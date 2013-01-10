@@ -18,7 +18,7 @@
     <OptionStrict>Off</OptionStrict>
     <OptionInfer>On</OptionInfer>
     <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
@@ -392,6 +392,7 @@
     <Content Include="Views\Home\default.ascx" />
     <Content Include="Views\Home\DefSel.ascx" />
     <Content Include="Views\Home\DefSelProperties.aspx" />
+    <Content Include="Views\Home\EventLog.aspx" />
     <Content Include="Views\Home\Find.ascx" />
     <Content Include="Views\Home\fixedlinks.ascx" />
     <Content Include="Views\Home\linksMain.aspx" />
@@ -427,9 +428,12 @@
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridRepetition.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridSelectedColumns.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridSortOrder.ascx" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -465,8 +469,8 @@
     </COMReference>
     <COMReference Include="COAIntServer">
       <Guid>{D8480CC5-97D4-4D5B-B044-686CBE1F89E3}</Guid>
-      <VersionMajor>16</VersionMajor>
-      <VersionMinor>0</VersionMinor>
+      <VersionMajor>15</VersionMajor>
+      <VersionMinor>2</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
@@ -506,7 +510,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49597</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/DMI.NET</IISUrl>
+          <IISUrl>http://localhost:49597/dmi.net</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
