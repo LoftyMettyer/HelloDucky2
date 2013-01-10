@@ -1,0 +1,304 @@
+.column{	
+	margin-right:.5%;
+	min-height:300px;
+	/*background:#fff;*/
+	float:left;	
+	/*height: 100%;*/
+}
+
+.column .dragbox{
+	margin:5px 2px  20px;
+	/*background:#fff;*/	
+	position:relative;
+	border:1px solid #ddd;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;	
+	background-color: #fff;
+   background-color: rgba(255,255,255,0.5);	
+}
+.column .dragbox h2{
+	margin:0;
+	font-size:12px;
+	padding:5px;
+	/*background:#f0f0f0;*/
+	color:#fff;
+	border-bottom:1px solid #eee;
+	/*font-family:Verdana;*/
+	cursor:move;
+}
+.dragbox-content{
+	/*background:#fff;*/
+	min-height:100px; margin:5px;
+	/*font-family:'Lucida Grande', Verdana; font-size:0.8em; line-height:1.5em;*/
+	overflow: auto;
+}
+.column  .placeholder{
+	/*background: #f0f0f0;*/
+	border:1px dashed #ddd;
+}
+.dragbox h2.collapse
+{	
+	background:#164c89 url('collapse2.png') no-repeat top right;
+}
+.dragbox h2 .configure{
+	font-size:11px; font-weight:normal;
+	margin-right:30px; float:right;
+}
+
+.frame
+{
+	width: 800px; 
+	height: 520px; 
+	border: 1px solid black; 
+}
+
+.frame {
+    zoom: 0.65;
+    -moz-transform: scale(0.65);
+    -moz-transform-origin: 0 0;
+    -o-transform: scale(0.65);
+    -o-transform-origin: 0 0;
+    -webkit-transform: scale(0.65);
+    -webkit-transform-origin: 0 0;
+}
+
+.dialog 
+{
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    width: 290px;
+    margin-left: -157px;
+    background-color: #002248; 
+    padding: 10px;
+    border: 2px solid gainsboro; 
+    border-radius: 10px; 
+    text-align: center; 
+    z-index: 400;
+}
+
+@media screen and (orientation:landscape)
+{	
+	#coverColumn 
+	{
+/*		float: left;
+		position: static;
+		top: 0px;
+		bottom: 0px;
+		left: 0px;
+		width: 800px;	
+		background: url("../Content/Images/ABSBack1.jpg") no-repeat center center fixed; */
+		width: 800px;	
+		display: block;
+		height: 100%;
+		overflow: hidden;
+	}	
+	#leftHandColumn
+	{
+		display: block;
+		/*width:49%;*/
+	}
+	
+	#rightHandColumn 
+	{		
+		display: block;
+		width: 900px;
+	}
+	
+	#imgShowWebParts
+	{
+		/*display: none;			
+		visibility: hidden;*/
+	}
+	#backarrow
+	{
+		display: none;
+	}
+
+	.dashButton 
+	{
+		min-width: 100px;
+		width: 100px;
+		height: 100px;           
+	}
+	
+	.pageHeader 
+	{
+		margin-top: 60px;
+		margin-left: 120px;
+		font-size: 42pt;
+		/*color: White;	*/
+	}	
+
+	.buttonLinks 
+	{
+		clear: both;
+		margin-right: 0px;
+		margin-left: 80px;
+		margin-top: 60px;
+	}	
+}
+
+@media screen and (orientation:portrait)
+{
+	#coverColumn 
+	{
+/*		float: left;
+		position: static;
+		top: 0px;
+		bottom: 0px;
+		left: 0px;*/
+		width: 60%;			
+		display: block;
+		height: 100%;	
+		overflow: hidden;	
+	}		
+	#leftHandColumn
+	{
+		/*position: fixed;*/
+		display: block;
+		/*width:2000px;*/
+		top: 0px;
+		bottom: 0px;
+	}
+	
+	#rightHandColumn 
+	{
+		width: 100%;
+		display: none;
+	}	
+
+	#imgShowWebParts
+	{
+		/*display: block;	
+		visibility: visible;*/
+	}
+	
+	.dashButton 
+	{
+		min-width: 100px;
+		width: 100px;
+		height: 100px;           
+	}
+
+	.pageHeader 
+	{
+		margin-top: 60px;
+		margin-left: 120px;
+		font-size: 42pt;
+		/*color: White;		*/
+	}		
+	
+	.buttonLinks 
+	{
+		clear: both;
+		margin-right: 0px;
+		margin-left: 80px;
+		margin-top: 60px;
+	}
+}
+
+/* iPad Portrait */
+@media screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)
+{
+	/*iPad only*/
+	.dashButton 
+	{
+		min-width: 150px;
+		width: 150px;
+		height: 150px;           		
+	}		
+	
+}
+
+/* iPad Landscape */
+@media screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape) 
+{
+	/*iPad only*/
+	.dashButton 
+	{
+		min-width: 100px;
+		width: 100px;
+		height: 100px;           
+	}	
+	.pageHeader 
+	{
+		margin-top: 10px;
+		margin-left: 10px;
+		font-size: 26pt;
+		/*color: White;	*/
+	}		
+	.buttonLinks 
+	{
+		clear: both;
+		margin-right: 0px;
+		margin-left: 0px;
+		margin-top: 0px;
+	}		
+}
+
+/* iPhone Portrait */
+@media screen and (max-device-width: 480px) and (orientation:portrait) 
+{
+	.pageHeader 
+	{
+		margin-top: 10px;
+		margin-left: 10px;
+		font-size: 26pt;
+		/*color: White;	*/
+	}
+
+	.buttonLinks 
+	{
+		clear: both;
+		margin-right: 0px;
+		margin-left: 0px;
+		margin-top: 0px;
+	}	
+	
+	.desktoplink 
+	{
+		display: none;
+	}	
+} 
+
+
+/*Small browser - desktops only*/
+@media screen and (max-width: 1023px) and (orientation: landscape) and (min-device-width: 1025px)
+{
+	.pageHeader 
+	{
+		margin-top: 10px;
+		margin-left: 10px;
+		font-size: 26pt;
+		/*color: White;	*/
+	}	
+	.buttonLinks 
+	{
+		clear: both;
+		margin-right: 0px;
+		margin-left: 0px;
+		margin-top: 0px;
+	}		
+}
+
+/* iPhone Landscape */
+@media screen and (max-device-width: 480px) and (orientation:landscape) {
+}
+
+/* Non-Retina */
+@media screen and (-webkit-max-device-pixel-ratio: 1) {
+}
+
+/* Retina */
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5),
+only screen and (-o-min-device-pixel-ratio: 3/2),
+only screen and (min--moz-device-pixel-ratio: 1.5),
+only screen and (min-device-pixel-ratio: 1.5) {
+}
+
+
+@media only screen and (max-width: 1024px) {
+  /* rules that only apply for canvases narrower than 1000px */
+}
+

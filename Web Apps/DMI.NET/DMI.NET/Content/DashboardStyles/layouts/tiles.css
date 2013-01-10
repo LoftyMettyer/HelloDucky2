@@ -1,0 +1,248 @@
+﻿html {background-image: none;
+      height: 100%;
+      }
+
+body 
+{	
+	height: 100%;
+	padding: 0px;
+	margin: 0px;
+}
+
+
+
+
+.DashContent {position: absolute; top: 95px; bottom: 2px;left: 0px; right: 0px;
+              margin: 0px 0px 0px 120px;
+              padding: 30px 0px 0px 10px;
+              height: 680px;
+              overflow-x: auto; overflow-y: hidden;-webkit-overflow-scrolling: touch ; }
+
+
+
+
+/********************
+*   Mobile Styles   *
+********************/
+@media only screen and (max-height: 850px) {
+.DashContent 
+{
+	top: 0;
+	margin-left: 0;
+	padding-top: 0;
+	left: 80px;
+	
+}
+
+}
+
+
+*
+{
+	padding: 0px;
+}
+
+.tileContent {width: 3000px;}
+
+/*.ButtonLinkColumn {display: none;}
+					
+.hypertextlinks {display: none;}*/
+
+.gridster 
+{
+	transition:opacity 0.6s; opacity: 0.8; -o-transition: opacity .6s; -moz-transition: opacity .6s; -webkit-transition: opacity .6s;
+}
+
+.hypertextlinks, .hypertextlinkseparatorframe, .linkspagebutton, .ButtonLinkColumn, .linkspagebuttonseparatorframe, .dropdownlinks, .dropdownlinkseparatorframe {float:left;}
+
+.linkspagebuttontext, .hypertextlinktext, .dropdownlinktext {border: none; color: Black;}
+
+.hypertextlinktext {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+
+.linkspagebuttontext a, .hypertextlinktext a, .dropdownlinktext a, .DBValueCaption p
+{
+	position: absolute;bottom: 0px; width: 100%; text-align: center; text-decoration: none; margin: 0px 2px 5px 2px;
+	}
+
+.linkspagebuttontext img { display: none;}
+
+.hypertextlinktileIcon, .linkspagebuttontileIcon, .dropdownlinktileIcon
+{
+	text-align: center;
+	font-size: 26pt;
+}
+
+
+
+.hypertextlinkseparatorframe, .linkspagebuttonseparatorframe, .dropdownlinkseparatorframe {border: none;width: 140px;margin-right: 10px;}
+
+.hypertextlinkseparator, .linkspagebuttonseparator, .dropdownlinkseparator
+{
+	/*margin-left: 10px;*/
+	background-color: transparent!Important;
+   font-size: 11pt;
+   text-decoration: none;
+}
+
+.linkspagebuttonseparator h2 {
+	font-size: inherit;
+	font-weight: inherit;
+	margin: 0px;
+}
+
+.widgetplaceholder {
+	display: none;
+}
+
+.cols2 { width: 280px;}
+.cols3 { width: 420px;}
+.cols4 { width: 560px;}
+
+.gridster {
+	margin: 0px auto; transition:opacity 0.6s;  opacity: 0.8; -webkit-transition: opacity .6s; -moz-transition: opacity .6s; -o-transition: opacity .6s;
+}
+.gridster .gs_w {
+	border-radius: 00px; cursor: pointer; box-shadow: 0px 0px 5px rgba(0,0,0,0.3); -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+.gridster .player {
+	box-shadow: 3px 3px 5px rgba(0,0,0,0.3); -webkit-box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+}
+.gridster .try.gs_w {
+	background-position: 37px -169px; background-image: url("../img/sprite.png"); background-repeat: no-repeat;
+}
+.gridster .preview-holder {
+	background: rgba(255, 255, 255, 0.2) !important; border-radius: 0px !important; border: currentColor !important;
+}	
+
+li {list-style: none;}
+
+.DBValueScroller { overflow: hidden;}
+
+.DBValue  
+{
+	position: relative;
+	white-space: nowrap;
+	text-align: center;
+   margin-top: 0px;
+   font-style: normal;
+   font-size: 26pt;
+   margin: 0 auto;
+}
+
+
+
+
+
+
+.greenTile {
+   /* Chuck all possibilities at the browser for gradients... */
+   background-color: #1a82f7; 
+   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7a9600', endColorstr='#c2db5e',GradientType=1 );
+   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#7a9600), to(#c2db5e));
+   background-image: -webkit-linear-gradient(top, #7a9600, #c2db5e); 
+   background-image:    -moz-linear-gradient(top, #7a9600, #c2db5e);
+   background-image:     -ms-linear-gradient(top, #7a9600, #c2db5e);
+   background-image:      -o-linear-gradient(top, #7a9600, #c2db5e);
+   color: White;        
+}      
+
+.redTile
+{
+   /* Chuck all possibilities at the browser for gradients... */
+   background-color: #1a82f7; 
+   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cf0404', endColorstr='#ff8075',GradientType=1 );
+   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#cf0404), to(#ff8075));
+   background-image: -webkit-linear-gradient(top, #cf0404, #ff8075); 
+   background-image:    -moz-linear-gradient(top, #cf0404, #ff8075);
+   background-image:     -ms-linear-gradient(top, #cf0404, #ff8075);
+   background-image:      -o-linear-gradient(top, #cf0404, #ff8075);
+   color: White;        
+}
+
+.blueTile {
+   /* Chuck all possibilities at the browser for gradients... */
+   background-color: #1a82f7; 
+   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#164c89', endColorstr='#687687',GradientType=1 );
+   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#164c89), to(#687687));
+   background-image: -webkit-linear-gradient(top, #164c89, #687687); 
+   background-image:    -moz-linear-gradient(top, #164c89, #687687);
+   background-image:     -ms-linear-gradient(top, #164c89, #687687);
+   background-image:      -o-linear-gradient(top, #164c89, #687687);
+   color: White;        
+}      
+         
+.orangeTile {
+   /* Chuck all possibilities at the browser for gradients... */
+   background-color: #1a82f7; 
+   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff7b0d', endColorstr='#ffa84c',GradientType=1 );
+   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ff7b0d), to(#ffa84c));
+   background-image: -webkit-linear-gradient(top, #ff7b0d, #ffa84c); 
+   background-image:    -moz-linear-gradient(top, #ff7b0d, #ffa84c);
+   background-image:     -ms-linear-gradient(top, #ff7b0d, #ffa84c);
+   background-image:      -o-linear-gradient(top, #ff7b0d, #ffa84c);
+   color: White;        
+}           
+         
+.lightBlueTile {
+   /* Chuck all possibilities at the browser for gradients... */
+   background-color: #1a82f7; 
+   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#067fdb', endColorstr='#d6d6d6',GradientType=1 );
+   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#067fdb), to(#d6d6d6));
+   background-image: -webkit-linear-gradient(top, #067fdb, #d6d6d6); 
+   background-image:    -moz-linear-gradient(top, #067fdb, #d6d6d6);
+   background-image:     -ms-linear-gradient(top, #067fdb, #d6d6d6);
+   background-image:      -o-linear-gradient(top, #067fdb, #d6d6d6);
+   color: White;        
+}
+
+.holidaycontainer { display: none;}
+
+
+/* === Fixed Links === */
+
+.RecDescPhoto, .RecordDescription { display: none;}
+
+.FixedLinksLeft {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 80px;
+	background-color: black;
+	
+}
+
+div.officebar > ul { padding-left: 0;}
+div.officetab > ul { padding-left: 0;}
+
+.officebar img, .officebar h6 { display: none;}
+
+.officebar i { font-size: 26pt;text-decoration: none;list-style: none;}
+
+.officebar > ul > li:not(.current) {
+	display: none;	
+}
+
+div.officetab li div.button 
+{
+  text-align: center;
+  display: inline-block;
+  position: relative;
+  float: left;
+  /*top: -84px;*/
+  left: 0px;
+  height: 66px;
+  width: 49px;
+  overflow: hidden;
+  line-height: normal;
+}
+
+.officebar li { list-style: none;}
+
+div.officebar ul li.current > a { display: none;}
+div.officetab div.panel > span { display: none;}

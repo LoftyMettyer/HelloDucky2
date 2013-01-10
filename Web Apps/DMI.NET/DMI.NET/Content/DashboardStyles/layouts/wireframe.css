@@ -1,0 +1,281 @@
+﻿html {background-image: none;
+      height: 100%;
+      }
+
+body 
+{	
+	height: 100%;
+	padding: 0px;
+	margin: 0px;
+}
+
+#fixedlinks {
+	position: absolute;
+	top: 0;left: 70px;right: 0;height: 126px;	
+}
+
+.FixedLinksLeft {
+	position: absolute;
+	width: 100%;
+}
+
+
+.DashContent {position: absolute; top: 126px; bottom: 2px;left: 0px; right: 0px;}
+
+
+.hypertextlinks 
+{
+	height: 100%;
+	width: 250px;
+	overflow: auto;
+	float: left;
+	}			
+
+.hypertextlinkseparator
+{
+	line-height: 2;
+	text-decoration: none;
+	font-size: 11pt;
+	/*font-weight: bold;*/
+	margin: 0px;
+	display: block;
+	cursor: default;
+}
+
+.hypertextlinkseparatorframe 
+{
+	margin: 0px 0px 0px 0px;
+   padding: 0px;
+   border-style: solid;
+   border-width: 2px;
+}
+                              
+.hypertextlinkseparatorframe ul {padding: 0px;}
+
+.hypertextlink-displaytype
+{
+	cursor: pointer; 
+   list-style: none;
+	list-style-type: none;
+	list-style-position: outside;
+	list-style-image: none; 
+	}
+
+	.hypertextlink-displaytype ul {list-style: none;
+		list-style-type: none;
+		list-style-position: outside;
+		list-style-image: none; 
+		}
+		
+.hypertextlinktext a 
+{
+	line-height: 2;
+	text-decoration: none;
+	margin-left: 10px;
+	}
+
+.hypertextlinktext {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.hypertextlinktext p { margin: 0px;}
+
+.hypertextlinktileIcon, .linkspagebuttontileIcon {display: none;}
+
+.linkspagebutton 
+{
+	position: fixed;
+	left: 200px;
+	right: 0px;
+	top: 126px;
+	bottom: 50px;
+	overflow: auto;
+	margin: 10px 0px 0px 100px;
+}
+
+.linkspagebuttonseparator
+{
+	line-height: 2;
+	text-decoration: none;
+	font-size: 11pt;
+	/*font-weight: bold;*/
+	margin: 0px;
+	display: block;
+	cursor: default;
+	padding-left: 10px;
+}
+
+.linkspagebuttonseparator h2 {
+	font-size: inherit;
+	margin: 0px;
+	cursor: move;
+}
+
+.linkspagebuttonseparatorframe 
+{
+	margin: 0px 10px 10px 0px;
+   list-style: none;
+   padding: 0px;
+   border-style: solid;
+   border-width: 2px;                              
+}
+
+.linkspagebuttonseparatorframe ul {padding: 0px; min-width: 300px;}
+
+.linkspagebutton-displaytype
+{
+	cursor: pointer; 
+   list-style: none;
+	list-style-type: none;
+	list-style-position: outside;
+	list-style-image: none; 
+	}
+
+	.linkspagebutton-displaytype ul {list-style: none;
+		list-style-type: none;
+		list-style-position: outside;
+		list-style-image: none; 
+		}
+
+.linkspagebuttontext {padding-left: 10px; position: relative;line-height: 2em;}
+
+.linkspagebuttontext a 
+{
+	line-height: 2;
+	text-decoration: none;
+	margin: 0px;
+	}
+
+.linkspagebuttontext p 
+{
+	margin: 0px;
+}
+
+.linkspagebuttontext img {
+	margin-left: 5px;
+	border: none;
+}
+
+.DBValueScroller  
+{
+	position: absolute;
+	right: 0px;
+	padding-right: 10px;
+}
+
+.DBVSpinner 
+{
+	height: 16px;
+	width: 16px;
+}
+
+.ButtonLinkColumn 
+{	
+	float: left;
+}
+
+/* For old Self-service Intranet styling 
+*
+{
+	padding: 0px;
+}*/
+
+.greenTile {background-color: transparent;}
+
+
+
+.dropdownlinks 
+{
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+	padding-bottom: 20px;
+}
+
+.dropdownlinkseparatorframe {
+	margin: 0px auto;
+	width: 300px;
+}
+
+.dropdownlinkseparator 
+{
+	float: left;
+	text-decoration: none;
+	padding-right: 10px;
+}
+
+.dropdownlink-displaytype {
+	list-style: none;
+	
+}
+.centered {
+	text-align:center;
+   margin: 0px auto;
+}
+
+.widgetplaceholder  
+{
+	text-align: center;
+	border: 1px solid white;
+	margin: 0px 30px 10px 20px;
+	height: 120px;
+	line-height: normal;
+}
+
+.widgetplaceholder i { font-size: 48pt;}
+
+.widgetplaceholder>div { width: 100%;}
+
+.ButtonLinkColumn  .linksplaceholder{      
+    
+    border:1px dashed #ddd;  
+}  
+
+
+
+
+
+
+/* === Fixed Links === */
+
+#fixedlinksframe {
+	/*position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 126px;*/
+}
+
+/*div.officebar { position: absolute;bottom: 0; }*/
+
+div.officebar > ul { padding-left: 0;}
+div.officetab > ul { padding-left: 0;}
+
+.officebar img, .officebar h6 { display: none;}
+
+.officebar i { font-size: 26pt;text-decoration: none;list-style: none;}
+
+.officebar > ul > li:not(.current) {
+	display: none;	
+}
+
+div.officetab li div.button 
+{
+  text-align: center;
+  display: inline-block;
+  position: relative;
+  float: left;
+  /*top: -84px;*/
+  left: 0px;
+  height: 66px;
+  width: 49px;
+  overflow: hidden;
+  line-height: normal;
+}
+
+.officebar li { list-style: none;}
+
+div.officebar ul li.current > a { display: none;}
+div.officetab div.panel > span { display: none;}

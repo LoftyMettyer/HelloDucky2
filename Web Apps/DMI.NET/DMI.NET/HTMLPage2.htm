@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title></title>
+	<script src="/dmi.net/Scripts/jquery-1.8.2.js" type="text/javascript"></script>
+	
+	<script type="text/javascript">
+
+		$(function () {
+			$('#go').click(doWork);
+		});
+
+		function doWork() {
+
+			$('#test').html('');
+
+			for (var i = 0; i < 12; i++) {
+				$.ajax({
+					url: "http://localhost/DMI.NET/sessionless/test/i=" + i,
+					type: "POST",
+					data: { index: i },
+					success: function (data) {
+						$('#test').append("<p>" + data  + "</p>");
+					}
+				});
+			}	
+		}
+	</script>
+</head>
+	<body>
+		<input id="go" type="button" value="Go"/>
+		<div id="test">
+		
+		</div>
+	</body>
+</html>

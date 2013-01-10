@@ -1,0 +1,519 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{52FBD57B-87C8-40D3-A5DA-6A6174F4A871}</ProjectGuid>
+    <ProjectTypeGuids>{E53F8FEA-EAE0-44A6-8774-FFD645390401};{349c5851-65df-11da-9384-00065b846f21};{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>DMI.NET</RootNamespace>
+    <AssemblyName>DMI.NET</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionCompare>Binary</OptionCompare>
+    <OptionStrict>Off</OptionStrict>
+    <OptionInfer>On</OptionInfer>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>false</UseIISExpress>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>DMI.NET.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>DMI.NET.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Extensions.Design" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Collections.Specialized" />
+    <Import Include="System.Configuration" />
+    <Import Include="System.Text" />
+    <Import Include="System.Text.RegularExpressions" />
+    <Import Include="System.Web" />
+    <Import Include="System.Web.Caching" />
+    <Import Include="System.Web.Mvc" />
+    <Import Include="System.Web.Mvc.Ajax" />
+    <Import Include="System.Web.Mvc.Html" />
+    <Import Include="System.Web.Routing" />
+    <Import Include="System.Web.SessionState" />
+    <Import Include="System.Web.Security" />
+    <Import Include="System.Web.Profile" />
+    <Import Include="System.Web.UI" />
+    <Import Include="System.Web.UI.WebControls" />
+    <Import Include="System.Web.UI.WebControls.WebParts" />
+    <Import Include="System.Web.UI.HtmlControls" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Code\ASRIntranetFunctions.vb" />
+    <Compile Include="Code\svrCleanup.vb" />
+    <Compile Include="Controllers\AccountController.vb" />
+    <Compile Include="Controllers\HomeController.vb" />
+    <Compile Include="Controllers\SessionLessController.vb" />
+    <Compile Include="Global.asax.vb">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="ViewModels\NavLinksViewModel.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="_bin_deployableAssemblies\Microsoft.Web.Infrastructure.dll" />
+    <None Include="_bin_deployableAssemblies\System.Web.WebPages.Razor.dll" />
+    <None Include="_bin_deployableAssemblies\System.Web.WebPages.dll" />
+    <None Include="_bin_deployableAssemblies\System.Web.WebPages.Deployment.dll" />
+    <None Include="_bin_deployableAssemblies\System.Web.Razor.dll" />
+    <None Include="_bin_deployableAssemblies\System.Web.Helpers.dll" />
+    <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
+    <None Include="Content\fonts\font-awesome\fontawesome-webfont.eot" />
+    <None Include="Content\fonts\font-awesome\fontawesome-webfont.ttf" />
+    <None Include="Content\fonts\font-awesome\fontawesome-webfont.woff" />
+    <None Include="Content\fonts\general_enclosed_foundicons.eot" />
+    <None Include="Content\fonts\general_enclosed_foundicons.ttf" />
+    <None Include="Content\fonts\general_enclosed_foundicons.woff" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <Content Include="Content\contextmenustyle.css" />
+    <Content Include="Content\DashboardStyles\layouts\winkit.css" />
+    <Content Include="Content\DashboardStyles\layouts\tiles.css" />
+    <Content Include="Content\DashboardStyles\themes\Blue.css" />
+    <Content Include="Content\DashboardStyles\themes\White.css" />
+    <Content Include="Content\DashboardStyles\themes\Red.css" />
+    <Content Include="Content\dragdrop\cog.png" />
+    <Content Include="Content\dragdrop\collapse.png" />
+    <Content Include="Content\dragdrop\styles.css" />
+    <Content Include="Content\font-awesome-ie7.css" />
+    <Content Include="Content\font-awesome.css" />
+    <Content Include="Content\fonts\font-awesome\fontawesome-webfont.svg" />
+    <Content Include="Content\fonts\general_enclosed_foundicons.svg" />
+    <Content Include="Content\general_enclosed_foundicons.css" />
+    <Content Include="Content\images\ABSBack.jpg" />
+    <Content Include="Content\images\ABSBack1.jpg" />
+    <Content Include="Content\images\ABSBack2.jpg" />
+    <Content Include="Content\images\abssmall.png" />
+    <Content Include="Content\images\AdvBS_WHITE.gif" />
+    <Content Include="Content\images\extlink.png" />
+    <Content Include="Content\images\extlink2.png" />
+    <Content Include="Content\images\extlink3.png" />
+    <Content Include="Content\images\extlink4.png" />
+    <Content Include="Content\images\OpenHRLogo.png" />
+    <Content Include="Content\images\arrow-left-white.png" />
+    <Content Include="Content\images\arrow-right-white.png" />
+    <Content Include="Content\images\back_48.png" />
+    <Content Include="Content\images\bluebgrd.png" />
+    <Content Include="Content\images\COAInt_Banner.jpg" />
+    <Content Include="Content\images\COAInt_Splash.jpg" />
+    <Content Include="Content\images\COAInt_TopBar.jpg" />
+    <Content Include="Content\images\DefaultBackground.jpg" />
+    <Content Include="Content\images\DMIBackground.gif" />
+    <Content Include="Content\images\employee.jpg" />
+    <Content Include="Content\images\Expand.png" />
+    <Content Include="Content\images\Help32.png" />
+    <Content Include="Content\images\next_48.png" />
+    <Content Include="Content\images\OpenHRLogo2.png" />
+    <Content Include="Content\images\Retract.png" />
+    <Content Include="Content\DashboardStyles\layouts\wireframe.css" />
+    <Content Include="Content\images\spinner04.gif" />
+    <Content Include="Content\jquery.gridster.css" />
+    <Content Include="HTMLPage2.htm" />
+    <Content Include="Scripts\FormScripts\Util_Def_CustomReports.js" />
+    <Content Include="Scripts\officebar\images\bg.png" />
+    <Content Include="Scripts\officebar\images\bg_tab.png" />
+    <Content Include="Scripts\officebar\images\button2_over.png" />
+    <Content Include="Scripts\officebar\images\button3_over.png" />
+    <Content Include="Scripts\officebar\images\button3_over_dropdown.png" />
+    <Content Include="Scripts\officebar\images\button4_over.png" />
+    <Content Include="Scripts\officebar\images\button5.gif" />
+    <Content Include="Scripts\officebar\images\button5_over.gif" />
+    <Content Include="Scripts\officebar\images\button_over - Copy.png" />
+    <Content Include="Scripts\officebar\images\button_over.png" />
+    <Content Include="Scripts\officebar\images\dropdown.png" />
+    <Content Include="Scripts\officebar\images\panel_left.gif" />
+    <Content Include="Scripts\officebar\images\panel_right.gif" />
+    <Content Include="Scripts\officebar\images\popup_left.png" />
+    <Content Include="Scripts\officebar\images\resize.gif" />
+    <Content Include="Scripts\officebar\images\resize_bg.png" />
+    <Content Include="Scripts\officebar\images\tab_left.gif" />
+    <Content Include="Scripts\officebar\images\tab_left_over.gif" />
+    <Content Include="Scripts\officebar\images\tab_right.gif" />
+    <Content Include="Scripts\officebar\images\tab_right_over.gif" />
+    <Content Include="Scripts\officebar\jquery.officebar.js" />
+    <Content Include="Scripts\officebar\jquery.ribbon.css" />
+    <Content Include="Scripts\jsTree\theme\classic\d.gif" />
+    <Content Include="Scripts\jsTree\theme\classic\d.png" />
+    <Content Include="Scripts\jsTree\theme\classic\dot_for_ie.gif" />
+    <Content Include="Scripts\jsTree\theme\classic\style.css" />
+    <Content Include="Scripts\jsTree\theme\classic\throbber.gif" />
+    <Content Include="Content\Menu\ActiveNode.png" />
+    <Content Include="Content\Menu\folder_closed.png" />
+    <Content Include="Content\Menu\InactiveNode.png" />
+    <Content Include="Content\Menu\node_closed.png" />
+    <Content Include="Content\Menu\node_expanded.png" />
+    <Content Include="Content\Menu\subnode.png" />
+    <Content Include="Content\OpenHR.css" />
+    <Content Include="Content\widgetCSS\wdg_oHRHoliday.css" />
+    <Content Include="Include\ctl_SetFont.txt" />
+    <Content Include="Include\gotoWork.txt" />
+    <Content Include="Scripts\FormScripts\menu.js" />
+    <Content Include="Scripts\jquery.flip.js" />
+    <Content Include="Scripts\jsTree\jquery.jstree.js" />
+    <Content Include="Scripts\jquery.marquee.js" />
+    <Content Include="Scripts\jquery-1.8.2.js" />
+    <Content Include="Scripts\jquery-ui-1.9.1.custom.js" />
+    <Content Include="Scripts\jquery-ui-1.9.1.custom.min.js" />
+    <Content Include="Scripts\jquery.gridster.js" />
+    <Content Include="Scripts\jquery.mousewheel.js" />
+    <Content Include="Scripts\officebar\winkit\AbsenceBreakdown64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\AbsenceBreakdown64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\AbsenceBreakdown64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\AbsenceCalendar64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\AbsenceCalendar64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\AbsenceCalendar64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\abssmall.png" />
+    <Content Include="Scripts\officebar\winkit\add64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\add64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\add64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\AddFormWaitingList64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\AddFormWaitingList64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\AddFormWaitingList64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\arrangeall64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\arrangeall64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\arrangeall64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\back64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\back64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\back64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\BackRecord64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\BackRecord64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\BackRecord64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\BookCourse64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\BookCourse64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\BookCourse64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\BradfordFactor64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\BradfordFactor64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\BradfordFactor64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\BulkBooking64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\BulkBooking64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\buttoncancel64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\buttoncancel64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\buttoncancel64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\CalendarReports64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\CalendarReports64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\CalendarReports64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\CancelBooking64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\CancelBooking64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\CancelCourse64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\CancelCourse64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\CancelCourse64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\ChangePassword64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\ChangePassword64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\ChangePassword64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\checkmark64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\checkmark64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\checkmark64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\close64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\close64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\close64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\configuration64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\configuration64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\configuration64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\CourseBooking64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\CourseBooking64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\CourseBooking64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\cross64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\cross64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\cross64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\delete64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\delete64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\delete64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\diskette64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\diskette64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\diskette64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\Edit64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\Edit64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\Edit64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\Filtering64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\Filtering64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\Filtering64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\FilteringDelete64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\FilteringDelete64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\Filteringdelete64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\Find64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\Find64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\Find64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\first64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\first64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\first64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\help64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\help64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\help64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\Home64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\home64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\home64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\info64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\info64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\info64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\last64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\last64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\last64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\MailMerge64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\MailMerge64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\MailMerge64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\next64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\next64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\next64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\PendingSteps64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\PendingSteps64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\PendingSteps64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\printer64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\printer64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\printer64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\QuickFind64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\QuickFind64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\QuickFind64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\sort64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\sort64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\sort64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\TransferBooking64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\TransferBooking64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\TransferBooking64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\upblack64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\upblack64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\Workflow64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\Workflow64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\Workflow64NORM.png" />
+    <Content Include="Scripts\OpenHR.js" />
+    <Content Include="Scripts\widgetScripts\wdg_oHRHoliday.js" />
+    <Content Include="Scripts\widgetScripts\external wdg_oHRDBV.js" />
+    <Content Include="Scripts\widgetScripts\wdg_oHRButton.js" />
+    <Content Include="Scripts\widgetScripts\getLinks.js" />
+    <Content Include="Scripts\widgetScripts\wdg_oHRDBV.js" />
+    <Content Include="packages.config" />
+    <Content Include="Scripts\ctl_SetFont.js" />
+    <Content Include="Scripts\ctl_SetStyles.js" />
+    <Content Include="Scripts\jquery.cookie.js" />
+    <Content Include="Scripts\jquery.rightClick.js" />
+    <Content Include="Scripts\jquery.ui.touch-punch.min.js" />
+    <Content Include="Scripts\menu.js" />
+    <Content Include="Views\Account\AboutHRPro.aspx" />
+    <Content Include="Views\Account\Error.aspx" />
+    <Content Include="Views\Account\ForcedPasswordChange.aspx" />
+    <Content Include="Views\Account\Login.aspx" />
+    <Content Include="Views\Account\Message.aspx" />
+    <Content Include="Views\Home\CheckForUsage.ascx" />
+    <Content Include="Views\Home\Data.ascx" />
+    <Content Include="Views\Home\default.ascx" />
+    <Content Include="Views\Home\DefSel.ascx" />
+    <Content Include="Views\Home\DefSelProperties.aspx" />
+    <Content Include="Views\Home\Find.ascx" />
+    <Content Include="Views\Home\fixedlinks.ascx" />
+    <Content Include="Views\Home\linksMain.aspx" />
+    <Content Include="Views\Home\Main.aspx" />
+    <Content Include="Views\Home\Menu.ascx" />
+    <Content Include="HTMLPage1.htm" />
+    <Content Include="Views\Home\Util_CustomReportChilds.aspx" />
+    <Content Include="Views\Home\Util_Def_CustomReports.ascx" />
+    <Content Include="Views\Home\Util_EmailSelection.aspx" />
+    <Content Include="Views\Home\Util_RecordSelection.aspx" />
+    <Content Include="Views\Home\Util_SortOrderSelection.aspx" />
+    <Content Include="Views\Shared\Util_Def_CustomReports\grdaccess.ascx" />
+    <Content Include="Views\Shared\gotoWork.ascx" />
+    <Content Include="Views\Shared\Site.Master" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Global.asax" />
+    <Content Include="Content\Site.css" />
+    <Content Include="Scripts\jquery-1.5.1-vsdoc.js" />
+    <Content Include="Scripts\jquery-1.5.1.js" />
+    <Content Include="Scripts\jquery-1.5.1.min.js" />
+    <Content Include="Scripts\jquery-ui-1.8.11.js" />
+    <Content Include="Scripts\jquery-ui-1.8.11.min.js" />
+    <Content Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\modernizr-1.7.js" />
+    <Content Include="Scripts\modernizr-1.7.min.js" />
+    <Content Include="Views\Shared\Util_Def_CustomReports\dialog.ascx" />
+    <Content Include="Views\Shared\Util_Def_CustomReports\grdColProps.ascx" />
+    <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridAvailableColumns.ascx" />
+    <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridChildren.ascx" />
+    <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridRepetition.ascx" />
+    <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridSelectedColumns.ascx" />
+    <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridSortOrder.ascx" />
+    <Content Include="Web.config" />
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\MicrosoftAjax.js" />
+    <Content Include="Scripts\MicrosoftAjax.debug.js" />
+    <Content Include="Scripts\MicrosoftMvcAjax.js" />
+    <Content Include="Scripts\MicrosoftMvcAjax.debug.js" />
+    <Content Include="Scripts\MicrosoftMvcValidation.js" />
+    <Content Include="Scripts\MicrosoftMvcValidation.debug.js" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\Shared\Error.aspx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="Pictures\" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="ADODB">
+      <Guid>{00000205-0000-0010-8000-00AA006D2EA4}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>5</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="COAIntServer">
+      <Guid>{D8480CC5-97D4-4D5B-B044-686CBE1F89E3}</Guid>
+      <VersionMajor>16</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VBA">
+      <Guid>{000204EF-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>6</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>9</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>49597</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost/DMI.NET</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

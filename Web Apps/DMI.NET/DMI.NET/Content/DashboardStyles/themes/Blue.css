@@ -1,0 +1,32 @@
+﻿body {background-color: rgb(7, 55, 99);color: White;
+      	font-family: Segoe UI, Verdana, "Open Sans", Tahoma,Helvetica,sans-serif; }
+      	
+li:visited { color: white;}      	
+
+.headerbar, #fixedlinksframe {background-color: rgb(43, 120, 228);}
+
+.DashHeader {background-color: rgb(43, 120, 228);}
+.RecordDescription {	background-color: rgb(43, 120, 228);}
+.RecordDescription p {color: White;	}
+.FixedLinksLeft ul li {	color: White;}
+.FixedLinksRight ul li {color: White;}
+/*.FixedLinksLeft ul li a:hover {	background-color: Orange; border-radius: 5px; }*/
+.FixedLinksLeft .button:hover {	background-color: Orange; border-radius: 5px; }
+
+
+li {background-color: transparent;}
+li a {	color: White;}
+.linkspagebuttonseparatorframe {border-color: rgb(43, 120, 228);}
+.hypertextlinkseparatorframe {border-color: rgb(43, 120, 228);}
+.hypertextlinkseparator {background-color: rgb(43, 120, 228);}
+.linkspagebuttonseparator {background-color: rgb(43, 120, 228);}
+.hypertextlinktext:hover {	background-color: #ff9608; }
+.linkspagebuttontext:hover {	background-color: #ff9608; }
+.linkspagebutton .displayonly { background-color: transparent; }
+.generaltheme {background-color: rgb(43, 120, 228);}
+
+.widgetplaceholder { color: white;}
+
+.abMainMenu { color: black;}
+
+.abMainMenu li a { color: black;}

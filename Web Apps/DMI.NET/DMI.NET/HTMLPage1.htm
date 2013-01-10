@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<script src="/dmi.net/Scripts/jquery-1.8.2.js" type="text/javascript"></script>
+	<script src="/dmi.net/Scripts/3DCarousel/jquery.carousel.js" type="text/javascript"></script>
+	<style>
+		li
+		{
+			list-style: none;
+		}
+		
+		.tableLayout
+		{
+			
+			height: 400px;
+		}
+		.tableLayout .tableRow
+		{
+			width: 100%;
+		}
+		.tableLayout li ul li
+		{
+			width: 100px;
+			float: left;
+			border-left: 1px solid black;
+		}
+		.tableRow
+		{
+			clear: both;
+		}
+		.col_1
+		{
+			display: none;
+		}
+		
+		.titles { display: none;}
+	</style>
+</head>
+<body>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			//return false;
+			$('#carousel01').carousel({
+				frameRate: 25,
+				rotationsPerSecond: 0.1,
+				inertia: 0.5
+			});
+		});
+
+		$("#carousel01").carousel('stop');
+	</script>
+
+	<div id="carousel01" class="tableLayout">
+				<ul class="titles">
+					<li class="col_1">0</li>
+					<li class="col_2">Surname</li>
+					<li class="col_3">Forenames</li>
+					<li class="col_4">Staff Number</li>
+				</ul>
+		<ul>
+			<li><img src="Content/images/AVERY.png" /></li>
+			<li class="col_1">21</li>
+			<li class="col_2">Avery</li>
+			<li class="col_3">Debbie</li>
+			<li class="col_4">00000021</li>
+		</ul>
+		<ul>
+			<li><img src="Content/images/BATES.png" /></li>
+			<li class="col_1">33</li>
+			<li class="col_2">Bates</li>
+			<li class="col_3">Kenneth</li>
+			<li class="col_4">000000</li>
+		</ul>
+		<ul>
+			<li><img src="Content/images/CAMPBELL.png" /></li>
+			<li class="col_1">00</li>
+			<li class="col_2">Campbell</li>
+			<li class="col_3">Laura</li>
+			<li class="col_4">00000021</li>
+		</ul>
+		<ul>
+			<li><img src="Content/images/CAMPBELL.png" /></li>
+			<li class="col_1">37</li>
+			<li class="col_2">worthing</li>
+			<li class="col_3">Mark</li>
+			<li class="col_4">00000037</li>
+		</ul>
+		<ul>
+			<li><img src="Content/images/flynn.png" /></li>
+			<li class="col_1">21</li>
+			<li class="col_2">Flynn</li>
+			<li class="col_3">Tracy</li>
+			<li class="col_4">00000021</li>
+		</ul>
+		<ul>
+			<li><img src="Content/images/MARTIN.png" /></li>
+			<li class="col_1">37</li>
+			<li class="col_2">Martin</li>
+			<li class="col_3">Susan</li>
+			<li class="col_4">00000037</li>
+		</ul>
+	</div>
+
+	<input type="button" value="resume" onclick="$('#carousel01').carousel('pause');" />
+	<input type="button" value="resume" onclick="$('#carousel01').carousel('resume');" />
+</body>
+</html>
