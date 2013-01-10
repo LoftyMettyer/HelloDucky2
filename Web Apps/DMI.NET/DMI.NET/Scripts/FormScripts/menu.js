@@ -582,13 +582,13 @@ function menu_MenuClick(sTool) {
 			return;
 		}
 
-	//	if (sToolName == "mnutoolEventLog") {
-	//		if (saveChanges("EVENTLOG",true, false) !=2) {
-	//			loadPage("eventLog");
-	//		}
-	//		return;
-	//	}
-	//	
+		if (sToolName == "mnutoolEventLog") {
+			if (saveChanges("EVENTLOG",true, false) !=2) {
+				menu_loadPage("eventLog");
+			}
+			return;
+		}
+		
 	//	if (sToolName == "mnutoolCancelCourse") {
 	//		if (ASRIntranetFunctions.MessageBox("Are you sure you want to cancel this course?", 36,"OpenHR Intranet") == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
 	//			if (saveChanges("CANCELCOURSE", true, false) != 2) { // 2 = vbCancel
