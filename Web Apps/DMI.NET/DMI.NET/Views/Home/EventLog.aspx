@@ -110,7 +110,6 @@ EventLog
     bHasViewAllPermission = Nothing
 %>
 
-<!--#include file="include\ctl_SetFont.txt"-->
 
 <OBJECT 
 	classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" 
@@ -167,7 +166,7 @@ EventLog
 </script>
 
 
-    <script type="text/javascript"> EventLog_window_onload();</script>
+    
 
 <script type="text/javascript" id=scptGeneralFunctions>
 <!--
@@ -695,8 +694,10 @@ EventLog
     -->
 </script>
 
-<script FOR=ssOleDBGridEventLog EVENT=HeadClick type="text/javascript">
+<script FOR=ssOleDBGridEventLog EVENT=HeadClick type="text/javascript">    
 <!--
+    
+
     var ColIndex = arguments[0];
  
     //Set the sort criteria depending on the column header clicked and refresh the grid
@@ -784,7 +785,7 @@ EventLog
     -->
 </script>
 
-<form idfrmLog>
+<form id=frmLog>
 <table align=center class="outline" cellPadding=5 cellSpacing=0 width=100% height=100%>
 	<TR>
 		<TD>
@@ -1475,6 +1476,7 @@ EventLog
 %>
 
 <!-- Embeds createActiveX.js script reference -->
-<!--#include file="include\ctl_CreateControl.txt"-->
+
+<script type="text/javascript"> EventLog_window_onload();</script>
 
 </asp:Content>

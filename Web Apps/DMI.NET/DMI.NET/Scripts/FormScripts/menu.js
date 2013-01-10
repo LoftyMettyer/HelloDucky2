@@ -583,9 +583,9 @@ function menu_MenuClick(sTool) {
 		}
 
 		if (sToolName == "mnutoolEventLog") {
-			if (saveChanges("EVENTLOG",true, false) !=2) {
+//			if (saveChanges("EVENTLOG",true, false) !=2) {
 				menu_loadPage("eventLog");
-			}
+//			}
 			return;
 		}
 		
@@ -1797,15 +1797,15 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 }
 
 function menu_loadPage(psPage) {
-//	var frmWorkArea;
+	var frmWorkArea;
 
-//	// Submit the current "workframe" form, and then load the required page.
-//	frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
-//	frmWorkArea.txtGotoTableID.value = 0;
-//	frmWorkArea.txtGotoViewID.value = 0;
-//	frmWorkArea.txtGotoScreenID.value = 0;
-//	frmWorkArea.txtGotoPage.value = psPage + ".asp";
-//	frmWorkArea.submit();
+	// Submit the current "workframe" form, and then load the required page.
+	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+	frmWorkArea.txtGotoTableID.value = 0;
+	frmWorkArea.txtGotoViewID.value = 0;
+	frmWorkArea.txtGotoScreenID.value = 0;
+	frmWorkArea.txtGotoPage.value = psPage;
+	OpenHR.submitForm(frmWorkArea);
 }
 
 function menu_autoLoadPage(psPage, pfAuto) {

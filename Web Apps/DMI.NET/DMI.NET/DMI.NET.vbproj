@@ -469,8 +469,8 @@
     </COMReference>
     <COMReference Include="COAIntServer">
       <Guid>{D8480CC5-97D4-4D5B-B044-686CBE1F89E3}</Guid>
-      <VersionMajor>15</VersionMajor>
-      <VersionMinor>2</VersionMinor>
+      <VersionMajor>16</VersionMajor>
+      <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>

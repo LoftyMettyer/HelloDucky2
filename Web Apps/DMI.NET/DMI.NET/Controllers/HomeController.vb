@@ -876,6 +876,11 @@ Namespace Controllers
 			Return View()
 		End Function
 
+		Function EventLog() As ActionResult
+			Return View()
+		End Function
+
+
 		Function LinksMain() As ActionResult
 			If Session("objButtonInfo") Is Nothing Or Session("objHypertextInfo") Is Nothing Or Session("objDropdownInfo") Is Nothing Then
 				Return RedirectToAction("Login", "Account")
