@@ -6,47 +6,8 @@ EventLog
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
-<%@ Language=VBScript %>
-<!--#INCLUDE FILE="include/svrCleanup.asp" -->
-<%
-	Response.Expires = -1
+<%@Import Namespace="DMI.NET" %>
 
-	Dim sReferringPage
-
-	' Only open the form if there was a referring page.
-	' If it wasn't then redirect to the login page.
-	sReferringPage = Request.ServerVariables("HTTP_REFERER") 
-	if inStrRev(sReferringPage, "/") > 0 then
-		sReferringPage = mid(sReferringPage, inStrRev(sReferringPage, "/") + 1)
-	end if
-
-	if len(sReferringPage) = 0 then
-		Response.Redirect("login.asp")
-	end if	
-	
-	Response.Buffer = True
-	
-	Session("CurrentUsername") = CStr(Request.Form("txtCurrentUsername"))
-	Session("CurrentType") = CStr(Request.Form("txtCurrentType"))
-	Session("CurrentMode") = CStr(Request.Form("txtCurrentMode"))
-	Session("CurrentStatus") = CStr(Request.Form("txtCurrentStatus"))	
-	
-	if Session("CurrentUsername") = "" then
-		Session("CurrentUsername") = "-1"
-	end if
-	
-	if Session("CurrentType") = "" then
-		Session("CurrentType") = "-1"
-	end if
-
-	if Session("CurrentMode") = "" then
-		Session("CurrentMode") = "-1"
-	end if
-
-	if Session("CurrentStatus") = "" then
-		Session("CurrentStatus") = "-1"
-	end if
-%>
 
 <%
 	'This section of script is used for saving the new purge criteria.
@@ -54,8 +15,10 @@ EventLog
 	dim sPeriod
 	dim iFrequency
 	dim sSQL
-	dim cmdPurge
-	
+    Dim cmdPurge
+    Dim prmPeriod
+    Dim prmFrequency
+    
 	bDoesPurge = trim(Request.Form("txtDoesPurge"))
 	sPeriod = Request.Form("txtPurgePeriod")
 	iFrequency = Request.Form("txtPurgeFrequency")
@@ -63,32 +26,32 @@ EventLog
 	if bDoesPurge <> vbNullString then
 		
 		' Delete old purge information to the database
-		Set cmdPurge = Server.CreateObject("ADODB.Command")
+        cmdPurge = Server.CreateObject("ADODB.Command")
 		cmdPurge.CommandText = "spASRIntClearEventLogPurge"
 		cmdPurge.CommandType = 4 ' Stored procedure.
-		Set cmdPurge.ActiveConnection = session("databaseConnection")
-		err = 0
+        cmdPurge.ActiveConnection = Session("databaseConnection")
+		err.clear()
 		cmdPurge.Execute 
-		set cmdPurge = nothing
+        cmdPurge = Nothing
  
 		if bDoesPurge = 1 then
 			' Insert the new purge criteria
-			Set cmdPurge = Server.CreateObject("ADODB.Command")
+            cmdPurge = Server.CreateObject("ADODB.Command")
 			cmdPurge.CommandText = "spASRIntSetEventLogPurge"
 			cmdPurge.CommandType = 4 ' Stored procedure.
-			Set cmdPurge.ActiveConnection = session("databaseConnection")
+            cmdPurge.ActiveConnection = Session("databaseConnection")
 		
-			Set prmPeriod = cmdPurge.CreateParameter("period",200,1,8000) ' 200=varchar, 1=input, 8000=size
-			cmdPurge.Parameters.Append prmPeriod
+			prmPeriod = cmdPurge.CreateParameter("period",200,1,8000) ' 200=varchar, 1=input, 8000=size
+            cmdPurge.Parameters.Append(prmPeriod)
 			prmPeriod.value = cstr(sPeriod)
 
-			Set prmFrequency = cmdPurge.CreateParameter("frequency",3,1) ' 3=integer, 1=input
-			cmdPurge.Parameters.Append prmFrequency
+			prmFrequency = cmdPurge.CreateParameter("frequency",3,1) ' 3=integer, 1=input
+            cmdPurge.Parameters.Append(prmFrequency)
 			prmFrequency.value = cleanNumeric(clng(iFrequency))
 			
-			err = 0
+			err.clear()
 			cmdPurge.Execute 
-			set cmdPurge = nothing
+            cmdPurge = Nothing
 
 			Session("showPurgeMessage") = 1
 		else
@@ -96,10 +59,10 @@ EventLog
 		end if
 	end if
 	
-	set bDoesPurge = nothing
-	set sPeriod = nothing
-	set iFrequency = nothing
-	set sSQL = nothing
+    bDoesPurge = Nothing
+    sPeriod = Nothing
+    iFrequency = Nothing
+    sSQL = Nothing
 %>
 
 <%
@@ -107,7 +70,10 @@ EventLog
 	dim iDeleteSelection
 	dim sSelectedEventIDs 
 	dim cmdDelete
-	dim bHasViewAllPermission
+    Dim bHasViewAllPermission
+    Dim prmEventIDs
+    Dim prmType
+    Dim prmCanViewAll
 	
 	iDeleteSelection = Request.Form("txtDeleteSel") 
 	sSelectedEventIDs = Request.Form("txtSelectedIDs")
@@ -116,38 +82,33 @@ EventLog
 	if iDeleteSelection <> vbNullString then
 		iDeleteSelection = CInt(iDeleteSelection)
 		
-		set	cmdDelete = Server.CreateObject("ADODB.Command")
+        cmdDelete = Server.CreateObject("ADODB.Command")
 		cmdDelete.CommandText = "spASRIntDeleteEventLogRecords"
 		cmdDelete.CommandType = 4 ' Stored procedure.
-		Set cmdDelete.ActiveConnection = session("databaseConnection")
+        cmdDelete.ActiveConnection = Session("databaseConnection")
 		
-		Set prmType = cmdDelete.CreateParameter("type",3,1) ' 3=integer, 1=input
-		cmdDelete.Parameters.Append prmType
+		prmType = cmdDelete.CreateParameter("type",3,1) ' 3=integer, 1=input
+        cmdDelete.Parameters.Append(prmType)
 		prmType.value = cleanNumeric(clng(iDeleteSelection))
 
-		Set prmEventIDs = cmdDelete.CreateParameter("eventIDs",200,1,8000) ' 200=varchar, 1=input, 8000=size
-		cmdDelete.Parameters.Append prmEventIDs
+		prmEventIDs = cmdDelete.CreateParameter("eventIDs",200,1,8000) ' 200=varchar, 1=input, 8000=size
+        cmdDelete.Parameters.Append(prmEventIDs)
 		prmEventIDs.value = cstr(sSelectedEventIDs)
 
-		Set prmCanViewAll = cmdDelete.CreateParameter("canViewAll",11,1) ' 11=bit, 1=input
-		cmdDelete.Parameters.Append prmCanViewAll
+		prmCanViewAll = cmdDelete.CreateParameter("canViewAll",11,1) ' 11=bit, 1=input
+        cmdDelete.Parameters.Append(prmCanViewAll)
 		prmCanViewAll.value = cleanBoolean(cbool(bHasViewAllPermission))
 
-		err = 0
+		err.clear()
 		cmdDelete.Execute 
-		set cmdDelete = nothing
+        cmdDelete = Nothing
 	end if
 
-	set iDeleteSelection = nothing
-	set sSelectedEventIDs = nothing
-	set cmdDelete = nothing
-	set bHasViewAllPermission = nothing
+    iDeleteSelection = Nothing
+    sSelectedEventIDs = Nothing
+	cmdDelete = nothing
+    bHasViewAllPermission = Nothing
 %>
-
-<HTML>
-<HEAD>
-<META NAME="GENERATOR" Content="Microsoft Visual Studio 6.0">
-<LINK href="OpenHR.css" rel=stylesheet type=text/css >
 
 <!--#include file="include\ctl_SetFont.txt"-->
 
@@ -158,54 +119,57 @@ EventLog
 	<PARAM NAME="LPKPath" VALUE="lpks/main.lpk">
 </OBJECT>
 
-<SCRIPT FOR=window EVENT=onload LANGUAGE=JavaScript>
-<!--
-    window.parent.document.all.item("workframeset").cols = "*, 0";
+<script type="text/javascript">
+    function EventLog_window_onload() {
+        window.parent.document.all.item("workframeset").cols = "*, 0";
 	
-    window.parent.frames("menuframe").abMainMenu.Bands("mnubandMainToolBar").tools("mnutoolRecordPosition").caption = '';
+        window.parent.frames("menuframe").abMainMenu.Bands("mnubandMainToolBar").tools("mnutoolRecordPosition").caption = '';
 	
-    frmLog.cboUsername.style.color = 'white';
-    frmLog.cboType.style.color = 'white';
-    frmLog.cboMode.style.color = 'white';
-    frmLog.cboStatus.style.color = 'white';
+        frmLog.cboUsername.style.color = 'white';
+        frmLog.cboType.style.color = 'white';
+        frmLog.cboMode.style.color = 'white';
+        frmLog.cboStatus.style.color = 'white';
 	
-    setGridFont(frmLog.ssOleDBGridEventLog);
+        setGridFont(frmLog.ssOleDBGridEventLog);
 	
-    var fOK
-    fOK = true;	
+        var fOK
+        fOK = true;	
 
-    var sErrMsg = frmUseful.txtErrorDescription.value;
-    if (sErrMsg.length > 0) {
-        fOK = false;
-        window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sErrMsg);
-        window.parent.location.replace("login.asp");
+        var sErrMsg = frmUseful.txtErrorDescription.value;
+        if (sErrMsg.length > 0) {
+            fOK = false;
+            window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sErrMsg);
+            window.parent.location.replace("login");
+        }
+	
+        if (fOK == true) {
+            // Get menu to refresh the menu.
+            window.parent.frames("menuframe").refreshMenu();		  
+        }
+	
+        frmLog.txtELDeletePermission.value = window.parent.frames("menuframe").document.all.item("txtSysPerm_EVENTLOG_DELETE").value;
+        frmLog.txtELViewAllPermission.value = window.parent.frames("menuframe").document.all.item("txtSysPerm_EVENTLOG_VIEWALL").value;
+        frmLog.txtELPurgePermission.value = window.parent.frames("menuframe").document.all.item("txtSysPerm_EVENTLOG_PURGE").value;
+        frmLog.txtELEmailPermission.value = window.parent.frames("menuframe").document.all.item("txtSysPerm_EVENTLOG_EMAIL").value;
+
+        refreshUsers();
+
+        // Little dodge to get around a browser bug that
+        // does not refresh the display on all controls.
+        try
+        {
+            window.resizeBy(0,-1);
+            window.resizeBy(0,1);
+        }
+        catch(e) {}
     }
-	
-    if (fOK == true) {
-        // Get menu.asp to refresh the menu.
-        window.parent.frames("menuframe").refreshMenu();		  
-    }
-	
-    frmLog.txtELDeletePermission.value = window.parent.frames("menuframe").document.all.item("txtSysPerm_EVENTLOG_DELETE").value;
-    frmLog.txtELViewAllPermission.value = window.parent.frames("menuframe").document.all.item("txtSysPerm_EVENTLOG_VIEWALL").value;
-    frmLog.txtELPurgePermission.value = window.parent.frames("menuframe").document.all.item("txtSysPerm_EVENTLOG_PURGE").value;
-    frmLog.txtELEmailPermission.value = window.parent.frames("menuframe").document.all.item("txtSysPerm_EVENTLOG_EMAIL").value;
 
-    refreshUsers();
+</script>
 
-    // Little dodge to get around a browser bug that
-    // does not refresh the display on all controls.
-    try
-    {
-        window.resizeBy(0,-1);
-        window.resizeBy(0,1);
-    }
-    catch(e) {}
 
-    -->
-</SCRIPT>
+    <script type="text/javascript"> EventLog_window_onload();</script>
 
-<SCRIPT LANGUAGE=JavaScript id=scptGeneralFunctions>
+<script type="text/javascript" id=scptGeneralFunctions>
 <!--
 	
     function moveRecord(psMovement)
@@ -349,10 +313,10 @@ EventLog
 
         refreshButtons();
 
-        //Set the event log loaded flag, used in the menu.asp
+        //Set the event log loaded flag, used in the menu
         frmLog.txtELLoaded.value = 1;
 	
-        // Get menu.asp to refresh the menu.
+        // Get menu to refresh the menu.
         window.parent.frames("menuframe").refreshMenu();
 	
         refreshStatusBar()
@@ -450,7 +414,7 @@ EventLog
 		
             frmDetails.txtEmailPermission.value = frmLog.txtELEmailPermission.value;
 	
-            sURL = "eventLogDetails.asp" +
+            sURL = "eventLogDetails" +
                 "?txtEventID=" + frmDetails.txtEventID.value +
                 "&txtEventName=" + escape(frmDetails.txtEventName.value) + 
                 "&txtEventMode=" + escape(frmDetails.txtEventMode.value) +
@@ -477,7 +441,7 @@ EventLog
     {
         var sURL;
 		
-        sURL = "eventLogSelection.asp" +
+        sURL = "eventLogSelection" +
 			"?txtEventID=" + frmDetails.txtEventID.value +
 			"&txtEventName=" + escape(frmDetails.txtEventName.value) + 
 			"&txtEventMode=" + escape(frmDetails.txtEventMode.value) +
@@ -501,7 +465,7 @@ EventLog
     {
         var sURL;
 		
-        sURL = "eventLogPurge.asp" +
+        sURL = "eventLogPurge" +
 			"?txtEventID=" + frmDetails.txtEventID.value +
 			"&txtEventName=" + escape(frmDetails.txtEventName.value) + 
 			"&txtEventMode=" + escape(frmDetails.txtEventMode.value) +
@@ -537,7 +501,7 @@ EventLog
 	
         frmEmail.txtSelectedEventIDs.value = sEventList.substr(0,sEventList.length-1);
 		
-        sURL = "emailSelection.asp" +
+        sURL = "emailSelection" +
             "?txtSelectedEventIDs=" + frmEmail.txtSelectedEventIDs.value +
             "&txtFromMain=" + frmEmail.txtFromMain.value + 
             "&txtEmailOrderColumn=" + frmLog.txtELOrderColumn.value + 
@@ -642,7 +606,7 @@ EventLog
                 oOptionALL.selected = true;
             }
 						
-            // Get menu.asp to refresh the menu.
+            // Get menu to refresh the menu.
             window.parent.frames("menuframe").refreshMenu();		
         }
         else
@@ -662,7 +626,7 @@ EventLog
 	
     function okClick()
     {
-        window.location.href="default.asp";
+        window.location.href="default";
     }
 
     function openDialog(pDestination, pWidth, pHeight)
@@ -678,7 +642,7 @@ EventLog
     }
 
     -->
-</SCRIPT>
+</script>
 
 <OBJECT classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB" 
 	id=dialog 
@@ -716,7 +680,7 @@ EventLog
 	<PARAM NAME="ToPage" VALUE="0">
 	<PARAM NAME="Orientation" VALUE="1"></OBJECT>
 
-<SCRIPT FOR=ssOleDBGridEventLog EVENT=Click LANGUAGE=JavaScript>
+<script FOR=ssOleDBGridEventLog EVENT=Click type="text/javascript">
 <!--
   
     if ((frmLog.ssOleDBGridEventLog.SelBookmarks.Count > 1) || (frmLog.ssOleDBGridEventLog.Rows == 0)) 
@@ -729,9 +693,9 @@ EventLog
     }
 
     -->
-</SCRIPT>
+</script>
 
-<SCRIPT FOR=ssOleDBGridEventLog EVENT=HeadClick LANGUAGE=JavaScript>
+<script FOR=ssOleDBGridEventLog EVENT=HeadClick type="text/javascript">
 <!--
     var ColIndex = arguments[0];
  
@@ -794,9 +758,9 @@ EventLog
     refreshGrid();
 
     -->
-</SCRIPT>
+</script>
 
-<SCRIPT FOR=ssOleDBGridEventLog EVENT=RowColChange LANGUAGE=JavaScript>
+<script FOR=ssOleDBGridEventLog EVENT=RowColChange type="text/javascript">
 <!--
     if (frmLog.ssOleDBGridEventLog.SelBookmarks.Count > 1) 
     {
@@ -807,9 +771,9 @@ EventLog
         button_disable(frmLog.cmdView, false);
     }
     -->
-</SCRIPT>
+</script>
 
-<SCRIPT FOR=ssOleDBGridEventLog EVENT=DblClick LANGUAGE=JavaScript>
+<script FOR=ssOleDBGridEventLog EVENT=DblClick type="text/javascript">
 <!--
   
     if ((frmLog.ssOleDBGridEventLog.Rows > 0) && (frmLog.ssOleDBGridEventLog.SelBookmarks.Count == 1)) 
@@ -818,12 +782,9 @@ EventLog
     }
 
     -->
-</SCRIPT>
-<!--#INCLUDE FILE="include/ctl_SetStyles.txt" -->
-</HEAD>
+</script>
 
-<BODY <%=session("BodyTag")%>>
-<form id=frmLog>
+<form idfrmLog>
 <table align=center class="outline" cellPadding=5 cellSpacing=0 width=100% height=100%>
 	<TR>
 		<TD>
@@ -860,106 +821,106 @@ EventLog
 												
 <%
 	if Session("CurrentType") = "-1" then
-		Response.Write "											<option value=-1 selected>&lt;All&gt;" & vbCrLf 
+        Response.Write("											<option value=-1 selected>&lt;All&gt;" & vbCrLf)
 	else
-		Response.Write "											<option value=-1>&lt;All&gt;" & vbCrLf 
-	end if
+        Response.Write("											<option value=-1>&lt;All&gt;" & vbCrLf)
+    End If
 	
-	if Session("CurrentType") = "17" then
-		Response.Write "											<option value=17 selected>Calendar Report" & vbCrLf
-	else
-		Response.Write "											<option value=17>Calendar Report" & vbCrLf
-	end if
+    If Session("CurrentType") = "17" Then
+        Response.Write("											<option value=17 selected>Calendar Report" & vbCrLf)
+    Else
+        Response.Write("											<option value=17>Calendar Report" & vbCrLf)
+    End If
 
-	if Session("CurrentType") = "22" then
-		Response.Write "											<option value=22 selected>Career Progression" & vbCrLf
-	else
-		Response.Write "											<option value=22>Career Progression" & vbCrLf
-	end if
+    If Session("CurrentType") = "22" Then
+        Response.Write("											<option value=22 selected>Career Progression" & vbCrLf)
+    Else
+        Response.Write("											<option value=22>Career Progression" & vbCrLf)
+    End If
 
-	if Session("CurrentType") = "1" then
-		Response.Write "											<option value=1 selected>Cross Tab" & vbCrLf
-	else
-		Response.Write "											<option value=1>Cross Tab" & vbCrLf
-	end if
+    If Session("CurrentType") = "1" Then
+        Response.Write("											<option value=1 selected>Cross Tab" & vbCrLf)
+    Else
+        Response.Write("											<option value=1>Cross Tab" & vbCrLf)
+    End If
 	
-	if Session("CurrentType") = "2" then
-		Response.Write "											<option value=2 selected>Custom Report" & vbCrLf
-	else
-		Response.Write "											<option value=2>Custom Report" & vbCrLf
-	end if
+    If Session("CurrentType") = "2" Then
+        Response.Write("											<option value=2 selected>Custom Report" & vbCrLf)
+    Else
+        Response.Write("											<option value=2>Custom Report" & vbCrLf)
+    End If
 	
-	if Session("CurrentType") = "3" then
-		Response.Write "											<option value=3 selected>Data Transfer" & vbCrLf
-	else
-		Response.Write "											<option value=3>Data Transfer" & vbCrLf
-	end if
+    If Session("CurrentType") = "3" Then
+        Response.Write("											<option value=3 selected>Data Transfer" & vbCrLf)
+    Else
+        Response.Write("											<option value=3>Data Transfer" & vbCrLf)
+    End If
 	
-	if Session("CurrentType") = "11" then
-		Response.Write "											<option value=11 selected>Diary Rebuild" & vbCrLf
-	else
-		Response.Write "											<option value=11>Diary Rebuild" & vbCrLf
-	end if
+    If Session("CurrentType") = "11" Then
+        Response.Write("											<option value=11 selected>Diary Rebuild" & vbCrLf)
+    Else
+        Response.Write("											<option value=11>Diary Rebuild" & vbCrLf)
+    End If
 	
-	if Session("CurrentType") = "12" then
-		Response.Write "											<option value=12 selected>Email Rebuild" & vbCrLf
-	else
-		Response.Write "											<option value=12>Email Rebuild" & vbCrLf
-	end if
+    If Session("CurrentType") = "12" Then
+        Response.Write("											<option value=12 selected>Email Rebuild" & vbCrLf)
+    Else
+        Response.Write("											<option value=12>Email Rebuild" & vbCrLf)
+    End If
 
-	if Session("CurrentType") = "18" then
-		Response.Write "											<option value=18 selected>Envelopes & Labels" & vbCrLf
-	else
-		Response.Write "											<option value=18>Envelopes & Labels" & vbCrLf
-	end if
+    If Session("CurrentType") = "18" Then
+        Response.Write("											<option value=18 selected>Envelopes & Labels" & vbCrLf)
+    Else
+        Response.Write("											<option value=18>Envelopes & Labels" & vbCrLf)
+    End If
 	
-	if Session("CurrentType") = "4" then
-		Response.Write "											<option value=4 selected>Export" & vbCrLf
-	else
-		Response.Write "											<option value=4>Export" & vbCrLf
-	end if
+    If Session("CurrentType") = "4" Then
+        Response.Write("											<option value=4 selected>Export" & vbCrLf)
+    Else
+        Response.Write("											<option value=4>Export" & vbCrLf)
+    End If
 	
-	if Session("CurrentType") = "5" then
-		Response.Write "											<option value=5 selected>Global Add" & vbCrLf
-	else
-		Response.Write "											<option value=5>Global Add" & vbCrLf
-	end if
+    If Session("CurrentType") = "5" Then
+        Response.Write("											<option value=5 selected>Global Add" & vbCrLf)
+    Else
+        Response.Write("											<option value=5>Global Add" & vbCrLf)
+    End If
 	
-	if Session("CurrentType") = "6" then
-		Response.Write "											<option value=6 selected>Global Delete" & vbCrLf
-	else
-		Response.Write "											<option value=6>Global Delete" & vbCrLf
-	end if
+    If Session("CurrentType") = "6" Then
+        Response.Write("											<option value=6 selected>Global Delete" & vbCrLf)
+    Else
+        Response.Write("											<option value=6>Global Delete" & vbCrLf)
+    End If
 	
-	if Session("CurrentType") = "7" then
-		Response.Write "											<option value=7 selected>Global Update" & vbCrLf
-	else
-		Response.Write "											<option value=7>Global Update" & vbCrLf
-	end if
+    If Session("CurrentType") = "7" Then
+        Response.Write("											<option value=7 selected>Global Update" & vbCrLf)
+    Else
+        Response.Write("											<option value=7>Global Update" & vbCrLf)
+    End If
 	
-	if Session("CurrentType") = "8" then
-		Response.Write "											<option value=8 selected>Import" & vbCrLf
-	else
-		Response.Write "											<option value=8>Import" & vbCrLf
-	end if
+    If Session("CurrentType") = "8" Then
+        Response.Write("											<option value=8 selected>Import" & vbCrLf)
+    Else
+        Response.Write("											<option value=8>Import" & vbCrLf)
+    End If
 
-	'if Session("CurrentType") = "19" then
-	'	Response.Write "											<option value=19 selected>Label Definition" & vbCrLf
-	'else
-	'	Response.Write "											<option value=19>Label Definition" & vbCrLf
-	'end if
+    'if Session("CurrentType") = "19" then
+    '	Response.Write "											<option value=19 selected>Label Definition" & vbCrLf
+    'else
+    '	Response.Write "											<option value=19>Label Definition" & vbCrLf
+    'end if
 	
-	if Session("CurrentType") = "9" then
-		Response.Write "											<option value=9 selected>Mail Merge" & vbCrLf
-	else
-		Response.Write "											<option value=9>Mail Merge" & vbCrLf
-	end if
+    If Session("CurrentType") = "9" Then
+        Response.Write("											<option value=9 selected>Mail Merge" & vbCrLf)
+    Else
+        Response.Write("											<option value=9>Mail Merge" & vbCrLf)
+    End If
 
-	if Session("CurrentType") = "16" then
-		Response.Write "											<option value=16 selected>Match Report" & vbCrLf
-	else
-		Response.Write "											<option value=16>Match Report" & vbCrLf
-	end if
+    If Session("CurrentType") = "16" Then
+        Response.Write("											<option value=16 selected>Match Report" & vbCrLf)
+    Else
+        Response.Write("											<option value=16>Match Report" & vbCrLf)
+    End If
 	
 	'if Session("CurrentType") = "14" then
 	'	Response.Write "											<option value=14 selected>Record Editing" & vbCrLf
@@ -967,37 +928,37 @@ EventLog
 	'	Response.Write "											<option value=14>Record Editing" & vbCrLf
 	'end if
 
-	if Session("CurrentType") = "20" then
-		Response.Write "											<option value=20 selected>Record Profile" & vbCrLf
-	else
-		Response.Write "											<option value=20>Record Profile" & vbCrLf
-	end if
+    If Session("CurrentType") = "20" Then
+        Response.Write("											<option value=20 selected>Record Profile" & vbCrLf)
+    Else
+        Response.Write("											<option value=20>Record Profile" & vbCrLf)
+    End If
 
-	if Session("CurrentType") = "13" then
-		Response.Write "											<option value=13 selected>Standard Report" & vbCrLf
-	else
-		Response.Write "											<option value=13>Standard Report" & vbCrLf
-	end if
+    If Session("CurrentType") = "13" Then
+        Response.Write("											<option value=13 selected>Standard Report" & vbCrLf)
+    Else
+        Response.Write("											<option value=13>Standard Report" & vbCrLf)
+    End If
 
-	if Session("CurrentType") = "21" then
-		Response.Write "											<option value=21 selected>Succession Planning" & vbCrLf
-	else
-		Response.Write "											<option value=21>Succession Planning" & vbCrLf
-	end if
+    If Session("CurrentType") = "21" Then
+        Response.Write("											<option value=21 selected>Succession Planning" & vbCrLf)
+    Else
+        Response.Write("											<option value=21>Succession Planning" & vbCrLf)
+    End If
 
-	if Session("CurrentType") = "15" then
-		Response.Write "											<option value=15 selected>System Error" & vbCrLf
-	else
-		Response.Write "											<option value=15>System Error" & vbCrLf
-	end if
+    If Session("CurrentType") = "15" Then
+        Response.Write("											<option value=15 selected>System Error" & vbCrLf)
+    Else
+        Response.Write("											<option value=15>System Error" & vbCrLf)
+    End If
 
-	if session("WF_Enabled") then
-		if Session("CurrentType") = "25" then
-			Response.Write "											<option value=25 selected>Workflow Rebuild" & vbCrLf
-		else
-			Response.Write "											<option value=25>Workflow Rebuild" & vbCrLf
-		end if
-	end if
+    If Session("WF_Enabled") Then
+        If Session("CurrentType") = "25" Then
+            Response.Write("											<option value=25 selected>Workflow Rebuild" & vbCrLf)
+        Else
+            Response.Write("											<option value=25>Workflow Rebuild" & vbCrLf)
+        End If
+    End If
 		
 %>												
 												</select>		
@@ -1008,74 +969,73 @@ EventLog
 											<TD>
 												<select id=cboMode name=cboMode class="combo" style="WIDTH: 100%" onchange="refreshGrid();">
 <%
-	if Session("CurrentMode") = "-1" then
-		Response.Write "											<option value=-1 selected>&lt;All&gt;" & vbCrLf
-	else
-		Response.Write "											<option value=-1>&lt;All&gt;" & vbCrLf 
-	end if
+    If Session("CurrentMode") = "-1" Then
+        Response.Write("											<option value=-1 selected>&lt;All&gt;" & vbCrLf)
+    Else
+        Response.Write("											<option value=-1>&lt;All&gt;" & vbCrLf)
+    End If
 	
-	if Session("CurrentMode") = "1" then
-		Response.Write "											<option value=1 selected>Batch" & vbCrLf
-	else
-		Response.Write "											<option value=1>Batch" & vbCrLf
-	end if
+    If Session("CurrentMode") = "1" Then
+        Response.Write("											<option value=1 selected>Batch" & vbCrLf)
+    Else
+        Response.Write("											<option value=1>Batch" & vbCrLf)
+    End If
 	
-	if Session("CurrentMode") = "0" then
-		Response.Write "											<option value=0 selected>Manual" & vbCrLf
-	else
-		Response.Write "											<option value=0>Manual" & vbCrLf
-	end if
-%>									
-												</select>		
-											</TD>
-											<TD width=25>
-												Status : 
-											</TD>
-											<TD>
-												<select id=cboStatus name=cboStatus class="combo" style="WIDTH: 100%" onchange="refreshGrid();">
-<%	
-	if Session("CurrentStatus") = "-1" then
-		Response.Write "											<option value=-1 selected>&lt;All&gt;" & vbCrLf
-	else
-		Response.Write "											<option value=-1>&lt;All&gt;" & vbCrLf
-	end if
-		
-	if Session("CurrentStatus") = "1" then
-		Response.Write "											<option value=1 selected>Cancelled" & vbCrLf
-	else
-		Response.Write "											<option value=1>Cancelled" & vbCrLf
-	end if
-	
-	if Session("CurrentStatus") = "5" then
-		Response.Write "											<option value=5 selected>Error" & vbCrLf
-	else
-		Response.Write "											<option value=5>Error" & vbCrLf
-	end if
-	
-	if Session("CurrentStatus") = "2" then
-		Response.Write "											<option value=2 selected>Failed" & vbCrLf
-	else
-		Response.Write "											<option value=2>Failed" & vbCrLf
-	end if
-	
-	if Session("CurrentStatus") = "0" then
-		Response.Write "											<option value=0 selected>Pending" & vbCrLf
-	else
-		Response.Write "											<option value=0>Pending" & vbCrLf
-	end if
-	
-	if Session("CurrentStatus") = "4" then
-		Response.Write "											<option value=4 selected>Skipped" & vbCrLf
-	else
-		Response.Write "											<option value=4>Skipped" & vbCrLf
-	end if
-	
-	if Session("CurrentStatus") = "3" then
-		Response.Write "											<option value=3 selected>Successful" & vbCrLf
-	else
-		Response.Write "											<option value=3>Successful" & vbCrLf
-	end if
+    If Session("CurrentMode") = "0" Then
+        Response.Write("											<option value=0 selected>Manual" & vbCrLf)
+    Else
+        Response.Write("											<option value=0>Manual" & vbCrLf)
+    End If
 %>
+                                                </select>
+                                            </td>
+                                            <td width="25">Status : 
+                                            </td>
+                                            <td>
+                                                <select id="cboStatus" name="cboStatus" class="combo" style="width: 100%" onchange="refreshGrid();">
+                                                    <%	
+                                                        If Session("CurrentStatus") = "-1" Then
+                                                            Response.Write("											<option value=-1 selected>&lt;All&gt;" & vbCrLf)
+                                                        Else
+                                                            Response.Write("											<option value=-1>&lt;All&gt;" & vbCrLf)
+                                                        End If
+		
+                                                        If Session("CurrentStatus") = "1" Then
+                                                            Response.Write("											<option value=1 selected>Cancelled" & vbCrLf)
+                                                        Else
+                                                            Response.Write("											<option value=1>Cancelled" & vbCrLf)
+                                                        End If
+	
+                                                        If Session("CurrentStatus") = "5" Then
+                                                            Response.Write("											<option value=5 selected>Error" & vbCrLf)
+                                                        Else
+                                                            Response.Write("											<option value=5>Error" & vbCrLf)
+                                                        End If
+	
+                                                        If Session("CurrentStatus") = "2" Then
+                                                            Response.Write("											<option value=2 selected>Failed" & vbCrLf)
+                                                        Else
+                                                            Response.Write("											<option value=2>Failed" & vbCrLf)
+                                                        End If
+	
+                                                        If Session("CurrentStatus") = "0" Then
+                                                            Response.Write("											<option value=0 selected>Pending" & vbCrLf)
+                                                        Else
+                                                            Response.Write("											<option value=0>Pending" & vbCrLf)
+                                                        End If
+	
+                                                        If Session("CurrentStatus") = "4" Then
+                                                            Response.Write("											<option value=4 selected>Skipped" & vbCrLf)
+                                                        Else
+                                                            Response.Write("											<option value=4>Skipped" & vbCrLf)
+                                                        End If
+	
+                                                        If Session("CurrentStatus") = "3" Then
+                                                            Response.Write("											<option value=3 selected>Successful" & vbCrLf)
+                                                        Else
+                                                            Response.Write("											<option value=3>Successful" & vbCrLf)
+                                                        End If
+                                                    %>
 												</select>		
 											</TD>
 										</TR>
@@ -1163,135 +1123,135 @@ EventLog
 	avColumnDef(13,2) = "1800"				'width
 	avColumnDef(13,3) = "0"						'visible
 		
-	Response.Write "											<OBJECT classid=clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" & vbCrLf
-	Response.Write "													 codebase=""cabs/COAInt_Grid.cab#version=3,1,3,6""" & vbCrLf
-	Response.Write "													height=""100%""" & vbCrLf 
-	Response.Write "													id=ssOleDBGridEventLog" & vbCrLf
-	Response.Write "													name=ssOleDBGridEventLog" & vbCrLf
-	Response.Write "													style=""HEIGHT: 100%; VISIBILITY: visible; WIDTH: 100%""" & vbCrLf 
-	Response.Write "													width=""100%"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""ScrollBars"" VALUE=""3"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""_Version"" VALUE=""196617"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""DataMode"" VALUE=""2"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""Cols"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""Rows"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""BorderStyle"" VALUE=""1"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""RecordSelectors"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""GroupHeaders"" VALUE=""-1"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""ColumnHeaders"" VALUE=""-1"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""GroupHeadLines"" VALUE=""1"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""HeadLines"" VALUE=""1"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""FieldDelimiter"" VALUE=""(None)"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""FieldSeparator"" VALUE=""(Tab)"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""Row.Count"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""Col.Count"" VALUE=""1"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""stylesets.count"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""TagVariant"" VALUE=""EMPTY"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""UseGroups"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""HeadFont3D"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""Font3D"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""DividerType"" VALUE=""3"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""DividerStyle"" VALUE=""1"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""DefColWidth"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""BeveColorScheme"" VALUE=""2"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""BevelColorFrame"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""BevelColorHighlight"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""BevelColorShadow"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""BevelColorFace"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""CheckBox3D"" VALUE=""-1"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""AllowAddNew"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""AllowDelete"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""AllowUpdate"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""MultiLine"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""ActiveCellStyleSet"" VALUE="""">" & vbCrLf
-	Response.Write "												<PARAM NAME=""RowSelectionStyle"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""AllowRowSizing"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""AllowGroupSizing"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""AllowColumnSizing"" VALUE=""-1"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""AllowGroupMoving"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""AllowColumnMoving"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""AllowGroupSwapping"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""AllowColumnSwapping"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""AllowGroupShrinking"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""AllowColumnShrinking"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""AllowDragDrop"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""UseExactRowCount"" VALUE=""-1"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""SelectTypeCol"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""SelectTypeRow"" VALUE=""3"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""SelectByCell"" VALUE=""-1"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""BalloonHelp"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""RowNavigation"" VALUE=""2"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""CellNavigation"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""MaxSelectedRows"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""HeadStyleSet"" VALUE="""">" & vbCrLf
-	Response.Write "												<PARAM NAME=""StyleSet"" VALUE="""">" & vbCrLf
-	Response.Write "												<PARAM NAME=""ForeColorEven"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""ForeColorOdd"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""BackColorEven"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""BackColorOdd"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""Levels"" VALUE=""1"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""RowHeight"" VALUE=""503"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""ExtraHeight"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""ActiveRowStyleSet"" VALUE="""">" & vbCrLf
-	Response.Write "												<PARAM NAME=""CaptionAlignment"" VALUE=""2"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""SplitterPos"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""SplitterVisible"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""Columns.Count"" VALUE=""" & (UBound(avColumnDef)	+ 1) & """>" & vbCrLf
+    Response.Write("											<OBJECT classid=clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" & vbCrLf)
+    Response.Write("													 codebase=""cabs/COAInt_Grid.cab#version=3,1,3,6""" & vbCrLf)
+    Response.Write("													height=""100%""" & vbCrLf)
+    Response.Write("													id=ssOleDBGridEventLog" & vbCrLf)
+    Response.Write("													name=ssOleDBGridEventLog" & vbCrLf)
+    Response.Write("													style=""HEIGHT: 100%; VISIBILITY: visible; WIDTH: 100%""" & vbCrLf)
+    Response.Write("													width=""100%"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""ScrollBars"" VALUE=""3"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""_Version"" VALUE=""196617"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""DataMode"" VALUE=""2"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""Cols"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""Rows"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""BorderStyle"" VALUE=""1"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""RecordSelectors"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""GroupHeaders"" VALUE=""-1"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""ColumnHeaders"" VALUE=""-1"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""GroupHeadLines"" VALUE=""1"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""HeadLines"" VALUE=""1"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""FieldDelimiter"" VALUE=""(None)"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""FieldSeparator"" VALUE=""(Tab)"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""Row.Count"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""Col.Count"" VALUE=""1"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""stylesets.count"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""TagVariant"" VALUE=""EMPTY"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""UseGroups"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""HeadFont3D"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""Font3D"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""DividerType"" VALUE=""3"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""DividerStyle"" VALUE=""1"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""DefColWidth"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""BeveColorScheme"" VALUE=""2"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""BevelColorFrame"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""BevelColorHighlight"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""BevelColorShadow"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""BevelColorFace"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""CheckBox3D"" VALUE=""-1"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""AllowAddNew"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""AllowDelete"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""AllowUpdate"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""MultiLine"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""ActiveCellStyleSet"" VALUE="""">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""RowSelectionStyle"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""AllowRowSizing"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""AllowGroupSizing"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""AllowColumnSizing"" VALUE=""-1"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""AllowGroupMoving"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""AllowColumnMoving"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""AllowGroupSwapping"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""AllowColumnSwapping"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""AllowGroupShrinking"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""AllowColumnShrinking"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""AllowDragDrop"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""UseExactRowCount"" VALUE=""-1"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""SelectTypeCol"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""SelectTypeRow"" VALUE=""3"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""SelectByCell"" VALUE=""-1"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""BalloonHelp"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""RowNavigation"" VALUE=""2"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""CellNavigation"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""MaxSelectedRows"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""HeadStyleSet"" VALUE="""">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""StyleSet"" VALUE="""">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""ForeColorEven"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""ForeColorOdd"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""BackColorEven"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""BackColorOdd"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""Levels"" VALUE=""1"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""RowHeight"" VALUE=""503"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""ExtraHeight"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""ActiveRowStyleSet"" VALUE="""">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""CaptionAlignment"" VALUE=""2"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""SplitterPos"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""SplitterVisible"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""Columns.Count"" VALUE=""" & (UBound(avColumnDef) + 1) & """>" & vbCrLf)
 	
-	for i = 0 to ubound(avColumnDef) step 1
-		Response.Write "												<!--" & avColumnDef(i,0) & "-->  " & vbCrLf      
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").Width"" VALUE=""" & avColumnDef(i,2) & """>" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").Visible"" VALUE=""" & avColumnDef(i,3) & """>" & vbCrLf 
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").Columns.Count"" VALUE=""1"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").Caption"" VALUE=""" & avColumnDef(i,1) & """>" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").Name"" VALUE=""" & avColumnDef(i,0) & """>" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").Alignment"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").CaptionAlignment"" VALUE=""3"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").Bound"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").AllowSizing"" VALUE=""1"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").DataField"" VALUE=""Column " & i & """>" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").DataType"" VALUE=""8"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").Level"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").NumberFormat"" VALUE="""">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").Case"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").FieldLen"" VALUE=""256"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").VertScrollBar"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").Locked"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").Style"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").ButtonsAlways"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").RowCount"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").ColCount"" VALUE=""1"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").HasHeadForeColor"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").HasHeadBackColor"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").HasForeColor"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").HasBackColor"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").HeadForeColor"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").HeadBackColor"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").ForeColor"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").BackColor"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").HeadStyleSet"" VALUE="""">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").StyleSet"" VALUE="""">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").Nullable"" VALUE=""1"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").Mask"" VALUE="""">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").PromptInclude"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").ClipMode"" VALUE=""0"">" & vbCrLf
-		Response.Write "												<PARAM NAME=""Columns(" & i & ").PromptChar"" VALUE=""95"">" & vbCrLf
+    For i = 0 To UBound(avColumnDef) Step 1
+        Response.Write("												<!--" & avColumnDef(i, 0) & "-->  " & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").Width"" VALUE=""" & avColumnDef(i, 2) & """>" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").Visible"" VALUE=""" & avColumnDef(i, 3) & """>" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").Columns.Count"" VALUE=""1"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").Caption"" VALUE=""" & avColumnDef(i, 1) & """>" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").Name"" VALUE=""" & avColumnDef(i, 0) & """>" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").Alignment"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").CaptionAlignment"" VALUE=""3"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").Bound"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").AllowSizing"" VALUE=""1"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").DataField"" VALUE=""Column " & i & """>" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").DataType"" VALUE=""8"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").Level"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").NumberFormat"" VALUE="""">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").Case"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").FieldLen"" VALUE=""256"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").VertScrollBar"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").Locked"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").Style"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").ButtonsAlways"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").RowCount"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").ColCount"" VALUE=""1"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").HasHeadForeColor"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").HasHeadBackColor"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").HasForeColor"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").HasBackColor"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").HeadForeColor"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").HeadBackColor"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").ForeColor"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").BackColor"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").HeadStyleSet"" VALUE="""">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").StyleSet"" VALUE="""">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").Nullable"" VALUE=""1"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").Mask"" VALUE="""">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").PromptInclude"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").ClipMode"" VALUE=""0"">" & vbCrLf)
+        Response.Write("												<PARAM NAME=""Columns(" & i & ").PromptChar"" VALUE=""95"">" & vbCrLf)
 	next
 		
-	Response.Write "												<PARAM NAME=""UseDefaults"" VALUE=""-1"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""TabNavigation"" VALUE=""1"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""BatchUpdate"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""_ExtentX"" VALUE=""11298"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""_ExtentY"" VALUE=""3969"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""_StockProps"" VALUE=""79"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""Caption"" VALUE="""">" & vbCrLf
-	Response.Write "												<PARAM NAME=""ForeColor"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""BackColor"" VALUE=""0"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""Enabled"" VALUE=""-1"">" & vbCrLf
-	Response.Write "												<PARAM NAME=""DataMember"" VALUE="""">" & vbCrLf
+    Response.Write("												<PARAM NAME=""UseDefaults"" VALUE=""-1"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""TabNavigation"" VALUE=""1"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""BatchUpdate"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""_ExtentX"" VALUE=""11298"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""_ExtentY"" VALUE=""3969"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""_StockProps"" VALUE=""79"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""Caption"" VALUE="""">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""ForeColor"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""BackColor"" VALUE=""0"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""Enabled"" VALUE=""-1"">" & vbCrLf)
+    Response.Write("												<PARAM NAME=""DataMember"" VALUE="""">" & vbCrLf)
 
-	Response.Write "												<PARAM NAME=""Row.Count"" VALUE=""0"">" & vbcrlf
-	Response.Write "											</OBJECT>" & vbCrLf
+    Response.Write("												<PARAM NAME=""Row.Count"" VALUE=""0"">" & vbCrLf)
+    Response.Write("											</OBJECT>" & vbCrLf)
 %>											
 											</TD>
 										</TR>									
@@ -1399,8 +1359,8 @@ EventLog
 
 </form>
 
-<FORM action="default_Submit.asp" method=post id=frmGoto name=frmGoto style="visibility:hidden;display:none">
-<!--#include file="include\gotoWork.txt"-->
+<FORM action="default_Submit" method=post id=frmGoto name=frmGoto style="visibility:hidden;display:none">
+    <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 </FORM>
 
 <FORM id=frmDetails name=frmDetails method=post style="visibility:hidden;display:none">
@@ -1427,7 +1387,7 @@ EventLog
 	<INPUT type="hidden" id=txtEmailPermission name=txtEmailPermission>
 </FORM>
 
-<FORM id=frmPurge name=frmPurge method=post style="visibility:hidden;display:none" action="eventLog.asp">
+<FORM id=frmPurge name=frmPurge method=post style="visibility:hidden;display:none" action="eventLog">
 	<INPUT type="hidden" id=txtDoesPurge name=txtDoesPurge>
 	<INPUT type="hidden" id=txtPurgePeriod name=txtPurgePeriod>
 	<INPUT type="hidden" id=txtPurgeFrequency name=txtPurgeFrequency>
@@ -1438,7 +1398,7 @@ EventLog
 	<INPUT type="hidden" id=txtCurrentStatus name=txtCurrentStatus>
 </FORM>
 
-<FORM id=frmDelete name=frmDelete method=post style="visibility:hidden;display:none" action="eventLog.asp">
+<FORM id=frmDelete name=frmDelete method=post style="visibility:hidden;display:none" action="eventLog">
 	<INPUT type="hidden" id=txtDeleteSel name=txtDeleteSel>
 	<INPUT type="hidden" id=txtSelectedIDs name=txtSelectedIDs>
 	<INPUT type="hidden" id=txtViewAllPerm name=txtViewAllPerm>
@@ -1448,14 +1408,14 @@ EventLog
 	<INPUT type="hidden" id=Hidden4 name=txtCurrentStatus>
 </FORM>
 
-<FORM id=frmEmail name=frmEmail method=post style="visibility:hidden;display:none" action="emailSelection.asp">
+<FORM id=frmEmail name=frmEmail method=post style="visibility:hidden;display:none" action="emailSelection">
 	<INPUT type="hidden" id=txtSelectedEventIDs name=txtSelectedEventIDs>
 	<INPUT type="hidden" id=txtFromMain name=txtFromMain value=1>
 	<INPUT type="hidden" id=txtEmailOrderColumn name=txtEmailOrderColumn>
 	<INPUT type="hidden" id=txtEmailOrderOrder name=txtEmailOrderOrder>
 </FORM>
 
-<FORM id=frmRefresh name=frmRefresh method=post style="visibility:hidden;display:none" action="eventLog.asp">
+<FORM id=frmRefresh name=frmRefresh method=post style="visibility:hidden;display:none" action="eventLog">
 	<INPUT type="hidden" id=txtEventExisted name=txtEventExisted>
 	<INPUT type="hidden" id=Hidden5 name=txtCurrentUsername>
 	<INPUT type="hidden" id=Hidden6 name=txtCurrentType>
@@ -1470,31 +1430,37 @@ EventLog
 <FORM id=frmUseful name=frmUseful style="visibility:hidden;display:none">
 	<INPUT type="hidden" id=txtUserName name=txtUserName value="<%=session("username")%>">
 <%
-	Set cmdDefinition = Server.CreateObject("ADODB.Command")
+    Dim cmdDefinition
+    Dim prmModuleKey
+    Dim prmParameterKey
+    Dim prmParameterValue
+    Dim sErrorDescription As String
+    
+	cmdDefinition = Server.CreateObject("ADODB.Command")
 	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
 	cmdDefinition.CommandType = 4 ' Stored procedure.
-	Set cmdDefinition.ActiveConnection = session("databaseConnection")
+    cmdDefinition.ActiveConnection = Session("databaseConnection")
 
-	Set prmModuleKey = cmdDefinition.CreateParameter("moduleKey",200,1,8000) ' 200=varchar, 1=input, 8000=size
-	cmdDefinition.Parameters.Append prmModuleKey
-	prmModuleKey.value = "MODULE_PERSONNEL"
+    prmModuleKey = cmdDefinition.CreateParameter("moduleKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDefinition.Parameters.Append(prmModuleKey)
+    prmModuleKey.value = "MODULE_PERSONNEL"
 
-	Set prmParameterKey = cmdDefinition.CreateParameter("paramKey",200,1,8000) ' 200=varchar, 1=input, 8000=size
-	cmdDefinition.Parameters.Append prmParameterKey
-	prmParameterKey.value = "Param_TablePersonnel"
+    prmParameterKey = cmdDefinition.CreateParameter("paramKey", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDefinition.Parameters.Append(prmParameterKey)
+    prmParameterKey.value = "Param_TablePersonnel"
 
-	Set prmParameterValue = cmdDefinition.CreateParameter("paramValue",200,2,8000) '200=varchar, 2=output, 8000=size
-	cmdDefinition.Parameters.Append prmParameterValue
+    prmParameterValue = cmdDefinition.CreateParameter("paramValue", 200, 2, 8000) '200=varchar, 2=output, 8000=size
+    cmdDefinition.Parameters.Append(prmParameterValue)
 
-	err = 0
-	cmdDefinition.Execute
+    err.clear()
+    cmdDefinition.Execute()
 
-	Response.Write "<INPUT type='hidden' id=txtPersonnelTableID name=txtPersonnelTableID value=" & cmdDefinition.Parameters("paramValue").Value & ">" & vbcrlf
+    Response.Write("<INPUT type='hidden' id=txtPersonnelTableID name=txtPersonnelTableID value=" & cmdDefinition.Parameters("paramValue").Value & ">" & vbCrLf)
 	
-	set cmdDefinition = nothing
+	cmdDefinition = nothing
 
-	Response.Write "<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbcrlf
-	Response.Write "<INPUT type='hidden' id=txtAction name=txtAction value=" & session("action") & ">" & vbcrlf
+    Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
+    Response.Write("<INPUT type='hidden' id=txtAction name=txtAction value=" & Session("action") & ">" & vbCrLf)
 %>
 </FORM>
 
@@ -1508,31 +1474,7 @@ EventLog
 	Session("CurrentStatus") = ""
 %>
 
-</BODY>
-</HTML>
-
 <!-- Embeds createActiveX.js script reference -->
 <!--#include file="include\ctl_CreateControl.txt"-->
-
-<% 
-
-function formatError(psErrMsg)
-  Dim iStart 
-  dim iFound 
-  
-  iFound = 0
-  Do
-    iStart = iFound
-    iFound = InStr(iStart + 1, psErrMsg, "]")
-  Loop While iFound > 0
-  
-  If (iStart > 0) And (iStart < Len(Trim(psErrMsg))) Then
-    formatError = Trim(Mid(psErrMsg, iStart + 1))
-  Else
-    formatError = psErrMsg
-  End If
-end function
-%>
-
 
 </asp:Content>
