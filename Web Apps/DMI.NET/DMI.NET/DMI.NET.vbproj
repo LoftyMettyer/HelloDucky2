@@ -404,6 +404,8 @@
     <Content Include="Views\Home\Util_EmailSelection.aspx" />
     <Content Include="Views\Home\Util_RecordSelection.aspx" />
     <Content Include="Views\Home\Util_SortOrderSelection.aspx" />
+    <Content Include="Views\PasswordChange.aspx" />
+    <Content Include="Views\passwordChange_Submit.aspx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\grdaccess.ascx" />
     <Content Include="Views\Shared\gotoWork.ascx" />
     <Content Include="Views\Shared\Site.Master" />
