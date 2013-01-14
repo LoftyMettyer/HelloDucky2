@@ -313,7 +313,7 @@
 <table width="100%" border="0" cellspacing="0" cellpadding="0" height="44px" style="border-bottom:solid 1px;border-color:#992b99">
   <tr> 
     <td align=left> 
-		 <IMG SRC="<%= Url.Content("~/Content/images/advBS_WHITE.gif")%>" align=top width="138" height="44">
+		 <IMG SRC="<%= Url.Content("~/Content/images/COAInt_TopBar.jpg")%>" align=top width="138" height="44">
     </td>
     <td height="44px" width="100%" align=right> 
 			<IMG style="display: none;" src="<%= Url.Content("~/Content/images/coaint_banner.jpg")%>" align=top width="600" height="44">

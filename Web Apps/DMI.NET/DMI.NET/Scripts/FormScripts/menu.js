@@ -408,266 +408,266 @@ function menu_MenuClick(sTool) {
 		return;
 	}
 
-	//	if (sToolName == "mnutoolDownloadControls") {
-	//		DownloadControls();		
-	//		return;
-	//	}	
-	//		
-	//	if (sToolName == "mnutoolNewRecord") {
-	//		newRecord();		
-	//		return;
-	//	}
-	//	
-	//	if (sToolName == "mnutoolCopyRecord") {
-	//		copyRecord();		
-	//		return;
-	//	}
-	//	
-	//	if (sToolName == "mnutoolSaveRecord") {
-	//		saveChanges("", false, false);
-	//		return;
-	//	}
-	//	
-	//	if (sToolName == "mnutoolEditRecord") {
-	//		editRecord();
-	//		return;
-	//	}
-	//						
-	//	if (sToolName == "mnutoolDeleteRecord") {
-	//		deleteRecord();
-	//		return;
-	//	}
+	if (sToolName == "mnutoolDownloadControls") {
+		menu_DownloadControls();		
+		return;
+	}	
+			
+	if (sToolName == "mnutoolNewRecord") {
+	    menu_newRecord();
+		return;
+	}
+		
+	if (sToolName == "mnutoolCopyRecord") {
+	    menu_copyRecord();
+		return;
+	}
+		
+	if (sToolName == "mnutoolSaveRecord") {
+	    menu_saveChanges("", false, false);
+		return;
+	}
+		
+	if (sToolName == "mnutoolEditRecord") {
+	    menu_editRecord();
+		return;
+	}
+							
+	if (sToolName == "mnutoolDeleteRecord") {
+	    menu_deleteRecord();
+		return;
+	}
 
-	//	if (sToolName == "mnutoolParentRecord") {
-	//		loadParentRecord();
-	//		return;
-	//	}
+	if (sToolName == "mnutoolParentRecord") {
+	    menu_loadParentRecord();
+		return;
+	}
 
-	//	if (sToolName == "mnutoolBack") {
-	//		loadBackPage();
-	//		return;
-	//	}
+	if (sToolName == "mnutoolBack") {
+	    menu_loadBackPage();
+		return;
+	}
 
-	//	if (sToolName == "mnutoolFirstRecord") {
-	//		moveRecord("MOVEFIRST");
-	//		return;
-	//	}
+	if (sToolName == "mnutoolFirstRecord") {
+	    menu_moveRecord("MOVEFIRST");
+		return;
+	}
 
-	//	if (sToolName == "mnutoolPreviousRecord") {
-	//		moveRecord("MOVEPREVIOUS");
-	//		return;
-	//	}
+	if (sToolName == "mnutoolPreviousRecord") {
+	    menu_moveRecord("MOVEPREVIOUS");
+		return;
+	}
 
-	//	if (sToolName == "mnutoolNextRecord") {
-	//		moveRecord("MOVENEXT");
-	//		return;
-	//	}
+	if (sToolName == "mnutoolNextRecord") {
+	    menu_moveRecord("MOVENEXT");
+		return;
+	}
 
-	//	if (sToolName == "mnutoolLastRecord") {
-	//		moveRecord("MOVELAST");
-	//		return;
-	//	}
+	if (sToolName == "mnutoolLastRecord") {
+	    menu_moveRecord("MOVELAST");
+		return;
+	}
 
-	//	if ((sToolName == "mnutoolLocateRecordsCaption")  ||
-	//		(sToolName == "mnutoolRecordPosition")) {
-	//		// Do nothing
-	//		return;
-	//	}
+	if ((sToolName == "mnutoolLocateRecordsCaption")  ||
+		(sToolName == "mnutoolRecordPosition")) {
+		// Do nothing
+		return;
+	}
 
-	//	if (sToolName == "mnutoolFind") {
-	//		if (saveChanges(sTool, true, false) != 2) { // 2 = vbCancel
-	//			ShowWait("Loading find records. Please wait...");
-	//			disableMenu();
-	//				
-	//			loadFindPage();
-	//		}
-	//		return;
-	//	}
+	if (sToolName == "mnutoolFind") {
+	    if (menu_saveChanges(sTool, true, false) != 2) { // 2 = vbCancel
+			ShowWait("Loading find records. Please wait...");
+			menu_disableMenu();
+					
+			menu_loadFindPage();
+		}
+		return;
+	}
 
-	//	if (sToolName == "mnutoolQuickFind") {
-	//		loadQuickFind();
-	//		return;
-	//	}
+	if (sToolName == "mnutoolQuickFind") {
+	    menu_loadQuickFind();
+		return;
+	}
 
-	//	if (sToolName == "mnutoolOrder") {
-	//		loadSelectOrderFilter("ORDER");
-	//		return;
-	//	}
-	//			
-	//	if (sToolName == "mnutoolFilter") {
-	//		loadSelectOrderFilter("FILTER");
-	//		return;
-	//	}
-	//			
-	//	if (sToolName == "mnutoolClearFilter") {
-	//		clearFilter();
-	//		return;
-	//	}
-	//	
-	//	if (sToolName == "mnutoolPrint") {
-	//		// Print the browser display.
-	//		// Get the data.asp to get the save the current record.
-	//		frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
-	//		frmRecEditArea.ctlRecordEdit.printScreen();
-	//		return;
-	//	}
-	//	
+	if (sToolName == "mnutoolOrder") {
+	    menu_loadSelectOrderFilter("ORDER");
+		return;
+	}
+				
+	if (sToolName == "mnutoolFilter") {
+	    menu_loadSelectOrderFilter("FILTER");
+		return;
+	}
+				
+	if (sToolName == "mnutoolClearFilter") {
+	    menu_clearFilter();
+		return;
+	}
+		
+	if (sToolName == "mnutoolPrint") {
+		// Print the browser display.
+		// Get the data.asp to get the save the current record.
+		OpenHR.getForm("workframe", "frmRecordEditForm");
+		frmRecEditArea.ctlRecordEdit.printScreen();
+		return;
+	}
+		
 		if (sToolName == "mnutoolCrossTabs") {
-			//if (saveChanges("CROSSTABS", true, false) != 2) { // 2 = vbCancel
+		    if (menu_saveChanges("CROSSTABS", true, false) != 2) { // 2 = vbCancel
 				menu_loadDefSelPage(1, 0, 0, true);
-			//}
+			}
 			return;
 		}
 
 		if (sToolName == "mnutoolCustomReports") {
-			//if (saveChanges("CUSTOMREPORTS", true, false) != 2) { // 2 = vbCancel
+		    if (menu_saveChanges("CUSTOMREPORTS", true, false) != 2) { // 2 = vbCancel
 				menu_loadDefSelPage(2, 0, 0, true);
-			//}
+			}
 			return;
 		}
 		
 		if (sToolName == "mnutoolCalendarReports") {
-	//		if (saveChanges("CALENDARREPORTS", true, false) != 2) { // 2 = vbCancel
+		    if (menu_saveChanges("CALENDARREPORTS", true, false) != 2) { // 2 = vbCancel
 				menu_loadDefSelPage(17, 0, 0, true);
-	//		}
+			}
 			return;
 		}
-	//	
+		
 		if (sToolName == "mnutoolMailMerge") {
-	//		if (saveChanges("MAILMERGE", true, false) != 2) { // 2 = vbCancel
+		    if (menu_saveChanges("MAILMERGE", true, false) != 2) { // 2 = vbCancel
 			menu_loadDefSelPage(9, 0, 0, true);
-	//		}
+			}
 			return;
 		}
 
 		if (sToolName == "mnutoolWorkflow") {
-	//		if (saveChanges("WORKFLOW", true, false) != 2) { // 2 = vbCancel
+		    if (menu_saveChanges("WORKFLOW", true, false) != 2) { // 2 = vbCancel
 			menu_loadDefSelPage(25, 0, 0, true);
-	//		}
+			}
 			return;
 		}
 
-	//	if (sToolName == "mnutoolWorkflowPendingSteps") {
-	//		if (saveChanges("WORKFLOWPENDINGSTEPS", true, false) != 2) { // 2 = vbCancel
-	//			autoLoadPage("workflowPendingSteps", false);
-	//		}
-	//		return;
-	//	}
-	//	
-	//	if (sToolName == "mnutoolWorkflowOutOfOffice") {
-	//		if (saveChanges("WORKFLOWOUTOFOFFICE", true, false) != 2) { // 2 = vbCancel
-	//			WorkflowOutOfOffice();
-	//		}
-	//		return;
-	//	}
+		if (sToolName == "mnutoolWorkflowPendingSteps") {
+		    if (menu_saveChanges("WORKFLOWPENDINGSTEPS", true, false) != 2) { // 2 = vbCancel
+			    menu_autoLoadPage("workflowPendingSteps", false);
+			}
+			return;
+		}
+		
+		if (sToolName == "mnutoolWorkflowOutOfOffice") {
+		    if (menu_saveChanges("WORKFLOWOUTOFOFFICE", true, false) != 2) { // 2 = vbCancel
+			    menu_WorkflowOutOfOffice();
+			}
+			return;
+		}
 
 		if (sToolName == "mnutoolCalculations") {
-	//		if (saveChanges("CALCULATIONS", true, false) != 2) { // 2 = vbCancel
+		    if (menu_saveChanges("CALCULATIONS", true, false) != 2) { // 2 = vbCancel
 			menu_loadDefSelPage(12, 0, 0, true);
-	//		}
+			}
 			return;
 		}
 
 		if (sToolName == "mnutoolFilters") {
-	//		if (saveChanges("FILTERS", true, false) != 2) { // 2 = vbCancel
+		    if (menu_saveChanges("FILTERS", true, false) != 2) { // 2 = vbCancel
 			menu_loadDefSelPage(11, 0, 0, true);
-	//		}
+			}
 			return;
 		}
 
 		if (sToolName == "mnutoolPicklists") {
-	//		if (saveChanges("PICKLISTS", true, false) != 2) { // 2 = vbCancel
+			if (saveChanges("PICKLISTS", true, false) != 2) { // 2 = vbCancel
 			menu_loadDefSelPage(10, 0, 0, true);
-	//		}
+			}
 			return;
 		}
 
 		if (sToolName == "mnutoolEventLog") {
-//			if (saveChanges("EVENTLOG",true, false) !=2) {
+		    if (menu_saveChanges("EVENTLOG", true, false) != 2) {
 				menu_loadPage("eventLog");
-//			}
+			}
 			return;
 		}
 		
-	//	if (sToolName == "mnutoolCancelCourse") {
-	//		if (ASRIntranetFunctions.MessageBox("Are you sure you want to cancel this course?", 36,"OpenHR Intranet") == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
-	//			if (saveChanges("CANCELCOURSE", true, false) != 2) { // 2 = vbCancel
-	//				cancelCourse();
-	//			}
-	//		}
-	//		return;
-	//	}
+		if (sToolName == "mnutoolCancelCourse") {
+			if (OpenHR.MessageBox("Are you sure you want to cancel this course?", 36,"OpenHR Intranet") == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
+			    if (menu_saveChanges("CANCELCOURSE", true, false) != 2) { // 2 = vbCancel
+			        menu_cancelCourse();
+				}
+			}
+			return;
+		}
 
-	//	if (sToolName == "mnutoolBookCourse") {
-	//		bookCourse();
-	//		return;
-	//	}
+		if (sToolName == "mnutoolBookCourse") {
+		    menu_bookCourse();
+			return;
+		}
 
-	//	if (sToolName == "mnutoolTransferBooking") {
-	//		transferBooking();
-	//		return;
-	//	}
+		if (sToolName == "mnutoolTransferBooking") {
+		    menu_transferBooking();
+			return;
+		}
 
-	//	if (sToolName == "mnutoolAddFromWaitingList") {
-	//		addFromWaitingList();
-	//		return;
-	//	}
+		if (sToolName == "mnutoolAddFromWaitingList") {
+		    menu_addFromWaitingList();
+			return;
+		}
 
-	//	if (sToolName == "mnutoolCancelBooking") {
-	//		cancelBooking();
-	//		return;
-	//	}
+		if (sToolName == "mnutoolCancelBooking") {
+		    menu_cancelBooking();
+			return;
+		}
 
-	//	if (sToolName == "mnutoolBulkBooking") {
-	//		bulkBooking();
-	//		return;
-	//	}
+		if (sToolName == "mnutoolBulkBooking") {
+		    menu_bulkBooking();
+			return;
+		}
 
-	//	if (sToolName == "mnutoolStdRpt_AbsenceCalendar") {
-	//		LoadAbsenceCalendar();
-	//		return;
-	//	}
-	//	
-	//	// Calendar Reports  (from record menu)
-	//	if (sToolName == "mnutoolCalendarReportsRec") {
-	//		loadRecordDefSelPage(17, 0, 0, true);
-	//		return;
-	//	}
+		if (sToolName == "mnutoolStdRpt_AbsenceCalendar") {
+		    menu_LoadAbsenceCalendar();
+			return;
+		}
+		
+		// Calendar Reports  (from record menu)
+		if (sToolName == "mnutoolCalendarReportsRec") {
+		    menu_loadRecordDefSelPage(17, 0, 0, true);
+			return;
+		}
 
-	//	// Mail Merge  (from record menu)
-	//	if (sToolName == "mnutoolMailMergeRec") {
-	//		loadRecordDefSelPage(9, 0, 0, true);
-	//		return;
-	//	}
-	//	
-	//	// Absence Breakdown (from reports menu)
-	//	if (sToolName == "mnutoolStdRpt_AbsenceBreakdown") {
-	//		LoadStandardReport("ABSENCEBREAKDOWN","ALL");
-	//		return;
-	//	}
+		// Mail Merge  (from record menu)
+		if (sToolName == "mnutoolMailMergeRec") {
+		    menu_loadRecordDefSelPage(9, 0, 0, true);
+			return;
+		}
+		
+		// Absence Breakdown (from reports menu)
+		if (sToolName == "mnutoolStdRpt_AbsenceBreakdown") {
+		    menu_LoadStandardReport("ABSENCEBREAKDOWN", "ALL");
+			return;
+		}
 
-	//	// Bradford Factor (from reports menu)
-	//	if (sToolName == "mnutoolStdRpt_BradfordFactor") {
-	//		LoadStandardReport("BRADFORDFACTOR","ALL");
-	//		return;
-	//	}
+		// Bradford Factor (from reports menu)
+		if (sToolName == "mnutoolStdRpt_BradfordFactor") {
+		    menu_LoadStandardReport("BRADFORDFACTOR", "ALL");
+			return;
+		}
 
-	//	// Individual Absence Breakdown (from record menu)
-	//	if (sToolName == "mnutoolStdRpt_BreakdownREC") {
-	//		LoadStandardReport("ABSENCEBREAKDOWN","REC");
-	//		return;
-	//	}
+		// Individual Absence Breakdown (from record menu)
+		if (sToolName == "mnutoolStdRpt_BreakdownREC") {
+		    menu_LoadStandardReport("ABSENCEBREAKDOWN", "REC");
+			return;
+		}
 
-	//	// Individual Bradford Factor (from record menu)
-	//	if (sToolName == "mnutoolStdRpt_BradfordREC") {
-	//		LoadStandardReport("BRADFORDFACTOR","REC");
-	//		return;
-	//	}
-	//	
-	//	if (sToolName == "mnutoolVersionInfo") {
-	//		displayVersionInfo();
-	//		return;
-	//	}
+		// Individual Bradford Factor (from record menu)
+		if (sToolName == "mnutoolStdRpt_BradfordREC") {
+		    menu_LoadStandardReport("BRADFORDFACTOR", "REC");
+			return;
+		}
+		
+		if (sToolName == "mnutoolVersionInfo") {
+		    menu_displayVersionInfo();
+			return;
+		}
 		
 		
 		if (menu_saveChanges(sToolName, true, false) != 2) { // 2 = vbCancel
@@ -735,7 +735,7 @@ function menu_MenuClick(sTool) {
 		            return;
 		        }
 
-		        ASRIntranetFunctions.MessageBox("Unrecognised menu option '" + sToolName + "'.", 0, "OpenHR Intranet"); // 0 = vbOKOnly
+		        OpenHR.MessageBox("Unrecognised menu option '" + sToolName + "'.", 0, "OpenHR Intranet"); // 0 = vbOKOnly
 		    }
 		}
 }
