@@ -80,19 +80,6 @@
             frmPasswordChangeForm.txtPassword1.focus();
         }
 
-        /* JDM - 30/06/2004 - Fault 6709 - Don't disallow blank passwords */
-        /* Check if the new password is long enough. */
-        /*
-          if ((fChangeOK) && (sNewPassword1.length == 0)) {
-                sErrorMessage = "The password cannot be blank.";
-                window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sErrorMessage);
-                fChangeOK = false;
-                frmPasswordChangeForm.txtPassword1.value = "";
-                frmPasswordChangeForm.txtPassword2.value = "";
-              frmPasswordChangeForm.txtPassword1.focus();
-          }
-        */
-
         /* If everything is okay, submit the password change. */
         if (fChangeOK)
         {
