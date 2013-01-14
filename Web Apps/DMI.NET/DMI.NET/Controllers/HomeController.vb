@@ -923,6 +923,10 @@ Namespace Controllers
 			Return RedirectToAction("Login", "Account")
 		End Function
 
+		Function PasswordChange() As ActionResult
+			Return View()
+		End Function
+
 	End Class
 
 

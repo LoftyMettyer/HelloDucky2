@@ -68,6 +68,19 @@
 	    },
 	    getRegistrySetting = function (x, y, z) {
 	    	//TODO
+	    },
+	    currentWorkPage = function () {
+	        var sCurrentPage;
+	        if (!($("#workframe").css('display') == 'none')) {
+	            //Work frame is in view.
+	            sCurrentPage = $("#workframe").attr("data-framesource").replace(".asp", "");
+	        } else {
+	            //Option frame is in view.
+	            sCurrentPage = $("#optionframe").attr("data-framesource").replace(".asp", "");
+	        }
+
+	        sCurrentPage = sCurrentPage.toUpperCase();
+	        return sCurrentPage;
 	    };
 
 	window.OpenHR = {
@@ -84,7 +97,8 @@
 		LocaleThousandSeparator: localeThousandSeparator,
 		PrinterCount: printerCount,
 		PrinterName: printerName,
-		GetRegistrySetting: getRegistrySetting
+		GetRegistrySetting: getRegistrySetting,
+        currentWorkPage: currentWorkPage
 	};
 
 })(window, jQuery);

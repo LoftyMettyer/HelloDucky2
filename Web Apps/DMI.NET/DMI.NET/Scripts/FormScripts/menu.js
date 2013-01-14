@@ -668,102 +668,76 @@ function menu_MenuClick(sTool) {
 	//		displayVersionInfo();
 	//		return;
 	//	}
-
-	//	if (saveChanges(sToolName, true, false) != 2) { // 2 = vbCancel
-	//		if (sToolName.substr(0,7) == "mnutool") {
-	//			loadPage(sToolName.substr(7));
-	//		}
-	//		else {
-
-	
-	//frmData = window.parent.frames("dataframe").document.forms("frmData");
-
 		
-	sToolNameKey = sToolName.substr(0, 3);
+		
+		if (menu_saveChanges(sToolName, true, false) != 2) { // 2 = vbCancel
+		    if (sToolName.substr(0, 7) == "mnutool") {
+		        menu_loadPage(sToolName.substr(7));
+		    }
+		    else {
+		        //frmData = window.parent.frames("dataframe").document.forms("frmData");
+		        frmData = OpenHR.getForm("dataframe", "frmData");
+		        sToolNameKey = sToolName.substr(0, 3);
 
-	if ((sToolNameKey == "PT_") ||
-				 (sToolNameKey == "PV_")) {
-		// PT_ = primary table
-		// PV_ = primary table view
-//		if (frmMenuInfo.txtPrimaryStartMode.value == 3) {
-//			frmData.txtRecordDescription.value = "";
-//			loadFindPageFirst(sToolName);
-//		}
-//		else {
-//			loadRecordEditPage(sToolName);
-//		}
+		        if ((sToolNameKey == "PT_") ||
+                     (sToolNameKey == "PV_")) {
+		            // PT_ = primary table
+		            // PV_ = primary table view
+		            if (frmMenuInfo.txtPrimaryStartMode.value == 3) {
+		                frmData.txtRecordDescription.value = "";
+		                menu_loadFindPageFirst(sToolName);
+		            }
+		            else {
+		                menu_loadRecordEditPage(sToolName);
+		            }
 
-				if ($("#txtPrimaryStartMode").val() == 3) {
-					$("#txtRecordDescription").val("");
-					menu_loadFindPageFirst(sToolName);
-				}
-				else {
-					menu_loadRecordEditPage(sToolName);
-				}
+		            return;
+		        }
 
-		return;
-	}
+		        if (sToolNameKey == "TS_") {
+		            // TS_ = Table screen
+		            if (frmMenuInfo.txtLookupStartMode.value == 3) {
+		                frmData.txtRecordDescription.value = "";
+		                menu_loadFindPageFirst(sToolName);
+		            }
+		            else {
+		                menu_loadRecordEditPage(sToolName);
+		            }
 
-	if (sToolNameKey == "TS_") {
-		// TS_ = Table screen
-//		if (frmMenuInfo.txtLookupStartMode.value == 3) {
-//			frmData.txtRecordDescription.value = "";
-//			loadFindPageFirst(sToolName);
-//		}
-//		else {
-//			loadRecordEditPage(sToolName);
-//		}
-		if ($("#txtLookupStartMode").val() == 3) {
-			$("#txtRecordDescription").val("");
-			menu_loadFindPageFirst(sToolName);
+		            return;
+		        }
+
+		        if (sToolNameKey == "QE_") {
+		            // QE_ = quick entry screen
+		            if (frmMenuInfo.txtQuickAccessStartMode.value == 3) {
+		                frmData.txtRecordDescription.value = "";
+		                menu_loadFindPageFirst(sToolName);
+		            }
+		            else {
+		                menu_loadRecordEditPage(sToolName);
+		            }
+
+		            return;
+		        }
+
+		        if (sToolNameKey == "HT_") {
+		            // HT_ = history table
+		            if (frmMenuInfo.txtHistoryStartMode.value == 3) {
+		                // NB. Don't clear the record description, as we'll
+		                // use the existing recEdit record description
+		                // value for the history find window.
+		                menu_loadFindPageFirst(sToolName);
+		            }
+		            else {
+		                menu_loadRecordEditPage(sToolName);
+		            }
+
+		            return;
+		        }
+
+		        ASRIntranetFunctions.MessageBox("Unrecognised menu option '" + sToolName + "'.", 0, "OpenHR Intranet"); // 0 = vbOKOnly
+		    }
 		}
-		else {
-			menu_loadRecordEditPage(sToolName);
-		}
-
-		return;
-	}
-
-	if (sToolNameKey == "QE_") {
-		// QE_ = quick entry screen
-//		if (frmMenuInfo.txtQuickAccessStartMode.value == 3) {
-//			frmData.txtRecordDescription.value = "";
-//			loadFindPageFirst(sToolName);
-//		}
-//		else {
-//			loadRecordEditPage(sToolName);
-//		}
-
-		if ($("#txtQuickAccessStartMode").val() == 3) {
-			$("#txtRecordDescription").val("");
-			menu_loadFindPageFirst(sToolName);
-		}
-		else {
-			menu_loadRecordEditPage(sToolName);
-		}
-		return;
-	}
-
-	if (sToolNameKey == "HT_") {
-		// HT_ = history table
-		//if (frmMenuInfo.txtHistoryStartMode.value == 3) {
-		if ($("#txtHistoryStartMode").val() == 3) {
-			// NB. Don't clear the record description, as we'll
-			// use the existing recEdit record description
-			// value for the history find window.
-			menu_loadFindPageFirst(sToolName);
-		}
-		else {
-			menu_loadRecordEditPage(sToolName);
-		}
-
-		return;
-	}
-
-	//ASRIntranetFunctions.MessageBox("Unrecognised menu option '" + sToolName + "'.", 0, "OpenHR Intranet"); // 0 = vbOKOnly
-	alert("Unrecognised menu option '" + sToolName + "'."); // 0 = vbOKOnly
-	//    	}
-	//    }
 }
 
 
@@ -1695,105 +1669,105 @@ function menu_enableMenu() {
  }
 
 function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
-//	// Prompt the user to save changes if required.
-//	var iResult;
-//	var sCurrentPage;
-//	var frmRecEdit;
-//	var frmDataArea;
-//	var frmRecEditArea;
-//	
-//	iResult = 7; // 7 = vbNo
-//	sCurrentPage = currentWorkPage();
-//	
-//	if ((sCurrentPage == "RECORDEDIT") ||
-//		(sCurrentPage == "LOOKUPFIND") ||
-//		(sCurrentPage == "LINKFIND") ||
-//		(sCurrentPage == "TBTRANSFERCOURSEFIND")) {
+	// Prompt the user to save changes if required.
+	var iResult;
+	var sCurrentPage;
+	var frmRecEdit;
+	var frmDataArea;
+	var frmRecEditArea;
+	
+	iResult = 7; // 7 = vbNo
+	sCurrentPage = OpenHR.currentWorkPage();
+	
+	if ((sCurrentPage == "RECORDEDIT") ||
+		(sCurrentPage == "LOOKUPFIND") ||
+		(sCurrentPage == "LINKFIND") ||
+		(sCurrentPage == "TBTRANSFERCOURSEFIND")) {
 
-//		frmRecEdit = window.parent.frames("workframe").document.forms("frmRecordEditForm");
-//		if (frmRecEdit.ctlRecordEdit.changed == true) {
-//			// Expand the work frame and hide the option frame.
-//			window.parent.document.all.item("workframeset").cols = "*, 0";
-//			
-//			// The current record has been modified so prompt the user if they want' to save the changes.
-//			if (pfPrompt == true) {
-//				iResult = ASRIntranetFunctions.MessageBox("Record changed, do you wish to save changes?", 35);
-//			}
-//			else {
-//				iResult = 6; // 6 = vbYes
-//			}
-//			
-//			if (iResult == 6) {
-//				// vbYes
-//				// Try to save the changes.
-//				// Get the data.asp to get the save the current record.
-//				frmDataArea = window.parent.frames("dataframe").document.forms("frmGetData");
-//				frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
+		frmRecEdit = window.parent.frames("workframe").document.forms("frmRecordEditForm");
+		if (frmRecEdit.ctlRecordEdit.changed == true) {
+			// Expand the work frame and hide the option frame.
+			//window.parent.document.all.item("workframeset").cols = "*, 0";
+			
+			// The current record has been modified so prompt the user if they want' to save the changes.
+			if (pfPrompt == true) {
+				iResult = OpenHR.MessageBox("Record changed, do you wish to save changes?", 35);
+			}
+			else {
+				iResult = 6; // 6 = vbYes
+			}
+			
+			if (iResult == 6) {
+				// vbYes
+				// Try to save the changes.
+				// Get the data.asp to get the save the current record.
+				frmDataArea = window.parent.frames("dataframe").document.forms("frmGetData");
+				frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
 
-//				// Validate the record first.
-//				if (frmRecEditArea.ctlRecordEdit.validateSave() == true) {
-//					frmDataArea.txtAction.value = "SAVE";
-//					frmDataArea.txtReaction.value = psAction;
+				// Validate the record first.
+				if (frmRecEditArea.ctlRecordEdit.validateSave() == true) {
+					frmDataArea.txtAction.value = "SAVE";
+					frmDataArea.txtReaction.value = psAction;
 
-//					frmDataArea.txtCurrentTableID.value = frmRecEditArea.txtCurrentTableID.value;
-//					frmDataArea.txtCurrentScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
-//					frmDataArea.txtCurrentViewID.value = frmRecEditArea.txtCurrentViewID.value;
-//					frmDataArea.txtSelectSQL.value = frmRecEditArea.txtRecEditSelectSQL.value;
-//					frmDataArea.txtFromDef.value = frmRecEditArea.txtRecEditFromDef.value;
-//					frmDataArea.txtFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
-//					frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
-//					frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
-//					frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
-//					frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
-//					frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
-//					frmDataArea.txtDefaultCalcCols.value = frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
-//					frmDataArea.txtInsertUpdateDef.value = frmRecEditArea.ctlRecordEdit.insertUpdateDef();
-//					frmDataArea.txtTimestamp.value = frmRecEditArea.ctlRecordEdit.timestamp;
-//					frmDataArea.txtTBCourseRecordID.value = frmRecEditArea.ctlRecordEdit.TBCourseRecordID();
-//					frmDataArea.txtTBEmployeeRecordID.value = frmRecEditArea.ctlRecordEdit.TBEmployeeRecordID();
-//					frmDataArea.txtTBBookingStatusValue.value = frmRecEditArea.ctlRecordEdit.TBBookingStatusValue();
-//					frmDataArea.txtTBOverride.value = pfTBOverride;
+					frmDataArea.txtCurrentTableID.value = frmRecEditArea.txtCurrentTableID.value;
+					frmDataArea.txtCurrentScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
+					frmDataArea.txtCurrentViewID.value = frmRecEditArea.txtCurrentViewID.value;
+					frmDataArea.txtSelectSQL.value = frmRecEditArea.txtRecEditSelectSQL.value;
+					frmDataArea.txtFromDef.value = frmRecEditArea.txtRecEditFromDef.value;
+					frmDataArea.txtFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
+					frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
+					frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
+					frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
+					frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
+					frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
+					frmDataArea.txtDefaultCalcCols.value = frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
+					frmDataArea.txtInsertUpdateDef.value = frmRecEditArea.ctlRecordEdit.insertUpdateDef();
+					frmDataArea.txtTimestamp.value = frmRecEditArea.ctlRecordEdit.timestamp;
+					frmDataArea.txtTBCourseRecordID.value = frmRecEditArea.ctlRecordEdit.TBCourseRecordID();
+					frmDataArea.txtTBEmployeeRecordID.value = frmRecEditArea.ctlRecordEdit.TBEmployeeRecordID();
+					frmDataArea.txtTBBookingStatusValue.value = frmRecEditArea.ctlRecordEdit.TBBookingStatusValue();
+					frmDataArea.txtTBOverride.value = pfTBOverride;
 
-//					if (frmDataArea.txtInsertUpdateDef.value != "") {
-//						ShowWait("Saving record. Please wait...");
-//						disableMenu();
+					if (frmDataArea.txtInsertUpdateDef.value != "") {
+						ShowWait("Saving record. Please wait...");
+						menu_disableMenu();
 
-//                        frmRecEditArea.ctlRecordEdit.ExecutePostSaveCode();
+                        frmRecEditArea.ctlRecordEdit.ExecutePostSaveCode();
 
-//						data_refreshData();
-//					}
-//				}
-//					
-//				// Do not do the required action yet. The 'save' operation might not have
-//				// finished yet so do nothing now. The required action will be triggered when the
-//				// 'save' operation has completed in the data.asp.
-//				iResult = 2; // 2 = vbCancel
-//			}
-//			else {
-//		    if (iResult == 7) {
-//					// vbNo
-//					// Cancel the changes and do not save them.
-//        }
-//        else {
-//					// Do not save changes, and cancel the operation that called this function.
-//				}
-//			}
-//		}
-//	}	
-//	else {
-//		if ((sCurrentPage == "UTIL_DEF_CUSTOMREPORTS") ||
-//			(sCurrentPage == "UTIL_DEF_MAILMERGE") ||
-//			(sCurrentPage == "UTIL_DEF_CALENDARREPORT") ||
-//			(sCurrentPage == "UTIL_DEF_PICKLIST") ||
-//			(sCurrentPage == "UTIL_DEF_EXPRESSION") ||
-//			(sCurrentPage == "UTIL_DEF_EXPRCOMPONENT") ||
-//			(sCurrentPage == "CONFIGURATION") ||
-//			(sCurrentPage == "PCCONFIGURATION")) {
-//			iResult = window.parent.frames("workframe").saveChanges(psAction, pfPrompt, pfTBOverride);
-//		}
-//	}
-//	
-//	return iResult;
+						data_refreshData();
+					}
+				}
+					
+				// Do not do the required action yet. The 'save' operation might not have
+				// finished yet so do nothing now. The required action will be triggered when the
+				// 'save' operation has completed in the data.asp.
+				iResult = 2; // 2 = vbCancel
+			}
+			else {
+		    if (iResult == 7) {
+					// vbNo
+					// Cancel the changes and do not save them.
+        }
+        else {
+					// Do not save changes, and cancel the operation that called this function.
+				}
+			}
+		}
+	}	
+	else {
+		if ((sCurrentPage == "UTIL_DEF_CUSTOMREPORTS") ||
+			(sCurrentPage == "UTIL_DEF_MAILMERGE") ||
+			(sCurrentPage == "UTIL_DEF_CALENDARREPORT") ||
+			(sCurrentPage == "UTIL_DEF_PICKLIST") ||
+			(sCurrentPage == "UTIL_DEF_EXPRESSION") ||
+			(sCurrentPage == "UTIL_DEF_EXPRCOMPONENT") ||
+			(sCurrentPage == "CONFIGURATION") ||
+			(sCurrentPage == "PCCONFIGURATION")) {
+			iResult = window.parent.frames("workframe").saveChanges(psAction, pfPrompt, pfTBOverride);
+		}
+	}
+	
+	return iResult;
 }
 
 function menu_loadPage(psPage) {
