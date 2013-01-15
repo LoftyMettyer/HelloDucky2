@@ -4269,3 +4269,9 @@ function menu_setVisibletoolbarGroup(itemId, fNewSetting) {
 	}
 
 }
+
+function menu_GetItemValue(itemID) {
+
+    return "TODO"; //window.parent.frames("menuframe").document.all.item("txtSysPerm_EVENTLOG_DELETE").value;
+
+}
