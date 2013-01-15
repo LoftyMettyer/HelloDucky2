@@ -5,7 +5,7 @@ EventLog
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-
+    0
 <%@Import Namespace="DMI.NET" %>
 
 
@@ -120,10 +120,11 @@ EventLog
 
 <script type="text/javascript">
     function EventLog_window_onload() {
+
+        debugger;
+
         window.parent.document.all.item("workframeset").cols = "*, 0";
-	
-        window.parent.frames("menuframe").abMainMenu.Bands("mnubandMainToolBar").tools("mnutoolRecordPosition").caption = '';
-	
+
         frmLog.cboUsername.style.color = 'white';
         frmLog.cboType.style.color = 'white';
         frmLog.cboMode.style.color = 'white';
@@ -137,19 +138,19 @@ EventLog
         var sErrMsg = frmUseful.txtErrorDescription.value;
         if (sErrMsg.length > 0) {
             fOK = false;
-            window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sErrMsg);
+            OpenHR.MessageBox(sErrMsg);
             window.parent.location.replace("login");
         }
 	
         if (fOK == true) {
             // Get menu to refresh the menu.
-            window.parent.frames("menuframe").refreshMenu();		  
+            menu_refreshMenu();		  
         }
 	
-        frmLog.txtELDeletePermission.value = window.parent.frames("menuframe").document.all.item("txtSysPerm_EVENTLOG_DELETE").value;
-        frmLog.txtELViewAllPermission.value = window.parent.frames("menuframe").document.all.item("txtSysPerm_EVENTLOG_VIEWALL").value;
-        frmLog.txtELPurgePermission.value = window.parent.frames("menuframe").document.all.item("txtSysPerm_EVENTLOG_PURGE").value;
-        frmLog.txtELEmailPermission.value = window.parent.frames("menuframe").document.all.item("txtSysPerm_EVENTLOG_EMAIL").value;
+        frmLog.txtELDeletePermission.value =  menu_GetItemValue("txtSysPerm_EVENTLOG_DELETE");
+        frmLog.txtELViewAllPermission.value =menu_GetItemValue("txtSysPerm_EVENTLOG_VIEWALL");
+        frmLog.txtELPurgePermission.value = menu_GetItemValue("txtSysPerm_EVENTLOG_PURGE");
+        frmLog.txtELEmailPermission.value = menu_GetItemValue("txtSysPerm_EVENTLOG_EMAIL");
 
         refreshUsers();
 
@@ -173,8 +174,8 @@ EventLog
 	
     function moveRecord(psMovement)
     {
-        var frmGetData = window.parent.frames("dataframe").document.forms("frmGetData");
-        var frmData = window.parent.frames("dataframe").document.forms("frmData");
+        var frmGetData = OpenHR.getForm("dataframe", "frmGetData");
+        var frmData = OpenHR.getForm("dataframe", "frmData");
 
         frmGetData.txtELAction.value = psMovement;
         frmGetData.txtELCurrRecCount.value = frmData.txtELCurrentRecCount.value;
@@ -191,7 +192,7 @@ EventLog
         var sOrderColumn;
         var sOrderOrder;
         var sRecords;
-        var frmData = window.parent.frames("dataframe").document.forms("frmData");
+        var frmData = OpenHR.getForm("dataframe", "frmData");
 	
         sOrderColumn = frmLog.ssOleDBGridEventLog.Columns(parseInt(frmLog.txtELSortColumnIndex.value)).caption;
         sOrderOrder = frmLog.txtELOrderOrder.value;
@@ -246,6 +247,11 @@ EventLog
         window.parent.frames("menuframe").abMainMenu.Tools("mnutoolRecordPosition").visible = true;
         window.parent.frames("menuframe").abMainMenu.Bands("mnubandMainToolBar").tools("mnutoolRecordPosition").caption = sCaption;
         window.parent.frames("menuframe").abMainMenu.RecalcLayout();
+
+        menu_setcaption
+
+
+
 	
         return true;
     }
@@ -261,7 +267,7 @@ EventLog
         iPollPeriod = 100;
         iPollCounter = iPollPeriod;
 
-        var frmUtilDefForm = window.parent.frames("dataframe").document.forms("frmData");
+        var frmUtilDefForm = OpenHR.getForm("dataframe", "frmData");
         var dataCollection = frmUtilDefForm.elements;
 	
         var frmRefresh;
@@ -316,13 +322,13 @@ EventLog
         frmLog.txtELLoaded.value = 1;
 	
         // Get menu to refresh the menu.
-        window.parent.frames("menuframe").refreshMenu();
+        menu_refreshMenu();
 	
         refreshStatusBar()
 	
         if (frmPurge.txtShowPurgeMSG.value == 1)
         {
-            window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Purge completed.",64,"Event Log");
+            OpenHR.MessageBox("Purge completed.",64,"Event Log");
             frmPurge.txtShowPurgeMSG.value = 0;
         }
     }
@@ -369,8 +375,7 @@ EventLog
 	
     function refreshGrid()
     {
-        var frmGetDataForm = window.parent.frames("dataframe").document.forms("frmGetData");
-	
+        var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
         frmGetDataForm.txtAction.value = "LOADEVENTLOG";
 	
         frmGetDataForm.txtELFilterUser.value = frmLog.cboUsername.options[frmLog.cboUsername.selectedIndex].value; 
@@ -383,6 +388,7 @@ EventLog
         refreshButtons();
 	
         window.parent.frames("dataframe").refreshData();
+
     }
 
     function viewEvent()
@@ -555,11 +561,10 @@ EventLog
     function refreshUsers()
     {
         // Get the columns/calcs for the current table selection.
-        var frmGetDataForm = window.parent.frames("dataframe").document.forms("frmGetData");
-	
-        frmGetDataForm.txtAction.value = "LOADEVENTLOGUSERS";
+        var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
 
-        window.parent.frames("dataframe").refreshData();
+        frmGetDataForm.txtAction.value = "LOADEVENTLOGUSERS";
+        frmGetDataForm.refreshData();
     }
 	
     function loadEventLogUsers(pbViewAll, psCurrentFilterUser)
@@ -574,7 +579,7 @@ EventLog
             oOptionALL.innerText = '<All>';
             oOptionALL.value = -1;	
 		
-            var frmUtilDefForm = window.parent.frames("dataframe").document.forms("frmData");
+            var frmUtilDefForm = OpenHR.getForm("dataframe", "frmData");
             var dataCollection = frmUtilDefForm.elements;
 
             if (dataCollection!=null) 
@@ -606,7 +611,9 @@ EventLog
             }
 						
             // Get menu to refresh the menu.
-            window.parent.frames("menuframe").refreshMenu();		
+            menu_refreshMenu();
+
+
         }
         else
         {
@@ -679,111 +686,6 @@ EventLog
 	<PARAM NAME="ToPage" VALUE="0">
 	<PARAM NAME="Orientation" VALUE="1"></OBJECT>
 
-<script FOR=ssOleDBGridEventLog EVENT=Click type="text/javascript">
-<!--
-  
-    if ((frmLog.ssOleDBGridEventLog.SelBookmarks.Count > 1) || (frmLog.ssOleDBGridEventLog.Rows == 0)) 
-    {
-        button_disable(frmLog.cmdView, true);
-    }
-    else
-    {
-        button_disable(frmLog.cmdView, false);
-    }
-
-    -->
-</script>
-
-<script FOR=ssOleDBGridEventLog EVENT=HeadClick type="text/javascript">    
-<!--
-    
-
-    var ColIndex = arguments[0];
- 
-    //Set the sort criteria depending on the column header clicked and refresh the grid
-    if (ColIndex == 1)
-    { 
-        frmLog.txtELOrderColumn.value = 'DateTime';
-    }
-    else if (ColIndex == 2)
-    { 
-        frmLog.txtELOrderColumn.value = 'EndTime';
-    }
-    else if (ColIndex == 3)
-    {  
-        frmLog.txtELOrderColumn.value = 'Duration';
-    }
-    else if (ColIndex == 4)
-    { 
-        frmLog.txtELOrderColumn.value = 'Type';
-    }
-    else if (ColIndex == 5)
-    { 	
-        frmLog.txtELOrderColumn.value = 'Name';
-    }
-    else if (ColIndex == 6)
-    { 	
-        frmLog.txtELOrderColumn.value = 'Status';
-    }
-    else if (ColIndex == 7)
-    { 	
-        frmLog.txtELOrderColumn.value = 'Mode';
-    }
-    else if (ColIndex == 8)
-    { 	
-        frmLog.txtELOrderColumn.value = 'Username';
-    }
-    else
-    { 
-        frmLog.txtELOrderColumn.value = 'DateTime';
-    }
-		
-    if (ColIndex == frmLog.txtELSortColumnIndex.value)
-    {
-        if (frmLog.txtELOrderOrder.value == 'ASC') 
-        {
-            frmLog.txtELOrderOrder.value = 'DESC'; 
-        }
-        else
-        {
-            frmLog.txtELOrderOrder.value = 'ASC';
-        }
-    }
-    else
-    {
-        frmLog.txtELOrderOrder.value = 'ASC';
-    }
-  
-    frmLog.txtELSortColumnIndex.value = ColIndex;
- 
-    refreshGrid();
-
-    -->
-</script>
-
-<script FOR=ssOleDBGridEventLog EVENT=RowColChange type="text/javascript">
-<!--
-    if (frmLog.ssOleDBGridEventLog.SelBookmarks.Count > 1) 
-    {
-        button_disable(frmLog.cmdView, true);
-    }
-    else
-    {
-        button_disable(frmLog.cmdView, false);
-    }
-    -->
-</script>
-
-<script FOR=ssOleDBGridEventLog EVENT=DblClick type="text/javascript">
-<!--
-  
-    if ((frmLog.ssOleDBGridEventLog.Rows > 0) && (frmLog.ssOleDBGridEventLog.SelBookmarks.Count == 1)) 
-    {
-        viewEvent();
-    }
-
-    -->
-</script>
 
 <form id=frmLog>
 <table align=center class="outline" cellPadding=5 cellSpacing=0 width=100% height=100%>
@@ -1475,8 +1377,126 @@ EventLog
 	Session("CurrentStatus") = ""
 %>
 
-<!-- Embeds createActiveX.js script reference -->
 
-<script type="text/javascript"> EventLog_window_onload();</script>
+<script type="text/javascript">
+
+    function addActiveXHandlers()
+    {
+        OpenHR.addActiveXHandler("ssOleDBGridEventLog", "DblClick", ssOleDBGridEventLog_dblclick);
+        OpenHR.addActiveXHandler("ssOleDBGridEventLog", "rowcolchange", ssOleDBGridEventLog_rowcolchange);
+        OpenHR.addActiveXHandler("ssOleDBGridEventLog", "Click", ssOleDBGridEventLog_click);
+        OpenHR.addActiveXHandler("ssOleDBGridEventLog", "HeadClick", ssOleDBGridEventLog_headclick);
+    }
+
+    function ssOleDBGridEventLog_dblclick()
+    {
+        if ((frmLog.ssOleDBGridEventLog.Rows > 0) && (frmLog.ssOleDBGridEventLog.SelBookmarks.Count == 1)) 
+        {
+            viewEvent();
+        }
+    }
+
+    function ssOleDBGridEventLog_rowcolchange()
+    {
+        if (frmLog.ssOleDBGridEventLog.SelBookmarks.Count > 1) 
+        {
+            button_disable(frmLog.cmdView, true);
+        }
+        else
+        {
+            button_disable(frmLog.cmdView, false);
+        }
+    }
+
+    function ssOleDBGridEventLog_click()
+    {
+        if ((frmLog.ssOleDBGridEventLog.SelBookmarks.Count > 1) || (frmLog.ssOleDBGridEventLog.Rows == 0)) 
+        {
+            button_disable(frmLog.cmdView, true);
+        }
+        else
+        {
+            button_disable(frmLog.cmdView, false);
+        }
+    }
+
+    function ssOleDBGridEventLog_headclick()
+    {
+
+        var ColIndex = arguments[0];
+ 
+        //Set the sort criteria depending on the column header clicked and refresh the grid
+        if (ColIndex == 1)
+        { 
+            frmLog.txtELOrderColumn.value = 'DateTime';
+        }
+        else if (ColIndex == 2)
+        { 
+            frmLog.txtELOrderColumn.value = 'EndTime';
+        }
+        else if (ColIndex == 3)
+        {  
+            frmLog.txtELOrderColumn.value = 'Duration';
+        }
+        else if (ColIndex == 4)
+        { 
+            frmLog.txtELOrderColumn.value = 'Type';
+        }
+        else if (ColIndex == 5)
+        { 	
+            frmLog.txtELOrderColumn.value = 'Name';
+        }
+        else if (ColIndex == 6)
+        { 	
+            frmLog.txtELOrderColumn.value = 'Status';
+        }
+        else if (ColIndex == 7)
+        { 	
+            frmLog.txtELOrderColumn.value = 'Mode';
+        }
+        else if (ColIndex == 8)
+        { 	
+            frmLog.txtELOrderColumn.value = 'Username';
+        }
+        else
+        { 
+            frmLog.txtELOrderColumn.value = 'DateTime';
+        }
+		
+        if (ColIndex == frmLog.txtELSortColumnIndex.value)
+        {
+            if (frmLog.txtELOrderOrder.value == 'ASC') 
+            {
+                frmLog.txtELOrderOrder.value = 'DESC'; 
+            }
+            else
+            {
+                frmLog.txtELOrderOrder.value = 'ASC';
+            }
+        }
+        else
+        {
+            frmLog.txtELOrderOrder.value = 'ASC';
+        }
+  
+        frmLog.txtELSortColumnIndex.value = ColIndex;
+ 
+        refreshGrid();
+    }
+
+
+
+
+
+
+</script>
+
+
+<script type="text/javascript">
+    EventLog_window_onload();
+    addActiveXHandlers();
+</script>
+
+
 
 </asp:Content>
