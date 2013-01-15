@@ -856,7 +856,7 @@ Namespace Controllers
 			End If
 
 			' Go to the requested page.
-			RedirectToAction("Data")
+      RedirectToAction("data")
 
 		End Function
 

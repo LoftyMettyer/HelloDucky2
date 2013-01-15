@@ -139,24 +139,11 @@ function default_window_onload() {
 }		
 </script>
 
-<script type="text/javascript">
-<!--
-	function hideMessage() {
-		var fso;
-		var sMsg;
-
-		tblMsg.style.visibility = "hidden";
-		tblMsg.style.display = "none";
-
-	}
--->
-</script>
-
 <INPUT type=hidden id=securitySettingFailure name=securitySettingFailure value=0>	
 <INPUT type=hidden id=txtWorkflowOutOfOffice name=txtWorkflowOutOfOffice value=<%=iOutOfOffice%>>
 <INPUT type=hidden id=txtWorkflowRecordCount name=txtWorkflowRecordCount value=<%=iRecordCount%>>
 
-<TABLE style="DISPLAY: none; VISIBILITY: hidden" name="tblMsg" id=tblMsg WIDTH="100%" height="50%" class="invisible" CELLSPACING=0 CELLPADDING=0>
+<TABLE style="DISPLAY: none; VISIBILITY: hidden" id=tblMsg WIDTH="100%" height="50%" class="invisible" CELLSPACING=0 CELLPADDING=0>
     <tr></tr>
 	<TR>
         <TD>
@@ -170,6 +157,21 @@ function default_window_onload() {
 		</TD>
 	</TR>
 </TABLE>
+
+
+<script type="text/javascript">
+<!--
+    function hideMessage() {
+        var fso;
+        var sMsg;
+
+        tblMsg.style.visibility = "hidden";
+        tblMsg.style.display = "none";
+
+    }
+    -->
+</script>
+
 <FORM action="default_Submit" method=post id=frmGoto name=frmGoto>
 	
 <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>

@@ -5,7 +5,7 @@ EventLog
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    0
+
 <%@Import Namespace="DMI.NET" %>
 
 
@@ -122,6 +122,7 @@ EventLog
     function EventLog_window_onload() {
 
         debugger;
+
 
         window.parent.document.all.item("workframeset").cols = "*, 0";
 
@@ -244,14 +245,8 @@ EventLog
             sCaption = sCaption + "     [Viewing own entries only]";
         }
 	
-        window.parent.frames("menuframe").abMainMenu.Tools("mnutoolRecordPosition").visible = true;
-        window.parent.frames("menuframe").abMainMenu.Bands("mnubandMainToolBar").tools("mnutoolRecordPosition").caption = sCaption;
-        window.parent.frames("menuframe").abMainMenu.RecalcLayout();
-
-        menu_setcaption
-
-
-
+        menu_setVisibleMenuItem("mnutoolRecordPosition", true);
+        menu_SetmnutoolRecordPositionCaption(sCaption);
 	
         return true;
     }
@@ -271,7 +266,7 @@ EventLog
         var dataCollection = frmUtilDefForm.elements;
 	
         var frmRefresh;
-        frmRefresh = window.parent.frames("pollframe").document.forms("frmHit");
+        frmRefresh = OpenHR.getForm("pollframe","frmHit");
 	
         if (dataCollection!=null) 
         {
@@ -385,9 +380,8 @@ EventLog
         frmGetDataForm.txtELOrderColumn.value = frmLog.txtELOrderColumn.value; 
         frmGetDataForm.txtELOrderOrder.value = frmLog.txtELOrderOrder.value; 
 	
-        refreshButtons();
-	
-        window.parent.frames("dataframe").refreshData();
+        refreshButtons();	
+        OpenHR.submitForm(frmGetDataForm);
 
     }
 
@@ -560,11 +554,14 @@ EventLog
 
     function refreshUsers()
     {
+        debugger;
+
         // Get the columns/calcs for the current table selection.
         var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
-
         frmGetDataForm.txtAction.value = "LOADEVENTLOGUSERS";
-        frmGetDataForm.refreshData();
+    //    data_refreshData();
+        OpenHR.submitForm(frmGetDataForm);
+
     }
 	
     function loadEventLogUsers(pbViewAll, psCurrentFilterUser)

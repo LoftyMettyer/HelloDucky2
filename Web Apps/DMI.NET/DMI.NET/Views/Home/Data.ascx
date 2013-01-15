@@ -554,7 +554,7 @@
 
 <div>
 
-<form action="data_Submit" method=post id=frmGetData name=frmGetData>
+<form action="data_submit" method=post id=frmGetData name=frmGetData>
 	<INPUT type="hidden" id=txtAction name=txtAction>
 	<INPUT type="hidden" id=txtReaction name=txtReaction>
 	<INPUT type="hidden" id=txtCurrentTableID name=txtCurrentTableID>
