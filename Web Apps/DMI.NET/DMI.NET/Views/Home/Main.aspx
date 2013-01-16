@@ -86,7 +86,7 @@
 	</div>
 
 	<div id="optionframeset">
-		<div id="data" data-framesource="data.asp" style="display: none"><%Html.RenderPartial("~/views/home/data.ascx")%></div>
+		<div id="dataframe" data-framesource="data.asp" style="display: none"><%Html.RenderPartial("~/views/home/data.ascx")%></div>
 		<div id="optiondata" data-framesource="optionData.asp" style="display: none">optiondata</div>
 	</div>
 

@@ -121,11 +121,9 @@ EventLog
 <script type="text/javascript">
     function EventLog_window_onload() {
 
-        debugger;
-
-
-        window.parent.document.all.item("workframeset").cols = "*, 0";
-
+        //window.parent.document.all.item("workframeset").cols = "*, 0";
+        $("#workframe").attr("data-framesource", "EVENTLOG");
+        
         frmLog.cboUsername.style.color = 'white';
         frmLog.cboType.style.color = 'white';
         frmLog.cboMode.style.color = 'white';
@@ -378,8 +376,8 @@ EventLog
         frmGetDataForm.txtELFilterStatus.value = frmLog.cboStatus.options[frmLog.cboStatus.selectedIndex].value; 
         frmGetDataForm.txtELFilterMode.value = frmLog.cboMode.options[frmLog.cboMode.selectedIndex].value; 
         frmGetDataForm.txtELOrderColumn.value = frmLog.txtELOrderColumn.value; 
-        frmGetDataForm.txtELOrderOrder.value = frmLog.txtELOrderOrder.value; 
-	
+        frmGetDataForm.txtELOrderOrder.value = frmLog.txtELOrderOrder.value;
+
         refreshButtons();	
         OpenHR.submitForm(frmGetDataForm);
 
@@ -553,9 +551,7 @@ EventLog
     }
 
     function refreshUsers()
-    {
-        debugger;
-
+    {        
         // Get the columns/calcs for the current table selection.
         var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
         frmGetDataForm.txtAction.value = "LOADEVENTLOGUSERS";

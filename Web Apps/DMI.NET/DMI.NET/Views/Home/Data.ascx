@@ -10,7 +10,6 @@
 <script type="text/javascript">
 <!--
 	function data_window_onload() {
-
 		var frmData = document.getElementById("frmData");
 		var frmGetData = document.getElementById("frmGetData");
 		var frmMenuInfo = OpenHR.getForm("menuframe", "frmMenuInfo");
@@ -33,9 +32,10 @@
 		window.location = "Login";
 	}
 	else {
+	   
 		// Do nothing if the menu controls are not yet instantiated.
 		if (frmWorkAreaInfo != null) {
-			var sCurrentWorkPage = currentWorkPage();
+			var sCurrentWorkPage = OpenHR.currentWorkPage();
 
 			if (sCurrentWorkPage == "RECORDEDIT") {
 				// Refresh the recEdit controls with the data if required.
@@ -409,8 +409,7 @@
 				if (sAction == "CLEARFILTER") {
 					frmRecEditArea.txtRecEditFilterDef.value = "";
 					frmRecEditArea.txtRecEditFilterSQL.value = "";
-					//TODO should call refreshData in workframe form not local refreshData
-					debugger;
+					//TODO should call refreshData in workframe form not local refreshData					
 					refreshData(); //workframe
 					return;
 				}				
@@ -1308,4 +1307,4 @@
 
 </div>
 
-
+<script type="text/javascript"> data_window_onload();</script>

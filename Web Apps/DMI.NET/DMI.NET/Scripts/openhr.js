@@ -24,16 +24,12 @@
 	    getForm = function (frameId, formId) {
 	    	return document.forms[formId];
 	    },
-	    submitForm = function (form) {
-
+	    submitForm = function (form) {	       
 	    	var $form = $(form),
 	    	    $frame = $form.closest("div[data-framesource]").first(),
 	    	    url = $form.attr("action"),
 	    	    data = $form.serialize();
-	    	//				 frmGotoPage = form.txtGotoPage.value.toUpperCase();
-	    	//	    	
-	    	//			$("#workframe").attr("data-framesource", frmGotoPage);
-
+	        
 	    	$.ajax({
 	    		url: url,
 	    		type: "POST",

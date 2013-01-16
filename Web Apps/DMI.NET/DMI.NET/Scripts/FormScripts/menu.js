@@ -794,8 +794,8 @@ function menu_refreshMenu() {
 	var sRecEditDate;
 	var sDummyDate;
 	//Get the frmMenuInfo object for implicit use in this function (non-ie)
-	var frmMenuInfo = document.getElementById("frmMenuInfo");	
-
+	var frmMenuInfo = document.getElementById("frmMenuInfo");
+    
 	// Standard reports
 	var fStdRptAbsenceCalendarEnabled;
 	var fStdRptAbsenceBreakdownEnabled;
@@ -1348,48 +1348,54 @@ function menu_refreshMenu() {
 		}
 	}
 
-
-
-	// enable/disable the tools required for the event log
+    // enable/disable the tools required for the event log
 	if ((sCurrentWorkPage == "EVENTLOG")) {
-		abMainMenu.Bands("mnubandMainToolBar").visible = true;
-		abMainMenu.Tools("mnutoolRecord").visible = false;
 
-		abMainMenu.Tools("mnutoolNewRecord").visible = false;
-		abMainMenu.Tools("mnutoolCopyRecord").visible = false;
-		abMainMenu.Tools("mnutoolEditRecord").visible = false;
-		abMainMenu.Tools("mnutoolSaveRecord").visible = false;
-		abMainMenu.Tools("mnutoolDeleteRecord").visible = false;
-		abMainMenu.Tools("mnutoolParentRecord").visible = false;
-		abMainMenu.Tools("mnutoolBack").visible = false;
+	    //New functionality: switch ribbon tab to required item.
+	    $("#toolbarRecord").show();
+	    $("#toolbarRecord").click();
 
-		if (window.parent.frames("workframe").document.forms("frmLog").txtELLoaded.value == 1) {
+
+	    var frmLog = document.getElementById("frmLog");
+
+		menu_setVisibleMenuItem("mnubandMainToolBar", true);
+		menu_setVisibleMenuItem("mnutoolRecord", false);
+
+		menu_setVisibleMenuItem("mnutoolNewRecord", false);
+		menu_setVisibleMenuItem("mnutoolCopyRecord", false);
+		menu_setVisibleMenuItem("mnutoolEditRecord", false);
+		menu_setVisibleMenuItem("mnutoolSaveRecord", false);
+		menu_setVisibleMenuItem("mnutoolDeleteRecord", false);
+		menu_setVisibleMenuItem("mnutoolParentRecord", false);
+		menu_setVisibleMenuItem("mnutoolBack", false);
+
+		if (frmLog.txtELLoaded.value == 1) {
 			var frmData = window.parent.frames("dataframe").document.forms("frmData");
 			var bLastPage = frmData.txtELIsLastPage.value;
 			var bFirstPage = frmData.txtELIsFirstPage.value;
 
-			abMainMenu.Tools("mnutoolFirstRecord").enabled = (bFirstPage.toUpperCase() == "FALSE");
-			abMainMenu.Tools("mnutoolPreviousRecord").enabled = (bFirstPage.toUpperCase() == "FALSE");
-			abMainMenu.Tools("mnutoolNextRecord").enabled = (bLastPage.toUpperCase() == "FALSE");
-			abMainMenu.Tools("mnutoolLastRecord").enabled = (bLastPage.toUpperCase() == "FALSE");
+			menu_enableMenuItem("mnutoolFirstRecord", bFirstPage.toUpperCase() == "FALSE");
+			menu_enableMenuItem("mnutoolPreviousRecord", bFirstPage.toUpperCase() == "FALSE");
+			menu_enableMenuItem("mnutoolNextRecord", bLastPage.toUpperCase() == "FALSE");
+			menu_enableMenuItem("mnutoolLastRecord", bLastPage.toUpperCase() == "FALSE");
 		}
 
-		abMainMenu.Tools("mnutoolFirstRecord").visible = true;
-		abMainMenu.Tools("mnutoolPreviousRecord").visible = true;
-		abMainMenu.Tools("mnutoolNextRecord").visible = true;
-		abMainMenu.Tools("mnutoolLastRecord").visible = true;
+		menu_setVisibleMenuItem("mnutoolFirstRecord", true);
+		menu_setVisibleMenuItem("mnutoolPreviousRecord", true);
+		menu_setVisibleMenuItem("mnutoolNextRecord", true);
+		menu_setVisibleMenuItem("mnutoolLastRecord", true);
 
-		abMainMenu.Tools("mnutoolRecordPosition").visible = true;
+		menu_setVisibleMenuItem("mnutoolRecordPosition", true);
 
-		abMainMenu.Tools("mnutoolLocateRecordsCaption").visible = false;
-		abMainMenu.Tools("mnutoolLocateRecords").visible = false;
-		abMainMenu.Tools("mnutoolLocateRecordsLogic").visible = false;
-		abMainMenu.Tools("mnutoolFind").visible = false;
-		abMainMenu.Tools("mnutoolQuickFind").visible = false;
-		abMainMenu.Tools("mnutoolOrder").visible = false;
-		abMainMenu.Tools("mnutoolFilter").visible = false;
-		abMainMenu.Tools("mnutoolClearFilter").visible = false;
-		abMainMenu.Tools("mnutoolPrint").visible = false;
+		menu_setVisibleMenuItem("mnutoolLocateRecordsCaption", false);
+		menu_setVisibleMenuItem("mnutoolLocateRecords", false);
+		menu_setVisibleMenuItem("mnutoolLocateRecordsLogic", false);
+		menu_setVisibleMenuItem("mnutoolFind", false);
+		menu_setVisibleMenuItem("mnutoolQuickFind", false);
+		menu_setVisibleMenuItem("mnutoolOrder", false);
+		menu_setVisibleMenuItem("mnutoolFilter", false);
+		menu_setVisibleMenuItem("mnutoolClearFilter", false);
+		menu_setVisibleMenuItem("mnutoolPrint", false);
 	}
 
 	//if (txtSysPerm_INTRANET_NEW_USER != null) {
@@ -4272,6 +4278,9 @@ function menu_setVisibletoolbarGroup(itemId, fNewSetting) {
 
 function menu_GetItemValue(itemID) {
 
-    return "TODO"; //window.parent.frames("menuframe").document.all.item("txtSysPerm_EVENTLOG_DELETE").value;
+    return $("#menuframe #" + itemID).val();
+
+    //return "TODO"; //window.parent.frames("menuframe").document.all.item("txtSysPerm_EVENTLOG_DELETE").value;
+
 
 }
