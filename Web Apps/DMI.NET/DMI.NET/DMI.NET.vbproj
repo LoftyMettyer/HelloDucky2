@@ -388,6 +388,8 @@
     <Content Include="Views\Account\Login.aspx" />
     <Content Include="Views\Account\Message.aspx" />
     <Content Include="Views\Home\CheckForUsage.ascx" />
+    <Content Include="Views\Home\configuration.aspx" />
+    <Content Include="Views\Home\confirmok.aspx" />
     <Content Include="Views\Home\Data.ascx" />
     <Content Include="Views\Home\default.ascx" />
     <Content Include="Views\Home\DefSel.ascx" />
