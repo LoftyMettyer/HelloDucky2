@@ -221,9 +221,9 @@
 
 			//Splash
 			$(".splashDiv").show();
+            
+		    frmLoginForm.submit();			
 
-
-			frmLoginForm.submit();
 		}
 
 	}

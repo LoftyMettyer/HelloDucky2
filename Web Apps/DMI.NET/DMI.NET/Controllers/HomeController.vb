@@ -10,9 +10,6 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		Function passwordChange_Submit() As ActionResult
-			Return View()
-		End Function
 
 		<HttpPost()>
 		Function passwordChange_Submit(value As FormCollection)
