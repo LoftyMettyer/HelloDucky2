@@ -396,6 +396,8 @@
     <Content Include="Views\Home\DefSelProperties.aspx" />
     <Content Include="Views\Home\EventLog.ascx" />
     <Content Include="Views\Home\EventLogDetails.aspx" />
+    <Content Include="Views\Home\EventLogPurge.aspx" />
+    <Content Include="Views\Home\EventLogSelection.aspx" />
     <Content Include="Views\Home\Find.ascx" />
     <Content Include="Views\Home\fixedlinks.ascx" />
     <Content Include="Views\Home\linksMain.aspx" />
