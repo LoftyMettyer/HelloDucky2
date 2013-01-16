@@ -402,6 +402,7 @@
     <Content Include="Views\Home\Main.aspx" />
     <Content Include="Views\Home\Menu.ascx" />
     <Content Include="HTMLPage1.htm" />
+    <Content Include="Views\Home\pcconfiguration.aspx" />
     <Content Include="Views\Home\Util_CustomReportChilds.aspx" />
     <Content Include="Views\Home\Util_Def_CustomReports.ascx" />
     <Content Include="Views\Home\Util_EmailSelection.aspx" />
