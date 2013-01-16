@@ -3451,6 +3451,7 @@ function menu_selectFolder(psKey, psPath) {
 //	frmOptionArea.submit();
 }
 
+
 function menu_cancelCourse() {
 //	var frmDataArea;
 //	var frmRecEditArea;
