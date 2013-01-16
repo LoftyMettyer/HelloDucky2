@@ -25,14 +25,15 @@ Namespace Controllers
 
 			' Only process the form submission if the referring page was the newUser page.
 			' If it wasn't then redirect to the login page.
-			sReferringPage = Request.ServerVariables("HTTP_REFERER")
-			If InStrRev(sReferringPage, "/") > 0 Then
-				sReferringPage = Mid(sReferringPage, InStrRev(sReferringPage, "/") + 1)
-			End If
+			'sReferringPage = Request.ServerVariables("HTTP_REFERER")
+			'If InStrRev(sReferringPage, "/") > 0 Then
+			'	sReferringPage = Mid(sReferringPage, InStrRev(sReferringPage, "/") + 1)
+			'End If
 
-			If UCase(sReferringPage) <> UCase("passwordChange") Then
-				Return RedirectToAction("login")
-			Else
+			'If UCase(sReferringPage) <> UCase("passwordChange") Then
+			'	Return RedirectToAction("login")
+			'Else
+			If True Then
 				fSubmitPasswordChange = (Len(Request.Form("txtGotoPage")) = 0)
 
 				If fSubmitPasswordChange Then
@@ -91,7 +92,7 @@ Namespace Controllers
 						If Err.Number <> 0 Then
 							Session("ErrorTitle") = "Change Password Page"
 							Session("ErrorText") = "You could not change your password because of the following error:<p>" & FormatError(Err.Description)
-							Return RedirectToAction("Error")
+							Return RedirectToAction("Error", "Account")
 						Else
 							' Password changed okay. Update the appropriate record in the ASRSysPasswords table.
 							Dim cmdPasswordOK = Server.CreateObject("ADODB.Command")
@@ -104,7 +105,7 @@ Namespace Controllers
 							If Err.Number <> 0 Then
 								Session("ErrorTitle") = "Change Password Page"
 								Session("ErrorText") = "You could not change your password because of the following error:<p>" & FormatError(Err.Description)
-								Return RedirectToAction("Error")
+								Return RedirectToAction("Error", "Account")
 							End If
 
 							' Release the ADO command object.
@@ -129,7 +130,7 @@ Namespace Controllers
 								If Err.Number <> 0 Then
 									Session("ErrorTitle") = "Change Password Page"
 									Session("ErrorText") = "You could not change your password because of the following error:<p>" & FormatError(Err.Description)
-									Return RedirectToAction("Error")
+									Return RedirectToAction("Error", "Account")
 								End If
 
 								Session("databaseConnection") = conX
@@ -162,7 +163,7 @@ Namespace Controllers
 							' Tell the user that the password was changed okay.
 							Session("MessageTitle") = "Change Password Page"
 							Session("MessageText") = "Password changed successfully."
-							Return RedirectToAction("message")
+							Return RedirectToAction("message", "Account")
 						End If
 					Else
 						Session("ErrorTitle") = "Change Password Page"
@@ -175,7 +176,7 @@ Namespace Controllers
 						sErrorText = sErrorText & " in the system."
 						Session("ErrorText") = sErrorText
 
-						Return RedirectToAction("error")
+						Return RedirectToAction("error", "Account")
 					End If
 				Else
 					' Save the required table/view and screen IDs in session variables.

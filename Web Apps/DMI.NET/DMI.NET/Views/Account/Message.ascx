@@ -25,8 +25,8 @@
 <!--
 	/* Go back to the previous page. */
 	function GoBack() {
-		var frmGotoMain = document.getElementById('frmGotoMain');
-		frmGotoMain.submit();
+		var frmGotoMain = OpenHR.getForm("workframe", "frmGotoMain");
+	    OpenHR.submitForm(frmGotoMain);
 	}
 -->
 </script>

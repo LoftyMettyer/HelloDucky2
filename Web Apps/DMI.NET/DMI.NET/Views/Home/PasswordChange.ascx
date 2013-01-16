@@ -77,8 +77,7 @@
 
         /* Return to the default page. */
         function cancelClick() {
-            //TODO
-            //window.location.href = "default";
+            window.location.href = "main";
         }
     </script>
 
@@ -92,7 +91,7 @@
                     <td>
                         <table align="center" class="invisible" cellpadding="0" cellspacing="0">
                             <tr>
-                                <td colspan="5" height="10"></td>f
+                                <td colspan="5" height="10"></td>
                             </tr>
                             <tr>
                                 <td colspan="5">

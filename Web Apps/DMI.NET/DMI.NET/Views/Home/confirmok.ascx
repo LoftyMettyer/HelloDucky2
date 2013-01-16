@@ -9,7 +9,7 @@
     }
 
     function okClick() {
-
+        debugger;
         if (txtReloadMenu.value == 1)
         {
             window.parent.location.href = "main";

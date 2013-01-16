@@ -386,7 +386,7 @@
     <Content Include="Views\Account\Error.aspx" />
     <Content Include="Views\Account\ForcedPasswordChange.aspx" />
     <Content Include="Views\Account\Login.aspx" />
-    <Content Include="Views\Account\Message.aspx" />
+    <Content Include="Views\Account\Message.ascx" />
     <Content Include="Views\Home\CheckForUsage.ascx" />
     <Content Include="Views\Home\configuration.ascx" />
     <Content Include="Views\Home\confirmok.ascx" />
