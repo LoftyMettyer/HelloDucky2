@@ -1,11 +1,5 @@
-﻿<%@ Page Title="" Language="VB" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage" %>
-
-<asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-    PasswordChange
-</asp:Content>
-
-<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <%@ Import Namespace="DMI.NET" %>
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="DMI.NET" %>
 
     <script type="text/javascript">
         function PasswordChange_window_onload() {
@@ -273,6 +267,4 @@
     %>
 
     <script type="type/javascript"> PasswordChange_window_onload(); </script>
-
-</asp:Content>
 
