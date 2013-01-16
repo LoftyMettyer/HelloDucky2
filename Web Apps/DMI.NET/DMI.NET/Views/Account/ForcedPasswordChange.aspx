@@ -4,20 +4,6 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-<%
-	' Only open the form if there was a referring page.
-	' If it wasn't then redirect to the login page.
-	Dim sReferringPage = Request.ServerVariables("HTTP_REFERER")
-	if inStrRev(sReferringPage, "/") > 0 then
-		sReferringPage = mid(sReferringPage, inStrRev(sReferringPage, "/") + 1)
-	end if
-
-	If Len(sReferringPage) = 0 Then
-		Response.Redirect("Login")
-	End If
-%>
-
-<!--Client script to handle the screen events.-->
 <script type="text/javascript">
 <!--
 	/* Validate the password change, and change the user's password
@@ -30,7 +16,7 @@
 		var sErrorMessage;
 		var frmPasswordChangeForm = document.getElementById('frmPasswordChangeForm');
 		var txtMinPasswordLength = document.getElementById('txtMinPasswordLength');
-		
+
 		fChangeOK = true;
 		sCurrentPassword = frmPasswordChangeForm.txtCurrentPassword.value.toLowerCase();
 		sNewPassword1 = frmPasswordChangeForm.txtPassword1.value.toLowerCase();
@@ -142,7 +128,7 @@
 
 <%
 	On Error Resume Next
-	Response.Write("<INPUT type='hidden' id=txtMinPasswordLength name=txtMinPasswordLength value=" & Session("minPasswordLength") & ">" & vbCrLf)
+    Response.Write("<INPUT type='hidden' id=txtMinPasswordLength name=txtMinPasswordLength value=" & Session("minPasswordLength") & ">" & vbCrLf)
 %>
 </div>
 </asp:Content>
