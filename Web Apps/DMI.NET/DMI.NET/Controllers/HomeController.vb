@@ -10,6 +10,11 @@ Namespace Controllers
       Return View()
     End Function
 
+    Function PCConfiguration() As ActionResult
+      Return View()
+    End Function
+
+
     <HttpPost()>
     Function Configuration_Submit(value As FormCollection)
 
