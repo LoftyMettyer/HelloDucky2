@@ -21,7 +21,7 @@ Namespace Controllers
       On Error Resume Next
 
       Dim sTemp
-      Dim sType
+			Dim sType = ""
       Dim sControlName
       Dim cmdPrimaryStartMode
       Dim prmSection

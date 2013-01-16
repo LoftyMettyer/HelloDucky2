@@ -1,11 +1,4 @@
-﻿<%@ Page Title="" Language="VB" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage" %>
-
-<asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-</asp:Content>
-
-<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-
-<h2>confirmok</h2>
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 
 <script ID="clientEventHandlersJS" type="text/javascript">
 <!--
@@ -15,11 +8,11 @@
         OpenHR.Closepopup();
     }
 
-    function okClick() 
-    {
+    function okClick() {
+
         if (txtReloadMenu.value == 1)
         {
-            window.parent.location.href = "main.asp";
+            window.parent.location.href = "main";
             return;
         }
 	
@@ -79,7 +72,7 @@
         }
 
         if (sAction == "DEFAULT") {
-            window.location.href = "default.asp";
+            window.location.href = "main";  // "default.asp";
         }
 				
         if (sAction.substring(0, 7) == "mnutool") {
@@ -207,5 +200,3 @@
 <FORM action="default_Submit" method=post id=FORM1 name=frmGoto style="visibility:hidden;display:none">
     <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 </FORM>
-
-</asp:Content>

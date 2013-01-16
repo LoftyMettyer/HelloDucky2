@@ -1,9 +1,4 @@
-﻿<%@ Page Title="" Language="VB" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage" %>
-
-<asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-</asp:Content>
-
-<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
     <%
@@ -480,7 +475,7 @@
         var chkControl;
         var txtControl;
         var sType;
-	
+        var frmConfiguration = OpenHR.getForm("workframe", "frmConfiguration");
         // Validate the find window block size.
         if (validateFindBlockSize == false) {
             return (false);
@@ -527,7 +522,9 @@
         //if (frmConfiguration.chkWarn_GlobalUpdate.checked == true) frmConfiguration.txtWarn_GlobalUpdate.value = 1;
         //if (frmConfiguration.chkWarn_Import.checked == true) frmConfiguration.txtWarn_Import.value = 1;
 
-        frmConfiguration.submit();
+        //frmConfiguration.submit();
+        OpenHR.submitForm(frmConfiguration);
+
     }
 
     function validateFindBlockSize()
@@ -1411,5 +1408,3 @@
 <script type="text/javascript">
     configuration_window_onload();
 </script>
-
-</asp:Content>
