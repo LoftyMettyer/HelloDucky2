@@ -9,7 +9,7 @@
 
 <script type="text/javascript">
 <!--
-	function data_window_onload() {
+    function data_window_onload() {        
 		var frmData = document.getElementById("frmData");
 		var frmGetData = document.getElementById("frmGetData");
 		var frmMenuInfo = OpenHR.getForm("menuframe", "frmMenuInfo");
@@ -467,9 +467,8 @@
 					 (sCurrentWorkPage == "UTIL_DEF_CALENDARREPORT") ||
 			         (sCurrentWorkPage == "UTIL_DEF_CROSSTABS") ||
 			         (sCurrentWorkPage == "UTIL_DEF_MAILMERGE") ||
-							 (sCurrentWorkPage == "EVENTLOG")) 
-				{
-					
+							 (sCurrentWorkPage == "EVENTLOG")) {
+			    
 				if (frmData.txtAction.value == "LOADREPORTCOLUMNS") 
 					{
 					loadAvailableColumns(); //workframe

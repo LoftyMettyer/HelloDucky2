@@ -1,13 +1,5 @@
-﻿<%@ Page Title="" Language="VB" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage" %>
-
-<asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-EventLog
-</asp:Content>
-
-<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-
-<%@Import Namespace="DMI.NET" %>
-
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="DMI.NET" %>
 
 <%
 	'This section of script is used for saving the new purge criteria.
@@ -267,7 +259,7 @@ EventLog
         frmRefresh = OpenHR.getForm("pollframe","frmHit");
 	
         if (dataCollection!=null) 
-        {
+        {            
             frmLog.ssOleDBGridEventLog.focus();
             frmLog.ssOleDBGridEventLog.Redraw = false;
             if(frmLog.ssOleDBGridEventLog.Rows > 0)
@@ -279,7 +271,8 @@ EventLog
             {
 			
                 if (i==iPollCounter) {			
-                    frmRefresh.submit();
+                    //TODO
+                    //frmRefresh.submit();
                     iPollCounter = iPollCounter + iPollPeriod;
                 }
 				
@@ -293,8 +286,8 @@ EventLog
             }
 			
             frmLog.ssOleDBGridEventLog.Redraw = true;
-		
-            frmRefresh.submit();
+            //TODO
+            //frmRefresh.submit();
 
             if (frmLog.ssOleDBGridEventLog.Rows > 0)
             {
@@ -1255,7 +1248,7 @@ EventLog
 
 </form>
 
-<FORM action="default_Submit" method=post id=frmGoto name=frmGoto style="visibility:hidden;display:none">
+<FORM action="default_Submit" method=post id=frmGoto name=frmGoto>
     <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 </FORM>
 
@@ -1486,10 +1479,6 @@ EventLog
 
 
 <script type="text/javascript">
-    EventLog_window_onload();
     addActiveXHandlers();
+    EventLog_window_onload();   
 </script>
-
-
-
-</asp:Content>

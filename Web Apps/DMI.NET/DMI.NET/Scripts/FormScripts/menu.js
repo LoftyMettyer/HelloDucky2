@@ -1370,7 +1370,7 @@ function menu_refreshMenu() {
 		menu_setVisibleMenuItem("mnutoolBack", false);
 
 		if (frmLog.txtELLoaded.value == 1) {
-			var frmData = window.parent.frames("dataframe").document.forms("frmData");
+		    frmData = OpenHR.getForm("dataframe", "frmData");
 			var bLastPage = frmData.txtELIsLastPage.value;
 			var bFirstPage = frmData.txtELIsFirstPage.value;
 
@@ -4277,10 +4277,6 @@ function menu_setVisibletoolbarGroup(itemId, fNewSetting) {
 }
 
 function menu_GetItemValue(itemID) {
-
+    //return window.parent.frames("menuframe").document.all.item("txtSysPerm_EVENTLOG_DELETE").value;
     return $("#menuframe #" + itemID).val();
-
-    //return "TODO"; //window.parent.frames("menuframe").document.all.item("txtSysPerm_EVENTLOG_DELETE").value;
-
-
 }

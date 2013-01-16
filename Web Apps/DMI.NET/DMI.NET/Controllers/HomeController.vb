@@ -393,8 +393,9 @@ Namespace Controllers
 			Return View()
 		End Function
 
+
 		<HttpPost()>
-		Function Default_Submit()
+		Function default_Submit()
 
 			' Save the required table/view and screen IDs in session variables.
 			Session("action") = Request.Form("txtAction")
@@ -439,7 +440,6 @@ Namespace Controllers
 
 		<HttpPost()>
 		Function DefSel_Submit(value As FormCollection)
-
 			' Set some session variables used by all the util pages
 			Session("utiltype") = Request.Form("utiltype")
 			Session("utilid") = Request.Form("utilid")
@@ -1232,8 +1232,8 @@ Namespace Controllers
 				Session("ELFirstRecPos") = 1
 			End If
 
-			' Go to the requested page.
-      RedirectToAction("data")
+			' Go to the requested page.			
+			Return RedirectToAction("Data", "Home")
 
 		End Function
 
