@@ -6,16 +6,21 @@
 	var version = "1.0.0",
 	    mbStyle = { vbExclamation: 48, vbQuestion: 32, vbYesNo: 4 },
 	    mbResult = { vbYes: 6, vbNo: 7 },
+
 	    messageBox = function (prompt, buttons, title) {
+	        
+
 	    	switch (buttons) {
 	    		case mbStyle.vbExclamation:
 	    			//48
 	    			alert(prompt);
 	    		case mbStyle.vbQuestion + mbStyle.vbYesNo:
 	    			//36
-	    			return confirm(prompt) ? mbResult.vbYes : mbResult.vbNo;
-	    		default:
-	    			throw Error("OpenHR.messageBox buttons not coded for.");
+	    		    return confirm(prompt) ? mbResult.vbYes : mbResult.vbNo;
+	    		
+	    	    default:
+	    	        alert(prompt);
+	    			//throw Error("OpenHR.messageBox buttons not coded for.");
 	    	}
 	    },
 	    showPopup = function (prompt) {
@@ -65,6 +70,12 @@
 	    getRegistrySetting = function (x, y, z) {
 	    	//TODO
 	    },
+	    saveRegistrySetting = function(w, x, y, z) {
+	        //TODO
+	    },
+	    validateDir = function(x, y) {
+	        //TODO
+	    },
 	    currentWorkPage = function () {
 	        var sCurrentPage;
 	        if (!($("#workframe").css('display') == 'none')) {
@@ -94,6 +105,8 @@
 		PrinterCount: printerCount,
 		PrinterName: printerName,
 		GetRegistrySetting: getRegistrySetting,
+	    SaveRegistrySetting: saveRegistrySetting,
+		ValidateDir: validateDir,
         currentWorkPage: currentWorkPage
 	};
 

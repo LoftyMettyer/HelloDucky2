@@ -565,7 +565,7 @@
         }
 
         if(isNaN(sConvertedFindSize) == true) {
-            OpenHR.MessageBox("Find window block size must be numeric.");
+            OpenHR.messageBox("Find window block size must be numeric.");
             frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtLastFindSize.value;
             displayPage(1);
             frmConfiguration.txtFindSize.focus();
@@ -573,7 +573,7 @@
         }
 
         if (frmConfiguration.txtFindSize.value <= 0 ) {
-            OpenHR.MessageBox("Find window block size must be greater than 0.");
+            OpenHR.messageBox("Find window block size must be greater than 0.");
             frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtLastFindSize.value;
             displayPage(1);
             frmConfiguration.txtFindSize.focus();
@@ -582,7 +582,7 @@
 
         // Find size must be integer.		
         if (sConvertedFindSize.indexOf(".") >= 0 ) {
-            OpenHR.MessageBox("Find window block size must be an integer value.");
+            OpenHR.messageBox("Find window block size must be an integer value.");
             frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtLastFindSize.value;
             displayPage(1);
             frmConfiguration.txtFindSize.focus();
@@ -591,7 +591,7 @@
 
         iValue = new Number(frmConfiguration.txtFindSize.value);
         if (iValue > 100000) {
-            OpenHR.MessageBox("Find window block size cannot be greater than 100000.");
+            OpenHR.messageBox("Find window block size cannot be greater than 100000.");
             frmConfiguration.txtFindSize.value = "100000";
             displayPage(1);
             frmConfiguration.txtFindSize.focus();
@@ -613,14 +613,14 @@
     function cancelClick()
     {
         if (definitionChanged() == false) {
-            window.location.href = "default";
+            window.location.href = "main";
             return;
         }
 
-        answer = OpenHR.MessageBox("You have changed the current configuration. Save changes ?",3);
+        answer = OpenHR.messageBox("You have changed the current configuration. Save changes ?",3);
         if (answer == 7) {
             // No
-            window.location.href = "default";
+            window.location.href = "main";
             return (false);
         }
         if (answer == 6) {
@@ -636,7 +636,7 @@
             return 7; //No to saving the changes, as none have been made.
         }
 
-        answer = OpenHR.MessageBox("You have changed the current definition. Save changes ?",3);
+        answer = OpenHR.messageBox("You have changed the current definition. Save changes ?",3);
         if (answer == 7) {
             // No
             return 7;
@@ -728,7 +728,7 @@
     {
         var answer;
 	
-        answer = OpenHR.MessageBox("Are you sure you want to restore all default settings?",36);
+        answer = OpenHR.messageBox("Are you sure you want to restore all default settings?",36);
         if (answer == 6) {
             setComboValue("PARENT", 3);
             setComboValue("HISTORY", 3);

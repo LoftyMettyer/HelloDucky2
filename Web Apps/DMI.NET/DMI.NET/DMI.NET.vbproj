@@ -18,7 +18,7 @@
     <OptionStrict>Off</OptionStrict>
     <OptionInfer>On</OptionInfer>
     <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
@@ -402,7 +402,7 @@
     <Content Include="Views\Home\Main.aspx" />
     <Content Include="Views\Home\Menu.ascx" />
     <Content Include="HTMLPage1.htm" />
-    <Content Include="Views\Home\pcconfiguration.aspx" />
+    <Content Include="Views\Home\pcconfiguration.ascx" />
     <Content Include="Views\Home\Util_CustomReportChilds.aspx" />
     <Content Include="Views\Home\Util_Def_CustomReports.ascx" />
     <Content Include="Views\Home\Util_EmailSelection.aspx" />
@@ -515,7 +515,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49597</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/DMI.NET</IISUrl>
+          <IISUrl>http://localhost:49597/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

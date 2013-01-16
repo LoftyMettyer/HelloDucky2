@@ -1,10 +1,4 @@
-﻿<%@ Page Title="" Language="VB" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage" %>
-
-<asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-pcconfiguration
-</asp:Content>
-
-<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
 <h2>pcconfiguration</h2>
@@ -15,9 +9,6 @@ pcconfiguration
 
         function pcconfiguration_window_onload() {
             window.parent.document.all.item("workframeset").cols = "*, 0";
-
-
-            debugger;
 
             var frmMenu = OpenHR.getForm("menuframe", "frmMenuInfo");
 
@@ -96,8 +87,6 @@ pcconfiguration
 
     function selectPath(psKey)
     {
-      //  OpenHR.selec
-
 
         if (psKey == "DOCUMENTS") 
         {
@@ -134,16 +123,17 @@ pcconfiguration
 
     function saveConfiguration()
     {
+
+        var frmConfiguration = OpenHR.getForm("workframe", "frmConfiguration");
+
         // Validate the Documents path.
         var sPath = new String(frmConfiguration.txtDocuments.value);
         if (sPath.length > 0) 
         {
             
-            
-
             if (!OpenHR.ValidateDir(sPath))
             {
-                OpenHR.MessageBox("The Documents Path is not valid.");
+                OpenHR.messageBox("The Documents Path is not valid.");
                 return false;
             }
         }
@@ -154,7 +144,7 @@ pcconfiguration
         {
             if (!OpenHR.ValidateDir(sPath))
             {
-                OpenHR.MessageBox("The OLE Path (server) is not valid.");
+                OpenHR.messageBox("The OLE Path (server) is not valid.");
                 return false;
             }
         }
@@ -165,7 +155,7 @@ pcconfiguration
         {
             if (!OpenHR.ValidateDir(sPath))
             {
-                OpenHR.MessageBox("The OLE Path (local) is not valid.");
+                OpenHR.messageBox("The OLE Path (local) is not valid.");
                 return false;
             }
         }
@@ -176,7 +166,7 @@ pcconfiguration
         {
             if (!OpenHR.ValidateDir(sPath))
             {
-                OpenHR.MessageBox("The Photo Path is not valid.");
+                OpenHR.messageBox("The Photo Path is not valid.");
                 return false;
             }
         }
@@ -187,7 +177,7 @@ pcconfiguration
         {
             if (!OpenHR.ValidateDir(sPath))
             {
-                OpenHR.MessageBox("The Image Path is not valid.");
+                OpenHR.messageBox("The Image Path is not valid.");
                 return false;
             }
         }
@@ -197,7 +187,7 @@ pcconfiguration
         if (sPath.length > 0) 
         {
             if (!OpenHR.ValidateDir(sPath))
-            {			OpenHR.MessageBox("The Temporary Menu File Path is not valid.");
+            {			OpenHR.messageBox("The Temporary Menu File Path is not valid.");
                 return false;
             }
 		
@@ -214,7 +204,7 @@ pcconfiguration
             }
             catch(e) 
             {
-                OpenHR.MessageBox("The Temporary Menu File Path cannot be written to.");
+                OpenHR.messageBox("The Temporary Menu File Path cannot be written to.");
                 return false;
             }			
         }
@@ -265,7 +255,8 @@ pcconfiguration
 //            return;
 //        }
 
-        frmConfiguration.submit();
+        OpenHR.submitForm(frmConfiguration);
+
     }
 
     function okClick()
@@ -291,16 +282,19 @@ pcconfiguration
    //         okClick();
    //         return;
    //     }
-	
+
+        debugger;
+
         if (definitionChanged() == false) {
-            window.location.href = "default";
+            window.location.href = "main";
             return;
         }
 
-        answer = OpenHR.MessageBox("You have changed the current configuration. Save changes ?",3);
+
+        answer = OpenHR.messageBox("You have changed the current configuration. Save changes ?",3,"");
         if (answer == 7) {
             // No
-            window.location.href = "default";
+            window.location.href = "main";
             return (false);
         }
         if (answer == 6) {
@@ -316,7 +310,7 @@ pcconfiguration
             return 7; //No to saving the changes, as none have been made.
         }
 
-        answer = OpenHR.MessageBox("You have changed the current definition. Save changes ?",3);
+        answer = OpenHR.messageBox("You have changed the current definition. Save changes ?",3,"");
         if (answer == 7) {
             // No
             return 7;
@@ -679,6 +673,3 @@ pcconfiguration
 <script type="text/javascript">
     pcconfiguration_window_onload();
 </script>
-
-
-</asp:Content>
