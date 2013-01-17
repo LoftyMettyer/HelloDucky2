@@ -100,8 +100,8 @@
 	<div id="refresh" data-framesource="refresh.asp" style="display: none"><%Html.RenderPartial("~/views/home/refresh.ascx")%></div>
 
 	<div id="pollframeset">
-		<div id="poll" data-framesource="poll.asp" style="display: none"><%Html.RenderPartial("~/views/home/poll.ascx")%></div>
-		<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none"><%Html.RenderPartial("~/views/home/pollmessage.ascx")%></div>
+		<div id="poll" data-framesource="poll.asp" style="display: none">poll</div>
+		<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none">pollmessage</div>
 	</div>
 
 	<div id="waitpage" data-framesource="WaitPage.asp" style="display: none">waitpage</div>

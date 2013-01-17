@@ -17,7 +17,7 @@
 <html>
 <head>
     <title></title>
-    <meta http-equiv="refresh" content="1;URL=<%=Url.Action("Login", "Account")%>">
+    <meta http-equiv="refresh" content="<%=Session("TimeoutSecs")%>";URL=<%=Url.Action("Login", "Account")%>">
     <link href="OpenHR.css" rel="stylesheet" type="text/css">
 </head>
 
