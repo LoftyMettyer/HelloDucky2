@@ -409,11 +409,13 @@
     <Content Include="Views\Home\pollmessage.ascx" />
     <Content Include="Views\Home\refresh.ascx" />
     <Content Include="Views\Home\Util_CustomReportChilds.aspx" />
+    <Content Include="Views\Home\Util_Def_Crosstabs.ascx" />
     <Content Include="Views\Home\Util_Def_CustomReports.ascx" />
     <Content Include="Views\Home\Util_EmailSelection.aspx" />
     <Content Include="Views\Home\Util_RecordSelection.aspx" />
     <Content Include="Views\Home\Util_SortOrderSelection.aspx" />
     <Content Include="Views\Home\PasswordChange.ascx" />
+    <Content Include="Views\Home\Util_Validate_Crosstabs.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\grdaccess.ascx" />
     <Content Include="Views\Shared\gotoWork.ascx" />
     <Content Include="Views\Shared\Site.Master" />
