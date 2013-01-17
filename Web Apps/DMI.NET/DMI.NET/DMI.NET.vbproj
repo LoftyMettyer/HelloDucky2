@@ -394,6 +394,7 @@
     <Content Include="Views\Home\default.ascx" />
     <Content Include="Views\Home\DefSel.ascx" />
     <Content Include="Views\Home\DefSelProperties.aspx" />
+    <Content Include="Views\Home\emailSelection.aspx" />
     <Content Include="Views\Home\EventLog.ascx" />
     <Content Include="Views\Home\EventLogDetails.aspx" />
     <Content Include="Views\Home\EventLogPurge.aspx" />
@@ -416,6 +417,7 @@
     <Content Include="Views\Home\Util_SortOrderSelection.aspx" />
     <Content Include="Views\Home\PasswordChange.ascx" />
     <Content Include="Views\Home\Util_Validate_Crosstabs.ascx" />
+    <Content Include="Views\Shared\ctl_ASRIntranetPrintFunctions.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\grdaccess.ascx" />
     <Content Include="Views\Shared\gotoWork.ascx" />
     <Content Include="Views\Shared\Site.Master" />
@@ -497,6 +499,9 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

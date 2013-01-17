@@ -1227,7 +1227,7 @@
 						sAddString = sAddString & ConvertSqlDateToLocale(rsEventLogRecords.Fields("EndTime").Value) & " " & ConvertSqlDateToTime(rsEventLogRecords.Fields("EndTime").Value) & vbTab
 					End If
 						
-					sAddString = sAddString & objUtilities.FormatEventDuration(rsEventLogRecords.Fields("Duration").Value) & vbTab
+                    sAddString = sAddString & objUtilities.FormatEventDuration(CLng(rsEventLogRecords.Fields("Duration").Value)) & vbTab
 					
 					sAddString = sAddString & Replace(rsEventLogRecords.Fields("EventInfo").Value, """", "&quot;")
 					

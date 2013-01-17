@@ -74,9 +74,12 @@
 	        //TODO
 	    },
 	    validateDir = function(x, y) {
+	        //TODO	        
+	    },
+	    SendMail = function(sTo, sSubject, sBody, sCC, sBCC) {
 	        //TODO
 	    },
-	    currentWorkPage = function () {
+    currentWorkPage = function () {
 	        var sCurrentPage;
 	        if (!($("#workframe").css('display') == 'none')) {
 	            //Work frame is in view.
@@ -106,7 +109,8 @@
 		PrinterName: printerName,
 		GetRegistrySetting: getRegistrySetting,
 	    SaveRegistrySetting: saveRegistrySetting,
-		ValidateDir: validateDir,
+	    ValidateDir: validateDir,
+	    sendMail: SendMail,
         currentWorkPage: currentWorkPage
 	};
 

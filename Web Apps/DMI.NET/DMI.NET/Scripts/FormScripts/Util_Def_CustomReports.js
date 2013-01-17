@@ -998,7 +998,7 @@
 		var fIsNotOwner;
 		var fAllAlreadyHidden;
 		var fSilent;
-		
+
 		fSilent = ((frmUseful.txtAction.value.toUpperCase() == "COPY") && (frmUseful.txtLoading.value == "Y"));
 
 		fIsForcedHidden = ((frmSelectionAccess.baseHidden.value == "Y") ||
@@ -2052,7 +2052,9 @@
 		var frmDefinition = document.getElementById("frmDefinition");
 		var frmUseful = document.getElementById("frmUseful");
 		var frmRecordSelection = document.getElementById("frmRecordSelection");
-		
+
+	    debugger;
+
 		if (psTable == 'base') {
 			iTableID = frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].value;
 

@@ -1440,11 +1440,6 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		Function EventLog() As ActionResult
-			Return View()
-		End Function
-
-
 		Function LinksMain() As ActionResult
 			If Session("objButtonInfo") Is Nothing Or Session("objHypertextInfo") Is Nothing Or Session("objDropdownInfo") Is Nothing Then
 				Return RedirectToAction("Login", "Account")
@@ -1463,22 +1458,22 @@ Namespace Controllers
 			Return View(viewModel)
 		End Function
 
-
+    ' TODO
 		Public Sub ShowPhoto(imageName As String)
-			'TODO fetch path from registry
-			Const localImagesPath As String = "\\abs16090\hrprotemp\"
-
-			'TODO fetch imagename from db
-			Dim file = localImagesPath & imageName
-			Dim fStream As New FileStream(file, FileMode.Open, FileAccess.Read)
-			Dim br As New BinaryReader(fStream)
-
-			' Show the number of bytes in the array.
-			br.Close()
-			fStream.Close()
-
-			Response.ContentType = "image/png"
-			Response.WriteFile(file)
+'			'TODO fetch path from registry
+'			Const localImagesPath As String = "\\abs16090\hrprotemp\"
+'
+'			'TODO fetch imagename from db
+'			Dim file = localImagesPath & imageName
+'			Dim fStream As New FileStream(file, FileMode.Open, FileAccess.Read)
+'			Dim br As New BinaryReader(fStream)
+'
+'			' Show the number of bytes in the array.
+'			br.Close()
+'			fStream.Close()
+'
+'			Response.ContentType = "image/png"
+'			Response.WriteFile(file)
 
 		End Sub
 
@@ -1491,7 +1486,32 @@ Namespace Controllers
 			Return View()
 		End Function
 
-	End Class
+
+#Region "Event Log Forms"
+
+    Function emailSelection() As ActionResult
+      Return View()
+    End Function
+
+    Function EventLog() As ActionResult
+      Return View()
+    End Function
+
+    Function EventLogDetails() As ActionResult
+      Return View()
+    End Function
+
+    Function EventLogPurge() As ActionResult
+      Return View()
+    End Function
+
+    Function EventLogSelection() As ActionResult
+      Return View()
+    End Function
+
+#End Region
+
+  End Class
 
 
 End Namespace

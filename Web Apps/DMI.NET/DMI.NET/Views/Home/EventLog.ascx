@@ -129,7 +129,7 @@
         var sErrMsg = frmUseful.txtErrorDescription.value;
         if (sErrMsg.length > 0) {
             fOK = false;
-            OpenHR.MessageBox(sErrMsg);
+            OpenHR.messageBox(sErrMsg);
             window.parent.location.replace("login");
         }
 	
@@ -314,7 +314,7 @@
 	
         if (frmPurge.txtShowPurgeMSG.value == 1)
         {
-            OpenHR.MessageBox("Purge completed.",64,"Event Log");
+            OpenHR.messageBox("Purge completed.",64,"Event Log");
             frmPurge.txtShowPurgeMSG.value = 0;
         }
     }
@@ -455,7 +455,7 @@
     {
         var sURL;
 		
-        sURL = "eventLogPurge" +
+        sURL = "EventLogPurge" +
 			"?txtEventID=" + frmDetails.txtEventID.value +
 			"&txtEventName=" + escape(frmDetails.txtEventName.value) + 
 			"&txtEventMode=" + escape(frmDetails.txtEventMode.value) +
@@ -473,6 +473,7 @@
 			"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
 
         openDialog(sURL, 500, 180);
+
     }
 
     function emailEvent()
@@ -621,8 +622,8 @@
         window.location.href="default";
     }
 
-    function openDialog(pDestination, pWidth, pHeight)
-    {
+    function openDialog(pDestination, pWidth, pHeight) {
+
         dlgwinprops = "center:yes;" +
             "dialogHeight:" + pHeight + "px;" +
             "dialogWidth:" + pWidth + "px;" +
@@ -1366,8 +1367,9 @@
 
 <script type="text/javascript">
 
-    function addActiveXHandlers()
-    {
+    function addActiveXHandlers() {
+        debugger;
+
         OpenHR.addActiveXHandler("ssOleDBGridEventLog", "DblClick", ssOleDBGridEventLog_dblclick);
         OpenHR.addActiveXHandler("ssOleDBGridEventLog", "rowcolchange", ssOleDBGridEventLog_rowcolchange);
         OpenHR.addActiveXHandler("ssOleDBGridEventLog", "Click", ssOleDBGridEventLog_click);
@@ -1479,6 +1481,6 @@
 
 
 <script type="text/javascript">
-    addActiveXHandlers();
+  //  addActiveXHandlers();
     EventLog_window_onload();   
 </script>
