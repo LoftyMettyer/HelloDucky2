@@ -5,7 +5,6 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 <script type="text/javascript">
-<!--
 	/* Validate the password change, and change the user's password
 	on the SQL database if everything is okay. */
 	function SubmitPasswordDetails() {
@@ -51,12 +50,16 @@
 			frmPasswordChangeForm.txtPassword1.focus();
 		}
 
-		/* If everything is okay, submit the password change. */
+	    /* If everything is okay, submit the password change. */
 		if (fChangeOK) {
-			frmPasswordChangeForm.submit();
+		    OpenHR.submitForm(frmPasswordChangeForm);
 		}
+
+        /* Return to the default page. */
+        function cancelClick() {
+            window.location.href = "main";
+        }
 	}
--->
 </script>
 
 <div <%=session("BodyTag")%>>
