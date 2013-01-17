@@ -32,7 +32,8 @@
 
 <script type="text/javascript">
 
-	$(function () {
+    $(function () {               
+
 		// ----  Apply jQuery functionality to the slide out CONTEXT MENU  ----
 		var ContextMenuTab = {
 			speed: 300,
@@ -59,7 +60,13 @@
 			}
 		};
 		ContextMenuTab.init();
-	});
+    });
+
+    $(document).ready(function() {
+        $("#fixedlinksframe").show();
+    });
+
+
 </script>
 
 
@@ -90,11 +97,11 @@
 		<div id="optiondata" data-framesource="optionData.asp" style="display: none">optiondata</div>
 	</div>
 
-	<div id="refresh" data-framesource="refresh.asp" style="display: none">refresh</div>
+	<div id="refresh" data-framesource="refresh.asp" style="display: none"><%Html.RenderPartial("~/views/home/refresh.ascx")%></div>
 
 	<div id="pollframeset">
-		<div id="poll" data-framesource="poll.asp" style="display: none">poll</div>
-		<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none">poll</div>
+		<div id="poll" data-framesource="poll.asp" style="display: none"><%Html.RenderPartial("~/views/home/poll.ascx")%></div>
+		<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none"><%Html.RenderPartial("~/views/home/pollmessage.ascx")%></div>
 	</div>
 
 	<div id="waitpage" data-framesource="WaitPage.asp" style="display: none">waitpage</div>

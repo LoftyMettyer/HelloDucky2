@@ -37,6 +37,9 @@
 		}
 
 		$(document).ready(function () {
+
+		    $("#fixedlinksframe").show();
+
 			if (window.currentLayout == "tiles") {
 				setupTiles();
 			}

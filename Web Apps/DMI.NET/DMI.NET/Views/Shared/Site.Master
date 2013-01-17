@@ -125,7 +125,7 @@
 <body>
 	
 <header>
-	<div id="fixedlinksframe"><% Html.RenderPartial("~/views/home/fixedlinks.ascx")%></div>
+	<div id="fixedlinksframe" style="display: none;"><% Html.RenderPartial("~/views/home/fixedlinks.ascx")%></div>
 </header>
 
 
