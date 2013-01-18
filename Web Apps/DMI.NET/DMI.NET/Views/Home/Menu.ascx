@@ -284,7 +284,7 @@
 		prm4 = cmdMisc.CreateParameter("param4", 200, 2, 8000) '200=varchar, 2=output, 8000=size
 		cmdMisc.Parameters.Append(prm4)
 		
-		' Err = 0
+        Err.Clear()
 		cmdMisc.Execute()
 		
 		Response.Write("<INPUT TYPE=Hidden NAME=txtCFG_PCL ID=txtCFG_PCL VALUE='" & cmdMisc.Parameters("param1").value & "'>" & vbCrLf)
@@ -313,7 +313,8 @@
 		cmdSystemPermissions.ActiveConnection = Session("databaseConnection")
 		cmdSystemPermissions.CommandTimeout = 300
 
-		' Err = 0
+        Err.Clear()
+        
 		Dim rstSystemPermissions = cmdSystemPermissions.Execute
 		
 		If (Err.Number <> 0) Then
@@ -388,7 +389,7 @@
 		Dim prmEnabled = cmdAbsenceModule.CreateParameter("enabled", 11, 2) ' 11=bit, 2=output
 		cmdAbsenceModule.Parameters.Append(prmEnabled)
 
-		' Err = 0
+        Err.Clear()
 		cmdAbsenceModule.Execute()
 
 		iAbsenceEnabled = CInt(cmdAbsenceModule.Parameters("enabled").Value)

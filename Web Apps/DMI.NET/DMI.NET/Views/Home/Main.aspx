@@ -64,7 +64,27 @@
 
     $(document).ready(function() {
         $("#fixedlinksframe").show();
+
+        //Load Poll.asp, then reload every 30 seconds to keep
+        //session alive, and check for server messages.
+        loadPartialView(); // first time
+        // re-call the function each 30 seconds
+        window.setInterval("loadPartialView()", 30000);
+
     });
+
+    function loadPartialView() {
+        $.ajax({
+            url: "<%:Url.Action("poll", "home")%>",
+ 		        type: "POST",
+ 		        success: function (html) {
+ 		            $("#poll").html(html);
+ 		        },
+ 		        error: function (req, status, errorObj) {
+ 		            //alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
+ 		        }
+ 		    });
+    }
 
 
 </script>
@@ -100,8 +120,8 @@
 	<div id="refresh" data-framesource="refresh.asp" style="display: none"><%Html.RenderPartial("~/views/home/refresh.ascx")%></div>
 
 	<div id="pollframeset">
-		<div id="poll" data-framesource="poll.asp" style="display: none">poll</div>
-		<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none">pollmessage</div>
+		<div id="poll" data-framesource="poll.asp" style="display: none"></div>
+		<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none"><%Html.RenderPartial("~/views/home/pollmessage.ascx")%></div>
 	</div>
 
 	<div id="waitpage" data-framesource="WaitPage.asp" style="display: none">waitpage</div>

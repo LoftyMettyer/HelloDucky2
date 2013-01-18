@@ -1,9 +1,9 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
     <meta http-equiv="refresh" content="30;URL=poll">
-    <link href="OpenHR.css" rel="stylesheet" type="text/css">
+    <link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css">
 
     <script type="text/javascript">
-        function poll_window_onload() {            
+        function poll_window_onload() {
             var sMessage = new String("");
             var controlCollection = frmMessages.elements;
             if (controlCollection != null) {
@@ -39,7 +39,13 @@
             If (Err.Number = 0) Then
                 Dim iloop = 1
                 Do While Not rstMessages.EOF
-                    Response.Write("<INPUT type='hidden' id=txtMessage_" & iLoop & " name=txtMessage_" & iLoop & " value=""" & Replace(rstMessages.Fields(0).Value, """", "&quot;") & """>" & vbCrLf)
+                    ' Response.Write("<INPUT type='hidden' id=txtMessage_" & iLoop & " name=txtMessage_" & iLoop & " value=""" & Replace(rstMessages.Fields(0).Value, """", "&quot;") & """>" & vbCrLf)
+%>		
+	<INPUT type='hidden' 
+		id=txtMessage_<%=iLoop%> 
+		name=txtMessage_<%=iLoop%> 
+		value="<%=replace(rstMessages.Fields(0).Value, """", "&quot;")%>">
+<%                    
                     rstMessages.MoveNext()
 	
                     iloop = iloop + 1

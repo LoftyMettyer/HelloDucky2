@@ -60,6 +60,13 @@
 				});
 			}
 
+		    //Load Poll.asp, then reload every 30 seconds to keep
+		    //session alive, and check for server messages.
+			loadPartialView(); // first time
+		    // re-call the function each 30 seconds
+			window.setInterval("loadPartialView()", 30000);
+
+
 			$(".DashContent").fadeIn("slow");
 
 
@@ -151,6 +158,29 @@
 
 				$(".DashContent").fadeIn("slow");
 			});
+		}
+
+		function loadPartialView() {
+//		    $.ajax({
+//		        url: "<%:Url.Action("poll", "home")%>",
+//		        type: "GET", // <-- make a async request by GET
+//		        dataType: 'html', // <-- to expect an html response
+//		        success: function(result) {
+//		            $('#poll').html(result);
+//		        }
+//		    });
+		    
+		    $.ajax({
+		        url: "<%:Url.Action("poll", "home")%>",
+		        type: "POST",
+		        success: function (html) {
+		            $("#poll").html(html);
+		        },
+		        error: function (req, status, errorObj) {
+		            //alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
+		        }
+		    });
+
 		}
 
 	</script>
@@ -413,4 +443,10 @@
 
 		</div>
 	</div>
+    
+	<div id="pollframeset">
+		<div id="poll" data-framesource="poll.asp" style="display: none"></div>
+		<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none"><%Html.RenderPartial("~/views/home/pollmessage.ascx")%></div>
+	</div>    
+
 </asp:Content>

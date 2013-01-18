@@ -3,8 +3,7 @@
 <html>
 <head>
     <title></title>
-    <meta name="GENERATOR" content="Microsoft Visual Studio 6.0">
-    <link rel="stylesheet" type="text/css" href="OpenHR.css">
+    <link rel="stylesheet" type="text/css" href="<%: Url.Content("~/Content/OpenHR.css") %>">
 
     <script type="text/javascript">
 
