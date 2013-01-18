@@ -408,9 +408,9 @@ Else
 			            <td style="width: 10px"></td>
 			            <td style="width: 200px;">
 								<input id="txtUserName" autocomplete="off" autocorrect="off" name="txtUserName" class="text" style="height: 22px;width: 100%; padding: 0px;" onkeypress="CheckKeyPressed(event)"/>
-				            
+				        <input type="hidden" id="txtUserNameCopy" name="txtUserNameCopy" />    
 			            </td>
-							<input type="hidden" id="txtUserNameCopy" name="txtUserNameCopy" >
+			            
         		    </tr>
     			    <tr class="logintext" style="display: block">
 	    		        <td style="font-weight:bold ;width: 100px;">Password :</td>
@@ -478,41 +478,43 @@ Else
 	    <tr height=10>
 	        <td colSpan=5></td>
 	    </tr>
-	
-	    <tr height=10>
-		    <TD width=15></TD>
-		    <TD colSpan=3>
-			    <table border="0" CELLSPACING="0" CELLPADDING="0" align="center">
-			        <td align=center>
-			            <input id="submitLoginDetails" name="submitLoginDetails" type="button" class="btn loginbuttontext" value="OK" style="WIDTH: 90px"			                
-			                onclick="SubmitLoginDetails()"
-			                onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-			                onmouseout="try{button_onMouseOut(this);}catch(e){}"
-			                onfocus="try{button_onFocus(this);}catch(e){}"
-			                onblur="try{button_onBlur(this);}catch(e){}" />
-			        </td>
-			        <td width = 10></td>
-			        <td align=center>
-			            <input id="cancel" name="cancel" type="button" value="Cancel" class="btn loginbuttontext" style="WIDTH: 90px"  
-			                onclick="CancelLogin()"
-			                onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-			                onmouseout="try{button_onMouseOut(this);}catch(e){}"
-			                onfocus="try{button_onFocus(this);}catch(e){}"
-			                onblur="try{button_onBlur(this);}catch(e){}" />
-			        </td>
-			        <td width = 10></td>
-			        <td align=center>
-			            <input id="details" name="details" type="button" value="Details" class="btn loginbuttontext" style="WIDTH: 90px" 
-			                onclick="toggleDetails()"
-			                onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-			                onmouseout="try{button_onMouseOut(this);}catch(e){}"
-			                onfocus="try{button_onFocus(this);}catch(e){}"
-			                onblur="try{button_onBlur(this);}catch(e){}" />
-			        </td>
-		        </table>
-		    </TD>
-		    <TD width=15></TD>
-	    </tr>
+
+    <tr height="10">
+        <td width="15"></td>
+        <td colspan="3">
+            <table border="0" cellspacing="0" cellpadding="0" align="center">
+                <tr>
+                    <td align="center">
+                        <input id="submitLoginDetails" name="submitLoginDetails" type="button" class="btn loginbuttontext" value="OK" style="WIDTH: 90px"
+                            onclick="SubmitLoginDetails()"
+                            onmouseover="try{button_onMouseOver(this);}catch(e){}"
+                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
+                            onfocus="try{button_onFocus(this);}catch(e){}"
+                            onblur="try{button_onBlur(this);}catch(e){}" />
+                    </td>
+                    <td width="10"></td>
+                    <td align="center">
+                        <input id="cancel" name="cancel" type="button" value="Cancel" class="btn loginbuttontext" style="WIDTH: 90px"
+                            onclick="CancelLogin()"
+                            onmouseover="try{button_onMouseOver(this);}catch(e){}"
+                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
+                            onfocus="try{button_onFocus(this);}catch(e){}"
+                            onblur="try{button_onBlur(this);}catch(e){}" />
+                    </td>
+                    <td width="10"></td>
+                    <td align="center">
+                        <input id="details" name="details" type="button" value="Details" class="btn loginbuttontext" style="WIDTH: 90px"
+                            onclick="toggleDetails()"
+                            onmouseover="try{button_onMouseOver(this);}catch(e){}"
+                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
+                            onfocus="try{button_onFocus(this);}catch(e){}"
+                            onblur="try{button_onBlur(this);}catch(e){}" />
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td width="15"></td>
+    </tr>
 <%
 End If
 End If
@@ -529,7 +531,7 @@ End If
 	    </tr>
     </table>
 
-	<INPUT type="hidden" id=txtSetDetails name=txtSetDetails value=<%=Session("showLoginDetails")%>>
+	<INPUT type="hidden" id=txtSetDetails name=txtSetDetails value="<%=Session("showLoginDetails")%>">
    <INPUT type="hidden" id=txtLocaleDateFormat name=txtLocaleDateFormat>
    <INPUT type="hidden" id=txtLocaleDateSeparator name=txtLocaleDateSeparator>
    <INPUT type="hidden" id=txtLocaleDecimalSeparator name=txtLocaleDecimalSeparator>
