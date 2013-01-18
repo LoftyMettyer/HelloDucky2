@@ -3,14 +3,17 @@
 
     <script type="text/javascript">
         function PasswordChange_window_onload() {
-            fOK = true;
+            
+            $("#workframe").attr("data-framesource", "PASSWORDCHANGE");
+
+            var fOK = true;
 
             var sErrMsg = document.getElementById("txtErrorDescription").value;
 
             if (sErrMsg.length > 0) {
                 fOK = false;
                 //window.parent.frames("menuframe").OpenHR.messageBox(sErrMsg);
-                openHR.messageBox("menuframe", sErrMsg);
+                OpenHR.messageBox("menuframe", sErrMsg);
 
                 window.parent.location.replace("login");
             }
@@ -34,6 +37,8 @@
             var fChangeOK;
             var sErrorMessage;
 
+            var frmPasswordChangeForm = OpenHR.getForm("workframe", "frmPasswordChangeForm");
+
             fChangeOK = true;
             sCurrentPassword = frmPasswordChangeForm.txtCurrentPassword.value.toLowerCase();
             sNewPassword1 = frmPasswordChangeForm.txtPassword1.value.toLowerCase();
@@ -42,7 +47,7 @@
             /* Check that the two new passwords are the same. */
             if (sNewPassword1 != sNewPassword2) {
                 //window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("The confirmation password is not correct.");
-                openHR.messageBox("menuframe", "The confirmation password is not correct.");
+                OpenHR.messageBox("menuframe", "The confirmation password is not correct.");
                 fChangeOK = false;
                 frmPasswordChangeForm.txtPassword2.value = "";
                 frmPasswordChangeForm.txtPassword2.focus();
@@ -50,7 +55,7 @@
 
             /* Check that the new password is different to the old one. */
             if (sNewPassword1 == sCurrentPassword) {
-                openHR.MessageBox("menuframe", "The new password cannot be the same as the old one.");
+                OpenHR.MessageBox("menuframe", "The new password cannot be the same as the old one.");
                 fChangeOK = false;
                 frmPasswordChangeForm.txtPassword1.value = "";
                 frmPasswordChangeForm.txtPassword2.value = "";
@@ -62,7 +67,7 @@
                 sErrorMessage = "The password must be at least ";
                 sErrorMessage = sErrorMessage.concat(txtMinPasswordLength.value);
                 sErrorMessage = sErrorMessage.concat(" characters long.");
-                openHR.MessageBox(sErrorMessage);
+                OpenHR.MessageBox(sErrorMessage);
                 fChangeOK = false;
                 frmPasswordChangeForm.txtPassword1.value = "";
                 frmPasswordChangeForm.txtPassword2.value = "";
@@ -70,7 +75,7 @@
             }
 
             /* If everything is okay, submit the password change. */
-            if (fChangeOK) {
+            if (fChangeOK) {                
                 OpenHR.submitForm(frmPasswordChangeForm);
             }
         }
