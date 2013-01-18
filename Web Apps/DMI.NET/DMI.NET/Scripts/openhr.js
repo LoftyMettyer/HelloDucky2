@@ -41,8 +41,8 @@
 	    		data: data,
 	    		async: false,
 	    		success: function (html) {
-	    			$frame.html(html);
-	    			$("#workframeset").show();
+	    		    $("#workframeset").show();
+	    		    $frame.html(html);
 	    		},
 	    		error: function (req, status, errorObj) {
 	    			alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
