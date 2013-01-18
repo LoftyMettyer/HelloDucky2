@@ -16,7 +16,7 @@
                 if (sMessage.length > 0) {
                     var frmPollMsg = OpenHR.getForm("pollmessageframe", "frmSetMessage");
                     frmPollMsg.txtMessage.value = sMessage;
-                    frmPollMsg.refreshMessage();
+                    pollmessage_refreshMessage();
                 }
             }
         }
