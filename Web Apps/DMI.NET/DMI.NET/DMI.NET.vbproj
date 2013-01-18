@@ -414,9 +414,11 @@
     <Content Include="Views\Home\Util_Def_CustomReports.ascx" />
     <Content Include="Views\Home\Util_EmailSelection.aspx" />
     <Content Include="Views\Home\Util_RecordSelection.aspx" />
+    <Content Include="Views\Home\util_run.aspx" />
     <Content Include="Views\Home\util_run_customreports.aspx" />
     <Content Include="Views\Home\util_run_customreportsData.aspx" />
     <Content Include="Views\Home\util_run_customreportsMain.aspx" />
+    <Content Include="Views\Home\util_run_promptedvalues.aspx" />
     <Content Include="Views\Home\Util_SortOrderSelection.aspx" />
     <Content Include="Views\Home\PasswordChange.ascx" />
     <Content Include="Views\Home\Util_Validate_Crosstabs.ascx" />

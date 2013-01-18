@@ -33,8 +33,11 @@
 	    	var $form = $(form),
 	    	    $frame = $form.closest("div[data-framesource]").first(),
 	    	    url = $form.attr("action"),
+	    	    target = $form.attr("target"),
 	    	    data = $form.serialize();
 	        
+	 //       $("#post_form").attr("target", target);
+
 	    	$.ajax({
 	    		url: url,
 	    		type: "POST",
@@ -42,7 +45,7 @@
 	    		async: false,
 	    		success: function (html) {
 	    		    $("#workframeset").show();
-	    		    $frame.html(html);
+	    			$frame.html(html);
 	    		},
 	    		error: function (req, status, errorObj) {
 	    			alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
@@ -59,8 +62,12 @@
 	    disableMenu = function () {
 	    	//TODO
 	    },
+	    locateDateFormat = "DD/MM/YYYY",
 	    localeDecimalSeparator = ".",
 	    localeThousandSeparator = ",",
+	    convertSqlDateToLocale = function(z) {
+	        // TODO
+	    },
 	    printerCount = function () {
 	    	//TODO
 	    },
@@ -102,9 +109,10 @@
 		addActiveXHandler: addActiveXHandler,
 		refreshMenu: refreshMenu,
 		disableMenu: disableMenu,
-
+	    LocaleDateFormat: locateDateFormat,
 		LocaleDecimalSeparator: localeDecimalSeparator,
 		LocaleThousandSeparator: localeThousandSeparator,
+		ConvertSQLDateToLocale : convertSqlDateToLocale,
 		PrinterCount: printerCount,
 		PrinterName: printerName,
 		GetRegistrySetting: getRegistrySetting,

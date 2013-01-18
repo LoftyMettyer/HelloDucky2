@@ -468,7 +468,8 @@
 				OpenHR.submitForm(frmWorkflow);
 			}
 			else {
-				var frmPrompt = document.getElementById('frmPrompt');
+
+			    var frmPrompt = OpenHR.getForm("", "frmPrompt"); // document.getElementById('frmPrompt');
 				frmPrompt.utiltype.value = frmDefSel.utiltype.value;
 				frmPrompt.utilid.value = frmDefSel.utilid.value;
 				frmPrompt.utilname.value = frmDefSel.utilname.value;
@@ -477,7 +478,9 @@
 
 				frmPrompt.target = sUtilId;
 				NewWindow('', sUtilId, '500', '200', 'yes');
-				OpenHR.submitForm(frmPrompt);
+				//frmPrompt.submitForm();
+
+			    OpenHR.submitForm(frmPrompt);
 			}
 			return false;
 		}
