@@ -1486,6 +1486,9 @@ Namespace Controllers
       Return View()
     End Function
 
+		Function Poll() As ActionResult
+			Return PartialView()
+		End Function
 
 #Region "Event Log Forms"
 
