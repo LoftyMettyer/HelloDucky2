@@ -933,10 +933,10 @@ Namespace Controllers
 			sBGImage = Url.Content("~/Pictures/" & sBGImage)
 
 			If (Len(sTempPath) > 0) And (Len(sBGImage) > 0) Then
-				Session("BodyTag") = "bgcolor=" & Session("ConvertedDesktopColour") & " STYLE=""background-image:url('" & sBGImage &
+				Session("BodyTag") = "bgcolor=" & Session("ConvertedDesktopColour") & " STYLE=""height: 100%; background-image:url('" & sBGImage &
 				 "'); background-repeat:" & strRepeat & "; background-position:" & strBGPos & """" & vbCrLf
 			Else
-				Session("BodyTag") = "bgcolor=" & Session("ConvertedDesktopColour") & vbCrLf
+				Session("BodyTag") = "height: 100%; bgcolor=" & Session("ConvertedDesktopColour") & vbCrLf
 			End If
 			Session("BodyColour") = "bgcolor=" & Session("ConvertedDesktopColour") & vbCrLf
 

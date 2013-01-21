@@ -65,13 +65,6 @@
 	' Enable response buffering as we may redirect the response further down this page.
 	Response.Buffer = True
 %>
-<html>
-<head>
-	<meta name="GENERATOR" content="Microsoft Visual Studio 6.0">
-	<link rel="stylesheet" type="text/css" href="<%:Url.Content("~/Content/OpenHR.css") %>">
-	<title>OpenHR Intranet</title>
-	
-
 	<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" id="Microsoft_Licensed_Class_Manager_1_0"
 		viewastext>
 		<param name="LPKPath" value="lpks/main.lpk">
@@ -381,8 +374,7 @@
 		}
 	-->
 	</script>
-</head>
-<body <%=session("BodyTag")%>>
+<div <%=session("BodyTag")%>>
 	<form action="" method="POST" id="frmFindForm" name="frmFindForm">
 	<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%"
 		height="100%">
@@ -436,7 +428,7 @@
 					<tr id="findGridRow">
 						<td>
 						</td>
-						<td width="100%" colspan="3" height="500">
+						<td width="100%" colspan="3">
 							<%
 								Dim sThousandColumns As String
 								Dim sBlankIfZeroColumns As String
@@ -1224,5 +1216,4 @@ Response.Write("				<INPUT type='hidden' id=txtErrorDescription name=txtErrorDes
 	
 	<script type="text/javascript"> find_window_onload();</script>
 
-</body>
-</html>
+</div>
