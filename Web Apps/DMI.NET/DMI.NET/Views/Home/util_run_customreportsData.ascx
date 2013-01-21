@@ -1,14 +1,10 @@
-﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-
-<!DOCTYPE html>
-
-<html>
-<head runat="server">
-    <title>util_run_customreportsData</title>
 
     <script type="text/javascript">
         function reportdata_window_onload() {
+
+            debugger;
 
         <%
         If Session("CR_Mode") = "" Then
@@ -73,9 +69,6 @@
         Response.Write("<INPUT id=txtEmailGroupAddr name=txtEmailGroupAddr class=""text"" value="""">" & vbCrLf)
     End If
 %>
-</head>
-<body>
-    
     
     <script type="text/javascript">
         function ExportData(strMode) {
@@ -93,6 +86,3 @@
     <script type="text/javascript">
         reportdata_window_onload();
     </script>
-
-</body>
-</html>

@@ -1511,6 +1511,35 @@ Namespace Controllers
 
 #End Region
 
+#Region "Running Reports"
+
+    Function util_run_promptedvalues() As ActionResult
+      Return View()
+    End Function
+
+    Function util_run() As ActionResult
+      Return View()
+    End Function
+
+    Function util_run_customreports() As ActionResult
+      Return View()
+    End Function
+
+    Function util_run_customreportsData() As ActionResult
+      Return View()
+    End Function
+
+    Function util_run_customreportsMain() As ActionResult
+      Return View()
+    End Function
+
+    Function progress() As ActionResult
+      Return View()
+    End Function
+
+
+#End Region
+
   End Class
 
 

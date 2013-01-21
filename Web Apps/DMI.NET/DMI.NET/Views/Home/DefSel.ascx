@@ -469,18 +469,22 @@
 			}
 			else {
 
-			    var frmPrompt = OpenHR.getForm("", "frmPrompt"); // document.getElementById('frmPrompt');
+//			    var frmPrompt = document.getElementById('frmPrompt');
+			    var frmPrompt = OpenHR.getForm("workframe", "frmPrompt");
+			    
 				frmPrompt.utiltype.value = frmDefSel.utiltype.value;
 				frmPrompt.utilid.value = frmDefSel.utilid.value;
 				frmPrompt.utilname.value = frmDefSel.utilname.value;
 				frmPrompt.action.value = frmDefSel.action.value;
 				sUtilId = new String(frmDefSel.utilid.value);
 
-				frmPrompt.target = sUtilId;
-				NewWindow('', sUtilId, '500', '200', 'yes');
+			//	frmPrompt.target = sUtilId;
+			//	NewWindow('', sUtilId, '500', '200', 'yes');
 				//frmPrompt.submitForm();
-
-			    OpenHR.submitForm(frmPrompt);
+				debugger;
+			    
+				OpenHR.submitForm(frmPrompt);
+				
 			}
 			return false;
 		}
@@ -636,23 +640,23 @@
 			}
 
 			var answer = 0;
-			
-			if (frmDefSel.utiltype.value == 1) 
-			{
-				answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Cross Tab ?",36,"Confirmation...");
-			}
-			if (frmDefSel.utiltype.value == 2) 
-			{
-				answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Custom Report ?",36,"Confirmation...");
-			}
-			if (frmDefSel.utiltype.value == 9) 
-			{
-				answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Mail Merge ?",36,"Confirmation...");
-			}
-			if (frmDefSel.utiltype.value == 17) 
-			{
-				answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Calendar Report ?",36,"Confirmation...");
-			}
+
+		    if (frmDefSel.utiltype.value == 1) {
+		        answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Cross Tab ?", 36, "Confirmation...");
+		    }
+
+		    if (frmDefSel.utiltype.value == 2) 
+		    {
+		        answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Custom Report ?",36,"Confirmation...");
+		    }
+		    if (frmDefSel.utiltype.value == 9) 
+		    {
+		        answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Mail Merge ?",36,"Confirmation...");
+		    }
+		    if (frmDefSel.utiltype.value == 17) 
+		    {
+		        answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Calendar Report ?",36,"Confirmation...");
+		    }
 			if (frmDefSel.utiltype.value == 25) 
 			{
 				answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Workflow ?",36,"Confirmation...");

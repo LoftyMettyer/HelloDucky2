@@ -1,7 +1,5 @@
-﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-
-<!DOCTYPE html>
 
 <% 
     Dim bStandardReportPrompt As Boolean
@@ -26,47 +24,32 @@
 		session("action") = Request.Form("action")
 	end if
 %>
-
-<html>
-<head runat="server">
         
-    <link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css"/>
-    <script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>    
-	<script src="<%: Url.Content("~/Scripts/jquery-ui-1.9.1.custom.min.js") %>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/Scripts/jquery.cookie.js") %>" type="text/javascript"></script>	 	
-    <script src="<%: Url.Content("~/Scripts/menu.js")%>" type="text/javascript"></script >
-	<script src="<%: Url.Content("~/Scripts/jquery.ui.touch-punch.min.js") %>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/Scripts/jsTree/jquery.jstree.js") %>" type="text/javascript"></script>
-	<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>	
-
-    <title>OpenHR Intranet</title>
-        
-
-    
-
-
-</head>
-    
-    <OBJECT 
-	    classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" 
-	    id="Microsoft_Licensed_Class_Manager_1_0" 
-	    VIEWASTEXT>
-	    <PARAM NAME="LPKPath" VALUE="lpks/main.lpk">
-    </OBJECT>
+<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css"/>
+<script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>    
+<script src="<%: Url.Content("~/Scripts/jquery-ui-1.9.1.custom.min.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/jquery.cookie.js") %>" type="text/javascript"></script>	 	
+<script src="<%: Url.Content("~/Scripts/menu.js")%>" type="text/javascript"></script >
+<script src="<%: Url.Content("~/Scripts/jquery.ui.touch-punch.min.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/jsTree/jquery.jstree.js") %>" type="text/javascript"></script>
+<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>	
+   
+<OBJECT 
+	classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" 
+	id="Microsoft_Licensed_Class_Manager_1_0" 
+	VIEWASTEXT>
+	<PARAM NAME="LPKPath" VALUE="lpks/main.lpk">
+</OBJECT>
     
     
-    
-
-<body>
-    
-    
-
 <script type="text/javascript">
 
     function promptedvalues_window_onload() {
+
+        $("#workframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
 
         frmPromptedValues.txtLocaleDateFormat.value = OpenHR.LocaleDateFormat;
         frmPromptedValues.txtLocaleDecimalSeparator.value = OpenHR.LocaleDecimalSeparator;
@@ -256,14 +239,14 @@ end if
 
             ' Character Prompted Value
             If rstPromptedValue.fields("ValueType").value = 1 Then
-                Response.Write("        <input type=text class=""text"" id=prompt_1_" & rstPromptedValue.fields("componentID").value & " name=prompt_1_" & rstPromptedValue.fields("componentID").value & " value=""" & Replace(rstPromptedValue.fields("valuecharacter"), """", "&quot;") & """ maxlength=" & rstPromptedValue.fields("promptsize") & " style=""WIDTH: 100%"">" & vbCrLf)
-                Response.Write("        <input type=hidden id=promptMask_" & rstPromptedValue.fields("componentID").value & " name=promptMask_" & rstPromptedValue.fields("componentID").value & " value=""" & Replace(rstPromptedValue.fields("promptMask"), """", "&quot;") & """>" & vbCrLf)
+                Response.Write("        <input type=text class=""text"" id=prompt_1_" & rstPromptedValue.fields("componentID").value & " name=prompt_1_" & rstPromptedValue.fields("componentID").value & " value=""" & Replace(rstPromptedValue.fields("valuecharacter").value, """", "&quot;") & """ maxlength=" & rstPromptedValue.fields("promptsize").value & " style=""WIDTH: 100%"">" & vbCrLf)
+                Response.Write("        <input type=hidden id=promptMask_" & rstPromptedValue.fields("componentID").value & " name=promptMask_" & rstPromptedValue.fields("componentID").value & " value=""" & Replace(rstPromptedValue.fields("promptMask").value, """", "&quot;") & """>" & vbCrLf)
 
                 ' Numeric Prompted Value
             ElseIf rstPromptedValue.fields("ValueType").value = 2 Then
-                Response.Write("        <input type=text class=""text"" id=prompt_2_" & rstPromptedValue.fields("componentID").value & " name=prompt_2_" & rstPromptedValue.fields("componentID").value & " value=""" & Replace(rstPromptedValue.fields("valuenumeric"), ".", Session("LocaleDecimalSeparator")) & """ style=""WIDTH: 100%"">" & vbCrLf)
-                Response.Write("        <input type=hidden id=promptSize_" & rstPromptedValue.fields("componentID").value & " name=promptSize" & rstPromptedValue.fields("componentID").value & " value=""" & rstPromptedValue.fields("promptSize") & """>" & vbCrLf)
-                Response.Write("        <input type=hidden id=promptDecs_" & rstPromptedValue.fields("componentID").value & " name=promptDecs" & rstPromptedValue.fields("componentID").value & " value=""" & rstPromptedValue.fields("promptDecimals") & """>" & vbCrLf)
+                Response.Write("        <input type=text class=""text"" id=prompt_2_" & rstPromptedValue.fields("componentID").value & " name=prompt_2_" & rstPromptedValue.fields("componentID").value & " value=""" & Replace(rstPromptedValue.fields("valuenumeric").value, ".", Session("LocaleDecimalSeparator")) & """ style=""WIDTH: 100%"">" & vbCrLf)
+                Response.Write("        <input type=hidden id=promptSize_" & rstPromptedValue.fields("componentID").value & " name=promptSize" & rstPromptedValue.fields("componentID").value & " value=""" & rstPromptedValue.fields("promptSize").value & """>" & vbCrLf)
+                Response.Write("        <input type=hidden id=promptDecs_" & rstPromptedValue.fields("componentID").value & " name=promptDecs" & rstPromptedValue.fields("componentID").value & " value=""" & rstPromptedValue.fields("promptDecimals").value & """>" & vbCrLf)
 
                 ' Logic Prompted Value
             ElseIf rstPromptedValue.fields("ValueType").value = 3 Then
@@ -505,7 +488,6 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
         <input type="hidden" id="lastPrompt" name="lastPrompt" value="">
         <input type="hidden" id="StandardReportPrompt" name="StandardReportPrompt" value="<%=bStandardReportPrompt%>">
         <input type="hidden" id="RunInOptionFrame" name="RunInOptionFrame" value='<%=(Session("optionAction") = "STDREPORT_DATEPROMPT") %>'>
-
         <input type="hidden" id="txtLocaleDateFormat" name="txtLocaleDateFormat" value="">
         <input type="hidden" id="txtLocaleDecimalSeparator" name="txtLocaleDecimalSeparator" value="">
         <input type="hidden" id="txtLocaleThousandSeparator" name="txtLocaleThousandSeparator" value="">
@@ -514,8 +496,6 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
 <!-- Form to return to record edit screen -->
 <form action="emptyoption" method="post" id="frmRecordEdit" name="frmRecordEdit">
 </form>
-    
-
 
 <script type="text/javascript">
 <!--
@@ -1033,8 +1013,3 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
 <script type="text/javascript">
     promptedvalues_window_onload();
 </script>
-
-    
-
-</body>
-</html>

@@ -1,7 +1,5 @@
-﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-
-<!DOCTYPE html>
 
 <% 
     Dim bBradfordFactor As Boolean
@@ -11,8 +9,6 @@
 	bBradfordFactor = (session("utiltype") = "16")
 %>
 
-<html>
-<head runat="server">
 
     <link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
     <script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
@@ -26,8 +22,6 @@
     <script src="<%: Url.Content("~/Scripts/jquery.ui.touch-punch.min.js") %>" type="text/javascript"></script>
     <script src="<%: Url.Content("~/Scripts/jsTree/jquery.jstree.js") %>" type="text/javascript"></script>
     <script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
-
-    <title>OpenHR Intranet</title>
 
     <object
         classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
@@ -43,9 +37,6 @@
     </script>
     
 
-</head>
-<body>
-    
     <%
 	if session("utiltype") = "" or _ 
 	   session("utilname") = "" or _ 
@@ -171,11 +162,12 @@
 	fNotCancelled = true
 
 	' Create the reference to the DLL (Report Class)
-        objReport = Server.CreateObject("COAIntServer.Report")
+        objReport = CreateObject("COAIntServer.Report")
 
 	' Pass required info to the DLL
 	objReport.Username = session("username")
-	objReport.Connection = session("databaseConnection")
+        CallByName(objReport, "Connection", CallType.Let, Session("databaseConnection"))
+
 	objReport.CustomReportID = session("utilid")
 	objReport.ClientDateFormat = session("LocaleDateFormat")
 	objReport.LocalDecimalSeparator = session("LocaleDecimalSeparator")
@@ -363,7 +355,9 @@
 	end if
 
         Dim arrayColumnsDefinition
-        
+        Dim arrayPageBreakValues
+        Dim arrayVisibleColumns
+
 	if fok then
 		arrayColumnsDefinition = objreport.OutputArray_Columns 
 
@@ -380,10 +374,7 @@
 		end if
 
 		arrayColumnsDefinition = objreport.OutputArray_Columns 
-		
-            Dim arrayPageBreakValues
-            Dim arrayVisibleColumns
-            
+		            
 		arrayPageBreakValues = objreport.OutputArray_PageBreakValues		
 		arrayVisibleColumns = objreport.OutputArray_VisibleColumns
 		
@@ -421,8 +412,6 @@
             Response.Write("  <INPUT type=""hidden"" id=txtFileName name=txtFileName value=""" & objReport.OutputFilename & """>" & vbCrLf)
             Response.Write("  <INPUT type=""hidden"" id=txtUtilType name=txtUtilType value=""" & Session("UtilType") & """>" & vbCrLf)
 
-            Dim arrayPageBreakValues
-            Dim arrayVisibleColumns
             
             For icount = 0 To (UBound(arrayPageBreakValues))
                 Response.Write("	<INPUT type=hidden id=txtPageBreak_" & icount & " name=txtPageBreak_" & icount & " value=""" & Replace(arrayPageBreakValues(icount), """", "&quot;") & """>" & vbCrLf)
@@ -440,7 +429,7 @@
             Response.Write("	<INPUT type=hidden id=txtVisColCount name=txtVisColCount value=" & UBound(arrayVisibleColumns, 2) & ">" & vbCrLf)
             Response.Write("</FORM>" & vbCrLf)
 	
-            Response.Write("<SCRIPT LANGUAGE=JavaScript>" & vbCrLf)
+            Response.Write("script type=""""text/javascript""" & vbCrLf)
             Response.Write("<!--" & vbCrLf)
 
             ' Change the output text if Bradford Factor Report
@@ -452,9 +441,11 @@
             Response.Write("	var blnBreakCheck = false;" & vbCrLf)
 		
             Dim objUser
-            objUser = Server.CreateObject("COAIntServer.clsSettings")
-		objUser.Connection = session("databaseConnection")
-
+            objUser = CreateObject("COAIntServer.clsSettings")
+            objReport.Username = Session("username")
+            CallByName(objUser, "Connection", CallType.Let, Session("databaseConnection"))
+            
+            
             'MH20031113 Fault 7606 Reset Columns and Styles...
             Response.Write("  window.parent.parent.ASRIntranetOutput.ResetColumns();" & vbCrLf)
             Response.Write("  window.parent.parent.ASRIntranetOutput.ResetStyles();" & vbCrLf)
@@ -488,8 +479,8 @@
 
             Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215")) & ", ")
             Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")) & ", ")
-            Response.Write(cleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215"))) & ", ")
-            Response.Write(cleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "TitleForecolour", "6697779"))) & ");" & vbCrLf)
+            Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215")))) & ", ")
+            Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")))) & ");" & vbCrLf)
 
             Response.Write("  window.parent.parent.ASRIntranetOutput.SettingHeading(")
             Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingGridLines", "1")) & ", ")
@@ -497,8 +488,8 @@
             Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingUnderline", "0")) & ", ")
             Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingBackcolour", "16248553")) & ", ")
             Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingForecolour", "6697779")) & ", ")
-            Response.Write(cleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "HeadingBackcolour", "16248553"))) & ", ")
-            Response.Write(cleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "HeadingForecolour", "6697779"))) & ");" & vbCrLf)
+            Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "HeadingBackcolour", "16248553")))) & ", ")
+            Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "HeadingForecolour", "6697779")))) & ");" & vbCrLf)
 
             Response.Write("  window.parent.parent.ASRIntranetOutput.SettingData(")
             Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "DataGridLines", "1")) & ", ")
@@ -506,8 +497,8 @@
             Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "DataUnderline", "0")) & ", ")
             Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "DataBackcolour", "15988214")) & ", ")
             Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "DataForecolour", "6697779")) & ", ")
-            Response.Write(cleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "DataBackcolour", "15988214"))) & ", ")
-            Response.Write(cleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "DataForecolour", "6697779"))) & ");" & vbCrLf)
+            Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "DataBackcolour", "15988214")))) & ", ")
+            Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "DataForecolour", "6697779")))) & ");" & vbCrLf)
 
             Response.Write("  frmMenuFrame = window.parent.parent.opener.window.parent.frames(""menuframe"");" & vbCrLf)
 
@@ -1174,8 +1165,7 @@
     <%
         Response.Write("<INPUT type=""hidden"" id=txtDatabase name=txtDatabase value=""" & Replace(Session("Database"), """", "&quot;") & """>")
     %>
-</body>
-</html>
+
 
 <script type="text/javascript">
 <!--

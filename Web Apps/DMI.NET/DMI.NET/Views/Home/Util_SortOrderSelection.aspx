@@ -1,8 +1,5 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 
-<!DOCTYPE html>
-<html>
-<head>
 <link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css"/>
 <script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
 <script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
@@ -323,9 +320,6 @@
 	Response.Write("</script>" & vbCrLf)
 
 %>
-</head>
-
-<body <%=session("BodyColour")%> leftmargin=20 topmargin=20 bottommargin=20 rightmargin=5>
 	
 <form id=frmPopup name=frmPopup onsubmit="return setForm();">
 	

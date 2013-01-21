@@ -56,24 +56,19 @@ sKey = "Prompts_" & Request.Form("utiltype") & "_" & Request.Form("utilid")
 session(sKey) = aPrompts
 %>
 
-<html>
-<head runat="server">
-    <title><%=session("utilname")%> - OpenHR Intranet</title>
 
-    <link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
-    <script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/jquery-ui-1.9.1.custom.min.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/jquery.cookie.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/menu.js")%>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/jquery.ui.touch-punch.min.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/jsTree/jquery.jstree.js") %>" type="text/javascript"></script>
-    <script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
+<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
+<script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/jquery-ui-1.9.1.custom.min.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/jquery.cookie.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/menu.js")%>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/jquery.ui.touch-punch.min.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/jsTree/jquery.jstree.js") %>" type="text/javascript"></script>
+<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
 
-</head>
-<body>
     
     
 <script type="text/javascript">
@@ -187,44 +182,43 @@ session(sKey) = aPrompts
 	<INPUT type="hidden" id=txtErrorDesc name=txtErrorDesc>
 </FORM>
 
-<frameset name="myframeset" rows="*,0,0" frameborder="NO" border="0" framespacing="0" cols="*">
-	<frame name="top" scrolling="NO" noresize src="Progress">
+<div id="myframeset">
+    <div id="top">       
+        <%Html.RenderPartial("~/Views/Home/progress.ascx")%>
+    </div>
+    
+    <div id="main">
+        <%   
+            If Session("utiltype") = "1" Then
+                Html.RenderPartial("~/Views/Home/util_run_crosstabsMain.ascx")
+            ElseIf Session("utiltype") = "2" Then
+                Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
+            ElseIf Session("utiltype") = "3" Then
+                Html.RenderPartial("~/Views/Home/util_run_datatransfer.ascx")
+            ElseIf Session("utiltype") = "4" Then
+                Html.RenderPartial("~/Views/Home/util_run_export.ascx")
+            ElseIf Session("utiltype") = "5" Then
+                Html.RenderPartial("~/Views/Home/util_run_globaladd.ascx")
+            ElseIf Session("utiltype") = "6" Then
+                Html.RenderPartial("~/Views/Home/util_run_globalupdate.ascx")
+            ElseIf Session("utiltype") = "7" Then
+                Html.RenderPartial("~/Views/Home/util_run_globaldelete.ascx")
+            ElseIf Session("utiltype") = "8" Then
+                Html.RenderPartial("~/Views/Home/util_run_import.ascx")
+            ElseIf Session("utiltype") = "9" Then
+                Html.RenderPartial("~/Views/Home/util_run_mailmerge.ascx")
+            ElseIf Session("utiltype") = "15" Then
+                Html.RenderPartial("~/Views/Home/stdrpt_run_AbsenceBreakdown.ascx")
+            ElseIf Session("utiltype") = "16" Then
+                Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
+            ElseIf Session("utiltype") = "17" Then
+                Html.RenderPartial("~/Views/Home/util_run_calendarreport_main.ascx")
+            End If
+        %>
+    </div>
 
-<%
-    If Session("utiltype") = "1" Then
-        Response.Write("    <frame name=""main"" data-framesource=""util_run_crosstabsMain"">" & vbCrLf)
-    ElseIf Session("utiltype") = "2" Then
-        Response.Write("    <frame name=""main"" data-framesource=""util_run_customreportsMain"">" & vbCrLf)
-    ElseIf Session("utiltype") = "3" Then
-        Response.Write("    <frame name=""main"" data-framesource=""util_run_datatransfer"">" & vbCrLf)
-    ElseIf Session("utiltype") = "4" Then
-        Response.Write("    <frame name=""main"" data-framesource=""util_run_export"">" & vbCrLf)
-    ElseIf Session("utiltype") = "5" Then
-        Response.Write("    <frame name=""main"" data-framesource=""util_run_globaladd"">" & vbCrLf)
-    ElseIf Session("utiltype") = "6" Then
-        Response.Write("    <frame name=""main"" data-framesource=""util_run_globalupdate"">" & vbCrLf)
-    ElseIf Session("utiltype") = "7" Then
-        Response.Write("    <frame name=""main"" data-framesource=""util_run_globaldelete"">" & vbCrLf)
-    ElseIf Session("utiltype") = "8" Then
-        Response.Write("    <frame name=""main"" data-framesource=""util_run_import"">" & vbCrLf)
-    ElseIf Session("utiltype") = "9" Then
-        Response.Write("    <frame name=""main"" data-framesource=""util_run_mailmerge"">" & vbCrLf)
-    ElseIf Session("utiltype") = "15" Then
-        Response.Write("    <frame name=""main"" data-framesource=""stdrpt_run_AbsenceBreakdown"">" & vbCrLf)
-    ElseIf Session("utiltype") = "16" Then
-        Response.Write("    <frame name=""main"" data-framesource=""util_run_customreportsMain"">" & vbCrLf)
-    ElseIf Session("utiltype") = "17" Then
-        Response.Write("    <frame name=""main"" data-framesource=""util_run_calendarreport_main"">" & vbCrLf)
-    End If
+	<div id="outputoptions"></div>
+</div>
 
-%>
-	<frame name="outputoptions" scrolling="NO" noresize src="">
-</frameset>
-
-
-</body>
-
-
-</html>
 
 
