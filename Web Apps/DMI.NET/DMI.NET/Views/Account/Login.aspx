@@ -2,13 +2,14 @@
 <%@ Import Namespace="DMI.NET" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
+    <%= GetPageTitle("Login") %>    
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
 <%	
-	On Error Resume Next
-	
+	On Error Resume Next            
+    
 	Dim sBrowserInfo As String
 	  
 	' Ensure the database connection object is closed.

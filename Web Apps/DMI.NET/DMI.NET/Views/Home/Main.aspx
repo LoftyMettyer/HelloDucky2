@@ -24,8 +24,12 @@
 	End If
 
 	' RH 18/04/01 - Clear this session variable
-	Session("utilid")=""
+    Session("utilid") = ""        
+
 %>
+    
+    <%=DMI.NET.svrCleanup.GetPageTitle("") %>
+
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">

@@ -1,4 +1,6 @@
-﻿Public Module svrCleanup
+﻿Imports System.Reflection
+
+Public Module svrCleanup
 
 	Function CleanString(psString)
 		Dim sCleaned
@@ -8,7 +10,7 @@
 		'   sCleaned = replace(sCleaned, ">", "&gt;")
 		sCleaned = Replace(sCleaned, "'", "''")
 		'	cleanString = "'" & sCleaned & "'"
-		cleanString = sCleaned
+		CleanString = sCleaned
 	End Function
 
 	Function CleanNumeric(pNumber)
@@ -26,7 +28,7 @@
 			End If
 		End If
 
-		cleanNumeric = lngCleaned
+		CleanNumeric = lngCleaned
 	End Function
 
 	Function CleanBoolean(pValue)
@@ -52,7 +54,7 @@
 			lngCleaned = 1
 		End If
 
-		cleanBoolean = lngCleaned
+		CleanBoolean = lngCleaned
 	End Function
 
 	Function CleanStringForJavaScript(psString)
@@ -63,7 +65,7 @@
 		sCleaned = Replace(sCleaned, "'", "\'")
 		sCleaned = Replace(sCleaned, """", "\""")
 
-		cleanStringForJavaScript = sCleaned
+		CleanStringForJavaScript = sCleaned
 	End Function
 
 	Function CleanStringForJavaScript_NotDoubleQuotes(psString)
@@ -74,7 +76,7 @@
 		sCleaned = Replace(sCleaned, "'", "\'")
 		sCleaned = Replace(sCleaned, "\""", """")
 
-		cleanStringForJavaScript_NotDoubleQuotes = sCleaned
+		CleanStringForJavaScript_NotDoubleQuotes = sCleaned
 	End Function
 
 	Function FormatError(psErrMsg) As String
@@ -88,9 +90,9 @@
 		Loop While iFound > 0
 
 		If (iStart > 0) And (iStart < Len(Trim(psErrMsg))) Then
-			formatError = Trim(Mid(psErrMsg, iStart + 1))
+			FormatError = Trim(Mid(psErrMsg, iStart + 1))
 		Else
-			formatError = psErrMsg
+			FormatError = psErrMsg
 		End If
 	End Function
 
@@ -129,18 +131,26 @@
 				 Year(psDate) & Mid(sLocaleFormat, iIndex + 4)
 			End If
 
-			ConvertSQLDateToLocale = sLocaleFormat
+			ConvertSqlDateToLocale = sLocaleFormat
 		Else
-			ConvertSQLDateToLocale = ""
+			ConvertSqlDateToLocale = ""
 		End If
 	End Function
 
 	Function ConvertSqlDateToTime(psDate) As String
 		If Len(psDate) = 0 Then
-			ConvertSQLDateToTime = ""
+			ConvertSqlDateToTime = ""
 		Else
-			ConvertSQLDateToTime = FormatDateTime(psDate, vbShortTime)
+			ConvertSqlDateToTime = FormatDateTime(psDate, vbShortTime)
 		End If
+	End Function
+
+	Function GetPageTitle(pageName As String) As String
+
+		With Assembly.GetExecutingAssembly.GetName.Version			
+			Return String.Format("OpenHR {0} - v{1}.{2}.{3}", pageName, .Major, .Minor, .Build)
+		End With
+
 	End Function
 
 End Module
