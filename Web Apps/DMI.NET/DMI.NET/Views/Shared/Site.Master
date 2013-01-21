@@ -50,7 +50,17 @@
 		    
 			if ($("#workframeset").length > 0) {
 				$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
-				$("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });
+			    $("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });
+			    
+                //Apply ajax please wait message
+			    $(document).ajaxStart(function() {
+			        $("body").addClass("loading");			        
+			    });
+			    
+			    $(document).ajaxStop(function () {
+			        $("body").removeClass("loading");
+			    });
+
 			}
 			else {
 				//only load themes for linksMain.
@@ -89,6 +99,7 @@
                 }
 
 			}
+
 		});
     </script>
 
@@ -155,6 +166,9 @@
 
 <asp:ContentPlaceHolder ID="MainContent" runat="server">
 </asp:ContentPlaceHolder>
+
+    
+<div class="modal"><!-- AJAX please wait spinner --></div>    
 
 </body>
 </html>

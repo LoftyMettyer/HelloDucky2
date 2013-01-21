@@ -184,6 +184,7 @@
     <Content Include="Content\images\extlink2.png" />
     <Content Include="Content\images\extlink3.png" />
     <Content Include="Content\images\extlink4.png" />
+    <Content Include="Content\images\spinnerBig.gif" />
     <Content Include="Content\images\OpenHRLogo.png" />
     <Content Include="Content\images\arrow-left-white.png" />
     <Content Include="Content\images\arrow-right-white.png" />

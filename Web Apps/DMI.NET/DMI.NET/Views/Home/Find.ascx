@@ -428,7 +428,7 @@
 					<tr id="findGridRow">
 						<td>
 						</td>
-						<td width="100%" colspan="3">
+						<td width="100%" colspan="3" height="500">
 							<%
 								Dim sThousandColumns As String
 								Dim sBlankIfZeroColumns As String

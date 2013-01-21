@@ -41,8 +41,7 @@
 	    	$.ajax({
 	    		url: url,
 	    		type: "POST",
-	    		data: data,
-	    		async: false,
+	    		data: data,	    		
 	    		success: function (html) {
 	    		    $("#workframeset").show();
 	    			$frame.html(html);
