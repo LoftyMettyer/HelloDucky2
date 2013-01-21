@@ -1,5 +1,5 @@
 ﻿<%@ Master Language="VB" Inherits="System.Web.Mvc.ViewMasterPage" %>
-
+<%@Import namespace="DMI.NET" %>
 <!DOCTYPE html>
 <html>
 <head runat="server">
@@ -7,16 +7,16 @@
 
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 
-   <script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/Scripts/jquery-ui-1.9.1.custom.min.js") %>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/Scripts/jquery.cookie.js") %>" type="text/javascript"></script>	 	
-   <script src="<%: Url.Content("~/Scripts/menu.js")%>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/Scripts/jquery.ui.touch-punch.min.js") %>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/Scripts/jsTree/jquery.jstree.js") %>" type="text/javascript"></script>
-	<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>	
+   <script src="<%: Url.LatestContent("~/Scripts/jquery-1.8.2.js")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/Scripts/openhr.js")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/Scripts/jquery-ui-1.9.1.custom.min.js")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/Scripts/jquery.cookie.js")%>" type="text/javascript"></script>	 	
+   <script src="<%: Url.LatestContent("~/Scripts/menu.js")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/Scripts/jquery.ui.touch-punch.min.js")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/Scripts/jsTree/jquery.jstree.js")%>" type="text/javascript"></script>
+	<script id="officebarscript" src="<%: Url.LatestContent("~/Scripts/officebar/jquery.officebar.js")%>" type="text/javascript"></script>	
 		
 	<% 
 		' Mobiles. Fix as tiles display.
@@ -32,25 +32,25 @@
 		End If
 	%>	
 
-	<link href="<%= url.content("~/Content/general_enclosed_foundicons.css") %>" rel="stylesheet" type="text/css" />
-	<link href="<%= url.content("~/Content/font-awesome.css") %>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
 
-	<link href="<%: Url.Content("~/Content/Site.css") %>" rel="stylesheet" type="text/css"/>
-	<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css"/>
+	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css"/>
+	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css"/>
 
-	<%--<link href="<%: Url.Content("~/Content/dragdrop/styles.css") %>" rel="stylesheet" type="text/css" />--%>
-	<link href="<%: Url.Content("~/Content/contextmenustyle.css") %>" rel="stylesheet" type="text/css" />
-	<%--<link href="<%: Url.Content("~/Scripts/officebar/jquery.ribbon.css") %>" rel="stylesheet" type="text/css" />--%>
+	<%--<link href="<%: Url.LatestContent("~/Content/dragdrop/styles.css") %>" rel="stylesheet" type="text/css" />--%>
+	<link href="<%: Url.LatestContent("~/Content/contextmenustyle.css")%>" rel="stylesheet" type="text/css" />
+	<%--<link href="<%: Url.LatestContent("~/Scripts/officebar/jquery.ribbon.css") %>" rel="stylesheet" type="text/css" />--%>
 
 	<link id="layoutLink" href="" rel="stylesheet" type="text/css" />
 	<link id="themeLink" href="" rel="stylesheet" type="text/css" />
 
 	<script type="text/javascript">
 		$(document).ready(function () {
-			
+		    
 			if ($("#workframeset").length > 0) {
-				$("link[id=layoutLink]").attr({ href: "../Content/DashboardStyles/layouts/winkit.css" });
-				$("link[id=themeLink]").attr({ href: "../Content/DashboardStyles/themes/white.css" });
+				$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
+				$("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });
 			}
 			else {
 				//only load themes for linksMain.
@@ -62,11 +62,35 @@
 				if (cookieTheme === undefined || cookieTheme === "undefined" || cookieTheme.length <= 0) cookieTheme = "white";
 				window.currentTheme = cookieTheme;
 
-				$("link[id=layoutLink]").attr({ href: "../Content/DashboardStyles/layouts/" + window.currentLayout + ".css" });
-				$("link[id=themeLink]").attr({ href: "../Content/DashboardStyles/themes/" + window.currentTheme + ".css" });
+                switch (window.currentLayout)
+			    {
+                    case "winkit":
+                        $("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
+                        break;
+                    case "wireframe":
+                        $("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });
+                        break;
+                    case "tiles":
+                        $("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
+                        break;
+			    }
+
+			    switch (window.currentTheme) {
+			        case "red":
+			            $("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
+			            break;
+                    case "blue":
+                        $("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
+                        break;
+                    case "white":
+                        $("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
+                    default:
+                        break;
+                }
+
 			}
 		});
-	</script>
+    </script>
 
 	<meta name="viewport"/>
 
@@ -107,13 +131,13 @@
 		function changeTheme(newThemeName) {
 			switch (newThemeName) {
 			case "theme-Red":
-				$("link[id=themeLink]").attr({ href: "../Content/DashboardStyles/themes/Red.css?x=21" });
+				$("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
 				break;
 			case "theme-Blue":
-				$("link[id=themeLink]").attr({ href: "../Content/DashboardStyles/themes/Blue.css" });
+			    $("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
 				break;
 			case "theme-White":
-				$("link[id=themeLink]").attr({ href: "../Content/DashboardStyles/themes/White.css" });
+			    $("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
 			default:
 				break;
 			}

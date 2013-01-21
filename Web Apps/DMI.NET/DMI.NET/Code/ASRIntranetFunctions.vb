@@ -62,4 +62,14 @@ Public Module ASRIntranetFunctions
     Return True
   End Function
 
+	Function GeneratePath(filename As String) As String
+		Dim currVersion As String = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
+		Return String.Format("{0}?v={1}", filename, currVersion)
+	End Function
+
+	<System.Runtime.CompilerServices.Extension> _
+	Public Function LatestContent(helper As UrlHelper, filename As String)
+		Return helper.Content(String.Format("{0}", GeneratePath(filename)))
+	End Function
+
 End Module

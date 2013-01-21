@@ -1,4 +1,5 @@
 ﻿<%@ Page Title="" Language="VB" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage(Of DMI.NET.NavLinksViewModel)" %>
+<%@Import namespace="DMI.NET" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
     <%=DMI.NET.svrCleanup.GetPageTitle("") %>
@@ -8,10 +9,10 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
 	
-	<link href="<%= url.content("~/Content/jquery.gridster.css") %>" rel="stylesheet" type="text/css" />
-	<script src="<%: Url.Content("~/Scripts/jquery.gridster.js") %>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/Scripts/jquery.mousewheel.js") %>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/Scripts/jquery.flip.js") %>" type="text/javascript"></script>
+	<link href="<%= Url.LatestContent("~/Content/jquery.gridster.css")%>" rel="stylesheet" type="text/css" />
+	<script src="<%: Url.LatestContent("~/Scripts/jquery.gridster.js")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/Scripts/jquery.mousewheel.js")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/Scripts/jquery.flip.js")%>" type="text/javascript"></script>
 
 
 
@@ -112,7 +113,7 @@
 		}
 
 		function changeLayout(newLayoutName) {
-
+		    
 			setCookie('Intranet_Layout', newLayoutName, 365);
 			if (newLayoutName == "winkit") {
 				setCookie('Intranet_Theme', "white", 365);
@@ -139,7 +140,7 @@
 						//$(".current > a").hide();
 
 						window.changeTheme("theme-Blue");
-						$("link[id=layoutLink]").attr({ href: "../Content/DashboardStyles/layouts/tiles.css" });
+						$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
 						setupTiles();
 						break;
 					case "wireframe":
@@ -147,12 +148,12 @@
 						//$(".current > a").hide();
 
 						window.changeTheme("theme-Blue");
-						$("link[id=layoutLink]").attr({ href: "../Content/DashboardStyles/layouts/wireframe.css" });
+						$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });
 
 						break;
 					case "winkit":
 						window.changeTheme("theme-White");
-						$("link[id=layoutLink]").attr({ href: "../Content/DashboardStyles/layouts/winkit.css" });
+						$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
 						$(".officebar > ul > li:not(.current)").show();
 						$(".current > a").show();
 
