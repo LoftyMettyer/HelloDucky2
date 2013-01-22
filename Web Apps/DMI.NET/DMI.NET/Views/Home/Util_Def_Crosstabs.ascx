@@ -72,7 +72,6 @@
     }
 
     function util_def_crosstabs_addhandlers() {
-        debugger;
         OpenHR.addActiveXHandler("grdAccess", "ComboCloseUp", grdAccess_ComboCloseUp);
         OpenHR.addActiveXHandler("grdAccess", "GotFocus", grdAccess_GotFocus);
         OpenHR.addActiveXHandler("grdAccess", "RowColChange", grdAccess_RowColChange);
