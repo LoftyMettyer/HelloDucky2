@@ -183,42 +183,43 @@ session(sKey) = aPrompts
 </FORM>
 
 <div id="myframeset">
+
     <div id="top">       
-        <%Html.RenderPartial("~/Views/Home/progress.ascx")%>
+        <%Html.RenderPartial("~/Views/Home/progress.ascx")%>        
     </div>
     
-    <div id="main">
-        <%   
-            If Session("utiltype") = "1" Then
-                Html.RenderPartial("~/Views/Home/util_run_crosstabsMain.ascx")
-            ElseIf Session("utiltype") = "2" Then
-                Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
-            ElseIf Session("utiltype") = "3" Then
-                Html.RenderPartial("~/Views/Home/util_run_datatransfer.ascx")
-            ElseIf Session("utiltype") = "4" Then
-                Html.RenderPartial("~/Views/Home/util_run_export.ascx")
-            ElseIf Session("utiltype") = "5" Then
-                Html.RenderPartial("~/Views/Home/util_run_globaladd.ascx")
-            ElseIf Session("utiltype") = "6" Then
-                Html.RenderPartial("~/Views/Home/util_run_globalupdate.ascx")
-            ElseIf Session("utiltype") = "7" Then
-                Html.RenderPartial("~/Views/Home/util_run_globaldelete.ascx")
-            ElseIf Session("utiltype") = "8" Then
-                Html.RenderPartial("~/Views/Home/util_run_import.ascx")
-            ElseIf Session("utiltype") = "9" Then
-                Html.RenderPartial("~/Views/Home/util_run_mailmerge.ascx")
-            ElseIf Session("utiltype") = "15" Then
-                Html.RenderPartial("~/Views/Home/stdrpt_run_AbsenceBreakdown.ascx")
-            ElseIf Session("utiltype") = "16" Then
-                Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
-            ElseIf Session("utiltype") = "17" Then
-                Html.RenderPartial("~/Views/Home/util_run_calendarreport_main.ascx")
-            End If
-        %>
-    </div>
+    <%   
+        If Session("utiltype") = "1" Then
+            Html.RenderPartial("~/Views/Home/util_run_crosstabsMain.ascx")
+        ElseIf Session("utiltype") = "2" Then
+            Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
+        ElseIf Session("utiltype") = "3" Then
+            Html.RenderPartial("~/Views/Home/util_run_datatransfer.ascx")
+        ElseIf Session("utiltype") = "4" Then
+            Html.RenderPartial("~/Views/Home/util_run_export.ascx")
+        ElseIf Session("utiltype") = "5" Then
+            Html.RenderPartial("~/Views/Home/util_run_globaladd.ascx")
+        ElseIf Session("utiltype") = "6" Then
+            Html.RenderPartial("~/Views/Home/util_run_globalupdate.ascx")
+        ElseIf Session("utiltype") = "7" Then
+            Html.RenderPartial("~/Views/Home/util_run_globaldelete.ascx")
+        ElseIf Session("utiltype") = "8" Then
+            Html.RenderPartial("~/Views/Home/util_run_import.ascx")
+        ElseIf Session("utiltype") = "9" Then
+            Html.RenderPartial("~/Views/Home/util_run_mailmerge.ascx")
+        ElseIf Session("utiltype") = "15" Then
+            Html.RenderPartial("~/Views/Home/stdrpt_run_AbsenceBreakdown.ascx")
+        ElseIf Session("utiltype") = "16" Then
+            Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
+        ElseIf Session("utiltype") = "17" Then
+            Html.RenderPartial("~/Views/Home/util_run_calendarreport_main.ascx")
+        End If
+    %>
 
 	<div id="outputoptions"></div>
+    
 </div>
 
-
-
+<FORM action="default_Submit" method=post id=FORM1 name=frmGoto style="visibility:hidden;display:none">
+    <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
+</FORM>

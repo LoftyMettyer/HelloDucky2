@@ -51,24 +51,27 @@
 
         $("#workframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
 
+        //var frmPromptedValues = OpenHR.getForm("workframe", "frmPromptedValues");
+        var frmPromptedValues = document.getElementById('frmPromptedValues');
+
         frmPromptedValues.txtLocaleDateFormat.value = OpenHR.LocaleDateFormat;
         frmPromptedValues.txtLocaleDecimalSeparator.value = OpenHR.LocaleDecimalSeparator;
         frmPromptedValues.txtLocaleThousandSeparator.value = OpenHR.LocaleThousandSeparator;
 
         if (frmPromptedValues.RunInOptionFrame.value == "True") {
-            window.parent.document.all.item("workframeset").cols = "1, *";
+            $("#workframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
+
         } else {
             if (frmPromptedValues.StandardReportPrompt.value == "True") {
-                window.parent.document.all.item("workframeset").cols = "*, 0";
+                $("#workframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");                
             }
         }
 
-        if (frmPromptedValues.StandardReportPrompt.value == "True") {
-            window.parent.frames("menuframe").disableMenu();
-        }
-
         if (frmPromptedValues.txtPromptCount.value == 0) {
-            frmPromptedValues.submit();
+            debugger;
+            OpenHR.submitForm(frmPromptedValues);
+          //  frmPromptedValues.submit();
+
         } else {
             // Set focus on the first prompt control.
             var controlCollection = frmPromptedValues.elements;
@@ -105,15 +108,15 @@
     }
 </script>
     
-    <FORM name=frmPromptedValues id=frmPromptedValues method=POST onSubmit="return false;" action=
-<%
-if bStandardReportPrompt then
+    <FORM name=frmPromptedValues id=frmPromptedValues method=POST action=
+    <%
+        If bStandardReportPrompt Then
             Response.Write("stdrpt_def_Absence")
-else
+        Else
             Response.Write("util_run")
-end if
-%>
->
+        End If
+    %>
+    >
 
 <%
 	' Get variables for Absence Breakdown / Bradford Factor
@@ -483,7 +486,7 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
 
         <input type="hidden" id="utiltype" name="utiltype" value="<%=Session("utiltype")%>">
         <input type="hidden" id="utilid" name="utilid" value='<%=Session("utilid")%>'>
-        <input type="hidden" id="utilname" name="utilname" value="<%=replace(Session("utilname"), """", "&quot;")%>">
+        <input type="hidden" id="utilname" name="utilname" value="<%=Replace(Session("utilname").ToString(), """", "&quot;")%>">
         <input type="hidden" id="action" name="action" value='<%=Session("action")%>'>
         <input type="hidden" id="lastPrompt" name="lastPrompt" value="">
         <input type="hidden" id="StandardReportPrompt" name="StandardReportPrompt" value="<%=bStandardReportPrompt%>">
@@ -496,6 +499,10 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
 <!-- Form to return to record edit screen -->
 <form action="emptyoption" method="post" id="frmRecordEdit" name="frmRecordEdit">
 </form>
+
+<FORM action="default_Submit" method=post id=FORM1 name=frmGoto style="visibility:hidden;display:none">
+    <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
+</FORM>
 
 <script type="text/javascript">
 <!--
@@ -526,7 +533,6 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
                 }
             }
         }
-        debugger;
 
         // Everything OK. Submit the form.
         OpenHR.submitForm(frmPromptedValues);       
@@ -1013,3 +1019,4 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
 <script type="text/javascript">
     promptedvalues_window_onload();
 </script>
+

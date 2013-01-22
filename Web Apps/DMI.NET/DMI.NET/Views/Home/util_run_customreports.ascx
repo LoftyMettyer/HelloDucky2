@@ -32,7 +32,11 @@
     
     <script type="text/javascript">
         function customreports_window_onload() {
-            window.parent.loadAddRecords();
+
+            debugger;
+
+            $("#workframe").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTS");
+            loadAddRecords();
         }
     </script>
     
@@ -199,7 +203,7 @@
 		bPrintFilterPickList = session("stdReport_PrintFilterPicklistHeader")
 
 		bMinBradford = session("stdReport_MinimumBradfordFactor")
-		lngMinBradfordAmount = session("stdReport_MinimumBradfordFactorAmount")
+            lngMinBradfordAmount = CLng(Session("stdReport_MinimumBradfordFactorAmount"))
 		pbDisplayBradfordDetail	= session("stdReport_DisplayBradfordDetail")
 
 		' Default output options
@@ -429,9 +433,9 @@
             Response.Write("	<INPUT type=hidden id=txtVisColCount name=txtVisColCount value=" & UBound(arrayVisibleColumns, 2) & ">" & vbCrLf)
             Response.Write("</FORM>" & vbCrLf)
 	
-            Response.Write("script type=""""text/javascript""" & vbCrLf)
+            Response.Write("<script type=""text/javascript"">" & vbCrLf)
             Response.Write("<!--" & vbCrLf)
-
+            
             ' Change the output text if Bradford Factor Report
 
             Response.Write("function ExportData(strMode) " & vbCrLf)
@@ -855,7 +859,7 @@
 
             Response.Write("  }" & vbCrLf)
             Response.Write("-->" & vbCrLf)
-            Response.Write("</SCRIPT>" & vbCrLf & vbCrLf)
+            Response.Write("</script>" & vbCrLf & vbCrLf)
         End If
 
         Dim fNoRecords As Boolean
@@ -1282,7 +1286,9 @@
 
         iPollPeriod = 100;
         iPollCounter = iPollPeriod;
-	
+
+        debugger;
+
         // Expand the work frame and hide the option frame.
         //window.parent.parent.document.all.item("myframeset").rows = "0, *";
 	
@@ -1403,8 +1409,12 @@
                 }
             }
         }
+        debugger;
 			
-        window.parent.parent.document.all.item("myframeset").rows = "0, *, 0";
+        //window.parent.parent.document.all.item("myframeset").rows = "0, *, 0";
+        //window.parent.parent.document.all.item("myframeset").rows = "0, *, 0";
+        //$("#workframe").attr("myframeset", "REPORT");
+        $("").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTSMAIN");
     }		
 
     function ExportDataPrompt() 

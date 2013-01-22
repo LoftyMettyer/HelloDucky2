@@ -5,13 +5,14 @@
         function reportdata_window_onload() {
 
             debugger;
+            
+        $("#workframe").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTS_DATA");
 
         <%
         If Session("CR_Mode") = "" Then
-            Response.Write("  window.parent.loadAddRecords();" & vbCrLf & vbCrLf)
+            Response.Write("  loadAddRecords();" & vbCrLf & vbCrLf)
         Else
-            Response.Write("  frmWorkFrame = window.parent.frames(""workframe"");" & vbCrLf)
-            Response.Write("  frmWorkFrame.ExportData('OUTPUTREPORT');" & vbCrLf)
+            Response.Write("  ExportData('OUTPUTREPORT');" & vbCrLf)
         End If
         %>
         }
@@ -72,7 +73,7 @@
     
     <script type="text/javascript">
         function ExportData(strMode) {
-            window.parent.frames("workframe").ExportData("OUTPUTREPORT");
+            ExportData("OUTPUTREPORT");
             return;
         }
     </script>

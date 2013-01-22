@@ -14,7 +14,7 @@
     Response.Write("  txtLoadCount.value = iCount + 1" & vbCrLf & vbCrLf)
 
     Response.Write("  if (iCount > 0) {	" & vbCrLf)
-    'Response.Write("    var frmData = OpenHR.getForm(""workframe"", ""frmData"");")
+    Response.Write("    $(""#workframe"").attr(""data-framesource"", ""UTIL_RUN_CUSTOMREPORTSMAIN"");" & vbCrLf)   
     Response.Write("    ShowReport();" & vbCrLf & vbCrLf)
     Response.Write("  }" & vbCrLf & vbCrLf)
 
@@ -28,10 +28,9 @@
     <INPUT type='hidden' id=txtLoadCount name=txtLoadCount value=0>
 
 <div id="mainframeset">
-    <div id="workframe" style="display: none;">
-         <%Html.RenderPartial("~/views/home/util_run_customreports.ascx")%> 
-    </div>
-    <div id="dataframe" style="display: none;">
+    
+
+    <div id="reportdataframe" style="display: none;">
          <%Html.RenderPartial("~/views/home/util_run_customreportsData.ascx")%>
     </div>
 </div>

@@ -469,8 +469,8 @@
 			}
 			else {
 
-//			    var frmPrompt = document.getElementById('frmPrompt');
-			    var frmPrompt = OpenHR.getForm("workframe", "frmPrompt");
+			    var frmPrompt = document.getElementById('frmPrompt');
+			    //var frmPrompt = OpenHR.getForm("workframe", "frmPrompt");
 			    
 				frmPrompt.utiltype.value = frmDefSel.utiltype.value;
 				frmPrompt.utilid.value = frmDefSel.utilid.value;
@@ -478,13 +478,12 @@
 				frmPrompt.action.value = frmDefSel.action.value;
 				sUtilId = new String(frmDefSel.utilid.value);
 
-			//	frmPrompt.target = sUtilId;
-			//	NewWindow('', sUtilId, '500', '200', 'yes');
-				//frmPrompt.submitForm();
-				debugger;
-			    
-				OpenHR.submitForm(frmPrompt);
-				
+				//frmPrompt.target = sUtilId;
+//				OpenHR.submitForm(frmPrompt);
+			    debugger;
+			    OpenHR.submitForm(document.frmPrompt);
+                
+
 			}
 			return false;
 		}
@@ -1382,7 +1381,7 @@ end if
 <input type="hidden" id="txtTableID" name="txtTableID" value=<%=session("utilTableID")%>>
 <input type="hidden" id="txtSingleRecordID" name="txtSingleRecordID" value=<%=session("singleRecordID")%>>
 </form>
-
+    
 <form name=frmPrompt method=post action=util_run_promptedValues id=frmPrompt style="visibility:hidden;display:none">
 	<input type="hidden" id="utiltype" name="utiltype" value="<%=Session("defseltype")%>">
 	<input type="hidden" id="utilid" name="utilid"  value=<%=Session("utilid")%>>
