@@ -29,6 +29,9 @@
 
 <div id="mainframeset">
     
+    <div id="reportworkframe" style="display: none;">
+         <%Html.RenderPartial("~/views/home/util_run_customreports.ascx")%> 
+    </div>
 
     <div id="reportdataframe" style="display: none;">
          <%Html.RenderPartial("~/views/home/util_run_customreportsData.ascx")%>

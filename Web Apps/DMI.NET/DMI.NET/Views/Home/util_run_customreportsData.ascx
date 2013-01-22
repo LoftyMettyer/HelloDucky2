@@ -2,11 +2,8 @@
 <%@ Import Namespace="DMI.NET" %>
 
     <script type="text/javascript">
-        function reportdata_window_onload() {
-
-            debugger;
-            
-        $("#workframe").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTS_DATA");
+        function reportdata_window_onload() {           
+            $("#workframe").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTS_DATA");
 
         <%
         If Session("CR_Mode") = "" Then
@@ -19,9 +16,9 @@
     </script>
 
     <%	
-	if Session("EmailGroupID") = "" then 
-		Session("EmailGroupID") = 0 
-	end if
+        If CStr(Session("EmailGroupID")) = "" Then
+            Session("EmailGroupID") = 0
+        End If
 		
     Dim cmdReportsCols
     Dim prmEmailGroupID

@@ -185,7 +185,7 @@ session(sKey) = aPrompts
 <div id="myframeset">
 
     <div id="top">       
-        <%Html.RenderPartial("~/Views/Home/progress.ascx")%>        
+        <%html.RenderPartial("~/Views/Home/progress.ascx")%>
     </div>
     
     <%   

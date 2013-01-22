@@ -32,9 +32,6 @@
     
     <script type="text/javascript">
         function customreports_window_onload() {
-
-            debugger;
-
             $("#workframe").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTS");
             loadAddRecords();
         }
@@ -1175,9 +1172,12 @@
 <!--
     
     function addActiveXHandlers() {
+        debugger;
+
         OpenHR.addActiveXHandler("tblGrid", "onresize", tblGrid_onresize);
-        OpenHR.addActiveXHandler("ssOleDBGridDefselRecords", "PrintError", ssOleDBGridDefselRecords_PrintError);
         OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "PrintInitialize", ssOleDBGridDefSelRecords_PrintInitialize);
+        OpenHR.addActiveXHandler("ssOleDBGridDefselRecords", "PrintError", ssOleDBGridDefselRecords_PrintError);
+
         OpenHR.addActiveXHandler("ssHiddenGrid", "PrintInitialize", ssHiddenGrid_PrintInitialize);
         OpenHR.addActiveXHandler("ssHiddenGrid", "PrintBegin", ssHiddenGrid_PrintBegin);
         OpenHR.addActiveXHandler("ssHiddenGrid", "PrintError", ssHiddenGrid_PrintError);
@@ -1214,6 +1214,12 @@
         ssPrintInfo.PageHeader = "	" + frmOutput.ssOleDBGridDefSelRecords.Caption + "	";
         ssPrintInfo.PageFooter = "Printed on <date> at <time> by " + frmOriginalDefinition.txtUserName.value + "	" + "	" + "Page <page number>";
     }
+
+    function ssOleDBGridDefselRecords_PrintError(lngPrintError, iResponse){
+        if (lngPrintError == 30457) {
+            frmOriginalDefinition.txtCancelPrint.value = 1;
+        }
+    }   
 
     function ssHiddenGrid_PrintInitialize(ssPrintInfo) {
     
@@ -1262,11 +1268,6 @@
         }
     }
     
-    function ssOleDBGridDefselRecords_PrintError(lngPrintError, iResponse){
-        if (lngPrintError == 30457) {
-            frmOriginalDefinition.txtCancelPrint.value = 1;
-        }
-    }   
 
     -->
 </script>
@@ -1340,13 +1341,17 @@
         {
             if (txtSuccessFlag.value == 2) 
             {
+                debugger;
+
+                var frmOutput = OpenHR.getForm("workframe", "frmOutput");
+
                 setGridFont(frmOutput.ssHiddenGrid);
                 setGridFont(frmOutput.ssOleDBGridDefSelRecords);
 
-                frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'hidden';
-                frmOutput.ssOleDBGridDefSelRecords.Redraw = false;
-                frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'visible';
-                frmOutput.ssOleDBGridDefSelRecords.focus();
+//                frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'hidden';
+  //              frmOutput.ssOleDBGridDefSelRecords.Redraw = false;
+    //            frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'visible';
+      //          frmOutput.ssOleDBGridDefSelRecords.focus();
 			
                 var dataCollection = frmGridItems.elements;
                 if (dataCollection!=null) 
@@ -1409,12 +1414,11 @@
                 }
             }
         }
-        debugger;
 			
         //window.parent.parent.document.all.item("myframeset").rows = "0, *, 0";
         //window.parent.parent.document.all.item("myframeset").rows = "0, *, 0";
         //$("#workframe").attr("myframeset", "REPORT");
-        $("").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTSMAIN");
+        $("workframe").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTSMAIN");
     }		
 
     function ExportDataPrompt() 
@@ -1602,6 +1606,6 @@
 
 
 <script type="text/javascript">
-    addActiveXHandlers();
+    //addActiveXHandlers();
     customreports_window_onload();
 </script>

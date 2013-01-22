@@ -68,9 +68,7 @@
         }
 
         if (frmPromptedValues.txtPromptCount.value == 0) {
-            debugger;
             OpenHR.submitForm(frmPromptedValues);
-          //  frmPromptedValues.submit();
 
         } else {
             // Set focus on the first prompt control.
