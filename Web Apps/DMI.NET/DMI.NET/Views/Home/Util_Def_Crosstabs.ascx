@@ -1,69 +1,82 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@Import namespace="DMI.NET" %>
 
-<!--#include file="include\ctl_SetFont.txt"-->
-
 <script type="text/javaScript">
-    var fOK;
-    fOK = true;	
 
-    var sErrMsg = frmUseful.txtErrorDescription.value;
-    if (sErrMsg.length > 0) {
-        fOK = false;
-        OpenHR.MessageBox(sErrMsg,48,"Cross Tabs");
-        window.parent.location.replace("login");
+    function util_def_crosstabs_window_onload() {
+        var fOK;
+        fOK = true;
+        debugger;
+        var frmUseful = document.getElementById("frmUseful");
+        var sErrMsg = frmUseful.txtErrorDescription.value;
+        if (sErrMsg.length > 0) {
+            fOK = false;
+            OpenHR.MessageBox(sErrMsg, 48, "Cross Tabs");
+            //TODO
+            //window.parent.location.replace("login");
+
+        }
+
+        if (fOK == true) {
+            setGridFont(frmDefinition.grdAccess);
+            setFont(frmDefinition.txtHorStart);
+            setFont(frmDefinition.txtHorStop);
+            setFont(frmDefinition.txtHorStep);
+            setFont(frmDefinition.txtVerStart);
+            setFont(frmDefinition.txtVerStop);
+            setFont(frmDefinition.txtVerStep);
+            setFont(frmDefinition.txtPgbStart);
+            setFont(frmDefinition.txtPgbStop);
+            setFont(frmDefinition.txtPgbStep);
+
+            // Expand the work frame and hide the option frame.
+            //window.parent.document.all.item("workframeset").cols = "*, 0";	
+            $("#workframe").attr("data-framesource", "UTIL_DEF_CROSSTABS");
+
+            populateBaseTableCombo();
+
+            if (frmUseful.txtAction.value.toUpperCase() == "NEW") {
+                frmDefinition.txtOwner.value = frmUseful.txtUserName.value;
+                setBaseTable(0);
+                changeBaseTable();
+                frmUseful.txtSelectedColumnsLoaded.value = 1;
+                frmUseful.txtSortLoaded.value = 1;
+                frmDefinition.txtDescription.value = "";
+                populateColumnCombos();
+            } else {
+                loadDefinition();
+            }
+
+            populateAccessGrid();
+
+            if (frmUseful.txtAction.value.toUpperCase() != "EDIT") {
+                frmUseful.txtUtilID.value = 0;
+            }
+
+            if (frmUseful.txtAction.value.toUpperCase() == "EDIT") {
+                // Get the columns/calcs for the current table selection.
+                //var frmGetDataForm = window.parent.frames("dataframe").document.forms("frmGetData");
+                var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
+
+                frmGetDataForm.txtReportBaseTableID.value = frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].value;
+            }
+
+            if (frmUseful.txtAction.value.toUpperCase() == "COPY") {
+                frmUseful.txtChanged.value = 1;
+            }
+
+            refreshTab3Controls();
+
+            displayPage(1);
+        }
     }
-	
-    if (fOK == true) {
-        setGridFont(frmDefinition.grdAccess);
-        setFont(frmDefinition.txtHorStart);
-        setFont(frmDefinition.txtHorStop);
-        setFont(frmDefinition.txtHorStep);
-        setFont(frmDefinition.txtVerStart);
-        setFont(frmDefinition.txtVerStop);
-        setFont(frmDefinition.txtVerStep);
-        setFont(frmDefinition.txtPgbStart);
-        setFont(frmDefinition.txtPgbStop);
-        setFont(frmDefinition.txtPgbStep);
-		
-        // Expand the work frame and hide the option frame.
-        window.parent.document.all.item("workframeset").cols = "*, 0";	
-	    populateBaseTableCombo();
 
-        if(frmUseful.txtAction.value.toUpperCase() == "NEW"){
-            frmDefinition.txtOwner.value = frmUseful.txtUserName.value;
-            setBaseTable(0);
-            changeBaseTable();	
-            frmUseful.txtSelectedColumnsLoaded.value = 1;	
-            frmUseful.txtSortLoaded.value = 1;	
-            frmDefinition.txtDescription.value = "";
-            populateColumnCombos();
-        }
-        else {
-            loadDefinition();
-        }		
-
-        populateAccessGrid();
-		
-        if(frmUseful.txtAction.value.toUpperCase() != "EDIT"){
-            frmUseful.txtUtilID.value = 0;
-        }
-		
-        if(frmUseful.txtAction.value.toUpperCase() == "EDIT")
-        {
-            // Get the columns/calcs for the current table selection.
-            var frmGetDataForm = window.parent.frames("dataframe").document.forms("frmGetData");
-
-            frmGetDataForm.txtReportBaseTableID.value = frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].value;
-        }
-
-        if(frmUseful.txtAction.value.toUpperCase() == "COPY"){
-            frmUseful.txtChanged.value = 1;
-        }
-		
-        refreshTab3Controls();
-
-        displayPage(1);
+    function util_def_crosstabs_addhandlers() {
+        debugger;
+        OpenHR.addActiveXHandler("grdAccess", "ComboCloseUp", grdAccess_ComboCloseUp);
+        OpenHR.addActiveXHandler("grdAccess", "GotFocus", grdAccess_GotFocus);
+        OpenHR.addActiveXHandler("grdAccess", "RowColChange", grdAccess_RowColChange);
+        OpenHR.addActiveXHandler("grdAccess", "RowLoaded", grdAccess_RowLoaded);
     }
 </script>
 
@@ -71,8 +84,8 @@
     function displayPage(piPageNumber) {
         var iLoop;
         var iCurrentChildCount;
-        window.parent.frames("refreshframe").document.forms("frmRefresh").submit();
-			
+        //window.parent.frames("refreshframe").document.forms("frmRefresh").submit();
+        
         if (piPageNumber == 1) {
             div1.style.visibility="visible";
             div1.style.display="block";
@@ -95,7 +108,9 @@
 
         if (piPageNumber == 2) {
             // Get the columns/calcs for the current table selection.
-            var frmGetDataForm = window.parent.frames("dataframe").document.forms("frmGetData");
+            //var frmGetDataForm = window.parent.frames("dataframe").document.forms("frmGetData");
+            var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
+            
 
             div1.style.visibility="hidden";
             div1.style.display="none";
@@ -225,7 +240,9 @@
     }
 
     function populateColumnCombos() {
-        var frmGetDataForm = window.parent.frames("dataframe").document.forms("frmGetData");
+        //var frmGetDataForm = window.parent.frames("dataframe").document.forms("frmGetData");
+        var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
+        
 
         frmGetDataForm.txtAction.value = "LOADREPORTCOLUMNS";
         //frmGetDataForm.txtReportBaseTableID.value = 20;		//frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].Value;
@@ -233,7 +250,7 @@
         frmGetDataForm.txtReportParent1TableID.value = 0;
         frmGetDataForm.txtReportParent2TableID.value = 0;
         frmGetDataForm.txtReportChildTableID.value = 0;
-        window.parent.frames("dataframe").refreshData();
+        data_refreshData();
 
         frmUseful.txtLoading.value = 'Y';
     }
@@ -241,7 +258,9 @@
     function loadAvailableColumns() {
         loadAvailableColumns2(true, true, true, true);
         frmUseful.txtLoading.value = 'N';
-        window.parent.frames("menuframe").refreshMenu();
+        //window.parent.frames("menuframe").refreshMenu();
+        menu_refreshMenu();
+
     }
 
     function loadAvailableColumns2(horChange, VerChange, PgbChange, IntChange) {
@@ -250,20 +269,20 @@
 
             frmUseful.txtLoading.value = 'Y';
 
-            lngHor = 0;
-            lngVer = 0;
-            lngPgb = 0;
-            lngInt = 0;
+            var lngHor = 0;
+            var lngVer = 0;
+            var lngPgb = 0;
+            var lngInt = 0;
 
-            iHNumeric = 0;
-            iHSize = 0;
-            iHDecimals = 0;
-            iVNumeric = 0;
-            iVSize = 0;
-            iVDecimals = 0;
-            iPNumeric = 0;
-            iPSize = 0;
-            iPDecimals = 0;
+            var iHNumeric = 0;
+            var iHSize = 0;
+            var iHDecimals = 0;
+            var iVNumeric = 0;
+            var iVSize = 0;
+            var iVDecimals = 0;
+            var iPNumeric = 0;
+            var iPSize = 0;
+            var iPDecimals = 0;
 
 
             if (horChange == true) {
@@ -300,8 +319,9 @@
                 oOption.value = 0;			
             }
 
-
-            var frmUtilDefForm = window.parent.frames("dataframe").document.forms("frmData");
+            //var frmUtilDefForm = window.parent.frames("dataframe").document.forms("frmData");
+            var frmUtilDefForm = OpenHR.getForm("dataframe", "frmData");
+            
             var dataCollection = frmUtilDefForm.elements;
 
             //type
@@ -604,10 +624,10 @@
     function changeBaseTable() 
     {
         var i;
-        var frmRefresh;
-	
-        frmRefresh = window.parent.frames("pollframe").document.forms("frmHit");	
-	
+        var iAnswer;
+        //frmRefresh = window.parent.frames("pollframe").document.forms("frmHit");
+        var frmRefresh = OpenHR.getForm("pollframe", "frmHit");
+        
         iAnswer = 7;
         if (frmUseful.txtLoading.value == 'N') {
 	
@@ -1155,7 +1175,8 @@
         if (frmDefinition.txtFilename.value.length == 0) {
             sKey = new String("documentspath_");
             sKey = sKey.concat(frmDefinition.txtDatabase.value);
-            sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+            //TODO
+            //sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
             dialog.InitDir = sPath;
         }
         else {
@@ -1269,10 +1290,10 @@
         var sType;
         var sURL;
 	
-        if (validateTab1() == false) {window.parent.frames("menuframe").refreshMenu(); return;}
-        if (validateTab2() == false) {window.parent.frames("menuframe").refreshMenu(); return;}
-        if (validateTab3() == false) {window.parent.frames("menuframe").refreshMenu(); return;}
-        if (populateSendForm() == false) {window.parent.frames("menuframe").refreshMenu(); return;}
+        if (validateTab1() == false) { menu_refreshMenu(); return;}
+        if (validateTab2() == false) { menu_refreshMenu(); return;}
+        if (validateTab3() == false) { menu_refreshMenu(); return;}
+        if (populateSendForm() == false)  {menu_refreshMenu(); return;}
 
         // Now create the validate popup to check that any filters/calcs
         // etc havent been deleted, or made hidden etc.		
@@ -1312,14 +1333,16 @@
     {
         if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
             (definitionChanged() == false)) {
-            window.location.href="defsel";
+            //todo
+            //window.location.href="defsel";
             return;
         }
 
         answer = OpenHR.MessageBox("You have changed the current definition. Save changes ?",3,"Cross Tabs");
         if (answer == 7) {
             // No
-            window.location.href="defsel";
+            //todo
+            //window.location.href="defsel";
             return (false);
         }
         if (answer == 6) {
@@ -1330,9 +1353,10 @@
 
     function okClick()
     {
-        window.parent.frames("menuframe").disableMenu();
+        //window.parent.frames("menuframe").disableMenu();
+        disableMenu();
 	
-        sAttachmentName = new String(frmDefinition.txtEmailAttachAs.value);
+        var sAttachmentName = new String(frmDefinition.txtEmailAttachAs.value);
         if ((sAttachmentName.indexOf("/") != -1) || 
             (sAttachmentName.indexOf(":") != -1) || 
             (sAttachmentName.indexOf("?") != -1) || 
@@ -1669,9 +1693,10 @@
 	
         try 
         {
+            var frmRefresh = OpenHR.getForm("workframe", "frmRefresh");
             var testDataCollection = frmRefresh.elements;
-            iDummy = testDataCollection.txtDummy.value;
-            frmRefresh.submit();
+            var iDummy = testDataCollection.txtDummy.value;
+            OpenHR.submit(frmRefresh);
         }
         catch(e) 
         {
@@ -2040,8 +2065,8 @@
             disableAll();
         }
 		
-        window.parent.frames("menuframe").ASRIntranetFunctions.ClosePopup();
-
+        //TODO
+        //window.parent.frames("menuframe").ASRIntranetFunctions.ClosePopup();
 
         if (frmDefinition.chkDestination1.checked == true) {
             if (frmOriginalDefinition.txtDefn_OutputPrinterName.value != "") {
@@ -2136,17 +2161,18 @@
             oOption.innerText = "<Default Printer>";
             oOption.value = 0;
 
-            for (iLoop=0; iLoop<window.parent.frames("menuframe").ASRIntranetFunctions.PrinterCount(); iLoop++)  {
+            //TODO Do this printer loop when we redo asrintrnetFunctions
+            //for (iLoop=0; iLoop<window.parent.frames("menuframe").ASRIntranetFunctions.PrinterCount(); iLoop++)  {
 
-                var oOption = document.createElement("OPTION");
-                options.add(oOption);
-                oOption.innerText = window.parent.frames("menuframe").ASRIntranetFunctions.PrinterName(iLoop);
-                oOption.value = iLoop+1;
+            //    var oOption = document.createElement("OPTION");
+            //    options.add(oOption);
+            //    oOption.innerText = window.parent.frames("menuframe").ASRIntranetFunctions.PrinterName(iLoop);
+            //    oOption.value = iLoop+1;
 
-                if (oOption.innerText == strCurrentPrinter) {
-                    selectedIndex = iLoop+1;
-                }
-            }
+            //    if (oOption.innerText == strCurrentPrinter) {
+            //        selectedIndex = iLoop+1;
+            //    }
+            //}
 
             if (strCurrentPrinter != '') {
                 if (frmDefinition.cboPrinterName.options(frmDefinition.cboPrinterName.selectedIndex).innerText != strCurrentPrinter) {
@@ -2283,7 +2309,83 @@
 -->
 </script>
 
-<script FOR=grdAccess EVENT=ComboCloseUp LANGUAGE=JavaScript>
+<script type="text/javaScript">
+    function grdAccess_ComboCloseUp() { 
+        frmUseful.txtChanged.value = 1;
+        if((frmDefinition.grdAccess.AddItemRowIndex(frmDefinition.grdAccess.Bookmark) == 0) &&
+          (frmDefinition.grdAccess.Columns("Access").Text.length > 0)) {
+            ForceAccess(frmDefinition.grdAccess, AccessCode(frmDefinition.grdAccess.Columns("Access").Text));
+    
+            frmDefinition.grdAccess.MoveFirst();
+            frmDefinition.grdAccess.Col = 1;
+        }
+        refreshTab1Controls();
+    }
+    
+    function grdAccess_GotFocus() {
+        frmDefinition.grdAccess.Col = 1;
+    }
+    
+    function grdAccess_RowColChange() {
+        var fViewing;
+        var fIsNotOwner;
+        var varBkmk;
+		
+        fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
+        fIsNotOwner = (frmUseful.txtUserName.value.toUpperCase() != frmDefinition.txtOwner.value.toUpperCase());
+
+        if (frmDefinition.grdAccess.AddItemRowIndex(frmDefinition.grdAccess.Bookmark) == 0) {
+            frmDefinition.grdAccess.Columns("Access").Text = "";
+        }
+
+        varBkmk = frmDefinition.grdAccess.SelBookmarks(0);
+
+        if ((fIsNotOwner == true) ||
+            (fViewing == true) ||
+            (frmSelectionAccess.forcedHidden.value == "Y") ||
+            (frmDefinition.grdAccess.Columns("SysSecMgr").CellText(varBkmk) == "1")) {
+            frmDefinition.grdAccess.Columns("Access").Style = 0; // 0 = Edit
+        }
+        else {
+            frmDefinition.grdAccess.Columns("Access").Style = 3; // 3 = Combo box
+            frmDefinition.grdAccess.Columns("Access").RemoveAll();
+            frmDefinition.grdAccess.Columns("Access").AddItem(AccessDescription("RW"));
+            frmDefinition.grdAccess.Columns("Access").AddItem(AccessDescription("RO"));
+            frmDefinition.grdAccess.Columns("Access").AddItem(AccessDescription("HD"));
+        }
+
+        frmDefinition.grdAccess.Col = 1;
+    }
+    
+    function grdAccess_RowLoaded() {
+        var fViewing;
+        var fIsNotOwner;
+		
+        fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
+        fIsNotOwner = (frmUseful.txtUserName.value.toUpperCase() != frmDefinition.txtOwner.value.toUpperCase());
+
+        if ((fIsNotOwner == true) ||
+            (fViewing == true) ||
+            (frmSelectionAccess.forcedHidden.value == "Y")) {
+            frmDefinition.grdAccess.Columns("GroupName").CellStyleSet("ReadOnly");
+            frmDefinition.grdAccess.Columns("Access").CellStyleSet("ReadOnly");
+            frmDefinition.grdAccess.ForeColor = "-2147483631";
+        }  
+        else {
+            if (frmDefinition.grdAccess.Columns("SysSecMgr").CellText(Bookmark) == "1") {
+                frmDefinition.grdAccess.Columns("GroupName").CellStyleSet("SysSecMgr");
+                frmDefinition.grdAccess.Columns("Access").CellStyleSet("SysSecMgr");
+                frmDefinition.grdAccess.ForeColor = "0";
+            }
+            else {
+                frmDefinition.grdAccess.ForeColor = "0";
+            }
+        }
+    }
+</script>
+
+
+<%--<script FOR=grdAccess EVENT=ComboCloseUp LANGUAGE=JavaScript>
 <!--
     frmUseful.txtChanged.value = 1;
     if((grdAccess.AddItemRowIndex(grdAccess.Bookmark) == 0) &&
@@ -2333,11 +2435,9 @@
     }
 
     grdAccess.Col = 1;
--->
 </script>
 
 <script FOR=grdAccess EVENT=RowLoaded(Bookmark) LANGUAGE=JavaScript>
-<!--
     var fViewing;
     var fIsNotOwner;
 		
@@ -2361,8 +2461,7 @@
             grdAccess.ForeColor = "0";
         }
     }
--->
-</script>
+</script>--%>
 
 <object classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB"
     id="dialog"
@@ -2712,15 +2811,15 @@
 
     <form id=frmDefinition name=frmDefinition>
         <table valign=top align=center class="outline" cellPadding=5 width=100% height=100% cellSpacing=0>
-            <TR>
-                <TD>
+            <tr>
+                <td>
                     <TABLE WIDTH="100%" height="100%" class="invisible" cellspacing=0 cellpadding=0>
                         <tr height=5> 
                             <td colspan=3></td>
                         </tr> 
 
                         <tr height=10>
-                            <TD width=10></td>
+                            <td width=10></td>
                             <td>
                                 <INPUT type="button" value="Definition" id=btnTab1 name=btnTab1 class="btn btndisabled" disabled="disabled"
                                        onclick="displayPage(1)" 
@@ -2741,7 +2840,7 @@
                                        onfocus="try{button_onFocus(this);}catch(e){}"
                                        onblur="try{button_onBlur(this);}catch(e){}" />
                             </td>
-                            <TD width=10></td>
+                            <td width=10></td>
                         </tr>
 
                         <tr height=10> 
@@ -2749,7 +2848,7 @@
                         </tr> 
 
                         <tr>
-                            <TD width=10></td>
+                            <td width=10></td>
                             <td>
                                 <!-- First tab -->
                                 <DIV id=div1>
@@ -2757,84 +2856,83 @@
                                         <tr valign=top> 
                                             <td>
                                                 <TABLE WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
-                                                    <TR height=10>
-                                                        <TD width=5>&nbsp;</TD>
-                                                        <TD width=10>Name :</TD>
-                                                        <TD width=5>&nbsp;</TD>
-                                                        <TD>
+                                                    <tr height=10>
+                                                        <td width=5>&nbsp;</td>
+                                                        <td width=10>Name :</td>
+                                                        <td width=5>&nbsp;</td>
+                                                        <td>
                                                             <INPUT id=txtName name=txtName maxlength="50" style="WIDTH: 100%" class="text"
                                                                    onkeyup="changeTab1Control()">
-                                                        </TD>
-                                                        <TD width=20>&nbsp;</TD>
-                                                        <TD width=10>Owner :</TD>
-                                                        <TD width=5>&nbsp;</TD>
-                                                        <TD width="40%">
+                                                        </td>
+                                                        <td width=20>&nbsp;</td>
+                                                        <td width=10>Owner :</td>
+                                                        <td width=5>&nbsp;</td>
+                                                        <td width="40%">
                                                             <INPUT id=txtOwner name=txtOwner class="text textdisabled" style="WIDTH: 100%" disabled="disabled">
-                                                        </TD>
-                                                        <TD width=5>&nbsp;</TD>
-                                                    </TR>
+                                                        </td>
+                                                        <td width=5>&nbsp;</td>
+                                                    </tr>
 
-                                                    <TR>
-                                                        <TD colspan=9 height=5></TD>
-                                                    </TR>
+                                                    <tr>
+                                                        <td colspan=9 height=5></td>
+                                                    </tr>
 
-                                                    <TR height=60>
-                                                        <TD width=5>&nbsp;</TD>
-                                                        <TD width=10 nowrap valign=top>Description :</TD>
-                                                        <TD width=5>&nbsp;</TD>
-                                                        <TD width="40%" rowspan="3">
+                                                    <tr height=60>
+                                                        <td width=5>&nbsp;</td>
+                                                        <td width=10 nowrap valign=top>Description :</td>
+                                                        <td width=5>&nbsp;</td>
+                                                        <td width="40%" rowspan="3">
                                                             <TEXTAREA id=txtDescription name=txtDescription class="textarea" style="HEIGHT: 99%; WIDTH: 100%" wrap=VIRTUAL height="0" maxlength="255" 
                                                                       onkeyup="changeTab1Control()" 
                                                                       onpaste="var selectedLength = document.selection.createRange().text.length;var pasteData = window.clipboardData.getData('Text');if ((this.value.length + pasteData.length - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}" 
                                                                       onkeypress="var selectedLength = document.selection.createRange().text.length;if ((this.value.length + 1 - selectedLength) > parseInt(this.maxlength)) {return(false);}else {return(true);}">
 													</TEXTAREA>
-                                                        </TD>
-                                                        <TD width=20 nowrap>&nbsp;</TD>
-                                                        <TD width=10 valign=top>Access :</TD>
-                                                        <TD width=5>&nbsp;</TD>
-                                                        <TD width="40%" rowspan="3" valign=top>
-                                                            <!--#include file="include\ctl_grdAccess.txt"-->                  
-                                                        </TD>
-                                                        <TD width=5>&nbsp;</TD>
-                                                    </TR>
+                                                        </td>
+                                                        <td width=20 nowrap>&nbsp;</td>
+                                                        <td width=10 valign=top>Access :</td>
+                                                        <td width=5>&nbsp;</td>
+                                                        <td width="40%" rowspan="3" valign=top>
+                                                        </td>
+                                                        <td width=5>&nbsp;</td>
+                                                    </tr>
 
-                                                    <TR height=10>
-                                                        <TD colspan=7>&nbsp;</TD>
-                                                    </TR>
+                                                    <tr height=10>
+                                                        <td colspan=7>&nbsp;</td>
+                                                    </tr>
 
-                                                    <TR height=10>
-                                                        <TD colspan=7>&nbsp;</TD>
-                                                    </TR>
+                                                    <tr height=10>
+                                                        <td colspan=7>&nbsp;</td>
+                                                    </tr>
 
-                                                    <TR>
-                                                        <TD colspan=9><hr></TD>
-                                                    </TR>
+                                                    <tr>
+                                                        <td colspan=9><hr></td>
+                                                    </tr>
 
-                                                    <TR height=10>
-                                                        <TD width=5>&nbsp;</TD>
-                                                        <TD width=100 nowrap vAlign=top>Base Table :</TD>
-                                                        <TD width=5>&nbsp;</TD>
-                                                        <TD width="40%" vAlign=top>
+                                                    <tr height=10>
+                                                        <td width=5>&nbsp;</td>
+                                                        <td width=100 nowrap vAlign=top>Base Table :</td>
+                                                        <td width=5>&nbsp;</td>
+                                                        <td width="40%" vAlign=top>
                                                             <select id=cboBaseTable name=cboBaseTable style="WIDTH: 100%" class="combo combodisabled"
                                                                     onchange="changeBaseTable()" disabled="disabled"> 
                                                             </select>
-                                                        </TD>
-                                                        <TD width=20 nowrap>&nbsp;</TD>
-                                                        <TD width=10 vAlign=top>Records :</TD>
-                                                        <TD width=5>&nbsp;</TD>
-                                                        <TD width="40%"> 
+                                                        </td>
+                                                        <td width=20 nowrap>&nbsp;</td>
+                                                        <td width=10 vAlign=top>Records :</td>
+                                                        <td width=5>&nbsp;</td>
+                                                        <td width="40%"> 
                                                             <TABLE class="invisible" CELLSPACING=0 CELLPADDING=0 width="100%">
-                                                                <TR>
-                                                                    <TD width=5>
+                                                                <tr>
+                                                                    <td width=5>
                                                                         <input CHECKED id=optRecordSelection1 name=optRecordSelection type=radio 
                                                                                onclick="changeBaseTableRecordOptions()"
                                                                                onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
                                                                                onmouseout="try{radio_onMouseOut(this);}catch(e){}"
                                                                                onfocus="try{radio_onFocus(this);}catch(e){}"
                                                                                onblur="try{radio_onBlur(this);}catch(e){}"/>
-                                                                    </TD>
-                                                                    <TD width=5>&nbsp;</TD>
-                                                                    <TD width=30>
+                                                                    </td>
+                                                                    <td width=5>&nbsp;</td>
+                                                                    <td width=30>
                                                                         <label 
                                                                             tabindex="-1"
                                                                             for="optRecordSelection1"
@@ -2844,23 +2942,23 @@
                                                                             />
                                                                         All
                                                                     </label>
-                                                                    </TD>
-                                                                    <TD>&nbsp;</TD>
-                                                                </TR>
-                                                                <TR>
-                                                                    <TD colspan=6 height=5></TD>
-                                                                </TR>
-                                                                <TR>
-                                                                    <TD width=5>
+                                                                    </td>
+                                                                    <td>&nbsp;</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan=6 height=5></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width=5>
                                                                         <input id=optRecordSelection2 name=optRecordSelection type=radio 
                                                                                onclick="changeBaseTableRecordOptions()"
                                                                                onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
                                                                                onmouseout="try{radio_onMouseOut(this);}catch(e){}"
                                                                                onfocus="try{radio_onFocus(this);}catch(e){}"
                                                                                onblur="try{radio_onBlur(this);}catch(e){}"/>
-                                                                    </TD>
-                                                                    <TD width=5>&nbsp;</TD>
-                                                                    <TD width=20>
+                                                                    </td>
+                                                                    <td width=5>&nbsp;</td>
+                                                                    <td width=20>
                                                                         <label 
                                                                             tabindex="-1"
                                                                             for="optRecordSelection2"
@@ -2870,34 +2968,34 @@
                                                                             />
                                                                         Picklist
                                                                     </label>
-                                                                    </TD>
-                                                                    <TD width=5>&nbsp;</TD>
-                                                                    <TD>
+                                                                    </td>
+                                                                    <td width=5>&nbsp;</td>
+                                                                    <td>
                                                                         <INPUT id=txtBasePicklist name=txtBasePicklist class="text textdisabled" disabled="disabled" style="WIDTH: 100%">
-                                                                    </TD>
-                                                                    <TD width=30>
+                                                                    </td>
+                                                                    <td width=30>
                                                                         <INPUT id=cmdBasePicklist name=cmdBasePicklist style="WIDTH: 100%" type=button disabled="disabled" value="..." class="btn btndisabled"
                                                                                onclick="selectRecordOption('base', 'picklist')"
                                                                                onmouseover="try{button_onMouseOver(this);}catch(e){}" 
                                                                                onmouseout="try{button_onMouseOut(this);}catch(e){}"
                                                                                onfocus="try{button_onFocus(this);}catch(e){}"
                                                                                onblur="try{button_onBlur(this);}catch(e){}" />
-                                                                    </TD>
-                                                                </TR>
-                                                                <TR>
-                                                                    <TD colspan=6 height=5></TD>
-                                                                </TR>
-                                                                <TR>
-                                                                    <TD width=5>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan=6 height=5></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td width=5>
                                                                         <input id=optRecordSelection3 name=optRecordSelection type=radio
                                                                                onclick=changeBaseTableRecordOptions() 
                                                                                onmouseover="try{radio_onMouseOver(this);}catch(e){}" 
                                                                                onmouseout="try{radio_onMouseOut(this);}catch(e){}"
                                                                                onfocus="try{radio_onFocus(this);}catch(e){}"
                                                                                onblur="try{radio_onBlur(this);}catch(e){}"/>
-                                                                    </TD>
-                                                                    <TD width=5>&nbsp;</TD>
-                                                                    <TD width=20>
+                                                                    </td>
+                                                                    <td width=5>&nbsp;</td>
+                                                                    <td width=20>
                                                                         <label 
                                                                             tabindex="-1"
                                                                             for="optRecordSelection3"
@@ -2907,33 +3005,33 @@
                                                                             />
                                                                         Filter
                                                                     </label>
-                                                                    </TD>
-                                                                    <TD width=5>&nbsp;</TD>
-                                                                    <TD>
+                                                                    </td>
+                                                                    <td width=5>&nbsp;</td>
+                                                                    <td>
                                                                         <INPUT id=txtBaseFilter name=txtBaseFilter disabled="disabled" class="text textdisabled" style="WIDTH: 100%">
-                                                                    </TD>
-                                                                    <TD width=30>
+                                                                    </td>
+                                                                    <td width=30>
                                                                         <INPUT id=cmdBaseFilter name=cmdBaseFilter style="WIDTH: 100%" type=button class="btn btndisabled" disabled="disabled" value="..."
                                                                                onclick="selectRecordOption('base', 'filter')" 
                                                                                onmouseover="try{button_onMouseOver(this);}catch(e){}" 
                                                                                onmouseout="try{button_onMouseOut(this);}catch(e){}"
                                                                                onfocus="try{button_onFocus(this);}catch(e){}"
                                                                                onblur="try{button_onBlur(this);}catch(e){}" />
-                                                                    </TD>
-                                                                </TR>
+                                                                    </td>
+                                                                </tr>
                                                             </TABLE>
-                                                        </TD>
-                                                        <TD width=5>&nbsp;</TD>
-                                                    </TR>
+                                                        </td>
+                                                        <td width=5>&nbsp;</td>
+                                                    </tr>
 											
-                                                    <TR>
-                                                        <TD colspan=9 height=5>&nbsp;</TD>
-                                                    </TR>
+                                                    <tr>
+                                                        <td colspan=9 height=5>&nbsp;</td>
+                                                    </tr>
 											
 
-                                                    <TR>
-                                                        <TD colspan=5>&nbsp;</TD>
-                                                        <TD colspan=3>
+                                                    <tr>
+                                                        <td colspan=5>&nbsp;</td>
+                                                        <td colspan=3>
                                                             <input name=chkPrintFilter id=chkPrintFilter type=checkbox disabled="disabled" tabindex=-1 
                                                                    onclick="changeTab1Control()"
                                                                    onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
@@ -2949,13 +3047,13 @@
                                                                 onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
                                                                 Display filter or picklist title in the report header
                                                             </label> 
-                                                        </TD>
-                                                        <TD width=5>&nbsp;</TD>
-                                                    </TR>
+                                                        </td>
+                                                        <td width=5>&nbsp;</td>
+                                                    </tr>
 											
-                                                    <TR>
-                                                        <TD colspan=9 height=5>&nbsp;</TD>
-                                                    </TR>
+                                                    <tr>
+                                                        <td colspan=9 height=5>&nbsp;</td>
+                                                    </tr>
                                                 </TABLE>
                                             </td>
                                         </tr>
@@ -2967,35 +3065,35 @@
                                         <tr valign=top> 
                                             <td>
                                                 <TABLE WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
-                                                <TR>
-                                                    <TD colspan=9 height=5></TD>
-                                                </TR>
+                                                <tr>
+                                                    <td colspan=9 height=5></td>
+                                                </tr>
 
-                                                <TR height=10>
-                                                    <TD width=5>&nbsp;</TD>
-                                                    <TD colspan=4 vAlign=top><U>Headings & Breaks</U></TD>
-                                                    <TD width="15%" align=Center>Start</TD>
-                                                    <TD width=5>&nbsp;</TD>
-                                                    <TD width="15%" align=Center>Stop</TD>
-                                                    <TD width=5>&nbsp;</TD>
-                                                    <TD width="15%" align=Center>Increment</TD>
-                                                    <TD>&nbsp;</TD>
-                                                </TR>
+                                                <tr height=10>
+                                                    <td width=5>&nbsp;</td>
+                                                    <td colspan=4 vAlign=top><U>Headings & Breaks</U></td>
+                                                    <td width="15%" align=Center>Start</td>
+                                                    <td width=5>&nbsp;</td>
+                                                    <td width="15%" align=Center>Stop</td>
+                                                    <td width=5>&nbsp;</td>
+                                                    <td width="15%" align=Center>Increment</td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
 
-                                                <TR>
-                                                    <TD colspan=9 height=5></TD>
-                                                </TR>
-                                                <TR height=23>
-                                                    <TD width=5>&nbsp;</TD>
-                                                    <TD width=80 nowrap vAlign=top>Horizontal :</TD>
-                                                    <TD width=5>&nbsp;</TD>
-                                                    <TD width="40%" vAlign=top>
+                                                <tr>
+                                                    <td colspan=9 height=5></td>
+                                                </tr>
+                                                <tr height=23>
+                                                    <td width=5>&nbsp;</td>
+                                                    <td width=80 nowrap vAlign=top>Horizontal :</td>
+                                                    <td width=5>&nbsp;</td>
+                                                    <td width="40%" vAlign=top>
                                                         <select id=cboHor name=cboHor style="WIDTH: 100%" class="combo combodisabled" disabled="disabled"
                                                                 onchange="cboHor_Change();changeTab2Control(); "> 
                                                         </select>
-                                                    </TD>
-                                                    <TD width=15>&nbsp;</TD>
-                                                    <TD>
+                                                    </td>
+                                                    <td width=15>&nbsp;</td>
+                                                    <td>
                                                         <OBJECT CLASSID="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"  codebase="cabs/tinumb6.cab#version=6,0,1,1" id=txtHorStart name=txtHorStart width="100%" height="100%" 
                                                                 onkeyup="changeTab2Control()">
                                                             <PARAM NAME="DisplayFormat" VALUE="##########0.0000">
@@ -3006,9 +3104,9 @@
                                                             <PARAM NAME="BackColor" VALUE="15988214">
                                                             <PARAM NAME="ForeColor" VALUE="6697779">
                                                         </OBJECT>
-                                                    </TD>
-                                                    <TD width=5>&nbsp;</TD>
-                                                    <TD width="15%">
+                                                    </td>
+                                                    <td width=5>&nbsp;</td>
+                                                    <td width="15%">
                                                         <OBJECT CLASSID="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"  codebase="cabs/tinumb6.cab#version=6,0,1,1" id=txtHorStop name=txtHorStop width="100%" height="100%" 
                                                                 onkeyup="changeTab2Control()">
                                                             <PARAM NAME="DisplayFormat" VALUE="##########0.0000">
@@ -3019,9 +3117,9 @@
                                                             <PARAM NAME="BackColor" VALUE="15988214">
                                                             <PARAM NAME="ForeColor" VALUE="6697779">
                                                         </OBJECT>
-                                                    </TD>
-                                                    <TD width=5>&nbsp;</TD>
-                                                    <TD width="15%">
+                                                    </td>
+                                                    <td width=5>&nbsp;</td>
+                                                    <td width="15%">
                                                         <OBJECT CLASSID="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"  codebase="cabs/tinumb6.cab#version=6,0,1,1" id=txtHorStep name=txtHorStep width="100%" height="100%" 
                                                                 onkeyup="changeTab2Control()">
                                                             <PARAM NAME="DisplayFormat" VALUE="##########0.0000">
@@ -3032,25 +3130,25 @@
                                                             <PARAM NAME="BackColor" VALUE="15988214">
                                                             <PARAM NAME="ForeColor" VALUE="6697779">
                                                         </OBJECT>
-                                                    </TD>
+                                                    </td>
 
-                                                    <TD>&nbsp;</TD>
-                                                </TR>
+                                                    <td>&nbsp;</td>
+                                                </tr>
 
-                                                <TR>
-                                                    <TD colspan=9 height=5></TD>
-                                                </TR>
-                                                <TR height=23>
-                                                    <TD width=5>&nbsp;</TD>
-                                                    <TD width=80 nowrap vAlign=top>Vertical :</TD>
-                                                    <TD width=5>&nbsp;</TD>
-                                                    <TD width="40%" vAlign=top>
+                                                <tr>
+                                                    <td colspan=9 height=5></td>
+                                                </tr>
+                                                <tr height=23>
+                                                    <td width=5>&nbsp;</td>
+                                                    <td width=80 nowrap vAlign=top>Vertical :</td>
+                                                    <td width=5>&nbsp;</td>
+                                                    <td width="40%" vAlign=top>
                                                         <select id=cboVer name=cboVer style="WIDTH: 100%" class="combo combodisabled" disabled="disabled"
                                                                 onchange="cboVer_Change();changeTab2Control(); "> 
                                                         </select>
-                                                    </TD>
-                                                    <TD width=15>&nbsp;</TD>
-                                                    <TD width="15%">
+                                                    </td>
+                                                    <td width=15>&nbsp;</td>
+                                                    <td width="15%">
                                                         <OBJECT CLASSID="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"  codebase="cabs/tinumb6.cab#version=6,0,1,1" id=txtVerStart name=txtVerStart width="100%" height="100%" 
                                                                 onkeyup="changeTab2Control()">
                                                             <PARAM NAME="DisplayFormat" VALUE="##########0.0000">
@@ -3061,9 +3159,9 @@
                                                             <PARAM NAME="BackColor" VALUE="15988214">
                                                             <PARAM NAME="ForeColor" VALUE="6697779">
                                                         </OBJECT>
-                                                    </TD>
-                                                    <TD width=5>&nbsp;</TD>
-                                                    <TD width="15%">
+                                                    </td>
+                                                    <td width=5>&nbsp;</td>
+                                                    <td width="15%">
                                                         <OBJECT CLASSID="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"  codebase="cabs/tinumb6.cab#version=6,0,1,1" id=txtVerStop name=txtVerStop width="100%" height="100%" 
                                                                 onkeyup="changeTab2Control()">
                                                             <PARAM NAME="DisplayFormat" VALUE="##########0.0000">
@@ -3074,9 +3172,9 @@
                                                             <PARAM NAME="BackColor" VALUE="15988214">
                                                             <PARAM NAME="ForeColor" VALUE="6697779">
                                                         </OBJECT>
-                                                    </TD>
-                                                    <TD width=5>&nbsp;</TD>
-                                                    <TD width="15%">
+                                                    </td>
+                                                    <td width=5>&nbsp;</td>
+                                                    <td width="15%">
                                                         <OBJECT CLASSID="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"  codebase="cabs/tinumb6.cab#version=6,0,1,1" id=txtVerStep name=txtVerStep width="100%" height="100%" 
                                                                 onkeyup="changeTab2Control()">
                                                             <PARAM NAME="DisplayFormat" VALUE="##########0.0000">
@@ -3087,24 +3185,24 @@
                                                             <PARAM NAME="BackColor" VALUE="15988214">
                                                             <PARAM NAME="ForeColor" VALUE="6697779">
                                                         </OBJECT>
-                                                    </TD>
+                                                    </td>
 
-                                                    <TD>&nbsp;</TD>
-                                                </TR>
-                                                <TR>
-                                                    <TD colspan=9 height=5></TD>
-                                                </TR>
-                                                <TR height=23>
-                                                    <TD width=5>&nbsp;</TD>
-                                                    <TD width=100 nowrap vAlign=top>Page Break :</TD>
-                                                    <TD width=5>&nbsp;</TD>
-                                                    <TD width="40%" vAlign=top>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan=9 height=5></td>
+                                                </tr>
+                                                <tr height=23>
+                                                    <td width=5>&nbsp;</td>
+                                                    <td width=100 nowrap vAlign=top>Page Break :</td>
+                                                    <td width=5>&nbsp;</td>
+                                                    <td width="40%" vAlign=top>
                                                         <select id=cboPgb name=cboPgb style="WIDTH: 100%" class="combo combodisabled" disabled="disabled"
                                                                 onchange="cboPgb_Change();changeTab2Control(); " > 
                                                         </select>
-                                                    </TD>
-                                                    <TD width=15>&nbsp;</TD>
-                                                    <TD width="15%">
+                                                    </td>
+                                                    <td width=15>&nbsp;</td>
+                                                    <td width="15%">
                                                         <OBJECT CLASSID="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"  codebase="cabs/tinumb6.cab#version=6,0,1,1" id=txtPgbStart name=txtPgbStart style="LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:100%" 
                                                                 onkeyup="changeTab2Control()">
                                                             <PARAM NAME="DisplayFormat" VALUE="##########0.0000">
@@ -3115,9 +3213,9 @@
                                                             <PARAM NAME="BackColor" VALUE="15988214">
                                                             <PARAM NAME="ForeColor" VALUE="6697779">
                                                         </OBJECT>
-                                                    </TD>
-                                                    <TD width=5>&nbsp;</TD>
-                                                    <TD width="15%">
+                                                    </td>
+                                                    <td width=5>&nbsp;</td>
+                                                    <td width="15%">
                                                         <OBJECT CLASSID="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"  codebase="cabs/tinumb6.cab#version=6,0,1,1" id=txtPgbStop name=txtPgbStop style="LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:100%" 
                                                                 onkeyup="changeTab2Control()">
                                                             <PARAM NAME="DisplayFormat" VALUE="##########0.0000">
@@ -3128,9 +3226,9 @@
                                                             <PARAM NAME="BackColor" VALUE="15988214">
                                                             <PARAM NAME="ForeColor" VALUE="6697779">
                                                         </OBJECT>
-                                                    </TD>
-                                                    <TD width=5>&nbsp;</TD>
-                                                    <TD width="15%">
+                                                    </td>
+                                                    <td width=5>&nbsp;</td>
+                                                    <td width="15%">
                                                         <OBJECT CLASSID="clsid:49CBFCC2-1337-11D2-9BBF-00A024695830"  codebase="cabs/tinumb6.cab#version=6,0,1,1" id=txtPgbStep name=txtPgbStep style="LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:100%" 
                                                                 onkeyup="changeTab2Control()">
                                                             <PARAM NAME="DisplayFormat" VALUE="##########0.0000">
@@ -3141,48 +3239,48 @@
                                                             <PARAM NAME="BackColor" VALUE="15988214">
                                                             <PARAM NAME="ForeColor" VALUE="6697779">
                                                         </OBJECT>
-                                                    </TD>
-                                                    <TD>&nbsp;</TD>
-                                                </TR>
+                                                    </td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
 
-                                                <TR height=40>
-                                                    <TD colspan=11><hr></TD>
-                                                </TR>
+                                                <tr height=40>
+                                                    <td colspan=11><hr></td>
+                                                </tr>
 
-                                                <TR height=10>
-                                                    <TD width=5>&nbsp;</TD>
-                                                    <TD width=80 colspan=4 nowrap vAlign=top><U>Intersection</U></TD>
-                                                </TR>
-                                                <TR>
-                                                    <TD colspan=9 height=5></TD>
-                                                </TR>
+                                                <tr height=10>
+                                                    <td width=5>&nbsp;</td>
+                                                    <td width=80 colspan=4 nowrap vAlign=top><U>Intersection</U></td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan=9 height=5></td>
+                                                </tr>
 
                                                 <TABLE WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
-                                                    <TR height=0>
-                                                        <TD width=90></TD>
-                                                        <TD width="40%"></TD>
-                                                    </TR>
+                                                    <tr height=0>
+                                                        <td width=90></td>
+                                                        <td width="40%"></td>
+                                                    </tr>
 
-                                                    <TD colspan=2>
+                                                    <td colspan=2>
                                                         <TABLE WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
-                                                            <TR height=10>
-                                                                <TD width=5>&nbsp;</TD>
-                                                                <TD width=80 nowrap vAlign=top>Column :</TD>
-                                                                <TD width=5>&nbsp;</TD>
-                                                                <TD width="100%" vAlign=top>
+                                                            <tr height=10>
+                                                                <td width=5>&nbsp;</td>
+                                                                <td width=80 nowrap vAlign=top>Column :</td>
+                                                                <td width=5>&nbsp;</td>
+                                                                <td width="100%" vAlign=top>
                                                                     <select id=cboInt name=cboInt style="WIDTH: 100%" class="combo combodisabled" disabled="disabled"
                                                                             onchange="cboInt_Change();changeTab2Control(); " > 
                                                                     </select>
-                                                                </TD>
-                                                            </TR>
-                                                            <TR>
-                                                                <TD colspan=9 height=5></TD>
-                                                            </TR>
-                                                            <TR height=10>
-                                                                <TD width=5>&nbsp;</TD>
-                                                                <TD width=80 nowrap vAlign=top>Type :</TD>
-                                                                <TD width=5>&nbsp;</TD>
-                                                                <TD width="100%" vAlign=top>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan=9 height=5></td>
+                                                            </tr>
+                                                            <tr height=10>
+                                                                <td width=5>&nbsp;</td>
+                                                                <td width=80 nowrap vAlign=top>Type :</td>
+                                                                <td width=5>&nbsp;</td>
+                                                                <td width="100%" vAlign=top>
                                                                     <select id=cboIntType name=cboIntType style="WIDTH: 100%" class="combo combodisabled" disabled="disabled"
                                                                             onchange="changeTab2Control()" >
                                                                         <option value="1">Average</option>
@@ -3191,15 +3289,15 @@
                                                                         <option value="3">Minimum</option>
                                                                         <option value="4">Total</option>
                                                                     </select>
-                                                                </TD>
-                                                            </TR>
+                                                                </td>
+                                                            </tr>
                                                         </TABLE>
-                                                    </TD>
-                                                    <TD width=15>&nbsp;</TD>
-                                                    <TD>
+                                                    </td>
+                                                    <td width=15>&nbsp;</td>
+                                                    <td>
                                                         <TABLE WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
-                                                            <TR>
-                                                                <TD>
+                                                            <tr>
+                                                                <td>
                                                                     <INPUT type="checkbox" id=chkPercentage name=chkPercentage tabindex=-1
                                                                            onclick="changeTab2Control()"
                                                                            onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
@@ -3216,13 +3314,13 @@
 																    
                                                                         Percentage of Type
                                                                     </label> 
-                                                                </TD>
-                                                            </TR>
-                                                            <TR>
-                                                                <TD height=5></TD>
-                                                            </TR>
-                                                            <TR>
-                                                                <TD>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td height=5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
                                                                     <INPUT type="checkbox" id=chkPerPage name=chkPerPage tabindex=-1
                                                                            onclick="changeTab2Control()"                                                                     
                                                                            onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
@@ -3239,13 +3337,13 @@
 																    
                                                                         Percentage of Page
                                                                     </label> 
-                                                                </TD>
-                                                            </TR>
-                                                            <TR>
-                                                                <TD height=5></TD>
-                                                            </TR>
-                                                            <TR>
-                                                                <TD>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td height=5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
                                                                     <INPUT type="checkbox" id=chkSuppress name=chkSuppress tabindex=-1
                                                                            onclick="changeTab2Control()"
                                                                            onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
@@ -3262,13 +3360,13 @@
 																    
                                                                         Suppress Zeros
                                                                     </label> 
-                                                                </TD>
-                                                            </TR>
-                                                            <TR>
-                                                                <TD height=5></TD>
-                                                            </TR>
-                                                            <TR>
-                                                                <TD>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td height=5></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
                                                                     <INPUT type="checkbox" id=chkUse1000 name=chkUse1000 tabindex=-1
                                                                            onclick="changeTab2Control()" 																    onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
                                                                            onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
@@ -3284,13 +3382,13 @@
 																    
                                                                         Use 1000 Separators (,)
                                                                     </label> 
-                                                                </TD>
-                                                            </TR>													
+                                                                </td>
+                                                            </tr>													
                                                         </TABLE>
-                                                    </TD>
-                                                    <TR>
-                                                        <TD colspan=9 height=5></TD>
-                                                    </TR>
+                                                    </td>
+                                                    <tr>
+                                                        <td colspan=9 height=5></td>
+                                                    </tr>
                                                 </TABLE>
                                             </td>
                                         </tr>
@@ -3617,21 +3715,21 @@
                                                                                                     <td></td>
                                                                                                     <td colspan=2>
                                                                                                         <TABLE class="invisible" CELLSPACING=0 CELLPADDING=0 style="WIDTH: 400px">
-                                                                                                        <TR>
-                                                                                                        <TD>
+                                                                                                        <tr>
+                                                                                                        <td>
                                                                                                             <INPUT id=txtFilename name=txtFilename class="text textdisabled" disabled="disabled" style="WIDTH: 375px">
-                                                                                                        </TD>
-                                                                                                        <TD width=25>
+                                                                                                        </td>
+                                                                                                        <td width=25>
                                                                                                             <INPUT id=cmdFilename name=cmdFilename style="WIDTH: 100%" type=button class="btn" value="..."
                                                                                                                    onClick="saveFile();changeTab3Control();"  			                                
                                                                                                                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
                                                                                                                    onmouseout="try{button_onMouseOut(this);}catch(e){}"
                                                                                                                    onfocus="try{button_onFocus(this);}catch(e){}"
                                                                                                                    onblur="try{button_onBlur(this);}catch(e){}" />
-                                                                                                        </TD>
-                                                                                                    </TD>
+                                                                                                        </td>
+                                                                                                    </td>
                                                                                                 </TABLE>
-                                                                </TD>
+                                                                </td>
                                                                 <td></td>
                                                             </tr>
 																	
@@ -3683,22 +3781,22 @@
                                                             <td></td>
                                                             <td colspan=2>
                                                                 <TABLE class="invisible" CELLSPACING=0 CELLPADDING=0 style="WIDTH: 400px">
-                                                                <TR>
-                                                                <TD>
+                                                                <tr>
+                                                                <td>
                                                                     <INPUT id=txtEmailGroup name=txtEmailGroup class="text textdisabled" disabled="disabled" style="WIDTH: 100%">
                                                                     <INPUT id=txtEmailGroupID name=txtEmailGroupID type=hidden>
-                                                                </TD>
-                                                                <TD width=25>
+                                                                </td>
+                                                                <td width=25>
                                                                     <INPUT id=cmdEmailGroup name=cmdEmailGroup style="WIDTH: 100%" type=button class="btn" value="..."
                                                                            onClick="selectEmailGroup();changeTab3Control();" 
                                                                            onmouseover="try{button_onMouseOver(this);}catch(e){}" 
                                                                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
                                                                            onfocus="try{button_onFocus(this);}catch(e){}"
                                                                            onblur="try{button_onBlur(this);}catch(e){}" />
-                                                                </TD>
-                                                            </TD>
+                                                                </td>
+                                                            </td>
                                                         </TABLE>
-                                                    </TD>
+                                                    </td>
                                                     <td></td>
                                                 </tr>
 																	
@@ -3712,11 +3810,11 @@
                                                         Email subject :   
                                                     </td>
                                                     <td></td>
-                                                    <TD colspan=2 width=100% nowrap>
+                                                    <td colspan=2 width=100% nowrap>
                                                         <INPUT id=txtEmailSubject disabled="disabled" class="text textdisabled" maxlength=255 name=txtEmailSubject style="WIDTH: 400px" 
                                                                onchange="frmUseful.txtChanged.value = 1;" 
                                                                onkeydown="frmUseful.txtChanged.value = 1;">
-                                                    </TD>
+                                                    </td>
                                                     <td></td>
                                                 </tr>
 																	
@@ -3730,11 +3828,11 @@
                                                         Attach as :   
                                                     </td>
                                                     <td></td>
-                                                    <TD colspan=2 width=100% nowrap>
+                                                    <td colspan=2 width=100% nowrap>
                                                         <INPUT id=txtEmailAttachAs disabled="disabled" maxlength=255 class="text textdisabled" name=txtEmailAttachAs style="WIDTH: 400px" 
                                                                onchange="frmUseful.txtChanged.value = 1;" 
                                                                onkeydown="frmUseful.txtChanged.value = 1;">
-                                                    </TD>
+                                                    </td>
                                                     <td></td>
                                                 </tr>
 																	
@@ -3750,63 +3848,63 @@
                     </TABLE>
                 </td>
             </tr>
-        </TABLE>
-    </DIV>
+        </TABLE></form>
+</DIV>
     </td>
-        <TD width=10></td>
+        <td width=10></td>
     </tr> 
 
         <tr height=10> 
             <td colspan=3></td>
         </tr> 
 
-        <TR height=10>
-            <TD width=10></td>
-            <TD>
+        <tr height=10>
+            <td width=10></td>
+            <td>
                 <TABLE WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
-                    <TR>
-                        <TD>&nbsp;</TD>
-                        <TD width=80>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td width=80>
                             <input type=button id=cmdOK name=cmdOK value=OK style="WIDTH: 100%" class="btn"
                                    onclick="okClick()"
                                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
                                    onmouseout="try{button_onMouseOut(this);}catch(e){}"
                                    onfocus="try{button_onFocus(this);}catch(e){}"
                                    onblur="try{button_onBlur(this);}catch(e){}" />
-                        </TD>
-                        <TD width=10></TD>
-                        <TD width=80>
+                        </td>
+                        <td width=10></td>
+                        <td width=80>
                             <input type=button id=cmdCancel name=cmdCancel value=Cancel style="WIDTH: 100%"  class="btn"
                                    onclick="cancelClick()"
                                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
                                    onmouseout="try{button_onMouseOut(this);}catch(e){}"
                                    onfocus="try{button_onFocus(this);}catch(e){}"
                                    onblur="try{button_onBlur(this);}catch(e){}" />
-                        </TD>
-                    </TR>
+                        </td>
+                    </tr>
                 </TABLE>
             </td>
-            <TD width=10></td>
+            <td width=10></td>
         </tr> 
 
         <tr height=5> 
             <td colspan=3></td>
         </tr> 
-    </TABLE>
+    </table>
     </td>
     </tr> 
-    </TABLE>
+    </table>
 
-        <INPUT type='hidden' id=txtBasePicklistID name=txtBasePicklistID>
-        <INPUT type='hidden' id=txtBaseFilterID name=txtBaseFilterID>
-        <INPUT type='hidden' id=txtDatabase name=txtDatabase value="<%=session("Database")%>">
+        <input type='hidden' id=txtBasePicklistID name=txtBasePicklistID>
+        <input type='hidden' id=txtBaseFilterID name=txtBaseFilterID>
+        <input type='hidden' id=txtDatabase name=txtDatabase value="<%=session("Database")%>">
 
-        <INPUT type='hidden' id=txtWordVer name=txtWordVer value="<%=Session("WordVer")%>">
-        <INPUT type='hidden' id=txtExcelVer name=txtExcelVer value="<%=Session("ExcelVer")%>">
-        <INPUT type='hidden' id=txtWordFormats name=txtWordFormats value="<%=Session("WordFormats")%>">
-        <INPUT type='hidden' id=txtExcelFormats name=txtExcelFormats value="<%=Session("ExcelFormats")%>">
-        <INPUT type='hidden' id=txtWordFormatDefaultIndex name=txtWordFormatDefaultIndex value="<%=Session("WordFormatDefaultIndex")%>">
-        <INPUT type='hidden' id=txtExcelFormatDefaultIndex name=txtExcelFormatDefaultIndex value="<%=Session("ExcelFormatDefaultIndex")%>">
+        <input type='hidden' id=txtWordVer name=txtWordVer value="<%=Session("WordVer")%>">
+        <input type='hidden' id=txtExcelVer name=txtExcelVer value="<%=Session("ExcelVer")%>">
+        <input type='hidden' id=txtWordFormats name=txtWordFormats value="<%=Session("WordFormats")%>">
+        <input type='hidden' id=txtExcelFormats name=txtExcelFormats value="<%=Session("ExcelFormats")%>">
+        <input type='hidden' id=txtWordFormatDefaultIndex name=txtWordFormatDefaultIndex value="<%=Session("WordFormatDefaultIndex")%>">
+        <input type='hidden' id=txtExcelFormatDefaultIndex name=txtExcelFormatDefaultIndex value="<%=Session("ExcelFormatDefaultIndex")%>">
 
     </form>
 
@@ -3999,3 +4097,7 @@
     <INPUT type='hidden' id=txtTicker name=txtTicker value=0>
     <INPUT type='hidden' id=txtLastKeyFind name=txtLastKeyFind value="">
 
+<script type="text/javascript">
+    util_def_crosstabs_window_onload();
+    util_def_crosstabs_addhandlers();
+</script>
