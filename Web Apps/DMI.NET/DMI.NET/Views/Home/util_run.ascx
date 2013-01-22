@@ -19,11 +19,10 @@ session("action") = Request.Form("action")
 ' Write the prompted values from the calling form into a session variable.
 ' NB. The prompts are written into an array and this array is written to a 
     ' session variables with the name 'Prompts_<util type>_<util id>.
-    Dim j
     Dim sKey
 
     Dim aPrompts(1, 0)
-j = 0
+    Dim j = 0
 redim preserve aPrompts(1, 0)
     For i = 0 To (Request.Form.Count) - 1
         sKey = Request.Form.Keys(i)
@@ -188,6 +187,7 @@ session(sKey) = aPrompts
         <%html.RenderPartial("~/Views/Home/progress.ascx")%>
     </div>
     
+    <div id="main" data-framesource="">
     <%   
         If Session("utiltype") = "1" Then
             Html.RenderPartial("~/Views/Home/util_run_crosstabsMain.ascx")
@@ -215,7 +215,7 @@ session(sKey) = aPrompts
             Html.RenderPartial("~/Views/Home/util_run_calendarreport_main.ascx")
         End If
     %>
-
+    </div>
 	<div id="outputoptions"></div>
     
 </div>

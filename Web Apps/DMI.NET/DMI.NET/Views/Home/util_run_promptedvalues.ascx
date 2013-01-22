@@ -48,7 +48,7 @@
 <script type="text/javascript">
 
     function promptedvalues_window_onload() {
-
+        
         $("#workframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
 
         //var frmPromptedValues = OpenHR.getForm("workframe", "frmPromptedValues");
@@ -162,7 +162,7 @@
     Dim prmUtilType
     Dim prmUtilID
     Dim prmRecordID
-    Dim rstPromptedValue
+    ' Dim rstPromptedValue
     Dim iValueType
 	
 	iPromptCount = 0
@@ -170,7 +170,7 @@
 	
 	'if Request.Form("utiltype") = 2 or Request.Form("utiltype") = 9 then
 	if bStandardReportPrompt then
-        cmdDefn = Server.CreateObject("ADODB.Command")
+        cmdDefn = CreateObject("ADODB.Command")
 		cmdDefn.CommandText = "spASRIntGetStandardReportDates"
 		cmdDefn.CommandType = 4 ' Stored Procedure
         cmdDefn.ActiveConnection = Session("databaseConnection")
@@ -179,7 +179,7 @@
         cmdDefn.Parameters.Append(prmUtilType)
 		prmUtilType.value = cleanNumeric(session("StandardReport_Type"))
 	else
-        cmdDefn = Server.CreateObject("ADODB.Command")
+        cmdDefn = CreateObject("ADODB.Command")
 		cmdDefn.CommandText = "sp_ASRIntGetUtilityPromptedValues"
 		cmdDefn.CommandType = 4 ' Stored Procedure
         cmdDefn.ActiveConnection = Session("databaseConnection")
@@ -198,7 +198,7 @@
 	end if
 
     Err.Clear()
-    rstPromptedValue = cmdDefn.Execute
+    Dim rstPromptedValue = cmdDefn.Execute
 
 	if not (rstPromptedValue.EOF and rstPromptedValue.BOF) then
         Response.Write("<table align=center class=""outline"" cellPadding=5 cellSpacing=0 style=""width:100%;"">" & vbCrLf)

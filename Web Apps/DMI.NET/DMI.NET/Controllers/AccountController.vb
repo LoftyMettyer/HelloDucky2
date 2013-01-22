@@ -539,7 +539,7 @@ Namespace Controllers
 			' 200=varchar, 1=input, 20=size
 			cmdDetail.Parameters.Append(prmModuleKey)
 
-			Err.Number = 0
+			Err.Clear()
 			cmdDetail.Execute()
 
 			If (Err.Number <> 0) Then
@@ -557,6 +557,55 @@ Namespace Controllers
 			End If
 
 			Session("Usergroup") = cmdDetail.Parameters("Group").Value
+
+
+
+			' Do we have DMI Multi-record access?	
+			Dim cmdDmiUser = New Command
+			cmdDmiUser.CommandText =
+				"SELECT count(ItemID) as blah" & vbNewLine & _
+				"FROM ASRSysGroupPermissions" & vbNewLine & _
+				"WHERE ASRSysGroupPermissions.itemID = (SELECT ASRSysPermissionItems.itemID" & vbNewLine & _
+				"FROM ASRSysPermissionItems" & vbNewLine & _
+				"INNER JOIN ASRSysPermissionCategories ON ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID" & vbNewLine & _
+				"WHERE (ASRSysPermissionItems.itemKey = 'INTRANET'" & vbNewLine & _
+				"AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')" & vbNewLine & _
+				"AND ASRSysGroupPermissions.groupName = '" & Session("Usergroup") & "'" & vbNewLine & _
+				"AND ASRSysGroupPermissions.permitted = 1)" & vbNewLine
+			cmdDmiUser.ActiveConnection = conX
+
+			Err.Clear()
+			Dim result = cmdDmiUser.Execute()
+
+			If (Err.Number <> 0) Then
+				Session("ErrorTitle") = "Login Page"
+
+				If Err.Number = -2147217900 Then
+					Session("ErrorText") = "Unable to login to the OpenHR database:<p>" &
+					 FormatError(
+					  "Please ask the System Administrator to update the database in the System Manager.")
+				Else
+					Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
+					 FormatError(Err.Description)
+				End If
+				Return RedirectToAction("Error")
+			End If
+
+			Dim superUserAccessCount = result.Fields(0).Value
+
+			If CLng(superUserAccessCount) > 0 Then
+				' We are a superUser.
+				' As per some of the stored procs, I thought we'd use:
+				' 0 = SSI user only
+				' 1 = DMI single record access
+				' 2 = DMI Multi record access
+				Session("Usertype") = 2
+			Else
+				Session("Usertype") = 0
+			End If
+
+			cmdDmiUser = Nothing
+
 
 			' If the users default database is not 'master' then make it so.
 			Dim cmdDefaultDB = New Command
@@ -627,7 +676,7 @@ Namespace Controllers
 			If (Err.Number <> 0) Then
 				Session("ErrorTitle") = "Login Page - Audit Access"
 				Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
-				 formatError(Err.Description)
+				 FormatError(Err.Description)
 				Return RedirectToAction("Error")
 			End If
 
@@ -650,7 +699,7 @@ Namespace Controllers
 			If (Err.Number <> 0) Then
 				Session("ErrorTitle") = "Login Page"
 				Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
-				 formatError(Err.Description)
+				 FormatError(Err.Description)
 				Return RedirectToAction("Error")
 			End If
 
@@ -675,7 +724,7 @@ Namespace Controllers
 			If (Err.Number <> 0) Then
 				Session("ErrorTitle") = "Login Page"
 				Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
-				 formatError(Err.Description)
+				 FormatError(Err.Description)
 				Return RedirectToAction("Error")
 			End If
 
@@ -827,7 +876,7 @@ Namespace Controllers
 			If (Err.Number <> 0) Then
 				Session("ErrorTitle") = "Login Page"
 				Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
-				 formatError(Err.Description)
+				 FormatError(Err.Description)
 				Return RedirectToAction("Error")
 			End If
 
@@ -1366,7 +1415,7 @@ Namespace Controllers
 			If (Err.Number <> 0) Then
 				Session("ErrorTitle") = "Login Page - Module setup"
 				Session("ErrorText") = "You could not login to the OpenHR database because of the following error :<p>" &
-				 formatError(Err.Description)
+				 FormatError(Err.Description)
 				Response.Redirect("loginerror.asp")
 			End If
 
@@ -1479,12 +1528,12 @@ Namespace Controllers
 						prmViewID = cmdSSRecord.CreateParameter("@piViewID", 3, 1)
 						' 3=integer, 1=input
 						cmdSSRecord.Parameters.Append(prmViewID)
-						prmViewID.Value = cleanNumeric(Session("SingleRecordViewID"))
+						prmViewID.Value = CleanNumeric(Session("SingleRecordViewID"))
 
 						cmdSSRecord.Execute()
 
 						If (Err.Number <> 0) Then
-							sErrorDescription = "Unable to get the personnel record ID." & vbCrLf & formatError(Err.Description)
+							sErrorDescription = "Unable to get the personnel record ID." & vbCrLf & FormatError(Err.Description)
 						End If
 
 						If Len(sErrorDescription) = 0 Then
@@ -1517,23 +1566,23 @@ Namespace Controllers
 						prmTableID = cmdGetRecordDesc.CreateParameter("tableID", 3, 1)
 						' 3 = integer, 1 = input
 						cmdGetRecordDesc.Parameters.Append(prmTableID)
-						prmTableID.Value = cleanNumeric(Session("SingleRecordTableID"))
+						prmTableID.Value = CleanNumeric(Session("SingleRecordTableID"))
 						' cleanNumeric(Session("tableID"))
 
 						prmRecordID = cmdGetRecordDesc.CreateParameter("recordID", 3, 1)
 						' 3 = integer, 1 = input
 						cmdGetRecordDesc.Parameters.Append(prmRecordID)
-						prmRecordID.Value = cleanNumeric(Session("TopLevelRecID"))
+						prmRecordID.Value = CleanNumeric(Session("TopLevelRecID"))
 
 						Dim prmParentTableID = cmdGetRecordDesc.CreateParameter("parentTableID", 3, 1)
 						' 3 = integer, 1 = input
 						cmdGetRecordDesc.Parameters.Append(prmParentTableID)
-						prmParentTableID.Value = cleanNumeric(Session("parentTableID"))
+						prmParentTableID.Value = CleanNumeric(Session("parentTableID"))
 
 						Dim prmParentRecordID = cmdGetRecordDesc.CreateParameter("parentRecordID", 3, 1)
 						' 3=integer, 1=input
 						cmdGetRecordDesc.Parameters.Append(prmParentRecordID)
-						prmParentRecordID.Value = cleanNumeric(Session("parentRecordID"))
+						prmParentRecordID.Value = CleanNumeric(Session("parentRecordID"))
 
 						Dim prmRecordDesc = cmdGetRecordDesc.CreateParameter("recordDesc", 200, 2, 8000)
 						' 200=varchar, 2=output, 8000=size
@@ -1562,7 +1611,7 @@ Namespace Controllers
 
 							If cmdGetRecordDesc.ActiveConnection.Errors.Count > 0 Then
 								For iLoop = 1 To cmdGetRecordDesc.ActiveConnection.Errors.Count
-									sErrMsg = formatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
+									sErrMsg = FormatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
 
 									If (cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Number = DEADLOCK_ERRORNUMBER) And
 									 (((UCase(Left(sErrMsg, Len(DEADLOCK_MESSAGESTART))) = DEADLOCK_MESSAGESTART) And
@@ -1584,7 +1633,7 @@ Namespace Controllers
 										End If
 									Else
 										sErrorDescription = sErrorDescription & vbCrLf &
-										  formatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
+										  FormatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
 										fOK = False
 									End If
 								Next
@@ -1616,7 +1665,12 @@ Namespace Controllers
 					cookie("WindowsAuthentication") = Request.Form("chkWindowsAuthentication")
 					Response.Cookies.Add(cookie)
 
-					Return RedirectToAction("LinksMain", "Home")
+					If Session("Usertype") = 2 Then
+						Return RedirectToAction("Main", "Home")
+					Else
+						Return RedirectToAction("LinksMain", "Home")
+					End If
+
 				End If
 
 			End If

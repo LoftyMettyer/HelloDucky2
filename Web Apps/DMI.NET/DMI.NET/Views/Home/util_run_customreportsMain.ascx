@@ -27,7 +27,7 @@
     
     <INPUT type='hidden' id=txtLoadCount name=txtLoadCount value=0>
 
-<div id="mainframeset">
+<div id="reportmainframeset">
     
     <div id="reportworkframe" style="display: none;">
          <%Html.RenderPartial("~/views/home/util_run_customreports.ascx")%> 

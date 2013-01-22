@@ -469,8 +469,8 @@
 			}
 			else {
 
-			    var frmPrompt = document.getElementById('frmPrompt');
-			    //var frmPrompt = OpenHR.getForm("workframe", "frmPrompt");
+			    //var frmPrompt = document.getElementById('frmPrompt');
+			    var frmPrompt = OpenHR.getForm("workframe", "frmPrompt");
 			    
 				frmPrompt.utiltype.value = frmDefSel.utiltype.value;
 				frmPrompt.utilid.value = frmDefSel.utilid.value;
@@ -479,9 +479,8 @@
 				sUtilId = new String(frmDefSel.utilid.value);
 
 				//frmPrompt.target = sUtilId;
-//				OpenHR.submitForm(frmPrompt);
-			    debugger;
-			    OpenHR.submitForm(document.frmPrompt);
+				OpenHR.submitForm(frmPrompt);
+			    //OpenHR.submitForm(document.frmPrompt);
                 
 
 			}

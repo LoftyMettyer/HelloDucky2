@@ -1172,7 +1172,6 @@
 <!--
     
     function addActiveXHandlers() {
-        debugger;
 
         OpenHR.addActiveXHandler("tblGrid", "onresize", tblGrid_onresize);
         OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "PrintInitialize", ssOleDBGridDefSelRecords_PrintInitialize);
@@ -1288,11 +1287,11 @@
         iPollPeriod = 100;
         iPollCounter = iPollPeriod;
 
-        debugger;
-
         // Expand the work frame and hide the option frame.
         //window.parent.parent.document.all.item("myframeset").rows = "0, *";
-	
+
+        var frmPopup = document.getElementById("frmPopup");
+
         if ((txtSuccessFlag.value == 1) || (txtSuccessFlag.value == 3)) 
         {
 
@@ -1341,9 +1340,8 @@
         {
             if (txtSuccessFlag.value == 2) 
             {
-                debugger;
 
-                var frmOutput = OpenHR.getForm("workframe", "frmOutput");
+                var frmOutput = document.getElementById("frmOutput");
 
                 setGridFont(frmOutput.ssHiddenGrid);
                 setGridFont(frmOutput.ssOleDBGridDefSelRecords);
@@ -1407,8 +1405,9 @@
                     {
                         var lngPreviewWidth = new Number(850);
                         var lngPreviewHeight = new Number(550);
-                        window.parent.parent.parent.moveTo((screen.width - lngPreviewWidth) / 2, (screen.height - lngPreviewHeight) / 2);
-                        window.parent.parent.parent.resizeTo(lngPreviewWidth, lngPreviewHeight);
+                        //modal forms for dmi.net
+                        //window.parent.parent.parent.moveTo((screen.width - lngPreviewWidth) / 2, (screen.height - lngPreviewHeight) / 2);
+                        //window.parent.parent.parent.resizeTo(lngPreviewWidth, lngPreviewHeight);
                     }
                     catch(e) {}
                 }
@@ -1418,7 +1417,12 @@
         //window.parent.parent.document.all.item("myframeset").rows = "0, *, 0";
         //window.parent.parent.document.all.item("myframeset").rows = "0, *, 0";
         //$("#workframe").attr("myframeset", "REPORT");
-        $("workframe").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTSMAIN");
+        $("myframeset").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTSMAIN");
+
+        $("#top").hide();
+        $("#reportworkframe").show();
+
+
     }		
 
     function ExportDataPrompt() 
