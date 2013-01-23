@@ -404,6 +404,23 @@
 		}
 	}
 
+
+	function ReturnNewWindow(mypage, myname, w, h, scroll) {
+	    var winl = (screen.width - w) / 2;
+	    var wint = (screen.height - h) / 2;
+	    var winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scroll + ',resizable';
+	    var win = window.open(mypage, myname, winprops);
+
+	    if (parseInt(navigator.appVersion) >= 4) {
+	        // Delay fixes a problem with IE7 and Vista (don't know why though!)
+	        pausecomp(300);
+	        win.window.focus();
+	    }
+
+	    return win;
+
+	}
+
 	function openDialog(pDestination, pWidth, pHeight) {
 		var dlgwinprops = "center:yes;" +
 			"dialogHeight:" + pHeight + "px;" +
@@ -478,8 +495,9 @@
 				frmPrompt.action.value = frmDefSel.action.value;
 				sUtilId = new String(frmDefSel.utilid.value);
 
-				//frmPrompt.target = sUtilId;
-				OpenHR.submitForm(frmPrompt);
+			    frmPrompt.target = sUtilId;
+			    var newWin = ReturnNewWindow('', sUtilId, '500', '200', 'yes');
+			    OpenHR.submitForm(frmPrompt, newWin);
 			    //OpenHR.submitForm(document.frmPrompt);
                 
 

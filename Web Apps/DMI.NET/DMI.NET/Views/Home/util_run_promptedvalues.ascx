@@ -44,15 +44,14 @@
 	<PARAM NAME="LPKPath" VALUE="lpks/main.lpk">
 </OBJECT>
     
-    
-<script type="text/javascript">
-
+<script type="text/javascript">    
+ 
     function promptedvalues_window_onload() {
-        
-        $("#workframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
+        //remmed this - don't need to set current workframe source - leave as defsel.
+        //$("#workframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
 
         //var frmPromptedValues = OpenHR.getForm("workframe", "frmPromptedValues");
-        var frmPromptedValues = document.getElementById('frmPromptedValues');
+        var frmPromptedValues = $("#frmPromptedValues");        // document.getElementById('frmPromptedValues');
 
         frmPromptedValues.txtLocaleDateFormat.value = OpenHR.LocaleDateFormat;
         frmPromptedValues.txtLocaleDecimalSeparator.value = OpenHR.LocaleDecimalSeparator;

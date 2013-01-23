@@ -32,7 +32,7 @@
 	    getForm = function (frameId, formId) {
 	    	return document.forms[formId];
 	    },
-	    submitForm = function (form) {	       
+	    submitForm = function (form, targetWin) {	       
 	    	var $form = $(form),
 	    	    $frame = $form.closest("div[data-framesource]").first(),
 	    	    url = $form.attr("action"),
@@ -43,9 +43,14 @@
 	    		url: url,
 	    		type: "POST",
 	    		data: data,	    		
-	    		success: function (html) {
+	    		success: function(html) {
 	    		    $("#workframeset").show();
-	    		    $frame.html(html);
+	    		    if (targetWin != null)
+	    		 {
+	    		        $(targetWin.document.body).html(html);	    		        
+	    		    } else {
+	    		        $frame.html(html);
+	    		    }
 	    		},
 	    		error: function (req, status, errorObj) {
 	    			alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
