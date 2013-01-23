@@ -1174,17 +1174,19 @@
     function addActiveXHandlers() {
 
         OpenHR.addActiveXHandler("tblGrid", "onresize", tblGrid_onresize);
-        OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "PrintInitialize", ssOleDBGridDefSelRecords_PrintInitialize);
-        OpenHR.addActiveXHandler("ssOleDBGridDefselRecords", "PrintError", ssOleDBGridDefselRecords_PrintError);
+        OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "printinitialize", ssOleDBGridDefSelRecords_PrintInitialize);
+    //    OpenHR.addActiveXHandler("ssOleDBGridDefselRecords", "printerror", ssOleDBGridDefselRecords_PrintError);
 
-        OpenHR.addActiveXHandler("ssHiddenGrid", "PrintInitialize", ssHiddenGrid_PrintInitialize);
-        OpenHR.addActiveXHandler("ssHiddenGrid", "PrintBegin", ssHiddenGrid_PrintBegin);
-        OpenHR.addActiveXHandler("ssHiddenGrid", "PrintError", ssHiddenGrid_PrintError);
+        OpenHR.addActiveXHandler("ssHiddenGrid", "printinitialize", ssHiddenGrid_PrintInitialize);
+        OpenHR.addActiveXHandler("ssHiddenGrid", "printbegin", ssHiddenGrid_PrintBegin);
+      ///  OpenHR.addActiveXHandler("ssHiddenGrid", "printerror", ssHiddenGrid_PrintError);
     }
 
     function tblGrid_onresize() {
 
         try {
+            debugger;
+
             if (txtNoRecs.value == 0) {
                 frmOutput.ssOleDBGridDefSelRecords.Refresh();
                 if ((frmOutput.ssOleDBGridDefSelRecords.visiblerows() + 1) >= frmOutput.ssOleDBGridDefSelRecords.rows()) {
@@ -1338,18 +1340,17 @@
         }
         else 
         {
-            if (txtSuccessFlag.value == 2) 
-            {
-
+            if (txtSuccessFlag.value == 2) {
+                
                 var frmOutput = document.getElementById("frmOutput");
 
                 setGridFont(frmOutput.ssHiddenGrid);
                 setGridFont(frmOutput.ssOleDBGridDefSelRecords);
 
-//                frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'hidden';
-  //              frmOutput.ssOleDBGridDefSelRecords.Redraw = false;
-    //            frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'visible';
-      //          frmOutput.ssOleDBGridDefSelRecords.focus();
+                frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'hidden';
+                frmOutput.ssOleDBGridDefSelRecords.Redraw = false;
+                frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'visible';
+                frmOutput.ssOleDBGridDefSelRecords.focus();
 			
                 var dataCollection = frmGridItems.elements;
                 if (dataCollection!=null) 
@@ -1368,12 +1369,13 @@
                             }
                             catch(e) {}
                         }
-				
+
+                        debugger;
+
                         sControlName = dataCollection.item(i).name;
                         sControlName = sControlName.substr(0, 12);
-                        if (sControlName=="txtGridItem_") 
-                        {
-                            frmOutput.ssOleDBGridDefSelRecords.additem(dataCollection.item(i).value);
+                        if (sControlName=="txtGridItem_") {
+                            frmOutput.ssOleDBGridDefSelRecords.AddItem(dataCollection.item(i).value);
                         }
                     }
                 }		
@@ -1406,8 +1408,8 @@
                         var lngPreviewWidth = new Number(850);
                         var lngPreviewHeight = new Number(550);
                         //modal forms for dmi.net
-                        //window.parent.parent.parent.moveTo((screen.width - lngPreviewWidth) / 2, (screen.height - lngPreviewHeight) / 2);
-                        //window.parent.parent.parent.resizeTo(lngPreviewWidth, lngPreviewHeight);
+                        window.parent.parent.parent.moveTo((screen.width - lngPreviewWidth) / 2, (screen.height - lngPreviewHeight) / 2);
+                        window.parent.parent.parent.resizeTo(lngPreviewWidth, lngPreviewHeight);
                     }
                     catch(e) {}
                 }
@@ -1550,8 +1552,13 @@
                         }
                         sAddItem = sAddItem + frmOutput.ssOleDBGridDefSelRecords.Columns(iColIndex).value;
                     }
+                    
+
+
                     frmOutput.ssHiddenGrid.AddItem(sAddItem);
                 }
+
+                debugger;
 
                 if (iIndex < frmOutput.ssOleDBGridDefSelRecords.rows) 
                 {
@@ -1610,6 +1617,6 @@
 
 
 <script type="text/javascript">
-    //addActiveXHandlers();
+    addActiveXHandlers();
     customreports_window_onload();
 </script>
