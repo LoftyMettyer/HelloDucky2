@@ -2035,8 +2035,6 @@
 		var frmUseful = document.getElementById("frmUseful");
 		var frmRecordSelection = document.getElementById("frmRecordSelection");
 
-	    debugger;
-
 		if (psTable == 'base') {
 			iTableID = frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].value;
 
