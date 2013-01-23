@@ -6,7 +6,6 @@
     function util_def_crosstabs_window_onload() {
         var fOK;
         fOK = true;
-        debugger;
         var frmUseful = document.getElementById("frmUseful");
         var sErrMsg = frmUseful.txtErrorDescription.value;
         if (sErrMsg.length > 0) {
