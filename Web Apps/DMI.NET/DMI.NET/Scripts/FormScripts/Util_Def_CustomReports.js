@@ -205,24 +205,6 @@
 		return false;
 	}
 
-	function updateCurrentColProp(psProp, pbValue) {
-		with (grdColProps) {
-			Columns(psProp).Value = pbValue;
-		}
-		return;
-	}
-
-	function getCurrentColProp(psProp) {
-		with (grdColProps) {
-			if (Columns(psProp).Value == "-1") {
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-	}
-
 	function displayPage(piPageNumber) {
 
 		if (piPageNumber == 1) {
@@ -2207,7 +2189,7 @@
 		sHiddenGroups = HiddenGroups(frmDefinition.grdAccess);
 		frmValidate.validateHiddenGroups.value = sHiddenGroups;
 
-		sURL = "dialog" +
+		sURL = "util_validate_customreports" +
 			"?validateBaseFilter=" + escape(frmValidate.validateBaseFilter.value) +
 				"&validateBasePicklist=" + escape(frmValidate.validateBasePicklist.value) +
 					"&validateEmailGroup=" + escape(frmValidate.validateEmailGroup.value) +

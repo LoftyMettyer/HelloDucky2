@@ -26,6 +26,9 @@
 	    showPopup = function (prompt) {
 
 	    },
+        getFrame = function(frameId) {
+            return document.frames[frameId];
+        },
 	    getForm = function (frameId, formId) {
 	    	return document.forms[formId];
 	    },
@@ -35,8 +38,6 @@
 	    	    url = $form.attr("action"),
 	    	    target = $form.attr("target"),
 	    	    data = $form.serialize();
-	        
-	 //       $("#post_form").attr("target", target);
 
 	    	$.ajax({
 	    		url: url,
@@ -44,7 +45,7 @@
 	    		data: data,	    		
 	    		success: function (html) {
 	    		    $("#workframeset").show();
-	    			$frame.html(html);
+	    		    $frame.html(html);
 	    		},
 	    		error: function (req, status, errorObj) {
 	    			alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
@@ -103,6 +104,7 @@
 		version: version,
 		messageBox: messageBox,
 		showPopup: showPopup,
+        getFrame: getFrame,
 		getForm: getForm,
 		submitForm: submitForm,
 		addActiveXHandler: addActiveXHandler,

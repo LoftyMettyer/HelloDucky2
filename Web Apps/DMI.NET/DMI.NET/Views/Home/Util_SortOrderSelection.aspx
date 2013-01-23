@@ -1,11 +1,20 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
+<%@ Import Namespace="DMI.NET" %>
 
+<script src="<%: Url.Content("~/Scripts/FormScripts/Util_Def_CustomReports.js") %>" type="text/javascript"></script>
+
+<!DOCTYPE html>
+<html>
+<head>
 <link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css"/>
 <script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
 <script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
 <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
 <title>OpenHR Intranet</title>
+</head>
 
+<body id=bdyMain leftmargin=20 topmargin=20 bottommargin=20 rightmargin=5>
+	
 <script type="text/javascript">
 <!--
 	window.onload = function() {
@@ -118,9 +127,11 @@
 	}
 
 	function getTableIDFromSelectedColumns(piColumnID) {
-		var frmDef = window.dialogArguments.parent.frames("workframe").document.forms("frmDefinition");
-		var frmUseful = window.dialogArguments.parent.frames("workframe").document.forms("frmUseful");
-		var frmOrig = window.dialogArguments.parent.frames("workframe").document.forms("frmOriginalDefinition");
+	    
+	    var frmDef = window.dialogArguments.OpenHR.getForm("workframe","frmDefinition");
+	    var frmUseful = window.dialogArguments.OpenHR.getForm("workframe","frmUseful");
+	    var frmOrig = window.dialogArguments.OpenHR.getForm("workframe","frmOriginalDefinition");
+
 
 		if (frmUseful.txtSelectedColumnsLoaded.value == 1) {
 				frmDef.ssOleDBGridSelectedColumns.Redraw = false;
@@ -161,11 +172,14 @@
 
 
 	function checkColumnOptions(pbFromCheckBox) {
+
 		var frmPopup = document.getElementById("frmPopup");
-		var parWin = window.dialogArguments.parent.frames("workframe");
+		var parWin = window.dialogArguments.OpenHR.getFrame("workframe");
 		var sKey = new String('C' + frmPopup.cboColumn.options[frmPopup.cboColumn.selectedIndex].value);
 
-		if (window.dialogArguments.parent.frames("workframe").setGirdCol(sKey)) {
+		debugger;   
+
+		if (parWin.setGirdCol(sKey)) {
 			var bBreak = parWin.getCurrentColProp('Break');
 			var bPage = parWin.getCurrentColProp('Page');
 			var bHidden = parWin.getCurrentColProp('Hidden');
@@ -281,15 +295,15 @@
 
 	if (session("utiltype") = 2) then
 		Response.Write("		var sKey = new String('C'+frmPopup.cboColumn.options[frmPopup.cboColumn.selectedIndex].value);" & vbCrLf)
-		Response.Write("		if (window.dialogArguments.parent.frames('workframe').setGirdCol(sKey))" & vbCrLf)
+        Response.Write("		if (window.dialogArguments.OpenHR.getFrame('workframe').setGirdCol(sKey))" & vbCrLf)
 		Response.Write("			{" & vbCrLf)
-		Response.Write("			window.dialogArguments.parent.frames('workframe').updateCurrentColProp('break', frmPopup.chkBOC.checked);" & vbCrLf)
+        Response.Write("			window.dialogArguments.OpenHR.getFrame('workframe').updateCurrentColProp('break', frmPopup.chkBOC.checked);" & vbCrLf)
 		Response.Write("			window.dialogArguments.document.getElementById('ssOleDBGridSortOrder').columns(3).value = frmPopup.chkBOC.checked;" & vbCrLf)
-		Response.Write("			window.dialogArguments.parent.frames('workframe').updateCurrentColProp('page', frmPopup.chkPOC.checked);" & vbCrLf)
+        Response.Write("			window.dialogArguments.OpenHR.getFrame('workframe').updateCurrentColProp('page', frmPopup.chkPOC.checked);" & vbCrLf)
 		Response.Write("			window.dialogArguments.document.getElementById('ssOleDBGridSortOrder').columns(4).value = frmPopup.chkPOC.checked;" & vbCrLf)
-		Response.Write("			window.dialogArguments.parent.frames('workframe').updateCurrentColProp('value', frmPopup.chkVOC.checked);" & vbCrLf)
+        Response.Write("			window.dialogArguments.OpenHR.getFrame('workframe').updateCurrentColProp('value', frmPopup.chkVOC.checked);" & vbCrLf)
 		Response.Write("			window.dialogArguments.document.getElementById('ssOleDBGridSortOrder').columns(5).value = frmPopup.chkVOC.checked;" & vbCrLf)
-		Response.Write("			window.dialogArguments.parent.frames('workframe').updateCurrentColProp('hide', frmPopup.chkSRV.checked);" & vbCrLf)
+        Response.Write("			window.dialogArguments.OpenHR.getFrame('workframe').updateCurrentColProp('hide', frmPopup.chkSRV.checked);" & vbCrLf)
 		Response.Write("			window.dialogArguments.document.getElementById('ssOleDBGridSortOrder').columns(6).value = frmPopup.chkSRV.checked;" & vbCrLf)
 		Response.Write("			}" & vbCrLf)
 	end if
@@ -300,12 +314,12 @@
 	
 	if (session("utiltype") = 2) then
 		Response.Write("		var sKey = new String('C'+frmPopup.cboColumn.options[frmPopup.cboColumn.selectedIndex].value);" & vbCrLf)
-		Response.Write("		if (window.dialogArguments.parent.frames('workframe').setGirdCol(sKey))" & vbCrLf)
+        Response.Write("		if (window.dialogArguments.OpenHR.getFrame('workframe').setGirdCol(sKey))" & vbCrLf)
 		Response.Write("			{" & vbCrLf)
-		Response.Write("			window.dialogArguments.parent.frames('workframe').updateCurrentColProp('break', frmPopup.chkBOC.checked);" & vbCrLf)
-		Response.Write("			window.dialogArguments.parent.frames('workframe').updateCurrentColProp('page', frmPopup.chkPOC.checked);" & vbCrLf)
-		Response.Write("			window.dialogArguments.parent.frames('workframe').updateCurrentColProp('value', frmPopup.chkVOC.checked);" & vbCrLf)
-		Response.Write("			window.dialogArguments.parent.frames('workframe').updateCurrentColProp('hide', frmPopup.chkSRV.checked);" & vbCrLf)
+        Response.Write("			window.dialogArguments.OpenHR.getFrame('workframe').updateCurrentColProp('break', frmPopup.chkBOC.checked);" & vbCrLf)
+        Response.Write("			window.dialogArguments.OpenHR.getFrame('workframe').updateCurrentColProp('page', frmPopup.chkPOC.checked);" & vbCrLf)
+        Response.Write("			window.dialogArguments.OpenHR.getFrame('workframe').updateCurrentColProp('value', frmPopup.chkVOC.checked);" & vbCrLf)
+        Response.Write("			window.dialogArguments.OpenHR.getFrame('workframe').updateCurrentColProp('hide', frmPopup.chkSRV.checked);" & vbCrLf)
 		Response.Write("			}" & vbCrLf)
 	end if
 	
@@ -321,9 +335,8 @@
 
 %>
 	
-<form id=frmPopup name=frmPopup onsubmit="return setForm();">
-	
-<table align=center class="outline" cellpadding=5 cellspacing=0 width="95%">
+<form id=frmPopup name=frmPopup onsubmit="return setForm();">	
+    <table align=center class="outline" cellpadding=5 cellspacing=0 width="95%">
 	<tr>
 		<td>
 			<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
@@ -377,7 +390,7 @@
     </tr>
 </table>
 </form>
-</body>
+
 <%
 		Response.End 
 	end if

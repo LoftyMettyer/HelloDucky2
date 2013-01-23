@@ -3,6 +3,7 @@
 
 <script src="<%: Url.Content("~/Scripts/FormScripts/Util_Def_CustomReports.js") %>" type="text/javascript"></script>
 
+
 <%Html.RenderPartial("Util_Def_CustomReports/dialog")%>
 
 <div <%=session("BodyTag")%>>
@@ -2357,6 +2358,32 @@
 </div>
 
 <script type="text/javascript">
+
+	function updateCurrentColProp(psProp, pbValue) {
+		with (grdColProps) {
+			Columns(psProp).Value = pbValue;
+		}
+		return;
+	}
+
+	function getCurrentColProp(psProp) {
+		with (grdColProps) {
+			if (Columns(psProp).Value == "-1") {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+	}
+
+</script>
+
+
+<script type="text/javascript">
 	util_def_customreports_onload();
 	util_def_customreports_addhandlers();
 </script>
+
+
+
