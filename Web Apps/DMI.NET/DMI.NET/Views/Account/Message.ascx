@@ -5,7 +5,7 @@
 <!--
 	/* Go back to the previous page. */
 	function GoBack() {
-        debugger;
+        //debugger;
         if (InStrRev(document.referrer, "/") > 0) {
             var sReferringPage = (Mid(document.referrer, (InStrRev(document.referrer, "/") + 1), 255));
             if (sReferringPage.length > 0 && sReferringPage.toLowerCase() != "login" && sReferringPage.toLowerCase() != "forcedpasswordchange") {
