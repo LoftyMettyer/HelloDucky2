@@ -1,29 +1,52 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%--<%@ Import Namespace="DMI.NET" %>
 
-<%--<%
-	' Only open the form if there was a referring page.
-	' If it wasn't then redirect to the login page.
-	Dim sReferringPage = Request.ServerVariables("HTTP_REFERER")
-	if inStrRev(sReferringPage, "/") > 0 then
-		sReferringPage = mid(sReferringPage, inStrRev(sReferringPage, "/") + 1)
-	end if
-
-	if len(sReferringPage) = 0 then
-		Response.Redirect("Login")
-	end if
-%>--%>
-
-<%--TODO <SCRIPT FOR=window EVENT=onload LANGUAGE=JavaScript>
-	cmdGoBack.focus();
-</SCRIPT>--%>
-
 <script type="text/javascript">
 <!--
 	/* Go back to the previous page. */
 	function GoBack() {
-		var frmGotoMain = OpenHR.getForm("workframe", "frmGotoMain");
-	    OpenHR.submitForm(frmGotoMain);
+        debugger;
+        if (InStrRev(document.referrer, "/") > 0) {
+            var sReferringPage = (Mid(document.referrer, (InStrRev(document.referrer, "/") + 1), 255));
+            if (sReferringPage.length > 0 && sReferringPage.toLowerCase() != "login" && sReferringPage.toLowerCase() != "forcedpasswordchange") {
+                //Not referred from login page, so default behaviour
+                //window.history.back(2);
+                window.location.href("Main");
+            }
+            else {
+                //referred from login page, so return to default.asp
+                window.location = "Login";
+            }
+        }
+        else {
+            //window.history.back(2);
+            window.location.href("Main");
+        }
+    }
+
+    function InStrRev(strSearch, charSearchFor) {
+        var j = -1;
+        for (var i = 0; i < strSearch.length; i++) {
+            if (charSearchFor == Mid(strSearch, i, 1)) {
+                j = i;
+            }
+        }
+        if (j > 0) {
+            return j;
+        }
+        else {
+            return -1;
+        }
+    }
+
+    function Mid(str, start, len) {
+        if (start < 0 || len < 0) return "";
+        var iEnd, iLen = String(str).length;
+        if (start + len > iLen)
+            iEnd = iLen;
+        else
+            iEnd = start + len;
+        return String(str).substring(start, iEnd);
 	}
 -->
 </script>
