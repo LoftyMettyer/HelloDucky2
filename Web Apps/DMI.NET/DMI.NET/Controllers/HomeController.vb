@@ -1805,6 +1805,40 @@ Namespace Controllers
 
 #End Region
 
+#Region "Expression Builder"
+
+    Function util_def_expression() As ActionResult
+      Return PartialView()
+    End Function
+
+    <HttpPost()>
+    Function util_def_expression_submit(value As FormCollection)
+      Return RedirectToAction("defsel")
+    End Function
+
+    Function util_def_exprcomponent() As ActionResult
+      Return PartialView()
+    End Function
+
+    Function util_test_expression() As ActionResult
+      Return View()
+    End Function
+
+    Function util_test_expression_pval() As ActionResult
+      Return View()
+    End Function
+
+    Function util_test_expression_submit(value As FormCollection)
+      Return RedirectToAction("util_def_expression")
+    End Function
+
+    Function util_validate_expression() As ActionResult
+      Return View()
+    End Function
+
+#End Region
+
+
   End Class
 
 
