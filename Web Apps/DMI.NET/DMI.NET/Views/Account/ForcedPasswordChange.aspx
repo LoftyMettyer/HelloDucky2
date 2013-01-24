@@ -54,11 +54,11 @@
 		if (fChangeOK) {
 		    OpenHR.submitForm(frmPasswordChangeForm);
 		}
-
+        //TODO
         /* Return to the default page. */
-        function cancelClick() {
-            window.location.href = "main";
-        }
+        //function cancelClick() {
+        //window.location.href = "main";
+        //}
 	}
 </script>
 
