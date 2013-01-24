@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%@ Import Namespace="DMI.NET" %>
+<%--<%@ Import Namespace="DMI.NET" %>
 
-<%
+<%--<%
 	' Only open the form if there was a referring page.
 	' If it wasn't then redirect to the login page.
 	Dim sReferringPage = Request.ServerVariables("HTTP_REFERER")
@@ -12,7 +12,7 @@
 	if len(sReferringPage) = 0 then
 		Response.Redirect("Login")
 	end if
-%>
+%>--%>
 
 <%--TODO <SCRIPT FOR=window EVENT=onload LANGUAGE=JavaScript>
 	cmdGoBack.focus();
