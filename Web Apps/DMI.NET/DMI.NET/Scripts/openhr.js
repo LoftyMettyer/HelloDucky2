@@ -39,6 +39,9 @@
 	    	    target = $form.attr("target"),
 	    	    data = $form.serialize();
 
+            //clear the frame...
+	        $frame.html('');
+
 	    	$.ajax({
 	    		url: url,
 	    		type: "POST",
@@ -48,9 +51,9 @@
 	    		    if (targetWin != null)
 	    		 {
 	    		        $(targetWin.document.body).html(html);	    		        
-	    		    } else {
+	    		    } else {	    		        
 	    		        $frame.html(html);
-	    		    }
+	    		    }	    		    
 	    		},
 	    		error: function (req, status, errorObj) {
 	    			alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
