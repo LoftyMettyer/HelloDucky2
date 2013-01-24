@@ -223,17 +223,3 @@ session(sKey) = aPrompts
 <FORM action="default_Submit" method=post id=FORM1 name=frmGoto style="visibility:hidden;display:none">
     <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 </FORM>
-
-<script type="text/javascript">
-
-    debugger;
-                var frmOutput = document.getElementById("frmOutput");
-
-                    frmOutput.ssOleDBGridDefSelRecords.Redraw = true;
-                    frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'visible';
-
-                    frmOutput.ssOleDBGridDefSelRecords.focus();
-
-
-    </script>
-
