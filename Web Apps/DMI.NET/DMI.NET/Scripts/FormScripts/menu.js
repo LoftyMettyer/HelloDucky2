@@ -3747,6 +3747,12 @@ function menu_openPersonnelRecEdit() {
 //	}
 }
 
+function menu_ConvertSQLDateToLocale(psString) {
+    
+}
+
+
+
 function menu_convertLocaleDateToSQL(psDateString)
 { 
 //	/* Convert the given date string (in locale format) into 
