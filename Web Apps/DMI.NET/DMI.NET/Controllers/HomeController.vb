@@ -10,9 +10,8 @@ Namespace Controllers
             Return View()
         End Function
 
-
         <HttpPost()>
-        Function forceFasswordChange_Submit(value As FormCollection)
+        Function ForceFasswordChange_Submit(value As FormCollection)
             On Error Resume Next
 
             Dim strErrorMessage As String = ""
@@ -183,6 +182,7 @@ Namespace Controllers
                         Session("MessageTitle") = "Change Password Page"
                         Session("MessageText") = "Password changed successfully."
                         Response.Redirect("loginmessage")
+                        'Response.Redirect("confirmok")
                     End If
                 Else
                     Session("ErrorTitle") = "Change Password Page"
@@ -201,6 +201,10 @@ Namespace Controllers
                 ' Go to the main page.
                 Response.Redirect("main")
             End If
+        End Function
+
+        Function ForcedPasswordChange() As ActionResult
+            Return View()
         End Function
 
         <HttpPost()>
@@ -352,7 +356,8 @@ Namespace Controllers
                             ' Tell the user that the password was changed okay.
                             Session("MessageTitle") = "Change Password Page"
                             Session("MessageText") = "Password changed successfully."
-                            Return RedirectToAction("message", "Account")
+                            Return RedirectToAction("Message", "Account")
+
                         End If
                     Else
                         Session("ErrorTitle") = "Change Password Page"
