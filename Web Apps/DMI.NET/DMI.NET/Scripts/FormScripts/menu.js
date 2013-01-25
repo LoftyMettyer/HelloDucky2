@@ -15,7 +15,8 @@
 	$("#contextmenu a").live('click', function (e) {
 		var pTool = ($(this).closest("li").attr("id"));
 		menu_abMainMenu_Click(pTool);
-
+	});
+    
 	//Add accordion functionality to the context menu
 	$(".accordion").accordion({
 		heightStyle: "fill"
@@ -578,7 +579,7 @@ function menu_MenuClick(sTool) {
 		}
 
 		if (sToolName == "mnutoolPicklists") {
-		    if (menu_saveChanges("PICKLISTS", true, false) != 2) { // 2 = vbCancel
+			if (menu_saveChanges("PICKLISTS", true, false) != 2) { // 2 = vbCancel
 			menu_loadDefSelPage(10, 0, 0, true);
 			}
 			return;
