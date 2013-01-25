@@ -1,13 +1,23 @@
-﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+﻿<%@ Page Title="" Language="VB" Inherits="System.Web.Mvc.ViewPage" MasterPageFile="~/Views/Shared/Site.Master" %>
 <%@ Import Namespace="DMI.NET" %>
 
+
+<asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
+    <%= GetPageTitle("Login") %>    
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 <script type="text/javascript">
 <!--
 	/* Go back to the previous page. */
 	function GoBack() {
-        //debugger;
+        
+	    //loginmessage is always called so back to login.
+	    window.location.href("login");
+
+	    return false;
         if (InStrRev(document.referrer, "/") > 0) {
-            var sReferringPage = (Mid(document.referrer, (InStrRev(document.referrer, "/") + 1), 255));
+            var sReferringPage = (Mid(document.location, (InStrRev(document.location, "/") + 1), 255));
             if (sReferringPage.length > 0 && sReferringPage.toLowerCase() != "login" && sReferringPage.toLowerCase() != "forcedpasswordchange") {
                 //Not referred from login page, so default behaviour
                 //window.history.back(2);
@@ -99,3 +109,5 @@
 <INPUT type="hidden" id=txtDesktopColour name=txtDesktopColour value=<%=session("DesktopColour")%>>
 
 </div>
+
+</asp:Content>

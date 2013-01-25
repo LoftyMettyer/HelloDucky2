@@ -7,7 +7,7 @@
 <script type="text/javascript">
 	/* Validate the password change, and change the user's password
 	on the SQL database if everything is okay. */
-	function SubmitPasswordDetails() {
+    function SubmitPasswordDetails() {
 		var sCurrentPassword;
 		var sNewPassword1;
 		var sNewPassword2;
@@ -52,19 +52,18 @@
 
 	    /* If everything is okay, submit the password change. */
 		if (fChangeOK) {
-		    OpenHR.submitForm(frmPasswordChangeForm);
+		    
+            //Don't use OPenHR.submitForm, as we don't want results to go to workframe.
+		    //OpenHR.submitForm(frmPasswordChangeForm);
+		    frmPasswordChangeForm.submit();
 		}
-        //TODO
-        /* Return to the default page. */
-        //function cancelClick() {
-        //window.location.href = "main";
-        //}
+
 	}
 </script>
 
 <div <%=session("BodyTag")%>>
 
-<% Html.BeginForm("ForcedPasswordChange", "Account", FormMethod.Post, New With {.id = "frmPasswordChangeForm", .name = "frmPasswordChangeForm"})%>
+<form action="forcedPasswordChange_Submit" method="post" id="frmPasswordChangeForm" name="frmPasswordChangeForm">
 
 <BR>
 <table class="outline" align=center cellPadding=5 cellSpacing=0> 
@@ -127,7 +126,7 @@
 		</td>
 	</tr>
 </table>
-<% Html.EndForm()%>
+</form>
 
 <%
 	On Error Resume Next
