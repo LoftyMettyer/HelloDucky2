@@ -416,6 +416,7 @@
     <Content Include="Views\Home\Util_Def_CustomReports.ascx" />
     <Content Include="Views\Home\util_def_exprcomponent.ascx" />
     <Content Include="Views\Home\util_def_expression.ascx" />
+    <Content Include="Views\Home\util_dialog_expression.aspx" />
     <Content Include="Views\Home\Util_EmailSelection.aspx" />
     <Content Include="Views\Home\Util_RecordSelection.aspx" />
     <Content Include="Views\Home\util_run.ascx" />

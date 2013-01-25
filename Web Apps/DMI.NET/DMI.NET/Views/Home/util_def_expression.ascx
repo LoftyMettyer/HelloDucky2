@@ -15,6 +15,8 @@
 <!--
     function util_def_expression_onload() {
 
+        debugger;
+
         var fOK;
         var objNode;
 
@@ -167,7 +169,7 @@
                         objNode.tag = sComponentDefn;
 					
                         if (pfVisible == true) {
-                            objNode.ensureVisible();
+                            objNode.EnsureVisible();
                         }
                         objNode.foreColor = getNodeColour(objNode.level);
 
@@ -209,7 +211,7 @@
                         objNode.tag = sExprDefn;
 					
                         if (pfVisible == true) {
-                            objNode.ensureVisible();
+                            objNode.EnsureVisible();
                         }
                         objNode.foreColor = getNodeColour(objNode.level);
 
@@ -246,9 +248,9 @@
             // Expand All.
             frmDefinition.SSTree1.focus();
             for (i=1; i<= frmDefinition.SSTree1.Nodes.Count; i++) {
-                frmDefinition.SSTree1.Nodes(i).ensureVisible();
+                frmDefinition.SSTree1.Nodes(i).EnsureVisible();
             }
-            frmDefinition.SSTree1.Nodes(1).ensureVisible();
+            frmDefinition.SSTree1.Nodes(1).EnsureVisible();
 			
             break;
 			
@@ -257,13 +259,13 @@
             frmDefinition.SSTree1.focus();
             for (i=1; i<= frmDefinition.SSTree1.Nodes.Count; i++) {
                 if(frmDefinition.SSTree1.Nodes(i).level <= 2){      
-                    frmDefinition.SSTree1.Nodes(i).ensureVisible();
+                    frmDefinition.SSTree1.Nodes(i).EnsureVisible();
                 }
                 else {
                     frmDefinition.SSTree1.Nodes(i).Expanded = false;
                 }
             }
-            frmDefinition.SSTree1.Nodes(1).ensureVisible();
+            frmDefinition.SSTree1.Nodes(1).EnsureVisible();
 			
             break;
         }
@@ -451,7 +453,8 @@
                                                                 iCharIndex = sDefn.indexOf("	");
                                                                 if (iCharIndex >= 0) {
                                                                     if (psParameter == "VALUECHARACTER") return sDefn.substr(0, iCharIndex);
-                                                                    sDefn = sDefn.substr(iCharIndex + 1);												
+                                                                    sDefn = sDefn.substr(iCharIndex + 1);												
+
 	
                                                                     iCharIndex = sDefn.indexOf("	");
                                                                     if (iCharIndex >= 0) {
@@ -511,16 +514,20 @@
                                                                                                                             sDefn = sDefn.substr(iCharIndex + 1);	
                                                                                                                             iCharIndex = sDefn.indexOf("	");
                                                                                                                             if (iCharIndex >= 0) {
-                                                                                                                                if (psParameter == "FIELDTABLEID") return sDefn.substr(0, 
+                                                                                                                                if (psParameter == "FIELDTABLEID") return sDefn.substr(0, 
+
                                                                                                                                     iCharIndex);
                                                                                                                                 sDefn = sDefn.substr(iCharIndex + 1);	
                                                                                                                                 iCharIndex = sDefn.indexOf("	");
                                                                                                                                 if (iCharIndex >= 0) {
-                                                                                                                                    if (psParameter == "FIELDSELECTIONORDERNAME") return 
+                                                                                                                                    if (psParameter == "FIELDSELECTIONORDERNAME") return 
+
                                                                                                                                     sDefn.substr(0, iCharIndex);
                                                                                                                                     sDefn = sDefn.substr(iCharIndex + 1);	
-																									
-																									
+																									
+
+																									
+
 										
                                                                                                                                     if (psParameter == "FIELDSELECTIONFILTERNAME") return sDefn;
                                                                                                                                 }
@@ -1062,7 +1069,9 @@
         var sTemp;
 
         // Expand the work frame and hide the option frame.
-        $("#workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");       
+        $("#workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
+
+        debugger;
 
         frmDefinition.SSTree1.style.visibility = "visible";
         frmDefinition.SSTree1.Refresh();
@@ -1085,7 +1094,7 @@
                 //objNode = frmDefinition.SSTree1.Nodes.Add(frmDefinition.SSTree1.Nodes(psLinkComponentID), 3, sNewKey, componentDescription(psComponentDefn));
                 objNode.tag = psComponentDefn;
 					
-                objNode.ensureVisible();
+                objNode.EnsureVisible();
                 objNode.foreColor = getNodeColour(objNode.level);
 
                 if(componentParameter(psComponentDefn, "TYPE") == 2) {
@@ -1106,7 +1115,7 @@
                         //					objNode = frmDefinition.SSTree1.Nodes.Add(frmDefinition.SSTree1.Nodes(sNewKey), 4, getUniqueNodeKey("E"), sExprName);
                         objNode.tag = "													";
                         objNode.foreColor = getNodeColour(objNode.level);				
-                        objNode.ensureVisible();
+                        objNode.EnsureVisible();
                     }
                 }
 			
@@ -1126,7 +1135,7 @@
                 //			objNode = frmDefinition.SSTree1.Nodes.Add(frmDefinition.SSTree1.Nodes(psLinkComponentID), 4, sNewKey, componentDescription(psComponentDefn));
                 objNode.tag = psComponentDefn;
 					
-                objNode.ensureVisible();
+                objNode.EnsureVisible();
                 objNode.foreColor = getNodeColour(objNode.level);
 
                 if(componentParameter(psComponentDefn, "TYPE") == 2) {
@@ -1147,7 +1156,7 @@
                         //					objNode = frmDefinition.SSTree1.Nodes.Add(frmDefinition.SSTree1.Nodes(sNewKey), 4, getUniqueNodeKey("E"), sExprName);
                         objNode.tag = "													";
                         objNode.foreColor = getNodeColour(objNode.level);				
-                        objNode.ensureVisible();
+                        objNode.EnsureVisible();
                     }
                 }
 		
@@ -1164,7 +1173,7 @@
                 //			objNode = frmDefinition.SSTree1.Nodes.Add(frmDefinition.SSTree1.Nodes(psLinkComponentID), 3, sNewKey, componentDescription(psComponentDefn));
                 objNode.tag = psComponentDefn;
 					
-                objNode.ensureVisible();
+                objNode.EnsureVisible();
                 objNode.foreColor = getNodeColour(objNode.level);
 
                 if(componentParameter(psComponentDefn, "TYPE") == 2) {
@@ -1185,7 +1194,7 @@
                         //					objNode = frmDefinition.SSTree1.Nodes.Add(frmDefinition.SSTree1.Nodes(sNewKey), 4, getUniqueNodeKey("E"), sExprName);
                         objNode.tag = "													";
                         objNode.foreColor = getNodeColour(objNode.level);				
-                        objNode.ensureVisible();
+                        objNode.EnsureVisible();
                     }
                 }
 		
@@ -1494,9 +1503,8 @@
         frmTest.prompts.value = sPrompts;
         frmTest.filtersAndCalcs.value = sFiltersAndCalcs;
 		
-        sURL = "dialog" +
-            "?action=test" +
-            "&destination=util_dialog_expression";
+        sURL = "util_dialog_expression" +
+            "?action=test";
 		
         openDialog(sURL, (screen.width)/2,(screen.height)/3);
     }
@@ -1677,7 +1685,7 @@
                 objNode = frmDefinition.SSTree1.Nodes.Add(currentNodeKey, iRelation, sNewKey, SSTreeClipboard.Nodes(i).text);
                 //			objNode = frmDefinition.SSTree1.Nodes.Add(objCurrentNode, iRelation, sNewKey, SSTreeClipboard.Nodes(i).text);
                 objNode.tag = SSTreeClipboard.Nodes(i).tag;
-                objNode.ensureVisible();
+                objNode.EnsureVisible();
                 objNode.foreColor = getNodeColour(objNode.level);
 
                 pasteSubNodes(SSTreeClipboard.Nodes(i).key, sNewKey);
@@ -1814,7 +1822,7 @@
         objNode = frmDefinition.SSTree1.Nodes.Add(sRelatedKey, iRelation, sNewKey, frmDefinition.SSTree1.Nodes(piIndex).text);
         //	objNode = frmDefinition.SSTree1.Nodes.Add(frmDefinition.SSTree1.Nodes(sRelatedKey), iRelation, sNewKey, frmDefinition.SSTree1.Nodes(piIndex).text);
         objNode.tag = frmDefinition.SSTree1.Nodes(piIndex).tag;
-        objNode.ensureVisible();
+        objNode.EnsureVisible();
         objNode.foreColor = getNodeColour(objNode.level);
 
         moveSubNodes(frmDefinition.SSTree1.Nodes(piIndex).key, sNewKey);
@@ -1845,7 +1853,7 @@
             objNewNode = frmDefinition.SSTree1.Nodes.Add(sToNode, 4, sNewKey, objNode.text);
             //		objNewNode = frmDefinition.SSTree1.Nodes.Add(frmDefinition.SSTree1.Nodes(sToNode), 4, sNewKey, objNode.text);
             objNewNode.tag = objNode.tag;
-            objNewNode.ensureVisible();
+            objNewNode.EnsureVisible();
             objNewNode.foreColor = getNodeColour(objNewNode.level);
             moveSubNodes(objNode.key, sNewKey);
 
@@ -1856,7 +1864,7 @@
                 objNewNode = frmDefinition.SSTree1.Nodes.Add(sToNode, 4, sNewKey, objNode.text);
                 //			objNewNode = frmDefinition.SSTree1.Nodes.Add(frmDefinition.SSTree1.Nodes(sToNode), 4, sNewKey, objNode.text);
                 objNewNode.tag = objNode.tag;
-                objNewNode.ensureVisible();
+                objNewNode.EnsureVisible();
                 objNewNode.foreColor = getNodeColour(objNewNode.level);
                 moveSubNodes(objNode.key, sNewKey);
             }
@@ -2644,9 +2652,9 @@
             break;
         case "ID_ExpandAll" :
             for (iCount=1; iCount<= frmDefinition.SSTree1.Nodes.Count; iCount++) {
-                frmDefinition.SSTree1.Nodes(iCount).ensureVisible();
+                frmDefinition.SSTree1.Nodes(iCount).EnsureVisible();
             }
-            frmDefinition.SSTree1.SelectedItem.ensureVisible();
+            frmDefinition.SSTree1.SelectedItem.EnsureVisible();
             break;
         case "ID_ShrinkAll" :
             for (iCount=1; iCount<= frmDefinition.SSTree1.Nodes.Count; iCount++) {
@@ -2660,7 +2668,7 @@
             for (iCount=1; iCount<= frmDefinition.SSTree1.Nodes.Count; iCount++) {
                 frmDefinition.SSTree1.Nodes(iCount).Font.Size = frmDefinition.SSTree1.Font.Size;
             }
-            frmDefinition.SSTree1.SelectedItem.ensureVisible();
+            frmDefinition.SSTree1.SelectedItem.EnsureVisible();
             abExprMenu.Tools("ID_ZoomIn").Enabled = (frmDefinition.SSTree1.Font.Size < 11);
             abExprMenu.Tools("ID_ZoomOut").Enabled = true;
             break;
@@ -2669,7 +2677,7 @@
             for (iCount=1; iCount<= frmDefinition.SSTree1.Nodes.Count; iCount++) {
                 frmDefinition.SSTree1.Nodes(iCount).Font.Size = frmDefinition.SSTree1.Font.Size;
             }
-            frmDefinition.SSTree1.SelectedItem.ensureVisible();
+            frmDefinition.SSTree1.SelectedItem.EnsureVisible();
             abExprMenu.Tools("ID_ZoomOut").Enabled = (frmDefinition.SSTree1.Font.Size > 7);
             abExprMenu.Tools("ID_ZoomIn").Enabled = true;
             break;
@@ -2678,7 +2686,7 @@
             for (iCount=1; iCount<= frmDefinition.SSTree1.Nodes.Count; iCount++) {
                 frmDefinition.SSTree1.Nodes(iCount).Font.Size = frmDefinition.SSTree1.Font.Size;
             }
-            frmDefinition.SSTree1.SelectedItem.ensureVisible();
+            frmDefinition.SSTree1.SelectedItem.EnsureVisible();
             abExprMenu.Tools("ID_ZoomOut").Enabled = true;
             abExprMenu.Tools("ID_ZoomIn").Enabled = true;
             break;
@@ -2989,10 +2997,10 @@
 													</TR>
 													<TR height=10>
 														<TD rowspan=16>
-															<OBJECT classid="clsid:1C203F13-95AD-11D0-A84B-00A0247B735B" id=SSTree1 
-codebase="cabs/SStree.cab#version=1,0,2,24" style="LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:100%" VIEWASTEXT>
+															<OBJECT classid="clsid:1C203F13-95AD-11D0-A84B-00A0247B735B" id=SSTree1 
+                                                                codebase="cabs/SStree.cab#version=1,0,2,24" style="LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:100%; VISIBILITY: visible;" VIEWASTEXT>
 																<PARAM NAME="_ExtentX" VALUE="31882">
-																<PARAM NAME="_ExtentY" VALUE="16536">
+																<PARAM NAME="_ExtentY" VALUE="16404">
 																<PARAM NAME="_Version" VALUE="65538">
 																<PARAM NAME="BackColor" VALUE="-2147483643">
 																<PARAM NAME="ForeColor" VALUE="-2147483640">
@@ -3039,8 +3047,7 @@ codebase="cabs/SStree.cab#version=1,0,2,24" style="LEFT: 0px; TOP: 0px; WIDTH:10
 														</TD>
 														<TD rowspan=16 width=10>&nbsp;</TD>
 														<TD width=80>
-															<input type=button id=cmdAdd name=cmdAdd class="btn" value=Add 
-style="WIDTH: 100%"  
+															<input type=button id=cmdAdd name=cmdAdd class="btn" value=Add style="WIDTH: 100%"  
 															    onclick="addClick()"
 		                                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
 		                                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -3053,8 +3060,7 @@ style="WIDTH: 100%"
 													</TR>
 													<TR height=10>
 														<TD width=80>
-															<input type=button id=cmdInsert name=cmdInsert class="btn" value="Insert" 
-style="WIDTH: 100%"  
+															<input type=button id=cmdInsert name=cmdInsert class="btn" value="Insert" style="WIDTH: 100%"  
 															    onclick="insertClick()"
 		                                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
 		                                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -3067,7 +3073,8 @@ style="WIDTH: 100%"
 													</TR>
 													<TR height=10>
 														<TD width=80>
-															<input type=button id=cmdEdit name=cmdEdit class="btn" value="Edit" 
+															<input type=button id=cmdEdit name=cmdEdit class="btn" value="Edit" 
+
 style="WIDTH: 100%"  
 															    onclick="editClick()"
 		                                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
@@ -3081,7 +3088,8 @@ style="WIDTH: 100%"
 													</TR>
 													<TR height=10>
 														<TD width=80>
-															<input type=button id=cmdDelete name=cmdDelete class="btn" value="Delete" 
+															<input type=button id=cmdDelete name=cmdDelete class="btn" value="Delete" 
+
 style="WIDTH: 100%"  
 															    onclick="deleteClick()"
 		                                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
@@ -3095,7 +3103,8 @@ style="WIDTH: 100%"
 													</TR>
 													<TR height=10>
 														<TD width=80>
-															<input type=button id=cmdPrint name=cmdPrint class="btn" value="Print" 
+															<input type=button id=cmdPrint name=cmdPrint class="btn" value="Print" 
+
 style="WIDTH: 100%"  
 															    onclick="printClick(true)"
 		                                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
@@ -3132,8 +3141,7 @@ style="WIDTH: 100%"
 													</TR>
 													<TR height=10>
 														<TD width=80>
-															<input type=button id=cmdOK name=cmdOK class="btn" value=OK style="WIDTH: 
-100%"
+															<input type=button id=cmdOK name=cmdOK class="btn" value=OK style="WIDTH: 100%"
 															    onclick="okClick()"
 		                                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
 		                                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
@@ -3146,8 +3154,7 @@ style="WIDTH: 100%"
 													</TR>
 													<TR height=10>
 														<TD width=80>
-															<input type=button id=cmdCancel name=cmdCancel class="btn" value=Cancel 
-style="WIDTH: 100%"  
+															<input type=button id=cmdCancel name=cmdCancel class="btn" value=Cancel style="WIDTH: 100%"  
 															    onclick="cancelClick()"
 		                                                        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
 		                                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"

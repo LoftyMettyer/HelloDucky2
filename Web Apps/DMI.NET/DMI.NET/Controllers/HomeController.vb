@@ -2012,7 +2012,153 @@ Namespace Controllers
 
     <HttpPost()>
     Function util_def_expression_submit(value As FormCollection)
-      Return RedirectToAction("defsel")
+
+      Dim objExpression
+      Dim iExprType As Integer
+      Dim iReturnType As Integer
+      Dim sUtilType As String
+      Dim sUtilType2 As String
+      Dim fok As Boolean
+      Dim cmdMakeHidden
+      Dim prmUtilType
+      Dim prmUtilID
+
+      On Error Resume Next
+
+      ' Get the server DLL to save the expression definition
+      objExpression = Server.CreateObject("COAIntServer.Expression")
+
+      ' Pass required info to the DLL
+      objExpression.Username = Session("username")
+      objExpression.Connection = Session("databaseConnection")
+
+      If Request.Form("txtSend_type") = 11 Then
+        iExprType = 11
+        iReturnType = 3
+        sUtilType = "Filter"
+        sUtilType2 = "filter"
+      Else
+        iExprType = 10
+        iReturnType = 0
+        sUtilType = "Calculation"
+        sUtilType2 = "calculation"
+      End If
+
+      fok = objExpression.Initialise(Request.Form("txtSend_tableID"), _
+        Request.Form("txtSend_ID"), CInt(iExprType), CInt(iReturnType))
+
+      If fok Then
+        fok = objExpression.SetExpressionDefinition(Request.Form("txtSend_components1"), _
+          "", "", "", "", Request.Form("txtSend_names"))
+      End If
+
+      If fok Then
+        fOK = objExpression.SaveExpression(Request.Form("txtSend_name"), _
+          Request.Form("txtSend_userName"), _
+          Request.Form("txtSend_access"), _
+          Request.Form("txtSend_description"))
+
+        If fOK Then
+          If (Request.Form("txtSend_access") = "HD") And _
+            (Request.Form("txtSend_ID") > 0) Then
+            ' Hide any utilities that use this filter/calc.
+            ' NB. The check to see if we can do this has already been done as part of the filter/calc validation. */
+            cmdMakeHidden = Server.CreateObject("ADODB.Command")
+            cmdMakeHidden.CommandText = "sp_ASRIntMakeUtilitiesHidden"
+            cmdMakeHidden.CommandType = 4 ' Stored procedure
+            cmdMakeHidden.ActiveConnection = Session("databaseConnection")
+            cmdMakeHidden.CommandTimeout = 180
+
+            prmUtilType = cmdMakeHidden.CreateParameter("UtilType", 3, 1) ' 3 = integer, 1 = input
+            cmdMakeHidden.Parameters.Append(prmUtilType)
+            prmUtilType.value = CleanNumeric(Request.Form("txtSend_type"))
+
+            prmUtilID = cmdMakeHidden.CreateParameter("UtilID", 3, 1) ' 3 = integer, 1 = input
+            cmdMakeHidden.Parameters.Append(prmUtilID)
+            prmUtilID.value = CleanNumeric(Request.Form("txtSend_ID"))
+
+            Err.Clear()
+            cmdMakeHidden.Execute()
+
+            cmdMakeHidden = Nothing
+          End If
+
+          Session("confirmtext") = sUtilType & " has been saved successfully"
+          Session("confirmtitle") = sUtilType & "s"
+          Session("followpage") = "defsel.asp"
+          Session("reaction") = Request.Form("txtSend_reaction")
+          Session("utilid") = objExpression.ExpressionID
+
+          Return RedirectToAction("confirmok")
+
+        Else
+
+          ' TODO ERROR REPORTING
+          Response.Write("<HTML>" & vbCrLf)
+          Response.Write("	<HEAD>" & vbCrLf)
+          Response.Write("		<META NAME=""GENERATOR"" Content=""Microsoft Visual Studio 6.0"">" & vbCrLf)
+          Response.Write("		<LINK href=""OpenHR.css"" rel=stylesheet type=text/css >" & vbCrLf)
+          Response.Write("		<TITLE>" & vbCrLf)
+          Response.Write("			OpenHR Intranet" & vbCrLf)
+          Response.Write("		</TITLE>" & vbCrLf)
+          Response.Write("  <!--#INCLUDE FILE=""include/ctl_SetStyles.txt"" -->")
+          Response.Write("	</HEAD>" & vbCrLf)
+          Response.Write("	<BODY id=bdyMainBody name=""bdyMainBody"" " & Session("BodyTag") & ">" & vbCrLf)
+
+          Response.Write("	<table align=center class=""outline"" cellPadding=5 cellSpacing=0>" & vbCrLf)
+          Response.Write("		<TR>" & vbCrLf)
+          Response.Write("			<TD>" & vbCrLf)
+          Response.Write("				<table class=""invisible"" cellspacing=0 cellpadding=0>" & vbCrLf)
+          Response.Write("				  <tr> " & vbCrLf)
+          Response.Write("				    <td colspan=3 height=10></td>" & vbCrLf)
+          Response.Write("				  </tr>" & vbCrLf)
+          Response.Write("				  <tr> " & vbCrLf)
+          Response.Write("				    <td colspan=3 align=center> " & vbCrLf)
+          Response.Write("							<H3>Error</H3>" & vbCrLf)
+          Response.Write("				    </td>" & vbCrLf)
+          Response.Write("				  </tr>" & vbCrLf)
+          Response.Write("				  <tr> " & vbCrLf)
+          Response.Write("				    <td width=20 height=10></td> " & vbCrLf)
+          Response.Write("				    <td> " & vbCrLf)
+          Response.Write("							<H4>Error saving " & sUtilType2 & "</H4>" & vbCrLf)
+          Response.Write("				    </td>" & vbCrLf)
+          Response.Write("				    <td width=20></td> " & vbCrLf)
+          Response.Write("				  </tr>" & vbCrLf)
+          Response.Write("				  <tr> " & vbCrLf)
+          Response.Write("				    <td width=20 height=10></td> " & vbCrLf)
+          Response.Write("				    <td> " & vbCrLf)
+          Response.Write("							Unknown error" & vbCrLf)
+          Response.Write("			    </td>" & vbCrLf)
+          Response.Write("			    <td width=20></td> " & vbCrLf)
+          Response.Write("			  </tr>" & vbCrLf)
+          Response.Write("			  <tr> " & vbCrLf)
+          Response.Write("			    <td colspan=3 height=20></td>" & vbCrLf)
+          Response.Write("			  </tr>" & vbCrLf)
+          Response.Write("			  <tr> " & vbCrLf)
+          Response.Write("			    <td colspan=3 height=10 align=center>" & vbCrLf)
+          Response.Write("						<INPUT TYPE=button VALUE=""Retry"" NAME=""GoBack"" class=""btn"" OnClick=""window.history.back(1)"" style=""WIDTH: 80px"" width=80 id=cmdGoBack>" & vbCrLf)
+          Response.Write("                      onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
+          Response.Write("                      onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
+          Response.Write("		                  onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
+          Response.Write("                      onblur=""try{button_onBlur(this);}catch(e){}"" />" & vbCrLf)
+          Response.Write("			    </td>" & vbCrLf)
+          Response.Write("			  </tr>" & vbCrLf)
+          Response.Write("			  <tr>" & vbCrLf)
+          Response.Write("			    <td colspan=3 height=10></td>" & vbCrLf)
+          Response.Write("			  </tr>" & vbCrLf)
+          Response.Write("			</table>" & vbCrLf)
+          Response.Write("    </td>" & vbCrLf)
+          Response.Write("  </tr>" & vbCrLf)
+          Response.Write("</table>" & vbCrLf)
+          Response.Write("	</BODY>" & vbCrLf)
+          Response.Write("<HTML>" & vbCrLf)
+        End If
+      End If
+
+      objExpression = Nothing
+
+      Return RedirectToAction("confirmok")
+
     End Function
 
     Function util_def_exprcomponent() As ActionResult
@@ -2032,6 +2178,10 @@ Namespace Controllers
     End Function
 
     Function util_validate_expression() As ActionResult
+      Return View()
+    End Function
+
+    Function util_dialog_expression() As ActionResult
       Return View()
     End Function
 
