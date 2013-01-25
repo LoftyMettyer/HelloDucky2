@@ -1,5 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%--<%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="DMI.NET" %>
 
 <script type="text/javascript">
 <!--
