@@ -211,7 +211,7 @@ function menu_abMainMenu_DataReady() {
 	//		return;
 	//	}
 
-	if (menu_currentWorkPage() == "DEFAULT") {
+	if (OpenHR.currentWorkPage() == "DEFAULT") {
 
 		//window.parent.frames("workframe").hideMessage();
 		window.hideMessage();
@@ -396,7 +396,7 @@ function menu_MenuClick(sTool) {
 
 
 	sToolName = sTool;
-	sCurrentWorkPage = menu_currentWorkPage();
+	sCurrentWorkPage = OpenHR.currentWorkPage();
 	//	
 	//	frmRefresh = window.parent.frames("refreshframe").document.forms("frmRefresh");
 	//	frmRefresh.submit();
@@ -892,8 +892,7 @@ function menu_refreshMenu() {
 	//if (abMainMenu.Bands.Count() > 0) {
 	menu_enableMenu();
 
-	sCurrentWorkPage = menu_currentWorkPage();
-
+	sCurrentWorkPage = OpenHR.currentWorkPage();    
 
 	//None of the sCurrentWorkPage criteria are met yet, so code fixes yet.
 	//Code continues at line 1349.
