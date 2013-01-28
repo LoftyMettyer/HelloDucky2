@@ -77,12 +77,13 @@
             /* If everything is okay, submit the password change. */
             if (fChangeOK) {                
                 OpenHR.submitForm(frmPasswordChangeForm);
+
             }
         }
 
         /* Return to the default page. */
         function cancelClick() {
-            window.location.href = "main";
+            window.location = "main";
         }
     </script>
 

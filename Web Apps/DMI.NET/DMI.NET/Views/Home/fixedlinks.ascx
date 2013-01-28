@@ -1,5 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%If Session("databaseConnection") Is Nothing Or (Not Session("ErrorText") Is Nothing) Then Return%>
+<%If Session("databaseConnection") Is Nothing Then Return%>
 <script type="text/javascript">
 	$(document).ready(function () {
 		$(".officebar").officebar({});

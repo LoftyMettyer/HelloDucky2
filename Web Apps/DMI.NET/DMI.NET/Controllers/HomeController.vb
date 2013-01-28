@@ -11,197 +11,206 @@ Namespace Controllers
     End Function
 
  
-    <HttpPost()>
-    Function passwordChange_Submit(value As FormCollection)
+		<HttpPost()>
+		Function passwordChange_Submit(value As FormCollection) As JsonResult
 
-      On Error Resume Next
+			On Error Resume Next
 
-      Dim sReferringPage = ""
-      Dim fSubmitPasswordChange = ""
-      Dim sErrorText = ""
+			Dim sReferringPage = ""
+			Dim fSubmitPasswordChange = ""
+			Dim sErrorText = ""
 
-      ' Only process the form submission if the referring page was the newUser page.
-      ' If it wasn't then redirect to the login page.
-      'sReferringPage = Request.ServerVariables("HTTP_REFERER")
-      'If InStrRev(sReferringPage, "/") > 0 Then
-      '	sReferringPage = Mid(sReferringPage, InStrRev(sReferringPage, "/") + 1)
-      'End If
+			' Only process the form submission if the referring page was the newUser page.
+			' If it wasn't then redirect to the login page.
+			'sReferringPage = Request.ServerVariables("HTTP_REFERER")
+			'If InStrRev(sReferringPage, "/") > 0 Then
+			'	sReferringPage = Mid(sReferringPage, InStrRev(sReferringPage, "/") + 1)
+			'End If
 
-      'If UCase(sReferringPage) <> UCase("passwordChange") Then
-      '	Return RedirectToAction("login")
-      'Else
-      If True Then
-        fSubmitPasswordChange = (Len(Request.Form("txtGotoPage")) = 0)
+			'If UCase(sReferringPage) <> UCase("passwordChange") Then
+			'	Return RedirectToAction("login")
+			'Else
+			If True Then
+				fSubmitPasswordChange = (Len(Request.Form("txtGotoPage")) = 0)
 
-        If fSubmitPasswordChange Then
-          ' Force password change only if there are no other users logged in with the same name.
-          Dim cmdCheckUserSessions = Server.CreateObject("ADODB.Command")
-          cmdCheckUserSessions.CommandText = "spASRGetCurrentUsersCountOnServer"
-          cmdCheckUserSessions.CommandType = 4 ' Stored procedure.
-          cmdCheckUserSessions.ActiveConnection = Session("databaseConnection")
+				If fSubmitPasswordChange Then
+					' Force password change only if there are no other users logged in with the same name.
+					Dim cmdCheckUserSessions = Server.CreateObject("ADODB.Command")
+					cmdCheckUserSessions.CommandText = "spASRGetCurrentUsersCountOnServer"
+					cmdCheckUserSessions.CommandType = 4 ' Stored procedure.
+					cmdCheckUserSessions.ActiveConnection = Session("databaseConnection")
 
-          Dim prmCount = cmdCheckUserSessions.CreateParameter("count", 3, 2) ' 3=integer, 2=output
-          cmdCheckUserSessions.Parameters.Append(prmCount)
+					Dim prmCount = cmdCheckUserSessions.CreateParameter("count", 3, 2) ' 3=integer, 2=output
+					cmdCheckUserSessions.Parameters.Append(prmCount)
 
-          Dim prmUserName = cmdCheckUserSessions.CreateParameter("userName", 200, 1, 8000)  ' 200=varchar, 1=input, 8000=size
-          cmdCheckUserSessions.Parameters.Append(prmUserName)
-          prmUserName.value = Session("Username")
+					Dim prmUserName = cmdCheckUserSessions.CreateParameter("userName", 200, 1, 8000)	 ' 200=varchar, 1=input, 8000=size
+					cmdCheckUserSessions.Parameters.Append(prmUserName)
+					prmUserName.value = Session("Username")
 
-          Err.Clear()
-          cmdCheckUserSessions.Execute()
+					Err.Clear()
+					cmdCheckUserSessions.Execute()
 
-          Dim iUserSessionCount = CLng(cmdCheckUserSessions.Parameters("count").Value)
-          cmdCheckUserSessions = Nothing
+					Dim iUserSessionCount = CLng(cmdCheckUserSessions.Parameters("count").Value)
+					cmdCheckUserSessions = Nothing
 
-          If iUserSessionCount < 2 Then
-            ' Read the Password details from the Password form.
-            Dim sCurrentPassword = Request.Form("txtCurrentPassword")
-            Dim sNewPassword = Request.Form("txtPassword1")
+					If iUserSessionCount < 2 Then
+						' Read the Password details from the Password form.
+						Dim sCurrentPassword = Request.Form("txtCurrentPassword")
+						Dim sNewPassword = Request.Form("txtPassword1")
 
-            ' Attempt to change the password on the SQL Server.
-            Dim cmdChangePassword = Server.CreateObject("ADODB.Command")
-            cmdChangePassword.CommandText = "sp_password"
-            cmdChangePassword.CommandType = 4 ' Stored Procedure
-            cmdChangePassword.ActiveConnection = Session("databaseConnection")
+						' Attempt to change the password on the SQL Server.
+						Dim cmdChangePassword = Server.CreateObject("ADODB.Command")
+						cmdChangePassword.CommandText = "sp_password"
+						cmdChangePassword.CommandType = 4 ' Stored Procedure
+						cmdChangePassword.ActiveConnection = Session("databaseConnection")
 
-            Dim prmCurrentPassword = cmdChangePassword.CreateParameter("currentPassword", 200, 1, 255)
-            cmdChangePassword.Parameters.Append(prmCurrentPassword)
-            If Len(sCurrentPassword) > 0 Then
-              prmCurrentPassword.value = sCurrentPassword
-            Else
-              prmCurrentPassword.value = DBNull.Value
-            End If
+						Dim prmCurrentPassword = cmdChangePassword.CreateParameter("currentPassword", 200, 1, 255)
+						cmdChangePassword.Parameters.Append(prmCurrentPassword)
+						If Len(sCurrentPassword) > 0 Then
+							prmCurrentPassword.value = sCurrentPassword
+						Else
+							prmCurrentPassword.value = DBNull.Value
+						End If
 
-            Dim prmNewPassword = cmdChangePassword.CreateParameter("newPassword", 200, 1, 255)
-            cmdChangePassword.Parameters.Append(prmNewPassword)
-            If Len(sNewPassword) > 0 Then
-              prmNewPassword.value = sNewPassword
-            Else
-              prmNewPassword.value = DBNull.Value
-            End If
+						Dim prmNewPassword = cmdChangePassword.CreateParameter("newPassword", 200, 1, 255)
+						cmdChangePassword.Parameters.Append(prmNewPassword)
+						If Len(sNewPassword) > 0 Then
+							prmNewPassword.value = sNewPassword
+						Else
+							prmNewPassword.value = DBNull.Value
+						End If
 
-            Err.Clear()
-            cmdChangePassword.Execute()
+						Err.Clear()
+						cmdChangePassword.Execute()
 
-            ' Release the ADO command object.
-            cmdChangePassword = Nothing
+						' Release the ADO command object.
+						cmdChangePassword = Nothing
 
-            If Err.Number <> 0 Then
-              Session("ErrorTitle") = "Change Password Page"
-              Session("ErrorText") = "You could not change your password because of the following error:<p>" & FormatError(Err.Description)
-							Return RedirectToAction("Loginerror", "Account")
-            Else
-              ' Password changed okay. Update the appropriate record in the ASRSysPasswords table.
-              Dim cmdPasswordOK = Server.CreateObject("ADODB.Command")
-              cmdPasswordOK.CommandText = "sp_ASRIntPasswordOK"
-              cmdPasswordOK.CommandType = 4 ' Stored Procedure
-              cmdPasswordOK.ActiveConnection = Session("databaseConnection")
+						If Err.Number <> 0 Then
+							Session("ErrorTitle") = "Change Password Page"
+							Session("ErrorText") = "You could not change your password because of the following error:<p>" & FormatError(Err.Description)							
+							Dim data = New JsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}							
+							Return Json(data, JsonRequestBehavior.AllowGet)
+							' Return RedirectToAction("error", "home")
+						Else
+							' Password changed okay. Update the appropriate record in the ASRSysPasswords table.
+							Dim cmdPasswordOK = Server.CreateObject("ADODB.Command")
+							cmdPasswordOK.CommandText = "sp_ASRIntPasswordOK"
+							cmdPasswordOK.CommandType = 4	' Stored Procedure
+							cmdPasswordOK.ActiveConnection = Session("databaseConnection")
 
-              Err.Clear()
-              cmdPasswordOK.Execute()
-              If Err.Number <> 0 Then
-                Session("ErrorTitle") = "Change Password Page"
-                Session("ErrorText") = "You could not change your password because of the following error:<p>" & FormatError(Err.Description)
-								Return RedirectToAction("Loginerror", "Account")
-              End If
+							Err.Clear()
+							cmdPasswordOK.Execute()
+							If Err.Number <> 0 Then
+								Session("ErrorTitle") = "Change Password Page"
+								Session("ErrorText") = "You could not change your password because of the following error:<p>" & FormatError(Err.Description)
+								Dim data1 = New JsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
+								Return Json(data1, JsonRequestBehavior.AllowGet)
+								' Return RedirectToAction("error", "Account")
+							End If
 
-              ' Release the ADO command object.
-              cmdPasswordOK = Nothing
+							' Release the ADO command object.
+							cmdPasswordOK = Nothing
 
-              ' Close and reopen the connection object.
-              Dim conX = Session("databaseConnection")
-              Dim sConnString = conX.connectionString
+							' Close and reopen the connection object.
+							Dim conX = Session("databaseConnection")
+							Dim sConnString = conX.connectionString
 
-              Dim iPos1 = InStr(UCase(sConnString), UCase(";PWD=" & sCurrentPassword))
-              If iPos1 > 0 Then
-                conX.close()
-                conX = Nothing
-                Session("databaseConnection") = ""
+							Dim iPos1 = InStr(UCase(sConnString), UCase(";PWD=" & sCurrentPassword))
+							If iPos1 > 0 Then
+								conX.close()
+								conX = Nothing
+								Session("databaseConnection") = ""
 
 
-                Dim sNewConnString = Left(sConnString, iPos1 + 4) & sNewPassword & Mid(sConnString, iPos1 + 5 + Len(sCurrentPassword))
-                ' Open a connection to the database.
-                conX = Server.CreateObject("ADODB.Connection")
-                conX.open(sNewConnString)
+								Dim sNewConnString = Left(sConnString, iPos1 + 4) & sNewPassword & Mid(sConnString, iPos1 + 5 + Len(sCurrentPassword))
+								' Open a connection to the database.
+								conX = Server.CreateObject("ADODB.Connection")
+								conX.open(sNewConnString)
 
-                If Err.Number <> 0 Then
-                  Session("ErrorTitle") = "Change Password Page"
-                  Session("ErrorText") = "You could not change your password because of the following error:<p>" & FormatError(Err.Description)
-									Return RedirectToAction("Loginerror", "Account")
-                End If
+								If Err.Number <> 0 Then
+									Session("ErrorTitle") = "Change Password Page"
+									Session("ErrorText") = "You could not change your password because of the following error:<p>" & FormatError(Err.Description)
+									Dim data1 = New JsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
+									Return Json(data1, JsonRequestBehavior.AllowGet)
+									' Return RedirectToAction("error", "Account")
+								End If
 
-                Session("databaseConnection") = conX
+								Session("databaseConnection") = conX
 
-              End If
+							End If
 
-              ' Create the cached system tables on the server - Don;t do it in a stored procedure because the #temp will then only be visible to that stored procedure
-              Dim cmdCreateCache = Server.CreateObject("ADODB.Command")
-              cmdCreateCache.CommandText = "DECLARE @iUserGroupID	integer, " & vbNewLine & _
-                                      "	@sUserGroupName		sysname, " & vbNewLine & _
-                                      "	@sActualLoginName	varchar(250) " & vbNewLine & _
-                                      "-- Get the current user's group ID. " & vbNewLine & _
-                                      "EXEC spASRIntGetActualUserDetails " & vbNewLine & _
-                                      "	@sActualLoginName OUTPUT, " & vbNewLine & _
-                                      "	@sUserGroupName OUTPUT, " & vbNewLine & _
-                                      "	@iUserGroupID OUTPUT " & vbNewLine & _
-                                      "-- Create the SysProtects cache table " & vbNewLine & _
-                                      "IF OBJECT_ID('tempdb..#SysProtects') IS NOT NULL " & vbNewLine & _
-                                      "	DROP TABLE #SysProtects " & vbNewLine & _
-                                      "CREATE TABLE #SysProtects(ID int, Action tinyint, Columns varbinary(8000), ProtectType int) " & vbNewLine & _
-                                      "	INSERT #SysProtects " & vbNewLine & _
-                                      "	SELECT ID, Action, Columns, ProtectType " & vbNewLine & _
-                                      "       FROM sysprotects " & vbNewLine & _
-                                      "       WHERE uid = @iUserGroupID"
-              'cmdCreateCache.CommandType = 4 ' Stored Procedure
-              cmdCreateCache.ActiveConnection = conX
-              cmdCreateCache.execute()
-              cmdCreateCache = Nothing
+							' Create the cached system tables on the server - Don;t do it in a stored procedure because the #temp will then only be visible to that stored procedure
+							Dim cmdCreateCache = Server.CreateObject("ADODB.Command")
+							cmdCreateCache.CommandText = "DECLARE @iUserGroupID	integer, " & vbNewLine & _
+															"	@sUserGroupName		sysname, " & vbNewLine & _
+															"	@sActualLoginName	varchar(250) " & vbNewLine & _
+															"-- Get the current user's group ID. " & vbNewLine & _
+															"EXEC spASRIntGetActualUserDetails " & vbNewLine & _
+															"	@sActualLoginName OUTPUT, " & vbNewLine & _
+															"	@sUserGroupName OUTPUT, " & vbNewLine & _
+															"	@iUserGroupID OUTPUT " & vbNewLine & _
+															"-- Create the SysProtects cache table " & vbNewLine & _
+															"IF OBJECT_ID('tempdb..#SysProtects') IS NOT NULL " & vbNewLine & _
+															"	DROP TABLE #SysProtects " & vbNewLine & _
+															"CREATE TABLE #SysProtects(ID int, Action tinyint, Columns varbinary(8000), ProtectType int) " & vbNewLine & _
+															"	INSERT #SysProtects " & vbNewLine & _
+															"	SELECT ID, Action, Columns, ProtectType " & vbNewLine & _
+															"       FROM sysprotects " & vbNewLine & _
+															"       WHERE uid = @iUserGroupID"
+							'cmdCreateCache.CommandType = 4 ' Stored Procedure
+							cmdCreateCache.ActiveConnection = conX
+							cmdCreateCache.execute()
+							cmdCreateCache = Nothing
 
-              ' Tell the user that the password was changed okay.
-              Session("MessageTitle") = "Change Password Page"
-              Session("MessageText") = "Password changed successfully."
-							Return RedirectToAction("Loginmessage", "Account")
+							' Tell the user that the password was changed okay.
+							Session("MessageTitle") = "Change Password Page"
+							Session("MessageText") = "Password changed successfully."
+							Dim data = New JsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = "main"}
+							Return Json(data, JsonRequestBehavior.AllowGet)
+							' Return RedirectToAction("message", "Account")
 
-            End If
-          Else
-            Session("ErrorTitle") = "Change Password Page"
-            sErrorText = "You could not change your password.<p>The account is currently being used by "
-            If iUserSessionCount > 2 Then
-              sErrorText = sErrorText & iUserSessionCount & " users"
-            Else
-              sErrorText = sErrorText & "another user"
-            End If
-            sErrorText = sErrorText & " in the system."
-            Session("ErrorText") = sErrorText
+						End If
+					Else
+						Session("ErrorTitle") = "Change Password Page"
+						sErrorText = "You could not change your password.<p>The account is currently being used by "
+						If iUserSessionCount > 2 Then
+							sErrorText = sErrorText & iUserSessionCount & " users"
+						Else
+							sErrorText = sErrorText & "another user"
+						End If
+						sErrorText = sErrorText & " in the system."
+						Session("ErrorText") = sErrorText
 
-						Return RedirectToAction("Loginerror", "Account")
-          End If
-        Else
-          ' Save the required table/view and screen IDs in session variables.
-          Session("action") = Request.Form("txtAction")
-          Session("tableID") = Request.Form("txtGotoTableID")
-          Session("viewID") = Request.Form("txtGotoViewID")
-          Session("screenID") = Request.Form("txtGotoScreenID")
-          Session("orderID") = Request.Form("txtGotoOrderID")
-          Session("recordID") = Request.Form("txtGotoRecordID")
-          Session("parentTableID") = Request.Form("txtGotoParentTableID")
-          Session("parentRecordID") = Request.Form("txtGotoParentRecordID")
-          Session("realSource") = Request.Form("txtGotoRealSource")
-          Session("filterDef") = Request.Form("txtGotoFilterDef")
-          Session("filterSQL") = Request.Form("txtGotoFilterSQL")
-          Session("lineage") = Request.Form("txtGotoLineage")
-          Session("defseltype") = Request.Form("txtGotoDefSelType")
-          Session("utilID") = Request.Form("txtGotoUtilID")
-          Session("locateValue") = Request.Form("txtGotoLocateValue")
-          Session("firstRecPos") = Request.Form("txtGotoFirstRecPos")
-          Session("currentRecCount") = Request.Form("txtGotoCurrentRecCount")
-          Session("fromMenu") = Request.Form("txtGotoFromMenu")
+						' Return RedirectToAction("Loginerror", "Account")
+					End If
+				Else
+					' Save the required table/view and screen IDs in session variables.
+					Session("action") = Request.Form("txtAction")
+					Session("tableID") = Request.Form("txtGotoTableID")
+					Session("viewID") = Request.Form("txtGotoViewID")
+					Session("screenID") = Request.Form("txtGotoScreenID")
+					Session("orderID") = Request.Form("txtGotoOrderID")
+					Session("recordID") = Request.Form("txtGotoRecordID")
+					Session("parentTableID") = Request.Form("txtGotoParentTableID")
+					Session("parentRecordID") = Request.Form("txtGotoParentRecordID")
+					Session("realSource") = Request.Form("txtGotoRealSource")
+					Session("filterDef") = Request.Form("txtGotoFilterDef")
+					Session("filterSQL") = Request.Form("txtGotoFilterSQL")
+					Session("lineage") = Request.Form("txtGotoLineage")
+					Session("defseltype") = Request.Form("txtGotoDefSelType")
+					Session("utilID") = Request.Form("txtGotoUtilID")
+					Session("locateValue") = Request.Form("txtGotoLocateValue")
+					Session("firstRecPos") = Request.Form("txtGotoFirstRecPos")
+					Session("currentRecCount") = Request.Form("txtGotoCurrentRecCount")
+					Session("fromMenu") = Request.Form("txtGotoFromMenu")
 
-          ' Go to the requested page.
-          Return RedirectToAction(Request.Form("txtGotoPage"))
-        End If
-      End If
-    End Function
+					' Go to the requested page.
+					' Return RedirectToAction(Request.Form("txtGotoPage"))
+					Session("txtGotoPage") = Request.Form("txtGotoPage")
+				End If
+			End If
+		End Function
 
     <HttpPost()>
     Function Configuration_Submit(value As FormCollection)
@@ -1994,7 +2003,14 @@ Namespace Controllers
 
   End Class
 
+	Public Class JsonAjaxResponse
 
+		Public Property ErrorTitle As String
+		Public Property ErrorMessage As String
+		Public Property Redirect As String
+
+
+	End Class
 End Namespace
 
 
