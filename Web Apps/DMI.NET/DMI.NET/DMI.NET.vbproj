@@ -205,6 +205,8 @@
     <Content Include="Content\images\spinner04.gif" />
     <Content Include="Content\jquery.gridster.css" />
     <Content Include="HTMLPage2.htm" />
+    <Content Include="Pictures\ProfilePhotos\dAvery.jpg" />
+    <Content Include="Pictures\ProfilePhotos\mWORTHING.jpg" />
     <Content Include="Scripts\FormScripts\Util_Def_CustomReports.js" />
     <Content Include="Scripts\officebar\images\bg.png" />
     <Content Include="Scripts\officebar\images\bg_tab.png" />
@@ -484,7 +486,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
-    <Folder Include="Pictures\" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="ADODB">

@@ -1,26 +1,20 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import namespace="DMI.NET" %>
 
-<%@ Language=VBScript %>
-<!--#INCLUDE FILE="include/svrCleanup.asp" -->
 <%
-	Dim sReferringPage
+    'Dim sReferringPage
 
-	' Only open the form if there was a referring page.
-	' If it wasn't then redirect to the login page.
-	sReferringPage = Request.ServerVariables("HTTP_REFERER") 
-	if inStrRev(sReferringPage, "/") > 0 then
-		sReferringPage = mid(sReferringPage, inStrRev(sReferringPage, "/") + 1)
-	end if
+    '' Only open the form if there was a referring page.
+    '' If it wasn't then redirect to the login page.
+    'sReferringPage = Request.ServerVariables("HTTP_REFERER") 
+    'if inStrRev(sReferringPage, "/") > 0 then
+    '	sReferringPage = mid(sReferringPage, inStrRev(sReferringPage, "/") + 1)
+    'end if
 
-	if len(sReferringPage) = 0 then
-		Response.Redirect("login.asp")
-	end if
+    'if len(sReferringPage) = 0 then
+    '	Response.Redirect("login.asp")
+    'end if
 %>
-
-<HEAD>
-<META NAME="GENERATOR" Content="Microsoft Visual Studio 6.0">
-<LINK href="OpenHR.css" rel=stylesheet type=text/css>
-<TITLE>OpenHR Intranet</TITLE>
 
 <OBJECT classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" 
 	id="Microsoft_Licensed_Class_Manager_1_0" 
@@ -28,342 +22,342 @@
 	<PARAM NAME="LPKPath" VALUE="lpks/main.lpk">
 </OBJECT>
 
-<SCRIPT FOR=window EVENT=onload LANGUAGE=JavaScript>
-<!--
-    var fOK
-    fOK = true;	
-    var sErrMsg = frmRecordEditForm.txtErrorDescription.value;
-    if (sErrMsg.length > 0) {
-        fOK = false;
-        window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sErrMsg);
-        window.parent.location.replace("login.asp");
-    }
-
-    if (fOK == true) {
-        // Expand the work frame and hide the option frame.
-        window.parent.document.all.item("workframeset").cols = "*, 0";	
-
-        var recEditCtl = frmRecordEditForm.ctlRecordEdit;
-
-        if (recEditCtl==null){
+<script type="text/javascript">
+    function recordEdit_window_onload() {
+        var fOK
+        fOK = true;
+        var sErrMsg = frmRecordEditForm.txtErrorDescription.value;
+        if (sErrMsg.length > 0) {
             fOK = false;
-
-            // The recEdit control was not loaded properly.
-            window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Record Edit control not loaded.");
+            window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sErrMsg);
             window.parent.location.replace("login.asp");
         }
-    }
 
-    if (fOK == true) {
-        sKey = new String("photopath_");
-        sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);	
-        sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-        frmRecordEditForm.txtPicturePath.value = sPath;
+        if (fOK == true) {
+            // Expand the work frame and hide the option frame.
+            //window.parent.document.all.item("workframeset").cols = "*, 0";
+            $("#workframe").attr("data-framesource", "RECORDEDIT");
 
-        sKey = new String("imagepath_");
-        sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);	
-        sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-        frmRecordEditForm.txtImagePath.value = sPath;
+            var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
 
-        sKey = new String("olePath_");
-        sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);	
-        sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-        frmRecordEditForm.txtOLEServerPath.value = sPath;
+            var recEditCtl = frmRecordEditForm.ctlRecordEdit;
 
-        sKey = new String("localolePath_");
-        sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);	
-        sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-        frmRecordEditForm.txtOLELocalPath.value = sPath;
+            if (recEditCtl == null) {
+                fOK = false;
 
-
-        // Read and then reset the HR Pro Navigation flag.
-        var HRProNavigationFlagValue;
-        var HRProNavigationFlag = window.parent.frames("menuframe").document.forms("frmWorkAreaInfo").txtHRProNavigation;
-        HRProNavigationFlagValue = HRProNavigationFlag.value;
-        HRProNavigationFlag.value = 0;
-	
-        if (HRProNavigationFlagValue==0) {
-            frmGoto.txtGotoTableID.value = frmRecordEditForm.txtCurrentTableID.value;
-            frmGoto.txtGotoViewID.value = frmRecordEditForm.txtCurrentViewID.value;
-            frmGoto.txtGotoScreenID.value = frmRecordEditForm.txtCurrentScreenID.value;
-            frmGoto.txtGotoOrderID.value = frmRecordEditForm.txtCurrentOrderID.value;
-            frmGoto.txtGotoRecordID.value = frmRecordEditForm.txtCurrentRecordID.value;
-            frmGoto.txtGotoParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
-            frmGoto.txtGotoParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
-            frmGoto.txtGotoPage.value = "recordEdit.asp";
-
-            HRProNavigationFlag.value = 1;
-            frmGoto.submit();	
+                // The recEdit control was not loaded properly.
+                OpenHR.messageBox("Record Edit control not loaded.");
+                window.location = "login";
+            }
         }
-        else {
-            // Set the recEdit control properties.
-            fOK = recEditCtl.initialise (
-				frmRecordEditForm.txtRecEditTableID.value,
-				frmRecordEditForm.txtRecEditHeight.value,	
-				frmRecordEditForm.txtRecEditWidth.value + 1,
-				frmRecordEditForm.txtRecEditTabCount.value,
-				frmRecordEditForm.txtRecEditTabCaptions.value,
-				frmRecordEditForm.txtRecEditFontName.value,
-				frmRecordEditForm.txtRecEditFontSize.value,
-				frmRecordEditForm.txtRecEditFontBold.value,
-				frmRecordEditForm.txtRecEditFontItalic.value,
-				frmRecordEditForm.txtRecEditFontUnderline.value,
-				frmRecordEditForm.txtRecEditFontStrikethru.value,
-				frmRecordEditForm.txtRecEditRealSource.value,
-				frmRecordEditForm.txtPicturePath.value,
-				frmRecordEditForm.txtRecEditEmpTableID.value,
-				frmRecordEditForm.txtRecEditCourseTableID.value,
-				frmRecordEditForm.txtRecEditTBStatusColumnID.value,
-				frmRecordEditForm.txtRecEditCourseCancelDateColumnID.value
-				);
 
-            if (fOK == true) {		
-                // Get the recEdit control to instantiate the required controls.
-                var sControlName;
-                var controlCollection = frmRecordEditForm.elements;
-                if (controlCollection!=null) {
-                    for (i=0; i<controlCollection.length; i++)  {
-                        sControlName = controlCollection.item(i).name;
-                        sControlName = sControlName.substr(0, 18);
-                        if (sControlName=="txtRecEditControl_") {
-                            fOK = recEditCtl.addControl(controlCollection.item(i).value);
-                        }
-						
-                        if (fOK == false) {
-                            break;
-                        }
-                    }
-                }	
-            }
-			
-            if (fOK == true) {
-                // Set the column control values in the recEdit control.
-                var sControlName;
-                var controlCollection = frmRecordEditForm.elements;
-                if (controlCollection!=null) {
-                    for (i=0; i<controlCollection.length; i++)  {
-                        sControlName = controlCollection.item(i).name;
-                        sControlName = sControlName.substr(0, 24);
-                        if (sControlName=="txtRecEditControlValues_") {
-                            fOK = recEditCtl.addControlValues(controlCollection.item(i).value);
-                        }
+        if (fOK == true) {
+            var sKey = new String("photopath_");
+            sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
+            var sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+            frmRecordEditForm.txtPicturePath.value = sPath;
 
-                        if (fOK == false) {
-                            break;
-                        }
-                    }
-                }
-            }
-			
-            if (fOK == true) {			
-                // Get the recEdit control to format itself.
-                recEditCtl.formatscreen();
-			
-                //JPD 20021021 - Added picture functionality.
-                if (frmRecordEditForm.txtImagePath.value.length > 0) {
+            sKey = new String("imagepath_");
+            sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
+            sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+            frmRecordEditForm.txtImagePath.value = sPath;
+
+            sKey = new String("olePath_");
+            sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
+            sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+            frmRecordEditForm.txtOLEServerPath.value = sPath;
+
+            sKey = new String("localolePath_");
+            sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
+            sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+            frmRecordEditForm.txtOLELocalPath.value = sPath;
+
+
+            // Read and then reset the HR Pro Navigation flag.
+            var HRProNavigationFlagValue;
+            var HRProNavigationFlag = window.parent.frames("menuframe").document.forms("frmWorkAreaInfo").txtHRProNavigation;
+            HRProNavigationFlagValue = HRProNavigationFlag.value;
+            HRProNavigationFlag.value = 0;
+
+            if (HRProNavigationFlagValue == 0) {
+                frmGoto.txtGotoTableID.value = frmRecordEditForm.txtCurrentTableID.value;
+                frmGoto.txtGotoViewID.value = frmRecordEditForm.txtCurrentViewID.value;
+                frmGoto.txtGotoScreenID.value = frmRecordEditForm.txtCurrentScreenID.value;
+                frmGoto.txtGotoOrderID.value = frmRecordEditForm.txtCurrentOrderID.value;
+                frmGoto.txtGotoRecordID.value = frmRecordEditForm.txtCurrentRecordID.value;
+                frmGoto.txtGotoParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
+                frmGoto.txtGotoParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
+                frmGoto.txtGotoPage.value = "recordEdit.asp";
+
+                HRProNavigationFlag.value = 1;
+                frmGoto.submit();
+            } else {
+                // Set the recEdit control properties.
+                fOK = recEditCtl.initialise(
+                    frmRecordEditForm.txtRecEditTableID.value,
+                    frmRecordEditForm.txtRecEditHeight.value,
+                    frmRecordEditForm.txtRecEditWidth.value + 1,
+                    frmRecordEditForm.txtRecEditTabCount.value,
+                    frmRecordEditForm.txtRecEditTabCaptions.value,
+                    frmRecordEditForm.txtRecEditFontName.value,
+                    frmRecordEditForm.txtRecEditFontSize.value,
+                    frmRecordEditForm.txtRecEditFontBold.value,
+                    frmRecordEditForm.txtRecEditFontItalic.value,
+                    frmRecordEditForm.txtRecEditFontUnderline.value,
+                    frmRecordEditForm.txtRecEditFontStrikethru.value,
+                    frmRecordEditForm.txtRecEditRealSource.value,
+                    frmRecordEditForm.txtPicturePath.value,
+                    frmRecordEditForm.txtRecEditEmpTableID.value,
+                    frmRecordEditForm.txtRecEditCourseTableID.value,
+                    frmRecordEditForm.txtRecEditTBStatusColumnID.value,
+                    frmRecordEditForm.txtRecEditCourseCancelDateColumnID.value
+                );
+
+                if (fOK == true) {
+                    // Get the recEdit control to instantiate the required controls.
+                    var sControlName;
                     var controlCollection = frmRecordEditForm.elements;
-                    if (controlCollection!=null) {
-                        for (i=0; i<controlCollection.length; i++)  {
+                    if (controlCollection != null) {
+                        for (i = 0; i < controlCollection.length; i++) {
                             sControlName = controlCollection.item(i).name;
                             sControlName = sControlName.substr(0, 18);
-                            if (sControlName=="txtRecEditPicture_") {
-                                sControlName = controlCollection.item(i).name;
-                                iPictureID = new Number(sControlName.substr(18));
-                                recEditCtl.updatePicture(iPictureID, frmRecordEditForm.txtImagePath.value + "/" + controlCollection.item(i).value);
+                            if (sControlName == "txtRecEditControl_") {
+                                fOK = recEditCtl.addControl(controlCollection.item(i).value);
+                            }
+
+                            if (fOK == false) {
+                                break;
                             }
                         }
                     }
                 }
-            }
-						
-            if (fOK == true) {			
-                // Get the data.asp to get the required data.
-                var action = window.parent.frames("dataframe").document.forms("frmGetData").txtAction;
-                if (((frmRecordEditForm.txtAction.value == "NEW") ||
-						(frmRecordEditForm.txtAction.value == "COPY")) && 
-						(frmRecordEditForm.txtRecEditInsertGranted.value == "True")){
-                    action.value = frmRecordEditForm.txtAction.value;
-                }
-                else {
-                    action.value = "LOAD";
+
+                if (fOK == true) {
+                    // Set the column control values in the recEdit control.
+                    var sControlName;
+                    var controlCollection = frmRecordEditForm.elements;
+                    if (controlCollection != null) {
+                        for (i = 0; i < controlCollection.length; i++) {
+                            sControlName = controlCollection.item(i).name;
+                            sControlName = sControlName.substr(0, 24);
+                            if (sControlName == "txtRecEditControlValues_") {
+                                fOK = recEditCtl.addControlValues(controlCollection.item(i).value);
+                            }
+
+                            if (fOK == false) {
+                                break;
+                            }
+                        }
+                    }
                 }
 
-                if (frmRecordEditForm.txtCurrentOrderID.value != frmRecordEditForm.txtRecEditOrderID.value) {
-                    frmRecordEditForm.txtCurrentOrderID.value = frmRecordEditForm.txtRecEditOrderID.value;
+                if (fOK == true) {
+                    // Get the recEdit control to format itself.
+                    recEditCtl.formatscreen();
+
+                    //JPD 20021021 - Added picture functionality.
+                    if (frmRecordEditForm.txtImagePath.value.length > 0) {
+                        var controlCollection = frmRecordEditForm.elements;
+                        if (controlCollection != null) {
+                            for (i = 0; i < controlCollection.length; i++) {
+                                sControlName = controlCollection.item(i).name;
+                                sControlName = sControlName.substr(0, 18);
+                                if (sControlName == "txtRecEditPicture_") {
+                                    sControlName = controlCollection.item(i).name;
+                                    iPictureID = new Number(sControlName.substr(18));
+                                    recEditCtl.updatePicture(iPictureID, frmRecordEditForm.txtImagePath.value + "/" + controlCollection.item(i).value);
+                                }
+                            }
+                        }
+                    }
                 }
-				
-                var dataForm = window.parent.frames("dataframe").document.forms("frmGetData");
-                dataForm.txtCurrentTableID.value = frmRecordEditForm.txtCurrentTableID.value;
-                dataForm.txtCurrentScreenID.value = frmRecordEditForm.txtCurrentScreenID.value;
-                dataForm.txtCurrentViewID.value = frmRecordEditForm.txtCurrentViewID.value;
-                dataForm.txtSelectSQL.value = frmRecordEditForm.txtRecEditSelectSQL.value;	
-                dataForm.txtFromDef.value = frmRecordEditForm.txtRecEditFromDef.value;	
-                dataForm.txtFilterSQL.value = "";	
-                dataForm.txtFilterDef.value = "";	
-                dataForm.txtRealSource.value = frmRecordEditForm.txtRecEditRealSource.value;
-                dataForm.txtRecordID.value = frmRecordEditForm.txtCurrentRecordID.value;
-                dataForm.txtParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
-                dataForm.txtParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
-                dataForm.txtDefaultCalcCols.value = recEditCtl.CalculatedDefaultColumns();
 
-                window.parent.frames("dataframe").refreshData();
-            }
+                if (fOK == true) {
+                    // Get the data.asp to get the required data.
+                    var action = window.parent.frames("dataframe").document.forms("frmGetData").txtAction;
+                    if (((frmRecordEditForm.txtAction.value == "NEW") ||
+                            (frmRecordEditForm.txtAction.value == "COPY")) &&
+                        (frmRecordEditForm.txtRecEditInsertGranted.value == "True")) {
+                        action.value = frmRecordEditForm.txtAction.value;
+                    } else {
+                        action.value = "LOAD";
+                    }
 
-            if (fOK != true) {			
-                // The recEdit control was not initialised properly.
-                window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Record Edit control not initialised properly.");
-                window.parent.location.replace("login.asp");
+                    if (frmRecordEditForm.txtCurrentOrderID.value != frmRecordEditForm.txtRecEditOrderID.value) {
+                        frmRecordEditForm.txtCurrentOrderID.value = frmRecordEditForm.txtRecEditOrderID.value;
+                    }
+
+                    var dataForm = window.parent.frames("dataframe").document.forms("frmGetData");
+                    dataForm.txtCurrentTableID.value = frmRecordEditForm.txtCurrentTableID.value;
+                    dataForm.txtCurrentScreenID.value = frmRecordEditForm.txtCurrentScreenID.value;
+                    dataForm.txtCurrentViewID.value = frmRecordEditForm.txtCurrentViewID.value;
+                    dataForm.txtSelectSQL.value = frmRecordEditForm.txtRecEditSelectSQL.value;
+                    dataForm.txtFromDef.value = frmRecordEditForm.txtRecEditFromDef.value;
+                    dataForm.txtFilterSQL.value = "";
+                    dataForm.txtFilterDef.value = "";
+                    dataForm.txtRealSource.value = frmRecordEditForm.txtRecEditRealSource.value;
+                    dataForm.txtRecordID.value = frmRecordEditForm.txtCurrentRecordID.value;
+                    dataForm.txtParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
+                    dataForm.txtParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
+                    dataForm.txtDefaultCalcCols.value = recEditCtl.CalculatedDefaultColumns();
+
+                    window.parent.frames("dataframe").refreshData();
+                }
+
+                if (fOK != true) {
+                    // The recEdit control was not initialised properly.
+                    window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Record Edit control not initialised properly.");
+                    window.parent.location.replace("login.asp");
+                }
             }
-        }	
+        }
+        try {
+            frmRecordEditForm.ctlRecordEdit.SetWidth(frmRecordEditForm.txtRecEditWidth.value);
+            parent.window.resizeBy(-1, -1);
+            parent.window.resizeBy(1, 1);
+        } catch(e) {
+        }
     }
-    try 
+</script>
+
+<script type="text/javascript">
+    function addActiveXHandlers() {
+
+        OpenHR.addActiveXHandler("ctlRecordEdit", "dataChanged", ctlRecordEdit_dataChanged);
+        OpenHR.addActiveXHandler("ctlRecordEdit", "ToolClickRequest", ctlRecordEdit_ToolClickRequest);
+        OpenHR.addActiveXHandler("ctlRecordEdit", "LinkButtonClick", ctlRecordEdit_LinkButtonClick);
+        OpenHR.addActiveXHandler("ctlRecordEdit", "LookupClick", ctlRecordEdit_LookupClick);
+        OpenHR.addActiveXHandler("ctlRecordEdit", "ImageClick4", ctlRecordEdit_ImageClick4);
+        OpenHR.addActiveXHandler("ctlRecordEdit", "OLEClick4", ctlRecordEdit_OLEClick4);
+    }
+</script>
+
+
+<SCRIPT type="text/javascript">
+    function ctlRecordEdit_dataChanged()
     {
-        frmRecordEditForm.ctlRecordEdit.SetWidth(frmRecordEditForm.txtRecEditWidth.value);
-        parent.window.resizeBy(-1,-1);
-        parent.window.resizeBy(1,1);
-    }
-    catch(e) {}
-    -->
-</SCRIPT>
-
-<SCRIPT FOR=ctlRecordEdit EVENT=dataChanged LANGUAGE=JavaScript>
-<!--
-    // The data in the recEdit control has changed so refresh the menu.
-    // Get menu.asp to refresh the menu.
-    window.parent.frames("menuframe").refreshMenu();
-    -->
-</script>
-
-<SCRIPT FOR=ctlRecordEdit EVENT="ToolClickRequest(lngIndex, strTool)" LANGUAGE=JavaScript>
-<!--
-    // The data in the recEdit control has changed so refresh the menu.
-    // Get menu.asp to refresh the menu.
-    window.parent.frames("menuframe").MenuClick(strTool);
-    -->
-</script>
-
-<SCRIPT FOR=ctlRecordEdit EVENT="LinkButtonClick(plngLinkTableID, plngLinkOrderID, plngLinkViewID, plngLinkRecordID)" LANGUAGE=JavaScript>
-<!--
-    // A link button has been pressed in the recEdit control,
-    // so open the link option page.
-    window.parent.frames("menuframe").loadLinkPage(plngLinkTableID, plngLinkOrderID, plngLinkViewID, plngLinkRecordID);
-    -->
-</script>
-
-<SCRIPT FOR=ctlRecordEdit EVENT="LookupClick(plngColumnID, plngLookupColumnID, psLookupValue, pfMandatory, pstrFilterValue)" LANGUAGE=JavaScript>
-<!--
-    // A lookup button has been pressed in the recEdit control,
-    // so open the lookup page.
-    window.parent.frames("menuframe").loadLookupPage(plngColumnID, plngLookupColumnID, psLookupValue, pfMandatory, pstrFilterValue);
-    -->
-</script>
-
-<SCRIPT FOR=ctlRecordEdit EVENT="ImageClick4(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize, pbIsReadOnly)" LANGUAGE=JavaScript>
-<!--
-    // An image has been pressed in the recEdit control,
-    // so open the image find page.
-    var fOK;
-
-    fOK = true;
-    if (frmRecordEditForm.ctlRecordEdit.recordID == 0)
-    {
-        window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit photo fields until the record has been saved.");
-        fOK = false;
+        // The data in the recEdit control has changed so refresh the menu.
+        // Get menu.asp to refresh the menu.
+        window.parent.frames("menuframe").refreshMenu();
     }
 
-    if (fOK == true) {
-        if (plngOLEType < 2) {
-            fOK = window.parent.frames("menuframe").ASRIntranetFunctions.ValidateDir(frmRecordEditForm.txtPicturePath.value);
-            if (fOK == true)
+    function ctlRecordEdit_ToolClickRequest(lngIndex, strTool) {
+        // The data in the recEdit control has changed so refresh the menu.
+        // Get menu.asp to refresh the menu.
+        window.parent.frames("menuframe").MenuClick(strTool);
+    }
+
+    function ctlRecordEdit_LinkButtonClick(plngLinkTableID, plngLinkOrderID, plngLinkViewID, plngLinkRecordID)
+    {        
+        // A link button has been pressed in the recEdit control,
+        // so open the link option page.
+        window.parent.frames("menuframe").loadLinkPage(plngLinkTableID, plngLinkOrderID, plngLinkViewID, plngLinkRecordID);
+    }
+
+    function ctlRecordEdit_LookupClick(plngColumnID, plngLookupColumnID, psLookupValue, pfMandatory, pstrFilterValue) {
+        // A lookup button has been pressed in the recEdit control,
+        // so open the lookup page.
+        window.parent.frames("menuframe").loadLookupPage(plngColumnID, plngLookupColumnID, psLookupValue, pfMandatory, pstrFilterValue);
+    }
+
+    function ctlRecordEdit_ImageClick4(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize, pbIsReadOnly) {
+        // An image has been pressed in the recEdit control,
+        // so open the image find page.
+        var fOK;
+
+        fOK = true;
+        if (frmRecordEditForm.ctlRecordEdit.recordID == 0) {
+            window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit photo fields until the record has been saved.");
+            fOK = false;
+        }
+
+        if (fOK == true) {
+            if (plngOLEType < 2) {
+                fOK = window.parent.frames("menuframe").ASRIntranetFunctions.ValidateDir(frmRecordEditForm.txtPicturePath.value);
+                if (fOK == true)
+                    window.parent.frames("menuframe").loadImagePage(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize);
+                else
+                    window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit photo fields as the photo path is not valid.");
+            } else {
                 window.parent.frames("menuframe").loadImagePage(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize);
-            else
-                window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit photo fields as the photo path is not valid.");
+            }
         }
+    }	
 
-        else {
-            window.parent.frames("menuframe").loadImagePage(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize);
-        }
-    }
-	
-    -->
-</script>
-
-<SCRIPT FOR=ctlRecordEdit EVENT="OLEClick4(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly)" LANGUAGE=JavaScript>
-<!--
-    // An OLE button has been pressed in the recEdit control,
-    // so open the OLE page.	
-    var fOK;
-    var sKey = new String('');
+    function ctlRecordEdit_OLEClick4(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly) {
+        // An OLE button has been pressed in the recEdit control,
+        // so open the OLE page.	
+        var fOK;
+        var sKey = new String('');
   
-    fOK = true;
-    if (frmRecordEditForm.ctlRecordEdit.recordID == 0)
-    {
-        window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit OLE fields until the record has been saved.");
-        fOK = false;
-    }
+        fOK = true;
+        if (frmRecordEditForm.ctlRecordEdit.recordID == 0)
+        {
+            window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit OLE fields until the record has been saved.");
+            fOK = false;
+        }
 
-    if (fOK == true)
-    {
-        // Server OLE
-        if (plngOLEType == 1) {
-            fOK = window.parent.frames("menuframe").ASRIntranetFunctions.ValidateDir(frmRecordEditForm.txtOLEServerPath.value);
-            if (fOK == true)
+        if (fOK == true)
+        {
+            // Server OLE
+            if (plngOLEType == 1) {
+                fOK = window.parent.frames("menuframe").ASRIntranetFunctions.ValidateDir(frmRecordEditForm.txtOLEServerPath.value);
+                if (fOK == true)
+                    window.parent.frames("menuframe").loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly);
+                else
+                    window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit server OLE fields as the OLE (Server) path is not valid.");
+            }
+
+                // Local OLE
+            else if (plngOLEType == 0) {
+                fOK = window.parent.frames("menuframe").ASRIntranetFunctions.ValidateDir(frmRecordEditForm.txtOLELocalPath.value);
+                if (fOK == true)
+                    window.parent.frames("menuframe").loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly);
+                else
+                    window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit local OLE fields as the OLE (Local) path is not valid.");
+            }
+
+                // Embedded OLE
+            else if (plngOLEType == 2) {
+                sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);	
                 window.parent.frames("menuframe").loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly);
-            else
-                window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit server OLE fields as the OLE (Server) path is not valid.");
-        }
+            }
 
-            // Local OLE
-        else if (plngOLEType == 0) {
-            fOK = window.parent.frames("menuframe").ASRIntranetFunctions.ValidateDir(frmRecordEditForm.txtOLELocalPath.value);
-            if (fOK == true)
-                window.parent.frames("menuframe").loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly);
-            else
-                window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit local OLE fields as the OLE (Local) path is not valid.");
-        }
-
-            // Embedded OLE
-        else if (plngOLEType == 2) {
-            sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);	
-            window.parent.frames("menuframe").loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly);
-        }
-
-            // Linked OLE
-        else if (plngOLEType == 3) {
-            sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
-            window.parent.frames("menuframe").loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly);			
-        }
+                // Linked OLE
+            else if (plngOLEType == 3) {
+                sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
+                window.parent.frames("menuframe").loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly);			
+            }
+        }	        
     }
-	
-    -->
-</script>
+    
+    
 
-<script LANGUAGE="JavaScript">
-<!--
-    function refreshData()
-    {
-        // Get the data.asp to get the required data.
-        var frmGetDataForm = window.parent.frames("dataframe").document.forms("frmGetData");
+    function recordEdit_refreshData()
+        {
+            // Get the data.asp to get the required data.
+            var frmGetDataForm = window.parent.frames("dataframe").document.forms("frmGetData");
 
-        frmGetDataForm.txtAction.value = "LOAD";
-        frmGetDataForm.txtReaction.value = "";
-        frmGetDataForm.txtCurrentTableID.value = frmRecordEditForm.txtCurrentTableID.value;
-        frmGetDataForm.txtCurrentScreenID.value = frmRecordEditForm.txtCurrentScreenID.value;
-        frmGetDataForm.txtCurrentViewID.value = frmRecordEditForm.txtCurrentViewID.value;
-        frmGetDataForm.txtSelectSQL.value = frmRecordEditForm.txtRecEditSelectSQL.value;	
-        frmGetDataForm.txtFromDef.value = frmRecordEditForm.txtRecEditFromDef.value;	
-        frmGetDataForm.txtFilterSQL.value = frmRecordEditForm.txtRecEditFilterSQL.value;	
-        frmGetDataForm.txtFilterDef.value = frmRecordEditForm.txtRecEditFilterDef.value;	
-        frmGetDataForm.txtRealSource.value = frmRecordEditForm.txtRecEditRealSource.value;
-        frmGetDataForm.txtRecordID.value = window.parent.frames("dataframe").document.forms("frmData").txtRecordID.value;
-        frmGetDataForm.txtParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
-        frmGetDataForm.txtParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
-        frmGetDataForm.txtDefaultCalcCols.value = frmRecordEditForm.ctlRecordEdit.CalculatedDefaultColumns();
-        frmGetDataForm.txtInsertUpdateDef.value = "";
-        frmGetDataForm.txtTimestamp.value = "";
+            frmGetDataForm.txtAction.value = "LOAD";
+            frmGetDataForm.txtReaction.value = "";
+            frmGetDataForm.txtCurrentTableID.value = frmRecordEditForm.txtCurrentTableID.value;
+            frmGetDataForm.txtCurrentScreenID.value = frmRecordEditForm.txtCurrentScreenID.value;
+            frmGetDataForm.txtCurrentViewID.value = frmRecordEditForm.txtCurrentViewID.value;
+            frmGetDataForm.txtSelectSQL.value = frmRecordEditForm.txtRecEditSelectSQL.value;	
+            frmGetDataForm.txtFromDef.value = frmRecordEditForm.txtRecEditFromDef.value;	
+            frmGetDataForm.txtFilterSQL.value = frmRecordEditForm.txtRecEditFilterSQL.value;	
+            frmGetDataForm.txtFilterDef.value = frmRecordEditForm.txtRecEditFilterDef.value;	
+            frmGetDataForm.txtRealSource.value = frmRecordEditForm.txtRecEditRealSource.value;
+            frmGetDataForm.txtRecordID.value = window.parent.frames("dataframe").document.forms("frmData").txtRecordID.value;
+            frmGetDataForm.txtParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
+            frmGetDataForm.txtParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
+            frmGetDataForm.txtDefaultCalcCols.value = frmRecordEditForm.ctlRecordEdit.CalculatedDefaultColumns();
+            frmGetDataForm.txtInsertUpdateDef.value = "";
+            frmGetDataForm.txtTimestamp.value = "";
 
-        window.parent.frames("dataframe").refreshData();
+            window.parent.frames("dataframe").refreshData();
     }
+        
 
     function setRecordID(plngRecordID)
     {
@@ -388,7 +382,6 @@
         frmRecordEditForm.ctlRecordEdit.ParentRecordID = plngParentRecordID;
     }
 
-    -->
 </script>
 
 <!--The following objects are included to ensure that some of the controls 
@@ -437,10 +430,7 @@ that are used in the ASRIntRecEdit control are downloaded and installed properly
 	VIEWASTEXT>
 </OBJECT>
 
-<!--#INCLUDE FILE="include/ctl_SetStyles.txt" -->
-</HEAD>
-
-<BODY <%=session("BodyTag")%>>
+<div <%=session("BodyTag")%>>
 <FORM action="" method=post id=frmRecordEditForm name=frmRecordEditForm>
 
 <table align=center class="outline" cellPadding=5 cellSpacing=0>
@@ -454,43 +444,43 @@ that are used in the ASRIntRecEdit control are downloaded and installed properly
 <%
 	on error resume next
 	
-	Dim sErrorDescription
+    Dim sErrorDescription As String
 	sErrorDescription = ""
 
 	' Get the page title.
-	Set cmdRecEditWindowTitle = Server.CreateObject("ADODB.Command")
+    Dim cmdRecEditWindowTitle = CreateObject("ADODB.Command")
 	cmdRecEditWindowTitle.CommandText = "sp_ASRIntGetRecordEditInfo"
 	cmdRecEditWindowTitle.CommandType = 4 ' Stored Procedure
-	Set cmdRecEditWindowTitle.ActiveConnection = session("databaseConnection")
+    cmdRecEditWindowTitle.ActiveConnection = Session("databaseConnection")
 
-	Set prmTitle = cmdRecEditWindowTitle.CreateParameter("title",200,2,100)
-	cmdRecEditWindowTitle.Parameters.Append prmTitle
+    Dim prmTitle = cmdRecEditWindowTitle.CreateParameter("title", 200, 2, 100)
+    cmdRecEditWindowTitle.Parameters.Append(prmTitle)
 
-	Set prmQuickEntry = cmdRecEditWindowTitle.CreateParameter("quickEntry",11,2) ' 11=bit, 2=output
-	cmdRecEditWindowTitle.Parameters.Append prmQuickEntry
+    Dim prmQuickEntry = cmdRecEditWindowTitle.CreateParameter("quickEntry", 11, 2) ' 11=bit, 2=output
+    cmdRecEditWindowTitle.Parameters.Append(prmQuickEntry)
 
-	Set prmScreenID = cmdRecEditWindowTitle.CreateParameter("screenID",3,1)
-	cmdRecEditWindowTitle.Parameters.Append prmScreenID
+    Dim prmScreenID = cmdRecEditWindowTitle.CreateParameter("screenID", 3, 1)
+    cmdRecEditWindowTitle.Parameters.Append(prmScreenID)
 	prmScreenID.value = cleanNumeric(session("screenID"))
 
-	Set prmViewID = cmdRecEditWindowTitle.CreateParameter("viewID",3,1)
-	cmdRecEditWindowTitle.Parameters.Append prmViewID
+    Dim prmViewID = cmdRecEditWindowTitle.CreateParameter("viewID", 3, 1)
+    cmdRecEditWindowTitle.Parameters.Append(prmViewID)
 	prmViewID.value = cleanNumeric(session("viewID"))
 
-	err = 0
+    Err.Clear()
     cmdRecEditWindowTitle.Execute
   
-	if (err <> 0) then
-		sErrorDescription = "The page title could not be created." & vbcrlf & formatError(Err.Description)
-	end if
+    If (Err.Number <> 0) Then
+        sErrorDescription = "The page title could not be created." & vbCrLf & FormatError(Err.Description)
+    End If
 
 	if len(sErrorDescription) = 0 then		  
-		Response.Write replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " ") & vbcrlf
-		Response.Write "<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & cmdRecEditWindowTitle.Parameters("quickEntry").Value & ">" & vbcrlf
-	end if
+        Response.Write(Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " ") & vbCrLf)
+        Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & cmdRecEditWindowTitle.Parameters("quickEntry").Value & ">" & vbCrLf)
+    End If
 		
 	' Release the ADO command object.
-	Set cmdRecEditWindowTitle = nothing
+    cmdRecEditWindowTitle = Nothing
 %>
 						</H3>
 					</TD>
@@ -522,178 +512,178 @@ that are used in the ASRIntRecEdit control are downloaded and installed properly
 </table>
 
 <%
-	Response.Write "<INPUT type='hidden' id=txtAction name=txtAction value=" & session("action") & ">" & vbcrlf
-	Response.Write "<INPUT type='hidden' id=txtCurrentTableID name=txtCurrentTableID value=" & session("tableID") & ">" & vbcrlf
-	Response.Write "<INPUT type='hidden' id=txtCurrentViewID name=txtCurrentViewID value=" & session("viewID") & ">" & vbcrlf
-	Response.Write "<INPUT type='hidden' id=txtCurrentScreenID name=txtCurrentScreenID value=" & session("screenID") & ">" & vbcrlf
-	Response.Write "<INPUT type='hidden' id=txtCurrentOrderID name=txtCurrentOrderID value=" & session("orderID") & ">" & vbcrlf
-	Response.Write "<INPUT type='hidden' id=txtCurrentRecordID name=txtCurrentRecordID value=" & session("recordID") & ">" & vbcrlf
-	Response.Write "<INPUT type='hidden' id=txtCurrentParentTableID name=txtCurrentParentTableID value=" & session("parentTableID") & ">" & vbcrlf
-	Response.Write "<INPUT type='hidden' id=txtCurrentParentRecordID name=txtCurrentParentRecordID value=" & session("parentRecordID") & ">" & vbcrlf
-	Response.Write "<INPUT type='hidden' id=txtLineage name=txtLineage value=" & session("lineage") & ">" & vbcrlf
-	Response.Write "<INPUT type='hidden' id=txtCurrentRecPos name=txtCurrentRecPos value=" & session("parentRecordID") & ">" & vbcrlf
+    Response.Write("<INPUT type='hidden' id=txtAction name=txtAction value=" & Session("action") & ">" & vbCrLf)
+    Response.Write("<INPUT type='hidden' id=txtCurrentTableID name=txtCurrentTableID value=" & Session("tableID") & ">" & vbCrLf)
+    Response.Write("<INPUT type='hidden' id=txtCurrentViewID name=txtCurrentViewID value=" & Session("viewID") & ">" & vbCrLf)
+    Response.Write("<INPUT type='hidden' id=txtCurrentScreenID name=txtCurrentScreenID value=" & Session("screenID") & ">" & vbCrLf)
+    Response.Write("<INPUT type='hidden' id=txtCurrentOrderID name=txtCurrentOrderID value=" & Session("orderID") & ">" & vbCrLf)
+    Response.Write("<INPUT type='hidden' id=txtCurrentRecordID name=txtCurrentRecordID value=" & Session("recordID") & ">" & vbCrLf)
+    Response.Write("<INPUT type='hidden' id=txtCurrentParentTableID name=txtCurrentParentTableID value=" & Session("parentTableID") & ">" & vbCrLf)
+    Response.Write("<INPUT type='hidden' id=txtCurrentParentRecordID name=txtCurrentParentRecordID value=" & Session("parentRecordID") & ">" & vbCrLf)
+    Response.Write("<INPUT type='hidden' id=txtLineage name=txtLineage value=" & Session("lineage") & ">" & vbCrLf)
+    Response.Write("<INPUT type='hidden' id=txtCurrentRecPos name=txtCurrentRecPos value=" & Session("parentRecordID") & ">" & vbCrLf)
 	
 	if len(sErrorDescription) = 0 then
 		' Read the screen definition from the database into 'hidden' controls.
-		Set cmdRecEditDefinition = Server.CreateObject("ADODB.Command")
+        Dim cmdRecEditDefinition = CreateObject("ADODB.Command")
 		cmdRecEditDefinition.CommandText = "sp_ASRIntGetScreenDefinition"
 		cmdRecEditDefinition.CommandType = 4 ' Stored Procedure
-		Set cmdRecEditDefinition.ActiveConnection = session("databaseConnection")
+        cmdRecEditDefinition.ActiveConnection = Session("databaseConnection")
 
-		Set prmScreenID = cmdRecEditDefinition.CreateParameter("screenID", 3, 1) ' 3=integer, 1=input
-		cmdRecEditDefinition.Parameters.Append prmScreenID
+        prmScreenID = cmdRecEditDefinition.CreateParameter("screenID", 3, 1) ' 3=integer, 1=input
+        cmdRecEditDefinition.Parameters.Append(prmScreenID)
 		prmScreenID.value = cleanNumeric(session("screenID"))
 
-		Set prmViewID = cmdRecEditDefinition.CreateParameter("viewID", 3, 1) ' 3=integer, 1=input
-		cmdRecEditDefinition.Parameters.Append prmViewID
+        prmViewID = cmdRecEditDefinition.CreateParameter("viewID", 3, 1) ' 3=integer, 1=input
+        cmdRecEditDefinition.Parameters.Append(prmViewID)
 		prmViewID.value = cleanNumeric(session("viewID"))
 
-		err = 0
-	  Set rstScreenDefinition = cmdRecEditDefinition.Execute
+        Err.Clear()
+        Dim rstScreenDefinition = cmdRecEditDefinition.Execute
 	  
-		if (err <> 0) then
-			sErrorDescription = "The screen definition could not be read." & vbcrlf & formatError(Err.Description)
-		end if
+        If (Err.Number <> 0) Then
+            sErrorDescription = "The screen definition could not be read." & vbCrLf & FormatError(Err.Description)
+        End If
 
 		if len(sErrorDescription) = 0 then		  
-			Response.Write "<INPUT type='hidden' id=txtRecEditTableID name=txtRecEditTableID value=" & session("tableID") & ">" & vbcrlf
-			Response.Write "<INPUT type='hidden' id=txtRecEditViewID name=txtRecEditViewID value=" & session("viewID") & ">" & vbcrlf
-			Response.Write "<INPUT type='hidden' id=txtRecEditHeight name=txtRecEditHeight value=" & rstScreenDefinition.Fields("height").Value & ">" & vbcrlf
-			Response.Write "<INPUT type='hidden' id=txtRecEditWidth name=txtRecEditWidth value=" & rstScreenDefinition.Fields("width").Value & ">" & vbcrlf
-			Response.Write "<INPUT type='hidden' id=txtRecEditTabCount name=txtRecEditTabCount value=" & rstScreenDefinition.Fields("tabCount").Value & ">" & vbcrlf
-			Response.Write "<INPUT type='hidden' id=txtRecEditTabCaptions name=txtRecEditTabCaptions value=""" & replace(replace(rstScreenDefinition.Fields("tabCaptions").Value, "&", "&&"), """", "&quot;") & """>" & vbcrlf
-			Response.Write "<INPUT type='hidden' id=txtRecEditFontName name=txtRecEditFontName value=""" & replace(rstScreenDefinition.Fields("fontName").Value, """", "&quot;") & """>" & vbcrlf
-			Response.Write "<INPUT type='hidden' id=txtRecEditFontSize name=txtRecEditFontSize value=" & rstScreenDefinition.Fields("fontSize").Value & ">" & vbcrlf
-			Response.Write "<INPUT type='hidden' id=txtRecEditFontBold name=txtRecEditFontBold value=" & rstScreenDefinition.Fields("fontBold").Value & ">" & vbcrlf
-			Response.Write "<INPUT type='hidden' id=txtRecEditFontItalic name=txtRecEditFontItalic value=" & rstScreenDefinition.Fields("fontItalic").Value & ">" & vbcrlf
-			Response.Write "<INPUT type='hidden' id=txtRecEditFontUnderline name=txtRecEditFontUnderline value=" & rstScreenDefinition.Fields("fontUnderline").Value & ">" & vbcrlf
-			Response.Write "<INPUT type='hidden' id=txtRecEditFontStrikethru name=txtRecEditFontStrikethru value=" & rstScreenDefinition.Fields("fontStrikethru").Value & ">" & vbcrlf
-			Response.Write "<INPUT type='hidden' id=txtRecEditRealSource name=txtRecEditRealSource value=""" & replace(rstScreenDefinition.Fields("realSource").Value, """", "&quot;") & """>" & vbcrlf
-			Response.Write "<INPUT type='hidden' id=txtRecEditInsertGranted name=txtRecEditInsertGranted value=" & rstScreenDefinition.Fields("insertGranted").Value & ">" & vbcrlf
-			Response.Write "<INPUT type='hidden' id=txtRecEditDeleteGranted name=txtRecEditDeleteGranted value=" & rstScreenDefinition.Fields("deleteGranted").Value & ">" & vbcrlf
-		end if
+            Response.Write("<INPUT type='hidden' id=txtRecEditTableID name=txtRecEditTableID value=" & Session("tableID") & ">" & vbCrLf)
+            Response.Write("<INPUT type='hidden' id=txtRecEditViewID name=txtRecEditViewID value=" & Session("viewID") & ">" & vbCrLf)
+            Response.Write("<INPUT type='hidden' id=txtRecEditHeight name=txtRecEditHeight value=" & rstScreenDefinition.Fields("height").Value & ">" & vbCrLf)
+            Response.Write("<INPUT type='hidden' id=txtRecEditWidth name=txtRecEditWidth value=" & rstScreenDefinition.Fields("width").Value & ">" & vbCrLf)
+            Response.Write("<INPUT type='hidden' id=txtRecEditTabCount name=txtRecEditTabCount value=" & rstScreenDefinition.Fields("tabCount").Value & ">" & vbCrLf)
+            Response.Write("<INPUT type='hidden' id=txtRecEditTabCaptions name=txtRecEditTabCaptions value=""" & Replace(Replace(rstScreenDefinition.Fields("tabCaptions").Value, "&", "&&"), """", "&quot;") & """>" & vbCrLf)
+            Response.Write("<INPUT type='hidden' id=txtRecEditFontName name=txtRecEditFontName value=""" & Replace(rstScreenDefinition.Fields("fontName").Value, """", "&quot;") & """>" & vbCrLf)
+            Response.Write("<INPUT type='hidden' id=txtRecEditFontSize name=txtRecEditFontSize value=" & rstScreenDefinition.Fields("fontSize").Value & ">" & vbCrLf)
+            Response.Write("<INPUT type='hidden' id=txtRecEditFontBold name=txtRecEditFontBold value=" & rstScreenDefinition.Fields("fontBold").Value & ">" & vbCrLf)
+            Response.Write("<INPUT type='hidden' id=txtRecEditFontItalic name=txtRecEditFontItalic value=" & rstScreenDefinition.Fields("fontItalic").Value & ">" & vbCrLf)
+            Response.Write("<INPUT type='hidden' id=txtRecEditFontUnderline name=txtRecEditFontUnderline value=" & rstScreenDefinition.Fields("fontUnderline").Value & ">" & vbCrLf)
+            Response.Write("<INPUT type='hidden' id=txtRecEditFontStrikethru name=txtRecEditFontStrikethru value=" & rstScreenDefinition.Fields("fontStrikethru").Value & ">" & vbCrLf)
+            Response.Write("<INPUT type='hidden' id=txtRecEditRealSource name=txtRecEditRealSource value=""" & Replace(rstScreenDefinition.Fields("realSource").Value, """", "&quot;") & """>" & vbCrLf)
+            Response.Write("<INPUT type='hidden' id=txtRecEditInsertGranted name=txtRecEditInsertGranted value=" & rstScreenDefinition.Fields("insertGranted").Value & ">" & vbCrLf)
+            Response.Write("<INPUT type='hidden' id=txtRecEditDeleteGranted name=txtRecEditDeleteGranted value=" & rstScreenDefinition.Fields("deleteGranted").Value & ">" & vbCrLf)
+        End If
 		
 		rstScreenDefinition.close
-		Set rstScreenDefinition = nothing
+        rstScreenDefinition = Nothing
 		
 		' Release the ADO command object.
-		Set cmdRecEditDefinition = nothing
+        cmdRecEditDefinition = Nothing
 	end if
 	
-	Response.Write "<INPUT type='hidden' id=txtRecEditEmpTableID name=txtRecEditEmpTableID value=" & session("TB_EmpTableID") & ">" & vbcrlf
-	Response.Write "<INPUT type='hidden' id=txtRecEditCourseTableID name=txtRecEditCourseTableID value=" & session("TB_CourseTableID") & ">" & vbcrlf
-	Response.Write "<INPUT type='hidden' id=txtRecEditTBTableID name=txtRecEditTBTableID value=" & session("TB_TBTableID") & ">" & vbcrlf
-	Response.Write "<INPUT type='hidden' id=txtRecEditTBStatusColumnID name=txtRecEditTBStatusColumnID value=" & session("TB_TBStatusColumnID") & ">" & vbcrlf
-	Response.Write "<INPUT type='hidden' id=txtRecEditCourseCancelDateColumnID name=txtRecEditCourseCancelDateColumnID value=" & session("TB_CourseCancelDateColumnID") & ">" & vbcrlf
-	'ND commented out for now - Response.Write "<INPUT type='hidden' id=txtWaitListOverRideColumnID name=txtWaitListOverRideColumnID value=" & session("TB_WaitListOverRideColumnID") & ">" & vbcrlf
+    Response.Write("<INPUT type='hidden' id=txtRecEditEmpTableID name=txtRecEditEmpTableID value=" & Session("TB_EmpTableID") & ">" & vbCrLf)
+    Response.Write("<INPUT type='hidden' id=txtRecEditCourseTableID name=txtRecEditCourseTableID value=" & Session("TB_CourseTableID") & ">" & vbCrLf)
+    Response.Write("<INPUT type='hidden' id=txtRecEditTBTableID name=txtRecEditTBTableID value=" & Session("TB_TBTableID") & ">" & vbCrLf)
+    Response.Write("<INPUT type='hidden' id=txtRecEditTBStatusColumnID name=txtRecEditTBStatusColumnID value=" & Session("TB_TBStatusColumnID") & ">" & vbCrLf)
+    Response.Write("<INPUT type='hidden' id=txtRecEditCourseCancelDateColumnID name=txtRecEditCourseCancelDateColumnID value=" & Session("TB_CourseCancelDateColumnID") & ">" & vbCrLf)
+    'ND commented out for now - Response.Write "<INPUT type='hidden' id=txtWaitListOverRideColumnID name=txtWaitListOverRideColumnID value=" & session("TB_WaitListOverRideColumnID") & ">" & vbcrlf
 
 	if len(sErrorDescription) = 0 then
 		' Get the screen controls
-		Set cmdRecEditControls = Server.CreateObject("ADODB.Command")
+        Dim cmdRecEditControls = CreateObject("ADODB.Command")
 		cmdRecEditControls.CommandText = "sp_ASRIntGetScreenControlsString2"
 		cmdRecEditControls.CommandType = 4 ' Stored Procedure
-	    Set cmdRecEditControls.ActiveConnection = session("databaseConnection")
+        cmdRecEditControls.ActiveConnection = Session("databaseConnection")
 
-		Set prmScreenID = cmdRecEditControls.CreateParameter("screenID",3,1) ' 3=integer, 1=input
-		cmdRecEditControls.Parameters.Append prmScreenID
+        prmScreenID = cmdRecEditControls.CreateParameter("screenID", 3, 1) ' 3=integer, 1=input
+        cmdRecEditControls.Parameters.Append(prmScreenID)
 		prmScreenID.value = cleanNumeric(session("screenID"))
 
-		Set prmViewID = cmdRecEditControls.CreateParameter("viewID",3,1) ' 3=integer, 1=input
-		cmdRecEditControls.Parameters.Append prmViewID
+        prmViewID = cmdRecEditControls.CreateParameter("viewID", 3, 1) ' 3=integer, 1=input
+        cmdRecEditControls.Parameters.Append(prmViewID)
 		prmViewID.value = cleanNumeric(session("viewID"))
 
-		Set prmSelectSQL = cmdRecEditControls.CreateParameter("selectSQL",200,2,2147483646) ' 200=varchar, 2=output
-		cmdRecEditControls.Parameters.Append prmSelectSQL
+        Dim prmSelectSQL = cmdRecEditControls.CreateParameter("selectSQL", 200, 2, 2147483646) ' 200=varchar, 2=output
+        cmdRecEditControls.Parameters.Append(prmSelectSQL)
 
-		Set prmFromDef = cmdRecEditControls.CreateParameter("fromDef",200,2,255) ' 200=varchar, 2=output
-		cmdRecEditControls.Parameters.Append prmFromDef
+        Dim prmFromDef = cmdRecEditControls.CreateParameter("fromDef", 200, 2, 255) ' 200=varchar, 2=output
+        cmdRecEditControls.Parameters.Append(prmFromDef)
 
-		Set prmOrderID = cmdRecEditControls.CreateParameter("orderID", 3, 3) ' 3=integer,  3=input/output
-		cmdRecEditControls.Parameters.Append prmOrderID
+        Dim prmOrderID = cmdRecEditControls.CreateParameter("orderID", 3, 3) ' 3=integer,  3=input/output
+        cmdRecEditControls.Parameters.Append(prmOrderID)
 		prmOrderID.value = cleanNumeric(session("orderID"))
 
-		err = 0
-	  Set rstScreenControls = cmdRecEditControls.Execute
+        Err.Clear()
+        Dim rstScreenControls = cmdRecEditControls.Execute
 	  
-		if (err <> 0) then
-			sErrorDescription = "The screen control definitions could not be read." & vbcrlf & formatError(Err.Description)
-		end if
+        If (Err.Number <> 0) Then
+            sErrorDescription = "The screen control definitions could not be read." & vbCrLf & FormatError(Err.Description)
+        End If
 
 		if len(sErrorDescription) = 0 then		  
-			iloop = 1
+            Dim iloop = 1
 			do while not rstScreenControls.EOF
-				Response.Write "<INPUT type='hidden' id=txtRecEditControl_" & iLoop & " name=txtRecEditControl_" & iLoop & " value=""" & replace(rstScreenControls.Fields("controlDefinition").Value, """", "&quot;") & """>" & vbcrlf
-				rstScreenControls.MoveNext
+                Response.Write("<INPUT type='hidden' id=txtRecEditControl_" & iloop & " name=txtRecEditControl_" & iloop & " value=""" & Replace(rstScreenControls.Fields("controlDefinition").Value, """", "&quot;") & """>" & vbCrLf)
+                rstScreenControls.MoveNext()
 	
 				iloop = iloop + 1
 			loop
 
 			' Release the ADO recordset object.
 			rstScreenControls.close
-			Set rstScreenControls = nothing
+            rstScreenControls = Nothing
 		
 			' NB. IMPORTANT ADO NOTE.
 			' When calling a stored procedure which returns a recordset AND has output parameters
 			' you need to close the recordset and set it to nothing before using the output parameters. 
-			Response.Write "<INPUT type='hidden' id=txtRecEditSelectSQL name=txtRecEditSelectSQL value=""" & replace(replace(cmdRecEditControls.Parameters("selectSQL").Value, "'", "'''"), """", "&quot;") & """>" & vbcrlf
-			Response.Write "<INPUT type='hidden' id=txtRecEditFromDef name=txtRecEditFromDef value=""" & replace(replace(cmdRecEditControls.Parameters("fromDef").Value, "'", "'''"), """", "&quot;") & """>" & vbcrlf
-			Response.Write "<INPUT type='hidden' id=txtRecEditOrderID name=txtRecEditOrderID value=" & cmdRecEditControls.Parameters("orderID").Value & ">" & vbcrlf
-		end if
+            Response.Write("<INPUT type='hidden' id=txtRecEditSelectSQL name=txtRecEditSelectSQL value=""" & Replace(Replace(cmdRecEditControls.Parameters("selectSQL").Value, "'", "'''"), """", "&quot;") & """>" & vbCrLf)
+            Response.Write("<INPUT type='hidden' id=txtRecEditFromDef name=txtRecEditFromDef value=""" & Replace(Replace(cmdRecEditControls.Parameters("fromDef").Value, "'", "'''"), """", "&quot;") & """>" & vbCrLf)
+            Response.Write("<INPUT type='hidden' id=txtRecEditOrderID name=txtRecEditOrderID value=" & cmdRecEditControls.Parameters("orderID").Value & ">" & vbCrLf)
+        End If
 		
-		Set cmdRecEditControls = nothing
+        cmdRecEditControls = Nothing
 	end if
 	
 	if len(sErrorDescription) = 0 then
 		' Get the screen column control values
-		Set cmdRecEditControlValues = Server.CreateObject("ADODB.Command")
+        Dim cmdRecEditControlValues = CreateObject("ADODB.Command")
 		cmdRecEditControlValues.CommandText = "sp_ASRIntGetScreenControlValuesString"
 		cmdRecEditControlValues.CommandType = 4 ' Stored Procedure
-		Set cmdRecEditControlValues.ActiveConnection = session("databaseConnection")
+        cmdRecEditControlValues.ActiveConnection = Session("databaseConnection")
 
-		Set prmScreenID = cmdRecEditControlValues.CreateParameter("screenID",3,1)
-		cmdRecEditControlValues.Parameters.Append prmScreenID
+        prmScreenID = cmdRecEditControlValues.CreateParameter("screenID", 3, 1)
+        cmdRecEditControlValues.Parameters.Append(prmScreenID)
 		prmScreenID.value = cleanNumeric(session("screenID"))
 
-		err = 0
-		Set rstScreenControlValues = cmdRecEditControlValues.Execute
+        Err.Clear()
+        Dim rstScreenControlValues = cmdRecEditControlValues.Execute
 		
-		if (err <> 0) then
-			sErrorDescription = "The screen control values could not be read." & vbcrlf & formatError(Err.Description)
-		end if
+        If (Err.Number <> 0) Then
+            sErrorDescription = "The screen control values could not be read." & vbCrLf & FormatError(Err.Description)
+        End If
 
 		if len(sErrorDescription) = 0 then		  
-			iloop = 1
+            Dim iloop = 1
 			do while not rstScreenControlValues.EOF
-				Response.Write "<INPUT type='hidden' id=txtRecEditControlValues_" & iLoop & " name=txtRecEditControlValues_" & iLoop & " value=""" & replace(rstScreenControlValues.Fields("valueDefinition").Value, """", "&quot;") & """>" & vbcrlf
-				rstScreenControlValues.MoveNext
+                Response.Write("<INPUT type='hidden' id=txtRecEditControlValues_" & iloop & " name=txtRecEditControlValues_" & iloop & " value=""" & Replace(rstScreenControlValues.Fields("valueDefinition").Value, """", "&quot;") & """>" & vbCrLf)
+                rstScreenControlValues.MoveNext()
 		
 				iloop = iloop + 1
 			loop
 
 			' Release the ADO recordset object.
 			rstScreenControlValues.close
-			Set rstScreenControlValues = nothing
+            rstScreenControlValues = Nothing
 		end if
 	
-		Set cmdRecEditControlValues = nothing
+        cmdRecEditControlValues = Nothing
 	end if
 
-	Response.Write "<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>"
-	Response.Write "<INPUT type='hidden' id=txtRecEditFilterDef name=txtRecEditFilterDef value=""" & replace(session("filterDef"), """", "&quot;") & """>" & vbcrlf
-	Response.Write "<INPUT type='hidden' id=txtRecEditFilterSQL name=txtRecEditFilterSQL value=""" & replace(session("filterSQL"), """", "&quot;") & """>" & vbcrlf
+    Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
+    Response.Write("<INPUT type='hidden' id=txtRecEditFilterDef name=txtRecEditFilterDef value=""" & Replace(Session("filterDef"), """", "&quot;") & """>" & vbCrLf)
+    Response.Write("<INPUT type='hidden' id=txtRecEditFilterSQL name=txtRecEditFilterSQL value=""" & Replace(Session("filterSQL"), """", "&quot;") & """>" & vbCrLf)
 
 	' JPD 20021021 - Added pictures functionlity.
 	' JPD 20021127 - Moved Utilities object into session variable.
 	'Set objUtilities = server.CreateObject("COAIntServer.Utilities")
 	'objUtilities.Connection = session("databaseConnection")
-	Set objUtilities = session("UtilitiesObject")
-	sTempPath = server.MapPath("pictures")
-	picturesArray = objUtilities.GetPictures(session("screenID"), cstr(sTempPath))
+    Dim objUtilities = Session("UtilitiesObject")
+    Dim sTempPath = Server.MapPath("pictures")
+    Dim picturesArray = objUtilities.GetPictures(Session("screenID"), CStr(sTempPath))
 
 	for iCount = 1 to UBound(picturesArray,2)
-		Response.Write "<INPUT type='hidden' id=txtRecEditPicture_" & picturesArray(1,icount) & " name=txtRecEditPicture_" & picturesArray(1,icount) & " value=""" & picturesArray(2,icount) & """>" & vbcrlf
-	next 
-	Set objUtilities = nothing
+        Response.Write("<INPUT type='hidden' id=txtRecEditPicture_" & picturesArray(1, iCount) & " name=txtRecEditPicture_" & picturesArray(1, iCount) & " value=""" & picturesArray(2, iCount) & """>" & vbCrLf)
+    Next
+    objUtilities = Nothing
 
 	'sReferringPage = Request.ServerVariables("HTTP_REFERER") 
 	'iIndex = inStrRev(sReferringPage, "/")
@@ -712,30 +702,33 @@ that are used in the ASRIntRecEdit control are downloaded and installed properly
 	<INPUT type='hidden' id=txtOLELocalPath name=txtOLELocalPath>
 </FORM>
 
-<FORM action="default_Submit.asp" method=post id=frmGoto name=frmGoto><!--#include file="include\gotoWork.txt"-->
+<FORM action="default_Submit.asp" method=post id=frmGoto name=frmGoto>
+    <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 </FORM>
 
-</BODY>
-</HTML>
+</div>
 
-<!-- Embeds createActiveX.js script reference -->
-<!--#include file="include\ctl_CreateControl.txt"-->
+
+<script type="text/javascript">
+    addActiveXHandlers(); 
+    recordEdit_window_onload();
+</script>
 
 <% 
-function formatError(psErrMsg)
-  Dim iStart 
-  dim iFound 
+    'function formatError(psErrMsg)
+    '  Dim iStart 
+    '  dim iFound 
   
-  iFound = 0
-  Do
-    iStart = iFound
-    iFound = InStr(iStart + 1, psErrMsg, "]")
-  Loop While iFound > 0
+    '  iFound = 0
+    '  Do
+    '    iStart = iFound
+    '    iFound = InStr(iStart + 1, psErrMsg, "]")
+    '  Loop While iFound > 0
   
-  If (iStart > 0) And (iStart < Len(Trim(psErrMsg))) Then
-    formatError = Trim(Mid(psErrMsg, iStart + 1))
-  Else
-    formatError = psErrMsg
-  End If
-end function
+    '  If (iStart > 0) And (iStart < Len(Trim(psErrMsg))) Then
+    '    formatError = Trim(Mid(psErrMsg, iStart + 1))
+    '  Else
+    '    formatError = psErrMsg
+    '  End If
+    'end function
 %>

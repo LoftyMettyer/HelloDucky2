@@ -1,5 +1,6 @@
 ﻿Imports System.Web.Mvc
 Imports System.IO
+Imports System.Web
 
 Namespace Controllers
 
@@ -1471,20 +1472,20 @@ Namespace Controllers
 
     ' TODO
     Public Sub ShowPhoto(imageName As String)
-      '			'TODO fetch path from registry
-      '			Const localImagesPath As String = "\\abs16090\hrprotemp\"
-      '
-      '			'TODO fetch imagename from db
-      '			Dim file = localImagesPath & imageName
-      '			Dim fStream As New FileStream(file, FileMode.Open, FileAccess.Read)
-      '			Dim br As New BinaryReader(fStream)
-      '
-      '			' Show the number of bytes in the array.
-      '			br.Close()
-      '			fStream.Close()
-      '
-      '			Response.ContentType = "image/png"
-      '			Response.WriteFile(file)
+			'TODO fetch path from registry
+			Dim localImagesPath As String = HttpContext.Server.MapPath("~/pictures/profilephotos/")
+
+			'TODO fetch imagename from db
+			Dim file = localImagesPath & imageName
+			Dim fStream As New FileStream(file, FileMode.Open, FileAccess.Read)
+			Dim br As New BinaryReader(fStream)
+
+			' Show the number of bytes in the array.
+			br.Close()
+			fStream.Close()
+
+			Response.ContentType = "image/png"
+			Response.WriteFile(file)
 
     End Sub
 
