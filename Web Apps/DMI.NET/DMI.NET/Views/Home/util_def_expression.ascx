@@ -15,8 +15,6 @@
 <!--
     function util_def_expression_onload() {
 
-        debugger;
-
         var fOK;
         var objNode;
 
@@ -864,12 +862,16 @@
         var fOK;
         var sKey;
         var sRelativeKey;
+        
+        debugger;
+
         var frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
         var frmRefresh = OpenHR.getForm("refreshframe", "frmRefresh");
         var iFunctionID = 0;
         var iParamIndex = 0;
 
         fOK = true;
+
 
         OpenHR.submitForm(frmRefresh);
 	
@@ -923,7 +925,7 @@
         }
 
         if (fOK == true) {
-            frmOptionArea.submit();
+            OpenHR.submitForm(frmOptionArea);
         }
     }
 
@@ -989,7 +991,7 @@
         }
 
         if (fOK == true) {
-            frmOptionArea.submit();
+            OpenHR.submitForm(frmOptionArea);
         }
     }
 
@@ -1055,7 +1057,7 @@
         }
 
         if (fOK == true) {
-            frmOptionArea.submit();
+            OpenHR.submitForm(frmOptionArea);
         }
     }
 
@@ -1070,8 +1072,6 @@
 
         // Expand the work frame and hide the option frame.
         $("#workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
-
-        debugger;
 
         frmDefinition.SSTree1.style.visibility = "visible";
         frmDefinition.SSTree1.Refresh();
@@ -2998,7 +2998,7 @@
 													<TR height=10>
 														<TD rowspan=16>
 															<OBJECT classid="clsid:1C203F13-95AD-11D0-A84B-00A0247B735B" id=SSTree1 
-                                                                codebase="cabs/SStree.cab#version=1,0,2,24" style="LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:100%; VISIBILITY: visible;" VIEWASTEXT>
+                                                                codebase="cabs/SStree.cab#version=1,0,2,24" style="LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:400px; VISIBILITY: visible;" VIEWASTEXT>
 																<PARAM NAME="_ExtentX" VALUE="31882">
 																<PARAM NAME="_ExtentY" VALUE="16404">
 																<PARAM NAME="_Version" VALUE="65538">

@@ -624,6 +624,56 @@ Namespace Controllers
 
     End Function
 
+
+    <HttpPost()>
+    Function emptyoption_Submit()
+
+      On Error Resume Next
+
+      ' Save the required information in session variables.
+      Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
+      Session("optionTableID") = Request.Form("txtGotoOptionTableID")
+      Session("optionViewID") = Request.Form("txtGotoOptionViewID")
+      Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
+      Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
+      Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
+      Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
+      Session("optionValue") = Request.Form("txtGotoOptionValue")
+      Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
+      Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
+      Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
+      Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
+      Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
+      Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
+      Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
+      Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
+      Session("optionLookupFilterValue") = Request.Form("txtGotoOptionLookupFilterValue")
+      Session("optionFile") = Request.Form("txtGotoOptionFile")
+      Session("optionExtension") = Request.Form("txtGotoOptionExtension")
+      'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
+      Session("optionAction") = Request.Form("txtGotoOptionAction")
+      Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
+      Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
+      Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
+      Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
+      Session("optionExprType") = Request.Form("txtGotoOptionExprType")
+      Session("optionExprID") = Request.Form("txtGotoOptionExprID")
+      Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
+      Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
+      Session("OptionRealsource") = Request.Form("txtGotoOptionRealsource")
+      Session("StandardReport_Type") = Request.Form("txtStandardReportType")
+      Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
+      Session("optionDefSelRecordID") = Request.Form("txtGotoOptionDefSelRecordID")
+      Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
+      Session("optionOLEMaxEmbedSize") = Request.Form("txtGotoOptionOLEMaxEmbedSize")
+      Session("optionOLEReadOnly") = Request.Form("txtGotoOptionOLEReadOnly")
+      Session("optionOnlyNumerics") = CLng(Request.Form("txtOptionOnlyNumerics"))
+
+      ' Go to the requested page.
+      Return RedirectToAction(Request.Form("txtGotoOptionPage"))
+
+    End Function
+
     Function DefSel() As ActionResult
       Return View()
     End Function
@@ -704,6 +754,43 @@ Namespace Controllers
 
     Function Data() As ActionResult
       Return View()
+    End Function
+
+    Function OptionData() As ActionResult
+      Return View()
+    End Function
+
+    Function optionData_Submit() As ActionResult
+
+      On Error Resume Next
+
+      ' Read the information from the calling form.
+      Session("optionAction") = Request.Form("txtOptionAction")
+      Session("optionTableID") = Request.Form("txtOptionTableID")
+      Session("optionViewID") = Request.Form("txtOptionViewID")
+      Session("optionOrderID") = Request.Form("txtOptionOrderID")
+      Session("optionColumnID") = Request.Form("txtOptionColumnID")
+      Session("optionPageAction") = Request.Form("txtOptionPageAction")
+      Session("optionFirstRecPos") = Request.Form("txtOptionFirstRecPos")
+      Session("optionCurrentRecCount") = Request.Form("txtOptionCurrentRecCount")
+      Session("optionLocateValue") = Request.Form("txtGotoLocateValue")
+      Session("optionCourseTitle") = Request.Form("txtOptionCourseTitle")
+      Session("optionRecordID") = Request.Form("txtOptionRecordID")
+      Session("optionLinkRecordID") = Request.Form("txtOptionLinkRecordID")
+      Session("optionValue") = Request.Form("txtOptionValue")
+      Session("optionSQL") = Request.Form("txtOptionSQL")
+      Session("optionPromptSQL") = Request.Form("txtOptionPromptSQL")
+      Session("optionOnlyNumerics") = CLng(Request.Form("txtOptionOnlyNumerics"))
+      Session("optionLookupColumnID") = Request.Form("txtOptionLookupColumnID")
+      Session("optionFilterValue") = Request.Form("txtOptionLookupFilterValue")
+      Session("IsLookupTable") = Request.Form("txtOptionIsLookupTable")
+      Session("optionParentTableID") = Request.Form("txtOptionParentTableID")
+      Session("optionParentRecordID") = Request.Form("txtOptionParentRecordID")
+      Session("option1000SepCols") = Request.Form("txtOption1000SepCols")
+
+      ' Go to the requested page.
+      Return RedirectToAction("OptionData")
+
     End Function
 
     Function Data_Submit() As ActionResult
@@ -1553,10 +1640,13 @@ Namespace Controllers
       Return PartialView()
     End Function
 
-    Function progress() As ActionResult
+    Function Progress() As ActionResult
       Return PartialView()
     End Function
 
+    Function Refresh() As ActionResult
+      Return View()
+    End Function
 
     '  Function util_run_promptedvaluessubmit() As ActionResult
     '     Return RedirectToAction("util_run")
@@ -1867,12 +1957,12 @@ Namespace Controllers
       End If
 
       If fok Then
-        fOK = objExpression.SaveExpression(Request.Form("txtSend_name"), _
+        fok = objExpression.SaveExpression(Request.Form("txtSend_name"), _
           Request.Form("txtSend_userName"), _
           Request.Form("txtSend_access"), _
           Request.Form("txtSend_description"))
 
-        If fOK Then
+        If fok Then
           If (Request.Form("txtSend_access") = "HD") And _
             (Request.Form("txtSend_ID") > 0) Then
             ' Hide any utilities that use this filter/calc.
@@ -1976,7 +2066,7 @@ Namespace Controllers
     End Function
 
     Function util_def_exprcomponent() As ActionResult
-      Return PartialView()
+      Return View()
     End Function
 
     Function util_test_expression() As ActionResult

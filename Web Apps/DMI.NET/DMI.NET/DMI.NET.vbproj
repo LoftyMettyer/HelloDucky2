@@ -398,6 +398,7 @@
     <Content Include="Views\Home\DefSel.ascx" />
     <Content Include="Views\Home\DefSelProperties.aspx" />
     <Content Include="Views\Home\emailSelection.aspx" />
+    <Content Include="Views\Home\emptyoption.ascx" />
     <Content Include="Views\Home\EventLog.ascx" />
     <Content Include="Views\Home\EventLogDetails.aspx" />
     <Content Include="Views\Home\EventLogPurge.aspx" />
@@ -408,6 +409,7 @@
     <Content Include="Views\Home\Main.aspx" />
     <Content Include="Views\Home\Menu.ascx" />
     <Content Include="HTMLPage1.htm" />
+    <Content Include="Views\Home\OptionData.ascx" />
     <Content Include="Views\Home\pcconfiguration.ascx" />
     <Content Include="Views\Home\poll.ascx" />
     <Content Include="Views\Home\pollmessage.ascx" />
@@ -435,6 +437,7 @@
     <Content Include="Views\Home\util_validate_customreports.aspx" />
     <Content Include="Views\Home\util_validate_expression.aspx" />
     <Content Include="Views\Shared\ctl_ASRIntranetPrintFunctions.ascx" />
+    <Content Include="Views\Shared\gotoOption.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\grdaccess.ascx" />
     <Content Include="Views\Shared\gotoWork.ascx" />
     <Content Include="Views\Shared\Site.Master" />

@@ -113,12 +113,12 @@
 	
 	<div id="workframeset" style="display: none;">
 		<div id="workframe" data-framesource="default.asp"><%Html.RenderPartial("~/views/home/default.ascx")%></div>
-		<div id="optionframe" data-framesource="emptyoption.asp" style="display: none">emptyoption</div>
+		<div id="optionframe" data-framesource="emptyoption.asp" style="display: none"><%Html.RenderPartial("~/views/home/emptyoption.ascx")%></div>
 	</div>
 
 	<div id="optionframeset">
 		<div id="dataframe" data-framesource="data.asp" style="display: none"><%Html.RenderPartial("~/views/home/data.ascx")%></div>
-		<div id="optiondata" data-framesource="optionData.asp" style="display: none">optiondata</div>
+		<div id="optiondataframe" data-framesource="optionData.asp" style="display: none"><%Html.RenderPartial("~/views/home/optiondata.ascx")%></div>
 	</div>
 
 	<div id="refresh" data-framesource="refresh.asp" style="display: none"><%Html.RenderPartial("~/views/home/refresh.ascx")%></div>
