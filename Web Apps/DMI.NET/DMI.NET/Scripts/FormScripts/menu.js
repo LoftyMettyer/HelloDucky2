@@ -17,6 +17,14 @@
 		menu_abMainMenu_Click(pTool);
 	});
     
+    //add onclick to all ribbon items.
+	$(".officetab a").live('click', function (e) {
+	    var pTool = ($(this).closest("div").attr("id"));	    
+	    menu_abMainMenu_Click(pTool);
+	});
+
+
+
 	//Add accordion functionality to the context menu
 	$(".accordion").accordion({
 		heightStyle: "fill"
@@ -593,7 +601,7 @@ function menu_MenuClick(sTool) {
 		}
 		
 		if (sToolName == "mnutoolCancelCourse") {
-			if (OpenHR.MessageBox("Are you sure you want to cancel this course?", 36,"OpenHR Intranet") == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
+			if (OpenHR.messageBox("Are you sure you want to cancel this course?", 36,"OpenHR Intranet") == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
 			    if (menu_saveChanges("CANCELCOURSE", true, false) != 2) { // 2 = vbCancel
 			        menu_cancelCourse();
 				}
@@ -738,7 +746,7 @@ function menu_MenuClick(sTool) {
 		            return;
 		        }
 
-		        OpenHR.MessageBox("Unrecognised menu option '" + sToolName + "'.", 0, "OpenHR Intranet"); // 0 = vbOKOnly
+		        OpenHR.messageBox("Unrecognised menu option '" + sToolName + "'.", 0, "OpenHR Intranet"); // 0 = vbOKOnly
 		    }
 		}
 }
@@ -892,15 +900,16 @@ function menu_refreshMenu() {
 	//if (abMainMenu.Bands.Count() > 0) {
 	menu_enableMenu();
 
-	sCurrentWorkPage = OpenHR.currentWorkPage();    
+	sCurrentWorkPage = OpenHR.currentWorkPage();
+
 
 	//None of the sCurrentWorkPage criteria are met yet, so code fixes yet.
 	//Code continues at line 1349.
 
 	if (sCurrentWorkPage == "RECORDEDIT") {
-		frmRecEdit = window.parent.frames("workframe").document.forms("frmRecordEditForm");
-		frmData = window.parent.frames("dataframe").document.forms("frmData");
-
+		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
+		var frmData = OpenHR.getForm("dataframe", "frmData");
+	    return;
 		abMainMenu.Bands("mnubandMainToolBar").visible = true;
 		abMainMenu.Tools("mnutoolRecord").visible = true;
 
@@ -1692,14 +1701,14 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 		(sCurrentPage == "LINKFIND") ||
 		(sCurrentPage == "TBTRANSFERCOURSEFIND")) {
 
-		frmRecEdit = window.parent.frames("workframe").document.forms("frmRecordEditForm");
+		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
 		if (frmRecEdit.ctlRecordEdit.changed == true) {
 			// Expand the work frame and hide the option frame.
 			//window.parent.document.all.item("workframeset").cols = "*, 0";
 			
 			// The current record has been modified so prompt the user if they want' to save the changes.
 			if (pfPrompt == true) {
-				iResult = OpenHR.MessageBox("Record changed, do you wish to save changes?", 35);
+				iResult = OpenHR.messageBox("Record changed, do you wish to save changes?", 36);
 			}
 			else {
 				iResult = 6; // 6 = vbYes
@@ -1709,8 +1718,8 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 				// vbYes
 				// Try to save the changes.
 				// Get the data.asp to get the save the current record.
-				frmDataArea = window.parent.frames("dataframe").document.forms("frmGetData");
-				frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
+				frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
+				frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 
 				// Validate the record first.
 				if (frmRecEditArea.ctlRecordEdit.validateSave() == true) {
@@ -1737,7 +1746,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 					frmDataArea.txtTBOverride.value = pfTBOverride;
 
 					if (frmDataArea.txtInsertUpdateDef.value != "") {
-						ShowWait("Saving record. Please wait...");
+						//ShowWait("Saving record. Please wait...");
 						menu_disableMenu();
 
                         frmRecEditArea.ctlRecordEdit.ExecutePostSaveCode();
@@ -2061,13 +2070,13 @@ function menu_loadLookupPage(plngColumnID, plngLookupColumnID, psLookupValue, pf
 	var frmRecEditArea;
 	var frmOptionArea;
 
-	ShowWait("Loading lookup find records. Please wait...");
-	disableMenu();
+	//ShowWait("Loading lookup find records. Please wait...");
+	menu_disableMenu();
 
 	frmWorkAreaInfo.txtHRProNavigation.value = 1;
 	
-	frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
-	frmOptionArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
+	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
+	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 
 	frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
 	frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
@@ -2085,13 +2094,13 @@ function menu_loadLookupPage(plngColumnID, plngLookupColumnID, psLookupValue, pf
 	frmOptionArea.txtGotoOptionLookupValue.value = psLookupValue;
 	frmOptionArea.txtGotoOptionLookupMandatory.value = pfMandatory;
 	frmOptionArea.txtGotoOptionLookupFilterValue.value = psFilterLookupValue;
-	frmOptionArea.txtGotoOptionPage.value = "lookupFind.asp";
+	frmOptionArea.txtGotoOptionPage.value = "lookupFind";
 	frmOptionArea.txtGotoOptionAction.value = "";
 	frmOptionArea.txtGotoOptionPageAction.value = "LOAD";
 	frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
 	frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
 
-	frmOptionArea.submit();
+    OpenHR.submitForm(frmOptionArea);
 }
 
 function menu_loadLinkPage(plngLinkTableID, plngLinkOrderID, plngLinkViewID, plngLinkRecordID) {
@@ -2827,35 +2836,42 @@ function menu_copyRecord() {
 }
 
 function menu_editRecord() {
-//	var lngRecordID;
-//	var frmWorkArea;
-//	var frmFindArea;
-//	
-//	lngRecordID = window.parent.frames("workframe").selectedRecordID();
+    
+	var lngRecordID;
+	var frmWorkArea;
+	var frmFindArea;
 
-//	if (lngRecordID > 0) {
-//		ShowWait("Loading screen. Please wait...");
-//		disableMenu();
-//		
-//		frmWorkAreaInfo.txtHRProNavigation.value = 1;
-//	
-//		// Submit the current "workframe" form, and then load the required record Edit page.
-//		frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
-//		frmFindArea = window.parent.frames("workframe").document.forms("frmFindForm");
-//		frmWorkArea.txtGotoTableID.value = frmFindArea.txtCurrentTableID.value;
-//		frmWorkArea.txtGotoViewID.value = frmFindArea.txtCurrentViewID.value;
-//		frmWorkArea.txtGotoScreenID.value = frmFindArea.txtCurrentScreenID.value;
-//		frmWorkArea.txtGotoOrderID.value = frmFindArea.txtCurrentOrderID.value;
-//		frmWorkArea.txtGotoRecordID.value = lngRecordID;
-//		frmWorkArea.txtGotoParentTableID.value = frmFindArea.txtCurrentParentTableID.value;
-//		frmWorkArea.txtGotoParentRecordID.value = frmFindArea.txtCurrentParentRecordID.value;
-//		frmWorkArea.txtGotoLineage.value = frmFindArea.txtLineage.value;
-//		frmWorkArea.txtGotoFilterDef.value = frmFindArea.txtFilterDef.value;
-//		frmWorkArea.txtGotoFilterSQL.value = frmFindArea.txtFilterSQL.value;
+    //NPG: selectedRecordID function is unique to workframe, whatever the content. 
+    //Should be in scope.
+	lngRecordID = selectedRecordID();
 
-//		frmWorkArea.txtGotoPage.value = "recordEdit.asp";
-//		frmWorkArea.submit();
-//	}
+	if (lngRecordID > 0) {
+		//ShowWait("Loading screen. Please wait...");
+		//disableMenu();
+
+        
+	
+		// Submit the current "workframe" form, and then load the required record Edit page.
+		frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+		frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
+
+		frmWorkAreaInfo.txtHRProNavigation.value = 1;
+
+		frmWorkArea.txtGotoTableID.value = frmFindArea.txtCurrentTableID.value;
+		frmWorkArea.txtGotoViewID.value = frmFindArea.txtCurrentViewID.value;
+		frmWorkArea.txtGotoScreenID.value = frmFindArea.txtCurrentScreenID.value;
+		frmWorkArea.txtGotoOrderID.value = frmFindArea.txtCurrentOrderID.value;
+		frmWorkArea.txtGotoRecordID.value = lngRecordID;
+		frmWorkArea.txtGotoParentTableID.value = frmFindArea.txtCurrentParentTableID.value;
+		frmWorkArea.txtGotoParentRecordID.value = frmFindArea.txtCurrentParentRecordID.value;
+		frmWorkArea.txtGotoLineage.value = frmFindArea.txtLineage.value;
+		frmWorkArea.txtGotoFilterDef.value = frmFindArea.txtFilterDef.value;
+		frmWorkArea.txtGotoFilterSQL.value = frmFindArea.txtFilterSQL.value;
+
+		frmWorkArea.txtGotoPage.value = "recordEdit";
+	    //frmWorkArea.submit();
+	    OpenHR.submitForm(frmWorkArea);
+	}
 }
 
 function menu_deleteRecord() {

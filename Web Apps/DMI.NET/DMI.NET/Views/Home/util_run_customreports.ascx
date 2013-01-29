@@ -1184,8 +1184,7 @@
 
     function tblGrid_onresize() {
 
-        try {
-            debugger;
+        try {            
 
             if (txtNoRecs.value == 0) {
                 frmOutput.ssOleDBGridDefSelRecords.Refresh();
@@ -1368,9 +1367,7 @@
                                 iPollCounter = iPollCounter + iPollPeriod;
                             }
                             catch(e) {}
-                        }
-
-                        debugger;
+                        }                        
 
                         sControlName = dataCollection.item(i).name;
                         sControlName = sControlName.substr(0, 12);
@@ -1556,9 +1553,7 @@
 
 
                     frmOutput.ssHiddenGrid.AddItem(sAddItem);
-                }
-
-                debugger;
+                }             
 
                 if (iIndex < frmOutput.ssOleDBGridDefSelRecords.rows) 
                 {

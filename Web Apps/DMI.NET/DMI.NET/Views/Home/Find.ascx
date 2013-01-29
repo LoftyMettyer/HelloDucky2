@@ -85,7 +85,7 @@
 				fOk = false;
 
 //				window.parent.frames("menuframe").ASRIntranetFunctions.Closepopup();
-				OpenHR.MessageBox(sErrMsg);
+				OpenHR.messageBox(sErrMsg);
 				menu_loadPage("default");				
 			}
 
@@ -106,7 +106,7 @@
 					menu_refreshMenu();
 
 					/* The user does NOT have permission to create new records. */
-					OpenHR.MessageBox("Unable to load personnel records.\n\nYou are logged on as a self-service user and can access only single record personnel record sets.");
+					OpenHR.messageBox("Unable to load personnel records.\n\nYou are logged on as a self-service user and can access only single record personnel record sets.");
 
 					/* Go to the default page. */
 					menu_loadPage("default");
@@ -128,7 +128,7 @@
 
 				// JPD20020903 Fault 2316 - Need to dim focus on the grid before adding the items.
 				frmFindForm.ssOleDBGridFindRecords.focus();
-
+			    
 				var controlCollection = frmFindForm.elements;
 				if (controlCollection != null) {
 					for (var i = 0; i < controlCollection.length; i++) {
@@ -203,7 +203,7 @@
 				menu_refreshMenu();
 
 				if ((frmFindForm.ssOleDBGridFindRecords.rows == 0) && (frmFindForm.txtFilterSQL.value.length > 0)) {
-					OpenHR.MessageBox("No records match the current filter.\nNo filter is applied.");
+					OpenHR.messageBox("No records match the current filter.\nNo filter is applied.");
 					menu_clearFilter();
 				}
 			}
@@ -213,7 +213,8 @@
 	<script type="text/javascript">
 <!--
 		/* Return the ID of the record selected in the find form. */
-		function selectedRecordID() {
+	    function selectedRecordID() {
+	        
 			var iRecordId;
 			var iIndex;
 			var iIdColumnIndex;

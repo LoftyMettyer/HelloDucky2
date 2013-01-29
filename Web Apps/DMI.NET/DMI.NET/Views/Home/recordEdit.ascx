@@ -2,7 +2,7 @@
 <%@ Import namespace="DMI.NET" %>
 
 <%
-    'Dim sReferringPage
+    Dim sReferringPage
 
     '' Only open the form if there was a referring page.
     '' If it wasn't then redirect to the login page.
@@ -24,21 +24,22 @@
 
 <script type="text/javascript">
     function recordEdit_window_onload() {
-        var fOK
+
+        var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
+
+        var fOK;
         fOK = true;
         var sErrMsg = frmRecordEditForm.txtErrorDescription.value;
         if (sErrMsg.length > 0) {
             fOK = false;
-            window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sErrMsg);
-            window.parent.location.replace("login.asp");
+            OpenHR.messageBox(sErrMsg);
+            window.parent.location.replace("login");
         }
 
         if (fOK == true) {
             // Expand the work frame and hide the option frame.
             //window.parent.document.all.item("workframeset").cols = "*, 0";
             $("#workframe").attr("data-framesource", "RECORDEDIT");
-
-            var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
 
             var recEditCtl = frmRecordEditForm.ctlRecordEdit;
 
@@ -52,34 +53,37 @@
         }
 
         if (fOK == true) {
-            var sKey = new String("photopath_");
-            sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
-            var sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-            frmRecordEditForm.txtPicturePath.value = sPath;
+            //TODO:
+            //var sKey = new String("photopath_");
+            //sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
+            //var sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+            //frmRecordEditForm.txtPicturePath.value = sPath;
 
-            sKey = new String("imagepath_");
-            sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
-            sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-            frmRecordEditForm.txtImagePath.value = sPath;
+            //sKey = new String("imagepath_");
+            //sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
+            //sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+            //frmRecordEditForm.txtImagePath.value = sPath;
 
-            sKey = new String("olePath_");
-            sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
-            sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-            frmRecordEditForm.txtOLEServerPath.value = sPath;
+            //sKey = new String("olePath_");
+            //sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
+            //sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+            //frmRecordEditForm.txtOLEServerPath.value = sPath;
 
-            sKey = new String("localolePath_");
-            sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
-            sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-            frmRecordEditForm.txtOLELocalPath.value = sPath;
+            //sKey = new String("localolePath_");
+            //sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
+            //sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+            //frmRecordEditForm.txtOLELocalPath.value = sPath;
 
 
             // Read and then reset the HR Pro Navigation flag.
             var HRProNavigationFlagValue;
-            var HRProNavigationFlag = window.parent.frames("menuframe").document.forms("frmWorkAreaInfo").txtHRProNavigation;
+            //var HRProNavigationFlag = window.parent.frames("menuframe").document.forms("frmWorkAreaInfo").txtHRProNavigation;            
+            var HRProNavigationFlag = document.getElementById("txtHRProNavigation");
             HRProNavigationFlagValue = HRProNavigationFlag.value;
             HRProNavigationFlag.value = 0;
 
             if (HRProNavigationFlagValue == 0) {
+                var frmGoto = OpenHR.getForm("workframe", "frmGoto");
                 frmGoto.txtGotoTableID.value = frmRecordEditForm.txtCurrentTableID.value;
                 frmGoto.txtGotoViewID.value = frmRecordEditForm.txtCurrentViewID.value;
                 frmGoto.txtGotoScreenID.value = frmRecordEditForm.txtCurrentScreenID.value;
@@ -90,7 +94,8 @@
                 frmGoto.txtGotoPage.value = "recordEdit.asp";
 
                 HRProNavigationFlag.value = 1;
-                frmGoto.submit();
+                //frmGoto.submit();
+                OpenHR.submitForm(frmGoto);
             } else {
                 // Set the recEdit control properties.
                 fOK = recEditCtl.initialise(
@@ -118,7 +123,7 @@
                     var sControlName;
                     var controlCollection = frmRecordEditForm.elements;
                     if (controlCollection != null) {
-                        for (i = 0; i < controlCollection.length; i++) {
+                        for (var i = 0; i < controlCollection.length; i++) {
                             sControlName = controlCollection.item(i).name;
                             sControlName = sControlName.substr(0, 18);
                             if (sControlName == "txtRecEditControl_") {
@@ -174,7 +179,7 @@
 
                 if (fOK == true) {
                     // Get the data.asp to get the required data.
-                    var action = window.parent.frames("dataframe").document.forms("frmGetData").txtAction;
+                    var action = document.getElementById("txtAction");
                     if (((frmRecordEditForm.txtAction.value == "NEW") ||
                             (frmRecordEditForm.txtAction.value == "COPY")) &&
                         (frmRecordEditForm.txtRecEditInsertGranted.value == "True")) {
@@ -187,7 +192,7 @@
                         frmRecordEditForm.txtCurrentOrderID.value = frmRecordEditForm.txtRecEditOrderID.value;
                     }
 
-                    var dataForm = window.parent.frames("dataframe").document.forms("frmGetData");
+                    var dataForm = OpenHR.getForm("dataframe", "frmGetData");
                     dataForm.txtCurrentTableID.value = frmRecordEditForm.txtCurrentTableID.value;
                     dataForm.txtCurrentScreenID.value = frmRecordEditForm.txtCurrentScreenID.value;
                     dataForm.txtCurrentViewID.value = frmRecordEditForm.txtCurrentViewID.value;
@@ -201,20 +206,29 @@
                     dataForm.txtParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
                     dataForm.txtDefaultCalcCols.value = recEditCtl.CalculatedDefaultColumns();
 
-                    window.parent.frames("dataframe").refreshData();
+                    //this should be in scope by now.
+                    data_refreshData();   //window.parent.frames("dataframe").refreshData();
                 }
 
                 if (fOK != true) {
                     // The recEdit control was not initialised properly.
-                    window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Record Edit control not initialised properly.");
-                    window.parent.location.replace("login.asp");
+                    OpenHR.messageBox("Record Edit control not initialised properly.");
+                    window.location= "login";
                 }
             }
         }
-        try {
+        try {            
             frmRecordEditForm.ctlRecordEdit.SetWidth(frmRecordEditForm.txtRecEditWidth.value);
-            parent.window.resizeBy(-1, -1);
-            parent.window.resizeBy(1, 1);
+            
+            //NPG - recedit not resizing. Do it manually.
+            var newHeight = frmRecordEditForm.txtRecEditHeight.value / 15;
+            var newWidth = frmRecordEditForm.txtRecEditWidth.value / 15;
+
+            $("#ctlRecordEdit").height(newHeight + "px");
+            $("#ctlRecordEdit").width(newWidth + "px");
+            
+            //parent.window.resizeBy(-1, -1);
+            //parent.window.resizeBy(1, 1);
         } catch(e) {
         }
     }
@@ -238,26 +252,26 @@
     {
         // The data in the recEdit control has changed so refresh the menu.
         // Get menu.asp to refresh the menu.
-        window.parent.frames("menuframe").refreshMenu();
+        menu_refreshMenu();
     }
 
     function ctlRecordEdit_ToolClickRequest(lngIndex, strTool) {
         // The data in the recEdit control has changed so refresh the menu.
         // Get menu.asp to refresh the menu.
-        window.parent.frames("menuframe").MenuClick(strTool);
+        menu_MenuClick(strTool);
     }
 
     function ctlRecordEdit_LinkButtonClick(plngLinkTableID, plngLinkOrderID, plngLinkViewID, plngLinkRecordID)
     {        
         // A link button has been pressed in the recEdit control,
         // so open the link option page.
-        window.parent.frames("menuframe").loadLinkPage(plngLinkTableID, plngLinkOrderID, plngLinkViewID, plngLinkRecordID);
+        menu_loadLinkPage(plngLinkTableID, plngLinkOrderID, plngLinkViewID, plngLinkRecordID);
     }
 
     function ctlRecordEdit_LookupClick(plngColumnID, plngLookupColumnID, psLookupValue, pfMandatory, pstrFilterValue) {
         // A lookup button has been pressed in the recEdit control,
         // so open the lookup page.
-        window.parent.frames("menuframe").loadLookupPage(plngColumnID, plngLookupColumnID, psLookupValue, pfMandatory, pstrFilterValue);
+        menu_loadLookupPage(plngColumnID, plngLookupColumnID, psLookupValue, pfMandatory, pstrFilterValue);
     }
 
     function ctlRecordEdit_ImageClick4(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize, pbIsReadOnly) {
@@ -267,20 +281,21 @@
 
         fOK = true;
         if (frmRecordEditForm.ctlRecordEdit.recordID == 0) {
-            window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit photo fields until the record has been saved.");
+            OpenHR.messageBox("Unable to edit photo fields until the record has been saved.");
             fOK = false;
         }
 
         if (fOK == true) {
-            if (plngOLEType < 2) {
-                fOK = window.parent.frames("menuframe").ASRIntranetFunctions.ValidateDir(frmRecordEditForm.txtPicturePath.value);
-                if (fOK == true)
-                    window.parent.frames("menuframe").loadImagePage(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize);
-                else
-                    window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit photo fields as the photo path is not valid.");
-            } else {
-                window.parent.frames("menuframe").loadImagePage(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize);
-            }
+            //TODO Client DLL stuff
+        //    if (plngOLEType < 2) {
+        //        fOK = window.parent.frames("menuframe").ASRIntranetFunctions.ValidateDir(frmRecordEditForm.txtPicturePath.value);
+        //        if (fOK == true)
+        //            window.parent.frames("menuframe").loadImagePage(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize);
+        //        else
+        //            window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit photo fields as the photo path is not valid.");
+        //    } else {
+        //        window.parent.frames("menuframe").loadImagePage(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize);
+        //    }
         }
     }	
 
@@ -293,42 +308,43 @@
         fOK = true;
         if (frmRecordEditForm.ctlRecordEdit.recordID == 0)
         {
-            window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit OLE fields until the record has been saved.");
+            OpenHR.messageBox("Unable to edit OLE fields until the record has been saved.");
             fOK = false;
         }
 
-        if (fOK == true)
-        {
-            // Server OLE
-            if (plngOLEType == 1) {
-                fOK = window.parent.frames("menuframe").ASRIntranetFunctions.ValidateDir(frmRecordEditForm.txtOLEServerPath.value);
-                if (fOK == true)
-                    window.parent.frames("menuframe").loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly);
-                else
-                    window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit server OLE fields as the OLE (Server) path is not valid.");
-            }
+        //TODO: Client DLL stuff
+        //if (fOK == true)
+        //{
+        //    // Server OLE
+        //    if (plngOLEType == 1) {
+        //        fOK = window.parent.frames("menuframe").ASRIntranetFunctions.ValidateDir(frmRecordEditForm.txtOLEServerPath.value);
+        //        if (fOK == true)
+        //            window.parent.frames("menuframe").loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly);
+        //        else
+        //            window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit server OLE fields as the OLE (Server) path is not valid.");
+        //    }
 
-                // Local OLE
-            else if (plngOLEType == 0) {
-                fOK = window.parent.frames("menuframe").ASRIntranetFunctions.ValidateDir(frmRecordEditForm.txtOLELocalPath.value);
-                if (fOK == true)
-                    window.parent.frames("menuframe").loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly);
-                else
-                    window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit local OLE fields as the OLE (Local) path is not valid.");
-            }
+        //        // Local OLE
+        //    else if (plngOLEType == 0) {
+        //        fOK = window.parent.frames("menuframe").ASRIntranetFunctions.ValidateDir(frmRecordEditForm.txtOLELocalPath.value);
+        //        if (fOK == true)
+        //            window.parent.frames("menuframe").loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly);
+        //        else
+        //            window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit local OLE fields as the OLE (Local) path is not valid.");
+        //    }
 
-                // Embedded OLE
-            else if (plngOLEType == 2) {
-                sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);	
-                window.parent.frames("menuframe").loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly);
-            }
+        //        // Embedded OLE
+        //    else if (plngOLEType == 2) {
+        //        sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);	
+        //        window.parent.frames("menuframe").loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly);
+        //    }
 
-                // Linked OLE
-            else if (plngOLEType == 3) {
-                sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
-                window.parent.frames("menuframe").loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly);			
-            }
-        }	        
+        //        // Linked OLE
+        //    else if (plngOLEType == 3) {
+        //        sKey = sKey.concat(window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
+        //        window.parent.frames("menuframe").loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly);			
+        //    }
+        //}	        
     }
     
     
@@ -336,8 +352,9 @@
     function recordEdit_refreshData()
         {
             // Get the data.asp to get the required data.
-            var frmGetDataForm = window.parent.frames("dataframe").document.forms("frmGetData");
-
+            var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
+            var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
+        
             frmGetDataForm.txtAction.value = "LOAD";
             frmGetDataForm.txtReaction.value = "";
             frmGetDataForm.txtCurrentTableID.value = frmRecordEditForm.txtCurrentTableID.value;
@@ -348,14 +365,14 @@
             frmGetDataForm.txtFilterSQL.value = frmRecordEditForm.txtRecEditFilterSQL.value;	
             frmGetDataForm.txtFilterDef.value = frmRecordEditForm.txtRecEditFilterDef.value;	
             frmGetDataForm.txtRealSource.value = frmRecordEditForm.txtRecEditRealSource.value;
-            frmGetDataForm.txtRecordID.value = window.parent.frames("dataframe").document.forms("frmData").txtRecordID.value;
+            frmGetDataForm.txtRecordID.value = OpenHR.getForm("dataframe", "frmData").txtRecordID.value;
             frmGetDataForm.txtParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
             frmGetDataForm.txtParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
             frmGetDataForm.txtDefaultCalcCols.value = frmRecordEditForm.ctlRecordEdit.CalculatedDefaultColumns();
             frmGetDataForm.txtInsertUpdateDef.value = "";
             frmGetDataForm.txtTimestamp.value = "";
 
-            window.parent.frames("dataframe").refreshData();
+            data_refreshData();
     }
         
 
@@ -390,21 +407,21 @@ that are used in the ASRIntRecEdit control are downloaded and installed properly
 <OBJECT 
 	classid=clsid:66A90C04-346D-11D2-9BC0-00A024695830 
 	codebase="cabs/timask6.cab#version=6,0,1,1" 
-	id=TDBMask1 
+	id=TDBMask1 style="display: none;"
 	VIEWASTEXT>
 </OBJECT>
  
 <OBJECT 
 	classid=clsid:49CBFCC2-1337-11D2-9BBF-00A024695830 
 	codebase="cabs/tinumb6.cab#version=6,0,1,1" 
-	id=TDBNumber1 
+	id=TDBNumber1  style="display: none;"
 	VIEWASTEXT>
 </OBJECT>
 
 <OBJECT 
 	id=ASRUserImage1 
 	CLASSID="CLSID:8FF15C8D-49D5-4B79-8419-C36C26654283"
-	CODEBASE="cabs/COA_Image.cab#version=1,0,0,7" 
+	CODEBASE="cabs/COA_Image.cab#version=1,0,0,7"  style="display: none;"
 	VIEWASTEXT>
 		<PARAM NAME="_ExtentX" VALUE="2619">
 		<PARAM NAME="_ExtentY" VALUE="2619">
@@ -418,7 +435,7 @@ that are used in the ASRIntRecEdit control are downloaded and installed properly
 	CLASSID="CLSID:C25C3704-2AA7-44E5-943A-B40B14E2348F"
 	CODEBASE="cabs/COA_Spinner.cab#version=1,0,0,3"
 	id=ASRSpinner1 
-	style="LEFT: 0px; TOP: 0px; VISIBILITY: hidden" 
+	style="LEFT: 0px; TOP: 0px; VISIBILITY: hidden; display: none;" 
 	VIEWASTEXT>
 </OBJECT>
 
@@ -426,7 +443,7 @@ that are used in the ASRIntRecEdit control are downloaded and installed properly
 	classid="clsid:A49CE0E4-C0F9-11D2-B0EA-00A024695830" 
 	codebase="cabs/tidate6.cab#version=6,0,1,1" 
 	id=TDBDate1 
-	style="LEFT: 0px; TOP: 0px; VISIBILITY: hidden" 
+	style="LEFT: 0px; TOP: 0px; VISIBILITY: hidden; display: none;" 
 	VIEWASTEXT>
 </OBJECT>
 
@@ -492,7 +509,7 @@ that are used in the ASRIntRecEdit control are downloaded and installed properly
 						<OBJECT 
 							CLASSID="CLSID:2D0A5ED7-6669-481F-9A5D-19BA14E92364"
 							CODEBASE="cabs/COAInt_RecordDMI.cab#version=1,0,0,21"
-							id=ctlRecordEdit 
+							id=ctlRecordEdit style="height: 1px; width: 1px;"
 							VIEWASTEXT>
 								<PARAM NAME="_ExtentX" VALUE="16007">
 								<PARAM NAME="_ExtentY" VALUE="6403">
@@ -702,7 +719,7 @@ that are used in the ASRIntRecEdit control are downloaded and installed properly
 	<INPUT type='hidden' id=txtOLELocalPath name=txtOLELocalPath>
 </FORM>
 
-<FORM action="default_Submit.asp" method=post id=frmGoto name=frmGoto>
+<FORM action="default_Submit" method=post id=frmGoto name=frmGoto>
     <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 </FORM>
 

@@ -100,6 +100,8 @@ Public Module svrCleanup
 		Dim sLocaleFormat
 		Dim iIndex
 
+		If IsDBNull(psDate) Then psDate = ""
+
 		If Len(psDate) > 0 Then
 			sLocaleFormat = HttpContext.Current.Session("LocaleDateFormat")
 
