@@ -20,12 +20,12 @@
 
         fOK = true;
 
-        var sErrMsg = frmUseful.txtErrorDescription.value;
-        if (sErrMsg.length > 0) {
-            fOK = false;
-            OpenHR.messageBox(sErrMsg);
-        }
-
+//        var sErrMsg = frmUseful.txtErrorDescription.value;
+//        if (sErrMsg.length > 0) {
+//            fOK = false;
+//            OpenHR.messageBox(sErrMsg);
+//        }
+        
         setTreeFont(frmDefinition.SSTree1);
         setTreeFont(frmDefinition.SSTreeClipboard);
         setTreeFont(frmDefinition.SSTreeUndo);
@@ -785,16 +785,7 @@
         }
         else {
             frmUseful.txtCanCut.value = 1;
-        }	
-	
-        // Little dodge to get around a browser bug that
-        // does not refresh the display on all controls.
-        try
-        {
-            window.resizeBy(0,-1);
-            window.resizeBy(0,1);
-        }
-        catch(e) {}
+        }		
     }
 
     function disableAll()
@@ -862,8 +853,6 @@
         var fOK;
         var sKey;
         var sRelativeKey;
-        
-        debugger;
 
         var frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
         var frmRefresh = OpenHR.getForm("refreshframe", "frmRefresh");
@@ -871,7 +860,6 @@
         var iParamIndex = 0;
 
         fOK = true;
-
 
         OpenHR.submitForm(frmRefresh);
 	
@@ -1071,7 +1059,8 @@
         var sTemp;
 
         // Expand the work frame and hide the option frame.
-        $("#workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
+        $("#optionframe").hide();
+        $("#workframe").show();
 
         frmDefinition.SSTree1.style.visibility = "visible";
         frmDefinition.SSTree1.Refresh();
@@ -1217,10 +1206,12 @@
 
     function cancelComponent() {
         // Expand the work frame and hide the option frame.
+        $("#optionframe").hide();        
+        $("#workframe").show();
         frmDefinition.SSTree1.style.visibility = "visible";
         frmDefinition.SSTree1.Refresh();
 
-        $("#workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
+//        $("#workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
         menu_refreshMenu();
 
         frmDefinition.SSTree1.focus();
@@ -2723,13 +2714,11 @@
 
 </script>
 
-
 <OBJECT classid="clsid:6976CB54-C39B-4181-B1DC-1A829068E2E7" codebase="cabs/COAInt_Client.cab#Version=1,0,0,5" 
 	id="abExprMenu" name="abExprMenu" style="left:0px;top:0px;position:absolute; height: 10px;" VIEWASTEXT>
 	<PARAM NAME="_ExtentX" VALUE="0">
 	<PARAM NAME="_ExtentY" VALUE="0">
 </OBJECT>
-
 
 <OBJECT classid="clsid:1C203F13-95AD-11D0-A84B-00A0247B735B" id=SSTreeClipboard   codebase="cabs/SStree.cab#version=1,0,2,24" style="LEFT: 0px; TOP: 0px; WIDTH:0px; HEIGHT:0px" VIEWASTEXT>
 	<PARAM NAME="_ExtentX" VALUE="370">

@@ -28,7 +28,10 @@
     if (fOK == true) {
         // Expand the option frame and hide the work frame.
         $("#optionframe").attr("data-framesource", "UTIL_DEF_EXPRCOMPONENT");
-				
+        
+        $("#workframe").hide();        
+        $("#optionframe").show();
+        
         formatComponentTypeFrame();
 		
         if (util_def_exprcomponent_frmUseful.txtAction.value == "EDITEXPRCOMPONENT") {
@@ -66,14 +69,6 @@
         // Hide the workframe ActiveX treeview. IE6 still displays it.
         OpenHR.getForm("workframe","frmDefinition").SSTree1.style.visibility = "hidden";
 
-        // Little dodge to get around a browser bug that
-        // does not refresh the display on all controls.
-        try
-        {
-            window.resizeBy(0,-1);
-            window.resizeBy(0,1);	
-        }
-        catch(e){}
     }
  }
 
@@ -131,7 +126,7 @@
         var i;
         var iIndex;
 
-        iType = new Number(frmOriginalDefinition.txtType.value);
+        iType = new Number(util_def_exprcomponent_frmOriginalDefinition.txtType.value);
 	
         if (iType == 1) {
             // Field
@@ -141,22 +136,22 @@
             util_def_exprcomponent_frmUseful.txtInitialising.value = 0;
 		
             if (frmMainForm.txtPassByType.value == 1) {
-                if (frmOriginalDefinition.txtFieldSelectionRecord.value == 5) {
+                if (util_def_exprcomponent_frmOriginalDefinition.txtFieldSelectionRecord.value == 5) {
                     frmMainForm.optField_Count.checked = true;	
                 }
                 else {
-                    if (frmOriginalDefinition.txtFieldSelectionRecord.value == 4) {
+                    if (util_def_exprcomponent_frmOriginalDefinition.txtFieldSelectionRecord.value == 4) {
                         frmMainForm.optField_Total.checked = true;	
                     }
                     else {
                         frmMainForm.optField_Field.checked = true;	
 					
-                        if (frmOriginalDefinition.txtFieldSelectionRecord.value == 3) {
+                        if (util_def_exprcomponent_frmOriginalDefinition.txtFieldSelectionRecord.value == 3) {
                             frmMainForm.optFieldRecSel_Specific.checked = true;	
-                            frmMainForm.txtFieldRecSel_Specific.value = frmOriginalDefinition.txtFieldSelectionLine.value;
+                            frmMainForm.txtFieldRecSel_Specific.value = util_def_exprcomponent_frmOriginalDefinition.txtFieldSelectionLine.value;
                         }
                         else {
-                            if (frmOriginalDefinition.txtFieldSelectionRecord.value == 2) {
+                            if (util_def_exprcomponent_frmOriginalDefinition.txtFieldSelectionRecord.value == 2) {
                                 frmMainForm.optFieldRecSel_Last.checked = true;	
                             }
                             else {
@@ -170,10 +165,10 @@
             field_refreshTable();
 		
             if (frmMainForm.txtPassByType.value == 1) {
-                util_def_exprcomponent_frmUseful.txtChildFieldOrderID.value = frmOriginalDefinition.txtFieldSelectionOrderID.value;
-                frmMainForm.txtFieldRecOrder.value = frmOriginalDefinition.txtFieldOrderName.value;
-                util_def_exprcomponent_frmUseful.txtChildFieldFilterID.value = frmOriginalDefinition.txtFieldSelectionFilter.value;
-                frmMainForm.txtFieldRecFilter.value = frmOriginalDefinition.txtFieldFilterName.value;
+                util_def_exprcomponent_frmUseful.txtChildFieldOrderID.value = util_def_exprcomponent_frmOriginalDefinition.txtFieldSelectionOrderID.value;
+                frmMainForm.txtFieldRecOrder.value = util_def_exprcomponent_frmOriginalDefinition.txtFieldOrderName.value;
+                util_def_exprcomponent_frmUseful.txtChildFieldFilterID.value = util_def_exprcomponent_frmOriginalDefinition.txtFieldSelectionFilter.value;
+                frmMainForm.txtFieldRecFilter.value = util_def_exprcomponent_frmOriginalDefinition.txtFieldFilterName.value;
             }
             else {
                 util_def_exprcomponent_frmUseful.txtChildFieldOrderID.value = 0;
@@ -188,7 +183,7 @@
 
             util_def_exprcomponent_frmUseful.txtInitialising.value = 0;
             functionAndOperator_refresh();
-            frmMainForm.SSFunctionTree.SelectedItem = frmMainForm.SSFunctionTree.Nodes(frmOriginalDefinition.txtFunctionID.value);
+            frmMainForm.SSFunctionTree.SelectedItem = frmMainForm.SSFunctionTree.Nodes(util_def_exprcomponent_frmOriginalDefinition.txtFunctionID.value);
             button_disable(frmMainForm.cmdOK, false);
         }
 	
@@ -201,7 +196,7 @@
             calculationsAndFilters_load();
 		
             // Locate the current calc.
-            locateGridRecord(frmOriginalDefinition.txtCalculationID.value);
+            locateGridRecord(util_def_exprcomponent_frmOriginalDefinition.txtCalculationID.value);
         }
 	
         if (iType == 4) {
@@ -209,34 +204,34 @@
             frmMainForm.optType_Value.checked = true;
             changeType(iType);
 
-            if (frmOriginalDefinition.txtValueType.value == 1) {
+            if (util_def_exprcomponent_frmOriginalDefinition.txtValueType.value == 1) {
                 // Character value
                 frmMainForm.cboValueType.selectedIndex = 0;
                 value_changeType();
-                frmMainForm.txtValue.value = frmOriginalDefinition.txtValueCharacter.value;
+                frmMainForm.txtValue.value = util_def_exprcomponent_frmOriginalDefinition.txtValueCharacter.value;
             }
-            if (frmOriginalDefinition.txtValueType.value == 2) {
+            if (util_def_exprcomponent_frmOriginalDefinition.txtValueType.value == 2) {
                 // Numeric value
                 frmMainForm.cboValueType.selectedIndex = 1;
                 value_changeType();
-                frmMainForm.txtValue.value = frmOriginalDefinition.txtValueNumeric.value;
+                frmMainForm.txtValue.value = util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value;
             }
-            if (frmOriginalDefinition.txtValueType.value == 3) {
+            if (util_def_exprcomponent_frmOriginalDefinition.txtValueType.value == 3) {
                 // Logic value
                 frmMainForm.cboValueType.selectedIndex = 2;
                 value_changeType();
-                if (frmOriginalDefinition.txtValueLogic.value == 1) {
+                if (util_def_exprcomponent_frmOriginalDefinition.txtValueLogic.value == 1) {
                     frmMainForm.selectValue.selectedIndex = 0;
                 }
                 else {
                     frmMainForm.selectValue.selectedIndex = 1;
                 }
             }
-            if (frmOriginalDefinition.txtValueType.value == 4) {
+            if (util_def_exprcomponent_frmOriginalDefinition.txtValueType.value == 4) {
                 // Date value
                 frmMainForm.cboValueType.selectedIndex = 3;
                 value_changeType();
-                frmMainForm.txtValue.value = menu_ConvertSQLDateToLocale(frmOriginalDefinition.txtValueDate.value);
+                frmMainForm.txtValue.value = menu_ConvertSQLDateToLocale(util_def_exprcomponent_frmOriginalDefinition.txtValueDate.value);
             }
         }
 
@@ -247,7 +242,7 @@
 
             util_def_exprcomponent_frmUseful.txtInitialising.value = 0;
             functionAndOperator_refresh();
-            frmMainForm.SSOperatorTree.SelectedItem = frmMainForm.SSOperatorTree.Nodes(frmOriginalDefinition.txtOperatorID.value);
+            frmMainForm.SSOperatorTree.SelectedItem = frmMainForm.SSOperatorTree.Nodes(util_def_exprcomponent_frmOriginalDefinition.txtOperatorID.value);
             button_disable(frmMainForm.cmdOK, false);
         }
 
@@ -265,27 +260,27 @@
             frmMainForm.optType_PromptedValue.checked = true;
             changeType(iType);
 		
-            frmMainForm.txtPrompt.value = frmOriginalDefinition.txtPromptDescription.value;
-            frmMainForm.cboPValType.selectedIndex = frmOriginalDefinition.txtValueType.value - 1;
-            frmMainForm.txtPValSize.value = frmOriginalDefinition.txtPromptSize.value;
-            frmMainForm.txtPValDecimals.value = frmOriginalDefinition.txtPromptDecimals.value;
-            frmMainForm.txtPValFormat.value = frmOriginalDefinition.txtPromptMask.value;
+            frmMainForm.txtPrompt.value = util_def_exprcomponent_frmOriginalDefinition.txtPromptDescription.value;
+            frmMainForm.cboPValType.selectedIndex = util_def_exprcomponent_frmOriginalDefinition.txtValueType.value - 1;
+            frmMainForm.txtPValSize.value = util_def_exprcomponent_frmOriginalDefinition.txtPromptSize.value;
+            frmMainForm.txtPValDecimals.value = util_def_exprcomponent_frmOriginalDefinition.txtPromptDecimals.value;
+            frmMainForm.txtPValFormat.value = util_def_exprcomponent_frmOriginalDefinition.txtPromptMask.value;
 
             pVal_changeType();
 		
-            if (frmOriginalDefinition.txtValueType.value == 1) {
+            if (util_def_exprcomponent_frmOriginalDefinition.txtValueType.value == 1) {
                 // Character
-                frmMainForm.txtPValDefault.value = frmOriginalDefinition.txtValueCharacter.value;
+                frmMainForm.txtPValDefault.value = util_def_exprcomponent_frmOriginalDefinition.txtValueCharacter.value;
             }		
-            if (frmOriginalDefinition.txtValueType.value == 2) {
+            if (util_def_exprcomponent_frmOriginalDefinition.txtValueType.value == 2) {
                 // Numeric
-                frmMainForm.txtPValDefault.value = frmOriginalDefinition.txtValueNumeric.value;
+                frmMainForm.txtPValDefault.value = util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value;
             }		
-            if (frmOriginalDefinition.txtValueType.value == 3) {
+            if (util_def_exprcomponent_frmOriginalDefinition.txtValueType.value == 3) {
                 // Logic
                 iIndex = 0;
                 for (i=0; i<frmMainForm.cboPValDefault.options.length; i++)  {
-                    if (frmMainForm.cboPValDefault.options(i).Value == frmOriginalDefinition.txtValueLogic.value) {
+                    if (frmMainForm.cboPValDefault.options(i).Value == util_def_exprcomponent_frmOriginalDefinition.txtValueLogic.value) {
                         iIndex = i;
                         break;
                     }		
@@ -294,32 +289,32 @@
                 frmMainForm.cboPValDefault.selectedIndex = iIndex;
             }		
 		
-            if (frmOriginalDefinition.txtValueType.value == 4) {
+            if (util_def_exprcomponent_frmOriginalDefinition.txtValueType.value == 4) {
                 // Date
-                if (frmOriginalDefinition.txtPromptDateType.value == 0) {
-                    if ((frmOriginalDefinition.txtValueDate.value != "12/30/1899") &&
-                        (frmOriginalDefinition.txtValueDate.value != "")) {
-                        frmMainForm.txtPValDefault.value = menu_ConvertSQLDateToLocale(frmOriginalDefinition.txtValueDate.value);
+                if (util_def_exprcomponent_frmOriginalDefinition.txtPromptDateType.value == 0) {
+                    if ((util_def_exprcomponent_frmOriginalDefinition.txtValueDate.value != "12/30/1899") &&
+                        (util_def_exprcomponent_frmOriginalDefinition.txtValueDate.value != "")) {
+                        frmMainForm.txtPValDefault.value = menu_ConvertSQLDateToLocale(util_def_exprcomponent_frmOriginalDefinition.txtValueDate.value);
                     }
                     frmMainForm.optPValDate_Explicit.checked = true;
                 }
-                if (frmOriginalDefinition.txtPromptDateType.value == 2) {
+                if (util_def_exprcomponent_frmOriginalDefinition.txtPromptDateType.value == 2) {
                     frmMainForm.optPValDate_MonthStart.checked = true;
                 }
-                if (frmOriginalDefinition.txtPromptDateType.value == 1) {
+                if (util_def_exprcomponent_frmOriginalDefinition.txtPromptDateType.value == 1) {
                     frmMainForm.optPValDate_Current.checked = true;
                 }
-                if (frmOriginalDefinition.txtPromptDateType.value == 4) {
+                if (util_def_exprcomponent_frmOriginalDefinition.txtPromptDateType.value == 4) {
                     frmMainForm.optPValDate_YearStart.checked = true;
                 }
-                if (frmOriginalDefinition.txtPromptDateType.value == 3) {
+                if (util_def_exprcomponent_frmOriginalDefinition.txtPromptDateType.value == 3) {
                     frmMainForm.optPValDate_MonthEnd.checked = true;
                 }
-                if (frmOriginalDefinition.txtPromptDateType.value == 5) {
+                if (util_def_exprcomponent_frmOriginalDefinition.txtPromptDateType.value == 5) {
                     frmMainForm.optPValDate_YearEnd.checked = true;
                 }
 
-                pVal_changeDateOption(frmOriginalDefinition.txtPromptDateType.value)
+                pVal_changeDateOption(util_def_exprcomponent_frmOriginalDefinition.txtPromptDateType.value)
             }		
         }
 
@@ -332,7 +327,7 @@
             calculationsAndFilters_load();
 		
             // Locate the current filter.
-            locateGridRecord(frmOriginalDefinition.txtFilterID.value);
+            locateGridRecord(util_def_exprcomponent_frmOriginalDefinition.txtFilterID.value);
         }
     }
 
@@ -429,15 +424,6 @@
         divPromptedValue.style.visibility = sPromptedValue_Visibility;
         divPromptedValue.style.display = sPromptedValue_Display;
 
-        // Little dodge to get around a browser bug that
-        // does not refresh the display on all controls.
-        try
-        {
-            window.resizeBy(0,-1);
-            window.resizeBy(0,1);
-        }
-        catch(e) {}
-	
         initializeComponentControls(piType);
     }
 
@@ -505,7 +491,7 @@
         var fInitialise = util_def_exprcomponent_frmUseful.txtInitialising.value;
         var fTableOK;
 	
-        sDefaultTableID = frmOriginalDefinition.txtFieldTableID.value;
+        sDefaultTableID = util_def_exprcomponent_frmOriginalDefinition.txtFieldTableID.value;
 
         if ((fInitialise == 0) &&
             (frmMainForm.cboFieldTable.selectedIndex >= 0)) {
@@ -559,15 +545,16 @@
         else {
             combo_disable(frmMainForm.cboFieldTable, true);
         }
-	
-        field_refreshColumn()
+
+        field_refreshColumn();
     }
 
     function field_refreshColumn() {
+
         var sDefaultColumnID;
         var fInitialise = util_def_exprcomponent_frmUseful.txtInitialising.value;
 	
-        sDefaultColumnID = frmOriginalDefinition.txtFieldColumnID.value;
+        sDefaultColumnID = util_def_exprcomponent_frmOriginalDefinition.txtFieldColumnID.value;
 
         if ((fInitialise == 0) &&
             (frmMainForm.cboFieldColumn.selectedIndex >= 0)) {
@@ -602,7 +589,7 @@
 
         if (frmMainForm.cboFieldTable.selectedIndex >= 0) {
             // Get the optionData page to get the columns for the current table.
-            var optionDataForm = OpenHR.getFrame("optiondataframe","frmGetOptionData");
+            var optionDataForm = OpenHR.getForm("optiondataframe","frmGetOptionData");
             optionDataForm.txtOptionAction.value = "LOADEXPRFIELDCOLUMNS";
             optionDataForm.txtOptionTableID.value = frmMainForm.cboFieldTable.options[frmMainForm.cboFieldTable.selectedIndex].Value;
             optionDataForm.txtOptionColumnID.value = sDefaultColumnID;
@@ -618,8 +605,9 @@
                     optionDataForm.txtOptionOnlyNumerics.value = 0;
                 }
             }
-
-            OpenHR.getFrame("optiondataframe").refreshOptionData();
+           
+            //OpenHR.getFrame("optiondataframe").refreshOptionData();
+            refreshOptionData();
 
         }
         else {
@@ -724,14 +712,6 @@
             button_disable(frmMainForm.cmdOK, false);
         }
 	
-        // Little dodge to get around a browser bug that
-        // does not refresh the display on all controls.
-        try
-        {
-            window.resizeBy(0,-1);
-            window.resizeBy(0,1);	
-        }
-        catch(e) {}
     }
 
     function field_changeTable() {
@@ -790,7 +770,7 @@
         var sRootText;
         var ctlLoadedFlag;
         var fNoOperatorSelected;
-	
+
         if (frmMainForm.optType_Function.checked == true) {
             trvTreeView = frmMainForm.SSFunctionTree;
             colCollection = frmFunctions.elements;
@@ -872,14 +852,6 @@
 
         util_def_exprcomponent_frmUseful.txtInitialising.value = 0;
 
-        // Little dodge to get around a browser bug that
-        // does not refresh the display on all controls.
-        try
-        {
-            window.resizeBy(0,-1);
-            window.resizeBy(0,1);	
-        }
-        catch(e) {}
     }
 
     function calculationAndFilter_refresh() {
@@ -980,14 +952,6 @@
 
         grdGrid.Redraw = true;
 
-        // Little dodge to get around a browser bug that
-        // does not refresh the display on all controls.
-        try
-        {
-            window.resizeBy(0,-1);
-            window.resizeBy(0,1);	
-        }
-        catch(e) {}
     }
 
     function value_changeType() {
@@ -1033,7 +997,7 @@
         var iIndex;
         var fInitialise = util_def_exprcomponent_frmUseful.txtInitialising.value;
 	
-        sDefaultTableID = frmOriginalDefinition.txtLookupTableID.value;
+        sDefaultTableID = util_def_exprcomponent_frmOriginalDefinition.txtLookupTableID.value;
 
         if ((fInitialise == 0) &&
             (frmMainForm.cboLookupValueTable.selectedIndex >= 0)) {
@@ -1088,7 +1052,7 @@
         var sDefaultColumnID;
         var fInitialise = util_def_exprcomponent_frmUseful.txtInitialising.value;
 	
-        sDefaultColumnID = frmOriginalDefinition.txtLookupColumnID.value;
+        sDefaultColumnID = util_def_exprcomponent_frmOriginalDefinition.txtLookupColumnID.value;
 
         if ((fInitialise == 0) &&
             (frmMainForm.cboLookupValueColumn.selectedIndex >= 0)) {
@@ -1102,12 +1066,13 @@
 
         if (frmMainForm.cboLookupValueTable.selectedIndex >= 0) {
             // Get the optionData page to get the columns for the current table.
-            var optionDataForm = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
+            var optionDataForm = OpenHR.getForm("optiondataframe","frmGetOptionData");
             optionDataForm.txtOptionAction.value = "LOADEXPRLOOKUPCOLUMNS";
             optionDataForm.txtOptionTableID.value = frmMainForm.cboLookupValueTable.options[frmMainForm.cboLookupValueTable.selectedIndex].Value;
             optionDataForm.txtOptionColumnID.value = sDefaultColumnID;
 
-            OpenHR.getFrame("optiondataframe").refreshOptionData();
+            //OpenHR.getFrame("optiondataframe").refreshOptionData();
+            refreshOptionData();
         }
         else {
             combo_disable(frmMainForm.cboLookupValueColumn, true);
@@ -1130,21 +1095,21 @@
         if (frmMainForm.cboLookupValueColumn.selectedIndex >= 0) {
             iDataType = columnParameter(frmMainForm.cboLookupValueColumn.options[frmMainForm.cboLookupValueColumn.selectedIndex].Value, "DATATYPE");
 
-            if ((frmMainForm.cboLookupValueTable.options[frmMainForm.cboLookupValueTable.selectedIndex].Value == frmOriginalDefinition.txtLookupTableID.value)  &&
-                (columnParameter(frmMainForm.cboLookupValueColumn.options[frmMainForm.cboLookupValueColumn.selectedIndex].Value, "COLUMNID") == frmOriginalDefinition.txtLookupColumnID.value)) {
+            if ((frmMainForm.cboLookupValueTable.options[frmMainForm.cboLookupValueTable.selectedIndex].Value == util_def_exprcomponent_frmOriginalDefinition.txtLookupTableID.value)  &&
+                (columnParameter(frmMainForm.cboLookupValueColumn.options[frmMainForm.cboLookupValueColumn.selectedIndex].Value, "COLUMNID") == util_def_exprcomponent_frmOriginalDefinition.txtLookupColumnID.value)) {
 
                 if (iDataType == 11) {
                     // Date type lookup column.
-                    sDefaultValue = frmOriginalDefinition.txtValueDate.value;
+                    sDefaultValue = util_def_exprcomponent_frmOriginalDefinition.txtValueDate.value;
                     sDefaultValue = menu_ConvertSQLDateToLocale(sDefaultValue);
                 }
                 if (iDataType == 12) {
                     // Character type lookup column.
-                    sDefaultValue = frmOriginalDefinition.txtValueCharacter.value;
+                    sDefaultValue = util_def_exprcomponent_frmOriginalDefinition.txtValueCharacter.value;
                 }
                 if ((iDataType == 2) || (iDataType == 4)) {
                     // Numeric/integer type lookup column.
-                    sDefaultValue = frmOriginalDefinition.txtValueNumeric.value;
+                    sDefaultValue = util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value;
                 }
 			
                 if ((fInitialise == 0) &&
@@ -1161,12 +1126,13 @@
 
         if (frmMainForm.cboLookupValueColumn.selectedIndex >= 0) {
             // Get the optionData page to get the columns for the current table.
-            var optionDataForm = OpenHR.getFrame("optiondataframe","frmGetOptionData");
+            var optionDataForm = OpenHR.getForm("optiondataframe","frmGetOptionData");
             optionDataForm.txtOptionAction.value = "LOADEXPRLOOKUPVALUES";
             optionDataForm.txtOptionColumnID.value = columnParameter(frmMainForm.cboLookupValueColumn.options[frmMainForm.cboLookupValueColumn.selectedIndex].Value, "COLUMNID");
             optionDataForm.txtGotoLocateValue.value = sDefaultValue;
             
-            OpenHR.getFrame("optiondataframe").refreshOptionData();
+            //OpenHR.getFrame("optiondataframe").refreshOptionData();
+            refreshOptionData();
         }
         else {
             combo_disable(frmMainForm.cboLookupValueValue, true);
@@ -1319,7 +1285,7 @@
         var fInitialise = util_def_exprcomponent_frmUseful.txtInitialising.value;
         var sDefaultTableID;
 	
-        sDefaultTableID = frmOriginalDefinition.txtFieldTableID.value;
+        sDefaultTableID = util_def_exprcomponent_frmOriginalDefinition.txtFieldTableID.value;
 
         if ((fInitialise == 0) &&
             (frmMainForm.cboPValTable.selectedIndex >= 0)) {
@@ -1373,7 +1339,7 @@
         var sDefaultColumnID;
         var fInitialise = util_def_exprcomponent_frmUseful.txtInitialising.value;
 	
-        sDefaultColumnID = frmOriginalDefinition.txtFieldColumnID.value;
+        sDefaultColumnID = util_def_exprcomponent_frmOriginalDefinition.txtFieldColumnID.value;
 
         if ((fInitialise == 0) &&
             (frmMainForm.cboPValColumn.selectedIndex >= 0)) {
@@ -1387,12 +1353,13 @@
 
         if (frmMainForm.cboPValTable.selectedIndex >= 0) {
             // Get the optionData page to get the columns for the current table.
-            var optionDataForm = OpenHR.getFrame("optiondataframe","frmGetOptionData");
+            var optionDataForm = OpenHR.getForm("optiondataframe","frmGetOptionData");
             optionDataForm.txtOptionAction.value = "LOADEXPRLOOKUPCOLUMNS";
             optionDataForm.txtOptionTableID.value = frmMainForm.cboPValTable.options[frmMainForm.cboPValTable.selectedIndex].Value;
             optionDataForm.txtOptionColumnID.value = sDefaultColumnID;
 
-            OpenHR.getFrame("optiondataframe").refreshOptionData();
+            //OpenHR.getFrame("optiondataframe").refreshOptionData();
+            refreshOptionData();
         }
         else {
             combo_disable(frmMainForm.cboPValColumn, true);
@@ -1414,21 +1381,21 @@
         if (frmMainForm.cboPValColumn.selectedIndex >= 0) {
             iDataType = columnParameter(frmMainForm.cboPValColumn.options[frmMainForm.cboPValColumn.selectedIndex].Value, "DATATYPE");
 
-            if ((frmMainForm.cboPValTable.options[frmMainForm.cboPValTable.selectedIndex].Value == frmOriginalDefinition.txtFieldTableID.value)  &&
-                (columnParameter(frmMainForm.cboPValColumn.options[frmMainForm.cboPValColumn.selectedIndex].Value, "COLUMNID") == frmOriginalDefinition.txtFieldColumnID.value)) {
+            if ((frmMainForm.cboPValTable.options[frmMainForm.cboPValTable.selectedIndex].Value == util_def_exprcomponent_frmOriginalDefinition.txtFieldTableID.value)  &&
+                (columnParameter(frmMainForm.cboPValColumn.options[frmMainForm.cboPValColumn.selectedIndex].Value, "COLUMNID") == util_def_exprcomponent_frmOriginalDefinition.txtFieldColumnID.value)) {
 
                 if (iDataType == 11) {
                     // Date type lookup column.
-                    sDefaultValue = frmOriginalDefinition.txtValueCharacter.value;
+                    sDefaultValue = util_def_exprcomponent_frmOriginalDefinition.txtValueCharacter.value;
                     sDefaultValue = menu_ConvertSQLDateToLocale(sDefaultValue);
                 }
                 if (iDataType == 12) {
                     // Character type lookup column.
-                    sDefaultValue = frmOriginalDefinition.txtValueCharacter.value;
+                    sDefaultValue = util_def_exprcomponent_frmOriginalDefinition.txtValueCharacter.value;
                 }
                 if ((iDataType == 2) || (iDataType == 4)) {
                     // Numeric/integer type lookup column.
-                    sDefaultValue = frmOriginalDefinition.txtValueCharacter.value;
+                    sDefaultValue = util_def_exprcomponent_frmOriginalDefinition.txtValueCharacter.value;
                 }
 			
                 if ((fInitialise == 0) &&
@@ -1445,12 +1412,13 @@
 
         if (frmMainForm.cboPValColumn.selectedIndex >= 0) {
             // Get the optionData page to get the columns for the current table.
-            var optionDataForm = OpenHR.getFrame("optiondataframe","frmGetOptionData");
+            var optionDataForm = OpenHR.getForm("optiondataframe","frmGetOptionData");
             optionDataForm.txtOptionAction.value = "LOADEXPRLOOKUPVALUES";
             optionDataForm.txtOptionColumnID.value = columnParameter(frmMainForm.cboPValColumn.options[frmMainForm.cboPValColumn.selectedIndex].Value, "COLUMNID");
             optionDataForm.txtGotoLocateValue.value = sDefaultValue;
 
-            OpenHR.getFrame("optiondataframe").refreshOptionData();
+            //OpenHR.getFrame("optiondataframe").refreshOptionData();
+            refreshOptionData();
         }
         else {
             combo_disable(frmMainForm.cboPValDefault, true);
@@ -1488,7 +1456,7 @@
         pVal_refreshValues();
     }
 
-    function addColumn(psDefn) {
+    function component_addColumn(psDefn) {
         var sColumnName;
         var oOption;
         var cboCombo;
@@ -1512,7 +1480,7 @@
         oOption.Value = psDefn;			
     }
 
-    function setColumn(piColumnID) {
+    function component_setColumn(piColumnID) {
         var iIndex;
         var i;
         var cboCombo;
@@ -1562,7 +1530,7 @@
         util_def_exprcomponent_frmUseful.txtInitialising.value = 0;
     }
 
-    function addValue(psValue) {
+    function component_addValue(psValue) {
         var fOK;
         var cboColumnCombo;
         var cboValueCombo;
@@ -1600,7 +1568,7 @@
         }
     }
 
-    function setValue(psValue) {
+    function component_setValue(psValue) {
         var iIndex;
         var i;
         var fFound = false;
@@ -1664,14 +1632,6 @@
         frmMainForm.txtValueNotInLookup.style.visibility = sVisibility;
         frmMainForm.txtValueNotInLookup.style.display = sDisplay;
 
-        // Little dodge to get around a browser bug that
-        // does not refresh the display on all controls.
-        try
-        {
-            window.resizeBy(0,-1);
-            window.resizeBy(0,1);	
-        }
-        catch(e) {}
     }
 
     function columnParameter(psDefnString, psParameter)
@@ -1898,7 +1858,7 @@
         window.showModalDialog(pDestination, self, dlgwinprops);
     }
 
-    function OKClick()
+    function component_OKClick()
     {  
         var sDefn;
         var i;
@@ -1908,7 +1868,7 @@
         var tableCollection = frmTables.elements;
         var sFunctionParameters;
         var colFunctionParameters = frmFunctionParameters.elements;
-	
+
         if (frmMainForm.cmdOK.disabled == true) {
             return;
         }
@@ -1917,7 +1877,7 @@
             // Component definition is valid. Pass it back to the 
             // expression page.
 	
-            sDefn = frmOriginalDefinition.txtComponentID.value + "	0	";
+            sDefn = util_def_exprcomponent_frmOriginalDefinition.txtComponentID.value + "	0	";
 	
             // Component type.
             if (frmMainForm.optType_Field.checked == true) {
@@ -2429,15 +2389,17 @@
             }		
 		
             // Pass the component definition back to the expression page.
-            OpenHR.getFrame("workframe").setComponent(sDefn, util_def_exprcomponent_frmUseful.txtAction.value, util_def_exprcomponent_frmUseful.txtLinkRecordID.value, sFunctionParameters);
+            //OpenHR.getFrame("workframe").setComponent(sDefn, util_def_exprcomponent_frmUseful.txtAction.value, util_def_exprcomponent_frmUseful.txtLinkRecordID.value, sFunctionParameters);
+            setComponent(sDefn, util_def_exprcomponent_frmUseful.txtAction.value, util_def_exprcomponent_frmUseful.txtLinkRecordID.value, sFunctionParameters);
             
 
         }
     }
 
-    function CancelClick()
+    function component_CancelClick()
     {  
-        OpenHR.getFrame("workframe").cancelComponent();
+        //OpenHR.getFrame("workframe").cancelComponent();
+        cancelComponent();
     }
 
     function validateComponent() {
@@ -2456,11 +2418,11 @@
         var sConvertedValue;
 
         sDecimalSeparator = "\\";
-        sDecimalSeparator = sDecimalSeparator.concat(window.parent.frames("menuframe").ASRIntranetFunctions.LocaleDecimalSeparator);
+        sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator);
         var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
   
         sThousandSeparator = "\\";
-        sThousandSeparator = sThousandSeparator.concat(window.parent.frames("menuframe").ASRIntranetFunctions.LocaleThousandSeparator);
+        sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator);
         var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
 
         sPoint = "\\.";
@@ -2491,9 +2453,9 @@
                     // Remove any thousand separators.
                     sConvertedValue = sConvertedValue.replace(reThousandSeparator, "");
                     frmMainForm.txtFieldRecSel_Specific.value = sConvertedValue;
-
+                   
                     // Convert any decimal separators to '.'.
-                    if (window.parent.frames("menuframe").ASRIntranetFunctions.LocaleDecimalSeparator != ".") {
+                    if (OpenHR.LocaleDecimalSeparator != ".") {
                         // Remove decimal points.
                         sConvertedValue = sConvertedValue.replace(rePoint, "A");
                         // replace the locale decimal marker with the decimal point.
@@ -2535,7 +2497,7 @@
                 frmMainForm.txtValue.value = sConvertedValue;
 
                 // Convert any decimal separators to '.'.
-                if (window.parent.frames("menuframe").ASRIntranetFunctions.LocaleDecimalSeparator != ".") {
+                if (OpenHR.LocaleDecimalSeparator != ".") {
                     // Remove decimal points.
                     sConvertedValue = sConvertedValue.replace(rePoint, "A");
                     // replace the locale decimal marker with the decimal point.
@@ -2576,7 +2538,7 @@
                 frmMainForm.txtPValSize.value = sConvertedValue;
 
                 // Convert any decimal separators to '.'.
-                if (window.parent.frames("menuframe").ASRIntranetFunctions.LocaleDecimalSeparator != ".") {
+                if (OpenHR.LocaleDecimalSeparator != ".") {
                     // Remove decimal points.
                     sConvertedValue = sConvertedValue.replace(rePoint, "A");
                     // replace the locale decimal marker with the decimal point.
@@ -2618,7 +2580,7 @@
                     frmMainForm.txtPValDecimals.value = sConvertedValue;
 
                     // Convert any decimal separators to '.'.
-                    if (window.parent.frames("menuframe").ASRIntranetFunctions.LocaleDecimalSeparator != ".") {
+                    if (OpenHR.LocaleDecimalSeparator != ".") {
                         // Remove decimal points.
                         sConvertedValue = sConvertedValue.replace(rePoint, "A");
                         // replace the locale decimal marker with the decimal point.
@@ -2709,7 +2671,7 @@
                         frmMainForm.txtPValDefault.value = sConvertedValue;
 
                         // Convert any decimal separators to '.'.
-                        if (window.parent.frames("menuframe").ASRIntranetFunctions.LocaleDecimalSeparator != ".") {
+                        if (OpenHR.LocaleDecimalSeparator != ".") {
                             // Remove decimal points.
                             sConvertedValue = sConvertedValue.replace(rePoint, "A");
                             // replace the locale decimal marker with the decimal point.
@@ -2748,7 +2710,7 @@
         return true;
     }
 
-    function saveChanges(psAction, pfPrompt, pfTBOverride)
+    function component_saveChanges(psAction, pfPrompt, pfTBOverride)
     {
         // Expand the work frame and hide the option frame.
         $("#optionframe").attr("data-framesource", "UTIL_DEF_EXPRCOMPONENT");
@@ -2756,7 +2718,8 @@
         $("#workframe").show();
         
         // Pass the component definition back to the expression page.        
-        OpenHR.getFrame("workframe").saveChanges(psAction, pfPrompt, pfTBOverride);
+        //OpenHR.getFrame("workframe").saveChanges(psAction, pfPrompt, pfTBOverride);
+        saveChanges(psAction, pfPrompt, pfTBOverride);
     }
     -->
 </script>
@@ -2792,7 +2755,7 @@
     }
 
     function ssOleDBGridFilters_dblClick() {
-        OKClick();
+        component_OKClick();
     }
 
     function ssOleDBGridCalculations_KeyPress(iKeyAscii) {
@@ -2811,7 +2774,7 @@
     }
 
     function ssOleDBGridCalculations_dblClick() {
-        OKClick();        
+        component_OKClick();        
     }
 
     function SSOperatorTree_nodeClick(node) {
@@ -2831,7 +2794,7 @@
     }
 
     function SSOperatorTree_dblClick() {
-        OKClick();        
+        component_OKClick();        
     }
 
     function SSFunctionTree_nodeClick(node) {
@@ -2851,7 +2814,7 @@
     }
     
     function SSFunctionTree_dblClick() {
-        OKClick();        
+        component_OKClick();        
     }
 
 </script>
@@ -3526,7 +3489,7 @@ end if
 											<TR>
 												<TD width=10>&nbsp;</TD>
 												<TD>
-													<OBJECT classid="clsid:1C203F13-95AD-11D0-A84B-00A0247B735B" id=SSFunctionTree codebase="cabs/SStree.cab#version=1,0,2,24" style="LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:100%" VIEWASTEXT>
+													<OBJECT classid="clsid:1C203F13-95AD-11D0-A84B-00A0247B735B" id=SSFunctionTree codebase="cabs/SStree.cab#version=1,0,2,24" style="LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:400px" VIEWASTEXT>
 														<PARAM NAME="_ExtentX" VALUE="2646">
 														<PARAM NAME="_ExtentY" VALUE="1323">
 														<PARAM NAME="_Version" VALUE="65538">
@@ -3601,7 +3564,7 @@ end if
 											<TR>
 												<TD width=10>&nbsp;</TD>
 												<TD>
-													<OBJECT classid="clsid:1C203F13-95AD-11D0-A84B-00A0247B735B" id=SSOperatorTree codebase="cabs/SStree.cab#version=1,0,2,24" style="LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:100%" VIEWASTEXT>
+													<OBJECT classid="clsid:1C203F13-95AD-11D0-A84B-00A0247B735B" id=SSOperatorTree codebase="cabs/SStree.cab#version=1,0,2,24" style="LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:400px" VIEWASTEXT>
 														<PARAM NAME="_ExtentX" VALUE="2646">
 														<PARAM NAME="_ExtentY" VALUE="1323">
 														<PARAM NAME="_Version" VALUE="65538">
@@ -4692,7 +4655,7 @@ end if
 								</td>
 								<td width=10>
 									<input id=cmdOK name=cmdOK type="button" class="btn" value="OK" style="WIDTH: 75px" width="75" 
-									    onclick="OKClick()"
+									    onclick="component_OKClick()"
 		                                onmouseover="try{button_onMouseOver(this);}catch(e){}" 
 		                                onmouseout="try{button_onMouseOut(this);}catch(e){}"
 		                                onfocus="try{button_onFocus(this);}catch(e){}"
@@ -4702,7 +4665,7 @@ end if
 								</td>
 								<td width=10>
 									<input id="cmdCancel" name="cmdCancel" type="button" class="btn" value="Cancel" style="WIDTH: 75px" width="75" 
-									    onclick="CancelClick()"
+									    onclick="component_CancelClick()"
 		                                onmouseover="try{button_onMouseOver(this);}catch(e){}" 
 		                                onmouseout="try{button_onMouseOut(this);}catch(e){}"
 		                                onfocus="try{button_onFocus(this);}catch(e){}"
@@ -4748,7 +4711,7 @@ end if
   	<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
 </FORM>
 
-<FORM id=frmOriginalDefinition name=frmOriginalDefinition>
+<FORM id=util_def_exprcomponent_frmOriginalDefinition name=util_def_exprcomponent_frmOriginalDefinition>
 <%
     Dim sDefnString As String
     Dim sFieldTableID As String

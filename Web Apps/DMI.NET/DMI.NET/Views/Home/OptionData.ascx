@@ -14,7 +14,7 @@
         } else {
             // Do nothing if the menu controls are not yet instantiated.
             if (2 != 3) {
-                var sCurrentWorkPage = currentWorkPage();
+                var sCurrentWorkPage = OpenHR.currentWorkPage();
 
                 if (sCurrentWorkPage == "LINKFIND") {
                     var sErrorMsg = frmOptionData.txtErrorMessage.value;
@@ -442,12 +442,12 @@
                                 sControlName = dataCollection.item(i).name;
                                 sControlName = sControlName.substr(0, 10);
                                 if (sControlName == "txtColumn_") {
-                                    OpenHR.getFrame("optionframe").addColumn(dataCollection.item(i).value);
+                                    component_addColumn(dataCollection.item(i).value);
                                 }
                             }
                         }
 
-                        OpenHR.getFrame("optionframe").setColumn(frmOptionData.txtOptionColumnID.value);
+                        component_setColumn(frmOptionData.txtOptionColumnID.value);
                     }
 
                     if (sAction == "LOADEXPRLOOKUPVALUES") {
@@ -458,12 +458,12 @@
                                 sControlName = dataCollection.item(i).name;
                                 sControlName = sControlName.substr(0, 9);
                                 if (sControlName == "txtValue_") {
-                                    OpenHR.getFrame("optionframe").addValue(dataCollection.item(i).value);
+                                    omponent_addValue(dataCollection.item(i).value);
                                 }
                             }
                         }
 
-                        OpenHR.getFrame("optionframe").setValue(frmOptionData.txtOptionLocateValue.value);
+                        component_setValue(frmOptionData.txtOptionLocateValue.value);
                     }
 
                     // Get menu.asp to refresh the menu.
@@ -2687,4 +2687,8 @@
         End If
     End Function
 
+</script>
+
+<script type="text/javascript">
+    optiondata_onload()
 </script>
