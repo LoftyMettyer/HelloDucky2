@@ -1122,8 +1122,8 @@
 
 		' Pass required info to the DLL
 		objExpression.Username = Session("username")
-		objExpression.Connection = Session("databaseConnection")
-
+        CallByName(objExpression, "Connection", CallType.Let, Session("databaseConnection"))
+        
 		Do While Len(sParam1) > 0
 			iCharIndex = InStr(sParam1, ",")
 

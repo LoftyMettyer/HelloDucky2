@@ -81,8 +81,7 @@
         cancelClick();
     }
 
-    function returnToDefSel() 
-    {
+    function returnToDefSel() {
 
         window.dialogArguments.OpenHR.returnToDefSel();		  
         cancelClick();
@@ -104,10 +103,11 @@
         if (iNextPass <= 3) {
             frmValidate.validatePass.value = iNextPass;
 
-            frmValidate.submit();		
+            OpenHR.submitForm(frmValidate);
         }
         else {	
-            window.dialogArguments.document.getElementById('frmSend').submit();
+            
+            OpenHR.submitForm(window.dialogArguments.document.getElementById('frmSend'));
             self.close();
         }
     }
@@ -806,8 +806,8 @@
 
 		' Pass required info to the DLL
 		objExpression.Username = session("username")
-        objExpression.Connection = Session("databaseConnection")
-
+        CallByName(objExpression, "Connection", CallType.Let, Session("databaseConnection"))
+        
 		if Request.form("validateUtilType") = 11 then
 			iExprType = 11
 			iReturnType = 3
@@ -816,11 +816,11 @@
 			iReturnType = 0
 		end if
 				
-		fok = objExpression.Initialise(Request.form("validateBaseTableID"), _
-			cint(Request.form("validateUtilID")), cint(iExprType), cint(iReturnType))
+        fOK = objExpression.Initialise(CLng(Request.Form("validateBaseTableID")), _
+            CLng(Request.Form("validateUtilID")), CInt(iExprType), CInt(iReturnType))
 
 		if fok then 
-			fok = objExpression.SetExpressionDefinition(Request.form("components1"), "", "", "", "", "")
+            fOK = objExpression.SetExpressionDefinition(CStr(Request.Form("components1")), "", "", "", "", "")
 		end if
 
 		if fok then 
@@ -874,7 +874,7 @@
 
 		  If Request.form("validateUtilID") > 0 Then
                 objExpression = CreateObject("COAIntServer.Expression")
-				iOriginalReturnType = objExpression.ExistingExpressionReturnType(Request.form("validateUtilID"))
+                iOriginalReturnType = objExpression.ExistingExpressionReturnType(CLng(Request.Form("validateUtilID")))
                 objExpression = Nothing
 					
 				If iReturnType <> iOriginalReturnType Then

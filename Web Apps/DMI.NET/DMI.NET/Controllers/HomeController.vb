@@ -1934,7 +1934,7 @@ Namespace Controllers
 
       ' Pass required info to the DLL
       objExpression.Username = Session("username")
-      objExpression.Connection = Session("databaseConnection")
+      CallByName(objExpression, "Connection", CallType.Let, Session("databaseConnection"))
 
       If Request.Form("txtSend_type") = 11 Then
         iExprType = 11
@@ -1948,16 +1948,16 @@ Namespace Controllers
         sUtilType2 = "calculation"
       End If
 
-      fok = objExpression.Initialise(Request.Form("txtSend_tableID"), _
-        Request.Form("txtSend_ID"), CInt(iExprType), CInt(iReturnType))
+      fok = objExpression.Initialise(CLng(Request.Form("txtSend_tableID")), _
+        CLng(Request.Form("txtSend_ID")), CInt(iExprType), CInt(iReturnType))
 
       If fok Then
-        fok = objExpression.SetExpressionDefinition(Request.Form("txtSend_components1"), _
-          "", "", "", "", Request.Form("txtSend_names"))
+        fok = objExpression.SetExpressionDefinition(CStr(Request.Form("txtSend_components1")), _
+          "", "", "", "", CStr(Request.Form("txtSend_names")))
       End If
 
       If fok Then
-        fok = objExpression.SaveExpression(Request.Form("txtSend_name"), _
+        fok = objExpression.SaveExpression(CStr(Request.Form("txtSend_name")), _
           Request.Form("txtSend_userName"), _
           Request.Form("txtSend_access"), _
           Request.Form("txtSend_description"))
@@ -1992,8 +1992,6 @@ Namespace Controllers
           Session("followpage") = "defsel.asp"
           Session("reaction") = Request.Form("txtSend_reaction")
           Session("utilid") = objExpression.ExpressionID
-
-          Return RedirectToAction("confirmok")
 
         Else
 
@@ -2057,11 +2055,17 @@ Namespace Controllers
           Response.Write("	</BODY>" & vbCrLf)
           Response.Write("<HTML>" & vbCrLf)
         End If
+
       End If
 
       objExpression = Nothing
 
-      Return RedirectToAction("confirmok")
+      If fok Then
+        Return RedirectToAction("DefSel")
+      Else
+        'TODO - error message
+        Return RedirectToAction("confirmok")
+      End If
 
     End Function
 

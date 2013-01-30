@@ -905,7 +905,7 @@ function menu_refreshMenu() {
 	if (sCurrentWorkPage == "RECORDEDIT") {
 		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
 		var frmData = OpenHR.getForm("datafframe", "frmData");
-	    
+
 		//abMainMenu.Bands("mnubandMainToolBar").visible = true;
 		menu_setVisibleMenuItem("mnutoolRecord", true);
 
@@ -951,8 +951,8 @@ function menu_refreshMenu() {
 
 		menu_setVisibleMenuItem("mnutoolQuickFind", true);
 	    menu_enableMenuItem("mnutoolQuickFind", ((frmRecEdit.txtLineage.value.length == 0) &&
-	        ((frmMenuInfo.txtUserType.value == 0) ||
-	            (frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
+				((frmMenuInfo.txtUserType.value == 0) ||
+				(frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
 	            (frmRecEdit.txtCurrentParentTableID.value > 0))));
 		//abMainMenu.Bands("mnubandMainToolBar").Tools("mnutoolOrder").beginGroup = false;
 		menu_setVisibleMenuItem("mnutoolOrder", true);
@@ -1058,7 +1058,7 @@ function menu_refreshMenu() {
 	else {
 		if (sCurrentWorkPage == "FIND") {			
 			//frmFind = window.parent.frames("workframe").document.forms("frmFindForm");
-		    
+
 			frmFind = document.getElementById("frmFindForm");	
 
 			lngRecordID = selectedRecordID(); //should be in scope at runtime.
@@ -1075,8 +1075,8 @@ function menu_refreshMenu() {
 
 			//New functionality: switch ribbon tab to required item.
 			$("#toolbarRecord").show();
-			$("#toolbarRecord").click();
-		    
+			$("#toolbarRecord").click();			
+
 			// Enable the record editing options as necessary.
 			menu_setVisibleMenuItem("mnutoolNewRecord", true);
 
@@ -1150,7 +1150,7 @@ function menu_refreshMenu() {
 
 			//frmData = window.parent.frames("dataframe").document.forms("frmData");
 			frmData = document.getElementById("frmData");
-		    //TODO are we setting this?
+			//TODO are we setting this?
 		    
 			if (frmFind.txtRecordCount.value > 0) {
 				iStartPosition = parseInt(frmFind.txtFirstRecPos.value);
@@ -1440,7 +1440,7 @@ function menu_refreshMenu() {
 		//abMainMenu.Tools("mnutoolConfiguration").enabled = false;
 		menu_enableMenuItem("mnutoolConfiguration", false);
 	}
-   
+
 	//TODO	
 	//<%
 	//	if session("WinAuth") then
@@ -1469,8 +1469,8 @@ function menu_refreshMenu() {
 			menu_setVisibletoolbarGroup("mnutoolBulkBooking", ((fBulkBookingVisible) && 
 																				(fAddFromWaitingListVisible) && 
 																					(fTransferBookingVisible) && 
-																						(fCancelBookingVisible)));
-    
+																						(fCancelBookingVisible)));			
+
 			//if all these are false, then hide the Course Booking group.			
 			menu_setVisibletoolbarGroup("mnutoolBookCourse", ((fBookCourseVisible) && (fCancelCourseVisible)));			
 
@@ -1779,7 +1779,6 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 			(sCurrentPage == "CONFIGURATION") ||
 			(sCurrentPage == "PCCONFIGURATION")) {
 
-		    //iResult = OpenHR.getFrame("workframe").saveChanges(psAction, pfPrompt, pfTBOverride);
 		    iResult = saveChanges(psAction, pfPrompt, pfTBOverride);
 		}
 	}

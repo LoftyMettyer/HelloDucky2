@@ -22,7 +22,7 @@
     Dim sKey As String
     j = 0
     ReDim Preserve aPrompts(1, 0)
-    For i = 1 To (Request.Form.Count)
+    For i = 0 To (Request.Form.Count) - 1
         sKey = Request.Form.Keys(i)
         If ((UCase(Left(sKey, 7)) = "PROMPT_") And (Mid(sKey, 8, 1) <> "3")) Or _
             (UCase(Left(sKey, 10)) = "PROMPTCHK_") Then
@@ -54,54 +54,57 @@
     <title>OpenHR Intranet</title>
     
     <script ID="clientEventHandlersJS"  type="text/javascript">
-    function util_test_expression_onload() {
-        debugger;
+        function util_test_expression_onload() {
 
-        if (txtDisplay.value != "False") {
-            // Hide the 'please wait' message.
-            trPleaseWait1.style.visibility='hidden';
-            trPleaseWait1.style.display='none';
-            trPleaseWait2.style.visibility='hidden';
-            trPleaseWait2.style.display='none';
-            trPleaseWait3.style.visibility='hidden';
-            trPleaseWait3.style.display='none';
-            trPleaseWait4.style.visibility='hidden';
-            trPleaseWait4.style.display='none';
-            trPleaseWait5.style.visibility='hidden';
-            trPleaseWait5.style.display='none';
+            if (txtDisplay.value != "False") {
+                // Hide the 'please wait' message.
+                trPleaseWait1.style.visibility='hidden';
+                trPleaseWait1.style.display='none';
+                trPleaseWait2.style.visibility='hidden';
+                trPleaseWait2.style.display='none';
+                trPleaseWait3.style.visibility='hidden';
+                trPleaseWait3.style.display='none';
+                trPleaseWait4.style.visibility='hidden';
+                trPleaseWait4.style.display='none';
+                trPleaseWait5.style.visibility='hidden';
+                trPleaseWait5.style.display='none';
 
-            // Resize the grid to show all prompted values.
-            iResizeBy = bdyMain.scrollWidth	- bdyMain.clientWidth;
-            if (bdyMain.offsetWidth + iResizeBy > screen.width) {
-                window.dialogWidth = new String(screen.width) + "px";
+                var bdyMain = $("#bdyMain");
+
+                // Resize the grid to show all prompted values.
+                iResizeBy = bdyMain.scrollWidth	- bdyMain.clientWidth;
+                if (bdyMain.offsetWidth + iResizeBy > screen.width) {
+                    window.dialogWidth = new String(screen.width) + "px";
+                }
+                else {
+                    iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length-2));
+                    iNewWidth = iNewWidth + iResizeBy;
+                    window.dialogWidth = new String(iNewWidth) + "px";
+                }
+
+                iResizeBy = bdyMain.scrollHeight	- bdyMain.clientHeight;
+                if (bdyMain.offsetHeight + iResizeBy > screen.height) {
+                    window.dialogHeight = new String(screen.height) + "px";
+                }
+                else {
+                    iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length-2));
+                    iNewHeight = iNewHeight + iResizeBy;
+                    window.dialogHeight = new String(iNewHeight) + "px";
+                }
             }
             else {
-                iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length-2));
-                iNewWidth = iNewWidth + iResizeBy;
-                window.dialogWidth = new String(iNewWidth) + "px";
-            }
-
-            iResizeBy = bdyMain.scrollHeight	- bdyMain.clientHeight;
-            if (bdyMain.offsetHeight + iResizeBy > screen.height) {
-                window.dialogHeight = new String(screen.height) + "px";
-            }
-            else {
-                iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length-2));
-                iNewHeight = iNewHeight + iResizeBy;
-                window.dialogHeight = new String(iNewHeight) + "px";
+                self.close();
             }
         }
-        else {
-            self.close();
-        }
-    }
 
     </script>
 
 
 </head>
 
-<body onload="return util_test_expression_onload()" id=bdyMain>
+<body id="bdyMain">    
+    <div data-framesource="util_test_expression">
+
     
     <table align=center class="outline" cellPadding=5 cellSpacing=0>
 	<TR>
@@ -193,8 +196,8 @@
 
 	' Pass required info to the DLL
 	objExpression.Username = session("username")
-	objExpression.Connection = session("databaseConnection")
-
+    CallByName(objExpression, "Connection", CallType.Let, Session("databaseConnection"))
+    
 	if fok then 
 		if Request.form("type") = 11 then
 			iExprType = 11
@@ -204,12 +207,11 @@
 			iReturnType = 0
 		end if
 				
-		fok = objExpression.Initialise(Request.form("tableID"), _
-			0, cint(iExprType), cint(iReturnType))
+        fOK = objExpression.Initialise(CLng(Request.Form("tableID")), 0, CInt(iExprType), CInt(iReturnType))
 	end if
 
 	if fok then 
-		fok = objExpression.SetExpressionDefinition(Request.form("components1"), "", "", "", "", "")
+        fOK = objExpression.SetExpressionDefinition(CStr(Request.Form("components1")), "", "", "", "", "")
 	end if
 
 	if fok then 
@@ -337,9 +339,14 @@ Response.Write("			    <td align=center colspan=3> " & vbCrLf)
 	</TR>
 </table>
 
-
+</div>
 </body>
+
 </html>
+
+<script type="text/javascript">
+    util_test_expression_onload();
+</script>
 
 <script runat="server" language="vb">
 

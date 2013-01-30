@@ -18,23 +18,20 @@
 <html>
 <head runat="server">
     <title>OpenHR Intranet</title>
-    
-    <OBJECT 
-	classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" 
-	id="Microsoft_Licensed_Class_Manager_1_0" 
-	VIEWASTEXT>
-	<PARAM NAME="LPKPath" VALUE="lpks/main.lpk">
 
-</OBJECT>
-    
-    
-    
-<script type="text/javascript" >
+    <object
+        classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
+        id="Microsoft_Licensed_Class_Manager_1_0"
+        viewastext>
+        <param name="LPKPath" value="lpks/main.lpk">
+    </object>
+
+    <script type="text/javascript" >
 <!--
     function util_test_expression_pval_onload() {
-        
+
         if (frmPromptedValues.txtPromptCount.value == 0) {
-            frmPromptedValues.submit();
+            OpenHR.submitForm(frmPromptedValues);
         }
         else {
             // Set focus on the first prompt control.
@@ -89,7 +86,7 @@
         }	
 
         // Everything OK. Submit the form.
-        frmPromptedValues.submit();
+        OpenHR.submitForm(frmPromptedValues);
     }
 
     function CancelClick()
@@ -482,13 +479,12 @@
     -->
 </script>
 
-
-    
-
 </head>
 <body>
     
-    <FORM name=frmPromptedValues id=frmPromptedValues method=POST action=util_test_expression.asp>
+    <div data-framesource="util_test_expression_pval">
+
+        <FORM name=frmPromptedValues id=frmPromptedValues method=POST action=util_test_expression>
 <%
 	dim iPromptCount
 	dim sPrompts
@@ -1068,9 +1064,15 @@
 	<INPUT type="hidden" id=components1 name=components1 value="<%=Request.Form("components1")%>">
 	<INPUT type="hidden" id=tableID name=tableID value=<%=Request.Form("tableID")%>>
 </FORM>
-
+    
+    </div>
 </body>
 </html>
+
+
+<script type="text/javascript">
+    util_test_expression_pval_onload();
+</script>
 
 
 

@@ -1434,7 +1434,7 @@
         var sFiltersAndCalcs;
         var sURL;
 		
-        if (validate() == false) return;
+        if (validateExpression() == false) return;
         if (populateSendForm() == false) return;
 
         // Create a tab-delimuted string of the prompted value definitions.
@@ -1987,7 +1987,7 @@
 
     function submitDefinition()
     {
-        if (validate() == false) {menu_refreshMenu(); return;}
+        if (validateExpression() == false) {menu_refreshMenu(); return;}
         if (populateSendForm() == false) {menu_refreshMenu(); return;}
 
         // first populate the validate fields
@@ -2081,7 +2081,7 @@
         frmDefinition.SSTree1.SelectedItem.EnsureVisible();
     }
 
-    function validate()
+    function validateExpression()
     {
         var sTypeName;
         var sMsg;
