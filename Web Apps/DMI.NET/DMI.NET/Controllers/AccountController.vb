@@ -597,13 +597,9 @@ Namespace Controllers
 
 			If CLng(superUserAccessCount) > 0 Then
 				' We are a superUser.
-				' As per some of the stored procs, I thought we'd use:
-				' 0 = SSI user only
-				' 1 = DMI single record access
-				' 2 = DMI Multi record access
-				Session("Usertype") = 2
+				Session("SuperUser") = True
 			Else
-				Session("Usertype") = 0
+				Session("SuperUser") = False
 			End If
 
 			cmdDmiUser = Nothing
@@ -1668,7 +1664,7 @@ Namespace Controllers
 					cookie("WindowsAuthentication") = Request.Form("chkWindowsAuthentication")
 					Response.Cookies.Add(cookie)
 
-					If Session("Usertype") = 2 Then
+					If Session("SuperUser") = True Then
 						Return RedirectToAction("Main", "Home")
 					Else
 						Return RedirectToAction("LinksMain", "Home")

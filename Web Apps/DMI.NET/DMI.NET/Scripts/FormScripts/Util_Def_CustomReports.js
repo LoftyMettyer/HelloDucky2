@@ -40,7 +40,8 @@
 
 			// Expand the work frame and hide the option frame.
 			//TODO
-			//window.parent.document.all.item("workframeset").cols = "*, 0";	
+		    //window.parent.document.all.item("workframeset").cols = "*, 0";	
+			$("#workframe").attr("data-framesource", "UTIL_DEF_CUSTOMREPORTS");
 	
 			populateBaseTableCombo();
 		

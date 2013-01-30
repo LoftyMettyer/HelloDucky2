@@ -4,7 +4,7 @@
 	$(document).ready(function () {
 		$(".officebar").officebar({});
 
-		$("#toolbarRecord").hide();
+		//$("#toolbarRecord").hide();
 
 		$("#fixedlinks").fadeIn("slow");
 
@@ -236,7 +236,7 @@
                                             alt="" />Cancel</a>
                                 </div>
                             </li>
-                            <li><span>Workflow</span>
+                            <li style="display: none;"><span>Workflow</span>
                                 <div id="mnutoolWorkflow" class="button">
                                     <a href="#" rel="table">
                                         <img src="<%: Url.Content("~/Scripts/officebar/winkit/Workflow64HOVER.png") %>"
@@ -252,7 +252,7 @@
                                 <div id="mnutoolRecordPosition" class="textboxlist">
                                     <ul>
                                         <li>
-	                                        Record n of m [(filtered)]
+	                                        <span>Record n of m [(filtered)]</span>
                                         </li>
                                     </ul>
                                 </div>

@@ -33,9 +33,9 @@
 	//Add treeview functionality to all divs in the accordion
 	$(".accordion div").jstree({
 		"themes": {
-			"theme": "classic",
-			"url": "../Scripts/jsTree/theme/classic/style.css",
-			"dots": true,
+			"theme": "apple",
+			"url": "../Scripts/jsTree/theme/apple/style.css",
+			"dots": false,
 			"icons": true
 		},
 		types: {
@@ -902,72 +902,70 @@ function menu_refreshMenu() {
 
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 
-
-	//None of the sCurrentWorkPage criteria are met yet, so code fixes yet.
-	//Code continues at line 1349.
-
 	if (sCurrentWorkPage == "RECORDEDIT") {
 		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
-		var frmData = OpenHR.getForm("dataframe", "frmData");
-	    return;
-		abMainMenu.Bands("mnubandMainToolBar").visible = true;
-		abMainMenu.Tools("mnutoolRecord").visible = true;
+		var frmData = OpenHR.getForm("datafframe", "frmData");
+	    
+		//abMainMenu.Bands("mnubandMainToolBar").visible = true;
+		menu_setVisibleMenuItem("mnutoolRecord", true);
 
 		// Enable the record editing options as necessary.
-		abMainMenu.Tools("mnutoolNewRecord").visible = true;
-		abMainMenu.Tools("mnutoolNewRecord").enabled = ((frmRecEdit.txtRecEditInsertGranted.value.toUpperCase() == "TRUE") &&
+		menu_setVisibleMenuItem("mnutoolNewRecord", true);
+        
+		var fMnutoolNewRecord = ((frmRecEdit.txtRecEditInsertGranted.value.toUpperCase() == "TRUE") &&
 				((frmMenuInfo.txtUserType.value == 0) ||
 					(frmRecEdit.txtCurrentParentTableID.value > 0) ||
 					(frmRecEdit.txtQuickEntry.value.toUpperCase() == "TRUE")));
-		abMainMenu.Tools("mnutoolCopyRecord").visible = true;
-		abMainMenu.Tools("mnutoolCopyRecord").enabled = ((abMainMenu.Tools("mnutoolNewRecord").enabled) &&
-				(frmRecEdit.txtCurrentRecordID.value > 0));
-		abMainMenu.Tools("mnutoolEditRecord").visible = false;
-		abMainMenu.Tools("mnutoolSaveRecord").visible = true;
-		abMainMenu.Tools("mnutoolSaveRecord").enabled = (frmRecEdit.ctlRecordEdit.changed == true);
-		abMainMenu.Tools("mnutoolDeleteRecord").visible = true;
-		abMainMenu.Tools("mnutoolDeleteRecord").enabled = ((frmRecEdit.txtRecEditDeleteGranted.value.toUpperCase() == "TRUE") &&
+	    
+		menu_enableMenuItem("mnutoolNewRecord", fMnutoolNewRecord);
+		menu_setVisibleMenuItem("mnutoolCopyRecord", true);
+		menu_enableMenuItem("mnutoolCopyRecord", (fMnutoolNewRecord && (frmRecEdit.txtCurrentRecordID.value > 0)));
+		menu_setVisibleMenuItem("mnutoolEditRecord", false);
+		menu_setVisibleMenuItem("mnutoolSaveRecord", true);
+		menu_enableMenuItem("mnutoolSaveRecord", (frmRecEdit.ctlRecordEdit.changed == true));
+		menu_setVisibleMenuItem("mnutoolDeleteRecord", true);
+		menu_enableMenuItem("mnutoolDeleteRecord", ((frmRecEdit.txtRecEditDeleteGranted.value.toUpperCase() == "TRUE") &&
 				(frmRecEdit.txtCurrentRecordID.value > 0) &&
 				((frmMenuInfo.txtUserType.value == 0) ||
 					(frmRecEdit.txtCurrentParentTableID.value > 0) ||
-					(frmRecEdit.txtQuickEntry.value.toUpperCase() == "TRUE")));
-		abMainMenu.Tools("mnutoolParentRecord").visible = true;
-		abMainMenu.Tools("mnutoolParentRecord").enabled = (frmRecEdit.txtCurrentParentTableID.value > 0);
-		abMainMenu.Tools("mnutoolBack").visible = false;
-		abMainMenu.Tools("mnutoolBack").enabled = false;
+					(frmRecEdit.txtQuickEntry.value.toUpperCase() == "TRUE"))));
+		menu_setVisibleMenuItem("mnutoolParentRecord", true);
+		menu_enableMenuItem("mnutoolParentRecord", (frmRecEdit.txtCurrentParentTableID.value > 0));
+		menu_setVisibleMenuItem("mnutoolBack", false);
+		menu_enableMenuItem("mnutoolBack", false);
 
-		abMainMenu.Tools("mnutoolFirstRecord").visible = true;
-		abMainMenu.Tools("mnutoolFirstRecord").enabled = (parseInt(frmData.txtRecordPosition.value, 10) > 1);
-		abMainMenu.Tools("mnutoolPreviousRecord").visible = true;
-		abMainMenu.Tools("mnutoolPreviousRecord").enabled = (parseInt(frmData.txtRecordPosition.value, 10) > 1);
-		abMainMenu.Tools("mnutoolNextRecord").visible = true;
-		abMainMenu.Tools("mnutoolNextRecord").enabled = (parseInt(frmData.txtRecordPosition.value, 10) < parseInt(frmData.txtRecordCount.value, 10));
-		abMainMenu.Tools("mnutoolLastRecord").visible = true;
-		abMainMenu.Tools("mnutoolLastRecord").enabled = abMainMenu.Tools("mnutoolNextRecord").enabled;
+		menu_setVisibleMenuItem("mnutoolFirstRecord", true);
+		menu_enableMenuItem("mnutoolFirstRecord", (parseInt(frmData.txtRecordPosition.value, 10) > 1));
+		menu_setVisibleMenuItem("mnutoolPreviousRecord", true);
+		menu_enableMenuItem("mnutoolPreviousRecord", (parseInt(frmData.txtRecordPosition.value, 10) > 1));
+		menu_setVisibleMenuItem("mnutoolNextRecord", true);
+		menu_enableMenuItem("mnutoolNextRecord", (parseInt(frmData.txtRecordPosition.value, 10) < parseInt(frmData.txtRecordCount.value, 10)));
+		menu_setVisibleMenuItem("mnutoolLastRecord", true);
+		menu_enableMenuItem("mnutoolLastRecord", (parseInt(frmData.txtRecordPosition.value, 10) < parseInt(frmData.txtRecordCount.value, 10)));
 
-		abMainMenu.Tools("mnutoolLocateRecordsCaption").visible = false;
-		abMainMenu.Tools("mnutoolLocateRecords").visible = false;
-		abMainMenu.Tools("mnutoolLocateRecordsLogic").visible = false;
+		menu_setVisibleMenuItem("mnutoolLocateRecordsCaption", false);
+		menu_setVisibleMenuItem("mnutoolLocateRecords", false);
+		menu_setVisibleMenuItem("mnutoolLocateRecordsLogic", false);
 
-		abMainMenu.Tools("mnutoolFind").visible = true;
+		menu_setVisibleMenuItem("mnutoolFind", true);
 
-		abMainMenu.Tools("mnutoolQuickFind").visible = true;
-		abMainMenu.Tools("mnutoolQuickFind").enabled = ((frmRecEdit.txtLineage.value.length == 0) &&
-				((frmMenuInfo.txtUserType.value == 0) ||
+		menu_setVisibleMenuItem("mnutoolQuickFind", true);
+	    menu_enableMenuItem("mnutoolQuickFind", ((frmRecEdit.txtLineage.value.length == 0) &&
+	        ((frmMenuInfo.txtUserType.value == 0) ||
+	            (frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
+	            (frmRecEdit.txtCurrentParentTableID.value > 0))));
+		//abMainMenu.Bands("mnubandMainToolBar").Tools("mnutoolOrder").beginGroup = false;
+		menu_setVisibleMenuItem("mnutoolOrder", true);
+		menu_enableMenuItem("mnutoolOrder", ((frmMenuInfo.txtUserType.value == 0) ||
 				(frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
-				(frmRecEdit.txtCurrentParentTableID.value > 0)))
-		abMainMenu.Bands("mnubandMainToolBar").Tools("mnutoolOrder").beginGroup = false;
-		abMainMenu.Tools("mnutoolOrder").visible = true;
-		abMainMenu.Tools("mnutoolOrder").enabled = ((frmMenuInfo.txtUserType.value == 0) ||
+				(frmRecEdit.txtCurrentParentTableID.value > 0)));
+		menu_setVisibleMenuItem("mnutoolFilter", true);
+		menu_enableMenuItem("mnutoolFilter", ((frmMenuInfo.txtUserType.value == 0) ||
 				(frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
-				(frmRecEdit.txtCurrentParentTableID.value > 0));
-		abMainMenu.Tools("mnutoolFilter").visible = true;
-		abMainMenu.Tools("mnutoolFilter").enabled = ((frmMenuInfo.txtUserType.value == 0) ||
-				(frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
-				(frmRecEdit.txtCurrentParentTableID.value > 0));
-		abMainMenu.Tools("mnutoolClearFilter").visible = true;
-		abMainMenu.Tools("mnutoolClearFilter").enabled = (frmRecEdit.txtRecEditFilterDef.value.length > 0);
-		abMainMenu.Tools("mnutoolPrint").visible = true;
+				(frmRecEdit.txtCurrentParentTableID.value > 0)));
+		menu_setVisibleMenuItem("mnutoolClearFilter", true);
+		menu_enableMenuItem("mnutoolClearFilter", (frmRecEdit.txtRecEditFilterDef.value.length > 0));
+		menu_setVisibleMenuItem("mnutoolPrint", true);
 
 		// Standard reports (record menu)
 		fStdRptAbsenceCalendarVisible = ((frmRecEdit.txtCurrentTableID.value == frmMenuInfo.txtPersonnel_EmpTableID.value) &&
@@ -988,24 +986,24 @@ function menu_refreshMenu() {
 		fCalendarReportsVisible = true;
 		fCalendarReportsEnabled = ((fCanRunCalendarReports == true) &&
 				(fCalendarReportsVisible) &&
-				(window.parent.frames("workframe").frmRecordEditForm.txtCurrentRecordID.value > 0));
+				(frmRecEdit.txtCurrentRecordID.value > 0));
 
 		//Mail Merge (Record Menu)
 		//fMailMergeVisible = ((frmRecEdit.txtQuickEntry.value.toUpperCase() != "TRUE"));
 		fMailMergeVisible = true;
 		fMailMergeEnabled = ((fCanRunMailMerge == true) &&
 				(fMailMergeVisible) &&
-				(window.parent.frames("workframe").frmRecordEditForm.txtCurrentRecordID.value > 0));
+				(frmRecEdit.txtCurrentRecordID.value > 0));
 
 		fStdRptAbsenceCalendarEnabled = ((fCanRunAbsenceCalendar == true) &&
 				(fStdRptAbsenceCalendarVisible) &&
-				(window.parent.frames("workframe").frmRecordEditForm.txtCurrentRecordID.value > 0));
+				(frmRecEdit.txtCurrentRecordID.value > 0));
 		fStdRptAbsenceBreakdownEnabled = ((fCanRunAbsenceBreakdown == true) &&
 				(fStdRptAbsenceBreakdownVisible) &&
-				(window.parent.frames("workframe").frmRecordEditForm.txtCurrentRecordID.value > 0));
+				(frmRecEdit.txtCurrentRecordID.value > 0));
 		fStdRptBradfordFactorEnabled = ((fCanRunBradfordFactor == true) &&
 				(fStdRptBradfordFactorVisible) &&
-				(window.parent.frames("workframe").frmRecordEditForm.txtCurrentRecordID.value > 0));
+				(frmRecEdit.txtCurrentRecordID.value > 0));
 
 		if (frmRecEdit.txtCurrentRecordID.value > 0) {
 			sCaption = "Record " +
@@ -1025,16 +1023,17 @@ function menu_refreshMenu() {
 			sCaption = sCaption + " : " + frmData.txtRecordDescription.value;
 		}
 
-		abMainMenu.Tools("mnutoolRecordPosition").visible = true;
-		abMainMenu.Bands("mnubandMainToolBar").Tools("mnutoolRecordPosition").caption = sCaption;
+		menu_setVisibleMenuItem("mnutoolRecordPosition", true);
+		menu_SetmnutoolRecordPositionCaption(sCaption);
 
-		abMainMenu.Tools("mnutoolHistory").visible = true;
+		menu_setVisibleMenuItem("mnutoolHistory", true);
 
-		menu_refreshHistoryScreensMenu(frmRecEdit.txtCurrentScreenID.value);
+        //dynamically created function, found in menu.ascx...
+		//TODO: menu_refreshHistoryScreensMenu(frmRecEdit.txtCurrentScreenID.value);
 
 		// Disable the history menu for new records.
 		if (frmRecEdit.txtCurrentRecordID.value <= 0) {
-			abMainMenu.Tools("mnutoolHistory").enabled = false;
+			menu_enableMenuItem("mnutoolHistory", false);
 		}
 
 		sRecEditDate = String(frmRecEdit.ctlRecordEdit.TBCourseCancelDateValue());
@@ -1059,10 +1058,10 @@ function menu_refreshMenu() {
 	else {
 		if (sCurrentWorkPage == "FIND") {			
 			//frmFind = window.parent.frames("workframe").document.forms("frmFindForm");
-
+		    
 			frmFind = document.getElementById("frmFindForm");	
 
-			//TODO: lngRecordID = window.parent.frames("workframe").selectedRecordID();
+			lngRecordID = selectedRecordID(); //should be in scope at runtime.
 
 			if (lngRecordID == "" | lngRecordID == null) {
 				lngRecordID = 0;
@@ -1076,8 +1075,8 @@ function menu_refreshMenu() {
 
 			//New functionality: switch ribbon tab to required item.
 			$("#toolbarRecord").show();
-			$("#toolbarRecord").click();			
-
+			$("#toolbarRecord").click();
+		    
 			// Enable the record editing options as necessary.
 			menu_setVisibleMenuItem("mnutoolNewRecord", true);
 
@@ -1151,7 +1150,8 @@ function menu_refreshMenu() {
 
 			//frmData = window.parent.frames("dataframe").document.forms("frmData");
 			frmData = document.getElementById("frmData");
-			//TODO are we setting this?
+		    //TODO are we setting this?
+		    
 			if (frmFind.txtRecordCount.value > 0) {
 				iStartPosition = parseInt(frmFind.txtFirstRecPos.value);
 				iEndPosition = iStartPosition - 1 + parseInt(frmFind.txtRecordCount.value);
@@ -1171,9 +1171,9 @@ function menu_refreshMenu() {
 				sCaption = sCaption + " (filtered)";
 			}
 
-			//if (frmData.txtRecordDescription.value.length > 0) {
-				//TODO sCaption = sCaption + " : " + frmData.txtRecordDescription.value;
-			//}
+			if (frmData.txtRecordDescription.value.length > 0) {
+				sCaption = sCaption + " : " + frmData.txtRecordDescription.value;
+			}
 			menu_setVisibleMenuItem("mnutoolRecordPosition", true);
 			menu_SetmnutoolRecordPositionCaption(sCaption);
 
@@ -1440,8 +1440,7 @@ function menu_refreshMenu() {
 		//abMainMenu.Tools("mnutoolConfiguration").enabled = false;
 		menu_enableMenuItem("mnutoolConfiguration", false);
 	}
-
-
+   
 	//TODO	
 	//<%
 	//	if session("WinAuth") then
@@ -1470,34 +1469,32 @@ function menu_refreshMenu() {
 			menu_setVisibletoolbarGroup("mnutoolBulkBooking", ((fBulkBookingVisible) && 
 																				(fAddFromWaitingListVisible) && 
 																					(fTransferBookingVisible) && 
-																						(fCancelBookingVisible)));			
-
+																						(fCancelBookingVisible)));
+    
 			//if all these are false, then hide the Course Booking group.			
 			menu_setVisibletoolbarGroup("mnutoolBookCourse", ((fBookCourseVisible) && (fCancelCourseVisible)));			
 
-	// No longer support record menu. 
-	//NOT REQUIRED
-	//		// Standard reports (record menu)
-	//		abMainMenu.Tools("mnutoolStdRpt_AbsenceCalendar").visible = fStdRptAbsenceCalendarVisible;
-	//		abMainMenu.Tools("mnutoolStdRpt_AbsenceCalendar").enabled = fStdRptAbsenceCalendarEnabled;
-	//		abMainMenu.Tools("mnutoolStdRpt_BreakdownREC").visible = fStdRptAbsenceBreakdownVisible;
-	//		abMainMenu.Tools("mnutoolStdRpt_BreakdownREC").enabled = fStdRptAbsenceBreakdownEnabled;
-	//		abMainMenu.Tools("mnutoolStdRpt_BradfordREC").visible = fStdRptBradfordFactorVisible;
-	//		abMainMenu.Tools("mnutoolStdRpt_BradfordREC").enabled = fStdRptBradfordFactorEnabled;
+			// Standard reports (record menu)
+			menu_setVisibleMenuItem("mnutoolStdRpt_AbsenceCalendar", fStdRptAbsenceCalendarVisible);
+			menu_enableMenuItem("mnutoolStdRpt_AbsenceCalendar", fStdRptAbsenceCalendarEnabled);
+			menu_setVisibleMenuItem("mnutoolStdRpt_BreakdownREC", fStdRptAbsenceBreakdownVisible);
+			menu_enableMenuItem("mnutoolStdRpt_BreakdownREC", fStdRptAbsenceBreakdownEnabled);
+			menu_setVisibleMenuItem("mnutoolStdRpt_BradfordREC", fStdRptBradfordFactorVisible);
+			menu_enableMenuItem("mnutoolStdRpt_BradfordREC", fStdRptBradfordFactorEnabled);
 
-	//		// Calendar Reports (Record Menu)
-	//		abMainMenu.Tools("mnutoolCalendarReportsRec").visible = fCalendarReportsVisible;
-	//		abMainMenu.Tools("mnutoolCalendarReportsRec").enabled = fCalendarReportsEnabled;
-	//		abMainMenu.Bands("mnubandMainToolBar").Tools("mnutoolCalendarReportsRec").visible = fCalendarReportsVisible; 
-	//		abMainMenu.Bands("mnubandMainToolBar").Tools("mnutoolCalendarReportsRec").enabled = fCalendarReportsEnabled; 
+			// Calendar Reports (Record Menu)
+			menu_setVisibleMenuItem("mnutoolCalendarReportsRec", fCalendarReportsVisible);
+			menu_enableMenuItem("mnutoolCalendarReportsRec", fCalendarReportsEnabled);
+			menu_setVisibleMenuItem("mnutoolCalendarReportsRec", fCalendarReportsVisible); 
+			menu_enableMenuItem("mnutoolCalendarReportsRec", fCalendarReportsEnabled); 
 
-	//		// Mail Merge (Record Menu)
-	//		abMainMenu.Tools("mnutoolMailMergeRec").visible = fMailMergeVisible;
-	//		abMainMenu.Tools("mnutoolMailMergeRec").enabled = fMailMergeEnabled;
-	//		abMainMenu.Bands("mnubandMainToolBar").Tools("mnutoolMailMergeRec").visible = fMailMergeVisible; 
-	//		abMainMenu.Bands("mnubandMainToolBar").Tools("mnutoolMailMergeRec").enabled = fMailMergeEnabled; 
-	//		
-	// Standard reports (reports menu)
+			// Mail Merge (Record Menu)
+			menu_setVisibleMenuItem("mnutoolMailMergeRec", fMailMergeVisible);
+			menu_enableMenuItem("mnutoolMailMergeRec", fMailMergeEnabled);
+			menu_setVisibleMenuItem("mnutoolMailMergeRec", fMailMergeVisible);
+			menu_enableMenuItem("mnutoolMailMergeRec", fMailMergeEnabled);
+
+	 //Standard reports (reports menu)
 	fStdRptAbsenceCalendarVisible = ((frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
 			(frmMenuInfo.txtUserType.value == 0) &&
 			($("#txtAbsenceEnabled").val() == 1));
@@ -1532,6 +1529,10 @@ function menu_refreshMenu() {
 	menu_enableMenuItem("mnutoolStdRpt_TurnoverReport", fStdRptTurnoverEnabled);
 	menu_setVisibleMenuItem("mnutoolStdRpt_StabilityReport", fStdRptStabilityVisible);
 	menu_enableMenuItem("mnutoolStdRpt_StabilityReport", fStdRptStabilityEnabled);
+
+    //Hide Calendar Reports Group if all items are hidden.
+	menu_setVisibletoolbarGroup("mnutoolCalendarReportsRec", (fCalendarReportsVisible && fStdRptAbsenceCalendarVisible && fStdRptAbsenceBreakdownVisible && fStdRptBradfordFactorVisible && fMailMergeVisible));
+
 
 
 	//no beginGroup functionality 
@@ -1601,10 +1602,7 @@ function menu_refreshMenu() {
 	menu_enableMenuItem("mnutoolPicklists", $("#txtPicklistsGranted").val());
 
 	try {
-		window.resizeBy(1, 1);
-		window.resizeBy(-1, -1);
-		window.resizeBy(1, 1);
-		window.resizeBy(-1, -1);
+		
 	}
 	catch (e) { }
 
@@ -1781,7 +1779,8 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 			(sCurrentPage == "CONFIGURATION") ||
 			(sCurrentPage == "PCCONFIGURATION")) {
 
-		    iResult = OpenHR.getFrame("workframe").saveChanges(psAction, pfPrompt, pfTBOverride);
+		    //iResult = OpenHR.getFrame("workframe").saveChanges(psAction, pfPrompt, pfTBOverride);
+		    iResult = saveChanges(psAction, pfPrompt, pfTBOverride);
 		}
 	}
 	
@@ -4281,7 +4280,7 @@ function menu_setVisibleMenuItem(itemId, fNewSetting) {
 }
 
 function menu_SetmnutoolRecordPositionCaption(newCaption) {
-	if (newCaption != null && newCaption.length > 0) $("#mnutoolRecordPosition li").innerText = newCaption;
+	if (newCaption != null && newCaption.length > 0) $("#mnutoolRecordPosition span").text(newCaption);
 }
 
 

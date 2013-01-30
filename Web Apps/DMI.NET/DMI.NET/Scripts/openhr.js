@@ -52,7 +52,7 @@
 	    	    $frame = $form.closest("div[data-framesource]").first(),
 	    	    url = $form.attr("action"),
 	    	    target = $form.attr("target"),
-	    	    data = $form.serialize();
+	    	    data = $form.serialize();	        
 
 	    	$.ajax({
 	    		url: url,

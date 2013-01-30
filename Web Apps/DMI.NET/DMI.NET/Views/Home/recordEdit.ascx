@@ -26,7 +26,7 @@
     function recordEdit_window_onload() {
 
         var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
-
+       
         var fOK;
         fOK = true;
         var sErrMsg = frmRecordEditForm.txtErrorDescription.value;

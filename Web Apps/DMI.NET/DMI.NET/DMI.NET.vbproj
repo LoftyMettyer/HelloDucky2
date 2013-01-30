@@ -211,6 +211,11 @@
     <Content Include="Pictures\ProfilePhotos\dAvery.jpg" />
     <Content Include="Pictures\ProfilePhotos\mWORTHING.jpg" />
     <Content Include="Scripts\FormScripts\Util_Def_CustomReports.js" />
+    <Content Include="Scripts\jsTree\theme\apple\bg.jpg" />
+    <Content Include="Scripts\jsTree\theme\apple\d.png" />
+    <Content Include="Scripts\jsTree\theme\apple\dot_for_ie.gif" />
+    <Content Include="Scripts\jsTree\theme\apple\style.css" />
+    <Content Include="Scripts\jsTree\theme\apple\throbber.gif" />
     <Content Include="Scripts\officebar\images\bg.png" />
     <Content Include="Scripts\officebar\images\bg_tab.png" />
     <Content Include="Scripts\officebar\images\button2_over.png" />

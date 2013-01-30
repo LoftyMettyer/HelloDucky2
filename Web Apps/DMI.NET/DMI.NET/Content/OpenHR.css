@@ -383,6 +383,8 @@ table.calendarcell
 }
 
 #ContextMenuIcon { border-style: none;}
+
+#contextmenu h3 { font-size: 16pt;}
 	   
 .rot-neg-90 
 {
@@ -543,15 +545,18 @@ table.calendarcell
 .accordion h3 {
 	margin: 0px;
 	cursor: pointer;
+	background-color: rgb(192, 216, 240);
+	border-bottom: 1px solid white;
+	
 
    /* Chuck all possibilities at the browser for gradients... */
-   background-color: #1a82f7; 
-   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bfdbff', endColorstr='#ffffff',GradientType=0 );
+   /*background-color: #1a82f7; 
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bfdbff', endColorstr='#ffffff',GradientType=0 );
    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#bfdbff), to(#ffffff));
    background-image: -webkit-linear-gradient(top, #bfdbff, #ffffff); 
    background-image:    -moz-linear-gradient(top, #bfdbff, #ffffff);
    background-image:     -ms-linear-gradient(top, #bfdbff, #ffffff);
-   background-image:      -o-linear-gradient(top, #bfdbff, #ffffff);
+   background-image:      -o-linear-gradient(top, #bfdbff, #ffffff);*/
 	
 }
 
