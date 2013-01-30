@@ -384,7 +384,9 @@ table.calendarcell
 
 #ContextMenuIcon { border-style: none;}
 
-#contextmenu h3 { font-size: 16pt;}
+#contextmenu h3 { font-size: 14pt;
+	padding: 2px;
+}
 	   
 .rot-neg-90 
 {
@@ -547,7 +549,8 @@ table.calendarcell
 	cursor: pointer;
 	background-color: rgb(192, 216, 240);
 	border-bottom: 1px solid white;
-	
+	font-family: segoe UI light;
+	padding-left: 8px;
 
    /* Chuck all possibilities at the browser for gradients... */
    /*background-color: #1a82f7; 
