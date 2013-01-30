@@ -18,7 +18,7 @@
 	if bDoesPurge <> vbNullString then
 		
 		' Delete old purge information to the database
-        cmdPurge = Server.CreateObject("ADODB.Command")
+        cmdPurge = CreateObject("ADODB.Command")
 		cmdPurge.CommandText = "spASRIntClearEventLogPurge"
 		cmdPurge.CommandType = 4 ' Stored procedure.
         cmdPurge.ActiveConnection = Session("databaseConnection")
@@ -28,7 +28,7 @@
  
 		if bDoesPurge = 1 then
 			' Insert the new purge criteria
-            cmdPurge = Server.CreateObject("ADODB.Command")
+            cmdPurge = CreateObject("ADODB.Command")
 			cmdPurge.CommandText = "spASRIntSetEventLogPurge"
 			cmdPurge.CommandType = 4 ' Stored procedure.
             cmdPurge.ActiveConnection = Session("databaseConnection")
@@ -74,7 +74,7 @@
 	if iDeleteSelection <> vbNullString then
 		iDeleteSelection = CInt(iDeleteSelection)
 		
-        cmdDelete = Server.CreateObject("ADODB.Command")
+        cmdDelete = CreateObject("ADODB.Command")
 		cmdDelete.CommandText = "spASRIntDeleteEventLogRecords"
 		cmdDelete.CommandType = 4 ' Stored procedure.
         cmdDelete.ActiveConnection = Session("databaseConnection")
@@ -1326,7 +1326,7 @@
     Dim prmParameterValue
     Dim sErrorDescription As String
     
-	cmdDefinition = Server.CreateObject("ADODB.Command")
+	cmdDefinition = CreateObject("ADODB.Command")
 	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
 	cmdDefinition.CommandType = 4 ' Stored procedure.
     cmdDefinition.ActiveConnection = Session("databaseConnection")

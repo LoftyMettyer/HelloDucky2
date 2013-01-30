@@ -2504,7 +2504,7 @@
             Dim sErrorDescription = ""
 
             ' Get the table records.
-            Dim cmdTables = Server.CreateObject("ADODB.Command")
+            Dim cmdTables = CreateObject("ADODB.Command")
             cmdTables.CommandText = "sp_ASRIntGetCrossTabTablesInfo"
             cmdTables.CommandType = 4 ' Stored Procedure
             cmdTables.ActiveConnection = Session("databaseConnection")
@@ -2555,7 +2555,7 @@
             Dim lngPStep = 0
 
             If Session("action") <> "new" Then
-                Dim cmdDefn = Server.CreateObject("ADODB.Command")
+                Dim cmdDefn = CreateObject("ADODB.Command")
                 cmdDefn.CommandText = "sp_ASRIntGetCrossTabDefinition"
                 cmdDefn.CommandType = 4 ' Stored Procedure
                 cmdDefn.ActiveConnection = Session("databaseConnection")
@@ -3911,7 +3911,7 @@
             sErrorDescription = ""
 	
             ' Get the table records.
-            Dim cmdAccess = Server.CreateObject("ADODB.Command")
+            Dim cmdAccess = CreateObject("ADODB.Command")
             cmdAccess.CommandText = "spASRIntGetUtilityAccessRecords"
             cmdAccess.CommandType = 4 ' Stored Procedure
             cmdAccess.ActiveConnection = Session("databaseConnection")
@@ -3977,7 +3977,7 @@
         <INPUT type="hidden" id=txtChanged name=txtChanged value=0>
         <INPUT type="hidden" id=txtUtilID name=txtUtilID value=<%=session("utilid")%>>
         <%
-            Dim cmdDefinition = Server.CreateObject("ADODB.Command")
+            Dim cmdDefinition = CreateObject("ADODB.Command")
             cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
             cmdDefinition.CommandType = 4 ' Stored procedure.
             cmdDefinition.ActiveConnection = Session("databaseConnection")

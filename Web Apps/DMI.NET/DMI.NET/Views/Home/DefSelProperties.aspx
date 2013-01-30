@@ -140,7 +140,7 @@ prmID.value = cleanNumeric(clng(Request("prop_id")))
 				    <td rowspan=4>
 						<SELECT size=2 id=select1 name=select1 style="WIDTH: 300px; height:100%" class="combo">
 <%
-	cmdDefPropRecords = Server.CreateObject("ADODB.Command")
+	cmdDefPropRecords = CreateObject("ADODB.Command")
 cmdDefPropRecords.CommandText = "sp_ASRIntDefUsage"
 cmdDefPropRecords.CommandType = 4 ' Stored Procedure
 

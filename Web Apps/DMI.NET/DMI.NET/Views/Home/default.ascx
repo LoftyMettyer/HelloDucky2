@@ -7,45 +7,45 @@
 	Dim iRecordCount = 0
 
 	if Session("action") = "WORKFLOWOUTOFOFFICE_CHECK" then
-		Dim cmdWorkflow = Server.CreateObject("ADODB.Command")
-		cmdWorkflow.CommandText = "spASRWorkflowOutOfOfficeCheck" 
-		cmdWorkflow.CommandType = 4 ' Stored procedure
-		cmdWorkflow.CommandTimeout = 180
-		cmdWorkflow.ActiveConnection = Session("databaseConnection")
+        Dim cmdWorkflow = CreateObject("ADODB.Command")
+        cmdWorkflow.CommandText = "spASRWorkflowOutOfOfficeCheck"
+        cmdWorkflow.CommandType = 4 ' Stored procedure
+        cmdWorkflow.CommandTimeout = 180
+        cmdWorkflow.ActiveConnection = Session("databaseConnection")
 					
-		Dim prmOutOfOffice = cmdWorkflow.CreateParameter("OutOfOffice", 11, 2) ' 11=boolean, 2=output
-		cmdWorkflow.Parameters.Append(prmOutOfOffice)
+        Dim prmOutOfOffice = cmdWorkflow.CreateParameter("OutOfOffice", 11, 2) ' 11=boolean, 2=output
+        cmdWorkflow.Parameters.Append(prmOutOfOffice)
 
-		Dim prmRecordCount = cmdWorkflow.CreateParameter("RecordCount", 3, 2) ' 3=integer, 2=output
-		cmdWorkflow.Parameters.Append(prmRecordCount)
+        Dim prmRecordCount = cmdWorkflow.CreateParameter("RecordCount", 3, 2) ' 3=integer, 2=output
+        cmdWorkflow.Parameters.Append(prmRecordCount)
 
-		Err.Clear()
-		cmdWorkflow.Execute
+        Err.Clear()
+        cmdWorkflow.Execute()
 
-		if cmdWorkflow.Parameters("OutOfOffice").Value then
-			iOutOfOffice = 1
-		end if
-		iRecordCount = CInt(cmdWorkflow.Parameters("RecordCount").Value)
+        If cmdWorkflow.Parameters("OutOfOffice").Value Then
+            iOutOfOffice = 1
+        End If
+        iRecordCount = CInt(cmdWorkflow.Parameters("RecordCount").Value)
 			
-		cmdWorkflow = Nothing
-	end if
+        cmdWorkflow = Nothing
+    End If
 	
-	if Session("action") = "WORKFLOWOUTOFOFFICE_SET" then
-		Dim cmdOutOfOffice = Server.CreateObject("ADODB.Command")
-		cmdOutOfOffice.CommandText = "spASRWorkflowOutOfOfficeSet"
-		cmdOutOfOffice.CommandType = 4 ' Stored Procedure
-		cmdOutOfOffice.ActiveConnection = Session("databaseConnection")
+    If Session("action") = "WORKFLOWOUTOFOFFICE_SET" Then
+        Dim cmdOutOfOffice = CreateObject("ADODB.Command")
+        cmdOutOfOffice.CommandText = "spASRWorkflowOutOfOfficeSet"
+        cmdOutOfOffice.CommandType = 4 ' Stored Procedure
+        cmdOutOfOffice.ActiveConnection = Session("databaseConnection")
 
-		Dim prmValue = cmdOutOfOffice.CreateParameter("value", 11, 1) ' 11=bit, 1=input
-		cmdOutOfOffice.Parameters.Append(prmValue)
-		prmValue.value = session("reset")
+        Dim prmValue = cmdOutOfOffice.CreateParameter("value", 11, 1) ' 11=bit, 1=input
+        cmdOutOfOffice.Parameters.Append(prmValue)
+        prmValue.value = Session("reset")
 
-		Err.Clear()
-		cmdOutOfOffice.Execute
-		cmdOutOfOffice = Nothing
+        Err.Clear()
+        cmdOutOfOffice.Execute()
+        cmdOutOfOffice = Nothing
 
-		Session("reset") = 0
-	end if
+        Session("reset") = 0
+    End If
 %>
 
 <script type="text/javascript">

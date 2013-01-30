@@ -91,7 +91,7 @@
         Response.Write("<INPUT type=hidden Name=txtEventBatch ID=txtEventBatch VALUE=0>" & vbCrLf)
     End If
 
-    cmdEventBatchJobs = Server.CreateObject("ADODB.Command")
+    cmdEventBatchJobs = CreateObject("ADODB.Command")
 	cmdEventBatchJobs.CommandText = "spASRIntGetEventLogBatchDetails"
 	cmdEventBatchJobs.CommandType = 4 ' Stored procedure
     cmdEventBatchJobs.ActiveConnection = Session("databaseConnection")
@@ -515,7 +515,7 @@
 
 	iDetailCount = 0
 	
-    cmdEventDetails = Server.CreateObject("ADODB.Command")
+    cmdEventDetails = CreateObject("ADODB.Command")
 	cmdEventDetails.CommandText = "spASRIntGetEventLogDetails"
 	cmdEventDetails.CommandType = 4 ' Stored procedure
     cmdEventDetails.ActiveConnection = Session("databaseConnection")
@@ -571,7 +571,7 @@
     Dim prmParameterValue
     Dim sErrorDescription
     
-    cmdDefinition = Server.CreateObject("ADODB.Command")
+    cmdDefinition = CreateObject("ADODB.Command")
 	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
 	cmdDefinition.CommandType = 4 ' Stored procedure.
     cmdDefinition.ActiveConnection = Session("databaseConnection")

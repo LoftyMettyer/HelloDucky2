@@ -390,7 +390,7 @@
     
 	if session("optionAction") = "SELECTLINK" then
 		' Get the parent fields for the selected link.
-        cmdLinkValues = Server.CreateObject("ADODB.Command")
+        cmdLinkValues = CreateObject("ADODB.Command")
 		cmdLinkValues.CommandText = "sp_ASRIntGetLinkParentValues"
 		cmdLinkValues.CommandType = 4 ' Stored Procedure
         cmdLinkValues.ActiveConnection = Session("databaseConnection")

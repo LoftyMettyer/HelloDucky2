@@ -36,7 +36,7 @@ Namespace Controllers
 
         If fSubmitPasswordChange Then
           ' Force password change only if there are no other users logged in with the same name.
-          Dim cmdCheckUserSessions = Server.CreateObject("ADODB.Command")
+          Dim cmdCheckUserSessions = CreateObject("ADODB.Command")
           cmdCheckUserSessions.CommandText = "spASRGetCurrentUsersCountOnServer"
           cmdCheckUserSessions.CommandType = 4 ' Stored procedure.
           cmdCheckUserSessions.ActiveConnection = Session("databaseConnection")
@@ -60,7 +60,7 @@ Namespace Controllers
             Dim sNewPassword = Request.Form("txtPassword1")
 
             ' Attempt to change the password on the SQL Server.
-            Dim cmdChangePassword = Server.CreateObject("ADODB.Command")
+            Dim cmdChangePassword = CreateObject("ADODB.Command")
             cmdChangePassword.CommandText = "sp_password"
             cmdChangePassword.CommandType = 4 ' Stored Procedure
             cmdChangePassword.ActiveConnection = Session("databaseConnection")
@@ -95,7 +95,7 @@ Namespace Controllers
               ' Return RedirectToAction("error", "home")
             Else
               ' Password changed okay. Update the appropriate record in the ASRSysPasswords table.
-              Dim cmdPasswordOK = Server.CreateObject("ADODB.Command")
+              Dim cmdPasswordOK = CreateObject("ADODB.Command")
               cmdPasswordOK.CommandText = "sp_ASRIntPasswordOK"
               cmdPasswordOK.CommandType = 4 ' Stored Procedure
               cmdPasswordOK.ActiveConnection = Session("databaseConnection")
@@ -126,7 +126,7 @@ Namespace Controllers
 
                 Dim sNewConnString = Left(sConnString, iPos1 + 4) & sNewPassword & Mid(sConnString, iPos1 + 5 + Len(sCurrentPassword))
                 ' Open a connection to the database.
-                conX = Server.CreateObject("ADODB.Connection")
+                conX = CreateObject("ADODB.Connection")
                 conX.open(sNewConnString)
 
                 If Err.Number <> 0 Then
@@ -142,7 +142,7 @@ Namespace Controllers
               End If
 
               ' Create the cached system tables on the server - Don;t do it in a stored procedure because the #temp will then only be visible to that stored procedure
-              Dim cmdCreateCache = Server.CreateObject("ADODB.Command")
+              Dim cmdCreateCache = CreateObject("ADODB.Command")
               cmdCreateCache.CommandText = "DECLARE @iUserGroupID	integer, " & vbNewLine & _
                               "	@sUserGroupName		sysname, " & vbNewLine & _
                               "	@sActualLoginName	varchar(250) " & vbNewLine & _
@@ -233,7 +233,7 @@ Namespace Controllers
       '--------------------------------------------
       ' Save the Primary Record Editing Start Mode.
       '--------------------------------------------
-      cmdPrimaryStartMode = Server.CreateObject("ADODB.Command")
+      cmdPrimaryStartMode = CreateObject("ADODB.Command")
       cmdPrimaryStartMode.CommandText = "sp_ASRIntSaveSetting"
       cmdPrimaryStartMode.CommandType = 4 ' Stored procedure.
       cmdPrimaryStartMode.ActiveConnection = Session("databaseConnection")
@@ -262,7 +262,7 @@ Namespace Controllers
       '--------------------------------------------
       ' Save the History Record Editing Start Mode.
       '--------------------------------------------
-      cmdHistoryStartMode = Server.CreateObject("ADODB.Command")
+      cmdHistoryStartMode = CreateObject("ADODB.Command")
       cmdHistoryStartMode.CommandText = "sp_ASRIntSaveSetting"
       cmdHistoryStartMode.CommandType = 4 ' Stored procedure.
       cmdHistoryStartMode.ActiveConnection = Session("databaseConnection")
@@ -292,7 +292,7 @@ Namespace Controllers
       ' Save the Lookup Record Editing Start Mode.
       '--------------------------------------------
       Dim cmdLookupStartMode
-      cmdLookupStartMode = Server.CreateObject("ADODB.Command")
+      cmdLookupStartMode = CreateObject("ADODB.Command")
       cmdLookupStartMode.CommandText = "sp_ASRIntSaveSetting"
       cmdLookupStartMode.CommandType = 4 ' Stored procedure.
       cmdLookupStartMode.ActiveConnection = Session("databaseConnection")
@@ -322,7 +322,7 @@ Namespace Controllers
       ' Save the Quick Access Record Editing Start Mode.
       '--------------------------------------------
       Dim cmdQuickAccessStartMode
-      cmdQuickAccessStartMode = Server.CreateObject("ADODB.Command")
+      cmdQuickAccessStartMode = CreateObject("ADODB.Command")
       cmdQuickAccessStartMode.CommandText = "sp_ASRIntSaveSetting"
       cmdQuickAccessStartMode.CommandType = 4 ' Stored procedure.
       cmdQuickAccessStartMode.ActiveConnection = Session("databaseConnection")
@@ -352,7 +352,7 @@ Namespace Controllers
       ' Save the Expression Colour Mode.
       '--------------------------------------------
       Dim cmdExprColourMode
-      cmdExprColourMode = Server.CreateObject("ADODB.Command")
+      cmdExprColourMode = CreateObject("ADODB.Command")
       cmdExprColourMode.CommandText = "sp_ASRIntSaveSetting"
       cmdExprColourMode.CommandType = 4 ' Stored procedure.
       cmdExprColourMode.ActiveConnection = Session("databaseConnection")
@@ -382,7 +382,7 @@ Namespace Controllers
       ' Save the Expression Node Mode.
       '--------------------------------------------
       Dim cmdExprNodeMode
-      cmdExprNodeMode = Server.CreateObject("ADODB.Command")
+      cmdExprNodeMode = CreateObject("ADODB.Command")
       cmdExprNodeMode.CommandText = "sp_ASRIntSaveSetting"
       cmdExprNodeMode.CommandType = 4 ' Stored procedure.
       cmdExprNodeMode.ActiveConnection = Session("databaseConnection")
@@ -412,7 +412,7 @@ Namespace Controllers
       ' Save the Find Window Block Size.
       '--------------------------------------------
       Dim cmdFindSize
-      cmdFindSize = Server.CreateObject("ADODB.Command")
+      cmdFindSize = CreateObject("ADODB.Command")
       cmdFindSize.CommandText = "sp_ASRIntSaveSetting"
       cmdFindSize.CommandType = 4 ' Stored procedure.
       cmdFindSize.ActiveConnection = Session("databaseConnection")
@@ -491,7 +491,7 @@ Namespace Controllers
         sTemp = "onlymine " & sType
 
         Dim cmdDefSelOnlyMine
-        cmdDefSelOnlyMine = Server.CreateObject("ADODB.Command")
+        cmdDefSelOnlyMine = CreateObject("ADODB.Command")
         cmdDefSelOnlyMine.CommandText = "sp_ASRIntSaveSetting"
         cmdDefSelOnlyMine.CommandType = 4 ' Stored procedure.
         cmdDefSelOnlyMine.ActiveConnection = Session("databaseConnection")
@@ -538,7 +538,7 @@ Namespace Controllers
         sTemp = "warning " & sType
 
         Dim cmdDefSelOnlyMine
-        cmdDefSelOnlyMine = Server.CreateObject("ADODB.Command")
+        cmdDefSelOnlyMine = CreateObject("ADODB.Command")
         cmdDefSelOnlyMine.CommandText = "sp_ASRIntSaveSetting"
         cmdDefSelOnlyMine.CommandType = 4 ' Stored procedure.
         cmdDefSelOnlyMine.ActiveConnection = Session("databaseConnection")
@@ -840,7 +840,7 @@ Namespace Controllers
 
         If (Not fTBOverride) And (CLng(lngTableID) = CLng(Session("TB_TBTableID"))) Then
           ' Training Booking check.
-          Dim cmdTBCheck = Server.CreateObject("ADODB.Command")
+          Dim cmdTBCheck = CreateObject("ADODB.Command")
           cmdTBCheck.CommandText = "sp_ASRIntValidateTrainingBooking"
           cmdTBCheck.CommandType = 4    ' Stored procedure
           cmdTBCheck.ActiveConnection = Session("databaseConnection")
@@ -962,7 +962,7 @@ Namespace Controllers
               ' Inserting.
 
               ' The required stored procedure exists, so run it.
-              Dim cmdInsertRecord = Server.CreateObject("ADODB.Command")
+              Dim cmdInsertRecord = CreateObject("ADODB.Command")
               cmdInsertRecord.CommandText = "spASRIntInsertNewRecord"
               cmdInsertRecord.CommandType = 4 ' Stored procedure
               cmdInsertRecord.CommandTimeout = 180
@@ -1052,7 +1052,7 @@ Namespace Controllers
 
 
               'MH20001017 Immediate email stuff to go in v1.9.0
-              Dim cmdInsertRecord2 = Server.CreateObject("ADODB.Command")
+              Dim cmdInsertRecord2 = CreateObject("ADODB.Command")
               cmdInsertRecord2.CommandText = "spASREmailImmediate"
               cmdInsertRecord2.CommandType = 4    ' Stored procedure
               cmdInsertRecord2.CommandTimeout = 180
@@ -1069,7 +1069,7 @@ Namespace Controllers
               ' Updating.
 
               ' The required stored procedure exists, so run it.
-              Dim cmdUpdateRecord = Server.CreateObject("ADODB.Command")
+              Dim cmdUpdateRecord = CreateObject("ADODB.Command")
               cmdUpdateRecord.CommandText = "spASRIntUpdateRecord"
               cmdUpdateRecord.CommandType = 4 ' Stored procedure
               cmdUpdateRecord.CommandTimeout = 180
@@ -1175,7 +1175,7 @@ Namespace Controllers
               cmdUpdateRecord = Nothing
 
               'MH20001017 Immediate email stuff to go in v1.9.0
-              cmdUpdateRecord = Server.CreateObject("ADODB.Command")
+              cmdUpdateRecord = CreateObject("ADODB.Command")
               cmdUpdateRecord.CommandText = "spASREmailImmediate"
               cmdUpdateRecord.CommandType = 4 ' Stored procedure
               cmdUpdateRecord.CommandTimeout = 180
@@ -1195,7 +1195,7 @@ Namespace Controllers
         ' Deleting.
 
         ' The required stored procedure exists, so run it.
-        Dim cmdDeleteRecord = Server.CreateObject("ADODB.Command")
+        Dim cmdDeleteRecord = CreateObject("ADODB.Command")
         cmdDeleteRecord.CommandText = "sp_ASRDeleteRecord"
         cmdDeleteRecord.CommandType = 4 ' Stored procedure
         cmdDeleteRecord.ActiveConnection = Session("databaseConnection")
@@ -1280,7 +1280,7 @@ Namespace Controllers
         cmdDeleteRecord = Nothing
 
         'MH20100609
-        Dim cmdInsertRecord = Server.CreateObject("ADODB.Command")
+        Dim cmdInsertRecord = CreateObject("ADODB.Command")
         cmdInsertRecord.CommandText = "spASREmailImmediate"
         cmdInsertRecord.CommandType = 4 ' Stored procedure
         cmdInsertRecord.CommandTimeout = 180
@@ -1296,7 +1296,7 @@ Namespace Controllers
 
       ElseIf sAction = "CANCELCOURSE" Then
         ' Check number of bookings made.
-        Dim cmdCancelCourse = Server.CreateObject("ADODB.Command")
+        Dim cmdCancelCourse = CreateObject("ADODB.Command")
         cmdCancelCourse.CommandText = "sp_ASRIntCancelCourse"
         cmdCancelCourse.CommandType = 4 ' Stored procedure
         cmdCancelCourse.ActiveConnection = Session("databaseConnection")
@@ -1344,7 +1344,7 @@ Namespace Controllers
 
         cmdCancelCourse = Nothing
       ElseIf sAction = "CANCELCOURSE_2" Then
-        Dim cmdCancelCourse = Server.CreateObject("ADODB.Command")
+        Dim cmdCancelCourse = CreateObject("ADODB.Command")
         cmdCancelCourse.CommandText = "sp_ASRIntCancelCoursePart2"
         cmdCancelCourse.CommandType = 4 ' Stored procedure
         cmdCancelCourse.ActiveConnection = Session("databaseConnection")
@@ -1435,7 +1435,7 @@ Namespace Controllers
         cmdCancelCourse = Nothing
 
       ElseIf sAction = "CANCELBOOKING" Then
-        Dim cmdCancelBooking = Server.CreateObject("ADODB.Command")
+        Dim cmdCancelBooking = CreateObject("ADODB.Command")
         cmdCancelBooking.CommandText = "sp_ASRIntCancelBooking"
         cmdCancelBooking.CommandType = 4    ' Stored procedure
         cmdCancelBooking.ActiveConnection = Session("databaseConnection")
@@ -1661,7 +1661,7 @@ Namespace Controllers
     Function util_def_customreports_submit()
       On Error Resume Next
 
-      Dim cmdSave = Server.CreateObject("ADODB.Command")
+      Dim cmdSave = CreateObject("ADODB.Command")
       cmdSave.CommandText = "sp_ASRIntSaveCustomReport"
       cmdSave.CommandType = 4 ' Stored Procedure
       cmdSave.ActiveConnection = Session("databaseConnection")
@@ -1930,7 +1930,7 @@ Namespace Controllers
       On Error Resume Next
 
       ' Get the server DLL to save the expression definition
-      objExpression = Server.CreateObject("COAIntServer.Expression")
+      objExpression = CreateObject("COAIntServer.Expression")
 
       ' Pass required info to the DLL
       objExpression.Username = Session("username")
@@ -1967,7 +1967,7 @@ Namespace Controllers
             (Request.Form("txtSend_ID") > 0) Then
             ' Hide any utilities that use this filter/calc.
             ' NB. The check to see if we can do this has already been done as part of the filter/calc validation. */
-            cmdMakeHidden = Server.CreateObject("ADODB.Command")
+            cmdMakeHidden = CreateObject("ADODB.Command")
             cmdMakeHidden.CommandText = "sp_ASRIntMakeUtilitiesHidden"
             cmdMakeHidden.CommandType = 4 ' Stored procedure
             cmdMakeHidden.ActiveConnection = Session("databaseConnection")

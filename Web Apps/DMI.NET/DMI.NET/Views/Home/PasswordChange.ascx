@@ -106,7 +106,7 @@
                             </tr>
                             <%
                                 ' Force password change only if there are no other users logged in with the same name.
-                                Dim cmdCheckUserSessions = Server.CreateObject("ADODB.Command")
+                                Dim cmdCheckUserSessions = CreateObject("ADODB.Command")
                                 cmdCheckUserSessions.CommandText = "spASRGetCurrentUsersCountOnServer"
                                 cmdCheckUserSessions.CommandType = 4 ' Stored procedure.
                                 cmdCheckUserSessions.ActiveConnection = Session("databaseConnection")
@@ -249,7 +249,7 @@
         Dim sErrorDescription = ""
         
         ' Get the minimum password length.
-        Dim cmdPwdLength = Server.CreateObject("ADODB.Command")
+        Dim cmdPwdLength = CreateObject("ADODB.Command")
         cmdPwdLength.CommandText = "sp_ASRIntGetMinimumPasswordLength"
         cmdPwdLength.CommandType = 4 ' Stored Procedure
         cmdPwdLength.ActiveConnection = Session("databaseConnection")

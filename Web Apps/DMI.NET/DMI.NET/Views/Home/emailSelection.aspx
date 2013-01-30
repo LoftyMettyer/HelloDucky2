@@ -403,7 +403,7 @@
     Dim prmParameterKey
     Dim sErrorDescription
     
-    cmdDefinition = Server.CreateObject("ADODB.Command")
+    cmdDefinition = CreateObject("ADODB.Command")
 	cmdDefinition.CommandText = "sp_ASRIntGetModuleParameter"
 	cmdDefinition.CommandType = 4 ' Stored procedure.
     cmdDefinition.ActiveConnection = Session("databaseConnection")
@@ -450,7 +450,7 @@
 	sAddline = vbnullString 
 	sEmailAddresses = vbNullString 
 	
-    cmdEmail = Server.CreateObject("ADODB.Command")
+    cmdEmail = CreateObject("ADODB.Command")
 	cmdEmail.CommandText = "spASRIntGetEventLogEmails"
 	cmdEmail.CommandType = 4 'Stored Procedure
     cmdEmail.ActiveConnection = Session("databaseConnection")
@@ -472,7 +472,7 @@
                 sAddline = sAddline & rsEmail.Fields("Name").value
             Else
 
-                cmdEmailAddr = Server.CreateObject("ADODB.Command")
+                cmdEmailAddr = CreateObject("ADODB.Command")
                 cmdEmailAddr.CommandText = "spASRIntGetEmailGroupAddresses"
                 cmdEmailAddr.CommandType = 4 ' Stored procedure
                 cmdEmailAddr.ActiveConnection = Session("databaseConnection")
@@ -539,7 +539,7 @@
 		
     objUtilities = Session("UtilitiesObject")
 		
-    cmdEmailDetails = Server.CreateObject("ADODB.Command")
+    cmdEmailDetails = CreateObject("ADODB.Command")
 	cmdEmailDetails.CommandText = "spASRIntGetEventLogEmailInfo"
 	cmdEmailDetails.CommandType = 4 'Stored Procedure
     cmdEmailDetails.ActiveConnection = Session("databaseConnection")

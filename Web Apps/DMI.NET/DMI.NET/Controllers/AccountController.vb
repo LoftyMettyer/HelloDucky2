@@ -1751,7 +1751,7 @@ Namespace Controllers
 
 						Dim conX = CreateObject("ADODB.Connection")
 						conX.ConnectionTimeout = 60
-						' Dim objSettings = Server.CreateObject("COAIntServer.clsSettings")
+            ' Dim objSettings = CreateObject("COAIntServer.clsSettings")
 						Dim objSettings = New clsSettings
 
 						Select Case objSettings.GetSQLNCLIVersion

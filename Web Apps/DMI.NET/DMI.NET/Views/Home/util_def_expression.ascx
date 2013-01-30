@@ -20,11 +20,11 @@
 
         fOK = true;
 
-//        var sErrMsg = frmUseful.txtErrorDescription.value;
-//        if (sErrMsg.length > 0) {
-//            fOK = false;
-//            OpenHR.messageBox(sErrMsg);
-//        }
+        var sErrMsg = frmUseful.txtErrorDescription.value;
+        if (sErrMsg.length > 0) {
+            fOK = false;
+            OpenHR.messageBox(sErrMsg);
+        }
         
         setTreeFont(frmDefinition.SSTree1);
         setTreeFont(frmDefinition.SSTreeClipboard);
@@ -34,7 +34,7 @@
             setMenuFont(abExprMenu);
 
             abExprMenu.Attach();
-            abExprMenu.DataPath = "misc\\exprmenu.htm";
+            abExprMenu.DataPath = "include\\exprmenu.htm";
             abExprMenu.RecalcLayout();
 
             // Expand the work frame and hide the option frame.
@@ -2011,9 +2011,8 @@
 
         disableButtons();
 
-        sURL = "dialog" +
-            "?action=validate" +
-            "&destination=util_dialog_expression";
+        sURL = "util_dialog_expression" +
+            "?action=validate";
 		
         openDialog(sURL, (screen.width)/2,(screen.height)/3);
     }
@@ -2345,7 +2344,6 @@
         SSTree1.ApproximateNodeCount = SSTree1.Nodes.Count;
     }
 
-
     function SSTree1_dblClick() {
 
         var sKey;
@@ -2359,7 +2357,6 @@
             editClick();
         }
     }    
-
 
     function SSTree1_keyPress(piKeyAscii) {
     
@@ -2538,10 +2535,11 @@
         }       
     }
 
-
     function abExprMenu_DataReady() {
         var sKey;
         sKey = new String("tempmenufilepath_");
+
+        debugger;
 
         var frmMenuInfo = OpenHR.getForm("menuFrame", "frmMenuInfo");
 
@@ -2715,7 +2713,7 @@
 </script>
 
 <OBJECT classid="clsid:6976CB54-C39B-4181-B1DC-1A829068E2E7" codebase="cabs/COAInt_Client.cab#Version=1,0,0,5" 
-	id="abExprMenu" name="abExprMenu" style="left:0px;top:0px;position:absolute; height: 10px;" VIEWASTEXT>
+	id=abExprMenu name=abExprMenu style="left:0px;top:0px;position:absolute; height: 10px;" VIEWASTEXT>
 	<PARAM NAME="_ExtentX" VALUE="0">
 	<PARAM NAME="_ExtentY" VALUE="0">
 </OBJECT>
@@ -3199,7 +3197,7 @@ style="WIDTH: 100%"
 	end if
 
 	if session("action") <> "new"	then
-        Dim cmdDefn = Server.CreateObject("ADODB.Command")
+        Dim cmdDefn = CreateObject("ADODB.Command")
 		cmdDefn.CommandText = "sp_ASRIntGetExpressionDefinition"
 		cmdDefn.CommandType = 4 ' Stored Procedure
         cmdDefn.ActiveConnection = Session("databaseConnection")
@@ -3283,7 +3281,7 @@ style="WIDTH: 100%"
         
         Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
 	
-        Dim cmdBaseTable = Server.CreateObject("ADODB.Command")
+        Dim cmdBaseTable = CreateObject("ADODB.Command")
 	cmdBaseTable.CommandText = "sp_ASRIntGetTableName"
 	cmdBaseTable.CommandType = 4 ' Stored Procedure
         cmdBaseTable.ActiveConnection = Session("databaseConnection")
@@ -3358,7 +3356,7 @@ style="WIDTH: 100%"
     
 	sShortcutKeys = ""
 	
-    Dim cmdShortcutKeys = Server.CreateObject("ADODB.Command")
+    Dim cmdShortcutKeys = CreateObject("ADODB.Command")
 	cmdShortcutKeys.CommandText = "spASRIntGetOpFuncShortcuts"
 	cmdShortcutKeys.CommandType = 4 ' Stored Procedure
     cmdShortcutKeys.ActiveConnection = Session("databaseConnection")

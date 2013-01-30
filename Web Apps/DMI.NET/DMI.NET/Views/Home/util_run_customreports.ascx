@@ -584,7 +584,7 @@
                 
 			if (objreport.OutputEmail) and (objreport.OutputEmailID > 0) then
 				
-                    cmdEmailAddr = Server.CreateObject("ADODB.Command")
+                    cmdEmailAddr = CreateObject("ADODB.Command")
 				cmdEmailAddr.CommandText = "spASRIntGetEmailGroupAddresses"
 				cmdEmailAddr.CommandType = 4 ' Stored procedure
                     cmdEmailAddr.ActiveConnection = Session("databaseConnection")

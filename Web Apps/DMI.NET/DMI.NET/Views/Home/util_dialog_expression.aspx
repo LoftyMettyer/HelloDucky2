@@ -22,7 +22,7 @@
 
 <script type="text/javascript">
 
-    function util_dialog_expression_onload() {        
+    function util_dialog_expression_onload() {
 
         if(frmUseful.action.value == "test") {
             var frmParentTest = window.dialogArguments.document.forms("frmTest");
@@ -32,7 +32,7 @@
             frmTest.tableID.value = frmParentTest.tableID.value;
             frmTest.prompts.value = frmParentTest.prompts.value;
             frmTest.filtersAndCalcs.value = frmParentTest.filtersAndCalcs.value;
-            window.dialogArguments.OpenHR.submitForm(frmTest);
+            OpenHR.submitForm(frmTest);
 
         }
         else {
@@ -49,7 +49,7 @@
             frmValidate.validateBaseTableID.value = frmParentValidate.validateBaseTableID.value;
             frmValidate.validateOriginalAccess.value = frmParentValidate.validateOriginalAccess.value;
 
-            window.dialogArguments.OpenHR.submitForm(frmValidate);
+            OpenHR.submitForm(frmValidate);
             }
         }
     
@@ -58,32 +58,34 @@
 
 </head>
 <body>
-        
-        
-<FORM id=frmUseful name=frmUseful style="visibility:hidden;display:none">
-	<INPUT type=hidden id=action name=action value=<%=Request("action")%>>
-</FORM>
+    <div id="util_dialog_expression" data-framesource="util_dialog_expression">
+                
+        <FORM id=frmUseful name=frmUseful style="visibility:hidden;display:none">
+	        <INPUT type=hidden id=action name=action value=<%=Request("action")%>>
+        </FORM>
 
-<FORM id=frmValidate name=frmValidate method=post action=util_validate_expression style="visibility:hidden;display:none">
-	<INPUT type=hidden id=validatePass name=validatePass>
-	<INPUT type=hidden id=validateName name=validateName>
-	<INPUT type=hidden id=validateOwner name=validateOwner>
-	<INPUT type=hidden id=validateTimestamp name=validateTimestamp>
-	<INPUT type=hidden id=validateUtilID name=validateUtilID>
-	<INPUT type=hidden id=validateUtilType name=validateUtilType>
-	<INPUT type=hidden id=validateAccess name=validateAccess>
-	<INPUT type=hidden id=components1 name=components1>
-	<INPUT type=hidden id=validateBaseTableID name=validateBaseTableID>>
-	<INPUT type=hidden id=validateOriginalAccess name=validateOriginalAccess>
-</FORM>
+        <FORM id=frmValidate name=frmValidate method=post action=util_validate_expression style="visibility:hidden;display:none">
+	        <INPUT type=hidden id=validatePass name=validatePass>
+	        <INPUT type=hidden id=validateName name=validateName>
+	        <INPUT type=hidden id=validateOwner name=validateOwner>
+	        <INPUT type=hidden id=validateTimestamp name=validateTimestamp>
+	        <INPUT type=hidden id=validateUtilID name=validateUtilID>
+	        <INPUT type=hidden id=validateUtilType name=validateUtilType>
+	        <INPUT type=hidden id=validateAccess name=validateAccess>
+	        <INPUT type=hidden id=components1 name=components1>
+	        <INPUT type=hidden id=validateBaseTableID name=validateBaseTableID>>
+	        <INPUT type=hidden id=validateOriginalAccess name=validateOriginalAccess>
+        </FORM>
 
-<FORM id=frmTest name=frmTest method=post action=util_test_expression_pval style="visibility:hidden;display:none">
-	<INPUT type="hidden" id=type name=type>	
-	<INPUT type="hidden" id=Hidden1 name=components1>
-    <INPUT type="hidden" id=tableID name=tableID>
-	<INPUT type="hidden" id=prompts name=prompts>
-	<INPUT type="hidden" id=filtersAndCalcs name=filtersAndCalcs>
-</FORM>
+        <FORM id=frmTest name=frmTest method=post action=util_test_expression_pval style="visibility:hidden;display:none">
+	        <INPUT type="hidden" id=type name=type>	
+	        <INPUT type="hidden" id=Hidden1 name=components1>
+            <INPUT type="hidden" id=tableID name=tableID>
+	        <INPUT type="hidden" id=prompts name=prompts>
+	        <INPUT type="hidden" id=filtersAndCalcs name=filtersAndCalcs>
+        </FORM>
+
+    </div>
 
 </body>
 </html>

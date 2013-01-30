@@ -205,6 +205,9 @@
     <Content Include="Content\images\spinner04.gif" />
     <Content Include="Content\jquery.gridster.css" />
     <Content Include="HTMLPage2.htm" />
+    <Content Include="Include\exprmenu.htm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Pictures\ProfilePhotos\dAvery.jpg" />
     <Content Include="Pictures\ProfilePhotos\mWORTHING.jpg" />
     <Content Include="Scripts\FormScripts\Util_Def_CustomReports.js" />

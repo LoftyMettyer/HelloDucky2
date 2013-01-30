@@ -691,7 +691,7 @@ that are used in the ASRIntRecEdit control are downloaded and installed properly
 
 	' JPD 20021021 - Added pictures functionlity.
 	' JPD 20021127 - Moved Utilities object into session variable.
-	'Set objUtilities = server.CreateObject("COAIntServer.Utilities")
+	'Set objUtilities = CreateObject("COAIntServer.Utilities")
 	'objUtilities.Connection = session("databaseConnection")
     Dim objUtilities = Session("UtilitiesObject")
     Dim sTempPath = Server.MapPath("pictures")

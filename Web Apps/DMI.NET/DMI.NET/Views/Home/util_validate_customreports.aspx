@@ -71,7 +71,7 @@
 
 <%
     
-    Dim cmdValidate = Server.CreateObject("ADODB.Command")
+    Dim cmdValidate = CreateObject("ADODB.Command")
 	cmdValidate.CommandText = "sp_ASRIntValidateReport"
 	cmdValidate.CommandType = 4 ' Stored Procedure
     cmdValidate.ActiveConnection = Session("databaseConnection")

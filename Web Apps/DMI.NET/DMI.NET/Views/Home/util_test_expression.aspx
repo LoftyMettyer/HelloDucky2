@@ -189,7 +189,7 @@
 	end if
 		
 	' Get the server DLL to test the expression definition
-    objExpression = Server.CreateObject("COAIntServer.Expression")
+    objExpression = CreateObject("COAIntServer.Expression")
 
 	' Pass required info to the DLL
 	objExpression.Username = session("username")

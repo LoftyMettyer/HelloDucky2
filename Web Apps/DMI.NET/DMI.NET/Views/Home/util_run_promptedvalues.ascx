@@ -340,7 +340,7 @@
                 Dim rstLookupValues
 
                 ' Get the lookup values.
-                cmdLookupValues = Server.CreateObject("ADODB.Command")
+                cmdLookupValues = CreateObject("ADODB.Command")
                 cmdLookupValues.CommandText = "sp_ASRIntGetLookupValues"
                 cmdLookupValues.CommandType = 4 ' Stored Procedure
                 cmdLookupValues.ActiveConnection = Session("databaseConnection")

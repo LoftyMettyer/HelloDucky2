@@ -246,7 +246,7 @@
     Dim iPeriod
     Dim cmdPurgeInfo
 	
-    cmdPurgeInfo = Server.CreateObject("ADODB.Command")
+    cmdPurgeInfo = CreateObject("ADODB.Command")
 	cmdPurgeInfo.CommandText = "spASRIntGetEventLogPurgeDetails"
 	cmdPurgeInfo.CommandType = 4
     cmdPurgeInfo.ActiveConnection = Session("databaseConnection")

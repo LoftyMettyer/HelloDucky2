@@ -690,7 +690,7 @@
 							sFirstValue = ""
 
 							' Get the lookup values.
-                            cmdLookupValues = Server.CreateObject("ADODB.Command")
+                            cmdLookupValues = CreateObject("ADODB.Command")
 							cmdLookupValues.CommandText = "sp_ASRIntGetLookupValues"
 							cmdLookupValues.CommandType = 4 ' Stored Procedure
                             cmdLookupValues.ActiveConnection = Session("databaseConnection")
@@ -792,7 +792,7 @@
                 sFilterCalcID = Left(sFiltersAndCalcs, iCharIndex - 1)
                 sFiltersAndCalcs = Mid(sFiltersAndCalcs, iCharIndex + 1)
 
-                cmdDefn = Server.CreateObject("ADODB.Command")
+                cmdDefn = CreateObject("ADODB.Command")
                 cmdDefn.CommandText = "sp_ASRIntGetFilterPromptedValuesRecordset"
                 cmdDefn.CommandType = 4 ' Stored Procedure
                 cmdDefn.ActiveConnection = Session("databaseConnection")
@@ -923,7 +923,7 @@
                             sFirstValue = ""
 
                             ' Get the lookup values.
-                            cmdLookupValues = Server.CreateObject("ADODB.Command")
+                            cmdLookupValues = CreateObject("ADODB.Command")
                             cmdLookupValues.CommandText = "sp_ASRIntGetLookupValues"
                             cmdLookupValues.CommandType = 4 ' Stored Procedure
                             cmdLookupValues.ActiveConnection = Session("databaseConnection")

@@ -2833,7 +2833,7 @@
     
 iPassBy = 1	
 if (len(sErrMsg) = 0) and (Session("optionFunctionID") > 0) then
-        cmdParameter = Server.CreateObject("ADODB.Command")
+        cmdParameter = CreateObject("ADODB.Command")
 	cmdParameter.CommandText = "spASRIntGetParameterPassByType"
 	cmdParameter.CommandType = 4 ' Stored Procedure
         cmdParameter.ActiveConnection = Session("databaseConnection")
@@ -4782,7 +4782,7 @@ end if
     Dim iCount As Integer
     
 	if len(sErrMsg) = 0 then
-        cmdTables = Server.CreateObject("ADODB.Command")
+        cmdTables = CreateObject("ADODB.Command")
 		cmdTables.CommandText = "sp_ASRIntGetExprTables"
 		cmdTables.CommandType = 4 ' Stored Procedure
         cmdTables.ActiveConnection = Session("databaseConnection")
@@ -4823,7 +4823,7 @@ end if
     Dim rstFunctions
     
 	if len(sErrMsg) = 0 then
-        cmdFunctions = Server.CreateObject("ADODB.Command")
+        cmdFunctions = CreateObject("ADODB.Command")
         cmdFunctions.CommandText = "sp_ASRIntGetExprFunctions"
 		cmdFunctions.CommandType = 4 ' Stored Procedure
         cmdFunctions.ActiveConnection = Session("databaseConnection")
@@ -4864,7 +4864,7 @@ end if
     Dim rstFunctionParameters
     
 	if len(sErrMsg) = 0 then
-        cmdFunctionParameters = Server.CreateObject("ADODB.Command")
+        cmdFunctionParameters = CreateObject("ADODB.Command")
 		cmdFunctionParameters.CommandText = "sp_ASRIntGetExprFunctionParameters"
 		cmdFunctionParameters.CommandType = 4 ' Stored Procedure
         cmdFunctionParameters.ActiveConnection = Session("databaseConnection")
@@ -4901,7 +4901,7 @@ end if
     Dim rstOperators
     
 	if len(sErrMsg) = 0 then
-        cmdOperators = Server.CreateObject("ADODB.Command")
+        cmdOperators = CreateObject("ADODB.Command")
 		cmdOperators.CommandText = "sp_ASRIntGetExprOperators"
 		cmdOperators.CommandType = 4 ' Stored Procedure
         cmdOperators.ActiveConnection = Session("databaseConnection")
@@ -4942,7 +4942,7 @@ end if
     
     
 	if len(sErrMsg) = 0 then
-        cmdCalcs = Server.CreateObject("ADODB.Command")
+        cmdCalcs = CreateObject("ADODB.Command")
 		cmdCalcs.CommandText = "sp_ASRIntGetExprCalcs"
 		cmdCalcs.CommandType = 4 ' Stored Procedure
         cmdCalcs.ActiveConnection = Session("databaseConnection")
@@ -4988,7 +4988,7 @@ end if
     Dim rstFilters
     
 	if len(sErrMsg) = 0 then
-        cmdFilters = Server.CreateObject("ADODB.Command")
+        cmdFilters = CreateObject("ADODB.Command")
 		cmdFilters.CommandText = "sp_ASRIntGetExprFilters"
 		cmdFilters.CommandType = 4 ' Stored Procedure
         cmdFilters.ActiveConnection = Session("databaseConnection")

@@ -16,7 +16,7 @@
 
 	
 	'Primary Start Mode.
-        cmdDisplayDefault = Server.CreateObject("ADODB.Command")
+        cmdDisplayDefault = CreateObject("ADODB.Command")
 	cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
 	cmdDisplayDefault.CommandType = 4 ' Stored procedure.
         cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
@@ -46,7 +46,7 @@
         cmdDisplayDefault = Nothing
 	
 	'History Start Mode.
-        cmdDisplayDefault = Server.CreateObject("ADODB.Command")
+        cmdDisplayDefault = CreateObject("ADODB.Command")
 	cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
 	cmdDisplayDefault.CommandType = 4 ' Stored procedure.
         cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
@@ -76,7 +76,7 @@
         cmdDisplayDefault = Nothing
 	
 	'Lookup Start Mode.
-        cmdDisplayDefault = Server.CreateObject("ADODB.Command")
+        cmdDisplayDefault = CreateObject("ADODB.Command")
 	cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
 	cmdDisplayDefault.CommandType = 4 ' Stored procedure.
         cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
@@ -106,7 +106,7 @@
         cmdDisplayDefault = Nothing
 	
 	'Quick Access Start Mode.
-        cmdDisplayDefault = Server.CreateObject("ADODB.Command")
+        cmdDisplayDefault = CreateObject("ADODB.Command")
 	cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
 	cmdDisplayDefault.CommandType = 4 ' Stored procedure.
         cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
@@ -136,7 +136,7 @@
         cmdDisplayDefault = Nothing
 	
 	'Expression colour mode.
-        cmdDisplayDefault = Server.CreateObject("ADODB.Command")
+        cmdDisplayDefault = CreateObject("ADODB.Command")
 	cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
 	cmdDisplayDefault.CommandType = 4 ' Stored procedure.
         cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
@@ -166,7 +166,7 @@
         cmdDisplayDefault = Nothing
 
 	'Expression expand mode.
-        cmdDisplayDefault = Server.CreateObject("ADODB.Command")
+        cmdDisplayDefault = CreateObject("ADODB.Command")
 	cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
 	cmdDisplayDefault.CommandType = 4 ' Stored procedure.
         cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
@@ -196,7 +196,7 @@
         cmdDisplayDefault = Nothing
 	
 	'Find window records.
-        cmdDisplayDefault = Server.CreateObject("ADODB.Command")
+        cmdDisplayDefault = CreateObject("ADODB.Command")
 	cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
 	cmdDisplayDefault.CommandType = 4 ' Stored procedure.
         cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
@@ -275,7 +275,7 @@
 				sTemp = sTemp & "SuccessionPlanning"
 		end select
 			
-            cmdDefSelOnlyMine = Server.CreateObject("ADODB.Command")
+            cmdDefSelOnlyMine = CreateObject("ADODB.Command")
 		cmdDefSelOnlyMine.CommandText = "sp_ASRIntGetSetting"
 		cmdDefSelOnlyMine.CommandType = 4 ' Stored procedure.
             cmdDefSelOnlyMine.ActiveConnection = Session("databaseConnection")
@@ -323,7 +323,7 @@
 		end select
 			
             
-            cmdUtilWarning = Server.CreateObject("ADODB.Command")
+            cmdUtilWarning = CreateObject("ADODB.Command")
 		cmdUtilWarning.CommandText = "sp_ASRIntGetSetting"
 		cmdUtilWarning.CommandType = 4 ' Stored procedure.
             cmdUtilWarning.ActiveConnection = Session("databaseConnection")

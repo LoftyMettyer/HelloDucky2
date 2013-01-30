@@ -27,7 +27,7 @@
     Dim iLoop As Integer
     
     If Session("EmailGroupID") > 0 Then
-        cmdReportsCols = Server.CreateObject("ADODB.Command")
+        cmdReportsCols = CreateObject("ADODB.Command")
         cmdReportsCols.CommandText = "spASRIntGetEmailGroupAddresses"
         cmdReportsCols.CommandType = 4 ' Stored procedure
         cmdReportsCols.ActiveConnection = Session("databaseConnection")
