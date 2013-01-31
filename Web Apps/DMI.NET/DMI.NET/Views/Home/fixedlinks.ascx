@@ -79,6 +79,37 @@
 													 </a>
                                 </div>
                             </li>
+                            <li id="mnuSectionUtilities"><span>Utilities</span>
+                                <div id="mnutoolNewUtil" class="button">
+                                    <a href="javascript:setnew();" rel="table">
+                                        <img src="<%: Url.Content("~/Scripts/officebar/winkit/add64HOVER.png") %>" alt="" />New</a>
+                                </div>
+                                <div id="mnutoolEditUtil" class="button">
+                                    <a href="javascript:setedit();" rel="table">
+                                        <img src="<%: Url.Content("~/Scripts/officebar/winkit/Edit64HOVER.png") %>" alt="" />Edit</a>
+                                </div>
+                                <div id="mnutoolCopyUtil" class="button">
+                                    <a href="javascript:setcopy();" rel="table">
+                                        <img src="<%: Url.Content("~/Scripts/officebar/winkit/arrangeall64HOVER.png") %>" alt="" />Copy</a>
+                                </div>
+                                <div id="mnutoolDeleteUtil" class="button">
+                                    <a href="javascript:setdelete();" rel="table">
+                                        <img src="<%: Url.Content("~/Scripts/officebar/winkit/delete64HOVER.png") %>" alt="" />Delete</a>
+                                </div>
+                                <div id="mnutoolPrintUtil" class="button">
+                                    <a href="#" rel="table">
+                                        <img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png") %>" alt="" />Print</a>
+                                </div>
+                                <div id="mnutoolPropertiesUtil" class="button">
+                                    <a href="javascript:showproperties();" rel="table">
+                                        <img src="<%: Url.Content("~/Scripts/officebar/winkit/configuration64HOVER.png")%>" alt="" />Properties</a>
+                                </div>
+                                <div id="mnutillRunUtil" class="button">
+                                    <a href="javascript:setrun();" rel="table">
+                                        <img src="<%: Url.Content("~/Scripts/officebar/winkit/checkmark64HOVER.png")%>" alt="" />Run</a>
+                                </div>
+                            </li>
+
                         </ul>
                     </li>
                     <li><a id="toolbarRecord" href="#" rel="home">Record</a>

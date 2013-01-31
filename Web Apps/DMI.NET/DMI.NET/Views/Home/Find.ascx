@@ -65,7 +65,7 @@
 	' Enable response buffering as we may redirect the response further down this page.
 	Response.Buffer = True
 %>
-	<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" id="Microsoft_Licensed_Class_Manager_1_0"
+	<object style="display:none;" classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" id="Microsoft_Licensed_Class_Manager_1_0"
 		viewastext>
 		<param name="LPKPath" value="lpks/main.lpk">
 	</object>
@@ -384,7 +384,7 @@
 				<table id="findTable" width="100%" height="100%" class="invisible" cellspacing="0"
 					cellpadding="0">
 					<tr height="10">
-						<td align="center" colspan="5" height="10">
+						<td align="left" colspan="5" height="10">
 							<%
 								On Error Resume Next
 	
@@ -417,7 +417,7 @@
 								End If
 
 								If Len(sErrorDescription) = 0 Then
-									Response.Write("						<h3 align=center>Find - " & Replace(cmdFindWindowTitle.Parameters("title").Value, "_", " ") & "</h3>" & vbCrLf)
+							        Response.Write("						<h3 class='pageTitle'>Find - " & Replace(cmdFindWindowTitle.Parameters("title").Value, "_", " ") & "</h3>" & vbCrLf)
 									Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & cmdFindWindowTitle.Parameters("quickEntry").Value & ">" & vbCrLf)
 								End If
 	
@@ -427,7 +427,7 @@
 						</td>
 					</tr>
 					<tr id="findGridRow">
-						<td>
+						<td width=20>&nbsp;&nbsp;&nbsp;&nbsp;
 						</td>
 						<td width="100%" colspan="3" height="500">
 							<%

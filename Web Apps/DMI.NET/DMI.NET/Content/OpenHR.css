@@ -108,7 +108,7 @@ textarea
 {
     FONT-SIZE: 10pt;
     COLOR: #333366;
-    /*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';*/
+    FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';
 	background-color: #f6f5f3;
 	border: 1px solid;
 	border-color: #9a7057;
@@ -117,7 +117,7 @@ textarea.disabled
 {
 	font-size: 10pt;
 	color: #9594ad;
-	/*font-family: Verdana, Tahoma, 'MS Sans Serif';*/
+	font-family: Verdana, Tahoma, 'MS Sans Serif';
 	background-color: #fdf3e4;
 	border: 1px solid;
 	border-color: #cbc3c4;
@@ -213,7 +213,15 @@ label.radiodisabled
 	color:#333366;
 }
 
-
+.pageTitle {
+	font-family: segoe ui light;
+	font-size: 26pt;
+	color: #2778ec;
+	padding-left: 20px;
+	font-weight: 300;
+	margin-top: 0;
+	margin-bottom: 0;
+}
 input.text
 {
 	color: #333366;
@@ -303,7 +311,8 @@ span.outline
 
 table.outline
 {
-	background-color:#f9f7fb;
+	/*background-color:#f9f7fb;*/
+	background-color: white;
 	border: 1px solid #9894a3;
 }
 

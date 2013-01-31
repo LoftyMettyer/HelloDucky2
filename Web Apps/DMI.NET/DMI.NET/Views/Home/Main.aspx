@@ -111,7 +111,7 @@
 
 <div id="mainframeset">
 	
-	<div id="workframeset" style="display: none;">
+	<div id="workframeset" style="display: block;">
 		<div id="workframe" data-framesource="default.asp"><%Html.RenderPartial("~/views/home/default.ascx")%></div>
 		<div id="optionframe" data-framesource="emptyoption.asp" style="display: none"><%Html.RenderPartial("~/views/home/emptyoption.ascx")%></div>
 	</div>

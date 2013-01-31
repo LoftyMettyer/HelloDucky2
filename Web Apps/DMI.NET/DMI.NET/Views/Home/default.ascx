@@ -142,7 +142,7 @@ function default_window_onload() {
 <INPUT type=hidden id=securitySettingFailure name=securitySettingFailure value=0>	
 <INPUT type=hidden id=txtWorkflowOutOfOffice name=txtWorkflowOutOfOffice value=<%=iOutOfOffice%>>
 <INPUT type=hidden id=txtWorkflowRecordCount name=txtWorkflowRecordCount value=<%=iRecordCount%>>
-
+<div <%=session("BodyTag")%>>
 <TABLE style="DISPLAY: none; VISIBILITY: hidden" id=tblMsg WIDTH="100%" height="50%" class="invisible" CELLSPACING=0 CELLPADDING=0>
     <tr></tr>
 	<TR>
@@ -157,7 +157,7 @@ function default_window_onload() {
 		</TD>
 	</TR>
 </TABLE>
-
+</div>
 
 <script type="text/javascript">
 <!--

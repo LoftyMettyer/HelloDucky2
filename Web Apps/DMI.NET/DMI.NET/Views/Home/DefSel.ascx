@@ -186,11 +186,14 @@
 	function defsel_window_onload() {
 		
 		var frmDefSel = document.getElementById('frmDefSel');
-
+		
+		$("#workframe").attr("data-framesource", "DEFSEL");
+	    
 		if (frmDefSel.txtSingleRecordID.value > 0) {
 			// Expand the option frame and hide the work frame.
 			//TODO
 			//window.parent.document.all.item("workframeset").cols = "1, *";
+
 		}
 
 		var sControlName;
@@ -327,6 +330,11 @@
 	}
 
 	function refreshControls() {
+	    
+	    //show the utilities menu block.
+	    $("#mnuSectionUtilities").show();
+	    $("#toolbarHome").click();
+
 		var fNoneSelected;
 		var frmpermissions = document.getElementById('frmpermissions');
 		var frmDefSel = document.getElementById('frmDefSel');
@@ -545,7 +553,8 @@
 		}
 		else {
 			OpenHR.messageBox("You must select a definition to edit", 48, "OpenHR Intranet");
-		}
+		}	    
+
 	}
 
 	function setcancel() {
@@ -924,7 +933,7 @@
     	    <table width="100%" height="100%" class="invisible">
 	            <tr> 
 		            <td colspan=5 height=10>
-						<H3>
+						<H3 class="pageTitle">
 <%
 	if session("defseltype") = 0 then	        'BATCH JOB
 		Response.write("Batch Jobs")
@@ -1240,7 +1249,7 @@
 					
 					<td width=20>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 	        
-	                <td width=80> 
+	                <td width=80 style="display: none;"> 
 						<table height=100% class="invisible">
 							<tr>
 								<td>

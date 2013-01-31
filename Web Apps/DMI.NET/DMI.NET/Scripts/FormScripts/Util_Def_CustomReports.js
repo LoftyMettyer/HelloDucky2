@@ -97,7 +97,8 @@
 			frmUseful.txtLoading.value = 'N';
 
 			// Get menu.asp to refresh the menu.
-			OpenHR.refreshMenu();		
+		    //OpenHR.refreshMenu();		
+		    menu_refreshMenu();
 
 			if ((frmUseful.txtAction.value.toUpperCase() != "NEW") &&
 				(frmOriginalDefinition.txtDefn_Info.value != "")) 

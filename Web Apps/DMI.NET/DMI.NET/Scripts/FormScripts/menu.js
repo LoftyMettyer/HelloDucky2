@@ -379,6 +379,11 @@ function menu_abMainMenu_Click(pTool) {
 
 function menu_MenuClick(sTool) {
 
+    //ignore clicks from 'fixed links' which have no 'id'.
+    if (!sTool) return false;
+    //new ribbon buttons for utils - ignore click.
+    if (sTool.substr(sTool.length - 4).toLowerCase() == "util") return false;
+    
 	// Perform the selected menu action.
 	var lngRecordID;
 	var lngTableID;
@@ -899,6 +904,10 @@ function menu_refreshMenu() {
 	//menu is always available and populated.
 	//if (abMainMenu.Bands.Count() > 0) {
 	menu_enableMenu();
+
+    //hide the utilities menu block.
+    $("#mnuSectionUtilities").hide();
+
 
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 
