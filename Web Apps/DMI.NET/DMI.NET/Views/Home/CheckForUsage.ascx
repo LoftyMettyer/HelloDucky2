@@ -1,5 +1,7 @@
-﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+﻿
+<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+
 
 <%
 	' call the sp to retrieve the items that the current utility
@@ -22,8 +24,8 @@
 	
 	' The util isnt used in any batch jobs, so we can delete it
 	if rstUsage.eof then
-		Response.Redirect("util_delete")
-	end if
+        Response.Redirect("util_delete")
+    End If
 %>
 
 <div <%=session("BodyTag")%>>
