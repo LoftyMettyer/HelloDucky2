@@ -57,6 +57,7 @@
         function util_test_expression_onload() {
 
             if (txtDisplay.value != "False") {
+
                 // Hide the 'please wait' message.
                 trPleaseWait1.style.visibility='hidden';
                 trPleaseWait1.style.display='none';

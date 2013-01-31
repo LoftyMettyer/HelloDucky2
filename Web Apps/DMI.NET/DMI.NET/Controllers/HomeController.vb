@@ -572,7 +572,7 @@ Namespace Controllers
       Session("followpage") = "default"
       Session("reaction") = Request.Form("txtReaction")
 
-      Return RedirectToAction("confirmok")
+      '    Return RedirectToAction("confirmok")
 
     End Function
 
@@ -1989,7 +1989,7 @@ Namespace Controllers
 
           Session("confirmtext") = sUtilType & " has been saved successfully"
           Session("confirmtitle") = sUtilType & "s"
-          Session("followpage") = "defsel.asp"
+          Session("followpage") = "defsel"
           Session("reaction") = Request.Form("txtSend_reaction")
           Session("utilid") = objExpression.ExpressionID
 
@@ -2060,12 +2060,12 @@ Namespace Controllers
 
       objExpression = Nothing
 
-      If fok Then
-        Return RedirectToAction("DefSel")
-      Else
-        'TODO - error message
-        Return RedirectToAction("confirmok")
-      End If
+      'If fok Then
+      'Return RedirectToAction("DefSel")
+      ' Else
+      'TODO - error message
+      Return RedirectToAction("confirmok")
+      ' End If
 
     End Function
 

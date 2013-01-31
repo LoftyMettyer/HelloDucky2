@@ -1,15 +1,21 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 
-<script ID="clientEventHandlersJS" type="text/javascript">
-<!--
-    function window_onload()
-    {
-        // remove the popup if its there
-        OpenHR.Closepopup();
-    }
 
-    function okClick() {
-        debugger;
+<div>
+    <script ID="clientEventHandlersJS" type="text/javascript">
+<!--
+    function confirmok_window_onload() {
+
+  //      debugger;
+
+        $("#workframe").attr("data-framesource", "CONFIRMOK");
+
+        // remove the popup if its there
+        //OpenHR.Closepopup();
+  //  }
+
+ //   function confirmok_okClick() {
+//        debugger;
         if (txtReloadMenu.value == 1)
         {
             window.parent.location.href = "main";
@@ -19,7 +25,7 @@
         sAction = txtReaction.value;
 
         if (sAction == "LOGOFF") {
-            window.parent.location.href = window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDefaultStartPage.value;
+            menu_logoffIntranet();
             return;	
         }
 
@@ -139,6 +145,7 @@
     -->
 </script>
 
+
 <table align=center class="outline" cellPadding=5 cellSpacing=0>
 	<TR>
 		<TD>
@@ -168,7 +175,7 @@
 			    <tr> 
 			        <td colspan=3 height=10 align=center> 
 		                <input id="cmdOK" name="cmdOK" type=button class="btn" value="OK" style="WIDTH: 75px" width="75" 
-		                    onclick="okClick()"
+		                    onclick="confirmok_okClick();"
                             onmouseover="try{button_onMouseOver(this);}catch(e){}" 
                             onmouseout="try{button_onMouseOut(this);}catch(e){}"
                             onfocus="try{button_onFocus(this);}catch(e){}"
@@ -200,3 +207,10 @@
 <FORM action="default_Submit" method=post id=FORM1 name=frmGoto style="visibility:hidden;display:none">
     <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 </FORM>
+
+</div>
+
+
+<script type="text/javascript">
+    confirmok_window_onload();
+</script>

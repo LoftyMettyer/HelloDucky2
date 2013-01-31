@@ -57,7 +57,8 @@
 	    	$.ajax({
 	    		url: url,
 	    		type: "POST",
-	    		data: data,	    		
+	    		data: data,
+	    		async: false,
 	    		success: function (html) {
 	    		    try {
 	    		        if (html.ErrorMessage.length > 0) {

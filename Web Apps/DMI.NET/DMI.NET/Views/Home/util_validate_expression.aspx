@@ -6,7 +6,6 @@
 <html>
 <head>
     <title>OpenHR Intranet</title>
-    
 
 <script type="text/javascript">
 <!--
@@ -15,16 +14,18 @@
 
         if (txtDisplay.value != "False") {
             // Hide the 'please wait' message.
-            trPleaseWait1.style.visibility='hidden';
-            trPleaseWait1.style.display='none';
-            trPleaseWait2.style.visibility='hidden';
-            trPleaseWait2.style.display='none';
-            trPleaseWait3.style.visibility='hidden';
-            trPleaseWait3.style.display='none';
-            trPleaseWait4.style.visibility='hidden';
-            trPleaseWait4.style.display='none';
-            trPleaseWait5.style.visibility='hidden';
-            trPleaseWait5.style.display='none';
+//            $("#trPleaseWait1").style.visibility='hidden';
+//            $("#trPleaseWait1").style.display='none';
+//            $("#trPleaseWait2").style.visibility='hidden';
+//            $("#trPleaseWait2").style.display='none';
+//            $("#trPleaseWait3").style.visibility='hidden';
+//            $("#trPleaseWait3").style.display='none';
+//            $("#trPleaseWait4").style.visibility='hidden';
+//            $("#trPleaseWait4").style.display='none';
+//            $("#trPleaseWait5").style.visibility='hidden';
+//            $("#trPleaseWait5").style.display='none';
+
+            var bdyMain = $("#bdyMain");
 
             // Resize the grid to show all prompted values.
             iResizeBy = bdyMain.scrollWidth	- bdyMain.clientWidth;
@@ -100,11 +101,12 @@
 
         if (iNextPass <= 3) {
             frmValidate.validatePass.value = iNextPass;
-
             OpenHR.submitForm(frmValidate);
         }
         else {
-            OpenHR.submitForm(window.dialogArguments.document.getElementById('frmSend'));
+
+            var frmSend = window.dialogArguments.document.getElementById('frmSend');
+            window.dialogArguments.OpenHR.submitForm(frmSend);
             self.close();
         }
     }
@@ -141,9 +143,8 @@
     -->
 </script>
 
-    
-
 </head>
+
 <body id=bdyMain >
     
         <div id="util_validate_expression" data-framesource="util_validate_expression">
@@ -1113,8 +1114,8 @@
     
 
 </body>
-</html>
 
+</html>
 
 <script type="text/javascript">
     util_validate_window_onload();

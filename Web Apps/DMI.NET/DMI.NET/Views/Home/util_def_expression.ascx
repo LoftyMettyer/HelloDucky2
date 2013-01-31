@@ -20,7 +20,6 @@
 
         fOK = true;
 
-        // Expand the work frame and hide the option frame.
         $("#workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
 
         var sErrMsg = frmUseful.txtErrorDescription.value;
@@ -1526,15 +1525,16 @@
 
     function cancelClick()
     {
+
         if (definitionChanged() == false) {
-            window.location.href="defsel";
+            menu_loadDefSelPage(frmUseful.txtUtilType.value, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, false);
             return;
         }
 
         answer = OpenHR.messageBox("You have changed the current definition. Save changes ?",3);
         if (answer == 7) {
             // No
-            window.location.href="defsel";
+            menu_loadDefSelPage(frmUseful.txtUtilType.value, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, false);
             return (false);
         }
 

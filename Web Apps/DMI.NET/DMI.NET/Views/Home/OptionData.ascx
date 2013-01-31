@@ -458,7 +458,7 @@
                                 sControlName = dataCollection.item(i).name;
                                 sControlName = sControlName.substr(0, 9);
                                 if (sControlName == "txtValue_") {
-                                    omponent_addValue(dataCollection.item(i).value);
+                                    component_addValue(dataCollection.item(i).value);
                                 }
                             }
                         }
