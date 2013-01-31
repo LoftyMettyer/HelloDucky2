@@ -2153,6 +2153,11 @@ Namespace Controllers
       Return View()
     End Function
 
+    Function FieldRec() As ActionResult
+      Return View()
+    End Function
+
+
 #End Region
 
     Function recordEdit() As ActionResult
