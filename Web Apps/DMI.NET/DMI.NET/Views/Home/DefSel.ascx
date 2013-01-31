@@ -511,7 +511,8 @@
 	}
 
 	function setnew() {
-		OpenHR.showPopup("Loading form. Please wait...");
+
+	    OpenHR.showPopup("Loading form. Please wait...");
 		document.frmDefSel.action.value = "new";
 		OpenHR.submitForm(document.frmDefSel);
 	}
@@ -1243,7 +1244,7 @@
 						<table height=100% class="invisible">
 							<tr>
 								<td>
-        					        <input type="submit" id="cmdNew" class="btn" name="cmdNew" value="New" style="WIDTH: 80px" width="80"
+        					        <input type="button" id="cmdNew" class="btn" name="cmdNew" value="New" style="WIDTH: 80px" width="80"
 <% 
 if (session("singleRecordID") > 0) or session("defseltype") = 25 then 
 		Response.Write(" style=""visibility:hidden""")

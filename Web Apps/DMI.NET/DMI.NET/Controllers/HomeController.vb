@@ -1958,9 +1958,9 @@ Namespace Controllers
 
       If fok Then
         fok = objExpression.SaveExpression(CStr(Request.Form("txtSend_name")), _
-          Request.Form("txtSend_userName"), _
-          Request.Form("txtSend_access"), _
-          Request.Form("txtSend_description"))
+          CStr(Request.Form("txtSend_userName")), _
+          CStr(Request.Form("txtSend_access")), _
+          CStr(Request.Form("txtSend_description")))
 
         If fok Then
           If (Request.Form("txtSend_access") = "HD") And _

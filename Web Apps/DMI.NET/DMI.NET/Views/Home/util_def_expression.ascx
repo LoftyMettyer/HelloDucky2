@@ -20,6 +20,9 @@
 
         fOK = true;
 
+        // Expand the work frame and hide the option frame.
+        $("#workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
+
         var sErrMsg = frmUseful.txtErrorDescription.value;
         if (sErrMsg.length > 0) {
             fOK = false;
@@ -36,9 +39,6 @@
             abExprMenu.Attach();
             abExprMenu.DataPath = "include\\exprmenu.htm";
             abExprMenu.RecalcLayout();
-
-            // Expand the work frame and hide the option frame.
-            $("#workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
 
             if (frmUseful.txtAction.value.toUpperCase() == "NEW") {
                 frmUseful.txtUtilID.value = 0;
@@ -1208,6 +1208,9 @@
         // Expand the work frame and hide the option frame.
         $("#optionframe").hide();        
         $("#workframe").show();
+
+        var frmDefinition = OpenHR.getForm("workframe", "frmDefinition");
+
         frmDefinition.SSTree1.style.visibility = "visible";
         frmDefinition.SSTree1.Refresh();
 
@@ -2539,14 +2542,10 @@
         var sKey;
         sKey = new String("tempmenufilepath_");
 
-        debugger;
-
         var frmMenuInfo = OpenHR.getForm("menuFrame", "frmMenuInfo");
 
         sKey = sKey.concat(frmMenuInfo.txtDatabase.value);	
         //  sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-        
-        
 
         if(sPath == "") {
             sPath = "c:\\";

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
+﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage"%>
 <%@ Import Namespace="DMI.NET" %>
 
 <!DOCTYPE html>
@@ -1061,7 +1061,7 @@
     Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCount"" value=" & iPromptCount & ">" & vbCrLf)
 %>
 	<INPUT type="hidden" id=type name=type value=<%=Request.Form("type")%>>	
-	<INPUT type="hidden" id=components1 name=components1 value="<%=Request.Form("components1")%>">
+	<INPUT type="hidden" id=components1 name=components1 value="<% =Request.Form("components1")%>">
 	<INPUT type="hidden" id=tableID name=tableID value=<%=Request.Form("tableID")%>>
 </FORM>
     

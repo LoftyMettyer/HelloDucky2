@@ -13,8 +13,6 @@
     
     function util_validate_window_onload() {
 
-        debugger;
-
         if (txtDisplay.value != "False") {
             // Hide the 'please wait' message.
             trPleaseWait1.style.visibility='hidden';
@@ -105,8 +103,7 @@
 
             OpenHR.submitForm(frmValidate);
         }
-        else {	
-            
+        else {
             OpenHR.submitForm(window.dialogArguments.document.getElementById('frmSend'));
             self.close();
         }

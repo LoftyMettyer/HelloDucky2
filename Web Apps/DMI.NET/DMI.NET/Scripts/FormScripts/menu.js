@@ -1782,7 +1782,10 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 		    iResult = saveChanges(psAction, pfPrompt, pfTBOverride);
 		}
 	}
-	
+
+    // Set current page to defsel
+    $("#workframe").attr("data-framesource", "DEFAULT");
+
 	return iResult;
 }
 
