@@ -2211,17 +2211,16 @@
 	function cancelClick() {
 		if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
 			(definitionChanged() == false)) {
-			//TODO
-			//window.location.href = "defsel";
-			return;
+		    
+		    menu_loadDefSelPage(2, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
+		    return (false);		    
 		}
 
 		answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3, "Custom Reports");
 		if (answer == 7) {
 			// No
-			//TODO
-			//window.location.href = "defsel";
-			return (false);
+		    menu_loadDefSelPage(2, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
+		    return (false);
 		}
 		if (answer == 6) {
 			// Yes
