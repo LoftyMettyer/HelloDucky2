@@ -22,7 +22,6 @@
         %>
 
  <script type="text/javascript">
-<!--
 
      function picklistSelectionMain_window_onload() {
          $("#picklistdialog").attr("data-framesource", "PICKLISTSELECTIONMAIN");     
@@ -31,7 +30,7 @@
      function loadAddRecords()
      {
          var iCount;
-
+         
          iCount = new Number(txtLoadCount.value);
          txtLoadCount.value = iCount + 1;
 
@@ -48,8 +47,8 @@
              refreshData();
          }
      }
- -->
-</script>
+
+ </script>
 
 </head>
 
@@ -65,7 +64,7 @@
 
         <div id="mainframeset">
             <div id="workframe" data-framesource="picklistSelection" style="display: none"><%Html.RenderPartial("~/views/home/picklistSelection.ascx")%></div>
-            <div id="dataframe" data-framesource="picklistSelectionData" style="display: none"></div>
+            <div id="dataframe" data-framesource="picklistSelectionData" style="display: none"><%Html.RenderPartial("~/views/home/picklistSelectionData.ascx")%></div>
         </div>
 
     </div>
@@ -73,6 +72,7 @@
 </html>
 
 <script type="text/javascript">
-    debugger;
+    picklistSelection_window_onload();
+    picklistSelectionData_window_onload();
     picklistSelectionMain_window_onload();
 </script>

@@ -11,7 +11,7 @@
     </object>
 
 <script ID="clientEventHandlersJS"  type="text/javascript">
-<!--
+
     function util_def_picklist_onload() {
 
         var fOK;
@@ -610,11 +610,11 @@
         frmUseful.txtChanged.value = 1;
         refreshControls();
     }
--->
+
 </script>
 
 <script type="text/javascript">
-<!--    
+
     function util_def_addhandlers() {
         OpenHR.addActiveXHandler("ssOleDBGrid", "rowColChange", ssOleDBGrid_rowColChange);
         OpenHR.addActiveXHandler("ssOleDBGrid", "KeyPress", ssOleDBGrid_KeyPress);
@@ -654,7 +654,7 @@
     function ssOleDBGrid_SelChange() {
         refreshControls();        
     }
--->
+
 </script>
 
 

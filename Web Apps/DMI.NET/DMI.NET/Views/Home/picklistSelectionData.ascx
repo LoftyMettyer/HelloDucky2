@@ -6,13 +6,11 @@
 
 
 <script type="text/javascript">
-<!--
     function picklistSelectionData_window_onload() {
 
-        debugger;
         $("#dataframe").attr("data-framesource", "PICKLISTSELECTIONDATA");
 
-        if (frmUseful.txtLoading.value == "True") {
+        if (frmSelectDataUseful.txtLoading.value == "True") {
             window.parent.loadAddRecords();
             return;
         }
@@ -35,9 +33,11 @@
             //		var sAction = frmData.txtAction.value;
 
             // Refresh the link find grid with the data if required.
+            debugger;
+
             var grdLinkFind = document.getElementById("ssOleDBGridSelRecords");
 
-            grdLinkFind.redraw = false;
+            grdLinkFind.Redraw = false;
             grdLinkFind.removeAll();
             grdLinkFind.columns.removeAll();
 
@@ -98,7 +98,7 @@
                     }
                 }
             }
-            grdLinkFind.redraw = true;
+            grdLinkFind.Redraw = true;
 
             frmData.txtRecordCount.value = iCount;
 
@@ -108,7 +108,6 @@
             menu_refreshMenu();
         }
     }
--->
 </script>
 
 <script type="text/javascript">
@@ -127,7 +126,7 @@
 	<INPUT type="hidden" id=txtGotoLocateValue name=txtGotoLocateValue>
 </FORM>
 
-<FORM id=frmUseful name=frmUseful>
+<FORM id=frmSelectDataUseful name=frmSelectDataUseful>
 	<INPUT type='hidden' id=txtLoading name=txtLoading value=<%=session("picklistSelectionDataLoading")%>>
 </FORM>
 
@@ -428,8 +427,5 @@
     End Function
 </script>
 
-<script type="text/javascript">
-    picklistSelectionData_window_onload()
-</script>
     
     </div>

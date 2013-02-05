@@ -1,6 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
+<div>    
+
 <object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" id="Microsoft_Licensed_Class_Manager_1_0" viewastext>
     <param name="LPKPath" value="lpks/main.lpk">
 </object>
@@ -12,12 +14,11 @@
     <input type="hidden" id="txtMenuSaved" name="txtMenuSaved" value="0">
 </form>
 
-<script type="text/javascript">
-<!--
-     
+<script type="text/javascript">    
     function picklistSelection_window_onload() {
 
         $("#workframe").attr("data-framesource", "PICKLISTSELECTION");
+        $("#workframe").show();
 
         fOK = true;
 	
@@ -27,14 +28,14 @@
             var sErrMsg = txtErrorDescription.value;
             if (sErrMsg.length > 0) {
                 fOK = false;
-                ASRIntranetFunctions.MessageBox(sErrMsg);
+                OpenHR.messageBox(sErrMsg);
                 window.parent.close();
             }
 
             if (fOK == true) {
                 if (selectView.length == 0) {
                     fOK = false;
-                    ASRIntranetFunctions.MessageBox("You do not have permission to read the table.");
+                    OpenHR.messageBox("You do not have permission to read the table.");
                     window.parent.close();
                 }
             }
@@ -42,7 +43,7 @@
             if (fOK == true) {
                 if (selectOrder.length == 0) {
                     fOK = false;
-                    ASRIntranetFunctions.MessageBox("You do not have permission to use any of the table orders.");
+                    OpenHR.messageBox("You do not have permission to use any of the table orders.");
                     window.parent.close();;
                 }
             }
@@ -84,14 +85,13 @@
             window.parent.txtViewID.value = selectView.options[selectView.selectedIndex].value;
             window.parent.txtOrderID.value = selectOrder.options[selectOrder.selectedIndex].value;
 
-            window.parent.loadAddRecords();
+            loadAddRecords();
         }
     }
--->
 </script>
 
 <script type="text/javascript">
-    <!--
+
     function refreshControls()
     {
         var fNoneSelected;
@@ -148,7 +148,7 @@
             {
                 sSelectedIDs = "";
 			
-                ssOleDBGridSelRecords.redraw = false;
+                ssOleDBGridSelRecords.Reddraw = false;
                 for (iIndex = 0; iIndex < ssOleDBGridSelRecords.selbookmarks.Count(); iIndex++) 
                 {	
                     ssOleDBGridSelRecords.bookmark = ssOleDBGridSelRecords.selbookmarks(iIndex);
@@ -161,7 +161,7 @@
                     }
                     sSelectedIDs = sSelectedIDs + sRecordID;				
                 }
-                ssOleDBGridSelRecords.redraw = true;
+                ssOleDBGridSelRecords.Redraw = true;
 
                 try 
                 {
@@ -198,7 +198,7 @@
 
         fFound = false;
 	
-        ssOleDBGridSelRecords.redraw = false;
+        ssOleDBGridSelRecords.Redraw = false;
 
         ssOleDBGridSelRecords.MoveLast();
         ssOleDBGridSelRecords.MoveFirst();
@@ -233,7 +233,7 @@
             ssOleDBGridSelRecords.SelBookmarks.Add(ssOleDBGridSelRecords.Bookmark);
         }
 
-        ssOleDBGridSelRecords.redraw = true;
+        ssOleDBGridSelRecords.Redraw = true;
     }
 
     function goView() {
@@ -406,7 +406,7 @@
 
                 if (isNaN(sConvertedValue) == true) {
                     fValidLocateValue = false;
-                    ASRIntranetFunctions.MessageBox("Invalid numeric value entered.");
+                    OpenHR.messageBox("Invalid numeric value entered.");
                 }
                 else {
                     psLocateValue = sConvertedValue;
@@ -415,7 +415,7 @@
                         // Ensure that integer columns are compared with integer values.
                         if (iIndex >= 0 ) {
                             fValidLocateValue = false;
-                            ASRIntranetFunctions.MessageBox("Invalid integer value entered.");
+                            OpenHR.messageBox("Invalid integer value entered.");
                         }
                     } 
                     else {
@@ -437,12 +437,12 @@
 
                         if(iTempSize > (dataForm.txtFirstColumnSize.value - dataForm.txtFirstColumnDecimals.value)) {
                             fValidLocateValue = false;
-                            ASRIntranetFunctions.MessageBox("The value cannot have more than " + (dataForm.txtFirstColumnSize.value - dataForm.txtFirstColumnDecimals.value) + " digit(s) to the left of the decimal separator.");
+                            OpenHR.messageBox("The value cannot have more than " + (dataForm.txtFirstColumnSize.value - dataForm.txtFirstColumnDecimals.value) + " digit(s) to the left of the decimal separator.");
                         }
                         else {
                             if(iTempDecimals > dataForm.txtFirstColumnDecimals.value) {
                                 fValidLocateValue = false;
-                                ASRIntranetFunctions.MessageBox("The value cannot have more than " + dataForm.txtFirstColumnDecimals.value + " decimal place(s).");
+                                OpenHR.messageBox("The value cannot have more than " + dataForm.txtFirstColumnDecimals.value + " decimal place(s).");
                             }
                         }
                     }
@@ -458,7 +458,7 @@
                         psLocateValue = convertLocaleDateToSQL(psLocateValue)
                         if (psLocateValue.length = 0) {
                             fValidLocateValue = false;
-                            ASRIntranetFunctions.MessageBox("Invalid date value entered.");
+                            OpenHR.messageBox("Invalid date value entered.");
                         }
                     }
                 }
@@ -646,21 +646,23 @@
             return sTempValue;
         }
     }
--->
+
 </script>
     
 <script type="text/javascript">
-<!--
-     function picklistSelection_addhandlers() {
+
+    function picklistSelection_addhandlers() {
          OpenHR.addActiveXHandler("abMainMenu", "DataReady", abMainMenu_DataReady);
          OpenHR.addActiveXHandler("abMainMenu", "PreCustomizeMenu", abMainMenu_PreCustomizeMenu);
          OpenHR.addActiveXHandler("abMainMenu", "Click", abMainMenu_Click);
          OpenHR.addActiveXHandler("abMainMenu", "KeyDown", abMainMenu_KeyDown);
          OpenHR.addActiveXHandler("abMainMenu", "ComboSelChange", abMainMenu_ComboSelChange);
          OpenHR.addActiveXHandler("abMainMenu", "PreSysMenu", abMainMenu_PreSysMenu);
-         OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "rowcolchange", ssOleDBGridSelRecords_rowcolchange);
-         OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "dblClick", ssOleDBGridSelRecords_dblClick);
-         OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "KeyPress", ssOleDBGridSelRecords_KeyPress);
+        
+        //TODO - Reattach handlers - for some reason the control can't be found by the addhandelr - don't know why!
+         //OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "RowColChange", ssOleDBGridSelRecords_RowColChange);
+         //OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "DblClick", ssOleDBGridSelRecords_DblClick);
+         //OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "KeyPress", ssOleDBGridSelRecords_KeyPress);
      }
 
      function abMainMenu_DataReady() {
@@ -688,7 +690,7 @@
                      abMainMenu.save(sPath, "");
                  }
                  catch(e) {
-                     ASRIntranetFunctions.MessageBox("The specified temporary menu file path cannot be written to. The temporary menu file path will be cleared."); 
+                     OpenHR.messageBox("The specified temporary menu file path cannot be written to. The temporary menu file path will be cleared."); 
                      sKey = new String("tempMenuFilePath_");
                      sKey = sKey.concat(window.parent.window.dialogArguments.window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);	
                      ASRIntranetFunctions.SaveRegistrySetting("HR Pro", "DataPaths", sKey, "<NONE>");
@@ -707,7 +709,7 @@
 
      function abMainMenu_PreCustomizeMenu(pfCancel) {
          pfCancel = true;
-         ASRIntranetFunctions.MessageBox("The menu cannot be customized. Errors will occur if you attempt to customize it. Click anywhere in your browser to remove the dummy customisation menu.");         
+         OpenHR.messageBox("The menu cannot be customized. Errors will occur if you attempt to customize it. Click anywhere in your browser to remove the dummy customisation menu.");         
      }
      
      function abMainMenu_Click(pTool) {
@@ -728,7 +730,7 @@
          }     
      }
 
-     function  abMainMenu_KeyDown(piKeyCode, piShift) {
+     function abMainMenu_KeyDown(piKeyCode, piShift) {
          iIndex = abMainMenu.ActiveBand.CurrentTool;
 	
          if (abMainMenu.ActiveBand.Tools(iIndex).Name == "mnutoolLocateRecords") {
@@ -754,11 +756,11 @@
          }
      }
 
-     function ssOleDBGridSelRecords_rowcolchange() {
+     function ssOleDBGridSelRecords_RowColChange() {
          refreshControls();         
      }
 
-     function ssOleDBGridSelRecords_dblClick() {
+     function ssOleDBGridSelRecords_DblClick() {
          if (frmUseful.txtSelectionType.value != "ALL") {
              makeSelection();
          }         
@@ -789,7 +791,7 @@
              locateRecord(sFind);
          }         
      }
-     
+
  </script>
             
 
@@ -803,12 +805,7 @@
         height="32" id="abMainMenu" name="abMainMenu" style="LEFT: 0px; TOP: 0px" width="100%" viewastext>
         <param name="_ExtentX" value="847">
         <param name="_ExtentY" value="847">
-    </object>
-
-    
-        HELLO LOFTY
-
-    
+    </object>   
 
     <table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="95%">
         <%
@@ -901,7 +898,7 @@
 
                                         ' Instantiate and initialise the grid. 
                                 %>
-                                <object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id="ssOleDBGridSelRecords" name="ssOleDBGridSelRecords" codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 100%">
+                                <object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id=ssOleDBGridSelRecords name=ssOleDBGridSelRecords codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 100%">
                                     <param name="ScrollBars" value="4">
                                     <param name="_Version" value="196616">
                                     <param name="DataMode" value="2">
@@ -1213,7 +1210,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id="OBJECT1" name="ssOleDBGridSelRecords" codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 100%">
+                                            <object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id="OBJECT1" name="ssOleDBGridSelRecords" codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 400px">
                                                 <param name="ScrollBars" value="4">
                                                 <param name="_Version" value="196617">
                                                 <param name="DataMode" value="2">
@@ -1337,21 +1334,21 @@
                 </td>
             </tr>
         </table>
+        </table>
 
 
         <input type='hidden' id="txtTicker" name="txtTicker" value="0">
         <input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
         
 
-        <form name="frmPrompt" method="post" action="promptedValues.asp" id="frmPrompt" style="visibility: hidden; display: none">
+        <form name="frmPrompt" method="post" action="promptedValues" id="frmPrompt" style="visibility: hidden; display: none">
             <input type="hidden" id="filterID" name="filterID">
         </form>
         
 
-<script type="text/javascript">
+        </div>
 
-    debugger;
+<script type="text/javascript">
     picklistSelection_addhandlers();
-    picklistSelection_window_onload();
 </script>
         
