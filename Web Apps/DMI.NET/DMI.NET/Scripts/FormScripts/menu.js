@@ -27,7 +27,8 @@
 
 	//Add accordion functionality to the context menu
 	$(".accordion").accordion({
-		heightStyle: "fill"
+	    heightStyle: "fill",
+	    icons: false
 	});
 
 	//Add treeview functionality to all divs in the accordion
@@ -1704,7 +1705,8 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	
 	iResult = 7; // 7 = vbNo
 	sCurrentPage = OpenHR.currentWorkPage();
-	
+    //TODO: NPG
+	return 7;
 	if ((sCurrentPage == "RECORDEDIT") ||
 		(sCurrentPage == "LOOKUPFIND") ||
 		(sCurrentPage == "LINKFIND") ||
@@ -1857,6 +1859,7 @@ function menu_loadDefSelPage(piDefSelType, piUtilID, piTableID, pfFromMenu) {
 }
 
 function menu_loadRecordEditPage(psToolName) {
+    alert("empty function loadRecordEditPage");
 //	var lngTableID;
 //	var lngViewID;
 //	var lngScreenID;

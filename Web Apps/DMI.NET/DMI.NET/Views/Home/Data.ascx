@@ -290,16 +290,17 @@
 				if (dataCollection!=null) {
 					// Need to hide the popup in case setdata causes
 					// the intrecedit control to display an error message.
-					menu_refreshMenu();	
-	  
+					menu_refreshMenu();
+
 					for (var i=0; i<dataCollection.length; i++)  {
 					  sControlName = dataCollection.item(i).name;
 						sControlName = sControlName.substr(0, 8);
 						if (sControlName=="txtData_") {
 						  sColumnId = dataCollection.item(i).name;
 						  sColumnId = sColumnId.substr(8);
-
- 							recEditControl.setData(sColumnId, dataCollection.item(i).value);
+						    var x = $("#FI_" + sColumnId);
+						    //recEditControl.setData(sColumnId, dataCollection.item(i).value);
+						    $("#FI_" + sColumnId).val(dataCollection.item(i).value);
 						}
 					}
 				}	

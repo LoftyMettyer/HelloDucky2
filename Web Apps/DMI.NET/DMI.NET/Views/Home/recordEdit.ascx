@@ -1,32 +1,14 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import namespace="DMI.NET" %>
 
-<%
-    Dim sReferringPage
-
-    '' Only open the form if there was a referring page.
-    '' If it wasn't then redirect to the login page.
-    'sReferringPage = Request.ServerVariables("HTTP_REFERER") 
-    'if inStrRev(sReferringPage, "/") > 0 then
-    '	sReferringPage = mid(sReferringPage, inStrRev(sReferringPage, "/") + 1)
-    'end if
-
-    'if len(sReferringPage) = 0 then
-    '	Response.Redirect("login.asp")
-    'end if
-%>
-
-<OBJECT classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" 
-	id="Microsoft_Licensed_Class_Manager_1_0" 
-	VIEWASTEXT>
-	<PARAM NAME="LPKPath" VALUE="lpks/main.lpk">
-</OBJECT>
-
 <script type="text/javascript">
+
     function recordEdit_window_onload() {
 
+        $("#ctlRecordEdit").tabs();
+
         var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
-       
+
         var fOK;
         fOK = true;
         var sErrMsg = frmRecordEditForm.txtErrorDescription.value;
@@ -40,8 +22,8 @@
             // Expand the work frame and hide the option frame.
             //window.parent.document.all.item("workframeset").cols = "*, 0";
             $("#workframe").attr("data-framesource", "RECORDEDIT");
-
-            var recEditCtl = frmRecordEditForm.ctlRecordEdit;
+           
+            var recEditCtl = document.getElementById("ctlRecordEdit"); // frmRecordEditForm.ctlRecordEdit;
 
             if (recEditCtl == null) {
                 fOK = false;
@@ -97,70 +79,110 @@
                 //frmGoto.submit();
                 OpenHR.submitForm(frmGoto);
             } else {
-                // Set the recEdit control properties.
-                fOK = recEditCtl.initialise(
-                    frmRecordEditForm.txtRecEditTableID.value,
-                    frmRecordEditForm.txtRecEditHeight.value,
-                    frmRecordEditForm.txtRecEditWidth.value + 1,
-                    frmRecordEditForm.txtRecEditTabCount.value,
-                    frmRecordEditForm.txtRecEditTabCaptions.value,
-                    frmRecordEditForm.txtRecEditFontName.value,
-                    frmRecordEditForm.txtRecEditFontSize.value,
-                    frmRecordEditForm.txtRecEditFontBold.value,
-                    frmRecordEditForm.txtRecEditFontItalic.value,
-                    frmRecordEditForm.txtRecEditFontUnderline.value,
-                    frmRecordEditForm.txtRecEditFontStrikethru.value,
-                    frmRecordEditForm.txtRecEditRealSource.value,
-                    frmRecordEditForm.txtPicturePath.value,
-                    frmRecordEditForm.txtRecEditEmpTableID.value,
-                    frmRecordEditForm.txtRecEditCourseTableID.value,
-                    frmRecordEditForm.txtRecEditTBStatusColumnID.value,
-                    frmRecordEditForm.txtRecEditCourseCancelDateColumnID.value
-                );
+
+                // Set the recEdit control properties.               
+                //TODO: initialise clears the recordDMI activeX object and sets the module variables as below.
+                //fOK = recEditCtl.initialise(
+                //    frmRecordEditForm.txtRecEditTableID.value,
+                //    frmRecordEditForm.txtRecEditHeight.value,
+                //    frmRecordEditForm.txtRecEditWidth.value + 1,
+                //    frmRecordEditForm.txtRecEditTabCount.value,
+                //    frmRecordEditForm.txtRecEditTabCaptions.value,
+                //    frmRecordEditForm.txtRecEditFontName.value,
+                //    frmRecordEditForm.txtRecEditFontSize.value,
+                //    frmRecordEditForm.txtRecEditFontBold.value,
+                //    frmRecordEditForm.txtRecEditFontItalic.value,
+                //    frmRecordEditForm.txtRecEditFontUnderline.value,
+                //    frmRecordEditForm.txtRecEditFontStrikethru.value,
+                //    frmRecordEditForm.txtRecEditRealSource.value,
+                //    frmRecordEditForm.txtPicturePath.value,
+                //    frmRecordEditForm.txtRecEditEmpTableID.value,
+                //    frmRecordEditForm.txtRecEditCourseTableID.value,
+                //    frmRecordEditForm.txtRecEditTBStatusColumnID.value,
+                //    frmRecordEditForm.txtRecEditCourseCancelDateColumnID.value
+                //);
 
                 if (fOK == true) {
                     // Get the recEdit control to instantiate the required controls.
                     var sControlName;
                     var controlCollection = frmRecordEditForm.elements;
                     if (controlCollection != null) {
+                        var txtControls = new Array();
+                        var txtControlsCount = 0;
+
+
+                        //two loops here - the controlCollection was growing as controls were added, which didn't help.
                         for (var i = 0; i < controlCollection.length; i++) {
                             sControlName = controlCollection.item(i).name;
                             sControlName = sControlName.substr(0, 18);
                             if (sControlName == "txtRecEditControl_") {
-                                fOK = recEditCtl.addControl(controlCollection.item(i).value);
+                                //fOK = recEditCtl.addControl(controlCollection.item(i).value);
+                                txtControls[txtControlsCount] = controlCollection.item(i).name;
+                                txtControlsCount += 1;
                             }
 
                             if (fOK == false) {
                                 break;
                             }
                         }
+
+                        //Now add the form controls based on the fixed array of txtRecEditControl_ items...
+                        for (var i = 0; i < txtControls.length; i++) {
+                            var txtControlValue = $("#" + txtControls[i]).val();
+                            AddHtmlControl(txtControlValue);
+                        }
+
                     }
                 }
+
+                //jQuery Functionality:
+                if (fOK == true) {
+                    //add datepicker functionality.
+                    $(".datepicker").datepicker();
+                    //add spinner functionality
+                    $(".spinner").spinner();
+                }
+
 
                 if (fOK == true) {
                     // Set the column control values in the recEdit control.
                     var sControlName;
                     var controlCollection = frmRecordEditForm.elements;
                     if (controlCollection != null) {
+                        var txtControls = new Array();
+                        var txtControlsCount = 0;
+
                         for (i = 0; i < controlCollection.length; i++) {
                             sControlName = controlCollection.item(i).name;
-                            sControlName = sControlName.substr(0, 24);
-                            if (sControlName == "txtRecEditControlValues_") {
-                                fOK = recEditCtl.addControlValues(controlCollection.item(i).value);
+                            if (sControlName) {
+                                sControlName = sControlName.substr(0, 24);
+                                if (sControlName == "txtRecEditControlValues_") {
+                                    //fOK = recEditCtl.addControlValues(controlCollection.item(i).value);
+                                    txtControls[txtControlsCount] = controlCollection.item(i).name;
+                                    txtControlsCount += 1;
+                                }
                             }
-
                             if (fOK == false) {
                                 break;
                             }
+                        }
+
+                        //Now add the form control values based on the fixed array of txtRecEditControl_ items...
+                        for (var i = 0; i < txtControls.length; i++) {
+                            var txtControlValue = $("#" + txtControls[i]).val();
+                            addHTMLControlValues(txtControlValue);
                         }
                     }
                 }
 
                 if (fOK == true) {
                     // Get the recEdit control to format itself.
-                    recEditCtl.formatscreen();
+                    //No longer necessary
+
+                    //recEditCtl.formatscreen();
 
                     //JPD 20021021 - Added picture functionality.
+                    //TODO: NPG
                     if (frmRecordEditForm.txtImagePath.value.length > 0) {
                         var controlCollection = frmRecordEditForm.elements;
                         if (controlCollection != null) {
@@ -170,7 +192,7 @@
                                 if (sControlName == "txtRecEditPicture_") {
                                     sControlName = controlCollection.item(i).name;
                                     iPictureID = new Number(sControlName.substr(18));
-                                    recEditCtl.updatePicture(iPictureID, frmRecordEditForm.txtImagePath.value + "/" + controlCollection.item(i).value);
+                                    // recEditCtl.updatePicture(iPictureID, frmRecordEditForm.txtImagePath.value + "/" + controlCollection.item(i).value);
                                 }
                             }
                         }
@@ -204,39 +226,410 @@
                     dataForm.txtRecordID.value = frmRecordEditForm.txtCurrentRecordID.value;
                     dataForm.txtParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
                     dataForm.txtParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
-                    dataForm.txtDefaultCalcCols.value = recEditCtl.CalculatedDefaultColumns();
+                    //dataForm.txtDefaultCalcCols.value = recEditCtl.CalculatedDefaultColumns();
 
                     //this should be in scope by now.
-                    data_refreshData();   //window.parent.frames("dataframe").refreshData();
+                    //TODO: NPG
+                    //data_refreshData(); //window.parent.frames("dataframe").refreshData();
                 }
 
                 if (fOK != true) {
                     // The recEdit control was not initialised properly.
                     OpenHR.messageBox("Record Edit control not initialised properly.");
-                    window.location= "login";
+                    window.location = "login";
                 }
             }
         }
-        try {            
-            frmRecordEditForm.ctlRecordEdit.SetWidth(frmRecordEditForm.txtRecEditWidth.value);
-            
+
+        try {
+
+            //frmRecordEditForm.ctlRecordEdit.SetWidth(frmRecordEditForm.txtRecEditWidth.value);
+
             //NPG - recedit not resizing. Do it manually.
             var newHeight = frmRecordEditForm.txtRecEditHeight.value / 15;
             var newWidth = frmRecordEditForm.txtRecEditWidth.value / 15;
 
             $("#ctlRecordEdit").height(newHeight + "px");
             $("#ctlRecordEdit").width(newWidth + "px");
-            
+
             //parent.window.resizeBy(-1, -1);
             //parent.window.resizeBy(1, 1);
-        } catch(e) {
+        } catch (e) {
+        }
+
+    }
+
+
+    function addControl(tabNumber, controlDef) {
+
+        var tabID = "FI_21_" + tabNumber
+
+        if (($("#" + tabID).length <= 0) && (tabNumber > 0)) {
+            //tab doesn't exist - create it...
+            var tabs = $("#ctlRecordEdit").tabs(),
+        tabTemplate = "<li><a href='#{href}'>#{label}</a></li>";
+
+            var label = "Tab" + tabNumber,
+                li = $(tabTemplate.replace(/#\{href\}/g, "#" + tabID).replace(/#\{label\}/g, label));
+
+            tabs.find(".ui-tabs-nav").append(li);
+            tabs.append("<div style='position: relative;' id='" + tabID + "'></div>");
+            tabs.tabs("refresh");
+            if (tabNumber == 1) tabs.tabs("option", "active", 0);
+        }
+
+        //add control to tab.
+        try {
+            $("#" + tabID).append(controlDef);
+        }
+        catch (e) { alert("unable to add control!"); }
+
+    }
+
+
+    function applyLocation(formItem, controlItemArray) {
+        formItem.style.top = (Number(controlItemArray[4]) / 15) + "px";
+        formItem.style.left = (Number(controlItemArray[5]) / 15) + "px";
+        formItem.style.height = (Number(controlItemArray[6]) / 15) + "px";
+        formItem.style.width = (Number(controlItemArray[7]) / 15) + "px";
+        formItem.style.position = "absolute";
+    }
+
+    // -------------------------------------------------- Add the record Edit controls ------------------------------------------------
+    function AddHtmlControl(controlItem) {
+        var controlItemArray = controlItem.split("\t");
+        var sProperty;
+        var fDoingIDColumn = false;
+        var iPageNo = 0;
+        var iPageName = "";
+        var sHTMLTag = ""
+        var sHTMLAttributes = ""
+        var sHTMLStyles = ""
+        var sHTMLContent = ""
+        var controlID = ""
+
+        //do nowt for negative id columns.
+        if (controlItemArray[0] < 0) return;
+
+        var iPageNo = Number(controlItemArray[0]);
+        var controlID = "FI_" + controlItemArray[2];
+        //ColumnID used for controlvalues etc, not unique.
+        var ColumnID = controlItemArray[2];
+        var tabIndex = Number(controlItemArray[18]);
+
+        //TODO: move styling to classes
+        //TODO: can't use ID's as they may not be unique....
+
+        var ControlType = Number(controlItemArray[3]);
+        var fSelectOK = false;
+        var fParentTableControl = false;
+        var fControlEnabled = true;
+        var fReadOnly = false;
+
+        //Permissions. From activeX recordDMI.formatscreen function.
+        if ($("#txtRecEditTableID").val() == controlItemArray[1]) {
+            if (controlItemArray[2] > 0) { }
+            fSelectOK = (Number(controlItemArray[47]) != 0);
+            fParentTableControl = false;
+
+            // Disable control if no permission is granted.
+            fControlEnabled = (Number(controlItemArray[40]) == 0);  //database readonly value
+            if ((ControlType == 8) || ((ControlType == 64) && (Number(controlItemArray[37]) != 0))) fControlEnabled = true;    //enable all multiline text, or OLEs
+
+
+            if (fControlEnabled) {
+                if ((ControlType == 64) && (Number(controlItemArray[23]) == 11)) {
+                    //Date Control
+                    fControlEnabled = (Number(controlItemArray[48] != 0));  // UpdateGranted property
+                }
+                else if (ControlType == 2048) {
+                    //CommandButton
+                    fControlEnabled = false;
+                }
+                else {
+                    fControlEnabled = (Number(controlItemArray[48] != 0));  // UpdateGranted property
+
+                    if ((ControlType == 64) && (Number(controlItemArray[37]) != 0) && ((Number(controlItemArray[23]) == 12) || (Number(controlItemArray[23]) == -1))) {
+                        //if multiline text and (sqlVarchar or sqllongvarchar)
+                        if ((!fControlEnabled) || (Number(controlItemArray[61]) != 0)) {
+                            //if screen.readonly or disabled
+                            fControlEnabled = true;
+                            fReadOnly = true;
+                        }
+                    }
+
+                }
+            }
+        }
+        else {
+            //Parent table control.
+            fParentTableControl = true;
+            if ((ControlType == 256) || (ControlType == 512) || (ControlType == 4) || (ControlType == 2 ^ 13) || (ControlType == 2 ^ 14) || (ControlType == 2 ^ 15)) {
+                //label, frame, image, line, navigation or colourpicker
+                fControlEnabled = false;
+            }
+
+            if ((ControlType == 64) && (Number(controlItemArray[37]) != 0) && ((Number(controlItemArray[23]) == 12) || (Number(controlItemArray[23]) == -1))) {
+                //if multiline text and (sqlVarchar or sqllongvarchar)
+                if ((!fControlEnabled) || (Number(controlItemArray[61]) != 0)) {
+                    //if screen.readonly or disabled
+                    fControlEnabled = true;
+                    fReadOnly = true;
+                }
+            }
+        }
+
+        if (Number(controlItemArray[61]) != 0) {
+            //Screen.Readonly
+            fControlEnabled = false;
+        }
+
+
+        //Now add the controls to the form...
+
+        switch (Number(controlItemArray[3])) {
+            case 1: //checkbox
+                //TODO: right-aligned checkboxes                
+                var span = document.createElement('span');
+                span.className = "checkbox left";
+                applyLocation(span, controlItemArray);
+                span.style.margin = "0px";
+                span.style.textAlign = "left";
+                span.style.display = "inline-block";
+
+                var checkbox = span.appendChild(document.createElement('input'));
+                checkbox.type = "checkbox";
+                checkbox.id = controlID;
+                checkbox.style.fontFamily = controlItemArray[11];
+                checkbox.style.fontSize = controlItemArray[12] + 'pt';
+                checkbox.style.position = "absolute";
+                checkbox.style.top = "50%";
+                checkbox.style.left = "0px";
+                checkbox.style.padding = "0px";
+                checkbox.style.margin = "-7px 0px 0px 0px";
+                checkbox.style.textAlign = "left";
+
+                var label = span.appendChild(document.createElement('label'));
+                label.htmlFor = checkbox.id;
+                label.appendChild(document.createTextNode(controlItemArray[8]));
+                label.style.marginLeft = "18px";
+                label.style.fontFamily = controlItemArray[11];
+                label.style.fontSize = controlItemArray[12] + 'pt';
+
+
+                checkbox.setAttribute("data-ColumnID", ColumnID);
+
+                if (!fControlEnabled) span.disabled = true;
+
+                //Add control to relevant tab, create if required.                
+                addControl(iPageNo, span);
+
+                break;
+            case 2: //ctlCombo
+                var selector = document.createElement('select');
+                selector.id = controlID;
+                applyLocation(selector, controlItemArray);
+                selector.style.backgroundColor = "White";
+                selector.style.color = "Black";
+                selector.style.fontFamily = controlItemArray[11];
+                selector.style.fontSize = controlItemArray[12] + 'pt';
+                selector.style.borderWidth = "1px";
+                selector.setAttribute("data-ColumnID", ColumnID);
+
+                if (!fControlEnabled) selector.disabled = true;
+
+                addControl(iPageNo, selector);
+
+                var option = document.createElement('option');
+                option.value = '0';
+                option.appendChild(document.createTextNode(''));
+                selector.appendChild(option);
+
+                break;
+
+            case 4, 1024: //Image/Photo
+                var image = document.createElement('img');
+                image.id = controlID;
+                applyLocation(image, controlItemArray);
+                image.style.border = "1px solid gray";
+                image.style.padding = "0px";
+                image.setAttribute("data-ColumnID", ColumnID);
+
+                if (!fControlEnabled) image.disabled = true;
+
+                //Add control to relevant tab, create if required.                
+                addControl(iPageNo, image);
+
+                break;
+            case 8: //ctlOle
+                var button = document.createElement('input');
+                button.type = "button";
+                button.value = "OLE";
+                applyLocation(button, controlItemArray);
+                button.style.padding = "0px";
+                button.setAttribute("data-ColumnID", ColumnID);
+                //button.disabled = false;    //always enabled
+                addControl(iPageNo, button);
+
+                break;
+            case 16: //ctlRadio
+                //TODO: set 'maxlength=.size' if fselectOK is true and not fparentcontrol
+                //TODO: .disabled = (!fControlEnabled);
+                break;
+            case 32: //ctlSpinner
+                var spinnerContainer = document.createElement('div');
+                applyLocation(spinnerContainer, controlItemArray);
+                spinnerContainer.style.padding = "0px";
+
+                var spinner = spinnerContainer.appendChild(document.createElement("input"));
+                spinner.className = "spinner";
+                spinner.id = controlID;
+                spinner.style.fontFamily = controlItemArray[11];
+                spinner.style.fontSize = controlItemArray[12] + 'pt';
+                spinner.style.width = (Number((controlItemArray[7]) / 15)) + "px";
+                spinner.style.margin = "0px";
+                spinner.setAttribute("data-ColumnID", ColumnID);
+
+                if (!fControlEnabled) spinnerContainer.disabled = true;
+
+                //Add control to relevant tab, create if required.                
+                addControl(iPageNo, spinnerContainer);
+                break;
+            case 64: //ctlText
+
+                if (Number(controlItemArray[37]) !== 0) {
+                    //Multi-line textbox
+                    var textbox = document.createElement('textarea');
+                    //textbox.disabled = false;  //always enabled.
+                }
+                else {
+                    var textbox = document.createElement('input');
+
+                    switch (Number(controlItemArray[23])) {
+                        case 11: //sqlDate
+                            textbox.type = "text";
+                            textbox.className = "datepicker";
+                            break;
+                        case 2, 4: //sqlNumeric, sqlInteger
+                            textbox.type = "number";
+                            break;
+                        default:
+                            textbox.type = "text";
+                            textbox.isMultiLine = false;
+
+                            if (controlItemArray[35].length > 0) {
+                                //TODO: apply mask to control
+                            }
+                    }
+
+                    if (!fControlEnabled) textbox.disabled = true;
+
+                }
+
+                textbox.id = controlID;
+                applyLocation(textbox, controlItemArray);
+                textbox.style.fontFamily = controlItemArray[11];
+                textbox.style.fontSize = controlItemArray[12] + 'pt';
+                textbox.style.padding = "0px";
+                textbox.setAttribute("data-ColumnID", ColumnID);
+
+                //Add control to relevant tab, create if required.                
+                addControl(iPageNo, textbox);
+                break;
+            case 128: //ctlTab
+                break;
+            case 256: //Label
+                var span = document.createElement('span');
+                applyLocation(span, controlItemArray);
+                span.style.backgroundColor = "White";
+                span.style.color = "Black";
+                span.style.fontFamily = controlItemArray[11];
+                span.style.fontSize = controlItemArray[12] + 'pt';
+                span.innerText = controlItemArray[8];
+
+                //replaces the SetControlLevel function in recordDMI.ocx.
+                span.style.zIndex = 0;
+
+                if (!fControlEnabled) span.disabled = true;
+
+                addControl(iPageNo, span);
+
+                break;
+            case 512: //Frame
+                var fieldset = document.createElement('fieldset');
+                applyLocation(fieldset, controlItemArray);
+                fieldset.style.backgroundColor = "transparent";
+                fieldset.style.color = "Black";
+                fieldset.style.padding = "0px";
+
+                var legend = fieldset.appendChild(document.createElement('legend'));
+                legend.appendChild(document.createTextNode(controlItemArray[8]));
+
+                addControl(iPageNo, fieldset);
+
+                break;
+                //case 1024: //ctlPhoto - see case 4.            
+            case 2048: //ctlCommand
+                break;
+            case 4096: //ctlWorking Pattern
+                //TODO: .disabled = (!fControlEnabled);
+                break;
+            case 2 ^ 13: //ctlLine
+                break;
+            case 2 ^ 14: //ctlNavigation
+                //TODO: Nav control always .disabled = false.
+                break;
+            case 2 ^ 15: //ctlColourPicker
+                //TODO: .disabled = (!fControlEnabled);
+                break;
+            default:
+                break;
         }
     }
+
+    function addHTMLControlValues(controlValues) {
+        var controlValuesArray = controlValues.split("\t");
+        var fDoneFirstValue = false;
+        var lngColumnID = 0;
+        var sValue = "";
+
+        for (var i = 0; i < controlValuesArray.length; i++) {
+
+            sValue = controlValuesArray[i];
+
+            if (lngColumnID > 0) {
+                if (sValue.length > 0) {
+
+                    //get the column type, then add this value to it/them.
+                    $("#ctlRecordEdit").find("[data-ColumnID='" + lngColumnID + "']").each(function () {
+                        //TODO: Option Groups
+                        if ($(this).is("select")) {
+                            var option = document.createElement('option');
+                            option.value = i + 1;
+                            option.appendChild(document.createTextNode(sValue));
+                            $(this).append(option);
+                        }
+                    });
+                }
+            }
+            else {
+                if (sValue.length > 0) {
+                    //set the column ID to apply list to.
+                    lngColumnID = Number(sValue);
+                }
+                else { return false; }
+            }
+        }
+    }
+
+
+
 </script>
 
 <script type="text/javascript">
     function addActiveXHandlers() {
-
+        //TODO: NPG
+        return false;
         OpenHR.addActiveXHandler("ctlRecordEdit", "dataChanged", ctlRecordEdit_dataChanged);
         OpenHR.addActiveXHandler("ctlRecordEdit", "ToolClickRequest", ctlRecordEdit_ToolClickRequest);
         OpenHR.addActiveXHandler("ctlRecordEdit", "LinkButtonClick", ctlRecordEdit_LinkButtonClick);
@@ -248,8 +641,7 @@
 
 
 <SCRIPT type="text/javascript">
-    function ctlRecordEdit_dataChanged()
-    {
+    function ctlRecordEdit_dataChanged() {
         // The data in the recEdit control has changed so refresh the menu.
         // Get menu.asp to refresh the menu.
         menu_refreshMenu();
@@ -261,8 +653,7 @@
         menu_MenuClick(strTool);
     }
 
-    function ctlRecordEdit_LinkButtonClick(plngLinkTableID, plngLinkOrderID, plngLinkViewID, plngLinkRecordID)
-    {        
+    function ctlRecordEdit_LinkButtonClick(plngLinkTableID, plngLinkOrderID, plngLinkViewID, plngLinkRecordID) {
         // A link button has been pressed in the recEdit control,
         // so open the link option page.
         menu_loadLinkPage(plngLinkTableID, plngLinkOrderID, plngLinkViewID, plngLinkRecordID);
@@ -287,27 +678,26 @@
 
         if (fOK == true) {
             //TODO Client DLL stuff
-        //    if (plngOLEType < 2) {
-        //        fOK = window.parent.frames("menuframe").ASRIntranetFunctions.ValidateDir(frmRecordEditForm.txtPicturePath.value);
-        //        if (fOK == true)
-        //            window.parent.frames("menuframe").loadImagePage(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize);
-        //        else
-        //            window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit photo fields as the photo path is not valid.");
-        //    } else {
-        //        window.parent.frames("menuframe").loadImagePage(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize);
-        //    }
+            //    if (plngOLEType < 2) {
+            //        fOK = window.parent.frames("menuframe").ASRIntranetFunctions.ValidateDir(frmRecordEditForm.txtPicturePath.value);
+            //        if (fOK == true)
+            //            window.parent.frames("menuframe").loadImagePage(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize);
+            //        else
+            //            window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox("Unable to edit photo fields as the photo path is not valid.");
+            //    } else {
+            //        window.parent.frames("menuframe").loadImagePage(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize);
+            //    }
         }
-    }	
+    }
 
     function ctlRecordEdit_OLEClick4(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly) {
         // An OLE button has been pressed in the recEdit control,
         // so open the OLE page.	
         var fOK;
         var sKey = new String('');
-  
+
         fOK = true;
-        if (frmRecordEditForm.ctlRecordEdit.recordID == 0)
-        {
+        if (frmRecordEditForm.ctlRecordEdit.recordID == 0) {
             OpenHR.messageBox("Unable to edit OLE fields until the record has been saved.");
             fOK = false;
         }
@@ -346,118 +736,60 @@
         //    }
         //}	        
     }
-    
-    
 
-    function recordEdit_refreshData()
-        {
-            // Get the data.asp to get the required data.
-            var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
-            var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
-        
-            frmGetDataForm.txtAction.value = "LOAD";
-            frmGetDataForm.txtReaction.value = "";
-            frmGetDataForm.txtCurrentTableID.value = frmRecordEditForm.txtCurrentTableID.value;
-            frmGetDataForm.txtCurrentScreenID.value = frmRecordEditForm.txtCurrentScreenID.value;
-            frmGetDataForm.txtCurrentViewID.value = frmRecordEditForm.txtCurrentViewID.value;
-            frmGetDataForm.txtSelectSQL.value = frmRecordEditForm.txtRecEditSelectSQL.value;	
-            frmGetDataForm.txtFromDef.value = frmRecordEditForm.txtRecEditFromDef.value;	
-            frmGetDataForm.txtFilterSQL.value = frmRecordEditForm.txtRecEditFilterSQL.value;	
-            frmGetDataForm.txtFilterDef.value = frmRecordEditForm.txtRecEditFilterDef.value;	
-            frmGetDataForm.txtRealSource.value = frmRecordEditForm.txtRecEditRealSource.value;
-            frmGetDataForm.txtRecordID.value = OpenHR.getForm("dataframe", "frmData").txtRecordID.value;
-            frmGetDataForm.txtParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
-            frmGetDataForm.txtParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
-            frmGetDataForm.txtDefaultCalcCols.value = frmRecordEditForm.ctlRecordEdit.CalculatedDefaultColumns();
-            frmGetDataForm.txtInsertUpdateDef.value = "";
-            frmGetDataForm.txtTimestamp.value = "";
 
-            data_refreshData();
+
+    function recordEdit_refreshData() {
+        // Get the data.asp to get the required data.
+        var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
+        var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
+
+        frmGetDataForm.txtAction.value = "LOAD";
+        frmGetDataForm.txtReaction.value = "";
+        frmGetDataForm.txtCurrentTableID.value = frmRecordEditForm.txtCurrentTableID.value;
+        frmGetDataForm.txtCurrentScreenID.value = frmRecordEditForm.txtCurrentScreenID.value;
+        frmGetDataForm.txtCurrentViewID.value = frmRecordEditForm.txtCurrentViewID.value;
+        frmGetDataForm.txtSelectSQL.value = frmRecordEditForm.txtRecEditSelectSQL.value;
+        frmGetDataForm.txtFromDef.value = frmRecordEditForm.txtRecEditFromDef.value;
+        frmGetDataForm.txtFilterSQL.value = frmRecordEditForm.txtRecEditFilterSQL.value;
+        frmGetDataForm.txtFilterDef.value = frmRecordEditForm.txtRecEditFilterDef.value;
+        frmGetDataForm.txtRealSource.value = frmRecordEditForm.txtRecEditRealSource.value;
+        frmGetDataForm.txtRecordID.value = OpenHR.getForm("dataframe", "frmData").txtRecordID.value;
+        frmGetDataForm.txtParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
+        frmGetDataForm.txtParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
+        //TODO frmGetDataForm.txtDefaultCalcCols.value = frmRecordEditForm.ctlRecordEdit.CalculatedDefaultColumns();
+        frmGetDataForm.txtInsertUpdateDef.value = "";
+        frmGetDataForm.txtTimestamp.value = "";
+
+        data_refreshData();
     }
-        
 
-    function setRecordID(plngRecordID)
-    {
+
+    function setRecordID(plngRecordID) {
         frmRecordEditForm.txtCurrentRecordID.value = plngRecordID;
         frmRecordEditForm.ctlRecordEdit.recordID = plngRecordID;
     }
 
-    function setCopiedRecordID(plngRecordID)
-    {
+    function setCopiedRecordID(plngRecordID) {
         frmRecordEditForm.ctlRecordEdit.CopiedRecordID = plngRecordID;
     }
 
-    function setParentTableID(plngParentTableID)
-    {
+    function setParentTableID(plngParentTableID) {
         frmRecordEditForm.txtCurrentParentTableID.value = plngParentTableID;
         frmRecordEditForm.ctlRecordEdit.ParentTableID = plngParentTableID;
     }
 
-    function setParentRecordID(plngParentRecordID)
-    {
+    function setParentRecordID(plngParentRecordID) {
         frmRecordEditForm.txtCurrentParentRecordID.value = plngParentRecordID;
         frmRecordEditForm.ctlRecordEdit.ParentRecordID = plngParentRecordID;
     }
 
 </script>
 
-<!--The following objects are included to ensure that some of the controls 
-that are used in the ASRIntRecEdit control are downloaded and installed properly.
--->
-<OBJECT 
-	classid=clsid:66A90C04-346D-11D2-9BC0-00A024695830 
-	codebase="cabs/timask6.cab#version=6,0,1,1" 
-	id=TDBMask1 style="display: none;"
-	VIEWASTEXT>
-</OBJECT>
- 
-<OBJECT 
-	classid=clsid:49CBFCC2-1337-11D2-9BBF-00A024695830 
-	codebase="cabs/tinumb6.cab#version=6,0,1,1" 
-	id=TDBNumber1  style="display: none;"
-	VIEWASTEXT>
-</OBJECT>
-
-<OBJECT 
-	id=ASRUserImage1 
-	CLASSID="CLSID:8FF15C8D-49D5-4B79-8419-C36C26654283"
-	CODEBASE="cabs/COA_Image.cab#version=1,0,0,7"  style="display: none;"
-	VIEWASTEXT>
-		<PARAM NAME="_ExtentX" VALUE="2619">
-		<PARAM NAME="_ExtentY" VALUE="2619">
-		<PARAM NAME="ForeColor" VALUE="0">
-		<PARAM NAME="Enabled" VALUE="-1">
-		<PARAM NAME="BorderStyle" VALUE="0">
-		<PARAM NAME="ASRDataField" VALUE="0">
-</OBJECT>
-
-<OBJECT 
-	CLASSID="CLSID:C25C3704-2AA7-44E5-943A-B40B14E2348F"
-	CODEBASE="cabs/COA_Spinner.cab#version=1,0,0,3"
-	id=ASRSpinner1 
-	style="LEFT: 0px; TOP: 0px; VISIBILITY: hidden; display: none;" 
-	VIEWASTEXT>
-</OBJECT>
-
-<OBJECT 
-	classid="clsid:A49CE0E4-C0F9-11D2-B0EA-00A024695830" 
-	codebase="cabs/tidate6.cab#version=6,0,1,1" 
-	id=TDBDate1 
-	style="LEFT: 0px; TOP: 0px; VISIBILITY: hidden; display: none;" 
-	VIEWASTEXT>
-</OBJECT>
-
 <div <%=session("BodyTag")%>>
 <FORM action="" method=post id=frmRecordEditForm name=frmRecordEditForm>
 
-<table align=center class="outline" cellPadding=5 cellSpacing=0>
-	<TR>
-		<TD>
-			<TABLE WIDTH="100%" ALIGN=center BORDER=0 CELLSPACING=0 CELLPADDING=0>
-				<TR>
-					<td width=20></td>
-					<TD height=10>
-						<H3 align=center>
+
 <%
 	on error resume next
 	
@@ -492,41 +824,21 @@ that are used in the ASRIntRecEdit control are downloaded and installed properly
     End If
 
 	if len(sErrorDescription) = 0 then		  
-        Response.Write(Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " ") & vbCrLf)
+        'Response.Write(Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " ") & " - No activeX" & vbCrLf)        
         Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & cmdRecEditWindowTitle.Parameters("quickEntry").Value & ">" & vbCrLf)
     End If
 		
-	' Release the ADO command object.
-    cmdRecEditWindowTitle = Nothing
+
 %>
-						</H3>
-					</TD>
-					<td width=20></td>
-				</TR>
-				<TR align=middle>
-					<td width=20></td>
-					<TD align=middle class="bordered"> 
-						<OBJECT 
-							CLASSID="CLSID:2D0A5ED7-6669-481F-9A5D-19BA14E92364"
-							CODEBASE="cabs/COAInt_RecordDMI.cab#version=1,0,0,21"
-							id=ctlRecordEdit style="height: 1px; width: 1px;"
-							VIEWASTEXT>
-								<PARAM NAME="_ExtentX" VALUE="16007">
-								<PARAM NAME="_ExtentY" VALUE="6403">
-								<PARAM NAME="TabCount" VALUE="0">
-								<PARAM NAME="TabCaptions" VALUE="">
-								<PARAM NAME="BorderStyle" VALUE="0">
-						</OBJECT>
-					</TD>
-					<td width=20></td>
-				</TR>
-				<TR>
-				 <TD colSpan=3 height=10></TD>
-				</TR>
-			</TABLE>
-		</TD>
-	</TR>
-</table>
+
+<h3 class="pageTitle"><%Response.Write(Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " ") & " - No activeX" & vbCrLf)
+    ' Release the ADO command object.
+    cmdRecEditWindowTitle = Nothing%></h3>
+    
+<div id="ctlRecordEdit" style="margin:0 auto;">
+    <ul id="tabHeaders">        
+    </ul>
+</div>
 
 <%
     Response.Write("<INPUT type='hidden' id=txtAction name=txtAction value=" & Session("action") & ">" & vbCrLf)
@@ -727,7 +1039,7 @@ that are used in the ASRIntRecEdit control are downloaded and installed properly
 
 
 <script type="text/javascript">
-    addActiveXHandlers(); 
+    addActiveXHandlers();
     recordEdit_window_onload();
 </script>
 

@@ -13,7 +13,6 @@
             //window.parent.location.replace("login.asp");
         } else {
             // Do nothing if the menu controls are not yet instantiated.
-            if (2 != 3) {
                 var sCurrentWorkPage = OpenHR.currentWorkPage();
 
                 if (sCurrentWorkPage == "LINKFIND") {
@@ -488,7 +487,7 @@
                         menu_reloadFindPage("MOVEFIRST", "");
                     }
                 }
-            }
+            
         }
     }
     -->
