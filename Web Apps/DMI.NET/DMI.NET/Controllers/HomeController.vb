@@ -2164,7 +2164,181 @@ Namespace Controllers
       Return PartialView()
     End Function
 
+#Region "Picklists"
+
+    Function util_def_picklist() As ActionResult
+      Return PartialView()
+    End Function
+
+    Function util_def_picklist_submit(value As FormCollection)
+
+      On Error Resume Next
+
+      Dim cmdSave
+      Dim prmName
+      Dim prmDescription
+      Dim prmAccess
+      Dim prmUserName
+      Dim prmColumns
+      Dim prmColumns2
+      Dim prmID
+      Dim prmTableID
+
+      cmdSave = Server.CreateObject("ADODB.Command")
+      cmdSave.CommandText = "sp_ASRIntSavePicklist"
+      cmdSave.CommandType = 4 ' Stored Procedure
+      cmdSave.ActiveConnection = Session("databaseConnection")
+
+      prmName = cmdSave.CreateParameter("name", 200, 1, 8000) ' 200=varchar,1=input,8000=size
+      cmdSave.Parameters.Append(prmName)
+      prmName.value = Request.Form("txtSend_name")
+
+      prmDescription = cmdSave.CreateParameter("description", 200, 1, 8000) ' 200=varchar,1=input,8000=size
+      cmdSave.Parameters.Append(prmDescription)
+      prmDescription.value = Request.Form("txtSend_description")
+
+      prmAccess = cmdSave.CreateParameter("access", 200, 1, 8000) ' 200=varchar,1=input,8000=size
+      cmdSave.Parameters.Append(prmAccess)
+      prmAccess.value = Request.Form("txtSend_access")
+
+      prmUserName = cmdSave.CreateParameter("user", 200, 1, 8000) ' 200=varchar,1=input,8000=size
+      cmdSave.Parameters.Append(prmUserName)
+      prmUserName.value = Request.Form("txtSend_userName")
+
+      prmColumns = cmdSave.CreateParameter("columns", 200, 1, 8000) ' 200=varchar,1=input,8000=size
+      cmdSave.Parameters.Append(prmColumns)
+      prmColumns.value = Request.Form("txtSend_columns")
+
+      prmColumns2 = cmdSave.CreateParameter("columns2", 200, 1, 8000) ' 200=varchar,1=input,8000=size
+      cmdSave.Parameters.Append(prmColumns2)
+      prmColumns2.value = Request.Form("txtSend_columns2")
+
+      prmID = cmdSave.CreateParameter("id", 3, 3) ' 3=integer,3=input/output
+      cmdSave.Parameters.Append(prmID)
+      prmID.value = CleanNumeric(Request.Form("txtSend_ID"))
+
+      prmTableID = cmdSave.CreateParameter("tableID", 3, 1) ' 3=integer,1=input
+      cmdSave.Parameters.Append(prmTableID)
+      prmTableID.value = CleanNumeric(Request.Form("txtSend_tableID"))
+
+      Err.Clear()
+      cmdSave.Execute()
+
+      If Err.Number = 0 Then
+        Session("confirmtext") = "Picklist has been saved successfully"
+        Session("confirmtitle") = "Picklists"
+        Session("followpage") = "defsel"
+        Session("reaction") = Request.Form("txtSend_reaction")
+        Session("utilid") = cmdSave.Parameters("id").Value
+
+      Else
+        Response.Write("<HTML>" & vbCrLf)
+        Response.Write("	<HEAD>" & vbCrLf)
+        Response.Write("		<META NAME=""GENERATOR"" Content=""Microsoft Visual Studio 6.0"">" & vbCrLf)
+        Response.Write("		<LINK href=""OpenHR.css"" rel=stylesheet type=text/css >" & vbCrLf)
+        Response.Write("		<TITLE>" & vbCrLf)
+        Response.Write("			OpenHR Intranet" & vbCrLf)
+        Response.Write("		</TITLE>" & vbCrLf)
+        Response.Write("	</HEAD>" & vbCrLf)
+        Response.Write("	<BODY id=bdyMainBody name=""bdyMainBody"" " & Session("BodyTag") & ">" & vbCrLf)
+
+        Response.Write("	<table align=center class=""outline"" cellPadding=5 cellSpacing=0>" & vbCrLf)
+        Response.Write("		<TR>" & vbCrLf)
+        Response.Write("			<TD>" & vbCrLf)
+        Response.Write("				<table class=""invisible"" cellspacing=0 cellpadding=0>" & vbCrLf)
+        Response.Write("				  <tr> " & vbCrLf)
+        Response.Write("				    <td colspan=3 height=10></td>" & vbCrLf)
+        Response.Write("				  </tr>" & vbCrLf)
+        Response.Write("				  <tr> " & vbCrLf)
+        Response.Write("				    <td colspan=3 align=center> " & vbCrLf)
+        Response.Write("							<H3>Error</H3>" & vbCrLf)
+        Response.Write("				    </td>" & vbCrLf)
+        Response.Write("				  </tr>" & vbCrLf)
+        Response.Write("				  <tr> " & vbCrLf)
+        Response.Write("				    <td width=20 height=10></td> " & vbCrLf)
+        Response.Write("				    <td> " & vbCrLf)
+        Response.Write("							<H4>Error saving picklist</H4>" & vbCrLf)
+        Response.Write("				    </td>" & vbCrLf)
+        Response.Write("				    <td width=20></td> " & vbCrLf)
+        Response.Write("				  </tr>" & vbCrLf)
+        Response.Write("				  <tr> " & vbCrLf)
+        Response.Write("				    <td width=20 height=10></td> " & vbCrLf)
+        Response.Write("				    <td> " & vbCrLf)
+        Response.Write(Err.Description & vbCrLf)
+        Response.Write("			    </td>" & vbCrLf)
+        Response.Write("			    <td width=20></td> " & vbCrLf)
+        Response.Write("			  </tr>" & vbCrLf)
+        Response.Write("			  <tr> " & vbCrLf)
+        Response.Write("			    <td colspan=3 height=20></td>" & vbCrLf)
+        Response.Write("			  </tr>" & vbCrLf)
+        Response.Write("			  <tr> " & vbCrLf)
+        Response.Write("			    <td colspan=3 height=10 align=center>" & vbCrLf)
+        Response.Write("						<INPUT TYPE=button VALUE=""Retry"" NAME=""GoBack"" OnClick=""window.history.back(1)"" class=""btn"" style=""WIDTH: 80px"" width=80 id=cmdGoBack>" & vbCrLf)
+        Response.Write("                      onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
+        Response.Write("                      onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
+        Response.Write("		                  onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
+        Response.Write("                      onblur=""try{button_onBlur(this);}catch(e){}"" />" & vbCrLf)
+        Response.Write("			    </td>" & vbCrLf)
+        Response.Write("			  </tr>" & vbCrLf)
+        Response.Write("			  <tr>" & vbCrLf)
+        Response.Write("			    <td colspan=3 height=10></td>" & vbCrLf)
+        Response.Write("			  </tr>" & vbCrLf)
+        Response.Write("			</table>" & vbCrLf)
+        Response.Write("    </td>" & vbCrLf)
+        Response.Write("  </tr>" & vbCrLf)
+        Response.Write("</table>" & vbCrLf)
+        Response.Write("	</BODY>" & vbCrLf)
+        Response.Write("<HTML>" & vbCrLf)
+
+      End If
+
+      cmdSave = Nothing
+
+      Return RedirectToAction("ConfirmOK")
+
+    End Function
+
+    Function util_dialog_picklist() As ActionResult
+      Return View()
+    End Function
+
+    Function picklistSelectionMain() As ActionResult
+      Return View()
+    End Function
+
+    Function picklistSelection() As ActionResult
+      Return PartialView()
+    End Function
+
+    Function picklistSelectionData() As ActionResult
+      Return PartialView()
+    End Function
+
+    Function picklistSelectionData_Submit(value As FormCollection)
+
+      ' Read the information from the calling form.
+      Session("tableID") = Request.Form("txtTableID")
+      Session("viewID") = Request.Form("txtViewID")
+      Session("orderID") = Request.Form("txtOrderID")
+      Session("pageAction") = Request.Form("txtPageAction")
+      Session("firstRecPos") = Request.Form("txtFirstRecPos")
+      Session("currentRecCount") = Request.Form("txtCurrentRecCount")
+      Session("locateValue") = Request.Form("txtGotoLocateValue")
+
+      Session("picklistSelectionDataLoading") = False
+
+      ' Go to the requested page.
+      Return RedirectToAction("picklistSelectionData")
+
+    End Function
+
+#End Region
+
   End Class
+
+
+
+
 
   Public Class JsonAjaxResponse
 

@@ -1308,6 +1308,8 @@ function menu_refreshMenu() {
 			else {
 				if (sCurrentWorkPage == "UTIL_DEF_PICKLIST") {
 
+				    return;
+
 					abMainMenu.Bands("mnubandMainToolBar").visible = true;
 					abMainMenu.Tools("mnutoolRecord").visible = false;
 

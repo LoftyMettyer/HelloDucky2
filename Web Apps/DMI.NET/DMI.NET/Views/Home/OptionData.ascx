@@ -7,7 +7,7 @@
 <!--
     function optiondata_onload() {
 
-        var sFatalErrorMsg = frmOptionData.txtErrorDescription.value
+        var sFatalErrorMsg = frmOptionData.txtErrorDescription.value;
         if (sFatalErrorMsg.length > 0) {
             //window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sFatalErrorMsg);
             //window.parent.location.replace("login.asp");
@@ -423,7 +423,7 @@
                         grdFind.SelBookmarks.Add(grdFind.Bookmark);
                     }
 
-                    OpenHR.getFrame("workframe").refreshControls();
+                    refreshControls();
 
                     // Get menu.asp to refresh the menu.
                     menu_refreshMenu();
@@ -2332,7 +2332,7 @@
 
                 objUtilities = Nothing
             End If
-		
+		            
             cmdPicklist = CreateObject("ADODB.Command")
             cmdPicklist.CommandText = "sp_ASRIntGetSelectedPicklistRecords"
             cmdPicklist.CommandType = 4 ' Stored procedure

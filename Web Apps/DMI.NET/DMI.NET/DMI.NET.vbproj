@@ -420,6 +420,9 @@
     <Content Include="HTMLPage1.htm" />
     <Content Include="Views\Home\OptionData.ascx" />
     <Content Include="Views\Home\pcconfiguration.ascx" />
+    <Content Include="Views\Home\picklistSelection.ascx" />
+    <Content Include="Views\Home\picklistSelectionData.ascx" />
+    <Content Include="Views\Home\picklistSelectionMain.aspx" />
     <Content Include="Views\Home\poll.ascx" />
     <Content Include="Views\Home\pollmessage.ascx" />
     <Content Include="Views\Home\progress.ascx" />
@@ -430,8 +433,10 @@
     <Content Include="Views\Home\Util_Def_CustomReports.ascx" />
     <Content Include="Views\Home\util_def_exprcomponent.ascx" />
     <Content Include="Views\Home\util_def_expression.ascx" />
+    <Content Include="Views\Home\util_def_picklist.ascx" />
     <Content Include="Views\Home\util_delete.ascx" />
     <Content Include="Views\Home\util_dialog_expression.aspx" />
+    <Content Include="Views\Home\util_dialog_picklist.aspx" />
     <Content Include="Views\Home\Util_EmailSelection.aspx" />
     <Content Include="Views\Home\Util_RecordSelection.aspx" />
     <Content Include="Views\Home\util_run.ascx" />
