@@ -148,7 +148,7 @@
             {
                 sSelectedIDs = "";
 			
-                ssOleDBGridSelRecords.Reddraw = false;
+                ssOleDBGridSelRecords.Redraw = false;
                 for (iIndex = 0; iIndex < ssOleDBGridSelRecords.selbookmarks.Count(); iIndex++) 
                 {	
                     ssOleDBGridSelRecords.bookmark = ssOleDBGridSelRecords.selbookmarks(iIndex);
@@ -192,9 +192,8 @@
         return(iRecordID);
     }
 
-    function locateRecord(psSearchFor)
-    {  
-        var fFound
+    function locateRecord(psSearchFor) {
+        var fFound;
 
         fFound = false;
 	
@@ -322,15 +321,6 @@
             abMainMenu.tools("mnutoolRecordPosition").visible = true;
             abMainMenu.Bands("mnubandMainToolBar").tools("mnutoolRecordPosition").caption = sCaption;
 						
-            try
-            {
-                window.resizeBy(1,1);	
-                window.resizeBy(-1,-1);	
-                window.resizeBy(1,1);	
-                window.resizeBy(-1,-1);	
-            }
-            catch(e) {}
-
             try
             {
                 abMainMenu.Attach();
@@ -516,7 +506,7 @@
         var sValue;
         var iLoop;
 		
-        sDateFormat = ASRIntranetFunctions.LocaleDateFormat;
+        sDateFormat = OpenHR.LocaleDateFormat.LocaleDateFormat;
 
         sDays="";
         sMonths="";
@@ -622,7 +612,7 @@
         sTempValue = sTempValue.concat("/");
         sTempValue = sTempValue.concat(sYears);
 	
-        sValue = ASRIntranetFunctions.ConvertSQLDateToLocale(sTempValue);
+        sValue = OpenHR.ConvertSQLDateToLocale(sTempValue);
 
         iYears = parseInt(sYears);
 	

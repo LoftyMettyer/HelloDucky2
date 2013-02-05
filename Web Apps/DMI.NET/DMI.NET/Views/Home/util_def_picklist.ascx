@@ -400,8 +400,6 @@
             "scroll:yes;" +
             "status:no;";
         window.showModalDialog(pDestination, self, dlgwinprops);
-      //  window.open(pDestination, "", "");
- //       window.showModelessDialog(pDestination, self, dlgwinprops);
 
     }
 
