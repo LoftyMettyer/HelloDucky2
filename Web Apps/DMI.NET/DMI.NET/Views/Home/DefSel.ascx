@@ -495,27 +495,27 @@
 			else {
 
 			    //var frmPrompt = document.getElementById('frmPrompt');
-			    var frmPrompt = OpenHR.getForm("workframe", "frmPrompt");
-			    
-				frmPrompt.utiltype.value = frmDefSel.utiltype.value;
+		//	    var frmPrompt = OpenHR.getForm("workframe", "frmPrompt");
+			    var frmPrompt = document.getElementById('frmPrompt');
+
 				frmPrompt.utilid.value = frmDefSel.utilid.value;
 				frmPrompt.utilname.value = frmDefSel.utilname.value;
 				frmPrompt.action.value = frmDefSel.action.value;
 				sUtilId = new String(frmDefSel.utilid.value);
 
-			    frmPrompt.target = sUtilId;
-			    var newWin = ReturnNewWindow('', sUtilId, '500', '200', 'yes');
-			    OpenHR.submitForm(frmPrompt, newWin);
+		//	    frmPrompt.target = sUtilId;
+	//		    var newWin = ReturnNewWindow('', sUtilId, '500', '200', 'yes');
+			 //   OpenHR.submitForm(frmPrompt, newWin);
 			    //OpenHR.submitForm(document.frmPrompt);
-                
+				OpenHR.submitForm(document.frmPrompt);                
 
 			}
-			return false;
+		//	return false;
 		}
 		else {
 			OpenHR.messageBox("You must select a definition to run", 48, "OpenHR Intranet");
 		}
-		return false;
+	//	return false;
 	}
 
 	function setnew() {

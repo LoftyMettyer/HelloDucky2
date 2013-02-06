@@ -2,7 +2,7 @@
 <%@ Import Namespace="DMI.NET" %>
 
     <script type="text/javascript">
-        function reportdata_window_onload() {           
+        function reportdata_window_onload() {
             $("#workframe").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTS_DATA");
 
         <%

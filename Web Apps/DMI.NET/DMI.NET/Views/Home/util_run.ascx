@@ -2,10 +2,8 @@
 <%@ Import Namespace="DMI.NET" %>
 
 
-
 <%
- 'Response.Expires = 0 
-' following sessions vars:
+    ' following sessions vars:
 '
 ' UtilType    - 0-13 (see UtilityType code in DATMGR .exe
 ' UtilName    - <the name of the utility>
@@ -56,22 +54,14 @@ session(sKey) = aPrompts
 %>
 
 
-<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
-<script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/jquery-ui-1.9.1.custom.min.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/jquery.cookie.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/menu.js")%>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/jquery.ui.touch-punch.min.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/jsTree/jquery.jstree.js") %>" type="text/javascript"></script>
-<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
-
     
     
 <script type="text/javascript">
-<!--
+
+    function util_run_window_onload() {
+        $("#workframe").attr("data-framesource", "UTIL_RUN");
+    }    
+
     function raiseError(sErrorDesc, fok, fcancelled) 
     {
         frmError.txtUtilTypeDesc.value = window.frames("top").frmPopup.txtUtilTypeDesc.value;
@@ -86,7 +76,6 @@ session(sKey) = aPrompts
         return;
     }
 
-
     function pausecomp(millis) 
     {
         var date = new Date();
@@ -97,7 +86,6 @@ session(sKey) = aPrompts
             curDate = new Date(); 
         } while(curDate-date < millis);
     } 
-
 
     function NewWindow(mypage, myname, w, h, scroll) 
     {
@@ -130,7 +118,6 @@ session(sKey) = aPrompts
         catch(e) {}
     }
 
-
     function ShowOutputOptionsFrame(sURL)
     {
         //frames("outputoptions").location.replace(sURL);
@@ -153,7 +140,6 @@ session(sKey) = aPrompts
         catch(e) {}
     }
 
-
     function ShowDataFrame()
     {
         var fs = window.parent.document.all.item("myframeset");
@@ -170,7 +156,6 @@ session(sKey) = aPrompts
         catch(e) {}
     }
 
-    -->
 </script>
 
 <FORM id=frmError name=frmError action="util_run_error" method=post>
@@ -181,13 +166,13 @@ session(sKey) = aPrompts
 	<INPUT type="hidden" id=txtErrorDesc name=txtErrorDesc>
 </FORM>
 
-<div id="myframeset">
+<div id="reportframeset">
 
     <div id="top">       
         <%html.RenderPartial("~/Views/Home/progress.ascx")%>
     </div>
     
-    <div id="main" data-framesource="">
+    <div id="main" data-framesource="util_run">
     <%   
         If Session("utiltype") = "1" Then
             Html.RenderPartial("~/Views/Home/util_run_crosstabsMain.ascx")
@@ -216,10 +201,11 @@ session(sKey) = aPrompts
         End If
     %>
     </div>
-	<div id="outputoptions"></div>
-    
-</div>
 
-<FORM action="default_Submit" method=post id=FORM1 name=frmGoto style="visibility:hidden;display:none">
-    <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-</FORM>
+	<div id="outputoptions"></div>
+
+    <form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
+        <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
+    </form>
+
+</div>

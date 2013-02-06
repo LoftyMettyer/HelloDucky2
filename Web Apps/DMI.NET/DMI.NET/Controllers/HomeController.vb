@@ -1621,11 +1621,11 @@ Namespace Controllers
 #Region "Running Reports"
 
     Function util_run_promptedvalues() As ActionResult
-      Return View()
+      Return PartialView()
     End Function
 
     Function util_run() As ActionResult
-      Return View()
+      Return PartialView()
     End Function
 
     Function util_run_customreports() As ActionResult

@@ -54,6 +54,7 @@
 	    	    target = $form.attr("target"),
 	    	    data = $form.serialize();	        
 
+
 	    	$.ajax({
 	    		url: url,
 	    		type: "POST",

@@ -4,8 +4,7 @@
 <% 
     Dim bStandardReportPrompt As Boolean
     
-	Response.Expires = 0 
-	' This page is called from DefSel.asp.  If receives the following
+    ' This page is called from DefSel.asp.  If receives the following
 	' information via the request object:
 	'
 	' ConfirmType - ok/yesno
@@ -25,33 +24,26 @@
 	end if
 %>
         
-<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css"/>
-<script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>    
-<script src="<%: Url.Content("~/Scripts/jquery-ui-1.9.1.custom.min.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/jquery.cookie.js") %>" type="text/javascript"></script>	 	
-<script src="<%: Url.Content("~/Scripts/menu.js")%>" type="text/javascript"></script >
-<script src="<%: Url.Content("~/Scripts/jquery.ui.touch-punch.min.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/jsTree/jquery.jstree.js") %>" type="text/javascript"></script>
-<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>	
-   
-<OBJECT 
-	classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" 
-	id="Microsoft_Licensed_Class_Manager_1_0" 
-	VIEWASTEXT>
-	<PARAM NAME="LPKPath" VALUE="lpks/main.lpk">
-</OBJECT>
-    
+<object
+    classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
+    id="Microsoft_Licensed_Class_Manager_1_0"
+    viewastext>
+    <param name="LPKPath" value="lpks/main.lpk">
+</object>
+
 <script type="text/javascript">    
  
     function promptedvalues_window_onload() {
-        //remmed this - don't need to set current workframe source - leave as defsel.
-        //$("#workframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
 
-        //var frmPromptedValues = OpenHR.getForm("workframe", "frmPromptedValues");
-        var frmPromptedValues = $("#frmPromptedValues");        // document.getElementById('frmPromptedValues');
+           //remmed this - don't need to set current workframe source - leave as defsel.
+        $("#workframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");       
+
+        var frmPromptedValues = OpenHR.getForm("workframe", "frmPromptedValues");
+
+        //var frmPromptedValues = $("#frmPromptedValues");        // document.getElementById('frmPromptedValues');
+        //var frmPromptedValues = document.getElementById('frmPromptedValues');
+
+
 
         frmPromptedValues.txtLocaleDateFormat.value = OpenHR.LocaleDateFormat;
         frmPromptedValues.txtLocaleDecimalSeparator.value = OpenHR.LocaleDecimalSeparator;
@@ -65,7 +57,6 @@
                 $("#workframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");                
             }
         }
-
         if (frmPromptedValues.txtPromptCount.value == 0) {
             OpenHR.submitForm(frmPromptedValues);
 
@@ -104,8 +95,11 @@
         }
     }
 </script>
+
+<div>
     
-    <FORM name=frmPromptedValues id=frmPromptedValues method=POST action=
+    
+    <FORM name="frmPromptedValues" id="frmPromptedValues" method=POST action=
     <%
         If bStandardReportPrompt Then
             Response.Write("stdrpt_def_Absence")
@@ -497,9 +491,12 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
 <form action="emptyoption" method="post" id="frmRecordEdit" name="frmRecordEdit">
 </form>
 
-<FORM action="default_Submit" method=post id=FORM1 name=frmGoto style="visibility:hidden;display:none">
+<FORM action="default_Submit" method=post id=frmGoto name=frmGoto style="visibility:hidden;display:none">
     <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 </FORM>
+
+    </div>
+
 
 <script type="text/javascript">
 <!--
@@ -672,8 +669,9 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
                 }
             }
 		
-            if (fFound == true) 
-            {
+            debugger;
+
+            if (fFound == true) {
                 sMask = frmPromptedValues.elements(sMaskCtlName).value;
                 sValue = pctlPrompt.value;
                 // Need to get rid of the backslash characters that precede literals.

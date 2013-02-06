@@ -9,20 +9,6 @@
 	bBradfordFactor = (session("utiltype") = "16")
 %>
 
-
-    <link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
-    <script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
-
-    <script src="<%: Url.Content("~/Scripts/jquery-ui-1.9.1.custom.min.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/jquery.cookie.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/menu.js")%>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/jquery.ui.touch-punch.min.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/jsTree/jquery.jstree.js") %>" type="text/javascript"></script>
-    <script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
-
     <object
         classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
         id="Microsoft_Licensed_Class_Manager_1_0"
@@ -31,8 +17,8 @@
     </object>
     
     <script type="text/javascript">
-        function customreports_window_onload() {
-            $("#workframe").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTS");
+        function reports_window_onload() {
+            //            $("#workframe").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTS");
             loadAddRecords();
         }
     </script>
@@ -397,7 +383,7 @@
 
 	if fok then
 
-            Response.Write("<FORM target=""Output"" action=""util_run_outputoptions.asp"" method=post id=frmExportData name=frmExportData>" & vbCrLf)
+            Response.Write("<FORM target=""Output"" action=""util_run_outputoptions"" method=post id=frmExportData name=frmExportData>" & vbCrLf)
             Response.Write("  <INPUT type=""hidden"" id=txtPreview name=txtPreview value=""" & objReport.OutputPreview & """>" & vbCrLf)
             Response.Write("  <INPUT type=""hidden"" id=txtFormat name=txtFormat value=""" & objReport.OutputFormat & """>" & vbCrLf)
             Response.Write("  <INPUT type=""hidden"" id=txtScreen name=txtScreen value=""" & objReport.OutputScreen & """>" & vbCrLf)
@@ -1169,7 +1155,6 @@
 
 
 <script type="text/javascript">
-<!--
     
     function addActiveXHandlers() {
 
@@ -1268,16 +1253,10 @@
         }
     }
     
-
-    -->
 </script>
 
 
-
-
-
 <script type="text/javascript">
-<!--
 
     function ShowReport() 
     {
@@ -1287,6 +1266,9 @@
 
         iPollPeriod = 100;
         iPollCounter = iPollPeriod;
+
+//        debugger;
+        
 
         // Expand the work frame and hide the option frame.
         //window.parent.parent.document.all.item("myframeset").rows = "0, *";
@@ -1413,20 +1395,16 @@
             }
         }
 			
-        //window.parent.parent.document.all.item("myframeset").rows = "0, *, 0";
-        //window.parent.parent.document.all.item("myframeset").rows = "0, *, 0";
-        //$("#workframe").attr("myframeset", "REPORT");
-        $("myframeset").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTSMAIN");
 
+        $("reportframeset").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTSMAIN");
         $("#top").hide();
         $("#reportworkframe").show();
-
 
     }		
 
     function ExportDataPrompt() 
     {
-        sURL = "util_run_outputoptions.asp" +
+        sURL = "util_run_outputoptions" +
             "?txtUtilType=" + escape(frmExportData.txtUtilType.value) +
             "&txtPreview=" + escape(frmExportData.txtPreview.value) +
             "&txtFormat=" + escape(frmExportData.txtFormat.value) +
@@ -1467,7 +1445,7 @@
     
     function getData()
     {
-        window.parent.parent.loadAddRecords();
+        loadAddRecords();
     }
     
     function dataOnlyPrint()
@@ -1607,11 +1585,10 @@
         catch (e)	{}
     }
 
--->
 </script>
 
 
 <script type="text/javascript">
     addActiveXHandlers();
-    customreports_window_onload();
+    reports_window_onload();
 </script>
