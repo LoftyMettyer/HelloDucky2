@@ -17,7 +17,9 @@
             $("#picklistdialog").attr("data-framesource", "UTIL_DIALOG_PICKLIST");
 
             if (frmUseful.action.value == "add") {
-                var frmParentAdd = window.dialogArguments.OpenHR.getForm("workframe","frmPicklistSelection");
+               
+               // var frmParentAdd = window.dialogArguments.OpenHR.getForm("workframe", "frmPicklistSelection");
+                var frmParentAdd = window.opener.OpenHR.getForm("workframe", "frmPicklistSelection");
 
                 frmAdd.selectionType.value = frmParentAdd.selectionType.value;
                 frmAdd.txtTableID.value = frmParentAdd.txtTableID.value;

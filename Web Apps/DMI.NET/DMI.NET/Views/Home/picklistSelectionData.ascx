@@ -35,11 +35,9 @@
             // Refresh the link find grid with the data if required.
             debugger;
 
-            var grdLinkFind = document.getElementById("ssOleDBGridSelRecords");
-
-            grdLinkFind.Redraw = false;
-            grdLinkFind.removeAll();
-            grdLinkFind.columns.removeAll();
+            ssOleDBGridSelRecords.Redraw = false;
+            //ssOleDBGridSelRecords.removeAll();
+            ssOleDBGridSelRecords.Columns.RemoveAll();
 
             var dataCollection = frmData.elements;
             var sControlName;
@@ -61,23 +59,23 @@
                             sColumnName = sColDef.substr(0, iIndex);
                             sColumnType = sColDef.substr(iIndex + 1);
 
-                            grdLinkFind.columns.add(grdLinkFind.columns.count);
-                            grdLinkFind.columns.item(grdLinkFind.columns.count - 1).name = sColumnName;
-                            grdLinkFind.columns.item(grdLinkFind.columns.count - 1).caption = sColumnName;
+                            ssOleDBGridSelRecords.Columns.Add(ssOleDBGridSelRecords.Columns.Count);
+                            ssOleDBGridSelRecords.Columns.Item(ssOleDBGridSelRecords.Columns.Count - 1).Name = sColumnName;
+                            ssOleDBGridSelRecords.Columns.Item(ssOleDBGridSelRecords.Columns.Count - 1).Caption = sColumnName;
 
                             if (sColumnName == "ID") {
-                                grdLinkFind.columns.item(grdLinkFind.columns.count - 1).Visible = false;
+                                ssOleDBGridSelRecords.Columns.Item(ssOleDBGridSelRecords.Columns.Count - 1).Visible = false;
                             }
 
                             if ((sColumnType == "131") || (sColumnType == "3")) {
-                                grdLinkFind.columns.item(grdLinkFind.columns.count - 1).Alignment = 1;
+                                ssOleDBGridSelRecords.Columns.Item(ssOleDBGridSelRecords.Columns.Count - 1).Alignment = 1;
                             } else {
-                                grdLinkFind.columns.item(grdLinkFind.columns.count - 1).Alignment = 0;
+                                ssOleDBGridSelRecords.Columns.Item(ssOleDBGridSelRecords.Columns.Count - 1).Alignment = 0;
                             }
                             if (sColumnType == 11) {
-                                grdLinkFind.columns.item(grdLinkFind.columns.count - 1).Style = 2;
+                                ssOleDBGridSelRecords.Columns.Item(ssOleDBGridSelRecords.Columns.Count - 1).Style = 2;
                             } else {
-                                grdLinkFind.columns.item(grdLinkFind.columns.count - 1).Style = 0;
+                                ssOleDBGridSelRecords.Columns.Item(ssOleDBGridSelRecords.Columns.Count - 1).Style = 0;
                             }
                         }
                     }
@@ -92,20 +90,20 @@
                     sControlName = dataCollection.item(i).name;
                     sControlName = sControlName.substr(0, 8);
                     if (sControlName == "txtData_") {
-                        grdLinkFind.addItem(dataCollection.item(i).value);
+                        ssOleDBGridSelRecords.addItem(dataCollection.item(i).value);
                         fRecordAdded = true;
                         iCount = iCount + 1
                     }
                 }
             }
-            grdLinkFind.Redraw = true;
+            ssOleDBGridSelRecords.Redraw = true;
 
             frmData.txtRecordCount.value = iCount;
 
             refreshControls();
 
             // Get menu.asp to refresh the menu.
-            menu_refreshMenu();
+         //   OpenHR.menu_refreshMenu();
         }
     }
 </script>
@@ -429,3 +427,9 @@
 
     
     </div>
+
+
+<script type="text/javascript">
+    picklistSelectionData_window_onload();
+</script>
+

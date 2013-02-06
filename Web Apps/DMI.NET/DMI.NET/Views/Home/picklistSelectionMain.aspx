@@ -72,7 +72,7 @@
 </html>
 
 <script type="text/javascript">
+    picklistSelectionMain_window_onload();
     picklistSelection_window_onload();
     picklistSelectionData_window_onload();
-    picklistSelectionMain_window_onload();
 </script>
