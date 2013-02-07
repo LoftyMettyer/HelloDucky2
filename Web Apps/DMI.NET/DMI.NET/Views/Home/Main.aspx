@@ -77,6 +77,13 @@
         // re-call the function each 30 seconds
         window.setInterval("loadPartialView()", 30000);
 
+        $(".popup").dialog({
+            autoOpen: false,
+            modal: true,
+            height: 550,
+            width: 800
+        });
+
     });
 
     function loadPartialView() {
@@ -130,7 +137,7 @@
 		<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none"><%Html.RenderPartial("~/views/home/pollmessage.ascx")%></div>
 	</div>
     
-    <div id="reportframeset" class="popup" data-framesource="util_run" style="display: block;">
+    <div id="reportframeset" class="popup" data-framesource="util_run" style="">
         <div id="reportframe"></div>
     </div>
 

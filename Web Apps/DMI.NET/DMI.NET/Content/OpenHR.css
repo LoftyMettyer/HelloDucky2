@@ -396,7 +396,12 @@ table.calendarcell
 #contextmenu h3 { font-size: 14pt;
 	padding: 2px;
 }
-	   
+	
+#contextmenu > div {
+	padding-left: 0;
+	padding-top: 0;
+}
+   
 .rot-neg-90 
 {
 	width: 500px;
@@ -596,7 +601,7 @@ table.calendarcell
 
 .popup
 {
-    width: 800px;
+  /*  width: 800px;
     border-radius: 7px;
     background: #6b6a63;
     margin: 30px auto 0;
@@ -605,5 +610,5 @@ table.calendarcell
     left: 50%;
     top: 50%;
     margin-left: -400px;
-    margin-top: -40px;
+    margin-top: -40px;*/
 }

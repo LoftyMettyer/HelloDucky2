@@ -63,7 +63,8 @@
                     $frame.html('');
 
           //          $("#workframeset").hide();
-                    $("#reportframeset").show();
+                    //$("#reportframeset").show();
+                    $( ".popup" ).dialog( "open" );
 
                     //OK
                     $frame.html(html);
