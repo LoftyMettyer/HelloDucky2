@@ -1,16 +1,14 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<div data-framesource="util_def_picklist">
+<object
+    classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
+    id="Microsoft_Licensed_Class_Manager_1_0"
+    viewastext>
+    <param name="LPKPath" value="lpks/main.lpk">
+</object>
 
-    <object
-        classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-        id="Microsoft_Licensed_Class_Manager_1_0"
-        viewastext>
-        <param name="LPKPath" value="lpks/main.lpk">
-    </object>
-
-<script ID="clientEventHandlersJS"  type="text/javascript">
+<script type="text/javascript">
 
     function util_def_picklist_onload() {
 
@@ -115,14 +113,15 @@
             frmValidate.validateUtilID.value = 0;
         }
 
-        sURL = "util_validate_picklist" +
-            "?validatePass=" + frmValidate.validatePass.value +
-            "&validateName=" + escape(frmValidate.validateName.value) + 
-            "&validateTimestamp=" + frmValidate.validateTimestamp.value +
-            "&validateUtilID=" + frmValidate.validateUtilID.value +
-            "&validateAccess=" + frmValidate.validateAccess.value +
-            "&validateBaseTableID=" + frmValidate.validateBaseTableID.value;
-        openDialog(sURL, (screen.width)/2,(screen.height)/3);
+//        sURL = "util_validate_picklist" +
+//            "?validatePass=" + frmValidate.validatePass.value +
+//            "&validateName=" + escape(frmValidate.validateName.value) + 
+//            "&validateTimestamp=" + frmValidate.validateTimestamp.value +
+//            "&validateUtilID=" + frmValidate.validateUtilID.value +
+//            "&validateAccess=" + frmValidate.validateAccess.value +
+//            "&validateBaseTableID=" + frmValidate.validateBaseTableID.value;
+//        openDialog(sURL, (screen.width) / 2, (screen.height) / 3);
+        OpenHR.showInReportFrame(frmValidate);
     }
 
     function addClick()
@@ -153,9 +152,13 @@
         frmPicklistSelection.selectionType.value = "ALL";
         frmPicklistSelection.selectedIDs1.value = sSelectedIDs1;
 
-        sURL = "util_dialog_picklist" +
-            "?action=add";
-        openDialog(sURL, (screen.width)/3,(screen.height)/2);
+//        sURL = "util_dialog_picklist" + "?action=add";
+  //      openDialog(sURL, (screen.width) / 3, (screen.height) / 2);
+
+        var frmSend = document.getElementById("frmAddSelection");
+        frmSend.selectionAction = "add";
+        OpenHR.showInReportFrame(frmSend);
+
     }
 
     function openWindow(mypage, myname, w, h, scroll)
@@ -180,7 +183,7 @@
     function addAllClick()
     {	
         frmUseful.txtChanged.value = 1;
-        makeSelection("ALLRECORDS", 0, "");
+        picklistdef_makeSelection("ALLRECORDS", 0, "");
     }
 
     function filteredAddClick()
@@ -280,7 +283,7 @@
         submitDefinition();
     }
 
-    function makeSelection(psType, piID, psPrompts)
+    function picklistdef_makeSelection(psType, piID, psPrompts)
     {	
         /* Get the current selected delegate IDs. */
         sSelectedIDs = "0";
@@ -334,7 +337,7 @@
             return 7; //No to saving the changes, as none have been made.
         }
 
-        answer =OpenHR.messageBox("You have changed the current definition. Save changes ?",3);
+        answer = OpenHR.messageBox("You have changed the current definition. Save changes ?",3);
         if (answer == 7) {
             // No
             return 7;
@@ -399,8 +402,8 @@
             "resizable:yes;" +
             "scroll:yes;" +
             "status:no;";
-        //window.showModalDialog(pDestination, self, dlgwinprops);
-        window.open(pDestination);
+        window.showModalDialog(pDestination, self, dlgwinprops);
+        //window.open(pDestination);
 
     }
 
@@ -507,7 +510,7 @@
 	
         // Load the selected records into the grid.
         //makeSelection("ALL", 0, frmOriginalDefinition.txtSelectedRecords.value);
-        makeSelection("PICKLIST", frmUseful.txtUtilID.value, '');
+        picklistdef_makeSelection("PICKLIST", frmUseful.txtUtilID.value, '');
 	
         frmDefinition.ssOleDBGrid.MoveFirst();
         frmDefinition.ssOleDBGrid.FirstRow = frmDefinition.ssOleDBGrid.Bookmark;
@@ -1217,7 +1220,7 @@
             Response.Write("<INPUT type='hidden' id=txtSelectedRecords name=txtSelectedRecords value=""" & sSelectedRecords & """>" & vbCrLf)
 	
             ' Release the ADO recordset object.
-            rstDefinition.close()
+            'rstDefinition.close()
             '			end if
             rstDefinition = Nothing
 			
@@ -1263,37 +1266,42 @@
     %>
     </form>
 
-<FORM id=frmValidate name=frmValidate target=validate method=post action=util_validate_picklist style="visibility:hidden;display:none">
-	<INPUT type=hidden id="validatePass" name=validatePass value=0>
-	<INPUT type=hidden id="validateName" name=validateName value=''>
-	<INPUT type=hidden id="validateTimestamp" name=validateTimestamp value=''>
-	<INPUT type=hidden id="validateUtilID" name=validateUtilID value=''>
-	<INPUT type=hidden id="validateAccess" name=validateAccess value=''>
-	<INPUT type=hidden id=validateBaseTableID name=validateBaseTableID value=<%=session("utiltableid")%>>
-</FORM>
+<form id="frmValidate" name="frmValidate" method="post" action="util_validate_picklist" style="visibility: hidden; display: none">
+    <input type="hidden" id="validatePass" name="validatePass" value="0">
+    <input type="hidden" id="validateName" name="validateName" value=''>
+    <input type="hidden" id="validateTimestamp" name="validateTimestamp" value=''>
+    <input type="hidden" id="validateUtilID" name="validateUtilID" value=''>
+    <input type="hidden" id="validateAccess" name="validateAccess" value=''>
+    <input type="hidden" id="validateBaseTableID" name="validateBaseTableID" value='<%=session("utiltableid")%>'>
+</form>
 
-<FORM id=frmSend name=frmSend method=post action=util_def_picklist_Submit style="visibility:hidden;display:none">
-	<INPUT type="hidden" id=txtSend_ID name=txtSend_ID>	
-	<INPUT type="hidden" id=txtSend_name name=txtSend_name>
-	<INPUT type="hidden" id=txtSend_description name=txtSend_description>
-	<INPUT type="hidden" id=txtSend_access name=txtSend_access>
-	<INPUT type="hidden" id=txtSend_userName name=txtSend_userName>
-	<INPUT type="hidden" id=txtSend_columns name=txtSend_columns>
-	<INPUT type="hidden" id=txtSend_columns2 name=txtSend_columns2>
-	<INPUT type="hidden" id=txtSend_reaction name=txtSend_reaction>
-	<INPUT type="hidden" id=txtSend_tableID name=txtSend_tableID value=<% =session("utiltableid")%>>
-</FORM>
 
-<INPUT type='hidden' id=txtTicker name=txtTicker value=0>
-<INPUT type='hidden' id=txtLastKeyFind name=txtLastKeyFind value="">
+<form id="frmAddSelection" name="frmAddSelection" target="validate" method="post" action="util_dialog_picklist" style="visibility: hidden; display: none">
+        <input type="hidden" id="selectionAction" name="selectionAction" value="0">
+    </form>
 
-<FORM id=frmPicklistSelection name=frmPicklistSelection action="picklistSelectionMain" method=post style="visibility:hidden;display:none">
-	<INPUT type="hidden" id=selectionType name=selectionType>
-	<INPUT type="hidden" id=Hidden1 name=txtTableID value=<% =session("utiltableid")%>>
-	<INPUT type="hidden" id=selectedIDs1 name=selectedIDs1>
-</FORM>
 
-    </div>
+
+    <form id="frmSend" name="frmSend" method="post" action="util_def_picklist_Submit" style="visibility: hidden; display: none">
+        <input type="hidden" id="txtSend_ID" name="txtSend_ID">
+        <input type="hidden" id="txtSend_name" name="txtSend_name">
+        <input type="hidden" id="txtSend_description" name="txtSend_description">
+        <input type="hidden" id="txtSend_access" name="txtSend_access">
+        <input type="hidden" id="txtSend_userName" name="txtSend_userName">
+        <input type="hidden" id="txtSend_columns" name="txtSend_columns">
+        <input type="hidden" id="txtSend_columns2" name="txtSend_columns2">
+        <input type="hidden" id="txtSend_reaction" name="txtSend_reaction">
+        <input type="hidden" id="txtSend_tableID" name="txtSend_tableID" value='<% =session("utiltableid")%>'>
+    </form>
+
+    <input type='hidden' id="txtTicker" name="txtTicker" value="0">
+    <input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
+
+    <form id="frmPicklistSelection" name="frmPicklistSelection" action="picklistSelectionMain" method="post" style="visibility: hidden; display: none">
+        <input type="hidden" id="selectionType" name="selectionType">
+        <input type="hidden" id="Hidden1" name="txtTableID" value='<% =session("utiltableid")%>'>
+        <input type="hidden" id="selectedIDs1" name="selectedIDs1">
+    </form>
 
 <script runat="server" language="vb">
 

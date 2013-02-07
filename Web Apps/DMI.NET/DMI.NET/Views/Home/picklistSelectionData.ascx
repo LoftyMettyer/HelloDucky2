@@ -2,26 +2,23 @@
 <%@ Import Namespace="DMI.NET" %>
 
 
-<div>
+    <script type="text/javascript">
 
-
-<script type="text/javascript">
     function picklistSelectionData_window_onload() {
 
-        $("#dataframe").attr("data-framesource", "PICKLISTSELECTIONDATA");
+        $("#picklistdataframe").attr("data-framesource", "PICKLISTSELECTIONDATA");
 
         if (frmSelectDataUseful.txtLoading.value == "True") {
-            window.parent.loadAddRecords();
+            loadAddRecords();
             return;
         }
 
-        var sFatalErrorMsg = frmData.txtErrorDescription.value
+        var sFatalErrorMsg = frmPicklistData.txtErrorDescription.value
         if (sFatalErrorMsg.length > 0) {
             OpenHR.messageBox(sFatalErrorMsg);
-            window.parent.close();
         } else {
             // Do nothing if the menu controls are not yet instantiated.
-            var sErrorMsg = frmData.txtErrorMessage.value;
+            var sErrorMsg = frmPicklistData.txtErrorMessage.value;
             if (sErrorMsg.length > 0) {
                 // We've got an error so don't update the record edit form.
 
@@ -30,16 +27,20 @@
                 OpenHR.messageBox(sErrorMsg);
             }
 
-            //		var sAction = frmData.txtAction.value;
+            //		var sAction = frmPicklistData.txtAction.value;
+
+            //debugger;
+
+
 
             // Refresh the link find grid with the data if required.
-            debugger;
-
+            var ssOleDBGridSelRecords = document.getElementById("ssOleDBGridSelRecords");
             ssOleDBGridSelRecords.Redraw = false;
+            
             //ssOleDBGridSelRecords.removeAll();
             ssOleDBGridSelRecords.Columns.RemoveAll();
 
-            var dataCollection = frmData.elements;
+            var dataCollection = frmPicklistData.elements;
             var sControlName;
             var sColumnName;
             var iColumnType;
@@ -92,13 +93,13 @@
                     if (sControlName == "txtData_") {
                         ssOleDBGridSelRecords.addItem(dataCollection.item(i).value);
                         fRecordAdded = true;
-                        iCount = iCount + 1
+                        iCount = iCount + 1;
                     }
                 }
             }
             ssOleDBGridSelRecords.Redraw = true;
 
-            frmData.txtRecordCount.value = iCount;
+            frmPicklistData.txtRecordCount.value = iCount;
 
             refreshControls();
 
@@ -106,40 +107,31 @@
          //   OpenHR.menu_refreshMenu();
         }
     }
-</script>
 
-<script type="text/javascript">
     function refreshData() {
-        OpenHR.submitForm(frmGetData);
+        OpenHR.submitForm(frmPicklistGetData);
     }
+
 </script>
 
-<FORM action="picklistSelectionData_Submit" method=post id=frmGetData name=frmGetData>
-	<INPUT type="hidden" id=txtTableID name=txtTableID>
-	<INPUT type="hidden" id=txtViewID name=txtViewID>
-	<INPUT type="hidden" id=txtOrderID name=txtOrderID>
-	<INPUT type="hidden" id=txtPageAction name=txtPageAction>
-	<INPUT type="hidden" id=txtFirstRecPos name=txtFirstRecPos>
-	<INPUT type="hidden" id=txtCurrentRecCount name=txtCurrentRecCount>
-	<INPUT type="hidden" id=txtGotoLocateValue name=txtGotoLocateValue>
-</FORM>
+<form action="picklistSelectionData_Submit" method="post" id="frmPicklistGetData" name="frmPicklistGetData">
+    <input type="hidden" id="txtTableID" name="txtTableID">
+    <input type="hidden" id="txtViewID" name="txtViewID">
+    <input type="hidden" id="txtOrderID" name="txtOrderID">
+    <input type="hidden" id="txtPageAction" name="txtPageAction">
+    <input type="hidden" id="txtFirstRecPos" name="txtFirstRecPos">
+    <input type="hidden" id="txtCurrentRecCount" name="txtCurrentRecCount">
+    <input type="hidden" id="txtGotoLocateValue" name="txtGotoLocateValue">
+</form>
 
-<FORM id=frmSelectDataUseful name=frmSelectDataUseful>
-	<INPUT type='hidden' id=txtLoading name=txtLoading value=<%=session("picklistSelectionDataLoading")%>>
-</FORM>
+<form id="frmSelectDataUseful" name="frmSelectDataUseful">
+    <input type='hidden' id="txtLoading" name="txtLoading" value='<%=session("picklistSelectionDataLoading")%>'>
+</form>
 
-<FORM id=frmData name=frmData>
+<FORM id=frmPicklistData name=frmPicklistData>
 <%
 	on error resume next
 		
-    Const DEADLOCK_ERRORNUMBER = -2147467259
-    Const DEADLOCK_MESSAGESTART = "YOUR TRANSACTION (PROCESS ID #"
-    Const DEADLOCK_MESSAGEEND = ") WAS DEADLOCKED WITH ANOTHER PROCESS AND HAS BEEN CHOSEN AS THE DEADLOCK VICTIM. RERUN YOUR TRANSACTION."
-    Const DEADLOCK2_MESSAGESTART = "TRANSACTION (PROCESS ID "
-    Const DEADLOCK2_MESSAGEEND = ") WAS DEADLOCKED ON "
-    Const SQLMAILNOTSTARTEDMESSAGE = "SQL MAIL SESSION IS NOT STARTED."
-
-    Const iRETRIES = 5
     Dim iRetryCount = 0
     Dim sErrorDescription As String = ""
     Dim sThousandColumns As String
@@ -424,10 +416,6 @@
         End If
     End Function
 </script>
-
-    
-    </div>
-
 
 <script type="text/javascript">
     picklistSelectionData_window_onload();

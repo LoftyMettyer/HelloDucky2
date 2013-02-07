@@ -1,13 +1,11 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<div>    
-
 <object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" id="Microsoft_Licensed_Class_Manager_1_0" viewastext>
     <param name="LPKPath" value="lpks/main.lpk">
 </object>
 
-<form id="frmUseful" name="frmUseful" style="visibility: hidden; display: none">
+<form id="frmpicklistSelectionUseful" name="frmpicklistSelectionUseful" style="visibility: hidden; display: none">
     <input type="hidden" id="txtIEVersion" name="txtIEVersion" value='<%=session("IEVersion")%>'>
     <input type='hidden' id="txtSelectionType" name="txtSelectionType" value='<%=session("selectionType")%>'>
     <input type='hidden' id="txtTableID" name="txtTableID" value='<%=session("selectionTableID")%>'>
@@ -17,26 +15,29 @@
 <script type="text/javascript">    
     function picklistSelection_window_onload() {
 
-        $("#workframe").attr("data-framesource", "PICKLISTSELECTION");
-        $("#workframe").show();
+        $("workframe").hide();
+
+        $("#picklistworkframe").attr("data-framesource", "PICKLISTSELECTION");
+        $("#picklistworkframe").show();
+
 
         fOK = true;
-	
+
+        var frmUseful = document.getElementById("frmpicklistSelectionUseful");
+
         if ((frmUseful.txtSelectionType.value.toUpperCase() != "FILTER") &&
             (frmUseful.txtSelectionType.value.toUpperCase() != "PICKLIST")) {
 
-            var sErrMsg = txtErrorDescription.value;
+            var sErrMsg = txtpicklistSelectionErrorDescription.value;
             if (sErrMsg.length > 0) {
                 fOK = false;
                 OpenHR.messageBox(sErrMsg);
-                window.parent.close();
             }
 
             if (fOK == true) {
                 if (selectView.length == 0) {
                     fOK = false;
                     OpenHR.messageBox("You do not have permission to read the table.");
-                    window.parent.close();
                 }
             }
 	
@@ -44,7 +45,6 @@
                 if (selectOrder.length == 0) {
                     fOK = false;
                     OpenHR.messageBox("You do not have permission to use any of the table orders.");
-                    window.parent.close();;
                 }
             }
         }
@@ -76,14 +76,14 @@
             abMainMenu.DataPath = "misc\\mainmenu.htm";
             abMainMenu.RecalcLayout();
 		
-            window.parent.dialogLeft = new String((screen.width - (9 * screen.width / 10)) / 2) + "px";
-            window.parent.dialogTop =  new String((screen.height - (3 * screen.height / 4)) / 2) + "px";
-            window.parent.dialogWidth = new String((9 * screen.width / 10)) + "px";
-            window.parent.dialogHeight = new String((3 * screen.height / 4)) + "px";
+//            window.parent.dialogLeft = new String((screen.width - (9 * screen.width / 10)) / 2) + "px";
+//            window.parent.dialogTop =  new String((screen.height - (3 * screen.height / 4)) / 2) + "px";
+//            window.parent.dialogWidth = new String((9 * screen.width / 10)) + "px";
+//            window.parent.dialogHeight = new String((3 * screen.height / 4)) + "px";
 			
-            window.parent.txtTableID.value = frmUseful.txtTableID.value;
-            window.parent.txtViewID.value = selectView.options[selectView.selectedIndex].value;
-            window.parent.txtOrderID.value = selectOrder.options[selectOrder.selectedIndex].value;
+            txtTableID.value = frmUseful.txtTableID.value;
+            txtViewID.value = selectView.options[selectView.selectedIndex].value;
+            txtOrderID.value = selectOrder.options[selectOrder.selectedIndex].value;
 
             loadAddRecords();
         }
@@ -100,8 +100,8 @@
 
         button_disable(cmdOK, fNoneSelected);
 
-        if ((frmUseful.txtSelectionType.value.toUpperCase() != "FILTER") &&
-            (frmUseful.txtSelectionType.value.toUpperCase() != "PICKLIST")) {
+        if ((frmpicklistSelectionUseful.txtSelectionType.value.toUpperCase() != "FILTER") &&
+            (frmpicklistSelectionUseful.txtSelectionType.value.toUpperCase() != "PICKLIST")) {
 
             if (selectOrder.length <= 1) {
                 combo_disable(selectOrder, true);
@@ -130,7 +130,8 @@
 
             // Go to the prompted values form to get any required prompts. 
             frmPrompt.filterID.value = selectedRecordID();
-            OpenHR.submitForm(frmPrompt);
+            OpenHR.showInReportFrame(frmPrompt);
+            
         }
         else 
         {
@@ -138,7 +139,7 @@
             {
                 try 
                 {
-                    dialogArguments.OpenHR.makeSelection(frmUseful.txtSelectionType.value, selectedRecordID(), "");
+                    makeSelection(frmUseful.txtSelectionType.value, selectedRecordID(), "");
                 }
                 catch(e) 
                 {
@@ -168,13 +169,12 @@
                     var frmParentUseful = window.dialogArguments.OpenHR.getForm("workframe","frmUseful");
                     frmParentUseful.txtChanged.value = 1;
 
-                    window.dialogArguments.OpenHR.makeSelection(frmUseful.txtSelectionType.value, 0, sSelectedIDs);
+                    makeSelection(frmUseful.txtSelectionType.value, 0, sSelectedIDs);
                 }
                 catch(e) 
                 {
                 }
             }
-            window.parent.close();
         }
     }
 
@@ -237,7 +237,7 @@
 
     function goView() {
         // Get the picklistSelectionData.asp to get the find records.
-        var dataForm = OpenHR.getForm("dataframe","frmGetData");        
+        var dataForm = OpenHR.getForm("dataframe", "frmPicklistGetData");
         dataForm.txtTableID.value = frmUseful.txtTableID.value;
         dataForm.txtViewID.value = selectView.options[selectView.selectedIndex].value;
         dataForm.txtOrderID.value = selectOrder.options[selectOrder.selectedIndex].value;
@@ -250,7 +250,7 @@
 
     function goOrder() {
         // Get the picklistSelectionData.asp to get the find records.
-        var dataForm = OpenHR.getForm("dataframe","frmGetData");        
+        var dataForm = OpenHR.getForm("dataframe", "frmPicklistGetData");
         dataForm.txtTableID.value = frmUseful.txtTableID.value;
         dataForm.txtViewID.value = selectView.options[selectView.selectedIndex].value;
         dataForm.txtOrderID.value = selectOrder.options[selectOrder.selectedIndex].value;
@@ -275,7 +275,7 @@
         if (abMainMenu.Bands.Count() > 0) {
             enableMenu();
 
-            var frmData = OpenHR.getForm("dataframe","frmData");        
+            var frmData = OpenHR.getForm("dataframe","frmPicklistData");        
 
             for (i=0; i< abMainMenu.tools.count(); i++) {
                 abMainMenu.tools(i).visible = false;
@@ -366,8 +366,8 @@
 
         fValidLocateValue = true;
 
-        var dataForm = OpenHR.getForm("dataframe","frmData");        
-        var getDataForm = OpenHR.getForm("dataframe","frmGetData");        
+        var dataForm = OpenHR.getForm("dataframe","frmPicklistData");        
+        var getDataForm = OpenHR.getForm("dataframe", "frmPicklistGetData");
 
         if (psAction == "LOCATE") {
             // Check that the entered value is valid for the first order column type.
@@ -642,18 +642,16 @@
 <script type="text/javascript">
 
     function picklistSelection_addhandlers() {
-         OpenHR.addActiveXHandler("abMainMenu", "DataReady", abMainMenu_DataReady);
-         OpenHR.addActiveXHandler("abMainMenu", "PreCustomizeMenu", abMainMenu_PreCustomizeMenu);
-         OpenHR.addActiveXHandler("abMainMenu", "Click", abMainMenu_Click);
-         OpenHR.addActiveXHandler("abMainMenu", "KeyDown", abMainMenu_KeyDown);
-         OpenHR.addActiveXHandler("abMainMenu", "ComboSelChange", abMainMenu_ComboSelChange);
-         OpenHR.addActiveXHandler("abMainMenu", "PreSysMenu", abMainMenu_PreSysMenu);
-        
-        //TODO - Reattach handlers - for some reason the control can't be found by the addhandelr - don't know why!
-        // OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "RowColChange", ssOleDBGridSelRecords_RowColChange);
-        // OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "DblClick", ssOleDBGridSelRecords_DblClick);
-        // OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "KeyPress", ssOleDBGridSelRecords_KeyPress);
-     }
+        OpenHR.addActiveXHandler("abMainMenu", "DataReady", abMainMenu_DataReady);
+        OpenHR.addActiveXHandler("abMainMenu", "PreCustomizeMenu", abMainMenu_PreCustomizeMenu);
+        OpenHR.addActiveXHandler("abMainMenu", "Click", abMainMenu_Click);
+        OpenHR.addActiveXHandler("abMainMenu", "KeyDown", abMainMenu_KeyDown);
+        OpenHR.addActiveXHandler("abMainMenu", "ComboSelChange", abMainMenu_ComboSelChange);
+        OpenHR.addActiveXHandler("abMainMenu", "PreSysMenu", abMainMenu_PreSysMenu);
+        OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "RowColChange", ssOleDBGridSelRecords_RowColChange);
+        OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "DblClick", ssOleDBGridSelRecords_DblClick);
+        OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "KeyPress", ssOleDBGridSelRecords_KeyPress);
+    }
 
      function abMainMenu_DataReady() {
 
@@ -666,7 +664,7 @@
          }
 
          if(sPath == "<NONE>") {
-             frmUseful.txtMenuSaved.value = 1;
+             frmpicklistSelectionUseful.txtMenuSaved.value = 1;
              abMainMenu.RecalcLayout();
          }
          else {
@@ -675,7 +673,7 @@
              }
 		
              sPath = sPath.concat("tempmenu.asp");
-             if ((abMainMenu.Bands.Count() > 0) && (frmUseful.txtMenuSaved.value == 0)) {
+             if ((abMainMenu.Bands.Count() > 0) && (frmpicklistSelectionUseful.txtMenuSaved.value == 0)) {
                  try {
                      abMainMenu.save(sPath, "");
                  }
@@ -685,7 +683,7 @@
                      sKey = sKey.concat(window.parent.window.dialogArguments.window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);	
                      ASRIntranetFunctions.SaveRegistrySetting("HR Pro", "DataPaths", sKey, "<NONE>");
                  }
-                 frmUseful.txtMenuSaved.value = 1;
+                 frmpicklistSelectionUseful.txtMenuSaved.value = 1;
              }
              else {
                  if ((abMainMenu.Bands.Count() == 0) && (frmUseful.txtMenuSaved.value == 1)) {
@@ -751,7 +749,7 @@
      }
 
      function ssOleDBGridSelRecords_DblClick() {
-         if (frmUseful.txtSelectionType.value != "ALL") {
+         if (frmpicklistSelectionUseful.txtSelectionType.value != "ALL") {
              makeSelection();
          }         
      }
@@ -782,38 +780,38 @@
          }         
      }
 
- </script>
-            
+</script>
 
+
+<%
+    If (UCase(Session("selectionType")) <> UCase("picklist")) And _
+        (UCase(Session("selectionType")) <> UCase("filter")) Then
+%>
+
+<object classid="clsid:6976CB54-C39B-4181-B1DC-1A829068E2E7"
+    codebase="cabs/COAInt_Client.cab#Version=1,0,0,5"
+    height="32" id="abMainMenu" name="abMainMenu" style="LEFT: 0px; TOP: 0px" width="100%" viewastext>
+    <param name="_ExtentX" value="847">
+    <param name="_ExtentY" value="847">
+</object>
+
+<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="95%">
     <%
-        If (UCase(Session("selectionType")) <> UCase("picklist")) And _
-            (UCase(Session("selectionType")) <> UCase("filter")) Then
+    Else
     %>
-
-    <object classid="clsid:6976CB54-C39B-4181-B1DC-1A829068E2E7"
-        codebase="cabs/COAInt_Client.cab#Version=1,0,0,5"
-        height="32" id="abMainMenu" name="abMainMenu" style="LEFT: 0px; TOP: 0px" width="100%" viewastext>
-        <param name="_ExtentX" value="847">
-        <param name="_ExtentY" value="847">
-    </object>   
-
-    <table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="95%">
+    <table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">
         <%
-        Else
+        End If
         %>
-        <table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">
-            <%
-            End If
-            %>
-            <tr>
-                <td>
-                    <table align="center" class="invisible" cellspacing="0" cellpadding="0" width="100%" height="100%">
-                        <tr height="10">
-                            <td colspan="3" align="center" height="10">
-                                <h3 align="center">
-                                    <% 
+        <tr>
+            <td>
+                <table align="center" class="invisible" cellspacing="0" cellpadding="0" width="100%" height="100%">
+                    <tr height="10">
+                        <td colspan="3" align="center" height="10">
+                            <h3 align="center">
+                                <% 
                                         If UCase(Session("selectionType")) = UCase("picklist") Then
-                                    %>	
+                                %>	
                             Select Picklist
                                     <%
                                     Else
@@ -828,13 +826,13 @@
                                     End If
                                 End If
                                     %>
-                                </h3>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td width="20"></td>
-                            <td>
-                                <%
+                            </h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20"></td>
+                        <td>
+                            <%
                                     Dim sErrorDescription As String
                                     Dim cmdSelRecords
                                     Dim prmTableID
@@ -887,150 +885,150 @@
                                         rstSelRecords = cmdSelRecords.Execute
 
                                         ' Instantiate and initialise the grid. 
-                                %>
-                                <object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id="ssOleDBGridSelRecords" name="ssOleDBGridSelRecords" codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 400px">
-                                    <param name="ScrollBars" value="4">
-                                    <param name="_Version" value="196616">
-                                    <param name="DataMode" value="2">
-                                    <param name="Cols" value="0">
-                                    <param name="Rows" value="0">
-                                    <param name="BorderStyle" value="1">
-                                    <param name="RecordSelectors" value="0">
-                                    <param name="GroupHeaders" value="0">
-                                    <param name="ColumnHeaders" value="0">
-                                    <param name="GroupHeadLines" value="0">
-                                    <param name="HeadLines" value="0">
-                                    <param name="FieldDelimiter" value="(None)">
-                                    <param name="FieldSeparator" value="(Tab)">
-                                    <param name="Col.Count" value="<%=rstSelRecords.fields.count%>">
-                                    <param name="stylesets.count" value="0">
-                                    <param name="TagVariant" value="EMPTY">
-                                    <param name="UseGroups" value="0">
-                                    <param name="HeadFont3D" value="0">
-                                    <param name="Font3D" value="0">
-                                    <param name="DividerType" value="3">
-                                    <param name="DividerStyle" value="1">
-                                    <param name="DefColWidth" value="0">
-                                    <param name="BeveColorScheme" value="2">
-                                    <param name="BevelColorFrame" value="-2147483642">
-                                    <param name="BevelColorHighlight" value="-2147483628">
-                                    <param name="BevelColorShadow" value="-2147483632">
-                                    <param name="BevelColorFace" value="-2147483633">
-                                    <param name="CheckBox3D" value="-1">
-                                    <param name="AllowAddNew" value="0">
-                                    <param name="AllowDelete" value="0">
-                                    <param name="AllowUpdate" value="0">
-                                    <param name="MultiLine" value="0">
-                                    <param name="ActiveCellStyleSet" value="">
-                                    <param name="RowSelectionStyle" value="0">
-                                    <param name="AllowRowSizing" value="0">
-                                    <param name="AllowGroupSizing" value="0">
-                                    <param name="AllowColumnSizing" value="0">
-                                    <param name="AllowGroupMoving" value="0">
-                                    <param name="AllowColumnMoving" value="0">
-                                    <param name="AllowGroupSwapping" value="0">
-                                    <param name="AllowColumnSwapping" value="0">
-                                    <param name="AllowGroupShrinking" value="0">
-                                    <param name="AllowColumnShrinking" value="0">
-                                    <param name="AllowDragDrop" value="0">
-                                    <param name="UseExactRowCount" value="-1">
-                                    <param name="SelectTypeCol" value="0">
-                                    <param name="SelectTypeRow" value="1">
-                                    <param name="SelectByCell" value="-1">
-                                    <param name="BalloonHelp" value="0">
-                                    <param name="RowNavigation" value="1">
-                                    <param name="CellNavigation" value="0">
-                                    <param name="MaxSelectedRows" value="1">
-                                    <param name="HeadStyleSet" value="">
-                                    <param name="StyleSet" value="">
-                                    <param name="ForeColorEven" value="0">
-                                    <param name="ForeColorOdd" value="0">
-                                    <param name="BackColorEven" value="16777215">
-                                    <param name="BackColorOdd" value="16777215">
-                                    <param name="Levels" value="1">
-                                    <param name="RowHeight" value="503">
-                                    <param name="ExtraHeight" value="0">
-                                    <param name="ActiveRowStyleSet" value="">
-                                    <param name="CaptionAlignment" value="2">
-                                    <param name="SplitterPos" value="0">
-                                    <param name="SplitterVisible" value="0">
-                                    <param name="Columns.Count" value="<%=rstSelRecords.fields.count%>">
-                                    <%
+                            %>
+                            <object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id="ssOleDBGridSelRecords" name="ssOleDBGridSelRecords" codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 400px">
+                                <param name="ScrollBars" value="4">
+                                <param name="_Version" value="196616">
+                                <param name="DataMode" value="2">
+                                <param name="Cols" value="0">
+                                <param name="Rows" value="0">
+                                <param name="BorderStyle" value="1">
+                                <param name="RecordSelectors" value="0">
+                                <param name="GroupHeaders" value="0">
+                                <param name="ColumnHeaders" value="0">
+                                <param name="GroupHeadLines" value="0">
+                                <param name="HeadLines" value="0">
+                                <param name="FieldDelimiter" value="(None)">
+                                <param name="FieldSeparator" value="(Tab)">
+                                <param name="Col.Count" value="<%=rstSelRecords.fields.count%>">
+                                <param name="stylesets.count" value="0">
+                                <param name="TagVariant" value="EMPTY">
+                                <param name="UseGroups" value="0">
+                                <param name="HeadFont3D" value="0">
+                                <param name="Font3D" value="0">
+                                <param name="DividerType" value="3">
+                                <param name="DividerStyle" value="1">
+                                <param name="DefColWidth" value="0">
+                                <param name="BeveColorScheme" value="2">
+                                <param name="BevelColorFrame" value="-2147483642">
+                                <param name="BevelColorHighlight" value="-2147483628">
+                                <param name="BevelColorShadow" value="-2147483632">
+                                <param name="BevelColorFace" value="-2147483633">
+                                <param name="CheckBox3D" value="-1">
+                                <param name="AllowAddNew" value="0">
+                                <param name="AllowDelete" value="0">
+                                <param name="AllowUpdate" value="0">
+                                <param name="MultiLine" value="0">
+                                <param name="ActiveCellStyleSet" value="">
+                                <param name="RowSelectionStyle" value="0">
+                                <param name="AllowRowSizing" value="0">
+                                <param name="AllowGroupSizing" value="0">
+                                <param name="AllowColumnSizing" value="0">
+                                <param name="AllowGroupMoving" value="0">
+                                <param name="AllowColumnMoving" value="0">
+                                <param name="AllowGroupSwapping" value="0">
+                                <param name="AllowColumnSwapping" value="0">
+                                <param name="AllowGroupShrinking" value="0">
+                                <param name="AllowColumnShrinking" value="0">
+                                <param name="AllowDragDrop" value="0">
+                                <param name="UseExactRowCount" value="-1">
+                                <param name="SelectTypeCol" value="0">
+                                <param name="SelectTypeRow" value="1">
+                                <param name="SelectByCell" value="-1">
+                                <param name="BalloonHelp" value="0">
+                                <param name="RowNavigation" value="1">
+                                <param name="CellNavigation" value="0">
+                                <param name="MaxSelectedRows" value="1">
+                                <param name="HeadStyleSet" value="">
+                                <param name="StyleSet" value="">
+                                <param name="ForeColorEven" value="0">
+                                <param name="ForeColorOdd" value="0">
+                                <param name="BackColorEven" value="16777215">
+                                <param name="BackColorOdd" value="16777215">
+                                <param name="Levels" value="1">
+                                <param name="RowHeight" value="503">
+                                <param name="ExtraHeight" value="0">
+                                <param name="ActiveRowStyleSet" value="">
+                                <param name="CaptionAlignment" value="2">
+                                <param name="SplitterPos" value="0">
+                                <param name="SplitterVisible" value="0">
+                                <param name="Columns.Count" value="<%=rstSelRecords.fields.count%>">
+                                <%
                                         For iLoop = 0 To (rstSelRecords.fields.count - 1)
                                             If rstSelRecords.fields(iLoop).name <> "name" Then
-                                    %>
-                                    <param name="Columns(<%=iLoop%>).Width" value="0">
-                                    <param name="Columns(<%=iLoop%>).Visible" value="0">
-                                    <% 
+                                %>
+                                <param name="Columns(<%=iLoop%>).Width" value="0">
+                                <param name="Columns(<%=iLoop%>).Visible" value="0">
+                                <% 
                                     Else
-                                    %>
-                                    <param name="Columns(<%=iLoop%>).Width" value="100000">
-                                    <param name="Columns(<%=iLoop%>).Visible" value="-1">
-                                    <%
+                                %>
+                                <param name="Columns(<%=iLoop%>).Width" value="100000">
+                                <param name="Columns(<%=iLoop%>).Visible" value="-1">
+                                <%
                                     End If
-                                    %>
-                                    <param name="Columns(<%=iLoop%>).Columns.Count" value="1">
-                                    <param name="Columns(<%=iLoop%>).Caption" value="<%=replace(rstSelRecords.fields(iLoop).name, "_", "> ")%>">
-                                    <param name="Columns(<%=iLoop%>).Name" value="<%=rstSelRecords.fields(iLoop).name%>">
-                                    <param name="Columns(<%=iLoop%>).Alignment" value="0">
-                                    <param name="Columns(<%=iLoop%>).CaptionAlignment" value="3">
-                                    <param name="Columns(<%=iLoop%>).Bound" value="0">
-                                    <param name="Columns(<%=iLoop%>).AllowSizing" value="1">
-                                    <param name="Columns(<%=iLoop%>).DataField" value="Column <%=iLoop%>">
-                                    <param name="Columns(<%=iLoop%>).DataType" value="8">
-                                    <param name="Columns(<%=iLoop%>).Level" value="0">
-                                    <param name="Columns(<%=iLoop%>).NumberFormat" value="">
-                                    <param name="Columns(<%=iLoop%>).Case" value="0">
-                                    <param name="Columns(<%=iLoop%>).FieldLen" value="4096">
-                                    <param name="Columns(<%=iLoop%>).VertScrollBar" value="0">
-                                    <param name="Columns(<%=iLoop%>).Locked" value="0">
-                                    <param name="Columns(<%=iLoop%>).Style" value="0">
-                                    <param name="Columns(<%=iLoop%>).ButtonsAlways" value="0">
-                                    <param name="Columns(<%=iLoop%>).RowCount" value="0">
-                                    <param name="Columns(<%=iLoop%>).ColCount" value="1">
-                                    <param name="Columns(<%=iLoop%>).HasHeadForeColor" value="0">
-                                    <param name="Columns(<%=iLoop%>).HasHeadBackColor" value="0">
-                                    <param name="Columns(<%=iLoop%>).HasForeColor" value="0">
-                                    <param name="Columns(<%=iLoop%>).HasBackColor" value="0">
-                                    <param name="Columns(<%=iLoop%>).HeadForeColor" value="0">
-                                    <param name="Columns(<%=iLoop%>).HeadBackColor" value="0">
-                                    <param name="Columns(<%=iLoop%>).ForeColor" value="0">
-                                    <param name="Columns(<%=iLoop%>).BackColor" value="0">
-                                    <param name="Columns(<%=iLoop%>).HeadStyleSet" value="">
-                                    <param name="Columns(<%=iLoop%>).StyleSet" value="">
-                                    <param name="Columns(<%=iLoop%>).Nullable" value="1">
-                                    <param name="Columns(<%=iLoop%>).Mask" value="">
-                                    <param name="Columns(<%=iLoop%>).PromptInclude" value="0">
-                                    <param name="Columns(<%=iLoop%>).ClipMode" value="0">
-                                    <param name="Columns(<%=iLoop%>).PromptChar" value="95">
-                                    <%
+                                %>
+                                <param name="Columns(<%=iLoop%>).Columns.Count" value="1">
+                                <param name="Columns(<%=iLoop%>).Caption" value="<%=replace(rstSelRecords.fields(iLoop).name, "_", "> ")%>">
+                                <param name="Columns(<%=iLoop%>).Name" value="<%=rstSelRecords.fields(iLoop).name%>">
+                                <param name="Columns(<%=iLoop%>).Alignment" value="0">
+                                <param name="Columns(<%=iLoop%>).CaptionAlignment" value="3">
+                                <param name="Columns(<%=iLoop%>).Bound" value="0">
+                                <param name="Columns(<%=iLoop%>).AllowSizing" value="1">
+                                <param name="Columns(<%=iLoop%>).DataField" value="Column <%=iLoop%>">
+                                <param name="Columns(<%=iLoop%>).DataType" value="8">
+                                <param name="Columns(<%=iLoop%>).Level" value="0">
+                                <param name="Columns(<%=iLoop%>).NumberFormat" value="">
+                                <param name="Columns(<%=iLoop%>).Case" value="0">
+                                <param name="Columns(<%=iLoop%>).FieldLen" value="4096">
+                                <param name="Columns(<%=iLoop%>).VertScrollBar" value="0">
+                                <param name="Columns(<%=iLoop%>).Locked" value="0">
+                                <param name="Columns(<%=iLoop%>).Style" value="0">
+                                <param name="Columns(<%=iLoop%>).ButtonsAlways" value="0">
+                                <param name="Columns(<%=iLoop%>).RowCount" value="0">
+                                <param name="Columns(<%=iLoop%>).ColCount" value="1">
+                                <param name="Columns(<%=iLoop%>).HasHeadForeColor" value="0">
+                                <param name="Columns(<%=iLoop%>).HasHeadBackColor" value="0">
+                                <param name="Columns(<%=iLoop%>).HasForeColor" value="0">
+                                <param name="Columns(<%=iLoop%>).HasBackColor" value="0">
+                                <param name="Columns(<%=iLoop%>).HeadForeColor" value="0">
+                                <param name="Columns(<%=iLoop%>).HeadBackColor" value="0">
+                                <param name="Columns(<%=iLoop%>).ForeColor" value="0">
+                                <param name="Columns(<%=iLoop%>).BackColor" value="0">
+                                <param name="Columns(<%=iLoop%>).HeadStyleSet" value="">
+                                <param name="Columns(<%=iLoop%>).StyleSet" value="">
+                                <param name="Columns(<%=iLoop%>).Nullable" value="1">
+                                <param name="Columns(<%=iLoop%>).Mask" value="">
+                                <param name="Columns(<%=iLoop%>).PromptInclude" value="0">
+                                <param name="Columns(<%=iLoop%>).ClipMode" value="0">
+                                <param name="Columns(<%=iLoop%>).PromptChar" value="95">
+                                <%
                                     Next
-                                    %>
-                                    <param name="UseDefaults" value="-1">
-                                    <param name="TabNavigation" value="1">
-                                    <param name="_ExtentX" value="17330">
-                                    <param name="_ExtentY" value="1323">
-                                    <param name="_StockProps" value="79">
-                                    <param name="Caption" value="">
-                                    <param name="ForeColor" value="0">
-                                    <param name="BackColor" value="16777215">
-                                    <param name="Enabled" value="-1">
-                                    <param name="DataMember" value="">
-                                    <% 
+                                %>
+                                <param name="UseDefaults" value="-1">
+                                <param name="TabNavigation" value="1">
+                                <param name="_ExtentX" value="17330">
+                                <param name="_ExtentY" value="1323">
+                                <param name="_StockProps" value="79">
+                                <param name="Caption" value="">
+                                <param name="ForeColor" value="0">
+                                <param name="BackColor" value="16777215">
+                                <param name="Enabled" value="-1">
+                                <param name="DataMember" value="">
+                                <% 
                                         lngRowCount = 0
                                         Do While Not rstSelRecords.EOF
                                             For iLoop = 0 To (rstSelRecords.fields.count - 1)
-                                    %>
-                                    <param name="Row(<%=lngRowCount%>).Col(<%=iLoop%>)" value="<%=replace(rstSelRecords.Fields(iLoop).Value, "_", " ")%>">
-                                    <%
+                                %>
+                                <param name="Row(<%=lngRowCount%>).Col(<%=iLoop%>)" value="<%=replace(rstSelRecords.Fields(iLoop).Value, "_", " ")%>">
+                                <%
                                     Next
                                     lngRowCount = lngRowCount + 1
                                     rstSelRecords.MoveNext()
                                 Loop
-                                    %>
-                                    <param name="Row.Count" value="<%=lngRowCount%>">
-                                </object>
-                                <%	
+                                %>
+                                <param name="Row.Count" value="<%=lngRowCount%>">
+                            </object>
+                            <%	
                                     rstSelRecords.close()
                                     rstSelRecords = Nothing
 
@@ -1039,19 +1037,19 @@
 		
                                 Else
                                     ' Select individual employee records.
-                                %>
-                                <table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
-                                    <tr height="10">
-                                        <td height="10">
-                                            <table width="100%" height="10" class="invisible" cellspacing="0" cellpadding="0">
-                                                <tr height="10">
-                                                    <td width="40" height="10">View :
-                                                    </td>
-                                                    <td width="10" height="10">&nbsp;
-                                                    </td>
-                                                    <td width="175" height="10">
-                                                        <select id="selectView" name="selectView" class="combo" style="HEIGHT: 10px; WIDTH: 200px">
-                                                            <%
+                            %>
+                            <table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
+                                <tr height="10">
+                                    <td height="10">
+                                        <table width="100%" height="10" class="invisible" cellspacing="0" cellpadding="0">
+                                            <tr height="10">
+                                                <td width="40" height="10">View :
+                                                </td>
+                                                <td width="10" height="10">&nbsp;
+                                                </td>
+                                                <td width="175" height="10">
+                                                    <select id="selectView" name="selectView" class="combo" style="HEIGHT: 10px; WIDTH: 200px">
+                                                        <%
                                                                 If Len(sErrorDescription) = 0 Then
                                                                     ' Get the view records.
                                                                     cmdViewRecords = Server.CreateObject("ADODB.Command")
@@ -1075,20 +1073,20 @@
 
                                                                     If Len(sErrorDescription) = 0 Then
                                                                         Do While Not rstViewRecords.EOF
-                                                            %>
-                                                            <option value="<%=rstViewRecords.Fields(0).Value%>"
-                                                                <%
+                                                        %>
+                                                        <option value="<%=rstViewRecords.Fields(0).Value%>"
+                                                            <%
                                                                 If rstViewRecords.Fields(0).Value = Session("optionLinkViewID") Then
 %>
-                                                                selected
-                                                                <%
+                                                            selected
+                                                            <%
                                                             End If
 
                                                             If rstViewRecords.Fields(0).Value = 0 Then
 %>><%=replace(rstViewRecords.Fields(1).Value, "_", " ")%></option>
-                                                            <%
+                                                        <%
                                                             Else
-                                                            %>
+                                                        %>
 						                                >'<%=replace(rstViewRecords.Fields(1).Value, "_", " ")%>' view</OPTION>
                                                             <%
                                                             End If
@@ -1116,25 +1114,25 @@
                                                     cmdViewRecords = Nothing
                                                 End If
                                                             %>
-                                                        </select>
-                                                    </td>
-                                                    <td width="10" height="10">
-                                                        <input type="button" value="Go" id="btnGoView" name="btnGoView" class="btn"
-                                                            onclick="goView()"
-                                                            onmouseover="try{button_onMouseOver(this);}catch(e){}"
-                                                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                                            onfocus="try{button_onFocus(this);}catch(e){}"
-                                                            onblur="try{button_onBlur(this);}catch(e){}" />
-                                                    </td>
-                                                    <td height="10">&nbsp;
-                                                    </td>
-                                                    <td width="40" height="10">Order :
-                                                    </td>
-                                                    <td width="10" height="10">&nbsp;
-                                                    </td>
-                                                    <td width="175" height="10">
-                                                        <select id="selectOrder" name="selectOrder" class="combo" style="HEIGHT: 10px; WIDTH: 200px">
-                                                            <%
+                                                    </select>
+                                                </td>
+                                                <td width="10" height="10">
+                                                    <input type="button" value="Go" id="btnGoView" name="btnGoView" class="btn"
+                                                        onclick="goView()"
+                                                        onmouseover="try{button_onMouseOver(this);}catch(e){}"
+                                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
+                                                        onfocus="try{button_onFocus(this);}catch(e){}"
+                                                        onblur="try{button_onBlur(this);}catch(e){}" />
+                                                </td>
+                                                <td height="10">&nbsp;
+                                                </td>
+                                                <td width="40" height="10">Order :
+                                                </td>
+                                                <td width="10" height="10">&nbsp;
+                                                </td>
+                                                <td width="175" height="10">
+                                                    <select id="selectOrder" name="selectOrder" class="combo" style="HEIGHT: 10px; WIDTH: 200px">
+                                                        <%
                                                                 If Len(sErrorDescription) = 0 Then
                                                                     ' Get the order records.
                                                                     cmdOrderRecords = Server.CreateObject("ADODB.Command")
@@ -1159,16 +1157,16 @@
 
                                                                     If Len(sErrorDescription) = 0 Then
                                                                         Do While Not rstOrderRecords.EOF
-                                                            %>
-                                                            <option value="<%=rstOrderRecords.Fields(1).Value%>"
-                                                                <%
+                                                        %>
+                                                        <option value="<%=rstOrderRecords.Fields(1).Value%>"
+                                                            <%
                                                                 If rstOrderRecords.Fields(1).Value = Session("optionLinkOrderID") Then
 %>
-                                                                selected
-                                                                <%
+                                                            selected
+                                                            <%
                                                             End If
 %>><%=replace(rstOrderRecords.Fields(0).Value, "_", " ")%></option>
-                                                            <%
+                                                        <%
                                                                 rstOrderRecords.MoveNext()
                                                             Loop
 
@@ -1180,165 +1178,158 @@
                                                         ' Release the ADO command object.
                                                         cmdOrderRecords = Nothing
                                                     End If
-                                                            %>
-                                                        </select>
-                                                    </td>
-                                                    <td width="10" height="10">
-                                                        <input type="button" value="Go" id="btnGoOrder" name="btnGoOrder" class="btn"
-                                                            onclick="goOrder()"
-                                                            onmouseover="try{button_onMouseOver(this);}catch(e){}"
-                                                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                                            onfocus="try{button_onFocus(this);}catch(e){}"
-                                                            onblur="try{button_onBlur(this);}catch(e){}" />
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr height="10">
-                                        <td height="10">&nbsp;</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id="OBJECT1" name="ssOleDBGridSelRecords" codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 400px">
-                                                <param name="ScrollBars" value="4">
-                                                <param name="_Version" value="196617">
-                                                <param name="DataMode" value="2">
-                                                <param name="Cols" value="0">
-                                                <param name="Rows" value="0">
-                                                <param name="BorderStyle" value="1">
-                                                <param name="RecordSelectors" value="0">
-                                                <param name="GroupHeaders" value="0">
-                                                <param name="ColumnHeaders" value="-1">
-                                                <param name="GroupHeadLines" value="1">
-                                                <param name="HeadLines" value="1">
-                                                <param name="FieldDelimiter" value="(None)">
-                                                <param name="FieldSeparator" value="(Tab)">
-                                                <param name="Col.Count" value="0">
-                                                <param name="stylesets.count" value="0">
-                                                <param name="TagVariant" value="EMPTY">
-                                                <param name="UseGroups" value="0">
-                                                <param name="HeadFont3D" value="0">
-                                                <param name="Font3D" value="0">
-                                                <param name="DividerType" value="3">
-                                                <param name="DividerStyle" value="1">
-                                                <param name="DefColWidth" value="0">
-                                                <param name="BeveColorScheme" value="2">
-                                                <param name="BevelColorFrame" value="-2147483642">
-                                                <param name="BevelColorHighlight" value="-2147483628">
-                                                <param name="BevelColorShadow" value="-2147483632">
-                                                <param name="BevelColorFace" value="-2147483633">
-                                                <param name="CheckBox3D" value="-1">
-                                                <param name="AllowAddNew" value="0">
-                                                <param name="AllowDelete" value="0">
-                                                <param name="AllowUpdate" value="0">
-                                                <param name="MultiLine" value="0">
-                                                <param name="ActiveCellStyleSet" value="">
-                                                <param name="RowSelectionStyle" value="0">
-                                                <param name="AllowRowSizing" value="0">
-                                                <param name="AllowGroupSizing" value="0">
-                                                <param name="AllowColumnSizing" value="-1">
-                                                <param name="AllowGroupMoving" value="0">
-                                                <param name="AllowColumnMoving" value="0">
-                                                <param name="AllowGroupSwapping" value="0">
-                                                <param name="AllowColumnSwapping" value="0">
-                                                <param name="AllowGroupShrinking" value="0">
-                                                <param name="AllowColumnShrinking" value="0">
-                                                <param name="AllowDragDrop" value="0">
-                                                <param name="UseExactRowCount" value="-1">
-                                                <param name="SelectTypeCol" value="0">
-                                                <param name="SelectTypeRow" value="3">
-                                                <param name="SelectByCell" value="-1">
-                                                <param name="BalloonHelp" value="0">
-                                                <param name="RowNavigation" value="1">
-                                                <param name="CellNavigation" value="0">
-                                                <param name="MaxSelectedRows" value="0">
-                                                <param name="HeadStyleSet" value="">
-                                                <param name="StyleSet" value="">
-                                                <param name="ForeColorEven" value="0">
-                                                <param name="ForeColorOdd" value="0">
-                                                <param name="BackColorEven" value="16777215">
-                                                <param name="BackColorOdd" value="16777215">
-                                                <param name="Levels" value="1">
-                                                <param name="RowHeight" value="503">
-                                                <param name="ExtraHeight" value="0">
-                                                <param name="ActiveRowStyleSet" value="">
-                                                <param name="CaptionAlignment" value="2">
-                                                <param name="SplitterPos" value="0">
-                                                <param name="SplitterVisible" value="0">
-                                                <param name="Columns.Count" value="0">
-                                                <param name="UseDefaults" value="-1">
-                                                <param name="TabNavigation" value="1">
-                                                <param name="_ExtentX" value="17330">
-                                                <param name="_ExtentY" value="1323">
-                                                <param name="_StockProps" value="79">
-                                                <param name="Caption" value="">
-                                                <param name="ForeColor" value="0">
-                                                <param name="BackColor" value="16777215">
-                                                <param name="Enabled" value="-1">
-                                                <param name="DataMember" value="">
-                                                <param name="Row.Count" value="0">
-                                            </object>
-                                        </td>
-                                    </tr>
-                                </table>
-                                <%	
+                                                        %>
+                                                    </select>
+                                                </td>
+                                                <td width="10" height="10">
+                                                    <input type="button" value="Go" id="btnGoOrder" name="btnGoOrder" class="btn"
+                                                        onclick="goOrder()"
+                                                        onmouseover="try{button_onMouseOver(this);}catch(e){}"
+                                                        onmouseout="try{button_onMouseOut(this);}catch(e){}"
+                                                        onfocus="try{button_onFocus(this);}catch(e){}"
+                                                        onblur="try{button_onBlur(this);}catch(e){}" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr height="10">
+                                    <td height="10">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id="ssOleDBGridSelRecords" name="ssOleDBGridSelRecords" codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 400px">
+                                            <param name="ScrollBars" value="4">
+                                            <param name="_Version" value="196617">
+                                            <param name="DataMode" value="2">
+                                            <param name="Cols" value="0">
+                                            <param name="Rows" value="0">
+                                            <param name="BorderStyle" value="1">
+                                            <param name="RecordSelectors" value="0">
+                                            <param name="GroupHeaders" value="0">
+                                            <param name="ColumnHeaders" value="-1">
+                                            <param name="GroupHeadLines" value="1">
+                                            <param name="HeadLines" value="1">
+                                            <param name="FieldDelimiter" value="(None)">
+                                            <param name="FieldSeparator" value="(Tab)">
+                                            <param name="Col.Count" value="0">
+                                            <param name="stylesets.count" value="0">
+                                            <param name="TagVariant" value="EMPTY">
+                                            <param name="UseGroups" value="0">
+                                            <param name="HeadFont3D" value="0">
+                                            <param name="Font3D" value="0">
+                                            <param name="DividerType" value="3">
+                                            <param name="DividerStyle" value="1">
+                                            <param name="DefColWidth" value="0">
+                                            <param name="BeveColorScheme" value="2">
+                                            <param name="BevelColorFrame" value="-2147483642">
+                                            <param name="BevelColorHighlight" value="-2147483628">
+                                            <param name="BevelColorShadow" value="-2147483632">
+                                            <param name="BevelColorFace" value="-2147483633">
+                                            <param name="CheckBox3D" value="-1">
+                                            <param name="AllowAddNew" value="0">
+                                            <param name="AllowDelete" value="0">
+                                            <param name="AllowUpdate" value="0">
+                                            <param name="MultiLine" value="0">
+                                            <param name="ActiveCellStyleSet" value="">
+                                            <param name="RowSelectionStyle" value="0">
+                                            <param name="AllowRowSizing" value="0">
+                                            <param name="AllowGroupSizing" value="0">
+                                            <param name="AllowColumnSizing" value="-1">
+                                            <param name="AllowGroupMoving" value="0">
+                                            <param name="AllowColumnMoving" value="0">
+                                            <param name="AllowGroupSwapping" value="0">
+                                            <param name="AllowColumnSwapping" value="0">
+                                            <param name="AllowGroupShrinking" value="0">
+                                            <param name="AllowColumnShrinking" value="0">
+                                            <param name="AllowDragDrop" value="0">
+                                            <param name="UseExactRowCount" value="-1">
+                                            <param name="SelectTypeCol" value="0">
+                                            <param name="SelectTypeRow" value="3">
+                                            <param name="SelectByCell" value="-1">
+                                            <param name="BalloonHelp" value="0">
+                                            <param name="RowNavigation" value="1">
+                                            <param name="CellNavigation" value="0">
+                                            <param name="MaxSelectedRows" value="0">
+                                            <param name="HeadStyleSet" value="">
+                                            <param name="StyleSet" value="">
+                                            <param name="ForeColorEven" value="0">
+                                            <param name="ForeColorOdd" value="0">
+                                            <param name="BackColorEven" value="16777215">
+                                            <param name="BackColorOdd" value="16777215">
+                                            <param name="Levels" value="1">
+                                            <param name="RowHeight" value="503">
+                                            <param name="ExtraHeight" value="0">
+                                            <param name="ActiveRowStyleSet" value="">
+                                            <param name="CaptionAlignment" value="2">
+                                            <param name="SplitterPos" value="0">
+                                            <param name="SplitterVisible" value="0">
+                                            <param name="Columns.Count" value="0">
+                                            <param name="UseDefaults" value="-1">
+                                            <param name="TabNavigation" value="1">
+                                            <param name="_ExtentX" value="17330">
+                                            <param name="_ExtentY" value="1323">
+                                            <param name="_StockProps" value="79">
+                                            <param name="Caption" value="">
+                                            <param name="ForeColor" value="0">
+                                            <param name="BackColor" value="16777215">
+                                            <param name="Enabled" value="-1">
+                                            <param name="DataMember" value="">
+                                            <param name="Row.Count" value="0">
+                                        </object>
+                                    </td>
+                                </tr>
+                            </table>
+                            <%	
                                 End If
-                                %>
-                                <input type='hidden' id="txtErrorDescription" name="txtErrorDescription" value="<%=sErrorDescription%>">
-                            </td>
-                            <td width="20"></td>
-                        </tr>
-                        <tr height="10">
-                            <td height="10" colspan="3">&nbsp;</td>
-                        </tr>
-                        <tr height="10">
-                            <td width="20"></td>
-                            <td height="10">
-                                <table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-                                    <tr>
-                                        <td>&nbsp;</td>
-                                        <td width="10">
-                                            <input id="cmdOK" type="button" value="OK" name="cmdOK" class="btn" style="WIDTH: 80px" width="80"
-                                                onclick="makeSelection()"
-                                                onmouseover="try{button_onMouseOver(this);}catch(e){}"
-                                                onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                                onfocus="try{button_onFocus(this);}catch(e){}"
-                                                onblur="try{button_onBlur(this);}catch(e){}" />
-                                        </td>
-                                        <td width="10">&nbsp;</td>
-                                        <td width="10">
-                                            <input id="cmdCancel" type="button" value="Cancel" class="btn" name="cmdCancel" style="WIDTH: 80px" width="80"
-                                                onclick="window.parent.close();"
-                                                onmouseover="try{button_onMouseOver(this);}catch(e){}"
-                                                onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                                onfocus="try{button_onFocus(this);}catch(e){}"
-                                                onblur="try{button_onBlur(this);}catch(e){}" />
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td width="20"></td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-        </table>
+                            %>
+                            <input type='hidden' id="txtpicklistSelectionErrorDescription" name="txtpicklistSelectionErrorDescription" value="<%=sErrorDescription%>">
+                        </td>
+                        <td width="20"></td>
+                    </tr>
+                    <tr height="10">
+                        <td height="10" colspan="3">&nbsp;</td>
+                    </tr>
+                    <tr height="10">
+                        <td width="20"></td>
+                        <td height="10">
+                            <table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td width="10">
+                                        <input id="cmdOK" type="button" value="OK" name="cmdOK" class="btn" style="WIDTH: 80px" width="80"
+                                            onclick="makeSelection()"
+                                            onmouseover="try{button_onMouseOver(this);}catch(e){}"
+                                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
+                                            onfocus="try{button_onFocus(this);}catch(e){}"
+                                            onblur="try{button_onBlur(this);}catch(e){}" />
+                                    </td>
+                                    <td width="10">&nbsp;</td>
+                                    <td width="10">
+                                        <input id="cmdCancel" type="button" value="Cancel" class="btn" name="cmdCancel" style="WIDTH: 80px" width="80"
+                                            onclick="window.parent.close();"
+                                            onmouseover="try{button_onMouseOver(this);}catch(e){}"
+                                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
+                                            onfocus="try{button_onFocus(this);}catch(e){}"
+                                            onblur="try{button_onBlur(this);}catch(e){}" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td width="20"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</table>
 
 
-        <input type='hidden' id="txtTicker" name="txtTicker" value="0">
-        <input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
-        
+<input type='hidden' id="txtTicker" name="txtTicker" value="0">
+<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
 
-        <form name="frmPrompt" method="post" action="promptedValues" id="frmPrompt" style="visibility: hidden; display: none">
-            <input type="hidden" id="filterID" name="filterID">
-        </form>
-        
 
-        </div>
+<form name="frmPrompt" method="post" action="promptedValues" id="frmPrompt" style="visibility: hidden; display: none">
+    <input type="hidden" id="filterID" name="filterID">
+</form>
 
-<script type="text/javascript">
-    picklistSelection_addhandlers();
-</script>
-        
