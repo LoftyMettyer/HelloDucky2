@@ -829,13 +829,13 @@
             Else
                 Response.Write("  sUtilTypeDesc = window.parent.parent.parent.frames(""top"").frmPopup.txtUtilTypeDesc.value;" & vbCrLf)
                 Response.Write("  if (frmOriginalDefinition.txtCancelPrint.value == 1) {" & vbCrLf)
-                Response.Write("    window.parent.parent.ASRIntranetFunctions.MessageBox(sUtilTypeDesc+"" output failed.\n\nCancelled by user."",64,sUtilTypeDesc);" & vbCrLf)
+                Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output failed.\n\nCancelled by user."",64,sUtilTypeDesc);" & vbCrLf)
                 Response.Write("  }" & vbCrLf)
                 Response.Write("  else if (window.parent.parent.ASRIntranetOutput.ErrorMessage != """") {" & vbCrLf)
-                Response.Write("    window.parent.parent.ASRIntranetFunctions.MessageBox(sUtilTypeDesc+"" output failed.\n\n"" + window.parent.parent.ASRIntranetOutput.ErrorMessage,48,sUtilTypeDesc);" & vbCrLf)
+                Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output failed.\n\n"" + window.parent.parent.ASRIntranetOutput.ErrorMessage,48,sUtilTypeDesc);" & vbCrLf)
                 Response.Write("  }" & vbCrLf)
                 Response.Write("  else {" & vbCrLf)
-                Response.Write("    window.parent.parent.ASRIntranetFunctions.MessageBox(sUtilTypeDesc+"" output complete."",64,sUtilTypeDesc);" & vbCrLf)
+                Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output complete."",64,sUtilTypeDesc);" & vbCrLf)
                 Response.Write("  }" & vbCrLf)
             End If
 
@@ -1105,8 +1105,7 @@
 					  </tr>
 					  <tr> 
 					    <td colspan=3 height=10 align=center> 
-                <input type=button id=cmdClose name=cmdClose value=Close style="WIDTH: 80px" width=80 class="btn"
-                    onclick="window.parent.parent.parent.self.close()"
+                <input type=button id=cmdClose name=cmdClose value=Close style="WIDTH: 80px" width=80 class="btn"                    
                                       onmouseover="try{button_onMouseOver(this);}catch(e){}" 
                                       onmouseout="try{button_onMouseOut(this);}catch(e){}"
                                       onfocus="try{button_onFocus(this);}catch(e){}"
@@ -1332,7 +1331,6 @@
             }
         }
 			
-
         $("reportframeset").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTSMAIN");
         $("#top").hide();
         $("#reportworkframe").show();
@@ -1357,7 +1355,7 @@
             "&txtEmailAttachAs=" + escape(frmExportData.txtEmailAttachAs.value) +
             "&txtFileName=" + escape(frmExportData.txtFileName.value);
 
-        window.parent.parent.ShowOutputOptionsFrame(sURL);
+        ShowOutputOptionsFrame(sURL);
     }
 
     function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll)

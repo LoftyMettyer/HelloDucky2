@@ -130,7 +130,7 @@
 		<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none"><%Html.RenderPartial("~/views/home/pollmessage.ascx")%></div>
 	</div>
     
-    <div id="reportframeset">
+    <div id="reportframeset" class="popup" data-framesource="util_run" style="display: block;">
         <div id="reportframe"></div>
     </div>
 

@@ -62,8 +62,7 @@
                     //clear the frame...
                     $frame.html('');
 
-                  //  $("#workframeset").hide();
-
+          //          $("#workframeset").hide();
                     $("#reportframeset").show();
 
                     //OK
@@ -112,7 +111,7 @@
 	    		    
 	    		    //OK
 
-//	    		    $("#reportframe").hide();
+	    		    $("#reportframe").hide();
 	    		    $("#workframeset").show();
 	    		    if (targetWin != null)
 	    		 {
