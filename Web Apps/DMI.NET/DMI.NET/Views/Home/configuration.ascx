@@ -1,446 +1,442 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-    <%
-	Dim sReferringPage
-	dim sTemp
-        Dim cmdDisplayDefault
-        Dim prmSection
-        Dim prmKey
-        Dim prmDefault
-        Dim prmUserSetting
-        Dim prmResult
-        Dim cmdDefSelOnlyMine
-        Dim cmdUtilWarning
+<%
+    Dim sReferringPage
+    Dim sTemp
+    Dim cmdDisplayDefault
+    Dim prmSection
+    Dim prmKey
+    Dim prmDefault
+    Dim prmUserSetting
+    Dim prmResult
+    Dim cmdDefSelOnlyMine
+    Dim cmdUtilWarning
 
 
 	
-	'Primary Start Mode.
-        cmdDisplayDefault = CreateObject("ADODB.Command")
-	cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
-	cmdDisplayDefault.CommandType = 4 ' Stored procedure.
-        cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
+    'Primary Start Mode.
+    cmdDisplayDefault = CreateObject("ADODB.Command")
+    cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
+    cmdDisplayDefault.CommandType = 4 ' Stored procedure.
+    cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
 
-        prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmSection)
-	prmSection.value = "recordediting"
+    prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmSection)
+    prmSection.value = "recordediting"
 
-        prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmKey)
-	prmKey.value = "primary"
+    prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmKey)
+    prmKey.value = "primary"
 
-        prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmDefault)
-	prmDefault.value = "3"
+    prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmDefault)
+    prmDefault.value = "3"
 
-        prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-        cmdDisplayDefault.Parameters.Append(prmUserSetting)
+    prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
+    cmdDisplayDefault.Parameters.Append(prmUserSetting)
+    prmUserSetting.value = 1
+
+    prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmResult)
+
+    Err.Clear()
+    cmdDisplayDefault.Execute()
+    Session("PrimaryStartMode") = CLng(cmdDisplayDefault.Parameters("result").Value)
+    cmdDisplayDefault = Nothing
+	
+    'History Start Mode.
+    cmdDisplayDefault = CreateObject("ADODB.Command")
+    cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
+    cmdDisplayDefault.CommandType = 4 ' Stored procedure.
+    cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
+
+    prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmSection)
+    prmSection.value = "recordediting"
+
+    prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmKey)
+    prmKey.value = "history"
+
+    prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmDefault)
+    prmDefault.value = "3"
+
+    prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
+    cmdDisplayDefault.Parameters.Append(prmUserSetting)
+    prmUserSetting.value = 1
+
+    prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmResult)
+
+    Err.Clear()
+    cmdDisplayDefault.Execute()
+    Session("HistoryStartMode") = CLng(cmdDisplayDefault.Parameters("result").Value)
+    cmdDisplayDefault = Nothing
+	
+    'Lookup Start Mode.
+    cmdDisplayDefault = CreateObject("ADODB.Command")
+    cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
+    cmdDisplayDefault.CommandType = 4 ' Stored procedure.
+    cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
+
+    prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmSection)
+    prmSection.value = "recordediting"
+
+    prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmKey)
+    prmKey.value = "lookup"
+
+    prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmDefault)
+    prmDefault.value = "3"
+
+    prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
+    cmdDisplayDefault.Parameters.Append(prmUserSetting)
+    prmUserSetting.value = 1
+
+    prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmResult)
+
+    Err.Clear()
+    cmdDisplayDefault.Execute()
+    Session("LookupStartMode") = CLng(cmdDisplayDefault.Parameters("result").Value)
+    cmdDisplayDefault = Nothing
+	
+    'Quick Access Start Mode.
+    cmdDisplayDefault = CreateObject("ADODB.Command")
+    cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
+    cmdDisplayDefault.CommandType = 4 ' Stored procedure.
+    cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
+
+    prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmSection)
+    prmSection.value = "recordediting"
+
+    prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmKey)
+    prmKey.value = "quickaccess"
+
+    prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmDefault)
+    prmDefault.value = "3"
+
+    prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
+    cmdDisplayDefault.Parameters.Append(prmUserSetting)
+    prmUserSetting.value = 1
+
+    prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmResult)
+
+    Err.Clear()
+    cmdDisplayDefault.Execute()
+    Session("QuickAccessStartMode") = CLng(cmdDisplayDefault.Parameters("result").Value)
+    cmdDisplayDefault = Nothing
+	
+    'Expression colour mode.
+    cmdDisplayDefault = CreateObject("ADODB.Command")
+    cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
+    cmdDisplayDefault.CommandType = 4 ' Stored procedure.
+    cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
+
+    prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmSection)
+    prmSection.value = "expressionbuilder"
+
+    prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmKey)
+    prmKey.value = "viewcolours"
+
+    prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmDefault)
+    prmDefault.value = "1"
+
+    prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
+    cmdDisplayDefault.Parameters.Append(prmUserSetting)
+    prmUserSetting.value = 1
+
+    prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmResult)
+
+    Err.Clear()
+    cmdDisplayDefault.Execute()
+    Session("ExprColourMode") = CLng(cmdDisplayDefault.Parameters("result").Value)
+    cmdDisplayDefault = Nothing
+
+    'Expression expand mode.
+    cmdDisplayDefault = CreateObject("ADODB.Command")
+    cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
+    cmdDisplayDefault.CommandType = 4 ' Stored procedure.
+    cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
+
+    prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmSection)
+    prmSection.value = "expressionbuilder"
+
+    prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmKey)
+    prmKey.value = "nodesize"
+
+    prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmDefault)
+    prmDefault.value = "1"
+
+    prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
+    cmdDisplayDefault.Parameters.Append(prmUserSetting)
+    prmUserSetting.value = 1
+
+    prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmResult)
+
+    Err.Clear()
+    cmdDisplayDefault.Execute()
+    Session("ExprNodeMode") = CLng(cmdDisplayDefault.Parameters("result").Value)
+    cmdDisplayDefault = Nothing
+	
+    'Find window records.
+    cmdDisplayDefault = CreateObject("ADODB.Command")
+    cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
+    cmdDisplayDefault.CommandType = 4 ' Stored procedure.
+    cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
+
+    prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmSection)
+    prmSection.value = "IntranetFindWindow"
+
+    prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmKey)
+    prmKey.value = "BlockSize"
+
+    prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmDefault)
+    prmDefault.value = "1000"
+
+    prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
+    cmdDisplayDefault.Parameters.Append(prmUserSetting)
+    prmUserSetting.value = 1
+
+    prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
+    cmdDisplayDefault.Parameters.Append(prmResult)
+
+    Err.Clear()
+    cmdDisplayDefault.Execute()
+    Session("FindRecords") = CLng(cmdDisplayDefault.Parameters("result").Value)
+    cmdDisplayDefault = Nothing
+
+	
+    ' Get the DefSel 'only mine' settings.
+    For i = 0 To 20
+        sTemp = "onlymine "
+
+        Select Case i
+            Case 0
+                sTemp = sTemp & "BatchJobs"
+            Case 1
+                sTemp = sTemp & "Calculations"
+            Case 2
+                sTemp = sTemp & "CrossTabs"
+            Case 3
+                sTemp = sTemp & "CustomReports"
+            Case 4
+                sTemp = sTemp & "DataTransfer"
+            Case 5
+                sTemp = sTemp & "Export"
+            Case 6
+                sTemp = sTemp & "Filters"
+            Case 7
+                sTemp = sTemp & "GlobalAdd"
+            Case 8
+                sTemp = sTemp & "GlobalUpdate"
+            Case 9
+                sTemp = sTemp & "GlobalDelete"
+            Case 10
+                sTemp = sTemp & "Import"
+            Case 11
+                sTemp = sTemp & "MailMerge"
+            Case 12
+                sTemp = sTemp & "Picklists"
+            Case 13
+                sTemp = sTemp & "CalendarReports"
+            Case 14
+                sTemp = sTemp & "Labels"
+            Case 15
+                sTemp = sTemp & "LabelDefinition"
+            Case 16
+                sTemp = sTemp & "MatchReports"
+            Case 17
+                sTemp = sTemp & "CareerProgression"
+            Case 18
+                sTemp = sTemp & "EmailGroups"
+            Case 19
+                sTemp = sTemp & "RecordProfile"
+            Case 20
+                sTemp = sTemp & "SuccessionPlanning"
+        End Select
+			
+        cmdDefSelOnlyMine = CreateObject("ADODB.Command")
+        cmdDefSelOnlyMine.CommandText = "sp_ASRIntGetSetting"
+        cmdDefSelOnlyMine.CommandType = 4 ' Stored procedure.
+        cmdDefSelOnlyMine.ActiveConnection = Session("databaseConnection")
+
+        prmSection = cmdDefSelOnlyMine.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+        cmdDefSelOnlyMine.Parameters.Append(prmSection)
+        prmSection.value = "defsel"
+
+        prmKey = cmdDefSelOnlyMine.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+        cmdDefSelOnlyMine.Parameters.Append(prmKey)
+        prmKey.value = sTemp
+
+        prmDefault = cmdDefSelOnlyMine.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+        cmdDefSelOnlyMine.Parameters.Append(prmDefault)
+        prmDefault.value = "0"
+
+        prmUserSetting = cmdDefSelOnlyMine.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
+        cmdDefSelOnlyMine.Parameters.Append(prmUserSetting)
         prmUserSetting.value = 1
 
-        prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmResult)
+        prmResult = cmdDefSelOnlyMine.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
+        cmdDefSelOnlyMine.Parameters.Append(prmResult)
 
         Err.Clear()
-	cmdDisplayDefault.Execute
-	session("PrimaryStartMode") = clng(cmdDisplayDefault.Parameters("result").Value)
-        cmdDisplayDefault = Nothing
-	
-	'History Start Mode.
-        cmdDisplayDefault = CreateObject("ADODB.Command")
-	cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
-	cmdDisplayDefault.CommandType = 4 ' Stored procedure.
-        cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
+        cmdDefSelOnlyMine.Execute()
+        Session(sTemp) = CLng(cmdDefSelOnlyMine.Parameters("result").Value)
+        cmdDefSelOnlyMine = Nothing
+    Next
 
-        prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmSection)
-	prmSection.value = "recordediting"
+    ' Get the Utility Warning settings.
+    For i = 0 To 4
+        sTemp = "warning "
 
-        prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmKey)
-	prmKey.value = "history"
-
-        prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmDefault)
-	prmDefault.value = "3"
-
-        prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-        cmdDisplayDefault.Parameters.Append(prmUserSetting)
-	prmUserSetting.value = 1
-
-        prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmResult)
-
-        Err.Clear()
-	cmdDisplayDefault.Execute
-	session("HistoryStartMode") = clng(cmdDisplayDefault.Parameters("result").Value)
-        cmdDisplayDefault = Nothing
-	
-	'Lookup Start Mode.
-        cmdDisplayDefault = CreateObject("ADODB.Command")
-	cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
-	cmdDisplayDefault.CommandType = 4 ' Stored procedure.
-        cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
-
-        prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmSection)
-	prmSection.value = "recordediting"
-
-        prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmKey)
-	prmKey.value = "lookup"
-
-        prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmDefault)
-	prmDefault.value = "3"
-
-        prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-        cmdDisplayDefault.Parameters.Append(prmUserSetting)
-	prmUserSetting.value = 1
-
-        prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmResult)
-
-        Err.Clear()
-	cmdDisplayDefault.Execute
-	session("LookupStartMode") = clng(cmdDisplayDefault.Parameters("result").Value)
-        cmdDisplayDefault = Nothing
-	
-	'Quick Access Start Mode.
-        cmdDisplayDefault = CreateObject("ADODB.Command")
-	cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
-	cmdDisplayDefault.CommandType = 4 ' Stored procedure.
-        cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
-
-        prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmSection)
-	prmSection.value = "recordediting"
-
-        prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmKey)
-        prmKey.value = "quickaccess"
-
-        prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmDefault)
-        prmDefault.value = "3"
-
-        prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-        cmdDisplayDefault.Parameters.Append(prmUserSetting)
-	prmUserSetting.value = 1
-
-        prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmResult)
-
-        Err.Clear()
-	cmdDisplayDefault.Execute
-	session("QuickAccessStartMode") = clng(cmdDisplayDefault.Parameters("result").Value)
-        cmdDisplayDefault = Nothing
-	
-	'Expression colour mode.
-        cmdDisplayDefault = CreateObject("ADODB.Command")
-	cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
-	cmdDisplayDefault.CommandType = 4 ' Stored procedure.
-        cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
-
-        prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmSection)
-	prmSection.value = "expressionbuilder"
-
-        prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmKey)
-	prmKey.value = "viewcolours"
-
-        prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmDefault)
-	prmDefault.value = "1"
-
-        prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-        cmdDisplayDefault.Parameters.Append(prmUserSetting)
-	prmUserSetting.value = 1
-
-        prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmResult)
-
-        Err.Clear()
-	cmdDisplayDefault.Execute
-	session("ExprColourMode") = clng(cmdDisplayDefault.Parameters("result").Value)
-        cmdDisplayDefault = Nothing
-
-	'Expression expand mode.
-        cmdDisplayDefault = CreateObject("ADODB.Command")
-	cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
-	cmdDisplayDefault.CommandType = 4 ' Stored procedure.
-        cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
-
-        prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmSection)
-	prmSection.value = "expressionbuilder"
-
-        prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmKey)
-	prmKey.value = "nodesize"
-
-        prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmDefault)
-	prmDefault.value = "1"
-
-        prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-        cmdDisplayDefault.Parameters.Append(prmUserSetting)
-	prmUserSetting.value = 1
-
-        prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmResult)
-
-        Err.Clear()
-	cmdDisplayDefault.Execute
-	session("ExprNodeMode") = clng(cmdDisplayDefault.Parameters("result").Value)
-        cmdDisplayDefault = Nothing
-	
-	'Find window records.
-        cmdDisplayDefault = CreateObject("ADODB.Command")
-	cmdDisplayDefault.CommandText = "sp_ASRIntGetSetting"
-	cmdDisplayDefault.CommandType = 4 ' Stored procedure.
-        cmdDisplayDefault.ActiveConnection = Session("databaseConnection")
-
-        prmSection = cmdDisplayDefault.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmSection)
-	prmSection.value = "IntranetFindWindow"
-
-        prmKey = cmdDisplayDefault.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmKey)
-	prmKey.value = "BlockSize"
-
-        prmDefault = cmdDisplayDefault.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmDefault)
-	prmDefault.value = "1000"
-
-        prmUserSetting = cmdDisplayDefault.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-        cmdDisplayDefault.Parameters.Append(prmUserSetting)
-	prmUserSetting.value = 1
-
-        prmResult = cmdDisplayDefault.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-        cmdDisplayDefault.Parameters.Append(prmResult)
-
-        Err.Clear()
-	cmdDisplayDefault.Execute
-	session("FindRecords") = clng(cmdDisplayDefault.Parameters("result").Value)
-        cmdDisplayDefault = Nothing
-
-	
-	' Get the DefSel 'only mine' settings.
-	for i = 0 to 20
-		sTemp = "onlymine "
-
-		select case i
-			case 0
-				sTemp = sTemp & "BatchJobs"
-			case 1
-				sTemp = sTemp & "Calculations"
-			case 2
-				sTemp = sTemp & "CrossTabs"
-			case 3
-				sTemp = sTemp & "CustomReports"
-			case 4
-				sTemp = sTemp & "DataTransfer"
-			case 5
-				sTemp = sTemp & "Export"
-			case 6
-				sTemp = sTemp & "Filters"
-			case 7
-				sTemp = sTemp & "GlobalAdd"
-			case 8
-				sTemp = sTemp & "GlobalUpdate"
-			case 9
-				sTemp = sTemp & "GlobalDelete"
-			case 10
-				sTemp = sTemp & "Import"
-			case 11
-				sTemp = sTemp & "MailMerge"
-			case 12
-				sTemp = sTemp & "Picklists"
-			case 13
-				sTemp = sTemp & "CalendarReports"
-			case 14
-				sTemp = sTemp & "Labels"
-			case 15
-				sTemp = sTemp & "LabelDefinition"
-			case 16
-				sTemp = sTemp & "MatchReports"
-			case 17
-				sTemp = sTemp & "CareerProgression"
-			case 18
-				sTemp = sTemp & "EmailGroups"
-			case 19
-				sTemp = sTemp & "RecordProfile"
-			case 20
-				sTemp = sTemp & "SuccessionPlanning"
-		end select
-			
-            cmdDefSelOnlyMine = CreateObject("ADODB.Command")
-		cmdDefSelOnlyMine.CommandText = "sp_ASRIntGetSetting"
-		cmdDefSelOnlyMine.CommandType = 4 ' Stored procedure.
-            cmdDefSelOnlyMine.ActiveConnection = Session("databaseConnection")
-
-            prmSection = cmdDefSelOnlyMine.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-            cmdDefSelOnlyMine.Parameters.Append(prmSection)
-		prmSection.value = "defsel"
-
-            prmKey = cmdDefSelOnlyMine.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-            cmdDefSelOnlyMine.Parameters.Append(prmKey)
-		prmKey.value = sTemp
-
-            prmDefault = cmdDefSelOnlyMine.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-            cmdDefSelOnlyMine.Parameters.Append(prmDefault)
-		prmDefault.value = "0"
-
-            prmUserSetting = cmdDefSelOnlyMine.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-            cmdDefSelOnlyMine.Parameters.Append(prmUserSetting)
-		prmUserSetting.value = 1
-
-            prmResult = cmdDefSelOnlyMine.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-            cmdDefSelOnlyMine.Parameters.Append(prmResult)
-
-            Err.Clear()
-		cmdDefSelOnlyMine.Execute
-		session(sTemp) = clng(cmdDefSelOnlyMine.Parameters("result").Value)
-            cmdDefSelOnlyMine = Nothing
-	next		
-
-	' Get the Utility Warning settings.
-	for i = 0 to 4
-		sTemp = "warning "
-
-		select case i
-			case 0
-				sTemp = sTemp & "DataTransfer"
-			case 1
-				sTemp = sTemp & "GlobalAdd"
-			case 2
-				sTemp = sTemp & "GlobalUpdate"
-			case 3
-				sTemp = sTemp & "GlobalDelete"
-			case 4
-				sTemp = sTemp & "Import"
-		end select
+        Select Case i
+            Case 0
+                sTemp = sTemp & "DataTransfer"
+            Case 1
+                sTemp = sTemp & "GlobalAdd"
+            Case 2
+                sTemp = sTemp & "GlobalUpdate"
+            Case 3
+                sTemp = sTemp & "GlobalDelete"
+            Case 4
+                sTemp = sTemp & "Import"
+        End Select
 			
             
-            cmdUtilWarning = CreateObject("ADODB.Command")
-		cmdUtilWarning.CommandText = "sp_ASRIntGetSetting"
-		cmdUtilWarning.CommandType = 4 ' Stored procedure.
-            cmdUtilWarning.ActiveConnection = Session("databaseConnection")
+        cmdUtilWarning = CreateObject("ADODB.Command")
+        cmdUtilWarning.CommandText = "sp_ASRIntGetSetting"
+        cmdUtilWarning.CommandType = 4 ' Stored procedure.
+        cmdUtilWarning.ActiveConnection = Session("databaseConnection")
 
-            prmSection = cmdUtilWarning.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-            cmdUtilWarning.Parameters.Append(prmSection)
-		prmSection.value = "warningmsg"
+        prmSection = cmdUtilWarning.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+        cmdUtilWarning.Parameters.Append(prmSection)
+        prmSection.value = "warningmsg"
 
-            prmKey = cmdUtilWarning.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-            cmdUtilWarning.Parameters.Append(prmKey)
-		prmKey.value = sTemp
+        prmKey = cmdUtilWarning.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+        cmdUtilWarning.Parameters.Append(prmKey)
+        prmKey.value = sTemp
 
-            prmDefault = cmdUtilWarning.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
-            cmdUtilWarning.Parameters.Append(prmDefault)
-		prmDefault.value = "1"
+        prmDefault = cmdUtilWarning.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+        cmdUtilWarning.Parameters.Append(prmDefault)
+        prmDefault.value = "1"
 
-            prmUserSetting = cmdUtilWarning.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
-            cmdUtilWarning.Parameters.Append(prmUserSetting)
-		prmUserSetting.value = 1
+        prmUserSetting = cmdUtilWarning.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
+        cmdUtilWarning.Parameters.Append(prmUserSetting)
+        prmUserSetting.value = 1
 
-            prmResult = cmdUtilWarning.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-            cmdUtilWarning.Parameters.Append(prmResult)
+        prmResult = cmdUtilWarning.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
+        cmdUtilWarning.Parameters.Append(prmResult)
 
-            Err.Clear()
-		cmdUtilWarning.Execute
-		session(sTemp) = clng(cmdUtilWarning.Parameters("result").Value)
-            cmdUtilWarning = Nothing
-	next		
-    %>
-
-
-<h2>configuration</h2>
+        Err.Clear()
+        cmdUtilWarning.Execute()
+        Session(sTemp) = CLng(cmdUtilWarning.Parameters("result").Value)
+        cmdUtilWarning = Nothing
+    Next
+%>
 
 
-    <script type="text/javascript">
-        function configuration_window_onload() {
+<script type="text/javascript">
+    function configuration_window_onload() {
 
-     //       debugger;
+        $("#workframe").attr("data-framesource", "CONFIGURATION");
 
-            window.parent.document.all.item("workframeset").cols = "*, 0";	
+//        var frmOriginalConfiguration = OpenHR.getForm("workframe", "frmOriginalConfiguration");
 
-            // Load the original values into tab 1.
-            setComboValue("PARENT", frmOriginalConfiguration.txtPrimaryStartMode.value);
-            setComboValue("HISTORY", frmOriginalConfiguration.txtHistoryStartMode.value);
-            setComboValue("LOOKUP", frmOriginalConfiguration.txtLookupStartMode.value);
-            setComboValue("QUICKACCESS", frmOriginalConfiguration.txtQuickAccessStartMode.value);
-            setComboValue("EXPRCOLOURMODE", frmOriginalConfiguration.txtExprColourMode.value);
-            setComboValue("EXPRNODEMODE", frmOriginalConfiguration.txtExprNodeMode.value);
-            frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtFindSize.value;
-	
-            // Load the original values into tab 2. 
-            //frmConfiguration.chkOwner_BatchJobs.checked = (frmOriginalConfiguration.txtOnlyMineBatchJobs.value == 1);
-            frmConfiguration.chkOwner_Calculations.checked = (frmOriginalConfiguration.txtOnlyMineCalculations.value == 1);
-            frmConfiguration.chkOwner_CrossTabs.checked = (frmOriginalConfiguration.txtOnlyMineCrossTabs.value == 1);
-            frmConfiguration.chkOwner_CustomReports.checked = (frmOriginalConfiguration.txtOnlyMineCustomReports.value == 1);
-            //frmConfiguration.chkOwner_DataTransfer.checked = (frmOriginalConfiguration.txtOnlyMineDataTransfer.value == 1);
-            //frmConfiguration.chkOwner_Export.checked = (frmOriginalConfiguration.txtOnlyMineExport.value == 1);
-            frmConfiguration.chkOwner_Filters.checked = (frmOriginalConfiguration.txtOnlyMineFilters.value == 1);
-            //frmConfiguration.chkOwner_GlobalAdd.checked = (frmOriginalConfiguration.txtOnlyMineGlobalAdd.value == 1);
-            //frmConfiguration.chkOwner_GlobalUpdate.checked = (frmOriginalConfiguration.txtOnlyMineGlobalUpdate.value == 1);
-            //frmConfiguration.chkOwner_GlobalDelete.checked = (frmOriginalConfiguration.txtOnlyMineGlobalDelete.value == 1);
-            //frmConfiguration.chkOwner_Import.checked = (frmOriginalConfiguration.txtOnlyMineImport.value == 1);
-            frmConfiguration.chkOwner_MailMerge.checked = (frmOriginalConfiguration.txtOnlyMineMailMerge.value == 1);
-            frmConfiguration.chkOwner_Picklists.checked = (frmOriginalConfiguration.txtOnlyMinePicklists.value == 1);
-            frmConfiguration.chkOwner_CalendarReports.checked = (frmOriginalConfiguration.txtOnlyMineCalendarReports.value == 1);
-            //frmConfiguration.chkOwner_CareerProgression.checked = (frmOriginalConfiguration.txtOnlyMineCareerProgression.value == 1);
-            //frmConfiguration.chkOwner_EmailGroups.checked = (frmOriginalConfiguration.txtOnlyMineEmailGroups.value == 1);
-            //frmConfiguration.chkOwner_Labels.checked = (frmOriginalConfiguration.txtOnlyMineLabels.value == 1);
-            //frmConfiguration.chkOwner_LabelDefinition.checked = (frmOriginalConfiguration.txtOnlyMineLabelDefinition.value == 1);
-            //frmConfiguration.chkOwner_MatchReports.checked = (frmOriginalConfiguration.txtOnlyMineMatchReports.value == 1);
-            //frmConfiguration.chkOwner_RecordProfile.checked = (frmOriginalConfiguration.txtOnlyMineRecordProfile.value == 1);
-            //frmConfiguration.chkOwner_SuccessionPlanning.checked = (frmOriginalConfiguration.txtOnlyMineSuccessionPlanning.value == 1);
+        // Load the original values into tab 1.
+        setComboValue("PARENT", frmOriginalConfiguration.txtPrimaryStartMode.value);
+        setComboValue("HISTORY", frmOriginalConfiguration.txtHistoryStartMode.value);
+        setComboValue("LOOKUP", frmOriginalConfiguration.txtLookupStartMode.value);
+        setComboValue("QUICKACCESS", frmOriginalConfiguration.txtQuickAccessStartMode.value);
+        setComboValue("EXPRCOLOURMODE", frmOriginalConfiguration.txtExprColourMode.value);
+        setComboValue("EXPRNODEMODE", frmOriginalConfiguration.txtExprNodeMode.value);
+        frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtFindSize.value;
 
-            //frmConfiguration.chkWarn_DataTransfer.checked = (frmOriginalConfiguration.txtUtilWarnDataTransfer.value == 1);
-            //frmConfiguration.chkWarn_GlobalAdd.checked = (frmOriginalConfiguration.txtUtilWarnGlobalAdd.value == 1);
-            //frmConfiguration.chkWarn_GlobalUpdate.checked = (frmOriginalConfiguration.txtUtilWarnGlobalUpdate.value == 1);
-            //frmConfiguration.chkWarn_GlobalDelete.checked = (frmOriginalConfiguration.txtUtilWarnGlobalDelete.value == 1);
-            //frmConfiguration.chkWarn_Import.checked = (frmOriginalConfiguration.txtUtilWarnImport.value == 1);
+        // Load the original values into tab 2. 
+        //frmConfiguration.chkOwner_BatchJobs.checked = (frmOriginalConfiguration.txtOnlyMineBatchJobs.value == 1);
+        frmConfiguration.chkOwner_Calculations.checked = (frmOriginalConfiguration.txtOnlyMineCalculations.value == 1);
+        frmConfiguration.chkOwner_CrossTabs.checked = (frmOriginalConfiguration.txtOnlyMineCrossTabs.value == 1);
+        frmConfiguration.chkOwner_CustomReports.checked = (frmOriginalConfiguration.txtOnlyMineCustomReports.value == 1);
+        //frmConfiguration.chkOwner_DataTransfer.checked = (frmOriginalConfiguration.txtOnlyMineDataTransfer.value == 1);
+        //frmConfiguration.chkOwner_Export.checked = (frmOriginalConfiguration.txtOnlyMineExport.value == 1);
+        frmConfiguration.chkOwner_Filters.checked = (frmOriginalConfiguration.txtOnlyMineFilters.value == 1);
+        //frmConfiguration.chkOwner_GlobalAdd.checked = (frmOriginalConfiguration.txtOnlyMineGlobalAdd.value == 1);
+        //frmConfiguration.chkOwner_GlobalUpdate.checked = (frmOriginalConfiguration.txtOnlyMineGlobalUpdate.value == 1);
+        //frmConfiguration.chkOwner_GlobalDelete.checked = (frmOriginalConfiguration.txtOnlyMineGlobalDelete.value == 1);
+        //frmConfiguration.chkOwner_Import.checked = (frmOriginalConfiguration.txtOnlyMineImport.value == 1);
+        frmConfiguration.chkOwner_MailMerge.checked = (frmOriginalConfiguration.txtOnlyMineMailMerge.value == 1);
+        frmConfiguration.chkOwner_Picklists.checked = (frmOriginalConfiguration.txtOnlyMinePicklists.value == 1);
+        frmConfiguration.chkOwner_CalendarReports.checked = (frmOriginalConfiguration.txtOnlyMineCalendarReports.value == 1);
+        //frmConfiguration.chkOwner_CareerProgression.checked = (frmOriginalConfiguration.txtOnlyMineCareerProgression.value == 1);
+        //frmConfiguration.chkOwner_EmailGroups.checked = (frmOriginalConfiguration.txtOnlyMineEmailGroups.value == 1);
+        //frmConfiguration.chkOwner_Labels.checked = (frmOriginalConfiguration.txtOnlyMineLabels.value == 1);
+        //frmConfiguration.chkOwner_LabelDefinition.checked = (frmOriginalConfiguration.txtOnlyMineLabelDefinition.value == 1);
+        //frmConfiguration.chkOwner_MatchReports.checked = (frmOriginalConfiguration.txtOnlyMineMatchReports.value == 1);
+        //frmConfiguration.chkOwner_RecordProfile.checked = (frmOriginalConfiguration.txtOnlyMineRecordProfile.value == 1);
+        //frmConfiguration.chkOwner_SuccessionPlanning.checked = (frmOriginalConfiguration.txtOnlyMineSuccessionPlanning.value == 1);
 
-            displayPage(1);
+        //frmConfiguration.chkWarn_DataTransfer.checked = (frmOriginalConfiguration.txtUtilWarnDataTransfer.value == 1);
+        //frmConfiguration.chkWarn_GlobalAdd.checked = (frmOriginalConfiguration.txtUtilWarnGlobalAdd.value == 1);
+        //frmConfiguration.chkWarn_GlobalUpdate.checked = (frmOriginalConfiguration.txtUtilWarnGlobalUpdate.value == 1);
+        //frmConfiguration.chkWarn_GlobalDelete.checked = (frmOriginalConfiguration.txtUtilWarnGlobalDelete.value == 1);
+        //frmConfiguration.chkWarn_Import.checked = (frmOriginalConfiguration.txtUtilWarnImport.value == 1);
 
-        }
-    </script>
+        displayPage(1);
+
+    }
+</script>
 
 
-    <script type="text/javascript">
-<!--
+<script type="text/javascript">
+
     function displayPage(piPageNumber) {
         var iLoop;
         var frmDisplay;
-	
+
         //TODO: Is this necessary?
-     //   frmDisplay = OpenHR.getForm("refreshframe","frmRefresh");
-   //     frmDisplay.submit();
-			
+        //   frmDisplay = OpenHR.getForm("refreshframe","frmRefresh");
+        //     frmDisplay.submit();
+
         if (piPageNumber == 1) {
-            div1.style.visibility="visible";
-            div1.style.display="block";
-            div2.style.visibility="hidden";
-            div2.style.display="none";
+            div1.style.visibility = "visible";
+            div1.style.display = "block";
+            div2.style.visibility = "hidden";
+            div2.style.display = "none";
 
             frmConfiguration.cboPrimaryTableDisplay.focus();
         }
 
         if (piPageNumber == 2) {
-            div1.style.visibility="hidden";
-            div1.style.display="none";
-            div2.style.visibility="visible";
-            div2.style.display="block";
+            div1.style.visibility = "hidden";
+            div1.style.display = "none";
+            div2.style.visibility = "visible";
+            div2.style.display = "block";
         }
     }
 
-    function setComboValue(psCombo, piValue) 
-    {
+    function setComboValue(psCombo, piValue) {
         var i;
         var cboCombo;
-	
+
         if (psCombo == "PARENT") {
             cboCombo = frmConfiguration.cboPrimaryTableDisplay;
         }
@@ -459,19 +455,18 @@
         if (psCombo == "EXPRNODEMODE") {
             cboCombo = frmConfiguration.cboExpandNodes;
         }
-	
-        for (i=0; i<cboCombo.options.length; i++)  {
+
+        for (i = 0; i < cboCombo.options.length; i++) {
             if (cboCombo.options(i).value == piValue) {
                 cboCombo.selectedIndex = i;
                 return;
-            }		
+            }
         }
-	
+
         cboCombo.selectedIndex = 0;
     }
 
-    function saveConfiguration()
-    {
+    function saveConfiguration() {
         var chkControl;
         var txtControl;
         var sType;
@@ -480,7 +475,7 @@
         if (validateFindBlockSize == false) {
             return (false);
         }
-	
+
         frmConfiguration.txtPrimaryStartMode.value = frmConfiguration.cboPrimaryTableDisplay.options(frmConfiguration.cboPrimaryTableDisplay.options.selectedIndex).value;
         frmConfiguration.txtHistoryStartMode.value = frmConfiguration.cboHistoryTableDisplay.options(frmConfiguration.cboHistoryTableDisplay.options.selectedIndex).value;
         frmConfiguration.txtLookupStartMode.value = frmConfiguration.cboLookupTableDisplay.options(frmConfiguration.cboLookupTableDisplay.options.selectedIndex).value;
@@ -488,7 +483,7 @@
         frmConfiguration.txtExprColourMode.value = frmConfiguration.cboViewInColour.options(frmConfiguration.cboViewInColour.options.selectedIndex).value;
         frmConfiguration.txtExprNodeMode.value = frmConfiguration.cboExpandNodes.options(frmConfiguration.cboExpandNodes.options.selectedIndex).value;
 
-        var menuForm = OpenHR.getForm("menuframe","frmMenuInfo");
+        var menuForm = OpenHR.getForm("menuframe", "frmMenuInfo");
         menuForm.txtPrimaryStartMode.value = frmConfiguration.txtPrimaryStartMode.value;
         menuForm.txtHistoryStartMode.value = frmConfiguration.txtHistoryStartMode.value;
         menuForm.txtLookupStartMode.value = frmConfiguration.txtLookupStartMode.value;
@@ -515,7 +510,7 @@
         //if (frmConfiguration.chkOwner_MatchReports.checked == true) frmConfiguration.txtOwner_MatchReports.value = 1;
         //if (frmConfiguration.chkOwner_RecordProfile.checked == true) frmConfiguration.txtOwner_RecordProfile.value = 1;
         //if (frmConfiguration.chkOwner_SuccessionPlanning.checked == true) frmConfiguration.txtOwner_SuccessionPlanning.value = 1;
-	
+
         //if (frmConfiguration.chkWarn_DataTransfer.checked == true) frmConfiguration.txtWarn_DataTransfer.value = 1;
         //if (frmConfiguration.chkWarn_GlobalAdd.checked == true) frmConfiguration.txtWarn_GlobalAdd.value = 1;
         //if (frmConfiguration.chkWarn_GlobalDelete.checked == true) frmConfiguration.txtWarn_GlobalDelete.value = 1;
@@ -527,8 +522,7 @@
 
     }
 
-    function validateFindBlockSize()
-    {
+    function validateFindBlockSize() {
         var sConvertedFindSize;
         var sDecimalSeparator;
         var sThousandSeparator;
@@ -545,7 +539,7 @@
 
         sPoint = "\\.";
         var rePoint = new RegExp(sPoint, "gi");
-	
+
         if (frmConfiguration.txtFindSize.value == '') {
             frmConfiguration.txtFindSize.value = 0;
         }
@@ -564,7 +558,7 @@
             sConvertedFindSize = sConvertedFindSize.replace(reDecimalSeparator, ".");
         }
 
-        if(isNaN(sConvertedFindSize) == true) {
+        if (isNaN(sConvertedFindSize) == true) {
             OpenHR.messageBox("Find window block size must be numeric.");
             frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtLastFindSize.value;
             displayPage(1);
@@ -572,7 +566,7 @@
             return false;
         }
 
-        if (frmConfiguration.txtFindSize.value <= 0 ) {
+        if (frmConfiguration.txtFindSize.value <= 0) {
             OpenHR.messageBox("Find window block size must be greater than 0.");
             frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtLastFindSize.value;
             displayPage(1);
@@ -581,7 +575,7 @@
         }
 
         // Find size must be integer.		
-        if (sConvertedFindSize.indexOf(".") >= 0 ) {
+        if (sConvertedFindSize.indexOf(".") >= 0) {
             OpenHR.messageBox("Find window block size must be an integer value.");
             frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtLastFindSize.value;
             displayPage(1);
@@ -599,25 +593,23 @@
         }
 
         frmOriginalConfiguration.txtLastFindSize.value = frmConfiguration.txtFindSize.value;
-	
-        return true;
-    }	
 
-    function okClick()
-    {
+        return true;
+    }
+
+    function okClick() {
         frmConfiguration.txtReaction.value = "DEFAULT";
         saveConfiguration();
     }
 
     /* Return to the default page. */
-    function cancelClick()
-    {
+    function cancelClick() {
         if (definitionChanged() == false) {
             window.location.href = "main";
             return;
         }
 
-        answer = OpenHR.messageBox("You have changed the current configuration. Save changes ?",3);
+        answer = OpenHR.messageBox("You have changed the current configuration. Save changes ?", 3);
         if (answer == 7) {
             // No
             window.location.href = "main";
@@ -630,13 +622,12 @@
         }
     }
 
-    function saveChanges(psAction, pfPrompt, pfTBOverride)
-    {
+    function saveChanges(psAction, pfPrompt, pfTBOverride) {
         if (definitionChanged() == false) {
             return 7; //No to saving the changes, as none have been made.
         }
 
-        answer = OpenHR.messageBox("You have changed the current definition. Save changes ?",3);
+        answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
         if (answer == 7) {
             // No
             return 7;
@@ -650,8 +641,7 @@
         return 2; //Cancel.
     }
 
-    function definitionChanged()
-    {
+    function definitionChanged() {
         // Compare the tab 1 controls with the original values.
         if (frmConfiguration.cboPrimaryTableDisplay.options[frmConfiguration.cboPrimaryTableDisplay.selectedIndex].value != frmOriginalConfiguration.txtPrimaryStartMode.value) {
             return true;
@@ -677,7 +667,7 @@
         if (frmConfiguration.txtFindSize.value != frmOriginalConfiguration.txtFindSize.value) {
             return true;
         }
-		
+
         // Compare the tab 2 controls with the original values.
         /*if ((frmConfiguration.chkOwner_BatchJobs.checked != (frmOriginalConfiguration.txtOnlyMineBatchJobs.value == 1)) ||
             (frmConfiguration.chkOwner_Calculations.checked != (frmOriginalConfiguration.txtOnlyMineCalculations.value == 1)) ||
@@ -707,8 +697,7 @@
             (frmConfiguration.chkOwner_Filters.checked != (frmOriginalConfiguration.txtOnlyMineFilters.value == 1)) ||
             (frmConfiguration.chkOwner_MailMerge.checked != (frmOriginalConfiguration.txtOnlyMineMailMerge.value == 1)) ||
             (frmConfiguration.chkOwner_Picklists.checked != (frmOriginalConfiguration.txtOnlyMinePicklists.value == 1)) ||
-            (frmConfiguration.chkOwner_CalendarReports.checked != (frmOriginalConfiguration.txtOnlyMineCalendarReports.value == 1)))
-        {	
+            (frmConfiguration.chkOwner_CalendarReports.checked != (frmOriginalConfiguration.txtOnlyMineCalendarReports.value == 1))) {
             return true;
         }
 
@@ -724,11 +713,10 @@
         return false;
     }
 
-    function restoreDefaults()
-    {
+    function restoreDefaults() {
         var answer;
-	
-        answer = OpenHR.messageBox("Are you sure you want to restore all default settings?",36);
+
+        answer = OpenHR.messageBox("Are you sure you want to restore all default settings?", 36);
         if (answer == 6) {
             setComboValue("PARENT", 3);
             setComboValue("HISTORY", 3);
@@ -737,9 +725,9 @@
 
             setComboValue("EXPRCOLOURMODE", 1);
             setComboValue("EXPRNODEMODE", 1);
- 		
+
             frmConfiguration.txtFindSize.value = 1000;
- 		
+
             //frmConfiguration.chkOwner_BatchJobs.checked = false;
             frmConfiguration.chkOwner_Calculations.checked = false;
             frmConfiguration.chkOwner_CrossTabs.checked = false;
@@ -761,7 +749,7 @@
             //frmConfiguration.chkOwner_MatchReports.checked = false;
             //frmConfiguration.chkOwner_RecordProfile.checked = false;
             //frmConfiguration.chkOwner_SuccessionPlanning.checked = false;
- 		
+
             //frmConfiguration.chkWarn_DataTransfer.checked = true;
             //frmConfiguration.chkWarn_GlobalAdd.checked = true;
             //frmConfiguration.chkWarn_GlobalDelete.checked = true;
@@ -769,10 +757,10 @@
             //frmConfiguration.chkWarn_Import.checked = true;
         }
     }
-    -->
+
 </script>
 
-    <form action="configuration_Submit" method="post" id="frmConfiguration" name="frmConfiguration" onSubmit="return false;">
+<form action="configuration_Submit" method="post" id="frmConfiguration" name="frmConfiguration">
 	<br><!-- First tab -->
 	<DIV id=div1>
 		<table align=center class="outline" cellPadding=5 cellSpacing=0>
@@ -1258,152 +1246,87 @@
 			</TR>
 		</table>
 	</DIV>
-	
-	<!-- Redundant Objects -->
-	<!--
-	<INPUT type="checkbox" id=chkOwner_BatchJobs name=chkOwner_BatchJobs> Batch Jobs
-	<INPUT type="checkbox" id=chkOwner_EmailGroups name=chkOwner_EmailGroups> Email Groups
-	<INPUT type="checkbox" id=chkOwner_GlobalUpdate name=chkOwner_GlobalUpdate> Global Update
-	<INPUT type="checkbox" id=chkOwner_Labels name=chkOwner_Labels> Envelopes & Labels
-	<INPUT type="checkbox" id=chkOwner_Import name=chkOwner_Import> Import
-	<INPUT type="checkbox" id=chkOwner_LabelDefinition name=chkOwner_LabelDefinition> Envelope & Label Templates							
-	<INPUT type="checkbox" id=chkOwner_CareerProgression name=chkOwner_CareerProgression> Career Progression
-	<INPUT type="checkbox" id=chkOwner_Export name=chkOwner_Export> Export
-	<INPUT type="checkbox" id=chkOwner_MatchReports name=chkOwner_MatchReports> Match Reports
-	<INPUT type="checkbox" id=chkOwner_GlobalAdd name=chkOwner_GlobalAdd> Global Add
-	<INPUT type="checkbox" id=chkOwner_RecordProfile name=chkOwner_RecordProfile> Record Profile
-	<INPUT type="checkbox" id=chkOwner_DataTransfer name=chkOwner_DataTransfer> Data Transfer
-	<INPUT type="checkbox" id=chkOwner_GlobalDelete name=chkOwner_GlobalDelete>  Global Delete
-	<INPUT type="checkbox" id=chkOwner_SuccessionPlanning name=chkOwner_SuccessionPlanning> Succession Planning
 
-	<TR>
-		<td align=center colspan=7>
-			<STRONG>Warning Message</STRONG>
-		</td>
-	</TR>
-	<TR>
-		<td height=10 colspan=7></td>
-	</TR>
-	<TR>
-		<td align=center colspan=7>
-			Only show warnings for the following utilities :
-		</td>
-	</TR>
-	<TR>
-		<td height=10 colspan=7></td>
-	</TR>
-	<TR>
-		<td width=20></td>
-		<td align=left nowrap>
-			<INPUT type="checkbox" id=chkWarn_DataTransfer name=chkWarn_DataTransfer> Data Transfer
-		</td>
-		<td width=20></td>
-		<td align=left nowrap>
-			<INPUT type="checkbox" id=chkWarn_GlobalUpdate name=chkWarn_GlobalUpdate> Global Update
-		</td>
-		<td width=20></td>
-		<td align=left nowrap>
-			<INPUT type="checkbox" id=chkWarn_Import name=chkWarn_Import> Import
-		</td>
-		<td width=20></td>
-	</TR>
-	<TR>
-		<td width=20></td>
-		<td align=left nowrap>
-			<INPUT type="checkbox" id=chkWarn_GlobalAdd name=chkWarn_GlobalAdd> Global Add
-		</td>
-		<td width=20></td>
-		<td align=left nowrap>
-			<INPUT type="checkbox" id=chkWarn_GlobalDelete name=chkWarn_GlobalDelete> Global Delete
-		</td>
-		<td width=20></td>
-		<td align=left nowrap></td>
-		<td width=20></td>
-	</TR>
-	-->
-	
-	<!-- End Redundant Objects -->
-	
-	<INPUT type="hidden" id=txtReaction name=txtReaction>
+    <input type="hidden" id="txtReaction" name="txtReaction">
 
-	<INPUT type="hidden" id=txtPrimaryStartMode name=txtPrimaryStartMode>
-	<INPUT type="hidden" id=txtHistoryStartMode name=txtHistoryStartMode>
-	<INPUT type="hidden" id=txtLookupStartMode name=txtLookupStartMode>
-	<INPUT type="hidden" id=txtQuickAccessStartMode name=txtQuickAccessStartMode>
-	<INPUT type="hidden" id=txtExprColourMode name=txtExprColourMode>
-	<INPUT type="hidden" id=txtExprNodeMode name=txtExprNodeMode>
+    <input type="hidden" id="txtPrimaryStartMode" name="txtPrimaryStartMode">
+    <input type="hidden" id="txtHistoryStartMode" name="txtHistoryStartMode">
+    <input type="hidden" id="txtLookupStartMode" name="txtLookupStartMode">
+    <input type="hidden" id="txtQuickAccessStartMode" name="txtQuickAccessStartMode">
+    <input type="hidden" id="txtExprColourMode" name="txtExprColourMode">
+    <input type="hidden" id="txtExprNodeMode" name="txtExprNodeMode">
 
-	<INPUT type="hidden" id=txtOwner_BatchJobs name=txtOwner_BatchJobs value=0>
-	<INPUT type="hidden" id=txtOwner_Calculations name=txtOwner_Calculations value=0>
-	<INPUT type="hidden" id=txtOwner_CrossTabs name=txtOwner_CrossTabs value=0>
-	<INPUT type="hidden" id=txtOwner_CustomReports name=txtOwner_CustomReports value=0>
-	<INPUT type="hidden" id=txtOwner_DataTransfer name=txtOwner_DataTransfer value=0>
-	<INPUT type="hidden" id=txtOwner_Export name=txtOwner_Export value=0>
-	<INPUT type="hidden" id=txtOwner_Filters name=txtOwner_Filters value=0>
-	<INPUT type="hidden" id=txtOwner_GlobalAdd name=txtOwner_GlobalAdd value=0>
-	<INPUT type="hidden" id=txtOwner_GlobalUpdate name=txtOwner_GlobalUpdate value=0>
-	<INPUT type="hidden" id=txtOwner_GlobalDelete name=txtOwner_GlobalDelete value=0>
-	<INPUT type="hidden" id=txtOwner_Import name=txtOwner_Import value=0>
-	<INPUT type="hidden" id=txtOwner_MailMerge name=txtOwner_MailMerge value=0>
-	<INPUT type="hidden" id=txtOwner_Picklists name=txtOwner_Picklists value=0>
-	<INPUT type="hidden" id=txtOwner_CalendarReports name=txtOwner_CalendarReports value=0>
-	<INPUT type="hidden" id=txtOwner_CareerProgression name=txtOwner_CareerProgression value=0>
-	<INPUT type="hidden" id=txtOwner_EmailGroups name=txtOwner_EmailGroups value=0>
-	<INPUT type="hidden" id=txtOwner_Labels name=txtOwner_Labels value=0>
-	<INPUT type="hidden" id=txtOwner_LabelDefinition name=txtOwner_LabelDefinition value=0>
-	<INPUT type="hidden" id=txtOwner_MatchReports name=txtOwner_MatchReports value=0>
-	<INPUT type="hidden" id=txtOwner_RecordProfile name=txtOwner_RecordProfile value=0>
-	<INPUT type="hidden" id=txtOwner_SuccessionPlanning name=txtOwner_SuccessionPlanning value=0>
-	
-	<INPUT type="hidden" id=txtWarn_DataTransfer name=txtWarn_DataTransfer value=0>
-	<INPUT type="hidden" id=txtWarn_GlobalAdd name=txtWarn_GlobalAdd value=0>
-	<INPUT type="hidden" id=txtWarn_GlobalUpdate name=txtWarn_GlobalUpdate value=0>
-	<INPUT type="hidden" id=txtWarn_GlobalDelete name=txtWarn_GlobalDelete value=0>
-	<INPUT type="hidden" id=txtWarn_Import name=txtWarn_Import value=0>
+    <input type="hidden" id="txtOwner_BatchJobs" name="txtOwner_BatchJobs" value="0">
+    <input type="hidden" id="txtOwner_Calculations" name="txtOwner_Calculations" value="0">
+    <input type="hidden" id="txtOwner_CrossTabs" name="txtOwner_CrossTabs" value="0">
+    <input type="hidden" id="txtOwner_CustomReports" name="txtOwner_CustomReports" value="0">
+    <input type="hidden" id="txtOwner_DataTransfer" name="txtOwner_DataTransfer" value="0">
+    <input type="hidden" id="txtOwner_Export" name="txtOwner_Export" value="0">
+    <input type="hidden" id="txtOwner_Filters" name="txtOwner_Filters" value="0">
+    <input type="hidden" id="txtOwner_GlobalAdd" name="txtOwner_GlobalAdd" value="0">
+    <input type="hidden" id="txtOwner_GlobalUpdate" name="txtOwner_GlobalUpdate" value="0">
+    <input type="hidden" id="txtOwner_GlobalDelete" name="txtOwner_GlobalDelete" value="0">
+    <input type="hidden" id="txtOwner_Import" name="txtOwner_Import" value="0">
+    <input type="hidden" id="txtOwner_MailMerge" name="txtOwner_MailMerge" value="0">
+    <input type="hidden" id="txtOwner_Picklists" name="txtOwner_Picklists" value="0">
+    <input type="hidden" id="txtOwner_CalendarReports" name="txtOwner_CalendarReports" value="0">
+    <input type="hidden" id="txtOwner_CareerProgression" name="txtOwner_CareerProgression" value="0">
+    <input type="hidden" id="txtOwner_EmailGroups" name="txtOwner_EmailGroups" value="0">
+    <input type="hidden" id="txtOwner_Labels" name="txtOwner_Labels" value="0">
+    <input type="hidden" id="txtOwner_LabelDefinition" name="txtOwner_LabelDefinition" value="0">
+    <input type="hidden" id="txtOwner_MatchReports" name="txtOwner_MatchReports" value="0">
+    <input type="hidden" id="txtOwner_RecordProfile" name="txtOwner_RecordProfile" value="0">
+    <input type="hidden" id="txtOwner_SuccessionPlanning" name="txtOwner_SuccessionPlanning" value="0">
+
+    <input type="hidden" id="txtWarn_DataTransfer" name="txtWarn_DataTransfer" value="0">
+    <input type="hidden" id="txtWarn_GlobalAdd" name="txtWarn_GlobalAdd" value="0">
+    <input type="hidden" id="txtWarn_GlobalUpdate" name="txtWarn_GlobalUpdate" value="0">
+    <input type="hidden" id="txtWarn_GlobalDelete" name="txtWarn_GlobalDelete" value="0">
+    <input type="hidden" id="txtWarn_Import" name="txtWarn_Import" value="0">
 </form>
 
-<FORM id=frmOriginalConfiguration name=frmOriginalConfiguration>	
-	<INPUT type="hidden" id=Hidden1 name=txtPrimaryStartMode value=<%=session("PrimaryStartMode")%>>
-	<INPUT type="hidden" id=Hidden2 name=txtHistoryStartMode value=<%=session("HistoryStartMode")%>>
-	<INPUT type="hidden" id=Hidden3 name=txtLookupStartMode value=<%=session("LookupStartMode")%>>
-	<INPUT type="hidden" id=Hidden4 name=txtQuickAccessStartMode value=<%=session("QuickAccessStartMode")%>>
-	<INPUT type="hidden" id=Hidden5 name=txtExprColourMode value=<%=session("ExprColourMode")%>>
-	<INPUT type="hidden" id=Hidden6 name=txtExprNodeMode value=<%=session("ExprNodeMode")%>>
-	<INPUT type="hidden" id=Hidden7 name=txtFindSize value=<%=session("FindRecords")%>>
-	<INPUT type="hidden" id=txtLastFindSize name=txtLastFindSize value=<%=session("FindRecords")%>>
-	
-	<INPUT type="hidden" id=txtOnlyMineBatchJobs name=txtOnlyMineBatchJobs value=<%=session("onlyMine BatchJobs")%>>
-	<INPUT type="hidden" id=txtOnlyMineCalculations name=txtOnlyMineCalculations value=<%=session("onlyMine Calculations")%>>
-	<INPUT type="hidden" id=txtOnlyMineCrossTabs name=txtOnlyMineCrossTabs value=<%=session("onlyMine CrossTabs")%>>
-	<INPUT type="hidden" id=txtOnlyMineCustomReports name=txtOnlyMineCustomReports value=<%=session("onlyMine CustomReports")%>>
-	<INPUT type="hidden" id=txtOnlyMineDataTransfer name=txtOnlyMineDataTransfer value=<%=session("onlyMine DataTransfer")%>>
-	<INPUT type="hidden" id=txtOnlyMineExport name=txtOnlyMineExport value=<%=session("onlyMine Export")%>>
-	<INPUT type="hidden" id=txtOnlyMineFilters name=txtOnlyMineFilters value=<%=session("onlyMine Filters")%>>
-	<INPUT type="hidden" id=txtOnlyMineGlobalAdd name=txtOnlyMineGlobalAdd value=<%=session("onlyMine GlobalAdd")%>>
-	<INPUT type="hidden" id=txtOnlyMineGlobalUpdate name=txtOnlyMineGlobalUpdate value=<%=session("onlyMine GlobalUpdate")%>>
-	<INPUT type="hidden" id=txtOnlyMineGlobalDelete name=txtOnlyMineGlobalDelete value=<%=session("onlyMine GlobalDelete")%>>
-	<INPUT type="hidden" id=txtOnlyMineImport name=txtOnlyMineImport value=<%=session("onlyMine Import")%>>
-	<INPUT type="hidden" id=txtOnlyMineMailMerge name=txtOnlyMineMailMerge value=<%=session("onlyMine MailMerge")%>>
-	<INPUT type="hidden" id=txtOnlyMinePicklists name=txtOnlyMinePicklists value=<%=session("onlyMine Picklists")%>>
-	<INPUT type="hidden" id=txtOnlyMineCalendarReports name=txtOnlyMineCalendarReports value=<%=session("onlyMine CalendarReports")%>>
-	<INPUT type="hidden" id=txtOnlyMineCareerProgression name=txtOnlyMineCareerProgression value=<%=session("onlyMine CareerProgression")%>>
-	<INPUT type="hidden" id=txtOnlyMineEmailGroups name=txtOnlyMineEmailGroups value=<%=session("onlyMine EmailGroups")%>>
-	<INPUT type="hidden" id=txtOnlyMineLabels name=txtOnlyMineLabels value=<%=session("onlyMine Labels")%>>
-	<INPUT type="hidden" id=txtOnlyMineLabelDefinition name=txtOnlyMineLabelDefinition value=<%=session("onlyMine LabelDefinition")%>>
-	<INPUT type="hidden" id=txtOnlyMineMatchReports name=txtOnlyMineMatchReports value=<%=session("onlyMine MatchReports")%>>
-	<INPUT type="hidden" id=txtOnlyMineRecordProfile name=txtOnlyMineRecordProfile value=<%=session("onlyMine RecordProfile")%>>
-	<INPUT type="hidden" id=txtOnlyMineSuccessionPlanning name=txtOnlyMineSuccessionPlanning value=<%=session("onlyMine SuccessionPlanning")%>>
-	
-	<INPUT type="hidden" id=txtUtilWarnDataTransfer name=txtUtilWarnDataTransfer value=<%=session("warning DataTransfer")%>>
-	<INPUT type="hidden" id=txtUtilWarnGlobalAdd name=txtUtilWarnGlobalAdd value=<%=session("warning GlobalAdd")%>>
-	<INPUT type="hidden" id=txtUtilWarnGlobalUpdate name=txtUtilWarnGlobalUpdate value=<%=session("warning GlobalUpdate")%>>
-	<INPUT type="hidden" id=txtUtilWarnGlobalDelete name=txtUtilWarnGlobalDelete value=<%=session("warning GlobalDelete")%>>
-	<INPUT type="hidden" id=txtUtilWarnImport name=txtUtilWarnImport value=<%=session("warning Import")%>>
-</FORM>
+<form id="frmOriginalConfiguration" name="frmOriginalConfiguration">
+    <input type="hidden" id="Hidden1" name="txtPrimaryStartMode" value='<%=session("PrimaryStartMode")%>'>
+    <input type="hidden" id="Hidden2" name="txtHistoryStartMode" value='<%=session("HistoryStartMode")%>'>
+    <input type="hidden" id="Hidden3" name="txtLookupStartMode" value='<%=session("LookupStartMode")%>'>
+    <input type="hidden" id="Hidden4" name="txtQuickAccessStartMode" value='<%=session("QuickAccessStartMode")%>'>
+    <input type="hidden" id="Hidden5" name="txtExprColourMode" value='<%=session("ExprColourMode")%>'>
+    <input type="hidden" id="Hidden6" name="txtExprNodeMode" value='<%=session("ExprNodeMode")%>'>
+    <input type="hidden" id="Hidden7" name="txtFindSize" value='<%=session("FindRecords")%>'>
+    <input type="hidden" id="txtLastFindSize" name="txtLastFindSize" value='<%=session("FindRecords")%>'>
 
-<FORM action="default_Submit" method=post id=frmGoto name=frmGoto style="visibility:hidden;display:none">
+    <input type="hidden" id="txtOnlyMineBatchJobs" name="txtOnlyMineBatchJobs" value='<%=session("onlyMine BatchJobs")%>'>
+    <input type="hidden" id="txtOnlyMineCalculations" name="txtOnlyMineCalculations" value='<%=session("onlyMine Calculations")%>'>
+    <input type="hidden" id="txtOnlyMineCrossTabs" name="txtOnlyMineCrossTabs" value='<%=session("onlyMine CrossTabs")%>'>
+    <input type="hidden" id="txtOnlyMineCustomReports" name="txtOnlyMineCustomReports" value='<%=session("onlyMine CustomReports")%>'>
+    <input type="hidden" id="txtOnlyMineDataTransfer" name="txtOnlyMineDataTransfer" value='<%=session("onlyMine DataTransfer")%>'>
+    <input type="hidden" id="txtOnlyMineExport" name="txtOnlyMineExport" value='<%=session("onlyMine Export")%>'>
+    <input type="hidden" id="txtOnlyMineFilters" name="txtOnlyMineFilters" value='<%=session("onlyMine Filters")%>'>
+    <input type="hidden" id="txtOnlyMineGlobalAdd" name="txtOnlyMineGlobalAdd" value='<%=session("onlyMine GlobalAdd")%>'>
+    <input type="hidden" id="txtOnlyMineGlobalUpdate" name="txtOnlyMineGlobalUpdate" value='<%=session("onlyMine GlobalUpdate")%>'>
+    <input type="hidden" id="txtOnlyMineGlobalDelete" name="txtOnlyMineGlobalDelete" value='<%=session("onlyMine GlobalDelete")%>'>
+    <input type="hidden" id="txtOnlyMineImport" name="txtOnlyMineImport" value='<%=session("onlyMine Import")%>'>
+    <input type="hidden" id="txtOnlyMineMailMerge" name="txtOnlyMineMailMerge" value='<%=session("onlyMine MailMerge")%>'>
+    <input type="hidden" id="txtOnlyMinePicklists" name="txtOnlyMinePicklists" value='<%=session("onlyMine Picklists")%>'>
+    <input type="hidden" id="txtOnlyMineCalendarReports" name="txtOnlyMineCalendarReports" value='<%=session("onlyMine CalendarReports")%>'>
+    <input type="hidden" id="txtOnlyMineCareerProgression" name="txtOnlyMineCareerProgression" value='<%=session("onlyMine CareerProgression")%>'>
+    <input type="hidden" id="txtOnlyMineEmailGroups" name="txtOnlyMineEmailGroups" value='<%=session("onlyMine EmailGroups")%>'>
+    <input type="hidden" id="txtOnlyMineLabels" name="txtOnlyMineLabels" value='<%=session("onlyMine Labels")%>'>
+    <input type="hidden" id="txtOnlyMineLabelDefinition" name="txtOnlyMineLabelDefinition" value='<%=session("onlyMine LabelDefinition")%>'>
+    <input type="hidden" id="txtOnlyMineMatchReports" name="txtOnlyMineMatchReports" value='<%=session("onlyMine MatchReports")%>'>
+    <input type="hidden" id="txtOnlyMineRecordProfile" name="txtOnlyMineRecordProfile" value='<%=session("onlyMine RecordProfile")%>'>
+    <input type="hidden" id="txtOnlyMineSuccessionPlanning" name="txtOnlyMineSuccessionPlanning" value='<%=session("onlyMine SuccessionPlanning")%>'>
+
+    <input type="hidden" id="txtUtilWarnDataTransfer" name="txtUtilWarnDataTransfer" value='<%=session("warning DataTransfer")%>'>
+    <input type="hidden" id="txtUtilWarnGlobalAdd" name="txtUtilWarnGlobalAdd" value='<%=session("warning GlobalAdd")%>'>
+    <input type="hidden" id="txtUtilWarnGlobalUpdate" name="txtUtilWarnGlobalUpdate" value='<%=session("warning GlobalUpdate")%>'>
+    <input type="hidden" id="txtUtilWarnGlobalDelete" name="txtUtilWarnGlobalDelete" value='<%=session("warning GlobalDelete")%>'>
+    <input type="hidden" id="txtUtilWarnImport" name="txtUtilWarnImport" value='<%=session("warning Import")%>'>
+</form>
+
+<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
     <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-</FORM>
+</form>
 
 <script type="text/javascript">
     configuration_window_onload();

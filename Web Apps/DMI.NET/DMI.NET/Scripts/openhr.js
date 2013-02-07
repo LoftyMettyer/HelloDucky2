@@ -158,7 +158,8 @@
 	        //TODO
 	    },
 	    validateDir = function(x, y) {
-	        //TODO	        
+	        //TODO
+	        return true;
 	    },
 	    SendMail = function(sTo, sSubject, sBody, sCC, sBCC) {
 	        //TODO
