@@ -507,7 +507,8 @@
 	//		    var newWin = ReturnNewWindow('', sUtilId, '500', '200', 'yes');
 			 //   OpenHR.submitForm(frmPrompt, newWin);
 			    //OpenHR.submitForm(document.frmPrompt);
-				OpenHR.submitForm(document.frmPrompt);                
+				//OpenHR.submitForm(document.frmPrompt);                
+				OpenHR.showInReportFrame(document.frmPrompt); 
 
 			}
 		//	return false;

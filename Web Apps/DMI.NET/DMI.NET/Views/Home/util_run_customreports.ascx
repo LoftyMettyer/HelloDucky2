@@ -18,7 +18,6 @@
     
     <script type="text/javascript">
         function reports_window_onload() {
-            //            $("#workframe").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTS");
             loadAddRecords();
         }
     </script>
@@ -1156,7 +1155,7 @@
 
 <script type="text/javascript">
     
-    function addActiveXHandlers() {
+    function util_run_customreports_addActiveXHandlers() {
 
         OpenHR.addActiveXHandler("tblGrid", "onresize", tblGrid_onresize);
         OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "printinitialize", ssOleDBGridDefSelRecords_PrintInitialize);
@@ -1267,131 +1266,69 @@
         iPollPeriod = 100;
         iPollCounter = iPollPeriod;
 
-//        debugger;
-        
-
-        // Expand the work frame and hide the option frame.
-        //window.parent.parent.document.all.item("myframeset").rows = "0, *";
-
         var frmPopup = document.getElementById("frmPopup");
 
-        if ((txtSuccessFlag.value == 1) || (txtSuccessFlag.value == 3)) 
-        {
+        if (txtSuccessFlag.value == 2) {
+                
+            var frmOutput = document.getElementById("frmOutput");
 
-            // Resize the popup.
-            iResizeByHeight = frmPopup.offsetParent.scrollHeight - window.parent.parent.parent.document.body.clientHeight;
-            if (frmPopup.offsetParent.offsetHeight + iResizeByHeight > screen.height) 
-            {
-                try
-                {
-                    window.parent.window.parent.moveTo((screen.width - window.parent.parent.parent.document.body.offsetWidth) / 2, 0);
-                    window.parent.window.parent.resizeTo(window.parent.parent.parent.document.body.offsetWidth, screen.height);
-                }
-                catch(e) {}
-            }
-            else 
-            {
-                try
-                {
-                    window.parent.window.parent.moveTo((screen.width - window.parent.parent.parent.document.body.offsetWidth) / 2, (screen.height - (window.parent.parent.parent.document.body.offsetHeight + iResizeByHeight)) / 2);
-                    window.parent.window.parent.resizeBy(0, iResizeByHeight);
-                }
-                catch(e) {}
-            }
+            setGridFont(frmOutput.ssHiddenGrid);
+            setGridFont(frmOutput.ssOleDBGridDefSelRecords);
 
-            iResizeByWidth = frmPopup.offsetParent.scrollWidth - window.parent.parent.parent.document.body.clientWidth;
-            if (frmPopup.offsetParent.offsetWidth + iResizeByWidth > screen.width) 
+            frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'hidden';
+            frmOutput.ssOleDBGridDefSelRecords.Redraw = false;
+            frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'visible';
+            frmOutput.ssOleDBGridDefSelRecords.focus();
+			
+            var dataCollection = frmGridItems.elements;
+            if (dataCollection!=null) 
             {
-                try
+                for (i=0; i<dataCollection.length; i++)  
                 {
-                    window.parent.window.parent.moveTo(0, (screen.height - window.parent.parent.parent.document.body.offsetHeight) / 2);
-                    window.parent.window.parent.resizeTo(screen.width, window.parent.parent.parent.document.body.offsetHeight);
+                    if (i==iPollCounter) 
+                    {			
+                        try 
+                        {
+                            var frmRefresh = OpenHR.getForm("pollframe","frmHit");	
+                            var testDataCollection = frmRefresh.elements;
+                            iDummy = testDataCollection.txtDummy.value;
+                            frmRefresh.submit();
+                            iPollCounter = iPollCounter + iPollPeriod;
+                        }
+                        catch(e) {}
+                    }                        
+
+                    sControlName = dataCollection.item(i).name;
+                    sControlName = sControlName.substr(0, 12);
+                    if (sControlName=="txtGridItem_") {
+                        frmOutput.ssOleDBGridDefSelRecords.AddItem(dataCollection.item(i).value);
+                    }
                 }
-                catch(e) {}
+            }		
+			
+            // JPD 19/03/02 Fault 3665
+            for (i=0; i<frmOutput.ssOleDBGridDefSelRecords.Columns.Count; i++) 
+            {
+                if (frmOutput.ssOleDBGridDefSelRecords.Columns(i).Width > 32000) 
+                {
+                    frmOutput.ssOleDBGridDefSelRecords.Columns(i).Width = 32000;
+                }
+            }
+			
+            if (frmExportData.txtPreview.value == 'False')
+            {
+                frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'hidden';
+                frmOutput.ssOleDBGridDefSelRecords.Redraw = true;
+                ExportData("OUTPUTRUN");
+                document.getElementById('output').style.visibility = 'hidden';
+                document.getElementById('close').value = 'OK';
+                document.getElementById('tdOutputMSG').innerText = "Custom Report : '"+"' Completed Successfully.";
+                return;
             }
             else
             {
-                try
-                {
-                    window.parent.window.parent.moveTo((screen.width - (window.parent.parent.parent.document.body.offsetWidth + iResizeByWidth)) / 2, (screen.height - window.parent.parent.parent.document.body.offsetHeight) / 2);
-                    window.parent.window.parent.resizeBy(iResizeByWidth, 0);
-                }
-                catch(e) {}
-            }		
-        }
-        else 
-        {
-            if (txtSuccessFlag.value == 2) {
-                
-                var frmOutput = document.getElementById("frmOutput");
-
-                setGridFont(frmOutput.ssHiddenGrid);
-                setGridFont(frmOutput.ssOleDBGridDefSelRecords);
-
-                frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'hidden';
-                frmOutput.ssOleDBGridDefSelRecords.Redraw = false;
+                frmOutput.ssOleDBGridDefSelRecords.Redraw = true;
                 frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'visible';
-                frmOutput.ssOleDBGridDefSelRecords.focus();
-			
-                var dataCollection = frmGridItems.elements;
-                if (dataCollection!=null) 
-                {
-                    for (i=0; i<dataCollection.length; i++)  
-                    {
-                        if (i==iPollCounter) 
-                        {			
-                            try 
-                            {
-                                var frmRefresh = window.parent.parent.parent.window.opener.parent.frames("pollframe").document.forms("frmHit");	
-                                var testDataCollection = frmRefresh.elements;
-                                iDummy = testDataCollection.txtDummy.value;
-                                frmRefresh.submit();
-                                iPollCounter = iPollCounter + iPollPeriod;
-                            }
-                            catch(e) {}
-                        }                        
-
-                        sControlName = dataCollection.item(i).name;
-                        sControlName = sControlName.substr(0, 12);
-                        if (sControlName=="txtGridItem_") {
-                            frmOutput.ssOleDBGridDefSelRecords.AddItem(dataCollection.item(i).value);
-                        }
-                    }
-                }		
-			
-                // JPD 19/03/02 Fault 3665
-                for (i=0; i<frmOutput.ssOleDBGridDefSelRecords.Columns.Count; i++) 
-                {
-                    if (frmOutput.ssOleDBGridDefSelRecords.Columns(i).Width > 32000) 
-                    {
-                        frmOutput.ssOleDBGridDefSelRecords.Columns(i).Width = 32000;
-                    }
-                }
-			
-                if (frmExportData.txtPreview.value == 'False')
-                {
-                    frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'hidden';
-                    frmOutput.ssOleDBGridDefSelRecords.Redraw = true;
-                    ExportData("OUTPUTRUN");
-                    document.getElementById('output').style.visibility = 'hidden';
-                    document.getElementById('close').value = 'OK';
-                    document.getElementById('tdOutputMSG').innerText = "Custom Report : '"+"' Completed Successfully.";
-                    return;
-                }
-                else
-                {
-                    frmOutput.ssOleDBGridDefSelRecords.Redraw = true;
-                    frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'visible';
-                    try
-                    {
-                        var lngPreviewWidth = new Number(850);
-                        var lngPreviewHeight = new Number(550);
-                        //modal forms for dmi.net
-                        window.parent.parent.parent.moveTo((screen.width - lngPreviewWidth) / 2, (screen.height - lngPreviewHeight) / 2);
-                        window.parent.parent.parent.resizeTo(lngPreviewWidth, lngPreviewHeight);
-                    }
-                    catch(e) {}
-                }
             }
         }
 			
@@ -1589,6 +1526,5 @@
 
 
 <script type="text/javascript">
-    addActiveXHandlers();
     reports_window_onload();
 </script>

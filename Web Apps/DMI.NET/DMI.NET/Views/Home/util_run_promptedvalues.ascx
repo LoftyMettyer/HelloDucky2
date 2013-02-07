@@ -35,8 +35,12 @@
  
     function promptedvalues_window_onload() {
 
-           //remmed this - don't need to set current workframe source - leave as defsel.
-        $("#workframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");       
+        //remmed this - don't need to set current workframe source - leave as defsel.
+        $("#reportframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");       
+
+        $("#workframeset").hide();
+        $("#reportframe").show();
+
 
         var frmPromptedValues = OpenHR.getForm("workframe", "frmPromptedValues");
 
@@ -50,15 +54,16 @@
         frmPromptedValues.txtLocaleThousandSeparator.value = OpenHR.LocaleThousandSeparator;
 
         if (frmPromptedValues.RunInOptionFrame.value == "True") {
-            $("#workframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
+            $("#reportframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
 
         } else {
             if (frmPromptedValues.StandardReportPrompt.value == "True") {
-                $("#workframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");                
+                $("#reportframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");                
             }
         }
         if (frmPromptedValues.txtPromptCount.value == 0) {
-            OpenHR.submitForm(frmPromptedValues);
+            //    OpenHR.submitForm(frmPromptedValues);
+            OpenHR.showInReportFrame(frmPromptedValues);
 
         } else {
             // Set focus on the first prompt control.
@@ -73,24 +78,7 @@
                         break;
                     }
                 }
-            }
 
-            // Resize the grid to show all propmted values.
-            if (frmPromptedValues.StandardReportPrompt.value == "False") {
-                iResizeBy = frmPromptedValues.offsetParent.scrollHeight - frmPromptedValues.offsetParent.clientHeight;
-                if (frmPromptedValues.offsetParent.offsetHeight + iResizeBy > screen.height) {
-                    try {
-                        window.parent.moveTo((screen.width - frmPromptedValues.offsetParent.offsetWidth) / 2, 0);
-                        window.parent.resizeTo(frmPromptedValues.offsetParent.offsetWidth, screen.height);
-                    } catch (e) {
-                    }
-                } else {
-                    try {
-                        window.parent.moveTo((screen.width - frmPromptedValues.offsetParent.offsetWidth) / 2, (screen.height - (frmPromptedValues.offsetParent.offsetHeight + iResizeBy)) / 2);
-                        window.parent.resizeBy(0, iResizeBy);
-                    } catch (e) {
-                    }
-                }
             }
         }
     }
@@ -487,19 +475,12 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
         <input type="hidden" id="txtLocaleThousandSeparator" name="txtLocaleThousandSeparator" value="">
 </FORM>
 
-<!-- Form to return to record edit screen -->
-<form action="emptyoption" method="post" id="frmRecordEdit" name="frmRecordEdit">
-</form>
-
-<FORM action="default_Submit" method=post id=frmGoto name=frmGoto style="visibility:hidden;display:none">
-    <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-</FORM>
 
     </div>
 
 
 <script type="text/javascript">
-<!--
+
     function SubmitPrompts()
     {
         // Validate the prompt values before submitting the form.
@@ -653,7 +634,7 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
             // Character column.
             // Ensure that the value entered matches the required mask (if there is one).
             sMaskCtlName = "promptMask_" + pctlPrompt.name.substring(9, pctlPrompt.name.length);
-            sMaskCtlName = sMaskCtlName.toUpperCase();
+            //   sMaskCtlName = sMaskCtlName.toUpperCase();
 
             fFound = false;		
             var controlCollection = frmPromptedValues.elements;
@@ -669,8 +650,6 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
                 }
             }
 		
-            debugger;
-
             if (fFound == true) {
                 sMask = frmPromptedValues.elements(sMaskCtlName).value;
                 sValue = pctlPrompt.value;
@@ -698,86 +677,86 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
                             {
                                 switch (sMask.substring(i, i+1)) 
                                 {
-                                    case "A":
-                                        // Character must be uppercase.
-                                        if (sValueChar.toUpperCase() != sValueChar) 
-                                        {
-                                            fOK = false;
-                                        }
-                                        else 
-                                        {
-                                            iNumber = new Number(sValueChar);
-                                            if (isNaN(iNumber) == false) 
-                                            {
-                                                fOK= true;
-                                            }
-                                        }
-                                        iIndex = iIndex + 1;
-                                        break;
-									
-                                    case "a":
-                                        // Character must be lowercase.
-                                        if (sValueChar.toLowerCase() != sValueChar) 
-                                        {
-                                            fOK = false;
-                                        }
-                                        else 
-                                        {
-                                            iNumber = new Number(sValueChar);
-                                            if (isNaN(iNumber) == false) 
-                                            {
-                                                fOK= false;
-                                            }
-                                        }
-                                        iIndex = iIndex + 1;
-                                        break;
-									
-                                    case "9":
-                                        // Character must be numeric (0-9).
+                                case "A":
+                                    // Character must be uppercase.
+                                    if (sValueChar.toUpperCase() != sValueChar) 
+                                    {
+                                        fOK = false;
+                                    }
+                                    else 
+                                    {
                                         iNumber = new Number(sValueChar);
-                                        if (isNaN(iNumber) == true) 
+                                        if (isNaN(iNumber) == false) 
                                         {
-                                            fOK= false;
+                                            fOK= true;
                                         }
-                                        iIndex = iIndex + 1;
-                                        break;
+                                    }
+                                    iIndex = iIndex + 1;
+                                    break;
 									
-                                    case "#":
-                                        // Character must be numeric (0-9) or symbolic (+-%\).
+                                case "a":
+                                    // Character must be lowercase.
+                                    if (sValueChar.toLowerCase() != sValueChar) 
+                                    {
+                                        fOK = false;
+                                    }
+                                    else 
+                                    {
                                         iNumber = new Number(sValueChar);
-                                        if ((isNaN(iNumber) == true) && 
-                                            (sValueChar != "+") &&
-                                            (sValueChar != "-") &&
-                                            (sValueChar != "%") &&
-                                            (sValueChar != "\\")) 
+                                        if (isNaN(iNumber) == false) 
                                         {
                                             fOK= false;
                                         }
-                                        iIndex = iIndex + 1;
-                                        break;
+                                    }
+                                    iIndex = iIndex + 1;
+                                    break;
 									
-                                    case "B":
-                                        // Character must be logic (0 or 1).
-                                        if ((sValueChar != "0") &&
-                                            (sValueChar != "1"))
-                                        {
-                                            fOK= false;
-                                        }
-                                        iIndex = iIndex + 1;
-                                        break;
+                                case "9":
+                                    // Character must be numeric (0-9).
+                                    iNumber = new Number(sValueChar);
+                                    if (isNaN(iNumber) == true) 
+                                    {
+                                        fOK= false;
+                                    }
+                                    iIndex = iIndex + 1;
+                                    break;
 									
-                                    case "\\":
-                                        // Following character is literal.
-                                        fFollowingBackslash = true;
-                                        break;
+                                case "#":
+                                    // Character must be numeric (0-9) or symbolic (+-%\).
+                                    iNumber = new Number(sValueChar);
+                                    if ((isNaN(iNumber) == true) && 
+                                        (sValueChar != "+") &&
+                                        (sValueChar != "-") &&
+                                        (sValueChar != "%") &&
+                                        (sValueChar != "\\")) 
+                                    {
+                                        fOK= false;
+                                    }
+                                    iIndex = iIndex + 1;
+                                    break;
 									
-                                    default:
-                                        // Literal.
-                                        if (sMask.substring(i, i+1) != sValueChar) 
-                                        {
-                                            fOK = false;
-                                        }
-                                        iIndex = iIndex + 1;
+                                case "B":
+                                    // Character must be logic (0 or 1).
+                                    if ((sValueChar != "0") &&
+                                        (sValueChar != "1"))
+                                    {
+                                        fOK= false;
+                                    }
+                                    iIndex = iIndex + 1;
+                                    break;
+									
+                                case "\\":
+                                    // Following character is literal.
+                                    fFollowingBackslash = true;
+                                    break;
+									
+                                default:
+                                    // Literal.
+                                    if (sMask.substring(i, i+1) != sValueChar) 
+                                    {
+                                        fOK = false;
+                                    }
+                                    iIndex = iIndex + 1;
                                 }
                             }
                             else 
@@ -1008,7 +987,6 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
             }
         }
     }
-    -->
 </script>
     
 <script type="text/javascript">

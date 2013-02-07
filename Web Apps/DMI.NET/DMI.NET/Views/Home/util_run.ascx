@@ -1,7 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-
 <%
     ' following sessions vars:
 '
@@ -52,15 +51,8 @@ redim preserve aPrompts(1, 0)
 sKey = "Prompts_" & Request.Form("utiltype") & "_" & Request.Form("utilid") 
 session(sKey) = aPrompts
 %>
-
-
-    
-    
+        
 <script type="text/javascript">
-
-    function util_run_window_onload() {
-        $("#workframe").attr("data-framesource", "UTIL_RUN");
-    }    
 
     function raiseError(sErrorDesc, fok, fcancelled) 
     {
@@ -103,19 +95,13 @@ session(sKey) = aPrompts
 
     function ShowWaitFrame(sMessage)
     {
-        var fs = window.parent.document.all.item("myframeset");
+        var fs = window.parent.document.all.item("reportframe");
 
         if (fs) 
         {
             fs.rows = "*,0,0";
         }
 	
-        try 
-        {
-            window.resizeBy(0,-1);
-            window.resizeBy(0,1);		
-        } 
-        catch(e) {}
     }
 
     function ShowOutputOptionsFrame(sURL)
@@ -132,47 +118,33 @@ session(sKey) = aPrompts
             fs.rows = "0,0,*";
         }
 
-        try 
-        {
-            window.resizeBy(0,-1);
-            window.resizeBy(0,1);		
-        } 
-        catch(e) {}
     }
 
     function ShowDataFrame()
     {
-        var fs = window.parent.document.all.item("myframeset");
+        var fs = window.parent.document.all.item("reportframe");
         if (fs) 
         {
             fs.rows = "0,*,0";
         }
 	
-        try 
-        {
-            window.resizeBy(0,-1);
-            window.resizeBy(0,1);		
-        } 
-        catch(e) {}
     }
 
 </script>
 
-<FORM id=frmError name=frmError action="util_run_error" method=post>
-	<INPUT type="hidden" id=txtUtilTypeDesc name=txtUtilTypeDesc>
-	<INPUT type="hidden" id=txtEventLogID name=txtEventLogID>
-	<INPUT type="hidden" id=txtOK name=txtOK>
-	<INPUT type="hidden" id=txtUserCancelled name=txtUserCancelled>
-	<INPUT type="hidden" id=txtErrorDesc name=txtErrorDesc>
-</FORM>
+<form id="frmError" name="frmError" action="util_run_error" method="post">
+    <input type="hidden" id="txtUtilTypeDesc" name="txtUtilTypeDesc">
+    <input type="hidden" id="txtEventLogID" name="txtEventLogID">
+    <input type="hidden" id="txtOK" name="txtOK">
+    <input type="hidden" id="txtUserCancelled" name="txtUserCancelled">
+    <input type="hidden" id="txtErrorDesc" name="txtErrorDesc">
+</form>
 
-<div id="reportframeset">
+<div id="top">
+    <%Html.RenderPartial("~/Views/Home/progress.ascx")%>
+</div>
 
-    <div id="top">       
-        <%html.RenderPartial("~/Views/Home/progress.ascx")%>
-    </div>
-    
-    <div id="main" data-framesource="util_run">
+<div id="main" data-framesource="util_run">
     <%   
         If Session("utiltype") = "1" Then
             Html.RenderPartial("~/Views/Home/util_run_crosstabsMain.ascx")
@@ -200,12 +172,7 @@ session(sKey) = aPrompts
             Html.RenderPartial("~/Views/Home/util_run_calendarreport_main.ascx")
         End If
     %>
-    </div>
-
-	<div id="outputoptions"></div>
-
-    <form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
-        <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-    </form>
-
 </div>
+
+<div id="outputoptions"></div>
+

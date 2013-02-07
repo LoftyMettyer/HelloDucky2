@@ -38,6 +38,44 @@
 	    	        break;
 	    	}
 	    },
+
+        showInReportFrame = function (form) {
+            var $form = $(form),
+   	    	    $frame = $("#reportframe"),
+	    	    url = $form.attr("action"),
+	    	    data = $form.serialize();
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: data,
+                async: false,
+                success: function (html) {
+                    try {
+                        if (html.ErrorMessage.length > 0) {
+                            //A handled error was returned. Display error message, then redirect accordingly...
+                            handleAjaxError(html);
+                            return false;
+                        }
+                    } catch (e) { }
+
+                    //clear the frame...
+                    $frame.html('');
+
+                  //  $("#workframeset").hide();
+
+                    $("#reportframeset").show();
+
+                    //OK
+                    $frame.html(html);
+                    
+                },
+                error: function (req, status, errorObj) {
+                    alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
+                }
+            });
+        },
+
 	    showPopup = function (prompt) {
 
 	    },
@@ -72,7 +110,9 @@
 	    		    //clear the frame...
 	    		    $frame.html('');
 	    		    
-                    //OK
+	    		    //OK
+
+//	    		    $("#reportframe").hide();
 	    		    $("#workframeset").show();
 	    		    if (targetWin != null)
 	    		 {
@@ -87,8 +127,11 @@
 	    	});
 	    },
 	    addActiveXHandler = function (controlId, eventName, func) {
-	    	var ctl = document.getElementById(controlId);
-	    	ctl.attachEvent(eventName, func);
+	        var ctl = document.getElementById(controlId);
+	        
+            if (ctl != null) {
+                ctl.attachEvent(eventName, func);
+            }
 	    },
 	    refreshMenu = function () {
 	    	//TODO
@@ -141,6 +184,7 @@
         getFrame: getFrame,
 		getForm: getForm,
 		submitForm: submitForm,
+		showInReportFrame: showInReportFrame,
 		addActiveXHandler: addActiveXHandler,
 		refreshMenu: refreshMenu,
 		disableMenu: disableMenu,

@@ -25,7 +25,6 @@
 <input type='hidden' id="txtLoadCount" name="txtLoadCount" value="0">
 
 <div id="customreportmainframeset">
-
     <div id="reportworkframe" style="display: none;">
         <%Html.RenderPartial("~/views/home/util_run_customreports.ascx")%>
     </div>
@@ -33,7 +32,6 @@
     <div id="reportdataframe" style="display: none;">
         <%Html.RenderPartial("~/views/home/util_run_customreportsData.ascx")%>
     </div>
-
 </div>
 
 <form id="frmOutput" name="frmOutput">
@@ -45,5 +43,6 @@
 
 <script type="text/javascript">
     reports_window_onload();
+    util_run_customreports_addActiveXHandlers();
 </script>
 

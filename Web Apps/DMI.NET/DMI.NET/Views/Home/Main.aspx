@@ -51,12 +51,14 @@
 						$('.ContextMenu-panel').animate({ left: '-' + ContextMenuTab.containerWidth }, ContextMenuTab.speed)
                             .removeClass('open');
 						$("#workframeset").css("left", "30px");
+						$("#reportframeset").css("left", "30px");
 						$('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/expand.png") %>');
 
 					} else {
 						$('.ContextMenu-panel').animate({ left: '0' }, ContextMenuTab.speed)
                             .addClass('open');
 						$("#workframeset").css("left", "350px");
+						$("#reportframeset").css("left", "350px");
 						$('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/retract.png") %>');
 					}
 					event.preventDefault();
@@ -127,6 +129,12 @@
 		<div id="poll" data-framesource="poll.asp" style="display: none"></div>
 		<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none"><%Html.RenderPartial("~/views/home/pollmessage.ascx")%></div>
 	</div>
+    
+    <div id="reportframeset">
+        <div id="reportframe"></div>
+    </div>
+
+    <div id="messageframe" style="display: none">Message Page</div>
 
 	<div id="waitpage" data-framesource="WaitPage.asp" style="display: none">waitpage</div>
 
