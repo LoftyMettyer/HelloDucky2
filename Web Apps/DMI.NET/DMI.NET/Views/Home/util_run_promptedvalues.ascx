@@ -347,7 +347,7 @@
                     If rstLookupValues.fields(0).type = 135 Then
                         ' Field is a date so format as such.
                         sOptionValue = ConvertSqlDateToLocale(rstLookupValues.Fields(0).Value)
-                        If sOptionValue = ConvertSqlDateToLocale(rstPromptedValue.fields("valuecharacter")) Then
+                        If sOptionValue = ConvertSqlDateToLocale(rstPromptedValue.fields("valuecharacter").Value) Then
                             Response.Write(" SELECTED")
                             fDefaultFound = True
                         End If
@@ -355,8 +355,8 @@
                     ElseIf rstLookupValues.fields(0).type = 131 Then
                         ' Field is a numeric so format as such.
                         sOptionValue = Replace(rstLookupValues.Fields(0).Value, ".", Session("LocaleDecimalSeparator"))
-                        If (Not IsDBNull(rstLookupValues.Fields(0).Value)) And (Not IsDBNull(rstPromptedValue.fields("valuecharacter"))) Then
-                            If FormatNumber(rstLookupValues.Fields(0).Value) = FormatNumber(rstPromptedValue.fields("valuecharacter")) Then
+                        If (Not IsDBNull(rstLookupValues.Fields(0).Value)) And (Not IsDBNull(rstPromptedValue.fields("valuecharacter").Value)) Then
+                            If FormatNumber(rstLookupValues.Fields(0).Value) = FormatNumber(rstPromptedValue.fields("valuecharacter").Value) Then
                                 Response.Write(" SELECTED")
                                 fDefaultFound = True
                             End If
@@ -365,14 +365,14 @@
                     ElseIf rstLookupValues.fields(0).type = 11 Then
                         ' Field is a logic so format as such.
                         sOptionValue = rstLookupValues.Fields(0).Value
-                        If sOptionValue = rstPromptedValue.fields("valuecharacter") Then
+                        If sOptionValue = rstPromptedValue.fields("valuecharacter").Value Then
                             Response.Write(" SELECTED")
                             fDefaultFound = True
                         End If
                         Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
                     Else
                         sOptionValue = RTrim(rstLookupValues.Fields(0).Value)
-                        If sOptionValue = rstPromptedValue.fields("valuecharacter") Then
+                        If sOptionValue = rstPromptedValue.fields("valuecharacter").Value Then
                             Response.Write(" SELECTED")
                             fDefaultFound = True
                         End If
