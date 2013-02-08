@@ -8,7 +8,6 @@
 %>
 
 <script type="text/javascript">
-<!--
     function data_window_onload() {        
 		var frmData = document.getElementById("frmData");
 		var frmGetData = document.getElementById("frmGetData");
@@ -31,8 +30,7 @@
 		//TODO
 		window.location = "Login";
 	}
-	else {
-	   
+	else {	    
 		// Do nothing if the menu controls are not yet instantiated.
 		if (frmWorkAreaInfo != null) {
 			var sCurrentWorkPage = OpenHR.currentWorkPage();
@@ -287,6 +285,9 @@
 				var sControlName;
 				var sColumnId;
 				var dataCollection = frmData.elements;
+
+				var frmRecEditForm = document.getElementById("frmRecordEditForm");
+
 				if (dataCollection!=null) {
 					// Need to hide the popup in case setdata causes
 					// the intrecedit control to display an error message.
@@ -300,10 +301,14 @@
 						  sColumnId = sColumnId.substr(8);
 						    var x = $("#FI_" + sColumnId);
 						    //recEditControl.setData(sColumnId, dataCollection.item(i).value);
-						    $("#FI_" + sColumnId).val(dataCollection.item(i).value);
+						    //$("#FI_" + sColumnId).val(dataCollection.item(i).value);
+						    //setData function is in recordEdit.ascx.						    
+						    recEdit_setData(sColumnId, dataCollection.item(i).value);						    
 						}
 					}
 				}	
+
+				return false;
 				recEditControl.ChangedOLEPhoto(0, "NONE");
 				
 				setRecordID(frmData.txtRecordID.value); //workframe
@@ -503,12 +508,12 @@
 				}
 		}
 	}
-	}
--->
+    }
+
 </script>
 
 <script type="text/javascript">
-<!--
+
 	function data_refreshData() {
 		var f = document.getElementById("frmGetData");
 		OpenHR.submitForm(f);
@@ -548,7 +553,7 @@
 
 		return (sCurrentPage);
 	}
--->
+
 </script>
 
 <div>

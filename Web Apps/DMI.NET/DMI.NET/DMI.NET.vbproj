@@ -348,6 +348,7 @@
     </Content>
     <Content Include="Pictures\ProfilePhotos\dAvery.jpg" />
     <Content Include="Pictures\ProfilePhotos\mWORTHING.jpg" />
+    <Content Include="Scripts\FormScripts\recordEdit.js" />
     <Content Include="Scripts\FormScripts\Util_Def_CustomReports.js" />
     <Content Include="Scripts\jquery-1.8.3.js" />
     <Content Include="Scripts\jquery-ui-1.9.2.custom.js" />

@@ -932,7 +932,7 @@ function menu_refreshMenu() {
 		menu_enableMenuItem("mnutoolCopyRecord", (fMnutoolNewRecord && (frmRecEdit.txtCurrentRecordID.value > 0)));
 		menu_setVisibleMenuItem("mnutoolEditRecord", false);
 		menu_setVisibleMenuItem("mnutoolSaveRecord", true);
-		menu_enableMenuItem("mnutoolSaveRecord", (frmRecEdit.ctlRecordEdit.changed == true));
+		//TODO: menu_enableMenuItem("mnutoolSaveRecord", (frmRecEdit.ctlRecordEdit.changed == true));
 		menu_setVisibleMenuItem("mnutoolDeleteRecord", true);
 		menu_enableMenuItem("mnutoolDeleteRecord", ((frmRecEdit.txtRecEditDeleteGranted.value.toUpperCase() == "TRUE") &&
 				(frmRecEdit.txtCurrentRecordID.value > 0) &&
@@ -1046,23 +1046,24 @@ function menu_refreshMenu() {
 			menu_enableMenuItem("mnutoolHistory", false);
 		}
 
-		sRecEditDate = String(frmRecEdit.ctlRecordEdit.TBCourseCancelDateValue());
-		sRecEditDate = sRecEditDate.toUpperCase();
-		sDummyDate = String(dtDummyDate.getVarDate());
-		sDummyDate = sDummyDate.toUpperCase();
+        //TODO: NPG; 
+		//sRecEditDate = String(frmRecEdit.ctlRecordEdit.TBCourseCancelDateValue());
+		//sRecEditDate = sRecEditDate.toUpperCase();
+		//sDummyDate = String(dtDummyDate.getVarDate());
+		//sDummyDate = sDummyDate.toUpperCase();
 
-		fCancelCourseVisible = ((frmRecEdit.txtCurrentTableID.value == frmMenuInfo.txtTB_CourseTableID.value) &&
-				(frmMenuInfo.txtUserType.value == 0));
-		fCancelCourseEnabled = ((frmRecEdit.txtCurrentRecordID.value > 0) &&
-					(frmMenuInfo.txtUserType.value == 0) &&
-					(frmMenuInfo.txtTB_CourseCancelDateColumnID.value > 0) &&
-					(frmMenuInfo.txtTB_TBTableID.value > 0) &&
-					(frmMenuInfo.txtTB_TBTableSelect.value.toUpperCase() == "TRUE") &&
-					(frmMenuInfo.txtTB_TBStatusColumnID.value > 0) &&
-					(frmMenuInfo.txtTB_TBStatusColumnUpdate.value.toUpperCase() == "TRUE") &&
-					((frmMenuInfo.txtTB_TBCancelDateColumnID.value == 0) ||
-						(frmMenuInfo.txtTB_TBCancelDateColumnUpdate.value.toUpperCase() == "TRUE")) &&
-					(sRecEditDate == sDummyDate));
+		//fCancelCourseVisible = ((frmRecEdit.txtCurrentTableID.value == frmMenuInfo.txtTB_CourseTableID.value) &&
+		//		(frmMenuInfo.txtUserType.value == 0));
+		//fCancelCourseEnabled = ((frmRecEdit.txtCurrentRecordID.value > 0) &&
+		//			(frmMenuInfo.txtUserType.value == 0) &&
+		//			(frmMenuInfo.txtTB_CourseCancelDateColumnID.value > 0) &&
+		//			(frmMenuInfo.txtTB_TBTableID.value > 0) &&
+		//			(frmMenuInfo.txtTB_TBTableSelect.value.toUpperCase() == "TRUE") &&
+		//			(frmMenuInfo.txtTB_TBStatusColumnID.value > 0) &&
+		//			(frmMenuInfo.txtTB_TBStatusColumnUpdate.value.toUpperCase() == "TRUE") &&
+		//			((frmMenuInfo.txtTB_TBCancelDateColumnID.value == 0) ||
+		//				(frmMenuInfo.txtTB_TBCancelDateColumnUpdate.value.toUpperCase() == "TRUE")) &&
+		//			(sRecEditDate == sDummyDate));
 
 	}
 	else {
@@ -2885,7 +2886,7 @@ function menu_editRecord() {
 
 		frmWorkArea.txtGotoPage.value = "recordEdit";
 	    //frmWorkArea.submit();
-	    OpenHR.submitForm(frmWorkArea);
+		OpenHR.submitForm(frmWorkArea);		
 	}
 }
 
