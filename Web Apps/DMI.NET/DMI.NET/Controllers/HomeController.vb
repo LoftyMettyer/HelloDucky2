@@ -1627,7 +1627,54 @@ Namespace Controllers
 
 #End Region
 
+
 #Region "Running Reports"
+
+    Function util_run_crosstabsMain() As ActionResult
+      Return PartialView()
+    End Function
+
+    Function util_run_crosstabsData() As ActionResult
+      Return PartialView()
+    End Function
+
+    Function util_run_crosstabs() As ActionResult
+      Return PartialView()
+    End Function
+
+    <HttpPost()>
+    Function util_run_crosstabsData_submit()
+
+      On Error Resume Next
+
+      Session("CT_Mode") = Request.Form("txtMode")
+      Session("CT_EmailGroupID") = Request.Form("txtEmailGroupID")
+      Session("CT_EmailGroupAddr") = Request.Form("txtEmailGroupAddr")
+      Session("CT_UtilID") = Request.Form("txtUtilID")
+
+      If Session("CT_Mode") = "BREAKDOWN" Then
+        Session("CT_Hor") = Request.Form("txtHor")
+        Session("CT_Ver") = Request.Form("txtVer")
+        Session("CT_Pgb") = Request.Form("txtPgb")
+        Session("CT_IntersectionType") = Request.Form("txtIntersectionType")
+        Session("CT_CellValue") = Request.Form("txtCellValue")
+        Session("CT_Use1000") = Request.Form("txtUse1000")
+      Else
+        Session("CT_PageNumber") = Request.Form("txtPageNumber")
+        Session("CT_IntersectionType") = Request.Form("txtIntersectionType")
+        Session("CT_ShowPercentage") = Request.Form("txtShowPercentage")
+        Session("CT_PercentageOfPage") = Request.Form("txtPercentageOfPage")
+        Session("CT_SuppressZeros") = Request.Form("txtSuppressZeros")
+        Session("CT_Use1000") = Request.Form("txtUse1000")
+      End If
+
+      ' Go to the requested page.
+      Return RedirectToAction("util_run_crosstabsData")
+
+    End Function
+
+
+
 
     Function util_run_promptedvalues() As ActionResult
       Return PartialView()

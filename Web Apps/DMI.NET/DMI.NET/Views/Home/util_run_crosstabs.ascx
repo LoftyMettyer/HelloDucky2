@@ -1,0 +1,917 @@
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="DMI.NET" %>
+
+<object
+    classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
+    id="Microsoft_Licensed_Class_Manager_1_0"
+    viewastext>
+    <param name="LPKPath" value="lpks/main.lpk">
+</object>
+
+<object classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB"
+    id="dialog"
+    codebase="cabs/comdlg32.cab#Version=1,0,0,0"
+    style="LEFT: 0px; TOP: 0px"
+    viewastext>
+    <param name="_ExtentX" value="847">
+    <param name="_ExtentY" value="847">
+    <param name="_Version" value="393216">
+    <param name="CancelError" value="0">
+    <param name="Color" value="0">
+    <param name="Copies" value="1">
+    <param name="DefaultExt" value="">
+    <param name="DialogTitle" value="">
+    <param name="FileName" value="">
+    <param name="Filter" value="">
+    <param name="FilterIndex" value="0">
+    <param name="Flags" value="0">
+    <param name="FontBold" value="0">
+    <param name="FontItalic" value="0">
+    <param name="FontName" value="">
+    <param name="FontSize" value="8">
+    <param name="FontStrikeThru" value="0">
+    <param name="FontUnderLine" value="0">
+    <param name="FromPage" value="0">
+    <param name="HelpCommand" value="0">
+    <param name="HelpContext" value="0">
+    <param name="HelpFile" value="">
+    <param name="HelpKey" value="">
+    <param name="InitDir" value="">
+    <param name="Max" value="0">
+    <param name="Min" value="0">
+    <param name="MaxFileSize" value="260">
+    <param name="PrinterDefault" value="1">
+    <param name="ToPage" value="0">
+    <param name="Orientation" value="1">
+</object>
+
+<script type="text/javascript">
+
+    function chkPercentType_Click() 
+    {
+        checkbox_disable(chkPercentPage, (chkPercentType.checked == false));
+        if (chkPercentType.checked == false) 
+        {
+            chkPercentPage.checked = false;
+        }
+        UpdateGrid();
+    }
+
+    function UpdateGrid() 
+    {
+        strMode = "REFRESH";
+
+        lngPageNumber = 0;
+        if (cboPage.selectedIndex != -1) 
+        {
+            lngPageNumber = cboPage.options[cboPage.selectedIndex].Value;
+        }
+
+        lngIntType = 0;
+        if (cboIntersectionType.selectedIndex != -1) 
+        {
+            lngIntType = cboIntersectionType.options[cboIntersectionType.selectedIndex].Value;
+        }
+
+        blnShowPer = (chkPercentType.checked == true);
+        blnPerPage = (chkPercentPage.checked == true);
+        blnSupZeros = (chkSuppressZeros.checked == true);
+        blnThousand = (chkUse1000.checked == true);
+
+        getData(strMode,lngPageNumber,lngIntType,blnShowPer,blnPerPage,blnSupZeros,blnThousand);
+    }
+
+    function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll)
+    {
+        dlgwinprops = "center:yes;" +
+            "dialogHeight:" + pHeight + "px;" +
+            "dialogWidth:" + pWidth + "px;" +
+            "help:no;" +
+            "resizable:" + psResizable + ";" +
+            "scroll:" + psScroll + ";" +
+            "status:no;";
+        window.showModalDialog(pDestination, self, dlgwinprops);
+    }
+
+</script>
+
+<script type="text/javascript">
+    
+    function util_run_crosstabs_addhandlers() {
+        OpenHR.addActiveXHandler("ssOutputGrid", "PrintInitialize", ssOutputGrid_PrintInitialize);
+        OpenHR.addActiveXHandler("ssOutputGrid", "PrintBegin", ssOutputGrid_PrintBegin);
+        OpenHR.addActiveXHandler("ssOutputGrid", "PrintError", ssOutputGrid_PrintError);
+        OpenHR.addActiveXHandler("ssHiddenGrid", "PrintInitialize", ssHiddenGrid_PrintInitialize);
+        OpenHR.addActiveXHandler("ssHiddenGrid", "PrintBegin", ssHiddenGrid_PrintBegin);
+        OpenHR.addActiveXHandler("ssHiddenGrid", "PrintError", ssHiddenGrid_PrintError);
+    }
+
+    function ssOutputGrid_PrintInitialize(ssPrintInfo) {
+        ssPrintInfo.PrintGridlines = 3;
+
+        ssPrintInfo.PrintHeaders = 0;
+        ssPrintInfo.Portrait = false;
+        ssPrintInfo.Copies = 1;
+        ssPrintInfo.Collate = true;
+        ssPrintInfo.PrintColors = true;
+
+        ssPrintInfo.RowAutoSize = true;
+        ssPrintInfo.PrintColumnHeaders = 1;
+        ssPrintInfo.MaxLinesPerRow = 2;
+
+        ssPrintInfo.PageHeader = "	" + ssHiddenGrid.Caption + frmOriginalDefinition.txtCurrentPrintPage.value + "	";
+        ssPrintInfo.PageFooter = "Printed on <date> at <time> by " + frmOriginalDefinition.txtUserName.value + "	" + "	" + "Page <page number>";
+    }
+
+    function ssOutputGrid_PrintBegin(ssPrintInfo) {
+
+        if (frmOriginalDefinition.txtOptionsDone.value == 0) {
+            frmOriginalDefinition.txtOptionsPortrait.value = ssPrintInfo.Portrait;
+            frmOriginalDefinition.txtOptionsMarginLeft.value = ssPrintInfo.MarginLeft;
+            frmOriginalDefinition.txtOptionsMarginRight.value = ssPrintInfo.MarginRight;
+            frmOriginalDefinition.txtOptionsMarginTop.value = ssPrintInfo.MarginTop;
+            frmOriginalDefinition.txtOptionsMarginBottom.value = ssPrintInfo.MarginBottom;
+            frmOriginalDefinition.txtOptionsCopies.value = ssPrintInfo.Copies;
+        } else {
+            ssPrintInfo.Portrait = frmOriginalDefinition.txtOptionsPortrait.value;
+            ssPrintInfo.MarginLeft = frmOriginalDefinition.txtOptionsMarginLeft.value;
+            ssPrintInfo.MarginRight = frmOriginalDefinition.txtOptionsMarginRight.value;
+            ssPrintInfo.MarginTop = frmOriginalDefinition.txtOptionsMarginTop.value;
+            ssPrintInfo.MarginBottom = frmOriginalDefinition.txtOptionsMarginBottom.value;
+            ssPrintInfo.Copies = frmOriginalDefinition.txtOptionsCopies.value;
+        }
+    }
+
+    function ssHiddenGrid_PrintInitialize(ssPrintInfo) {
+
+        ssPrintInfo.PrintGridlines = 3;
+	    
+        ssPrintInfo.PrintHeaders = 0;
+        ssPrintInfo.Portrait = false;
+        ssPrintInfo.Copies = 1;
+        ssPrintInfo.Collate = true;
+        ssPrintInfo.PrintColors = true;
+
+        ssPrintInfo.RowAutoSize = true;
+        ssPrintInfo.PrintColumnHeaders = 1;
+        ssPrintInfo.MaxLinesPerRow = 2;
+
+        ssPrintInfo.PageHeader = "	" + ssHiddenGrid.Caption + frmOriginalDefinition.txtCurrentPrintPage.value + "	";
+        ssPrintInfo.PageFooter = "Printed on <date> at <time> by " + frmOriginalDefinition.txtUserName.value + "	" + "	" + "Page <page number>";
+    }
+        
+    function ssHiddenGrid_PrintBegin(ssPrintInfo) {
+            
+        if (frmOriginalDefinition.txtOptionsDone.value == 0) 
+        {
+            frmOriginalDefinition.txtOptionsPortrait.value = ssPrintInfo.Portrait;
+            frmOriginalDefinition.txtOptionsMarginLeft.value = ssPrintInfo.MarginLeft;
+            frmOriginalDefinition.txtOptionsMarginRight.value = ssPrintInfo.MarginRight;
+            frmOriginalDefinition.txtOptionsMarginTop.value = ssPrintInfo.MarginTop;
+            frmOriginalDefinition.txtOptionsMarginBottom.value = ssPrintInfo.MarginBottom;
+            frmOriginalDefinition.txtOptionsCopies.value = ssPrintInfo.Copies;
+        }
+        else 
+        {
+            ssPrintInfo.Portrait = frmOriginalDefinition.txtOptionsPortrait.value;
+            ssPrintInfo.MarginLeft = frmOriginalDefinition.txtOptionsMarginLeft.value;
+            ssPrintInfo.MarginRight = frmOriginalDefinition.txtOptionsMarginRight.value;
+            ssPrintInfo.MarginTop = frmOriginalDefinition.txtOptionsMarginTop.value;
+            ssPrintInfo.MarginBottom = frmOriginalDefinition.txtOptionsMarginBottom.value;
+            ssPrintInfo.Copies = frmOriginalDefinition.txtOptionsCopies.value;
+        }
+    }
+
+    function ssOutputGrid_PrintError(lngPrintError, iResponse) {   
+        if(lngPrintError == 30457 ) 
+        {
+            frmOriginalDefinition.txtCancelPrint.value = 1;
+        }
+    }
+        
+    function ssHiddenGrid_PrintError(lngPrintError, iResponse) {
+        if(lngPrintError == 30457 ) 
+        {
+            frmOriginalDefinition.txtCancelPrint.value = 1;
+        }            
+    }
+
+</script>
+
+<script type="text/javascript">
+
+    function AddToIntTypeCombo(strText, strValue)
+    {
+        var oOption = document.createElement("OPTION");
+        var cboIntersectionType = document.getElementById("cboIntersectionType");
+        cboIntersectionType.options.add(oOption);
+        oOption.innerText = strText;
+        oOption.Value = strValue;
+    }
+
+    function AddToPgbCombo(strText, strValue)
+    {
+        var oOption = document.createElement("OPTION");
+        var cboPage = document.getElementById("cboPage");
+        cboPage.options.add(oOption);
+        oOption.innerText = strText;
+        oOption.Value = strValue;
+    }
+
+
+    function refreshCombo(psComboKey)
+    {
+        try 
+        {
+            var iSelectedIndex;
+            var objCombo;
+	
+            if (psComboKey == "PAGE") 
+            {
+                objCombo = document.getElementById("cboPage");
+            }
+            else 
+            {
+                if (psComboKey == "INTERSECTIONTYPE") 
+                {
+                    objCombo = document.getElementById("cboIntersectionType");
+                }
+                else 
+                {
+                    objCombo = document.getElementById("cboFileFormat");
+                }
+            }
+	
+            iSelectedIndex = objCombo.selectedIndex;
+	
+            while (cboDummy.options.length > 0) 
+            {
+                cboDummy.options.remove(0);
+            }
+	
+            while (objCombo.options.length > 0) 
+            {
+                var oOption = document.createElement("OPTION");
+                cboDummy.options.add(oOption);
+                oOption.innerText = objCombo.item(0).innerText;
+			
+                // Needs both the value and the Value properties - Capital V for dropdowns to work, lowercase for drilldown to work.
+                oOption.Value = objCombo.item(0).Value;
+                oOption.value = objCombo.item(0).value;
+                objCombo.options.remove(0);
+            }
+	
+            while (cboDummy.options.length > 0) 
+            {
+                var oOption = document.createElement("OPTION");
+                objCombo.options.add(oOption);
+                oOption.innerText = cboDummy.item(0).innerText;
+                oOption.Value = cboDummy.item(0).Value;
+                oOption.value = cboDummy.item(0).value;
+                cboDummy.options.remove(0);
+            }
+
+            objCombo.selectedIndex = iSelectedIndex;
+        }
+        catch (e) {}
+    }
+
+</script>
+
+
+<%
+    Dim objCrossTab
+    
+    objCrossTab = Session("objCrossTab" & Session("UtilID"))
+    If (objCrossTab.ErrorString = "") Then
+
+        Response.Write("<script type=""text/javascript"">" & vbCrLf)
+        Response.Write("   function util_run_crosstabs_window_onload() {" & vbCrLf)
+%>
+    setGridFont(ssOutputGrid);
+    setGridFont(ssHiddenGrid);
+<%
+    Response.Write("	loadAddRecords();" & vbCrLf)
+    Response.Write("    window.parent.parent.frmError.txtEventLogID.value = """ & CleanStringForJavaScript(objCrossTab.EventLogID) & """;" & vbCrLf)
+    Response.Write("  }" & vbCrLf)
+    Response.Write("</script>" & vbCrLf)
+
+
+    Response.Write("<script type=""text/javascript"">" & vbCrLf)
+    Response.Write("  function ssOutputGrid_DblClick() {" & vbCrLf)
+
+    If objCrossTab.RecordDescExprID = 0 Then
+        Response.Write("    window.parent.parent.ASRIntranetFunctions.MessageBox(""Unable to show cell breakdown details as no record description has been set up for the '" & CleanStringForJavaScript(objCrossTab.BaseTableName) & "' table."",64,""Cross Tab Breakdown"");" & vbCrLf)
+    Else
+        Response.Write("	if (ssOutputGrid.Col > 0) {" & vbCrLf)
+        Response.Write("      frmData = OpenHR.getFrame(""reportdataframe"");" & vbCrLf)
+        Response.Write("      lngPage = 0;" & vbCrLf)
+        Response.Write("      if (cboPage.selectedIndex != -1) {" & vbCrLf)
+        Response.Write("        lngPage = cboPage.options[cboPage.selectedIndex].Value;" & vbCrLf)
+        Response.Write("      }" & vbCrLf)
+        Response.Write("      frmData.getBreakdown(ssOutputGrid.Col - 1, ssOutputGrid.AddItemRowIndex(ssOutputGrid.Bookmark), lngPage, cboIntersectionType.options[cboIntersectionType.selectedIndex].Value, ssOutputGrid.ActiveCell.Value);" & vbCrLf)
+        'Response.Write "    frmData.getBreakdown(ssOutputGrid.Col -1, ssOutputGrid.AddItemRowIndex(ssOutputGrid.Bookmark), cboPage.options[cboPage.selectedIndex].Value, cboIntersectionType.options[cboIntersectionType.selectedIndex].text, ssOutputGrid.ActiveCell.Value);" & vbcrlf
+        Response.Write("    }" & vbCrLf)
+        Response.Write("  }" & vbCrLf)
+    End If
+
+    Response.Write("</script>" & vbCrLf)
+
+    objCrossTab.EventLogChangeHeaderStatus(3)  'Successful
+
+	else 
+%>
+
+		<script type="text/javascript">
+		    function util_run_crosstabs_window_onload() {
+
+		        try {
+		            $("#reportworkframe").attr("data-framesource", "UTIL_RUN_CROSSTABS");
+
+		            // Resize the popup.
+		            iResizeByHeight = frmPopup.offsetParent.scrollHeight - window.parent.parent.parent.document.body.clientHeight;
+		            if (frmPopup.offsetParent.offsetHeight + iResizeByHeight > screen.height) {
+		                try {
+		                    window.parent.window.parent.moveTo((screen.width - window.parent.parent.parent.document.body.offsetWidth) / 2, 0);
+		                    window.parent.window.parent.resizeTo(window.parent.parent.parent.document.body.offsetWidth, screen.height);
+		                } catch(e) {
+		                }
+		            } else {
+		                try {
+		                    window.parent.window.parent.moveTo((screen.width - window.parent.parent.parent.document.body.offsetWidth) / 2, (screen.height - (window.parent.parent.parent.document.body.offsetHeight + iResizeByHeight)) / 2);
+		                    window.parent.window.parent.resizeBy(0, iResizeByHeight);
+		                } catch(e) {
+		                }
+		            }
+
+		            iResizeByWidth = frmPopup.offsetParent.scrollWidth - window.parent.parent.parent.document.body.clientWidth;
+		            if (frmPopup.offsetParent.offsetWidth + iResizeByWidth > screen.width) {
+		                try {
+		                    window.parent.window.parent.moveTo(0, (screen.height - window.parent.parent.parent.document.body.offsetHeight) / 2);
+		                    window.parent.window.parent.resizeTo(screen.width, window.parent.parent.parent.document.body.offsetHeight);
+		                } catch(e) {
+		                }
+		            } else {
+		                try {
+		                    window.parent.window.parent.moveTo((screen.width - (window.parent.parent.parent.document.body.offsetWidth + iResizeByWidth)) / 2, (screen.height - window.parent.parent.parent.document.body.offsetHeight) / 2);
+		                    window.parent.window.parent.resizeBy(iResizeByWidth, 0);
+		                } catch(e) {
+		                }
+		            }
+		        } catch(e) {
+		        }
+		    }
+		</script>
+
+<%
+    Response.Write("<FORM Name=frmPopup ID=frmPopup>" & vbCrLf)
+    Response.Write("<table align=center class=""outline="" cellPadding=5 cellSpacing=0>" & vbCrLf)
+    Response.Write("	<TR>" & vbCrLf)
+    Response.Write("		<TD>" & vbCrLf)
+    Response.Write("			<table class=""invisible"" cellspacing=0 cellpadding=0>" & vbCrLf)
+    Response.Write("			  <tr>" & vbCrLf)
+    Response.Write("			    <td colspan=3 height=10></td>" & vbCrLf)
+    Response.Write("			  </tr>" & vbCrLf)
+    Response.Write("			  <tr> " & vbCrLf)
+    Response.Write("			    <td width=20 height=10></td> " & vbCrLf)
+    Response.Write("			    <td align=center> " & vbCrLf)
+
+    If objCrossTab.NoRecords Then
+        If objCrossTab.CrossTabType = 3 Then
+            Response.Write("						<H4>Absence Breakdown Completed successfully.</H4>" & vbCrLf)
+        Else
+            Response.Write("						<H4>Cross Tab '" & Session("utilname") & "' Completed successfully.</H4>" & vbCrLf)
+        End If
+        objCrossTab.EventLogChangeHeaderStatus(3)    'Successful
+    Else
+        If objCrossTab.CrossTabType = 3 Then
+            Response.Write("						<H4>Absence Breakdown Failed." & vbCrLf)
+        Else
+            Response.Write("						<H4>Cross Tab '" & Session("utilname") & "' Failed." & vbCrLf)
+        End If
+        objCrossTab.EventLogChangeHeaderStatus(2)    'Failed
+    End If
+
+    Response.Write("			    </td>" & vbCrLf)
+    Response.Write("			    <td width=20></td> " & vbCrLf)
+    Response.Write("			  </tr>" & vbCrLf)
+    Response.Write("			  <tr> " & vbCrLf)
+    Response.Write("			    <td width=20 height=10></td> " & vbCrLf)
+    Response.Write("			    <td align=center nowrap>" & objCrossTab.ErrorString & vbCrLf)
+    Response.Write("			    </td>" & vbCrLf)
+    Response.Write("			    <td width=20></td> " & vbCrLf)
+    Response.Write("			  </tr>" & vbCrLf)
+    Response.Write("			  <tr>" & vbCrLf)
+    Response.Write("			    <td colspan=3 height=10>&nbsp;</td>" & vbCrLf)
+    Response.Write("			  </tr>" & vbCrLf)
+    Response.Write("			  <tr> " & vbCrLf)
+    Response.Write("			    <td colspan=3 height=10 align=center> " & vbCrLf)
+    Response.Write("						<input type=button id=cmdClose name=cmdClose value=Close style=""WIDTH: 80px"" width=80px class=""btn""" & vbCrLf)
+    Response.Write("                      onclick=""window.parent.parent.self.close();""" & vbCrLf)
+    Response.Write("                      onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
+    Response.Write("                      onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
+    Response.Write("                      onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
+    Response.Write("                      onblur=""try{button_onBlur(this);}catch(e){}"" />" & vbCrLf)
+    Response.Write("			    </td>" & vbCrLf)
+    Response.Write("			  </tr>" & vbCrLf)
+    Response.Write("			  <tr> " & vbCrLf)
+    Response.Write("			    <td colspan=3 height=10></td>" & vbCrLf)
+    Response.Write("			  </tr>" & vbCrLf)
+    Response.Write("			</table>" & vbCrLf)
+    Response.Write("		</td>" & vbCrLf)
+    Response.Write("	</tr>" & vbCrLf)
+    Response.Write("</table>" & vbCrLf)
+    Response.Write("</FORM>" & vbCrLf)
+		
+		if objCrossTab.ErrorString <> "" then
+			objCrossTab.FailedMessage = objCrossTab.ErrorString
+		end if
+
+		Response.End
+	end if
+%>
+
+<table align=center class="outline" cellPadding=5 cellSpacing=0 width=100% height=100%>
+	<TR>
+		<TD>
+			<TABLE HEIGHT="100%" WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
+				<TR>
+					<TD COLSPAN=50>
+						<OBJECT classid=clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1
+							codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" 
+							id=ssOutputGrid name=ssOutputGrid
+							style="HEIGHT: 400px; LEFT: 0px; TOP: 0px; WIDTH: 100%">
+							<PARAM NAME="ScrollBars" VALUE="4">
+							<PARAM NAME="_Version" VALUE="196617">
+							<PARAM NAME="DataMode" VALUE="2">
+							<PARAM NAME="Cols" VALUE="0">
+							<PARAM NAME="Rows" VALUE="0">
+							<PARAM NAME="BorderStyle" VALUE="1">
+							<PARAM NAME="RecordSelectors" VALUE="0">
+							<PARAM NAME="GroupHeaders" VALUE="1">
+							<PARAM NAME="ColumnHeaders" VALUE="1">
+							<PARAM NAME="GroupHeadLines" VALUE="1">
+							<PARAM NAME="HeadLines" VALUE="1">
+							<PARAM NAME="FieldDelimiter" VALUE="(None)">
+							<PARAM NAME="FieldSeparator" VALUE="(Tab)">
+							<PARAM NAME="Row.Count" VALUE="0">
+							<PARAM NAME="Col.Count" VALUE="1">
+							<PARAM NAME="stylesets.count" VALUE="1">
+							<PARAM NAME="TagVariant" VALUE="EMPTY">
+							<PARAM NAME="UseGroups" VALUE="0">
+							<PARAM NAME="HeadFont3D" VALUE="0">
+							<PARAM NAME="Font3D" VALUE="0">
+							<PARAM NAME="DividerType" VALUE="3">
+							<PARAM NAME="DividerStyle" VALUE="1">
+							<PARAM NAME="DefColWidth" VALUE="3528">
+							<PARAM NAME="BeveColorScheme" VALUE="2">
+							<PARAM NAME="BevelColorFrame" VALUE="-2147483642">
+							<PARAM NAME="BevelColorHighlight" VALUE="-2147483643">
+							<PARAM NAME="BevelColorShadow" VALUE="-2147483632">
+							<PARAM NAME="BevelColorFace" VALUE="-2147483633">
+							<PARAM NAME="CheckBox3D" VALUE="1">
+							<PARAM NAME="AllowAddNew" VALUE="0">
+							<PARAM NAME="AllowDelete" VALUE="0">
+							<PARAM NAME="AllowUpdate" VALUE="1">
+							<PARAM NAME="MultiLine" VALUE="0">
+							<PARAM NAME="ActiveCellStyleSet" VALUE="Highlight">
+							<PARAM NAME="RowSelectionStyle" VALUE="0">
+							<PARAM NAME="AllowRowSizing" VALUE="1">
+							<PARAM NAME="AllowGroupSizing" VALUE="1">
+							<PARAM NAME="AllowColumnSizing" VALUE="1">
+							<PARAM NAME="AllowGroupMoving" VALUE="0">
+							<PARAM NAME="AllowColumnMoving" VALUE="0">
+							<PARAM NAME="AllowGroupSwapping" VALUE="0">
+							<PARAM NAME="AllowColumnSwapping" VALUE="0">
+							<PARAM NAME="AllowGroupShrinking" VALUE="1">
+							<PARAM NAME="AllowColumnShrinking" VALUE="1">
+							<PARAM NAME="AllowDragDrop" VALUE="0">
+							<PARAM NAME="UseExactRowCount" VALUE="1">
+							<PARAM NAME="SelectTypeCol" VALUE="0">
+							<PARAM NAME="SelectTypeRow" VALUE="0">
+							<PARAM NAME="SelectByCell" VALUE="1">
+							<PARAM NAME="BalloonHelp" VALUE="0">
+							<PARAM NAME="RowNavigation" VALUE="0">
+							<PARAM NAME="CellNavigation" VALUE="0">
+							<PARAM NAME="MaxSelectedRows" VALUE="1">
+							<PARAM NAME="HeadStyleSet" VALUE="">
+							<PARAM NAME="StyleSet" VALUE="">
+							<PARAM NAME="ForeColorEven" VALUE="0">
+							<PARAM NAME="ForeColorOdd" VALUE="0">
+							<PARAM NAME="BackColorEven" VALUE="-2147483643">
+							<PARAM NAME="BackColorOdd" VALUE="-2147483643">
+							<PARAM NAME="Levels" VALUE="1">
+							<PARAM NAME="RowHeight" VALUE="239">
+							<PARAM NAME="ExtraHeight" VALUE="239">
+							<PARAM NAME="ActiveRowStyleSet" VALUE="">
+							<PARAM NAME="CaptionAlignment" VALUE="2">
+							<PARAM NAME="SplitterPos" VALUE="0">
+							<PARAM NAME="SplitterVisible" VALUE="0">
+							<PARAM NAME="Columns.Count" VALUE="1">
+							<PARAM NAME="Columns(0).Width" VALUE="3528">
+							<PARAM NAME="Columns(0).Visible" VALUE="-1">
+							<PARAM NAME="Columns(0).Columns.Count" VALUE="1">
+							<PARAM NAME="Columns(0).Caption" VALUE="  ">
+							<PARAM NAME="Columns(0).Name" VALUE="">
+							<PARAM NAME="Columns(0).Alignment" VALUE="0">
+							<PARAM NAME="Columns(0).CaptionAlignment" VALUE="3">
+							<PARAM NAME="Columns(0).Bound" VALUE="0">
+							<PARAM NAME="Columns(0).AllowSizing" VALUE="1">
+							<PARAM NAME="Columns(0).DataField" VALUE="">
+							<PARAM NAME="Columns(0).DataType" VALUE="8">
+							<PARAM NAME="Columns(0).Level" VALUE="0">
+							<PARAM NAME="Columns(0).NumberFormat" VALUE="">
+							<PARAM NAME="Columns(0).Case" VALUE="0">
+							<PARAM NAME="Columns(0).FieldLen" VALUE="4096">
+							<PARAM NAME="Columns(0).VertScrollBar" VALUE="0">
+							<PARAM NAME="Columns(0).Locked" VALUE="0">
+							<PARAM NAME="Columns(0).Style" VALUE="0">
+							<PARAM NAME="Columns(0).ButtonsAlways" VALUE="0">
+							<PARAM NAME="Columns(0).RowCount" VALUE="0">
+							<PARAM NAME="Columns(0).ColCount" VALUE="1">
+							<PARAM NAME="Columns(0).HasHeadForeColor" VALUE="0">
+							<PARAM NAME="Columns(0).HasHeadBackColor" VALUE="0">
+							<PARAM NAME="Columns(0).HasForeColor" VALUE="0">
+							<PARAM NAME="Columns(0).HasBackColor" VALUE="0">
+							<PARAM NAME="Columns(0).HeadForeColor" VALUE="0">
+							<PARAM NAME="Columns(0).HeadBackColor" VALUE="0">
+							<PARAM NAME="Columns(0).ForeColor" VALUE="0">
+							<PARAM NAME="Columns(0).BackColor" VALUE="0">
+							<PARAM NAME="Columns(0).HeadStyleSet" VALUE="">
+							<PARAM NAME="Columns(0).StyleSet" VALUE="">
+							<PARAM NAME="Columns(0).Nullable" VALUE="1">
+							<PARAM NAME="Columns(0).Mask" VALUE="">
+							<PARAM NAME="Columns(0).PromptInclude" VALUE="0">
+							<PARAM NAME="Columns(0).ClipMode" VALUE="0">
+							<PARAM NAME="Columns(0).PromptChar" VALUE="95">
+							<PARAM NAME="UseDefaults" VALUE="-1">
+							<PARAM NAME="TabNavigation" VALUE="1">
+							<PARAM NAME="BatchUpdate" VALUE="0">
+							<PARAM NAME="_ExtentX" VALUE="2646">
+							<PARAM NAME="_ExtentY" VALUE="1323">
+							<PARAM NAME="_StockProps" VALUE="79">
+							<PARAM NAME="Caption" VALUE="SSDBGrid1">
+							<PARAM NAME="ForeColor" VALUE="0">
+							<PARAM NAME="BackColor" VALUE="16777215">
+							<PARAM NAME="Enabled" VALUE="-1">
+							<PARAM NAME="DataMember" VALUE=""></OBJECT>
+					</TD>
+				</TR>
+
+                <tr height="5">
+                    <td colspan="50">
+                        <table width="100%" class="outline" cellspacing="0" cellpadding="0">
+                            <tr height="5">
+                                <td></td>
+                            </tr>
+
+                            <TR>
+								<TD>&nbsp;&nbsp;<U>Intersection</U>
+									<TABLE WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
+                                    <td>
+                                        <table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+                                            <% if clng(session("utiltype")) = 15 then %>
+                                            <input type="HIDDEN" id="txtIntersectionColumn" name="txtIntersectionColumn" style="BACKGROUND-COLOR: threedface; WIDTH: 100%" readonly>
+                                    </td>
+                                <% Else%>
+                                <td width="20"></td>
+                                <td width="100">Column :</td>
+                                <td width="5"></td>
+                                <td width="300">
+                                    <input id="txtIntersectionColumn" name="txtIntersectionColumn" class="text textdisabled" style="WIDTH: 100%" disabled="disabled"></td>
+
+                                <TR height=5>
+												  <TD></TD>
+												</TR>
+<% end if %>
+												<td width="20"></td>
+                                <TD width=100 valign=top>Type :</TD>
+												<TD width=5></TD>
+                                <td width="300" valign="top">
+                                    <select id="cboIntersectionType" name="cboIntersectionType" class="combo" style="WIDTH: 100%" onchange="UpdateGrid()"></select>
+                                </td>
+                                <TD width=20></TD>
+											</TABLE>
+
+											<TR height=5>
+												<TD></TD>
+											</TR>
+										</TABLE>
+									</TD>
+									<TD width="20%" valign=top nowrap>
+
+
+				        <input type="checkbox" id="chkPercentType" name="chkPercentType" value="checkbox" 
+				            onclick="chkPercentType_Click();" 
+		                    onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
+		                    onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+                        <label 
+	                        for="chkPercentType"
+	                        class="checkbox"
+	                        tabindex=0 
+	                        onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+		                    onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
+		                    onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+                            onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+                            onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+<%
+	if objCrossTab.CrossTabType <> 3 then
+		Response.write(" Percentage of Type")
+	end if
+%>
+      	    		        </label>
+										<BR>
+										
+				        <input type="checkbox" id="chkPercentPage" name="chkPercentPage" value="checkbox"
+				            onclick="UpdateGrid();" 
+		                    onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
+		                    onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+                        <label 
+	                        for="chkPercentPage"
+	                        class="checkbox"
+	                        tabindex=0 
+	                        onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+		                    onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
+		                    onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+                            onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+                            onblur="try{checkboxLabel_onBlur(this);}catch(e){}">									
+<%
+	if objCrossTab.CrossTabType <> 3 then
+		Response.write(" Percentage of Page")
+	end if
+%>
+                        </label>
+                        
+										<BR>
+
+				        <input type="checkbox" id="chkSuppressZeros" name="chkSuppressZeros" value="checkbox" 
+				            onclick="UpdateGrid();" 
+		                    onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
+		                    onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+                        <label 
+	                        for="chkSuppressZeros"
+	                        class="checkbox"
+	                        tabindex=0 
+	                        onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+		                    onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
+		                    onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+                            onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+                            onblur="try{checkboxLabel_onBlur(this);}catch(e){}">									
+                            Suppress Zeros<br>
+                         </label>
+
+				        <input type="checkbox" id="chkUse1000" name="chkUse1000" value="checkbox" 
+				            onclick="UpdateGrid();" 
+		                    onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
+		                    onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+                        <label 
+	                        for="chkUse1000"
+	                        class="checkbox"
+	                        tabindex=0 
+	                        onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+		                    onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
+		                    onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+                            onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+                            onblur="try{checkboxLabel_onBlur(this);}catch(e){}">									
+<%
+	if objCrossTab.CrossTabType <> 3 then
+		Response.write(" Use 1000 Separators (,)")
+	end if
+%>
+                         </label>
+
+										<BR>
+									</TD>
+									<TD id=CrossTabPage name=CrossTabPage>&nbsp;&nbsp;<U>Page</U>
+										<TABLE WIDTH="100%" outline="invisible" CELLSPACING=0 CELLPADDING=0>
+											<TR>
+												<TD width=20></TD>
+												<TD width=100>Column :</TD>
+												<TD width=5></TD>
+												<TD width=300>
+												<INPUT id=txtPageColumn name=txtPageColumn style="WIDTH: 100%" class="text textdisabled" disabled="disabled"></TD>
+												<TR height=5>
+												  <TD></TD>
+												</TR>
+												<TD width=20></TD>
+												<TD width=100>Value :</TD>
+												<TD width=5></TD>
+												<TD width=300>
+											  <select id=cboPage name=cboPage style="WIDTH: 100%" class="combo" onchange="UpdateGrid()"> 
+												  </select>
+												</TD>
+												<TD width=20></TD>
+											</TR>
+										</TABLE>
+									</TD>
+								</TR>
+
+							  <TR height=1>
+							    <TD width=40%></TD>
+							    <TD width=150></TD>
+							    <TD></TD>
+							  </TR>
+							</TABLE>
+
+							<TABLE WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
+							  <TR HEIGHT=5>
+							    <TD></TD>
+							  </TR>
+							  <TR HEIGHT=5>
+							    <TD colspan=3>
+								  <TABLE WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
+									<TD ALIGN=RIGHT>
+                      <input type=button id=cmdOutput name=cmdOutput value="Output" style="WIDTH: 80" class="btn" 
+                          onclick=ExportData("OUTPUTPROMPT");
+                                            onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+                                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
+                                            onfocus="try{button_onFocus(this);}catch(e){}"
+                                            onblur="try{button_onBlur(this);}catch(e){}" />
+									</TD>
+									<TD width=15></TD>
+									<TD width=5 ALIGN=RIGHT>
+                      <input type=button id=cmdClose name=cmdClose value="Close" style="WIDTH: 80px"  class="btn" 
+                                            onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+                                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
+                                            onfocus="try{button_onFocus(this);}catch(e){}"
+                                            onblur="try{button_onBlur(this);}catch(e){}" />
+									</TD>
+                                  </table>
+                                </td>
+                              </tr>
+                                <tr height="5">
+                                    <td></td>
+                                </tr>
+                            </table>
+</TABLE>
+
+
+<form id="frmOriginalDefinition">
+    <input type="hidden" id="txtDefn_Name" name="txtDefn_Name" value="<%=session("utilname")%>">
+    <input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
+    <input type="hidden" id="txtDateFormat" name="txtDateFormat" value="<%=session("LocaleDateFormat")%>">
+    <input type="hidden" id="txtDatabase" name="txtDatabase" value="<%=session("database")%>">
+
+    <input type="hidden" id="txtCurrentPrintPage" name="txtCurrentPrintPage">
+    <input type="hidden" id="txtCancelPrint" name="txtCancelPrint">
+    <input type="hidden" id="txtOptionsDone" name="txtOptionsDone">
+    <input type="hidden" id="txtOptionsPortrait" name="txtOptionsPortrait">
+    <input type="hidden" id="txtOptionsMarginLeft" name="txtOptionsMarginLeft">
+    <input type="hidden" id="txtOptionsMarginRight" name="txtOptionsMarginRight">
+    <input type="hidden" id="txtOptionsMarginTop" name="txtOptionsMarginTop">
+    <input type="hidden" id="txtOptionsMarginBottom" name="txtOptionsMarginBottom">
+    <input type="hidden" id="txtOptionsCopies" name="txtOptionsCopies">
+</form>
+
+<form target="breakdown" name="frmBreakdown" method="post" action="util_run_crosstabsBreakdown" id="frmBreakdown" style="visibility: hidden; display: none">
+    <input type="hidden" id="txtHor" name="txtHor" value="0">
+    <input type="hidden" id="txtVer" name="txtVer" value="0">
+    <input type="hidden" id="txtPgb" name="txtPgb" value="0">
+    <input type="hidden" id="txtIntersectionType" name="txtIntersectionType" value="0">
+    <input type="hidden" id="txtCellValue" name="txtCellValue" value="0">
+</form>
+
+<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"
+    codebase="cabs/COAInt_Grid.cab#version=3,1,3,6"
+    id="ssHiddenGrid" name="ssHiddenGrid"
+    style="HEIGHT: 0px; LEFT: 0px; TOP: 0px; WIDTH: 0px; POSITION: absolute" viewastext>
+    <param name="ScrollBars" value="4">
+    <param name="_Version" value="196617">
+    <param name="DataMode" value="2">
+    <param name="Cols" value="0">
+    <param name="Rows" value="0">
+    <param name="BorderStyle" value="1">
+    <param name="RecordSelectors" value="0">
+    <param name="GroupHeaders" value="1">
+    <param name="ColumnHeaders" value="1">
+    <param name="GroupHeadLines" value="1">
+    <param name="HeadLines" value="1">
+    <param name="FieldDelimiter" value="(None)">
+    <param name="FieldSeparator" value="(Tab)">
+    <param name="Row.Count" value="0">
+    <param name="Col.Count" value="1">
+    <param name="stylesets.count" value="1">
+    <param name="TagVariant" value="EMPTY">
+    <param name="UseGroups" value="0">
+    <param name="HeadFont3D" value="0">
+    <param name="Font3D" value="0">
+    <param name="DividerType" value="3">
+    <param name="DividerStyle" value="1">
+    <param name="DefColWidth" value="3528">
+    <param name="BeveColorScheme" value="2">
+    <param name="BevelColorFrame" value="-2147483642">
+    <param name="BevelColorHighlight" value="-2147483643">
+    <param name="BevelColorShadow" value="-2147483632">
+    <param name="BevelColorFace" value="-2147483633">
+    <param name="CheckBox3D" value="1">
+    <param name="AllowAddNew" value="0">
+    <param name="AllowDelete" value="0">
+    <param name="AllowUpdate" value="1">
+    <param name="MultiLine" value="0">
+    <param name="ActiveCellStyleSet" value="Highlight">
+    <param name="RowSelectionStyle" value="0">
+    <param name="AllowRowSizing" value="1">
+    <param name="AllowGroupSizing" value="1">
+    <param name="AllowColumnSizing" value="1">
+    <param name="AllowGroupMoving" value="0">
+    <param name="AllowColumnMoving" value="0">
+    <param name="AllowGroupSwapping" value="0">
+    <param name="AllowColumnSwapping" value="0">
+    <param name="AllowGroupShrinking" value="1">
+    <param name="AllowColumnShrinking" value="1">
+    <param name="AllowDragDrop" value="0">
+    <param name="UseExactRowCount" value="1">
+    <param name="SelectTypeCol" value="0">
+    <param name="SelectTypeRow" value="0">
+    <param name="SelectByCell" value="1">
+    <param name="BalloonHelp" value="0">
+    <param name="RowNavigation" value="0">
+    <param name="CellNavigation" value="0">
+    <param name="MaxSelectedRows" value="1">
+    <param name="HeadStyleSet" value="">
+    <param name="StyleSet" value="">
+    <param name="ForeColorEven" value="0">
+    <param name="ForeColorOdd" value="0">
+    <param name="BackColorEven" value="-2147483643">
+    <param name="BackColorOdd" value="-2147483643">
+    <param name="Levels" value="1">
+    <param name="RowHeight" value="239">
+    <param name="ExtraHeight" value="239">
+    <param name="ActiveRowStyleSet" value="">
+    <param name="CaptionAlignment" value="2">
+    <param name="SplitterPos" value="0">
+    <param name="SplitterVisible" value="0">
+    <param name="Columns.Count" value="1">
+    <param name="Columns(0).Width" value="3528">
+    <param name="Columns(0).Visible" value="-1">
+    <param name="Columns(0).Columns.Count" value="1">
+    <param name="Columns(0).Caption" value="  ">
+    <param name="Columns(0).Name" value="">
+    <param name="Columns(0).Alignment" value="0">
+    <param name="Columns(0).CaptionAlignment" value="3">
+    <param name="Columns(0).Bound" value="0">
+    <param name="Columns(0).AllowSizing" value="1">
+    <param name="Columns(0).DataField" value="">
+    <param name="Columns(0).DataType" value="8">
+    <param name="Columns(0).Level" value="0">
+    <param name="Columns(0).NumberFormat" value="">
+    <param name="Columns(0).Case" value="0">
+    <param name="Columns(0).FieldLen" value="4096">
+    <param name="Columns(0).VertScrollBar" value="0">
+    <param name="Columns(0).Locked" value="0">
+    <param name="Columns(0).Style" value="0">
+    <param name="Columns(0).ButtonsAlways" value="0">
+    <param name="Columns(0).RowCount" value="0">
+    <param name="Columns(0).ColCount" value="1">
+    <param name="Columns(0).HasHeadForeColor" value="0">
+    <param name="Columns(0).HasHeadBackColor" value="0">
+    <param name="Columns(0).HasForeColor" value="0">
+    <param name="Columns(0).HasBackColor" value="0">
+    <param name="Columns(0).HeadForeColor" value="0">
+    <param name="Columns(0).HeadBackColor" value="0">
+    <param name="Columns(0).ForeColor" value="0">
+    <param name="Columns(0).BackColor" value="0">
+    <param name="Columns(0).HeadStyleSet" value="">
+    <param name="Columns(0).StyleSet" value="">
+    <param name="Columns(0).Nullable" value="1">
+    <param name="Columns(0).Mask" value="">
+    <param name="Columns(0).PromptInclude" value="0">
+    <param name="Columns(0).ClipMode" value="0">
+    <param name="Columns(0).PromptChar" value="95">
+    <param name="UseDefaults" value="-1">
+    <param name="TabNavigation" value="1">
+    <param name="BatchUpdate" value="0">
+    <param name="_ExtentX" value="2646">
+    <param name="_ExtentY" value="1323">
+    <param name="_StockProps" value="79">
+    <param name="Caption" value="SSDBGrid1">
+    <param name="ForeColor" value="0">
+    <param name="BackColor" value="16777215">
+    <param name="Enabled" value="-1">
+    <param name="DataMember" value="">
+</object>
+
+<form target="Output" action="util_run_outputoptions" method="post" id="frmExportData" name="frmExportData">
+    <input type="hidden" id="txtPreview" name="txtPreview" value="">
+    <input type="hidden" id="txtFormat" name="txtFormat" value="">
+    <input type="hidden" id="txtScreen" name="txtScreen" value="">
+    <input type="hidden" id="txtPrinter" name="txtPrinter" value="">
+    <input type="hidden" id="txtPrinterName" name="txtPrinterName" value="">
+    <input type="hidden" id="txtSave" name="txtSave" value="">
+    <input type="hidden" id="txtSaveExisting" name="txtSaveExisting" value="">
+    <input type="hidden" id="txtEmail" name="txtEmail" value="">
+    <input type="hidden" id="txtEmailAddr" name="txtEmailAddr" value="">
+    <input type="hidden" id="txtEmailAddrName" name="txtEmailAddrName" value="">
+    <input type="hidden" id="txtEmailSubject" name="txtEmailSubject" value="">
+    <input type="hidden" id="txtEmailAttachAs" name="txtEmailAttachAs" value="">
+    <input type="hidden" id="txtEmailGroupAddr" name="txtEmailGroupAddr" value="">
+    <input type="hidden" id="txtFileName" name="txtFileName" value="">
+    <input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
+</form>
+
+<select style="visibility: hidden; display: none" id="cboDummy" name="cboDummy">
+</select>
+
+<script type="text/javascript">
+    util_run_crosstabs_addhandlers();
+</script>

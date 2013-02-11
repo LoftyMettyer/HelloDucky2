@@ -712,4 +712,36 @@ function image_disable(obj, pfDisable)
 }
 
 
+// --------------------------------------------------
+// Generic handler
+// --------------------------------------------------
+function control_disable(eElem, pfDisable) {
+    
+    if (eElem != null) {
+        if ("text" == eElem.type) {
+            text_disable(eElem, pfDisable);
+        }
+        else if ("TEXTAREA" == eElem.tagName) {
+            textarea_disable(eElem, pfDisable);
+        }
+        else if ("checkbox" == eElem.type) {
+            checkbox_disable(eElem, pfDisable);
+        }
+        else if ("radio" == eElem.type) {
+            radio_disable(eElem, pfDisable);
+        }
+        else if ("button" == eElem.type) {
+            button_disable(eElem, pfDisable);
+        }
+        else if ("SELECT" == eElem.tagName) {
+            combo_disable(eElem, pfDisable);
+        }
+        else {
+            grid_disable(eElem, pfDisable);
+        }
+    }
+
+}
+
+
 

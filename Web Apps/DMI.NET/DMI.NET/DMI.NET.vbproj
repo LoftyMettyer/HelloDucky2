@@ -582,6 +582,9 @@
     <Content Include="Views\Home\Util_EmailSelection.aspx" />
     <Content Include="Views\Home\Util_RecordSelection.aspx" />
     <Content Include="Views\Home\util_run.ascx" />
+    <Content Include="Views\Home\util_run_crosstabs.ascx" />
+    <Content Include="Views\Home\util_run_crosstabsMain.ascx" />
+    <Content Include="Views\Home\util_run_crosstabsData.ascx" />
     <Content Include="Views\Home\util_run_customreports.ascx" />
     <Content Include="Views\Home\util_run_customreportsData.ascx" />
     <Content Include="Views\Home\util_run_customreportsMain.ascx" />
