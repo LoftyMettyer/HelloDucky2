@@ -609,7 +609,7 @@
             return;
         }
 
-        answer = OpenHR.messageBox("You have changed the current configuration. Save changes ?", 3);
+        answer = OpenHR.messageBox("You have changed the current configuration. Save changes ?", 36);
         if (answer == 7) {
             // No
             window.location.href = "main";

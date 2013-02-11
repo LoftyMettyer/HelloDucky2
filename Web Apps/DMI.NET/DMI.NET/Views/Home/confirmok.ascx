@@ -12,9 +12,9 @@
 
         // remove the popup if its there
         //OpenHR.Closepopup();
-  //  }
+    }
 
- //   function confirmok_okClick() {
+    function confirmok_okClick() {
 //        debugger;
         if (txtReloadMenu.value == 1)
         {
