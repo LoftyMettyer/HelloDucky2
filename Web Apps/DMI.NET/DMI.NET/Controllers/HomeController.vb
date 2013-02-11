@@ -1970,8 +1970,8 @@ Namespace Controllers
       Return PartialView()
     End Function
 
-    <HttpPost()>
-    Function util_def_expression_submit(value As FormCollection)
+    <HttpPost(), ValidateInput(False)>
+    Function util_def_expression_Submit()
 
       Dim objExpression
       Dim iExprType As Integer
@@ -2201,6 +2201,7 @@ Namespace Controllers
       Return RedirectToAction("util_def_expression")
     End Function
 
+    <ValidateInput(False)>
     Function util_validate_expression() As ActionResult
       Return View()
     End Function
@@ -2226,7 +2227,8 @@ Namespace Controllers
       Return PartialView()
     End Function
 
-    Function util_def_picklist_submit(value As FormCollection)
+    <HttpPost()>
+    Function util_def_picklist_submit()
 
       On Error Resume Next
 

@@ -36,7 +36,7 @@
 
         }
         else {
-            var frmParentValidate = window.dialogArguments.document.forms("frmValidate");
+            var frmParentValidate = window.dialogArguments.OpenHR.getForm("workframe","frmValidate");
 	
             frmValidate.validatePass.value = frmParentValidate.validatePass.value;
             frmValidate.validateName.value = frmParentValidate.validateName.value;

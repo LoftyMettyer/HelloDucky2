@@ -106,7 +106,6 @@
                     <td width="20"></td>
                     <td align="center" colspan="3">
                         <input type="button" value="Cancel" class="btn" name="Cancel" style="WIDTH: 80px" width="80" id="Cancel"
-                            onclick="self.close()"
                             onmouseover="try{button_onMouseOver(this);}catch(e){}"
                             onmouseout="try{button_onMouseOut(this);}catch(e){}"
                             onfocus="try{button_onFocus(this);}catch(e){}"

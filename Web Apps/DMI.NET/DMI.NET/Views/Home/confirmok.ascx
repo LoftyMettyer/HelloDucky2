@@ -1,12 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 
-
-<div>
-    <script ID="clientEventHandlersJS" type="text/javascript">
-<!--
+<script id="clientEventHandlersJS" type="text/javascript">
     function confirmok_window_onload() {
-
-  //      debugger;
 
         $("#workframe").attr("data-framesource", "CONFIRMOK");
 
@@ -15,18 +10,17 @@
     }
 
     function confirmok_okClick() {
-//        debugger;
-        if (txtReloadMenu.value == 1)
-        {
+        //        debugger;
+        if (txtReloadMenu.value == 1) {
             window.parent.location.href = "main";
             return;
         }
-	
+
         sAction = txtReaction.value;
 
         if (sAction == "LOGOFF") {
             menu_logoffIntranet();
-            return;	
+            return;
         }
 
         if (sAction == "EXIT") {
@@ -37,18 +31,18 @@
         //	window.parent.frames("menuframe").loadDefSelPage(txtUtilType.value, txtUtilID.value, false);
         //}
 
-        if (sAction == "CROSSTABS") {            
+        if (sAction == "CROSSTABS") {
             menu_loadDefSelPage(txtUtilType.value, txtUtilID.value, 0, false);
         }
 
         if (sAction == "CUSTOMREPORTS") {
             menu_loadDefSelPage(2, txtUtilID.value, 0, false);
         }
-	
+
         if (sAction == "CALENDARREPORTS") {
             menu_loadDefSelPage(17, txtUtilID.value, 0, false);
         }
-	
+
         if (sAction == "MAILMERGE") {
             menu_loadDefSelPage(9, txtUtilID.value, 0, false);
         }
@@ -80,16 +74,16 @@
         if (sAction == "DEFAULT") {
             window.location.href = "main";  // "default.asp";
         }
-				
+
         if (sAction.substring(0, 7) == "mnutool") {
-					
+
             menu_loadPage(sAction.substring(7, sAction.length));
             return;
         }
         else {
 
-            var frmData = OpenHR.getForm("dataframe","frmData");
-            var frmMenuInfo = OpenHR.getForm("menuframe","frmMenuInfo");
+            var frmData = OpenHR.getForm("dataframe", "frmData");
+            var frmMenuInfo = OpenHR.getForm("menuframe", "frmMenuInfo");
 
             if ((sAction.substring(0, 3) == "PT_") ||
                 (sAction.substring(0, 3) == "PV_")) {
@@ -104,7 +98,7 @@
                 }
                 return;
             }
-		
+
             if (sAction.substring(0, 3) == "TS_") {
                 // TS_ = Table screen
                 if (frmMenuInfo.txtLookupStartMode.value == 3) {
@@ -142,7 +136,6 @@
             }
         }
     }
-    -->
 </script>
 
 
@@ -204,11 +197,9 @@
 	session("reloadMenu") = 0
 %>
 
-<FORM action="default_Submit" method=post id=FORM1 name=frmGoto style="visibility:hidden;display:none">
+<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
     <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-</FORM>
-
-</div>
+</form>
 
 
 <script type="text/javascript">

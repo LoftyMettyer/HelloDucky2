@@ -3325,18 +3325,18 @@ style="WIDTH: 100%"
 	<INPUT type=hidden id=validateOriginalAccess name=validateOriginalAccess value="RW">
 </FORM>
 
-<FORM id=frmSend name=frmSend method=post action=util_def_expression_Submit style="visibility:hidden;display:none">
-	<INPUT type="hidden" id=txtSend_ID name=txtSend_ID>	
-	<INPUT type="hidden" id=txtSend_type name=txtSend_type>	
-	<INPUT type="hidden" id=txtSend_name name=txtSend_name>
-	<INPUT type="hidden" id=txtSend_description name=txtSend_description>
-	<INPUT type="hidden" id=txtSend_access name=txtSend_access>
-	<INPUT type="hidden" id=txtSend_userName name=txtSend_userName>
-	<INPUT type="hidden" id=txtSend_components1 name=txtSend_components1>
-	<INPUT type="hidden" id=txtSend_reaction name=txtSend_reaction>
-	<INPUT type="hidden" id=txtSend_tableID name=txtSend_tableID value=<% =session("utiltableid")%>>
-	<INPUT type="hidden" id=txtSend_names name=txtSend_names value="">
-</FORM>
+    <form id="frmSend" name="frmSend" method="post" action="util_def_expression_Submit" style="visibility: hidden; display: none">
+        <input type="hidden" id="txtSend_ID" name="txtSend_ID">
+        <input type="hidden" id="txtSend_type" name="txtSend_type">
+        <input type="hidden" id="txtSend_name" name="txtSend_name">
+        <input type="hidden" id="txtSend_description" name="txtSend_description">
+        <input type="hidden" id="txtSend_access" name="txtSend_access">
+        <input type="hidden" id="txtSend_userName" name="txtSend_userName">
+        <input type="hidden" id="txtSend_components1" name="txtSend_components1">
+        <input type="hidden" id="txtSend_reaction" name="txtSend_reaction">
+        <input type="hidden" id="txtSend_tableID" name="txtSend_tableID" value='<% =session("utiltableid")%>'>
+        <input type="hidden" id="txtSend_names" name="txtSend_names" value="">
+    </form>
 
 <FORM id=frmTest name=frmTest target=test method=post action=util_test_expression_pval style="visibility:hidden;display:none">
 	<INPUT type="hidden" id=type name=type>	

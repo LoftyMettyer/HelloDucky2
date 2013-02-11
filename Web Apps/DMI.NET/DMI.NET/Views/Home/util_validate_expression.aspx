@@ -8,49 +8,9 @@
     <title>OpenHR Intranet</title>
 
 <script type="text/javascript">
-<!--
     
     function util_validate_window_onload() {
-
-        if (txtDisplay.value != "False") {
-            // Hide the 'please wait' message.
-//            $("#trPleaseWait1").style.visibility='hidden';
-//            $("#trPleaseWait1").style.display='none';
-//            $("#trPleaseWait2").style.visibility='hidden';
-//            $("#trPleaseWait2").style.display='none';
-//            $("#trPleaseWait3").style.visibility='hidden';
-//            $("#trPleaseWait3").style.display='none';
-//            $("#trPleaseWait4").style.visibility='hidden';
-//            $("#trPleaseWait4").style.display='none';
-//            $("#trPleaseWait5").style.visibility='hidden';
-//            $("#trPleaseWait5").style.display='none';
-
-            var bdyMain = $("#bdyMain");
-
-            // Resize the grid to show all prompted values.
-            iResizeBy = bdyMain.scrollWidth	- bdyMain.clientWidth;
-            if (bdyMain.offsetWidth + iResizeBy > screen.width) {
-                window.dialogWidth = new String(screen.width) + "px";
-            }
-            else {
-                iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length-2));
-                iNewWidth = iNewWidth + iResizeBy;
-                window.dialogWidth = new String(iNewWidth) + "px";
-            }
-
-            iResizeBy = bdyMain.scrollHeight	- bdyMain.clientHeight;
-            if (bdyMain.offsetHeight + iResizeBy > screen.height) {
-                window.dialogHeight = new String(screen.height) + "px";
-            }
-            else {
-                iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length-2));
-                iNewHeight = iNewHeight + iResizeBy;
-                window.dialogHeight = new String(iNewHeight) + "px";
-            }
-        }
-        else {
-            nextPass();
-        }
+        nextPass();
     }
 
     function overwrite(){
@@ -86,16 +46,13 @@
         cancelClick();
     }
 
-    function makeHidden() 
-    {
+    function makeHidden() {
         window.dialogArguments.OpenHR.makeHidden(self);
     }
 
-    function nextPass()
-    {
+    function nextPass() {
         var iNextPass;
-        var sURL;
-	
+
         iNextPass = new Number(frmValidate.validatePass.value);
         iNextPass = iNextPass + 1;
 
@@ -104,8 +61,7 @@
             OpenHR.submitForm(frmValidate);
         }
         else {
-
-            var frmSend = window.dialogArguments.document.getElementById('frmSend');
+            var frmSend = window.dialogArguments.OpenHR.getForm("workframe", "frmSend");
             window.dialogArguments.OpenHR.submitForm(frmSend);
             self.close();
         }
@@ -140,7 +96,6 @@
 
         self.close();
     }
-    -->
 </script>
 
 </head>
@@ -1100,18 +1055,18 @@
             </div>
             
 
-<FORM id=frmValidate name=frmValidate method=post action=util_validate_expression style="visibility:hidden;display:none">
-	<INPUT type=hidden id="validatePass" name=validatePass value=<%=Request.form("validatePass")%>>
-	<INPUT type=hidden id="validateUtilID" name=validateUtilID value=<%=Request.form("validateUtilID")%>>
-	<INPUT type=hidden id="validateUtilType" name=validateUtilType value=<%=Request.form("validateUtilType")%>>
-	<INPUT type=hidden id="validateAccess" name=validateAccess value=<%=Request.form("validateAccess")%>>
-	<INPUT type=hidden id="validateOriginalAccess" name=validateOriginalAccess value=<%=Request.form("validateOriginalAccess")%>>
-	<INPUT type=hidden id="validateOwner" name=validateOwner value=<%=Request.form("validateOwner")%>>
+    <form id="frmValidate" name="frmValidate" method="post" action="util_validate_expression" style="visibility: hidden; display: none">
+        <input type="hidden" id="validatePass" name="validatePass" value='<%=Request.form("validatePass")%>'>
+        <input type="hidden" id="validateUtilID" name="validateUtilID" value='<%=Request.form("validateUtilID")%>'>
+        <input type="hidden" id="validateUtilType" name="validateUtilType" value='<%=Request.form("validateUtilType")%>'>
+        <input type="hidden" id="validateAccess" name="validateAccess" value='<%=Request.form("validateAccess")%>'>
+        <input type="hidden" id="validateOriginalAccess" name="validateOriginalAccess" value='<%=Request.form("validateOriginalAccess")%>'>
+        <input type="hidden" id="validateOwner" name="validateOwner" value='<%=Request.form("validateOwner")%>'>
 
-	<INPUT type=hidden id=components1 name=components1 value="<%=Request.form("components1")%>">
-	<INPUT type=hidden id=validateBaseTableID name=validateBaseTableID value=<%=Request.form("validateBaseTableID")%>>
-</FORM>
-    
+        <input type="hidden" id="components1" name="components1" value="<%=Request.form("components1")%>">
+        <input type="hidden" id="validateBaseTableID" name="validateBaseTableID" value='<%=Request.form("validateBaseTableID")%>'>
+    </form>
+
 
 </body>
 

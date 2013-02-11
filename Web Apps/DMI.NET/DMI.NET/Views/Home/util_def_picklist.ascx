@@ -121,7 +121,8 @@
 //            "&validateAccess=" + frmValidate.validateAccess.value +
 //            "&validateBaseTableID=" + frmValidate.validateBaseTableID.value;
 //        openDialog(sURL, (screen.width) / 2, (screen.height) / 3);
-        OpenHR.showInReportFrame(frmValidate);
+        //OpenHR.showInReportFrame(frmValidate);
+        OpenHR.submitForm(frmValidate);
     }
 
     function addClick()
