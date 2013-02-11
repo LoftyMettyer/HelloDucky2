@@ -255,15 +255,14 @@
         refreshControls();
     }
 
-    function cancelClick()
-    {
+    function cancelClick() {
         if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
             (definitionChanged() == false)) {
             menu_loadDefSelPage(10, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, false);
             return (false);
         }
 
-        answer = OpenHR.messageBox("You have changed the current definition. Save changes ?",3);
+        answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
         if (answer == 7) {
             // No
             menu_loadDefSelPage(10, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, false);
@@ -435,13 +434,12 @@
         submitDefinition();
     }
 
-    function populateSendForm()
-    {
+    function populateSendForm() {
         var i;
         var iIndex;
         var sControlName;
         var iNum;
-	
+
         // Copy all the header information to frmSend
         frmSend.txtSend_ID.value = frmUseful.txtUtilID.value;
         frmSend.txtSend_name.value = frmDefinition.txtName.value;
@@ -456,23 +454,23 @@
         if (frmDefinition.optAccessHD.checked == true) {
             frmSend.txtSend_access.value = "HD";
         }
-  
+
         // Now go through the records grid
         var sColumns = '';
 
         frmDefinition.ssOleDBGrid.Redraw = false;
         frmDefinition.ssOleDBGrid.movefirst();
 
-        for (i=0; i < frmDefinition.ssOleDBGrid.rows; i++) {
+        for (i = 0; i < frmDefinition.ssOleDBGrid.rows; i++) {
             sColumns = sColumns + frmDefinition.ssOleDBGrid.columns("ID").text + ',';
-					
+
             frmDefinition.ssOleDBGrid.movenext();
-        }     
+        }
         frmDefinition.ssOleDBGrid.Redraw = true;
-	  
+
         frmSend.txtSend_columns.value = sColumns.substr(0, 8000);
         frmSend.txtSend_columns2.value = sColumns.substr(8000, 8000);
-	
+
         if (sColumns.length > 16000) {
             OpenHR.messageBox("Too many records selected.");
             return false;
@@ -482,8 +480,8 @@
         }
     }
 
-    function loadDefinition()
-    {
+    function loadDefinition() {
+
         frmDefinition.txtName.value = frmOriginalDefinition.txtDefn_Name.value;
 
         if((frmUseful.txtAction.value.toUpperCase() == "EDIT") ||
@@ -1204,7 +1202,10 @@
         cmdDefn.Parameters.Append(prmTimestamp)
 
         Err.Clear()
-        rstDefinition = cmdDefn.Execute
+        '       rstDefinition = cmdDefn.Execute
+
+        cmdDefn.Execute()
+
         If (Err.Number <> 0) Then
             sErrMsg = "'" & Session("utilname") & "' picklist definition could not be read." & vbCrLf & formatError(Err.Description)
         Else
@@ -1220,7 +1221,7 @@
             Response.Write("<INPUT type='hidden' id=txtSelectedRecords name=txtSelectedRecords value=""" & sSelectedRecords & """>" & vbCrLf)
 	
             ' Release the ADO recordset object.
-            'rstDefinition.close()
+            '            rstDefinition.close()
             '			end if
             rstDefinition = Nothing
 			
@@ -1239,7 +1240,7 @@
             End If
         End If
 
-		' Release the ADO command object.
+        ' Release the ADO command object.
         cmdDefn = Nothing
 
         '		if len(sErrMsg) > 0 then
@@ -1254,17 +1255,17 @@
 %>
 </form>
 
-<FORM id=frmUseful name=frmUseful style="visibility:hidden;display:none">
-	<INPUT type="hidden" id=txtUserName name=txtUserName value="<%=session("username")%>">
-	<INPUT type="hidden" id=txtLoading name=txtLoading value="Y">
-	<INPUT type="hidden" id=txtChanged name=txtChanged value=0>
-	<INPUT type="hidden" id=txtUtilID name=txtUtilID value=<% =session("utilid")%>>
-	<INPUT type="hidden" id=txtTableID name=txtTableID value=<% =session("utiltableid")%>>
-	<INPUT type="hidden" id=txtAction name=txtAction value=<% =session("action")%>>
+<form id="frmUseful" name="frmUseful" style="visibility: hidden; display: none">
+    <input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
+    <input type="hidden" id="txtLoading" name="txtLoading" value="Y">
+    <input type="hidden" id="txtChanged" name="txtChanged" value="0">
+    <input type="hidden" id="txtUtilID" name="txtUtilID" value='<% =session("utilid")%>'>
+    <input type="hidden" id="txtTableID" name="txtTableID" value='<% =session("utiltableid")%>'>
+    <input type="hidden" id="txtAction" name="txtAction" value='<% =session("action")%>'>
     <%
         Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
     %>
-    </form>
+</form>
 
 <form id="frmValidate" name="frmValidate" method="post" action="util_validate_picklist" style="visibility: hidden; display: none">
     <input type="hidden" id="validatePass" name="validatePass" value="0">
@@ -1275,33 +1276,30 @@
     <input type="hidden" id="validateBaseTableID" name="validateBaseTableID" value='<%=session("utiltableid")%>'>
 </form>
 
-
 <form id="frmAddSelection" name="frmAddSelection" target="validate" method="post" action="util_dialog_picklist" style="visibility: hidden; display: none">
-        <input type="hidden" id="selectionAction" name="selectionAction" value="0">
-    </form>
+    <input type="hidden" id="selectionAction" name="selectionAction" value="0">
+</form>
 
+<form id="frmSend" name="frmSend" method="post" action="util_def_picklist_Submit" style="visibility: hidden; display: none">
+    <input type="hidden" id="txtSend_ID" name="txtSend_ID">
+    <input type="hidden" id="txtSend_name" name="txtSend_name">
+    <input type="hidden" id="txtSend_description" name="txtSend_description">
+    <input type="hidden" id="txtSend_access" name="txtSend_access">
+    <input type="hidden" id="txtSend_userName" name="txtSend_userName">
+    <input type="hidden" id="txtSend_columns" name="txtSend_columns">
+    <input type="hidden" id="txtSend_columns2" name="txtSend_columns2">
+    <input type="hidden" id="txtSend_reaction" name="txtSend_reaction">
+    <input type="hidden" id="txtSend_tableID" name="txtSend_tableID" value='<% =session("utiltableid")%>'>
+</form>
 
-
-    <form id="frmSend" name="frmSend" method="post" action="util_def_picklist_Submit" style="visibility: hidden; display: none">
-        <input type="hidden" id="txtSend_ID" name="txtSend_ID">
-        <input type="hidden" id="txtSend_name" name="txtSend_name">
-        <input type="hidden" id="txtSend_description" name="txtSend_description">
-        <input type="hidden" id="txtSend_access" name="txtSend_access">
-        <input type="hidden" id="txtSend_userName" name="txtSend_userName">
-        <input type="hidden" id="txtSend_columns" name="txtSend_columns">
-        <input type="hidden" id="txtSend_columns2" name="txtSend_columns2">
-        <input type="hidden" id="txtSend_reaction" name="txtSend_reaction">
-        <input type="hidden" id="txtSend_tableID" name="txtSend_tableID" value='<% =session("utiltableid")%>'>
-    </form>
-
-    <input type='hidden' id="txtTicker" name="txtTicker" value="0">
+<input type='hidden' id="txtTicker" name="txtTicker" value="0">
     <input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
 
-    <form id="frmPicklistSelection" name="frmPicklistSelection" action="picklistSelectionMain" method="post" style="visibility: hidden; display: none">
-        <input type="hidden" id="selectionType" name="selectionType">
-        <input type="hidden" id="Hidden1" name="txtTableID" value='<% =session("utiltableid")%>'>
-        <input type="hidden" id="selectedIDs1" name="selectedIDs1">
-    </form>
+<form id="frmPicklistSelection" name="frmPicklistSelection" action="picklistSelectionMain" method="post" style="visibility: hidden; display: none">
+    <input type="hidden" id="selectionType" name="selectionType">
+    <input type="hidden" id="Hidden1" name="txtTableID" value='<% =session("utiltableid")%>'>
+    <input type="hidden" id="selectedIDs1" name="selectedIDs1">
+</form>
 
 <script runat="server" language="vb">
 
