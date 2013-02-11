@@ -132,10 +132,11 @@
                             }
                         }
 
-                        //Now add the form controls based on the fixed array of txtRecEditControl_ items...
-                        for (var i = 0; i < txtControls.length; i++) {
-                            var txtControlValue = $("#" + txtControls[i]).val();
-                            AddHtmlControl(txtControlValue);
+                        //Now add the form controls based on the fixed array of txtRecEditControl_ items...                        
+                        for (i = 0; i < txtControls.length; i++) {
+                            txtControlValue = $("#" + txtControls[i]).val();
+                            var txtControlID = $("#" + txtControls[i]).attr("id");
+                            AddHtmlControl(txtControlValue, txtControlID);
                         }
 
                     }

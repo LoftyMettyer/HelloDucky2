@@ -47,7 +47,7 @@ header { height: 126px;}
 
 fieldset 
 {
-    border:1px solid #ddd;
+    /*border:1px solid #ddd;*/
     padding:0 1.4em 1.4em 1.4em;
     margin:0 0 1.5em 0;
 }
