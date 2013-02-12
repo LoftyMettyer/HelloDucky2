@@ -537,12 +537,12 @@ Namespace Controllers
               cmdCreateCache = Nothing
 
               ' Tell the user that the password was changed okay.
-              Session("MessageTitle") = "Change Password Page"
-              Session("MessageText") = "Password changed successfully."
+              Session("ErrorTitle") = "Change Password Page"
+              Session("ErrorText") = "Password changed successfully."
+
               Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = "main"}
               Return Json(data, JsonRequestBehavior.AllowGet)
               ' Return RedirectToAction("message", "Account")
-
             End If
           Else
             Session("ErrorTitle") = "Change Password Page"
