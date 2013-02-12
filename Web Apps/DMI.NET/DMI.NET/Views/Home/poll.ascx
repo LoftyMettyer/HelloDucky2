@@ -4,6 +4,9 @@
 
     <script type="text/javascript">
         function poll_window_onload() {
+
+            $("#pollframe").attr("data-framesource", "POLL");
+
             var sMessage = new String("");
             var controlCollection = frmMessages.elements;
             if (controlCollection != null) {

@@ -84,8 +84,7 @@
     }
 </script>
 
-<div>
-    
+   
     
     <FORM name="frmPromptedValues" id="frmPromptedValues" method=POST action=
     <%
@@ -476,13 +475,11 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
 </FORM>
 
 
-    </div>
-
 
 <script type="text/javascript">
 
-    function SubmitPrompts()
-    {
+    function SubmitPrompts() {
+
         // Validate the prompt values before submitting the form.
         var controlCollection = frmPromptedValues.elements;
         if (controlCollection!=null) 
@@ -514,8 +511,8 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
         
     }
 
-    function CancelClick()
-    {
+    function CancelClick() {
+
         if (frmPromptedValues.StandardReportPrompt.value == "True")
         {
             if (frmPromptedValues.RunInOptionFrame.value == "True")
@@ -987,6 +984,7 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
             }
         }
     }
+
 </script>
     
 <script type="text/javascript">

@@ -78,7 +78,7 @@
             Response.Write("			  <tr> " & vbCrLf)
             Response.Write("			    <td colspan=3 height=10 align=center> " & vbCrLf)
             Response.Write("						<input type=button id=cmdClose name=cmdClose value=Close style=""WIDTH: 80px"" width=80 class=""btn""" & vbCrLf)    '1
-            Response.Write("                      onclick=""window.parent.parent.parent.self.close();""" & vbCrLf)
+            Response.Write("                      onclick=""closeclick();""" & vbCrLf)
             Response.Write("                      onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
             Response.Write("                      onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
             Response.Write("                      onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
@@ -1266,6 +1266,7 @@
         iPollCounter = iPollPeriod;
 
         var frmPopup = document.getElementById("frmPopup");
+        var i;
 
         if (txtSuccessFlag.value == 2) {
                 
@@ -1284,18 +1285,17 @@
             {
                 for (i=0; i<dataCollection.length; i++)  
                 {
-                    if (i==iPollCounter) 
-                    {			
-                        try 
-                        {
-                            var frmRefresh = OpenHR.getForm("pollframe","frmHit");	
-                            var testDataCollection = frmRefresh.elements;
-                            iDummy = testDataCollection.txtDummy.value;
-                            frmRefresh.submit();
-                            iPollCounter = iPollCounter + iPollPeriod;
-                        }
-                        catch(e) {}
-                    }                        
+//                   if (i==iPollCounter) 
+//                    {			
+//                       try {
+//                            var frmRefresh = OpenHR.getForm("pollframe","frmHit");	
+//                            var testDataCollection = frmRefresh.elements;
+//                            iDummy = testDataCollection.txtDummy.value;
+//                            OpenHR.submitForm(frmRefresh);
+//                            iPollCounter = iPollCounter + iPollPeriod;
+//                        }
+//                        catch(e) {}
+//                    }                        
 
                     sControlName = dataCollection.item(i).name;
                     sControlName = sControlName.substr(0, 12);
@@ -1330,7 +1330,7 @@
                 frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'visible';
             }
         }
-			
+        
         $("reportframeset").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTSMAIN");
         $("#top").hide();
         $("#reportworkframe").show();
@@ -1511,13 +1511,12 @@
         }
     }
 
-    function closeclick()
-    {
-        try
-        {
-            window.parent.parent.close();
+    function closeclick() {
+        try {
+            $(".popup").dialog("close");
+
         }
-        catch (e)	{}
+        catch (e) { }
     }
 
 </script>

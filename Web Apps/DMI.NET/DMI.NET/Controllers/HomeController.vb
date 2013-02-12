@@ -1675,23 +1675,27 @@ Namespace Controllers
 
 
 
-
+    <ValidateInput(False)>
     Function util_run_promptedvalues() As ActionResult
-      Return PartialView()
+      Return View()
     End Function
 
+    <ValidateInput(False)>
     Function util_run() As ActionResult
       Return PartialView()
     End Function
 
+    <ValidateInput(False)>
     Function util_run_customreports() As ActionResult
       Return PartialView()
     End Function
 
+    <ValidateInput(False)>
     Function util_run_customreportsData() As ActionResult
       Return PartialView()
     End Function
 
+    <ValidateInput(False)>
     Function util_run_customreportsMain() As ActionResult
       Return PartialView()
     End Function

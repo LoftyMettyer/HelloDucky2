@@ -93,23 +93,21 @@ session(sKey) = aPrompts
         }
     }
 
-    function ShowWaitFrame(sMessage)
-    {
+    function ShowWaitFrame(sMessage) {
+
         var fs = window.parent.document.all.item("reportframe");
 
-        if (fs) 
-        {
+        if (fs) {
             fs.rows = "*,0,0";
         }
-	
+
     }
 
-    function ShowOutputOptionsFrame(sURL)
-    {
+    function ShowOutputOptionsFrame(sURL) {
+
         //frames("outputoptions").location.replace(sURL);
         var fsOptions = window.parent.document.all.item("outputoptions");
-        if (fsOptions)	
-        {
+        if (fsOptions) {
             fsOptions.src = sURL
         }
 
@@ -117,17 +115,13 @@ session(sKey) = aPrompts
         if (fs) {
             fs.rows = "0,0,*";
         }
-
     }
 
-    function ShowDataFrame()
-    {
+    function ShowDataFrame() {
         var fs = window.parent.document.all.item("reportframe");
-        if (fs) 
-        {
+        if (fs) {
             fs.rows = "0,*,0";
         }
-	
     }
 
 </script>
