@@ -2189,14 +2189,17 @@ Namespace Controllers
       Return PartialView()
     End Function
 
+    <ValidateInput(False)>
     Function util_test_expression() As ActionResult
       Return View()
     End Function
 
+    <ValidateInput(False)>
     Function util_test_expression_pval() As ActionResult
       Return View()
     End Function
 
+    <ValidateInput(False)>
     Function util_test_expression_submit(value As FormCollection)
       Return RedirectToAction("util_def_expression")
     End Function

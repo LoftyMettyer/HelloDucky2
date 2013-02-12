@@ -106,11 +106,11 @@
         var sConvertedValue;
 
         sDecimalSeparator = "\\";
-        sDecimalSeparator = sDecimalSeparator.concat(ASRIntranetFunctions.LocaleDecimalSeparator);
+        sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator);
         var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
 
         sThousandSeparator = "\\";
-        sThousandSeparator = sThousandSeparator.concat(ASRIntranetFunctions.LocaleThousandSeparator);
+        sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator);
         var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
 
         sPoint = "\\.";
@@ -135,7 +135,7 @@
             pctlPrompt.value = sConvertedValue;
 
             // Convert any decimal separators to '.'.
-            if (ASRIntranetFunctions.LocaleDecimalSeparator != ".") {
+            if (OpenHR.LocaleDecimalSeparator != ".") {
                 // Remove decimal points.
                 sConvertedValue = sConvertedValue.replace(rePoint, "A");
                 // replace the locale decimal marker with the decimal point.
@@ -144,7 +144,7 @@
 
             if (isNaN(sConvertedValue) == true) {
                 fOK = false;
-                ASRIntranetFunctions.MessageBox("Invalid numeric value entered.");
+                OpenHR.messageBox("Invalid numeric value entered.");
                 pctlPrompt.focus();
             }
         }
@@ -165,12 +165,12 @@
                     fOK = false;
                 }
                 else {
-                    pctlPrompt.value = ASRIntranetFunctions.ConvertSQLDateToLocale(sValue);
+                    pctlPrompt.value = OpenHR.ConvertSQLDateToLocale(sValue);
                 }
             }
 			
             if (fOK == false) {
-                ASRIntranetFunctions.MessageBox("Invalid date value entered.");
+                OpenHR.messageBox("Invalid date value entered.");
                 pctlPrompt.focus();
             }	
         }
@@ -295,7 +295,7 @@
                 }
 		
                 if (fOK == false) {
-                    ASRIntranetFunctions.MessageBox("The entered value does not match the required format (" + sMask + ").");
+                    OpenHR.messageBox("The entered value does not match the required format (" + sMask + ").");
                     pctlPrompt.focus();
                 }	
             }
@@ -320,7 +320,7 @@
         var sValue;
         var iLoop;
 		
-        sDateFormat = ASRIntranetFunctions.LocaleDateFormat;
+        sDateFormat = OpenHR.LocaleDateFormat;
 
         sDays="";
         sMonths="";
@@ -426,7 +426,7 @@
         sTempValue = sTempValue.concat("/");
         sTempValue = sTempValue.concat(sYears);
 	
-        sValue = ASRIntranetFunctions.ConvertSQLDateToLocale(sTempValue);
+        sValue = OpenHR.ConvertSQLDateToLocale(sTempValue);
 
         iYears = parseInt(sYears);
 	

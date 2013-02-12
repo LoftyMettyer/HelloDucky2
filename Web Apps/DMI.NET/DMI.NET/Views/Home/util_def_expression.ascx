@@ -1,18 +1,16 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<div>
 
-<OBJECT 
-	classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" 
-	id="Microsoft_Licensed_Class_Manager_1_0" 
-	VIEWASTEXT>
-	<PARAM NAME="LPKPath" VALUE="lpks/main.lpk">
-</OBJECT>
+<object
+    classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
+    id="Microsoft_Licensed_Class_Manager_1_0"
+    viewastext>
+    <param name="LPKPath" value="lpks/main.lpk">
+</object>
 
 
 <script type="text/javascript">
-<!--
     function util_def_expression_onload() {
 
         var fOK;
@@ -71,11 +69,9 @@
         }
     }
         
--->
 </script>
 
 <script type="text/javascript">
-<!--
     function loadDefinition()
     {
         var sKey;
@@ -2284,7 +2280,7 @@
             "status:no;";
         window.showModalDialog(pDestination, self, dlgwinprops);
     }
--->
+
 </SCRIPT>
 
 <script type="text/javascript">
@@ -2337,14 +2333,13 @@
         return false;  
     }
 
-    function SSTree1_collapse() {
+    function SSTree1_collapse(pNode) {
 
         if (pNode.level == 1) {
             pNode.expanded = true;
         }
 
-        // JPD 31/10/03 Fault 7399
-        SSTree1.ApproximateNodeCount = SSTree1.Nodes.Count;
+        frmDefinition.SSTree1.ApproximateNodeCount = frmDefinition.SSTree1.Nodes.Count;
     }
 
     function SSTree1_dblClick() {
@@ -2586,7 +2581,6 @@
             }
         }    
     }
-
 
     function abExprMenu_PreCustomizeMenu(pfCancel) {
         pfCancel = true;
@@ -3349,53 +3343,52 @@ style="WIDTH: 100%"
 <INPUT type='hidden' id=txtTicker name=txtTicker value=0>
 <INPUT type='hidden' id=txtLastKeyFind name=txtLastKeyFind value="">
 
-<FORM id=frmShortcutKeys name=frmShortcutKeys style="visibility:hidden;display:none">
-<%
-    Dim sShortcutKeys As String
+<form id="frmShortcutKeys" name="frmShortcutKeys" style="visibility: hidden; display: none">
+    <%
+        Dim sShortcutKeys As String
     
-	sShortcutKeys = ""
+        sShortcutKeys = ""
 	
-    Dim cmdShortcutKeys = CreateObject("ADODB.Command")
-	cmdShortcutKeys.CommandText = "spASRIntGetOpFuncShortcuts"
-	cmdShortcutKeys.CommandType = 4 ' Stored Procedure
-    cmdShortcutKeys.ActiveConnection = Session("databaseConnection")
+        Dim cmdShortcutKeys = CreateObject("ADODB.Command")
+        cmdShortcutKeys.CommandText = "spASRIntGetOpFuncShortcuts"
+        cmdShortcutKeys.CommandType = 4 ' Stored Procedure
+        cmdShortcutKeys.ActiveConnection = Session("databaseConnection")
 
-    Err.Clear()
-    Dim rstShortcutKeys = cmdShortcutKeys.Execute
-    If (Err.Number <> 0) Then
-        sErrMsg = "'" & Session("utilname") & "' " & sUtilTypeName & " definition could not be read." & vbCrLf & FormatError(Err.Description)
-    Else
-        If rstShortcutKeys.state <> 0 Then
-            ' Read recordset values.
-            iCount = 0
-            Do While Not rstShortcutKeys.EOF
-                sShortcutKeys = sShortcutKeys & rstShortcutKeys.fields("shortcutKeys").value
+        Err.Clear()
+        Dim rstShortcutKeys = cmdShortcutKeys.Execute
+        If (Err.Number <> 0) Then
+            sErrMsg = "'" & Session("utilname") & "' " & sUtilTypeName & " definition could not be read." & vbCrLf & FormatError(Err.Description)
+        Else
+            If rstShortcutKeys.state <> 0 Then
+                ' Read recordset values.
+                iCount = 0
+                Do While Not rstShortcutKeys.EOF
+                    sShortcutKeys = sShortcutKeys & rstShortcutKeys.fields("shortcutKeys").value
 
-                Response.Write("<INPUT type='hidden' id=txtShortcutKeys_" & iCount & " name=txtShortcutKeys_" & iCount & " value=""" & Replace(rstShortcutKeys.fields("shortcutKeys").value, """", "&quot;") & """>" & vbCrLf)
-                Response.Write("<INPUT type='hidden' id=txtShortcutType_" & iCount & " name=txtShortcutType_" & iCount & " value=""" & Replace(rstShortcutKeys.fields("componentType").value, """","&quot;") & """>" & vbCrLf)
-                Response.Write("<INPUT type='hidden' id=txtShortcutID_" & iCount & " name=txtShortcutID_" & iCount & " value=""" & Replace(rstShortcutKeys.fields("ID").value, """", "&quot;") & """>" & vbCrLf)
-                Response.Write("<INPUT type='hidden' id=txtShortcutParams_" & iCount & " name=txtShortcutParams_" & iCount & " value=""" & Replace(rstShortcutKeys.fields("params").value, """", "&quot;") & """>" & vbCrLf)
-                Response.Write("<INPUT type='hidden' id=txtShortcutName_" & iCount & " name=txtShortcutName_" & iCount & " value=""" & Replace(rstShortcutKeys.fields("name").value, """", "&quot;") & """>" & vbCrLf)
+                    Response.Write("<INPUT type='hidden' id=txtShortcutKeys_" & iCount & " name=txtShortcutKeys_" & iCount & " value=""" & Replace(rstShortcutKeys.fields("shortcutKeys").value, """", "&quot;") & """>" & vbCrLf)
+                    Response.Write("<INPUT type='hidden' id=txtShortcutType_" & iCount & " name=txtShortcutType_" & iCount & " value=""" & Replace(rstShortcutKeys.fields("componentType").value, """", "&quot;") & """>" & vbCrLf)
+                    Response.Write("<INPUT type='hidden' id=txtShortcutID_" & iCount & " name=txtShortcutID_" & iCount & " value=""" & Replace(rstShortcutKeys.fields("ID").value, """", "&quot;") & """>" & vbCrLf)
+                    Response.Write("<INPUT type='hidden' id=txtShortcutParams_" & iCount & " name=txtShortcutParams_" & iCount & " value=""" & Replace(rstShortcutKeys.fields("params").value, """", "&quot;") & """>" & vbCrLf)
+                    Response.Write("<INPUT type='hidden' id=txtShortcutName_" & iCount & " name=txtShortcutName_" & iCount & " value=""" & Replace(rstShortcutKeys.fields("name").value, """", "&quot;") & """>" & vbCrLf)
 
-                iCount = iCount + 1
-                rstShortcutKeys.MoveNext()
-            Loop
+                    iCount = iCount + 1
+                    rstShortcutKeys.MoveNext()
+                Loop
 	
-            ' Release the ADO recordset object.
-            rstShortcutKeys.close()
+                ' Release the ADO recordset object.
+                rstShortcutKeys.close()
+            End If
+            rstShortcutKeys = Nothing
         End If
-        rstShortcutKeys = Nothing
-    End If
 
-    Response.Write("<INPUT type='hidden' id=txtShortcutKeys name=txtShortcutKeys value=""" & Replace(sShortcutKeys, """", "&quot;") & """>" & vbCrLf)
+        Response.Write("<INPUT type='hidden' id=txtShortcutKeys name=txtShortcutKeys value=""" & Replace(sShortcutKeys, """", "&quot;") & """>" & vbCrLf)
 
-	' Release the ADO command object.
-    cmdShortcutKeys = Nothing
+        ' Release the ADO command object.
+        cmdShortcutKeys = Nothing
 	
-%>
-</FORM>
+    %>
+</form>
 
-    </div>
 
 <script type="text/javascript">
     util_def_expression_addhandlers();
