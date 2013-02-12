@@ -1,16 +1,14 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-   
-    <OBJECT 
-        classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" 
-        id="Microsoft_Licensed_Class_Manager_1_0" 
-        VIEWASTEXT>
-        <PARAM NAME="LPKPath" VALUE="lpks/main.lpk">
-    </OBJECT>
 
-        
+<object
+    classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
+    id="Microsoft_Licensed_Class_Manager_1_0"
+    viewastext>
+    <param name="LPKPath" value="lpks/main.lpk">
+</object>
+
 <script type="text/javascript">
-<!--
     
     function util_def_exprcomponent_onload() {
         
@@ -44,15 +42,9 @@
             changeType(1);
         }	
 
-        // Hide SQL2000 specifics if required
-        if (util_def_exprcomponent_frmUseful.txtEnableSQL2000Functions.value == "False") {
-            sUDFFunction_Visibility = "hidden";
-            sUDFFunction_Display = "none";
-        }
-        else {
-            sUDFFunction_Visibility = "visible";
-            sUDFFunction_Display = "block";
-        }
+
+        sUDFFunction_Visibility = "visible";
+        sUDFFunction_Display = "block";
 		
         if (frmMainForm.txtPassByType.value == 1) {
             frmMainForm.optFieldRecSel_Specific.style.visibility = sUDFFunction_Visibility;
@@ -646,7 +638,7 @@
 				
                     radio_disable(frmMainForm.optFieldRecSel_First, false);
                     radio_disable(frmMainForm.optFieldRecSel_Last, false);
-                    radio_disable(frmMainForm.optFieldRecSel_Specific, (util_def_exprcomponent_frmUseful.txtEnableSQL2000Functions.value == "False"));
+                    radio_disable(frmMainForm.optFieldRecSel_Specific, false);
 				
                     if (frmMainForm.optFieldRecSel_Specific.checked == false) {
                         frmMainForm.txtFieldRecSel_Specific.value = "";
@@ -2721,7 +2713,7 @@
         //OpenHR.getFrame("workframe").saveChanges(psAction, pfPrompt, pfTBOverride);
         saveChanges(psAction, pfPrompt, pfTBOverride);
     }
-    -->
+
 </script>
 
 <script type="text/javascript">    
@@ -4685,31 +4677,26 @@ end if
 </TABLE>
 </FORM>
 
-<FORM id=util_def_exprcomponent_frmUseful name=util_def_exprcomponent_frmUseful style="visibility:hidden;display:none">
-	<INPUT type="hidden" id=txtUserName name=txtUserName value="<%=session("username")%>">
-	<INPUT type="hidden" id=txtExprType name=txtExprType value=<%=session("optionExprType")%>>
-	<INPUT type="hidden" id=txtExprID name=txtExprID value=<%=session("optionExprID")%>>
-	<INPUT type="hidden" id=txtAction name=txtAction value=<%=session("optionAction")%>>
-	<INPUT type="hidden" id=txtLinkRecordID name=txtLinkRecordID value=<%=session("optionLinkRecordID")%>>
-	<INPUT type="hidden" id=txtTableID name=txtTableID value=<%=session("optionTableID")%>>
+<form id="util_def_exprcomponent_frmUseful" name="util_def_exprcomponent_frmUseful" style="visibility: hidden; display: none">
+    <input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
+    <input type="hidden" id="txtExprType" name="txtExprType" value='<%=session("optionExprType")%>'>
+    <input type="hidden" id="txtExprID" name="txtExprID" value='<%=session("optionExprID")%>'>
+    <input type="hidden" id="txtAction" name="txtAction" value='<%=session("optionAction")%>'>
+    <input type="hidden" id="txtLinkRecordID" name="txtLinkRecordID" value='<%=session("optionLinkRecordID")%>'>
+    <input type="hidden" id="txtTableID" name="txtTableID" value='<%=session("optionTableID")%>'>
+    <input type="hidden" id="txtInitialising" name="txtInitialising" value="0">
+    <input type="hidden" id="txtChildFieldOrderID" name="txtChildFieldOrderID" value="0">
+    <input type="hidden" id="txtChildFieldFilterID" name="txtChildFieldFilterID" value="0">
+    <input type="hidden" id="txtChildFieldFilterHidden" name="txtChildFieldFilterHidden" value="0">
+    <input type="hidden" id="txtFunctionsLoaded" name="txtFunctionsLoaded" value="0">
+    <input type="hidden" id="txtOperatorsLoaded" name="txtOperatorsLoaded" value="0">
+    <input type="hidden" id="txtLookupTablesLoaded" name="txtLookupTablesLoaded" value="0">
+    <input type="hidden" id="txtPValLookupTablesLoaded" name="txtPValLookupTablesLoaded" value="0">
+</form>
 
-	<INPUT type="hidden" id=txtInitialising name=txtInitialising value=0>
-
-	<INPUT type="hidden" id=txtChildFieldOrderID name=txtChildFieldOrderID value=0>
-	<INPUT type="hidden" id=txtChildFieldFilterID name=txtChildFieldFilterID value=0>
-	<INPUT type="hidden" id=txtChildFieldFilterHidden name=txtChildFieldFilterHidden value=0>
-
-	<INPUT type="hidden" id=txtFunctionsLoaded name=txtFunctionsLoaded value=0>
-	<INPUT type="hidden" id=txtOperatorsLoaded name=txtOperatorsLoaded value=0>
-	<INPUT type="hidden" id=txtLookupTablesLoaded name=txtLookupTablesLoaded value=0>
-	<INPUT type="hidden" id=txtPValLookupTablesLoaded name=txtPValLookupTablesLoaded value=0>
-	
-	<INPUT type="hidden" id=txtEnableSQL2000Functions name=txtEnableSQL2000Functions value=<%=session("EnableSQL2000Functions")%>>
-</FORM>
-
-<FORM action="util_def_exprComponent_Submit" method=post id=frmGotoOption name=frmGotoOption>
-  	<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
-</FORM>
+<form action="util_def_exprComponent_Submit" method="post" id="frmGotoOption" name="frmGotoOption">
+    <%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
+</form>
 
 <FORM id=util_def_exprcomponent_frmOriginalDefinition name=util_def_exprcomponent_frmOriginalDefinition>
 <%
