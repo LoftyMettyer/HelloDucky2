@@ -6,8 +6,6 @@
 
     function util_validate_picklist_window_onload() {
 
-        debugger;
-
         $("#reportframe").attr("data-framesource", "UTIL_VALIDATE_PICKLIST");
 
         if (txtDisplay.value != "False") {
@@ -32,6 +30,7 @@
     function nextPass() {
         var sURL;
 
+
         var frmValidate = OpenHR.getForm("reportframe", "frmValidatePicklist");
 
         iNextPass = new Number(frmValidate.validatePass.value);
@@ -52,8 +51,10 @@
             OpenHR.submitForm(frmValidate);            
         }
         else {
-            var frmSend = OpenHR.getForm("workframe","frmSend");
-            OpenHR.submitForm(frmSend);
+
+            var frmSend = OpenHR.getForm("workframe", "frmSend");
+            OpenHR.submitForm(frmSend);            
+            $(".popup").dialog("close");
         }
     }
 
