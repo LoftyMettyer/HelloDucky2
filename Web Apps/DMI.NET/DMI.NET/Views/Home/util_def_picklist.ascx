@@ -158,6 +158,8 @@
 
         var frmSend = document.getElementById("frmAddSelection");
         frmSend.selectionAction = "add";
+
+        $("#workframe").hide();
         OpenHR.showInReportFrame(frmSend);
 
     }

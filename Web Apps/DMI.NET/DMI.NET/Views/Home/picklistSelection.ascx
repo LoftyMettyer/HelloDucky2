@@ -236,6 +236,9 @@
     }
 
     function goView() {
+
+        debugger;
+        
         // Get the picklistSelectionData.asp to get the find records.
         var dataForm = OpenHR.getForm("dataframe", "frmPicklistGetData");
         dataForm.txtTableID.value = frmUseful.txtTableID.value;
