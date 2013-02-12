@@ -15,11 +15,7 @@
 <script type="text/javascript">    
     function picklistSelection_window_onload() {
 
-        $("workframe").hide();
-
         $("#picklistworkframe").attr("data-framesource", "PICKLISTSELECTION");
-        $("#picklistworkframe").show();
-
 
         fOK = true;
 
@@ -92,8 +88,7 @@
 
 <script type="text/javascript">
 
-    function refreshControls()
-    {
+    function refreshControls() {
         var fNoneSelected;
 
         fNoneSelected = (ssOleDBGridSelRecords.SelBookmarks.Count == 0);
@@ -115,81 +110,75 @@
         }
     }
 
-    function makeSelection()
-    {
-        if (frmUseful.txtSelectionType.value.toUpperCase() == "FILTER") 
-        {
-            try 
-            {
-                var frmParentUseful = window.dialogArguments.OpenHR.getForm("workframe","frmUseful");
+    function cancelClick() {
+        $(".popup").dialog("close");
+        $("#workframe").show();
+    }
+
+    function makeSelection() {
+
+        var frmUseful = document.getElementById("frmpicklistSelectionUseful");
+
+        if (frmUseful.txtSelectionType.value.toUpperCase() == "FILTER") {
+            try {
+                var frmParentUseful = OpenHR.getForm("workframe", "frmUseful");
                 frmParentUseful.txtChanged.value = 1;
             }
-            catch(e) 
-            {
+            catch (e) {
             }
 
             // Go to the prompted values form to get any required prompts. 
             frmPrompt.filterID.value = selectedRecordID();
             OpenHR.showInReportFrame(frmPrompt);
-            
+
         }
-        else 
-        {
-            if (frmUseful.txtSelectionType.value.toUpperCase() == "PICKLIST") 
-            {
-                try 
-                {
-                    makeSelection(frmUseful.txtSelectionType.value, selectedRecordID(), "");
+        else {
+            if (frmUseful.txtSelectionType.value.toUpperCase() == "PICKLIST") {
+                try {
+                    picklistdef_makeSelection(frmUseful.txtSelectionType.value, selectedRecordID(), "");
                 }
-                catch(e) 
-                {
+                catch (e) {
                 }
             }
-            else 
-            {
+            else {
                 sSelectedIDs = "";
-			
+
                 ssOleDBGridSelRecords.Redraw = false;
-                for (iIndex = 0; iIndex < ssOleDBGridSelRecords.selbookmarks.Count(); iIndex++) 
-                {	
+                for (iIndex = 0; iIndex < ssOleDBGridSelRecords.selbookmarks.Count() ; iIndex++) {
                     ssOleDBGridSelRecords.bookmark = ssOleDBGridSelRecords.selbookmarks(iIndex);
 
                     sRecordID = ssOleDBGridSelRecords.Columns("ID").Value;
 
-                    if (sSelectedIDs.length > 0) 
-                    {
+                    if (sSelectedIDs.length > 0) {
                         sSelectedIDs = sSelectedIDs + ",";
                     }
-                    sSelectedIDs = sSelectedIDs + sRecordID;				
+                    sSelectedIDs = sSelectedIDs + sRecordID;
                 }
                 ssOleDBGridSelRecords.Redraw = true;
 
-                try 
-                {
-                    var frmParentUseful = window.dialogArguments.OpenHR.getForm("workframe","frmUseful");
+                try {
+                    var frmParentUseful = OpenHR.getForm("workframe", "frmUseful");
                     frmParentUseful.txtChanged.value = 1;
 
-                    makeSelection(frmUseful.txtSelectionType.value, 0, sSelectedIDs);
+                    picklistdef_makeSelection(frmUseful.txtSelectionType.value, 0, sSelectedIDs);
                 }
-                catch(e) 
-                {
+                catch (e) {
                 }
             }
         }
     }
 
     /* Return the ID of the record selected in the find form. */
-    function selectedRecordID()
-    {  
+    function selectedRecordID() {
         var iRecordID
 
         iRecordID = 0
-	
-        if (ssOleDBGridSelRecords.SelBookmarks.Count > 0) {   
+
+        if (ssOleDBGridSelRecords.SelBookmarks.Count > 0) {
             iRecordID = ssOleDBGridSelRecords.Columns("ID").Value;
         }
 
-        return(iRecordID);
+        return (iRecordID);
     }
 
     function locateRecord(psSearchFor) {
@@ -237,11 +226,9 @@
 
     function goView() {
 
-        debugger;
-        
         // Get the picklistSelectionData.asp to get the find records.
         var dataForm = OpenHR.getForm("dataframe", "frmPicklistGetData");
-        dataForm.txtTableID.value = frmUseful.txtTableID.value;
+        dataForm.txtTableID.value = frmpicklistSelectionUseful.txtTableID.value;
         dataForm.txtViewID.value = selectView.options[selectView.selectedIndex].value;
         dataForm.txtOrderID.value = selectOrder.options[selectOrder.selectedIndex].value;
         dataForm.txtFirstRecPos.value = 1;
@@ -254,7 +241,7 @@
     function goOrder() {
         // Get the picklistSelectionData.asp to get the find records.
         var dataForm = OpenHR.getForm("dataframe", "frmPicklistGetData");
-        dataForm.txtTableID.value = frmUseful.txtTableID.value;
+        dataForm.txtTableID.value = frmpicklistSelectionUseful.txtTableID.value;
         dataForm.txtViewID.value = selectView.options[selectView.selectedIndex].value;
         dataForm.txtOrderID.value = selectOrder.options[selectOrder.selectedIndex].value;
         dataForm.txtFirstRecPos.value = 1;
@@ -462,7 +449,7 @@
             disableMenu();
 
             // Get the optionData.asp to get the link find records.
-            getDataForm.txtTableID.value = frmUseful.txtTableID.value;
+            getDataForm.txtTableID.value = frmpicklistSelectionUseful.txtTableID.value;
             getDataForm.txtViewID.value = selectView.options[selectView.selectedIndex].value;
             getDataForm.txtOrderID.value = selectOrder.options[selectOrder.selectedIndex].value;
             getDataForm.txtFirstRecPos.value = dataForm.txtFirstRecPos.value;
@@ -689,7 +676,7 @@
                  frmpicklistSelectionUseful.txtMenuSaved.value = 1;
              }
              else {
-                 if ((abMainMenu.Bands.Count() == 0) && (frmUseful.txtMenuSaved.value == 1)) {
+                 if ((abMainMenu.Bands.Count() == 0) && (frmpicklistSelectionUseful.txtMenuSaved.value == 1)) {
                      abMainMenu.DataPath = sPath;
                      abMainMenu.RecalcLayout();
                      return;
@@ -1310,7 +1297,7 @@
                                     <td width="10">&nbsp;</td>
                                     <td width="10">
                                         <input id="cmdCancel" type="button" value="Cancel" class="btn" name="cmdCancel" style="WIDTH: 80px" width="80"
-                                            onclick="window.parent.close();"
+                                            onclick="cancelClick();"
                                             onmouseover="try{button_onMouseOver(this);}catch(e){}"
                                             onmouseout="try{button_onMouseOut(this);}catch(e){}"
                                             onfocus="try{button_onFocus(this);}catch(e){}"

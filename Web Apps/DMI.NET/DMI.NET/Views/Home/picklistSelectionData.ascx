@@ -1,12 +1,13 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-
     <script type="text/javascript">
 
     function picklistSelectionData_window_onload() {
 
-        $("#picklistdataframe").attr("data-framesource", "PICKLISTSELECTIONDATA");
+        //$("#picklistdataframe").attr("data-framesource", "PICKLISTSELECTIONDATA");
+        $("#workframe").hide();
+        $("#reportframe").show();
 
         if (frmSelectDataUseful.txtLoading.value == "True") {
             loadAddRecords();
@@ -26,12 +27,6 @@
                 menu_refreshMenu();
                 OpenHR.messageBox(sErrorMsg);
             }
-
-            //		var sAction = frmPicklistData.txtAction.value;
-
-            //debugger;
-
-
 
             // Refresh the link find grid with the data if required.
             var ssOleDBGridSelRecords = document.getElementById("ssOleDBGridSelRecords");

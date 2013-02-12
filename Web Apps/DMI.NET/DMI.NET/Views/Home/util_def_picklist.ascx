@@ -59,6 +59,8 @@
 
     function refreshControls() {
 
+        var frmUseful = OpenHR.getForm("workframe", "frmUseful");
+
         fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
         fIsNotOwner = (frmUseful.txtUserName.value.toUpperCase() != frmDefinition.txtOwner.value.toUpperCase());
 
@@ -125,8 +127,8 @@
         //OpenHR.submitForm(frmValidate);
     }
 
-    function addClick()
-    {	
+    function addClick() {
+
         var sURL;
         var vBM;
 	
@@ -286,7 +288,11 @@
     }
 
     function picklistdef_makeSelection(psType, piID, psPrompts)
-    {	
+    {
+        
+        $(".popup").dialog("close");
+        $("#workframe").show();
+
         /* Get the current selected delegate IDs. */
         sSelectedIDs = "0";
 

@@ -4,7 +4,7 @@
 <script type="text/javascript">
     function util_dialog_picklist_onload() {
 
-        $("#picklistdialog").attr("data-framesource", "UTIL_DIALOG_PICKLIST");
+        $("#reportframe").attr("data-framesource", "UTIL_DIALOG_PICKLIST");
 
         var frmParentAdd = OpenHR.getForm("workframe", "frmPicklistSelection");
         var frmAdd = document.getElementById("frmAdd");
