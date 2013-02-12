@@ -9,9 +9,8 @@
 
         //redirect if specified...
         if (html.Redirect.length > 0) {
-            alert("redirecting to " + html.Redirect);
-            //TODO...
-            
+          //alert("redirecting to " + html.Redirect);
+          window.location(html.Redirect);
         }
         
     }
