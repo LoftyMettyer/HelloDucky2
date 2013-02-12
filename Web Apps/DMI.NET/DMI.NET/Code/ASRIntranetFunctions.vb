@@ -12,8 +12,7 @@ Public Module ASRIntranetFunctions
   'TODO
   Function LocaleDateFormat() As String
 
-    Dim sLocaleDateFormat As String = Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern.ToLower()
-
+    Dim sLocaleDateFormat As String = Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern.ToLower()
     Return sLocaleDateFormat
 
   End Function
