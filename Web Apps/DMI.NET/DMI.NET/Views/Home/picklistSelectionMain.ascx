@@ -48,11 +48,11 @@
 
 <script type="text/javascript">
 
-    $("#workframe").hide();
+    $("#workframeset").hide();
     $("#reportframe").show();
     
-  //  picklistSelection_window_onload();
     picklistSelectionData_window_onload();
+    picklistSelection_window_onload();
     picklistSelection_addhandlers();
 
 </script>

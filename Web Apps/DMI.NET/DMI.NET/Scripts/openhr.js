@@ -17,16 +17,21 @@
 
 
 	var version = "1.0.0",
-	    mbStyle = { vbExclamation: 48, vbQuestion: 32, vbYesNo: 4 },
-	    mbResult = { vbYes: 6, vbNo: 7 },
+	    mbStyle = { vbExclamation: 48, vbQuestion: 32, vbYesNo: 4, vbYesNoCancel: 3 },
+	    mbResult = { vbYes: 6, vbNo: 7, vbCancel: 2 },
 
 	    messageBox = function (prompt, buttons, title) {
-	                    
+        
 	        switch (buttons) {
 	    		case mbStyle.vbExclamation:
 	    			//48
 	    		    alert(prompt);
 	    		    break;
+	            case mbStyle.vbYesNoCancel:
+	                
+                    //TODO - Need to find a popup that can handle multiple buttons
+	                return confirm(prompt) ? mbResult.vbYes : mbResult.vbNo;
+
 	    		case mbStyle.vbQuestion + mbStyle.vbYesNo:
 	    			//36
 	    		    return confirm(prompt) ? mbResult.vbYes : mbResult.vbNo;
@@ -35,7 +40,10 @@
 	    	        alert(prompt);
 	    	        //throw Error("OpenHR.messageBox buttons not coded for.");
 	    	        break;
-	    	}
+	        }
+	        
+            
+
 	    },
 
         showInReportFrame = function (form) {

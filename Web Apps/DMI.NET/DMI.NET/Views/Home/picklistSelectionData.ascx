@@ -6,7 +6,7 @@
     function picklistSelectionData_window_onload() {
 
         //$("#picklistdataframe").attr("data-framesource", "PICKLISTSELECTIONDATA");
-        $("#workframe").hide();
+        $("#workframeset").hide();
         $("#reportframe").show();
 
         if (frmSelectDataUseful.txtLoading.value == "True") {

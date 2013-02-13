@@ -112,7 +112,7 @@
 
     function cancelClick() {
         $(".popup").dialog("close");
-        $("#workframe").show();
+        $("#workframeset").show();
     }
 
     function makeSelection() {
@@ -147,7 +147,7 @@
                 for (iIndex = 0; iIndex < ssOleDBGridSelRecords.selbookmarks.Count() ; iIndex++) {
                     ssOleDBGridSelRecords.bookmark = ssOleDBGridSelRecords.selbookmarks(iIndex);
 
-                    sRecordID = ssOleDBGridSelRecords.Columns("ID").Value;
+                    sRecordID = ssOleDBGridSelRecords.Columns("id").Value;
 
                     if (sSelectedIDs.length > 0) {
                         sSelectedIDs = sSelectedIDs + ",";
@@ -170,12 +170,14 @@
 
     /* Return the ID of the record selected in the find form. */
     function selectedRecordID() {
-        var iRecordID
+        var iRecordID;
 
-        iRecordID = 0
+        debugger;
+
+        iRecordID = 0;
 
         if (ssOleDBGridSelRecords.SelBookmarks.Count > 0) {
-            iRecordID = ssOleDBGridSelRecords.Columns("ID").Value;
+            iRecordID = ssOleDBGridSelRecords.Columns(0).Value;
         }
 
         return (iRecordID);

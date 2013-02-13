@@ -78,7 +78,7 @@
 
         button_disable(frmDefinition.cmdAdd, fAddDisabled);
         button_disable(frmDefinition.cmdAddAll, fAddAllDisabled);
-        button_disable(frmDefinition.cmdFilteredAdd, fFilteredAddDisabled);
+        button_disable(frmDefinition.cmdFilteredAdd, true);
         button_disable(frmDefinition.cmdRemove, fRemoveDisabled);
         button_disable(frmDefinition.cmdRemoveAll, fRemoveAllDisabled);
     
@@ -161,7 +161,7 @@
         var frmSend = document.getElementById("frmAddSelection");
         frmSend.selectionAction = "add";
 
-        $("#workframe").hide();
+        $("#workframeset").hide();
         OpenHR.showInReportFrame(frmSend);
 
     }
@@ -216,9 +216,11 @@
         frmPicklistSelection.selectionType.value = "FILTER";
         frmPicklistSelection.selectedIDs1.value = sSelectedIDs1;
 
-        sURL = "util_dialog_picklist" +
-            "?action=add";
-        openDialog(sURL, (screen.width)/3,(screen.height)/2);
+        var frmSend = document.getElementById("frmAddSelection");
+        frmSend.selectionAction = "add";
+
+        OpenHR.showInReportFrame(frmSend);
+
     }
 
     function removeClick()
@@ -291,7 +293,7 @@
     {
         
         $(".popup").dialog("close");
-        $("#workframe").show();
+        $("#workframeset").show();
 
         /* Get the current selected delegate IDs. */
         sSelectedIDs = "0";
