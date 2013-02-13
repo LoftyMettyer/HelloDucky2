@@ -82,9 +82,9 @@
         button_disable(frmDefinition.cmdRemove, fRemoveDisabled);
         button_disable(frmDefinition.cmdRemoveAll, fRemoveAllDisabled);
     
-        button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
-            (fViewing == true) ||
-            (frmDefinition.ssOleDBGrid.Rows == 0)));
+//        button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
+//            (fViewing == true) ||
+//            (frmDefinition.ssOleDBGrid.Rows == 0)));
 
         // Get menu.asp to refresh the menu.
         menu_refreshMenu();		  
@@ -688,7 +688,7 @@
 											<TD width=10>Name :</TD>
 											<TD width=5>&nbsp;</TD>
 											<TD>
-                                                <input id="txtName" name="txtName" class="text" maxlength="50" style="WIDTH: 100%" onkeyup="changeName();">
+                                                <input id="txtName" name="txtName" class="text" maxlength="50" style="WIDTH: 100%" onchange="changeName()">
 											</TD>
 											<TD width=20>&nbsp;</TD>
 											<TD width=10>Owner :</TD>
