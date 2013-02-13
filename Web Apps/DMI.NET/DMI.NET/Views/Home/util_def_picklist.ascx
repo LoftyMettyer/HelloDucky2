@@ -688,8 +688,7 @@
 											<TD width=10>Name :</TD>
 											<TD width=5>&nbsp;</TD>
 											<TD>
-												<INPUT id=txtName name=txtName class="text" maxlength="50" style="WIDTH: 100%" 
-												    onkeyup="changeName()">
+                                                <input id="txtName" name="txtName" class="text" maxlength="50" style="WIDTH: 100%" onkeyup="changeName();">
 											</TD>
 											<TD width=20>&nbsp;</TD>
 											<TD width=10>Owner :</TD>
@@ -1156,9 +1155,9 @@
 </TABLE>
 </form>
 
-<FORM action="default_Submit" method=post id=frmGoto name=frmGoto style="visibility:hidden;display:none">
-	<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-</FORM>
+<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
+    <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
+</form>
 
 <form id=frmOriginalDefinition style="visibility:hidden;display:none">
 <%
