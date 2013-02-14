@@ -477,7 +477,7 @@
 
 %>
 
-<h3 class="pageTitle"><%Response.Write(Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " ") & " - No activeX" & vbCrLf)
+<h3 class="pageTitle"><%Response.Write(Replace(cmdRecEditWindowTitle.Parameters("title").Value, "_", " ") & vbCrLf)
     ' Release the ADO command object.
     cmdRecEditWindowTitle = Nothing%></h3>
     
