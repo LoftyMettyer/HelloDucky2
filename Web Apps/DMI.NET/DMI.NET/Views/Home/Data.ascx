@@ -442,7 +442,7 @@
 
 				// No error deleting 
 				if (frmData.txtAction.value == "REFRESHFINDAFTERDELETE") {
-					var ctlFindGrid = frmFindForm.ssOleDBGridFindRecords;
+					var ctlFindGrid = frmFindForm.ssOleDBGridFindRecords;   
 					var iAbsRowNo = ctlFindGrid.AddItemRowIndex(ctlFindGrid.Bookmark);
 					if(ctlFindGrid.Rows == 1) {
 						ctlFindGrid.removeAll();

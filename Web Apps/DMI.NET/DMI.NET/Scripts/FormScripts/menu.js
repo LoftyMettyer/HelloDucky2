@@ -2891,77 +2891,77 @@ function menu_editRecord() {
 }
 
 function menu_deleteRecord() {
-//	var sCurrentWorkPage;
-//	var frmDataArea;
-//	var frmRecEditArea;
-//	var frmFindArea;
-//	var lngRecordID;
-//	
-//	sCurrentWorkPage = currentWorkPage();
+	var sCurrentWorkPage;
+	var frmDataArea;
+	var frmRecEditArea;
+	var frmFindArea;
+	var lngRecordID;
+	
+	sCurrentWorkPage = OpenHR.currentWorkPage();
 
-//	if (sCurrentWorkPage == "RECORDEDIT") {
-//		if (ASRIntranetFunctions.MessageBox("Delete the current record, are you sure ?", 36,"OpenHR Intranet") == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
-//			ShowWait("Deleting record. Please wait...");
-//			disableMenu();
-//					
-//			// Get the data.asp to get the save the current record.
-//			frmDataArea = window.parent.frames("dataframe").document.forms("frmGetData");
-//			frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
+	if (sCurrentWorkPage == "RECORDEDIT") {
+		if (OpenHR.messageBox("Delete the current record, are you sure ?", 36) == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
+			//ShowWait("Deleting record. Please wait...");
+			//disableMenu();
+					
+			// Get the data.asp to get the save the current record.
+			frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
+			frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 
-//			frmDataArea.txtAction.value = "DELETE";
-//			frmDataArea.txtCurrentTableID.value = frmRecEditArea.txtCurrentTableID.value;
-//			frmDataArea.txtCurrentScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
-//			frmDataArea.txtCurrentViewID.value = frmRecEditArea.txtCurrentViewID.value;
-//			frmDataArea.txtSelectSQL.value = frmRecEditArea.txtRecEditSelectSQL.value;
-//			frmDataArea.txtFromDef.value = frmRecEditArea.txtRecEditFromDef.value;
-//			frmDataArea.txtFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
-//			frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
-//			frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
-//			frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
-//			frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
-//			frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
-//			frmDataArea.txtDefaultCalcCols.value = frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
-//			frmDataArea.txtInsertUpdateDef.value = frmRecEditArea.ctlRecordEdit.insertUpdateDef();
-//			frmDataArea.txtTimestamp.value = frmRecEditArea.ctlRecordEdit.timestamp;
+			frmDataArea.txtAction.value = "DELETE";
+			frmDataArea.txtCurrentTableID.value = frmRecEditArea.txtCurrentTableID.value;
+			frmDataArea.txtCurrentScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
+			frmDataArea.txtCurrentViewID.value = frmRecEditArea.txtCurrentViewID.value;
+			frmDataArea.txtSelectSQL.value = frmRecEditArea.txtRecEditSelectSQL.value;
+			frmDataArea.txtFromDef.value = frmRecEditArea.txtRecEditFromDef.value;
+			frmDataArea.txtFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
+			frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
+			frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
+			frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
+			frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
+			frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
+			frmDataArea.txtDefaultCalcCols.value = frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
+			frmDataArea.txtInsertUpdateDef.value = frmRecEditArea.ctlRecordEdit.insertUpdateDef();
+			frmDataArea.txtTimestamp.value = frmRecEditArea.ctlRecordEdit.timestamp;
 
-//			data_refreshData();
-//		}
-//	}
-//	else {
-//		if (sCurrentWorkPage == "FIND") {
-//			lngRecordID = window.parent.frames("workframe").selectedRecordID();
-//	
-//			if (lngRecordID > 0) {
-//				if (ASRIntranetFunctions.MessageBox("Delete the current record, are you sure ?", 36,"OpenHR Intranet") == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
-//					// Get the data.asp to get the save the current record.
-//					ShowWait("Deleting record. Please wait...");
-//					disableMenu()	;
-//						
-//					frmDataArea = window.parent.frames("dataframe").document.forms("frmGetData");
-//					frmFindArea = window.parent.frames("workframe").document.forms("frmFindForm");
+			data_refreshData();
+		}
+	}
+	else {
+		if (sCurrentWorkPage == "FIND") {
+			lngRecordID = selectedRecordID();
+	
+			if (lngRecordID > 0) {
+				if (OpenHR.messageBox("Delete the current record, are you sure ?", 36) == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
+					// Get the data.asp to get the save the current record.
+					//ShowWait("Deleting record. Please wait...");
+					//disableMenu()	;
+						
+					frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
+					frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
 
-//					frmDataArea.txtAction.value = "DELETE";
-//					frmDataArea.txtReaction.value = "REFRESHFINDAFTERDELETE";
-//					frmDataArea.txtCurrentTableID.value = frmFindArea.txtCurrentTableID.value;
-//					frmDataArea.txtCurrentScreenID.value = frmFindArea.txtCurrentScreenID.value;
-//					frmDataArea.txtCurrentViewID.value = frmFindArea.txtCurrentViewID.value;
-//					frmDataArea.txtSelectSQL.value = "";
-//					frmDataArea.txtFromDef.value = "";
-//	 				frmDataArea.txtFilterSQL.value = "";
-//	 				frmDataArea.txtFilterDef.value = "";
-//					frmDataArea.txtRealSource.value = frmFindArea.txtRealSource.value;
-//					frmDataArea.txtRecordID.value = lngRecordID;
-//					frmDataArea.txtParentTableID.value = frmFindArea.txtCurrentParentTableID.value;
-//					frmDataArea.txtParentRecordID.value = frmFindArea.txtCurrentParentRecordID.value;
-//					frmDataArea.txtDefaultCalcCols.value = "";
-//					frmDataArea.txtInsertUpdateDef.value = "";
-//					frmDataArea.txtTimestamp.value = 0;
+					frmDataArea.txtAction.value = "DELETE";
+					frmDataArea.txtReaction.value = "REFRESHFINDAFTERDELETE";
+					frmDataArea.txtCurrentTableID.value = frmFindArea.txtCurrentTableID.value;
+					frmDataArea.txtCurrentScreenID.value = frmFindArea.txtCurrentScreenID.value;
+					frmDataArea.txtCurrentViewID.value = frmFindArea.txtCurrentViewID.value;
+					frmDataArea.txtSelectSQL.value = "";
+					frmDataArea.txtFromDef.value = "";
+	 				frmDataArea.txtFilterSQL.value = "";
+	 				frmDataArea.txtFilterDef.value = "";
+					frmDataArea.txtRealSource.value = frmFindArea.txtRealSource.value;
+					frmDataArea.txtRecordID.value = lngRecordID;
+					frmDataArea.txtParentTableID.value = frmFindArea.txtCurrentParentTableID.value;
+					frmDataArea.txtParentRecordID.value = frmFindArea.txtCurrentParentRecordID.value;
+					frmDataArea.txtDefaultCalcCols.value = "";
+					frmDataArea.txtInsertUpdateDef.value = "";
+					frmDataArea.txtTimestamp.value = 0;
 
-//					data_refreshData();
-//				}
-//			}
-//		}
-//	}
+					data_refreshData();
+				}
+			}
+		}
+	}
 }
 
 function menu_loadParentRecord() {

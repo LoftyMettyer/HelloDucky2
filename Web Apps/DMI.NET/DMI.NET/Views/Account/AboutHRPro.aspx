@@ -75,7 +75,7 @@ AboutHRPro
                             <td width="20" rowspan="<%=iNumRows %>">
                             </td>
                             <td valign="top" align="LEFT" nowrap style="padding-right: 10;">
-                                OpenHR Data Manager Intranet :
+                                OpenHR Data Manager Intranet :&nbsp;
                             </td>
                             <td valign="top" align="left" nowrap>
                                 Version
@@ -216,11 +216,12 @@ AboutHRPro
                         </tr>                       
                         <tr>
                             <td colspan="2" valign="top" align="LEFT" nowrap>
-                                <font face='<%=session("Config-logintext-font")%>' color='<%=session("Config-logintext-colour")%>'
-                                    style="font-size: <%=session("Config-logintext-size")%>pt; <%=session("Config-logintext-italics")%> <%=session("Config-logintext-bold")%>">
-                                <a href="http://www.advancedconnect.co.uk/" target="_blank">Visit Advanced Connect for the latest OpenHR news and events</a>    
-                                    
-                                </font>
+                              <a TARGET="AdvancedConnectWebsite" href="http://www.advancedconnect.co.uk/" class="hypertext"
+					                      onmouseover="try{hypertextARef_onMouseOver(this);}catch(e){}" 
+					                      onmouseout="try{hypertextARef_onMouseOut(this);}catch(e){}"
+		                            onfocus="try{hypertextARef_onFocus(this);}catch(e){}"
+		                            onblur="try{hypertextARef_onBlur(this);}catch(e){}">
+                                Visit Advanced Connect for the latest OpenHR news and events</a>                               
                             </td>
                         </tr>                                              
                         <tr>
