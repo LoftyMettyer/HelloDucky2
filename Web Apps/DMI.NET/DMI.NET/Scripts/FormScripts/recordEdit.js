@@ -45,7 +45,7 @@ function applyLocation(formItem, controlItemArray, bordered) {
 }
 
 // -------------------------------------------------- Add the record Edit controls ------------------------------------------------
-function AddHtmlControl(controlItem, txtcontrolID) {
+function AddHtmlControl(controlItem, txtcontrolID, key) {
     var controlItemArray = controlItem.split("\t");
     var iPageNo = 0;
     var controlID = "";
@@ -136,15 +136,16 @@ function AddHtmlControl(controlItem, txtcontrolID) {
     }
 
 
-    //----------------------------------------------------------------------- Now add the controls to the form... ---------------------------------------------------------------
+    //----------------------------------------------------------------------- Now add the control to the form... ---------------------------------------------------------------
     
     iPageNo = Number(controlItemArray[0]);
     controlID = "FI_" + controlItemArray[2] + txtcontrolID; //ColumnID used for controlvalues etc, not unique.
     var columnID = controlItemArray[2];
     var tabIndex = Number(controlItemArray[18]);
 
-    //TODO: move styling to classes    
-
+    //TODO: move styling to classes?    
+    //TODO: move duplicated property setting blocks to separate functions
+    
     var span;
     var top;
     var left;
@@ -152,6 +153,8 @@ function AddHtmlControl(controlItem, txtcontrolID) {
     var width;
     var borderCss;
     var radioTop;
+    
+
     switch (Number(controlItemArray[3])) {
         case 1: //checkbox
             span = document.createElement('span');
@@ -195,6 +198,7 @@ function AddHtmlControl(controlItem, txtcontrolID) {
             if(tabIndex > 0) checkbox.tabindex = tabIndex;
 
             checkbox.setAttribute("data-columnID", columnID);
+            checkbox.setAttribute("data-control-tag", key);
 
             if (!fControlEnabled) span.disabled = true;
 
@@ -212,7 +216,8 @@ function AddHtmlControl(controlItem, txtcontrolID) {
             selector.style.fontSize = controlItemArray[12] + 'pt';
             selector.style.borderWidth = "1px";
             selector.setAttribute("data-columnID", columnID);
-
+            selector.setAttribute("data-control-key", key);
+            
             if (!fControlEnabled) selector.disabled = true;
 
             if (tabIndex > 0) selector.tabindex = tabIndex;
@@ -233,6 +238,7 @@ function AddHtmlControl(controlItem, txtcontrolID) {
             image.style.border = "1px solid gray";
             image.style.padding = "0px";
             image.setAttribute("data-columnID", columnID);
+            image.setAttribute("data-control-key", key);
             
             if (!fControlEnabled) image.disabled = true;           
             
@@ -247,6 +253,8 @@ function AddHtmlControl(controlItem, txtcontrolID) {
             applyLocation(button, controlItemArray, true);
             button.style.padding = "0px";
             button.setAttribute("data-columnID", columnID);
+            button.setAttribute("data-control-key", key);
+            
             if (tabIndex > 0) button.tabindex = tabIndex;
 
             //button.disabled = false;    //always enabled
@@ -302,6 +310,7 @@ function AddHtmlControl(controlItem, txtcontrolID) {
             fieldset.setAttribute("data-datatype", "Option Group");
             fieldset.setAttribute("data-columnID", columnID);
             fieldset.setAttribute("data-alignment", controlItemArray[20]);
+            fieldset.setAttribute("data-control-key", key);
             
             if ((controlItemArray[19] != "0") && (controlItemArray[8].length > 0)) {
                 //has a border and a caption
@@ -332,6 +341,8 @@ function AddHtmlControl(controlItem, txtcontrolID) {
             spinner.style.width = (Number((controlItemArray[7]) / 15)) + "px";
             spinner.style.margin = "0px";
             spinner.setAttribute("data-columnID", columnID);
+            spinner.setAttribute("data-control-key", key);
+            
             if (tabIndex > 0) spinner.tabindex = tabIndex;
             if (!fControlEnabled) spinnerContainer.disabled = true;
 
@@ -372,6 +383,8 @@ function AddHtmlControl(controlItem, txtcontrolID) {
             textbox.style.fontSize = controlItemArray[12] + 'pt';
             textbox.style.padding = "0px";
             textbox.setAttribute("data-columnID", columnID);
+            textbox.setAttribute("data-control-key", key);
+            
             if (tabIndex > 0) textbox.tabindex = tabIndex;
             
             //Add control to relevant tab, create if required.                
@@ -388,6 +401,8 @@ function AddHtmlControl(controlItem, txtcontrolID) {
             span.style.fontSize = controlItemArray[12] + 'pt';
             span.innerText = controlItemArray[8];
 
+            span.setAttribute("data-control-key", key);
+            
             //replaces the SetControlLevel function in recordDMI.ocx.
             span.style.zIndex = 0;
 
@@ -410,6 +425,8 @@ function AddHtmlControl(controlItem, txtcontrolID) {
             legend.style.textDecoration = (Number(controlItemArray[16]) != 0) ? "underline" : "none";
             legend.appendChild(document.createTextNode(controlItemArray[8]));
 
+            fieldset.setAttribute("data-control-key", key);
+            
             addControl(iPageNo, fieldset);
 
             break;
@@ -439,6 +456,8 @@ function AddHtmlControl(controlItem, txtcontrolID) {
             fieldset.id = controlID;
             fieldset.setAttribute("data-columnID", columnID);
             fieldset.setAttribute("data-datatype", "Working Pattern");
+            fieldset.setAttribute("data-control-key", key);
+            
             fieldset.style.position = "absolute";
             fieldset.style.top = top + "px";
             fieldset.style.left = left + "px";
@@ -529,7 +548,51 @@ function AddHtmlControl(controlItem, txtcontrolID) {
             
 
             break;
-        case 2 ^ 13: //ctlLine
+        case 8192: //2 ^ 13: //ctlLine
+            var line = document.createElement('div');            
+            applyLocation(line, controlItemArray, true);
+            if (controlItemArray[20] != 0) {
+                //Vertical line
+                line.style.height = "1px";
+            } else {
+                line.style.width = "1px";
+            }
+
+            line.style.backgroundColor = "gray";
+            line.style.padding = "0px";
+            line.setAttribute("data-control-key", key);
+            //.visible = true
+            //.container = tabnumber    TODO: non-tabbed pages?
+            //.alignment
+            //.border
+            //.top
+            //.left
+            //.height
+            //.width
+            //.caption
+            //tabIndex
+            //.backColor
+            //.oletype
+            //font, fontsize, fontbold, fontitalic, fontstrikethrough, fontunderline
+            //forecolor
+            //enabled
+            //columnid
+            //displaytype
+            //navto
+            //navin
+            //navonsave
+            //radio options and border
+            //spinner min max increment spinnerposition
+            //numeric separator, alignment
+            //date/number max size
+            //format
+            //mask
+            //showliterals
+            //allow space
+            //screenreadonly
+
+            addControl(iPageNo, line);
+
             break;
         case 2 ^ 14: //ctlNavigation
             //TODO: Nav control always .disabled = false.

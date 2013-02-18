@@ -108,17 +108,25 @@
                 //    frmRecordEditForm.txtRecEditCourseCancelDateColumnID.value
                 //);
 
-                if (fOK == true) {
-                    // Get the recEdit control to instantiate the required controls.
-                    var sControlName;
-                    var controlCollection = frmRecordEditForm.elements;
-                    if (controlCollection != null) {
-                        var txtControls = new Array();
-                        var txtControlsCount = 0;
 
+
+                //Overview of upgrade from classic ASP for reference.
+                //We used to load the recordDMI activeX control in 3 stages:
+                //  .addControl (created an array of properties), .addControlValues (added option group and DDL options) and .formatScreen (rendered controls onto the form).
+                //  Now the controls are created and set up using the following javascript functions. 
+                //  The addHtmlControl loop below replaces .addControl AND .formatScreen, combining both functions
+                //  The addHTMLControlValues function replaces the addControlValues method.
+                //  NB The controlItemArray is the array that totally replaced the .addControl function.
+                
+                if (fOK == true) {
+                    // Get the recEdit control to instantiate the required controls.                    
+                    controlCollection = frmRecordEditForm.elements;
+                    if (controlCollection != null) {
+                        txtControls = new Array();
+                        txtControlsCount = 0;
 
                         //two loops here - the controlCollection was growing as controls were added, which didn't help.
-                        for (var i = 0; i < controlCollection.length; i++) {
+                        for (i = 0; i < controlCollection.length; i++) {
                             sControlName = controlCollection.item(i).name;
                             sControlName = sControlName.substr(0, 18);
                             if (sControlName == "txtRecEditControl_") {
@@ -136,7 +144,7 @@
                         for (i = 0; i < txtControls.length; i++) {
                             txtControlValue = $("#" + txtControls[i]).val();
                             var txtControlID = $("#" + txtControls[i]).attr("id");
-                            AddHtmlControl(txtControlValue, txtControlID);
+                            AddHtmlControl(txtControlValue, txtControlID, i);
                         }
 
                     }
@@ -154,7 +162,7 @@
                 if (fOK == true) {
                     // Set the column control values in the recEdit control.
                     var sControlName;
-                    var controlCollection = frmRecordEditForm.elements;
+                    controlCollection = frmRecordEditForm.elements;
                     if (controlCollection != null) {
                         var txtControls = new Array();
                         var txtControlsCount = 0;
@@ -183,9 +191,8 @@
                 }
 
                 if (fOK == true) {
+                    //.formatScreen is redundant. the 'addHtmlControl' js function replaces it and amalgamates with addControl.
                     // Get the recEdit control to format itself.
-                    //No longer necessary
-
                     //recEditCtl.formatscreen();
 
                     //JPD 20021021 - Added picture functionality.
@@ -198,8 +205,7 @@
                                 sControlName = sControlName.substr(0, 18);
                                 if (sControlName == "txtRecEditPicture_") {
                                     sControlName = controlCollection.item(i).name;
-                                    iPictureID = new Number(sControlName.substr(18));
-                                    // recEditCtl.updatePicture(iPictureID, frmRecordEditForm.txtImagePath.value + "/" + controlCollection.item(i).value);
+                                    //var iPictureID = new Number(sControlName.substr(18)); // recEditCtl.updatePicture(iPictureID, frmRecordEditForm.txtImagePath.value + "/" + controlCollection.item(i).value);
                                 }
                             }
                         }
