@@ -161,6 +161,9 @@
 			}
 		}
 
+        //set up ROOT variable for use in external JS files.
+	    window.ROOT = '<%= Url.Content("~/") %>';
+        
 	</script>
 
 </head>

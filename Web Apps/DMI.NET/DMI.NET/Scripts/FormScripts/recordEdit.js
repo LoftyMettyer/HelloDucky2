@@ -231,7 +231,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
             break;
 
-        case 4, 1024: //Image/Photo
+        case 4: //Image
             var image = document.createElement('img');
             image.id = controlID;
             applyLocation(image, controlItemArray, true);
@@ -240,8 +240,12 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
             image.setAttribute("data-columnID", columnID);
             image.setAttribute("data-control-key", key);
             
-            if (!fControlEnabled) image.disabled = true;           
+            if (!fControlEnabled) image.disabled = true;
+
+            var path = window.ROOT + 'Home/ShowImageFromDb?imageID=' + controlItemArray[50];
             
+            image.setAttribute('src', path);            
+
             //Add control to relevant tab, create if required.                
             addControl(iPageNo, image);
 
@@ -430,7 +434,10 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
             addControl(iPageNo, fieldset);
 
             break;
-            //case 1024: //ctlPhoto - see case 4.            
+        case 1024: //ctlPhoto
+            
+
+
         case 2048: //ctlCommand
             break;
         case 4096: //ctlWorking Pattern
@@ -562,7 +569,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
             line.style.padding = "0px";
             line.setAttribute("data-control-key", key);
             //.visible = true
-            //.container = tabnumber    TODO: non-tabbed pages?
+            //.container = tabnumber
             //.alignment
             //.border
             //.top
