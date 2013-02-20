@@ -87,6 +87,11 @@
 			    rowNum: 1000    //TODO set this to blocksize...
 			}); });
 
+			$("#findGridTable").jqGrid('bindKeys', {
+			    "onEnter": function (rowid) {
+			        menu_editRecord();
+			    }
+			});
 
             //resize the grid to the height of its container.
 		    $("#findGridTable").jqGrid('setGridHeight', $("#findGridRow").height());
