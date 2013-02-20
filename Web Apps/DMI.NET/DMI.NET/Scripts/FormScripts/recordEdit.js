@@ -139,7 +139,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
     //----------------------------------------------------------------------- Now add the control to the form... ---------------------------------------------------------------
     
     iPageNo = Number(controlItemArray[0]);
-    controlID = "FI_" + controlItemArray[2] + txtcontrolID; //ColumnID used for controlvalues etc, not unique.
+    controlID = "FI_" + controlItemArray[2] + "_" + controlItemArray[3] + "" + txtcontrolID;
     var columnID = controlItemArray[2];
     var tabIndex = Number(controlItemArray[18]);
 
@@ -154,7 +154,6 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
     var borderCss;
     var radioTop;
     
-
     switch (Number(controlItemArray[3])) {
         case 1: //checkbox
             span = document.createElement('span');
@@ -601,7 +600,79 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
             addControl(iPageNo, line);
 
             break;
-        case 2 ^ 14: //ctlNavigation
+        case Math.pow(2, 14): //ctlNavigation
+
+            var displayType = controlItemArray[17];
+            //var navigateIn = controlItemArray[59];
+            var displayText = (controlItemArray[8].length <= 0 ? "Navigate..." : controlItemArray[8]);
+            //var navigateTo = controlItemArray[58];
+
+            switch (Number(displayType)) {
+            
+                case 0: //Hyperlink
+                    var hyperlink = document.createElement("a");
+                    applyLocation(hyperlink, controlItemArray, false);
+                    hyperlink.style.fontFamily = controlItemArray[11];
+                    hyperlink.style.fontSize = controlItemArray[12] + 'pt';
+                    hyperlink.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
+                    hyperlink.style.textDecoration = "underline"; //(Number(controlItemArray[16]) != 0) ? "underline" : "none";
+                    hyperlink.appendChild(document.createTextNode(displayText));
+                    hyperlink.style.color = controlItemArray[10];
+                    hyperlink.style.backgroundColor = controlItemArray[9];                    
+                    hyperlink.setAttribute("href", controlItemArray[58]);
+                    hyperlink.setAttribute("target", "_blank");
+
+                    hyperlink.id = controlID;
+                    hyperlink.style.padding = "0px";
+                    hyperlink.setAttribute("data-columnID", columnID);
+                    hyperlink.setAttribute("data-control-key", key);
+
+                    if (tabIndex > 0) hyperlink.tabindex = tabIndex;
+
+                    addControl(iPageNo, hyperlink);
+
+                    break;
+                case 1: //Button
+                    button = document.createElement("input");
+                    button.type = "button";
+                    applyLocation(button, controlItemArray, false);
+                    button.style.fontFamily = controlItemArray[11];
+                    button.style.fontSize = controlItemArray[12] + 'pt';
+                    button.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
+                    button.style.textDecoration = (Number(controlItemArray[16]) != 0) ? "underline" : "none";
+                    button.value = displayText;
+                    button.style.color = controlItemArray[10];
+                    button.style.backgroundColor = controlItemArray[9];
+
+                    button.setAttribute("onclick", "window.open('" + controlItemArray[58] + "')");                                        
+                    
+                    button.id = controlID;
+                    button.style.padding = "0px";
+                    button.setAttribute("data-columnID", columnID);
+                    button.setAttribute("data-control-key", key);
+
+                    if (tabIndex > 0) button.tabindex = tabIndex;
+
+                    addControl(iPageNo, button);
+
+                    break;
+                case 2: //Browser
+                    var el = document.createElement("iframe");
+                    applyLocation(el, controlItemArray, true);
+                    el.id = controlID;
+                    el.setAttribute("data-columnID", columnID);
+                    el.setAttribute("data-control-key", key);
+                    if (tabIndex > 0) el.tabindex = tabIndex;
+
+                    addControl(iPageNo, el);
+                    el.setAttribute('src', controlItemArray[58]);
+
+                    break;
+                case 3: //Hidden
+                    break;
+                    
+            }
+
             //TODO: Nav control always .disabled = false.
             //if (tabIndex > 0) checkbox.tabindex = tabIndex;
             break;
@@ -726,8 +797,14 @@ function updateControl(lngColumnID, value) {
    
     //get the column type, then add this value to it/them.
     $("#ctlRecordEdit").find("[data-columnID='" + lngColumnID + "']").each(function () {
-        
+        //TODO: is this control tagged to a column?
 
+        //TODO: is this controls columnID = lngColumnID?
+        
+        //Get the controlType from the ID
+        var arrIDProps = $(this).attr("id").split("_");
+        var controlType = Number(arrIDProps[2]);
+                
         if ($(this).is("textarea")) {
             $(this).val(value);
         }
@@ -736,8 +813,8 @@ function updateControl(lngColumnID, value) {
 
         //TODO if mask
 
-        if ($(this).is("input")) {
-                        
+        //Input type controls...
+        if ($(this).is("input")) {                       
             switch ($(this).attr("type")) {
                 case "text":
                     $(this).val(value);
@@ -748,7 +825,17 @@ function updateControl(lngColumnID, value) {
                 case "checkbox":                    
                     $(this).prop("checked", value == "True" ? true : false);
                     break;
-
+                case "button":
+                    //link button or nav control
+                    if (controlType == Math.pow(2, 14)) {
+                        //Navigation Control
+                        if (value.length <= 0) {
+                            $(this).attr("href", "about:blank");
+                        } else {
+                            $(this).attr("href", value);
+                        }
+                    }
+                    //TODO: link button.
                 default:
                     $(this).val(value);
 
@@ -757,13 +844,14 @@ function updateControl(lngColumnID, value) {
 
         //Working pattern & Option group
         if ($(this).is("fieldset")) {
-            if ($(this).attr("data-datatype") === "Working Pattern")
+            if ($(this).attr("data-datatype") === "Working Pattern")                
             {                
                 //ensure the value is 14 characters long.
                 if (value.length < 14) value = value.concat("              ").substring(0, 14);
+                var tthisId = "#" + $(this).attr("id");
                 //tick relevant boxes.
-                for (var i = 1; i <= 14; i++) {
-                    $("#FI_" + lngColumnID + "_" + i).prop("checked", value.substring(i - 1 , i) != " " ? true : false);
+                for (var i = 1; i <= 14; i++) {                    
+                    $(tthisId + "_" + i).prop("checked", value.substring(i - 1 , i) != " " ? true : false);
                 }
             }
 
@@ -795,7 +883,15 @@ function updateControl(lngColumnID, value) {
 
         //Spinner - done nwith number above..
 
+        //Nav controls
+        if ($(this).is("a")) {
 
+            if (value.length <= 0) {
+                $(this).attr("href", "about:blank");
+            } else {
+                $(this).attr("href", value);
+            }
+        }
 
 
     });
