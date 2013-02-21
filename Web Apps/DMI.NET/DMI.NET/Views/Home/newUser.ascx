@@ -36,6 +36,7 @@
 
 <div <%=session("BodyTag")%>>
   <form action="newUser_Submit" method="post" id="frmNewUserForm" name="frmNewUserForm">
+
     <%
       On Error Resume Next
 
@@ -219,6 +220,6 @@
   <script type="text/javascript">newUser_window_onload();</script>
 
   <form action="newUser_Submit" method="post" id="frmGoto" name="frmGoto">
-    : <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
+    <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
   </form>
 </div>
