@@ -382,6 +382,86 @@ Namespace Controllers
 
 #End Region
 
+    <HttpPost()>
+    Function newUser_Submit()
+      On Error Resume Next
+
+      Dim fSubmitNewUser = (Len(Request.Form("txtGotoPage")) = 0)
+
+      If fSubmitNewUser Then
+        ' Read the Password details from the Password form.
+        Dim sNewUserLogin = Request.Form("selNewUser")
+
+        ' Create an OpenHR user associated with the
+        ' given SQL Server login.
+        Dim cmdNewUser = Server.CreateObject("ADODB.Command")
+        cmdNewUser.CommandText = "sp_ASRIntNewUser"
+        cmdNewUser.CommandType = 4 ' Stored Procedure
+        cmdNewUser.ActiveConnection = Session("databaseConnection")
+
+        Dim prmNewUser = cmdNewUser.CreateParameter("newUser", 200, 1, 255)
+        cmdNewUser.Parameters.Append(prmNewUser)
+        prmNewUser.value = sNewUserLogin
+
+        Err.Clear()
+        cmdNewUser.Execute()
+
+        ' Release the ADO command object.
+        cmdNewUser = Nothing
+
+        If Err.Number <> 0 Then
+          Session("ErrorTitle") = "New User Page"
+          Session("ErrorText") = "You could not add the user because of the following error:<p>" & formatError(Err.Description)
+          Response.Redirect("error.asp")
+        Else
+          Session("MessageTitle") = "New User Page"
+          Session("MessageText") = "User added successfully."
+          Response.Redirect("message.asp")
+        End If
+      Else
+        ' Read the information from the calling form.
+        ' Save the required table/view and screen IDs in session variables.
+        Session("action") = Request.Form("txtAction")
+        Session("tableID") = Request.Form("txtGotoTableID")
+        Session("viewID") = Request.Form("txtGotoViewID")
+        Session("screenID") = Request.Form("txtGotoScreenID")
+        Session("orderID") = Request.Form("txtGotoOrderID")
+        Session("recordID") = Request.Form("txtGotoRecordID")
+        Session("parentTableID") = Request.Form("txtGotoParentTableID")
+        Session("parentRecordID") = Request.Form("txtGotoParentRecordID")
+        Session("realSource") = Request.Form("txtGotoRealSource")
+        Session("filterDef") = Request.Form("txtGotoFilterDef")
+        Session("filterSQL") = Request.Form("txtGotoFilterSQL")
+        Session("lineage") = Request.Form("txtGotoLineage")
+        Session("defseltype") = Request.Form("txtGotoDefSelType")
+        Session("utilID") = Request.Form("txtGotoUtilID")
+        Session("locateValue") = Request.Form("txtGotoLocateValue")
+        Session("firstRecPos") = Request.Form("txtGotoFirstRecPos")
+        Session("currentRecCount") = Request.Form("txtGotoCurrentRecCount")
+        Session("fromMenu") = Request.Form("txtGotoFromMenu")
+
+        ' Go to the requested page.
+        ' Response.Redirect(Request.Form("txtGotoPage"))
+        Return RedirectToAction(Request.Form("txtGotoPage").Replace(".asp", ""))
+      End If
+    End Function
+
+    Function formatError(psErrMsg)
+      Dim iStart
+      Dim iFound
+
+      iFound = 0
+      Do
+        iStart = iFound
+        iFound = InStr(iStart + 1, psErrMsg, "]")
+      Loop While iFound > 0
+
+      If (iStart > 0) And (iStart < Len(Trim(psErrMsg))) Then
+        formatError = Trim(Mid(psErrMsg, iStart + 1))
+      Else
+        formatError = psErrMsg
+      End If
+    End Function
 
 
 		<HttpPost()>
@@ -2180,11 +2260,11 @@ Namespace Controllers
 		<HttpPost()>
 		Function util_def_exprcomponent_submit(value As FormCollection)
 
-			Dim sErrorMsg As String
+      Dim sErrorMsg As String = ""
 			Dim sNextPage As String
 			Dim sAction As String
 
-			On Error Resume Next
+      On Error Resume Next
 
 			' Read the information from the calling form.
 			sNextPage = Request.Form("txtGotoOptionPage")
@@ -2223,7 +2303,8 @@ Namespace Controllers
 			Session("optionDefSelRecordID") = Request.Form("txtGotoOptionDefSelRecordID")
 
 			If sAction = "CANCEL" Then
-				' Go to the requested page.
+        ' Go to the requested page.
+
 				Session("errorMessage") = sErrorMsg
 			End If
 
