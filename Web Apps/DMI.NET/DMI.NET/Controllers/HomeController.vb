@@ -383,7 +383,7 @@ Namespace Controllers
 #End Region
 
     <HttpPost()>
-    Function newUser_Submit()
+    Function newUser_Submit(value As FormCollection) As JsonResult
       On Error Resume Next
 
       Dim fSubmitNewUser = (Len(Request.Form("txtGotoPage")) = 0)
@@ -412,11 +412,15 @@ Namespace Controllers
         If Err.Number <> 0 Then
           Session("ErrorTitle") = "New User Page"
           Session("ErrorText") = "You could not add the user because of the following error:<p>" & formatError(Err.Description)
-          Response.Redirect("error.asp")
+          Dim data1 = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
+          Return Json(data1, JsonRequestBehavior.AllowGet)
+          'Response.Redirect("error")
         Else
-          Session("MessageTitle") = "New User Page"
-          Session("MessageText") = "User added successfully."
-          Response.Redirect("message.asp")
+          Session("ErrorTitle") = "New User Page"
+          Session("ErrorText") = "User added successfully."
+          Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
+          Return Json(data, JsonRequestBehavior.AllowGet)
+          'Response.Redirect("message")
         End If
       Else
         ' Read the information from the calling form.
@@ -442,7 +446,7 @@ Namespace Controllers
 
         ' Go to the requested page.
         ' Response.Redirect(Request.Form("txtGotoPage"))
-        Return RedirectToAction(Request.Form("txtGotoPage").Replace(".asp", ""))
+        Session("txtGotoPage") = Request.Form("txtGotoPage")
       End If
     End Function
 
@@ -473,16 +477,6 @@ Namespace Controllers
 			Dim fSubmitPasswordChange = ""
 			Dim sErrorText = ""
 
-			' Only process the form submission if the referring page was the newUser page.
-			' If it wasn't then redirect to the login page.
-			'sReferringPage = Request.ServerVariables("HTTP_REFERER")
-			'If InStrRev(sReferringPage, "/") > 0 Then
-			'	sReferringPage = Mid(sReferringPage, InStrRev(sReferringPage, "/") + 1)
-			'End If
-
-			'If UCase(sReferringPage) <> UCase("passwordChange") Then
-			'	Return RedirectToAction("login")
-			'Else
 			If True Then
 				fSubmitPasswordChange = (Len(Request.Form("txtGotoPage")) = 0)
 
@@ -1721,6 +1715,10 @@ Namespace Controllers
 		Function PasswordChange() As ActionResult
 			Return View()
 		End Function
+
+    Function NewUser() As ActionResult
+      Return View()
+    End Function
 
 		'Function ForcePasswordChange() As ActionResult
 		'    Return View()
