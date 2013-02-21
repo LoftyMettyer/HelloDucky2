@@ -3,10 +3,12 @@
 
 <script type="text/javascript">
   function newUser_window_onload() {
-    window.parent.document.all.item("workframeset").cols = "*, 0";
-
+    //window.parent.document.all.item("workframeset").cols = "*, 0";
+    $("#workframe").attr("data-framesource", "NEWUSER");
+    
     // Get menu to refresh the menu.
-    window.parent.frames("menuframe").refreshMenu();
+    //window.parent.frames("menuframe").refreshMenu();
+    menu_refreshMenu();
 
     //Set focus on the dropdown list of users if it exists.
     var ctlNewUsers = frmNewUserForm.selNewUser;
@@ -19,15 +21,16 @@
 <script type="text/javascript">
   /* Submit the new user login. */
   function SubmitNewUserDetails() {
-    frmNewUserForm.submit();
+    //frmNewUserForm.submit();
+    OpenHR.submitForm(frmNewUserForm);
   }
   /* Return to the default page. */
   function cancelClick() {
-    window.location.href = "default";
+    window.location.href = "main";  // "default.asp";
   }
   /* Go to the default page. */
   function okClick() {
-    window.location.href = "default";
+    window.location.href = "main";  // "default.asp";
   }
 </script>
 
