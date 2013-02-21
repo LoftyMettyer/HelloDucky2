@@ -107,7 +107,7 @@
 	    		async: false,
 	    		success: function (html) {	    		    
 	    		    try {
-	    		        if (eval(html.ErrorMessage)) {
+	    		        if ((html.ErrorMessage != null) && (html.ErrorMessage != undefined) && (html.ErrorMessage != "undefined")) {
 	    		            if (html.ErrorMessage.length > 0) {
 	    		                //A handled error was returned. Display error message, then redirect accordingly...
 	    		                handleAjaxError(html);
