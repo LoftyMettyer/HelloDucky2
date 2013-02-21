@@ -327,57 +327,7 @@
 		}
 	
 	</script>
-	<script type="text/javascript">		
-		<!--		
-		// Double-click in the grid. Edit the selected record.
-		//OpenHR.addActiveXHandler("ssOleDBGridFindRecords", "dblClick", ssOleDBGridFindRecords_dblClick);
 
-		//function ssOleDBGridFindRecords_dblClick() {
-		//	menu_editRecord();
-		//}
-	
-	</script>
-	<script type="text/javascript">
-<!--
-		//OpenHR.addActiveXHandler("ssOleDBGridFindRecords", "KeyPress", ssOleDBGridFindRecords_KeyPress);
-
-		//function ssOleDBGridFindRecords_KeyPress(iKeyAscii) {
-		//	if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {
-		//		var frmFindForm = document.getElementById("frmFindForm");
-		//		var dtTicker = new Date();
-		//		var iThisTick = new Number(dtTicker.getTime());
-		//		var iLastTick;
-				
-		//		if (frmFindForm.txtLastKeyFind.value.length > 0) {
-		//			iLastTick = new Number(frmFindForm.txtTicker.value);
-		//		} else {
-		//			iLastTick = new Number("0");
-		//		}
-		//		var sFind;
-		//		if (iThisTick > (iLastTick + 1500)) {
-		//			sFind = String.fromCharCode(iKeyAscii);
-		//		} else {
-		//			sFind = frmFindForm.txtLastKeyFind.value + String.fromCharCode(iKeyAscii);
-		//		}
-
-		//		frmFindForm.txtTicker.value = iThisTick;
-		//		frmFindForm.txtLastKeyFind.value = sFind;
-
-		//		locateRecord(sFind, false);
-		//	}
-		//}
-	
-	</script>
-	<script type="text/javascript">
-
-		//OpenHR.addActiveXHandler("ssOleDBGridFindRecords", "click", ssOleDBGridFindRecords_Click);
-
-		//function ssOleDBGridFindRecords_Click() {
-		//	// Click in the grid. Refresh the menu.		
-		//	menu_refreshMenu();
-		//}
-
-	</script>
 <div <%=session("BodyTag")%>>
 	<form action="" class="absolutefull" method="POST" id="frmFindForm" name="frmFindForm">
 	    <div class="absolutefull">
