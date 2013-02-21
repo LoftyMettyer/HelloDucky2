@@ -92,27 +92,31 @@
 	    getForm = function (frameId, formId) {
 	    	return document.forms[formId];
 	    },
-	    submitForm = function (form, targetWin) {	       
+	    submitForm = function (form, targetWin) {
+	        
 	    	var $form = $(form),
 	    	    $frame = $form.closest("div[data-framesource]").first(),
 	    	    url = $form.attr("action"),
 	    	    target = $form.attr("target"),
 	    	    data = $form.serialize();	        
 
-
 	    	$.ajax({
 	    		url: url,
 	    		type: "POST",
 	    		data: data,
 	    		async: false,
-	    		success: function (html) {
+	    		success: function (html) {	    		    
 	    		    try {
-	    		        if (html.ErrorMessage.length > 0) {
-	    		            //A handled error was returned. Display error message, then redirect accordingly...
-	    		            handleAjaxError(html);
-	    		            return false;
+	    		        if (eval(html.ErrorMessage)) {
+	    		            if (html.ErrorMessage.length > 0) {
+	    		                //A handled error was returned. Display error message, then redirect accordingly...
+	    		                handleAjaxError(html);
+	    		                return false;
+	    		            }
 	    		        }
-	    		    } catch (e) { }
+	    		    } catch (e) {
+	    		        alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + e.toString() + "'.");
+	    		    }
 	    		    
 	    		    //clear the frame...
 	    		    $frame.html('');
@@ -120,9 +124,10 @@
 	    		    //OK
 
 	    		    $("#reportframe").hide();
-	    		    $("#workframeset").show();
+	    		    $("#workframeset").show();	    		    
+	    		    
 	    		    if (targetWin != null)
-	    		 {
+	    		    {
 	    		        $(targetWin.document.body).html(html);	    		        
 	    		    } else {	    		        
 	    		        $frame.html(html);

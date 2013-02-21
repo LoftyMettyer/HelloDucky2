@@ -205,7 +205,7 @@ function menu_abMainMenu_DataReady() {
 	if (OpenHR.currentWorkPage() == "DEFAULT") {
 
 		//window.parent.frames("workframe").hideMessage();
-		window.hideMessage();
+		//window.hideMessage();
 		
 		var iReset = 0;
 
@@ -245,9 +245,11 @@ function menu_abMainMenu_DataReady() {
 
 		//frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
 		var frmWorkArea = document.getElementById("frmGoto");
-		frmWorkArea.txtReset.value = iReset;
-
-		//TODO 
+	    try {
+	        frmWorkArea.txtReset.value = iReset;
+	    } catch(e) {
+	    }
+	    //TODO 
 		//autoLoadPage("workflowPendingSteps", true);
 	}
 }
@@ -2014,7 +2016,7 @@ function menu_loadFindPageFirst(psToolName) {
 	var frmRecEdit;
 	var frmData;
 	var iIndex;
-
+    
 	//ShowWait("Loading find records. Please wait...");
 	//disableMenu();
 
