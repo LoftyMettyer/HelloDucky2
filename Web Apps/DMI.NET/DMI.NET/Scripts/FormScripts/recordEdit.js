@@ -408,7 +408,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
             span.style.color = "Black";
             span.style.fontFamily = controlItemArray[11];
             span.style.fontSize = controlItemArray[12] + 'pt';
-            span.innerText = controlItemArray[8];
+            span.textContent = controlItemArray[8];
 
             span.setAttribute("data-control-key", key);
             
@@ -483,25 +483,25 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
                 var dayLabel = fieldset.appendChild(document.createElement("span"));
                 switch (i) {
                     case 0:
-                        dayLabel.innerText = "S";
+                        dayLabel.textContent  = "S";
                         break;
                     case 1:
-                        dayLabel.innerText = "M";
+                        dayLabel.textContent  = "M";
                         break;
                     case 2:
-                        dayLabel.innerText = "T";
+                        dayLabel.textContent  = "T";
                         break;
                     case 3:
-                        dayLabel.innerText = "W";
+                        dayLabel.textContent  = "W";
                         break;
                     case 4:
-                        dayLabel.innerText = "T";
+                        dayLabel.textContent  = "T";
                         break;
                     case 5:
-                        dayLabel.innerText = "F";
+                        dayLabel.textContent  = "F";
                         break;
                     case 6:
-                        dayLabel.innerText = "S";
+                        dayLabel.textContent  = "S";
                         break;
                 }
                 
@@ -536,7 +536,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
             //AM/PM Labels
             label = document.createElement("span");
-            label.innerText = "AM";
+            label.textContent  = "AM";
             label.style.fontFamily = controlItemArray[11];
             label.style.fontSize = controlItemArray[12] + 'pt';
             label.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
@@ -546,7 +546,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
             addControl(iPageNo, label);
 
             label = document.createElement("span");
-            label.innerText = "PM";
+            label.textContent  = "PM";
             label.style.fontFamily = controlItemArray[11];
             label.style.fontSize = controlItemArray[12] + 'pt';
             label.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
