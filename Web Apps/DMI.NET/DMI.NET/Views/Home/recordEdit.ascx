@@ -417,24 +417,7 @@
     }
 
 
-    function setRecordID(plngRecordID) {
-        frmRecordEditForm.txtCurrentRecordID.value = plngRecordID;
-        frmRecordEditForm.ctlRecordEdit.recordID = plngRecordID;
-    }
-
-    function setCopiedRecordID(plngRecordID) {
-        frmRecordEditForm.ctlRecordEdit.CopiedRecordID = plngRecordID;
-    }
-
-    function setParentTableID(plngParentTableID) {
-        frmRecordEditForm.txtCurrentParentTableID.value = plngParentTableID;
-        frmRecordEditForm.ctlRecordEdit.ParentTableID = plngParentTableID;
-    }
-
-    function setParentRecordID(plngParentRecordID) {
-        frmRecordEditForm.txtCurrentParentRecordID.value = plngParentRecordID;
-        frmRecordEditForm.ctlRecordEdit.ParentRecordID = plngParentRecordID;
-    }
+ 
 
 </script>
 

@@ -31,26 +31,8 @@
 	    icons: false
 	});
 
-	//Add treeview functionality to all divs in the accordion
-	$(".accordion div").jstree({
-		"themes": {
-			"theme": "apple",
-			"url": "../Scripts/jsTree/theme/apple/style.css",
-			"dots": false,
-			"icons": true
-		},
-		types: {
-			"types": {
-				"disabled": {		
-					"select_node": false,
-					"open_node": false,
-					"close_node": false,
-					"create_node": false,
-					"delete_node": false
-				}
-			}
-		}
-	});
+    //apply tree control
+    applyJSTree();
 
 	if ($("#txtErrorDescription").val().length > 0) {
 		//ASRIntranetFunctions.MessageBox(window.txtErrorDescription.value, 0, "OpenHR Intranet"); // 0 = vbOKonly
@@ -783,6 +765,7 @@ function menu_CloseWait() {
 }
 
 function menu_refreshMenu() {
+    
 	// Refresh the menu.
 	var lngRecordID;
 	var sCaption;
@@ -914,7 +897,7 @@ function menu_refreshMenu() {
 
 	if (sCurrentWorkPage == "RECORDEDIT") {
 		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
-		var frmData = OpenHR.getForm("datafframe", "frmData");
+		var frmData = OpenHR.getForm("dataframe", "frmData");
 
 		//abMainMenu.Bands("mnubandMainToolBar").visible = true;
 		menu_setVisibleMenuItem("mnutoolRecord", true);
@@ -1037,9 +1020,10 @@ function menu_refreshMenu() {
 		menu_SetmnutoolRecordPositionCaption(sCaption);
 
 		menu_setVisibleMenuItem("mnutoolHistory", true);
+		$("#mnutoolHistory").click();
 
         //dynamically created function, found in menu.ascx...
-		//TODO: menu_refreshHistoryScreensMenu(frmRecEdit.txtCurrentScreenID.value);
+		menu_refreshHistoryScreensMenu(frmRecEdit.txtCurrentScreenID.value);
 
 		// Disable the history menu for new records.
 		if (frmRecEdit.txtCurrentRecordID.value <= 0) {
@@ -1189,6 +1173,9 @@ function menu_refreshMenu() {
 			menu_SetmnutoolRecordPositionCaption(sCaption);
 
 			menu_setVisibleMenuItem("mnutoolHistory", false);
+		    $("#mnutoolDatabase").click();
+		    
+            
 
 			fBookCourseVisible = ((frmFind.txtCurrentTableID.value == frmMenuInfo.txtTB_WaitListTableID.value) &&
 					(frmMenuInfo.txtUserType.value == 0));
@@ -4231,8 +4218,16 @@ function menu_loadFind(target) {
 
 
 function menu_insertMenuItem(parentULID, NewLICaption, NewLIID) {
-	var insertRef = "#" + parentULID;
-	$(insertRef).prepend("<li id='" + NewLIID + "'><a href='#'>" + NewLICaption + "</a></li>");
+    var insertRef = "#" + parentULID;
+    if ($(insertRef).length > 0) {
+        $(insertRef).prepend("<li id='" + NewLIID + "'><a href='#'>" + NewLICaption + "</a></li>");
+    } else {
+        
+        var insertRefULParent = insertRef.replace("#mnuband", "mnutool");
+        
+        $("#contextmenu div[aria-labelledby='" + insertRefULParent + "']>ul").attr("id", insertRef.replace("#", ""));
+        
+    }
 }
 
 function menu_insertSubMenuItem(parentULID, NewLICaption, NewLIID, NewULID) {
@@ -4283,7 +4278,8 @@ function menu_toolbarEnableItem(itemId, fNewSetting) {
 
 
 function menu_setVisibleMenuItem(itemId, fNewSetting) {
-	var sNewValue = "";
+    
+    var sNewValue = "";
 
 	if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
 		$("#" + itemId + " a:first").show();
@@ -4321,4 +4317,32 @@ function menu_setVisibletoolbarGroup(itemId, fNewSetting) {
 function menu_GetItemValue(itemID) {
     //return window.parent.frames("menuframe").document.all.item("txtSysPerm_EVENTLOG_DELETE").value;
     return $("#menuframe #" + itemID).val();
+}
+
+
+function applyJSTree(element) {
+    //Add treeview functionality to all divs in the accordion
+    if (element == undefined) element = "";
+    
+
+
+    $(".accordion div" + element).jstree({
+        "themes": {
+            "theme": "apple",
+            "url": "../Scripts/jsTree/theme/apple/style.css",
+            "dots": false,
+            "icons": true
+        },
+        types: {
+            "types": {
+                "disabled": {
+                    "select_node": false,
+                    "open_node": false,
+                    "close_node": false,
+                    "create_node": false,
+                    "delete_node": false
+                }
+            }
+        }
+    });
 }

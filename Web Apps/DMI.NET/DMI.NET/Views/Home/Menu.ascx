@@ -107,7 +107,7 @@
 			Response.Write("  //abMainMenu.Bands(""mnubandDatabase"").Tools.insert(0, objFileTool);" & vbCrLf & vbCrLf)
 
 			' new method to insert a new submenu item.
-			Response.Write("  menu_insertSubMenuItem('mnubandDatabase', '" & cleanStringForJavaScript(Replace(avPrimaryMenuInfo(2, iLoop), "_", " ")) & "', 'PS_" & cleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & "', 'mnusubband_" & cleanStringForJavaScript(avPrimaryMenuInfo(2, iLoop)) & "');" & vbCrLf & vbCrLf)
+            Response.Write("  menu_insertSubMenuItem('mnubandDatabase', '" & CleanStringForJavaScript(Replace(avPrimaryMenuInfo(2, iLoop), "_", " ")) & "', 'PS_" & CleanStringForJavaScript(avPrimaryMenuInfo(1, iLoop)) & "', 'mnusubband_" & CleanStringForJavaScript(avPrimaryMenuInfo(2, iLoop)) & "');" & vbCrLf & vbCrLf)
 			
 			' Add the submenu.
 			avSubMenuInfo = objMenu.GetPrimaryTableSubMenu(CLng(avPrimaryMenuInfo(1, iLoop)))
@@ -265,7 +265,7 @@
     Response.Write("  //}" & vbCrLf & vbCrLf)
 
     Response.Write("  //abMainMenu.Bands(""mnubandHistory"").Tools.RemoveAll();" & vbCrLf & vbCrLf)
-
+    Response.Write("  $('#mnubandHistory').empty();" & vbCrLf & vbCrLf)
     Dim iLastParentScreenID = 0
     Dim iDoneCount = 0
     Dim iLastChildTableID = 0
@@ -288,9 +288,9 @@
         End If
 
         ' Create the history screen menu item (without placing it in the menu).
-        Response.Write("    //objFileTool = abMainMenu.Tools.add(0, ""HT_" & CleanStringForJavaScript(avHistoryMenuInfo(2, iLoop)) & "_0_" & CleanStringForJavaScript(avHistoryMenuInfo(4, iLoop)) & """);" & vbCrLf)
-        Response.Write("    //objFileTool.Caption = """ & CleanStringForJavaScript(Replace(avHistoryMenuInfo(5, iLoop), "_", " ")) & "..."";" & vbCrLf)
-        Response.Write("    //objFileTool.Style = 0;" & vbCrLf)
+        Response.Write("    objFileToolID = ""HT_" & CleanStringForJavaScript(avHistoryMenuInfo(2, iLoop)) & "_0_" & CleanStringForJavaScript(avHistoryMenuInfo(4, iLoop)) & """;" & vbCrLf)
+        Response.Write("    objFileToolCaption = """ & CleanStringForJavaScript(Replace(avHistoryMenuInfo(5, iLoop), "_", " ")) & "..."";" & vbCrLf)
+        Response.Write("    objFileToolStyle = 0;" & vbCrLf)
         If iLoop < UBound(avHistoryMenuInfo, 2) Then
             If avHistoryMenuInfo(1, iLoop) = avHistoryMenuInfo(1, iLoop + 1) Then
                 iNextChildTableID = avHistoryMenuInfo(2, iLoop + 1)
@@ -305,64 +305,69 @@
             ' The current screen is for the same table as the last screen added to the menu
             ' which will have created the sub-menu, so just add it to the sub-menu.
             sBand = "mnuhistorysubband_" & CleanStringForJavaScript(avHistoryMenuInfo(3, iLoop))
-            Response.Write("    iIndex = -1; //a" & vbCrLf)
-            Response.Write("    for (iLoop2=0; iLoop2 < abMainMenu.Bands(""" & sBand & """).Tools.Count(); iLoop2++) {" & vbCrLf)
-            Response.Write("			sCaption1 = abMainMenu.Bands(""" & sBand & """).Tools(iLoop2).Caption.toLowerCase();" & vbCrLf)
-            Response.Write("			sCaption1 = sCaption1.substr(0, sCaption1.length - 3);" & vbCrLf)
-            Response.Write("			sCaption2 = objFileTool.Caption.toLowerCase();" & vbCrLf)
-            Response.Write("			sCaption2 = sCaption2.substr(0, sCaption2.length - 3);" & vbCrLf)
-            Response.Write("      if (sCaption1 > sCaption2) {" & vbCrLf)
-            Response.Write("        iIndex = iLoop2;" & vbCrLf)
-            Response.Write("        break;" & vbCrLf)
-            Response.Write("      }" & vbCrLf)
-            Response.Write("    }" & vbCrLf)
-            Response.Write("    abMainMenu.Bands(""" & sBand & """).Tools.Insert(iIndex, objFileTool);" & vbCrLf & vbCrLf)
+            Response.Write("    //iIndex = -1; //a" & vbCrLf)
+            Response.Write("    //for (iLoop2=0; iLoop2 < abMainMenu.Bands(""" & sBand & """).Tools.Count(); iLoop2++) {" & vbCrLf)
+            Response.Write("	//		sCaption1 = abMainMenu.Bands(""" & sBand & """).Tools(iLoop2).Caption.toLowerCase();" & vbCrLf)
+            Response.Write("	//		sCaption1 = sCaption1.substr(0, sCaption1.length - 3);" & vbCrLf)
+            Response.Write("	//		sCaption2 = objFileTool.Caption.toLowerCase();" & vbCrLf)
+            Response.Write("	//		sCaption2 = sCaption2.substr(0, sCaption2.length - 3);" & vbCrLf)
+            Response.Write("    //  if (sCaption1 > sCaption2) {" & vbCrLf)
+            Response.Write("    //    iIndex = iLoop2;" & vbCrLf)
+            Response.Write("    //    break;" & vbCrLf)
+            Response.Write("    //  }" & vbCrLf)
+            Response.Write("    //}" & vbCrLf)
+            Response.Write("    //abMainMenu.Bands(""" & sBand & """).Tools.Insert(iIndex, objFileTool);" & vbCrLf)
+            Response.Write("    menu_insertMenuItem(""" & sBand & """, objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf & vbCrLf)
+            
         Else
             If (iNextChildTableID = avHistoryMenuInfo(2, iLoop)) Then
                 ' The current screen is for the same table as the next screen to be added
                 ' but is for a different table to the last screen added to the menu
                 ' so create a sub-menu, and add this screen to the sub-menu.
                 sBand = "mnuhistorysubband_" & CleanStringForJavaScript(avHistoryMenuInfo(3, iLoop))
-                Response.Write("    abMainMenu.Bands.add(""" & sBand & """);" & vbCrLf)
-                Response.Write("    abMainMenu.Bands(""" & sBand & """).type = 2;" & vbCrLf)
-                Response.Write("    abMainMenu.Bands(""" & sBand & """).Tools.removeall();" & vbCrLf)
+                Response.Write("    //abMainMenu.Bands.add(""" & sBand & """);" & vbCrLf)
+                Response.Write("    //abMainMenu.Bands(""" & sBand & """).type = 2;" & vbCrLf)
+                Response.Write("    //abMainMenu.Bands(""" & sBand & """).Tools.removeall();" & vbCrLf)
           
-                Response.Write("    objBandTool = abMainMenu.Tools.Add(0, """ & sBand & """);" & vbCrLf)
-                Response.Write("    objBandTool.Caption = """ & CleanStringForJavaScript(Replace(avHistoryMenuInfo(3, iLoop), "_", " ")) & """;" & vbCrLf)
-                Response.Write("    objBandTool.Style = 0;" & vbCrLf)
-                Response.Write("    objBandTool.SubBand = """ & sBand & """;" & vbCrLf)
+                Response.Write("    //objBandTool = abMainMenu.Tools.Add(0, """ & sBand & """);" & vbCrLf)
+                Response.Write("    objBandToolCaption = """ & CleanStringForJavaScript(Replace(avHistoryMenuInfo(3, iLoop), "_", " ")) & """;" & vbCrLf)
+                Response.Write("    //objBandTool.Style = 0;" & vbCrLf)
+                Response.Write("    objBandToolSubBand = """ & sBand & """;" & vbCrLf)
           
-                Response.Write("    iIndex = -1;  //b" & vbCrLf)
-                Response.Write("    for (iLoop2=0; iLoop2 < abMainMenu.Bands(""mnubandHistory"").Tools.Count(); iLoop2++) {" & vbCrLf)
-                Response.Write("			sCaption1 = abMainMenu.Bands(""mnubandHistory"").Tools(iLoop2).Caption.toLowerCase();" & vbCrLf)
-                Response.Write("      if (abMainMenu.Bands(""mnubandHistory"").Tools(iLoop2).SubBand == """") {" & vbCrLf)
-                Response.Write("				sCaption1 = sCaption1.substr(0, sCaption1.length - 3);" & vbCrLf)
-                Response.Write("      }" & vbCrLf)
-                Response.Write("			sCaption2 = objBandTool.Caption.toLowerCase();" & vbCrLf)
-                Response.Write("      if (sCaption1 > sCaption2) {" & vbCrLf)
-                Response.Write("        iIndex = iLoop2;" & vbCrLf)
-                Response.Write("        break;" & vbCrLf)
-                Response.Write("      }" & vbCrLf)
-                Response.Write("    }" & vbCrLf)
-                Response.Write("    abMainMenu.Bands(""mnubandHistory"").Tools.Insert(iIndex, objBandTool);" & vbCrLf)
-                Response.Write("    abMainMenu.Bands(""" & sBand & """).Tools.Insert(0, objFileTool);" & vbCrLf & vbCrLf)
+                Response.Write("   // iIndex = -1;  //b" & vbCrLf)
+                Response.Write("   // for (iLoop2=0; iLoop2 < abMainMenu.Bands(""mnubandHistory"").Tools.Count(); iLoop2++) {" & vbCrLf)
+                Response.Write("	//		sCaption1 = abMainMenu.Bands(""mnubandHistory"").Tools(iLoop2).Caption.toLowerCase();" & vbCrLf)
+                Response.Write("    //  if (abMainMenu.Bands(""mnubandHistory"").Tools(iLoop2).SubBand == """") {" & vbCrLf)
+                Response.Write("	//			sCaption1 = sCaption1.substr(0, sCaption1.length - 3);" & vbCrLf)
+                Response.Write("    //  }" & vbCrLf)
+                Response.Write("	//		sCaption2 = objBandTool.Caption.toLowerCase();" & vbCrLf)
+                Response.Write("    //  if (sCaption1 > sCaption2) {" & vbCrLf)
+                Response.Write("     //   iIndex = iLoop2;" & vbCrLf)
+                Response.Write("    //    break;" & vbCrLf)
+                Response.Write("    //  }" & vbCrLf)
+                Response.Write("    //}" & vbCrLf)
+                Response.Write("    //abMainMenu.Bands(""mnubandHistory"").Tools.Insert(iIndex, objBandTool);" & vbCrLf)
+                Response.Write("    //abMainMenu.Bands(""" & sBand & """).Tools.Insert(0, objFileTool);" & vbCrLf)
+                Response.Write("    menu_insertSubMenuItem(""mnubandHistory"", objBandToolCaption.replace(""&&"", ""&""), ""0"", objBandToolSubBand);" & vbCrLf)
+                Response.Write("    menu_insertMenuItem(objBandToolSubBand, objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf & vbCrLf)
             Else
                 ' The current screen is for a different table/view to the next and last screens
                 ' added to the menu so just add this screen to the main menu as normal.
-                Response.Write("    iIndex = -1;  //c" & vbCrLf)
-                Response.Write("    for (iLoop2=0; iLoop2 < abMainMenu.Bands(""mnubandHistory"").Tools.Count(); iLoop2++) {" & vbCrLf)
-                Response.Write("			sCaption1 = abMainMenu.Bands(""mnubandHistory"").Tools(iLoop2).Caption.toLowerCase();" & vbCrLf)
-                Response.Write("      if (abMainMenu.Bands(""mnubandHistory"").Tools(iLoop2).SubBand == """") {" & vbCrLf)
-                Response.Write("				sCaption1 = sCaption1.substr(0, sCaption1.length - 3);" & vbCrLf)
-                Response.Write("      }" & vbCrLf)
-                Response.Write("			sCaption2 = objFileTool.Caption.toLowerCase();" & vbCrLf)
-                Response.Write("			sCaption2 = sCaption2.substr(0, sCaption2.length - 3);" & vbCrLf)
-                Response.Write("      if (sCaption1 > sCaption2) {" & vbCrLf)
-                Response.Write("        iIndex = iLoop2;" & vbCrLf)
-                Response.Write("        break;" & vbCrLf)
-                Response.Write("      }" & vbCrLf)
-                Response.Write("    }" & vbCrLf)
-                Response.Write("    abMainMenu.Bands(""mnubandHistory"").Tools.Insert(iIndex, objFileTool);" & vbCrLf & vbCrLf)
+                Response.Write("    //iIndex = -1;  //c" & vbCrLf)
+                Response.Write("    //for (iLoop2=0; iLoop2 < abMainMenu.Bands(""mnubandHistory"").Tools.Count(); iLoop2++) {" & vbCrLf)
+                Response.Write("	//		sCaption1 = abMainMenu.Bands(""mnubandHistory"").Tools(iLoop2).Caption.toLowerCase();" & vbCrLf)
+                Response.Write("    //  if (abMainMenu.Bands(""mnubandHistory"").Tools(iLoop2).SubBand == """") {" & vbCrLf)
+                Response.Write("	//			sCaption1 = sCaption1.substr(0, sCaption1.length - 3);" & vbCrLf)
+                Response.Write("     // }" & vbCrLf)
+                Response.Write("	//		sCaption2 = objFileTool.Caption.toLowerCase();" & vbCrLf)
+                Response.Write("	//		sCaption2 = sCaption2.substr(0, sCaption2.length - 3);" & vbCrLf)
+                Response.Write("    //  if (sCaption1 > sCaption2) {" & vbCrLf)
+                Response.Write("     //   iIndex = iLoop2;" & vbCrLf)
+                Response.Write("  //      break;" & vbCrLf)
+                Response.Write("    //  }" & vbCrLf)
+                Response.Write("   // }" & vbCrLf)
+                Response.Write("   menu_insertMenuItem(""mnubandHistory"", objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf)
+                Response.Write("   // abMainMenu.Bands(""mnubandHistory"").Tools.Insert(iIndex, objFileTool);" & vbCrLf & vbCrLf)
             End If
         End If
 
@@ -376,10 +381,16 @@
     End If
 
     Response.Write("  if (fDone == false) {" & vbCrLf)
-    Response.Write("	  abMainMenu.Tools(""mnutoolHistory"").enabled = false;" & vbCrLf)
+    Response.Write("	  //abMainMenu.Tools(""mnutoolHistory"").enabled = false;" & vbCrLf)
+    Response.Write("      $('#mnubandHistory').empty();" & vbCrLf & vbCrLf)   ' hack!
+    Response.Write("	  $(""#mnutoolHistory"").show();" & vbCrLf)
+    Response.Write("      $('#mnutoolDatabase').click();")
     Response.Write("  }" & vbCrLf)
     Response.Write("  else {" & vbCrLf)
-    Response.Write("	  abMainMenu.Tools(""mnutoolHistory"").enabled = true;" & vbCrLf)
+    Response.Write("	  //abMainMenu.Tools(""mnutoolHistory"").enabled = true;" & vbCrLf)
+    Response.Write("      applyJSTree('[aria-labelledby=""mnutoolHistory""]');" & vbCrLf)
+    Response.Write("	  $(""#mnutoolHistory"").show();" & vbCrLf)
+    Response.Write("      $('#mnutoolHistory').click();")
     Response.Write("  }" & vbCrLf)
     Response.Write("}" & vbCrLf & vbCrLf)
 	

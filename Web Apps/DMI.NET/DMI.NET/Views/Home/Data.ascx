@@ -308,12 +308,12 @@
 					}
 				}	
 
-				return false;
-				recEditControl.ChangedOLEPhoto(0, "NONE");
 				
-				setRecordID(frmData.txtRecordID.value); //workframe
-				setParentTableID(frmData.txtParentTableID.value); //workframe
-				setParentRecordID(frmData.txtParentRecordID.value); //workframe
+				//TODO: recEditControl.ChangedOLEPhoto(0, "NONE");				
+			    
+				recEdit_setData(frmData.txtRecordID.value); //workframe
+				recEdit_setParentTableID(frmData.txtParentTableID.value); //workframe
+				recEdit_setParentRecordID(frmData.txtParentRecordID.value); //workframe
 				
 				/* Check if the record is empty. */
 				if ((sAction != "NEW") && (sAction != "COPY") && (frmData.txtRecordCount.value == 0)) {
@@ -375,8 +375,8 @@
 				}
 				
 				if (sAction == "COPY") {
-					setRecordID(0); //workframe
-					setCopiedRecordID(<%= CLng(session("recordID"))%>); //workframe
+					recEdit_setRecordID(0); //workframe
+					recEdit_setCopiedRecordID(<%= CLng(session("recordID"))%>); //workframe
 					frmData.txtRecordPosition.value = frmData.txtRecordCount.value + 1;
 					recEditControl.ClearUniqueColumnControls();
 					recEditControl.ChangedOLEPhoto(0, "ALL");
@@ -387,7 +387,8 @@
 					recEditControl.changed = recEditControl.allDefaults();
 				}
 
-				// Get menu to refresh the menu.
+			    // Get menu to refresh the menu.
+			    
 				menu_refreshMenu();
 
 				if (sAction == "SELECTORDER") {

@@ -46,7 +46,12 @@ function applyLocation(formItem, controlItemArray, bordered) {
 
 // -------------------------------------------------- Add the record Edit controls ------------------------------------------------
 function AddHtmlControl(controlItem, txtcontrolID, key) {
-    var controlItemArray = controlItem.split("\t");
+    try {
+        var controlItemArray = controlItem.split("\t");
+    } catch (e) {
+        return false;
+    }
+    
     var iPageNo = 0;
     var controlID = "";
     var tmpNum = txtcontrolID.indexOf("_");
@@ -252,6 +257,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
         case 8: //ctlOle
             var button = document.createElement('input');
             button.type = "button";
+            button.id = controlID;
             button.value = "OLE";
             applyLocation(button, controlItemArray, true);
             button.style.padding = "0px";
@@ -686,7 +692,11 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 }
 
 function addHTMLControlValues(controlValues) {
-    var controlValuesArray = controlValues.split("\t");
+    
+    try {
+        var controlValuesArray = controlValues.split("\t");
+    } catch(e) {return false;}
+
     var lngColumnID = 0;
     var sValue;
 
@@ -793,6 +803,32 @@ function recEdit_setData(columnID, value) {
     }
 }
 
+function recEdit_setRecordID(plngRecordID) {
+    var frmRecordEditForm = document.getElementById("frmRecordEditForm");
+    frmRecordEditForm.txtCurrentRecordID.value = plngRecordID;
+    frmRecordEditForm.ctlRecordEdit.recordID = plngRecordID;
+}
+
+function recEdit_setCopiedRecordID(plngRecordID) {
+    var frmRecordEditForm = document.getElementById("frmRecordEditForm");
+    frmRecordEditForm.ctlRecordEdit.CopiedRecordID = plngRecordID;
+}
+
+function recEdit_setParentTableID(plngParentTableID) {
+    var frmRecordEditForm = document.getElementById("frmRecordEditForm");
+    frmRecordEditForm.txtCurrentParentTableID.value = plngParentTableID;
+    //frmRecordEditForm.ctlRecordEdit.ParentTableID = plngParentTableID;
+}
+
+function recEdit_setParentRecordID(plngParentRecordID) {
+    var frmRecordEditForm = document.getElementById("frmRecordEditForm");
+    frmRecordEditForm.txtCurrentParentRecordID.value = plngParentRecordID;
+    //frmRecordEditForm.ctlRecordEdit.ParentRecordID = plngParentRecordID;
+}
+
+
+
+
 function updateControl(lngColumnID, value) {
    
     //get the column type, then add this value to it/them.
@@ -802,7 +838,12 @@ function updateControl(lngColumnID, value) {
         //TODO: is this controls columnID = lngColumnID?
         
         //Get the controlType from the ID
-        var arrIDProps = $(this).attr("id").split("_");
+        try {
+            var arrIDProps = $(this).attr("id").split("_");
+        } catch (e) {
+            return false;
+        }
+
         var controlType = Number(arrIDProps[2]);
                 
         if ($(this).is("textarea")) {
@@ -902,7 +943,11 @@ function updateControl(lngColumnID, value) {
 function getTabCaption(tabNumber) {
     
     var psNewValues = $("#txtRecEditTabCaptions").val();
-    var arr = psNewValues.split("\t");
+        try {
+            var arr = psNewValues.split("\t");
+        } catch (e) {
+            return false;
+        }
 
     var tabCaption = arr[tabNumber - 1];
 
