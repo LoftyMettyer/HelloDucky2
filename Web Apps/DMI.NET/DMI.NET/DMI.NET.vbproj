@@ -563,6 +563,7 @@
     <Content Include="Views\Home\Main.aspx" />
     <Content Include="Views\Home\Menu.ascx" />
     <Content Include="HTMLPage1.htm" />
+    <Content Include="Views\Home\newUser.ascx" />
     <Content Include="Views\Home\OptionData.ascx" />
     <Content Include="Views\Home\pcconfiguration.ascx" />
     <Content Include="Views\Home\picklistSelection.ascx" />
