@@ -11,7 +11,8 @@
 	});
 </script>
 <div class="RecDescPhoto">
-	<%If Session("recdesc").ToString.ToUpper.Contains("AVERY") Then%>
+    
+	<%If DMI.NET.NullSafeString(Session("recdesc")).ToUpper.Contains("AVERY") Then%>
 	<img src="<%: Url.Action("ShowPhoto", "Home", new with { .ImageName="davery.jpg"}) %>"
 		alt="" />
 	<%--	<i class="icon-user"></i>--%>
