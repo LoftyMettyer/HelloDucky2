@@ -343,7 +343,6 @@
     <Content Include="Content\themes\jqueryui\minified\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\jqueryui\minified\jquery.ui.tooltip.min.css" />
     <Content Include="Content\ui.jqgrid.css" />
-    <Content Include="HTMLPage3.htm" />
     <Content Include="HTMLPage2.htm" />
     <Content Include="Include\exprmenu.htm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
