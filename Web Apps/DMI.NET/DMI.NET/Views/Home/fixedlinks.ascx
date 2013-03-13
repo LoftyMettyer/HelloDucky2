@@ -5,7 +5,7 @@
 		$(".officebar").officebar({});
 
 		//$("#toolbarRecord").hide();
-
+		$("#mnuSectionUtilities").hide();
 		$("#fixedlinks").fadeIn("slow");
 
 	});

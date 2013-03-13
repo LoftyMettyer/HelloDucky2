@@ -189,6 +189,26 @@
 
 		}
 
+
+	    function goScreen(psScreenInfo) {
+	        return false;
+	        //ShowWait("Loading screen...");
+	        //window.parent.relocateScreen(psScreenInfo);
+
+	        var sDestination;
+
+	        // Submit the refresh.asp to keep the session alive
+	        //refreshSession();
+	        psScreenInfo = escape(psScreenInfo);
+
+	        sDestination = "recordEditMain.asp?";
+	        sDestination = sDestination.concat(psScreenInfo);
+	        window.frames("linksworkframe").location.replace(sDestination);
+
+
+
+	    }
+
 	</script>
 
 
@@ -260,8 +280,27 @@
 		<%fFirstSeparator = True%>
 		<div class="linkspagebutton">
 			<div class="ButtonLinkColumn">
+                <%Dim sOnclick As String = ""
+                    Dim sLinkKey As String = ""%>
 				<%For Each navlink In Model.NavigationLinks%>
 				<%If navlink.LinkType = 1 Then	 ' main dashboard link%>
+                <%
+                    If navlink.UtilityID > 0 Then
+                        Dim sUtilityType = CStr(navlink.UtilityType)
+                        Dim sUtilityID = CStr(navlink.UtilityID)
+                        Dim sUtilityBaseTable = CStr(navlink.BaseTable)
+                        Dim sUtilityDef = sUtilityType & "_" & sUtilityID & "_" & sUtilityBaseTable
+                        
+                        sOnclick = "goUtility('" & sUtilityDef & "')"
+                    Else
+                        sLinkKey = "recedit" & _
+                            "_" & Session("TopLevelRecID") & _
+                            "_" & navlink.ID
+                        
+                        sOnclick = "goScreen('" & sLinkKey & "')"
+                    End If
+                    
+                    %>
 				<%If navlink.Element_Type = 1 Then		' separator%>
 				<%iRowNum = 1%>
 				<%iColNum = 1%>
@@ -298,7 +337,7 @@
 
 							<%Case 0		 ' Button Link	%>
 								<%If navlink.UtilityType = -1 Then	' screen view%>
-									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext blueTile">
+									<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"	class="linkspagebuttontext blueTile" onclick="<%=sOnclick%>">
 										<p class="linkspagebuttontileIcon"><i class="icon-table"></i></p>
 										<p><a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt=""/></a></p>
 									</li>								
