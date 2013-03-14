@@ -1,4 +1,5 @@
 ﻿
+
 <%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
@@ -24,8 +25,8 @@
 	
 	' The util isnt used in any batch jobs, so we can delete it
 	if rstUsage.eof then
-        Response.Redirect("util_delete")
-    End If
+		Response.Redirect("util_delete")		
+	End If
 %>
 
 <div <%=session("BodyTag")%>>
@@ -49,7 +50,7 @@
 			            Could not <%=session("action")%> '<%=session("utilname")%>' because it is used in the following:<BR><BR>
 <%
 	Do While Not rstUsage.EOF
-		Dim sDescription As String = rstUsage.Fields("description").Value
+		Dim sDescription As String = CType(rstUsage.Fields("description").Value, String)
 		sDescription = Replace(sDescription, "<", "&lt;")
 		sDescription = Replace(sDescription, ">", "&gt;")
 
@@ -78,11 +79,14 @@
 			    <tr>
 					<td height=10 colspan=3></td>
 				</tr>
-				<%session("utilid") = Request.Form("utilid")%>
+<%--				<%session("utilid") = Request.Form("utilid")%>--%>
 			</table>
 		</TD>
 	</TR>
 </table>
+	
+<form name="frmDelete" method="post" action="util_delete" id="frmDelete">
+</form>
 
 <form name="frmUsage" method="post" action="defsel" id="frmUsage">
 </form>
