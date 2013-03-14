@@ -2534,6 +2534,13 @@ Namespace Controllers
 
 #End Region
 
+		Public Function util_def_mailmerge() As ActionResult
+			Throw New NotImplementedException()
+		End Function
+
+		Public Function util_def_calendarreport() As ActionResult
+			Throw New NotImplementedException()
+		End Function
 	End Class
 
 	Public Class ErrMsgJsonAjaxResponse
