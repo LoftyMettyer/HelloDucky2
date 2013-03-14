@@ -1252,16 +1252,7 @@
 
         ' Release the ADO command object.
         cmdDefn = Nothing
-
-        '		if len(sErrMsg) > 0 then
-        'Session("confirmtext") = sErrMsg
-        'Session("confirmtitle") = "OpenHR Intranet"
-        'Session("followpage") = "defsel.asp"
-        'Session("reaction") = "PICKLISTS"
-        '			Response.Clear
-        '			Response.Redirect("confirmok.asp")
-        '		end if
-    End If
+	End If
 %>
 </form>
 
