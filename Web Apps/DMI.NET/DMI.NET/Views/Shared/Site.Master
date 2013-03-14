@@ -50,6 +50,11 @@
 	<script id="officebarscript" src="<%: Url.LatestContent("~/Scripts/officebar/jquery.officebar.js")%>" type="text/javascript"></script>	
     <script src="<%: Url.LatestContent("~/Scripts/jquery.jqGrid.min.js")%>" type="text/javascript"></script>
     
+<OBJECT classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" 
+	id="Microsoft_Licensed_Class_Manager_1_0" 
+	VIEWASTEXT>
+	<PARAM NAME="LPKPath" VALUE="<%: Url.Content("~/lpks/ssmain.lpk")%>">
+</OBJECT>
 
 
 	<script type="text/javascript">
