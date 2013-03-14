@@ -835,6 +835,10 @@ Namespace Controllers
 			Return View()
 		End Function
 
+		Function util_delete() As ActionResult
+			Return View()
+		End Function
+
 		Function Data() As ActionResult
 			Return View()
 		End Function
