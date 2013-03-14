@@ -578,11 +578,11 @@
 				<li id="mnutoolLogoff"><a href="#">Log Off...</a></li>
 			</ul>
 		</div>
-		<h3 id="mnutoolRecord">Record</h3>
+		<h3 id="mnutoolRecord" class="hidden">Record</h3>
 		<div>
 			<ul id="mnubandRecord"></ul>
 		</div>
-		<h3 id="mnutoolHistory">History</h3>
+		<h3 id="mnutoolHistory" class="hidden">History</h3>
 		<div>
 			<ul id="mnubandHistory"></ul>
 		</div>

@@ -4292,6 +4292,7 @@ function menu_setVisibleMenuItem(itemId, fNewSetting) {
 		$("#" + itemId).addClass("hidden");
 	}
 
+	$(".accordion").accordion("resize");
 }
 
 function menu_SetmnutoolRecordPositionCaption(newCaption) {
