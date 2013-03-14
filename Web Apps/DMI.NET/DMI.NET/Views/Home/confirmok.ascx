@@ -168,7 +168,7 @@
 			    <tr> 
 			        <td colspan=3 height=10 align=center> 
 		                <input id="cmdOK" name="cmdOK" type=button class="btn" value="OK" style="WIDTH: 75px" width="75" 
-		                    onclick="confirmok_okClick();"
+		                    onclick="confirmok_okClick()"
                             onmouseover="try{button_onMouseOver(this);}catch(e){}" 
                             onmouseout="try{button_onMouseOut(this);}catch(e){}"
                             onfocus="try{button_onFocus(this);}catch(e){}"
