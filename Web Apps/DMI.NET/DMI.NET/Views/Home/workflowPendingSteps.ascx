@@ -1,211 +1,215 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 
-<%@ Language=VBScript %>
-<!--#INCLUDE FILE="include/svrCleanup.asp" -->
-<HTML>
-<HEAD>
-<META NAME="GENERATOR" Content="Microsoft Visual Studio 6.0">
-<LINK href="OpenHR.css" rel=stylesheet type=text/css >
-<TITLE>OpenHR Intranet</TITLE>
-<meta http-equiv="X-UA-Compatible" content="IE=5">
-<!--#include file="include\ctl_SetFont.txt"-->
+<%-- For other devs: Do not remove below line. --%>
+<%="" %>
+<%-- For other devs: Do not remove above line. --%>
 
-<FORM id=frmSteps name=frmSteps style="visibility:hidden;display:none">
-<%
-	on error resume next
+<form id="frmSteps" name="frmSteps" style="visibility: hidden; display: none">
+	<%On Error Resume Next
 
-	Response.Expires = -1
+		Response.Expires = -1
 	
-	Dim sReferringPage
-	Dim fError
+		If (Session("fromMenu") = 0) And (Session("reset") = 1) Then
+			' Reset the Workflow OutOfOffice flag.
+			Dim cmdOutOfOffice = CreateObject("ADODB.Command")
+			cmdOutOfOffice.CommandText = "spASRWorkflowOutOfOfficeSet"
+			cmdOutOfOffice.CommandType = 4 ' Stored Procedure
+			cmdOutOfOffice.ActiveConnection = Session("databaseConnection")
 
-	if (session("fromMenu") = 0) and (session("reset") = 1) then
-		' Reset the Workflow OutOfOffice flag.
-		Set cmdOutOfOffice = Server.CreateObject("ADODB.Command")
-		cmdOutOfOffice.CommandText = "spASRWorkflowOutOfOfficeSet"
-		cmdOutOfOffice.CommandType = 4 ' Stored Procedure
-		Set cmdOutOfOffice.ActiveConnection = session("databaseConnection")
+			Dim prmValue = cmdOutOfOffice.CreateParameter("value", 11, 1)	' 11=bit, 1=input
+			cmdOutOfOffice.Parameters.Append(prmValue)
+			prmValue.value = 0
 
-		Set prmValue = cmdOutOfOffice.CreateParameter("value",11,1) ' 11=bit, 1=input
-		cmdOutOfOffice.Parameters.Append prmValue
-		prmValue.value = 0
+			Err.Clear()
+			cmdOutOfOffice.Execute()
 
-		err = 0
-		cmdOutOfOffice.Execute
-		set cmdOutOfOffice = nothing
+			cmdOutOfOffice = Nothing
 
-		session("reset") = 0
-	end if
+			Session("reset") = 0
+		End If
 
-	fWorkflowGood = true
-	iStepCount = 0
+		Dim fWorkflowGood = True
+		Dim iStepCount As Integer = 0
+		Dim sAddString As String
 	
-	Set cmdDefSelRecords = Server.CreateObject("ADODB.Command")
-	cmdDefSelRecords.CommandText = "spASRIntCheckPendingWorkflowSteps"
-	cmdDefSelRecords.CommandType = 4 ' Stored Procedure
-	Set cmdDefSelRecords.ActiveConnection = session("databaseConnection")
+		Dim cmdDefSelRecords = CreateObject("ADODB.Command")
+		cmdDefSelRecords.CommandText = "spASRIntCheckPendingWorkflowSteps"
+		cmdDefSelRecords.CommandType = 4 ' Stored Procedure
+		cmdDefSelRecords.ActiveConnection = Session("databaseConnection")
 
-	err = 0
-	Set rstDefSelRecords = cmdDefSelRecords.Execute
+		Err.Clear()
+		Dim rstDefSelRecords = cmdDefSelRecords.Execute
 
-	if (err <> 0) then
-		' Workflow not licensed or configured. Go to default page.
-		fWorkflowGood = false
-	else
-		do until rstDefSelRecords.eof
-			if iStepCount = 0 then
-				' Add the <All> row.
-				sAddString = "0" & vbtab & "<All>" & vbtab
-%>
-	<INPUT type='hidden' id="txtAddString_<%=iStepCount%>" name=txtAddString_<%=iStepCount%> value="<%=sAddString%>">
-<%			
+		If Err.Number <> 0 Then
+			' Workflow not licensed or configured. Go to default page.
+			fWorkflowGood = False
+		Else
+			Do Until rstDefSelRecords.eof
+				If iStepCount = 0 Then
+					' Add the <All> row.
+					sAddString = CType(("0" & vbTab & "<All>" & vbTab), String)
+	%>
+	<input type='hidden' id="txtAddString_<%=iStepCount%>" name="txtAddString_<%=iStepCount%>" value="<%=sAddString%>">
+	<%			
 				
-			end if
+	End If
 
-			iStepCount = iStepCount + 1
-			
-			sAddString = "0" & vbtab & _
-				replace(rstDefSelRecords.Fields("description").Value, chr(34),"&quot;") & vbtab & _
-				replace(rstDefSelRecords.Fields("url").Value, chr(34),"&quot;")
-%>
-	<INPUT type='hidden' id=Hidden1 name=txtAddString_<%=iStepCount%> value="<%=sAddString%>">
-<%			
-			rstDefSelRecords.movenext
-		loop
+	iStepCount = iStepCount + 1
+	sAddString = "0" & vbTab & _
+		Replace(CType(rstDefSelRecords.Fields("description").Value, String), Chr(34), "&quot;") & vbTab & _
+		Replace(CType(rstDefSelRecords.Fields("url").Value, String), Chr(34), "&quot;")
+	%>
+	<input type='hidden' id="Hidden1" name="txtAddString_<%=iStepCount%>" value="<%=sAddString%>">
+	<%			
+		rstDefSelRecords.movenext()
+	Loop
 
-		rstDefSelRecords.close
-		Set rstDefSelRecords = nothing
-	end if
+	rstDefSelRecords.close()
+	rstDefSelRecords = Nothing
+End If
 							
-	' Release the ADO command object.
-	Set cmdDefSelRecords = nothing
-%>
-	<INPUT type='hidden' id=txtFromMenu name=txtFromMenu value="<%=session("fromMenu")%>">
-</FORM>
+' Release the ADO command object.
+cmdDefSelRecords = Nothing
+	%>
+	<input type='hidden' id="txtFromMenu" name="txtFromMenu" value="<%=Session("fromMenu")%>">
+</form>
 
-<OBJECT 
-	classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" 
-	id="Microsoft_Licensed_Class_Manager_1_0" 
-	VIEWASTEXT>
-	<PARAM NAME="LPKPath" VALUE="lpks/main.lpk">
-</OBJECT>
+<%--<object
+	classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
+	id="Microsoft_Licensed_Class_Manager_1_0"
+	viewastext>
+	<param name="LPKPath" value="lpks/main.lpk">
+</object>--%>
 
-<SCRIPT FOR=window EVENT=onload LANGUAGE=JavaScript>
-<!--
-	var iPollCounter;
-	var iPollPeriod;
-	var frmRefresh;
-	var sControlName;
-	var sControlPrefix;
+<script type="text/javascript">
+	function workflowPendingSteps_window_onload() {
+		var iPollCounter;
+		var iPollPeriod;
+		var frmRefresh;
+		var sControlName;
+		var sControlPrefix;
+		
+		var frmDefSel = document.getElementById('frmDefSel');
+		var frmSteps = document.getElementById('frmSteps');
+		
+		<%If iStepCount > 0 Then%>
 
-<%
-	if iStepCount > 0 then
-%>	
+		setGridFont(frmDefSel.ssOleDBGridDefSelRecords);
 
-	setGridFont(frmDefSel.ssOleDBGridDefSelRecords);
-	
-	iPollPeriod = 100;
-	iPollCounter = iPollPeriod;
-	frmRefresh = window.parent.frames("pollframe").document.forms("frmHit");	
+		iPollPeriod = 100;
+		iPollCounter = iPollPeriod;
+		frmRefresh = window.parent.frames("pollframe").document.forms("frmHit");
 
-	frmDefSel.ssOleDBGridDefSelRecords.focus();
-	frmDefSel.cmdCancel.focus;
+		frmDefSel.ssOleDBGridDefSelRecords.focus();
+		frmDefSel.cmdCancel.focus();
 
-	var controlCollection = frmSteps.elements;
-	if (controlCollection!=null) 
-	{
-		for (i=0; i<controlCollection.length; i++)  
-		{
-			if (i==iPollCounter) 
-			{			
-				frmRefresh.submit();
-				iPollCounter = iPollCounter + iPollPeriod;
-			}
+		var controlCollection = frmSteps.elements;
+		if (controlCollection != null) {
+			for (i = 0; i < controlCollection.length; i++) {
+				if (i == iPollCounter) {
+					frmRefresh.submit();
+					iPollCounter = iPollCounter + iPollPeriod;
+				}
 
-			sControlName = controlCollection.item(i).name;
-			sControlPrefix = sControlName.substr(0, 13);
-					
-			if (sControlPrefix=="txtAddString_") 
-			{
-				frmDefSel.ssOleDBGridDefSelRecords.AddItem(controlCollection.item(i).value);
+				sControlName = controlCollection.item(i).name;
+				sControlPrefix = sControlName.substr(0, 13);
+
+				if (sControlPrefix == "txtAddString_") {
+					frmDefSel.ssOleDBGridDefSelRecords.AddItem(controlCollection.item(i).value);
+				}
 			}
 		}
-	}	
 
-	frmRefresh.submit();
+		frmRefresh.submit();
 
-	if (frmDefSel.ssOleDBGridDefSelRecords.rows > 0) 
-	{
-		// Need to refresh the grid before we movefirst.
-		frmDefSel.ssOleDBGridDefSelRecords.refresh();			
+		if (frmDefSel.ssOleDBGridDefSelRecords.rows > 0) {
+			// Need to refresh the grid before we movefirst.
+			frmDefSel.ssOleDBGridDefSelRecords.refresh();
+			// Select the top row.
+			frmDefSel.ssOleDBGridDefSelRecords.MoveFirst();
+			frmDefSel.ssOleDBGridDefSelRecords.SelBookmarks.Add(frmDefSel.ssOleDBGridDefSelRecords.Bookmark);
+		}
 
-		// Select the top row.
-		frmDefSel.ssOleDBGridDefSelRecords.MoveFirst();
-		frmDefSel.ssOleDBGridDefSelRecords.SelBookmarks.Add(frmDefSel.ssOleDBGridDefSelRecords.Bookmark);
+		refreshControls();
+
+		sizeColumnsToFitGrid(frmDefSel.ssOleDBGridDefSelRecords);
+		<%Else
+			If Session("fromMenu") = 0 Then
+			%>
+		window.parent.frames("menuframe").openPersonnelRecEdit();
+		<%End If
+		End If
+		%>
+
+		window.parent.frames("menuframe").refreshMenu();
+		window.parent.document.all.item("workframeset").cols = "*, 0";
+
+		// Little dodge to get around a browser bug that
+		// does not refresh the display on all controls.
+		try {
+			window.resizeBy(0, -1);
+			window.resizeBy(0, 1);
+			window.resizeBy(0, -1);
+			window.resizeBy(0, 1);
+		} catch(e) {
+		}
 	}
-
-	refreshControls();
-
-	sizeColumnsToFitGrid(frmDefSel.ssOleDBGridDefSelRecords);
-<%
-	else
-		if session("fromMenu") = 0 then
-%>	
-	window.parent.frames("menuframe").openPersonnelRecEdit();
-<%
-		end if
-	end if
-%>	
-
-	window.parent.frames("menuframe").refreshMenu();
-	window.parent.document.all.item("workframeset").cols = "*, 0";	
-
-	// Little dodge to get around a browser bug that
-	// does not refresh the display on all controls.
-	try	
-	{
-		window.resizeBy(0,-1);
-		window.resizeBy(0,1);
-		window.resizeBy(0,-1);
-		window.resizeBy(0,1);
-	}
-	catch(e) {}
-	-->	
-</SCRIPT>
-
-<SCRIPT FOR=window EVENT=onfocus LANGUAGE=JavaScript>
-<!--
-	// Little dodge to get around a browser bug that
-	// does not refresh the display on all controls.
-	try 
-	{
-		window.resizeBy(0,-1);
-		window.resizeBy(0,1);
-		window.resizeBy(0,-1);
-		window.resizeBy(0,1);
-	}
-	catch(e) {}
-	-->
-</SCRIPT>
-
-<SCRIPT FOR=ssOleDBGridDefSelRecords EVENT=change LANGUAGE=JavaScript>
-<!--
-	RefreshGrid();
-	-->
 </script>
 
-<SCRIPT FOR=ssOleDBGridDefSelRecords EVENT=KeyPress(iKeyAscii) LANGUAGE=JavaScript>
-<!--
-	if(iKeyAscii == 32)
-	{
-		// Space pressed. Toggle the current row value.
-		ToggleCurrentRow();
+<script type="text/javascript">
+	window.onload = workflowPendingSteps_window_onload;
+	
+	OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "rowcolchange", ssOleDBGridDefSelRecords_rowcolchange);
+	OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "KeyPress", ssOleDBGridDefSelRecords_KeyPress(iKeyAscii);
+	
+</script>
+<script>
+	function ssOleDBGridDefSelRecords_rowcolchange() {
+		RefreshGrid();	
 	}
-	-->
 </script>
 
-<SCRIPT LANGUAGE="JavaScript">
-<!--
+<script type="text/javascript">
+function ssOleDBGridDefSelRecords_KeyPress(iKeyAscii) {
+	var sFind,
+		    iLastTick,
+		    txtLastKeyFind = document.getElementById("txtLastKeyFind"),
+		    txtTicker = document.getElementById("txtTicker");
+
+		if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {
+			var dtTicker = new Date();
+			var iThisTick = new Number(dtTicker.getTime());
+			if (txtLastKeyFind.value.length > 0) {
+				iLastTick = new Number(txtTicker.value);
+			}
+			else {
+				iLastTick = new Number("0");
+			}
+
+			if (iThisTick > (iLastTick + 1500)) {
+				sFind = String.fromCharCode(iKeyAscii);
+			}
+			else {
+				sFind = txtLastKeyFind.value + String.fromCharCode(iKeyAscii);
+			}
+
+			txtTicker.value = iThisTick;
+			txtLastKeyFind.value = sFind;
+
+			locateRecord(sFind);
+		}
+		if(iKeyAscii == 32)
+		{
+			// Space pressed. Toggle the current row value.
+			ToggleCurrentRow();
+		}
+	}
+</script>
+
+<script type="text/JavaScript">
+	
+	var frmDefSel = document.getElementById('frmDefSel');
+	
 	function RefreshGrid()
 	{
 		var iLoop;
@@ -218,7 +222,7 @@
 		if(iRowIndex == 0)
 		{
 			// <All> row. Ensure all other rows match.
-			varBookmark = frmDefSel.ssOleDBGridDefSelRecords.AddItemBookmark(0);
+			var varBookmark = frmDefSel.ssOleDBGridDefSelRecords.AddItemBookmark(0);
 			sRowTickValue = frmDefSel.ssOleDBGridDefSelRecords.Columns("TickBox").CellText(varBookmark); 
 
 			frmDefSel.ssOleDBGridDefSelRecords.MoveFirst();
@@ -280,15 +284,11 @@
 	
 		RefreshGrid();	
 	}
-	-->
-</script>
-
-<SCRIPT LANGUAGE="JavaScript">
-<!--
+	
 	function refreshControls()
 	{
 		var fSomeSelected;
-
+		
 		fSomeSelected = SomeSelected();
 		button_disable(frmDefSel.cmdRun, (fSomeSelected == false));
 	}
@@ -329,7 +329,7 @@
 		var winl = (screen.availWidth - w) / 2;
 		var wint = (screen.availHeight - h) / 2;
 	
-		winprops = 'height='+h+',width='+w+',top='+wint+',left='+winl+',scrollbars='+scroll+',resizable';
+		var winprops = 'height='+h+',width='+w+',top='+wint+',left='+winl+',scrollbars='+scroll+',resizable';
 
 		try
 		{
@@ -390,56 +390,56 @@
 				//NPG20090403 Fault 13512
 				//sMessage = "Workflow forms opened successfully";
 				//window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sMessage,64,"OpenHR Intranet");
-<%
-	if session("fromMenu") = 0 then
-%>				
-			window.parent.frames("menuframe").autoLoadPage("workflowPendingSteps", true);
-<%
-	else
-%>			
-			window.parent.frames("menuframe").autoLoadPage("workflowPendingSteps", false);
-<%
-	end if
-%>			
+				<%
+	If Session("fromMenu") = 0 Then
+				%>				
+								window.parent.frames("menuframe").autoLoadPage("workflowPendingSteps", true);
+								<%
+				Else
+				%>			
+								window.parent.frames("menuframe").autoLoadPage("workflowPendingSteps", false);
+								<%
+				End If
+				%>			
+			}
+		}
+		catch(e)
+		{
+			sMessage = "Error opening workflow forms : " + e.description;
+			window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sMessage,48,"OpenHR Intranet");
 		}
 	}
-	catch(e)
+
+	function setcancel()
 	{
-		sMessage = "Error opening workflow forms : " + e.description;
-		window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sMessage,48,"OpenHR Intranet");
+		// Goto self-service recedit page (if Self-service user at login)
+		// Otherwise load the default page.
+		if (<%=session("fromMenu")%> == 0)
+		{
+			window.parent.frames("menuframe").openPersonnelRecEdit();
+		}
+		else
+		{
+			window.location.href = "default";
+		}
 	}
-}
-
-function setcancel()
-{
-	// Goto self-service recedit page (if Self-service user at login)
-	// Otherwise load the default page.
-	if (<%=session("fromMenu")%> == 0)
+	
+	function setrefresh()
 	{
-		window.parent.frames("menuframe").openPersonnelRecEdit();
-	}
-else
-{
-		window.location.href = "default.asp";
-}
-}
+		window.parent.frames("refreshframe").document.forms("frmRefresh").submit();
 
-function setrefresh()
-{
-	window.parent.frames("refreshframe").document.forms("frmRefresh").submit();
-
-<%
-	if session("fromMenu") = 0 then
+		<%
+	If Session("fromMenu") = 0 Then
 %>				
-	window.parent.frames("menuframe").autoLoadPage("workflowPendingSteps", true);
-<%
-	else
+		window.parent.frames("menuframe").autoLoadPage("workflowPendingSteps", true);
+		<%
+Else
 %>			
-	window.parent.frames("menuframe").autoLoadPage("workflowPendingSteps", false);
-<%
-	end if
+		window.parent.frames("menuframe").autoLoadPage("workflowPendingSteps", false);
+		<%
+End If
 %>			
-}
+	}
 
 	function currentWorkFramePage()
 	{
@@ -546,356 +546,356 @@ function setrefresh()
 			pctlGrid.Columns.Item(iLastVisibleColumn).Width = iNewColWidth;
 		}
 	}
-	-->
+-->
 </script>
-<!--#INCLUDE FILE="include/ctl_SetStyles.txt" -->
+
 </HEAD>
 
-<BODY <%=session("BodyTag")%>>
+<DIV <%=Session("BodyTag")%>>
 
-<form name="frmDefSel" method="post" id="frmDefSel">
+	<form name="frmDefSel" method="post" id="frmDefSel">
 
-<%if (fWorkflowGood = true) or (session("fromMenu") = 1) then%>
-<%	if iStepCount > 0 then%>
-<table align=center class="outline" cellPadding=5 cellSpacing=0 height="100%" width=100%>
-	<TR>
-		<TD>
-			<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0" >
-				<tr> 
-					<td colspan=5 align=center height=10>
-						<H3>
-							Pending Workflow Steps
-						</H3>
-					</td>
-				</tr>
-				
-				<tr> 
-					<td width=20>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-					<td width=100%>
-						<table height=100% width=100% class="invisible" cellspacing=0 cellpadding=0 id="findTable">
-							<tr>
-								<td width=100%>
-									<OBJECT classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" 
-										id=ssOleDBGridDefSelRecords 
-										name=ssOleDBGridDefselRecords 
-										codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" 
-										style="LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:100%">
-										<PARAM NAME="ScrollBars" VALUE="4">
-										<PARAM NAME="_Version" VALUE="196616">
-										<PARAM NAME="DataMode" VALUE="2">
-										<PARAM NAME="Cols" VALUE="0">
-										<PARAM NAME="Rows" VALUE="0">
-										<PARAM NAME="BorderStyle" VALUE="1">
-										<PARAM NAME="RecordSelectors" VALUE="0">
-										<PARAM NAME="GroupHeaders" VALUE="0">
-										<PARAM NAME="ColumnHeaders" VALUE="0">
-										<PARAM NAME="GroupHeadLines" VALUE="0">
-										<PARAM NAME="HeadLines" VALUE="0">
-										<PARAM NAME="FieldDelimiter" VALUE="(None)">
-										<PARAM NAME="FieldSeparator" VALUE="(Tab)">
-										<PARAM NAME="Col.Count" VALUE="3">
-										<PARAM NAME="stylesets.count" VALUE="0">
+		<%If (fWorkflowGood = True) Or (Session("fromMenu") = 1) Then%>
+		<%	If iStepCount > 0 Then%>
+		<table align="center" class="outline" cellpadding="5" cellspacing="0" height="100%" width="100%">
+			<tr>
+				<td>
+					<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
+						<tr>
+							<td colspan="5" align="center" height="10">
+								<h3>Pending Workflow Steps
+								</h3>
+							</td>
+						</tr>
 
-										<PARAM NAME="TagVariant" VALUE="EMPTY">
-										<PARAM NAME="UseGroups" VALUE="0">
-										<PARAM NAME="HeadFont3D" VALUE="0">
-										<PARAM NAME="Font3D" VALUE="0">
-										<PARAM NAME="DividerType" VALUE="3">
-										<PARAM NAME="DividerStyle" VALUE="1">
-										<PARAM NAME="DefColWidth" VALUE="0">
-										<PARAM NAME="BevelColorScheme" VALUE="2">
-										<PARAM NAME="BevelColorFrame" VALUE="0">
-										<PARAM NAME="BevelColorHighlight" VALUE="0">
-										<PARAM NAME="BevelColorShadow" VALUE="0">
-										<PARAM NAME="BevelColorFace" VALUE="0">
-										<PARAM NAME="CheckBox3D" VALUE="0">
-										<PARAM NAME="AllowAddNew" VALUE="0">
-										<PARAM NAME="AllowDelete" VALUE="0">
-										<PARAM NAME="AllowUpdate" VALUE="-1">
-										<PARAM NAME="MultiLine" VALUE="0">
-										<PARAM NAME="ActiveCellStyleSet" VALUE="">
-										<PARAM NAME="RowSelectionStyle" VALUE="0">
-										<PARAM NAME="AllowRowSizing" VALUE="0">
-										<PARAM NAME="AllowGroupSizing" VALUE="0">
-										<PARAM NAME="AllowColumnSizing" VALUE="0">
-										<PARAM NAME="AllowGroupMoving" VALUE="0">
-										<PARAM NAME="AllowColumnMoving" VALUE="0">
-										<PARAM NAME="AllowGroupSwapping" VALUE="0">
-										<PARAM NAME="AllowColumnSwapping" VALUE="0">
-										<PARAM NAME="AllowGroupShrinking" VALUE="0">
-										<PARAM NAME="AllowColumnShrinking" VALUE="0">
-										<PARAM NAME="AllowDragDrop" VALUE="0">
-										<PARAM NAME="UseExactRowCount" VALUE="-1">
-										<PARAM NAME="SelectTypeCol" VALUE="0">
-										<PARAM NAME="SelectTypeRow" VALUE="1">
-										<PARAM NAME="SelectByCell" VALUE="-1">
-										<PARAM NAME="BalloonHelp" VALUE="0">
-										<PARAM NAME="RowNavigation" VALUE="1">
-										<PARAM NAME="CellNavigation" VALUE="0">
-										<PARAM NAME="MaxSelectedRows" VALUE="1">
-										<PARAM NAME="HeadStyleSet" VALUE="">
-										<PARAM NAME="StyleSet" VALUE="">
-										<PARAM NAME="ForeColorEven" VALUE="0">
-										<PARAM NAME="ForeColorOdd" VALUE="0">
-										<PARAM NAME="BackColorEven" VALUE="0">
-										<PARAM NAME="BackColorOdd" VALUE="0">
-										<PARAM NAME="Levels" VALUE="1">
-										<PARAM NAME="RowHeight" VALUE="503">
-										<PARAM NAME="ExtraHeight" VALUE="0">
-										<PARAM NAME="ActiveRowStyleSet" VALUE="">
-										<PARAM NAME="CaptionAlignment" VALUE="2">
-										<PARAM NAME="SplitterPos" VALUE="0">
-										<PARAM NAME="SplitterVisible" VALUE="0">
-										<PARAM NAME="Columns.Count" VALUE="3">
+						<tr>
+							<td width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td width="100%">
+								<table height="100%" width="100%" class="invisible" cellspacing="0" cellpadding="0" id="findTable">
+									<tr>
+										<td width="100%">
+											<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"
+												id="ssOleDBGridDefSelRecords"
+												name="ssOleDBGridDefselRecords"
+												codebase="cabs/COAInt_Grid.cab#version=3,1,3,6"
+												style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 100%">
+												<param name="ScrollBars" value="4">
+												<param name="_Version" value="196616">
+												<param name="DataMode" value="2">
+												<param name="Cols" value="0">
+												<param name="Rows" value="0">
+												<param name="BorderStyle" value="1">
+												<param name="RecordSelectors" value="0">
+												<param name="GroupHeaders" value="0">
+												<param name="ColumnHeaders" value="0">
+												<param name="GroupHeadLines" value="0">
+												<param name="HeadLines" value="0">
+												<param name="FieldDelimiter" value="(None)">
+												<param name="FieldSeparator" value="(Tab)">
+												<param name="Col.Count" value="3">
+												<param name="stylesets.count" value="0">
 
-										<PARAM NAME="Columns(0).Width" VALUE="1000">
-										<PARAM NAME="Columns(0).Visible" VALUE="-1">
-										<PARAM NAME="Columns(0).Columns.Count" VALUE="1">
-										<PARAM NAME="Columns(0).Caption" VALUE="">
-										<PARAM NAME="Columns(0).Name" VALUE="TickBox">			
-										<PARAM NAME="Columns(0).Alignment" VALUE="0">
-										<PARAM NAME="Columns(0).CaptionAlignment" VALUE="3">
-										<PARAM NAME="Columns(0).Bound" VALUE="0">
-										<PARAM NAME="Columns(0).AllowSizing" VALUE="1">
-										<PARAM NAME="Columns(0).DataField" VALUE="Column 0">
-										<PARAM NAME="Columns(0).DataType" VALUE="8">
-										<PARAM NAME="Columns(0).Level" VALUE="0">
-										<PARAM NAME="Columns(0).NumberFormat" VALUE="">			
-										<PARAM NAME="Columns(0).Case" VALUE="0">
-										<PARAM NAME="Columns(0).FieldLen" VALUE="4096">
-										<PARAM NAME="Columns(0).VertScrollBar" VALUE="0">
-										<PARAM NAME="Columns(0).Locked" VALUE="0">			
-										<PARAM NAME="Columns(0).Style" VALUE="2">
-										<PARAM NAME="Columns(0).ButtonsAlways" VALUE="0">
-										<PARAM NAME="Columns(0).RowCount" VALUE="0">
-										<PARAM NAME="Columns(0).ColCount" VALUE="1">
-										<PARAM NAME="Columns(0).HasHeadForeColor" VALUE="0">
-										<PARAM NAME="Columns(0).HasHeadBackColor" VALUE="0">
-										<PARAM NAME="Columns(0).HasForeColor" VALUE="0">
-										<PARAM NAME="Columns(0).HasBackColor" VALUE="0">
-										<PARAM NAME="Columns(0).HeadForeColor" VALUE="0">
-										<PARAM NAME="Columns(0).HeadBackColor" VALUE="0">
-										<PARAM NAME="Columns(0).ForeColor" VALUE="0">
-										<PARAM NAME="Columns(0).BackColor" VALUE="0">
-										<PARAM NAME="Columns(0).HeadStyleSet" VALUE="">
-										<PARAM NAME="Columns(0).StyleSet" VALUE="">
-										<PARAM NAME="Columns(0).Nullable" VALUE="1">
-										<PARAM NAME="Columns(0).Mask" VALUE="">
-										<PARAM NAME="Columns(0).PromptInclude" VALUE="0">
-										<PARAM NAME="Columns(0).ClipMode" VALUE="0">
-										<PARAM NAME="Columns(0).PromptChar" VALUE="95">
-										
-										<PARAM NAME="Columns(1).Width" VALUE="1000">
-										<PARAM NAME="Columns(1).Visible" VALUE="-1">
-										<PARAM NAME="Columns(1).Columns.Count" VALUE="1">
-										<PARAM NAME="Columns(1).Caption" VALUE="">
-										<PARAM NAME="Columns(1).Name" VALUE="Description">			
-										<PARAM NAME="Columns(1).Alignment" VALUE="0">
-										<PARAM NAME="Columns(1).CaptionAlignment" VALUE="3">
-										<PARAM NAME="Columns(1).Bound" VALUE="0">
-										<PARAM NAME="Columns(1).AllowSizing" VALUE="1">
-										<PARAM NAME="Columns(1).DataField" VALUE="Column 0">
-										<PARAM NAME="Columns(1).DataType" VALUE="8">
-										<PARAM NAME="Columns(1).Level" VALUE="0">
-										<PARAM NAME="Columns(1).NumberFormat" VALUE="">			
-										<PARAM NAME="Columns(1).Case" VALUE="0">
-										<PARAM NAME="Columns(1).FieldLen" VALUE="4096">
-										<PARAM NAME="Columns(1).VertScrollBar" VALUE="0">
-										<PARAM NAME="Columns(1).Locked" VALUE="-1">			
-										<PARAM NAME="Columns(1).Style" VALUE="0">
-										<PARAM NAME="Columns(1).ButtonsAlways" VALUE="0">
-										<PARAM NAME="Columns(1).RowCount" VALUE="0">
-										<PARAM NAME="Columns(1).ColCount" VALUE="1">
-										<PARAM NAME="Columns(1).HasHeadForeColor" VALUE="0">
-										<PARAM NAME="Columns(1).HasHeadBackColor" VALUE="0">
-										<PARAM NAME="Columns(1).HasForeColor" VALUE="0">
-										<PARAM NAME="Columns(1).HasBackColor" VALUE="0">
-										<PARAM NAME="Columns(1).HeadForeColor" VALUE="0">
-										<PARAM NAME="Columns(1).HeadBackColor" VALUE="0">
-										<PARAM NAME="Columns(1).ForeColor" VALUE="0">
-										<PARAM NAME="Columns(1).BackColor" VALUE="0">
-										<PARAM NAME="Columns(1).HeadStyleSet" VALUE="">
-										<PARAM NAME="Columns(1).StyleSet" VALUE="">
-										<PARAM NAME="Columns(1).Nullable" VALUE="1">
-										<PARAM NAME="Columns(1).Mask" VALUE="">
-										<PARAM NAME="Columns(1).PromptInclude" VALUE="0">
-										<PARAM NAME="Columns(1).ClipMode" VALUE="0">
-										<PARAM NAME="Columns(1).PromptChar" VALUE="95">
-										
-										<PARAM NAME="Columns(2).Width" VALUE="0">
-										<PARAM NAME="Columns(2).Visible" VALUE="0">
-										<PARAM NAME="Columns(2).Columns.Count" VALUE="1">
-										<PARAM NAME="Columns(2).Caption" VALUE="">
-										<PARAM NAME="Columns(2).Name" VALUE="URL">			
-										<PARAM NAME="Columns(2).Alignment" VALUE="0">
-										<PARAM NAME="Columns(2).CaptionAlignment" VALUE="3">
-										<PARAM NAME="Columns(2).Bound" VALUE="0">
-										<PARAM NAME="Columns(2).AllowSizing" VALUE="1">
-										<PARAM NAME="Columns(2).DataField" VALUE="Column 0">
-										<PARAM NAME="Columns(2).DataType" VALUE="8">
-										<PARAM NAME="Columns(2).Level" VALUE="0">
-										<PARAM NAME="Columns(2).NumberFormat" VALUE="">			
-										<PARAM NAME="Columns(2).Case" VALUE="0">
-										<PARAM NAME="Columns(2).FieldLen" VALUE="4096">
-										<PARAM NAME="Columns(2).VertScrollBar" VALUE="0">
-										<PARAM NAME="Columns(2).Locked" VALUE="0">			
-										<PARAM NAME="Columns(2).Style" VALUE="0">
-										<PARAM NAME="Columns(2).ButtonsAlways" VALUE="0">
-										<PARAM NAME="Columns(2).RowCount" VALUE="0">
-										<PARAM NAME="Columns(2).ColCount" VALUE="1">
-										<PARAM NAME="Columns(2).HasHeadForeColor" VALUE="0">
-										<PARAM NAME="Columns(2).HasHeadBackColor" VALUE="0">
-										<PARAM NAME="Columns(2).HasForeColor" VALUE="0">
-										<PARAM NAME="Columns(2).HasBackColor" VALUE="0">
-										<PARAM NAME="Columns(2).HeadForeColor" VALUE="0">
-										<PARAM NAME="Columns(2).HeadBackColor" VALUE="0">
-										<PARAM NAME="Columns(2).ForeColor" VALUE="0">
-										<PARAM NAME="Columns(2).BackColor" VALUE="0">
-										<PARAM NAME="Columns(2).HeadStyleSet" VALUE="">
-										<PARAM NAME="Columns(2).StyleSet" VALUE="">
-										<PARAM NAME="Columns(2).Nullable" VALUE="1">
-										<PARAM NAME="Columns(2).Mask" VALUE="">
-										<PARAM NAME="Columns(2).PromptInclude" VALUE="0">
-										<PARAM NAME="Columns(2).ClipMode" VALUE="0">
-										<PARAM NAME="Columns(2).PromptChar" VALUE="95">
+												<param name="TagVariant" value="EMPTY">
+												<param name="UseGroups" value="0">
+												<param name="HeadFont3D" value="0">
+												<param name="Font3D" value="0">
+												<param name="DividerType" value="3">
+												<param name="DividerStyle" value="1">
+												<param name="DefColWidth" value="0">
+												<param name="BevelColorScheme" value="2">
+												<param name="BevelColorFrame" value="0">
+												<param name="BevelColorHighlight" value="0">
+												<param name="BevelColorShadow" value="0">
+												<param name="BevelColorFace" value="0">
+												<param name="CheckBox3D" value="0">
+												<param name="AllowAddNew" value="0">
+												<param name="AllowDelete" value="0">
+												<param name="AllowUpdate" value="-1">
+												<param name="MultiLine" value="0">
+												<param name="ActiveCellStyleSet" value="">
+												<param name="RowSelectionStyle" value="0">
+												<param name="AllowRowSizing" value="0">
+												<param name="AllowGroupSizing" value="0">
+												<param name="AllowColumnSizing" value="0">
+												<param name="AllowGroupMoving" value="0">
+												<param name="AllowColumnMoving" value="0">
+												<param name="AllowGroupSwapping" value="0">
+												<param name="AllowColumnSwapping" value="0">
+												<param name="AllowGroupShrinking" value="0">
+												<param name="AllowColumnShrinking" value="0">
+												<param name="AllowDragDrop" value="0">
+												<param name="UseExactRowCount" value="-1">
+												<param name="SelectTypeCol" value="0">
+												<param name="SelectTypeRow" value="1">
+												<param name="SelectByCell" value="-1">
+												<param name="BalloonHelp" value="0">
+												<param name="RowNavigation" value="1">
+												<param name="CellNavigation" value="0">
+												<param name="MaxSelectedRows" value="1">
+												<param name="HeadStyleSet" value="">
+												<param name="StyleSet" value="">
+												<param name="ForeColorEven" value="0">
+												<param name="ForeColorOdd" value="0">
+												<param name="BackColorEven" value="0">
+												<param name="BackColorOdd" value="0">
+												<param name="Levels" value="1">
+												<param name="RowHeight" value="503">
+												<param name="ExtraHeight" value="0">
+												<param name="ActiveRowStyleSet" value="">
+												<param name="CaptionAlignment" value="2">
+												<param name="SplitterPos" value="0">
+												<param name="SplitterVisible" value="0">
+												<param name="Columns.Count" value="3">
 
-										<PARAM NAME="UseDefaults" VALUE="-1">
-										<PARAM NAME="TabNavigation" VALUE="1">
-										<PARAM NAME="_ExtentX" VALUE="17330">
-										<PARAM NAME="_ExtentY" VALUE="1323">
-										<PARAM NAME="_StockProps" VALUE="79">
-										<PARAM NAME="Caption" VALUE="">
-										<PARAM NAME="ForeColor" VALUE="0">
-										<PARAM NAME="BackColor" VALUE="0">
-										<PARAM NAME="Enabled" VALUE="-1">
-										<PARAM NAME="DataMember" VALUE="">
-										<PARAM NAME="Row.Count" VALUE="0">
-									</OBJECT>
-								</td>
-							</tr>
-						</table>							
-					</td>
-					
-					<td width=20>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-	        
-			        <td width=80> 
-						<table height=100% class="invisible" cellspacing=0 cellpadding=0>
-							<tr>
-								<td>
-									<input type="button" name=cmdRefresh value="Refresh" style="WIDTH: 80px" width="80" id=cmdRefresh class="btn"
-									    onclick="setrefresh();"
-					                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-			                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-			                            onfocus="try{button_onFocus(this);}catch(e){}"
-			                            onblur="try{button_onBlur(this);}catch(e){}" />
-								</td>
-							</tr>
-							<tr height=100%>
-								<td></td>
-							</tr>
-							<tr>
-								<td>
-									<input type="button" name=cmdRun value="Run" style="WIDTH: 80px" width="80" id=cmdRun class="btn"
-									    onclick="setrun();"
-					                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-			                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-			                            onfocus="try{button_onFocus(this);}catch(e){}"
-			                            onblur="try{button_onBlur(this);}catch(e){}" />
-								</td>
-							</tr>
-							<tr height=10>
-								<td></td>
-							</tr>
-							<tr>
-								<td>
-									<input type="button" name="cmdCancel" value=Cancel style="WIDTH: 80px" width="80" class="btn"
-										onclick="setcancel()" 
-					                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-			                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-			                            onfocus="try{button_onFocus(this);}catch(e){}"
-			                            onblur="try{button_onBlur(this);}catch(e){}" />
-							  </td>
-							</tr>
-						</table>	
-					</td>
-					<td width=20>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-				</tr>
-				<tr> 
-					<td colspan=5 align=center height=10>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-<%							
-	else
-		if (session("fromMenu") = 1) then
-			if fWorkflowGood = true then
-				' Display message saying no pending steps.
-				sMessage = "No pending workflow steps"
-			else
-				' Display error message.
-				sMessage = "Error getting the pending workflow steps"
-			end if
-%>
-<table align=center class="outline" cellPadding=5 cellSpacing=0>
-	<TR>
-        <td width=20></td> 
-		<TD>
-			<table class="invisible" cellspacing="0" cellpadding="0">
-                <tr> 
-			        <td height=10></td>
-			    </tr>
+												<param name="Columns(0).Width" value="1000">
+												<param name="Columns(0).Visible" value="-1">
+												<param name="Columns(0).Columns.Count" value="1">
+												<param name="Columns(0).Caption" value="">
+												<param name="Columns(0).Name" value="TickBox">
+												<param name="Columns(0).Alignment" value="0">
+												<param name="Columns(0).CaptionAlignment" value="3">
+												<param name="Columns(0).Bound" value="0">
+												<param name="Columns(0).AllowSizing" value="1">
+												<param name="Columns(0).DataField" value="Column 0">
+												<param name="Columns(0).DataType" value="8">
+												<param name="Columns(0).Level" value="0">
+												<param name="Columns(0).NumberFormat" value="">
+												<param name="Columns(0).Case" value="0">
+												<param name="Columns(0).FieldLen" value="4096">
+												<param name="Columns(0).VertScrollBar" value="0">
+												<param name="Columns(0).Locked" value="0">
+												<param name="Columns(0).Style" value="2">
+												<param name="Columns(0).ButtonsAlways" value="0">
+												<param name="Columns(0).RowCount" value="0">
+												<param name="Columns(0).ColCount" value="1">
+												<param name="Columns(0).HasHeadForeColor" value="0">
+												<param name="Columns(0).HasHeadBackColor" value="0">
+												<param name="Columns(0).HasForeColor" value="0">
+												<param name="Columns(0).HasBackColor" value="0">
+												<param name="Columns(0).HeadForeColor" value="0">
+												<param name="Columns(0).HeadBackColor" value="0">
+												<param name="Columns(0).ForeColor" value="0">
+												<param name="Columns(0).BackColor" value="0">
+												<param name="Columns(0).HeadStyleSet" value="">
+												<param name="Columns(0).StyleSet" value="">
+												<param name="Columns(0).Nullable" value="1">
+												<param name="Columns(0).Mask" value="">
+												<param name="Columns(0).PromptInclude" value="0">
+												<param name="Columns(0).ClipMode" value="0">
+												<param name="Columns(0).PromptChar" value="95">
 
-			    <tr> 
-			        <td align=center> 
-			            <H3>Pending Workflow Steps</H3>
-			        </td>
-			    </tr>
-			  
-			    <tr> 
-			        <td align=center> 
-                        <%=sMessage%>
-			        </td>
-			    </tr>
-			  
-			    <tr> 
-			        <td height=20></td>
-			    </tr>
+												<param name="Columns(1).Width" value="1000">
+												<param name="Columns(1).Visible" value="-1">
+												<param name="Columns(1).Columns.Count" value="1">
+												<param name="Columns(1).Caption" value="">
+												<param name="Columns(1).Name" value="Description">
+												<param name="Columns(1).Alignment" value="0">
+												<param name="Columns(1).CaptionAlignment" value="3">
+												<param name="Columns(1).Bound" value="0">
+												<param name="Columns(1).AllowSizing" value="1">
+												<param name="Columns(1).DataField" value="Column 0">
+												<param name="Columns(1).DataType" value="8">
+												<param name="Columns(1).Level" value="0">
+												<param name="Columns(1).NumberFormat" value="">
+												<param name="Columns(1).Case" value="0">
+												<param name="Columns(1).FieldLen" value="4096">
+												<param name="Columns(1).VertScrollBar" value="0">
+												<param name="Columns(1).Locked" value="-1">
+												<param name="Columns(1).Style" value="0">
+												<param name="Columns(1).ButtonsAlways" value="0">
+												<param name="Columns(1).RowCount" value="0">
+												<param name="Columns(1).ColCount" value="1">
+												<param name="Columns(1).HasHeadForeColor" value="0">
+												<param name="Columns(1).HasHeadBackColor" value="0">
+												<param name="Columns(1).HasForeColor" value="0">
+												<param name="Columns(1).HasBackColor" value="0">
+												<param name="Columns(1).HeadForeColor" value="0">
+												<param name="Columns(1).HeadBackColor" value="0">
+												<param name="Columns(1).ForeColor" value="0">
+												<param name="Columns(1).BackColor" value="0">
+												<param name="Columns(1).HeadStyleSet" value="">
+												<param name="Columns(1).StyleSet" value="">
+												<param name="Columns(1).Nullable" value="1">
+												<param name="Columns(1).Mask" value="">
+												<param name="Columns(1).PromptInclude" value="0">
+												<param name="Columns(1).ClipMode" value="0">
+												<param name="Columns(1).PromptChar" value="95">
 
-			    <tr> 
-			        <td height=10 align=center> 
-		                <input id="cmdOK" name="cmdOK" type=button class="btn" value="OK" style="WIDTH: 75px" width="75" 
-        		            onclick="setcancel()"
-		                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                            onfocus="try{button_onFocus(this);}catch(e){}"
-                            onblur="try{button_onBlur(this);}catch(e){}" />
-                    </td>
-			    </tr>
+												<param name="Columns(2).Width" value="0">
+												<param name="Columns(2).Visible" value="0">
+												<param name="Columns(2).Columns.Count" value="1">
+												<param name="Columns(2).Caption" value="">
+												<param name="Columns(2).Name" value="URL">
+												<param name="Columns(2).Alignment" value="0">
+												<param name="Columns(2).CaptionAlignment" value="3">
+												<param name="Columns(2).Bound" value="0">
+												<param name="Columns(2).AllowSizing" value="1">
+												<param name="Columns(2).DataField" value="Column 0">
+												<param name="Columns(2).DataType" value="8">
+												<param name="Columns(2).Level" value="0">
+												<param name="Columns(2).NumberFormat" value="">
+												<param name="Columns(2).Case" value="0">
+												<param name="Columns(2).FieldLen" value="4096">
+												<param name="Columns(2).VertScrollBar" value="0">
+												<param name="Columns(2).Locked" value="0">
+												<param name="Columns(2).Style" value="0">
+												<param name="Columns(2).ButtonsAlways" value="0">
+												<param name="Columns(2).RowCount" value="0">
+												<param name="Columns(2).ColCount" value="1">
+												<param name="Columns(2).HasHeadForeColor" value="0">
+												<param name="Columns(2).HasHeadBackColor" value="0">
+												<param name="Columns(2).HasForeColor" value="0">
+												<param name="Columns(2).HasBackColor" value="0">
+												<param name="Columns(2).HeadForeColor" value="0">
+												<param name="Columns(2).HeadBackColor" value="0">
+												<param name="Columns(2).ForeColor" value="0">
+												<param name="Columns(2).BackColor" value="0">
+												<param name="Columns(2).HeadStyleSet" value="">
+												<param name="Columns(2).StyleSet" value="">
+												<param name="Columns(2).Nullable" value="1">
+												<param name="Columns(2).Mask" value="">
+												<param name="Columns(2).PromptInclude" value="0">
+												<param name="Columns(2).ClipMode" value="0">
+												<param name="Columns(2).PromptChar" value="95">
 
-                <tr> 
-			        <td height=10></td>
-			    </tr>
-			</table>
-        </td>
-        <td width=20></td> 
-    </tr>
-</table>
-<%			
-		end if
-	end if
-end if
-%>							
-</form>
+												<param name="UseDefaults" value="-1">
+												<param name="TabNavigation" value="1">
+												<param name="_ExtentX" value="17330">
+												<param name="_ExtentY" value="1323">
+												<param name="_StockProps" value="79">
+												<param name="Caption" value="">
+												<param name="ForeColor" value="0">
+												<param name="BackColor" value="0">
+												<param name="Enabled" value="-1">
+												<param name="DataMember" value="">
+												<param name="Row.Count" value="0">
+											</object>
+										</td>
+									</tr>
+								</table>
+							</td>
 
-<FORM action="default_Submit.asp" method=post id=frmGoto name=frmGoto style="visibility:hidden;display:none">
-<!--#include file="include\gotoWork.txt"-->
-</FORM>
+							<td width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
 
-</BODY>
-</html>
+							<td width="80">
+								<table height="100%" class="invisible" cellspacing="0" cellpadding="0">
+									<tr>
+										<td>
+											<input type="button" name="cmdRefresh" value="Refresh" style="WIDTH: 80px" width="80" id="cmdRefresh" class="btn"
+												onclick="setrefresh();"
+												onmouseover="try{button_onMouseOver(this);}catch(e){}"
+												onmouseout="try{button_onMouseOut(this);}catch(e){}"
+												onfocus="try{button_onFocus(this);}catch(e){}"
+												onblur="try{button_onBlur(this);}catch(e){}" />
+										</td>
+									</tr>
+									<tr height="100%">
+										<td></td>
+									</tr>
+									<tr>
+										<td>
+											<input type="button" name="cmdRun" value="Run" style="WIDTH: 80px" width="80" id="cmdRun" class="btn"
+												onclick="setrun();"
+												onmouseover="try{button_onMouseOver(this);}catch(e){}"
+												onmouseout="try{button_onMouseOut(this);}catch(e){}"
+												onfocus="try{button_onFocus(this);}catch(e){}"
+												onblur="try{button_onBlur(this);}catch(e){}" />
+										</td>
+									</tr>
+									<tr height="10">
+										<td></td>
+									</tr>
+									<tr>
+										<td>
+											<input type="button" name="cmdCancel" value="Cancel" style="WIDTH: 80px" width="80" class="btn"
+												onclick="setcancel()"
+												onmouseover="try{button_onMouseOver(this);}catch(e){}"
+												onmouseout="try{button_onMouseOut(this);}catch(e){}"
+												onfocus="try{button_onFocus(this);}catch(e){}"
+												onblur="try{button_onBlur(this);}catch(e){}" />
+										</td>
+									</tr>
+								</table>
+							</td>
+							<td width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+						</tr>
+						<tr>
+							<td colspan="5" align="center" height="10"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<%							
+		Else
+			If (Session("fromMenu") = 1) Then
+				Dim sMessage As String
+				If fWorkflowGood = True Then
+					' Display message saying no pending steps.
+					sMessage = "No pending workflow steps"
+				Else
+					' Display error message.
+					sMessage = "Error getting the pending workflow steps"
+				End If
+		%>
+		<table align="center" class="outline" cellpadding="5" cellspacing="0">
+			<tr>
+				<td width="20"></td>
+				<td>
+					<table class="invisible" cellspacing="0" cellpadding="0">
+						<tr>
+							<td height="10"></td>
+						</tr>
 
-<!-- Embeds createActiveX.js script reference -->
-<!--#include file="include\ctl_CreateControl.txt"-->
+						<tr>
+							<td align="center">
+								<h3>Pending Workflow Steps</h3>
+							</td>
+						</tr>
+
+						<tr>
+							<td align="center">
+								<%=sMessage%>
+							</td>
+						</tr>
+
+						<tr>
+							<td height="20"></td>
+						</tr>
+
+						<tr>
+							<td height="10" align="center">
+								<input id="cmdOK" name="cmdOK" type="button" class="btn" value="OK" style="WIDTH: 75px" width="75"
+									onclick="setcancel()"
+									onmouseover="try{button_onMouseOver(this);}catch(e){}"
+									onmouseout="try{button_onMouseOut(this);}catch(e){}"
+									onfocus="try{button_onFocus(this);}catch(e){}"
+									onblur="try{button_onBlur(this);}catch(e){}" />
+							</td>
+						</tr>
+
+						<tr>
+							<td height="10"></td>
+						</tr>
+					</table>
+				</td>
+				<td width="20"></td>
+			</tr>
+		</table>
+		<%			
+		End If
+	End If
+End If
+		%>
+	</form>
+
+	<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
+		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
+	</form>
+
+</DIV>
+
+<script type="text/javascript">
+	// Generated by the response.writes above
+	workflowPendingSteps_window_onload();
+</script>
