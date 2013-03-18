@@ -795,6 +795,8 @@ Namespace Controllers
 						Return RedirectToAction("util_def_expression")
 					Case 17	' CALENDAR REPORTS
 						Return RedirectToAction("util_def_calendarreport")
+						'Case 25	' WORKFLOW 
+						'Return RedirectToAction("util_run_workflow")
 				End Select
 
 			ElseIf Session("action") = "delete" Then
@@ -813,6 +815,8 @@ Namespace Controllers
 						Session("reaction") = "CALCULATIONS"
 					Case 17	' CALENDAR REPORTS
 						Session("reaction") = "CALENDARREPORTS"
+						'Case 25	' WORKFLOW 
+						'	Session("reaction") = "WORKFLOWS"
 				End Select
 				Return RedirectToAction("checkforusage")
 			End If
@@ -1728,7 +1732,6 @@ Namespace Controllers
 		'    Return View()
 		'End Function
 
-
 		Function Poll() As ActionResult
 			Return PartialView()
 		End Function
@@ -1821,6 +1824,16 @@ Namespace Controllers
 		End Function
 
 		<ValidateInput(False)>
+		Function util_run_workflow() As ActionResult
+			Return PartialView()
+		End Function
+
+		<ValidateInput(False)>
+		Function WorkflowPendingSteps() As ActionResult
+			Return PartialView()
+		End Function
+
+		<ValidateInput(False)>
 		Function util_run_customreportsData() As ActionResult
 			Return PartialView()
 		End Function
@@ -1841,8 +1854,6 @@ Namespace Controllers
 		'  Function util_run_promptedvaluessubmit() As ActionResult
 		'     Return RedirectToAction("util_run")
 		'    End Function
-
-
 
 #End Region
 
