@@ -7,18 +7,18 @@
 <form id="frmSteps" name="frmSteps" style="visibility: hidden; display: none">
 	<%On Error Resume Next
 
-		Response.Expires = -1
+	Response.Expires = -1
 	
 		If (Session("fromMenu") = 0) And (Session("reset") = 1) Then
-			' Reset the Workflow OutOfOffice flag.
+		' Reset the Workflow OutOfOffice flag.
 			Dim cmdOutOfOffice = CreateObject("ADODB.Command")
-			cmdOutOfOffice.CommandText = "spASRWorkflowOutOfOfficeSet"
-			cmdOutOfOffice.CommandType = 4 ' Stored Procedure
+		cmdOutOfOffice.CommandText = "spASRWorkflowOutOfOfficeSet"
+		cmdOutOfOffice.CommandType = 4 ' Stored Procedure
 			cmdOutOfOffice.ActiveConnection = Session("databaseConnection")
 
 			Dim prmValue = cmdOutOfOffice.CreateParameter("value", 11, 1)	' 11=bit, 1=input
 			cmdOutOfOffice.Parameters.Append(prmValue)
-			prmValue.value = 0
+		prmValue.value = 0
 
 			Err.Clear()
 			cmdOutOfOffice.Execute()
@@ -27,40 +27,40 @@
 
 			Session("reset") = 0
 		End If
-
+	
 		Dim fWorkflowGood = True
 		Dim iStepCount As Integer = 0
 		Dim sAddString As String
 	
 		Dim cmdDefSelRecords = CreateObject("ADODB.Command")
-		cmdDefSelRecords.CommandText = "spASRIntCheckPendingWorkflowSteps"
-		cmdDefSelRecords.CommandType = 4 ' Stored Procedure
+	cmdDefSelRecords.CommandText = "spASRIntCheckPendingWorkflowSteps"
+	cmdDefSelRecords.CommandType = 4 ' Stored Procedure
 		cmdDefSelRecords.ActiveConnection = Session("databaseConnection")
 
 		Err.Clear()
 		Dim rstDefSelRecords = cmdDefSelRecords.Execute
 
 		If Err.Number <> 0 Then
-			' Workflow not licensed or configured. Go to default page.
+		' Workflow not licensed or configured. Go to default page.
 			fWorkflowGood = False
 		Else
 			Do Until rstDefSelRecords.eof
 				If iStepCount = 0 Then
-					' Add the <All> row.
+				' Add the <All> row.
 					sAddString = CType(("0" & vbTab & "<All>" & vbTab), String)
-	%>
+%>
 	<input type='hidden' id="txtAddString_<%=iStepCount%>" name="txtAddString_<%=iStepCount%>" value="<%=sAddString%>">
-	<%			
+<%			
 				
 	End If
 
-	iStepCount = iStepCount + 1
+			iStepCount = iStepCount + 1
 	sAddString = "0" & vbTab & _
 		Replace(CType(rstDefSelRecords.Fields("description").Value, String), Chr(34), "&quot;") & vbTab & _
 		Replace(CType(rstDefSelRecords.Fields("url").Value, String), Chr(34), "&quot;")
-	%>
+%>
 	<input type='hidden' id="Hidden1" name="txtAddString_<%=iStepCount%>" value="<%=sAddString%>">
-	<%			
+<%			
 		rstDefSelRecords.movenext()
 	Loop
 
@@ -68,148 +68,154 @@
 	rstDefSelRecords = Nothing
 End If
 							
-' Release the ADO command object.
+	' Release the ADO command object.
 cmdDefSelRecords = Nothing
-	%>
+%>
 	<input type='hidden' id="txtFromMenu" name="txtFromMenu" value="<%=Session("fromMenu")%>">
 </form>
 
-<%--<object
-	classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-	id="Microsoft_Licensed_Class_Manager_1_0"
-	viewastext>
-	<param name="LPKPath" value="lpks/main.lpk">
-</object>--%>
-
 <script type="text/javascript">
-	function workflowPendingSteps_window_onload() {
-		var iPollCounter;
-		var iPollPeriod;
-		var frmRefresh;
-		var sControlName;
-		var sControlPrefix;
-		
+	function workflowPendingSteps_window_onload() {	
+	var iPollCounter;
+	var iPollPeriod;
+	var frmRefresh;
+	var sControlName;
+	var sControlPrefix;
+
 		var frmDefSel = document.getElementById('frmDefSel');
 		var frmSteps = document.getElementById('frmSteps');
-		
+
 		<%If iStepCount > 0 Then%>
 
-		setGridFont(frmDefSel.ssOleDBGridDefSelRecords);
+	setGridFont(frmDefSel.ssOleDBGridDefSelRecords);
+	
+	iPollPeriod = 100;
+	iPollCounter = iPollPeriod;
+	frmRefresh = window.parent.frames("pollframe").document.forms("frmHit");	
 
-		iPollPeriod = 100;
-		iPollCounter = iPollPeriod;
-		frmRefresh = window.parent.frames("pollframe").document.forms("frmHit");
-
-		frmDefSel.ssOleDBGridDefSelRecords.focus();
+	frmDefSel.ssOleDBGridDefSelRecords.focus();
 		frmDefSel.cmdCancel.focus();
 
-		var controlCollection = frmSteps.elements;
+	var controlCollection = frmSteps.elements;
 		if (controlCollection != null) {
 			for (i = 0; i < controlCollection.length; i++) {
 				if (i == iPollCounter) {
-					frmRefresh.submit();
-					iPollCounter = iPollCounter + iPollPeriod;
-				}
+				frmRefresh.submit();
+				iPollCounter = iPollCounter + iPollPeriod;
+			}
 
-				sControlName = controlCollection.item(i).name;
-				sControlPrefix = sControlName.substr(0, 13);
-
+			sControlName = controlCollection.item(i).name;
+			sControlPrefix = sControlName.substr(0, 13);
+					
 				if (sControlPrefix == "txtAddString_") {
-					frmDefSel.ssOleDBGridDefSelRecords.AddItem(controlCollection.item(i).value);
-				}
+				frmDefSel.ssOleDBGridDefSelRecords.AddItem(controlCollection.item(i).value);
 			}
 		}
+	}	
 
-		frmRefresh.submit();
+	frmRefresh.submit();
 
 		if (frmDefSel.ssOleDBGridDefSelRecords.rows > 0) {
-			// Need to refresh the grid before we movefirst.
-			frmDefSel.ssOleDBGridDefSelRecords.refresh();
-			// Select the top row.
-			frmDefSel.ssOleDBGridDefSelRecords.MoveFirst();
-			frmDefSel.ssOleDBGridDefSelRecords.SelBookmarks.Add(frmDefSel.ssOleDBGridDefSelRecords.Bookmark);
-		}
+		// Need to refresh the grid before we movefirst.
+		frmDefSel.ssOleDBGridDefSelRecords.refresh();			
+		// Select the top row.
+		frmDefSel.ssOleDBGridDefSelRecords.MoveFirst();
+		frmDefSel.ssOleDBGridDefSelRecords.SelBookmarks.Add(frmDefSel.ssOleDBGridDefSelRecords.Bookmark);
+	}
 
-		refreshControls();
+	refreshControls();
 
-		sizeColumnsToFitGrid(frmDefSel.ssOleDBGridDefSelRecords);
+	sizeColumnsToFitGrid(frmDefSel.ssOleDBGridDefSelRecords);
 		<%Else
 			If Session("fromMenu") = 0 Then
-			%>
-		window.parent.frames("menuframe").openPersonnelRecEdit();
+%>	
+	window.parent.frames("menuframe").openPersonnelRecEdit();
 		<%End If
 		End If
-		%>
+%>	
 
-		window.parent.frames("menuframe").refreshMenu();
-		window.parent.document.all.item("workframeset").cols = "*, 0";
+	window.parent.frames("menuframe").refreshMenu();
+	window.parent.document.all.item("workframeset").cols = "*, 0";	
 
-		// Little dodge to get around a browser bug that
-		// does not refresh the display on all controls.
+	// Little dodge to get around a browser bug that
+	// does not refresh the display on all controls.
 		try {
 			window.resizeBy(0, -1);
 			window.resizeBy(0, 1);
 			window.resizeBy(0, -1);
 			window.resizeBy(0, 1);
 		} catch(e) {
-		}
+	}
+		catch(e) {}
+	}
+
+	//function workflowPendingSteps_addhandlers() {
+	//}
+
+</script>
+	}
+<%--<script FOR=window EVENT=onfocus LANGUAGE=JavaScript>
+
+	// Little dodge to get around a browser bug that
+	// does not refresh the display on all controls.
+	try 
+	{
+		window.resizeBy(0,-1);
+		window.resizeBy(0,1);
+		window.resizeBy(0,-1);
+		window.resizeBy(0,1);
+	}
+	catch(e) {}
+</script>--%>
+
+
+<%--<script FOR=ssOleDBGridDefSelRecords EVENT=change LANGUAGE=JavaScript>
+	RefreshGrid();
+</script>--%>
+<script type="text/javascript">
+	OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "RowColChange", ssOleDBGridDefSelRecordss_RowColChange);
+	function ssOleDBGridDefSelRecordss_RowColChange() {
+		freshGrid();
+	}
+</script>
+
+<%--<script FOR=ssOleDBGridDefSelRecords EVENT=KeyPress(iKeyAscii) LANGUAGE=JavaScript>
+	if(iKeyAscii == 32)
+	{// Space pressed. Toggle the current row value.
+		ToggleCurrentRow();
+	}
+	</script>--%>
+<script type="text/javascript">
+	OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "KeyPress", ssOleDBGridDefSelRecords_KeyPress);
+	function ssOleDBGridDefSelRecordss_KeyPress(iKeyAscii) {
+		
+		if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {	
+			//var dtTicker = new Date();
+			//var iThisTick = new Number(dtTicker.getTime());
+			//if (txtLastKeyFind.value.length > 0) {
+			//	var iLastTick = new Number(txtTicker.value);
+			//}
+			//else {
+			//	var iLastTick = new Number("0");
+			//}
+		
+			//if (iThisTick > (iLastTick + 1500)) {
+			//	var sFind = String.fromCharCode(iKeyAscii);
+			//}
+			//else {
+			//	var sFind = txtLastKeyFind.value + String.fromCharCode(iKeyAscii);
+			//}
+		
+			//txtTicker.value = iThisTick;
+			//txtLastKeyFind.value = sFind;
+
+			//locateRecord(sFind);
+		ToggleCurrentRow();
+	}
 	}
 </script>
 
 <script type="text/javascript">
-	window.onload = workflowPendingSteps_window_onload;
-	
-	OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "rowcolchange", ssOleDBGridDefSelRecords_rowcolchange);
-	OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "KeyPress", ssOleDBGridDefSelRecords_KeyPress(iKeyAscii);
-	
-</script>
-<script>
-	function ssOleDBGridDefSelRecords_rowcolchange() {
-		RefreshGrid();	
-	}
-</script>
-
-<script type="text/javascript">
-function ssOleDBGridDefSelRecords_KeyPress(iKeyAscii) {
-	var sFind,
-		    iLastTick,
-		    txtLastKeyFind = document.getElementById("txtLastKeyFind"),
-		    txtTicker = document.getElementById("txtTicker");
-
-		if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {
-			var dtTicker = new Date();
-			var iThisTick = new Number(dtTicker.getTime());
-			if (txtLastKeyFind.value.length > 0) {
-				iLastTick = new Number(txtTicker.value);
-			}
-			else {
-				iLastTick = new Number("0");
-			}
-
-			if (iThisTick > (iLastTick + 1500)) {
-				sFind = String.fromCharCode(iKeyAscii);
-			}
-			else {
-				sFind = txtLastKeyFind.value + String.fromCharCode(iKeyAscii);
-			}
-
-			txtTicker.value = iThisTick;
-			txtLastKeyFind.value = sFind;
-
-			locateRecord(sFind);
-		}
-		if(iKeyAscii == 32)
-		{
-			// Space pressed. Toggle the current row value.
-			ToggleCurrentRow();
-		}
-	}
-</script>
-
-<script type="text/JavaScript">
-	
-	var frmDefSel = document.getElementById('frmDefSel');
-	
 	function RefreshGrid()
 	{
 		var iLoop;
@@ -285,10 +291,13 @@ function ssOleDBGridDefSelRecords_KeyPress(iKeyAscii) {
 		RefreshGrid();	
 	}
 	
+</script>
+
+<script type="text/javascript">
 	function refreshControls()
 	{
 		var fSomeSelected;
-		
+
 		fSomeSelected = SomeSelected();
 		button_disable(frmDefSel.cmdRun, (fSomeSelected == false));
 	}
@@ -390,56 +399,56 @@ function ssOleDBGridDefSelRecords_KeyPress(iKeyAscii) {
 				//NPG20090403 Fault 13512
 				//sMessage = "Workflow forms opened successfully";
 				//window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sMessage,64,"OpenHR Intranet");
-				<%
-	If Session("fromMenu") = 0 Then
-				%>				
-								window.parent.frames("menuframe").autoLoadPage("workflowPendingSteps", true);
-								<%
-				Else
-				%>			
-								window.parent.frames("menuframe").autoLoadPage("workflowPendingSteps", false);
-								<%
-				End If
-				%>			
-			}
-		}
-		catch(e)
-		{
-			sMessage = "Error opening workflow forms : " + e.description;
-			window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sMessage,48,"OpenHR Intranet");
-		}
-	}
-
-	function setcancel()
-	{
-		// Goto self-service recedit page (if Self-service user at login)
-		// Otherwise load the default page.
-		if (<%=session("fromMenu")%> == 0)
-		{
-			window.parent.frames("menuframe").openPersonnelRecEdit();
-		}
-		else
-		{
-			window.location.href = "default";
-		}
-	}
-	
-	function setrefresh()
-	{
-		window.parent.frames("refreshframe").document.forms("frmRefresh").submit();
-
-		<%
+<%
 	If Session("fromMenu") = 0 Then
 %>				
-		window.parent.frames("menuframe").autoLoadPage("workflowPendingSteps", true);
-		<%
+			window.parent.frames("menuframe").autoLoadPage("workflowPendingSteps", true);
+<%
+				Else
+%>			
+			window.parent.frames("menuframe").autoLoadPage("workflowPendingSteps", false);
+<%
+				End If
+%>			
+		}
+	}
+	catch(e)
+	{
+		sMessage = "Error opening workflow forms : " + e.description;
+		window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sMessage,48,"OpenHR Intranet");
+	}
+}
+
+function setcancel()
+{
+	// Goto self-service recedit page (if Self-service user at login)
+	// Otherwise load the default page.
+	if (<%=session("fromMenu")%> == 0)
+	{
+		window.parent.frames("menuframe").openPersonnelRecEdit();
+	}
+else
+{
+			window.location.href = "default";
+}
+}
+
+function setrefresh()
+{
+	window.parent.frames("refreshframe").document.forms("frmRefresh").submit();
+
+<%
+	If Session("fromMenu") = 0 Then
+%>				
+	window.parent.frames("menuframe").autoLoadPage("workflowPendingSteps", true);
+<%
 Else
 %>			
-		window.parent.frames("menuframe").autoLoadPage("workflowPendingSteps", false);
-		<%
+	window.parent.frames("menuframe").autoLoadPage("workflowPendingSteps", false);
+<%
 End If
 %>			
-	}
+}
 
 	function currentWorkFramePage()
 	{
@@ -546,38 +555,36 @@ End If
 			pctlGrid.Columns.Item(iLastVisibleColumn).Width = iNewColWidth;
 		}
 	}
--->
+	
 </script>
 
-</HEAD>
+<div <%=session("BodyTag")%>>
 
-<DIV <%=Session("BodyTag")%>>
-
-	<form name="frmDefSel" method="post" id="frmDefSel">
+<form name="frmDefSel" method="post" id="frmDefSel">
 
 		<%If (fWorkflowGood = True) Or (Session("fromMenu") = 1) Then%>
 		<%	If iStepCount > 0 Then%>
 		<table align="center" class="outline" cellpadding="5" cellspacing="0" height="100%" width="100%">
-			<tr>
+				<tr> 
 				<td>
 					<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
 						<tr>
 							<td colspan="5" align="center" height="10">
 								<h3>Pending Workflow Steps
 								</h3>
-							</td>
-						</tr>
-
-						<tr>
+					</td>
+				</tr>
+				
+				<tr> 
 							<td width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
 							<td width="100%">
 								<table height="100%" width="100%" class="invisible" cellspacing="0" cellpadding="0" id="findTable">
-									<tr>
+							<tr>
 										<td width="100%">
 											<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"
 												id="ssOleDBGridDefSelRecords"
 												name="ssOleDBGridDefselRecords"
-												codebase="cabs/COAInt_Grid.cab#version=3,1,3,6"
+										codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" 
 												style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 100%">
 												<param name="ScrollBars" value="4">
 												<param name="_Version" value="196616">
@@ -683,7 +690,7 @@ End If
 												<param name="Columns(0).PromptInclude" value="0">
 												<param name="Columns(0).ClipMode" value="0">
 												<param name="Columns(0).PromptChar" value="95">
-
+										
 												<param name="Columns(1).Width" value="1000">
 												<param name="Columns(1).Visible" value="-1">
 												<param name="Columns(1).Columns.Count" value="1">
@@ -720,7 +727,7 @@ End If
 												<param name="Columns(1).PromptInclude" value="0">
 												<param name="Columns(1).ClipMode" value="0">
 												<param name="Columns(1).PromptChar" value="95">
-
+										
 												<param name="Columns(2).Width" value="0">
 												<param name="Columns(2).Visible" value="0">
 												<param name="Columns(2).Columns.Count" value="1">
@@ -770,132 +777,146 @@ End If
 												<param name="DataMember" value="">
 												<param name="Row.Count" value="0">
 											</object>
-										</td>
-									</tr>
-								</table>
-							</td>
-
+								</td>
+							</tr>
+						</table>							
+					</td>
+					
 							<td width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-
+	        
 							<td width="80">
 								<table height="100%" class="invisible" cellspacing="0" cellpadding="0">
-									<tr>
-										<td>
+							<tr>
+								<td>
 											<input type="button" name="cmdRefresh" value="Refresh" style="WIDTH: 80px" width="80" id="cmdRefresh" class="btn"
-												onclick="setrefresh();"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
-										</td>
-									</tr>
+									    onclick="setrefresh();"
+					                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+			                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
+			                            onfocus="try{button_onFocus(this);}catch(e){}"
+			                            onblur="try{button_onBlur(this);}catch(e){}" />
+								</td>
+							</tr>
 									<tr height="100%">
-										<td></td>
-									</tr>
-									<tr>
-										<td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>
 											<input type="button" name="cmdRun" value="Run" style="WIDTH: 80px" width="80" id="cmdRun" class="btn"
-												onclick="setrun();"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
-										</td>
-									</tr>
+									    onclick="setrun();"
+					                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+			                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
+			                            onfocus="try{button_onFocus(this);}catch(e){}"
+			                            onblur="try{button_onBlur(this);}catch(e){}" />
+								</td>
+							</tr>
 									<tr height="10">
-										<td></td>
-									</tr>
-									<tr>
-										<td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>
 											<input type="button" name="cmdCancel" value="Cancel" style="WIDTH: 80px" width="80" class="btn"
-												onclick="setcancel()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
-										</td>
-									</tr>
-								</table>
-							</td>
+										onclick="setcancel()" 
+					                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+			                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
+			                            onfocus="try{button_onFocus(this);}catch(e){}"
+			                            onblur="try{button_onBlur(this);}catch(e){}" />
+							  </td>
+							</tr>
+						</table>	
+					</td>
 							<td width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-						</tr>
-						<tr>
+				</tr>
+				<tr> 
 							<td colspan="5" align="center" height="10"></td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
-		<%							
-		Else
-			If (Session("fromMenu") = 1) Then
-				Dim sMessage As String
-				If fWorkflowGood = True Then
-					' Display message saying no pending steps.
-					sMessage = "No pending workflow steps"
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<%							
+	else
+		if (session("fromMenu") = 1) then
+		Dim sMessage As String
+			if fWorkflowGood = true then
+				' Display message saying no pending steps.
+				sMessage = "No pending workflow steps"
 				Else
-					' Display error message.
-					sMessage = "Error getting the pending workflow steps"
+				' Display error message.
+				sMessage = "Error getting the pending workflow steps"
 				End If
-		%>
+%>
 		<table align="center" class="outline" cellpadding="5" cellspacing="0">
 			<tr>
 				<td width="20"></td>
 				<td>
-					<table class="invisible" cellspacing="0" cellpadding="0">
-						<tr>
+			<table class="invisible" cellspacing="0" cellpadding="0">
+                <tr> 
 							<td height="10"></td>
-						</tr>
+			    </tr>
 
-						<tr>
+			    <tr> 
 							<td align="center">
 								<h3>Pending Workflow Steps</h3>
-							</td>
-						</tr>
-
-						<tr>
+			        </td>
+			    </tr>
+			  
+			    <tr> 
 							<td align="center">
-								<%=sMessage%>
-							</td>
-						</tr>
-
-						<tr>
+                        <%=sMessage%>
+			        </td>
+			    </tr>
+			  
+			    <tr> 
 							<td height="20"></td>
-						</tr>
+			    </tr>
 
-						<tr>
+			    <tr> 
 							<td height="10" align="center">
 								<input id="cmdOK" name="cmdOK" type="button" class="btn" value="OK" style="WIDTH: 75px" width="75"
-									onclick="setcancel()"
-									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-									onfocus="try{button_onFocus(this);}catch(e){}"
-									onblur="try{button_onBlur(this);}catch(e){}" />
-							</td>
-						</tr>
+        		            onclick="setcancel()"
+		                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
+                            onfocus="try{button_onFocus(this);}catch(e){}"
+                            onblur="try{button_onBlur(this);}catch(e){}" />
+                    </td>
+			    </tr>
 
-						<tr>
+                <tr> 
 							<td height="10"></td>
-						</tr>
-					</table>
-				</td>
+			    </tr>
+			</table>
+        </td>
 				<td width="20"></td>
-			</tr>
-		</table>
-		<%			
+    </tr>
+</table>
+<%			
 		End If
 	End If
 End If
-		%>
-	</form>
+%>							
+</form>
 
-	<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
-		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-	</form>
-
-</DIV>
+<form action="default_Submit" method=post id=frmGoto name=frmGoto style="visibility:hidden;display:none">
+<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
+</form>
+</div>
 
 <script type="text/javascript">
-	// Generated by the response.writes above
 	workflowPendingSteps_window_onload();
 </script>
+
+
+<%--		
+		OpenHR.addActiveXHandler("<SSGRIDCONTROL>", "RowColChange", <SSGRIDCONTROL>_RowColChange);
+		OpenHR.addActiveXHandler("<SSGRIDCONTROL>", "DblClick", <SSGRIDCONTROL>_DblClick);
+		OpenHR.addActiveXHandler("<SSGRIDCONTROL>", "KeyPress", <SSGRIDCONTROL>_KeyPress);
+		OpenHR.addActiveXHandler("<SSGRIDCONTROL>", "SelChange", <SSGRIDCONTROL>_SelChange);
+		OpenHR.addActiveXHandler("<SSGRIDCONTROL>", "BeforeUpdate", <SSGRIDCONTROL>_BeforeUpdate);
+		OpenHR.addActiveXHandler("<SSGRIDCONTROL>", "AfterInsert", <SSGRIDCONTROL>_AfterInsert);
+		OpenHR.addActiveXHandler("<SSGRIDCONTROL>", "RowLoaded", <SSGRIDCONTROL>_RowLoaded);
+		OpenHR.addActiveXHandler("<SSGRIDCONTROL>", "Change", <SSGRIDCONTROL>_Change);
+		OpenHR.addActiveXHandler("<SSGRIDCONTROL>", "KeyUp", <SSGRIDCONTROL>_KeyUp);
+		OpenHR.addActiveXHandler("<SSGRIDCONTROL>", "Click", <SSGRIDCONTROL>_Click);
+		OpenHR.addActiveXHandler("<SSGRIDCONTROL>", "ComboCloseUp", <SSGRIDCONTROL>_ComboCloseUp);
+		OpenHR.addActiveXHandler("<SSGRIDCONTROL>", "GotFocus", <SSGRIDCONTROL>_GotFocus);
+--%>
