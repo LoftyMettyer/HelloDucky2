@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<fusionMessage xmlns="http://advancedcomputersoftware.com/xml/fusion">
+  <messageType>xxxxx</messageType>
+  <id></id>
+  <originator></originator>
+  <payload>
+    
+    
+  </payload>
+  <created></created>
+  <schemaVersion></schemaVersion>
+  <entityRef></entityRef>
+  <community></community>
+</fusionMessage>

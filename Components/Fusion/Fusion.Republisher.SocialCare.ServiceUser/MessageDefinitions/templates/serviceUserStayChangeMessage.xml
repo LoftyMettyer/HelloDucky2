@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serviceUserStayChange version="1" serviceUserStayRef="" serviceUserRef="" xmlns="http://advancedcomputersoftware.com/xml/fusion/socialCare" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<data auditUserName="" recordStatus="">
+		<serviceUserStay>
+			<primarySite/>
+			<room/>
+			<admissionDate/>
+			<dischargeDate/>
+			<serviceType/>
+			<fundingType/>
+			<locationWithinFacility/>
+			<companyName/>
+		</serviceUserStay>
+	</data>
+</serviceUserStayChange>

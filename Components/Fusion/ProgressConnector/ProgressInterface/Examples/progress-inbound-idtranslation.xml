@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<fusionIdTranslation xmlns="http://advancedcomputersoftware.com/xml/fusion">
+  <id></id> 
+  <!-- connector source identifier-->
+  <source></source>
+  
+  <!-- Optional message id that triggered translation -->
+  <messageId></messageId>
+  
+  <!-- time of translation-->
+  
+  <timeUtc></timeUtc>
+  <entityName></entityName>
+  <busRef></busRef>
+  <localId></localId>
+  <community></community>
+
+
+</fusionIdTranslation>

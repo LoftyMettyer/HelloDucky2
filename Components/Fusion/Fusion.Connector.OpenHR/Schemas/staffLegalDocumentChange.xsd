@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2012 rel. 2 sp1 (x64) (http://www.altova.com) by Chris (Advanced Health & Care) -->
+<xs:schema xmlns="http://advancedcomputersoftware.com/xml/fusion/socialCare" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:altova="http://www.altova.com/xml-schema-extensions" xmlns:common="http://advancedcomputersoftware.com/xml/fusion" targetNamespace="http://advancedcomputersoftware.com/xml/fusion/socialCare" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://advancedcomputersoftware.com/xml/fusion" schemaLocation="commonTypes.xsd"/>
+	<xs:element name="staffLegalDocumentChange">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="data">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="staffLegalDocument" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="typeName" type="common:legalDocumentTypes">
+											<xs:annotation>
+												<xs:documentation>Common data list across systems as specified by customer</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="validFrom" type="xs:date">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="2011-01-02"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="validTo" type="xs:date" nillable="true">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="2015-01-01"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="documentReference" type="xs:string">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="12zw440951"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+												<xs:documentation>The main reference such as passport number</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="secondaryReference" nillable="true" minOccurs="0">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="1234"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+												<xs:documentation>Any additional information such as nursing Pin number</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:minLength value="1"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="requestedBy" nillable="true" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>who in the compnay requested this document was done</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:minLength value="1"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="requestedDate" type="xs:date" nillable="true" minOccurs="0">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="2011-01-02"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+												<xs:documentation>When the document was requested, becaue it could be seen that it would be required by the company</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="acceptedBy" nillable="true" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>who in the compnay accepted the document</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:minLength value="1"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="acceptedDate" type="xs:date" nillable="true" minOccurs="0">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="2011-01-02"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+												<xs:documentation>When the company accepted the document had been done</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="auditUserName">
+							<xs:annotation>
+								<xs:appinfo>
+									<altova:exampleValues>
+										<altova:example value="s.papworth"/>
+										<altova:example value="a.lines"/>
+									</altova:exampleValues>
+								</xs:appinfo>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:minLength value="1"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+						<xs:attribute name="recordStatus" type="common:recordStatusRescindable" use="required">
+							<xs:annotation>
+								<xs:appinfo>
+									<altova:exampleValues>
+										<altova:example value="Active"/>
+									</altova:exampleValues>
+								</xs:appinfo>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:int" use="required">
+				<xs:annotation>
+					<xs:appinfo>
+						<altova:exampleValues>
+							<altova:example value="1"/>
+						</altova:exampleValues>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="staffLegalDocumentRef" type="common:guid" use="required">
+				<xs:annotation>
+					<xs:appinfo>
+						<altova:exampleValues>
+							<altova:example value="12345678-1234-3333-1234-000000000001"/>
+						</altova:exampleValues>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="staffRef" type="common:guid" use="required">
+				<xs:annotation>
+					<xs:appinfo>
+						<altova:exampleValues>
+							<altova:example value="12345678-1234-0000-1234-000000000001"/>
+						</altova:exampleValues>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

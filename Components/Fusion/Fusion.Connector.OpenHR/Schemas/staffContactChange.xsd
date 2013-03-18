@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2012 rel. 2 sp1 (x64) (http://www.altova.com) by Chris (Advanced Health & Care) -->
+<xs:schema xmlns="http://advancedcomputersoftware.com/xml/fusion/socialCare" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:altova="http://www.altova.com/xml-schema-extensions" xmlns:common="http://advancedcomputersoftware.com/xml/fusion" targetNamespace="http://advancedcomputersoftware.com/xml/fusion/socialCare" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://advancedcomputersoftware.com/xml/fusion" schemaLocation="commonTypes.xsd"/>
+	<xs:element name="staffContactChange">
+		<xs:annotation>
+			<xs:documentation>A staff change</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="data">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="staffContact" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="title" nillable="true">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="Mr"/>
+														<altova:example value="Mr"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:minLength value="1"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="forenames" nillable="true">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="Lee"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:minLength value="1"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="surname" nillable="true">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="Andrews"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:minLength value="1"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="description" nillable="true" minOccurs="0">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="Lee works in a bar on saturdays, this is the contact for the bar"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:minLength value="1"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="relationshipType">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="Friend"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+												<xs:documentation>Common data list across systems as specified by customer</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:minLength value="1"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="workMobile" nillable="true" minOccurs="0">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="07771 139822"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="common:phoneNumber">
+													<xs:maxLength value="50"/>
+													<xs:minLength value="1"/>
+													<xs:pattern value="[0-9,\s]+"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="personalMobile" nillable="true" minOccurs="0">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="07973 558718"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="common:phoneNumber">
+													<xs:maxLength value="50"/>
+													<xs:pattern value="[0-9,\s]+"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="workPhoneNumber" nillable="true" minOccurs="0">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="07973 558717"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="common:phoneNumber">
+													<xs:maxLength value="50"/>
+													<xs:pattern value="[0-9,\s]+"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="homePhoneNumber" nillable="true" minOccurs="0">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="07973 558717"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="common:phoneNumber">
+													<xs:maxLength value="50"/>
+													<xs:pattern value="[0-9,\s]+"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="email" nillable="true" minOccurs="0">
+											<xs:simpleType>
+												<xs:restriction base="common:email">
+													<xs:maxLength value="100"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="notes" nillable="true" minOccurs="0">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="Lee works on saturdays at the Dog and Duck bar, but if needed phone Dave and arrange for him not to work one or two saturdays a year"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:minLength value="1"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="homeAddress" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="addressLine1">
+														<xs:annotation>
+															<xs:appinfo>
+																<altova:exampleValues>
+																	<altova:example value="1 Kenelyn Road"/>
+																</altova:exampleValues>
+															</xs:appinfo>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:minLength value="1"/>
+																<xs:maxLength value="50"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="addressLine2">
+														<xs:annotation>
+															<xs:appinfo>
+																<altova:exampleValues>
+																	<altova:example value="Blurton"/>
+																</altova:exampleValues>
+															</xs:appinfo>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:maxLength value="50"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="addressLine3">
+														<xs:annotation>
+															<xs:appinfo>
+																<altova:exampleValues>
+																	<altova:example value="Stoke-on-Trent"/>
+																</altova:exampleValues>
+															</xs:appinfo>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:maxLength value="50"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="addressLine4">
+														<xs:annotation>
+															<xs:appinfo>
+																<altova:exampleValues>
+																	<altova:example value=""/>
+																</altova:exampleValues>
+															</xs:appinfo>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:maxLength value="50"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="addressLine5">
+														<xs:annotation>
+															<xs:appinfo>
+																<altova:exampleValues>
+																	<altova:example value=""/>
+																</altova:exampleValues>
+															</xs:appinfo>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:maxLength value="50"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="postCode">
+														<xs:annotation>
+															<xs:documentation>Allow for non uk postcodes</xs:documentation>
+															<xs:appinfo>
+																<altova:exampleValues>
+																	<altova:example value="ST3 2DD"/>
+																</altova:exampleValues>
+															</xs:appinfo>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:maxLength value="15"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="auditUserName">
+							<xs:annotation>
+								<xs:appinfo>
+									<altova:exampleValues>
+										<altova:example value="s.papworth"/>
+										<altova:example value="a.lines"/>
+									</altova:exampleValues>
+								</xs:appinfo>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:minLength value="1"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+						<xs:attribute name="recordStatus" type="common:recordStatusRescindable" use="required">
+							<xs:annotation>
+								<xs:appinfo>
+									<altova:exampleValues>
+										<altova:example value="Active"/>
+										<altova:example value="Active"/>
+									</altova:exampleValues>
+								</xs:appinfo>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:int" use="required">
+				<xs:annotation>
+					<xs:appinfo>
+						<altova:exampleValues>
+							<altova:example value="1"/>
+						</altova:exampleValues>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="staffContactRef" type="common:guid" use="required">
+				<xs:annotation>
+					<xs:appinfo>
+						<altova:exampleValues>
+							<altova:example value="12345678-1234-6666-1234-000000000001"/>
+						</altova:exampleValues>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="staffRef" type="common:guid" use="required">
+				<xs:annotation>
+					<xs:appinfo>
+						<altova:exampleValues>
+							<altova:example value="12345678-1234-0000-1234-000000000001"/>
+						</altova:exampleValues>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

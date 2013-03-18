@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2012 rel. 2 sp1 (x64) (http://www.altova.com) by Chris (Advanced Health & Care) -->
+<xs:schema xmlns="http://advancedcomputersoftware.com/xml/fusion/socialCare" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:altova="http://www.altova.com/xml-schema-extensions" xmlns:common="http://advancedcomputersoftware.com/xml/fusion" targetNamespace="http://advancedcomputersoftware.com/xml/fusion/socialCare" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://advancedcomputersoftware.com/xml/fusion" schemaLocation="commonTypes.xsd"/>
+	<xs:element name="staffPictureChange">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="data">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="pictureChange" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="imageType" type="common:imageType"/>
+										<xs:element name="picture" type="xs:base64Binary">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="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"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="auditUserName" type="xs:string">
+							<xs:annotation>
+								<xs:appinfo>
+									<altova:exampleValues>
+										<altova:example value="s.papworth"/>
+									</altova:exampleValues>
+								</xs:appinfo>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="recordStatus" type="common:recordStatusRescindable" use="required">
+							<xs:annotation>
+								<xs:appinfo>
+									<altova:exampleValues>
+										<altova:example value="Active"/>
+									</altova:exampleValues>
+								</xs:appinfo>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:int" use="required">
+				<xs:annotation>
+					<xs:appinfo>
+						<altova:exampleValues>
+							<altova:example value="1"/>
+						</altova:exampleValues>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="staffRef" type="common:guid" use="required">
+				<xs:annotation>
+					<xs:appinfo>
+						<altova:exampleValues>
+							<altova:example value="12345678-1234-0000-1234-000000000001"/>
+						</altova:exampleValues>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

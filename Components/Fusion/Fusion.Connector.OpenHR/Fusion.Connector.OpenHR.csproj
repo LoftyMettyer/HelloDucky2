@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{063B2F4C-4903-41F1-8B00-BD26EA561AAD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Fusion.Connector.OpenHR</RootNamespace>
+    <AssemblyName>Fusion.Connector.OpenHR</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper">
+      <HintPath>..\..\lib\Dapper.1.8\lib\net40\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\..\lib\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="NServiceBus">
+      <HintPath>..\..\lib\NServiceBus.3.2.8\lib\net40\NServiceBus.dll</HintPath>
+    </Reference>
+    <Reference Include="NServiceBus.Core">
+      <HintPath>..\..\lib\NServiceBus.3.2.8\lib\net40\NServiceBus.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="NServiceBus.Host">
+      <HintPath>..\..\lib\NServiceBus.Host.3.2.8\lib\net40\NServiceBus.Host.exe</HintPath>
+    </Reference>
+    <Reference Include="NServiceBus.ObjectBuilder.StructureMap, Version=3.0.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\NServiceBus.Structuremap.3.2.8\lib\net40\NServiceBus.ObjectBuilder.StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap">
+      <HintPath>..\..\lib\structuremap.2.6.3\lib\StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core">
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Configuration\FusionConfiguration.cs" />
+    <Compile Include="Configuration\IFusionConfiguration.cs" />
+    <Compile Include="DatabaseAccess\StaffRecord.cs" />
+    <Compile Include="DatabaseAccess\StaffRecordDb.cs" />
+    <Compile Include="EndpointConfig.cs" />
+    <Compile Include="Installer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Installer.Designer.cs">
+      <DependentUpon>Installer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MessageTypes.cs" />
+    <Compile Include="Messaging\BaseMessageHandler.cs" />
+    <Compile Include="Messaging\GenericMessageHandler.cs" />
+    <Compile Include="Messaging\GenericMessageOutboundFilter.cs" />
+    <Compile Include="Messaging\StaffChange\StaffChangeMessageHandler.cs" />
+    <Compile Include="Messaging\StaffChange\StaffChangeMessageSchemaValidator.cs" />
+    <Compile Include="Messaging\StaffChange\StaffChangeMessageSender.cs" />
+    <Compile Include="Messaging\StaffChange\StaffMessageBuilder.cs" />
+    <Compile Include="Messaging\StaffChange\Staff.cs" />
+    <Compile Include="Messaging\staffLegalDocument.cs" />
+    <Compile Include="Messaging\TrackingMessageSender.cs" />
+    <Compile Include="Messaging\GenericMessageBuilder.cs" />
+    <Compile Include="Messaging\GenericMessageSender.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Registries\DatabaseAccessRegistry.cs" />
+    <Compile Include="Registries\ConfigurationRegistry.cs" />
+    <Compile Include="Registries\FilterRegistry.cs" />
+    <Compile Include="Registries\FusionLoggerRegistry.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Registries\MessageSenderRegistry.cs" />
+    <Compile Include="Registries\OutboundBuilderRegistry.cs" />
+    <Compile Include="Registries\SendFusionMessageRequestBuilderRegistry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ServiceBrokerListener.cs" />
+    <Compile Include="StructureMapBootstrap.cs" />
+    <Compile Include="SubscriptionAuthorizer.cs" />
+    <Compile Include="Subscriptions\ManageSubscriptions.cs" />
+    <Compile Include="Configuration\SubcriptionTypeElement.cs" />
+    <Compile Include="Configuration\SubscriptionElementCollection.cs" />
+    <Compile Include="Configuration\SubscriptionSection.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Content Include="Setup.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="Schemas\commonTypes.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Schemas\staffChange.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Schemas\staffContactChange.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Schemas\staffContractChange.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Schemas\staffDepartmentChange.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Schemas\staffHolidayBalanceRemainingChange.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Schemas\staffLeavingReasonChange.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Schemas\staffLegalDocumentChange.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Schemas\staffPictureChange.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Schemas\staffSkillChange.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Schemas\staffTimesheetPerContractSubmission.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Schemas\staffTrainingOutcomeChange.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Fusion.Core.Sql\Fusion.Core.Sql.csproj">
+      <Project>{050F8DEE-2BDB-4C63-A7CA-E2C6F0EF11DC}</Project>
+      <Name>Fusion.Core.Sql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fusion.Core\Fusion.Core.csproj">
+      <Project>{34714C17-E9D5-4AA6-B9BA-00965D3D4AD4}</Project>
+      <Name>Fusion.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fusion.Messages.General\Fusion.Messages.General.csproj">
+      <Project>{07912BFE-66C7-4C5E-8FFA-96AAC0EA6D5E}</Project>
+      <Name>Fusion.Messages.General</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fusion.Messages.SocialCare\Fusion.Messages.SocialCare.csproj">
+      <Project>{BD12AEE4-0906-478F-AAF8-D510EAE3CA06}</Project>
+      <Name>Fusion.Messages.SocialCare</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>-->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <StartAction>Program</StartAction>
+    <StartProgram>$(ProjectDir)$(OutputPath)NServiceBus.Host.exe</StartProgram>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+</Project>

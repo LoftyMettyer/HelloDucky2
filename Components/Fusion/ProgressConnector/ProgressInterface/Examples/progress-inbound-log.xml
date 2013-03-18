@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<fusionLog xmlns="http://advancedcomputersoftware.com/xml/fusion">
+  
+  <!-- id for this log entry (ie new guid) -->
+  <id></id>
+  
+  <!-- source connector identifier -->
+  <source>    
+  </source>
+  
+  <!-- Optional message id of fusion log message -->
+  <messageId>
+    
+  </messageId>
+  <!-- Optional entity ref-->
+  <entityRef>
+    
+  </entityRef>
+  
+  <!-- time of message generation-->
+  <timeUtc>
+    
+  </timeUtc>
+  <!-- Can be one of
+        Info, 
+        Warning, 
+        Error,
+        Fatal
+  -->
+  <logLevel>
+    
+  </logLevel>
+  
+  <!-- log message to write -->
+  <message>
+    
+  </message>
+  
+  <!-- Optional description of the fusion message this log message is about-->
+  <messageDescription>
+    
+  </messageDescription>
+
+  <!-- community -->
+  <community>
+    
+  </community>
+ 
+</fusionLog>

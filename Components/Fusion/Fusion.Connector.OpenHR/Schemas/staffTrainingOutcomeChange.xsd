@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2012 sp1 (x64) (http://www.altova.com) by Simon Papworth (Advanced Health & Care) -->
+<xs:schema xmlns="http://advancedcomputersoftware.com/xml/fusion/socialCare" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:altova="http://www.altova.com/xml-schema-extensions" xmlns:common="http://advancedcomputersoftware.com/xml/fusion" targetNamespace="http://advancedcomputersoftware.com/xml/fusion/socialCare" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://advancedcomputersoftware.com/xml/fusion" schemaLocation="commonTypes.xsd"/>
+	<xs:element name="staffTrainingOutcomeChange">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="data">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="staffTrainingOutcome" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="TrainingOutcomeName">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="Senior Support Worker"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+												<xs:documentation>StaffPlan team name</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:minLength value="1"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="TrainingOutcomeValue">
+											<xs:annotation>
+												<xs:appinfo>
+													<altova:exampleValues>
+														<altova:example value="Senior Support Worker"/>
+													</altova:exampleValues>
+												</xs:appinfo>
+												<xs:documentation>StaffPlan team name</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:minLength value="1"/>
+													<xs:enumeration value="Passed"/>
+													<xs:enumeration value="Failed"/>
+													<xs:enumeration value="Completed"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="auditUserName">
+							<xs:annotation>
+								<xs:appinfo>
+									<altova:exampleValues>
+										<altova:example value="s.papworth"/>
+									</altova:exampleValues>
+								</xs:appinfo>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:minLength value="1"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+						<xs:attribute name="recordStatus" type="common:recordStatusRescindable" use="required">
+							<xs:annotation>
+								<xs:appinfo>
+									<altova:exampleValues>
+										<altova:example value="Active"/>
+									</altova:exampleValues>
+								</xs:appinfo>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:int" use="required">
+				<xs:annotation>
+					<xs:appinfo>
+						<altova:exampleValues>
+							<altova:example value="1"/>
+						</altova:exampleValues>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="staffTrainingOutcomeRef" type="common:guid" use="required">
+				<xs:annotation>
+					<xs:appinfo>
+						<altova:exampleValues>
+							<altova:example value="12345678-1234-2222-1234-000000000001"/>
+						</altova:exampleValues>
+					</xs:appinfo>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

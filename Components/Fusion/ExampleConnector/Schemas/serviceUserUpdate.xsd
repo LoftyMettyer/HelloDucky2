@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2011 rel. 2 (x64) (http://www.altova.com) by James Berry (Adastra Software Ltd) -->
+<xs:schema xmlns="http://advancedcomputersoftware.com/xml/fusion" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://advancedcomputersoftware.com/xml/fusion" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:simpleType name="guid">
+		<xs:annotation>
+			<xs:documentation>A string restriction for a guid</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})|(\{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\})"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="serviceUserChange">
+		<xs:annotation>
+			<xs:documentation>A service user change</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="serviceUserRef" type="guid">
+					<xs:annotation>
+						<xs:documentation>A server user's external id, used across all updates - guid</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="serviceUserDetails">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="serviceUser" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>Can be many service user details, but they must then use the start/end date attributes, and they must not overlap</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="serviceUserId" type="guid">
+											<xs:annotation>
+												<xs:documentation>This is a human knowable ID the service user is known by, not used for identification on the bus</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="title" minOccurs="0">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="20"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="forenames">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="100"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="surname">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="100"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="DOB" type="xs:dateTime"/>
+										<xs:element name="gender">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="Male"/>
+													<xs:enumeration value="Female"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="primarySite">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="100"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="room" minOccurs="0">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="100"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="admissionDate" type="xs:dateTime" minOccurs="0"/>
+										<xs:element name="dischargeDate" type="xs:dateTime" minOccurs="0"/>
+										<xs:element name="serviceType" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>The primary type of service the service user will receive</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="100"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="fundingType" minOccurs="0">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="100"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="locationWithinFacility" minOccurs="0">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="100"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="validFrom" type="xs:dateTime"/>
+									<xs:attribute name="validTo" type="xs:dateTime"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="version" use="required"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

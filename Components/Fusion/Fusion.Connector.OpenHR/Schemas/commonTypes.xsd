@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2012 rel. 2 sp1 (x64) (http://www.altova.com) by Chris (Advanced Health & Care) -->
+<xs:schema xmlns="http://advancedcomputersoftware.com/xml/fusion" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:altova="http://www.altova.com/xml-schema-extensions" targetNamespace="http://advancedcomputersoftware.com/xml/fusion" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:simpleType name="guid">
+		<xs:annotation>
+			<xs:documentation>A string restriction for a guid</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})|(\{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\})"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="phoneNumber">
+		<xs:annotation>
+			<xs:documentation>A string restriction for a phone number</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"/>
+			<xs:minLength value="1"/>
+			<xs:pattern value="[0-9,\s]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="email">
+		<xs:annotation>
+			<xs:documentation>A string restriction for a email</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="recordStatusRescindable">
+		<xs:annotation>
+			<xs:documentation>A record that can be immediately withdrawn</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Active"/>
+			<xs:enumeration value="Inactive"/>
+			<xs:enumeration value="RecordCreatedInError"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="recordStatusTransactional">
+		<xs:annotation>
+			<xs:documentation>A transactional record that can be marked as removed/voided</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Active"/>
+			<xs:enumeration value="Removed"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="recordStatusStandard">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Active"/>
+			<xs:enumeration value="Inactive"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="gender">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Male"/>
+			<xs:enumeration value="Female"/>
+			<xs:enumeration value="Unknown"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="imageType">
+		<xs:annotation>
+			<xs:documentation>A string restriction for source image type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="TIFF"/>
+			<xs:enumeration value="BMP"/>
+			<xs:enumeration value="GIF"/>
+			<xs:enumeration value="JPEG"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="legalDocumentTypes">
+		<xs:annotation>
+			<xs:documentation>A string restriction for supported legal documents</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="DBS"/>
+			<xs:enumeration value="NursingRegistration"/>
+			<xs:enumeration value="PersonalReference"/>
+			<xs:enumeration value="POCA"/>
+			<xs:enumeration value="POVA"/>
+			<xs:enumeration value="WorkReference"/>
+			<xs:enumeration value="StaffInducted"/>
+			<xs:enumeration value="StaffFullyAccepted"/>
+			<xs:enumeration value="Passport"/>
+			<xs:enumeration value="DrivingLicense"/>
+			<xs:enumeration value="Visa"/>
+			<xs:enumeration value="LeaveToRemain"/>
+			<xs:enumeration value="WorkPermit"/>
+			<xs:enumeration value="SOVA"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

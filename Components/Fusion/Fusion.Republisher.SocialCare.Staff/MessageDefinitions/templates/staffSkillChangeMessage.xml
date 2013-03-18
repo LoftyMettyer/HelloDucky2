@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<staffSkillChange version="1" staffSkillRef="" staffRef="" xmlns="http://advancedcomputersoftware.com/xml/fusion/socialCare" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<data auditUserName="" recordStatus="">
+		<staffSkill>
+			<name/>
+			<trainingStart/>
+			<trainingEnd/>
+			<validFrom/>
+			<validTo/>
+			<reference/>
+			<outcome/>
+			<didNotAttend/>			
+		</staffSkill>
+	</data>
+</staffSkillChange>

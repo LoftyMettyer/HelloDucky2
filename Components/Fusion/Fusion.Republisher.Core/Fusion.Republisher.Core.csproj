@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E5486C88-31E1-43DE-B844-475376E20FFC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Fusion.Republisher.Core</RootNamespace>
+    <AssemblyName>Fusion.Republisher.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper">
+      <HintPath>..\..\lib\Dapper.1.8\lib\net40\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <HintPath>..\..\lib\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\lib\Newtonsoft.Json.4.5.10\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NServiceBus">
+      <HintPath>..\..\lib\NServiceBus.3.2.8\lib\net40\NServiceBus.dll</HintPath>
+    </Reference>
+    <Reference Include="NServiceBus.Core">
+      <HintPath>..\..\lib\NServiceBus.3.2.8\lib\net40\NServiceBus.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="NServiceBus.Host, Version=3.2.0.0, Culture=neutral, PublicKeyToken=9fc386479f8a226c, processorArchitecture=MSIL">
+      <ExecutableExtension>.exe</ExecutableExtension>
+      <HintPath>..\..\lib\NServiceBus.Host.3.2.8\lib\net40\NServiceBus.Host.exe</HintPath>
+    </Reference>
+    <Reference Include="StructureMap, Version=2.6.3.0, Culture=neutral, PublicKeyToken=e60ad81abae3c223, processorArchitecture=MSIL">
+      <HintPath>..\..\lib\structuremap.2.6.3\lib\StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Configuration\FusionConfiguration.cs" />
+    <Compile Include="Configuration\IFusionConfiguration.cs" />
+    <Compile Include="Database\EntityState.cs" />
+    <Compile Include="Database\EntityStateDatabase.cs" />
+    <Compile Include="Database\IEntityStateDatabase.cs" />
+    <Compile Include="FusionSchemaValidator.cs" />
+    <Compile Include="GenericBlindMessageRepublisher.cs" />
+    <Compile Include="IMessageDefinition.cs" />
+    <Compile Include="InboundFilters\IgnoreDuplicateMessageInboundFilter.cs" />
+    <Compile Include="InboundFilters\IgnoreNonLatestMessageInboundFilter.cs" />
+    <Compile Include="IRepublisherMessageBuilder.cs" />
+    <Compile Include="MessageHandlers\BaseMessageHandler.cs" />
+    <Compile Include="MessageProcessors\FusionMessageDefinition.cs" />
+    <Compile Include="MessageProcessors\FusionMessageDefinitionCollection.cs" />
+    <Compile Include="MessageProcessors\FusionMessageOptionalGroupNode.cs" />
+    <Compile Include="MessageProcessors\FusionMessageProcessor.cs" />
+    <Compile Include="MessageProcessors\FusionMessageRescindableNode.cs" />
+    <Compile Include="MessageProcessors\FusionMessageSimpleAttribute.cs" />
+    <Compile Include="MessageProcessors\FusionMessageSimpleNode.cs" />
+    <Compile Include="MessageProcessors\IExtractFusionMessageData.cs" />
+    <Compile Include="MessageProcessors\IFusionMessageProcessor.cs" />
+    <Compile Include="MessageSenders\TrackingMessageSender.cs" />
+    <Compile Include="MessageStateSerializer\IMessageStateSerializer.cs" />
+    <Compile Include="MessageStateSerializer\MessagePersistedState.cs" />
+    <Compile Include="MessageStateSerializer\MessageStateSerializer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PublishMessageRequest.cs" />
+    <Compile Include="Registries\ConfigurationRegistry.cs" />
+    <Compile Include="Registries\DatabaseRegistry.cs" />
+    <Compile Include="Registries\FusionLoggerRegistry.cs" />
+    <Compile Include="Registries\FusionMessageProcessorRegistry.cs" />
+    <Compile Include="Registries\MessageStateSerializerRegistry.cs" />
+    <Compile Include="ServiceBrokerListener.cs" />
+    <Compile Include="StateStoreMessageRepublisher.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Fusion.Core.Sql\Fusion.Core.Sql.csproj">
+      <Project>{050F8DEE-2BDB-4C63-A7CA-E2C6F0EF11DC}</Project>
+      <Name>Fusion.Core.Sql</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fusion.Core\Fusion.Core.csproj">
+      <Project>{34714C17-E9D5-4AA6-B9BA-00965D3D4AD4}</Project>
+      <Name>Fusion.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Fusion.Messages.General\Fusion.Messages.General.csproj">
+      <Project>{07912BFE-66C7-4C5E-8FFA-96AAC0EA6D5E}</Project>
+      <Name>Fusion.Messages.General</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

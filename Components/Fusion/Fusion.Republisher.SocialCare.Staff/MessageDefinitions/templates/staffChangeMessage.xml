@@ -1,0 +1,35 @@
+<staffChange version="1" staffRef="" xmlns="http://advancedcomputersoftware.com/xml/fusion/socialCare" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <data auditUserName="" recordStatus="">
+    <staff>
+      <title/>
+      <forenames/>
+      <surname/>
+      <preferredName/>
+      <payrollNumber/>
+      <DOB/>
+      <employeeType/>
+      <workMobile/>
+      <personalMobile/>
+      <workPhoneNumber/>
+      <homePhoneNumber/>
+      <email/>
+      <personalEmail/>
+      <gender/>
+      <startDate/>
+      <leavingDate/>
+      <leavingReason/>
+      <companyName/>
+      <jobTitle/>
+      <managerRef/>
+      <homeAddress>
+        <addressLine1/>
+        <addressLine2/>
+        <addressLine3/>
+        <addressLine4/>
+        <addressLine5/>
+        <postCode/>
+      </homeAddress>
+      <nationalInsuranceNumber/>
+    </staff>
+  </data>
+</staffChange>

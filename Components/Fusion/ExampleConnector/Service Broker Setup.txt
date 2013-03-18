@@ -1,0 +1,18 @@
+﻿
+
+ALTER DATABASE FusionExample SET ENABLE_BROKER WITH ROLLBACK IMMEDIATE
+GO
+
+CREATE MESSAGE TYPE TriggerFusionSend VALIDATION = NONE;
+GO
+
+CREATE CONTRACT TriggerFusionContract (
+	TriggerFusionSend SENT BY INITIATOR
+);
+
+CREATE QUEUE fusion.qFusion
+  WITH
+  STATUS = ON;
+
+CREATE SERVICE FusionApplicationService ON QUEUE fusion.qFusion (TriggerFusionContract);
+CREATE SERVICE FusionConnectorService ON QUEUE fusion.qFusion (TriggerFusionContract);
