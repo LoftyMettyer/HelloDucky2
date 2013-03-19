@@ -659,6 +659,7 @@
     <Content Include="Views\Home\util_run_customreportsData.ascx" />
     <Content Include="Views\Home\util_run_customreportsMain.ascx" />
     <Content Include="Views\Home\util_run_promptedvalues.ascx" />
+    <Content Include="Views\Home\util_run_workflow.ascx" />
     <Content Include="Views\Home\Util_SortOrderSelection.aspx" />
     <Content Include="Views\Home\PasswordChange.ascx" />
     <Content Include="Views\Home\util_test_expression.aspx" />
@@ -667,6 +668,7 @@
     <Content Include="Views\Home\util_validate_customreports.aspx" />
     <Content Include="Views\Home\util_validate_expression.aspx" />
     <Content Include="Views\Home\util_validate_picklist.ascx" />
+    <Content Include="Views\Home\WorkflowPendingSteps.ascx" />
     <Content Include="Views\Shared\ctl_ASRIntranetPrintFunctions.ascx" />
     <Content Include="Views\Shared\gotoOption.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\grdaccess.ascx" />
