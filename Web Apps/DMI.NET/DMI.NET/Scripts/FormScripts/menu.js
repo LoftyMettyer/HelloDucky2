@@ -4279,6 +4279,7 @@ function menu_enableMenuItem(itemId, fNewSetting) {
 }
 
 function menu_toolbarEnableItem(itemId, fNewSetting) {
+	
 	var currSrc = $("#" + itemId + " img:first").attr("src");
 	
 		if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
@@ -4296,19 +4297,25 @@ function menu_toolbarEnableItem(itemId, fNewSetting) {
 
 
 function menu_setVisibleMenuItem(itemId, fNewSetting) {
-    
+	
     var sNewValue = "";
 
-	if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
-		$("#" + itemId + " a:first").show();
-		$("#" + itemId).removeClass("hidden");
-	}
-	else {
-		$("#" + itemId + " a:first").hide();
-		$("#" + itemId).addClass("hidden");
-	}
+    if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
+	    if ($("#" + itemId).hasClass("hidden")) {
+		    $("#" + itemId + " a:first").show();
+		    $("#" + itemId).removeClass("hidden");
+	    }
+    }
+    else {
+	    if (!$("#" + itemId).hasClass("hidden")) {
+		    $("#" + itemId + " a:first").hide();
+		    $("#" + itemId).addClass("hidden");
+	    }
+    }
 
-	$(".accordion").accordion("resize");
+	if (itemId == "mnutoolHistory") {
+		$(".accordion").accordion("resize");
+	}
 }
 
 function menu_SetmnutoolRecordPositionCaption(newCaption) {
