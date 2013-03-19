@@ -9,6 +9,11 @@
 		$("#fixedlinks").fadeIn("slow");
 
 	});
+	
+	function fixedlinks_mnutoolAboutHRPro() {
+		$("#About").dialog("open");
+	}
+
 </script>
 <div class="RecDescPhoto">
     
@@ -74,7 +79,7 @@
 														  </a>
                                 </div>
                                 <div class="button">
-                                    <a href="#" rel="table">
+                                    <a href="javascript:fixedlinks_mnutoolAboutHRPro()" rel="table">
                                         <img src="<%: Url.Content("~/Scripts/officebar/winkit/help64HOVER.png") %>" alt="" />
 													 <i class="icon-question-sign"></i><h6>Help</h6>
 													 </a>

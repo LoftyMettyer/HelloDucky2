@@ -22,8 +22,9 @@
 	session("selectSQL") = ""
 	session("filterSQL") = ""
 	session("filterDef") = ""
-	session("optionAction") = ""
-
+	Session("optionAction") = ""	
+	Session("server") = ""
+	
 	Session("showLoginDetails") = Request.QueryString("Details")
 
 	'TODO
@@ -150,7 +151,8 @@
 <!--
 
 	function HelpAbout() {
-		window.location.href = "<%: Url.Action("AboutHRPro", "Account") %>";
+		//window.location.href = "<%: Url.Action("AboutHRPro", "Account") %>";
+		$("#About").dialog( "open" );
 	}
 
 	function SubmitLoginDetails() {

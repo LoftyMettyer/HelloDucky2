@@ -59,7 +59,14 @@
 
 	<script type="text/javascript">
 		$(document).ready(function () {
-		    
+
+			$("#About").dialog({
+				autoOpen: false,
+				modal: true,
+				width: 650
+			});
+
+
 			if ($("#workframeset").length > 0) {
 				$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
 			    $("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });
@@ -184,6 +191,7 @@
 
     
 <div class="modal"><!-- AJAX please wait spinner --></div>    
+<div id="About"><%Html.RenderPartial("~/views/account/about.ascx")%></div>
 
 </body>
 </html>

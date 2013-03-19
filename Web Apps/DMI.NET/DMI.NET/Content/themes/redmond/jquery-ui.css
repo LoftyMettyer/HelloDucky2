@@ -784,7 +784,8 @@ body .ui-tooltip {
 /* Component containers
 ----------------------------------*/
 .ui-widget {
-	font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;
+	/*font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;*/
+	font-family: Segoe UI, Verdana, "Open Sans", Tahoma,Helvetica,sans-serif; 
 	font-size: 1.1em;
 }
 .ui-widget .ui-widget {
@@ -794,7 +795,7 @@ body .ui-tooltip {
 .ui-widget select,
 .ui-widget textarea,
 .ui-widget button {
-	font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;
+	font-family: Segoe UI, Verdana, "Open Sans", Tahoma,Helvetica,sans-serif; 
 	font-size: 1em;
 }
 .ui-widget-content {

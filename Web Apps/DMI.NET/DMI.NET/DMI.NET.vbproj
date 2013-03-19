@@ -604,7 +604,7 @@
     <Content Include="Scripts\jquery.rightClick.js" />
     <Content Include="Scripts\jquery.ui.touch-punch.min.js" />
     <Content Include="Scripts\menu.js" />
-    <Content Include="Views\Account\AboutHRPro.aspx" />
+    <Content Include="Views\Account\About.ascx" />
     <Content Include="Views\Account\Loginerror.aspx" />
     <Content Include="Views\Account\ForcedPasswordChange.aspx" />
     <Content Include="Views\Account\Login.aspx" />

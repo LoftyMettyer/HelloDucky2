@@ -404,6 +404,14 @@ function menu_MenuClick(sTool) {
 		return;
 	}
 
+
+	if (sToolName == "mnutoolAboutHRPro") {
+		menu_mnutoolAboutHRPro();
+		return;
+	}
+
+
+
 	if (sToolName == "mnutoolExit") {
 		menu_exitIntranet();
 		return;
@@ -2729,6 +2737,12 @@ function menu_logoffIntranet() {
 	window.location.href = "LogOff";
 
 }
+
+function menu_mnutoolAboutHRPro() {
+	$("#About").dialog("open");
+}
+
+
 
 function menu_newRecord() {
 //	var sCurrentWorkPage;
