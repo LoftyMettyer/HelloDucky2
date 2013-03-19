@@ -894,7 +894,7 @@ function menu_refreshMenu() {
 			fCanRunBradfordFactor = true;
 		}
 	}
-
+	
 	//menu is always available and populated.
 	//if (abMainMenu.Bands.Count() > 0) {
 	menu_enableMenu();
@@ -904,7 +904,7 @@ function menu_refreshMenu() {
 
 
 	sCurrentWorkPage = OpenHR.currentWorkPage();
-
+	
 	if (sCurrentWorkPage == "RECORDEDIT") {
 		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
 		var frmData = OpenHR.getForm("dataframe", "frmData");
@@ -1061,7 +1061,7 @@ function menu_refreshMenu() {
 
 	}
 	else {
-		if (sCurrentWorkPage == "FIND") {			
+		if (sCurrentWorkPage == "FIND") {						
 			//frmFind = window.parent.frames("workframe").document.forms("frmFindForm");
 
 			frmFind = document.getElementById("frmFindForm");	
@@ -1084,7 +1084,7 @@ function menu_refreshMenu() {
 
 			// Enable the record editing options as necessary.
 			menu_setVisibleMenuItem("mnutoolNewRecord", true);
-
+			
 			menu_toolbarEnableItem("mnutoolNewRecord", ((frmFind.txtInsertGranted.value.toUpperCase() == "TRUE") &&
 					((frmMenuInfo.txtUserType.value == 0) ||
 					(frmFind.txtCurrentParentTableID.value > 0) ||
@@ -4280,13 +4280,17 @@ function menu_enableMenuItem(itemId, fNewSetting) {
 
 function menu_toolbarEnableItem(itemId, fNewSetting) {
 	var currSrc = $("#" + itemId + " img:first").attr("src");
-
+	
 		if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
 			//apply disable icon
-			$("#" + itemId + " img:first").attr("src", currSrc.replace("DIS.png", "HOVER.png"));			
+			if (currSrc.indexOf("HOVER") <= 0) {
+				$("#" + itemId + " img:first").attr("src", currSrc.replace("DIS.png", "HOVER.png"));
+			}
 		} else {
 			//apply disable icon
-			$("#" + itemId + " img:first").attr("src", currSrc.replace("HOVER.png", "DIS.png"));
+			if (currSrc.indexOf("DIS") <= 0) {
+				$("#" + itemId + " img:first").attr("src", currSrc.replace("HOVER.png", "DIS.png"));
+			}
 		}
 }
 
