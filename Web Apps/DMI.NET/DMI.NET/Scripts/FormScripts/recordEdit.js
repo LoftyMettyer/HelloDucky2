@@ -4,24 +4,30 @@
 function addControl(tabNumber, controlDef) {
 
     var tabID = "FI_21_" + tabNumber;
+		
+    if ($("#" + tabID).length <= 0) {
+	    if (tabNumber > 0) {
+		    //tab doesn't exist - create it...
+		    var tabFontName = $("#txtRecEditFontName").val();
+		    var tabFontSize = $("#txtRecEditFontSize ").val();
 
-    if (($("#" + tabID).length <= 0) && (tabNumber > 0)) {
-        //tab doesn't exist - create it...
-        var tabFontName = $("#txtRecEditFontName").val();
-        var tabFontSize = $("#txtRecEditFontSize ").val();
+		    var tabCss = "style='font-family: " + tabFontName + " ; font-size: " + tabFontSize + "pt'";
 
-        var tabCss = "style='font-family: " + tabFontName + " ; font-size: " + tabFontSize + "pt'";
-        
-        var tabs = $("#ctlRecordEdit").tabs(),
-    tabTemplate = "<li><a " + tabCss + " href='#{href}'>#{label}</a></li>";
+		    var tabs = $("#ctlRecordEdit").tabs(),
+			    tabTemplate = "<li><a " + tabCss + " href='#{href}'>#{label}</a></li>";
 
-        var label = getTabCaption(tabNumber),
-            li = $(tabTemplate.replace(/#\{href\}/g, "#" + tabID).replace(/#\{label\}/g, label));
+		    var label = getTabCaption(tabNumber),
+			    li = $(tabTemplate.replace(/#\{href\}/g, "#" + tabID).replace(/#\{label\}/g, label));
 
-        tabs.find(".ui-tabs-nav").append(li);
-        tabs.append("<div style='position: relative;' id='" + tabID + "'></div>");
-        tabs.tabs("refresh");
-        if (tabNumber == 1) tabs.tabs("option", "active", 0);
+		    tabs.find(".ui-tabs-nav").append(li);
+		    tabs.append("<div style='position: relative;' id='" + tabID + "'></div>");
+		    tabs.tabs("refresh");
+		    if (tabNumber == 1) tabs.tabs("option", "active", 0);
+	    } else {
+	    	$("#ctlRecordEdit").append("<div style='position: relative;' id='" + tabID + "'></div>");
+	    	$("#ctlRecordEdit").css("background-color", "white");
+		    $("#ctlRecordEdit").css("border", "1px solid gray");
+	    }
     }
 
     //add control to tab.

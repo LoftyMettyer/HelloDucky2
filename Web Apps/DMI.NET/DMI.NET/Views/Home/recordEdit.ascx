@@ -10,9 +10,7 @@
     function recordEdit_window_onload() {
         //public variables
         this.mavIDColumns = new Array(3);
-
-        $("#ctlRecordEdit").tabs();
-
+	    
         var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
 
         var fOK;
@@ -189,7 +187,7 @@
                         }
                     }
                 }
-
+                
                 if (fOK == true) {
                     //.formatScreen is redundant. the 'addHtmlControl' js function replaces it and amalgamates with addControl.
                     // Get the recEdit control to format itself.
