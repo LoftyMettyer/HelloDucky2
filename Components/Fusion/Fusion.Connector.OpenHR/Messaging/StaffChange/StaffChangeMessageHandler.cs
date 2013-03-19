@@ -5,12 +5,11 @@ using log4net;
 
 using NServiceBus;
 using StructureMap.Attributes;
-using System.Xml.Linq;
 using System.IO;
 using System;
 using Fusion.Core.Sql;
 using Fusion.Messages.SocialCare;
-using Fusion.Connector.OpenHR.Messaging;
+using Fusion.Connector.OpenHR.MessageComponents;
 using System.Xml.Serialization;
 using System.Xml;
 using Dapper;
@@ -37,7 +36,7 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
 
             SqlParameter idParameter;
             SqlParameter parameter;
-            staffChange _staff;
+            StaffChange _staff;
 
             bool shouldProcess = base.StartHandlingMessage(message);
             bool isNew = true;
@@ -54,8 +53,8 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                 {
                     using (XmlTextReader xr = new XmlTextReader(sr))
                     {
-                        XmlSerializer serializer = new XmlSerializer(typeof (staffChange));
-                        _staff = (staffChange) serializer.Deserialize(xr);
+                        XmlSerializer serializer = new XmlSerializer(typeof (StaffChange));
+                        _staff = (StaffChange) serializer.Deserialize(xr);
 
                     }
                 }

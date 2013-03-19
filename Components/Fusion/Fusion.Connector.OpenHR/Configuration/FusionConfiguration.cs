@@ -6,8 +6,8 @@ namespace Fusion.Connector.OpenHR.Configuration
     {
         public FusionConfiguration()
         {
-            ServiceName = string.Format("{0}.{1}" ,ConfigurationManager.AppSettings["Name"],ConfigurationManager.AppSettings["OpenHR_db"]);
-            InputQueue = ConfigurationManager.AppSettings["InputQueue"];
+            ServiceName = ConfigurationManager.AppSettings["Name"];
+            Community = ConfigurationManager.AppSettings["Community"];
 
         }
         public string ServiceName
@@ -16,7 +16,7 @@ namespace Fusion.Connector.OpenHR.Configuration
             private set;
         }
 
-        public string InputQueue
+        public string Community
         {
             get;
             private set;
