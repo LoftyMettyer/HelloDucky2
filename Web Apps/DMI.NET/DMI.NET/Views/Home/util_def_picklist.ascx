@@ -1026,13 +1026,16 @@
         rstFindRecords = Nothing
 
 		' NB. IMPORTANT ADO NOTE.
-        ' When calling a stored procedure which returns a recordset AND has output parameters
-        ' you need to close the recordset and set it to nothing before using the output parameters. 
-        If Len(cmdFindRecords.Parameters("errorMsg").Value) > 0 Then
-            Session("ErrorTitle") = "Picklist Definition Page"
-            Session("ErrorText") = cmdFindRecords.Parameters("errorMsg").Value
-            Response.Clear()
-            Response.Redirect("error.asp")
+		' When calling a stored procedure which returns a recordset AND has output parameters
+		' you need to close the recordset and set it to nothing before using the output parameters. 
+		If Len(cmdFindRecords.Parameters("errorMsg").Value) > 0 Then
+			Session("ErrorTitle") = "Picklist Definition Page"
+			Session("ErrorText") = cmdFindRecords.Parameters("errorMsg").Value
+			Response.Clear()
+			
+			'Response.Redirect("error.asp")
+			Response.Redirect("FormError")
+			
         Else
             Response.Write("<INPUT type='hidden' id=txt1000SepCols name=txt1000SepCols value=""" & cmdFindRecords.Parameters("1000SepCols").Value & """>" & vbCrLf)
         End If

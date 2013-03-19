@@ -9,14 +9,14 @@
 	
 		Session("ErrorTitle") = "Find Page"
 		Session("ErrorText") = "No table or view specified."
-		Response.Redirect("error")
+		Response.Redirect("FormError")
 	End If
 	
 	' Flag an error if there is no current screen is specified.
 	If Session("screenID") <= 0 Then
 		Session("ErrorTitle") = "Find Page"
 		Session("ErrorText") = "No screen specified."
-		Response.Redirect("error")
+		Response.Redirect("FormError")
 	End If
 	
 	' Get the screen's default order if none is already specified.
@@ -38,7 +38,7 @@
 		If (Err.Number <> 0) Then
 			Session("ErrorTitle") = "Find Page"
 			Session("ErrorText") = "The default order for the screen could not be determined :<p>" & formatError(Err.Description)
-			Response.Redirect("error")
+			Response.Redirect("FormError")
 		Else
 			Session("orderID") = cmdScreenOrder.Parameters("orderID").Value
 		End If

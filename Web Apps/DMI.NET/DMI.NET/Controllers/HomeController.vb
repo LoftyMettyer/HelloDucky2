@@ -2370,6 +2370,17 @@ Namespace Controllers
 			Return PartialView()
 		End Function
 
+		Function FormError() As JsonResult
+			' replaces response.redirect("error") 
+			If NullSafeString(Session("ErrorTitle")).Length = 0 Then Session("ErrorTitle") = "Unspecified Form"
+			If NullSafeString(Session("ErrorText")).Length = 0 Then Session("ErrorText") = "Unspecified Error (" & Session("ErrorTitle") & ")"
+
+			Dim errorResponse = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
+			Return Json(errorResponse, JsonRequestBehavior.AllowGet)
+
+		End Function
+
+
 #Region "Picklists"
 
 		Function util_def_picklist() As ActionResult
