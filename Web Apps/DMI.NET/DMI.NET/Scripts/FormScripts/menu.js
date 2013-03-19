@@ -1800,6 +1800,16 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	return iResult;
 }
 
+function menu_WorkflowOutOfOffice() {
+	//	var frmWorkArea;
+
+	//	// Submit the current "workframe" form, and then load the required page.
+	//	frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
+	//	frmWorkArea.txtAction.value = "WORKFLOWOUTOFOFFICE_CHECK";
+	//	frmWorkArea.txtGotoPage.value = "default.asp";
+	//	frmWorkArea.submit();
+}
+
 function menu_loadPage(psPage) {
 	var frmWorkArea;
 
@@ -1813,25 +1823,22 @@ function menu_loadPage(psPage) {
 }
 
 function menu_autoLoadPage(psPage, pfAuto) {
-//	var frmWorkArea;
+	var frmWorkArea;
+	// Submit the current "workframe" form, and then load the required page.
+	//frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
+	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+	frmWorkArea.txtGotoTableID.value = 0;
+	frmWorkArea.txtGotoViewID.value = 0;
+	frmWorkArea.txtGotoScreenID.value = 0;
+	frmWorkArea.txtGotoPage.value = psPage;
 
-//	// Submit the current "workframe" form, and then load the required page.
-//	frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
-//	frmWorkArea.txtGotoTableID.value = 0;
-//	frmWorkArea.txtGotoViewID.value = 0;
-//	frmWorkArea.txtGotoScreenID.value = 0;
-//	frmWorkArea.txtGotoPage.value = psPage + ".asp";
-
-//	if (pfAuto == true) 
-//	{
-//		frmWorkArea.txtGotoFromMenu.value = 0;
-//	}
-//	else 
-//	{
-//		frmWorkArea.txtGotoFromMenu.value = 1;
-//	}
-
-//	frmWorkArea.submit();
+	if (pfAuto == true) {
+		frmWorkArea.txtGotoFromMenu.value = 0;
+	}
+	else {
+		frmWorkArea.txtGotoFromMenu.value = 1;
+	}
+	OpenHR.submitForm(frmWorkArea);
 }
 
 function menu_loadDefSelPage(piDefSelType, piUtilID, piTableID, pfFromMenu) {
@@ -2668,16 +2675,7 @@ function menu_pausecomp(millis)
 //	} while(curDate-date < millis);
 }
 				
-function menu_WorkflowOutOfOffice()
-{
-//	var frmWorkArea;
 
-//	// Submit the current "workframe" form, and then load the required page.
-//	frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
-//	frmWorkArea.txtAction.value = "WORKFLOWOUTOFOFFICE_CHECK";
-//	frmWorkArea.txtGotoPage.value = "default.asp";
-//	frmWorkArea.submit();
-}
 				
 function menu_exitIntranet() {
 
