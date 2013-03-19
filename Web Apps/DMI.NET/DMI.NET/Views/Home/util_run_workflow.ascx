@@ -1,13 +1,17 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%@ Import namespace="DMI.NET" %>
+<%@ Import Namespace="DMI.NET" %>
+
+<%-- For other devs: Do not remove below line. --%>
+<%="" %>
+<%-- For other devs: Do not remove above line. --%>
 
 <% 
 	Response.Expires = 0
 
 	Dim sMessage = ""
-	Dim sFormElements As String
-	Dim sURL As String
-	Dim sInstanceID As String
+	Dim sFormElements = ""
+	Dim sURL = ""
+	Dim sInstanceID = ""
 	Dim iInstanceID As Integer
 	
 	Session("utiltype") = Request.Form("utiltype")
@@ -28,8 +32,8 @@
 	cmdURL.Parameters.Append(prmParameterKey)
 	prmParameterKey.value = "Param_URL"
 
-	Dim prmURL = cmdURL.CreateParameter("url", 200, 2, 8000) ' 200=adVarChar, 2=output, 8000=size
-	cmdURL.Parameters.Append(prmURL)
+	Dim prmUrl = cmdURL.CreateParameter("url", 200, 2, 8000) ' 200=adVarChar, 2=output, 8000=size
+	cmdURL.Parameters.Append(prmUrl)
 
 	Err.Clear()
 	cmdURL.Execute()
@@ -42,14 +46,14 @@
 	cmdURL = Nothing
 	
 	If Len(sURL) > 0 Then
-		Dim cmdInitiate = Server.CreateObject("ADODB.Command")
+		Dim cmdInitiate = CreateObject("ADODB.Command")
 		cmdInitiate.CommandText = "spASRInstantiateWorkflow"
 		cmdInitiate.CommandType = 4	' Stored Procedure
 		cmdInitiate.ActiveConnection = Session("databaseConnection")
 
 		Dim prmUtilID = cmdInitiate.CreateParameter("WorkflowID", 3, 1)
 		cmdInitiate.Parameters.Append(prmUtilID)
-		prmUtilID.value = cleanNumeric(CType(Session("utilid"), String))
+		prmUtilID.value = CleanNumeric(CType(Session("utilid"), String))
 
 		Dim prmInstanceID = cmdInitiate.CreateParameter("instanceID", 3, 2)	' 3=integer, 2=output
 		cmdInitiate.Parameters.Append(prmInstanceID)
@@ -64,134 +68,107 @@
 		cmdInitiate.Execute()
 			
 		If (Err.Number = 0) Then
-			sInstanceID = cmdInitiate.Parameters("instanceID").Value
-			sFormElements = cmdInitiate.Parameters("formElements").Value
-			sMessage = cmdInitiate.Parameters("message").Value
+			sInstanceID = CType(cmdInitiate.Parameters("instanceID").Value, String)
+			sFormElements = CType(cmdInitiate.Parameters("formElements").Value, String)
+			sMessage = CType(cmdInitiate.Parameters("message").Value, String)
 		End If
 	
 		' Release the ADO command object.
 		cmdInitiate = Nothing
 	End If
 %>
-<html>
-<head>
-	<meta name="GENERATOR" content="Microsoft Visual Studio 6.0">
-	<link href="OpenHR.css" rel="stylesheet" type="text/css">
-	<title>OpenHR Intranet</title>
-	<meta http-equiv="X-UA-Compatible" content="IE=5">
+<script type="text/JavaScript">
 
-	<script  type="text/JavaScript">
-		
-		// Resize the popup.
-		iResizeByHeight = frmPopup.offsetParent.scrollHeight - frmPopup.offsetParent.clientHeight;
-		if (frmPopup.offsetParent.offsetHeight + iResizeByHeight > screen.availHeight) {
-			try
-			{
-				window.parent.moveTo((screen.width - frmPopup.offsetParent.offsetWidth) / 2, 0);
-				window.parent.resizeTo(frmPopup.offsetParent.offsetWidth, screen.availHeight);
-			}
-			catch(e) {}
+	// Resize the popup.
+	iResizeByHeight = frmPopup.offsetParent.scrollHeight - frmPopup.offsetParent.clientHeight;
+	if (frmPopup.offsetParent.offsetHeight + iResizeByHeight > screen.availHeight) {
+		try {
+			window.parent.moveTo((screen.width - frmPopup.offsetParent.offsetWidth) / 2, 0);
+			window.parent.resizeTo(frmPopup.offsetParent.offsetWidth, screen.availHeight);
 		}
-		else {
-			try
-			{
-				window.parent.moveTo((screen.width - frmPopup.offsetParent.offsetWidth) / 2, (screen.availHeight - (frmPopup.offsetParent.offsetHeight + iResizeByHeight)) / 2);
-				window.parent.resizeBy(0, iResizeByHeight);
-			}
-			catch(e) {}
+		catch (e) { }
+	}
+	else {
+		try {
+			window.parent.moveTo((screen.width - frmPopup.offsetParent.offsetWidth) / 2, (screen.availHeight - (frmPopup.offsetParent.offsetHeight + iResizeByHeight)) / 2);
+			window.parent.resizeBy(0, iResizeByHeight);
 		}
+		catch (e) { }
+	}
 
-		iResizeByWidth = frmPopup.offsetParent.scrollWidth - frmPopup.offsetParent.clientWidth;
-		if (frmPopup.offsetParent.offsetWidth + iResizeByWidth > screen.width) {
-			try
-			{
-				window.parent.moveTo(0, (screen.availHeight - frmPopup.offsetParent.offsetHeight) / 2);
-				window.parent.resizeTo(screen.width, frmPopup.offsetParent.offsetHeight);
-			}
-			catch(e) {}
+	iResizeByWidth = frmPopup.offsetParent.scrollWidth - frmPopup.offsetParent.clientWidth;
+	if (frmPopup.offsetParent.offsetWidth + iResizeByWidth > screen.width) {
+		try {
+			window.parent.moveTo(0, (screen.availHeight - frmPopup.offsetParent.offsetHeight) / 2);
+			window.parent.resizeTo(screen.width, frmPopup.offsetParent.offsetHeight);
 		}
-		else {
-			try
-			{
-				window.parent.moveTo((screen.width - (frmPopup.offsetParent.offsetWidth + iResizeByWidth)) / 2, (screen.availHeight - frmPopup.offsetParent.offsetHeight) / 2);
-				window.parent.resizeBy(iResizeByWidth, 0);
-			}
-			catch(e) {}
+		catch (e) { }
+	}
+	else {
+		try {
+			window.parent.moveTo((screen.width - (frmPopup.offsetParent.offsetWidth + iResizeByWidth)) / 2, (screen.availHeight - frmPopup.offsetParent.offsetHeight) / 2);
+			window.parent.resizeBy(iResizeByWidth, 0);
 		}
+		catch (e) { }
+	}
 
-		var dataCollection = frmPopup.elements;
-		if (dataCollection!=null) 
-		{
-			for (i=0; i<dataCollection.length; i++)  
-			{
-				sControlName = dataCollection.item(i).name;
-				sControlName = sControlName.substr(0, 9);
-				if (sControlName=="utilform_") 
-				{
-					sForm = dataCollection.item(i).value;
-					spawnWindow(sForm, '_blank', screen.availWidth, screen.availHeight,'yes');
-				}
+	var dataCollection = frmPopup.elements;
+	if (dataCollection != null) {
+		for (i = 0; i < dataCollection.length; i++) {
+			sControlName = dataCollection.item(i).name;
+			sControlName = sControlName.substr(0, 9);
+			if (sControlName == "utilform_") {
+				sForm = dataCollection.item(i).value;
+				spawnWindow(sForm, '_blank', screen.availWidth, screen.availHeight, 'yes');
 			}
-		}	
+		}
+	}
 
 		<%
-		If (Len(sMessage) = 0) _
-			And (Len(sFormElements) > 0) _
-			And (Len(sURL) > 0) Then
-%>		
-		try 
-		{
-			self.close();
-		}
-		catch(e) {}		
-		<%
-	End If
+	If (Len(sMessage) = 0) _
+		And (Len(sFormElements) > 0) _
+		And (Len(sURL) > 0) Then
 %>
-	</script>
+	try {
+		self.close();
+	}
+	catch (e) { }
+		<%
+End If
+%>
 
-	<script type="text/javascript">
-<!--
-		function pausecomp(millis) 
-		{
-			var date = new Date();
-			var curDate = null;
+	function pausecomp(millis) {
+		var date = new Date();
+		var curDate = null;
 
-			do 
-			{ 
-				curDate = new Date(); 
-			} 
-			while(curDate-date < millis);
-		} 
-
-		function spawnWindow(mypage, myname, w, h, scroll) 
-		{
-			var newWin;
-			var winl = (screen.availWidth - w) / 2;
-			var wint = (screen.availHeight - h) / 2;
-			winprops = 'height='+h+',width='+w+',top='+wint+',left='+winl+',scrollbars='+scroll+',resizable';
-
-			newWin = window.open(mypage, myname, winprops);
-
-			try
-			{
-				if (parseInt(navigator.appVersion) >= 4) 
-				{ 
-					pausecomp(300);
-					newWin.window.focus(); 
-				}
-			}
-			catch(e) {}
+		do {
+			curDate = new Date();
 		}
-	-->
-	</script>
-	<!--#INCLUDE FILE="include/ctl_SetStyles.txt" -->
-</head>
+		while (curDate - date < millis);
+	}
 
-<div <%=session("BodyColour")%>>
+	function spawnWindow(mypage, myname, w, h, scroll) {
+		var newWin;
+		var winl = (screen.availWidth - w) / 2;
+		var wint = (screen.availHeight - h) / 2;
+		winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scroll + ',resizable';
+
+		newWin = window.open(mypage, myname, winprops);
+
+		try {
+			if (parseInt(navigator.appVersion) >= 4) {
+				pausecomp(300);
+				newWin.window.focus();
+			}
+		}
+		catch (e) { }
+	}
+</script>
+
+<div>
 	<form name="frmPopup" id="frmPopup">
 		<%
 			Dim iFormCount = 0
-			
 			
 			If Len(sMessage) = 0 Then
 			
@@ -202,31 +179,31 @@
 
 					Dim sStep = Left(sFormElements, iIndex - 1)
 
-					Dim cmdQS = CreateObject("ADODB.Command")
-					cmdQS.CommandText = "spASRGetWorkflowQueryString"
-					cmdQS.CommandType = 4	' Stored Procedure
-					cmdQS.ActiveConnection = Session("databaseConnection")
+					Dim cmdQs = CreateObject("ADODB.Command")
+					cmdQs.CommandText = "spASRGetWorkflowQueryString"
+					cmdQs.CommandType = 4	' Stored Procedure
+					cmdQs.ActiveConnection = Session("databaseConnection")
 
-					Dim prmInstance = cmdQS.CreateParameter("instance", 3, 1)
-					cmdQS.Parameters.Append(prmInstance)
+					Dim prmInstance = cmdQs.CreateParameter("instance", 3, 1)
+					cmdQs.Parameters.Append(prmInstance)
 					prmInstance.value = CLng(sInstanceID)
 
-					Dim prmElement = cmdQS.CreateParameter("element", 200, 1, 8000)
-					cmdQS.Parameters.Append(prmElement)
+					Dim prmElement = cmdQs.CreateParameter("element", 200, 1, 8000)
+					cmdQs.Parameters.Append(prmElement)
 					prmElement.value = CLng(sStep)
 
-					Dim prmQS = cmdQS.CreateParameter("qs", 200, 2, 8000)	' 200=adVarChar, 2=output, 8000=size
-					cmdQS.Parameters.Append(prmQS)
+					Dim prmQs = cmdQs.CreateParameter("qs", 200, 2, 8000)	' 200=adVarChar, 2=output, 8000=size
+					cmdQs.Parameters.Append(prmQs)
 
 					Err.Clear()
-					cmdQS.Execute()
+					cmdQs.Execute()
 			
-					If Err.number = 0 Then
-						sTemp = cmdQS.Parameters("qs").Value
+					If Err.Number = 0 Then
+						sTemp = CType(cmdQs.Parameters("qs").Value, String)
 					End If
 	
 					' Release the ADO command object.
-					cmdQS = Nothing
+					cmdQs = Nothing
 		%>
 		<input type="hidden" id="utilform_<%=iFormCount%>" name="utilform_<%=iFormCount%>" value="<%=sTemp%>">
 		<%
@@ -238,7 +215,7 @@
 		<input type="hidden" id="utilinstance" name="utilinstance" value="<%=iInstanceID%>">
 		<input type="hidden" id="utiltype" name="utiltype" value="<%=Session("utiltype")%>">
 		<input type="hidden" id="utilid" name="utilid" value='<%=Session("utilid")%>'>
-		<input type="hidden" id="utilname" name="utilname" value="<%=replace(Session("utilname"), """", "&quot;")%>">
+		<input type="hidden" id="utilname" name="utilname" value="<%=replace(CType(Session("utilname"), String), """", "&quot;")%>">
 		<input type="hidden" id="action" name="action" value='<%=Session("action")%>'>
 
 		<table align="center" class="outline" cellpadding="5" cellspacing="0">
@@ -250,7 +227,7 @@
 						</tr>
 						<tr>
 							<td width="20" height="10"></td>
-							<td align="center">Workflow '<%=replace(session("utilname"), """", "&quot;")%>'
+							<td align="center">Workflow '<%=replace(CType(session("utilname"), String), """", "&quot;")%>'
 								<%
 									If Len(sURL) = 0 Then
 								%>
@@ -296,4 +273,4 @@
 	</form>
 
 </div>
-</html>
+
