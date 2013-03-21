@@ -1,140 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Xml.Serialization;
 
 namespace Fusion.Connector.OpenHR.MessageComponents.Component
 {
     public partial class Contract
     {
+        public string contractName { get; set; }
 
-        private string contractNameField;
+        public string department { get; set; }
 
-        private string departmentField;
+        public string primarySite { get; set; }
 
-        private string primarySiteField;
+        public decimal? contractedHoursPerWeek { get; set; }
 
-        private decimal contractedHoursPerWeekField;
+        public decimal? maximumHoursPerWeek { get; set; }
 
-        private decimal maximumHoursPerWeekField;
+        [XmlElementAttribute(DataType = "date")]
+        public DateTime? effectiveFrom { get; set; }
 
-        private System.DateTime? effectiveFromField;
+        [XmlIgnoreAttribute()]
+        public bool effectiveFromSpecified { get; set; }
 
-        private bool effectiveFromFieldSpecified;
+        [XmlElementAttribute(DataType = "date")]
+        public DateTime? effectiveTo { get; set; }
 
-        private DateTime? effectiveToField;
+        [XmlIgnoreAttribute()]
+        public bool effectiveToSpecified { get; set; }
 
-        private bool effectiveToFieldSpecified;
+        [XmlIgnoreAttribute]
+        public int? id_Staff { get; set; }
 
-        public string contractName
-        {
-            get
-            {
-                return this.contractNameField;
-            }
-            set
-            {
-                this.contractNameField = value;
-            }
-        }
-
-        public string department
-        {
-            get
-            {
-                return this.departmentField;
-            }
-            set
-            {
-                this.departmentField = value;
-            }
-        }
-
-        public string primarySite
-        {
-            get
-            {
-                return this.primarySiteField;
-            }
-            set
-            {
-                this.primarySiteField = value;
-            }
-        }
-
-        public decimal contractedHoursPerWeek
-        {
-            get
-            {
-                return this.contractedHoursPerWeekField;
-            }
-            set
-            {
-                this.contractedHoursPerWeekField = value;
-            }
-        }
-
-        public decimal maximumHoursPerWeek
-        {
-            get
-            {
-                return this.maximumHoursPerWeekField;
-            }
-            set
-            {
-                this.maximumHoursPerWeekField = value;
-            }
-        }
-
-        public DateTime? effectiveFrom
-        {
-            get
-            {
-                return this.effectiveFromField;
-            }
-            set
-            {
-                this.effectiveFromField = value;
-            }
-        }
-
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool effectiveFromSpecified
-        {
-            get
-            {
-                return this.effectiveFromFieldSpecified;
-            }
-            set
-            {
-                this.effectiveFromFieldSpecified = value;
-            }
-        }
-
-        public DateTime? effectiveTo
-        {
-            get
-            {
-                return this.effectiveToField;
-            }
-            set
-            {
-                this.effectiveToField = value;
-            }
-        }
-
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool effectiveToSpecified
-        {
-            get
-            {
-                return this.effectiveToFieldSpecified;
-            }
-            set
-            {
-                this.effectiveToFieldSpecified = value;
-            }
-        }
     }
 
 }

@@ -1,0 +1,71 @@
+﻿using System;
+using Fusion.Connector.OpenHR.MessageComponents.Data;
+using Fusion.Core.Sql.OutboundBuilder;
+using StructureMap.Attributes;
+using Fusion.Core.Sql;
+using Fusion.Connector.OpenHR.Configuration;
+using Fusion.Messages.General;
+using Fusion.Messages.SocialCare;
+using Fusion.Connector.OpenHR.Database;
+using Fusion.Connector.OpenHR.MessageComponents;
+using Fusion.Connector.OpenHR.MessageComponents.Data;
+using Fusion.Connector.OpenHR.MessageComponents.Component;
+using Fusion.Connector.OpenHR.MessageComponents.Enums;
+using System.IO;
+
+using System.Xml;
+using System.Xml.Serialization;
+
+namespace Fusion.Connector.OpenHR.OutboundBuilders
+{
+    public class StaffContractChangeMessageBuilder : IOutboundBuilder
+    {
+        [SetterProperty]
+        public IBusRefTranslator refTranslator { get; set; }
+
+        [SetterProperty]
+        public IFusionConfiguration config { get; set; }
+
+        public FusionMessage Build(SendFusionMessageRequest source)
+        {
+            Guid contractRef = refTranslator.GetBusRef(EntityTranslationNames.Contract, source.LocalId);
+
+            Contract contract = DatabaseAccess.readContract(Convert.ToInt32(source.LocalId));
+
+            var xsSubmit = new XmlSerializer(typeof(StaffContractChange));
+            var subReq = new StaffContractChange();
+            subReq.data = new StaffContractChangeData();
+
+            subReq.data.staffContract = contract;
+            subReq.data.recordStatus = RecordStatusRescindable.Active;
+            subReq.data.auditUserName = "OpenHR user";
+
+            Guid staffRef = refTranslator.GetBusRef(EntityTranslationNames.Staff, contract.id_Staff.ToString());
+
+            subReq.staffContractRef = contractRef.ToString();
+            subReq.staffRef = staffRef.ToString();
+
+            var sww = new StringWriter();
+            XmlWriter writer = XmlWriter.Create(sww);
+            xsSubmit.Serialize(writer, subReq);
+            string xml = sww.ToString();
+
+            string messageType = source.MessageType + "Request";
+            Type myType = Type.GetType("Fusion.Messages.SocialCare." + messageType + ", Fusion.Messages.SocialCare");
+
+            var theMessage = (StaffContractChangeRequest)Activator.CreateInstance(myType);
+
+            theMessage.Community = config.Community;
+
+            theMessage.PrimaryEntityRef = contractRef;
+            theMessage.CreatedUtc = source.TriggerDate;
+            theMessage.Id = Guid.NewGuid();
+            theMessage.Originator = config.ServiceName;
+            theMessage.EntityRef = staffRef;
+            theMessage.Xml = xml;
+
+            return theMessage;
+        
+        }
+    }
+}

@@ -2,7 +2,7 @@
 
 namespace Fusion.Connector.OpenHR.Messaging.StaffLegalDocumentChange
 {
-    public class StaffLegalDocumentChangeSchemaValidator : SchemaValidatorOutboundFilterHandler<StaffLegalDocumentChangeRequest>
+    public class StaffLegalDocumentChangeMessageSchemaValidator : SchemaValidatorOutboundFilterHandler<StaffLegalDocumentChangeRequest>
     {
         public override bool Handle(StaffLegalDocumentChangeRequest message)
         {

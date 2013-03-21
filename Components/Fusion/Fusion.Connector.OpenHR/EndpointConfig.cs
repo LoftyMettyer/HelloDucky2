@@ -11,7 +11,7 @@ namespace Fusion.Connector.OpenHR
             NServiceBus.Configure.With()
                 .StructureMapBuilder()
                 .JsonSerializer()
-                .InMemorySubscriptionStorage()
+//                .InMemorySubscriptionStorage()
                 .UnicastBus()
                 .DoNotAutoSubscribe()
                 .DisableRavenInstall()

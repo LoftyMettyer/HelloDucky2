@@ -88,14 +88,14 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                     cmd.Parameters.Add(new SqlParameter("@preferredName", _staff.data.staff.preferredName ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@payrollNumber", _staff.data.staff.payrollNumber ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@DOB", _staff.data.staff.DOB ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@employeeType", _staff.data.staff.employeeType));
+                    cmd.Parameters.Add(new SqlParameter("@employeeType", _staff.data.staff.employeeType.ToString()));
                     cmd.Parameters.Add(new SqlParameter("@workMobile", _staff.data.staff.workMobile ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@personalMobile", _staff.data.staff.personalMobile ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@workPhoneNumber", _staff.data.staff.workPhoneNumber ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@homePhoneNumber", _staff.data.staff.homePhoneNumber ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@email", _staff.data.staff.email ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@personalEmail", _staff.data.staff.personalEmail ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@gender", _staff.data.staff.gender));
+                    cmd.Parameters.Add(new SqlParameter("@gender", _staff.data.staff.gender.ToString()));
                     cmd.Parameters.Add(new SqlParameter("@startDate", _staff.data.staff.startDate ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@leavingDate", _staff.data.staff.leavingDate ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@leavingReason", _staff.data.staff.leavingReason ?? (object)DBNull.Value));
@@ -109,6 +109,7 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                     cmd.Parameters.Add(new SqlParameter("@addressLine5", _staff.data.staff.homeAddress.addressLine5 ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@postcode", _staff.data.staff.homeAddress.postCode ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@nationalInsuranceNumber", _staff.data.staff.nationalInsuranceNumber ?? (object)DBNull.Value));
+
 
                     try
                     {
@@ -125,7 +126,7 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
 
                 if (isNew & isValid)
                 {
-                    BusRefTranslator.SetBusRef(EntityTranslationNames.Staff, idParameter.ToString(), busRef);                    
+                    BusRefTranslator.SetBusRef(EntityTranslationNames.Staff, idParameter.Value.ToString(), busRef);                    
                 }
 
             }

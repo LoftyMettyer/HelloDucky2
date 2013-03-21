@@ -45,6 +45,27 @@ namespace Fusion.Connector.OpenHR.Database
 
         }
 
+        public static Contract readContract(int localId)
+        {
+
+            using (var c = new SqlConnection(connectionString))
+            {
+                c.Open();
+
+                Contract su =
+                    c.Query<Contract>(@"SELECT * from Fusion.staffContract WHERE ID_Contract = @ContractID",
+                                     new
+                                     {
+                                         ContractID = localId
+                                     }
+                        ).FirstOrDefault();
+
+                return su;
+
+            }
+
+        }
+
         public static Contact readContact(int localId)
         {
 
@@ -66,6 +87,27 @@ namespace Fusion.Connector.OpenHR.Database
 
         }
 
+        public static Skill readSkill(int localId)
+        {
+
+            using (var c = new SqlConnection(connectionString))
+            {
+                c.Open();
+
+                Skill su =
+                    c.Query<Skill>(@"SELECT * from Fusion.staffSkillChange WHERE ID_Skill = @SkillID",
+                                     new
+                                     {
+                                         SkillID = localId
+                                     }
+                        ).FirstOrDefault();
+
+                return su;
+
+            }
+
+        }
+
         public static LegalDocument readDocument(int localId)
         {
 
@@ -78,6 +120,27 @@ namespace Fusion.Connector.OpenHR.Database
                         {
                             DocumentID = localId
                         }
+                        ).FirstOrDefault();
+
+                return su;
+
+            }
+
+        }
+
+        public static TimesheetPerContract readTimesheet(int localId)
+        {
+
+            using (var c = new SqlConnection(connectionString))
+            {
+                c.Open();
+
+                TimesheetPerContract su =
+                    c.Query<TimesheetPerContract>(@"SELECT * from Fusion.staffTimesheet WHERE ID_Timesheet = @TimesheetID",
+                                     new
+                                     {
+                                         TimesheetID = localId
+                                     }
                         ).FirstOrDefault();
 
                 return su;

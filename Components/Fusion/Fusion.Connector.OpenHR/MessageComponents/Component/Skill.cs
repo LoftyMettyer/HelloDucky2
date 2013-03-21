@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Serialization;
 
 namespace Fusion.Connector.OpenHR.MessageComponents.Component
 {
@@ -6,24 +7,28 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
     {
         public string name { get; set; }
 
-        public DateTime trainingStart { get; set; }
+        [XmlElementAttribute(DataType = "date")]
+        public DateTime? trainingStart { get; set; }
 
-        [System.Xml.Serialization.XmlIgnoreAttribute]
+        [XmlIgnoreAttribute]
         public bool trainingStartSpecified { get; set; }
 
+        [XmlElementAttribute(DataType = "date")]
         public DateTime? trainingEnd { get; set; }
 
-        [System.Xml.Serialization.XmlIgnoreAttribute]
+        [XmlIgnoreAttribute]
         public bool trainingEndSpecified { get; set; }
 
-        public DateTime validFrom { get; set; }
+        [XmlElementAttribute(DataType = "date")]
+        public DateTime? validFrom { get; set; }
 
-        [System.Xml.Serialization.XmlIgnoreAttribute]
+        [XmlIgnoreAttribute]
         public bool validFromSpecified { get; set; }
 
+        [XmlElementAttribute(DataType = "date")]
         public DateTime? validTo { get; set; }
 
-        [System.Xml.Serialization.XmlIgnoreAttribute]
+        [XmlIgnoreAttribute]
         public bool validToSpecified { get; set; }
 
         public string reference { get; set; }
@@ -32,8 +37,12 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
 
         public bool? didNotAttend { get; set; }
 
-        [System.Xml.Serialization.XmlIgnoreAttribute]
+        [XmlIgnoreAttribute]
         public bool didNotAttendSpecified { get; set; }
+
+        [XmlIgnoreAttribute]
+        public int? id_Staff { get; set; }
+
     }
 
 

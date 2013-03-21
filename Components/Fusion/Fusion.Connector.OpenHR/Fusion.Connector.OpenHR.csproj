@@ -122,21 +122,29 @@
     <Compile Include="Messaging\StaffChange\StaffChangeMessageHandler.cs" />
     <Compile Include="Messaging\StaffChange\StaffChangeMessageSchemaValidator.cs" />
     <Compile Include="Messaging\StaffChange\StaffChangeMessageSender.cs" />
-    <Compile Include="Messaging\StaffChange\StaffMessageBuilder.cs" />
+    <Compile Include="Messaging\StaffChange\StaffChangeMessageBuilder.cs" />
     <Compile Include="MessageComponents\Component\Staff.cs" />
     <Compile Include="Messaging\StaffContactChange\StaffContactChangeMessageBuilder.cs" />
     <Compile Include="Messaging\StaffContactChange\StaffContactChangeMessageSchemaValidator.cs" />
+    <Compile Include="Messaging\StaffContactChange\StaffContactChangeMessageSender.cs" />
+    <Compile Include="Messaging\StaffContractChange\StaffContractChangeMessageBuilder.cs" />
     <Compile Include="Messaging\StaffContractChange\StaffContractChangeMessageSchemaValidator.cs" />
     <Compile Include="Messaging\Base\TrackingMessageSender.cs" />
     <Compile Include="Messaging\Obsolete\GenericMessageBuilder.cs" />
     <Compile Include="Messaging\Obsolete\GenericMessageSender.cs" />
+    <Compile Include="Messaging\StaffContractChange\StaffContractChangeMessageSender.cs" />
     <Compile Include="Messaging\StaffLegalDocumentChange\StaffLegalDocumentChangeMessageBuilder.cs" />
     <Compile Include="Messaging\StaffLegalDocumentChange\StaffLegalDocumentChangeMessageSender.cs" />
-    <Compile Include="Messaging\StaffLegalDocumentChange\StaffLegalDocumentChangeSchemaValidator.cs" />
+    <Compile Include="Messaging\StaffLegalDocumentChange\StaffLegalDocumentChangeMessageSchemaValidator.cs" />
     <Compile Include="Messaging\StaffPictureChange\StaffPictureChangeMessageHandler.cs" />
     <Compile Include="Messaging\StaffPictureChange\staffPictureChangeMessageBuilder.cs" />
     <Compile Include="Messaging\StaffPictureChange\StaffPictureChangeMessageSchemaValidator.cs" />
+    <Compile Include="Messaging\StaffPictureChange\StaffPictureChangeMessageSender.cs" />
+    <Compile Include="Messaging\StaffSkillChange\StaffSkillChangeMessageBuilder.cs" />
     <Compile Include="Messaging\StaffSkillChange\StaffSkillChangeMessageSchemaValidator.cs" />
+    <Compile Include="Messaging\StaffSkillChange\StaffSkillChangeMessageSender.cs" />
+    <Compile Include="Messaging\StaffTimesheetPerContractSubmission\StaffTimesheetPerContractSubmissionMessageBuilder.cs" />
+    <Compile Include="Messaging\StaffTimesheetPerContractSubmission\StaffTimesheetPerContractSubmissionMessageSender.cs" />
     <Compile Include="Messaging\StaffTimesheetPerContractSubmission\StaffTimesheetPerContractSubmissionSchemaValidator.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -170,7 +178,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Content Include="Setup.bat">
+    <Content Include="Deployment\Setup.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Schemas\commonTypes.xsd">
