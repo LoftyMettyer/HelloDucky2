@@ -767,6 +767,168 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		Function MailMerge_submit()
+			On Error Resume Next
+
+			Dim cmdSave = CreateObject("ADODB.Command")
+			cmdSave.CommandText = "sp_ASRIntSaveMailMerge"
+			cmdSave.CommandType = 4	' Stored Procedure
+			cmdSave.ActiveConnection = Session("databaseConnection")
+
+			Dim prmName = cmdSave.CreateParameter("name", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmName)
+			prmName.value = Request.Form("txtSend_name")
+
+			Dim prmDescription = cmdSave.CreateParameter("description", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmDescription)
+			prmDescription.value = Request.Form("txtSend_description")
+
+			Dim prmTableID = cmdSave.CreateParameter("tableID", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmTableID)
+			prmTableID.value = CleanNumeric(Request.Form("txtSend_baseTable"))
+
+			Dim prmSelection = cmdSave.CreateParameter("selection", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmSelection)
+			prmSelection.value = CleanNumeric(Request.Form("txtSend_selection"))
+
+			Dim prmPicklistID = cmdSave.CreateParameter("picklistID", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmPicklistID)
+			prmPicklistID.value = CleanNumeric(Request.Form("txtSend_picklist"))
+
+			Dim prmFilterID = cmdSave.CreateParameter("filterID", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmFilterID)
+			prmFilterID.value = CleanNumeric(Request.Form("txtSend_filter"))
+
+			Dim prmOutputFormat = cmdSave.CreateParameter("outputFormat", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmOutputFormat)
+			prmOutputFormat.value = CleanNumeric(Request.Form("txtSend_outputformat"))
+
+			Dim prmOutputSave = cmdSave.CreateParameter("outputSave", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmOutputSave)
+			prmOutputSave.value = CleanBoolean(Request.Form("txtSend_outputsave"))
+
+			Dim prmOutputFileName = cmdSave.CreateParameter("outputFileName", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmOutputFileName)
+			prmOutputFileName.value = Request.Form("txtSend_outputfilename")
+
+			Dim prmEmailAddrID = cmdSave.CreateParameter("emailAddrID", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmEmailAddrID)
+			prmEmailAddrID.value = CleanNumeric(Request.Form("txtSend_emailaddrid"))
+
+			Dim prmEmailSubject = cmdSave.CreateParameter("emailSubject", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmEmailSubject)
+			prmEmailSubject.value = Request.Form("txtSend_emailsubject")
+
+			Dim prmTemplateFileName = cmdSave.CreateParameter("templateFileName", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmTemplateFileName)
+			prmTemplateFileName.value = Request.Form("txtSend_templatefilename")
+
+			Dim prmOutputScreen = cmdSave.CreateParameter("outputScreen", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmOutputScreen)
+			prmOutputScreen.value = CleanBoolean(Request.Form("txtSend_outputscreen"))
+
+			Dim prmUserName = cmdSave.CreateParameter("userName", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmUserName)
+			prmUserName.value = Request.Form("txtSend_userName")
+
+			Dim prmEmailAsAttachment = cmdSave.CreateParameter("emailAsAttachment", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmEmailAsAttachment)
+			prmEmailAsAttachment.value = CleanBoolean(Request.Form("txtSend_emailasattachment"))
+
+			Dim prmEmailAttachmentName = cmdSave.CreateParameter("emailAttachmentName", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmEmailAttachmentName)
+			prmEmailAttachmentName.value = Request.Form("txtSend_emailattachmentname")
+
+			Dim prmSuppressBlanks = cmdSave.CreateParameter("suppressBlanks", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmSuppressBlanks)
+			prmSuppressBlanks.value = CleanBoolean(Request.Form("txtSend_suppressblanks"))
+
+			Dim prmPauseBeforeMerge = cmdSave.CreateParameter("pauseBeforeMerge", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmPauseBeforeMerge)
+			prmPauseBeforeMerge.value = CleanBoolean(Request.Form("txtSend_pausebeforemerge"))
+
+			Dim prmOutputPrinter = cmdSave.CreateParameter("outputPrinter", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmOutputPrinter)
+			prmOutputPrinter.value = CleanBoolean(Request.Form("txtSend_outputprinter"))
+
+			Dim prmOutputPrinterName = cmdSave.CreateParameter("outputPrinterName", 200, 1, 255) ' 200=varchar,1=input,255=size
+			cmdSave.Parameters.Append(prmOutputPrinterName)
+			prmOutputPrinterName.value = Request.Form("txtSend_outputprintername")
+
+			Dim prmDocumentMapID = cmdSave.CreateParameter("documentMapID", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmDocumentMapID)
+			prmDocumentMapID.value = CleanNumeric(Request.Form("txtSend_documentmapid"))
+
+			Dim prmManualDocManHeader = cmdSave.CreateParameter("manualDocManHeader", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmManualDocManHeader)
+			prmManualDocManHeader.value = CleanBoolean(Request.Form("txtSend_manualdocmanheader"))
+
+			Dim prmAccess = cmdSave.CreateParameter("access", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmAccess)
+			prmAccess.value = Request.Form("txtSend_access")
+
+			Dim prmJobToHide = cmdSave.CreateParameter("jobsToHide", 200, 1, 8000) ' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmJobToHide)
+			prmJobToHide.value = Request.Form("txtSend_jobsToHide")
+
+			Dim prmJobToHideGroups = cmdSave.CreateParameter("acess", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmJobToHideGroups)
+			prmJobToHideGroups.value = Request.Form("txtSend_jobsToHideGroups")
+
+			Dim prmColumns = cmdSave.CreateParameter("columns", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmColumns)
+			prmColumns.value = Request.Form("txtSend_columns")
+
+			Dim prmColumns2 = cmdSave.CreateParameter("columns2", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmColumns2)
+			prmColumns2.value = Request.Form("txtSend_columns2")
+
+			Dim prmID = cmdSave.CreateParameter("id", 3, 3)	' 3=integer,3=input/output
+			cmdSave.Parameters.Append(prmID)
+			prmID.value = CleanNumeric(Request.Form("txtSend_ID"))
+
+			cmdSave.Execute()
+
+			If Err.Number = 0 Then
+				Session("confirmtext") = "Mail Merge has been saved successfully"
+				Session("confirmtitle") = "Mail Merge"
+				Session("followpage") = "defsel"
+				Session("reaction") = Request.Form("txtSend_reaction")
+				Session("utilid") = cmdSave.Parameters("id").Value
+
+				Response.Redirect("confirmok")
+			Else
+				Response.Write("<HTML>" & vbCrLf)
+				Response.Write("	<HEAD>" & vbCrLf)
+				Response.Write("		<META NAME=""GENERATOR"" Content=""Microsoft Visual Studio 6.0"">" & vbCrLf)
+				Response.Write("		<LINK href=""OpenHR.css"" rel=stylesheet type=text/css >" & vbCrLf)
+				Response.Write("		<TITLE>" & vbCrLf)
+				Response.Write("			OpenHR Intranet" & vbCrLf)
+				Response.Write("		</TITLE>" & vbCrLf)
+				Response.Write("		<meta http-equiv=""X-UA-Compatible"" content=""IE=5"">" & vbCrLf)
+				Response.Write("  <!--#INCLUDE FILE=""include/ctl_SetStyles.txt"" -->")
+				Response.Write("	</HEAD>" & vbCrLf)
+				Response.Write("	<BODY>" & vbCrLf)
+				Response.Write("Error saving definition : <BR>" & Err.Description & "<BR>" & vbCrLf)
+				Response.Write("<INPUT TYPE=button VALUE=Retry NAME=GoBack OnClick=" & Chr(34) & "window.history.back(1)" & Chr(34) & " class=""btn"" style=" & Chr(34) & "WIDTH: 100px" & Chr(34) & " width=100 id=cmdGoBack>")
+				Response.Write("                      onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
+				Response.Write("                      onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
+				Response.Write("		                  onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
+				Response.Write("                      onblur=""try{button_onBlur(this);}catch(e){}"" />" & vbCrLf)
+				'Response.Write(vbCrLf & vbCrLf & sSQLString)
+				Response.Write("	</BODY>" & vbCrLf)
+				Response.Write("<HTML>" & vbCrLf)
+			End If
+
+			cmdSave = Nothing
+			'%>	
+
+		End Function
+
+
+
+
+		<HttpPost()>
 		Function DefSel_Submit(value As FormCollection)
 			' Set some session variables used by all the util pages
 			Session("utiltype") = Request.Form("utiltype")
@@ -958,7 +1120,7 @@ Namespace Controllers
 					Err.Clear()
 					cmdTBCheck.Execute()
 					If (Err.Number <> 0) Then
-						sErrorMsg = "Error validating training booking." & vbCrLf & FormatError(Err.Description)
+						sErrorMsg = "Error validating training booking." & vbCrLf & formatError(Err.Description)
 					End If
 
 					If Len(sErrorMsg) = 0 Then
@@ -1077,7 +1239,7 @@ Namespace Controllers
 
 								If cmdInsertRecord.ActiveConnection.Errors.Count > 0 Then
 									For iLoop = 1 To cmdInsertRecord.ActiveConnection.Errors.Count
-										sErrMsg = FormatError(cmdInsertRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
+										sErrMsg = formatError(cmdInsertRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
 
 										If (cmdInsertRecord.ActiveConnection.Errors.Item(iLoop - 1).Number = DEADLOCK_ERRORNUMBER) And _
 										 (((UCase(Left(sErrMsg, Len(DEADLOCK_MESSAGESTART))) = DEADLOCK_MESSAGESTART) And _
@@ -1110,7 +1272,7 @@ Namespace Controllers
 											'NHRD 18082011 HRPRO-1572 Removed extra carriage return for this error msg
 											'sErrorMsg = sErrorMsg & vbcrlf & _
 											sErrorMsg = sErrorMsg & _
-											 FormatError(cmdInsertRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
+											 formatError(cmdInsertRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
 											fOk = False
 										End If
 									Next
@@ -1200,7 +1362,7 @@ Namespace Controllers
 
 								If cmdUpdateRecord.ActiveConnection.Errors.Count > 0 Then
 									For iLoop = 1 To cmdUpdateRecord.ActiveConnection.Errors.Count
-										sErrMsg = FormatError(cmdUpdateRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
+										sErrMsg = formatError(cmdUpdateRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
 
 										If (cmdUpdateRecord.ActiveConnection.Errors.Item(iLoop - 1).Number = DEADLOCK_ERRORNUMBER) And _
 										 (((UCase(Left(sErrMsg, Len(DEADLOCK_MESSAGESTART))) = DEADLOCK_MESSAGESTART) And _
@@ -1227,7 +1389,7 @@ Namespace Controllers
 											' Ignore the follow on message that says "The transaction ended in the trigger."
 										Else
 											sErrorMsg = sErrorMsg & vbCrLf & _
-											 FormatError(cmdUpdateRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
+											 formatError(cmdUpdateRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
 											fOk = False
 										End If
 									Next
@@ -1317,7 +1479,7 @@ Namespace Controllers
 
 					If cmdDeleteRecord.ActiveConnection.Errors.Count > 0 Then
 						For iLoop = 1 To cmdDeleteRecord.ActiveConnection.Errors.Count
-							sErrMsg = FormatError(cmdDeleteRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
+							sErrMsg = formatError(cmdDeleteRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
 
 							If (cmdDeleteRecord.ActiveConnection.Errors.Item(iLoop - 1).Number = DEADLOCK_ERRORNUMBER) And _
 							 (((UCase(Left(sErrMsg, Len(DEADLOCK_MESSAGESTART))) = DEADLOCK_MESSAGESTART) And _
@@ -1342,7 +1504,7 @@ Namespace Controllers
 								' Ignore the follow on message that says "The transaction ended in the trigger."
 							Else
 								sErrorMsg = sErrorMsg & vbCrLf & _
-								 FormatError(cmdDeleteRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
+								 formatError(cmdDeleteRecord.ActiveConnection.Errors.Item(iLoop - 1).Description)
 								fOk = False
 							End If
 						Next
@@ -1424,7 +1586,7 @@ Namespace Controllers
 				Err.Clear()
 				cmdCancelCourse.Execute()
 				If (Err.Number <> 0) Then
-					sErrorMsg = "Error cancelling the course." & vbCrLf & FormatError(Err.Description)
+					sErrorMsg = "Error cancelling the course." & vbCrLf & formatError(Err.Description)
 					sAction = "SAVEERROR"
 				Else
 					sAction = "CANCELCOURSE_1"
@@ -1511,7 +1673,7 @@ Namespace Controllers
 				cmdCancelCourse.Execute()
 
 				If (Err.Number <> 0) Then
-					sErrorMsg = "Error cancelling the course." & vbCrLf & FormatError(Err.Description)
+					sErrorMsg = "Error cancelling the course." & vbCrLf & formatError(Err.Description)
 					sAction = "SAVEERROR"
 				Else
 					sErrorMsg = cmdCancelCourse.Parameters("errorMessage").Value
@@ -1545,7 +1707,7 @@ Namespace Controllers
 				Err.Clear()
 				cmdCancelBooking.Execute()
 				If (Err.Number <> 0) Then
-					sErrorMsg = "Error cancelling the booking." & vbCrLf & FormatError(Err.Description)
+					sErrorMsg = "Error cancelling the booking." & vbCrLf & formatError(Err.Description)
 					sAction = "SAVEERROR"
 				Else
 					sErrorMsg = cmdCancelBooking.Parameters("errorMessage").Value
@@ -1724,9 +1886,9 @@ Namespace Controllers
 			Return View()
 		End Function
 
-    Function NewUser() As ActionResult
-      Return View()
-    End Function
+		Function NewUser() As ActionResult
+			Return View()
+		End Function
 
 		'Function ForcePasswordChange() As ActionResult
 		'    Return View()
@@ -2273,11 +2435,11 @@ Namespace Controllers
 		<HttpPost()>
 		Function util_def_exprcomponent_submit(value As FormCollection)
 
-      Dim sErrorMsg As String = ""
+			Dim sErrorMsg As String = ""
 			Dim sNextPage As String
 			Dim sAction As String
 
-      On Error Resume Next
+			On Error Resume Next
 
 			' Read the information from the calling form.
 			sNextPage = Request.Form("txtGotoOptionPage")
@@ -2316,7 +2478,7 @@ Namespace Controllers
 			Session("optionDefSelRecordID") = Request.Form("txtGotoOptionDefSelRecordID")
 
 			If sAction = "CANCEL" Then
-        ' Go to the requested page.
+				' Go to the requested page.
 
 				Session("errorMessage") = sErrorMsg
 			End If
@@ -2359,6 +2521,9 @@ Namespace Controllers
 			Return View()
 		End Function
 
+
+	
+			
 		Function FieldRec() As ActionResult
 			Return View()
 		End Function
@@ -2558,6 +2723,13 @@ Namespace Controllers
 
 		Public Function util_def_mailmerge() As ActionResult
 			Throw New NotImplementedException()
+
+			'ND my original call for reference later delete when approp
+			'<ValidateInput(False)>
+			'Function util_validate_mailmerge() As ActionResult
+			'	Return View()
+			'End Function
+
 		End Function
 
 		Public Function util_def_calendarreport() As ActionResult
