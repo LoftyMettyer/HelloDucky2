@@ -48,21 +48,21 @@
 				If iStepCount = 0 Then
 					' Add the <All> row.
 					sAddString = CType(("0" & vbTab & "<All>" & vbTab), String)
-				%>
-				<input type='hidden' id="txtAddString_<%=iStepCount%>" name="txtAddString_<%=iStepCount%>" value="<%=sAddString%>">
-				<%			
+	%>
+	<input type='hidden' id="txtAddString_<%=iStepCount%>" name="txtAddString_<%=iStepCount%>" value="<%=sAddString%>">
+	<%			
 				
-				End If
+	End If
 
-				iStepCount = iStepCount + 1
-				sAddString = "0" & vbTab & _
-					Replace(CType(rstDefSelRecords.Fields("description").Value, String), Chr(34), "&quot;") & vbTab & _
-					Replace(CType(rstDefSelRecords.Fields("url").Value, String), Chr(34), "&quot;")
-				%>
-				<input type='hidden' id="Hidden1" name="txtAddString_<%=iStepCount%>" value="<%=sAddString%>">
-				<%			
-					rstDefSelRecords.movenext()
-				Loop
+	iStepCount = iStepCount + 1
+	sAddString = "0" & vbTab & _
+		Replace(CType(rstDefSelRecords.Fields("description").Value, String), Chr(34), "&quot;") & vbTab & _
+		Replace(CType(rstDefSelRecords.Fields("url").Value, String), Chr(34), "&quot;")
+	%>
+	<input type='hidden' id="Hidden1" name="txtAddString_<%=iStepCount%>" value="<%=sAddString%>">
+	<%			
+		rstDefSelRecords.movenext()
+	Loop
 
 	rstDefSelRecords.close()
 	rstDefSelRecords = Nothing
@@ -75,38 +75,38 @@ cmdDefSelRecords = Nothing
 </form>
 
 <script type="text/javascript">
-	function workflowPendingSteps_window_onload() {	
+	function workflowPendingSteps_window_onload() {
 		var sControlName;
 		var sControlPrefix;
 
 		var frmDefSel = document.getElementById('frmDefSel');
 		//$("#workframe").attr("data-framesource", "DEFSEL");
-		
+
 		var frmSteps = document.getElementById('frmSteps');
 
 		<%If iStepCount > 0 Then%>
 
 		setGridFont(frmDefSel.ssOleDBGridDefSelRecords);
-	
+
 		frmDefSel.ssOleDBGridDefSelRecords.focus();
 		frmDefSel.cmdCancel.focus();
-		//debugger;
+
 		var controlCollection = frmSteps.elements;
 		if (controlCollection != null) {
 			for (i = 0; i < controlCollection.length; i++) {
-				
+
 				sControlName = controlCollection.item(i).name;
 				sControlPrefix = sControlName.substr(0, 13);
-					
+
 				if (sControlPrefix == "txtAddString_") {
 					frmDefSel.ssOleDBGridDefSelRecords.AddItem(controlCollection.item(i).value);
 				}
 			}
-		}	
+		}
 
 		if (frmDefSel.ssOleDBGridDefSelRecords.rows > 0) {
 			// Need to refresh the grid before we movefirst.
-			frmDefSel.ssOleDBGridDefSelRecords.refresh();			
+			frmDefSel.ssOleDBGridDefSelRecords.refresh();
 			// Select the top row.
 			frmDefSel.ssOleDBGridDefSelRecords.MoveFirst();
 			frmDefSel.ssOleDBGridDefSelRecords.SelBookmarks.Add(frmDefSel.ssOleDBGridDefSelRecords.Bookmark);
@@ -116,12 +116,12 @@ cmdDefSelRecords = Nothing
 
 		sizeColumnsToFitGrid(frmDefSel.ssOleDBGridDefSelRecords);
 		<%Else
-		If Session("fromMenu") = 0 Then%>	
+		If Session("fromMenu") = 0 Then%>
 		//TODO
 		//window.parent.frames("menuframe").openPersonnelRecEdit();
 		<%End If
 End If
-%>	
+%>
 		//TODO
 		//window.parent.frames("menuframe").refreshMenu();
 		//TODO		
@@ -134,14 +134,13 @@ End If
 			window.resizeBy(0, 1);
 			window.resizeBy(0, -1);
 			window.resizeBy(0, 1);
-		} catch(e) {
+		} catch (e) {
 		}
 	}
 </script>
-}
 
 <script type="text/javascript">
-	OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "Change" , ssOleDBGridDefSelRecords_Change);
+	OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "Change", ssOleDBGridDefSelRecords_Change);
 	function ssOleDBGridDefSelRecords_Change() {
 		RefreshGrid();
 	}
@@ -150,7 +149,7 @@ End If
 <script type="text/javascript">
 	OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "KeyPress", ssOleDBGridDefSelRecords_KeyPress);
 	function ssOleDBGridDefSelRecords_KeyPress(iKeyAscii) {
-		
+
 		//if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {	
 		//	var dtTicker = new Date();
 		//	var iThisTick = new Number(dtTicker.getTime());
@@ -160,14 +159,14 @@ End If
 		//	else {
 		//		var iLastTick = new Number("0");
 		//	}
-		
+
 		//	if (iThisTick > (iLastTick + 1500)) {
 		//		var sFind = String.fromCharCode(iKeyAscii);
 		//	}
 		//	else {
 		//		var sFind = txtLastKeyFind.value + String.fromCharCode(iKeyAscii);
 		//	}
-		
+
 		//	txtTicker.value = iThisTick;
 		//	txtLastKeyFind.value = sFind;
 
@@ -178,208 +177,175 @@ End If
 </script>
 
 <script type="text/javascript">
-	function RefreshGrid()
-	{
+	function RefreshGrid() {
 		var iLoop;
 		var iRowIndex = frmDefSel.ssOleDBGridDefSelRecords.AddItemRowIndex(frmDefSel.ssOleDBGridDefSelRecords.Bookmark);
 		var sRowTickValue;
 		var fAllTicked = true;
-	
-		//debugger;
+
 		frmDefSel.ssOleDBGridDefSelRecords.Update();
-		
-		if(iRowIndex == 0)
-		{
+
+		if (iRowIndex == 0) {
 			// <All> row. Ensure all other rows match.
 			var varBookmark = frmDefSel.ssOleDBGridDefSelRecords.AddItemBookmark(0);
-			sRowTickValue = frmDefSel.ssOleDBGridDefSelRecords.Columns("TickBox").CellText(varBookmark); 
+			sRowTickValue = frmDefSel.ssOleDBGridDefSelRecords.Columns("TickBox").CellText(varBookmark);
 
 			frmDefSel.ssOleDBGridDefSelRecords.MoveFirst();
 			frmDefSel.ssOleDBGridDefSelRecords.MoveNext();
-		
-			for (iLoop=1; iLoop<frmDefSel.ssOleDBGridDefSelRecords.Rows; iLoop++)  
-			{
+
+			for (iLoop = 1; iLoop < frmDefSel.ssOleDBGridDefSelRecords.Rows; iLoop++) {
 				frmDefSel.ssOleDBGridDefSelRecords.Columns("TickBox").Text = sRowTickValue;
 				frmDefSel.ssOleDBGridDefSelRecords.MoveNext();
 			}
 			frmDefSel.ssOleDBGridDefSelRecords.MoveFirst();
 		}
-		else
-		{
+		else {
 			// Step row. Check if all step rows now have the same value.
 			// If so, ensure the <All> row matches.
-		
-			for (iLoop=1; iLoop<frmDefSel.ssOleDBGridDefSelRecords.Rows; iLoop++)  
-			{
+
+			for (iLoop = 1; iLoop < frmDefSel.ssOleDBGridDefSelRecords.Rows; iLoop++) {
 				varBookmark = frmDefSel.ssOleDBGridDefSelRecords.AddItemBookmark(iLoop);
-				sRowTickValue = frmDefSel.ssOleDBGridDefSelRecords.Columns("TickBox").CellText(varBookmark); 
-			
-				if (sRowTickValue == "0")
-				{
+				sRowTickValue = frmDefSel.ssOleDBGridDefSelRecords.Columns("TickBox").CellText(varBookmark);
+
+				if (sRowTickValue == "0") {
 					fAllTicked = false;
 				}
 			}
-		
+
 			varBookmark = frmDefSel.ssOleDBGridDefSelRecords.Bookmark;
 
-			if (fAllTicked == true)
-			{
+			if (fAllTicked == true) {
 
 				frmDefSel.ssOleDBGridDefSelRecords.Bookmark = frmDefSel.ssOleDBGridDefSelRecords.AddItemBookmark(0);
 				frmDefSel.ssOleDBGridDefSelRecords.Columns("TickBox").Text = "-1";
 			}
-			else
-			{
+			else {
 				frmDefSel.ssOleDBGridDefSelRecords.Bookmark = frmDefSel.ssOleDBGridDefSelRecords.AddItemBookmark(0);
 				frmDefSel.ssOleDBGridDefSelRecords.Columns("TickBox").Text = "0";
 			}
 
 			frmDefSel.ssOleDBGridDefSelRecords.Bookmark = varBookmark;
 		}
-	
+
 		refreshControls();
 	}
 
 	function ToggleCurrentRow() {
-		//debugger;
-		if (frmDefSel.ssOleDBGridDefSelRecords.Columns("TickBox").Text == "-1")
-		{
+		if (frmDefSel.ssOleDBGridDefSelRecords.Columns("TickBox").Text == "-1") {
 			frmDefSel.ssOleDBGridDefSelRecords.Columns("TickBox").Text = "0";
 		}
-		else
-		{
+		else {
 			frmDefSel.ssOleDBGridDefSelRecords.Columns("TickBox").Text = "-1";
 		}
-		//debugger;	
-		RefreshGrid();	
+		RefreshGrid();
 	}
-	
+
 </script>
 
 <script type="text/javascript">
-	function refreshControls()
-	{
+	function refreshControls() {
 		var fSomeSelected;
-		//debugger;
 		fSomeSelected = SomeSelected();
 		button_disable(frmDefSel.cmdRun, (fSomeSelected == false));
 	}
 
-	function SomeSelected()
-	{
+	function SomeSelected() {
 		var varBookmark;
 		var iLoop;
-		//debugger;
 		frmDefSel.ssOleDBGridDefSelRecords.Update()
-	
-		for (iLoop=1; iLoop<frmDefSel.ssOleDBGridDefSelRecords.Rows; iLoop++)  
-		{
+
+		for (iLoop = 1; iLoop < frmDefSel.ssOleDBGridDefSelRecords.Rows; iLoop++) {
 			varBookmark = frmDefSel.ssOleDBGridDefSelRecords.AddItemBookmark(iLoop);
 			if (frmDefSel.ssOleDBGridDefSelRecords.Columns("TickBox").CellText(varBookmark) == "-1") {
-				return(true);
+				return (true);
 			}
 		}
-	
-		return(false);
+
+		return (false);
 	}
 
-	function pausecomp(millis) 
-	{
+	function pausecomp(millis) {
 		var date = new Date();
 		var curDate = null;
-		//debugger;
-		do 
-		{ 
-			curDate = new Date(); 
-		} 
-		while(curDate-date < millis);
-	} 
+		do {
+			curDate = new Date();
+		}
+		while (curDate - date < millis);
+	}
 
-	function spawnWindow(mypage, myname, w, h, scroll) 
-	{
+	function spawnWindow(mypage, myname, w, h, scroll) {
 		var newWin;
 		var winl = (screen.availWidth - w) / 2;
 		var wint = (screen.availHeight - h) / 2;
-	
-		var winprops = 'height='+h+',width='+w+',top='+wint+',left='+winl+',scrollbars='+scroll+',resizable';
 
-		try
-		{
+		var winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scroll + ',resizable';
+
+		try {
 			newWin = window.open(mypage, myname, winprops);
 
-			if (parseInt(navigator.appVersion) >= 4) 
-			{ 
-				try 
-				{
+			if (parseInt(navigator.appVersion) >= 4) {
+				try {
 					pausecomp(300);
-					newWin.focus(); 
+					newWin.focus();
 				}
-				catch(e) {}
+				catch (e) { }
 			}
 		}
-		catch(e)
-		{	
-			try
-			{
+		catch (e) {
+			try {
 				newWin.close();
 			}
-			catch(e){}
+			catch (e) { }
 
 			spawnWindow(mypage, myname, w, h, scroll)
 		}
 	}
 
-	function setrun()
-	{
+	function setrun() {
 		var varBookmark;
 		var sForm;
 		var iSelectedCount = 0;
 		var sMessage;
-		var iLoop; 
+		var iLoop;
 		var frmRefresh = OpenHR.getForm("refreshframe", "frmRefresh");
 		var frmDefSel = document.getElementById('frmDefSel');
-		//debugger;
+
 		//window.parent.frames("refreshframe").document.forms("frmRefresh").submit();
 		OpenHR.submitForm(frmRefresh);
-		try
-		{
-			for (iLoop=1; iLoop<frmDefSel.ssOleDBGridDefSelRecords.Rows; iLoop++)  
-			{
+		try {
+			for (iLoop = 1; iLoop < frmDefSel.ssOleDBGridDefSelRecords.Rows; iLoop++) {
 				varBookmark = frmDefSel.ssOleDBGridDefSelRecords.AddItemBookmark(iLoop);
-		      
+
 				if (frmDefSel.ssOleDBGridDefSelRecords.Columns("TickBox").CellText(varBookmark) == "-1") {
 					sForm = frmDefSel.ssOleDBGridDefSelRecords.Columns("URL").CellText(varBookmark);
-					spawnWindow(sForm, "_blank", screen.availWidth, screen.availHeight,'yes');
-				
+					spawnWindow(sForm, "_blank", screen.availWidth, screen.availHeight, 'yes');
+
 					iSelectedCount = iSelectedCount + 1;
 				}
 			}
 
-			if (iSelectedCount == 0) 
-			{
+			if (iSelectedCount == 0) {
 				sMessage = "You must select a workflow step to run";
 				//window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sMessage,48,"OpenHR Intranet");
 				OpenHR.messageBox(sMessage, 48, "OpenHR Intranet");
 
 			}
-			else
-			{
+			else {
 				<%
-				If Session("fromMenu") = 0 Then
-					%>				
+	If Session("fromMenu") = 0 Then
+					%>
 				menu_autoLoadPage("workflowPendingSteps", true);
-				
+
 				<%
-				Else
-					%>			
+Else
+					%>
 				menu_autoLoadPage("workflowPendingSteps", false);
 				<%
-				End If
-				%>			
+End If
+				%>
 			}
 		}
-		catch(e)
-		{
+		catch (e) {
 			sMessage = "Error opening workflow forms : " + e.description;
 			OpenHR.messageBox(sMessage, 48, "OpenHR Intranet");
 		}
@@ -388,116 +354,115 @@ End If
 	function setcancel() {
 		// Goto self-service recedit page (if Self-service user at login)
 		// Otherwise load the default page.
-		//debugger;
+
 		<%If Session("fromMenu") = 0 Then%>
 		window.parent.frames("menuframe").openPersonnelRecEdit();
 		<%Else%>
 		//window.location = "default";
 		window.location = "main";
 		<%End If%>
+	}
 
-		function setrefresh() {
-			//debugger;
-			OpenHR.submitForm("frmRefresh");
+	function setrefresh() {
+
+		OpenHR.submitForm("frmRefresh");
 			<%If Session("fromMenu") = 0 Then%>
-			menu_autoLoadPage("workflowPendingSteps", true);
+		menu_autoLoadPage("workflowPendingSteps", true);
 			<%Else%>
-			menu_autoLoadPage("workflowPendingSteps", false);
+		menu_autoLoadPage("workflowPendingSteps", false);
 			<%End If%>
+	}
+
+	//TODO - parts of this next function are still todo
+
+	function currentWorkFramePage() {
+		//// Return the current page in the workframeset.
+		//var sCols = window.parent.document.all.item("workframeset").cols;
+
+		//var re = / /gi;
+		//sCols = sCols.replace(re, "");
+		//sCols = sCols.substr(0, 1);
+
+		//// Work frame is in view.
+		////var sCurrentPage = window.parent.frames("workframe").document.location;
+		//var sCurrentPage = OpenHR.getForm("workframe");
+		//sCurrentPage = sCurrentPage.toString();
+
+		//if (sCurrentPage.lastIndexOf("/") > 0) {
+		//	sCurrentPage = sCurrentPage.substr(sCurrentPage.lastIndexOf("/") + 1);
+		//}
+
+		//if (sCurrentPage.indexOf(".") > 0) {
+		//	sCurrentPage = sCurrentPage.substr(0, sCurrentPage.indexOf("."));
+		//}
+
+		//re = / /gi;
+		//sCurrentPage = sCurrentPage.replace(re, "");
+		//sCurrentPage = sCurrentPage.toUpperCase();
+
+		//return(sCurrentPage);	
+	}
+
+	function sizeColumnsToFitGrid(pctlGrid) {
+		var iLoop;
+		var iVisibleColumnCount;
+		var iVisibleCheckboxCount;
+		var iNewColWidth;
+		var iLastVisibleColumn;
+		var iUsedWidth;
+		var iUsableWidth;
+		var iMinWidth = 100;
+		var fScrollBarVisible;
+		var iCheckboxWidth = 100;
+
+		iVisibleCheckboxCount = 0;
+		iVisibleColumnCount = 0;
+		iLastVisibleColumn = 0;
+		iUsedWidth = 0;
+		for (iLoop = 0; iLoop < pctlGrid.Columns.Count; iLoop++) {
+			if (pctlGrid.Columns.Item(iLoop).Visible == true) {
+				if (pctlGrid.Columns.Item(iLoop).Style == 2) {
+					iVisibleCheckboxCount = iVisibleCheckboxCount + 1;
+				}
+
+				iVisibleColumnCount = iVisibleColumnCount + 1;
+				iLastVisibleColumn = iLoop;
+			}
 		}
 
-		//TODO - parts of this next function are still todo
+		if (iVisibleColumnCount > 0) {
+			fScrollBarVisible = (pctlGrid.Rows > pctlGrid.VisibleRows);
+			if (fScrollBarVisible == true) {
+				//NPG20090403 Fault 13516
+				//iUsableWidth = pctlGrid.style.pixelWidth - 20;
+				iUsableWidth = findTable.clientWidth - 20;
+			} else {
+				//NPG20090403 Fault 13516
+				//iUsableWidth = pctlGrid.style.pixelWidth;
+				iUsableWidth = findTable.clientWidth;
+			}
 
-		function currentWorkFramePage() {
-			//// Return the current page in the workframeset.
-			//var sCols = window.parent.document.all.item("workframeset").cols;
+			iNewColWidth = (iUsableWidth - (iVisibleCheckboxCount * iCheckboxWidth)) / (iVisibleColumnCount - iVisibleCheckboxCount);
+			if (iNewColWidth < iMinWidth) {
+				iNewColWidth = iMinWidth;
+			}
 
-			//var re = / /gi;
-			//sCols = sCols.replace(re, "");
-			//sCols = sCols.substr(0, 1);
-
-			//// Work frame is in view.
-			////var sCurrentPage = window.parent.frames("workframe").document.location;
-			//var sCurrentPage = OpenHR.getForm("workframe");
-			//sCurrentPage = sCurrentPage.toString();
-
-			//if (sCurrentPage.lastIndexOf("/") > 0) {
-			//	sCurrentPage = sCurrentPage.substr(sCurrentPage.lastIndexOf("/") + 1);
-			//}
-
-			//if (sCurrentPage.indexOf(".") > 0) {
-			//	sCurrentPage = sCurrentPage.substr(0, sCurrentPage.indexOf("."));
-			//}
-
-			//re = / /gi;
-			//sCurrentPage = sCurrentPage.replace(re, "");
-			//sCurrentPage = sCurrentPage.toUpperCase();
-
-			//return(sCurrentPage);	
-		}
-
-		function sizeColumnsToFitGrid(pctlGrid) {
-			var iLoop;
-			var iVisibleColumnCount;
-			var iVisibleCheckboxCount;
-			var iNewColWidth;
-			var iLastVisibleColumn;
-			var iUsedWidth;
-			var iUsableWidth;
-			var iMinWidth = 100;
-			var fScrollBarVisible;
-			var iCheckboxWidth = 100;
-
-			//debugger;
-			iVisibleCheckboxCount = 0;
-			iVisibleColumnCount = 0;
-			iLastVisibleColumn = 0;
-			iUsedWidth = 0;
-			for (iLoop = 0; iLoop < pctlGrid.Columns.Count; iLoop++) {
+			for (iLoop = 0; iLoop < iLastVisibleColumn; iLoop++) {
 				if (pctlGrid.Columns.Item(iLoop).Visible == true) {
 					if (pctlGrid.Columns.Item(iLoop).Style == 2) {
-						iVisibleCheckboxCount = iVisibleCheckboxCount + 1;
+						pctlGrid.Columns(iLoop).Width = iCheckboxWidth;
+					} else {
+						pctlGrid.Columns.Item(iLoop).Width = iNewColWidth;
 					}
-
-					iVisibleColumnCount = iVisibleColumnCount + 1;
-					iLastVisibleColumn = iLoop;
+					iUsedWidth = iUsedWidth + pctlGrid.Columns.Item(iLoop).Width;
 				}
 			}
 
-			if (iVisibleColumnCount > 0) {
-				fScrollBarVisible = (pctlGrid.Rows > pctlGrid.VisibleRows);
-				if (fScrollBarVisible == true) {
-					//NPG20090403 Fault 13516
-					//iUsableWidth = pctlGrid.style.pixelWidth - 20;
-					iUsableWidth = findTable.clientWidth - 20;
-				} else {
-					//NPG20090403 Fault 13516
-					//iUsableWidth = pctlGrid.style.pixelWidth;
-					iUsableWidth = findTable.clientWidth;
-				}
-
-				iNewColWidth = (iUsableWidth - (iVisibleCheckboxCount * iCheckboxWidth)) / (iVisibleColumnCount - iVisibleCheckboxCount);
-				if (iNewColWidth < iMinWidth) {
-					iNewColWidth = iMinWidth;
-				}
-
-				for (iLoop = 0; iLoop < iLastVisibleColumn; iLoop++) {
-					if (pctlGrid.Columns.Item(iLoop).Visible == true) {
-						if (pctlGrid.Columns.Item(iLoop).Style == 2) {
-							pctlGrid.Columns(iLoop).Width = iCheckboxWidth;
-						} else {
-							pctlGrid.Columns.Item(iLoop).Width = iNewColWidth;
-						}
-						iUsedWidth = iUsedWidth + pctlGrid.Columns.Item(iLoop).Width;
-					}
-				}
-
-				iNewColWidth = iUsableWidth - iUsedWidth - 2;
-				if (iNewColWidth < iMinWidth) {
-					iNewColWidth = iMinWidth;
-				}
-				pctlGrid.Columns.Item(iLastVisibleColumn).Width = iNewColWidth;
+			iNewColWidth = iUsableWidth - iUsedWidth - 2;
+			if (iNewColWidth < iMinWidth) {
+				iNewColWidth = iMinWidth;
 			}
+			pctlGrid.Columns.Item(iLastVisibleColumn).Width = iNewColWidth;
 		}
 	}
 </script>
@@ -529,7 +494,7 @@ End If
 												id="ssOleDBGridDefSelRecords"
 												name="ssOleDBGridDefselRecords"
 												codebase="cabs/COAInt_Grid.cab#version=3,1,3,6"
-												style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 100%">
+												style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 400px">
 												<param name="ScrollBars" value="4">
 												<param name="_Version" value="196616">
 												<param name="DataMode" value="2">
@@ -846,7 +811,6 @@ End If
 </div>
 
 <script type="text/javascript">
-	//debugger;
 	workflowPendingSteps_window_onload();
 </script>
 
