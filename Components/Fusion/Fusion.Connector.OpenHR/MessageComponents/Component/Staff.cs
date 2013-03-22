@@ -129,18 +129,7 @@ public partial class Staff
         }
     }
 
-    /// <remarks/>
-    public EmployeeType employeeType
-    {
-        get
-        {
-            return this.employeeTypeField;
-        }
-        set
-        {
-            this.employeeTypeField = value;
-        }
-    }
+    public string employeeType {get;set;}
 
     /// <remarks/>
     [System.Xml.Serialization.XmlElementAttribute(IsNullable = true)]

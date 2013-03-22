@@ -151,6 +151,7 @@ namespace Fusion.Connector.OpenHR.Database
 
         public static Staff readStaff(int localId)
         {
+            string value;
 
             string sQuery = string.Format("SELECT * FROM fusion.staff WHERE StaffID = {0}", localId);
 
@@ -189,11 +190,7 @@ namespace Fusion.Connector.OpenHR.Database
                     su.DOB = Convert.ToDateTime(custDS.Tables["staff"].Rows[0]["DOB"].ToString());
                 }
 
-                if (custDS.Tables["staff"].Rows[0]["employeeType"].ToString() != "")
-                {
-                    su.employeeType = (EmployeeType)Enum.Parse(typeof(EmployeeType), custDS.Tables["staff"].Rows[0]["employeeType"].ToString(), true);
-                }
-
+                su.employeeType = pRow["employeeType"].ToString() == "" ? null : pRow["employeeType"].ToString();
                 su.workMobile = pRow["workMobile"].ToString() == "" ? null : pRow["workMobile"].ToString();
                 su.personalMobile = pRow["personalMobile"].ToString() == "" ? null : pRow["personalMobile"].ToString();
                 su.workPhoneNumber = pRow["workPhoneNumber"].ToString() == "" ? null : pRow["workPhoneNumber"].ToString();
