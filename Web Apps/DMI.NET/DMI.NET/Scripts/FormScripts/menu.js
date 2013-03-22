@@ -363,7 +363,7 @@ function menu_abMainMenu_Click(pTool) {
 
 
 function menu_MenuClick(sTool) {
-
+	
     //ignore clicks from 'fixed links' which have no 'id'.
     if (!sTool) return false;
     //new ribbon buttons for utils - ignore click.
@@ -678,77 +678,95 @@ function menu_MenuClick(sTool) {
 			return;
 		}
 		
-		
+
 		if (menu_saveChanges(sToolName, true, false) != 2) { // 2 = vbCancel
-		    if (sToolName.substr(0, 7) == "mnutool") {
-		        menu_loadPage(sToolName.substr(7));
-		    }
-		    else {
-		        //frmData = window.parent.frames("dataframe").document.forms("frmData");
-		        frmData = OpenHR.getForm("dataframe", "frmData");
-		        sToolNameKey = sToolName.substr(0, 3);
+			if (sToolName.substr(0, 7) == "mnutool") {
+				
+				//if selected item is an expandable menu item, toggle it instead of going to menu_loadPage.
+				if ($("#" + sTool).is(".jstree-closed, .jstree-open")) {
+					toggle_Leaf(sTool);
+					return false;
+				}
 
-		        if ((sToolNameKey == "PT_") ||
-                     (sToolNameKey == "PV_")) {
-		            // PT_ = primary table
-		            // PV_ = primary table view
-		            if (frmMenuInfo.txtPrimaryStartMode.value == 3) {
-		                frmData.txtRecordDescription.value = "";
-		                menu_loadFindPageFirst(sToolName);
-		            }
-		            else {
-		                menu_loadRecordEditPage(sToolName);
-		            }
+				//not an expandable menu item, so continue.
+				menu_loadPage(sToolName.substr(7));
+			}
+			else {
+				//frmData = window.parent.frames("dataframe").document.forms("frmData");
+				frmData = OpenHR.getForm("dataframe", "frmData");
+				sToolNameKey = sToolName.substr(0, 3);
 
-		            return;
-		        }
+				if ((sToolNameKey == "PT_") ||
+								 (sToolNameKey == "PV_")) {
+					// PT_ = primary table
+					// PV_ = primary table view
+					if (frmMenuInfo.txtPrimaryStartMode.value == 3) {
+						frmData.txtRecordDescription.value = "";
+						menu_loadFindPageFirst(sToolName);
+					}
+					else {
+						menu_loadRecordEditPage(sToolName);
+					}
 
-		        if (sToolNameKey == "TS_") {
-		            // TS_ = Table screen
-		            if (frmMenuInfo.txtLookupStartMode.value == 3) {
-		                frmData.txtRecordDescription.value = "";
-		                menu_loadFindPageFirst(sToolName);
-		            }
-		            else {
-		                menu_loadRecordEditPage(sToolName);
-		            }
+					return;
+				}
 
-		            return;
-		        }
+				if (sToolNameKey == "TS_") {
+					// TS_ = Table screen
+					if (frmMenuInfo.txtLookupStartMode.value == 3) {
+						frmData.txtRecordDescription.value = "";
+						menu_loadFindPageFirst(sToolName);
+					}
+					else {
+						menu_loadRecordEditPage(sToolName);
+					}
 
-		        if (sToolNameKey == "QE_") {
-		            // QE_ = quick entry screen
-		            if (frmMenuInfo.txtQuickAccessStartMode.value == 3) {
-		                frmData.txtRecordDescription.value = "";
-		                menu_loadFindPageFirst(sToolName);
-		            }
-		            else {
-		                menu_loadRecordEditPage(sToolName);
-		            }
+					return;
+				}
 
-		            return;
-		        }
+				if (sToolNameKey == "QE_") {
+					// QE_ = quick entry screen
+					if (frmMenuInfo.txtQuickAccessStartMode.value == 3) {
+						frmData.txtRecordDescription.value = "";
+						menu_loadFindPageFirst(sToolName);
+					}
+					else {
+						menu_loadRecordEditPage(sToolName);
+					}
 
-		        if (sToolNameKey == "HT_") {
-		            // HT_ = history table
-		            if (frmMenuInfo.txtHistoryStartMode.value == 3) {
-		                // NB. Don't clear the record description, as we'll
-		                // use the existing recEdit record description
-		                // value for the history find window.
-		                menu_loadFindPageFirst(sToolName);
-		            }
-		            else {
-		                menu_loadRecordEditPage(sToolName);
-		            }
+					return;
+				}
 
-		            return;
-		        }
+				if (sToolNameKey == "HT_") {
+					// HT_ = history table
+					if (frmMenuInfo.txtHistoryStartMode.value == 3) {
+						// NB. Don't clear the record description, as we'll
+						// use the existing recEdit record description
+						// value for the history find window.
+						menu_loadFindPageFirst(sToolName);
+					}
+					else {
+						menu_loadRecordEditPage(sToolName);
+					}
 
-		        OpenHR.messageBox("Unrecognised menu option '" + sToolName + "'.", 0, "OpenHR Intranet"); // 0 = vbOKOnly
-		    }
+					return;
+				}
+
+				//Default to toggling this leaf (expand/contract)
+				toggle_Leaf(sTool);
+				
+				//OpenHR.messageBox("Unrecognised menu option '" + sToolName + "'.", 0, "OpenHR Intranet"); // 0 = vbOKOnly
+			}
 		}
-}
+	}
 
+function toggle_Leaf(sTool) {
+	//is this clicked item an expandable leaf? If so, toggle it...
+	try {
+		var jsTreeID = ($("#" + sTool).parent().parent().attr("id"));
+		$("#" + jsTreeID).jstree("toggle_node", "#" + sTool);
+	} catch(e) {}
+}
 
 function menu_ShowWait(sMessage) {
 

@@ -567,7 +567,7 @@
 
 <div id="contextmenu" class="accordion">
 		<h3 id="mnutoolDatabase">Database</h3>
-		<div>
+		<div id="jsTree_Database">
 			<ul id="mnubandDatabase">
 				<li id="mnutoolQuickEntry"><a href="#">Quick Access Screens</a>
 					<ul id="mnubandQuickEntry"></ul>
