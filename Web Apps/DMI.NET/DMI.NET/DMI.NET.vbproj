@@ -139,6 +139,19 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="appletest.htm" />
+    <Content Include="Content\images\ABSLogo\OpenHRLogo1024x768.png" />
+    <Content Include="Content\images\ABSLogo\OpenHRLogo114.png" />
+    <Content Include="Content\images\ABSLogo\OpenHRLogo144.png" />
+    <Content Include="Content\images\ABSLogo\OpenHRLogo1496x2048.png" />
+    <Content Include="Content\images\ABSLogo\OpenHRLogo1536x2008.png" />
+    <Content Include="Content\images\ABSLogo\OpenHRLogo320x460.png" />
+    <Content Include="Content\images\ABSLogo\OpenHRLogo57.png" />
+    <Content Include="Content\images\ABSLogo\OpenHRLogo640x1096.png" />
+    <Content Include="Content\images\ABSLogo\OpenHRLogo640x920.png" />
+    <Content Include="Content\images\ABSLogo\OpenHRLogo72.png" />
+    <Content Include="Content\images\ABSLogo\OpenHRLogo748x1024.png" />
+    <Content Include="Content\images\ABSLogo\OpenHRLogo768x1004.png" />
     <Content Include="lpks\ssmain.lpk" />
     <None Include="_bin_deployableAssemblies\Microsoft.Web.Infrastructure.dll" />
     <None Include="_bin_deployableAssemblies\System.Web.WebPages.Razor.dll" />
@@ -176,31 +189,24 @@
     <Content Include="Content\fonts\font-awesome\fontawesome-webfont.svg" />
     <Content Include="Content\fonts\general_enclosed_foundicons.svg" />
     <Content Include="Content\general_enclosed_foundicons.css" />
-    <Content Include="Content\images\ABSBack.jpg" />
-    <Content Include="Content\images\ABSBack1.jpg" />
-    <Content Include="Content\images\ABSBack2.jpg" />
     <Content Include="Content\images\abssmall.png" />
-    <Content Include="Content\images\AdvBS_WHITE.gif" />
     <Content Include="Content\images\extlink.png" />
     <Content Include="Content\images\extlink2.png" />
     <Content Include="Content\images\extlink3.png" />
     <Content Include="Content\images\extlink4.png" />
     <Content Include="Content\images\spinnerBig.gif" />
-    <Content Include="Content\images\OpenHRLogo.png" />
+    <Content Include="Content\images\ABSLogo\OpenHRLogo.png" />
     <Content Include="Content\images\arrow-left-white.png" />
     <Content Include="Content\images\arrow-right-white.png" />
     <Content Include="Content\images\back_48.png" />
-    <Content Include="Content\images\bluebgrd.png" />
     <Content Include="Content\images\COAInt_Banner.jpg" />
     <Content Include="Content\images\COAInt_Splash.jpg" />
     <Content Include="Content\images\COAInt_TopBar.jpg" />
-    <Content Include="Content\images\DefaultBackground.jpg" />
     <Content Include="Content\images\DMIBackground.gif" />
-    <Content Include="Content\images\employee.jpg" />
     <Content Include="Content\images\Expand.png" />
     <Content Include="Content\images\Help32.png" />
     <Content Include="Content\images\next_48.png" />
-    <Content Include="Content\images\OpenHRLogo2.png" />
+    <Content Include="Content\images\ABSLogo\OpenHRLogo2.png" />
     <Content Include="Content\images\Retract.png" />
     <Content Include="Content\DashboardStyles\layouts\wireframe.css" />
     <Content Include="Content\images\spinner04.gif" />

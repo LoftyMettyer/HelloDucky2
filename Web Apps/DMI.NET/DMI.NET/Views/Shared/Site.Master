@@ -6,6 +6,72 @@
    <title><asp:ContentPlaceHolder ID="TitleContent" runat="server" /></title>
 
 	<meta name="apple-mobile-web-app-capable" content="yes" />
+	  <link href="~/Content/images/ABSLogo/OpenHRLogo144.png" sizes="144x144" rel="apple-touch-icon">
+	
+	
+	<!-- ipad -->
+	        <link href="Content/images/ABSLogo/OpenHRLogo748x1024.png"
+              media="(device-width: 768px) and (device-height: 1024px)
+                 and (orientation: landscape)
+                 and (-webkit-device-pixel-ratio: 1)"
+              rel="apple-touch-startup-image">
+	
+        <!-- iPhone -->
+        <link href="~/Content/images/ABSLogo/OpenHRLogo57.png"
+              sizes="57x57"
+              rel="apple-touch-icon">
+        <link href="~/Content/images/ABSLogo/OpenHRLogo320x460.png"
+              media="(device-width: 320px) and (device-height: 480px)
+                 and (-webkit-device-pixel-ratio: 1)"
+              rel="apple-touch-startup-image">
+ 
+        <!-- iPhone (Retina) -->
+        <link href="~/Content/images/ABSLogo/OpenHRLogo114.png"
+              sizes="114x114"
+              rel="apple-touch-icon">
+        <link href="~/Content/images/ABSLogo/OpenHRLogo640x920.png"
+              media="(device-width: 320px) and (device-height: 480px)
+                 and (-webkit-device-pixel-ratio: 2)"
+              rel="apple-touch-startup-image">
+ 
+        <!-- iPhone 5 -->
+        <link href="~/Content/images/ABSLogo/OpenHRLogo640x1096.png"
+              media="(device-width: 320px) and (device-height: 568px)
+                 and (-webkit-device-pixel-ratio: 2)"
+              rel="apple-touch-startup-image">
+ 
+        <!-- iPad -->
+        <link href="~/Content/images/ABSLogo/OpenHRLogo72.png"
+              sizes="72x72"
+              rel="apple-touch-icon">
+        <link href="~/Content/images/ABSLogo/OpenHRLogo768x1004.png"
+              media="(device-width: 768px) and (device-height: 1024px)
+                 and (orientation: portrait)
+                 and (-webkit-device-pixel-ratio: 1)"
+              rel="apple-touch-startup-image">
+        <link href="~/Content/images/ABSLogo/OpenHRLogo748x1024.png"
+              media="(device-width: 768px) and (device-height: 1024px)
+                 and (orientation: landscape)
+                 and (-webkit-device-pixel-ratio: 1)"
+              rel="apple-touch-startup-image">
+ 
+        <!-- iPad (Retina) -->
+        <link href="~/Content/images/ABSLogo/OpenHRLogo144.png"
+              sizes="144x144"
+              rel="apple-touch-icon">
+        <link href="~/Content/images/ABSLogo/OpenHRLogo1536x2008.png"
+              media="(device-width: 768px) and (device-height: 1024px)
+                 and (orientation: portrait)
+                 and (-webkit-device-pixel-ratio: 2)"
+              rel="apple-touch-startup-image">
+        <link href="~/Content/images/ABSLogo/OpenHRLogo1496x2048.png"
+              media="(device-width: 768px) and (device-height: 1024px)
+                 and (orientation: landscape)
+                 and (-webkit-device-pixel-ratio: 2)"
+              rel="apple-touch-startup-image">
+
+
+
 
     
 	<% 
