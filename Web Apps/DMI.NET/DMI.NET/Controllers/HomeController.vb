@@ -450,24 +450,6 @@ Namespace Controllers
       End If
     End Function
 
-    Function formatError(psErrMsg)
-      Dim iStart
-      Dim iFound
-
-      iFound = 0
-      Do
-        iStart = iFound
-        iFound = InStr(iStart + 1, psErrMsg, "]")
-      Loop While iFound > 0
-
-      If (iStart > 0) And (iStart < Len(Trim(psErrMsg))) Then
-        formatError = Trim(Mid(psErrMsg, iStart + 1))
-      Else
-        formatError = psErrMsg
-      End If
-    End Function
-
-
 		<HttpPost()>
 		Function passwordChange_Submit(value As FormCollection) As JsonResult
 

@@ -1,9 +1,9 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@Import namespace="DMI.NET" %>
 
-<script type=”text/javascript" </script>
-
-<%Html.RenderPartial("Util_Def_Crosstabs/dialog")%>
+<script type=”text/javascript">
+	<%Html.RenderPartial("Util_Def_Crosstabs/dialog")%>
+</script>
 
 <div bgcolor='<%=session("ConvertedDesktopColour")%>' onload="return window_onload()" id=bdyMain leftmargin=20 topmargin=20 bottommargin=20 rightmargin=5>
 
