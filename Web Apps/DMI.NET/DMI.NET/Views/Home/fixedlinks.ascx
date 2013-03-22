@@ -142,10 +142,6 @@
                                     <a href="#" rel="table">
                                         <img src="<%: Url.Content("~/Scripts/officebar/winkit/delete64HOVER.png") %>" alt="" />Delete</a>
                                 </div>
-                                <div id="mnutoolPrint" class="button">
-                                    <a href="#" rel="table">
-                                        <img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png") %>" alt="" />Printer</a>
-                                </div>
                             </li>
                             <li><span>Navigate</span>
                                 <div id="mnutoolParentRecord" class="button">
@@ -211,8 +207,12 @@
                                         <img src="<%: Url.Content("~/Scripts/officebar/winkit/FilteringDelete64HOVER.png") %>"
                                             alt="" />Clear Filter</a>
                                 </div>
+                                <div id="mnutoolPrint" class="button">
+                                    <a href="#" rel="table">
+                                        <img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png") %>" alt="" />Printer</a>
+                                </div>
                             </li>
-                            <li><span>Calendar Reports</span>
+                            <li><span>Reports</span>
                                 <div id="mnutoolCalendarReportsRec" class="button">
                                     <a href="#" rel="table">
                                         <img src="<%: Url.Content("~/Scripts/officebar/winkit/CalendarReports64HOVER.png") %>"

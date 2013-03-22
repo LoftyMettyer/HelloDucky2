@@ -315,7 +315,10 @@ div.officebar ul li:hover a {
 div.officebar ul li.current a {
   background: transparent url(../../../Scripts/officebar/images/tab_right.gif) no-repeat scroll right top;
   color: #15428B;
+}
 
+div.officebar ul li.current .button.disabled a {
+	color: gray;
 }
 
 div.officetab {
@@ -542,6 +545,12 @@ div.officetab li div.button a:hover {
   background: transparent url(../../../Scripts/officebar/images/button_over.png) no-repeat scroll left top;
 	cursor: pointer;
 }
+
+div.officetab li div.button.disabled a:hover {
+  background: transparent;
+	cursor: default;
+}
+
 
   div.officetab li div.list a {
     width: 24px;

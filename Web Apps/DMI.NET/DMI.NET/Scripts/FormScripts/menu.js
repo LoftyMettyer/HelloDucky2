@@ -938,54 +938,58 @@ function menu_refreshMenu() {
 					(frmRecEdit.txtCurrentParentTableID.value > 0) ||
 					(frmRecEdit.txtQuickEntry.value.toUpperCase() == "TRUE")));
 	    
-		menu_enableMenuItem("mnutoolNewRecord", fMnutoolNewRecord);
+		menu_toolbarEnableItem("mnutoolNewRecord", fMnutoolNewRecord);
 		menu_setVisibleMenuItem("mnutoolCopyRecord", true);
-		menu_enableMenuItem("mnutoolCopyRecord", (fMnutoolNewRecord && (frmRecEdit.txtCurrentRecordID.value > 0)));
+		menu_toolbarEnableItem("mnutoolCopyRecord", (fMnutoolNewRecord && (frmRecEdit.txtCurrentRecordID.value > 0)));
 		menu_setVisibleMenuItem("mnutoolEditRecord", false);
 		menu_setVisibleMenuItem("mnutoolSaveRecord", true);
 		//TODO: menu_enableMenuItem("mnutoolSaveRecord", (frmRecEdit.ctlRecordEdit.changed == true));
+		menu_toolbarEnableItem("mnutoolSaveRecord", false);
 		menu_setVisibleMenuItem("mnutoolDeleteRecord", true);
-		menu_enableMenuItem("mnutoolDeleteRecord", ((frmRecEdit.txtRecEditDeleteGranted.value.toUpperCase() == "TRUE") &&
+		menu_toolbarEnableItem("mnutoolDeleteRecord", ((frmRecEdit.txtRecEditDeleteGranted.value.toUpperCase() == "TRUE") &&
 				(frmRecEdit.txtCurrentRecordID.value > 0) &&
 				((frmMenuInfo.txtUserType.value == 0) ||
 					(frmRecEdit.txtCurrentParentTableID.value > 0) ||
 					(frmRecEdit.txtQuickEntry.value.toUpperCase() == "TRUE"))));
 		menu_setVisibleMenuItem("mnutoolParentRecord", true);
-		menu_enableMenuItem("mnutoolParentRecord", (frmRecEdit.txtCurrentParentTableID.value > 0));
+		menu_toolbarEnableItem("mnutoolParentRecord", (frmRecEdit.txtCurrentParentTableID.value > 0));
 		menu_setVisibleMenuItem("mnutoolBack", false);
-		menu_enableMenuItem("mnutoolBack", false);
+		menu_toolbarEnableItem("mnutoolBack", false);
 
 		menu_setVisibleMenuItem("mnutoolFirstRecord", true);
-		menu_enableMenuItem("mnutoolFirstRecord", (parseInt(frmData.txtRecordPosition.value, 10) > 1));
+		menu_toolbarEnableItem("mnutoolFirstRecord", (parseInt(frmData.txtRecordPosition.value, 10) > 1));
 		menu_setVisibleMenuItem("mnutoolPreviousRecord", true);
-		menu_enableMenuItem("mnutoolPreviousRecord", (parseInt(frmData.txtRecordPosition.value, 10) > 1));
+		menu_toolbarEnableItem("mnutoolPreviousRecord", (parseInt(frmData.txtRecordPosition.value, 10) > 1));
 		menu_setVisibleMenuItem("mnutoolNextRecord", true);
-		menu_enableMenuItem("mnutoolNextRecord", (parseInt(frmData.txtRecordPosition.value, 10) < parseInt(frmData.txtRecordCount.value, 10)));
+		menu_toolbarEnableItem("mnutoolNextRecord", (parseInt(frmData.txtRecordPosition.value, 10) < parseInt(frmData.txtRecordCount.value, 10)));
 		menu_setVisibleMenuItem("mnutoolLastRecord", true);
-		menu_enableMenuItem("mnutoolLastRecord", (parseInt(frmData.txtRecordPosition.value, 10) < parseInt(frmData.txtRecordCount.value, 10)));
+		menu_toolbarEnableItem("mnutoolLastRecord", (parseInt(frmData.txtRecordPosition.value, 10) < parseInt(frmData.txtRecordCount.value, 10)));
 
 		menu_setVisibleMenuItem("mnutoolLocateRecordsCaption", false);
 		menu_setVisibleMenuItem("mnutoolLocateRecords", false);
 		menu_setVisibleMenuItem("mnutoolLocateRecordsLogic", false);
+		menu_setVisibletoolbarGroup("mnutoolLocateRecords", false);	//hide the group too.
 
 		menu_setVisibleMenuItem("mnutoolFind", true);
 
 		menu_setVisibleMenuItem("mnutoolQuickFind", true);
-	    menu_enableMenuItem("mnutoolQuickFind", ((frmRecEdit.txtLineage.value.length == 0) &&
+		menu_toolbarEnableItem("mnutoolQuickFind", ((frmRecEdit.txtLineage.value.length == 0) &&
 				((frmMenuInfo.txtUserType.value == 0) ||
 				(frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
 	            (frmRecEdit.txtCurrentParentTableID.value > 0))));
+		menu_setVisibletoolbarGroup("mnutoolFind", true);
+
 		//abMainMenu.Bands("mnubandMainToolBar").Tools("mnutoolOrder").beginGroup = false;
 		menu_setVisibleMenuItem("mnutoolOrder", true);
-		menu_enableMenuItem("mnutoolOrder", ((frmMenuInfo.txtUserType.value == 0) ||
+		menu_toolbarEnableItem("mnutoolOrder", ((frmMenuInfo.txtUserType.value == 0) ||
 				(frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
 				(frmRecEdit.txtCurrentParentTableID.value > 0)));
 		menu_setVisibleMenuItem("mnutoolFilter", true);
-		menu_enableMenuItem("mnutoolFilter", ((frmMenuInfo.txtUserType.value == 0) ||
+		menu_toolbarEnableItem("mnutoolFilter", ((frmMenuInfo.txtUserType.value == 0) ||
 				(frmRecEdit.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value) ||
 				(frmRecEdit.txtCurrentParentTableID.value > 0)));
 		menu_setVisibleMenuItem("mnutoolClearFilter", true);
-		menu_enableMenuItem("mnutoolClearFilter", (frmRecEdit.txtRecEditFilterDef.value.length > 0));
+		menu_toolbarEnableItem("mnutoolClearFilter", (frmRecEdit.txtRecEditFilterDef.value.length > 0));
 		menu_setVisibleMenuItem("mnutoolPrint", true);
 
 		// Standard reports (record menu)
@@ -1502,25 +1506,21 @@ function menu_refreshMenu() {
 			//if all these are false, then hide the Course Booking group.			
 			menu_setVisibletoolbarGroup("mnutoolBookCourse", ((fBookCourseVisible) && (fCancelCourseVisible)));			
 
-			// Standard reports (record menu)
-			menu_setVisibleMenuItem("mnutoolStdRpt_AbsenceCalendar", fStdRptAbsenceCalendarVisible);
-			menu_enableMenuItem("mnutoolStdRpt_AbsenceCalendar", fStdRptAbsenceCalendarEnabled);
-			menu_setVisibleMenuItem("mnutoolStdRpt_BreakdownREC", fStdRptAbsenceBreakdownVisible);
-			menu_enableMenuItem("mnutoolStdRpt_BreakdownREC", fStdRptAbsenceBreakdownEnabled);
-			menu_setVisibleMenuItem("mnutoolStdRpt_BradfordREC", fStdRptBradfordFactorVisible);
-			menu_enableMenuItem("mnutoolStdRpt_BradfordREC", fStdRptBradfordFactorEnabled);
+			// Standard reports (toolbar)
+			menu_setVisibleMenuItem("mnutoolStdRpt_AbsenceCalendar", fStdRptAbsenceCalendarVisible);	//Toolbar Icon
+			menu_toolbarEnableItem("mnutoolStdRpt_AbsenceCalendar", fStdRptAbsenceCalendarEnabled);	//Toolbar Icon
+			menu_setVisibleMenuItem("mnutoolStdRpt_BreakdownREC", fStdRptAbsenceBreakdownVisible);	//Toolbar Icon
+			menu_toolbarEnableItem("mnutoolStdRpt_BreakdownREC", fStdRptAbsenceBreakdownEnabled);	//Toolbar Icon
+			menu_setVisibleMenuItem("mnutoolStdRpt_BradfordREC", fStdRptBradfordFactorVisible);	//Toolbar Icon
+			menu_toolbarEnableItem("mnutoolStdRpt_BradfordREC", fStdRptBradfordFactorEnabled);	//Toolbar Icon
 
-			// Calendar Reports (Record Menu)
-			menu_setVisibleMenuItem("mnutoolCalendarReportsRec", fCalendarReportsVisible);
-			menu_enableMenuItem("mnutoolCalendarReportsRec", fCalendarReportsEnabled);
-			menu_setVisibleMenuItem("mnutoolCalendarReportsRec", fCalendarReportsVisible); 
-			menu_enableMenuItem("mnutoolCalendarReportsRec", fCalendarReportsEnabled); 
+	// Calendar Reports (toolbar)
+			menu_setVisibleMenuItem("mnutoolCalendarReportsRec", fCalendarReportsVisible);	//Toolbar icon
+			menu_toolbarEnableItem("mnutoolCalendarReportsRec", fCalendarReportsEnabled);	//Toolbar Icon
 
-			// Mail Merge (Record Menu)
+			// Mail Merge (Toolbar!)
 			menu_setVisibleMenuItem("mnutoolMailMergeRec", fMailMergeVisible);
-			menu_enableMenuItem("mnutoolMailMergeRec", fMailMergeEnabled);
-			menu_setVisibleMenuItem("mnutoolMailMergeRec", fMailMergeVisible);
-			menu_enableMenuItem("mnutoolMailMergeRec", fMailMergeEnabled);
+			menu_toolbarEnableItem("mnutoolMailMergeRec", fMailMergeEnabled);
 
 	 //Standard reports (reports menu)
 	fStdRptAbsenceCalendarVisible = ((frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
@@ -1549,14 +1549,14 @@ function menu_refreshMenu() {
 	//		abMainMenu.Tools("mnutoolStdRpt_StabilityReport").visible = fStdRptStabilityVisible;
 	//		abMainMenu.Tools("mnutoolStdRpt_StabilityReport").enabled = fStdRptStabilityEnabled;
 
-	menu_setVisibleMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownVisible);
-	menu_enableMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownEnabled);
-	menu_setVisibleMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorVisible);
-	menu_enableMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorEnabled);
-	menu_setVisibleMenuItem("mnutoolStdRpt_TurnoverReport", fStdRptTurnoverVisible);
-	menu_enableMenuItem("mnutoolStdRpt_TurnoverReport", fStdRptTurnoverEnabled);
-	menu_setVisibleMenuItem("mnutoolStdRpt_StabilityReport", fStdRptStabilityVisible);
-	menu_enableMenuItem("mnutoolStdRpt_StabilityReport", fStdRptStabilityEnabled);
+	menu_setVisibleMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownVisible);	//Context menu item
+	menu_enableMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownEnabled);	//Context menu item
+	menu_setVisibleMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorVisible);	//Context menu item
+	menu_enableMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorEnabled);	//Context menu item
+	menu_setVisibleMenuItem("mnutoolStdRpt_TurnoverReport", fStdRptTurnoverVisible);	//Context menu item
+	menu_enableMenuItem("mnutoolStdRpt_TurnoverReport", fStdRptTurnoverEnabled);	//Context menu item
+	menu_setVisibleMenuItem("mnutoolStdRpt_StabilityReport", fStdRptStabilityVisible);	//Context menu item
+	menu_enableMenuItem("mnutoolStdRpt_StabilityReport", fStdRptStabilityEnabled);	//Context menu item
 
     //Hide Calendar Reports Group if all items are hidden.
 	menu_setVisibletoolbarGroup("mnutoolCalendarReportsRec", (fCalendarReportsVisible && fStdRptAbsenceCalendarVisible && fStdRptAbsenceBreakdownVisible && fStdRptBradfordFactorVisible && fMailMergeVisible));
@@ -1678,6 +1678,7 @@ function menu_refreshMenu() {
 }
 //	
 function menu_enableMenu() {
+	//TODO: run through and re-enable all items.
 	//	var iLoop;
 
 	//We now always enable the menu items (NB not the tools), so this section is...
@@ -4289,7 +4290,7 @@ function menu_enableMenuItem(itemId, fNewSetting) {
 		$("#" + itemId + " a:first").removeAttr("disabled");
 	} else {
 		$("#" + itemId + " a:first").attr("disabled", "disabled");
-		$("#" + itemId + " a:first").css("color", "lightgray");
+		//$("#" + itemId + " a:first").css("color", "lightgray");
 		$("#" + itemId + " a:first").css("font-weight", "lighter");
 
 	}
@@ -4304,11 +4305,13 @@ function menu_toolbarEnableItem(itemId, fNewSetting) {
 			//apply disable icon
 			if (currSrc.indexOf("HOVER") <= 0) {
 				$("#" + itemId + " img:first").attr("src", currSrc.replace("DIS.png", "HOVER.png"));
+				$("#" + itemId).removeClass("disabled");
 			}
 		} else {
 			//apply disable icon
 			if (currSrc.indexOf("DIS") <= 0) {
 				$("#" + itemId + " img:first").attr("src", currSrc.replace("HOVER.png", "DIS.png"));
+				$("#" + itemId).addClass("disabled");
 			}
 		}
 }
