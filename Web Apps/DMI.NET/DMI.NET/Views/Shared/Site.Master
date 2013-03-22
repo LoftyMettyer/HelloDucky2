@@ -6,10 +6,9 @@
    <title><asp:ContentPlaceHolder ID="TitleContent" runat="server" /></title>
 
 	<meta name="apple-mobile-web-app-capable" content="yes" />
-	  <link href="~/Content/images/ABSLogo/OpenHRLogo144.png" sizes="144x144" rel="apple-touch-icon">
+	  	
 	
-	
-	<!-- ipad -->
+				<!-- ipad -->
 	        <link href="Content/images/ABSLogo/OpenHRLogo748x1024.png"
               media="(device-width: 768px) and (device-height: 1024px)
                  and (orientation: landscape)
