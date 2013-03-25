@@ -3306,33 +3306,33 @@ function menu_moveRecord(psMovement) {
 
 function menu_loadQuickFind() 
 {
-//	if (saveChanges("QUICKFIND", true, false) != 2) { // 2 = vbCancel
-//		loadQuickFindNoSaveCheck();
-//	}
+	if (menu_saveChanges("QUICKFIND", true, false) != 2) { // 2 = vbCancel
+		menu_loadQuickFindNoSaveCheck();
+	}
 }
 
 function menu_loadQuickFindNoSaveCheck() 
 {
-//	var frmRecEditArea;
-//	var frmOptionArea;
-//	
-//	// NPG20100824 Fault HRPRO1065 - leave menus disabled in these modal screens
-//  disableMenu();	
-//	
-//	frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
-//	frmOptionArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
+	var frmRecEditArea;
+	var frmOptionArea;
+	
+	// NPG20100824 Fault HRPRO1065 - leave menus disabled in these modal screens
+  menu_disableMenu();	
+	
+	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
+	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 
-//	frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
-//	frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
-//	frmOptionArea.txtGotoOptionViewID.value = frmRecEditArea.txtCurrentViewID.value;
-//	frmOptionArea.txtGotoOptionOrderID.value = frmRecEditArea.txtCurrentOrderID.value;
-//	frmOptionArea.txtGotoOptionFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
-//	frmOptionArea.txtGotoOptionFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
-//	frmOptionArea.txtGotoOptionValue.value = "";
-//	frmOptionArea.txtGotoOptionPage.value = "quickfind.asp";
-//	frmOptionArea.txtGotoOptionAction.value = "";
+	frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
+	frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
+	frmOptionArea.txtGotoOptionViewID.value = frmRecEditArea.txtCurrentViewID.value;
+	frmOptionArea.txtGotoOptionOrderID.value = frmRecEditArea.txtCurrentOrderID.value;
+	frmOptionArea.txtGotoOptionFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
+	frmOptionArea.txtGotoOptionFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
+	frmOptionArea.txtGotoOptionValue.value = "";
+	frmOptionArea.txtGotoOptionPage.value = "quickfind";
+	frmOptionArea.txtGotoOptionAction.value = "";
 
-//	frmOptionArea.submit();
+	OpenHR.submitForm(frmOptionArea);
 }
 
 function menu_loadSelectOrderFilter(psType) {

@@ -644,6 +644,7 @@
     <Content Include="Views\Home\poll.ascx" />
     <Content Include="Views\Home\pollmessage.ascx" />
     <Content Include="Views\Home\progress.ascx" />
+    <Content Include="Views\Home\quickfind.ascx" />
     <Content Include="Views\Home\recordEdit.ascx" />
     <Content Include="Views\Home\refresh.ascx" />
     <Content Include="Views\Home\Util_CustomReportChilds.aspx" />

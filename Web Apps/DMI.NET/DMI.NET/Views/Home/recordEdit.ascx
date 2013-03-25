@@ -389,7 +389,7 @@
 
 
 
-    function recordEdit_refreshData() {
+    function refreshData() {    	
         // Get the data.asp to get the required data.
         var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
         var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");

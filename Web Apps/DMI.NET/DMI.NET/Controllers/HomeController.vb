@@ -2415,6 +2415,143 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		Function quickfind_Submit(value As FormCollection)
+			Dim sErrorMsg = ""
+
+			' Only process the form submission if the referring page was the default page.
+			' If it wasn't then redirect to the login page.
+
+			Dim sFilterSQL = Request.Form("txtGotoOptionFilterSQL")
+			Dim sFilterDef = Request.Form("txtGotoOptionFilterDef")
+			Dim sValue = Request.Form("txtGotoOptionValue")
+			Dim sNextPage = Request.Form("txtGotoOptionPage")
+			Dim sAction = Request.Form("txtGotoOptionAction")
+
+			Dim lngRecordID = 0
+
+			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
+			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
+			Session("optionViewID") = Request.Form("txtGotoOptionViewID")
+			Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
+			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
+			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
+			Session("optionFilterSQL") = sFilterSQL
+			Session("optionFilterDef") = sFilterDef
+			Session("optionValue") = sValue
+			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
+			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
+			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
+			Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
+			Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
+			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
+			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
+			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
+			Session("optionFile") = Request.Form("txtGotoOptionFile")
+			Session("optionExtension") = Request.Form("txtGotoOptionExtension")
+			'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
+			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
+			Session("optionAction") = sAction
+			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
+			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
+			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
+			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
+			Session("optionExprType") = Request.Form("txtGotoOptionExprType")
+			Session("optionExprID") = Request.Form("txtGotoOptionExprID")
+			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
+			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
+
+			If sAction = "" Then
+				' Go to the requested page.
+				Response.Redirect(sNextPage)
+			End If
+
+			If sAction = "CANCEL" Then
+				' Go to the requested page.
+				Session("errorMessage") = sErrorMsg
+				Response.Redirect(sNextPage)
+			End If
+
+			If sAction = "QUICKFIND" Then
+				' Try to get the record that matches the quick find criteria.
+				Dim cmdQuickFind = CreateObject("ADODB.Command")
+				cmdQuickFind.CommandText = "spASRIntGetQuickFindRecord"
+				cmdQuickFind.CommandType = 4 ' Stored Procedure
+				cmdQuickFind.ActiveConnection = Session("databaseConnection")
+
+				Dim prmTableID = cmdQuickFind.CreateParameter("tableID", 3, 1)
+				cmdQuickFind.Parameters.Append(prmTableID)
+				prmTableID.value = CleanNumeric(Session("optionTableID"))
+
+				Dim prmViewID = cmdQuickFind.CreateParameter("viewID", 3, 1)
+				cmdQuickFind.Parameters.Append(prmViewID)
+				prmViewID.value = CleanNumeric(Session("optionViewID"))
+
+				Dim prmColumnID = cmdQuickFind.CreateParameter("columnID", 3, 1)
+				cmdQuickFind.Parameters.Append(prmColumnID)
+				prmColumnID.value = CleanNumeric(Session("optionColumnID"))
+
+				Dim prmValue = cmdQuickFind.CreateParameter("value", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+				cmdQuickFind.Parameters.Append(prmValue)
+				prmValue.value = sValue
+
+				Dim prmFilterDef = cmdQuickFind.CreateParameter("filterDef", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+				cmdQuickFind.Parameters.Append(prmFilterDef)
+				prmFilterDef.value = sFilterDef
+
+				Dim prmResult = cmdQuickFind.CreateParameter("result", 3, 2)
+				cmdQuickFind.Parameters.Append(prmResult)
+
+				Dim prmDecSeparator = cmdQuickFind.CreateParameter("decSeparator", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+				cmdQuickFind.Parameters.Append(prmDecSeparator)
+				prmDecSeparator.value = Session("LocaleDecimalSeparator")
+
+				Dim prmDateFormat = cmdQuickFind.CreateParameter("dateFormat", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
+				cmdQuickFind.Parameters.Append(prmDateFormat)
+				prmDateFormat.value = Session("LocaleDateFormat")
+
+				Err.Clear()
+				cmdQuickFind.Execute()
+
+				If Err.Number <> 0 Then
+					sErrorMsg = "Error trying to run 'quick find'." & vbCrLf & formatError(Err.Description)
+				Else
+					If (cmdQuickFind.Parameters("result").Value = 0) Then
+						sErrorMsg = "No records match the criteria."
+
+						If Len(sFilterDef) > 0 Then
+							sErrorMsg = sErrorMsg & vbCrLf & _
+								"Try removing the filter."
+						End If
+					Else
+						' A record has been found !
+						lngRecordID = cmdQuickFind.Parameters("result").Value
+					End If
+				End If
+
+				cmdQuickFind = Nothing
+
+				Session("errorMessage") = sErrorMsg
+
+				If Len(sErrorMsg) > 0 Then
+					' Go to the requested page.
+					Return RedirectToAction("quickfind")
+				End If
+
+			End If
+
+			' Go to the requested page.
+			Session("optionRecordID") = lngRecordID
+			Return RedirectToAction(sNextPage)
+
+		End Function
+
+
+		Function emptyoption() As ActionResult
+			Return View()
+		End Function
+
+
+		<HttpPost()>
 		Function util_def_exprcomponent_submit(value As FormCollection)
 
 			Dim sErrorMsg As String = ""
@@ -2504,8 +2641,8 @@ Namespace Controllers
 		End Function
 
 
-	
-			
+
+
 		Function FieldRec() As ActionResult
 			Return View()
 		End Function
@@ -2717,6 +2854,14 @@ Namespace Controllers
 		Public Function util_def_calendarreport() As ActionResult
 			Throw New NotImplementedException()
 		End Function
+
+		Function quickfind() As ActionResult
+			Return View()
+		End Function
+
+
+
+
 	End Class
 
 	Public Class ErrMsgJsonAjaxResponse
