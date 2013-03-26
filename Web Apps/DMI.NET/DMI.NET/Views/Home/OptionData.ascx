@@ -4,7 +4,6 @@
 
 
 <script type="text/javascript">
-<!--
     function optiondata_onload() {
 
         var sFatalErrorMsg = frmOptionData.txtErrorDescription.value;
@@ -489,15 +488,16 @@
                 }
             
         }
-    }
-    -->
+    }   
 </script>
 
 <script type="text/javascript">
 <!--
-    function refreshOptionData() {
-        OpenHR.submitForm(frmGetOptionData);
-    }
+	function refreshOptionData() {
+		var frmGetOptionData = document.getElementById("frmGetOptionData");
+		OpenHR.submitForm(frmGetOptionData);		
+	}
+	
 
     -->
 </script>

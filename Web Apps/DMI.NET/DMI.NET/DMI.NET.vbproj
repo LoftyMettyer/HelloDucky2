@@ -629,6 +629,7 @@
     <Content Include="Views\Home\EventLogPurge.aspx" />
     <Content Include="Views\Home\EventLogSelection.aspx" />
     <Content Include="Views\Home\fieldRec.aspx" />
+    <Content Include="Views\Home\filterselect.ascx" />
     <Content Include="Views\Home\Find.ascx" />
     <Content Include="Views\Home\fixedlinks.ascx" />
     <Content Include="Views\Home\linksMain.aspx" />

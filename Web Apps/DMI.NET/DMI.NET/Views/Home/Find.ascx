@@ -72,10 +72,13 @@
 	    }
 
 
-		function find_window_onload() {
+	    function find_window_onload() {		    
 			var fOk;
 
 			fOk = true;
+			$("#workframe").attr("data-framesource", "FIND");
+			$("#optionframe").hide();
+			$("#workframe").show();
 		    
 			$(function () { tableToGrid("#findGridTable", {
 			    onSelectRow: function (rowID) {
@@ -145,7 +148,11 @@
 
 				// Expand the work frame and hide the option frame.
 				//window.parent.document.all.item("workframeset").cols = "*, 0";
-				$("#workframe").attr("data-framesource", "FIND");
+
+				//moved this higher up - grid wasn't resized properly after filtering. (HRPRO-2797)
+				//$("#workframe").attr("data-framesource", "FIND");
+				//$("#optionframe").hide();
+				//$("#workframe").show();
 
 				// JPD20020903 Fault 2316 - Need to dim focus on the grid before adding the items.
 				$("#findGridTable").focus();

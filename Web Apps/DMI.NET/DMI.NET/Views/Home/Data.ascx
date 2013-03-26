@@ -8,7 +8,7 @@
 %>
 
 <script type="text/javascript">
-    function data_window_onload() {        
+	function data_window_onload() {
 		var frmData = document.getElementById("frmData");
 		var frmGetData = document.getElementById("frmGetData");
 		var frmMenuInfo = OpenHR.getForm("menuframe", "frmMenuInfo");
@@ -30,7 +30,7 @@
 		//TODO
 		window.location = "Login";
 	}
-	else {	    
+	else {		
 		// Do nothing if the menu controls are not yet instantiated.
 		if (frmWorkAreaInfo != null) {
 			var sCurrentWorkPage = OpenHR.currentWorkPage();
@@ -409,14 +409,15 @@
 					frmOptionArea.txtGotoOptionOrderID.value = frmRecEditArea.txtCurrentOrderID.value;
 					frmOptionArea.txtGotoOptionFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
 					frmOptionArea.txtGotoOptionPage.value = "filterselect";
-					frmOptionArea.submit();
+					//frmOptionArea.submit();
+					OpenHR.submitForm(frmOptionArea);
 					return;
 				}				
 				
 				if (sAction == "CLEARFILTER") {
 					frmRecEditArea.txtRecEditFilterDef.value = "";
 					frmRecEditArea.txtRecEditFilterSQL.value = "";
-					//TODO should call refreshData in workframe form not local refreshData					
+					//TODO should call refreshData in workframe form not local refreshData			
 					refreshData(); //workframe
 					return;
 				}				

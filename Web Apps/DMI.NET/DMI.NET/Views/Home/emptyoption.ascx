@@ -29,11 +29,11 @@
 				if (txtAction.value == "SELECTORDER") {
 					fNoAction = false;
 
-					if (sCurrentWorkFramePage == "RECORDEDIT") {
+					if (sCurrentWorkFramePage == "RECORDEDIT") {						
 						var frmRecEdit = OpenHR.getForm("workframe","frmRecordEditForm");
 						frmRecEdit.txtRecEditFromDef.value = txtFromDef.value;
 						frmRecEdit.txtCurrentOrderID.value = txtOrderID.value;
-						OpenHR.getFrame("workframe").refreshData();
+						refreshData();
 						$("#optionframe").attr("data-framesource", "EMPTYOPTION");
 					} else {
 						if (sCurrentWorkFramePage == "FIND") {
@@ -46,17 +46,17 @@
 
 				if (txtAction.value == "SELECTFILTER") {
 					fNoAction = false;
-
 					if (sCurrentWorkFramePage == "RECORDEDIT") {
-						var frmRecEdit = OpenHR.getForm("workframe","frmRecordEditForm");
+						frmRecEdit = OpenHR.getForm("workframe","frmRecordEditForm");
 						frmRecEdit.txtRecEditFilterSQL.value = txtFilterSQL.value;
 						frmRecEdit.txtRecEditFilterDef.value = txtFilterDef.value;
-						OpenHR.getFrame("workframe").refreshData();
-						$("#optionframe").attr("data-framesource", "EMPTYOPTION");
-
+						$("#workframe").attr("data-framesource", "RECORDEDIT");
+						$("#optionframe").hide();
+						$("#workframe").show();
+						refreshData();						
 					} else {
 						if (sCurrentWorkFramePage == "FIND") {
-							var frmFind = OpenHR.getForm("workframe","frmFindForm");
+							frmFind = OpenHR.getForm("workframe","frmFindForm");
 							frmFind.txtFilterSQL.value = txtFilterSQL.value;
 							frmFind.txtFilterDef.value = txtFilterDef.value;
 							menu_reloadFindPage("RELOAD", "");
@@ -71,11 +71,8 @@
 					$("#workframe").attr("data-framesource", "RECORDEDIT");
 					$("#optionframe").hide();
 					$("#workframe").show();
-	                
 					//OpenHR.getFrame("workframe").refreshData();
 					refreshData();	//recedit
-
-
 				}
 
 				if (txtAction.value == "SELECTLINK") {
@@ -132,228 +129,229 @@
 					var recEditControl = OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit;
 					recEditControl.setData(txtColumnID.value, txtFile.value);
 					recEditControl.timestamp = <%=session("timestamp")%>;
-                	//recEditControl.changed = true;
+					//recEditControl.changed = true;
 
-                    $("#optionframe").attr("data-framesource", "EMPTYOPTION");
-                	//window.setTimeout("window.parent.frames('menuframe').refreshMenu()", 100);
+					$("#optionframe").attr("data-framesource", "EMPTYOPTION");
+					//window.setTimeout("window.parent.frames('menuframe').refreshMenu()", 100);
 
-									}
+				}
+				
 
-									if ((txtAction.value == "SELECTTRANSFERCOURSE") ||
-											(txtAction.value == "SELECTBOOKCOURSE_2") ||
-											(txtAction.value == "SELECTTRANSFERBOOKING_1") ||
-											(txtAction.value == "SELECTADDFROMWAITINGLIST_2") ||
-											(txtAction.value == "SELECTBULKBOOKINGS")) {
+				if ((txtAction.value == "SELECTTRANSFERCOURSE") ||
+						(txtAction.value == "SELECTBOOKCOURSE_2") ||
+						(txtAction.value == "SELECTTRANSFERBOOKING_1") ||
+						(txtAction.value == "SELECTADDFROMWAITINGLIST_2") ||
+						(txtAction.value == "SELECTBULKBOOKINGS")) {
 
-										if ((txtAction.value == "SELECTBOOKCOURSE_2") ||
-                        (txtAction.value == "SELECTTRANSFERBOOKING_1") ||
-                        (txtAction.value == "SELECTADDFROMWAITINGLIST_2")) {
-											sPrefix = "The employee";
-											sPrefix2 = "The employee is";
-										} else {
-											if (txtAction.value == "SELECTBULKBOOKINGS") {
-												sPrefix = "A delegate";
-												sPrefix2 = "Some delegates are";
-											} else {
-												sPrefix = "A delegate";
-												sPrefix2 = "Some transferred delegates are";
-											}
-										}
+					if ((txtAction.value == "SELECTBOOKCOURSE_2") ||
+							(txtAction.value == "SELECTTRANSFERBOOKING_1") ||
+							(txtAction.value == "SELECTADDFROMWAITINGLIST_2")) {
+						sPrefix = "The employee";
+						sPrefix2 = "The employee is";
+					} else {
+						if (txtAction.value == "SELECTBULKBOOKINGS") {
+							sPrefix = "A delegate";
+							sPrefix2 = "Some delegates are";
+						} else {
+							sPrefix = "A delegate";
+							sPrefix2 = "Some transferred delegates are";
+						}
+					}
 
-										fNoAction = false;
+					fNoAction = false;
 
-										$("#optionframe").attr("data-framesource", "EMPTYOPTION");                    
-										menu_refreshMenu();
+					$("#optionframe").attr("data-framesource", "EMPTYOPTION");                    
+					menu_refreshMenu();
 
-										fTransferOK = true;
+					fTransferOK = true;
 
-										iResultCode = txtResultCode.value;
-										if (iResultCode > 0) {
-											iOverlapCode = iResultCode % 10;
-											iResultCode = iResultCode - iOverlapCode;
-											iResultCode = iResultCode / 10;
-											iAvailabilityCode = iResultCode % 10;
-											iResultCode = iResultCode - iAvailabilityCode;
-											iResultCode = iResultCode / 10;
-											iPreReqCode = iResultCode % 10;
-											iResultCode = iResultCode - iPreReqCode;
-											iResultCode = iResultCode / 10;
-											iOverbookCode = iResultCode;
+					iResultCode = txtResultCode.value;
+					if (iResultCode > 0) {
+						iOverlapCode = iResultCode % 10;
+						iResultCode = iResultCode - iOverlapCode;
+						iResultCode = iResultCode / 10;
+						iAvailabilityCode = iResultCode % 10;
+						iResultCode = iResultCode - iAvailabilityCode;
+						iResultCode = iResultCode / 10;
+						iPreReqCode = iResultCode % 10;
+						iResultCode = iResultCode - iPreReqCode;
+						iResultCode = iResultCode / 10;
+						iOverbookCode = iResultCode;
 
-											sTransferErrorMsg = ""
-											sTransferWarningMsg = ""
+						sTransferErrorMsg = ""
+						sTransferWarningMsg = ""
 
-											if (txtAction.value == "SELECTBULKBOOKINGS") {
-												sPreReqFails = txtPreReqFails.value;
-												sUnAvailFails = txtUnAvailFails.value;
-												sOverlapFails = txtOverlapFails.value;
-												sOverBookFails = txtOverBookFails.value;
+						if (txtAction.value == "SELECTBULKBOOKINGS") {
+							sPreReqFails = txtPreReqFails.value;
+							sUnAvailFails = txtUnAvailFails.value;
+							sOverlapFails = txtOverlapFails.value;
+							sOverBookFails = txtOverBookFails.value;
 
-												/*	alert('These delegates have failed the following checks: \n' +
-														'\nCourse Prequisites - ' + sPreReqFails +
-														'\nUnavailable - ' + sUnAvailFails +
-														'\nOvelapping Course - ' + sOverlapFails);
-																		
-														alert('iResultCode = ' + iResultCode + 
-														'\niPreReqCode = ' + iPreReqCode +
-														'\niOverlapCode = ' + iOverlapCode +
-														'\niAvailabilityCode = ' + iAvailabilityCode + 
-														'\niOverbookCode = ' + iOverbookCode); 
-												*/
-											} else {
-												sPreReqFails = "";
-												sUnAvailFails = "";
-												sOverlapFails = "";
-												sOverBookFails = "";
-											}
+							/*	alert('These delegates have failed the following checks: \n' +
+									'\nCourse Prequisites - ' + sPreReqFails +
+									'\nUnavailable - ' + sUnAvailFails +
+									'\nOvelapping Course - ' + sOverlapFails);
+													
+									alert('iResultCode = ' + iResultCode + 
+									'\niPreReqCode = ' + iPreReqCode +
+									'\niOverlapCode = ' + iOverlapCode +
+									'\niAvailabilityCode = ' + iAvailabilityCode + 
+									'\niOverbookCode = ' + iOverbookCode); 
+							*/
+						} else {
+							sPreReqFails = "";
+							sUnAvailFails = "";
+							sOverlapFails = "";
+							sOverBookFails = "";
+						}
 
-											if (iOverlapCode == 1) {
-												if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
-												if (sOverlapFails.length == 0) sTransferErrorMsg = sTransferErrorMsg + "This delegate is already booked on a course that overlaps with the selected course. \n";
-												if (sOverlapFails.length > 0) sTransferErrorMsg = sTransferErrorMsg + "These delegates are already booked on a course that overlaps with the selected course. \n" + sOverlapFails + "\n";
-											} else if (iOverlapCode == 2) {
-												if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
-												if (sOverlapFails.length == 0) sTransferWarningMsg = sTransferWarningMsg + "This delegate is already booked on a course that overlaps with the selected course. \n";
-												if (sOverlapFails.length > 0) sTransferWarningMsg = sTransferWarningMsg + "These delegates are booked on a course that overlaps with the selected course. \n" + sOverlapFails + "\n";
-											}
+						if (iOverlapCode == 1) {
+							if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
+							if (sOverlapFails.length == 0) sTransferErrorMsg = sTransferErrorMsg + "This delegate is already booked on a course that overlaps with the selected course. \n";
+							if (sOverlapFails.length > 0) sTransferErrorMsg = sTransferErrorMsg + "These delegates are already booked on a course that overlaps with the selected course. \n" + sOverlapFails + "\n";
+						} else if (iOverlapCode == 2) {
+							if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
+							if (sOverlapFails.length == 0) sTransferWarningMsg = sTransferWarningMsg + "This delegate is already booked on a course that overlaps with the selected course. \n";
+							if (sOverlapFails.length > 0) sTransferWarningMsg = sTransferWarningMsg + "These delegates are booked on a course that overlaps with the selected course. \n" + sOverlapFails + "\n";
+						}
 
-											if (iPreReqCode == 1) {
-												if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
-												if (sPreReqFails.length == 0) sTransferErrorMsg = sTransferErrorMsg + "The delegate has not met the pre-requisites for the course. \n";
-												if (sPreReqFails.length > 0) sTransferErrorMsg = sTransferErrorMsg + "These delegates have not met the pre-requisites for the course: \n" + sPreReqFails + "\n";
-											} else if (iPreReqCode == 2) {
-												if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
-												if (sPreReqFails.length == 0) sTransferWarningMsg = sTransferWarningMsg + "The delegate has not met the pre-requisites for the course. \n";
-												if (sPreReqFails.length > 0) sTransferWarningMsg = sTransferWarningMsg + "These delegates have not met the pre-requisites for the course:  \n" + sPreReqFails + "\n";
-											}
+						if (iPreReqCode == 1) {
+							if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
+							if (sPreReqFails.length == 0) sTransferErrorMsg = sTransferErrorMsg + "The delegate has not met the pre-requisites for the course. \n";
+							if (sPreReqFails.length > 0) sTransferErrorMsg = sTransferErrorMsg + "These delegates have not met the pre-requisites for the course: \n" + sPreReqFails + "\n";
+						} else if (iPreReqCode == 2) {
+							if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
+							if (sPreReqFails.length == 0) sTransferWarningMsg = sTransferWarningMsg + "The delegate has not met the pre-requisites for the course. \n";
+							if (sPreReqFails.length > 0) sTransferWarningMsg = sTransferWarningMsg + "These delegates have not met the pre-requisites for the course:  \n" + sPreReqFails + "\n";
+						}
 
-											if (iAvailabilityCode == 1) {
-												if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
-												if (sUnAvailFails.length == 0) sTransferErrorMsg = sTransferErrorMsg + "This delegate is unavailable for the selected course. \n";
-												if (sUnAvailFails.length > 0) sTransferErrorMsg = sTransferErrorMsg + "These delegates are unavailable for the selected course. \n" + sUnAvailFails + "\n";
-											} else if (iAvailabilityCode == 2) {
-												if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
-												if (sUnAvailFails.length == 0) sTransferWarningMsg = sTransferWarningMsg + "This delegate is unavailable for the selected course. \n";
-												if (sUnAvailFails.length > 0) sTransferWarningMsg = sTransferWarningMsg + "These delegates are unavailable for the selected course. \n" + sUnAvailFails + "\n";
-											}
+						if (iAvailabilityCode == 1) {
+							if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
+							if (sUnAvailFails.length == 0) sTransferErrorMsg = sTransferErrorMsg + "This delegate is unavailable for the selected course. \n";
+							if (sUnAvailFails.length > 0) sTransferErrorMsg = sTransferErrorMsg + "These delegates are unavailable for the selected course. \n" + sUnAvailFails + "\n";
+						} else if (iAvailabilityCode == 2) {
+							if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
+							if (sUnAvailFails.length == 0) sTransferWarningMsg = sTransferWarningMsg + "This delegate is unavailable for the selected course. \n";
+							if (sUnAvailFails.length > 0) sTransferWarningMsg = sTransferWarningMsg + "These delegates are unavailable for the selected course. \n" + sUnAvailFails + "\n";
+						}
 
-											if (iOverbookCode == 1) {
-												if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
-												sTransferErrorMsg = sTransferErrorMsg + "The selected course is already fully booked.";
-											} else if (iOverbookCode == 2) {
-												if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
-												sTransferWarningMsg = sTransferWarningMsg + "The selected course is already fully booked.";
-											}
+						if (iOverbookCode == 1) {
+							if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
+							sTransferErrorMsg = sTransferErrorMsg + "The selected course is already fully booked.";
+						} else if (iOverbookCode == 2) {
+							if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
+							sTransferWarningMsg = sTransferWarningMsg + "The selected course is already fully booked.";
+						}
 
-											if (sTransferErrorMsg.length > 0) {
-												/* Error - not over-ridable. */
-												if ((txtAction.value == "SELECTBOOKCOURSE_2") ||
-														(txtAction.value == "SELECTTRANSFERBOOKING_1") ||
-														(txtAction.value == "SELECTADDFROMWAITINGLIST_2")) {
-													sTransferErrorMsg = sTransferErrorMsg + "\n\nUnable to make the booking."
-												} else {
-													if (txtAction.value == "SELECTBULKBOOKINGS") {
-														sTransferErrorMsg = sTransferErrorMsg + "\n\nUnable to make the bookings."
-													} else {
-														sTransferErrorMsg = sTransferErrorMsg + "\n\nUnable to transfer the bookings."
-													}
-												}
-												OpenHR.messageBox(sTransferErrorMsg);                            
-												fTransferOK = false;
+						if (sTransferErrorMsg.length > 0) {
+							/* Error - not over-ridable. */
+							if ((txtAction.value == "SELECTBOOKCOURSE_2") ||
+									(txtAction.value == "SELECTTRANSFERBOOKING_1") ||
+									(txtAction.value == "SELECTADDFROMWAITINGLIST_2")) {
+								sTransferErrorMsg = sTransferErrorMsg + "\n\nUnable to make the booking."
+							} else {
+								if (txtAction.value == "SELECTBULKBOOKINGS") {
+									sTransferErrorMsg = sTransferErrorMsg + "\n\nUnable to make the bookings."
+								} else {
+									sTransferErrorMsg = sTransferErrorMsg + "\n\nUnable to transfer the bookings."
+								}
+							}
+							OpenHR.messageBox(sTransferErrorMsg);                            
+							fTransferOK = false;
                             
-											} else if (sTransferWarningMsg.length > 0) {
-												/* Error - but over-ridable. */
-												if ((txtAction.value == "SELECTBOOKCOURSE_2") ||
-														(txtAction.value == "SELECTTRANSFERBOOKING_1") ||
-														(txtAction.value == "SELECTADDFROMWAITINGLIST_2")) {
-													sTransferWarningMsg = sTransferWarningMsg + "\n\nDo you still want to make the booking ?"
-												} else {
-													if (txtAction.value == "SELECTBULKBOOKINGS") {
-														sTransferWarningMsg = sTransferWarningMsg + "\n\nDo you still want to make the bookings ?"
-													} else {
-														sTransferWarningMsg = sTransferWarningMsg + "\n\nDo you still want to transfer the bookings ?"
-													}
-												}
-												iResponse = OpenHR.messageBox(sTransferWarningMsg, 36); // 36 = vbYesNo + vbQuestion
+						} else if (sTransferWarningMsg.length > 0) {
+							/* Error - but over-ridable. */
+							if ((txtAction.value == "SELECTBOOKCOURSE_2") ||
+									(txtAction.value == "SELECTTRANSFERBOOKING_1") ||
+									(txtAction.value == "SELECTADDFROMWAITINGLIST_2")) {
+								sTransferWarningMsg = sTransferWarningMsg + "\n\nDo you still want to make the booking ?"
+							} else {
+								if (txtAction.value == "SELECTBULKBOOKINGS") {
+									sTransferWarningMsg = sTransferWarningMsg + "\n\nDo you still want to make the bookings ?"
+								} else {
+									sTransferWarningMsg = sTransferWarningMsg + "\n\nDo you still want to transfer the bookings ?"
+								}
+							}
+							iResponse = OpenHR.messageBox(sTransferWarningMsg, 36); // 36 = vbYesNo + vbQuestion
 
-												if (iResponse == 7) { // 7 = vbNo
-													fTransferOK = false;
-												}
-											}
-										}
+							if (iResponse == 7) { // 7 = vbNo
+								fTransferOK = false;
+							}
+						}
+					}
 
-										if (txtAction.value == "SELECTBOOKCOURSE_2") {
-											if (fTransferOK == true) {
-												// Go ahead and book the course.
-												var optionDataForm = OpenHR.getForm("optiondataframe","frmGetOptionData");
-												optionDataForm.txtOptionAction.value = "SELECTBOOKCOURSE_3";
-												optionDataForm.txtOptionRecordID.value = txtRecordID.value;
-												optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
-												optionDataForm.txtOptionValue.value = txtValue.value;
+					if (txtAction.value == "SELECTBOOKCOURSE_2") {
+						if (fTransferOK == true) {
+							// Go ahead and book the course.
+							var optionDataForm = OpenHR.getForm("optiondataframe","frmGetOptionData");
+							optionDataForm.txtOptionAction.value = "SELECTBOOKCOURSE_3";
+							optionDataForm.txtOptionRecordID.value = txtRecordID.value;
+							optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
+							optionDataForm.txtOptionValue.value = txtValue.value;
 
-												window.parent.frames("optiondataframe").refreshOptionData();
-											}
-										} else {
-											if (txtAction.value == "SELECTTRANSFERBOOKING_1") {
-												if (fTransferOK == true) {
-													// Go ahead and book the course.
-													var optionDataForm = OpenHR.getForm("optiondataframe","frmGetOptionData");
-													optionDataForm.txtOptionAction.value = "SELECTTRANSFERBOOKING_2";
-													optionDataForm.txtOptionRecordID.value = txtRecordID.value;
-													optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
+							window.parent.frames("optiondataframe").refreshOptionData();
+						}
+					} else {
+						if (txtAction.value == "SELECTTRANSFERBOOKING_1") {
+							if (fTransferOK == true) {
+								// Go ahead and book the course.
+								var optionDataForm = OpenHR.getForm("optiondataframe","frmGetOptionData");
+								optionDataForm.txtOptionAction.value = "SELECTTRANSFERBOOKING_2";
+								optionDataForm.txtOptionRecordID.value = txtRecordID.value;
+								optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
 
-													OpenHR.getFrame("optiondataframe").refreshOptionData();
-												}
-											} else {
-												if (txtAction.value == "SELECTADDFROMWAITINGLIST_2") {
-													if (fTransferOK == true) {
-														// Go ahead and book the course.
-														var optionDataForm = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
-														optionDataForm.txtOptionAction.value = "SELECTADDFROMWAITINGLIST_3";
-														optionDataForm.txtOptionRecordID.value = txtRecordID.value;
-														optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
-														optionDataForm.txtOptionValue.value = txtValue.value;
+								OpenHR.getFrame("optiondataframe").refreshOptionData();
+							}
+						} else {
+							if (txtAction.value == "SELECTADDFROMWAITINGLIST_2") {
+								if (fTransferOK == true) {
+									// Go ahead and book the course.
+									var optionDataForm = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
+									optionDataForm.txtOptionAction.value = "SELECTADDFROMWAITINGLIST_3";
+									optionDataForm.txtOptionRecordID.value = txtRecordID.value;
+									optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
+									optionDataForm.txtOptionValue.value = txtValue.value;
 
-														OpenHR.getFrame("optiondataframe").refreshOptionData();
-													}
-												} else {
-													if (txtAction.value == "SELECTBULKBOOKINGS") {
-														if (fTransferOK == true) {
-															// Go ahead and make the bookings.
-															var optionDataForm = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
-															optionDataForm.txtOptionAction.value = "SELECTBULKBOOKINGS_2";
-															optionDataForm.txtOptionRecordID.value = txtRecordID.value;
-															optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
-															optionDataForm.txtOptionValue.value = txtValue.value;
+									OpenHR.getFrame("optiondataframe").refreshOptionData();
+								}
+							} else {
+								if (txtAction.value == "SELECTBULKBOOKINGS") {
+									if (fTransferOK == true) {
+										// Go ahead and make the bookings.
+										var optionDataForm = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
+										optionDataForm.txtOptionAction.value = "SELECTBULKBOOKINGS_2";
+										optionDataForm.txtOptionRecordID.value = txtRecordID.value;
+										optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
+										optionDataForm.txtOptionValue.value = txtValue.value;
 
-															OpenHR.getFrame("optiondataframe").refreshOptionData();
-														}
-													} else {
-														if (fTransferOK == true) {
-															menu_transferCourse(txtLinkRecordID.value, true);
-														} else {
-															menu_transferCourse(0, true);                                        
-														}
-													}
-												}
-											}
-										}
+										OpenHR.getFrame("optiondataframe").refreshOptionData();
 									}
-
-									if (fNoAction == true) {
-										$("#optionframe").attr("data-framesource", "EMPTYOPTION");
-
-										// Get menu.asp to refresh the menu.
-										menu_refreshMenu();
-									}
-
-            	// Fault 3503
-									if (sCurrentWorkFramePage == "RECORDEDIT") {
-										//OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit.refreshSize();
+								} else {
+									if (fTransferOK == true) {
+										menu_transferCourse(txtLinkRecordID.value, true);
+									} else {
+										menu_transferCourse(0, true);                                        
 									}
 								}
 							}
 						}
+					}
+				}
+
+				if (fNoAction == true) {
+					$("#optionframe").attr("data-framesource", "EMPTYOPTION");
+
+					// Get menu.asp to refresh the menu.
+					menu_refreshMenu();
+				}
+
+				// Fault 3503
+				if (sCurrentWorkFramePage == "RECORDEDIT") {
+					//OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit.refreshSize();
+				}
+			}
+		}
+	}
 </script>
 
 

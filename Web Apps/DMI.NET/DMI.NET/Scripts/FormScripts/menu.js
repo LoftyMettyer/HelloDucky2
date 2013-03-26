@@ -2304,7 +2304,7 @@ function menu_loadImagePage(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize
 }
 
 function menu_reloadFindPage(psAction, psLocateValue) {
-//	reloadPage(psAction, psLocateValue, "FIND");
+	menu_reloadPage(psAction, psLocateValue, "FIND");
 }
 
 function menu_reloadLookupPage(psAction, psLocateValue) {
@@ -2331,322 +2331,327 @@ function menu_reloadTransferBookingPage(psAction, psLocateValue) {
 //	reloadPage(psAction, psLocateValue, "TRANSFERBOOKING");
 }
 
-function menu_reloadPage(psAction, psLocateValue, psPage) {
-//	var fValidLocateValue;
-//	var iDataType;
-//	var frmFindForm;
-//	var sDecimalSeparator;
-//	var sThousandSeparator;
-//	var sPoint;
-//	var sConvertedValue;
-//	var iIndex;
-//	var iSize;
-//	var iDecimals;
-//	var iTempSize;
-//	var iTempDecimals;
-//	
-//	sDecimalSeparator = "\\";
-//	sDecimalSeparator = sDecimalSeparator.concat(ASRIntranetFunctions.LocaleDecimalSeparator);
-//	var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
+function menu_reloadPage(psAction, psLocateValue, psPage) {	
+	var fValidLocateValue;
+	var iDataType;
+	var frmFindForm;
+	var sDecimalSeparator;
+	var sThousandSeparator;
+	var sPoint;
+	var sConvertedValue;
+	var iIndex;
+	var iSize;
+	var iDecimals;
+	var iTempSize;
+	var iTempDecimals;
+	
+	sDecimalSeparator = "\\";
+	sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator);
+	var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
 
-//	sThousandSeparator = "\\";
-//	sThousandSeparator = sThousandSeparator.concat(ASRIntranetFunctions.LocaleThousandSeparator);
-//	var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
+	sThousandSeparator = "\\";
+	sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator);
+	var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
 
-//	sPoint = "\\.";
-//	var rePoint = new RegExp(sPoint, "gi");
-//	
-//	fValidLocateValue = true;
-//	
-//	if (psPage == "FIND") {
-//		frmFindForm = window.parent.frames("workframe").document.forms("frmFindForm");
-//	}
-//	else {
-//		if ((psPage == "LOOKUP") || 
-//			(psPage == "LINK") || 
-//			(psPage == "TRANSFERCOURSE") || 
-//			(psPage == "BOOKCOURSE") || 
-//			(psPage == "ADDFROMWAITINGLIST") || 
-//			(psPage == "TRANSFERBOOKING")) {
-//				frmFindForm = window.parent.frames("optiondataframe").document.forms("frmOptionData");
-//		}
-//		else {
-//			return;
-//		}
-//	}
+	sPoint = "\\.";
+	var rePoint = new RegExp(sPoint, "gi");
+	
+	fValidLocateValue = true;
+	
+	if (psPage == "FIND") {
+		frmFindForm = OpenHR.getForm("workframe", "frmFindForm");
+	}
+	else {
+		if ((psPage == "LOOKUP") || 
+			(psPage == "LINK") || 
+			(psPage == "TRANSFERCOURSE") || 
+			(psPage == "BOOKCOURSE") || 
+			(psPage == "ADDFROMWAITINGLIST") || 
+			(psPage == "TRANSFERBOOKING")) {
+				frmFindForm = OpenHR.getForm("optiondataframe", "frmOptionData");
+		}
+		else {
+			return;
+		}
+	}
 
-//	if (psAction == "LOCATE") {
-//		if (psLocateValue.length == 0) {
-//			return;
-//		}
-//	
-//		// Check that the entered value is valid for the first order column type.
-//		iDataType = frmFindForm.txtFirstColumnType.value;
-//	
-//		if ((iDataType == 2) || (iDataType == 4)) {
-//			// Numeric/Integer column.
-//			// Ensure that the value entered is numeric.
+	if (psAction == "LOCATE") {
+		if (psLocateValue.length == 0) {
+			return;
+		}
+	
+		// Check that the entered value is valid for the first order column type.
+		iDataType = frmFindForm.txtFirstColumnType.value;
+	
+		if ((iDataType == 2) || (iDataType == 4)) {
+			// Numeric/Integer column.
+			// Ensure that the value entered is numeric.
 
-//			// Convert the value from locale to UK settings for use with the isNaN funtion.
-//			sConvertedValue = new String(psLocateValue);
-//			// Remove any thousand separators.
-//			sConvertedValue = sConvertedValue.replace(reThousandSeparator, "");
+			// Convert the value from locale to UK settings for use with the isNaN funtion.
+			sConvertedValue = new String(psLocateValue);
+			// Remove any thousand separators.
+			sConvertedValue = sConvertedValue.replace(reThousandSeparator, "");
 
-//			// Convert any decimal separators to '.'.
-//			if (ASRIntranetFunctions.LocaleDecimalSeparator != ".") {
-//				// Remove decimal points.
-//				sConvertedValue = sConvertedValue.replace(rePoint, "A");
-//				// replace the locale decimal marker with the decimal point.
-//				sConvertedValue = sConvertedValue.replace(reDecimalSeparator, ".");
-//			}
-//			psLocateValue = sConvertedValue;
+			// Convert any decimal separators to '.'.
+			if (OpenHR.LocaleDecimalSeparator != ".") {
+				// Remove decimal points.
+				sConvertedValue = sConvertedValue.replace(rePoint, "A");
+				// replace the locale decimal marker with the decimal point.
+				sConvertedValue = sConvertedValue.replace(reDecimalSeparator, ".");
+			}
+			psLocateValue = sConvertedValue;
 
-//			if (isNaN(sConvertedValue) == true) {
-//				fValidLocateValue = false;
-//				ASRIntranetFunctions.MessageBox("Invalid numeric value entered.");
-//			}
-//			else {
-//				iIndex = sConvertedValue.indexOf(".");
+			if (isNaN(sConvertedValue) == true) {
+				fValidLocateValue = false;
+				OpenHR.messageBox("Invalid numeric value entered.");
+			}
+			else {
+				iIndex = sConvertedValue.indexOf(".");
 
-//				if (iDataType == 2) {
-//					// Ensure numeric columns are compared with numeric values that do not exceed
-//					// their defined size and decimals settings.
-//					if (iIndex >= 0) {
-//						iTempSize = iIndex;
-//						iTempDecimals = sConvertedValue.length - iIndex - 1;
-//					}
-//					else {
-//						iTempSize = sConvertedValue.length;
-//						iTempDecimals = 0;
-//					}
-//					
-//					if ((sConvertedValue.substr(0,1) == "+") ||
-//						(sConvertedValue.substr(0,1) == "-")) {
-//						iTempSize = iTempSize - 1;
-//					}
+				if (iDataType == 2) {
+					// Ensure numeric columns are compared with numeric values that do not exceed
+					// their defined size and decimals settings.
+					if (iIndex >= 0) {
+						iTempSize = iIndex;
+						iTempDecimals = sConvertedValue.length - iIndex - 1;
+					}
+					else {
+						iTempSize = sConvertedValue.length;
+						iTempDecimals = 0;
+					}
+					
+					if ((sConvertedValue.substr(0,1) == "+") ||
+						(sConvertedValue.substr(0,1) == "-")) {
+						iTempSize = iTempSize - 1;
+					}
 
-//					iSize = frmFindForm.txtFirstColumnSize.value;
-//					iDecimals = frmFindForm.txtFirstColumnDecimals.value;
+					iSize = frmFindForm.txtFirstColumnSize.value;
+					iDecimals = frmFindForm.txtFirstColumnDecimals.value;
 
-//					if(iTempSize > (iSize - iDecimals)) {
-//						fValidLocateValue = false;
-//						ASRIntranetFunctions.MessageBox("The column can only be compared to values with " + (iSize - iDecimals) + " digit(s) to the left of the decimal separator.");
-//					}
-//					else {
-//						if(iTempDecimals > iDecimals) {
-//							fValidLocateValue = false;
-//							ASRIntranetFunctions.MessageBox("The column can only be compared to values with " + iDecimals + " decimal place(s).");
-//						}
-//					}
-//				}
-//				else {
-//					// Ensure the value is an integer.
-//					if (iIndex >= 0) {
-//						fValidLocateValue = false;
-//						ASRIntranetFunctions.MessageBox("Invalid integer value entered.");
-//					}
-//				}
-//			}
-//		}
-//		else {
-//			if (iDataType == 11) {
-//				// Date column.
-//				// Ensure that the value entered is a date.
-//				if (psLocateValue.length > 0) {
-//					// Convert the date to SQL format (use this as a validation check).
-//					// An empty string is returned if the date is invalid.
-//					psLocateValue = convertLocaleDateToSQL(psLocateValue);
+					if(iTempSize > (iSize - iDecimals)) {
+						fValidLocateValue = false;
+						OpenHR.messageBox("The column can only be compared to values with " + (iSize - iDecimals) + " digit(s) to the left of the decimal separator.");
+					}
+					else {
+						if(iTempDecimals > iDecimals) {
+							fValidLocateValue = false;
+							OpenHR.messageBox("The column can only be compared to values with " + iDecimals + " decimal place(s).");
+						}
+					}
+				}
+				else {
+					// Ensure the value is an integer.
+					if (iIndex >= 0) {
+						fValidLocateValue = false;
+						OpenHR.messageBox("Invalid integer value entered.");
+					}
+				}
+			}
+		}
+		else {
+			if (iDataType == 11) {
+				// Date column.
+				// Ensure that the value entered is a date.
+				if (psLocateValue.length > 0) {
+					// Convert the date to SQL format (use this as a validation check).
+					// An empty string is returned if the date is invalid.
+					psLocateValue = menu_convertLocaleDateToSQL(psLocateValue);
 
-//					if (psLocateValue.length == 0) {
-//						fValidLocateValue = false;
-//						ASRIntranetFunctions.MessageBox("Invalid date value entered.");
-//					}
-//				}
-//			}
-//		}
-//	}
+					if (psLocateValue.length == 0) {
+						fValidLocateValue = false;
+						OpenHR.messageBox("Invalid date value entered.");
+					}
+				}
+			}
+		}
+	}
 
-//	if (fValidLocateValue == true) {
-//		if (psAction == "RELOAD") {
-//			ShowWait("Reloading find records. Please wait...");
-//		}
-//		else {
-//			ShowWait("Loading find records. Please wait...");
-//		}
-//		disableMenu();
+	if (fValidLocateValue == true) {
+		if (psAction == "RELOAD") {
+			//TODO: (maybe) ShowWait("Reloading find records. Please wait...");
+		}
+		else {
+			//TODO: (maybe) ShowWait("Loading find records. Please wait...");
+		}
+		menu_disableMenu();
 
-//		if (psPage == "FIND") {
-//			frmWorkAreaInfo.txtHRProNavigation.value = 1;
-//	
-//			// Submit the current "workframe" form, and then load the required record Edit page.
-//			frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
-//	
-//			frmWorkArea.txtAction.value = psAction;
-//			frmWorkArea.txtGotoTableID.value = frmFindForm.txtCurrentTableID.value;
-//			frmWorkArea.txtGotoViewID.value = frmFindForm.txtCurrentViewID.value;
-//			frmWorkArea.txtGotoScreenID.value = frmFindForm.txtCurrentScreenID.value;
-//			frmWorkArea.txtGotoOrderID.value = frmFindForm.txtCurrentOrderID.value;
-//			frmWorkArea.txtGotoRecordID.value = frmFindForm.txtCurrentRecordID.value;
+		if (psPage == "FIND") {
+			var frmWorkAreaInfo = document.getElementById("frmWorkAreaInfo");
+			
+			frmWorkAreaInfo.txtHRProNavigation.value = 1;
+	
+			// Submit the current "workframe" form, and then load the required record Edit page.
+			var frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+	
+			frmWorkArea.txtAction.value = psAction;
+			frmWorkArea.txtGotoTableID.value = frmFindForm.txtCurrentTableID.value;
+			frmWorkArea.txtGotoViewID.value = frmFindForm.txtCurrentViewID.value;
+			frmWorkArea.txtGotoScreenID.value = frmFindForm.txtCurrentScreenID.value;
+			frmWorkArea.txtGotoOrderID.value = frmFindForm.txtCurrentOrderID.value;
+			frmWorkArea.txtGotoRecordID.value = frmFindForm.txtCurrentRecordID.value;
 
-//			frmWorkArea.txtGotoFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
-//			frmWorkArea.txtGotoCurrentRecCount.value = frmFindForm.txtCurrentRecCount.value;
-//			frmWorkArea.txtGotoLocateValue.value = psLocateValue;
-//	
-//			if (frmFindForm.txtCurrentParentTableID.value > 0) {
-//				frmWorkArea.txtGotoParentTableID.value = frmFindForm.txtCurrentParentTableID.value;
-//				frmWorkArea.txtGotoParentRecordID.value = frmFindForm.txtCurrentParentRecordID.value;
-//			}
-//			else {
-//				frmWorkArea.txtGotoParentTableID.value = 0;
-//				frmWorkArea.txtGotoParentRecordID.value = 0;
-//			}
+			frmWorkArea.txtGotoFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
+			frmWorkArea.txtGotoCurrentRecCount.value = frmFindForm.txtCurrentRecCount.value;
+			frmWorkArea.txtGotoLocateValue.value = psLocateValue;
+	
+			if (frmFindForm.txtCurrentParentTableID.value > 0) {
+				frmWorkArea.txtGotoParentTableID.value = frmFindForm.txtCurrentParentTableID.value;
+				frmWorkArea.txtGotoParentRecordID.value = frmFindForm.txtCurrentParentRecordID.value;
+			}
+			else {
+				frmWorkArea.txtGotoParentTableID.value = 0;
+				frmWorkArea.txtGotoParentRecordID.value = 0;
+			}
 
-//			frmWorkArea.txtGotoRealSource.value = frmFindForm.txtRealSource.value;
-//			frmWorkArea.txtGotoLineage.value = frmFindForm.txtLineage.value;
-//			frmWorkArea.txtGotoFilterDef.value = frmFindForm.txtFilterDef.value;
-//			frmWorkArea.txtGotoFilterSQL.value = frmFindForm.txtFilterSQL.value;
+			frmWorkArea.txtGotoRealSource.value = frmFindForm.txtRealSource.value;
+			frmWorkArea.txtGotoLineage.value = frmFindForm.txtLineage.value;
+			frmWorkArea.txtGotoFilterDef.value = frmFindForm.txtFilterDef.value;
+			frmWorkArea.txtGotoFilterSQL.value = frmFindForm.txtFilterSQL.value;
 
-//			frmWorkArea.txtGotoPage.value = "find.asp";
+			frmWorkArea.txtGotoPage.value = "find";
 
-//			// Clear the locate value from the menu.
-//			abMainMenu.Tools("mnutoolLocateRecords").Text = "";
+			// Clear the locate value from the menu.
+			//TODO: abMainMenu.Tools("mnutoolLocateRecords").Text = "";
 
-//			frmWorkArea.submit();
-//		}
+			OpenHR.submitForm(frmWorkArea);
+		}
 
-//		if (psPage == "LOOKUP") {
-//			// Get the optionData.asp to get the lookup find records.
-//			frmOptionGetDataArea = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
-//			frmOptionArea = window.parent.frames("optionframe").document.forms("frmLookupFindForm");
-//			frmOptionGetDataArea.txtOptionAction.value = "LOADLOOKUPFIND";
+		if (psPage == "LOOKUP") {
+			// Get the optionData.asp to get the lookup find records.
+			var frmOptionGetDataArea = OpenHR.getForm("optiondataframe", "frmGetOptionData");
+			var frmOptionArea = OpenHR.getForm("optionframe", "frmLookupFindForm");
+			frmOptionGetDataArea.txtOptionAction.value = "LOADLOOKUPFIND";
 
-//			frmOptionGetDataArea.txtOptionColumnID.value = frmOptionArea.txtOptionColumnID.value;		
-//			frmOptionGetDataArea.txtOptionLookupColumnID.value = frmOptionArea.txtOptionLookupColumnID.value;
-//			frmOptionGetDataArea.txtOptionLookupFilterValue.value = frmOptionArea.txtOptionLookupFilterValue.value;
+			frmOptionGetDataArea.txtOptionColumnID.value = frmOptionArea.txtOptionColumnID.value;		
+			frmOptionGetDataArea.txtOptionLookupColumnID.value = frmOptionArea.txtOptionLookupColumnID.value;
+			frmOptionGetDataArea.txtOptionLookupFilterValue.value = frmOptionArea.txtOptionLookupFilterValue.value;
 
-//			frmOptionGetDataArea.txtOptionPageAction.value = "LOCATE";
-//			frmOptionGetDataArea.txtGotoLocateValue.value = psLocateValue;
-//			frmOptionGetDataArea.txtOptionFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
-//			frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmFindForm.txtRecordCount.value;
-//			frmOptionGetDataArea.txtOptionIsLookupTable.value = frmOptionArea.txtIsLookupTable.value;
-//			frmOptionGetDataArea.txtOptionRecordID.value = window.parent.frames("workframe").document.forms("frmRecordEditForm").txtCurrentRecordID.value;
+			frmOptionGetDataArea.txtOptionPageAction.value = "LOCATE";
+			frmOptionGetDataArea.txtGotoLocateValue.value = psLocateValue;
+			frmOptionGetDataArea.txtOptionFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
+			frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmFindForm.txtRecordCount.value;
+			frmOptionGetDataArea.txtOptionIsLookupTable.value = frmOptionArea.txtIsLookupTable.value;
 
-//			frmOptionGetDataArea.txtOptionParentTableID.value = window.parent.frames("workframe").document.forms("frmRecordEditForm").txtCurrentParentTableID.value;
-//			frmOptionGetDataArea.txtOptionParentRecordID.value = window.parent.frames("workframe").document.forms("frmRecordEditForm").txtCurrentParentRecordID.value;
+			var frmRecordEditForm = document.getElementById("frmRecordEditForm");
+			
+			frmOptionGetDataArea.txtOptionRecordID.value = frmRecordEditForm.txtCurrentRecordID.value;
+			frmOptionGetDataArea.txtOptionParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
+			frmOptionGetDataArea.txtOptionParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
 
-//			if (frmOptionArea.txtIsLookupTable.value == "False") {
-//				frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
-//				frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.selectView.options[frmOptionArea.selectView.selectedIndex].value;
-//				frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.selectOrder.options[frmOptionArea.selectOrder.selectedIndex].value;
-//			}
-//			else {
-//				frmOptionGetDataArea.txtOptionTableID.value = 0;
-//				frmOptionGetDataArea.txtOptionViewID.value = 0;
-//				frmOptionGetDataArea.txtOptionOrderID.value = 0;
-//			}
-//			
-//			window.parent.frames("optiondataframe").refreshOptionData();
+			if (frmOptionArea.txtIsLookupTable.value == "False") {
+				frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
+				frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.selectView.options[frmOptionArea.selectView.selectedIndex].value;
+				frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.selectOrder.options[frmOptionArea.selectOrder.selectedIndex].value;
+			}
+			else {
+				frmOptionGetDataArea.txtOptionTableID.value = 0;
+				frmOptionGetDataArea.txtOptionViewID.value = 0;
+				frmOptionGetDataArea.txtOptionOrderID.value = 0;
+			}
+			
+			//window.parent.frames("optiondataframe").refreshOptionData();
+			refreshOptionData();	//should be in context.
 
-//			// Clear the locate value from the menu.
-//			abMainMenu.Tools("mnutoolLocateRecords").Text = ""
-//		}
+			// Clear the locate value from the menu.
+			//TODO: abMainMenu.Tools("mnutoolLocateRecords").Text = ""
+		}
 
-//		if (psPage == "LINK") {
-//			// Get the optionData.asp to get the lookup find records.
-//			frmOptionGetDataArea = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
-//			frmOptionArea = window.parent.frames("optionframe").document.forms("frmLinkFindForm");
-//			frmOptionGetDataArea.txtOptionAction.value = "LOADFIND";
-//			frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
-//			frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
-//			frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.txtOptionLinkOrderID.value;
-//			frmOptionGetDataArea.txtOptionPageAction.value = "LOCATE";
-//			frmOptionGetDataArea.txtGotoLocateValue.value = psLocateValue;
-//			frmOptionGetDataArea.txtOptionFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
-//			frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmFindForm.txtRecordCount.value;
+		if (psPage == "LINK") {
+			// Get the optionData.asp to get the lookup find records.
+			frmOptionGetDataArea = OpenHR.getForm("optiondataframe", "frmGetOptionData");
+			frmOptionArea = OpenHR.getForm("optionframe", "frmLinkFindForm");
+			frmOptionGetDataArea.txtOptionAction.value = "LOADFIND";
+			frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
+			frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
+			frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.txtOptionLinkOrderID.value;
+			frmOptionGetDataArea.txtOptionPageAction.value = "LOCATE";
+			frmOptionGetDataArea.txtGotoLocateValue.value = psLocateValue;
+			frmOptionGetDataArea.txtOptionFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
+			frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmFindForm.txtRecordCount.value;
 
-//			window.parent.frames("optiondataframe").refreshOptionData();
+			refreshOptionData();
 
-//			// Clear the locate value from the menu.
-//			abMainMenu.Tools("mnutoolLocateRecords").Text = ""
-//		}
+			// Clear the locate value from the menu.
+			//TODO: abMainMenu.Tools("mnutoolLocateRecords").Text = ""
+		}
+		//TODO: ALL THESE TB IF's....
+		if (psPage == "TRANSFERCOURSE") {
+			// Get the optionData.asp to get the lookup find records.
+			frmOptionGetDataArea = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
+			frmOptionArea = window.parent.frames("optionframe").document.forms("frmFindForm");
+			frmOptionGetDataArea.txtOptionAction.value = "LOADTRANSFERCOURSE";
+			frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
+			frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
+			frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.txtOptionLinkOrderID.value;
+			frmOptionGetDataArea.txtOptionRecordID.value = frmOptionArea.txtOptionRecordID.value;
+			frmOptionGetDataArea.txtOptionPageAction.value = "LOCATE";
+			frmOptionGetDataArea.txtGotoLocateValue.value = psLocateValue;
+			frmOptionGetDataArea.txtOptionCourseTitle.value = frmOptionArea.txtOptionCourseTitle.value;
+			frmOptionGetDataArea.txtOptionFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
+			frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmFindForm.txtRecordCount.value;
+			window.parent.frames("optiondataframe").refreshOptionData();
 
-//		if (psPage == "TRANSFERCOURSE") {
-//			// Get the optionData.asp to get the lookup find records.
-//			frmOptionGetDataArea = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
-//			frmOptionArea = window.parent.frames("optionframe").document.forms("frmFindForm");
-//			frmOptionGetDataArea.txtOptionAction.value = "LOADTRANSFERCOURSE";
-//			frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
-//			frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
-//			frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.txtOptionLinkOrderID.value;
-//			frmOptionGetDataArea.txtOptionRecordID.value = frmOptionArea.txtOptionRecordID.value;
-//			frmOptionGetDataArea.txtOptionPageAction.value = "LOCATE";
-//			frmOptionGetDataArea.txtGotoLocateValue.value = psLocateValue;
-//			frmOptionGetDataArea.txtOptionCourseTitle.value = frmOptionArea.txtOptionCourseTitle.value;
-//			frmOptionGetDataArea.txtOptionFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
-//			frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmFindForm.txtRecordCount.value;
-//			window.parent.frames("optiondataframe").refreshOptionData();
+			// Clear the locate value from the menu.
+			abMainMenu.Tools("mnutoolLocateRecords").Text = ""
+		}
 
-//			// Clear the locate value from the menu.
-//			abMainMenu.Tools("mnutoolLocateRecords").Text = ""
-//		}
+		if (psPage == "BOOKCOURSE") {
+			// Get the optionData.asp to get the lookup find records.
+			frmOptionGetDataArea = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
+			frmOptionArea = window.parent.frames("optionframe").document.forms("frmFindForm");
+			frmOptionGetDataArea.txtOptionAction.value = "LOADBOOKCOURSE";
+			frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
+			frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
+			frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.txtOptionLinkOrderID.value;
+			frmOptionGetDataArea.txtOptionRecordID.value = frmOptionArea.txtOptionRecordID.value;
+			frmOptionGetDataArea.txtOptionPageAction.value = "LOCATE";
+			frmOptionGetDataArea.txtGotoLocateValue.value = psLocateValue;
+			frmOptionGetDataArea.txtOptionFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
+			frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmFindForm.txtRecordCount.value;
+			window.parent.frames("optiondataframe").refreshOptionData();
 
-//		if (psPage == "BOOKCOURSE") {
-//			// Get the optionData.asp to get the lookup find records.
-//			frmOptionGetDataArea = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
-//			frmOptionArea = window.parent.frames("optionframe").document.forms("frmFindForm");
-//			frmOptionGetDataArea.txtOptionAction.value = "LOADBOOKCOURSE";
-//			frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
-//			frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
-//			frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.txtOptionLinkOrderID.value;
-//			frmOptionGetDataArea.txtOptionRecordID.value = frmOptionArea.txtOptionRecordID.value;
-//			frmOptionGetDataArea.txtOptionPageAction.value = "LOCATE";
-//			frmOptionGetDataArea.txtGotoLocateValue.value = psLocateValue;
-//			frmOptionGetDataArea.txtOptionFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
-//			frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmFindForm.txtRecordCount.value;
-//			window.parent.frames("optiondataframe").refreshOptionData();
+			// Clear the locate value from the menu.
+			abMainMenu.Tools("mnutoolLocateRecords").Text = ""
+		}
 
-//			// Clear the locate value from the menu.
-//			abMainMenu.Tools("mnutoolLocateRecords").Text = ""
-//		}
+		if (psPage == "ADDFROMWAITINGLIST") {
+			// Get the optionData.asp to get the lookup find records.
+			frmOptionGetDataArea = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
+			frmOptionArea = window.parent.frames("optionframe").document.forms("frmFindForm");
+			frmOptionGetDataArea.txtOptionAction.value = "LOADADDFROMWAITINGLIST";
+			frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
+			frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
+			frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.txtOptionLinkOrderID.value;
+			frmOptionGetDataArea.txtOptionRecordID.value = frmOptionArea.txtOptionRecordID.value;
+			frmOptionGetDataArea.txtOptionPageAction.value = "LOCATE";
+			frmOptionGetDataArea.txtGotoLocateValue.value = psLocateValue;
+			frmOptionGetDataArea.txtOptionFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
+			frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmFindForm.txtRecordCount.value;
+			window.parent.frames("optiondataframe").refreshOptionData();
 
-//		if (psPage == "ADDFROMWAITINGLIST") {
-//			// Get the optionData.asp to get the lookup find records.
-//			frmOptionGetDataArea = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
-//			frmOptionArea = window.parent.frames("optionframe").document.forms("frmFindForm");
-//			frmOptionGetDataArea.txtOptionAction.value = "LOADADDFROMWAITINGLIST";
-//			frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
-//			frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
-//			frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.txtOptionLinkOrderID.value;
-//			frmOptionGetDataArea.txtOptionRecordID.value = frmOptionArea.txtOptionRecordID.value;
-//			frmOptionGetDataArea.txtOptionPageAction.value = "LOCATE";
-//			frmOptionGetDataArea.txtGotoLocateValue.value = psLocateValue;
-//			frmOptionGetDataArea.txtOptionFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
-//			frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmFindForm.txtRecordCount.value;
-//			window.parent.frames("optiondataframe").refreshOptionData();
+			// Clear the locate value from the menu.
+			abMainMenu.Tools("mnutoolLocateRecords").Text = ""
+		}
 
-//			// Clear the locate value from the menu.
-//			abMainMenu.Tools("mnutoolLocateRecords").Text = ""
-//		}
+		if (psPage == "TRANSFERBOOKING") {
+			// Get the optionData.asp to get the lookup find records.
+			frmOptionGetDataArea = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
+			frmOptionArea = window.parent.frames("optionframe").document.forms("frmFindForm");
+			frmOptionGetDataArea.txtOptionAction.value = "LOADTRANSFERBOOKING";
+			frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
+			frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
+			frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.txtOptionLinkOrderID.value;
+			frmOptionGetDataArea.txtOptionRecordID.value = frmOptionArea.txtOptionRecordID.value;
+			frmOptionGetDataArea.txtOptionPageAction.value = "LOCATE";
+			frmOptionGetDataArea.txtGotoLocateValue.value = psLocateValue;
+			frmOptionGetDataArea.txtOptionFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
+			frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmFindForm.txtRecordCount.value;
+			window.parent.frames("optiondataframe").refreshOptionData();
 
-//		if (psPage == "TRANSFERBOOKING") {
-//			// Get the optionData.asp to get the lookup find records.
-//			frmOptionGetDataArea = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
-//			frmOptionArea = window.parent.frames("optionframe").document.forms("frmFindForm");
-//			frmOptionGetDataArea.txtOptionAction.value = "LOADTRANSFERBOOKING";
-//			frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
-//			frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
-//			frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.txtOptionLinkOrderID.value;
-//			frmOptionGetDataArea.txtOptionRecordID.value = frmOptionArea.txtOptionRecordID.value;
-//			frmOptionGetDataArea.txtOptionPageAction.value = "LOCATE";
-//			frmOptionGetDataArea.txtGotoLocateValue.value = psLocateValue;
-//			frmOptionGetDataArea.txtOptionFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
-//			frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmFindForm.txtRecordCount.value;
-//			window.parent.frames("optiondataframe").refreshOptionData();
-
-//			// Clear the locate value from the menu.
-//			abMainMenu.Tools("mnutoolLocateRecords").Text = ""
-//		}
-//	}
+			// Clear the locate value from the menu.
+			abMainMenu.Tools("mnutoolLocateRecords").Text = ""
+		}
+	}
 }
 
 function menu_DownloadControls()
@@ -3336,95 +3341,95 @@ function menu_loadQuickFindNoSaveCheck()
 }
 
 function menu_loadSelectOrderFilter(psType) {
-//	var sCurrentWorkPage;
-//	var frmRecEditArea;
-//	var frmOptionArea;
-//	var frmFindArea;
-//	var sSaveChangesTag;
-//	var sOptionPage;
-//	
-//	//disable the menu
-//	// NPG20100824 Fault HRPRO1065 - leave menus disabled in these modal screens	
-//	disableMenu();
-//	
-//	if (psType == "ORDER") {
-//		sSaveChangesTag = "SELECTORDER";
-//		sOptionPage = "orderselect.asp";
-//	}
-//	else {
-//		sSaveChangesTag = "SELECTFILTER";
-//		sOptionPage = "filterselect.asp";
-//	}
-//	
-//	sCurrentWorkPage = currentWorkPage();
+	var sCurrentWorkPage;
+	var frmRecEditArea;
+	var frmOptionArea;
+	var frmFindArea;
+	var sSaveChangesTag;
+	var sOptionPage;
+	
+	//disable the menu
+	// NPG20100824 Fault HRPRO1065 - leave menus disabled in these modal screens	
+	menu_disableMenu();
+	
+	if (psType == "ORDER") {
+		sSaveChangesTag = "SELECTORDER";
+		sOptionPage = "orderselect";
+	}
+	else {
+		sSaveChangesTag = "SELECTFILTER";
+		sOptionPage = "filterselect";
+	}
+	
+	sCurrentWorkPage = OpenHR.currentWorkPage();
 
-//	if (sCurrentWorkPage == "RECORDEDIT") {
-//		if (saveChanges(sSaveChangesTag, true, false) != 2) { // 2 = vbCancel
-//			frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
-//			frmOptionArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
+	if (sCurrentWorkPage == "RECORDEDIT") {
+		if (menu_saveChanges(sSaveChangesTag, true, false) != 2) { // 2 = vbCancel
+			frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
+			frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 
-//			frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
-//			frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
-//			frmOptionArea.txtGotoOptionViewID.value = frmRecEditArea.txtCurrentViewID.value;
+			frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
+			frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
+			frmOptionArea.txtGotoOptionViewID.value = frmRecEditArea.txtCurrentViewID.value;
 
-//			if (psType == "ORDER") {
-//				frmOptionArea.txtGotoOptionOrderID.value = frmRecEditArea.txtCurrentOrderID.value;
-//			}
-//			
-//			frmOptionArea.txtGotoOptionFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
-//			frmOptionArea.txtGotoOptionFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
-//			frmOptionArea.txtGotoOptionValue.value = "";
-//			frmOptionArea.txtGotoOptionPage.value = sOptionPage;
-//			frmOptionArea.txtGotoOptionAction.value = "";
+			if (psType == "ORDER") {
+				frmOptionArea.txtGotoOptionOrderID.value = frmRecEditArea.txtCurrentOrderID.value;
+			}
+			
+			frmOptionArea.txtGotoOptionFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
+			frmOptionArea.txtGotoOptionFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
+			frmOptionArea.txtGotoOptionValue.value = "";
+			frmOptionArea.txtGotoOptionPage.value = sOptionPage;
+			frmOptionArea.txtGotoOptionAction.value = "";
 
-//			frmOptionArea.submit();
-//		}
-//	}
-//	else {
-//		if (sCurrentWorkPage == "FIND") {
-//			frmFindArea = window.parent.frames("workframe").document.forms("frmFindForm");
-//			frmOptionArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
+			OpenHR.submitForm(frmOptionArea);
+		}
+	}
+	else {
+		if (sCurrentWorkPage == "FIND") {
+			frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
+			frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 
-//			frmOptionArea.txtGotoOptionScreenID.value = frmFindArea.txtCurrentScreenID.value;
-//			frmOptionArea.txtGotoOptionTableID.value = frmFindArea.txtCurrentTableID.value;
-//			frmOptionArea.txtGotoOptionViewID.value = frmFindArea.txtCurrentViewID.value;
-//			frmOptionArea.txtGotoOptionOrderID.value = frmFindArea.txtCurrentOrderID.value;
-//			frmOptionArea.txtGotoOptionFilterDef.value = frmFindArea.txtFilterDef.value;
-//			frmOptionArea.txtGotoOptionFilterSQL.value = frmFindArea.txtFilterSQL.value;
-//			frmOptionArea.txtGotoOptionValue.value = "";
-//			frmOptionArea.txtGotoOptionPage.value = sOptionPage;
-//			frmOptionArea.txtGotoOptionAction.value = "";
+			frmOptionArea.txtGotoOptionScreenID.value = frmFindArea.txtCurrentScreenID.value;
+			frmOptionArea.txtGotoOptionTableID.value = frmFindArea.txtCurrentTableID.value;
+			frmOptionArea.txtGotoOptionViewID.value = frmFindArea.txtCurrentViewID.value;
+			frmOptionArea.txtGotoOptionOrderID.value = frmFindArea.txtCurrentOrderID.value;
+			frmOptionArea.txtGotoOptionFilterDef.value = frmFindArea.txtFilterDef.value;
+			frmOptionArea.txtGotoOptionFilterSQL.value = frmFindArea.txtFilterSQL.value;
+			frmOptionArea.txtGotoOptionValue.value = "";
+			frmOptionArea.txtGotoOptionPage.value = sOptionPage;
+			frmOptionArea.txtGotoOptionAction.value = "";
 
-//			frmOptionArea.submit();
-//		}
-//	}	
+			OpenHR.submitForm(frmOptionArea);
+		}
+	}	
 }
 
 function menu_clearFilter() {
-//	var sCurrentWorkPage;
-//	var frmRecEditArea;
-//	var frmFindArea;
-//	
-//	sCurrentWorkPage = currentWorkPage();
+	var sCurrentWorkPage;
+	var frmRecEditArea;
+	var frmFindArea;
+	
+	sCurrentWorkPage = OpenHR.currentWorkPage();
 
-//	if (sCurrentWorkPage == "RECORDEDIT") {
-//		if (saveChanges("CLEARFILTER", true, false) != 2) { // 2 = vbCancel
-//				frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
+	if (sCurrentWorkPage == "RECORDEDIT") {
+		if (menu_saveChanges("CLEARFILTER", true, false) != 2) { // 2 = vbCancel
+				frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 
-//				frmRecEditArea.txtRecEditFilterDef.value = "";
-//				frmRecEditArea.txtRecEditFilterSQL.value = "";
-//				refreshData(); //workframe
-//		}
-//	}
-//	else {
-//		if (sCurrentWorkPage == "FIND") {
-//			frmFindArea = window.parent.frames("workframe").document.forms("frmFindForm");
+				frmRecEditArea.txtRecEditFilterDef.value = "";
+				frmRecEditArea.txtRecEditFilterSQL.value = "";
+				refreshData(); //workframe
+		}
+	}
+	else {
+		if (sCurrentWorkPage == "FIND") {
+			frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
 
-//			frmFindArea.txtFilterDef.value = "";
-//			frmFindArea.txtFilterSQL.value = "";
-//			reloadFindPage("RELOAD", "");
-//		}
-//	}
+			frmFindArea.txtFilterDef.value = "";
+			frmFindArea.txtFilterSQL.value = "";
+			menu_reloadFindPage("RELOAD", "");
+		}
+	}
 }
 
 function menu_currentWorkPage() {
