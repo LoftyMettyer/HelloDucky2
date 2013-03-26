@@ -14,7 +14,6 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Data
             staffSkill = new Skill();
         }
 
-        [XmlAttributeAttribute]
         public Skill staffSkill { get; set; }
 
         [XmlAttributeAttribute]

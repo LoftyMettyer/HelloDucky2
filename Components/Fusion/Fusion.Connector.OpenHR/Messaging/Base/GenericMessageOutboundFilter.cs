@@ -31,6 +31,29 @@ namespace Fusion.Connector.OpenHR.Messaging
             Logger = LogManager.GetLogger(this.GetType());
         }
 
+
+        protected bool checkAlreadySent(T message)
+        {
+            string messageType = message.GetMessageName();
+
+            if (message.EntityRef != null)
+            {
+                var busRef = message.EntityRef.Value;
+
+                string lastMessageGenerated = MessageTracking.GetLastGeneratedXml(messageType, busRef);
+
+                // Simple compare, could be more elaborate
+                if (lastMessageGenerated == message.Xml)
+                {
+                    Logger.InfoFormat("Outbound Message {0} message previously sent {1} ", messageType, busRef);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+
         protected bool CheckValidity(string xml, string schemaName)
         {
             SchemaValidator sv = new SchemaValidator(

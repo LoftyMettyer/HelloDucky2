@@ -46,13 +46,14 @@
 												<xs:documentation>When the training finnished</xs:documentation>
 											</xs:annotation>
 										</xs:element>
-										<xs:element name="validFrom" type="xs:date">
+										<xs:element name="validFrom" type="xs:date" minOccurs="0">
 											<xs:annotation>
 												<xs:appinfo>
 													<altova:exampleValues>
 														<altova:example value="2011-01-02"/>
 													</altova:exampleValues>
 												</xs:appinfo>
+												<xs:documentation>Date the training is valid from</xs:documentation>
 											</xs:annotation>
 										</xs:element>
 										<xs:element name="validTo" type="xs:date" nillable="true" minOccurs="0">
@@ -65,7 +66,7 @@
 												<xs:documentation>Date the training is valid to</xs:documentation>
 											</xs:annotation>
 										</xs:element>
-										<xs:element name="reference" nillable="true">
+										<xs:element name="reference" nillable="true" minOccurs="0">
 											<xs:annotation>
 												<xs:appinfo>
 													<altova:exampleValues>
@@ -93,46 +94,6 @@
 										<xs:element name="didNotAttend" type="xs:boolean" nillable="true" minOccurs="0">
 											<xs:annotation>
 												<xs:documentation>True / False</xs:documentation>
-											</xs:annotation>
-										</xs:element>
-										<xs:element name="requestedBy" nillable="true" minOccurs="0">
-											<xs:annotation>
-												<xs:documentation>who in the compnay requested this trainiing was done</xs:documentation>
-											</xs:annotation>
-											<xs:simpleType>
-												<xs:restriction base="xs:string">
-													<xs:minLength value="1"/>
-												</xs:restriction>
-											</xs:simpleType>
-										</xs:element>
-										<xs:element name="requestedDate" type="xs:date" nillable="true" minOccurs="0">
-											<xs:annotation>
-												<xs:appinfo>
-													<altova:exampleValues>
-														<altova:example value="2011-01-02"/>
-													</altova:exampleValues>
-												</xs:appinfo>
-												<xs:documentation>When the training was requested, becaue it could be seen that it would be required by the company</xs:documentation>
-											</xs:annotation>
-										</xs:element>
-										<xs:element name="acceptedBy" nillable="true" minOccurs="0">
-											<xs:annotation>
-												<xs:documentation>who in the compnay accepted the training was done</xs:documentation>
-											</xs:annotation>
-											<xs:simpleType>
-												<xs:restriction base="xs:string">
-													<xs:minLength value="1"/>
-												</xs:restriction>
-											</xs:simpleType>
-										</xs:element>
-										<xs:element name="acceptedDate" type="xs:date" nillable="true" minOccurs="0">
-											<xs:annotation>
-												<xs:appinfo>
-													<altova:exampleValues>
-														<altova:example value="2011-01-02"/>
-													</altova:exampleValues>
-												</xs:appinfo>
-												<xs:documentation>When the company accepted the training had been done</xs:documentation>
 											</xs:annotation>
 										</xs:element>
 									</xs:sequence>

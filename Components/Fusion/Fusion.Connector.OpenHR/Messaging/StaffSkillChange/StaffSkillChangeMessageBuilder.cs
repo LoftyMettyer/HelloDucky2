@@ -60,11 +60,11 @@ namespace Fusion.Connector.OpenHR.OutboundBuilders
 
                 theMessage.Community = config.Community;
 
-                theMessage.PrimaryEntityRef = skillRef;
+                theMessage.PrimaryEntityRef = staffRef;
                 theMessage.CreatedUtc = source.TriggerDate;
                 theMessage.Id = Guid.NewGuid();
                 theMessage.Originator = config.ServiceName;
-                theMessage.EntityRef = staffRef;
+                theMessage.EntityRef = skillRef;
                 theMessage.Xml = xml;
 
                 return theMessage;

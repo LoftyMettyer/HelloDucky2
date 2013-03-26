@@ -6,7 +6,13 @@ namespace Fusion.Connector.OpenHR.Messaging.StaffContractChange
     {
         public override bool Handle(StaffContractChangeRequest message)
         {
-            var valid = CheckValidity(message);
+            var valid = false;
+
+            if (!checkAlreadySent(message))
+            {
+                valid = CheckValidity(message);
+            }
+
             return valid;
         }
     }

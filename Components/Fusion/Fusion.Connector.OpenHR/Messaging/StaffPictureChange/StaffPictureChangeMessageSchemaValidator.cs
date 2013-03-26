@@ -6,7 +6,13 @@ namespace Fusion.Connector.OpenHR.Messaging.StaffPictureChange
     {
         public override bool Handle(StaffPictureChangeRequest message)
         {
-            var valid = CheckValidity(message);
+            var valid = false;
+
+            if (!checkAlreadySent(message))
+            {
+                valid = CheckValidity(message);
+            }
+
             return valid;
         }
     }

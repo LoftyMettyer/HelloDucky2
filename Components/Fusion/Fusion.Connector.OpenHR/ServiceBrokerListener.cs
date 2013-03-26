@@ -6,20 +6,12 @@ using Fusion.Core.Sql;
 using Fusion.Core.Sql.OutboundBuilder;
 using Fusion.Core.Sql.ServiceBroker;
 using Fusion.Messages.General;
-using Fusion.Messages.SocialCare;
 using NServiceBus;
 using StructureMap.Attributes;
 using Fusion.Core.OutboundFilters;
 using log4net;
 using Fusion.Core.Logging;
 using Fusion.Core;
-
-using Fusion.Connector.OpenHR.Messaging;
-
-using Fusion.Core;
-using Fusion.Messages.General;
-using log4net;
-using NServiceBus;
 
 namespace Fusion
 {

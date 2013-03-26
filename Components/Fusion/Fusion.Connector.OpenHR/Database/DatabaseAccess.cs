@@ -3,11 +3,9 @@ using Dapper;
 using System.Linq;
 using System.Data.SqlClient;
 using Fusion.Connector.OpenHR.Configuration;
-using Fusion.Connector.OpenHR.MessageComponents;
 using Fusion.Connector.OpenHR.MessageComponents.Component;
 using Fusion.Connector.OpenHR.MessageComponents.Enums;
 using StructureMap.Attributes;
-using System.Data.SqlClient;
 using System.Data;
 
 namespace Fusion.Connector.OpenHR.Database
@@ -60,31 +58,67 @@ namespace Fusion.Connector.OpenHR.Database
                                      }
                         ).FirstOrDefault();
 
-                return su;
+                if (su != null)
+                {
+                    su.effectiveFromSpecified = true;
+                    su.effectiveToSpecified = true;
 
+                    return su;
+                }
             }
-
+            return null;
         }
 
         public static Contact readContact(int localId)
         {
 
+            string sQuery = string.Format("SELECT * FROM fusion.staffContact WHERE ID_Contact = {0}", localId);
+
             using (var c = new SqlConnection(connectionString))
             {
                 c.Open();
 
-                Contact su =
-                    c.Query<Contact>(@"SELECT * from Fusion.staffContact WHERE ID_Contact = @ContactID",
-                                     new
-                                         {
-                                             ContactID = localId
-                                         }
-                        ).FirstOrDefault();
+                var custDA = new SqlDataAdapter(sQuery, c);
+                var custDS = new DataSet();
+                custDA.Fill(custDS, "contact");
 
-                return su;
+                var contact = new Contact();
 
+                DataRow pRow = custDS.Tables["contact"].Rows[0];
+
+                contact.id_Staff = (int?) pRow["id_staff"];
+                contact.title = pRow["title"].ToString() == "" ? null : pRow["title"].ToString();
+                contact.forenames = pRow["Forenames"].ToString() == "" ? null : pRow["Forenames"].ToString();
+                contact.surname = pRow["Surname"].ToString() == "" ? null : pRow["Surname"].ToString();
+                contact.description = pRow["description"].ToString() == "" ? null : pRow["description"].ToString();
+                contact.relationshipType = pRow["relationshipType"].ToString() == ""
+                                               ? null
+                                               : pRow["relationshipType"].ToString();
+                contact.workMobile = pRow["workMobile"].ToString() == "" ? null : pRow["workMobile"].ToString();
+                contact.personalMobile = pRow["personalMobile"].ToString() == ""
+                                             ? null
+                                             : pRow["personalMobile"].ToString();
+                contact.workPhoneNumber = pRow["workPhoneNumber"].ToString() == ""
+                                              ? null
+                                              : pRow["workPhoneNumber"].ToString();
+                contact.homePhoneNumber = pRow["homePhoneNumber"].ToString() == ""
+                                              ? null
+                                              : pRow["homePhoneNumber"].ToString();
+                contact.email = pRow["email"].ToString() == "" ? null : pRow["email"].ToString();
+                contact.notes = pRow["notes"].ToString() == "" ? null : pRow["notes"].ToString();
+
+                contact.homeAddress = new Address
+                    {
+                        addressLine1 = pRow["AddressLine1"].ToString(),
+                        addressLine2 = pRow["AddressLine2"].ToString(),
+                        addressLine3 = pRow["AddressLine3"].ToString(),
+                        addressLine4 = pRow["AddressLine4"].ToString(),
+                        addressLine5 = pRow["AddressLine5"].ToString(),
+                        postCode = pRow["postcode"].ToString()
+                    };
+
+                return contact;
             }
-
         }
 
         public static Skill readSkill(int localId)
@@ -102,10 +136,16 @@ namespace Fusion.Connector.OpenHR.Database
                                      }
                         ).FirstOrDefault();
 
-                return su;
-
+                if (su != null)
+                {
+                    su.trainingStartSpecified = true;
+                    su.trainingEndSpecified = true;
+                    su.validFromSpecified = (su.validFrom.HasValue);
+                    su.validToSpecified = true;
+                    return su;
+                }
             }
-
+            return null;
         }
 
         public static LegalDocument readDocument(int localId)
@@ -122,10 +162,14 @@ namespace Fusion.Connector.OpenHR.Database
                         }
                         ).FirstOrDefault();
 
-                return su;
+                if (su != null)
+                {
+                    su.acceptedDateFieldSpecified = true;
+                    return su;
+                }
 
+                return null;
             }
-
         }
 
         public static TimesheetPerContract readTimesheet(int localId)
@@ -151,8 +195,6 @@ namespace Fusion.Connector.OpenHR.Database
 
         public static Staff readStaff(int localId)
         {
-            string value;
-
             string sQuery = string.Format("SELECT * FROM fusion.staff WHERE StaffID = {0}", localId);
 
             using (var c = new SqlConnection(connectionString))
@@ -166,17 +208,13 @@ namespace Fusion.Connector.OpenHR.Database
                 //    new { StaffID = LocalID }).FirstOrDefault();
 
                 //                SqlCommand selectCMD = new SqlCommand(sQuery, c);
-                SqlDataAdapter custDA = new SqlDataAdapter(sQuery, c);
-                DataSet custDS = new DataSet();
+                var custDA = new SqlDataAdapter(sQuery, c);
+                var custDS = new DataSet();
                 custDA.Fill(custDS, "staff");
 
 
-                Staff su = new Staff();
-                su.homeAddress = new Address();
-                //foreach (DataRow pRow in custDS.Tables["staff"].Rows)
-                //{
-                //    su.forenames = pRow["Forenames"].ToString();
-                //}
+                var su = new Staff {homeAddress = new Address()};
+
                 DataRow pRow = custDS.Tables["staff"].Rows[0];
 
                 su.title = pRow["title"].ToString() == "" ? null : pRow["title"].ToString();
@@ -187,7 +225,7 @@ namespace Fusion.Connector.OpenHR.Database
 
                 if (!DBNull.Value.Equals(custDS.Tables["staff"].Rows[0]["DOB"]))
                 {
-                    su.DOB = Convert.ToDateTime(custDS.Tables["staff"].Rows[0]["DOB"].ToString());
+                    su.dob = Convert.ToDateTime(custDS.Tables["staff"].Rows[0]["DOB"].ToString());
                 }
 
                 su.employeeType = pRow["employeeType"].ToString() == "" ? null : pRow["employeeType"].ToString();
@@ -211,6 +249,7 @@ namespace Fusion.Connector.OpenHR.Database
                 if (!DBNull.Value.Equals(custDS.Tables["staff"].Rows[0]["leavingDate"]))
                 {
                     su.leavingDate = Convert.ToDateTime(custDS.Tables["staff"].Rows[0]["leavingDate"].ToString());
+                    su.leavingDateSpecified = true;
                 }
 
                 su.leavingReason = pRow["leavingreason"].ToString() == "" ? null : pRow["leavingreason"].ToString();

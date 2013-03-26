@@ -8,7 +8,6 @@ using Fusion.Messages.General;
 using Fusion.Messages.SocialCare;
 using Fusion.Connector.OpenHR.Database;
 using Fusion.Connector.OpenHR.MessageComponents;
-using Fusion.Connector.OpenHR.MessageComponents.Data;
 using Fusion.Connector.OpenHR.MessageComponents.Component;
 using Fusion.Connector.OpenHR.MessageComponents.Enums;
 using System.IO;
@@ -53,19 +52,22 @@ namespace Fusion.Connector.OpenHR.OutboundBuilders
             string messageType = source.MessageType + "Request";
             Type myType = Type.GetType("Fusion.Messages.SocialCare." + messageType + ", Fusion.Messages.SocialCare");
 
-            var theMessage = (StaffContractChangeRequest)Activator.CreateInstance(myType);
+            if (myType != null)
+            {
+                var theMessage = (StaffContractChangeRequest)Activator.CreateInstance(myType);
 
-            theMessage.Community = config.Community;
+                theMessage.Community = config.Community;
 
-            theMessage.PrimaryEntityRef = contractRef;
-            theMessage.CreatedUtc = source.TriggerDate;
-            theMessage.Id = Guid.NewGuid();
-            theMessage.Originator = config.ServiceName;
-            theMessage.EntityRef = staffRef;
-            theMessage.Xml = xml;
+                theMessage.PrimaryEntityRef = staffRef;
+                theMessage.CreatedUtc = source.TriggerDate;
+                theMessage.Id = Guid.NewGuid();
+                theMessage.Originator = config.ServiceName;
+                theMessage.EntityRef = contractRef;
+                theMessage.Xml = xml;
 
-            return theMessage;
-        
+                return theMessage;
+            }
+            return null;
         }
     }
 }

@@ -7,11 +7,14 @@ using Fusion.Messages.General;
 using Fusion.Core.Sql;
 using StructureMap.Attributes;
 using Fusion.Core;
+using log4net;
 
 namespace Fusion.Connector.OpenHR.MessageSenders
 {
     public abstract class TrackingMessageSender<T> : MessageSender<T> where T : FusionMessage
     {
+        protected ILog Logger;
+
         [SetterProperty]
         public IMessageTracking MessageTracking { get; set; }
 
@@ -32,5 +35,6 @@ namespace Fusion.Connector.OpenHR.MessageSenders
 
             return false;
         }
+
     }
 }

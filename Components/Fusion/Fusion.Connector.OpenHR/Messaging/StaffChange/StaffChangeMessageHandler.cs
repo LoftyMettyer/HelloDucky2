@@ -20,8 +20,8 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
     public class StaffChangeMessageHandler : BaseMessageHandler, IHandleMessages<StaffChangeMessage>
     {
 
-        [SetterProperty]
-        public IBusRefTranslator BusRefTranslator {get;set;}
+        //[SetterProperty]
+        //public IBusRefTranslator BusRefTranslator {get;set;}
 
         private readonly string _connectionString;
 
@@ -35,8 +35,6 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
         {
 
             SqlParameter idParameter;
-            SqlParameter parameter;
-            StaffChange _staff;
 
             bool shouldProcess = base.StartHandlingMessage(message);
             bool isNew = true;
@@ -48,13 +46,13 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
 
             if (shouldProcess == true)
             {
-
+                StaffChange staff;
                 using (StringReader sr = new StringReader(message.Xml))
                 {
                     using (XmlTextReader xr = new XmlTextReader(sr))
                     {
                         XmlSerializer serializer = new XmlSerializer(typeof (StaffChange));
-                        _staff = (StaffChange) serializer.Deserialize(xr);
+                        staff = (StaffChange) serializer.Deserialize(xr);
 
                     }
                 }
@@ -82,33 +80,33 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                     idParameter.SqlDbType = SqlDbType.Int;
                     idParameter.Direction = ParameterDirection.InputOutput;
 
-                    cmd.Parameters.Add(new SqlParameter("@title", _staff.data.staff.title ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@forenames", _staff.data.staff.forenames ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@surname", _staff.data.staff.surname ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@preferredName", _staff.data.staff.preferredName ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@payrollNumber", _staff.data.staff.payrollNumber ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@DOB", _staff.data.staff.DOB ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@employeeType", _staff.data.staff.employeeType ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@workMobile", _staff.data.staff.workMobile ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@personalMobile", _staff.data.staff.personalMobile ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@workPhoneNumber", _staff.data.staff.workPhoneNumber ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@homePhoneNumber", _staff.data.staff.homePhoneNumber ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@email", _staff.data.staff.email ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@personalEmail", _staff.data.staff.personalEmail ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@gender", _staff.data.staff.gender.ToString()));
-                    cmd.Parameters.Add(new SqlParameter("@startDate", _staff.data.staff.startDate ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@leavingDate", _staff.data.staff.leavingDate ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@leavingReason", _staff.data.staff.leavingReason ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@companyName", _staff.data.staff.companyName ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@jobTitle", _staff.data.staff.jobTitle ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@managerRef", _staff.data.staff.managerRef ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@addressLine1", _staff.data.staff.homeAddress.addressLine1 ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@addressLine2", _staff.data.staff.homeAddress.addressLine2 ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@addressLine3", _staff.data.staff.homeAddress.addressLine3 ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@addressLine4", _staff.data.staff.homeAddress.addressLine4 ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@addressLine5", _staff.data.staff.homeAddress.addressLine5 ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@postcode", _staff.data.staff.homeAddress.postCode ?? (object)DBNull.Value));
-                    cmd.Parameters.Add(new SqlParameter("@nationalInsuranceNumber", _staff.data.staff.nationalInsuranceNumber ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@title", staff.data.staff.title ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@forenames", staff.data.staff.forenames ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@surname", staff.data.staff.surname ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@preferredName", staff.data.staff.preferredName ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@payrollNumber", staff.data.staff.payrollNumber ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@DOB", staff.data.staff.dob ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@employeeType", staff.data.staff.employeeType ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@workMobile", staff.data.staff.workMobile ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@personalMobile", staff.data.staff.personalMobile ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@workPhoneNumber", staff.data.staff.workPhoneNumber ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@homePhoneNumber", staff.data.staff.homePhoneNumber ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@email", staff.data.staff.email ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@personalEmail", staff.data.staff.personalEmail ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@gender", staff.data.staff.gender.ToString()));
+                    cmd.Parameters.Add(new SqlParameter("@startDate", staff.data.staff.startDate ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@leavingDate", staff.data.staff.leavingDate ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@leavingReason", staff.data.staff.leavingReason ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@companyName", staff.data.staff.companyName ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@jobTitle", staff.data.staff.jobTitle ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@managerRef", staff.data.staff.managerRef ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@addressLine1", staff.data.staff.homeAddress.addressLine1 ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@addressLine2", staff.data.staff.homeAddress.addressLine2 ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@addressLine3", staff.data.staff.homeAddress.addressLine3 ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@addressLine4", staff.data.staff.homeAddress.addressLine4 ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@addressLine5", staff.data.staff.homeAddress.addressLine5 ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@postcode", staff.data.staff.homeAddress.postCode ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@nationalInsuranceNumber", staff.data.staff.nationalInsuranceNumber ?? (object)DBNull.Value));
 
 
                     try

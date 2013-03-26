@@ -6,7 +6,13 @@ namespace Fusion.Connector.OpenHR.Messaging.StaffTimesheetPerContractSubmission
     {
         public override bool Handle(StaffTimeSheetPerContractSubmissionMessage message)
         {
-            var valid = CheckValidity(message);
+            var valid = false;
+
+            if (!checkAlreadySent(message))
+            {
+                valid = CheckValidity(message);
+            }
+
             return valid;
         }
     }

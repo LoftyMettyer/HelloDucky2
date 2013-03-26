@@ -2,11 +2,17 @@
 
 namespace Fusion.Connector.OpenHR.Messaging.StaffSkillChange
 {
-    public class StaffSkillChangeMessageSchemaValidator : SchemaValidatorOutboundFilterHandler<StaffSkillChangeMessage>
+    public class StaffSkillChangeMessageSchemaValidator : SchemaValidatorOutboundFilterHandler<StaffSkillChangeRequest>
     {
-        public override bool Handle(StaffSkillChangeMessage message)
+        public override bool Handle(StaffSkillChangeRequest message)
         {
-            var valid = CheckValidity(message);
+            var valid = false;
+
+            if (!checkAlreadySent(message))
+            {
+                valid = CheckValidity(message);
+            }
+
             return valid;
         }
     }

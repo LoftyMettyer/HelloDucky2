@@ -57,6 +57,19 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
             set;
         }
 
+        [SetterProperty]
+        public IBusRefTranslator BusRefTranslator { get; set; }
+
+        protected readonly string ConnectionString;
+
+        public BaseMessageHandler()
+        {
+            ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["db"].ConnectionString;
+            Logger = LogManager.GetLogger(typeof(BaseMessageHandler));
+        }
+
+
+
         public bool StartHandlingMessage(FusionMessage message)
         {
             Logger.Info(string.Format("Connector received " + message.GetMessageName() + " with Id {0} from {1} - xml {2}.", message.Id, message.Originator, message.Xml));

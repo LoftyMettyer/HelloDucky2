@@ -35,6 +35,7 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
 
         public string outcome { get; set; }
 
+        [XmlElementAttribute(DataType = "boolean", IsNullable = true)]
         public bool? didNotAttend { get; set; }
 
         [XmlIgnoreAttribute]

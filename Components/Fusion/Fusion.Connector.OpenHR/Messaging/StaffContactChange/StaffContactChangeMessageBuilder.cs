@@ -8,7 +8,6 @@ using Fusion.Messages.General;
 using Fusion.Messages.SocialCare;
 using Fusion.Connector.OpenHR.Database;
 using Fusion.Connector.OpenHR.MessageComponents;
-using Fusion.Connector.OpenHR.MessageComponents.Data;
 using Fusion.Connector.OpenHR.MessageComponents.Component;
 using Fusion.Connector.OpenHR.MessageComponents.Enums;
 using System.IO;
@@ -28,9 +27,9 @@ namespace Fusion.Connector.OpenHR.OutboundBuilders
 
         public FusionMessage Build(SendFusionMessageRequest source)
         {
-            Guid contactRef = refTranslator.GetBusRef(EntityTranslationNames.Contact, source.LocalId);
+            var contactRef = refTranslator.GetBusRef(EntityTranslationNames.Contact, source.LocalId);
 
-            Contact contact = DatabaseAccess.readContact(Convert.ToInt32(source.LocalId));
+            var contact = DatabaseAccess.readContact(Convert.ToInt32(source.LocalId));
 
             var xsSubmit = new XmlSerializer(typeof(StaffContactChange));
             var subReq = new StaffContactChange();
@@ -53,19 +52,23 @@ namespace Fusion.Connector.OpenHR.OutboundBuilders
             string messageType = source.MessageType + "Request";
             Type myType = Type.GetType("Fusion.Messages.SocialCare." + messageType + ", Fusion.Messages.SocialCare");
 
-            var theMessage = (StaffContactChangeRequest)Activator.CreateInstance(myType);
+            if (myType != null)
+            {
+                var theMessage = (StaffContactChangeRequest)Activator.CreateInstance(myType);
 
-            theMessage.Community = config.Community;
+                theMessage.Community = config.Community;
 
-            theMessage.PrimaryEntityRef = contactRef;
-            theMessage.CreatedUtc = source.TriggerDate;
-            theMessage.Id = Guid.NewGuid();
-            theMessage.Originator = config.ServiceName;
-            theMessage.EntityRef = staffRef;
-            theMessage.Xml = xml;
+                theMessage.PrimaryEntityRef = staffRef ;
+                theMessage.CreatedUtc = source.TriggerDate;
+                theMessage.Id = Guid.NewGuid();
+                theMessage.Originator = config.ServiceName;
+                theMessage.EntityRef = contactRef;
+                theMessage.Xml = xml;
 
-            return theMessage;
+                return theMessage;
+            }
 
+            return null;
         }
     }
 

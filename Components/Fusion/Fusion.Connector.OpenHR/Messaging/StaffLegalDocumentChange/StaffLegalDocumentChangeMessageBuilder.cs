@@ -34,11 +34,12 @@ namespace Fusion.Connector.OpenHR.OutboundBuilders
 
             var xsSubmit = new XmlSerializer(typeof(StaffLegalDocumentChange));
             var subReq = new MessageComponents.StaffLegalDocumentChange();
-            subReq.data = new StaffLegalDocumentChangeData();
-
-            subReq.data.staffLegalDocument = doc;
-            subReq.data.recordStatus = RecordStatusRescindable.Active;
-            subReq.data.auditUserName = "OpenHR user";
+            subReq.data = new StaffLegalDocumentChangeData
+                {
+                    staffLegalDocument = doc,
+                    recordStatus = RecordStatusRescindable.Active,
+                    auditUserName = "OpenHR user"
+                };
 
             Guid staffRef = refTranslator.GetBusRef(EntityTranslationNames.Staff, doc.id_Staff.ToString());
 
@@ -57,11 +58,11 @@ namespace Fusion.Connector.OpenHR.OutboundBuilders
 
             theMessage.Community = config.Community;
 
-            theMessage.PrimaryEntityRef = docRef;
+            theMessage.PrimaryEntityRef = staffRef ;
             theMessage.CreatedUtc = source.TriggerDate;
             theMessage.Id = Guid.NewGuid();
             theMessage.Originator = config.ServiceName;
-            theMessage.EntityRef = staffRef;
+            theMessage.EntityRef = docRef;
             theMessage.Xml = xml;
 
             return theMessage;

@@ -14,7 +14,6 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Data
             staffContract = new Contract();
         }
 
-        [XmlAttributeAttribute]
         public Contract staffContract { get; set; }
 
         [XmlAttributeAttribute]

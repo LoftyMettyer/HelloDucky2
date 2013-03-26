@@ -7,7 +7,6 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Data
     public class StaffTimesheetPerContractSubmissionData
     {
 
-        [XmlAttribute]
         public TimesheetPerContract staffTimesheetPerContract { get; set; }
 
         [XmlAttributeAttribute]

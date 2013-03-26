@@ -106,14 +106,14 @@
       <DependentUpon>Installer.cs</DependentUpon>
     </Compile>
     <Compile Include="MessageComponents\Enums\RecordStatusTransactional.cs" />
-    <Compile Include="MessageComponents\StaffChange.cs" />
-    <Compile Include="MessageComponents\StaffContactChange.cs" />
+    <Compile Include="Messaging\StaffChange\StaffChange.cs" />
+    <Compile Include="Messaging\StaffContactChange\StaffContactChange.cs" />
     <Compile Include="MessageComponents\Data\StaffContactChangeData.cs" />
-    <Compile Include="MessageComponents\StaffContractChange.cs" />
-    <Compile Include="MessageComponents\StaffLegalDocumentChange.cs" />
-    <Compile Include="MessageComponents\StaffPictureChange.cs" />
-    <Compile Include="MessageComponents\StaffSkillChange.cs" />
-    <Compile Include="MessageComponents\StaffTimesheetPerContractSubmission.cs" />
+    <Compile Include="Messaging\StaffContractChange\StaffContractChange.cs" />
+    <Compile Include="Messaging\StaffLegalDocumentChange\StaffLegalDocumentChange.cs" />
+    <Compile Include="Messaging\StaffPictureChange\StaffPictureChange.cs" />
+    <Compile Include="Messaging\StaffSkillChange\StaffSkillChange.cs" />
+    <Compile Include="Messaging\StaffTimesheetPerContractSubmission\StaffTimesheetPerContractSubmission.cs" />
     <Compile Include="MessageTypes.cs" />
     <Compile Include="Messaging\Base\BaseMessageHandler.cs" />
     <Compile Include="Messaging\Obsolete\GenericMessageHandler.cs" />
@@ -125,14 +125,17 @@
     <Compile Include="Messaging\StaffChange\StaffChangeMessageBuilder.cs" />
     <Compile Include="MessageComponents\Component\Staff.cs" />
     <Compile Include="Messaging\StaffContactChange\StaffContactChangeMessageBuilder.cs" />
+    <Compile Include="Messaging\StaffContactChange\StaffContactChangeMessageHandler.cs" />
     <Compile Include="Messaging\StaffContactChange\StaffContactChangeMessageSchemaValidator.cs" />
     <Compile Include="Messaging\StaffContactChange\StaffContactChangeMessageSender.cs" />
     <Compile Include="Messaging\StaffContractChange\StaffContractChangeMessageBuilder.cs" />
+    <Compile Include="Messaging\StaffContractChange\StaffContractChangeMessageHandler.cs" />
     <Compile Include="Messaging\StaffContractChange\StaffContractChangeMessageSchemaValidator.cs" />
     <Compile Include="Messaging\Base\TrackingMessageSender.cs" />
     <Compile Include="Messaging\Obsolete\GenericMessageBuilder.cs" />
     <Compile Include="Messaging\Obsolete\GenericMessageSender.cs" />
     <Compile Include="Messaging\StaffContractChange\StaffContractChangeMessageSender.cs" />
+    <Compile Include="Messaging\StaffLegalDocumentChange\StaffLegalDocumentChangeMessageHandler.cs" />
     <Compile Include="Messaging\StaffLegalDocumentChange\StaffLegalDocumentChangeMessageBuilder.cs" />
     <Compile Include="Messaging\StaffLegalDocumentChange\StaffLegalDocumentChangeMessageSender.cs" />
     <Compile Include="Messaging\StaffLegalDocumentChange\StaffLegalDocumentChangeMessageSchemaValidator.cs" />
@@ -141,6 +144,7 @@
     <Compile Include="Messaging\StaffPictureChange\StaffPictureChangeMessageSchemaValidator.cs" />
     <Compile Include="Messaging\StaffPictureChange\StaffPictureChangeMessageSender.cs" />
     <Compile Include="Messaging\StaffSkillChange\StaffSkillChangeMessageBuilder.cs" />
+    <Compile Include="Messaging\StaffSkillChange\StaffSkillChangeMessageHandler.cs" />
     <Compile Include="Messaging\StaffSkillChange\StaffSkillChangeMessageSchemaValidator.cs" />
     <Compile Include="Messaging\StaffSkillChange\StaffSkillChangeMessageSender.cs" />
     <Compile Include="Messaging\StaffTimesheetPerContractSubmission\StaffTimesheetPerContractSubmissionMessageBuilder.cs" />
@@ -174,6 +178,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Scripts\Fusion - Generic.sql" />
+    <Content Include="Scripts\Fusion - NFP.sql" />
+    <Content Include="Scripts\Fusion - Personnel.sql" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -187,19 +194,13 @@
     <EmbeddedResource Include="Schemas\staffChange.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Schemas\staffTimesheetPerContractSubmission.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Schemas\staffContactChange.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Schemas\staffContractChange.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Schemas\staffDepartmentChange.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Schemas\staffHolidayBalanceRemainingChange.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Schemas\staffLeavingReasonChange.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Schemas\staffLegalDocumentChange.xsd">
@@ -209,12 +210,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Schemas\staffSkillChange.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Schemas\staffTimesheetPerContractSubmission.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Schemas\staffTrainingOutcomeChange.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

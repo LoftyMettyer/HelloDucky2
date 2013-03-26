@@ -37,6 +37,7 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
         [XmlElement(IsNullable = true)]
         public string notes { get; set; }
 
+        [XmlElementAttribute(IsNullable = true)]
         public Address homeAddress { get; set; }
 
         [XmlIgnoreAttribute]
