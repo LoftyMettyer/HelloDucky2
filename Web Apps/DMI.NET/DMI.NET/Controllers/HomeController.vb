@@ -749,7 +749,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
-		Function MailMerge_submit()
+		Function MailMerge_Submit()
 			On Error Resume Next
 
 			Dim cmdSave = CreateObject("ADODB.Command")
