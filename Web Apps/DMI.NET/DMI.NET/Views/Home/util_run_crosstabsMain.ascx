@@ -3,7 +3,7 @@
 
 <%
     Dim fok As Boolean
-    Dim objCrossTab
+    Dim objCrossTab As Object
     Dim fNotCancelled As Boolean
     Dim lngEventLogID As Long
     Dim blnNoDefinition As Boolean
@@ -133,6 +133,11 @@
     <%Html.RenderPartial("~/views/home/util_run_crosstabsData.ascx")%>
 </div>
 
+<div id="reportbreakdownframe" data-framesource="util_run_crosstabsBreakdown" style="display: none;" accesskey="">   
+    <%Html.RenderPartial("~/views/home/util_run_crosstabsBreakdown.ascx")%>
+</div>
+
+
 
 <form id="frmOutput" name="frmOutput">
     <input type="hidden" id="fok" name="fok" value="">
@@ -141,7 +146,6 @@
 </form>
 
 <script type="text/javascript">
-    //$("reportframeset").attr("data-framesource", "UTIL_RUN_CROSSTABSMAIN");
     util_run_crosstabs_window_onload();
 
     $("#workframe").hide();

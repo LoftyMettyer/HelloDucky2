@@ -1,4 +1,6 @@
-﻿' Note: For instructions on enabling IIS6 or IIS7 classic mode, 
+﻿Imports System.Web.Optimization
+
+' Note: For instructions on enabling IIS6 or IIS7 classic mode, 
 ' visit http://go.microsoft.com/?LinkId=9394802
 
 Public Class MvcApplication
@@ -23,12 +25,15 @@ Public Class MvcApplication
 
     End Sub
 
-    Sub Application_Start()
-        AreaRegistration.RegisterAllAreas()
+  Sub Application_Start()
+    AreaRegistration.RegisterAllAreas()
 
-        RegisterGlobalFilters(GlobalFilters.Filters)
-        RegisterRoutes(RouteTable.Routes)
-	End Sub
+    RegisterGlobalFilters(GlobalFilters.Filters)
+    RegisterRoutes(RouteTable.Routes)
+
+    BundleConfig.RegisterBundles(BundleTable.Bundles)
+
+  End Sub
 
 	Sub Session_Start()
 

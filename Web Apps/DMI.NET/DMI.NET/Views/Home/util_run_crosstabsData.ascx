@@ -9,7 +9,7 @@
 </object>
 
 <%
-    Dim objCrossTab
+    Dim objCrossTab As Object
     Dim intCount As Integer
     Dim strCrossTabName As String
     Dim lngCount
@@ -30,14 +30,13 @@
     Response.Write("    $(""#reportdataframe"").attr(""data-framesource"", ""UTIL_RUN_CROSSTABSDATA"");" & vbCrLf & vbCrLf)
 
     Response.Write("    $(""#reportdataframe"").hide();" & vbCrLf & vbCrLf)
+    Response.Write("    $(""#reportbreakdownframe"").hide();" & vbCrLf & vbCrLf)
     Response.Write("    $(""#reportworkframe"").show();" & vbCrLf & vbCrLf)
     
     Response.Write("    frmOriginalDefinition = OpenHR.getForm(""reportworkframe"",""frmOriginalDefinition"");" & vbCrLf)
     Response.Write("    frmExportData = OpenHR.getForm(""reportworkframe"",""frmExportData"");" & vbCrLf)
     Response.Write("    var ssOutputGrid;" & vbCrLf)
-    
-    Response.Write("    // debugger;" & vbCrLf)
-    
+       
     If Session("CT_Mode") = "OUTPUTRUN" Or _
        Session("CT_Mode") = "OUTPUTRUNTHENCLOSE" Then
         Response.Write("    ssOutputGrid = document.getElementById(""ssHiddenGrid"");" & vbCrLf & vbCrLf)
@@ -211,7 +210,7 @@
         '		Response.Write "  while (ssOutputGrid.Rows > 0) {"
         '		Response.Write "    ssOutputGrid.RemoveAll(); }"  & vbcrlf & vbcrlf
         '		Response.Write "  ssOutputGrid.Redraw = true;" & vbcrlf & vbcrlf
-
+        
         For intCount = 1 To objCrossTab.OutputArrayDataUBound
             Response.Write("  ssOutputGrid.Additem(""" & CleanStringForJavaScript(Left(objCrossTab.OutputArrayData(intCount), 255)) & """);" & vbCrLf)
         Next
@@ -251,20 +250,13 @@
 
 If Session("CT_Mode") = "BREAKDOWN" Then
 
-objCrossTab = Session("objCrossTab" & Session("CT_UtilID"))
-objCrossTab.BuildBreakdownStrings(CLng(Session("CT_Hor")), CLng(Session("CT_Ver")), CLng(Session("CT_Pgb")))
+        objCrossTab = Session("objCrossTab" & Session("CT_UtilID"))
+        objCrossTab.BuildBreakdownStrings(CLng(Session("CT_Hor")), CLng(Session("CT_Ver")), CLng(Session("CT_Pgb")))
 
-'Look up the Int Type Text from the Int Type Number...
+        'Look up the Int Type Text from the Int Type Number...
+        Response.Write("  var frmBreakdown = OpenHR.getForm(""dataframe"", ""frmBreakdown"");" & vbCrLf)
         Response.Write("  frmBreakdown.txtIntersectionType.value = cboIntersectionType.options[frmBreakdown.txtIntersectionType.value].innerText;" & vbCrLf)
-
-        Response.Write("			sURL = ""util_run_CrossTabsBreakdown"" +" & vbCrLf & _
-            """?txtMode="" + escape(frmBreakdown.txtMode.value) +" & vbCrLf & _
-            """&txtHor="" + escape(frmBreakdown.txtHor.value) + " & vbCrLf & _
-            """&txtVer="" + escape(frmBreakdown.txtVer.value) +" & vbCrLf & _
-            """&txtPgb="" + escape(frmBreakdown.txtPgb.value) +" & vbCrLf & _
-            """&txtIntersectionType="" + escape(frmBreakdown.txtIntersectionType.value) +" & vbCrLf & _
-            """&txtCellValue="" + escape(frmBreakdown.txtCellValue.value);" & vbCrLf & _
-            "  ShowOutputOptionsFrame(sURL);" & vbCrLf)
+        Response.Write("  OpenHR.submitForm(frmBreakdown);" & vbCrLf)
 
 
 '**************************************
@@ -300,7 +292,7 @@ ElseIf Session("CT_Mode") = "OUTPUTRUN" Or _
 objCrossTab = Session("objCrossTab" & Session("CT_UtilID"))
 objUser = Server.CreateObject("COAIntServer.clsSettings")
 
-Response.Write("  frmMenuFrame = window.parent.parent.opener.window.parent.frames(""menuframe"");" & vbCrLf)
+        Response.Write("  frmMenuFrame = OpenHR.getFrame(""menuframe"");" & vbCrLf)
 
 Response.Write("  window.parent.parent.ASRIntranetOutput.UserName = """ & CleanStringForJavaScript(Session("Username")) & """;" & vbCrLf)
 Response.Write("  window.parent.parent.ASRIntranetOutput.SaveAsValues = """ & CleanStringForJavaScript(Session("OfficeSaveAsValues")) & """;" & vbCrLf)
@@ -676,7 +668,7 @@ End If
 
     function getBreakdown(lngHor, lngVer, lngPgb, txtIntType, txtCellValue) {
 
-        var frmGetData = OpenHR.getForm("reportdataframe", "frmGetCrossTabData");
+        var frmGetData = OpenHR.getForm("reportbreakdownframe", "frmGetCrossTabData");
         frmGetData.txtMode.value = "BREAKDOWN";
         frmGetData.txtHor.value = lngHor;
         frmGetData.txtVer.value = lngVer;
@@ -695,7 +687,7 @@ End If
 
 </script>
 
-<form action="util_run_CrossTabsData_Submit" method="post" id="frmGetCrossTabData" name="frmGetCrossTabData">
+<form action="util_run_crosstabsDataSubmit" method="post" id="frmGetCrossTabData" name="frmGetCrossTabData">
     <input type="hidden" id="txtMode" name="txtMode" value="<%=Session("CT_Mode")%>">
     <input type="hidden" id="txtPageNumber" name="txtPageNumber" value="<%=Session("CT_PageNumber")%>">
     <input type="hidden" id="txtShowPercentage" name="txtShowPercentage" value="<%=Session("CT_ShowPercentage")%>">
@@ -709,15 +701,6 @@ End If
     <input type="hidden" id="txtCellValue" name="txtCellValue" value="<%=Session("CT_CellValue")%>">
     <input type="hidden" id="txtUtilID" name="txtUtilID" value="<%=Session("CT_UtilID")%>">
     <input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="<%=Session("CT_EmailGroupID")%>">
-</form>
-
-<form target="Breakdown" action="util_run_CrossTabsBreakdown" method="post" id="frmBreakdown" name="frmBreakdown">
-    <input type="hidden" id="Hidden1" name="txtMode" value="<%=Session("CT_Mode")%>">
-    <input type="hidden" id="Hidden2" name="txtHor" value="<%=Session("CT_Hor")%>">
-    <input type="hidden" id="Hidden3" name="txtVer" value="<%=Session("CT_Ver")%>">
-    <input type="hidden" id="Hidden4" name="txtPgb" value="<%=Session("CT_Pgb")%>">
-    <input type="hidden" id="Hidden5" name="txtIntersectionType" value="<%=Session("CT_IntersectionType")%>">
-    <input type="hidden" id="Hidden6" name="txtCellValue" value="<%=Session("CT_CellValue")%>">
 </form>
 
 <textarea id="holdtext" style="display: none;"></textarea>

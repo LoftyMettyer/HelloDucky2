@@ -104,6 +104,10 @@
         OpenHR.addActiveXHandler("ssHiddenGrid", "PrintInitialize", ssHiddenGrid_PrintInitialize);
         OpenHR.addActiveXHandler("ssHiddenGrid", "PrintBegin", ssHiddenGrid_PrintBegin);
         OpenHR.addActiveXHandler("ssHiddenGrid", "PrintError", ssHiddenGrid_PrintError);
+
+        // Function generated at runtime
+        OpenHR.addActiveXHandler("ssOutputGrid", "DblClick", window.ssOutputGrid_DblClick);
+
     }
 
     function ssOutputGrid_PrintInitialize(ssPrintInfo) {
@@ -276,6 +280,14 @@
         catch (e) {}
     }
 
+    function closeclick() {
+        try {
+            $(".popup").dialog("close");
+            $("#workframe").show();
+        }
+        catch (e) { }
+    }
+
 </script>
 
 
@@ -292,7 +304,7 @@
     setGridFont(ssHiddenGrid);
 <%
     Response.Write("	loadAddRecords();" & vbCrLf)
-    Response.Write("    window.parent.parent.frmError.txtEventLogID.value = """ & CleanStringForJavaScript(objCrossTab.EventLogID) & """;" & vbCrLf)
+    Response.Write("    frmError.txtEventLogID.value = """ & CleanStringForJavaScript(objCrossTab.EventLogID) & """;" & vbCrLf)
     Response.Write("  }" & vbCrLf)
     Response.Write("</script>" & vbCrLf)
 
@@ -301,16 +313,15 @@
     Response.Write("  function ssOutputGrid_DblClick() {" & vbCrLf)
 
     If objCrossTab.RecordDescExprID = 0 Then
-        Response.Write("    window.parent.parent.ASRIntranetFunctions.MessageBox(""Unable to show cell breakdown details as no record description has been set up for the '" & CleanStringForJavaScript(objCrossTab.BaseTableName) & "' table."",64,""Cross Tab Breakdown"");" & vbCrLf)
+        Response.Write("    OpenHR.messageBox(""Unable to show cell breakdown details as no record description has been set up for the '" & CleanStringForJavaScript(objCrossTab.BaseTableName) & "' table."",64,""Cross Tab Breakdown"");" & vbCrLf)
     Else
         Response.Write("	if (ssOutputGrid.Col > 0) {" & vbCrLf)
         Response.Write("      frmData = OpenHR.getFrame(""reportdataframe"");" & vbCrLf)
         Response.Write("      lngPage = 0;" & vbCrLf)
         Response.Write("      if (cboPage.selectedIndex != -1) {" & vbCrLf)
         Response.Write("        lngPage = cboPage.options[cboPage.selectedIndex].Value;" & vbCrLf)
-        Response.Write("      }" & vbCrLf)
-        Response.Write("      frmData.getBreakdown(ssOutputGrid.Col - 1, ssOutputGrid.AddItemRowIndex(ssOutputGrid.Bookmark), lngPage, cboIntersectionType.options[cboIntersectionType.selectedIndex].Value, ssOutputGrid.ActiveCell.Value);" & vbCrLf)
-        'Response.Write "    frmData.getBreakdown(ssOutputGrid.Col -1, ssOutputGrid.AddItemRowIndex(ssOutputGrid.Bookmark), cboPage.options[cboPage.selectedIndex].Value, cboIntersectionType.options[cboIntersectionType.selectedIndex].text, ssOutputGrid.ActiveCell.Value);" & vbcrlf
+        Response.Write("      }" & vbCrLf)       
+        Response.Write("      getBreakdown(ssOutputGrid.Col - 1, ssOutputGrid.AddItemRowIndex(ssOutputGrid.Bookmark), lngPage, cboIntersectionType.options[cboIntersectionType.selectedIndex].Value, ssOutputGrid.ActiveCell.Value);" & vbCrLf)
         Response.Write("    }" & vbCrLf)
         Response.Write("  }" & vbCrLf)
     End If
@@ -329,7 +340,7 @@
 		            $("#reportworkframe").attr("data-framesource", "UTIL_RUN_CROSSTABS");
 
 		            // Resize the popup.
-		            iResizeByHeight = frmPopup.offsetParent.scrollHeight - window.parent.parent.parent.document.body.clientHeight;
+		            var iResizeByHeight = frmPopup.offsetParent.scrollHeight - window.parent.parent.parent.document.body.clientHeight;
 		            if (frmPopup.offsetParent.offsetHeight + iResizeByHeight > screen.height) {
 		                try {
 		                    window.parent.window.parent.moveTo((screen.width - window.parent.parent.parent.document.body.offsetWidth) / 2, 0);
@@ -407,7 +418,7 @@
     Response.Write("			  <tr> " & vbCrLf)
     Response.Write("			    <td colspan=3 height=10 align=center> " & vbCrLf)
     Response.Write("						<input type=button id=cmdClose name=cmdClose value=Close style=""WIDTH: 80px"" width=80px class=""btn""" & vbCrLf)
-    Response.Write("                      onclick=""window.parent.parent.self.close();""" & vbCrLf)
+    Response.Write("                      onclick=""closeclick();""" & vbCrLf)
     Response.Write("                      onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
     Response.Write("                      onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
     Response.Write("                      onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
@@ -434,7 +445,7 @@
 <table align=center class="outline" cellPadding=5 cellSpacing=0 width=100% height=100%>
 	<TR>
 		<TD>
-			<TABLE HEIGHT="100%" WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
+			<table HEIGHT="100%" WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
 				<TR>
 					<TD COLSPAN=50>
 						<OBJECT classid=clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1
@@ -567,42 +578,49 @@
 
                             <TR>
 								<TD>&nbsp;&nbsp;<U>Intersection</U>
-									<TABLE WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
+									<table WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
                                     <td>
                                         <table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-                                            <% if clng(session("utiltype")) = 15 then %>
-                                            <input type="HIDDEN" id="txtIntersectionColumn" name="txtIntersectionColumn" style="BACKGROUND-COLOR: threedface; WIDTH: 100%" readonly>
-                                    </td>
-                                <% Else%>
-                                <td width="20"></td>
-                                <td width="100">Column :</td>
-                                <td width="5"></td>
-                                <td width="300">
-                                    <input id="txtIntersectionColumn" name="txtIntersectionColumn" class="text textdisabled" style="WIDTH: 100%" disabled="disabled"></td>
+                                            <% If CLng(Session("utiltype")) = 15 Then%>
+                                                <input type="HIDDEN" id="txtIntersectionColumn" name="txtIntersectionColumn" style="BACKGROUND-COLOR: threedface; WIDTH: 100%" 
 
-                                <TR height=5>
-												  <TD></TD>
-												</TR>
-<% end if %>
-												<td width="20"></td>
-                                <TD width=100 valign=top>Type :</TD>
-												<TD width=5></TD>
-                                <td width="300" valign="top">
-                                    <select id="cboIntersectionType" name="cboIntersectionType" class="combo" style="WIDTH: 100%" onchange="UpdateGrid()"></select>
-                                </td>
-                                <TD width=20></TD>
-											</TABLE>
+readonly></table>
+                                                </td>
+                                            <% Else%>
+                                                <td width="20"></td>
+                                                <td width="100">Column :</td>
+                                                <td width="5"></td>
+                                                <td width="300">
+                                                    <input id="Text1" name="txtIntersectionColumn" class="text textdisabled" style="WIDTH: 100%" 
 
-											<TR height=5>
-												<TD></TD>
-											</TR>
-										</TABLE>
+disabled="disabled"></td>
+
+                                                <tr height="5">
+                                                    <td></td>
+                                                </tr>
+                                            <% End If%>
+
+								            <td width="20"></td>
+                                            <td width="100" valign="top">Type :</td>
+                                            <td width="5"></td>
+                                            <td width="300" valign="top">
+                                                <select id="cboIntersectionType" name="cboIntersectionType" class="combo" style="WIDTH: 100%" onchange="UpdateGrid()"></select>
+                                            </td>
+                                            <td width="20"></td>
+
+                                        </table>
+                                    
+										<TR height=5>
+											<TD></TD>
+										</TR>
+                                        
+			</table>
 									</TD>
 									<TD width="20%" valign=top nowrap>
 
 
 				        <input type="checkbox" id="chkPercentType" name="chkPercentType" value="checkbox" 
-				            onclick="chkPercentType_Click();" 
+				            onclick="chkPercentType_Click()" 
 		                    onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
 		                    onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
                         <label 
@@ -645,7 +663,7 @@
 										<BR>
 
 				        <input type="checkbox" id="chkSuppressZeros" name="chkSuppressZeros" value="checkbox" 
-				            onclick="UpdateGrid();" 
+				            onclick="UpdateGrid()" 
 		                    onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
 		                    onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
                         <label 
@@ -661,7 +679,7 @@
                          </label>
 
 				        <input type="checkbox" id="chkUse1000" name="chkUse1000" value="checkbox" 
-				            onclick="UpdateGrid();" 
+				            onclick="UpdateGrid()" 
 		                    onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
 		                    onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
                         <label 
@@ -683,26 +701,26 @@
 										<BR>
 									</TD>
 									<TD id=CrossTabPage name=CrossTabPage>&nbsp;&nbsp;<U>Page</U>
-										<TABLE WIDTH="100%" outline="invisible" CELLSPACING=0 CELLPADDING=0>
-											<TR>
-												<TD width=20></TD>
-												<TD width=100>Column :</TD>
-												<TD width=5></TD>
-												<TD width=300>
-												<INPUT id=txtPageColumn name=txtPageColumn style="WIDTH: 100%" class="text textdisabled" disabled="disabled"></TD>
-												<TR height=5>
-												  <TD></TD>
-												</TR>
-												<TD width=20></TD>
-												<TD width=100>Value :</TD>
-												<TD width=5></TD>
-												<TD width=300>
-											  <select id=cboPage name=cboPage style="WIDTH: 100%" class="combo" onchange="UpdateGrid()"> 
-												  </select>
-												</TD>
-												<TD width=20></TD>
-											</TR>
-										</TABLE>
+                                        <table width="100%" outline="invisible" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td width="20"></td>
+                                                <td width="100">Column :</td>
+                                                <td width="5"></td>
+                                                <td width="300">
+                                                    <input id="txtPageColumn" name="txtPageColumn" style="WIDTH: 100%" class="text textdisabled" disabled="disabled"></td>
+                                                <tr height="5">
+                                                    <td></td>
+                                                </tr>
+                                                <td width="20"></td>
+                                                <td width="100">Value :</td>
+                                                <td width="5"></td>
+                                                <td width="300">
+                                                    <select id="cboPage" name="cboPage" style="WIDTH: 100%" class="combo" onchange="UpdateGrid()">
+                                                    </select>
+                                                </td>
+                                                <td width="20"></td>
+                                            </tr>
+                                        </table>
 									</TD>
 								</TR>
 
@@ -711,39 +729,44 @@
 							    <TD width=150></TD>
 							    <TD></TD>
 							  </TR>
-							</TABLE>
+							</table>
 
-							<TABLE WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
-							  <TR HEIGHT=5>
-							    <TD></TD>
-							  </TR>
-							  <TR HEIGHT=5>
-							    <TD colspan=3>
-								  <TABLE WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
-									<TD ALIGN=RIGHT>
-                      <input type=button id=cmdOutput name=cmdOutput value="Output" style="WIDTH: 80" class="btn" 
-                          onclick=ExportData("OUTPUTPROMPT");
-                                            onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                            onfocus="try{button_onFocus(this);}catch(e){}"
-                                            onblur="try{button_onBlur(this);}catch(e){}" />
-									</TD>
-									<TD width=15></TD>
-									<TD width=5 ALIGN=RIGHT>
-                      <input type=button id=cmdClose name=cmdClose value="Close" style="WIDTH: 80px"  class="btn" 
-                                            onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                            onfocus="try{button_onFocus(this);}catch(e){}"
-                                            onblur="try{button_onBlur(this);}catch(e){}" />
-									</TD>
-                                  </table>
-                                </td>
-                              </tr>
-                                <tr height="5">
-                                    <td></td>
-                                </tr>
-                            </table>
-</TABLE>
+    <table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+        <tr height="5">
+            <td></td>
+        </tr>
+        <tr height="5">
+            <td colspan="3">
+                <table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+                    <td align="RIGHT">
+                        <input type="button" id="cmdOutput" name="cmdOutput" value="Output" style="WIDTH: 80px"
+                            onmouseover="try{button_onMouseOver(this);}catch(e){}"
+                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
+                            onfocus="try{button_onFocus(this);}catch(e){}"
+                            onblur="try{button_onBlur(this);}catch(e){}" />
+                    </td>
+                    <td width="15"></td>
+                    <td width="5" align="RIGHT">
+                        <input type="button" id="cmdClose" name="cmdClose" value="Close" style="WIDTH: 80px" class="btn"
+                            onclick="try { closeclick(); } catch (e) { }"
+                            onmouseover="try{button_onMouseOver(this);}catch(e){}"
+                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
+                            onfocus="try{button_onFocus(this);}catch(e){}"
+                            onblur="try{button_onBlur(this);}catch(e){}" />
+                    </td>
+                    admin
+                </table>
+            </td>
+        </tr>
+        <tr height="5">
+            <td></td>
+        </tr>
+    </table>
+
+
+</table>
+</table>
+</table>
 
 
 <form id="frmOriginalDefinition">
@@ -763,18 +786,10 @@
     <input type="hidden" id="txtOptionsCopies" name="txtOptionsCopies">
 </form>
 
-<form target="breakdown" name="frmBreakdown" method="post" action="util_run_crosstabsBreakdown" id="frmBreakdown" style="visibility: hidden; display: none">
-    <input type="hidden" id="txtHor" name="txtHor" value="0">
-    <input type="hidden" id="txtVer" name="txtVer" value="0">
-    <input type="hidden" id="txtPgb" name="txtPgb" value="0">
-    <input type="hidden" id="txtIntersectionType" name="txtIntersectionType" value="0">
-    <input type="hidden" id="txtCellValue" name="txtCellValue" value="0">
-</form>
-
 <object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"
     codebase="cabs/COAInt_Grid.cab#version=3,1,3,6"
     id="ssHiddenGrid" name="ssHiddenGrid"
-    style="HEIGHT: 0px; LEFT: 0px; TOP: 0px; WIDTH: 0px; POSITION: absolute" viewastext>
+    style="HEIGHT: 0px; LEFT: 0px; TOP: 0px; WIDTH: 0px; POSITION: absolute">
     <param name="ScrollBars" value="4">
     <param name="_Version" value="196617">
     <param name="DataMode" value="2">
@@ -912,6 +927,11 @@
 <select style="visibility: hidden; display: none" id="cboDummy" name="cboDummy">
 </select>
 
+
+
 <script type="text/javascript">
     util_run_crosstabs_addhandlers();
 </script>
+
+
+

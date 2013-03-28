@@ -105,23 +105,28 @@ session(sKey) = aPrompts
 
     function ShowOutputOptionsFrame(sURL) {
 
-        //frames("outputoptions").location.replace(sURL);
-        var fsOptions = window.parent.document.all.item("outputoptions");
-        if (fsOptions) {
-            fsOptions.src = sURL
-        }
+        debugger;
 
-        var fs = window.parent.document.all.item("myframeset");
-        if (fs) {
-            fs.rows = "0,0,*";
-        }
+        $("#outputoptions").src = sURL;
+        $("#outputoptions").show();
+
+//        var fsOptions = window.parent.document.all.item("outputoptions");
+//        if (fsOptions) {
+//            fsOptions.src = sURL;
+//        }
+
+//        var fs = window.parent.document.all.item("myframeset");
+//        if (fs) {
+//            fs.rows = "0,0,*";
+//        }
     }
 
     function ShowDataFrame() {
-        var fs = window.parent.document.all.item("reportframe");
-        if (fs) {
-            fs.rows = "0,*,0";
-        }
+
+        $("#reportbreakdownframe").hide();
+        $("#reportframe").show();
+        $("#reportworkframe").show();
+
     }
 
 </script>
