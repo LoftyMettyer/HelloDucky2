@@ -31,7 +31,7 @@ Public Class MvcApplication
     RegisterGlobalFilters(GlobalFilters.Filters)
     RegisterRoutes(RouteTable.Routes)
 
-    BundleConfig.RegisterBundles(BundleTable.Bundles)
+    ' BundleConfig.RegisterBundles(BundleTable.Bundles)
 
   End Sub
 
