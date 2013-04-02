@@ -675,6 +675,10 @@
     <Content Include="Views\Home\Util_EmailSelection.aspx" />
     <Content Include="Views\Home\Util_RecordSelection.aspx" />
     <Content Include="Views\Home\util_run.ascx" />
+    <Content Include="Views\Home\util_run_calendarreport_data.ascx" />
+    <Content Include="Views\Home\util_run_calendarreport_key.ascx" />
+    <Content Include="Views\Home\util_run_calendarreport_main.ascx" />
+    <Content Include="Views\Home\util_run_calendarreport_options.ascx" />
     <Content Include="Views\Home\util_run_crosstabs.ascx" />
     <Content Include="Views\Home\util_run_crosstabsBreakdown.ascx" />
     <Content Include="Views\Home\util_run_crosstabsMain.ascx" />

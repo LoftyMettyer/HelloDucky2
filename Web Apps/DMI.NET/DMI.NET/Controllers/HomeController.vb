@@ -937,11 +937,11 @@ Namespace Controllers
 						Return RedirectToAction("util_def_expression")
 					Case 12	' CALCULATIONS
 						Return RedirectToAction("util_def_expression")
-					Case 17	' CALENDAR REPORTS
-						Return RedirectToAction("util_def_calendarreport")
-						'Case 25	' WORKFLOW 
-						'Return RedirectToAction("util_run_workflow")
-				End Select
+          Case 17 ' CALENDAR REPORTS
+            Return RedirectToAction("util_def_calendarreport")
+            'Case 25	' WORKFLOW 
+            'Return RedirectToAction("util_run_workflow")
+        End Select
 
 			ElseIf Session("action") = "delete" Then
 				Select Case Session("utiltype")
@@ -1971,6 +1971,11 @@ Namespace Controllers
 		Function util_run_customreports() As ActionResult
 			Return PartialView()
 		End Function
+
+    Function util_run_calendarreport_main() As ActionResult
+      Return PartialView()
+    End Function
+
 
 		<ValidateInput(False)>
 		Function util_run_workflow() As ActionResult
