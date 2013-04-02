@@ -709,6 +709,7 @@
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridRepetition.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridSelectedColumns.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridSortOrder.ascx" />
+    <Content Include="Views\Home\util_run_calendarreport_nav.ascx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
