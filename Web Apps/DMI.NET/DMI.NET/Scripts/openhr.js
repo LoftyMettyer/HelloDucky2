@@ -92,19 +92,24 @@
 	    getForm = function (frameId, formId) {
 	    	return document.forms[formId];
 	    },
-	    submitForm = function (form, targetWin) {
-	        
-	    	var $form = $(form),
-	    	    $frame = $form.closest("div[data-framesource]").first(),
-	    	    url = $form.attr("action"),
-	    	    target = $form.attr("target"),
-	    	    data = $form.serialize();	        
+	    submitForm = function(form, targetWin, asyncFlag) {		    
+		    var $form = $(form),
+			    $frame = $form.closest("div[data-framesource]").first(),
+			    url = $form.attr("action"),
+			    target = $form.attr("target"),
+			    data = $form.serialize();
+
+		    if ((asyncFlag == undefined) || (asyncFlag.length == 0) || (asyncFlag == true)) {
+			    asyncFlag = true;
+		    } else {
+			    asyncFlag = false;
+		    }
 
 	    	$.ajax({
 	    		url: url,
 	    		type: "POST",
 	    		data: data,
-	    		async: false,
+	    		async: asyncFlag,
 	    		success: function (html) {	    		    
 	    		    try {
 	    		        if ((html.ErrorMessage != null) && (html.ErrorMessage != undefined) && (html.ErrorMessage != "undefined")) {
