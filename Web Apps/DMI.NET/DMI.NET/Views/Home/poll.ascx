@@ -1,12 +1,11 @@
-﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-    <meta http-equiv="refresh" content="30;URL=poll">
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>    
     <link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css">
 
     <script type="text/javascript">
         function poll_window_onload() {
-
+	        
             $("#pollframe").attr("data-framesource", "POLL");
-
+            var frmMessages = document.getElementById("frmMessages");
             var sMessage = new String("");
             var controlCollection = frmMessages.elements;
             if (controlCollection != null) {
@@ -60,7 +59,7 @@
             End If
 	
             ' Release the ADO command object.
-            cmdHit = Nothing
+            
         %>
     </form>
     
