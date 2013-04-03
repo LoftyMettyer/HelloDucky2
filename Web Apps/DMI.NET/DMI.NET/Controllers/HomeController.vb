@@ -1876,7 +1876,7 @@ Namespace Controllers
 		'    Return View()
 		'End Function
 
-		Function Poll() As ActionResult
+		Function Poll() As PartialViewResult
 			Return PartialView()
 		End Function
 
