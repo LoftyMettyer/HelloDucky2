@@ -109,17 +109,17 @@
 %>
 
 <script type="text/javascript">
-    function loadAddRecords() {
+	function loadAddRecords() {
         
-        var iCount;
-        iCount = new Number(txtLoadCount.value);
-        txtLoadCount.value = iCount + 1;
-        if (iCount > 0) {
-            var frmGetData = OpenHR.getForm("reportdataframe", "frmGetCrossTabData");
-            <% Response.Write("frmGetData.txtUtilID.value = """ & Session("utilid") & """;" & vbCrLf)%>
-            getData("LOAD", 0, 0, 0, 0, 0, 0);
-        }
-    }
+		var iCount;
+		iCount = new Number(txtLoadCount.value);
+		txtLoadCount.value = iCount + 1;
+		if (iCount > 0) {
+			var frmGetData = OpenHR.getForm("reportdataframe", "frmGetCrossTabData");
+			<% Response.Write("frmGetData.txtUtilID.value = """ & Session("utilid") & """;" & vbCrLf)%>
+			getData("LOAD", 0, 0, 0, 0, 0, 0);
+		}
+	}
 </script>
 
 
@@ -146,12 +146,13 @@
 </form>
 
 <script type="text/javascript">
-    util_run_crosstabs_window_onload();
 
-    $("#workframe").hide();
-    $("#reportframe").show();
+	util_run_crosstabs_window_onload();
 
-    $("#top").hide();
-    $("#reportworkframe").show();
+	$("#workframe").hide();
+	$("#reportframe").show();
+
+	$("#top").hide();
+	$("#reportworkframe").show();
 
 </script>

@@ -83,7 +83,7 @@
 
                         Response.Write("<TR HEIGHT=5>" & vbCrLf)
                         Response.Write("  <TD WIDTH=50>&nbsp;</TD>" & vbCrLf)
-                        Response.Write("  <TD>" & Session("txtIntersectionType") & " :</TD>" & vbCrLf)
+                    	Response.Write("  <TD>" & Session("txtDataIntersectionType") & " :</TD>" & vbCrLf)
                         Response.Write("  <TD><INPUT id=txtCellValue name=txtCellValue value="" ")
 				
                         If objCrossTab.CrossTabType = 3 Then
@@ -100,7 +100,6 @@
                     <tr>
                         <td></td>
                         <td colspan="2">
-
                             <object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"
                                 codebase="cabs/COAInt_Grid.cab#version=3,1,3,6"
                                 id="ssOutputBreakdown" name="ssOutputBreakdown"
@@ -220,7 +219,6 @@
                                 <param name="Enabled" value="-1">
                                 <param name="DataMember" value="">
                             </object>
-
                         </td>
                     </tr>
                     <tr height="2">
@@ -251,34 +249,32 @@
  
         Response.Write("<script type=""text/javascript"">" & vbCrLf)
         Response.Write("function util_run_crosstabsBreakdown_window_onload()" & vbCrLf)
-        Response.Write("{" & vbCrLf & vbCrLf)
+    	Response.Write("{" & vbCrLf & vbCrLf)
 
     %>
 	
 	setGridFont(ssOutputBreakdown);
 	
-	<%
-	    Response.Write("  debugger;" & vbCrLf)
-	    
-	    Response.Write("  ssOutputBreakdown.Columns.RemoveAll();" & vbCrLf)
-	    Response.Write("  ssOutputBreakdown.Columns.Add(0);" & vbCrLf)
-	    Response.Write("  ssOutputBreakdown.Columns(0).Caption = """ & CleanStringForJavaScript(objCrossTab.BaseTableName) & """;" & vbCrLf)
-	    Response.Write("  ssOutputBreakdown.Columns(0).Locked = true;" & vbCrLf)
-	    Response.Write("  ssOutputBreakdown.Columns(0).Visible = true;" & vbCrLf)
-	    Response.Write("  ssOutputBreakdown.Columns(0).Width = 300;" & vbCrLf)
+	<%	    
+		Response.Write("  ssOutputBreakdown.Columns.RemoveAll();" & vbCrLf)
+		Response.Write("  ssOutputBreakdown.Columns.Add(0);" & vbCrLf)
+		Response.Write("  ssOutputBreakdown.Columns(0).Caption = """ & CleanStringForJavaScript(objCrossTab.BaseTableName) & """;" & vbCrLf)
+		Response.Write("  ssOutputBreakdown.Columns(0).Locked = true;" & vbCrLf)
+		Response.Write("  ssOutputBreakdown.Columns(0).Visible = true;" & vbCrLf)
+		Response.Write("  ssOutputBreakdown.Columns(0).Width = 300;" & vbCrLf)
 
 	    ' Absence Breakdown
 	    If objCrossTab.CrossTabType = 3 Then
 	        Response.Write("  ssOutputBreakdown.Columns.Add(1);" & vbCrLf)
 	        Response.Write("  ssOutputBreakdown.Columns(1).Caption = ""Start Date"";" & vbCrLf)
-	        Response.Write("  ssOutputBreakdown.Columns(1).Locked = true;" & vbCrLf)
+			Response.Write("  ssOutputBreakdown.Columns(1).Locked = true;" & vbCrLf)
 	        Response.Write("  ssOutputBreakdown.Columns(1).Visible = true;" & vbCrLf)
 	        Response.Write("  ssOutputBreakdown.Columns(1).Width = 150;" & vbCrLf)
 	        Response.Write("  ssOutputBreakdown.Columns(1).Alignment = 1;" & vbCrLf)
 		
 	        Response.Write("  ssOutputBreakdown.Columns.Add(2);" & vbCrLf)
 	        Response.Write("  ssOutputBreakdown.Columns(2).Caption = ""End Date"";" & vbCrLf)
-	        Response.Write("  ssOutputBreakdown.Columns(2).Locked = true;" & vbCrLf)
+			Response.Write("  ssOutputBreakdown.Columns(2).Locked = true;" & vbCrLf)
 	        Response.Write("  ssOutputBreakdown.Columns(2).Visible = true;" & vbCrLf)
 	        Response.Write("  ssOutputBreakdown.Columns(2).Width = 150;" & vbCrLf)
 	        Response.Write("  ssOutputBreakdown.Columns(2).Alignment = 1;" & vbCrLf)
@@ -286,7 +282,7 @@
 	        Response.Write("  ssOutputBreakdown.Columns.Add(3);" & vbCrLf)
 		
 	        Response.Write("  ssOutputBreakdown.Columns(3).Caption = """ & CleanStringForJavaScript(objCrossTab.ColumnHeading(0, Session("txtHor"))) & "'s taken" & """;" & vbCrLf)
-	        Response.Write("  ssOutputBreakdown.Columns(3).Locked = true;" & vbCrLf)
+			Response.Write("  ssOutputBreakdown.Columns(3).Locked = true;" & vbCrLf)
 	        Response.Write("  ssOutputBreakdown.Columns(3).Visible = true;" & vbCrLf)
 	        Response.Write("  ssOutputBreakdown.Columns(3).Width = 150;" & vbCrLf)
 	        Response.Write("  ssOutputBreakdown.Columns(3).Alignment = 1;" & vbCrLf)
@@ -295,7 +291,7 @@
 	    End If
 
 
-	    Response.Write("  ssOutputBreakdown.Redraw = false;" & vbCrLf & vbCrLf)
+		Response.Write("ssOutputBreakdown.Redraw = false;" & vbCrLf & vbCrLf)
 	    
 	    If objCrossTab.IntersectionColumn = True Then
 	        Response.Write("  ssOutputBreakdown.Columns.Add(" & iInterSectionColumnCount & ");" & vbCrLf)
@@ -306,10 +302,9 @@
 	        Response.Write("  ssOutputBreakdown.Columns(" & iInterSectionColumnCount & ").Alignment = 1;" & vbCrLf)
 	    End If
 
-	    
-	    For intCount = 1 To CLng(objCrossTab.OutputArrayDataUBound)
-	        Response.Write("  ssOutputBreakdown.AddItem(""" & CleanStringForJavaScript(objCrossTab.OutputArrayData(CLng(intCount))) & """);" & vbCrLf)
-	    Next
+		For intCount = 1 To CLng(objCrossTab.OutputArrayDataUBound)
+			Response.Write("  ssOutputBreakdown.AddItem(""" & CleanStringForJavaScript(objCrossTab.OutputArrayData(CLng(intCount))) & """);" & vbCrLf)
+		Next
 	    Response.Write("  ssOutputBreakdown.RowHeight = 10;" & vbCrLf)
 
 	    Response.Write("  ssOutputBreakdown.VisibleCols = 2;" & vbCrLf)
@@ -319,7 +314,7 @@
 
 	    
 	    
-	    Response.Write("}" & vbCrLf)
+		Response.Write("}" & vbCrLf)
 	    Response.Write("</script>" & vbCrLf & vbCrLf)
 
 	    objCrossTab = Nothing
@@ -336,8 +331,8 @@
     $("#reportworkframe").hide();
     $("#reportbreakdownframe").show();
 
-    util_run_crosstabsBreakdown_window_onload();
-
+    setTimeout("util_run_crosstabsBreakdown_window_onload()", 100);
+    
 </script>
 
 <%

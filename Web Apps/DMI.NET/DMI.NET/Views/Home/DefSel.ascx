@@ -210,7 +210,7 @@
 				sControlName = controlCollection.item(i).name;
 				sControlPrefix = sControlName.substr(0, 13);
 
-				if (sControlPrefix == "txtAddString_") {
+				if (sControlPrefix == "txtAddString_") {					
 					frmDefSel.ssOleDBGridDefSelRecords.AddItem(controlCollection.item(i).value);
 				}
 			}
@@ -472,7 +472,6 @@
 	}
 
 	function setrun() {
-
 		var frmDefSel = document.getElementById('frmDefSel');
 		if (frmDefSel.ssOleDBGridDefSelRecords.selbookmarks.count > 0) {
 			frmDefSel.action.value = "run";
@@ -490,7 +489,7 @@
 
 				frmWorkflow.target = sUtilId;
 				NewWindow('', sUtilId, '500', '200', 'yes');
-				OpenHR.submitForm(frmWorkflow);
+				OpenHR.submitForm(frmWorkflow, null, false);
 			}
 			else {
 

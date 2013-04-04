@@ -34,7 +34,6 @@
 <script type="text/javascript">    
  
     function promptedvalues_window_onload() {
-
         //remmed this - don't need to set current workframe source - leave as defsel.
         $("#reportframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");       
 
@@ -507,7 +506,7 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
         }
 
         // Everything OK. Submit the form.
-        OpenHR.submitForm(frmPromptedValues);       
+        OpenHR.submitForm(frmPromptedValues, null, false);       
         
     }
 
@@ -521,7 +520,7 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
 
                 window.parent.document.all.item("workframeset").cols = "*, 0";		
                 window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
-                window.dialogArguments.OpenHR.submitForm(frmParent);
+                window.dialogArguments.OpenHR.submitForm(frmParent, null, false);
             }
             else
             {

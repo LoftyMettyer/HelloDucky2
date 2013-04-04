@@ -8,16 +8,9 @@
     
 	bBradfordFactor = (session("utiltype") = "16")
 %>
-
-    <object
-        classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-        id="Microsoft_Licensed_Class_Manager_1_0"
-        viewastext>
-        <param name="LPKPath" value="lpks/main.lpk">
-    </object>
-    
+ 
     <script type="text/javascript">
-        function reports_window_onload() {
+    	function reports_window_onload() {
             loadAddRecords();
         }
     </script>

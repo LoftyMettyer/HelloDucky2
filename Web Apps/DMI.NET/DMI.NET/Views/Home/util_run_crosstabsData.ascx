@@ -1,14 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<object
-    classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-    id="Microsoft_Licensed_Class_Manager_1_0"
-    viewastext>
-    <param name="LPKPath" value="lpks/main.lpk">
-</object>
-
-<%
+<%		
     Dim objCrossTab As Object
     Dim intCount As Integer
     Dim strCrossTabName As String
@@ -30,7 +23,7 @@
     Response.Write("    $(""#reportdataframe"").attr(""data-framesource"", ""UTIL_RUN_CROSSTABSDATA"");" & vbCrLf & vbCrLf)
 
     Response.Write("    $(""#reportdataframe"").hide();" & vbCrLf & vbCrLf)
-    Response.Write("    $(""#reportbreakdownframe"").hide();" & vbCrLf & vbCrLf)
+	Response.Write("    $(""#reportbreakdownframe"").hide();" & vbCrLf & vbCrLf)
     Response.Write("    $(""#reportworkframe"").show();" & vbCrLf & vbCrLf)
     
     Response.Write("    frmOriginalDefinition = OpenHR.getForm(""reportworkframe"",""frmOriginalDefinition"");" & vbCrLf)
@@ -59,8 +52,7 @@
         Response.Write("  AddToIntTypeCombo(""Maximum"",""2"");" & vbCrLf)
         Response.Write("  AddToIntTypeCombo(""Minimum"",""3"");" & vbCrLf)
         Response.Write("  AddToIntTypeCombo(""Total"",""4"");" & vbCrLf)
-
-        intCount = 0
+       
         For intCount = 0 To objCrossTab.ColumnHeadingUbound(2)
             Response.Write("  AddToPgbCombo(""" & CleanStringForJavaScript(Left(objCrossTab.ColumnHeading(2, intCount), 255)) & """,""" & CStr(intCount) & """);" & vbCrLf)
         Next
@@ -255,8 +247,10 @@ If Session("CT_Mode") = "BREAKDOWN" Then
 
         'Look up the Int Type Text from the Int Type Number...
         Response.Write("  var frmBreakdown = OpenHR.getForm(""dataframe"", ""frmBreakdown"");" & vbCrLf)
-        Response.Write("  frmBreakdown.txtIntersectionType.value = cboIntersectionType.options[frmBreakdown.txtIntersectionType.value].innerText;" & vbCrLf)
-        Response.Write("  OpenHR.submitForm(frmBreakdown);" & vbCrLf)
+		' Response.Write("  frmBreakdown.txtIntersectionType.value = cboIntersectionType.options[frmBreakdown.txtIntersectionType.value].innerText;" & vbCrLf)
+		Response.Write("  document.getElementById('txtDataIntersectionType').value = cboIntersectionType.options[document.getElementById('txtDataIntersectionType').value].innerText;" & vbCrLf)
+		
+		Response.Write("  OpenHR.submitForm(frmBreakdown, null, false);" & vbCrLf)
 
 
 '**************************************
@@ -643,8 +637,8 @@ End If
     Response.Write("</script>" & vbCrLf & vbCrLf)
 %>
 
-<script type="text/javascript">
-
+<script type="text/javascript">	
+	
     function getData(strMode, lngPageNumber, lngIntType, blnShowPer, blnPerPage, blnSupZeros, blnThousand) {
 
         var frmWorkFrame = OpenHR.getFrame("reportworkframe");
@@ -663,7 +657,7 @@ End If
         frmGetData.txtPercentageOfPage.value = blnPerPage;
         frmGetData.txtSuppressZeros.value = blnSupZeros;
         frmGetData.txtUse1000.value = blnThousand;
-        OpenHR.submitForm(frmGetData);
+        OpenHR.submitForm(frmGetData, null, false);
     }
 
     function getBreakdown(lngHor, lngVer, lngPgb, txtIntType, txtCellValue) {
@@ -675,14 +669,14 @@ End If
         frmGetData.txtPgb.value = lngPgb;
         frmGetData.txtIntersectionType.value = txtIntType;
         frmGetData.txtCellValue.value = txtCellValue;
-        OpenHR.submitForm(frmGetData);
+        OpenHR.submitForm(frmGetData, null, false);
     }
 
     function ExportData(strMode) {
         
         var frmGetData = OpenHR.getForm("reportdataframe", "frmGetCrossTabData");
         frmGetData.txtMode.value = strMode;
-        OpenHR.submitForm(frmGetData);
+        OpenHR.submitForm(frmGetData, null, false);
     }
 
 </script>
@@ -698,6 +692,7 @@ End If
     <input type="hidden" id="txtVer" name="txtVer" value="<%=Session("CT_Ver")%>">
     <input type="hidden" id="txtPgb" name="txtPgb" value="<%=Session("CT_Pgb")%>">
     <input type="hidden" id="txtIntersectionType" name="txtIntersectionType" value="<%=Session("CT_IntersectionType")%>">
+	  <input type="hidden" id="txtDataIntersectionType" name="txtDataIntersectionType" value="<%=Session("CT_IntersectionType")%>">
     <input type="hidden" id="txtCellValue" name="txtCellValue" value="<%=Session("CT_CellValue")%>">
     <input type="hidden" id="txtUtilID" name="txtUtilID" value="<%=Session("CT_UtilID")%>">
     <input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="<%=Session("CT_EmailGroupID")%>">

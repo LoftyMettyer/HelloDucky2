@@ -78,7 +78,7 @@
                     
                 },
                 error: function (req, status, errorObj) {
-                    alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
+                    alert("OpenHR.showInReportFrame ajax call to '" + url + "' failed with '" + errorObj + "'.");
                 }
             });
         },

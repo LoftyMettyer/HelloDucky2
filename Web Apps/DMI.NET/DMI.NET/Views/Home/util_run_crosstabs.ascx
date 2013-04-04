@@ -1,13 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<object
-    classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-    id="Microsoft_Licensed_Class_Manager_1_0"
-    viewastext>
-    <param name="LPKPath" value="lpks/main.lpk">
-</object>
-
 <object classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB"
     id="dialog"
     codebase="cabs/comdlg32.cab#Version=1,0,0,0"
@@ -310,13 +303,13 @@
 
 
     Response.Write("<script type=""text/javascript"">" & vbCrLf)
-    Response.Write("  function ssOutputGrid_DblClick() {" & vbCrLf)
+	Response.Write("  function ssOutputGrid_DblClick() {" & vbCrLf)
 
     If objCrossTab.RecordDescExprID = 0 Then
         Response.Write("    OpenHR.messageBox(""Unable to show cell breakdown details as no record description has been set up for the '" & CleanStringForJavaScript(objCrossTab.BaseTableName) & "' table."",64,""Cross Tab Breakdown"");" & vbCrLf)
     Else
         Response.Write("	if (ssOutputGrid.Col > 0) {" & vbCrLf)
-        Response.Write("      frmData = OpenHR.getFrame(""reportdataframe"");" & vbCrLf)
+		Response.Write("      frmData = OpenHR.getFrame(""reportdataframe"");" & vbCrLf)
         Response.Write("      lngPage = 0;" & vbCrLf)
         Response.Write("      if (cboPage.selectedIndex != -1) {" & vbCrLf)
         Response.Write("        lngPage = cboPage.options[cboPage.selectedIndex].Value;" & vbCrLf)
