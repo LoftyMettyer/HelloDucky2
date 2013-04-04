@@ -379,7 +379,7 @@
 								cmdFindWindowTitle = Nothing
 							%>
             </div>
-					<div id="findGridRow" style="position: absolute; height: 80%; left: 20px; right: 20px;">
+					<div id="findGridRow" style="height: <%If Session("parentTableID") > 0 Then%>65%<%Else%>85%<%End If%>; margin-right: 20px; margin-left: 20px;">
 							<%
 								Dim sThousandColumns As String
 								Dim sBlankIfZeroColumns As String
@@ -920,7 +920,8 @@
 							        cmdFindRecords = Nothing
 							    End If
 							%>
-					</div>
+						
+					</div>				
 					<%
 
 						If Len(sErrorDescription) = 0 Then
@@ -994,6 +995,8 @@
 									Dim iRowCount = CLng((iTotalCount + 1) / 2)
 
 									If iTotalCount > 0 Then
+										Response.Write("			<div id='row3' style='margin-top: 25px;'>" & vbCrLf)
+										Response.Write("<table>" & vbCrLf)
 										Response.Write("				<TR height=10>" & vbCrLf)
 										Response.Write("				  <TD colspan=5 height=10></TD>" & vbCrLf)
 										Response.Write("				</TR>" & vbCrLf)
@@ -1099,7 +1102,9 @@
 				Response.Write("				</TR>" & vbCrLf)
 			End If
 		End If
-			
+		Response.Write("</table>" & vbCrLf)
+		Response.Write("</div>" & vbCrLf)
+					
 		' NB. IMPORTANT ADO NOTE.
 		' When calling a stored procedure which returns a recorddim AND has output parameters
 		' you need to close the recorddim and dim it to nothing before using the output parameters. 
