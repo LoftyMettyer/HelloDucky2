@@ -199,24 +199,24 @@
 		version: version,
 		messageBox: messageBox,
 		showPopup: showPopup,
-        getFrame: getFrame,
+		getFrame: getFrame,
 		getForm: getForm,
 		submitForm: submitForm,
 		showInReportFrame: showInReportFrame,
 		addActiveXHandler: addActiveXHandler,
 		refreshMenu: refreshMenu,
 		disableMenu: disableMenu,
-	    LocaleDateFormat: locateDateFormat,
+		LocaleDateFormat: locateDateFormat,
 		LocaleDecimalSeparator: localeDecimalSeparator,
 		LocaleThousandSeparator: localeThousandSeparator,
-		ConvertSQLDateToLocale : convertSqlDateToLocale,
+		ConvertSQLDateToLocale: convertSqlDateToLocale,
 		PrinterCount: printerCount,
 		PrinterName: printerName,
 		GetRegistrySetting: getRegistrySetting,
-	    SaveRegistrySetting: saveRegistrySetting,
-	    ValidateDir: validateDir,
-	    sendMail: SendMail,
-        currentWorkPage: currentWorkPage
+		SaveRegistrySetting: saveRegistrySetting,
+		ValidateDir: validateDir,
+		sendMail: SendMail,
+		currentWorkPage: currentWorkPage
 	};
 
 })(window, jQuery);
