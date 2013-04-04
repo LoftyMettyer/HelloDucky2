@@ -57,7 +57,8 @@ function default_window_onload() {
 			{
 			window.parent.document.all.item("workframeset").cols = "*, 0";	
 			// Get menu.asp to refresh the menu.
-			window.parent.frames("menuframe").refreshMenu();
+			//window.parent.frames("menuframe").refreshMenu();
+			menu_refreshMenu();
 
 			if ("<%=Session("action")%>" == "WORKFLOWOUTOFOFFICE_CHECK")
 			{
