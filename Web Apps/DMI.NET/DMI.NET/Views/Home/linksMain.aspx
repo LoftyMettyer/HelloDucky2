@@ -418,7 +418,7 @@
 									<div class="holidaycontainer" id="HolContainer<%: navlink.id %>"></div>
 									
 								</li>
-								<script type="text/javascript">loadjscssfile('$.getScript("http://abs16090/dmi.net/scripts/widgetscripts/wdg_oHRHoliday.js", function () { initialiseWidget(<%: navlink.id %>, "HolContainer<%: navlink.id %>", 19, ""); });', 'ajax');</script>
+								<script type="text/javascript">loadjscssfile('$.getScript("http://abs16091/dmi.net/scripts/widgetscripts/wdg_oHRHoliday.js", function () { initialiseWidget(<%: navlink.id %>, "HolContainer<%: navlink.id %>", 19, ""); });', 'ajax');</script>
 								<%iRowNum += 1%>
 
 

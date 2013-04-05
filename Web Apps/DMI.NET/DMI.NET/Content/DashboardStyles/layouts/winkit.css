@@ -322,7 +322,16 @@ div.officebar ul li.current .button.disabled a {
 }
 
 div.officetab {
-  background: #BFDBFF url(../../../Scripts/officebar/images/bg.png) repeat-x scroll center top;
+  /*background: #BFDBFF url(../../../Scripts/officebar/images/bg.png) repeat-x scroll center top;*/
+
+	  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#8DB2E3',GradientType=0 );
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFFFFF), to(#8DB2E3));
+  background-image: -webkit-linear-gradient(top, #FFFFFF, #8DB2E3); 
+  background-image:    -moz-linear-gradient(top, #FFFFFF, #8DB2E3);
+  background-image:     -ms-linear-gradient(top, #FFFFFF, #8DB2E3);
+  background-image:      -o-linear-gradient(top, #FFFFFF, #8DB2E3);
+	
+
   overflow: hidden;
   cursor: default;
   position: absolute;
@@ -542,7 +551,15 @@ div.officetab li div.button a {
   height:66px;
 }
 div.officetab li div.button a:hover {
-  background: transparent url(../../../Scripts/officebar/images/button_over.png) no-repeat scroll left top;
+  /*background: transparent url(../../../Scripts/officebar/images/button_over.png) no-repeat scroll left top;*/
+
+	  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#FFD342',GradientType=0 );
+  background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFFFFF), to(#FFD342));
+  background-image: -webkit-linear-gradient(top, #FFFFFF, #FFD342); 
+  background-image:    -moz-linear-gradient(top, #FFFFFF, #FFD342);
+  background-image:     -ms-linear-gradient(top, #FFFFFF, #FFD342);
+  background-image:      -o-linear-gradient(top, #FFFFFF, #FFD342);
+
 	cursor: pointer;
 }
 
