@@ -28,16 +28,16 @@ namespace Fusion.Connector.OpenHR.OutboundBuilders
 
         public FusionMessage Build(SendFusionMessageRequest source)
         {
+            var recordStatus = RecordStatusRescindable.Active;
             Guid docRef = refTranslator.GetBusRef(EntityTranslationNames.Document, source.LocalId);
-
-            LegalDocument doc = DatabaseAccess.readDocument(Convert.ToInt32(source.LocalId));
+            LegalDocument doc = DatabaseAccess.readDocument(Convert.ToInt32(source.LocalId), ref recordStatus);
 
             var xsSubmit = new XmlSerializer(typeof(StaffLegalDocumentChange));
             var subReq = new MessageComponents.StaffLegalDocumentChange();
             subReq.data = new StaffLegalDocumentChangeData
                 {
                     staffLegalDocument = doc,
-                    recordStatus = RecordStatusRescindable.Active,
+                    recordStatus = recordStatus,
                     auditUserName = "OpenHR user"
                 };
 

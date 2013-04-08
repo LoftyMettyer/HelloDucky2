@@ -101,7 +101,7 @@ namespace Fusion
 					try {
 						var message = sl.ReceiveMessage();
 
-                        if (message != null)
+                        if (message != null && message.LocalId != null)
                         {
 
                             var thisBuilder = OutboundBuilderFactory.GetOutboundBuilder(message.MessageType);

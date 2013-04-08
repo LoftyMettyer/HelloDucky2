@@ -13,6 +13,9 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Data
 
         public Staff staff { get; set; }
 
+        [XmlIgnoreAttribute]
+        public bool staffFieldSpecified { get; set; }
+
         [XmlAttribute]
         public string auditUserName { get; set; }
 

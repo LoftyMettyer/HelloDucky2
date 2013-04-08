@@ -37,24 +37,27 @@ namespace Fusion.Connector.OpenHR.OutboundBuilders
 
         public FusionMessage Build(SendFusionMessageRequest source)
         {
-
-            Guid busRef = refTranslator.GetBusRef(EntityTranslationNames.Staff, source.LocalId);
-            var staff = DatabaseAccess.readStaff(Convert.ToInt32(source.LocalId));
+            var recordStatus = RecordStatusRescindable.Active;
+            var busRef = refTranslator.GetBusRef(EntityTranslationNames.Staff, source.LocalId);
+            var staff = DatabaseAccess.readStaff(Convert.ToInt32(source.LocalId), ref recordStatus);
             
             string xml = "";
 
-            XmlSerializer xsSubmit = new XmlSerializer(typeof(StaffChange));
+            var xsSubmit = new XmlSerializer(typeof(StaffChange));
             var subReq = new StaffChange();
 
             subReq.data = new StaffChangeData();
 
             subReq.data.staff = staff;
-            subReq.data.recordStatus = RecordStatusRescindable.Active;
+            subReq.data.recordStatus = recordStatus;
             subReq.data.auditUserName = "OpenHR user";
             subReq.staffRef = busRef.ToString();
 
-            StringWriter sww = new StringWriter();
-            XmlWriter writer = XmlWriter.Create(sww);
+            // Skip staff node if we are deleting/marking as inactive, as the child nodes would make it fail validation.
+            subReq.data.staffFieldSpecified = (recordStatus == RecordStatusRescindable.Active);
+
+            var sww = new StringWriter();
+            var writer = XmlWriter.Create(sww);
             xsSubmit.Serialize(writer, subReq);
             xml = sww.ToString();
 

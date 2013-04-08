@@ -161,7 +161,7 @@ namespace Fusion.Connector.OpenHR.Database
             return null;
         }
 
-        public static LegalDocument readDocument(int localId)
+        public static LegalDocument readDocument(int localId, ref RecordStatusRescindable recordStatus)
         {
 
             using (var c = new SqlConnection(connectionString))
@@ -186,6 +186,7 @@ namespace Fusion.Connector.OpenHR.Database
                     return su;
                 }
 
+                recordStatus = RecordStatusRescindable.Inactive;
                 return null;
             }
         }
@@ -211,14 +212,13 @@ namespace Fusion.Connector.OpenHR.Database
 
         }
 
-        public static Staff readStaff(int localId)
+        public static Staff readStaff(int localId, ref RecordStatusRescindable recordStatus)
         {
             string sQuery = string.Format("SELECT * FROM fusion.staff WHERE StaffID = {0}", localId);
 
             using (var c = new SqlConnection(connectionString))
             {
                 c.Open();
-
 
                 // This uses a technique with the Dapper library
                 // original - semi working, has orrible problems with the homeAddress child node. Possible fix with research, but don't have the time :-(
@@ -230,8 +230,13 @@ namespace Fusion.Connector.OpenHR.Database
                 var custDS = new DataSet();
                 custDA.Fill(custDS, "staff");
 
-
                 var su = new Staff {homeAddress = new Address()};
+
+                if (custDS.Tables["staff"].Rows.Count == 0)
+                {
+                    recordStatus = RecordStatusRescindable.Inactive;
+                    return null;
+                }
 
                 DataRow pRow = custDS.Tables["staff"].Rows[0];
 

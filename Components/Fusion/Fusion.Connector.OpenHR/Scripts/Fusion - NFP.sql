@@ -54,7 +54,7 @@ SELECT ID as [StaffID]
 	, postcode AS [postCode]
 	, ni_number AS [nationalInsuranceNumber]
 	, photograph AS [picture]
-FROM dbo.personnel_records
+FROM dbo.Personnel_Records
 GO
 
 CREATE VIEW [fusion].[staffContract]
