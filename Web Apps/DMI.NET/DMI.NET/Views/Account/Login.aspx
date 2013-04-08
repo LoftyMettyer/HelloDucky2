@@ -12,10 +12,12 @@
     
 	Dim sBrowserInfo As String
 	  
-	' Ensure the database connection object is closed.
-	Dim conX = Session("databaseConnection")
-	conX.Close()
-	conX = Nothing
+    ' Ensure the database connection object is closed.
+    Dim conX = Session("databaseConnection")
+    If Not conX = Nothing Then
+        conX.Close()    
+    End If
+    conX = Nothing
 
 	Session("databaseConnection") = Nothing
 	session("action") = ""
