@@ -20,16 +20,16 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
 
         public string documentReference { get; set; }
 
+        [XmlElementAttribute(IsNullable = true)]
         public string secondaryReference { get; set; }
 
+        [XmlElementAttribute(IsNullable = true)]
         public string requestedBy { get; set; }
 
         [XmlElementAttribute(DataType = "date", IsNullable = true)]
         public DateTime? requestedDate { get; set; }
 
-        [XmlIgnoreAttribute]
-        public bool requestedDateFieldSpecified { get; set; }
-
+        [XmlElementAttribute(IsNullable = true)]
         public string acceptedBy { get; set; }
 
         [XmlElementAttribute(DataType = "date", IsNullable = true)]
@@ -37,6 +37,10 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
 
         [XmlIgnoreAttribute]
         public bool acceptedDateFieldSpecified { get; set; }
+
+        [XmlIgnoreAttribute]
+        public bool requestedDateFieldSpecified { get; set; }
+
 
         [XmlIgnoreAttribute]
         public int? id_Staff { get; set; }

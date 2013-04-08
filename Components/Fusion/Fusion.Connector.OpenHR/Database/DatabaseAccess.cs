@@ -174,7 +174,12 @@ namespace Fusion.Connector.OpenHR.Database
 
                 if (su != null)
                 {
+                    su.documentReference = su.documentReference == "" ? null : su.documentReference;
+                    su.secondaryReference = su.secondaryReference == "" ? null : su.secondaryReference;
+                    su.requestedBy = su.requestedBy == "" ? null : su.requestedBy;
+                    su.acceptedBy = su.acceptedBy == "" ? null : su.acceptedBy;
                     su.acceptedDateFieldSpecified = true;
+                    su.requestedDateFieldSpecified = true;
                     return su;
                 }
 
