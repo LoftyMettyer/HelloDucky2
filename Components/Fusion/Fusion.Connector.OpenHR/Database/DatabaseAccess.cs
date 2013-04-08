@@ -60,6 +60,7 @@ namespace Fusion.Connector.OpenHR.Database
 
                 if (su != null)
                 {
+                    su.department = su.department == "" ? null : su.department;
                     su.effectiveFromSpecified = true;
                     su.effectiveToSpecified = true;
 

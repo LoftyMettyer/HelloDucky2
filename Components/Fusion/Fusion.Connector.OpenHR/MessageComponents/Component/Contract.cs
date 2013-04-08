@@ -7,6 +7,7 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
     {
         public string contractName { get; set; }
 
+        [XmlElement(IsNullable = true)]
         public string department { get; set; }
 
         public string primarySite { get; set; }
