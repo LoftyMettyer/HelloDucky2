@@ -54,6 +54,7 @@ SELECT ID as [StaffID]
 	, postcode AS [postCode]
 	, ni_number AS [nationalInsuranceNumber]
 	, photograph AS [picture]
+
 FROM dbo.Personnel_Records
 GO
 
@@ -163,6 +164,8 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[fusion].[pMessag
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[fusion].[pMessageUpdate_StaffTimesheetSubmission]') AND xtype = 'P')
 	DROP PROCEDURE [fusion].[pMessageUpdate_StaffTimesheetSubmission];
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[fusion].[pMessageUpdate_StaffPictureChange]') AND xtype = 'P')
+	DROP PROCEDURE [fusion].[pMessageUpdate_StaffPictureChange];
 
 GO
 
@@ -403,6 +406,22 @@ END
 
 GO
 
+CREATE PROCEDURE fusion.pMessageUpdate_StaffPictureChange(@ID int OUTPUT
+	, @picture			varbinary(MAX)
+)
+AS
+BEGIN
+
+	DECLARE @photostring varchar(MAX);
+
+	SET @photostring = '<<V002>>2 Embedded Photograph.jpg' + SPACE(367) + convert(varchar(MAX),@picture)
+
+	UPDATE fusion.staff SET picture = convert(varbinary(max), @photostring)
+		WHERE StaffID = @ID;
+
+END
+
+GO
 
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[fusion].[spSendFusionMessage]') AND xtype = 'P')
@@ -422,7 +441,7 @@ BEGIN
 	IF @TableID = 1
 	BEGIN
 		EXEC fusion.[pSendFusionMessageCheckContext] @MessageType='StaffChange', @LocalId=@RecordID;
-	--	EXEC fusion.[pSendFusionMessageCheckContext] @MessageType='StaffPictureChange', @LocalId=@RecordID;
+		EXEC fusion.[pSendFusionMessageCheckContext] @MessageType='StaffPictureChange', @LocalId=@RecordID;
 	END
 
 	-- Address 

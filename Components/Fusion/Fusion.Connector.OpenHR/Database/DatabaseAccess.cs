@@ -31,7 +31,7 @@ namespace Fusion.Connector.OpenHR.Database
                 c.Open();
 
                 Picture su =
-                    c.Query<Picture>(@"SELECT 'JPEG' AS ImageType, picture from Fusion.staff where StaffID = @StaffID",
+                    c.Query<Picture>(@"SELECT 'JPEG' AS ImageType, SUBSTRING(picture,401,datalength(picture)-400) AS picture FROM Fusion.staff where StaffID = @StaffID",
                                      new
                                          {
                                              StaffID = localId
