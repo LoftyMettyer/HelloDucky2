@@ -264,10 +264,11 @@ namespace Fusion.Connector.OpenHR.Database
                     su.startDate = Convert.ToDateTime(custDS.Tables["staff"].Rows[0]["startDate"].ToString());
                 }
 
-                if (!DBNull.Value.Equals(custDS.Tables["staff"].Rows[0]["leavingDate"]))
+
+                su.leavingDateSpecified = true;
+                if (!DBNull.Value.Equals(pRow["leavingDate"]))
                 {
-                    su.leavingDate = Convert.ToDateTime(custDS.Tables["staff"].Rows[0]["leavingDate"].ToString());
-                    su.leavingDateSpecified = true;
+                    su.leavingDate = Convert.ToDateTime(pRow["leavingDate"].ToString());
                 }
 
                 su.leavingReason = pRow["leavingreason"].ToString() == "" ? null : pRow["leavingreason"].ToString();
