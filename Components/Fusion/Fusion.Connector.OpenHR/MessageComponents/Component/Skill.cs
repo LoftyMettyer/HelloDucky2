@@ -13,7 +13,7 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
         [XmlIgnoreAttribute]
         public bool trainingStartSpecified { get; set; }
 
-        [XmlElementAttribute(DataType = "date")]
+        [XmlElementAttribute(DataType = "date", IsNullable = true)]
         public DateTime? trainingEnd { get; set; }
 
         [XmlIgnoreAttribute]
@@ -25,14 +25,16 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
         [XmlIgnoreAttribute]
         public bool validFromSpecified { get; set; }
 
-        [XmlElementAttribute(DataType = "date")]
+        [XmlElementAttribute(DataType = "date", IsNullable = true)]
         public DateTime? validTo { get; set; }
 
         [XmlIgnoreAttribute]
         public bool validToSpecified { get; set; }
 
+        [XmlElementAttribute(IsNullable = true)]
         public string reference { get; set; }
 
+        [XmlElementAttribute(IsNullable = true)]
         public string outcome { get; set; }
 
         [XmlElementAttribute(DataType = "boolean", IsNullable = true)]

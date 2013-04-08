@@ -148,10 +148,13 @@ namespace Fusion.Connector.OpenHR.Database
 
                 if (su != null)
                 {
+                    su.reference = su.reference == "" ? null : su.reference;
+                    su.outcome = su.outcome == "" ? null : su.outcome;
                     su.trainingStartSpecified = true;
                     su.trainingEndSpecified = true;
                     su.validFromSpecified = (su.validFrom.HasValue);
                     su.validToSpecified = true;
+                    su.didNotAttendSpecified = true;
                     return su;
                 }
             }
