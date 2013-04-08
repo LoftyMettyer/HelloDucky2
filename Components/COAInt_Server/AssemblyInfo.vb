@@ -10,10 +10,10 @@ Imports System.Runtime.InteropServices
 ' TODO: Review the values of the assembly attributes
 
 
-<Assembly: AssemblyTitle("COA Intranet Server")>
+<Assembly: AssemblyTitle("HR.Intranet.Server")> 
 <Assembly: AssemblyDescription("")>
 <Assembly: AssemblyCompany("Advanced Business Software and Solutions Limited")>
-<Assembly: AssemblyProduct("COAInt_Server")>
+<Assembly: AssemblyProduct("HR.Intranet.Server")> 
 <Assembly: AssemblyCopyright("Copyright Advanced Business Software and Solutions Limited 2000-2011")>
 <Assembly: AssemblyTrademark("")>
 <Assembly: AssemblyCulture("")>
@@ -31,3 +31,5 @@ Imports System.Runtime.InteropServices
 <Assembly:  AssemblyVersion("1.0.*")>
 
 
+
+<Assembly: ComVisibleAttribute(False)> 

@@ -473,7 +473,7 @@ ErrorTrap:
 		Dim sColumnCode As String
 		Dim rsInfo As ADODB.Recordset
 		Dim asViews() As String
-		Dim avOrderJoinTables() As Object
+    Dim avOrderJoinTables(,) As Object
 		Dim objFilterExpr As clsExprExpression
 		Dim objOrderTableView As CTablePrivilege
 		Dim objTableView As CTablePrivilege

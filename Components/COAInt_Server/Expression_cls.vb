@@ -8,7 +8,7 @@ Option Explicit On
 	Private mlngExpressionID As Integer
 	Private miType As Short
 	Private miReturnType As Short
-	Private mvarPrompts() As Object
+  Private mvarPrompts(,) As Object
 	
 	Public Function Initialise(ByRef plngBaseTableID As Integer, ByRef plngExpressionID As Integer, ByRef piType As Short, ByRef piReturnType As Short) As Boolean
 		' Initialise the expression object.
@@ -252,7 +252,7 @@ ErrorTrap:
 		
 		Dim objExpr As clsExprExpression
 		Dim objComponent As clsExprComponent
-		Dim avSubExpressions() As Object
+    Dim avSubExpressions(,) As Object
 		
 		Dim objParameter As clsExprComponent
 		Dim iNextIndex As Short

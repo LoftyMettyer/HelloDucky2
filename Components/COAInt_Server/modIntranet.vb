@@ -91,42 +91,42 @@ UDFFunctions_ERROR:
 	End Function
 	
 	
-	Public Function GetEmailGroupName(ByRef lngGroupID As Integer) As String
-		
-		Dim datData As clsDataAccess
-		Dim rsTemp As ADODB.Recordset
-		Dim strSQL As String
-		
-		On Error GoTo LocalErr
-		
-		GetEmailGroupName = vbNullString
-		
-		datData = New clsDataAccess
-		
-		strSQL = "SELECT Name FROM ASRSysEmailGroupName " & "WHERE EmailGroupID = " & CStr(lngGroupID)
-		rsTemp = datData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-		
-		With rsTemp
-			If Not .BOF And Not .EOF Then
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				If Not IsDbNull(rsTemp.Fields("Name").Value) Then
-					GetEmailGroupName = rsTemp.Fields("Name").Value
-				End If
-			End If
-		End With
-		
-		rsTemp.Close()
-		
-		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTemp = Nothing
-		'UPGRADE_NOTE: Object datData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		datData = Nothing
-		
-		Exit Function
-		
-LocalErr: 
-		
-	End Function
+  Public Function GetEmailGroupName(ByVal lngGroupID As Integer) As String
+
+    Dim datData As clsDataAccess
+    Dim rsTemp As ADODB.Recordset
+    Dim strSQL As String
+
+    On Error GoTo LocalErr
+
+    GetEmailGroupName = vbNullString
+
+    datData = New clsDataAccess
+
+    strSQL = "SELECT Name FROM ASRSysEmailGroupName " & "WHERE EmailGroupID = " & CStr(lngGroupID)
+    rsTemp = datData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+
+    With rsTemp
+      If Not .BOF And Not .EOF Then
+        'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+        If Not IsDBNull(rsTemp.Fields("Name").Value) Then
+          GetEmailGroupName = rsTemp.Fields("Name").Value
+        End If
+      End If
+    End With
+
+    rsTemp.Close()
+
+    'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rsTemp = Nothing
+    'UPGRADE_NOTE: Object datData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    datData = Nothing
+
+    Exit Function
+
+LocalErr:
+
+  End Function
 	
 	' Encode an string so that it can be displayed correctly
 	' inside the browser.

@@ -8,7 +8,7 @@
     <ProjectGuid>{2AF7F0B5-431D-4892-B0B1-9397C73EBFD7}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <AssemblyName>COAIntServer</AssemblyName>
+    <AssemblyName>HR.Intranet.Server</AssemblyName>
     <OutputType>Library</OutputType>
     <StartupObject>COAIntServer.modIntranet</StartupObject>
     <AssemblyMajorVersion>1</AssemblyMajorVersion>
@@ -17,10 +17,10 @@
     <GenerateRevisionNumber>True</GenerateRevisionNumber>
     <AssemblyCompanyName>Advanced Business Software and Solutions Limited</AssemblyCompanyName>
     <StartWithIE>False</StartWithIE>
-    <RootNamespace>COAIntServer</RootNamespace>
+    <RootNamespace>HR.Intranet.Server</RootNamespace>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -43,10 +43,11 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>.\bin\</OutputPath>
-    <DocumentationFile>COAIntServer.xml</DocumentationFile>
+    <DocumentationFile>HR.Intranet.Server.xml</DocumentationFile>
     <DebugSymbols>True</DebugSymbols>
     <DefineDebug>True</DefineDebug>
     <DefineTrace>True</DefineTrace>
@@ -57,7 +58,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>.\bin\</OutputPath>
-    <DocumentationFile>COAIntServer.xml</DocumentationFile>
+    <DocumentationFile>HR.Intranet.Server.xml</DocumentationFile>
     <DebugSymbols>False</DebugSymbols>
     <DefineDebug>False</DefineDebug>
     <DefineTrace>True</DefineTrace>
@@ -67,6 +68,15 @@
     <DebugType>none</DebugType>
   </PropertyGroup>
   <ItemGroup>
+    <COMReference Include="VBA">
+      <Guid>{000204EF-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>6</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>9</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
     <Reference Include="Microsoft.VisualBasic.Compatibility">
       <Name>Microsoft.VisualBasic.Compatibility</Name>
     </Reference>
@@ -138,78 +148,17 @@
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="_UpgradeReport.htm">
-      <SubType>Preview</SubType>
-    </None>
-    <Compile Include="AbsenceBreakdown.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="AssemblyInfo.vb" />
-    <Compile Include="clsAbsenceCalendar.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsBankHoliday.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsBankHolidays.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsCalendarEvent.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsCalendarEvents.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsCalendarReports.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsChart.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsCrypt.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsDiary.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsEncryption.vb">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="clsChart.vb" />
     <Compile Include="clsEventLog.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="clsMultiAxisChart.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsNavigationLink.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsNavigationLinks.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsOLE.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsOutlookLinks.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsResetPassword.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsSettings.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="clsTodaysAbsence.vb">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="clsNavigationLink.vb" />
+    <Compile Include="clsNavigationLinks.vb" />
+    <Compile Include="clsSettings.vb" />
     <Compile Include="ColumnPrivilege.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ColumnPrivileges.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CrossTab.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CustomReportsRUN.vb">
@@ -260,19 +209,8 @@
     <Compile Include="General.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MailMerge.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Menu.vb">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Menu.vb" />
     <Compile Include="modAbsenceSpecifics.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="modBankHolidaySpecifics.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="modFileSecurity.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="modIntranet.vb">
@@ -287,16 +225,10 @@
     <Compile Include="modSettings.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="modTrainingBookingSpecifics.vb">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="modUtilAccessLog.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="modUtilityAccess.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="StandardReports.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TablePrivilege.vb">
@@ -308,9 +240,12 @@
     <Compile Include="UI.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utilities.vb">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Utilities.vb" />
+    <None Include="app.config" />
+    <None Include="_UpgradeReport.htm">
+      <SubType>Preview</SubType>
+    </None>
+    <Compile Include="AssemblyInfo.vb" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="My Project\" />

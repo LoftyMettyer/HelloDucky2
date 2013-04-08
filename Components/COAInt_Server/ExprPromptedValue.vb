@@ -1,5 +1,7 @@
 Option Strict Off
 Option Explicit On
+
+Imports Microsoft.VisualBasic.PowerPacks.Printing.Compatibility.VB6
 Imports VB = Microsoft.VisualBasic
 Friend Class clsExprPromptedValue
 	

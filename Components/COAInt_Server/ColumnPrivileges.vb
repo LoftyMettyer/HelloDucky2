@@ -9,47 +9,51 @@ Friend Class CColumnPrivileges
 	
 	Public Function IsValid(ByRef pvIndexKey As Object) As Boolean
 		' Return TRUE if the given column exists in the collection.
-		Dim Item As CColumnPrivilege
+    'Dim Item As CColumnPrivilege
 		
-		On Error GoTo err_IsValid
+    'On Error GoTo err_IsValid
 		
-		Item = mCol.Item(pvIndexKey)
-		IsValid = True
+    'Item = mCol.Item(pvIndexKey)
+    '	IsValid = True
 		'UPGRADE_NOTE: Object Item may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		Item = Nothing
-		
-		Exit Function
-		
-err_IsValid: 
-		IsValid = False
-		
-	End Function
+    '		Item = Nothing
+
+
+    IsValid = mCol.Contains(pvIndexKey)
+
+
+    Exit Function
+
+err_IsValid:
+    IsValid = False
+
+  End Function
 	
 	
 	
-	Public Function Add(ByRef pfSelect As Boolean, ByRef pfUpdate As Boolean, ByRef psColumnName As String, ByRef piColumnType As Short, ByRef piDataType As Short, ByRef plngColumnID As Integer, ByRef pfUniqueCheck As Boolean) As CColumnPrivilege
-		'create a new object
-		Dim objNewMember As CColumnPrivilege
-		objNewMember = New CColumnPrivilege
-		
-		With objNewMember
-			.ColumnName = psColumnName
-			.AllowSelect = pfSelect
-			.AllowUpdate = pfUpdate
-			.ColumnType = piColumnType
-			.DataType = piDataType
-			.ColumnID = plngColumnID
-			.UniqueCheck = pfUniqueCheck
-		End With
-		
-		mCol.Add(objNewMember, psColumnName)
-		
-		'return the object created
-		Add = objNewMember
-		'UPGRADE_NOTE: Object objNewMember may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objNewMember = Nothing
-		
-	End Function
+  Public Function Add(ByVal pfSelect As Boolean, ByVal pfUpdate As Boolean, ByVal psColumnName As String, ByVal piColumnType As Short, ByVal piDataType As Short, ByVal plngColumnID As Integer, ByVal pfUniqueCheck As Boolean) As CColumnPrivilege
+    'create a new object
+    Dim objNewMember As CColumnPrivilege
+    objNewMember = New CColumnPrivilege
+
+    With objNewMember
+      .ColumnName = psColumnName
+      .AllowSelect = pfSelect
+      .AllowUpdate = pfUpdate
+      .ColumnType = piColumnType
+      .DataType = piDataType
+      .ColumnID = plngColumnID
+      .UniqueCheck = pfUniqueCheck
+    End With
+
+    mCol.Add(objNewMember, psColumnName)
+
+    'return the object created
+    Add = objNewMember
+    'UPGRADE_NOTE: Object objNewMember may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    objNewMember = Nothing
+
+  End Function
 	
 	Public Function FindColumnID(ByRef plngColumnID As Integer) As CColumnPrivilege
 		' Return the column privilege object with the given column ID.

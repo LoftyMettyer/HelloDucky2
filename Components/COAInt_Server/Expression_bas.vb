@@ -119,10 +119,10 @@ Module modExpression
 	Public Const gsDUMMY_NUMERIC As Short = 1
 	Public Const gsDUMMY_LOGIC As Boolean = True
 	Public Const gsDUMMY_DATE As Date = #1/1/1998#
-	Public Const gsDUMMY_BYREF_CHARACTER As String = Declarations.SQLDataType.sqlVarChar & vbTab & "a"
-	Public Const gsDUMMY_BYREF_NUMERIC As String = Declarations.SQLDataType.sqlNumeric & vbTab & "1"
-	Public Const gsDUMMY_BYREF_LOGIC As String = Declarations.SQLDataType.sqlBoolean & vbTab & "0"
-	Public Const gsDUMMY_BYREF_DATE As String = Declarations.SQLDataType.sqlDate & vbTab & "1/1/1998"
+  Public Const gsDUMMY_BYREF_CHARACTER As String = "12" & vbTab & "a"
+  Public Const gsDUMMY_BYREF_NUMERIC As String = "2" & vbTab & "1"
+  Public Const gsDUMMY_BYREF_LOGIC As String = "-7" & vbTab & "0"
+  Public Const gsDUMMY_BYREF_DATE As String = "11" & vbTab & "1/1/1998"
 	
 	' Order object constants.
 	Public Enum OrderTypes
@@ -758,7 +758,7 @@ ErrorTrap:
 		Dim objExpr As clsExprExpression
 		Dim strRuntimeCode As String
 		Dim strFilterName As String
-		Dim avDummyPrompts() As Object
+    Dim avDummyPrompts(,) As Object
 		
 		On Error GoTo LocalErr
 		
@@ -968,10 +968,10 @@ ErrorTrap:
 						rsExpr = datGeneral.GetRecords(sSQL)
 						Do Until rsExpr.EOF
 							'UPGRADE_WARNING: Couldn't resolve default property of object GetExprField(rsExpr!ExprID, Access). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If HasHiddenComponents(rsExpr.Fields("ExprID")) Or GetExprField(rsExpr.Fields("ExprID").Value, "Access") = ACCESS_HIDDEN Then
-								bHasHiddenComp = True
-								Exit Do
-							End If
+              If HasHiddenComponents(rsExpr.Fields("ExprID").Value) Or GetExprField(rsExpr.Fields("ExprID").Value, "Access") = ACCESS_HIDDEN Then
+                bHasHiddenComp = True
+                Exit Do
+              End If
 							
 							rsExpr.MoveNext()
 						Loop 

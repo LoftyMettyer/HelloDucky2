@@ -43,7 +43,7 @@ Option Explicit On
 	Private mstrOutputFilename As String
 	Private mblnOutputPreview As Boolean
 	
-	Private mvarChildTables() As Object
+  Private mvarChildTables(,) As Object
 	Private miChildTablesCount As Short
 	Private miUsedChildCount As Short
 	
@@ -65,15 +65,16 @@ Option Explicit On
 	Private mrstCustomReportsDetails As New ADODB.Recordset
 	
 	' Classes
-	Private mclsData As clsDataAccess
+  Private mclsData As clsDataAccess
 	Private mclsGeneral As clsGeneral
-	Private mclsUI As clsUI
+  'Private mclsUI As clsUI
 	Private mobjEventLog As clsEventLog
-	
+
+  
 	' TableViewsGuff
 	Private mstrRealSource As String
 	Private mstrBaseTableRealSource As String
-	Private mlngTableViews() As Integer
+  Private mlngTableViews(,) As Integer
 	Private mstrViews() As String
 	Private mobjTableView As CTablePrivilege
 	Private mobjColumnPrivileges As CColumnPrivileges
@@ -87,21 +88,21 @@ Option Explicit On
 	Private mstrSQL As String
 	
 	' Array holding the columns to sort the report by
-	Private mvarSortOrder() As Object
+  Private mvarSortOrder(,) As Object
 	
 	' Array to hold the columns used in the report
-	Dim mvarColDetails() As Object
+  Dim mvarColDetails(,) As Object
 	Dim mstrExcelFormats() As String
-	Dim mvarVisibleColumns() As Object
+  Dim mvarVisibleColumns(,) As Object
 	
 	' Array to hold the column widths used when formatting the grid
-	Dim mlngColWidth() As Integer
+  Dim mlngColWidth() As Integer
 	
 	'Array used to store the 'GroupWithNextColumn' option strings.
-	Private mvarGroupWith() As Object
+  Private mvarGroupWith(,) As Object
 	
 	'Array used to store the 'POC' values when outputting.
-	Private mvarPageBreak() As Object
+  Private mvarPageBreak() As Object
 	Private mblnPageBreak As Boolean
 	Private mintPageBreakRowIndex As Integer
 	
@@ -120,7 +121,7 @@ Option Explicit On
 	Private mvarOutputArray_Definition() As Object
 	Private mvarOutputArray_Columns() As Object
 	Private mvarOutputArray_Data() As Object
-	Private mvarPrompts() As Object
+  Private mvarPrompts(,) As Object
 	
 	' Flags used when populating the grid
 	Private mblnReportHasSummaryInfo As Boolean
@@ -425,7 +426,7 @@ Option Explicit On
 			
 			' Username passed in from the asp page
 			gsUsername = Value
-			
+
 		End Set
 	End Property
 	
@@ -684,24 +685,24 @@ HideColumns_ERROR:
 		
 	End Function
 	
-	Private Function PageBreakValue() As String
-		
-		Dim iPageBreakCount As Short
-		Dim strBreakValue As String
-		
-		strBreakValue = vbNullString
-		
-		For iPageBreakCount = 0 To UBound(mvarPageBreak, 2) Step 1
-			If iPageBreakCount > 0 Then
-				strBreakValue = strBreakValue & " - "
-			End If
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarPageBreak(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			strBreakValue = strBreakValue & CStr(mvarPageBreak(1, iPageBreakCount))
-		Next iPageBreakCount
-		
-		PageBreakValue = strBreakValue
-		
-	End Function
+  'Private Function PageBreakValue() As String
+
+  '	Dim iPageBreakCount As Short
+  '	Dim strBreakValue As String
+
+  '	strBreakValue = vbNullString
+
+  '	For iPageBreakCount = 0 To UBound(mvarPageBreak, 2) Step 1
+  '		If iPageBreakCount > 0 Then
+  '			strBreakValue = strBreakValue & " - "
+  '		End If
+  '		'UPGRADE_WARNING: Couldn't resolve default property of object mvarPageBreak(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+  '		strBreakValue = strBreakValue & CStr(mvarPageBreak(1, iPageBreakCount))
+  '	Next iPageBreakCount
+
+  '	PageBreakValue = strBreakValue
+
+  'End Function
 	
 	Public Function SetPromptedValues(ByRef pavPromptedValues As Object) As Boolean
 		
@@ -785,7 +786,7 @@ ErrorTrap:
 		' Initialise the the classes/arrays to be used
 		mclsData = New clsDataAccess
 		mclsGeneral = New clsGeneral
-		mclsUI = New clsUI
+    'mclsUI = New clsUI
 		mobjEventLog = New clsEventLog
 		ReDim mvarSortOrder(2, 0)
 		ReDim mvarColDetails(25, 0)
@@ -818,7 +819,7 @@ ErrorTrap:
 		'UPGRADE_NOTE: Object mclsGeneral may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mclsGeneral = Nothing
 		'UPGRADE_NOTE: Object mclsUI may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mclsUI = Nothing
+    'mclsUI = Nothing
 		'UPGRADE_NOTE: Object mobjEventLog may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mobjEventLog = Nothing
 		' JPD20030313 Do not drop the tables & columns collections as they can be reused.
@@ -1542,7 +1543,7 @@ GetDetailsRecordsets_ERROR:
 		
 		Dim blnOK As Boolean
 		Dim sCalcCode As String
-		Dim alngSourceTables() As Integer
+    Dim alngSourceTables(,) As Integer
 		Dim objCalcExpr As clsExprExpression
 		Dim objTableView As CTablePrivilege
 		
@@ -1928,36 +1929,36 @@ GenerateSQLSelect_ERROR:
 		
 	End Function
 	
-	Private Function GetMostChildsForParent(ByRef avChildRecs() As ADODB.Recordset, ByRef iParentCount As Short) As Short
-		
-		Dim i As Short
-		Dim iMostChildRecords As Short
-		Dim iChildRecordCount As Short
-		
-		On Error GoTo Error_Trap
-		
-		iMostChildRecords = 0
-		iChildRecordCount = 0
-		
-		For i = 0 To UBound(avChildRecs, 2) Step 1
-			If (avChildRecs(iParentCount, i).BOF) And (avChildRecs(iParentCount, i).EOF) Then
-				iChildRecordCount = 0
-			Else
-				iChildRecordCount = avChildRecs(iParentCount, i).RecordCount
-			End If
-			If iChildRecordCount > iMostChildRecords Then
-				iMostChildRecords = iChildRecordCount
-			End If
-		Next i
-		
-		GetMostChildsForParent = iMostChildRecords
-		
-		Exit Function
-		
-Error_Trap: 
-		GetMostChildsForParent = 0
-		
-	End Function
+  Private Function GetMostChildsForParent(ByRef avChildRecs(,) As ADODB.Recordset, ByRef iParentCount As Short) As Short
+
+    Dim i As Short
+    Dim iMostChildRecords As Short
+    Dim iChildRecordCount As Short
+
+    On Error GoTo Error_Trap
+
+    iMostChildRecords = 0
+    iChildRecordCount = 0
+
+    For i = 0 To UBound(avChildRecs, 2) Step 1
+      If (avChildRecs(iParentCount, i).BOF) And (avChildRecs(iParentCount, i).EOF) Then
+        iChildRecordCount = 0
+      Else
+        iChildRecordCount = avChildRecs(iParentCount, i).RecordCount
+      End If
+      If iChildRecordCount > iMostChildRecords Then
+        iMostChildRecords = iChildRecordCount
+      End If
+    Next i
+
+    GetMostChildsForParent = iMostChildRecords
+
+    Exit Function
+
+Error_Trap:
+    GetMostChildsForParent = 0
+
+  End Function
 	
 	Private Function OrderBy(ByRef plngTableID As Integer) As Object
 		
@@ -2012,7 +2013,7 @@ Error_Trap:
 		Dim iChildCount As Short
 		Dim rsChild As ADODB.Recordset
 		Dim iParentCount As Short
-		Dim avChildRecordsets() As ADODB.Recordset
+    Dim avChildRecordsets(,) As ADODB.Recordset
 		Dim sChildSelectSQL As String
 		Dim sChildWhereSQL As String
 		Dim iFields As Short
@@ -2624,7 +2625,7 @@ GenerateSQLJoin_ERROR:
 		Dim objColumnPrivileges As CColumnPrivileges
 		Dim pobjOrderCol As CTablePrivilege
 		Dim objTableView As CTablePrivilege
-		Dim alngTableViews() As Integer
+    Dim alngTableViews(,) As Integer
 		Dim asViews() As String
 		Dim iTempCounter As Short
 		
@@ -3218,27 +3219,27 @@ GenerateSQLOrderBy_ERROR:
 		
 	End Function
 	
-	Private Function GetTableIDFromColumn(ByRef lngColumnID As Integer) As Integer
-		
-		' Purpose : To return the table id for which the given column belongs
-		
-		Dim rsInfo As ADODB.Recordset
-		Dim strSQL As String
-		
-		strSQL = "SELECT ASRSysTables.TableID " & "FROM ASRSysColumns JOIN ASRSysTables " & "ON (ASRSysTables.TableID = ASRSysColumns.TableID) " & "WHERE ColumnID = " & CStr(lngColumnID)
-		
-		rsInfo = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-		
-		If rsInfo.BOF And rsInfo.EOF Then
-			GetTableIDFromColumn = 0
-		Else
-			GetTableIDFromColumn = rsInfo.Fields("TableID").Value
-		End If
-		
-		'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsInfo = Nothing
-		
-	End Function
+  Private Function GetTableIDFromColumn(ByVal lngColumnID As Integer) As Integer
+
+    ' Purpose : To return the table id for which the given column belongs
+
+    Dim rsInfo As ADODB.Recordset
+    Dim strSQL As String
+
+    strSQL = "SELECT ASRSysTables.TableID " & "FROM ASRSysColumns JOIN ASRSysTables " & "ON (ASRSysTables.TableID = ASRSysColumns.TableID) " & "WHERE ColumnID = " & CStr(lngColumnID)
+
+    rsInfo = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+
+    If rsInfo.BOF And rsInfo.EOF Then
+      GetTableIDFromColumn = 0
+    Else
+      GetTableIDFromColumn = rsInfo.Fields("TableID").Value
+    End If
+
+    'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rsInfo = Nothing
+
+  End Function
 	
 	Public Function CheckRecordSet() As Boolean
 		
@@ -3309,7 +3310,7 @@ CheckRecordSet_ERROR:
 		Dim pintCharWidth As Short
 		Dim vDisplayData As Object
 		Dim vPreviousData As Object
-		Dim avColumns() As Object
+    Dim avColumns(,) As Object
 		Dim vValue As Object
 		Dim fBreak As Boolean
 		Dim iLoop2 As Short
@@ -3893,212 +3894,212 @@ LoadRecords_ERROR:
 		
 	End Function
 	
-	Private Function AddPageBreakValue(ByRef pintRowIndex As Short, ByRef pvarValue As Object) As Object
-		
-		ReDim Preserve mvarPageBreak(pintRowIndex)
-		'UPGRADE_WARNING: Couldn't resolve default property of object pvarValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarPageBreak(pintRowIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarPageBreak(pintRowIndex) = pvarValue
-		
-	End Function
+  Private Function AddPageBreakValue(ByVal pintRowIndex As Short, ByVal pvarValue As Object) As Object
+
+    ReDim Preserve mvarPageBreak(pintRowIndex)
+    'UPGRADE_WARNING: Couldn't resolve default property of object pvarValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+    'UPGRADE_WARNING: Couldn't resolve default property of object mvarPageBreak(pintRowIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+    mvarPageBreak(pintRowIndex) = pvarValue
+
+  End Function
 	
-	Private Function PopulateGrid_AddToGroupWith(ByRef pstrValue As String, ByRef pintRowIndex As Short, ByRef pintGridColIndex As Short) As Boolean
-		
-		Dim intCount As Short
-		Dim strAddString As String
-		Dim blnNewGroup As Boolean
-		
-		blnNewGroup = False
-		
-		If pintRowIndex > UBound(mvarGroupWith, 2) Then
-			ReDim Preserve mvarGroupWith(1, pintRowIndex)
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarGroupWith(1, pintRowIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarGroupWith(1, pintRowIndex) = 0
-			strAddString = vbNullString
-		ElseIf UBound(mvarGroupWith, 2) = 0 Then 
-			blnNewGroup = True
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarGroupWith(0, pintRowIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			strAddString = mvarGroupWith(0, pintRowIndex)
-		Else
-			blnNewGroup = True
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarGroupWith(0, pintRowIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			strAddString = mvarGroupWith(0, pintRowIndex)
-		End If
-		
-		If blnNewGroup Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarGroupWith(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			strAddString = strAddString & New String(vbTab, pintGridColIndex - mvarGroupWith(1, pintRowIndex)) & pstrValue
-		Else
-			strAddString = strAddString & New String(vbTab, pintGridColIndex) & pstrValue
-		End If
-		
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarGroupWith(0, pintRowIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarGroupWith(0, pintRowIndex) = strAddString
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarGroupWith(1, pintRowIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarGroupWith(1, pintRowIndex) = pintGridColIndex
-		
-		'If len of data is greater than the previous length of data, store len in the array.
-		If (Len(pstrValue)) > mlngColWidth(pintGridColIndex) Then
-			mlngColWidth(pintGridColIndex) = Len(pstrValue)
-		End If
-		
-	End Function
+  Private Function PopulateGrid_AddToGroupWith(ByVal pstrValue As String, ByVal pintRowIndex As Short, ByVal pintGridColIndex As Short) As Boolean
+
+    Dim intCount As Short
+    Dim strAddString As String
+    Dim blnNewGroup As Boolean
+
+    blnNewGroup = False
+
+    If pintRowIndex > UBound(mvarGroupWith, 2) Then
+      ReDim Preserve mvarGroupWith(1, pintRowIndex)
+      'UPGRADE_WARNING: Couldn't resolve default property of object mvarGroupWith(1, pintRowIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      mvarGroupWith(1, pintRowIndex) = 0
+      strAddString = vbNullString
+    ElseIf UBound(mvarGroupWith, 2) = 0 Then
+      blnNewGroup = True
+      'UPGRADE_WARNING: Couldn't resolve default property of object mvarGroupWith(0, pintRowIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      strAddString = mvarGroupWith(0, pintRowIndex)
+    Else
+      blnNewGroup = True
+      'UPGRADE_WARNING: Couldn't resolve default property of object mvarGroupWith(0, pintRowIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      strAddString = mvarGroupWith(0, pintRowIndex)
+    End If
+
+    If blnNewGroup Then
+      'UPGRADE_WARNING: Couldn't resolve default property of object mvarGroupWith(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      strAddString = strAddString & New String(vbTab, pintGridColIndex - mvarGroupWith(1, pintRowIndex)) & pstrValue
+    Else
+      strAddString = strAddString & New String(vbTab, pintGridColIndex) & pstrValue
+    End If
+
+    'UPGRADE_WARNING: Couldn't resolve default property of object mvarGroupWith(0, pintRowIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+    mvarGroupWith(0, pintRowIndex) = strAddString
+    'UPGRADE_WARNING: Couldn't resolve default property of object mvarGroupWith(1, pintRowIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+    mvarGroupWith(1, pintRowIndex) = pintGridColIndex
+
+    'If len of data is greater than the previous length of data, store len in the array.
+    If (Len(pstrValue)) > mlngColWidth(pintGridColIndex) Then
+      mlngColWidth(pintGridColIndex) = Len(pstrValue)
+    End If
+
+  End Function
 	
-	Private Function PopulateGrid_FormatData(ByRef sfieldname As String, ByRef vData As Object, ByRef mbSuppressRepeated As Boolean, ByRef pbNewBaseRecord As Boolean) As Object
-		' Purpose : Format the data to the form the user has specified to see it
-		'           in the grid
-		' Input   : None
-		' Output  : True/False
-		Dim pintLoop As Short
-		Dim strTemp As String
-		Dim iDigitCount As Short
-		Dim iCount As Short
-		
-		Dim vOriginalData As Object
-		
-		'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'UPGRADE_WARNING: Couldn't resolve default property of object vOriginalData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		vOriginalData = vData
-		
-		For pintLoop = 1 To UBound(mvarColDetails, 2)
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			If mvarColDetails(0, pintLoop) = sfieldname Then
-				' Do the DP thing
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(3, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(3, pintLoop) Then ' is numeric
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mvarColDetails(2, pintLoop) <> 0 Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						vData = VB6.Format(vData, "0." & New String("0", mvarColDetails(2, pintLoop)))
-						'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						vData = Replace(vData, ".", mstrLocalDecimalSeparator)
-					Else
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If mvarColDetails(1, pintLoop) > 0 Then 'Size restriction
-							'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If vData = "0" Then
-								'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								vData = VB6.Format(vData, "0")
-							Else
-								'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								vData = VB6.Format(vData, "#")
-							End If
-						End If
-					End If
-				End If
-				
-				' Is it a boolean calculation ? If so, change to Y or N
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(18, pintLoop) Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If vData = "True" Then vData = "Y"
-					'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If vData = "False" Then vData = "N"
-				End If
-				
-				' If its a date column, format it as dateformat
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(17, pintLoop) Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					vData = VB6.Format(vData, mstrClientDateFormat)
-				End If
-				
-				' Numeric digit separators
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(22, pintLoop) Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mvarColDetails(2, pintLoop) <> 0 Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						vData = VB6.Format(vData, "#,0." & New String("0", mvarColDetails(2, pintLoop)))
-					Else
-						'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						vData = VB6.Format(vData, "#,0")
-					End If
-					
-				End If
-				
-				'Check if has decimal places
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarColDetails(1, pintLoop) > 0 Then 'Size restriction
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mvarColDetails(2, pintLoop) > 0 Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If InStr(vData, ".") > mvarColDetails(1, pintLoop) Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							vData = Left(vData, mvarColDetails(1, pintLoop)) & Mid(vData, InStr(vData, "."))
-						End If
-					Else
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If Len(vData) > mvarColDetails(1, pintLoop) Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							vData = Left(vData, mvarColDetails(1, pintLoop))
-						End If
-					End If
-				End If
-				
-				' SRV ?
-				If Not mbIsBradfordIndexReport Then
-					If mbSuppressRepeated = True Then
-						'check if column value should be repeated or not.
-						If Not mvarColDetails(21, pintLoop) And Not pbNewBaseRecord And Not mvarColDetails(10, pintLoop) And Not mvarColDetails(20, pintLoop) Then
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							If CStr(RTrim(IIf(IsDbNull(mvarColDetails(11, pintLoop)), vbNullString, mvarColDetails(11, pintLoop)))) = CStr(RTrim(IIf(IsDbNull(vOriginalData), vbNullString, vOriginalData))) Then
-								'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								vData = ""
-							End If
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(10, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						ElseIf mvarColDetails(10, pintLoop) Then 
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							If CStr(RTrim(IIf(IsDbNull(mvarColDetails(11, pintLoop)), vbNullString, mvarColDetails(11, pintLoop)))) = CStr(RTrim(IIf(IsDbNull(vOriginalData), vbNullString, vOriginalData))) Then
-								'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								vData = ""
-							End If
-						End If
-					End If
-					Exit For
-				Else
-					'Bradford Factor does not use the repetition functionality.
-					If mbSuppressRepeated = True Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(10, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If mvarColDetails(10, pintLoop) Then
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							If CStr(RTrim(IIf(IsDbNull(mvarColDetails(11, pintLoop)), vbNullString, mvarColDetails(11, pintLoop)))) = CStr(RTrim(IIf(IsDbNull(vOriginalData), vbNullString, vOriginalData))) Then
-								'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								vData = ""
-							End If
-						End If
-					End If
-				End If
-				
-			End If
-		Next pintLoop
-		
-		'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-		If Not IsDbNull(vData) Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			vData = Replace(vData, vbNewLine, " ")
-			'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			vData = Replace(vData, vbCr, " ")
-			'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			vData = Replace(vData, vbLf, " ")
-			'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			vData = Replace(vData, vbTab, " ")
-			'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			vData = Replace(vData, Chr(10), "")
-			'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			vData = Replace(vData, Chr(13), "")
-		End If
-		
-		'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'UPGRADE_WARNING: Couldn't resolve default property of object PopulateGrid_FormatData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		PopulateGrid_FormatData = vData
-		
-	End Function
+  Private Function PopulateGrid_FormatData(ByVal sfieldname As String, ByVal vData As Object, ByVal mbSuppressRepeated As Boolean, ByVal pbNewBaseRecord As Boolean) As Object
+    ' Purpose : Format the data to the form the user has specified to see it
+    '           in the grid
+    ' Input   : None
+    ' Output  : True/False
+    Dim pintLoop As Short
+    Dim strTemp As String
+    Dim iDigitCount As Short
+    Dim iCount As Short
+
+    Dim vOriginalData As Object
+
+    'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+    'UPGRADE_WARNING: Couldn't resolve default property of object vOriginalData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+    vOriginalData = vData
+
+    For pintLoop = 1 To UBound(mvarColDetails, 2)
+      'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      If mvarColDetails(0, pintLoop) = sfieldname Then
+        ' Do the DP thing
+        'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(3, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        If mvarColDetails(3, pintLoop) Then ' is numeric
+          'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+          If mvarColDetails(2, pintLoop) <> 0 Then
+            'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            vData = VB6.Format(vData, "0." & New String("0", mvarColDetails(2, pintLoop)))
+            'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            vData = Replace(vData, ".", mstrLocalDecimalSeparator)
+          Else
+            'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            If mvarColDetails(1, pintLoop) > 0 Then 'Size restriction
+              'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+              If vData = "0" Then
+                'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                vData = VB6.Format(vData, "0")
+              Else
+                'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                vData = VB6.Format(vData, "#")
+              End If
+            End If
+          End If
+        End If
+
+        ' Is it a boolean calculation ? If so, change to Y or N
+        'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        If mvarColDetails(18, pintLoop) Then
+          'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+          If vData = "True" Then vData = "Y"
+          'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+          If vData = "False" Then vData = "N"
+        End If
+
+        ' If its a date column, format it as dateformat
+        'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        If mvarColDetails(17, pintLoop) Then
+          'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+          vData = VB6.Format(vData, mstrClientDateFormat)
+        End If
+
+        ' Numeric digit separators
+        'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        If mvarColDetails(22, pintLoop) Then
+          'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+          If mvarColDetails(2, pintLoop) <> 0 Then
+            'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            vData = VB6.Format(vData, "#,0." & New String("0", mvarColDetails(2, pintLoop)))
+          Else
+            'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            vData = VB6.Format(vData, "#,0")
+          End If
+
+        End If
+
+        'Check if has decimal places
+        'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        If mvarColDetails(1, pintLoop) > 0 Then 'Size restriction
+          'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+          If mvarColDetails(2, pintLoop) > 0 Then
+            'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            If InStr(vData, ".") > mvarColDetails(1, pintLoop) Then
+              'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+              'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+              vData = Left(vData, mvarColDetails(1, pintLoop)) & Mid(vData, InStr(vData, "."))
+            End If
+          Else
+            'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            If Len(vData) > mvarColDetails(1, pintLoop) Then
+              'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+              'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+              vData = Left(vData, mvarColDetails(1, pintLoop))
+            End If
+          End If
+        End If
+
+        ' SRV ?
+        If Not mbIsBradfordIndexReport Then
+          If mbSuppressRepeated = True Then
+            'check if column value should be repeated or not.
+            If Not mvarColDetails(21, pintLoop) And Not pbNewBaseRecord And Not mvarColDetails(10, pintLoop) And Not mvarColDetails(20, pintLoop) Then
+              'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+              If CStr(RTrim(IIf(IsDBNull(mvarColDetails(11, pintLoop)), vbNullString, mvarColDetails(11, pintLoop)))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
+                'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                vData = ""
+              End If
+              'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(10, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            ElseIf mvarColDetails(10, pintLoop) Then
+              'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+              If CStr(RTrim(IIf(IsDBNull(mvarColDetails(11, pintLoop)), vbNullString, mvarColDetails(11, pintLoop)))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
+                'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                vData = ""
+              End If
+            End If
+          End If
+          Exit For
+        Else
+          'Bradford Factor does not use the repetition functionality.
+          If mbSuppressRepeated = True Then
+            'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(10, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            If mvarColDetails(10, pintLoop) Then
+              'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+              If CStr(RTrim(IIf(IsDBNull(mvarColDetails(11, pintLoop)), vbNullString, mvarColDetails(11, pintLoop)))) = CStr(RTrim(IIf(IsDBNull(vOriginalData), vbNullString, vOriginalData))) Then
+                'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                vData = ""
+              End If
+            End If
+          End If
+        End If
+
+      End If
+    Next pintLoop
+
+    'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+    If Not IsDBNull(vData) Then
+      'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      vData = Replace(vData, vbNewLine, " ")
+      'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      vData = Replace(vData, vbCr, " ")
+      'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      vData = Replace(vData, vbLf, " ")
+      'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      vData = Replace(vData, vbTab, " ")
+      'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      vData = Replace(vData, Chr(10), "")
+      'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      vData = Replace(vData, Chr(13), "")
+    End If
+
+    'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+    'UPGRADE_WARNING: Couldn't resolve default property of object PopulateGrid_FormatData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+    PopulateGrid_FormatData = vData
+
+  End Function
 	
 	Private Function CheckValueOnChange(ByRef sColName As String) As Boolean
 		
@@ -5103,7 +5104,7 @@ PopulateGrid_DoGrandSummary_ERROR:
 		
 		'  ReDim mvarColDetails(24, 0)
 		ReDim mvarSortOrder(2, 0)
-		ReDim mlngColWidth(1, 0)
+    ReDim mlngColWidth(1)
 		ReDim mvarChildTables(5, 0)
 		
 		' Flags
@@ -5135,41 +5136,7 @@ ClearUp_ERROR:
 		
 	End Function
 	
-	'Private Function InitialiseOutPutFormWithDefaults() As Boolean
-	'
-	'  ' Purpose : To instantiate the output options form and load with
-	'  '           the defaults for the current custom report
-	'
-	'  On Error GoTo InitialiseOutPutFormWithDefaults_ERROR
-	'
-	'  ' Load the output form and hide the page/percentage frame used by MH
-	'  frmOutputOptions.Initialise mfrmOutput, False
-	'
-	'  ' Set the relevant option group button and other options to the defaults
-	'  If mintCustomReportsDefaultOutput = 0 Then
-	'    frmOutputOptions.optOutput(0).Value = True
-	'  Else
-	'    frmOutputOptions.optOutput(1).Value = True
-	'    Select Case mintCustomReportsDefaultExportTo
-	'      Case 0: SetComboText frmOutputOptions.cboExportTo, "Html"
-	'      Case 1: SetComboText frmOutputOptions.cboExportTo, "Microsoft Excel"
-	'      Case 2: SetComboText frmOutputOptions.cboExportTo, "Microsoft Word"
-	'    End Select
-	'    If mblnCustomReportsDefaultSave Then frmOutputOptions.chkSave.Value = vbChecked Else frmOutputOptions.chkSave.Value = vbUnchecked
-	'    If mblnCustomReportsDefaultCloseApp Then frmOutputOptions.chkCloseApplication.Value = vbChecked Else frmOutputOptions.chkCloseApplication.Value = vbUnchecked
-	'    frmOutputOptions.txtFilename.Text = mstrCustomReportsDefaultSaveAs
-	'  End If
-	'
-	'  InitialiseOutPutFormWithDefaults = True
-	'  Exit Function
-	'
-	'InitialiseOutPutFormWithDefaults_ERROR:
-	'
-	'  mstrErrorString = "Error preparing the output option form with defaults." & vbNewLine & "(clsCustomReportsRUN.InitialiseOutPutFormWithDefaults : " & Err.Description & ")"
-	'  InitialiseOutPutFormWithDefaults = False
-	'
-	'End Function
-	
+
 	Private Function IsRecordSelectionValid() As Boolean
 		Dim sSQL As String
 		Dim lCount As Integer

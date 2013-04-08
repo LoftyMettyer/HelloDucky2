@@ -17,11 +17,11 @@ Module modPermissions
 		Dim rsPermissions As ADODB.Recordset
 		Dim objTableView As CTablePrivilege
 		Dim objColumnPrivileges As CColumnPrivileges
-		Dim avChildViews() As Object
+    Dim avChildViews(,) As Object
 		Dim lngNextIndex As Integer
 		'Dim sRoleName As String
 		Dim iTemp As Short
-		Dim avTablePermissions() As Object
+    Dim avTablePermissions(,) As Object
 		Dim iLoop2 As Short
 		Dim sTableName As String
 		Dim sLastTableView As String
@@ -297,7 +297,7 @@ Module modPermissions
 					sLastTableView = UCase(rsInfo.Fields("tableviewname").Value)
 					objColumnPrivileges = New CColumnPrivileges
 					objColumnPrivileges.Tag = rsInfo.Fields("tableviewname").Value
-					gcolColumnPrivilegesCollection.Add(objColumnPrivileges, rsInfo.Fields("tableviewname"))
+          gcolColumnPrivilegesCollection.Add(objColumnPrivileges, rsInfo.Fields("tableviewname").Value)
 				End If
 				
 				' JPD20020926 Fault 3980
@@ -352,9 +352,9 @@ Module modPermissions
 					End If
 					
 					If rsInfo.Fields("Action").Value = 193 Then
-						objColumnPrivileges.Item(rsInfo.Fields("ColumnName")).AllowSelect = rsInfo.Fields("Permission").Value
+            objColumnPrivileges.Item(rsInfo.Fields("ColumnName").Value).AllowSelect = rsInfo.Fields("Permission").Value
 					Else
-						objColumnPrivileges.Item(rsInfo.Fields("ColumnName")).AllowUpdate = rsInfo.Fields("Permission").Value
+            objColumnPrivileges.Item(rsInfo.Fields("ColumnName").Value).AllowUpdate = rsInfo.Fields("Permission").Value
 					End If
 					
 					rsInfo.MoveNext()

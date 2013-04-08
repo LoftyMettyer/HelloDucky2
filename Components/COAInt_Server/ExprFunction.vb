@@ -125,7 +125,7 @@ ErrorTrap:
 		Dim rsInfo As ADODB.Recordset
 		Dim objColumnPrivileges As CColumnPrivileges
 		Dim objTableView As CTablePrivilege
-		Dim asViews() As String
+    Dim asViews(,) As String
 		Dim strRemainString As String
 		Dim strTempTableName As String
 		Dim strTempTableID As String

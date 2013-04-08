@@ -23,18 +23,18 @@ Option Explicit On
 				gADOCon = Value
 			End If
 			
-			'''  Set datData = New clsDataAccess
-			'''  sSQL = "exec sp_helpuser '" & gsUsername & "'"
-			'''  Set rsUser = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
-			'''  If rsUser!GroupName = "db_owner" Then
-			'''    rsUser.MoveNext
-			'''  End If
-			'''  sGroupName = rsUser!GroupName
-			'''  rsUser.Close
-			'''  Set rsUser = Nothing
-			'''  Set datData = Nothing
+      '  Set datData = New clsDataAccess
+      '  sSQL = "exec sp_helpuser '" & gsUsername & "'"
+      '  Set rsUser = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
+      '  If rsUser!GroupName = "db_owner" Then
+      '    rsUser.MoveNext
+      '  End If
+      '  sGroupName = rsUser!GroupName
+      '  rsUser.Close
+      '  Set rsUser = Nothing
+      '  Set datData = Nothing
 			
-			'''  If sGroupName <> gsUserGroup Then
+      '  If sGroupName <> gsUserGroup Then
 			'JPD 20031006 Yes, do drop the tables & columns collections as we want to be sure that
 			'the current users settings are read. HDA encountered a problem where they weren't.
 			' JPD20030313 Do not drop the tables & columns collections as they can be reused.
@@ -42,22 +42,23 @@ Option Explicit On
 			gcoTablePrivileges = Nothing
 			'UPGRADE_NOTE: Object gcolColumnPrivilegesCollection may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			gcolColumnPrivilegesCollection = Nothing
-			'''  End If
+      '  End If
 			
-			'''  gsUserGroup = sGroupName
+      '  gsUserGroup = sGroupName
 			
 			SetupTablesCollection()
 			
 		End Set
 	End Property
-	Public WriteOnly Property Username() As String
-		Set(ByVal Value As String)
-			
-			' Username passed in from the asp page
-			gsUsername = Value
-			
-		End Set
-	End Property
+
+  Public WriteOnly Property Username() As String
+    Set(ByVal value As String)
+
+      ' Username passed in from the asp page
+      gsUsername = value
+
+    End Set
+  End Property
 	
 	Public Function GetHistoryScreens() As Object
 		' Return an array of information that can be used to format the History tables menu for the current user.
@@ -67,7 +68,7 @@ Option Explicit On
 		
 		Dim sSQL As String
 		Dim rsTableScreens As ADODB.Recordset
-		Dim avTableInfo() As Object
+    Dim avTableInfo(,) As Object
 		Dim iNextIndex As Short
 		
 		ReDim avTableInfo(5, 0)
@@ -82,21 +83,21 @@ Option Explicit On
 		rsTableScreens = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockReadOnly)
 		
 		Do While Not rsTableScreens.EOF
-			If gcoTablePrivileges.Item(rsTableScreens.Fields("childTableName")).AllowSelect Then
-				iNextIndex = UBound(avTableInfo, 2) + 1
-				ReDim Preserve avTableInfo(5, iNextIndex)
-				
-				'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(1, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				avTableInfo(1, iNextIndex) = rsTableScreens.Fields("parentScreenID").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(2, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				avTableInfo(2, iNextIndex) = rsTableScreens.Fields("childTableID").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(3, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				avTableInfo(3, iNextIndex) = rsTableScreens.Fields("childTableName").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(4, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				avTableInfo(4, iNextIndex) = rsTableScreens.Fields("childScreenID").Value
-				'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(5, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				avTableInfo(5, iNextIndex) = Replace(rsTableScreens.Fields("childScreenName").Value, "&", "&&")
-			End If
+      If gcoTablePrivileges.Item(rsTableScreens.Fields("childTableName").Value).AllowSelect Then
+        iNextIndex = UBound(avTableInfo, 2) + 1
+        ReDim Preserve avTableInfo(5, iNextIndex)
+
+        'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(1, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        avTableInfo(1, iNextIndex) = rsTableScreens.Fields("parentScreenID").Value
+        'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(2, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        avTableInfo(2, iNextIndex) = rsTableScreens.Fields("childTableID").Value
+        'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(3, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        avTableInfo(3, iNextIndex) = rsTableScreens.Fields("childTableName").Value
+        'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(4, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        avTableInfo(4, iNextIndex) = rsTableScreens.Fields("childScreenID").Value
+        'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(5, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        avTableInfo(5, iNextIndex) = Replace(rsTableScreens.Fields("childScreenName").Value, "&", "&&")
+      End If
 			
 			rsTableScreens.MoveNext()
 		Loop 
@@ -155,7 +156,7 @@ ErrorTrap:
 		Dim rsViewScreen As ADODB.Recordset
 		Dim rsTables As ADODB.Recordset
 		Dim rsTableScreen As ADODB.Recordset
-		Dim avTableInfo() As Object
+    Dim avTableInfo(,) As Object
 		Dim objTableView As CTablePrivilege
 		
 		ReDim avTableInfo(12, 0)
@@ -190,7 +191,7 @@ ErrorTrap:
 			'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(4, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			avTableInfo(4, iNextIndex) = 0
 			'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(5, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			avTableInfo(5, iNextIndex) = gcoTablePrivileges.Item(rsTables.Fields("TableName")).AllowSelect
+      avTableInfo(5, iNextIndex) = gcoTablePrivileges.Item(rsTables.Fields("TableName").Value).AllowSelect
 			'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(6, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			avTableInfo(6, iNextIndex) = 0
 			'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(7, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -295,81 +296,79 @@ ErrorTrap:
 		
 	End Function
 	
-	Public Function GetPrimaryTableSubMenu(ByRef plngTableID As Integer) As Object
-		' Return an array of information that can be used to format the given table's sub-menu
-		' on the Database menu for the current user.
-		' The array contains a row for each screen and view screen.
-		'
-		' For each primary table the following information is given :
-		' screenID    ID of the screen
-		' screenName  Name of the screen
-		' viewID      ID of the view
-		' viewName    Name of the view
-		' screenPictureID ID of the screen's icon
-		Dim iNextIndex As Short
-		Dim sSQL As String
-		Dim sViewList As String
-		Dim rsScreens As ADODB.Recordset
-		Dim avScreenInfo() As Object
-		Dim objTableView As CTablePrivilege
-		Dim sTableName As String
-		
-		' Create an array with records for each screen for each permitted view on the primary table.
-		ReDim avScreenInfo(5, 0)
-		
-		' Create a list of the current user's permitted views on the current table.
-		sViewList = "0"
-		For	Each objTableView In gcoTablePrivileges.Collection
-			If Not (objTableView.IsTable) And (objTableView.TableID = plngTableID) And (objTableView.AllowSelect) Then
-				
-				sViewList = sViewList & ", " & Trim(Str(objTableView.ViewID))
-			End If
-			
-			If (objTableView.IsTable) And (objTableView.TableID = plngTableID) Then
-				
-				sTableName = objTableView.TableName
-			End If
-		Next objTableView
-		'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objTableView = Nothing
-		
-		sSQL = "SELECT ASRSysViewScreens.screenID," & " ASRSysScreens.name," & " ASRSysViews.viewID," & " ASRSysViews.ViewName," & " ASRSysScreens.PictureID" & " FROM ASRSysViews" & " INNER JOIN ASRSysViewScreens ON ASRSysViews.viewID = ASRSysViewScreens.viewID" & " INNER JOIN ASRSysScreens ON ASRSysViewScreens.screenID = ASRSysScreens.screenID" & " WHERE ASRSysViews.viewID IN (" & sViewList & ")"
-		
-		If gcoTablePrivileges.Item(sTableName).AllowSelect Then
-			' The current user does have SELECT permission on the given table, so populate the array
-			' table with records for each screen associated with the primary table.
-			sSQL = sSQL & " UNION" & " SELECT ASRSysScreens.screenID," & " ASRSysScreens.Name," & " 0 AS viewID," & " '' AS viewName," & " ASRSysScreens.pictureID" & " FROM ASRSysScreens" & " WHERE (ASRSysScreens.tableID = " & Trim(Str(plngTableID)) & ")" & " AND ((ASRSysScreens.ssIntranet IS null) OR (ASRSysScreens.ssIntranet = 0))" & " AND ((ASRSysScreens.quickEntry IS null) OR (ASRSysScreens.quickEntry = 0))"
-		End If
-		
-		sSQL = sSQL & " ORDER BY ASRSysScreens.name DESC, viewName DESC"
-		
-		rsScreens = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-		Do While Not rsScreens.EOF
-			iNextIndex = UBound(avScreenInfo, 2) + 1
-			ReDim Preserve avScreenInfo(5, iNextIndex)
-			'UPGRADE_WARNING: Couldn't resolve default property of object avScreenInfo(1, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			avScreenInfo(1, iNextIndex) = rsScreens.Fields("ScreenID").Value
-			'UPGRADE_WARNING: Couldn't resolve default property of object avScreenInfo(2, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			avScreenInfo(2, iNextIndex) = Replace(rsScreens.Fields("Name").Value, "&", "&&")
-			'UPGRADE_WARNING: Couldn't resolve default property of object avScreenInfo(3, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			avScreenInfo(3, iNextIndex) = rsScreens.Fields("ViewID").Value
-			'UPGRADE_WARNING: Couldn't resolve default property of object avScreenInfo(4, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			avScreenInfo(4, iNextIndex) = rsScreens.Fields("ViewName").Value
-			'UPGRADE_WARNING: Couldn't resolve default property of object avScreenInfo(5, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			avScreenInfo(5, iNextIndex) = rsScreens.Fields("pictureID").Value
-			
-			rsScreens.MoveNext()
-		Loop 
-		rsScreens.Close()
-		'UPGRADE_NOTE: Object rsScreens may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsScreens = Nothing
-		
-		'UPGRADE_WARNING: Couldn't resolve default property of object GetPrimaryTableSubMenu. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		GetPrimaryTableSubMenu = VB6.CopyArray(avScreenInfo)
-		
-	End Function
-	
-	
+  Public Function GetPrimaryTableSubMenu(ByVal plngTableID As Integer) As Object
+    ' Return an array of information that can be used to format the given table's sub-menu
+    ' on the Database menu for the current user.
+    ' The array contains a row for each screen and view screen.
+    '
+    ' For each primary table the following information is given :
+    ' screenID    ID of the screen
+    ' screenName  Name of the screen
+    ' viewID      ID of the view
+    ' viewName    Name of the view
+    ' screenPictureID ID of the screen's icon
+    Dim iNextIndex As Short
+    Dim sSQL As String
+    Dim sViewList As String
+    Dim rsScreens As ADODB.Recordset
+    Dim avScreenInfo(,) As Object
+    Dim objTableView As CTablePrivilege
+    Dim sTableName As String
+
+    ' Create an array with records for each screen for each permitted view on the primary table.
+    ReDim avScreenInfo(5, 0)
+
+    ' Create a list of the current user's permitted views on the current table.
+    sViewList = "0"
+    For Each objTableView In gcoTablePrivileges.Collection
+      If Not (objTableView.IsTable) And (objTableView.TableID = plngTableID) And (objTableView.AllowSelect) Then
+
+        sViewList = sViewList & ", " & Trim(Str(objTableView.ViewID))
+      End If
+
+      If (objTableView.IsTable) And (objTableView.TableID = plngTableID) Then
+
+        sTableName = objTableView.TableName
+      End If
+    Next objTableView
+    'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    objTableView = Nothing
+
+    sSQL = "SELECT ASRSysViewScreens.screenID," & " ASRSysScreens.name," & " ASRSysViews.viewID," & " ASRSysViews.ViewName," & " ASRSysScreens.PictureID" & " FROM ASRSysViews" & " INNER JOIN ASRSysViewScreens ON ASRSysViews.viewID = ASRSysViewScreens.viewID" & " INNER JOIN ASRSysScreens ON ASRSysViewScreens.screenID = ASRSysScreens.screenID" & " WHERE ASRSysViews.viewID IN (" & sViewList & ")"
+
+    If gcoTablePrivileges.Item(sTableName).AllowSelect Then
+      ' The current user does have SELECT permission on the given table, so populate the array
+      ' table with records for each screen associated with the primary table.
+      sSQL = sSQL & " UNION" & " SELECT ASRSysScreens.screenID," & " ASRSysScreens.Name," & " 0 AS viewID," & " '' AS viewName," & " ASRSysScreens.pictureID" & " FROM ASRSysScreens" & " WHERE (ASRSysScreens.tableID = " & Trim(Str(plngTableID)) & ")" & " AND ((ASRSysScreens.ssIntranet IS null) OR (ASRSysScreens.ssIntranet = 0))" & " AND ((ASRSysScreens.quickEntry IS null) OR (ASRSysScreens.quickEntry = 0))"
+    End If
+
+    sSQL = sSQL & " ORDER BY ASRSysScreens.name DESC, viewName DESC"
+
+    rsScreens = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+    Do While Not rsScreens.EOF
+      iNextIndex = UBound(avScreenInfo, 2) + 1
+      ReDim Preserve avScreenInfo(5, iNextIndex)
+      'UPGRADE_WARNING: Couldn't resolve default property of object avScreenInfo(1, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      avScreenInfo(1, iNextIndex) = rsScreens.Fields("ScreenID").Value
+      'UPGRADE_WARNING: Couldn't resolve default property of object avScreenInfo(2, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      avScreenInfo(2, iNextIndex) = Replace(rsScreens.Fields("Name").Value, "&", "&&")
+      'UPGRADE_WARNING: Couldn't resolve default property of object avScreenInfo(3, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      avScreenInfo(3, iNextIndex) = rsScreens.Fields("ViewID").Value
+      'UPGRADE_WARNING: Couldn't resolve default property of object avScreenInfo(4, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      avScreenInfo(4, iNextIndex) = rsScreens.Fields("ViewName").Value
+      'UPGRADE_WARNING: Couldn't resolve default property of object avScreenInfo(5, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      avScreenInfo(5, iNextIndex) = rsScreens.Fields("pictureID").Value
+
+      rsScreens.MoveNext()
+    Loop
+    rsScreens.Close()
+    'UPGRADE_NOTE: Object rsScreens may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rsScreens = Nothing
+
+    'UPGRADE_WARNING: Couldn't resolve default property of object GetPrimaryTableSubMenu. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+    GetPrimaryTableSubMenu = VB6.CopyArray(avScreenInfo)
+
+  End Function
 	
 	Public Function GetTableScreens() As Object
 		' Return an array of information that can be used to format the Lookup tables menu for the current user.
@@ -380,7 +379,7 @@ ErrorTrap:
 		Dim sSQL As String
 		Dim rsTableScreens As ADODB.Recordset
 		Dim rsPermissions As ADODB.Recordset
-		Dim avTableInfo() As Object
+    Dim avTableInfo(,) As Object
 		Dim iNextIndex As Short
 		
 		ReDim avTableInfo(3, 0)
@@ -445,7 +444,7 @@ ErrorTrap:
 	Public Function GetQuickEntryScreens() As Object
 		Dim sSQL As String
 		Dim rsScreens As ADODB.Recordset
-		Dim avTableInfo() As Object
+    Dim avTableInfo(,) As Object
 		Dim iNextIndex As Short
 		
 		ReDim avTableInfo(3, 0)
@@ -459,22 +458,22 @@ ErrorTrap:
 		
 		Do While Not rsScreens.EOF
 			'First see if we have privileges to see this table
-			If gcoTablePrivileges.Item(rsScreens.Fields("TableName")).AllowSelect Then
-				
-				' Check that the current user has 'select' permission on at least one parent table,
-				' or at least one view of one parent table referenced by the quick entry screen.
-				If ViewQuickEntry(rsScreens.Fields("ScreenID").Value) Then
-					iNextIndex = UBound(avTableInfo, 2) + 1
-					ReDim Preserve avTableInfo(3, iNextIndex)
-					
-					'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(1, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					avTableInfo(1, iNextIndex) = rsScreens.Fields("TableID").Value
-					'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(2, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					avTableInfo(2, iNextIndex) = Replace(rsScreens.Fields("Name").Value, "&", "&&")
-					'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(3, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					avTableInfo(3, iNextIndex) = rsScreens.Fields("ScreenID").Value
-				End If
-			End If
+      If gcoTablePrivileges.Item(rsScreens.Fields("TableName").Value).AllowSelect Then
+
+        ' Check that the current user has 'select' permission on at least one parent table,
+        ' or at least one view of one parent table referenced by the quick entry screen.
+        If ViewQuickEntry(rsScreens.Fields("ScreenID").Value) Then
+          iNextIndex = UBound(avTableInfo, 2) + 1
+          ReDim Preserve avTableInfo(3, iNextIndex)
+
+          'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(1, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+          avTableInfo(1, iNextIndex) = rsScreens.Fields("TableID").Value
+          'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(2, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+          avTableInfo(2, iNextIndex) = Replace(rsScreens.Fields("Name").Value, "&", "&&")
+          'UPGRADE_WARNING: Couldn't resolve default property of object avTableInfo(3, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+          avTableInfo(3, iNextIndex) = rsScreens.Fields("ScreenID").Value
+        End If
+      End If
 			rsScreens.MoveNext()
 		Loop 
 		
@@ -485,100 +484,98 @@ ErrorTrap:
 		GetQuickEntryScreens = VB6.CopyArray(avTableInfo)
 		
 	End Function
-	
-	
-	Private Function ViewQuickEntry(ByRef plngScreenID As Integer) As Boolean
-		' Return TRUE if the current user can see at least one parent table (or view of a parent table)
-		' of given quick view screen.
-		On Error GoTo ErrorTrap
-		
-		Dim fCanView As Boolean
-		Dim rsTables As ADODB.Recordset
-		Dim rsViews As ADODB.Recordset
-		
-		fCanView = False
-		
-		' Get the list of parent tables used in the quick entry screen.
-		rsTables = GetQuickEntryTables(plngScreenID)
-		
-		With rsTables
-			If (.EOF And .BOF) Then
-				fCanView = True
-			End If
-			
-			' Loop through parent tables, seeing if we have select permissions on these tables.
-			Do While (Not .EOF) And (Not fCanView)
-				' Check if the current user has 'select' permission on the given table.
-				If gcoTablePrivileges.Item(.Fields("TableName")).AllowSelect Then
-					fCanView = True
-				Else
-					' No select permissions, can we use a view instead ???
-					rsViews = GetQuickEntryViews(.Fields("TableID").Value)
-					
-					'Loop through the views, and see if we have permission on these
-					Do While (Not rsViews.EOF) And (Not fCanView)
-						If gcoTablePrivileges.Item(rsViews.Fields("ViewName")).AllowSelect Then
-							'We have a view we can use, let's get outta here
-							fCanView = True
-						End If
-						
-						rsViews.MoveNext()
-					Loop 
-					rsViews.Close()
-					'UPGRADE_NOTE: Object rsViews may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-					rsViews = Nothing
-				End If
-				
-				.MoveNext()
-			Loop 
-			.Close()
-		End With
-		'UPGRADE_NOTE: Object rsTables may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTables = Nothing
-		
-		ViewQuickEntry = fCanView
-		Exit Function
-		
-ErrorTrap: 
-		If Err.Number = 457 Then
-			Resume Next
-		End If
-		
-	End Function
-	
-	
-	Public Function GetQuickEntryTables(ByRef plngScreenID As Integer) As ADODB.Recordset
-		' Return a recordset of all the table id's of the controls which aren't related to the base table
-		' in the given screen.
-		Dim sSQL As String
-		Dim rsTemp As ADODB.Recordset
-		
-		sSQL = "exec sp_ASRGetQuickEntryTables " & plngScreenID
-		rsTemp = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-		GetQuickEntryTables = rsTemp
-		
-	End Function
-	Public Function GetQuickEntryViews(ByRef plngTableID As Integer) As ADODB.Recordset
-		' Return a recordset of the user defined views on the given table.
-		Dim sSQL As String
-		Dim rsViews As ADODB.Recordset
-		
-		sSQL = "SELECT viewID, viewName" & " FROM ASRSysViews" & " WHERE viewTableID = " & Trim(Str(plngTableID))
-		rsViews = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-		GetQuickEntryViews = rsViews
-		
-	End Function
+
+  Private Function ViewQuickEntry(ByVal plngScreenID As Integer) As Boolean
+    ' Return TRUE if the current user can see at least one parent table (or view of a parent table)
+    ' of given quick view screen.
+    On Error GoTo ErrorTrap
+
+    Dim fCanView As Boolean
+    Dim rsTables As ADODB.Recordset
+    Dim rsViews As ADODB.Recordset
+
+    fCanView = False
+
+    ' Get the list of parent tables used in the quick entry screen.
+    rsTables = GetQuickEntryTables(plngScreenID)
+
+    With rsTables
+      If (.EOF And .BOF) Then
+        fCanView = True
+      End If
+
+      ' Loop through parent tables, seeing if we have select permissions on these tables.
+      Do While (Not .EOF) And (Not fCanView)
+        ' Check if the current user has 'select' permission on the given table.
+        If gcoTablePrivileges.Item(.Fields("TableName").Value).AllowSelect Then
+          fCanView = True
+        Else
+          ' No select permissions, can we use a view instead ???
+          rsViews = GetQuickEntryViews(.Fields("TableID").Value)
+
+          'Loop through the views, and see if we have permission on these
+          Do While (Not rsViews.EOF) And (Not fCanView)
+            If gcoTablePrivileges.Item(rsViews.Fields("ViewName")).AllowSelect Then
+              'We have a view we can use, let's get outta here
+              fCanView = True
+            End If
+
+            rsViews.MoveNext()
+          Loop
+          rsViews.Close()
+          'UPGRADE_NOTE: Object rsViews may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+          rsViews = Nothing
+        End If
+
+        .MoveNext()
+      Loop
+      .Close()
+    End With
+    'UPGRADE_NOTE: Object rsTables may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rsTables = Nothing
+
+    ViewQuickEntry = fCanView
+    Exit Function
+
+ErrorTrap:
+    If Err.Number = 457 Then
+      Resume Next
+    End If
+
+  End Function
+
+  Public Function GetQuickEntryTables(ByVal plngScreenID As Integer) As ADODB.Recordset
+    ' Return a recordset of all the table id's of the controls which aren't related to the base table
+    ' in the given screen.
+    Dim sSQL As String
+    Dim rsTemp As ADODB.Recordset
+
+    sSQL = "exec sp_ASRGetQuickEntryTables " & plngScreenID
+    rsTemp = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+    GetQuickEntryTables = rsTemp
+
+  End Function
+
+  Public Function GetQuickEntryViews(ByVal plngTableID As Integer) As ADODB.Recordset
+    ' Return a recordset of the user defined views on the given table.
+    Dim sSQL As String
+    Dim rsViews As ADODB.Recordset
+
+    sSQL = "SELECT viewID, viewName" & " FROM ASRSysViews" & " WHERE viewTableID = " & Trim(Str(plngTableID))
+    rsViews = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+    GetQuickEntryViews = rsViews
+
+  End Function
 	
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Initialize_Renamed()
-		mclsData = New clsDataAccess
-		
+		mclsData = New clsDataAccess		
 	End Sub
-	Public Sub New()
-		MyBase.New()
-		Class_Initialize_Renamed()
-	End Sub
-	
+
+  Public Sub New()
+    MyBase.New()
+    Class_Initialize_Renamed()
+  End Sub
 	
 	'UPGRADE_NOTE: Class_Terminate was upgraded to Class_Terminate_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Terminate_Renamed()
@@ -586,8 +583,9 @@ ErrorTrap:
 		mclsData = Nothing
 		
 	End Sub
-	Protected Overrides Sub Finalize()
-		Class_Terminate_Renamed()
-		MyBase.Finalize()
-	End Sub
+
+  Protected Overrides Sub Finalize()
+    Class_Terminate_Renamed()
+    MyBase.Finalize()
+  End Sub
 End Class

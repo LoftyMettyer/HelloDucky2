@@ -165,7 +165,7 @@ UDFFunctions_ERROR:
 		' Return a string describing the record IDs from the given table
 		' that satisfy the given criteria.
 		Dim sIDSQL As String
-		Dim avPrompts() As Object
+    Dim avPrompts(,) As Object
 		Dim iDataType As Short
 		Dim lngComponentID As Integer
 		Dim iLoop As Short
@@ -289,7 +289,7 @@ UDFFunctions_ERROR:
 	End Property
 	
 	Public Function GetPictures(ByRef plngScreenID As Integer, ByRef psTempPath As String) As Object
-		Dim avPictures() As Object
+    Dim avPictures(,) As Object
 		Dim sSQL As String
 		Dim rsTemp As ADODB.Recordset
 		Dim sFileName As String
@@ -381,70 +381,70 @@ UDFFunctions_ERROR:
 		
 	End Function
 	
-	Private Function LoadScreenControlPicture(ByRef plngPictureID As Integer, ByRef psTempPath As String, ByRef psName As String) As String
-		' Read the given picture from the database.
-		On Error GoTo ErrorTrap
-		
-		Dim iFragments As Short
-		Dim iTempFile As Short
-		Dim lngOffset As Integer
-		Dim lngPictureSize As Integer
-		Dim sTempName As String
-		Dim sPictureFile As String
-		Dim bytChunks() As Byte
-		Dim rsPictures As ADODB.Recordset
-		Dim sSQL As String
-		
-		Const conChunkSize As Short = 2 ^ 14
-		
-		sPictureFile = ""
-		
-		sSQL = "SELECT picture" & " FROM ASRSysPictures" & " WHERE pictureID = " & Trim(Str(plngPictureID))
-		rsPictures = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-		
-		With rsPictures
-			If Not (.BOF And .EOF) Then
-				.MoveFirst()
-				
-				'sTempName = GetFileName(psTempPath, psName)
-				sTempName = psTempPath & "\" & psName
-				
-				iTempFile = 1
-				FileOpen(iTempFile, sTempName, OpenMode.Binary, OpenAccess.Write)
-				
-				lngPictureSize = .Fields("Picture").ActualSize
-				iFragments = lngPictureSize Mod conChunkSize
-				
-				ReDim bytChunks(iFragments)
-				
-				Do While lngOffset < lngPictureSize
-					'UPGRADE_WARNING: Couldn't resolve default property of object rsPictures!Picture.GetChunk(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					bytChunks = .Fields("Picture").GetChunk(conChunkSize)
-					lngOffset = lngOffset + conChunkSize
-					'UPGRADE_WARNING: Put was upgraded to FilePut and has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
-					FilePut(iTempFile, bytChunks)
-				Loop 
-				
-				FileClose(iTempFile)
-				
-				sPictureFile = sTempName
-			End If
-			
-			.Close()
-		End With
-		'UPGRADE_NOTE: Object rsPictures may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsPictures = Nothing
-		
-TidyUpAndExit: 
-		
-		LoadScreenControlPicture = sPictureFile
-		Exit Function
-		
-ErrorTrap: 
-		sPictureFile = Err.Description
-		Resume TidyUpAndExit
-		
-	End Function
+  Private Function LoadScreenControlPicture(ByVal plngPictureID As Integer, ByVal psTempPath As String, ByVal psName As String) As String
+    ' Read the given picture from the database.
+    On Error GoTo ErrorTrap
+
+    Dim iFragments As Short
+    Dim iTempFile As Short
+    Dim lngOffset As Integer
+    Dim lngPictureSize As Integer
+    Dim sTempName As String
+    Dim sPictureFile As String
+    Dim bytChunks() As Byte
+    Dim rsPictures As ADODB.Recordset
+    Dim sSQL As String
+
+    Const conChunkSize As Short = 2 ^ 14
+
+    sPictureFile = ""
+
+    sSQL = "SELECT picture" & " FROM ASRSysPictures" & " WHERE pictureID = " & Trim(Str(plngPictureID))
+    rsPictures = mclsData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+
+    With rsPictures
+      If Not (.BOF And .EOF) Then
+        .MoveFirst()
+
+        'sTempName = GetFileName(psTempPath, psName)
+        sTempName = psTempPath & "\" & psName
+
+        iTempFile = 1
+        FileOpen(iTempFile, sTempName, OpenMode.Binary, OpenAccess.Write)
+
+        lngPictureSize = .Fields("Picture").ActualSize
+        iFragments = lngPictureSize Mod conChunkSize
+
+        ReDim bytChunks(iFragments)
+
+        Do While lngOffset < lngPictureSize
+          'UPGRADE_WARNING: Couldn't resolve default property of object rsPictures!Picture.GetChunk(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+          bytChunks = .Fields("Picture").GetChunk(conChunkSize)
+          lngOffset = lngOffset + conChunkSize
+          'UPGRADE_WARNING: Put was upgraded to FilePut and has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
+          FilePut(iTempFile, bytChunks)
+        Loop
+
+        FileClose(iTempFile)
+
+        sPictureFile = sTempName
+      End If
+
+      .Close()
+    End With
+    'UPGRADE_NOTE: Object rsPictures may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rsPictures = Nothing
+
+TidyUpAndExit:
+
+    LoadScreenControlPicture = sPictureFile
+    Exit Function
+
+ErrorTrap:
+    sPictureFile = Err.Description
+    Resume TidyUpAndExit
+
+  End Function
 	
 	
 	

@@ -212,14 +212,14 @@ Option Explicit On
 	End Property
 	
 	
-	Public Property UtilityType_Renamed() As Short
-		Get
-			UtilityType = miUtilityType
-		End Get
-		Set(ByVal Value As Short)
-			miUtilityType = Value
-		End Set
-	End Property
+  Public Property UtilityType() As Short
+    Get
+      UtilityType = miUtilityType
+    End Get
+    Set(ByVal Value As Short)
+      miUtilityType = Value
+    End Set
+  End Property
 	
 	
 	Public Property UtilityID() As Integer

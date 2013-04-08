@@ -640,242 +640,240 @@ LocalErr:
 		
 	End Function
 	
-	Public Function DropUniqueSQLObject(ByRef sSQLObjectName As String, ByRef iType As Short) As Boolean
-		
-		On Error GoTo ErrorTrap
-		
-		Dim cmdUniqObj As New ADODB.Command
-		Dim pmADO As ADODB.Parameter
-		
-		If Len(sSQLObjectName) > 0 Then
-			With cmdUniqObj
-				.CommandText = "sp_ASRDropUniqueObject"
-				.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-				.CommandTimeout = 0
-				.ActiveConnection = gADOCon
-				
-				pmADO = .CreateParameter("UniqueObjectName", ADODB.DataTypeEnum.adVarChar, ADODB.ParameterDirectionEnum.adParamInput, 255)
-				.Parameters.Append(pmADO)
-				pmADO.Value = sSQLObjectName
-				
-				pmADO = .CreateParameter("Type", ADODB.DataTypeEnum.adInteger, ADODB.ParameterDirectionEnum.adParamInput)
-				.Parameters.Append(pmADO)
-				pmADO.Value = iType
-				
-				'UPGRADE_NOTE: Object pmADO may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				pmADO = Nothing
-				
-				.Execute()
-			End With
-		End If
-		
-		DropUniqueSQLObject = True
-		
-TidyUpAndExit: 
-		'UPGRADE_NOTE: Object cmdUniqObj may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		cmdUniqObj = Nothing
-		Exit Function
-		
-ErrorTrap: 
-		DropUniqueSQLObject = False
-		GoTo TidyUpAndExit
-		
-	End Function
+  Public Function DropUniqueSQLObject(ByVal sSQLObjectName As String, ByRef iType As Short) As Boolean
+
+    On Error GoTo ErrorTrap
+
+    Dim cmdUniqObj As New ADODB.Command
+    Dim pmADO As ADODB.Parameter
+
+    If Len(sSQLObjectName) > 0 Then
+      With cmdUniqObj
+        .CommandText = "sp_ASRDropUniqueObject"
+        .CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
+        .CommandTimeout = 0
+        .ActiveConnection = gADOCon
+
+        pmADO = .CreateParameter("UniqueObjectName", ADODB.DataTypeEnum.adVarChar, ADODB.ParameterDirectionEnum.adParamInput, 255)
+        .Parameters.Append(pmADO)
+        pmADO.Value = sSQLObjectName
+
+        pmADO = .CreateParameter("Type", ADODB.DataTypeEnum.adInteger, ADODB.ParameterDirectionEnum.adParamInput)
+        .Parameters.Append(pmADO)
+        pmADO.Value = iType
+
+        'UPGRADE_NOTE: Object pmADO may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+        pmADO = Nothing
+
+        .Execute()
+      End With
+    End If
+
+    DropUniqueSQLObject = True
+
+TidyUpAndExit:
+    'UPGRADE_NOTE: Object cmdUniqObj may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    cmdUniqObj = Nothing
+    Exit Function
+
+ErrorTrap:
+    DropUniqueSQLObject = False
+    GoTo TidyUpAndExit
+
+  End Function
 	
-	Public Function DoesColumnUseSeparators(ByRef plngColumnID As Integer) As Boolean
-		
-		' Returns whether the column uses 1000 separators...
-		Dim sSQL As String
-		Dim rsData As ADODB.Recordset
-		
-		sSQL = "SELECT Use1000Separator FROM ASRSysColumns" & " WHERE columnID = " & Trim(Str(plngColumnID))
-		rsData = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-		
-		If Not rsData.BOF And Not rsData.EOF Then
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			DoesColumnUseSeparators = IIf(Not IsDbNull(rsData.Fields("Use1000Separator").Value), rsData.Fields("Use1000Separator").Value, False)
-		Else
-			DoesColumnUseSeparators = False
-		End If
-		
-		rsData.Close()
-		'UPGRADE_NOTE: Object rsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsData = Nothing
-		
-	End Function
+  Public Function DoesColumnUseSeparators(ByVal plngColumnID As Integer) As Boolean
+
+    ' Returns whether the column uses 1000 separators...
+    Dim sSQL As String
+    Dim rsData As ADODB.Recordset
+
+    sSQL = "SELECT Use1000Separator FROM ASRSysColumns" & " WHERE columnID = " & Trim(Str(plngColumnID))
+    rsData = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+
+    If Not rsData.BOF And Not rsData.EOF Then
+      'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+      DoesColumnUseSeparators = IIf(Not IsDBNull(rsData.Fields("Use1000Separator").Value), rsData.Fields("Use1000Separator").Value, False)
+    Else
+      DoesColumnUseSeparators = False
+    End If
+
+    rsData.Close()
+    'UPGRADE_NOTE: Object rsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rsData = Nothing
+
+  End Function
 	
 	' Returns the amount of decimals that are specificed for a column
-	Public Function GetDecimalsSize(ByRef plngColumnID As Integer) As Short
-		
-		Dim sSQL As String
-		Dim rsData As ADODB.Recordset
-		
-		sSQL = "SELECT Decimals FROM ASRSysColumns" & " WHERE columnID = " & Trim(Str(plngColumnID))
-		rsData = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-		
-		If Not rsData.BOF And Not rsData.EOF Then
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			GetDecimalsSize = IIf(Not IsDbNull(rsData.Fields("Decimals").Value), rsData.Fields("Decimals").Value, 0)
-		Else
-			GetDecimalsSize = 0
-		End If
-		
-		rsData.Close()
-		'UPGRADE_NOTE: Object rsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsData = Nothing
-		
-	End Function
+  Public Function GetDecimalsSize(ByVal plngColumnID As Integer) As Short
+
+    Dim sSQL As String
+    Dim rsData As ADODB.Recordset
+
+    sSQL = "SELECT Decimals FROM ASRSysColumns" & " WHERE columnID = " & Trim(Str(plngColumnID))
+    rsData = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+
+    If Not rsData.BOF And Not rsData.EOF Then
+      'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+      GetDecimalsSize = IIf(Not IsDBNull(rsData.Fields("Decimals").Value), rsData.Fields("Decimals").Value, 0)
+    Else
+      GetDecimalsSize = 0
+    End If
+
+    rsData.Close()
+    'UPGRADE_NOTE: Object rsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rsData = Nothing
+
+  End Function
 	
-	Public Function IsAChildOf(ByRef lTestTableID As Integer, ByRef lBaseTableID As Integer) As Boolean
-		
-		Dim rsTemp As ADODB.Recordset
-		Dim strSQL As String
-		
-		strSQL = "SELECT * FROM ASRSysRelations WHERE ParentID = " & lBaseTableID & " AND ChildID = " & lTestTableID
-		
-		rsTemp = datData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-		
-		If rsTemp.BOF And rsTemp.EOF Then
-			IsAChildOf = False
-		Else
-			IsAChildOf = True
-		End If
-		
-		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTemp = Nothing
-		
-	End Function
+  Public Function IsAChildOf(ByVal lTestTableID As Integer, ByVal lBaseTableID As Integer) As Boolean
+
+    Dim rsTemp As ADODB.Recordset
+    Dim strSQL As String
+
+    strSQL = "SELECT * FROM ASRSysRelations WHERE ParentID = " & lBaseTableID & " AND ChildID = " & lTestTableID
+
+    rsTemp = datData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+
+    If rsTemp.BOF And rsTemp.EOF Then
+      IsAChildOf = False
+    Else
+      IsAChildOf = True
+    End If
+
+    'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rsTemp = Nothing
+
+  End Function
 	
-	Public Function IsAParentOf(ByRef lTestTableID As Integer, ByRef lBaseTableID As Integer) As Boolean
-		
-		Dim rsTemp As ADODB.Recordset
-		Dim strSQL As String
-		
-		strSQL = "SELECT * FROM ASRSysRelations WHERE ChildID = " & lBaseTableID & " AND ParentID = " & lTestTableID
-		
-		rsTemp = datData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-		
-		If rsTemp.BOF And rsTemp.EOF Then
-			IsAParentOf = False
-		Else
-			IsAParentOf = True
-		End If
-		
-		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTemp = Nothing
-		
-	End Function
+  Public Function IsAParentOf(ByVal lTestTableID As Integer, ByVal lBaseTableID As Integer) As Boolean
+
+    Dim rsTemp As ADODB.Recordset
+    Dim strSQL As String
+
+    strSQL = "SELECT * FROM ASRSysRelations WHERE ChildID = " & lBaseTableID & " AND ParentID = " & lTestTableID
+
+    rsTemp = datData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+
+    If rsTemp.BOF And rsTemp.EOF Then
+      IsAParentOf = False
+    Else
+      IsAParentOf = True
+    End If
+
+    'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rsTemp = Nothing
+
+  End Function
 	
-	Public Function DateColumn(ByRef strType As String, ByRef lngTableID As Integer, ByRef lngColumnID As Integer) As Boolean
-		
-		'MH20000705
-		Dim objCalcExpr As New clsExprExpression
-		Dim rsTemp As ADODB.Recordset
-		Dim sSQL As String
-		
-		DateColumn = False
-		
-		
-		Select Case strType
-			Case "C" 'Column
-				DateColumn = (GetDataType(lngTableID, lngColumnID) = Declarations.SQLDataType.sqlDate)
-				
-			Case Else 'Calculation
-				
-				' RH 29/05/01 - This was commented out. Removed the comments to hopefully fix 2214.
-				
-				objCalcExpr = New clsExprExpression
-				objCalcExpr.Initialise(lngTableID, lngColumnID, modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION, modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
-				objCalcExpr.ConstructExpression()
-				objCalcExpr.ValidateExpression(True)
-				
-				DateColumn = (objCalcExpr.ReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_DATE)
-				'UPGRADE_NOTE: Object objCalcExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				objCalcExpr = Nothing
-				
-		End Select
-		
-	End Function
+  Public Function DateColumn(ByVal strType As String, ByVal lngTableID As Integer, ByVal lngColumnID As Integer) As Boolean
+
+    'MH20000705
+    Dim objCalcExpr As New clsExprExpression
+
+    DateColumn = False
+
+
+    Select Case strType
+      Case "C" 'Column
+        DateColumn = (GetDataType(lngTableID, lngColumnID) = Declarations.SQLDataType.sqlDate)
+
+      Case Else 'Calculation
+
+        ' RH 29/05/01 - This was commented out. Removed the comments to hopefully fix 2214.
+
+        objCalcExpr = New clsExprExpression
+        objCalcExpr.Initialise(lngTableID, lngColumnID, modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION, modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
+        objCalcExpr.ConstructExpression()
+        objCalcExpr.ValidateExpression(True)
+
+        DateColumn = (objCalcExpr.ReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_DATE)
+        'UPGRADE_NOTE: Object objCalcExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+        objCalcExpr = Nothing
+
+    End Select
+
+  End Function
 	
-	Public Function GetColumnDataType(ByRef lColumnID As Integer) As Integer
-		
-		Dim sSQL As String
-		Dim rsData As ADODB.Recordset
-		
-		sSQL = "Select datatype From ASRSysColumns Where columnid = " & lColumnID
-		rsData = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-		
-		If Not rsData.BOF And Not rsData.EOF Then
-			GetColumnDataType = rsData.Fields(0).Value
-		End If
-		
-		rsData.Close()
-		'UPGRADE_NOTE: Object rsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsData = Nothing
-		
-	End Function
+  Public Function GetColumnDataType(ByVal lColumnID As Integer) As Integer
+
+    Dim sSQL As String
+    Dim rsData As ADODB.Recordset
+
+    sSQL = "Select datatype From ASRSysColumns Where columnid = " & lColumnID
+    rsData = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+
+    If Not rsData.BOF And Not rsData.EOF Then
+      GetColumnDataType = rsData.Fields(0).Value
+    End If
+
+    rsData.Close()
+    'UPGRADE_NOTE: Object rsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rsData = Nothing
+
+  End Function
 	
-	Public Function BitColumn(ByRef strType As String, ByRef lngTableID As Integer, ByRef lngColumnID As Integer) As Boolean
-		
-		'RH20000713
-		Dim objCalcExpr As New clsExprExpression
-		
-		BitColumn = False
-		
-		Select Case strType
-			Case "C" 'Column
-				BitColumn = (GetDataType(lngTableID, lngColumnID) = Declarations.SQLDataType.sqlBoolean)
-				
-			Case Else 'Calculation
-				objCalcExpr = New clsExprExpression
-				objCalcExpr.Initialise(lngTableID, lngColumnID, modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION, modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
-				objCalcExpr.ConstructExpression()
-				objCalcExpr.ValidateExpression(True)
-				
-				BitColumn = (objCalcExpr.ReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC)
-				'UPGRADE_NOTE: Object objCalcExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				objCalcExpr = Nothing
-				
-		End Select
-		
-	End Function
+  Public Function BitColumn(ByVal strType As String, ByVal lngTableID As Integer, ByVal lngColumnID As Integer) As Boolean
+
+    'RH20000713
+    Dim objCalcExpr As New clsExprExpression
+
+    BitColumn = False
+
+    Select Case strType
+      Case "C" 'Column
+        BitColumn = (GetDataType(lngTableID, lngColumnID) = Declarations.SQLDataType.sqlBoolean)
+
+      Case Else 'Calculation
+        objCalcExpr = New clsExprExpression
+        objCalcExpr.Initialise(lngTableID, lngColumnID, modExpression.ExpressionTypes.giEXPR_RUNTIMECALCULATION, modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
+        objCalcExpr.ConstructExpression()
+        objCalcExpr.ValidateExpression(True)
+
+        BitColumn = (objCalcExpr.ReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_LOGIC)
+        'UPGRADE_NOTE: Object objCalcExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+        objCalcExpr = Nothing
+
+    End Select
+
+  End Function
 	
-	Public Function GetColumnTableName(ByRef plngColumnID As Integer) As String
-		
-		' Return the table id of the given column.
-		Dim sSQL As String
-		Dim rsData As ADODB.Recordset
-		
-		sSQL = "SELECT tableName" & " FROM ASRSysColumns " & " JOIN ASRSysTables ON ASRSysColumns.TableID = ASRSysTables.TableID" & " WHERE columnID = " & Trim(Str(plngColumnID))
-		rsData = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-		
-		If Not rsData.BOF And Not rsData.EOF Then
-			GetColumnTableName = rsData.Fields("TableName").Value
-		Else
-			GetColumnTableName = ""
-		End If
-		
-		rsData.Close()
-		'UPGRADE_NOTE: Object rsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsData = Nothing
-		
-	End Function
+  Public Function GetColumnTableName(ByVal plngColumnID As Integer) As String
+
+    ' Return the table id of the given column.
+    Dim sSQL As String
+    Dim rsData As ADODB.Recordset
+
+    sSQL = "SELECT tableName" & " FROM ASRSysColumns " & " JOIN ASRSysTables ON ASRSysColumns.TableID = ASRSysTables.TableID" & " WHERE columnID = " & Trim(Str(plngColumnID))
+    rsData = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+
+    If Not rsData.BOF And Not rsData.EOF Then
+      GetColumnTableName = rsData.Fields("TableName").Value
+    Else
+      GetColumnTableName = ""
+    End If
+
+    rsData.Close()
+    'UPGRADE_NOTE: Object rsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rsData = Nothing
+
+  End Function
 	
-	Public Function IsPhotoDataType(ByRef lColumnID As Integer) As Boolean
-		
-		Dim sSQL As String
-		Dim rsData As ADODB.Recordset
-		
-		sSQL = "Select datatype From ASRSysColumns Where columnid= " & lColumnID
-		rsData = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-		
-		If Not rsData.BOF And Not rsData.EOF Then
-			IsPhotoDataType = IIf(rsData.Fields(0).Value = -4, False, True)
-		End If
-		
-		rsData.Close()
-		'UPGRADE_NOTE: Object rsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsData = Nothing
-		
-	End Function
+  Public Function IsPhotoDataType(ByVal lColumnID As Integer) As Boolean
+
+    Dim sSQL As String
+    Dim rsData As ADODB.Recordset
+
+    sSQL = "Select datatype From ASRSysColumns Where columnid= " & lColumnID
+    rsData = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+
+    If Not rsData.BOF And Not rsData.EOF Then
+      IsPhotoDataType = IIf(rsData.Fields(0).Value = -4, False, True)
+    End If
+
+    rsData.Close()
+    'UPGRADE_NOTE: Object rsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rsData = Nothing
+
+  End Function
 End Class

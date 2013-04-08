@@ -31,44 +31,44 @@ Friend Class CTablePrivileges
 		End Get
 	End Property
 	
-	Public Function Add(ByRef psTableName As String, ByRef plngTableID As Integer, ByRef piTableType As Short, ByRef plngDfltOrderID As Integer, ByRef plngRecDescID As Integer, ByRef pfIsTable As Boolean, ByRef plngViewID As Integer, ByRef psViewName As String) As CTablePrivilege
-		' Add a new member to the collection of table privileges.
-		Dim lngChildViewID As Integer
-		Dim skey As String
-		Dim objNewMember As New CTablePrivilege
-		
-		' Initialise the privileges.
-		With objNewMember
-			.TableID = plngTableID
-			.TableName = psTableName
-			.TableType = piTableType
-			.DefaultOrderID = plngDfltOrderID
-			.RecordDescriptionID = plngRecDescID
-			
-			.IsTable = pfIsTable
-			
-			.ViewID = plngViewID
-			.ViewName = psViewName
-			
-			If (Not pfIsTable) Then
-				skey = psViewName
-			Else
-				skey = psTableName
-			End If
-			
-			.AllowSelect = False
-			.AllowUpdate = False
-			.AllowDelete = False
-			.AllowInsert = False
-		End With
-		
-		mCol.Add(objNewMember, skey)
-		
-		Add = objNewMember
-		'UPGRADE_NOTE: Object objNewMember may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objNewMember = Nothing
-		
-	End Function
+  Public Function Add(ByVal psTableName As String, ByVal plngTableID As Integer, ByVal piTableType As Short, ByVal plngDfltOrderID As Integer, ByVal plngRecDescID As Integer, ByVal pfIsTable As Boolean, ByVal plngViewID As Integer, ByVal psViewName As String) As CTablePrivilege
+    ' Add a new member to the collection of table privileges.
+    Dim lngChildViewID As Integer
+    Dim skey As String
+    Dim objNewMember As New CTablePrivilege
+
+    ' Initialise the privileges.
+    With objNewMember
+      .TableID = plngTableID
+      .TableName = psTableName
+      .TableType = piTableType
+      .DefaultOrderID = plngDfltOrderID
+      .RecordDescriptionID = plngRecDescID
+
+      .IsTable = pfIsTable
+
+      .ViewID = plngViewID
+      .ViewName = psViewName
+
+      If (Not pfIsTable) Then
+        skey = psViewName
+      Else
+        skey = psTableName
+      End If
+
+      .AllowSelect = False
+      .AllowUpdate = False
+      .AllowDelete = False
+      .AllowInsert = False
+    End With
+
+    mCol.Add(objNewMember, skey)
+
+    Add = objNewMember
+    'UPGRADE_NOTE: Object objNewMember may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    objNewMember = Nothing
+
+  End Function
 	
 	Public Sub Remove(ByRef vntIndexKey As Object)
 		
@@ -101,59 +101,59 @@ Friend Class CTablePrivileges
 	
 	
 	
-	Public Function FindRealSource(ByRef psRealSource As String) As CTablePrivilege
-		' Return the table/view privilege object with the given real source.
-		Dim objTable As CTablePrivilege
-		Dim objRequiredTable As CTablePrivilege
-		
-		For	Each objTable In mCol
-			If objTable.RealSource = psRealSource Then
-				objRequiredTable = objTable
-				Exit For
-			End If
-		Next objTable
-		'UPGRADE_NOTE: Object objTable may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objTable = Nothing
-		
-		FindRealSource = objRequiredTable
-		
-	End Function
-	Public Function FindTableID(ByRef plngTableID As Integer) As CTablePrivilege
-		' Return the table/view privilege object with the given table ID.
-		Dim objTable As CTablePrivilege
-		Dim objRequiredTable As CTablePrivilege
-		
-		For	Each objTable In mCol
-			' JPD 6/9/00 This function has been modified to ensure that the object returned is for the
-			' given table, and not just a view on the given table.
-			'    If objTable.TableID = plngTableID Then
-			If (objTable.TableID = plngTableID) And (objTable.IsTable) Then
-				objRequiredTable = objTable
-				Exit For
-			End If
-		Next objTable
-		'UPGRADE_NOTE: Object objTable may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objTable = Nothing
-		
-		FindTableID = objRequiredTable
-		
-	End Function
+  Public Function FindRealSource(ByVal psRealSource As String) As CTablePrivilege
+    ' Return the table/view privilege object with the given real source.
+    Dim objTable As CTablePrivilege
+    Dim objRequiredTable As CTablePrivilege
+
+    For Each objTable In mCol
+      If objTable.RealSource = psRealSource Then
+        objRequiredTable = objTable
+        Exit For
+      End If
+    Next objTable
+    'UPGRADE_NOTE: Object objTable may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    objTable = Nothing
+
+    FindRealSource = objRequiredTable
+
+  End Function
+  Public Function FindTableID(ByVal plngTableID As Integer) As CTablePrivilege
+    ' Return the table/view privilege object with the given table ID.
+    Dim objTable As CTablePrivilege
+    Dim objRequiredTable As CTablePrivilege
+
+    For Each objTable In mCol
+      ' JPD 6/9/00 This function has been modified to ensure that the object returned is for the
+      ' given table, and not just a view on the given table.
+      '    If objTable.TableID = plngTableID Then
+      If (objTable.TableID = plngTableID) And (objTable.IsTable) Then
+        objRequiredTable = objTable
+        Exit For
+      End If
+    Next objTable
+    'UPGRADE_NOTE: Object objTable may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    objTable = Nothing
+
+    FindTableID = objRequiredTable
+
+  End Function
 	
-	Public Function FindViewID(ByRef plngViewID As Integer) As CTablePrivilege
-		' Return the table/view privilege object with the given table ID.
-		Dim objView As CTablePrivilege
-		Dim objRequiredView As CTablePrivilege
-		
-		For	Each objView In mCol
-			If objView.ViewID = plngViewID Then
-				objRequiredView = objView
-				Exit For
-			End If
-		Next objView
-		'UPGRADE_NOTE: Object objView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objView = Nothing
-		
-		FindViewID = objRequiredView
-		
-	End Function
+  Public Function FindViewID(ByVal plngViewID As Integer) As CTablePrivilege
+    ' Return the table/view privilege object with the given table ID.
+    Dim objView As CTablePrivilege
+    Dim objRequiredView As CTablePrivilege
+
+    For Each objView In mCol
+      If objView.ViewID = plngViewID Then
+        objRequiredView = objView
+        Exit For
+      End If
+    Next objView
+    'UPGRADE_NOTE: Object objView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    objView = Nothing
+
+    FindViewID = objRequiredView
+
+  End Function
 End Class

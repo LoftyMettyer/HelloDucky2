@@ -4,7 +4,7 @@ Module Declarations
 	
 	Public gADOCon As ADODB.Connection
 	
-	Public datGeneral As New clsGeneral
+  Public datGeneral As New clsGeneral
 	
 	Public gsUsername As String
 	Public gsActualLogin As String

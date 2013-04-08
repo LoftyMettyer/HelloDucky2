@@ -150,12 +150,12 @@ Friend Class clsUI
 	Private Declare Function LockWindowUpdate Lib "user32" (ByVal hwndLock As Integer) As Integer
 	Private Declare Function OemKeyScan Lib "user32" (ByVal wOemChar As Integer) As Integer
 	'UPGRADE_ISSUE: Declaring a parameter 'As Any' is not supported. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="FAE78A8D-8978-4FD4-8208-5B7324A8F795"'
-	Private Declare Function SendMessage Lib "user32"  Alias "SendMessageA"(ByVal hWnd As Integer, ByVal wMsg As Integer, ByVal wParam As Integer, ByVal lParam As Any) As Integer
+  Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hWnd As Integer, ByVal wMsg As Integer, ByVal wParam As Integer, ByVal lParam As String) As Integer
 	Private Declare Function SetFocusAPI Lib "user32"  Alias "SetFocus"(ByVal hWnd As Integer) As Integer
 	Private Declare Function SetWindowLong Lib "user32"  Alias "SetWindowLongA"(ByVal hWnd As Integer, ByVal nIndex As Integer, ByVal dwNewLong As Integer) As Integer
 	Private Declare Function SetWindowPos Lib "user32" (ByVal hWnd As Integer, ByVal hWndInsertAfter As Integer, ByVal x As Integer, ByVal y As Integer, ByVal cx As Integer, ByVal cy As Integer, ByVal wFlags As Integer) As Integer
 	'UPGRADE_ISSUE: Declaring a parameter 'As Any' is not supported. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="FAE78A8D-8978-4FD4-8208-5B7324A8F795"'
-	Private Declare Function SystemParametersInfo Lib "user32"  Alias "SystemParametersInfoA"(ByVal uAction As Integer, ByVal uParam As Integer, ByRef lpvParam As Any, ByVal fuWinIni As Integer) As Integer
+  Private Declare Function SystemParametersInfo Lib "user32" Alias "SystemParametersInfoA" (ByVal uAction As Integer, ByVal uParam As Integer, ByRef lpvParam As String, ByVal fuWinIni As Integer) As Integer
 	'UPGRADE_NOTE: cChar was upgraded to cChar_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Declare Function VkKeyScan Lib "user32"  Alias "VkKeyScanA"(ByVal cChar_Renamed As Byte) As Short
 	Private Declare Function WindowFromPoint Lib "user32" (ByVal xPoint As Integer, ByVal yPoint As Integer) As Integer
@@ -282,17 +282,17 @@ Friend Class clsUI
 		
 	End Sub
 	
-	Function frmIsLoaded(ByVal FormName As String) As Boolean
-		Dim f As Short
-		
-		For f = 0 To My.Application.OpenForms.Count - 1
-			If UCase(My.Application.OpenForms.Item(f).Name) = UCase(FormName) Then
-				frmIsLoaded = True
-				Exit For
-			End If
-		Next f
-		
-	End Function
+  'Function frmIsLoaded(ByVal FormName As String) As Boolean
+  '	Dim f As Short
+
+  '   For f = 0 To My.Application.OpenForms.Count - 1
+  '     If UCase(My.Application.OpenForms.Item(f).Name) = UCase(FormName) Then
+  '       frmIsLoaded = True
+  '       Exit For
+  '     End If
+  '   Next f
+
+  'End Function
 	
 	Function frmTopmost(ByVal hWnd As Integer, ByRef bTopMost As Boolean) As Boolean
 		Dim lFlags As Integer
@@ -407,18 +407,18 @@ ErrorTrap:
 	'
 	'End Function
 	
-	Function txtSelText() As String
-		If TypeOf System.Windows.Forms.Form.ActiveForm.ActiveControl Is System.Windows.Forms.TextBox Then
-			With System.Windows.Forms.Form.ActiveForm.ActiveControl
-				'UPGRADE_WARNING: Couldn't resolve default property of object Screen.ActiveForm.ActiveControl.SelStart. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				.SelStart = 0
-				'UPGRADE_WARNING: Couldn't resolve default property of object Screen.ActiveForm.ActiveControl.SelLength. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				.SelLength = Len(.Text)
-				'UPGRADE_WARNING: Couldn't resolve default property of object Screen.ActiveForm.ActiveControl.SelText. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				txtSelText = .SelText
-			End With
-		End If
-	End Function
+  'Function txtSelText() As String
+  '	If TypeOf System.Windows.Forms.Form.ActiveForm.ActiveControl Is System.Windows.Forms.TextBox Then
+  '		With System.Windows.Forms.Form.ActiveForm.ActiveControl
+  '			'UPGRADE_WARNING: Couldn't resolve default property of object Screen.ActiveForm.ActiveControl.SelStart. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+  '			.SelStart = 0
+  '			'UPGRADE_WARNING: Couldn't resolve default property of object Screen.ActiveForm.ActiveControl.SelLength. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+  '			.SelLength = Len(.Text)
+  '			'UPGRADE_WARNING: Couldn't resolve default property of object Screen.ActiveForm.ActiveControl.SelText. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+  '			txtSelText = .SelText
+  '		End With
+  '	End If
+  'End Function
 	
 	Public Function YBorder() As Double
 		' Return the height of a control border.
@@ -687,10 +687,10 @@ ErrorTrap:
 		Dim RectWorkArea As RECT
 		
 		'UPGRADE_WARNING: Couldn't resolve default property of object RectWorkArea. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		If SystemParametersInfo(SPI_GETWORKAREA, VariantType.Empty, RectWorkArea, VariantType.Empty) Then
-			SizeX = (RectWorkArea.Right_Renamed - RectWorkArea.Left_Renamed) * VB6.TwipsPerPixelX
-			SizeY = (RectWorkArea.Bottom - RectWorkArea.Top) * VB6.TwipsPerPixelY
-		End If
+    If SystemParametersInfo(SPI_GETWORKAREA, VariantType.Empty, RectWorkArea.ToString(), VariantType.Empty) Then
+      SizeX = (RectWorkArea.Right_Renamed - RectWorkArea.Left_Renamed) * VB6.TwipsPerPixelX
+      SizeY = (RectWorkArea.Bottom - RectWorkArea.Top) * VB6.TwipsPerPixelY
+    End If
 		
 		GetWorkAreaSize = True
 		Exit Function

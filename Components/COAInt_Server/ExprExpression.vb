@@ -1602,7 +1602,7 @@ ErrorTrap:
 		Dim sComponentCode As String
 		Dim vParameter1 As Object
 		Dim vParameter2 As Object
-		Dim avValues() As Object
+    Dim avValues(,) As Object
 		
 		fOK = True
 		sCode = ""
@@ -1854,8 +1854,8 @@ ErrorTrap:
 		Dim sWhereCode As String
 		Dim sBaseTableSource As String
 		Dim sRuntimeFilterSQL As String
-		Dim alngSourceTables() As Integer
-		Dim avRelatedTables() As Object
+    Dim alngSourceTables(,) As Integer
+    Dim avRelatedTables(,) As Object
 		Dim rsInfo As ADODB.Recordset
 		Dim objTableView As CTablePrivilege
 		
@@ -2000,7 +2000,7 @@ ErrorTrap:
 		
 		Dim fOK As Boolean
 		Dim sRuntimeSQL As String
-		Dim avDummyPrompts() As Object
+    Dim avDummyPrompts(,) As Object
 		
 		' Check if the 'validating' parameter is set.
 		' If not, set it to FALSE.
@@ -2360,8 +2360,8 @@ ErrorTrap:
 		Dim iEvaluatedReturnType As modExpression.ExpressionValueTypes
 		Dim sSPCode As String
 		Dim sFilterCode As String
-		Dim aiDummyValues() As Short
-		Dim avDummyPrompts() As Object
+    Dim aiDummyValues(,) As Short
+    Dim avDummyPrompts(,) As Object
 		Dim iTempReturnType As Short
 		
 		ReDim avDummyPrompts(1, 0)
@@ -2626,7 +2626,7 @@ ErrorTrap:
 		' Validate the expression's SQL code. This picks up on errors such as too many nested levels of the CASE statement.
 		On Error GoTo ErrorTrap
 		
-		Dim lngCalcViews() As Integer
+    Dim lngCalcViews(,) As Integer
 		Dim objCalcExpr As clsExprExpression
 		Dim intCount As Short
 		Dim sSource As String
@@ -2636,9 +2636,9 @@ ErrorTrap:
 		Dim sSQLCode As String
 		Dim lngOriginalExprID As Integer
 		Dim sOriginalSQLCode As String
-		Dim alngSourceTables() As Integer
+    Dim alngSourceTables(,) As Integer
 		Dim sProcName As String
-		Dim avDummyPrompts() As Object
+    Dim avDummyPrompts(,) As Object
 		Dim intStart As Short
 		Dim intFound As Short
 		
@@ -3206,7 +3206,7 @@ ErrorTrap:
 		Dim sWhereCode As String
 		Dim sBaseTableSource As String
 		Dim sRuntimeFilterSQL As String
-		Dim alngSourceTables() As Integer
+    Dim alngSourceTables(,) As Integer
 		Dim avRelatedTables() As Object
 		Dim rsInfo As ADODB.Recordset
 		Dim objTableView As CTablePrivilege
