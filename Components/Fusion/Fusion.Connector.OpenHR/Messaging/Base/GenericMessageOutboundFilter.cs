@@ -53,7 +53,6 @@ namespace Fusion.Connector.OpenHR.Messaging
             return false;
         }
 
-
         protected bool CheckValidity(string xml, string schemaName)
         {
             SchemaValidator sv = new SchemaValidator(
@@ -90,19 +89,24 @@ namespace Fusion.Connector.OpenHR.Messaging
             return messageValid;
         }
 
+        public bool checkStaffHasBeenSent(T message)
+        {
+            var staffBusRef = message.PrimaryEntityRef;
+
+            if (staffBusRef == null)
+            {
+                return false;
+            }
+
+            var lastMessageGenerated = MessageTracking.GetLastGeneratedXml("StaffChange", (Guid)staffBusRef);
+
+            if (lastMessageGenerated == null)
+            {
+                Logger.InfoFormat("Outbound Message {0} blocked as staff {1} not sent ", message.GetType().Name, staffBusRef);
+                return false;
+            }
+                
+            return true;
+        }
     }
 }
-
-
-
-//namespace Fusion.Connector.OpenHR.Messaging
-//{
-//    public class ServiceUserUpdateMessageSchemaValidatorOutboundFilter : Fusion.Connector.OpenHR.Messaging.SchemaValidatorOutboundFilterHandler<StaffChangeRequest>
-//    {
-//        public override bool Handle(StaffChangeRequest message)
-//        {
-//            bool valid = base.CheckValidity(message);
-//            return valid;
-//        }
-//    }
-//}

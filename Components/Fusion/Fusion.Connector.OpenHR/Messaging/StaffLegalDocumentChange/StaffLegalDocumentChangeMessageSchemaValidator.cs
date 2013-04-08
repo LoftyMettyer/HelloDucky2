@@ -8,9 +8,12 @@ namespace Fusion.Connector.OpenHR.Messaging.StaffLegalDocumentChange
         {
             var valid = false;
 
-            if (!checkAlreadySent(message))
+            if (checkStaffHasBeenSent(message))
             {
-                valid = CheckValidity(message);
+                if (!checkAlreadySent(message))
+                {
+                    valid = CheckValidity(message);
+                }
             }
 
             return valid;
