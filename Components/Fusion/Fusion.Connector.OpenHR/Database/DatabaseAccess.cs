@@ -107,15 +107,24 @@ namespace Fusion.Connector.OpenHR.Database
                 contact.email = pRow["email"].ToString() == "" ? null : pRow["email"].ToString();
                 contact.notes = pRow["notes"].ToString() == "" ? null : pRow["notes"].ToString();
 
-                contact.homeAddress = new Address
+                if (pRow["AddressLine1"].ToString() != ""
+                    || pRow["AddressLine2"].ToString() != ""
+                    || pRow["AddressLine3"].ToString() != ""
+                    || pRow["AddressLine4"].ToString() != ""
+                    || pRow["AddressLine5"].ToString() != ""
+                    || pRow["postcode"].ToString() != "")
+                {
+                    contact.homeAddressSpecified = true;
+                    contact.homeAddress = new Address
                     {
-                        addressLine1 = pRow["AddressLine1"].ToString(),
+                        addressLine1 = pRow["AddressLine1"].ToString() == "" ? null : pRow["AddressLine1"].ToString(),
                         addressLine2 = pRow["AddressLine2"].ToString(),
                         addressLine3 = pRow["AddressLine3"].ToString(),
                         addressLine4 = pRow["AddressLine4"].ToString(),
                         addressLine5 = pRow["AddressLine5"].ToString(),
-                        postCode = pRow["postcode"].ToString()
+                        postCode = pRow["postcode"].ToString() == "" ? null : pRow["postcode"].ToString()
                     };
+                }
 
                 return contact;
             }
@@ -256,12 +265,14 @@ namespace Fusion.Connector.OpenHR.Database
                 su.companyName = pRow["CompanyName"].ToString() == "" ? null : pRow["CompanyName"].ToString();
                 su.jobTitle = pRow["jobTitle"].ToString() == "" ? null : pRow["jobTitle"].ToString();
                 su.managerRef = pRow["managerRef"].ToString() == "" ? null : pRow["managerRef"].ToString();
-                su.homeAddress.addressLine1 = pRow["AddressLine1"].ToString();
+
+                su.homeAddress.addressLine1 = pRow["AddressLine1"].ToString() == "" ? null : pRow["AddressLine1"].ToString();
                 su.homeAddress.addressLine2 = pRow["AddressLine2"].ToString();
                 su.homeAddress.addressLine3 = pRow["AddressLine3"].ToString();
                 su.homeAddress.addressLine4 = pRow["AddressLine4"].ToString();
                 su.homeAddress.addressLine5 = pRow["AddressLine5"].ToString();
-                su.homeAddress.postCode = pRow["postcode"].ToString();
+                su.homeAddress.postCode = pRow["postcode"].ToString() == "" ? null : pRow["postcode"].ToString();                
+
                 su.nationalInsuranceNumber = pRow["nationalInsuranceNumber"].ToString() == "" ? null : pRow["nationalInsuranceNumber"].ToString();
 
                 return su;

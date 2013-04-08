@@ -55,9 +55,6 @@ public class Staff
     [XmlElementAttribute(DataType = "date", IsNullable = true)]
     public DateTime? leavingDate { get; set; }
 
-    [XmlIgnoreAttribute]
-    public bool leavingDateSpecified { get; set; }
-
     [XmlElementAttribute(IsNullable = true)]
     public string leavingReason { get; set; }
 
@@ -72,6 +69,10 @@ public class Staff
     public Address homeAddress { get; set; }
 
     public string nationalInsuranceNumber { get; set; }
+
+    [XmlIgnoreAttribute]
+    public bool leavingDateSpecified { get; set; }
+
 }
 
 
