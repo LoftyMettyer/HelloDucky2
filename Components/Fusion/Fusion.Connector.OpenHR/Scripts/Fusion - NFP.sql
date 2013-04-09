@@ -43,7 +43,7 @@ SELECT ID as [StaffID]
 	, start_date AS [startDate]
 	, leaving_date AS [leavingDate]
 	, leaving_reason AS [leavingReason]
-	, Division AS [companyName]
+	, Payroll_Company AS [companyName]
 	, Post_Title AS [jobTitle]
 	, Manager_Ref AS [managerRef]
 	, address_1 AS [addressLine1]
@@ -414,7 +414,7 @@ BEGIN
 
 	DECLARE @photostring varchar(MAX);
 
-	SET @photostring = '<<V002>>2 Embedded Photograph.jpg' + SPACE(367) + convert(varchar(MAX),@picture)
+	SET @photostring = '<<V002>>2 Embedded Photograph.jpg' + SPACE(367) + convert(varchar(MAX),@picture);
 
 	UPDATE fusion.staff SET picture = convert(varbinary(max), @photostring)
 		WHERE StaffID = @ID;
