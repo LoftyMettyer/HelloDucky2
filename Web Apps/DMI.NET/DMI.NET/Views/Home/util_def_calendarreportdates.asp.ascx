@@ -15,7 +15,7 @@
 
 		frmPopup.cboLegendTable.selectedIndex = -1;
 
-		var frmevent = OpenHR.getForm("workframe", "frmEventDetails");
+		var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
 		var frmDef = OpenHR.getForm("workframe", "frmDefinition");
 
 		if (frmEvent.eventAction.value.toUpperCase() == "NEW") {
@@ -40,11 +40,10 @@
 
 		frmPopup.txtLoading.value = 0;
 	}
-</script>
 
-<%--<script FOR=window EVENT=onfocus LANGUAGE=JavaScript>
-	var frmevent = window.dialogarguments.OpenHR.getForm("workframe","frmEventDetails");
-</script>--%>
+<%--<script FOR=window EVENT=onfocus LANGUAGE=JavaScript>--%>
+	var frmEvent = window.dialogarguments.OpenHR.getForm("workframe", "frmEventDetails");
+</script>
 
 <!-- Have added the object to this page so the message box has focus infront of the child window. -->
 <script type="text/javascript" id="scptGeneralFunctions">
@@ -101,14 +100,8 @@
 		var iIndex;
 		var sType;
 		var sID;
-		var iPollPeriod;
-		var iPollCounter;
 		var iDummy;
 		var frmRefresh;
-
-		iPollPeriod = 100;
-		iPollCounter = iPollPeriod;
-		frmRefresh = OpenHR.getForm("pollframe", "frmHit");
 
 		with (frmPopup) {
 			window.cboStartDate.length = 0;
@@ -165,16 +158,6 @@
 
 			if (dataCollection != null) {
 				for (i = 0; i < dataCollection.length; i++) {
-					if (i == iPollCounter) {
-						try {
-							var testDataCollection = frmRefresh.elements;
-							iDummy = testDataCollection.txtDummy.value;
-							frmRefresh.submit();
-							iPollCounter = iPollCounter + iPollPeriod;
-						}
-						catch (e) {
-						}
-					}
 
 					sControlName = dataCollection.item(i).name;
 
@@ -261,7 +244,7 @@
 			}
 		}
 
-		var frmevent = OpenHR.getForm("workframe", "frmEventDetails");
+		var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
 
 		if (frmPopup.cboStartDate.length < 1) {
 			OpenHR.MessageBox("The selected event table has no date columns. Please select an event table that contains date columns.", 48, "Calendar Reports");
@@ -317,15 +300,9 @@
 		var iIndex;
 		var sType;
 		var sID;
-		var iPollPeriod;
-		var iPollCounter;
 		var iDummy;
 		var frmRefresh;
-
-		iPollPeriod = 100;
-		iPollCounter = iPollPeriod;
-		frmRefresh = OpenHR.getForm("pollframe", "frmHit");
-
+		
 		with (frmPopup) {
 			cboLegendColumn.length = 0;
 			cboLegendCode.length = 0;
@@ -335,17 +312,6 @@
 
 			if (dataCollection != null) {
 				for (i = 0; i < dataCollection.length; i++) {
-					if (i == iPollCounter) {
-						try {
-							var testDataCollection = frmRefresh.elements;
-							iDummy = testDataCollection.txtDummy.value;
-							frmRefresh.submit();
-							iPollCounter = iPollCounter + iPollPeriod;
-						}
-						catch (e) {
-						}
-					}
-
 					sControlName = dataCollection.item(i).name;
 
 					if (sControlName.substr(0, 10) == "txtRepCol_") {
@@ -370,10 +336,10 @@
 			}
 
 			//document.parentWindow.parent.window.dialogArguments.window.refreshTab3Controls();		  
-			//OpenHR.refreshTab3Controls();
+			OpenHR.refreshTab3Controls();
 		}
 
-		var frmevent = OpenHR.getForm("workframe", "frmEventDetails");
+		var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
 
 		if ((frmEvent.eventAction.value.toUpperCase() == "EDIT") && (frmPopup.txtFirstLoad_Lookup.value == 1)) {
 			setLookupValues();
@@ -402,9 +368,7 @@
 		var dataCollection = frmTab.elements;
 		var oOption;
 
-		var frmRefresh = OpenHR.getForm("pollframe", "frmHit");
-
-		iIndex = sRelationString.indexOf("	");
+		var iIndex = sRelationString.indexOf("	");
 		while (iIndex > 0) {
 			iRelationID = sRelationString.substr(0, iIndex);
 
@@ -577,8 +541,7 @@
 	}
 
 	function setLookupValues() {
-		var frmevent = OpenHR.getForm("workframe", "frmEventDetails");
-
+		var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
 		if (frmPopup.txtHaveSetLookupValues.value == 1) {
 			return;
 		}
@@ -601,7 +564,7 @@
 	}
 
 	function setEventValues() {
-		var frmevent = OpenHR.getForm("workframe", "frmEventDetails");
+		var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
 
 		with (frmEvent) {
 			setStartDate(eventStartDateID.value);
@@ -1206,7 +1169,7 @@
 					}
 
 					if (fChildColumnsSelected == true) {
-						iAnswer = OpenHR.messageBox("One or more columns from the child table have been included in the report definition. Changing the child table will remove these columns from the report definition. Do you wish to continue ?", 36, "Calendar Reports");
+						var iAnswer = OpenHR.messageBox("One or more columns from the child table have been included in the report definition. Changing the child table will remove these columns from the report definition. Do you wish to continue ?", 36, "Calendar Reports");
 
 						if (iAnswer == 7) {
 							// cancel and change back !
@@ -1280,7 +1243,7 @@
 			return false;
 		}
 
-		var frmevent = OpenHR.getForm("workframe", "frmEventDetails");
+		var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
 		var frmDef = OpenHR.getForm("workframe", "frmDefinition");
 
 		var plngRow = frmDef.grdEvents.AddItemRowIndex(frmDef.grdEvents.Bookmark);
@@ -1565,7 +1528,7 @@
 																Dim sErrorDescription = ""
 
 																' Get the lookup table records.
-																Dim cmdLookupTables = Server.CreateObject("ADODB.Command")
+																Dim cmdLookupTables = CreateObject("ADODB.Command")
 																cmdLookupTables.CommandText = "spASRIntGetLookupTables"
 																cmdLookupTables.CommandType = 4	' Stored Procedure
 																cmdLookupTables.ActiveConnection = Session("databaseConnection")
@@ -1591,8 +1554,6 @@
 	
 																' Release the ADO command object.
 																cmdLookupTables = Nothing
-
-
 															%>
 														</select>
 													</td>

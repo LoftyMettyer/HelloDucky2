@@ -4,10 +4,12 @@
 <script type="text/javascript">
 	function util_validate_calendarreportdates_data_window_onload() {
 		if (window.frmCalendarData.txtCalendarAction.value == "LOADCALENDAREVENTDETAILSCOLUMNS") {
-			window.parent.frames("calendarworkframe").loadAvailableEventColumns();
+			//window.parent.frames("calendarworkframe").loadAvailableEventColumns();
+			OpenHR.getFrame("calendarworkframe").loadAvailableColumns();
 		}
 		else if (window.frmCalendarData.txtCalendarAction.value == "LOADCALENDAREVENTKEYLOOKUPCOLUMNS") {
-			window.parent.frames("calendarworkframe").loadAvailableLookupColumns();
+			//window.parent.frames("calendarworkframe").loadAvailableLookupColumns();
+			OpenHR.getFrame("calendarworkframe").loadAvailableColumns();
 		}
 	}
 
@@ -79,7 +81,7 @@
 
 			ElseIf Session("CalendarAction") = "LOADCALENDAREVENTKEYLOOKUPCOLUMNS" Then
 
-				Dim cmdKeyLookupCols = Server.CreateObject("ADODB.Command")
+				Dim cmdKeyLookupCols = CreateObject("ADODB.Command")
 				cmdKeyLookupCols.CommandText = "spASRIntGetCalendarReportColumns"
 				cmdKeyLookupCols.CommandType = 4 ' Stored procedure
 				cmdKeyLookupCols.ActiveConnection = Session("databaseConnection")
