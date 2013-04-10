@@ -5,8 +5,8 @@
 
 	function util_def_mailmerge_window_onload() {
 		var fOK;
-		fOK = true;	
-
+		fOK = true;
+		debugger;
 		var sErrMsg = frmUseful.txtErrorDescription.value;
 		if (sErrMsg.length > 0) {
 			fOK = false;
@@ -106,8 +106,6 @@
 		refreshTab4Controls();
 	}
 	function populateTableAvailable(){
-		var i;
-	
 		with (frmDefinition)
 		{
 			//Clear the existing data in the child table combo
@@ -153,7 +151,6 @@
 		}
 	}
 	function TemplateSelect() {
-
 		if (frmDefinition.txtTemplate.value.length == 0) {
 			var sKey = new String("documentspath_");
 			sKey = sKey.concat(OpenHR.getForm("menuframe", "frmMenuInfo").txtDatabase.value);
@@ -206,7 +203,8 @@
 	function displayPage(piPageNumber) {
 	var iLoop;
 	
-	window.parent.frames("refreshframe").document.forms("frmRefresh").submit();
+	//window.parent.frames("refreshframe").document.forms("frmRefresh").submit();
+	OpenHR.submitForm(window.frmRefresh);
 			
 	if (piPageNumber == 1) {
 		div1.style.visibility="visible";
@@ -768,61 +766,60 @@
 	frmUseful.txtChanged.value = 1;
 	refreshTab1Controls();
 }
-	function setRecordsNumeric()
-{
-	var sConvertedValue;
-	var sDecimalSeparator;
-	var sThousandSeparator;
-	var sPoint;
-	
-	sDecimalSeparator = "\\";
-	sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator);
-	var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
+	function setRecordsNumeric() {
+		var sConvertedValue;
+		var sDecimalSeparator;
+		var sThousandSeparator;
+		var sPoint;
 
-	sThousandSeparator = "\\";
-	sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator);
-	var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
+		sDecimalSeparator = "\\";
+		sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator);
+		var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
 
-	sPoint = "\\.";
-	var rePoint = new RegExp(sPoint, "gi");
-	
-	if (frmDefinition.txtChildRecords.value == '') {
-		frmDefinition.txtChildRecords.value = 0;
-	}
+		sThousandSeparator = "\\";
+		sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator);
+		var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
 
-	// Convert the value from locale to UK settings for use with the isNaN funtion.
-	sConvertedValue = new String(frmDefinition.txtChildRecords.value);
-	// Remove any thousand separators.
-	sConvertedValue = sConvertedValue.replace(reThousandSeparator, "");
-	frmDefinition.txtChildRecords.value = sConvertedValue;
+		sPoint = "\\.";
+		var rePoint = new RegExp(sPoint, "gi");
 
-	// Convert any decimal separators to '.'.
-	if (OpenHR.LocaleDecimalSeparator != ".") {
-		// Remove decimal points.
-		sConvertedValue = sConvertedValue.replace(rePoint, "A");
-		// replace the locale decimal marker with the decimal point.
-		sConvertedValue = sConvertedValue.replace(reDecimalSeparator, ".");
-	}
+		if (frmDefinition.txtChildRecords.value == '') {
+			frmDefinition.txtChildRecords.value = 0;
+		}
 
-	if(isNaN(sConvertedValue) == true) {
-		OpenHR.messageBox("No. of records must be numeric.");
-		frmDefinition.txtChildRecords.value = 0;
-	}
-	else {
-		if (sConvertedValue.indexOf(".") >= 0 ) {
-			OpenHR.messageBox("Invalid integer value.");
+		// Convert the value from locale to UK settings for use with the isNaN funtion.
+		sConvertedValue = new String(frmDefinition.txtChildRecords.value);
+		// Remove any thousand separators.
+		sConvertedValue = sConvertedValue.replace(reThousandSeparator, "");
+		frmDefinition.txtChildRecords.value = sConvertedValue;
+
+		// Convert any decimal separators to '.'.
+		if (OpenHR.LocaleDecimalSeparator != ".") {
+			// Remove decimal points.
+			sConvertedValue = sConvertedValue.replace(rePoint, "A");
+			// replace the locale decimal marker with the decimal point.
+			sConvertedValue = sConvertedValue.replace(reDecimalSeparator, ".");
+		}
+
+		if (isNaN(sConvertedValue) == true) {
+			OpenHR.messageBox("No. of records must be numeric.");
 			frmDefinition.txtChildRecords.value = 0;
 		}
 		else {
-			if (frmDefinition.txtChildRecords.value < 0 ) {
-				OpenHR.messageBox("The value cannot be negative.");
+			if (sConvertedValue.indexOf(".") >= 0) {
+				OpenHR.messageBox("Invalid integer value.");
 				frmDefinition.txtChildRecords.value = 0;
 			}
+			else {
+				if (frmDefinition.txtChildRecords.value < 0) {
+					OpenHR.messageBox("The value cannot be negative.");
+					frmDefinition.txtChildRecords.value = 0;
+				}
+			}
 		}
-	}
 
-	refreshTab2Controls();
-}	
+		refreshTab2Controls();
+	}
 	function validateTab2() {
 	var i;
 	var iCount;
@@ -917,638 +914,626 @@
 
 	return (true);
 }
-	function submitDefinition()
-{
-	var i;
-	var iIndex;
-	var sColumnID;
-	var sType;
-	
-	if (validateTab1() == false) {menu_refreshMenu(); return;}
-	if (validateTab2() == false) { menu_refreshMenu(); return; }
-	if (validateTab3() == false) {menu_refreshMenu(); return;}
-	if (validateTab4() == false) {menu_refreshMenu(); return;}
-	if (populateSendForm() == false) {menu_refreshMenu(); return;}
+	function submitDefinition() {
+		var i;
+		var iIndex;
+		var sColumnID;
+		var sType;
 
-	// Now create the validate popup to check that any filters/calcs
-	// etc havent been deleted, or made hidden etc.		
+		if (validateTab1() == false) { menu_refreshMenu(); return; }
+		if (validateTab2() == false) { menu_refreshMenu(); return; }
+		if (validateTab3() == false) { menu_refreshMenu(); return; }
+		if (validateTab4() == false) { menu_refreshMenu(); return; }
+		if (populateSendForm() == false) { menu_refreshMenu(); return; }
 
-	// first populate the validate fields
-	frmValidate.validateBaseFilter.value = frmDefinition.txtBaseFilterID.value;
-	frmValidate.validateBasePicklist.value = frmDefinition.txtBasePicklistID.value;
-	//frmValidate.validateP1Filter.value = frmDefinition.txtParent1FilterID.value;
-	//frmValidate.validateP1Picklist.value = frmDefinition.txtParent1PicklistID.value;
-	//frmValidate.validateP2Filter.value = frmDefinition.txtParent2FilterID.value;
-	//frmValidate.validateP2Picklist.value = frmDefinition.txtParent2PicklistID.value;
-	//frmValidate.validateChildFilter.value = frmDefinition.txtChildFilterID.value;		
-	frmValidate.validateName.value = frmDefinition.txtName.value;
-	
-	if(frmUseful.txtAction.value.toUpperCase() == "EDIT"){
-		frmValidate.validateTimestamp.value = frmOriginalDefinition.txtDefn_Timestamp.value;
-		frmValidate.validateUtilID.value = frmUseful.txtUtilID.value;
-	}
-	else {
-		frmValidate.validateTimestamp.value = 0;
-		frmValidate.validateUtilID.value = 0;
-	}
-	frmValidate.validateCalcs.value = '';
-	
-	if (frmUseful.txtSelectedColumnsLoaded.value == 1) {
-		frmDefinition.ssOleDBGridSelectedColumns.Redraw = false;
-		frmDefinition.ssOleDBGridSelectedColumns.movefirst();
+		// Now create the validate popup to check that any filters/calcs
+		// etc havent been deleted, or made hidden etc.		
 
-		for (i=0; i < frmDefinition.ssOleDBGridSelectedColumns.rows; i++) {
-			if (frmDefinition.ssOleDBGridSelectedColumns.Columns("type").Text == 'E') {
-				if (frmValidate.validateCalcs.value != '') {
-					frmValidate.validateCalcs.value = frmValidate.validateCalcs.value + ',';
+		// first populate the validate fields
+		frmValidate.validateBaseFilter.value = frmDefinition.txtBaseFilterID.value;
+		frmValidate.validateBasePicklist.value = frmDefinition.txtBasePicklistID.value;
+		//frmValidate.validateP1Filter.value = frmDefinition.txtParent1FilterID.value;
+		//frmValidate.validateP1Picklist.value = frmDefinition.txtParent1PicklistID.value;
+		//frmValidate.validateP2Filter.value = frmDefinition.txtParent2FilterID.value;
+		//frmValidate.validateP2Picklist.value = frmDefinition.txtParent2PicklistID.value;
+		//frmValidate.validateChildFilter.value = frmDefinition.txtChildFilterID.value;		
+		frmValidate.validateName.value = frmDefinition.txtName.value;
+
+		if (frmUseful.txtAction.value.toUpperCase() == "EDIT") {
+			frmValidate.validateTimestamp.value = frmOriginalDefinition.txtDefn_Timestamp.value;
+			frmValidate.validateUtilID.value = frmUseful.txtUtilID.value;
+		}
+		else {
+			frmValidate.validateTimestamp.value = 0;
+			frmValidate.validateUtilID.value = 0;
+		}
+		frmValidate.validateCalcs.value = '';
+
+		if (frmUseful.txtSelectedColumnsLoaded.value == 1) {
+			frmDefinition.ssOleDBGridSelectedColumns.Redraw = false;
+			frmDefinition.ssOleDBGridSelectedColumns.movefirst();
+
+			for (i = 0; i < frmDefinition.ssOleDBGridSelectedColumns.rows; i++) {
+				if (frmDefinition.ssOleDBGridSelectedColumns.Columns("type").Text == 'E') {
+					if (frmValidate.validateCalcs.value != '') {
+						frmValidate.validateCalcs.value = frmValidate.validateCalcs.value + ',';
+					}
+					frmValidate.validateCalcs.value = frmValidate.validateCalcs.value + frmDefinition.ssOleDBGridSelectedColumns.Columns("columnid").Text;
 				}
-				frmValidate.validateCalcs.value = frmValidate.validateCalcs.value + frmDefinition.ssOleDBGridSelectedColumns.Columns("columnid").Text;
-			}					
-			frmDefinition.ssOleDBGridSelectedColumns.movenext();
-		}		 
+				frmDefinition.ssOleDBGridSelectedColumns.movenext();
+			}
 
-		frmDefinition.ssOleDBGridSelectedColumns.Redraw = true;
-	}
-	else {
-		var dataCollection = frmOriginalDefinition.elements;
-		if (dataCollection!=null) {
-			for (iIndex=0; iIndex<dataCollection.length; iIndex++)  {
-				sControlName = dataCollection.item(iIndex).name;
-				sControlName = sControlName.substr(0, 20);
-				if (sControlName == "txtReportDefnColumn_") {
-					sDefnString = new String(dataCollection.item(iIndex).value);
-					
-					if (sDefnString.length > 0) {
-						sType = selectedColumnParameter(sDefnString, "TYPE");					
-						sColumnID = selectedColumnParameter(sDefnString, "COLUMNID");					
+			frmDefinition.ssOleDBGridSelectedColumns.Redraw = true;
+		}
+		else {
+			var dataCollection = frmOriginalDefinition.elements;
+			if (dataCollection != null) {
+				for (iIndex = 0; iIndex < dataCollection.length; iIndex++) {
+					sControlName = dataCollection.item(iIndex).name;
+					sControlName = sControlName.substr(0, 20);
+					if (sControlName == "txtReportDefnColumn_") {
+						sDefnString = new String(dataCollection.item(iIndex).value);
 
-						if (sType == 'E') {
-							if (frmValidate.validateCalcs.value != '') {
-								frmValidate.validateCalcs.value = frmValidate.validateCalcs.value + ',';
+						if (sDefnString.length > 0) {
+							sType = selectedColumnParameter(sDefnString, "TYPE");
+							sColumnID = selectedColumnParameter(sDefnString, "COLUMNID");
+
+							if (sType == 'E') {
+								if (frmValidate.validateCalcs.value != '') {
+									frmValidate.validateCalcs.value = frmValidate.validateCalcs.value + ',';
+								}
+								frmValidate.validateCalcs.value = frmValidate.validateCalcs.value + sColumnID;
 							}
-							frmValidate.validateCalcs.value = frmValidate.validateCalcs.value + sColumnID;
 						}
 					}
-				}				
-			}	
+				}
+			}
+		}
+
+		sHiddenGroups = HiddenGroups(frmDefinition.grdAccess);
+		frmValidate.validateHiddenGroups.value = sHiddenGroups;
+
+		sURL = "dialog" +
+			"?validateBaseFilter=" + escape(frmValidate.validateBaseFilter.value) +
+			"&validateBasePicklist=" + escape(frmValidate.validateBasePicklist.value) +
+			"&validateCalcs=" + escape(frmValidate.validateCalcs.value) +
+			"&validateHiddenGroups=" + escape(frmValidate.validateHiddenGroups.value) +
+			"&validateName=" + escape(frmValidate.validateName.value) +
+			"&validateTimestamp=" + escape(frmValidate.validateTimestamp.value) +
+			"&validateUtilID=" + escape(frmValidate.validateUtilID.value) +
+			"&destination=util_validate_mailmerge";
+		openDialog(sURL, (screen.width) / 2, (screen.height) / 3, "no", "no");
+	}
+	function cancelClick() {
+		if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
+			(definitionChanged() == false)) {
+			//todo
+			//window.location.href="defsel";
+			return (false);
+		}
+
+		var answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
+		if (answer == 7) {
+			// No
+			//todo
+			//window.location.href="defsel";
+			return (false);
+		}
+		if (answer == 6) {
+			// Yes
+			okClick();
 		}
 	}
-	
-	sHiddenGroups = HiddenGroups(frmDefinition.grdAccess);
-	frmValidate.validateHiddenGroups.value = sHiddenGroups;
+	function okClick() {
+		OpenHR.disableMenu("menuframe");
+		frmSend.txtSend_reaction.value = "MAILMERGE";
+		submitDefinition();
+	}
+	function saveChanges(psAction, pfPrompt, pfTBOverride) {
+		if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
+			(definitionChanged() == false)) {
+			return 7; //No to saving the changes, as none have been made.
+		}
+		var answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
+		if (answer == 7) {
+			// No
+			return 7;
+		}
+		if (answer == 6) {
+			// Yes
+			okClick();
+		}
 
-	sURL = "dialog" +
-		"?validateBaseFilter=" + escape(frmValidate.validateBaseFilter.value) +
-		"&validateBasePicklist=" + escape(frmValidate.validateBasePicklist.value) +
-		"&validateCalcs=" + escape(frmValidate.validateCalcs.value) +
-		"&validateHiddenGroups=" + escape(frmValidate.validateHiddenGroups.value) +
-		"&validateName=" + escape(frmValidate.validateName.value) +
-		"&validateTimestamp=" + escape(frmValidate.validateTimestamp.value) +
-		"&validateUtilID=" + escape(frmValidate.validateUtilID.value) +
-		"&destination=util_validate_mailmerge";
-	openDialog(sURL, (screen.width)/2,(screen.height)/3, "no", "no");
-}
-	function cancelClick()
-{
-	if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
-		(definitionChanged() == false)) {
-		//todo
-		//window.location.href="defsel";
-		return(false);
+		return 2; //Cancel.
 	}
+	function definitionChanged() {
+		if (frmUseful.txtAction.value.toUpperCase() == "VIEW") {
+			return false;
+		}
 
-	var answer = OpenHR.messageBox("You have changed the current definition. Save changes ?",3);
-	if (answer == 7) {
-		// No
-		//todo
-		//window.location.href="defsel";
-		return (false);
-	}
-	if (answer == 6) {
-		// Yes
-		okClick();
-	}
-}
-	function okClick()
-{
-	OpenHR.disableMenu("menuframe");
-	frmSend.txtSend_reaction.value = "MAILMERGE";
-	submitDefinition();
-}
-	function saveChanges(psAction, pfPrompt, pfTBOverride)
-{
-	if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
-		(definitionChanged() == false)) {
-		return 7; //No to saving the changes, as none have been made.
-	}
-	var answer = OpenHR.messageBox("You have changed the current definition. Save changes ?",3);
-	if (answer == 7) {
-		// No
-		return 7;
-	}
-	if (answer == 6) {
-		// Yes
-		okClick();
-	}
-
-	return 2; //Cancel.
-}
-	function definitionChanged() 
-{
-	if (frmUseful.txtAction.value.toUpperCase() == "VIEW") 
-	{
-		return false;
-	}
-
-	if (frmUseful.txtChanged.value == 1) 
-	{
-		return true;
-	}
-	else {
-		if (frmUseful.txtAction.value.toUpperCase() != "NEW") {
-			// Compare the tab 1 controls with the original values.
-			if (frmDefinition.txtName.value != frmOriginalDefinition.txtDefn_Name.value) 
-			{
-				return true;
-			}
-			if (frmDefinition.txtDescription.value != frmOriginalDefinition.txtDefn_Description.value) {
-				return true;
-			}
-			if (frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].value != frmOriginalDefinition.txtDefn_BaseTableID.value) {
-				return true;
-			}
-
-			if (frmOriginalDefinition.txtDefn_PicklistID.value > 0) {
-				if (frmDefinition.optRecordSelection2.checked == false) {
+		if (frmUseful.txtChanged.value == 1) {
+			return true;
+		}
+		else {
+			if (frmUseful.txtAction.value.toUpperCase() != "NEW") {
+				// Compare the tab 1 controls with the original values.
+				if (frmDefinition.txtName.value != frmOriginalDefinition.txtDefn_Name.value) {
 					return true;
 				}
-				else {
-					if (frmDefinition.txtBasePicklistID.value != frmOriginalDefinition.txtDefn_PicklistID.value) {
-						return true;
-					}
+				if (frmDefinition.txtDescription.value != frmOriginalDefinition.txtDefn_Description.value) {
+					return true;
 				}
-			}
-			else {
-				if (frmOriginalDefinition.txtDefn_FilterID.value > 0) {
-					if (frmDefinition.optRecordSelection3.checked == false) {
+				if (frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].value != frmOriginalDefinition.txtDefn_BaseTableID.value) {
+					return true;
+				}
+
+				if (frmOriginalDefinition.txtDefn_PicklistID.value > 0) {
+					if (frmDefinition.optRecordSelection2.checked == false) {
 						return true;
 					}
 					else {
-						if (frmDefinition.txtBaseFilterID.value != frmOriginalDefinition.txtDefn_FilterID.value) {
+						if (frmDefinition.txtBasePicklistID.value != frmOriginalDefinition.txtDefn_PicklistID.value) {
 							return true;
 						}
 					}
 				}
 				else {
-					if (frmDefinition.optRecordSelection1.checked == false) {
-						return true;
-					}
-				}
-			}
-
-			// Compare the tab 4 controls with the original values.
-			if (frmDefinition.txtTemplate.value != frmOriginalDefinition.txtDefn_TemplateFileName.value) {
-				return true;
-			}
-
-			if (frmDefinition.chkSave.checked.toString() != frmOriginalDefinition.txtDefn_OutputSave.value) {
-				return true;
-			}
-
-			if (frmDefinition.txtSaveFile.value != frmOriginalDefinition.txtDefn_OutputFileName.value) {
-				return true;
-			}
-
-			if (frmDefinition.cboEmail.options.selectedIndex != -1) {
-				if (frmDefinition.cboEmail.options(frmDefinition.cboEmail.options.selectedIndex).value != frmOriginalDefinition.txtDefn_EmailAddrID.value) {
-					return true;
-				}
-			}
-
-			if (frmDefinition.txtSubject.value != frmOriginalDefinition.txtDefn_EmailSubject.value) {
-				return true;
-			}
-
-			if ((frmDefinition.optDestination1.checked != true) && (frmDefinition.chkOutputScreen.checked.toString() != frmOriginalDefinition.txtDefn_OutputScreen.value)) {
-				return true;
-			}
-			if (frmDefinition.chkAttachment.checked.toString() != frmOriginalDefinition.txtDefn_EmailAsAttachment.value) {
-				return true;
-			}
-
-			if (frmDefinition.txtAttachmentName.value != frmOriginalDefinition.txtDefn_EmailAttachmentName.value) {
-				return true;
-			}
-
-			if (frmDefinition.chkSuppressBlanks.checked.toString() != frmOriginalDefinition.txtDefn_SuppressBlanks.value) {
-				return true;
-			}
-			if (frmDefinition.chkPause.checked.toString() != frmOriginalDefinition.txtDefn_PauseBeforeMerge.value) {
-				return true;
-			}
-
-			if ((frmDefinition.optDestination0.checked == true) && (frmDefinition.cboPrinterName.options.selectedIndex != -1)) {
-				if (frmDefinition.cboPrinterName.options(frmDefinition.cboPrinterName.options.selectedIndex).text != frmOriginalDefinition.txtDefn_OutputPrinterName.value) {
-            
-					if ((frmDefinition.cboPrinterName.options(frmDefinition.cboPrinterName.options.selectedIndex).text == "<Default Printer>") &&
-					(frmOriginalDefinition.txtDefn_OutputPrinterName.value.length == 0)) {
-						//<Default Printer> is stored as "", so no change.
-						return false;
-					}
-					else
-					{
-						return true;
-					}                                  
-				}
-			}
-           
-			if ((frmDefinition.optDestination2.checked == true) && (frmDefinition.cboDMEngine.options.selectedIndex != -1)) {
-				if (frmDefinition.cboDMEngine.options(frmDefinition.cboDMEngine.options.selectedIndex).text != frmOriginalDefinition.txtDefn_OutputPrinterName.value) {
-
-					if ((frmDefinition.cboDMEngine.options(frmDefinition.cboDMEngine.options.selectedIndex).text == "<Default Printer>") &&
-            (frmOriginalDefinition.txtDefn_OutputPrinterName.value.length == 0)) {
-						//<Default Printer> is stored as "", so no change.
-						return false;
+					if (frmOriginalDefinition.txtDefn_FilterID.value > 0) {
+						if (frmDefinition.optRecordSelection3.checked == false) {
+							return true;
+						}
+						else {
+							if (frmDefinition.txtBaseFilterID.value != frmOriginalDefinition.txtDefn_FilterID.value) {
+								return true;
+							}
+						}
 					}
 					else {
-						return true;
-					}                                  
-          
-				}
-			}
-
-    
-		}
-		return false;
-    
-	}
-}
-	function spinRecords(pfUp)
-{
-	var iRecords = frmDefinition.txtChildRecords.value;
-	if (pfUp == true) {
-		iRecords = ++iRecords;
-	}
-	else {
-		if (iRecords > 0) {
-			iRecords = iRecords - 1;
-		}
-	}
-		
-	frmDefinition.txtChildRecords.value = iRecords;
-
-	refreshTab2Controls();
-}
-	function getTableName(piTableID)
-{
-	var i;
-	var sTableName = new String("");
-	
-	var sReqdControlName = new String("txtTableName_");
-	sReqdControlName = sReqdControlName.concat(piTableID);
-
-	var dataCollection = frmTables.elements;
-	if (dataCollection!=null) {
-		for (i=0; i<dataCollection.length; i++)  {
-			var sControlName = dataCollection.item(i).name;
-					
-			if (sControlName == sReqdControlName) {
-				sTableName = dataCollection.item(i).value;
-				break;
-			}
-		}
-	}	
-
-	return sTableName;
-}
-	function columnSwap(pfSelect)
-{
-	var i;
-	var iColumnsSwapped;
-	var sAddedCalcIDs;
-	
-	sAddedCalcIDs = "";
-	iColumnsSwapped = 0;
-	
-	// Do nothing of the Add button is disabled (read-only mode).
-	if (frmUseful.txtAction.value.toUpperCase() == "VIEW") return;
-	
-	if (pfSelect == true) {
-		var grdFrom = frmDefinition.ssOleDBGridAvailableColumns;
-		var grdTo = frmDefinition.ssOleDBGridSelectedColumns;
-	}
-	else {
-		var grdFrom = frmDefinition.ssOleDBGridSelectedColumns;
-		var grdTo = frmDefinition.ssOleDBGridAvailableColumns;
-
-		// Check if the column being removed is in the sort columns collection.
-		iCount = grdFrom.selbookmarks.Count();		
-		for (i=iCount-1; i >= 0; i--) {
-			grdFrom.bookmark = grdFrom.selbookmarks(i);
-			iRowIndex = grdFrom.AddItemRowIndex(grdFrom.Bookmark);
-					
-			// Remove the column from the sort columns collection.
-			if (grdFrom.columns(0).text == "C") {
-				if (frmUseful.txtSortLoaded.value == 1) {
-					if (frmDefinition.ssOleDBGridSortOrder.Rows > 0) {
-						frmDefinition.ssOleDBGridSortOrder.Redraw = false;
-						frmDefinition.ssOleDBGridSortOrder.MoveFirst();
-
-						iCount2 = frmDefinition.ssOleDBGridSortOrder.rows;
-						for (i2=0;i2<iCount2; i2++) {	
-							if (grdFrom.columns(2).text == frmDefinition.ssOleDBGridSortOrder.Columns("id").Text) {
-								// The selected column is a sort column. Prompt the user to confirm the deselection.
-
-								sColumnName = frmDefinition.ssOleDBGridSortOrder.Columns(1).text;
-								if (iCount > 1 ) {
-									iResponse = OpenHR.messageBox("Removing the '" + sColumnName + "' column will also remove it from the definition sort order.\n\nDo you still want to remove this column ?",3,"Mail Merge");
-								}
-								else {
-									iResponse = OpenHR.messageBox("Removing the '" + sColumnName + "' column will also remove it from the definition sort order.\n\nDo you still want to remove this column ?",4,"Mail Merge");
-								}
-								
-								if (iResponse == 2) {
-									// Cancel.
-									frmDefinition.ssOleDBGridSortOrder.Redraw = true;
-									return;
-								}
-								
-								if (iResponse == 7) {
-									// No. 
-									grdFrom.selbookmarks.remove(i);
-								}
-									
-								break;		
-							}										
-							else {
-								frmDefinition.ssOleDBGridSortOrder.MoveNext();
-							}
-						}     
-
-						frmDefinition.ssOleDBGridSortOrder.Redraw = true;
+						if (frmDefinition.optRecordSelection1.checked == false) {
+							return true;
+						}
 					}
 				}
-				else {
-					var dataCollection = frmOriginalDefinition.elements;
-					if (dataCollection!=null) {
-						for (iIndex=0; iIndex<dataCollection.length; iIndex++) {
-							sControlName = dataCollection.item(iIndex).name;
-							sControlName = sControlName.substr(0, 19);
-							if (sControlName == "txtReportDefnOrder_") {
-								if (grdFrom.columns(2).text == sortColumnParameter(dataCollection.item(iIndex).value, "COLUMNID")) {
+
+				// Compare the tab 4 controls with the original values.
+				if (frmDefinition.txtTemplate.value != frmOriginalDefinition.txtDefn_TemplateFileName.value) {
+					return true;
+				}
+
+				if (frmDefinition.chkSave.checked.toString() != frmOriginalDefinition.txtDefn_OutputSave.value) {
+					return true;
+				}
+
+				if (frmDefinition.txtSaveFile.value != frmOriginalDefinition.txtDefn_OutputFileName.value) {
+					return true;
+				}
+
+				if (frmDefinition.cboEmail.options.selectedIndex != -1) {
+					if (frmDefinition.cboEmail.options(frmDefinition.cboEmail.options.selectedIndex).value != frmOriginalDefinition.txtDefn_EmailAddrID.value) {
+						return true;
+					}
+				}
+
+				if (frmDefinition.txtSubject.value != frmOriginalDefinition.txtDefn_EmailSubject.value) {
+					return true;
+				}
+
+				if ((frmDefinition.optDestination1.checked != true) && (frmDefinition.chkOutputScreen.checked.toString() != frmOriginalDefinition.txtDefn_OutputScreen.value)) {
+					return true;
+				}
+				if (frmDefinition.chkAttachment.checked.toString() != frmOriginalDefinition.txtDefn_EmailAsAttachment.value) {
+					return true;
+				}
+
+				if (frmDefinition.txtAttachmentName.value != frmOriginalDefinition.txtDefn_EmailAttachmentName.value) {
+					return true;
+				}
+
+				if (frmDefinition.chkSuppressBlanks.checked.toString() != frmOriginalDefinition.txtDefn_SuppressBlanks.value) {
+					return true;
+				}
+				if (frmDefinition.chkPause.checked.toString() != frmOriginalDefinition.txtDefn_PauseBeforeMerge.value) {
+					return true;
+				}
+
+				if ((frmDefinition.optDestination0.checked == true) && (frmDefinition.cboPrinterName.options.selectedIndex != -1)) {
+					if (frmDefinition.cboPrinterName.options(frmDefinition.cboPrinterName.options.selectedIndex).text != frmOriginalDefinition.txtDefn_OutputPrinterName.value) {
+
+						if ((frmDefinition.cboPrinterName.options(frmDefinition.cboPrinterName.options.selectedIndex).text == "<Default Printer>") &&
+						(frmOriginalDefinition.txtDefn_OutputPrinterName.value.length == 0)) {
+							//<Default Printer> is stored as "", so no change.
+							return false;
+						}
+						else {
+							return true;
+						}
+					}
+				}
+
+				if ((frmDefinition.optDestination2.checked == true) && (frmDefinition.cboDMEngine.options.selectedIndex != -1)) {
+					if (frmDefinition.cboDMEngine.options(frmDefinition.cboDMEngine.options.selectedIndex).text != frmOriginalDefinition.txtDefn_OutputPrinterName.value) {
+
+						if ((frmDefinition.cboDMEngine.options(frmDefinition.cboDMEngine.options.selectedIndex).text == "<Default Printer>") &&
+							(frmOriginalDefinition.txtDefn_OutputPrinterName.value.length == 0)) {
+							//<Default Printer> is stored as "", so no change.
+							return false;
+						}
+						else {
+							return true;
+						}
+
+					}
+				}
+
+
+			}
+			return false;
+
+		}
+	}
+	function spinRecords(pfUp) {
+		var iRecords = frmDefinition.txtChildRecords.value;
+		if (pfUp == true) {
+			iRecords = ++iRecords;
+		}
+		else {
+			if (iRecords > 0) {
+				iRecords = iRecords - 1;
+			}
+		}
+
+		frmDefinition.txtChildRecords.value = iRecords;
+
+		refreshTab2Controls();
+	}
+	function getTableName(piTableID) {
+		var i;
+		var sTableName = new String("");
+
+		var sReqdControlName = new String("txtTableName_");
+		sReqdControlName = sReqdControlName.concat(piTableID);
+
+		var dataCollection = frmTables.elements;
+		if (dataCollection != null) {
+			for (i = 0; i < dataCollection.length; i++) {
+				var sControlName = dataCollection.item(i).name;
+
+				if (sControlName == sReqdControlName) {
+					sTableName = dataCollection.item(i).value;
+					break;
+				}
+			}
+		}
+
+		return sTableName;
+	}
+	function columnSwap(pfSelect) {
+		var i;
+		var iColumnsSwapped;
+		var sAddedCalcIDs;
+
+		sAddedCalcIDs = "";
+		iColumnsSwapped = 0;
+
+		// Do nothing of the Add button is disabled (read-only mode).
+		if (frmUseful.txtAction.value.toUpperCase() == "VIEW") return;
+
+		if (pfSelect == true) {
+			var grdFrom = frmDefinition.ssOleDBGridAvailableColumns;
+			var grdTo = frmDefinition.ssOleDBGridSelectedColumns;
+		}
+		else {
+			var grdFrom = frmDefinition.ssOleDBGridSelectedColumns;
+			var grdTo = frmDefinition.ssOleDBGridAvailableColumns;
+
+			// Check if the column being removed is in the sort columns collection.
+			iCount = grdFrom.selbookmarks.Count();
+			for (i = iCount - 1; i >= 0; i--) {
+				grdFrom.bookmark = grdFrom.selbookmarks(i);
+				iRowIndex = grdFrom.AddItemRowIndex(grdFrom.Bookmark);
+
+				// Remove the column from the sort columns collection.
+				if (grdFrom.columns(0).text == "C") {
+					if (frmUseful.txtSortLoaded.value == 1) {
+						if (frmDefinition.ssOleDBGridSortOrder.Rows > 0) {
+							frmDefinition.ssOleDBGridSortOrder.Redraw = false;
+							frmDefinition.ssOleDBGridSortOrder.MoveFirst();
+
+							iCount2 = frmDefinition.ssOleDBGridSortOrder.rows;
+							for (i2 = 0; i2 < iCount2; i2++) {
+								if (grdFrom.columns(2).text == frmDefinition.ssOleDBGridSortOrder.Columns("id").Text) {
 									// The selected column is a sort column. Prompt the user to confirm the deselection.
-									sColumnName = grdFrom.columns(3).text;
-									if (iCount > 1 ) {
-										iResponse = OpenHR.messageBox("Removing the '" + sColumnName + "' column will also remove it from the definition sort order.\n\nDo you still want to remove this column ?",3,"Mail Merge");
+
+									sColumnName = frmDefinition.ssOleDBGridSortOrder.Columns(1).text;
+									if (iCount > 1) {
+										iResponse = OpenHR.messageBox("Removing the '" + sColumnName + "' column will also remove it from the definition sort order.\n\nDo you still want to remove this column ?", 3, "Mail Merge");
 									}
 									else {
-										iResponse = OpenHR.messageBox("Removing the '" + sColumnName + "' column will also remove it from the definition sort order.\n\nDo you still want to remove this column ?",4,"Mail Merge");
+										iResponse = OpenHR.messageBox("Removing the '" + sColumnName + "' column will also remove it from the definition sort order.\n\nDo you still want to remove this column ?", 4, "Mail Merge");
 									}
-								
+
 									if (iResponse == 2) {
 										// Cancel.
 										frmDefinition.ssOleDBGridSortOrder.Redraw = true;
 										return;
 									}
-								
-									if (iResponse == 7)	{
+
+									if (iResponse == 7) {
 										// No. 
 										grdFrom.selbookmarks.remove(i);
 									}
-										
-									break;		
-								}		
+
+									break;
+								}
+								else {
+									frmDefinition.ssOleDBGridSortOrder.MoveNext();
+								}
+							}
+
+							frmDefinition.ssOleDBGridSortOrder.Redraw = true;
+						}
+					}
+					else {
+						var dataCollection = frmOriginalDefinition.elements;
+						if (dataCollection != null) {
+							for (iIndex = 0; iIndex < dataCollection.length; iIndex++) {
+								sControlName = dataCollection.item(iIndex).name;
+								sControlName = sControlName.substr(0, 19);
+								if (sControlName == "txtReportDefnOrder_") {
+									if (grdFrom.columns(2).text == sortColumnParameter(dataCollection.item(iIndex).value, "COLUMNID")) {
+										// The selected column is a sort column. Prompt the user to confirm the deselection.
+										sColumnName = grdFrom.columns(3).text;
+										if (iCount > 1) {
+											iResponse = OpenHR.messageBox("Removing the '" + sColumnName + "' column will also remove it from the definition sort order.\n\nDo you still want to remove this column ?", 3, "Mail Merge");
+										}
+										else {
+											iResponse = OpenHR.messageBox("Removing the '" + sColumnName + "' column will also remove it from the definition sort order.\n\nDo you still want to remove this column ?", 4, "Mail Merge");
+										}
+
+										if (iResponse == 2) {
+											// Cancel.
+											frmDefinition.ssOleDBGridSortOrder.Redraw = true;
+											return;
+										}
+
+										if (iResponse == 7) {
+											// No. 
+											grdFrom.selbookmarks.remove(i);
+										}
+
+										break;
+									}
+								}
 							}
 						}
 					}
 				}
 			}
 		}
-	}
-	
-	grdFrom.Redraw = false;
-	grdTo.Redraw = false;
-	
-	grdTo.selbookmarks.removeall();
-		
-	if (grdFrom.SelBookmarks.count() > 0) {
-		iHiddenCalcCount = 0;
-		
-		for (i=0; i < grdFrom.selbookmarks.Count(); i++) {
-			grdFrom.bookmark = grdFrom.selbookmarks(i);
 
-			// Check if the user is selecting a hidden calc, but is not the report owner.
-			if ((pfSelect == true) &&
-				(frmDefinition.txtOwner.value.toUpperCase() != frmUseful.txtUserName.value.toUpperCase()) &&
-				(grdFrom.columns(6).text == "Y")) {
-				
-				sCalcName = new String(grdFrom.columns(3).text);
-				iStringIndex = sCalcName.indexOf("<Calc> ");
-				if (iStringIndex >= 0) {
-					sCalcName = sCalcName.substring(iStringIndex + 7, sCalcName.length);
-				}
-				OpenHR.messageBox("Cannot include the '" + sCalcName + "' calculation.\nIts hidden and you are not the creator of this definition.",64,"Mail Merge");
-			}
-			else {	
-				iColumnsSwapped = iColumnsSwapped + 1;
-				
-				if (grdFrom.columns(0).text == 'C') {
-					sAddline = grdFrom.columns(0).text + 
-								'	' + grdFrom.columns(1).text + 
-								'	' + grdFrom.columns(2).text
-						
-					if (pfSelect == true) { 
-						sAddline = sAddline + '	' + getTableName(grdFrom.columns(1).text) + '.' + grdFrom.columns(3).text 
+		grdFrom.Redraw = false;
+		grdTo.Redraw = false;
+
+		grdTo.selbookmarks.removeall();
+
+		if (grdFrom.SelBookmarks.count() > 0) {
+			iHiddenCalcCount = 0;
+
+			for (i = 0; i < grdFrom.selbookmarks.Count() ; i++) {
+				grdFrom.bookmark = grdFrom.selbookmarks(i);
+
+				// Check if the user is selecting a hidden calc, but is not the report owner.
+				if ((pfSelect == true) &&
+					(frmDefinition.txtOwner.value.toUpperCase() != frmUseful.txtUserName.value.toUpperCase()) &&
+					(grdFrom.columns(6).text == "Y")) {
+
+					sCalcName = new String(grdFrom.columns(3).text);
+					iStringIndex = sCalcName.indexOf("<Calc> ");
+					if (iStringIndex >= 0) {
+						sCalcName = sCalcName.substring(iStringIndex + 7, sCalcName.length);
 					}
-					else {
-						sAddline = sAddline + '	' + grdFrom.columns(3).text.substring(grdFrom.columns(3).text.indexOf(".")+1) 							
-					}
-							
-					sAddline = sAddline + '	' + grdFrom.columns(4).text + 
-																'	' + grdFrom.columns(5).text + 
-																'	' + grdFrom.columns(6).text + 
-																'	' + grdFrom.columns(7).text;
+					OpenHR.messageBox("Cannot include the '" + sCalcName + "' calculation.\nIts hidden and you are not the creator of this definition.", 64, "Mail Merge");
 				}
 				else {
-					sAddline = grdFrom.columns(0).text + 
-								'	' + grdFrom.columns(1).text + 
-								'	' + grdFrom.columns(2).text;
-								
-					if (pfSelect == true) {
-						sAddline = sAddline + '	<Calc> ' + grdFrom.columns(3).text;
+					iColumnsSwapped = iColumnsSwapped + 1;
+
+					if (grdFrom.columns(0).text == 'C') {
+						sAddline = grdFrom.columns(0).text +
+									'	' + grdFrom.columns(1).text +
+									'	' + grdFrom.columns(2).text
+
+						if (pfSelect == true) {
+							sAddline = sAddline + '	' + getTableName(grdFrom.columns(1).text) + '.' + grdFrom.columns(3).text
+						}
+						else {
+							sAddline = sAddline + '	' + grdFrom.columns(3).text.substring(grdFrom.columns(3).text.indexOf(".") + 1)
+						}
+
+						sAddline = sAddline + '	' + grdFrom.columns(4).text +
+																	'	' + grdFrom.columns(5).text +
+																	'	' + grdFrom.columns(6).text +
+																	'	' + grdFrom.columns(7).text;
 					}
 					else {
+						sAddline = grdFrom.columns(0).text +
+									'	' + grdFrom.columns(1).text +
+									'	' + grdFrom.columns(2).text;
+
+						if (pfSelect == true) {
+							sAddline = sAddline + '	<Calc> ' + grdFrom.columns(3).text;
+						}
+						else {
+							sTemp = grdFrom.columns(3).text;
+							iTemp = sTemp.indexOf("<Calc> ");
+							if (iTemp >= 0) {
+								sTemp = sTemp.substring(iTemp + 7);
+							}
+							sAddline = sAddline + '	' + sTemp;
+						}
+
+						sAddline = sAddline +
+									'	' + grdFrom.columns(4).text +
+									'	' + grdFrom.columns(5).text +
+									'	' + grdFrom.columns(6).text +
+									'	' + grdFrom.columns(7).text;
+					}
+
+					if (pfSelect == true) {
+						sAddline = sAddline +
+							'	' + grdFrom.columns(3).text +
+							'	' + '0' + '	' + '0' + '	' + '0';
+
+						// Remember which calcs we are adding to the report so that
+						// we can get there return types below.						
+						if (grdFrom.columns(0).text == "E") {
+							sAddedCalcIDs = sAddedCalcIDs + grdFrom.columns(2).text + ",";
+						}
+					}
+
+					if (grdFrom.columns(6).text == "Y") {
+						iHiddenCalcCount = iHiddenCalcCount + 1;
+					}
+
+					if (pfSelect == true) {
+						grdTo.MoveLast();
+						grdTo.AddItem(sAddline);
+						grdTo.MoveLast();
+					}
+					else {
+						/* Find the right spot to add the row. */
+						//grdTo.redraw = false;
+
+						sFromType = grdFrom.columns(0).text;
+						sFromTableID = grdFrom.columns(1).text;
+
 						sTemp = grdFrom.columns(3).text;
 						iTemp = sTemp.indexOf("<Calc> ");
 						if (iTemp >= 0) {
 							sTemp = sTemp.substring(iTemp + 7);
 						}
-						sAddline = sAddline + '	' + sTemp;
-					}
+						sFromDisplay = replace(sTemp, "_", " ");
+						sFromDisplay = sFromDisplay.substring(sFromDisplay.indexOf(".") + 1)
+						sFromDisplay = sFromDisplay.toUpperCase();
 
-					sAddline = sAddline + 
-								'	' + grdFrom.columns(4).text + 
-								'	' + grdFrom.columns(5).text + 
-								'	' + grdFrom.columns(6).text + 
-								'	' + grdFrom.columns(7).text;
-				}
+						fIsFromTblAvailable = (sFromTableID == frmDefinition.cboTblAvailable.options[frmDefinition.cboTblAvailable.selectedIndex].value);
 
-				if (pfSelect == true) {
-					sAddline = sAddline + 
-						'	' +	grdFrom.columns(3).text +
-						'	' + '0' + '	' + '0' + '	' + '0';
+						fIsFromTypeAvailable = (((sFromType == "C") && (frmDefinition.optColumns.checked)) ||
+							((sFromType == "E") && (frmDefinition.optCalc.checked)))
 
-					// Remember which calcs we are adding to the report so that
-					// we can get there return types below.						
-					if (grdFrom.columns(0).text == "E") {
-						sAddedCalcIDs = sAddedCalcIDs + grdFrom.columns(2).text + ",";				
-					}	
-				}
-			
-				if (grdFrom.columns(6).text == "Y")	{
-					iHiddenCalcCount = iHiddenCalcCount + 1;
-				}
-			
-				if (pfSelect == true) {
-					grdTo.MoveLast();
-					grdTo.AddItem(sAddline);
-					grdTo.MoveLast();
-				}
-				else {
-					/* Find the right spot to add the row. */
-					//grdTo.redraw = false;
-					
-					sFromType = grdFrom.columns(0).text;				
-					sFromTableID = grdFrom.columns(1).text;				
-					
-					sTemp = grdFrom.columns(3).text;
-					iTemp = sTemp.indexOf("<Calc> ");
-					if (iTemp >= 0) {
-						sTemp = sTemp.substring(iTemp + 7);
-					}
-					sFromDisplay = replace(sTemp,"_"," ");
-					sFromDisplay = sFromDisplay.substring(sFromDisplay.indexOf(".")+1)
-					sFromDisplay = sFromDisplay.toUpperCase();
-				
-					fIsFromTblAvailable = (sFromTableID == frmDefinition.cboTblAvailable.options[frmDefinition.cboTblAvailable.selectedIndex].value);
-					
-					fIsFromTypeAvailable = (((sFromType == "C") && (frmDefinition.optColumns.checked)) ||
-						((sFromType == "E") && (frmDefinition.optCalc.checked)))
-											
-					fFound = true;
+						fFound = true;
 
-					if (fIsFromTblAvailable && fIsFromTypeAvailable) {
-						fFound = false;
-						grdTo.movefirst();
-						grdTo.Redraw = true;
-						for(i2=0; i2<grdTo.rows(); i2++) {
-							grdTo.Redraw = false;
-							
-							sToType = grdTo.columns(0).text;				
-							sToTableID = grdTo.columns(1).text;				
-							sToDisplay = replace(grdTo.columns(3).text.toUpperCase(),"_"," ");				
-							
-							if ((sFromType == "C") && (frmDefinition.optColumns.checked)) {
-								// Column
-								if ((sToType == sFromType) && (sToDisplay > sFromDisplay)) {
-									fFound = true;
+						if (fIsFromTblAvailable && fIsFromTypeAvailable) {
+							fFound = false;
+							grdTo.movefirst();
+							grdTo.Redraw = true;
+							for (i2 = 0; i2 < grdTo.rows() ; i2++) {
+								grdTo.Redraw = false;
+
+								sToType = grdTo.columns(0).text;
+								sToTableID = grdTo.columns(1).text;
+								sToDisplay = replace(grdTo.columns(3).text.toUpperCase(), "_", " ");
+
+								if ((sFromType == "C") && (frmDefinition.optColumns.checked)) {
+									// Column
+									if ((sToType == sFromType) && (sToDisplay > sFromDisplay)) {
+										fFound = true;
+									}
 								}
-							}
-							else {
-								// Calculation
-								if ((sToType == sFromType) && 
-									(sToDisplay > sFromDisplay) &&
-									(frmDefinition.optCalc.checked)) {
-									fFound = true;
+								else {
+									// Calculation
+									if ((sToType == sFromType) &&
+										(sToDisplay > sFromDisplay) &&
+										(frmDefinition.optCalc.checked)) {
+										fFound = true;
+									}
 								}
-							}
-							
-							if (fFound == true) {
-								grdTo.additem(sAddline,i2);
-								break;
-							}
-							grdTo.movenext();
-						} //end for loop
-					}
-						
-					if (fFound == false) {
-						grdTo.additem(sAddline);
-					}		
-				}
-				if (i == grdFrom.selbookmarks.Count() - 1) {
-					grdTo.Redraw = true;
-				}
-				grdTo.SelBookmarks.Add(grdTo.Bookmark);
-			}			
-		}
-		grdTo.Redraw = true;
-		grdFrom.Redraw = true;
 
-		if (iColumnsSwapped > 0) {
-		
-			iCount = grdFrom.selbookmarks.Count();		
-			for (i=iCount-1; i >= 0; i--) {
-				grdFrom.bookmark = grdFrom.selbookmarks(i);
-				iRowIndex = grdFrom.AddItemRowIndex(grdFrom.Bookmark);
-        
-				//NPG20111010 Fault HRPRO-1798
-				if (iRowIndex > (grdFrom.rows - 1)) iRowIndex = grdFrom.rows - 1;
-				
-				if ((grdFrom.Rows == 1) && (iRowIndex == 0)) {
-					grdFrom.RemoveAll();
-					if (pfSelect == false) {
-						// Clear the sort columns collection.
-						removeSortColumn(0, 0);
-					}
-				}
-				else {
-					if (pfSelect == false) {
-						// Remove the column from the sort columns collection.
-						if (grdFrom.columns(0).text == "C") {
-							removeSortColumn(grdFrom.columns(2).text, 0);
+								if (fFound == true) {
+									grdTo.additem(sAddline, i2);
+									break;
+								}
+								grdTo.movenext();
+							} //end for loop
 						}
-							
-						grdFrom.RemoveItem(iRowIndex);
+
+						if (fFound == false) {
+							grdTo.additem(sAddline);
+						}
+					}
+					if (i == grdFrom.selbookmarks.Count() - 1) {
+						grdTo.Redraw = true;
+					}
+					grdTo.SelBookmarks.Add(grdTo.Bookmark);
+				}
+			}
+			grdTo.Redraw = true;
+			grdFrom.Redraw = true;
+
+			if (iColumnsSwapped > 0) {
+
+				iCount = grdFrom.selbookmarks.Count();
+				for (i = iCount - 1; i >= 0; i--) {
+					grdFrom.bookmark = grdFrom.selbookmarks(i);
+					iRowIndex = grdFrom.AddItemRowIndex(grdFrom.Bookmark);
+
+					//NPG20111010 Fault HRPRO-1798
+					if (iRowIndex > (grdFrom.rows - 1)) iRowIndex = grdFrom.rows - 1;
+
+					if ((grdFrom.Rows == 1) && (iRowIndex == 0)) {
+						grdFrom.RemoveAll();
+						if (pfSelect == false) {
+							// Clear the sort columns collection.
+							removeSortColumn(0, 0);
+						}
 					}
 					else {
-						if ((frmDefinition.txtOwner.value.toUpperCase() == frmUseful.txtUserName.value.toUpperCase()) ||
-							(grdFrom.columns(6).text != "Y")) {
+						if (pfSelect == false) {
+							// Remove the column from the sort columns collection.
+							if (grdFrom.columns(0).text == "C") {
+								removeSortColumn(grdFrom.columns(2).text, 0);
+							}
+
 							grdFrom.RemoveItem(iRowIndex);
+						}
+						else {
+							if ((frmDefinition.txtOwner.value.toUpperCase() == frmUseful.txtUserName.value.toUpperCase()) ||
+								(grdFrom.columns(6).text != "Y")) {
+								grdFrom.RemoveItem(iRowIndex);
+							}
 						}
 					}
 				}
-			}
-		
-			if (iHiddenCalcCount > 0 ) {
-				iOldCalcCount = new Number(frmSelectionAccess.calcsHiddenCount.value);
-				if (pfSelect == true) {
-					frmSelectionAccess.calcsHiddenCount.value = iOldCalcCount + iHiddenCalcCount;
+
+				if (iHiddenCalcCount > 0) {
+					iOldCalcCount = new Number(frmSelectionAccess.calcsHiddenCount.value);
+					if (pfSelect == true) {
+						frmSelectionAccess.calcsHiddenCount.value = iOldCalcCount + iHiddenCalcCount;
+					}
+					else {
+						frmSelectionAccess.calcsHiddenCount.value = iOldCalcCount - iHiddenCalcCount;
+					}
+
+					refreshTab1Controls();
 				}
-				else {
-					frmSelectionAccess.calcsHiddenCount.value = iOldCalcCount - iHiddenCalcCount;
-				}
-				
-				refreshTab1Controls();
 			}
 		}
-	}
 
-	if (iColumnsSwapped > 0) {
-		frmUseful.txtChanged.value = 1;
+		if (iColumnsSwapped > 0) {
+			frmUseful.txtChanged.value = 1;
 
-		if(sAddedCalcIDs.length > 0) {
-			// Get the return types of the added calcs.
-			var frmGetDataForm = OpenHR.getForm("dataframe","frmGetData");
-			frmGetDataForm.txtAction.value = "GETEXPRESSIONRETURNTYPES";
-			frmGetDataForm.txtParam1.value = sAddedCalcIDs;
-			data_refreshData();
-			OpenHR.getForm("dataframe","")
+			if (sAddedCalcIDs.length > 0) {
+				// Get the return types of the added calcs.
+				var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
+				frmGetDataForm.txtAction.value = "GETEXPRESSIONRETURNTYPES";
+				frmGetDataForm.txtParam1.value = sAddedCalcIDs;
+				data_refreshData();
+				OpenHR.getForm("dataframe", "")
+			}
 		}
+		grdFrom.Redraw = true;
+		grdTo.Redraw = true;
+		refreshTab2Controls();
 	}
-	grdFrom.Redraw = true;
-	grdTo.Redraw = true;
-	refreshTab2Controls();
-}
 	function columnSwapAll(pfSelect) 
 {
 	var i;
@@ -1792,325 +1777,140 @@
 	refreshTab2Controls();
 }
 	function replace(sExpression, sFind, sReplace) {
-	//gi (global search, ignore case)
-	var re = new RegExp(sFind,"gi");
-	sExpression = sExpression.replace(re, sReplace);
-	return(sExpression);
-}
+		//gi (global search, ignore case)
+		var re = new RegExp(sFind, "gi");
+		sExpression = sExpression.replace(re, sReplace);
+		return (sExpression);
+	}
 	function trim(strInput) {
-	if (strInput.length < 1){
-		return "";
-	}
-		
-	while (strInput.substr(strInput.length-1, 1) == " ") {
-		strInput = strInput.substr(0, strInput.length - 1);
-	}
-	
-	while (strInput.substr(0, 1) == " ") {
-		strInput = strInput.substr(1, strInput.length);
-	}
-	
-	return strInput;
-}
-	function columnMove(pfUp)
-{
-	if (pfUp == true) {
-		iNewIndex = frmDefinition.ssOleDBGridSelectedColumns.AddItemRowIndex(frmDefinition.ssOleDBGridSelectedColumns.Bookmark) - 1;
-		iOldIndex = iNewIndex + 2;
-		iSelectIndex =iNewIndex;
-	}
-	else {
-		iNewIndex = frmDefinition.ssOleDBGridSelectedColumns.AddItemRowIndex(frmDefinition.ssOleDBGridSelectedColumns.Bookmark) + 2;
-		iOldIndex = iNewIndex - 2;
-		iSelectIndex =iNewIndex - 1;
-	}
-
-	sAddline = frmDefinition.ssOleDBGridSelectedColumns.columns(0).text + 
-		'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(1).text + 
-		'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(2).text + 
-		'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(3).text + 
-		'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(4).text + 
-		'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(5).text + 
-		'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(6).text + 
-		'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(7).text + 
-		'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(8).text + 
-		'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(9).text + 
-		'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(10).text + 
-		'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(11).text + 
-		'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(12).text + 
-		'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(13).text;
-	
-	frmDefinition.ssOleDBGridSelectedColumns.additem(sAddline, iNewIndex);
-	frmDefinition.ssOleDBGridSelectedColumns.RemoveItem(iOldIndex);
-
-	frmDefinition.ssOleDBGridSelectedColumns.SelBookmarks.RemoveAll();
-	frmDefinition.ssOleDBGridSelectedColumns.SelBookmarks.Add(frmDefinition.ssOleDBGridSelectedColumns.AddItemBookmark(iSelectIndex));
-	frmDefinition.ssOleDBGridSelectedColumns.Bookmark = frmDefinition.ssOleDBGridSelectedColumns.AddItemBookmark(iSelectIndex);
-
-	frmUseful.txtChanged.value = 1;
-	refreshTab2Controls();
-}
-	function validateColSize() {
-	var sConvertedValue;
-	var sDecimalSeparator;
-	var sThousandSeparator;
-	var sPoint;
-	var tempValue;
-
-	sDecimalSeparator = "\\";
-	sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator);
-	var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
-
-	sThousandSeparator = "\\";
-	sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator);
-	var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
-
-	sPoint = "\\.";
-	var rePoint = new RegExp(sPoint, "gi");
-
-	if (frmDefinition.txtSize.value == '') {
-		frmDefinition.txtSize.value = 0;
-	}
-
-	tempValue = parseFloat(frmDefinition.txtSize.value);
-	if (isNaN(tempValue) == false) {
-		frmDefinition.txtSize.value = String(tempValue);
-	}
-
-	// Convert the value from locale to UK settings for use with the isNaN funtion.
-	sConvertedValue = new String(frmDefinition.txtSize.value);
-	// Remove any thousand separators.
-	sConvertedValue = sConvertedValue.replace(reThousandSeparator, "");
-	//frmDefinition.txtSize.value = sConvertedValue;
-
-	// Convert any decimal separators to '.'.
-	if (OpenHR.LocaleDecimalSeparator != ".") {
-		{
-			// Remove decimal points.
-			sConvertedValue = sConvertedValue.replace(rePoint, "A");
-			// replace the locale decimal marker with the decimal point.
-			sConvertedValue = sConvertedValue.replace(reDecimalSeparator, ".");
+		if (strInput.length < 1) {
+			return "";
 		}
 
-		if (isNaN(sConvertedValue) == true) {
-			OpenHR.messageBox("Invalid numeric value.", 48, "Mail Merge");
-			frmDefinition.txtSize.value = frmDefinition.ssOleDBGridSelectedColumns.columns(4).text;
-			frmDefinition.txtSize.focus();
-			return false;
-		} else {
-			if (sConvertedValue.indexOf(".") >= 0) {
-				OpenHR.messageBox("Invalid integer value.", 48, "Mail Merge");
+		while (strInput.substr(strInput.length - 1, 1) == " ") {
+			strInput = strInput.substr(0, strInput.length - 1);
+		}
+
+		while (strInput.substr(0, 1) == " ") {
+			strInput = strInput.substr(1, strInput.length);
+		}
+
+		return strInput;
+	}
+	function columnMove(pfUp) {
+		if (pfUp == true) {
+			iNewIndex = frmDefinition.ssOleDBGridSelectedColumns.AddItemRowIndex(frmDefinition.ssOleDBGridSelectedColumns.Bookmark) - 1;
+			iOldIndex = iNewIndex + 2;
+			iSelectIndex = iNewIndex;
+		}
+		else {
+			iNewIndex = frmDefinition.ssOleDBGridSelectedColumns.AddItemRowIndex(frmDefinition.ssOleDBGridSelectedColumns.Bookmark) + 2;
+			iOldIndex = iNewIndex - 2;
+			iSelectIndex = iNewIndex - 1;
+		}
+
+		sAddline = frmDefinition.ssOleDBGridSelectedColumns.columns(0).text +
+			'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(1).text +
+			'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(2).text +
+			'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(3).text +
+			'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(4).text +
+			'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(5).text +
+			'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(6).text +
+			'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(7).text +
+			'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(8).text +
+			'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(9).text +
+			'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(10).text +
+			'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(11).text +
+			'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(12).text +
+			'	' + frmDefinition.ssOleDBGridSelectedColumns.columns(13).text;
+
+		frmDefinition.ssOleDBGridSelectedColumns.additem(sAddline, iNewIndex);
+		frmDefinition.ssOleDBGridSelectedColumns.RemoveItem(iOldIndex);
+
+		frmDefinition.ssOleDBGridSelectedColumns.SelBookmarks.RemoveAll();
+		frmDefinition.ssOleDBGridSelectedColumns.SelBookmarks.Add(frmDefinition.ssOleDBGridSelectedColumns.AddItemBookmark(iSelectIndex));
+		frmDefinition.ssOleDBGridSelectedColumns.Bookmark = frmDefinition.ssOleDBGridSelectedColumns.AddItemBookmark(iSelectIndex);
+
+		frmUseful.txtChanged.value = 1;
+		refreshTab2Controls();
+	}
+	function validateColSize() {
+		var sConvertedValue;
+		var sDecimalSeparator;
+		var sThousandSeparator;
+		var sPoint;
+		var tempValue;
+
+		sDecimalSeparator = "\\";
+		sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator);
+		var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
+
+		sThousandSeparator = "\\";
+		sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator);
+		var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
+
+		sPoint = "\\.";
+		var rePoint = new RegExp(sPoint, "gi");
+
+		if (frmDefinition.txtSize.value == '') {
+			frmDefinition.txtSize.value = 0;
+		}
+
+		tempValue = parseFloat(frmDefinition.txtSize.value);
+		if (isNaN(tempValue) == false) {
+			frmDefinition.txtSize.value = String(tempValue);
+		}
+
+		// Convert the value from locale to UK settings for use with the isNaN funtion.
+		sConvertedValue = new String(frmDefinition.txtSize.value);
+		// Remove any thousand separators.
+		sConvertedValue = sConvertedValue.replace(reThousandSeparator, "");
+		//frmDefinition.txtSize.value = sConvertedValue;
+
+		// Convert any decimal separators to '.'.
+		if (OpenHR.LocaleDecimalSeparator != ".") {
+			{
+				// Remove decimal points.
+				sConvertedValue = sConvertedValue.replace(rePoint, "A");
+				// replace the locale decimal marker with the decimal point.
+				sConvertedValue = sConvertedValue.replace(reDecimalSeparator, ".");
+			}
+
+			if (isNaN(sConvertedValue) == true) {
+				OpenHR.messageBox("Invalid numeric value.", 48, "Mail Merge");
 				frmDefinition.txtSize.value = frmDefinition.ssOleDBGridSelectedColumns.columns(4).text;
 				frmDefinition.txtSize.focus();
 				return false;
 			} else {
-				if (frmDefinition.txtSize.value < 0) {
-					OpenHR.messageBox("The value must be greater than or equal to 0.", 48, "Mail Merge");
+				if (sConvertedValue.indexOf(".") >= 0) {
+					OpenHR.messageBox("Invalid integer value.", 48, "Mail Merge");
 					frmDefinition.txtSize.value = frmDefinition.ssOleDBGridSelectedColumns.columns(4).text;
 					frmDefinition.txtSize.focus();
 					return false;
+				} else {
+					if (frmDefinition.txtSize.value < 0) {
+						OpenHR.messageBox("The value must be greater than or equal to 0.", 48, "Mail Merge");
+						frmDefinition.txtSize.value = frmDefinition.ssOleDBGridSelectedColumns.columns(4).text;
+						frmDefinition.txtSize.focus();
+						return false;
+					}
+
+					if (frmDefinition.txtSize.value > 2147483646) {
+						OpenHR.messageBox("The value must be less than or equal to 2147483646.", 48, "Mail Merge");
+						frmDefinition.txtSize.value = frmDefinition.ssOleDBGridSelectedColumns.columns(4).text;
+						frmDefinition.txtSize.focus();
+						return false;
+					}
+
 				}
-
-				if (frmDefinition.txtSize.value > 2147483646) {
-					OpenHR.messageBox("The value must be less than or equal to 2147483646.", 48, "Mail Merge");
-					frmDefinition.txtSize.value = frmDefinition.ssOleDBGridSelectedColumns.columns(4).text;
-					frmDefinition.txtSize.focus();
-					return false;
-				}
-
-			}
-		}
-
-		frmDefinition.ssOleDBGridSelectedColumns.columns(4).text = frmDefinition.txtSize.value;
-		frmUseful.txtChanged.value = 1;
-		refreshTab2Controls();
-		return true;
-	}
-	
-	
-	function locateRecord(psSearchFor) {
-		var fFound;
-
-		fFound = false;
-
-		frmDefinition.ssOleDBGridAvailableColumns.redraw = false;
-
-		frmDefinition.ssOleDBGridAvailableColumns.MoveLast();
-		frmDefinition.ssOleDBGridAvailableColumns.MoveFirst();
-
-		frmDefinition.ssOleDBGridAvailableColumns.SelBookmarks.removeall();
-
-		for (iIndex = 1; iIndex <= frmDefinition.ssOleDBGridAvailableColumns.rows; iIndex++) {
-			var sGridValue = new String(frmDefinition.ssOleDBGridAvailableColumns.Columns(3).value);
-			sGridValue = sGridValue.substr(0, psSearchFor.length).toUpperCase();
-			if (sGridValue == psSearchFor.toUpperCase()) {
-				frmDefinition.ssOleDBGridAvailableColumns.SelBookmarks.Add(frmDefinition.ssOleDBGridAvailableColumns.Bookmark);
-				fFound = true;
-				break;
 			}
 
-			if (iIndex < frmDefinition.ssOleDBGridAvailableColumns.rows) {
-				frmDefinition.ssOleDBGridAvailableColumns.MoveNext();
-			} else {
-				break;
-			}
-		}
-
-		if ((fFound == false) && (frmDefinition.ssOleDBGridAvailableColumns.rows > 0)) {
-			// Select the top row.
-			frmDefinition.ssOleDBGridAvailableColumns.MoveFirst();
-			frmDefinition.ssOleDBGridAvailableColumns.SelBookmarks.Add(frmDefinition.ssOleDBGridAvailableColumns.Bookmark);
-		}
-
-		frmDefinition.ssOleDBGridAvailableColumns.Redraw = true;
-	}
-
-	<%--ND Combos functions stuff was here--%>
-	function util_def_mailmerge_addActiveXHandlers() {
-		OpenHR.addActiveXHandler("ssOleDBGridAvailableColumns", "rowColChange", ssOleDbGridAvailableColumnsRowColChange);
-		OpenHR.addActiveXHandler("ssOleDBGridAvailableColumns", "DblClick", ssOleDbGridAvailableColumnsDblClick);
-		OpenHR.addActiveXHandler("ssOleDBGridAvailableColumns", "KeyPress(iKeyAscii)", ssOleDbGridAvailableColumnsKeyPress);
-
-		OpenHR.addActiveXHandler("ssOleDBGridSelectedColumns", "rowColChange", ssOleDbGridSelectedColumnsRowColChange);
-		OpenHR.addActiveXHandler("ssOleDBGridSelectedColumns", "DblClick", ssOleDbGridSelectedColumnsDblClick);
-		OpenHR.addActiveXHandler("ssOleDBGridSelectedColumns", "SelChange", ssOleDbGridSelectedColumnsSelChange);
-
-		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "beforerowcolchange", ssOleDbGridSortOrderBeforerowcolchange);
-		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "beforeupdate", ssOleDbGridSortOrderBeforeupdate);
-		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "afterinsert", ssOleDbGridSortOrderAfterinsert);
-		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "rowcolchange", ssOleDbGridSortOrderRowcolchange);
-		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "change", ssOleDbGridSortOrderChange);
-
-		OpenHR.addActiveXHandler("grdAccess", "ComboCloseUp", grdAccessComboCloseUp);
-		OpenHR.addActiveXHandler("grdAccess", "GotFocus", grdAccessGotFocus);
-		OpenHR.addActiveXHandler("grdAccess", "RowColChange", grdAccessRowColChange);
-		OpenHR.addActiveXHandler("grdAccess", "RowLoaded", grdAccessRowLoaded);
-	}
-	//ssOleDBGridAvailableColumns handlers
-	function ssOleDbGridAvailableColumnsRowColChange() { refreshTab2Controls(); }
-	function ssOleDbGridAvailableColumnsDblClick() { columnSwap(true); }
-	function ssOleDbGridAvailableColumnsKeyPress() {
-		if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {
-			var dtTicker = new Date();
-			var iThisTick = new Number(dtTicker.getTime());
-			if (txtLastKeyFind.value.length > 0) {
-				var iLastTick = new Number(txtTicker.value);
-			} else {
-				var iLastTick = new Number("0");
-			}
-
-			if (iThisTick > (iLastTick + 1500)) {
-				var sFind = String.fromCharCode(iKeyAscii);
-			} else {
-				var sFind = txtLastKeyFind.value + String.fromCharCode(iKeyAscii);
-			}
-
-			txtTicker.value = iThisTick;
-			txtLastKeyFind.value = sFind;
-
-			locateRecord(sFind);
-		}
-	}
-	//ssOleDBGridSelectedColumns handlers
-	function ssOleDbGridSelectedColumnsRowColChange() {
-		if (frmUseful.txtLockGridEvents.value != 1) {
+			frmDefinition.ssOleDBGridSelectedColumns.columns(4).text = frmDefinition.txtSize.value;
+			frmUseful.txtChanged.value = 1;
 			refreshTab2Controls();
+			return true;
 		}
 	}
-	function ssOleDbGridSelectedColumnsDblClick() { columnSwap(false); }
-	function ssOleDbGridSelectedColumnsSelChange() { refreshTab2Controls(); }
-	//ssOleDBGridSortOrder handlers
-	function ssOleDbGridSortOrderBeforerowcolchange() {
-		//	if (frmUseful.txtAction.value.toUpperCase() == "VIEW") {
-		//		frmDefinition.ssOleDBGridSortOrder.columns(1).cellstyleset("ssetViewDormant", frmDefinition.ssOleDBGridSortOrder.row);
-		//	}
-		//	else {
-		//		frmDefinition.ssOleDBGridSortOrder.columns(1).cellstyleset("ssetDormant", frmDefinition.ssOleDBGridSortOrder.row);
-		//	}
-	}
-	function ssOleDbGridSortOrderBeforeupdate() {
-		if ((frmDefinition.ssOleDBGridSortOrder.Columns(2).text != 'Asc') &&
-			(frmDefinition.ssOleDBGridSortOrder.Columns(2).text != 'Desc')) {
-			frmDefinition.ssOleDBGridSortOrder.Columns(2).text = 'Asc';
-		}
-	}
-	function ssOleDbGridSortOrderAfterinsert() { refreshTab3Controls(); }
-	function ssOleDbGridSortOrderRowcolchange() {
-		frmDefinition.ssOleDBGridSortOrder.SelBookmarks.Add(frmDefinition.ssOleDBGridSortOrder.Bookmark);
-		frmDefinition.ssOleDBGridSortOrder.columns(1).cellstyleset("ssetSelected", frmDefinition.ssOleDBGridSortOrder.row);
-		frmSortOrder.txtSortColumnID.value = frmDefinition.ssOleDBGridSortOrder.Columns(0).text;
-		frmSortOrder.txtSortColumnName.value = frmDefinition.ssOleDBGridSortOrder.Columns(1).text;
-		frmSortOrder.txtSortOrder.value = frmDefinition.ssOleDBGridSortOrder.Columns(2).text;
-		refreshTab3Controls();
-	}
-	function ssOleDbGridSortOrderChange() {
-		frmUseful.txtChanged.value = 1;
-		refreshTab3Controls();
-	}
-	//grdAccess Handlers
-	function grdAccessComboCloseUp() {
-		frmUseful.txtChanged.value = 1;
-		if (grdAccess.AddItemRowIndex(grdAccess.Bookmark) == 0) and(grdAccess.Columns("Access").Text.length > 0);
-		{
-			ForceAccess(grdAccess, AccessCode(grdAccess.Columns("Access").Text));
-			grdAccess.MoveFirst();
-			grdAccess.Col = 1;
-		}
-		refreshTab1Controls();
-	}
-	function grdAccessGotFocus() { grdAccess.Col = 1; }
-	function grdAccessRowColChange() {
-		var fViewing;
-		var fIsNotOwner;
-		var varBkmk;
-
-		fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
-		fIsNotOwner = (frmUseful.txtUserName.value.toUpperCase() != frmDefinition.txtOwner.value.toUpperCase());
-
-		if (grdAccess.AddItemRowIndex(grdAccess.Bookmark) == 0) {
-			grdAccess.Columns("Access").Text = "";
-		}
-
-		varBkmk = grdAccess.SelBookmarks(0);
-
-		if ((fIsNotOwner == true) ||
-			(fViewing == true) ||
-			(frmSelectionAccess.forcedHidden.value == "Y") ||
-			(grdAccess.Columns("SysSecMgr").CellText(varBkmk) == "1")) {
-			grdAccess.Columns("Access").Style = 0; // 0 = Edit
-		} else {
-			grdAccess.Columns("Access").Style = 3; // 3 = Combo box
-			grdAccess.Columns("Access").RemoveAll();
-			grdAccess.Columns("Access").AddItem(AccessDescription("RW"));
-			grdAccess.Columns("Access").AddItem(AccessDescription("RO"));
-			grdAccess.Columns("Access").AddItem(AccessDescription("HD"));
-		}
-
-		grdAccess.Col = 1
-	}
-	function grdAccessRowLoaded() {
-		var fViewing;
-		var fIsNotOwner;
-		fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
-		fIsNotOwner = (frmUseful.txtUserName.value.toUpperCase() != frmDefinition.txtOwner.value.toUpperCase());
-		if ((fIsNotOwner == true) ||
-			(fViewing == true) ||
-			(frmSelectionAccess.forcedHidden.value == "Y")) {
-			grdAccess.Columns("GroupName").CellStyleSet("ReadOnly");
-			grdAccess.Columns("Access").CellStyleSet("ReadOnly");
-			grdAccess.ForeColor = "-2147483631";
-		} else {
-			if (grdAccess.Columns("SysSecMgr").CellText(Bookmark) == "1") {
-				grdAccess.Columns("GroupName").CellStyleSet("SysSecMgr");
-				grdAccess.Columns("Access").CellStyleSet("SysSecMgr");
-				grdAccess.ForeColor = "0";
-			} else {
-				grdAccess.ForeColor = "0";
-			}
-		}
-	}
-}
-
 </script>
 
 <%  
@@ -6605,9 +6405,190 @@ function chkOutputPrinter_Click() {
 		frmDefinition.cboPrinterName.selectedIndex = 0;
 	}
 }
-
 </script>
+
 <script type="text/javascript">
 	util_def_mailmerge_window_onload();
-	util_def_mailmerge_addActiveXHandlers();
-</script>
+	utilDefMailmergeAddActiveXHandlers();
+
+	function utilDefMailmergeAddActiveXHandlers() {
+		OpenHR.addActiveXHandler("ssOleDBGridAvailableColumns", "rowColChange", ssOleDbGridAvailableColumnsRowColChange);
+		OpenHR.addActiveXHandler("ssOleDBGridAvailableColumns", "DblClick", ssOleDbGridAvailableColumnsDblClick);
+		OpenHR.addActiveXHandler("ssOleDBGridAvailableColumns", "KeyPress(iKeyAscii)", ssOleDbGridAvailableColumnsKeyPress);
+
+		OpenHR.addActiveXHandler("ssOleDBGridSelectedColumns", "rowColChange", ssOleDbGridSelectedColumnsRowColChange);
+		OpenHR.addActiveXHandler("ssOleDBGridSelectedColumns", "DblClick", ssOleDbGridSelectedColumnsDblClick);
+		OpenHR.addActiveXHandler("ssOleDBGridSelectedColumns", "SelChange", ssOleDbGridSelectedColumnsSelChange);
+
+		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "beforerowcolchange", ssOleDbGridSortOrderBeforerowcolchange);
+		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "beforeupdate", ssOleDbGridSortOrderBeforeupdate);
+		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "afterinsert", ssOleDbGridSortOrderAfterinsert);
+		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "rowcolchange", ssOleDbGridSortOrderRowcolchange);
+		OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "change", ssOleDbGridSortOrderChange);
+
+		OpenHR.addActiveXHandler("grdAccess", "ComboCloseUp", grdAccessComboCloseUp);
+		OpenHR.addActiveXHandler("grdAccess", "GotFocus", grdAccessGotFocus);
+		OpenHR.addActiveXHandler("grdAccess", "RowColChange", grdAccessRowColChange);
+		OpenHR.addActiveXHandler("grdAccess", "RowLoaded", grdAccessRowLoaded);
+	}
+
+	//ssOleDBGridAvailableColumns handlers
+	function ssOleDbGridAvailableColumnsRowColChange() { refreshTab2Controls(); }
+	function ssOleDbGridAvailableColumnsDblClick() { columnSwap(true); }
+	function ssOleDbGridAvailableColumnsKeyPress() {
+		if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {
+			var dtTicker = new Date();
+			var iThisTick = new Number(dtTicker.getTime());
+			if (txtLastKeyFind.value.length > 0) {
+				var iLastTick = new Number(txtTicker.value);
+			} else {
+				var iLastTick = new Number("0");
+			}
+
+			if (iThisTick > (iLastTick + 1500)) {
+				var sFind = String.fromCharCode(iKeyAscii);
+			} else {
+				var sFind = txtLastKeyFind.value + String.fromCharCode(iKeyAscii);
+			}
+
+			txtTicker.value = iThisTick;
+			txtLastKeyFind.value = sFind;
+
+			locateRecord(sFind);
+		}
+	}
+	//ssOleDBGridSelectedColumns handlers
+	function ssOleDbGridSelectedColumnsRowColChange() {
+		if (frmUseful.txtLockGridEvents.value != 1) {
+			refreshTab2Controls();
+		}
+	}
+	function ssOleDbGridSelectedColumnsDblClick() { columnSwap(false); }
+	function ssOleDbGridSelectedColumnsSelChange() { refreshTab2Controls(); }
+	//ssOleDBGridSortOrder handlers
+	function ssOleDbGridSortOrderBeforerowcolchange() {
+		//	if (frmUseful.txtAction.value.toUpperCase() == "VIEW") {
+		//		frmDefinition.ssOleDBGridSortOrder.columns(1).cellstyleset("ssetViewDormant", frmDefinition.ssOleDBGridSortOrder.row);
+		//	}
+		//	else {
+		//		frmDefinition.ssOleDBGridSortOrder.columns(1).cellstyleset("ssetDormant", frmDefinition.ssOleDBGridSortOrder.row);
+		//	}
+	}
+	function ssOleDbGridSortOrderBeforeupdate() {
+		if ((frmDefinition.ssOleDBGridSortOrder.Columns(2).text != 'Asc') &&
+			(frmDefinition.ssOleDBGridSortOrder.Columns(2).text != 'Desc')) {
+			frmDefinition.ssOleDBGridSortOrder.Columns(2).text = 'Asc';
+		}
+	}
+	function ssOleDbGridSortOrderAfterinsert() { refreshTab3Controls(); }
+	function ssOleDbGridSortOrderRowcolchange() {
+		frmDefinition.ssOleDBGridSortOrder.SelBookmarks.Add(frmDefinition.ssOleDBGridSortOrder.Bookmark);
+		frmDefinition.ssOleDBGridSortOrder.columns(1).cellstyleset("ssetSelected", frmDefinition.ssOleDBGridSortOrder.row);
+		frmSortOrder.txtSortColumnID.value = frmDefinition.ssOleDBGridSortOrder.Columns(0).text;
+		frmSortOrder.txtSortColumnName.value = frmDefinition.ssOleDBGridSortOrder.Columns(1).text;
+		frmSortOrder.txtSortOrder.value = frmDefinition.ssOleDBGridSortOrder.Columns(2).text;
+		refreshTab3Controls();
+	}
+	function ssOleDbGridSortOrderChange() {
+		frmUseful.txtChanged.value = 1;
+		refreshTab3Controls();
+	}
+	//grdAccess Handlers
+	function grdAccessComboCloseUp() {
+		frmUseful.txtChanged.value = 1;
+		if (grdAccess.AddItemRowIndex(grdAccess.Bookmark) == 0) and(grdAccess.Columns("Access").Text.length > 0);
+		{
+			ForceAccess(grdAccess, AccessCode(grdAccess.Columns("Access").Text));
+			grdAccess.MoveFirst();
+			grdAccess.Col = 1;
+		}
+		refreshTab1Controls();
+	}
+	function grdAccessGotFocus() { grdAccess.Col = 1; }
+	function grdAccessRowColChange() {
+		var fViewing;
+		var fIsNotOwner;
+		var varBkmk;
+
+		fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
+		fIsNotOwner = (frmUseful.txtUserName.value.toUpperCase() != frmDefinition.txtOwner.value.toUpperCase());
+
+		if (grdAccess.AddItemRowIndex(grdAccess.Bookmark) == 0) {
+			grdAccess.Columns("Access").Text = "";
+		}
+
+		varBkmk = grdAccess.SelBookmarks(0);
+
+		if ((fIsNotOwner == true) ||
+			(fViewing == true) ||
+			(frmSelectionAccess.forcedHidden.value == "Y") ||
+			(grdAccess.Columns("SysSecMgr").CellText(varBkmk) == "1")) {
+			grdAccess.Columns("Access").Style = 0; // 0 = Edit
+		} else {
+			grdAccess.Columns("Access").Style = 3; // 3 = Combo box
+			grdAccess.Columns("Access").RemoveAll();
+			grdAccess.Columns("Access").AddItem(AccessDescription("RW"));
+			grdAccess.Columns("Access").AddItem(AccessDescription("RO"));
+			grdAccess.Columns("Access").AddItem(AccessDescription("HD"));
+		}
+
+		grdAccess.Col = 1
+	}
+	function grdAccessRowLoaded() {
+		var fViewing;
+		var fIsNotOwner;
+		fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
+		fIsNotOwner = (frmUseful.txtUserName.value.toUpperCase() != frmDefinition.txtOwner.value.toUpperCase());
+		if ((fIsNotOwner == true) ||
+			(fViewing == true) ||
+			(frmSelectionAccess.forcedHidden.value == "Y")) {
+			grdAccess.Columns("GroupName").CellStyleSet("ReadOnly");
+			grdAccess.Columns("Access").CellStyleSet("ReadOnly");
+			grdAccess.ForeColor = "-2147483631";
+		} else {
+			if (grdAccess.Columns("SysSecMgr").CellText(Bookmark) == "1") {
+				grdAccess.Columns("GroupName").CellStyleSet("SysSecMgr");
+				grdAccess.Columns("Access").CellStyleSet("SysSecMgr");
+				grdAccess.ForeColor = "0";
+			} else {
+				grdAccess.ForeColor = "0";
+			}
+		}
+	}
+	function locateRecord(psSearchFor) {
+		var fFound;
+
+		fFound = false;
+
+		frmDefinition.ssOleDBGridAvailableColumns.redraw = false;
+
+		frmDefinition.ssOleDBGridAvailableColumns.MoveLast();
+		frmDefinition.ssOleDBGridAvailableColumns.MoveFirst();
+
+		frmDefinition.ssOleDBGridAvailableColumns.SelBookmarks.removeall();
+
+		for (iIndex = 1; iIndex <= frmDefinition.ssOleDBGridAvailableColumns.rows; iIndex++) {
+			var sGridValue = new String(frmDefinition.ssOleDBGridAvailableColumns.Columns(3).value);
+			sGridValue = sGridValue.substr(0, psSearchFor.length).toUpperCase();
+			if (sGridValue == psSearchFor.toUpperCase()) {
+				frmDefinition.ssOleDBGridAvailableColumns.SelBookmarks.Add(frmDefinition.ssOleDBGridAvailableColumns.Bookmark);
+				fFound = true;
+				break;
+			}
+
+			if (iIndex < frmDefinition.ssOleDBGridAvailableColumns.rows) {
+				frmDefinition.ssOleDBGridAvailableColumns.MoveNext();
+			} else {
+				break;
+			}
+		}
+
+		if ((fFound == false) && (frmDefinition.ssOleDBGridAvailableColumns.rows > 0)) {
+			// Select the top row.
+			frmDefinition.ssOleDBGridAvailableColumns.MoveFirst();
+			frmDefinition.ssOleDBGridAvailableColumns.SelBookmarks.Add(frmDefinition.ssOleDBGridAvailableColumns.Bookmark);
+		}
+
+		frmDefinition.ssOleDBGridAvailableColumns.Redraw = true;
+	}
+	</script>
