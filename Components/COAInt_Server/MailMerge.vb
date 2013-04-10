@@ -67,7 +67,7 @@ Option Explicit On
 	Private mstrSQLWhere As String
 	Private mstrSQLOrder As String
 	
-	Private mlngTableViews() As Integer
+  Private mlngTableViews(,) As Integer
 	Private mstrWhereIDs As String
 	
 	'Word Variables
@@ -83,7 +83,7 @@ Option Explicit On
 	Private mobjEventLog As clsEventLog
 	
 	Private mstrOutputArray_Data() As Object
-	Private mvarPrompts() As Object
+  Private mvarPrompts(,) As Object
 	Private mstrClientDateFormat As String
 	Private mstrLocalDecimalSeparator As String
 	
@@ -1554,7 +1554,7 @@ LocalErr:
 	
 	Private Sub SQLAddCalculation(ByRef lngExpID As Integer, ByRef strColCode As String)
 		
-		Dim lngCalcViews() As Integer
+    Dim lngCalcViews(,) As Integer
 		Dim objCalcExpr As clsExprExpression
 		Dim intCount As Short
 		Dim blnFound As Boolean

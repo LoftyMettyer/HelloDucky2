@@ -71,7 +71,7 @@ Imports VB = Microsoft.VisualBasic
 	Private miAbsenceRecordsFound As Short
 	
 	Private miStrAbsenceTypes As Short
-	Dim mastrAbsenceTypes() As String ' Store the absence types (redefined later as ???,3 so as to auto clear it)
+  Dim mastrAbsenceTypes(,) As String ' Store the absence types (redefined later as ???,3 so as to auto clear it)
 	'0 = Contains the colour
 	'1 = Contains the text
 	'2 = Contains the code
@@ -79,7 +79,7 @@ Imports VB = Microsoft.VisualBasic
 	'4 = Contains the calendar code
 	'5 = Contains the type code
 	
-  Dim mavAbsences() As Object ' Stores each of the absence cells (redefined later as 733,6 so as to auto clear it)
+  Dim mavAbsences(,) As Object ' Stores each of the absence cells (redefined later as 733,6 so as to auto clear it)
 	'0 = Contains data (true / false)
 	'1 = Weekend (true / false)
 	'2 = Caption
@@ -96,7 +96,7 @@ Imports VB = Microsoft.VisualBasic
 	'13 = End session of absence
 	'14 = Region
 	
-  Dim mavRegionChanges() As Object ' Stores the dates of the region changes
+  Dim mavRegionChanges(,) As Object ' Stores the dates of the region changes
 	'0 = Contains the date of change
 	'1 = Contains the region name
 	
@@ -138,7 +138,7 @@ Imports VB = Microsoft.VisualBasic
 	Private mstrSQLSelect_PersonnelStartDate As String
 	Private mstrSQLSelect_PersonnelLeavingDate As String
 	
-  Private mvarTableViews() As Object
+  Private mvarTableViews(,) As Object
 	Private mobjTableView As CTablePrivilege
 	Private mobjColumnPrivileges As CColumnPrivileges
 	
@@ -655,11 +655,11 @@ Imports VB = Microsoft.VisualBasic
 		' Get Recordset Containing Absence info for the current employee
 		sSQL = "SELECT " & mstrSQLSelect_AbsenceStartDate & " as 'StartDate', " & vbNewLine & mstrSQLSelect_AbsenceStartSession & " as 'StartSession', " & vbNewLine
 		
-		If mdLeavingDate <> CDate(VariantType.Null) Then
-			sSQL = sSQL & "isnull(" & mstrSQLSelect_AbsenceEndDate & ",'" & Replace(VB6.Format(mdLeavingDate, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "') as 'EndDate', " & vbNewLine
-		Else
-			sSQL = sSQL & "isnull(" & mstrSQLSelect_AbsenceEndDate & ",'" & Replace(VB6.Format(Now, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "') as 'EndDate', " & vbNewLine
-		End If
+    If Not IsDBNull(mdLeavingDate) Then
+      sSQL = sSQL & "isnull(" & mstrSQLSelect_AbsenceEndDate & ",'" & Replace(VB6.Format(mdLeavingDate, "mm/dd/yyyy"), clsUI.GetSystemDateSeparator, "/") & "') as 'EndDate', " & vbNewLine
+    Else
+      sSQL = sSQL & "isnull(" & mstrSQLSelect_AbsenceEndDate & ",'" & Replace(VB6.Format(Now, "mm/dd/yyyy"), clsUI.GetSystemDateSeparator, "/") & "') as 'EndDate', " & vbNewLine
+    End If
 		
 		sSQL = sSQL & mstrSQLSelect_AbsenceEndSession & " as 'EndSession', " & vbNewLine & mstrSQLSelect_AbsenceType & " as 'Type', " & vbNewLine & mstrSQLSelect_AbsenceTypeCalCode & " as 'CalendarCode', " & vbNewLine & mstrSQLSelect_AbsenceTypeCode & " as 'Code', " & vbNewLine & mstrSQLSelect_AbsenceReason & " as 'Reason', " & vbNewLine & mstrSQLSelect_AbsenceDuration & " as 'Duration' " & vbNewLine
 		

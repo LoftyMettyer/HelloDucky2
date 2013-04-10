@@ -14,7 +14,7 @@ Option Explicit On
 	Private mstrSQLWhere As String
 	Private mstrBaseTableRealSource As String
 	Private mstrErrorString As String
-	Private mlngTableViews() As Integer
+  Private mlngTableViews(,) As Integer
 	Private mstrSQL As String
 	Private mstrAbsenceRealSource As String
 	

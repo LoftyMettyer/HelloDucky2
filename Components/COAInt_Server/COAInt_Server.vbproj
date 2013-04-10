@@ -148,6 +148,7 @@
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="clsAbsenceCalendar.vb" />
     <Compile Include="clsBankHoliday.vb" />
     <Compile Include="clsBankHolidays.vb" />
     <Compile Include="clsCalendarEvent.vb" />
@@ -160,7 +161,9 @@
     </Compile>
     <Compile Include="clsNavigationLink.vb" />
     <Compile Include="clsNavigationLinks.vb" />
+    <Compile Include="clsOutlookLinks.vb" />
     <Compile Include="clsSettings.vb" />
+    <Compile Include="clsTodaysAbsence.vb" />
     <Compile Include="ColumnPrivilege.vb">
       <SubType>Code</SubType>
     </Compile>
@@ -216,6 +219,7 @@
     <Compile Include="General.vb">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MailMerge.vb" />
     <Compile Include="Menu.vb" />
     <Compile Include="modAbsenceSpecifics.vb">
       <SubType>Code</SubType>
