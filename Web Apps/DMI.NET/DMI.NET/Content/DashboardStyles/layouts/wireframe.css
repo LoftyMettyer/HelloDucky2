@@ -241,11 +241,7 @@ body
 /* === Fixed Links === */
 
 #fixedlinksframe {
-	/*position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: 126px;*/
+	height: 100%;
 }
 
 /*div.officebar { position: absolute;bottom: 0; }*/
@@ -269,7 +265,7 @@ div.officetab li div.button
   float: left;
   /*top: -84px;*/
   left: 0px;
-  height: 66px;
+  /*height: 66px;*/
   width: 49px;
   overflow: hidden;
   line-height: normal;
@@ -277,5 +273,5 @@ div.officetab li div.button
 
 .officebar li { list-style: none;}
 
-div.officebar ul li.current > a { display: none;}
+div.officebar ul li > a { display: none!important;}
 div.officetab div.panel > span { display: none;}

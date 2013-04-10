@@ -650,7 +650,404 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		Function Find() As ActionResult
+		Function Find(Optional sParameters As String = "") As ActionResult
+
+			' Additional controller actions for SSI view. Only SSI calls to this action have parameters.
+			If sParameters.Length > 0 Then
+				' =========================
+				' Self-service Find request
+				' =========================
+				Dim lngTopLevelRecordID
+				Dim sTableName
+				Dim sViewName
+				'NPG20081401 Fault 12868
+				Dim dblPreviousColumnWidth
+				Dim objUser
+
+				'NPG20081401 Fault 12868
+				objUser = CreateObject("COAIntServer.clsSettings")
+				CallByName(objUser, "Connection", CallType.Let, Session("databaseConnection"))				
+
+				Const DEADLOCK_ERRORNUMBER = -2147467259
+				Const DEADLOCK_MESSAGESTART = "YOUR TRANSACTION (PROCESS ID #"
+				Const DEADLOCK_MESSAGEEND = ") WAS DEADLOCKED WITH ANOTHER PROCESS AND HAS BEEN CHOSEN AS THE DEADLOCK VICTIM. RERUN YOUR TRANSACTION."
+				Const DEADLOCK2_MESSAGESTART = "TRANSACTION (PROCESS ID "
+				Const DEADLOCK2_MESSAGEEND = ") WAS DEADLOCKED ON "
+				Const SQLMAILNOTSTARTEDMESSAGE = "SQL MAIL SESSION IS NOT STARTED."
+
+				Dim iRETRIES = 5
+				Dim iRetryCount = 0
+				Dim sErrorDescription = ""
+
+				Dim iRealTableID = 0
+				Dim iRealViewID = 0
+
+				lngTopLevelRecordID = Session("TopLevelRecID")
+
+				If CLng(Session("tableType")) <> 2 Then
+					' Top Level table.
+					'Response.Write "#<FONT COLOR='Red'><B>Top Level table.</B></FONT>#<BR>"
+
+					Session("recordID") = lngTopLevelRecordID
+					Session("parentTableID") = 0
+					Session("parentRecordID") = 0
+				Else
+					' Child table.
+					' Response.Write "#<FONT COLOR='Red'><B>Child table.</B></FONT>#<BR>"
+
+					iRealTableID = Session("SSILinkTableID")
+					iRealViewID = Session("SSILinkViewID")
+					'session("tableID") = 0 
+					Session("viewID") = 0
+					Session("parentTableID") = Session("SSILinkTableID")
+					Session("parentRecordID") = lngTopLevelRecordID
+				End If
+
+				' Read the screen info from the query string.			
+
+				'Response.Write "#<FONT COLOR='Red'><B>sParameters = " & sParameters & "</B></FONT>#<BR>"
+				'Response.Write "#<FONT COLOR='Red'><B>parentTableID = " & session("parentTableID") & "</B></FONT>#<BR>"
+				'Response.Write "#<FONT COLOR='Red'><B>parentRecordID = " & session("parentRecordID") & "</B></FONT>#<BR>"
+
+				Session("action") = Left(sParameters, InStr(sParameters, "_") - 1)
+				sParameters = Mid(sParameters, InStr(sParameters, "_") + 1)
+				Session("firstRecPos") = Left(sParameters, InStr(sParameters, "_") - 1)
+				sParameters = Mid(sParameters, InStr(sParameters, "_") + 1)
+				Session("currentRecCount") = Left(sParameters, InStr(sParameters, "_") - 1)
+				Session("locateValue") = Mid(sParameters, InStr(sParameters, "_") + 1)
+
+				' Flag an error if there is no current table or view is specified.
+				If (Session("tableID") <= 0) Then
+					'and (session("viewID") <= 0) then
+
+					sErrorDescription = "The find page could not be loaded." & vbCrLf & "No table or view specified."
+				End If
+
+				If Len(sErrorDescription) = 0 Then
+					' Flag an error if there is no current screen is specified.
+					If (Session("linkType") <> "multifind") And _
+						(Session("screenID") <= 0) Then
+						sErrorDescription = "The find page could not be loaded." & vbCrLf & "No screen specified."
+					End If
+				End If
+
+				If Len(sErrorDescription) = 0 Then
+					If (Session("linkType") = "multifind") Then
+						Dim cmdOrder = CreateObject("ADODB.Command")
+						cmdOrder.CommandText = "spASRIntGetDefaultOrder"
+						cmdOrder.CommandType = 4 ' Stored Procedure
+						cmdOrder.ActiveConnection = Session("databaseConnection")
+
+						Dim prmTableID = cmdOrder.CreateParameter("tableID", 3, 1)
+						cmdOrder.Parameters.Append(prmTableID)
+						prmTableID.value = CleanNumeric(Session("tableID"))
+
+						Dim prmOrderID = cmdOrder.CreateParameter("orderID", 3, 2)
+						cmdOrder.Parameters.Append(prmOrderID)
+
+						Err.Clear()
+						cmdOrder.Execute()
+						If (Err.Number <> 0) Then
+							sErrorDescription = "The find page could not be loaded." & vbCrLf & "The default order for the table could not be determined :" & vbCrLf & FormatError(Err.Description)
+						Else
+							Session("orderID") = cmdOrder.Parameters("orderID").Value
+						End If
+						' Release the ADO command object.
+						cmdOrder = Nothing
+					Else
+						' Get the screen's default order if none is already specified.
+						Dim cmdScreenOrder = CreateObject("ADODB.Command")
+						cmdScreenOrder.CommandText = "sp_ASRIntGetScreenOrder"
+						cmdScreenOrder.CommandType = 4 ' Stored Procedure
+						cmdScreenOrder.ActiveConnection = Session("databaseConnection")
+
+						Dim prmOrderID = cmdScreenOrder.CreateParameter("orderID", 3, 2)
+						cmdScreenOrder.Parameters.Append(prmOrderID)
+
+						Dim prmScreenID = cmdScreenOrder.CreateParameter("screenID", 3, 1)
+						cmdScreenOrder.Parameters.Append(prmScreenID)
+						prmScreenID.value = CleanNumeric(Session("screenID"))
+
+						Err.Clear()
+						cmdScreenOrder.Execute()
+						If (Err.Number <> 0) Then
+							sErrorDescription = "The find page could not be loaded." & vbCrLf & "The default order for the table could not be determined :" & vbCrLf & FormatError(Err.Description)
+						Else
+							Session("orderID") = cmdScreenOrder.Parameters("orderID").Value
+						End If
+						' Release the ADO command object.
+						cmdScreenOrder = Nothing
+					End If
+				End If
+
+				'Response.Write "#<FONT COLOR='Red'>session(SSILinkViewID) = <B>" & session("SSILinkViewID") & "</B></FONT>#<BR>"
+				'Response.Write "#<FONT COLOR='Red'>session(SSILinkTableID) = <B>" & session("SSILinkTableID") & "</B></FONT>#<BR>"
+				'Response.Write "#<FONT COLOR='Red'>session(PersonnelTableID) = <B>" & session("PersonnelTableID") & "</B></FONT>#<BR>"
+				'Response.Write "#<FONT COLOR='Red'>session(TopLevelRecID) = <B>" & session("TopLevelRecID") & "</B></FONT>#<BR>"
+				'Response.Write "#<FONT COLOR='Red'>session(SingleRecordViewID) = <B>" & session("SingleRecordViewID") & "</B></FONT>#<BR>"
+				'Response.Write "#<FONT COLOR='Red'>session(tableID) = <B>" & session("tableID") & "</B></FONT>#<BR>"
+				'Response.Write "#<FONT COLOR='Red'>session(viewID) = <B>" & session("viewID") & "</B></FONT>#<BR>"
+
+				If Len(sErrorDescription) = 0 Then
+
+					If CLng(Session("SSILinkViewID")) = CLng(Session("SingleRecordViewID")) Then
+						lngTopLevelRecordID = Session("TopLevelRecID")
+					End If
+
+					If CLng(Session("tableType")) <> 2 Then
+						' Top Level table.
+						Session("recordID") = 0	'  lngPersonnelRecordID			' never set???
+						Session("parentTableID") = 0
+						Session("parentRecordID") = 0
+					Else
+						' Child table.
+						Session("parentTableID") = Session("SSILinkTableID")
+						Session("parentRecordID") = lngTopLevelRecordID
+					End If
+
+					' Enable response buffering as we may redirect the response further down this page.
+					Response.Buffer = True
+				End If
+
+				Dim sRecDesc = ""
+				If CLng(Session("SSILinkViewID")) <> CLng(Session("SingleRecordViewID")) And _
+					(Len(sErrorDescription) = 0) Then
+
+
+					Dim cmdGetRecordDesc = CreateObject("ADODB.Command")
+					cmdGetRecordDesc.CommandText = "spASRIntGetRecordDescriptionInView"
+					cmdGetRecordDesc.CommandType = 4 ' Stored procedure
+					cmdGetRecordDesc.ActiveConnection = Session("databaseConnection")
+
+					Dim prmViewID = cmdGetRecordDesc.CreateParameter("viewID", 3, 1) ' 3 = integer, 1 = input
+					cmdGetRecordDesc.Parameters.Append(prmViewID)
+					prmViewID.value = CleanNumeric(Session("SSILinkViewID"))
+
+					Dim prmTableID = cmdGetRecordDesc.CreateParameter("tableID", 3, 1) ' 3 = integer, 1 = input
+					cmdGetRecordDesc.Parameters.Append(prmTableID)
+					prmTableID.value = CleanNumeric(Session("tableID"))
+
+					Dim prmRecordID = cmdGetRecordDesc.CreateParameter("recordID", 3, 1) ' 3 = integer, 1 = input
+					cmdGetRecordDesc.Parameters.Append(prmRecordID)
+					prmRecordID.value = 0
+
+					Dim prmParentTableID = cmdGetRecordDesc.CreateParameter("parentTableID", 3, 1) ' 3 = integer, 1 = input
+					cmdGetRecordDesc.Parameters.Append(prmParentTableID)
+					prmParentTableID.value = CleanNumeric(Session("parentTableID"))
+
+					Dim prmParentRecordID = cmdGetRecordDesc.CreateParameter("parentRecordID", 3, 1) ' 3=integer, 1=input
+					cmdGetRecordDesc.Parameters.Append(prmParentRecordID)
+					prmParentRecordID.value = CleanNumeric(Session("parentRecordID"))
+
+					Dim prmRecordDesc = cmdGetRecordDesc.CreateParameter("recordDesc", 200, 2, 2147483646)
+					cmdGetRecordDesc.Parameters.Append(prmRecordDesc)
+
+					Dim prmErrorMessage = cmdGetRecordDesc.CreateParameter("errorMessage", 200, 2, 2147483646)
+					cmdGetRecordDesc.Parameters.Append(prmErrorMessage)
+
+					Dim fOK = True
+					Dim fDeadlock = True
+					Do While fDeadlock
+						fDeadlock = False
+
+						cmdGetRecordDesc.ActiveConnection.Errors.Clear()
+
+						cmdGetRecordDesc.Execute()
+						Dim sErrMsg As String
+
+						If cmdGetRecordDesc.ActiveConnection.Errors.Count > 0 Then
+							For iLoop = 1 To cmdGetRecordDesc.ActiveConnection.Errors.Count
+								sErrMsg = FormatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
+
+								If (cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Number = DEADLOCK_ERRORNUMBER) And _
+									(((UCase(Left(sErrMsg, Len(DEADLOCK_MESSAGESTART))) = DEADLOCK_MESSAGESTART) And _
+										(UCase(Right(sErrMsg, Len(DEADLOCK_MESSAGEEND))) = DEADLOCK_MESSAGEEND)) Or _
+									((UCase(Left(sErrMsg, Len(DEADLOCK2_MESSAGESTART))) = DEADLOCK2_MESSAGESTART) And _
+										(InStr(UCase(sErrMsg), DEADLOCK2_MESSAGEEND) > 0))) Then
+									' The error is for a deadlock.
+									' Sorry about having to use the err.description to trap the error but the err.number
+									' is not specific and MSDN suggests using the err.description.
+									If (iRetryCount < iRETRIES) And (cmdGetRecordDesc.ActiveConnection.Errors.Count = 1) Then
+										iRetryCount = iRetryCount + 1
+										fDeadlock = True
+									Else
+										If Len(sErrorDescription) > 0 Then
+											sErrorDescription = sErrorDescription & vbCrLf
+										End If
+										sErrorDescription = sErrorDescription & "Another user is deadlocking the database. Please try again."
+										fOK = False
+									End If
+								Else
+									sErrorDescription = sErrorDescription & vbCrLf & _
+										FormatError(cmdGetRecordDesc.ActiveConnection.Errors.Item(iLoop - 1).Description)
+									fOK = False
+								End If
+							Next
+
+							cmdGetRecordDesc.ActiveConnection.Errors.Clear()
+
+							If Not fOK Then
+								sErrorDescription = "Unable to get the record description." & vbCrLf & sErrorDescription
+							End If
+						End If
+					Loop
+
+					If (Len(sErrorDescription) = 0) Then
+						If (Len(cmdGetRecordDesc.Parameters("errorMessage").Value) > 0) Then
+							sErrorDescription = "Unable to get the record description." & vbCrLf & cmdGetRecordDesc.Parameters("errorMessage").Value
+						Else
+							sRecDesc = cmdGetRecordDesc.Parameters("recordDesc").Value
+						End If
+					End If
+
+					cmdGetRecordDesc = Nothing
+				End If
+
+				If (Len(sErrorDescription) = 0) Then
+					Dim sTitle As String = ""
+					If (Session("linkType") <> "multifind") Then
+						Dim cmdGetTableName = CreateObject("ADODB.Command")
+						cmdGetTableName.CommandText = "sp_ASRIntGetTableName"
+						cmdGetTableName.CommandType = 4	' Stored procedure
+						cmdGetTableName.ActiveConnection = Session("databaseConnection")
+
+						Dim prmTableID = cmdGetTableName.CreateParameter("TableID", 3, 1)
+						cmdGetTableName.Parameters.Append(prmTableID)
+						prmTableID.value = CleanNumeric(Session("tableID"))
+
+						Dim prmTableName = cmdGetTableName.CreateParameter("TableName", 200, 2, 255)
+						cmdGetTableName.Parameters.Append(prmTableName)
+
+						Err.Clear()
+						cmdGetTableName.Execute()
+
+						If (Err.Number <> 0) Then
+							sErrorDescription = "Error getting the link table name." & vbCrLf & FormatError(Err.Description)
+						Else
+							sTableName = Replace(cmdGetTableName.Parameters("TableName").Value, "_", " ")
+						End If
+
+						cmdGetTableName = Nothing
+
+						sTitle = "Select the required "
+
+						If Len(sTableName) > 0 Then
+							sTitle = sTitle & sTableName & " "
+						End If
+
+						sTitle = sTitle & "record"
+
+						If Len(sRecDesc) > 0 Then
+							sTitle = sTitle & " for " & sRecDesc
+						End If
+					Else
+						Dim cmdGetPageTitle = CreateObject("ADODB.Command")
+						cmdGetPageTitle.CommandText = "spASRIntGetPageTitle"
+						cmdGetPageTitle.CommandType = 4	' Stored procedure
+						cmdGetPageTitle.ActiveConnection = Session("databaseConnection")
+
+						Dim prmTableID = cmdGetPageTitle.CreateParameter("TableID", 3, 1)
+						cmdGetPageTitle.Parameters.Append(prmTableID)
+						prmTableID.value = CleanNumeric(Session("TableID"))
+
+						Dim prmViewID = cmdGetPageTitle.CreateParameter("ViewID", 3, 1)
+						cmdGetPageTitle.Parameters.Append(prmViewID)
+						prmViewID.value = CleanNumeric(Session("ViewID"))
+
+						Dim prmPageTitle = cmdGetPageTitle.CreateParameter("PageTitle", 200, 2, 200) ' 200=varchar, 2=output, 200=size
+						cmdGetPageTitle.Parameters.Append(prmPageTitle)
+						Err.Clear()
+						cmdGetPageTitle.Execute()
+
+						If (Err.Number <> 0) Then
+							sErrorDescription = "Error getting the page title." & vbCrLf & FormatError(Err.Description)
+						Else
+							sTitle = Replace(cmdGetPageTitle.Parameters("PageTitle").Value, "_", " ")
+						End If
+
+						cmdGetPageTitle = Nothing
+					End If
+
+					sTitle = Server.UrlEncode(sTitle)
+				End If
+
+				If (Len(sErrorDescription) = 0) Then
+
+					If CLng(Session("SSILinkViewID")) > -1 Then
+
+						Dim cmdGetViewName = CreateObject("ADODB.Command")
+						cmdGetViewName.CommandText = "spASRIntGetViewName"
+						cmdGetViewName.CommandType = 4 ' Stored procedure
+						cmdGetViewName.ActiveConnection = Session("databaseConnection")
+
+						Dim prmViewID = cmdGetViewName.CreateParameter("ViewID", 3, 1)
+						cmdGetViewName.Parameters.Append(prmViewID)
+
+						If CLng(Session("SSILinkViewID")) <> CLng(Session("SingleRecordViewID")) And _
+							(Session("linkType") <> "multifind") Then
+							prmViewID.value = CleanNumeric(Session("SSILinkViewID"))
+						Else
+							prmViewID.value = CleanNumeric(Session("SingleRecordViewID"))
+						End If
+
+						Dim prmViewName = cmdGetViewName.CreateParameter("ViewName", 200, 2, 255)
+						cmdGetViewName.Parameters.Append(prmViewName)
+
+						Err.Clear()
+						cmdGetViewName.Execute()
+
+						If (Err.Number <> 0) Then
+							sErrorDescription = "Error getting the link view name." & vbCrLf & FormatError(Err.Description)
+						Else
+							If Not IsDBNull(cmdGetViewName.Parameters("ViewName").Value) Then
+								sViewName = Replace(cmdGetViewName.Parameters("ViewName").Value, "_", " ")
+							Else
+								sViewName = ""
+							End If
+						End If
+
+						cmdGetViewName = Nothing
+
+					Else
+
+						Dim cmdGetTableName = CreateObject("ADODB.Command")
+						cmdGetTableName.CommandText = "sp_ASRIntGetTableName"
+						cmdGetTableName.CommandType = 4	' Stored procedure
+						cmdGetTableName.ActiveConnection = Session("databaseConnection")
+
+						Dim prmTableID = cmdGetTableName.CreateParameter("TableID", 3, 1)
+						cmdGetTableName.Parameters.Append(prmTableID)
+						prmTableID.value = CleanNumeric(Session("SSILinkTableID"))
+
+						Dim prmTableName = cmdGetTableName.CreateParameter("TableName", 200, 2, 255)
+						cmdGetTableName.Parameters.Append(prmTableName)
+
+						Err.Clear()
+						cmdGetTableName.Execute()
+
+						If (Err.Number <> 0) Then
+							sErrorDescription = "Error getting the link table name." & vbCrLf & FormatError(Err.Description)
+						Else
+							If Not IsDBNull(cmdGetTableName.Parameters("TableName").Value) Then
+								sTableName = Replace(cmdGetTableName.Parameters("TableName").Value, "_", " ")
+							Else
+								sTableName = ""
+							End If
+						End If
+
+						cmdGetTableName = Nothing
+
+					End If
+
+					If (CLng(Session("SSILinkViewID")) = CLng(Session("SingleRecordViewID")) Or _
+						(Session("linkType") = "multifind")) And _
+						Session("SingleRecordViewID") = 0 Then
+
+						sViewName = "single record"
+					End If
+				End If
+			End If
+
 			Return View()
 		End Function
 
@@ -1626,6 +2023,9 @@ Namespace Controllers
 			lstButtonInfo.AddRange(From collectionItem As Object In objDropdownInfo Select New navigationLink(collectionItem.ID, collectionItem.DrillDownHidden, collectionItem.LinkType, collectionItem.LinkOrder, collectionItem.Text, collectionItem.Text1, collectionItem.Text2, collectionItem.Prompt, collectionItem.ScreenID, collectionItem.TableID, collectionItem.ViewID, collectionItem.PageTitle, collectionItem.URL, collectionItem.UtilityType, collectionItem.UtilityID, collectionItem.NewWindow, collectionItem.BaseTable, collectionItem.LinkToFind, collectionItem.SingleRecord, collectionItem.PrimarySequence, collectionItem.SecondarySequence, collectionItem.FindPage, collectionItem.EmailAddress, collectionItem.EmailSubject, collectionItem.AppFilePath, collectionItem.AppParameters, collectionItem.DocumentFilePath, collectionItem.DisplayDocumentHyperlink, collectionItem.IsSeparator, collectionItem.Element_Type, collectionItem.SeparatorOrientation, collectionItem.PictureID, collectionItem.Chart_ShowLegend, collectionItem.Chart_Type, collectionItem.Chart_ShowGrid, collectionItem.Chart_StackSeries, collectionItem.Chart_ShowValues, collectionItem.Chart_ViewID, collectionItem.Chart_TableID, collectionItem.Chart_ColumnID, collectionItem.Chart_FilterID, collectionItem.Chart_AggregateType, collectionItem.Chart_ColumnName, collectionItem.Chart_ColumnName_2, collectionItem.UseFormatting, collectionItem.Formatting_DecimalPlaces, collectionItem.Formatting_Use1000Separator, collectionItem.Formatting_Prefix, collectionItem.Formatting_Suffix, collectionItem.UseConditionalFormatting, collectionItem.ConditionalFormatting_Operator_1, collectionItem.ConditionalFormatting_Value_1, collectionItem.ConditionalFormatting_Style_1, collectionItem.ConditionalFormatting_Colour_1, collectionItem.ConditionalFormatting_Operator_2, collectionItem.ConditionalFormatting_Value_2, collectionItem.ConditionalFormatting_Style_2, collectionItem.ConditionalFormatting_Colour_2, collectionItem.ConditionalFormatting_Operator_3, collectionItem.ConditionalFormatting_Value_3, collectionItem.ConditionalFormatting_Style_3, collectionItem.ConditionalFormatting_Colour_3, collectionItem.SeparatorColour, collectionItem.InitialDisplayMode, collectionItem.Chart_TableID_2, collectionItem.Chart_ColumnID_2, collectionItem.Chart_TableID_3, collectionItem.Chart_ColumnID_3, collectionItem.Chart_SortOrderID, collectionItem.Chart_SortDirection, collectionItem.Chart_ColourID, collectionItem.Chart_ShowPercentages))
 
 			Dim viewModel = New NavLinksViewModel With {.NavigationLinks = lstButtonInfo, .NumberOfLinks = objDropdownInfo.Count}
+
+			Session("SSILinkTableID") = Session("SingleRecordTableID")
+			Session("SSILinkViewID") = Session("SingleRecordViewID")
 
 			Return View(viewModel)
 		End Function
@@ -2798,6 +3198,103 @@ Namespace Controllers
 		Function recordEdit() As ActionResult
 			Return PartialView()
 		End Function
+
+		<HttpPost()>
+		Function recordEditMain(psScreenInfo As String) As ActionResult
+
+			Session("action") = ""
+			Session("parentTableID") = 0
+			Session("parentRecordID") = 0
+			Session("selectSQL") = ""
+			Session("errorMessage") = ""
+			Session("warningFlag") = ""
+			Session("previousAction") = ""
+
+			Dim sParameters As String = psScreenInfo
+
+			Session("linkType") = Left(sParameters, InStr(sParameters, "_") - 1)
+
+			sParameters = Mid(sParameters, InStr(sParameters, "_") + 1)
+
+			Session("TopLevelRecID") = Left(sParameters, InStr(sParameters, "_") - 1)
+
+			If Session("linkType") = "multifind" Then
+				Session("screenID") = 0
+				Session("title") = ""
+				Session("startMode") = 0
+				Session("tableID") = Mid(sParameters, InStr(sParameters, "_") + 1, ((InStr(sParameters, "!") - 1) - InStr(sParameters, "_")))
+				Session("viewID") = Mid(sParameters, InStr(sParameters, "!") + 1)
+				Session("tableType") = 1
+
+			Else
+				Session("linkID") = Mid(sParameters, InStr(sParameters, "_") + 1)
+
+				Err.Clear()
+				Dim cmdLinkInfo = CreateObject("ADODB.Command")
+				cmdLinkInfo.CommandText = "spASRIntGetLinkInfo"
+				cmdLinkInfo.CommandType = 4	' Stored Procedure
+				cmdLinkInfo.ActiveConnection = Session("databaseConnection")
+
+				Dim prmLinkID = cmdLinkInfo.CreateParameter("linkID", 3, 1)	' 3=integer, 1=input
+				cmdLinkInfo.Parameters.Append(prmLinkID)
+				prmLinkID.value = CLng(CleanNumeric(Session("linkID")))
+
+				Dim prmScreenID = cmdLinkInfo.CreateParameter("screenID", 3, 2)	' 3=integer, 2=output
+				cmdLinkInfo.Parameters.Append(prmScreenID)
+
+				Dim prmTableID = cmdLinkInfo.CreateParameter("tableID", 3, 2)	' 3=integer, 2=output
+				cmdLinkInfo.Parameters.Append(prmTableID)
+
+				Dim prmTitle = cmdLinkInfo.CreateParameter("title", 200, 2, 8000)	' 200=adVarChar, 2=output, 8000=size
+				cmdLinkInfo.Parameters.Append(prmTitle)
+
+				Dim prmStartMode = cmdLinkInfo.CreateParameter("startMode", 3, 2)	' 3=integer, 2=output
+				cmdLinkInfo.Parameters.Append(prmStartMode)
+
+				Dim prmTableType = cmdLinkInfo.CreateParameter("tableType", 3, 2)	' 3=integer, 2=output
+				cmdLinkInfo.Parameters.Append(prmTableType)
+
+				Err.Clear()
+				cmdLinkInfo.Execute()
+
+				Dim sErrorDescription As String = ""
+
+				If (Err.Number <> 0) Then
+					sErrorDescription = "Unable to get the link definition." & vbCrLf & FormatError(Err.Description)
+				Else
+					Session("screenID") = cmdLinkInfo.Parameters("screenID").Value
+					Session("tableID") = cmdLinkInfo.Parameters("tableID").Value
+					Session("title") = (cmdLinkInfo.Parameters("title").Value)
+					Session("startMode") = cmdLinkInfo.Parameters("startMode").Value
+					Session("tableType") = cmdLinkInfo.Parameters("tableType").Value
+				End If
+
+				cmdLinkInfo = Nothing
+
+				'session("tableID") = session("SSILinkTableID") 
+				Session("viewID") = Session("SSILinkViewID")
+			End If
+
+			' recordEditMain.asp now replaced with the following server side code instead. So don't go looking for the form.
+			If Session("linkType") = "multifind" Then
+				Return RedirectToAction("Find", New With {.sParameters = "LOAD_0_0_"})
+			Else
+				If (CLng(Session("SSILinkTableID")) = CLng(Session("SingleRecordTableID"))) _
+						And (CLng(Session("SSILinkViewID")) = CLng(Session("SingleRecordViewID"))) _
+						And (CLng(Session("TopLevelRecID")) = 0) _
+						And (CLng(Session("tableID")) <> CLng(Session("SingleRecordTableID"))) Then
+					'TODO: error - no parent record in the current view.
+					Stop
+				End If
+				If CleanNumeric(Session("startMode")) <> 3 Then
+					Return View("recordEdit")
+				Else
+					Return RedirectToAction("Find", New With {.sParameters = "LOAD_0_0_"})
+				End If
+			End If
+
+		End Function
+
 
 		Function FormError() As JsonResult
 			' replaces response.redirect("error") 

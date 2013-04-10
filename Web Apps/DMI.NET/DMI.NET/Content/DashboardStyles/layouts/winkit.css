@@ -285,7 +285,7 @@ div.officebar a {
   padding: 4px 15px 0px 6px;
   text-decoration:none;
   cursor:default;
-  height: 23px; 
+  /*height: 23px; */
 }
 
 div.officebar a:hover {
@@ -548,7 +548,7 @@ div.officetab li div.button a {
   text-decoration: none;
   padding:0;
   margin:0;
-  height:66px;
+  /*height:66px;*/
 }
 div.officetab li div.button a:hover {
   /*background: transparent url(../../../Scripts/officebar/images/button_over.png) no-repeat scroll left top;*/

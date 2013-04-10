@@ -5,6 +5,7 @@ li:visited { color: white;}
 
 .headerbar, #fixedlinksframe {background-color: rgb(43, 120, 228);}
 
+.DashContent { background-color: rgb(7, 55, 99);}
 .DashHeader {background-color: rgb(43, 120, 228);}
 .RecordDescription {	background-color: rgb(43, 120, 228);}
 .RecordDescription p {color: White;	}

@@ -6,9 +6,10 @@
 </asp:Content>
 
 
-<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">	
+		<%--ThemeRoller stylesheet--%>
+	<link href="<%: Url.LatestContent("~/Content/themes/jMetro/jquery-ui.css")%>" rel="stylesheet" type="text/css" />
 
-	
 	<link href="<%= Url.LatestContent("~/Content/jquery.gridster.css")%>" rel="stylesheet" type="text/css" />
 	<script src="<%: Url.LatestContent("~/Scripts/jquery.gridster.js")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/Scripts/jquery.mousewheel.js")%>" type="text/javascript"></script>
@@ -68,9 +69,9 @@
 
 		    //Load Poll.asp, then reload every 30 seconds to keep
 		    //session alive, and check for server messages.
-			loadPartialView(); // first time
+			loadPartialView("poll", "home"); // first time
 		    // re-call the function each 30 seconds
-			window.setInterval("loadPartialView()", 30000);
+			window.setInterval("loadPartialView('poll', 'home')", 30000);
 
 
 			$(".DashContent").fadeIn("slow");
@@ -166,53 +167,46 @@
 			});
 		}
 
-		function loadPartialView() {
-//		    $.ajax({
-//		        url: "<%:Url.Action("poll", "home")%>",
-//		        type: "GET", // <-- make a async request by GET
-//		        dataType: 'html', // <-- to expect an html response
-//		        success: function(result) {
-//		            $('#poll').html(result);
-//		        }
-//		    });
-		    
-		    $.ajax({
-		        url: "<%:Url.Action("poll", "home")%>",
-		        type: "POST",
-		        success: function (html) {
-		            $("#poll").html(html);
-		        },
-		        error: function (req, status, errorObj) {
-		            //alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
-		        }
-		    });
+		function loadPartialView(action, controller, targetDiv, params) {			
 
+			$.ajax({
+				url: window.ROOT + controller + "/" + action,
+				data: { psScreenInfo: params },
+				type: "POST",
+				success: function (html) {					
+					$("#" + targetDiv).html(html);
+					var breadcrumb = $(".pageTitle").text();
+					if ((action.toUpperCase() != "POLL") && (breadcrumb.length > 0)) {						
+						$(".RecordDescription p").append("<a href='javascript:alert(1)'>: " + breadcrumb + "</a>");
+					}
+				},
+				error: function (req, status, errorObj) {
+					//TODO: remove this popup. Used for debugging only.
+					OpenHR.messageBox("ajax call to '" + action + "' failed with '" + errorObj + "'.");
+				}
+			});
 		}
 
 
-	    function goScreen(psScreenInfo) {
-	        return false;
-	        //ShowWait("Loading screen...");
-	        //window.parent.relocateScreen(psScreenInfo);
+		function goScreen(psScreenInfo) {
 
-	        var sDestination;
+			var sDestination;
+			
+			loadPartialView("recordEditMain", "home", "workframe", psScreenInfo);
+			
+			// Submit the refresh.asp to keep the session alive
+			//refreshSession();
+			//psScreenInfo = escape(psScreenInfo);
 
-	        // Submit the refresh.asp to keep the session alive
-	        //refreshSession();
-	        psScreenInfo = escape(psScreenInfo);
-
-	        sDestination = "recordEditMain.asp?";
-	        sDestination = sDestination.concat(psScreenInfo);
-	        window.frames("linksworkframe").location.replace(sDestination);
-
-
-
-	    }
+			//sDestination = "recordEditMain.asp?";
+			//sDestination = sDestination.concat(psScreenInfo);
+			//window.frames("linksworkframe").location.replace(sDestination);
+		}
 
 	</script>
 
 
-	<div class="DashContent" style="display: none;">
+	<div id="workframe" class="DashContent" style="display: none;">
 		<div class="tileContent">
 		<%Dim fFirstSeparator = True%>
 		<%Const iMaxRows As Integer = 4%>
@@ -493,5 +487,52 @@
 		<div id="poll" data-framesource="poll.asp" style="display: none"></div>
 		<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none"><%Html.RenderPartial("~/views/home/pollmessage.ascx")%></div>
 	</div>    
+	
+<FORM action="" method="POST" id="frmMenuInfo" name="frmMenuInfo">
+<%
+	Response.Write("<INPUT type=""hidden"" id=txtDefaultStartPage name=txtDefaultStartPage value=""" & Replace(Session("DefaultStartPage"), """", "&quot;") & """>")
+	Response.Write("<INPUT type=""hidden"" id=txtDatabase name=txtDatabase value=""" & Replace(Session("Database"), """", "&quot;") & """>")
+%>
+	<INPUT type="hidden" id=txtIEVersion name=txtIEVersion value=<%=session("IEVersion")%>>
+	<INPUT type="hidden" id=txtUserType name=txtUserType value=<%=session("userType")%>>
+
+	<INPUT type="hidden" id=txtPersonnel_EmpTableID name=txtPersonnel_EmpTableID value=<%=session("Personnel_EmpTableID")%>>
+
+	<INPUT type="hidden" id=txtTB_EmpTableID name=txtTB_EmpTableID value=<%=session("TB_EmpTableID")%>>
+	<INPUT type="hidden" id=txtTB_CourseTableID name=txtTB_CourseTableID value=<%=session("TB_CourseTableID")%>>
+	<INPUT type="hidden" id=txtTB_CourseCancelDateColumnID name=txtTB_CourseCancelDateColumnID value=<%=session("TB_CourseCancelDateColumnID")%>>
+	<INPUT type="hidden" id=txtWaitListOverRideColumnID name=txtWaitListOverRideColumnID value=<%=session("TB_WaitListOverRideColumnID")%>>
+	<INPUT type="hidden" id=txtTB_TBTableID name=txtTB_TBTableID value=<%=session("TB_TBTableID")%>>
+	<INPUT type="hidden" id=txtTB_TBTableSelect name=txtTB_TBTableSelect value=<%=session("TB_TBTableSelect")%>>
+	<INPUT type="hidden" id=txtTB_TBTableInsert name=txtTB_TBTableInsert value=<%=session("TB_TBTableInsert")%>>
+	<INPUT type="hidden" id=txtTB_TBTableUpdate name=txtTB_TBTableUpdate value=<%=session("TB_TBTableUpdate")%>>
+	<INPUT type="hidden" id=txtTB_TBStatusColumnID name=txtTB_TBStatusColumnID value=<%=session("TB_TBStatusColumnID")%>>
+	<INPUT type="hidden" id=txtTB_TBStatusColumnUpdate name=txtTB_TBStatusColumnUpdate value=<%=session("TB_TBStatusColumnUpdate")%>>
+	<INPUT type="hidden" id=txtTB_TBCancelDateColumnID name=txtTB_TBCancelDateColumnID value=<%=session("TB_TBCancelDateColumnID")%>>
+	<INPUT type="hidden" id=txtTB_TBCancelDateColumnUpdate name=txtTB_TBCancelDateColumnUpdate value=<%=session("TB_TBCancelDateColumnUpdate")%>>
+	<INPUT type="hidden" id=txtTB_TBStatusPExists name=txtTB_TBStatusPExists value=<%=session("TB_TBStatusPExists")%>>
+	<INPUT type="hidden" id=txtTB_WaitListTableID name=txtTB_WaitListTableID value=<%=session("TB_WaitListTableID")%>>
+	<INPUT type="hidden" id=txtTB_WaitListTableInsert name=txtTB_WaitListTableInsert value=<%=session("TB_WaitListTableInsert")%>>
+	<INPUT type="hidden" id=txtTB_WaitListTableDelete name=txtTB_WaitListTableDelete value=<%=session("TB_WaitListTableDelete")%>>
+	<INPUT type="hidden" id=txtTB_WaitListCourseTitleColumnID name=txtTB_WaitListCourseTitleColumnID value=<%=session("TB_WaitListCourseTitleColumnID")%>>
+	<INPUT type="hidden" id=txtTB_WaitListCourseTitleColumnUpdate name=txtTB_WaitListCourseTitleColumnUpdate value=<%=session("TB_WaitListCourseTitleColumnUpdate")%>>
+	<INPUT type="hidden" id=txtTB_WaitListCourseTitleColumnSelect name=txtTB_WaitListCourseTitleColumnSelect value=<%=session("TB_WaitListCourseTitleColumnSelect")%>>
+	<INPUT type="hidden" id=txtPrimaryStartMode name=txtPrimaryStartMode value=<%=session("PrimaryStartMode")%>>
+	<INPUT type="hidden" id=txtHistoryStartMode name=txtHistoryStartMode value=<%=session("HistoryStartMode")%>>
+	<INPUT type="hidden" id=txtLookupStartMode name=txtLookupStartMode value=<%=session("LookupStartMode")%>>
+	<INPUT type="hidden" id=txtQuickAccessStartMode name=txtQuickAccessStartMode value=<%=session("QuickAccessStartMode")%>>
+	<INPUT type="hidden" id=txtDesktopColour name=txtDesktopColour value=<%=session("DesktopColour")%>>
+
+	<INPUT type="hidden" id=txtWFEnabled name=txtWFEnabled value=<%=session("WF_Enabled")%>>
+	<INPUT type="hidden" id=txtWFOutOfOfficeEnabled name=txtWFOutOfOfficeEnabled value=<%=session("WF_OutOfOfficeConfigured")%>>
+
+	<INPUT type="hidden" id=txtDoneDatabaseMenu name=txtDoneDatabaseMenu value=0>
+	<INPUT type="hidden" id=txtDoneQuickEntryMenu name=txtDoneQuickEntryMenu value=0>
+	<INPUT type="hidden" id=txtDoneTableScreensMenu name=txtDoneTableScreensMenu value=0>
+	<INPUT type="hidden" id=txtDoneSelfServiceStart name=txtDoneSelfServiceStart value=0>
+
+	<INPUT type="hidden" id=txtMenuSaved name=txtMenuSaved value=0>
+</FORM>	
+	
 
 </asp:Content>

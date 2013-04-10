@@ -140,7 +140,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="appletest.htm" />
+    <Content Include="Content\fonts\SSI80v194934\style.css" />
     <Content Include="Content\images\ABSLogo\OpenHRLogo1024x768.png" />
     <Content Include="Content\images\ABSLogo\OpenHRLogo114.png" />
     <Content Include="Content\images\ABSLogo\OpenHRLogo144.png" />
@@ -160,6 +160,7 @@
     <Content Include="Content\themes\jMetro\images\ui-icons_ffffff_0.png" />
     <Content Include="Content\themes\jMetro\jquery-ui.css" />
     <Content Include="lpks\ssmain.lpk" />
+    <Content Include="Content\fonts\SSI80v194934\SSI80v1.woff" />
     <None Include="_bin_deployableAssemblies\Microsoft.Web.Infrastructure.dll" />
     <None Include="_bin_deployableAssemblies\System.Web.WebPages.Razor.dll" />
     <None Include="_bin_deployableAssemblies\System.Web.WebPages.dll" />
@@ -423,7 +424,6 @@
     <Content Include="Content\themes\jqueryui\minified\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\jqueryui\minified\jquery.ui.tooltip.min.css" />
     <Content Include="Content\ui.jqgrid.css" />
-    <Content Include="HTMLPage2.htm" />
     <Content Include="Include\exprmenu.htm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -642,7 +642,6 @@
     <Content Include="Views\Home\linksMain.aspx" />
     <Content Include="Views\Home\Main.aspx" />
     <Content Include="Views\Home\Menu.ascx" />
-    <Content Include="HTMLPage1.htm" />
     <Content Include="Views\Home\newUser.ascx" />
     <Content Include="Views\Home\OptionData.ascx" />
     <Content Include="Views\Home\pcconfiguration.ascx" />

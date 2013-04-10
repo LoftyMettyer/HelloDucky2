@@ -479,6 +479,13 @@ table.calendarcell
 		/*font-weight: bold;*/
 	}
 
+	.RecordDescription a:visited, .RecordDescription a:hover, .RecordDescription a:link  {
+		color: white;
+		text-decoration: none;
+	}
+	.RecordDescription a:hover {
+		border-bottom: 2px solid orange;
+	}
 .RecDescPhoto i {text-align: center;}
 
 .RecDescPhoto 
@@ -505,7 +512,13 @@ table.calendarcell
 }
 
 
-
+header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 126px;
+}
 
 .FixedLinksLeft { float: left;}
 

@@ -1421,6 +1421,10 @@ Namespace Controllers
 			Session("SingleRecordTableID") = cmdModuleInfo.Parameters("tableID").Value
 			Session("SingleRecordViewID") = cmdModuleInfo.Parameters("viewID").Value
 
+			' SSI Stuff:
+			Session("SSILinkTableID") = 0
+			Session("SSILinkViewID") = 0
+
 			cmdModuleInfo = Nothing
 
 			' Get dashboard items
