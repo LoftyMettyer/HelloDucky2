@@ -282,12 +282,7 @@ ErrorTrap:
 		
 	End Function
 	
-	
-	
-	
-	
-	
-	
+
 	Public Function ValidateOperatorParameters(ByRef plngOperatorID As Integer, ByRef piResultType As ExpressionValueTypes, ByRef piParam1Type As Short, ByRef piParam2Type As Short) As Boolean
 		' Validate the given operator with the given parameters.
 		' Return the result type in the piResultType parameter.
@@ -851,277 +846,277 @@ LocalErr:
 	End Function
 	
 	
-	Public Function GetExprField(ByRef lngExprID As Integer, ByRef sField As String) As Object
-		
-		Dim sSQL As String
-		Dim rsExpr As ADODB.Recordset
-		
-		On Error GoTo ErrorTrap
-		
-		sSQL = "SELECT * FROM ASRSysExpressions WHERE ExprID = " & lngExprID
-		
-		rsExpr = datGeneral.GetRecords(sSQL)
-		
-		With rsExpr
-			If .RecordCount > 0 Then
-				'UPGRADE_WARNING: Couldn't resolve default property of object GetExprField. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				GetExprField = .Fields(sField).Value
-			End If
-		End With
-		
-		rsExpr.Close()
-		
-TidyUpAndExit: 
-		'UPGRADE_NOTE: Object rsExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsExpr = Nothing
-		Exit Function
-		
-ErrorTrap: 
-		'NO MSGBOX ON THE SERVER ! - MsgBox "Error retrieving field value from database.", vbOKOnly + vbCritical, App.Title
-		Resume TidyUpAndExit
-		
-	End Function
+  Public Function GetExprField(ByVal lngExprID As Integer, ByVal sField As String) As Object
+
+    Dim sSQL As String
+    Dim rsExpr As ADODB.Recordset
+
+    On Error GoTo ErrorTrap
+
+    sSQL = "SELECT * FROM ASRSysExpressions WHERE ExprID = " & lngExprID
+
+    rsExpr = datGeneral.GetRecords(sSQL)
+
+    With rsExpr
+      If .RecordCount > 0 Then
+        'UPGRADE_WARNING: Couldn't resolve default property of object GetExprField. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        GetExprField = .Fields(sField).Value
+      End If
+    End With
+
+    rsExpr.Close()
+
+TidyUpAndExit:
+    'UPGRADE_NOTE: Object rsExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rsExpr = Nothing
+    Exit Function
+
+ErrorTrap:
+    'NO MSGBOX ON THE SERVER ! - MsgBox "Error retrieving field value from database.", vbOKOnly + vbCritical, App.Title
+    Resume TidyUpAndExit
+
+  End Function
 	
 	
-	Public Function HasHiddenComponents(ByRef lngExprID As Integer) As Boolean
-		
-		'********************************************************************************
-		' HasHiddenComponents - Loops through the passed expression searching for       *
-		'                       hidden expressions (calcs/filters).                     *
-		'                       Note: This function calls itself and drills down the    *
-		'                       expression checking for hidden calcs & filters, then    *
-		'                       works its way up the expressions/components.            *
-		'                                                                               *
-		' 'TM20010802 Fault 2617                                                        *
-		'********************************************************************************
-		
-		Dim rsExpr As ADODB.Recordset
-		Dim rsExprComp As ADODB.Recordset
-		Dim lngCalcFilterID As Integer
-		Dim bHasHiddenComp As Boolean
-		Dim sStartAccess As String
-		Dim sSQL As String
-		
-		On Error GoTo ErrorTrap
-		
-		'  sSQL = "SELECT * FROM ASRSysExpressions WHERE ExprID = " & lngExprID
-		'  Set rsExpr = datGeneral.GetRecords(sSQL)
-		
-		sSQL = "SELECT * FROM ASRSysExprComponents WHERE ExprID = " & lngExprID
-		rsExprComp = datGeneral.GetRecords(sSQL)
-		
-		bHasHiddenComp = False
-		
-		With rsExprComp
-			Do Until .EOF
-				Select Case .Fields("Type").Value
-					Case ExpressionComponentTypes.giCOMPONENT_CALCULATION
-						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						lngCalcFilterID = IIf(IsDbNull(.Fields("CalculationID").Value), 0, .Fields("CalculationID").Value)
-						
-						If lngCalcFilterID > 0 Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object GetExprField(lngCalcFilterID, Access). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If HasHiddenComponents(lngCalcFilterID) Or GetExprField(lngCalcFilterID, "Access") = ACCESS_HIDDEN Then
-								bHasHiddenComp = True
-								'TM20011003
-								'Need this function to just find out if there are any hidden components,
-								'it was also setting the access of the functions and therefore changing
-								'time stamp.
-								'SetExprAccess lngCalcFilterID, "HD"
-							End If
-						End If
-						
-					Case ExpressionComponentTypes.giCOMPONENT_FILTER
-						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						lngCalcFilterID = IIf(IsDbNull(.Fields("FilterID").Value), 0, .Fields("FilterID").Value)
-						
-						If lngCalcFilterID > 0 Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object GetExprField(lngCalcFilterID, Access). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If HasHiddenComponents(lngCalcFilterID) Or GetExprField(lngCalcFilterID, "Access") = ACCESS_HIDDEN Then
-								bHasHiddenComp = True
-								'TM20011003
-								'Need this function to just find out if there are any hidden components,
-								'it was also setting the access of the functions and therefore changing
-								'time stamp.
-								'SetExprAccess lngCalcFilterID, "HD"
-							End If
-						End If
-						
-					Case ExpressionComponentTypes.giCOMPONENT_FIELD
-						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						lngCalcFilterID = IIf(IsDbNull(.Fields("FieldSelectionFilter").Value), 0, .Fields("FieldSelectionFilter").Value)
-						
-						If lngCalcFilterID > 0 Then
-							'UPGRADE_WARNING: Couldn't resolve default property of object GetExprField(lngCalcFilterID, Access). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If HasHiddenComponents(lngCalcFilterID) Or GetExprField(lngCalcFilterID, "Access") = ACCESS_HIDDEN Then
-								bHasHiddenComp = True
-								'TM20011003
-								'Need this function to just find out if there are any hidden components,
-								'it was also setting the access of the functions and therefore changing
-								'time stamp.
-								'SetExprAccess lngCalcFilterID, "HD"
-							End If
-						End If
-						
-					Case ExpressionComponentTypes.giCOMPONENT_FUNCTION
-						sSQL = "SELECT exprID FROM ASRSysExpressions WHERE parentComponentID = " & CStr(.Fields("ComponentID").Value)
-						rsExpr = datGeneral.GetRecords(sSQL)
-						Do Until rsExpr.EOF
-							'UPGRADE_WARNING: Couldn't resolve default property of object GetExprField(rsExpr!ExprID, Access). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+  Public Function HasHiddenComponents(ByVal lngExprID As Integer) As Boolean
+
+    '********************************************************************************
+    ' HasHiddenComponents - Loops through the passed expression searching for       *
+    '                       hidden expressions (calcs/filters).                     *
+    '                       Note: This function calls itself and drills down the    *
+    '                       expression checking for hidden calcs & filters, then    *
+    '                       works its way up the expressions/components.            *
+    '                                                                               *
+    ' 'TM20010802 Fault 2617                                                        *
+    '********************************************************************************
+
+    Dim rsExpr As ADODB.Recordset
+    Dim rsExprComp As ADODB.Recordset
+    Dim lngCalcFilterID As Integer
+    Dim bHasHiddenComp As Boolean
+    Dim sStartAccess As String
+    Dim sSQL As String
+
+    On Error GoTo ErrorTrap
+
+    '  sSQL = "SELECT * FROM ASRSysExpressions WHERE ExprID = " & lngExprID
+    '  Set rsExpr = datGeneral.GetRecords(sSQL)
+
+    sSQL = "SELECT * FROM ASRSysExprComponents WHERE ExprID = " & lngExprID
+    rsExprComp = datGeneral.GetRecords(sSQL)
+
+    bHasHiddenComp = False
+
+    With rsExprComp
+      Do Until .EOF
+        Select Case .Fields("Type").Value
+          Case ExpressionComponentTypes.giCOMPONENT_CALCULATION
+            'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+            lngCalcFilterID = IIf(IsDBNull(.Fields("CalculationID").Value), 0, .Fields("CalculationID").Value)
+
+            If lngCalcFilterID > 0 Then
+              'UPGRADE_WARNING: Couldn't resolve default property of object GetExprField(lngCalcFilterID, Access). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+              If HasHiddenComponents(lngCalcFilterID) Or GetExprField(lngCalcFilterID, "Access") = ACCESS_HIDDEN Then
+                bHasHiddenComp = True
+                'TM20011003
+                'Need this function to just find out if there are any hidden components,
+                'it was also setting the access of the functions and therefore changing
+                'time stamp.
+                'SetExprAccess lngCalcFilterID, "HD"
+              End If
+            End If
+
+          Case ExpressionComponentTypes.giCOMPONENT_FILTER
+            'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+            lngCalcFilterID = IIf(IsDBNull(.Fields("FilterID").Value), 0, .Fields("FilterID").Value)
+
+            If lngCalcFilterID > 0 Then
+              'UPGRADE_WARNING: Couldn't resolve default property of object GetExprField(lngCalcFilterID, Access). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+              If HasHiddenComponents(lngCalcFilterID) Or GetExprField(lngCalcFilterID, "Access") = ACCESS_HIDDEN Then
+                bHasHiddenComp = True
+                'TM20011003
+                'Need this function to just find out if there are any hidden components,
+                'it was also setting the access of the functions and therefore changing
+                'time stamp.
+                'SetExprAccess lngCalcFilterID, "HD"
+              End If
+            End If
+
+          Case ExpressionComponentTypes.giCOMPONENT_FIELD
+            'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+            lngCalcFilterID = IIf(IsDBNull(.Fields("FieldSelectionFilter").Value), 0, .Fields("FieldSelectionFilter").Value)
+
+            If lngCalcFilterID > 0 Then
+              'UPGRADE_WARNING: Couldn't resolve default property of object GetExprField(lngCalcFilterID, Access). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+              If HasHiddenComponents(lngCalcFilterID) Or GetExprField(lngCalcFilterID, "Access") = ACCESS_HIDDEN Then
+                bHasHiddenComp = True
+                'TM20011003
+                'Need this function to just find out if there are any hidden components,
+                'it was also setting the access of the functions and therefore changing
+                'time stamp.
+                'SetExprAccess lngCalcFilterID, "HD"
+              End If
+            End If
+
+          Case ExpressionComponentTypes.giCOMPONENT_FUNCTION
+            sSQL = "SELECT exprID FROM ASRSysExpressions WHERE parentComponentID = " & CStr(.Fields("ComponentID").Value)
+            rsExpr = datGeneral.GetRecords(sSQL)
+            Do Until rsExpr.EOF
+              'UPGRADE_WARNING: Couldn't resolve default property of object GetExprField(rsExpr!ExprID, Access). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
               If HasHiddenComponents(rsExpr.Fields("ExprID").Value) Or GetExprField(rsExpr.Fields("ExprID").Value, "Access") = ACCESS_HIDDEN Then
                 bHasHiddenComp = True
                 Exit Do
               End If
-							
-							rsExpr.MoveNext()
-						Loop 
-						rsExpr.Close()
-						'UPGRADE_NOTE: Object rsExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-						rsExpr = Nothing
-				End Select
-				
-				If bHasHiddenComp Then
-					Exit Do
-				End If
-				
-				.MoveNext()
-			Loop 
-		End With
-		
-		'TM20011003
-		'Need this function to just find out if there are any hidden components,
-		'it was also setting the access of the functions and therefore changing
-		'time stamp.
-		'  If bHasHiddenComp Then SetExprAccess lngExprID, "HD"
-		HasHiddenComponents = bHasHiddenComp
-		
-		rsExprComp.Close()
-		'  rsExpr.Close
-		
-TidyUpAndExit: 
-		'  Set rsExpr = Nothing
-		'UPGRADE_NOTE: Object rsExprComp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsExprComp = Nothing
-		
-		Exit Function
-		
-ErrorTrap: 
-		HasHiddenComponents = False
-		Resume TidyUpAndExit
-		
-	End Function
+
+              rsExpr.MoveNext()
+            Loop
+            rsExpr.Close()
+            'UPGRADE_NOTE: Object rsExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+            rsExpr = Nothing
+        End Select
+
+        If bHasHiddenComp Then
+          Exit Do
+        End If
+
+        .MoveNext()
+      Loop
+    End With
+
+    'TM20011003
+    'Need this function to just find out if there are any hidden components,
+    'it was also setting the access of the functions and therefore changing
+    'time stamp.
+    '  If bHasHiddenComp Then SetExprAccess lngExprID, "HD"
+    HasHiddenComponents = bHasHiddenComp
+
+    rsExprComp.Close()
+    '  rsExpr.Close
+
+TidyUpAndExit:
+    '  Set rsExpr = Nothing
+    'UPGRADE_NOTE: Object rsExprComp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rsExprComp = Nothing
+
+    Exit Function
+
+ErrorTrap:
+    HasHiddenComponents = False
+    Resume TidyUpAndExit
+
+  End Function
 	
 	
-	Public Function GetPickListField(ByRef lngPicklistID As Integer, ByRef sField As String) As Object
-		
-		Dim sSQL As String
-		Dim rsExpr As ADODB.Recordset
-		
-		On Error GoTo ErrorTrap
-		
-		sSQL = "SELECT * FROM ASRSysPickListName WHERE PickListID = " & lngPicklistID
-		
-		rsExpr = datGeneral.GetRecords(sSQL)
-		
-		With rsExpr
-			If .RecordCount > 0 Then
-				'UPGRADE_WARNING: Couldn't resolve default property of object GetPickListField. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				GetPickListField = .Fields(sField).Value
-			End If
-		End With
-		
-		rsExpr.Close()
-		
-TidyUpAndExit: 
-		'UPGRADE_NOTE: Object rsExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsExpr = Nothing
-		Exit Function
-		
-ErrorTrap: 
-		'NO MSGBOX ON THE SERVER ! - MsgBox "Error retrieving field value from database.", vbOKOnly + vbCritical, App.Title
-		Resume TidyUpAndExit
-		
-	End Function
+  Public Function GetPickListField(ByVal lngPicklistID As Integer, ByVal sField As String) As Object
+
+    Dim sSQL As String
+    Dim rsExpr As ADODB.Recordset
+
+    On Error GoTo ErrorTrap
+
+    sSQL = "SELECT * FROM ASRSysPickListName WHERE PickListID = " & lngPicklistID
+
+    rsExpr = datGeneral.GetRecords(sSQL)
+
+    With rsExpr
+      If .RecordCount > 0 Then
+        'UPGRADE_WARNING: Couldn't resolve default property of object GetPickListField. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        GetPickListField = .Fields(sField).Value
+      End If
+    End With
+
+    rsExpr.Close()
+
+TidyUpAndExit:
+    'UPGRADE_NOTE: Object rsExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rsExpr = Nothing
+    Exit Function
+
+ErrorTrap:
+    'NO MSGBOX ON THE SERVER ! - MsgBox "Error retrieving field value from database.", vbOKOnly + vbCritical, App.Title
+    Resume TidyUpAndExit
+
+  End Function
 	
-	Public Function HasExpressionComponent(ByRef plngExprIDBeingSearched As Integer, ByRef plngExprIDSearchedFor As Integer) As Boolean
-		'JPD 20040507 Fault 8600
-		On Error GoTo ErrorTrap
-		
-		Dim rsExprComp As ADODB.Recordset
-		Dim rsExpr As ADODB.Recordset
-		Dim fHasExpr As Boolean
-		Dim sSQL As String
-		Dim lngSubExprID As Integer
-		
-		HasExpressionComponent = (plngExprIDBeingSearched = plngExprIDSearchedFor)
-		
-		If Not HasExpressionComponent Then
-			sSQL = "SELECT * FROM ASRSysExprComponents WHERE ExprID = " & CStr(plngExprIDBeingSearched)
-			rsExprComp = datGeneral.GetRecords(sSQL)
-			
-			With rsExprComp
-				Do Until .EOF
-					Select Case .Fields("Type").Value
-						Case ExpressionComponentTypes.giCOMPONENT_CALCULATION
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							lngSubExprID = IIf(IsDbNull(.Fields("CalculationID").Value), 0, .Fields("CalculationID").Value)
-							
-							If lngSubExprID > 0 Then
-								HasExpressionComponent = HasExpressionComponent(lngSubExprID, plngExprIDSearchedFor)
-							End If
-							
-						Case ExpressionComponentTypes.giCOMPONENT_FILTER
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							lngSubExprID = IIf(IsDbNull(.Fields("FilterID").Value), 0, .Fields("FilterID").Value)
-							
-							If lngSubExprID > 0 Then
-								HasExpressionComponent = HasExpressionComponent(lngSubExprID, plngExprIDSearchedFor)
-							End If
-							
-						Case ExpressionComponentTypes.giCOMPONENT_FIELD
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							lngSubExprID = IIf(IsDbNull(.Fields("FieldSelectionFilter").Value), 0, .Fields("FieldSelectionFilter").Value)
-							
-							If lngSubExprID > 0 Then
-								HasExpressionComponent = HasExpressionComponent(lngSubExprID, plngExprIDSearchedFor)
-							End If
-							
-						Case ExpressionComponentTypes.giCOMPONENT_FUNCTION
-							sSQL = "SELECT exprID FROM ASRSysExpressions WHERE parentComponentID = " & CStr(.Fields("ComponentID").Value)
-							rsExpr = datGeneral.GetRecords(sSQL)
-							Do Until rsExpr.EOF
-								HasExpressionComponent = HasExpressionComponent(rsExpr.Fields("ExprID").Value, plngExprIDSearchedFor)
-								
-								If HasExpressionComponent Then
-									Exit Do
-								End If
-								
-								rsExpr.MoveNext()
-							Loop 
-							rsExpr.Close()
-							'UPGRADE_NOTE: Object rsExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-							rsExpr = Nothing
-					End Select
-					
-					If HasExpressionComponent Then
-						Exit Do
-					End If
-					
-					.MoveNext()
-				Loop 
-			End With
-			
-			rsExprComp.Close()
-		End If
-		
-TidyUpAndExit: 
-		'UPGRADE_NOTE: Object rsExprComp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsExprComp = Nothing
-		
-		Exit Function
-		
-ErrorTrap: 
-		Resume TidyUpAndExit
-		
-	End Function
+  Public Function HasExpressionComponent(ByVal plngExprIDBeingSearched As Integer, ByVal plngExprIDSearchedFor As Integer) As Boolean
+    'JPD 20040507 Fault 8600
+    On Error GoTo ErrorTrap
+
+    Dim rsExprComp As ADODB.Recordset
+    Dim rsExpr As ADODB.Recordset
+    Dim fHasExpr As Boolean
+    Dim sSQL As String
+    Dim lngSubExprID As Integer
+
+    HasExpressionComponent = (plngExprIDBeingSearched = plngExprIDSearchedFor)
+
+    If Not HasExpressionComponent Then
+      sSQL = "SELECT * FROM ASRSysExprComponents WHERE ExprID = " & CStr(plngExprIDBeingSearched)
+      rsExprComp = datGeneral.GetRecords(sSQL)
+
+      With rsExprComp
+        Do Until .EOF
+          Select Case .Fields("Type").Value
+            Case ExpressionComponentTypes.giCOMPONENT_CALCULATION
+              'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+              lngSubExprID = IIf(IsDBNull(.Fields("CalculationID").Value), 0, .Fields("CalculationID").Value)
+
+              If lngSubExprID > 0 Then
+                HasExpressionComponent = HasExpressionComponent(lngSubExprID, plngExprIDSearchedFor)
+              End If
+
+            Case ExpressionComponentTypes.giCOMPONENT_FILTER
+              'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+              lngSubExprID = IIf(IsDBNull(.Fields("FilterID").Value), 0, .Fields("FilterID").Value)
+
+              If lngSubExprID > 0 Then
+                HasExpressionComponent = HasExpressionComponent(lngSubExprID, plngExprIDSearchedFor)
+              End If
+
+            Case ExpressionComponentTypes.giCOMPONENT_FIELD
+              'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+              lngSubExprID = IIf(IsDBNull(.Fields("FieldSelectionFilter").Value), 0, .Fields("FieldSelectionFilter").Value)
+
+              If lngSubExprID > 0 Then
+                HasExpressionComponent = HasExpressionComponent(lngSubExprID, plngExprIDSearchedFor)
+              End If
+
+            Case ExpressionComponentTypes.giCOMPONENT_FUNCTION
+              sSQL = "SELECT exprID FROM ASRSysExpressions WHERE parentComponentID = " & CStr(.Fields("ComponentID").Value)
+              rsExpr = datGeneral.GetRecords(sSQL)
+              Do Until rsExpr.EOF
+                HasExpressionComponent = HasExpressionComponent(rsExpr.Fields("ExprID").Value, plngExprIDSearchedFor)
+
+                If HasExpressionComponent Then
+                  Exit Do
+                End If
+
+                rsExpr.MoveNext()
+              Loop
+              rsExpr.Close()
+              'UPGRADE_NOTE: Object rsExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+              rsExpr = Nothing
+          End Select
+
+          If HasExpressionComponent Then
+            Exit Do
+          End If
+
+          .MoveNext()
+        Loop
+      End With
+
+      rsExprComp.Close()
+    End If
+
+TidyUpAndExit:
+    'UPGRADE_NOTE: Object rsExprComp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rsExprComp = Nothing
+
+    Exit Function
+
+ErrorTrap:
+    Resume TidyUpAndExit
+
+  End Function
 End Module

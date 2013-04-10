@@ -169,46 +169,46 @@ Friend Class clsUI
 		
 	End Function
 	
-	Function GetSystemDateSeparator() As String
-		' Return the system data separator.
-		Dim lngLength As Integer
-		Dim sBuffer As New VB6.FixedLengthString(100)
-		
-		lngLength = GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SDATE, sBuffer.Value, 99)
-		GetSystemDateSeparator = Left(sBuffer.Value, lngLength - 1)
-		
-	End Function
+  Shared Function GetSystemDateSeparator() As String
+    ' Return the system data separator.
+    Dim lngLength As Integer
+    Dim sBuffer As New VB6.FixedLengthString(100)
+
+    lngLength = GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SDATE, sBuffer.Value, 99)
+    GetSystemDateSeparator = Left(sBuffer.Value, lngLength - 1)
+
+  End Function
 	
-	Function GetSystemDateFormat() As String
-		' Return the system data format.
-		Dim lngLength As Integer
-		Dim sBuffer As New VB6.FixedLengthString(100)
-		
-		lngLength = GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SSHORTDATE, sBuffer.Value, 99)
-		GetSystemDateFormat = Left(sBuffer.Value, lngLength - 1)
-		
-	End Function
+  Shared Function GetSystemDateFormat() As String
+    ' Return the system data format.
+    Dim lngLength As Integer
+    Dim sBuffer As New VB6.FixedLengthString(100)
+
+    lngLength = GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SSHORTDATE, sBuffer.Value, 99)
+    GetSystemDateFormat = Left(sBuffer.Value, lngLength - 1)
+
+  End Function
 	
-	Function GetSystemDecimalSeparator() As String
-		' Return the system data separator.
-		Dim lngLength As Integer
-		Dim sBuffer As New VB6.FixedLengthString(100)
-		
-		lngLength = GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SDECIMAL, sBuffer.Value, 99)
-		GetSystemDecimalSeparator = Left(sBuffer.Value, lngLength - 1)
-		
-		
-	End Function
+  Shared Function GetSystemDecimalSeparator() As String
+    ' Return the system data separator.
+    Dim lngLength As Integer
+    Dim sBuffer As New VB6.FixedLengthString(100)
+
+    lngLength = GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SDECIMAL, sBuffer.Value, 99)
+    GetSystemDecimalSeparator = Left(sBuffer.Value, lngLength - 1)
+
+
+  End Function
 	
-	Function GetSystemThousandSeparator() As String
-		' Return the system data separator.
-		Dim lngLength As Integer
-		Dim sBuffer As New VB6.FixedLengthString(100)
-		
-		lngLength = GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_STHOUSAND, sBuffer.Value, 99)
-		GetSystemThousandSeparator = Left(sBuffer.Value, lngLength - 1)
-		
-	End Function
+  Shared Function GetSystemThousandSeparator() As String
+    ' Return the system data separator.
+    Dim lngLength As Integer
+    Dim sBuffer As New VB6.FixedLengthString(100)
+
+    lngLength = GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_STHOUSAND, sBuffer.Value, 99)
+    GetSystemThousandSeparator = Left(sBuffer.Value, lngLength - 1)
+
+  End Function
 	
 	
 	Function GetSystemMeasurement() As String

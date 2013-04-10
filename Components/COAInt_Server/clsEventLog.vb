@@ -38,7 +38,7 @@ Option Explicit On
 	
 	Private mclsData As New clsDataAccess
 	Private mlngEventLogID As Integer
-	Private mstrBatchName As String
+  Private mstrBatchName As String = ""
 	Private mlngBatchRunID As Integer
 	Private mlngBatchJobID As Integer
 	Private mblnBatchMode As Boolean
@@ -169,7 +169,7 @@ Option Explicit On
 		
 		prmBatchName = cmdAddHeader.CreateParameter("batchName", 200, 1, 50)
 		cmdAddHeader.Parameters.Append(prmBatchName)
-		prmBatchName.Value = mstrBatchName
+    prmBatchName.Value = mstrBatchName
 		
 		prmBatchRunID = cmdAddHeader.CreateParameter("batchRunID", 3, 1)
 		cmdAddHeader.Parameters.Append(prmBatchRunID)

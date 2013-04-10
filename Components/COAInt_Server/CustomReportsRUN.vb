@@ -2644,7 +2644,7 @@ GenerateSQLJoin_ERROR:
 				' Check if the user can read the column.
 				pobjOrderCol = gcoTablePrivileges.FindTableID(rsTemp.Fields("TableID").Value)
 				objColumnPrivileges = GetColumnPrivileges((pobjOrderCol.TableName))
-				fColumnOK = objColumnPrivileges.Item(rsTemp.Fields("ColumnName")).AllowSelect
+        fColumnOK = objColumnPrivileges.Item(rsTemp.Fields("ColumnName").Value).AllowSelect
 				'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 				objColumnPrivileges = Nothing
 				
@@ -2695,38 +2695,38 @@ GenerateSQLJoin_ERROR:
 								' Get the column permission for the view.
 								objColumnPrivileges = GetColumnPrivileges(sSource)
 								
-								If objColumnPrivileges.IsValid(rsTemp.Fields("ColumnName")) Then
-									If objColumnPrivileges.Item(rsTemp.Fields("ColumnName")).AllowSelect Then
-										' Add the view info to an array to be put into the column list or order code below.
-										iNextIndex = UBound(asViews) + 1
-										ReDim Preserve asViews(iNextIndex)
-										asViews(iNextIndex) = objTableView.ViewName
-										
-										' Add the view to the Join code.
-										' Check if the view has already been added to the join code.
-										fFound = False
-										iTempCounter = 0
-										For iNextIndex = 1 To UBound(alngTableViews, 2)
-											If alngTableViews(1, iNextIndex) = 1 And alngTableViews(2, iNextIndex) = objTableView.ViewID Then
-												fFound = True
-												iTempCounter = iNextIndex
-												Exit For
-											End If
-										Next iNextIndex
-										
-										If Not fFound Then
-											' The view has not yet been added to the join code, so add it to the array and the join code.
-											iNextIndex = UBound(alngTableViews, 2) + 1
-											ReDim Preserve alngTableViews(2, iNextIndex)
-											alngTableViews(1, iNextIndex) = 1
-											alngTableViews(2, iNextIndex) = objTableView.ViewID
-											
-											iTempCounter = iNextIndex
-											
-											psJoinCode = psJoinCode & " LEFT OUTER JOIN " & sRealSource & " ASRSysTemp_" & Trim(Str(iTempCounter)) & " ON " & sCurrentTableViewName & ".ID_" & Trim(Str(objTableView.TableID)) & " = ASRSysTemp_" & Trim(Str(iTempCounter)) & ".ID"
-										End If
-									End If
-								End If
+                If objColumnPrivileges.IsValid(rsTemp.Fields("ColumnName").Value) Then
+                  If objColumnPrivileges.Item(rsTemp.Fields("ColumnName").Value).AllowSelect Then
+                    ' Add the view info to an array to be put into the column list or order code below.
+                    iNextIndex = UBound(asViews) + 1
+                    ReDim Preserve asViews(iNextIndex)
+                    asViews(iNextIndex) = objTableView.ViewName
+
+                    ' Add the view to the Join code.
+                    ' Check if the view has already been added to the join code.
+                    fFound = False
+                    iTempCounter = 0
+                    For iNextIndex = 1 To UBound(alngTableViews, 2)
+                      If alngTableViews(1, iNextIndex) = 1 And alngTableViews(2, iNextIndex) = objTableView.ViewID Then
+                        fFound = True
+                        iTempCounter = iNextIndex
+                        Exit For
+                      End If
+                    Next iNextIndex
+
+                    If Not fFound Then
+                      ' The view has not yet been added to the join code, so add it to the array and the join code.
+                      iNextIndex = UBound(alngTableViews, 2) + 1
+                      ReDim Preserve alngTableViews(2, iNextIndex)
+                      alngTableViews(1, iNextIndex) = 1
+                      alngTableViews(2, iNextIndex) = objTableView.ViewID
+
+                      iTempCounter = iNextIndex
+
+                      psJoinCode = psJoinCode & " LEFT OUTER JOIN " & sRealSource & " ASRSysTemp_" & Trim(Str(iTempCounter)) & " ON " & sCurrentTableViewName & ".ID_" & Trim(Str(objTableView.TableID)) & " = ASRSysTemp_" & Trim(Str(iTempCounter)) & ".ID"
+                    End If
+                  End If
+                End If
 								'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 								objColumnPrivileges = Nothing
 							End If
@@ -3602,7 +3602,7 @@ CheckRecordSet_ERROR:
 					' Get the formatted data to display in the grid
 					'UPGRADE_WARNING: Couldn't resolve default property of object PopulateGrid_FormatData(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					'UPGRADE_WARNING: Couldn't resolve default property of object vDisplayData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					vDisplayData = PopulateGrid_FormatData((mrstCustomReportsOutput.Fields(iLoop).Name), mrstCustomReportsOutput.Fields(iLoop), bSuppress, bBaseRecordChanged)
+          vDisplayData = PopulateGrid_FormatData((mrstCustomReportsOutput.Fields(iLoop).Name), mrstCustomReportsOutput.Fields(iLoop).Value, bSuppress, bBaseRecordChanged)
 				End If
 				
 				'************************************************************************
@@ -3617,7 +3617,7 @@ CheckRecordSet_ERROR:
 						'Get the formatted data of the next column to display in the grid
 						'UPGRADE_WARNING: Couldn't resolve default property of object PopulateGrid_FormatData(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						'UPGRADE_WARNING: Couldn't resolve default property of object vDisplayData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						vDisplayData = PopulateGrid_FormatData((mrstCustomReportsOutput.Fields(intSkippedIndex).Name), mrstCustomReportsOutput.Fields(intSkippedIndex), bSuppress, bBaseRecordChanged)
+            vDisplayData = PopulateGrid_FormatData((mrstCustomReportsOutput.Fields(intSkippedIndex).Name), mrstCustomReportsOutput.Fields(intSkippedIndex).Value, bSuppress, bBaseRecordChanged)
 					End If
 					
 				End If
@@ -4034,10 +4034,12 @@ LoadRecords_ERROR:
             End If
           Else
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, pintLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            If Len(vData) > mvarColDetails(1, pintLoop) Then
-              'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              vData = Left(vData, mvarColDetails(1, pintLoop))
+            If Not IsDBNull(vData) Then
+              If Len(vData) > mvarColDetails(1, pintLoop) Then
+                'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                vData = Left(vData, mvarColDetails(1, pintLoop))
+              End If
             End If
           End If
         End If

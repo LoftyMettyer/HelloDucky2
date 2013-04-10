@@ -7,33 +7,29 @@ Friend Class CTablePrivileges
 	
 	Public Property Collection() As Collection
 		Get
-			Collection = mCol
-			
-		End Get
+			Collection = mCol			
+    End Get
+
 		Set(ByVal Value As Collection)
-			mCol = Value
-			
+			mCol = Value			
 		End Set
 	End Property
 	
 	Public ReadOnly Property Item(ByVal vntIndexKey As Object) As CTablePrivilege
 		Get
-			Item = mCol.Item(vntIndexKey)
-			
+			Item = mCol.Item(vntIndexKey)			
 		End Get
 	End Property
 	
 	Public ReadOnly Property Count() As Integer
-		Get
-			
-			Count = mCol.Count()
-			
+		Get			
+			Count = mCol.Count()			
 		End Get
 	End Property
 	
   Public Function Add(ByVal psTableName As String, ByVal plngTableID As Integer, ByVal piTableType As Short, ByVal plngDfltOrderID As Integer, ByVal plngRecDescID As Integer, ByVal pfIsTable As Boolean, ByVal plngViewID As Integer, ByVal psViewName As String) As CTablePrivilege
     ' Add a new member to the collection of table privileges.
-    Dim lngChildViewID As Integer
+
     Dim skey As String
     Dim objNewMember As New CTablePrivilege
 
@@ -118,6 +114,7 @@ Friend Class CTablePrivileges
     FindRealSource = objRequiredTable
 
   End Function
+
   Public Function FindTableID(ByVal plngTableID As Integer) As CTablePrivilege
     ' Return the table/view privilege object with the given table ID.
     Dim objTable As CTablePrivilege

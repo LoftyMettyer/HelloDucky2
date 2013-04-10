@@ -326,20 +326,20 @@ LocalErr:
 		cmdUserInfo.CommandType = 4
 		cmdUserInfo.let_ActiveConnection(gADOCon)
 		
-		prmActualUser = cmdUserInfo.CreateParameter("ActualUser", ADODB.DataTypeEnum.adVarChar, ADODB.ParameterDirectionEnum.adParamOutput, 250)
+    prmActualUser = cmdUserInfo.CreateParameter("psUsername", ADODB.DataTypeEnum.adVarChar, ADODB.ParameterDirectionEnum.adParamOutput, 250)
 		cmdUserInfo.Parameters.Append(prmActualUser)
 		
-		prmActualUserGroup = cmdUserInfo.CreateParameter("ActualUserGroup", ADODB.DataTypeEnum.adVarChar, ADODB.ParameterDirectionEnum.adParamOutput, 250)
+    prmActualUserGroup = cmdUserInfo.CreateParameter("psUserGroup", ADODB.DataTypeEnum.adVarChar, ADODB.ParameterDirectionEnum.adParamOutput, 250)
 		cmdUserInfo.Parameters.Append(prmActualUserGroup)
 		
-		prmActualUserGroupID = cmdUserInfo.CreateParameter("ActualUserGroupID", ADODB.DataTypeEnum.adInteger, ADODB.ParameterDirectionEnum.adParamOutput)
+    prmActualUserGroupID = cmdUserInfo.CreateParameter("piUserGroupID", ADODB.DataTypeEnum.adInteger, ADODB.ParameterDirectionEnum.adParamOutput)
 		cmdUserInfo.Parameters.Append(prmActualUserGroupID)
 		
 		cmdUserInfo.ActiveConnection.Errors.Clear()
 		cmdUserInfo.Execute()
 		
-		gsActualLogin = cmdUserInfo.Parameters("ActualUser").Value
-		gsUserGroup = cmdUserInfo.Parameters("ActualUserGroup").Value
+    gsActualLogin = cmdUserInfo.Parameters("psUsername").Value
+    gsUserGroup = cmdUserInfo.Parameters("psUserGroup").Value
 		
 		'UPGRADE_NOTE: Object prmActualUser may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		prmActualUser = Nothing
@@ -615,8 +615,8 @@ LocalErr:
 			.ActiveConnection = gADOCon
 			
 			pmADO = .CreateParameter("UniqueObjectName", ADODB.DataTypeEnum.adVarChar, ADODB.ParameterDirectionEnum.adParamOutput, 255)
-			.Parameters.Append(pmADO)
-			
+      .Parameters.Append(pmADO)
+
 			pmADO = .CreateParameter("Prefix", ADODB.DataTypeEnum.adVarChar, ADODB.ParameterDirectionEnum.adParamInput, 255)
 			.Parameters.Append(pmADO)
 			pmADO.Value = strPrefix
