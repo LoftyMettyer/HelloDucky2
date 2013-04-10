@@ -36,30 +36,31 @@ ErrorTrap:
 		Resume TidyUpAndExit
 		
 	End Function
-	Public Function TestFilterCode(ByRef psFilterCode As String) As Integer
-		On Error GoTo ErrorTrap
-		
-		Dim lngRecCount As Integer
-		Dim rstTemp As ADODB.Recordset
-		
-		lngRecCount = 0
-		
-		rstTemp = datGeneral.GetRecords(psFilterCode)
-		lngRecCount = rstTemp.Fields(0).Value
-		rstTemp.Close()
-		'UPGRADE_NOTE: Object rstTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rstTemp = Nothing
-		
-TidyUpAndExit: 
-		TestFilterCode = lngRecCount
-		
-		Exit Function
-		
-ErrorTrap: 
-		lngRecCount = -1
-		Resume TidyUpAndExit
-		
-	End Function
+
+  Public Function TestFilterCode(ByRef psFilterCode As String) As Integer
+    On Error GoTo ErrorTrap
+
+    Dim lngRecCount As Integer
+    Dim rstTemp As ADODB.Recordset
+
+    lngRecCount = 0
+
+    rstTemp = datGeneral.GetRecords(psFilterCode)
+    lngRecCount = rstTemp.Fields(0).Value
+    rstTemp.Close()
+    'UPGRADE_NOTE: Object rstTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rstTemp = Nothing
+
+TidyUpAndExit:
+    TestFilterCode = lngRecCount
+
+    Exit Function
+
+ErrorTrap:
+    lngRecCount = -1
+    Resume TidyUpAndExit
+
+  End Function
 	
 	Public Function RuntimeFilterCode() As String
 		Dim strSQL As String
@@ -80,8 +81,7 @@ ErrorTrap:
 		RuntimeFilterCode = strSQL
 		
 	End Function
-	
-	
+
 	Public Function SetPromptedValues(ByRef pavPromptedValues As Object) As Boolean
 		
 		' Purpose : This function calls the individual functions that
@@ -155,9 +155,7 @@ ErrorTrap:
 		SetPromptedValues = False
 		
 	End Function
-	
-	
-	
+
 	Public Function SaveExpression(ByRef psName As String, ByRef psUserName As String, ByRef psAccess As String, ByRef psDescription As String) As Boolean
 		
 		' Save the expression.
@@ -199,7 +197,6 @@ ErrorTrap:
 		End If
 		
 	End Function
-	
 	
 	Public Function SetExpressionDefinition(ByRef psComponentString1 As String, ByRef psComponentString2 As String, ByRef psComponentString3 As String, ByRef psComponentString4 As String, ByRef psComponentString5 As String, ByRef psNames As String) As Boolean
 		
@@ -664,10 +661,10 @@ ErrorTrap:
 		Resume TidyUpAndExit
 	End Function
 	
-	
 	Public Function ReturnType() As Short
 		ReturnType = mobjBaseExpr.ReturnType
-	End Function
+  End Function
+
 	Public Function ExpressionID() As Integer
 		ExpressionID = mobjBaseExpr.ExpressionID
 	End Function
@@ -690,7 +687,6 @@ ErrorTrap:
 		objExpression = Nothing
 	End Function
 	
-	
 	Public WriteOnly Property Username() As String
 		Set(ByVal Value As String)
 			
@@ -699,7 +695,6 @@ ErrorTrap:
 			
 		End Set
 	End Property
-	
 	
 	Public WriteOnly Property Connection() As Object
 		Set(ByVal Value As Object)
@@ -742,7 +737,6 @@ ErrorTrap:
 		ValidityMessage = mobjBaseExpr.ValidityMessage(piValidityCode)
 		
 	End Function
-	
 	
 	Public Sub UDFFilterCode(ByRef pbCreate As Boolean)
 		
@@ -800,4 +794,5 @@ ExecuteSQL_ERROR:
 		msErrorMessage = "Error whilst creating user defined functions." & vbNewLine & Err.Description
 		
 	End Sub
+
 End Class

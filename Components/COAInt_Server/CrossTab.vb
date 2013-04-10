@@ -80,13 +80,13 @@ Option Explicit On
 	Private mvarHeadings(2) As Object
 	Private mvarSearches(2) As Object
 	
-	Private mdblHorTotal() As Double
-	Private mdblVerTotal() As Double
-	Private mdblPgbTotal() As Double
-	Private mdblPageTotal() As Double
+  Private mdblHorTotal(,,) As Double
+  Private mdblVerTotal(,,) As Double
+  Private mdblPgbTotal(,,) As Double
+  Private mdblPageTotal(,) As Double
 	Private mdblGrandTotal() As Double
 	
-	Private mdblDataArray() As Double
+  Private mdblDataArray(,,,) As Double
 	Private mstrOutput() As String
 	
 	Private mlngIntersectionDecimals As Integer
@@ -115,7 +115,7 @@ Option Explicit On
 	Private msAbsenceBreakdownTypes As String
 	
 	Private mstrOutputArray_Data() As Object
-	Private mvarPrompts() As Object
+  Private mvarPrompts(,) As Object
 	Private mstrClientDateFormat As String
 	Private mstrLocalDecimalSeparator As String
 	
@@ -332,12 +332,15 @@ Option Explicit On
 		End Get
 	End Property
 	
-	Public ReadOnly Property ColumnHeadingUbound(ByVal lngIndex As Object) As Integer
-		Get
-			'UPGRADE_WARNING: Couldn't resolve default property of object lngIndex. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			ColumnHeadingUbound = UBound(mvarHeadings(CInt(lngIndex)))
-		End Get
-	End Property
+  Public ReadOnly Property ColumnHeadingUbound(ByVal lngIndex As Integer) As Integer
+    Get
+      If Not mvarHeadings(lngIndex) Is Nothing Then
+        ColumnHeadingUbound = UBound(mvarHeadings(lngIndex))
+      Else
+        ColumnHeadingUbound = 0
+      End If
+    End Get
+  End Property
 	
 	Public ReadOnly Property PageBreakColumn() As Boolean
 		Get
@@ -394,11 +397,11 @@ Option Explicit On
 	End Property
 	
 	' What type of cross tab are we running as
-	Public ReadOnly Property CrossTabType_Renamed() As Integer
-		Get
-			CrossTabType = mlngCrossTabType
-		End Get
-	End Property
+  Public ReadOnly Property CrossTabType() As Integer
+    Get
+      CrossTabType = mlngCrossTabType
+    End Get
+  End Property
 	
 	
 	Public ReadOnly Property OutputPreview() As Boolean
@@ -695,13 +698,13 @@ ErrorTrap:
 		
 		With rsCrossTabDefinition
 			
-			If LCase(.Fields("Username").Value) <> LCase(gsUsername) And CurrentUserAccess(modUtilAccessLog.UtilityType.utlCrossTab, mlngCrossTabID) = ACCESS_HIDDEN Then
-				'UPGRADE_NOTE: Object rsCrossTabDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				rsCrossTabDefinition = Nothing
-				mstrStatusMessage = "This definition has been made hidden by another user."
-				RetreiveDefinition = False
-				Exit Function
-			End If
+      If LCase(CType(.Fields("Username").Value, String)) <> LCase(gsUsername) And CurrentUserAccess(modUtilAccessLog.UtilityType.utlCrossTab, mlngCrossTabID) = ACCESS_HIDDEN Then
+        'UPGRADE_NOTE: Object rsCrossTabDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+        rsCrossTabDefinition = Nothing
+        mstrStatusMessage = "This definition has been made hidden by another user."
+        RetreiveDefinition = False
+        Exit Function
+      End If
 			
 			mlngBaseTableID = .Fields("TableID").Value
 			mstrBaseTable = .Fields("TableName").Value
@@ -810,152 +813,150 @@ LocalErr:
 		
 	End Function
 	
-	Private Function IsRecordSelectionValid(ByRef lngPicklistID As Integer, ByRef lngFilterID As Integer) As Boolean
-		
-		Dim sSQL As String
-		Dim lCount As Integer
-		Dim rsTemp As ADODB.Recordset
-		Dim iResult As modUtilityAccess.RecordSelectionValidityCodes
-		Dim fCurrentUserIsSysSecMgr As Boolean
-		
-		fCurrentUserIsSysSecMgr = CurrentUserIsSysSecMgr
-		
-		' Filter
-		If lngFilterID > 0 Then
-			iResult = ValidateRecordSelection(modUtilityAccess.RecordSelectionTypes.REC_SEL_FILTER, lngFilterID)
-			Select Case iResult
-				Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
-					mstrStatusMessage = "The base table filter used in this definition has been deleted by another user."
-				Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
-					mstrStatusMessage = "The base table filter used in this definition is invalid."
-				Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
-					If Not fCurrentUserIsSysSecMgr Then
-						mstrStatusMessage = "The base table filter used in this definition has been made hidden by another user."
-					End If
-			End Select
-		ElseIf lngPicklistID > 0 Then 
-			iResult = ValidateRecordSelection(modUtilityAccess.RecordSelectionTypes.REC_SEL_PICKLIST, lngPicklistID)
-			Select Case iResult
-				Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
-					mstrStatusMessage = "The base table picklist used in this definition has been deleted by another user."
-				Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
-					mstrStatusMessage = "The base table picklist used in this definition is invalid."
-				Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
-					If Not fCurrentUserIsSysSecMgr Then
-						mstrStatusMessage = "The base table picklist used in this definition has been made hidden by another user."
-					End If
-			End Select
-		End If
-		
-		IsRecordSelectionValid = (Len(mstrStatusMessage) = 0)
-		
-	End Function
+  Private Function IsRecordSelectionValid(ByVal lngPicklistID As Integer, ByVal lngFilterID As Integer) As Boolean
+
+    Dim sSQL As String
+    Dim lCount As Integer
+    Dim rsTemp As ADODB.Recordset
+    Dim iResult As modUtilityAccess.RecordSelectionValidityCodes
+    Dim fCurrentUserIsSysSecMgr As Boolean
+
+    fCurrentUserIsSysSecMgr = CurrentUserIsSysSecMgr()
+
+    ' Filter
+    If lngFilterID > 0 Then
+      iResult = ValidateRecordSelection(modUtilityAccess.RecordSelectionTypes.REC_SEL_FILTER, lngFilterID)
+      Select Case iResult
+        Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+          mstrStatusMessage = "The base table filter used in this definition has been deleted by another user."
+        Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+          mstrStatusMessage = "The base table filter used in this definition is invalid."
+        Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+          If Not fCurrentUserIsSysSecMgr Then
+            mstrStatusMessage = "The base table filter used in this definition has been made hidden by another user."
+          End If
+      End Select
+    ElseIf lngPicklistID > 0 Then
+      iResult = ValidateRecordSelection(modUtilityAccess.RecordSelectionTypes.REC_SEL_PICKLIST, lngPicklistID)
+      Select Case iResult
+        Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+          mstrStatusMessage = "The base table picklist used in this definition has been deleted by another user."
+        Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+          mstrStatusMessage = "The base table picklist used in this definition is invalid."
+        Case modUtilityAccess.RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+          If Not fCurrentUserIsSysSecMgr Then
+            mstrStatusMessage = "The base table picklist used in this definition has been made hidden by another user."
+          End If
+      End Select
+    End If
+
+    IsRecordSelectionValid = (Len(mstrStatusMessage) = 0)
+
+  End Function
 	
+  Private Function GetPicklistFilterSelect(ByVal lngPicklistID As Integer, ByVal lngFilterID As Integer) As String
+
+    Dim rsTemp As ADODB.Recordset
+
+    If lngPicklistID > 0 Then
+
+      mstrStatusMessage = IsPicklistValid(lngPicklistID)
+      If mstrStatusMessage <> vbNullString Then
+        'mblnInvalidPicklistFilter = True
+        fOK = False
+        Exit Function
+      End If
+
+      'Get List of IDs from Picklist
+      rsTemp = mclsData.OpenRecordset("EXEC sp_ASRGetPickListRecords " & lngPicklistID, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+      fOK = Not (rsTemp.BOF And rsTemp.EOF)
+
+      If Not fOK Then
+        mstrStatusMessage = "The base table picklist contains no records."
+      Else
+        GetPicklistFilterSelect = vbNullString
+        Do While Not rsTemp.EOF
+          GetPicklistFilterSelect = GetPicklistFilterSelect & IIf(Len(GetPicklistFilterSelect) > 0, ", ", "") & rsTemp.Fields(0).Value
+          rsTemp.MoveNext()
+        Loop
+      End If
+
+      rsTemp.Close()
+      'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+      rsTemp = Nothing
+
+      'MH20020704 Fault 4022
+      rsTemp = mclsData.OpenRecordset("SELECT name from ASRSysPicklistName WHERE PicklistID = " & CStr(lngPicklistID), ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+      mstrPicklistFilterName = " (Base Table Picklist : " & rsTemp.Fields("Name").Value & ")"
+      rsTemp.Close()
+      'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+      rsTemp = Nothing
+
+    ElseIf lngFilterID > 0 Then
+
+      mstrStatusMessage = IsFilterValid(lngFilterID)
+      If mstrStatusMessage <> vbNullString Then
+        'mblnInvalidPicklistFilter = True
+        fOK = False
+        Exit Function
+      End If
+
+      'Get list of IDs from Filter
+      fOK = datGeneral.FilteredIDs(lngFilterID, GetPicklistFilterSelect, mvarPrompts)
+
+      ' Generate any UDFs that are used in this filter
+      If fOK Then
+        datGeneral.FilterUDFs(lngFilterID, mastrUDFsRequired)
+      End If
+
+      If Not fOK Then
+        ' Permission denied on something in the filter.
+        mstrStatusMessage = "You do not have permission to use the '" & datGeneral.GetFilterName(lngFilterID) & "' filter."
+      End If
+
+      'MH20020704 Fault 4022
+      rsTemp = mclsData.OpenRecordset("SELECT Name from ASRSysExpressions WHERE ExprID = " & CStr(lngFilterID), ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+      mstrPicklistFilterName = " (Base Table Filter : " & rsTemp.Fields("Name").Value & ")"
+      rsTemp.Close()
+      'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+      rsTemp = Nothing
+
+    Else
+      mstrPicklistFilterName = " (No Picklist Or Filter Selected)"
+
+    End If
+
+  End Function
 	
-	
-	Private Function GetPicklistFilterSelect(ByRef lngPicklistID As Integer, ByRef lngFilterID As Integer) As String
-		
-		Dim rsTemp As ADODB.Recordset
-		
-		If lngPicklistID > 0 Then
-			
-			mstrStatusMessage = IsPicklistValid(lngPicklistID)
-			If mstrStatusMessage <> vbNullString Then
-				'mblnInvalidPicklistFilter = True
-				fOK = False
-				Exit Function
-			End If
-			
-			'Get List of IDs from Picklist
-			rsTemp = mclsData.OpenRecordset("EXEC sp_ASRGetPickListRecords " & lngPicklistID, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-			fOK = Not (rsTemp.BOF And rsTemp.EOF)
-			
-			If Not fOK Then
-				mstrStatusMessage = "The base table picklist contains no records."
-			Else
-				GetPicklistFilterSelect = vbNullString
-				Do While Not rsTemp.EOF
-					GetPicklistFilterSelect = GetPicklistFilterSelect & IIf(Len(GetPicklistFilterSelect) > 0, ", ", "") & rsTemp.Fields(0).Value
-					rsTemp.MoveNext()
-				Loop 
-			End If
-			
-			rsTemp.Close()
-			'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			rsTemp = Nothing
-			
-			'MH20020704 Fault 4022
-			rsTemp = mclsData.OpenRecordset("SELECT name from ASRSysPicklistName WHERE PicklistID = " & CStr(lngPicklistID), ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-			mstrPicklistFilterName = " (Base Table Picklist : " & rsTemp.Fields("Name").Value & ")"
-			rsTemp.Close()
-			'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			rsTemp = Nothing
-			
-		ElseIf lngFilterID > 0 Then 
-			
-			mstrStatusMessage = IsFilterValid(lngFilterID)
-			If mstrStatusMessage <> vbNullString Then
-				'mblnInvalidPicklistFilter = True
-				fOK = False
-				Exit Function
-			End If
-			
-			'Get list of IDs from Filter
-			fOK = datGeneral.FilteredIDs(lngFilterID, GetPicklistFilterSelect, mvarPrompts)
-			
-			' Generate any UDFs that are used in this filter
-			If fOK Then
-				datGeneral.FilterUDFs(lngFilterID, mastrUDFsRequired)
-			End If
-			
-			If Not fOK Then
-				' Permission denied on something in the filter.
-				mstrStatusMessage = "You do not have permission to use the '" & datGeneral.GetFilterName(lngFilterID) & "' filter."
-			End If
-			
-			'MH20020704 Fault 4022
-			rsTemp = mclsData.OpenRecordset("SELECT Name from ASRSysExpressions WHERE ExprID = " & CStr(lngFilterID), ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-			mstrPicklistFilterName = " (Base Table Filter : " & rsTemp.Fields("Name").Value & ")"
-			rsTemp.Close()
-			'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			rsTemp = Nothing
-			
-		Else
-			mstrPicklistFilterName = " (No Picklist Or Filter Selected)"
-			
-		End If
-		
-	End Function
-	
-	Private Function GetFormat(ByRef lngColumnID As Integer) As String
-		
-		Dim rsTemp As ADODB.Recordset
-		Dim strSQL As String
-		
-		strSQL = "SELECT DataType, Size, Decimals FROM ASRSysColumns Where ColumnID = " & CStr(lngColumnID)
-		rsTemp = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-		
-		Select Case rsTemp.Fields("DataType").Value
-			Case Declarations.SQLDataType.sqlNumeric
-				GetFormat = New String("#", rsTemp.Fields("Size").Value - 1) & "0"
-				If rsTemp.Fields("Decimals").Value > 0 Then
-					'GetFormat = GetFormat & UI.GetSystemDecimalSeparator & String$(rsTemp!Decimals, "0")
-					GetFormat = GetFormat & "." & New String("0", rsTemp.Fields("Decimals").Value)
-				End If
-				
-			Case Declarations.SQLDataType.sqlInteger
-				GetFormat = New String("#", 9) & "0"
-				
-		End Select
-		
-		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTemp = Nothing
-		
-	End Function
+  Private Function GetFormat(ByVal lngColumnID As Integer) As String
+
+    Dim rsTemp As ADODB.Recordset
+    Dim strSQL As String
+
+    strSQL = "SELECT DataType, Size, Decimals FROM ASRSysColumns Where ColumnID = " & CStr(lngColumnID)
+    rsTemp = mclsData.OpenRecordset(strSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+
+    Select Case rsTemp.Fields("DataType").Value
+      Case Declarations.SQLDataType.sqlNumeric
+        GetFormat = New String("#", rsTemp.Fields("Size").Value - 1) & "0"
+        If rsTemp.Fields("Decimals").Value > 0 Then
+          'GetFormat = GetFormat & UI.GetSystemDecimalSeparator & String$(rsTemp!Decimals, "0")
+          GetFormat = GetFormat & "." & New String("0", rsTemp.Fields("Decimals").Value)
+        End If
+
+      Case Declarations.SQLDataType.sqlInteger
+        GetFormat = New String("#", 9) & "0"
+
+    End Select
+
+    'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    rsTemp = Nothing
+
+  End Function
 	
 	Public Function CreateTempTable() As Boolean
 		
-		Dim strColumn() As String
+    Dim strColumn(,) As String
 		Dim strSQL As String
 		Dim lngMax As Integer
 		
@@ -1126,225 +1127,225 @@ LocalErr:
 		
 	End Function
 	
-	Private Sub GetSQL2(ByRef strCol() As String)
-		
-		Dim objTableView As CTablePrivilege
-		Dim objColumnPrivileges As CColumnPrivileges
-		Dim sRealSource As String
-		Dim sSource As String
-		Dim lngCount As Integer
-		Dim fColumnOK As Boolean
-		Dim alngTableViews() As Integer
-		Dim iNextIndex As Short
-		Dim fFound As Boolean
-		
-		Dim sCaseStatement As String
-		Dim sWhereColumn As String
-		Dim strSelectedRecords As String
-		Dim sWhereIDs As String
-		Dim blnOK As Boolean
-		Dim strColumn As String
-		Dim blnCharColumn As Boolean
-		
-		
-		On Error GoTo LocalErr
-		
-		fOK = True
-		ReDim alngTableViews(2, 0)
-		
-		mstrSQLFrom = gcoTablePrivileges.Item(mstrBaseTable).RealSource
-		mstrSQLSelect = vbNullString
-		mstrSQLJoin = vbNullString
-		Dim asViews(0) As Object
-		
-		blnCharColumn = (Val(mlngColDataType(lngCount)) = Declarations.SQLDataType.sqlVarChar)
-		
-		
-		For lngCount = 0 To UBound(strCol, 2)
-			
-			objColumnPrivileges = GetColumnPrivileges(mstrBaseTable)
-			fColumnOK = objColumnPrivileges.IsValid(strCol(1, lngCount))
-			If fColumnOK Then
-				fColumnOK = objColumnPrivileges.Item(strCol(1, lngCount)).AllowSelect
-				
-				If fColumnOK Then
-					fColumnOK = gcoTablePrivileges.Item(mstrBaseTable).AllowSelect
-				End If
-				
-			End If
-			
-			'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			objColumnPrivileges = Nothing
-			
-			If lngCount <= UBound(mlngColDataType) Then
-				blnCharColumn = (Val(mlngColDataType(lngCount)) = Declarations.SQLDataType.sqlVarChar)
-			End If
-			
-			If fColumnOK Then
-				' The column can be read from the base table/view, or directly from a parent table.
-				' Add the column to the column list.
-				
-				If strSelectedRecords = vbNullString And mstrPicklistFilter <> vbNullString Then
-					
-					'MH20020321 Remmed out for INT
-					If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
-						strSelectedRecords = mstrSQLFrom & ".ID_" & Trim(Str(glngPersonnelTableID)) & " IN (" & mstrPicklistFilter & ")"
-					Else
-						strSelectedRecords = mstrSQLFrom & ".ID IN (" & mstrPicklistFilter & ")"
-					End If
-					
-				End If
-				
-				'mstrSQLSelect = mstrSQLSelect & _
-				'IIf(Len(mstrSQLSelect) > 0, ", ", "") & _
-				'mstrSQLFrom & "." & strCol(1, lngCount) & _
-				'" AS '" & strCol(2, lngCount) & "'"
-				
-				strColumn = mstrSQLFrom & "." & strCol(1, lngCount)
-				If blnCharColumn Then
-					strColumn = FormatSQLColumn(strColumn)
-				End If
-				
-				mstrSQLSelect = mstrSQLSelect & IIf(Len(mstrSQLSelect) > 0, ", ", "") & strColumn & " AS '" & strCol(2, lngCount) & "'"
-				
-			Else
-				
-				ReDim asViews(0)
-				For	Each objTableView In gcoTablePrivileges.Collection
-					
-					'Loop thru all of the views for this table where the user has select access
-					If (Not objTableView.IsTable) And (objTableView.TableID = mlngBaseTableID) And (objTableView.AllowSelect) Then
-						
-						sSource = objTableView.ViewName
-						
-						' Get the column permission for the view.
-						objColumnPrivileges = GetColumnPrivileges(sSource)
-						
-						If objColumnPrivileges.IsValid(strCol(1, lngCount)) Then
-							If objColumnPrivileges.Item(strCol(1, lngCount)).AllowSelect Then
-								' Add the view info to an array to be put into the column list or order code below.
-								iNextIndex = UBound(asViews) + 1
-								ReDim Preserve asViews(iNextIndex)
-								'UPGRADE_WARNING: Couldn't resolve default property of object asViews(iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								asViews(iNextIndex) = sSource
-								
-								
-								'=== This is the join code section ===
-								' Add the view to the Join code.
-								' Check if the view has already been added to the join code.
-								fFound = False
-								For iNextIndex = 1 To UBound(alngTableViews, 2)
-									If alngTableViews(2, iNextIndex) = objTableView.ViewID Then
-										fFound = True
-										Exit For
-									End If
-								Next iNextIndex
-								
-								If Not fFound Then
-									' The view has not yet been added to the join code, so add it to the array and the join code.
-									' (also include the picklist info)
-									
-									iNextIndex = UBound(alngTableViews, 2) + 1
-									ReDim Preserve alngTableViews(2, iNextIndex)
-									alngTableViews(1, iNextIndex) = 1
-									alngTableViews(2, iNextIndex) = objTableView.ViewID
-									
-									mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & mstrSQLFrom & ".ID = " & sSource & ".ID"
-									
-									sWhereIDs = sWhereIDs & IIf(sWhereIDs <> vbNullString, " OR ", vbNullString) & mstrSQLFrom & ".ID IN (SELECT ID FROM " & sSource & ")"
-									
-									'If mstrPicklistFilter <> vbNullString Then
-									strSelectedRecords = strSelectedRecords & IIf(strSelectedRecords <> vbNullString, " OR ", vbNullString) & "(" & IIf(mstrPicklistFilter <> vbNullString, sSource & ".ID IN (" & mstrPicklistFilter & ") AND ", vbNullString) & sSource & ".ID > 0)"
-									'End If
-									
-								End If
-							End If
-							'=== End of Join Code ===
-							
-							
-							'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-							objColumnPrivileges = Nothing
-						End If
-						
-					End If
-				Next objTableView
-				'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				objTableView = Nothing
-				
-				' The current user does have permission to 'read' the column through a/some view(s) on the
-				' table.
-				If UBound(asViews) = 0 Then
-					fOK = False
-					'MH20010716 Fault 2497
-					'If its the ID column they they don't have any access to the table.
-					'mstrStatusMessage = "You do not have permission to see the column '" & strCol(1, lngCount) & "' " & _
-					'"either directly or through any views." & vbNewLine
-					mstrStatusMessage = "You do not have permission to see the " & IIf(strCol(1, lngCount) = "ID", "table '" & mstrBaseTable, "column '" & strCol(1, lngCount)) & "' either directly or through any views." & vbNewLine
-					Exit Sub
-				Else
-					' Add the column to the column list.
-					'        sCaseStatement = "CASE"
-					'        sWhereColumn = vbNullString
-					'        For iNextIndex = 1 To UBound(asViews)
-					'          sCaseStatement = sCaseStatement & _
-					''            " WHEN NOT " & asViews(iNextIndex) & "." & strCol(1, lngCount) & " IS NULL THEN " & asViews(iNextIndex) & "." & strCol(1, lngCount) & vbNewLine
-					'        Next iNextIndex
-					'
-					'        If Len(sCaseStatement) > 0 Then
-					'          sCaseStatement = sCaseStatement & _
-					''            " ELSE NULL END AS " & _
-					''            "'" & strCol(2, lngCount) & "'"
-					'
-					'          mstrSQLSelect = mstrSQLSelect & _
-					''            IIf(Len(mstrSQLSelect) > 0, ", ", "") & vbNewLine & _
-					''            sCaseStatement
-					'        End If
-					sCaseStatement = ""
-					For iNextIndex = 1 To UBound(asViews)
-						'UPGRADE_WARNING: Couldn't resolve default property of object asViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sCaseStatement = sCaseStatement & IIf(sCaseStatement <> "", vbCrLf & " , ", "") & asViews(iNextIndex) & "." & strCol(1, lngCount)
-					Next iNextIndex
-					
-					If Len(sCaseStatement) > 0 Then
-						' NPG20100820 Fault HRPRO 1080
-						'          If InStr(strColumn, ",") > 0 Then
-						'            strColumn = "COALESCE(" & sCaseStatement & ")"
-						'          Else
-						strColumn = "COALESCE(" & sCaseStatement & ", NULL)"
-						'          End If
-						
-						If blnCharColumn Then
-							strColumn = FormatSQLColumn(strColumn)
-						End If
-						
-						mstrSQLSelect = mstrSQLSelect & IIf(Len(mstrSQLSelect) > 0, ", ", "") & vbCrLf & strColumn & "AS '" & strCol(2, lngCount) & "'"
-					End If
-					
-				End If
-			End If
-		Next 
-		
-		If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown And Not msAbsenceBreakdownTypes = vbNullString Then
-			mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "(UPPER(" & gsAbsenceTypeColumnName & ") IN " & msAbsenceBreakdownTypes & ")"
-		End If
-		
-		If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
-			mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "( " & gsAbsenceStartDateColumnName & " <= CONVERT(datetime, '" & mstrReportEndDate & "'))" & "And (" & gsAbsenceEndDateColumnName & " >= CONVERT(datetime, '" & mstrReportStartDate & "') OR " & gsAbsenceEndDateColumnName & " IS NULL)"
-			'" >= CONVERT(datetime, '" & mstrReportStartDate & "'))"
-			'MH20060626 Fault 11260
-		End If
-		
-		If strSelectedRecords <> vbNullString Then
-			mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "(" & strSelectedRecords & ")"
-		End If
-		
-		Exit Sub
-		
-LocalErr: 
-		mstrStatusMessage = "Error retrieving data"
-		fOK = False
-		
-	End Sub
+  Private Sub GetSQL2(ByRef strCol(,) As String)
+
+    Dim objTableView As CTablePrivilege
+    Dim objColumnPrivileges As CColumnPrivileges
+    Dim sRealSource As String
+    Dim sSource As String
+    Dim lngCount As Integer
+    Dim fColumnOK As Boolean
+    Dim alngTableViews(,) As Integer
+    Dim iNextIndex As Short
+    Dim fFound As Boolean
+
+    Dim sCaseStatement As String
+    Dim sWhereColumn As String
+    Dim strSelectedRecords As String
+    Dim sWhereIDs As String
+    Dim blnOK As Boolean
+    Dim strColumn As String
+    Dim blnCharColumn As Boolean
+
+
+    On Error GoTo LocalErr
+
+    fOK = True
+    ReDim alngTableViews(2, 0)
+
+    mstrSQLFrom = gcoTablePrivileges.Item(mstrBaseTable).RealSource
+    mstrSQLSelect = vbNullString
+    mstrSQLJoin = vbNullString
+    Dim asViews(0) As Object
+
+    blnCharColumn = (Val(mlngColDataType(lngCount)) = Declarations.SQLDataType.sqlVarChar)
+
+
+    For lngCount = 0 To UBound(strCol, 2)
+
+      objColumnPrivileges = GetColumnPrivileges(mstrBaseTable)
+      fColumnOK = objColumnPrivileges.IsValid(strCol(1, lngCount))
+      If fColumnOK Then
+        fColumnOK = objColumnPrivileges.Item(strCol(1, lngCount)).AllowSelect
+
+        If fColumnOK Then
+          fColumnOK = gcoTablePrivileges.Item(mstrBaseTable).AllowSelect
+        End If
+
+      End If
+
+      'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+      objColumnPrivileges = Nothing
+
+      If lngCount <= UBound(mlngColDataType) Then
+        blnCharColumn = (Val(mlngColDataType(lngCount)) = Declarations.SQLDataType.sqlVarChar)
+      End If
+
+      If fColumnOK Then
+        ' The column can be read from the base table/view, or directly from a parent table.
+        ' Add the column to the column list.
+
+        If strSelectedRecords = vbNullString And mstrPicklistFilter <> vbNullString Then
+
+          'MH20020321 Remmed out for INT
+          If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
+            strSelectedRecords = mstrSQLFrom & ".ID_" & Trim(Str(glngPersonnelTableID)) & " IN (" & mstrPicklistFilter & ")"
+          Else
+            strSelectedRecords = mstrSQLFrom & ".ID IN (" & mstrPicklistFilter & ")"
+          End If
+
+        End If
+
+        'mstrSQLSelect = mstrSQLSelect & _
+        'IIf(Len(mstrSQLSelect) > 0, ", ", "") & _
+        'mstrSQLFrom & "." & strCol(1, lngCount) & _
+        '" AS '" & strCol(2, lngCount) & "'"
+
+        strColumn = mstrSQLFrom & "." & strCol(1, lngCount)
+        If blnCharColumn Then
+          strColumn = FormatSQLColumn(strColumn)
+        End If
+
+        mstrSQLSelect = mstrSQLSelect & IIf(Len(mstrSQLSelect) > 0, ", ", "") & strColumn & " AS '" & strCol(2, lngCount) & "'"
+
+      Else
+
+        ReDim asViews(0)
+        For Each objTableView In gcoTablePrivileges.Collection
+
+          'Loop thru all of the views for this table where the user has select access
+          If (Not objTableView.IsTable) And (objTableView.TableID = mlngBaseTableID) And (objTableView.AllowSelect) Then
+
+            sSource = objTableView.ViewName
+
+            ' Get the column permission for the view.
+            objColumnPrivileges = GetColumnPrivileges(sSource)
+
+            If objColumnPrivileges.IsValid(strCol(1, lngCount)) Then
+              If objColumnPrivileges.Item(strCol(1, lngCount)).AllowSelect Then
+                ' Add the view info to an array to be put into the column list or order code below.
+                iNextIndex = UBound(asViews) + 1
+                ReDim Preserve asViews(iNextIndex)
+                'UPGRADE_WARNING: Couldn't resolve default property of object asViews(iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                asViews(iNextIndex) = sSource
+
+
+                '=== This is the join code section ===
+                ' Add the view to the Join code.
+                ' Check if the view has already been added to the join code.
+                fFound = False
+                For iNextIndex = 1 To UBound(alngTableViews, 2)
+                  If alngTableViews(2, iNextIndex) = objTableView.ViewID Then
+                    fFound = True
+                    Exit For
+                  End If
+                Next iNextIndex
+
+                If Not fFound Then
+                  ' The view has not yet been added to the join code, so add it to the array and the join code.
+                  ' (also include the picklist info)
+
+                  iNextIndex = UBound(alngTableViews, 2) + 1
+                  ReDim Preserve alngTableViews(2, iNextIndex)
+                  alngTableViews(1, iNextIndex) = 1
+                  alngTableViews(2, iNextIndex) = objTableView.ViewID
+
+                  mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & mstrSQLFrom & ".ID = " & sSource & ".ID"
+
+                  sWhereIDs = sWhereIDs & IIf(sWhereIDs <> vbNullString, " OR ", vbNullString) & mstrSQLFrom & ".ID IN (SELECT ID FROM " & sSource & ")"
+
+                  'If mstrPicklistFilter <> vbNullString Then
+                  strSelectedRecords = strSelectedRecords & IIf(strSelectedRecords <> vbNullString, " OR ", vbNullString) & "(" & IIf(mstrPicklistFilter <> vbNullString, sSource & ".ID IN (" & mstrPicklistFilter & ") AND ", vbNullString) & sSource & ".ID > 0)"
+                  'End If
+
+                End If
+              End If
+              '=== End of Join Code ===
+
+
+              'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+              objColumnPrivileges = Nothing
+            End If
+
+          End If
+        Next objTableView
+        'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+        objTableView = Nothing
+
+        ' The current user does have permission to 'read' the column through a/some view(s) on the
+        ' table.
+        If UBound(asViews) = 0 Then
+          fOK = False
+          'MH20010716 Fault 2497
+          'If its the ID column they they don't have any access to the table.
+          'mstrStatusMessage = "You do not have permission to see the column '" & strCol(1, lngCount) & "' " & _
+          '"either directly or through any views." & vbNewLine
+          mstrStatusMessage = "You do not have permission to see the " & IIf(strCol(1, lngCount) = "ID", "table '" & mstrBaseTable, "column '" & strCol(1, lngCount)) & "' either directly or through any views." & vbNewLine
+          Exit Sub
+        Else
+          ' Add the column to the column list.
+          '        sCaseStatement = "CASE"
+          '        sWhereColumn = vbNullString
+          '        For iNextIndex = 1 To UBound(asViews)
+          '          sCaseStatement = sCaseStatement & _
+          ''            " WHEN NOT " & asViews(iNextIndex) & "." & strCol(1, lngCount) & " IS NULL THEN " & asViews(iNextIndex) & "." & strCol(1, lngCount) & vbNewLine
+          '        Next iNextIndex
+          '
+          '        If Len(sCaseStatement) > 0 Then
+          '          sCaseStatement = sCaseStatement & _
+          ''            " ELSE NULL END AS " & _
+          ''            "'" & strCol(2, lngCount) & "'"
+          '
+          '          mstrSQLSelect = mstrSQLSelect & _
+          ''            IIf(Len(mstrSQLSelect) > 0, ", ", "") & vbNewLine & _
+          ''            sCaseStatement
+          '        End If
+          sCaseStatement = ""
+          For iNextIndex = 1 To UBound(asViews)
+            'UPGRADE_WARNING: Couldn't resolve default property of object asViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+            sCaseStatement = sCaseStatement & IIf(sCaseStatement <> "", vbCrLf & " , ", "") & asViews(iNextIndex) & "." & strCol(1, lngCount)
+          Next iNextIndex
+
+          If Len(sCaseStatement) > 0 Then
+            ' NPG20100820 Fault HRPRO 1080
+            '          If InStr(strColumn, ",") > 0 Then
+            '            strColumn = "COALESCE(" & sCaseStatement & ")"
+            '          Else
+            strColumn = "COALESCE(" & sCaseStatement & ", NULL)"
+            '          End If
+
+            If blnCharColumn Then
+              strColumn = FormatSQLColumn(strColumn)
+            End If
+
+            mstrSQLSelect = mstrSQLSelect & IIf(Len(mstrSQLSelect) > 0, ", ", "") & vbCrLf & strColumn & "AS '" & strCol(2, lngCount) & "'"
+          End If
+
+        End If
+      End If
+    Next
+
+    If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown And Not msAbsenceBreakdownTypes = vbNullString Then
+      mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "(UPPER(" & gsAbsenceTypeColumnName & ") IN " & msAbsenceBreakdownTypes & ")"
+    End If
+
+    If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
+      mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "( " & gsAbsenceStartDateColumnName & " <= CONVERT(datetime, '" & mstrReportEndDate & "'))" & "And (" & gsAbsenceEndDateColumnName & " >= CONVERT(datetime, '" & mstrReportStartDate & "') OR " & gsAbsenceEndDateColumnName & " IS NULL)"
+      '" >= CONVERT(datetime, '" & mstrReportStartDate & "'))"
+      'MH20060626 Fault 11260
+    End If
+
+    If strSelectedRecords <> vbNullString Then
+      mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "(" & strSelectedRecords & ")"
+    End If
+
+    Exit Sub
+
+LocalErr:
+    mstrStatusMessage = "Error retrieving data"
+    fOK = False
+
+  End Sub
 	
 	Public Function GetHeadingsAndSearches() As Boolean
 		
@@ -1385,8 +1386,7 @@ LocalErr:
 		GetHeadingsAndSearches = False
 		
 	End Function
-	
-	
+
 	Private Sub GetHeadingsAndSearchesForColumns(ByRef lngLoop As Integer, ByRef strHeading() As String, ByRef strSearch() As String)
 		
 		Dim rsTemp As ADODB.Recordset
@@ -2053,59 +2053,59 @@ LocalErr:
 		FormatCell = vbNullString
 		
 		
-		If dblCellValue <> 0 Or mblnSuppressZeros = False Then
-			
-			
-			If mlngCrossTabType <> Declarations.CrossTabType.cttNormal Then
-				
-				' 1000 seperators
-				'strMask = IIf(mbUse1000Separator, "#,0", "#0")
-				
-				If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
-					'strMask = String$(20, "#") & "0.0"
-					strMask = IIf(mbUse1000Separator, "#,", "#") & "0.00"
-				Else
-					'strMask = String$(20, "#") & "0"
-					strMask = IIf(mbUse1000Separator, "#,", "#") & "0"
-					
-					If lngHOR = 2 Then
-						'strMask = String$(20, "#") & "0" & UI.GetSystemDecimalSeparator & "00%"
-						strMask = New String("#", 20) & "0.00%"
-					ElseIf lngHOR = 0 And mlngCrossTabType = Declarations.CrossTabType.cttTurnover Then 
-						'strMask = String$(20, "#") & "0" & UI.GetSystemDecimalSeparator & "0"
-						strMask = New String("#", 20) & "0.0"
-					End If
-				End If
-				
-			Else
-				
-				' 1000 seperators
-				strMask = IIf(mbUse1000Separator, "#,0", "#0")
-				
-				If mblnShowPercentage Then
-					'If percentage
-					dblCellValue = dblCellValue * mdblPercentageFactor
-					'strMask = strMask & UI.GetSystemDecimalSeparator & "00%"
-					strMask = strMask & ".00%"
-					
-				ElseIf mlngType > 0 Then 
-					'if not count then
-					'value should be displayed as per field definition
-					'strMask = mstrIntersectionMask
-					
-					If mlngIntersectionDecimals > 0 Then
-						strMask = strMask & "." & New String("0", mlngIntersectionDecimals)
-					End If
-					
-				End If
-				
-			End If
-			
-			If strMask <> vbNullString Then
-				FormatCell = VB6.Format(dblCellValue, strMask)
-			End If
-			
-		End If
+    If dblCellValue <> 0 Or mblnSuppressZeros = False Then
+
+
+      If mlngCrossTabType <> Declarations.CrossTabType.cttNormal Then
+
+        ' 1000 seperators
+        'strMask = IIf(mbUse1000Separator, "#,0", "#0")
+
+        If mlngCrossTabType = Declarations.CrossTabType.cttAbsenceBreakdown Then
+          'strMask = String$(20, "#") & "0.0"
+          strMask = IIf(mbUse1000Separator, "#,", "#") & "0.00"
+        Else
+          'strMask = String$(20, "#") & "0"
+          strMask = IIf(mbUse1000Separator, "#,", "#") & "0"
+
+          If lngHOR = 2 Then
+            'strMask = String$(20, "#") & "0" & UI.GetSystemDecimalSeparator & "00%"
+            strMask = New String("#", 20) & "0.00%"
+          ElseIf lngHOR = 0 And mlngCrossTabType = Declarations.CrossTabType.cttTurnover Then
+            'strMask = String$(20, "#") & "0" & UI.GetSystemDecimalSeparator & "0"
+            strMask = New String("#", 20) & "0.0"
+          End If
+        End If
+
+      Else
+
+        ' 1000 seperators
+        strMask = IIf(mbUse1000Separator, "#,0", "#0")
+
+        If mblnShowPercentage Then
+          'If percentage
+          dblCellValue = dblCellValue * mdblPercentageFactor
+          'strMask = strMask & UI.GetSystemDecimalSeparator & "00%"
+          strMask = strMask & ".00%"
+
+        ElseIf mlngType > 0 Then
+          'if not count then
+          'value should be displayed as per field definition
+          'strMask = mstrIntersectionMask
+
+          If mlngIntersectionDecimals > 0 Then
+            strMask = strMask & "." & New String("0", mlngIntersectionDecimals)
+          End If
+
+        End If
+
+      End If
+
+      If strMask <> vbNullString Then
+        FormatCell = VB6.Format(dblCellValue, strMask)
+      End If
+
+    End If
 		
 		
 		Exit Function
@@ -2645,55 +2645,55 @@ LocalErr:
 		
 	End Function
 	
-	Public Function UDFFunctions(ByRef pbCreate As Object) As Object
-		
-		On Error GoTo UDFFunctions_ERROR
-		
-		Dim iCount As Short
-		Dim strDropCode As String
-		Dim strFunctionName As String
-		Dim sUDFCode As String
-		Dim datData As clsDataAccess
-		Dim iStart As Short
-		Dim iEnd As Short
-		Dim strFunctionNumber As String
-		
-		Const FUNCTIONPREFIX As String = "udf_ASRSys_"
-		
-		If gbEnableUDFFunctions Then
-			
-			For iCount = 1 To UBound(mastrUDFsRequired)
-				
-				'JPD 20060110 Fault 10509
-				'iStart = Len("CREATE FUNCTION udf_ASRSys_") + 1
-				iStart = InStr(mastrUDFsRequired(iCount), FUNCTIONPREFIX) + Len(FUNCTIONPREFIX)
-				iEnd = InStr(1, Mid(mastrUDFsRequired(iCount), 1, 1000), "(@Per")
-				strFunctionNumber = Mid(mastrUDFsRequired(iCount), iStart, iEnd - iStart)
-				strFunctionName = FUNCTIONPREFIX & strFunctionNumber
-				
-				'Drop existing function (could exist if the expression is used more than once in a report)
-				strDropCode = "IF EXISTS" & " (SELECT *" & "   FROM sysobjects" & "   WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "')" & "     AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
-				mclsData.ExecuteSql(strDropCode)
-				
-				' Create the new function
-				'UPGRADE_WARNING: Couldn't resolve default property of object pbCreate. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If pbCreate Then
-					sUDFCode = mastrUDFsRequired(iCount)
-					mclsData.ExecuteSql(sUDFCode)
-				End If
-				
-			Next iCount
-		End If
-		
-		'UPGRADE_WARNING: Couldn't resolve default property of object UDFFunctions. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		UDFFunctions = True
-		Exit Function
-		
-UDFFunctions_ERROR: 
-		'UPGRADE_WARNING: Couldn't resolve default property of object UDFFunctions. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		UDFFunctions = False
-		
-	End Function
+  Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
+
+    On Error GoTo UDFFunctions_ERROR
+
+    Dim iCount As Short
+    Dim strDropCode As String
+    Dim strFunctionName As String
+    Dim sUDFCode As String
+    Dim datData As clsDataAccess
+    Dim iStart As Short
+    Dim iEnd As Short
+    Dim strFunctionNumber As String
+
+    Const FUNCTIONPREFIX As String = "udf_ASRSys_"
+
+    If gbEnableUDFFunctions Then
+
+      For iCount = 1 To UBound(mastrUDFsRequired)
+
+        'JPD 20060110 Fault 10509
+        'iStart = Len("CREATE FUNCTION udf_ASRSys_") + 1
+        iStart = InStr(mastrUDFsRequired(iCount), FUNCTIONPREFIX) + Len(FUNCTIONPREFIX)
+        iEnd = InStr(1, Mid(mastrUDFsRequired(iCount), 1, 1000), "(@Per")
+        strFunctionNumber = Mid(mastrUDFsRequired(iCount), iStart, iEnd - iStart)
+        strFunctionName = FUNCTIONPREFIX & strFunctionNumber
+
+        'Drop existing function (could exist if the expression is used more than once in a report)
+        strDropCode = "IF EXISTS" & " (SELECT *" & "   FROM sysobjects" & "   WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "')" & "     AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
+        mclsData.ExecuteSql(strDropCode)
+
+        ' Create the new function
+        'UPGRADE_WARNING: Couldn't resolve default property of object pbCreate. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+        If pbCreate Then
+          sUDFCode = mastrUDFsRequired(iCount)
+          mclsData.ExecuteSql(sUDFCode)
+        End If
+
+      Next iCount
+    End If
+
+    'UPGRADE_WARNING: Couldn't resolve default property of object UDFFunctions. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+    UDFFunctions = True
+    Exit Function
+
+UDFFunctions_ERROR:
+    'UPGRADE_WARNING: Couldn't resolve default property of object UDFFunctions. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+    UDFFunctions = False
+
+  End Function
 	
 	
 	Public Sub GetPivotRecordset()
@@ -2701,7 +2701,7 @@ UDFFunctions_ERROR:
 		Dim rsPivot As ADODB.Recordset
 		Dim strSQL As String
 		
-		Dim strOutput() As String
+    Dim strOutput(,) As String
 		Dim strPageValue As String
 		Dim lngGroupNum As Integer
 		Dim lngCol As Integer

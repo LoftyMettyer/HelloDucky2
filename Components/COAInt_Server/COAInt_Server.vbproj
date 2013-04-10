@@ -167,6 +167,7 @@
     <Compile Include="ColumnPrivileges.vb">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CrossTab.vb" />
     <Compile Include="CustomReportsRUN.vb">
       <SubType>Code</SubType>
     </Compile>

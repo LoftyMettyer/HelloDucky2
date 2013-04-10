@@ -1495,17 +1495,17 @@ ErrorTrap:
 		Dim fOK As Boolean
 		
 		' Begin the transaction of data.
-		gADOCon.BeginTrans()
+    'gADOCon.BeginTrans()
 		
 		fOK = WriteExpression
 		
 TidyUpAndExit: 
 		' Commit the data transaction if everything was okay.
-		If fOK Then
-			gADOCon.CommitTrans()
-		Else
-			gADOCon.RollbackTrans()
-		End If
+    'If fOK Then
+    '	gADOCon.CommitTrans()
+    'Else
+    '	gADOCon.RollbackTrans()
+    'End If
 		WriteExpression_Transaction = fOK
 		Exit Function
 		

@@ -258,22 +258,22 @@ Option Explicit On
 		
 	End Function
 	
-	Public Function GetLinks(ByRef piLinkType As NavigationLinkType) As Collection
-		
-		Dim objLink As clsNavigationLink
-		Dim objLinks As Collection
-		
-		objLinks = New Collection
-		
-		For	Each objLink In gcolLinks
-			If objLink.LinkType = piLinkType Then
-				objLinks.Add(objLink)
-			End If
-		Next objLink
-		
-		GetLinks = objLinks
-		
-	End Function
+  Public Function GetLinks(ByRef piLinkType As NavigationLinkType) As Collection
+
+    Dim objLink As clsNavigationLink
+    Dim objLinks As Collection
+
+    objLinks = New Collection
+
+    For Each objLink In gcolLinks
+      If objLink.LinkType = piLinkType Then
+        objLinks.Add(objLink)
+      End If
+    Next objLink
+
+    GetLinks = objLinks
+
+  End Function
 	
 	Public Function GetDocuments(ByRef piLinkType As NavigationLinkType) As Collection
 		

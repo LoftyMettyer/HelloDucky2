@@ -446,40 +446,34 @@ ErrorTrap:
 
   End Function
 	
-	
-	
-	
-	
-	
-	
-	Private Function GetFileName(ByRef psPath As String, ByRef psName As String) As String
-		On Error GoTo ErrorTrap
-		
-		Dim iIndex As Short
-		Dim sFullFileName As String
-		Dim sTempFileName As String
-		
-		sFullFileName = ""
-		
-		iIndex = 0
-		sTempFileName = "_" & psName
-		'UPGRADE_WARNING: Dir has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
-		Do While Dir(psPath & "\" & sTempFileName) <> vbNullString
-			iIndex = iIndex + 1
-			sTempFileName = "_" & Trim(Str(iIndex)) & psName
-		Loop 
-		
-		sFullFileName = psPath & "\" & sTempFileName
-		
-TidyUpAndExit: 
-		GetFileName = sFullFileName
-		Exit Function
-		
-ErrorTrap: 
-		sFullFileName = ""
-		Resume TidyUpAndExit
-		
-	End Function
+  Private Function GetFileName(ByRef psPath As String, ByRef psName As String) As String
+    On Error GoTo ErrorTrap
+
+    Dim iIndex As Short
+    Dim sFullFileName As String
+    Dim sTempFileName As String
+
+    sFullFileName = ""
+
+    iIndex = 0
+    sTempFileName = "_" & psName
+    'UPGRADE_WARNING: Dir has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
+    Do While Dir(psPath & "\" & sTempFileName) <> vbNullString
+      iIndex = iIndex + 1
+      sTempFileName = "_" & Trim(Str(iIndex)) & psName
+    Loop
+
+    sFullFileName = psPath & "\" & sTempFileName
+
+TidyUpAndExit:
+    GetFileName = sFullFileName
+    Exit Function
+
+ErrorTrap:
+    sFullFileName = ""
+    Resume TidyUpAndExit
+
+  End Function
 	
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Initialize_Renamed()
