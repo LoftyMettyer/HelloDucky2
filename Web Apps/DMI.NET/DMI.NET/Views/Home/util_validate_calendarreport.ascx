@@ -17,11 +17,11 @@
 			window.trPleaseWait5.style.display = 'none';
 
 			// Resize the grid to show all prompted values.
-			iResizeBy = bdyMain.scrollWidth - bdyMain.clientWidth;
+			var iResizeBy = bdyMain.scrollWidth - bdyMain.clientWidth;
 			if (bdyMain.offsetWidth + iResizeBy > screen.width) {
 				window.dialogWidth = new String(screen.width) + "px";
 			} else {
-				iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length - 2));
+				var iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length - 2));
 				iNewWidth = iNewWidth + iResizeBy;
 				window.dialogWidth = new String(iNewWidth) + "px";
 			}
@@ -30,18 +30,18 @@
 			if (bdyMain.offsetHeight + iResizeBy > screen.height) {
 				window.dialogHeight = new String(screen.height) + "px";
 			} else {
-				iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length - 2));
+				var iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length - 2));
 				iNewHeight = iNewHeight + iResizeBy;
 				window.dialogHeight = new String(iNewHeight) + "px";
 			}
 
-			iNewLeft = (screen.width - bdyMain.offsetWidth) / 2;
-			iNewTop = (screen.height - bdyMain.offsetHeight) / 2;
+			var iNewLeft = (screen.width - bdyMain.offsetWidth) / 2;
+			var iNewTop = (screen.height - bdyMain.offsetHeight) / 2;
 			window.dialogLeft = new String(iNewLeft) + "px";
 			window.dialogTop = new String(iNewTop) + "px";
 
 			if (txtErrorCode.value == 0) {
-				window.dialogArguments.document.getElementById('frmSend').submit();
+				OpenHR.getElementById("frmSend").submit();
 				self.close();
 				return;
 			}
@@ -49,10 +49,10 @@
 			/* need to remove hidden event filters from the definition */
 			if (txtErrorCode.value == 1) {
 				if (txtHiddenFilters.value.length > 0) {
-					window.dialogArguments.OpenHR.removeFilters(window.txtHiddenFilters.value);
+					OpenHR.removeFilters(window.txtHiddenFilters.value);
 				}
 				if (txtDeletedFilters.value.length > 0) {
-					window.dialogArguments.OpenHR.removeFilters(window.txtDeletedFilters.value);
+					OpenHR.removeFilters(window.txtDeletedFilters.value);
 				}
 			}
 
@@ -60,37 +60,38 @@
 			if (txtErrorCode.value == 1) {
 				// Error, see if we need to remove any columns from the report.
 				if (txtHiddenPicklists.value.length > 0) {
-					window.dialogArguments.OpenHR.removePicklists(txtHiddenPicklists.value);
+					OpenHR.removePicklists(txtHiddenPicklists.value);
 				}
 				if (txtDeletedPicklists.value.length > 0) {
-					window.dialogArguments.OpenHR.removePicklists(txtDeletedPicklists.value);
+					OpenHR.removePicklists(txtDeletedPicklists.value);
 				}
 			}
 
 			/* need to remove hidden calcs from the definition */
 			if (txtErrorCode.value == 1) {
 				if (txtHiddenCalcs.value.length > 0) {
-					window.dialogArguments.OpenHR.removeCalcs(txtHiddenCalcs.value);
+					OpenHR.removeCalcs(txtHiddenCalcs.value);
 				}
 				if (txtDeletedCalcs.value.length > 0) {
-					window.dialogArguments.OpenHR.removeCalcs(txtDeleteCalcs.value);
+					OpenHR.removeCalcs(txtDeleteCalcs.value);
 				}
 			}
-			window.dialogArguments.menu_refreshMenu();
+			//window.dialogArguments.menu_refreshMenu();
+			menu_refreshMenu();
 		}
 
 		function overwrite() {
-			window.dialogArguments.OpenHR.getElementById.getElementById('frmSend').submit();
+			OpenHR.getElementById.getElementById('frmSend').submit();
 			self.close();
 		}
 
 		function createNew() {
-			window.dialogArguments.OpenHR.createNew(self);
+			OpenHR.createNew(self);
 		}
 
 		function continueSave() {
-			window.dialogArguments.setJobsToHide(window.txtJibIDsToHide.value);
-			window.dialogArguments.OpenHR.submitForm(frmSend);
+			OpenHR.setJobsToHide(window.txtJibIDsToHide.value);
+			OpenHR.submitForm(frmSend);
 			self.close();
 		}
 	}
