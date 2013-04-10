@@ -11,7 +11,7 @@ Imports VB = Microsoft.VisualBasic
 	Private mstrHexColour_FormText As String
 	Private mstrHexColour_AbsenceTypesBackground As String
 	
-	Dim mastrAbsenceTypes() As String ' Store the absence types (redefined later as ???,2 so as to auto clear it)
+  Dim mastrAbsenceTypes(,) As String ' Store the absence types (redefined later as ???,2 so as to auto clear it)
 	'0 = Contains the Absence Type
 	'1 = Contains the Absence String
 	'2 = Is this absence in list by default

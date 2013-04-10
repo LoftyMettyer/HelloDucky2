@@ -148,7 +148,13 @@
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="clsBankHoliday.vb" />
+    <Compile Include="clsBankHolidays.vb" />
+    <Compile Include="clsCalendarEvent.vb" />
+    <Compile Include="clsCalendarEvents.vb" />
+    <Compile Include="clsCalendarReports.vb" />
     <Compile Include="clsChart.vb" />
+    <Compile Include="clsDiary.vb" />
     <Compile Include="clsEventLog.vb">
       <SubType>Code</SubType>
     </Compile>
@@ -213,6 +219,7 @@
     <Compile Include="modAbsenceSpecifics.vb">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="modBankHolidaySpecifics.vb" />
     <Compile Include="modIntranet.vb">
       <SubType>Code</SubType>
     </Compile>
@@ -225,12 +232,14 @@
     <Compile Include="modSettings.vb">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="modTrainingBookingSpecifics.vb" />
     <Compile Include="modUtilAccessLog.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="modUtilityAccess.vb">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="StandardReports.vb" />
     <Compile Include="TablePrivilege.vb">
       <SubType>Code</SubType>
     </Compile>

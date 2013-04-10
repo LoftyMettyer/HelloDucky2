@@ -14,18 +14,18 @@ Imports VB = Microsoft.VisualBasic
 	
 	Private mstrBaseTableName As String
 	
-	Private mvarTableViews() As Object
+  Private mvarTableViews(,) As Object
 	Private mstrTempRealSource As String
 	
 	'TableViews
 	Private mstrRealSource As String
 	Private mstrBaseTableRealSource As String
-	Private mlngTableViews() As Integer
+  Private mlngTableViews(,) As Integer
 	Private mstrViews() As String
 	Private mobjTableView As CTablePrivilege
 	Private mobjColumnPrivileges As CColumnPrivileges
 	
-	Private mvarEventColumnViews() As Object
+  Private mvarEventColumnViews(,) As Object
 	Private mlngEventViewColumn As Integer
 	
 	'************************************************************
@@ -150,8 +150,8 @@ Imports VB = Microsoft.VisualBasic
 	Private mobjEventLog As clsEventLog
 	
 	'Array holding the columns to sort the report by
-	Private mvarSortOrder() As Object
-	Private mvarPrompts() As Object
+  Private mvarSortOrder(,) As Object
+  Private mvarPrompts(,) As Object
 	
 	Private mcolEvents As clsCalendarEvents
 	
@@ -193,7 +193,7 @@ Imports VB = Microsoft.VisualBasic
 	
 	'****************************************************
 	'variables for outputting
-	Private mavOutputDateIndex() As Object
+  Private mavOutputDateIndex(,) As Object
 	
 	Private mintFirstDayOfMonth_Output As Short
 	Private mintDaysInMonth_Output As Short
@@ -230,9 +230,9 @@ Imports VB = Microsoft.VisualBasic
 	Private mvarOutputArray_Styles() As Object
 	Private mvarOutputArray_Merges() As Object
 	
-	Private mavLegend() As Object
+  Private mavLegend(,) As Object
 	Private mstrLegend() As String
-	Private mavAvailableColours() As Object
+  Private mavAvailableColours(,) As Object
 	Private mstrExcludedColours As String
 	
 	'****************************************************
@@ -287,7 +287,7 @@ Imports VB = Microsoft.VisualBasic
 	Private mlngColor_Disabled As Integer
 	Private mlngColor_RangeDisabled As Integer
 	
-	Private mavCareerRanges() As Object
+  Private mavCareerRanges(,) As Object
 	
 	Private Const DAY_CONTROL_COUNT As Short = 37
 	
@@ -1342,7 +1342,7 @@ ErrorTrap:
 		Dim strRegion As String
 		Dim strWorkingPattern As String
 		
-		Dim varTempArray() As Object
+    Dim varTempArray(,) As Object
 		
 		Dim blnNewBaseRecord As Boolean
 		Dim strTempRecordDesc As String
@@ -2135,7 +2135,7 @@ ErrorTrap:
 		Dim strCurrentRegion_BD As String
 		Dim strCurrentWorkingPattern_BD As String
 		
-		Dim varTempArray() As Object
+    Dim varTempArray(,) As Object
 		
 		Dim intStartCount As Short
 		Dim intEndCount As Short
@@ -3557,7 +3557,7 @@ ExecuteSQL_ERROR:
 		Dim strDescription2 As String
 		Dim strDescriptionExpr As String
 		Dim lngCurrentBaseID As Integer
-		Dim avDateRanges() As Object
+    Dim avDateRanges(,) As Object
 		Dim i As Short
 		Dim blnHasOverlap As Boolean
 		Dim intNewIndex As Short
@@ -4204,7 +4204,7 @@ Error_Trap:
 		Dim dtStartDate As Date
 		Dim dtEndDate As Date
 		
-		Dim avCareerRanges() As String
+    Dim avCareerRanges(,) As String
 		Dim intNextIndex As Short
 		
 		Dim blnNewBaseRecord As Boolean
@@ -6257,7 +6257,7 @@ GenerateSQLSelect_ERROR:
 		Dim strTable As String
 		Dim strColumn As String
 		Dim sCalcCode As String
-		Dim alngSourceTables() As Integer
+    Dim alngSourceTables(,) As Integer
 		Dim objCalcExpr As clsExprExpression
 		
 		' Set flags with their starting values
