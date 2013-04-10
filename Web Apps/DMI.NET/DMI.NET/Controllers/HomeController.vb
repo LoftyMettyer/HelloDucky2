@@ -394,7 +394,7 @@ Namespace Controllers
 
         ' Create an OpenHR user associated with the
         ' given SQL Server login.
-        Dim cmdNewUser = Server.CreateObject("ADODB.Command")
+				Dim cmdNewUser = CreateObject("ADODB.Command")
         cmdNewUser.CommandText = "sp_ASRIntNewUser"
         cmdNewUser.CommandType = 4 ' Stored Procedure
         cmdNewUser.ActiveConnection = Session("databaseConnection")
@@ -747,10 +747,7 @@ Namespace Controllers
 		Function DefSel(value As FormCollection)
 			Return View()
 		End Function
-
-
-
-
+		
 		<HttpPost()>
 		Function DefSel_Submit(value As FormCollection)
 			' Set some session variables used by all the util pages
@@ -1673,7 +1670,7 @@ Namespace Controllers
 				Response.End()
 			End If
 
-			Dim image As Byte()
+			Dim image(-1) As Byte
 
 			Do While Not objRs.EOF
 				image = CType(objRs.fields(1).value, Byte())
@@ -1745,7 +1742,6 @@ Namespace Controllers
 
 #End Region
 
-
 #Region "Running Reports"
 
 		Function util_run_crosstabsMain() As ActionResult
@@ -1759,8 +1755,7 @@ Namespace Controllers
 		Function util_run_crosstabsBreakdown() As ActionResult
 			Return PartialView()
 		End Function
-
-
+		
 		Function util_run_crosstabs() As ActionResult
 			Return PartialView()
 		End Function
@@ -1796,8 +1791,6 @@ Namespace Controllers
 
 		End Function
 
-
-
 		<ValidateInput(False)>
 		Function util_run_promptedvalues() As ActionResult
 			Return View()
@@ -1816,8 +1809,7 @@ Namespace Controllers
 		Function util_run_calendarreport_main() As ActionResult
 			Return PartialView()
 		End Function
-
-
+		
 		<ValidateInput(False)>
 		Function util_run_workflow() As ActionResult
 			Return PartialView()
@@ -1853,6 +1845,305 @@ Namespace Controllers
 #End Region
 
 #Region "Defining Reports"
+
+		Function util_def_calendarreportdates_data_submit()
+			Session("CalendarAction") = Request.Form("txtCalendarAction")
+			Session("CalendarBaseTableID") = Request.Form("txtCalendarBaseTableID")
+			Session("CalendarEventTableID") = Request.Form("txtCalendarEventTableID")
+			Session("CalendarLookupTableID") = Request.Form("txtCalendarLookupTableID")
+
+			'Response.Redirect("util_def_calendarreportdates_data")
+			Return RedirectToAction("util_def_calendarreportdates_data")
+		End Function
+
+		Function util_def_calendarreport_submit()
+			On Error Resume Next
+
+			Dim cmdSave = CreateObject("ADODB.Command")
+			cmdSave.CommandText = "spASRIntSaveCalendarReport"
+			cmdSave.CommandType = 4	' Stored Procedure
+			cmdSave.ActiveConnection = Session("databaseConnection")
+
+			Dim prmName = cmdSave.CreateParameter("name", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmName)
+			prmName.value = Request.Form("txtSend_name")
+
+			Dim prmDescription = cmdSave.CreateParameter("description", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmDescription)
+			prmDescription.value = Request.Form("txtSend_description")
+
+			Dim prmBaseTable = cmdSave.CreateParameter("baseTable", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmBaseTable)
+			prmBaseTable.value = CleanNumeric(Request.Form("txtSend_baseTable"))
+
+			Dim prmAllRecords = cmdSave.CreateParameter("allRecords", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmAllRecords)
+			prmAllRecords.value = CleanBoolean(Request.Form("txtSend_allRecords"))
+
+			Dim prmPicklist = cmdSave.CreateParameter("picklist", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmPicklist)
+			prmPicklist.value = CleanNumeric(Request.Form("txtSend_picklist"))
+
+			Dim prmFilter = cmdSave.CreateParameter("filt)er", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmFilter)
+			prmFilter.value = CleanNumeric(Request.Form("txtSend_filter"))
+
+			Dim prmPrintFilterHeader = cmdSave.CreateParameter("printFilterHeader", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmPrintFilterHeader)
+			prmPrintFilterHeader.value = CleanBoolean(Request.Form("txtSend_printFilterHeader"))
+
+			Dim prmUserName = cmdSave.CreateParameter("userName", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmUserName)
+			prmUserName.value = Request.Form("txtSend_userName")
+
+			Dim prmDescription1 = cmdSave.CreateParameter("description1", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmDescription1)
+			prmDescription1.value = CleanNumeric(Request.Form("txtSend_desc1"))
+
+			Dim prmDescription2 = cmdSave.CreateParameter("description2", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmDescription2)
+			prmDescription2.value = CleanNumeric(Request.Form("txtSend_desc2"))
+
+			Dim prmDescriptionExpr = cmdSave.CreateParameter("descriptionExpr", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmDescriptionExpr)
+			prmDescriptionExpr.value = CleanNumeric(Request.Form("txtSend_descExpr"))
+
+			Dim prmRegion = cmdSave.CreateParameter("region", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmRegion)
+			prmRegion.value = CleanNumeric(Request.Form("txtSend_region"))
+
+			Dim prmGroupByDesc = cmdSave.CreateParameter("groupByDesc", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmGroupByDesc)
+			prmGroupByDesc.value = CleanBoolean(Request.Form("txtSend_groupbydesc"))
+
+			Dim prmDescSeparator = cmdSave.CreateParameter("descSeparator", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmDescSeparator)
+			prmDescSeparator.value = Request.Form("txtSend_descseparator")
+
+			Dim prmStartType = cmdSave.CreateParameter("startType", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmStartType)
+			prmStartType.value = CleanNumeric(Request.Form("txtSend_StartType"))
+
+			Dim prmFixedStart = cmdSave.CreateParameter("fixedStart", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmFixedStart)
+			If Len(Request.Form("txtSend_FixedStart")) > 0 Then
+				prmFixedStart.value = Request.Form("txtSend_FixedStart")
+			Else
+				prmFixedStart.value = ""
+			End If
+
+			Dim prmStartFrequency = cmdSave.CreateParameter("startFrequency", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmStartFrequency)
+			prmStartFrequency.value = CleanNumeric(Request.Form("txtSend_StartFrequency"))
+
+			Dim prmStartPeriod = cmdSave.CreateParameter("startPeriod", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmStartPeriod)
+			prmStartPeriod.value = CleanNumeric(Request.Form("txtSend_StartPeriod"))
+
+			Dim prmStartDateExpr = cmdSave.CreateParameter("startDateExpr", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmStartDateExpr)
+			prmStartDateExpr.value = CleanNumeric(Request.Form("txtSend_CustomStart"))
+
+			Dim prmEndType = cmdSave.CreateParameter("endType", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmEndType)
+			prmEndType.value = CleanNumeric(Request.Form("txtSend_EndType"))
+
+			Dim prmFixedEnd = cmdSave.CreateParameter("fixedEnd", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmFixedEnd)
+			If Len(Request.Form("txtSend_FixedEnd")) > 0 Then
+				prmFixedEnd.value = Request.Form("txtSend_FixedEnd")
+			Else
+				prmFixedEnd.value = ""
+			End If
+
+			Dim prmEndFrequency = cmdSave.CreateParameter("endFrequency", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmEndFrequency)
+			prmEndFrequency.value = CleanNumeric(Request.Form("txtSend_EndFrequency"))
+
+			Dim prmEndPeriod = cmdSave.CreateParameter("endPeriod", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmEndPeriod)
+			prmEndPeriod.value = CleanNumeric(Request.Form("txtSend_EndPeriod"))
+
+			Dim prmEndDateExpr = cmdSave.CreateParameter("endDateExpr", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmEndDateExpr)
+			prmEndDateExpr.value = CleanNumeric(Request.Form("txtSend_CustomEnd"))
+
+			Dim prmShowBankHols = cmdSave.CreateParameter("showBankHols", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmShowBankHols)
+			prmShowBankHols.value = CleanBoolean(Request.Form("txtSend_ShadeBHols"))
+
+			Dim prmShowCaptions = cmdSave.CreateParameter("showCaptions", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmShowCaptions)
+			prmShowCaptions.value = CleanBoolean(Request.Form("txtSend_Captions"))
+
+			Dim prmShowWeekends = cmdSave.CreateParameter("showWeekends", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmShowWeekends)
+			prmShowWeekends.value = CleanBoolean(Request.Form("txtSend_ShadeWeekends"))
+
+			Dim prmStartOnCurrentMonth = cmdSave.CreateParameter("startOnCurrentMonth", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmStartOnCurrentMonth)
+			prmStartOnCurrentMonth.value = CleanBoolean(Request.Form("txtSend_StartOnCurrentMonth"))
+
+			Dim prmIncludeWorkdays = cmdSave.CreateParameter("includeWorkdays", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmIncludeWorkdays)
+			prmIncludeWorkdays.value = CleanBoolean(Request.Form("txtSend_IncludeWorkingDaysOnly"))
+
+			Dim prmIncludeBankHols = cmdSave.CreateParameter("includeBankHols", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmIncludeBankHols)
+			prmIncludeBankHols.value = CleanBoolean(Request.Form("txtSend_IncludeBHols"))
+
+			Dim prmOutputPreview = cmdSave.CreateParameter("outputPreview", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmOutputPreview)
+			prmOutputPreview.value = CleanBoolean(Request.Form("txtSend_OutputPreview"))
+
+			Dim prmOutputFormat = cmdSave.CreateParameter("outputFormat", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmOutputFormat)
+			prmOutputFormat.value = CleanNumeric(Request.Form("txtSend_OutputFormat"))
+
+			Dim prmOutputScreen = cmdSave.CreateParameter("outputScreen", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmOutputScreen)
+			prmOutputScreen.value = CleanBoolean(Request.Form("txtSend_OutputScreen"))
+
+			Dim prmOutputPrinter = cmdSave.CreateParameter("outputPrinter", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmOutputPrinter)
+			prmOutputPrinter.value = CleanBoolean(Request.Form("txtSend_OutputPrinter"))
+
+			Dim prmOutputPrinterName = cmdSave.CreateParameter("outputPrinterName", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmOutputPrinterName)
+			prmOutputPrinterName.value = Request.Form("txtSend_OutputPrinterName")
+
+			Dim prmOutputSave = cmdSave.CreateParameter("outputSave", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmOutputSave)
+			prmOutputSave.value = CleanBoolean(Request.Form("txtSend_OutputSave"))
+
+			Dim prmOutputSaveExisting = cmdSave.CreateParameter("outputSaveExisting", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmOutputSaveExisting)
+			prmOutputSaveExisting.value = CleanNumeric(Request.Form("txtSend_OutputSaveExisting"))
+
+			Dim prmOutputEmail = cmdSave.CreateParameter("outputEmail", 11, 1) ' 11=boolean, 1=input
+			cmdSave.Parameters.Append(prmOutputEmail)
+			prmOutputEmail.value = CleanBoolean(Request.Form("txtSend_OutputEmail"))
+
+			Dim prmOutputEmailAddr = cmdSave.CreateParameter("outputEmailAddr", 3, 1)	' 3=integer,1=input
+			cmdSave.Parameters.Append(prmOutputEmailAddr)
+			prmOutputEmailAddr.value = CleanNumeric(Request.Form("txtSend_OutputEmailAddr"))
+
+			Dim prmOutputEmailSubject = cmdSave.CreateParameter("outputEmailSubject", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmOutputEmailSubject)
+			prmOutputEmailSubject.value = Request.Form("txtSend_OutputEmailSubject")
+
+			Dim prmOutputEmailAttachAs = cmdSave.CreateParameter("outputEmailAttachAs", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmOutputEmailAttachAs)
+			prmOutputEmailAttachAs.value = Request.Form("txtSend_OutputEmailAttachAs")
+
+			Dim prmOutputFilename = cmdSave.CreateParameter("outputFilename", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmOutputFilename)
+			prmOutputFilename.value = Request.Form("txtSend_OutputFilename")
+
+			Dim prmAccess = cmdSave.CreateParameter("access", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmAccess)
+			prmAccess.value = Request.Form("txtSend_access")
+
+			Dim prmJobToHide = cmdSave.CreateParameter("jobsToHide", 200, 1, 8000) ' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmJobToHide)
+			prmJobToHide.value = Request.Form("txtSend_jobsToHide")
+
+			Dim prmJobToHideGroups = cmdSave.CreateParameter("acess", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmJobToHideGroups)
+			prmJobToHideGroups.value = Request.Form("txtSend_jobsToHideGroups")
+
+			Dim prmEvents = cmdSave.CreateParameter("events", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmEvents)
+			prmEvents.value = Request.Form("txtSend_Events")
+			Dim prmEvents2 = cmdSave.CreateParameter("events2", 200, 1, 8000)	' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmEvents2)
+			prmEvents2.value = Request.Form("txtSend_Events2")
+
+			'pass the order string to the stored procedure, the stored procedure 
+			'saves the order information to the ASRSysCalendarReportOrder table.
+			Dim prmOrderString = cmdSave.CreateParameter("orderstring", 200, 1, 8000)	 ' 200=varchar,1=input,8000=size
+			cmdSave.Parameters.Append(prmOrderString)
+			prmOrderString.value = Request.Form("txtSend_OrderString")
+
+			Dim prmID = cmdSave.CreateParameter("id", 3, 3)	' 3=integer,3=input/output
+			cmdSave.Parameters.Append(prmID)
+			prmID.value = CleanNumeric(Request.Form("txtSend_ID"))
+
+			cmdSave.Execute()
+
+			If Err.Number = 0 Then
+				Session("confirmtext") = "Report has been saved successfully"
+				Session("confirmtitle") = "Calendar Reports"
+				Session("followpage") = "defsel"
+				Session("reaction") = Request.Form("txtSend_reaction")
+				Session("utilid") = cmdSave.Parameters("id").Value
+
+				'Response.Redirect("confirmok.asp")
+				Return RedirectToAction("ConfirmOK")
+			Else
+				Response.Write("<HTML>" & vbCrLf)
+				Response.Write("	<HEAD>" & vbCrLf)
+				Response.Write("		<META NAME=""GENERATOR"" Content=""Microsoft Visual Studio 6.0"">" & vbCrLf)
+				Response.Write("		<LINK href=""AutoBG.css"" rel=stylesheet type=text/css >" & vbCrLf)
+				Response.Write("		<TITLE>" & vbCrLf)
+				Response.Write("			OpenHR Intranet" & vbCrLf)
+				Response.Write("		</TITLE>" & vbCrLf)
+				Response.Write("		<meta http-equiv=""X-UA-Compatible"" content=""IE=5"">" & vbCrLf)
+				Response.Write("	</HEAD>" & vbCrLf)
+				Response.Write("	<BODY id=bdyMainBody name=""bdyMainBody"" " & Session("BodyTag") & ">" & vbCrLf)
+
+				Response.Write("	<table align=center border=1 cellPadding=5 cellSpacing=0>" & vbCrLf)
+				Response.Write("		<TR>" & vbCrLf)
+				Response.Write("			<TD bgcolor=threedface>" & vbCrLf)
+				Response.Write("				<table border=0 cellspacing=0 cellpadding=0>" & vbCrLf)
+				Response.Write("				  <tr> " & vbCrLf)
+				Response.Write("				    <td colspan=3 height=10></td>" & vbCrLf)
+				Response.Write("				  </tr>" & vbCrLf)
+				Response.Write("				  <tr> " & vbCrLf)
+				Response.Write("				    <td colspan=3 align=center> " & vbCrLf)
+				Response.Write("							<H3>Error</H3>" & vbCrLf)
+				Response.Write("				    </td>" & vbCrLf)
+				Response.Write("				  </tr>" & vbCrLf)
+				Response.Write("				  <tr> " & vbCrLf)
+				Response.Write("				    <td width=20 height=10></td> " & vbCrLf)
+				Response.Write("				    <td> " & vbCrLf)
+				Response.Write("							<H4>Error saving report</H4>" & vbCrLf)
+				Response.Write("				    </td>" & vbCrLf)
+				Response.Write("				    <td width=20></td> " & vbCrLf)
+				Response.Write("				  </tr>" & vbCrLf)
+				Response.Write("				  <tr> " & vbCrLf)
+				Response.Write("				    <td width=20 height=10></td> " & vbCrLf)
+				Response.Write("				    <td> " & vbCrLf)
+				Response.Write(Err.Description & vbCrLf)
+				Response.Write("			    </td>" & vbCrLf)
+				Response.Write("			    <td width=20></td> " & vbCrLf)
+				Response.Write("			  </tr>" & vbCrLf)
+				Response.Write("			  <tr> " & vbCrLf)
+				Response.Write("			    <td colspan=3 height=20></td>" & vbCrLf)
+				Response.Write("			  </tr>" & vbCrLf)
+				Response.Write("			  <tr> " & vbCrLf)
+				Response.Write("			    <td colspan=3 height=10 align=center>" & vbCrLf)
+				Response.Write("						<INPUT TYPE=button VALUE=""Retry"" NAME=""GoBack"" OnClick=""window.history.back(1)"" style=""WIDTH: 80px"" width=80 id=cmdGoBack>" & vbCrLf)
+				Response.Write("			    </td>" & vbCrLf)
+				Response.Write("			  </tr>" & vbCrLf)
+				Response.Write("			  <tr>" & vbCrLf)
+				Response.Write("			    <td colspan=3 height=10></td>" & vbCrLf)
+				Response.Write("			  </tr>" & vbCrLf)
+				Response.Write("			</table>" & vbCrLf)
+				Response.Write("    </td>" & vbCrLf)
+				Response.Write("  </tr>" & vbCrLf)
+				Response.Write("</table>" & vbCrLf)
+				Response.Write("	</BODY>" & vbCrLf)
+				Response.Write("<HTML>" & vbCrLf)
+			End If
+
+			cmdSave = Nothing
+
+		End Function
+
+		Public Function util_def_calendarreport() As ActionResult
+			Return View()
+		End Function
 
 		Function util_def_customreports_submit()
 			On Error Resume Next
@@ -2093,6 +2384,9 @@ Namespace Controllers
 
 		End Function
 
+		Public Function util_def_calendarreportdates_data() As ActionResult
+			Return View()
+		End Function
 
 		Function util_validate_customreports() As ActionResult
 			Return View()
@@ -2364,7 +2658,7 @@ Namespace Controllers
 				cmdQuickFind.Execute()
 
 				If Err.Number <> 0 Then
-					sErrorMsg = "Error trying to run 'quick find'." & vbCrLf & formatError(Err.Description)
+					sErrorMsg = "Error trying to run 'quick find'." & vbCrLf & FormatError(Err.Description)
 				Else
 					If (cmdQuickFind.Parameters("result").Value = 0) Then
 						sErrorMsg = "No records match the criteria."
@@ -2385,7 +2679,7 @@ Namespace Controllers
 
 				If Len(sErrorMsg) > 0 Then
 					' Go to the requested page.
-					Return RedirectToAction("quickfind")
+					Return RedirectToAction("Quickfind")
 				End If
 
 			End If
@@ -2696,7 +2990,7 @@ Namespace Controllers
 			'Throw New NotImplementedException()
 			Return View()
 		End Function
-		
+
 		<HttpPost()>
 		Function util_def_mailmerge_submit()
 			On Error Resume Next
@@ -2865,16 +3159,11 @@ Namespace Controllers
 #End Region
 
 
-
-		Public Function util_def_calendarreport() As ActionResult
-			Throw New NotImplementedException()
-		End Function
-
-		Function quickfind() As ActionResult
+		Function Quickfind() As ActionResult
 			Return View()
 		End Function
 
-		Function filterselect() As ActionResult
+		Function Filterselect() As ActionResult
 			Return View()
 		End Function
 
@@ -2935,8 +3224,6 @@ Namespace Controllers
 			Return RedirectToAction(sNextPage)
 
 		End Function
-
-
 	End Class
 
 	Public Class ErrMsgJsonAjaxResponse
