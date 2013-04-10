@@ -391,7 +391,7 @@
     Response.Write("      applyJSTree('[aria-labelledby=""mnutoolHistory""]');" & vbCrLf)
     Response.Write("	  $(""#mnutoolHistory"").show();" & vbCrLf)
     Response.Write("      $('#mnutoolHistory').click();")
-    Response.Write("  }" & vbCrLf)
+	'Response.Write("  }" & vbCrLf)
     Response.Write("}" & vbCrLf & vbCrLf)
 	
 	
@@ -436,7 +436,7 @@
 		prm4 = cmdMisc.CreateParameter("param4", 200, 2, 8000) '200=varchar, 2=output, 8000=size
 		cmdMisc.Parameters.Append(prm4)
 		
-        Err.Clear()
+		Err.Clear()
 		cmdMisc.Execute()
 		
 		Response.Write("<INPUT TYPE=Hidden NAME=txtCFG_PCL ID=txtCFG_PCL VALUE='" & cmdMisc.Parameters("param1").value & "'>" & vbCrLf)
@@ -465,12 +465,12 @@
 		cmdSystemPermissions.ActiveConnection = Session("databaseConnection")
 		cmdSystemPermissions.CommandTimeout = 300
 
-        Err.Clear()
+		Err.Clear()
         
 		Dim rstSystemPermissions = cmdSystemPermissions.Execute
 		
 		If (Err.Number <> 0) Then
-			sErrorDescription = "The system permissions could not be read." & vbCrLf & formatError(Err.Description)
+			sErrorDescription = "The system permissions could not be read." & vbCrLf & FormatError(Err.Description)
 		End If
 		
 		If Len(sErrorDescription) = 0 Then
@@ -510,7 +510,7 @@
 					fPicklistsGranted = True
 				End If
 				If ((rstSystemPermissions.fields("KEY").value = "MODULEACCESS_SYSTEMMANAGER") Or _
-				  (rstSystemPermissions.fields("KEY").value = "MODULEACCESS_SECURITYMANAGER")) And _
+					(rstSystemPermissions.fields("KEY").value = "MODULEACCESS_SECURITYMANAGER")) And _
 				 (rstSystemPermissions.fields("PERMITTED").value = 1) Then
 					fNewUserGranted = True
 				End If
@@ -538,10 +538,10 @@
 		cmdAbsenceModule.Parameters.Append(prmModuleKey)
 		prmModuleKey.value = "ABSENCE"
 
-		Dim prmEnabled = cmdAbsenceModule.CreateParameter("enabled", 11, 2) ' 11=bit, 2=output
+		Dim prmEnabled = cmdAbsenceModule.CreateParameter("enabled", 11, 2)	' 11=bit, 2=output
 		cmdAbsenceModule.Parameters.Append(prmEnabled)
 
-        Err.Clear()
+		Err.Clear()
 		cmdAbsenceModule.Execute()
 
 		iAbsenceEnabled = CInt(cmdAbsenceModule.Parameters("enabled").Value)
