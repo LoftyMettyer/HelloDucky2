@@ -106,10 +106,8 @@ Option Explicit On
 	
 	' Classes
 	Private mclsData As clsDataAccess
-	Private mclsGeneral As clsGeneral
-	Private mobjEventLog As clsEventLog
-	Private mclsUI As clsUI
-	
+  Private mobjEventLog As clsEventLog
+
 	Private mlngType As Integer
 	
 	Private msAbsenceBreakdownTypes As String
@@ -117,7 +115,7 @@ Option Explicit On
 	Private mstrOutputArray_Data() As Object
   Private mvarPrompts(,) As Object
 	Private mstrClientDateFormat As String
-	Private mstrLocalDecimalSeparator As String
+  Private mstrLocalDecimalSeparator As String
 	
 	' Array holding the User Defined functions that are needed for this report
 	Private mastrUDFsRequired() As String
@@ -143,21 +141,21 @@ Option Explicit On
 	End Property
 	
 	Public WriteOnly Property FailedMessage() As String
-		Set(ByVal Value As String)
-			mobjEventLog.AddDetailEntry(Value)
-		End Set
+    Set(ByVal value As String)
+      mobjEventLog.AddDetailEntry(value)
+    End Set
 	End Property
 	
 	Public WriteOnly Property ClientDateFormat() As String
-		Set(ByVal Value As String)
-			mstrClientDateFormat = Value
-		End Set
+    Set(ByVal value As String)
+      mstrClientDateFormat = value
+    End Set
 	End Property
 	
 	Public WriteOnly Property LocalDecimalSeparator() As String
-		Set(ByVal Value As String)
-			mstrLocalDecimalSeparator = Value
-		End Set
+    Set(ByVal value As String)
+      mstrLocalDecimalSeparator = value
+    End Set
 	End Property
 	
 	Public ReadOnly Property NoRecords() As Boolean
@@ -191,104 +189,57 @@ Option Explicit On
 		End Get
 	End Property
 	
-	
 	Public Property EventLogID() As Integer
 		Get
 			EventLogID = mobjEventLog.EventLogID
 		End Get
-		Set(ByVal Value As Integer)
-			mobjEventLog.EventLogID = Value
-		End Set
+    Set(ByVal value As Integer)
+      mobjEventLog.EventLogID = value
+    End Set
 	End Property
-	
-	'Public Function CreateOutputArray(lngPage As Long) As Boolean
-	'
-	'  Dim lngPage As Long
-	'  Dim lngLine As Long
-	'
-	'  On Local Error GoTo LocalErr
-	'
-	'  ReDim mstrOutputArray_Data(0)
-	'
-	'  For lngPage = LBound(mvarHeadings(PGB)) To UBound(mvarHeadings(PGB))
-	'
-	'    BuildOutputStrings lngPage
-	'    AddToOutput "  if (lngPage = " & lngPage & ") {"
-	'
-	'    For lngLine = LBound(mstrOutput) To UBound(mstrOutput)
-	'      AddToOutput "    grdOutput.additem """ & mstrOutput(lngLine) & """;"
-	'    Next
-	'
-	'    AddToOutput "  }"
-	'    AddToOutput ""
-	'  Next
-	'
-	'  CreateOutputArray = True
-	'
-	'Exit Function
-	'
-	'LocalErr:
-	'  mstrStatusMessage = "Error building output pages"
-	'  CreateOutputArray = False
-	'
-	'End Function
-	
-	'Private Sub AddToOutput(strItem As String)
-	'
-	'  Dim lngIndex As Long
-	'
-	'  lngIndex = UBound(mstrOutputArray_Data) + 1
-	'  ReDim Preserve mstrOutputArray_Data(lngIndex)
-	'  mstrOutputArray_Data(lngIndex) = strItem
-	'
-	'End Sub
-	
 	
 	Public Property IntersectionType() As Integer
 		Get
 			IntersectionType = mlngType
 		End Get
-		Set(ByVal Value As Integer)
-			mlngType = Value
-		End Set
+    Set(ByVal value As Integer)
+      mlngType = value
+    End Set
 	End Property
-	
 	
 	Public Property ShowPercentage() As Boolean
 		Get
 			ShowPercentage = mblnShowPercentage
 		End Get
-		Set(ByVal Value As Boolean)
-			mblnShowPercentage = Value
-		End Set
+    Set(ByVal value As Boolean)
+      mblnShowPercentage = value
+    End Set
 	End Property
-	
 	
 	Public Property PercentageOfPage() As Boolean
 		Get
 			PercentageOfPage = mblnPercentageofPage
 		End Get
-		Set(ByVal Value As Boolean)
-			mblnPercentageofPage = Value
-		End Set
+    Set(ByVal value As Boolean)
+      mblnPercentageofPage = value
+    End Set
 	End Property
-	
 	
 	Public Property SuppressZeros() As Boolean
 		Get
 			SuppressZeros = mblnSuppressZeros
 		End Get
-		Set(ByVal Value As Boolean)
-			mblnSuppressZeros = Value
-		End Set
+    Set(ByVal value As Boolean)
+      mblnSuppressZeros = value
+    End Set
 	End Property
 	
-	Public ReadOnly Property OutputArrayData(ByVal lngIndex As Object) As String
-		Get
-			'UPGRADE_WARNING: Couldn't resolve default property of object lngIndex. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			OutputArrayData = mstrOutput(CInt(lngIndex))
-		End Get
-	End Property
+  Public ReadOnly Property OutputArrayData(ByVal lngIndex As Integer) As String
+    Get
+      'UPGRADE_WARNING: Couldn't resolve default property of object lngIndex. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      OutputArrayData = mstrOutput(lngIndex)
+    End Get
+  End Property
 	
 	Public ReadOnly Property OutputArrayDataUBound() As String
 		Get
@@ -316,21 +267,21 @@ Option Explicit On
 		End Get
 	End Property
 	
-	Public ReadOnly Property ColumnHeading(ByVal lngArray As Integer, ByVal lngIndex As Object) As String
-		Get
-			'ColumnHeading = Replace(mvarHeadings(lngArray)(CLng(lngIndex)), Chr(34), Chr(34) & " + String.fromCharCode(34) + " & Chr(34))
-			'UPGRADE_WARNING: Couldn't resolve default property of object lngIndex. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			ColumnHeading = mvarHeadings(lngArray)(CInt(lngIndex))
-		End Get
-	End Property
+  Public ReadOnly Property ColumnHeading(ByVal lngArray As Integer, ByVal lngIndex As Integer) As String
+    Get
+      'ColumnHeading = Replace(mvarHeadings(lngArray)(CLng(lngIndex)), Chr(34), Chr(34) & " + String.fromCharCode(34) + " & Chr(34))
+      'UPGRADE_WARNING: Couldn't resolve default property of object lngIndex. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      ColumnHeading = mvarHeadings(lngArray)(lngIndex)
+    End Get
+  End Property
 	
-	Public ReadOnly Property ColumnDataType(ByVal lngIndex As Object) As Integer
-		Get
-			'UPGRADE_WARNING: Couldn't resolve default property of object lngIndex. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			ColumnDataType = CInt(mlngColDataType(CInt(lngIndex)))
-		End Get
-	End Property
+  Public ReadOnly Property ColumnDataType(ByVal lngIndex As Integer) As Integer
+    Get
+      'UPGRADE_WARNING: Couldn't resolve default property of object lngIndex. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      ColumnDataType = CInt(mlngColDataType(lngIndex))
+    End Get
+  End Property
 	
   Public ReadOnly Property ColumnHeadingUbound(ByVal lngIndex As Integer) As Integer
     Get
@@ -464,15 +415,11 @@ Option Explicit On
 		End Get
 	End Property
 	
-	'Public Function OutputEmailGroupAddresses(lngGroupID As Long) As String
-	'  OutputEmailGroupAddresses = GetEmailGroupAddresses(lngGroupID)
-	'End Function
-	
-	Public ReadOnly Property OutputEmailSubject() As String
-		Get
-			OutputEmailSubject = mstrOutputEmailSubject
-		End Get
-	End Property
+  Public ReadOnly Property OutputEmailSubject() As String
+    Get
+      OutputEmailSubject = mstrOutputEmailSubject
+    End Get
+  End Property
 	
 	Public ReadOnly Property OutputEmailAttachAs() As String
 		Get
@@ -524,17 +471,17 @@ Option Explicit On
 		Get
 			Use1000Separator = mbUse1000Separator
 		End Get
-		Set(ByVal Value As Boolean)
-			mbUse1000Separator = Value
-		End Set
+    Set(ByVal value As Boolean)
+      mbUse1000Separator = Value
+    End Set
 	End Property
 	
-	Public ReadOnly Property OutputPivotArrayData(ByVal lngIndex As Object) As String
-		Get
-			'UPGRADE_WARNING: Couldn't resolve default property of object lngIndex. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			OutputPivotArrayData = mstrOutputPivotArray(CInt(lngIndex))
-		End Get
-	End Property
+  Public ReadOnly Property OutputPivotArrayData(ByVal lngIndex As Integer) As String
+    Get
+      'UPGRADE_WARNING: Couldn't resolve default property of object lngIndex. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      OutputPivotArrayData = mstrOutputPivotArray(lngIndex)
+    End Get
+  End Property
 	
 	Public ReadOnly Property OutputPivotArrayDataUBound() As String
 		Get
@@ -563,9 +510,8 @@ Option Explicit On
 		
 		' Initialise the the classes/arrays to be used
 		mclsData = New clsDataAccess
-		mclsGeneral = New clsGeneral
-		mobjEventLog = New clsEventLog
-		mclsUI = New clsUI
+    mobjEventLog = New clsEventLog
+
 		ReDim mstrOutputArray_Data(0)
 		
 	End Sub
@@ -580,13 +526,9 @@ Option Explicit On
 		' Clear references to classes and clear collection objects
 		'UPGRADE_NOTE: Object mclsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mclsData = Nothing
-		'UPGRADE_NOTE: Object mclsGeneral may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mclsGeneral = Nothing
-		'UPGRADE_NOTE: Object mobjEventLog may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    'UPGRADE_NOTE: Object mobjEventLog may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mobjEventLog = Nothing
-		'UPGRADE_NOTE: Object mclsUI may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mclsUI = Nothing
-		
+
 		' JPD20030313 Do not drop the tables & columns collections as they can be reused.
 		'Set gcoTablePrivileges = Nothing
 		'Set gcolColumnPrivilegesCollection = Nothing
@@ -1959,7 +1901,7 @@ LocalErr:
 		End If
 		
 		'mdblPercentageFactor will be used in FORMATCELL, if required
-		Call GetPercentageFactor(lngSinglePage, lngTYPE)
+    GetPercentageFactor(lngSinglePage, lngTYPE)
 		
 		ReDim mstrOutput(lngNumRows + 2)
 		
@@ -2116,23 +2058,23 @@ LocalErr:
 		
 	End Function
 	
-	Private Function GetPercentageFactor(ByRef lngPage As Integer, ByRef mlngType As Integer) As Object
-		
-		'mdblPercentageFactor will be used in FORMATCELL, if required
-		mdblPercentageFactor = 0
-		If mblnShowPercentage Then
-			If mblnPercentageofPage Then
-				If mdblPageTotal(lngPage, mlngType) > 0 Then
-					mdblPercentageFactor = 1 / mdblPageTotal(lngPage, mlngType)
-				End If
-			Else
-				If mdblGrandTotal(mlngType) > 0 Then
-					mdblPercentageFactor = 1 / mdblGrandTotal(mlngType)
-				End If
-			End If
-		End If
-		
-	End Function
+  Private Sub GetPercentageFactor(ByRef lngPage As Integer, ByRef mlngType As Integer)
+
+    'mdblPercentageFactor will be used in FORMATCELL, if required
+    mdblPercentageFactor = 0
+    If mblnShowPercentage Then
+      If mblnPercentageofPage Then
+        If mdblPageTotal(lngPage, mlngType) > 0 Then
+          mdblPercentageFactor = 1 / mdblPageTotal(lngPage, mlngType)
+        End If
+      Else
+        If mdblGrandTotal(mlngType) > 0 Then
+          mdblPercentageFactor = 1 / mdblGrandTotal(mlngType)
+        End If
+      End If
+    End If
+
+  End Sub
 	
 	Public Sub BuildBreakdownStrings(ByRef lngHOR As Integer, ByRef lngVER As Integer, ByRef lngPGB As Integer)
 		
