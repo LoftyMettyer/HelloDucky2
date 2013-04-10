@@ -311,7 +311,7 @@ End If
 		var frmDefSel = document.getElementById('frmDefSel');
 
 		//window.parent.frames("refreshframe").document.forms("frmRefresh").submit();
-		OpenHR.submitForm(frmRefresh);
+		OpenHR.submitForm(window.frmRefresh);
 		try {
 			for (iLoop = 1; iLoop < frmDefSel.ssOleDBGridDefSelRecords.Rows; iLoop++) {
 				varBookmark = frmDefSel.ssOleDBGridDefSelRecords.AddItemBookmark(iLoop);
