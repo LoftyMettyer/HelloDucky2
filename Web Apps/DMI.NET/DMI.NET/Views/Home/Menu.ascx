@@ -391,7 +391,7 @@
     Response.Write("      applyJSTree('[aria-labelledby=""mnutoolHistory""]');" & vbCrLf)
     Response.Write("	  $(""#mnutoolHistory"").show();" & vbCrLf)
     Response.Write("      $('#mnutoolHistory').click();")
-	'Response.Write("  }" & vbCrLf)
+	Response.Write("  }" & vbCrLf)
     Response.Write("}" & vbCrLf & vbCrLf)
 	
 	
@@ -567,7 +567,7 @@
 
 <div id="contextmenu" class="accordion">
 		<h3 id="mnutoolDatabase">Database</h3>
-		<div id="jsTree_Database">
+		<div>
 			<ul id="mnubandDatabase">
 				<li id="mnutoolQuickEntry"><a href="#">Quick Access Screens</a>
 					<ul id="mnubandQuickEntry"></ul>
