@@ -139,7 +139,7 @@ namespace Fusion.Connector.OpenHR.Database
                 c.Open();
 
                 Skill su =
-                    c.Query<Skill>(@"SELECT * from Fusion.staffSkillChange WHERE ID_Skill = @SkillID",
+                    c.Query<Skill>(@"SELECT * from Fusion.staffSkill WHERE ID_Skill = @SkillID",
                                      new
                                      {
                                          SkillID = localId
