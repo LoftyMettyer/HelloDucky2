@@ -605,6 +605,9 @@
     <Content Include="Scripts\officebar\winkit\Workflow64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\Workflow64NORM.png" />
     <Content Include="Scripts\OpenHR.js" />
+    <Content Include="Scripts\Utilities\crosstab.js" />
+    <Content Include="Scripts\Utilities\customreport.js" />
+    <Content Include="Scripts\Utilities\general.js" />
     <Content Include="Scripts\widgetScripts\wdg_oHRHoliday.js" />
     <Content Include="Scripts\widgetScripts\external wdg_oHRDBV.js" />
     <Content Include="Scripts\widgetScripts\wdg_oHRButton.js" />
