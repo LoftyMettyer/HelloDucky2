@@ -2760,7 +2760,32 @@
 </div>
 
 <script type="text/javascript">
-	function validateColDecimals() {
+	
+function populatePrinters() {
+	with (frmDefinition.cboPrinterName){
+		var strCurrentPrinter = "";
+		selectedIndex.value = 0;
+		if (selectedIndex > 0){
+			strCurrentPrinter = options[selectedIndex].innerText;
+			}
+		oOption = document.createElement("OPTION");
+		options.add(oOption);
+		oOption.innerText = "<Default Printer>";
+		oOption.value = 0;
+		for (var iLoop = 0; iLoop < OpenHR.PrinterCount() ; iLoop++){
+			var oOption = document.createElement("OPTION");
+			options.add(oOption);
+			oOption.innerText = OpenHR.PrinterName(iLoop);
+			oOption.value = iLoop + 1;
+			if (oOption.innerText == strCurrentPrinter){
+				selectedIndex.value = iLoop + 1;
+			}
+		}
+	}
+}
+	
+
+function validateColDecimals() {
 		var sConvertedValue;
 		var sDecimalSeparator;
 		var sThousandSeparator;
