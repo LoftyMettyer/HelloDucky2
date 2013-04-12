@@ -50,26 +50,26 @@
         UpdateGrid();
     }
 
-    function UpdateGrid() 
-    {
-        strMode = "REFRESH";
+    function UpdateGrid() {
 
-        lngPageNumber = 0;
-        if (cboPage.selectedIndex != -1) 
+        var strMode = "REFRESH";
+
+        var lngPageNumber = 0;
+        if (window.cboPage.selectedIndex != -1) 
         {
-            lngPageNumber = cboPage.options[cboPage.selectedIndex].Value;
+            lngPageNumber = window.cboPage.options[window.cboPage.selectedIndex].Value;
         }
 
-        lngIntType = 0;
-        if (cboIntersectionType.selectedIndex != -1) 
+        var lngIntType = 0;
+        if (window.cboIntersectionType.selectedIndex != -1) 
         {
-            lngIntType = cboIntersectionType.options[cboIntersectionType.selectedIndex].Value;
+            lngIntType = window.cboIntersectionType.options[window.cboIntersectionType.selectedIndex].Value;
         }
 
-        blnShowPer = (chkPercentType.checked == true);
-        blnPerPage = (chkPercentPage.checked == true);
-        blnSupZeros = (chkSuppressZeros.checked == true);
-        blnThousand = (chkUse1000.checked == true);
+        var blnShowPer = (window.chkPercentType.checked == true);
+        var blnPerPage = (window.chkPercentPage.checked == true);
+        var blnSupZeros = (window.chkSuppressZeros.checked == true);
+        var blnThousand = (window.chkUse1000.checked == true);
 
         getData(strMode,lngPageNumber,lngIntType,blnShowPer,blnPerPage,blnSupZeros,blnThousand);
     }

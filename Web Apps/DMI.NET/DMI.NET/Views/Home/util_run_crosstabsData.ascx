@@ -2,11 +2,11 @@
 <%@ Import Namespace="DMI.NET" %>
 
 <%		
-    Dim objCrossTab As Object
+    Dim objCrossTab As HR.Intranet.Server.CrossTab
     Dim intCount As Integer
     Dim strCrossTabName As String
-    Dim lngCount
-    Dim objUser
+    Dim lngCount As Long
+    Dim objUser As HR.Intranet.Server.clsSettings
     Dim lngLoopMin As Long
     Dim lngLoopMax As Long
     Dim strEmailAddresses As String
@@ -22,9 +22,10 @@
     Response.Write("  function util_run_crosstabs_data_window_onload() {" & vbCrLf & vbCrLf)
     Response.Write("    $(""#reportdataframe"").attr(""data-framesource"", ""UTIL_RUN_CROSSTABSDATA"");" & vbCrLf & vbCrLf)
 
-    Response.Write("    $(""#reportdataframe"").hide();" & vbCrLf & vbCrLf)
-	Response.Write("    $(""#reportbreakdownframe"").hide();" & vbCrLf & vbCrLf)
-    Response.Write("    $(""#reportworkframe"").show();" & vbCrLf & vbCrLf)
+    Response.Write("    $(""#reportframe"").show();" & vbCrLf)
+    Response.Write("    $(""#reportdataframe"").hide();" & vbCrLf)
+    Response.Write("    $(""#reportbreakdownframe"").hide();" & vbCrLf)
+    Response.Write("    $(""#reportworkframe"").show();" & vbCrLf)
     
     Response.Write("    frmOriginalDefinition = OpenHR.getForm(""reportworkframe"",""frmOriginalDefinition"");" & vbCrLf)
     Response.Write("    frmExportData = OpenHR.getForm(""reportworkframe"",""frmExportData"");" & vbCrLf)
@@ -37,6 +38,7 @@
         Response.Write("    ssOutputGrid = document.getElementById(""ssOutputGrid"");" & vbCrLf & vbCrLf)
     End If
 
+   
 
     '**************************************
     ' LOAD
@@ -191,18 +193,14 @@
         Response.Write("  control_disable(chkSuppressZeros, false);" & vbCrLf)
         Response.Write("  control_disable(chkUse1000, false);" & vbCrLf)
 
-        'Response.Write("  ssOutputGrid.Columns.RemoveAll();" & vbCrLf & vbCrLf)
+        Response.Write("  ssOutputGrid.RemoveAll();" & vbCrLf & vbCrLf)
         
         Response.Write("  ssOutputGrid.Redraw = false;" & vbCrLf & vbCrLf)
         Response.Write("  lngCol = ssOutputGrid.LeftCol;" & vbCrLf)
         Response.Write("  lngRow = ssOutputGrid.FirstRow;" & vbCrLf)
 
         Response.Write("  ssOutputGrid.Columns(ssOutputGrid.Columns.Count-1).Caption = cboIntersectionType.options[cboIntersectionType.selectedIndex].text;" & vbCrLf)
-		
-        '		Response.Write "  while (ssOutputGrid.Rows > 0) {"
-        '		Response.Write "    ssOutputGrid.RemoveAll(); }"  & vbcrlf & vbcrlf
-        '		Response.Write "  ssOutputGrid.Redraw = true;" & vbcrlf & vbcrlf
-        
+		       
         For intCount = 1 To objCrossTab.OutputArrayDataUBound
             Response.Write("  ssOutputGrid.Additem(""" & CleanStringForJavaScript(Left(objCrossTab.OutputArrayData(intCount), 255)) & """);" & vbCrLf)
         Next
@@ -247,10 +245,9 @@ If Session("CT_Mode") = "BREAKDOWN" Then
 
         'Look up the Int Type Text from the Int Type Number...
         Response.Write("  var frmBreakdown = OpenHR.getForm(""dataframe"", ""frmBreakdown"");" & vbCrLf)
-		' Response.Write("  frmBreakdown.txtIntersectionType.value = cboIntersectionType.options[frmBreakdown.txtIntersectionType.value].innerText;" & vbCrLf)
-		Response.Write("  document.getElementById('txtDataIntersectionType').value = cboIntersectionType.options[document.getElementById('txtDataIntersectionType').value].innerText;" & vbCrLf)
-		
-		Response.Write("  OpenHR.submitForm(frmBreakdown, null, false);" & vbCrLf)
+        Response.Write("  document.getElementById('txtDataIntersectionType').value = cboIntersectionType.options[document.getElementById('txtDataIntersectionType').value].innerText;" & vbCrLf)
+        
+        Response.Write("  OpenHR.submitForm(frmBreakdown);" & vbCrLf)
 
 
 '**************************************
@@ -284,7 +281,7 @@ ElseIf Session("CT_Mode") = "OUTPUTRUN" Or _
        Session("CT_Mode") = "OUTPUTRUNTHENCLOSE" Then
 
 objCrossTab = Session("objCrossTab" & Session("CT_UtilID"))
-objUser = Server.CreateObject("COAIntServer.clsSettings")
+        objUser = New HR.Intranet.Server.clsSettings
 
         Response.Write("  frmMenuFrame = OpenHR.getFrame(""menuframe"");" & vbCrLf)
 
@@ -641,13 +638,12 @@ End If
 	
     function getData(strMode, lngPageNumber, lngIntType, blnShowPer, blnPerPage, blnSupZeros, blnThousand) {
 
-        var frmWorkFrame = OpenHR.getFrame("reportworkframe");
-        control_disable(frmWorkFrame.cboIntersectionType, true);
-        control_disable(frmWorkFrame.chkPercentPage, true);
-        control_disable(frmWorkFrame.chkPercentType, true);
-        control_disable(frmWorkFrame.chkSuppressZeros, true);
-        control_disable(frmWorkFrame.chkUse1000, true);
-        control_disable(frmWorkFrame.cboPage, true);
+        control_disable(window.cboIntersectionType, true);
+        control_disable(window.chkPercentPage, true);
+        control_disable(window.chkPercentType, true);
+        control_disable(window.chkSuppressZeros, true);
+        control_disable(window.chkUse1000, true);
+        control_disable(window.cboPage, true);
 
         var frmGetData = OpenHR.getForm("reportdataframe", "frmGetCrossTabData");
         frmGetData.txtMode.value = strMode;
@@ -657,7 +653,7 @@ End If
         frmGetData.txtPercentageOfPage.value = blnPerPage;
         frmGetData.txtSuppressZeros.value = blnSupZeros;
         frmGetData.txtUse1000.value = blnThousand;
-        OpenHR.submitForm(frmGetData, null, false);
+        OpenHR.submitForm(frmGetData);
     }
 
     function getBreakdown(lngHor, lngVer, lngPgb, txtIntType, txtCellValue) {
@@ -669,14 +665,14 @@ End If
         frmGetData.txtPgb.value = lngPgb;
         frmGetData.txtIntersectionType.value = txtIntType;
         frmGetData.txtCellValue.value = txtCellValue;
-        OpenHR.submitForm(frmGetData, null, false);
+        OpenHR.submitForm(frmGetData);
     }
 
     function ExportData(strMode) {
         
         var frmGetData = OpenHR.getForm("reportdataframe", "frmGetCrossTabData");
         frmGetData.txtMode.value = strMode;
-        OpenHR.submitForm(frmGetData, null, false);
+        OpenHR.submitForm(frmGetData);
     }
 
 </script>
@@ -692,7 +688,7 @@ End If
     <input type="hidden" id="txtVer" name="txtVer" value="<%=Session("CT_Ver")%>">
     <input type="hidden" id="txtPgb" name="txtPgb" value="<%=Session("CT_Pgb")%>">
     <input type="hidden" id="txtIntersectionType" name="txtIntersectionType" value="<%=Session("CT_IntersectionType")%>">
-	  <input type="hidden" id="txtDataIntersectionType" name="txtDataIntersectionType" value="<%=Session("CT_IntersectionType")%>">
+	<input type="hidden" id="txtDataIntersectionType" name="txtDataIntersectionType" value="<%=Session("CT_IntersectionType")%>">
     <input type="hidden" id="txtCellValue" name="txtCellValue" value="<%=Session("CT_CellValue")%>">
     <input type="hidden" id="txtUtilID" name="txtUtilID" value="<%=Session("CT_UtilID")%>">
     <input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="<%=Session("CT_EmailGroupID")%>">

@@ -666,9 +666,11 @@
     <Content Include="Views\Home\Util_EmailSelection.aspx" />
     <Content Include="Views\Home\Util_RecordSelection.aspx" />
     <Content Include="Views\Home\util_run.ascx" />
+    <Content Include="Views\Home\util_run_calendarreport_calendar.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_data.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_key.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_main.ascx" />
+    <Content Include="Views\Home\util_run_calendarreport_navfiller.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_options.ascx" />
     <Content Include="Views\Home\util_run_crosstabs.ascx" />
     <Content Include="Views\Home\util_run_crosstabsBreakdown.ascx" />
@@ -754,15 +756,6 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-    <COMReference Include="COAIntServer">
-      <Guid>{D8480CC5-97D4-4D5B-B044-686CBE1F89E3}</Guid>
-      <VersionMajor>15</VersionMajor>
-      <VersionMinor>2</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
     <COMReference Include="VBA">
       <Guid>{000204EF-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>6</VersionMajor>
@@ -775,6 +768,12 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Intranet\IntServer.NET\COAIntServer.NET\COAInt_Server.vbproj">
+      <Project>{2af7f0b5-431d-4892-b0b1-9397c73ebfd7}</Project>
+      <Name>COAInt_Server</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

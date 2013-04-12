@@ -755,7 +755,7 @@
     
 	if Request.form("validatePass") = 2 then
 		' Get the server DLL to validate the expression definition
-        objExpression = CreateObject("COAIntServer.Expression")
+        objExpression = New HR.Intranet.Server.Expression
 
 		' Pass required info to the DLL
 		objExpression.Username = session("username")
@@ -826,7 +826,8 @@
 			' If so, check if it can be.
 
 		  If Request.form("validateUtilID") > 0 Then
-                objExpression = CreateObject("COAIntServer.Expression")
+                objExpression = New HR.Intranet.Server.Expression
+
                 iOriginalReturnType = objExpression.ExistingExpressionReturnType(CLng(Request.Form("validateUtilID")))
                 objExpression = Nothing
 					

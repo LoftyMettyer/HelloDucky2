@@ -141,12 +141,13 @@
 	fNotCancelled = true
 
 	' Create the reference to the DLL (Report Class)
-        objReport = CreateObject("COAIntServer.Report")
-
+        objReport = New HR.Intranet.Server.Report
+        
 	' Pass required info to the DLL
-	objReport.Username = session("username")
-        CallByName(objReport, "Connection", CallType.Let, Session("databaseConnection"))
 
+        CallByName(objReport, "Connection", CallType.Let, Session("databaseConnection"))
+        objReport.Username = Session("username")
+        
 	objReport.CustomReportID = session("utilid")
 	objReport.ClientDateFormat = session("LocaleDateFormat")
 	objReport.LocalDecimalSeparator = session("LocaleDecimalSeparator")
@@ -419,8 +420,8 @@
             Response.Write("	var sBreakValue = new String('');" & vbCrLf)
             Response.Write("	var blnBreakCheck = false;" & vbCrLf)
 		
-            Dim objUser
-            objUser = CreateObject("COAIntServer.clsSettings")
+            Dim objUser As New HR.Intranet.Server.clsSettings          
+            
             objReport.Username = Session("username")
             CallByName(objUser, "Connection", CallType.Let, Session("databaseConnection"))
             
@@ -1507,7 +1508,7 @@
     function closeclick() {
         try {
             $(".popup").dialog("close");
-
+            $("#workframe").show();
         }
         catch (e) { }
     }

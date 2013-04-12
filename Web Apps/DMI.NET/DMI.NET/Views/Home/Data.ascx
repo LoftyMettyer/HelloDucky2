@@ -1126,10 +1126,11 @@
 		Dim iCharIndex As Integer
 		
 		' Get the server DLL to test the expression definition
-		Dim objExpression = CreateObject("COAIntServer.Expression")
+        Dim objExpression = New HR.Intranet.Server.Expression
+        
 
 		' Pass required info to the DLL
-		objExpression.Username = Session("username")
+        objExpression.Username = Session("username").ToString()
         CallByName(objExpression, "Connection", CallType.Let, Session("databaseConnection"))
         
 		Do While Len(sParam1) > 0

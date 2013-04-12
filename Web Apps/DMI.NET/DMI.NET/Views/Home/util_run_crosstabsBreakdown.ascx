@@ -45,7 +45,7 @@
                             Response.Write("  <TD WIDTH=50>&nbsp;</TD>" & vbCrLf)
                             Response.Write("  <TD WIDTH=""50%"">" & objCrossTab.PageBreakColumnName & " :</TD>" & vbCrLf)
                             Response.Write("  <TD WIDTH=""50%""><INPUT id=txtPgb class=""text textdisabled"" name=txtPgb value="" " & _
-                                            objCrossTab.ColumnHeading(2, Session("txtPgb")) & _
+                                            objCrossTab.ColumnHeading(2, Session("CT_Pgb")) & _
                                             """ style=""WIDTH: 100%"" disabled=""disabled""></TD>" & vbCrLf)
                             Response.Write("  <TD WIDTH=50>&nbsp;</TD>" & vbCrLf)
                             Response.Write("</TR>" & vbCrLf)
@@ -57,10 +57,10 @@
                         Response.Write("  <TD WIDTH=""50%"">" & objCrossTab.HorizontalColumnName & " :</TD>" & vbCrLf)
                         Response.Write("  <TD WIDTH=""50%""><INPUT id=txtHor name=txtHor value="" ")
 
-                        If CLng(Session("txtHor")) > CLng(objCrossTab.ColumnHeadingUbound(0)) Then
+                        If CLng(Session("CT_Hor")) > CLng(objCrossTab.ColumnHeadingUbound(0)) Then
                             Response.Write("<All>")
                         Else
-                            Response.Write(objCrossTab.ColumnHeading(0, Session("txtHor")))
+                            Response.Write(objCrossTab.ColumnHeading(0, Session("CT_Hor")))
                         End If
                         Response.Write(""" style=""WIDTH: 100%"" class=""text textdisabled"" disabled=""disabled""></TD>" & vbCrLf)
                         Response.Write("  <TD WIDTH=50>&nbsp;</TD>" & vbCrLf)
@@ -71,10 +71,10 @@
                         Response.Write("  <TD WIDTH=50>&nbsp;</TD>" & vbCrLf)
                         Response.Write("  <TD>" & objCrossTab.VerticalColumnName & " :</TD>" & vbCrLf)
                         Response.Write("  <TD><INPUT id=txtVer name=txtVer value="" ")
-                        If CLng(Session("txtVer")) > CLng(objCrossTab.ColumnHeadingUbound(1)) Then
+                        If CLng(Session("CT_Ver")) > CLng(objCrossTab.ColumnHeadingUbound(1)) Then
                             Response.Write("<All>")
                         Else
-                            Response.Write(objCrossTab.ColumnHeading(1, Session("txtVer")))
+                            Response.Write(objCrossTab.ColumnHeading(1, Session("CT_Ver")))
                         End If
                         Response.Write(""" style=""WIDTH: 100%"" class=""text textdisabled"" disabled=""disabled""></TD>" & vbCrLf)
                         Response.Write("</TR>" & vbCrLf)
@@ -83,13 +83,13 @@
 
                         Response.Write("<TR HEIGHT=5>" & vbCrLf)
                         Response.Write("  <TD WIDTH=50>&nbsp;</TD>" & vbCrLf)
-                    	Response.Write("  <TD>" & Session("txtDataIntersectionType") & " :</TD>" & vbCrLf)
+                        Response.Write("  <TD>" & Session("CT_IntersectionType") & " :</TD>" & vbCrLf)
                         Response.Write("  <TD><INPUT id=txtCellValue name=txtCellValue value="" ")
 				
                         If objCrossTab.CrossTabType = 3 Then
                             Response.Write(objCrossTab.OutputArrayDataUBound)
                         Else
-                            Response.Write(Session("txtCellValue"))
+                            Response.Write(Session("CT_CellValue"))
                         End If
 
                         Response.Write(""" style=""WIDTH: 100%"" class=""text textdisabled"" disabled=""disabled""></TD>" & vbCrLf)
@@ -281,7 +281,7 @@
 				
 	        Response.Write("  ssOutputBreakdown.Columns.Add(3);" & vbCrLf)
 		
-	        Response.Write("  ssOutputBreakdown.Columns(3).Caption = """ & CleanStringForJavaScript(objCrossTab.ColumnHeading(0, Session("txtHor"))) & "'s taken" & """;" & vbCrLf)
+	        Response.Write("  ssOutputBreakdown.Columns(3).Caption = """ & CleanStringForJavaScript(objCrossTab.ColumnHeading(0, Session("CT_Hor"))) & "'s taken" & """;" & vbCrLf)
 			Response.Write("  ssOutputBreakdown.Columns(3).Locked = true;" & vbCrLf)
 	        Response.Write("  ssOutputBreakdown.Columns(3).Visible = true;" & vbCrLf)
 	        Response.Write("  ssOutputBreakdown.Columns(3).Width = 150;" & vbCrLf)

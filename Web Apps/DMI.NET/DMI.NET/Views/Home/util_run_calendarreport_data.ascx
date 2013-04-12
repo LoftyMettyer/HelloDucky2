@@ -12,25 +12,25 @@
     function util_run_calendarreport_data_window_onload() {
 
         if (txtFirstLoad.value == 1) {
-            window.parent.loadAddRecords('data');
+            loadAddRecords('data');
             return;
         }
 
         if (frmCalendarData.txtCalendarMode.value == "LOADCALENDARREPORTDATA") {
-            window.parent.frames("workframe").fillCalBoxes();
+            fillCalBoxes();
         }
         else if (frmCalendarData.txtCalendarMode.value == "OUTPUTREPORT") {
             setGridFont(frmCalendarData.grdCalendarOutput);
             setGridFont(frmCalendarData.ssHiddenGrid);
 
-            window.parent.frames("workframe").outputReport();
+            outputReport();
         }
     }
 
 
     function ExportData(strMode)
     {
-        var frmGetDataForm = document.forms("frmGetData");
+        var frmGetDataForm = document.forms("frmCalendarGetData");
 			
         frmGetDataForm.txtMode.value = "OUTPUTREPORT";
 
@@ -38,15 +38,15 @@
     }
 	
     function refreshData() {
-        var frmGetData = OpenHR.getForm("util_run_calendarreport_data", "frmGetData");
+        var frmGetData = OpenHR.getForm("dataframe", "frmCalendarGetData");
         OpenHR.submitForm(frmGetData);
     }
 	
 </script>
 
-<input type="hidden" name="txtFirstLoad" id="txtFirstLoad" value="<%=Request("firstLoad")%>">
+<input type="hidden" name="txtFirstLoad" id="txtFirstLoad" value="<%=Session("firstLoad").ToString()%>">
 
-<form action="util_run_calendarreport_data_submit?CalRepUtilID=<%=Request("CalRepUtilID")%>&firstLoad=0" method="post" id="frmGetData" name="frmGetData">
+<form action="util_run_calendarreport_data_submit?CalRepUtilID=<%=Session("CalRepUtilID").ToString()%>&firstLoad=0" method="post" id="frmCalendarGetData" name="frmCalendarGetData">
     <input type="hidden" id="txtDaysInMonth" name="txtDaysInMonth">
     <input type="hidden" id="txtMonth" name="txtMonth">
     <input type="hidden" id="txtYear" name="txtYear">
@@ -64,20 +64,18 @@
     
 	sErrorDescription = ""
 	
-	dim fok
-	dim fNotCancelled
+    Dim fok As Boolean
+    Dim fNotCancelled As Boolean
 	
-	dim objCalendar 
-	dim rsEvents
-	dim lngCurrentBaseID
-	dim intBaseRecordIndex
+    Dim objCalendar As Object
+    Dim rsEvents As Object
+    Dim lngCurrentBaseID As Long
+    Dim intBaseRecordIndex As Integer
 	dim dtEventStartDate
 	dim dtEventEndDate
 	dim strEventStartSession
 	dim strEventEndSession
-	dim lngStart
-	dim lngEnd
-	dim strEventToolTip
+    Dim strEventToolTip
 	dim INPUT_VALUE 
 	dim EVENT_DETAIL
 	dim strKeyCode
@@ -92,12 +90,12 @@
 	dim strEventDesc2ColumnName_BD
 	dim strBaseDescription_BD
 	
-	dim lngMonth
-	dim lngYear 
+    Dim lngMonth As Long
+    Dim lngYear As Long
 	dim dtMonth 
 	dim dtVisibleStartDate
 	dim dtVisibleEndDate
-	Dim mintDaysInMonth
+    Dim mintDaysInMonth As Integer
 
     Dim arrayDefinition
     Dim arrayColumnsDefinition
@@ -115,7 +113,7 @@
 	
 	if Session("CalRep_Mode") = "LOADCALENDARREPORTDATA" then		
 
-        objCalendar = Session("objCalendar" & Request("CalRepUtilID"))
+        objCalendar = Session("objCalendar" & Session("CalRepUtilID"))
 		
         rsEvents = objCalendar.EventsRecordset
 		
@@ -339,7 +337,7 @@
 		end with
 		
 	elseif Session("CalRep_Mode") = "OUTPUTREPORT" then		
-        objCalendar = Session("objCalendar" & Request("CalRepUtilID"))
+        objCalendar = Session("objCalendar" & Session("CalRepUtilID"))
 		
 		if fok then 
 			fok = objCalendar.OutputGridDefinition 
@@ -537,7 +535,7 @@ Dim rstEmails As Object
 Dim iLoop As Integer
 
 	if Session("EmailGroupID") > 0 then
-cmdEmailGroup = Server.CreateObject("ADODB.Command")
+cmdEmailGroup = CreateObject("ADODB.Command")
 		cmdEmailGroup.CommandText = "spASRIntGetEmailGroupAddresses"
 		cmdEmailGroup.CommandType = 4 ' Stored procedure
 cmdEmailGroup.ActiveConnection = Session("databaseConnection")
@@ -689,8 +687,8 @@ Session("CalRep_Mode") = ""
     End Function
 
     Function convertSQLDateToCalendar(psDate)
-        Dim sCalendarFormat
-        Dim iIndex
+        Dim sCalendarFormat As String
+        Dim iIndex As Integer
 	
         If Len(psDate) > 0 Then
             'sLocaleFormat = session("LocaleDateFormat")
@@ -730,9 +728,9 @@ Session("CalRep_Mode") = ""
         End If
     End Function
 
-    Function formatError(psErrMsg)
-        Dim iStart
-        Dim iFound
+    Function formatError(psErrMsg As String)
+        Dim iStart As Integer
+        Dim iFound As Integer
   
         iFound = 0
         Do

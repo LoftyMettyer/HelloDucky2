@@ -1,13 +1,13 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <%
     Dim fok As Boolean
-    Dim objCrossTab As Object
+    Dim objCrossTab As HR.Intranet.Server.CrossTab
     Dim fNotCancelled As Boolean
     Dim lngEventLogID As Long
-    Dim blnNoDefinition As Boolean
-    Dim aPrompts
+    Dim aPrompts As Object
     
     Session("objCrossTab" & Session("UtilID")) = Nothing
     Session("CT_Mode") = ""
@@ -32,18 +32,17 @@
     End If
 
     ' Create the reference to the DLL (Report Class)
-    objCrossTab = CreateObject("COAIntServer.CrossTab")
+    objCrossTab = New HR.Intranet.Server.CrossTab
     Session("objCrossTab" & Session("UtilID")) = Nothing
 
     ' Pass required info to the DLL
-    objCrossTab.Username = Session("username")
+    objCrossTab.Username = Session("username").ToString()
     CallByName(objCrossTab, "Connection", CallType.Let, Session("databaseConnection"))    
     objCrossTab.CrossTabID = Session("utilid")
     objCrossTab.ClientDateFormat = Session("LocaleDateFormat")
     objCrossTab.LocalDecimalSeparator = Session("LocaleDecimalSeparator")
 
     fok = True
-    blnNoDefinition = True
 
     objCrossTab.CreateTablesCollection()
 
@@ -61,7 +60,6 @@
     End If
 
     If fok Then
-        blnNoDefinition = False
         lngEventLogID = objCrossTab.EventLogAddHeader
         fok = (lngEventLogID > 0)
         fNotCancelled = Response.IsClientConnected

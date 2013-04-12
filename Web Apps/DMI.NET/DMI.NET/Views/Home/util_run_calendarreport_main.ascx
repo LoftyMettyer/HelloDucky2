@@ -42,7 +42,7 @@
 	dim icount
 	dim definition
 	dim fok
-	dim objCalendar
+    Dim objCalendar As HR.Intranet.Server.clsCalendarReportsRUN
 	dim fNotCancelled
 	dim fBadUtilDef
 	dim fNoRecords
@@ -51,7 +51,9 @@
     Dim aPrompts
 	
 	CalRep_UtilID = Session("UtilID")
-	
+    Session("firstload") = 0
+
+    
 	fBadUtilDef = (session("utiltype") = "") or _ 
 	   (session("utilname") = "") or _ 
 	   (session("utilid") = "") or _ 
@@ -66,8 +68,8 @@
 	
 	if fOK then	
 		' Create the reference to the DLL (Report Class)
-        objCalendar = CreateObject("COAIntServer.clsCalendarReportsRUN")
-
+        objCalendar = New HR.Intranet.Server.clsCalendarReportsRUN
+        
 		' Pass required info to the DLL
 		objCalendar.Username = session("username")
         CallByName(objCalendar, "Connection", CallType.Let, Session("databaseConnection"))
@@ -490,8 +492,7 @@
         return window.parent.opener.window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value;
     }
 	
-    function loadAddRecords(sFrom)
-    {
+    function loadAddRecords(sFrom) {
         var iCount;
 	
         iCount = new Number(txtLoadCount.value);
@@ -500,18 +501,9 @@
 
         if (iCount > 1)	
         {	
-            var frmNav = window.frames("workframe");
-            frmNav.startCalendar();
+            startCalendar();
         }
 
-        // Little dodge to get around a browser bug that
-        // does not refresh the display on all controls.
-        try
-        {
-            window.resizeBy(0,-1);
-            window.resizeBy(0,1);
-        }
-        catch(e) {}
     }
 
 </script>
@@ -524,7 +516,7 @@
 <INPUT type='hidden' id=txtLoadCount name=txtLoadCount value=0>
 <input type='hidden' id=txtOK name=txtOK value="True">
 <%
-    Dim objUser As Object
+    Dim objUser As New HR.Intranet.Server.clsSettings
     Dim cmdEmailAddr As Object
     
     Dim arrayDefinition
@@ -551,23 +543,33 @@
 %>		
 
 <div id="calendarframeset">
-    <div id="util_run_calendarreport_data" data-framesource="util_run_calendarreport_data" style="display: block;">
+
+    <div id="dataframe" data-framesource="util_run_calendarreport_data" style="display: block;">
          <%Html.RenderPartial("~/views/home/util_run_calendarreport_data.ascx")%>
     </div>
+
     <div id="navframeset">
-        <div id="util_run_calendarreport_nav" data-framesource="util_run_calendarreport_nav" style="display: block;"></div>
-        <div id="util_run_calendarreport_navfiller" data-framesource="util_run_calendarreport_nav" style="display: block;"></div>
+        <div id="calendarworkframe" data-framesource="util_run_calendarreport_nav" style="display: block;">
+             <%Html.RenderPartial("~/views/home/util_run_calendarreport_nav.ascx")%>
+        </div>
+        <div id="workframefiller" data-framesource="util_run_calendarreport_nav" style="display: block;">
+             <%Html.RenderPartial("~/views/home/util_run_calendarreport_navfiller.ascx")%>           
+        </div>
     </div>
-    <div id="util_run_calendarreport_calendar" data-framesource="util_run_calendarreport_calendar" style="display: block;"></div>
+
+    <div id="calendarframe_calendar" data-framesource="util_run_calendarreport_calendar" style="display: block;">
+        <%Html.RenderPartial("~/views/home/util_run_calendarreport_calendar.ascx")%>                   
+    </div>
+
     <div id="optionsframeset">
-        <div id="util_run_calendarreport_key" data-framesource="util_run_calendarreport_key" style="display: block;">
+        <div id="calendarframe_key" data-framesource="util_run_calendarreport_key" style="display: block;">
              <%Html.RenderPartial("~/views/home/util_run_calendarreport_key.ascx")%>
         </div>
-        <div id="util_run_calendarreport_options" data-framesource="util_run_calendarreport_options" style="display: block;">
+        <div id="calendarframe_options" data-framesource="util_run_calendarreport_options" style="display: block;">
              <%Html.RenderPartial("~/views/home/util_run_calendarreport_options.ascx")%>
         </div>
     </div>
-    <div id="util_run_calendarreport_output" data-framesource="util_run_calendarreport_output" style="display: block;"></div>
+    <div id="calendarreport_output" data-framesource="util_run_calendarreport_output" style="display: block;"></div>
 </div>
 
 
@@ -601,9 +603,9 @@
 				arrayDataDefinition = objCalendar.OutputArray_Data 
 			end if	
 		%>
-	
 
-	<FORM id=frmOutput name=frmOutput>
+
+<form id="frmOutput" name="frmOutput">
 		<table align=center class="outline" cellPadding=5 cellSpacing=0> 
 		    <tr>
 			    <td>
@@ -661,7 +663,11 @@
         Response.Write(arrayDataDefinition(icount))
     Next
 
-    Response.Write("</OBJECT>" & vbCrLf)
+    %>
+
+     </OBJECT>
+                        
+            <%
 				
 			if fok then
         arrayStyles = objCalendar.OutputArray_Styles
@@ -784,11 +790,19 @@
     Response.Write("	<PARAM NAME=""BackColor"" VALUE=""16777215"">" & vbCrLf)
     Response.Write("	<PARAM NAME=""Enabled"" VALUE=""-1"">" & vbCrLf)
     Response.Write("	<PARAM NAME=""DataMember"" VALUE="""">" & vbCrLf)
-    Response.Write("</OBJECT>" & vbCrLf)
-		
-    '***************************** END OF HIDDEN GRID **************************************				
-    Response.Write("<INPUT type='hidden' id=txtCalendarPageCount name=txtCalendarPageCount value=" & UBound(arrayMerges) & ">" & vbCrLf)
-    Response.Write("</FORM>" & vbCrLf)
+
+                Response.Write("</OBJECT>" & vbCrLf)
+
+                '***************************** END OF HIDDEN GRID **************************************				
+                Response.Write("<INPUT type='hidden' id=txtCalendarPageCount name=txtCalendarPageCount value=" & UBound(arrayMerges) & ">" & vbCrLf)
+    
+    %>
+
+    </form>
+            
+    <%
+
+        Session("firstload") = 1
 			
 			if fok then 
 				on error resume next
@@ -801,22 +815,22 @@
 			
         For iPage = 0 To UBound(arrayMerges)
             arrayPageMerges = arrayMerges(iPage)
-            Response.Write("<FORM id=frmCalendarMerge_" & iPage & " name=frmCalendarMerge_" & iPage & " style=""visibility:hidden;display:none"">" & vbCrLf)
+            Response.Write("<form id=frmCalendarMerge_" & iPage & " name=frmCalendarMerge_" & iPage & " style=""visibility:hidden;display:none"">" & vbCrLf)
             For iMerge = 0 To UBound(arrayPageMerges)
                 INPUT_VALUE = arrayPageMerges(iMerge)
                 Response.Write("	<INPUT type=hidden name=Merge_" & iPage & "_" & iMerge & " ID=Merge_" & iPage & "_" & iMerge & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
             Next
-            Response.Write("</FORM>" & vbCrLf)
+            Response.Write("</form>" & vbCrLf)
         Next
 
         For iPage = 0 To UBound(arrayStyles)
             arrayPageStyles = arrayStyles(iPage)
-            Response.Write("<FORM id=frmCalendarStyle_" & iPage & " name=frmCalendarStyle_" & iPage & " style=""visibility:hidden;display:none"">" & vbCrLf)
+            Response.Write("<form id=frmCalendarStyle_" & iPage & " name=frmCalendarStyle_" & iPage & " style=""visibility:hidden;display:none"">" & vbCrLf)
             For iStyle = 0 To UBound(arrayPageStyles)
                 INPUT_VALUE = arrayPageStyles(iStyle)
                 Response.Write("	<INPUT type=hidden name=Style_" & iPage & "_" & iStyle & " ID=Style_" & iPage & "_" & iStyle & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
             Next
-            Response.Write("</FORM>" & vbCrLf)
+            Response.Write("</form>" & vbCrLf)
         Next
 			end if
 			
@@ -850,8 +864,7 @@
     Response.Write("  var blnUnderline = false;" & vbCrLf)
     Response.Write("  var blnGridlines = false;" & vbCrLf)
 	
-    objUser = CreateObject("COAIntServer.clsSettings")
-    objUser.Connection = Session("databaseConnection")
+        objUser.Connection = Session("databaseConnection")
 			
     Response.Write("  window.parent.ASRIntranetOutput.UserName = """ & CleanStringForJavaScript(Session("Username")) & """;" & vbCrLf)
     Response.Write("  window.parent.ASRIntranetOutput.SaveAsValues = """ & CleanStringForJavaScript(Session("OfficeSaveAsValues")) & """;" & vbCrLf)
@@ -963,7 +976,7 @@
 
 			if (blnEmail) and (lngEmailGroupID > 0) then
 			
-        cmdEmailAddr = Server.CreateObject("ADODB.Command")
+        cmdEmailAddr = CreateObject("ADODB.Command")
         cmdEmailAddr.CommandText = "spASRIntGetEmailGroupAddresses"
         cmdEmailAddr.CommandType = 4 ' Stored procedure
         cmdEmailAddr.ActiveConnection = Session("databaseConnection")
@@ -1385,9 +1398,7 @@ objCalendar = Nothing
 
             
 <script type="text/javascript">
-
-    debugger;
-    
+   
     $("#workframe").hide();
     $("#reportframe").show();
 

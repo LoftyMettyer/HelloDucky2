@@ -193,10 +193,10 @@
 	end if
 		
 	' Get the server DLL to test the expression definition
-    objExpression = CreateObject("COAIntServer.Expression")
+    objExpression = New HR.Intranet.Server.Expression
 
 	' Pass required info to the DLL
-	objExpression.Username = session("username")
+    objExpression.Username = Session("username")
     CallByName(objExpression, "Connection", CallType.Let, Session("databaseConnection"))
     
 	if fok then 

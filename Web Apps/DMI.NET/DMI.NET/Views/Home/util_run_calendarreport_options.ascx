@@ -9,10 +9,10 @@
 <script type="text/javascript">
 
     function refreshInfo() {
-        var frmUseful = window.parent.frames("workframe").document.forms("frmUseful");
+        var frmUseful = OpenHR.getForm("calendarworkframe", "frmUseful");
 
         if (frmUseful.txtLoading.value == 0) {
-            window.parent.frames("workframe").refreshDateSpecifics();
+            refreshDateSpecifics();
         }
 
         setOptions();
@@ -20,7 +20,7 @@
     }
 
     function setOptions() {
-        var frmNavFillerOptions = window.parent.frames("workframefiller").document.forms("frmOptions");
+        var frmNavFillerOptions = OpenHR.getForm("workframefiller", "frmOptions");
 
         with (frmNavFillerOptions) {
             txtIncludeBankHolidays.value = (frmOptions.chkIncludeBHols.checked);

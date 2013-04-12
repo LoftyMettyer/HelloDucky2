@@ -636,8 +636,7 @@
 
 	' JPD 20021021 - Added pictures functionlity.
 	' JPD 20021127 - Moved Utilities object into session variable.
-	'Set objUtilities = CreateObject("COAIntServer.Utilities")
-	'objUtilities.Connection = session("databaseConnection")
+    'objUtilities.Connection = session("databaseConnection")
     Dim objUtilities = Session("UtilitiesObject")
     Dim sTempPath = Server.MapPath("pictures")
     Dim picturesArray = objUtilities.GetPictures(Session("screenID"), CStr(sTempPath))

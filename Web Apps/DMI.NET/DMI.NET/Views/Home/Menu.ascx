@@ -40,7 +40,8 @@
 	
 	sErrorDescription = ""
 	
-	objMenu = CreateObject("COAIntServer.Menu")
+    objMenu = New HR.Intranet.Server.Menu()
+    
 	objMenu.Username = Session("username")
 	CallByName(objMenu, "Connection", CallType.Let, Session("databaseConnection"))
 	
@@ -400,13 +401,12 @@
 
 	objMenu = Nothing
 
-	Dim objUtilities
-	objUtilities = CreateObject("COAIntServer.Utilities")
-	CallByName(objUtilities, "Connection", CallType.Let, Session("databaseConnection"))
+    Dim objUtilities As New HR.Intranet.Server.Utilities
+    CallByName(objUtilities, "Connection", CallType.Let, Session("databaseConnection"))
 	Session("UtilitiesObject") = objUtilities
 	
-	Dim objOLE
-	objOLE = CreateObject("COAIntServer.clsOLE")
+    Dim objOLE
+    objOLE = CreateObject("COAIntServer.clsOLE")
 	CallByName(objOLE, "Connection", CallType.Let, Session("databaseConnection"))
 	objOLE.TempLocationPhysical = "\\" & Request.ServerVariables("SERVER_NAME") & "\HRProTemp$\"
 	Session("OLEObject") = objOLE
