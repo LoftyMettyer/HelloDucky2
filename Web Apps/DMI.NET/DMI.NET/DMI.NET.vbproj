@@ -129,7 +129,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="ViewModels\NavLinksViewModel.vb" />
+    <Compile Include="Scripts\ViewModels\NavLinksViewModel.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -643,6 +643,13 @@
     <Content Include="Views\Home\Find.ascx" />
     <Content Include="Views\Home\fixedlinks.ascx" />
     <Content Include="Views\Home\linksMain.aspx" />
+    <Content Include="Views\Home\util_def_calendarreport.ascx" />
+    <Content Include="Views\Home\util_def_calendarreportdates.asp.ascx" />
+    <Content Include="Views\Home\util_def_calendarreportdates_data.ascx" />
+    <Content Include="Views\Home\util_def_calendarreportdates_main.ascx" />
+    <Content Include="Views\Home\util_def_mailmerge.ascx" />
+    <Content Include="Views\Home\util_validate_calendarreport.ascx" />
+    <Content Include="Views\Home\util_validate_mailmerge.ascx" />
     <Content Include="Views\Home\Main.aspx" />
     <Content Include="Views\Home\Menu.ascx" />
     <Content Include="Views\Home\newUser.ascx" />
@@ -720,6 +727,7 @@
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridSelectedColumns.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridSortOrder.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_nav.ascx" />
+    <Content Include="Views\util_def_mailmerge.ascx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -748,6 +756,7 @@
   <ItemGroup>
     <Folder Include="Content\themes\start\images\" />
     <Folder Include="Models\" />
+    <Folder Include="Views\Home\MailMerge\" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="ADODB">
