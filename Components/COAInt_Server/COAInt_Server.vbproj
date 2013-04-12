@@ -51,7 +51,8 @@
     <DebugSymbols>True</DebugSymbols>
     <DefineDebug>True</DefineDebug>
     <DefineTrace>True</DefineTrace>
-    <DefineConstants>Win32=True</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <NoWarn>41999,42016,42017,42018,42019,42032,42036</NoWarn>
     <DebugType>full</DebugType>

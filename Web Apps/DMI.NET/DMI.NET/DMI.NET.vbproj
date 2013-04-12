@@ -439,6 +439,7 @@
     <None Include="Scripts\FormScripts\crosstabdef.js" />
     <None Include="Scripts\FormScripts\util_def_exprcomponent.js" />
     <None Include="Scripts\FormScripts\util_def_expression.js" />
+    <Content Include="Scripts\FormScripts\calendarreportdef.js" />
     <Content Include="Scripts\jsTree\theme\apple\bg.jpg" />
     <Content Include="Scripts\jsTree\theme\apple\d.png" />
     <Content Include="Scripts\jsTree\theme\apple\dot_for_ie.gif" />
@@ -647,6 +648,10 @@
     <Content Include="Views\Home\Find.ascx" />
     <Content Include="Views\Home\fixedlinks.ascx" />
     <Content Include="Views\Home\linksMain.aspx" />
+    <Content Include="Views\Home\util_def_calendarreport.ascx" />
+    <Content Include="Views\Home\util_def_calendarreportdates.asp.ascx" />
+    <Content Include="Views\Home\util_def_calendarreportdates_data.ascx" />
+    <Content Include="Views\Home\util_def_calendarreportdates_main.ascx" />
     <Content Include="Views\Home\util_def_mailmerge.ascx" />
     <Content Include="Views\Home\util_validate_calendarreport.ascx" />
     <Content Include="Views\Home\util_validate_mailmerge.ascx" />
