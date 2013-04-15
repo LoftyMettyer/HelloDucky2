@@ -1,6 +1,7 @@
 Option Strict Off
 Option Explicit On
-<System.Runtime.InteropServices.ProgId("Report_NET.Report")> Public Class Report
+
+Public Class Report
 
   ' To hold Properties
   Private mlngCustomReportID As Integer
@@ -951,13 +952,13 @@ ExecuteSQL_ERROR:
       '    mstrCustomReportsDefaultSaveAs = IIf(IsNull(!DefaultSaveAs), "", !DefaultSaveAs)
       '    mblnCustomReportsDefaultCloseApp = !DefaultCloseApp
       'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-      mlngCustomReportsParent1AllRecords = IIf(IsDbNull(.Fields("parent1AllRecords").Value), 0, .Fields("parent1AllRecords").Value)
+      mlngCustomReportsParent1AllRecords = IIf(IsDBNull(.Fields("parent1AllRecords").Value), 0, .Fields("parent1AllRecords").Value)
       'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-      mlngCustomReportsParent1PickListID = IIf(IsDbNull(.Fields("parent1Picklist").Value), 0, .Fields("parent1Picklist").Value)
+      mlngCustomReportsParent1PickListID = IIf(IsDBNull(.Fields("parent1Picklist").Value), 0, .Fields("parent1Picklist").Value)
       'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-      mlngCustomReportsParent2AllRecords = IIf(IsDbNull(.Fields("parent2AllRecords").Value), 0, .Fields("parent2AllRecords").Value)
+      mlngCustomReportsParent2AllRecords = IIf(IsDBNull(.Fields("parent2AllRecords").Value), 0, .Fields("parent2AllRecords").Value)
       'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-      mlngCustomReportsParent2PickListID = IIf(IsDbNull(.Fields("parent2Picklist").Value), 0, .Fields("parent2Picklist").Value)
+      mlngCustomReportsParent2PickListID = IIf(IsDBNull(.Fields("parent2Picklist").Value), 0, .Fields("parent2Picklist").Value)
 
       'New Default Output Variables
       mblnOutputPreview = .Fields("OutputPreview").Value
@@ -972,7 +973,7 @@ ExecuteSQL_ERROR:
       mstrOutputEmailName = GetEmailGroupName(.Fields("OutputEmailAddr").Value)
       mstrOutputEmailSubject = .Fields("OutputEmailSubject").Value
       'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-      mstrOutputEmailAttachAs = IIf(IsDbNull(.Fields("OutputEmailAttachAs").Value), vbNullString, .Fields("OutputEmailAttachAs").Value)
+      mstrOutputEmailAttachAs = IIf(IsDBNull(.Fields("OutputEmailAttachAs").Value), vbNullString, .Fields("OutputEmailAttachAs").Value)
       mstrOutputFilename = .Fields("OutputFilename").Value
 
       mblnOutputPreview = (.Fields("OutputPreview").Value Or (mlngOutputFormat = Declarations.OutputFormats.fmtDataOnly And mblnOutputScreen))
@@ -1010,7 +1011,7 @@ ExecuteSQL_ERROR:
       End If
     End With
 
-    If Not IsRecordSelectionValid Then
+    If Not IsRecordSelectionValid() Then
       GetCustomReportDefinition = False
       Exit Function
     End If
@@ -1063,7 +1064,7 @@ GetCustomReportDefinition_ERROR:
         Exit Function
       End If
 
-      If Not CheckCalcsStillExist Then
+      If Not CheckCalcsStillExist() Then
         GetDetailsRecordsets = False
         Exit Function
       End If
@@ -1083,7 +1084,7 @@ GetCustomReportDefinition_ERROR:
         'What twats!!!...Fault 10211.
 
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-        If IIf((IsDbNull(.Fields("Hidden").Value) Or (.Fields("Hidden")).Value), True, False) Then
+        If IIf((IsDBNull(.Fields("Hidden").Value) Or (.Fields("Hidden")).Value), True, False) Then
           'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(0, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
           mvarColDetails(0, intTemp) = "?ID_HD_" & .Fields("Type").Value & "_" & .Fields("ColExprID").Value
         Else
@@ -1168,7 +1169,7 @@ GetCustomReportDefinition_ERROR:
 
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
         'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(19, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        mvarColDetails(19, intTemp) = IIf((IsDbNull(.Fields("Hidden").Value) Or (.Fields("Hidden")).Value), True, False)
+        mvarColDetails(19, intTemp) = IIf((IsDBNull(.Fields("Hidden").Value) Or (.Fields("Hidden")).Value), True, False)
 
         'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(20, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         mvarColDetails(20, intTemp) = IsReportChildTable(lngTableID) 'Indicates if column is a report child table.
@@ -1190,7 +1191,7 @@ GetCustomReportDefinition_ERROR:
 
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
         'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(24, intTemp). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        mvarColDetails(24, intTemp) = IIf((IsDbNull(.Fields("GroupWithNextColumn").Value) Or (Not .Fields("GroupWithNextColumn").Value)), False, True)
+        mvarColDetails(24, intTemp) = IIf((IsDBNull(.Fields("GroupWithNextColumn").Value) Or (Not .Fields("GroupWithNextColumn").Value)), False, True)
 
         .MoveNext()
       Loop
@@ -1508,11 +1509,11 @@ GetDetailsRecordsets_ERROR:
 
     fOK = True
 
-    If fOK Then fOK = GenerateSQLSelect
-    If fOK Then fOK = GenerateSQLFrom
-    If fOK Then fOK = GenerateSQLJoin
-    If fOK Then fOK = GenerateSQLWhere
-    If fOK Then fOK = GenerateSQLOrderBy
+    If fOK Then fOK = GenerateSQLSelect()
+    If fOK Then fOK = GenerateSQLFrom()
+    If fOK Then fOK = GenerateSQLJoin()
+    If fOK Then fOK = GenerateSQLWhere()
+    If fOK Then fOK = GenerateSQLOrderBy()
 
     If fOK Then
       GenerateSQL = True
@@ -2171,11 +2172,11 @@ Error_Trap:
               Select Case rsParent.Fields(iFields).Type
                 Case ADODB.DataTypeEnum.adNumeric, ADODB.DataTypeEnum.adInteger, ADODB.DataTypeEnum.adSingle, ADODB.DataTypeEnum.adDouble
                   'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-                  sVALUES = sVALUES & IIf(IsDbNull(rsParent.Fields(iFields).Value), 0, rsParent.Fields(iFields).Value) & ","
+                  sVALUES = sVALUES & IIf(IsDBNull(rsParent.Fields(iFields).Value), 0, rsParent.Fields(iFields).Value) & ","
                 Case ADODB.DataTypeEnum.adDBTimeStamp, ADODB.DataTypeEnum.adDate, ADODB.DataTypeEnum.adDBDate, ADODB.DataTypeEnum.adDBTime
                   'TM20030124 Fault 4974
                   'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-                  If Not IsDbNull(rsParent.Fields(iFields).Value) Then
+                  If Not IsDBNull(rsParent.Fields(iFields).Value) Then
                     sVALUES = sVALUES & "'" & VB6.Format(rsParent.Fields(iFields).Value, "mm/dd/yyyy") & "',"
                   Else
                     sVALUES = sVALUES & "NULL,"
@@ -2185,7 +2186,7 @@ Error_Trap:
                 Case Else
                   'MH20021119 Fault 4315
                   'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-                  If Not IsDbNull(rsParent.Fields(iFields).Value) Then
+                  If Not IsDBNull(rsParent.Fields(iFields).Value) Then
                     sVALUES = sVALUES & "'" & Replace(rsParent.Fields(iFields).Value, "'", "''") & "',"
                   Else
                     sVALUES = sVALUES & "'',"
@@ -2205,11 +2206,11 @@ Error_Trap:
                   Select Case avChildRecordsets(0, iChildCount).Fields(iFields).Type
                     Case ADODB.DataTypeEnum.adNumeric, ADODB.DataTypeEnum.adInteger, ADODB.DataTypeEnum.adSingle, ADODB.DataTypeEnum.adDouble
                       'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-                      sVALUES = sVALUES & IIf(IsDbNull(avChildRecordsets(0, iChildCount).Fields(iFields).Value), 0, avChildRecordsets(0, iChildCount).Fields(iFields).Value) & ","
+                      sVALUES = sVALUES & IIf(IsDBNull(avChildRecordsets(0, iChildCount).Fields(iFields).Value), 0, avChildRecordsets(0, iChildCount).Fields(iFields).Value) & ","
                     Case ADODB.DataTypeEnum.adDBTimeStamp, ADODB.DataTypeEnum.adDate, ADODB.DataTypeEnum.adDBDate, ADODB.DataTypeEnum.adDBTime
                       'TM20030124 Fault 4974
                       'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-                      If Not IsDbNull(avChildRecordsets(0, iChildCount).Fields(iFields).Value) Then
+                      If Not IsDBNull(avChildRecordsets(0, iChildCount).Fields(iFields).Value) Then
                         sVALUES = sVALUES & "'" & VB6.Format(avChildRecordsets(0, iChildCount).Fields(iFields).Value, "mm/dd/yyyy") & "',"
                       Else
                         sVALUES = sVALUES & "NULL,"
@@ -2219,7 +2220,7 @@ Error_Trap:
                     Case Else
                       'MH20021119 Fault 4315
                       'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-                      If Not IsDbNull(avChildRecordsets(0, iChildCount).Fields(iFields).Value) Then
+                      If Not IsDBNull(avChildRecordsets(0, iChildCount).Fields(iFields).Value) Then
                         sVALUES = sVALUES & "'" & Replace(avChildRecordsets(0, iChildCount).Fields(iFields).Value, "'", "''") & "',"
                       Else
                         sVALUES = sVALUES & "'',"
@@ -2262,11 +2263,11 @@ Error_Trap:
             Select Case rsParent.Fields(iFields).Type
               Case ADODB.DataTypeEnum.adNumeric, ADODB.DataTypeEnum.adInteger, ADODB.DataTypeEnum.adSingle, ADODB.DataTypeEnum.adDouble
                 'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-                sVALUES = sVALUES & IIf(IsDbNull(rsParent.Fields(iFields).Value), 0, rsParent.Fields(iFields).Value) & ","
+                sVALUES = sVALUES & IIf(IsDBNull(rsParent.Fields(iFields).Value), 0, rsParent.Fields(iFields).Value) & ","
               Case ADODB.DataTypeEnum.adDBTimeStamp, ADODB.DataTypeEnum.adDate, ADODB.DataTypeEnum.adDBDate, ADODB.DataTypeEnum.adDBTime
                 'TM20030124 Fault 4974
                 'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-                If Not IsDbNull(rsParent.Fields(iFields).Value) Then
+                If Not IsDBNull(rsParent.Fields(iFields).Value) Then
                   sVALUES = sVALUES & "'" & VB6.Format(rsParent.Fields(iFields).Value, "mm/dd/yyyy") & "',"
                 Else
                   sVALUES = sVALUES & "NULL,"
@@ -2277,7 +2278,7 @@ Error_Trap:
                 'MH20021119 Fault 4315
                 'sVALUES = sVALUES & "'" & Replace(rsParent.Fields(iFields).Value, "'", "''") & "',"
                 'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-                If Not IsDbNull(rsParent.Fields(iFields).Value) Then
+                If Not IsDBNull(rsParent.Fields(iFields).Value) Then
                   sVALUES = sVALUES & "'" & Replace(CStr(rsParent.Fields(iFields).Value), "'", "''") & "',"
                 Else
                   sVALUES = sVALUES & "'',"
@@ -3168,7 +3169,7 @@ GenerateSQLWhere_ERROR:
 
       If UBound(mvarSortOrder, 2) > 0 Then
         ' Columns have been defined, so use these for the base table/view
-        mstrSQLOrderBy = DoDefinedOrderBy
+        mstrSQLOrderBy = DoDefinedOrderBy()
       End If
 
       If Len(mstrSQLOrderBy) > 0 Then mstrSQLOrderBy = " ORDER BY " & mstrSQLOrderBy
@@ -3417,7 +3418,7 @@ CheckRecordSet_ERROR:
 
               ' The column breaks. Check if its changed.
               'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-              If IsDbNull(mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value) And (Not mvarColDetails(3, iColumnIndex)) And (Not mvarColDetails(17, iColumnIndex)) And (Not mvarColDetails(18, iColumnIndex)) Then
+              If IsDBNull(mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value) And (Not mvarColDetails(3, iColumnIndex)) And (Not mvarColDetails(17, iColumnIndex)) And (Not mvarColDetails(18, iColumnIndex)) Then
                 ' Field value is null but a character data type, so set it to be "".
                 'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
                 vValue = ""
@@ -3443,7 +3444,7 @@ CheckRecordSet_ERROR:
                   If (mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value = False) Or (mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value = 0) Then vValue = "N"
                   'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
                   'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                  If IsDbNull(mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value) Then vValue = ""
+                  If IsDBNull(mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value) Then vValue = ""
 
                 Else 'Varchar
                   'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -3456,7 +3457,7 @@ CheckRecordSet_ERROR:
               'Now that we store the formatted value in position (11) of the mcolDetails
               'Comparison made after adjusting the size of the field.
               'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-              If IsDbNull(vValue) Or IsDbNull(mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value) Then
+              If IsDBNull(vValue) Or IsDBNull(mrstCustomReportsOutput.Fields(iColumnIndex - 1).Value) Then
                 'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
                 fBreak = ("" <> mvarColDetails(11, iColumnIndex))
               Else
@@ -3497,7 +3498,7 @@ CheckRecordSet_ERROR:
                     If avColumns(1, iOtherColumnIndex) Then
                       ' The column breaks. Check if its changed.
                       'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-                      If IsDbNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex - 1).Value) And (Not mvarColDetails(3, iOtherColumnIndex)) And (Not mvarColDetails(17, iOtherColumnIndex)) And (Not mvarColDetails(18, iOtherColumnIndex)) Then
+                      If IsDBNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex - 1).Value) And (Not mvarColDetails(3, iOtherColumnIndex)) And (Not mvarColDetails(17, iOtherColumnIndex)) And (Not mvarColDetails(18, iOtherColumnIndex)) Then
                         ' Field value is null but a character data type, so set it to be "".
                         'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
                         vValue = ""
@@ -3516,7 +3517,7 @@ CheckRecordSet_ERROR:
                         If (mrstCustomReportsOutput.Fields(iOtherColumnIndex - 1).Value = False) Or (mrstCustomReportsOutput.Fields(iOtherColumnIndex - 1).Value = 0) Then vValue = "N"
                         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
                         'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                        If IsDbNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex - 1).Value) Then vValue = ""
+                        If IsDBNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex - 1).Value) Then vValue = ""
 
                       Else
                         'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iOtherColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -3526,7 +3527,7 @@ CheckRecordSet_ERROR:
                       End If
 
                       'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-                      If IsDbNull(vValue) Or IsDbNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex - 1).Value) Then
+                      If IsDBNull(vValue) Or IsDBNull(mrstCustomReportsOutput.Fields(iOtherColumnIndex - 1).Value) Then
                         'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
                         fBreak = ("" <> mvarColDetails(11, iOtherColumnIndex))
                       Else
@@ -3592,7 +3593,7 @@ CheckRecordSet_ERROR:
           If (mrstCustomReportsOutput.Fields(iLoop).Value = "False") Or (mrstCustomReportsOutput.Fields(iLoop).Value = 0) Then tmpLogicValue = "N"
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
           'UPGRADE_WARNING: Couldn't resolve default property of object tmpLogicValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-          If IsDbNull(mrstCustomReportsOutput.Fields(iLoop).Value) Then tmpLogicValue = ""
+          If IsDBNull(mrstCustomReportsOutput.Fields(iLoop).Value) Then tmpLogicValue = ""
 
           ' Get the formatted data to display in the grid
           'UPGRADE_WARNING: Couldn't resolve default property of object PopulateGrid_FormatData(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -3612,7 +3613,7 @@ CheckRecordSet_ERROR:
         If (mvarColDetails(24, iLoop + 1)) Or (mvarColDetails(24, iLoop)) Then
           'UPGRADE_WARNING: Couldn't resolve default property of object vDisplayData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If (intRowIndex_GW < 1) And ((IsDbNull(vDisplayData)) Or (vDisplayData = vbNullString)) Then
+          If (intRowIndex_GW < 1) And ((IsDBNull(vDisplayData)) Or (vDisplayData = vbNullString)) Then
             blnSkipped = True
             intSkippedIndex = iLoop + 1
             'Get the formatted data of the next column to display in the grid
@@ -3627,7 +3628,7 @@ CheckRecordSet_ERROR:
         If blnSkipped Then
           ' Store the ACTUAL data in the array (previous value dimension)
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If IsDbNull(mrstCustomReportsOutput.Fields(intSkippedIndex).Value) And (Not mvarColDetails(3, intSkippedIndex + 1)) And (Not mvarColDetails(17, intSkippedIndex + 1)) And (Not mvarColDetails(18, intSkippedIndex + 1)) Then
+          If IsDBNull(mrstCustomReportsOutput.Fields(intSkippedIndex).Value) And (Not mvarColDetails(3, intSkippedIndex + 1)) And (Not mvarColDetails(17, intSkippedIndex + 1)) And (Not mvarColDetails(18, intSkippedIndex + 1)) Then
             ' Field value is null but a character data type, so set it to be "".
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, intSkippedIndex + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             mvarColDetails(11, intSkippedIndex + 1) = ""
@@ -3642,7 +3643,7 @@ CheckRecordSet_ERROR:
             ElseIf (mvarColDetails(3, intSkippedIndex + 1)) Then  'Numeric
               'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, intSkippedIndex + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              mvarColDetails(11, intSkippedIndex + 1) = IIf(IsDbNull(mrstCustomReportsOutput.Fields(intSkippedIndex).Value), "", mrstCustomReportsOutput.Fields(intSkippedIndex).Value)
+              mvarColDetails(11, intSkippedIndex + 1) = IIf(IsDBNull(mrstCustomReportsOutput.Fields(intSkippedIndex).Value), "", mrstCustomReportsOutput.Fields(intSkippedIndex).Value)
 
             ElseIf (mvarColDetails(18, intSkippedIndex + 1)) Then  'Bit
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, intSkippedIndex + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -3651,7 +3652,7 @@ CheckRecordSet_ERROR:
               If (mrstCustomReportsOutput.Fields(intSkippedIndex).Value = "False") Or (mrstCustomReportsOutput.Fields(intSkippedIndex).Value = 0) Then mvarColDetails(11, intSkippedIndex + 1) = "N"
               'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, intSkippedIndex + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              If IsDbNull(mrstCustomReportsOutput.Fields(intSkippedIndex).Value) Then mvarColDetails(11, intSkippedIndex + 1) = ""
+              If IsDBNull(mrstCustomReportsOutput.Fields(intSkippedIndex).Value) Then mvarColDetails(11, intSkippedIndex + 1) = ""
 
             Else 'Varchar
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, intSkippedIndex + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -3670,7 +3671,7 @@ CheckRecordSet_ERROR:
         Else
           ' Store the ACTUAL data in the array (previous value dimension)
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If IsDbNull(mrstCustomReportsOutput.Fields(iLoop).Value) And (Not mvarColDetails(3, iLoop + 1)) And (Not mvarColDetails(17, iLoop + 1)) And (Not mvarColDetails(18, iLoop + 1)) Then
+          If IsDBNull(mrstCustomReportsOutput.Fields(iLoop).Value) And (Not mvarColDetails(3, iLoop + 1)) And (Not mvarColDetails(17, iLoop + 1)) And (Not mvarColDetails(18, iLoop + 1)) Then
             ' Field value is null but a character data type, so set it to be "".
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, iLoop + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             mvarColDetails(11, iLoop + 1) = ""
@@ -3685,7 +3686,7 @@ CheckRecordSet_ERROR:
             ElseIf (mvarColDetails(3, iLoop + 1)) Then  'Numeric
               'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, iLoop + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              mvarColDetails(11, iLoop + 1) = IIf(IsDbNull(mrstCustomReportsOutput.Fields(iLoop).Value), "", mrstCustomReportsOutput.Fields(iLoop).Value)
+              mvarColDetails(11, iLoop + 1) = IIf(IsDBNull(mrstCustomReportsOutput.Fields(iLoop).Value), "", mrstCustomReportsOutput.Fields(iLoop).Value)
 
             ElseIf (mvarColDetails(18, iLoop + 1)) Then  'Bit
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, iLoop + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -3694,7 +3695,7 @@ CheckRecordSet_ERROR:
               If (mrstCustomReportsOutput.Fields(iLoop).Value = "False") Or (mrstCustomReportsOutput.Fields(iLoop).Value = 0) Then mvarColDetails(11, iLoop + 1) = "N"
               'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, iLoop + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              If IsDbNull(mrstCustomReportsOutput.Fields(iLoop).Value) Then mvarColDetails(11, iLoop + 1) = ""
+              If IsDBNull(mrstCustomReportsOutput.Fields(iLoop).Value) Then mvarColDetails(11, iLoop + 1) = ""
 
             Else 'Varchar
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(11, iLoop + 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -3712,7 +3713,7 @@ CheckRecordSet_ERROR:
 
 
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-        If Not IsDbNull(vDisplayData) Then
+        If Not IsDBNull(vDisplayData) Then
           'If len of data is greater than the previous length of data, store len in the array.
           If Len(vDisplayData) > mlngColWidth(intColCounter) Then
             mlngColWidth(intColCounter) = Len(vDisplayData)
@@ -3724,7 +3725,7 @@ CheckRecordSet_ERROR:
 
         'Add the displaydata to the main addstring.
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-        If IsDbNull(vDisplayData) Then
+        If IsDBNull(vDisplayData) Then
           'UPGRADE_WARNING: Couldn't resolve default property of object vDisplayData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
           sAddString = sAddString & vDisplayData
         Else
@@ -3744,7 +3745,7 @@ CheckRecordSet_ERROR:
           End If
 
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          strGroupedValue = IIf(IsDbNull(vDisplayData), "", vDisplayData)
+          strGroupedValue = IIf(IsDBNull(vDisplayData), "", vDisplayData)
 
           If (strGroupedValue <> vbNullString) And (Not blnSkipped) Then
             'add the grouped value to the string according to the row index
@@ -4196,7 +4197,7 @@ LoadRecords_ERROR:
             '           If IsNull(pavColumns(3, iColumnIndex)) Then
             'UPGRADE_WARNING: Couldn't resolve default property of object pavColumns(3, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-            If IsDbNull(pavColumns(3, iColumnIndex)) Or pavColumns(3, iColumnIndex) = "" Then
+            If IsDBNull(pavColumns(3, iColumnIndex)) Or pavColumns(3, iColumnIndex) = "" Then
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
               sWhereCode = sWhereCode & "([" & CStr(mvarColDetails(0, iColumnIndex)) & "] IS NULL)"
             Else
@@ -4377,7 +4378,7 @@ LoadRecords_ERROR:
 
           ' Average.
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If IsDbNull(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value) Then
+          If IsDBNull(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value) Then
             strAggrValue = "0"
             'TM20020430 Fault 3810 - if the size and decimals of the report column are zero then
             'do not format the data, show it as it is.
@@ -4419,7 +4420,7 @@ LoadRecords_ERROR:
           sAverageAddString = sAverageAddString & strAggrValue & vbTab
 
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If Not IsDbNull(strAggrValue) Then
+          If Not IsDBNull(strAggrValue) Then
             If Len(strAggrValue) > mlngColWidth(intColCounter) Then
               mlngColWidth(intColCounter) = Len(strAggrValue)
             End If
@@ -4460,14 +4461,14 @@ LoadRecords_ERROR:
 
           'JDM - Make a note of count the Bradford Index Report
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If mbIsBradfordIndexReport Then miAmountOfRecords = IIf(Not IsDbNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value), rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value, 0)
+          If mbIsBradfordIndexReport Then miAmountOfRecords = IIf(Not IsDBNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value), rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value, 0)
 
           ' Count.
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          sCountAddString = sCountAddString & IIf(IsDbNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value), "0", VB6.Format(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value, "0")) & vbTab
+          sCountAddString = sCountAddString & IIf(IsDBNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value), "0", VB6.Format(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value, "0")) & vbTab
 
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If Not IsDbNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value) Then
+          If Not IsDBNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value) Then
             If Len(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value) > mlngColWidth(intColCounter) Then
               mlngColWidth(intColCounter) = Len(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value)
             End If
@@ -4510,7 +4511,7 @@ LoadRecords_ERROR:
           End If
 
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If IsDbNull(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value) Then
+          If IsDBNull(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value) Then
             strAggrValue = "0"
             'TM20020430 Fault 3810 - if the size and decimals of the report column are zero then
             'do not format the data, show it as it is.
@@ -4541,7 +4542,7 @@ LoadRecords_ERROR:
           sTotalAddString = sTotalAddString & strAggrValue & vbTab
 
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If Not IsDbNull(strAggrValue) Then
+          If Not IsDBNull(strAggrValue) Then
             If Len(strAggrValue) > mlngColWidth(intColCounter) Then
               mlngColWidth(intColCounter) = Len(strAggrValue)
             End If
@@ -4848,7 +4849,7 @@ LoadRecords_ERROR:
           End If
 
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If IsDbNull(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value) Then
+          If IsDBNull(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value) Then
             strAggrValue = "0"
             'TM20020430 Fault 3810 - if the size and decimals of the report column are zero then
             'do not format the data, show it as it is.
@@ -4890,7 +4891,7 @@ LoadRecords_ERROR:
           sAverageAddString = sAverageAddString & strAggrValue & vbTab
 
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If Not IsDbNull(strAggrValue) Then
+          If Not IsDBNull(strAggrValue) Then
             If Len(strAggrValue) > mlngColWidth(intColCounter) Then
               mlngColWidth(intColCounter) = Len(strAggrValue)
             End If
@@ -4911,10 +4912,10 @@ LoadRecords_ERROR:
           End If
 
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          sCountAddString = sCountAddString & IIf(IsDbNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value), "0", VB6.Format(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value, "0")) & vbTab
+          sCountAddString = sCountAddString & IIf(IsDBNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value), "0", VB6.Format(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value, "0")) & vbTab
 
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If Not IsDbNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value) Then
+          If Not IsDBNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value) Then
             If Len(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value) > mlngColWidth(iLoop - 1) Then
               mlngColWidth(iLoop - 1) = Len(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value)
             End If
@@ -4932,7 +4933,7 @@ LoadRecords_ERROR:
           End If
 
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If IsDbNull(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value) Then
+          If IsDBNull(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value) Then
             '          sTotalAddString = sTotalAddString & "0" & vbTab
             strAggrValue = "0"
             'TM20020430 Fault 3810 - if the size and decimals of the report column are zero then
@@ -4967,7 +4968,7 @@ LoadRecords_ERROR:
           sTotalAddString = sTotalAddString & strAggrValue & vbTab
 
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If Not IsDbNull(strAggrValue) Then
+          If Not IsDBNull(strAggrValue) Then
             If Len(strAggrValue) > mlngColWidth(intColCounter) Then
               mlngColWidth(intColCounter) = Len(strAggrValue)
             End If
@@ -5149,7 +5150,7 @@ ClearUp_ERROR:
     Dim i As Short
     Dim lngFilterID As Integer
 
-    fCurrentUserIsSysSecMgr = CurrentUserIsSysSecMgr
+    fCurrentUserIsSysSecMgr = CurrentUserIsSysSecMgr()
 
     ' Base Table First
     If mlngSingleRecordID = 0 Then
@@ -6099,7 +6100,7 @@ CalculateBradfordFactors_ERROR:
     'TM20020503 Fault 3837 - Automatically the definition owner as this is a bradford adhoc report.
     mbDefinitionOwner = True
 
-    If Not IsRecordSelectionValid Then
+    If Not IsRecordSelectionValid() Then
       GetBradfordReportDefinition = False
       Exit Function
     End If
@@ -6366,7 +6367,7 @@ GetBradfordReportDefinition_ERROR:
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
               mstrExcelFormats(intTemp) = "0" & IIf(mvarColDetails(2, intTemp) > 0, "." & New String("0", mvarColDetails(2, intTemp)), "")
             Case Declarations.SQLDataType.sqlDate
-              mstrExcelFormats(intTemp) = DateFormat
+              mstrExcelFormats(intTemp) = DateFormat()
             Case Else
               mstrExcelFormats(intTemp) = "@"
           End Select
@@ -6388,7 +6389,7 @@ GetBradfordReportDefinition_ERROR:
             Case modExpression.ExpressionValueTypes.giEXPRVALUE_NUMERIC
               mstrExcelFormats(intTemp) = "0.####"
             Case modExpression.ExpressionValueTypes.giEXPRVALUE_DATE
-              mstrExcelFormats(intTemp) = DateFormat
+              mstrExcelFormats(intTemp) = DateFormat()
             Case Else
               mstrExcelFormats(intTemp) = "@"
           End Select
@@ -6587,7 +6588,7 @@ GetBradfordRecordSet_ERROR:
     'UPGRADE_WARNING: Couldn't resolve default property of object pstrOutputEmailSubject. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mstrOutputEmailSubject = pstrOutputEmailSubject
     'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-    mstrOutputEmailAttachAs = IIf(IsDbNull(pstrOutputEmailAttachAs), vbNullString, pstrOutputEmailAttachAs)
+    mstrOutputEmailAttachAs = IIf(IsDBNull(pstrOutputEmailAttachAs), vbNullString, pstrOutputEmailAttachAs)
     'UPGRADE_WARNING: Couldn't resolve default property of object pstrOutputFilename. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mstrOutputFilename = pstrOutputFilename
 

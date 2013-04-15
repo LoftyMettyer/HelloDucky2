@@ -1,7 +1,7 @@
 Option Strict Off
 Option Explicit On
-<System.Runtime.InteropServices.ProgId("CrossTab_NET.CrossTab")> Public Class CrossTab
 
+Public Class CrossTab
 
   Private mstrSQLSelect As String
   Private mstrSQLFrom As String
@@ -472,7 +472,7 @@ Option Explicit On
       Use1000Separator = mbUse1000Separator
     End Get
     Set(ByVal value As Boolean)
-      mbUse1000Separator = Value
+      mbUse1000Separator = value
     End Set
   End Property
 
@@ -677,7 +677,7 @@ ErrorTrap:
       mstrOutputEmailName = GetEmailGroupName(.Fields("OutputEmailAddr").Value)
       mstrOutputEmailSubject = .Fields("OutputEmailSubject").Value
       'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-      mstrOutputEmailAttachAs = IIf(IsDbNull(.Fields("OutputEmailAttachAs").Value), vbNullString, .Fields("OutputEmailAttachAs").Value)
+      mstrOutputEmailAttachAs = IIf(IsDBNull(.Fields("OutputEmailAttachAs").Value), vbNullString, .Fields("OutputEmailAttachAs").Value)
       mstrOutputFilename = .Fields("OutputFilename").Value
 
       mblnOutputPreview = (.Fields("OutputPreview").Value Or (mlngOutputFormat = Declarations.OutputFormats.fmtDataOnly And mblnOutputScreen))
@@ -1395,7 +1395,7 @@ LocalErr:
           'strFieldValue = IIf(IsNull(.Fields(0).Value), vbNullString, Trim(.Fields(0).Value))
           'If strFieldValue <> vbNullString Then
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          strFieldValue = IIf(IsDbNull(.Fields(0).Value), vbNullString, .Fields(0).Value)
+          strFieldValue = IIf(IsDBNull(.Fields(0).Value), vbNullString, .Fields(0).Value)
 
           If Trim(strFieldValue) <> vbNullString Then
             ReDim Preserve strHeading(lngCount)
@@ -1598,18 +1598,18 @@ LocalErr:
       Do While Not .EOF
 
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-        strTempValue = IIf(Not IsDbNull(.Fields("HOR").Value), .Fields("HOR").Value, vbNullString)
+        strTempValue = IIf(Not IsDBNull(.Fields("HOR").Value), .Fields("HOR").Value, vbNullString)
         'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         lngCol = GetGroupNumber(strTempValue, HOR)
 
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-        strTempValue = IIf(Not IsDbNull(.Fields("VER").Value), .Fields("VER").Value, vbNullString)
+        strTempValue = IIf(Not IsDBNull(.Fields("VER").Value), .Fields("VER").Value, vbNullString)
         'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         lngRow = GetGroupNumber(strTempValue, VER)
 
         If mblnPageBreak Then
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          strTempValue = IIf(Not IsDbNull(.Fields("PGB").Value), .Fields("PGB").Value, vbNullString)
+          strTempValue = IIf(Not IsDBNull(.Fields("PGB").Value), .Fields("PGB").Value, vbNullString)
           'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
           lngPage = GetGroupNumber(strTempValue, PGB)
         Else
@@ -1629,7 +1629,7 @@ LocalErr:
         If mblnIntersection Then
 
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If IsDbNull(.Fields("INS").Value) Then
+          If IsDBNull(.Fields("INS").Value) Then
             dblThisIntersectionVal = 0
           Else
             dblThisIntersectionVal = Val(datGeneral.ConvertNumberForSQL(.Fields("INS").Value))
@@ -2138,7 +2138,7 @@ LocalErr:
 
           ' Add absence start date
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If IsDbNull(.Fields("Start_Date").Value) Then
+          If IsDBNull(.Fields("Start_Date").Value) Then
             strOutput = strOutput & vbTab
           Else
             strOutput = strOutput & VB6.Format(.Fields("Start_Date").Value, mstrClientDateFormat) & vbTab
@@ -2146,7 +2146,7 @@ LocalErr:
 
           ' Add absence end date
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If IsDbNull(.Fields("End_Date").Value) Then
+          If IsDBNull(.Fields("End_Date").Value) Then
             strOutput = strOutput & vbTab
           Else
             strOutput = strOutput & VB6.Format(.Fields("End_Date").Value, mstrClientDateFormat) & vbTab
@@ -2154,7 +2154,7 @@ LocalErr:
 
           ' Add occurences
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If IsDbNull(.Fields("Value").Value) Then
+          If IsDBNull(.Fields("Value").Value) Then
             strOutput = strOutput & vbTab
           Else
             'MH20040128 Fault 7995 - Round average to 2 decimal places
@@ -2166,7 +2166,7 @@ LocalErr:
 
         If mblnIntersection Then
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          If Not IsDbNull(.Fields("Ins").Value) Then
+          If Not IsDBNull(.Fields("Ins").Value) Then
             strOutput = strOutput & vbTab & VB6.Format(.Fields("Ins").Value, mstrIntersectionMask)
           End If
         End If
@@ -2237,7 +2237,7 @@ LocalErr:
         Do While Not .EOF
 
           If .Fields("Day_Number").Value < 8 Then
-            .Fields("HOR").Value = WeekDayName(.Fields("Day_Number").Value, False, FirstDayOfWeek.Monday)
+            .Fields("HOR").Value = WeekdayName(.Fields("Day_Number").Value, False, FirstDayOfWeek.Monday)
           End If
 
           .MoveNext()
@@ -2313,34 +2313,34 @@ LocalErr:
       Do While Not .EOF
 
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-        strTempValue = IIf(Not IsDbNull(.Fields("HOR").Value), .Fields("HOR").Value, vbNullString)
+        strTempValue = IIf(Not IsDBNull(.Fields("HOR").Value), .Fields("HOR").Value, vbNullString)
         'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         lngCol = GetGroupNumber(strTempValue, HOR)
 
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-        strTempValue = IIf(Not IsDbNull(.Fields("VER").Value), .Fields("VER").Value, vbNullString)
+        strTempValue = IIf(Not IsDBNull(.Fields("VER").Value), .Fields("VER").Value, vbNullString)
         'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         lngRow = GetGroupNumber(strTempValue, VER)
 
         'Count
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-        mdblDataArray(lngCol, lngRow, 0, TYPECOUNT) = mdblDataArray(lngCol, lngRow, 0, TYPECOUNT) + IIf(Not IsDbNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 143)
+        mdblDataArray(lngCol, lngRow, 0, TYPECOUNT) = mdblDataArray(lngCol, lngRow, 0, TYPECOUNT) + IIf(Not IsDBNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 143)
         mdblHorTotal(lngCol, 0, TYPECOUNT) = mdblHorTotal(lngCol, 0, TYPECOUNT) + 1
         mdblVerTotal(lngRow, 0, TYPECOUNT) = mdblVerTotal(lngRow, 0, TYPECOUNT) + 1
 
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-        mdblDataArray(lngCol, lngRow, 0, TYPETOTAL) = mdblDataArray(lngCol, lngRow, 0, TYPETOTAL) + IIf(Not IsDbNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 143)
+        mdblDataArray(lngCol, lngRow, 0, TYPETOTAL) = mdblDataArray(lngCol, lngRow, 0, TYPETOTAL) + IIf(Not IsDBNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 143)
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-        mdblHorTotal(lngCol, 0, TYPETOTAL) = mdblHorTotal(lngCol, 0, TYPETOTAL) + IIf(Not IsDbNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 0)
+        mdblHorTotal(lngCol, 0, TYPETOTAL) = mdblHorTotal(lngCol, 0, TYPETOTAL) + IIf(Not IsDBNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 0)
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-        mdblVerTotal(lngRow, 0, TYPETOTAL) = mdblVerTotal(lngRow, 0, TYPETOTAL) + IIf(Not IsDbNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 0)
+        mdblVerTotal(lngRow, 0, TYPETOTAL) = mdblVerTotal(lngRow, 0, TYPETOTAL) + IIf(Not IsDBNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 0)
 
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-        mdblDataArray(lngCol, lngRow, lngPage, TYPEAVERAGE) = mdblDataArray(lngCol, lngRow, lngPage, TYPEAVERAGE) + IIf(Not IsDbNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 143)
+        mdblDataArray(lngCol, lngRow, lngPage, TYPEAVERAGE) = mdblDataArray(lngCol, lngRow, lngPage, TYPEAVERAGE) + IIf(Not IsDBNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 143)
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-        mdblHorTotal(lngCol, lngPage, TYPEAVERAGE) = mdblHorTotal(lngCol, lngPage, TYPEAVERAGE) + IIf(Not IsDbNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 0)
+        mdblHorTotal(lngCol, lngPage, TYPEAVERAGE) = mdblHorTotal(lngCol, lngPage, TYPEAVERAGE) + IIf(Not IsDBNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 0)
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-        mdblVerTotal(lngRow, lngPage, TYPEAVERAGE) = mdblVerTotal(lngRow, lngPage, TYPEAVERAGE) + IIf(Not IsDbNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 0)
+        mdblVerTotal(lngRow, lngPage, TYPEAVERAGE) = mdblVerTotal(lngRow, lngPage, TYPEAVERAGE) + IIf(Not IsDBNull(.Fields("VALUE").Value), .Fields("VALUE").Value, 0)
 
         .MoveNext()
       Loop
@@ -2578,7 +2578,7 @@ LocalErr:
     'UPGRADE_WARNING: Couldn't resolve default property of object pstrOutputEmailSubject. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mstrOutputEmailSubject = pstrOutputEmailSubject
     'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-    mstrOutputEmailAttachAs = IIf(IsDbNull(pstrOutputEmailAttachAs), vbNullString, pstrOutputEmailAttachAs)
+    mstrOutputEmailAttachAs = IIf(IsDBNull(pstrOutputEmailAttachAs), vbNullString, pstrOutputEmailAttachAs)
     'UPGRADE_WARNING: Couldn't resolve default property of object pstrOutputFilename. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mstrOutputFilename = pstrOutputFilename
 
@@ -2723,7 +2723,7 @@ UDFFunctions_ERROR:
 
             'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
             'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            lngGroupNum = GetGroupNumber(CStr(IIf(IsDbNull(.Fields(lngCol).Value), vbNullString, .Fields(lngCol).Value)), CShort(lngCol))
+            lngGroupNum = GetGroupNumber(CStr(IIf(IsDBNull(.Fields(lngCol).Value), vbNullString, .Fields(lngCol).Value)), CShort(lngCol))
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             strOutput(lngCol, lngRow) = mvarHeadings(lngCol)(lngGroupNum)
           Else
