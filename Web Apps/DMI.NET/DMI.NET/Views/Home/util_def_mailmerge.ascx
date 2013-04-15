@@ -28,11 +28,7 @@
 	cmdVersionOneModule = Nothing
 %>
 
-<object classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB"
-	id="dialog"
-	codebase="cabs/comdlg32.cab#Version=1,0,0,0"
-	style="LEFT: 0px; TOP: 0px"
-	viewastext>
+<object classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB"id="dialog" codebase="cabs/comdlg32.cab#Version=1,0,0,0" style="LEFT: 0px; TOP: 0px" viewastext>
 	<param name="_ExtentX" value="847">
 	<param name="_ExtentY" value="847">
 	<param name="_Version" value="393216">
@@ -157,6 +153,9 @@
 															<td width="10" valign="top">Access :</td>
 															<td width="5">&nbsp;</td>
 															<td width="40%" rowspan="3" valign="top"></td>
+												<TD width="40%" rowspan="3" valign=top>
+													<%Html.RenderPartial("Util_Def_CustomReports/grdaccess")%>         
+												</TD>
 															<td width="5">&nbsp;</td>
 														</tr>
 
@@ -2761,7 +2760,7 @@
 </div>
 
 <script type="text/javascript">
-	debugger;
+	//debugger;
 	util_def_mailmerge_window_onload();
 	utilDefMailmergeAddActiveXHandlers();
 </script>
