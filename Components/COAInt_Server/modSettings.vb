@@ -157,8 +157,8 @@ LocalErr:
 		fYearsDone = False
 		sDateFormat = ""
 		
-		sSysFormat = UI.GetSystemDateFormat
-		sSysDateSeparator = UI.GetSystemDateSeparator
+    sSysFormat = clsUI.GetSystemDateFormat
+    sSysDateSeparator = clsUI.GetSystemDateSeparator
 		
 		' Loop through the string picking out the required characters.
 		For iLoop = 1 To Len(sSysFormat)

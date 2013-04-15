@@ -220,7 +220,7 @@ Module modAbsenceSpecifics
 		' Validate the configuration of the Absence module parameters.
 		
 		Dim fValid As Boolean
-		Dim strMessage As String
+    Dim strMessage As String = ""
 		Dim rsType As ADODB.Recordset
 		
 		' Check that the Absence module is installed.

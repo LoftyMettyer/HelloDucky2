@@ -87,8 +87,7 @@ Module modUtilAccessLog
 		Dim datData As clsDataAccess
 		Dim rsTemp As ADODB.Recordset
 		Dim strSQL As String
-		Dim strHostName As String
-		
+
 		datData = New clsDataAccess
 		
 		strSQL = "SELECT * FROM ASRSysUtilAccessLog " & "WHERE UtilID = " & CStr(lngID) & " AND Type = " & CStr(utlType)

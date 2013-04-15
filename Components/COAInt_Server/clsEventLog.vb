@@ -116,38 +116,9 @@ Option Explicit On
 		Dim prmBatchName As New ADODB.Parameter
 		Dim prmBatchRunID As New ADODB.Parameter
 		Dim prmBatchJobID As New ADODB.Parameter
-		Dim prmInsertSQL As New ADODB.Parameter
-		Dim strInsertSQL As String
-		Dim sErrorMsg As String
+    Dim sErrorMsg As String = ""
 		Dim iLoop As Short
-		
-		'JPD 20041104 Replaced the 'InsertSQL' parameter with individual parameters
-		' for security tightening.
-		'strInsertSQL = "INSERT INTO AsrSysEventLog (" & _
-		'"DateTime," & _
-		'"Type," & _
-		'"Name," & _
-		'"Status," & _
-		'"Username," & _
-		'"Mode," & _
-		'"BatchName," & _
-		'"SuccessCount," & _
-		'"FailCount," & _
-		'"BatchRunID," & _
-		'"BatchJobID) " & _
-		'"VALUES(" & _
-		'"GETDATE()," & _
-		'udtType & "," & _
-		'"'" & Replace(strName, "'", "''") & "'," & _
-		'elsPending & "," & _
-		'"'" & StrConv(gsUsername, vbProperCase) & "'," & _
-		'IIf(mstrBatchName = vbNullString, 0, 1) & "," & _
-		'"'" & Replace(mstrBatchName, "'", "''") & "'," & _
-		'"NULL," & _
-		'"NULL," & _
-		'IIf(mlngBatchRunID > 0, mlngBatchRunID, "NULL") & "," & _
-		'IIf(mlngBatchJobID > 0, mlngBatchJobID, "NULL") & ")"
-		
+
 		cmdAddHeader.CommandText = "sp_ASRIntAddEventLogHeader"
 		cmdAddHeader.CommandType = 4
 		cmdAddHeader.let_ActiveConnection(gADOCon)

@@ -164,7 +164,7 @@ UDFFunctions_ERROR:
 	Public Function GetFilteredIDs(ByRef plngExprID As Integer, ByRef pavPromptedValues As Object) As String
 		' Return a string describing the record IDs from the given table
 		' that satisfy the given criteria.
-		Dim sIDSQL As String
+    Dim sIDSQL As String = ""
     Dim avPrompts(,) As Object
 		Dim iDataType As Short
 		Dim lngComponentID As Integer
@@ -330,7 +330,7 @@ UDFFunctions_ERROR:
 		
 		Dim sSQL As String
 		Dim rsTemp As ADODB.Recordset
-		Dim sFileName As String
+    Dim sFileName As String = ""
 		Dim lngPictureID As Short
 		
 		sSQL = "SELECT DISTINCT ASRSysSystemSettings.settingValue " & "FROM ASRSysSystemSettings " & "WHERE ASRSysSystemSettings.section = 'desktopsetting' " & "     AND  ASRSysSystemSettings.settingKey = 'bitmapid'"

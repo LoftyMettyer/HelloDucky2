@@ -244,43 +244,43 @@ Friend Class clsUI
 		
 	End Function
 	
-	Sub frmAtCenter(ByRef ThisForm As System.Windows.Forms.Form)
-		On Error Resume Next
-		
-		With ThisForm
-			.Top = VB6.TwipsToPixelsY(Int((VB6.PixelsToTwipsY(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height) - VB6.PixelsToTwipsY(.Height)) / 2))
-			.Left = VB6.TwipsToPixelsX(Int((VB6.PixelsToTwipsX(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width) - VB6.PixelsToTwipsX(.Width)) / 2))
-		End With
-		
-	End Sub
+  'Sub frmAtCenter(ByRef ThisForm As System.Windows.Forms.Form)
+  '	On Error Resume Next
+
+  '	With ThisForm
+  '		.Top = VB6.TwipsToPixelsY(Int((VB6.PixelsToTwipsY(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height) - VB6.PixelsToTwipsY(.Height)) / 2))
+  '		.Left = VB6.TwipsToPixelsX(Int((VB6.PixelsToTwipsX(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width) - VB6.PixelsToTwipsX(.Width)) / 2))
+  '	End With
+
+  'End Sub
 	
-	Sub frmAtMouse(ByRef ThisForm As System.Windows.Forms.Form)
-		On Error Resume Next
-		
-		Dim MouseX, MouseY As Integer
-		Dim SizeX, SizeY As Integer
-		
-		If Not GetWorkAreaSize(SizeX, SizeY) Then
-			SizeX = VB6.PixelsToTwipsX(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width)
-			SizeY = VB6.PixelsToTwipsY(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height)
-		End If
-		
-		If GetMousePos(MouseX, MouseY) Then
-			With ThisForm
-				If MouseY + VB6.PixelsToTwipsY(.Height) > SizeY Then
-					.Top = VB6.TwipsToPixelsY(SizeY - VB6.PixelsToTwipsY(.Height))
-				Else
-					.Top = VB6.TwipsToPixelsY(MouseY)
-				End If
-				If MouseX + VB6.PixelsToTwipsX(.Width) > SizeX Then
-					.Left = VB6.TwipsToPixelsX(SizeX - VB6.PixelsToTwipsX(.Width))
-				Else
-					.Left = VB6.TwipsToPixelsX(MouseX)
-				End If
-			End With
-		End If
-		
-	End Sub
+  'Sub frmAtMouse(ByRef ThisForm As System.Windows.Forms.Form)
+  '	On Error Resume Next
+
+  '	Dim MouseX, MouseY As Integer
+  '	Dim SizeX, SizeY As Integer
+
+  '	If Not GetWorkAreaSize(SizeX, SizeY) Then
+  '		SizeX = VB6.PixelsToTwipsX(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width)
+  '		SizeY = VB6.PixelsToTwipsY(System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height)
+  '	End If
+
+  '	If GetMousePos(MouseX, MouseY) Then
+  '		With ThisForm
+  '			If MouseY + VB6.PixelsToTwipsY(.Height) > SizeY Then
+  '				.Top = VB6.TwipsToPixelsY(SizeY - VB6.PixelsToTwipsY(.Height))
+  '			Else
+  '				.Top = VB6.TwipsToPixelsY(MouseY)
+  '			End If
+  '			If MouseX + VB6.PixelsToTwipsX(.Width) > SizeX Then
+  '				.Left = VB6.TwipsToPixelsX(SizeX - VB6.PixelsToTwipsX(.Width))
+  '			Else
+  '				.Left = VB6.TwipsToPixelsX(MouseX)
+  '			End If
+  '		End With
+  '	End If
+
+  'End Sub
 	
   'Function frmIsLoaded(ByVal FormName As String) As Boolean
   '	Dim f As Short
@@ -294,13 +294,13 @@ Friend Class clsUI
 
   'End Function
 	
-	Function frmTopmost(ByVal hWnd As Integer, ByRef bTopMost As Boolean) As Boolean
-		Dim lFlags As Integer
-		
-		lFlags = SWP_NOMOVE Or SWP_NOSIZE
-		
-		frmTopmost = (SetWindowPos(hWnd, IIf(bTopMost, HWND_TOPMOST, hWnd_NOTOPMOST), 0, 0, 0, 0, lFlags) <> 0)
-	End Function
+  'Function frmTopmost(ByVal hWnd As Integer, ByRef bTopMost As Boolean) As Boolean
+  '	Dim lFlags As Integer
+
+  '	lFlags = SWP_NOMOVE Or SWP_NOSIZE
+
+  '	frmTopmost = (SetWindowPos(hWnd, IIf(bTopMost, HWND_TOPMOST, hWnd_NOTOPMOST), 0, 0, 0, 0, lFlags) <> 0)
+  'End Function
 	
 	Function lstFind(ByVal hWnd As Integer, ByVal FindStr As String, ByVal Exact As Boolean) As Short
 		lstFind = SendMessage(hWnd, IIf(Exact, LB_FINDSTRINGEXACT, LB_FINDSTRING), -1, FindStr)
@@ -832,117 +832,117 @@ ErrorTrap:
 		frmWidth = MinWidth
 	End Sub
 	
-	Public Sub ClipForForm(ByRef frm As System.Windows.Forms.Form, ByRef MinHeight As Integer, ByRef MinWidth As Integer)
-		Dim ResizeREC As RECT
-		Dim DesktopREC As RECT
-		Dim GetClipREC As RECT
-		ResizeREC.Top = (VB6.PixelsToTwipsY(frm.Top) + MinHeight) / VB6.TwipsPerPixelY - 2
-		ResizeREC.Bottom = (VB6.PixelsToTwipsY(frm.Top) + (VB6.PixelsToTwipsY(frm.Height) - MinHeight)) / VB6.TwipsPerPixelY + 2
-		ResizeREC.Left_Renamed = (VB6.PixelsToTwipsX(frm.Left) + MinWidth) / VB6.TwipsPerPixelX - 2
-		ResizeREC.Right_Renamed = (VB6.PixelsToTwipsX(frm.Left) + (VB6.PixelsToTwipsX(frm.Width) - MinWidth)) / VB6.TwipsPerPixelX + 2
-		If VB6.PixelsToTwipsX(frm.Width) <> frmWidth And frm.WindowState = 0 Then
-			'UPGRADE_WARNING: Couldn't resolve default property of object retVAL. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			retVAL = GetClipCursor(GetClipREC)
-			'UPGRADE_WARNING: Couldn't resolve default property of object DeskhWnd. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			DeskhWnd = GetDesktopWindow()
-			'UPGRADE_WARNING: Couldn't resolve default property of object DeskhWnd. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'UPGRADE_WARNING: Couldn't resolve default property of object retVAL. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			retVAL = GetWindowRect(DeskhWnd, DesktopREC)
-			If GetX > ((VB6.PixelsToTwipsX(frm.Left) + (MinWidth / 2)) / VB6.TwipsPerPixelX) And GetClipREC.Right_Renamed = DesktopREC.Right_Renamed Then
-				If GetClipREC.Left_Renamed = ResizeREC.Left_Renamed And (GetClipREC.Top = ResizeREC.Top Or GetClipREC.Bottom = ResizeREC.Bottom) Then
-					frmHeight = VB6.PixelsToTwipsY(frm.Height)
-					frmWidth = VB6.PixelsToTwipsX(frm.Width)
-					Exit Sub
-				ElseIf GetClipREC.Left_Renamed = ResizeREC.Left_Renamed And (GetClipREC.Top <> ResizeREC.Top Or GetClipREC.Bottom <> ResizeREC.Bottom) Then 
-					If VB6.PixelsToTwipsY(frm.Height) <> frmHeight Then
-						If GetY > (VB6.PixelsToTwipsY(frm.Top) / VB6.TwipsPerPixelY) + 25 Then
-							DesktopREC.Top = ResizeREC.Top
-						Else
-							DesktopREC.Bottom = ResizeREC.Bottom
-						End If
-						frmHeight = VB6.PixelsToTwipsY(frm.Height)
-					End If
-				ElseIf GetClipREC.Left_Renamed <> ResizeREC.Left_Renamed And (GetClipREC.Top = ResizeREC.Top Or GetClipREC.Bottom = ResizeREC.Bottom) Then 
-					If GetClipREC.Top = ResizeREC.Top Then DesktopREC.Top = GetClipREC.Top
-					If GetClipREC.Bottom = ResizeREC.Bottom Then DesktopREC.Bottom = GetClipREC.Bottom
-					DesktopREC.Left_Renamed = ResizeREC.Left_Renamed
-				End If
-				DesktopREC.Left_Renamed = ResizeREC.Left_Renamed
-			Else
-				If GetClipREC.Right_Renamed = ResizeREC.Right_Renamed And (GetClipREC.Bottom = ResizeREC.Bottom Or GetClipREC.Top = ResizeREC.Top) Then
-					frmHeight = VB6.PixelsToTwipsY(frm.Height)
-					frmWidth = VB6.PixelsToTwipsX(frm.Width)
-					Exit Sub
-				ElseIf GetClipREC.Right_Renamed = ResizeREC.Right_Renamed And (GetClipREC.Bottom <> ResizeREC.Bottom Or GetClipREC.Top <> ResizeREC.Top) Then 
-					If VB6.PixelsToTwipsY(frm.Height) <> frmHeight Then
-						If GetY > (VB6.PixelsToTwipsY(frm.Top) / VB6.TwipsPerPixelY) + 25 Then
-							DesktopREC.Top = ResizeREC.Top
-						Else
-							DesktopREC.Bottom = ResizeREC.Bottom
-						End If
-						frmHeight = VB6.PixelsToTwipsY(frm.Height)
-					End If
-				ElseIf GetClipREC.Right_Renamed <> ResizeREC.Right_Renamed And (GetClipREC.Bottom = ResizeREC.Bottom Or GetClipREC.Top = ResizeREC.Top) Then 
-					If GetClipREC.Top = ResizeREC.Top Then DesktopREC.Top = GetClipREC.Top
-					If GetClipREC.Bottom = ResizeREC.Bottom Then DesktopREC.Bottom = GetClipREC.Bottom
-				End If
-				DesktopREC.Right_Renamed = ResizeREC.Right_Renamed
-			End If
-			'UPGRADE_WARNING: Couldn't resolve default property of object retVAL. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			retVAL = ClipCursor(DesktopREC)
-			frmWidth = VB6.PixelsToTwipsX(frm.Width)
-		ElseIf VB6.PixelsToTwipsY(frm.Height) <> frmHeight And frm.WindowState = 0 Then 
-			'UPGRADE_WARNING: Couldn't resolve default property of object retVAL. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			retVAL = GetClipCursor(GetClipREC)
-			'UPGRADE_WARNING: Couldn't resolve default property of object DeskhWnd. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			DeskhWnd = GetDesktopWindow()
-			'UPGRADE_WARNING: Couldn't resolve default property of object DeskhWnd. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			'UPGRADE_WARNING: Couldn't resolve default property of object retVAL. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			retVAL = GetWindowRect(DeskhWnd, DesktopREC)
-			If GetY > ((VB6.PixelsToTwipsY(frm.Top) + (MinHeight / 2)) / VB6.TwipsPerPixelY) And GetClipREC.Bottom <> ResizeREC.Bottom Then
-				If GetClipREC.Top = ResizeREC.Top And (GetClipREC.Left_Renamed = ResizeREC.Left_Renamed Or GetClipREC.Right_Renamed = ResizeREC.Right_Renamed) Then
-					frmHeight = VB6.PixelsToTwipsY(frm.Height)
-					frmWidth = VB6.PixelsToTwipsX(frm.Width)
-					Exit Sub
-				ElseIf GetClipREC.Top = ResizeREC.Top And (GetClipREC.Left_Renamed <> ResizeREC.Left_Renamed Or GetClipREC.Right_Renamed <> ResizeREC.Right_Renamed) Then 
-					If VB6.PixelsToTwipsX(frm.Width) <> frmWidth Then
-						If GetX > (VB6.PixelsToTwipsX(frm.Left) / VB6.TwipsPerPixelX) + 15 Then
-							DesktopREC.Left_Renamed = ResizeREC.Left_Renamed
-						Else
-							DesktopREC.Right_Renamed = ResizeREC.Right_Renamed
-						End If
-						frmWidth = VB6.PixelsToTwipsX(frm.Width)
-					End If
-				ElseIf GetClipREC.Top <> ResizeREC.Top And (GetClipREC.Left_Renamed = ResizeREC.Left_Renamed Or GetClipREC.Right_Renamed = ResizeREC.Right_Renamed) Then 
-					If GetClipREC.Left_Renamed = ResizeREC.Left_Renamed Then DesktopREC.Left_Renamed = GetClipREC.Left_Renamed
-					If GetClipREC.Right_Renamed = ResizeREC.Right_Renamed Then DesktopREC.Right_Renamed = GetClipREC.Right_Renamed
-				End If
-				DesktopREC.Top = ResizeREC.Top
-			Else
-				If GetClipREC.Bottom = ResizeREC.Bottom And (GetClipREC.Right_Renamed = ResizeREC.Right_Renamed Or GetClipREC.Left_Renamed = ResizeREC.Left_Renamed) Then
-					frmHeight = VB6.PixelsToTwipsY(frm.Height)
-					frmWidth = VB6.PixelsToTwipsX(frm.Width)
-					Exit Sub
-				ElseIf GetClipREC.Bottom = ResizeREC.Bottom And (GetClipREC.Right_Renamed <> ResizeREC.Right_Renamed Or GetClipREC.Left_Renamed <> ResizeREC.Left_Renamed) Then 
-					If VB6.PixelsToTwipsX(frm.Width) <> frmWidth Then
-						If GetX > (VB6.PixelsToTwipsX(frm.Left) / VB6.TwipsPerPixelX) + 15 Then
-							DesktopREC.Left_Renamed = ResizeREC.Left_Renamed
-						Else
-							DesktopREC.Right_Renamed = ResizeREC.Right_Renamed
-						End If
-						frmWidth = VB6.PixelsToTwipsX(frm.Width)
-					End If
-				ElseIf GetClipREC.Bottom <> ResizeREC.Bottom And (GetClipREC.Right_Renamed = ResizeREC.Right_Renamed Or GetClipREC.Left_Renamed = ResizeREC.Left_Renamed) Then 
-					If GetClipREC.Left_Renamed = ResizeREC.Left_Renamed Then DesktopREC.Left_Renamed = GetClipREC.Left_Renamed
-					If GetClipREC.Right_Renamed = ResizeREC.Right_Renamed Then DesktopREC.Right_Renamed = GetClipREC.Right_Renamed
-				End If
-				DesktopREC.Bottom = ResizeREC.Bottom
-			End If
-			'UPGRADE_WARNING: Couldn't resolve default property of object retVAL. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			retVAL = ClipCursor(DesktopREC)
-			frmHeight = VB6.PixelsToTwipsY(frm.Height)
-		End If
-	End Sub
+  'Public Sub ClipForForm(ByRef frm As System.Windows.Forms.Form, ByRef MinHeight As Integer, ByRef MinWidth As Integer)
+  '	Dim ResizeREC As RECT
+  '	Dim DesktopREC As RECT
+  '	Dim GetClipREC As RECT
+  '	ResizeREC.Top = (VB6.PixelsToTwipsY(frm.Top) + MinHeight) / VB6.TwipsPerPixelY - 2
+  '	ResizeREC.Bottom = (VB6.PixelsToTwipsY(frm.Top) + (VB6.PixelsToTwipsY(frm.Height) - MinHeight)) / VB6.TwipsPerPixelY + 2
+  '	ResizeREC.Left_Renamed = (VB6.PixelsToTwipsX(frm.Left) + MinWidth) / VB6.TwipsPerPixelX - 2
+  '	ResizeREC.Right_Renamed = (VB6.PixelsToTwipsX(frm.Left) + (VB6.PixelsToTwipsX(frm.Width) - MinWidth)) / VB6.TwipsPerPixelX + 2
+  '	If VB6.PixelsToTwipsX(frm.Width) <> frmWidth And frm.WindowState = 0 Then
+  '		'UPGRADE_WARNING: Couldn't resolve default property of object retVAL. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+  '		retVAL = GetClipCursor(GetClipREC)
+  '		'UPGRADE_WARNING: Couldn't resolve default property of object DeskhWnd. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+  '		DeskhWnd = GetDesktopWindow()
+  '		'UPGRADE_WARNING: Couldn't resolve default property of object DeskhWnd. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+  '		'UPGRADE_WARNING: Couldn't resolve default property of object retVAL. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+  '		retVAL = GetWindowRect(DeskhWnd, DesktopREC)
+  '		If GetX > ((VB6.PixelsToTwipsX(frm.Left) + (MinWidth / 2)) / VB6.TwipsPerPixelX) And GetClipREC.Right_Renamed = DesktopREC.Right_Renamed Then
+  '			If GetClipREC.Left_Renamed = ResizeREC.Left_Renamed And (GetClipREC.Top = ResizeREC.Top Or GetClipREC.Bottom = ResizeREC.Bottom) Then
+  '				frmHeight = VB6.PixelsToTwipsY(frm.Height)
+  '				frmWidth = VB6.PixelsToTwipsX(frm.Width)
+  '				Exit Sub
+  '			ElseIf GetClipREC.Left_Renamed = ResizeREC.Left_Renamed And (GetClipREC.Top <> ResizeREC.Top Or GetClipREC.Bottom <> ResizeREC.Bottom) Then 
+  '				If VB6.PixelsToTwipsY(frm.Height) <> frmHeight Then
+  '					If GetY > (VB6.PixelsToTwipsY(frm.Top) / VB6.TwipsPerPixelY) + 25 Then
+  '						DesktopREC.Top = ResizeREC.Top
+  '					Else
+  '						DesktopREC.Bottom = ResizeREC.Bottom
+  '					End If
+  '					frmHeight = VB6.PixelsToTwipsY(frm.Height)
+  '				End If
+  '			ElseIf GetClipREC.Left_Renamed <> ResizeREC.Left_Renamed And (GetClipREC.Top = ResizeREC.Top Or GetClipREC.Bottom = ResizeREC.Bottom) Then 
+  '				If GetClipREC.Top = ResizeREC.Top Then DesktopREC.Top = GetClipREC.Top
+  '				If GetClipREC.Bottom = ResizeREC.Bottom Then DesktopREC.Bottom = GetClipREC.Bottom
+  '				DesktopREC.Left_Renamed = ResizeREC.Left_Renamed
+  '			End If
+  '			DesktopREC.Left_Renamed = ResizeREC.Left_Renamed
+  '		Else
+  '			If GetClipREC.Right_Renamed = ResizeREC.Right_Renamed And (GetClipREC.Bottom = ResizeREC.Bottom Or GetClipREC.Top = ResizeREC.Top) Then
+  '				frmHeight = VB6.PixelsToTwipsY(frm.Height)
+  '				frmWidth = VB6.PixelsToTwipsX(frm.Width)
+  '				Exit Sub
+  '			ElseIf GetClipREC.Right_Renamed = ResizeREC.Right_Renamed And (GetClipREC.Bottom <> ResizeREC.Bottom Or GetClipREC.Top <> ResizeREC.Top) Then 
+  '				If VB6.PixelsToTwipsY(frm.Height) <> frmHeight Then
+  '					If GetY > (VB6.PixelsToTwipsY(frm.Top) / VB6.TwipsPerPixelY) + 25 Then
+  '						DesktopREC.Top = ResizeREC.Top
+  '					Else
+  '						DesktopREC.Bottom = ResizeREC.Bottom
+  '					End If
+  '					frmHeight = VB6.PixelsToTwipsY(frm.Height)
+  '				End If
+  '			ElseIf GetClipREC.Right_Renamed <> ResizeREC.Right_Renamed And (GetClipREC.Bottom = ResizeREC.Bottom Or GetClipREC.Top = ResizeREC.Top) Then 
+  '				If GetClipREC.Top = ResizeREC.Top Then DesktopREC.Top = GetClipREC.Top
+  '				If GetClipREC.Bottom = ResizeREC.Bottom Then DesktopREC.Bottom = GetClipREC.Bottom
+  '			End If
+  '			DesktopREC.Right_Renamed = ResizeREC.Right_Renamed
+  '		End If
+  '		'UPGRADE_WARNING: Couldn't resolve default property of object retVAL. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+  '		retVAL = ClipCursor(DesktopREC)
+  '		frmWidth = VB6.PixelsToTwipsX(frm.Width)
+  '	ElseIf VB6.PixelsToTwipsY(frm.Height) <> frmHeight And frm.WindowState = 0 Then 
+  '		'UPGRADE_WARNING: Couldn't resolve default property of object retVAL. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+  '		retVAL = GetClipCursor(GetClipREC)
+  '		'UPGRADE_WARNING: Couldn't resolve default property of object DeskhWnd. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+  '		DeskhWnd = GetDesktopWindow()
+  '		'UPGRADE_WARNING: Couldn't resolve default property of object DeskhWnd. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+  '		'UPGRADE_WARNING: Couldn't resolve default property of object retVAL. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+  '		retVAL = GetWindowRect(DeskhWnd, DesktopREC)
+  '		If GetY > ((VB6.PixelsToTwipsY(frm.Top) + (MinHeight / 2)) / VB6.TwipsPerPixelY) And GetClipREC.Bottom <> ResizeREC.Bottom Then
+  '			If GetClipREC.Top = ResizeREC.Top And (GetClipREC.Left_Renamed = ResizeREC.Left_Renamed Or GetClipREC.Right_Renamed = ResizeREC.Right_Renamed) Then
+  '				frmHeight = VB6.PixelsToTwipsY(frm.Height)
+  '				frmWidth = VB6.PixelsToTwipsX(frm.Width)
+  '				Exit Sub
+  '			ElseIf GetClipREC.Top = ResizeREC.Top And (GetClipREC.Left_Renamed <> ResizeREC.Left_Renamed Or GetClipREC.Right_Renamed <> ResizeREC.Right_Renamed) Then 
+  '				If VB6.PixelsToTwipsX(frm.Width) <> frmWidth Then
+  '					If GetX > (VB6.PixelsToTwipsX(frm.Left) / VB6.TwipsPerPixelX) + 15 Then
+  '						DesktopREC.Left_Renamed = ResizeREC.Left_Renamed
+  '					Else
+  '						DesktopREC.Right_Renamed = ResizeREC.Right_Renamed
+  '					End If
+  '					frmWidth = VB6.PixelsToTwipsX(frm.Width)
+  '				End If
+  '			ElseIf GetClipREC.Top <> ResizeREC.Top And (GetClipREC.Left_Renamed = ResizeREC.Left_Renamed Or GetClipREC.Right_Renamed = ResizeREC.Right_Renamed) Then 
+  '				If GetClipREC.Left_Renamed = ResizeREC.Left_Renamed Then DesktopREC.Left_Renamed = GetClipREC.Left_Renamed
+  '				If GetClipREC.Right_Renamed = ResizeREC.Right_Renamed Then DesktopREC.Right_Renamed = GetClipREC.Right_Renamed
+  '			End If
+  '			DesktopREC.Top = ResizeREC.Top
+  '		Else
+  '			If GetClipREC.Bottom = ResizeREC.Bottom And (GetClipREC.Right_Renamed = ResizeREC.Right_Renamed Or GetClipREC.Left_Renamed = ResizeREC.Left_Renamed) Then
+  '				frmHeight = VB6.PixelsToTwipsY(frm.Height)
+  '				frmWidth = VB6.PixelsToTwipsX(frm.Width)
+  '				Exit Sub
+  '			ElseIf GetClipREC.Bottom = ResizeREC.Bottom And (GetClipREC.Right_Renamed <> ResizeREC.Right_Renamed Or GetClipREC.Left_Renamed <> ResizeREC.Left_Renamed) Then 
+  '				If VB6.PixelsToTwipsX(frm.Width) <> frmWidth Then
+  '					If GetX > (VB6.PixelsToTwipsX(frm.Left) / VB6.TwipsPerPixelX) + 15 Then
+  '						DesktopREC.Left_Renamed = ResizeREC.Left_Renamed
+  '					Else
+  '						DesktopREC.Right_Renamed = ResizeREC.Right_Renamed
+  '					End If
+  '					frmWidth = VB6.PixelsToTwipsX(frm.Width)
+  '				End If
+  '			ElseIf GetClipREC.Bottom <> ResizeREC.Bottom And (GetClipREC.Right_Renamed = ResizeREC.Right_Renamed Or GetClipREC.Left_Renamed = ResizeREC.Left_Renamed) Then 
+  '				If GetClipREC.Left_Renamed = ResizeREC.Left_Renamed Then DesktopREC.Left_Renamed = GetClipREC.Left_Renamed
+  '				If GetClipREC.Right_Renamed = ResizeREC.Right_Renamed Then DesktopREC.Right_Renamed = GetClipREC.Right_Renamed
+  '			End If
+  '			DesktopREC.Bottom = ResizeREC.Bottom
+  '		End If
+  '		'UPGRADE_WARNING: Couldn't resolve default property of object retVAL. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+  '		retVAL = ClipCursor(DesktopREC)
+  '		frmHeight = VB6.PixelsToTwipsY(frm.Height)
+  '	End If
+  'End Sub
 	
 	Public Sub RemoveClipping()
 		Dim DesktopREC As RECT

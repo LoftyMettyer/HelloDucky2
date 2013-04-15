@@ -75,21 +75,7 @@ ErrorTrap:
 					sCode = "convert(datetime, '" & VB6.Format(CDate(gsDUMMY_DATE), "MM/dd/yyyy") & "')"
 			End Select
 		Else
-			''' JPD20010925 No longer use defaults. The prompted values should now be passed in.
-			''' So use those values instead.
-			'''' RH 23/04/01 - This piece of code forces the default value to be used
-			''''               for the prompted value.  It is temporary until we can
-			''''               get prompted values to work on the intranet.
-			'''Select Case ReturnType
-			'''  Case giEXPRVALUE_CHARACTER
-			'''    mvLastEvaluatedValue = msDefaultCharacterValue
-			'''  Case giEXPRVALUE_NUMERIC
-			'''    mvLastEvaluatedValue = mdblDefaultNumericValue
-			'''  Case giEXPRVALUE_LOGIC
-			'''    mvLastEvaluatedValue = mfDefaultLogicValue
-			'''  Case giEXPRVALUE_DATE
-			'''    mvLastEvaluatedValue = mdtDefaultDateValue
-			'''End Select
+
 			fFound = False
 			For iLoop = 0 To UBound(pavPromptedValues, 2)
 				'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -118,17 +104,8 @@ ErrorTrap:
 				End If
 			Next iLoop
 			fOK = fFound
-			
-			'''Select Case ReturnType
-			'''  Case giEXPRVALUE_CHARACTER
-			'''    sCode = "'" & Replace(CStr(mvLastEvaluatedValue), "'", "''") & "'"
-			'''  Case giEXPRVALUE_NUMERIC
-			'''    sCode = Trim(Str(mvLastEvaluatedValue))
-			'''  Case giEXPRVALUE_LOGIC
-			'''    sCode = IIf(mvLastEvaluatedValue, "1", "0")
-			'''  Case giEXPRVALUE_DATE
-			'''    sCode = "convert(datetime, '" & Format(CDate(mvLastEvaluatedValue), "MM/dd/yyyy") & "')"
-			'''End Select
+
+
 		End If
 		
 TidyUpAndExit: 

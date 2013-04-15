@@ -161,7 +161,7 @@ ErrorTrap:
 			Dim sSQL As String
 			Dim sTableName As String
 			Dim sColumnName As String
-			Dim sSelectionType As String
+      Dim sSelectionType As String = ""
 			Dim rsInfo As ADODB.Recordset
 			
 			' Get the column and table name.
@@ -469,8 +469,8 @@ ErrorTrap:
 		Dim sCode As String
 		Dim sOtherTableName As String
 		Dim sOrderCode As String
-		Dim sFilterCode As String
-		Dim sColumnCode As String
+    Dim sFilterCode As String = ""
+    Dim sColumnCode As String = ""
 		Dim rsInfo As ADODB.Recordset
 		Dim asViews() As String
     Dim avOrderJoinTables(,) As Object
@@ -483,7 +483,7 @@ ErrorTrap:
 		Dim objBaseTable As CTablePrivilege
 		Dim objBaseColumns As CColumnPrivileges
 		Dim objBaseColumn As CColumnPrivilege
-		Dim strUDFReturnType As String
+    Dim strUDFReturnType As String = ""
 		
 		sCode = ""
 		fOK = True
@@ -1205,7 +1205,7 @@ ErrorTrap:
 	
 	Public Function UDFCode(ByRef psRuntimeCode() As String, ByRef palngSourceTables As Object, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
 		
-		Dim strUDFCode As String
+    Dim strUDFCode As String = ""
 		
 		UDFCode = GenerateCode(strUDFCode, palngSourceTables, pfApplyPermissions, pfValidating, "", True, plngFixedExprID, psFixedSQLCode)
 		

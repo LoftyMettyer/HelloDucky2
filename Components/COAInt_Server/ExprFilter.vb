@@ -18,7 +18,7 @@ Friend Class clsExprFilter
 		
 		Dim objFilter As clsExprExpression
 		
-		Dim strRuntimeCode As String
+    Dim strRuntimeCode As String = ""
 		Dim bOK As Boolean
 		
 		' Instantiate and generate the runtime for the filter expression.

@@ -115,12 +115,12 @@ ErrorTrap:
 		Dim sSrchColumnCode As String
 		Dim sSrchTableCode As String
 		Dim sRealTableSource As String
-		Dim sParamCode1 As String
-		Dim sParamCode2 As String
-		Dim sParamCode3 As String
-		Dim sParamCode4 As String
-		Dim sSrchColumnName As String
-		Dim sRtnColumnName As String
+    Dim sParamCode1 As String = ""
+    Dim sParamCode2 As String = ""
+    Dim sParamCode3 As String = ""
+    Dim sParamCode4 As String = ""
+    Dim sSrchColumnName As String = ""
+    Dim sRtnColumnName As String = ""
 		Dim sSrchTableName As String
 		Dim rsInfo As ADODB.Recordset
 		Dim objColumnPrivileges As CColumnPrivileges
