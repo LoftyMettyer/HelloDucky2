@@ -254,7 +254,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities.vb" />
-    <None Include="app.config" />
     <Compile Include="AssemblyInfo.vb" />
   </ItemGroup>
   <ItemGroup>

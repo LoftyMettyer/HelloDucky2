@@ -13,7 +13,7 @@
 %>
  
     <script type="text/javascript">
-    	function reports_window_onload() {
+        function reports_window_onload() {
             loadAddRecords();
         }
     </script>
