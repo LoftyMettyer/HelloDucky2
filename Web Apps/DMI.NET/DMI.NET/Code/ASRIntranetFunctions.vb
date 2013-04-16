@@ -1,4 +1,5 @@
 ﻿Imports System.Threading
+Imports Scripting
 
 Public Module ASRIntranetFunctions
 
@@ -59,7 +60,23 @@ Public Module ASRIntranetFunctions
   ' TODO
   Function ValidateDir(ByRef paramType As String) As Boolean
     Return True
-  End Function
+	End Function
+	'Code from INTCLient 
+	'Public Function ValidateDir(psDir As String) As Boolean
+	'	Dim fso As New FileSystemObject
+	'	On Error Resume Next
+	'	ValidateDir = False
+	'	ValidateDir = fso.FolderExists(psDir)
+	'	fso = Nothing
+	'End Function
+
+	'Function ValidateFilePath(psDir As String) As Boolean
+	'	'NHRD Based on IntClient but fileSystemObject covers it better and non clienty
+	'	'Dim fso As New FileSystemObject
+	'	'Dim pathIsGood As Boolean
+	'	'pathIsGood = fso.FileExists(psDir)
+	'	Return True	'pathIsGood
+	'End Function
 
 	Function GeneratePath(filename As String) As String
 		Dim currVersion As String = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
