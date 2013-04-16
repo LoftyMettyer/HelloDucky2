@@ -184,7 +184,8 @@
 			},
 			sendMail = function(sTo, sSubject, sBody, sCC, sBCC) {
 						//TODO
-				},
+			},
+		
 			currentWorkPage = function () {
 						var sCurrentPage;
 						if (!($("#workframe").css('display') == 'none')) {
@@ -197,6 +198,10 @@
 
 						sCurrentPage = sCurrentPage.toUpperCase();
 						return sCurrentPage;
+				},
+				mmwordCreateTemplateFile = function (psTemplatePath) {
+					//TODO
+					return true;
 				};
 
 	window.OpenHR = {
@@ -221,7 +226,8 @@
 		ValidateDir: validateDir,
 		ValidateFilePath: validateFilePath,
 		sendMail: sendMail,
-		currentWorkPage: currentWorkPage
+		currentWorkPage: currentWorkPage,
+		MM_WORD_CreateTemplateFile: mmwordCreateTemplateFile
 	};
 
 })(window, jQuery);
