@@ -178,22 +178,26 @@
 	        //TODO
 	        return true;
 	    },
-	    SendMail = function(sTo, sSubject, sBody, sCC, sBCC) {
-	        //TODO
-	    },
-    currentWorkPage = function () {
-	        var sCurrentPage;
-	        if (!($("#workframe").css('display') == 'none')) {
-	            //Work frame is in view.
-	            sCurrentPage = $("#workframe").attr("data-framesource").replace(".asp", "");
-	        } else {
-	            //Option frame is in view.
-	            sCurrentPage = $("#optionframe").attr("data-framesource").replace(".asp", "");
-	        }
+			validateFilePath = function(sPath) {
+				//TODO
+				return true;
+			},
+			sendMail = function(sTo, sSubject, sBody, sCC, sBCC) {
+						//TODO
+				},
+			currentWorkPage = function () {
+						var sCurrentPage;
+						if (!($("#workframe").css('display') == 'none')) {
+								//Work frame is in view.
+								sCurrentPage = $("#workframe").attr("data-framesource").replace(".asp", "");
+						} else {
+								//Option frame is in view.
+								sCurrentPage = $("#optionframe").attr("data-framesource").replace(".asp", "");
+						}
 
-	        sCurrentPage = sCurrentPage.toUpperCase();
-	        return sCurrentPage;
-	    };
+						sCurrentPage = sCurrentPage.toUpperCase();
+						return sCurrentPage;
+				};
 
 	window.OpenHR = {
 		version: version,
@@ -215,8 +219,8 @@
 		GetRegistrySetting: getRegistrySetting,
 		SaveRegistrySetting: saveRegistrySetting,
 		ValidateDir: validateDir,
-		ValidateFilePath: ValidateFilePath,
-		sendMail: SendMail,
+		ValidateFilePath: validateFilePath,
+		sendMail: sendMail,
 		currentWorkPage: currentWorkPage
 	};
 
