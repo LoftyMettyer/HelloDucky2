@@ -2266,9 +2266,6 @@
         window.showModalDialog(pDestination, self, dlgwinprops);
     }
 
-    </SCRIPT>
-
-    <script type="text/javascript">
     
         function util_def_expression_addhandlers() {
 
