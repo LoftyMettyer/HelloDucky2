@@ -1,6 +1,5 @@
-﻿
-
-	function util_def_calendarreport_window_onload() {
+﻿function util_def_calendarreport_window_onload() {
+	debugger;
 	    var fOK;
 	    fOK = true;
 	    debugger;
@@ -5627,7 +5626,8 @@ function removeEventTable(piChildTableID) {
                         for (i = 0; i < frmDefinition.ssOleDBGridSelectedColumns.rows; i++) {
                             iTableID = frmDefinition.ssOleDBGridSelectedColumns.Columns("tableID").Text;
 
-                            if (window.dialogArguments.window.isSelectedChildTable(iTableID)) {
+                            //if (window.dialogArguments.window.isSelectedChildTable(iTableID)) {
+                            if (OpenHR.isSelectedChildTable(iTableID)) {
                                 fChildColumnsSelected = true;
                                 break;
                             }
