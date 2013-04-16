@@ -3953,11 +3953,9 @@ LoadRecords_ERROR:
     ' Input   : None
     ' Output  : True/False
     Dim pintLoop As Short
-    Dim strTemp As String
-    Dim iDigitCount As Short
-    Dim iCount As Short
-
     Dim vOriginalData As Object
+
+    If IsDBNull(vData) Then Return ""
 
     'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     'UPGRADE_WARNING: Couldn't resolve default property of object vOriginalData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
