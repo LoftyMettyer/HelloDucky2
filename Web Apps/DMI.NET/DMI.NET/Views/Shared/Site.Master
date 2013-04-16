@@ -252,6 +252,14 @@
 </script>
 </head>
 <body>
-<header><div id="fixedlinksframe" style="display: none;"><% Html.RenderPartial("~/views/home/fixedlinks.ascx")%></div></header><asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder><div class="modal"><!-- AJAX please wait spinner --></div><div id="About"><%Html.RenderPartial("~/views/account/about.ascx")%></div>
+	<header>
+		<asp:ContentPlaceHolder runat="server" ID="FixedLinksContent"></asp:ContentPlaceHolder>		
+	</header>
+	<asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
+	<div class="modal">
+		<!-- AJAX please wait spinner -->
+	</div>
+	<div id="About"><%Html.RenderPartial("~/views/account/about.ascx")%></div>
+	
 </body>
 </html>

@@ -32,6 +32,14 @@
 
 </asp:Content>
 
+
+<asp:Content runat="server" ID="Content1a" ContentPlaceHolderID="FixedLinksContent">
+	<div id="fixedlinksframe" style="display: none;"><%	Html.RenderPartial("~/views/home/fixedlinks.ascx")%></div>	
+</asp:Content>
+
+
+
+
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
 <script type="text/javascript">
