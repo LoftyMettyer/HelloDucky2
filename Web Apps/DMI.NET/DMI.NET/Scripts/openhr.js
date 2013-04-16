@@ -215,6 +215,7 @@
 		GetRegistrySetting: getRegistrySetting,
 		SaveRegistrySetting: saveRegistrySetting,
 		ValidateDir: validateDir,
+		ValidateFilePath: ValidateFilePath,
 		sendMail: SendMail,
 		currentWorkPage: currentWorkPage
 	};
