@@ -1,9 +1,6 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<!DOCTYPE html>
-
-
 <link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
 <script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
 <script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
@@ -340,51 +337,51 @@
 
 
     <script ID="clientEventHandlersJS" type="text/javascript">
-<!--
-        function validate_window_onload()
-        { 
-            // Hide the 'please wait' message.
-            trPleaseWait1.style.visibility='hidden';
-            trPleaseWait1.style.display='none';
-            trPleaseWait2.style.visibility='hidden';
-            trPleaseWait2.style.display='none';
-            trPleaseWait3.style.visibility='hidden';
-            trPleaseWait3.style.display='none';
-            trPleaseWait4.style.visibility='hidden';
-            trPleaseWait4.style.display='none';
-            trPleaseWait5.style.visibility='hidden';
-            trPleaseWait5.style.display='none';
 
-            // Resize the grid to show all prompted values.
-            iResizeBy = bdyMain.scrollWidth	- bdyMain.clientWidth;
-            if (bdyMain.offsetWidth + iResizeBy > screen.width) {
-                window.dialogWidth = new String(screen.width) + "px";
-            }
-            else {
-                iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length-2));
-                iNewWidth = iNewWidth + iResizeBy;
-                window.dialogWidth = new String(iNewWidth) + "px";
-            }
+        function validate_window_onload() {
 
-            iResizeBy = bdyMain.scrollHeight	- bdyMain.clientHeight;
-            if (bdyMain.offsetHeight + iResizeBy > screen.height) {
-                window.dialogHeight = new String(screen.height) + "px";
-            }
-            else {
-                iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length-2));
-                iNewHeight = iNewHeight + iResizeBy;
-                window.dialogHeight = new String(iNewHeight) + "px";
-            }
+            //// Hide the 'please wait' message.
+            //trPleaseWait1.style.visibility='hidden';
+            //trPleaseWait1.style.display='none';
+            //trPleaseWait2.style.visibility='hidden';
+            //trPleaseWait2.style.display='none';
+            //trPleaseWait3.style.visibility='hidden';
+            //trPleaseWait3.style.display='none';
+            //trPleaseWait4.style.visibility='hidden';
+            //trPleaseWait4.style.display='none';
+            //trPleaseWait5.style.visibility='hidden';
+            //trPleaseWait5.style.display='none';
 
-            iNewLeft = (screen.width - bdyMain.offsetWidth) / 2;
-            iNewTop = (screen.height - bdyMain.offsetHeight) / 2;
-            window.dialogLeft = new String(iNewLeft) + "px";
-            window.dialogTop = new String(iNewTop) + "px";
+            //// Resize the grid to show all prompted values.
+            //iResizeBy = bdyMain.scrollWidth	- bdyMain.clientWidth;
+            //if (bdyMain.offsetWidth + iResizeBy > screen.width) {
+            //    window.dialogWidth = new String(screen.width) + "px";
+            //}
+            //else {
+            //    iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length-2));
+            //    iNewWidth = iNewWidth + iResizeBy;
+            //    window.dialogWidth = new String(iNewWidth) + "px";
+            //}
+
+            //iResizeBy = bdyMain.scrollHeight	- bdyMain.clientHeight;
+            //if (bdyMain.offsetHeight + iResizeBy > screen.height) {
+            //    window.dialogHeight = new String(screen.height) + "px";
+            //}
+            //else {
+            //    iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length-2));
+            //    iNewHeight = iNewHeight + iResizeBy;
+            //    window.dialogHeight = new String(iNewHeight) + "px";
+            //}
+
+            //iNewLeft = (screen.width - bdyMain.offsetWidth) / 2;
+            //iNewTop = (screen.height - bdyMain.offsetHeight) / 2;
+            //window.dialogLeft = new String(iNewLeft) + "px";
+            //window.dialogTop = new String(iNewTop) + "px";
 
             if (txtErrorCode.value == 0) {
                 var frmSubmit = window.dialogArguments.document.getElementById('frmSend');
                 //window.dialogArguments.OpenHR(frmSubmit);
-                OpenHR.submitForm(frmSubmit);
+                OpenHR.submitForm(frmSubmit, null, false);
                 //window.dialogArguments.document.getElementById('frmSend').submit();
                 self.close();
                 return;
@@ -449,7 +446,7 @@
             window.dialogArguments.OpenHR.getElementById('frmSend').submit();
             self.close();
         }
-    -->
+
 </script>
 
 
