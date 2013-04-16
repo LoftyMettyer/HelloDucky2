@@ -4,7 +4,6 @@
 <%-- Import the js file containing functions for recordEdit --%>
 <script src="<%:Url.Content("~/Scripts/FormScripts/recordEdit.js")%>"></script>
 
-
 <script type="text/javascript">
 
     function recordEdit_window_onload() {
@@ -154,6 +153,7 @@
                     $(".datepicker").datepicker();
                     //add spinner functionality
                     $(".spinner").spinner();
+                    $(".number").mask("999999");
                 }
 
 

@@ -118,7 +118,8 @@
 	<script src="<%: Url.LatestContent("~/Scripts/jsTree/jquery.jstree.js")%>" type="text/javascript"></script>
 	<script id="officebarscript" src="<%: Url.LatestContent("~/Scripts/officebar/jquery.officebar.js")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/Scripts/jquery.jqGrid.min.js")%>" type="text/javascript"></script>
-	
+	<script src="<%: Url.LatestContent("~/Scripts/jquery.maskedinput.js")%>" type="text/javascript"></script>
+
 	<%--Load the OpenHR menu js file --%>
 	<script src="<%: Url.LatestContent("~/Scripts/FormScripts/menu.js")%>" type="text/javascript"></script>
 

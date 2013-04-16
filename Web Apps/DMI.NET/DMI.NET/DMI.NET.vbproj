@@ -18,7 +18,7 @@
     <OptionStrict>Off</OptionStrict>
     <OptionInfer>On</OptionInfer>
     <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
@@ -441,6 +441,7 @@
     <None Include="Scripts\FormScripts\util_def_exprcomponent.js" />
     <None Include="Scripts\FormScripts\util_def_expression.js" />
     <Content Include="Scripts\FormScripts\calendarreportdef.js" />
+    <None Include="Scripts\jquery.maskedinput.js" />
     <Content Include="Scripts\jsTree\theme\apple\bg.jpg" />
     <Content Include="Scripts\jsTree\theme\apple\d.png" />
     <Content Include="Scripts\jsTree\theme\apple\dot_for_ie.gif" />
@@ -787,7 +788,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\COAInt_Server\COAInt_Server.vbproj">
+    <ProjectReference Include="..\..\..\Components\COAInt_Server\COAInt_Server.vbproj">
       <Project>{2af7f0b5-431d-4892-b0b1-9397c73ebfd7}</Project>
       <Name>COAInt_Server</Name>
     </ProjectReference>
@@ -812,7 +813,16 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <SaveServerSettingsInUserFile>True</SaveServerSettingsInUserFile>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>50115</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:50115/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
     </VisualStudio>
