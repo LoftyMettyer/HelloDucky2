@@ -182,18 +182,13 @@
 %>
 
 <script type="text/javascript">
-<!--
 	function defsel_window_onload() {
-		
 		var frmDefSel = document.getElementById('frmDefSel');
-		
 		$("#workframe").attr("data-framesource", "DEFSEL");
-	    
 		if (frmDefSel.txtSingleRecordID.value > 0) {
 			// Expand the option frame and hide the work frame.
 			//TODO
 			//window.parent.document.all.item("workframeset").cols = "1, *";
-
 		}
 
 		var sControlName;
@@ -201,7 +196,6 @@
 		
 		frmDefSel.ssOleDBGridDefSelRecords.focus();
 		frmDefSel.cmdCancel.focus();
-
 		setGridFont(frmDefSel.ssOleDBGridDefSelRecords);
 
 		var controlCollection = frmDefSel.elements;
@@ -254,7 +248,6 @@
 			//window.parent.document.all.item("workframeset").cols = "*, 0";
 		}
 	}
--->	
 </script>
 
 <script type="text/javascript">
@@ -331,9 +324,9 @@
 
 	function refreshControls() {
 	    
-	    //show the utilities menu block.
-	    $("#mnuSectionUtilities").show();
-	    $("#toolbarHome").click();
+		//show the utilities menu block.
+		$("#mnuSectionUtilities").show();
+		$("#toolbarHome").click();
 
 		var fNoneSelected;
 		var frmpermissions = document.getElementById('frmpermissions');
@@ -347,11 +340,11 @@
 		button_disable(frmDefSel.cmdCopy, (fNoneSelected || (frmpermissions.grantnew.value == 0)));
 		button_disable(frmDefSel.cmdDelete, (fNoneSelected ||
 			(frmpermissions.grantdelete.value == 0) ||
-				(frmDefSel.cmdEdit.value.toUpperCase() == "VIEW")));
+			(frmDefSel.cmdEdit.value.toUpperCase() == "VIEW")));
 
 		if (((frmpermissions.grantedit.value == 0) &&
-			(frmpermissions.grantview.value == 1)) ||
-				(frmDefSel.cmdEdit.value.toUpperCase() == "VIEW")) {
+				(frmpermissions.grantview.value == 1)) ||
+			(frmDefSel.cmdEdit.value.toUpperCase() == "VIEW")) {
 			frmDefSel.cmdEdit.value = "View";
 		}
 		else {
@@ -361,9 +354,9 @@
 		button_disable(frmDefSel.cmdProperties, (fNoneSelected ||
 			((frmpermissions.grantnew.value == 0) &&
 				(frmpermissions.grantedit.value == 0) &&
-					(frmpermissions.grantview.value == 0) &&
-						(frmpermissions.grantdelete.value == 0) &&
-							(frmpermissions.grantrun.value == 0))));
+				(frmpermissions.grantview.value == 0) &&
+				(frmpermissions.grantdelete.value == 0) &&
+				(frmpermissions.grantrun.value == 0))));
 		button_disable(frmDefSel.cmdRun, (fNoneSelected || (frmpermissions.grantrun.value == 0)));
 	}
 
@@ -379,8 +372,8 @@
 
 			sUrl = "defselproperties" +
 				"?prop_name=" + escape(frmProp.prop_name.value) +
-					"&prop_id=" + frmProp.prop_id.value +
-						"&utiltype=" + frmProp.utiltype.value;
+				"&prop_id=" + frmProp.prop_id.value +
+				"&utiltype=" + frmProp.utiltype.value;
 			openDialog(sUrl, 500, 230);
 			return false;
 		}
@@ -414,29 +407,29 @@
 
 
 	function ReturnNewWindow(mypage, myname, w, h, scroll) {
-	    var winl = (screen.width - w) / 2;
-	    var wint = (screen.height - h) / 2;
-	    var winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scroll + ',resizable';
-	    var win = window.open(mypage, myname, winprops);
+		var winl = (screen.width - w) / 2;
+		var wint = (screen.height - h) / 2;
+		var winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scroll + ',resizable';
+		var win = window.open(mypage, myname, winprops);
 
-	    if (parseInt(navigator.appVersion) >= 4) {
-	        // Delay fixes a problem with IE7 and Vista (don't know why though!)
-	        pausecomp(300);
-	        win.window.focus();
-	    }
+		if (parseInt(navigator.appVersion) >= 4) {
+			// Delay fixes a problem with IE7 and Vista (don't know why though!)
+			pausecomp(300);
+			win.window.focus();
+		}
 
-	    return win;
+		return win;
 
 	}
 
 	function openDialog(pDestination, pWidth, pHeight) {
 		var dlgwinprops = "center:yes;" +
 			"dialogHeight:" + pHeight + "px;" +
-				"dialogWidth:" + pWidth + "px;" +
-					"help:no;" +
-						"resizable:yes;" +
-							"scroll:yes;" +
-								"status:no;";
+			"dialogWidth:" + pWidth + "px;" +
+			"help:no;" +
+			"resizable:yes;" +
+			"scroll:yes;" +
+			"status:no;";
 		window.showModalDialog(pDestination, self, dlgwinprops);
 	}
 
@@ -493,34 +486,34 @@
 			}
 			else {
 
-			    //var frmPrompt = document.getElementById('frmPrompt');
-		//	    var frmPrompt = OpenHR.getForm("workframe", "frmPrompt");
-			    var frmPrompt = document.getElementById('frmPrompt');
+				//var frmPrompt = document.getElementById('frmPrompt');
+				//	    var frmPrompt = OpenHR.getForm("workframe", "frmPrompt");
+				var frmPrompt = document.getElementById('frmPrompt');
 
 				frmPrompt.utilid.value = frmDefSel.utilid.value;
 				frmPrompt.utilname.value = frmDefSel.utilname.value;
 				frmPrompt.action.value = frmDefSel.action.value;
 				sUtilId = new String(frmDefSel.utilid.value);
 
-		//	    frmPrompt.target = sUtilId;
-	//		    var newWin = ReturnNewWindow('', sUtilId, '500', '200', 'yes');
-			 //   OpenHR.submitForm(frmPrompt, newWin);
-			    //OpenHR.submitForm(document.frmPrompt);
+				//	    frmPrompt.target = sUtilId;
+				//		    var newWin = ReturnNewWindow('', sUtilId, '500', '200', 'yes');
+				//   OpenHR.submitForm(frmPrompt, newWin);
+				//OpenHR.submitForm(document.frmPrompt);
 				//OpenHR.submitForm(document.frmPrompt);                
 				OpenHR.showInReportFrame(document.frmPrompt); 
 
 			}
-		//	return false;
+			//	return false;
 		}
 		else {
 			OpenHR.messageBox("You must select a definition to run", 48, "OpenHR Intranet");
 		}
-	//	return false;
+		//	return false;
 	}
 
 	function setnew() {
 
-	    OpenHR.showPopup("Loading form. Please wait...");
+		OpenHR.showPopup("Loading form. Please wait...");
 		document.frmDefSel.action.value = "new";
 		OpenHR.submitForm(document.frmDefSel);
 	}
@@ -645,68 +638,54 @@
 </script>
 
 <script type="text/javascript">
-<!--
-	OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "dblClick", ssOleDBGridDefSelRecords_dblClick);
-	
+	function util_def_addhandlers() {
+		OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "dblClick", ssOleDBGridDefSelRecords_dblClick);
+		OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "KeyPress", ssOleDBGridDefSelRecords_KeyPress);
+		OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "rowcolchange", ssOleDBGridDefSelRecords_rowcolchange);
+	}
 	function ssOleDBGridDefSelRecords_dblClick() {
 
 		var frmDefSel = document.getElementById("frmDefSel");
 
-		if ((frmDefSel.utiltype.value == 10) || (frmDefSel.utiltype.value == 11) || (frmDefSel.utiltype.value == 12)) 
-		{
+		if ((frmDefSel.utiltype.value == 10) || (frmDefSel.utiltype.value == 11) || (frmDefSel.utiltype.value == 12)) {
 			// DblClick triggers Edit.
 			setedit();
 		}
-		else 
-		{
+		else {
 			// DblClick triggers Run after prompting for confirmation. 
-			if (frmDefSel.cmdRun.disabled == true) 
-			{
-				return(false);
+			if (frmDefSel.cmdRun.disabled == true) {
+				return (false);
 			}
 
 			var answer = 0;
 
-		    if (frmDefSel.utiltype.value == 1) {
-		        answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Cross Tab ?", 36, "Confirmation...");
-		    }
-
-		    if (frmDefSel.utiltype.value == 2) 
-		    {
-		        answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Custom Report ?",36,"Confirmation...");
-		    }
-		    if (frmDefSel.utiltype.value == 9) 
-		    {
-		        answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Mail Merge ?",36,"Confirmation...");
-		    }
-		    if (frmDefSel.utiltype.value == 17) 
-		    {
-		        answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Calendar Report ?",36,"Confirmation...");
-		    }
-			if (frmDefSel.utiltype.value == 25) 
-			{
-				answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Workflow ?",36,"Confirmation...");
+			if (frmDefSel.utiltype.value == 1) {
+				answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Cross Tab ?", 36, "Confirmation...");
 			}
-			
-			if (answer == 6) 
-			{
+
+			if (frmDefSel.utiltype.value == 2) {
+				answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Custom Report ?", 36, "Confirmation...");
+			}
+			if (frmDefSel.utiltype.value == 9) {
+				answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Mail Merge ?", 36, "Confirmation...");
+			}
+			if (frmDefSel.utiltype.value == 17) {
+				answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Calendar Report ?", 36, "Confirmation...");
+			}
+			if (frmDefSel.utiltype.value == 25) {
+				answer = OpenHR.messageBox("Are you sure you want to run the '" + frmDefSel.utilname.value + "' Workflow ?", 36, "Confirmation...");
+			}
+
+			if (answer == 6) {
 				setrun();
 			}
 		}
 		return false;
 	}
--->
-</script>
-
-<script type="text/javascript">
-<!--
-	OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "KeyPress", ssOleDBGridDefSelRecords_KeyPress);
-	
 	function ssOleDBGridDefSelRecords_KeyPress(iKeyAscii) {
-
 		var txtTicker = document.getElementById("txtTicker");
 		var txtLastKeyFind = document.getElementById("txtLastKeyFind");
-		
+
 		if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {
 			var dtTicker = new Date();
 			var iThisTick = new Number(dtTicker.getTime());
@@ -730,13 +709,6 @@
 			locateRecord(sFind, false);
 		}
 	}
--->
-</script>
-
-<script type="text/javascript">
-<!--
-	OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "rowcolchange", ssOleDBGridDefSelRecords_rowcolchange);
-	
 	function ssOleDBGridDefSelRecords_rowcolchange() {
 
 		var frmDefSel = document.getElementById("frmDefSel");
@@ -783,7 +755,6 @@
 
 		refreshControls();
 	}
--->
 </script>
 
 <form id=frmpermissions name=frmpermissions style="visibility:hidden;display:none">
@@ -1445,4 +1416,5 @@ end if
 
 <script type="text/javascript">
 	defsel_window_onload();
+	util_def_addhandlers();
 </script>
