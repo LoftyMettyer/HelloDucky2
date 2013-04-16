@@ -787,7 +787,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Components\COAInt_Server\COAInt_Server.vbproj">
+    <ProjectReference Include="..\..\..\COAInt_Server\COAInt_Server.vbproj">
       <Project>{2af7f0b5-431d-4892-b0b1-9397c73ebfd7}</Project>
       <Name>COAInt_Server</Name>
     </ProjectReference>
