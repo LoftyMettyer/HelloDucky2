@@ -30,13 +30,8 @@
 				<li class="current"><a id="toolbarHome" href="#" rel="home">Home</a>
 					<ul>
 						<li><span>Fixed Links</span>
-							<div class="button">
-								<a href="<%: Url.Action("LinksMain", "Home") %>" rel="table" title="Home">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/home64HOVER.png") %>" alt="" />
-									<i class="icon-home"></i>
-									<h6>Home</h6>
-								</a>
-							</div>
+							<div class="button"><a href="<%: Url.Action("LinksMain", "Home") %>" rel="table" title="Home">
+								<img src="<%: Url.Content("~/Scripts/officebar/winkit/home64HOVER.png") %>" alt="" /><i class="icon-home"></i><h6>Home</h6></a></div>
 							<div class="button">
 								<a href="<%: Url.Action("LogOff", "Home") %>" rel="table" title="Log Off">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/cross64HOVER.png") %>" alt="" />
@@ -128,76 +123,77 @@
 				</li>
 				<li><a id="toolbarRecord" href="#" rel="home">Record</a>
 					<ul>
-						<li><span>Edit</span>
-							<div id="mnutoolNewRecord" class="button" title="Add...">
-								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/add64HOVER.png")%>" alt="" /></a>
+						<li><span>Edit</span>											
+
+							<div id="mnutoolNewRecord" class="button">
+								<a href="#" rel="table" title="New Record">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/add64HOVER.png")%>" alt="" />
 									<i class="icon-plus"></i>
 									<h6>Add</h6>
-							</div>
-							<div id="mnutoolCopyRecord" class="button" title="Copy...">
-								<a href="#" rel="table">
+							</a></div>
+							<div id="mnutoolCopyRecord" class="button">
+								<a href="#" rel="table" title="Copy Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/arrangeall64HOVER.png") %>"
-										alt="" /></a>
+										alt="" />
 									<i class="icon-copy"></i>
-									<h6>Copy</h6>
+									<h6>Copy</h6></a>
 							</div>
-							<div id="mnutoolEditRecord" class="button" title="Edit...">
-								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Edit64HOVER.png") %>" alt="" /></a>
+							<div id="mnutoolEditRecord" class="button">
+								<a href="#" rel="table" title="Edit Record">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Edit64HOVER.png") %>" alt="" />
 									<i class="icon-pencil"></i>
-									<h6>Edit</h6>
+									<h6>Edit</h6></a>
 							</div>
-							<div id="mnutoolSaveRecord" class="button" title="Save">
-								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/diskette64HOVER.png") %>" alt="" /></a>
+							<div id="mnutoolSaveRecord" class="button">
+								<a href="#" rel="table" title="Save">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/diskette64HOVER.png") %>" alt="" />
 									<i class="icon-disk"></i>
-									<h6>Save</h6>
+									<h6>Save</h6></a>
 							</div>
-							<div id="mnutoolDeleteRecord" class="button" title="Delete">
-								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/delete64HOVER.png") %>" alt="" /></a>
+							<div id="mnutoolDeleteRecord" class="button">
+								<a href="#" rel="table" title="Delete Record">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/delete64HOVER.png") %>" alt="" />
 									<i class="icon-close"></i>
-									<h6>Delete</h6>
+									<h6>Delete</h6></a>
 							</div>
 						</li>
 						<li><span>Navigate</span>
-							<div id="mnutoolParentRecord" class="button" title="Parent...">
-								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/upblack64HOVER.png") %>" alt="" /></a>
+							<div id="mnutoolParentRecord" class="button">
+								<a href="#" rel="table" title="Return to parent record">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/upblack64HOVER.png") %>" alt="" />
 									<i class="icon-arrow-up"></i>
-									<h6>Parent</h6>
+									<h6>Parent</h6></a>
 							</div>
-							<div id="mnutoolBack" class="button" title="Back to previous">
-								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BackRecord64HOVER.png") %>" alt="" /></a>
+							<div id="mnutoolBack" class="button">
+								<a href="#" rel="table" title="Return to record editing">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BackRecord64HOVER.png") %>" alt="" />
 									<i class="icon-arrow-left"></i>
-									<h6>Back</h6>
+									<h6>Back</h6></a>
 							</div>
 
-							<div id="mnutoolFirstRecord" class="button" title="Move to first record">
-								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/first64HOVER.png") %>" alt="" /></a>
+							<div id="mnutoolFirstRecord" class="button">
+								<a href="#" rel="table" title="First Record">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/first64HOVER.png") %>" alt="" />
 									<i class="icon-previous"></i>
-									<h6>First</h6>
+									<h6>First</h6></a>
 							</div>
-							<div id="mnutoolPreviousRecord" class="button" title="Move to previous record">
-								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/back64HOVER.png") %>" alt="" /></a>
+							<div id="mnutoolPreviousRecord" class="button">
+								<a href="#" rel="table" title="Previous Record">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/back64HOVER.png") %>" alt="" />
 									<i class="icon-backward"></i>
-									<h6>Back</h6>
+									<h6>Back</h6></a>
 							</div>
-							<div id="mnutoolNextRecord" class="button" title="Move to next record">
-								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/next64HOVER.png") %>" alt="" /></a>
+							<div id="mnutoolNextRecord" class="button">
+								<a href="#" rel="table" title="Next Record">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/next64HOVER.png") %>" alt="" />
 									<i class="icon-forward"></i>
-									<h6>Next</h6>
+									<h6>Next</h6></a>
 							</div>
-							<div id="mnutoolLastRecord" class="button" title="Move to last record">
-								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/last64HOVER.png") %>" alt="" /></a>
+							<div id="mnutoolLastRecord" class="button">
+								<a href="#" rel="table" title="Last Record">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/last64HOVER.png") %>" alt="" />
 									<i class="icon-next"></i>
-									<h6>Last</h6>
+									<h6>Last</h6></a>
 							</div>
 						</li>
 
@@ -209,117 +205,117 @@
 
 						<li><span>Find</span>
 							<div id="mnutoolFind" class="button">
-								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Find64HOVER.png") %>" alt="" /></a>
+								<a href="#" rel="table" title="Find">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Find64HOVER.png") %>" alt="" />
 									<i class="icon-check-empty"></i>
-									<h6>Find</h6>
+									<h6>Find</h6></a>
 							</div>
 							<div id="mnutoolQuickFind" class="button">
-								<a href="#" rel="table">
+								<a href="#" rel="table" title="Quick Find">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/QuickFind64HOVER.png") %>"
-										alt="" /></a>
+										alt="" />
 									<i class="icon-check-empty"></i>
-									<h6>Quick Find</h6>
+									<h6>Quick Find</h6></a>
 							</div>
 						</li>
 						<li><span>Order</span>
-							<div id="mnutoolOrder" class="button" title="Change sort order">
+							<div id="mnutoolOrder" class="button" title="Change Order">
 								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/sort64HOVER.png") %>" alt="" /></a>
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/sort64HOVER.png") %>" alt="" />
 									<i class="icon-sort"></i>
-									<h6>Sort</h6>
+									<h6>Sort</h6></a>
 							</div>
-							<div id="mnutoolFilter" class="button" title="Filter records">
+							<div id="mnutoolFilter" class="button" title="Filter">
 								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Filtering64HOVER.png") %>" alt="" /></a>
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Filtering64HOVER.png") %>" alt="" />
 									<i class="icon-filter"></i>
-									<h6>Filter</h6>
+									<h6>Filter</h6></a>
 							</div>
-							<div id="mnutoolClearFilter" class="button" title="Remove record filter">
+							<div id="mnutoolClearFilter" class="button" title="Clear Filter">
 								<a href="#" rel="table">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/FilteringDelete64HOVER.png") %>"
-										alt="" /></a>
+										alt="" />
 									<i class="icon-filter" style="color: gray"></i>
-									<h6>Clear Filter</h6>
+									<h6>Clear Filter</h6></a>
 							</div>
-							<div id="mnutoolPrint" class="button" title="Print...">
+							<div id="mnutoolPrint" class="button" title="Print">
 								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png") %>" alt="" /></a>
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png") %>" alt="" />
 									<i class="icon-print"></i>
-									<h6>Printer</h6>
+									<h6>Printer</h6></a>
 							</div>
 						</li>
 						<li><span>Reports</span>
 							<div id="mnutoolCalendarReportsRec" class="button">
-								<a href="#" rel="table">
+								<a href="#" rel="table" title="Calendar Reports">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CalendarReports64HOVER.png") %>"
-										alt="" />Calendar Reports</a>
+										alt="" />
+									<i class="icon-print"></i><h6>Calendar Reports</h6></a>
 							</div>
 							<div id="mnutoolStdRpt_BreakdownREC" class="button">
-								<a href="#" rel="table">
+								<a href="#" rel="table" title="Absence Breakdown">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/AbsenceBreakdown64HOVER.png") %>"
-										alt="" />Absence Breakdown</a>
+										alt="" /><i class="icon-print"></i><h6>Absence Breakdown</h6></a>
 							</div>
 							<div id="mnutoolStdRpt_AbsenceCalendar" class="button">
-								<a href="#" rel="table">
+								<a href="#" rel="table" title="Absence Calendar">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/AbsenceCalendar64HOVER.png") %>"
-										alt="" />Absence Calendar</a>
+										alt="" /><i class="icon-print"></i><h6>Absence Calendar</h6></a>
 							</div>
 							<div id="mnutoolStdRpt_BradfordREC" class="button">
-								<a href="#" rel="table">
+								<a href="#" rel="table" title="Bradford Factor">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BradfordFactor64HOVER.png") %>"
-										alt="" />Bradford Factor</a>
+										alt="" /><i class="icon-print"></i><h6>Bradford Factor</h6></a>
 							</div>
 							<div id="mnutoolMailMergeRec" class="button">
-								<a href="#" rel="table">
+								<a href="#" rel="table" title="Mail Merge">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/MailMerge64HOVER.png") %>"
-										alt="" />Mail Merge</a>
+										alt="" /><i class="icon-print"></i><h6>Mail Merge</h6></a>
 							</div>
 						</li>
 						<li><span>Training Booking</span>
 							<div id="mnutoolBulkBooking" class="button">
-								<a href="#" rel="table">
+								<a href="#" rel="table" title="Bulk Booking">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BulkBooking64HOVER.png") %>"
-										alt="" />Bulk Booking</a>
+										alt="" /><i class="icon-print"></i><h6>Bulk Booking</h6></a>
 							</div>
 							<div id="mnutoolAddFromWaitingList" class="button">
-								<a href="#" rel="table">
+								<a href="#" rel="table" title="Add from Waiting List">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/AddFormWaitingList64HOVER.png") %>"
-										alt="" />Add From Waiting List</a>
+										alt="" /><i class="icon-print"></i><h6>Add from Waiting List</h6></a>
 							</div>
 							<div id="mnutoolTransferBooking" class="button">
-								<a href="#" rel="table">
+								<a href="#" rel="table" title="Transfer Booking">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/TransferBooking64HOVER.png") %>"
-										alt="" />Transfer Booking</a>
+										alt="" /><i class="icon-print"></i><h6>Transfer Booking</h6></a>
 							</div>
 							<div id="mnutoolCancelBooking" class="button">
-								<a href="#" rel="table">
+								<a href="#" rel="table" title="Cancel Booking">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CancelBooking64HOVER.png") %>"
-										alt="" />Cancel Booking</a>
+										alt="" /><i class="icon-print"></i><h6>Cancel Booking</h6></a>
 							</div>
 						</li>
 						<li><span>Course Booking</span>
 							<div id="mnutoolBookCourse" class="button">
-								<a href="#" rel="table">
+								<a href="#" rel="table" title="Book Course">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BookCourse64HOVER.png") %>"
-										alt="" />Book</a>
+										alt="" /><i class="icon-print"></i><h6>Book Course</h6></a>
 							</div>
 							<div id="mnutoolCancelCourse" class="button">
-								<a href="#" rel="table">
+								<a href="#" rel="table" title="Cancel Course">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CancelCourse64HOVER.png") %>"
-										alt="" />Cancel</a>
+										alt="" /><i class="icon-print"></i><h6>Cancel Course</h6></a>
 							</div>
 						</li>
 						<li style="display: none;"><span>Workflow</span>
 							<div id="mnutoolWorkflow" class="button">
-								<a href="#" rel="table">
+								<a href="#" rel="table" title="Workflow">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Workflow64HOVER.png") %>"
-										alt="" />Workflows</a>
+										alt="" /><i class="icon-print"></i><h6>Launch Workflow</h6></a>
 							</div>
 							<div id="mnutoolWorkflowPendingSteps" class="button">
-								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/PendingSteps64HOVER.png") %>" alt="" />Pending
-                                        Steps</a>
+								<a href="#" rel="table" title="Pending Workflow Steps">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/PendingSteps64HOVER.png") %>" alt="" /><i class="icon-print"></i><h6>Pending Workflow Steps</h6></a>
 							</div>
 						</li>
 						<li><span>Record Position</span>

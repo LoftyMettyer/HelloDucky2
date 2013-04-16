@@ -284,7 +284,7 @@ div.officebar a {
   float:none;
   padding: 4px 15px 0px 6px;
   text-decoration:none;
-  cursor:default;
+  /*cursor:default;*/
   /*height: 23px; */
 }
 
@@ -548,11 +548,11 @@ div.officetab li div.button a {
   text-decoration: none;
   padding:0;
   margin:0;
-  /*height:66px;*/
+  height:66px;
 }
 div.officetab li div.button a:hover {
   /*background: transparent url(../../../Scripts/officebar/images/button_over.png) no-repeat scroll left top;*/
-
+	border-radius: 3px;
 	  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#FFD342',GradientType=0 );
   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFFFFF), to(#FFD342));
   background-image: -webkit-linear-gradient(top, #FFFFFF, #FFD342); 
