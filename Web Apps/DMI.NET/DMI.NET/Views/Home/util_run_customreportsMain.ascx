@@ -8,10 +8,10 @@
     Response.Write("function loadAddRecords()" & vbCrLf)
     Response.Write("{" & vbCrLf)
     Response.Write("  var iCount;" & vbCrLf & vbCrLf)
-
+    
     Response.Write("  iCount = new Number(txtLoadCount.value);" & vbCrLf)
     Response.Write("  txtLoadCount.value = iCount + 1" & vbCrLf & vbCrLf)
-
+   
     Response.Write("  if (iCount > 0) {	" & vbCrLf)
     Response.Write("    ShowReport();" & vbCrLf & vbCrLf)
     Response.Write("  }" & vbCrLf & vbCrLf)

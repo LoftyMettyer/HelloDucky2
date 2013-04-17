@@ -149,22 +149,22 @@ function ShowReport() {
             }
         }
 
-        if (frmExportData.txtPreview.value == 'False') {
-            frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'hidden';
-            frmOutput.ssOleDBGridDefSelRecords.Redraw = true;
-            ExportData("OUTPUTRUN");
-            document.getElementById('output').style.visibility = 'hidden';
-            document.getElementById('close').value = 'OK';
-            document.getElementById('tdOutputMSG').innerText = "Custom Report : '" + "' Completed Successfully.";
-            return;
-        }
-        else {
+        //debugger;
+        //if (frmExportData.txtPreview.value == 'False') {
+        //    frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'hidden';
+        //    frmOutput.ssOleDBGridDefSelRecords.Redraw = true;
+        //    ExportData("OUTPUTRUN");
+        //    document.getElementById('output').style.visibility = 'hidden';
+        //    document.getElementById('close').value = 'OK';
+        //    document.getElementById('tdOutputMSG').innerText = "Custom Report : '" + "' Completed Successfully.";
+        //    return;
+        //}
+        //else {
             frmOutput.ssOleDBGridDefSelRecords.Redraw = true;
             frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'visible';
-        }
+        //}
     }
 
-    $("reportframeset").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTSMAIN");
     $("#top").hide();
     $("#reportworkframe").show();
 
