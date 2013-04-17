@@ -1,4 +1,26 @@
-﻿	function util_def_mailmerge_window_onload() {
+﻿
+var sRepDefn;
+var sSortDefn;
+
+var frmDefinition = document.getElementById("frmDefinition");
+var frmUseful = document.getElementById("frmUseful");
+var frmOriginalDefinition = document.getElementById("frmOriginalDefinition");
+var frmCustomReportChilds = document.getElementById("frmCustomReportChilds");
+var frmSortOrder = document.getElementById("frmSortOrder");
+var frmSelectionAccess = document.getElementById("frmSelectionAccess");
+var frmSend = document.getElementById("frmSend");
+var frmAccess = document.getElementById("frmAccess");
+var frmValidate = document.getElementById("frmValidate");
+var frmEmailSelection = document.getElementById("frmEmailSelection");
+var frmTables = document.getElementById("frmTables");
+
+var div1 = document.getElementById("div1");
+var div2 = document.getElementById("div2");
+var div3 = document.getElementById("div3");
+var div4 = document.getElementById("div4");
+var div5 = document.getElementById("div5");
+
+function util_def_mailmerge_window_onload() {
 	    var fOK;
 	    fOK = true;
 	    //debugger;
@@ -138,64 +160,59 @@ function refreshAvailableColumns() {
     }
 }
 function TemplateSelect() {
-	//debugger;
 	var sPath = "";
-    if (frmDefinition.txtTemplate.value.length == 0) {
-        var sKey = new String("documentspath_");
-        sKey = sKey.concat(OpenHR.getForm("menuframe", "frmMenuInfo").txtDatabase.value);
-        OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-        window.dialog.InitDir = sPath;
-    }
-    else {
-    	window.dialog.FileName = frmDefinition.txtTemplate.value;
-    	sPath = new String(frmDefinition.txtTemplate.value);
-    }
+	if (frmDefinition.txtTemplate.value.length == 0) {
+		var sKey = new String("documentspath_");
+		sKey = sKey.concat(OpenHR.getForm("menuframe", "frmMenuInfo").txtDatabase.value);
+		sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+		dialog.InitDir = sPath;
+	}
+	else {
+		dialog.FileName = frmDefinition.txtTemplate.value;
+		//sPath = new String(frmDefinition.txtTemplate.value);
+	}
 
-    window.dialog.CancelError = true;
-    window.dialog.DialogTitle = "Mail Merge Template";
-    window.dialog.Filter = "Word Template (*.dot;*.dotx;*.doc;*.docx)|*.dot;*.dotx;*.doc;*.docx";
-    window.dialog.Flags = 2621444;
+	dialog.CancelError = true;
+	dialog.DialogTitle = "Mail Merge Template";
+	dialog.Filter = "Word Template (*.dot;*.dotx;*.doc;*.docx)|*.dot;*.dotx;*.doc;*.docx";
+	dialog.Flags = 2621444;
 
-    try {
-        window.dialog.ShowOpen();
-    }
-    catch (e) {
-    }
+	try {
+		dialog.ShowOpen();
+	}
+	catch (e) {
+	}
+	if (dialog.FileName != "") {
+		//if (sPath.length > 0) {
+		if (OpenHR.ValidateFilePath(sPath) == false) {
+			{
+				var iResponse = OpenHR.messageBox("Template file does not exist.  Create it now?", 36);
+				if (iResponse == 6) {
+					frmDefinition.txtTemplate.value = dialog.FileName;
+					button_disable(frmDefinition.cmdTemplateClear, false);
 
-    //if (window.dialog.FileName != "") {
-    if (sPath.length > 0) {
-    	if (!OpenHR.ValidateDir(sPath)) {
-			//if (OpenHR.validateFileDir(window.dialog.FileName) == false) {
-            {
-                var iResponse = OpenHR.messageBox("Template file does not exist.  Create it now?", 36);
-                if (iResponse == 6) {
-                    frmDefinition.txtTemplate.value = window.dialog.FileName;
-                    button_disable(frmDefinition.cmdTemplateClear, false);
+					try {
+						var sOfficeSaveAsValues = '<%=session("OfficeSaveAsValues")%>';
+						OpenHR.SaveAsValues = sOfficeSaveAsValues;
+						MM_WORD_CreateTemplateFile(dialog.FileName);
+					} catch (e) {
+					}
+				}
+			}
+		} else {
+			frmDefinition.txtTemplate.value = dialog.FileName;
+			button_disable(frmDefinition.cmdTemplateClear, false);
+		}
+	}
 
-
-                    try {
-                        var sOfficeSaveAsValues = '<%=session("OfficeSaveAsValues")%>';
-                        OpenHR.SaveAsValues = sOfficeSaveAsValues;
-                        //TODO
-                        debugger;
-                        //window.parent.frames("menuframe").ASRIntranetFunctions.MM_WORD_CreateTemplateFile(dialog.FileName);
-                    } catch (e) {
-                    }
-                }
-            }
-        } else {
-            frmDefinition.txtTemplate.value = window.dialog.FileName;
-            button_disable(frmDefinition.cmdTemplateClear, false);
-        }
-    }
-
-    frmUseful.txtChanged.value = 1;
-    refreshTab4Controls();
+	frmUseful.txtChanged.value = 1;
+	refreshTab4Controls();
 }
-function displayPage(piPageNumber) {
-    //window.parent.frames("refreshframe").document.forms("frmRefresh").submit();
-    OpenHR.submitForm(window.frmRefresh);
 
+function displayPage(piPageNumber) {
+	//window.parent.frames("refreshframe").document.forms("frmRefresh").submit();
+	OpenHR.submitForm(window.frmRefresh);
+	
     if (piPageNumber == 1) {
         div1.style.visibility = "visible";
         div1.style.display = "block";
@@ -211,8 +228,7 @@ function displayPage(piPageNumber) {
         button_disable(frmDefinition.btnTab3, false);
         button_disable(frmDefinition.btnTab4, false);
 
-
-        try {
+    	try {
             frmDefinition.txtName.focus();
         }
         catch (e) { }
@@ -223,8 +239,8 @@ function displayPage(piPageNumber) {
 
     if (piPageNumber == 2) {
         // Get the columns/calcs for the current tvable selection.
-        var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
-
+    	var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
+    	
         if (frmUseful.txtTablesChanged.value == 1) {
             frmGetDataForm.txtAction.value = "LOADREPORTCOLUMNS";
             frmGetDataForm.txtReportBaseTableID.value = frmUseful.txtCurrentBaseTableID.value;
@@ -656,9 +672,17 @@ function refreshTab3Controls() {
         (fViewing == true)));
 }
 function refreshTab4Controls() {
+	debugger;
     var fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
-
     button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) || (fViewing == true)));
+    // Little dodge to get around a browser bug that
+	// does not refresh the display on all controls.
+	try {
+		window.resizeBy(0, -1);
+		window.resizeBy(0, 1);
+	}
+	catch (e) { }
+
 }
 function changeBaseTableRecordOptions() {
     frmDefinition.txtBasePicklist.value = '';
@@ -885,11 +909,11 @@ function submitDefinition() {
     var sColumnID;
     var sType;
 
-    if (validateTab1() == false) { menu_refreshMenu(); return; }
-    if (validateTab2() == false) { menu_refreshMenu(); return; }
-    if (validateTab3() == false) { menu_refreshMenu(); return; }
-    if (validateTab4() == false) { menu_refreshMenu(); return; }
-    if (populateSendForm() == false) { menu_refreshMenu(); return; }
+    if (validateTab1() == false) { OpenHR.refreshMenu(); return; }
+    if (validateTab2() == false) { OpenHR.refreshMenu(); return; }
+    if (validateTab3() == false) { OpenHR.refreshMenu(); return; }
+    if (validateTab4() == false) { OpenHR.refreshMenu(); return; }
+    if (populateSendForm() == false) { OpenHR.refreshMenu(); return; }
 
     // Now create the validate popup to check that any filters/calcs
     // etc havent been deleted, or made hidden etc.		
@@ -957,7 +981,7 @@ function submitDefinition() {
     var sHiddenGroups = HiddenGroups(frmDefinition.grdAccess);
     frmValidate.validateHiddenGroups.value = sHiddenGroups;
 
-    var sURL = "dialog" +
+    var sURL = "util_validate_mailmerge" +
         "?validateBaseFilter=" + escape(frmValidate.validateBaseFilter.value) +
         "&validateBasePicklist=" + escape(frmValidate.validateBasePicklist.value) +
         "&validateCalcs=" + escape(frmValidate.validateCalcs.value) +
@@ -966,34 +990,38 @@ function submitDefinition() {
         "&validateTimestamp=" + escape(frmValidate.validateTimestamp.value) +
         "&validateUtilID=" + escape(frmValidate.validateUtilID.value) +
         "&destination=util_validate_mailmerge";
-    openDialog(sURL, (screen.width) / 2, (screen.height) / 3, "no", "no");
+    //openDialog(sURL, (screen.width) / 2, (screen.height) / 3, "no", "no");
+	openDialog(sURL, (screen.width) / 2, (screen.height) / 3);
 }
-function cancelClick() {
-    if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") || (definitionChanged() == false)) {
-        //todo
-        //window.location.href="defsel";
-        return (false);
-    }
 
-    var answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
-    if (answer == 7) {
-        // No
-        //todo
-        //window.location.href="defsel";
-        return (false);
-    }
-    if (answer == 6) {
-        // Yes
-        okClick();
-    }
-	return (false);
-}
+
+function cancelClick() {
+		if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
+			(definitionChanged() == false)) {
+
+			menu_loadDefSelPage(9, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
+			return (false);
+		}
+
+		var answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
+		if (answer == 7) {
+			// No
+			menu_loadDefSelPage(9, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
+			
+			return (false);
+		}
+		if (answer == 6) {
+			// Yes
+			okClick();
+		}
+	}
 
 function okClick() {
-    OpenHR.disableMenu("menuframe");
-    frmSend.txtSend_reaction.value = "MAILMERGE";
-    submitDefinition();
+	menu_disableMenu();
+	frmSend.txtSend_reaction.value = "MAILMERGE";
+	submitDefinition();
 }
+
 function saveChanges(psAction, pfPrompt, pfTBOverride) {
     if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
         (definitionChanged() == false)) {
@@ -1986,7 +2014,6 @@ function grdAccessComboCloseUp() {
 function grdAccessGotFocus() {
     window.grdAccess.Col = 1;
 }
-	
 function grdAccessRowColChange() {
     var fViewing;
     var fIsNotOwner;
@@ -2073,11 +2100,7 @@ function locateRecord(psSearchFor) {
 
     frmDefinition.ssOleDBGridAvailableColumns.Redraw = true;
 }
-
-
-
-
-	function validateColDecimals() {
+function validateColDecimals() {
 	    var sConvertedValue;
 	    var sDecimalSeparator;
 	    var sThousandSeparator;
@@ -2699,15 +2722,17 @@ function validateTab3() {
 }
 function validateTab4() {
     var sErrMsg;
-
+	debugger;
     sErrMsg = "";
-
+		var sPath = "";
     if (frmDefinition.txtTemplate.value == "") {
         sErrMsg = "No Template file selected.";
     }
 
     if (sErrMsg == "") {
-        if (OpenHR.validateFilePath(frmDefinition.txtTemplate.value) == false) {
+    	//if (OpenHR.validateFilePath(frmDefinition.txtTemplate.value) == false) {
+    	sPath = frmDefinition.txtTemplate.value;
+	    if (OpenHR.ValidateFilePath(sPath)== false) {
             sErrMsg = "Template file not found.";
         }
     }
