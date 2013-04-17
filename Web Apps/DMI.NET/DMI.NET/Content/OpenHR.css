@@ -548,6 +548,7 @@ header {
 	position: absolute;
 	bottom: 5px;
 	right: 0px;
+	z-index: 99;
 }
 
 	.FixedLinksRight ul

@@ -275,3 +275,18 @@ div.officetab li div.button
 
 div.officebar ul li > a { display: none!important;}
 div.officetab div.panel > span { display: none;}
+
+
+/* SSI Specific styling for shared screens go here:*/ 
+
+#divFindForm {
+	background-image: none!important;
+}
+
+#findGridRow td {
+	font-size: 14pt;
+	padding: 8px 0 8px 8px;	
+}
+
+#row3 td { color: white;}
+

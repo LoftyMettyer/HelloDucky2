@@ -338,7 +338,7 @@
 	
 	</script>
 
-<div <%=session("BodyTag")%>>
+<div id="divFindForm" <%=session("BodyTag")%>>
 	<form action="" class="absolutefull" method="POST" id="frmFindForm" name="frmFindForm">
 	    <div class="absolutefull">
 		<div id="row1">
@@ -870,7 +870,7 @@
 							                        If rstFindRecords.fields(iLoop).name = "ID" Then
 							                            ' Response.Write("<td style='display: none;'>" & sAddTRString & "</td>")							                            
 							                        Else
-							                            Response.Write("<td id='col_" & iIDNumber.ToString() & "'>" & sAddTRString & "<input type='hidden' value='" & iIDNumber.ToString() & "'></td>")
+							                            Response.Write("<td class='findGridCell' id='col_" & iIDNumber.ToString() & "'>" & sAddTRString & "<input type='hidden' value='" & iIDNumber.ToString() & "'></td>")
 							                        End If
 							                    Next
 							                    Response.Write("</tr>")
