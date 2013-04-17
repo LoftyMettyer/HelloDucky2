@@ -5,46 +5,48 @@
 	//<script ID="clientEventHandlersJS" type="text/javascript">
 	function util_validate_mailmerge_window_onload() {
 		// Hide the 'please wait' message.
-		trPleaseWait1.style.visibility = 'hidden';
-		trPleaseWait1.style.display = 'none';
-		trPleaseWait2.style.visibility = 'hidden';
-		trPleaseWait2.style.display = 'none';
-		trPleaseWait3.style.visibility = 'hidden';
-		trPleaseWait3.style.display = 'none';
-		trPleaseWait4.style.visibility = 'hidden';
-		trPleaseWait4.style.display = 'none';
-		trPleaseWait5.style.visibility = 'hidden';
-		trPleaseWait5.style.display = 'none';
+		//trPleaseWait1.style.visibility = 'hidden';
+		//trPleaseWait1.style.display = 'none';
+		//trPleaseWait2.style.visibility = 'hidden';
+		//trPleaseWait2.style.display = 'none';
+		//trPleaseWait3.style.visibility = 'hidden';
+		//trPleaseWait3.style.display = 'none';
+		//trPleaseWait4.style.visibility = 'hidden';
+		//trPleaseWait4.style.display = 'none';
+		//trPleaseWait5.style.visibility = 'hidden';
+		//trPleaseWait5.style.display = 'none';
 
-		// Resize the grid to show all prompted values.
-		iResizeBy = bdyMain.scrollWidth - bdyMain.clientWidth;
-		if (bdyMain.offsetWidth + iResizeBy > screen.width) {
-			window.dialogWidth = new String(screen.width) + "px";
-		}
-		else {
-			iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length - 2));
-			iNewWidth = iNewWidth + iResizeBy;
-			window.dialogWidth = new String(iNewWidth) + "px";
-		}
+		//// Resize the grid to show all prompted values.
+		//iResizeBy = bdyMain.scrollWidth - bdyMain.clientWidth;
+		//if (bdyMain.offsetWidth + iResizeBy > screen.width) {
+		//	window.dialogWidth = new String(screen.width) + "px";
+		//}
+		//else {
+		//	iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length - 2));
+		//	iNewWidth = iNewWidth + iResizeBy;
+		//	window.dialogWidth = new String(iNewWidth) + "px";
+		//}
 
-		iResizeBy = bdyMain.scrollHeight - bdyMain.clientHeight;
-		if (bdyMain.offsetHeight + iResizeBy > screen.height) {
-			window.dialogHeight = new String(screen.height) + "px";
-		}
-		else {
-			iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length - 2));
-			iNewHeight = iNewHeight + iResizeBy;
-			window.dialogHeight = new String(iNewHeight) + "px";
-		}
+		//iResizeBy = bdyMain.scrollHeight - bdyMain.clientHeight;
+		//if (bdyMain.offsetHeight + iResizeBy > screen.height) {
+		//	window.dialogHeight = new String(screen.height) + "px";
+		//}
+		//else {
+		//	iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length - 2));
+		//	iNewHeight = iNewHeight + iResizeBy;
+		//	window.dialogHeight = new String(iNewHeight) + "px";
+		//}
 
-		iNewLeft = (screen.width - bdyMain.offsetWidth) / 2;
-		iNewTop = (screen.height - bdyMain.offsetHeight) / 2;
-		window.dialogLeft = new String(iNewLeft) + "px";
-		window.dialogTop = new String(iNewTop) + "px";
-
+		//iNewLeft = (screen.width - bdyMain.offsetWidth) / 2;
+		//iNewTop = (screen.height - bdyMain.offsetHeight) / 2;
+		//window.dialogLeft = new String(iNewLeft) + "px";
+		//window.dialogTop = new String(iNewTop) + "px";
+		debugger;
 		if (txtErrorCode.value == 0) {
 			//window.dialogArguments.document.getElementById('frmSend').submit();
-			OpenHR.getElementById("frmSend").submit();
+			//window.dialogArguments.OpenHR.getElementById("frmSend").submit();
+			var frmSend = window.dialogArguments.OpenHR.getForm("workframe", "frmSend");
+			window.dialogArguments.OpenHR.submitForm(frmSend);
 			self.close();
 			return;
 		}
@@ -53,18 +55,18 @@
 			// Error, see if we need to remove any columns from the mail merge.
 			if (txtHiddenCalcs.value.length > 0) {
 				//window.dialogArguments.window.parent.frames("workframe").removeCalcs(txtHiddenCalcs.value);
-				OpenHR.removeCalcs(txtHiddenCalcs.value);
+				window.dialogArguments.OpenHR.removeCalcs(txtHiddenCalcs.value);
 				
 			}
 			if (txtDeletedCalcs.value.length > 0) {
 				//window.dialogArguments.window.parent.frames("workframe").removeCalcs(txtDeletedCalcs.value);
-				OpenHR.removeCalcs(txtDeletedCalcs.value);
+				window.dialogArguments.OpenHR.removeCalcs(txtDeletedCalcs.value);
 			}
 		}
 
 		try {
 			//window.dialogArguments.window.parent.frames("menuframe").refreshMenu();
-			OpenHR.refreshMenu("menuframe");
+			window.dialogArguments.OpenHR.refreshMenu("menuframe");
 		}
 		catch (e) {
 		}
@@ -72,21 +74,21 @@
 
 	function overwrite() {
 		//window.dialogArguments.document.getElementById('frmSend').submit();
-		OpenHR.getElementById("frmSend").submit();
+		window.dialogArguments.OpenHR.getElementById("frmSend").submit();
 		
 		self.close();
 	}
 
 	function createNew() {
 		//window.dialogArguments.window.parent.frames("workframe").createNew(self);
-		OpenHR.getFrame("workframe").createNew(self);
+		window.dialogArguments.OpenHR.getFrame("workframe").createNew(self);
 	}
 
 	function continueSave() {
 		//window.dialogArguments.window.parent.frames("workframe").setJobsToHide(txtJobIDsToHide.value);
-		OpenHR.getFrame("workframe").setJobsToHide(txtJobIDsToHide.value);
+		window.dialogArguments.OpenHR.getFrame("workframe").setJobsToHide(txtJobIDsToHide.value);
 		//window.dialogArguments.document.getElementById('frmSend').submit();
-		OpenHR.getElementById("frmSend").submit();
+		window.dialogArguments.OpenHR.getElementById("frmSend").submit();
 		self.close();
 	}
 </script>
