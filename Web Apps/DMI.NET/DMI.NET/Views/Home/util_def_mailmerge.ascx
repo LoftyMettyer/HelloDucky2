@@ -152,17 +152,16 @@
 															<td width="20" nowrap>&nbsp;</td>
 															<td width="10" valign="top">Access :</td>
 															<td width="5">&nbsp;</td>
-															<td width="40%" rowspan="3" valign="top"></td>
-												<TD width="40%" rowspan="3" valign=top>
-													<%Html.RenderPartial("Util_Def_CustomReports/grdaccess")%>         
-												</TD>
+															<td width="40%" rowspan="3" valign="top" style="height: 99%">
+																<%Html.RenderPartial("Util_Def_CustomReports/grdaccess")%>
+															</td>
 															<td width="5">&nbsp;</td>
+															
 														</tr>
-
+														
 														<tr height="10">
 															<td colspan="7">&nbsp;</td>
 														</tr>
-
 														<tr height="10">
 															<td colspan="7">&nbsp;</td>
 														</tr>
@@ -172,7 +171,7 @@
 																<hr>
 															</td>
 														</tr>
-
+							
 														<tr height="10">
 															<td width="5">&nbsp;</td>
 															<td width="100" nowrap valign="top">Base Table :</td>
@@ -2744,8 +2743,11 @@
 		<input type="hidden" id="txtSortVOC" name="txtSortVOC">
 		<input type="hidden" id="txtSortSRV" name="txtSortSRV">
 	</form>
-
-
+	
+	<form action="default_Submit" method=post id=frmGoto name=frmGoto style="visibility:hidden;display:none">
+		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
+	</form>
+	
 	<form id="frmSelectionAccess" name="frmSelectionAccess">
 		<input type="hidden" id="forcedHidden" name="forcedHidden" value="N">
 		<input type="hidden" id="baseHidden" name="baseHidden" value="N">
