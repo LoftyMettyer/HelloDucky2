@@ -256,7 +256,11 @@
 	    
 
 		/* Sequential search the grid for the required ID. */
-		function locateRecord(psSearchFor, pfIdMatch) {
+	    function locateRecord(psSearchFor, pfIdMatch) {
+
+				//TODO:
+		    return false;
+
 			var fFound;
 			var iIndex;
 			var iIdColumnIndex;
