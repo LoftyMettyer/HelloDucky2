@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<script src="<%: Url.Content("~/Scripts/FormScripts/mailmergedef.js")%>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/FormScripts/util_def_mailmerge.js")%>" type="text/javascript"></script>
 
 <%  
 	'Dim iVersionOneEnabled = 0
@@ -116,6 +116,7 @@
 										<tr valign="top">
 											<td>
 												<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
+													<td>
 													<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 														<tr height="10">
 															<td width="5">&nbsp;</td>
@@ -320,6 +321,7 @@
 															<td width="5">&nbsp;</td>
 														</tr>
 													</table>
+														</td>
 												</table>
 									</table>
 								</div>
@@ -338,8 +340,8 @@
 														<td width="5" height="5"></td>
 														<td valign="top" height="5">
 															<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-																<tr height="5">
-																	<td height="5" colspan="7" width="100%">
+																<tr height="17">
+																	<td height="17" colspan="7" width="100%">
 																		<select id="cboTblAvailable" name="cboTblAvailable" disabled="disabled" class="combo combodisabled" style="WIDTH: 100%; HEIGHT: 100%"
 																			onchange="refreshAvailableColumns();">
 																		</select>
@@ -2037,7 +2039,7 @@
 																			<%If iVersionOneEnabled = 0 Then%>
 																			<tr style="height: 20px; visibility: hidden; display: none">
 																				<%Else%>
-																			<tr style="height: 20px; visibility: visible; display: block">
+																			<tr style="height: 20px;">
 																				<%End If%>
 																				<td width="5">
 																					<input id="optDestination2" name="optDestination" type="radio"
@@ -2056,6 +2058,7 @@
 																						onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
 																						Document Management</label>
 																				</td>
+																				<td width="5">&nbsp;</td>
 																			</tr>
 																			<tr></tr>
 																		</table>
@@ -2761,8 +2764,7 @@
 	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
 </div>
 
-<script type="text/javascript">
-	//debugger;
+<script type="text/javascript">	
 	util_def_mailmerge_window_onload();
 	utilDefMailmergeAddActiveXHandlers();
 </script>

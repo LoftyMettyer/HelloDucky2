@@ -23,7 +23,6 @@ var div5 = document.getElementById("div5");
 function util_def_mailmerge_window_onload() {
 	    var fOK;
 	    fOK = true;
-	    //debugger;
 	    var sErrMsg = frmUseful.txtErrorDescription.value;
 	    if (sErrMsg.length > 0) {
 	        fOK = false;
@@ -672,7 +671,6 @@ function refreshTab3Controls() {
         (fViewing == true)));
 }
 function refreshTab4Controls() {
-	debugger;
     var fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
     button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) || (fViewing == true)));
     // Little dodge to get around a browser bug that
@@ -1931,8 +1929,8 @@ function utilDefMailmergeAddActiveXHandlers() {
 
     OpenHR.addActiveXHandler("grdAccess", "ComboCloseUp", grdAccessComboCloseUp);
     OpenHR.addActiveXHandler("grdAccess", "GotFocus", grdAccessGotFocus);
-    OpenHR.addActiveXHandler("grdAccess", "RowColChange", grdAccessRowColChange);
-    OpenHR.addActiveXHandler("grdAccess", "RowLoaded", grdAccessRowLoaded);
+    OpenHR.addActiveXHandler("grdAccess", "RowColChange(LastRow, LastCol)", grdAccessRowColChange);
+    OpenHR.addActiveXHandler("grdAccess", "RowLoaded(Bookmark)", grdAccessRowLoaded);
 }
 
 //ssOleDBGridAvailableColumns handlers
@@ -2014,7 +2012,7 @@ function grdAccessComboCloseUp() {
 function grdAccessGotFocus() {
     window.grdAccess.Col = 1;
 }
-function grdAccessRowColChange() {
+function grdAccessRowColChange(LastRow, LastCol) {
     var fViewing;
     var fIsNotOwner;
     var varBkmk;
@@ -2043,7 +2041,7 @@ function grdAccessRowColChange() {
 
     frmDefinition.grdAccess.Col = 1;
 }
-function grdAccessRowLoaded() {
+function grdAccessRowLoaded(Bookmark) {
     var fViewing;
     var fIsNotOwner;
     fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
@@ -2722,7 +2720,6 @@ function validateTab3() {
 }
 function validateTab4() {
     var sErrMsg;
-	debugger;
     sErrMsg = "";
 		var sPath = "";
     if (frmDefinition.txtTemplate.value == "") {

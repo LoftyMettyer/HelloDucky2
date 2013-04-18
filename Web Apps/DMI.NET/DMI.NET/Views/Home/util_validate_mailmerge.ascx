@@ -40,8 +40,7 @@
 		//iNewLeft = (screen.width - bdyMain.offsetWidth) / 2;
 		//iNewTop = (screen.height - bdyMain.offsetHeight) / 2;
 		//window.dialogLeft = new String(iNewLeft) + "px";
-		//window.dialogTop = new String(iNewTop) + "px";
-		debugger;
+		//window.dialogTop = new String(iNewTop) + "px";		
 		if (txtErrorCode.value == 0) {
 			//window.dialogArguments.document.getElementById('frmSend').submit();
 			//window.dialogArguments.OpenHR.getElementById("frmSend").submit();
