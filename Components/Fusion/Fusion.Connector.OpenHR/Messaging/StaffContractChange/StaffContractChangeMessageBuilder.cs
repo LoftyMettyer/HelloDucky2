@@ -27,19 +27,20 @@ namespace Fusion.Connector.OpenHR.OutboundBuilders
 
         public FusionMessage Build(SendFusionMessageRequest source)
         {
-            Guid contractRef = refTranslator.GetBusRef(EntityTranslationNames.Contract, source.LocalId);
+            var contractRef = refTranslator.GetBusRef(EntityTranslationNames.Contract, source.LocalId);
 
-            Contract contract = DatabaseAccess.readContract(Convert.ToInt32(source.LocalId));
+            var contract = DatabaseAccess.readContract(Convert.ToInt32(source.LocalId));
 
             var xsSubmit = new XmlSerializer(typeof(StaffContractChange));
             var subReq = new StaffContractChange();
-            subReq.data = new StaffContractChangeData();
+            subReq.data = new StaffContractChangeData
+                {
+                    staffContract = contract,
+                    recordStatus = contract.isRecordInactive == true ? RecordStatusStandard.Inactive: RecordStatusStandard.Active,
+                    auditUserName = "OpenHR user"
+                };
 
-            subReq.data.staffContract = contract;
-            subReq.data.recordStatus = RecordStatusRescindable.Active;
-            subReq.data.auditUserName = "OpenHR user";
-
-            Guid staffRef = refTranslator.GetBusRef(EntityTranslationNames.Staff, contract.id_Staff.ToString());
+            var staffRef = refTranslator.GetBusRef(EntityTranslationNames.Staff, contract.id_Staff.ToString());
 
             subReq.staffContractRef = contractRef.ToString();
             subReq.staffRef = staffRef.ToString();

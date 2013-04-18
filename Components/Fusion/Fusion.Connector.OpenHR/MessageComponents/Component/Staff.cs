@@ -73,6 +73,9 @@ public class Staff
     [XmlIgnoreAttribute]
     public bool leavingDateSpecified { get; set; }
 
+    [XmlIgnoreAttribute]
+    public bool? isRecordInactive { get; set; }
+
 }
 
 

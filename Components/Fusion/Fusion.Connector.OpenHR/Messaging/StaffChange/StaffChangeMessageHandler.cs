@@ -80,6 +80,7 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                     idParameter.SqlDbType = SqlDbType.Int;
                     idParameter.Direction = ParameterDirection.InputOutput;
 
+                    cmd.Parameters.Add(new SqlParameter("@recordIsInactive", staff.data.recordStatus));
                     cmd.Parameters.Add(new SqlParameter("@title", staff.data.staff.title ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@forenames", staff.data.staff.forenames ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@surname", staff.data.staff.surname ?? (object)DBNull.Value));

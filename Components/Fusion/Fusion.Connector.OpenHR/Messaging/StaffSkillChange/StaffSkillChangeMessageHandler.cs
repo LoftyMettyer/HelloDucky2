@@ -59,6 +59,7 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                     idParameter.Direction = ParameterDirection.InputOutput;
 
                     cmd.Parameters.Add(new SqlParameter("@staffId", staffId ?? (object)DBNull.Value));
+                    cmd.Parameters.Add(new SqlParameter("@recordIsInactive", skill.data.recordStatus));
                     cmd.Parameters.Add(new SqlParameter("@name", skill.data.staffSkill.name ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@trainingStart", skill.data.staffSkill.trainingStart ?? (object)DBNull.Value));
                     cmd.Parameters.Add(new SqlParameter("@trainingEnd", skill.data.staffSkill.trainingEnd ?? (object)DBNull.Value));

@@ -12,8 +12,12 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
     {
         public ImageType imageType { get; set; }
 
-        [XmlElementAttribute(IsNullable = false)]
+        [XmlElementAttribute(IsNullable = true)]
         public byte[] picture {get; set; }
+
+        [XmlIgnoreAttribute]
+        public bool? isRecordInactive { get; set; }
+
     }
 
 }

@@ -149,7 +149,7 @@
 					</xs:appinfo>
 				</xs:annotation>
 			</xs:attribute>
-			<xs:attribute name="staffTimesheetRef" type="common:guid" use="required"/>
+			<xs:attribute name="submissionRef" type="common:guid" use="required"/>
 			<xs:attribute name="staffRef" type="common:guid" use="required">
 				<xs:annotation>
 					<xs:appinfo>

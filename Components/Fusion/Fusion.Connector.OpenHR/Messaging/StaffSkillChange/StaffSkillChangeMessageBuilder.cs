@@ -28,18 +28,18 @@ namespace Fusion.Connector.OpenHR.OutboundBuilders
 
         public FusionMessage Build(SendFusionMessageRequest source)
         {
+            var skillRef = refTranslator.GetBusRef(EntityTranslationNames.Skill, source.LocalId);
 
-            Guid skillRef = refTranslator.GetBusRef(EntityTranslationNames.Skill, source.LocalId);
-
-            Skill skill = DatabaseAccess.readSkill(Convert.ToInt32(source.LocalId));
+            var skill = DatabaseAccess.readSkill(Convert.ToInt32(source.LocalId));
 
             var xsSubmit = new XmlSerializer(typeof(StaffSkillChange));
             var subReq = new StaffSkillChange();
-            subReq.data = new StaffSkillChangeData();
-
-            subReq.data.staffSkill = skill;
-            subReq.data.recordStatus = RecordStatusRescindable.Active;
-            subReq.data.auditUserName = "OpenHR user";
+            subReq.data = new StaffSkillChangeData
+                {
+                    staffSkill = skill,
+                    recordStatus = skill.isRecordInactive == true ? RecordStatusStandard.Inactive : RecordStatusStandard.Active,
+                    auditUserName = "OpenHR user"
+                };
 
             Guid staffRef = refTranslator.GetBusRef(EntityTranslationNames.Staff, skill.id_Staff.ToString());
 

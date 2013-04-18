@@ -30,8 +30,7 @@ namespace Fusion.Connector.OpenHR.Database
             {
                 c.Open();
 
-                Picture su =
-                    c.Query<Picture>(@"SELECT 'JPEG' AS ImageType, SUBSTRING(picture,401,datalength(picture)-400) AS picture FROM Fusion.staff where StaffID = @StaffID",
+                var su = c.Query<Picture>(@"SELECT 'JPEG' AS ImageType, SUBSTRING(picture,401,datalength(picture)-400) AS picture FROM Fusion.staff where StaffID = @StaffID",
                                      new
                                          {
                                              StaffID = localId
@@ -85,26 +84,19 @@ namespace Fusion.Connector.OpenHR.Database
 
                 var contact = new Contact();
 
-                DataRow pRow = custDS.Tables["contact"].Rows[0];
+                var pRow = custDS.Tables["contact"].Rows[0];
 
+                contact.isRecordInactive = pRow["isrecordinactive"] == DBNull.Value ? false : (bool?)pRow["isrecordinactive"];
                 contact.id_Staff = (int?) pRow["id_staff"];
                 contact.title = pRow["title"].ToString() == "" ? null : pRow["title"].ToString();
                 contact.forenames = pRow["Forenames"].ToString() == "" ? null : pRow["Forenames"].ToString();
                 contact.surname = pRow["Surname"].ToString() == "" ? null : pRow["Surname"].ToString();
                 contact.description = pRow["description"].ToString() == "" ? null : pRow["description"].ToString();
-                contact.relationshipType = pRow["relationshipType"].ToString() == ""
-                                               ? null
-                                               : pRow["relationshipType"].ToString();
+                contact.relationshipType = pRow["relationshipType"].ToString() == "" ? null : pRow["relationshipType"].ToString();
                 contact.workMobile = pRow["workMobile"].ToString() == "" ? null : pRow["workMobile"].ToString();
-                contact.personalMobile = pRow["personalMobile"].ToString() == ""
-                                             ? null
-                                             : pRow["personalMobile"].ToString();
-                contact.workPhoneNumber = pRow["workPhoneNumber"].ToString() == ""
-                                              ? null
-                                              : pRow["workPhoneNumber"].ToString();
-                contact.homePhoneNumber = pRow["homePhoneNumber"].ToString() == ""
-                                              ? null
-                                              : pRow["homePhoneNumber"].ToString();
+                contact.personalMobile = pRow["personalMobile"].ToString() == "" ? null : pRow["personalMobile"].ToString();
+                contact.workPhoneNumber = pRow["workPhoneNumber"].ToString() == "" ? null : pRow["workPhoneNumber"].ToString();
+                contact.homePhoneNumber = pRow["homePhoneNumber"].ToString() == "" ? null: pRow["homePhoneNumber"].ToString();
                 contact.email = pRow["email"].ToString() == "" ? null : pRow["email"].ToString();
                 contact.notes = pRow["notes"].ToString() == "" ? null : pRow["notes"].ToString();
 
@@ -161,14 +153,14 @@ namespace Fusion.Connector.OpenHR.Database
             return null;
         }
 
-        public static LegalDocument readDocument(int localId, ref RecordStatusRescindable recordStatus)
+        public static LegalDocument readDocument(int localId)
         {
 
             using (var c = new SqlConnection(connectionString))
             {
                 c.Open();
 
-                LegalDocument su = c.Query<LegalDocument>(@"SELECT * FROM Fusion.staffLegalDocument WHERE ID_Document = @DocumentID",
+                var su = c.Query<LegalDocument>(@"SELECT * FROM Fusion.staffLegalDocument WHERE ID_Document = @DocumentID",
                         new
                         {
                             DocumentID = localId
@@ -186,7 +178,6 @@ namespace Fusion.Connector.OpenHR.Database
                     return su;
                 }
 
-                recordStatus = RecordStatusRescindable.Inactive;
                 return null;
             }
         }
@@ -212,34 +203,23 @@ namespace Fusion.Connector.OpenHR.Database
 
         }
 
-        public static Staff readStaff(int localId, ref RecordStatusRescindable recordStatus)
+        public static Staff readStaff(int localId)
         {
-            string sQuery = string.Format("SELECT * FROM fusion.staff WHERE StaffID = {0}", localId);
+            var sQuery = string.Format("SELECT * FROM fusion.staff WHERE StaffID = {0}", localId);
 
             using (var c = new SqlConnection(connectionString))
             {
                 c.Open();
 
-                // This uses a technique with the Dapper library
-                // original - semi working, has orrible problems with the homeAddress child node. Possible fix with research, but don't have the time :-(
-                //staffChangeDataStaff su = c.Query<staffChangeDataStaff>(@"SELECT Forenames, Surname, AddressLine1 FROM fusion.staff WHERE StaffID = @StaffID",
-                //    new { StaffID = LocalID }).FirstOrDefault();
-
-                //                SqlCommand selectCMD = new SqlCommand(sQuery, c);
                 var custDA = new SqlDataAdapter(sQuery, c);
                 var custDS = new DataSet();
                 custDA.Fill(custDS, "staff");
 
                 var su = new Staff {homeAddress = new Address()};
 
-                if (custDS.Tables["staff"].Rows.Count == 0)
-                {
-                    recordStatus = RecordStatusRescindable.Inactive;
-                    return null;
-                }
+                var pRow = custDS.Tables["staff"].Rows[0];
 
-                DataRow pRow = custDS.Tables["staff"].Rows[0];
-
+                su.isRecordInactive = pRow["isrecordinactive"] == DBNull.Value ? false:  (bool?)pRow["isrecordinactive"];
                 su.title = pRow["title"].ToString() == "" ? null : pRow["title"].ToString();
                 su.forenames = pRow["Forenames"].ToString() == "" ? null : pRow["Forenames"].ToString();
                 su.surname = pRow["Surname"].ToString() == "" ? null : pRow["Surname"].ToString();

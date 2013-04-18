@@ -23,48 +23,50 @@ GO
 CREATE VIEW [fusion].[staff]
 AS
 SELECT ID as [StaffID]
-	, title AS [title]
-	, forenames AS [forenames]
-	, surname AS [surname]
-	, Known_As AS [preferredName]
-	, staff_number AS [payrollNumber]
-	, date_of_birth AS [DOB]
-	, employee_type AS [employeeType]
-	, work_mobile AS [workMobile]
-	, personal_mobile AS [personalMobile]
-	, work_telephone AS [workPhoneNumber]
-	, home_telephone AS [homePhoneNumber]
-	, email_work AS [email]
-	, email_home AS [personalEmail]
-	, gender AS [gender]
-	, start_date AS [startDate]
-	, leaving_date AS [leavingDate]
-	, leaving_reason AS [leavingReason]
-	, Payroll_Company AS [companyName]
-	, job_title AS [jobTitle]
-	, Manager_Ref AS [managerRef]
-	, address_1 AS [addressLine1]
-	, address_2 AS [addressLine2]
-	, address_3 AS [addressLine3]
-	, town AS [addressLine4]
-	, county AS [addressLine5]
-	, postcode AS [postCode]
-	, ni_number AS [nationalInsuranceNumber]
-	, photograph AS [picture]
-FROM dbo.personnel_records
+	, title				AS [title]
+	, forenames			AS [forenames]
+	, surname			AS [surname]
+	, Known_As			AS [preferredName]
+	, staff_number		AS [payrollNumber]
+	, date_of_birth		AS [DOB]
+	, employee_type		AS [employeeType]
+	, work_mobile		AS [workMobile]
+	, personal_mobile	AS [personalMobile]
+	, work_telephone	AS [workPhoneNumber]
+	, home_telephone	AS [homePhoneNumber]
+	, email_work		AS [email]
+	, email_home		AS [personalEmail]
+	, gender			AS [gender]
+	, start_date		AS [startDate]
+	, leaving_date		AS [leavingDate]
+	, leaving_reason	AS [leavingReason]
+	, Payroll_Company	AS [companyName]
+	, job_title			AS [jobTitle]
+	, Manager_Ref		AS [managerRef]
+	, address_1			AS [addressLine1]
+	, address_2			AS [addressLine2]
+	, address_3			AS [addressLine3]
+	, town				AS [addressLine4]
+	, county			AS [addressLine5]
+	, postcode			AS [postCode]
+	, ni_number			AS [nationalInsuranceNumber]
+	, photograph		AS [picture]
+	, [_deleted]		AS [isRecordInactive]
+FROM dbo.tbuser_personnel_records
 GO
 
 CREATE VIEW [fusion].[staffContract]
 AS
-	SELECT ID						AS [ID_Contract]
-		, ID_1						AS [ID_Staff]
-		, grade						AS [contractName]
-		, department				AS [department]
-		, location					AS [primarySite]
-		, actual_hours				AS [contractedHoursPerWeek]
-		, standard_hours			AS [maximumHoursPerWeek]
-		, start_date				AS [effectiveFrom]
-		, end_date					AS [effectiveTo]
+	SELECT ID				AS [ID_Contract]
+		, ID_1				AS [ID_Staff]
+		, grade				AS [contractName]
+		, department		AS [department]
+		, location			AS [primarySite]
+		, actual_hours		AS [contractedHoursPerWeek]
+		, standard_hours	AS [maximumHoursPerWeek]
+		, start_date		AS [effectiveFrom]
+		, end_date			AS [effectiveTo]
+		, [_deleted]		AS [isRecordInactive]
 FROM dbo.tbuser_Salary;
 GO
 
@@ -80,7 +82,8 @@ AS
 		, course_code		AS [reference]
 		, result			AS [outcome]
 		, did_not_attend	AS [didNotAttend]
-FROM dbo.Training_Booking;
+		, [_deleted]		AS [isRecordInactive]
+FROM dbo.tbuser_Training_Booking;
 GO
 
 CREATE VIEW [fusion].[staffLegalDocument]
@@ -96,7 +99,8 @@ AS
 		, Date_Requested		AS [requestedDate]
 		, Accepted_By			AS [acceptedBy]
 		, Date_Accepted			AS [acceptedDate]
-FROM dbo.Legal_Documents;
+		, [_deleted]			AS [isRecordInactive]
+FROM dbo.tbuser_Legal_Documents;
 GO
 
 CREATE VIEW [fusion].[staffContact]
@@ -120,7 +124,8 @@ AS
 		, County			AS [addressLine4]
 		, Country			AS [addressLine5]
 		, Postcode			AS [postcode]
-	FROM dbo.Contacts
+		, [_deleted]		AS [isRecordInactive]
+	FROM dbo.tbuser_Contacts
 
 GO
 
@@ -134,7 +139,8 @@ AS
 		, TOIL_Hours_Accrued	AS [toilHoursAccrued]
 		, Holiday_Hours_Taken	AS [holidayHoursTaken]
 		, TOIL_Hours_Taken		AS [toilHoursTaken]
-	FROM dbo.Fusion_Timesheet_Submissions
+		, [_deleted]			AS [isRecordInactive]
+	FROM dbo.tbuser_Fusion_Timesheet_Submissions
 
 GO
 
@@ -170,6 +176,7 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[fusion].[pMessag
 GO
 
 CREATE PROCEDURE fusion.pMessageUpdate_StaffChange(@ID int OUTPUT
+	, @recordIsInactive			tinyint
 	, @title					nvarchar(MAX)			
 	, @forenames				nvarchar(MAX)
 	, @surname					nvarchar(MAX)
@@ -202,6 +209,16 @@ AS
 BEGIN
 
 	DECLARE @childID	integer;
+
+	-- An inactive record.
+	IF @recordIsInactive = 1
+	BEGIN
+		IF ISNULL(@ID,0) > 0
+		BEGIN
+			DELETE FROM fusion.staff WHERE StaffID = @ID;
+		END
+		RETURN 0;
+	END
 
 	IF ISNULL(@ID,0) = 0
 	BEGIN
@@ -245,6 +262,7 @@ GO
 
 CREATE PROCEDURE fusion.pMessageUpdate_StaffContractChange(@ID int OUTPUT
 	, @staffID					integer
+	, @recordIsInactive			tinyint
 	, @contractName				nvarchar(MAX)
 	, @department				nvarchar(MAX)
 	, @primarySite				nvarchar(MAX)
@@ -254,6 +272,17 @@ CREATE PROCEDURE fusion.pMessageUpdate_StaffContractChange(@ID int OUTPUT
 	, @effectiveTo				datetime)
 AS
 BEGIN
+
+	-- An inactive record.
+	IF @recordIsInactive = 1
+	BEGIN
+		IF ISNULL(@ID,0) > 0
+		BEGIN
+			DELETE FROM fusion.staffContract WHERE ID_Contract = @ID;
+		END
+		RETURN 0;
+	END
+
 
 	IF ISNULL(@ID,0) = 0
 	BEGIN
@@ -279,6 +308,7 @@ GO
 
 CREATE PROCEDURE fusion.pMessageUpdate_StaffContactChange(@ID int OUTPUT
 	, @staffID					integer
+	, @recordIsInactive			tinyint
 	, @title					nvarchar(MAX)
 	, @forenames				nvarchar(MAX)
 	, @surname					nvarchar(MAX)
@@ -298,6 +328,18 @@ CREATE PROCEDURE fusion.pMessageUpdate_StaffContactChange(@ID int OUTPUT
 	, @postCode					nvarchar(MAX))
 AS
 BEGIN
+
+
+	-- An inactive record.
+	IF @recordIsInactive = 1
+	BEGIN
+		IF ISNULL(@ID,0) > 0
+		BEGIN
+			DELETE FROM fusion.staffContact WHERE ID_Contact = @ID;
+		END
+		RETURN 0;
+	END
+
 
 	IF ISNULL(@ID,0) = 0
 	BEGIN
@@ -330,19 +372,30 @@ END
 GO
 
 CREATE PROCEDURE fusion.pMessageUpdate_StaffLegalDocumentChange(@ID int OUTPUT
-	,@staffID				integer
-	,@typeName				varchar(MAX)
-	,@validFrom				datetime
-	,@validTo				datetime
-	,@documentReference		varchar(MAX)
-	,@secondaryReference	varchar(MAX)
-	,@requestedBy			varchar(MAX)
-	,@requestedDate			datetime
-	,@acceptedBy			varchar(MAX)
-	,@acceptedDate			datetime
+	, @staffID				integer
+	, @recordIsInactive		tinyint
+	, @typeName				varchar(MAX)
+	, @validFrom			datetime
+	, @validTo				datetime
+	, @documentReference	varchar(MAX)
+	, @secondaryReference	varchar(MAX)
+	, @requestedBy			varchar(MAX)
+	, @requestedDate		datetime
+	, @acceptedBy			varchar(MAX)
+	, @acceptedDate			datetime
 )
 AS
 BEGIN
+
+	-- An inactive record.
+	IF @recordIsInactive = 1
+	BEGIN
+		IF ISNULL(@ID,0) > 0
+		BEGIN
+			DELETE FROM fusion.staffLegalDocument WHERE ID_Document = @ID; 
+		END
+		RETURN 0;
+	END
 
 	IF ISNULL(@ID,0) = 0
 	BEGIN
@@ -370,20 +423,31 @@ END
 GO
 
 CREATE PROCEDURE fusion.pMessageUpdate_StaffSkillChange(@ID int OUTPUT
-	 ,@staffID				integer
-	 ,@name					nvarchar(MAX)
-	 ,@trainingStart		datetime
-	 ,@trainingEnd			datetime
-	, @validFrom			datetime
-	, @validTo				datetime
-	, @reference			nvarchar(MAX)
-	, @outcome				nvarchar(MAX)
-	, @didNotAttend			bit
+	 ,@staffID					integer
+	, @recordIsInactive			tinyint
+	 ,@name						nvarchar(MAX)
+	 ,@trainingStart			datetime
+	 ,@trainingEnd				datetime
+	, @validFrom				datetime
+	, @validTo					datetime
+	, @reference				nvarchar(MAX)
+	, @outcome					nvarchar(MAX)
+	, @didNotAttend				bit
 )
 AS
 BEGIN
 
 	DECLARE @childID	integer;
+
+	-- An inactive record.
+	IF @recordIsInactive = 1
+	BEGIN
+		IF ISNULL(@ID,0) > 0
+		BEGIN
+			DELETE FROM fusion.staffSkill WHERE ID_Skill = @ID;
+		END
+		RETURN 0;
+	END
 
 	IF ISNULL(@ID,0) = 0
 	BEGIN
@@ -408,18 +472,24 @@ END
 GO
 
 CREATE PROCEDURE fusion.pMessageUpdate_StaffPictureChange(@ID int OUTPUT
-	, @picture			varbinary(MAX)
+	, @recordIsInactive		tinyint
+	, @picture				varbinary(MAX)
 )
 AS
 BEGIN
 
 	DECLARE @photostring varchar(MAX);
 
-	SET @photostring = '<<V002>>2 Embedded Photograph.jpg' + SPACE(367) + convert(varchar(MAX),@picture);
+	IF @picture IS NULL
+		UPDATE fusion.staff SET picture = NULL	WHERE StaffID = @ID;
+		
+	ELSE
+	BEGIN
+		SET @photostring = '<<V002>>2 Embedded Photograph.jpg' + SPACE(367) + convert(varchar(MAX),@picture);
 
-	UPDATE fusion.staff SET picture = convert(varbinary(max), @photostring)
-		WHERE StaffID = @ID;
-
+		UPDATE fusion.staff SET picture = convert(varbinary(max), @photostring)
+			WHERE StaffID = @ID;
+	END
 END
 
 GO

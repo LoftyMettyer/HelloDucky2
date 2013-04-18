@@ -86,15 +86,15 @@
     <Compile Include="MessageComponents\Component\Picture.cs" />
     <Compile Include="MessageComponents\Component\Skill.cs" />
     <Compile Include="MessageComponents\Component\TimesheetPerContract.cs" />
-    <Compile Include="MessageComponents\Data\StaffContractChangeData.cs" />
-    <Compile Include="MessageComponents\Data\StaffLegalDocumentChangeData.cs" />
-    <Compile Include="MessageComponents\Data\StaffPictureChangeData.cs" />
-    <Compile Include="MessageComponents\Data\StaffSkillChangeData.cs" />
-    <Compile Include="MessageComponents\Data\StaffTimeSheetPerContractSubmission.cs" />
+    <Compile Include="Messaging\StaffContractChange\StaffContractChangeData.cs" />
+    <Compile Include="Messaging\StaffLegalDocumentChange\StaffLegalDocumentChangeData.cs" />
+    <Compile Include="Messaging\StaffPictureChange\StaffPictureChangeData.cs" />
+    <Compile Include="Messaging\StaffSkillChange\StaffSkillChangeData.cs" />
+    <Compile Include="Messaging\StaffTimesheetPerContractSubmission\StaffTimesheetPerContractSubmission.cs" />
+    <Compile Include="Messaging\StaffTimesheetPerContractSubmission\StaffTimeSheetPerContractSubmissionData.cs" />
     <Compile Include="MessageComponents\Enums\Gender.cs" />
     <Compile Include="MessageComponents\Enums\ImageType.cs" />
     <Compile Include="MessageComponents\Enums\LegalDocumentTypes.cs" />
-    <Compile Include="MessageComponents\Enums\RecordStatusRescindable.cs" />
     <Compile Include="MessageComponents\Enums\EmployeeType.cs" />
     <Compile Include="MessageComponents\Component\Contact.cs" />
     <Compile Include="MessageComponents\Component\Address.cs" />
@@ -105,20 +105,20 @@
     <Compile Include="Installer.Designer.cs">
       <DependentUpon>Installer.cs</DependentUpon>
     </Compile>
+    <Compile Include="MessageComponents\Enums\RecordStatusStandard.cs" />
     <Compile Include="MessageComponents\Enums\RecordStatusTransactional.cs" />
     <Compile Include="Messaging\StaffChange\StaffChange.cs" />
     <Compile Include="Messaging\StaffContactChange\StaffContactChange.cs" />
-    <Compile Include="MessageComponents\Data\StaffContactChangeData.cs" />
+    <Compile Include="Messaging\StaffContactChange\StaffContactChangeData.cs" />
     <Compile Include="Messaging\StaffContractChange\StaffContractChange.cs" />
     <Compile Include="Messaging\StaffLegalDocumentChange\StaffLegalDocumentChange.cs" />
     <Compile Include="Messaging\StaffPictureChange\StaffPictureChange.cs" />
     <Compile Include="Messaging\StaffSkillChange\StaffSkillChange.cs" />
-    <Compile Include="Messaging\StaffTimesheetPerContractSubmission\StaffTimesheetPerContractSubmission.cs" />
     <Compile Include="MessageTypes.cs" />
     <Compile Include="Messaging\Base\BaseMessageHandler.cs" />
     <Compile Include="Messaging\Obsolete\GenericMessageHandler.cs" />
     <Compile Include="Messaging\Base\GenericMessageOutboundFilter.cs" />
-    <Compile Include="MessageComponents\Data\StaffChangeData.cs" />
+    <Compile Include="Messaging\StaffChange\StaffChangeData.cs" />
     <Compile Include="Messaging\StaffChange\StaffChangeMessageHandler.cs" />
     <Compile Include="Messaging\StaffChange\StaffChangeMessageSchemaValidator.cs" />
     <Compile Include="Messaging\StaffChange\StaffChangeMessageSender.cs" />
@@ -213,7 +213,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="MessageComponents\Data\" />
+  </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>

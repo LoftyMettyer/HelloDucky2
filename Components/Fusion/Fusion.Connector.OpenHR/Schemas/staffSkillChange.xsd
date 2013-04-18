@@ -8,7 +8,7 @@
 				<xs:element name="data">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="staffSkill" minOccurs="0">
+							<xs:element name="staffSkill">
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="name">
@@ -114,7 +114,7 @@
 								</xs:restriction>
 							</xs:simpleType>
 						</xs:attribute>
-						<xs:attribute name="recordStatus" type="common:recordStatusRescindable" use="required">
+						<xs:attribute name="recordStatus" type="common:recordStatusStandard" use="required">
 							<xs:annotation>
 								<xs:appinfo>
 									<altova:exampleValues>

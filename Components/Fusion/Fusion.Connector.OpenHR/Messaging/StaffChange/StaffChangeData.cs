@@ -4,23 +4,20 @@ using Fusion.Connector.OpenHR.MessageComponents.Component;
 
 namespace Fusion.Connector.OpenHR.MessageComponents.Data
 {
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.17929")]
-    [System.SerializableAttribute]
+    [System.SerializableAttribute()]
     [XmlTypeAttribute(AnonymousType = true, Namespace = "http://advancedcomputersoftware.com/xml/fusion/socialCare")]
-    public class StaffSkillChangeData
+    public class StaffChangeData
     {
-        public StaffSkillChangeData()
-        {
-            staffSkill = new Skill();
-        }
 
-        public Skill staffSkill { get; set; }
+        public Staff staff { get; set; }
 
-        [XmlAttributeAttribute]
+        [XmlAttribute]
         public string auditUserName { get; set; }
 
-        [XmlAttributeAttribute]
-        public RecordStatusRescindable recordStatus { get; set; }
+        [XmlAttribute]
+        public RecordStatusStandard recordStatus { get; set; }
 
     }
 

@@ -46,6 +46,9 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Component
         [XmlIgnoreAttribute]
         public int? id_Staff { get; set; }
 
+        [XmlIgnoreAttribute]
+        public bool? isRecordInactive { get; set; }
+
     }
 
 

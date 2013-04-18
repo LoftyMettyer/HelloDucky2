@@ -8,7 +8,7 @@
 				<xs:element name="data">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="staffContract" minOccurs="0">
+							<xs:element name="staffContract">
 								<xs:annotation>
 									<xs:documentation>Can be many staff Contracts, but they must then use the start/end date attributes, and they must not overlap</xs:documentation>
 								</xs:annotation>
@@ -128,7 +128,7 @@
 								</xs:restriction>
 							</xs:simpleType>
 						</xs:attribute>
-						<xs:attribute name="recordStatus" type="common:recordStatusRescindable" use="required">
+						<xs:attribute name="recordStatus" type="common:recordStatusStandard" use="required">
 							<xs:annotation>
 								<xs:appinfo>
 									<altova:exampleValues>

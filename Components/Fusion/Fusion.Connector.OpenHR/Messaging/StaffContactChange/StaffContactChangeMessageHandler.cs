@@ -20,8 +20,8 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
         public void Handle(StaffContactChangeMessage message)
         {
 
-            bool shouldProcess = StartHandlingMessage(message);
-            bool isValid = true;
+            var shouldProcess = StartHandlingMessage(message);
+            var isValid = true;
 
             if (!shouldProcess) return;
 
@@ -60,6 +60,7 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                 idParameter.Direction = ParameterDirection.InputOutput;
 
                 cmd.Parameters.Add(new SqlParameter("@staffId", staffId ?? (object)DBNull.Value));
+                cmd.Parameters.Add(new SqlParameter("@recordIsInactive", contact.data.recordStatus));
 
                 cmd.Parameters.Add(new SqlParameter("@title", contact.data.staffContact.title ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@forenames", contact.data.staffContact.forenames ?? (object)DBNull.Value));

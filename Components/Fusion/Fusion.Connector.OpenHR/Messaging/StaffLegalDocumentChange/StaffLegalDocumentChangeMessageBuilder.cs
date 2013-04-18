@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using Fusion.Connector.OpenHR.MessageComponents.Data;
 using Fusion.Connector.OpenHR.MessageComponents.Enums;
 using Fusion.Core.Sql.OutboundBuilder;
@@ -10,7 +9,6 @@ using Fusion.Messages.General;
 using Fusion.Messages.SocialCare;
 using Fusion.Connector.OpenHR.Database;
 using Fusion.Connector.OpenHR.MessageComponents;
-using Fusion.Connector.OpenHR.MessageComponents.Component;
 using System.IO;
 
 using System.Xml;
@@ -28,31 +26,31 @@ namespace Fusion.Connector.OpenHR.OutboundBuilders
 
         public FusionMessage Build(SendFusionMessageRequest source)
         {
-            var recordStatus = RecordStatusRescindable.Active;
-            Guid docRef = refTranslator.GetBusRef(EntityTranslationNames.Document, source.LocalId);
-            LegalDocument doc = DatabaseAccess.readDocument(Convert.ToInt32(source.LocalId), ref recordStatus);
+            var docRef = refTranslator.GetBusRef(EntityTranslationNames.Document, source.LocalId);
+            var doc = DatabaseAccess.readDocument(Convert.ToInt32(source.LocalId));
 
             var xsSubmit = new XmlSerializer(typeof(StaffLegalDocumentChange));
-            var subReq = new MessageComponents.StaffLegalDocumentChange();
+            var subReq = new StaffLegalDocumentChange();
             subReq.data = new StaffLegalDocumentChangeData
                 {
                     staffLegalDocument = doc,
-                    recordStatus = recordStatus,
+                    recordStatus = doc.isRecordInactive == true ? RecordStatusStandard.Inactive : RecordStatusStandard.Active,
                     auditUserName = "OpenHR user"
                 };
+            
 
-            Guid staffRef = refTranslator.GetBusRef(EntityTranslationNames.Staff, doc.id_Staff.ToString());
+            var staffRef = refTranslator.GetBusRef(EntityTranslationNames.Staff, doc.id_Staff.ToString());
 
             subReq.staffRef = staffRef.ToString();
             subReq.staffLegalDocumentRef = docRef.ToString();
 
             var sww = new StringWriter();
-            XmlWriter writer = XmlWriter.Create(sww);
+            var writer = XmlWriter.Create(sww);
             xsSubmit.Serialize(writer, subReq);
-            string xml = sww.ToString();
+            var xml = sww.ToString();
 
-            string messageType = source.MessageType + "Request";
-            Type myType = Type.GetType("Fusion.Messages.SocialCare." + messageType + ", Fusion.Messages.SocialCare");
+            var messageType = source.MessageType + "Request";
+            var myType = Type.GetType("Fusion.Messages.SocialCare." + messageType + ", Fusion.Messages.SocialCare");
 
             var theMessage = (StaffLegalDocumentChangeRequest)Activator.CreateInstance(myType);
 

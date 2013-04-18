@@ -6,6 +6,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using Dapper;
 using Fusion.Connector.OpenHR.MessageComponents;
+using Fusion.Connector.OpenHR.MessageComponents.Enums;
 using Fusion.Core;
 using Fusion.Messages.SocialCare;
 using NServiceBus;
@@ -40,7 +41,7 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
             var localId = BusRefTranslator.GetLocalRef(EntityTranslationNames.Document, docRef);
             var staffId = Convert.ToInt32(BusRefTranslator.GetLocalRef(EntityTranslationNames.Staff, new Guid(message.PrimaryEntityRef.ToString())));
 
-            bool isNew = (localId == null);
+            var isNew = (localId == null && document.data.recordStatus == RecordStatusStandard.Active);
 
 
             SqlParameter idParameter;
@@ -58,6 +59,7 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                 idParameter.Direction = ParameterDirection.InputOutput;
 
                 cmd.Parameters.Add(new SqlParameter("@staffId", staffId));
+                cmd.Parameters.Add(new SqlParameter("@recordIsInactive", document.data.recordStatus));
                 cmd.Parameters.Add(new SqlParameter("@typeName", document.data.staffLegalDocument.typeName.ToString()));
                 cmd.Parameters.Add(new SqlParameter("@validFrom", document.data.staffLegalDocument.validFrom ?? (object)DBNull.Value));
                 cmd.Parameters.Add(new SqlParameter("@validTo", document.data.staffLegalDocument.validTo ?? (object)DBNull.Value));

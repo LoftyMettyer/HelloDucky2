@@ -1,27 +1,27 @@
-﻿using System.Xml.Serialization;
+﻿using Fusion.Connector.OpenHR.MessageComponents.Enums;
 using Fusion.Connector.OpenHR.MessageComponents.Component;
-using Fusion.Connector.OpenHR.MessageComponents.Enums;
+using System.Xml.Serialization;
 
 namespace Fusion.Connector.OpenHR.MessageComponents.Data
 {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.17929")]
     [System.SerializableAttribute]
-    [System.Diagnostics.DebuggerStepThroughAttribute]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [XmlTypeAttribute(AnonymousType = true, Namespace = "http://advancedcomputersoftware.com/xml/fusion/socialCare")]
-    public class StaffPictureChangeData
+    public class StaffContractChangeData
     {
-        public StaffPictureChangeData()
+        public StaffContractChangeData()
         {
-            pictureChange = new Picture();
+            staffContract = new Contract();
         }
 
-        public Picture pictureChange { get; set; }
+        public Contract staffContract { get; set; }
 
         [XmlAttributeAttribute]
         public string auditUserName { get; set; }
 
         [XmlAttributeAttribute]
-        public RecordStatusRescindable recordStatus { get; set; }
+        public RecordStatusStandard recordStatus { get; set; }
     }
+
+
 }

@@ -8,7 +8,7 @@
 				<xs:element name="data">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="staffLegalDocument" minOccurs="0">
+							<xs:element name="staffLegalDocument">
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="typeName" type="common:legalDocumentTypes">
@@ -118,7 +118,7 @@
 								</xs:restriction>
 							</xs:simpleType>
 						</xs:attribute>
-						<xs:attribute name="recordStatus" type="common:recordStatusRescindable" use="required">
+						<xs:attribute name="recordStatus" type="common:recordStatusStandard" use="required">
 							<xs:annotation>
 								<xs:appinfo>
 									<altova:exampleValues>

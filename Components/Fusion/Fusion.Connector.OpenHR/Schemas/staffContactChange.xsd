@@ -11,7 +11,7 @@
 				<xs:element name="data">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="staffContact" minOccurs="0">
+							<xs:element name="staffContact">
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="title" nillable="true">
@@ -279,7 +279,7 @@
 								</xs:restriction>
 							</xs:simpleType>
 						</xs:attribute>
-						<xs:attribute name="recordStatus" type="common:recordStatusRescindable" use="required">
+						<xs:attribute name="recordStatus" type="common:recordStatusStandard" use="required">
 							<xs:annotation>
 								<xs:appinfo>
 									<altova:exampleValues>

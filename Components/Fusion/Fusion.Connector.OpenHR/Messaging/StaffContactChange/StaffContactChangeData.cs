@@ -20,7 +20,7 @@ namespace Fusion.Connector.OpenHR.MessageComponents.Data
         public string auditUserName { get; set; }
 
         [XmlAttributeAttribute]
-        public RecordStatusRescindable recordStatus { get; set; }
+        public RecordStatusStandard recordStatus { get; set; }
     }
 
 

@@ -8,7 +8,6 @@ using Fusion.Messages.General;
 using Fusion.Messages.SocialCare;
 using Fusion.Connector.OpenHR.Database;
 using Fusion.Connector.OpenHR.MessageComponents;
-using Fusion.Connector.OpenHR.MessageComponents.Component;
 using Fusion.Connector.OpenHR.MessageComponents.Enums;
 using System.IO;
 
@@ -33,24 +32,25 @@ namespace Fusion.Connector.OpenHR.OutboundBuilders
 
             var xsSubmit = new XmlSerializer(typeof(StaffContactChange));
             var subReq = new StaffContactChange();
-            subReq.data = new StaffContactChangeData();
+            subReq.data = new StaffContactChangeData
+                {
+                    staffContact = contact,
+                    recordStatus = contact.isRecordInactive == true ? RecordStatusStandard.Inactive : RecordStatusStandard.Active,
+                    auditUserName = "OpenHR user"
+                };
 
-            subReq.data.staffContact = contact;
-            subReq.data.recordStatus = RecordStatusRescindable.Active;
-            subReq.data.auditUserName = "OpenHR user";
-
-            Guid staffRef = refTranslator.GetBusRef(EntityTranslationNames.Staff, contact.id_Staff.ToString());
+            var staffRef = refTranslator.GetBusRef(EntityTranslationNames.Staff, contact.id_Staff.ToString());
 
             subReq.staffContactRef = contactRef.ToString();
             subReq.staffRef = staffRef.ToString();
 
             var sww = new StringWriter();
-            XmlWriter writer = XmlWriter.Create(sww);
+            var writer = XmlWriter.Create(sww);
             xsSubmit.Serialize(writer, subReq);
-            string xml = sww.ToString();
+            var xml = sww.ToString();
 
-            string messageType = source.MessageType + "Request";
-            Type myType = Type.GetType("Fusion.Messages.SocialCare." + messageType + ", Fusion.Messages.SocialCare");
+            var messageType = source.MessageType + "Request";
+            var myType = Type.GetType("Fusion.Messages.SocialCare." + messageType + ", Fusion.Messages.SocialCare");
 
             if (myType != null)
             {

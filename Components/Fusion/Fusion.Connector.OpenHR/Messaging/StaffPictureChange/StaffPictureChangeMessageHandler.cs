@@ -54,13 +54,16 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                         CommandType = CommandType.StoredProcedure
                     };
 
-                SqlParameter idParameter =
-                    cmd.Parameters.Add(new SqlParameter("@ID", localId ?? (object) DBNull.Value));
+                SqlParameter idParameter = cmd.Parameters.Add(new SqlParameter("@ID", localId ?? (object) DBNull.Value));
                 idParameter.SqlDbType = SqlDbType.Int;
                 idParameter.Direction = ParameterDirection.InputOutput;
 
-                cmd.Parameters.Add(new SqlParameter("@picture",
-                                                    picture.data.pictureChange.picture ?? (object) DBNull.Value));
+                cmd.Parameters.Add(new SqlParameter("@recordIsInactive", picture.data.recordStatus));
+
+                SqlParameter pictureParameter = cmd.Parameters.Add(new SqlParameter("@picture", picture.data.pictureChange.picture ?? (object) DBNull.Value));
+                pictureParameter.SqlDbType = SqlDbType.Binary;
+                pictureParameter.Direction = ParameterDirection.Input;
+
 
                 try
                 {
