@@ -301,7 +301,7 @@
     <Content Include="Content\themes\redmond\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\redmond\minified\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\redmond\minified\jquery.ui.tooltip.min.css" />
-    <None Include="Scripts\FormScripts\mailmergedef.js" />
+    <None Include="Scripts\FormScripts\util_def_mailmerge.js" />
     <None Include="Scripts\jquery.jqGrid.min.js" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
@@ -762,7 +762,6 @@
   <ItemGroup>
     <Folder Include="Content\themes\start\images\" />
     <Folder Include="Models\" />
-    <Folder Include="Views\Home\MailMerge\" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="ADODB">
@@ -788,7 +787,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Components\COAInt_Server\COAInt_Server.vbproj">
+    <ProjectReference Include="..\..\..\COAInt_Server\COAInt_Server.vbproj">
       <Project>{2af7f0b5-431d-4892-b0b1-9397c73ebfd7}</Project>
       <Name>COAInt_Server</Name>
     </ProjectReference>
