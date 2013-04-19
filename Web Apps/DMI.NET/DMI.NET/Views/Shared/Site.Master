@@ -140,6 +140,13 @@
 				width: 650
 			});
 
+			$("#errorDialog").dialog({
+				autoOpen: false,
+				modal: true,			
+				width: 650
+			});
+
+			$("button").css("margin", "5px");
 
 			if ($("#workframeset").length > 0) {
 				$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
@@ -261,5 +268,14 @@
 	</div>
 	<div id="About"><%Html.RenderPartial("~/views/account/about.ascx")%></div>
 	
+	
+	<div id="errorDialog" title="AJAX call failed.">
+		<div id="errorDialogTitleContent">
+			<h1 id="errorDialogTitle"></h1>			
+		</div>
+		<div id="errorDialogContent">
+			<p id="errorDialogContentText"></p>
+		</div>
+	</div>
 </body>
 </html>

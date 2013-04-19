@@ -619,3 +619,19 @@ header {
 	right: 0;
 	bottom: 0;
 }
+
+#errorDialog { height: 400px;}
+
+#errorDialogTitleContent {
+	position: relative;
+	height: 50px;
+}
+
+#errorDialogContent {
+	position: relative;
+	height: 400px;
+	overflow: auto;
+	margin-top: 20px;
+}
+
+

@@ -104,14 +104,14 @@
 		    } else {
 			    asyncFlag = false;
 		    }
-
+		    
 	    	$.ajax({
 	    		url: url,
 	    		type: "POST",
 	    		data: data,
 	    		async: asyncFlag,
-	    		success: function (html) {	    		    
-	    		    try {
+	    		success: function (html) {	    			
+	    			try {	    				
 	    		        if ((html.ErrorMessage != null) && (html.ErrorMessage != undefined) && (html.ErrorMessage != "undefined")) {
 	    		            if (html.ErrorMessage.length > 0) {
 	    		                //A handled error was returned. Display error message, then redirect accordingly...
@@ -119,10 +119,12 @@
 	    		                return false;
 	    		            }
 	    		        }
-	    		    } catch (e) {
-	    		        alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + e.toString() + "'.");
-	    		    }
-	    		    
+	    		    } catch (e) {		    		    
+	    		    	//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + e.toString() + "'.");
+	    		    	$("#errorDialogTitle").text(e.toString);
+	    		    	$("#errorDialogContentText").text(e.responseText);
+	    		    	$("#errorDialog").dialog("open");
+	    		    }	    			
 	    		    //clear the frame...
 	    		    $frame.html('');
 	    		    
@@ -138,8 +140,12 @@
 	    		        $frame.html(html);
 	    		    }	    		    
 	    		},
-	    		error: function (req, status, errorObj) {
-	    			alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
+	    		error: function (req, status, errorObj) {	    			
+	    			//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
+	    			$("#errorDialogTitle").text(errorObj);
+	    			$("#errorDialogContentText").text(req.responseText);
+	    			$("#errorDialog").dialog("open");
+
 	    		}
 	    	});
 	    },

@@ -2597,7 +2597,7 @@
 		cmdAccess.Parameters.Append(prmUtilType)
 		prmUtilType.value = 17 ' 17 = calendar report
 
-		prmUtilID = cmdAccess.Cr0eateParameter("utilID", 3, 1)	' 3=integer, 1=input
+		prmUtilID = cmdAccess.CreateParameter("utilID", 3, 1)	' 3=integer, 1=input
 		cmdAccess.Parameters.Append(prmUtilID)
 		If UCase(Session("action")) = "NEW" Then
 			prmUtilID.value = 0
