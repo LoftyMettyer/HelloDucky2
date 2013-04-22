@@ -650,6 +650,7 @@
     <Content Include="Views\Home\Find.ascx" />
     <Content Include="Views\Home\fixedlinks.ascx" />
     <Content Include="Views\Home\linksMain.aspx" />
+    <Content Include="Views\Home\tbAddFromWaitingListFind.ascx" />
     <Content Include="Views\Home\util_def_calendarreport.ascx" />
     <Content Include="Views\Home\util_def_calendarreportdates.asp.ascx" />
     <Content Include="Views\Home\util_def_calendarreportdates_data.ascx" />
