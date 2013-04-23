@@ -1,39 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-<script src="<%: Url.Content("~/Scripts/FormScripts/calendarreportdef.js")%>" type="text/javascript"></script>
 
-<%--<object classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB" id="dialog" codebase="cabs/comdlg32.cab#Version=1,0,0,0" style="LEFT: 0px; TOP: 0px" viewastext>
-	<param name="_ExtentX" value="847">
-	<param name="_ExtentY" value="847">
-	<param name="_Version" value="393216">
-	<param name="CancelError" value="0">
-	<param name="Color" value="0">
-	<param name="Copies" value="1">
-	<param name="DefaultExt" value="">
-	<param name="DialogTitle" value="">
-	<param name="FileName" value="">
-	<param name="Filter" value="">
-	<param name="FilterIndex" value="0">
-	<param name="Flags" value="0">
-	<param name="FontBold" value="0">
-	<param name="FontItalic" value="0">
-	<param name="FontName" value="">
-	<param name="FontSize" value="8">
-	<param name="FontStrikeThru" value="0">
-	<param name="FontUnderLine" value="0">
-	<param name="FromPage" value="0">
-	<param name="HelpCommand" value="0">
-	<param name="HelpContext" value="0">
-	<param name="HelpFile" value="">
-	<param name="HelpKey" value="">
-	<param name="InitDir" value="">
-	<param name="Max" value="0">
-	<param name="Min" value="0">
-	<param name="MaxFileSize" value="260">
-	<param name="PrinterDefault" value="1">
-	<param name="ToPage" value="0">
-	<param name="Orientation" value="1">
-</object>--%>
+<script src="<%: Url.Content("~/Scripts/FormScripts/calendarreportdef.js")%>" type="text/javascript"></script>
+<%Html.RenderPartial("Util_Def_CustomReports/dialog")%>
 
 <div <%=session("BodyTag")%>>
 	<form id="frmDefinition" name="frmDefinition">
@@ -135,7 +104,9 @@
 														<td width="20" nowrap></td>
 														<td width="10" valign="top" nowrap>Access :</td>
 														<td width="5"></td>
-														<td width="40%" rowspan="1" valign="top" height="78"></td>
+														<td width="40%" rowspan="1" valign="top" height="78">
+															<%Html.RenderPartial("Util_Def_CustomReports/grdaccess")%> 
+														</td>
 														<td width="5"></td>
 													</tr>
 
@@ -175,7 +146,8 @@
 																			for="optRecordSelection1"
 																			class="radio"
 																			onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">All</label>
+																			onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																			All</label>
 																	</td>
 																	<td colspan="3">&nbsp;</td>
 																</tr>
@@ -303,7 +275,7 @@
 
 													<tr height="10">
 														<td width="5"></td>
-														<td style="white-space:nowrap" valign="top">Description 2 :</td>
+														<td style="white-space: nowrap" valign="top">Description 2 :</td>
 														<td width="5">&nbsp;</td>
 														<td valign="top" colspan="1">
 															<select id="cboDescription2" name="cboDescription2" width="100%" disabled="disabled" class="combo combodisabled"
@@ -347,60 +319,60 @@
 													</tr>
 
 													<tr height="10">
-														<td style="column-span:all" >
-																<table style="width:100%" class="invisible">
-																	<td width="5">&nbsp;</td>
-				<td style="text-align:left; width:15px; vertical-align:central" id="qq">
-					<input valign="center" name="chkGroupByDesc" id="chkGroupByDesc" type="checkbox" disabled="disabled" tabindex="-1"
-						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}"
-						onclick="changeTab1Control(); refreshTab3Controls();" />
-				</td>
-				<td style="text-align:left; width:150px; vertical-align:central">
-					<label
-						for="chkGroupByDesc"
-						class="checkbox checkboxdisabled"
-						tabindex="0"
-						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-						Group By Description</label>
-				</td>
-				<td>&nbsp;</td>
-				<td>Separator : </td>
-				<td width="5">&nbsp;</td>
-				<td style="vertical-align: central; width: 85%">
-					<select name="cboDescriptionSeparator" id="cboDescriptionSeparator" style="WIDTH: 100%" disabled="disabled" class="combo combodisabled"
-						onchange="changeTab1Control();">
-						<option value="">
-						&lt;None&gt;
+														<td style="column-span: all">
+															<table style="width: 100%" class="invisible">
+																<td width="5">&nbsp;</td>
+																<td style="text-align: left; width: 15px; vertical-align: central" id="qq">
+																	<input valign="center" name="chkGroupByDesc" id="chkGroupByDesc" type="checkbox" disabled="disabled" tabindex="-1"
+																		onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
+																		onmouseout="try{checkbox_onMouseOut(this);}catch(e){}"
+																		onclick="changeTab1Control(); refreshTab3Controls();" />
+																</td>
+																<td style="text-align: left; width: 150px; vertical-align: central">
+																	<label
+																		for="chkGroupByDesc"
+																		class="checkbox checkboxdisabled"
+																		tabindex="0"
+																		onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+																		onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
+																		onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+																		onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+																		onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																		Group By Description</label>
+																</td>
+																<td>&nbsp;</td>
+																<td>Separator : </td>
+																<td width="5">&nbsp;</td>
+																<td style="vertical-align: central; width: 85%">
+																	<select name="cboDescriptionSeparator" id="cboDescriptionSeparator" style="WIDTH: 100%" disabled="disabled" class="combo combodisabled"
+																		onchange="changeTab1Control();">
+																		<option value="">
+																		&lt;None&gt;
 																	<option value=" ">
-						&lt;Space&gt;
+																		&lt;Space&gt;
 																	<option value=", ">
-						, 
+																		, 
 																	<option value=".  ">
-						.  
+																		.  
 																	<option value=" - ">
-						- 
+																		- 
 																	<option value=" : ">
-						: 
+																		: 
 																	<option value=" ; ">
-						; 
+																		; 
 																	<option value=" / ">
-						/ 
+																		/ 
 																	<option value=" \ ">
-						\ 
+																		\ 
 																	<option value=" # ">
-						# 
+																		# 
 																	<option value=" ~ ">
-						~ 
+																		~ 
 																	<option value=" ^ ">
-						^       
-					</select>
-				</td>
-				</>
+																		^       
+																	</select>
+																</td>
+																</>
 															</table>
 														</td>
 													</tr>
@@ -707,11 +679,11 @@
 																	<td width="10">&nbsp;</td>
 																	<td width="80">
 																		<input type="button" id="cmdAddEvent" name="cmdAddEvent" value="Add..." style="WIDTH: 100%" class="btn"
-																		       onclick="eventAdd()"
-																		       onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																		       onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																		       onfocus="try{button_onFocus(this);}catch(e){}"
-																		       onblur="try{button_onBlur(this);}catch(e){}" />
+																			onclick="eventAdd()"
+																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
+																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																			onfocus="try{button_onFocus(this);}catch(e){}"
+																			onblur="try{button_onBlur(this);}catch(e){}" />
 																	</td>
 																	<td width="5">&nbsp;</td>
 																</tr>
@@ -1332,208 +1304,7 @@
 													<tr height="5">
 														<td width="5">&nbsp;</td>
 														<td rowspan="12">
-															<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"
-																codebase="cabs/COAInt_Grid.cab#version=3,1,3,6"
-																height="100%"
-																id="ssOleDBGridSortOrder"
-																name="ssOleDBGridSortOrder"
-																style="HEIGHT: 100%; VISIBILITY: visible; display: block; WIDTH: 100%"
-																width="100%">
-																<param name="ScrollBars" value="4">
-																<param name="_Version" value="196617">
-																<param name="DataMode" value="2">
-																<param name="Cols" value="0">
-																<param name="Rows" value="0">
-																<param name="BorderStyle" value="1">
-																<param name="RecordSelectors" value="0">
-																<param name="GroupHeaders" value="-1">
-																<param name="ColumnHeaders" value="-1">
-																<param name="GroupHeadLines" value="1">
-																<param name="HeadLines" value="1">
-																<param name="FieldDelimiter" value="(None)">
-																<param name="FieldSeparator" value="(Tab)">
-																<param name="Row.Count" value="0">
-																<param name="Col.Count" value="1">
-																<param name="stylesets.count" value="0">
-																<param name="TagVariant" value="EMPTY">
-																<param name="UseGroups" value="0">
-																<param name="HeadFont3D" value="0">
-																<param name="Font3D" value="0">
-																<param name="DividerType" value="3">
-																<param name="DividerStyle" value="1">
-																<param name="DefColWidth" value="0">
-																<param name="BeveColorScheme" value="2">
-																<param name="BevelColorFrame" value="-2147483642">
-																<param name="BevelColorHighlight" value="-2147483628">
-																<param name="BevelColorShadow" value="-2147483632">
-																<param name="BevelColorFace" value="-2147483633">
-																<param name="CheckBox3D" value="-1">
-																<param name="AllowAddNew" value="0">
-																<param name="AllowDelete" value="0">
-																<param name="AllowUpdate" value="-1">
-																<param name="MultiLine" value="0">
-																<param name="ActiveCellStyleSet" value="">
-																<param name="RowSelectionStyle" value="0">
-																<param name="AllowRowSizing" value="0">
-																<param name="AllowGroupSizing" value="0">
-																<param name="AllowColumnSizing" value="-1">
-																<param name="AllowGroupMoving" value="0">
-																<param name="AllowColumnMoving" value="0">
-																<param name="AllowGroupSwapping" value="0">
-																<param name="AllowColumnSwapping" value="0">
-																<param name="AllowGroupShrinking" value="0">
-																<param name="AllowColumnShrinking" value="0">
-																<param name="AllowDragDrop" value="0">
-																<param name="UseExactRowCount" value="-1">
-																<param name="SelectTypeCol" value="0">
-																<param name="SelectTypeRow" value="1">
-																<param name="SelectByCell" value="-1">
-																<param name="BalloonHelp" value="0">
-																<param name="RowNavigation" value="2">
-																<param name="CellNavigation" value="0">
-																<param name="MaxSelectedRows" value="1">
-																<param name="HeadStyleSet" value="">
-																<param name="StyleSet" value="">
-																<param name="ForeColorEven" value="0">
-																<param name="ForeColorOdd" value="0">
-																<param name="BackColorEven" value="16777215">
-																<param name="BackColorOdd" value="16777215">
-																<param name="Levels" value="1">
-																<param name="RowHeight" value="503">
-																<param name="ExtraHeight" value="0">
-																<param name="ActiveRowStyleSet" value="">
-																<param name="CaptionAlignment" value="2">
-																<param name="SplitterPos" value="0">
-																<param name="SplitterVisible" value="0">
-																<param name="Columns.Count" value="3">
-
-																<param name="Columns(0).Width" value="3200">
-																<param name="Columns(0).Visible" value="0">
-																<param name="Columns(0).Columns.Count" value="1">
-																<param name="Columns(0).Caption" value="id">
-																<param name="Columns(0).Name" value="columnID">
-																<param name="Columns(0).Alignment" value="0">
-																<param name="Columns(0).CaptionAlignment" value="3">
-																<param name="Columns(0).Bound" value="0">
-																<param name="Columns(0).AllowSizing" value="1">
-																<param name="Columns(0).DataField" value="Column 0">
-																<param name="Columns(0).DataType" value="8">
-																<param name="Columns(0).Level" value="0">
-																<param name="Columns(0).NumberFormat" value="">
-																<param name="Columns(0).Case" value="0">
-																<param name="Columns(0).FieldLen" value="256">
-																<param name="Columns(0).VertScrollBar" value="0">
-																<param name="Columns(0).Locked" value="0">
-																<param name="Columns(0).Style" value="0">
-																<param name="Columns(0).ButtonsAlways" value="0">
-																<param name="Columns(0).RowCount" value="0">
-																<param name="Columns(0).ColCount" value="1">
-																<param name="Columns(0).HasHeadForeColor" value="0">
-																<param name="Columns(0).HasHeadBackColor" value="0">
-																<param name="Columns(0).HasForeColor" value="0">
-																<param name="Columns(0).HasBackColor" value="0">
-																<param name="Columns(0).HeadForeColor" value="0">
-																<param name="Columns(0).HeadBackColor" value="0">
-																<param name="Columns(0).ForeColor" value="0">
-																<param name="Columns(0).BackColor" value="0">
-																<param name="Columns(0).HeadStyleSet" value="">
-																<param name="Columns(0).StyleSet" value="">
-																<param name="Columns(0).Nullable" value="1">
-																<param name="Columns(0).Mask" value="">
-																<param name="Columns(0).PromptInclude" value="0">
-																<param name="Columns(0).ClipMode" value="0">
-																<param name="Columns(0).PromptChar" value="95">
-
-																<param name="Columns(1).Width" value="8000">
-																<param name="Columns(1).Visible" value="-1">
-																<param name="Columns(1).Columns.Count" value="1">
-																<param name="Columns(1).Caption" value="Column">
-																<param name="Columns(1).Name" value="column">
-																<param name="Columns(1).Alignment" value="0">
-																<param name="Columns(1).CaptionAlignment" value="3">
-																<param name="Columns(1).Bound" value="0">
-																<param name="Columns(1).AllowSizing" value="1">
-																<param name="Columns(1).DataField" value="Column 1">
-																<param name="Columns(1).DataType" value="8">
-																<param name="Columns(1).Level" value="0">
-																<param name="Columns(1).NumberFormat" value="">
-																<param name="Columns(1).Case" value="0">
-																<param name="Columns(1).FieldLen" value="256">
-																<param name="Columns(1).VertScrollBar" value="0">
-																<param name="Columns(1).Locked" value="1">
-																<param name="Columns(1).Style" value="0">
-																<param name="Columns(1).ButtonsAlways" value="0">
-																<param name="Columns(1).RowCount" value="0">
-																<param name="Columns(1).ColCount" value="1">
-																<param name="Columns(1).HasHeadForeColor" value="0">
-																<param name="Columns(1).HasHeadBackColor" value="0">
-																<param name="Columns(1).HasForeColor" value="0">
-																<param name="Columns(1).HasBackColor" value="0">
-																<param name="Columns(1).HeadForeColor" value="0">
-																<param name="Columns(1).HeadBackColor" value="0">
-																<param name="Columns(1).ForeColor" value="0">
-																<param name="Columns(1).BackColor" value="0">
-																<param name="Columns(1).HeadStyleSet" value="">
-																<param name="Columns(1).StyleSet" value="">
-																<param name="Columns(1).Nullable" value="1">
-																<param name="Columns(1).Mask" value="">
-																<param name="Columns(1).PromptInclude" value="0">
-																<param name="Columns(1).ClipMode" value="0">
-																<param name="Columns(1).PromptChar" value="95">
-
-																<param name="Columns(2).Width" value="1402">
-																<param name="Columns(2).Visible" value="-1">
-																<param name="Columns(2).Columns.Count" value="1">
-																<param name="Columns(2).Caption" value="Sort Order">
-																<param name="Columns(2).Name" value="order">
-																<param name="Columns(2).Alignment" value="0">
-																<param name="Columns(2).CaptionAlignment" value="3">
-																<param name="Columns(2).Bound" value="0">
-																<param name="Columns(2).AllowSizing" value="1">
-																<param name="Columns(2).DataField" value="Column 2">
-																<param name="Columns(2).DataType" value="8">
-																<param name="Columns(2).Level" value="0">
-																<param name="Columns(2).NumberFormat" value="">
-																<param name="Columns(2).Case" value="0">
-																<param name="Columns(2).FieldLen" value="256">
-																<param name="Columns(2).VertScrollBar" value="0">
-																<param name="Columns(2).Locked" value="-1">
-																<param name="Columns(2).Style" value="3">
-																<param name="Columns(2).ButtonsAlways" value="0">
-																<param name="Columns(2).Row.Count" value="2">
-																<param name="Columns(2).Col.Count" value="2">
-																<param name="Columns(2).Row(0).Col(0)" value="Asc">
-																<param name="Columns(2).Row(0).Col(1)" value="">
-																<param name="Columns(2).Row(1).Col(0)" value="Desc">
-																<param name="Columns(2).Row(1).Col(1)" value="">
-																<param name="Columns(2).HasHeadForeColor" value="0">
-																<param name="Columns(2).HasHeadBackColor" value="0">
-																<param name="Columns(2).HasForeColor" value="0">
-																<param name="Columns(2).HasBackColor" value="0">
-																<param name="Columns(2).HeadForeColor" value="0">
-																<param name="Columns(2).HeadBackColor" value="0">
-																<param name="Columns(2).ForeColor" value="0">
-																<param name="Columns(2).BackColor" value="0">
-																<param name="Columns(2).HeadStyleSet" value="">
-																<param name="Columns(2).StyleSet" value="">
-																<param name="Columns(2).Nullable" value="1">
-																<param name="Columns(2).Mask" value="">
-																<param name="Columns(2).PromptInclude" value="0">
-																<param name="Columns(2).ClipMode" value="0">
-																<param name="Columns(2).PromptChar" value="95">
-
-																<param name="UseDefaults" value="-1">
-																<param name="TabNavigation" value="1">
-																<param name="BatchUpdate" value="0">
-																<param name="_ExtentX" value="11298">
-																<param name="_ExtentY" value="3969">
-																<param name="_StockProps" value="79">
-																<param name="Caption" value="">
-																<param name="ForeColor" value="0">
-																<param name="BackColor" value="-2147483633">
-																<param name="Enabled" value="-1">
-																<param name="DataMember" value="">
-															</object>
+															<%Html.RenderPartial("Util_Def_CustomReports/ssOleDBGridSortOrder")%>
 														</td>
 
 														<td width="10">&nbsp;</td>
@@ -2014,10 +1785,10 @@
 																				<td></td>
 																				<td align="left" nowrap>
 																					<input name="chkDestination3" id="chkDestination3" type="checkbox" disabled="disabled" tabindex="-1"
-																					       onclick="changeTab5Control();"
-																					       onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																					       onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
-																					
+																						onclick="changeTab5Control();"
+																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
+																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+
 																					<label for="chkDestination3"
 																						class="checkbox checkboxdisabled"
 																						tabindex="0"
@@ -2025,7 +1796,9 @@
 																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
 																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
 																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">Send as email </label>
+																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						Send as email
+																					</label>
 																				</td>
 																				<td></td>
 																				<td align="left" nowrap>Email group :   </td>
@@ -2044,7 +1817,8 @@
 																									onmouseout="try{button_onMouseOut(this);}catch(e){}"
 																									onfocus="try{button_onFocus(this);}catch(e){}"
 																									onblur="try{button_onBlur(this);}catch(e){}" />
-																							</td></table>
+																							</td>
+																					</table>
 																				</td>
 																		</table>
 																	</td>
@@ -2093,72 +1867,70 @@
 												</table>
 											</td>
 										</tr>
-									</table></div>
+									</table>
+								</div>
 							</td>
 						</tr>
-					</table> 
+					</table>
+
 		</table>
-	</form>
-</div>
 
-<table>
-	<td width="10"></td>
-	<tr height="10">
-		<td colspan="3"></td>
-	</tr>
+		<input type='hidden' id="txtBasePicklistID" name="txtBasePicklistID">
+		<input type='hidden' id="txtBaseFilterID" name="txtBaseFilterID">
+		<input type='hidden' id="txtDescExprID" name="txtDescExprID">
+		<input type='hidden' id="txtCustomStartID" name="txtCustomStartID">
+		<input type='hidden' id="txtCustomEndID" name="txtCustomEndID">
+		<input type='hidden' id="txtDatabase" name="txtDatabase" value="<%=session("Database")%>">
 
-	<tr height="10">
-		<td width="10"></td>
-		<td>
-			<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-				<tr>
-					<td>&nbsp;</td>
-					<td width="80">
-						<input type="button" id="cmdOK" name="cmdOK" value="OK" style="WIDTH: 100%" class="btn"
-							onclick="okClick()"
-							onmouseover="try{button_onMouseOver(this);}catch(e){}"
-							onmouseout="try{button_onMouseOut(this);}catch(e){}"
-							onfocus="try{button_onFocus(this);}catch(e){}"
-							onblur="try{button_onBlur(this);}catch(e){}" />
+		<input type='hidden' id="txtWordVer" name="txtWordVer" value="<%=Session("WordVer")%>">
+		<input type='hidden' id="txtExcelVer" name="txtExcelVer" value="<%=Session("ExcelVer")%>">
+		<input type='hidden' id="txtWordFormats" name="txtWordFormats" value="<%=Session("WordFormats")%>">
+		<input type='hidden' id="txtExcelFormats" name="txtExcelFormats" value="<%=Session("ExcelFormats")%>">
+		<input type='hidden' id="txtWordFormatDefaultIndex" name="txtWordFormatDefaultIndex" value="<%=Session("WordFormatDefaultIndex")%>">
+		<input type='hidden' id="txtExcelFormatDefaultIndex" name="txtExcelFormatDefaultIndex" value="<%=Session("ExcelFormatDefaultIndex")%>">
+		<div>
+			<table>
+				<td width="10"></td>
+				<tr height="10">
+					<td colspan="3"></td>
+				</tr>
+
+				<tr height="10">
+					<td width="10"></td>
+					<td>
+						<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+							<tr>
+								<td>&nbsp;</td>
+								<td width="80">
+									<input type="button" id="cmdOK" name="cmdOK" value="OK" style="WIDTH: 100%" class="btn"
+										onclick="okClick()"
+										onmouseover="try{button_onMouseOver(this);}catch(e){}"
+										onmouseout="try{button_onMouseOut(this);}catch(e){}"
+										onfocus="try{button_onFocus(this);}catch(e){}"
+										onblur="try{button_onBlur(this);}catch(e){}" />
+								</td>
+								<td width="10"></td>
+								<td width="80">
+									<input type="button" id="cmdCancel" name="cmdCancel" value="Cancel" style="WIDTH: 100%" class="btn"
+										onclick="cancelClick()"
+										onmouseover="try{button_onMouseOver(this);}catch(e){}"
+										onmouseout="try{button_onMouseOut(this);}catch(e){}"
+										onfocus="try{button_onFocus(this);}catch(e){}"
+										onblur="try{button_onBlur(this);}catch(e){}" />
+								</td>
+							</tr>
+						</table>
 					</td>
 					<td width="10"></td>
-					<td width="80">
-						<input type="button" id="cmdCancel" name="cmdCancel" value="Cancel" style="WIDTH: 100%" class="btn"
-							onclick="cancelClick()"
-							onmouseover="try{button_onMouseOver(this);}catch(e){}"
-							onmouseout="try{button_onMouseOut(this);}catch(e){}"
-							onfocus="try{button_onFocus(this);}catch(e){}"
-							onblur="try{button_onBlur(this);}catch(e){}" />
-					</td>
+				</tr>
+
+				<tr height="5">
+					<td colspan="3"></td>
 				</tr>
 			</table>
-		</td>
-		<td width="10"></td>
-	</tr>
-
-	<tr height="5">
-		<td colspan="3"></td>
-	</tr>
-</table>
-
-
-
-<form>
-	<input type='hidden' id="txtBasePicklistID" name="txtBasePicklistID">
-	<input type='hidden' id="txtBaseFilterID" name="txtBaseFilterID">
-	<input type='hidden' id="txtDescExprID" name="txtDescExprID">
-	<input type='hidden' id="txtCustomStartID" name="txtCustomStartID">
-	<input type='hidden' id="txtCustomEndID" name="txtCustomEndID">
-	<input type='hidden' id="txtDatabase" name="txtDatabase" value="<%=session("Database")%>">
-
-	<input type='hidden' id="txtWordVer" name="txtWordVer" value="<%=Session("WordVer")%>">
-	<input type='hidden' id="txtExcelVer" name="txtExcelVer" value="<%=Session("ExcelVer")%>">
-	<input type='hidden' id="txtWordFormats" name="txtWordFormats" value="<%=Session("WordFormats")%>">
-	<input type='hidden' id="txtExcelFormats" name="txtExcelFormats" value="<%=Session("ExcelFormats")%>">
-	<input type='hidden' id="txtWordFormatDefaultIndex" name="txtWordFormatDefaultIndex" value="<%=Session("WordFormatDefaultIndex")%>">
-	<input type='hidden' id="txtExcelFormatDefaultIndex" name="txtExcelFormatDefaultIndex" value="<%=Session("ExcelFormatDefaultIndex")%>">
+		</div>
 </form>
-
+</div>
 
 <form id="frmTables" style="visibility: hidden; display: none">
 	<%
@@ -2203,8 +1975,12 @@
 	%>
 </form>
 
-<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
-</form>
+<%--<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
+</form>--%>
+	<form action="default_Submit" method=post id=Form1 name=frmGoto style="visibility:hidden;display:none">
+		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
+	</form>
+
 
 <form id="frmOriginalDefinition" name="frmOriginalDefinition" style="visibility: hidden; display: none">
 	<%
@@ -2840,7 +2616,7 @@
 </div>
 
 <script type="text/javascript">
-	debugger;
+	//debugger;
 	util_def_calendarreport_window_onload();
 	util_def_calendarreport_addhandlers();
 </script>
