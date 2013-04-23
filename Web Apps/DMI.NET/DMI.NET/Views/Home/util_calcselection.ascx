@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="System.Diagnostics" %>
 
 <link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
 <script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
@@ -12,9 +13,9 @@
 		var ssOleDBGridDefSelRecords = document.getElementById("ssOleDBGridDefSelRecords");
 		var bdyMain = document.getElementById("bdyMain");
 		var iResizeBy, iNewWidth, iNewHeight;
-		
+
 		setGridFont(ssOleDBGridDefSelRecords);
-		
+
 		// Resize the popup.
 		iResizeBy = bdyMain.scrollWidth - bdyMain.clientWidth;
 		if (bdyMain.offsetWidth + iResizeBy > screen.width) {
@@ -122,9 +123,9 @@
 	function locateRecord(psSearchFor) {
 		var fFound = false;
 		var iIndex;
-		
+
 		var ssOleDBGridDefSelRecords = document.getElementById("ssOleDBGridDefSelRecords");
-		
+
 		ssOleDBGridDefSelRecords.redraw = false;
 		ssOleDBGridDefSelRecords.MoveLast();
 		ssOleDBGridDefSelRecords.MoveFirst();
@@ -154,10 +155,7 @@
 
 		ssOleDBGridDefSelRecords.redraw = true;
 	}
-</script>
 
-
-<script type="text/javascript">
 	function util_calcselection_addhandlers() {
 		OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "rowColChange", ssOleDBGridDefSelRecordsRowColChange);
 		OpenHR.addActiveXHandler("ssOleDBGridDefSelRecords", "DblClick", ssOleDBGridDefSelRecordsDblClick);
@@ -222,13 +220,9 @@
 						<td colspan="3" align="center" height="10">
 							<h3>
 								<% 
-									'if Request("recseltype") = "picklist" then 
 									Response.Write("Calculations")
-									'else
-									'	Response.write "Filters"
-									'end if
 								%>
-								</h3>
+							</h3>
 						</td>
 					</tr>
 					<tr>
@@ -236,13 +230,15 @@
 						<td>
 							<%
 								' Get the order records.
-								Dim cmdDefSelRecords = Server.CreateObject("ADODB.Command")
-								cmdDefSelRecords.CommandText = "spASRIntGetRecordSelection"
+								Dim cmdDefSelRecords = CreateObject("ADODB.Command")
+								cmdDefSelRecords.CommandText = "spASRIntGetRecordSelection" 
 								cmdDefSelRecords.CommandType = 4 ' Stored Procedure
 								cmdDefSelRecords.ActiveConnection = Session("databaseConnection")
-
+								
 								Dim prmType = cmdDefSelRecords.CreateParameter("type", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
 								cmdDefSelRecords.Parameters.Append(prmType)
+								'prmType.value = Request("calcSelType")
+								prmType.value = "CALC"
 
 								Dim prmTableID = cmdDefSelRecords.CreateParameter("tableID", 3, 1) ' 3=integer, 1=input
 								cmdDefSelRecords.Parameters.Append(prmTableID)
@@ -252,8 +248,8 @@
 									prmTableID.value = CleanNumeric(Request("calcSelTableID"))
 								End If
 	
-								Err.Number = 0
-								dim rstDefSelRecords = cmdDefSelRecords.Execute
+								Err.Clear()
+								Dim rstDefSelRecords = cmdDefSelRecords.Execute
 
 								' Instantiate and initialise the grid. 
 								Response.Write("			<OBJECT classid=""clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"" id=ssOleDBGridDefSelRecords name=ssOleDBGridDefselRecords codebase=""cabs/COAInt_Grid.cab#version=3,1,3,6"" style=""LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:100%"">" & vbCrLf)
@@ -270,7 +266,7 @@
 								Response.Write("				<PARAM NAME=""HeadLines"" VALUE=""0"">" & vbCrLf)
 								Response.Write("				<PARAM NAME=""FieldDelimiter"" VALUE=""(None)"">" & vbCrLf)
 								Response.Write("				<PARAM NAME=""FieldSeparator"" VALUE=""(Tab)"">" & vbCrLf)
-								Response.Write("				<PARAM NAME=""Col.Count"" VALUE=""" & rstDefselRecords.fields.count & """>" & vbCrLf)
+								Response.Write("				<PARAM NAME=""Col.Count"" VALUE=""" & rstDefSelRecords.fields.count & """>" & vbCrLf)
 								Response.Write("				<PARAM NAME=""stylesets.count"" VALUE=""0"">" & vbCrLf)
 								Response.Write("				<PARAM NAME=""TagVariant"" VALUE=""EMPTY"">" & vbCrLf)
 								Response.Write("				<PARAM NAME=""UseGroups"" VALUE=""0"">" & vbCrLf)
@@ -323,6 +319,7 @@
 								Response.Write("				<PARAM NAME=""SplitterPos"" VALUE=""0"">" & vbCrLf)
 								Response.Write("				<PARAM NAME=""SplitterVisible"" VALUE=""0"">" & vbCrLf)
 								Response.Write("				<PARAM NAME=""Columns.Count"" VALUE=""" & rstDefSelRecords.fields.count & """>" & vbCrLf)
+								
 
 								For iLoop = 0 To (rstDefSelRecords.fields.count - 1)
 
@@ -335,7 +332,7 @@
 									End If
 							
 									Response.Write("				<PARAM NAME=""Columns(" & iLoop & ").Columns.Count"" VALUE=""1"">" & vbCrLf)
-									Response.Write("				<PARAM NAME=""Columns(" & iLoop & ").Caption"" VALUE=""" & Replace(rstDefSelRecords.fields(iLoop).name, "_", " ") & """>" & vbCrLf)
+									Response.Write("				<PARAM NAME=""Columns(" & iLoop & ").Caption"" VALUE=""" & Replace(CType(rstDefSelRecords.fields(iLoop).name, String), "_", " ") & """>" & vbCrLf)
 									Response.Write("				<PARAM NAME=""Columns(" & iLoop & ").Name"" VALUE=""" & rstDefSelRecords.fields(iLoop).name & """>" & vbCrLf)
 									Response.Write("				<PARAM NAME=""Columns(" & iLoop & ").Alignment"" VALUE=""0"">" & vbCrLf)
 									Response.Write("				<PARAM NAME=""Columns(" & iLoop & ").CaptionAlignment"" VALUE=""3"">" & vbCrLf)
@@ -380,18 +377,19 @@
 								Response.Write("				<PARAM NAME=""BackColor"" VALUE=""16777215"">" & vbCrLf)
 								Response.Write("				<PARAM NAME=""Enabled"" VALUE=""-1"">" & vbCrLf)
 								Response.Write("				<PARAM NAME=""DataMember"" VALUE="""">" & vbCrLf)
-							
+
 								Dim lngRowCount = 0
 								Do While Not rstDefSelRecords.EOF
 									For iLoop = 0 To (rstDefSelRecords.fields.count - 1)
-										Response.Write("				<PARAM NAME=""Row(" & lngRowCount & ").Col(" & iLoop & ")"" VALUE=""" & Replace(Replace(rstDefSelRecords.Fields(iLoop).Value, "_", " "), """", "&quot;") & """>" & vbCrLf)
+										Response.Write("				<PARAM NAME=""Row(" & lngRowCount & ").Col(" & iLoop & ")"" VALUE=""" & Replace(Replace(CType(rstDefSelRecords.Fields(iLoop).Value, String), "_", " "), """", "&quot;") & """>" & vbCrLf)
 									Next
 									lngRowCount = lngRowCount + 1
 									rstDefSelRecords.MoveNext()
 								Loop
 								Response.Write("				<PARAM NAME=""Row.Count"" VALUE=""" & lngRowCount & """>" & vbCrLf)
 								Response.Write("			</OBJECT>" & vbCrLf)
-							%>
+								
+		%>						
 						</td>
 						<td width="20"></td>
 					</tr>
