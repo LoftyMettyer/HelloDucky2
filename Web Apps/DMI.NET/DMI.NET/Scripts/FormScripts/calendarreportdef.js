@@ -1,9 +1,22 @@
-﻿function util_def_calendarreport_window_onload() {
-	debugger;
+﻿var frmDefinition = document.getElementById("frmDefinition");
+var frmUseful = document.getElementById("frmUseful");
+var frmOriginalDefinition = document.getElementById("frmOriginalDefinition");
+var frmSortOrder = document.getElementById("frmSortOrder");
+var frmSelectionAccess = document.getElementById("frmSelectionAccess");
+var frmSend = document.getElementById("frmSend");
+var frmAccess = document.getElementById("frmAccess");
+var frmValidate = document.getElementById("frmValidate");
+var frmEmailSelection = document.getElementById("frmEmailSelection");
+var frmTables = document.getElementById("frmTables");
+
+var sRepDefn;
+var sSortDefn;
+
+
+function util_def_calendarreport_window_onload() {
 	    var fOK;
 	    fOK = true;
-	    debugger;
-	    var sErrMsg = frmUseful.txtErrorDescription.value;
+			var sErrMsg = frmUseful.txtErrorDescription.value;
 	    if (sErrMsg.length > 0) {
 	        fOK = false;
 	        OpenHR.messageBox(sErrMsg, 48, "Calendar Reports");
@@ -32,19 +45,19 @@
 
 	        if (frmUseful.txtAction.value.toUpperCase() == "NEW") {
 
-	            with (frmDefinition) {
-	                txtOwner.value = frmUseful.txtUserName.value;
-	                txtDescription.value = "";
-	                txtName.value = "";
-	                optRecordSelection1.checked = true;
-	                optFixedStart.checked = true;
-	                optFixedEnd.checked = true;
-	                chkShadeWeekends.checked = true;
-	                chkStartOnCurrentMonth.checked = true;
-	                chkCaptions.checked = true;
-	                optOutputFormat0.checked = true;
-	                chkDestination0.checked = true;
-	            }
+	            
+	               frmDefinition.txtOwner.value = frmUseful.txtUserName.value;
+	               frmDefinition.txtDescription.value = "";
+	               frmDefinition.txtName.value = "";
+	               frmDefinition.optRecordSelection1.checked = true;
+	               frmDefinition.optFixedStart.checked = true;
+	               frmDefinition.optFixedEnd.checked = true;
+	               frmDefinition.chkShadeWeekends.checked = true;
+	               frmDefinition.chkStartOnCurrentMonth.checked = true;
+	               frmDefinition.chkCaptions.checked = true;
+	               frmDefinition.optOutputFormat0.checked = true;
+	               frmDefinition.chkDestination0.checked = true;
+	            
 
 	            setBaseTable(0);
 	            changeBaseTable();
@@ -93,8 +106,6 @@
 	    }
 	}
 
-	var sRepDefn;
-var sSortDefn;
 var fValidating;
 fValidating = false;
 
@@ -264,16 +275,16 @@ function populateBaseTableCombo() {
 
     //Clear the existing data in the base table combo
     while (frmDefinition.cboBaseTable.options.length > 0) {
-        frmDefinition.cboBaseTable.options.remove(0);
+    	frmDefinition.cboBaseTable.options.remove(0);
     }
 
     var dataCollection = frmTables.elements;
     if (dataCollection != null) {
         for (i = 0; i < dataCollection.length; i++) {
-            sControlName = dataCollection.item(i).name;
-            sControlTag = sControlName.substr(0, 13);
+            var sControlName = dataCollection.item(i).name;
+            var sControlTag = sControlName.substr(0, 13);
             if (sControlTag == "txtTableName_") {
-                sTableID = sControlName.substr(13);
+                var sTableID = sControlName.substr(13);
                 var oOption = document.createElement("OPTION");
                 frmDefinition.cboBaseTable.options.add(oOption);
                 oOption.innerText = dataCollection.item(i).value;
@@ -294,8 +305,8 @@ function populateBaseTableColumns() {
     frmGetDataForm.txtReportBaseTableID.value = frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].value;
 
     //this should be in scope by now.
-    //TODO: NPG
-    data.data_refreshData(); //window.parent.frames("dataframe").refreshData();
+	//TODO: NPG
+    data_refreshData(); //window.parent.frames("dataframe").refreshData();
 }
 
 function trim(strInput) {
@@ -552,17 +563,10 @@ function refreshTab1Controls() {
     button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
         (fViewing == true)));
 
-    // Little dodge to get around a browser bug that
-    // does not refresh the display on all controls.
-    try {
-        window.resizeBy(0, -1);
-        window.resizeBy(0, 1);
-    }
-    catch (e) { }
 }
 
 function refreshTab2Controls() {
-    fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
+    var fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
 
     with (frmDefinition) {
         button_disable(cmdAddEvent, (fViewing == true));
@@ -582,13 +586,6 @@ function refreshTab2Controls() {
 
     frmDefinition.grdEvents.RowHeight = 19;
 
-    // Little dodge to get around a browser bug that
-    // does not refresh the display on all controls.
-    try {
-        window.resizeBy(0, -1);
-        window.resizeBy(0, 1);
-    }
-    catch (e) { }
 }
 
 function refreshTab3Controls() {
@@ -839,14 +836,6 @@ function refreshTab3Controls() {
 
     button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
         (fViewing == true)));
-
-    // Little dodge to get around a browser bug that
-    // does not refresh the display on all controls.
-    try {
-        window.resizeBy(0, -1);
-        window.resizeBy(0, 1);
-    }
-    catch (e) { }
 }
 
 function refreshTab4Controls() {
@@ -908,13 +897,6 @@ function refreshTab4Controls() {
     button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
         (fViewing == true)));
 
-    // Little dodge to get around a browser bug that
-    // does not refresh the display on all controls.
-    try {
-        window.resizeBy(0, -1);
-        window.resizeBy(0, 1);
-    }
-    catch (e) { }
 }
 
 
@@ -1208,13 +1190,7 @@ function refreshTab5Controls() {
     button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
         (fViewing == true)));
 
-    // Little dodge to get around a browser bug that
-    // does not refresh the display on all controls.
-    try {
-        window.resizeBy(0, -1);
-        window.resizeBy(0, 1);
-    }
-    catch (e) { }
+
 }
 
 function formatClick(index) {
@@ -1418,6 +1394,12 @@ function selectCalc(psCalcType, bRecordIndepend) {
     var iTableID;
     var iCurrentID;
     var sURL;
+	
+		var frmDefinition = document.getElementById("frmDefinition");
+    var frmUseful = document.getElementById("frmUseful");
+    var frmCalcSelection = document.getElementById("frmCalcSelection");
+	
+
 
     if (psCalcType == 'baseDesc') {
         iTableID = frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].value;
@@ -1450,7 +1432,7 @@ function selectCalc(psCalcType, bRecordIndepend) {
         frmCalcSelection.recSelDefOwner.value = '0';
     }
 
-    sURL = "dialog" +
+    sURL = "util_calcSelection" +
         "?calcSelRecInd=" + frmCalcSelection.calcSelRecInd.value +
         "&calcSelType=" + escape(frmCalcSelection.calcSelType.value) +
         "&calcSelTableID=" + escape(frmCalcSelection.calcSelTableID.value) +
@@ -1475,8 +1457,9 @@ function selectEmailGroup() {
 
 function selectRecordOption(psTable, psType) {
     var sURL;
-
-    if (psTable == 'base') {
+	var iCurrentID;
+	var iTableID;
+	if (psTable == 'base') {
         iTableID = frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].value;
 
         if (psType == 'picklist') {
@@ -1545,7 +1528,7 @@ function eventFilterString() {
     with (frmDefinition.grdEvents) {
         if (Rows > 0) {
             MoveFirst();
-            for (var i = 0; i < Rows; i++) {
+            for (i = 0; i < Rows; i++) {
                 pvarbookmark = GetBookmark(i);
                 sEventFilterString = sEventFilterString + Columns('FilterID').CellValue(pvarbookmark);
                 if (i != Rows - 1) {
@@ -1565,7 +1548,6 @@ function submitDefinition() {
     var iIndex;
     var sColumnID;
     var sType;
-    var frmRefresh;
     var iDummy;
     var sURL;
 
@@ -1578,7 +1560,7 @@ function submitDefinition() {
 
     // Now create the validate popup to check that any filters/calcs
     // etc havent been deleted, or made hidden etc.		
-
+	
     // first populate the validate fields
     frmValidate.validateBaseFilter.value = frmDefinition.txtBaseFilterID.value;
     frmValidate.validateBasePicklist.value = frmDefinition.txtBasePicklistID.value;
@@ -1598,18 +1580,21 @@ function submitDefinition() {
         frmValidate.validateUtilID.value = 0;
     }
 
-    try {
-        var testDataCollection = frmRefresh.elements;
-        iDummy = testDataCollection.txtDummy.value;
-        frmRefresh.submit();
-    }
-    catch (e) {
-    }
+		//ND May need to revisit or reinstate this if performance issues ensue
+    //try {
+
+    //	var frmRefresh = OpenHR.getForm("workframe", "frmRefresh");
+    //	var testDataCollection = frmRefresh.elements;
+    //    iDummy = testDataCollection.txtDummy.value;
+    //    frmRefresh.submit();
+    //}
+    //catch (e) {
+    //}
 
     var sHiddenGroups = HiddenGroups(frmDefinition.grdAccess);
     frmValidate.validateHiddenGroups.value = sHiddenGroups;
 
-    sURL = "dialog" +
+    sURL = "util_validate_calendarreport" +
         "?validateBaseFilter=" + frmValidate.validateBaseFilter.value +
         "&validateBasePicklist=" + escape(frmValidate.validateBasePicklist.value) +
         "&validateEmailGroup=" + escape(frmValidate.validateEmailGroup.value) +
@@ -1622,34 +1607,35 @@ function submitDefinition() {
         "&validateTimestamp=" + escape(frmValidate.validateTimestamp.value) +
         "&validateUtilID=" + escape(frmValidate.validateUtilID.value) +
         "&destination=util_validate_calendarreport";
-    openDialog(sURL, (screen.width) / 2, (screen.height) / 3, "no", "no");
+	//openDialog(sURL, (screen.width) / 2, (screen.height) / 3, "no", "no");
+	debugger;
+    openDialog(sURL, (screen.width) / 2, (screen.height) / 3);
 }
 
 function cancelClick() {
-    if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
-        (definitionChanged() == false)) {
-        //todo
-        //window.location.href="defsel";
-        return (false);
-    }
+	if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
+			(definitionChanged() == false)) {
+		menu_loadDefSelPage(17, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
+		return (false);
+	}
 
-    answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3, "Calendar Reports");
-    if (answer == 7) {
-        //todo
-        //window.location.href="defsel";
-        return (false);
-    }
-    if (answer == 6) {
-        // Yes
-        okClick();
-    }
+	var answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3, "Calendar Reports");
+	if (answer == 7) {
+		menu_loadDefSelPage(17, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
+		return (false);
+	}
+	if (answer == 6) {
+		// Yes
+		okClick();
+	}
 }
 
 function okClick() {
-    OpenHR.disableMenu();
-
-    frmSend.txtSend_reaction.value = "CALENDARREPORTS";
-    submitDefinition();
+	debugger;
+	//OpenHR.disableMenu();
+	menu_disableMenu();
+	frmSend.txtSend_reaction.value = "CALENDARREPORTS";
+	submitDefinition();
 }
 
 function saveChanges(psAction, pfPrompt, pfTBOverride) {
@@ -1815,16 +1801,29 @@ function getTableName(piTableID) {
     return sTableName;
 }
 
+//function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
+//    dlgwinprops = "center:yes;" +
+//        "dialogHeight:" + pHeight + "px;" +
+//        "dialogWidth:" + pWidth + "px;" +
+//        "help:no;" +
+//        "resizable:" + psResizable + ";" +
+//        "scroll:" + psScroll + ";" +
+//        "status:no;";
+//    window.showModalDialog(pDestination, self, dlgwinprops);
+//}
+
 function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
-    dlgwinprops = "center:yes;" +
-        "dialogHeight:" + pHeight + "px;" +
-        "dialogWidth:" + pWidth + "px;" +
-        "help:no;" +
-        "resizable:" + psResizable + ";" +
-        "scroll:" + psScroll + ";" +
-        "status:no;";
-    window.showModalDialog(pDestination, self, dlgwinprops);
+	var dlgwinprops = "center:yes;" +
+		"dialogHeight:" + pHeight + "px;" +
+			"dialogWidth:" + pWidth + "px;" +
+				"help:no;" +
+					"resizable:" + psResizable + ";" +
+						"scroll:" + psScroll + ";" +
+							"status:no;";
+	window.showModalDialog(pDestination, self, dlgwinprops);
 }
+
+
 
 function getEventKey() {
     var i = 1;
@@ -2057,7 +2056,7 @@ function sortAdd() {
     var iColumnsCount = 0;
     var sURL;
     var bm;
-
+	debugger;
     // Loop through the columns added and populate the 
     // sort order text boxes to pass to util_sortorderselection
     frmSortOrder.txtSortInclude.value = '';
@@ -2106,7 +2105,7 @@ function sortAdd() {
     }
     else {
         if (frmSortOrder.txtSortInclude.value != '') {
-            sURL = "util_sortorderselection" +
+        	sURL = "Util_SortOrderSelection" +
                 "?txtSortInclude=" + escape(frmSortOrder.txtSortInclude.value) +
                 "&txtSortExclude=" + escape(frmSortOrder.txtSortExclude.value) +
                 "&txtSortEditing=" + escape(frmSortOrder.txtSortEditing.value) +
@@ -2261,11 +2260,10 @@ function validateTab1() {
 function validateTab2() {
     var i;
     var sErrMsg;
-    var iIndex;
     var iCount;
     var sDefn;
     var sControlName;
-    var frmRefresh;
+    var frmRefresh = OpenHR.getForm("workframe", "frmRefresh");
     var iDummy;
 
     sErrMsg = "";
@@ -2281,13 +2279,6 @@ function validateTab2() {
         var dataCollection = frmOriginalDefinition.elements;
         if (dataCollection != null) {
             for (i = 0; i < dataCollection.length; i++) {
-                try {
-                    var testDataCollection = window.frmRefresh.elements;
-                    iDummy = testDataCollection.txtDummy.value;
-                    frmRefresh.submit();
-                }
-                catch (e) {
-                }
 					
                 sControlName = dataCollection.item(i).name;
                 sControlName = sControlName.substr(0, 19);
@@ -2310,13 +2301,16 @@ function validateTab2() {
         return (false);
     }
 
-    try {
-        testDataCollection = frmRefresh.elements;
-        iDummy = testDataCollection.txtDummy.value;
-        frmRefresh.submit();
-    }
-    catch (e) {
-    }
+	//ND May need to revisit or reinstate this if performance issues ensue
+    //try {
+	  //  var testDataCollection = frmRefresh.elements;
+	  //  iDummy = testDataCollection.txtDummy.value;
+	  //  iDummy = frmRefresh.elements.txtDummy.value;
+	    
+    //    frmRefresh.submit();
+    //}
+    //catch (e) {
+    //}
 
     return (true);
 }
@@ -2410,111 +2404,104 @@ function validateTab3() {
     return (true);
 }
 
+
+
 function validateTab4() {
-    var i;
-    var sErrMsg;
-    var iIndex;
-    var iCount;
-    var sPage;
-    var sBreak;
-    var sDefn;
-    var sControlName;
-    var frmRefresh;
-    var iDummy;
-    var blnHasVoc;
+	var i;
+	var sErrMsg;
+	var iCount;
+	var sDefn;
+	var sControlName;
+	var frmRefresh;
+	var iDummy;
 
-    blnHasVoc = false;
+	sErrMsg = "";
 
-    sErrMsg = "";
+	//check at least one column defined as sort order
+	var testDataCollection;
+	if (frmUseful.txtSortLoaded.value == 1) {
+		with (frmDefinition.ssOleDBGridSortOrder) {
+			if (frmDefinition.ssOleDBGridSortOrder.Rows <= 0) {
+				sErrMsg = "You must select at least one column to order the report by.";
+			}
+			else {
+				if ((frmDefinition.chkGroupByDesc.checked) && (frmDefinition.txtDescExprID.value < 1)) {
+					var lngDesc1ID = frmDefinition.cboDescription1.options[frmDefinition.cboDescription1.selectedIndex].value;
+					var lngDesc2ID = frmDefinition.cboDescription2.options[frmDefinition.cboDescription2.selectedIndex].value;
 
-    //check at least one column defined as sort order
-    if (frmUseful.txtSortLoaded.value == 1) {
-        if (frmDefinition.ssOleDBGridSortOrder.Rows == 0) {
-            sErrMsg = "You must select a column to order the report by.";
-        }
-        else {
-            frmDefinition.ssOleDBGridSortOrder.redraw = false;
-            frmDefinition.ssOleDBGridSortOrder.movefirst();
+					var strDesc = new String(lngDesc1ID);
+					if (lngDesc2ID > 0) {
+						strDesc = strDesc + '	' + lngDesc2ID;
+					}
+					var strTemp = new String('');
+					frmDefinition.ssOleDBGridSortOrder.Redraw = false;
+					frmDefinition.ssOleDBGridSortOrder.MoveFirst();
+					for (i = 0; i < frmDefinition.ssOleDBGridSortOrder.Rows; i++) {
+						if (frmDefinition.ssOleDBGridSortOrder.Columns('ColumnID').Text > 0) {
+							if (i > 0) {
+								strTemp = strTemp + '	';
+							}
+							strTemp = strTemp + frmDefinition.ssOleDBGridSortOrder.Columns('ColumnID').Value;
+						}
+						if (i >= 1) {
+							break;
+						}
+						frmDefinition.ssOleDBGridSortOrder.MoveNext();
+					}
+					frmDefinition.ssOleDBGridSortOrder.MoveFirst();
 
-            // check boc and poc not both selected
-            for (i = 0; i < frmDefinition.ssOleDBGridSortOrder.rows; i++) {
-                if ((frmDefinition.ssOleDBGridSortOrder.Columns("break").Text == -1) &&
-                    (frmDefinition.ssOleDBGridSortOrder.Columns("page").Text == -1)) {
-                    sErrMsg = "You cannot select break on change and page on change for the same column.";
-                    break;
-                }
+					if (strTemp != strDesc) {
+						sErrMsg = "The sort order does not reflect the selected Group By Description columns. Do you wish to continue?";
+						if (OpenHR.messageBox(sErrMsg, 36, "Calendar Report Definition") == 7) {
+							frmDefinition.ssOleDBGridSortOrder.Redraw = true;
+							displayPage(4);
+							return (false);
+						}
+						else {
+							frmDefinition.ssOleDBGridSortOrder.Redraw = true;
+							sErrMsg = '';
+						}
+					}
+				}
+			}
+		}
+	}
+	else {
+		iCount = 0;
+		var dataCollection = frmOriginalDefinition.elements;
+		if (dataCollection != null) {
+			for (i = 0; i < dataCollection.length; i++) {
+				sControlName = dataCollection.item(i).name;
+				sControlName = sControlName.substr(0, 19);
+				if (sControlName == "txtReportDefnOrder_") {
+					sDefn = new String(dataCollection.item(i).value);
 
-                if ((frmDefinition.ssOleDBGridSortOrder.Columns("value").Text == -1)) {
-                    blnHasVoc = true;
-                }
+					iCount = iCount + 1;
+				}
+			}
+		}
 
-                frmDefinition.ssOleDBGridSortOrder.movenext();
-            }
-            frmDefinition.ssOleDBGridSortOrder.redraw = true;
-        }
-    }
-    else {
-        iCount = 0;
-        var dataCollection = frmOriginalDefinition.elements;
-        if (dataCollection != null) {
-            for (i = 0; i < dataCollection.length; i++) {
-                if (dataCollection.item(i).value != "") {
-                    sControlName = dataCollection.item(i).name;
-                    sControlName = sControlName.substr(0, 19);
-                    if (sControlName == "txtReportDefnOrder_") {
-                        sDefn = new String(dataCollection.item(i).value);
-                        sPage = sortColumnParameter(sDefn, "POC");
-                        sBreak = sortColumnParameter(sDefn, "BOC")
+		if (iCount == 0) {
+			sErrMsg = "You must select at least one column to order the report by.";
+		}
+	}
 
-                        if ((sBreak == "-1") && (sPage == "-1")) {
-                            sErrMsg = "You cannot select break on change and page on change for the same column.";
-                            break;
-                        }
+	if (sErrMsg.length > 0) {
+		OpenHR.messageBox(sErrMsg, 48, "Calendar Reports");
+		displayPage(4);
+		return (false);
+	}
+	//ND May need to revisit or reinstate this if performance issues ensue
+	//try {
+	//	testDataCollection = frmRefresh.elements;
+	//	iDummy = testDataCollection.txtDummy.value;
+	//	frmRefresh.submit();
+	//}
+	//catch (e) {
+	//}
 
-                        if ((sortColumnParameter(sDefn, "VOC") == "1")) {
-                            blnHasVoc = true;
-                        }
-
-                        iCount = iCount + 1;
-                    }
-                }
-            }
-        }
-
-        if (iCount == 0) {
-            sErrMsg = "You must select a column to order the report by.";
-        }
-    }
-
-
-    if (frmDefinition.chkSummary.checked) {
-        if (!blnHasVoc) {
-            sErrMsg = "You have defined this report as a summary report but have not set a column as 'Value on Change'.\n\nDo you wish to continue?";
-            if ((OpenHR.messageBox(sErrMsg, 36, "Custom Reports") == 7)) {
-                displayPage(4);
-                return (false);
-            }
-        }
-    }
-    else {
-        if (sErrMsg.length > 0) {
-            OpenHR.MessageBox(sErrMsg, 48, "Custom Reports");
-            displayPage(4);
-            return (false);
-        }
-    }
-
-    try {
-        var testDataCollection = frmRefresh.elements;
-        iDummy = testDataCollection.txtDummy.value;
-        frmRefresh.submit();
-    }
-    catch (e) {
-    }
-
-    return (true);
+	return (true);
 }
-
 
 function validateTab5() {
     var sErrMsg;
@@ -2563,7 +2550,7 @@ function populateSendForm() {
     var iIndex;
     var sControlName;
     var iNum;
-    var frmRefresh;
+    var frmRefresh = OpenHR.getForm("workframe", "frmRefresh");
     var iDummy;
     var varBookmark;
     var iLoop;
@@ -2642,18 +2629,18 @@ function populateSendForm() {
     /******************* TAB 2 - EVENT DETAILS *******************/
     // now go through the columns grid (and sort order grid)(and the repetition grid)
     var sEvents = '';
-
-    try {
-        var testDataCollection = frmRefresh.elements;
-        iDummy = testDataCollection.txtDummy.value;
-        frmRefresh.submit();
-    }
-    catch (e) {
-    }
+	//var testDataCollection;
+	//try {
+	//	testDataCollection = frmRefresh.elements;
+	//	iDummy = testDataCollection.txtDummy.value;
+  //      frmRefresh.submit();
+  //  }
+  //  catch (e) {
+  //  }
 
     frmUseful.txtLockGridEvents.value = 1;
-
-    if (frmUseful.txtEventsLoaded.value == 1) {
+	var dataCollection;
+	if (frmUseful.txtEventsLoaded.value == 1) {
         frmDefinition.grdEvents.Redraw = false;
         frmDefinition.grdEvents.movefirst();
 
@@ -2701,8 +2688,8 @@ function populateSendForm() {
         frmDefinition.grdEvents.Redraw = true;
     }
     else {
-        var dataCollection = frmOriginalDefinition.elements;
-        if (dataCollection != null) {
+		dataCollection = frmOriginalDefinition.elements;
+		if (dataCollection != null) {
             iNum = 0;
             for (iIndex = 0; iIndex < dataCollection.length; iIndex++) {
                 sControlName = dataCollection.item(iIndex).name;
@@ -2883,9 +2870,8 @@ function populateSendForm() {
         frmSend.txtSend_OrderString.value = sOrders;
     }
     else {
-        var dataCollection = frmOriginalDefinition.elements;
-
-        var sOrders = '';
+	    dataCollection = frmOriginalDefinition.elements;
+	    var sOrders = '';
         var sDefnString = '';
 
         if (dataCollection != null) {
@@ -2961,13 +2947,14 @@ function populateSendForm() {
 
     frmUseful.txtLockGridEvents.value = 0;
 
-    try {
-        var testDataCollection = frmRefresh.elements;
-        iDummy = testDataCollection.txtDummy.value;
-        frmRefresh.submit();
-    }
-    catch (e) {
-    }
+	//ND May need to revisit or reinstate this if performance issues ensue
+	//try {
+	//	testDataCollection = frmRefresh.elements;
+	//   iDummy = testDataCollection.txtDummy.value;
+  //      frmRefresh.submit();
+  //  }
+  //  catch (e) {
+  //  }
 
     if (sEvents.length > 16000) {
         OpenHR.messageBox("Too many events selected.", 48, "Calendar Reports");
@@ -3107,14 +3094,6 @@ function loadAvailableColumns() {
     frmDefinition.cboDescription2.style.color = 'windowtext';
     frmDefinition.cboRegion.style.color = 'windowtext';
 
-    // Little dodge to get around a browser bug that
-    // does not refresh the display on all controls.
-    try {
-        window.resizeBy(0, -1);
-        window.resizeBy(0, 1);
-    }
-    catch (e) { }
-
     if (frmUseful.txtAvailableColumnsLoaded.value == 1) {
         if (frmDefinition.txtName.disabled == false) {
             frmDefinition.focus();
@@ -3126,8 +3105,8 @@ function loadAvailableColumns() {
     }
 
     // Get menu to refresh the menu.
-    OpenHR.refreshMenus();
-    refreshTab1Controls();
+    OpenHR.refreshMenu();
+		refreshTab1Controls();
     frmUseful.txtLoading.value = 'N';
 
     if (frmDefinition.txtName.disabled == false) {
@@ -3157,8 +3136,7 @@ function loadDefinition() {
 
     // Set the basic record selection.
     fRecordOptionSet = false;
-
-    if (frmOriginalDefinition.txtDefn_PicklistID.value > 0) {
+	if (frmOriginalDefinition.txtDefn_PicklistID.value > 0) {
         button_disable(frmDefinition.cmdBasePicklist, false);
         frmDefinition.optRecordSelection2.checked = true;
         frmDefinition.txtBasePicklistID.value = frmOriginalDefinition.txtDefn_PicklistID.value;
@@ -4319,51 +4297,35 @@ function recalcHiddenEventFiltersCount() {
     }
     frmSelectionAccess.eventHidden.value = iCount;
 }
-
-
-	//Grid contol Activex stuff
-	//
-	//<script FOR=ssOleDBGridSortOrder EVENT=beforerowcolchange LANGUAGE=JavaScript>
-	//	if (frmUseful.txtLockGridEvents.value != 1) 
-	//		{
-	//		if (frmUseful.txtAction.value.toUpperCase() == "VIEW") 
-	//			{
-	//			frmDefinition.ssOleDBGridSortOrder.columns(1).cellstyleset("ssetViewDormant", frmDefinition.ssOleDBGridSortOrder.row);
-	//			}
-	//		else 
-	//			{
-	//			frmDefinition.ssOleDBGridSortOrder.columns(1).cellstyleset("ssetDormant", frmDefinition.ssOleDBGridSortOrder.row);
-	//			}
-	//		}
-
 	
-	function util_def_calendarreport_addhandlers() {
+function util_def_calendarreport_addhandlers() {
 	    OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "beforeupdate", ssOleDBGridSortOrderbeforeupdate);
 	    OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "afterinsert", ssOleDBGridSortOrderafterinsert);
 	    OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "rowColChange", ssOleDBGridSortOrderRowColChange);
 	    OpenHR.addActiveXHandler("ssOleDBGridSortOrder", "Change", ssOleDBGridSortOrderchange);
-	    OpenHR.addActiveXHandler("grdEvents", "Change", grdEventsSortOrderchange);
+	  
 	    OpenHR.addActiveXHandler("grdEvents", "click", grdEventsclick);
 	    OpenHR.addActiveXHandler("grdEvents", "DblClick", grdEventsDblClick);
 	    OpenHR.addActiveXHandler("grdEvents", "rowcolchange", grdEventsrowcolchange);
+		
 	    OpenHR.addActiveXHandler("grdAccess", "ComboCloseUp", grdAccessComboCloseUp);
 	    OpenHR.addActiveXHandler("grdAccess", "GotFocus", grdAccessGotFocus);
 	    OpenHR.addActiveXHandler("grdAccess", "RowColChange", grdAccessRowColChange);
+	    OpenHR.addActiveXHandler("grdAccess", "RowLoaded", grdAccessRowLoaded);
 	}
-
-//<script FOR=ssOleDBGridSortOrder EVENT=beforeupdate LANGUAGE=JavaScript>
 function ssOleDBGridSortOrderbeforeupdate() {
+		//<script FOR=ssOleDBGridSortOrder EVENT=beforeupdate LANGUAGE=JavaScript>
     if ((frmDefinition.ssOleDBGridSortOrder.Columns(2).text != 'Asc') &&
         (frmDefinition.ssOleDBGridSortOrder.Columns(2).text != 'Desc')) {
         frmDefinition.ssOleDBGridSortOrder.Columns(2).text = 'Asc';
     }
 }
-
-//<script FOR=ssOleDBGridSortOrder EVENT=afterinsert LANGUAGE=JavaScript>
-function ssOleDBGridSortOrderafterinsert() { refreshTab4Controls(); }
-
-//<script FOR=ssOleDBGridSortOrder EVENT=rowcolchange LANGUAGE=JavaScript>
+function ssOleDBGridSortOrderafterinsert() {
+	//<script FOR=ssOleDBGridSortOrder EVENT=afterinsert LANGUAGE=JavaScript>
+	refreshTab4Controls();
+}
 function ssOleDBGridSortOrderRowColChange() {
+	//<script FOR=ssOleDBGridSortOrder EVENT=rowcolchange LANGUAGE=JavaScript>
     frmDefinition.ssOleDBGridSortOrder.SelBookmarks.Add(frmDefinition.ssOleDBGridSortOrder.Bookmark);
     frmDefinition.ssOleDBGridSortOrder.columns(1).cellstyleset("ssetSelected", frmDefinition.ssOleDBGridSortOrder.row);
     frmSortOrder.txtSortColumnID.value = frmDefinition.ssOleDBGridSortOrder.Columns(0).text;
@@ -4371,40 +4333,18 @@ function ssOleDBGridSortOrderRowColChange() {
     frmSortOrder.txtSortOrder.value = frmDefinition.ssOleDBGridSortOrder.Columns(2).text;
     refreshTab4Controls();
 }
-
-//<SCRIPT FOR=ssOleDBGridSortOrder EVENT=change LANGUAGE=JavaScript>
-function ssOleDBGridSortOrderchange() { frmUseful.txtChanged.value = 1; }
-
-//<script for=grdEvents event=change language=JavaScript>
-function grdEventsSortOrderchange() { frmUseful.txtChanged.value = 1; }
-
-//<script for=grdEvents event=click language=JavaScript>
-function grdEventsclick() { refreshTab2Controls(); }
-
-//<script for=grdEvents event=beforerowcolchange language=JavaScript>
-//<!--
-//	//	if (frmUseful.txtAction.value.toUpperCase() == "VIEW") 
-//	//		{
-//	//		frmDefinition.grdEvents.columns(1).cellstyleset("ssetViewDormant", frmDefinition.grdEvents.row);
-//	//		}
-//	//	else 
-//	//		{
-//	//		frmDefinition.grdEvents.columns(1).cellstyleset("ssetDormant", frmDefinition.grdEvents.row);
-//	//		}
-//	-->
-
-//<script FOR=grdEvents EVENT=beforeupdate LANGUAGE=JavaScript>
-//<!--
-//	-->
-
-//<script FOR=grdEvents EVENT=afterinsert LANGUAGE=JavaScript>
-//<!--
-//	//refreshTab2Controls();
-//	-->
-//refreshTab2Controls();	
-
-//<script FOR=grdEvents EVENT=DblClick LANGUAGE=JavaScript>
-	
+function ssOleDBGridSortOrderchange() {
+	//<SCRIPT FOR=ssOleDBGridSortOrder EVENT=change LANGUAGE=JavaScript>
+	frmUseful.txtChanged.value = 1;
+}
+function grdEventsSortOrderchange() {
+	//<script for=grdEvents event=change language=JavaScript>
+	frmUseful.txtChanged.value = 1;
+}
+function grdEventsclick() {
+	//<script for=grdEvents event=click language=JavaScript>
+	refreshTab2Controls();
+}
 function grdEventsDblClick() {
     if (frmUseful.txtAction.value.toUpperCase() != "VIEW") {
         if (frmDefinition.grdEvents.Rows > 0
@@ -4416,17 +4356,15 @@ function grdEventsDblClick() {
         }
     }
 }
-
-//<script FOR=grdEvents EVENT=rowcolchange LANGUAGE=JavaScript>
 function grdEventsrowcolchange() {
-    frmDefinition.grdEvents.SelBookmarks.Add(frmDefinition.grdEvents.Bookmark);
+	//<script FOR=grdEvents EVENT=rowcolchange LANGUAGE=JavaScript>
+	frmDefinition.grdEvents.SelBookmarks.Add(frmDefinition.grdEvents.Bookmark);
     frmDefinition.grdEvents.columns('Table').cellstyleset("ssetSelected", frmDefinition.grdEvents.row);
     refreshTab2Controls();
 }
-
-//<script FOR=grdAccess EVENT=ComboCloseUp LANGUAGE=JavaScript>
 function grdAccessComboCloseUp() {
-    frmUseful.txtChanged.value = 1;
+	//<script FOR=grdAccess EVENT=ComboCloseUp LANGUAGE=JavaScript>
+	frmUseful.txtChanged.value = 1;
     if ((grdAccess.AddItemRowIndex(grdAccess.Bookmark) == 0) &&
         (grdAccess.Columns("Access").Text.length > 0)) {
         ForceAccess(grdAccess, AccessCode(grdAccess.Columns("Access").Text));
@@ -4436,15 +4374,13 @@ function grdAccessComboCloseUp() {
     }
     refreshTab1Controls();
 }
-
-//<script FOR=grdAccess EVENT=GotFocus LANGUAGE=JavaScript>
 function grdAccessGotFocus() {
-    grdAccess.Col = 1;
+	//<script FOR=grdAccess EVENT=GotFocus LANGUAGE=JavaScript>
+	grdAccess.Col = 1;
 }
-
-//<script FOR=grdAccess EVENT=RowColChange(LastRow, LastCol) LANGUAGE=JavaScript>
-function grdAccessRowColChange() {
-    var fViewing;
+function grdAccessRowColChange(LastRow, LastCol) {
+	//<script FOR=grdAccess EVENT=RowColChange(LastRow, LastCol) LANGUAGE=JavaScript>
+	var fViewing;
     var fIsNotOwner;
     var varBkmk;
 
@@ -4472,10 +4408,8 @@ function grdAccessRowColChange() {
 
     grdAccess.Col = 1;
 }
-
-//<script FOR=grdAccess EVENT=RowLoaded(Bookmark) LANGUAGE=JavaScript>
-OpenHR.addActiveXHandler("grdAccess", "RowLoaded", grdAccessRowLoaded);
-function grdAccessRowLoaded() {
+function grdAccessRowLoaded(Bookmark) {
+	//<script FOR=grdAccess EVENT=RowLoaded(Bookmark) LANGUAGE=JavaScript>
     var fViewing;
     var fIsNotOwner;
 
@@ -4485,31 +4419,22 @@ function grdAccessRowLoaded() {
     if ((fIsNotOwner == true) ||
         (fViewing == true) ||
         (frmSelectionAccess.forcedHidden.value == "Y")) {
-        grdAccess.Columns("GroupName").CellStyleSet("ReadOnly");
-        grdAccess.Columns("Access").CellStyleSet("ReadOnly");
-        grdAccess.ForeColor = "-2147483631";
+        frmDefinition.grdAccess.Columns("GroupName").CellStyleSet("ReadOnly");
+        frmDefinition.grdAccess.Columns("Access").CellStyleSet("ReadOnly");
+        frmDefinition.grdAccess.ForeColor = "-2147483631";
     } else {
-        if (grdAccess.Columns("SysSecMgr").CellText(Bookmark) == "1") {
-            grdAccess.Columns("GroupName").CellStyleSet("SysSecMgr");
-            grdAccess.Columns("Access").CellStyleSet("SysSecMgr");
-            grdAccess.ForeColor = "0";
+    	if (frmDefinition.grdAccess.Columns("SysSecMgr").CellText(Bookmark) == "1") {
+    		frmDefinition.grdAccess.Columns("GroupName").CellStyleSet("SysSecMgr");
+    		frmDefinition.grdAccess.Columns("Access").CellStyleSet("SysSecMgr");
+    		frmDefinition.grdAccess.ForeColor = "0";
         } else {
-            grdAccess.ForeColor = "0";
+    		frmDefinition.grdAccess.ForeColor = "0";
         }
     }
 }
 
-
-
-
-
-
-
-
-//util_def_calendarreportdates_window_onload.ASCX
-
-
-	function util_def_calendarreportdates_window_onload() {
+function util_def_calendarreportdates_window_onload() {
+	//util_def_calendarreportdates_window_onload.ASCX
 	    frmPopup.txtLoading.value = 1;
 	    frmPopup.txtFirstLoad_Event.value = 1;
 	    frmPopup.txtFirstLoad_Lookup.value = 1;
@@ -5350,17 +5275,27 @@ function selectRecordOption(psTable, psType) {
     eventChanged();
 }
 
-function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
-    dlgwinprops = "center:yes;" +
-        "dialogHeight:" + pHeight + "px;" +
-        "dialogWidth:" + pWidth + "px;" +
-        "help:no;" +
-        "resizable:" + psResizable + ";" +
-        "scroll:" + psScroll + ";" +
-        "status:no;";
-    window.showModalDialog(pDestination, self, dlgwinprops);
-}
+//function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
+//    dlgwinprops = "center:yes;" +
+//        "dialogHeight:" + pHeight + "px;" +
+//        "dialogWidth:" + pWidth + "px;" +
+//        "help:no;" +
+//        "resizable:" + psResizable + ";" +
+//        "scroll:" + psScroll + ";" +
+//        "status:no;";
+//    window.showModalDialog(pDestination, self, dlgwinprops);
+//}
 
+function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
+	var dlgwinprops = "center:yes;" +
+		"dialogHeight:" + pHeight + "px;" +
+			"dialogWidth:" + pWidth + "px;" +
+				"help:no;" +
+					"resizable:" + psResizable + ";" +
+						"scroll:" + psScroll + ";" +
+							"status:no;";
+	window.showModalDialog(pDestination, self, dlgwinprops);
+}
 function refreshEventControls() {
     var frmUse = OpenHR.getForm("workframe", "frmUseful");
     var fViewing = (frmUse.txtAction.value.toUpperCase() == "VIEW");
@@ -5735,11 +5670,6 @@ function removeEventTable(piChildTableID) {
     return true;
 }
 
-function cancelClick() {
-    window.parent.close();
-    return false;
-}
-
 function setForm() {
     if (!validateEventInfo()) {
         return false;
@@ -5857,3 +5787,95 @@ function eventChanged() {
     button_disable(frmPopup.cmdOK, fViewing);
 }
 
+
+
+function AccessCode(psDescription) {
+	if (psDescription == "Read / Write") {
+		return "RW";
+	}
+	if (psDescription == "Read Only") {
+		return "RO";
+	}
+	if (psDescription == "Hidden") {
+		return "HD";
+	}
+	return "";
+}
+
+function AccessDescription(psCode) {
+	if (psCode == "RW") {
+		return "Read / Write";
+	}
+	if (psCode == "RO") {
+		return "Read Only";
+	}
+	if (psCode == "HD") {
+		return "Hidden";
+	}
+	return "Unknown";
+}
+
+function ForceAccess(pgrdAccess, psAccess) {
+	var iLoop;
+	var varBookmark;
+
+	pgrdAccess.redraw = false;
+	for (iLoop = 0; iLoop <= (pgrdAccess.Rows - 1) ; iLoop++) {
+		varBookmark = pgrdAccess.AddItemBookmark(iLoop);
+		pgrdAccess.Bookmark = varBookmark;
+
+		if (iLoop == 0) {
+			pgrdAccess.Columns("Access").Text = "";
+		}
+		else {
+			if (pgrdAccess.Columns("SysSecMgr").CellText(varBookmark) != "1") {
+				pgrdAccess.Columns("Access").Text = AccessDescription(psAccess);
+			}
+		}
+	}
+	pgrdAccess.redraw = true;
+
+	pgrdAccess.MoveFirst();
+}
+
+function AllHiddenAccess(pgrdAccess) {
+	var iLoop;
+	var varBookmark;
+
+	for (iLoop = 1; iLoop <= (pgrdAccess.Rows - 1) ; iLoop++) {
+		varBookmark = pgrdAccess.AddItemBookmark(iLoop);
+
+		if (pgrdAccess.Columns("SysSecMgr").CellText(varBookmark) != "1") {
+			if (pgrdAccess.Columns("Access").CellText(varBookmark) != AccessDescription("HD")) {
+				return (false);
+			}
+		}
+	}
+
+	return (true);
+}
+
+function HiddenGroups(pgrdAccess) {
+	var iLoop;
+	var varBookmark;
+	var sHiddenGroups;
+
+	sHiddenGroups = "";
+
+	pgrdAccess.Update();
+	for (iLoop = 1; iLoop <= (pgrdAccess.Rows - 1) ; iLoop++) {
+		varBookmark = pgrdAccess.AddItemBookmark(iLoop);
+
+		if (pgrdAccess.Columns("SysSecMgr").CellText(varBookmark) != "1") {
+			if (pgrdAccess.Columns("Access").CellText(varBookmark) == AccessDescription("HD")) {
+				sHiddenGroups = sHiddenGroups + pgrdAccess.Columns("GroupName").CellText(varBookmark) + "	";
+			}
+		}
+	}
+
+	if (sHiddenGroups.length > 0) {
+		sHiddenGroups = "	" + sHiddenGroups;
+	}
+
+	return (sHiddenGroups);
+}
