@@ -3,56 +3,64 @@
 
 <script type="text/javascript">
 	function util_validate_calendarreport_window_onload() {
-		{
-			// Hide the 'please wait' message.
-			window.trPleaseWait1.style.visibility = 'hidden';
-			window.trPleaseWait1.style.display = 'none';
-			window.trPleaseWait2.style.visibility = 'hidden';
-			window.trPleaseWait2.style.display = 'none';
-			window.trPleaseWait3.style.visibility = 'hidden';
-			window.trPleaseWait3.style.display = 'none';
-			window.trPleaseWait4.style.visibility = 'hidden';
-			window.trPleaseWait4.style.display = 'none';
-			window.trPleaseWait5.style.visibility = 'hidden';
-			window.trPleaseWait5.style.display = 'none';
+			//// Hide the 'please wait' message.
+			//window.trPleaseWait1.style.visibility = 'hidden';
+			//window.trPleaseWait1.style.display = 'none';
+			//window.trPleaseWait2.style.visibility = 'hidden';
+			//window.trPleaseWait2.style.display = 'none';
+			//window.trPleaseWait3.style.visibility = 'hidden';
+			//window.trPleaseWait3.style.display = 'none';
+			//window.trPleaseWait4.style.visibility = 'hidden';
+			//window.trPleaseWait4.style.display = 'none';
+			//window.trPleaseWait5.style.visibility = 'hidden';
+			//window.trPleaseWait5.style.display = 'none';
 
-			// Resize the grid to show all prompted values.
-			var iResizeBy = bdyMain.scrollWidth - bdyMain.clientWidth;
-			if (bdyMain.offsetWidth + iResizeBy > screen.width) {
-				window.dialogWidth = new String(screen.width) + "px";
-			} else {
-				var iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length - 2));
-				iNewWidth = iNewWidth + iResizeBy;
-				window.dialogWidth = new String(iNewWidth) + "px";
-			}
+			//// Resize the grid to show all prompted values.
+			//var iResizeBy = bdyMain.scrollWidth - bdyMain.clientWidth;
+			//if (bdyMain.offsetWidth + iResizeBy > screen.width) {
+			//	window.dialogWidth = new String(screen.width) + "px";
+			//} else {
+			//	var iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length - 2));
+			//	iNewWidth = iNewWidth + iResizeBy;
+			//	window.dialogWidth = new String(iNewWidth) + "px";
+			//}
 
-			iResizeBy = bdyMain.scrollHeight - bdyMain.clientHeight;
-			if (bdyMain.offsetHeight + iResizeBy > screen.height) {
-				window.dialogHeight = new String(screen.height) + "px";
-			} else {
-				var iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length - 2));
-				iNewHeight = iNewHeight + iResizeBy;
-				window.dialogHeight = new String(iNewHeight) + "px";
-			}
+			//iResizeBy = bdyMain.scrollHeight - bdyMain.clientHeight;
+			//if (bdyMain.offsetHeight + iResizeBy > screen.height) {
+			//	window.dialogHeight = new String(screen.height) + "px";
+			//} else {
+			//	var iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length - 2));
+			//	iNewHeight = iNewHeight + iResizeBy;
+			//	window.dialogHeight = new String(iNewHeight) + "px";
+			//}
 
-			var iNewLeft = (screen.width - bdyMain.offsetWidth) / 2;
-			var iNewTop = (screen.height - bdyMain.offsetHeight) / 2;
-			window.dialogLeft = new String(iNewLeft) + "px";
-			window.dialogTop = new String(iNewTop) + "px";
-
+			//var iNewLeft = (screen.width - bdyMain.offsetWidth) / 2;
+			//var iNewTop = (screen.height - bdyMain.offsetHeight) / 2;
+			//window.dialogLeft = new String(iNewLeft) + "px";
+			//window.dialogTop = new String(iNewTop) + "px";
+		debugger;
 			if (txtErrorCode.value == 0) {
-				OpenHR.getElementById("frmSend").submit();
+				////OpenHR.getElementById("frmSend").submit();
+				//var frmSubmit = window.dialogArguments.document.getElementById('frmSend');
+				////window.dialogArguments.OpenHR(frmSubmit);
+				//OpenHR.submitForm(frmSubmit, null, false);
+				////window.dialogArguments.document.getElementById('frmSend').submit();
+				//self.close();
+				//return;
+				
+				var frmSend = window.dialogArguments.OpenHR.getForm("workframe", "frmSend");
+				window.dialogArguments.OpenHR.submitForm(frmSend);
 				self.close();
-				return;
+
 			}
 
 			/* need to remove hidden event filters from the definition */
 			if (txtErrorCode.value == 1) {
 				if (txtHiddenFilters.value.length > 0) {
-					OpenHR.removeFilters(window.txtHiddenFilters.value);
+					window.dialogArguments.removeFilters(window.txtHiddenFilters.value);
 				}
 				if (txtDeletedFilters.value.length > 0) {
-					OpenHR.removeFilters(window.txtDeletedFilters.value);
+					window.dialogArguments.removeFilters(window.txtDeletedFilters.value);
 				}
 			}
 
@@ -60,41 +68,41 @@
 			if (txtErrorCode.value == 1) {
 				// Error, see if we need to remove any columns from the report.
 				if (txtHiddenPicklists.value.length > 0) {
-					OpenHR.removePicklists(txtHiddenPicklists.value);
+					window.dialogArguments.removePicklists(txtHiddenPicklists.value);
 				}
 				if (txtDeletedPicklists.value.length > 0) {
-					OpenHR.removePicklists(txtDeletedPicklists.value);
+					window.dialogArguments.removePicklists(txtDeletedPicklists.value);
 				}
 			}
 
 			/* need to remove hidden calcs from the definition */
 			if (txtErrorCode.value == 1) {
 				if (txtHiddenCalcs.value.length > 0) {
-					OpenHR.removeCalcs(txtHiddenCalcs.value);
+					window.dialogArguments.removeCalcs(txtHiddenCalcs.value);
 				}
 				if (txtDeletedCalcs.value.length > 0) {
-					OpenHR.removeCalcs(txtDeleteCalcs.value);
+					window.dialogArguments.removeCalcs(txtDeleteCalcs.value);
 				}
 			}
 			//window.dialogArguments.menu_refreshMenu();
-			menu_refreshMenu();
+			window.dialogArguments.OpenHR.refreshMenu("menuframe");
 		}
 
 		function overwrite() {
-			OpenHR.getElementById.getElementById('frmSend').submit();
+			window.dialogArguments.getElementById.getElementById('frmSend').submit();
 			self.close();
 		}
 
 		function createNew() {
-			OpenHR.createNew(self);
+			window.dialogArguments.createNew(self);
 		}
 
 		function continueSave() {
-			OpenHR.setJobsToHide(window.txtJibIDsToHide.value);
-			OpenHR.submitForm(frmSend);
+			window.dialogArguments.setJobsToHide(window.txtJibIDsToHide.value);
+			window.dialogArguments.submitForm(frmSend);
 			self.close();
 		}
-	}
+		
 </script>
 
 <div bgcolor='<%=session("ConvertedDesktopColour")%>' onload="return window_onload()" id="bdyMain" leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">
