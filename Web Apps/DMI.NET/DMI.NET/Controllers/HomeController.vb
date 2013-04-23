@@ -2160,13 +2160,17 @@ Namespace Controllers
       Return View()
     End Function
 
-    Function Util_CustomReportChilds() As ActionResult
-      Return View()
-    End Function
+		Function Util_CustomReportChilds() As ActionResult
+			Return View()
+		End Function
 
     Function Util_EmailSelection() As ActionResult
       Return View()
     End Function
+
+		Function Util_CalcSelection() As ActionResult
+			Return View()
+		End Function
 
     Function Util_SortOrderSelection() As ActionResult
       Return View()
@@ -2977,6 +2981,10 @@ Namespace Controllers
     Function util_validate_customreports() As ActionResult
       Return View()
     End Function
+
+		Function util_validate_calendarreport() As ActionResult
+			Return View()
+		End Function
 
     Function util_validate_crosstabs() As ActionResult
       Return View()
