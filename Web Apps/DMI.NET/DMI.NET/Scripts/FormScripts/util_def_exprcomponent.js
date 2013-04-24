@@ -1,12 +1,16 @@
 ﻿
-    
+var frmMainForm = OpenHR.getForm("workframe", "frmMainForm");
+var util_def_exprcomponent_frmUseful = OpenHR.getForm("optionframe", "util_def_exprcomponent_frmUseful");
+var util_def_exprcomponent_frmOriginalDefinition = OpenHR.getForm("optionframe", "util_def_exprcomponent_frmOriginalDefinition");
+var frmFieldRec = OpenHR.getForm("workframe", "frmFieldRec");
+
     function util_def_exprcomponent_onload() {
         
         var fOK;
         var sUDFFunction_Visibility;
         var sUDFFunction_Display;
 
-        fOK = true;	
+        fOK = true;
 
         setGridFont(frmMainForm.ssOleDBGridCalculations);
         setGridFont(frmMainForm.ssOleDBGridFilters);
@@ -24,7 +28,7 @@
 		
             if (util_def_exprcomponent_frmUseful.txtAction.value == "EDITEXPRCOMPONENT") {
                 // Load the component definition.
-                loadDefinition();
+                loadComponentDefinition();
             }
             else {
                 // Inserting/adding a new component.
@@ -103,7 +107,7 @@ function formatComponentTypeFrame() {
     trType_Filter.style.display = sType_Filter_Display;
 }
 
-function loadDefinition() {
+function loadComponentDefinition() {
     var iType;
     var i;
     var iIndex;
@@ -1804,6 +1808,7 @@ function locateGridRecordString(psString)
 }
 
 function gridKeyPress(iKeyAscii) {
+
     if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {	
         var dtTicker = new Date();
         var iThisTick = new Number(dtTicker.getTime());
@@ -1843,6 +1848,8 @@ function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll)
 function component_OKClick()
 {  
     var sDefn;
+    var sTemp;
+    var sKey;
     var i;
     var iIndex;
     var iDataType;
@@ -2704,9 +2711,6 @@ function component_saveChanges(psAction, pfPrompt, pfTBOverride)
     saveChanges(psAction, pfPrompt, pfTBOverride);
 }
 
-</script>
-
-<script type="text/javascript">    
     function util_def_exprcomponent_addhandlers() {
         
         OpenHR.addActiveXHandler("ssOleDBGridFilters", "KeyPress", ssOleDBGridFilters_KeyPress);

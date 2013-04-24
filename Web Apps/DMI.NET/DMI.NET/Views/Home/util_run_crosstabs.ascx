@@ -2,8 +2,7 @@
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 
-<script src="<%: Url.Content("~/Scripts/Utilities/crosstab.js")%>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/Utilities/general.js")%>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/bundles/utilities_crosstabs")%>" type="text/javascript"></script>
 
 <object classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB"
     id="dialog"

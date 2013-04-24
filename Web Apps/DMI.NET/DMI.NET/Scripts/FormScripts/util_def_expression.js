@@ -1,4 +1,8 @@
 ﻿
+    var frmOriginalDefinition = OpenHR.getForm("workframe", "frmOriginalDefinition");
+    var frmDefinition = OpenHR.getForm("workframe", "frmDefinition");
+    var frmUseful = OpenHR.getForm("workframe", "frmUseful");
+
     function util_def_expression_onload() {
 
         var fOK;
@@ -8,6 +12,8 @@
 
         $("#workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
 
+        var frmUseful = OpenHR.getForm("workframe", "frmUseful");
+        var frmDefinition = OpenHR.getForm("workframe", "frmDefinition");
         var sErrMsg = frmUseful.txtErrorDescription.value;
         if (sErrMsg.length > 0) {
             fOK = false;
@@ -57,72 +63,71 @@
         }
     }
         
-        function loadDefinition()
-        {
-            var sKey;
-	
-            var dataCollection = frmOriginalDefinition.elements;
-            if (dataCollection!=null) {
-                for (i=0; i<dataCollection.length; i++)  {
-                    sControlName = dataCollection.item(i).name;
-                    sControlName = sControlName.substr(0, 10);
-                    if (sControlName=="txtDefn_E_") {
-                        sExprDefn = dataCollection.item(i).value;
-                        if(expressionParameter(sExprDefn, "PARENTCOMPONENTID") == 0) {
-					
-                            if(frmUseful.txtAction.value.toUpperCase() == "COPY"){
-                                frmUseful.txtUtilID.value = 0;
-                                frmDefinition.txtName.value = "Copy of " + expressionParameter(sExprDefn, "NAME");
-                                frmDefinition.txtOwner.value = frmUseful.txtUserName.value;
-                                frmUseful.txtChanged.value = 1;
-                            }
-                            else {
-                                frmDefinition.txtName.value = expressionParameter(sExprDefn, "NAME");
-                                frmDefinition.txtOwner.value = expressionParameter(sExprDefn, "USERNAME");
-                            }
-				
-                            frmDefinition.txtDescription.value = expressionParameter(sExprDefn, "DESCRIPTION");
-					
-                            sAccess = expressionParameter(sExprDefn, "ACCESS")
-                            if (sAccess == "RW") {
-                                frmDefinition.optAccessRW.checked = true;
-                            }
-                            else {
-                                if (sAccess == "RO") {
-                                    frmDefinition.optAccessRO.checked = true;
-                                }		
-                                else {
-                                    frmDefinition.optAccessHD.checked = true;
-                                }		
-                            }
-                            frmOriginalDefinition.txtOriginalAccess.value = sAccess;
-					
-                            objNode = frmDefinition.SSTree1.Nodes.Add();
-                            sKey = "E" + expressionParameter(sExprDefn, "EXPRID");
-                            objNode.key = sKey;
-                            objNode.text = frmDefinition.txtName.value;
-                            objNode.tag = sExprDefn;
-                            objNode.font.Bold = true;
-                            objNode.expanded = true;
+    function loadDefinition() {
+        var sKey;
 
-                            // Load the expression definition into the treeview.
-                            loadComponentNodes(expressionParameter(sExprDefn, "EXPRID"), true);
-                            setInitialExpandedNodes();
-                            break;
+        var dataCollection = frmOriginalDefinition.elements;
+        if (dataCollection != null) {
+            for (i = 0; i < dataCollection.length; i++) {
+                sControlName = dataCollection.item(i).name;
+                sControlName = sControlName.substr(0, 10);
+                if (sControlName == "txtDefn_E_") {
+                    sExprDefn = dataCollection.item(i).value;
+                    if (expressionParameter(sExprDefn, "PARENTCOMPONENTID") == 0) {
+
+                        if (frmUseful.txtAction.value.toUpperCase() == "COPY") {
+                            frmUseful.txtUtilID.value = 0;
+                            frmDefinition.txtName.value = "Copy of " + expressionParameter(sExprDefn, "NAME");
+                            frmDefinition.txtOwner.value = frmUseful.txtUserName.value;
+                            frmUseful.txtChanged.value = 1;
                         }
-                    }
-                }
-            }	
+                        else {
+                            frmDefinition.txtName.value = expressionParameter(sExprDefn, "NAME");
+                            frmDefinition.txtOwner.value = expressionParameter(sExprDefn, "USERNAME");
+                        }
 
-            // If its read only, disable everything.
-            if(frmUseful.txtAction.value.toUpperCase() == "VIEW"){
-                disableAll();
-                button_disable(frmDefinition.cmdPrint, false);
-                if (frmUseful.txtUtilType.value == 11) {
-                    button_disable(frmDefinition.cmdTest, false);
+                        frmDefinition.txtDescription.value = expressionParameter(sExprDefn, "DESCRIPTION");
+
+                        sAccess = expressionParameter(sExprDefn, "ACCESS")
+                        if (sAccess == "RW") {
+                            frmDefinition.optAccessRW.checked = true;
+                        }
+                        else {
+                            if (sAccess == "RO") {
+                                frmDefinition.optAccessRO.checked = true;
+                            }
+                            else {
+                                frmDefinition.optAccessHD.checked = true;
+                            }
+                        }
+                        frmOriginalDefinition.txtOriginalAccess.value = sAccess;
+
+                        objNode = frmDefinition.SSTree1.Nodes.Add();
+                        sKey = "E" + expressionParameter(sExprDefn, "EXPRID");
+                        objNode.key = sKey;
+                        objNode.text = frmDefinition.txtName.value;
+                        objNode.tag = sExprDefn;
+                        objNode.font.Bold = true;
+                        objNode.expanded = true;
+
+                        // Load the expression definition into the treeview.
+                        loadComponentNodes(expressionParameter(sExprDefn, "EXPRID"), true);
+                        setInitialExpandedNodes();
+                        break;
+                    }
                 }
             }
         }
+
+        // If its read only, disable everything.
+        if (frmUseful.txtAction.value.toUpperCase() == "VIEW") {
+            disableAll();
+            button_disable(frmDefinition.cmdPrint, false);
+            if (frmUseful.txtUtilType.value == 11) {
+                button_disable(frmDefinition.cmdTest, false);
+            }
+        }
+    }
 
     function loadComponentNodes(piExprID, pfVisible)
     {
@@ -210,7 +215,7 @@
     function setInitialExpandedNodes()
     {
         var i;
-	
+
         switch (frmUseful.txtExprNodeMode.value) {
             case "1" :
                 // Minimized.
@@ -254,7 +259,7 @@
         var iModLevel;
 	
         iColour = 6697779;
-	
+
         if (frmUseful.txtExprColourMode.value == 2) {
             iModLevel = piLevel % 7;
 		
@@ -1188,8 +1193,6 @@
         // Expand the work frame and hide the option frame.
         $("#optionframe").hide();        
         $("#workframe").show();
-
-        var frmDefinition = OpenHR.getForm("workframe", "frmDefinition");
 
         frmDefinition.SSTree1.style.visibility = "visible";
         frmDefinition.SSTree1.Refresh();

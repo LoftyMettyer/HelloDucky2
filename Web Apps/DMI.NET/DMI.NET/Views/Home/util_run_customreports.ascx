@@ -1,8 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<script src="<%: Url.Content("~/Scripts/Utilities/customreport.js")%>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/Utilities/general.js")%>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/bundles/utilities_customreports")%>" type="text/javascript"></script>
 
 <% 
     Dim bBradfordFactor As Boolean

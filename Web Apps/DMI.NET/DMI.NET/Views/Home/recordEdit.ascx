@@ -1,9 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import namespace="DMI.NET" %>
 
-<%-- Import the js file containing functions for recordEdit --%>
-<script src="<%:Url.Content("~/Scripts/FormScripts/recordEdit.js")%>"></script>
-
 <script type="text/javascript">
 
     function recordEdit_window_onload() {

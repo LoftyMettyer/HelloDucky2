@@ -1,8 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<script src="<%: Url.Content("~/Scripts/FormScripts/util_def_exprcomponent.js")%>" type="text/javascript"></script>
-
+<script src="<%: Url.Content("~/bundles/utilities_expressions")%>" type="text/javascript"></script>
 
 <object
     classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
@@ -2215,11 +2214,11 @@ end if
 %>
 </FORM>
 	
-<FORM id=frmFieldRec name=frmFieldRec target="fieldRec" action="fieldRec" method=post style="visibility:hidden;display:none">
-	<INPUT type="hidden" id=selectionType name=selectionType>
-	<INPUT type="hidden" id=Hidden1 name=txtTableID>
-	<INPUT type="hidden" id=selectedID name=selectedID>
-</FORM>
+<form id="frmFieldRec" name="frmFieldRec" target="fieldRec" action="fieldRec" method="post" style="visibility: hidden; display: none">
+    <input type="hidden" id="selectionType" name="selectionType">
+    <input type="hidden" id="Hidden1" name="txtTableID">
+    <input type="hidden" id="selectedID" name="selectedID">
+</form>
 
 <INPUT type='hidden' id=txtTicker name=txtTicker value=0>
 <INPUT type='hidden' id=txtLastKeyFind name=txtLastKeyFind value="">

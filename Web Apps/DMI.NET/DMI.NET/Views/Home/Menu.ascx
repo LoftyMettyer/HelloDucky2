@@ -2,26 +2,6 @@
 <%@ Import Namespace="DMI.NET" %>
 
 <%
-	'NOT USED - This snippet has no return value.
-	'Dim sReferringPage
-	'' Only open the form if there was a referring page.
-	'' If it wasn't then redirect to the login page.
-	'sReferringPage = Request.ServerVariables("HTTP_REFERER") 
-	'if inStrRev(sReferringPage, "/") > 0 then
-	'	sReferringPage = mid(sReferringPage, inStrRev(sReferringPage, "/") + 1)
-	'end if
-	
-	'if ucase(sReferringPage) <> ucase("clear.asp") then
-	'	'Response.Redirect("login.asp")
-	'end if	
-
-%>
-
-<script src="<%: Url.Content("~/Include/ctl_SetFont.txt") %>" type="text/javascript"></script>
-
-<script src="<%: Url.Content("~/Scripts/FormScripts/menu.js?x=1") %>" type="text/javascript"></script>
-
-<%
 	On Error Resume Next
 
 	Dim sErrorDescription As String
@@ -32,8 +12,7 @@
 	Dim avHistoryMenuInfo
 	Dim iLoop As Integer
 	Dim iLoop2 As Integer
-	Dim iNextIndex As Integer
-	Dim iCount As Integer
+    Dim iCount As Integer
 	Dim objMenu
 	Dim sToolCaption As String
 	Dim sToolID As String
@@ -45,8 +24,7 @@
 	objMenu.Username = Session("username")
 	CallByName(objMenu, "Connection", CallType.Let, Session("databaseConnection"))
 	
-	Response.Write(vbCrLf & "<SCRIPT LANGUAGE=javascript>" & vbCrLf)
-	Response.Write("<!--" & vbCrLf)
+    Response.Write(vbCrLf & "<script type=""text/javascript"">" & vbCrLf)
 
 	' ------------------------------------------------------------------------------
 	' Create the sub-routine to populate the database menu with the tables available
@@ -395,9 +373,7 @@
 	Response.Write("  }" & vbCrLf)
     Response.Write("}" & vbCrLf & vbCrLf)
 	
-	
-	Response.Write("-->" & vbCrLf)
-	Response.Write("</SCRIPT>" & vbCrLf)
+    Response.Write("</script>" & vbCrLf)
 
 	objMenu = Nothing
 
@@ -405,7 +381,7 @@
     CallByName(objUtilities, "Connection", CallType.Let, Session("databaseConnection"))
 	Session("UtilitiesObject") = objUtilities
 	
-    Dim objOLE
+    Dim objOLE As Object
     objOLE = CreateObject("COAIntServer.clsOLE")
 	CallByName(objOLE, "Connection", CallType.Let, Session("databaseConnection"))
 	objOLE.TempLocationPhysical = "\\" & Request.ServerVariables("SERVER_NAME") & "\HRProTemp$\"
@@ -697,12 +673,10 @@
 	<INPUT type="hidden" id=txtMenuSaved name=txtMenuSaved value=0>
 </FORM>
 
-<FORM action="" method=POST id=frmWorkAreaInfo name=frmWorkAreaInfo>
-<INPUT type="hidden" id=txtHRProNavigation name=txtHRProNavigation value=0>
-</FORM>
+<form action="" method="POST" id="frmWorkAreaInfo" name="frmWorkAreaInfo">
+    <input type="hidden" id="txtHRProNavigation" name="txtHRProNavigation" value="0">
+</form>
 
 <script type="text/javascript">
-
-	menu_window_onload();
-
+    menu_window_onload();
 </script>

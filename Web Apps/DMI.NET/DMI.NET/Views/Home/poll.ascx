@@ -31,6 +31,7 @@
     <form id="frmMessages" name="frmMessages">
         <%
             Dim cmdHit = CreateObject("ADODB.Command")
+            
             cmdHit.CommandText = "sp_ASRIntPoll"
             cmdHit.CommandType = 4 ' Stored Procedure
             cmdHit.ActiveConnection = Session("databaseConnection")

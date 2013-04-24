@@ -14,13 +14,6 @@
 		<%--ThemeRoller stylesheet--%>
 	<link href="<%: Url.LatestContent("~/Content/themes/jMetro/jquery-ui.css")%>" rel="stylesheet" type="text/css" />
 
-	<link href="<%= Url.LatestContent("~/Content/jquery.gridster.css")%>" rel="stylesheet" type="text/css" />
-	<script src="<%: Url.LatestContent("~/Scripts/jquery.gridster.js")%>" type="text/javascript"></script>
-	<script src="<%: Url.LatestContent("~/Scripts/jquery.mousewheel.js")%>" type="text/javascript"></script>
-	<script src="<%: Url.LatestContent("~/Scripts/jquery.flip.js")%>" type="text/javascript"></script>
-
-
-
 	<script type="text/javascript">
 		function loadjscssfile(filename, filetype) {
 			var fileref;

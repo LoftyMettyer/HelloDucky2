@@ -46,34 +46,34 @@
 
     $(function () {               
 
-		// ----  Apply jQuery functionality to the slide out CONTEXT MENU  ----
-		var ContextMenuTab = {
-			speed: 300,
-			containerWidth: $('.ContextMenu-panel').outerWidth() - 30,
-			containerHeight: $('.ContextMenu-panel').outerHeight(),
-			tabWidth: $('.ContextMenu-tab').outerWidth(),
-			init: function () {
-				//$('.ContextMenu-panel').css('height', ContextMenuTab.containerHeight + 'px');
-				$('.ContextMenu-tab').click(function (event) {
-					if ($('.ContextMenu-panel').hasClass('open')) {
-						$('.ContextMenu-panel').animate({ left: '-' + ContextMenuTab.containerWidth }, ContextMenuTab.speed)
+        // ----  Apply jQuery functionality to the slide out CONTEXT MENU  ----
+        var ContextMenuTab = {
+            speed: 300,
+            containerWidth: $('.ContextMenu-panel').outerWidth() - 30,
+            containerHeight: $('.ContextMenu-panel').outerHeight(),
+            tabWidth: $('.ContextMenu-tab').outerWidth(),
+            init: function () {
+                //$('.ContextMenu-panel').css('height', ContextMenuTab.containerHeight + 'px');
+                $('.ContextMenu-tab').click(function (event) {
+                    if ($('.ContextMenu-panel').hasClass('open')) {
+                        $('.ContextMenu-panel').animate({ left: '-' + ContextMenuTab.containerWidth }, ContextMenuTab.speed)
                             .removeClass('open');
-						$("#workframeset").css("left", "30px");
-						$("#reportframeset").css("left", "30px");
-						$('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/expand.png") %>');
+                        $("#workframeset").css("left", "30px");
+                        $("#reportframeset").css("left", "30px");
+                        $('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/expand.png") %>');
 
-					} else {
-						$('.ContextMenu-panel').animate({ left: '0' }, ContextMenuTab.speed)
+                    } else {
+                        $('.ContextMenu-panel').animate({ left: '0' }, ContextMenuTab.speed)
                             .addClass('open');
-						$("#workframeset").css("left", "350px");
-						$("#reportframeset").css("left", "350px");
-						$('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/retract.png") %>');
-					}
-					event.preventDefault();
-				});
-			}
-		};
-		ContextMenuTab.init();
+                        $("#workframeset").css("left", "350px");
+                        $("#reportframeset").css("left", "350px");
+                        $('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/retract.png") %>');
+                    }
+                    event.preventDefault();
+                });
+            }
+        };
+        ContextMenuTab.init();
     });
 
     $(document).ready(function() {
@@ -97,14 +97,14 @@
     function loadPartialView() {
         $.ajax({
             url: "<%:Url.Action("poll", "home")%>",
- 		        type: "POST",
- 		        success: function (html) {
- 		            $("#poll").html(html);
- 		        },
- 		        error: function (req, status, errorObj) {
- 		            //alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
- 		        }
- 		    });
+            type: "POST",
+            success: function (html) {
+                $("#poll").html(html);
+            },
+            error: function (req, status, errorObj) {
+                //alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
+            }
+        });
     }
 
 
@@ -122,6 +122,7 @@
 </div>
 <div class="ContextMenu-content">
 <%	Html.RenderPartial("~/views/home/menu.ascx")%>
+
 </div>
 </div>
 </div>
@@ -155,5 +156,6 @@
 
 </div>
 
-	
 </asp:Content>
+
+

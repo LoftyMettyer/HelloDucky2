@@ -4376,13 +4376,11 @@ function menu_GetItemValue(itemID) {
 function applyJSTree(element) {
     //Add treeview functionality to all divs in the accordion
     if (element == undefined) element = "";
-    
-
 
     $(".accordion div" + element).jstree({
         "themes": {
             "theme": "apple",
-            "url": "../Scripts/jsTree/theme/apple/style.css",
+            "url": "../Scripts/jQuery/jsTree/theme/apple/style.css",
             "dots": false,
             "icons": true
         },

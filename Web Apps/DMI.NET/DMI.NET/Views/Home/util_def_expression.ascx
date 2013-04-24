@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<script src="<%: Url.Content("~/Scripts/FormScripts/util_def_expression.js")%>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/bundles/utilities_expressions")%>" type="text/javascript"></script>
 
 <object
     classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"

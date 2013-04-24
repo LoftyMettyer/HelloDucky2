@@ -42,6 +42,7 @@
 
 
 <script type="text/javascript">
+    debugger;
     reports_window_onload();
     util_run_customreports_addActiveXHandlers();
 </script>

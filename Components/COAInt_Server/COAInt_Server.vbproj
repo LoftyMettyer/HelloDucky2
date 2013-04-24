@@ -58,6 +58,7 @@
     <DebugType>full</DebugType>
     <WarningsAsErrors>
     </WarningsAsErrors>
+    <Optimize>true</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>.\bin\</OutputPath>

@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<script src="<%: Url.Content("~/Scripts/FormScripts/util_def_mailmerge.js")%>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/bundles/utilities_mailmerge")%>" type="text/javascript"></script>
 
 <%  
 	'Dim iVersionOneEnabled = 0
@@ -2764,7 +2764,7 @@
 	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
 </div>
 
-<script type="text/javascript">	
+<script type="text/javascript">
 	util_def_mailmerge_window_onload();
 	utilDefMailmergeAddActiveXHandlers();
 </script>
