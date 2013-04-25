@@ -149,7 +149,6 @@ function ShowReport() {
             }
         }
 
-        //debugger;
         //if (frmExportData.txtPreview.value == 'False') {
         //    frmOutput.ssOleDBGridDefSelRecords.style.visibility = 'hidden';
         //    frmOutput.ssOleDBGridDefSelRecords.Redraw = true;

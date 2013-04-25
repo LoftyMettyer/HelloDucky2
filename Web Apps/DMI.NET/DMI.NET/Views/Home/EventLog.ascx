@@ -1368,7 +1368,6 @@
 <script type="text/javascript">
 
     function addActiveXHandlers() {
-        debugger;
 
         OpenHR.addActiveXHandler("ssOleDBGridEventLog", "DblClick", ssOleDBGridEventLog_dblclick);
         OpenHR.addActiveXHandler("ssOleDBGridEventLog", "rowcolchange", ssOleDBGridEventLog_rowcolchange);

@@ -147,7 +147,6 @@
 
 	util_run_crosstabs_window_onload();
 
-	$("#workframe").hide();
 	$("#reportframe").show();
 
 	$("#top").hide();

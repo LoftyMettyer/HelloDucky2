@@ -178,8 +178,6 @@
 		var parWin = window.dialogArguments.OpenHR.getFrame("workframe");
 		var sKey = new String('C' + frmPopup.cboColumn.options[frmPopup.cboColumn.selectedIndex].value);
 
-		debugger;   
-
 		if (parWin.setGirdCol(sKey)) {
 			var bBreak = parWin.getCurrentColProp('Break');
 			var bPage = parWin.getCurrentColProp('Page');

@@ -37,9 +37,7 @@
         //remmed this - don't need to set current workframe source - leave as defsel.
         $("#reportframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");       
 
-        $("#workframeset").hide();
         $("#reportframe").show();
-
 
         var frmPromptedValues = OpenHR.getForm("workframe", "frmPromptedValues");
 
