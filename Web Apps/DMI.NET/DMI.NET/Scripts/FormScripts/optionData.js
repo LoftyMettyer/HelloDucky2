@@ -221,7 +221,7 @@
                     var sErrorMsg = frmOptionData.txtErrorMessage2.value;
                     if (sErrorMsg.length > 0) {
                         // We've got an error.
-                        OpenHR.getFrame("optionframe").Cancel();
+                        $("#optionframe").Cancel();
                         //window.parent.frames("menuframe").ASRIntranetFunctions.ClosePopup();
                         OpenHR.messageBox(sErrorMsg);
                         return;
@@ -231,7 +231,7 @@
                 var sAction = frmOptionData.txtOptionAction.value;
 
                 // Refresh the link find grid with the data if required.
-                var grdFind = OpenHR.getForm("optionframe","frmFindForm").ssOleDBGridRecords;
+                var grdFind = OpenHR.getForm("optionframe","frmtbAddFromWaitingListFindForm").ssOleDBGridRecords;
                 grdFind.redraw = false;
                 grdFind.removeAll();
                 grdFind.columns.removeAll();
@@ -306,7 +306,7 @@
                     grdFind.SelBookmarks.Add(grdFind.Bookmark);
                 }
 
-                OpenHR.getFrame("optionframe").refreshControls();
+                tbAddFromWaitingListFindFindrefreshControls();
 
                 // Get menu.asp to refresh the menu.
                 menu_refreshMenu();
