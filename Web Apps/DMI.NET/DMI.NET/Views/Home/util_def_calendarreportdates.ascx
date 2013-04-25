@@ -1,7 +1,58 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-<script src="<%: Url.Content("~/Scripts/FormScripts/calendarreportdef.js")%>" type="text/javascript"></script>
 
+<script src="<%: Url.Content("~/Scripts/FormScripts/calendarreportdef.js")%>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
+<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
+<script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
+
+
+
+<script type="text/javascript">
+	function util_def_calendarreportdates_window_onload() {
+		//debugger;
+		//var frmPopup = document.getElementById("frmPopup");
+		//var frmSelectionAccess = document.getElementById("frmSelectionAccess");
+		//frmPopup.txtLoading.value = 1;
+		//frmPopup.txtFirstLoad_Event.value = 1;
+		//frmPopup.txtFirstLoad_Lookup.value = 1;
+		//frmPopup.txtHaveSetLookupValues.value = 0;
+		
+		//button_disable(window.frmPopup.cmdCancel, true);
+		//button_disable(window.frmPopup.cmdOK, true);
+
+		//populateEventTableCombo();
+
+		//frmPopup.cboLegendTable.selectedIndex = -1;
+
+		//var frmEvent = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmEventDetails");
+		//var frmDef = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmDefinition");
+
+		//if (frmEvent.eventAction.value.toUpperCase() == "NEW") {
+		//	frmPopup.optNoEnd.checked = true;
+		//	frmPopup.optCharacter.checked = true;
+		//} else {
+		//	frmPopup.rowID.value = frmDef.grdEvents.AddItemRowIndex(frmDef.grdEvents.Bookmark);
+
+		//	frmPopup.txtEventName.value = frmEvent.eventName.value;
+		//	setEventTable(frmEvent.eventTableID.value);
+		//	frmPopup.txtEventFilter.value = frmEvent.eventFilter.value;
+		//	frmPopup.txtEventFilterID.value = frmEvent.eventFilterID.value;
+		//	frmSelectionAccess.baseHidden.value = frmEvent.eventFilterHidden.value;
+		//}
+
+		//disabledAll();
+
+		//frmPopup.txtEventColumnsLoaded.value = 0;
+		//frmPopup.txtLookupColumnsLoaded.value = 0;
+
+		//populateEventColumns();admin
+
+		//frmPopup.txtLoading.value = 0;
+	}
+</script>
 
 <div id="bdyMain" name="bdyMain" <%=session("BodyColour")%> leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">
 	<form id="frmPopup" name="frmPopup" onsubmit="return setForm();">
@@ -11,7 +62,7 @@
 					<table align="center" width="100%" height="100%" class="invisible" cellpadding="4" cellspacing="0">
 						<tr height="5">
 							<td align="center" colspan="2" height="10">
-								<font size="3"><B>Select Event Information</B></font>
+								Select Event Information
 							</td>
 						</tr>
 						<tr>
@@ -179,7 +230,7 @@
 																cmdLookupTables.CommandType = 4	' Stored Procedure
 																cmdLookupTables.ActiveConnection = Session("databaseConnection")
 	
-																Err.Number = 0
+																Err.Clear()
 																Dim rstLookupTablesInfo = cmdLookupTables.Execute
 	
 																If (Err.Number <> 0) Then
