@@ -2,8 +2,6 @@
 <%@ Import Namespace="DMI.NET" %>
 
 <script src="<%: Url.Content("~/Scripts/FormScripts/Util_Def_CustomReports.js") %>" type="text/javascript"></script>
-
-
 <%Html.RenderPartial("Util_Def_CustomReports/dialog")%>
 
 <div <%=session("BodyTag")%>>
