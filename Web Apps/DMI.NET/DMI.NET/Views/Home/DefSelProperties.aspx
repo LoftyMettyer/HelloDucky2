@@ -6,44 +6,34 @@
 %>
 
 <!DOCTYPE html>
-<HTML>
-<HEAD>
-    <link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css"/>
-    <script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>    
-	<script src="<%: Url.Content("~/Scripts/jquery-ui-1.9.1.custom.min.js") %>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/Scripts/jquery.cookie.js") %>" type="text/javascript"></script>	 	
-    <script src="<%: Url.Content("~/Scripts/menu.js")%>" type="text/javascript"></script >
-	<script src="<%: Url.Content("~/Scripts/jquery.ui.touch-punch.min.js") %>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/Scripts/jsTree/jquery.jstree.js") %>" type="text/javascript"></script>
-	<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>	
-<TITLE>OpenHR Intranet</TITLE>
+<html>
+<head>
+    <script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
 
-<script type="text/javascript">
-<!--
-	function defselproperties_window_onload() {
-		// Resize the popup.
-		var frmPopup = document.getElementById("frmPopup");
-		var iResizeBy = frmPopup.offsetParent.scrollHeight - frmPopup.offsetParent.clientHeight;
-		if (frmPopup.offsetParent.offsetHeight + iResizeBy > screen.height) {
-			window.parent.dialogHeight = new String(screen.height) + "px";
-		}
-		else {
-			var iNewHeight = new Number(window.parent.dialogHeight.substr(0, window.parent.dialogHeight.length - 2));
-			iNewHeight = iNewHeight + iResizeBy;
-			window.parent.dialogHeight = new String(iNewHeight) + "px";
-		}	
-	}
--->
-</script>
+    <title>OpenHR Intranet</title>
 
-</HEAD>
+    <script type="text/javascript">
+        function defselproperties_window_onload() {
+            // Resize the popup.
+            var frmPopup = document.getElementById("frmPopup");
+            var iResizeBy = frmPopup.offsetParent.scrollHeight - frmPopup.offsetParent.clientHeight;
+            if (frmPopup.offsetParent.offsetHeight + iResizeBy > screen.height) {
+                window.parent.dialogHeight = new String(screen.height) + "px";
+            }
+            else {
+                var iNewHeight = new Number(window.parent.dialogHeight.substr(0, window.parent.dialogHeight.length - 2));
+                iNewHeight = iNewHeight + iResizeBy;
+                window.parent.dialogHeight = new String(iNewHeight) + "px";
+            }
+        }
 
-<BODY <%=session("BodyColour")%> onload="onBlur=self.focus()" leftmargin=20 topmargin=20 bottommargin=20 rightmargin=5>
-<FORM name=frmPopup id=frmPopup>
-<table align=center class="outline" cellPadding=5 cellSpacing=0 height=100%> 
+    </script>
+
+</head>
+
+<body onload="onBlur=self.focus()" leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">
+    <form name="frmPopup" id="frmPopup">
+        <table align=center class="outline" cellPadding=5 cellSpacing=0 height=100%> 
     <tr>
 	    <td>
 		    <table align=center class="invisible" cellPadding=0 cellSpacing=0 height=100%> 
@@ -205,10 +195,9 @@ end if
 	</tr>
 </table>
 
-</FORM>
+    </form>
 <script type="text/javascript">
-	//TODO PG cant get the window to resize correctly
-	window.onload = defselproperties_window_onload;
+    window.onload = defselproperties_window_onload;
 </script>
-</BODY>
-</HTML>
+</body>
+</html>

@@ -443,8 +443,8 @@
         var frmDefSel = document.getElementById('frmDefSel');
 		
         var frmProp = document.getElementById('frmProp');
-        frmProp.prop_id.value = selectedRecordDetails("id");
-        frmProp.prop_name.value = selectedRecordDetails("name");
+        frmProp.prop_id.value = selectedRecordDetails("ID");
+        frmProp.prop_name.value = selectedRecordDetails("Name");
         frmProp.utiltype.value = frmDefSel.utiltype.value;
 
         sUrl = "defselproperties" +
@@ -453,7 +453,6 @@
             "&utiltype=" + frmProp.utiltype.value;
         openDialog(sUrl, 500, 230);
 
-        return false;
     }
 
     function pausecomp(millis) {
