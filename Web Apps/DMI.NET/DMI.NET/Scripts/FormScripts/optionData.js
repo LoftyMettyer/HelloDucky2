@@ -231,7 +231,7 @@
                 var sAction = frmOptionData.txtOptionAction.value;
 
                 // Refresh the link find grid with the data if required.
-                var grdFind = OpenHR.getForm("optionframe","frmtbAddFromWaitingListFindForm").ssOleDBGridRecords;
+                var grdFind = OpenHR.getForm("optionframe", "frmtbAddFromWaitingListFindFindForm").ssOleDBGridRecords;
                 grdFind.redraw = false;
                 grdFind.removeAll();
                 grdFind.columns.removeAll();
