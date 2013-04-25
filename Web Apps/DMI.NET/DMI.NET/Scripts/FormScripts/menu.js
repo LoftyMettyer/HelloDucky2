@@ -3670,39 +3670,41 @@ function menu_bulkBooking() {
 }
 
 function menu_addFromWaitingList() {
-//	var lngRecordID;
-//	var frmFindArea;
-//	var frmOptionArea;
-//	
-//	frmFindArea = window.parent.frames("workframe").document.forms("frmFindForm");
-//	lngRecordID = frmFindArea.txtCurrentParentRecordID.value;
+	var lngRecordID;
+	var frmFindArea;
+	var frmOptionArea;
+	
+	frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
+	lngRecordID = frmFindArea.txtCurrentParentRecordID.value;
 
-//	if (lngRecordID > 0) {
-//		ShowWait("Loading matching employees. Please wait...");
-//		disableMenu();
+	var frmMenuInfo = document.getElementById("frmMenuInfo");
+	
+	if (lngRecordID > 0) {
+		//ShowWait("Loading matching employees. Please wait...");
+		menu_disableMenu();
 
-//		frmOptionArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
+		frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 
-//		frmOptionArea.txtGotoOptionScreenID.value = 0;
-//		frmOptionArea.txtGotoOptionTableID.value = 0;
-//		frmOptionArea.txtGotoOptionViewID.value = 0;
-//		frmOptionArea.txtGotoOptionOrderID.value = 0;
-//		frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
-//		frmOptionArea.txtGotoOptionFilterDef.value = "";
-//		frmOptionArea.txtGotoOptionFilterSQL.value = "";
-//		frmOptionArea.txtGotoOptionValue.value = "";
-//		frmOptionArea.txtGotoOptionLinkTableID.value = frmMenuInfo.txtTB_EmpTableID.value;
-//		frmOptionArea.txtGotoOptionLinkOrderID.value = 0;
-//		frmOptionArea.txtGotoOptionLinkViewID.value = 0;
-//		frmOptionArea.txtGotoOptionLinkRecordID.value = 0;
-//		frmOptionArea.txtGotoOptionPage.value = "tbAddFromWaitingListFind.asp";
-//		frmOptionArea.txtGotoOptionAction.value = "";
-//		frmOptionArea.txtGotoOptionPageAction.value = "LOAD";
-//		frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
-//		frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
+		frmOptionArea.txtGotoOptionScreenID.value = 0;
+		frmOptionArea.txtGotoOptionTableID.value = 0;
+		frmOptionArea.txtGotoOptionViewID.value = 0;
+		frmOptionArea.txtGotoOptionOrderID.value = 0;
+		frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
+		frmOptionArea.txtGotoOptionFilterDef.value = "";
+		frmOptionArea.txtGotoOptionFilterSQL.value = "";
+		frmOptionArea.txtGotoOptionValue.value = "";
+		frmOptionArea.txtGotoOptionLinkTableID.value = frmMenuInfo.txtTB_EmpTableID.value;
+		frmOptionArea.txtGotoOptionLinkOrderID.value = 0;
+		frmOptionArea.txtGotoOptionLinkViewID.value = 0;
+		frmOptionArea.txtGotoOptionLinkRecordID.value = 0;
+		frmOptionArea.txtGotoOptionPage.value = "tbAddFromWaitingListFind";
+		frmOptionArea.txtGotoOptionAction.value = "";
+		frmOptionArea.txtGotoOptionPageAction.value = "LOAD";
+		frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
+		frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
 
-//		frmOptionArea.submit();
-//	}
+		OpenHR.submitForm(frmOptionArea);		
+	}
 }
 
 function menu_transferCourse(plngNewCourseRecordID, pfBookingsExist) {

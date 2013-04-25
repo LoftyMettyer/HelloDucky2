@@ -17,6 +17,7 @@
 
 <script type="text/javascript">
 	function emptyoption_onload() {
+
 		var fNoAction;
 		var sCurrentWorkFramePage = $("#workframe").attr("data-framesource").replace(".asp", ""); //OpenHR.currentWorkPage();
 		var frmMenu = OpenHR.getForm("menuframe", "frmWorkAreaInfo");
@@ -160,7 +161,10 @@
 
 					fNoAction = false;
 
-					$("#optionframe").attr("data-framesource", "EMPTYOPTION");                    
+					$("#optionframe").attr("data-framesource", "EMPTYOPTION");
+					$("#optionframe").hide();
+					$("#workframe").show();
+
 					menu_refreshMenu();
 
 					fTransferOK = true;
@@ -306,13 +310,13 @@
 							if (txtAction.value == "SELECTADDFROMWAITINGLIST_2") {
 								if (fTransferOK == true) {
 									// Go ahead and book the course.
-									var optionDataForm = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
+									var optionDataForm = OpenHR.getForm("optiondataframe", "frmGetOptionData");
 									optionDataForm.txtOptionAction.value = "SELECTADDFROMWAITINGLIST_3";
 									optionDataForm.txtOptionRecordID.value = txtRecordID.value;
 									optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
 									optionDataForm.txtOptionValue.value = txtValue.value;
-
-									OpenHR.getFrame("optiondataframe").refreshOptionData();
+									
+									refreshOptionData(); //should be in scope!
 								}
 							} else {
 								if (txtAction.value == "SELECTBULKBOOKINGS") {
