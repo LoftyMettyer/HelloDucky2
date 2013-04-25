@@ -2731,6 +2731,14 @@ Namespace Controllers
 
     End Function
 
+		Public Function util_def_calendarreportdates() As ActionResult
+			Return View()
+		End Function
+
+		Public Function util_def_calendarreportdates_main() As ActionResult
+			Return View()
+		End Function
+
     Public Function util_def_calendarreport() As ActionResult
       Return View()
     End Function
