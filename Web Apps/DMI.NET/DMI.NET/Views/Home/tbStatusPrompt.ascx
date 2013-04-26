@@ -176,7 +176,7 @@
 <INPUT type='hidden' id="txtOptionAction" name="txtOptionAction" value=<%=session("optionAction")%>>
 </FORM>
 
-<FORM action="tbBookCourseFind_Submit.asp" method=post id=frmGotoOption name=frmGotoOption style="visibility:hidden;display:none">
+<FORM action="tbBookCourseFind_Submit" method=post id=frmGotoOption name=frmGotoOption style="visibility:hidden;display:none">
 <%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
 </FORM>
 

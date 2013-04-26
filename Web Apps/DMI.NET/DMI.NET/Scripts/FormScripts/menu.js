@@ -793,7 +793,7 @@ function menu_CloseWait() {
 }
 
 function menu_refreshMenu() {
-    
+
 	// Refresh the menu.
 	var lngRecordID;
 	var sCaption;
@@ -1499,13 +1499,13 @@ function menu_refreshMenu() {
 
 			//new functionality
 			//if all these are false, then hide the Training Booking group.			
-			menu_setVisibletoolbarGroup("mnutoolBulkBooking", ((fBulkBookingVisible) && 
-																				(fAddFromWaitingListVisible) && 
-																					(fTransferBookingVisible) && 
+			menu_setVisibletoolbarGroup("mnutoolBulkBooking", ((fBulkBookingVisible) || 
+																				(fAddFromWaitingListVisible) || 
+																					(fTransferBookingVisible) || 
 																						(fCancelBookingVisible)));			
 
 			//if all these are false, then hide the Course Booking group.			
-			menu_setVisibletoolbarGroup("mnutoolBookCourse", ((fBookCourseVisible) && (fCancelCourseVisible)));			
+			menu_setVisibletoolbarGroup("mnutoolBookCourse", ((fBookCourseVisible) || (fCancelCourseVisible)));			
 
 			// Standard reports (toolbar)
 			menu_setVisibleMenuItem("mnutoolStdRpt_AbsenceCalendar", fStdRptAbsenceCalendarVisible);	//Toolbar Icon
@@ -2321,7 +2321,7 @@ function menu_reloadTransferCoursePage(psAction, psLocateValue) {
 }
 
 function menu_reloadBookCoursePage(psAction, psLocateValue) {
-//	reloadPage(psAction, psLocateValue, "BOOKCOURSE");
+	menu_reloadPage(psAction, psLocateValue, "BOOKCOURSE");
 }
 
 function menu_reloadAddFromWaitingListPage(psAction, psLocateValue) {
@@ -3544,40 +3544,40 @@ function menu_cancelCourse() {
 }
 
 function menu_bookCourse() {
-//	var lngRecordID;
-//	var frmOptionArea;
-//	
-//	lngRecordID = window.parent.frames("workframe").selectedRecordID();
+	var lngRecordID;
+	var frmOptionArea;
+	
+	lngRecordID = selectedRecordID();	//shold be in scope
 
-//	if (lngRecordID > 0) {
-//		ShowWait("Loading matching courses. Please wait...");
-//		disableMenu();
+	if (lngRecordID > 0) {
+		//TODO: ShowWait("Loading matching courses. Please wait...");
+		menu_disableMenu();
 
-//		frmOptionArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
+		frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 
-//		frmOptionArea.txtGotoOptionScreenID.value = 0;
-//		frmOptionArea.txtGotoOptionTableID.value = 0;
-//		frmOptionArea.txtGotoOptionViewID.value = 0;
-//		frmOptionArea.txtGotoOptionOrderID.value = 0;
-//		frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
-//		frmOptionArea.txtGotoOptionFilterDef.value = "";
-//		frmOptionArea.txtGotoOptionFilterSQL.value = "";
-//		frmOptionArea.txtGotoOptionValue.value = "";
-//		frmOptionArea.txtGotoOptionLinkTableID.value = frmMenuInfo.txtTB_CourseTableID.value;
-//		frmOptionArea.txtGotoOptionLinkOrderID.value = 0;
-//		frmOptionArea.txtGotoOptionLinkViewID.value = 0;
-//		frmOptionArea.txtGotoOptionLinkRecordID.value = 0;
-//		frmOptionArea.txtGotoOptionPage.value = "tbBookCourseFind.asp";
-//		frmOptionArea.txtGotoOptionAction.value = "";
-//		frmOptionArea.txtGotoOptionPageAction.value = "LOAD";
-//		frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
-//		frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
+		frmOptionArea.txtGotoOptionScreenID.value = 0;
+		frmOptionArea.txtGotoOptionTableID.value = 0;
+		frmOptionArea.txtGotoOptionViewID.value = 0;
+		frmOptionArea.txtGotoOptionOrderID.value = 0;
+		frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
+		frmOptionArea.txtGotoOptionFilterDef.value = "";
+		frmOptionArea.txtGotoOptionFilterSQL.value = "";
+		frmOptionArea.txtGotoOptionValue.value = "";
+		frmOptionArea.txtGotoOptionLinkTableID.value = frmMenuInfo.txtTB_CourseTableID.value;
+		frmOptionArea.txtGotoOptionLinkOrderID.value = 0;
+		frmOptionArea.txtGotoOptionLinkViewID.value = 0;
+		frmOptionArea.txtGotoOptionLinkRecordID.value = 0;
+		frmOptionArea.txtGotoOptionPage.value = "tbBookCourseFind";
+		frmOptionArea.txtGotoOptionAction.value = "";
+		frmOptionArea.txtGotoOptionPageAction.value = "LOAD";
+		frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
+		frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
 
-//		frmOptionArea.submit();
-//	}
-//	else {
-//		ASRIntranetFunctions.MessageBox("You must select a course to book.");
-//	}
+		OpenHR.submitForm(frmOptionArea);
+	}
+	else {
+		OpenHR.messageBox("You must select a course to book.");
+	}
 }
 
 function menu_transferBooking() {

@@ -293,7 +293,7 @@
 							optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
 							optionDataForm.txtOptionValue.value = txtValue.value;
 
-							window.parent.frames("optiondataframe").refreshOptionData();
+							refreshOptionData(); //is in scope and unique anyhoo.
 						}
 					} else {
 						if (txtAction.value == "SELECTTRANSFERBOOKING_1") {
@@ -304,7 +304,7 @@
 								optionDataForm.txtOptionRecordID.value = txtRecordID.value;
 								optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
 
-								OpenHR.getFrame("optiondataframe").refreshOptionData();
+								refreshOptionData();
 							}
 						} else {
 							if (txtAction.value == "SELECTADDFROMWAITINGLIST_2") {
@@ -328,7 +328,7 @@
 										optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
 										optionDataForm.txtOptionValue.value = txtValue.value;
 
-										OpenHR.getFrame("optiondataframe").refreshOptionData();
+										refreshOptionData();
 									}
 								} else {
 									if (fTransferOK == true) {

@@ -10,9 +10,9 @@
 		var fOK;
 		fOK = true;
 		
-		var frmFindForm = document.getElementById("frmtbAddFromWaitingListFindFindForm");
+		var frmtbFindForm = document.getElementById("frmtbFindForm");
 
-		var sErrMsg = frmFindForm.txtErrorDescription.value;
+		var sErrMsg = frmtbFindForm.txtErrorDescription.value;
 		if (sErrMsg.length > 0) {
 			fOK = false;
 			OpenHR.messageBox(sErrMsg);
@@ -20,7 +20,7 @@
 		}
 
 		if (fOK == true) {
-			sErrMsg = frmFindForm.txtFailureDescription.value;
+			sErrMsg = frmtbFindForm.txtFailureDescription.value;
 			if (sErrMsg.length > 0) {
 				fOK = false;
 				OpenHR.messageBox(sErrMsg);
@@ -29,7 +29,7 @@
 		}
 
 		if (fOK == true) {
-			if (frmFindForm.selectView.length == 0) {
+			if (frmtbFindForm.selectView.length == 0) {
 				fOK = false;
 				OpenHR.messageBox("You do not have permission to read the course table.");
 				Cancel();
@@ -37,7 +37,7 @@
 		}
 
 		if (fOK == true) {
-			if (frmFindForm.selectOrder.length == 0) {
+			if (frmtbFindForm.selectOrder.length == 0) {
 				fOK = false;
 				OpenHR.messageBox("You do not have permission to use any of the course table orders.");
 				Cancel();
@@ -45,7 +45,7 @@
 		}
 
 		if (fOK == true) {
-			setGridFont(frmFindForm.ssOleDBGridRecords);
+			setGridFont(frmtbFindForm.ssOleDBGridRecords);
 
 			// Expand the option frame and hide the work frame.
 			//window.parent.document.all.item("workframeset").cols = "0, *";	
@@ -55,23 +55,23 @@
 
 			// Set focus onto one of the form controls. 
 			// NB. This needs to be done before making any reference to the grid
-			frmFindForm.cmdCancel.focus();
+			frmtbFindForm.cmdCancel.focus();
 
-			//TODO: window.parent.frames("workframe").document.forms("frmFindForm").ssOleDBGridFindRecords.style.visibility = "hidden";
+			//TODO: window.parent.frames("workframe").document.forms("frmtbFindForm").ssOleDBGridFindRecords.style.visibility = "hidden";
 
 			// Get the optionData.asp to get the link find records.
 			var optionDataForm = OpenHR.getForm("optiondataframe", "frmGetOptionData");
 			optionDataForm.txtOptionAction.value = "LOADADDFROMWAITINGLIST";
-			optionDataForm.txtOptionTableID.value = frmFindForm.txtOptionLinkTableID.value;
-			optionDataForm.txtOptionViewID.value = frmFindForm.selectView.options[frmFindForm.selectView.selectedIndex].value;
-			optionDataForm.txtOptionOrderID.value = frmFindForm.selectOrder.options[frmFindForm.selectOrder.selectedIndex].value;
-			optionDataForm.txtOptionRecordID.value = frmFindForm.txtOptionRecordID.value;
+			optionDataForm.txtOptionTableID.value = frmtbFindForm.txtOptionLinkTableID.value;
+			optionDataForm.txtOptionViewID.value = frmtbFindForm.selectView.options[frmtbFindForm.selectView.selectedIndex].value;
+			optionDataForm.txtOptionOrderID.value = frmtbFindForm.selectOrder.options[frmtbFindForm.selectOrder.selectedIndex].value;
+			optionDataForm.txtOptionRecordID.value = frmtbFindForm.txtOptionRecordID.value;
 			optionDataForm.txtOptionFirstRecPos.value = 1;
 			optionDataForm.txtOptionCurrentRecCount.value = 0;
 			optionDataForm.txtOptionPageAction.value = "LOAD";
 
-			frmFindForm.txtOptionLinkViewID.value = optionDataForm.txtOptionViewID.value;
-			frmFindForm.txtOptionLinkOrderID.value = optionDataForm.txtOptionOrderID.value;
+			frmtbFindForm.txtOptionLinkViewID.value = optionDataForm.txtOptionViewID.value;
+			frmtbFindForm.txtOptionLinkOrderID.value = optionDataForm.txtOptionOrderID.value;
 
 			refreshOptionData();	//should be in scope.
 		}
@@ -82,14 +82,14 @@
 
 	function Select() {		
 		var frmGotoOption = document.getElementById("frmGotoOption");
-		var frmFindForm = document.getElementById("frmtbAddFromWaitingListFindFindForm");
+		var frmtbFindForm = document.getElementById("frmtbFindForm");
 
 		if ($("#txtStatusPExists").val() != "True") {
-			//TODO: window.parent.frames("workframe").document.forms("frmFindForm").ssOleDBGridFindRecords.style.visibility = "visible";
+			//TODO: window.parent.frames("workframe").document.forms("frmtbFindForm").ssOleDBGridFindRecords.style.visibility = "visible";
 		}
 
 		frmGotoOption.txtGotoOptionAction.value = "SELECTADDFROMWAITINGLIST_1";
-		frmGotoOption.txtGotoOptionRecordID.value = frmFindForm.txtOptionRecordID.value;
+		frmGotoOption.txtGotoOptionRecordID.value = frmtbFindForm.txtOptionRecordID.value;
 		frmGotoOption.txtGotoOptionLinkRecordID.value = ssselectedRecordID();
 		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
 		OpenHR.submitForm(frmGotoOption);
@@ -98,7 +98,7 @@
 	function Cancel() {
 		var frmGotoOption = document.getElementById("frmGotoOption");
 
-		//TODO: window.parent.frames("workframe").document.forms("frmFindForm").ssOleDBGridFindRecords.style.visibility = "visible";
+		//TODO: window.parent.frames("workframe").document.forms("frmtbFindForm").ssOleDBGridFindRecords.style.visibility = "visible";
 
 		frmGotoOption.txtGotoOptionAction.value = "CANCEL";
 		frmGotoOption.txtGotoOptionLinkRecordID.value = 0;
@@ -115,127 +115,127 @@
 
 		iRecordID = 0;
 		iIDColumnIndex = 0;
-		var frmFindForm = document.getElementById("frmtbAddFromWaitingListFindFindForm");
-		if (frmFindForm.ssOleDBGridRecords.SelBookmarks.Count > 0) {
-			for (iIndex = 0; iIndex < frmFindForm.ssOleDBGridRecords.Cols; iIndex++) {
-				sColumnName = frmFindForm.ssOleDBGridRecords.Columns(iIndex).Name;
+		var frmtbFindForm = document.getElementById("frmtbFindForm");
+		if (frmtbFindForm.ssOleDBGridRecords.SelBookmarks.Count > 0) {
+			for (iIndex = 0; iIndex < frmtbFindForm.ssOleDBGridRecords.Cols; iIndex++) {
+				sColumnName = frmtbFindForm.ssOleDBGridRecords.Columns(iIndex).Name;
 				if (sColumnName.toUpperCase() == "ID") {
 					iIDColumnIndex = iIndex;
 					break;
 				}
 			}
 
-			iRecordID = frmFindForm.ssOleDBGridRecords.Columns(iIDColumnIndex).Value;
+			iRecordID = frmtbFindForm.ssOleDBGridRecords.Columns(iIDColumnIndex).Value;
 		}
 
 		return (iRecordID);
 	}
 
-	function tbAddFromWaitingListFindFindrefreshControls() {
-		var frmFindForm = document.getElementById("frmtbAddFromWaitingListFindFindForm");
-		if (frmFindForm.ssOleDBGridRecords.rows > 0) {
-			if (frmFindForm.ssOleDBGridRecords.SelBookmarks.Count > 0) {
-				button_disable(frmFindForm.cmdSelect, false);
+	function tbrefreshControls() {
+		var frmtbFindForm = document.getElementById("frmtbFindForm");
+		if (frmtbFindForm.ssOleDBGridRecords.rows > 0) {
+			if (frmtbFindForm.ssOleDBGridRecords.SelBookmarks.Count > 0) {
+				button_disable(frmtbFindForm.cmdSelect, false);
 			}
 			else {
-				button_disable(frmFindForm.cmdSelect, true);
+				button_disable(frmtbFindForm.cmdSelect, true);
 			}
 		}
 		else {
-			button_disable(frmFindForm.cmdSelect, true);
+			button_disable(frmtbFindForm.cmdSelect, true);
 		}
 
-		if (frmFindForm.selectOrder.length <= 1) {
-			combo_disable(frmFindForm.selectOrder, true);
-			button_disable(frmFindForm.btnGoOrder, true);
+		if (frmtbFindForm.selectOrder.length <= 1) {
+			combo_disable(frmtbFindForm.selectOrder, true);
+			button_disable(frmtbFindForm.btnGoOrder, true);
 		}
 
-		if (frmFindForm.selectView.length <= 1) {
-			combo_disable(frmFindForm.selectView, true);
-			button_disable(frmFindForm.btnGoView, true);
+		if (frmtbFindForm.selectView.length <= 1) {
+			combo_disable(frmtbFindForm.selectView, true);
+			button_disable(frmtbFindForm.btnGoView, true);
 		}
 	}
 
 	function goView() {
 		// Get the optionData.asp to get the link find records.
 		var optionDataForm = OpenHR.getForm("optiondataframe", "frmGetOptionData");
-		var frmFindForm = document.getElementById("frmtbAddFromWaitingListFindFindForm");
+		var frmtbFindForm = document.getElementById("frmtbFindForm");
 		optionDataForm.txtOptionAction.value = "LOADADDFROMWAITINGLIST";
-		optionDataForm.txtOptionTableID.value = frmFindForm.txtOptionLinkTableID.value;
-		optionDataForm.txtOptionViewID.value = frmFindForm.selectView.options[frmFindForm.selectView.selectedIndex].value;
-		optionDataForm.txtOptionOrderID.value = frmFindForm.selectOrder.options[frmFindForm.selectOrder.selectedIndex].value;
-		optionDataForm.txtOptionRecordID.value = frmFindForm.txtOptionRecordID.value;
+		optionDataForm.txtOptionTableID.value = frmtbFindForm.txtOptionLinkTableID.value;
+		optionDataForm.txtOptionViewID.value = frmtbFindForm.selectView.options[frmtbFindForm.selectView.selectedIndex].value;
+		optionDataForm.txtOptionOrderID.value = frmtbFindForm.selectOrder.options[frmtbFindForm.selectOrder.selectedIndex].value;
+		optionDataForm.txtOptionRecordID.value = frmtbFindForm.txtOptionRecordID.value;
 		optionDataForm.txtOptionFirstRecPos.value = 1;
 		optionDataForm.txtOptionCurrentRecCount.value = 0;
 
-		frmFindForm.txtOptionLinkViewID.value = optionDataForm.txtOptionViewID.value;
-		frmFindForm.txtOptionLinkOrderID.value = optionDataForm.txtOptionOrderID.value;
+		frmtbFindForm.txtOptionLinkViewID.value = optionDataForm.txtOptionViewID.value;
+		frmtbFindForm.txtOptionLinkOrderID.value = optionDataForm.txtOptionOrderID.value;
 
 		refreshOptionData();	//should be in scope...
 	}
 
 	function goOrder() {
 		// Get the optionData.asp to get the link find records.
-		var frmFindForm = document.getElementById("frmtbAddFromWaitingListFindFindForm");
+		var frmtbFindForm = document.getElementById("frmtbFindForm");
 		var optionDataForm = OpenHR.getForm("optiondataframe", "frmGetOptionData");
 		optionDataForm.txtOptionAction.value = "LOADADDFROMWAITINGLIST";
-		optionDataForm.txtOptionTableID.value = frmFindForm.txtOptionLinkTableID.value;
-		optionDataForm.txtOptionViewID.value = frmFindForm.selectView.options[frmFindForm.selectView.selectedIndex].value;
-		optionDataForm.txtOptionOrderID.value = frmFindForm.selectOrder.options[frmFindForm.selectOrder.selectedIndex].value;
-		optionDataForm.txtOptionRecordID.value = frmFindForm.txtOptionRecordID.value;
+		optionDataForm.txtOptionTableID.value = frmtbFindForm.txtOptionLinkTableID.value;
+		optionDataForm.txtOptionViewID.value = frmtbFindForm.selectView.options[frmtbFindForm.selectView.selectedIndex].value;
+		optionDataForm.txtOptionOrderID.value = frmtbFindForm.selectOrder.options[frmtbFindForm.selectOrder.selectedIndex].value;
+		optionDataForm.txtOptionRecordID.value = frmtbFindForm.txtOptionRecordID.value;
 		optionDataForm.txtOptionFirstRecPos.value = 1;
 		optionDataForm.txtOptionCurrentRecCount.value = 0;
 
-		frmFindForm.txtOptionLinkViewID.value = optionDataForm.txtOptionViewID.value;
-		frmFindForm.txtOptionLinkOrderID.value = optionDataForm.txtOptionOrderID.value;
+		frmtbFindForm.txtOptionLinkViewID.value = optionDataForm.txtOptionViewID.value;
+		frmtbFindForm.txtOptionLinkOrderID.value = optionDataForm.txtOptionOrderID.value;
 
 		refreshOptionData();	//should be in scope.
 	}
 
 	function selectedOrderID() {
-		var frmFindForm = document.getElementById("frmtbAddFromWaitingListFindFindForm");
-		return frmFindForm.selectOrder.options[frmFindForm.selectOrder.selectedIndex].value;
+		var frmtbFindForm = document.getElementById("frmtbFindForm");
+		return frmtbFindForm.selectOrder.options[frmtbFindForm.selectOrder.selectedIndex].value;
 	}
 
 	function selectedViewID() {
-		var frmFindForm = document.getElementById("frmtbAddFromWaitingListFindFindForm");
-		return frmFindForm.selectView.options[frmFindForm.selectView.selectedIndex].value;
+		var frmtbFindForm = document.getElementById("frmtbFindForm");
+		return frmtbFindForm.selectView.options[frmtbFindForm.selectView.selectedIndex].value;
 	}
 
 	function locateRecord(psFileName) {
 		var fFound;
 
 		fFound = false;
-		var frmFindForm = document.getElementById("frmtbAddFromWaitingListFindFindForm");
-		frmFindForm.ssOleDBGridRecords.redraw = false;
+		var frmtbFindForm = document.getElementById("frmtbFindForm");
+		frmtbFindForm.ssOleDBGridRecords.redraw = false;
 
-		frmFindForm.ssOleDBGridRecords.MoveLast();
-		frmFindForm.ssOleDBGridRecords.MoveFirst();
+		frmtbFindForm.ssOleDBGridRecords.MoveLast();
+		frmtbFindForm.ssOleDBGridRecords.MoveFirst();
 
-		for (var iIndex = 1; iIndex <= frmFindForm.ssOleDBGridRecords.rows; iIndex++) {
-			var sGridValue = new String(frmFindForm.ssOleDBGridRecords.Columns(0).value);
+		for (var iIndex = 1; iIndex <= frmtbFindForm.ssOleDBGridRecords.rows; iIndex++) {
+			var sGridValue = new String(frmtbFindForm.ssOleDBGridRecords.Columns(0).value);
 			sGridValue = sGridValue.substr(0, psFileName.length).toUpperCase();
 			if (sGridValue == psFileName.toUpperCase()) {
-				frmFindForm.ssOleDBGridRecords.SelBookmarks.Add(frmFindForm.ssOleDBGridRecords.Bookmark);
+				frmtbFindForm.ssOleDBGridRecords.SelBookmarks.Add(frmtbFindForm.ssOleDBGridRecords.Bookmark);
 				fFound = true;
 				break;
 			}
 
-			if (iIndex < frmFindForm.ssOleDBGridRecords.rows) {
-				frmFindForm.ssOleDBGridRecords.MoveNext();
+			if (iIndex < frmtbFindForm.ssOleDBGridRecords.rows) {
+				frmtbFindForm.ssOleDBGridRecords.MoveNext();
 			}
 			else {
 				break;
 			}
 		}
 
-		if ((fFound == false) && (frmFindForm.ssOleDBGridRecords.rows > 0)) {
+		if ((fFound == false) && (frmtbFindForm.ssOleDBGridRecords.rows > 0)) {
 			// Select the top row.
-			frmFindForm.ssOleDBGridRecords.MoveFirst();
-			frmFindForm.ssOleDBGridRecords.SelBookmarks.Add(frmFindForm.ssOleDBGridRecords.Bookmark);
+			frmtbFindForm.ssOleDBGridRecords.MoveFirst();
+			frmtbFindForm.ssOleDBGridRecords.SelBookmarks.Add(frmtbFindForm.ssOleDBGridRecords.Bookmark);
 		}
 
-		frmFindForm.ssOleDBGridRecords.redraw = true;
+		frmtbFindForm.ssOleDBGridRecords.redraw = true;
 	}
 
 
@@ -250,7 +250,7 @@
 	}
 
 	function ssOleDBGridRecords_click() {
-		tbAddFromWaitingListFindFindrefreshControls();
+		tbrefreshControls();
 	}
 
 	function ssOleDBGridRecords_KeyPress(iKeyAscii) {
@@ -286,7 +286,7 @@
 
 
 <div <%=session("BodyTag")%>>
-	<form action="" method="POST" id="frmtbAddFromWaitingListFindFindForm" name="frmtbAddFromWaitingListFindFindForm">
+	<form action="" method="POST" id="frmtbFindForm" name="frmtbFindForm">
 
 		<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">
 			<tr>

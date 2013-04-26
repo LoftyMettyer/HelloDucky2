@@ -231,7 +231,7 @@
                 var sAction = frmOptionData.txtOptionAction.value;
 
                 // Refresh the link find grid with the data if required.
-                var grdFind = OpenHR.getForm("optionframe", "frmtbAddFromWaitingListFindFindForm").ssOleDBGridRecords;
+                var grdFind = OpenHR.getForm("optionframe", "frmtbFindForm").ssOleDBGridRecords;
                 grdFind.redraw = false;
                 grdFind.removeAll();
                 grdFind.columns.removeAll();
@@ -306,7 +306,7 @@
                     grdFind.SelBookmarks.Add(grdFind.Bookmark);
                 }
 
-                tbAddFromWaitingListFindFindrefreshControls();
+                tbrefreshControls();
 
                 // Get menu.asp to refresh the menu.
                 menu_refreshMenu();

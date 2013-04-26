@@ -4050,7 +4050,155 @@ Namespace Controllers
 			Return View()
 		End Function
 
-  End Class
+		Function tbBookCourseFind() As ActionResult
+			Return View()
+		End Function
+
+		<HttpPost()>
+		Function tbBookCourseFind_Submit(value As FormCollection)
+			On Error Resume Next
+
+			Dim sErrorMsg = ""
+			Dim iTBResultCode = 0
+
+			' Only process the form submission if the referring page was the default page.
+			' If it wasn't then redirect to the login page.
+			' Read the information from the calling form.
+			Dim sNextPage = Request.Form("txtGotoOptionPage")
+			Dim sAction = Request.Form("txtGotoOptionAction")
+
+			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
+			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
+			Session("optionViewID") = Request.Form("txtGotoOptionViewID")
+			Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
+			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
+			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
+			Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
+			Session("optionValue") = Request.Form("txtGotoOptionValue")
+			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
+			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
+			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
+			Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
+			Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
+			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
+			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
+			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
+			Session("optionFile") = Request.Form("txtGotoOptionFile")
+			Session("optionExtension") = Request.Form("txtGotoOptionExtension")
+			'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
+			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
+			Session("optionAction") = sAction
+			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
+			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
+			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
+			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
+			Session("optionExprType") = Request.Form("txtGotoOptionExprType")
+			Session("optionExprID") = Request.Form("txtGotoOptionExprID")
+			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
+			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
+			Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
+			Session("optionDefSelRecordID") = Request.Form("txtGotoOptionDefSelRecordID")
+
+			If (sAction = "SELECTBOOKCOURSE_1") Then
+				If CLng(Session("optionRecordID")) > 0 Then
+					' First pass after selecting the course to book.
+					' Get the user to choose whether to make the booking 'provisional'
+					' or confirmed.
+					If Session("TB_TBStatusPExists") Then
+						Return RedirectToAction("tbStatusPrompt")
+					Else
+						sAction = "SELECTBOOKCOURSE_2"
+						Session("optionAction") = sAction
+						Session("optionLookupValue") = "B"
+					End If
+				End If
+			End If
+
+			If (sAction = "SELECTBOOKCOURSE_2") Then
+				If CLng(Session("optionRecordID")) > 0 Then
+					' Get the employee record ID from the given Waiting List record.
+					Dim iEmpRecID = 0
+
+					Dim cmdEmpIDFromWLID = CreateObject("ADODB.Command")
+					cmdEmpIDFromWLID.CommandText = "sp_ASRIntGetEmpIDFromWLID"
+					cmdEmpIDFromWLID.CommandType = 4 ' Stored procedure
+					cmdEmpIDFromWLID.ActiveConnection = Session("databaseConnection")
+
+					Dim prmTBEmployeeRecordID = cmdEmpIDFromWLID.CreateParameter("empRecID", 3, 2) '3=integer, 2=output
+					cmdEmpIDFromWLID.Parameters.Append(prmTBEmployeeRecordID)
+
+					Dim prmTBWLRecordID = cmdEmpIDFromWLID.CreateParameter("WLRecID", 3, 1)	'3=integer, 1=input
+					cmdEmpIDFromWLID.Parameters.Append(prmTBWLRecordID)
+					prmTBWLRecordID.value = CleanNumeric(CLng(Session("optionRecordID")))
+
+					Err.Clear()
+					cmdEmpIDFromWLID.Execute()
+					If (Err.Number <> 0) Then
+						sErrorMsg = "Error getting employee ID." & vbCrLf & FormatError(Err.Description)
+					End If
+
+					If Len(sErrorMsg) = 0 Then
+						iEmpRecID = cmdEmpIDFromWLID.Parameters("empRecID").Value
+
+						If iEmpRecID = 0 Then
+							sErrorMsg = "Error getting employee ID."
+						End If
+					End If
+					cmdEmpIDFromWLID = Nothing
+
+					If Len(sErrorMsg) = 0 Then
+						' Validate the booking.
+						Dim sTBErrorMsg = ""
+						Dim sTBWarningMsg = ""
+						iTBResultCode = 0
+
+						Dim cmdTBCheck = CreateObject("ADODB.Command")
+						cmdTBCheck.CommandText = "sp_ASRIntValidateTrainingBooking"
+						cmdTBCheck.CommandType = 4 ' Stored procedure
+						cmdTBCheck.ActiveConnection = Session("databaseConnection")
+
+						Dim prmResult = cmdTBCheck.CreateParameter("resultCode", 3, 2) ' 3=integer, 2=output
+						cmdTBCheck.Parameters.Append(prmResult)
+
+						prmTBEmployeeRecordID = cmdTBCheck.CreateParameter("empRecID", 3, 1) '3=integer, 1=input
+						cmdTBCheck.Parameters.Append(prmTBEmployeeRecordID)
+						prmTBEmployeeRecordID.value = CleanNumeric(iEmpRecID)
+
+						Dim prmTBCourseRecordID = cmdTBCheck.CreateParameter("courseRecID", 3, 1)	'3=integer, 1=input
+						cmdTBCheck.Parameters.Append(prmTBCourseRecordID)
+						prmTBCourseRecordID.value = CleanNumeric(Session("optionLinkRecordID"))
+
+						Dim prmTBStatus = cmdTBCheck.CreateParameter("tbStatus", 200, 1, 8000) '200=varchar, 1=input, 8000=size
+						cmdTBCheck.Parameters.Append(prmTBStatus)
+						prmTBStatus.value = Session("optionLookupValue")
+
+						Dim prmTBRecordID = cmdTBCheck.CreateParameter("tbRecID", 3, 1)	'3=integer, 1=input
+						cmdTBCheck.Parameters.Append(prmTBRecordID)
+						prmTBRecordID.value = 0
+
+						Err.Clear()
+						cmdTBCheck.Execute()
+						If (Err.Number <> 0) Then
+							sErrorMsg = "Error validating training booking." & vbCrLf & FormatError(Err.Description)
+						End If
+
+						If Len(sErrorMsg) = 0 Then
+							iTBResultCode = cmdTBCheck.Parameters("resultCode").Value
+						End If
+						cmdTBCheck = Nothing
+					End If
+				End If
+			End If
+
+			' Go to the requested page.
+			Session("TBResultCode") = iTBResultCode
+			Session("errorMessage") = sErrorMsg
+			Return RedirectToAction(sNextPage)
+
+		End Function
+
+
+	End Class
 
   Public Class ErrMsgJsonAjaxResponse
 
