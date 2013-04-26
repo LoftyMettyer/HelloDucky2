@@ -5,7 +5,7 @@ Namespace App_Start
   Public Class BundleConfig
 
     Public Shared Sub RegisterBundles(bundles As BundleCollection)
-
+      
       ' Microsoft elements
       Dim codeBundle As New ScriptBundle("~/bundles/Microsoft")
       codeBundle.IncludeDirectory("~/Scripts/Microsoft", "*.js")
@@ -77,6 +77,13 @@ Namespace App_Start
         "~/Scripts/FormScripts/optionData.js",
         "~/Scripts/FormScripts/recordEdit.js"))
 
+#If DEBUG Then
+
+      For Each bundle As Bundle In BundleTable.Bundles
+        bundle.Transforms.Clear()
+      Next
+
+#End If
 
     End Sub
   End Class
