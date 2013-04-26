@@ -85,7 +85,7 @@
 		var frmtbFindForm = document.getElementById("frmtbFindForm");
 		frmGotoOption.txtGotoOptionAction.value = "SELECTBOOKCOURSE_1";
 		frmGotoOption.txtGotoOptionRecordID.value = frmtbFindForm.txtOptionRecordID.value;
-		frmGotoOption.txtGotoOptionLinkRecordID.value = selectedRecordID();
+		frmGotoOption.txtGotoOptionLinkRecordID.value = tbselectedRecordID();
 		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
 		OpenHR.submitForm(frmGotoOption);
 	}
@@ -101,7 +101,7 @@
 	}
 
 	/* Return the ID of the record selected in the find form. */
-	function selectedRecordID() {
+	function tbselectedRecordID() {
 		var iRecordID;
 		var iIndex;
 		var iIDColumnIndex;
