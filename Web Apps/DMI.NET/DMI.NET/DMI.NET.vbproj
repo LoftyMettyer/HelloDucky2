@@ -670,6 +670,8 @@
     <Content Include="Views\Home\util_def_calendarreportdates_data.ascx" />
     <Content Include="Views\Home\util_def_calendarreportdates_main.ascx" />
     <Content Include="Views\Home\util_def_mailmerge.ascx" />
+    <Content Include="Views\Home\util_run_mailmerge.ascx" />
+    <Content Include="Views\Home\util_run_mailmerge_completed.ascx" />
     <Content Include="Views\Home\util_validate_calendarreport.ascx" />
     <Content Include="Views\Home\util_validate_mailmerge.ascx" />
     <Content Include="Views\Home\Main.aspx" />

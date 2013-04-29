@@ -641,7 +641,7 @@ LocalErr:
 
     With rsMailMergeDefinition
 
-      If LCase(.Fields("Username").Value) <> LCase(gsUsername) And CurrentUserAccess(modUtilAccessLog.UtilityType.utlMailMerge, mlngMailMergeID) = ACCESS_HIDDEN Then
+      If LCase(CType(.Fields("Username").Value, String)) <> LCase(gsUsername) And CurrentUserAccess(modUtilAccessLog.UtilityType.utlMailMerge, mlngMailMergeID) = ACCESS_HIDDEN Then
         'UPGRADE_NOTE: Object rsMailMergeDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
         rsMailMergeDefinition = Nothing
         mstrStatusMessage = "This definition has been made hidden by another user."
@@ -1312,7 +1312,7 @@ LocalErr:
   End Function
 
 
-  Private Sub SQLAddColumn(ByRef sColumnList As String, ByRef lngTableID As Integer, ByRef sTableName As String, ByRef sColumnName As String, ByRef strColCode As String)
+  Private Sub SQLAddColumn(ByRef sColumnList As String, ByVal lngTableID As Integer, ByVal sTableName As String, ByVal sColumnName As String, ByVal strColCode As String)
 
     Dim objTableView As CTablePrivilege
     Dim objColumnPrivileges As CColumnPrivileges
@@ -2028,7 +2028,7 @@ ErrorTrap:
   End Function
 
 
-  Public Function UDFFunctions(ByRef pbCreate As Object) As Object
+  Public Function UDFFunctions(ByRef pbCreate As Object) As Boolean
 
     On Error GoTo UDFFunctions_ERROR
 

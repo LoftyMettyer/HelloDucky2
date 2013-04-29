@@ -1306,8 +1306,6 @@ Namespace Controllers
     End Function
 
 
-
-
     <HttpPost()>
     Function DefSel_Submit(value As FormCollection)
       ' Set some session variables used by all the util pages
@@ -4197,6 +4195,13 @@ Namespace Controllers
 
 		End Function
 
+    Function util_run_mailmerge() As ActionResult
+      Return View()
+    End Function
+
+    Function util_run_mailmerge_completed() As ActionResult
+      Return View()
+    End Function
 
 	End Class
 
@@ -4206,6 +4211,10 @@ Namespace Controllers
     Public Property ErrorMessage As String
     Public Property Redirect As String
   End Class
+
+
+
+
 
 
 
