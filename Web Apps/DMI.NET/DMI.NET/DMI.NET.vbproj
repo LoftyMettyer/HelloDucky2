@@ -658,7 +658,13 @@
     <Content Include="Views\Home\linksMain.aspx" />
     <Content Include="Views\Home\tbAddFromWaitingListFind.ascx" />
     <Content Include="Views\Home\tbBookCourseFind.ascx" />
+    <Content Include="Views\Home\tbBulkBooking.ascx" />
+    <Content Include="Views\Home\tbBulkBookingSelection.ascx" />
+    <Content Include="Views\Home\tbBulkBookingSelectionData.ascx" />
     <Content Include="Views\Home\tbStatusPrompt.ascx" />
+    <Content Include="Views\Home\tbTransferBookingFind.ascx" />
+    <Content Include="Views\Home\tbTransferCourseFind.ascx" />
+    <Content Include="Views\Home\util_calcselection.ascx" />
     <Content Include="Views\Home\util_def_calendarreport.ascx" />
     <Content Include="Views\Home\util_def_calendarreportdates.asp.ascx" />
     <Content Include="Views\Home\util_def_calendarreportdates_data.ascx" />
