@@ -8,50 +8,147 @@
 <script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
 <script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
 
-
-
 <script type="text/javascript">
 	function util_def_calendarreportdates_window_onload() {
 		//debugger;
-		//var frmPopup = document.getElementById("frmPopup");
-		//var frmSelectionAccess = document.getElementById("frmSelectionAccess");
-		//frmPopup.txtLoading.value = 1;
-		//frmPopup.txtFirstLoad_Event.value = 1;
-		//frmPopup.txtFirstLoad_Lookup.value = 1;
-		//frmPopup.txtHaveSetLookupValues.value = 0;
+		var frmPopup = document.getElementById("frmPopup");
+		var frmSelectionAccess = document.getElementById("frmSelectionAccess");
+		frmPopup.txtLoading.value = 1;
+		frmPopup.txtFirstLoad_Event.value = 1;
+		frmPopup.txtFirstLoad_Lookup.value = 1;
+		frmPopup.txtHaveSetLookupValues.value = 0;
 		
-		//button_disable(window.frmPopup.cmdCancel, true);
-		//button_disable(window.frmPopup.cmdOK, true);
+		button_disable(frmPopup.cmdCancel, true);
+		button_disable(frmPopup.cmdOK, true);
 
-		//populateEventTableCombo();
+		populateEventTableCombo();
 
-		//frmPopup.cboLegendTable.selectedIndex = -1;
+		frmPopup.cboLegendTable.selectedIndex = -1;
 
-		//var frmEvent = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmEventDetails");
-		//var frmDef = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmDefinition");
+		var frmEvent = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmEventDetails");
+		var frmDef = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmDefinition");
 
-		//if (frmEvent.eventAction.value.toUpperCase() == "NEW") {
-		//	frmPopup.optNoEnd.checked = true;
-		//	frmPopup.optCharacter.checked = true;
-		//} else {
-		//	frmPopup.rowID.value = frmDef.grdEvents.AddItemRowIndex(frmDef.grdEvents.Bookmark);
+		if (frmEvent.eventAction.value.toUpperCase() == "NEW") {
+			frmPopup.optNoEnd.checked = true;
+			frmPopup.optCharacter.checked = true;
+		} else {
+			frmPopup.rowID.value = frmDef.grdEvents.AddItemRowIndex(frmDef.grdEvents.Bookmark);
 
-		//	frmPopup.txtEventName.value = frmEvent.eventName.value;
-		//	setEventTable(frmEvent.eventTableID.value);
-		//	frmPopup.txtEventFilter.value = frmEvent.eventFilter.value;
-		//	frmPopup.txtEventFilterID.value = frmEvent.eventFilterID.value;
-		//	frmSelectionAccess.baseHidden.value = frmEvent.eventFilterHidden.value;
-		//}
+			frmPopup.txtEventName.value = frmEvent.eventName.value;
+			setEventTable(frmEvent.eventTableID.value);
+			frmPopup.txtEventFilter.value = frmEvent.eventFilter.value;
+			frmPopup.txtEventFilterID.value = frmEvent.eventFilterID.value;
+			frmSelectionAccess.baseHidden.value = frmEvent.eventFilterHidden.value;
+		}
 
-		//disabledAll();
+		disabledAll();
 
-		//frmPopup.txtEventColumnsLoaded.value = 0;
-		//frmPopup.txtLookupColumnsLoaded.value = 0;
+		frmPopup.txtEventColumnsLoaded.value = 0;
+		frmPopup.txtLookupColumnsLoaded.value = 0;
 
-		//populateEventColumns();admin
+		populateEventColumns();
 
-		//frmPopup.txtLoading.value = 0;
+		frmPopup.txtLoading.value = 0;
 	}
+	
+	function populateEventTableCombo() {
+		var frmDef = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmDefinition");
+		var frmRefresh = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmRefresh");
+		var frmPopup = document.getElementById("frmPopup");
+		var frmEvent = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmEventDetails");
+
+		var sRelationString = frmEvent.relationNames.value;
+		var sTableName;
+		var bAdded = false;
+		//var dataCollection = frmTab.elements;
+		var oOption;
+		var iIndex = sRelationString.indexOf("	");
+
+		while (iIndex > 0) {
+			var iRelationID = sRelationString.substr(0, iIndex);
+
+			frmRefresh.submit();
+			bAdded = true;
+			oOption = document.createElement("OPTION");
+			frmPopup.cboEventTable.options.add(oOption);
+			oOption.value = iRelationID;
+
+			if (iRelationID == frmDef.cboBaseTable.options[frmDef.cboBaseTable.selectedIndex].value) {
+				oOption.selected = true;
+			}
+
+			sRelationString = sRelationString.substr(iIndex + 1);
+			iIndex = sRelationString.indexOf("	");
+
+			sTableName = sRelationString.substr(0, iIndex);
+			oOption.innerText = sTableName;
+
+			if (bAdded) {
+				sRelationString = sRelationString.substr(iIndex + 1);
+				iIndex = sRelationString.indexOf("	");
+
+				bAdded = false;
+			}
+			else {
+				sRelationString = sRelationString.substr(iIndex + 1);
+				iIndex = sRelationString.indexOf("	");
+
+				sRelationString = sRelationString.substr(iIndex + 1);
+				iIndex = sRelationString.indexOf("	");
+
+				bAdded = false;
+			}
+		}
+	}
+	
+	function populateEventColumns() {
+		// Get the columns/calcs for the current table selection.
+		var frmGetDataForm = OpenHR.getForm("calendardataframe", "frmGetCalendarData");
+		var frmDef = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmDefinition");
+		var frmPopup = document.getElementById("frmPopup");
+
+		frmGetDataForm.txtCalendarAction.value = "LOADCALENDAREVENTDETAILSCOLUMNS";
+		frmGetDataForm.txtCalendarBaseTableID.value = frmDef.cboBaseTable.options[frmDef.cboBaseTable.selectedIndex].value;
+		frmGetDataForm.txtCalendarEventTableID.value = frmPopup.cboEventTable.options[frmPopup.cboEventTable.selectedIndex].value;
+
+		//window.parent.frames("calendardataframe").refreshData();
+		//data_refreshData();
+		window.parent.refreshData();
+	}
+	
+	function disabledAll() {
+		var frmPopup = document.getElementById("frmPopup");
+		/*Event Frame*/
+		text_disable(frmPopup.txtEventName, true);
+		combo_disable(frmPopup.cboEventTable, true);
+		text_disable(frmPopup.txtEventFilter, true);
+		button_disable(frmPopup.cmdEventFilter, true);
+
+		/*Event Start Frame*/
+		combo_disable(frmPopup.cboStartDate, true);
+		combo_disable(frmPopup.cboStartSession, true);
+
+		/*Event End Frame*/
+		radio_disable(frmPopup.optNoEnd, true);
+		radio_disable(frmPopup.optEndDate, true);
+		combo_disable(frmPopup.cboEndDate, true);
+		combo_disable(frmPopup.cboEndSession, true);
+		radio_disable(frmPopup.optDuration, true);
+		combo_disable(frmPopup.cboDuration, true);
+
+		/*Key Frame*/
+		text_disable(frmPopup.txtCharacter, true);
+		combo_disable(frmPopup.cboEventType, true);
+		combo_disable(frmPopup.cboLegendTable, true);
+		combo_disable(frmPopup.cboLegendColumn, true);
+		combo_disable(frmPopup.cboLegendCode, true);
+
+		/*Event Description Frame*/
+		combo_disable(frmPopup.cboEventDesc1, true);
+		combo_disable(frmPopup.cboEventDesc2, true);
+	}
+	
+	
 </script>
 
 <div id="bdyMain" name="bdyMain" <%=session("BodyColour")%> leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">
