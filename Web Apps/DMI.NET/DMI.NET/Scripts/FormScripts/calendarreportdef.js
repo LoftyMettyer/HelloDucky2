@@ -8,6 +8,14 @@ var frmAccess = document.getElementById("frmAccess");
 var frmValidate = document.getElementById("frmValidate");
 var frmEmailSelection = document.getElementById("frmEmailSelection");
 var frmTables = document.getElementById("frmTables");
+var frmPopup = document.getElementById("frmPopup");
+//var frmEvent = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmEventDetails");
+
+var div1 = document.getElementById("div1");
+var div2 = document.getElementById("div2");
+var div3 = document.getElementById("div3");
+var div4 = document.getElementById("div4");
+var div5 = document.getElementById("div5");
 
 var sRepDefn;
 var sSortDefn;
@@ -112,7 +120,7 @@ fValidating = false;
 function displayPage(piPageNumber) {
 
     var iLoop;
-
+		////debugger;
     //window.parent.frames("refreshframe").document.forms("frmRefresh").submit();
     OpenHR.submitForm(window.frmRefresh);
 
@@ -566,26 +574,21 @@ function refreshTab1Controls() {
 }
 
 function refreshTab2Controls() {
-    var fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
+	var fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
 
-    with (frmDefinition) {
-        button_disable(cmdAddEvent, (fViewing == true));
-        button_disable(cmdEditEvent, ((grdEvents.Rows < 1)
-            || (grdEvents.SelBookmarks.Count != 1)
-            || (fViewing == true)));
-        button_disable(cmdRemoveEvent, ((grdEvents.Rows < 1)
-            || (grdEvents.SelBookmarks.Count != 1)
-            || (fViewing == true)));
-        button_disable(cmdRemoveAllEvents, ((grdEvents.Rows < 1)
-            || (fViewing == true)));
-    }
-
-    recalcHiddenEventFiltersCount();
-
-    refreshTab1Controls();
-
-    frmDefinition.grdEvents.RowHeight = 19;
-
+	button_disable(frmDefinition.cmdAddEvent, (fViewing == true));
+	button_disable(frmDefinition.cmdEditEvent, ((frmDefinition.grdEvents.Rows < 1)
+			|| (frmDefinition.grdEvents.SelBookmarks.Count != 1)
+			|| (fViewing == true)));
+	button_disable(frmDefinition.cmdRemoveEvent, ((frmDefinition.grdEvents.Rows < 1)
+			|| (frmDefinition.grdEvents.SelBookmarks.Count != 1)
+			|| (fViewing == true)));
+	button_disable(frmDefinition.cmdRemoveAllEvents, ((frmDefinition.grdEvents.Rows < 1)
+			|| (fViewing == true)));
+	
+	recalcHiddenEventFiltersCount();
+	refreshTab1Controls();
+	frmDefinition.grdEvents.RowHeight = 19;
 }
 
 function refreshTab3Controls() {
@@ -839,69 +842,62 @@ function refreshTab3Controls() {
 }
 
 function refreshTab4Controls() {
-    var i;
-    var iCount;
-    var fSortAddDisabled = false;
-    var fSortEditDisabled = false;
-    var fSortRemoveDisabled = false;
-    var fSortRemoveAllDisabled = false;
-    var fSortMoveUpDisabled = false;
-    var fSortMoveDownDisabled = false;
-    var fViewing;
+	var i;
+	var iCount;
+	var fSortAddDisabled = false;
+	var fSortEditDisabled = false;
+	var fSortRemoveDisabled = false;
+	var fSortRemoveAllDisabled = false;
+	var fSortMoveUpDisabled = false;
+	var fSortMoveDownDisabled = false;
+	var fViewing;
 
-    fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
+	fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
 
-    if (frmDefinition.ssOleDBGridSortOrder.SelBookmarks.Count == 1
-        && frmDefinition.ssOleDBGridSortOrder.Rows > 0) {
-        // Are we on the top row ?
-        if ((frmDefinition.ssOleDBGridSortOrder.AddItemRowIndex(frmDefinition.ssOleDBGridSortOrder.Bookmark) == 0)
-            || (frmDefinition.ssOleDBGridSortOrder.rows <= 1)) {
-            fSortMoveUpDisabled = true;
-        }
+	if (frmDefinition.ssOleDBGridSortOrder.SelBookmarks.Count == 1
+			&& frmDefinition.ssOleDBGridSortOrder.Rows > 0) {
+		// Are we on the top row ?
+		if ((frmDefinition.ssOleDBGridSortOrder.AddItemRowIndex(frmDefinition.ssOleDBGridSortOrder.Bookmark) == 0)
+				|| (frmDefinition.ssOleDBGridSortOrder.rows <= 1)) {
+			fSortMoveUpDisabled = true;
+		}
 
-        // Are we on the bottom row ?
-        if ((frmDefinition.ssOleDBGridSortOrder.AddItemRowIndex(frmDefinition.ssOleDBGridSortOrder.Bookmark) == frmDefinition.ssOleDBGridSortOrder.rows - 1)
-            || (frmDefinition.ssOleDBGridSortOrder.rows <= 1)) {
-            fSortMoveDownDisabled = true;
-        }
+		// Are we on the bottom row ?
+		if ((frmDefinition.ssOleDBGridSortOrder.AddItemRowIndex(frmDefinition.ssOleDBGridSortOrder.Bookmark) == frmDefinition.ssOleDBGridSortOrder.rows - 1)
+				|| (frmDefinition.ssOleDBGridSortOrder.rows <= 1)) {
+			fSortMoveDownDisabled = true;
+		}
+	}
 
-    }
+	if (frmDefinition.ssOleDBGridSortOrder.Rows < 1
+			|| frmDefinition.ssOleDBGridSortOrder.SelBookmarks.Count != 1) {
+		fSortMoveUpDisabled = true;
+		fSortMoveDownDisabled = true;
+	}
 
-    if (frmDefinition.ssOleDBGridSortOrder.Rows < 1
-        || frmDefinition.ssOleDBGridSortOrder.SelBookmarks.Count != 1) {
-        fSortMoveUpDisabled = true;
-        fSortMoveDownDisabled = true;
-    }
+	if (fViewing) {
+		fSortAddDisabled = true;
+		fSortMoveUpDisabled = true;
+		fSortMoveDownDisabled = true;
+	}
 
-    if (fViewing) {
-        fSortAddDisabled = true;
-        fSortMoveUpDisabled = true;
-        fSortMoveDownDisabled = true;
-    }
+	fSortRemoveDisabled = ((frmDefinition.ssOleDBGridSortOrder.SelBookmarks.Count != 1) || (fViewing == true));
+	fSortRemoveAllDisabled = ((fViewing == true) || (frmDefinition.ssOleDBGridSortOrder.Rows < 1));
+	fSortEditDisabled = ((frmDefinition.ssOleDBGridSortOrder.SelBookmarks.Count != 1) || (fViewing == true));
 
-    fSortRemoveDisabled = ((frmDefinition.ssOleDBGridSortOrder.SelBookmarks.Count != 1) || (fViewing == true));
-    fSortRemoveAllDisabled = ((fViewing == true) || (frmDefinition.ssOleDBGridSortOrder.Rows < 1));
-    fSortEditDisabled = ((frmDefinition.ssOleDBGridSortOrder.SelBookmarks.Count != 1) || (fViewing == true));
+	button_disable(frmDefinition.cmdSortAdd, fSortAddDisabled);
+	button_disable(frmDefinition.cmdSortEdit, fSortEditDisabled);
+	button_disable(frmDefinition.cmdSortRemove, fSortRemoveDisabled);
+	button_disable(frmDefinition.cmdSortRemoveAll, fSortRemoveAllDisabled);
+	button_disable(frmDefinition.cmdSortMoveUp, fSortMoveUpDisabled);
+	button_disable(frmDefinition.cmdSortMoveDown, fSortMoveDownDisabled);
 
-    button_disable(frmDefinition.cmdSortAdd, fSortAddDisabled);
-    button_disable(frmDefinition.cmdSortEdit, fSortEditDisabled);
-    button_disable(frmDefinition.cmdSortRemove, fSortRemoveDisabled);
-    button_disable(frmDefinition.cmdSortRemoveAll, fSortRemoveAllDisabled);
-    button_disable(frmDefinition.cmdSortMoveUp, fSortMoveUpDisabled);
-    button_disable(frmDefinition.cmdSortMoveDown, fSortMoveDownDisabled);
-
-    frmDefinition.ssOleDBGridSortOrder.AllowUpdate = (fViewing == false);
-
-    frmDefinition.ssOleDBGridSortOrder.RowHeight = 19;
-
-    button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
-        (fViewing == true)));
+	frmDefinition.ssOleDBGridSortOrder.AllowUpdate = (fViewing == false);
+	frmDefinition.ssOleDBGridSortOrder.RowHeight = 19;
+	button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
+			(fViewing == true)));
 
 }
-
-
-
-
 
 function refreshTab5Controls() {
     var i;
@@ -1608,8 +1604,7 @@ function submitDefinition() {
         "&validateUtilID=" + escape(frmValidate.validateUtilID.value) +
         "&destination=util_validate_calendarreport";
 	//openDialog(sURL, (screen.width) / 2, (screen.height) / 3, "no", "no");
-	debugger;
-    openDialog(sURL, (screen.width) / 2, (screen.height) / 3);
+    openDialog(sURL, (screen.width) / 2, (screen.height) / 3, "no", "no");
 }
 
 function cancelClick() {
@@ -1631,8 +1626,6 @@ function cancelClick() {
 }
 
 function okClick() {
-	debugger;
-	//OpenHR.disableMenu();
 	menu_disableMenu();
 	frmSend.txtSend_reaction.value = "CALENDARREPORTS";
 	submitDefinition();
@@ -1801,29 +1794,17 @@ function getTableName(piTableID) {
     return sTableName;
 }
 
-//function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
-//    dlgwinprops = "center:yes;" +
-//        "dialogHeight:" + pHeight + "px;" +
-//        "dialogWidth:" + pWidth + "px;" +
-//        "help:no;" +
-//        "resizable:" + psResizable + ";" +
-//        "scroll:" + psScroll + ";" +
-//        "status:no;";
-//    window.showModalDialog(pDestination, self, dlgwinprops);
-//}
-
 function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
 	var dlgwinprops = "center:yes;" +
 		"dialogHeight:" + pHeight + "px;" +
-			"dialogWidth:" + pWidth + "px;" +
-				"help:no;" +
-					"resizable:" + psResizable + ";" +
-						"scroll:" + psScroll + ";" +
-							"status:no;";
-	window.showModalDialog(pDestination, self, dlgwinprops);
+		"dialogWidth:" + pWidth + "px;" +
+		"help:no;" +
+		"resizable:" + psResizable + ";" +
+		"scroll:" + psScroll + ";" +
+		"status:no;";
+	//calendarreprt.js at line 1805
+	showModalDialog(pDestination, self, dlgwinprops);
 }
-
-
 
 function getEventKey() {
     var i = 1;
@@ -1853,59 +1834,6 @@ function checkUniqueEventKey(psNewKey) {
         Redraw = true;
     }
     return false;
-}
-
-function eventAdd() {
-    var sURL;
-
-    with (frmEventDetails) {
-        eventAction.value = "NEW";
-        eventID.value = getEventKey();
-        eventFilterHidden.value = "";
-
-        if (frmDefinition.grdEvents.Rows < 999) {
-            sURL = "util_def_calendarreportdates_main" +
-                "?eventAction=" + escape(frmEventDetails.eventAction.value) +
-                "&eventName=" + escape(frmEventDetails.eventName.value) +
-                "&eventID=" + escape(frmEventDetails.eventID.value) +
-                "&eventTableID=" + escape(frmEventDetails.eventTableID.value) +
-                "&eventTable=" + escape(frmEventDetails.eventTable.value) +
-                "&eventFilterID=" + escape(frmEventDetails.eventFilterID.value) +
-                "&eventFilter=" + escape(frmEventDetails.eventFilter.value) +
-                "&eventFilterHidden=" + escape(frmEventDetails.eventFilterHidden.value) +
-                "&eventStartDateID=" + escape(frmEventDetails.eventStartDateID.value) +
-                "&eventStartDate=" + escape(frmEventDetails.eventStartDate.value) +
-                "&eventStartSessionID=" + escape(frmEventDetails.eventStartSessionID.value) +
-                "&eventStartSession=" + escape(frmEventDetails.eventStartSession.value) +
-                "&eventEndDateID=" + escape(frmEventDetails.eventEndDateID.value) +
-                "&eventEndDate=" + escape(frmEventDetails.eventEndDate.value) +
-                "&eventEndSessionID=" + escape(frmEventDetails.eventEndSessionID.value) +
-                "&eventEndSession=" + escape(frmEventDetails.eventEndSession.value) +
-                "&eventDurationID=" + escape(frmEventDetails.eventDurationID.value) +
-                "&eventDuration=" + escape(frmEventDetails.eventDuration.value) +
-                "&eventLookupType=" + escape(frmEventDetails.eventLookupType.value) +
-                "&eventKeyCharacter=" + escape(frmEventDetails.eventKeyCharacter.value) +
-                "&eventLookupTableID=" + escape(frmEventDetails.eventLookupTableID.value) +
-                "&eventLookupColumnID=" + escape(frmEventDetails.eventLookupColumnID.value) +
-                "&eventLookupCodeID=" + escape(frmEventDetails.eventLookupCodeID.value) +
-                "&eventTypeColumnID=" + escape(frmEventDetails.eventTypeColumnID.value) +
-                "&eventDesc1ID=" + escape(frmEventDetails.eventDesc1ID.value) +
-                "&eventDesc1=" + escape(frmEventDetails.eventDesc1.value) +
-                "&eventDesc2ID=" + escape(frmEventDetails.eventDesc2ID.value) +
-                "&eventDesc2=" + escape(frmEventDetails.eventDesc2.value) +
-                "&relationNames=" + escape(frmEventDetails.relationNames.value);
-            openDialog(sURL, 650, 500, "yes", "yes");
-
-            frmUseful.txtChanged.value = 1;
-        }
-        else {
-            var sMessage = "";
-            sMessage = "The maximum of 999 events has been selected.";
-            OpenHR.messageBox(sMessage, 64, "Calendar Reports");
-        }
-    }
-
-    refreshTab2Controls();
 }
 
 function eventEdit() {
@@ -2056,8 +1984,7 @@ function sortAdd() {
     var iColumnsCount = 0;
     var sURL;
     var bm;
-	debugger;
-    // Loop through the columns added and populate the 
+		// Loop through the columns added and populate the 
     // sort order text boxes to pass to util_sortorderselection
     frmSortOrder.txtSortInclude.value = '';
     frmSortOrder.txtSortExclude.value = '';
@@ -2104,8 +2031,8 @@ function sortAdd() {
         OpenHR.messageBox("You have selected all base columns in the sort order.", 48, "Calendar Reports");
     }
     else {
-        if (frmSortOrder.txtSortInclude.value != '') {
-        	sURL = "Util_SortOrderSelection" +
+    	if (frmSortOrder.txtSortInclude.value != '') {
+    		sURL = "util_sortorderselection" +
                 "?txtSortInclude=" + escape(frmSortOrder.txtSortInclude.value) +
                 "&txtSortExclude=" + escape(frmSortOrder.txtSortExclude.value) +
                 "&txtSortEditing=" + escape(frmSortOrder.txtSortEditing.value) +
@@ -2157,7 +2084,6 @@ function sortEdit() {
 
     frmDefinition.ssOleDBGridSortOrder.Redraw = true;
     frmDefinition.ssOleDBGridSortOrder.bookmark = frmDefinition.ssOleDBGridSortOrder.AddItemBookmark(rowNum);
-
     sURL = "util_sortorderselection" +
         "?txtSortInclude=" + escape(frmSortOrder.txtSortInclude.value) +
         "&txtSortExclude=" + escape(frmSortOrder.txtSortExclude.value) +
@@ -2412,8 +2338,6 @@ function validateTab4() {
 	var iCount;
 	var sDefn;
 	var sControlName;
-	var frmRefresh;
-	var iDummy;
 
 	sErrMsg = "";
 
@@ -3391,10 +3315,10 @@ function loadSortDefinition() {
         var dataCollection = frmOriginalDefinition.elements;
         if (dataCollection != null) {
             for (iIndex = 0; iIndex < dataCollection.length; iIndex++) {
-                sControlName = dataCollection.item(iIndex).name;
+                var sControlName = dataCollection.item(iIndex).name;
                 sControlName = sControlName.substr(0, 19);
                 if (sControlName == "txtReportDefnOrder_") {
-                    sDefnString = new String(dataCollection.item(iIndex).value);
+                    var sDefnString = new String(dataCollection.item(iIndex).value);
 
                     if (sDefnString.length > 0) {
                         frmDefinition.ssOleDBGridSortOrder.AddItem(sDefnString);
@@ -3402,7 +3326,6 @@ function loadSortDefinition() {
                 }
             }
         }
-
         frmDefinition.ssOleDBGridSortOrder.Redraw = true;
         frmUseful.txtSortLoaded.value = 1;
     }
@@ -4208,43 +4131,40 @@ function createNew(pPopup) {
 }
 
 function locateRecord(psSearchFor) {
-    var fFound
+	var fFound;
+	fFound = false;
+	return;
+	frmDefinition.ssOleDBGridAvailableColumns.redraw = false;
 
-    return;
+	frmDefinition.ssOleDBGridAvailableColumns.MoveLast();
+	frmDefinition.ssOleDBGridAvailableColumns.MoveFirst();
 
-    fFound = false;
+	frmDefinition.ssOleDBGridAvailableColumns.SelBookmarks.removeall();
 
-    frmDefinition.ssOleDBGridAvailableColumns.redraw = false;
+	for (iIndex = 1; iIndex <= frmDefinition.ssOleDBGridAvailableColumns.rows; iIndex++) {
+		var sGridValue = new String(frmDefinition.ssOleDBGridAvailableColumns.Columns(3).value);
+		sGridValue = sGridValue.substr(0, psSearchFor.length).toUpperCase();
+		if (sGridValue == psSearchFor.toUpperCase()) {
+			frmDefinition.ssOleDBGridAvailableColumns.SelBookmarks.Add(frmDefinition.ssOleDBGridAvailableColumns.Bookmark);
+			fFound = true;
+			break;
+		}
 
-    frmDefinition.ssOleDBGridAvailableColumns.MoveLast();
-    frmDefinition.ssOleDBGridAvailableColumns.MoveFirst();
+		if (iIndex < frmDefinition.ssOleDBGridAvailableColumns.rows) {
+			frmDefinition.ssOleDBGridAvailableColumns.MoveNext();
+		}
+		else {
+			break;
+		}
+	}
 
-    frmDefinition.ssOleDBGridAvailableColumns.SelBookmarks.removeall();
+	if ((fFound == false) && (frmDefinition.ssOleDBGridAvailableColumns.rows > 0)) {
+		// Select the top row.
+		frmDefinition.ssOleDBGridAvailableColumns.MoveFirst();
+		frmDefinition.ssOleDBGridAvailableColumns.SelBookmarks.Add(frmDefinition.ssOleDBGridAvailableColumns.Bookmark);
+	}
 
-    for (iIndex = 1; iIndex <= frmDefinition.ssOleDBGridAvailableColumns.rows; iIndex++) {
-        var sGridValue = new String(frmDefinition.ssOleDBGridAvailableColumns.Columns(3).value);
-        sGridValue = sGridValue.substr(0, psSearchFor.length).toUpperCase();
-        if (sGridValue == psSearchFor.toUpperCase()) {
-            frmDefinition.ssOleDBGridAvailableColumns.SelBookmarks.Add(frmDefinition.ssOleDBGridAvailableColumns.Bookmark);
-            fFound = true;
-            break;
-        }
-
-        if (iIndex < frmDefinition.ssOleDBGridAvailableColumns.rows) {
-            frmDefinition.ssOleDBGridAvailableColumns.MoveNext();
-        }
-        else {
-            break;
-        }
-    }
-
-    if ((fFound == false) && (frmDefinition.ssOleDBGridAvailableColumns.rows > 0)) {
-        // Select the top row.
-        frmDefinition.ssOleDBGridAvailableColumns.MoveFirst();
-        frmDefinition.ssOleDBGridAvailableColumns.SelBookmarks.Add(frmDefinition.ssOleDBGridAvailableColumns.Bookmark);
-    }
-
-    frmDefinition.ssOleDBGridAvailableColumns.redraw = true;
+	frmDefinition.ssOleDBGridAvailableColumns.redraw = true;
 }
 
 function populateAccessGrid() {
@@ -4315,9 +4235,9 @@ function util_def_calendarreport_addhandlers() {
 	}
 function ssOleDBGridSortOrderbeforeupdate() {
 		//<script FOR=ssOleDBGridSortOrder EVENT=beforeupdate LANGUAGE=JavaScript>
-    if ((frmDefinition.ssOleDBGridSortOrder.Columns(2).text != 'Asc') &&
-        (frmDefinition.ssOleDBGridSortOrder.Columns(2).text != 'Desc')) {
-        frmDefinition.ssOleDBGridSortOrder.Columns(2).text = 'Asc';
+    if ((frmDefinition.ssOleDBGridSortOrder.Columns(2).text != 'Asc') && (frmDefinition.ssOleDBGridSortOrder.Columns(2).text != 'Desc'))
+    {
+    	frmDefinition.ssOleDBGridSortOrder.Columns(2).text = 'Asc';
     }
 }
 function ssOleDBGridSortOrderafterinsert() {
@@ -4362,21 +4282,22 @@ function grdEventsrowcolchange() {
     frmDefinition.grdEvents.columns('Table').cellstyleset("ssetSelected", frmDefinition.grdEvents.row);
     refreshTab2Controls();
 }
+
 function grdAccessComboCloseUp() {
 	//<script FOR=grdAccess EVENT=ComboCloseUp LANGUAGE=JavaScript>
 	frmUseful.txtChanged.value = 1;
-    if ((grdAccess.AddItemRowIndex(grdAccess.Bookmark) == 0) &&
-        (grdAccess.Columns("Access").Text.length > 0)) {
-        ForceAccess(grdAccess, AccessCode(grdAccess.Columns("Access").Text));
+    if ((frmDefinition.grdAccess.AddItemRowIndex(frmDefinition.grdAccess.Bookmark) == 0) &&
+        (frmDefinition.grdAccess.Columns("Access").Text.length > 0)) {
+        ForceAccess(frmDefinition.grdAccess, AccessCode(frmDefinition.grdAccess.Columns("Access").Text));
 
-        grdAccess.MoveFirst();
-        grdAccess.Col = 1;
+        frmDefinition.grdAccess.MoveFirst();
+        frmDefinition.grdAccess.Col = 1;
     }
     refreshTab1Controls();
 }
 function grdAccessGotFocus() {
 	//<script FOR=grdAccess EVENT=GotFocus LANGUAGE=JavaScript>
-	grdAccess.Col = 1;
+	frmDefinition.grdAccess.Col = 1;
 }
 function grdAccessRowColChange(LastRow, LastCol) {
 	//<script FOR=grdAccess EVENT=RowColChange(LastRow, LastCol) LANGUAGE=JavaScript>
@@ -4387,26 +4308,26 @@ function grdAccessRowColChange(LastRow, LastCol) {
     fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
     fIsNotOwner = (frmUseful.txtUserName.value.toUpperCase() != frmDefinition.txtOwner.value.toUpperCase());
 
-    if (window.grdAccess.AddItemRowIndex(grdAccess.Bookmark) == 0) {
-        grdAccess.Columns("Access").Text = "";
+    if (frmDefinition.grdAccess.AddItemRowIndex(frmDefinition.grdAccess.Bookmark) == 0) {
+    	frmDefinition.grdAccess.Columns("Access").Text = "";
     }
 
-    varBkmk = grdAccess.SelBookmarks(0);
+    varBkmk = frmDefinition.grdAccess.SelBookmarks(0);
 
     if ((fIsNotOwner == true) ||
         (fViewing == true) ||
         (frmSelectionAccess.forcedHidden.value == "Y") ||
-        (grdAccess.Columns("SysSecMgr").CellText(varBkmk) == "1")) {
-        grdAccess.Columns("Access").Style = 0; // 0 = Edit
+        (frmDefinition.grdAccess.Columns("SysSecMgr").CellText(varBkmk) == "1")) {
+    	frmDefinition.grdAccess.Columns("Access").Style = 0; // 0 = Edit
     } else {
-        grdAccess.Columns("Access").Style = 3; // 3 = Combo box
-        grdAccess.Columns("Access").RemoveAll();
-        grdAccess.Columns("Access").AddItem(AccessDescription("RW"));
-        grdAccess.Columns("Access").AddItem(AccessDescription("RO"));
-        grdAccess.Columns("Access").AddItem(AccessDescription("HD"));
+    	frmDefinition.grdAccess.Columns("Access").Style = 3; // 3 = Combo box
+    	frmDefinition.grdAccess.Columns("Access").RemoveAll();
+    	frmDefinition.grdAccess.Columns("Access").AddItem(AccessDescription("RW"));
+    	frmDefinition.grdAccess.Columns("Access").AddItem(AccessDescription("RO"));
+    	frmDefinition.grdAccess.Columns("Access").AddItem(AccessDescription("HD"));
     }
 
-    grdAccess.Col = 1;
+    frmDefinition.grdAccess.Col = 1;
 }
 function grdAccessRowLoaded(Bookmark) {
 	//<script FOR=grdAccess EVENT=RowLoaded(Bookmark) LANGUAGE=JavaScript>
@@ -4433,277 +4354,233 @@ function grdAccessRowLoaded(Bookmark) {
     }
 }
 
-function util_def_calendarreportdates_window_onload() {
-	//util_def_calendarreportdates_window_onload.ASCX
-	    frmPopup.txtLoading.value = 1;
-	    frmPopup.txtFirstLoad_Event.value = 1;
-	    frmPopup.txtFirstLoad_Lookup.value = 1;
-	    frmPopup.txtHaveSetLookupValues.value = 0;
+function eventAdd() {
+	var sURL;
+	debugger;
+	var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
+	frmEvent.eventAction.value = "NEW";
+	frmEvent.eventID.value = getEventKey();
+	frmEvent.eventFilterHidden.value = "";
 
-	    button_disable(frmPopup.cmdCancel, true);
-	    button_disable(frmPopup.cmdOK, true);
-
-	    populateEventTableCombo();
-
-	    frmPopup.cboLegendTable.selectedIndex = -1;
-
-	    var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
-	    var frmDef = OpenHR.getForm("workframe", "frmDefinition");
-
-	    if (frmEvent.eventAction.value.toUpperCase() == "NEW") {
-	        frmPopup.optNoEnd.checked = true;
-	        frmPopup.optCharacter.checked = true;
-	    } else {
-	        frmPopup.rowID.value = frmDef.grdEvents.AddItemRowIndex(frmDef.grdEvents.Bookmark);
-
-	        frmPopup.txtEventName.value = frmEvent.eventName.value;
-	        setEventTable(frmEvent.eventTableID.value);
-	        frmPopup.txtEventFilter.value = frmEvent.eventFilter.value;
-	        frmPopup.txtEventFilterID.value = frmEvent.eventFilterID.value;
-	        frmSelectionAccess.baseHidden.value = frmEvent.eventFilterHidden.value;
-	    }
-
-	    disabledAll();
-
-	    frmPopup.txtEventColumnsLoaded.value = 0;
-	    frmPopup.txtLookupColumnsLoaded.value = 0;
-
-	    populateEventColumns();
-
-	    frmPopup.txtLoading.value = 0;
+	if (frmDefinition.grdEvents.Rows < 999) {
+		sURL = "util_def_calendarreportdates_main" +
+				"?eventAction=" + escape(frmEvent.eventAction.value) +
+				"&eventName=" + escape(frmEvent.eventName.value) +
+				"&eventID=" + escape(frmEvent.eventID.value) +
+				"&eventTableID=" + escape(frmEvent.eventTableID.value) +
+				"&eventTable=" + escape(frmEvent.eventTable.value) +
+				"&eventFilterID=" + escape(frmEvent.eventFilterID.value) +
+				"&eventFilter=" + escape(frmEvent.eventFilter.value) +
+				"&eventFilterHidden=" + escape(frmEvent.eventFilterHidden.value) +
+				"&eventStartDateID=" + escape(frmEvent.eventStartDateID.value) +
+				"&eventStartDate=" + escape(frmEvent.eventStartDate.value) +
+				"&eventStartSessionID=" + escape(frmEvent.eventStartSessionID.value) +
+				"&eventStartSession=" + escape(frmEvent.eventStartSession.value) +
+				"&eventEndDateID=" + escape(frmEvent.eventEndDateID.value) +
+				"&eventEndDate=" + escape(frmEvent.eventEndDate.value) +
+				"&eventEndSessionID=" + escape(frmEvent.eventEndSessionID.value) +
+				"&eventEndSession=" + escape(frmEvent.eventEndSession.value) +
+				"&eventDurationID=" + escape(frmEvent.eventDurationID.value) +
+				"&eventDuration=" + escape(frmEvent.eventDuration.value) +
+				"&eventLookupType=" + escape(frmEvent.eventLookupType.value) +
+				"&eventKeyCharacter=" + escape(frmEvent.eventKeyCharacter.value) +
+				"&eventLookupTableID=" + escape(frmEvent.eventLookupTableID.value) +
+				"&eventLookupColumnID=" + escape(frmEvent.eventLookupColumnID.value) +
+				"&eventLookupCodeID=" + escape(frmEvent.eventLookupCodeID.value) +
+				"&eventTypeColumnID=" + escape(frmEvent.eventTypeColumnID.value) +
+				"&eventDesc1ID=" + escape(frmEvent.eventDesc1ID.value) +
+				"&eventDesc1=" + escape(frmEvent.eventDesc1.value) +
+				"&eventDesc2ID=" + escape(frmEvent.eventDesc2ID.value) +
+				"&eventDesc2=" + escape(frmEvent.eventDesc2.value) +
+				"&relationNames=" + escape(frmEvent.relationNames.value);
+		openDialog(sURL, 650, 500, "yes", "yes");
+		frmUseful.txtChanged.value = 1;
 	}
-
-	function disabledAll() {
-	    with (frmPopup) {
-	        /*Event Frame*/
-	        text_disable(txtEventName, true);
-	        combo_disable(cboEventTable, true);
-	        text_disable(txtEventFilter, true);
-	        button_disable(cmdEventFilter, true);
-
-	        /*Event Start Frame*/
-	        combo_disable(cboStartDate, true);
-	        combo_disable(cboStartSession, true);
-
-	        /*Event End Frame*/
-	        radio_disable(optNoEnd, true);
-	        radio_disable(optEndDate, true);
-	        combo_disable(cboEndDate, true);
-	        combo_disable(cboEndSession, true);
-	        radio_disable(optDuration, true);
-	        combo_disable(cboDuration, true);
-
-	        /*Key Frame*/
-	        text_disable(txtCharacter, true);
-	        combo_disable(cboEventType, true);
-	        combo_disable(cboLegendTable, true);
-	        combo_disable(cboLegendColumn, true);
-	        combo_disable(cboLegendCode, true);
-
-	        /*Event Description Frame*/
-	        combo_disable(cboEventDesc1, true);
-	        combo_disable(cboEventDesc2, true);
-	    }
+	else {
+		var sMessage = "";
+		sMessage = "The maximum of 999 events has been selected.";
+		OpenHR.messageBox(sMessage, 64, "Calendar Reports");
 	}
-
-function populateEventColumns() {
-    // Get the columns/calcs for the current table selection.
-    var frmGetDataForm = OpenHR.getForm("calendardataframe", "frmGetCalendarData");
-    var frmDef = OpenHR.getForm("workframe", "frmDefinition");
-
-    frmGetDataForm.txtCalendarAction.value = "LOADCALENDAREVENTDETAILSCOLUMNS";
-    frmGetDataForm.txtCalendarBaseTableID.value = frmDef.cboBaseTable.options[frmDef.cboBaseTable.selectedIndex].value;
-    frmGetDataForm.txtCalendarEventTableID.value = frmPopup.cboEventTable.options[frmPopup.cboEventTable.selectedIndex].value;
-
-    //window.parent.frames("calendardataframe").refreshData();
-    OpenHR.getFrame("calendardataframe").RefreshData();
+	refreshTab2Controls();
 }
 
 function loadAvailableEventColumns() {
-    var i;
-    var sSelectedIDs;
-    var sTemp;
-    var iIndex;
-    var sType;
-    var sID;
-    var iDummy;
-    var frmRefresh;
+	var i;
+	var frmPopup = document.getElementById("frmPopup");
+	frmPopup.cboStartDate.length = 0;
+	frmPopup.cboStartSession.length = 0;
+	frmPopup.cboEndDate.length = 0;
+	frmPopup.cboEndSession.length = 0;
+	frmPopup.cboDuration.length = 0;
+	frmPopup.cboEventType.length = 0;
+	frmPopup.cboEventDesc1.length = 0;
+	frmPopup.cboEventDesc2.length = 0;
+	frmPopup.cboEventType.length = 0;
 
-    with (frmPopup) {
-        window.cboStartDate.length = 0;
-        window.cboStartSession.length = 0;
-        window.cboEndDate.length = 0;
-        window.cboEndSession.length = 0;
-        window.cboDuration.length = 0;
-        window.cboEventType.length = 0;
-        window.cboEventDesc1.length = 0;
-        window.cboEventDesc2.length = 0;
-        window.cboEventType.length = 0;
+	var oOption = document.createElement("OPTION");
+	frmPopup.cboStartSession.options.add(oOption);
+	oOption.innerText = "<None>";
+	oOption.value = 0;
 
-        var oOption = document.createElement("OPTION");
-        cboStartSession.options.add(oOption);
-        oOption.innerText = "<None>";
-        oOption.value = 0;
+	oOption = document.createElement("OPTION");
+	frmPopup.cboEndDate.options.add(oOption);
+	oOption.innerText = "<None>";
+	oOption.value = 0;
 
-        oOption = document.createElement("OPTION");
-        cboEndDate.options.add(oOption);
-        oOption.innerText = "<None>";
-        oOption.value = 0;
+	oOption = document.createElement("OPTION");
+	frmPopup.cboEndSession.options.add(oOption);
+	oOption.innerText = "<None>";
+	oOption.value = 0;
 
-        oOption = document.createElement("OPTION");
-        cboEndSession.options.add(oOption);
-        oOption.innerText = "<None>";
-        oOption.value = 0;
+	oOption = document.createElement("OPTION");
+	frmPopup.cboDuration.options.add(oOption);
+	oOption.innerText = "<None>";
+	oOption.value = 0;
 
-        oOption = document.createElement("OPTION");
-        cboDuration.options.add(oOption);
-        oOption.innerText = "<None>";
-        oOption.value = 0;
+	oOption = document.createElement("OPTION");
+	frmPopup.cboEventDesc1.options.add(oOption);
+	oOption.innerText = "<None>";
+	oOption.value = 0;
 
-        oOption = document.createElement("OPTION");
-        cboEventDesc1.options.add(oOption);
-        oOption.innerText = "<None>";
-        oOption.value = 0;
+	oOption = document.createElement("OPTION");
+	frmPopup.cboEventDesc2.options.add(oOption);
+	oOption.innerText = "<None>";
+	oOption.value = 0;
 
-        oOption = document.createElement("OPTION");
-        cboEventDesc2.options.add(oOption);
-        oOption.innerText = "<None>";
-        oOption.value = 0;
+	combo_disable(frmPopup.cboStartDate, true);
+	combo_disable(frmPopup.cboStartSession, true);
+	combo_disable(frmPopup.cboEndDate, true);
+	combo_disable(frmPopup.cboEndSession, true);
+	combo_disable(frmPopup.cboDuration, true);
+	combo_disable(frmPopup.cboEventDesc1, true);
+	combo_disable(frmPopup.cboEventDesc2, true);
+	combo_disable(frmPopup.cboEventType, true);
 
-        combo_disable(window.cboStartDate, true);
-        combo_disable(cboStartSession, true);
-        combo_disable(cboEndDate, true);
-        combo_disable(cboEndSession, true);
-        combo_disable(cboDuration, true);
-        combo_disable(cboEventDesc1, true);
-        combo_disable(cboEventDesc2, true);
-        combo_disable(cboEventType, true);
+	var frmUtilDefForm = OpenHR.getForm("calendardataframe", "frmCalendarData");
+	var dataCollection = frmUtilDefForm.elements;
 
-        var frmUtilDefForm = OpenHR.getFrame("calendardataframe", "frmCalendarData");
-        var dataCollection = frmUtilDefForm.elements;
+	if (dataCollection != null) {
+		for (i = 0; i < dataCollection.length; i++) {
 
-        if (dataCollection != null) {
-            for (i = 0; i < dataCollection.length; i++) {
+			var sControlName = dataCollection.item(i).name;
 
-                sControlName = dataCollection.item(i).name;
+			frmPopup.cboStartDate.selectedIndex = -1;
+			frmPopup.cboStartSession.selectedIndex = -1;
+			frmPopup.cboEndDate.selectedIndex = -1;
+			frmPopup.cboEndSession.selectedIndex = -1;
+			frmPopup.cboDuration.selectedIndex = -1;
+			frmPopup.cboEventType.selectedIndex = -1;
+			frmPopup.cboEventDesc1.selectedIndex = -1;
+			frmPopup.cboEventDesc2.selectedIndex = -1;
+			frmPopup.cboEventType.selectedIndex = -1;
 
-                window.cboStartDate.selectedIndex = -1;
-                cboStartSession.selectedIndex = -1;
-                cboEndDate.selectedIndex = -1;
-                cboEndSession.selectedIndex = -1;
-                cboDuration.selectedIndex = -1;
-                cboEventType.selectedIndex = -1;
-                cboEventDesc1.selectedIndex = -1;
-                cboEventDesc2.selectedIndex = -1;
-                cboEventType.selectedIndex = -1;
+			if (sControlName.substr(0, 10) == "txtRepCol_") {
+				var sColumnID = sControlName.substring(10, sControlName.length);
+				var sTableIDControlName = "txtRepColTableID_" + sColumnID;
+				var iTableIDControlValue = frmUtilDefForm.elements(sTableIDControlName).value;
+				var sTableNameControlName = "txtRepColTableName_" + sColumnID;
+				var sTableNameControlValue = frmUtilDefForm.elements(sTableNameControlName).value;
 
-                if (sControlName.substr(0, 10) == "txtRepCol_") {
-                    var sColumnID = sControlName.substring(10, sControlName.length);
-                    var sTableIDControlName = "txtRepColTableID_" + sColumnID;
-                    var iTableIDControlValue = frmUtilDefForm.elements(sTableIDControlName).value;
-                    var sTableNameControlName = "txtRepColTableName_" + sColumnID;
-                    var sTableNameControlValue = frmUtilDefForm.elements(sTableNameControlName).value;
+				if (iTableIDControlValue == frmPopup.cboEventTable.options[frmPopup.cboEventTable.selectedIndex].value) {
+					var sDataTypeControlName = "txtRepColDataType_" + sColumnID;
+					var iDataTypeControlValue = frmUtilDefForm.elements(sDataTypeControlName).value;
+					var sSizeControlName = "txtRepColSize_" + sColumnID;
+					var iSizeControlValue = frmUtilDefForm.elements(sSizeControlName).value;
+					var sTypeControlName = "txtRepColType_" + sColumnID;
+					var iTypeControlValue = frmUtilDefForm.elements(sTypeControlName).value;
 
-                    if (iTableIDControlValue == frmPopup.cboEventTable.options[frmPopup.cboEventTable.selectedIndex].value) {
-                        var sDataTypeControlName = "txtRepColDataType_" + sColumnID;
-                        var iDataTypeControlValue = frmUtilDefForm.elements(sDataTypeControlName).value;
-                        var sSizeControlName = "txtRepColSize_" + sColumnID;
-                        var iSizeControlValue = frmUtilDefForm.elements(sSizeControlName).value;
-                        var sTypeControlName = "txtRepColType_" + sColumnID;
-                        var iTypeControlValue = frmUtilDefForm.elements(sTypeControlName).value;
+					if (iDataTypeControlValue == 11) {
+						oOption = document.createElement("OPTION");
+						frmPopup.cboStartDate.options.add(oOption);
+						oOption.innerText = dataCollection.item(i).value;
+						oOption.value = sColumnID;
 
-                        if (iDataTypeControlValue == 11) {
-                            oOption = document.createElement("OPTION");
-                            window.cboStartDate.options.add(oOption);
-                            oOption.innerText = dataCollection.item(i).value;
-                            oOption.value = sColumnID;
+						oOption = document.createElement("OPTION");
+						frmPopup.cboEndDate.options.add(oOption);
+						oOption.innerText = dataCollection.item(i).value;
+						oOption.value = sColumnID;
+					}
 
-                            oOption = document.createElement("OPTION");
-                            cboEndDate.options.add(oOption);
-                            oOption.innerText = dataCollection.item(i).value;
-                            oOption.value = sColumnID;
-                        }
+					if (iDataTypeControlValue == 12 && iSizeControlValue == 2) {
+						oOption = document.createElement("OPTION");
+						frmPopup.cboStartSession.options.add(oOption);
+						oOption.innerText = dataCollection.item(i).value;
+						oOption.value = sColumnID;
 
-                        if (iDataTypeControlValue == 12 && iSizeControlValue == 2) {
-                            oOption = document.createElement("OPTION");
-                            cboStartSession.options.add(oOption);
-                            oOption.innerText = dataCollection.item(i).value;
-                            oOption.value = sColumnID;
+						oOption = document.createElement("OPTION");
+						frmPopup.cboEndSession.options.add(oOption);
+						oOption.innerText = dataCollection.item(i).value;
+						oOption.value = sColumnID;
+					}
 
-                            oOption = document.createElement("OPTION");
-                            cboEndSession.options.add(oOption);
-                            oOption.innerText = dataCollection.item(i).value;
-                            oOption.value = sColumnID;
-                        }
+					if (iDataTypeControlValue == 2 || iDataTypeControlValue == 4) {
+						oOption = document.createElement("OPTION");
+						frmPopup.cboDuration.options.add(oOption);
+						oOption.innerText = dataCollection.item(i).value;
+						oOption.value = sColumnID;
+					}
 
-                        if (iDataTypeControlValue == 2 || iDataTypeControlValue == 4) {
-                            oOption = document.createElement("OPTION");
-                            cboDuration.options.add(oOption);
-                            oOption.innerText = dataCollection.item(i).value;
-                            oOption.value = sColumnID;
-                        }
+					if (iTypeControlValue == 1) {
+						oOption = document.createElement("OPTION");
+						frmPopup.cboEventType.options.add(oOption);
+						oOption.innerText = dataCollection.item(i).value;
+						oOption.value = sColumnID;
+					}
+				}
 
-                        if (iTypeControlValue == 1) {
-                            oOption = document.createElement("OPTION");
-                            cboEventType.options.add(oOption);
-                            oOption.innerText = dataCollection.item(i).value;
-                            oOption.value = sColumnID;
-                        }
-                    }
+				oOption = document.createElement("OPTION");
+				frmPopup.cboEventDesc1.options.add(oOption);
+				oOption.innerText = sTableNameControlValue + '.' + dataCollection.item(i).value;
+				oOption.value = sColumnID;
 
-                    oOption = document.createElement("OPTION");
-                    cboEventDesc1.options.add(oOption);
-                    oOption.innerText = sTableNameControlValue + '.' + dataCollection.item(i).value;
-                    oOption.value = sColumnID;
+				oOption = document.createElement("OPTION");
+				frmPopup.cboEventDesc2.options.add(oOption);
+				oOption.innerText = sTableNameControlValue + '.' + dataCollection.item(i).value;
+				oOption.value = sColumnID;
+			}
+		}
+	}
 
-                    oOption = document.createElement("OPTION");
-                    cboEventDesc2.options.add(oOption);
-                    oOption.innerText = sTableNameControlValue + '.' + dataCollection.item(i).value;
-                    oOption.value = sColumnID;
-                }
-            }
-        }
+	if ((frmPopup.cboStartDate.selectedIndex < 0)
+			&& (frmPopup.cboStartDate.length > 0)) {
+		frmPopup.cboStartDate.selectedIndex = 0;
+	}
 
-        if ((window.cboStartDate.selectedIndex < 0)
-            && (window.cboStartDate.length > 0)) {
-            window.cboStartDate.selectedIndex = 0;
-        }
-    }
+	var frmEvent = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmEventDetails");
 
-    var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
+	if (frmPopup.cboStartDate.length < 1) {
+		OpenHR.MessageBox("The selected event table has no date columns. Please select an event table that contains date columns.", 48, "Calendar Reports");
+		frmPopup.txtNoDateColumns.value = 1;
+		refreshEventControls();
+		refreshLegendControls();
+	}
+	else {
 
-    if (frmPopup.cboStartDate.length < 1) {
-        OpenHR.MessageBox("The selected event table has no date columns. Please select an event table that contains date columns.", 48, "Calendar Reports");
-        frmPopup.txtNoDateColumns.value = 1;
-        refreshEventControls();
-        refreshLegendControls();
-    }
-    else {
+		frmPopup.txtNoDateColumns.value = 0;
 
-        frmPopup.txtNoDateColumns.value = 0;
+		if ((frmEvent.eventAction.value.toUpperCase() == "EDIT")
+				&& (frmPopup.txtFirstLoad_Event.value == 1)) {
+			setEventValues();
+			frmPopup.txtFirstLoad_Event.value = 0;
+		}
+		else {
+			refreshEventControls();
+			refreshLegendControls();
+		}
+	}
 
-        if ((frmEvent.eventAction.value.toUpperCase() == "EDIT")
-            && (frmPopup.txtFirstLoad_Event.value == 1)) {
-            setEventValues();
-            frmPopup.txtFirstLoad_Event.value = 0;
-        }
-        else {
-            refreshEventControls();
-            refreshLegendControls();
-        }
-    }
+	if (frmEvent.eventLookupType.value != 1) {
+		button_disable(frmPopup.cmdCancel, false);
+	}
 
-    if (frmEvent.eventLookupType.value != 1) {
-        button_disable(frmPopup.cmdCancel, false);
-    }
-
-    frmPopup.txtEventColumnsLoaded.value = 1;
+	frmPopup.txtEventColumnsLoaded.value = 1;
 }
 
 function populateLookupColumns() {
+	var frmPopup = document.getElementById("frmPopup");
     if (frmPopup.txtLookupColumnsLoaded.value == 0) {
         // Get the columns/calcs for the current table selection.
-        var frmGetDataForm = OpenHR.getFrame("calendardataframe", "frmGetCalendarData");
+        var frmGetDataForm = OpenHR.getForm("calendardataframe", "frmGetCalendarData");
 
         if ((frmPopup.cboLegendTable.options.length > 0) && (frmPopup.cboLegendTable.selectedIndex < 0)) {
             frmPopup.cboLegendTable.selectedIndex = 0;
@@ -4712,7 +4589,7 @@ function populateLookupColumns() {
         frmGetDataForm.txtCalendarAction.value = "LOADCALENDAREVENTKEYLOOKUPCOLUMNS";
         frmGetDataForm.txtCalendarLookupTableID.value = frmPopup.cboLegendTable.options[frmPopup.cboLegendTable.selectedIndex].value;
 
-        OpenHR.getFrame("calendardataframe").refreshData();
+        OpenHR.getForm("calendardataframe").refreshData();
     }
     else {
         return;
@@ -4720,122 +4597,63 @@ function populateLookupColumns() {
 }
 
 function loadAvailableLookupColumns() {
-    var i;
-    var sSelectedIDs;
-    var sTemp;
-    var iIndex;
-    var sType;
-    var sID;
-    var iDummy;
-    var frmRefresh;
-		
-    with (frmPopup) {
-        cboLegendColumn.length = 0;
-        cboLegendCode.length = 0;
+	var i;
+	var sSelectedIDs;
+	var sTemp;
+	var iIndex;
+	var sType;
+	var sID;
+	var iDummy;
+	var frmRefresh;
+	var frmPopup = document.getElementById("frmPopup");
+	frmPopup.cboLegendColumn.length = 0;
+	frmPopup.cboLegendCode.length = 0;
 
-        var frmUtilDefForm = OpenHR.getForm("calendardataframe", "frmCalendarData");
-        var dataCollection = frmUtilDefForm.elements;
+	var frmUtilDefForm = OpenHR.getForm("calendardataframe", "frmCalendarData");
+	var dataCollection = frmUtilDefForm.elements;
 
-        if (dataCollection != null) {
-            for (i = 0; i < dataCollection.length; i++) {
-                sControlName = dataCollection.item(i).name;
+	if (dataCollection != null) {
+		for (i = 0; i < dataCollection.length; i++) {
+			var sControlName = dataCollection.item(i).name;
 
-                if (sControlName.substr(0, 10) == "txtRepCol_") {
-                    sColumnID = sControlName.substring(10, sControlName.length);
+			if (sControlName.substr(0, 10) == "txtRepCol_") {
+				var sColumnID = sControlName.substring(10, sControlName.length);
+				var sDataTypeControlName = "txtRepColDataType_" + sColumnID;
+				var iDataTypeControlValue = frmUtilDefForm.elements(sDataTypeControlName).value;
 
-                    var sDataTypeControlName = "txtRepColDataType_" + sColumnID;
-                    var iDataTypeControlValue = frmUtilDefForm.elements(sDataTypeControlName).value;
+				if (iDataTypeControlValue == 12) {
+					var oOption = document.createElement("OPTION");
+					frmPopup.cboLegendColumn.options.add(oOption);
+					oOption.innerText = dataCollection.item(i).value;
+					oOption.value = sColumnID;
 
-                    if (iDataTypeControlValue == 12) {
-                        var oOption = document.createElement("OPTION");
-                        cboLegendColumn.options.add(oOption);
-                        oOption.innerText = dataCollection.item(i).value;
-                        oOption.value = sColumnID;
+					oOption = document.createElement("OPTION");
+					frmPopup.cboLegendCode.options.add(oOption);
+					oOption.innerText = dataCollection.item(i).value;
+					oOption.value = sColumnID;
+				}
+			}
+		}
+	}
+	//document.parentWindow.parent.window.dialogArguments.window.refreshTab3Controls();		  
+	refreshTab3Controls();
+	var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
 
-                        var oOption = document.createElement("OPTION");
-                        cboLegendCode.options.add(oOption);
-                        oOption.innerText = dataCollection.item(i).value;
-                        oOption.value = sColumnID;
-                    }
-                }
-            }
-        }
+	if ((frmEvent.eventAction.value.toUpperCase() == "EDIT") && (frmPopup.txtFirstLoad_Lookup.value == 1)) {
+		setLookupValues();
+		frmPopup.txtFirstLoad_Lookup.value = 0;
+	}
+	else {
+		refreshLegendControls();
+	}
 
-        //document.parentWindow.parent.window.dialogArguments.window.refreshTab3Controls();		  
-        OpenHR.refreshTab3Controls();
-    }
-
-    var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
-
-    if ((frmEvent.eventAction.value.toUpperCase() == "EDIT") && (frmPopup.txtFirstLoad_Lookup.value == 1)) {
-        setLookupValues();
-        frmPopup.txtFirstLoad_Lookup.value = 0;
-    }
-    else {
-        refreshLegendControls();
-    }
-
-    button_disable(frmPopup.cmdCancel, false);
-
-    frmPopup.txtLookupColumnsLoaded.value = 1;
-}
-
-function populateEventTableCombo() {
-    var frmTab = OpenHR.getForm("workframe", "frmTables");
-    var frmDef = OpenHR.getForm("workframe", "frmDefinition");
-    var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
-
-    var sRelationString = frmEvent.relationNames.value;
-    var iRelationID;
-    var sTableName;
-
-    var bAdded = false;
-
-    var dataCollection = frmTab.elements;
-    var oOption;
-
-    var iIndex = sRelationString.indexOf("	");
-    while (iIndex > 0) {
-        iRelationID = sRelationString.substr(0, iIndex);
-
-        frmRefresh.submit();
-
-        bAdded = true;
-
-        oOption = document.createElement("OPTION");
-        frmPopup.cboEventTable.options.add(oOption);
-        oOption.value = iRelationID;
-
-        if (iRelationID == frmDef.cboBaseTable.options[frmDef.cboBaseTable.selectedIndex].value) {
-            oOption.selected = true;
-        }
-
-        sRelationString = sRelationString.substr(iIndex + 1);
-        iIndex = sRelationString.indexOf("	");
-
-        sTableName = sRelationString.substr(0, iIndex);
-        oOption.innerText = sTableName;
-
-        if (bAdded) {
-            sRelationString = sRelationString.substr(iIndex + 1);
-            iIndex = sRelationString.indexOf("	");
-
-            bAdded = false;
-        }
-        else {
-            sRelationString = sRelationString.substr(iIndex + 1);
-            iIndex = sRelationString.indexOf("	");
-
-            sRelationString = sRelationString.substr(iIndex + 1);
-            iIndex = sRelationString.indexOf("	");
-
-            bAdded = false;
-        }
-    }
+	button_disable(frmPopup.cmdCancel, false);
+	frmPopup.txtLookupColumnsLoaded.value = 1;
 }
 
 function setEventTable(piTableID) {
-    var i;
+	var i;
+	var frmPopup = document.getElementById("frmPopup");
     for (i = 0; i < frmPopup.cboEventTable.options.length; i++) {
         if (frmPopup.cboEventTable.options(i).value == piTableID) {
             frmPopup.cboEventTable.selectedIndex = i;
@@ -4846,7 +4664,8 @@ function setEventTable(piTableID) {
 }
 
 function setStartDate(piColumnID) {
-    var i;
+	var i;
+	var frmPopup = document.getElementById("frmPopup");
     for (i = 0; i < frmPopup.cboStartDate.options.length; i++) {
         if (frmPopup.cboStartDate.options(i).value == piColumnID) {
             frmPopup.cboStartDate.selectedIndex = i;
@@ -4857,6 +4676,7 @@ function setStartDate(piColumnID) {
 }
 
 function setStartSession(piColumnID) {
+	var frmPopup = document.getElementById("frmPopup");
     var i;
     for (i = 0; i < frmPopup.cboStartSession.options.length; i++) {
         if (frmPopup.cboStartSession.options(i).value == piColumnID) {
@@ -4868,7 +4688,8 @@ function setStartSession(piColumnID) {
 }
 
 function setEndDate(piColumnID) {
-    var i;
+	var i;
+	var frmPopup = document.getElementById("frmPopup");
     for (i = 0; i < frmPopup.cboEndDate.options.length; i++) {
         if (frmPopup.cboEndDate.options(i).value == piColumnID) {
             frmPopup.cboEndDate.selectedIndex = i;
@@ -4879,7 +4700,8 @@ function setEndDate(piColumnID) {
 }
 
 function setEndSession(piColumnID) {
-    var i;
+	var i;
+	var frmPopup = document.getElementById("frmPopup");
     for (i = 0; i < frmPopup.cboEndSession.options.length; i++) {
         if (frmPopup.cboEndSession.options(i).value == piColumnID) {
             frmPopup.cboEndSession.selectedIndex = i;
@@ -4890,7 +4712,8 @@ function setEndSession(piColumnID) {
 }
 
 function setDuration(piColumnID) {
-    var i;
+	var i;
+	var frmPopup = document.getElementById("frmPopup");
     for (i = 0; i < frmPopup.cboDuration.options.length; i++) {
         if (frmPopup.cboDuration.options(i).value == piColumnID) {
             frmPopup.cboDuration.selectedIndex = i;
@@ -4901,7 +4724,8 @@ function setDuration(piColumnID) {
 }
 
 function setLookupTable(piColumnID) {
-    var i;
+	var i;
+	var frmPopup = document.getElementById("frmPopup");
     for (i = 0; i < frmPopup.cboLegendTable.options.length; i++) {
         if (frmPopup.cboLegendTable.options(i).value == piColumnID) {
             frmPopup.cboLegendTable.selectedIndex = i;
@@ -4912,7 +4736,8 @@ function setLookupTable(piColumnID) {
 }
 
 function setLookupColumn(piColumnID) {
-    var i;
+	var i;
+	var frmPopup = document.getElementById("frmPopup");
     for (i = 0; i < frmPopup.cboLegendColumn.options.length; i++) {
         if (frmPopup.cboLegendColumn.options(i).value == piColumnID) {
             frmPopup.cboLegendColumn.selectedIndex = i;
@@ -4923,7 +4748,8 @@ function setLookupColumn(piColumnID) {
 }
 
 function setLookupCode(piColumnID) {
-    var i;
+	var i;
+	var frmPopup = document.getElementById("frmPopup");
     for (i = 0; i < frmPopup.cboLegendCode.options.length; i++) {
         if (frmPopup.cboLegendCode.options(i).value == piColumnID) {
             frmPopup.cboLegendCode.selectedIndex = i;
@@ -4934,7 +4760,7 @@ function setLookupCode(piColumnID) {
 }
 
 function setEventTypeColumn(piColumnID) {
-    var i;
+	var i; var frmPopup = document.getElementById("frmPopup");
     for (i = 0; i < frmPopup.cboEventType.options.length; i++) {
         if (frmPopup.cboEventType.options(i).value == piColumnID) {
             frmPopup.cboEventType.selectedIndex = i;
@@ -4945,7 +4771,7 @@ function setEventTypeColumn(piColumnID) {
 }
 
 function setDesc1Column(piColumnID) {
-    var i;
+	var i; var frmPopup = document.getElementById("frmPopup");
     for (i = 0; i < frmPopup.cboEventDesc1.options.length; i++) {
         if (frmPopup.cboEventDesc1.options(i).value == piColumnID) {
             frmPopup.cboEventDesc1.selectedIndex = i;
@@ -4956,7 +4782,7 @@ function setDesc1Column(piColumnID) {
 }
 
 function setDesc2Column(piColumnID) {
-    var i;
+	var i; var frmPopup = document.getElementById("frmPopup");
     for (i = 0; i < frmPopup.cboEventDesc2.options.length; i++) {
         if (frmPopup.cboEventDesc2.options(i).value == piColumnID) {
             frmPopup.cboEventDesc2.selectedIndex = i;
@@ -4967,7 +4793,8 @@ function setDesc2Column(piColumnID) {
 }
 
 function setLookupValues() {
-    var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
+	var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
+	var frmPopup = document.getElementById("frmPopup");
     if (frmPopup.txtHaveSetLookupValues.value == 1) {
         return;
     }
@@ -4990,42 +4817,44 @@ function setLookupValues() {
 }
 
 function setEventValues() {
-    var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
-
+	var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
+	//var frmEvent = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmEventDetails");
+    var frmPopup = document.getElementById("frmPopup");
+	
     with (frmEvent) {
-        setStartDate(eventStartDateID.value);
+    	setStartDate(frmEvent.eventStartDateID.value);
 
-        if (eventStartSessionID.value > 0) {
-            setStartSession(eventStartSessionID.value);
+    	if (frmEvent.eventStartSessionID.value > 0) {
+    		setStartSession(frmEvent.eventStartSessionID.value);
         }
 
-        if (eventEndDateID.value > 0) {
+    	if (frmEvent.eventEndDateID.value > 0) {
             frmPopup.optEndDate.checked = true;
-            setEndDate(eventEndDateID.value);
-            if (eventEndSessionID.value > 0) {
-                setEndSession(eventEndSessionID.value);
+            setEndDate(frmEvent.eventEndDateID.value);
+            if (frmEvent.eventEndSessionID.value > 0) {
+            	setEndSession(frmEvent.eventEndSessionID.value);
             }
         }
-        else if (eventDurationID.value > 0) {
+    	else if (frmEvent.eventDurationID.value > 0) {
             frmPopup.optDuration.checked = true;
-            setDuration(eventDurationID.value);
+            setDuration(frmEvent.eventDurationID.value);
         }
         else {
             frmPopup.optNoEnd.checked = true;
         }
 
-        if (eventDesc1ID.value > 0) {
-            setDesc1Column(eventDesc1ID.value);
+    	if (frmEvent.eventDesc1ID.value > 0) {
+    		setDesc1Column(frmEvent.eventDesc1ID.value);
         }
 
-        if (eventDesc2ID.value > 0) {
-            setDesc2Column(eventDesc2ID.value);
+    	if (frmEvent.eventDesc2ID.value > 0) {
+    		setDesc2Column(frmEvent.eventDesc2ID.value);
         }
 
         refreshEventControls();
 
-        if ((eventLookupType.value == 1)) {
-            setLookupTable(eventLookupTableID.value);
+        if ((frmEvent.eventLookupType.value == 1)) {
+        	setLookupTable(frmEvent.eventLookupTableID.value);
 
             populateLookupColumns();
         }
@@ -5038,43 +4867,41 @@ function setEventValues() {
 }
 
 function changeEventTable() {
-    with (frmPopup) {
-        txtEventFilterID.value = 0;
-        txtEventFilter.value = "";
+	var frmPopup = document.getElementById("frmPopup");
+	frmPopup.txtEventFilterID.value = 0;
+	frmPopup.txtEventFilter.value = "";
 
-        cboStartDate.length = 0;
-        cboStartSession.length = 0;
+	frmPopup.cboStartDate.length = 0;
+	frmPopup.cboStartSession.length = 0;
 
-        cboEndDate.length = 0;
-        cboEndSession.length = 0;
-        cboDuration.length = 0;
+	frmPopup.cboEndDate.length = 0;
+	frmPopup.cboEndSession.length = 0;
+	frmPopup.cboDuration.length = 0;
 
-        cboEventType.length = 0;
+	frmPopup.cboEventType.length = 0;
 
-        cboEventDesc1.length = 0;
-        cboEventDesc2.length = 0;
+	frmPopup.cboEventDesc1.length = 0;
+	frmPopup.cboEventDesc2.length = 0;
 
-        txtEventColumnsLoaded.value = 0;
-    }
+	frmPopup.txtEventColumnsLoaded.value = 0;
 
-    populateEventColumns();
-    refreshEventControls();
-    eventChanged();
+	populateEventColumns();
+	refreshEventControls();
+	eventChanged();
 }
 
 function changeLegendTable() {
-    with (frmPopup) {
-        if (cboLegendTable.selectedIndex < 0) {
-            cboLegendTable.selectedIndex = 0;
-        }
-        cboLegendColumn.length = 0;
-        cboLegendCode.length = 0;
-        txtLookupColumnsLoaded.value = 0;
-    }
+	var frmPopup = document.getElementById("frmPopup");
 
-    populateLookupColumns();
-    refreshLegendControls();
-    eventChanged();
+	if (frmPopup.cboLegendTable.selectedIndex < 0) {
+		frmPopup.cboLegendTable.selectedIndex = 0;
+	}
+	frmPopup.cboLegendColumn.length = 0;
+	frmPopup.cboLegendCode.length = 0;
+	frmPopup.txtLookupColumnsLoaded.value = 0;
+	populateLookupColumns();
+	refreshLegendControls();
+	eventChanged();
 }
 
 function getTableName(piTableID) {
@@ -5087,7 +4914,7 @@ function getTableName(piTableID) {
     var dataCollection = frmTab.elements;
     if (dataCollection != null) {
         for (i = 0; i < dataCollection.length; i++) {
-            sControlName = dataCollection.item(i).name;
+            var sControlName = dataCollection.item(i).name;
 
             if (sControlName == sReqdControlName) {
                 sTableName = dataCollection.item(i).value;
@@ -5238,205 +5065,192 @@ function checkUniqueEventName(psEventName) {
 }
 
 function selectRecordOption(psTable, psType) {
-    if (psTable == 'event') {
-        iTableID = frmPopup.cboEventTable.options[frmPopup.cboEventTable.selectedIndex].value;
-        iCurrentID = frmPopup.txtEventFilterID.value;
-    }
+	var iTableID;
+	var iCurrentID;
+	var sURL;
+	var frmPopup = document.getElementById("frmPopup");
+	var frmRecordSelection = document.getElementById("frmRecordSelection");
 
-    frmRecordSelection.recSelTable.value = psTable;
-    frmRecordSelection.recSelType.value = psType;
-    frmRecordSelection.recSelTableID.value = iTableID;
-    frmRecordSelection.recSelCurrentID.value = iCurrentID;
+	if (psTable == 'event') {
+		iTableID = frmPopup.cboEventTable.options[frmPopup.cboEventTable.selectedIndex].value;
+		iCurrentID = frmPopup.txtEventFilterID.value;
+	}
 
-    var frmDef = OpenHR.getForm("workframe", "frmDefinition");
-    var frmUse = OpenHR.getForm("workframe", "frmUseful");
+	frmRecordSelection.recSelTable.value = psTable;
+	frmRecordSelection.recSelType.value = psType;
+	frmRecordSelection.recSelTableID.value = iTableID;
+	frmRecordSelection.recSelCurrentID.value = iCurrentID;
 
-    var strDefOwner = new String(frmDef.txtOwner.value);
-    var strCurrentUser = new String(frmUse.txtUserName.value);
+	var strDefOwner = new String(frmDefinition.txtOwner.value);
+	var strCurrentUser = new String(frmUseful.txtUserName.value);
+	strDefOwner = strDefOwner.toLowerCase();
+	strCurrentUser = strCurrentUser.toLowerCase();
 
-    strDefOwner = strDefOwner.toLowerCase();
-    strCurrentUser = strCurrentUser.toLowerCase();
+	if (strDefOwner == strCurrentUser) {
+		frmRecordSelection.recSelDefOwner.value = '1';
+	}
+	else {
+		frmRecordSelection.recSelDefOwner.value = '0';
+	}
 
-    if (strDefOwner == strCurrentUser) {
-        frmRecordSelection.recSelDefOwner.value = '1';
-    }
-    else {
-        frmRecordSelection.recSelDefOwner.value = '0';
-    }
+	sURL = "util_recordSelection" +
+			"?recSelType=" + escape(frmRecordSelection.recSelType.value) +
+			"&recSelTableID=" + escape(frmRecordSelection.recSelTableID.value) +
+			"&recSelCurrentID=" + escape(frmRecordSelection.recSelCurrentID.value) +
+			"&recSelTable=" + escape(frmRecordSelection.recSelTable.value) +
+			"&recSelDefOwner=" + escape(frmRecordSelection.recSelDefOwner.value);
+	openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
 
-    sURL = "util_recordSelection" +
-        "?recSelType=" + escape(frmRecordSelection.recSelType.value) +
-        "&recSelTableID=" + escape(frmRecordSelection.recSelTableID.value) +
-        "&recSelCurrentID=" + escape(frmRecordSelection.recSelCurrentID.value) +
-        "&recSelTable=" + escape(frmRecordSelection.recSelTable.value) +
-        "&recSelDefOwner=" + escape(frmRecordSelection.recSelDefOwner.value);
-    openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
-
-    eventChanged();
+	eventChanged();
 }
 
-//function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
-//    dlgwinprops = "center:yes;" +
-//        "dialogHeight:" + pHeight + "px;" +
-//        "dialogWidth:" + pWidth + "px;" +
-//        "help:no;" +
-//        "resizable:" + psResizable + ";" +
-//        "scroll:" + psScroll + ";" +
-//        "status:no;";
-//    window.showModalDialog(pDestination, self, dlgwinprops);
-//}
 
-function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
-	var dlgwinprops = "center:yes;" +
-		"dialogHeight:" + pHeight + "px;" +
-			"dialogWidth:" + pWidth + "px;" +
-				"help:no;" +
-					"resizable:" + psResizable + ";" +
-						"scroll:" + psScroll + ";" +
-							"status:no;";
-	window.showModalDialog(pDestination, self, dlgwinprops);
-}
+
 function refreshEventControls() {
-    var frmUse = OpenHR.getForm("workframe", "frmUseful");
-    var fViewing = (frmUse.txtAction.value.toUpperCase() == "VIEW");
+	//var frmUse = OpenHR.getForm("workframe", "frmUseful");
+	var frmUse = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmUseful");
+	var fViewing = (frmUse.txtAction.value.toUpperCase() == "VIEW");
+	var frmPopup = document.getElementById("frmPopup");
 
-    with (frmPopup) {
+	with (frmPopup) {
 
-        if (txtNoDateColumns.value == 1) {
-            button_disable(cmdEventFilter, true);
-            cboStartDate.length = 0;
-            cboStartSession.length = 0;
-            cboEndDate.length = 0;
-            cboEndSession.length = 0;
-            cboDuration.length = 0;
-            cboEventDesc1.length = 0;
-            cboEventDesc2.length = 0;
-        }
+		if (txtNoDateColumns.value == 1) {
+			button_disable(cmdEventFilter, true);
+			cboStartDate.length = 0;
+			cboStartSession.length = 0;
+			cboEndDate.length = 0;
+			cboEndSession.length = 0;
+			cboDuration.length = 0;
+			cboEventDesc1.length = 0;
+			cboEventDesc2.length = 0;
+		}
 
-        /* Event Frame */
-        if (fViewing) {
-            text_disable(txtEventName, true);
-            combo_disable(cboEventTable, true);
-            text_disable(txtEventFilter, true);
-            button_disable(cmdEventFilter, true);
-        }
-        else {
-            text_disable(txtEventName, false);
-            combo_disable(cboEventTable, false);
-            text_disable(txtEventFilter, true);
-            button_disable(cmdEventFilter, (txtNoDateColumns.value == 1));
-        }
+		/* Event Frame */
+		if (fViewing) {
+			text_disable(txtEventName, true);
+			combo_disable(cboEventTable, true);
+			text_disable(txtEventFilter, true);
+			button_disable(cmdEventFilter, true);
+		}
+		else {
+			text_disable(txtEventName, false);
+			combo_disable(cboEventTable, false);
+			text_disable(txtEventFilter, true);
+			button_disable(cmdEventFilter, (txtNoDateColumns.value == 1));
+		}
 
-        /* Event Start Frame */
-        if (fViewing) {
-            combo_disable(cboStartDate, true);
-            combo_disable(cboStartSession, true);
-        }
-        else {
-            if (txtNoDateColumns.value == 1) {
-                combo_disable(cboStartDate, true);
-                combo_disable(cboStartSession, true);
-            }
-            else {
-                combo_disable(cboStartDate, false);
-                combo_disable(cboStartSession, false);
-            }
-        }
+		/* Event Start Frame */
+		if (fViewing) {
+			combo_disable(cboStartDate, true);
+			combo_disable(cboStartSession, true);
+		}
+		else {
+			if (txtNoDateColumns.value == 1) {
+				combo_disable(cboStartDate, true);
+				combo_disable(cboStartSession, true);
+			}
+			else {
+				combo_disable(cboStartDate, false);
+				combo_disable(cboStartSession, false);
+			}
+		}
 
-        if ((cboStartDate.options.length > 0) && (cboStartDate.selectedIndex < 0)) {
-            cboStartDate.selectedIndex = 0;
-        }
-        if ((cboStartSession.options.length > 0) && (cboStartSession.selectedIndex < 0)) {
-            cboStartSession.selectedIndex = 0;
-        }
+		if ((cboStartDate.options.length > 0) && (cboStartDate.selectedIndex < 0)) {
+			cboStartDate.selectedIndex = 0;
+		}
+		if ((cboStartSession.options.length > 0) && (cboStartSession.selectedIndex < 0)) {
+			cboStartSession.selectedIndex = 0;
+		}
 
-        /* Event End Frame */
-        if (fViewing) {
-            radio_disable(optNoEnd, true);
-            radio_disable(optEndDate, true);
-            radio_disable(optDuration, true);
-        }
-        else {
-            radio_disable(optNoEnd, (txtNoDateColumns.value == 1));
-            radio_disable(optEndDate, (txtNoDateColumns.value == 1));
-            radio_disable(optDuration, (txtNoDateColumns.value == 1));
-        }
+		/* Event End Frame */
+		if (fViewing) {
+			radio_disable(optNoEnd, true);
+			radio_disable(optEndDate, true);
+			radio_disable(optDuration, true);
+		}
+		else {
+			radio_disable(optNoEnd, (txtNoDateColumns.value == 1));
+			radio_disable(optEndDate, (txtNoDateColumns.value == 1));
+			radio_disable(optDuration, (txtNoDateColumns.value == 1));
+		}
 
-        if (optNoEnd.checked == true) {
-            combo_disable(cboEndDate, true);
-            cboEndDate.selectedIndex = -1;
+		if (optNoEnd.checked == true) {
+			combo_disable(cboEndDate, true);
+			cboEndDate.selectedIndex = -1;
 
-            combo_disable(cboEndSession, true);
-            cboEndSession.selectedIndex = -1;
+			combo_disable(cboEndSession, true);
+			cboEndSession.selectedIndex = -1;
 
-            combo_disable(cboDuration, true);
-            cboDuration.selectedIndex = -1;
-        }
-        else if (optEndDate.checked == true) {
-            combo_disable(cboEndDate, fViewing);
-            if ((cboEndDate.options.length > 0) && (cboEndDate.selectedIndex < 0)) {
-                cboEndDate.selectedIndex = 0;
-            }
+			combo_disable(cboDuration, true);
+			cboDuration.selectedIndex = -1;
+		}
+		else if (optEndDate.checked == true) {
+			combo_disable(cboEndDate, fViewing);
+			if ((cboEndDate.options.length > 0) && (cboEndDate.selectedIndex < 0)) {
+				cboEndDate.selectedIndex = 0;
+			}
 
-            combo_disable(cboEndSession, fViewing);
-            if ((cboEndSession.options.length > 0) && (cboEndSession.selectedIndex < 0)) {
-                cboEndSession.selectedIndex = 0;
-            }
+			combo_disable(cboEndSession, fViewing);
+			if ((cboEndSession.options.length > 0) && (cboEndSession.selectedIndex < 0)) {
+				cboEndSession.selectedIndex = 0;
+			}
 
-            combo_disable(cboDuration, true);
-            cboDuration.selectedIndex = -1;
-        }
-        else if (optDuration.checked == true) {
-            combo_disable(cboEndDate, true);
-            cboEndDate.selectedIndex = -1;
+			combo_disable(cboDuration, true);
+			cboDuration.selectedIndex = -1;
+		}
+		else if (optDuration.checked == true) {
+			combo_disable(cboEndDate, true);
+			cboEndDate.selectedIndex = -1;
 
-            combo_disable(cboEndSession, true);
-            cboEndSession.selectedIndex = -1;
+			combo_disable(cboEndSession, true);
+			cboEndSession.selectedIndex = -1;
 
-            combo_disable(cboDuration, fViewing);
-            if ((cboDuration.options.length > 0) && (cboDuration.selectedIndex < 0)) {
-                cboDuration.selectedIndex = 0;
-            }
-        }
-        else {
-            combo_disable(cboEndDate, true);
-            cboEndDate.selectedIndex = -1;
+			combo_disable(cboDuration, fViewing);
+			if ((cboDuration.options.length > 0) && (cboDuration.selectedIndex < 0)) {
+				cboDuration.selectedIndex = 0;
+			}
+		}
+		else {
+			combo_disable(cboEndDate, true);
+			cboEndDate.selectedIndex = -1;
 
-            combo_disable(cboEndSession, true);
-            cboEndSession.selectedIndex = -1;
+			combo_disable(cboEndSession, true);
+			cboEndSession.selectedIndex = -1;
 
-            combo_disable(cboDuration, true);
-            cboDuration.selectedIndex = -1;
-        }
+			combo_disable(cboDuration, true);
+			cboDuration.selectedIndex = -1;
+		}
 
-        /* Event Description Frame */
-        if (fViewing) {
-            combo_disable(cboEventDesc1, true);
-            combo_disable(cboEventDesc2, true);
-        }
-        else {
-            if (txtNoDateColumns.value == 1) {
-                combo_disable(cboEventDesc1, true);
-                combo_disable(cboEventDesc2, true);
-            }
-            else {
-                combo_disable(cboEventDesc1, false);
-                combo_disable(cboEventDesc2, false);
-            }
-        }
+		/* Event Description Frame */
+		if (fViewing) {
+			combo_disable(cboEventDesc1, true);
+			combo_disable(cboEventDesc2, true);
+		}
+		else {
+			if (txtNoDateColumns.value == 1) {
+				combo_disable(cboEventDesc1, true);
+				combo_disable(cboEventDesc2, true);
+			}
+			else {
+				combo_disable(cboEventDesc1, false);
+				combo_disable(cboEventDesc2, false);
+			}
+		}
 
-        if ((cboEventDesc1.options.length > 0) && (cboEventDesc1.selectedIndex < 0)) {
-            cboEventDesc1.selectedIndex = 0;
-        }
-        if ((cboEventDesc2.options.length > 0) && (cboEventDesc2.selectedIndex < 0)) {
-            cboEventDesc2.selectedIndex = 0;
-        }
-    }
+		if ((cboEventDesc1.options.length > 0) && (cboEventDesc1.selectedIndex < 0)) {
+			cboEventDesc1.selectedIndex = 0;
+		}
+		if ((cboEventDesc2.options.length > 0) && (cboEventDesc2.selectedIndex < 0)) {
+			cboEventDesc2.selectedIndex = 0;
+		}
+	}
 }
 
 function refreshLegendControls() {
-    var frmUse = OpenHR.getForm("workframe", "frmUseful");
-    var fViewing = (frmUse.txtAction.value.toUpperCase() == "VIEW");
+	//var frmUse = OpenHR.getForm("workframe", "frmUseful");
+	var frmUse = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmUseful");
+	var fViewing = (frmUse.txtAction.value.toUpperCase() == "VIEW");
+	var frmPopup = document.getElementById("frmPopup");
 
     with (frmPopup) {
 
@@ -5540,7 +5354,7 @@ function removeEventTable(piChildTableID) {
     var sControlName;
     var sDefn;
 
-    var frmUseful = OpenHR.getForm("workframe", "frmUseful");
+    var frmUse = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmUseful");
     var frmDefinition = OpenHR.getForm("workframe", "frmDefinition");
     var frmOriginalDefinition = OpenHR.getForm("workframe", "frmOriginalDefinition");
 
@@ -5782,11 +5596,22 @@ function setForm() {
 }
 
 function eventChanged() {
-    var frmUse = OpenHR.getForm("workframe", "frmUseful");
-    var fViewing = (frmUse.txtAction.value.toUpperCase() == "VIEW");
-    button_disable(frmPopup.cmdOK, fViewing);
+	var frmUse = OpenHR.getForm("workframe", "frmUseful");
+	var fViewing = (frmUse.txtAction.value.toUpperCase() == "VIEW");
+	button_disable(window.frmpopup.cmdOk, fViewing);
 }
 
+function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
+	var dlgwinprops = "center:yes;" +
+			"dialogHeight:" + pHeight + "px;" +
+			"dialogWidth:" + pWidth + "px;" +
+			"help:no;" +
+			"resizable:" + psResizable + ";" +
+			"scroll:" + psScroll + ";" +
+			"status:no;";
+	//calendarreport.js at lineCap 5114
+	showModalDialog(pDestination, self, dlgwinprops);
+}
 
 
 function AccessCode(psDescription) {
