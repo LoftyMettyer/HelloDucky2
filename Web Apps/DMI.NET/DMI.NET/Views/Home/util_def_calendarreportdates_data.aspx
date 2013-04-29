@@ -1,20 +1,25 @@
-﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 <%@ Import Namespace="DMI.NET" %>
 
 <script type="text/javascript">
 	function util_validate_calendarreportdates_data_window_onload() {
+		//debugger;
 		if (window.frmCalendarData.txtCalendarAction.value == "LOADCALENDAREVENTDETAILSCOLUMNS") {
 			//window.parent.frames("calendarworkframe").loadAvailableEventColumns();
-			OpenHR.getFrame("calendarworkframe").loadAvailableColumns();
+			loadAvailableEventColumns();
 		}
 		else if (window.frmCalendarData.txtCalendarAction.value == "LOADCALENDAREVENTKEYLOOKUPCOLUMNS") {
 			//window.parent.frames("calendarworkframe").loadAvailableLookupColumns();
-			OpenHR.getFrame("calendarworkframe").loadAvailableColumns();
+			loadAvailableLookupColumns();
 		}
 	}
 
 	function refreshData() {
-		window.frmGetCalendarData.submit();
+		//window.frmGetCalendarData.submit();
+
+		//debugger;
+		var frmGetCalendarData = OpenHR.getForm("workframe", "frmGetCalendarData");
+		OpenHR.submitForm(frmGetCalendarData);
 	}
 </script>
 
@@ -35,14 +40,14 @@
 
 			If Session("CalendarAction") = "LOADCALENDAREVENTDETAILSCOLUMNS" Then
 		
-				Response.Write("<FONT COLOR=red><B>Base Table : " & Session("CalendarBaseTableID") & "<B></FONT><BR>")
-				Response.Write("<FONT COLOR=red><B>Event Table : " & Session("CalendarEventTableID") & "<B></FONT>")
+				Response.Write("Base Table : " & Session("CalendarBaseTableID") & "<BR>")
+				Response.Write("Event Table : " & Session("CalendarEventTableID") & "")
 		
-				Dim cmdEventCols = Server.CreateObject("ADODB.Command")
+				Dim cmdEventCols = CreateObject("ADODB.Command")
 				cmdEventCols.CommandText = "spASRIntGetCalendarReportColumns"
-				cmdEventCols.CommandType = 4 ' Stored procedure
+				cmdEventCols.CommandType = 4
 				cmdEventCols.ActiveConnection = Session("databaseConnection")
-							
+				
 				Dim prmBaseTableID = cmdEventCols.CreateParameter("baseTableID", 3, 1) ' 3=integer, 1=input
 				cmdEventCols.Parameters.Append(prmBaseTableID)
 				prmBaseTableID.value = CleanNumeric(Session("CalendarBaseTableID"))
@@ -51,7 +56,7 @@
 				cmdEventCols.Parameters.Append(prmEventTableID)
 				prmEventTableID.value = CleanNumeric(Session("CalendarEventTableID"))
 
-				Err.Number = 0
+				Err.Clear()
 				Dim rstEventColumns = cmdEventCols.Execute
 
 				If (Err.Number <> 0) Then
