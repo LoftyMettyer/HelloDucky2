@@ -4,6 +4,73 @@
 <script src="<%: Url.Content("~/Scripts/FormScripts/calendarreportdef.js")%>" type="text/javascript"></script>
 <%Html.RenderPartial("Util_Def_CustomReports/dialog")%>
 
+<script type="text/javascript">
+function selectRecordOption(psTable, psType) {
+	var sURL;
+	var iCurrentID;
+	var iTableID;
+	if (psTable == 'base') {
+		iTableID = frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].value;
+
+		if (psType == 'picklist') {
+			iCurrentID = frmDefinition.txtBasePicklistID.value;
+		}
+		else {
+			iCurrentID = frmDefinition.txtBaseFilterID.value;
+		}
+	}
+	if (psTable == 'p1') {
+		iTableID = frmDefinition.txtParent1ID.value;
+
+		if (psType == 'picklist') {
+			iCurrentID = frmDefinition.txtParent1PicklistID.value;
+		}
+		else {
+			iCurrentID = frmDefinition.txtParent1FilterID.value;
+		}
+	}
+	if (psTable == 'p2') {
+		iTableID = frmDefinition.txtParent2ID.value;
+
+		if (psType == 'picklist') {
+			iCurrentID = frmDefinition.txtParent2PicklistID.value;
+		}
+		else {
+			iCurrentID = frmDefinition.txtParent2FilterID.value;
+		}
+	}
+
+	frmRecordSelection.recSelTable.value = psTable;
+	frmRecordSelection.recSelType.value = psType;
+	frmRecordSelection.recSelTableID.value = iTableID;
+	frmRecordSelection.recSelCurrentID.value = iCurrentID;
+
+	var strDefOwner = new String(frmDefinition.txtOwner.value);
+	var strCurrentUser = new String(frmUseful.txtUserName.value);
+
+	strDefOwner = strDefOwner.toLowerCase();
+	strCurrentUser = strCurrentUser.toLowerCase();
+
+	if (strDefOwner == strCurrentUser) {
+		frmRecordSelection.recSelDefOwner.value = '1';
+	}
+	else {
+		frmRecordSelection.recSelDefOwner.value = '0';
+	}
+
+	sURL = "util_recordSelection" +
+			"?recSelType=" + escape(frmRecordSelection.recSelType.value) +
+			"&recSelTableID=" + escape(frmRecordSelection.recSelTableID.value) +
+			"&recSelCurrentID=" + escape(frmRecordSelection.recSelCurrentID.value) +
+			"&recSelTable=" + escape(frmRecordSelection.recSelTable.value) +
+			"&recSelDefOwner=" + escape(frmRecordSelection.recSelDefOwner.value);
+	openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
+
+	frmUseful.txtChanged.value = 1;
+	refreshTab1Controls();
+}
+</script>
+
 <div <%=session("BodyTag")%>>
 	<form id="frmDefinition" name="frmDefinition">
 		<table class="outline">
@@ -548,11 +615,11 @@
 			
 																			Response.Write("											<OBJECT classid=clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" & vbCrLf)
 																			Response.Write("													 codebase=""cabs/COAInt_Grid.cab#version=3,1,3,6""" & vbCrLf)
-																			Response.Write("													height=""100%""" & vbCrLf)
+																			Response.Write("													height=""300px""" & vbCrLf)
 																			Response.Write("													id=grdEvents" & vbCrLf)
 																			Response.Write("													name=grdEvents" & vbCrLf)
-																			Response.Write("													style=""HEIGHT: 100%; VISIBILITY: visible; WIDTH: 100%""" & vbCrLf)
-																			Response.Write("													width=""100%"">" & vbCrLf)
+																			Response.Write("													style=""HEIGHT: 300px; VISIBILITY: visible; WIDTH: 300px""" & vbCrLf)
+																			Response.Write("													width=""300px"">" & vbCrLf)
 																			Response.Write("												<PARAM NAME=""ScrollBars"" VALUE=""4"">" & vbCrLf)
 																			Response.Write("												<PARAM NAME=""_Version"" VALUE=""196617"">" & vbCrLf)
 																			Response.Write("												<PARAM NAME=""DataMode"" VALUE=""2"">" & vbCrLf)
