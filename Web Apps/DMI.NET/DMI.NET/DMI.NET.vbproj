@@ -661,6 +661,7 @@
     <Content Include="Views\Home\tbBulkBooking.ascx" />
     <Content Include="Views\Home\tbBulkBookingSelection.ascx" />
     <Content Include="Views\Home\tbBulkBookingSelectionData.ascx" />
+    <Content Include="Views\Home\tbBulkBookingSelectionMain.aspx" />
     <Content Include="Views\Home\tbStatusPrompt.ascx" />
     <Content Include="Views\Home\tbTransferBookingFind.ascx" />
     <Content Include="Views\Home\tbTransferCourseFind.ascx" />

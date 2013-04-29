@@ -3650,23 +3650,23 @@ function menu_cancelBooking() {
 }
 
 function menu_bulkBooking() {
-//	var lngRecordID;
-//	var frmFindArea;
-//	var frmOptionArea;
-//	
-//	frmFindArea = window.parent.frames("workframe").document.forms("frmFindForm");
-//	lngRecordID = frmFindArea.txtCurrentParentRecordID.value;
+	var lngRecordID;
+	var frmFindArea;
+	var frmOptionArea;
+	
+	frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
+	lngRecordID = frmFindArea.txtCurrentParentRecordID.value;
 
-//	if (lngRecordID > 0) {
-//		disableMenu();
+	if (lngRecordID > 0) {
+		menu_disableMenu();
 
-//		frmOptionArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
+		frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 
-//		frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
-//		frmOptionArea.txtGotoOptionPage.value = "tbBulkBooking.asp";
+		frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
+		frmOptionArea.txtGotoOptionPage.value = "tbBulkBooking";
 
-//		frmOptionArea.submit();
-//	}
+		OpenHR.submitForm(frmOptionArea);
+	}
 }
 
 function menu_addFromWaitingList() {

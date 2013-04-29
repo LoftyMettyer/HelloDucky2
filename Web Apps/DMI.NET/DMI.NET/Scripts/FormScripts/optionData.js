@@ -1,6 +1,8 @@
 ﻿
     function optiondata_onload() {
 
+    		var frmOptionData = document.getElementById("frmOptionData");
+
         var sFatalErrorMsg = frmOptionData.txtErrorDescription.value;
         if (sFatalErrorMsg.length > 0) {
             //window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sFatalErrorMsg);
@@ -313,22 +315,19 @@
             }
 
             if (sCurrentWorkPage == "TBBULKBOOKING") {
-                var sAction = frmOptionData.txtOptionAction.value;
+	            
+            	 frmOptionData = document.getElementById("frmOptionData");
+	            
+                sAction = frmOptionData.txtOptionAction.value;
 
                 // Refresh the link find grid with the data if required.
-                var grdFind = OpenHR.getForm("optionframe","frmBulkBooking").ssOleDBGridFindRecords;
+                grdFind = OpenHR.getForm("optionframe","frmBulkBooking").ssOleDBGridFindRecords;
                 grdFind.redraw = false;
                 grdFind.removeAll();
 
-                var dataCollection = frmOptionData.elements;
-                var sControlName;
-                var sColumnName;
-                var iColumnType;
-                var iCount;
+                dataCollection = frmOptionData.elements;
 
                 // Add the grid records.
-                var sAddString;
-                var fRecordAdded;
                 fRecordAdded = false;
                 iCount = 0;
 
@@ -340,7 +339,7 @@
                         if (sControlName == "txtOptionData_") {
                             grdFind.addItem(dataCollection.item(i).value);
                             fRecordAdded = true;
-                            iCount = iCount + 1
+	                        iCount = iCount + 1;
                         }
                     }
                 }
@@ -353,7 +352,7 @@
                     grdFind.SelBookmarks.Add(grdFind.Bookmark);
                 }
 
-                OpenHR.getFrame("optionframe").refreshControls();
+                tbrefreshControls();
 
                 // Get menu.asp to refresh the menu.
                 menu_refreshMenu();
