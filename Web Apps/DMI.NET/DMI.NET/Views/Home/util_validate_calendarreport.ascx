@@ -1,6 +1,24 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
+<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
+<script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/jquery-ui-1.9.1.custom.min.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/jquery.cookie.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/menu.js")%>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/jquery.ui.touch-punch.min.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/Scripts/jsTree/jquery.jstree.js") %>" type="text/javascript"></script>
+<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
+
+<html>
+<head id="Head1" runat="server">
+    <title>OpenHR Intranet</title>
+</head>
+<body id=Body1>
+
 <script type="text/javascript">
 	function util_validate_calendarreport_window_onload() {
 			//// Hide the 'please wait' message.
@@ -38,7 +56,7 @@
 			//var iNewTop = (screen.height - bdyMain.offsetHeight) / 2;
 			//window.dialogLeft = new String(iNewLeft) + "px";
 			//window.dialogTop = new String(iNewTop) + "px";
-		debugger;
+		
 			if (txtErrorCode.value == 0) {
 				////OpenHR.getElementById("frmSend").submit();
 				//var frmSubmit = window.dialogArguments.document.getElementById('frmSend');
@@ -410,3 +428,7 @@
 	util_validate_calendarreport_window_onload();
 </script>
 
+
+    </body>
+
+</html>
