@@ -321,58 +321,58 @@
 													<tr height="10">
 														<td style="column-span: all">
 															<table style="width: 100%" class="invisible">
-																	<td width="5">&nbsp;</td>
+																<td width="5">&nbsp;</td>
 																<td style="text-align: left; width: 15px; vertical-align: central" id="qq">
-					<input valign="center" name="chkGroupByDesc" id="chkGroupByDesc" type="checkbox" disabled="disabled" tabindex="-1"
-						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}"
-						onclick="changeTab1Control(); refreshTab3Controls();" />
-				</td>
+																	<input valign="center" name="chkGroupByDesc" id="chkGroupByDesc" type="checkbox" disabled="disabled" tabindex="-1"
+																		onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
+																		onmouseout="try{checkbox_onMouseOut(this);}catch(e){}"
+																		onclick="changeTab1Control(); refreshTab3Controls();" />
+																</td>
 																<td style="text-align: left; width: 150px; vertical-align: central">
-					<label
-						for="chkGroupByDesc"
-						class="checkbox checkboxdisabled"
-						tabindex="0"
-						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-						Group By Description</label>
-				</td>
-				<td>&nbsp;</td>
-				<td>Separator : </td>
-				<td width="5">&nbsp;</td>
-				<td style="vertical-align: central; width: 85%">
-					<select name="cboDescriptionSeparator" id="cboDescriptionSeparator" style="WIDTH: 100%" disabled="disabled" class="combo combodisabled"
-						onchange="changeTab1Control();">
-						<option value="">
-						&lt;None&gt;
+																	<label
+																		for="chkGroupByDesc"
+																		class="checkbox checkboxdisabled"
+																		tabindex="0"
+																		onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
+																		onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
+																		onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
+																		onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
+																		onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																		Group By Description</label>
+																</td>
+																<td>&nbsp;</td>
+																<td>Separator : </td>
+																<td width="5">&nbsp;</td>
+																<td style="vertical-align: central; width: 85%">
+																	<select name="cboDescriptionSeparator" id="cboDescriptionSeparator" style="WIDTH: 100%" disabled="disabled" class="combo combodisabled"
+																		onchange="changeTab1Control();">
+																		<option value="">
+																		&lt;None&gt;
 																	<option value=" ">
-						&lt;Space&gt;
+																		&lt;Space&gt;
 																	<option value=", ">
-						, 
+																		, 
 																	<option value=".  ">
-						.  
+																		.  
 																	<option value=" - ">
-						- 
+																		- 
 																	<option value=" : ">
-						: 
+																		: 
 																	<option value=" ; ">
-						; 
+																		; 
 																	<option value=" / ">
-						/ 
+																		/ 
 																	<option value=" \ ">
-						\ 
+																		\ 
 																	<option value=" # ">
-						# 
+																		# 
 																	<option value=" ~ ">
-						~ 
+																		~ 
 																	<option value=" ^ ">
-						^       
-					</select>
-				</td>
-				</>
+																		^       
+																	</select>
+																</td>
+																</>
 															</table>
 														</td>
 													</tr>
@@ -679,11 +679,11 @@
 																	<td width="10">&nbsp;</td>
 																	<td width="80">
 																		<input type="button" id="cmdAddEvent" name="cmdAddEvent" value="Add..." style="WIDTH: 100%" class="btn"
-																		       onclick="eventAdd()"
-																		       onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																		       onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																		       onfocus="try{button_onFocus(this);}catch(e){}"
-																		       onblur="try{button_onBlur(this);}catch(e){}" />
+																			onclick="eventAdd()"
+																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
+																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
+																			onfocus="try{button_onFocus(this);}catch(e){}"
+																			onblur="try{button_onBlur(this);}catch(e){}" />
 																	</td>
 																	<td width="5">&nbsp;</td>
 																</tr>
@@ -1785,10 +1785,10 @@
 																				<td></td>
 																				<td align="left" nowrap>
 																					<input name="chkDestination3" id="chkDestination3" type="checkbox" disabled="disabled" tabindex="-1"
-																					       onclick="changeTab5Control();"
-																					       onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																					       onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
-																					
+																						onclick="changeTab5Control();"
+																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
+																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+
 																					<label for="chkDestination3"
 																						class="checkbox checkboxdisabled"
 																						tabindex="0"
@@ -1871,7 +1871,7 @@
 								</div>
 							</td>
 						</tr>
-					</table> 
+					</table>
 
 		</table>
 
@@ -1889,45 +1889,45 @@
 		<input type='hidden' id="txtWordFormatDefaultIndex" name="txtWordFormatDefaultIndex" value="<%=Session("WordFormatDefaultIndex")%>">
 		<input type='hidden' id="txtExcelFormatDefaultIndex" name="txtExcelFormatDefaultIndex" value="<%=Session("ExcelFormatDefaultIndex")%>">
 		<div>
-<table>
-	<td width="10"></td>
-	<tr height="10">
-		<td colspan="3"></td>
-	</tr>
+			<table>
+				<td width="10"></td>
+				<tr height="10">
+					<td colspan="3"></td>
+				</tr>
 
-	<tr height="10">
-		<td width="10"></td>
-		<td>
-			<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-				<tr>
-					<td>&nbsp;</td>
-					<td width="80">
-						<input type="button" id="cmdOK" name="cmdOK" value="OK" style="WIDTH: 100%" class="btn"
-							onclick="okClick()"
-							onmouseover="try{button_onMouseOver(this);}catch(e){}"
-							onmouseout="try{button_onMouseOut(this);}catch(e){}"
-							onfocus="try{button_onFocus(this);}catch(e){}"
-							onblur="try{button_onBlur(this);}catch(e){}" />
+				<tr height="10">
+					<td width="10"></td>
+					<td>
+						<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+							<tr>
+								<td>&nbsp;</td>
+								<td width="80">
+									<input type="button" id="cmdOK" name="cmdOK" value="OK" style="WIDTH: 100%" class="btn"
+										onclick="okClick()"
+										onmouseover="try{button_onMouseOver(this);}catch(e){}"
+										onmouseout="try{button_onMouseOut(this);}catch(e){}"
+										onfocus="try{button_onFocus(this);}catch(e){}"
+										onblur="try{button_onBlur(this);}catch(e){}" />
+								</td>
+								<td width="10"></td>
+								<td width="80">
+									<input type="button" id="cmdCancel" name="cmdCancel" value="Cancel" style="WIDTH: 100%" class="btn"
+										onclick="cancelClick()"
+										onmouseover="try{button_onMouseOver(this);}catch(e){}"
+										onmouseout="try{button_onMouseOut(this);}catch(e){}"
+										onfocus="try{button_onFocus(this);}catch(e){}"
+										onblur="try{button_onBlur(this);}catch(e){}" />
+								</td>
+							</tr>
+						</table>
 					</td>
 					<td width="10"></td>
-					<td width="80">
-						<input type="button" id="cmdCancel" name="cmdCancel" value="Cancel" style="WIDTH: 100%" class="btn"
-							onclick="cancelClick()"
-							onmouseover="try{button_onMouseOver(this);}catch(e){}"
-							onmouseout="try{button_onMouseOut(this);}catch(e){}"
-							onfocus="try{button_onFocus(this);}catch(e){}"
-							onblur="try{button_onBlur(this);}catch(e){}" />
-					</td>
+				</tr>
+
+				<tr height="5">
+					<td colspan="3"></td>
 				</tr>
 			</table>
-		</td>
-		<td width="10"></td>
-	</tr>
-
-	<tr height="5">
-		<td colspan="3"></td>
-	</tr>
-</table>
 		</div>
 </form>
 </div>
@@ -1979,7 +1979,7 @@
 </form>--%>
 	<form action="default_Submit" method=post id=Form1 name=frmGoto style="visibility:hidden;display:none">
 		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-</form>
+	</form>
 
 
 <form id="frmOriginalDefinition" name="frmOriginalDefinition" style="visibility: hidden; display: none">
@@ -2297,7 +2297,7 @@
 				Dim prmErrMsg2 = cmdReportOrder.CreateParameter("errMsg2", 200, 2, 8000) '200=varchar, 2=output, 8000=size
 				cmdReportOrder.Parameters.Append(prmErrMsg2)
 
-				Err.Number = 0
+				Err.Clear()
 				Dim rstOrder = cmdReportOrder.Execute
 		
 				iCount = 0
@@ -2591,7 +2591,7 @@
 	<input type="hidden" id="EmailSelCurrentID" name="EmailSelCurrentID">
 </form>
 
-<form id="frmSortOrder" name="frmSortOrder" action="util_sortorderselection" target="sortorderselection" method="post" style="visibility: hidden; display: none">
+<form id="frmSortOrder" name="frmSortOrder" target="sortorderselection" action="util_sortorderselection" method="post" style="visibility: hidden; display: none">
 	<input type="hidden" id="txtSortInclude" name="txtSortInclude">
 	<input type="hidden" id="txtSortExclude" name="txtSortExclude">
 	<input type="hidden" id="txtSortEditing" name="txtSortEditing">
