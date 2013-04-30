@@ -465,7 +465,6 @@ disabled="disabled"></td>
                             onfocus="try{button_onFocus(this);}catch(e){}"
                             onblur="try{button_onBlur(this);}catch(e){}" />
                     </td>
-                    admin
                 </table>
             </td>
         </tr>
