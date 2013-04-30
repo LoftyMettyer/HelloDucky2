@@ -244,7 +244,7 @@
 
 <script type="text/javascript">
 	
-	function util_def_addhandlers() {
+	function tbBookCourseFind_addhandlers() {
 		OpenHR.addActiveXHandler("ssOleDBGridRecords", "dblClick", ssOleDBGridRecords_dblClick);
 		OpenHR.addActiveXHandler("ssOleDBGridRecords", "click", ssOleDBGridRecords_click);
 		OpenHR.addActiveXHandler("ssOleDBGridRecords", "KeyPress", ssOleDBGridRecords_KeyPress);
@@ -616,4 +616,7 @@
 </div>
 
 
-<script type="text/javascript"> tbBookCourse_onload();</script>
+<script type="text/javascript">
+	tbBookCourseFind_addhandlers();
+	tbBookCourse_onload();
+</script>

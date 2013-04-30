@@ -8,8 +8,7 @@
 		var frmBulkBooking = document.getElementById("frmBulkBooking");
 
 		setGridFont(frmBulkBooking.ssOleDBGridFindRecords);
-
-		//TODO: window.parent.document.all.item("workframeset").cols = "0, *";
+		
 		$("#optionframe").attr("data-framesource", "TBBULKBOOKING");
 		$("#workframe").hide();
 		$("#optionframe").show();
@@ -72,14 +71,18 @@
 	}
 
 	function cancel()
-	{  
-		//TODO: window.parent.frames("workframe").document.forms("frmFindForm").ssOleDBGridFindRecords.style.visibility = "visible";
+	{  		
+		//$("#optionframe").attr("data-framesource", "TBBULKBOOKING");
+		$("#optionframe").hide();
+		$("#workframe").show();
+		
+
 		var frmGotoOption = document.getElementById("frmGotoOption");
 	
 		frmGotoOption.txtGotoOptionAction.value = "CANCEL";
 		frmGotoOption.txtGotoOptionLinkRecordID.value = 0;
 		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
-		OpenHR.submitForm(frmGotoOption.submit);
+		OpenHR.submitForm(frmGotoOption);
 	}
 
 	function locateRecord(psFileName) {
@@ -199,8 +202,8 @@
 		tbrefreshControls();
 	}
 
-	function makeSelection(psType, piID, psPrompts)
-	{	
+	function makeSelection(psType, piID, psPrompts) {
+		alert(psType);
 		/* Get the current selected delegate IDs. */
 		var frmBulkBooking = document.getElementById("frmBulkBooking");
 		var sSelectedIDs = "";
@@ -262,7 +265,7 @@
 
 <script type="text/javascript">
 	
-	function util_def_addhandlers() {
+	function tbBulkBooking_addhandlers() {
 		OpenHR.addActiveXHandler("ssOleDBGridRecords", "KeyPress", ssOleDBGridRecords_KeyPress);
 		OpenHR.addActiveXHandler("ssOleDBGridRecords", "RowColChange", ssOleDBGridRecords_RowColChange);
 	}
@@ -312,7 +315,7 @@
 			<TABLE WIDTH="100%" height="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
 				<TR>
 					<TD align=center height=10 colspan=5>
-						<h3 align=center>Bulk Booking</h3>
+						<h3 align="left" class="pageTitle">Bulk Booking</h3>
 					</td>
 				</tr>
 
@@ -327,12 +330,12 @@
 		Response.Write("							<TR height=10>" & vbCrLf)
 		Response.Write("								<TD  nowrap>Booking Status :</TD>" & vbCrLf)
 		Response.Write("								<TD width=20>&nbsp;</TD>" & vbCrLf)
-		Response.Write("								<TD width=""100%"">" & vbCrLf)
+		Response.Write("								<TD>" & vbCrLf)
 		Response.Write("									<SELECT id=selStatus name=selStatus class=""combo"">" & vbCrLf)
 		Response.Write("										<OPTION value=B selected>Booked</OPTION>" & vbCrLf)
 		Response.Write("										<OPTION value=P>Provisional</OPTION></SELECT>" & vbCrLf)
 		Response.Write("								</TD>" & vbCrLf)
-		Response.Write("								<TD ></TD>" & vbCrLf)
+		Response.Write("								<TD style='width: 100%;'></TD>" & vbCrLf)
 		Response.Write("								<TD ></TD>" & vbCrLf)
 		Response.Write("							</TR>" & vbCrLf)
 		Response.Write("						</TABLE>" & vbCrLf)
@@ -664,4 +667,7 @@
 
 </div>
 
-<script type="text/javascript"> tbBulkBooking_onload();</script>
+<script type="text/javascript">
+	tbBulkBooking_addhandlers();
+	tbBulkBooking_onload();
+</script>

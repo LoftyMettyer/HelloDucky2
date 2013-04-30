@@ -98,7 +98,10 @@
 	function Cancel() {
 		var frmGotoOption = document.getElementById("frmGotoOption");
 
-		//TODO: window.parent.frames("workframe").document.forms("frmtbFindForm").ssOleDBGridFindRecords.style.visibility = "visible";
+		//window.parent.frames("workframe").document.forms("frmtbFindForm").ssOleDBGridFindRecords.style.visibility = "visible";
+		$("#optionframe").hide();
+		$("#workframe").show();
+
 
 		frmGotoOption.txtGotoOptionAction.value = "CANCEL";
 		frmGotoOption.txtGotoOptionLinkRecordID.value = 0;
@@ -239,7 +242,7 @@
 	}
 
 
-	function util_def_addhandlers() {
+	function tbAddFromWaitingListFind_addhandlers() {
 		OpenHR.addActiveXHandler("ssOleDBGridRecords", "dblClick", ssOleDBGridRecords_dblClick);
 		OpenHR.addActiveXHandler("ssOleDBGridRecords", "click", ssOleDBGridRecords_click);
 		OpenHR.addActiveXHandler("ssOleDBGridRecords", "KeyPress", ssOleDBGridRecords_KeyPress);
@@ -297,7 +300,7 @@
 						</tr>
 						<tr>
 							<td align="center" height="10" colspan="3">
-								<h3 align="center">Add From Waiting List</h3>
+								<h3 class="pageTitle" align="left">Add From Waiting List</h3>
 							</td>
 						</tr>
 						<tr height="10">
@@ -600,6 +603,7 @@
 </div>
 
 <script type="text/javascript">
+	tbAddFromWaitingListFind_addhandlers();
 	tbAddFromWaitingListFind_onload();
 </script>
 

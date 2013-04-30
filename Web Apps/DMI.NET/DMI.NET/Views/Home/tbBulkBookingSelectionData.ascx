@@ -134,7 +134,7 @@
 	<INPUT type="hidden" id=txtPromptSQL name=txtPromptSQL>-->
 </FORM>
 
-<FORM id="frmUseful" name="frmUseful">
+<FORM id="frmDataUseful" name="frmDataUseful">
 	<INPUT type="hidden" id="txtLoading" name="txtLoading" value="<%=session("tbSelectionDataLoading")%>">
 </FORM>
 

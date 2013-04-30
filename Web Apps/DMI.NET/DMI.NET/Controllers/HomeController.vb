@@ -4358,6 +4358,95 @@ Namespace Controllers
 			Return View()
 		End Function
 
+		Function promptedValues() As ActionResult
+			Return View()
+		End Function
+
+
+		<HttpPost()>
+		Function promptedValues_Submit(value As FormCollection)
+			On Error Resume Next
+
+			Session("filterID") = Request.Form("filterID")
+			'Response.Write("<input type=""hidden"" id=filterID name=filterID value=" & Request.Form("filterID") & ">" & vbCrLf)
+
+			Dim sPrompts
+			Dim aPrompts(1, 0)
+			Dim j = 0
+			sPrompts = ""
+			' ReDim Preserve aPrompts(1, 0)
+			For i = 1 To (Request.Form.Count)
+				Dim sKey = Request.Form.Keys(i)
+				If ((UCase(Left(sKey, 7)) = "PROMPT_") And (Mid(sKey, 8, 1) <> "3")) Or _
+					(UCase(Left(sKey, 10)) = "PROMPTCHK_") Then
+					ReDim Preserve aPrompts(1, j)
+
+					If (UCase(Left(sKey, 10)) = "PROMPTCHK_") Then
+						aPrompts(0, j) = "prompt_3_" & Mid(sKey, 11)
+						aPrompts(1, j) = UCase(Request.Form.Item(i))
+					Else
+						aPrompts(0, j) = sKey
+						Select Case Mid(sKey, 8, 1)
+							Case "2"
+								' Numeric. Replace locale decimal point with '.'
+								aPrompts(1, j) = Replace(Request.Form.Item(i), Session("LocaleDecimalSeparator"), ".")
+							Case "4"
+								' Date. Reformat to match SQL's mm/dd/yyyy format.
+								aPrompts(1, j) = convertLocaleDateToSQL(Request.Form.Item(i))
+							Case Else
+								aPrompts(1, j) = Request.Form.Item(i)
+						End Select
+					End If
+
+					sPrompts = sPrompts & aPrompts(0, j) & vbTab & aPrompts(1, j) & vbTab
+
+					j = j + 1
+				End If
+			Next
+
+			Session("filterIDvalue") = Request.Form("filterID")
+			Session("promptsvalue") = sPrompts
+
+			'Response.Write("<input type=""hidden"" id=prompts name=prompts value=""" & sPrompts & """>" & vbCrLf)
+
+			Return RedirectToAction("promptedValues_completed")
+
+		End Function
+
+
+		Function promptedValues_completed() As ActionResult
+			Return View()
+		End Function
+
+
+		Function convertLocaleDateToSQL(psDate)
+			Dim sLocaleFormat
+			Dim sSQLFormat
+			Dim iLocaleIndex
+
+			If Len(psDate) > 0 Then
+				sLocaleFormat = Session("LocaleDateFormat")
+
+				Dim iIndex = InStr(sLocaleFormat, "mm")
+				If iIndex > 0 Then
+					sSQLFormat = Mid(psDate, iIndex, 2) & "/"
+				End If
+
+				iIndex = InStr(sLocaleFormat, "dd")
+				If iIndex > 0 Then
+					sSQLFormat = sSQLFormat & Mid(psDate, iIndex, 2) & "/"
+				End If
+
+				iIndex = InStr(sLocaleFormat, "yyyy")
+				If iIndex > 0 Then
+					sSQLFormat = sSQLFormat & Mid(psDate, iIndex, 4)
+				End If
+
+				convertLocaleDateToSQL = sSQLFormat
+			Else
+				convertLocaleDateToSQL = ""
+			End If
+		End Function
 	End Class
 
 	Public Class ErrMsgJsonAjaxResponse

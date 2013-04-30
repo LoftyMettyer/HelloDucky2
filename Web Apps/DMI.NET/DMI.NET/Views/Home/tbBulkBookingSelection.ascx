@@ -12,6 +12,7 @@
 
 	function tbBulkBookingSelection_onload() {		
 		var fOK = true;
+		var frmUseful = document.getElementById("frmUseful");
 
 		if ((frmUseful.txtSelectionType.value.toUpperCase() != "FILTER") &&
 			(frmUseful.txtSelectionType.value.toUpperCase() != "PICKLIST")) {
@@ -20,14 +21,14 @@
 			if (sErrMsg.length > 0) {
 				fOK = false;
 				OpenHR.messageBox(sErrMsg);
-				//TODO: //window.parent.close();
+				window.parent.close();
 			}
 
 			if (fOK == true) {
 				if (selectView.length == 0) {
 					fOK = false;
 					OpenHR.messageBox("You do not have permission to read the employee table.");
-					//TODO: //window.parent.close();
+					window.parent.close();
 				}
 			}
 
@@ -35,7 +36,7 @@
 				if (selectOrder.length == 0) {
 					fOK = false;
 					OpenHR.messageBox("You do not have permission to use any of the employee table orders.");
-					//TODO: //window.parent.close();					
+					window.parent.close();					
 				}
 			}
 
@@ -46,6 +47,8 @@
 		if ((frmUseful.txtSelectionType.value.toUpperCase() == "FILTER") ||
 			(frmUseful.txtSelectionType.value.toUpperCase() == "PICKLIST")) {
 
+			var ssOleDBGridSelRecords = document.getElementById("ssOleDBGridSelRecords");
+			
 			setGridFont(ssOleDBGridSelRecords);
 
 			// Set focus onto one of the form controls. 
@@ -60,12 +63,15 @@
 
 			tbrefreshControls();
 		} else {
+
+			var ssOleDBGridSelRecords = document.getElementById("ssOleDBGridSelRecords");
+			var abMainMenu = document.getElementById("abMainMenu");			
+			
 			setGridFont(ssOleDBGridSelRecords);
-
 			setMenuFont(abMainMenu);
-
 			abMainMenu.Attach();
-			abMainMenu.DataPath = "misc\\mainmenu.htm";
+			abMainMenu.DataPath = "<%= Url.Content("~/") %>" + "misc/mainmenu.htm";
+			
 			abMainMenu.RecalcLayout();
 
 			window.parent.dialogLeft = new String((screen.width - (9 * screen.width / 10)) / 2) + "px";
@@ -108,22 +114,22 @@
 		}
 	}
 
-	function makeSelection() {
+	function Selection_makeSelection() {
 		var frmUseful = document.getElementById("frmUseful");
 		var frmPrompt = document.getElementById("frmPrompt");
+		var ssOleDBGridSelRecords = document.getElementById("ssOleDBGridSelRecords");
 		
 		if (frmUseful.txtSelectionType.value.toUpperCase() == "FILTER") {
 			// Go to the prompted values form to get any required prompts. 
 			frmPrompt.filterID.value = selectedRecordID();
-			frmPrompt.submit();		
+			OpenHR.submitForm(frmPrompt);
 		}
 		else {
 			if (frmUseful.txtSelectionType.value.toUpperCase() == "PICKLIST") {
 				try {
-					//TODO: window.parent.window.dialogArguments.window.makeSelection(frmUseful.txtSelectionType.value, selectedRecordID(), "");
-					alert("not done");
+					makeSelection(frmUseful.txtSelectionType.value, selectedRecordID(), "");
 				}
-				catch(e) {
+				catch (e) {
 				}
 			}
 			else {
@@ -133,7 +139,7 @@
 				for (var iIndex = 0; iIndex < ssOleDBGridSelRecords.selbookmarks.Count(); iIndex++) {	
 					ssOleDBGridSelRecords.bookmark = ssOleDBGridSelRecords.selbookmarks(iIndex);
 
-					sRecordID = ssOleDBGridSelRecords.Columns("ID").Value;
+					var sRecordID = ssOleDBGridSelRecords.Columns("ID").Value;
 
 					if (sSelectedIDs.length > 0) {
 						sSelectedIDs = sSelectedIDs + ",";
@@ -143,13 +149,13 @@
 				ssOleDBGridSelRecords.redraw = true;
 
 				try {
-					//TODO: window.parent.window.dialogArguments.window.makeSelection(frmUseful.txtSelectionType.value, 0, sSelectedIDs);
-					makeSelection(frmUseful.txtSelectionType.value, 0, sSelectedIDs);					
+					window.parent.window.dialogArguments.window.makeSelection(frmUseful.txtSelectionType.value, 0, sSelectedIDs);
 				}
-				catch(e) {
+				catch (e) {
+					
 				}
 			}
-			//window.parent.close();
+			window.parent.close();
 		}
 	}
 
@@ -211,6 +217,7 @@
 	function goView() {
 		// Get the tbBulkBookingSelectionData.asp to get the find records.
 		var dataForm = OpenHR.getForm("dataframe", "frmGetData");
+		var frmUseful = document.getElementById("frmUseful");
 		dataForm.txtTableID.value = frmUseful.txtTableID.value;
 		dataForm.txtViewID.value = selectView.options[selectView.selectedIndex].value;
 		dataForm.txtOrderID.value = selectOrder.options[selectOrder.selectedIndex].value;
@@ -224,6 +231,7 @@
 	function goOrder() {
 		// Get the tbBulkBookingSelectionData.asp to get the find records.
 		var dataForm = OpenHR.getForm("dataframe", "frmGetData");
+		var frmUseful = document.getElementById("frmUseful");
 		dataForm.txtTableID.value = frmUseful.txtTableID.value;
 		dataForm.txtViewID.value = selectView.options[selectView.selectedIndex].value;
 		dataForm.txtOrderID.value = selectOrder.options[selectOrder.selectedIndex].value;
@@ -242,15 +250,15 @@
 		return selectView.options[selectView.selectedIndex].value;
 	}
 
-	function tbrefreshMenu() 
-	{
+	function tbrefreshMenu() {
+		var abMainMenu = document.getElementById("abMainMenu");
 		if (abMainMenu.Bands.Count() > 0) 
 		{
 			window.setTimeout("enableMenu()", 250);
 
-			var frmData = window.parent.frames("dataframe").document.forms("frmData");
+			var frmData = OpenHR.getForm("dataframe", "frmData");
 				
-			for (i=0; i< abMainMenu.tools.count(); i++) 
+			for (var i=0; i< abMainMenu.tools.count(); i++) 
 			{
 				abMainMenu.tools(i).visible = false;
 			}				
@@ -275,11 +283,11 @@
 			abMainMenu.Tools("mnutoolLocateRecordsLogic").CBList.AddItem("False");
 			abMainMenu.tools("mnutoolLocateRecordsLogic").visible = (frmData.txtFirstColumnType.value == "-7");
 
-			sCaption = "";
+			var sCaption = "";
 			if (frmData.txtRecordCount.value > 0) 
 			{
-				iStartPosition = new Number(frmData.txtFirstRecPos.value);
-				iEndPosition = new Number(frmData.txtRecordCount.value);
+				var iStartPosition = new Number(frmData.txtFirstRecPos.value);
+				var iEndPosition = new Number(frmData.txtRecordCount.value);
 				iEndPosition = iStartPosition - 1 + iEndPosition;
 				sCaption = "Records " +
 					iStartPosition + 
@@ -338,24 +346,24 @@
 		var iTempDecimals;
 	
 		sDecimalSeparator = "\\";
-		sDecimalSeparator = sDecimalSeparator.concat(ASRIntranetFunctions.LocaleDecimalSeparator);
+		sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator);
 		var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
 
 		sThousandSeparator = "\\";
-		sThousandSeparator = sThousandSeparator.concat(ASRIntranetFunctions.LocaleThousandSeparator);
+		sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator);
 		var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
 
 		sPoint = "\\.";
 		var rePoint = new RegExp(sPoint, "gi");
 
-		fValidLocateValue = true;
+		var fValidLocateValue = true;
 
-		var dataForm = window.parent.frames("dataframe").document.forms("frmData");
-		var getDataForm = window.parent.frames("dataframe").document.forms("frmGetData");
+		var dataForm = OpenHR.getForm("dataframe", "frmData");
+		var getDataForm = OpenHR.getForm("dataframe", "frmGetData");
 
 		if (psAction == "LOCATE") {
 			// Check that the entered value is valid for the first order column type.
-			iDataType = dataForm.txtFirstColumnType.value;
+			var iDataType = dataForm.txtFirstColumnType.value;
 
 			if ((iDataType == 2) || (iDataType == 4)) {
 				// Numeric/Integer column.
@@ -371,7 +379,7 @@
 				psLocateValue = sConvertedValue;
 
 				// Convert any decimal separators to '.'.
-				if (ASRIntranetFunctions.LocaleDecimalSeparator != ".") {
+				if (OpenHR.LocaleDecimalSeparator != ".") {
 					// Remove decimal points.
 					sConvertedValue = sConvertedValue.replace(rePoint, "A");
 					// replace the locale decimal marker with the decimal point.
@@ -380,7 +388,7 @@
 
 				if (isNaN(sConvertedValue) == true) {
 					fValidLocateValue = false;
-					ASRIntranetFunctions.MessageBox("Invalid numeric value entered.");
+					OpenHR.messageBox("Invalid numeric value entered.");
 				}
 				else {
 					psLocateValue = sConvertedValue;
@@ -389,7 +397,7 @@
 						// Ensure that integer columns are compared with integer values.
 						if (iIndex >= 0 ) {
 							fValidLocateValue = false;
-							ASRIntranetFunctions.MessageBox("Invalid integer value entered.");
+							OpenHR.messageBox("Invalid integer value entered.");
 						}
 					} 
 					else {
@@ -411,12 +419,12 @@
 
 						if(iTempSize > (dataForm.txtFirstColumnSize.value - dataForm.txtFirstColumnDecimals.value)) {
 							fValidLocateValue = false;
-							ASRIntranetFunctions.MessageBox("The value cannot have more than " + (dataForm.txtFirstColumnSize.value - dataForm.txtFirstColumnDecimals.value) + " digit(s) to the left of the decimal separator.");
+							OpenHR.messageBox("The value cannot have more than " + (dataForm.txtFirstColumnSize.value - dataForm.txtFirstColumnDecimals.value) + " digit(s) to the left of the decimal separator.");
 						}
 						else {
 							if(iTempDecimals > dataForm.txtFirstColumnDecimals.value) {
 								fValidLocateValue = false;
-								ASRIntranetFunctions.MessageBox("The value cannot have more than " + dataForm.txtFirstColumnDecimals.value + " decimal place(s).");
+								OpenHR.messageBox("The value cannot have more than " + dataForm.txtFirstColumnDecimals.value + " decimal place(s).");
 							}
 						}
 					}
@@ -429,10 +437,10 @@
 					if (psLocateValue.length > 0) {
 						// Convert the date to SQL format (use this as a validation check).
 						// An empty string is returned if the date is invalid.
-						psLocateValue = convertLocaleDateToSQL(psLocateValue)
+						psLocateValue = convertLocaleDateToSQL(psLocateValue);
 						if (psLocateValue.length = 0) {
 							fValidLocateValue = false;
-							ASRIntranetFunctions.MessageBox("Invalid date value entered.");
+							OpenHR.messageBox("Invalid date value entered.");
 						}
 					}
 				}
@@ -441,7 +449,8 @@
 	
 		if (fValidLocateValue == true) {
 			disableMenu();
-
+			var frmUseful = document.getElementById("frmUseful");
+			
 			// Get the optionData.asp to get the link find records.
 			getDataForm.txtTableID.value = frmUseful.txtTableID.value;
 			getDataForm.txtViewID.value = selectView.options[selectView.selectedIndex].value;
@@ -451,7 +460,7 @@
 			getDataForm.txtGotoLocateValue.value = psLocateValue;
 			getDataForm.txtPageAction.value = psAction;
 
-			window.parent.frames("dataframe").refreshData();
+			refreshData(); // should be in scope (tbBulkBookingSelectionData)
 		}
 
 		// Clear the locate value from the menu.
@@ -490,7 +499,7 @@
 		var sValue;
 		var iLoop;
 		
-		sDateFormat = ASRIntranetFunctions.LocaleDateFormat;
+		sDateFormat = OpenHR.LocaleDateFormat;
 
 		sDays="";
 		sMonths="";
@@ -596,7 +605,7 @@
 		sTempValue = sTempValue.concat("/");
 		sTempValue = sTempValue.concat(sYears);
 	
-		sValue = ASRIntranetFunctions.ConvertSQLDateToLocale(sTempValue);
+		sValue = OpenHR.ConvertSQLDateToLocale(sTempValue);
 
 		iYears = parseInt(sYears);
 	
@@ -622,130 +631,141 @@
 	}
 </script>
 
-<SCRIPT FOR=abMainMenu EVENT=DataReady LANGUAGE=JavaScript>
 
-	var sKey;
-	sKey = new String("tempmenufilepath_");
-	sKey = sKey.concat(window.parent.window.dialogArguments.window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);	
-	sPath = ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-	if(sPath == "") {
-		sPath = "c:\\";
+<script type="text/javascript">
+	function tbBulkBookingSelection_addhandlers() {
+		OpenHR.addActiveXHandler("abMainMenu", "DataReady", abMainMenu_DataReady);
+		OpenHR.addActiveXHandler("abMainMenu", "PreCustomizeMenu", abMainMenu_PreCustomizeMenu);
+		OpenHR.addActiveXHandler("abMainMenu", "Click", abMainMenu_Click);
+		OpenHR.addActiveXHandler("abMainMenu", "KeyDown", abMainMenu_KeyDown);
+		OpenHR.addActiveXHandler("abMainMenu", "ComboSelChange", abMainMenu_ComboSelChange);
+		OpenHR.addActiveXHandler("abMainMenu", "PreSysMenu", abMainMenu_PreSysMenu);
+		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "rowcolchange", ssOleDBGridSelRecords_rowcolchange);
+		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "dblClick", ssOleDBGridSelRecords_dblClick);
+		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "KeyPress", ssOleDBGridSelRecords_KeyPress);
 	}
+</script>
 
-	if(sPath == "<NONE>") {
-		frmUseful.txtMenuSaved.value = 1;
-		abMainMenu.RecalcLayout();
-	}
-	else {
-		if (sPath.substr(sPath.length - 1, 1) != "\\") {
-			sPath = sPath.concat("\\");
+<script type="text/javascript">
+	function abMainMenu_DataReady() {
+		var abMainMenu = document.getElementById("abMainMenu");
+		abMainMenu.DataPath = "";
+		abMainMenu.RecalcLayout();		
+
+		return false;
+
+		var sKey, sPath;
+		sKey = new String("tempmenufilepath_");
+		//sKey = sKey.concat(window.parent.window.dialogArguments.window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
+		//sPath = ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+		if (sPath == "") {
+			sPath = "c:\\";
 		}
-		
-		sPath = sPath.concat("tempmenu.asp");
-		if ((abMainMenu.Bands.Count() > 0) && (frmUseful.txtMenuSaved.value == 0)) {
-			try {
-				abMainMenu.save(sPath, "");
-			}
-			catch(e) {
-				ASRIntranetFunctions.MessageBox("The specified temporary menu file path cannot be written to. The temporary menu file path will be cleared."); 
-				sKey = new String("tempMenuFilePath_");
-				sKey = sKey.concat(window.parent.window.dialogArguments.window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);	
-				ASRIntranetFunctions.SaveRegistrySetting("HR Pro", "DataPaths", sKey, "<NONE>");
-			}
 
+		if (sPath == "<NONE>") {
 			frmUseful.txtMenuSaved.value = 1;
-		}
-		else {
-			if ((abMainMenu.Bands.Count() == 0) && (frmUseful.txtMenuSaved.value == 1)) {
-				abMainMenu.DataPath = sPath;
-				abMainMenu.RecalcLayout();
-				return;
+			abMainMenu.RecalcLayout();
+		} else {
+			if (sPath.substr(sPath.length - 1, 1) != "\\") {
+				sPath = sPath.concat("\\");
+			}
+
+			sPath = sPath.concat("tempmenu.asp");
+			if ((abMainMenu.Bands.Count() > 0) && (frmUseful.txtMenuSaved.value == 0)) {
+				try {
+					abMainMenu.save(sPath, "");
+				} catch(e) {
+					ASRIntranetFunctions.MessageBox("The specified temporary menu file path cannot be written to. The temporary menu file path will be cleared.");
+					sKey = new String("tempMenuFilePath_");
+					sKey = sKey.concat(window.parent.window.dialogArguments.window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
+					ASRIntranetFunctions.SaveRegistrySetting("HR Pro", "DataPaths", sKey, "<NONE>");
+				}
+
+				frmUseful.txtMenuSaved.value = 1;
+			} else {
+				if ((abMainMenu.Bands.Count() == 0) && (frmUseful.txtMenuSaved.value == 1)) {
+					abMainMenu.DataPath = sPath;
+					abMainMenu.RecalcLayout();
+					return;
+				}
 			}
 		}
 	}
-</script>
-
-<SCRIPT FOR=abMainMenu EVENT=PreCustomizeMenu(pfCancel) LANGUAGE=JavaScript>
-	pfCancel = true;
-	ASRIntranetFunctions.MessageBox("The menu cannot be customized. Errors will occur if you attempt to customize it. Click anywhere in your browser to remove the dummy customisation menu.");
-</script>
-
-<SCRIPT FOR=abMainMenu EVENT=Click(pTool) LANGUAGE=JavaScript>
-	switch (pTool.name) {
-	case "mnutoolFirstRecord" :
-		reloadPage("MOVEFIRST", "");
-		break;
-	case "mnutoolPreviousRecord" :
-		reloadPage("MOVEPREVIOUS", "");
-		break;
-	case "mnutoolNextRecord" :
-		reloadPage("MOVENEXT", "");
-		break;
-	case "mnutoolLastRecord" :
-		reloadPage("MOVELAST", "");
-		break;
+	function abMainMenu_PreCustomizeMenu(pfCancel) {
+		pfCancel = true;
+		OpenHR.messageBox("The menu cannot be customized. Errors will occur if you attempt to customize it. Click anywhere in your browser to remove the dummy customisation menu.");
 	}
-</script>
+	function abMainMenu_Click(pTool) {
+		alert(pTool.name);
+		switch (pTool.name) {
+			case "mnutoolFirstRecord":
+				reloadPage("MOVEFIRST", "");
+				break;
+			case "mnutoolPreviousRecord":
+				reloadPage("MOVEPREVIOUS", "");
+				break;
+			case "mnutoolNextRecord":
+				reloadPage("MOVENEXT", "");
+				break;
+			case "mnutoolLastRecord":
+				reloadPage("MOVELAST", "");
+				break;
+		}
+	}
+	function abMainMenu_KeyDown(piKeyCode, piShift) {
+		iIndex = abMainMenu.ActiveBand.CurrentTool;
 
-<SCRIPT FOR=abMainMenu EVENT="KeyDown(piKeyCode, piShift)" LANGUAGE=JavaScript>
-	iIndex = abMainMenu.ActiveBand.CurrentTool;
-	
-	if (abMainMenu.ActiveBand.Tools(iIndex).Name == "mnutoolLocateRecords") {
-		if (piKeyCode == 13) {
-			sLocateValue = abMainMenu.ActiveBand.Tools(iIndex).Text;
+		if (abMainMenu.ActiveBand.Tools(iIndex).Name == "mnutoolLocateRecords") {
+			if (piKeyCode == 13) {
+				sLocateValue = abMainMenu.ActiveBand.Tools(iIndex).Text;
+
+				reloadPage("LOCATE", sLocateValue);
+			}
+		}
+	}
+	function abMainMenu_ComboSelChange(pTool) {
+		if (pTool.Name == "mnutoolLocateRecordsLogic") {
+			sLocateValue = pTool.Text;
 
 			reloadPage("LOCATE", sLocateValue);
 		}
 	}
-</script>
+	function abMainMenu_PreSysMenu(pBand) {
+		if (pBand.Name == "SysCustomize") {
+			pBand.Tools.RemoveAll();
+		}
+	}
+	function ssOleDBGridSelRecords_rowcolchange() { tbrefreshControls(); }
+	function ssOleDBGridSelRecords_dblClick() {
+		// JPD20021031 Fault 4631
+		Selection_makeSelection();
+	}
+	function ssOleDBGridSelRecords_KeyPress(iKeyAscii) {
+		if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {
+			var dtTicker = new Date();
+			var iThisTick = new Number(dtTicker.getTime());
+			if (txtLastKeyFind.value.length > 0) {
+				var iLastTick = new Number(txtTicker.value);
+			}
+			else {
+				var iLastTick = new Number("0");
+			}
 
-<SCRIPT FOR=abMainMenu EVENT=ComboSelChange(pTool) LANGUAGE=JavaScript>
-	if (pTool.Name == "mnutoolLocateRecordsLogic") {
-		sLocateValue = pTool.Text;
+			if (iThisTick > (iLastTick + 1500)) {
+				var sFind = String.fromCharCode(iKeyAscii);
+			}
+			else {
+				var sFind = txtLastKeyFind.value + String.fromCharCode(iKeyAscii);
+			}
 
-		reloadPage("LOCATE", sLocateValue);
+			txtTicker.value = iThisTick;
+			txtLastKeyFind.value = sFind;
+
+			locateRecord(sFind);
+		}
 	}
 </script>
 
-<SCRIPT FOR=abMainMenu EVENT=PreSysMenu(pBand) LANGUAGE=JavaScript>
-	if(pBand.Name == "SysCustomize") {
-		pBand.Tools.RemoveAll();
-	}
-</script>
-
-<SCRIPT FOR=ssOleDBGridSelRecords EVENT=rowcolchange LANGUAGE=JavaScript>
-	tbrefreshControls();
-</script>
-
-<SCRIPT FOR=ssOleDBGridSelRecords EVENT=dblClick LANGUAGE=JavaScript>
-	// JPD20021031 Fault 4631
-	makeSelection();
-</script>
-
-<SCRIPT FOR=ssOleDBGridSelRecords EVENT=KeyPress(iKeyAscii) LANGUAGE=JavaScript>
-	if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {	
-		var dtTicker = new Date();
-		var iThisTick = new Number(dtTicker.getTime());
-		if (txtLastKeyFind.value.length > 0) {
-			var iLastTick = new Number(txtTicker.value);
-		}
-		else {
-			var iLastTick = new Number("0");
-		}
-		
-		if (iThisTick > (iLastTick + 1500)) {
-			var sFind = String.fromCharCode(iKeyAscii);
-		}
-		else {
-			var sFind = txtLastKeyFind.value + String.fromCharCode(iKeyAscii);
-		}
-		
-		txtTicker.value = iThisTick;
-		txtLastKeyFind.value = sFind;
-
-		locateRecord(sFind);
-	}
-</script>
 
 <script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
 
@@ -771,7 +791,7 @@
 			<table align="center" class="invisible" cellspacing="0" cellpadding="0" width="100%" height="100%">
 				<tr height=10>
 					<td colspan="3" align="center" height="10">
-						<H3 align="center">
+						<H3 class="pageTitle" align="left">
 <% 
 	if ucase(session("selectionType")) = ucase("picklist") then 
 		Response.Write("Select Picklist")
@@ -977,15 +997,15 @@
 							<tr height="10">
 								<td height="10">
 									<TABLE WIDTH="100%" height="10" class="invisible" CELLSPACING="0" CELLPADDING="0">
-										<TR height="10">
-											<TD width="40" height="10">
+										<TR>
+											<TD width="40">
 												View :
 											</TD>
-											<TD width="10" height="10">
+											<TD width="10">
 												&nbsp;
 											</TD>
 											<TD width="175" >
-												<SELECT id="selectView" name="selectView" class="combo" style="HEIGHT: 10px; WIDTH: 200px">
+												<SELECT id="selectView" name="selectView" class="combo" style="WIDTH: 200px">
 <%
 	If Len(sErrorDescription) = 0 Then
 		' Get the view records.
@@ -1054,17 +1074,17 @@
                                                     onfocus="try{button_onFocus(this);}catch(e){}"
                                                     onblur="try{button_onBlur(this);}catch(e){}" />
 											</TD>
-											<TD height=10>
+											<TD >
 												&nbsp;
 											</TD>
-											<TD width=40 height=10>
+											<TD width=40>
 												Order :
 											</TD>
-											<TD width=10 height=10>
+											<TD width=10>
 												&nbsp;
 											</TD>
 											<TD width=175 >
-												<SELECT id=selectOrder name=selectOrder class="combo" style="HEIGHT: 10px; WIDTH: 200px">
+												<SELECT id=selectOrder name=selectOrder class="combo" style="WIDTH: 200px">
 <%
 		if len(sErrorDescription) = 0 then
 			' Get the order records.
@@ -1230,7 +1250,7 @@
 								<TD>&nbsp;</TD>
 								<TD width=10>
 									<INPUT id=cmdOK type=button value=OK name=cmdOK style="WIDTH: 80px" width="80" class="btn"
-									    onclick="makeSelection()" 
+									    onclick="Selection_makeSelection()" 
                                         onmouseover="try{button_onMouseOver(this);}catch(e){}" 
                                         onmouseout="try{button_onMouseOut(this);}catch(e){}"
                                         onfocus="try{button_onFocus(this);}catch(e){}"
@@ -1271,4 +1291,7 @@
 
 </div>
 
-<script type="text/javascript"> tbBulkBookingSelection_onload();</script>
+<script type="text/javascript">
+	tbBulkBookingSelection_addhandlers();
+	tbBulkBookingSelection_onload();	
+</script>

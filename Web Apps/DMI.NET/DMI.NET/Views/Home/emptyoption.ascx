@@ -322,7 +322,7 @@
 								if (txtAction.value == "SELECTBULKBOOKINGS") {
 									if (fTransferOK == true) {
 										// Go ahead and make the bookings.
-										var optionDataForm = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
+										var optionDataForm = OpenHR.getForm("optiondataframe", "frmGetOptionData");
 										optionDataForm.txtOptionAction.value = "SELECTBULKBOOKINGS_2";
 										optionDataForm.txtOptionRecordID.value = txtRecordID.value;
 										optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;

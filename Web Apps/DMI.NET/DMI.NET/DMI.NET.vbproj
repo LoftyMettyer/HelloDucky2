@@ -172,6 +172,7 @@
     <Content Include="Content\fonts\SSI80v194934\SSI80v1.woff" />
     <None Include="My Project\PublishProfiles\Local.pubxml" />
     <None Include="Scripts\FormScripts\find.js" />
+    <Content Include="misc\mainmenu.htm" />
     <Content Include="Scripts\FormScripts\optionData.js" />
     <Content Include="Scripts\jquery\jquery-ui-1.9.2.custom.js" />
     <None Include="Scripts\jquery\jquery.jqGrid.src.js" />
@@ -656,6 +657,8 @@
     <Content Include="Views\Home\Find.ascx" />
     <Content Include="Views\Home\fixedlinks.ascx" />
     <Content Include="Views\Home\linksMain.aspx" />
+    <Content Include="Views\Home\promptedValues.aspx" />
+    <Content Include="Views\Home\promptedValues_completed.aspx" />
     <Content Include="Views\Home\tbAddFromWaitingListFind.ascx" />
     <Content Include="Views\Home\tbBookCourseFind.ascx" />
     <Content Include="Views\Home\tbBulkBooking.ascx" />
