@@ -1,24 +1,22 @@
-﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
 <script type="text/javascript">
 	function util_validate_calendarreportdates_data_window_onload() {
 		//debugger;
-		if (window.frmCalendarData.txtCalendarAction.value == "LOADCALENDAREVENTDETAILSCOLUMNS") {
+		var frmCalendarData = document.getElementById("frmCalendarData");
+		if (frmCalendarData.txtCalendarAction.value == "LOADCALENDAREVENTDETAILSCOLUMNS") {
 			//window.parent.frames("calendarworkframe").loadAvailableEventColumns();
 			loadAvailableEventColumns();
 		}
-		else if (window.frmCalendarData.txtCalendarAction.value == "LOADCALENDAREVENTKEYLOOKUPCOLUMNS") {
+		else if (frmCalendarData.txtCalendarAction.value == "LOADCALENDAREVENTKEYLOOKUPCOLUMNS") {
 			//window.parent.frames("calendarworkframe").loadAvailableLookupColumns();
 			loadAvailableLookupColumns();
 		}
 	}
 
-	function refreshData() {
-		//window.frmGetCalendarData.submit();
-
-		//debugger;
-		var frmGetCalendarData = OpenHR.getForm("workframe", "frmGetCalendarData");
+	function data_refreshData() {
+		var frmGetCalendarData = document.getElementById("frmGetCalendarData");
 		OpenHR.submitForm(frmGetCalendarData);
 	}
 </script>
@@ -32,16 +30,13 @@
 	</form>
 
 	<form id="frmCalendarData" name="frmCalendarData">
-
 		<!-- INPUT element containing the required data for the calendar reports dates form -->
-
 		<%
 			Dim sErrorDescription = ""
 
 			If Session("CalendarAction") = "LOADCALENDAREVENTDETAILSCOLUMNS" Then
-		
-				Response.Write("Base Table : " & Session("CalendarBaseTableID") & "<BR>")
-				Response.Write("Event Table : " & Session("CalendarEventTableID") & "")
+				'Response.Write("<FONT COLOR=red><B>Base 1 Table : " & Session("CalendarBaseTableID") & "<B></FONT><BR>")
+				'Response.Write("<FONT COLOR=red><B>Event Table : " & Session("CalendarEventTableID") & "<B></FONT>")
 		
 				Dim cmdEventCols = CreateObject("ADODB.Command")
 				cmdEventCols.CommandText = "spASRIntGetCalendarReportColumns"
@@ -99,7 +94,7 @@
 				cmdKeyLookupCols.Parameters.Append(prmEventTableID)
 				prmEventTableID.value = CleanNumeric(Session("CalendarLookupTableID"))
 		
-				Err.Number = 0
+				Err.Clear()
 				Dim rstLookupColumns = cmdKeyLookupCols.Execute
 		
 				If (Err.Number <> 0) Then

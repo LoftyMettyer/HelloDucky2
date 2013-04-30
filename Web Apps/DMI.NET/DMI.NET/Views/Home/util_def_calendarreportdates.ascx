@@ -112,8 +112,7 @@
 		frmGetDataForm.txtCalendarEventTableID.value = frmPopup.cboEventTable.options[frmPopup.cboEventTable.selectedIndex].value;
 
 		//window.parent.frames("calendardataframe").refreshData();
-		//TODO
-		window.parent.refreshData();
+		data_refreshData();
 	}
 	
 	function selectRecordOption(psTable, psType) {
@@ -156,6 +155,40 @@
 		eventChanged();
 	}
 
+	function changeEventTable() {
+		var frmPopup = document.getElementById("frmPopup");
+		{
+			frmPopup.txtEventFilterID.value = 0;
+			frmPopup.txtEventFilter.value = "";
+			frmPopup.cboStartDate.length = 0;
+			frmPopup.cboStartSession.length = 0;
+			frmPopup.cboEndDate.length = 0;
+			frmPopup.cboEndSession.length = 0;
+			frmPopup.cboDuration.length = 0;
+			frmPopup.cboEventType.length = 0;
+			frmPopup.cboEventDesc1.length = 0;
+			frmPopup.cboEventDesc2.length = 0;
+			frmPopup.txtEventColumnsLoaded.value = 0;
+
+			populateEventColumns();
+			refreshEventControls();
+			eventChanged();
+		}
+	}
+
+	function changeLegendTable(){
+		var frmPopup = document.getElementById("frmPopup");
+		if (frmPopup.cboLegendTable.selectedIndex < 0)	{
+			frmPopup.cboLegendTable.selectedIndex = 0;
+		}
+		frmPopup.cboLegendColumn.length = 0;
+		frmPopup.cboLegendCode.length = 0;
+		frmPopup.txtLookupColumnsLoaded.value = 0;
+		populateLookupColumns();	
+		refreshLegendControls();
+		eventChanged();
+	}
+	
 	function disabledAll() {
 		var frmPopup = document.getElementById("frmPopup");
 		/*Event Frame*/
@@ -187,7 +220,6 @@
 		combo_disable(frmPopup.cboEventDesc1, true);
 		combo_disable(frmPopup.cboEventDesc2, true);
 	}
-	
 </script>
 
 <div id="bdyMain" name="bdyMain" <%=session("BodyColour")%> leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">

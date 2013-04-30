@@ -314,8 +314,8 @@ function populateBaseTableColumns() {
 
     //this should be in scope by now.
 	//TODO: NPG
-    data_refreshData(); //window.parent.frames("dataframe").refreshData();
-}
+   data_refreshData(); //window.parent.frames("dataframe").refreshData();
+	}
 
 function trim(strInput) {
     if (strInput.length < 1) {
@@ -791,8 +791,8 @@ function refreshTab3Controls() {
             button_disable(cmdPeriodEndUp, fViewing);
         }
 
-        var blnPersonnelBaseTable = (frmUseful.txtPersonnelTableID.value == frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].value)
-        var blnRegionSelected = (cboRegion.options[cboRegion.selectedIndex].value > 0);
+        var blnPersonnelBaseTable = (frmUseful.txtPersonnelTableID.value == frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].value);
+	    var blnRegionSelected = (cboRegion.options[cboRegion.selectedIndex].value > 0);
 
         if (chkIncludeBHols.checked || chkIncludeWorkingDaysOnly.checked || chkShadeBHols.checked
             || blnRegionSelected) {
@@ -926,8 +926,8 @@ function refreshTab5Controls() {
             }
 
             //disable save options
-            chkDestination2.checked = false
-            checkbox_disable(chkDestination2, true);
+            chkDestination2.checked = false;
+	        checkbox_disable(chkDestination2, true);
             combo_disable(cboSaveExisting, true);
             cboSaveExisting.length = 0;
 
@@ -1451,70 +1451,10 @@ function selectEmailGroup() {
     openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
 }
 
-function selectRecordOption(psTable, psType) {
-    var sURL;
-	var iCurrentID;
-	var iTableID;
-	if (psTable == 'base') {
-        iTableID = frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].value;
 
-        if (psType == 'picklist') {
-            iCurrentID = frmDefinition.txtBasePicklistID.value;
-        }
-        else {
-            iCurrentID = frmDefinition.txtBaseFilterID.value;
-        }
-    }
-    if (psTable == 'p1') {
-        iTableID = frmDefinition.txtParent1ID.value;
 
-        if (psType == 'picklist') {
-            iCurrentID = frmDefinition.txtParent1PicklistID.value;
-        }
-        else {
-            iCurrentID = frmDefinition.txtParent1FilterID.value;
-        }
-    }
-    if (psTable == 'p2') {
-        iTableID = frmDefinition.txtParent2ID.value;
 
-        if (psType == 'picklist') {
-            iCurrentID = frmDefinition.txtParent2PicklistID.value;
-        }
-        else {
-            iCurrentID = frmDefinition.txtParent2FilterID.value;
-        }
-    }
 
-    frmRecordSelection.recSelTable.value = psTable;
-    frmRecordSelection.recSelType.value = psType;
-    frmRecordSelection.recSelTableID.value = iTableID;
-    frmRecordSelection.recSelCurrentID.value = iCurrentID;
-
-    var strDefOwner = new String(frmDefinition.txtOwner.value);
-    var strCurrentUser = new String(frmUseful.txtUserName.value);
-
-    strDefOwner = strDefOwner.toLowerCase();
-    strCurrentUser = strCurrentUser.toLowerCase();
-
-    if (strDefOwner == strCurrentUser) {
-        frmRecordSelection.recSelDefOwner.value = '1';
-    }
-    else {
-        frmRecordSelection.recSelDefOwner.value = '0';
-    }
-
-    sURL = "util_recordSelection" +
-        "?recSelType=" + escape(frmRecordSelection.recSelType.value) +
-        "&recSelTableID=" + escape(frmRecordSelection.recSelTableID.value) +
-        "&recSelCurrentID=" + escape(frmRecordSelection.recSelCurrentID.value) +
-        "&recSelTable=" + escape(frmRecordSelection.recSelTable.value) +
-        "&recSelDefOwner=" + escape(frmRecordSelection.recSelDefOwner.value);
-    openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
-
-    frmUseful.txtChanged.value = 1;
-    refreshTab1Controls();
-}
 
 function eventFilterString() {
     var i;
@@ -1563,11 +1503,10 @@ function submitDefinition() {
     frmValidate.validateEmailGroup.value = frmDefinition.txtEmailGroupID.value;
     frmValidate.validateEventFilter.value = eventFilterString();
     frmValidate.validateName.value = frmDefinition.txtName.value;
-    frmValidate.validateDescExpr.value = frmDefinition.txtDescExprID.value
-    frmValidate.validateCustomStart.value = frmDefinition.txtCustomStartID.value
-    frmValidate.validateCustomEnd.value = frmDefinition.txtCustomEndID.value
-
-    if (frmUseful.txtAction.value.toUpperCase() == "EDIT") {
+    frmValidate.validateDescExpr.value = frmDefinition.txtDescExprID.value;
+	frmValidate.validateCustomStart.value = frmDefinition.txtCustomStartID.value;
+	frmValidate.validateCustomEnd.value = frmDefinition.txtCustomEndID.value;
+	if (frmUseful.txtAction.value.toUpperCase() == "EDIT") {
         frmValidate.validateTimestamp.value = frmOriginalDefinition.txtDefn_Timestamp.value;
         frmValidate.validateUtilID.value = frmUseful.txtUtilID.value;
     }
@@ -1608,21 +1547,15 @@ function submitDefinition() {
 }
 
 function cancelClick() {
-	if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
-			(definitionChanged() == false)) {
-		menu_loadDefSelPage(17, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
-		return (false);
-	}
-
-	var answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3, "Calendar Reports");
-	if (answer == 7) {
-		menu_loadDefSelPage(17, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
-		return (false);
-	}
-	if (answer == 6) {
-		// Yes
-		okClick();
-	}
+	//window.location = "main";
+	//window.close();
+	//self.close();
+	//window.parent.close();
+	try {
+			$(".popup").dialog("close");
+			//$("#").show();
+		}
+		catch (e) { }
 }
 
 function okClick() {
@@ -1794,17 +1727,7 @@ function getTableName(piTableID) {
     return sTableName;
 }
 
-function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
-	var dlgwinprops = "center:yes;" +
-		"dialogHeight:" + pHeight + "px;" +
-		"dialogWidth:" + pWidth + "px;" +
-		"help:no;" +
-		"resizable:" + psResizable + ";" +
-		"scroll:" + psScroll + ";" +
-		"status:no;";
-	//calendarreprt.js at line 1805
-	showModalDialog(pDestination, self, dlgwinprops);
-}
+
 
 function getEventKey() {
     var i = 1;
@@ -2136,9 +2059,8 @@ function sortMove(pfUp) {
 
     sAddline = frmDefinition.ssOleDBGridSortOrder.columns(0).text +
         '	' + frmDefinition.ssOleDBGridSortOrder.columns(1).text +
-        '	' + frmDefinition.ssOleDBGridSortOrder.columns(2).text
-
-    frmDefinition.ssOleDBGridSortOrder.additem(sAddline, iNewIndex);
+        '	' + frmDefinition.ssOleDBGridSortOrder.columns(2).text;
+	frmDefinition.ssOleDBGridSortOrder.additem(sAddline, iNewIndex);
     frmDefinition.ssOleDBGridSortOrder.RemoveItem(iOldIndex);
 
     frmDefinition.ssOleDBGridSortOrder.SelBookmarks.RemoveAll();
@@ -2579,17 +2501,16 @@ function populateSendForm() {
                 '||' + frmDefinition.grdEvents.columns("StartSessionID").text +
                 '||' + frmDefinition.grdEvents.columns("EndDateID").text +
                 '||' + frmDefinition.grdEvents.columns("EndSessionID").text +
-                '||' + frmDefinition.grdEvents.columns("DurationID").text
-
-            if (frmDefinition.grdEvents.columns("LegendType").text == '1') {
+                '||' + frmDefinition.grdEvents.columns("DurationID").text;
+	        if (frmDefinition.grdEvents.columns("LegendType").text == '1') {
                 sEvents = sEvents +
                     '||' + '1' +
                     '||' + '' +
                     '||' + frmDefinition.grdEvents.columns("LegendTableID").text +
                     '||' + frmDefinition.grdEvents.columns("LegendColumnID").text +
                     '||' + frmDefinition.grdEvents.columns("LegendCodeID").text +
-                    '||' + frmDefinition.grdEvents.columns("LegendEventTypeID").text
-            }
+                    '||' + frmDefinition.grdEvents.columns("LegendEventTypeID").text;
+	        }
             else {
                 sEvents = sEvents +
                     '||' + '0' +
@@ -2597,8 +2518,8 @@ function populateSendForm() {
                     '||' + 0 +
                     '||' + 0 +
                     '||' + 0 +
-                    '||' + 0
-            }
+                    '||' + 0;
+	        }
 
             sEvents = sEvents +
                 '||' + frmDefinition.grdEvents.columns("Desc1ID").text +
@@ -2628,17 +2549,16 @@ function populateSendForm() {
                         '||' + selectedEventParameter(dataCollection.item(iIndex).value, "STARTSESSIONID") +
                         '||' + selectedEventParameter(dataCollection.item(iIndex).value, "ENDDATEID") +
                         '||' + selectedEventParameter(dataCollection.item(iIndex).value, "ENDSESSIONID") +
-                        '||' + selectedEventParameter(dataCollection.item(iIndex).value, "DURATIONID")
-
-                    if (selectedEventParameter(dataCollection.item(iIndex).value, "LEGENDTYPE") == '1') {
+                        '||' + selectedEventParameter(dataCollection.item(iIndex).value, "DURATIONID");
+	                if (selectedEventParameter(dataCollection.item(iIndex).value, "LEGENDTYPE") == '1') {
                         sEvents = sEvents +
                             '||' + '1' +
                             '||' + '' +
                             '||' + selectedEventParameter(dataCollection.item(iIndex).value, "LEGENDLOOKUPTABLEID") +
                             '||' + selectedEventParameter(dataCollection.item(iIndex).value, "LEGENDLOOKUPCOLUMNID") +
                             '||' + selectedEventParameter(dataCollection.item(iIndex).value, "LEGENDLOOKUPCODEID") +
-                            '||' + selectedEventParameter(dataCollection.item(iIndex).value, "LEGENDEVENTCOLUMNID")
-                    }
+                            '||' + selectedEventParameter(dataCollection.item(iIndex).value, "LEGENDEVENTCOLUMNID");
+	                }
                     else {
                         sEvents = sEvents +
                             '||' + '0' +
@@ -2646,8 +2566,8 @@ function populateSendForm() {
                             '||' + '0' +
                             '||' + '0' +
                             '||' + '0' +
-                            '||' + '0'
-                    }
+                            '||' + '0';
+	                }
 
                     sEvents = sEvents +
                         '||' + selectedEventParameter(dataCollection.item(iIndex).value, "DESC1COLUMNID") +
@@ -2676,22 +2596,22 @@ function populateSendForm() {
     }
     else if (frmDefinition.optCurrentStart.checked == true) {
         frmSend.txtSend_StartType.value = 1;
-        frmSend.txtSend_FixedStart.value = ""
-        frmSend.txtSend_StartFrequency.value = 0;
+        frmSend.txtSend_FixedStart.value = "";
+	    frmSend.txtSend_StartFrequency.value = 0;
         frmSend.txtSend_StartPeriod.value = -1;
         frmSend.txtSend_CustomStart.value = 0;
     }
     else if (frmDefinition.optOffsetStart.checked == true) {
         frmSend.txtSend_StartType.value = 2;
-        frmSend.txtSend_FixedStart.value = ""
-        frmSend.txtSend_StartFrequency.value = frmDefinition.txtFreqStart.value;
+        frmSend.txtSend_FixedStart.value = "";
+	    frmSend.txtSend_StartFrequency.value = frmDefinition.txtFreqStart.value;
         frmSend.txtSend_StartPeriod.value = frmDefinition.cboPeriodStart.options[frmDefinition.cboPeriodStart.selectedIndex].value;
         frmSend.txtSend_CustomStart.value = 0;
     }
     else if (frmDefinition.optCustomStart.checked == true) {
         frmSend.txtSend_StartType.value = 3;
-        frmSend.txtSend_FixedStart.value = ""
-        frmSend.txtSend_StartFrequency.value = 0;
+        frmSend.txtSend_FixedStart.value = "";
+	    frmSend.txtSend_StartFrequency.value = 0;
         frmSend.txtSend_StartPeriod.value = -1;
         frmSend.txtSend_CustomStart.value = frmDefinition.txtCustomStartID.value;
     }
@@ -2919,9 +2839,8 @@ function getOrderString() {
 
 function loadAvailableColumns() {
     var i;
-    var blnPersonnelBaseTable = (frmUseful.txtPersonnelTableID.value == frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].value)
-
-    frmUseful.txtLockGridEvents.value = 1;
+    var blnPersonnelBaseTable = (frmUseful.txtPersonnelTableID.value == frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].value);
+	frmUseful.txtLockGridEvents.value = 1;
 
     frmDefinition.cboDescription1.length = 0;
     frmDefinition.cboDescription2.length = 0;
@@ -3636,7 +3555,7 @@ function populatePrinters() {
             oOption.value = iLoop + 1;
 
             if (oOption.innerText == strCurrentPrinter) {
-                selectedIndex = iLoop + 1
+                selectedIndex = iLoop + 1;
             }
         }
 
@@ -3691,8 +3610,8 @@ function populateSaveExisting() {
 
         for (iLoop = 0; iLoop < options.length; iLoop++) {
             if (options(iLoop).value == lngCurrentOption) {
-                selectedIndex = iLoop
-                break;
+                selectedIndex = iLoop;
+	            break;
             }
         }
 
@@ -4209,9 +4128,8 @@ function recalcHiddenEventFiltersCount() {
     iCount = 0;
 
     for (var i = 0; i < frmDefinition.grdEvents.Rows; i++) {
-        vBM = frmDefinition.grdEvents.AddItemBookmark(i)
-
-        if (frmDefinition.grdEvents.Columns("FilterHidden").CellValue(vBM) == "Y") {
+        vBM = frmDefinition.grdEvents.AddItemBookmark(i);
+	    if (frmDefinition.grdEvents.Columns("FilterHidden").CellValue(vBM) == "Y") {
             iCount = iCount + 1;
         }
     }
@@ -4356,7 +4274,6 @@ function grdAccessRowLoaded(Bookmark) {
 
 function eventAdd() {
 	var sURL;
-	debugger;
 	var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
 	frmEvent.eventAction.value = "NEW";
 	frmEvent.eventID.value = getEventKey();
@@ -4401,6 +4318,7 @@ function eventAdd() {
 		sMessage = "The maximum of 999 events has been selected.";
 		OpenHR.messageBox(sMessage, 64, "Calendar Reports");
 	}
+	
 	refreshTab2Controls();
 }
 
@@ -4578,22 +4496,46 @@ function loadAvailableEventColumns() {
 
 function populateLookupColumns() {
 	var frmPopup = document.getElementById("frmPopup");
-    if (frmPopup.txtLookupColumnsLoaded.value == 0) {
-        // Get the columns/calcs for the current table selection.
-        var frmGetDataForm = OpenHR.getForm("calendardataframe", "frmGetCalendarData");
+	var frmGetDataForm = OpenHR.getForm("calendardataframe", "frmGetCalendarData");
 
-        if ((frmPopup.cboLegendTable.options.length > 0) && (frmPopup.cboLegendTable.selectedIndex < 0)) {
-            frmPopup.cboLegendTable.selectedIndex = 0;
-        }
+	if (frmPopup.txtLookupColumnsLoaded.value == 0) {
+		// Get the columns/calcs for the current table selection.
+		if ((frmPopup.cboLegendTable.options.length > 0) && (frmPopup.cboLegendTable.selectedIndex < 0))
+			{
+				frmPopup.cboLegendTable.selectedIndex = 0;
+			}
+		frmGetDataForm.txtCalendarAction.value = "LOADCALENDAREVENTKEYLOOKUPCOLUMNS";
+		frmGetDataForm.txtCalendarLookupTableID.value = frmPopup.cboLegendTable.options[frmPopup.cboLegendTable.selectedIndex].value;
+		//window.parent.frames("calendardataframe").refreshData();
+		data_refreshData();
+		//OpenHR.getForm("calendardataframe").refreshData();
+	}
+	else {
+		return;
+	}
+}
 
-        frmGetDataForm.txtCalendarAction.value = "LOADCALENDAREVENTKEYLOOKUPCOLUMNS";
-        frmGetDataForm.txtCalendarLookupTableID.value = frmPopup.cboLegendTable.options[frmPopup.cboLegendTable.selectedIndex].value;
+function populateColumnCombos() {
+	//var frmGetDataForm = window.parent.frames("dataframe").document.forms("frmGetData");
+	var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
+	
+	frmGetDataForm.txtAction.value = "LOADREPORTCOLUMNS";
+	//frmGetDataForm.txtReportBaseTableID.value = 20;		//frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].Value;
+	frmGetDataForm.txtReportBaseTableID.value = frmUseful.txtCurrentBaseTableID.value;
+	frmGetDataForm.txtReportParent1TableID.value = 0;
+	frmGetDataForm.txtReportParent2TableID.value = 0;
+	frmGetDataForm.txtReportChildTableID.value = 0;
+	data_refreshData();
 
-        OpenHR.getForm("calendardataframe").refreshData();
-    }
-    else {
-        return;
-    }
+	frmUseful.txtLoading.value = 'Y';
+}
+
+function eventChanged() {
+	var frmPopup = document.getElementById("frmPopup");
+	//var frmUse = OpenHR.getForm("workframe", "frmUseful");
+	//var fViewing = (frmUse.txtAction.value.toUpperCase() == "VIEW");
+
+	//button_disable(frmPopup.cmdOk, false);
 }
 
 function loadAvailableLookupColumns() {
@@ -4817,92 +4759,51 @@ function setLookupValues() {
 }
 
 function setEventValues() {
-	var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
+	//var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
 	//var frmEvent = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmEventDetails");
-    var frmPopup = document.getElementById("frmPopup");
-	
-    with (frmEvent) {
-    	setStartDate(frmEvent.eventStartDateID.value);
-
-    	if (frmEvent.eventStartSessionID.value > 0) {
-    		setStartSession(frmEvent.eventStartSessionID.value);
-        }
-
-    	if (frmEvent.eventEndDateID.value > 0) {
-            frmPopup.optEndDate.checked = true;
-            setEndDate(frmEvent.eventEndDateID.value);
-            if (frmEvent.eventEndSessionID.value > 0) {
-            	setEndSession(frmEvent.eventEndSessionID.value);
-            }
-        }
-    	else if (frmEvent.eventDurationID.value > 0) {
-            frmPopup.optDuration.checked = true;
-            setDuration(frmEvent.eventDurationID.value);
-        }
-        else {
-            frmPopup.optNoEnd.checked = true;
-        }
-
-    	if (frmEvent.eventDesc1ID.value > 0) {
-    		setDesc1Column(frmEvent.eventDesc1ID.value);
-        }
-
-    	if (frmEvent.eventDesc2ID.value > 0) {
-    		setDesc2Column(frmEvent.eventDesc2ID.value);
-        }
-
-        refreshEventControls();
-
-        if ((frmEvent.eventLookupType.value == 1)) {
-        	setLookupTable(frmEvent.eventLookupTableID.value);
-
-            populateLookupColumns();
-        }
-        else {
-            setLookupValues();
-        }
-
-        refreshLegendControls();
-    }
-}
-
-function changeEventTable() {
+	var frmEvent = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmEventDetails");
 	var frmPopup = document.getElementById("frmPopup");
-	frmPopup.txtEventFilterID.value = 0;
-	frmPopup.txtEventFilter.value = "";
-
-	frmPopup.cboStartDate.length = 0;
-	frmPopup.cboStartSession.length = 0;
-
-	frmPopup.cboEndDate.length = 0;
-	frmPopup.cboEndSession.length = 0;
-	frmPopup.cboDuration.length = 0;
-
-	frmPopup.cboEventType.length = 0;
-
-	frmPopup.cboEventDesc1.length = 0;
-	frmPopup.cboEventDesc2.length = 0;
-
-	frmPopup.txtEventColumnsLoaded.value = 0;
-
-	populateEventColumns();
-	refreshEventControls();
-	eventChanged();
-}
-
-function changeLegendTable() {
-	var frmPopup = document.getElementById("frmPopup");
-
-	if (frmPopup.cboLegendTable.selectedIndex < 0) {
-		frmPopup.cboLegendTable.selectedIndex = 0;
+	setStartDate(frmEvent.eventStartDateID.value);
+	if (frmEvent.eventStartSessionID.value > 0) {
+		setStartSession(frmEvent.eventStartSessionID.value);
 	}
-	frmPopup.cboLegendColumn.length = 0;
-	frmPopup.cboLegendCode.length = 0;
-	frmPopup.txtLookupColumnsLoaded.value = 0;
-	populateLookupColumns();
+	if (frmEvent.eventEndDateID.value > 0) {
+		frmPopup.optEndDate.checked = true;
+		setEndDate(frmEvent.eventEndDateID.value);
+		if (frmEvent.eventEndSessionID.value > 0) {
+			setEndSession(frmEvent.eventEndSessionID.value);
+		}
+	}
+	else if (frmEvent.eventDurationID.value > 0) {
+		frmPopup.optDuration.checked = true;
+		setDuration(frmEvent.eventDurationID.value);
+	}
+	else {
+		frmPopup.optNoEnd.checked = true;
+	}
+
+	if (frmEvent.eventDesc1ID.value > 0) {
+		setDesc1Column(frmEvent.eventDesc1ID.value);
+	}
+
+	if (frmEvent.eventDesc2ID.value > 0) {
+		setDesc2Column(frmEvent.eventDesc2ID.value);
+	}
+
+	refreshEventControls();
+
+	if ((frmEvent.eventLookupType.value == 1)) {
+		setLookupTable(frmEvent.eventLookupTableID.value);
+
+		populateLookupColumns();
+	}
+	else {
+		setLookupValues();
+	}
 	refreshLegendControls();
-	eventChanged();
 }
+
+
 
 function getTableName(piTableID) {
     var i;
@@ -5063,48 +4964,6 @@ function checkUniqueEventName(psEventName) {
     //CODE REQUIRED TO CHECK THAT THE EVENT NAME IS UNIQUE 
     return true;
 }
-
-function selectRecordOption(psTable, psType) {
-	var iTableID;
-	var iCurrentID;
-	var sURL;
-	var frmPopup = document.getElementById("frmPopup");
-	var frmRecordSelection = document.getElementById("frmRecordSelection");
-
-	if (psTable == 'event') {
-		iTableID = frmPopup.cboEventTable.options[frmPopup.cboEventTable.selectedIndex].value;
-		iCurrentID = frmPopup.txtEventFilterID.value;
-	}
-
-	frmRecordSelection.recSelTable.value = psTable;
-	frmRecordSelection.recSelType.value = psType;
-	frmRecordSelection.recSelTableID.value = iTableID;
-	frmRecordSelection.recSelCurrentID.value = iCurrentID;
-
-	var strDefOwner = new String(frmDefinition.txtOwner.value);
-	var strCurrentUser = new String(frmUseful.txtUserName.value);
-	strDefOwner = strDefOwner.toLowerCase();
-	strCurrentUser = strCurrentUser.toLowerCase();
-
-	if (strDefOwner == strCurrentUser) {
-		frmRecordSelection.recSelDefOwner.value = '1';
-	}
-	else {
-		frmRecordSelection.recSelDefOwner.value = '0';
-	}
-
-	sURL = "util_recordSelection" +
-			"?recSelType=" + escape(frmRecordSelection.recSelType.value) +
-			"&recSelTableID=" + escape(frmRecordSelection.recSelTableID.value) +
-			"&recSelCurrentID=" + escape(frmRecordSelection.recSelCurrentID.value) +
-			"&recSelTable=" + escape(frmRecordSelection.recSelTable.value) +
-			"&recSelDefOwner=" + escape(frmRecordSelection.recSelDefOwner.value);
-	openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
-
-	eventChanged();
-}
-
-
 
 function refreshEventControls() {
 	//var frmUse = OpenHR.getForm("workframe", "frmUseful");
@@ -5497,71 +5356,71 @@ function setForm() {
 
     //Add the event information to string which will be used to populate the grid.
     with (frmPopup) {
-        sADD = sADD + txtEventName.value + '	';
-        sADD = sADD + cboEventTable.options[cboEventTable.selectedIndex].value + '	';
-        sADD = sADD + cboEventTable.options[cboEventTable.selectedIndex].innerText + '	';
-        sADD = sADD + txtEventFilterID.value + '	';
-        sADD = sADD + txtEventFilter.value + '	';
-        sADD = sADD + cboStartDate.options[cboStartDate.selectedIndex].value + '	';
-        sADD = sADD + cboStartDate.options[cboStartDate.selectedIndex].innerText + '	';
+    	sADD = sADD + frmPopup.txtEventName.value + '	';
+    	sADD = sADD + frmPopup.cboEventTable.options[frmPopup.cboEventTable.selectedIndex].value + '	';
+    	sADD = sADD + frmPopup.cboEventTable.options[frmPopup.cboEventTable.selectedIndex].innerText + '	';
+    	sADD = sADD + frmPopup.txtEventFilterID.value + '	';
+    	sADD = sADD + frmPopup.txtEventFilter.value + '	';
+    	sADD = sADD + frmPopup.cboStartDate.options[frmPopup.cboStartDate.selectedIndex].value + '	';
+    	sADD = sADD + frmPopup.cboStartDate.options[frmPopup.cboStartDate.selectedIndex].innerText + '	';
 
-        if (cboStartSession.selectedIndex < 0) {
+        if (frmPopup.cboStartSession.selectedIndex < 0) {
             sADD = sADD + 0 + '	';
             sADD = sADD + '' + '	';
         }
         else {
-            sADD = sADD + cboStartSession.options[cboStartSession.selectedIndex].value + '	';
-            sADD = sADD + cboStartSession.options[cboStartSession.selectedIndex].innerText + '	';
+        	sADD = sADD + frmPopup.cboStartSession.options[frmPopup.cboStartSession.selectedIndex].value + '	';
+        	sADD = sADD + frmPopup.cboStartSession.options[frmPopup.cboStartSession.selectedIndex].innerText + '	';
         }
 
-        if (cboEndDate.selectedIndex < 0) {
+        if (frmPopup.cboEndDate.selectedIndex < 0) {
             sADD = sADD + 0 + '	';
             sADD = sADD + '' + '	';
         }
         else {
-            sADD = sADD + cboEndDate.options[cboEndDate.selectedIndex].value + '	';
-            sADD = sADD + cboEndDate.options[cboEndDate.selectedIndex].innerText + '	';
+            sADD = sADD + frmPopup.cboEndDate.options[frmPopup.cboEndDate.selectedIndex].value + '	';
+            sADD = sADD + frmPopup.cboEndDate.options[frmPopup.cboEndDate.selectedIndex].innerText + '	';
         }
 
-        if (cboEndSession.selectedIndex < 0) {
+        if (frmPopup.cboEndSession.selectedIndex < 0) {
             sADD = sADD + 0 + '	';
             sADD = sADD + '' + '	';
         }
         else {
-            sADD = sADD + cboEndSession.options[cboEndSession.selectedIndex].value + '	';
-            sADD = sADD + cboEndSession.options[cboEndSession.selectedIndex].innerText + '	';
+        	sADD = sADD + frmPopup.cboEndSession.options[frmPopup.cboEndSession.selectedIndex].value + '	';
+        	sADD = sADD + frmPopup.cboEndSession.options[frmPopup.cboEndSession.selectedIndex].innerText + '	';
         }
 
-        if (cboDuration.selectedIndex < 0) {
+        if (frmPopup.cboDuration.selectedIndex < 0) {
             sADD = sADD + 0 + '	';
             sADD = sADD + '' + '	';
         }
         else {
-            sADD = sADD + cboDuration.options[cboDuration.selectedIndex].value + '	';
-            sADD = sADD + cboDuration.options[cboDuration.selectedIndex].innerText + '	';
+        	sADD = sADD + frmPopup.cboDuration.options[frmPopup.cboDuration.selectedIndex].value + '	';
+        	sADD = sADD + frmPopup.cboDuration.options[frmPopup.cboDuration.selectedIndex].innerText + '	';
         }
 
-        if (optLegendLookup.checked == true) {
+        if (frmPopup.optLegendLookup.checked == true) {
             sADD = sADD + '1' + '	';
-            sADD = sADD + cboLegendTable.options[cboLegendTable.selectedIndex].innerText + '.' + cboLegendCode.options[cboLegendCode.selectedIndex].innerText + '	';
-            sADD = sADD + cboLegendTable.options[cboLegendTable.selectedIndex].value + '	';
-            sADD = sADD + cboLegendColumn.options[cboLegendColumn.selectedIndex].value + '	';
-            sADD = sADD + cboLegendCode.options[cboLegendCode.selectedIndex].value + '	';
-            sADD = sADD + cboEventType.options[cboEventType.selectedIndex].value + '	';
+            sADD = sADD + frmPopup.cboLegendTable.options[frmPopup.cboLegendTable.selectedIndex].innerText + '.' + frmPopup.cboLegendCode.options[frmPopup.cboLegendCode.selectedIndex].innerText + '	';
+            sADD = sADD + frmPopup.cboLegendTable.options[frmPopup.cboLegendTable.selectedIndex].value + '	';
+            sADD = sADD + frmPopup.cboLegendColumn.options[frmPopup.cboLegendColumn.selectedIndex].value + '	';
+            sADD = sADD + frmPopup.cboLegendCode.options[frmPopup.cboLegendCode.selectedIndex].value + '	';
+            sADD = sADD + frmPopup.cboEventType.options[frmPopup.cboEventType.selectedIndex].value + '	';
         }
         else {
             sADD = sADD + '0' + '	';
-            sADD = sADD + txtCharacter.value + '	';
+            sADD = sADD + frmPopup.txtCharacter.value + '	';
             sADD = sADD + '0' + '	';
             sADD = sADD + '0' + '	';
             sADD = sADD + '0' + '	';
             sADD = sADD + '0' + '	';
         }
 
-        sADD = sADD + cboEventDesc1.options[cboEventDesc1.selectedIndex].value + '	';
-        sADD = sADD + cboEventDesc1.options[cboEventDesc1.selectedIndex].innerText + '	';
-        sADD = sADD + cboEventDesc2.options[cboEventDesc2.selectedIndex].value + '	';
-        sADD = sADD + cboEventDesc2.options[cboEventDesc2.selectedIndex].innerText + '	';
+        sADD = sADD + frmPopup.cboEventDesc1.options[frmPopup.cboEventDesc1.selectedIndex].value + '	';
+        sADD = sADD + frmPopup.cboEventDesc1.options[frmPopup.cboEventDesc1.selectedIndex].innerText + '	';
+        sADD = sADD + frmPopup.cboEventDesc2.options[frmPopup.cboEventDesc2.selectedIndex].value + '	';
+        sADD = sADD + frmPopup.cboEventDesc2.options[frmPopup.cboEventDesc2.selectedIndex].innerText + '	';
     }
 
     sADD = sADD + frmEvent.eventID.value + '	';
@@ -5595,12 +5454,6 @@ function setForm() {
     return false;
 }
 
-function eventChanged() {
-	var frmUse = OpenHR.getForm("workframe", "frmUseful");
-	var fViewing = (frmUse.txtAction.value.toUpperCase() == "VIEW");
-	button_disable(window.frmpopup.cmdOk, fViewing);
-}
-
 function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
 	var dlgwinprops = "center:yes;" +
 			"dialogHeight:" + pHeight + "px;" +
@@ -5612,7 +5465,6 @@ function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
 	//calendarreport.js at lineCap 5114
 	showModalDialog(pDestination, self, dlgwinprops);
 }
-
 
 function AccessCode(psDescription) {
 	if (psDescription == "Read / Write") {

@@ -1,20 +1,23 @@
 ﻿<%@ Page Title="" Language="VB" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage" %>
 
+<%@ Import Namespace="DMI.NET" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-downloadControlsStatus
+	<%= GetPageTitle("downloadControlsStatus")%>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
-<%@ Language=VBScript %>
-<!--#INCLUDE FILE="include/ctl_SetStyles.txt" -->
-<HTML>
-<HEAD>
-<META NAME="GENERATOR" Content="Microsoft Visual Studio 6.0">
-<link rel="stylesheet" type="text/css" href="OpenHR.css">
-<TITLE>OpenHR Intranet</TITLE>
-<meta http-equiv="X-UA-Compatible" content="IE=5">
-<SCRIPT LANGUAGE=JavaScript>
+	<script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
+
+
+	<html>
+	<head>
+		<meta name="GENERATOR" content="Microsoft Visual Studio 6.0">
+		<link rel="stylesheet" type="text/css" href="OpenHR.css">
+		<title>OpenHR Intranet</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=5">
+		<script language="JavaScript">
 <!--
 
 	function btnClick() 
@@ -38,71 +41,69 @@ downloadControlsStatus
 		
 		return;
 	}
-
 	-->
-</SCRIPT>
+		</script>
 
-</HEAD>
-<%
-if len(session("ConvertedDesktopColour")) = 0 then 
-    sBGColour = "#f9f7fb" 
-else 
-    sBGColour = session("ConvertedDesktopColour") 
-end if
-%>
-<BODY TOPMARGIN=8 BOTTOMMARGIN=0 style="background-color:<%=sBGColour%>" >
-<FORM ID=frmDownloadStatus NAME=frmDownloadStatus>
+	</head>
+	<%
+		Dim sBGColour As String
+		If Len(Session("ConvertedDesktopColour")) = 0 Then
+			sBGColour = "#f9f7fb"
+		Else
+			sBGColour = Session("ConvertedDesktopColour")
+		End If
+	%>
+	<body topmargin="8" bottommargin="0" style="background-color: <%=sBGColour%>">
+		<form id="frmDownloadStatus" name="frmDownloadStatus">
 
-<table class="outline" align=center cellPadding=0 cellSpacing=0> 
-    <tr>
-	    <td>
-		    <table class="invisible" align=center cellPadding=0 cellSpacing=0> 
-			    <tr height=10>
-			        <td colSpan=3 ></td>
-			    </tr>
-			    <tr>
-					<td width=20></td>
-			        <td align=center>
-				        Downloading OpenHR Intranet Controls.
-				    </td>
-				    <td width=20></td>
-			    </tr>
-			    <tr height=10>
-			        <td colSpan=3 height=10></td>
-			    </tr>
-			    <TR>
-					<td width=20></td>
-					<TD ALIGN=center ID=txtMessage NAME=txtMessage>
-				        Please wait...
-					</TD>
-					<td width=20></td>
-				</TR>
-			    <tr height=20>
-			        <td colSpan=3>&nbsp;</td>
-			    </tr>
-			    <tr>
-					<td width=20></td>
-			        <td align=center>
-				        <INPUT STYLE="WIDTH: 75px" WIDTH=75 ID=tdButton NAME=tdButton TYPE=button class="btn" VALUE=Cancel 
-					        onclick="btnClick()" 
-					        onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-			                onmouseout="try{button_onMouseOut(this);}catch(e){}"
-			                onfocus="try{button_onFocus(this);}catch(e){}"
-			                onblur="try{button_onBlur(this);}catch(e){}" />
-				    </td>
-					<td width=20></td>
-                </tr>
-			    <tr height=5>
-			        <td colSpan=5></td>
-			    </tr>
+			<table class="outline" align="center" cellpadding="0" cellspacing="0">
+				<tr>
+					<td>
+						<table class="invisible" align="center" cellpadding="0" cellspacing="0">
+							<tr height="10">
+								<td colspan="3"></td>
+							</tr>
+							<tr>
+								<td width="20"></td>
+								<td align="center">Downloading OpenHR Intranet Controls.
+								</td>
+								<td width="20"></td>
+							</tr>
+							<tr height="10">
+								<td colspan="3" height="10"></td>
+							</tr>
+							<tr>
+								<td width="20"></td>
+								<td align="center" id="txtMessage" name="txtMessage">Please wait...
+								</td>
+								<td width="20"></td>
+							</tr>
+							<tr height="20">
+								<td colspan="3">&nbsp;</td>
+							</tr>
+							<tr>
+								<td width="20"></td>
+								<td align="center">
+									<input style="WIDTH: 75px" width="75" id="tdButton" name="tdButton" type="button" class="btn" value="Cancel"
+										onclick="btnClick()"
+										onmouseover="try{button_onMouseOver(this);}catch(e){}"
+										onmouseout="try{button_onMouseOut(this);}catch(e){}"
+										onfocus="try{button_onFocus(this);}catch(e){}"
+										onblur="try{button_onBlur(this);}catch(e){}" />
+								</td>
+								<td width="20"></td>
+							</tr>
+							<tr height="5">
+								<td colspan="5"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
 			</table>
-		</td>
-    </tr>
-</table>
-<INPUT ID=txtDownloadStatus NAME=txtDownloadStstus TYPE=hidden VALUE=0>
-</FORM>
-</BODY>
-</HTML>
+			<input id="txtDownloadStatus" name="txtDownloadStstus" type="hidden" value="0">
+		</form>
+	</body>
+	</html>
 
 
 </asp:Content>
