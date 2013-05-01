@@ -5,7 +5,7 @@
 <%Html.RenderPartial("Util_Def_CustomReports/dialog")%>
 
 <script type="text/javascript">
-function selectRecordOption(psTable, psType) {
+function selectRecordOptionCalDef(psTable, psType) {
 	var sURL;
 	var iCurrentID;
 	var iTableID;
@@ -246,7 +246,7 @@ function selectRecordOption(psTable, psType) {
 																	</td>
 																	<td>
 																		<input id="cmdBasePicklist" name="cmdBasePicklist" style="WIDTH: 30px" type="button" disabled="disabled" class="btn btndisabled" value="..."
-																			onclick="selectRecordOption('base', 'picklist')"
+																			onclick="selectRecordOptionCalDef('base', 'picklist')"
 																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
 																			onfocus="try{button_onFocus(this);}catch(e){}"
@@ -281,7 +281,7 @@ function selectRecordOption(psTable, psType) {
 																	</td>
 																	<td>
 																		<input id="cmdBaseFilter" name="cmdBaseFilter" style="WIDTH: 30px" type="button" disabled="disabled" value="..." class="btn btndisabled"
-																			onclick="selectRecordOption('base', 'filter')"
+																			onclick="selectRecordOptionCalDef('base', 'filter')"
 																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
 																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
 																			onfocus="try{button_onFocus(this);}catch(e){}"

@@ -592,7 +592,9 @@ function refreshTab2Controls() {
 }
 
 function refreshTab3Controls() {
-    var fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
+	var frmUse = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmUseful");
+	//var frmPopup = document.getElementById("frmPopup");
+  var fViewing = (frmUse.txtAction.value.toUpperCase() == "VIEW");
 
     with (frmDefinition) {
         if (optFixedStart.checked) {
@@ -791,7 +793,7 @@ function refreshTab3Controls() {
             button_disable(cmdPeriodEndUp, fViewing);
         }
 
-        var blnPersonnelBaseTable = (frmUseful.txtPersonnelTableID.value == frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].value);
+        var blnPersonnelBaseTable = (frmUse.txtPersonnelTableID.value == frmDefinition.cboBaseTable.options[frmDefinition.cboBaseTable.selectedIndex].value);
 	    var blnRegionSelected = (cboRegion.options[cboRegion.selectedIndex].value > 0);
 
         if (chkIncludeBHols.checked || chkIncludeWorkingDaysOnly.checked || chkShadeBHols.checked
@@ -837,7 +839,7 @@ function refreshTab3Controls() {
 
     refreshTab1Controls();
 
-    button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
+    button_disable(frmDefinition.cmdOK, ((frmUsel.txtChanged.value == 0) ||
         (fViewing == true)));
 }
 
@@ -902,7 +904,7 @@ function refreshTab4Controls() {
 function refreshTab5Controls() {
     var i;
     var iCount;
-
+	
     var fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
     with (frmDefinition) {
         if (optOutputFormat0.checked == true)		//Data Only
@@ -1451,11 +1453,6 @@ function selectEmailGroup() {
     openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
 }
 
-
-
-
-
-
 function eventFilterString() {
     var i;
     var pvarbookmark;
@@ -1547,15 +1544,7 @@ function submitDefinition() {
 }
 
 function cancelClick() {
-	//window.location = "main";
-	//window.close();
-	//self.close();
-	//window.parent.close();
-	try {
-			$(".popup").dialog("close");
-			//$("#").show();
-		}
-		catch (e) { }
+	self.close();
 }
 
 function okClick() {
@@ -1761,7 +1750,7 @@ function checkUniqueEventKey(psNewKey) {
 
 function eventEdit() {
     var sURL;
-
+	debugger;
     with (frmEventDetails) {
         eventAction.value = "EDIT";
         eventName.value = frmDefinition.grdEvents.Columns("Name").value;
@@ -1825,12 +1814,9 @@ function eventEdit() {
             "&eventDesc2ID=" + escape(frmEventDetails.eventDesc2ID.value) +
             "&eventDesc2=" + escape(frmEventDetails.eventDesc2.value) +
             "&relationNames=" + escape(frmEventDetails.relationNames.value);
-
         openDialog(sURL, 650, 500, "yes", "yes");
-
         frmUseful.txtChanged.value = 1;
     }
-
     refreshTab2Controls();
 }
 
@@ -4275,6 +4261,7 @@ function grdAccessRowLoaded(Bookmark) {
 function eventAdd() {
 	var sURL;
 	var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
+	debugger;
 	frmEvent.eventAction.value = "NEW";
 	frmEvent.eventID.value = getEventKey();
 	frmEvent.eventFilterHidden.value = "";
@@ -4318,7 +4305,6 @@ function eventAdd() {
 		sMessage = "The maximum of 999 events has been selected.";
 		OpenHR.messageBox(sMessage, 64, "Calendar Reports");
 	}
-	
 	refreshTab2Controls();
 }
 
@@ -4530,14 +4516,6 @@ function populateColumnCombos() {
 	frmUseful.txtLoading.value = 'Y';
 }
 
-function eventChanged() {
-	var frmPopup = document.getElementById("frmPopup");
-	//var frmUse = OpenHR.getForm("workframe", "frmUseful");
-	//var fViewing = (frmUse.txtAction.value.toUpperCase() == "VIEW");
-
-	//button_disable(frmPopup.cmdOk, false);
-}
-
 function loadAvailableLookupColumns() {
 	var i;
 	var sSelectedIDs;
@@ -4578,8 +4556,9 @@ function loadAvailableLookupColumns() {
 		}
 	}
 	//document.parentWindow.parent.window.dialogArguments.window.refreshTab3Controls();		  
-	refreshTab3Controls();
-	var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
+	///refreshTab3Controls();
+
+	var frmEvent = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmEventDetails");
 
 	if ((frmEvent.eventAction.value.toUpperCase() == "EDIT") && (frmPopup.txtFirstLoad_Lookup.value == 1)) {
 		setLookupValues();
@@ -4627,7 +4606,7 @@ function setStartSession(piColumnID) {
         }
     }
     frmPopup.cboStartSession.selectedIndex = 0;
-}
+}4
 
 function setEndDate(piColumnID) {
 	var i;
@@ -4735,7 +4714,7 @@ function setDesc2Column(piColumnID) {
 }
 
 function setLookupValues() {
-	var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
+	var frmEvent = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmEventDetails");
 	var frmPopup = document.getElementById("frmPopup");
     if (frmPopup.txtHaveSetLookupValues.value == 1) {
         return;
@@ -4803,8 +4782,6 @@ function setEventValues() {
 	refreshLegendControls();
 }
 
-
-
 function getTableName(piTableID) {
     var i;
     var sTableName = new String("");
@@ -4841,124 +4818,7 @@ function trim(strInput) {
     return strInput;
 }
 
-function validateEventInfo() {
-    var sEventName = new String(trim(frmPopup.txtEventName.value));
-    var sMessage = new String("");
 
-    //check a name has been entered
-    if (sEventName == '' || sEventName.length < 1) {
-        sMessage = "You must give this event a name.";
-        OpenHR.messageBox(sMessage, 48, "Calendar Reports");
-        frmPopup.txtEventName.focus();
-        return false;
-    }
-
-    //check the name is unique
-    if (!checkUniqueEventName(sEventName)) {
-        sMessage = "An event called '" + sEventName + "' already exists.";
-        OpenHR.messageBox(sMessage, 48, "Calendar Reports");
-        frmPopup.txtEventName.focus();
-        return false;
-    }
-
-    //check that a valid event table has been selected
-    if (frmPopup.cboEventTable.options[frmPopup.cboEventTable.selectedIndex].value < 1) {
-        sMessage = "A valid event table has not been selected.";
-        OpenHR.messageBox(sMessage, 48, "Calendar Reports");
-        frmPopup.cboEventTable.focus();
-        return false;
-    }
-
-    //check that a valid start date column has been selected
-    if (frmPopup.cboStartDate.length < 1) {
-        sMessage = "The selected event table has no date columns. Please select an event table that contains date columns.";
-        OpenHR.messageBox(sMessage, 48, "Calendar Reports");
-        frmPopup.txtNoDateColumns.value = 1;
-        if (frmPopup.cboStartDate.disabled == false) frmPopup.cboStartDate.focus();
-        return false;
-    }
-
-    //check that a valid start date column has been selected
-    if (frmPopup.cboStartDate.selectedIndex < 0) {
-        sMessage = "A valid start date column has not been selected.";
-        OpenHR.messageBox(sMessage, 48, "Calendar Reports");
-        if (frmPopup.cboStartDate.disabled == false) frmPopup.cboStartDate.focus();
-        return false;
-    }
-
-    //check that a valid start date column has been selected
-    if (frmPopup.cboStartDate.options[frmPopup.cboStartDate.selectedIndex].value < 1) {
-        sMessage = "A valid start date column has not been selected.";
-        OpenHR.messageBox(sMessage, 48, "Calendar Reports");
-        if (frmPopup.cboStartDate.disabled == false) frmPopup.cboStartDate.focus();
-        return false;
-    }
-
-    //check that either a valid end date or duration column has been selected
-    if (frmPopup.optDuration.checked && (frmPopup.cboDuration.options[frmPopup.cboDuration.selectedIndex].value < 1)) {
-        sMessage = "A valid duration column has not been selected.";
-        OpenHR.messageBox(sMessage, 48, "Calendar Reports");
-        frmPopup.cboDuration.focus();
-        return false;
-    }
-    if (frmPopup.optEndDate.checked && (frmPopup.cboEndDate.options[frmPopup.cboEndDate.selectedIndex].value < 1)) {
-        sMessage = "A valid end date column has not been selected.";
-        OpenHR.messageBox(sMessage, 48, "Calendar Reports");
-        frmPopup.cboEndDate.focus();
-        return false;
-    }
-
-    //check that a valid 'set' of lookup tables have been selected
-    if (frmPopup.optLegendLookup.checked && (frmPopup.cboLegendTable.length < 1)) {
-        sMessage = "A valid lookup table has not been selected.";
-        OpenHR.messageBox(sMessage, 48, "Calendar Reports");
-        return false;
-    }
-    else if (frmPopup.optLegendLookup.checked && (frmPopup.cboLegendTable.options[frmPopup.cboLegendTable.selectedIndex].value < 1)) {
-        sMessage = "A valid lookup table has not been selected.";
-        OpenHR.messageBox(sMessage, 48, "Calendar Reports");
-        frmPopup.cboLegendTable.focus();
-        return false;
-    }
-
-    if (frmPopup.optLegendLookup.checked && (frmPopup.cboLegendColumn.length < 1)) {
-        sMessage = "A valid lookup column has not been selected.";
-        OpenHR.messageBox(sMessage, 48, "Calendar Reports");
-        return false;
-    }
-    else if (frmPopup.optLegendLookup.checked && (frmPopup.cboLegendColumn.options[frmPopup.cboLegendColumn.selectedIndex].value < 1)) {
-        sMessage = "A valid lookup column has not been selected.";
-        OpenHR.messageBox(sMessage, 48, "Calendar Reports");
-        frmPopup.cboLegendColumn.focus();
-        return false;
-    }
-
-    if (frmPopup.optLegendLookup.checked && (frmPopup.cboLegendCode.length < 1)) {
-        sMessage = "A valid lookup code has not been selected.";
-        OpenHR.messageBox(sMessage, 48, "Calendar Reports");
-        return false;
-    }
-    else if (frmPopup.optLegendLookup.checked && (frmPopup.cboLegendCode.options[frmPopup.cboLegendCode.selectedIndex].value < 1)) {
-        sMessage = "A valid lookup code has not been selected.";
-        OpenHR.messageBox(sMessage, 48, "Calendar Reports");
-        frmPopup.cboLegendCode.focus();
-        return false;
-    }
-
-    if (frmPopup.optLegendLookup.checked && (frmPopup.cboEventType.length < 1)) {
-        sMessage = "A valid event type has not been selected.";
-        OpenHR.messageBox(sMessage, 48, "Calendar Reports");
-        return false;
-    }
-    else if (frmPopup.optLegendLookup.checked && (frmPopup.cboEventType.options[frmPopup.cboEventType.selectedIndex].value < 1)) {
-        sMessage = "A valid event type has not been selected.";
-        OpenHR.messageBox(sMessage, 48, "Calendar Reports");
-        frmPopup.cboEventType.focus();
-        return false;
-    }
-
-    return true;
-}
 
 function checkUniqueEventName(psEventName) {
     //CODE REQUIRED TO CHECK THAT THE EVENT NAME IS UNIQUE 
@@ -5343,116 +5203,7 @@ function removeEventTable(piChildTableID) {
     return true;
 }
 
-function setForm() {
-    if (!validateEventInfo()) {
-        return false;
-    }
 
-    var frmEvent = OpenHR.getForm("workframe", "frmEventDetails");
-    var frmDef = OpenHR.getForm("workframe", "frmDefinition");
-
-    var plngRow = frmDef.grdEvents.AddItemRowIndex(frmDef.grdEvents.Bookmark);
-    var sADD = new String("");
-
-    //Add the event information to string which will be used to populate the grid.
-    with (frmPopup) {
-    	sADD = sADD + frmPopup.txtEventName.value + '	';
-    	sADD = sADD + frmPopup.cboEventTable.options[frmPopup.cboEventTable.selectedIndex].value + '	';
-    	sADD = sADD + frmPopup.cboEventTable.options[frmPopup.cboEventTable.selectedIndex].innerText + '	';
-    	sADD = sADD + frmPopup.txtEventFilterID.value + '	';
-    	sADD = sADD + frmPopup.txtEventFilter.value + '	';
-    	sADD = sADD + frmPopup.cboStartDate.options[frmPopup.cboStartDate.selectedIndex].value + '	';
-    	sADD = sADD + frmPopup.cboStartDate.options[frmPopup.cboStartDate.selectedIndex].innerText + '	';
-
-        if (frmPopup.cboStartSession.selectedIndex < 0) {
-            sADD = sADD + 0 + '	';
-            sADD = sADD + '' + '	';
-        }
-        else {
-        	sADD = sADD + frmPopup.cboStartSession.options[frmPopup.cboStartSession.selectedIndex].value + '	';
-        	sADD = sADD + frmPopup.cboStartSession.options[frmPopup.cboStartSession.selectedIndex].innerText + '	';
-        }
-
-        if (frmPopup.cboEndDate.selectedIndex < 0) {
-            sADD = sADD + 0 + '	';
-            sADD = sADD + '' + '	';
-        }
-        else {
-            sADD = sADD + frmPopup.cboEndDate.options[frmPopup.cboEndDate.selectedIndex].value + '	';
-            sADD = sADD + frmPopup.cboEndDate.options[frmPopup.cboEndDate.selectedIndex].innerText + '	';
-        }
-
-        if (frmPopup.cboEndSession.selectedIndex < 0) {
-            sADD = sADD + 0 + '	';
-            sADD = sADD + '' + '	';
-        }
-        else {
-        	sADD = sADD + frmPopup.cboEndSession.options[frmPopup.cboEndSession.selectedIndex].value + '	';
-        	sADD = sADD + frmPopup.cboEndSession.options[frmPopup.cboEndSession.selectedIndex].innerText + '	';
-        }
-
-        if (frmPopup.cboDuration.selectedIndex < 0) {
-            sADD = sADD + 0 + '	';
-            sADD = sADD + '' + '	';
-        }
-        else {
-        	sADD = sADD + frmPopup.cboDuration.options[frmPopup.cboDuration.selectedIndex].value + '	';
-        	sADD = sADD + frmPopup.cboDuration.options[frmPopup.cboDuration.selectedIndex].innerText + '	';
-        }
-
-        if (frmPopup.optLegendLookup.checked == true) {
-            sADD = sADD + '1' + '	';
-            sADD = sADD + frmPopup.cboLegendTable.options[frmPopup.cboLegendTable.selectedIndex].innerText + '.' + frmPopup.cboLegendCode.options[frmPopup.cboLegendCode.selectedIndex].innerText + '	';
-            sADD = sADD + frmPopup.cboLegendTable.options[frmPopup.cboLegendTable.selectedIndex].value + '	';
-            sADD = sADD + frmPopup.cboLegendColumn.options[frmPopup.cboLegendColumn.selectedIndex].value + '	';
-            sADD = sADD + frmPopup.cboLegendCode.options[frmPopup.cboLegendCode.selectedIndex].value + '	';
-            sADD = sADD + frmPopup.cboEventType.options[frmPopup.cboEventType.selectedIndex].value + '	';
-        }
-        else {
-            sADD = sADD + '0' + '	';
-            sADD = sADD + frmPopup.txtCharacter.value + '	';
-            sADD = sADD + '0' + '	';
-            sADD = sADD + '0' + '	';
-            sADD = sADD + '0' + '	';
-            sADD = sADD + '0' + '	';
-        }
-
-        sADD = sADD + frmPopup.cboEventDesc1.options[frmPopup.cboEventDesc1.selectedIndex].value + '	';
-        sADD = sADD + frmPopup.cboEventDesc1.options[frmPopup.cboEventDesc1.selectedIndex].innerText + '	';
-        sADD = sADD + frmPopup.cboEventDesc2.options[frmPopup.cboEventDesc2.selectedIndex].value + '	';
-        sADD = sADD + frmPopup.cboEventDesc2.options[frmPopup.cboEventDesc2.selectedIndex].innerText + '	';
-    }
-
-    sADD = sADD + frmEvent.eventID.value + '	';
-    sADD = sADD + frmSelectionAccess.baseHidden.value;
-
-    //Add the event information to the grdEvents in the parent window..
-    if (frmEvent.eventAction.value.toUpperCase() == "NEW") {
-        frmDef.grdEvents.additem(sADD);
-        frmDef.grdEvents.selbookmarks.RemoveAll();
-        frmDef.grdEvents.MoveLast();
-        frmDef.grdEvents.selbookmarks.Add(frmDef.grdEvents.Bookmark);
-    }
-    else {
-        //' Check if any columns in the report definition are from the table that was
-        //' previously selected in the child combo box. If so, prompt user for action.
-        var bContinueRemoval;
-
-        //bContinueRemoval = removeChildTable(frmPopup.originalChildID.value);
-        bContinueRemoval = true;
-
-        if (bContinueRemoval) {
-            frmDef.grdEvents.removeitem(plngRow);
-            frmDef.grdEvents.additem(sADD, plngRow);
-            frmDef.grdEvents.Bookmark = frmDef.grdEvents.AddItemBookmark(plngRow);
-            frmDef.grdEvents.SelBookmarks.RemoveAll();
-            frmDef.grdEvents.SelBookmarks.Add(frmDef.grdEvents.AddItemBookmark(plngRow));
-        }
-    }
-
-    self.close();
-    return false;
-}
 
 function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
 	var dlgwinprops = "center:yes;" +
