@@ -10,7 +10,7 @@
 
 <script type="text/javascript">
 	function util_def_calendarreportdates_window_onload() {
-		//debugger;
+		
 		var frmPopup = document.getElementById("frmPopup");
 		var frmSelectionAccess = document.getElementById("frmSelectionAccess");
 		frmPopup.txtLoading.value = 1;
@@ -273,23 +273,37 @@
 	}
 
 	function populateEventTableCombo() {
-		var frmDef = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmDefinition");
-		var frmRefresh = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmRefresh");
+		//var frmTab = document.parentWindow.parent.window.dialogArguments.parent.frames("workframe").document.forms("frmTables");
+		//var frmDef = document.parentWindow.parent.window.dialogArguments.parent.frames("workframe").document.forms("frmDefinition");
+		//var frmEvent = document.parentWindow.parent.window.dialogArguments.parent.frames("workframe").document.forms("frmEventDetails");
+		
+		var frmTab = document.parentWindow.parent.window.dialogArguments.parent.document.getElementById("frmTables");
+		var frmDef = document.parentWindow.parent.window.dialogArguments.parent.document.getElementById("frmDefinition");
+		var frmEvent = document.parentWindow.parent.window.dialogArguments.parent.document.getElementById("frmEventDetails");
+
 		var frmPopup = document.getElementById("frmPopup");
-		var frmEvent = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmEventDetails");
+		var sRelationString = frmEvent.relationNames.value;		
 
-		var sRelationString = frmEvent.relationNames.value;
+		var iRelationID;
 		var sTableName;
+
 		var bAdded = false;
-		//var dataCollection = frmTab.elements;
+
+		var dataCollection = frmTab.elements;
 		var oOption;
+
+		var frmRefresh = document.parentWindow.parent.window.dialogArguments.parent.document.getElementById("frmHit");
+
 		var iIndex = sRelationString.indexOf("	");
-
 		while (iIndex > 0) {
-			var iRelationID = sRelationString.substr(0, iIndex);
+			iRelationID = sRelationString.substr(0, iIndex);
 
-			frmRefresh.submit();
+			//frmRefresh.submit();
+
+			OpenHR.submitForm(frmRefresh);
+			console.log("refreshing...");
 			bAdded = true;
+
 			oOption = document.createElement("OPTION");
 			frmPopup.cboEventTable.options.add(oOption);
 			oOption.value = iRelationID;
@@ -309,7 +323,8 @@
 				iIndex = sRelationString.indexOf("	");
 
 				bAdded = false;
-			} else {
+			}
+			else {
 				sRelationString = sRelationString.substr(iIndex + 1);
 				iIndex = sRelationString.indexOf("	");
 
@@ -318,7 +333,7 @@
 
 				bAdded = false;
 			}
-		}
+		}		
 	}
 
 	function populateEventColumns() {

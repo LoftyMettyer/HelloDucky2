@@ -115,8 +115,9 @@ function eventAdd() {
 		sMessage = "The maximum of 999 events has been selected.";
 		OpenHR.messageBox(sMessage, 64, "Calendar Reports");
 	}
-	debugger;
+
 	refreshTab2Controls();
+
 }
 
 function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll) {

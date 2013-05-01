@@ -7,20 +7,25 @@
             $("#pollframe").attr("data-framesource", "POLL");
             var frmMessages = document.getElementById("frmMessages");
             var sMessage = new String("");
-            var controlCollection = frmMessages.elements;
-            if (controlCollection != null) {
-                for (var i = 0; i < controlCollection.length; i++) {
-                    if (sMessage.length > 0) {
-                        sMessage = sMessage + "\n\n";
-                    }
-                    sMessage = sMessage + controlCollection.item(i).value;
-                }
-                if (sMessage.length > 0) {
-                    var frmPollMsg = OpenHR.getForm("pollmessageframe", "frmSetMessage");
-                    frmPollMsg.txtMessage.value = sMessage;
-                    pollmessage_refreshMessage();
-                }
-            }
+	        try {
+		        var controlCollection = frmMessages.elements;
+		        if (controlCollection != null) {
+			        for (var i = 0; i < controlCollection.length; i++) {
+				        if (sMessage.length > 0) {
+					        sMessage = sMessage + "\n\n";
+				        }
+				        sMessage = sMessage + controlCollection.item(i).value;
+			        }
+			        if (sMessage.length > 0) {
+				        var frmPollMsg = OpenHR.getForm("pollmessageframe", "frmSetMessage");
+				        frmPollMsg.txtMessage.value = sMessage;
+				        pollmessage_refreshMessage();
+			        }
+		        }
+	        }
+        	catch (e) {
+		        //alert("poll failed");
+	        }
         }
     </script>
 
