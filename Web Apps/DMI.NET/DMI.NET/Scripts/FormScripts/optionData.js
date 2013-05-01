@@ -223,8 +223,8 @@
                     var sErrorMsg = frmOptionData.txtErrorMessage2.value;
                     if (sErrorMsg.length > 0) {
                         // We've got an error.
-                        $("#optionframe").Cancel();
-                        //window.parent.frames("menuframe").ASRIntranetFunctions.ClosePopup();
+                        Cancel(); //should be in scope!
+                    	//window.parent.frames("menuframe").ASRIntranetFunctions.ClosePopup();
                         OpenHR.messageBox(sErrorMsg);
                         return;
                     }

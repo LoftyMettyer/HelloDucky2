@@ -21,27 +21,33 @@
 	    mbResult = { vbYes: 6, vbNo: 7, vbCancel: 2 },
 
 	    messageBox = function (prompt, buttons, title) {
-        
-	        switch (buttons) {
+
+	    	switch (buttons) {
 	    		case mbStyle.vbExclamation:
 	    			//48
-	    		    alert(prompt);
-	    		    break;
-	            case mbStyle.vbYesNoCancel:
-	                
-                    //TODO - Need to find a popup that can handle multiple buttons
-	                return confirm(prompt) ? mbResult.vbYes : mbResult.vbNo;
+	    			alert(prompt);
+	    			break;
+	    		case mbStyle.vbYesNoCancel:
+
+	    			//TODO - Need to find a popup that can handle multiple buttons
+	    			return confirm(prompt) ? mbResult.vbYes : mbResult.vbNo;
 
 	    		case mbStyle.vbQuestion + mbStyle.vbYesNo:
 	    			//36
-	    		    return confirm(prompt) ? mbResult.vbYes : mbResult.vbNo;
-	    		    break;
-	    	    default:
-	    	        alert(prompt);
-	    	        //throw Error("OpenHR.messageBox buttons not coded for.");
-	    	        break;
-	        }
-	        
+	    			return confirm(prompt) ? mbResult.vbYes : mbResult.vbNo;
+
+	    			break;
+	    		case mbStyle.vbQuestion + mbStyle.vbYesNoCancel:
+	    			//35
+	    			return confirm(prompt) ? mbResult.vbYes : mbResult.vbNo;
+	    			break;
+
+	    		default:
+	    			alert(prompt);
+	    			//throw Error("OpenHR.messageBox buttons not coded for.");
+	    			break;
+	    	}
+
             
 
 	    },

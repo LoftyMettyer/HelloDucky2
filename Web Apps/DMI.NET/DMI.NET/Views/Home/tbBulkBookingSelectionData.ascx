@@ -1,4 +1,4 @@
-﻿r<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import namespace="DMI.NET" %>
 <%
 	Response.Expires = -1

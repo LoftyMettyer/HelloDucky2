@@ -182,8 +182,8 @@
 						iResultCode = iResultCode / 10;
 						iOverbookCode = iResultCode;
 
-						sTransferErrorMsg = ""
-						sTransferWarningMsg = ""
+						sTransferErrorMsg = "";
+						sTransferWarningMsg = "";
 
 						if (txtAction.value == "SELECTBULKBOOKINGS") {
 							sPreReqFails = txtPreReqFails.value;
@@ -252,12 +252,12 @@
 							if ((txtAction.value == "SELECTBOOKCOURSE_2") ||
 									(txtAction.value == "SELECTTRANSFERBOOKING_1") ||
 									(txtAction.value == "SELECTADDFROMWAITINGLIST_2")) {
-								sTransferErrorMsg = sTransferErrorMsg + "\n\nUnable to make the booking."
+								sTransferErrorMsg = sTransferErrorMsg + "\n\nUnable to make the booking.";
 							} else {
 								if (txtAction.value == "SELECTBULKBOOKINGS") {
-									sTransferErrorMsg = sTransferErrorMsg + "\n\nUnable to make the bookings."
+									sTransferErrorMsg = sTransferErrorMsg + "\n\nUnable to make the bookings.";
 								} else {
-									sTransferErrorMsg = sTransferErrorMsg + "\n\nUnable to transfer the bookings."
+									sTransferErrorMsg = sTransferErrorMsg + "\n\nUnable to transfer the bookings.";
 								}
 							}
 							OpenHR.messageBox(sTransferErrorMsg);                            
@@ -268,12 +268,12 @@
 							if ((txtAction.value == "SELECTBOOKCOURSE_2") ||
 									(txtAction.value == "SELECTTRANSFERBOOKING_1") ||
 									(txtAction.value == "SELECTADDFROMWAITINGLIST_2")) {
-								sTransferWarningMsg = sTransferWarningMsg + "\n\nDo you still want to make the booking ?"
+								sTransferWarningMsg = sTransferWarningMsg + "\n\nDo you still want to make the booking ?";
 							} else {
 								if (txtAction.value == "SELECTBULKBOOKINGS") {
-									sTransferWarningMsg = sTransferWarningMsg + "\n\nDo you still want to make the bookings ?"
+									sTransferWarningMsg = sTransferWarningMsg + "\n\nDo you still want to make the bookings ?";
 								} else {
-									sTransferWarningMsg = sTransferWarningMsg + "\n\nDo you still want to transfer the bookings ?"
+									sTransferWarningMsg = sTransferWarningMsg + "\n\nDo you still want to transfer the bookings ?";
 								}
 							}
 							iResponse = OpenHR.messageBox(sTransferWarningMsg, 36); // 36 = vbYesNo + vbQuestion

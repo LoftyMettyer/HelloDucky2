@@ -2176,37 +2176,39 @@ function menu_loadLinkPage(plngLinkTableID, plngLinkOrderID, plngLinkViewID, pln
 }
 
 function menu_loadTransferCoursePage(psCourseTitle) {
-//	var frmRecEditArea;
-//	var frmOptionArea;
+	var frmRecEditArea;
+	var frmOptionArea;
+	var frmWorkAreaInfo = document.getElementById("frmWorkAreaInfo");
 
-//	ShowWait("Loading matching course records. Please wait...");
-//	disableMenu();
+	//ShowWait("Loading matching course records. Please wait...");
+	menu_disableMenu();
 
-//	frmWorkAreaInfo.txtHRProNavigation.value = 1;
-//	
-//	frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
-//	frmOptionArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
+	frmWorkAreaInfo.txtHRProNavigation.value = 1;
+	
+	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
+	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+	var frmMenuInfo = document.getElementById("frmMenuInfo");
 
-//	frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
-//	frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
-//	frmOptionArea.txtGotoOptionViewID.value = frmRecEditArea.txtCurrentViewID.value;
-//	frmOptionArea.txtGotoOptionOrderID.value = frmRecEditArea.txtCurrentOrderID.value;
-//	frmOptionArea.txtGotoOptionRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
-//	frmOptionArea.txtGotoOptionFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
-//	frmOptionArea.txtGotoOptionFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
-//	frmOptionArea.txtGotoOptionValue.value = "";
-//	frmOptionArea.txtGotoOptionLinkTableID.value = frmMenuInfo.txtTB_CourseTableID.value;
-//	frmOptionArea.txtGotoOptionLinkOrderID.value = 0;
-//	frmOptionArea.txtGotoOptionLinkViewID.value = 0;
-//	frmOptionArea.txtGotoOptionLinkRecordID.value = 0;
-//	frmOptionArea.txtGotoOptionPage.value = "tbTransferCourseFind.asp";
-//	frmOptionArea.txtGotoOptionAction.value = "";
-//	frmOptionArea.txtGotoOptionPageAction.value = "LOAD";
-//	frmOptionArea.txtGotoOptionCourseTitle.value = psCourseTitle;
-//	frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
-//	frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
+	frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
+	frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
+	frmOptionArea.txtGotoOptionViewID.value = frmRecEditArea.txtCurrentViewID.value;
+	frmOptionArea.txtGotoOptionOrderID.value = frmRecEditArea.txtCurrentOrderID.value;
+	frmOptionArea.txtGotoOptionRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
+	frmOptionArea.txtGotoOptionFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
+	frmOptionArea.txtGotoOptionFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
+	frmOptionArea.txtGotoOptionValue.value = "";
+	frmOptionArea.txtGotoOptionLinkTableID.value = frmMenuInfo.txtTB_CourseTableID.value;
+	frmOptionArea.txtGotoOptionLinkOrderID.value = 0;
+	frmOptionArea.txtGotoOptionLinkViewID.value = 0;
+	frmOptionArea.txtGotoOptionLinkRecordID.value = 0;
+	frmOptionArea.txtGotoOptionPage.value = "tbTransferCourseFind";
+	frmOptionArea.txtGotoOptionAction.value = "";
+	frmOptionArea.txtGotoOptionPageAction.value = "LOAD";
+	frmOptionArea.txtGotoOptionCourseTitle.value = psCourseTitle;
+	frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
+	frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
 
-//	frmOptionArea.submit();
+	frmOptionArea.submit();
 }
 
 function menu_loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly) {
@@ -2317,7 +2319,7 @@ function menu_reloadLinkPage(psAction, psLocateValue) {
 }
 
 function menu_reloadTransferCoursePage(psAction, psLocateValue) {
-//	reloadPage(psAction, psLocateValue, "TRANSFERCOURSE");
+	menu_reloadPage(psAction, psLocateValue, "TRANSFERCOURSE");
 }
 
 function menu_reloadBookCoursePage(psAction, psLocateValue) {
@@ -2325,11 +2327,11 @@ function menu_reloadBookCoursePage(psAction, psLocateValue) {
 }
 
 function menu_reloadAddFromWaitingListPage(psAction, psLocateValue) {
-//	reloadPage(psAction, psLocateValue, "ADDFROMWAITINGLIST");
+	menu_reloadPage(psAction, psLocateValue, "ADDFROMWAITINGLIST");
 }
 
 function menu_reloadTransferBookingPage(psAction, psLocateValue) {
-//	reloadPage(psAction, psLocateValue, "TRANSFERBOOKING");
+	menu_reloadPage(psAction, psLocateValue, "TRANSFERBOOKING");
 }
 
 function menu_reloadPage(psAction, psLocateValue, psPage) {	
@@ -2512,7 +2514,7 @@ function menu_reloadPage(psAction, psLocateValue, psPage) {
 			frmWorkArea.txtGotoPage.value = "find";
 
 			// Clear the locate value from the menu.
-			//TODO: abMainMenu.Tools("mnutoolLocateRecords").Text = "";
+			menu_SetmnutoolLocateRecordsText("");
 
 			OpenHR.submitForm(frmWorkArea);
 		}
@@ -2550,11 +2552,11 @@ function menu_reloadPage(psAction, psLocateValue, psPage) {
 				frmOptionGetDataArea.txtOptionOrderID.value = 0;
 			}
 			
-			//window.parent.frames("optiondataframe").refreshOptionData();
+			//refreshOptionData(); //should be in scope
 			refreshOptionData();	//should be in context.
 
 			// Clear the locate value from the menu.
-			//TODO: abMainMenu.Tools("mnutoolLocateRecords").Text = ""
+			menu_SetmnutoolLocateRecordsText("");
 		}
 
 		if (psPage == "LINK") {
@@ -2573,13 +2575,13 @@ function menu_reloadPage(psAction, psLocateValue, psPage) {
 			refreshOptionData();
 
 			// Clear the locate value from the menu.
-			//TODO: abMainMenu.Tools("mnutoolLocateRecords").Text = ""
+			menu_SetmnutoolLocateRecordsText("");
 		}
 		//TODO: ALL THESE TB IF's....
 		if (psPage == "TRANSFERCOURSE") {
 			// Get the optionData.asp to get the lookup find records.
-			frmOptionGetDataArea = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
-			frmOptionArea = window.parent.frames("optionframe").document.forms("frmFindForm");
+			frmOptionGetDataArea = OpenHR.getForm("optiondataframe", "frmGetOptionData");
+			frmOptionArea = OpenHR.getForm("optionframe", "frmFindForm");
 			frmOptionGetDataArea.txtOptionAction.value = "LOADTRANSFERCOURSE";
 			frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
 			frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
@@ -2590,16 +2592,16 @@ function menu_reloadPage(psAction, psLocateValue, psPage) {
 			frmOptionGetDataArea.txtOptionCourseTitle.value = frmOptionArea.txtOptionCourseTitle.value;
 			frmOptionGetDataArea.txtOptionFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
 			frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmFindForm.txtRecordCount.value;
-			window.parent.frames("optiondataframe").refreshOptionData();
+			refreshOptionData(); //should be in scope
 
 			// Clear the locate value from the menu.
-			abMainMenu.Tools("mnutoolLocateRecords").Text = ""
+			menu_SetmnutoolLocateRecordsText("");			 
 		}
 
 		if (psPage == "BOOKCOURSE") {
 			// Get the optionData.asp to get the lookup find records.
-			frmOptionGetDataArea = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
-			frmOptionArea = window.parent.frames("optionframe").document.forms("frmFindForm");
+			frmOptionGetDataArea =  OpenHR.getForm("optiondataframe", "frmGetOptionData");
+			frmOptionArea =OpenHR.getForm("optionframe", "frmFindForm");
 			frmOptionGetDataArea.txtOptionAction.value = "LOADBOOKCOURSE";
 			frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
 			frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
@@ -2609,16 +2611,16 @@ function menu_reloadPage(psAction, psLocateValue, psPage) {
 			frmOptionGetDataArea.txtGotoLocateValue.value = psLocateValue;
 			frmOptionGetDataArea.txtOptionFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
 			frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmFindForm.txtRecordCount.value;
-			window.parent.frames("optiondataframe").refreshOptionData();
+			refreshOptionData(); //should be in scope
 
 			// Clear the locate value from the menu.
-			abMainMenu.Tools("mnutoolLocateRecords").Text = ""
+			menu_SetmnutoolLocateRecordsText("");
 		}
 
 		if (psPage == "ADDFROMWAITINGLIST") {
 			// Get the optionData.asp to get the lookup find records.
-			frmOptionGetDataArea = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
-			frmOptionArea = window.parent.frames("optionframe").document.forms("frmFindForm");
+			frmOptionGetDataArea =  OpenHR.getForm("optiondataframe", "frmGetOptionData");
+			frmOptionArea =OpenHR.getForm("optionframe", "frmFindForm");
 			frmOptionGetDataArea.txtOptionAction.value = "LOADADDFROMWAITINGLIST";
 			frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
 			frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
@@ -2628,16 +2630,16 @@ function menu_reloadPage(psAction, psLocateValue, psPage) {
 			frmOptionGetDataArea.txtGotoLocateValue.value = psLocateValue;
 			frmOptionGetDataArea.txtOptionFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
 			frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmFindForm.txtRecordCount.value;
-			window.parent.frames("optiondataframe").refreshOptionData();
+			refreshOptionData(); //should be in scope
 
 			// Clear the locate value from the menu.
-			abMainMenu.Tools("mnutoolLocateRecords").Text = ""
+			menu_SetmnutoolLocateRecordsText("");
 		}
 
 		if (psPage == "TRANSFERBOOKING") {
 			// Get the optionData.asp to get the lookup find records.
-			frmOptionGetDataArea = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
-			frmOptionArea = window.parent.frames("optionframe").document.forms("frmFindForm");
+			frmOptionGetDataArea =  OpenHR.getForm("optiondataframe", "frmGetOptionData");
+			frmOptionArea =OpenHR.getForm("optionframe", "frmFindForm");
 			frmOptionGetDataArea.txtOptionAction.value = "LOADTRANSFERBOOKING";
 			frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
 			frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
@@ -2647,10 +2649,10 @@ function menu_reloadPage(psAction, psLocateValue, psPage) {
 			frmOptionGetDataArea.txtGotoLocateValue.value = psLocateValue;
 			frmOptionGetDataArea.txtOptionFirstRecPos.value = frmFindForm.txtFirstRecPos.value;
 			frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmFindForm.txtRecordCount.value;
-			window.parent.frames("optiondataframe").refreshOptionData();
+			refreshOptionData(); //should be in scope
 
 			// Clear the locate value from the menu.
-			abMainMenu.Tools("mnutoolLocateRecords").Text = ""
+			menu_SetmnutoolLocateRecordsText("");
 		}
 	}
 }
@@ -3219,7 +3221,7 @@ function menu_moveRecord(psMovement) {
 
 //	if (sCurrentWorkPage == "LINKFIND") {
 //		// Get the optionData.asp to get the link find records.
-//		frmOptionGetDataArea = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
+//		frmOptionGetDataArea =  OpenHR.getForm("optiondataframe", "frmGetOptionData");
 //		frmOptionDataArea = window.parent.frames("optiondataframe").document.forms("frmOptionData");
 //		frmOptionArea = window.parent.frames("optionframe").document.forms("frmLinkFindForm");
 //		frmOptionGetDataArea.txtOptionAction.value = "LOADFIND";
@@ -3230,13 +3232,13 @@ function menu_moveRecord(psMovement) {
 //		frmOptionGetDataArea.txtOptionFirstRecPos.value = frmOptionDataArea.txtFirstRecPos.value;
 //		frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmOptionDataArea.txtRecordCount.value;
 
-//		window.parent.frames("optiondataframe").refreshOptionData();
+//		refreshOptionData(); //should be in scope
 //		return;
 //	}
 
 //	if (sCurrentWorkPage == "LOOKUPFIND") {
 //		// Get the optionData.asp to get the link find records.
-//		frmOptionGetDataArea = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
+//		frmOptionGetDataArea =  OpenHR.getForm("optiondataframe", "frmGetOptionData");
 //		frmOptionDataArea = window.parent.frames("optiondataframe").document.forms("frmOptionData");
 //		frmOptionArea = window.parent.frames("optionframe").document.forms("frmLookupFindForm");
 //		frmOptionGetDataArea.txtOptionAction.value = "LOADLOOKUPFIND";
@@ -3263,7 +3265,7 @@ function menu_moveRecord(psMovement) {
 //			frmOptionGetDataArea.txtOptionOrderID.value = 0;
 //		}
 
-//		window.parent.frames("optiondataframe").refreshOptionData();
+//		refreshOptionData(); //should be in scope
 //		return;
 //	}
 //	
@@ -3272,9 +3274,9 @@ function menu_moveRecord(psMovement) {
 //		(sCurrentWorkPage == "TBTRANSFERCOURSEFIND") ||
 //		(sCurrentWorkPage == "TBADDFROMWAITINGLISTFIND")) {
 //		// Get the optionData.asp to get the find records.
-//		frmOptionGetDataArea = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
+//		frmOptionGetDataArea =  OpenHR.getForm("optiondataframe", "frmGetOptionData");
 //		frmOptionDataArea = window.parent.frames("optiondataframe").document.forms("frmOptionData");
-//		frmOptionArea = window.parent.frames("optionframe").document.forms("frmFindForm");
+//		frmOptionArea =OpenHR.getForm("optionframe", "frmFindForm");
 //				
 //		if (sCurrentWorkPage == "TBTRANSFERBOOKINGFIND") {
 //			frmOptionGetDataArea.txtOptionAction.value = "LOADTRANSFERBOOKING";
@@ -3306,7 +3308,7 @@ function menu_moveRecord(psMovement) {
 //		frmOptionGetDataArea.txtOptionFirstRecPos.value = frmOptionDataArea.txtFirstRecPos.value;
 //		frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmOptionDataArea.txtRecordCount.value;
 
-//		window.parent.frames("optiondataframe").refreshOptionData();
+//		refreshOptionData(); //should be in scope
 //	}
 }
 
@@ -3514,33 +3516,33 @@ function menu_selectFolder(psKey, psPath) {
 
 
 function menu_cancelCourse() {
-//	var frmDataArea;
-//	var frmRecEditArea;
-//	
-//	// Get the number of course bookings 
-//	// (to see if we need to prompt for them to be transferred).
-//	disableMenu();
-//					
-//	frmDataArea = window.parent.frames("dataframe").document.forms("frmGetData");
-//	frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
+	var frmDataArea;
+	var frmRecEditArea;
+	
+	// Get the number of course bookings 
+	// (to see if we need to prompt for them to be transferred).
+	menu_disableMenu();
+					
+	frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
+	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 
-//	frmDataArea.txtAction.value = "CANCELCOURSE";
-//	frmDataArea.txtCurrentTableID.value = frmRecEditArea.txtCurrentTableID.value;
-//	frmDataArea.txtCurrentScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
-//	frmDataArea.txtCurrentViewID.value = frmRecEditArea.txtCurrentViewID.value;
-//	frmDataArea.txtSelectSQL.value = frmRecEditArea.txtRecEditSelectSQL.value;
-//	frmDataArea.txtFromDef.value = frmRecEditArea.txtRecEditFromDef.value;
-//	frmDataArea.txtFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
-//	frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
-//	frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
-//	frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
-//	frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
-//	frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
-//	frmDataArea.txtDefaultCalcCols.value = frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
-//	frmDataArea.txtInsertUpdateDef.value = frmRecEditArea.ctlRecordEdit.insertUpdateDef();
-//	frmDataArea.txtTimestamp.value = frmRecEditArea.ctlRecordEdit.timestamp;
+	frmDataArea.txtAction.value = "CANCELCOURSE";
+	frmDataArea.txtCurrentTableID.value = frmRecEditArea.txtCurrentTableID.value;
+	frmDataArea.txtCurrentScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
+	frmDataArea.txtCurrentViewID.value = frmRecEditArea.txtCurrentViewID.value;
+	frmDataArea.txtSelectSQL.value = frmRecEditArea.txtRecEditSelectSQL.value;
+	frmDataArea.txtFromDef.value = frmRecEditArea.txtRecEditFromDef.value;
+	frmDataArea.txtFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
+	frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
+	frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
+	frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
+	frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
+	frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
+	frmDataArea.txtDefaultCalcCols.value = frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
+	frmDataArea.txtInsertUpdateDef.value = frmRecEditArea.ctlRecordEdit.insertUpdateDef();
+	frmDataArea.txtTimestamp.value = frmRecEditArea.ctlRecordEdit.timestamp;
 
-//	data_refreshData();
+	data_refreshData();
 }
 
 function menu_bookCourse() {
@@ -3581,72 +3583,74 @@ function menu_bookCourse() {
 }
 
 function menu_transferBooking() {
-//	var lngRecordID;
-//	var frmOptionArea;
-//	
-//	lngRecordID = window.parent.frames("workframe").selectedRecordID();
+	var lngRecordID;
+	var frmOptionArea;
+	
+	lngRecordID = selectedRecordID();
 
-//	if (lngRecordID > 0) {
-//		ShowWait("Loading matching courses. Please wait...");
-//		disableMenu();
+	if (lngRecordID > 0) {
+		//TODO: ShowWait("Loading matching courses. Please wait...");
+		menu_disableMenu();
 
-//		frmOptionArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
+		frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+		var frmMenuInfo = document.getElementById("frmMenuInfo");
+		
+		frmOptionArea.txtGotoOptionScreenID.value = 0;
+		frmOptionArea.txtGotoOptionTableID.value = 0;
+		frmOptionArea.txtGotoOptionViewID.value = 0;
+		frmOptionArea.txtGotoOptionOrderID.value = 0;
+		frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
+		frmOptionArea.txtGotoOptionFilterDef.value = "";
+		frmOptionArea.txtGotoOptionFilterSQL.value = "";
+		frmOptionArea.txtGotoOptionValue.value = "";
+		frmOptionArea.txtGotoOptionLinkTableID.value = frmMenuInfo.txtTB_CourseTableID.value;
+		frmOptionArea.txtGotoOptionLinkOrderID.value = 0;
+		frmOptionArea.txtGotoOptionLinkViewID.value = 0;
+		frmOptionArea.txtGotoOptionLinkRecordID.value = 0;
+		frmOptionArea.txtGotoOptionPage.value = "tbTransferBookingFind";
+		frmOptionArea.txtGotoOptionAction.value = "";
+		frmOptionArea.txtGotoOptionPageAction.value = "LOAD";
+		frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
+		frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
 
-//		frmOptionArea.txtGotoOptionScreenID.value = 0;
-//		frmOptionArea.txtGotoOptionTableID.value = 0;
-//		frmOptionArea.txtGotoOptionViewID.value = 0;
-//		frmOptionArea.txtGotoOptionOrderID.value = 0;
-//		frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
-//		frmOptionArea.txtGotoOptionFilterDef.value = "";
-//		frmOptionArea.txtGotoOptionFilterSQL.value = "";
-//		frmOptionArea.txtGotoOptionValue.value = "";
-//		frmOptionArea.txtGotoOptionLinkTableID.value = frmMenuInfo.txtTB_CourseTableID.value;
-//		frmOptionArea.txtGotoOptionLinkOrderID.value = 0;
-//		frmOptionArea.txtGotoOptionLinkViewID.value = 0;
-//		frmOptionArea.txtGotoOptionLinkRecordID.value = 0;
-//		frmOptionArea.txtGotoOptionPage.value = "tbTransferBookingFind.asp";
-//		frmOptionArea.txtGotoOptionAction.value = "";
-//		frmOptionArea.txtGotoOptionPageAction.value = "LOAD";
-//		frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
-//		frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
-
-//		frmOptionArea.submit();
-//	}
-//	else {
-//		ASRIntranetFunctions.MessageBox("You must select a booking to transfer.");
-//	}
+		OpenHR.submitForm(frmOptionArea);
+	}
+	else {
+		OpenHR.messageBox("You must select a booking to transfer.");
+	}
 }
 
 function menu_cancelBooking() {
-//	var lngRecordID;
-//	var frmDataArea;
-//	
-//	lngRecordID = window.parent.frames("workframe").selectedRecordID();
+	var lngRecordID;
+	var frmDataArea;
+	var iUserChoice;	
+	lngRecordID = selectedRecordID();
+	var frmMenuInfo = document.getElementById("frmMenuInfo");
+	
+	if (lngRecordID > 0) {
+		if ((frmMenuInfo.txtTB_WaitListTableInsert.value.toUpperCase() == "TRUE") &&
+			(frmMenuInfo.txtTB_WaitListCourseTitleColumnUpdate.value.toUpperCase() == "TRUE")) {
+			iUserChoice = OpenHR.messageBox("Transfer the booking to the employee's waiting list ?", 35);
+		}
+		else {
+			iUserChoice = 7; // No
+		}
 
-//	if (lngRecordID > 0) {
-//		if ((frmMenuInfo.txtTB_WaitListTableInsert.value.toUpperCase() == "TRUE") &&
-//			(frmMenuInfo.txtTB_WaitListCourseTitleColumnUpdate.value.toUpperCase() == "TRUE")) {
-//			iUserChoice = ASRIntranetFunctions.MessageBox("Transfer the booking to the employee's waiting list ?", 35);
-//		}
-//		else {
-//			iUserChoice = 7; // No
-//		}
+		if (iUserChoice != 2) {
+			menu_disableMenu();
+								
+			frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
 
-//		if (iUserChoice != 2) {
-//			disableMenu();
-//								
-//			frmDataArea = window.parent.frames("dataframe").document.forms("frmGetData");
+			frmDataArea.txtAction.value = "CANCELBOOKING";
+			frmDataArea.txtRecordID.value = lngRecordID;
+			frmDataArea.txtUserChoice.value = (iUserChoice != 7);
 
-//			frmDataArea.txtAction.value = "CANCELBOOKING";
-//			frmDataArea.txtRecordID.value = lngRecordID;
-//			frmDataArea.txtUserChoice.value = (iUserChoice != 7);
-
-//			data_refreshData();
-//		}
-//	}
-//	else {
-//		ASRIntranetFunctions.MessageBox("You must select a booking to transfer.");
-//	}
+			data_refreshData();
+		}
+	}
+	else {
+		OpenHR.messageBox("You must select a booking to transfer.");
+	}
 }
 
 function menu_bulkBooking() {
@@ -3708,46 +3712,46 @@ function menu_addFromWaitingList() {
 }
 
 function menu_transferCourse(plngNewCourseRecordID, pfBookingsExist) {
-//	var iResult;
-//	var frmDataArea;
-//	var frmRecEditArea;
-//	
-//	// Get the number of course bookings 
-//	// (to see if we need to prompt for them to be transferred).
-//	disableMenu();
+	var iResult;
+	var frmDataArea;
+	var frmRecEditArea;
+	
+	// Get the number of course bookings 
+	// (to see if we need to prompt for them to be transferred).
+	menu_disableMenu();
 
-//	iResult = 7; // Default to No.
+	iResult = 7; // Default to No.
 
-//	if ((plngNewCourseRecordID == 0) &&
-//		(pfBookingsExist == true) &&
-//		(frmMenuInfo.txtTB_WaitListTableInsert.value.toUpperCase() == "TRUE") &&
-//		(frmMenuInfo.txtTB_WaitListCourseTitleColumnUpdate.value.toUpperCase() == "TRUE")) {
-//		// Prompt the user to create waiting list
-//		iResult = ASRIntranetFunctions.MessageBox("Create waiting list entries for the cancelled bookings ?", 36); // 36 = yesNo + question
-//	}
-//	
-//	frmDataArea = window.parent.frames("dataframe").document.forms("frmGetData");
-//	frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
+	if ((plngNewCourseRecordID == 0) &&
+		(pfBookingsExist == true) &&
+		(frmMenuInfo.txtTB_WaitListTableInsert.value.toUpperCase() == "TRUE") &&
+		(frmMenuInfo.txtTB_WaitListCourseTitleColumnUpdate.value.toUpperCase() == "TRUE")) {
+		// Prompt the user to create waiting list
+		iResult = OpenHR.messageBox("Create waiting list entries for the cancelled bookings ?", 36); // 36 = yesNo + question
+	}
+	
+	frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
+	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 
-//	frmDataArea.txtAction.value = "CANCELCOURSE_2";
-//	frmDataArea.txtCurrentTableID.value = frmRecEditArea.txtCurrentTableID.value;
-//	frmDataArea.txtCurrentScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
-//	frmDataArea.txtCurrentViewID.value = frmRecEditArea.txtCurrentViewID.value;
-//	frmDataArea.txtSelectSQL.value = frmRecEditArea.txtRecEditSelectSQL.value;
-//	frmDataArea.txtFromDef.value = frmRecEditArea.txtRecEditFromDef.value;
-//	frmDataArea.txtFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
-//	frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
-//	frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
-//	frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
-//	frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
-//	frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
-//	frmDataArea.txtDefaultCalcCols.value = frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
-//	frmDataArea.txtInsertUpdateDef.value = frmRecEditArea.ctlRecordEdit.insertUpdateDef();
-//	frmDataArea.txtTimestamp.value = frmRecEditArea.ctlRecordEdit.timestamp;
-//	frmDataArea.txtTBCourseRecordID.value = plngNewCourseRecordID;
-//	frmDataArea.txtTBCreateWLRecords.value = (iResult != 7);
-//	
-//	data_refreshData();
+	frmDataArea.txtAction.value = "CANCELCOURSE_2";
+	frmDataArea.txtCurrentTableID.value = frmRecEditArea.txtCurrentTableID.value;
+	frmDataArea.txtCurrentScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
+	frmDataArea.txtCurrentViewID.value = frmRecEditArea.txtCurrentViewID.value;
+	frmDataArea.txtSelectSQL.value = frmRecEditArea.txtRecEditSelectSQL.value;
+	frmDataArea.txtFromDef.value = frmRecEditArea.txtRecEditFromDef.value;
+	frmDataArea.txtFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
+	frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
+	frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
+	frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
+	frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
+	frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
+	frmDataArea.txtDefaultCalcCols.value = frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
+	frmDataArea.txtInsertUpdateDef.value = frmRecEditArea.ctlRecordEdit.insertUpdateDef();
+	frmDataArea.txtTimestamp.value = frmRecEditArea.ctlRecordEdit.timestamp;
+	frmDataArea.txtTBCourseRecordID.value = plngNewCourseRecordID;
+	frmDataArea.txtTBCreateWLRecords.value = (iResult != 7);
+	
+	data_refreshData();
 }
 
 function menu_openPersonnelRecEdit() {
@@ -3808,13 +3812,14 @@ function menu_openPersonnelRecEdit() {
 }
 
 function menu_ConvertSQLDateToLocale(psString) {
-    
+	alert("menu_ConvertSQLDateToLocale TODO!");
 }
 
 
 
 function menu_convertLocaleDateToSQL(psDateString)
-{ 
+{
+	alert("menu_convertLocaleDateToSQL TODO!");
 //	/* Convert the given date string (in locale format) into 
 //	SQL format (mm/dd/yyyy). */
 //	var sDateFormat;
@@ -4347,7 +4352,7 @@ function menu_setVisibleMenuItem(itemId, fNewSetting) {
 	}
 }
 
-function menu_SetmnutoolRecordPositionCaption(newCaption) {
+function frmMenuInfo(newCaption) {
 	if (newCaption != null && newCaption.length > 0) $("#mnutoolRecordPosition span").text(newCaption);
 }
 
@@ -4398,4 +4403,14 @@ function applyJSTree(element) {
             }
         }
     });
+}
+
+function menu_SetmnutoolRecordPositionCaption(newCaption) {
+	//update the record position text.
+	$("#mnutoolRecordPosition span").text(newCaption);
+}
+
+function menu_SetmnutoolLocateRecordsText(newCaption) {
+	//update the locate record text.
+	$("#mnutoolLocateRecords input:text").val(newCaption);
 }
