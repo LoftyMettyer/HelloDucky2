@@ -646,6 +646,9 @@
     <Content Include="Views\Home\default.ascx" />
     <Content Include="Views\Home\DefSel.ascx" />
     <Content Include="Views\Home\DefSelProperties.aspx" />
+    <Content Include="Views\Home\downloadControls.aspx" />
+    <Content Include="Views\Home\downloadControlsMain.aspx" />
+    <Content Include="Views\Home\downloadControlsStatus.aspx" />
     <Content Include="Views\Home\emailSelection.aspx" />
     <Content Include="Views\Home\emptyoption.ascx" />
     <Content Include="Views\Home\EventLog.ascx" />
@@ -670,9 +673,9 @@
     <Content Include="Views\Home\tbTransferCourseFind.ascx" />
     <Content Include="Views\Home\util_calcselection.ascx" />
     <Content Include="Views\Home\util_def_calendarreport.ascx" />
-    <Content Include="Views\Home\util_def_calendarreportdates.asp.ascx" />
+    <Content Include="Views\Home\util_def_calendarreportdates.ascx" />
     <Content Include="Views\Home\util_def_calendarreportdates_data.ascx" />
-    <Content Include="Views\Home\util_def_calendarreportdates_main.ascx" />
+    <Content Include="Views\Home\util_def_calendarreportdates_main.aspx" />
     <Content Include="Views\Home\util_def_mailmerge.ascx" />
     <Content Include="Views\Home\util_run_mailmerge.ascx" />
     <Content Include="Views\Home\util_run_mailmerge_completed.ascx" />
