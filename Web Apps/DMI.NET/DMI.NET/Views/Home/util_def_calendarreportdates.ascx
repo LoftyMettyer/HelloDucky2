@@ -1,12 +1,12 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<script src="<%: Url.Content("~/Scripts/FormScripts/calendarreportdef.js")%>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
-<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
-<script src="<%: Url.Content("~/Scripts/jquery/jquery-1.8.3.js")%>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
+<script src="<%:Url.Content("~/Scripts/FormScripts/calendarreportdef.js")%>" type="text/javascript"> </script>
+<script src="<%:Url.Content("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"> </script>
+<script src="<%:Url.Content("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"> </script>
+<link href="<%:Url.Content("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+<script src="<%:Url.Content("~/Scripts/jquery/jquery-1.8.3.js")%>" type="text/javascript"> </script>
+<script src="<%:Url.Content("~/Scripts/openhr.js")%>" type="text/javascript"> </script>
 
 <script type="text/javascript">
 	function util_def_calendarreportdates_window_onload() {
@@ -17,7 +17,7 @@
 		frmPopup.txtFirstLoad_Event.value = 1;
 		frmPopup.txtFirstLoad_Lookup.value = 1;
 		frmPopup.txtHaveSetLookupValues.value = 0;
-		
+
 		button_disable(frmPopup.cmdCancel, true);
 		button_disable(frmPopup.cmdOK, true);
 
@@ -50,7 +50,7 @@
 
 		frmPopup.txtLoading.value = 0;
 	}
-	
+
 
 	function validateEventInfo() {
 		var frmPopup = document.getElementById("frmPopup");
@@ -125,8 +125,7 @@
 			sMessage = "A valid lookup table has not been selected.";
 			OpenHR.messageBox(sMessage, 48, "Calendar Reports");
 			return false;
-		}
-		else if (frmPopup.optLegendLookup.checked && (frmPopup.cboLegendTable.options[frmPopup.cboLegendTable.selectedIndex].value < 1)) {
+		} else if (frmPopup.optLegendLookup.checked && (frmPopup.cboLegendTable.options[frmPopup.cboLegendTable.selectedIndex].value < 1)) {
 			sMessage = "A valid lookup table has not been selected.";
 			OpenHR.messageBox(sMessage, 48, "Calendar Reports");
 			frmPopup.cboLegendTable.focus();
@@ -137,8 +136,7 @@
 			sMessage = "A valid lookup column has not been selected.";
 			OpenHR.messageBox(sMessage, 48, "Calendar Reports");
 			return false;
-		}
-		else if (frmPopup.optLegendLookup.checked && (frmPopup.cboLegendColumn.options[frmPopup.cboLegendColumn.selectedIndex].value < 1)) {
+		} else if (frmPopup.optLegendLookup.checked && (frmPopup.cboLegendColumn.options[frmPopup.cboLegendColumn.selectedIndex].value < 1)) {
 			sMessage = "A valid lookup column has not been selected.";
 			OpenHR.messageBox(sMessage, 48, "Calendar Reports");
 			frmPopup.cboLegendColumn.focus();
@@ -149,8 +147,7 @@
 			sMessage = "A valid lookup code has not been selected.";
 			OpenHR.messageBox(sMessage, 48, "Calendar Reports");
 			return false;
-		}
-		else if (frmPopup.optLegendLookup.checked && (frmPopup.cboLegendCode.options[frmPopup.cboLegendCode.selectedIndex].value < 1)) {
+		} else if (frmPopup.optLegendLookup.checked && (frmPopup.cboLegendCode.options[frmPopup.cboLegendCode.selectedIndex].value < 1)) {
 			sMessage = "A valid lookup code has not been selected.";
 			OpenHR.messageBox(sMessage, 48, "Calendar Reports");
 			frmPopup.cboLegendCode.focus();
@@ -161,8 +158,7 @@
 			sMessage = "A valid event type has not been selected.";
 			OpenHR.messageBox(sMessage, 48, "Calendar Reports");
 			return false;
-		}
-		else if (frmPopup.optLegendLookup.checked && (frmPopup.cboEventType.options[frmPopup.cboEventType.selectedIndex].value < 1)) {
+		} else if (frmPopup.optLegendLookup.checked && (frmPopup.cboEventType.options[frmPopup.cboEventType.selectedIndex].value < 1)) {
 			sMessage = "A valid event type has not been selected.";
 			OpenHR.messageBox(sMessage, 48, "Calendar Reports");
 			frmPopup.cboEventType.focus();
@@ -171,7 +167,7 @@
 
 		return true;
 	}
-	
+
 	function setForm() {
 		if (!validateEventInfo()) {
 			//return false;
@@ -186,71 +182,66 @@
 		var sADD = new String("");
 
 		//Add the event information to string which will be used to populate the grid.
-			sADD = sADD + frmPopup.txtEventName.value + '	';
-			sADD = sADD + frmPopup.cboEventTable.options[frmPopup.cboEventTable.selectedIndex].value + '	';
-			sADD = sADD + frmPopup.cboEventTable.options[frmPopup.cboEventTable.selectedIndex].innerText + '	';
-			sADD = sADD + frmPopup.txtEventFilterID.value + '	';
-			sADD = sADD + frmPopup.txtEventFilter.value + '	';
-			sADD = sADD + frmPopup.cboStartDate.options[frmPopup.cboStartDate.selectedIndex].value + '	';
-			sADD = sADD + frmPopup.cboStartDate.options[frmPopup.cboStartDate.selectedIndex].innerText + '	';
+		sADD = sADD + frmPopup.txtEventName.value + '	';
+		sADD = sADD + frmPopup.cboEventTable.options[frmPopup.cboEventTable.selectedIndex].value + '	';
+		sADD = sADD + frmPopup.cboEventTable.options[frmPopup.cboEventTable.selectedIndex].innerText + '	';
+		sADD = sADD + frmPopup.txtEventFilterID.value + '	';
+		sADD = sADD + frmPopup.txtEventFilter.value + '	';
+		sADD = sADD + frmPopup.cboStartDate.options[frmPopup.cboStartDate.selectedIndex].value + '	';
+		sADD = sADD + frmPopup.cboStartDate.options[frmPopup.cboStartDate.selectedIndex].innerText + '	';
 
-			if (frmPopup.cboStartSession.selectedIndex < 0) {
-				sADD = sADD + 0 + '	';
-				sADD = sADD + '' + '	';
-			}
-			else {
-				sADD = sADD + frmPopup.cboStartSession.options[frmPopup.cboStartSession.selectedIndex].value + '	';
-				sADD = sADD + frmPopup.cboStartSession.options[frmPopup.cboStartSession.selectedIndex].innerText + '	';
-			}
+		if (frmPopup.cboStartSession.selectedIndex < 0) {
+			sADD = sADD + 0 + '	';
+			sADD = sADD + '' + '	';
+		} else {
+			sADD = sADD + frmPopup.cboStartSession.options[frmPopup.cboStartSession.selectedIndex].value + '	';
+			sADD = sADD + frmPopup.cboStartSession.options[frmPopup.cboStartSession.selectedIndex].innerText + '	';
+		}
 
-			if (frmPopup.cboEndDate.selectedIndex < 0) {
-				sADD = sADD + 0 + '	';
-				sADD = sADD + '' + '	';
-			}
-			else {
-				sADD = sADD + frmPopup.cboEndDate.options[frmPopup.cboEndDate.selectedIndex].value + '	';
-				sADD = sADD + frmPopup.cboEndDate.options[frmPopup.cboEndDate.selectedIndex].innerText + '	';
-			}
+		if (frmPopup.cboEndDate.selectedIndex < 0) {
+			sADD = sADD + 0 + '	';
+			sADD = sADD + '' + '	';
+		} else {
+			sADD = sADD + frmPopup.cboEndDate.options[frmPopup.cboEndDate.selectedIndex].value + '	';
+			sADD = sADD + frmPopup.cboEndDate.options[frmPopup.cboEndDate.selectedIndex].innerText + '	';
+		}
 
-			if (frmPopup.cboEndSession.selectedIndex < 0) {
-				sADD = sADD + 0 + '	';
-				sADD = sADD + '' + '	';
-			}
-			else {
-				sADD = sADD + frmPopup.cboEndSession.options[frmPopup.cboEndSession.selectedIndex].value + '	';
-				sADD = sADD + frmPopup.cboEndSession.options[frmPopup.cboEndSession.selectedIndex].innerText + '	';
-			}
+		if (frmPopup.cboEndSession.selectedIndex < 0) {
+			sADD = sADD + 0 + '	';
+			sADD = sADD + '' + '	';
+		} else {
+			sADD = sADD + frmPopup.cboEndSession.options[frmPopup.cboEndSession.selectedIndex].value + '	';
+			sADD = sADD + frmPopup.cboEndSession.options[frmPopup.cboEndSession.selectedIndex].innerText + '	';
+		}
 
-			if (frmPopup.cboDuration.selectedIndex < 0) {
-				sADD = sADD + 0 + '	';
-				sADD = sADD + '' + '	';
-			}
-			else {
-				sADD = sADD + frmPopup.cboDuration.options[frmPopup.cboDuration.selectedIndex].value + '	';
-				sADD = sADD + frmPopup.cboDuration.options[frmPopup.cboDuration.selectedIndex].innerText + '	';
-			}
+		if (frmPopup.cboDuration.selectedIndex < 0) {
+			sADD = sADD + 0 + '	';
+			sADD = sADD + '' + '	';
+		} else {
+			sADD = sADD + frmPopup.cboDuration.options[frmPopup.cboDuration.selectedIndex].value + '	';
+			sADD = sADD + frmPopup.cboDuration.options[frmPopup.cboDuration.selectedIndex].innerText + '	';
+		}
 
-			if (frmPopup.optLegendLookup.checked == true) {
-				sADD = sADD + '1' + '	';
-				sADD = sADD + frmPopup.cboLegendTable.options[frmPopup.cboLegendTable.selectedIndex].innerText + '.' + frmPopup.cboLegendCode.options[frmPopup.cboLegendCode.selectedIndex].innerText + '	';
-				sADD = sADD + frmPopup.cboLegendTable.options[frmPopup.cboLegendTable.selectedIndex].value + '	';
-				sADD = sADD + frmPopup.cboLegendColumn.options[frmPopup.cboLegendColumn.selectedIndex].value + '	';
-				sADD = sADD + frmPopup.cboLegendCode.options[frmPopup.cboLegendCode.selectedIndex].value + '	';
-				sADD = sADD + frmPopup.cboEventType.options[frmPopup.cboEventType.selectedIndex].value + '	';
-			}
-			else {
-				sADD = sADD + '0' + '	';
-				sADD = sADD + frmPopup.txtCharacter.value + '	';
-				sADD = sADD + '0' + '	';
-				sADD = sADD + '0' + '	';
-				sADD = sADD + '0' + '	';
-				sADD = sADD + '0' + '	';
-			}
+		if (frmPopup.optLegendLookup.checked == true) {
+			sADD = sADD + '1' + '	';
+			sADD = sADD + frmPopup.cboLegendTable.options[frmPopup.cboLegendTable.selectedIndex].innerText + '.' + frmPopup.cboLegendCode.options[frmPopup.cboLegendCode.selectedIndex].innerText + '	';
+			sADD = sADD + frmPopup.cboLegendTable.options[frmPopup.cboLegendTable.selectedIndex].value + '	';
+			sADD = sADD + frmPopup.cboLegendColumn.options[frmPopup.cboLegendColumn.selectedIndex].value + '	';
+			sADD = sADD + frmPopup.cboLegendCode.options[frmPopup.cboLegendCode.selectedIndex].value + '	';
+			sADD = sADD + frmPopup.cboEventType.options[frmPopup.cboEventType.selectedIndex].value + '	';
+		} else {
+			sADD = sADD + '0' + '	';
+			sADD = sADD + frmPopup.txtCharacter.value + '	';
+			sADD = sADD + '0' + '	';
+			sADD = sADD + '0' + '	';
+			sADD = sADD + '0' + '	';
+			sADD = sADD + '0' + '	';
+		}
 
-			sADD = sADD + frmPopup.cboEventDesc1.options[frmPopup.cboEventDesc1.selectedIndex].value + '	';
-			sADD = sADD + frmPopup.cboEventDesc1.options[frmPopup.cboEventDesc1.selectedIndex].innerText + '	';
-			sADD = sADD + frmPopup.cboEventDesc2.options[frmPopup.cboEventDesc2.selectedIndex].value + '	';
-			sADD = sADD + frmPopup.cboEventDesc2.options[frmPopup.cboEventDesc2.selectedIndex].innerText + '	';
+		sADD = sADD + frmPopup.cboEventDesc1.options[frmPopup.cboEventDesc1.selectedIndex].value + '	';
+		sADD = sADD + frmPopup.cboEventDesc1.options[frmPopup.cboEventDesc1.selectedIndex].innerText + '	';
+		sADD = sADD + frmPopup.cboEventDesc2.options[frmPopup.cboEventDesc2.selectedIndex].value + '	';
+		sADD = sADD + frmPopup.cboEventDesc2.options[frmPopup.cboEventDesc2.selectedIndex].innerText + '	';
 
 		sADD = sADD + frmEvent.eventID.value + '	';
 		sADD = sADD + frmSelectionAccess.baseHidden.value;
@@ -261,8 +252,7 @@
 			frmDef.grdEvents.selbookmarks.RemoveAll();
 			frmDef.grdEvents.MoveLast();
 			frmDef.grdEvents.selbookmarks.Add(frmDef.grdEvents.Bookmark);
-		}
-		else {
+		} else {
 			//' Check if any columns in the report definition are from the table that was
 			//' previously selected in the child combo box. If so, prompt user for action.
 			var bContinueRemoval;
@@ -281,7 +271,7 @@
 
 		self.close();
 	}
-	
+
 	function populateEventTableCombo() {
 		var frmDef = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmDefinition");
 		var frmRefresh = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmRefresh");
@@ -319,8 +309,7 @@
 				iIndex = sRelationString.indexOf("	");
 
 				bAdded = false;
-			}
-			else {
+			} else {
 				sRelationString = sRelationString.substr(iIndex + 1);
 				iIndex = sRelationString.indexOf("	");
 
@@ -331,7 +320,7 @@
 			}
 		}
 	}
-	
+
 	function populateEventColumns() {
 		// Get the columns/calcs for the current table selection.
 		var frmGetDataForm = OpenHR.getForm("calendardataframe", "frmGetCalendarData");
@@ -345,7 +334,7 @@
 		//window.parent.frames("calendardataframe").refreshData();
 		data_refreshData();
 	}
-	
+
 	function selectRecordOptionDates(psTable, psType) {
 		var iTableID;
 		var iCurrentID;
@@ -353,10 +342,10 @@
 		var frmPopup = document.getElementById("frmPopup");
 		var frmRecordSelection = document.getElementById("frmRecordSelection");
 		var frmGetDataForm = document.getElementById("frmGetCalendarData");
-		
-		var frmDef = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe","frmDefinition");
-		var frmUse = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe","frmUseful");
-		
+
+		var frmDef = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmDefinition");
+		var frmUse = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmUseful");
+
 		if (psTable == 'event') {
 			iTableID = frmPopup.cboEventTable.options[frmPopup.cboEventTable.selectedIndex].value;
 			iCurrentID = frmPopup.txtEventFilterID.value;
@@ -374,17 +363,16 @@
 
 		if (strDefOwner == strCurrentUser) {
 			frmRecordSelection.recSelDefOwner.value = '1';
-		}
-		else {
+		} else {
 			frmRecordSelection.recSelDefOwner.value = '0';
 		}
 
 		sURL = "util_recordSelection" +
-				"?recSelType=" + escape(frmRecordSelection.recSelType.value) +
-				"&recSelTableID=" + escape(frmRecordSelection.recSelTableID.value) +
-				"&recSelCurrentID=" + escape(frmRecordSelection.recSelCurrentID.value) +
-				"&recSelTable=" + escape(frmRecordSelection.recSelTable.value) +
-				"&recSelDefOwner=" + escape(frmRecordSelection.recSelDefOwner.value);
+			"?recSelType=" + escape(frmRecordSelection.recSelType.value) +
+			"&recSelTableID=" + escape(frmRecordSelection.recSelTableID.value) +
+			"&recSelCurrentID=" + escape(frmRecordSelection.recSelCurrentID.value) +
+			"&recSelTable=" + escape(frmRecordSelection.recSelTable.value) +
+			"&recSelDefOwner=" + escape(frmRecordSelection.recSelDefOwner.value);
 		openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
 		eventChanged();
 	}
@@ -410,22 +398,22 @@
 		}
 	}
 
-	function changeLegendTable(){
+	function changeLegendTable() {
 		var frmPopup = document.getElementById("frmPopup");
-		if (frmPopup.cboLegendTable.selectedIndex < 0)	{
+		if (frmPopup.cboLegendTable.selectedIndex < 0) {
 			frmPopup.cboLegendTable.selectedIndex = 0;
 		}
 		frmPopup.cboLegendColumn.length = 0;
 		frmPopup.cboLegendCode.length = 0;
 		frmPopup.txtLookupColumnsLoaded.value = 0;
-		populateLookupColumns();	
+		populateLookupColumns();
 		refreshLegendControls();
 		eventChanged();
 	}
-	
+
 	function eventChanged() {
 		var frmUse = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmUseful");
-		var frmPopup = document.getElementById("frmPopup");	
+		var frmPopup = document.getElementById("frmPopup");
 		var fViewing = (frmUse.txtAction.value.toUpperCase() == "VIEW");
 		button_disable(frmPopup.cmdOK, fViewing);
 	}
@@ -464,7 +452,7 @@
 </script>
 
 <div id="bdyMain" name="bdyMain" <%=session("BodyColour")%> leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">
-	<form id="frmPopup" name="frmPopup" onsubmit="return setForm();">
+	<form id="frmPopup" name="frmPopup" onsubmit=" return setForm(); ">
 		<table align="center" width="100%" height="100%" class="outline" cellpadding="0" cellspacing="0">
 			<tr>
 				<td>
@@ -487,9 +475,9 @@
 													<td width="5"></td>
 													<td>
 														<input id="txtEventName" name="txtEventName" class="text textdisabled" style="WIDTH: 100%" disabled="disabled"
-															onkeypress="eventChanged();"
-															onkeydown="eventChanged();"
-															onchange="eventChanged();">
+														       onkeypress=" eventChanged(); "
+														       onkeydown=" eventChanged(); "
+														       onchange=" eventChanged(); ">
 													</td>
 													<td width="5"></td>
 												</tr>
@@ -502,7 +490,7 @@
 													<td width="5"></td>
 													<td>
 														<select id="cboEventTable" name="cboEventTable" class="combo combodisabled" disabled="disabled" style="WIDTH: 100%"
-															onchange="changeEventTable();">
+														        onchange=" changeEventTable(); ">
 														</select>
 													</td>
 													<td width="5"></td>
@@ -520,15 +508,15 @@
 																<td>
 																	<input id="txtEventFilter" name="txtEventFilter" class="text textdisabled" disabled="disabled" style="WIDTH: 100%">
 																	<input type="hidden" id="txtEventFilterID" name="txtEventFilterID" class="text textdisabled" disabled="disabled" style="WIDTH: 100%"
-																		onchange="eventChanged();">
+																	       onchange=" eventChanged(); ">
 																</td>
 																<td width="25">
 																	<input id="cmdEventFilter" name="cmdEventFilter" disabled="disabled" class="btn btndisabled" style="WIDTH: 100%" type="button" value="..."
-																		onclick="selectRecordOptionDates('event', 'filter')"
-																		onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																		onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																		onfocus="try{button_onFocus(this);}catch(e){}"
-																		onblur="try{button_onBlur(this);}catch(e){}" />
+																	       onclick=" selectRecordOptionDates('event', 'filter') "
+																	       onmouseover=" try {button_onMouseOver(this);} catch(e) {} "
+																	       onmouseout=" try {button_onMouseOut(this);} catch(e) {} "
+																	       onfocus=" try {button_onFocus(this);} catch(e) {} "
+																	       onblur=" try {button_onBlur(this);} catch(e) {} " />
 																</td>
 															</tr>
 														</table>
@@ -550,27 +538,27 @@
 													<td width="5"></td>
 													<td colspan="1">
 														<input type="radio" name="optKey" id="optCharacter" disabled="disabled"
-															onclick="refreshLegendControls(); eventChanged();"
-															onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-															onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-															onfocus="try{radio_onFocus(this);}catch(e){}"
-															onblur="try{radio_onBlur(this);}catch(e){}" />&nbsp;
+														       onclick=" refreshLegendControls(); eventChanged(); "
+														       onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
+														       onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
+														       onfocus=" try {radio_onFocus(this);} catch(e) {} "
+														       onblur=" try {radio_onBlur(this);} catch(e) {} " />&nbsp;
 													</td>
 													<td nowrap colspan="1">
 														<label
 															tabindex="-1"
 															for="optCharacter"
 															class="radio radiodisabled"
-															onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-															onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+															onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
+															onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
 															Character</label>
 													</td>
 													<td width="5"></td>
 													<td nowrap width="100%">
 														<input id="txtCharacter" maxlength="2" name="txtCharacter" class="text textdisabled" disabled="disabled" style="WIDTH: 60px"
-															onkeypress="eventChanged();"
-															onkeydown="eventChanged();"
-															onchange="eventChanged();">
+														       onkeypress=" eventChanged(); "
+														       onkeydown=" eventChanged(); "
+														       onchange=" eventChanged(); ">
 													</td>
 													<td width="5"></td>
 												</tr>
@@ -581,19 +569,19 @@
 													<td width="5"></td>
 													<td colspan="1">
 														<input type="radio" name="optKey" id="optLegendLookup" disabled="disabled"
-															onclick="refreshLegendControls(); eventChanged();"
-															onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-															onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-															onfocus="try{radio_onFocus(this);}catch(e){}"
-															onblur="try{radio_onBlur(this);}catch(e){}" />
+														       onclick=" refreshLegendControls(); eventChanged(); "
+														       onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
+														       onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
+														       onfocus=" try {radio_onFocus(this);} catch(e) {} "
+														       onblur=" try {radio_onBlur(this);} catch(e) {} " />
 													</td>
 													<td nowrap width="100" colspan="3">
 														<label
 															tabindex="-1"
 															for="optLegendLookup"
 															class="radio radiodisabled"
-															onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-															onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+															onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
+															onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
 															Lookup Table</label>
 													</td>
 													<td width="5"></td>
@@ -609,7 +597,7 @@
 													<td width="5"></td>
 													<td>
 														<select id="cboEventType" name="cboEventType" disabled="disabled" width="100%" style="WIDTH: 100%" class="combo combodisabled"
-															onchange="eventChanged();">
+														        onchange=" eventChanged(); ">
 														</select>
 													</td>
 													<td width="5"></td>
@@ -629,7 +617,7 @@
 													<td width="5"></td>
 													<td>
 														<select id="cboLegendTable" name="cboLegendTable" disabled="disabled" class="combo combodisabled" style="WIDTH: 100%"
-															onchange="changeLegendTable();">
+														        onchange=" changeLegendTable(); ">
 															
 															<%
 																Dim sErrorDescription = ""
@@ -639,18 +627,21 @@
 																cmdLookupTables.CommandText = "spASRIntGetLookupTables"
 																cmdLookupTables.CommandType = 4	' Stored Procedure
 																cmdLookupTables.ActiveConnection = Session("databaseConnection")
-	
+
 																Err.Clear()
 																Dim rstLookupTablesInfo = cmdLookupTables.Execute
-	
+
 																If (Err.Number <> 0) Then
-																	sErrorDescription = "The lookup tables information could not be retrieved." & vbCrLf & FormatError(Err.Description)
+																	sErrorDescription = "The lookup tables information could not be retrieved." & vbCrLf &
+																	                    FormatError(Err.Description)
 																End If
 
 																If Len(sErrorDescription) = 0 Then
 																	Dim iCount = 0
 																	Do While Not rstLookupTablesInfo.EOF
-																		Response.Write("<OPTION value='" & rstLookupTablesInfo.fields("tableID").value & "'>" & rstLookupTablesInfo.fields("tableName").value & vbCrLf)
+																		Response.Write(
+																			"<OPTION value='" & rstLookupTablesInfo.fields("tableID").value & "'>" &
+																			rstLookupTablesInfo.fields("tableName").value & vbCrLf)
 																		rstLookupTablesInfo.MoveNext()
 																	Loop
 
@@ -658,10 +649,10 @@
 																	rstLookupTablesInfo.close()
 																	rstLookupTablesInfo = Nothing
 																End If
-	
+
 																' Release the ADO command object.
 																cmdLookupTables = Nothing
-															%>
+%>
 														</select>
 													</td>
 													<td width="5"></td>
@@ -677,7 +668,7 @@
 													<td width="5"></td>
 													<td>
 														<select id="cboLegendColumn" name="cboLegendColumn" width="100%" style="WIDTH: 100%" class="combo"
-															onchange="eventChanged();">
+														        onchange=" eventChanged(); ">
 														</select>
 													</td>
 													<td width="5"></td>
@@ -693,7 +684,7 @@
 													<td width="5"></td>
 													<td>
 														<select id="cboLegendCode" name="cboLegendCode" width="100%" style="WIDTH: 100%" class="combo"
-															onchange="eventChanged();">
+														        onchange=" eventChanged(); ">
 														</select>
 													</td>
 													<td width="5"></td>
@@ -717,7 +708,7 @@
 													<td width="5"></td>
 													<td>
 														<select disabled="disabled" id="cboStartDate" name="cboStartDate" class="combo combodisabled" style="WIDTH: 100%"
-															onchange="eventChanged();">
+														        onchange=" eventChanged(); ">
 														</select>
 													</td>
 													<td width="5"></td>
@@ -731,7 +722,7 @@
 													<td width="5"></td>
 													<td>
 														<select disabled="disabled" id="cboStartSession" name="cboStartSession" class="combo combodisabled" style="WIDTH: 100%"
-															onchange="eventChanged();">
+														        onchange=" eventChanged(); ">
 														</select>
 													</td>
 													<td width="5"></td>
@@ -753,19 +744,19 @@
 													<td width="5"></td>
 													<td colspan="1">
 														<input type="radio" name="optEnd" id="optNoEnd"
-															onclick="refreshEventControls(); eventChanged();"
-															onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-															onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-															onfocus="try{radio_onFocus(this);}catch(e){}"
-															onblur="try{radio_onBlur(this);}catch(e){}" />&nbsp;
+														       onclick=" refreshEventControls(); eventChanged(); "
+														       onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
+														       onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
+														       onfocus=" try {radio_onFocus(this);} catch(e) {} "
+														       onblur=" try {radio_onBlur(this);} catch(e) {} " />&nbsp;
 													</td>
 													<td nowrap colspan="3">
 														<label
 															tabindex="-1"
 															for="optNoEnd"
 															class="radio"
-															onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-															onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+															onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
+															onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
 															None</label>
 													</td>
 													<td width="5"></td>
@@ -777,18 +768,18 @@
 													<td width="5"></td>
 													<td colspan="1">
 														<input type="radio" name="optEnd" id="optEndDate"
-															onclick="refreshEventControls(); eventChanged();"
-															onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-															onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-															onfocus="try{radio_onFocus(this);}catch(e){}"
-															onblur="try{radio_onBlur(this);}catch(e){}" />
+														       onclick=" refreshEventControls(); eventChanged(); "
+														       onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
+														       onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
+														       onfocus=" try {radio_onFocus(this);} catch(e) {} "
+														       onblur=" try {radio_onBlur(this);} catch(e) {} " />
 													</td>
 													<td nowrap colspan="3">
 														<label tabindex="-1"
-															for="optEndDate"
-															class="radio"
-															onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-															onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+														       for="optEndDate"
+														       class="radio"
+														       onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
+														       onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
 															End</label>
 													</td>
 													<td width="5"></td>
@@ -803,7 +794,7 @@
 													<td width="5"></td>
 													<td>
 														<select disabled="disabled" id="cboEndDate" name="cboEndDate" style="WIDTH: 100%" class="combo combodisabled"
-															onchange="eventChanged();">
+														        onchange=" eventChanged(); ">
 														</select>
 													</td>
 													<td width="5"></td>
@@ -818,7 +809,7 @@
 													<td width="5"></td>
 													<td>
 														<select disabled="disabled" id="cboEndSession" name="cboEndSession" style="WIDTH: 100%" class="combo combodisabled"
-															onchange="eventChanged();">
+														        onchange=" eventChanged(); ">
 														</select>
 													</td>
 													<td width="5"></td>
@@ -830,25 +821,25 @@
 													<td width="5"></td>
 													<td colspan="1">
 														<input type="radio" name="optEnd" id="optDuration"
-															onclick="refreshEventControls();"
-															onchange="eventChanged();"
-															onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-															onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-															onfocus="try{radio_onFocus(this);}catch(e){}"
-															onblur="try{radio_onBlur(this);}catch(e){}"></td>
+														       onclick=" refreshEventControls(); "
+														       onchange=" eventChanged(); "
+														       onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
+														       onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
+														       onfocus=" try {radio_onFocus(this);} catch(e) {} "
+														       onblur=" try {radio_onBlur(this);} catch(e) {} "></td>
 													<td nowrap width="65">
 														<label
 															tabindex="-1"
 															for="optDuration"
 															class="radio"
-															onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-															onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+															onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
+															onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
 															Duration</label>
 													</td>
 													<td width="5"></td>
 													<td>
 														<select disabled="disabled" id="cboDuration" name="cboDuration" style="WIDTH: 100%" class="combo combodisabled"
-															onchange="eventChanged();">
+														        onchange=" eventChanged(); ">
 														</select>
 													</td>
 													<td width="5"></td>
@@ -870,7 +861,7 @@
 													<td width="5">&nbsp</td>
 													<td>
 														<select disabled="disabled" id="cboEventDesc1" name="cboEventDesc1" width="100%" class="combo combodisabled" style="WIDTH: 100%"
-															onchange="eventChanged();">
+														        onchange=" eventChanged(); ">
 														</select>
 													</td>
 													<td width="5"></td>
@@ -884,7 +875,7 @@
 													<td width="5"></td>
 													<td>
 														<select disabled="disabled" id="cboEventDesc2" name="cboEventDesc2" width="100%" class="combo combodisabled" style="WIDTH: 100%"
-															onchange="eventChanged();">
+														        onchange=" eventChanged(); ">
 														</select>
 													</td>
 													<td width="5"></td>
@@ -902,20 +893,20 @@
 										<td>&nbsp;</td>
 										<td width="10">
 											<input id="cmdOK" type="button" value="OK" name="cmdOK" class="btn" style="WIDTH: 80px" width="80"
-												onclick="setForm()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+											       onclick=" setForm() "
+											       onmouseover=" try {button_onMouseOver(this);} catch(e) {} "
+											       onmouseout=" try {button_onMouseOut(this);} catch(e) {} "
+											       onfocus=" try {button_onFocus(this);} catch(e) {} "
+											       onblur=" try {button_onBlur(this);} catch(e) {} " />
 										</td>
 										<td width="10">&nbsp;</td>
 										<td width="10">
 											<input id="cmdCancel" type="button" value="Cancel" name="cmdCancel" class="btn" style="WIDTH: 80px" width="80"
-												onclick="cancelClick();"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+											       onclick=" cancelClick(); "
+											       onmouseover=" try {button_onMouseOver(this);} catch(e) {} "
+											       onmouseout=" try {button_onMouseOut(this);} catch(e) {} "
+											       onfocus=" try {button_onFocus(this);} catch(e) {} "
+											       onblur=" try {button_onBlur(this);} catch(e) {} " />
 										</td>
 									</tr>
 								</table>
