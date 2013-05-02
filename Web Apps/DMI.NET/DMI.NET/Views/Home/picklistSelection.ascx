@@ -1,7 +1,10 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" id="Microsoft_Licensed_Class_Manager_1_0" viewastext>
+    <script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+    <script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>           
+
+<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" id="Microsoft_Licensed_Class_Manager_1_0">
     <param name="LPKPath" value="lpks/main.lpk">
 </object>
 
