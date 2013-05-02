@@ -1,16 +1,12 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 
-<script id="clientEventHandlersJS" type="text/javascript">
+<script type="text/javascript">
     function confirmok_window_onload() {
-
         $("#workframe").attr("data-framesource", "CONFIRMOK");
-
-        // remove the popup if its there
-        //OpenHR.Closepopup();
     }
 
     function confirmok_okClick() {
-        //        debugger;
+
         if (txtReloadMenu.value == 1) {
             window.parent.location.href = "main";
             return;
@@ -136,71 +132,71 @@
             }
         }
     }
+
 </script>
 
 
-<table align=center class="outline" cellPadding=5 cellSpacing=0>
-	<TR>
-		<TD>
-			<table class="invisible" cellspacing="0" cellpadding="0">
-			    <tr> 
-			        <td colspan=3 height=10></td>
-			    </tr>
+<table align="center" class="outline" cellpadding="5" cellspacing="0">
+    <tr>
+        <td>
+            <table class="invisible" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td colspan="3" height="10"></td>
+                </tr>
 
-			    <tr> 
-			        <td colspan=3 align=center> 
-			            <H3><%= session("confirmtitle")%></H3>
-			        </td>
-			    </tr>
-			  
-			    <tr> 
-			        <td width=20 height=10></td> 
-			        <td> 
-						<%=session("confirmtext")%>
-			        </td>
-			        <td width=20></td> 
-			    </tr>
-			  
-			    <tr> 
-			        <td colspan=3 height=20></td>
-			    </tr>
+                <tr>
+                    <td colspan="3" align="center">
+                        <h3><%= session("confirmtitle")%></h3>
+                    </td>
+                </tr>
 
-			    <tr> 
-			        <td colspan=3 height=10 align=center> 
-		                <input id="cmdOK" name="cmdOK" type=button class="btn" value="OK" style="WIDTH: 75px" width="75" 
-		                    onclick="confirmok_okClick()"
-                            onmouseover="try{button_onMouseOver(this);}catch(e){}" 
+                <tr>
+                    <td width="20" height="10"></td>
+                    <td>
+                        <%=session("confirmtext")%>
+                    </td>
+                    <td width="20"></td>
+                </tr>
+
+                <tr>
+                    <td colspan="3" height="20"></td>
+                </tr>
+
+                <tr>
+                    <td colspan="3" height="10" align="center">
+                        <input id="cmdOK" name="cmdOK" type="button" class="btn" value="OK" style="WIDTH: 75px" width="75"
+                            onclick="confirmok_okClick()"
+                            onmouseover="try{button_onMouseOver(this);}catch(e){}"
                             onmouseout="try{button_onMouseOut(this);}catch(e){}"
                             onfocus="try{button_onFocus(this);}catch(e){}"
                             onblur="try{button_onBlur(this);}catch(e){}" />
-			        </td>
-			    </tr>
+                    </td>
+                </tr>
 
-			    <tr> 
-			        <td colspan=3 height=10></td>
-			    </tr>
+                <tr>
+                    <td colspan="3" height="10"></td>
+                </tr>
             </table>
         </td>
     </tr>
 </table>
 <%
-    Response.Write("<INPUT type='hidden' id=txtFollowPage name=txtFollowPage value=" & Session("followpage") & ">")
-    Response.Write("<INPUT type='hidden' id=txtReaction name=txtReaction value=""" & Session("reaction") & """>")
-    Response.Write("<INPUT type='hidden' id=txtUtilID name=txtUtilID value=" & Session("utilid") & ">")
-    Response.Write("<INPUT type='hidden' id=txtUtilType name=txtUtilType value=" & Session("utiltype") & ">")
-    Response.Write("<INPUT type='hidden' id=txtUtilTableID name=txtUtilTableID value=" & Session("utilTableID") & ">")
-    Response.Write("<INPUT type='hidden' id=txtReloadMenu name=txtReloadMenu value=" & Session("reloadMenu") & ">")
-    Session("confirmtitle") = Nothing
-    Session("confirmtext") = Nothing
-    Session("followpage") = Nothing
-    Session("reaction") = Nothing
-	session("reloadMenu") = 0
+        Response.Write("<INPUT type='hidden' id=txtFollowPage name=txtFollowPage value=" & Session("followpage") & ">")
+        Response.Write("<INPUT type='hidden' id=txtReaction name=txtReaction value=""" & Session("reaction") & """>")
+        Response.Write("<INPUT type='hidden' id=txtUtilID name=txtUtilID value=" & Session("utilid") & ">")
+        Response.Write("<INPUT type='hidden' id=txtUtilType name=txtUtilType value=" & Session("utiltype") & ">")
+        Response.Write("<INPUT type='hidden' id=txtUtilTableID name=txtUtilTableID value=" & Session("utilTableID") & ">")
+        Response.Write("<INPUT type='hidden' id=txtReloadMenu name=txtReloadMenu value=" & Session("reloadMenu") & ">")
+        Session("confirmtitle") = Nothing
+        Session("confirmtext") = Nothing
+        Session("followpage") = Nothing
+        Session("reaction") = Nothing
+        Session("reloadMenu") = 0
 %>
 
 <form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
     <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 </form>
-
 
 <script type="text/javascript">
     confirmok_window_onload();

@@ -1,7 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<script src="<%: Url.Content("~/Scripts/FormScripts/Util_Def_CustomReports.js") %>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/bundles/utilities_customreports")%>" type="text/javascript"></script>
+
 <%Html.RenderPartial("Util_Def_CustomReports/dialog")%>
 
 <div <%=session("BodyTag")%>>
@@ -2111,14 +2112,14 @@
 		' Release the ADO command object.
 		cmdDefn = Nothing
 
-		if len(sErrMsg) > 0 then
-			session("confirmtext") = sErrMsg
-			session("confirmtitle") = "OpenHR Intranet"
-			Session("followpage") = "defsel"
-			Session("reaction") = "CUSTOMREPORTS"
-			Response.Clear
-			Response.Redirect("confirmok")
-		end if
+        'if len(sErrMsg) > 0 then
+        '	session("confirmtext") = sErrMsg
+        '	session("confirmtitle") = "OpenHR Intranet"
+        '	Session("followpage") = "defsel"
+        '	Session("reaction") = "CUSTOMREPORTS"
+        '	Response.Clear
+        '	Response.Redirect("confirmok")
+        'end if
 
 	else
 		session("childcount") = 0

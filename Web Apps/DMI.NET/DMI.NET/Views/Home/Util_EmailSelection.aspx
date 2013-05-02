@@ -3,11 +3,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css"/>
-<script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
-<title>OpenHR Intranet</title>
+
+    <title>OpenHR Intranet</title>
+    <script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+    <script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>           
 
 <script type="text/javascript">
 
@@ -45,7 +44,8 @@
 </script>
 
 <script type="text/javascript">
-	function setForm() {
+
+    function setForm() {
 
 		var frmPopup = document.getElementById("frmPopup");
 		window.dialogArguments.document.getElementById('txtEmailGroup').value = frmPopup.txtSelectedName.value;
@@ -88,6 +88,7 @@
 
 		ssOleDBGridDefSelRecords.redraw = true;
 	}
+
 </script>
 
 </head>

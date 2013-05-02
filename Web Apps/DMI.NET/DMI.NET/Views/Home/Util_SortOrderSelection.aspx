@@ -171,7 +171,7 @@
 	function checkColumnOptions(pbFromCheckBox) {
 
 		var frmPopup = document.getElementById("frmPopup");
-		var parWin = window.dialogArguments.OpenHR.getFrame("workframe");
+		var parWin = window.dialogArguments;
 		var sKey = new String('C' + frmPopup.cboColumn.options[frmPopup.cboColumn.selectedIndex].value);
 
 		if (parWin.setGirdCol(sKey)) {
@@ -221,7 +221,7 @@
 	Response.Write("	{" & vbCrLf)
 	Response.Write("	var frmPopup = document.getElementById('frmPopup');" & vbCrLf)
 	Response.Write("	sAdd = frmPopup.cboColumn.value + '	' + frmPopup.cboColumn.options(frmPopup.cboColumn.options.selectedIndex).text;" & vbCrLf)
-
+    
 	Response.Write("	if (frmPopup.optAscending.checked == true) " & vbCrLf)
 	Response.Write("		{" & vbCrLf)
 	Response.Write("		sAdd = sAdd + '	' + 'Asc';" & vbCrLf)
@@ -289,15 +289,15 @@
 
 	if (session("utiltype") = 2) then
 		Response.Write("		var sKey = new String('C'+frmPopup.cboColumn.options[frmPopup.cboColumn.selectedIndex].value);" & vbCrLf)
-        Response.Write("		if (window.dialogArguments.OpenHR.getFrame('workframe').setGirdCol(sKey))" & vbCrLf)
+        Response.Write("		if (window.dialogArguments.setGirdCol(sKey))" & vbCrLf)
 		Response.Write("			{" & vbCrLf)
-        Response.Write("			window.dialogArguments.OpenHR.getFrame('workframe').updateCurrentColProp('break', frmPopup.chkBOC.checked);" & vbCrLf)
+        Response.Write("			window.dialogArguments.updateCurrentColProp('break', frmPopup.chkBOC.checked);" & vbCrLf)
 		Response.Write("			window.dialogArguments.document.getElementById('ssOleDBGridSortOrder').columns(3).value = frmPopup.chkBOC.checked;" & vbCrLf)
-        Response.Write("			window.dialogArguments.OpenHR.getFrame('workframe').updateCurrentColProp('page', frmPopup.chkPOC.checked);" & vbCrLf)
+        Response.Write("			window.dialogArguments.updateCurrentColProp('page', frmPopup.chkPOC.checked);" & vbCrLf)
 		Response.Write("			window.dialogArguments.document.getElementById('ssOleDBGridSortOrder').columns(4).value = frmPopup.chkPOC.checked;" & vbCrLf)
-        Response.Write("			window.dialogArguments.OpenHR.getFrame('workframe').updateCurrentColProp('value', frmPopup.chkVOC.checked);" & vbCrLf)
+        Response.Write("			window.dialogArguments.updateCurrentColProp('value', frmPopup.chkVOC.checked);" & vbCrLf)
 		Response.Write("			window.dialogArguments.document.getElementById('ssOleDBGridSortOrder').columns(5).value = frmPopup.chkVOC.checked;" & vbCrLf)
-        Response.Write("			window.dialogArguments.OpenHR.getFrame('workframe').updateCurrentColProp('hide', frmPopup.chkSRV.checked);" & vbCrLf)
+        Response.Write("			window.dialogArguments.updateCurrentColProp('hide', frmPopup.chkSRV.checked);" & vbCrLf)
 		Response.Write("			window.dialogArguments.document.getElementById('ssOleDBGridSortOrder').columns(6).value = frmPopup.chkSRV.checked;" & vbCrLf)
 		Response.Write("			}" & vbCrLf)
 	end if
@@ -308,12 +308,12 @@
 	
 	if (session("utiltype") = 2) then
 		Response.Write("		var sKey = new String('C'+frmPopup.cboColumn.options[frmPopup.cboColumn.selectedIndex].value);" & vbCrLf)
-        Response.Write("		if (window.dialogArguments.OpenHR.getFrame('workframe').setGirdCol(sKey))" & vbCrLf)
+        Response.Write("		if (window.dialogArguments.setGirdCol(sKey))" & vbCrLf)
 		Response.Write("			{" & vbCrLf)
-        Response.Write("			window.dialogArguments.OpenHR.getFrame('workframe').updateCurrentColProp('break', frmPopup.chkBOC.checked);" & vbCrLf)
-        Response.Write("			window.dialogArguments.OpenHR.getFrame('workframe').updateCurrentColProp('page', frmPopup.chkPOC.checked);" & vbCrLf)
-        Response.Write("			window.dialogArguments.OpenHR.getFrame('workframe').updateCurrentColProp('value', frmPopup.chkVOC.checked);" & vbCrLf)
-        Response.Write("			window.dialogArguments.OpenHR.getFrame('workframe').updateCurrentColProp('hide', frmPopup.chkSRV.checked);" & vbCrLf)
+        Response.Write("			window.dialogArguments.updateCurrentColProp('break', frmPopup.chkBOC.checked);" & vbCrLf)
+        Response.Write("			window.dialogArguments.updateCurrentColProp('page', frmPopup.chkPOC.checked);" & vbCrLf)
+        Response.Write("			window.dialogArguments.updateCurrentColProp('value', frmPopup.chkVOC.checked);" & vbCrLf)
+        Response.Write("			window.dialogArguments.updateCurrentColProp('hide', frmPopup.chkSRV.checked);" & vbCrLf)
 		Response.Write("			}" & vbCrLf)
 	end if
 	

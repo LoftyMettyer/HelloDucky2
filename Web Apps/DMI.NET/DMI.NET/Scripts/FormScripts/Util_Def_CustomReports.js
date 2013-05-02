@@ -4685,14 +4685,14 @@
 
 		frmDefinition.cboPrinterName.length = 0;
 		var oOption = document.createElement("OPTION");
-		options.add(oOption);
+		frmDefinition.cboPrinterName.options.add(oOption);
 		oOption.innerText = "<Default Printer>";
 		oOption.value = 0;
 
 		for (var iLoop = 0; iLoop < OpenHR.PrinterCount(); iLoop++) {
 
 			oOption = document.createElement("OPTION");
-			options.add(oOption);
+			frmDefinition.cboPrinterName.options.add(oOption);
 			oOption.innerText = OpenHR.PrinterName(iLoop);
 			oOption.value = iLoop + 1;
 
@@ -4713,48 +4713,62 @@
 		}
 	}
 
+
+
+
+
 	function populateSaveExisting() {
-		
-		var lngCurrentOption = 0;
-		if (frmDefinition.cboSaveExisting.selectedIndex > 0) {
-			lngCurrentOption = options[selectedIndex].value;
-		}
-		frmDefinition.cboSaveExisting.length = 0;
 
-		var oOption = document.createElement("OPTION");
-		options.add(oOption);
-		oOption.innerText = "Overwrite";
-		oOption.value = 0;
+	    var lngCurrentOption;
+	    var iLoop;
 
-		oOption = document.createElement("OPTION");
-		options.add(oOption);
-		oOption.innerText = "Do not overwrite";
-		oOption.value = 1;
+	    with (frmDefinition.cboSaveExisting) {
+	        lngCurrentOption = 0;
+	        if (selectedIndex > 0) {
+	            lngCurrentOption = options[selectedIndex].value;
+	        }
+	        length = 0;
+	        
+	        var oOption = document.createElement("OPTION");
+	        options.add(oOption);
+	        oOption.innerText = "Overwrite";
+	        oOption.value = 0;
 
-		oOption = document.createElement("OPTION");
-		options.add(oOption);
-		oOption.innerText = "Add sequential number to name";
-		oOption.value = 2;
+	        oOption = document.createElement("OPTION");
+	        options.add(oOption);
+	        oOption.innerText = "Do not overwrite";
+	        oOption.value = 1;
 
-		oOption = document.createElement("OPTION");
-		options.add(oOption);
-		oOption.innerText = "Append to file";
-		oOption.value = 3;
+	        oOption = document.createElement("OPTION");
+	        options.add(oOption);
+	        oOption.innerText = "Add sequential number to name";
+	        oOption.value = 2;
 
-		if ((frmDefinition.optOutputFormat4.checked) || (frmDefinition.optOutputFormat5.checked) || (frmDefinition.optOutputFormat6.checked)) {
-			oOption = document.createElement("OPTION");
-			options.add(oOption);
-			oOption.innerText = "Create new sheet in workbook";
-			oOption.value = 4;
-		}
+	        oOption = document.createElement("OPTION");
+	        options.add(oOption);
+	        oOption.innerText = "Append to file";
+	        oOption.value = 3;
 
-		for (var iLoop = 0; iLoop < options.length; iLoop++) {
-			if (options(iLoop).value == lngCurrentOption) {
-				frmDefinition.cboSaveExisting.selectedIndex = iLoop;
-				break;
-			}
-		}
+	        if ((frmDefinition.optOutputFormat4.checked) ||
+                (frmDefinition.optOutputFormat5.checked) ||
+                (frmDefinition.optOutputFormat6.checked)) {
+	            oOption = document.createElement("OPTION");
+	            options.add(oOption);
+	            oOption.innerText = "Create new sheet in workbook";
+	            oOption.value = 4;
+	        }
+
+	        for (iLoop = 0; iLoop < options.length; iLoop++) {
+	            if (options(iLoop).value == lngCurrentOption) {
+	                selectedIndex = iLoop;
+	                break;
+	            }
+	        }
+
+	    }
+
 	}
+
 
 	function getChildString() {
 		var sChilds = "";

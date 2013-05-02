@@ -9,545 +9,545 @@
 </head>
 
 <script type="text/javascript">
-<!--	
-	window.onload = function () {
+    window.onload = function () {
 		
-	self.focus();
+        self.focus();
 
-	var iResizeBy, iNewWidth, iNewHeight, iNewLeft, iNewTop, frmPopup = document.getElementById("frmPopup");
+        var iResizeBy, iNewWidth, iNewHeight, iNewLeft, iNewTop, frmPopup = document.getElementById("frmPopup");
 
-	// Resize the grid to show all prompted values.
-	iResizeBy = frmPopup.offsetParent.scrollWidth	- frmPopup.offsetParent.clientWidth;
-	if (frmPopup.offsetParent.offsetWidth + iResizeBy > screen.width) {
-		window.dialogWidth = new String(screen.width) + "px";
-	}
-	else {
-		iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length-2));
-		iNewWidth = iNewWidth + iResizeBy;
-		window.dialogWidth = new String(iNewWidth) + "px";
-	}
+        // Resize the grid to show all prompted values.
+        iResizeBy = frmPopup.offsetParent.scrollWidth	- frmPopup.offsetParent.clientWidth;
+        if (frmPopup.offsetParent.offsetWidth + iResizeBy > screen.width) {
+            window.dialogWidth = new String(screen.width) + "px";
+        }
+        else {
+            iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length-2));
+            iNewWidth = iNewWidth + iResizeBy;
+            window.dialogWidth = new String(iNewWidth) + "px";
+        }
 
-	iResizeBy = frmPopup.offsetParent.scrollHeight	- frmPopup.offsetParent.clientHeight;
-	if (frmPopup.offsetParent.offsetHeight + iResizeBy > screen.height) {
-		window.dialogHeight = new String(screen.height) + "px";
-	}
-	else {
-		iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length-2));
-		iNewHeight = iNewHeight + iResizeBy;
-		window.dialogHeight = new String(iNewHeight) + "px";
-	}
+        iResizeBy = frmPopup.offsetParent.scrollHeight	- frmPopup.offsetParent.clientHeight;
+        if (frmPopup.offsetParent.offsetHeight + iResizeBy > screen.height) {
+            window.dialogHeight = new String(screen.height) + "px";
+        }
+        else {
+            iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length-2));
+            iNewHeight = iNewHeight + iResizeBy;
+            window.dialogHeight = new String(iNewHeight) + "px";
+        }
 
-	iNewLeft = (screen.width - frmPopup.offsetParent.offsetWidth) / 2;
-	iNewTop = (screen.height - frmPopup.offsetParent.offsetHeight) / 2;
-	window.dialogLeft = new String(iNewLeft) + "px";
-	window.dialogTop = new String(iNewTop) + "px";
+        iNewLeft = (screen.width - frmPopup.offsetParent.offsetWidth) / 2;
+        iNewTop = (screen.height - frmPopup.offsetParent.offsetHeight) / 2;
+        window.dialogLeft = new String(iNewLeft) + "px";
+        window.dialogTop = new String(iNewTop) + "px";
 
-	var frmChild = window.dialogArguments.parent.frames("workframe").document.forms("frmCustomReportChilds");
-	var frmDef = window.dialogArguments.parent.frames("workframe").document.forms("frmDefinition");
+        var frmChild = window.dialogArguments.OpenHR.getForm("workframe", "frmCustomReportChilds");
+        var frmDef = window.dialogArguments.OpenHR.getForm("workframe", "frmDefinition");
+
+        populateChildCombo();
 	
-	populateChildCombo();
-	
-	if(frmChild.childAction.value.toUpperCase() == "NEW")
-		{
-		frmPopup.cboChildTable.selectedIndex = 0;
-		frmPopup.txtChildFilter.value = frmChild.childFilter.value;
-		frmPopup.txtChildFilterID.value = frmChild.childFilterID.value;
-		frmPopup.txtFieldRecOrder.value = frmChild.childOrder.value;
-		frmPopup.txtChildFieldOrderID.value = frmChild.childOrderID.value;
-		frmPopup.txtChildRecords.value = frmChild.childRecords.value;
-		showAllRecords();
-		}
-	else
-		{
-		frmPopup.rowID.value = frmDef.ssOleDBGridChildren.AddItemRowIndex(frmDef.ssOleDBGridChildren.Bookmark);
-		frmPopup.originalChildID.value = frmChild.childTableID.value;
-		setChildTable(frmChild.childTableID.value);
-		frmPopup.txtChildFilter.value = frmChild.childFilter.value;
-		frmPopup.txtChildFilterID.value = frmChild.childFilterID.value;
-		frmPopup.txtFieldRecOrder.value = frmChild.childOrder.value;
-		frmPopup.txtChildFieldOrderID.value = frmChild.childOrderID.value;
-		frmPopup.txtChildRecords.value = frmChild.childRecords.value;
-		showAllRecords();
-		}
-	}
--->
-
+        if(frmChild.childAction.value.toUpperCase() == "NEW")
+        {
+            frmPopup.cboChildTable.selectedIndex = 0;
+            frmPopup.txtChildFilter.value = frmChild.childFilter.value;
+            frmPopup.txtChildFilterID.value = frmChild.childFilterID.value;
+            frmPopup.txtFieldRecOrder.value = frmChild.childOrder.value;
+            frmPopup.txtChildFieldOrderID.value = frmChild.childOrderID.value;
+            frmPopup.txtChildRecords.value = frmChild.childRecords.value;
+            showAllRecords();
+        }
+        else
+        {
+            frmPopup.rowID.value = frmDef.ssOleDBGridChildren.AddItemRowIndex(frmDef.ssOleDBGridChildren.Bookmark);
+            frmPopup.originalChildID.value = frmChild.childTableID.value;
+            setChildTable(frmChild.childTableID.value);
+            frmPopup.txtChildFilter.value = frmChild.childFilter.value;
+            frmPopup.txtChildFilterID.value = frmChild.childFilterID.value;
+            frmPopup.txtFieldRecOrder.value = frmChild.childOrder.value;
+            frmPopup.txtChildFieldOrderID.value = frmChild.childOrderID.value;
+            frmPopup.txtChildRecords.value = frmChild.childRecords.value;
+            showAllRecords();
+        }
+    }
 </script>
-
+    
 <script type="text/javascript">
+    
+    function populateChildCombo() {
 
-	function populateChildCombo() {
-		var frmChild = window.dialogArguments.parent.frames("workframe").document.forms("frmCustomReportChilds");
-		var frmPopup = document.getElementById("frmPopup");
+        var frmChild = window.dialogArguments.OpenHR.getForm("workframe", "frmCustomReportChilds");
+        var frmPopup = document.getElementById("frmPopup");
 		
-		//var sChildren = frmChild.childrenString.value;
-		var sChildren = frmChild.childrenNames.value;
-		var bAdded = false;
-		var sChildID;
-		var sChildName;
+        //var sChildren = frmChild.childrenString.value;
+        var sChildren = frmChild.childrenNames.value;
+        var bAdded = false;
+        var sChildID;
+        var sChildName;
 		
-		var oOption;
+        var oOption;
 
-		var iIndex = sChildren.indexOf("	");
-		while (iIndex > 0) {
-			sChildID = sChildren.substr(0, iIndex);
+        var iIndex = sChildren.indexOf("	");
+        while (iIndex > 0) {
+            sChildID = sChildren.substr(0, iIndex);
 
-			if (alreadyUsedInReport(sChildID) == false
-				|| sChildID == frmChild.childTableID.value) {
-				bAdded = true;
+            if (alreadyUsedInReport(sChildID) == false
+                || sChildID == frmChild.childTableID.value) {
+                bAdded = true;
 
-				oOption = document.createElement("OPTION");
-				frmPopup.cboChildTable.options.add(oOption);
+                oOption = document.createElement("OPTION");
+                frmPopup.cboChildTable.options.add(oOption);
 
-				//calling the getTableName() function for each of the child tables
-				//as it loops throught the Table elements collection each time.
-				//oOption.innerText = getTableName(sChildID);
-				//oOption.innerText = sChildID;
-				oOption.value = sChildID;
+                //calling the getTableName() function for each of the child tables
+                //as it loops throught the Table elements collection each time.
+                //oOption.innerText = getTableName(sChildID);
+                //oOption.innerText = sChildID;
+                oOption.value = sChildID;
 
-				sChildren = sChildren.substr(iIndex + 1);
-				iIndex = sChildren.indexOf("	");
+                sChildren = sChildren.substr(iIndex + 1);
+                iIndex = sChildren.indexOf("	");
 
-				sChildName = sChildren.substr(0, iIndex);
-				oOption.innerText = sChildName;
-			}
+                sChildName = sChildren.substr(0, iIndex);
+                oOption.innerText = sChildName;
+            }
 
-			if (bAdded) {
-				sChildren = sChildren.substr(iIndex + 1);
-				iIndex = sChildren.indexOf("	");
+            if (bAdded) {
+                sChildren = sChildren.substr(iIndex + 1);
+                iIndex = sChildren.indexOf("	");
 
-				bAdded = false;
-			}
-			else {
-				sChildren = sChildren.substr(iIndex + 1);
-				iIndex = sChildren.indexOf("	");
+                bAdded = false;
+            }
+            else {
+                sChildren = sChildren.substr(iIndex + 1);
+                iIndex = sChildren.indexOf("	");
 
-				sChildren = sChildren.substr(iIndex + 1);
-				iIndex = sChildren.indexOf("	");
+                sChildren = sChildren.substr(iIndex + 1);
+                iIndex = sChildren.indexOf("	");
 
-				bAdded = false;
-			}
-		}
+                bAdded = false;
+            }
+        }
 
-		if (frmPopup.cboChildTable.options.length < 2) {
-			combo_disable(frmPopup.cboChildTable, true);
-		}
-	}
+        if (frmPopup.cboChildTable.options.length < 2) {
+            combo_disable(frmPopup.cboChildTable, true);
+        }
+    }
 
-	function alreadyUsedInReport(piChildID) {
-		var frmDef = window.dialogArguments.parent.frames("workframe").document.forms("frmDefinition");
-		var pvarbookmark;
+    function alreadyUsedInReport(piChildID) {
+        var frmDef = window.dialogArguments.OpenHR.getForm("workframe", "frmDefinition");
+        
+        var pvarbookmark;
 
-		for (var i = 0; i < frmDef.ssOleDBGridChildren.rows; i++) {
-			pvarbookmark = frmDef.ssOleDBGridChildren.AddItemBookmark(i);
-			if (frmDef.ssOleDBGridChildren.Columns('TableID').CellText(pvarbookmark) == piChildID) {
-				return true;
-			}
-		}
-		return false;
-	}
+        for (var i = 0; i < frmDef.ssOleDBGridChildren.rows; i++) {
+            pvarbookmark = frmDef.ssOleDBGridChildren.AddItemBookmark(i);
+            if (frmDef.ssOleDBGridChildren.Columns('TableID').CellText(pvarbookmark) == piChildID) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	function setChildTable(piTableID) {
-		var i;
-		var frmPopup = document.getElementById("frmPopup");
+    function setChildTable(piTableID) {
+        var i;
+        var frmPopup = document.getElementById("frmPopup");
 		
-		for (i = 0; i < frmPopup.cboChildTable.options.length; i++) {
-			if (frmPopup.cboChildTable.options(i).value == piTableID) {
-				frmPopup.cboChildTable.selectedIndex = i;
-				return;
-			}
-		}
-		frmPopup.cboChildTable.selectedIndex = 0;
-	}
+        for (i = 0; i < frmPopup.cboChildTable.options.length; i++) {
+            if (frmPopup.cboChildTable.options(i).value == piTableID) {
+                frmPopup.cboChildTable.selectedIndex = i;
+                return;
+            }
+        }
+        frmPopup.cboChildTable.selectedIndex = 0;
+    }
 
-	function changeChildTable() {
-		var frmPopup = document.getElementById("frmPopup");
-		frmPopup.txtChildFilterID.value = 0;
-		frmPopup.txtChildFilter.value = "";
-		frmPopup.txtChildFieldOrderID.value = 0;
-		frmPopup.txtFieldRecOrder.value = "";
-		frmPopup.txtChildRecords.value = 0;
-	}
+    function changeChildTable() {
+        var frmPopup = document.getElementById("frmPopup");
+        frmPopup.txtChildFilterID.value = 0;
+        frmPopup.txtChildFilter.value = "";
+        frmPopup.txtChildFieldOrderID.value = 0;
+        frmPopup.txtFieldRecOrder.value = "";
+        frmPopup.txtChildRecords.value = 0;
+    }
 
-	function getTableName(piTableID) {
+    function getTableName(piTableID) {
 
-		var i;
-		var sTableName;
-		var frmTab = window.dialogArguments.parent.frames("workframe").document.forms("frmTables");
+        var i;
+        var sTableName;
+        var frmTab = window.dialogArguments.OpenHR.getForm("workframe", "frmTables");
 
-		var sReqdControlName = new String("txtTableName_");
-		sReqdControlName = sReqdControlName.concat(piTableID);
+        var sReqdControlName = new String("txtTableName_");
+        sReqdControlName = sReqdControlName.concat(piTableID);
 
-		var dataCollection = frmTab.elements;
-		if (dataCollection != null) {
-			for (i = 0; i < dataCollection.length; i++) {
-				var sControlName = dataCollection.item(i).name;
+        var dataCollection = frmTab.elements;
+        if (dataCollection != null) {
+            for (i = 0; i < dataCollection.length; i++) {
+                var sControlName = dataCollection.item(i).name;
 
-				if (sControlName == sReqdControlName) {
-					sTableName = dataCollection.item(i).value;
-					return sTableName;
-				}
-			}
-		}
-		return null;
-	}
+                if (sControlName == sReqdControlName) {
+                    sTableName = dataCollection.item(i).value;
+                    return sTableName;
+                }
+            }
+        }
+        return null;
+    }
 
-	function setRecordsNumeric() {
-		var sConvertedValue;
-		var sDecimalSeparator;
-		var sThousandSeparator;
-		var sPoint;
-		var frmPopup = document.getElementById("frmPopup");
+    function setRecordsNumeric() {
+        var sConvertedValue;
+        var sDecimalSeparator;
+        var sThousandSeparator;
+        var sPoint;
+        var frmPopup = document.getElementById("frmPopup");
 		
-		sDecimalSeparator = "\\";
-		sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator);
-		var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
+        sDecimalSeparator = "\\";
+        sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator);
+        var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
 
-		sThousandSeparator = "\\";
-		sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator);
-		var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
+        sThousandSeparator = "\\";
+        sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator);
+        var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
 
-		sPoint = "\\.";
-		var rePoint = new RegExp(sPoint, "gi");
+        sPoint = "\\.";
+        var rePoint = new RegExp(sPoint, "gi");
 
-		if (frmPopup.txtChildRecords.value == '') {
-			frmPopup.txtChildRecords.value = 0;
-		}
+        if (frmPopup.txtChildRecords.value == '') {
+            frmPopup.txtChildRecords.value = 0;
+        }
 
-		// Convert the value from locale to UK settings for use with the isNaN funtion.
-		sConvertedValue = new String(frmPopup.txtChildRecords.value);
+        // Convert the value from locale to UK settings for use with the isNaN funtion.
+        sConvertedValue = new String(frmPopup.txtChildRecords.value);
 
-		// Remove any thousand separators.
-		sConvertedValue = sConvertedValue.replace(reThousandSeparator, "");
-		frmPopup.txtChildRecords.value = sConvertedValue;
+        // Remove any thousand separators.
+        sConvertedValue = sConvertedValue.replace(reThousandSeparator, "");
+        frmPopup.txtChildRecords.value = sConvertedValue;
 
-		// Convert any decimal separators to '.'.
-		if (OpenHR.LocaleDecimalSeparator != ".") {
-			// Remove decimal points.
-			sConvertedValue = sConvertedValue.replace(rePoint, "A");
-			// replace the locale decimal marker with the decimal point.
-			sConvertedValue = sConvertedValue.replace(reDecimalSeparator, ".");
-		}
+        // Convert any decimal separators to '.'.
+        if (OpenHR.LocaleDecimalSeparator != ".") {
+            // Remove decimal points.
+            sConvertedValue = sConvertedValue.replace(rePoint, "A");
+            // replace the locale decimal marker with the decimal point.
+            sConvertedValue = sConvertedValue.replace(reDecimalSeparator, ".");
+        }
 
-		if (isNaN(sConvertedValue) == true) {
-			OpenHR.messageBox("Invalid numeric value.", 48, "Custom Reports");
-			frmPopup.txtChildRecords.value = 0;
-		}
-		else {
-			if (sConvertedValue.indexOf(".") >= 0) {
-				OpenHR.messageBox("Invalid integer value.", 48, "Custom Reports");
-				frmPopup.txtChildRecords.value = 0;
-			}
-			else {
-				if (frmPopup.txtChildRecords.value < 0) {
-					OpenHR.messageBox("The value cannot be negative.", 48, "Custom Reports");
-					frmPopup.txtChildRecords.value = 0;
-				}
-				else {
-					if (frmPopup.txtChildRecords.value > 999) {
-						OpenHR.messageBox("The value cannot be greater than 999.", 48, "Custom Reports");
-						frmPopup.txtChildRecords.value = 999;
-					}
-				}
-			}
-		}
-	}
+        if (isNaN(sConvertedValue) == true) {
+            OpenHR.messageBox("Invalid numeric value.", 48, "Custom Reports");
+            frmPopup.txtChildRecords.value = 0;
+        }
+        else {
+            if (sConvertedValue.indexOf(".") >= 0) {
+                OpenHR.messageBox("Invalid integer value.", 48, "Custom Reports");
+                frmPopup.txtChildRecords.value = 0;
+            }
+            else {
+                if (frmPopup.txtChildRecords.value < 0) {
+                    OpenHR.messageBox("The value cannot be negative.", 48, "Custom Reports");
+                    frmPopup.txtChildRecords.value = 0;
+                }
+                else {
+                    if (frmPopup.txtChildRecords.value > 999) {
+                        OpenHR.messageBox("The value cannot be greater than 999.", 48, "Custom Reports");
+                        frmPopup.txtChildRecords.value = 999;
+                    }
+                }
+            }
+        }
+    }
 
-	function showAllRecords() {
-		var frmPopup = document.getElementById("frmPopup");
-		if (frmPopup.txtChildRecords.value == 0) {
-			frmPopup.txtAllRecords.value = "(All Records)";
-		}
-		else {
-			frmPopup.txtAllRecords.value = "";
-		}
-	}
+    function showAllRecords() {
+        var frmPopup = document.getElementById("frmPopup");
+        if (frmPopup.txtChildRecords.value == 0) {
+            frmPopup.txtAllRecords.value = "(All Records)";
+        }
+        else {
+            frmPopup.txtAllRecords.value = "";
+        }
+    }
 
-	function spinRecords(pfUp) {
-		var frmPopup = document.getElementById("frmPopup");
-		var iRecords = frmPopup.txtChildRecords.value;
-		if (pfUp == true) {
-			iRecords = ++iRecords;
-		}
-		else {
-			if (iRecords > 0) {
-				iRecords = iRecords - 1;
-			}
-		}
-		frmPopup.txtChildRecords.value = iRecords;
-	}
+    function spinRecords(pfUp) {
+        var frmPopup = document.getElementById("frmPopup");
+        var iRecords = frmPopup.txtChildRecords.value;
+        if (pfUp == true) {
+            iRecords = ++iRecords;
+        }
+        else {
+            if (iRecords > 0) {
+                iRecords = iRecords - 1;
+            }
+        }
+        frmPopup.txtChildRecords.value = iRecords;
+    }
 
-	function selectRecordOrder() {
-		var sURL;
-		var frmPopup = document.getElementById("frmPopup");
-		var frmRecOrder = document.getElementById("frmRecOrder");
+    function selectRecordOrder() {
+        var sURL;
+        var frmPopup = document.getElementById("frmPopup");
+        var frmRecOrder = document.getElementById("frmRecOrder");
 		
-		frmRecOrder.selectionType.value = "ORDER";
-		frmRecOrder.txtTableID.value = frmPopup.cboChildTable.options[frmPopup.cboChildTable.selectedIndex].value;
-		frmRecOrder.selectedID.value = frmPopup.txtChildFieldOrderID.value;
+        frmRecOrder.selectionType.value = "ORDER";
+        frmRecOrder.txtTableID.value = frmPopup.cboChildTable.options[frmPopup.cboChildTable.selectedIndex].value;
+        frmRecOrder.selectedID.value = frmPopup.txtChildFieldOrderID.value;
 
-		sURL = "fieldRec" +
-			"?selectionType=" + escape(frmRecOrder.selectionType.value) +
-			"&txtTableID=" + escape(frmRecOrder.txtTableID.value) +
-			"&selectedID=" + escape(frmRecOrder.selectedID.value);
-		openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
-	}
+        sURL = "fieldRec" +
+            "?selectionType=" + escape(frmRecOrder.selectionType.value) +
+            "&txtTableID=" + escape(frmRecOrder.txtTableID.value) +
+            "&selectedID=" + escape(frmRecOrder.selectedID.value);
+        openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
+    }
 
-	function selectRecordOption(psTable, psType) {
-		var frmUse = window.dialogArguments.parent.frames("workframe").document.forms("frmUseful");
-		var frmDef = window.dialogArguments.parent.frames("workframe").document.forms("frmDefinition");
-		var sURL;
-		var frmPopup = document.getElementById("frmPopup");
-		var frmRecordSelection = document.getElementById("frmRecordSelection");
+    function selectRecordOption(psTable, psType) {
+        var frmUse = window.dialogArguments.OpenHR.getForm("workframe", "frmUseful");
+        var frmDef = window.dialogArguments.OpenHR.getForm("workframe", "frmDefinition");
+
+        var sURL;
+        var frmPopup = document.getElementById("frmPopup");
+        var frmRecordSelection = document.getElementById("frmRecordSelection");
 		
-		if (psTable == 'child') {
-			var iTableID = frmPopup.cboChildTable.options[frmPopup.cboChildTable.selectedIndex].value;
-			var iCurrentID = frmPopup.txtChildFilterID.value;
-		}
-		frmRecordSelection.recSelTable.value = psTable;
-		frmRecordSelection.recSelType.value = psType;
-		frmRecordSelection.recSelTableID.value = iTableID;
-		frmRecordSelection.recSelCurrentID.value = iCurrentID;
+        if (psTable == 'child') {
+            var iTableID = frmPopup.cboChildTable.options[frmPopup.cboChildTable.selectedIndex].value;
+            var iCurrentID = frmPopup.txtChildFilterID.value;
+        }
+        frmRecordSelection.recSelTable.value = psTable;
+        frmRecordSelection.recSelType.value = psType;
+        frmRecordSelection.recSelTableID.value = iTableID;
+        frmRecordSelection.recSelCurrentID.value = iCurrentID;
 
-		var strDefOwner = new String(frmDef.txtOwner.value);
-		var strCurrentUser = new String(frmUse.txtUserName.value);
+        var strDefOwner = new String(frmDef.txtOwner.value);
+        var strCurrentUser = new String(frmUse.txtUserName.value);
 
-		strDefOwner = strDefOwner.toLowerCase();
-		strCurrentUser = strCurrentUser.toLowerCase();
+        strDefOwner = strDefOwner.toLowerCase();
+        strCurrentUser = strCurrentUser.toLowerCase();
 
-		if (strDefOwner == strCurrentUser) {
-			frmRecordSelection.recSelDefOwner.value = '1';
-		}
-		else {
-			frmRecordSelection.recSelDefOwner.value = '0';
-		}
-		frmRecordSelection.recSelDefType.value = "Custom Reports";
+        if (strDefOwner == strCurrentUser) {
+            frmRecordSelection.recSelDefOwner.value = '1';
+        }
+        else {
+            frmRecordSelection.recSelDefOwner.value = '0';
+        }
+        frmRecordSelection.recSelDefType.value = "Custom Reports";
 
-		sURL = "util_recordSelection" +
-				"?recSelType=" + escape(frmRecordSelection.recSelType.value) +
-				"&recSelTableID=" + escape(frmRecordSelection.recSelTableID.value) +
-				"&recSelCurrentID=" + escape(frmRecordSelection.recSelCurrentID.value) +
-				"&recSelTable=" + escape(frmRecordSelection.recSelTable.value) +
-				"&recSelDefOwner=" + escape(frmRecordSelection.recSelDefOwner.value) +
-				"&recSelDefType=" + escape(frmRecordSelection.recSelDefType.value);
-		openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
-	}
+        sURL = "util_recordSelection" +
+            "?recSelType=" + escape(frmRecordSelection.recSelType.value) +
+            "&recSelTableID=" + escape(frmRecordSelection.recSelTableID.value) +
+            "&recSelCurrentID=" + escape(frmRecordSelection.recSelCurrentID.value) +
+            "&recSelTable=" + escape(frmRecordSelection.recSelTable.value) +
+            "&recSelDefOwner=" + escape(frmRecordSelection.recSelDefOwner.value) +
+            "&recSelDefType=" + escape(frmRecordSelection.recSelDefType.value);
+        openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
+    }
 
-	function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
-		var dlgwinprops = "center:yes;" +
-			"dialogHeight:" + pHeight + "px;" +
-			"dialogWidth:" + pWidth + "px;" +
-			"help:no;" +
-			"resizable:" + psResizable + ";" +
-			"scroll:" + psScroll + ";" +
-			"status:no;";
-		window.showModalDialog(pDestination, self, dlgwinprops);
-	}
+    function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
+        var dlgwinprops = "center:yes;" +
+            "dialogHeight:" + pHeight + "px;" +
+            "dialogWidth:" + pWidth + "px;" +
+            "help:no;" +
+            "resizable:" + psResizable + ";" +
+            "scroll:" + psScroll + ";" +
+            "status:no;";
+        window.showModalDialog(pDestination, self, dlgwinprops);
+    }
 
-	function removeChildTable(piChildTableID) {
-		var i;
-		var iCount;
-		var iTableID;
-		var fChildColumnsSelected;
-		var iIndex;
-		var sControlName;
-		var dataCollection;
+    function removeChildTable(piChildTableID) {
+        var i;
+        var iCount;
+        var iTableID;
+        var fChildColumnsSelected;
+        var iIndex;
+        var sControlName;
+        var dataCollection;
 		
-		var frmUseful = window.dialogArguments.parent.frames("workframe").document.forms("frmUseful");
-		var frmDefinition = window.dialogArguments.parent.frames("workframe").document.forms("frmDefinition");
-		var frmOriginalDefinition = window.dialogArguments.parent.frames("workframe").document.forms("frmOriginalDefinition");
+        var frmUseful = window.dialogArguments.OpenHR.getForm("workframe", "frmUseful");
+        var frmDefinition = window.dialogArguments.OpenHR.getForm("workframe", "frmDefinition");
+        var frmOriginalDefinition = window.dialogArguments.OpenHR.getForm("workframe", "frmOriginalDefinition");
 
-		frmUseful.txtCurrentChildTableID.value = piChildTableID;
+        frmUseful.txtCurrentChildTableID.value = piChildTableID;
 
-		if (frmUseful.txtLoading.value == 'N') {
-			if ((frmDefinition.ssOleDBGridSelectedColumns.Rows > 0) ||
-			((frmUseful.txtAction.value.toUpperCase() != "NEW") &&
-			(frmUseful.txtSelectedColumnsLoaded.value == 0))) {
-				if (frmUseful.txtCurrentChildTableID.value != 0)
-				//if (frmDefinition.ssOleDBGridChildren.Rows > 0)
-				{
+        if (frmUseful.txtLoading.value == 'N') {
+            if ((frmDefinition.ssOleDBGridSelectedColumns.Rows > 0) ||
+                ((frmUseful.txtAction.value.toUpperCase() != "NEW") &&
+                    (frmUseful.txtSelectedColumnsLoaded.value == 0))) {
+                if (frmUseful.txtCurrentChildTableID.value != 0)
+                    //if (frmDefinition.ssOleDBGridChildren.Rows > 0)
+                {
 
-					// Check if there are any child columns in the selected columns list.
-					fChildColumnsSelected = false;
-					if (frmUseful.txtSelectedColumnsLoaded.value == 1) {
-						if (frmDefinition.ssOleDBGridSelectedColumns.Rows > 0) {
-							frmDefinition.ssOleDBGridSelectedColumns.Redraw = false;
-							frmDefinition.ssOleDBGridSelectedColumns.movefirst();
+                    // Check if there are any child columns in the selected columns list.
+                    fChildColumnsSelected = false;
+                    if (frmUseful.txtSelectedColumnsLoaded.value == 1) {
+                        if (frmDefinition.ssOleDBGridSelectedColumns.Rows > 0) {
+                            frmDefinition.ssOleDBGridSelectedColumns.Redraw = false;
+                            frmDefinition.ssOleDBGridSelectedColumns.movefirst();
 
-							for (i = 0; i < frmDefinition.ssOleDBGridSelectedColumns.rows; i++) {
-								iTableID = frmDefinition.ssOleDBGridSelectedColumns.Columns("tableID").Text;
+                            for (i = 0; i < frmDefinition.ssOleDBGridSelectedColumns.rows; i++) {
+                                iTableID = frmDefinition.ssOleDBGridSelectedColumns.Columns("tableID").Text;
 
-								//if (window.dialogArguments.window.isSelectedChildTable(iTableID)) {
-								if (OpenHR.isSelectedChildTable(iTableID)) {
-									fChildColumnsSelected = true;
-									break;
-								}
+                                //if (window.dialogArguments.window.isSelectedChildTable(iTableID)) {
+                                if (OpenHR.isSelectedChildTable(iTableID)) {
+                                    fChildColumnsSelected = true;
+                                    break;
+                                }
 
-								if (iTableID == frmUseful.txtCurrentChildTableID.value) {
-									fChildColumnsSelected = true;
-									break;
-								}
+                                if (iTableID == frmUseful.txtCurrentChildTableID.value) {
+                                    fChildColumnsSelected = true;
+                                    break;
+                                }
 
-								frmDefinition.ssOleDBGridSelectedColumns.movenext();
-							}
+                                frmDefinition.ssOleDBGridSelectedColumns.movenext();
+                            }
 
-							frmDefinition.ssOleDBGridSelectedColumns.Redraw = true;
-							frmDefinition.ssOleDBGridSelectedColumns.selbookmarks.removeall();
-							frmDefinition.ssOleDBGridSelectedColumns.selbookmarks.add(frmDefinition.ssOleDBGridSelectedColumns.bookmark);
-						}
-					}
-					else {
-						dataCollection = frmOriginalDefinition.elements;
-						if (dataCollection != null) {
-							for (iIndex = 0; iIndex < dataCollection.length; iIndex++) {
-								sControlName = dataCollection.item(iIndex).name;
-								sControlName = sControlName.substr(0, 20);
-								if (sControlName == "txtReportDefnColumn_") {
-									iTableID = window.dialogArguments.window.selectedColumnParameter(dataCollection.item(iIndex).value, "TABLEID");
+                            frmDefinition.ssOleDBGridSelectedColumns.Redraw = true;
+                            frmDefinition.ssOleDBGridSelectedColumns.selbookmarks.removeall();
+                            frmDefinition.ssOleDBGridSelectedColumns.selbookmarks.add(frmDefinition.ssOleDBGridSelectedColumns.bookmark);
+                        }
+                    }
+                    else {
+                        dataCollection = frmOriginalDefinition.elements;
+                        if (dataCollection != null) {
+                            for (iIndex = 0; iIndex < dataCollection.length; iIndex++) {
+                                sControlName = dataCollection.item(iIndex).name;
+                                sControlName = sControlName.substr(0, 20);
+                                if (sControlName == "txtReportDefnColumn_") {
+                                    iTableID = window.dialogArguments.window.selectedColumnParameter(dataCollection.item(iIndex).value, "TABLEID");
 
-									//if (window.dialogArguments.window.isSelectedChildTable(iTableID)) {
-									if (OpenHR.isSelectedChildTable(iTableID)) {
-										fChildColumnsSelected = true;
-										break;
-									}
+                                    //if (window.dialogArguments.window.isSelectedChildTable(iTableID)) {
+                                    if (OpenHR.isSelectedChildTable(iTableID)) {
+                                        fChildColumnsSelected = true;
+                                        break;
+                                    }
 
-									if (iTableID == frmUseful.txtCurrentChildTableID.value) {
-										fChildColumnsSelected = true;
-										break;
-									}
+                                    if (iTableID == frmUseful.txtCurrentChildTableID.value) {
+                                        fChildColumnsSelected = true;
+                                        break;
+                                    }
 
-								}
-							}
-						}
-					}
+                                }
+                            }
+                        }
+                    }
 
-					if (fChildColumnsSelected == true) {
-						var iAnswer = OpenHR.messageBox("One or more columns from the child table have been included in the report definition. Changing the child table will remove these columns from the report definition. Do you wish to continue ?", 36, "Custom Reports");
+                    if (fChildColumnsSelected == true) {
+                        var iAnswer = OpenHR.messageBox("One or more columns from the child table have been included in the report definition. Changing the child table will remove these columns from the report definition. Do you wish to continue ?", 36, "Custom Reports");
 
-						if (iAnswer == 7) {
-							// cancel and change back !
-							return false;
-						}
-						else {
-							// Remove the child table's columns from the selected columns collection.
-							if (frmUseful.txtSelectedColumnsLoaded.value == 1) {
-								if (frmDefinition.ssOleDBGridSelectedColumns.Rows > 0) {
-									frmDefinition.ssOleDBGridSelectedColumns.Redraw = false;
-									frmDefinition.ssOleDBGridSelectedColumns.MoveFirst();
+                        if (iAnswer == 7) {
+                            // cancel and change back !
+                            return false;
+                        }
+                        else {
+                            // Remove the child table's columns from the selected columns collection.
+                            if (frmUseful.txtSelectedColumnsLoaded.value == 1) {
+                                if (frmDefinition.ssOleDBGridSelectedColumns.Rows > 0) {
+                                    frmDefinition.ssOleDBGridSelectedColumns.Redraw = false;
+                                    frmDefinition.ssOleDBGridSelectedColumns.MoveFirst();
 
-									iCount = frmDefinition.ssOleDBGridSelectedColumns.rows;
-									for (i = 0; i < iCount; i++) {
-										iTableID = frmDefinition.ssOleDBGridSelectedColumns.Columns("tableID").Text;
-										if (iTableID == frmUseful.txtCurrentChildTableID.value) {
-											if (frmDefinition.ssOleDBGridSelectedColumns.rows == 1) {
-												frmDefinition.ssOleDBGridSelectedColumns.RemoveAll();
-											}
-											else {
-												frmDefinition.ssOleDBGridSelectedColumns.RemoveItem(frmDefinition.ssOleDBGridSelectedColumns.AddItemRowIndex(frmDefinition.ssOleDBGridSelectedColumns.Bookmark));
-											}
-										}
-										frmDefinition.ssOleDBGridSelectedColumns.MoveNext();
-									}
+                                    iCount = frmDefinition.ssOleDBGridSelectedColumns.rows;
+                                    for (i = 0; i < iCount; i++) {
+                                        iTableID = frmDefinition.ssOleDBGridSelectedColumns.Columns("tableID").Text;
+                                        if (iTableID == frmUseful.txtCurrentChildTableID.value) {
+                                            if (frmDefinition.ssOleDBGridSelectedColumns.rows == 1) {
+                                                frmDefinition.ssOleDBGridSelectedColumns.RemoveAll();
+                                            }
+                                            else {
+                                                frmDefinition.ssOleDBGridSelectedColumns.RemoveItem(frmDefinition.ssOleDBGridSelectedColumns.AddItemRowIndex(frmDefinition.ssOleDBGridSelectedColumns.Bookmark));
+                                            }
+                                        }
+                                        frmDefinition.ssOleDBGridSelectedColumns.MoveNext();
+                                    }
 
-									frmDefinition.ssOleDBGridSelectedColumns.Redraw = true;
-									frmDefinition.ssOleDBGridSelectedColumns.selbookmarks.removeall();
-									frmDefinition.ssOleDBGridSelectedColumns.selbookmarks.add(frmDefinition.ssOleDBGridSelectedColumns.bookmark);
-								}
-							}
-							else {
-								dataCollection = frmOriginalDefinition.elements;
-								if (dataCollection != null) {
-									for (iIndex = 0; iIndex < dataCollection.length; iIndex++) {
-										sControlName = dataCollection.item(iIndex).name;
-										sControlName = sControlName.substr(0, 20);
-										if (sControlName == "txtReportDefnColumn_") {
-											iTableID = window.dialogArguments.window.selectedColumnParameter(dataCollection.item(iIndex).value, "TABLEID");
-											if (iTableID == frmUseful.txtCurrentChildTableID.value) {
-												dataCollection.item(iIndex).value = "";
-											}
-										}
-									}
-								}
-							}
+                                    frmDefinition.ssOleDBGridSelectedColumns.Redraw = true;
+                                    frmDefinition.ssOleDBGridSelectedColumns.selbookmarks.removeall();
+                                    frmDefinition.ssOleDBGridSelectedColumns.selbookmarks.add(frmDefinition.ssOleDBGridSelectedColumns.bookmark);
+                                }
+                            }
+                            else {
+                                dataCollection = frmOriginalDefinition.elements;
+                                if (dataCollection != null) {
+                                    for (iIndex = 0; iIndex < dataCollection.length; iIndex++) {
+                                        sControlName = dataCollection.item(iIndex).name;
+                                        sControlName = sControlName.substr(0, 20);
+                                        if (sControlName == "txtReportDefnColumn_") {
+                                            iTableID = window.dialogArguments.window.selectedColumnParameter(dataCollection.item(iIndex).value, "TABLEID");
+                                            if (iTableID == frmUseful.txtCurrentChildTableID.value) {
+                                                dataCollection.item(iIndex).value = "";
+                                            }
+                                        }
+                                    }
+                                }
+                            }
 
-							// Remove the child table's columns from the sort order collection.
-							window.dialogArguments.window.removeSortColumn(0, frmUseful.txtCurrentChildTableID.value);
-						}
-					}
-				}
-			}
-			frmUseful.txtChanged.value = 1;
-		}
+                            // Remove the child table's columns from the sort order collection.
+                            window.dialogArguments.window.removeSortColumn(0, frmUseful.txtCurrentChildTableID.value);
+                        }
+                    }
+                }
+            }
+            frmUseful.txtChanged.value = 1;
+        }
 
-		window.dialogArguments.window.refreshTab2Controls();
-		frmUseful.txtTablesChanged.value = 1;
-		//TM 24/07/02 Fault 4215
-		frmDefinition.ssOleDBGridSelectedColumns.selbookmarks.removeall();
-		return true;
-	}
+        window.dialogArguments.window.refreshTab2Controls();
+        frmUseful.txtTablesChanged.value = 1;
+        //TM 24/07/02 Fault 4215
+        frmDefinition.ssOleDBGridSelectedColumns.selbookmarks.removeall();
+        return true;
+    }
 
-	function setForm() {
-		var frmPopup = document.getElementById("frmPopup");
-		var sALL_RECORDS = "All Records";
-		var frmChild = window.dialogArguments.parent.frames("workframe").document.forms("frmCustomReportChilds");
-		var frmDef = window.dialogArguments.parent.frames("workframe").document.forms("frmDefinition");
-		var plngRow = frmDef.ssOleDBGridChildren.AddItemRowIndex(frmDef.ssOleDBGridChildren.Bookmark);
-		var frmSelectionAccess = document.getElementById("frmSelectionAccess");
+    function setForm() {
+        var frmPopup = document.getElementById("frmPopup");
+        var sALL_RECORDS = "All Records";
+        var frmChild = window.dialogArguments.OpenHR.getForm("workframe", "frmCustomReportChilds");
+        var frmDef = window.dialogArguments.OpenHR.getForm("workframe", "frmDefinition");
+        var plngRow = frmDef.ssOleDBGridChildren.AddItemRowIndex(frmDef.ssOleDBGridChildren.Bookmark);
+        var frmSelectionAccess = document.getElementById("frmSelectionAccess");
 		
-		//Add the child tableid and child tablename to the srting.
-		var sAdd = frmPopup.cboChildTable.options(frmPopup.cboChildTable.options.selectedIndex).value
-			 + '	' + frmPopup.cboChildTable.options(frmPopup.cboChildTable.options.selectedIndex).text;
+        //Add the child tableid and child tablename to the srting.
+        var sAdd = frmPopup.cboChildTable.options(frmPopup.cboChildTable.options.selectedIndex).value
+            + '	' + frmPopup.cboChildTable.options(frmPopup.cboChildTable.options.selectedIndex).text;
 
-		//Add the filterid and the filter name to the string.
-		sAdd = sAdd + '	' + frmPopup.txtChildFilterID.value + '	' + frmPopup.txtChildFilter.value;
+        //Add the filterid and the filter name to the string.
+        sAdd = sAdd + '	' + frmPopup.txtChildFilterID.value + '	' + frmPopup.txtChildFilter.value;
 
-		//Add the orderid and the order name to the string.
-		sAdd = sAdd + '	' + frmPopup.txtChildFieldOrderID.value + '	' + frmPopup.txtFieldRecOrder.value;
+        //Add the orderid and the order name to the string.
+        sAdd = sAdd + '	' + frmPopup.txtChildFieldOrderID.value + '	' + frmPopup.txtFieldRecOrder.value;
 
-		//Add the max records values to the string.
-		if (frmPopup.txtChildRecords.value == 0) {
-			sAdd = sAdd + '	' + sALL_RECORDS;
-		}
-		else {
-			sAdd = sAdd + '	' + frmPopup.txtChildRecords.value;
-		}
+        //Add the max records values to the string.
+        if (frmPopup.txtChildRecords.value == 0) {
+            sAdd = sAdd + '	' + sALL_RECORDS;
+        }
+        else {
+            sAdd = sAdd + '	' + frmPopup.txtChildRecords.value;
+        }
 
-		sAdd = sAdd + '	' + frmSelectionAccess.childHidden.value;
+        sAdd = sAdd + '	' + frmSelectionAccess.childHidden.value;
 
-		if (frmChild.childAction.value.toUpperCase() == "NEW") {
-			frmDef.ssOleDBGridChildren.additem(sAdd);
-			frmDef.ssOleDBGridChildren.selbookmarks.RemoveAll();
-			frmDef.ssOleDBGridChildren.MoveLast();
-			frmDef.ssOleDBGridChildren.selbookmarks.Add(frmDef.ssOleDBGridChildren.Bookmark);
-		}
-		else {
-			if (frmPopup.originalChildID.value != frmPopup.cboChildTable.options(frmPopup.cboChildTable.options.selectedIndex).value) {
-				//' Check if any columns in the report definition are from the table that was
-				//' previously selected in the child combo box. If so, prompt user for action.
-				var bContinueRemoval;
+        if (frmChild.childAction.value.toUpperCase() == "NEW") {
+            frmDef.ssOleDBGridChildren.additem(sAdd);
+            frmDef.ssOleDBGridChildren.selbookmarks.RemoveAll();
+            frmDef.ssOleDBGridChildren.MoveLast();
+            frmDef.ssOleDBGridChildren.selbookmarks.Add(frmDef.ssOleDBGridChildren.Bookmark);
+        }
+        else {
+            if (frmPopup.originalChildID.value != frmPopup.cboChildTable.options(frmPopup.cboChildTable.options.selectedIndex).value) {
+                //' Check if any columns in the report definition are from the table that was
+                //' previously selected in the child combo box. If so, prompt user for action.
+                var bContinueRemoval;
 
-				bContinueRemoval = removeChildTable(frmPopup.originalChildID.value);
+                bContinueRemoval = removeChildTable(frmPopup.originalChildID.value);
 
-				if (bContinueRemoval) {
-					frmDef.ssOleDBGridChildren.removeitem(plngRow);
-					frmDef.ssOleDBGridChildren.additem(sAdd, plngRow);
-					frmDef.ssOleDBGridChildren.Bookmark = frmDef.ssOleDBGridChildren.AddItemBookmark(plngRow);
-					frmDef.ssOleDBGridChildren.SelBookmarks.RemoveAll();
-					frmDef.ssOleDBGridChildren.SelBookmarks.Add(frmDef.ssOleDBGridChildren.AddItemBookmark(plngRow));
-				}
-			}
-			else {
-				frmDef.ssOleDBGridChildren.removeitem(plngRow);
-				frmDef.ssOleDBGridChildren.additem(sAdd, plngRow);
-				frmDef.ssOleDBGridChildren.Bookmark = frmDef.ssOleDBGridChildren.AddItemBookmark(plngRow);
-				frmDef.ssOleDBGridChildren.SelBookmarks.RemoveAll();
-				frmDef.ssOleDBGridChildren.SelBookmarks.Add(frmDef.ssOleDBGridChildren.AddItemBookmark(plngRow));
-			}
-		}
+                if (bContinueRemoval) {
+                    frmDef.ssOleDBGridChildren.removeitem(plngRow);
+                    frmDef.ssOleDBGridChildren.additem(sAdd, plngRow);
+                    frmDef.ssOleDBGridChildren.Bookmark = frmDef.ssOleDBGridChildren.AddItemBookmark(plngRow);
+                    frmDef.ssOleDBGridChildren.SelBookmarks.RemoveAll();
+                    frmDef.ssOleDBGridChildren.SelBookmarks.Add(frmDef.ssOleDBGridChildren.AddItemBookmark(plngRow));
+                }
+            }
+            else {
+                frmDef.ssOleDBGridChildren.removeitem(plngRow);
+                frmDef.ssOleDBGridChildren.additem(sAdd, plngRow);
+                frmDef.ssOleDBGridChildren.Bookmark = frmDef.ssOleDBGridChildren.AddItemBookmark(plngRow);
+                frmDef.ssOleDBGridChildren.SelBookmarks.RemoveAll();
+                frmDef.ssOleDBGridChildren.SelBookmarks.Add(frmDef.ssOleDBGridChildren.AddItemBookmark(plngRow));
+            }
+        }
 
-		self.close();
-		return false;
-	}
+        self.close();
+        return false;
+    }
 </script>
 
 <body <%=session("BodyColour")%> leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">
