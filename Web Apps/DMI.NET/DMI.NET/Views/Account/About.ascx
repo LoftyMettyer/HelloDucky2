@@ -21,7 +21,7 @@
 					<tr>
 						<td width="40"></td>
 						<td colspan="4">
-							<h3 align="center">About OpenHR</h3>
+							<h3 align="center"></h3>
 						</td>
 						<td width="40"></td>
 					</tr>
@@ -34,7 +34,7 @@
 					<tr>
 						<td width="40" rowspan="<%=iNumRows %>"></td>
 						<td width="20" rowspan="<%=iNumRows %>"></td>
-						<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">OpenHR Data Manager Intranet :&nbsp;
+						<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">OpenHR :&nbsp;
 						</td>
 						<td style="vertical-align: top; text-align: left; white-space: nowrap;">Version
                                 <%=session("Version")%>
