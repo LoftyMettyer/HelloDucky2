@@ -1,16 +1,16 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
-<script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/jquery-ui-1.9.1.custom.min.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/jquery.cookie.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/menu.js")%>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/jquery.ui.touch-punch.min.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/jsTree/jquery.jstree.js") %>" type="text/javascript"></script>
+<link href="<%:Url.Content("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+<script src="<%:Url.Content("~/Scripts/jquery/jquery-1.8.3.js")%>" type="text/javascript"></script>
+<script src="<%:Url.Content("~/Scripts/openhr.js")%>" type="text/javascript"></script>
+<script src="<%:Url.Content("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"></script>
+<script src="<%:Url.Content("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"></script>
+<script src="<%:Url.Content("~/Scripts/jquery/jquery-ui-1.9.2.custom.js")%>" type="text/javascript"></script>
+<script src="<%:Url.Content("~/Scripts/jquery/jquery.cookie.js")%>" type="text/javascript"></script>
+<script src="<%:Url.Content("~/Scripts/FormScripts/menu.js")%>" type="text/javascript"></script>
+<script src="<%:Url.Content("~/Scripts/jquery/jquery.ui.touch-punch.min.js")%>" type="text/javascript"></script>
+<script src="<%:Url.Content("~/Scripts/jquery/jsTree/jquery.jstree.js")%>" type="text/javascript"></script>
 <script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>
 
 <html>
