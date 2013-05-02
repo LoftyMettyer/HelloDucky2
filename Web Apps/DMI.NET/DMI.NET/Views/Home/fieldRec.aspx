@@ -13,20 +13,15 @@
 <head runat="server">
     <title>OpenHR Intranet</title>
 
-    <link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css"/>
-    <script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
-    <script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
-            
+    <script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+    <script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>           
+
     <object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" id="Microsoft_Licensed_Class_Manager_1_0" VIEWASTEXT>
 	    <param NAME="LPKPath" VALUE="lpks/main.lpk">
     </object>
 
-
-
     <script type="text/javascript">
-<!--
+
         function fieldRec_window_onload() {
             
             fOK = true;
@@ -199,11 +194,6 @@
             ssOleDBGridSelRecords.redraw = true;
         }
 
-    -->
-    </script>
-
-    <script type="text/javascript">
-<!--
         function fieldrec_addhandlers() {        
             OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "rowcolchange", ssOleDBGridSelRecords_rowcolchange);
             OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "dblClick", ssOleDBGridSelRecords_dblClick);
@@ -245,7 +235,6 @@
             }
         
         }
-    -->
 </script>
    
     
