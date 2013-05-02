@@ -170,8 +170,8 @@
 
 	function setForm() {
 		if (!validateEventInfo()) {
-			//return false;
 			self.close();
+			return false;
 		}
 		var frmSelectionAccess = document.getElementById("frmSelectionAccess");
 		var frmEvent = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmEventDetails");
@@ -270,6 +270,7 @@
 		}
 
 		self.close();
+		return true;
 	}
 
 	function populateEventTableCombo() {
@@ -912,7 +913,7 @@
 											       onmouseover=" try {button_onMouseOver(this);} catch(e) {} "
 											       onmouseout=" try {button_onMouseOut(this);} catch(e) {} "
 											       onfocus=" try {button_onFocus(this);} catch(e) {} "
-											       onblur=" try {button_onBlur(this);} catch(e) {} " />
+											       onblur=" try {button_onBlur(this);} catch(e) {} "/>
 										</td>
 										<td width="10">&nbsp;</td>
 										<td width="10">
