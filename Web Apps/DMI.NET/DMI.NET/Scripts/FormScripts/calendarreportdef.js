@@ -357,6 +357,9 @@ function setBaseTable(piTableID) {
 function changeBaseTable() {
 	var i;
 
+	//frmRefresh = window.parent.frames("pollframe").document.forms("frmHit");
+	var frmRefresh = OpenHR.getForm("pollframe", "frmHit");
+	
 	if (frmUseful.txtLoading.value == 'N') {
 
 		if ((frmDefinition.grdEvents.Rows > 0) ||
@@ -584,7 +587,7 @@ function refreshTab2Controls() {
 }
 
 function refreshTab3Controls() {
-	var frmUse = document.parentWindow.parent.window.dialogArguments.OpenHR.getForm("workframe", "frmUseful");
+	var frmUse = OpenHR.getForm("workframe", "frmUseful");
 	//var frmPopup = document.getElementById("frmPopup");
 	var fViewing = (frmUse.txtAction.value.toUpperCase() == "VIEW");
 
@@ -820,7 +823,7 @@ function refreshTab3Controls() {
 
 	refreshTab1Controls();
 
-	button_disable(frmDefinition.cmdOK, ((frmUsel.txtChanged.value == 0) ||
+	button_disable(frmDefinition.cmdOK, ((frmUse.txtChanged.value == 0) ||
 		(fViewing == true)));
 }
 
@@ -1439,29 +1442,37 @@ function submitDefinition() {
 	var sType;
 	var iDummy;
 	var sURL;
-
+	//rmRefresh = window.parent.frames("pollframe").document.forms("frmHit");
+	var frmRefresh = OpenHR.getForm("pollframe", "frmHit");
+	
 	if (validateTab1() == false) {
-		OpenHR.refreshMenu();
+		//OpenHR.refreshMenu();
+		menu_refreshMenu();
 		return;
 	}
 	if (validateTab2() == false) {
-		OpenHR.refreshMenu();
+		//OpenHR.refreshMenu();
+		menu_refreshMenu();
 		return;
 	}
 	if (validateTab3() == false) {
-		OpenHR.refreshMenu();
+		//OpenHR.refreshMenu();
+		menu_refreshMenu();
 		return;
 	}
 	if (validateTab4() == false) {
-		OpenHR.refreshMenu();
+		//OpenHR.refreshMenu();
+		menu_refreshMenu();
 		return;
 	}
 	if (validateTab5() == false) {
-		OpenHR.refreshMenu();
+		//OpenHR.refreshMenu();
+		menu_refreshMenu();
 		return;
 	}
 	if (populateSendForm() == false) {
-		OpenHR.refreshMenu();
+		//OpenHR.refreshMenu();
+		menu_refreshMenu();
 		return;
 	}
 
@@ -1477,6 +1488,7 @@ function submitDefinition() {
 	frmValidate.validateDescExpr.value = frmDefinition.txtDescExprID.value;
 	frmValidate.validateCustomStart.value = frmDefinition.txtCustomStartID.value;
 	frmValidate.validateCustomEnd.value = frmDefinition.txtCustomEndID.value;
+	
 	if (frmUseful.txtAction.value.toUpperCase() == "EDIT") {
 		frmValidate.validateTimestamp.value = frmOriginalDefinition.txtDefn_Timestamp.value;
 		frmValidate.validateUtilID.value = frmUseful.txtUtilID.value;
@@ -1485,13 +1497,11 @@ function submitDefinition() {
 		frmValidate.validateUtilID.value = 0;
 	}
 
-	//ND May need to revisit or reinstate this if performance issues ensue
 	//try {
-
-	//	var frmRefresh = OpenHR.getForm("workframe", "frmRefresh");
 	//	var testDataCollection = frmRefresh.elements;
 	//    iDummy = testDataCollection.txtDummy.value;
-	//    frmRefresh.submit();
+	//    //frmRefresh.submit();
+	//	OpenHR.submitForm("frmRefresh");
 	//}
 	//catch (e) {
 	//}
@@ -1512,12 +1522,12 @@ function submitDefinition() {
 		"&validateTimestamp=" + escape(frmValidate.validateTimestamp.value) +
 		"&validateUtilID=" + escape(frmValidate.validateUtilID.value) +
 		"&destination=util_validate_calendarreport";
-	//openDialog(sURL, (screen.width) / 2, (screen.height) / 3, "no", "no");
-	openDialog(sURL, (screen.width) / 2, (screen.height) / 3, "no", "no");
+	window.openDialog(sURL, (screen.width) / 2, (screen.height) / 3, "no", "no");
 }
 
 function cancelClick() {
 	self.close();
+	return false;
 }
 
 function okClick() {
@@ -1666,14 +1676,13 @@ function getTableName(piTableID) {
 	var i;
 	var sTableName = new String("");
 
-	sReqdControlName = new String("txtTableName_");
+	var sReqdControlName = new String("txtTableName_");
 	sReqdControlName = sReqdControlName.concat(piTableID);
 
 	var dataCollection = frmTables.elements;
 	if (dataCollection != null) {
 		for (i = 0; i < dataCollection.length; i++) {
-			sControlName = dataCollection.item(i).name;
-
+			var sControlName = dataCollection.item(i).name;
 			if (sControlName == sReqdControlName) {
 				sTableName = dataCollection.item(i).value;
 				return sTableName;
@@ -1717,73 +1726,70 @@ function checkUniqueEventKey(psNewKey) {
 
 function eventEdit() {
 	var sURL;
-	debugger;
-	with (frmEventDetails) {
-		eventAction.value = "EDIT";
-		eventName.value = frmDefinition.grdEvents.Columns("Name").value;
-		eventID.value = frmDefinition.grdEvents.Columns("EventKey").value;
-		eventTableID.value = frmDefinition.grdEvents.Columns("TableID").value;
-		eventTable.value = frmDefinition.grdEvents.Columns("Table").value;
-		eventFilterID.value = frmDefinition.grdEvents.Columns("FilterID").value;
-		eventFilter.value = frmDefinition.grdEvents.Columns("Filter").value;
-		eventFilterHidden.value = frmDefinition.grdEvents.Columns("FilterHidden").value;
+	frmEventDetails.eventAction.value = "EDIT";
+	frmEventDetails.eventName.value = frmDefinition.grdEvents.Columns("Name").value;
+	frmEventDetails.eventID.value = frmDefinition.grdEvents.Columns("EventKey").value;
+	frmEventDetails.eventTableID.value = frmDefinition.grdEvents.Columns("TableID").value;
+	frmEventDetails.eventTable.value = frmDefinition.grdEvents.Columns("Table").value;
+	frmEventDetails.eventFilterID.value = frmDefinition.grdEvents.Columns("FilterID").value;
+	frmEventDetails.eventFilter.value = frmDefinition.grdEvents.Columns("Filter").value;
+	frmEventDetails.eventFilterHidden.value = frmDefinition.grdEvents.Columns("FilterHidden").value;
 
-		eventStartDateID.value = frmDefinition.grdEvents.Columns("StartDateID").value;
-		eventStartDate.value = frmDefinition.grdEvents.Columns("Start Date").value;
-		eventStartSessionID.value = frmDefinition.grdEvents.Columns("StartSessionID").value;
-		eventStartSession.value = frmDefinition.grdEvents.Columns("Start Session").value;
-		eventEndDateID.value = frmDefinition.grdEvents.Columns("EndDateID").value;
-		eventEndDate.value = frmDefinition.grdEvents.Columns("End Date").value;
-		eventEndSessionID.value = frmDefinition.grdEvents.Columns("EndSessionID").value;
-		eventEndSession.value = frmDefinition.grdEvents.Columns("End Session").value;
-		eventDurationID.value = frmDefinition.grdEvents.Columns("DurationID").value;
-		eventDuration.value = frmDefinition.grdEvents.Columns("Duration").value;
+	frmEventDetails.eventStartDateID.value = frmDefinition.grdEvents.Columns("StartDateID").value;
+	frmEventDetails.eventStartDate.value = frmDefinition.grdEvents.Columns("Start Date").value;
+	frmEventDetails.eventStartSessionID.value = frmDefinition.grdEvents.Columns("StartSessionID").value;
+	frmEventDetails.eventStartSession.value = frmDefinition.grdEvents.Columns("Start Session").value;
+	frmEventDetails.eventEndDateID.value = frmDefinition.grdEvents.Columns("EndDateID").value;
+	frmEventDetails.eventEndDate.value = frmDefinition.grdEvents.Columns("End Date").value;
+	frmEventDetails.eventEndSessionID.value = frmDefinition.grdEvents.Columns("EndSessionID").value;
+	frmEventDetails.eventEndSession.value = frmDefinition.grdEvents.Columns("End Session").value;
+	frmEventDetails.eventDurationID.value = frmDefinition.grdEvents.Columns("DurationID").value;
+	frmEventDetails.eventDuration.value = frmDefinition.grdEvents.Columns("Duration").value;
 
-		eventLookupType.value = frmDefinition.grdEvents.Columns("LegendType").value;
-		eventKeyCharacter.value = frmDefinition.grdEvents.Columns("Legend").value.substr(0, 2);
-		eventLookupTableID.value = frmDefinition.grdEvents.Columns("LegendTableID").value;
-		eventLookupColumnID.value = frmDefinition.grdEvents.Columns("LegendColumnID").value;
-		eventLookupCodeID.value = frmDefinition.grdEvents.Columns("LegendCodeID").value;
-		eventTypeColumnID.value = frmDefinition.grdEvents.Columns("LegendEventTypeID").value;
+	frmEventDetails.eventLookupType.value = frmDefinition.grdEvents.Columns("LegendType").value;
+	frmEventDetails.eventKeyCharacter.value = frmDefinition.grdEvents.Columns("Legend").value.substr(0, 2);
+	frmEventDetails.eventLookupTableID.value = frmDefinition.grdEvents.Columns("LegendTableID").value;
+	frmEventDetails.eventLookupColumnID.value = frmDefinition.grdEvents.Columns("LegendColumnID").value;
+	frmEventDetails.eventLookupCodeID.value = frmDefinition.grdEvents.Columns("LegendCodeID").value;
+	frmEventDetails.eventTypeColumnID.value = frmDefinition.grdEvents.Columns("LegendEventTypeID").value;
 
-		eventDesc1ID.value = frmDefinition.grdEvents.Columns("Desc1ID").value;
-		eventDesc1.value = frmDefinition.grdEvents.Columns("Description 1").value;
-		eventDesc2ID.value = frmDefinition.grdEvents.Columns("Desc2ID").value;
-		eventDesc2.value = frmDefinition.grdEvents.Columns("Description 2").value;
+	frmEventDetails.eventDesc1ID.value = frmDefinition.grdEvents.Columns("Desc1ID").value;
+	frmEventDetails.eventDesc1.value = frmDefinition.grdEvents.Columns("Description 1").value;
+	frmEventDetails.eventDesc2ID.value = frmDefinition.grdEvents.Columns("Desc2ID").value;
+	frmEventDetails.eventDesc2.value = frmDefinition.grdEvents.Columns("Description 2").value;
 
-		sURL = "util_def_calendarreportdates_main" +
-			"?eventAction=" + escape(frmEventDetails.eventAction.value) +
-			"&eventName=" + escape(frmEventDetails.eventName.value) +
-			"&eventID=" + escape(frmEventDetails.eventID.value) +
-			"&eventTableID=" + escape(frmEventDetails.eventTableID.value) +
-			"&eventTable=" + escape(frmEventDetails.eventTable.value) +
-			"&eventFilterID=" + escape(frmEventDetails.eventFilterID.value) +
-			"&eventFilter=" + escape(frmEventDetails.eventFilter.value) +
-			"&eventFilterHidden=" + escape(frmEventDetails.eventFilterHidden.value) +
-			"&eventStartDateID=" + escape(frmEventDetails.eventStartDateID.value) +
-			"&eventStartDate=" + escape(frmEventDetails.eventStartDate.value) +
-			"&eventStartSessionID=" + escape(frmEventDetails.eventStartSessionID.value) +
-			"&eventStartSession=" + escape(frmEventDetails.eventStartSession.value) +
-			"&eventEndDateID=" + escape(frmEventDetails.eventEndDateID.value) +
-			"&eventEndDate=" + escape(frmEventDetails.eventEndDate.value) +
-			"&eventEndSessionID=" + escape(frmEventDetails.eventEndSessionID.value) +
-			"&eventEndSession=" + escape(frmEventDetails.eventEndSession.value) +
-			"&eventDurationID=" + escape(frmEventDetails.eventDurationID.value) +
-			"&eventDuration=" + escape(frmEventDetails.eventDuration.value) +
-			"&eventLookupType=" + escape(frmEventDetails.eventLookupType.value) +
-			"&eventKeyCharacter=" + escape(frmEventDetails.eventKeyCharacter.value) +
-			"&eventLookupTableID=" + escape(frmEventDetails.eventLookupTableID.value) +
-			"&eventLookupColumnID=" + escape(frmEventDetails.eventLookupColumnID.value) +
-			"&eventLookupCodeID=" + escape(frmEventDetails.eventLookupCodeID.value) +
-			"&eventTypeColumnID=" + escape(frmEventDetails.eventTypeColumnID.value) +
-			"&eventDesc1ID=" + escape(frmEventDetails.eventDesc1ID.value) +
-			"&eventDesc1=" + escape(frmEventDetails.eventDesc1.value) +
-			"&eventDesc2ID=" + escape(frmEventDetails.eventDesc2ID.value) +
-			"&eventDesc2=" + escape(frmEventDetails.eventDesc2.value) +
-			"&relationNames=" + escape(frmEventDetails.relationNames.value);
-		openDialog(sURL, 650, 500, "yes", "yes");
-		frmUseful.txtChanged.value = 1;
-	}
+	sURL = "util_def_calendarreportdates_main" +
+		"?eventAction=" + escape(frmEventDetails.eventAction.value) +
+		"&eventName=" + escape(frmEventDetails.eventName.value) +
+		"&eventID=" + escape(frmEventDetails.eventID.value) +
+		"&eventTableID=" + escape(frmEventDetails.eventTableID.value) +
+		"&eventTable=" + escape(frmEventDetails.eventTable.value) +
+		"&eventFilterID=" + escape(frmEventDetails.eventFilterID.value) +
+		"&eventFilter=" + escape(frmEventDetails.eventFilter.value) +
+		"&eventFilterHidden=" + escape(frmEventDetails.eventFilterHidden.value) +
+		"&eventStartDateID=" + escape(frmEventDetails.eventStartDateID.value) +
+		"&eventStartDate=" + escape(frmEventDetails.eventStartDate.value) +
+		"&eventStartSessionID=" + escape(frmEventDetails.eventStartSessionID.value) +
+		"&eventStartSession=" + escape(frmEventDetails.eventStartSession.value) +
+		"&eventEndDateID=" + escape(frmEventDetails.eventEndDateID.value) +
+		"&eventEndDate=" + escape(frmEventDetails.eventEndDate.value) +
+		"&eventEndSessionID=" + escape(frmEventDetails.eventEndSessionID.value) +
+		"&eventEndSession=" + escape(frmEventDetails.eventEndSession.value) +
+		"&eventDurationID=" + escape(frmEventDetails.eventDurationID.value) +
+		"&eventDuration=" + escape(frmEventDetails.eventDuration.value) +
+		"&eventLookupType=" + escape(frmEventDetails.eventLookupType.value) +
+		"&eventKeyCharacter=" + escape(frmEventDetails.eventKeyCharacter.value) +
+		"&eventLookupTableID=" + escape(frmEventDetails.eventLookupTableID.value) +
+		"&eventLookupColumnID=" + escape(frmEventDetails.eventLookupColumnID.value) +
+		"&eventLookupCodeID=" + escape(frmEventDetails.eventLookupCodeID.value) +
+		"&eventTypeColumnID=" + escape(frmEventDetails.eventTypeColumnID.value) +
+		"&eventDesc1ID=" + escape(frmEventDetails.eventDesc1ID.value) +
+		"&eventDesc1=" + escape(frmEventDetails.eventDesc1.value) +
+		"&eventDesc2ID=" + escape(frmEventDetails.eventDesc2ID.value) +
+		"&eventDesc2=" + escape(frmEventDetails.eventDesc2.value) +
+		"&relationNames=" + escape(frmEventDetails.relationNames.value);
+	openDialog(sURL, 650, 500, "yes", "yes");
+	frmUseful.txtChanged.value = 1;
 	refreshTab2Controls();
 }
 
@@ -2058,11 +2064,20 @@ function validateTab2() {
 	var iCount;
 	var sDefn;
 	var sControlName;
-	var frmRefresh = OpenHR.getForm("workframe", "frmRefresh");
+	var frmRefresh = OpenHR.getForm("pollframe", "frmHit");
 	var iDummy;
-
+	var testDataCollection;
+	
+	//try {
+	//	testDataCollection = frmRefresh.elements;
+	//	iDummy = testDataCollection.txtDummy.value;
+	//	OpenHR.submitForm("frmRefresh");
+	//}
+	//catch (e) {
+	//}
+	
 	sErrMsg = "";
-
+	
 	//check at least one column defined as sort order
 	if (frmUseful.txtEventsLoaded.value == 1) {
 		if (frmDefinition.grdEvents.Rows <= 0) {
@@ -2095,13 +2110,10 @@ function validateTab2() {
 		return (false);
 	}
 
-	//ND May need to revisit or reinstate this if performance issues ensue
 	//try {
-	//  var testDataCollection = frmRefresh.elements;
-	//  iDummy = testDataCollection.txtDummy.value;
-	//  iDummy = frmRefresh.elements.txtDummy.value;
-
-	//    frmRefresh.submit();
+	//	testDataCollection = frmRefresh.elements;
+	//	iDummy = testDataCollection.txtDummy.value;
+	//	OpenHR.submitForm("frmRefresh");
 	//}
 	//catch (e) {
 	//}
@@ -2205,7 +2217,18 @@ function validateTab4() {
 	var iCount;
 	var sDefn;
 	var sControlName;
+	var iDummy;
+	//var frmRefresh = window.parent.frames("pollframe").document.forms("frmHit");
+	var frmRefresh = OpenHR.getForm("pollframe", "frmHit");
 
+	//try {
+	//	testDataCollection = frmRefresh.elements;
+	//	iDummy = testDataCollection.txtDummy.value;
+	//	OpenHR.submitForm("frmRefresh");
+	//}
+	//catch (e) {
+	//}
+	
 	sErrMsg = "";
 
 	//check at least one column defined as sort order
@@ -2279,11 +2302,11 @@ function validateTab4() {
 		displayPage(4);
 		return (false);
 	}
-	//ND May need to revisit or reinstate this if performance issues ensue
+
 	//try {
 	//	testDataCollection = frmRefresh.elements;
 	//	iDummy = testDataCollection.txtDummy.value;
-	//	frmRefresh.submit();
+	//	OpenHR.submitForm("frmRefresh");
 	//}
 	//catch (e) {
 	//}
@@ -2338,7 +2361,8 @@ function populateSendForm() {
 	var iIndex;
 	var sControlName;
 	var iNum;
-	var frmRefresh = OpenHR.getForm("workframe", "frmRefresh");
+	//var frmRefresh = OpenHR.getForm("workframe", "frmRefresh");
+	var frmRefresh = OpenHR.getForm("pollframe", "frmHit");
 	var iDummy;
 	var varBookmark;
 	var iLoop;
@@ -2413,15 +2437,15 @@ function populateSendForm() {
 	/******************* TAB 2 - EVENT DETAILS *******************/
 	// now go through the columns grid (and sort order grid)(and the repetition grid)
 	var sEvents = '';
-	//var testDataCollection;
+	var testDataCollection;
 	//try {
 	//	testDataCollection = frmRefresh.elements;
 	//	iDummy = testDataCollection.txtDummy.value;
-	//      frmRefresh.submit();
-	//  }
-	//  catch (e) {
-	//  }
-
+	//	OpenHR.submitForm("frmRefresh");
+	//}
+	//catch (e) {
+	//}
+	
 	frmUseful.txtLockGridEvents.value = 1;
 	var dataCollection;
 	if (frmUseful.txtEventsLoaded.value == 1) {
@@ -2708,14 +2732,13 @@ function populateSendForm() {
 
 	frmUseful.txtLockGridEvents.value = 0;
 
-	//ND May need to revisit or reinstate this if performance issues ensue
 	//try {
 	//	testDataCollection = frmRefresh.elements;
-	//   iDummy = testDataCollection.txtDummy.value;
-	//      frmRefresh.submit();
-	//  }
-	//  catch (e) {
-	//  }
+	//	iDummy = testDataCollection.txtDummy.value;
+	//	OpenHR.submitForm("frmRefresh");
+	//}
+	//catch (e) {
+	//}
 
 	if (sEvents.length > 16000) {
 		OpenHR.messageBox("Too many events selected.", 48, "Calendar Reports");
@@ -4927,6 +4950,7 @@ function removeEventTable(piChildTableID) {
 			if (frmUseful.txtCurrentEventTableID.value != 0) {
 				// Check if there are any child columns in the selected columns list.
 				fChildColumnsSelected = false;
+				var dataCollection;
 				if (frmUseful.txtSelectedColumnsLoaded.value == 1) {
 					if (frmDefinition.ssOleDBGridSelectedColumns.Rows > 0) {
 						frmDefinition.ssOleDBGridSelectedColumns.Redraw = false;
@@ -4935,8 +4959,7 @@ function removeEventTable(piChildTableID) {
 						for (i = 0; i < frmDefinition.ssOleDBGridSelectedColumns.rows; i++) {
 							iTableID = frmDefinition.ssOleDBGridSelectedColumns.Columns("tableID").Text;
 
-							//if (window.dialogArguments.window.isSelectedChildTable(iTableID)) {
-							if (OpenHR.isSelectedChildTable(iTableID)) {
+							if (window.dialogArguments.window.isSelectedChildTable(iTableID)) {
 								fChildColumnsSelected = true;
 								break;
 							}
@@ -4954,17 +4977,15 @@ function removeEventTable(piChildTableID) {
 						frmDefinition.ssOleDBGridSelectedColumns.selbookmarks.add(frmDefinition.ssOleDBGridSelectedColumns.bookmark);
 					}
 				} else {
-					var dataCollection = frmOriginalDefinition.elements;
+					dataCollection = frmOriginalDefinition.elements;
 					if (dataCollection != null) {
 						for (iIndex = 0; iIndex < dataCollection.length; iIndex++) {
 							sControlName = dataCollection.item(iIndex).name;
 							sControlName = sControlName.substr(0, 20);
 							if (sControlName == "txtReportDefnColumn_") {
-								//iTableID = document.parentWindow.parent.window.dialogArguments.window.selectedColumnParameter(dataCollection.item(iIndex).value, "TABLEID");
-								iTableID = OpenHR.selectedColumnParameter(dataCollection.item(iIndex).value, "TABLEID");
-								//if (document.parentWindow.parent.window.dialogArguments.window.isSelectedChildTable(iTableID))
-								if (OpenHR.isSelectedChildTable(iTableID)) {
-									fChildColumnsSelected = true;
+								iTableID = document.parentWindow.parent.window.dialogArguments.window.selectedColumnParameter(dataCollection.item(iIndex).value, "TABLEID");
+								if (document.parentWindow.parent.window.dialogArguments.window.isSelectedChildTable(iTableID)){
+								  fChildColumnsSelected = true;
 									break;
 								}
 
@@ -5009,13 +5030,14 @@ function removeEventTable(piChildTableID) {
 								frmDefinition.ssOleDBGridSelectedColumns.selbookmarks.add(frmDefinition.ssOleDBGridSelectedColumns.bookmark);
 							}
 						} else {
-							var dataCollection = frmOriginalDefinition.elements;
+							dataCollection = frmOriginalDefinition.elements;
 							if (dataCollection != null) {
 								for (iIndex = 0; iIndex < dataCollection.length; iIndex++) {
 									sControlName = dataCollection.item(iIndex).name;
 									sControlName = sControlName.substr(0, 20);
 									if (sControlName == "txtReportDefnColumn_") {
-										iTableID = OpenHR.selectedColumnParameter(dataCollection.item(iIndex).value, "TABLEID");
+										//iTableID = OpenHR.selectedColumnParameter(dataCollection.item(iIndex).value, "TABLEID");
+										iTableID = document.parentWindow.parent.window.dialogArguments.window.selectedColumnParameter(dataCollection.item(iIndex).value, "TABLEID");
 										if (iTableID == frmUseful.txtCurrentChildTableID.value) {
 											dataCollection.item(iIndex).value = "";
 										}
@@ -5025,7 +5047,7 @@ function removeEventTable(piChildTableID) {
 						}
 
 						// Remove the child table's columns from the sort order collection.
-						OpenHR.removeSortColumn(0, frmUseful.txtCurrentChildTableID.value);
+						document.parentWindow.parent.window.dialogArguments.window.removeSortColumn(0, frmUseful.txtCurrentChildTableID.value);
 					}
 				}
 			}
@@ -5033,7 +5055,7 @@ function removeEventTable(piChildTableID) {
 		frmUseful.txtChanged.value = 1;
 	}
 
-	OpenHR.refreshTab2Controls();
+	document.parentWindow.parent.window.dialogArguments.window.refreshTab2Controls();
 	frmUseful.txtTablesChanged.value = 1;
 	//TM 24/07/02 Fault 4215
 	frmDefinition.ssOleDBGridSelectedColumns.selbookmarks.removeall();
