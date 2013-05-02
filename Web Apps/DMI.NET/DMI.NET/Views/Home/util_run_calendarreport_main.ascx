@@ -1406,5 +1406,5 @@ objCalendar = Nothing
     $("#calendarframeset").show();
 
     util_run_calendarreport_main_window_onload();
-
+    
 </script>

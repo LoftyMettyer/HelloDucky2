@@ -2,8 +2,6 @@
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 
-<script src="<%: Url.Content("~/bundles/utilities_crosstabs")%>" type="text/javascript"></script>
-
 <object classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB"
     id="dialog"
     codebase="cabs/comdlg32.cab#Version=1,0,0,0"
@@ -41,8 +39,6 @@
     <param name="Orientation" value="1">
 </object>
 
-
-
 <%
     Dim objCrossTab As HR.Intranet.Server.CrossTab
     
@@ -55,7 +51,7 @@
     setGridFont(ssOutputGrid);
     setGridFont(ssHiddenGrid);
 <%
-    Response.Write("	loadAddRecords();" & vbCrLf)
+    Response.Write("	crosstab_loadAddRecords();" & vbCrLf)
     Response.Write("    frmError.txtEventLogID.value = """ & CleanStringForJavaScript(objCrossTab.EventLogID) & """;" & vbCrLf)
     Response.Write("  }" & vbCrLf)
     Response.Write("</script>" & vbCrLf)
@@ -451,6 +447,7 @@ disabled="disabled"></td>
                 <table width="100%" class="invisible" cellspacing="0" cellpadding="0">
                     <td align="RIGHT">
                         <input type="button" id="cmdOutput" name="cmdOutput" value="Output" style="WIDTH: 80px"
+                            onclick="ViewExportOptions();"
                             onmouseover="try{button_onMouseOver(this);}catch(e){}"
                             onmouseout="try{button_onMouseOut(this);}catch(e){}"
                             onfocus="try{button_onFocus(this);}catch(e){}"
@@ -618,7 +615,7 @@ disabled="disabled"></td>
 
 <form target="Output" action="util_run_outputoptions" method="post" id="frmExportData" name="frmExportData">
     <input type="hidden" id="txtPreview" name="txtPreview" value="">
-    <input type="hidden" id="txtFormat" name="txtFormat" value="">
+    <input type="hidden" id="txtFormat" name="txtFormat" value=0>
     <input type="hidden" id="txtScreen" name="txtScreen" value="">
     <input type="hidden" id="txtPrinter" name="txtPrinter" value="">
     <input type="hidden" id="txtPrinterName" name="txtPrinterName" value="">
@@ -636,12 +633,6 @@ disabled="disabled"></td>
 
 <select style="visibility: hidden; display: none" id="cboDummy" name="cboDummy">
 </select>
-
-
-
-<script type="text/javascript">
-    util_run_crosstabs_addhandlers();
-</script>
 
 
 

@@ -1,6 +1,13 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
+<object
+    id="ClientDLL"
+    classid="CLSID:40E1755A-5A2D-4AEE-99E7-65E7D455F799"
+    codebase="cabs/COAInt_Client.CAB#version=1,0,0,147">
+</object>
+
+
 <%		
     Dim objCrossTab As HR.Intranet.Server.CrossTab
     Dim intCount As Integer
@@ -25,11 +32,13 @@
     Response.Write("    $(""#reportframe"").show();" & vbCrLf)
     Response.Write("    $(""#reportdataframe"").hide();" & vbCrLf)
     Response.Write("    $(""#reportbreakdownframe"").hide();" & vbCrLf)
-    Response.Write("    $(""#reportworkframe"").show();" & vbCrLf)
+    Response.Write("    $(""#outputoptions"").hide();" & vbCrLf)
+    Response.Write("    $(""#reportworkframe"").show();" & vbCrLf)  
     
     Response.Write("    frmOriginalDefinition = OpenHR.getForm(""reportworkframe"",""frmOriginalDefinition"");" & vbCrLf)
     Response.Write("    frmExportData = OpenHR.getForm(""reportworkframe"",""frmExportData"");" & vbCrLf)
     Response.Write("    var ssOutputGrid;" & vbCrLf)
+    Response.Write("    var fok;" & vbCrLf)
        
     If Session("CT_Mode") = "OUTPUTRUN" Or _
        Session("CT_Mode") = "OUTPUTRUNTHENCLOSE" Then
@@ -67,19 +76,15 @@
 		
         Response.Write("  txtIntersectionColumn.value = """ & CleanStringForJavaScript(objCrossTab.IntersectionColumnName) & """;" & vbCrLf)
         Response.Write("  cboIntersectionType.selectedIndex = " & CStr(objCrossTab.IntersectionType) & ";" & vbCrLf)
-        'Response.Write "  frmWorkFrame.cboFileFormat.selectedIndex = " & cstr(objCrossTab.DefaultExportTo) & ";" & vbcrlf
-        'Response.Write "  frmWorkFrame.txtFile.value = """ & Replace(objCrossTab.DefaultSaveAs,"\","\\") & """;" & vbcrlf
-        'Response.Write "  frmWorkFrame.chkCloseApp.checked = " & lcase(cstr(objCrossTab.DefaultCloseApp)) & ";" & vbcrlf & vbcrlf
-        'Response.Write "  frmWorkFrame.refreshScreen();" & vbcrlf
 
         If objCrossTab.PageBreakColumn = True Then
             Response.Write("  cboPage.selectedIndex = 0;" & vbCrLf)
         Else
             Response.Write("  control_disable(cboPage, true);" & vbCrLf)
         End If
-
+       
         Response.Write("  frmExportData.txtPreview.value = """ & objCrossTab.OutputPreview & """;" & vbCrLf)
-        Response.Write("  frmExportData.txtFormat.value = """ & objCrossTab.OutputFormat & """;" & vbCrLf)
+        Response.Write("  frmExportData.txtFormat.value = " & objCrossTab.OutputFormat & ";" & vbCrLf)
         Response.Write("  frmExportData.txtScreen.value = """ & objCrossTab.OutputScreen & """;" & vbCrLf)
         Response.Write("  frmExportData.txtPrinter.value = """ & objCrossTab.OutputPrinter & """;" & vbCrLf)
         Response.Write("  frmExportData.txtPrinterName.value = """ & CleanStringForJavaScript(objCrossTab.OutputPrinterName) & """;" & vbCrLf)
@@ -105,8 +110,6 @@
         objCrossTab = Session("objCrossTab" & Session("CT_UtilID"))
         strCrossTabName = CleanStringForJavaScript(Replace(objCrossTab.CrossTabName, "&", "&&"))
 
-        'Response.Write "  if (ssOutputGrid.Caption = """") {" & vbcrlf
-        'Response.Write "    ssOutputGrid.Redraw = false;" & vbcrlf
         Response.Write("    ssOutputGrid.Caption = """ & strCrossTabName & """;" & vbCrLf)
         Response.Write("    ssOutputGrid.focus();" & vbCrLf)
 		
@@ -144,7 +147,6 @@
 
             Response.Write("    ssOutputGrid.SplitterPos = 1;" & vbCrLf)
             Response.Write("    ssOutputGrid.SplitterVisible = false;" & vbCrLf & vbCrLf)
-            'Response.Write "  }" & vbcrlf
 
             Session("CT_ShowPercentage") = objCrossTab.ShowPercentage
             Session("CT_PercentageOfPage") = objCrossTab.PercentageOfPage
@@ -223,13 +225,8 @@
 
     If Session("CT_Mode") = "LOAD" Then
         If objCrossTab.OutputPreview = False Then
-            'Response.Write "    if (frmExportData.txtFormat.value == ""0"") {" & vbcrlf
-            'Response.Write "      if (frmExportData.txtPrinter.value == ""1"") {" & vbcrlf
-            'Response.Write "        ExportData(""OUTPUTRUNTHENCLOSE"", frmExportData.txtEmailAddr.value);" & vbcrlf
-            Response.Write("        frmGetData.txtEmailGroupID.value = frmExportData.txtEmailAddr.value;" & vbCrLf)
+            Response.Write("        frmGetReportData.txtEmailGroupID.value = frmExportData.txtEmailAddr.value;" & vbCrLf)
             Response.Write("        ExportData(""EMAILGROUPTHENCLOSE"");" & vbCrLf)
-            'Response.Write "      }" & vbcrlf
-            'Response.Write "    }" & vbcrlf
         End If
     End If
 
@@ -249,30 +246,16 @@ If Session("CT_Mode") = "BREAKDOWN" Then
         
         Response.Write("  OpenHR.submitForm(frmBreakdown);" & vbCrLf)
 
-
 '**************************************
 ' OUTPUTPROMPT
 '**************************************
 
 ElseIf Session("CT_Mode") = "OUTPUTPROMPT" Then
 
-        Response.Write("			sURL = ""util_run_outputoptions"" +" & vbCrLf & _
-            """?txtUtilType="" + escape(frmExportData.txtUtilType.value) +" & vbCrLf & _
-            """&txtPreview="" + escape(frmExportData.txtPreview.value) +" & vbCrLf & _
-            """&txtFormat="" + escape(frmExportData.txtFormat.value) + " & vbCrLf & _
-            """&txtScreen="" + escape(frmExportData.txtScreen.value) +" & vbCrLf & _
-            """&txtPrinter="" + escape(frmExportData.txtPrinter.value) +" & vbCrLf & _
-            """&txtPrinterName="" + escape(frmExportData.txtPrinterName.value) +" & vbCrLf & _
-            """&txtSave="" + escape(frmExportData.txtSave.value) +" & vbCrLf & _
-            """&txtSaveExisting="" + escape(frmExportData.txtSaveExisting.value) +" & vbCrLf & _
-            """&txtEmail="" + escape(frmExportData.txtEmail.value) +" & vbCrLf & _
-            """&txtEmailAddr="" + escape(frmExportData.txtEmailAddr.value) +" & vbCrLf & _
-            """&txtEmailAddrName="" + escape(frmExportData.txtEmailAddrName.value) +" & vbCrLf & _
-            """&txtEmailSubject="" + escape(frmExportData.txtEmailSubject.value) +" & vbCrLf & _
-            """&txtEmailAttachAs="" + escape(frmExportData.txtEmailAttachAs.value) +" & vbCrLf & _
-            """&txtFileName="" + escape(frmExportData.txtFileName.value);" & vbCrLf & _
-            "  ShowOutputOptionsFrame(sURL);" & vbCrLf)
-
+        Response.Write("  frmExportData.txtUtilType = " & Session("utiltype") & ");" & vbCrLf)
+        Response.Write("  OpenHR.submitForm(frmExportData);" & vbCrLf)
+        
+        
 '**************************************
 ' OUTPUTRUN
 '**************************************
@@ -280,291 +263,285 @@ ElseIf Session("CT_Mode") = "OUTPUTPROMPT" Then
 ElseIf Session("CT_Mode") = "OUTPUTRUN" Or _
        Session("CT_Mode") = "OUTPUTRUNTHENCLOSE" Then
 
-objCrossTab = Session("objCrossTab" & Session("CT_UtilID"))
         objUser = New HR.Intranet.Server.clsSettings
 
-        Response.Write("  frmMenuFrame = OpenHR.getFrame(""menuframe"");" & vbCrLf)
+        Response.Write("  ClientDLL.UserName = """ & CleanStringForJavaScript(Session("Username")) & """;" & vbCrLf)
+        Response.Write("  ClientDLL.SaveAsValues = """ & CleanStringForJavaScript(Session("OfficeSaveAsValues")) & """;" & vbCrLf)
+        Response.Write("  ClientDLL.SettingOptions(")
+        Response.Write("""" & CleanStringForJavaScript(objUser.GetUserSetting("Output", "WordTemplate", "")) & """, ")
+        Response.Write("""" & CleanStringForJavaScript(objUser.GetUserSetting("Output", "ExcelTemplate", "")) & """, ")
 
-Response.Write("  window.parent.parent.ASRIntranetOutput.UserName = """ & CleanStringForJavaScript(Session("Username")) & """;" & vbCrLf)
-Response.Write("  window.parent.parent.ASRIntranetOutput.SaveAsValues = """ & CleanStringForJavaScript(Session("OfficeSaveAsValues")) & """;" & vbCrLf)
-Response.Write("  window.parent.parent.ASRIntranetOutput.SettingOptions(")
-Response.Write("""" & CleanStringForJavaScript(objUser.GetUserSetting("Output", "WordTemplate", "")) & """, ")
-Response.Write("""" & CleanStringForJavaScript(objUser.GetUserSetting("Output", "ExcelTemplate", "")) & """, ")
-
-If (objUser.GetUserSetting("Output", "ExcelGridlines", "0") = "1") Then
-    Response.Write("true, ")
-Else
-    Response.Write("false, ")
-End If
-
-If (objUser.GetUserSetting("Output", "ExcelHeaders", "0") = "1") Then
-    Response.Write("true, ")
-Else
-    Response.Write("false, ")
-End If
-
-If (objUser.GetUserSetting("Output", "AutoFitCols", "1") = "1") Then
-    Response.Write("true, ")
-Else
-    Response.Write("false, ")
-End If
-
-If (objUser.GetUserSetting("Output", "Landscape", "1") = "1") Then
-    Response.Write("true, " & vbCrLf)
-Else
-    Response.Write("false, " & vbCrLf)
-End If
-
-Response.Write("frmMenuFrame.document.all.item(""txtSysPerm_EMAILGROUPS_VIEW"").value);" & vbCrLf)
-
-
-Response.Write("  window.parent.parent.ASRIntranetOutput.SettingLocations(")
-Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleCol", "3")) & ", ")
-Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleRow", "2")) & ", ")
-Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataCol", "2")) & ", ")
-Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataRow", "4")) & ");" & vbCrLf)
-
-Response.Write("  window.parent.parent.ASRIntranetOutput.SettingTitle(")
-If (objUser.GetUserSetting("Output", "TitleGridLines", "0") = "1") Then
-    Response.Write("true, ")
-Else
-    Response.Write("false, ")
-End If
-
-If (objUser.GetUserSetting("Output", "TitleBold", "1") = "1") Then
-    Response.Write("true, ")
-Else
-    Response.Write("false, ")
-End If
-
-If (objUser.GetUserSetting("Output", "TitleUnderline", "0") = "1") Then
-    Response.Write("true, ")
-Else
-    Response.Write("false, ")
-End If
-
-Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215")) & ", ")
-Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")) & ", ")
-Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215"))) & ", ")
-Response.Write(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")) & ");" & vbCrLf)
-
-Response.Write("  window.parent.parent.ASRIntranetOutput.SettingHeading(")
-Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingGridLines", "1")) & ", ")
-Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingBold", "1")) & ", ")
-Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingUnderline", "0")) & ", ")
-Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingBackcolour", "16248553")) & ", ")
-Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingForecolour", "6697779")) & ", ")
-Response.Write(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "HeadingBackcolour", "16248553")) & ", ")
-Response.Write(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "HeadingForecolour", "6697779")) & ");" & vbCrLf)
-
-Response.Write("  window.parent.parent.ASRIntranetOutput.SettingData(")
-Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataGridLines", "1")) & ", ")
-Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataBold", "0")) & ", ")
-Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataUnderline", "0")) & ", ")
-Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataBackcolour", "15988214")) & ", ")
-Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataForecolour", "6697779")) & ", ")
-Response.Write(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "DataBackcolour", "15988214")) & ", ")
-Response.Write(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "DataForecolour", "6697779")) & ");" & vbCrLf)
-
-Response.Write("  window.parent.parent.ASRIntranetOutput.InitialiseStyles();" & vbCrLf)
-Response.Write("  window.parent.parent.ASRIntranetOutput.HeaderCols = 1;" & vbCrLf)
-Response.Write("  fok = window.parent.parent.ASRIntranetOutput.SetOptions(false, " & _
-    "frmExportData.txtFormat.value, frmExportData.txtScreen.value, " & _
-    "frmExportData.txtPrinter.value, frmExportData.txtPrinterName.value, " & _
-    "frmExportData.txtSave.value, frmExportData.txtSaveExisting.value, " & _
-    "frmExportData.txtEmail.value, frmExportData.txtEmailGroupAddr.value, " & _
-    "frmExportData.txtEmailSubject.value, frmExportData.txtEmailAttachAs.value, frmExportData.txtFileName.value);" & vbCrLf)
-
-Response.Write("  if (fok == true) {" & vbCrLf)
-Response.Write("  if (window.parent.parent.ASRIntranetOutput.GetFile() == true) {" & vbCrLf)
-
-'DATA ONLY
-Response.Write("  if (frmExportData.txtFormat.value == ""0"") {" & vbCrLf)
-
-objCrossTab = Session("objCrossTab" & Session("CT_UtilID"))
-
-'if clng(Session("CT_PageNumber")) = -1 then
-'All pages
-lngLoopMin = 0
-lngLoopMax = objCrossTab.ColumnHeadingUbound(2)
-'else
-'	'Current page
-'	lngLoopMin = clng(Session("CT_PageNumber"))
-'	lngLoopMax = clng(Session("CT_PageNumber"))
-'end if
-
-Response.Write("  frmOriginalDefinition.txtOptionsDone.value = 0;" & vbCrLf)
-Response.Write("  frmOriginalDefinition.txtCancelPrint.value = 0;" & vbCrLf)
-
-Response.Write("  window.parent.parent.ASRIntranetOutput.SetOptions(false, " & _
-    "frmExportData.txtFormat.value, frmExportData.txtScreen.value, " & _
-    "frmExportData.txtPrinter.value, frmExportData.txtPrinterName.value, " & _
-    "frmExportData.txtSave.value, frmExportData.txtSaveExisting.value, " & _
-    "frmExportData.txtEmail.value, """", " & _
-    "frmExportData.txtEmailSubject.value, frmExportData.txtEmailAttachAs.value, frmExportData.txtFileName.value);")
-Response.Write("  window.parent.parent.ASRIntranetOutput.SetPrinter();" & vbCrLf)
-
-For lngCount = lngLoopMin To lngLoopMax
-
-    If objCrossTab.PageBreakColumn = True Then
-        Response.Write("	frmOriginalDefinition.txtCurrentPrintPage.value = "" (" & objCrossTab.PageBreakColumnName & _
-            " : " & CleanStringForJavaScript(Left(objCrossTab.ColumnHeading(2, lngCount), 255)) & ")"";" & vbCrLf)
-    End If
-
-    objCrossTab.BuildOutputStrings(lngCount)
-    Response.Write("  ssOutputGrid.Redraw = false;" & vbCrLf & vbCrLf)
-    Response.Write("  ssOutputGrid.Columns(ssOutputGrid.Columns.Count-1).Caption = frmWorkFrame.cboIntersectionType.options[frmWorkFrame.cboIntersectionType.selectedIndex].text;" & vbCrLf)
-    Response.Write("  ssOutputGrid.RemoveAll();" & vbCrLf & vbCrLf)
-    For intCount = 1 To objCrossTab.OutputArrayDataUBound
-        Response.Write("  ssOutputGrid.Additem(""" & CleanStringForJavaScript(Left(objCrossTab.OutputArrayData(intCount), 255)) & """);" & vbCrLf)
-    Next
-    Response.Write("  ssOutputGrid.Redraw = true;" & vbCrLf & vbCrLf)
-
-    Response.Write("  if (frmOriginalDefinition.txtCancelPrint.value == 1) {" & vbCrLf)
-    Response.Write("    ssOutputGrid.redraw = true;" & vbCrLf)
-    'Response.Write "    return;" & vbcrlf
-    Response.Write("  }" & vbCrLf)
-    Response.Write("  else if (frmOriginalDefinition.txtOptionsDone.value == 0) {" & vbCrLf)
-    Response.Write("    button_disable(window.parent.parent.frames(""top"").frmPopup.Cancel, true);" & vbCrLf)
-    Response.Write("    ssOutputGrid.PrintData(23,false,true);	" & vbCrLf)
-    Response.Write("    ssOutputGrid.value = 1;" & vbCrLf)
-    Response.Write("    try {" & vbCrLf)
-    Response.Write("      button_disable(window.parent.parent.frames(""top"").frmPopup.Cancel, false);" & vbCrLf)
-    Response.Write("      frmOriginalDefinition.txtOptionsDone.value = 1;" & vbCrLf)
-    Response.Write("    }" & vbCrLf)
-    Response.Write("    catch(e) {" & vbCrLf)
-    Response.Write("    }" & vbCrLf)
-    Response.Write("  }" & vbCrLf)
-    Response.Write("  else {" & vbCrLf)
-    Response.Write("    ssOutputGrid.PrintData(23,false,false);" & vbCrLf)
-    Response.Write("  }" & vbCrLf)
-    Response.Write("  ssOutputGrid.RemoveAll();" & vbCrLf)
-Next
-
-objCrossTab.BuildOutputStrings(CLng(Session("CT_PageNumber")))
-For intCount = 1 To objCrossTab.OutputArrayDataUBound
-    Response.Write("  ssOutputGrid.Additem(""" & CleanStringForJavaScript(Left(objCrossTab.OutputArrayData(intCount), 255)) & """);" & vbCrLf)
-Next
-Response.Write("  ssOutputGrid.Redraw = true;" & vbCrLf & vbCrLf)
-
-Response.Write("  window.parent.parent.ASRIntranetOutput.ResetDefaultPrinter();" & vbCrLf)
-Response.Write("  window.parent.parent.ASRIntranetOutput.Complete();" & vbCrLf)
-        Response.Write("  ShowDataFrame();" & vbCrLf)
-Response.Write("  }" & vbCrLf)
-
-'PIVOT TABLE
-Response.Write("  else if (frmExportData.txtFormat.value == ""6"") {" & vbCrLf)
-
-Response.Write("  window.parent.parent.ASRIntranetOutput.PivotSuppressBlanks = (frmWorkFrame.chkSuppressZeros.checked == true);" & vbCrLf)
-Response.Write("  window.parent.parent.ASRIntranetOutput.PivotDataFunction = frmWorkFrame.cboIntersectionType.options[frmWorkFrame.cboIntersectionType.selectedIndex].text;" & vbCrLf)
-
-Response.Write("  window.parent.parent.ASRIntranetOutput.AddColumn("" "", 12, 0,false);" & vbCrLf)
-For intCount = 0 To objCrossTab.ColumnHeadingUbound(0)
-    Response.Write("  window.parent.parent.ASRIntranetOutput.AddColumn(""" & _
-          CleanStringForJavaScript(Left(objCrossTab.ColumnHeading(0, intCount), 255)) & """, 2, " & _
-          objCrossTab.IntersectionDecimals & "," & LCase(objCrossTab.Use1000Separator) & ");" & vbCrLf)
-Next
-Response.Write("  window.parent.parent.ASRIntranetOutput.AddColumn(frmWorkFrame.cboIntersectionType.options[frmWorkFrame.cboIntersectionType.selectedIndex].text, 2, " & objCrossTab.IntersectionDecimals & "," & LCase(objCrossTab.Use1000Separator) & ");" & vbCrLf)
-
-objCrossTab.GetPivotRecordset()
-For intCount = 1 To objCrossTab.OutputPivotArrayDataUBound
-    Response.Write(CleanStringForJavaScript_NotDoubleQuotes(objCrossTab.OutputPivotArrayData(intCount)))
-Next
-
-Response.Write("  window.parent.parent.ASRIntranetOutput.Complete();" & vbCrLf)
-        Response.Write("  ShowDataFrame();" & vbCrLf)
-Response.Write("  }" & vbCrLf)
-
-
-'OTHER
-Response.Write("  else {" & vbCrLf)
-
-'MH20040219
-Response.Write("  if (frmWorkFrame.chkPercentType.checked == true) {" & vbCrLf)
-Response.Write("    lngExcelDataType = 0;" & vbCrLf)     'sqlNumeric
-Response.Write("  }" & vbCrLf)
-Response.Write("  else {" & vbCrLf)
-Response.Write("    lngExcelDataType = 2;" & vbCrLf)     'sqlUnknown
-Response.Write("  }" & vbCrLf)
-
-
-
-Response.Write("    window.parent.parent.ASRIntranetOutput.AddColumn("" "", 12, 0,false);" & vbCrLf)
-For intCount = 0 To objCrossTab.ColumnHeadingUbound(0)
-    Response.Write("  window.parent.parent.ASRIntranetOutput.AddColumn(""" & CleanStringForJavaScript(Left(objCrossTab.ColumnHeading(0, intCount), 255)) & """, lngExcelDataType, " & objCrossTab.IntersectionDecimals & "," & LCase(objCrossTab.Use1000Separator) & ");" & vbCrLf)
-Next
-Response.Write("  window.parent.parent.ASRIntranetOutput.AddColumn(frmWorkFrame.cboIntersectionType.options[frmWorkFrame.cboIntersectionType.selectedIndex].text, lngExcelDataType, " & objCrossTab.IntersectionDecimals & "," & LCase(objCrossTab.Use1000Separator) & ");" & vbCrLf)
-
-
-If objCrossTab.PageBreakColumn = True Then
-    lngLoopMin = 0
-    lngLoopMax = objCrossTab.ColumnHeadingUbound(2)
-Else
-    lngLoopMin = 0
-    lngLoopMax = 0
-End If
-
-
-For lngCount = lngLoopMin To lngLoopMax
-    If objCrossTab.PageBreakColumn = True Then
-        Response.Write("  window.parent.parent.ASRIntranetOutput.AddPage(ssOutputGrid.Caption, """ & _
-             CleanStringForJavaScript(Left(objCrossTab.ColumnHeading(2, lngCount), 255)) & """);" & vbCrLf)
-    Else
-        If objCrossTab.CrossTabType = 3 Then
-            Response.Write("  window.parent.parent.ASRIntranetOutput.AddPage(ssOutputGrid.Caption, """ & "Absence Breakdown" & """);" & vbCrLf)
+        If (objUser.GetUserSetting("Output", "ExcelGridlines", "0") = "1") Then
+            Response.Write("true, ")
         Else
-            Response.Write("  window.parent.parent.ASRIntranetOutput.AddPage(ssOutputGrid.Caption, """ & CleanStringForJavaScript(objCrossTab.BaseTableName) & """);" & vbCrLf)
+            Response.Write("false, ")
         End If
-    End If
-    objCrossTab.BuildOutputStrings(lngCount)
 
-    Response.Write("  window.parent.parent.ASRIntranetOutput.ArrayDim(" & CStr(objCrossTab.DataArrayCols) & ", " & CStr(objCrossTab.DataArrayRows) & ");" & vbCrLf)
-    For intCol = 0 To objCrossTab.DataArrayCols
-        For intRow = 0 To objCrossTab.DataArrayRows
-            Response.Write("  window.parent.parent.ASRIntranetOutput.ArrayAddTo(" & CStr(intCol) & ", " & CStr(intRow) & ", """ & CleanStringForJavaScript(Left(objCrossTab.DataArray(CLng(intCol), CLng(intRow)), 255)) & """);" & vbCrLf)
-        Next
-    Next
+        If (objUser.GetUserSetting("Output", "ExcelHeaders", "0") = "1") Then
+            Response.Write("true, ")
+        Else
+            Response.Write("false, ")
+        End If
 
-    Response.Write("  window.parent.parent.ASRIntranetOutput.DataArray();" & vbCrLf)
-Next
+        If (objUser.GetUserSetting("Output", "ExcelOmitSpacerRow", "0") = "1") Then
+            Response.Write("true, ")
+        Else
+            Response.Write("false, ")
+        End If
+		
+        If (objUser.GetUserSetting("Output", "ExcelOmitSpacerCol", "0") = "1") Then
+            Response.Write("true, ")
+        Else
+            Response.Write("false, ")
+        End If
 
-Response.Write("  window.parent.parent.ASRIntranetOutput.Complete();" & vbCrLf)
-        Response.Write("  ShowDataFrame();" & vbCrLf)
-Response.Write("  }" & vbCrLf)
-Response.Write("}" & vbCrLf)
-Response.Write("}" & vbCrLf)
+        If (objUser.GetUserSetting("Output", "AutoFitCols", "1") = "1") Then
+            Response.Write("true, ")
+        Else
+            Response.Write("false, ")
+        End If
 
-If Session("CT_Mode") = "OUTPUTRUNTHENCLOSE" Then
-    Response.Write("  try {" & vbCrLf)
-    Response.Write("    if (frmOriginalDefinition.txtCancelPrint.value == 1) {" & vbCrLf)
-    Response.Write("      window.parent.parent.raiseError('',false,true);" & vbCrLf)
-    Response.Write("    }" & vbCrLf)
-    Response.Write("    else if (window.parent.parent.ASRIntranetOutput.ErrorMessage != """") {" & vbCrLf)
-    Response.Write("      window.parent.parent.raiseError(window.parent.parent.ASRIntranetOutput.ErrorMessage,false,false);" & vbCrLf)
-    Response.Write("    }" & vbCrLf)
-    Response.Write("    else {" & vbCrLf)
-    Response.Write("      window.parent.parent.raiseError('',true,false);" & vbCrLf)
-    Response.Write("    }" & vbCrLf)
-    Response.Write("  }" & vbCrLf)
-    Response.Write("  catch (e) {" & vbCrLf)
-    Response.Write("  }" & vbCrLf)
-Else
-    Response.Write("  sUtilTypeDesc = window.parent.parent.frames(""top"").frmPopup.txtUtilTypeDesc.value;" & vbCrLf)
-    Response.Write("  if (frmOriginalDefinition.txtCancelPrint.value == 1) {" & vbCrLf)
-            Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output failed.\n\nCancelled by user."",64,sUtilTypeDesc);" & vbCrLf)
+        If (objUser.GetUserSetting("Output", "Landscape", "1") = "1") Then
+            Response.Write("true, " & vbCrLf)
+        Else
+            Response.Write("false, " & vbCrLf)
+        End If
+
+        Response.Write("document.all.item(""txtSysPerm_EMAILGROUPS_VIEW"").value);" & vbCrLf)
+
+        
+        Response.Write("  ClientDLL.SettingLocations(")
+        Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleCol", "3")) & ", ")
+        Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleRow", "2")) & ", ")
+        Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataCol", "2")) & ", ")
+        Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataRow", "4")) & ");" & vbCrLf)
+
+        Response.Write("  ClientDLL.SettingTitle(")
+        If (objUser.GetUserSetting("Output", "TitleGridLines", "0") = "1") Then
+            Response.Write("true, ")
+        Else
+            Response.Write("false, ")
+        End If
+
+        If (objUser.GetUserSetting("Output", "TitleBold", "1") = "1") Then
+            Response.Write("true, ")
+        Else
+            Response.Write("false, ")
+        End If
+
+        If (objUser.GetUserSetting("Output", "TitleUnderline", "0") = "1") Then
+            Response.Write("true, ")
+        Else
+            Response.Write("false, ")
+        End If
+
+        Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215")) & ", ")
+        Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")) & ", ")
+        Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215"))) & ", ")
+        Response.Write(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")) & ");" & vbCrLf)
+
+        Response.Write("  ClientDLL.SettingHeading(")
+        Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingGridLines", "1")) & ", ")
+        Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingBold", "1")) & ", ")
+        Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingUnderline", "0")) & ", ")
+        Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingBackcolour", "16248553")) & ", ")
+        Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingForecolour", "6697779")) & ", ")
+        Response.Write(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "HeadingBackcolour", "16248553")) & ", ")
+        Response.Write(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "HeadingForecolour", "6697779")) & ");" & vbCrLf)
+
+        Response.Write("  ClientDLL.SettingData(")
+        Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataGridLines", "1")) & ", ")
+        Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataBold", "0")) & ", ")
+        Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataUnderline", "0")) & ", ")
+        Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataBackcolour", "15988214")) & ", ")
+        Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataForecolour", "6697779")) & ", ")
+        Response.Write(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "DataBackcolour", "15988214")) & ", ")
+        Response.Write(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "DataForecolour", "6697779")) & ");" & vbCrLf)
+
+        Response.Write("  ClientDLL.InitialiseStyles();" & vbCrLf)
+        Response.Write("  ClientDLL.HeaderCols = 1;" & vbCrLf)
+        Response.Write("  fok = ClientDLL.SetOptions(false, " & _
+            "parseFloat(frmExportData.txtFormat.value), frmExportData.txtScreen.value, " & _
+            "frmExportData.txtPrinter.value, frmExportData.txtPrinterName.value, " & _
+            "frmExportData.txtSave.value, parseFloat(frmExportData.txtSaveExisting.value), " & _
+            "frmExportData.txtEmail.value, frmExportData.txtEmailGroupAddr.value, " & _
+            "frmExportData.txtEmailSubject.value, frmExportData.txtEmailAttachAs.value, frmExportData.txtFileName.value);" & vbCrLf)
+
+        Response.Write("  if (fok == true) {" & vbCrLf)
+        Response.Write("  if (ClientDLL.GetFile() == true) {" & vbCrLf)
+
+        'DATA ONLY
+        Response.Write("  if (frmExportData.txtFormat.value == 0) {" & vbCrLf)
+
+        objCrossTab = Session("objCrossTab" & Session("CT_UtilID"))
+
+        'All pages
+        lngLoopMin = 0
+        lngLoopMax = objCrossTab.ColumnHeadingUbound(2)
+
+        Response.Write("  frmOriginalDefinition.txtOptionsDone.value = 0;" & vbCrLf)
+        Response.Write("  frmOriginalDefinition.txtCancelPrint.value = 0;" & vbCrLf)
+
+        Response.Write("  ClientDLL.SetOptions(false, " & _
+            "parseFloat(frmExportData.txtFormat.value), frmExportData.txtScreen.value, " & _
+            "frmExportData.txtPrinter.value, frmExportData.txtPrinterName.value, " & _
+            "frmExportData.txtSave.value, parseFloat(frmExportData.txtSaveExisting.value), " & _
+            "frmExportData.txtEmail.value, """", " & _
+            "frmExportData.txtEmailSubject.value, frmExportData.txtEmailAttachAs.value, frmExportData.txtFileName.value);")
+        Response.Write("  ClientDLL.SetPrinter();" & vbCrLf)
+
+        For lngCount = lngLoopMin To lngLoopMax
+
+            If objCrossTab.PageBreakColumn = True Then
+                Response.Write("	frmOriginalDefinition.txtCurrentPrintPage.value = "" (" & objCrossTab.PageBreakColumnName & _
+                    " : " & CleanStringForJavaScript(Left(objCrossTab.ColumnHeading(2, lngCount), 255)) & ")"";" & vbCrLf)
+            End If
+
+            objCrossTab.BuildOutputStrings(lngCount)
+            Response.Write("  ssOutputGrid.Redraw = false;" & vbCrLf & vbCrLf)
+            Response.Write("  ssOutputGrid.Columns(ssOutputGrid.Columns.Count-1).Caption = cboIntersectionType.options[cboIntersectionType.selectedIndex].text;" & vbCrLf)
+            Response.Write("  ssOutputGrid.RemoveAll();" & vbCrLf & vbCrLf)
+            For intCount = 1 To objCrossTab.OutputArrayDataUBound
+                Response.Write("  ssOutputGrid.Additem(""" & CleanStringForJavaScript(Left(objCrossTab.OutputArrayData(intCount), 255)) & """);" & vbCrLf)
+            Next
+            Response.Write("  ssOutputGrid.Redraw = true;" & vbCrLf & vbCrLf)
+
+            Response.Write("  if (frmOriginalDefinition.txtCancelPrint.value == 1) {" & vbCrLf)
+            Response.Write("    ssOutputGrid.redraw = true;" & vbCrLf)
+            'Response.Write "    return;" & vbcrlf
             Response.Write("  }" & vbCrLf)
-            Response.Write("  else if (window.parent.parent.ASRIntranetOutput.ErrorMessage != """") {" & vbCrLf)
-            Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output failed.\n\n""+window.parent.parent.ASRIntranetOutput.ErrorMessage,48,sUtilTypeDesc);" & vbCrLf)
-            Response.Write("	  var fs = window.parent.parent.document.all.item(""myframeset"");" & vbCrLf)
-            Response.Write("	  if (fs) " & vbCrLf)
-            Response.Write("	    {" & vbCrLf)
-            Response.Write("	  	  fs.rows = ""0,0,*"";" & vbCrLf)
-            Response.Write("	    }" & vbCrLf)
+            Response.Write("  else if (frmOriginalDefinition.txtOptionsDone.value == 0) {" & vbCrLf)
+            Response.Write("    ssOutputGrid.PrintData(23,false,true);	" & vbCrLf)
+            Response.Write("    ssOutputGrid.value = 1;" & vbCrLf)
+            Response.Write("    try {" & vbCrLf)
+            Response.Write("      frmOriginalDefinition.txtOptionsDone.value = 1;" & vbCrLf)
+            Response.Write("    }" & vbCrLf)
+            Response.Write("    catch(e) {" & vbCrLf)
+            Response.Write("    }" & vbCrLf)
             Response.Write("  }" & vbCrLf)
             Response.Write("  else {" & vbCrLf)
+            Response.Write("    ssOutputGrid.PrintData(23,false,false);" & vbCrLf)
+            Response.Write("  }" & vbCrLf)
+            Response.Write("  ssOutputGrid.RemoveAll();" & vbCrLf)
+        Next
+
+        objCrossTab.BuildOutputStrings(CLng(Session("CT_PageNumber")))
+        For intCount = 1 To objCrossTab.OutputArrayDataUBound
+            Response.Write("  ssOutputGrid.Additem(""" & CleanStringForJavaScript(Left(objCrossTab.OutputArrayData(intCount), 255)) & """);" & vbCrLf)
+        Next
+        Response.Write("  ssOutputGrid.Redraw = true;" & vbCrLf & vbCrLf)
+
+        Response.Write("  ClientDLL.ResetDefaultPrinter();" & vbCrLf)
+        Response.Write("  ClientDLL.Complete();" & vbCrLf)
+        Response.Write("  ShowDataFrame();" & vbCrLf)
+        Response.Write("  }" & vbCrLf)
+
+        'PIVOT TABLE
+        Response.Write("  else if (frmExportData.txtFormat.value == 6) {" & vbCrLf)
+        
+        Response.Write("  ClientDLL.PivotSuppressBlanks = (window.chkSuppressZeros.checked == true);" & vbCrLf)
+        Response.Write("  ClientDLL.PivotDataFunction = window.cboIntersectionType.options[window.cboIntersectionType.selectedIndex].text;" & vbCrLf)
+
+        Response.Write("  ClientDLL.AddColumn("" "", 12, 0,false);" & vbCrLf)
+        For intCount = 0 To objCrossTab.ColumnHeadingUbound(0)
+            Response.Write("  ClientDLL.AddColumn(""" & _
+                  CleanStringForJavaScript(Left(objCrossTab.ColumnHeading(0, intCount), 255)) & """, 2, " & _
+                  objCrossTab.IntersectionDecimals & "," & LCase(objCrossTab.Use1000Separator) & ");" & vbCrLf)
+        Next
+        Response.Write("  ClientDLL.AddColumn(window.cboIntersectionType.options[window.cboIntersectionType.selectedIndex].text, 2, " & objCrossTab.IntersectionDecimals & "," & LCase(objCrossTab.Use1000Separator) & ");" & vbCrLf)
+
+        objCrossTab.GetPivotRecordset()
+        For intCount = 1 To objCrossTab.OutputPivotArrayDataUBound
+            Response.Write(CleanStringForJavaScript_NotDoubleQuotes(objCrossTab.OutputPivotArrayData(intCount)))
+        Next
+
+        Response.Write("  ClientDLL.Complete();" & vbCrLf)
+        Response.Write("  ShowDataFrame();" & vbCrLf)
+        Response.Write("  }" & vbCrLf)
+
+
+        'OTHER
+        Response.Write("  else {" & vbCrLf)
+
+        'MH20040219
+        Response.Write("  var lngExcelDataType;")
+        Response.Write("  if (window.chkPercentType.checked == true) {" & vbCrLf)
+        Response.Write("    lngExcelDataType = 0;" & vbCrLf)     'sqlNumeric
+        Response.Write("  }" & vbCrLf)
+        Response.Write("  else {" & vbCrLf)
+        Response.Write("    lngExcelDataType = 2;" & vbCrLf)     'sqlUnknown
+        Response.Write("  }" & vbCrLf)
+
+
+
+        Response.Write("    ClientDLL.AddColumn("" "", 12, 0,false);" & vbCrLf)
+        For intCount = 0 To objCrossTab.ColumnHeadingUbound(0)
+            Response.Write("  ClientDLL.AddColumn(""" & CleanStringForJavaScript(Left(objCrossTab.ColumnHeading(0, intCount), 255)) & """, lngExcelDataType, " & objCrossTab.IntersectionDecimals & "," & LCase(objCrossTab.Use1000Separator) & ");" & vbCrLf)
+        Next
+        Response.Write("  ClientDLL.AddColumn(window.cboIntersectionType.options[window.cboIntersectionType.selectedIndex].text, lngExcelDataType, " & objCrossTab.IntersectionDecimals & "," & LCase(objCrossTab.Use1000Separator) & ");" & vbCrLf)
+
+
+        If objCrossTab.PageBreakColumn = True Then
+            lngLoopMin = 0
+            lngLoopMax = objCrossTab.ColumnHeadingUbound(2)
+        Else
+            lngLoopMin = 0
+            lngLoopMax = 0
+        End If
+
+
+        For lngCount = lngLoopMin To lngLoopMax
+            If objCrossTab.PageBreakColumn = True Then
+                Response.Write("  ClientDLL.AddPage(ssOutputGrid.Caption, """ & _
+                     CleanStringForJavaScript(Left(objCrossTab.ColumnHeading(2, lngCount), 255)) & """);" & vbCrLf)
+            Else
+                If objCrossTab.CrossTabType = 3 Then
+                    Response.Write("  ClientDLL.AddPage(ssOutputGrid.Caption, """ & "Absence Breakdown" & """);" & vbCrLf)
+                Else
+                    Response.Write("  ClientDLL.AddPage(ssOutputGrid.Caption, """ & CleanStringForJavaScript(objCrossTab.BaseTableName) & """);" & vbCrLf)
+                End If
+            End If
+            objCrossTab.BuildOutputStrings(lngCount)
+
+            Response.Write("  ClientDLL.ArrayDim(" & CStr(objCrossTab.DataArrayCols) & ", " & CStr(objCrossTab.DataArrayRows) & ");" & vbCrLf)
+            For intCol = 0 To objCrossTab.DataArrayCols
+                For intRow = 0 To objCrossTab.DataArrayRows
+                    Response.Write("  ClientDLL.ArrayAddTo(" & CStr(intCol) & ", " & CStr(intRow) & ", """ & CleanStringForJavaScript(Left(objCrossTab.DataArray(CLng(intCol), CLng(intRow)), 255)) & """);" & vbCrLf)
+                Next
+            Next
+
+            Response.Write("  ClientDLL.DataArray();" & vbCrLf)
+        Next
+
+        Response.Write("  ClientDLL.Complete();" & vbCrLf)
+        Response.Write("  ShowDataFrame();" & vbCrLf)
+        Response.Write("  }" & vbCrLf)
+        Response.Write("}" & vbCrLf)
+        Response.Write("}" & vbCrLf)
+
+        If Session("CT_Mode") = "OUTPUTRUNTHENCLOSE" Then
+            Response.Write("  try {" & vbCrLf)
+            Response.Write("    if (frmOriginalDefinition.txtCancelPrint.value == 1) {" & vbCrLf)
+            Response.Write("      window.parent.parent.raiseError('',false,true);" & vbCrLf)
+            Response.Write("    }" & vbCrLf)
+            Response.Write("    else if (ClientDLL.ErrorMessage != """") {" & vbCrLf)
+            Response.Write("      window.parent.parent.raiseError(ClientDLL.ErrorMessage,false,false);" & vbCrLf)
+            Response.Write("    }" & vbCrLf)
+            Response.Write("    else {" & vbCrLf)
+            Response.Write("      window.parent.parent.raiseError('',true,false);" & vbCrLf)
+            Response.Write("    }" & vbCrLf)
+            Response.Write("  }" & vbCrLf)
+            Response.Write("  catch (e) {" & vbCrLf)
+            Response.Write("  }" & vbCrLf)
+        Else
+            Response.Write("  sUtilTypeDesc = frmPopup.txtUtilTypeDesc.value;" & vbCrLf)
+            Response.Write("  if (frmOriginalDefinition.txtCancelPrint.value == 1) {" & vbCrLf)
+            Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output failed.\n\nCancelled by user."",64,sUtilTypeDesc);" & vbCrLf)
+            Response.Write("  }" & vbCrLf)
+            Response.Write("  else if (ClientDLL.ErrorMessage == """") {" & vbCrLf)
             Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output complete."",64,sUtilTypeDesc);" & vbCrLf)
-    Response.Write("  }" & vbCrLf)
-End If
+            Response.Write("  }" & vbCrLf)
+        End If
 
 
 ElseIf Session("CT_Mode") = "EMAILGROUP" Or _
@@ -614,11 +591,11 @@ If Session("CT_Mode") = "EMAILGROUPTHENCLOSE" Then
 Else
     Response.Write("  ExportData(""OUTPUTRUN"");" & vbCrLf)
 End If
-
+       
 
 ElseIf Session("CT_Mode") = "" Then
 'Must be the first time this asp is called...
-        Response.Write(" loadAddRecords();" & vbCrLf)
+        Response.Write(" crosstab_loadAddRecords();" & vbCrLf)
 
 End If
 
@@ -645,7 +622,7 @@ End If
         control_disable(window.chkUse1000, true);
         control_disable(window.cboPage, true);
 
-        var frmGetData = OpenHR.getForm("reportdataframe", "frmGetCrossTabData");
+        var frmGetData = OpenHR.getForm("reportdataframe", "frmGetReportData");
         frmGetData.txtMode.value = strMode;
         frmGetData.txtPageNumber.value = lngPageNumber;
         frmGetData.txtIntersectionType.value = lngIntType;
@@ -658,7 +635,7 @@ End If
 
     function getBreakdown(lngHor, lngVer, lngPgb, txtIntType, txtCellValue) {
 
-        var frmGetData = OpenHR.getForm("reportbreakdownframe", "frmGetCrossTabData");
+        var frmGetData = OpenHR.getForm("reportbreakdownframe", "frmGetReportData");
         frmGetData.txtMode.value = "BREAKDOWN";
         frmGetData.txtHor.value = lngHor;
         frmGetData.txtVer.value = lngVer;
@@ -669,15 +646,27 @@ End If
     }
 
     function ExportData(strMode) {
-        
-        var frmGetData = OpenHR.getForm("reportdataframe", "frmGetCrossTabData");
+        var frmGetData = OpenHR.getForm("reportdataframe", "frmGetReportData");
         frmGetData.txtMode.value = strMode;
         OpenHR.submitForm(frmGetData);
     }
 
+    function ViewExportOptions() {
+
+        //var frmGetData = OpenHR.getForm("reportdataframe", "frmExportData");
+        //OpenHR.submitForm(frmGetData,"outputoptions");
+        output_setOptions();
+        
+        $("#reportworkframe").hide();
+        $("#reportbreakdownframe").hide();
+       $("#outputoptions").show();
+
+    }
+
+
 </script>
 
-<form action="util_run_crosstabsDataSubmit" method="post" id="frmGetCrossTabData" name="frmGetCrossTabData">
+<form action="util_run_crosstabsDataSubmit" method="post" id="frmGetReportData" name="frmGetReportData">
     <input type="hidden" id="txtMode" name="txtMode" value="<%=Session("CT_Mode")%>">
     <input type="hidden" id="txtPageNumber" name="txtPageNumber" value="<%=Session("CT_PageNumber")%>">
     <input type="hidden" id="txtShowPercentage" name="txtShowPercentage" value="<%=Session("CT_ShowPercentage")%>">
@@ -694,10 +683,11 @@ End If
     <input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="<%=Session("CT_EmailGroupID")%>">
 </form>
 
+
 <textarea id="holdtext" style="display: none;"></textarea>
 
 
 <script type="text/javascript">
     // Generated by the response.writes above
-    util_run_crosstabs_data_window_onload();
+    util_run_crosstabs_data_window_onload();    
 </script>

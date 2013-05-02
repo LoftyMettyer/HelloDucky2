@@ -1868,7 +1868,7 @@ LocalErr:
 
   End Function
 
-  Public Sub BuildOutputStrings(ByRef lngSinglePage As Integer)
+  Public Sub BuildOutputStrings(ByRef lngSinglePage As Long)
 
     Const strDelim As String = vbTab
     Dim strTempDelim As String
@@ -2689,15 +2689,15 @@ UDFFunctions_ERROR:
               '              objOutput.AddPage Replace(SSDBGrid1.Caption, "&&", "&"), strPageValue
               '              objOutput.DataArray strOutput
 
-              PivotAddToArray("  window.parent.parent.ASRIntranetOutput.AddPage(""" & Replace(Me.CrossTabName, """", "\""") & """, """ & Left(Replace(strPageValue, """", "\"""), 255) & """);")
-              PivotAddToArray("  window.parent.parent.ASRIntranetOutput.ArrayDim(" & CStr(UBound(strOutput, 1)) & ", " & CStr(UBound(strOutput, 2)) & ");")
+              PivotAddToArray("  ClientDLL.AddPage(""" & Replace(Me.CrossTabName, """", "\""") & """, """ & Left(Replace(strPageValue, """", "\"""), 255) & """);")
+              PivotAddToArray("  ClientDLL.ArrayDim(" & CStr(UBound(strOutput, 1)) & ", " & CStr(UBound(strOutput, 2)) & ");")
               For lngCol = 0 To UBound(strOutput, 1)
                 For lngRow = 0 To UBound(strOutput, 2)
-                  PivotAddToArray("  window.parent.parent.ASRIntranetOutput.ArrayAddTo(" & CStr(lngCol) & ", " & CStr(lngRow) & ", """ & Left(Replace(strOutput(lngCol, lngRow), """", "\"""), 255) & """);")
+                  PivotAddToArray("  ClientDLL.ArrayAddTo(" & CStr(lngCol) & ", " & CStr(lngRow) & ", """ & Left(Replace(strOutput(lngCol, lngRow), """", "\"""), 255) & """);")
                 Next
               Next
 
-              PivotAddToArray("  window.parent.parent.ASRIntranetOutput.DataArray();")
+              PivotAddToArray("  ClientDLL.DataArray();")
 
             End If
             strPageValue = .Fields("Page Break").Value
@@ -2737,16 +2737,16 @@ UDFFunctions_ERROR:
 
     '    objOutput.AddPage Replace(SSDBGrid1.Caption, "&&", "&"), IIf(strPageValue <> vbNullString, strPageValue, mstrCrossTabName)
     '    objOutput.DataArray strOutput
-    PivotAddToArray("  window.parent.parent.ASRIntranetOutput.AddPage(""" & Replace(Me.CrossTabName, """", "\""") & """, """ & Replace(strPageValue, """", "\""") & """);")
+    PivotAddToArray("  ClientDLL.AddPage(""" & Replace(Me.CrossTabName, """", "\""") & """, """ & Replace(strPageValue, """", "\""") & """);")
 
-    PivotAddToArray("  window.parent.parent.ASRIntranetOutput.ArrayDim(" & CStr(UBound(strOutput, 1)) & ", " & CStr(UBound(strOutput, 2)) & ");")
+    PivotAddToArray("  ClientDLL.ArrayDim(" & CStr(UBound(strOutput, 1)) & ", " & CStr(UBound(strOutput, 2)) & ");")
     For lngCol = 0 To UBound(strOutput, 1)
       For lngRow = 0 To UBound(strOutput, 2)
-        PivotAddToArray("  window.parent.parent.ASRIntranetOutput.ArrayAddTo(" & CStr(lngCol) & ", " & CStr(lngRow) & ", """ & Left(Replace(strOutput(lngCol, lngRow), """", "\"""), 255) & """);")
+        PivotAddToArray("  ClientDLL.ArrayAddTo(" & CStr(lngCol) & ", " & CStr(lngRow) & ", """ & Left(Replace(strOutput(lngCol, lngRow), """", "\"""), 255) & """);")
       Next
     Next
 
-    PivotAddToArray("  window.parent.parent.ASRIntranetOutput.DataArray();")
+    PivotAddToArray("  ClientDLL.DataArray();")
 
     rsPivot.Close()
     'UPGRADE_NOTE: Object rsPivot may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'

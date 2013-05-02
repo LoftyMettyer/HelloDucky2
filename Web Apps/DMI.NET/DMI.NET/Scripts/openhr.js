@@ -114,9 +114,12 @@
 	    		type: "POST",
 	    		data: data,
 	    		async: asyncFlag,
-	    		success: function (html) {	    			
+	    		success: function (html) {
+	    		    
+	    		    //console.log(html);
+
 	    			try {	    				
-	    		        if ((html.ErrorMessage != null) && (html.ErrorMessage != undefined) && (html.ErrorMessage != "undefined")) {
+	    			    if ((html.ErrorMessage != null) && (html.ErrorMessage != undefined) && (html.ErrorMessage != "undefined")) {
 	    		            if (html.ErrorMessage.length > 0) {
 	    		                //A handled error was returned. Display error message, then redirect accordingly...
 	    		                handleAjaxError(html);
@@ -130,14 +133,16 @@
 	    		    	$("#errorDialog").dialog("open");
 	    		    }	    			
 	    		    //clear the frame...
-	    		    $frame.html('');
 	    		    
 	    		    //OK
 	    		    
-	    		    if (targetWin != null)
-	    		    {
-	    		        $(targetWin.document.body).html(html);	    		        
+	    		    if (targetWin != null) {
+	    		        $frame = $form.closest("div[" + targetWin + "]").first();
+	    		        //	    		        $(targetWin.document.body).html(html);	    		        
+	    		        $frame.html(html);
+	    		        
 	    		    } else {	    		        
+	    		        $frame.html('');
 	    		        $frame.html(html);
 	    		    }	    		    
 	    		},

@@ -920,7 +920,7 @@ ExecuteSQL_ERROR:
       End If
 
       ' RH 29/05/01 - Dont run if its been made hidden by another user.
-      If LCase(.Fields("Username").Value) <> LCase(gsUsername) And CurrentUserAccess(modUtilAccessLog.UtilityType.utlCustomReport, mlngCustomReportID) = ACCESS_HIDDEN Then
+      If LCase(CType(.Fields("Username").Value, String)) <> LCase(gsUsername) And CurrentUserAccess(modUtilAccessLog.UtilityType.utlCustomReport, mlngCustomReportID) = ACCESS_HIDDEN Then
         GetCustomReportDefinition = False
         mstrErrorString = "Report has been made hidden by another user."
         Exit Function
@@ -5821,7 +5821,7 @@ AddError:
 
   End Function
 
-  Public Function GenerateSQLBradford(ByRef pstrIncludeTypes As Object) As Object
+  Public Function GenerateSQLBradford(ByRef pstrIncludeTypes As String) As Boolean
 
     ' NOTE: Checks are made elsewhere to ensure that from and to dates are not blank
     ' NOTE: Put in some code to handle blank end dates (do we include as an option on the main screen ?)
@@ -6472,7 +6472,7 @@ GetBradfordRecordSet_ERROR:
 
   End Function
 
-  Public Function SetBradfordOrders(ByRef pstrOrderBy As Object, ByRef pstrGroupBy As Object, ByRef pbOrder1Asc As Object, ByRef pbOrder2Asc As Object, ByRef plngOrderByColumnID As Object, ByRef plngGroupByColumnID As Object) As Boolean
+  Public Function SetBradfordOrders(ByRef pstrOrderBy As String, ByRef pstrGroupBy As String, ByRef pbOrder1Asc As Boolean, ByRef pbOrder2Asc As Boolean, ByRef plngOrderByColumnID As Long, ByRef plngGroupByColumnID As Long) As Boolean
 
     ' Set Report Order Options
     'UPGRADE_WARNING: Couldn't resolve default property of object pstrOrderBy. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -6561,42 +6561,30 @@ GetBradfordRecordSet_ERROR:
 
   ' Function which we use to pass in the default output parameters (Standard reports read from the defintion table,
   '    which don't exist for standard reports)
-  Public Function SetBradfordDefaultOutputOptions(ByRef pbOutputPreview As Object, ByRef plngOutputFormat As Object, ByRef pblnOutputScreen As Object, ByRef pblnOutputPrinter As Object, ByRef pstrOutputPrinterName As Object, ByRef pblnOutputSave As Object, ByRef plngOutputSaveExisting As Object, ByRef pblnOutputEmail As Object, ByRef plngOutputEmailID As Object, ByRef pstrOutputEmailName As Object, ByRef pstrOutputEmailSubject As Object, ByRef pstrOutputEmailAttachAs As Object, ByRef pstrOutputFilename As Object) As Boolean
+  Public Function SetBradfordDefaultOutputOptions(ByRef pbOutputPreview As Boolean, ByRef plngOutputFormat As Long, ByRef pblnOutputScreen As Boolean, ByRef pblnOutputPrinter As Boolean _
+                                                  , ByRef pstrOutputPrinterName As String, ByRef pblnOutputSave As Boolean, ByRef plngOutputSaveExisting As Long, ByRef pblnOutputEmail As Boolean _
+                                                  , ByRef plngOutputEmailID As Long, ByRef pstrOutputEmailName As String, ByRef pstrOutputEmailSubject As String, ByRef pstrOutputEmailAttachAs As String _
+                                                  , ByRef pstrOutputFilename As String) As Boolean
 
-    'UPGRADE_WARNING: Couldn't resolve default property of object pbOutputPreview. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mblnOutputPreview = pbOutputPreview
-    'UPGRADE_WARNING: Couldn't resolve default property of object plngOutputFormat. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mlngOutputFormat = plngOutputFormat
-    'UPGRADE_WARNING: Couldn't resolve default property of object pblnOutputScreen. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mblnOutputScreen = pblnOutputScreen
-    'UPGRADE_WARNING: Couldn't resolve default property of object pblnOutputPrinter. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mblnOutputPrinter = pblnOutputPrinter
-    'UPGRADE_WARNING: Couldn't resolve default property of object pstrOutputPrinterName. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mstrOutputPrinterName = pstrOutputPrinterName
-    'UPGRADE_WARNING: Couldn't resolve default property of object pblnOutputSave. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mblnOutputSave = pblnOutputSave
-    'UPGRADE_WARNING: Couldn't resolve default property of object plngOutputSaveExisting. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mlngOutputSaveExisting = plngOutputSaveExisting
-    'UPGRADE_WARNING: Couldn't resolve default property of object pblnOutputEmail. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mblnOutputEmail = pblnOutputEmail
-    'UPGRADE_WARNING: Couldn't resolve default property of object plngOutputEmailID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mlngOutputEmailID = plngOutputEmailID
-    'UPGRADE_WARNING: Couldn't resolve default property of object plngOutputEmailID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mstrOutputEmailName = GetEmailGroupName(CInt(plngOutputEmailID))
-    'UPGRADE_WARNING: Couldn't resolve default property of object pstrOutputEmailSubject. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mstrOutputEmailSubject = pstrOutputEmailSubject
-    'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
     mstrOutputEmailAttachAs = IIf(IsDBNull(pstrOutputEmailAttachAs), vbNullString, pstrOutputEmailAttachAs)
-    'UPGRADE_WARNING: Couldn't resolve default property of object pstrOutputFilename. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mstrOutputFilename = pstrOutputFilename
-
-    ' JDM - 17/11/03 - Fault 7688 - Not previewing correctly
     mblnOutputPreview = (pbOutputPreview Or (mlngOutputFormat = Declarations.OutputFormats.fmtDataOnly And mblnOutputScreen))
 
     SetBradfordDefaultOutputOptions = True
   End Function
 
-  Public Function UDFFunctions(ByRef pbCreate As Object) As Object
+  Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
 
     On Error GoTo UDFFunctions_ERROR
 

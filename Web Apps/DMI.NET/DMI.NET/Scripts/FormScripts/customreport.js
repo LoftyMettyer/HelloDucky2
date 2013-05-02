@@ -99,7 +99,6 @@ function ssHiddenGrid_PrintError(lngPrintError, iResponse) {
 function ShowReport() {
     var iPollPeriod;
     var iPollCounter;
-    var iDummy;
 
     iPollPeriod = 100;
     iPollCounter = iPollPeriod;
@@ -170,23 +169,8 @@ function ShowReport() {
 }
 
 function ExportDataPrompt() {
-    sURL = "util_run_outputoptions" +
-        "?txtUtilType=" + escape(frmExportData.txtUtilType.value) +
-        "&txtPreview=" + escape(frmExportData.txtPreview.value) +
-        "&txtFormat=" + escape(frmExportData.txtFormat.value) +
-        "&txtScreen=" + escape(frmExportData.txtScreen.value) +
-        "&txtPrinter=" + escape(frmExportData.txtPrinter.value) +
-        "&txtPrinterName=" + escape(frmExportData.txtPrinterName.value) +
-        "&txtSave=" + escape(frmExportData.txtSave.value) +
-        "&txtSaveExisting=" + escape(frmExportData.txtSaveExisting.value) +
-        "&txtEmail=" + escape(frmExportData.txtEmail.value) +
-        "&txtEmailAddr=" + escape(frmExportData.txtEmailAddr.value) +
-        "&txtEmailAddrName=" + escape(frmExportData.txtEmailAddrName.value) +
-        "&txtEmailSubject=" + escape(frmExportData.txtEmailSubject.value) +
-        "&txtEmailAttachAs=" + escape(frmExportData.txtEmailAttachAs.value) +
-        "&txtFileName=" + escape(frmExportData.txtFileName.value);
-
-    ShowOutputOptionsFrame(sURL);
+    var frmExportData = OpenHR.getForm("reportdataframe", "frmExportData");
+    OpenHR.submitForm(frmExportData);
 }
 
 function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
@@ -208,7 +192,7 @@ function replace(sExpression, sFind, sReplace) {
 }
 
 function getData() {
-    loadAddRecords();
+    customreport_loadAddRecords();
 }
 
 function dataOnlyPrint() {

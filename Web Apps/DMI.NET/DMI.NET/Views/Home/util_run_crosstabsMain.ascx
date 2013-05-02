@@ -1,6 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="HR.Intranet.Server" %>
+
+<script src="<%: Url.Content("~/bundles/utilities_crosstabs")%>" type="text/javascript"></script>
 
 <%
     Dim fok As Boolean
@@ -107,13 +107,13 @@
 %>
 
 <script type="text/javascript">
-	function loadAddRecords() {
+    function crosstab_loadAddRecords() {
         
 		var iCount;
 		iCount = new Number(txtLoadCount.value);
 		txtLoadCount.value = iCount + 1;
 		if (iCount > 0) {
-			var frmGetData = OpenHR.getForm("reportdataframe", "frmGetCrossTabData");
+			var frmGetData = OpenHR.getForm("reportdataframe", "frmGetReportData");
 			<% Response.Write("frmGetData.txtUtilID.value = """ & Session("utilid") & """;" & vbCrLf)%>
 			getData("LOAD", 0, 0, 0, 0, 0, 0);
 		}
@@ -135,7 +135,9 @@
     <%Html.RenderPartial("~/views/home/util_run_crosstabsBreakdown.ascx")%>
 </div>
 
-
+<div id="outputoptions" data-framesource="util_run_outputoptions" style="display: none;">
+    <% Html.RenderPartial("~/Views/Home/util_run_outputoptions.ascx")%>
+</div>
 
 <form id="frmOutput" name="frmOutput">
     <input type="hidden" id="fok" name="fok" value="">
@@ -146,6 +148,7 @@
 <script type="text/javascript">
 
 	util_run_crosstabs_window_onload();
+	util_run_crosstabs_addhandlers();
 
 	$("#reportframe").show();
 

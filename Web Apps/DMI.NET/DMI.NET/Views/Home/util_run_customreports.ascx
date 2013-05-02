@@ -3,6 +3,12 @@
 
 <script src="<%: Url.Content("~/bundles/utilities_customreports")%>" type="text/javascript"></script>
 
+<object
+    id="ClientDLL"
+    classid="CLSID:40E1755A-5A2D-4AEE-99E7-65E7D455F799"
+    codebase="cabs/COAInt_Client.CAB#version=1,0,0,147">
+</object>
+
 <% 
     Dim bBradfordFactor As Boolean
     Dim mstrCaption As String
@@ -13,7 +19,7 @@
  
     <script type="text/javascript">
         function reports_window_onload() {
-            loadAddRecords();
+            customreport_loadAddRecords();
         }
     </script>
     
@@ -93,47 +99,46 @@
 		Response.End
 	end if
 
-	dim icount
-	dim definition
-	dim fok
-	dim objReport
-	dim fNotCancelled
+        Dim icount As Integer
+        Dim fok As Boolean
+        Dim objReport As HR.Intranet.Server.Report
+        Dim fNotCancelled As Boolean
 
-	dim dtStartDate
-	dim dtEndDate
-	dim strAbsenceTypes
-	dim lngFilterID
-	dim lngPicklistID
-	dim lngPersonnelID
+        Dim dtStartDate As Date
+        Dim dtEndDate As Date
+        Dim strAbsenceTypes As String = ""
+        Dim lngFilterID As Long
+        Dim lngPicklistID As Long
+        Dim lngPersonnelID As Long
 	
-	dim bBradford_SRV
-	dim bBradford_ShowDurations
-	dim bBradford_ShowInstances
-	dim bBradford_ShowFormula	
-	dim bBradford_OmitBeforeStart	
-	dim bBradford_OmitAfterEnd	
-	dim bBradford_txtOrderBy1
-	dim lngBradford_txtOrderBy1ID	
-	dim bBradford_txtOrderBy1Asc
-	dim bBradford_txtOrderBy2
-	dim lngBradford_txtOrderBy2ID	
-	dim bBradford_txtOrderBy2Asc
-	dim bPrintFilterPickList
+        Dim bBradford_SRV As Boolean
+        Dim bBradford_ShowDurations As Boolean
+        Dim bBradford_ShowInstances As Boolean
+        Dim bBradford_ShowFormula As Boolean
+        Dim bBradford_OmitBeforeStart As Boolean
+        Dim bBradford_OmitAfterEnd As Boolean
+        Dim bBradford_txtOrderBy1 As String
+        Dim lngBradford_txtOrderBy1ID As String
+        Dim bBradford_txtOrderBy1Asc As Boolean
+        Dim bBradford_txtOrderBy2 As String
+        Dim lngBradford_txtOrderBy2ID As String
+        Dim bBradford_txtOrderBy2Asc As Boolean
+        Dim bPrintFilterPickList As Boolean
 
 	' Default output options
-	dim bOutputPreview
-	dim lngOutputFormat
-	dim pblnOutputScreen
-	dim pblnOutputPrinter
-	dim pstrOutputPrinterName
-	dim pblnOutputSave
-	dim plngOutputSaveExisting
-	dim pblnOutputEmail
-	dim plngOutputEmailID
-	dim pstrOutputEmailName
-	dim pstrOutputEmailSubject
-	dim pstrOutputEmailAttachAs
-	dim pstrOutputFilename	
+        Dim bOutputPreview As Boolean
+        Dim lngOutputFormat As Long
+        Dim pblnOutputScreen As Boolean
+        Dim pblnOutputPrinter As Boolean
+        Dim pstrOutputPrinterName As String
+        Dim pblnOutputSave As Boolean
+        Dim plngOutputSaveExisting As Long
+        Dim pblnOutputEmail As Boolean
+        Dim plngOutputEmailID As Long
+        Dim pstrOutputEmailName As String
+        Dim pstrOutputEmailSubject As String
+        Dim pstrOutputEmailAttachAs As String
+        Dim pstrOutputFilename As String
 
         Dim bMinBradford As Boolean
         Dim lngMinBradfordAmount As Long
@@ -295,15 +300,12 @@
 		if fok then fok = fNotCancelled
 	end if
 
-	'**********************************************
-	'TM20020809 Fault 4237 - check that at least one child table is used.
-	if fok and objReport.ChildCount > 1 and objReport.UsedChildCount > 1 then
-		fok = objReport.CreateMutipleChildTempTable
-		fNotCancelled = Response.IsClientConnected
-		if fok then fok = fNotCancelled
-	end if
-	'**********************************************
-	
+        If fok And objReport.ChildCount > 1 And objReport.UsedChildCount > 1 Then
+            fok = objReport.CreateMutipleChildTempTable
+            fNotCancelled = Response.IsClientConnected
+            If fok Then fok = fNotCancelled
+        End If
+
 	if fok then 
 		fok = objReport.CheckRecordSet 
 		fNotCancelled = Response.IsClientConnected 
@@ -360,27 +362,17 @@
 		arrayPageBreakValues = objreport.OutputArray_PageBreakValues		
 		arrayVisibleColumns = objreport.OutputArray_VisibleColumns
 		
-		if fok then
-			'arrayDataDefinition = objreport.OutputArray_Data 
-
-		  'Response.Write "		<FORM name=frmGridItems id=frmGridItems>" & vbcrlf
-			'for iCount = 1 to UBound(arrayDataDefinition)
-			'	if instr(arrayDataDefinition(icount),"<PARAM NAME=") = 0 then
-			'		sGridItemName = "txtGridItem_" & iCount
-			'	  Response.Write "			<input type=hidden id=" & sGridItemName & " name=" & sGridItemName & " value=""" & arrayDataDefinition(icount) & """>" & vbcrlf
-			'	end if
-			'next 
-		  'Response.Write "		</FORM>" & vbcrlf
-		  
+            If fok Then
                 Response.Write(objReport.Output_GridForm)
             End If
         End If
 
 	if fok then
 
-            Response.Write("<FORM target=""Output"" action=""util_run_outputoptions"" method=post id=frmExportData name=frmExportData>" & vbCrLf)
+            
+            Response.Write("<FORM action=""util_run_outputoptions"" method=post id=frmExportData name=frmExportData>" & vbCrLf)
             Response.Write("  <INPUT type=""hidden"" id=txtPreview name=txtPreview value=""" & objReport.OutputPreview & """>" & vbCrLf)
-            Response.Write("  <INPUT type=""hidden"" id=txtFormat name=txtFormat value=""" & objReport.OutputFormat & """>" & vbCrLf)
+            Response.Write("  <INPUT type=""hidden"" id=txtFormat name=txtFormat value=" & objReport.OutputFormat & ">" & vbCrLf)
             Response.Write("  <INPUT type=""hidden"" id=txtScreen name=txtScreen value=""" & objReport.OutputScreen & """>" & vbCrLf)
             Response.Write("  <INPUT type=""hidden"" id=txtPrinter name=txtPrinter value=""" & objReport.OutputPrinter & """>" & vbCrLf)
             Response.Write("  <INPUT type=""hidden"" id=txtPrinterName name=txtPrinterName value=""" & objReport.OutputPrinterName & """>" & vbCrLf)
@@ -395,52 +387,54 @@
             Response.Write("  <INPUT type=""hidden"" id=txtUtilType name=txtUtilType value=""" & Session("UtilType") & """>" & vbCrLf)
 
             
-            For icount = 0 To (UBound(arrayPageBreakValues))
-                Response.Write("	<INPUT type=hidden id=txtPageBreak_" & icount & " name=txtPageBreak_" & icount & " value=""" & Replace(arrayPageBreakValues(icount), """", "&quot;") & """>" & vbCrLf)
-            Next
-
-            Response.Write("			<input type=hidden id=pagebreak name=pagebreak value=""" & objReport.ReportHasPageBreak & """>" & vbCrLf)
-            Response.Write("			<input type=hidden id=txtSummaryReport name=txtSummaryReport value=""" & objReport.ReportHasSummaryInfo & """>" & vbCrLf)
-		
-            For icount = 0 To (UBound(arrayVisibleColumns, 2))
-                Response.Write("	<INPUT type=hidden id=txtVisHeading_" & icount & " name=txtVisHeading_" & icount & " value=""" & Replace(Replace(arrayVisibleColumns(0, icount), """", "&quot;"), "_", " ") & """>" & vbCrLf)
-                Response.Write("	<INPUT type=hidden id=txtVisDataType_" & icount & " name=txtVisDataType_" & icount & " value=""" & arrayVisibleColumns(1, icount) & """>" & vbCrLf)
-                Response.Write("	<INPUT type=hidden id=txtVisDecimals_" & icount & " name=txtVisDecimals_" & icount & " value=""" & arrayVisibleColumns(2, icount) & """>" & vbCrLf)
-                Response.Write("	<INPUT type=hidden id=txtVis1000Separator_" & icount & " name=txtVis1000Separator_" & icount & " value=""" & arrayVisibleColumns(3, icount) & """>" & vbCrLf)
-            Next
-            Response.Write("	<INPUT type=hidden id=txtVisColCount name=txtVisColCount value=" & UBound(arrayVisibleColumns, 2) & ">" & vbCrLf)
-            Response.Write("</FORM>" & vbCrLf)
-	
-            Response.Write("<script type=""text/javascript"">" & vbCrLf)
-            Response.Write("<!--" & vbCrLf)
             
+    For icount = 0 To (UBound(arrayPageBreakValues))
+        Response.Write("	<INPUT type=hidden id=txtPageBreak_" & icount & " name=txtPageBreak_" & icount & " value=""" & Replace(arrayPageBreakValues(icount), """", "&quot;") & """>" & vbCrLf)
+    Next
+
+    Response.Write("			<input type=hidden id=pagebreak name=pagebreak value=""" & objReport.ReportHasPageBreak & """>" & vbCrLf)
+    Response.Write("			<input type=hidden id=txtSummaryReport name=txtSummaryReport value=""" & objReport.ReportHasSummaryInfo & """>" & vbCrLf)
+		
+    For icount = 0 To (UBound(arrayVisibleColumns, 2))
+        Response.Write("	<INPUT type=hidden id=txtVisHeading_" & icount & " name=txtVisHeading_" & icount & " value=""" & Replace(Replace(arrayVisibleColumns(0, icount), """", "&quot;"), "_", " ") & """>" & vbCrLf)
+        Response.Write("	<INPUT type=hidden id=txtVisDataType_" & icount & " name=txtVisDataType_" & icount & " value=""" & arrayVisibleColumns(1, icount) & """>" & vbCrLf)
+        Response.Write("	<INPUT type=hidden id=txtVisDecimals_" & icount & " name=txtVisDecimals_" & icount & " value=""" & arrayVisibleColumns(2, icount) & """>" & vbCrLf)
+        Response.Write("	<INPUT type=hidden id=txtVis1000Separator_" & icount & " name=txtVis1000Separator_" & icount & " value=""" & arrayVisibleColumns(3, icount) & """>" & vbCrLf)
+    Next
+    Response.Write("	<INPUT type=hidden id=txtVisColCount name=txtVisColCount value=" & UBound(arrayVisibleColumns, 2) & ">" & vbCrLf)
+    Response.Write("</FORM>" & vbCrLf)
+	
+    Response.Write("<script type=""text/javascript"">" & vbCrLf)
+
             ' Change the output text if Bradford Factor Report
 
             Response.Write("function ExportData(strMode) " & vbCrLf)
             Response.Write("	{" & vbCrLf & vbCrLf)
+            
             Response.Write("	var bm;" & vbCrLf)
+            Response.Write("    var fok;" & vbCrLf)
             Response.Write("	var sBreakValue = new String('');" & vbCrLf)
             Response.Write("	var blnBreakCheck = false;" & vbCrLf)
-		
+            Response.Write("    var frmExportData = OpenHR.getForm(""reportworkframe"",""frmExportData_ORIGINAL"");" & vbCrLf)
+            
             Dim objUser As New HR.Intranet.Server.clsSettings          
             
-            objReport.Username = Session("username")
-            CallByName(objUser, "Connection", CallType.Let, Session("databaseConnection"))
-            
+            objReport.Username = Session("username").ToString()
+            CallByName(objUser, "Connection", CallType.Let, Session("databaseConnection"))            
             
             'MH20031113 Fault 7606 Reset Columns and Styles...
-            Response.Write("  window.parent.parent.ASRIntranetOutput.ResetColumns();" & vbCrLf)
-            Response.Write("  window.parent.parent.ASRIntranetOutput.ResetStyles();" & vbCrLf)
-            Response.Write("  window.parent.parent.ASRIntranetOutput.UserName = """ & cleanStringForJavaScript(Session("Username")) & """;" & vbCrLf)
-            Response.Write("  window.parent.parent.ASRIntranetOutput.SaveAsValues = """ & cleanStringForJavaScript(Session("OfficeSaveAsValues")) & """;" & vbCrLf)
+            Response.Write("  ClientDLL.ResetColumns();" & vbCrLf)
+            Response.Write("  ClientDLL.ResetStyles();" & vbCrLf)
+            Response.Write("  ClientDLL.UserName = """ & CleanStringForJavaScript(Session("Username")) & """;" & vbCrLf)
+            Response.Write("  ClientDLL.SaveAsValues = """ & CleanStringForJavaScript(Session("OfficeSaveAsValues")) & """;" & vbCrLf)
 
-            Response.Write("  window.parent.parent.ASRIntranetOutput.SettingLocations(")
-            Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleCol", "3")) & ", ")
-            Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleRow", "2")) & ", ")
-            Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "DataCol", "2")) & ", ")
-            Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "DataRow", "4")) & ");" & vbCrLf)
+            Response.Write("  ClientDLL.SettingLocations(")
+            Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleCol", "3")) & ", ")
+            Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleRow", "2")) & ", ")
+            Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataCol", "2")) & ", ")
+            Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataRow", "4")) & ");" & vbCrLf)
 
-            Response.Write("  window.parent.parent.ASRIntranetOutput.SettingTitle(")
+            Response.Write("  ClientDLL.SettingTitle(")
             If (objUser.GetUserSetting("Output", "TitleGridLines", "0") = "1") Then
                 Response.Write("true, ")
             Else
@@ -459,35 +453,33 @@
                 Response.Write("false, ")
             End If
 
-            Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215")) & ", ")
-            Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")) & ", ")
+            Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215")) & ", ")
+            Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")) & ", ")
             Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215")))) & ", ")
             Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")))) & ");" & vbCrLf)
 
-            Response.Write("  window.parent.parent.ASRIntranetOutput.SettingHeading(")
-            Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingGridLines", "1")) & ", ")
-            Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingBold", "1")) & ", ")
-            Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingUnderline", "0")) & ", ")
-            Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingBackcolour", "16248553")) & ", ")
-            Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingForecolour", "6697779")) & ", ")
+            Response.Write("  ClientDLL.SettingHeading(")
+            Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingGridLines", "1")) & ", ")
+            Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingBold", "1")) & ", ")
+            Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingUnderline", "0")) & ", ")
+            Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingBackcolour", "16248553")) & ", ")
+            Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "HeadingForecolour", "6697779")) & ", ")
             Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "HeadingBackcolour", "16248553")))) & ", ")
             Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "HeadingForecolour", "6697779")))) & ");" & vbCrLf)
 
-            Response.Write("  window.parent.parent.ASRIntranetOutput.SettingData(")
-            Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "DataGridLines", "1")) & ", ")
-            Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "DataBold", "0")) & ", ")
-            Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "DataUnderline", "0")) & ", ")
-            Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "DataBackcolour", "15988214")) & ", ")
-            Response.Write(cleanStringForJavaScript(objUser.GetUserSetting("Output", "DataForecolour", "6697779")) & ", ")
+            Response.Write("  ClientDLL.SettingData(")
+            Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataGridLines", "1")) & ", ")
+            Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataBold", "0")) & ", ")
+            Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataUnderline", "0")) & ", ")
+            Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataBackcolour", "15988214")) & ", ")
+            Response.Write(CleanStringForJavaScript(objUser.GetUserSetting("Output", "DataForecolour", "6697779")) & ", ")
             Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "DataBackcolour", "15988214")))) & ", ")
             Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "DataForecolour", "6697779")))) & ");" & vbCrLf)
 
-            Response.Write("  frmMenuFrame = window.parent.parent.opener.window.parent.frames(""menuframe"");" & vbCrLf)
-
-            Response.Write("  window.parent.parent.ASRIntranetOutput.InitialiseStyles();" & vbCrLf)
-            Response.Write("  window.parent.parent.ASRIntranetOutput.SettingOptions(")
-            Response.Write("""" & cleanStringForJavaScript(objUser.GetUserSetting("Output", "WordTemplate", "")) & """, ")
-            Response.Write("""" & cleanStringForJavaScript(objUser.GetUserSetting("Output", "ExcelTemplate", "")) & """, ")
+            Response.Write("  ClientDLL.InitialiseStyles();" & vbCrLf)
+            Response.Write("  ClientDLL.SettingOptions(")
+            Response.Write("""" & CleanStringForJavaScript(objUser.GetUserSetting("Output", "WordTemplate", "")) & """, ")
+            Response.Write("""" & CleanStringForJavaScript(objUser.GetUserSetting("Output", "ExcelTemplate", "")) & """, ")
 
             If (objUser.GetUserSetting("Output", "ExcelGridlines", "0") = "1") Then
                 Response.Write("true, ")
@@ -525,54 +517,52 @@
                 Response.Write("false, " & vbCrLf)
             End If
 
-            Response.Write("frmMenuFrame.document.all.item(""txtSysPerm_EMAILGROUPS_VIEW"").value);" & vbCrLf)
+            Response.Write("document.all.item(""txtSysPerm_EMAILGROUPS_VIEW"").value);" & vbCrLf)
 
             'Set Options
-            Response.Write("  frmDataFrame = window.parent.frames(""dataframe"");" & vbCrLf)
-
-		if not objreport.OutputPreview then	
-			dim lngFormat
-			dim blnScreen
-			dim blnPrinter
-			dim strPrinterName
-			dim blnSave
-			dim lngSaveExisting
-			dim blnEmail
-			dim lngEmailGroupID
-			dim strEmailSubject
-			dim strEmailAttachAs
-			dim strFileName
+            If Not objReport.OutputPreview Then
+                Dim lngFormat As Long
+                Dim blnScreen As Boolean
+                Dim blnPrinter As Boolean
+                Dim strPrinterName As String
+                Dim blnSave As Boolean
+                Dim lngSaveExisting As Long
+                Dim blnEmail As Boolean
+                Dim lngEmailGroupID As Long
+                Dim strEmailSubject As String
+                Dim strEmailAttachAs As String
+                Dim strFileName As String
 			
-			lngFormat = cleanStringForJavaScript(objreport.OutputFormat)
-			blnScreen = cleanStringForJavaScript(LCase(objreport.OutputScreen))
-			blnPrinter = cleanStringForJavaScript(LCase(objreport.OutputPrinter))
-			strPrinterName = cleanStringForJavaScript(objreport.OutputPrinterName)
-			blnSave = cleanStringForJavaScript(LCase(objreport.OutputSave))
-			lngSaveExisting = cleanStringForJavaScript(objreport.OutputSaveExisting) 
-			blnEmail = cleanStringForJavaScript(LCase(objreport.OutputEmail))
-			lngEmailGroupID = CLng(objreport.OutputEmailID)
-			strEmailSubject = cleanStringForJavaScript(objreport.OutputEmailSubject)
-			strEmailAttachAs = cleanStringForJavaScript(objreport.OutputEmailAttachAs)
-			'strFileName = objreport.OutputFilename 
-			strFileName = cleanStringForJavaScript(objreport.OutputFilename)
+                lngFormat = CleanStringForJavaScript(objReport.OutputFormat)
+                blnScreen = CleanStringForJavaScript(LCase(objReport.OutputScreen))
+                blnPrinter = CleanStringForJavaScript(LCase(objReport.OutputPrinter))
+                strPrinterName = CleanStringForJavaScript(objReport.OutputPrinterName)
+                blnSave = CleanStringForJavaScript(LCase(objReport.OutputSave))
+                lngSaveExisting = CleanStringForJavaScript(objReport.OutputSaveExisting)
+                blnEmail = CleanStringForJavaScript(LCase(objReport.OutputEmail))
+                lngEmailGroupID = CLng(objReport.OutputEmailID)
+                strEmailSubject = CleanStringForJavaScript(objReport.OutputEmailSubject)
+                strEmailAttachAs = CleanStringForJavaScript(objReport.OutputEmailAttachAs)
+                'strFileName = objreport.OutputFilename 
+                strFileName = CleanStringForJavaScript(objReport.OutputFilename)
 			
                 Dim cmdEmailAddr
                 Dim prmEmailGroupID
                 Dim rstEmailAddr
-                Dim sErrorDescription
+                Dim sErrorDescription As String = ""
                 Dim iLoop As Integer
-                Dim sEmailAddresses As String
+                Dim sEmailAddresses As String = ""
                 
-			if (objreport.OutputEmail) and (objreport.OutputEmailID > 0) then
+                If (objReport.OutputEmail) And (objReport.OutputEmailID > 0) Then
 				
                     cmdEmailAddr = CreateObject("ADODB.Command")
-				cmdEmailAddr.CommandText = "spASRIntGetEmailGroupAddresses"
-				cmdEmailAddr.CommandType = 4 ' Stored procedure
+                    cmdEmailAddr.CommandText = "spASRIntGetEmailGroupAddresses"
+                    cmdEmailAddr.CommandType = 4 ' Stored procedure
                     cmdEmailAddr.ActiveConnection = Session("databaseConnection")
 
                     prmEmailGroupID = cmdEmailAddr.CreateParameter("EmailGroupID", 3, 1) ' 3=integer, 1=input
                     cmdEmailAddr.Parameters.Append(prmEmailGroupID)
-				prmEmailGroupID.value = cleanNumeric(lngEmailGroupID)
+                    prmEmailGroupID.value = CleanNumeric(lngEmailGroupID)
 
                     Err.Clear()
                     rstEmailAddr = cmdEmailAddr.Execute
@@ -581,36 +571,36 @@
                         sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(Err.Description)
                     End If
 
-				if len(sErrorDescription) = 0 then
-					iLoop = 1
-					do while not rstEmailAddr.EOF
-						if iLoop > 1 then
-							sEmailAddresses = sEmailAddresses & ";"
-						end if
-						sEmailAddresses = sEmailAddresses & rstEmailAddr.Fields("Fixed").Value
-						rstEmailAddr.MoveNext
-						iLoop = iLoop + 1
-					loop
+                    If Len(sErrorDescription) = 0 Then
+                        iLoop = 1
+                        Do While Not rstEmailAddr.EOF
+                            If iLoop > 1 Then
+                                sEmailAddresses = sEmailAddresses & ";"
+                            End If
+                            sEmailAddresses = sEmailAddresses & rstEmailAddr.Fields("Fixed").Value
+                            rstEmailAddr.MoveNext()
+                            iLoop = iLoop + 1
+                        Loop
 						
-					' Release the ADO recordset object.
-					rstEmailAddr.close
-				end if
+                        ' Release the ADO recordset object.
+                        rstEmailAddr.close()
+                    End If
 							
                     rstEmailAddr = Nothing
                     cmdEmailAddr = Nothing
-			end if
+                End If
 			
-                Response.Write("  fok = window.parent.parent.ASRIntranetOutput.SetOptions(false, " & _
+                Response.Write("  fok = ClientDLL.SetOptions(false, " & _
                                                         lngFormat & "," & blnScreen & ", " & _
                                                         blnPrinter & ",""" & strPrinterName & """, " & _
                                                         blnSave & "," & lngSaveExisting & ", " & _
-                                                        blnEmail & ", """ & cleanStringForJavaScript(sEmailAddresses) & """, """ & _
+                                                        blnEmail & ", """ & CleanStringForJavaScript(sEmailAddresses) & """, """ & _
                                                         strEmailSubject & """,""" & strEmailAttachAs & """,""" & strFileName & """);" & vbCrLf)
             Else
-                Response.Write("  fok = window.parent.parent.ASRIntranetOutput.SetOptions(false, " & _
-                                                "frmExportData.txtFormat.value, frmExportData.txtScreen.value, " & _
+                Response.Write("  fok = ClientDLL.SetOptions(false, " & _
+                                                "parseFloat(frmExportData.txtFormat.value), frmExportData.txtScreen.value, " & _
                                                 "frmExportData.txtPrinter.value, frmExportData.txtPrinterName.value, " & _
-                                                "frmExportData.txtSave.value, frmExportData.txtSaveExisting.value, " & _
+                                                "frmExportData.txtSave.value, parseFloat(frmExportData.txtSaveExisting.value), " & _
                                                 "frmExportData.txtEmail.value, frmDataFrame.txtEmailGroupAddr.value, " & _
                                                 "frmExportData.txtEmailSubject.value, frmExportData.txtEmailAttachAs.value, frmExportData.txtFileName.value);" & vbCrLf)
 		
@@ -625,28 +615,28 @@
             Response.Write("    blnIndicatorColumn = (frmExportData.txtSummaryReport.value == 'False')" & vbCrLf)
             Response.Write("  }" & vbCrLf)
 		
-            Response.Write("  window.parent.parent.ASRIntranetOutput.SizeColumnsIndependently = true;" & vbCrLf)
+            Response.Write("  ClientDLL.SizeColumnsIndependently = true;" & vbCrLf)
 
             Response.Write("  if (frmExportData.txtFormat.value == ""0"") {" & vbCrLf)
             Response.Write("    if (frmExportData.txtPrinter.value.toLowerCase() == ""true"") {" & vbCrLf)
-            Response.Write("      window.parent.parent.ASRIntranetOutput.SetPrinter();" & vbCrLf)
+            Response.Write("      ClientDLL.SetPrinter();" & vbCrLf)
             Response.Write("      dataOnlyPrint();" & vbCrLf)
-            Response.Write("      window.parent.parent.ASRIntranetOutput.ResetDefaultPrinter();" & vbCrLf)
+            Response.Write("      ClientDLL.ResetDefaultPrinter();" & vbCrLf)
             Response.Write("    }" & vbCrLf)
             Response.Write("  }" & vbCrLf)
             Response.Write("  else {" & vbCrLf)
-            Response.Write("  window.parent.parent.ASRIntranetOutput.HeaderRows = 1;" & vbCrLf)
+            Response.Write("  ClientDLL.HeaderRows = 1;" & vbCrLf)
 
-            Response.Write("  if (window.parent.parent.ASRIntranetOutput.GetFile() == true) " & vbCrLf)
+            Response.Write("  if (ClientDLL.GetFile() == true) " & vbCrLf)
             Response.Write("		{" & vbCrLf)
 			
             'Response.Write "		if (frmExportData.pagebreak.value == 'True') " & vbcrlf
             Response.Write("		if (frmExportData.pagebreak.value.toLowerCase() == ""true"") " & vbCrLf)
             Response.Write("			{" & vbCrLf)
             Response.Write("			var lngActualRow = new Number(0);" & vbCrLf)
-            '	Response.Write "			window.parent.parent.ASRIntranetOutput.PageTitles = true;" & vbcrlf
+            '	Response.Write "			ClientDLL.PageTitles = true;" & vbcrlf
 			
-            Response.Write("			window.parent.parent.ASRIntranetOutput.ArrayDim(frmExportData.txtVisColCount.value, 0);" & vbCrLf & vbCrLf)
+            Response.Write("			ClientDLL.ArrayDim(frmExportData.txtVisColCount.value, 0);" & vbCrLf & vbCrLf)
             Response.Write("			lngActualRow = 0;" & vbCrLf)
 
             Response.Write("      frmOutput.ssOleDBGridDefSelRecords.MoveFirst();" & vbCrLf)
@@ -670,9 +660,9 @@
 			
             Response.Write("				  if (lngActualRow > 0) {" & vbCrLf)
             If bBradfordFactor = True Then
-                Response.Write("					window.parent.parent.ASRIntranetOutput.AddPage(replace(frmOutput.ssOleDBGridDefSelRecords.Caption,'&&','&'),'Bradford Factor');" & vbCrLf)
+                Response.Write("					ClientDLL.AddPage(replace(frmOutput.ssOleDBGridDefSelRecords.Caption,'&&','&'),'Bradford Factor');" & vbCrLf)
             Else
-                Response.Write("					window.parent.parent.ASRIntranetOutput.AddPage(replace(frmOutput.ssOleDBGridDefSelRecords.Caption,'&&','&'),sBreakValue);" & vbCrLf)
+                Response.Write("					ClientDLL.AddPage(replace(frmOutput.ssOleDBGridDefSelRecords.Caption,'&&','&'),sBreakValue);" & vbCrLf)
             End If
             Response.Write("					var sColHeading = new String(''); " & vbCrLf)
             Response.Write("					var iColDataType = new Number(0); " & vbCrLf)
@@ -682,10 +672,10 @@
             Response.Write("						sColHeading = document.getElementById('txtVisHeading_'+lngCol).value;" & vbCrLf)
             Response.Write("						iColDataType = document.getElementById('txtVisDataType_'+lngCol).value;" & vbCrLf)
             Response.Write("						iColDecimals = document.getElementById('txtVisDecimals_'+lngCol).value;" & vbCrLf)
-            Response.Write("						window.parent.parent.ASRIntranetOutput.AddColumn(sColHeading, iColDataType, iColDecimals, false);" & vbCrLf)
-            Response.Write("						window.parent.parent.ASRIntranetOutput.ArrayAddTo(lngCol, 0, sColHeading);" & vbCrLf & vbCrLf)
+            Response.Write("						ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, false);" & vbCrLf)
+            Response.Write("						ClientDLL.ArrayAddTo(lngCol, 0, sColHeading);" & vbCrLf & vbCrLf)
             Response.Write("						}" & vbCrLf)
-            Response.Write("                    window.parent.parent.ASRIntranetOutput.DataArray();" & vbCrLf)
+            Response.Write("                    ClientDLL.DataArray();" & vbCrLf)
             Response.Write("					lngActualRow = 0;" & vbCrLf)
             Response.Write("					blnBreakCheck = true;" & vbCrLf)
             Response.Write("					sBreakValue = '';" & vbCrLf)
@@ -699,9 +689,9 @@
             Response.Write("					sBreakValue = document.getElementById('txtPageBreak_'+lngRow).value;" & vbCrLf)
 
             If bBradfordFactor = True Then
-                Response.Write("					window.parent.parent.ASRIntranetOutput.AddPage(replace(frmOutput.ssOleDBGridDefSelRecords.Caption,'&&','&'),'Bradford Factor');" & vbCrLf)
+                Response.Write("					ClientDLL.AddPage(replace(frmOutput.ssOleDBGridDefSelRecords.Caption,'&&','&'),'Bradford Factor');" & vbCrLf)
             Else
-                Response.Write("					window.parent.parent.ASRIntranetOutput.AddPage(replace(frmOutput.ssOleDBGridDefSelRecords.Caption,'&&','&'),sBreakValue);" & vbCrLf)
+                Response.Write("					ClientDLL.AddPage(replace(frmOutput.ssOleDBGridDefSelRecords.Caption,'&&','&'),sBreakValue);" & vbCrLf)
             End If
 
             Response.Write("					var sColHeading = new String(''); " & vbCrLf)
@@ -714,17 +704,17 @@
             Response.Write("						iColDataType = document.getElementById('txtVisDataType_'+lngCol).value;" & vbCrLf)
             Response.Write("						iColDecimals = document.getElementById('txtVisDecimals_'+lngCol).value;" & vbCrLf)
             Response.Write("						iCol1000 = document.getElementById('txtVis1000Separator_'+lngCol).value;" & vbCrLf)
-            Response.Write("						window.parent.parent.ASRIntranetOutput.AddColumn(sColHeading, iColDataType, iColDecimals, iCol1000);" & vbCrLf)
-            Response.Write("						window.parent.parent.ASRIntranetOutput.ArrayAddTo(lngCol, 0, sColHeading);" & vbCrLf & vbCrLf)
+            Response.Write("						ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, iCol1000);" & vbCrLf)
+            Response.Write("						ClientDLL.ArrayAddTo(lngCol, 0, sColHeading);" & vbCrLf & vbCrLf)
             Response.Write("						}" & vbCrLf)
 
-            Response.Write("          window.parent.parent.ASRIntranetOutput.DataArray();" & vbCrLf)
-            Response.Write("					window.parent.parent.ASRIntranetOutput.ArrayDim(frmExportData.txtVisColCount.value, 0);" & vbCrLf & vbCrLf)
+            Response.Write("          ClientDLL.DataArray();" & vbCrLf)
+            Response.Write("					ClientDLL.ArrayDim(frmExportData.txtVisColCount.value, 0);" & vbCrLf & vbCrLf)
             Response.Write("					lngActualRow = 0;" & vbCrLf)
             Response.Write("					blnBreakCheck = true;" & vbCrLf)
             Response.Write("					sBreakValue = '';" & vbCrLf)
-            Response.Write("					window.parent.parent.ASRIntranetOutput.ResetColumns();" & vbCrLf)
-            Response.Write("					window.parent.parent.ASRIntranetOutput.ResetStyles();" & vbCrLf)
+            Response.Write("					ClientDLL.ResetColumns();" & vbCrLf)
+            Response.Write("					ClientDLL.ResetStyles();" & vbCrLf)
 			
             Response.Write("					}" & vbCrLf & vbCrLf)
             Response.Write("        else if (frmOutput.ssOleDBGridDefSelRecords.Columns(0).CellText(bm) != '*')" & vbCrLf)
@@ -732,12 +722,12 @@
 			
             Response.Write("					blnBreakCheck = false;" & vbCrLf)
             Response.Write("					lngCol = 0;" & vbCrLf)
-            Response.Write("					window.parent.parent.ASRIntranetOutput.ArrayReDim();" & vbCrLf & vbCrLf)
+            Response.Write("					ClientDLL.ArrayReDim();" & vbCrLf & vbCrLf)
             Response.Write("					for (var lngCount=0; lngCount<frmOutput.ssOleDBGridDefSelRecords.Columns.Count; lngCount++)" & vbCrLf)
             Response.Write("						{" & vbCrLf)
             Response.Write("						if (frmOutput.ssOleDBGridDefSelRecords.Columns(lngCount).Visible == true)" & vbCrLf)
             Response.Write("							{" & vbCrLf)
-            Response.Write("						  window.parent.parent.ASRIntranetOutput.ArrayAddTo(lngCol, lngActualRow, frmOutput.ssOleDBGridDefSelRecords.Columns(lngCount).CellText(bm));" & vbCrLf)
+            Response.Write("						  ClientDLL.ArrayAddTo(lngCol, lngActualRow, frmOutput.ssOleDBGridDefSelRecords.Columns(lngCount).CellText(bm));" & vbCrLf)
             Response.Write("						  lngCol++;" & vbCrLf)
             Response.Write("							}" & vbCrLf)
             Response.Write("						}" & vbCrLf)
@@ -748,12 +738,12 @@
             Response.Write("		else // no page break " & vbCrLf)
             Response.Write("			{ " & vbCrLf)
 
-            Response.Write("      window.parent.parent.ASRIntranetOutput.ArrayDim(frmExportData.txtVisColCount.value, 0);" & vbCrLf & vbCrLf)
+            Response.Write("      ClientDLL.ArrayDim(frmExportData.txtVisColCount.value, 0);" & vbCrLf & vbCrLf)
             If bBradfordFactor = True Then
-                Response.Write("			window.parent.parent.ASRIntranetOutput.PageTitles = false;" & vbCrLf)
-                Response.Write("      window.parent.parent.ASRIntranetOutput.AddPage(replace(frmOutput.ssOleDBGridDefSelRecords.Caption,'&&','&'),'" & "Bradford Factor" & "');" & vbCrLf)
+                Response.Write("			ClientDLL.PageTitles = false;" & vbCrLf)
+                Response.Write("      ClientDLL.AddPage(replace(frmOutput.ssOleDBGridDefSelRecords.Caption,'&&','&'),'" & "Bradford Factor" & "');" & vbCrLf)
             Else
-                Response.Write("      window.parent.parent.ASRIntranetOutput.AddPage(replace(frmOutput.ssOleDBGridDefSelRecords.Caption,'&&','&'),'" & cleanStringForJavaScript(objReport.BaseTableName) & "');" & vbCrLf)
+                Response.Write("      ClientDLL.AddPage(replace(frmOutput.ssOleDBGridDefSelRecords.Caption,'&&','&'),'" & CleanStringForJavaScript(objReport.BaseTableName) & "');" & vbCrLf)
             End If
 
             Response.Write("			var sColHeading = new String(''); " & vbCrLf)
@@ -766,8 +756,8 @@
             Response.Write("				iColDataType = document.getElementById('txtVisDataType_'+lngCol).value;" & vbCrLf)
             Response.Write("				iColDecimals = document.getElementById('txtVisDecimals_'+lngCol).value;" & vbCrLf)
             Response.Write("				iCol1000 = document.getElementById('txtVis1000Separator_'+lngCol).value;" & vbCrLf)
-            Response.Write("				window.parent.parent.ASRIntranetOutput.AddColumn(sColHeading, iColDataType, iColDecimals, iCol1000);" & vbCrLf)
-            Response.Write("				window.parent.parent.ASRIntranetOutput.ArrayAddTo(lngCol, 0, sColHeading);" & vbCrLf & vbCrLf)
+            Response.Write("				ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, iCol1000);" & vbCrLf)
+            Response.Write("				ClientDLL.ArrayAddTo(lngCol, 0, sColHeading);" & vbCrLf & vbCrLf)
             Response.Write("				}" & vbCrLf)
 			
             Response.Write("	  lngActualRow = 0;" & vbCrLf)
@@ -790,45 +780,45 @@
             Response.Write("      if (!blnIgnoreRow) {" & vbCrLf)
             Response.Write("				lngActualRow = lngActualRow + 1; " & vbCrLf)
             Response.Write("        lngCol = 0;" & vbCrLf)
-            Response.Write("        window.parent.parent.ASRIntranetOutput.ArrayReDim();" & vbCrLf & vbCrLf)
+            Response.Write("        ClientDLL.ArrayReDim();" & vbCrLf & vbCrLf)
             Response.Write("        for (var lngCount=0; lngCount<frmOutput.ssOleDBGridDefSelRecords.Columns.Count; lngCount++)" & vbCrLf)
             Response.Write("					{" & vbCrLf)
             Response.Write("          if (frmOutput.ssOleDBGridDefSelRecords.Columns(lngCount).Visible == true)" & vbCrLf)
             Response.Write("						{" & vbCrLf)
-            Response.Write("            window.parent.parent.ASRIntranetOutput.ArrayAddTo(lngCol, lngActualRow, frmOutput.ssOleDBGridDefSelRecords.Columns(lngCount).CellText(bm));" & vbCrLf)
+            Response.Write("            ClientDLL.ArrayAddTo(lngCol, lngActualRow, frmOutput.ssOleDBGridDefSelRecords.Columns(lngCount).CellText(bm));" & vbCrLf)
             Response.Write("            lngCol++;" & vbCrLf)
             Response.Write("						}" & vbCrLf)
             Response.Write("					}" & vbCrLf)
             Response.Write("				}" & vbCrLf)
             Response.Write("			}	// end (no page break) " & vbCrLf)
-            Response.Write("			window.parent.parent.ASRIntranetOutput.DataArray();" & vbCrLf)
+            Response.Write("			ClientDLL.DataArray();" & vbCrLf)
 			
             Response.Write("		}" & vbCrLf)
             Response.Write("		}" & vbCrLf)
             Response.Write("	}" & vbCrLf)
-            Response.Write("    window.parent.parent.ASRIntranetOutput.Complete();" & vbCrLf)
+            Response.Write("    ClientDLL.Complete();" & vbCrLf)
 
-            Response.Write("	window.parent.parent.ShowDataFrame();" & vbCrLf)
+            Response.Write("	ShowDataFrame();" & vbCrLf)
             Response.Write("  }" & vbCrLf)
 
             If Not objReport.OutputPreview Then
-                Response.Write("  window.parent.parent.parent.frmError.txtEventLogID.value = """ & cleanStringForJavaScript(objReport.EventLogID) & """;" & vbCrLf)
+                Response.Write("  frmError.txtEventLogID.value = """ & CleanStringForJavaScript(objReport.EventLogID) & """;" & vbCrLf)
                 Response.Write("  if (frmOriginalDefinition.txtCancelPrint.value == 1) {" & vbCrLf)
-                Response.Write("    window.parent.parent.raiseError('',false,true);" & vbCrLf)
+                Response.Write("    raiseError('',false,true);" & vbCrLf)
                 Response.Write("  }" & vbCrLf)
-                Response.Write("  else if (window.parent.parent.ASRIntranetOutput.ErrorMessage != """") {" & vbCrLf)
-                Response.Write("    window.parent.parent.raiseError(window.parent.parent.ASRIntranetOutput.ErrorMessage,false,false);" & vbCrLf)
+                Response.Write("  else if (ClientDLL.ErrorMessage != """") {" & vbCrLf)
+                Response.Write("    raiseError(ClientDLL.ErrorMessage,false,false);" & vbCrLf)
                 Response.Write("  }" & vbCrLf)
                 Response.Write("  else {" & vbCrLf)
-                Response.Write("    window.parent.parent.raiseError('',true,false);" & vbCrLf)
+                Response.Write("    raiseError('',true,false);" & vbCrLf)
                 Response.Write("  }" & vbCrLf)
             Else
-                Response.Write("  sUtilTypeDesc = window.parent.parent.parent.frames(""top"").frmPopup.txtUtilTypeDesc.value;" & vbCrLf)
+                Response.Write("  sUtilTypeDesc = frames(""top"").frmPopup.txtUtilTypeDesc.value;" & vbCrLf)
                 Response.Write("  if (frmOriginalDefinition.txtCancelPrint.value == 1) {" & vbCrLf)
                 Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output failed.\n\nCancelled by user."",64,sUtilTypeDesc);" & vbCrLf)
                 Response.Write("  }" & vbCrLf)
-                Response.Write("  else if (window.parent.parent.ASRIntranetOutput.ErrorMessage != """") {" & vbCrLf)
-                Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output failed.\n\n"" + window.parent.parent.ASRIntranetOutput.ErrorMessage,48,sUtilTypeDesc);" & vbCrLf)
+                Response.Write("  else if (ClientDLL.ErrorMessage != """") {" & vbCrLf)
+                Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output failed.\n\n"" + ClientDLL.ErrorMessage,48,sUtilTypeDesc);" & vbCrLf)
                 Response.Write("  }" & vbCrLf)
                 Response.Write("  else {" & vbCrLf)
                 Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output complete."",64,sUtilTypeDesc);" & vbCrLf)
@@ -836,8 +826,7 @@
             End If
 
             Response.Write("  }" & vbCrLf)
-            Response.Write("-->" & vbCrLf)
-            Response.Write("</script>" & vbCrLf & vbCrLf)
+    Response.Write("</script>" & vbCrLf & vbCrLf)
         End If
 
         Dim fNoRecords As Boolean
@@ -1029,7 +1018,7 @@
             Response.Write("								<TD>&nbsp;</TD>" & vbCrLf)
             Response.Write("								<td width=20>" & vbCrLf)
             Response.Write("      						<input type=button id=output name=output value=Output style=""WIDTH: 80px"" class=""btn""" & vbCrLf)
-            Response.Write("                            onclick=""ExportDataPrompt(false);""" & vbCrLf)
+            Response.Write("                            onclick=""ExportDataPrompt();""" & vbCrLf)
             Response.Write("                            onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
             Response.Write("                            onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
             Response.Write("                            onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
@@ -1117,8 +1106,8 @@
 		</table>
 		</FORM>
 
-		<INPUT type='hidden' id=txtNoRecs name=txtNoRecs value=1>
-	  <input type=hidden id=txtSuccessFlag name=txtSuccessFlag value=3>
+<input type='hidden' id="txtNoRecs" name="txtNoRecs" value="1">
+<input type="hidden" id="txtSuccessFlag" name="txtSuccessFlag" value="3">
 <%
 	end if
 %>
@@ -1133,14 +1122,14 @@
         <input type="hidden" id="txtUserName" name="txtUserName" value="<%Session("username").ToString()%>">
         <input type="hidden" id="txtDateFormat" name="txtDateFormat" value="<%Session("LocaleDateFormat").ToString()%>">
 
-	<INPUT type="hidden" id=txtCancelPrint name=txtCancelPrint>
-	<INPUT type="hidden" id=txtOptionsDone name=txtOptionsDone>
-	<INPUT type="hidden" id=txtOptionsPortrait name=txtOptionsPortrait>
-	<INPUT type="hidden" id=txtOptionsMarginLeft name=txtOptionsMarginLeft>
-	<INPUT type="hidden" id=txtOptionsMarginRight name=txtOptionsMarginRight>
-	<INPUT type="hidden" id=txtOptionsMarginTop name=txtOptionsMarginTop>
-	<INPUT type="hidden" id=txtOptionsMarginBottom name=txtOptionsMarginBottom>
-	<INPUT type="hidden" id=txtOptionsCopies name=txtOptionsCopies>
+        <input type="hidden" id="txtCancelPrint" name="txtCancelPrint">
+        <input type="hidden" id="txtOptionsDone" name="txtOptionsDone">
+        <input type="hidden" id="txtOptionsPortrait" name="txtOptionsPortrait">
+        <input type="hidden" id="txtOptionsMarginLeft" name="txtOptionsMarginLeft">
+        <input type="hidden" id="txtOptionsMarginRight" name="txtOptionsMarginRight">
+        <input type="hidden" id="txtOptionsMarginTop" name="txtOptionsMarginTop">
+        <input type="hidden" id="txtOptionsMarginBottom" name="txtOptionsMarginBottom">
+        <input type="hidden" id="txtOptionsCopies" name="txtOptionsCopies">
     </form>
 
     <%

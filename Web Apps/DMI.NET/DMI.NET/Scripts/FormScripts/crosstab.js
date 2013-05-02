@@ -64,6 +64,7 @@ function refreshCombo(psComboKey) {
 }
 
 function chkPercentType_Click() {
+
     checkbox_disable(chkPercentPage, (chkPercentType.checked == false));
     if (chkPercentType.checked == false) {
         chkPercentPage.checked = false;

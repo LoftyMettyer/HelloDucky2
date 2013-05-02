@@ -3,11 +3,12 @@
 
     <script type="text/javascript">
         function reportdata_window_onload() {
-            $("#reportframe").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTS_DATA");
+//            $("#reportframe").attr("data-framesource", "UTIL_RUN_CUSTOMREPORTS_DATA");
 
         <%
+        
         If Session("CR_Mode") = "" Then
-            Response.Write("  loadAddRecords();" & vbCrLf & vbCrLf)
+            Response.Write("  customreport_loadAddRecords();" & vbCrLf & vbCrLf)
         Else
             Response.Write("  ExportData('OUTPUTREPORT');" & vbCrLf)
         End If
@@ -23,7 +24,7 @@
     Dim cmdReportsCols
     Dim prmEmailGroupID
     Dim rstReportColumns
-    Dim sErrorDescription As String
+        Dim sErrorDescription As String = ""
     Dim iLoop As Integer
     
     If Session("EmailGroupID") > 0 Then
@@ -74,13 +75,13 @@
             return;
         }
     </script>
-    
 
-    <FORM action="util_run_customreportsDataSubmit" method=post id=frmGetData name=frmGetData>
-		<INPUT id=txtMode name=txtMode class="text" value="<%=Session("CR_Mode")%>">
-		<INPUT id=txtEmailGroupID name=txtEmailGroupID class="text" value="<%=Session("EmailGroupID")%>">
-	</FORM>
-    
-    <script type="text/javascript">
-        reportdata_window_onload();
-    </script>
+
+<form action="util_run_customreportsDataSubmit" method="post" id="frmGetReportData" name="frmGetReportData">
+    <input id="txtMode" name="txtMode" class="text" value="<%=Session("CR_Mode")%>">
+    <input id="txtEmailGroupID" name="txtEmailGroupID" class="text" value="<%=Session("EmailGroupID")%>">
+</form>
+
+<script type="text/javascript">
+    reportdata_window_onload();    
+</script>

@@ -1,11 +1,10 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%@ Import Namespace="DMI.NET" %>
 
 <%
 
     Session("CR_Mode") = ""
     Response.Write("<script type=""text/javascript"">" & vbCrLf)
-    Response.Write("function loadAddRecords()" & vbCrLf)
+    Response.Write("function customreport_loadAddRecords()" & vbCrLf)
     Response.Write("{" & vbCrLf)
     Response.Write("  var iCount;" & vbCrLf & vbCrLf)
     
@@ -13,7 +12,7 @@
     Response.Write("  txtLoadCount.value = iCount + 1" & vbCrLf & vbCrLf)
    
     Response.Write("  if (iCount > 0) {	" & vbCrLf)
-    Response.Write("    ShowReport();" & vbCrLf & vbCrLf)
+    Response.Write("    ShowReport();" & vbCrLf & vbCrLf)   
     Response.Write("  }" & vbCrLf & vbCrLf)
 
     Response.Write("}" & vbCrLf)
@@ -24,14 +23,16 @@
 
 <input type='hidden' id="txtLoadCount" name="txtLoadCount" value="0">
 
-<div id="customreportmainframeset">
-    <div id="reportworkframe" style="display: none;">
-        <%Html.RenderPartial("~/views/home/util_run_customreports.ascx")%>
-    </div>
+<div id="reportworkframe" data-framesource="util_run_customreports" style="display: block;">
+    <%Html.RenderPartial("~/views/home/util_run_customreports.ascx")%>
+</div>
 
-    <div id="reportdataframe" style="display: none;">
-        <%Html.RenderPartial("~/views/home/util_run_customreportsData.ascx")%>
-    </div>
+<div id="reportdataframe" data-framesource="util_run_customreportsData" style="display: none;" accesskey="">
+    <%Html.RenderPartial("~/views/home/util_run_customreportsData.ascx")%>
+</div>
+
+<div id="outputoptions" data-framesource="util_run_outputoptions" style="display: none;">
+    <% Html.RenderPartial("~/Views/Home/util_run_outputoptions.ascx")%>
 </div>
 
 <form id="frmOutput" name="frmOutput">

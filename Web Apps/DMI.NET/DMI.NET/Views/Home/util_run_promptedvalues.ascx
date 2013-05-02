@@ -34,6 +34,7 @@
 <script type="text/javascript">    
  
     function promptedvalues_window_onload() {
+
         //remmed this - don't need to set current workframe source - leave as defsel.
         $("#reportframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");       
 
