@@ -447,7 +447,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 													</tr>
 
 													<tr height="10">
-														<td style="column-span: all">
+														<td colspan="9">
 															<table style="width: 100%" class="invisible">
 																<td width="5">&nbsp;</td>
 																<td style="text-align: left; width: 15px; vertical-align: central" id="qq">
@@ -471,7 +471,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																<td>&nbsp;</td>
 																<td>Separator : </td>
 																<td width="5">&nbsp;</td>
-																<td style="vertical-align: central; width: 85%">
+																<td style="vertical-align: central; width: 25%">
 																	<select name="cboDescriptionSeparator" id="cboDescriptionSeparator" style="WIDTH: 100%" disabled="disabled" class="combo combodisabled"
 																		onchange="changeTab1Control();">
 																		<option value="">
