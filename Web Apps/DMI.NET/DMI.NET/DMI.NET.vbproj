@@ -170,10 +170,11 @@
     <Content Include="Content\themes\jMetro\jquery-ui.css" />
     <Content Include="lpks\ssmain.lpk" />
     <Content Include="Content\fonts\SSI80v194934\SSI80v1.woff" />
-    <None Include="My Project\PublishProfiles\Local.pubxml" />
+    <None Include="My Project\PublishProfiles\Local DMIPublished.pubxml" />
     <None Include="Scripts\FormScripts\find.js" />
     <Content Include="misc\mainmenu.htm" />
     <Content Include="Scripts\FormScripts\optionData.js" />
+    <Content Include="Scripts\FormScripts\util_def_mailmerge.js" />
     <Content Include="Scripts\jquery\jquery-ui-1.9.2.custom.js" />
     <None Include="Scripts\jquery\jquery.jqGrid.src.js" />
     <None Include="_bin_deployableAssemblies\Microsoft.Web.Infrastructure.dll" />
@@ -315,7 +316,6 @@
     <Content Include="Content\themes\redmond\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\redmond\minified\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\redmond\minified\jquery.ui.tooltip.min.css" />
-    <None Include="Scripts\FormScripts\mailmergedef.js" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -679,6 +679,7 @@
     <Content Include="Views\Home\util_def_mailmerge.ascx" />
     <Content Include="Views\Home\util_run_mailmerge.ascx" />
     <Content Include="Views\Home\util_run_mailmerge_completed.ascx" />
+    <Content Include="Views\Home\util_run_outputoptions.ascx" />
     <Content Include="Views\Home\util_validate_calendarreport.ascx" />
     <Content Include="Views\Home\util_validate_mailmerge.ascx" />
     <Content Include="Views\Home\Main.aspx" />

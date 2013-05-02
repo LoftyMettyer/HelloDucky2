@@ -68,7 +68,7 @@ Namespace App_Start
 
       ' Mail Merge
       bundles.Add(New ScriptBundle("~/bundles/utilities_mailmerge").Include(
-        "~/Scripts/FormScripts/mailmergedef.js"))
+        "~/Scripts/FormScripts/util_def_mailmerge.js"))
 
       ' Record Editing
       bundles.Add(New ScriptBundle("~/bundles/recordedit").Include(
