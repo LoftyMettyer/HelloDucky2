@@ -284,6 +284,8 @@
         //$("#DefSelRecords").jqGrid('setGridHeight', $("#findGridRow").height());
         //$("#DefSelRecords").jqGrid('setGridWidth', $("#findGridRow").width());
 
+    	//resize the grid to the height of its container.
+        $("#DefselRecords").jqGrid('setGridHeight', $("#findGridRow").height());
         var y = $("#gbox_findGridTable").height();
         var z = $('#gbox_findGridTable .ui-jqgrid-bdiv').height();
 
@@ -326,7 +328,22 @@
             //TODO
             //window.parent.document.all.item("workframeset").cols = "*, 0";
         }
+	    
+
+        if (rowCount() > 0) {
+						moveFirst();
+        }
+
     }
+
+    function moveFirst() {
+    	$("#DefSelRecords").jqGrid('setSelection', 1);
+    }
+
+    function rowCount() {
+    	return $("#DefSelRecords tr").length - 1;
+    }
+
 
     ///* Sequential search the grid for the required ID. */
     //function locateRecordID(psSearchFor, pfIdMatch) {
@@ -817,9 +834,9 @@
 %>
 </form>
 
-<div id="findGridRow" style="height: 95%; margin-right: 20px; margin-left: 20px;">
 
-    <form name="frmDefSel" action="defsel_submit" method="post" id="frmDefSel">
+    <form name="frmDefSel" class="absolutefull" action="defsel_submit" method="post" id="frmDefSel">
+<div id="findGridRow" style="height: 70%; margin-right: 20px; margin-left: 20px;">
 
                     <table width="100%" height="100%" class="invisible">
                         <tr>
@@ -1202,9 +1219,10 @@
         <input type="hidden" id="action" name="action">
         <input type="hidden" id="txtTableID" name="txtTableID" value='<%=session("utilTableID")%>'>
         <input type="hidden" id="txtSingleRecordID" name="txtSingleRecordID" value='<%=session("singleRecordID")%>'>
+</div>
     </form>
 
-</div>
+
 
 <form name="frmPrompt" method="post" action="util_run_promptedValues" id="frmPrompt" style="visibility: hidden; display: none">
         <input type="hidden" id="utiltype" name="utiltype" value="<%=Session("defseltype")%>">
