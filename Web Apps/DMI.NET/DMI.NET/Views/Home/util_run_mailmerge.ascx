@@ -1,6 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
+<%="" %>
+
 <object
     id="ClientDLL"
     classid="CLSID:3A4EA159-1138-4AC3-B175-966CCB958820"
@@ -101,8 +103,6 @@
     function util_run_mailmerge_onload() {
 
         var frmOutput = OpenHR.getForm("workframe", "frmMailMergeOutput");
-
-        debugger;
 
         <%
     If fok = False Then
