@@ -168,9 +168,15 @@
 	    disableMenu = function () {
 	    	//TODO
 	    },
-	    locateDateFormat = "DD/MM/YYYY",
-	    localeDecimalSeparator = ".",
-	    localeThousandSeparator = ",",
+	    locateDateFormat = function() {
+	        return "DD/MM/YYYY";
+	    },
+	    localeDecimalSeparator = function() {
+	        return ".";
+	    },
+	    localeThousandSeparator = function() {
+	        return ",";
+	    },
 	    convertSqlDateToLocale = function(z) {
 	        // TODO
 	    },

@@ -409,12 +409,6 @@
 <script type="text/javascript">
 
     function displayPage(piPageNumber) {
-        var iLoop;
-        var frmDisplay;
-
-        //TODO: Is this necessary?
-        //   frmDisplay = OpenHR.getForm("refreshframe","frmRefresh");
-        //     frmDisplay.submit();
 
         if (piPageNumber == 1) {
             div1.style.visibility = "visible";
