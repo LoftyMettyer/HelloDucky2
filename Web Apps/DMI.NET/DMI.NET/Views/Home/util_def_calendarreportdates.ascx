@@ -302,7 +302,7 @@
 			//frmRefresh.submit();
 
 			OpenHR.submitForm(frmRefresh);
-			console.log("refreshing...");
+			//console.log("refreshing...");
 			bAdded = true;
 
 			oOption = document.createElement("OPTION");
