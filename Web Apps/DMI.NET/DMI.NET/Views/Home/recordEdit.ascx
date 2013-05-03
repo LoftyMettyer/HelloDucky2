@@ -3,6 +3,15 @@
 
 <script type="text/javascript">
 
+
+		//Fault HRPRO-2953
+		(function(){
+			if (document.selection && document.selection.empty) {
+				document.selection.empty();
+			}
+		})();	
+
+
     function recordEdit_window_onload() {
         //public variables
         this.mavIDColumns = new Array(3);
