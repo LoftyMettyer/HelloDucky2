@@ -6,20 +6,9 @@
 <html>
 <head runat="server">
 
-<link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css"/>
-<script src="<%: Url.Content("~/Scripts/jquery-1.8.2.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/openhr.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
-<script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
-    
-	<script src="<%: Url.Content("~/Scripts/jquery-ui-1.9.1.custom.min.js") %>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/Scripts/jquery.cookie.js") %>" type="text/javascript"></script>	 	
-   <script src="<%: Url.Content("~/Scripts/menu.js")%>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/Scripts/jquery.ui.touch-punch.min.js") %>" type="text/javascript"></script>
-	<script src="<%: Url.Content("~/Scripts/jsTree/jquery.jstree.js") %>" type="text/javascript"></script>
-	<script id="officebarscript" src="<%: Url.Content("~/Scripts/officebar/jquery.officebar.js") %>" type="text/javascript"></script>	
-    <TITLE>OpenHR Intranet</TITLE>
-
+    <title>OpenHR Intranet</title>
+    <script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+    <script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>           
 
 </head>
 <body>
@@ -599,12 +588,12 @@
 %>
 </FORM>
 
-<FORM id=frmEmail name=frmEmail method=post style="visibility:hidden;display:none" action="emailSelection.asp">
-	<INPUT type="hidden" id=txtSelectedEventIDs name=txtSelectedEventIDs>
-	<INPUT type="hidden" id=txtBatchInfo name=txtBatchInfo>
-	<INPUT type="hidden" id=txtBatchy name=txtBatchy value=0>
-	<INPUT type="hidden" id=txtFromMain name=txtFromMain value=0>
-</FORM>
+    <form id="frmEmail" name="frmEmail" method="post" style="visibility: hidden; display: none" action="emailSelection">
+        <input type="hidden" id="txtSelectedEventIDs" name="txtSelectedEventIDs">
+        <input type="hidden" id="txtBatchInfo" name="txtBatchInfo">
+        <input type="hidden" id="txtBatchy" name="txtBatchy" value="0">
+        <input type="hidden" id="txtFromMain" name="txtFromMain" value="0">
+    </form>
 
     
     <script type="text/javascript">
@@ -644,8 +633,7 @@
         }
     </script>
 
-        <script type="text/javascript" id=scptGeneralFunctions>
-<!--
+<script type="text/javascript" id=scptGeneralFunctions>
 
     function okClick()
     {
@@ -908,8 +896,7 @@
             "status:no;";
         window.showModalDialog(pDestination, self, dlgwinprops);
     }
-	
-    -->
+
 </script>
 
 

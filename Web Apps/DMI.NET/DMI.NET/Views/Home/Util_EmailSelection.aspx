@@ -7,6 +7,7 @@
     <title>OpenHR Intranet</title>
     <script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
     <script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>           
+    <link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css"/>
 
 <script type="text/javascript">
 
