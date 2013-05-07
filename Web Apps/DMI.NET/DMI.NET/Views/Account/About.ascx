@@ -3,7 +3,7 @@
 %>
 <script type="text/javascript">
 	/* Return to the default page. */
-	function cancelClick() {
+	function about_cancelClick() {
 		$("#About").dialog("close");
 		return false;
 	}
@@ -166,7 +166,7 @@
 					<tr>
 						<td colspan="6" style="text-align: center">
 							<input id="btnCancel" name="btnCancel" type="button" class="btn" value="OK" style="width: 75px" width="75"
-								onclick="cancelClick()"
+								onclick="about_cancelClick()"
 								onmouseover="try{button_onMouseOver(this);}catch(e){}"
 								onmouseout="try{button_onMouseOut(this);}catch(e){}"
 								onfocus="try{button_onFocus(this);}catch(e){}"
