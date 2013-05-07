@@ -1099,7 +1099,7 @@
 											</TR>
 											
 											<TR height=20>
-												<TD colspan=5 valign=center>
+												<TD colspan=5>
 													<hr>
 												</TD>
 											</TR>
@@ -2231,125 +2231,115 @@
 %>
 </FORM>
 
-<FORM id=frmValidate name=frmValidate target=validate method=post action=util_validate_customreports style="visibility:hidden;display:none">
-	<INPUT type=hidden id="validateBaseFilter" name=validateBaseFilter value=0>
-	<INPUT type=hidden id="validateBasePicklist" name=validateBasePicklist value=0>
-	<INPUT type=hidden id="validateEmailGroup" name=validateEmailGroup value=0>
-	<INPUT type=hidden id="validateP1Filter" name=validateP1Filter value=0>
-	<INPUT type=hidden id="validateP1Picklist" name=validateP1Picklist value=0>
-	<INPUT type=hidden id="validateP2Filter" name=validateP2Filter value=0>
-	<INPUT type=hidden id="validateP2Picklist" name=validateP2Picklist value=0>
-<!-- need the array of child filters -->
-	<INPUT type=hidden id="validateChildFilter" name=validateChildFilter value=0>
-	<INPUT type=hidden id="validateChildOrders" name=validateChildOrders value=0>
-	
-	<INPUT type=hidden id="validateCalcs" name=validateCalcs value = ''>
-	<INPUT type=hidden id="validateHiddenGroups" name=validateHiddenGroups value = ''>
-	<INPUT type=hidden id="validateName" name=validateName value=''>
-	<INPUT type=hidden id="validateTimestamp" name=validateTimestamp value=''>
-	<INPUT type=hidden id="validateUtilID" name=validateUtilID value=''>
-</FORM>
+    <form id="frmValidate" name="frmValidate" target="validate" method="post" action="util_validate_customreports" style="visibility: hidden; display: none">
+        <input type="hidden" id="validateBaseFilter" name="validateBaseFilter" value="0">
+        <input type="hidden" id="validateBasePicklist" name="validateBasePicklist" value="0">
+        <input type="hidden" id="validateEmailGroup" name="validateEmailGroup" value="0">
+        <input type="hidden" id="validateP1Filter" name="validateP1Filter" value="0">
+        <input type="hidden" id="validateP1Picklist" name="validateP1Picklist" value="0">
+        <input type="hidden" id="validateP2Filter" name="validateP2Filter" value="0">
+        <input type="hidden" id="validateP2Picklist" name="validateP2Picklist" value="0">
+        <input type="hidden" id="validateChildFilter" name="validateChildFilter" value="0">
+        <input type="hidden" id="validateChildOrders" name="validateChildOrders" value="0">
+        <input type="hidden" id="validateCalcs" name="validateCalcs" value=''>
+        <input type="hidden" id="validateHiddenGroups" name="validateHiddenGroups" value=''>
+        <input type="hidden" id="validateName" name="validateName" value=''>
+        <input type="hidden" id="validateTimestamp" name="validateTimestamp" value=''>
+        <input type="hidden" id="validateUtilID" name="validateUtilID" value=''>
+    </form>
 
-<FORM id=frmSend name=frmSend method=post action=util_def_customreports_Submit style="visibility:hidden;display:none">
-	<INPUT type="hidden" id=txtSend_ID name=txtSend_ID>	
-	<INPUT type="hidden" id=txtSend_name name=txtSend_name>
-	<INPUT type="hidden" id=txtSend_description name=txtSend_description>
-	<INPUT type="hidden" id=txtSend_baseTable name=txtSend_baseTable>
-	<INPUT type="hidden" id=txtSend_allRecords name=txtSend_allRecords>
-	<INPUT type="hidden" id=txtSend_picklist name=txtSend_picklist>
-	<INPUT type="hidden" id=txtSend_filter name=txtSend_filter>
-	<INPUT type="hidden" id=txtSend_parent1Table name=txtSend_parent1Table>
-	<INPUT type="hidden" id=txtSend_parent1AllRecords name=txtSend_parent1AllRecords>
-	<INPUT type="hidden" id=txtSend_parent1Filter name=txtSend_parent1Filter>
-	<INPUT type="hidden" id=txtSend_parent1Picklist name=txtSend_parent1Picklist>
-	<INPUT type="hidden" id=txtSend_parent2Table name=txtSend_parent2Table>
-	<INPUT type="hidden" id=txtSend_parent2AllRecords name=txtSend_parent2AllRecords>
-	<INPUT type="hidden" id=txtSend_parent2Filter name=txtSend_parent2Filter>
-	<INPUT type="hidden" id=txtSend_parent2Picklist name=txtSend_parent2Picklist>
+    <form id="frmSend" name="frmSend" method="post" action="util_def_customreports_Submit" style="visibility: hidden; display: none">
+        <input type="hidden" id="txtSend_ID" name="txtSend_ID">
+        <input type="hidden" id="txtSend_name" name="txtSend_name">
+        <input type="hidden" id="txtSend_description" name="txtSend_description">
+        <input type="hidden" id="txtSend_baseTable" name="txtSend_baseTable">
+        <input type="hidden" id="txtSend_allRecords" name="txtSend_allRecords">
+        <input type="hidden" id="txtSend_picklist" name="txtSend_picklist">
+        <input type="hidden" id="txtSend_filter" name="txtSend_filter">
+        <input type="hidden" id="txtSend_parent1Table" name="txtSend_parent1Table">
+        <input type="hidden" id="txtSend_parent1AllRecords" name="txtSend_parent1AllRecords">
+        <input type="hidden" id="txtSend_parent1Filter" name="txtSend_parent1Filter">
+        <input type="hidden" id="txtSend_parent1Picklist" name="txtSend_parent1Picklist">
+        <input type="hidden" id="txtSend_parent2Table" name="txtSend_parent2Table">
+        <input type="hidden" id="txtSend_parent2AllRecords" name="txtSend_parent2AllRecords">
+        <input type="hidden" id="txtSend_parent2Filter" name="txtSend_parent2Filter">
+        <input type="hidden" id="txtSend_parent2Picklist" name="txtSend_parent2Picklist">
+        <input type="hidden" id="txtSend_childTable" name="txtSend_childTable">
+        <input type="hidden" id="txtSend_summary" name="txtSend_summary">
+        <input type="hidden" id="txtSend_IgnoreZeros" name="txtSend_IgnoreZeros">
+        <input type="hidden" id="txtSend_printFilterHeader" name="txtSend_printFilterHeader">
+        <input type="hidden" id="txtSend_access" name="txtSend_access">
+        <input type="hidden" id="txtSend_userName" name="txtSend_userName">
+        <input type="hidden" id="txtSend_OutputPreview" name="txtSend_OutputPreview">admin
+        <input type="hidden" id="txtSend_OutputFormat" name="txtSend_OutputFormat">
+        <input type="hidden" id="txtSend_OutputScreen" name="txtSend_OutputScreen">
+        <input type="hidden" id="txtSend_OutputPrinter" name="txtSend_OutputPrinter">
+        <input type="hidden" id="txtSend_OutputPrinterName" name="txtSend_OutputPrinterName">
+        <input type="hidden" id="txtSend_OutputSave" name="txtSend_OutputSave">
+        <input type="hidden" id="txtSend_OutputSaveExisting" name="txtSend_OutputSaveExisting">
+        <input type="hidden" id="txtSend_OutputEmail" name="txtSend_OutputEmail">
+        <input type="hidden" id="txtSend_OutputEmailAddr" name="txtSend_OutputEmailAddr">
+        <input type="hidden" id="txtSend_OutputEmailSubject" name="txtSend_OutputEmailSubject">
+        <input type="hidden" id="txtSend_OutputEmailAttachAs" name="txtSend_OutputEmailAttachAs">
+        <input type="hidden" id="txtSend_OutputFilename" name="txtSend_OutputFilename">
+        <input type="hidden" id="txtSend_columns" name="txtSend_columns">
+        <input type="hidden" id="txtSend_columns2" name="txtSend_columns2">
+        <input type="hidden" id="txtSend_reaction" name="txtSend_reaction">
+        <input type="hidden" id="txtSend_jobsToHide" name="txtSend_jobsToHide">
+        <input type="hidden" id="txtSend_jobsToHideGroups" name="txtSend_jobsToHideGroups">
+    </form>
 
-<!-- need the array of child info to send -->
-	<INPUT type="hidden" id=txtSend_childTable name=txtSend_childTable>
-	<INPUT type="hidden" id=txtSend_summary name=txtSend_summary>
-	<INPUT type="hidden" id=txtSend_IgnoreZeros name=txtSend_IgnoreZeros>
-	<INPUT type="hidden" id=txtSend_printFilterHeader name=txtSend_printFilterHeader>
-	<INPUT type="hidden" id=txtSend_access name=txtSend_access>
-	<INPUT type="hidden" id=txtSend_userName name=txtSend_userName>
+    <form id="frmCustomReportChilds" name="frmCustomReportChilds" target="childselection" action="util_customreportchilds" method="post" style="visibility: hidden; display: none">
+        <input type="hidden" id="childTableID" name="childTableID">
+        <input type="hidden" id="childTable" name="childTable">
+        <input type="hidden" id="childFilterID" name="childFilterID">
+        <input type="hidden" id="childFilter" name="childFilter">
+        <input type="hidden" id="childOrderID" name="childOrderID">
+        <input type="hidden" id="childOrder" name="childOrder">
+        <input type="hidden" id="childRecords" name="childRecords">
+        <input type="hidden" id="childrenString" name="childrenString">
+        <input type="hidden" id="childrenNames" name="childrenNames">
+        <input type="hidden" id="selectedChildString" name="selectedChildString">
+        <input type="hidden" id="childAction" name="childAction" value="NEW">
+        <input type="hidden" id="childMax" name="childMax" value="5">
+    </form>
 
-	<INPUT type="hidden" id=txtSend_OutputPreview name=txtSend_OutputPreview>
-	<INPUT type="hidden" id=txtSend_OutputFormat name=txtSend_OutputFormat>
-	<INPUT type="hidden" id=txtSend_OutputScreen name=txtSend_OutputScreen>
-	<INPUT type="hidden" id=txtSend_OutputPrinter name=txtSend_OutputPrinter>
-	<INPUT type="hidden" id=txtSend_OutputPrinterName name=txtSend_OutputPrinterName>
-	<INPUT type="hidden" id=txtSend_OutputSave name=txtSend_OutputSave>
-	<INPUT type="hidden" id=txtSend_OutputSaveExisting name=txtSend_OutputSaveExisting>
-	<INPUT type="hidden" id=txtSend_OutputEmail name=txtSend_OutputEmail>
-	<INPUT type="hidden" id=txtSend_OutputEmailAddr name=txtSend_OutputEmailAddr>
-	<INPUT type="hidden" id=txtSend_OutputEmailSubject name=txtSend_OutputEmailSubject>
-	<INPUT type="hidden" id=txtSend_OutputEmailAttachAs name=txtSend_OutputEmailAttachAs>
-	<INPUT type="hidden" id=txtSend_OutputFilename name=txtSend_OutputFilename>
+    <form id="frmRecordSelection" name="frmRecordSelection" target="recordSelection" action="util_recordSelection" method="post" style="visibility: hidden; display: none">
+        <input type="hidden" id="recSelType" name="recSelType">
+        <input type="hidden" id="recSelTableID" name="recSelTableID">
+        <input type="hidden" id="recSelCurrentID" name="recSelCurrentID">
+        <input type="hidden" id="recSelTable" name="recSelTable">
+        <input type="hidden" id="recSelDefOwner" name="recSelDefOwner">
+        <input type="hidden" id="recSelDefType" name="recSelDefType">
+    </form>
 
-	<INPUT type="hidden" id=txtSend_columns name=txtSend_columns>
-	<INPUT type="hidden" id=txtSend_columns2 name=txtSend_columns2>
+    <form id="frmEmailSelection" name="frmEmailSelection" target="emailSelection" action="util_emailSelection" method="post" style="visibility: hidden; display: none">
+        <input type="hidden" id="EmailSelCurrentID" name="EmailSelCurrentID">
+    </form>
 
-	<INPUT type="hidden" id=txtSend_reaction name=txtSend_reaction>
+    <form id="frmSortOrder" name="frmSortOrder" action="util_sortorderselection" target="sortorderselection" method="post" style="visibility: hidden; display: none">
+        <input type="hidden" id="txtSortInclude" name="txtSortInclude">
+        <input type="hidden" id="txtSortExclude" name="txtSortExclude">
+        <input type="hidden" id="txtSortEditing" name="txtSortEditing">
+        <input type="hidden" id="txtSortColumnID" name="txtSortColumnID">
+        <input type="hidden" id="txtSortColumnName" name="txtSortColumnName">
+        <input type="hidden" id="txtSortOrder" name="txtSortOrder">
+        <input type="hidden" id="txtSortBOC" name="txtSortBOC">
+        <input type="hidden" id="txtSortPOC" name="txtSortPOC">
+        <input type="hidden" id="txtSortVOC" name="txtSortVOC">
+        <input type="hidden" id="txtSortSRV" name="txtSortSRV">
+    </form>
 
-	<INPUT type="hidden" id=txtSend_jobsToHide name=txtSend_jobsToHide>
-	<INPUT type="hidden" id=txtSend_jobsToHideGroups name=txtSend_jobsToHideGroups>
-</FORM>
+    <form id="frmSelectionAccess" name="frmSelectionAccess" style="visibility: hidden; display: none">
+        <input type="hidden" id="forcedHidden" name="forcedHidden" value="N">
+        <input type="hidden" id="baseHidden" name="baseHidden" value="N">
+        <input type="hidden" id="p1Hidden" name="p1Hidden" value="N">
+        <input type="hidden" id="p2Hidden" name="p2Hidden" value="N">
+        <input type="hidden" id="childHidden" name="childHidden" value="0">
+        <input type="hidden" id="calcsHiddenCount" name="calcsHiddenCount" value="0">
+    </form>
 
-<FORM id=frmCustomReportChilds name=frmCustomReportChilds target="childselection" action="util_customreportchilds" method=post style="visibility:hidden;display:none">
-	<INPUT type="hidden" id=childTableID name=childTableID>
-	<INPUT type="hidden" id=childTable name=childTable>
-	<INPUT type="hidden" id=childFilterID name=childFilterID>
-	<INPUT type="hidden" id=childFilter name=childFilter>
-	<INPUT type="hidden" id=childOrderID name=childOrderID>
-	<INPUT type="hidden" id=childOrder name=childOrder>
-	<INPUT type="hidden" id=childRecords name=childRecords>
-	<INPUT type="hidden" id=childrenString name=childrenString>
-	<INPUT type="hidden" id=childrenNames name=childrenNames>
-	<INPUT type="hidden" id=selectedChildString name=selectedChildString>
-	<INPUT type="hidden" id=childAction name=childAction value="NEW">
-	<INPUT type="hidden" id=childMax name=childMax value=5>
-</FORM>
-
-<FORM id=frmRecordSelection name=frmRecordSelection target="recordSelection" action="util_recordSelection" method=post style="visibility:hidden;display:none">
-	<INPUT type="hidden" id=recSelType name=recSelType>
-	<INPUT type="hidden" id=recSelTableID name=recSelTableID>
-	<INPUT type="hidden" id=recSelCurrentID name=recSelCurrentID>
-	<INPUT type="hidden" id=recSelTable name=recSelTable>
-	<INPUT type="hidden" id=recSelDefOwner name=recSelDefOwner>
-	<INPUT type="hidden" id=recSelDefType name=recSelDefType>
-</FORM>
-
-<FORM id=frmEmailSelection name=frmEmailSelection target="emailSelection" action="util_emailSelection" method=post style="visibility:hidden;display:none">
-	<INPUT type="hidden" id=EmailSelCurrentID name=EmailSelCurrentID>
-</FORM>
-
-<FORM id=frmSortOrder name=frmSortOrder action="util_sortorderselection" target="sortorderselection" method=post style="visibility:hidden;display:none">
-	<INPUT type=hidden id=txtSortInclude name=txtSortInclude>
-	<INPUT type=hidden id=txtSortExclude name=txtSortExclude>
-	<INPUT type=hidden id=txtSortEditing name=txtSortEditing>
-	<INPUT type=hidden id=txtSortColumnID name=txtSortColumnID>
-	<INPUT type=hidden id=txtSortColumnName name=txtSortColumnName>
-	<INPUT type=hidden id=txtSortOrder name=txtSortOrder>	
-	<INPUT type=hidden id=txtSortBOC name=txtSortBOC>
-	<INPUT type=hidden id=txtSortPOC name=txtSortPOC>
-	<INPUT type=hidden id=txtSortVOC name=txtSortVOC>
-	<INPUT type=hidden id=txtSortSRV name=txtSortSRV>
-</FORM>
-
-<FORM id=frmSelectionAccess name=frmSelectionAccess style="visibility:hidden;display:none">
-	<INPUT type="hidden" id=forcedHidden name=forcedHidden value="N">
-	<INPUT type="hidden" id=baseHidden name=baseHidden value="N">
-	<INPUT type="hidden" id=p1Hidden name=p1Hidden value="N">
-	<INPUT type="hidden" id=p2Hidden name=p2Hidden value="N">
-
-<!-- need the count of hidden child filter access info -->
-	<INPUT type="hidden" id=childHidden name=childHidden value=0>
-	<INPUT type="hidden" id=calcsHiddenCount name=calcsHiddenCount value=0>
-</FORM>
-
-<INPUT type='hidden' id=txtTicker name=txtTicker value=0>
+    <INPUT type='hidden' id=txtTicker name=txtTicker value=0>
 <INPUT type='hidden' id=txtLastKeyFind name=txtLastKeyFind value="">
 
 <%Html.RenderPartial("Util_Def_CustomReports/grdColProps")%>

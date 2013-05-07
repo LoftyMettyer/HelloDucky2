@@ -374,10 +374,9 @@
             if (txtErrorCode.value == 0) {
                 var frmSubmit = window.dialogArguments.document.getElementById('frmSend');
                 //window.dialogArguments.OpenHR(frmSubmit);
-                OpenHR.submitForm(frmSubmit, null, false);
+                window.dialogArguments.OpenHR.submitForm(frmSubmit, null, false);
                 //window.dialogArguments.document.getElementById('frmSend').submit();
                 self.close();
-                return;
             }
 
             /* TM - need to remove hidden filters from the definition */
