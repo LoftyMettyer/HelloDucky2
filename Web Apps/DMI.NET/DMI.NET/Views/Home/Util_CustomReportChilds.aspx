@@ -377,8 +377,7 @@
                             for (i = 0; i < frmDefinition.ssOleDBGridSelectedColumns.rows; i++) {
                                 iTableID = frmDefinition.ssOleDBGridSelectedColumns.Columns("tableID").Text;
 
-                                //if (window.dialogArguments.window.isSelectedChildTable(iTableID)) {
-                                if (OpenHR.isSelectedChildTable(iTableID)) {
+                                if (window.dialogArguments.isSelectedChildTable(iTableID)) {
                                     fChildColumnsSelected = true;
                                     break;
                                 }
@@ -405,8 +404,7 @@
                                 if (sControlName == "txtReportDefnColumn_") {
                                     iTableID = window.dialogArguments.window.selectedColumnParameter(dataCollection.item(iIndex).value, "TABLEID");
 
-                                    //if (window.dialogArguments.window.isSelectedChildTable(iTableID)) {
-                                    if (OpenHR.isSelectedChildTable(iTableID)) {
+                                    if (window.dialogArguments.isSelectedChildTable(iTableID)) {
                                         fChildColumnsSelected = true;
                                         break;
                                     }
