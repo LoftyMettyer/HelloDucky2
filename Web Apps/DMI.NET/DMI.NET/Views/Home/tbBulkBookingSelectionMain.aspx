@@ -10,12 +10,11 @@
 %>
 <html>
 <head>
-
-	<link href="<%: Url.Content("~/Content/OpenHR.css")%>" rel="stylesheet" />
-
-	<script src="<%: Url.Content("~/Scripts/jquery/jquery-1.8.3.js")%>"></script>
-	<script src="<%: Url.Content("~/Scripts/jquery/jquery-ui-1.9.2.custom.js")%>"></script>
-	<script src="<%: Url.Content("~/Scripts/OpenHR.js")%>" type="text/javascript"></script>
+    
+    <script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+    <script src="<%: Url.Content("~/bundles/jQueryUI")%>" type="text/javascript"></script>
+    <script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>           
+    <link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css"/>
 
 	<meta name="GENERATOR" content="Microsoft Visual Studio 6.0">
 	<meta http-equiv="refresh" content="<%=session("TimeoutSecs")%>;URL=dialogtimeout">

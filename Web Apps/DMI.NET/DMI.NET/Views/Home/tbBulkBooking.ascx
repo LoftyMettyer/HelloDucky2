@@ -203,7 +203,7 @@
 	}
 
 	function makeSelection(psType, piID, psPrompts) {
-		alert(psType);
+
 		/* Get the current selected delegate IDs. */
 		var frmBulkBooking = document.getElementById("frmBulkBooking");
 		var sSelectedIDs = "";

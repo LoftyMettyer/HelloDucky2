@@ -115,6 +115,7 @@
 	}
 
 	function Selection_makeSelection() {
+
 		var frmUseful = document.getElementById("frmUseful");
 		var frmPrompt = document.getElementById("frmPrompt");
 		var ssOleDBGridSelRecords = document.getElementById("ssOleDBGridSelRecords");
@@ -127,7 +128,7 @@
 		else {
 			if (frmUseful.txtSelectionType.value.toUpperCase() == "PICKLIST") {
 				try {
-					makeSelection(frmUseful.txtSelectionType.value, selectedRecordID(), "");
+				    window.dialogArguments.makeSelection(frmUseful.txtSelectionType.value, selectedRecordID(), "");
 				}
 				catch (e) {
 				}
@@ -149,7 +150,7 @@
 				ssOleDBGridSelRecords.redraw = true;
 
 				try {
-					window.parent.window.dialogArguments.window.makeSelection(frmUseful.txtSelectionType.value, 0, sSelectedIDs);
+					window.dialogArguments.makeSelection(frmUseful.txtSelectionType.value, 0, sSelectedIDs);
 				}
 				catch (e) {
 					
