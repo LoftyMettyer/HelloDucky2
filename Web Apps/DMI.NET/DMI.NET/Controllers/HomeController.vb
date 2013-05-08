@@ -4571,41 +4571,150 @@ Namespace Controllers
       Return View()
     End Function
 
+		Function tbTransferCourseFind() As ActionResult
+			Return View()
+		End Function
+
+		<HttpPost()>
+	 Function tbTransferCourseFind_Submit(value As FormCollection)
+			On Error Resume Next
+
+			Dim sErrorMsg = ""
+			Dim iTBResultCode = 0
+
+			' Read the information from the calling form.
+			Dim sNextPage = Request.Form("txtGotoOptionPage")
+			Dim sAction = Request.Form("txtGotoOptionAction")
+
+			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
+			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
+			Session("optionViewID") = Request.Form("txtGotoOptionViewID")
+			Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
+			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
+			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
+			Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
+			Session("optionValue") = Request.Form("txtGotoOptionValue")
+			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
+			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
+			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
+			Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
+			Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
+			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
+			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
+			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
+			Session("optionFile") = Request.Form("txtGotoOptionFile")
+			Session("optionExtension") = Request.Form("txtGotoOptionExtension")
+			'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
+			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
+			Session("optionAction") = sAction
+			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
+			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
+			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
+			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
+			Session("optionExprType") = Request.Form("txtGotoOptionExprType")
+			Session("optionExprID") = Request.Form("txtGotoOptionExprID")
+			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
+			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
+			Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
+			Session("optionDefSelRecordID") = Request.Form("txtGotoOptionDefSelRecordID")
+
+			If sAction = "" Then
+				' Go to the requested page.
+				Return RedirectToAction(sNextPage)
+			End If
+
+			If sAction = "SELECTTRANSFERCOURSE" Then
+
+				If Session("optionLinkRecordID") > 0 Then
+					' Validate the booking transfers.
+					Dim cmdTBCheck = CreateObject("ADODB.Command")
+					cmdTBCheck.CommandText = "sp_ASRIntValidateTransfers"
+					cmdTBCheck.CommandType = 4 ' Stored procedure
+					cmdTBCheck.ActiveConnection = Session("databaseConnection")
+
+					Dim prmTBEmployeeTableID = cmdTBCheck.CreateParameter("empTableID", 3, 1)	'3=integer, 1=input
+					cmdTBCheck.Parameters.Append(prmTBEmployeeTableID)
+					prmTBEmployeeTableID.value = CleanNumeric(Session("TB_EmpTableID"))
+
+					Dim prmTBCourseTableID = cmdTBCheck.CreateParameter("courseTableID", 3, 1) '3=integer, 1=input
+					cmdTBCheck.Parameters.Append(prmTBCourseTableID)
+					prmTBCourseTableID.value = CleanNumeric(Session("TB_CourseTableID"))
+
+					Dim prmTBCourseRecordID = cmdTBCheck.CreateParameter("courseRecID", 3, 1)	'3=integer, 1=input
+					cmdTBCheck.Parameters.Append(prmTBCourseRecordID)
+					prmTBCourseRecordID.value = CleanNumeric(Session("optionRecordID"))
+
+					Dim prmTBNewCourseRecordID = cmdTBCheck.CreateParameter("newCourseRecID", 3, 1)	'3=integer, 1=input
+					cmdTBCheck.Parameters.Append(prmTBNewCourseRecordID)
+					prmTBNewCourseRecordID.value = CleanNumeric(Session("optionLinkRecordID"))
+
+					Dim prmTBTrainBookTableID = cmdTBCheck.CreateParameter("trainBookTableID", 3, 1) '3=integer, 1=input
+					cmdTBCheck.Parameters.Append(prmTBTrainBookTableID)
+					prmTBTrainBookTableID.value = CleanNumeric(Session("TB_TBTableID"))
+
+					Dim prmTBTrainBookStatusColumnID = cmdTBCheck.CreateParameter("trainBookStatusColumnID", 3, 1) '3=integer, 1=input
+					cmdTBCheck.Parameters.Append(prmTBTrainBookStatusColumnID)
+					prmTBTrainBookStatusColumnID.value = CleanNumeric(Session("TB_TBStatusColumnID"))
+
+					Dim prmResult = cmdTBCheck.CreateParameter("resultCode", 3, 2) ' 3=integer, 2=output
+					cmdTBCheck.Parameters.Append(prmResult)
+
+					Dim prmErrorMsg = cmdTBCheck.CreateParameter("errorMessage", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
+					cmdTBCheck.Parameters.Append(prmErrorMsg)
+
+					Err.Clear()
+					cmdTBCheck.Execute()
+					If (Err.Number <> 0) Then
+						sErrorMsg = "Error validating training booking transfers." & vbCrLf & FormatError(Err.Description)
+					End If
+
+					If (Len(sErrorMsg) = 0) And Len(cmdTBCheck.Parameters("errorMessage").Value) > 0 Then
+						sErrorMsg = "Error validating training booking transfers." & vbCrLf & cmdTBCheck.Parameters("errorMessage").Value
+					End If
+
+					iTBResultCode = cmdTBCheck.Parameters("resultCode").Value
+
+					cmdTBCheck = Nothing
+				End If
+
+				Session("TBResultCode") = iTBResultCode
+				Session("errorMessage") = sErrorMsg
+				Return RedirectToAction(sNextPage)
+			End If
+
+		End Function
 
 
 
+		Private Function convertLocaleDateToSQL(psDate)
+			Dim sLocaleFormat
+			Dim sSQLFormat
+			Dim iLocaleIndex
 
+			If Len(psDate) > 0 Then
+				sLocaleFormat = Session("LocaleDateFormat")
 
+				Dim iIndex = InStr(sLocaleFormat, "mm")
+				If iIndex > 0 Then
+					sSQLFormat = Mid(psDate, iIndex, 2) & "/"
+				End If
 
-    Private Function convertLocaleDateToSQL(psDate)
-      Dim sLocaleFormat
-      Dim sSQLFormat
-      Dim iLocaleIndex
+				iIndex = InStr(sLocaleFormat, "dd")
+				If iIndex > 0 Then
+					sSQLFormat = sSQLFormat & Mid(psDate, iIndex, 2) & "/"
+				End If
 
-      If Len(psDate) > 0 Then
-        sLocaleFormat = Session("LocaleDateFormat")
+				iIndex = InStr(sLocaleFormat, "yyyy")
+				If iIndex > 0 Then
+					sSQLFormat = sSQLFormat & Mid(psDate, iIndex, 4)
+				End If
 
-        Dim iIndex = InStr(sLocaleFormat, "mm")
-        If iIndex > 0 Then
-          sSQLFormat = Mid(psDate, iIndex, 2) & "/"
-        End If
-
-        iIndex = InStr(sLocaleFormat, "dd")
-        If iIndex > 0 Then
-          sSQLFormat = sSQLFormat & Mid(psDate, iIndex, 2) & "/"
-        End If
-
-        iIndex = InStr(sLocaleFormat, "yyyy")
-        If iIndex > 0 Then
-          sSQLFormat = sSQLFormat & Mid(psDate, iIndex, 4)
-        End If
-
-        convertLocaleDateToSQL = sSQLFormat
-      Else
-        convertLocaleDateToSQL = ""
-      End If
-    End Function
-  End Class
+				convertLocaleDateToSQL = sSQLFormat
+			Else
+				convertLocaleDateToSQL = ""
+			End If
+		End Function
+	End Class
 
   Public Class ErrMsgJsonAjaxResponse
 

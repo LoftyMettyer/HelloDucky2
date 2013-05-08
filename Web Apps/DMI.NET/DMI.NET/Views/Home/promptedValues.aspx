@@ -19,7 +19,8 @@
 	<title>OpenHR Intranet</title>
 
 	<script type="text/javascript">
-		function promptedValues_onload() {
+		function promptedValues_onload() {			
+
 			var frmPromptedValues = document.getElementById("frmPromptedValues");
 		
 			if (frmPromptedValues.txtPromptCount.value == 0) {
@@ -553,7 +554,7 @@
 									If NullSafeString(rstPromptedValue.fields("ValueType").value) = "1" Then
 								%>
 								<input type="text" class="text" id='prompt_1_<%=rstPromptedValue.fields("componentID").value%>' name='prompt_1_<%=rstPromptedValue.fields("componentID").value%>'
-									value="<%=replace(rstpromptedvalue.fields("valuecharacter"), """", "&quot;")%>" maxlength='<%=rstPromptedValue.fields("promptsize").value%>'
+									value="<%=replace(rstpromptedvalue.fields("valuecharacter").value, """", "&quot;")%>" maxlength='<%=rstPromptedValue.fields("promptsize").value%>'
 									style="WIDTH: 100%">
 								<input type="hidden" id='promptMask_<%=rstPromptedValue.fields("componentID").value%>' name='promptMask_<%=rstPromptedValue.fields("componentID").value%>'
 									value="<%=Replace(rstPromptedValue.fields("promptMask").value, """", "&quot;")%>">
@@ -774,6 +775,10 @@
 
 								<input type="hidden" id="filterID" name="filterID" value="<%=Session("filterID")%>">
 	</form>
+	
+	<script type="text/javascript"> promptedValues_onload();</script>
+	
+
 </body>
 </html>
 

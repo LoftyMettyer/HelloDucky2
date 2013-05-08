@@ -954,6 +954,7 @@ function menu_refreshMenu() {
 		menu_toolbarEnableItem("mnutoolParentRecord", (frmRecEdit.txtCurrentParentTableID.value > 0));
 		menu_setVisibleMenuItem("mnutoolBack", false);
 		menu_toolbarEnableItem("mnutoolBack", false);
+		menu_setVisibletoolbarGroup("mnutoolNewRecord", true);
 
 		menu_setVisibleMenuItem("mnutoolFirstRecord", true);
 		menu_toolbarEnableItem("mnutoolFirstRecord", (parseInt(frmData.txtRecordPosition.value, 10) > 1));
@@ -990,7 +991,8 @@ function menu_refreshMenu() {
 		menu_setVisibleMenuItem("mnutoolClearFilter", true);
 		menu_toolbarEnableItem("mnutoolClearFilter", (frmRecEdit.txtRecEditFilterDef.value.length > 0));
 		menu_setVisibleMenuItem("mnutoolPrint", true);
-
+		menu_setVisibletoolbarGroup("mnutoolOrder", true);
+		
 		// Standard reports (record menu)
 		fStdRptAbsenceCalendarVisible = ((frmRecEdit.txtCurrentTableID.value == frmMenuInfo.txtPersonnel_EmpTableID.value) &&
 				(frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
@@ -1060,26 +1062,33 @@ function menu_refreshMenu() {
 		if (frmRecEdit.txtCurrentRecordID.value <= 0) {
 			menu_enableMenuItem("mnutoolHistory", false);
 		}
+		
+		//TODO: NPG; 
+		//this used to call a function in the ctlRecordEdit activeX control...
+		//sRecEditDate = String(frmRecEdit.ctlRecordEdit.TBCourseCancelDateValue());		
 
-        //TODO: NPG; 
-		//sRecEditDate = String(frmRecEdit.ctlRecordEdit.TBCourseCancelDateValue());
-		//sRecEditDate = sRecEditDate.toUpperCase();
+		var TB_CourseCancelDateColumnID = $("#txtRecEditCourseCancelDateColumnID").val();
+		sRecEditDate = $("[data-columnID='" + TB_CourseCancelDateColumnID + "']").val();		
+				
+		sRecEditDate = sRecEditDate.toUpperCase();
 		//sDummyDate = String(dtDummyDate.getVarDate());
 		//sDummyDate = sDummyDate.toUpperCase();
+		//sDummyDate is now a blank, not some weird 1899 baloney.
+		sDummyDate = "";
 
-		//fCancelCourseVisible = ((frmRecEdit.txtCurrentTableID.value == frmMenuInfo.txtTB_CourseTableID.value) &&
-		//		(frmMenuInfo.txtUserType.value == 0));
-		//fCancelCourseEnabled = ((frmRecEdit.txtCurrentRecordID.value > 0) &&
-		//			(frmMenuInfo.txtUserType.value == 0) &&
-		//			(frmMenuInfo.txtTB_CourseCancelDateColumnID.value > 0) &&
-		//			(frmMenuInfo.txtTB_TBTableID.value > 0) &&
-		//			(frmMenuInfo.txtTB_TBTableSelect.value.toUpperCase() == "TRUE") &&
-		//			(frmMenuInfo.txtTB_TBStatusColumnID.value > 0) &&
-		//			(frmMenuInfo.txtTB_TBStatusColumnUpdate.value.toUpperCase() == "TRUE") &&
-		//			((frmMenuInfo.txtTB_TBCancelDateColumnID.value == 0) ||
-		//				(frmMenuInfo.txtTB_TBCancelDateColumnUpdate.value.toUpperCase() == "TRUE")) &&
-		//			(sRecEditDate == sDummyDate));
-
+		fCancelCourseVisible = ((frmRecEdit.txtCurrentTableID.value == frmMenuInfo.txtTB_CourseTableID.value) &&
+				(frmMenuInfo.txtUserType.value == 0));
+		
+		fCancelCourseEnabled = ((frmRecEdit.txtCurrentRecordID.value > 0) &&
+					(frmMenuInfo.txtUserType.value == 0) &&
+					(frmMenuInfo.txtTB_CourseCancelDateColumnID.value > 0) &&
+					(frmMenuInfo.txtTB_TBTableID.value > 0) &&
+					(frmMenuInfo.txtTB_TBTableSelect.value.toUpperCase() == "TRUE") &&
+					(frmMenuInfo.txtTB_TBStatusColumnID.value > 0) &&
+					(frmMenuInfo.txtTB_TBStatusColumnUpdate.value.toUpperCase() == "TRUE") &&
+					((frmMenuInfo.txtTB_TBCancelDateColumnID.value == 0) ||
+						(frmMenuInfo.txtTB_TBCancelDateColumnUpdate.value.toUpperCase() == "TRUE")) &&
+					(sRecEditDate == sDummyDate));				
 	}
 	else {
 		if (sCurrentWorkPage == "FIND") {						
@@ -1266,47 +1275,48 @@ function menu_refreshMenu() {
 
 				menu_setVisibleMenuItem("mnubandMainToolBar", true);
 				menu_setVisibleMenuItem("mnutoolRecord", true);
-				return;
+				
 				// Enable the record editing options as necessary.
-				abMainMenu.Tools("mnutoolNewRecord").visible = false;
-				abMainMenu.Tools("mnutoolNewRecord").enabled = false;
-				abMainMenu.Tools("mnutoolCopyRecord").visible = false;
-				abMainMenu.Tools("mnutoolCopyRecord").enabled = false;
-				abMainMenu.Tools("mnutoolEditRecord").visible = false;
-				abMainMenu.Tools("mnutoolEditRecord").enabled = false;
-				abMainMenu.Tools("mnutoolSaveRecord").visible = false;
-				abMainMenu.Tools("mnutoolDeleteRecord").visible = false;
-				abMainMenu.Tools("mnutoolDeleteRecord").enabled = false;
-				abMainMenu.Tools("mnutoolParentRecord").visible = false;
-				abMainMenu.Tools("mnutoolParentRecord").enabled = false;
-				abMainMenu.Tools("mnutoolBack").visible = false;
-				abMainMenu.Tools("mnutoolBack").enabled = false;
+				menu_setVisibleMenuItem("mnutoolNewRecord", false);
+				menu_enableMenuItem("mnutoolNewRecord", false);
+				menu_setVisibleMenuItem("mnutoolCopyRecord", false);
+				menu_enableMenuItem("mnutoolCopyRecord", false);
+				menu_setVisibleMenuItem("mnutoolEditRecord", false);
+				menu_enableMenuItem("mnutoolEditRecord", false);
+				menu_setVisibleMenuItem("mnutoolSaveRecord", false);
+				menu_setVisibleMenuItem("mnutoolDeleteRecord", false);
+				menu_enableMenuItem("mnutoolDeleteRecord", false);
+				menu_setVisibleMenuItem("mnutoolParentRecord", false);
+				menu_enableMenuItem("mnutoolParentRecord", false);
+				menu_setVisibleMenuItem("mnutoolBack", false);
+				menu_enableMenuItem("mnutoolBack", false);
 
-				abMainMenu.Tools("mnutoolFirstRecord").visible = true;
-				abMainMenu.Tools("mnutoolFirstRecord").enabled = (frmOption.txtIsFirstPage.value.toUpperCase() == "FALSE");
-				abMainMenu.Tools("mnutoolPreviousRecord").visible = true;
-				abMainMenu.Tools("mnutoolPreviousRecord").enabled = (frmOption.txtIsFirstPage.value.toUpperCase() == "FALSE");
-				abMainMenu.Tools("mnutoolNextRecord").visible = true;
-				abMainMenu.Tools("mnutoolNextRecord").enabled = (frmOption.txtIsLastPage.value.toUpperCase() == "FALSE");
-				abMainMenu.Tools("mnutoolLastRecord").visible = true;
-				abMainMenu.Tools("mnutoolLastRecord").enabled = (frmOption.txtIsLastPage.value.toUpperCase() == "FALSE");
+				menu_setVisibleMenuItem("mnutoolFirstRecord", true);
+				menu_enableMenuItem("mnutoolFirstRecord", (frmOption.txtIsFirstPage.value.toUpperCase() == "FALSE"));
+				menu_setVisibleMenuItem("mnutoolPreviousRecord", true);
+				menu_enableMenuItem("mnutoolPreviousRecord", (frmOption.txtIsFirstPage.value.toUpperCase() == "FALSE"));
+				menu_setVisibleMenuItem("mnutoolNextRecord", true);
+				menu_enableMenuItem("mnutoolNextRecord", (frmOption.txtIsLastPage.value.toUpperCase() == "FALSE"));
+				menu_setVisibleMenuItem("mnutoolLastRecord", true);
+				menu_enableMenuItem("mnutoolLastRecord", (frmOption.txtIsLastPage.value.toUpperCase() == "FALSE"));
 
-				abMainMenu.Tools("mnutoolLocateRecordsCaption").visible = true;
-				abMainMenu.Tools("mnutoolLocateRecords").visible = (parseInt(frmOption.txtFirstColumnType.value) != -7);
-				abMainMenu.Tools("mnutoolLocateRecordsLogic").CBList.Clear();
-				abMainMenu.Tools("mnutoolLocateRecordsLogic").CBList.AddItem("True");
-				abMainMenu.Tools("mnutoolLocateRecordsLogic").CBList.AddItem("False");
-				abMainMenu.Tools("mnutoolLocateRecordsLogic").visible = (parseInt(frmOption.txtFirstColumnType.value) == -7);
+				menu_setVisibleMenuItem("mnutoolLocateRecordsCaption", true);
+				menu_setVisibleMenuItem("mnutoolLocateRecords", (parseInt(frmOption.txtFirstColumnType.value) != -7));
+				//TODO:
+				//abMainMenu.Tools("mnutoolLocateRecordsLogic").CBList.Clear();
+				//abMainMenu.Tools("mnutoolLocateRecordsLogic").CBList.AddItem("True");
+				//abMainMenu.Tools("mnutoolLocateRecordsLogic").CBList.AddItem("False");
+				//abMainMenu.Tools("mnutoolLocateRecordsLogic").visible = (parseInt(frmOption.txtFirstColumnType.value) == -7);
 
-				abMainMenu.Tools("mnutoolFind").visible = false;
+				menu_setVisibleMenuItem("mnutoolFind", false);
 
 				// Hide the QuickFind, Order and Filter options until they're developed.
-				abMainMenu.Tools("mnutoolQuickFind").visible = false;
-				abMainMenu.Tools("mnutoolOrder").visible = false;
-				abMainMenu.Tools("mnutoolFilter").visible = false;
-				abMainMenu.Tools("mnutoolClearFilter").visible = false;
-				abMainMenu.Tools("mnutoolClearFilter").enabled = false;
-				abMainMenu.Tools("mnutoolPrint").visible = false;
+				menu_setVisibleMenuItem("mnutoolQuickFind", false);
+				menu_setVisibleMenuItem("mnutoolOrder", false);
+				menu_setVisibleMenuItem("mnutoolFilter", false);
+				menu_setVisibleMenuItem("mnutoolClearFilter", false);
+				menu_enableMenuItem("mnutoolClearFilter", false);
+				menu_setVisibleMenuItem("mnutoolPrint", false);
 
 				if (frmOption.txtRecordCount.value > 0) {
 					iStartPosition = parseInt(frmOption.txtFirstRecPos.value);
@@ -1322,10 +1332,18 @@ function menu_refreshMenu() {
 					sCaption = "No Records";
 				}
 
-				abMainMenu.Tools("mnutoolRecordPosition").visible = true;
-				abMainMenu.Bands("mnubandMainToolBar").Tools("mnutoolRecordPosition").caption = sCaption;
+				menu_setVisibleMenuItem("mnutoolRecordPosition", true);
+				//abMainMenu.Bands("mnubandMainToolBar").Tools("mnutoolRecordPosition").caption = sCaption;
+				menu_SetmnutoolRecordPositionCaption(sCaption);
 
-				abMainMenu.Tools("mnutoolHistory").visible = false;
+				//abMainMenu.Tools("mnutoolHistory").visible = false;
+				$("#mnutoolHistory").hide();
+				
+				//hide unused toolbargroups
+				menu_setVisibletoolbarGroup("mnutoolFind", false);
+				menu_setVisibletoolbarGroup("mnutoolNewRecord", false);
+				menu_setVisibletoolbarGroup("mnutoolOrder", false);
+			
 			}
 			else {
 				if (sCurrentWorkPage == "UTIL_DEF_PICKLIST") {
@@ -2208,7 +2226,7 @@ function menu_loadTransferCoursePage(psCourseTitle) {
 	frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
 	frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
 
-	frmOptionArea.submit();
+	OpenHR.submitForm(frmOptionArea);
 }
 
 function menu_loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly) {
@@ -3538,9 +3556,10 @@ function menu_cancelCourse() {
 	frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
 	frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
 	frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
-	frmDataArea.txtDefaultCalcCols.value = frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
-	frmDataArea.txtInsertUpdateDef.value = frmRecEditArea.ctlRecordEdit.insertUpdateDef();
-	frmDataArea.txtTimestamp.value = frmRecEditArea.ctlRecordEdit.timestamp;
+	//TODO: 
+	//frmDataArea.txtDefaultCalcCols.value = frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
+	//frmDataArea.txtInsertUpdateDef.value = frmRecEditArea.ctlRecordEdit.insertUpdateDef();
+	//frmDataArea.txtTimestamp.value = frmRecEditArea.ctlRecordEdit.timestamp;
 
 	data_refreshData();
 }
@@ -3715,6 +3734,7 @@ function menu_transferCourse(plngNewCourseRecordID, pfBookingsExist) {
 	var iResult;
 	var frmDataArea;
 	var frmRecEditArea;
+	var frmMenuInfo = document.getElementById("frmMenuInfo");
 	
 	// Get the number of course bookings 
 	// (to see if we need to prompt for them to be transferred).
@@ -3745,9 +3765,10 @@ function menu_transferCourse(plngNewCourseRecordID, pfBookingsExist) {
 	frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
 	frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
 	frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
-	frmDataArea.txtDefaultCalcCols.value = frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
-	frmDataArea.txtInsertUpdateDef.value = frmRecEditArea.ctlRecordEdit.insertUpdateDef();
-	frmDataArea.txtTimestamp.value = frmRecEditArea.ctlRecordEdit.timestamp;
+	//TODO:
+	//frmDataArea.txtDefaultCalcCols.value = frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
+	//frmDataArea.txtInsertUpdateDef.value = frmRecEditArea.ctlRecordEdit.insertUpdateDef();
+	//frmDataArea.txtTimestamp.value = frmRecEditArea.ctlRecordEdit.timestamp;
 	frmDataArea.txtTBCourseRecordID.value = plngNewCourseRecordID;
 	frmDataArea.txtTBCreateWLRecords.value = (iResult != 7);
 	

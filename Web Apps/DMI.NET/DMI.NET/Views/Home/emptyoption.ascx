@@ -17,7 +17,6 @@
 
 <script type="text/javascript">
 	function emptyoption_onload() {
-
 		var fNoAction;
 		var sCurrentWorkFramePage = $("#workframe").attr("data-framesource").replace(".asp", ""); //OpenHR.currentWorkPage();
 		var frmMenu = OpenHR.getForm("menuframe", "frmWorkAreaInfo");
@@ -332,7 +331,7 @@
 									}
 								} else {
 									if (fTransferOK == true) {
-										menu_transferCourse(txtLinkRecordID.value, true);
+										menu_transferCourse($("#txtLinkRecordID").val(), true);
 									} else {
 										menu_transferCourse(0, true);                                        
 									}

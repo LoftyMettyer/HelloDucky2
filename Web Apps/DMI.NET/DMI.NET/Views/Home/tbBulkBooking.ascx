@@ -149,7 +149,8 @@
 	function filteredAdd()
 	{	
 		var sURL;
-
+		var frmBookingSelection = document.getElementById("frmBookingSelection");
+		
 		frmBookingSelection.selectionType.value = "FILTER";
 	
 		sURL = "tbBulkBookingSelectionMain" +
@@ -160,7 +161,7 @@
 	function addPicklist()
 	{	
 		var sURL;
-
+		var frmBookingSelection = document.getElementById("frmBookingSelection");
 		frmBookingSelection.selectionType.value = "PICKLIST";
 
 		sURL = "tbBulkBookingSelectionMain" +
