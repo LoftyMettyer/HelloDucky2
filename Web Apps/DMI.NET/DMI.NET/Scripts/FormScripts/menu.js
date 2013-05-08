@@ -1069,8 +1069,10 @@ function menu_refreshMenu() {
 
 		var TB_CourseCancelDateColumnID = $("#txtRecEditCourseCancelDateColumnID").val();
 		sRecEditDate = $("[data-columnID='" + TB_CourseCancelDateColumnID + "']").val();		
-				
-		sRecEditDate = sRecEditDate.toUpperCase();
+		if (sRecEditDate) {
+			sRecEditDate = sRecEditDate.toUpperCase();
+		}
+		
 		//sDummyDate = String(dtDummyDate.getVarDate());
 		//sDummyDate = sDummyDate.toUpperCase();
 		//sDummyDate is now a blank, not some weird 1899 baloney.
