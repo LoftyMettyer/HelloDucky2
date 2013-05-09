@@ -2,8 +2,8 @@
 // --------------------------------------------------
 // Buttons
 // --------------------------------------------------
-function button_onMouseOver(obj)
-{
+function button_onMouseOver(obj) {
+	return false;
 	if(obj.className == 'btn btnselect')
 	{
 		obj.className='btn btnselect btnhov';
@@ -15,6 +15,7 @@ function button_onMouseOver(obj)
 }
 function button_onMouseOut(obj)
 {
+	return false;
 	if(obj.className == 'btn btnselect btnhov')
 	{
 		obj.className='btn btnselect';
@@ -26,6 +27,7 @@ function button_onMouseOut(obj)
 }
 function button_onFocus(obj)
 {
+	return false;
 	if(obj.className == 'btn btnhov')
 	{
 		obj.className='btn btnselect btnhov';
@@ -37,6 +39,7 @@ function button_onFocus(obj)
 }
 function button_onBlur(obj)
 {
+	return false;
 	if(obj.className == 'btn btnselect btnhov')
 	{
 		obj.className='btn btnhov';
@@ -49,6 +52,7 @@ function button_onBlur(obj)
 
 function button_disable(obj, pfDisable)
 {
+	return false;
 	obj.disabled = pfDisable;
 
 	if (pfDisable == true)

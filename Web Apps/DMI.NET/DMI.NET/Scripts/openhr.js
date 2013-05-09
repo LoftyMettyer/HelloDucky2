@@ -144,7 +144,24 @@
 	    		    } else {	    		        
 	    		        $frame.html('');
 	    		        $frame.html(html);
-	    		    }	    		    
+	    		    }
+	    			
+	    			//jqwuery stylin	    			
+	    		    $(function () {
+		    		    $("input[type=submit], input[type=button], button")
+			    		    .button();
+		    		    $("input").addClass("ui-widget ui-widget-content ui-corner-all");
+		    		    $("input").removeClass("text");
+		    		    
+		    		    $("textarea").addClass("ui-widget ui-widget-content ui-corner-all");
+		    		    $("textarea").removeClass("text");
+		    		    
+		    		    $("select").addClass("ui-widget ui-widget-content ui-corner-all");
+		    		    $("select").removeClass("text");
+		    		    
+
+	    		    });
+
 	    		},
 	    		error: function (req, status, errorObj) {	    			
 	    			//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");

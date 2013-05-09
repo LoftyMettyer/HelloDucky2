@@ -11,7 +11,8 @@ function addControl(tabNumber, controlDef) {
 		    var tabFontName = $("#txtRecEditFontName").val();
 		    var tabFontSize = $("#txtRecEditFontSize ").val();
 
-		    var tabCss = "style='font-family: " + tabFontName + " ; font-size: " + tabFontSize + "pt'";
+	    	//var tabCss = "style='font-family: " + tabFontName + " ; font-size: " + tabFontSize + "pt'";
+		    var tabCss = "";
 
 		    var tabs = $("#ctlRecordEdit").tabs(),
 			    tabTemplate = "<li><a " + tabCss + " href='#{href}'>#{label}</a></li>";
@@ -410,8 +411,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
         case 256: //Label
             span = document.createElement('span');
             applyLocation(span, controlItemArray, false);
-            span.style.backgroundColor = "White";
-            span.style.color = "Black";
+            span.style.backgroundColor = "transparent";
+            //span.style.color = "Black";
             span.style.fontFamily = controlItemArray[11];
             span.style.fontSize = controlItemArray[12] + 'pt';
             span.textContent = controlItemArray[8];
@@ -430,7 +431,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
             var fieldset = document.createElement('fieldset');
             applyLocation(fieldset, controlItemArray, true);
             fieldset.style.backgroundColor = "transparent";
-            fieldset.style.color = "Black";
+            //fieldset.style.color = "Black";
             fieldset.style.padding = "0px";
             
             var legend = fieldset.appendChild(document.createElement('legend'));

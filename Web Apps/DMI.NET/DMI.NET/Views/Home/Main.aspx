@@ -116,7 +116,7 @@
 
 <div id="menuframe">
 <div class="ContextMenu-panel open">
-<div class="ContextMenu-tab" style="text-align:center;vertical-align: middle">
+<div class="ContextMenu-tab ui-state-default" style="text-align:center;vertical-align: middle">
 <p style="display:none" class="rot-neg-90">Click here to show/hide this accordian menu...</p>
 <img id="ContextMenuIcon" src="<%= Url.Content("~/content/images/retract.png") %>" alt="x"/>
 </div>

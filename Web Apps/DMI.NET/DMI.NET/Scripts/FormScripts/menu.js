@@ -4408,12 +4408,11 @@ function applyJSTree(element) {
     if (element == undefined) element = "";
 
     $(".accordion div" + element).jstree({
-        "themes": {
-            "theme": "apple",
-            "url": "../Scripts/jQuery/jsTree/theme/apple/style.css",
-            "dots": false,
-            "icons": true
-        },
+    	"themes": {
+    		"dots": false,
+    		"icons": true
+    	},
+    	"plugins" : [ "html_data", "ui", "themeroller" ],
         types: {
             "types": {
                 "disabled": {
@@ -4424,7 +4423,12 @@ function applyJSTree(element) {
                     "delete_node": false
                 }
             }
-        }
+        },
+        "themeroller": {
+        	"item_leaf": false,
+        	"item_clsd": false,
+        	"item_open": false        	
+        },
     });
 }
 

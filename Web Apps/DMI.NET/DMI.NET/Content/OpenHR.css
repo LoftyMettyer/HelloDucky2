@@ -1,7 +1,11 @@
-﻿BODY
-{
-    FONT-SIZE: 10pt;
-    COLOR: black;
+﻿html { font-size: 10pt;}
+
+
+BODY
+{    
+    /*COLOR: black;*/
+	color: #2e6e9e;
+
     /*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';*/
 }
 div.COAwallpapered
@@ -22,23 +26,23 @@ div.COAwallpapered
 
 TD
 {
-	font-size: 10pt;
+	/*font-size: 10pt;
 	color: #333366;
-	/*font-family: Verdana, Tahoma, 'MS Sans Serif';*/
+	/*font-family: Verdana, Tahoma, 'MS Sans Serif';
 	border-bottom-style: none;
 	border-right-style: none;
 	border-top-style: none;
-	border-left-style: none;
+	border-left-style: none;*/
 }
 
 TD.bordered
 {
-	border: 1px solid #9894a3;
+	/*border: 1px solid #9894a3;*/
 }
 
 TD.smallfont
 {
-	font-size: 8pt;
+	/*font-size: 8pt;*/
 }
 
 TD.calendarheader_day
@@ -99,28 +103,29 @@ hr
 
 INPUT
 {
-    FONT-SIZE: 10pt;
+	padding: 3px;
+    /*FONT-SIZE: 10pt;
     COLOR: black;
-    /*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';*/
+    /*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';*/*/
 }
 
 textarea
 {
-    FONT-SIZE: 10pt;
+    /*FONT-SIZE: 10pt;
     COLOR: #333366;
     FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';
 	background-color: #f6f5f3;
 	border: 1px solid;
-	border-color: #9a7057;
+	border-color: #9a7057;*/
 }
 textarea.disabled
 {
-	font-size: 10pt;
+	/*font-size: 10pt;
 	color: #9594ad;
 	font-family: Verdana, Tahoma, 'MS Sans Serif';
 	background-color: #fdf3e4;
 	border: 1px solid;
-	border-color: #cbc3c4;
+	border-color: #cbc3c4;*/
 }
 
 DIV
@@ -132,18 +137,18 @@ DIV
 
 input.btn
 {
-	color: #333366;
+	/*color: #333366;
 	background-color: #f3f2f7;
 	border: 1px solid;
-	border-color: #9894a3;
+	border-color: #9894a3;*/
 }
 
 input.btnhov 
 {   
-	border-color: #ff9608;
+	/*border-color: #ff9608;*/
 }
 
-input.btnselect 
+/*input.btnselect 
 {   
 	border-color: #ff9608;
 	background-color:#fdf1c2;   
@@ -211,12 +216,13 @@ label.radioselect
 label.radiodisabled
 { 
 	color:#333366;
-}
+}*/
 
 .pageTitle {
-	font-family: segoe ui light;
+	/*font-family: segoe ui light;*/
 	font-size: 26pt;
-	color: #2778ec;
+	font-weight: lighter;
+	/*color: #2778ec;*/
 	padding-left: 20px;
 	font-weight: 300;
 	margin-top: 0;
@@ -224,23 +230,23 @@ label.radiodisabled
 }
 input.text
 {
-	color: #333366;
+	/*color: #333366;
 	background-color: #f6f5f3;
 	border: 1px solid;
 	border-color: #9a7057;
-	height:22px;
+	height:22px;*/
 }
 
 input.textselect
 {
-	border-color: #9994a4;
+	/*border-color: #9994a4;*/
 }
 
 input.textdisabled
 {
-	background-color: #fdf3e4;
+	/*background-color: #fdf3e4;
 	border-color: #cbc3c4;
-	color: #9594ad;
+	color: #9594ad;*/
 }
 
 input.textwarning
@@ -255,35 +261,35 @@ input.textwarning
 
 input.textinformation
 {
-	color:#333366;
+	/*color:#333366;
 	border-bottom-style: none;
 	border-right-style: none;
 	border-top-style: none;
 	border-left-style: none;
-	background-color: transparent;
+	background-color: transparent;*/
 }	
 
 SELECT
 {
-    /*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';*/
+    /*/*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';*/
     FONT-SIZE: 10pt;
     COLOR: #333366;
 	background-color: #f6f5f3;
-	border-color: #9a7057;
+	border-color: #9a7057;*/
 }
 select.combo
 {
-	color: #333366;
+	/*color: #333366;
 	background-color: #f6f5f3;
 	border: 1px solid;
-	border-color: #9a7057;
+	border-color: #9a7057;*/
 }
 
 select.combodisabled
 {
-	background-color: #fdf3e4;
+	/*background-color: #fdf3e4;
 	border-color: #cbc3c4;
-	color: #9594ad;
+	color: #9594ad;*/
 }
 
 a.hypertext
@@ -312,7 +318,7 @@ span.outline
 table.outline
 {
 	/*background-color:#f9f7fb;*/
-	background-color: white;
+	/*background-color: white;*/
 	border: 1px solid #9894a3;
 }
 
@@ -365,7 +371,7 @@ table.calendarcell
 	bottom: 0px;			
 	right: 0px;
 	z-index: 99;
-	background: #E8ECF0;
+	/*background: #E8ECF0;*/
 	cursor: pointer;
 	/*#F9F7FB;	*/
 }
@@ -593,8 +599,13 @@ header {
 
 
 .jsTree {
-
 	overflow: auto;
+}
+
+.jstree a {
+	background-color: transparent!important;
+	background-image: none!important;
+	border: none!important;
 }
 
 .hidden { display: none!important; }

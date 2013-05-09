@@ -106,7 +106,10 @@
           $("div:eq(0)", activeTab)
             .hide()
             .parent()
-            .removeClass('current'); }
+            .removeClass('current')
+						.removeClass('ui-tabs-active ui-state-active ui-state-hover')	        
+      		;
+				}
 
         $(object).data("officebar.activeTab",
         $(trigger)
@@ -115,6 +118,7 @@
           .end()
           .parent()
           .addClass('current')
+					.addClass('ui-tabs-active ui-state-active ui-state-hover')
           .get(0));
         
         var me = $(trigger);

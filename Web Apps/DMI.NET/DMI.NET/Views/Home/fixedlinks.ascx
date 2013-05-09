@@ -8,11 +8,21 @@
 		$("#mnuSectionUtilities").hide();
 		$("#fixedlinks").fadeIn("slow");
 
+
+		$("#officebar .button").addClass("ui-corner-all");
+		
+		$('#officebar .button').hover(
+			function() { $(this).addClass('ui-state-hover'); },
+			function() { $(this).removeClass('ui-state-hover'); }
+		);		
+		
 	});
 
 	function fixedlinks_mnutoolAboutHRPro() {
 		$("#About").dialog("open");
 	}
+
+	$("#officebar").tabs();
 
 </script><div class="RecDescPhoto"><%If DMI.NET.NullSafeString(Session("recdesc")).ToUpper.Contains("AVERY") Then%><img src="<%: Url.Action("ShowPhoto", "Home", new with { .ImageName="davery.jpg"}) %>"
 		alt="" />
@@ -25,9 +35,9 @@
 		<p><a href="<%: Url.Action("LinksMain", "Home") %>" title="Home"><%=Session("recdesc")%></a></p>
 	</div>
 	<div class="FixedLinksLeft">
-		<div class="officebar">
+		<div id="officebar" class="officebar ui-widget-header ui-widget-content">
 			<ul>
-				<li class="current"><a id="toolbarHome" href="#" rel="home">Home</a>
+				<li class="current ui-state-default ui-corner-top ui-tabs-active ui-state-active ui-state-hover"><a id="toolbarHome" href="#" rel="home">Home</a>
 					<ul>
 						<li><span>Fixed Links</span>
 							<div class="button"><a href="<%: Url.Action("LinksMain", "Home") %>" rel="table" title="Home">
@@ -121,7 +131,7 @@
 
 					</ul>
 				</li>
-				<li><a id="toolbarRecord" href="#" rel="home">Record</a>
+				<li class="ui-state-default ui-corner-top"><a id="toolbarRecord" href="#" rel="home">Record</a>
 					<ul>
 						<li><span>Edit</span>											
 
@@ -276,7 +286,7 @@
 						<li><span>Training Booking</span>
 							<div id="mnutoolBulkBooking" class="button">
 								<a href="#" rel="table" title="Bulk Booking">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BulkBooking64HOVER.png") %>"
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BulkBooking64HOVER.png")%>"
 										alt="" /><i class="icon-print"></i><h6>Bulk Booking</h6></a>
 							</div>
 							<div id="mnutoolAddFromWaitingList" class="button">

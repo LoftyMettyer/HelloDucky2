@@ -98,6 +98,10 @@ Public Class MvcApplication
 		'	Response.Redirect("Account/Login")
 		'End If
 
+		' get the theme out the web config.
+		Session("ui-theme") = System.Configuration.ConfigurationManager.AppSettings("ui-theme")
+		If Session("ui-theme") Is Nothing Or Len(Session("ui-theme")) <= 0 Then Session("ui-theme") = "redmond"
+
 	End Sub
 
 	Sub Session_End()

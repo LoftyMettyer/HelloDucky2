@@ -150,7 +150,6 @@
 %>
 
 <script type="text/javascript">
-<!--
 
 	function HelpAbout() {
 		//window.location.href = "<%: Url.Action("AboutHRPro", "Account") %>";
@@ -306,19 +305,16 @@
 		trDetails2.style.visibility = sVisibility;
 		trDetails2.style.display = sDisplay;
 	}
-
-
--->
 </script>
 
-<div style="scroll:auto" class="COAwallpapered" leftmargin="0" topmargin="0" rightmargin="0" marginwidth="0" marginheight="0">
+<div style="scroll:auto" class="COAwallpapered ui-widget-content" leftmargin="0" topmargin="0" rightmargin="0" marginwidth="0" marginheight="0" class="ui-widget">
 		
 <%	Html.BeginForm("Login", "Account", FormMethod.Post, New With {.id = "frmLoginForm"})%>
 
-<table width="100%" border="0" cellspacing="0" cellpadding="0" height="44px" style="border-bottom:solid 1px;border-color:#992b99">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" height="44px" style="">
   <tr> 
     <td align=left> 
-		 <IMG SRC="<%= Url.Content("~/Content/images/COAInt_TopBar.jpg")%>" align=top width="138" height="44">
+		 <IMG SRC="<%= Url.Content("~/Content/images/COAInt_TopBar.png")%>" align=top width="138" height="44">
     </td>
     <td height="44px" width="100%" align=right> 
 			<IMG style="display: none;" src="<%= Url.Content("~/Content/images/coaint_banner.jpg")%>" align=top width="600" height="44">
@@ -329,7 +325,7 @@
 	  </td>
   </tr>  
 </table>
-<table class="headerbar" width="100%" border="0" cellspacing="0" cellpadding="0" height="40" style="border-bottom:solid 1px;border-color:#992b99">
+<table class="ui-dialog-titlebar ui-widget-header" width="100%" border="0" cellspacing="0" cellpadding="0" height="40">
 	<tr> 
 		<td>
 			<table border="0" cellspacing="0" cellpadding="0" height="100%" width="100%">
@@ -346,7 +342,7 @@
 	</tr>
 </table>
 <div class="verticalpadding200"></div>
-    <table CELLSPACING="0" CELLPADDING="0" align="center" class="invisible loginframetheme" >
+    <table CELLSPACING="0" CELLPADDING="0" align="center" class="invisible loginframetheme ui-widget-content" >
         <tr> 
             <TD width=15 height="15"></TD>
             <td colSpan=3 height="15">&nbsp;</td>
@@ -358,14 +354,14 @@
         <tr> 
             <TD width=15></TD>
             <td colSpan=3> 
-                <p align="center"><IMG height=188 src="<%= Url.Content("~/Content/images/COAInt_Splash.jpg")%>" width=410></p>
+                <p align="center"><IMG height=188 src="<%= Url.Content("~/Content/images/COAInt_Splash.png")%>" width=410></p>
             </td>
             <TD width=15></TD>
         </tr>
 	    <tr height=10>
 		    <td colSpan=5></td>
     	</tr>
-	    <tr  class="logintext" height=10>
+	    <tr  class="" height=10>
 		    <TD width=15></TD>
 		    <td colSpan=3 style="font-weight: bold;" align=center>Version <%=session("Version")%></td>
 		    <TD width=15></TD>
@@ -391,12 +387,12 @@ Else
 	    <tr height=10>
 		    <td colSpan=5></td>
 	    </tr>
-	    <tr class="logintext" height=10>
+	    <tr class="" height=10>
 		    <td width=15></td>
 		    <td style="font-weight: bold;"  colSpan=3 >Unable to determine the intranet version.</td>
 		    <td width=15></td>
 	    </tr>
-	    <tr  class="logintext" height=10>
+	    <tr  class="" height=10>
 		    <td width=15></td>
 		    <td style="font-weight: bold;" colSpan=3 >Ensure that a virtual directory has been configured on your intranet web server.</td>
 		    <td width=15></td>" & vbcrlf
@@ -408,26 +404,26 @@ Else
 		    <td style="height: 15px"></td>
 		    <td colspan="3">
 			    <table style="border:0px; border-spacing: 0px; border-collapse: collapse;">
-			        <tr class="logintext" style="display: block">
+			        <tr class="" style="display: block">
 			            <td style="font-weight:bold ;width: 100px;">User name :</td>
 			            <td style="width: 10px"></td>
 			            <td style="width: 200px;">
-								<input id="txtUserName" autocomplete="off" autocorrect="off" name="txtUserName" class="text" style="height: 22px;width: 100%; padding: 0px;" onkeypress="CheckKeyPressed(event)"/>
+								<input id="txtUserName" autocomplete="off" autocorrect="off" name="txtUserName" class="text" style="height: 22px;width: 100%; " onkeypress="CheckKeyPressed(event)"/>
 				        <input type="hidden" id="txtUserNameCopy" name="txtUserNameCopy" />    
 			            </td>
 			            
         		    </tr>
-    			    <tr class="logintext" style="display: block">
+    			    <tr class="" style="display: block">
 	    		        <td style="font-weight:bold ;width: 100px;">Password :</td>
 			            <td style="width: 10px">
 							</td>
 			            <td style="width: 200px;">
 
-								<input id="txtPassword" name="txtPassword" type="password" class="text" style="height: 22px; width: 100%; padding: 0px;" onkeypress="CheckKeyPressed(event);"/>
+								<input id="txtPassword" name="txtPassword" type="password" class="text" style="height: 22px; width: 100%; " onkeypress="CheckKeyPressed(event);"/>
 			            </td>
     			    </tr>
 
-	    		    <tr class="logintext" >
+	    		    <tr class="" >
 <%
 			if Request.ServerVariables("LOGON_USER") <> "" then
 %>			
@@ -451,7 +447,7 @@ Else
 <%
 			else
 %>
-				        <td class="logintext" colspan="3" >
+				        <td class="" colspan="3" >
 				            <input type="hidden" id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" />
 				        </td>
 <%
@@ -459,20 +455,20 @@ Else
 %>
                  </tr>
 
-			        <tr class="logintext" style="display: block;visibility:hidden;display:none" id="trDetails1">
+			        <tr class="" style="display: block;visibility:hidden;display:none" id="trDetails1">
 			            <td style="width: 100px;font-weight: bold;">Database :</td>
 			            <td style="width: 10px">
 							</td>
 			            <td style="width: 200px;">
-			                <input id="txtDatabase"  autocomplete="off" autocorrect="off"  name="txtDatabase" style="height: 22px; width: 100%; padding: 0px;" class="text" onkeypress="CheckKeyPressed(event)" />
+			                <input id="txtDatabase"  autocomplete="off" autocorrect="off"  name="txtDatabase" style="height: 22px; width: 100%; " class="text" onkeypress="CheckKeyPressed(event)" />
 			            </td>
 			        </tr>
-			        <tr class="logintext" style="display: block;visibility:hidden;display:none" id="trDetails2">
+			        <tr class="" style="display: block;visibility:hidden;display:none" id="trDetails2">
 			            <td style="width: 100px;font-weight: bold;">Server :</td>
 			            <td style="width: 10px">
 							</td>
 			            <td style="width: 200px;">
-			                <input id="txtServer"  autocomplete="off" autocorrect="off"  name="txtServer" style="height: 22px; width: 100%; padding: 0px;" class="text" onkeypress="CheckKeyPressed(event)" />
+			                <input id="txtServer"  autocomplete="off" autocorrect="off"  name="txtServer" style="height: 22px; width: 100%; " class="text" onkeypress="CheckKeyPressed(event)" />
 			            </td>
 			        </tr>
 			    </table>
@@ -490,30 +486,18 @@ Else
             <table border="0" cellspacing="0" cellpadding="0" align="center">
                 <tr>
                     <td align="center">
-                        <input id="submitLoginDetails" name="submitLoginDetails" type="button" class="btn loginbuttontext" value="OK" style="WIDTH: 90px"
-                            onclick="SubmitLoginDetails()"
-                            onmouseover="try{button_onMouseOver(this);}catch(e){}"
-                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                            onfocus="try{button_onFocus(this);}catch(e){}"
-                            onblur="try{button_onBlur(this);}catch(e){}" />
+	                    <input type="button" id="submitLoginDetails" name="submitLoginDetails" class="ui-button" style="width: 90px;"
+	                           onclick="SubmitLoginDetails()" value="OK"/>
                     </td>
                     <td width="10"></td>
                     <td align="center">
-                        <input id="cancel" name="cancel" type="button" value="Cancel" class="btn loginbuttontext" style="WIDTH: 90px"
-                            onclick="CancelLogin()"
-                            onmouseover="try{button_onMouseOver(this);}catch(e){}"
-                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                            onfocus="try{button_onFocus(this);}catch(e){}"
-                            onblur="try{button_onBlur(this);}catch(e){}" />
+	                    <input type="button" id="cancel" name="cancel" class="ui-button" style="width: 90px;"
+	                           onclick="CancelLogin()" value="Cancel"/>                       
                     </td>
                     <td width="10"></td>
                     <td align="center">
-                        <input id="details" name="details" type="button" value="Details" class="btn loginbuttontext" style="WIDTH: 90px"
-                            onclick="toggleDetails()"
-                            onmouseover="try{button_onMouseOver(this);}catch(e){}"
-                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                            onfocus="try{button_onFocus(this);}catch(e){}"
-                            onblur="try{button_onBlur(this);}catch(e){}" />
+	                    <input type="button" id="details" name="details" class="ui-button" style="width: 90px;"
+	                           onclick="toggleDetails()" value="Details" />
                     </td>
                 </tr>
             </table>

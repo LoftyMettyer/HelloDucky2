@@ -98,7 +98,7 @@
 	<link href="<%: Url.LatestContent("~/Content/contextmenustyle.css")%>" rel="stylesheet" type="text/css" />
 	
 	<%--ThemeRoller stylesheet--%>
-	<link href="<%: Url.LatestContent("~/Content/themes/redmond/jquery-ui.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
 	
 	<%--jQuery Grid Stylesheet--%>
 	<link href="<%: Url.LatestContent("~/Content/ui.jqgrid.css")%>" rel="stylesheet" type="text/css" />
@@ -138,7 +138,21 @@
 				modal: true,			
 				width: 650
 			});
+			
+			$(function () {
+				$("input[type=submit], input[type=button], button")
+					.button();
+				$("input").addClass("ui-widget ui-widget-content ui-corner-all");
+				$("input").removeClass("text");
 
+				$("textarea").addClass("ui-widget ui-widget-content ui-corner-all");
+				$("textarea").removeClass("text");
+
+				$("select").addClass("ui-widget ui-widget-content ui-corner-all");
+				$("select").removeClass("text");
+
+			});
+			
 			$("button").css("margin", "5px");
 
 			if ($("#workframeset").length > 0) {
@@ -251,7 +265,7 @@
 	    window.ROOT = '<%= Url.Content("~/") %>';       
 </script>
 </head>
-<body>
+<body class="ui-widget ui-widget-content">
 	<header>
 		<asp:ContentPlaceHolder runat="server" ID="FixedLinksContent"></asp:ContentPlaceHolder>		
 	</header>

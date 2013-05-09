@@ -977,15 +977,15 @@ Namespace Controllers
 
       End Select
 
-      sBGImage = Url.Content("~/Pictures/" & sBGImage)
+			'   sBGImage = Url.Content("~/Pictures/" & sBGImage)
 
-      If (Len(sTempPath) > 0) And (Len(sBGImage) > 0) Then
-        Session("BodyTag") = "bgcolor=" & Session("ConvertedDesktopColour") & " STYLE=""height: 100%; background-image:url('" & sBGImage &
-         "'); background-repeat:" & strRepeat & "; background-position:" & strBGPos & """" & vbCrLf
-      Else
-        Session("BodyTag") = "height: 100%; bgcolor=" & Session("ConvertedDesktopColour") & vbCrLf
-      End If
-      Session("BodyColour") = "bgcolor=" & Session("ConvertedDesktopColour") & vbCrLf
+			'   If (Len(sTempPath) > 0) And (Len(sBGImage) > 0) Then
+			'	Session("BodyTag") = "STYLE=""height: 100%; background-image:url('" & sBGImage &
+			'	 "'); background-repeat:" & strRepeat & "; background-position:" & strBGPos & """" & vbCrLf
+			'   Else
+			'	Session("BodyTag") = "height: 100%;" & vbCrLf
+			'   End If
+			'Session("BodyColour") = "" & vbCrLf
 
 
       ' Get the Find Window Block Size.

@@ -1,5 +1,6 @@
-﻿body {background-color: white;
-      color: black;
+﻿body {
+	/*background-color: white;*/
+      /*color: black;*/
       font-family: "Segoe UI Semibold", Verdana, "Open Sans", Tahoma,Helvetica,sans-serif; 
 }
 
@@ -10,7 +11,7 @@
 .RecordDescription p {color: black;	}
 .FixedLinksLeft ul li {	color: black;}
 .FixedLinksRight ul li {color: black;}
-.FixedLinksLeft ul li:hover {	background-color: rgb(55, 151, 251); border-radius: 5px; }
+/*.FixedLinksLeft ul li:hover {	background-color: rgb(55, 151, 251); border-radius: 5px; }*/
 
 
 li {background-color: transparent;}
