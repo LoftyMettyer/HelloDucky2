@@ -1,5 +1,4 @@
-﻿Imports ADODB
-'Imports VBA
+﻿'Imports ADODB
 
 Namespace Controllers
   Public Class AccountController
@@ -114,7 +113,7 @@ Namespace Controllers
         iChartElementType, iChartSortOrderID, iChartSortDirection, iChartColourID)
 
       If (Err.Number <> 0) Then
-        Session("ErrorTitle") = "The Database Values could not be retrieved." & vbCrLf & formatError(Err.Description)
+        Session("ErrorTitle") = "The Database Values could not be retrieved." & vbCrLf & FormatError(Err.Description)
       Else
         Session("ErrorTitle") = ""
       End If
@@ -260,7 +259,7 @@ Namespace Controllers
       sConnectString = sConnectString & ";Persist Security Info=True;"
 
       ' Open a connection to the database.
-      Dim conX = New Connection
+      Dim conX = New ADODB.Connection
       conX.ConnectionTimeout = 60
 
       Try
@@ -293,7 +292,7 @@ Namespace Controllers
       ' Enter the current session in the poll table. This will
       ' ensure that even if the login checks fail, the session will still be killed
       ' after 1 minute.
-      Dim cmdHit = New Command
+      Dim cmdHit = New ADODB.Command
       cmdHit.CommandText = "sp_ASRIntPoll"
       cmdHit.CommandType = 4
       ' Stored Procedure
@@ -305,12 +304,12 @@ Namespace Controllers
         Dim sErrorText = "You could not login to the OpenHR database because of the following error:<p>"
 
         If (Err.Number = -2147217900) _
-         And (UCase(Left(formatError(Err.Description), 31)) = "COULD NOT FIND STORED PROCEDURE") Then
+         And (UCase(Left(FormatError(Err.Description), 31)) = "COULD NOT FIND STORED PROCEDURE") Then
           sErrorText = sErrorText &
            "The database has not been scripted to run the intranet.<P>" &
            "Contact your system administrator."
         Else
-          sErrorText = sErrorText & formatError(Err.Description)
+          sErrorText = sErrorText & FormatError(Err.Description)
         End If
 
         Session("ErrorText") = sErrorText
@@ -325,7 +324,7 @@ Namespace Controllers
 
 
       ' Get the desktop colour.
-      Dim cmdDesktopColour = New Command
+      Dim cmdDesktopColour = New ADODB.Command
       cmdDesktopColour.CommandText = "sp_ASRIntGetSetting"
       cmdDesktopColour.CommandType = 4
       ' Stored procedure.
@@ -454,7 +453,7 @@ Namespace Controllers
       End Select
 
       ' Check that its okay for the user to login.
-      Dim cmdLoginCheck = New Command
+      Dim cmdLoginCheck = New ADODB.Command
       cmdLoginCheck.CommandText = "sp_ASRIntCheckLogin"
       cmdLoginCheck.CommandType = 4
       ' Stored Procedure
@@ -480,7 +479,7 @@ Namespace Controllers
       Dim prmPasswordLength = cmdLoginCheck.CreateParameter("pwdLength", 3, 1)
       ' 3 = integer, 1 = input
       cmdLoginCheck.Parameters.Append(prmPasswordLength)
-      prmPasswordLength.Value = cleanNumeric(Len(sPassword))
+      prmPasswordLength.Value = CleanNumeric(Len(sPassword))
 
       Dim prmUserType = cmdLoginCheck.CreateParameter("userType", 3, 2)
       ' 3 = integer, 2 = output
@@ -494,11 +493,11 @@ Namespace Controllers
 
         If Err.Number = -2147217900 Then
           Session("ErrorText") = "Unable to login to the OpenHR database:<p>" &
-           formatError(
+           FormatError(
             "Please ask the System Administrator to update the database in the System Manager.")
         Else
           Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
-           formatError(Err.Description)
+           FormatError(Err.Description)
         End If
         Return RedirectToAction("Loginerror")
       End If
@@ -518,7 +517,7 @@ Namespace Controllers
 
       ' NPG20091102 Fault HRPRO-354
       ' Retrieve the user's group name and assign it to a session variable
-      Dim cmdDetail = New Command
+      Dim cmdDetail = New ADODB.Command
       cmdDetail.CommandText = "spASRGetActualUserDetails"
       cmdDetail.CommandType = 4
       ' Stored Procedure      
@@ -548,11 +547,11 @@ Namespace Controllers
 
         If Err.Number = -2147217900 Then
           Session("ErrorText") = "Unable to login to the OpenHR database:<p>" &
-           formatError(
+           FormatError(
             "Please ask the System Administrator to update the database in the System Manager.")
         Else
           Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
-           formatError(Err.Description)
+           FormatError(Err.Description)
         End If
         Return RedirectToAction("Loginerror")
       End If
@@ -562,7 +561,7 @@ Namespace Controllers
 
 
       ' Do we have DMI Multi-record access?	
-      Dim cmdDmiUser = New Command
+      Dim cmdDmiUser = New ADODB.Command
       cmdDmiUser.CommandText =
         "SELECT count(ItemID) as blah" & vbNewLine & _
         "FROM ASRSysGroupPermissions" & vbNewLine & _
@@ -605,7 +604,7 @@ Namespace Controllers
 
 
       ' If the users default database is not 'master' then make it so.
-      Dim cmdDefaultDB = New Command
+      Dim cmdDefaultDB = New ADODB.Command
       cmdDefaultDB.CommandText =
        "IF EXISTS(SELECT 1 FROM master..syslogins WHERE loginname = SUSER_NAME() AND dbname <> 'master')" & vbNewLine &
        "	EXEC sp_defaultdb [" & sUserName & "], master"
@@ -647,14 +646,14 @@ Namespace Controllers
         "       WHERE uid = @iUserGroupID"
 
       'cmdCreateCache.CommandType = 4 ' Stored Procedure
-      Dim cmdCreateCache = New Command
+      Dim cmdCreateCache = New ADODB.Command
       cmdCreateCache.ActiveConnection = conX
       cmdCreateCache.CommandText = sString
       cmdCreateCache.Execute()
       cmdCreateCache = Nothing
 
       ' RH 18/04/01 - Put entry in the audit access log
-      Dim cmdAudit = New Command
+      Dim cmdAudit = New ADODB.Command
       cmdAudit.CommandText = "sp_ASRIntAuditAccess"
       cmdAudit.CommandType = 4
       ' Stored Procedure
@@ -681,7 +680,7 @@ Namespace Controllers
       cmdAudit = Nothing
 
       ' Get Personnel module parameters		
-      Dim cmdPersonnel = New Command
+      Dim cmdPersonnel = New ADODB.Command
       cmdPersonnel.CommandText = "sp_ASRIntGetPersonnelParameters"
       cmdPersonnel.CommandType = 4
       ' Stored Procedure
@@ -706,7 +705,7 @@ Namespace Controllers
       cmdPersonnel = Nothing
 
       ' Get Workflow module parameters		
-      Dim cmdWorkflow = New Command
+      Dim cmdWorkflow = New ADODB.Command
       cmdWorkflow.CommandText = "spASRIntGetWorkflowParameters"
       cmdWorkflow.CommandType = 4
       ' Stored Procedure
@@ -736,7 +735,7 @@ Namespace Controllers
       Dim iWorkflowRecordCount = 0
 
       If Session("WF_Enabled") Then
-        cmdWorkflow = New Command
+        cmdWorkflow = New ADODB.Command
         cmdWorkflow.CommandText = "spASRWorkflowOutOfOfficeConfigured"
         cmdWorkflow.CommandType = 4
         ' Stored Procedure
@@ -755,7 +754,7 @@ Namespace Controllers
 
         If fWorkflowOutOfOfficeConfigured Then
           ' Check if the current user OutOfOffice
-          cmdWorkflow = New Command
+          cmdWorkflow = New ADODB.Command
           cmdWorkflow.CommandText = "spASRWorkflowOutOfOfficeCheck"
           cmdWorkflow.CommandType = 4
           ' Stored Procedure
@@ -783,7 +782,7 @@ Namespace Controllers
       Session("WF_RecordCount") = iWorkflowRecordCount
 
       ' Get Training Booking module parameters		
-      Dim cmdTrainingBooking = New Command
+      Dim cmdTrainingBooking = New ADODB.Command
       cmdTrainingBooking.CommandText = "sp_ASRIntGetTrainingBookingParameters"
       cmdTrainingBooking.CommandType = 4
       ' Stored Procedure
@@ -990,7 +989,7 @@ Namespace Controllers
 
 
       ' Get the Find Window Block Size.
-      Dim cmdFindSize = New Command
+      Dim cmdFindSize = New ADODB.Command
       cmdFindSize.CommandText = "sp_ASRIntGetSetting"
       cmdFindSize.CommandType = 4
       ' Stored procedure.
@@ -1033,7 +1032,7 @@ Namespace Controllers
       cmdFindSize = Nothing
 
       ' Get the Primary Record Editing Start Mode.
-      Dim cmdPrimaryStartMode = New Command
+      Dim cmdPrimaryStartMode = New ADODB.Command
       cmdPrimaryStartMode.CommandText = "sp_ASRIntGetSetting"
       cmdPrimaryStartMode.CommandType = 4
       ' Stored procedure.
@@ -1069,7 +1068,7 @@ Namespace Controllers
       cmdPrimaryStartMode = Nothing
 
       ' Get the History Record Editing Start Mode.
-      Dim cmdHistoryStartMode = New Command
+      Dim cmdHistoryStartMode = New ADODB.Command
       cmdHistoryStartMode.CommandText = "sp_ASRIntGetSetting"
       cmdHistoryStartMode.CommandType = 4
       ' Stored procedure.
@@ -1105,7 +1104,7 @@ Namespace Controllers
       cmdHistoryStartMode = Nothing
 
       ' Get the Lookup Record Editing Start Mode.
-      Dim cmdLookupStartMode = New Command
+      Dim cmdLookupStartMode = New ADODB.Command
       cmdLookupStartMode.CommandText = "sp_ASRIntGetSetting"
       cmdLookupStartMode.CommandType = 4
       ' Stored procedure.
@@ -1141,7 +1140,7 @@ Namespace Controllers
       cmdLookupStartMode = Nothing
 
       ' Get the Quick Access Record Editing Start Mode.
-      Dim cmdQuickAccessStartMode = New Command
+      Dim cmdQuickAccessStartMode = New ADODB.Command
       cmdQuickAccessStartMode.CommandText = "sp_ASRIntGetSetting"
       cmdQuickAccessStartMode.CommandType = 4
       ' Stored procedure.
@@ -1177,7 +1176,7 @@ Namespace Controllers
       cmdQuickAccessStartMode = Nothing
 
       ' Get the Expression Colour setting.
-      Dim cmdExprColourMode = New Command
+      Dim cmdExprColourMode = New ADODB.Command
       cmdExprColourMode.CommandText = "sp_ASRIntGetSetting"
       cmdExprColourMode.CommandType = 4
       ' Stored procedure.
@@ -1213,7 +1212,7 @@ Namespace Controllers
       cmdExprColourMode = Nothing
 
       ' Get the Expression Node Expansion setting.
-      Dim cmdExprNodeMode = New Command
+      Dim cmdExprNodeMode = New ADODB.Command
       cmdExprNodeMode.CommandText = "sp_ASRIntGetSetting"
       cmdExprNodeMode.CommandType = 4
       ' Stored procedure.
@@ -1249,7 +1248,7 @@ Namespace Controllers
       cmdExprNodeMode = Nothing
 
       'Support details - tel no
-      Dim cmdSupportInfo = New Command
+      Dim cmdSupportInfo = New ADODB.Command
       cmdSupportInfo.CommandText = "sp_ASRIntGetSetting"
       cmdSupportInfo.CommandType = 4
       ' Stored procedure.
@@ -1285,7 +1284,7 @@ Namespace Controllers
       cmdSupportInfo = Nothing
 
       'Support details - Fax
-      cmdSupportInfo = New Command
+      cmdSupportInfo = New ADODB.Command
       cmdSupportInfo.CommandText = "sp_ASRIntGetSetting"
       cmdSupportInfo.CommandType = 4
       ' Stored procedure.
@@ -1321,7 +1320,7 @@ Namespace Controllers
       cmdSupportInfo = Nothing
 
       'Support details - Email
-      cmdSupportInfo = New Command
+      cmdSupportInfo = New ADODB.Command
       cmdSupportInfo.CommandText = "sp_ASRIntGetSetting"
       cmdSupportInfo.CommandType = 4
       ' Stored procedure.
@@ -1357,7 +1356,7 @@ Namespace Controllers
       cmdSupportInfo = Nothing
 
       'Support details - Webpage
-      cmdSupportInfo = New Command
+      cmdSupportInfo = New ADODB.Command
       cmdSupportInfo.CommandText = "sp_ASRIntGetSetting"
       cmdSupportInfo.CommandType = 4
       ' Stored procedure.
@@ -1394,7 +1393,7 @@ Namespace Controllers
 
 
       ' Get the configured Single record view ID. 	For the dashboard.
-      Dim cmdModuleInfo = New Command
+      Dim cmdModuleInfo = New ADODB.Command
       cmdModuleInfo.CommandText = "spASRIntGetSingleRecordViewID"
       cmdModuleInfo.CommandType = 4
       ' Stored Procedure
@@ -1474,7 +1473,7 @@ Namespace Controllers
 
       If fForcePasswordChange = True Then
         ' Force password change only if there are no other users logged in with the same name.
-        Dim cmdCheckUserSessions = New Command
+        Dim cmdCheckUserSessions = New ADODB.Command
         cmdCheckUserSessions.CommandText = "spASRGetCurrentUsersCountOnServer"
         cmdCheckUserSessions.CommandType = 4
         ' Stored procedure.
@@ -1512,7 +1511,7 @@ Namespace Controllers
             Dim sErrorDescription = ""
 
             ' Get the self-service record ID.
-            Dim cmdSSRecord = New Command
+            Dim cmdSSRecord = New ADODB.Command
             cmdSSRecord.CommandText = "spASRIntGetSelfServiceRecordID"
             'Get Single Record ID
             cmdSSRecord.CommandType = 4
@@ -1558,7 +1557,7 @@ Namespace Controllers
 
             ' Get the record description.
             Dim sRecDesc = ""
-            Dim cmdGetRecordDesc = New Command
+            Dim cmdGetRecordDesc As ADODB.Command = New ADODB.Command
 
             cmdGetRecordDesc.CommandText = "sp_ASRIntGetRecordDescription"
             cmdGetRecordDesc.CommandType = 4
