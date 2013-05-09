@@ -103,27 +103,15 @@
 %>
 
 
-<OBJECT 
-	classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" 
-	id="Microsoft_Licensed_Class_Manager_1_0" 
-	VIEWASTEXT>
-	<PARAM NAME="LPKPath" VALUE="lpks/main.lpk">
-</OBJECT>
-
 <script type="text/javascript">
-    function EventLog_window_onload() {
+    
+    function eventLog_window_onload() {
 
-        //window.parent.document.all.item("workframeset").cols = "*, 0";
         $("#workframe").attr("data-framesource", "EVENTLOG");
         
-        frmLog.cboUsername.style.color = 'white';
-        frmLog.cboType.style.color = 'white';
-        frmLog.cboMode.style.color = 'white';
-        frmLog.cboStatus.style.color = 'white';
-	
         setGridFont(frmLog.ssOleDBGridEventLog);
-	
-        var fOK
+
+        var fOK;
         fOK = true;	
 
         var sErrMsg = frmUseful.txtErrorDescription.value;
@@ -145,23 +133,13 @@
 
         refreshUsers();
 
-        // Little dodge to get around a browser bug that
-        // does not refresh the display on all controls.
-        try
-        {
-            window.resizeBy(0,-1);
-            window.resizeBy(0,1);
-        }
-        catch(e) {}
     }
-
 </script>
 
 
     
 
-<script type="text/javascript" id=scptGeneralFunctions>
-<!--
+<script type="text/javascript">
 	
     function moveRecord(psMovement)
     {
@@ -219,11 +197,11 @@
             iEndPosition = iStartPosition - 1 + parseInt(frmData.txtELCurrentRecCount.value);
 						
             sCaption = "Records " +
-                        iStartPosition +
-                        " to " +
-                        iEndPosition +
-                        " of " +
-                        sRecords;
+                iStartPosition +
+                " to " +
+                iEndPosition +
+                " of " +
+                sRecords;
         }
         else 
         {
@@ -432,21 +410,21 @@
         var sURL;
 		
         sURL = "eventLogSelection" +
-			"?txtEventID=" + frmDetails.txtEventID.value +
-			"&txtEventName=" + escape(frmDetails.txtEventName.value) + 
-			"&txtEventMode=" + escape(frmDetails.txtEventMode.value) +
-			"&txtEventStartTime=" + frmDetails.txtEventStartTime.value +
-			"&txtEventEndTime=" + frmDetails.txtEventEndTime.value +
-			"&txtEventDuration=" + frmDetails.txtEventDuration.value +
-			"&txtEventType=" + escape(frmDetails.txtEventType.value) +
-			"&txtEventStatus=" + escape(frmDetails.txtEventStatus.value) +
-			"&txtEventUser=" + escape(frmDetails.txtEventUser.value) +
-			"&txtEventSuccessCount=" + frmDetails.txtEventSuccessCount.value +
-			"&txtEventFailCount=" + frmDetails.txtEventFailCount.value +
-			"&txtEventBatchName=" + escape(frmDetails.txtEventBatchName.value) +
-			"&txtEventBatchJobID=" + frmDetails.txtEventBatchJobID.value +
-			"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
-			"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
+            "?txtEventID=" + frmDetails.txtEventID.value +
+            "&txtEventName=" + escape(frmDetails.txtEventName.value) + 
+            "&txtEventMode=" + escape(frmDetails.txtEventMode.value) +
+            "&txtEventStartTime=" + frmDetails.txtEventStartTime.value +
+            "&txtEventEndTime=" + frmDetails.txtEventEndTime.value +
+            "&txtEventDuration=" + frmDetails.txtEventDuration.value +
+            "&txtEventType=" + escape(frmDetails.txtEventType.value) +
+            "&txtEventStatus=" + escape(frmDetails.txtEventStatus.value) +
+            "&txtEventUser=" + escape(frmDetails.txtEventUser.value) +
+            "&txtEventSuccessCount=" + frmDetails.txtEventSuccessCount.value +
+            "&txtEventFailCount=" + frmDetails.txtEventFailCount.value +
+            "&txtEventBatchName=" + escape(frmDetails.txtEventBatchName.value) +
+            "&txtEventBatchJobID=" + frmDetails.txtEventBatchJobID.value +
+            "&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
+            "&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
 
         openDialog(sURL, 500,225);
     }
@@ -456,21 +434,21 @@
         var sURL;
 		
         sURL = "EventLogPurge" +
-			"?txtEventID=" + frmDetails.txtEventID.value +
-			"&txtEventName=" + escape(frmDetails.txtEventName.value) + 
-			"&txtEventMode=" + escape(frmDetails.txtEventMode.value) +
-			"&txtEventStartTime=" + frmDetails.txtEventStartTime.value +
-			"&txtEventEndTime=" + frmDetails.txtEventEndTime.value +
-			"&txtEventDuration=" + frmDetails.txtEventDuration.value +
-			"&txtEventType=" + escape(frmDetails.txtEventType.value) +
-			"&txtEventStatus=" + escape(frmDetails.txtEventStatus.value) +
-			"&txtEventUser=" + escape(frmDetails.txtEventUser.value) +
-			"&txtEventSuccessCount=" + frmDetails.txtEventSuccessCount.value +
-			"&txtEventFailCount=" + frmDetails.txtEventFailCount.value +
-			"&txtEventBatchName=" + escape(frmDetails.txtEventBatchName.value) +
-			"&txtEventBatchJobID=" + frmDetails.txtEventBatchJobID.value +
-			"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
-			"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
+            "?txtEventID=" + frmDetails.txtEventID.value +
+            "&txtEventName=" + escape(frmDetails.txtEventName.value) + 
+            "&txtEventMode=" + escape(frmDetails.txtEventMode.value) +
+            "&txtEventStartTime=" + frmDetails.txtEventStartTime.value +
+            "&txtEventEndTime=" + frmDetails.txtEventEndTime.value +
+            "&txtEventDuration=" + frmDetails.txtEventDuration.value +
+            "&txtEventType=" + escape(frmDetails.txtEventType.value) +
+            "&txtEventStatus=" + escape(frmDetails.txtEventStatus.value) +
+            "&txtEventUser=" + escape(frmDetails.txtEventUser.value) +
+            "&txtEventSuccessCount=" + frmDetails.txtEventSuccessCount.value +
+            "&txtEventFailCount=" + frmDetails.txtEventFailCount.value +
+            "&txtEventBatchName=" + escape(frmDetails.txtEventBatchName.value) +
+            "&txtEventBatchJobID=" + frmDetails.txtEventBatchJobID.value +
+            "&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
+            "&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
 
         openDialog(sURL, 500, 180);
 
@@ -549,7 +527,7 @@
         // Get the columns/calcs for the current table selection.
         var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
         frmGetDataForm.txtAction.value = "LOADEVENTLOGUSERS";
-    //    data_refreshData();
+        //    data_refreshData();
         OpenHR.submitForm(frmGetDataForm);
 
     }
@@ -617,11 +595,6 @@
         refreshGrid();
     }
 	
-    function okClick()
-    {
-        window.location.href="default";
-    }
-
     function openDialog(pDestination, pWidth, pHeight) {
 
         dlgwinprops = "center:yes;" +
@@ -634,14 +607,12 @@
         window.showModalDialog(pDestination, self, dlgwinprops);
     }
 
-    -->
 </script>
 
 <OBJECT classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB" 
 	id=dialog 
   codebase="cabs/comdlg32.cab#Version=1,0,0,0"
-	style="LEFT: 0px; TOP: 0px" 
-	VIEWASTEXT>
+	style="LEFT: 0px; TOP: 0px">
 	<PARAM NAME="_ExtentX" VALUE="847">
 	<PARAM NAME="_ExtentY" VALUE="847">
 	<PARAM NAME="_Version" VALUE="393216">
@@ -812,12 +783,6 @@
         Response.Write("											<option value=16>Match Report" & vbCrLf)
     End If
 	
-	'if Session("CurrentType") = "14" then
-	'	Response.Write "											<option value=14 selected>Record Editing" & vbCrLf
-	'else
-	'	Response.Write "											<option value=14>Record Editing" & vbCrLf
-	'end if
-
     If Session("CurrentType") = "20" Then
         Response.Write("											<option value=20 selected>Record Profile" & vbCrLf)
     Else
@@ -937,11 +902,6 @@
 <%
 
 	dim avColumnDef(13,4)
-	dim cmdEventLogRecords
-	dim rsEventLogRecords
-	dim lngRowCount
-	dim iLoop
-	dim sAddString
 	
 	avColumnDef(0,0) = "ID"				'name
 	avColumnDef(0,1) = "ID"				'caption
@@ -1149,16 +1109,6 @@
 								</td>
 								<td width=80>
 									<TABLE WIDTH=100% class="invisible" CELLSPACING=0 CELLPADDING=2>
-										<TR>
-											<TD width=10>
-												<INPUT id=cmdOK type=button class="btn" value=OK name=cmdOK style="WIDTH: 80px" width="80" 
-											        onclick="okClick();"
-		                                            onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-		                                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-		                                            onfocus="try{button_onFocus(this);}catch(e){}"
-		                                            onblur="try{button_onBlur(this);}catch(e){}" />
-											</TD>
-										</TR>
 										<tr height=10>
 										<td></td>
 										</tr>
@@ -1222,13 +1172,12 @@
 				<tr height=8> 
 					<TD width=5></td>
 					<td colspan=1>
-						<TABLE WIDTH=100% class="invisible" CELLSPACING=0 CELLPADDING=1>
-							<TR >
-								<TD name=sbEventLog id=sbEventLog>
-								&nbsp
-								</TD>
-							</TD>
-						</TABLE>
+                        <table width="100%" class="invisible" cellspacing="0" cellpadding="1">
+                            <tr>
+                                <td name="sbEventLog" id="sbEventLog">&nbsp
+                                </td>
+                    </td>
+            </table>
 					</td>
 					<TD width=5></td>
 				</tr> 
@@ -1237,81 +1186,80 @@
 	</tr> 
 </TABLE>
 
-<INPUT type='hidden' id=txtELDeletePermission name=txtELDeletePermission>
-<INPUT type='hidden' id=txtELViewAllPermission name=txtELViewAllPermission>
-<INPUT type='hidden' id=txtELPurgePermission name=txtELPurgePermission>
-<INPUT type='hidden' id=txtELEmailPermission name=txtELEmailPermission>
-<INPUT type='hidden' id=txtELOrderColumn name=txtELOrderColumn value='DateTime'>
-<INPUT type='hidden' id=txtELOrderOrder name=txtELOrderOrder value='DESC'>
-<INPUT type='hidden' id=txtELSortColumnIndex name=txtELSortColumnIndex value=1>
-<INPUT type='hidden' id=txtELLoaded name=txtELLoaded value=0>
-<INPUT type="hidden" id=txtCurrUserFilter name=txtCurrUserFilter value='<%=Session("CurrentUsername")%>'>
-
+    <input type='hidden' id="txtELDeletePermission" name="txtELDeletePermission">
+    <input type='hidden' id="txtELViewAllPermission" name="txtELViewAllPermission">
+    <input type='hidden' id="txtELPurgePermission" name="txtELPurgePermission">
+    <input type='hidden' id="txtELEmailPermission" name="txtELEmailPermission">
+    <input type='hidden' id="txtELOrderColumn" name="txtELOrderColumn" value='DateTime'>
+    <input type='hidden' id="txtELOrderOrder" name="txtELOrderOrder" value='DESC'>
+    <input type='hidden' id="txtELSortColumnIndex" name="txtELSortColumnIndex" value="1">
+    <input type='hidden' id="txtELLoaded" name="txtELLoaded" value="0">
+    <input type="hidden" id="txtCurrUserFilter" name="txtCurrUserFilter" value='<%=Session("CurrentUsername")%>'>
 </form>
 
-<FORM action="default_Submit" method=post id=frmGoto name=frmGoto>
+<form action="default_Submit" method="post" id="frmGoto" name="frmGoto">
     <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-</FORM>
+</form>
 
-<FORM id=frmDetails name=frmDetails method=post style="visibility:hidden;display:none">
-	<INPUT type="hidden" id=txtEventID name=txtEventID>
+<form id="frmDetails" name="frmDetails" method="post" style="visibility: hidden; display: none">
+    <input type="hidden" id="txtEventID" name="txtEventID">
 
-	<INPUT type="hidden" id=txtEventName name=txtEventName>
-	<INPUT type="hidden" id=txtEventMode name=txtEventMode>
+    <input type="hidden" id="txtEventName" name="txtEventName">
+    <input type="hidden" id="txtEventMode" name="txtEventMode">
 
-	<INPUT type="hidden" id=txtEventStartTime name=txtEventStartTime>
-	<INPUT type="hidden" id=txtEventEndTime name=txtEventEndTime>
-	<INPUT type="hidden" id=txtEventDuration name=txtEventDuration>
+    <input type="hidden" id="txtEventStartTime" name="txtEventStartTime">
+    <input type="hidden" id="txtEventEndTime" name="txtEventEndTime">
+    <input type="hidden" id="txtEventDuration" name="txtEventDuration">
 
-	<INPUT type="hidden" id=txtEventType name=txtEventType>
-	<INPUT type="hidden" id=txtEventStatus name=txtEventStatus>
-	<INPUT type="hidden" id=txtEventUser name=txtEventUser>
-	
-	<INPUT type="hidden" id=txtEventSuccessCount name=txtEventSuccessCount>
-	<INPUT type="hidden" id=txtEventFailCount name=txtEventFailCount>
+    <input type="hidden" id="txtEventType" name="txtEventType">
+    <input type="hidden" id="txtEventStatus" name="txtEventStatus">
+    <input type="hidden" id="txtEventUser" name="txtEventUser">
 
-	<INPUT type="hidden" id=txtEventBatchName name=txtEventBatchName>
-	<INPUT type="hidden" id=txtEventBatchJobID name=txtEventBatchJobID>
-	<INPUT type="hidden" id=txtEventBatchRunID name=txtEventBatchRunID>
-	
-	<INPUT type="hidden" id=txtEmailPermission name=txtEmailPermission>
-</FORM>
+    <input type="hidden" id="txtEventSuccessCount" name="txtEventSuccessCount">
+    <input type="hidden" id="txtEventFailCount" name="txtEventFailCount">
 
-<FORM id=frmPurge name=frmPurge method=post style="visibility:hidden;display:none" action="eventLog">
-	<INPUT type="hidden" id=txtDoesPurge name=txtDoesPurge>
-	<INPUT type="hidden" id=txtPurgePeriod name=txtPurgePeriod>
-	<INPUT type="hidden" id=txtPurgeFrequency name=txtPurgeFrequency>
-	<INPUT type="hidden" id=txtShowPurgeMSG name=txtShowPurgeMSG value=<%=Session("showPurgeMessage")%>>
-	<INPUT type="hidden" id=txtCurrentUsername name=txtCurrentUsername>
-	<INPUT type="hidden" id=txtCurrentType name=txtCurrentType>
-	<INPUT type="hidden" id=txtCurrentMode name=txtCurrentMode>
-	<INPUT type="hidden" id=txtCurrentStatus name=txtCurrentStatus>
-</FORM>
+    <input type="hidden" id="txtEventBatchName" name="txtEventBatchName">
+    <input type="hidden" id="txtEventBatchJobID" name="txtEventBatchJobID">
+    <input type="hidden" id="txtEventBatchRunID" name="txtEventBatchRunID">
 
-<FORM id=frmDelete name=frmDelete method=post style="visibility:hidden;display:none" action="eventLog">
-	<INPUT type="hidden" id=txtDeleteSel name=txtDeleteSel>
-	<INPUT type="hidden" id=txtSelectedIDs name=txtSelectedIDs>
-	<INPUT type="hidden" id=txtViewAllPerm name=txtViewAllPerm>
-	<INPUT type="hidden" id=Hidden1 name=txtCurrentUsername>
-	<INPUT type="hidden" id=Hidden2 name=txtCurrentType>
-	<INPUT type="hidden" id=Hidden3 name=txtCurrentMode>
-	<INPUT type="hidden" id=Hidden4 name=txtCurrentStatus>
-</FORM>
+    <input type="hidden" id="txtEmailPermission" name="txtEmailPermission">
+</form>
 
-<FORM id=frmEmail name=frmEmail method=post style="visibility:hidden;display:none" action="emailSelection">
-	<INPUT type="hidden" id=txtSelectedEventIDs name=txtSelectedEventIDs>
-	<INPUT type="hidden" id=txtFromMain name=txtFromMain value=1>
-	<INPUT type="hidden" id=txtEmailOrderColumn name=txtEmailOrderColumn>
-	<INPUT type="hidden" id=txtEmailOrderOrder name=txtEmailOrderOrder>
-</FORM>
+<form id="frmPurge" name="frmPurge" method="post" style="visibility: hidden; display: none" action="eventLog">
+    <input type="hidden" id="txtDoesPurge" name="txtDoesPurge">
+    <input type="hidden" id="txtPurgePeriod" name="txtPurgePeriod">
+    <input type="hidden" id="txtPurgeFrequency" name="txtPurgeFrequency">
+    <input type="hidden" id="txtShowPurgeMSG" name="txtShowPurgeMSG" value='<%=Session("showPurgeMessage")%>'>
+    <input type="hidden" id="txtCurrentUsername" name="txtCurrentUsername">
+    <input type="hidden" id="txtCurrentType" name="txtCurrentType">
+    <input type="hidden" id="txtCurrentMode" name="txtCurrentMode">
+    <input type="hidden" id="txtCurrentStatus" name="txtCurrentStatus">
+</form>
 
-<FORM id=frmRefresh name=frmRefresh method=post style="visibility:hidden;display:none" action="eventLog">
-	<INPUT type="hidden" id=txtEventExisted name=txtEventExisted>
-	<INPUT type="hidden" id=Hidden5 name=txtCurrentUsername>
-	<INPUT type="hidden" id=Hidden6 name=txtCurrentType>
-	<INPUT type="hidden" id=Hidden7 name=txtCurrentMode>
-	<INPUT type="hidden" id=Hidden8 name=txtCurrentStatus>
-</FORM>
+<form id="frmDelete" name="frmDelete" method="post" style="visibility: hidden; display: none" action="eventLog">
+    <input type="hidden" id="txtDeleteSel" name="txtDeleteSel">
+    <input type="hidden" id="txtSelectedIDs" name="txtSelectedIDs">
+    <input type="hidden" id="txtViewAllPerm" name="txtViewAllPerm">
+    <input type="hidden" id="txtCurrentUsername" name="txtCurrentUsername">
+    <input type="hidden" id="txtCurrentType" name="txtCurrentType">
+    <input type="hidden" id="txtCurrentMode" name="txtCurrentMode">
+    <input type="hidden" id="txtCurrentStatus" name="txtCurrentStatus">
+</form>
+
+<form id="frmEmail" name="frmEmail" method="post" style="visibility: hidden; display: none" action="emailSelection">
+    <input type="hidden" id="txtSelectedEventIDs" name="txtSelectedEventIDs">
+    <input type="hidden" id="txtFromMain" name="txtFromMain" value="1">
+    <input type="hidden" id="txtEmailOrderColumn" name="txtEmailOrderColumn">
+    <input type="hidden" id="txtEmailOrderOrder" name="txtEmailOrderOrder">
+</form>
+
+<form id="frmRefresh" name="frmRefresh" method="post" style="visibility: hidden; display: none" action="eventLog">
+    <input type="hidden" id="txtEventExisted" name="txtEventExisted">
+    <input type="hidden" id="txtCurrentUsername" name="txtCurrentUsername">
+    <input type="hidden" id="txtCurrentType" name="txtCurrentType">
+    <input type="hidden" id="txtCurrentMode" name="txtCurrentMode">
+    <input type="hidden" id="txtCurrentStatus" name="txtCurrentStatus">
+</form>
 
 <%
 	Session("showPurgeMessage") = 0
@@ -1367,7 +1315,7 @@
 
 <script type="text/javascript">
 
-    function addActiveXHandlers() {
+    function eventlog_addActiveXHandlers() {
 
         OpenHR.addActiveXHandler("ssOleDBGridEventLog", "DblClick", ssOleDBGridEventLog_dblclick);
         OpenHR.addActiveXHandler("ssOleDBGridEventLog", "rowcolchange", ssOleDBGridEventLog_rowcolchange);
@@ -1472,14 +1420,10 @@
     }
 
 
-
-
-
-
 </script>
 
 
 <script type="text/javascript">
-  //  addActiveXHandlers();
-    EventLog_window_onload();   
+    eventlog_addActiveXHandlers();
+    eventLog_window_onload();   
 </script>
