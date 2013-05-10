@@ -50,19 +50,21 @@ function button_onBlur(obj)
 	}
 }
 
-function button_disable(obj, pfDisable)
-{
-	return false;
-	obj.disabled = pfDisable;
+function button_disable(obj, pfDisable) {
+	//modified for use with themeroller
+	//obj.disabled = pfDisable;
+	var objectID = obj.id;
 
-	if (pfDisable == true)
-	{
-		obj.className='btn btndisabled';
+	if (objectID) {
+		if (pfDisable == true) {
+			//obj.className='btn btndisabled';
+			$("#" + objectID).addClass("ui-state-disabled btndisabled").prop("disabled", true);
+		} else {
+			//obj.className='btn';
+			$("#" + objectID).removeClass("ui-state-disabled btndisabled").prop("disabled", false);
+		}
 	}
-	else
-	{
-		obj.className='btn';
-	}
+	
 }
 // --------------------------------------------------
 // Hypertext Labels
