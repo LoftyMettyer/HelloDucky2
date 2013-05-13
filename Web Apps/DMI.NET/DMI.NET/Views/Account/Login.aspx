@@ -496,7 +496,7 @@ Else
                     </td>
                     <td width="10"></td>
                     <td align="center">
-	                    <input type="button" id="details" name="details" class="ui-button" style="width: 90px;"
+	                    <input type="button" id="details" name="details" class="ui-button" style=""
 	                           onclick="toggleDetails()" value="Details" />
                     </td>
                 </tr>

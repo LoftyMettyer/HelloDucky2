@@ -24,6 +24,22 @@ div.COAwallpapered
     right: 0px;
 }
 
+.footer-banner {	
+	position: absolute; 
+	bottom: 0; 
+	right: 0; 
+	width: 40%; 
+	height: 35px;
+	border-radius: 20px 0 0 0;
+}
+
+.footer-banner p {
+	position: fixed;
+	padding-top: 6px;
+	margin: 0;
+	right: 10px;
+}
+
 TD
 {
 	/*font-size: 10pt;

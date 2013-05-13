@@ -358,6 +358,8 @@ function menu_abMainMenu_DataReady() {
 //}
 
 function menu_abMainMenu_Click(pTool) {
+	//reject disabled icon clicks
+	if ($("#" + pTool).hasClass("disabled")) return false;
 	menu_MenuClick(pTool);
 }
 
@@ -792,8 +794,7 @@ function menu_CloseWait() {
 
 }
 
-function menu_refreshMenu() {
-
+function menu_refreshMenu() {	
 	// Refresh the menu.
 	var lngRecordID;
 	var sCaption;
@@ -918,8 +919,18 @@ function menu_refreshMenu() {
 	menu_enableMenu();
 
     //hide the utilities menu block.
-    $("#mnuSectionUtilities").hide();
+	//$("#mnuSectionUtilities").hide();
+	menu_toolbarEnableItem("mnutoolNewUtil", false);
+	menu_toolbarEnableItem("mnutoolEditUtil", false);
+	menu_toolbarEnableItem("mnutoolCopyUtil", false);
+	menu_toolbarEnableItem("mnutoolDeleteUtil", false);
+	menu_toolbarEnableItem("mnutoolPrintUtil", false);
+	menu_toolbarEnableItem("mnutoolPropertiesUtil", false);
+	menu_toolbarEnableItem("mnutillRunUtil", false);
 	
+	//$("#toolbarHome").click();
+
+
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 	
 	if (sCurrentWorkPage == "RECORDEDIT") {
@@ -1399,19 +1410,24 @@ function menu_refreshMenu() {
 
 				}
 				else {
-					//mnubandMainToolBar = ribbon.
-					//abMainMenu.Bands("mnubandMainToolBar").visible = false;
+					if (sCurrentWorkPage == "DEFSEL") {						
+						$("#toolbarUtilities").show();
+						$("#toolbarUtilities").click();
+					} else {
+						//mnubandMainToolBar = ribbon.
+						//abMainMenu.Bands("mnubandMainToolBar").visible = false;
 
-					//abMainMenu.Tools("mnutoolRecord").visible = false;
-					$("#mnutoolRecord").hide();
+						//abMainMenu.Tools("mnutoolRecord").visible = false;
+						$("#mnutoolRecord").hide();
 
-					//abMainMenu.Tools("mnutoolHistory").visible = false;
-					$("#mnutoolHistory").hide();
+						//abMainMenu.Tools("mnutoolHistory").visible = false;
+						$("#mnutoolHistory").hide();
+					}
 				}
 			}
 		}
 	}
-
+	
     // enable/disable the tools required for the event log
 	if ((sCurrentWorkPage == "EVENTLOG")) {
 
@@ -4334,22 +4350,35 @@ function menu_enableMenuItem(itemId, fNewSetting) {
 }
 
 function menu_toolbarEnableItem(itemId, fNewSetting) {
-	
+
 	var currSrc = $("#" + itemId + " img:first").attr("src");
-	
-		if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
-			//apply disable icon
-			if (currSrc.indexOf("HOVER") <= 0) {
-				$("#" + itemId + " img:first").attr("src", currSrc.replace("DIS.png", "HOVER.png"));
-				$("#" + itemId).removeClass("disabled");
-			}
-		} else {
-			//apply disable icon
-			if (currSrc.indexOf("DIS") <= 0) {
-				$("#" + itemId + " img:first").attr("src", currSrc.replace("HOVER.png", "DIS.png"));
-				$("#" + itemId).addClass("disabled");
-			}
+
+	if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
+		//apply disable icon
+		if (currSrc.indexOf("HOVER") <= 0) {
+			$("#" + itemId + " img:first").attr("src", currSrc.replace("DIS.png", "HOVER.png"));
+			$("#" + itemId).removeClass("disabled");
+			$("#" + itemId + " a").removeClass("disabled");
+			$("#" + itemId + " a h6").removeClass("disabled");
+
+			//$("#" + itemId).removeClass("ui-state-disabled");
+			//$("#" + itemId + " a").removeClass("ui-state-disabled");
+			//$("#" + itemId + " a h6").removeClass("ui-state-disabled");
 		}
+	} else {
+		//apply disable icon
+		if (currSrc.indexOf("DIS") <= 0) {
+			$("#" + itemId + " img:first").attr("src", currSrc.replace("HOVER.png", "DIS.png"));
+			$("#" + itemId).addClass("disabled");
+			$("#" + itemId + " a").addClass("disabled");
+			$("#" + itemId + " a h6").addClass("disabled");
+
+			//$("#" + itemId).addClass("ui-state-disabled");
+			//$("#" + itemId + " a").addClass("ui-state-disabled");
+			//$("#" + itemId + " a h6").addClass("ui-state-disabled");
+
+		}
+	}
 }
 
 

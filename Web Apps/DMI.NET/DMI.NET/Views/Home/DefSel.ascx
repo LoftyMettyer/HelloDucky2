@@ -310,14 +310,14 @@
         frmDefSel.cmdCancel.focus();
 
         refreshControls();
-
+	    
         if (frmDefSel.txtSingleRecordID.value > 0) {
             // Expand the option frame and hide the work frame.
             //TODO
             //window.parent.frames("menuframe").disableMenu();
         } else {
-            //TODO
-            //window.parent.frames("menuframe").refreshMenu();
+        	//TODO	    
+            menu_refreshMenu();
         }
 
         if (frmDefSel.txtSingleRecordID.value > 0) {
@@ -419,8 +419,17 @@
     function refreshControls() {
 	    
         //show the utilities menu block.
-        $("#mnuSectionUtilities").show();
-        $("#toolbarHome").click();
+    	//$("#mnuSectionUtilities").show();
+    	menu_toolbarEnableItem("mnutoolNewUtil", true);
+    	menu_toolbarEnableItem("mnutoolEditUtil", true);
+    	menu_toolbarEnableItem("mnutoolCopyUtil", true);
+    	menu_toolbarEnableItem("mnutoolDeleteUtil", true);
+    	menu_toolbarEnableItem("mnutoolPrintUtil", true);
+    	menu_toolbarEnableItem("mnutoolPropertiesUtil", true);
+    	menu_toolbarEnableItem("mnutillRunUtil", true);
+    	$("#toolbarUtilities").click();
+    	//$("#toolbarHome").click();
+	    //menu_refreshMenu();
 
         var fNoneSelected;
         var frmpermissions = document.getElementById('frmpermissions');
@@ -456,20 +465,21 @@
     }
 
     function showproperties() {
-        var sUrl;
-        var frmDefSel = document.getElementById('frmDefSel');
-		
-        var frmProp = document.getElementById('frmProp');
-        frmProp.prop_id.value = selectedRecordDetails("ID");
-        frmProp.prop_name.value = selectedRecordDetails("Name");
-        frmProp.utiltype.value = frmDefSel.utiltype.value;
+	    if (!$("#mnutoolPropertiesUtil").hasClass("disabled")) {
+		    var sUrl;
+		    var frmDefSel = document.getElementById('frmDefSel');
 
-        sUrl = "defselproperties" +
-            "?prop_name=" + escape(frmProp.prop_name.value) +
-            "&prop_id=" + frmProp.prop_id.value +
-            "&utiltype=" + frmProp.utiltype.value;
-        openDialog(sUrl, 500, 230);
+		    var frmProp = document.getElementById('frmProp');
+		    frmProp.prop_id.value = selectedRecordDetails("ID");
+		    frmProp.prop_name.value = selectedRecordDetails("Name");
+		    frmProp.utiltype.value = frmDefSel.utiltype.value;
 
+		    sUrl = "defselproperties" +
+			    "?prop_name=" + escape(frmProp.prop_name.value) +
+			    "&prop_id=" + frmProp.prop_id.value +
+			    "&utiltype=" + frmProp.utiltype.value;
+		    openDialog(sUrl, 500, 230);
+	    }
     }
 
     function pausecomp(millis) {
@@ -537,80 +547,86 @@
     }
 
     function setdelete() {
+	    if (!$("#mnutoolDeleteUtil").hasClass("disabled")) {
+		    var frmDefSel = document.getElementById('frmDefSel');
+		    var answer = OpenHR.messageBox("Delete this definition. Are you sure ?", 36, "Confirmation");
 
-        var frmDefSel = document.getElementById('frmDefSel');
-        var answer = OpenHR.messageBox("Delete this definition. Are you sure ?", 36, "Confirmation");
-
-        if (answer == 6) {
-            document.frmDefSel.action.value = "delete";
-            OpenHR.submitForm(frmDefSel);
-        }
+		    if (answer == 6) {
+			    document.frmDefSel.action.value = "delete";
+			    OpenHR.submitForm(frmDefSel);
+		    }
+	    }
     }
 
     function setrun() {
-        var frmDefSel = document.getElementById('frmDefSel');
+	    if (!$("#mnutillRunUtil").hasClass("disabled")) {
+		    var frmDefSel = document.getElementById('frmDefSel');
 
-            frmDefSel.action.value = "run";
+		    frmDefSel.action.value = "run";
 
-            var sUtilId;
+		    var sUtilId;
 
-            if (frmDefSel.utiltype.value == 25) {
-                // Workflow
-                var frmWorkflow = document.getElementById('frmWorkflow');
-                frmWorkflow.utiltype.value = frmDefSel.utiltype.value;
-                frmWorkflow.utilid.value = frmDefSel.utilid.value;
-                frmWorkflow.utilname.value = frmDefSel.utilname.value;
-                frmWorkflow.action.value = frmDefSel.action.value;
-                sUtilId = new String(frmDefSel.utilid.value);
+		    if (frmDefSel.utiltype.value == 25) {
+			    // Workflow
+			    var frmWorkflow = document.getElementById('frmWorkflow');
+			    frmWorkflow.utiltype.value = frmDefSel.utiltype.value;
+			    frmWorkflow.utilid.value = frmDefSel.utilid.value;
+			    frmWorkflow.utilname.value = frmDefSel.utilname.value;
+			    frmWorkflow.action.value = frmDefSel.action.value;
+			    sUtilId = new String(frmDefSel.utilid.value);
 
-                frmWorkflow.target = sUtilId;
-                NewWindow('', sUtilId, '500', '200', 'yes');
-                OpenHR.submitForm(frmWorkflow, null, false);
-            }
-            else {
+			    frmWorkflow.target = sUtilId;
+			    NewWindow('', sUtilId, '500', '200', 'yes');
+			    OpenHR.submitForm(frmWorkflow, null, false);
+		    } else {
 
-                var frmPrompt = document.getElementById('frmPrompt');
+			    var frmPrompt = document.getElementById('frmPrompt');
 
-                frmPrompt.utilid.value = frmDefSel.utilid.value;
-                frmPrompt.utilname.value = frmDefSel.utilname.value;
-                frmPrompt.action.value = frmDefSel.action.value;
+			    frmPrompt.utilid.value = frmDefSel.utilid.value;
+			    frmPrompt.utilname.value = frmDefSel.utilname.value;
+			    frmPrompt.action.value = frmDefSel.action.value;
 
-                OpenHR.showInReportFrame(document.frmPrompt); 
+			    OpenHR.showInReportFrame(document.frmPrompt);
 
-            }
+		    }
+	    }
     }
 
     function setnew() {
-
-        OpenHR.showPopup("Loading form. Please wait...");
-        document.frmDefSel.action.value = "new";
-        OpenHR.submitForm(document.frmDefSel);
+	    if (!$("#mnutoolNewUtil").hasClass("disabled")) {
+		    OpenHR.showPopup("Loading form. Please wait...");
+		    document.frmDefSel.action.value = "new";
+		    OpenHR.submitForm(document.frmDefSel);
+	    }
     }
 
     function setcopy() {
-        var frmDefSel = document.getElementById('frmDefSel');
+	    if (!$("#mnutoolCopyUtil").hasClass("disabled")) {
+		    var frmDefSel = document.getElementById('frmDefSel');
 
-        OpenHR.showPopup("Copying definition. Please wait...");
-        frmDefSel.action.value = "copy";
-        OpenHR.submitForm(frmDefSel);
+		    OpenHR.showPopup("Copying definition. Please wait...");
+		    frmDefSel.action.value = "copy";
+		    OpenHR.submitForm(frmDefSel);
+	    }
     }
 
     function setedit() {
-        var frmDefSel = document.getElementById('frmDefSel');
+	    if (!$("#mnutoolEditUtil").hasClass("disabled")) {
+		    var frmDefSel = document.getElementById('frmDefSel');
 
-            OpenHR.showPopup("Loading definition. Please wait...");
+		    OpenHR.showPopup("Loading definition. Please wait...");
 
-            if (frmDefSel.cmdEdit.value == "Edit") {
-                document.frmDefSel.action.value = "edit";
-                OpenHR.submitForm(document.frmDefSel);
-            }
-            else {
-                document.frmDefSel.action.value = "view";
-                OpenHR.submitForm(document.frmDefSel);
-            }
+		    if (frmDefSel.cmdEdit.value == "Edit") {
+			    document.frmDefSel.action.value = "edit";
+			    OpenHR.submitForm(document.frmDefSel);
+		    } else {
+			    document.frmDefSel.action.value = "view";
+			    OpenHR.submitForm(document.frmDefSel);
+		    }
+	    }
     }
 
-    function setcancel() {
+    function setcancel() {    	
         var frmDefSel = document.getElementById('frmDefSel');
         if (frmDefSel.txtSingleRecordID.value > 0) {
             var sWorkPage = currentWorkFramePage();

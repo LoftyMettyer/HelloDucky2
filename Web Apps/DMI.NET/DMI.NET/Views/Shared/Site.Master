@@ -284,5 +284,7 @@
 			<p id="errorDialogContentText"></p>
 		</div>
 	</div>
+	
+	<div id="footer-banner" class="footer-banner ui-widget ui-widget-content ui-state-default"><p><a href="http://www.advancedcomputersoftware.com" target="_blank">© Advanced Computer Software Ltd</a></p></div>
 </body>
 </html>
