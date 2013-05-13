@@ -1,13 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<script src="<%:Url.Content("~/Scripts/FormScripts/calendarreportdef.js")%>" type="text/javascript"> </script>
-<script src="<%:Url.Content("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"> </script>
-<script src="<%:Url.Content("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"> </script>
-<link href="<%:Url.Content("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
-<script src="<%:Url.Content("~/Scripts/jquery/jquery-1.8.3.js")%>" type="text/javascript"> </script>
-<script src="<%:Url.Content("~/Scripts/openhr.js")%>" type="text/javascript"> </script>
-
 <script type="text/javascript">
 	function util_def_calendarreportdates_window_onload() {
 		
@@ -62,7 +55,7 @@
 			sMessage = "You must give this event a name.";
 			OpenHR.messageBox(sMessage, 48, "Calendar Reports");
 			frmPopup.txtEventName.focus();
-			return false;
+			return (false);
 		}
 
 		//check the name is unique
@@ -170,7 +163,7 @@
 
 	function setForm() {
 		if (!validateEventInfo()) {
-			self.close();
+			//self.close();
 			return false;
 		}
 		var frmSelectionAccess = document.getElementById("frmSelectionAccess");
@@ -918,11 +911,12 @@
 										<td width="10">&nbsp;</td>
 										<td width="10">
 											<input id="cmdCancel" type="button" value="Cancel" name="cmdCancel" class="btn" style="WIDTH: 80px" width="80"
-											       onclick=" cancelClick(); "
-											       onmouseover=" try {button_onMouseOver(this);} catch(e) {} "
-											       onmouseout=" try {button_onMouseOut(this);} catch(e) {} "
-											       onfocus=" try {button_onFocus(this);} catch(e) {} "
-											       onblur=" try {button_onBlur(this);} catch(e) {} " />
+												onclick="self.close();"
+												onmouseover=" try {button_onMouseOver(this);} catch(e) {} "
+												onmouseout=" try {button_onMouseOut(this);} catch(e) {} "
+												onfocus=" try {button_onFocus(this);} catch(e) {} "
+												onblur=" try {button_onBlur(this);} catch(e) {} " />
+											<%--onclick=" cancelClick(); "--%>
 										</td>
 									</tr>
 								</table>

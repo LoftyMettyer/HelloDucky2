@@ -1,7 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<script src="<%: Url.Content("~/Scripts/FormScripts/calendarreportdef.js")%>" type="text/javascript"></script>
+<script src="<%: Url.Content("~/bundles/utilities_calendarreports")%>" type="text/javascript"></script>  
+
 <%Html.RenderPartial("Util_Def_CustomReports/dialog")%>
 
 <script type="text/javascript">

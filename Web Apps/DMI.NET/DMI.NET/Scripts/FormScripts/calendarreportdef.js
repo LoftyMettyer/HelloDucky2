@@ -1525,10 +1525,33 @@ function submitDefinition() {
 	window.openDialog(sURL, (screen.width) / 2, (screen.height) / 3, "no", "no");
 }
 
+//function cancelClick() {
+//	self.close();
+//	return false;
+//}
+
+
 function cancelClick() {
-	self.close();
-	return false;
+	if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") ||
+		(definitionChanged() == false)) {
+
+		menu_loadDefSelPage(17, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
+		return (false);
+	}
+
+	var answer = OpenHR.messageBox("You have changed the current definition. Save changes ?", 3);
+	if (answer == 7) {
+		// No
+		menu_loadDefSelPage(17, frmUseful.txtUtilID.value, frmUseful.txtCurrentBaseTableID.value, false);
+
+		return (false);
+	}
+	if (answer == 6) {
+		// Yes
+		okClick();
+	}
 }
+
 
 function okClick() {
 	menu_disableMenu();
