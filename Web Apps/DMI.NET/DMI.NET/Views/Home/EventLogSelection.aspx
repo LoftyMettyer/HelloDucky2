@@ -154,7 +154,6 @@
                                         onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
                                     />
     									Only the currently highlighted row(s)
-    								</label>
 								</td>
 							</tr> 
 							<tr height="15">
@@ -178,7 +177,6 @@
                                         onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
                                     />
     									All entries currently displayed
-    								</label>
 								</td>
 							</tr> 
 							<tr height="15">
@@ -202,7 +200,6 @@
                                         onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
                                     />
     									All entries (that the current user has permission to see)
-    								</label>
 								</td>
 							</tr> 
 							<tr height="5">

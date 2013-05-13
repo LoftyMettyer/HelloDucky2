@@ -259,7 +259,7 @@ Namespace Controllers
       sConnectString = sConnectString & ";Persist Security Info=True;"
 
       ' Open a connection to the database.
-      Dim conX = New ADODB.Connection
+      Dim conX = New ADODB.Connection()
       conX.ConnectionTimeout = 60
 
       Try
@@ -916,6 +916,11 @@ Namespace Controllers
       Dim objUtilities = New Global.HR.Intranet.Server.Utilities
 
       objUtilities.Connection = Session("databaseConnection")
+
+      'CallByName(objUtilities, "Connection", CallType.Let, Session("databaseConnection"))
+
+
+
       sTempPath = Server.MapPath("~/pictures")
       sBGImage = objUtilities.GetBackgroundPicture(CStr(sTempPath))
       intBGPos = objUtilities.GetBackgroundPosition

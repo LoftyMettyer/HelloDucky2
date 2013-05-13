@@ -22,6 +22,7 @@ Namespace App_Start
           "~/Scripts/jquery/jquery-validate.js",
           "~/Scripts/jquery/jquery-validate-unobtrusive.js"))
 
+
       ' JQuery UI
       bundles.Add(New ScriptBundle("~/bundles/jQueryUI7").Include(
         "~/Scripts/jquery/jquery-{version}.js",

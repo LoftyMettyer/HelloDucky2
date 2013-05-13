@@ -114,7 +114,7 @@
         var fOK;
         fOK = true;	
 
-        var sErrMsg = frmUseful.txtErrorDescription.value;
+        var sErrMsg = frmEventUseful.txtErrorDescription.value;
         if (sErrMsg.length > 0) {
             fOK = false;
             OpenHR.messageBox(sErrMsg);
@@ -585,7 +585,7 @@
             combo_disable(frmLog.cboUsername, true);
             var oOption = document.createElement("OPTION");
             frmLog.cboUsername.options.add(oOption);
-            oOption.innerText = frmUseful.txtUserName.value;
+            oOption.innerText = frmEventUseful.txtUserName.value;
             oOption.value = oOption.innerText;	
             oOption.selected = true;
         }
@@ -1265,7 +1265,7 @@
 	Session("showPurgeMessage") = 0
 %>
 
-<FORM id=frmUseful name=frmUseful style="visibility:hidden;display:none">
+<FORM id=frmEventUseful name=frmEventUseful style="visibility:hidden;display:none">
 	<INPUT type="hidden" id=txtUserName name=txtUserName value="<%=session("username")%>">
 <%
     Dim cmdDefinition
