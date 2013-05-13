@@ -158,7 +158,8 @@
 		    		    
 		    		    $("select").addClass("ui-widget ui-widget-content ui-corner-all");
 		    		    $("select").removeClass("text");
-		    		    
+		    		    $("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+		    		    $("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
 
 	    		    });
 
