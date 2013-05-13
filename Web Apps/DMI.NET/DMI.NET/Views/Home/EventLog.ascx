@@ -3,10 +3,10 @@
 
 <%
 	'This section of script is used for saving the new purge criteria.
-	dim bDoesPurge
-	dim sPeriod
-	dim iFrequency
-	dim sSQL
+    Dim bDoesPurge As Boolean
+    Dim sPeriod As String
+    Dim iFrequency As Integer
+    Dim sSQL As String
     Dim cmdPurge
     Dim prmPeriod
     Dim prmFrequency

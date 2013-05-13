@@ -23,13 +23,7 @@
 		session("action") = Request.Form("action")
 	end if
 %>
-        
-<object
-    classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-    id="Microsoft_Licensed_Class_Manager_1_0"
-    viewastext>
-    <param name="LPKPath" value="lpks/main.lpk">
-</object>
+
 
 <script type="text/javascript">    
  
@@ -131,20 +125,18 @@
 	session("stdReport_OutputEmailAttachAs") = Request.Form("txtSend_OutputEmailAttachAs")
 	session("stdReport_OutputFilename") = Request.Form("txtSend_OutputFilename")
 	
-	dim iPromptCount
-	dim iPromptDateType
-	dim fDefaultFound 
-	dim fFirstValueDone 
-    Dim sFirstValue
+    Dim iPromptCount As Integer
+    Dim iPromptDateType As Integer
+    Dim fDefaultFound As Boolean
+    Dim fFirstValueDone As Boolean
+    Dim sFirstValue As String
     Dim cmdDefn
     Dim prmUtilType
     Dim prmUtilID
     Dim prmRecordID
-    ' Dim rstPromptedValue
-    Dim iValueType
+    Dim iValueType As Integer
 	
 	iPromptCount = 0
-	iPromptDateType = 0 
 	
 	'if Request.Form("utiltype") = 2 or Request.Form("utiltype") = 9 then
 	if bStandardReportPrompt then
@@ -511,6 +503,8 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
 
     function CancelClick() {
 
+        debugger;
+        
         if (frmPromptedValues.StandardReportPrompt.value == "True")
         {
             if (frmPromptedValues.RunInOptionFrame.value == "True")
@@ -523,12 +517,11 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
             }
             else
             {
-                window.location.href="default";
+                closeclick();
             }
         }
-        else
-        {
-            self.close();
+        else {
+            closeclick();
         }	
     }
 
