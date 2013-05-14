@@ -89,20 +89,8 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-    <COMReference Include="VBA">
-      <Guid>{000204EF-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>6</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>9</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
     <Reference Include="Microsoft.VisualBasic.Compatibility">
       <Name>Microsoft.VisualBasic.Compatibility</Name>
-    </Reference>
-    <Reference Include="Microsoft.VisualBasic.Compatibility.Data">
-      <Name>Microsoft.VisualBasic.Compatibility.Data</Name>
     </Reference>
     <Reference Include="Microsoft.VisualBasic.PowerPacks.VS">
       <Name>Microsoft.VisualBasic.PowerPacks.VS</Name>
@@ -119,23 +107,6 @@
     <Reference Include="System.Windows.Forms">
       <Name>System.Windows.Forms</Name>
     </Reference>
-    <Reference Include="System.XML">
-      <Name>System.XML</Name>
-    </Reference>
-    <COMReference Include="Microsoft.StdFormat">
-      <Guid>{6B263850-900B-11D0-9484-00A0C91110ED}</Guid>
-      <Lcid>0</Lcid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <WrapperTool>primary</WrapperTool>
-    </COMReference>
-    <COMReference Include="stdole">
-      <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
-      <Lcid>0</Lcid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <WrapperTool>primary</WrapperTool>
-    </COMReference>
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
