@@ -4435,7 +4435,7 @@ function menu_GetItemValue(itemID) {
 function applyJSTree(element) {
     //Add treeview functionality to all divs in the accordion
     if (element == undefined) element = "";
-
+	
     $(".accordion div" + element).jstree({
     	"themes": {
     		"dots": false,
@@ -4457,7 +4457,7 @@ function applyJSTree(element) {
         	"item_leaf": false,
         	"item_clsd": false,
         	"item_open": false        	
-        },
+        }
     });
 }
 
