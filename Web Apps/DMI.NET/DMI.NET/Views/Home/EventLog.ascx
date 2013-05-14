@@ -3,7 +3,7 @@
 
 <%
 	'This section of script is used for saving the new purge criteria.
-    Dim bDoesPurge As Boolean
+    Dim bDoesPurge
     Dim sPeriod As String
     Dim iFrequency As Integer
     Dim sSQL As String
