@@ -11,8 +11,6 @@
 
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">	
-		<%--ThemeRoller stylesheet--%>
-	<link href="<%: Url.LatestContent("~/Content/themes/jMetro/jquery-ui.css")%>" rel="stylesheet" type="text/css" />
 
 	<script type="text/javascript">
 		function loadjscssfile(filename, filetype) {
@@ -123,7 +121,8 @@
 			$(".DashContent").fadeOut("slow");
 
 			$(".DashContent").promise().done(function () {
-
+				window.location = "LinksMain";
+				return;
 				//Are we currently in tiles mode? If so, just refresh the screen as there's too much loaded to reformat on the fly.
 				var currentLayout = $("link[id=layoutLink]").attr("href");
 				if (currentLayout.indexOf("tiles.css") > 0) {

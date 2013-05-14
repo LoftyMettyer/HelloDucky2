@@ -98,7 +98,7 @@
 	<link href="<%: Url.LatestContent("~/Content/contextmenustyle.css")%>" rel="stylesheet" type="text/css" />
 	
 	<%--ThemeRoller stylesheet--%>
-	<link href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
 	
 	<%--jQuery Grid Stylesheet--%>
 	<link href="<%: Url.LatestContent("~/Content/ui.jqgrid.css")%>" rel="stylesheet" type="text/css" />
@@ -174,7 +174,7 @@
 
 			}
 			else {
-				//only load themes for linksMain.
+				//only load themes for linksMain.				
 				var cookieLayout = getCookie('Intranet_Layout');
 				if (cookieLayout === undefined || cookieLayout === "undefined" || cookieLayout.length <= 0) cookieLayout = "winkit";
 				window.currentLayout = cookieLayout;
@@ -182,6 +182,11 @@
 				var cookieTheme = getCookie('Intranet_Theme');
 				if (cookieTheme === undefined || cookieTheme === "undefined" || cookieTheme.length <= 0) cookieTheme = "white";
 				window.currentTheme = cookieTheme;
+
+				//Kill themeRoller:
+				if (($("#fixedlinksframe").length > 0) && (window.currentLayout != "winkit"))
+					$("link[id=DMIthemeLink]").attr({ href: "" });
+
 
                 switch (window.currentLayout)
 			    {
