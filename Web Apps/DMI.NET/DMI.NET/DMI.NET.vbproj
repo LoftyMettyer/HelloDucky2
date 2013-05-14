@@ -547,6 +547,7 @@
     <Content Include="Content\themes\ui-lightness\jquery.ui.tooltip.min.css" />
     <Content Include="lpks\ssmain.lpk" />
     <Content Include="Content\fonts\SSI80v194934\SSI80v1.woff" />
+    <None Include="My Project\PublishProfiles\Arcade Server.pubxml" />
     <None Include="My Project\PublishProfiles\HarpDev02.pubxml" />
     <None Include="My Project\PublishProfiles\Local DMIPublished.pubxml" />
     <Content Include="Scripts\FormScripts\find.js" />
@@ -1093,15 +1094,6 @@
       <VersionMinor>5</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
-    <COMReference Include="MSAdodcLib">
-      <Guid>{67397AA1-7FB1-11D0-B148-00A0C922E820}</Guid>
-      <VersionMajor>6</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>

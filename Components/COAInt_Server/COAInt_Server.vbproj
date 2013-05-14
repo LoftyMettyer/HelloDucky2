@@ -89,15 +89,6 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-    <COMReference Include="MSAdodcLib">
-      <Guid>{67397AA1-7FB1-11D0-B148-00A0C922E820}</Guid>
-      <VersionMajor>6</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
     <COMReference Include="VBA">
       <Guid>{000204EF-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>6</VersionMajor>
