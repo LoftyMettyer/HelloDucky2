@@ -138,7 +138,14 @@
 				modal: true,			
 				width: 650
 			});
-			
+
+			$("#divthemeRoller").dialog({
+				autoOpen: false,
+				modal: false,
+				width: 300,
+				height: 500
+			});
+
 			$(function () {
 				$("input[type=submit], input[type=button], button")
 					.button();
@@ -294,6 +301,8 @@
 		</div>
 	</div>
 	
+	<div id="divthemeRoller" title="ThemeRoller"><%Html.RenderPartial("~/views/shared/themeEditor.ascx")%></div>
+
 	<div id="footer-banner" class="footer-banner ui-widget ui-widget-content ui-state-default"><p><a href="http://www.advancedcomputersoftware.com" target="_blank">© Advanced Computer Software Ltd</a></p></div>
 </body>
 </html>

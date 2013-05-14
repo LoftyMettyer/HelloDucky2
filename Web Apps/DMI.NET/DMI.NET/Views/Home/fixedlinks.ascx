@@ -28,7 +28,12 @@
 	});
 
 	function fixedlinks_mnutoolAboutHRPro() {
-		$("#About").dialog("open");
+		$("#About").dialog("open");		
+	}
+
+	function showThemeEditor() {
+		$("#divthemeRoller").dialog("open");
+		$("#themeeditoraccordion").accordion("resize");
 	}
 
 	$("#officebar").tabs();
@@ -74,7 +79,7 @@
 								</a>
 							</div>
 							<div class="button">
-								<a href="#" rel="layout" title="Change Layout">
+								<a href="javascript:showThemeEditor()" rel="layout" title="Change Layout">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/configuration64HOVER.png") %>" alt="" />
 									<i class="icon-wrench"></i>
 									<h6>Layout</h6>

@@ -1045,6 +1045,7 @@
     <Content Include="Views\Home\WorkflowPendingSteps.ascx" />
     <Content Include="Views\Shared\ctl_ASRIntranetPrintFunctions.ascx" />
     <Content Include="Views\Shared\gotoOption.ascx" />
+    <Content Include="Views\Shared\themeEditor.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\grdaccess.ascx" />
     <Content Include="Views\Shared\gotoWork.ascx" />
     <Content Include="Views\Shared\Site.Master" />
