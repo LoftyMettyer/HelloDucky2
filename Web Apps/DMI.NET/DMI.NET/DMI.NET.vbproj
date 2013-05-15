@@ -971,6 +971,7 @@
     <Content Include="Views\Home\Find.ascx" />
     <Content Include="Views\Home\fixedlinks.ascx" />
     <Content Include="Views\Home\linksMain.aspx" />
+    <Content Include="Views\Home\orderselect.ascx" />
     <Content Include="Views\Home\promptedValues.aspx" />
     <Content Include="Views\Home\promptedValues_completed.aspx" />
     <Content Include="Views\Home\tbAddFromWaitingListFind.ascx" />
