@@ -4684,6 +4684,107 @@ Namespace Controllers
 
 		End Function
 
+		Function orderselect() As ActionResult
+			Return View()
+		End Function
+
+		<HttpPost()>
+	 Function orderselect_Submit(value As FormCollection)
+			On Error Resume Next
+
+			Dim sErrorMsg = ""
+
+			' Read the information from the calling form.
+			Dim lngScreenID = Request.Form("txtGotoOptionScreenID")
+			Dim lngViewID = Request.Form("txtGotoOptionViewID")
+			Dim lngOrderID = Request.Form("txtGotoOptionOrderID")
+			Dim sNextPage = Request.Form("txtGotoOptionPage")
+			Dim sAction = Request.Form("txtGotoOptionAction")
+
+			Session("optionScreenID") = lngScreenID
+			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
+			Session("optionViewID") = lngViewID
+			Session("optionOrderID") = lngOrderID
+			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
+			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
+			Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
+			Session("optionValue") = Request.Form("txtGotoOptionValue")
+			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
+			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
+			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
+			Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
+			Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
+			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
+			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
+			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
+			Session("optionFile") = Request.Form("txtGotoOptionFile")
+			Session("optionExtension") = Request.Form("txtGotoOptionExtension")
+			'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
+			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
+			Session("optionAction") = sAction
+			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
+			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
+			Session("optionAction") = sAction
+			Session("orderID") = lngOrderID
+			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
+			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
+			Session("optionExprType") = Request.Form("txtGotoOptionExprType")
+			Session("optionExprID") = Request.Form("txtGotoOptionExprID")
+			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
+			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
+
+
+			If sAction = "CANCEL" Then
+				' Go to the requested page.
+				Session("errorMessage") = sErrorMsg
+				Return RedirectToAction(sNextPage)
+			End If
+
+			If sAction = "SELECTORDER" Then
+				' Get the SQL code for the selected order.
+				Dim cmdOrder = CreateObject("ADODB.Command")
+				cmdOrder.CommandText = "sp_ASRIntGetOrderSQL"
+				cmdOrder.CommandType = 4 ' Stored Procedure
+				cmdOrder.ActiveConnection = Session("databaseConnection")
+
+				Dim prmScreenID = cmdOrder.CreateParameter("screenID", 3, 1)
+				cmdOrder.Parameters.Append(prmScreenID)
+				prmScreenID.value = CleanNumeric(lngScreenID)
+
+				Dim prmViewID = cmdOrder.CreateParameter("viewID", 3, 1)
+				cmdOrder.Parameters.Append(prmViewID)
+				prmViewID.value = CleanNumeric(lngViewID)
+
+				Dim prmOrderID = cmdOrder.CreateParameter("orderID", 3, 1)
+				cmdOrder.Parameters.Append(prmOrderID)
+				prmOrderID.value = CleanNumeric(lngOrderID)
+
+				Dim prmFromDef = cmdOrder.CreateParameter("fromDef", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
+				cmdOrder.Parameters.Append(prmFromDef)
+
+				Err.Clear()
+				cmdOrder.Execute()
+
+				If (Err.Number <> 0) Then
+					sErrorMsg = "Error retrieving the new order definition." & vbCrLf & FormatError(Err.Description)
+				Else
+					Session("fromDef") = cmdOrder.Parameters("fromDef").Value
+				End If
+
+				' Release the ADO command object.
+				cmdOrder = Nothing
+
+				Session("errorMessage") = sErrorMsg
+
+				' Go to the requested page.
+				Return RedirectToAction(sNextPage)
+			End If
+
+			Return RedirectToAction(sNextPage)
+
+		End Function
+
+
 
 
 		Private Function convertLocaleDateToSQL(psDate)
