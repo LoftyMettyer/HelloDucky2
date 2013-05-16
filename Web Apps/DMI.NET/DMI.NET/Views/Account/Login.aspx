@@ -218,10 +218,10 @@
 			setCookie('Intranet_Server', sServer, 365);
 			setCookie('Intranet_WindowsAuthentication', frmLoginForm.chkWindowsAuthentication.checked, 365);
 
-			frmLoginForm.txtLocaleDateFormat.value = '<% =LocaleDateFormat %>';
-			frmLoginForm.txtLocaleDecimalSeparator.value = '<% =LocaleDecimalSeparator %>';
-			frmLoginForm.txtLocaleThousandSeparator.value = '<% =LocaleThousandSeparator %>';
-			frmLoginForm.txtLocaleDateSeparator.value = '<% =LocaleDateSeparator %>';			
+			frmLoginForm.txtLocaleDateFormat.value = OpenHR.LocaleDateFormat();
+			frmLoginForm.txtLocaleDecimalSeparator.value = OpenHR.LocaleDecimalSeparator();
+			frmLoginForm.txtLocaleThousandSeparator.value = OpenHR.LocaleThousandSeparator();
+			frmLoginForm.txtLocaleDateSeparator.value = OpenHR.LocaleDateSeparator();			
 
 			//Splash
 			$(".splashDiv").show();

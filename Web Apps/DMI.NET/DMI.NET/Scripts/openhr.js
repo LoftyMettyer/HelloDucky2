@@ -186,17 +186,25 @@
 	    disableMenu = function () {
 	    	//TODO
 	    },
-	    locateDateFormat = function() {
-	        return "DD/MM/YYYY";
+	    locateDateFormat = function () {
+	        //TODO
+	        return "dd/MM/yyyy";
 	    },
-	    localeDecimalSeparator = function() {
+	    localeDecimalSeparator = function () {
+	        //TODO
 	        return ".";
 	    },
-	    localeThousandSeparator = function() {
+	    localeThousandSeparator = function () {
+	        //TODO
 	        return ",";
 	    },
-	    convertSqlDateToLocale = function(z) {
-	        // TODO
+	    localeDateSeparator = function () {
+	        //TODO
+	        return "/";
+	    },
+	    convertSqlDateToLocale = function (z) {
+	        var convertDate = Date.parseExact(z, "MM/dd/yyyy");
+	        return convertDate.format(OpenHR.LocaleDateFormat());
 	    },
 	    printerCount = function () {
 	    	//TODO
@@ -252,6 +260,7 @@
 		refreshMenu: refreshMenu,
 		disableMenu: disableMenu,
 		LocaleDateFormat: locateDateFormat,
+		LocaleDateSeparator: localeDateSeparator,
 		LocaleDecimalSeparator: localeDecimalSeparator,
 		LocaleThousandSeparator: localeThousandSeparator,
 		ConvertSQLDateToLocale: convertSqlDateToLocale,
