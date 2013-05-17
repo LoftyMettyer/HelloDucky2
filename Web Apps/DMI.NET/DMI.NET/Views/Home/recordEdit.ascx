@@ -644,7 +644,7 @@
 	' JPD 20021127 - Moved Utilities object into session variable.
     'objUtilities.Connection = session("databaseConnection")
     Dim objUtilities = Session("UtilitiesObject")
-    Dim sTempPath = Server.MapPath("pictures")
+    Dim sTempPath = Server.MapPath("~/pictures")
     Dim picturesArray = objUtilities.GetPictures(Session("screenID"), CStr(sTempPath))
 
 	for iCount = 1 to UBound(picturesArray,2)
