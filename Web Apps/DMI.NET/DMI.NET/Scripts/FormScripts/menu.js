@@ -4065,32 +4065,31 @@ function menu_loadRecordDefSelPageNoSaveCheck(piDefSelType) {
 
 function menu_LoadAbsenceCalendar() {
 
-//	var frmOptionArea;
-//	var lngRecordID;
-//	var lngTableID;
-//	var strRealSource;
+    var frmOptionArea;
+    var frmRecEdit;
+	var lngRecordID;
+	var strRealSource;
 
-//	if (saveChanges("STDRPT_ABSENCECALENDAR", true, false) != 2) { // 2 = vbCancel
+    if (menu_saveChanges("STDRPT_ABSENCECALENDAR", true, false) != 2) { // 2 = vbCancel
 
-//		// Show loading screen
-//		window.parent.frames("menuframe").ShowWait("Loading absence calendar. Please wait...");
-//		disableMenu();
+		// Show loading screen
+		OpenHR.disableMenu();
 
-//		// Submit the current "workframe" form, and then load the required page.
-//		frmOptionArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
+		// Submit the current "workframe" form, and then load the required page.
+	    frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+	    frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
 
-//		lngRecordID = window.parent.frames("workframe").frmRecordEditForm.txtCurrentRecordID.value;
-//		frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
+	    lngRecordID = frmRecEdit.txtCurrentRecordID.value;
+		frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
 
-//		strRealSource = window.parent.frames("workframe").frmRecordEditForm.txtRecEditRealSource.value;	
-//		frmOptionArea.txtGotoOptionRealsource.value = strRealSource;
-//		
-//		frmOptionArea.txtGotoOptionPage.value = "stdrpt_AbsenceCalendar.asp";
-//		frmOptionArea.txtGotoOptionAction.value = "";
-//		frmOptionArea.submit();
-//		//CloseWait();
+		strRealSource = frmRecEdit.txtRecEditRealSource.value;
+		frmOptionArea.txtGotoOptionRealsource.value = strRealSource;
+		
+		frmOptionArea.txtGotoOptionPage.value = "stdrpt_AbsenceCalendar";
+		frmOptionArea.txtGotoOptionAction.value = "";
+	    OpenHR.submitForm(frmOptionArea);
 
-//	}
+	}
 
 }
 
@@ -4122,73 +4121,50 @@ function menu_LoadAbsenceCalendarNoSaveCheck() {
 
 function menu_LoadStandardReport(psReportType, psRecordSelection)
 	{
-//	var sUtilReportType;
-//	var sPage;
-//	var frmSendArea;
-//	var sLoadCaption;
-//	var bOK;
+	var sUtilReportType;
+	var frmSendArea;
+	var bOK;
+	var sPage = "util_run_promptedValues";
 
+	bOK = false;
 
-//	bOK = false;
+	if (psReportType == "ABSENCEBREAKDOWN") {
+	    sUtilReportType = "15";
+	}
 
-//	if (psReportType == "ABSENCEBREAKDOWN")
-//		{
-//		sUtilReportType = "15";
-//		sPage = "stdrpt_def_Absence.asp";
-//		sLoadCaption = "Loading Absence Breakdown. Please wait...";
-//		}
+	if (psReportType == "BRADFORDFACTOR") {
+	    sUtilReportType = "16";
+	}
 
-//	if (psReportType == "BRADFORDFACTOR")
-//		{
-//		sUtilReportType = "16";
-//		sPage = "stdrpt_def_Absence.asp";
-//		sLoadCaption = "Loading Bradford Factor. Please wait...";
-//		}
+	// If we came from an individual record
+	if (psRecordSelection == "REC")
+		{
+		if (menu_saveChanges(psReportType + psRecordSelection, true, false) != 2)
+			{
+			frmSendArea = OpenHR.getForm("optionframe", "frmGotoOption");
+			frmSendArea.txtGotoOptionRecordID.value = frmRecordEditForm.txtCurrentRecordID.value;
+			frmSendArea.txtGotoOptionPage.value = sPage;
+			frmSendArea.txtGotoOptionAction.value = "STDREPORT_DATEPROMPT";
+			bOK = true;
+			}
+		}
+	else
+		{
+	    if (menu_saveChanges(psReportType + psRecordSelection, true, false) != 2)
+			{
+			frmSendArea = OpenHR.getForm("workframe","frmGoto");
+			frmSendArea.txtGotoPage.value = sPage;			
+			frmSendArea.txtAction.value = "STDREPORT_DATEPROMPT";
+			bOK = true;
+			}
+		}
 
-//	sPage = "util_run_promptedValues.asp"
+	if (bOK == true)
+		{
 
-
-//	// If we came from an individual record
-//	if (psRecordSelection == "REC")
-//		{
-//		if (saveChanges(psReportType + psRecordSelection, true, false) != 2)
-//			{
-//			frmSendArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
-//			frmSendArea.txtGotoOptionRecordID.value = window.parent.frames("workframe").frmRecordEditForm.txtCurrentRecordID.value;
-//			frmSendArea.txtGotoOptionPage.value = sPage;
-//			frmSendArea.txtGotoOptionAction.value = "STDREPORT_DATEPROMPT";
-//			bOK = true;
-//			}
-//		}
-//	else
-//		{
-//		if (saveChanges(psReportType + psRecordSelection,true, false) !=2)
-//			{
-//			frmSendArea = window.parent.frames("workframe").document.forms("frmGoto");
-//			frmSendArea.txtGotoPage.value = sPage;			
-//			frmSendArea.txtAction.value = "STDREPORT_DATEPROMPT";
-//			bOK = true;
-//			}
-//		}
-
-
-//	if (bOK == true)
-//		{
-
-//		// Show friendly popup
-//		ShowWait(sLoadCaption);
-
-//		//frmSendArea.txtGotoOptionTableID.value = 0;
-//		//frmSendArea.txtGotoOptionViewID.value = 0;
-//		//frmSendArea.txtGotoOptionScreenID.value = 0;
-//		frmSendArea.txtStandardReportType.value = sUtilReportType;
-//		//frmSendArea.txtGotoOptionAction.value = "";
-//		//frmSendArea.txtStandardReportPage.value = sPage;
-//		
-//		//frmSendArea.txtGotoPage.value = sPage;
-
-//		frmSendArea.submit();
-//		}
+	    frmSendArea.txtStandardReportType.value = sUtilReportType;
+	    OpenHR.submitForm(frmSendArea);
+		}
 	}
 
 function menu_LoadStandardReportNoSaveCheck(psReportType, psRecordSelection)

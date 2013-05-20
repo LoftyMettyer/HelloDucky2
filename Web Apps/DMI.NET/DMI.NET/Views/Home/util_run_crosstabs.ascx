@@ -59,7 +59,7 @@
 
     Response.Write("<script type=""text/javascript"">" & vbCrLf)
 	Response.Write("  function ssOutputGrid_DblClick() {" & vbCrLf)
-
+    
     If objCrossTab.RecordDescExprID = 0 Then
         Response.Write("    OpenHR.messageBox(""Unable to show cell breakdown details as no record description has been set up for the '" & CleanStringForJavaScript(objCrossTab.BaseTableName) & "' table."",64,""Cross Tab Breakdown"");" & vbCrLf)
     Else

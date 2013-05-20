@@ -104,8 +104,8 @@
         Dim objReport As HR.Intranet.Server.Report
         Dim fNotCancelled As Boolean
 
-        Dim dtStartDate As Date
-        Dim dtEndDate As Date
+        Dim dtStartDate
+        Dim dtEndDate
         Dim strAbsenceTypes As String = ""
         Dim lngFilterID As Long
         Dim lngPicklistID As Long
@@ -160,11 +160,8 @@
 	objReport.LocalDecimalSeparator = session("LocaleDecimalSeparator")
 
 	if fok and bBradfordFactor then
-            'dtStartDate = convertLocaleDateToSQL(session("stdReport_StartDate"))
-            '   dtEndDate = convertLocaleDateToSQL(Session("stdReport_EndDate"))
-            'TODO convertdate formats server side
-            dtStartDate = ""
-            dtEndDate = ""
+            dtStartDate = convertLocaleDateToSQL(Session("stdReport_StartDate"))
+            dtEndDate = convertLocaleDateToSQL(Session("stdReport_EndDate"))
             
 		strAbsenceTypes = session("stdReport_AbsenceTypes")
 		lngFilterID = session("stdReport_FilterID")
@@ -1135,8 +1132,6 @@
     <%
         Response.Write("<INPUT type=""hidden"" id=txtDatabase name=txtDatabase value=""" & Replace(Session("Database"), """", "&quot;") & """>")
     %>
-
-
 
 <script type="text/javascript">
     reports_window_onload();

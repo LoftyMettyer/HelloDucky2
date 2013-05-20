@@ -52,7 +52,8 @@ ErrorTrap:
 	
 	
 	Public Function PrintComponent(ByRef piLevel As Short) As Boolean
-		Dim Printer As New Printer
+    Dim Printer As New Printer
+
 		' Print the component definition to the printer object.
 		On Error GoTo ErrorTrap
 		

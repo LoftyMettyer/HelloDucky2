@@ -2201,15 +2201,12 @@ LocalErr:
 
   Public Function AbsenceBreakdownRunStoredProcedure() As Boolean
 
-    ' Purpose : To re-jig the selected records from the normal cross tab so it can be used in the standard
-    '           crosstab output.
+    ' Purpose : To re-jig the selected records from the normal cross tab so it can be used in the standard crosstab output.
 
     On Error GoTo LocalErr
 
     Dim datData As clsDataAccess
     Dim sSQL As String
-    Dim iAffectedRecords As Short
-    Dim lngAffectedRecords As Integer
 
     datData = New clsDataAccess
 
@@ -2218,12 +2215,12 @@ LocalErr:
     datData.ExecuteSql((sSQL))
 
     ' Check that records exist (in case there's no working pattern and such like)
-    Dim rsCrossTabData As ADODB.Recordset
-    rsCrossTabData = New ADODB.Recordset
-    rsCrossTabData.let_ActiveConnection(gADOCon)
-    rsCrossTabData.Open("Select * From " & mstrTempTableName, , ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)
+    Dim rsCrossTabDataLocal As ADODB.Recordset
+    rsCrossTabDataLocal = New ADODB.Recordset
+    rsCrossTabDataLocal.let_ActiveConnection(gADOCon)
+    rsCrossTabDataLocal.Open("Select * From " & mstrTempTableName, , ADODB.CursorTypeEnum.adOpenKeyset, ADODB.LockTypeEnum.adLockOptimistic, ADODB.CommandTypeEnum.adCmdText)
 
-    If rsCrossTabData.EOF Then
+    If rsCrossTabDataLocal.EOF Then
       mstrStatusMessage = "No records meet selection criteria"
       mblnNoRecords = True
       fOK = False
@@ -2232,7 +2229,7 @@ LocalErr:
     ' Fault 2422 - Switch days into language of client machine (server independant)
     ' JDM - 19/06/01 - Fault 2472 - Whoops, missed out some error checking...
     If fOK Then
-      With rsCrossTabData
+      With rsCrossTabDataLocal
         .MoveFirst()
         Do While Not .EOF
 
@@ -2255,24 +2252,6 @@ LocalErr:
 
   End Function
 
-  Public Sub AbsenceBreakdownSizeColumns()
-
-    Dim lngWidth As Integer
-    Dim intCount As Short
-
-
-    '  With frmCrossTabRun.SSDBGrid1
-    '
-    '    lngWidth = (.Width - .Columns(1).Width - 5) / (.Columns.Count - 1)
-    '
-    '    For intCount = 1 To .Cols - 1
-    '      .Columns(intCount).Width = lngWidth - 2
-    '    Next intCount
-    '
-    '  End With
-
-  End Sub
-
   Public Function AbsenceBreakdownBuildDataArrays() As Boolean
 
     Dim strTempValue As String
@@ -2284,7 +2263,6 @@ LocalErr:
     Dim lngNumCols As Integer
     Dim lngNumRows As Integer
     Dim lngNumPages As Integer
-
 
     On Error GoTo LocalErr
 
@@ -2506,7 +2484,6 @@ LocalErr:
 
   End Function
 
-
   Private Function ConvertSQLDateToLocale(ByRef psSQLDate As String) As String
     ' Convert the given date string (mm/dd/yyyy) into the locale format.
     ' NB. This function assumes a sensible locale format is used.
@@ -2554,35 +2531,25 @@ LocalErr:
 
   ' Function which we use to pass in the default output parameters (Standard reports read from the defintion table,
   '    which don't exist for standard reports)
-  Public Function SetAbsenceBreakDownDefaultOutputOptions(ByRef pbOutputPreview As Object, ByRef plngOutputFormat As Object, ByRef pblnOutputScreen As Object, ByRef pblnOutputPrinter As Object, ByRef pstrOutputPrinterName As Object, ByRef pblnOutputSave As Object, ByRef plngOutputSaveExisting As Object, ByRef pblnOutputEmail As Object, ByRef plngOutputEmailID As Object, ByRef pstrOutputEmailName As Object, ByRef pstrOutputEmailSubject As Object, ByRef pstrOutputEmailAttachAs As Object, ByRef pstrOutputFilename As Object) As Boolean
+  Public Function SetAbsenceBreakDownDefaultOutputOptions(ByRef pbOutputPreview As Boolean, ByRef plngOutputFormat As Boolean, ByRef pblnOutputScreen As Boolean, _
+                                                          ByRef pblnOutputPrinter As Boolean, ByRef pstrOutputPrinterName As String, ByRef pblnOutputSave As Boolean, _
+                                                          ByRef plngOutputSaveExisting As Long, ByRef pblnOutputEmail As Boolean, ByRef plngOutputEmailID As Long, _
+                                                          ByRef pstrOutputEmailName As String, ByRef pstrOutputEmailSubject As String, ByRef pstrOutputEmailAttachAs As String, _
+                                                          ByRef pstrOutputFilename As String) As Boolean
 
-    'UPGRADE_WARNING: Couldn't resolve default property of object pbOutputPreview. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mblnOutputPreview = pbOutputPreview
-    'UPGRADE_WARNING: Couldn't resolve default property of object plngOutputFormat. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mlngOutputFormat = plngOutputFormat
-    'UPGRADE_WARNING: Couldn't resolve default property of object pblnOutputScreen. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mblnOutputScreen = pblnOutputScreen
-    'UPGRADE_WARNING: Couldn't resolve default property of object pblnOutputPrinter. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mblnOutputPrinter = pblnOutputPrinter
-    'UPGRADE_WARNING: Couldn't resolve default property of object pstrOutputPrinterName. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mstrOutputPrinterName = pstrOutputPrinterName
-    'UPGRADE_WARNING: Couldn't resolve default property of object pblnOutputSave. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mblnOutputSave = pblnOutputSave
-    'UPGRADE_WARNING: Couldn't resolve default property of object plngOutputSaveExisting. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mlngOutputSaveExisting = plngOutputSaveExisting
-    'UPGRADE_WARNING: Couldn't resolve default property of object pblnOutputEmail. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mblnOutputEmail = pblnOutputEmail
-    'UPGRADE_WARNING: Couldn't resolve default property of object plngOutputEmailID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    mlngOutputEmailID = IIf(plngOutputEmailID = "", 0, plngOutputEmailID)
+    mlngOutputEmailID = plngOutputEmailID
     mstrOutputEmailName = GetEmailGroupName(mlngOutputEmailID)
-    'UPGRADE_WARNING: Couldn't resolve default property of object pstrOutputEmailSubject. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mstrOutputEmailSubject = pstrOutputEmailSubject
-    'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
     mstrOutputEmailAttachAs = IIf(IsDBNull(pstrOutputEmailAttachAs), vbNullString, pstrOutputEmailAttachAs)
-    'UPGRADE_WARNING: Couldn't resolve default property of object pstrOutputFilename. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mstrOutputFilename = pstrOutputFilename
-
-    ' JDM - 17/11/03 - Fault 7564 - Going to printer automatically
     mblnOutputPreview = (pbOutputPreview Or (mlngOutputFormat = Declarations.OutputFormats.fmtDataOnly And mblnOutputScreen))
 
   End Function
@@ -2636,7 +2603,6 @@ UDFFunctions_ERROR:
     UDFFunctions = False
 
   End Function
-
 
   Public Sub GetPivotRecordset()
 
@@ -2754,7 +2720,6 @@ UDFFunctions_ERROR:
 
   End Sub
 
-
   Private Function PivotAddToArray(ByRef strInput As String) As Object
 
     Dim lngIndex As Integer
@@ -2765,7 +2730,6 @@ UDFFunctions_ERROR:
     mstrOutputPivotArray(lngIndex) = strInput & vbNewLine
 
   End Function
-
 
   Private Function FormatSQLColumn(ByVal sColumn As String) As String
 
@@ -2781,7 +2745,6 @@ UDFFunctions_ERROR:
     FormatSQLColumn = sReturnValue
 
   End Function
-
 
   Private Function FormatString(ByVal sHeading As String) As String
 
@@ -2799,4 +2762,5 @@ UDFFunctions_ERROR:
     FormatString = sReturnValue
 
   End Function
+
 End Class

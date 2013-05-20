@@ -1439,14 +1439,11 @@ GetCustomReportDefinition_ERROR:
 
     End If
 
-    intTemp = 0
-
     '******************************************************************************
 
     ' Get those columns defined as a SortOrder and load into array
 
     strTempSQL = "SELECT * FROM ASRSysCustomReportsDetails WHERE " & "CustomReportID = " & mlngCustomReportID & " " & "AND SortOrderSequence > 0 " & "ORDER BY [SortOrderSequence]"
-
     prstCustomReportsSortOrder = mclsGeneral.GetReadOnlyRecords(strTempSQL)
 
     With prstCustomReportsSortOrder
@@ -3303,15 +3300,13 @@ CheckRecordSet_ERROR:
   Public Function PopulateGrid_LoadRecords() As Boolean
     ' Purpose : Blimey ! This function does the actual work of populating the
     '           grid, calculating summary info, breaking, page breaking etc.
-    '           Its a bit of a 'mare but it works ok.
+    '           Its a bit of a 'mare but it works ok. (JDM - I question that!)
 
     On Error GoTo LoadRecords_ERROR
 
     Dim sAddString As String
     Dim iLoop As Short
-    Dim pintCharWidth As Short
     Dim vDisplayData As Object
-    Dim vPreviousData As Object
     Dim avColumns(,) As Object
     Dim vValue As Object
     Dim fBreak As Boolean
@@ -3321,7 +3316,6 @@ CheckRecordSet_ERROR:
     Dim iOtherColumnIndex As Short
     Dim fNotFirstTime As Boolean
     Dim bSuppress As Boolean
-    Dim bSuppressInTable As Boolean
 
     Dim intColCounter As Short
 
@@ -3339,15 +3333,11 @@ CheckRecordSet_ERROR:
 
     intRowIndex_GW = 0
     intColIndex_GW = 0
-    strGroupedValue = vbNullString
-    intGroupCount = 0
     blnHasGroupWithNext = False
     blnSkipped = False
     intSkippedIndex = 0
-    strGroupString = vbNullString
 
     'Variables for Suppress Repeated Values within Table.
-    Dim lngCurrentTableID As Integer
     Dim lngCurrentRecordID As Integer
     Dim bBaseRecordChanged As Boolean
 
@@ -3404,8 +3394,7 @@ CheckRecordSet_ERROR:
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            If (mvarColDetails(12, iLoop2) = mvarSortOrder(1, iLoop)) And (mvarColDetails(13, iLoop2) = "C") Then
-
+            If (mvarColDetails(12, iLoop2).ToString() = mvarSortOrder(1, iLoop).ToString()) And (mvarColDetails(13, iLoop2) = "C") Then
               iColumnIndex = iLoop2
               Exit For
             End If
@@ -3486,8 +3475,7 @@ CheckRecordSet_ERROR:
                     'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, iLoop3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
                     'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
                     'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, iLoop3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                    If (mvarColDetails(12, iLoop3) = mvarSortOrder(1, iLoop2)) And (mvarColDetails(13, iLoop3) = "C") Then
-
+                    If mvarColDetails(12, iLoop3).ToString() = mvarSortOrder(1, iLoop2).ToString() And mvarColDetails(13, iLoop3) = "C" Then
                       iOtherColumnIndex = iLoop3
                       Exit For
                     End If
@@ -3795,11 +3783,7 @@ CheckRecordSet_ERROR:
       ReDim mvarGroupWith(1, 0)
       intRowIndex_GW = 0
       intColIndex_GW = 0
-      strGroupedValue = vbNullString
-      intGroupCount = 0
       blnHasGroupWithNext = False
-
-      intColCounter = 0
 
       fNotFirstTime = True
 
@@ -3824,7 +3808,7 @@ CheckRecordSet_ERROR:
         'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        If (mvarColDetails(12, iLoop2) = mvarSortOrder(1, iLoop)) And (mvarColDetails(13, iLoop2) = "C") Then
+        If (mvarColDetails(12, iLoop2).ToString() = mvarSortOrder(1, iLoop).ToString()) And (mvarColDetails(13, iLoop2) = "C") Then
 
           iColumnIndex = iLoop2
           Exit For
@@ -3876,23 +3860,17 @@ CheckRecordSet_ERROR:
     Next iLoop
 
     If Not AddToArray_Data(vbNullString) Then
-      PopulateGrid_LoadRecords = False
-      Exit Function
+      Return False
     End If
 
-    PopulateGrid_LoadRecords = True
-
-    ' This is now handled in the Cancelled Property
-    '  mobjEventLog.ChangeHeaderStatus elsSuccessful
-
-    Exit Function
+    Return True
 
 LoadRecords_ERROR:
 
-    PopulateGrid_LoadRecords = False
     mstrErrorString = mstrErrorString & "LOADRECORDS_ERROR (In Dll) - Error in PopulateGrid_LoadRecords." & vbNewLine & Err.Number & " - " & Err.Description
     mobjEventLog.AddDetailEntry(mstrErrorString)
     mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
+    Return False
 
   End Function
 
@@ -4169,8 +4147,7 @@ LoadRecords_ERROR:
         'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(13, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        If (mvarColDetails(12, iLoop2) = mvarSortOrder(1, iLoop)) And (mvarColDetails(13, iLoop2) = "C") Then
-
+        If (mvarColDetails(12, iLoop2).ToString() = mvarSortOrder(1, iLoop).ToString()) And (mvarColDetails(13, iLoop2) = "C") Then
           iColumnIndex = iLoop2
           Exit For
         End If
@@ -4433,7 +4410,7 @@ LoadRecords_ERROR:
             For iLoop2 = 1 To UBound(mvarSortOrder, 2)
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              If mvarSortOrder(1, iLoop2) = mvarColDetails(12, iLoop) Then
+              If mvarSortOrder(1, iLoop2).ToString() = mvarColDetails(12, iLoop).ToString() Then
                 fDoValue = (iLoop2 <= piSortIndex)
                 Exit For
               End If
@@ -4479,7 +4456,7 @@ LoadRecords_ERROR:
             For iLoop2 = 1 To UBound(mvarSortOrder, 2)
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              If mvarSortOrder(1, iLoop2) = mvarColDetails(12, iLoop) Then
+              If mvarSortOrder(1, iLoop2).ToString() = mvarColDetails(12, iLoop).ToString() Then
                 fDoValue = (iLoop2 <= piSortIndex)
                 Exit For
               End If
@@ -4556,7 +4533,7 @@ LoadRecords_ERROR:
             For iLoop2 = 1 To UBound(mvarSortOrder, 2)
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(12, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, iLoop2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              If mvarSortOrder(1, iLoop2) = mvarColDetails(12, iLoop) Then
+              If mvarSortOrder(1, iLoop2).ToString() = mvarColDetails(12, iLoop).ToString() Then
                 fDoValue = (iLoop2 <= piSortIndex)
                 Exit For
               End If
@@ -4684,7 +4661,7 @@ LoadRecords_ERROR:
 
 
 
-  Private Function PopulateGrid_DoGrandSummary() As Boolean
+  Private Sub PopulateGrid_DoGrandSummary()
 
     ' Purpose : To calculate the final grand summaries
     ' Input   : None
@@ -4693,7 +4670,6 @@ LoadRecords_ERROR:
     On Error GoTo PopulateGrid_DoGrandSummary_ERROR
 
     Dim iLoop As Short
-    Dim iLoop2 As Short
     Dim rsTemp As ADODB.Recordset
 
     Dim sAverageAddString As String
@@ -5009,23 +4985,16 @@ LoadRecords_ERROR:
       mintPageBreakRowIndex = mintPageBreakRowIndex + 1
     End If
 
-    '  If Not mblnCustomReportsSummaryReport Then
-    '    If fHasAverage Or fHasCount Or fHasTotal Then
-    '      AddToArray_Data "<blank>"
-    '      mintPageBreakRowIndex = mintPageBreakRowIndex + 1
-    '    End If
-    '  End If
-
-    Exit Function
+    Exit Sub
 
 PopulateGrid_DoGrandSummary_ERROR:
 
     'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
     rsTemp = Nothing
     mstrErrorString = "Error while calculating grand summary." & vbNewLine & "(" & Err.Description & ")"
-    PopulateGrid_DoGrandSummary = False
+    Return
 
-  End Function
+  End Sub
 
 
   Public Function ClearUp() As Boolean
@@ -5827,16 +5796,10 @@ AddError:
     ' NOTE: Put in some code to handle blank end dates (do we include as an option on the main screen ?)
 
     On Error GoTo GenerateSQLBradford_ERROR
-
-    Dim strAbsenceStartField As String
-    Dim strAbsenceEndField As String
     Dim strAbsenceType As String
-    Dim strReportStartDate As String
-    Dim strReportEndDate As String
     Dim iCount As Short
-    Dim dtStartDate As Date
-    Dim dtEndDate As Date
     Dim astrIncludeTypes() As String
+    Dim iUbound As Integer
 
     ' Get the absence start/end field details
     '    strAbsenceStartField = mstrRealSource + "." + datGeneral.GetColumnName(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCESTARTDATE)))
@@ -5957,11 +5920,13 @@ AddError:
     'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(21, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mvarColDetails(21, UBound(mvarColDetails, 2)) = False
 
-    ReDim Preserve mvarSortOrder(2, UBound(mvarSortOrder, 2) + 1)
+    iUbound = UBound(mvarSortOrder, 2)
+    ReDim Preserve mvarSortOrder(2, iUbound)
+    mvarSortOrder(0, iUbound) = 0
     'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(1, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    mvarSortOrder(1, UBound(mvarSortOrder, 2)) = -1
+    mvarSortOrder(1, iUbound) = -1
     'UPGRADE_WARNING: Couldn't resolve default property of object mvarSortOrder(2, UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    mvarSortOrder(2, UBound(mvarSortOrder, 2)) = "Asc"
+    mvarSortOrder(2, iUbound) = "ASC"
 
     ' All done correctly
     'UPGRADE_WARNING: Couldn't resolve default property of object GenerateSQLBradford. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -5994,7 +5959,7 @@ GenerateSQLBradford_ERROR:
     End If
 
     ' Delete unwanted absences from the table.
-    sSQL = CStr(CDbl("EXECUTE sp_ASR_Bradford_DeleteAbsences '" & mstrBradfordStartDate & "','" & mstrBradfordEndDate & "',") + IIf(mbOmitBeforeStart, "1,", "0,") + IIf(mbOmitAfterEnd, "1,'", "0,'") + CDbl(mstrTempTableName) + CDbl("'"))
+    sSQL = "EXECUTE sp_ASR_Bradford_DeleteAbsences '" & mstrBradfordStartDate & "','" & mstrBradfordEndDate & "'," + IIf(mbOmitBeforeStart, "1,", "0,") + IIf(mbOmitAfterEnd, "1,'", "0,'") + mstrTempTableName + "'"
     mclsData.ExecuteSql(sSQL)
 
     ' Calculate the included durations for the absences.
@@ -6017,7 +5982,8 @@ CalculateBradfordFactors_ERROR:
 
   End Function
 
-  Public Function GetBradfordReportDefinition(ByRef pdAbsenceFrom As Object, ByRef pdAbsenceTo As Object) As Boolean
+  ' Dates are in SQL (American format)
+  Public Function GetBradfordReportDefinition(ByRef pstrAbsenceFrom As String, ByRef pstrAbsenceTo As String) As Boolean
 
     ' Purpose : This function retrieves the basic definition details
     '           and stores it in module level variables
@@ -6029,20 +5995,14 @@ CalculateBradfordFactors_ERROR:
     SetupTablesCollection()
 
     ' Dates coming in are in American format (if they're not we have a problem)
-    'UPGRADE_WARNING: Couldn't resolve default property of object pdAbsenceFrom. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    mstrBradfordStartDate = pdAbsenceFrom
-    'UPGRADE_WARNING: Couldn't resolve default property of object pdAbsenceTo. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    mstrBradfordEndDate = pdAbsenceTo
+    mstrBradfordStartDate = pstrAbsenceFrom
+    mstrBradfordEndDate = pstrAbsenceTo
 
     'JPD 20041214 - ensure no injection can take place.
     mstrBradfordStartDate = Replace(mstrBradfordStartDate, "'", "''")
     mstrBradfordEndDate = Replace(mstrBradfordEndDate, "'", "''")
 
-    'MH20040129 Fault 7857
-    'UPGRADE_WARNING: Couldn't resolve default property of object pdAbsenceTo. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    'UPGRADE_WARNING: Couldn't resolve default property of object pdAbsenceFrom. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    'UPGRADE_WARNING: DateDiff behavior may be different. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6B38EC3F-686D-4B2E-B5A5-9E8E7A762E32"'
-    If DateDiff(Microsoft.VisualBasic.DateInterval.Day, datGeneral.ConvertSQLDateToSystemFormat(CStr(pdAbsenceFrom)), datGeneral.ConvertSQLDateToSystemFormat(CStr(pdAbsenceTo))) < 0 Then
+    If DateDiff(DateInterval.Day, ConvertSQLDateToLocale(pstrAbsenceFrom), ConvertSQLDateToLocale(pstrAbsenceTo)) < 0 Then
       mstrErrorString = "The report end date is before the report start date."
       mobjEventLog.AddDetailEntry(mstrErrorString)
       mobjEventLog.ChangeHeaderStatus(clsEventLog.EventLog_Status.elsFailed)
@@ -6128,13 +6088,10 @@ GetBradfordReportDefinition_ERROR:
 
     On Error GoTo GetBradfordRecordSet_ERROR
 
-    Dim strTempSQL As String
     Dim intTemp As Short
-    Dim prstCustomReportsSortOrder As ADODB.Recordset
     Dim lngTableID As Integer
     Dim iCount As Short
     Dim lngColumnID As Integer
-    Dim lcDataType As Short
 
     Dim lbHideStaffNumber As Boolean
 
@@ -6452,69 +6409,55 @@ GetBradfordRecordSet_ERROR:
 
   End Function
 
-  Public Function SetBradfordDisplayOptions(ByRef pbSRV As Object, ByRef pbShowTotals As Object, ByRef pbShowCount As Object, ByRef pbShowWorkings As Object, ByRef pbShowBasePicklistFilter As Object, ByRef pbDisplayBradfordDetail As Object) As Boolean
+  Public Function SetBradfordDisplayOptions(ByVal pbSRV As Boolean, ByRef pbShowTotals As Boolean, ByVal pbShowCount As Boolean, ByVal pbShowWorkings As Boolean _
+                                            , ByVal pbShowBasePicklistFilter As Boolean, ByVal pbDisplayBradfordDetail As Boolean) As Boolean
 
     ' Set Report Display Options
-    'UPGRADE_WARNING: Couldn't resolve default property of object pbSRV. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mbBradfordSRV = pbSRV
-    'UPGRADE_WARNING: Couldn't resolve default property of object pbShowTotals. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mbBradfordTotals = pbShowTotals
-    'UPGRADE_WARNING: Couldn't resolve default property of object pbShowCount. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mbBradfordCount = pbShowCount
-    'UPGRADE_WARNING: Couldn't resolve default property of object pbShowWorkings. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mbBradfordWorkings = pbShowWorkings
-    'UPGRADE_WARNING: Couldn't resolve default property of object pbShowBasePicklistFilter. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mblnCustomReportsPrintFilterHeader = pbShowBasePicklistFilter
-    'UPGRADE_WARNING: Couldn't resolve default property of object pbDisplayBradfordDetail. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mbDisplayBradfordDetail = pbDisplayBradfordDetail
 
-    SetBradfordDisplayOptions = True
+    Return True
 
   End Function
 
-  Public Function SetBradfordOrders(ByRef pstrOrderBy As String, ByRef pstrGroupBy As String, ByRef pbOrder1Asc As Boolean, ByRef pbOrder2Asc As Boolean, ByRef plngOrderByColumnID As Long, ByRef plngGroupByColumnID As Long) As Boolean
+  Public Function SetBradfordOrders(ByVal pstrOrderBy As String, ByVal pstrGroupBy As String, ByVal pbOrder1Asc As Boolean, ByRef pbOrder2Asc As Boolean _
+                                    , ByVal plngOrderByColumnID As Long, ByVal plngGroupByColumnID As Long) As Boolean
 
     ' Set Report Order Options
-    'UPGRADE_WARNING: Couldn't resolve default property of object pstrOrderBy. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mstrOrderByColumn = pstrOrderBy
-    'UPGRADE_WARNING: Couldn't resolve default property of object pstrGroupBy. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mstrGroupByColumn = pstrGroupBy
-    'UPGRADE_WARNING: Couldn't resolve default property of object pbOrder1Asc. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mbOrderBy1Asc = pbOrder1Asc
-    'UPGRADE_WARNING: Couldn't resolve default property of object pbOrder2Asc. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mbOrderBy2Asc = pbOrder2Asc
-    'UPGRADE_WARNING: Couldn't resolve default property of object plngOrderByColumnID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mlngOrderByColumnID = plngOrderByColumnID
-    'UPGRADE_WARNING: Couldn't resolve default property of object plngGroupByColumnID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mlngGroupByColumnID = plngGroupByColumnID
 
-    SetBradfordOrders = True
+    Return True
 
   End Function
 
-  Public Function SetBradfordIncludeOptions(ByRef pbOmitBeforeStart As Object, ByRef pbOmitAfterEnd As Object, ByRef plngPersonnelID As Object, ByRef plngCustomReportsFilterID As Object, ByRef plngCustomReportsPickListID As Object, ByRef pbMinBradford As Object, ByRef plngMinBradfordAmount As Object) As Boolean
+  Public Function SetBradfordIncludeOptions(ByVal pbOmitBeforeStart As Boolean, ByVal pbOmitAfterEnd As Boolean, ByVal plngPersonnelID As Long _
+                                            , ByVal plngCustomReportsFilterID As Long, ByVal plngCustomReportsPickListID As Long, ByVal pbMinBradford As Boolean _
+                                            , ByVal plngMinBradfordAmount As Long) As Boolean
 
     ' Include options for this report
-    'UPGRADE_WARNING: Couldn't resolve default property of object pbOmitBeforeStart. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mbOmitBeforeStart = pbOmitBeforeStart
-    'UPGRADE_WARNING: Couldn't resolve default property of object pbOmitAfterEnd. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mbOmitAfterEnd = pbOmitAfterEnd
-    'UPGRADE_WARNING: Couldn't resolve default property of object plngPersonnelID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mlngPersonnelID = plngPersonnelID
 
     mlngCustomReportsFilterID = IIf(IsNumeric(plngCustomReportsFilterID), plngCustomReportsFilterID, 0)
     mlngCustomReportsPickListID = IIf(IsNumeric(plngCustomReportsPickListID), plngCustomReportsPickListID, 0)
-
-    'UPGRADE_WARNING: Couldn't resolve default property of object pbMinBradford. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mbMinBradford = pbMinBradford
-    'UPGRADE_WARNING: Couldn't resolve default property of object plngMinBradfordAmount. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
     mlngMinBradfordAmount = plngMinBradfordAmount
 
-    SetBradfordIncludeOptions = True
+    Return True
 
   End Function
 
-  Private Function ConvertSQLDateToLocale(ByRef psSQLDate As String) As String
+  Private Function ConvertSQLDateToLocale(ByRef psSQLDate As String) As Date
     ' Convert the given date string (mm/dd/yyyy) into the locale format.
     ' NB. This function assumes a sensible locale format is used.
     Dim fDaysDone As Boolean
@@ -6581,7 +6524,8 @@ GetBradfordRecordSet_ERROR:
     mstrOutputFilename = pstrOutputFilename
     mblnOutputPreview = (pbOutputPreview Or (mlngOutputFormat = Declarations.OutputFormats.fmtDataOnly And mblnOutputScreen))
 
-    SetBradfordDefaultOutputOptions = True
+    Return True
+
   End Function
 
   Public Function UDFFunctions(ByRef pbCreate As Boolean) As Boolean
@@ -6633,4 +6577,5 @@ UDFFunctions_ERROR:
     UDFFunctions = False
 
   End Function
+
 End Class

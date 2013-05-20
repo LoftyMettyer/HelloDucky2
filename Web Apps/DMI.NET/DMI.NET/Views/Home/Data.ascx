@@ -595,8 +595,8 @@
 	<INPUT type="hidden" id=txtELOrderColumn name=txtELOrderColumn>
 	<INPUT type="hidden" id=txtELOrderOrder name=txtELOrderOrder>
 	<INPUT type="hidden" id=txtELAction name=txtELAction>
-	<INPUT type="hidden" id=txtELCurrRecCount name=txtELCurrRecCount>
-	<INPUT type="hidden" id=txtEL1stRecPos name=txtEL1stRecPos>
+	<INPUT type="hidden" id=txtELCurrRecCount name=txtELCurrRecCount value="0">
+	<INPUT type="hidden" id=txtEL1stRecPos name=txtEL1stRecPos value ="0">
 	
 </form>
 

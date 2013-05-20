@@ -187,50 +187,50 @@
 								End If
 
 								Dim fCancelDateColumn = True
-								If (Len(sErrorDescription) = 0) And (Session("TB_CourseTableID") > 0) Then
-									Dim sSubString As String = Session("lineage")
-									Dim iIndex = InStr(sSubString, "_")
-									sSubString = Mid(sSubString, iIndex + 1)
-									iIndex = InStr(sSubString, "_")
-									sSubString = Mid(sSubString, iIndex + 1)
-									iIndex = InStr(sSubString, "_")
-									sSubString = Mid(sSubString, iIndex + 1)
-									iIndex = InStr(sSubString, "_")
-									sSubString = Mid(sSubString, iIndex + 1)
-									iIndex = InStr(sSubString, "_")
-									Dim lngRecordID = Left(sSubString, iIndex - 1)
+							    If (Len(sErrorDescription) = 0) And (Session("TB_CourseTableID") > 0) And Len(Session("lineage").ToString()) > 0 Then
+							        Dim sSubString As String = Session("lineage").ToString()
+							        Dim iIndex = InStr(sSubString, "_")
+							        sSubString = Mid(sSubString, iIndex + 1)
+							        iIndex = InStr(sSubString, "_")
+							        sSubString = Mid(sSubString, iIndex + 1)
+							        iIndex = InStr(sSubString, "_")
+							        sSubString = Mid(sSubString, iIndex + 1)
+							        iIndex = InStr(sSubString, "_")
+							        sSubString = Mid(sSubString, iIndex + 1)
+							        iIndex = InStr(sSubString, "_")
+							        Dim lngRecordID = Left(sSubString, iIndex - 1)
 
-									' Get the Course Date
-									Dim cmdGetCancelDateColumn = CreateObject("ADODB.Command")
-									cmdGetCancelDateColumn.CommandText = "spASRIntGetCancelCourseDate"
-									cmdGetCancelDateColumn.CommandType = 4	' Stored Procedure
-									cmdGetCancelDateColumn.ActiveConnection = Session("databaseConnection")
-									cmdGetCancelDateColumn.CommandTimeout = 180
+							        ' Get the Course Date
+							        Dim cmdGetCancelDateColumn = CreateObject("ADODB.Command")
+							        cmdGetCancelDateColumn.CommandText = "spASRIntGetCancelCourseDate"
+							        cmdGetCancelDateColumn.CommandType = 4  ' Stored Procedure
+							        cmdGetCancelDateColumn.ActiveConnection = Session("databaseConnection")
+							        cmdGetCancelDateColumn.CommandTimeout = 180
 				
-									Dim prmError = cmdGetCancelDateColumn.CreateParameter("error", 11, 2) ' 11=bit, 2=output
-									cmdGetCancelDateColumn.Parameters.Append(prmError)
+							        Dim prmError = cmdGetCancelDateColumn.CreateParameter("error", 11, 2) ' 11=bit, 2=output
+							        cmdGetCancelDateColumn.Parameters.Append(prmError)
 
-									Dim prmRecID = cmdGetCancelDateColumn.CreateParameter("recordID", 3, 1)	' 3=integer, 1=input
-									cmdGetCancelDateColumn.Parameters.Append(prmRecID)
-									prmRecID.value = CleanNumeric(lngRecordID)
+							        Dim prmRecID = cmdGetCancelDateColumn.CreateParameter("recordID", 3, 1) ' 3=integer, 1=input
+							        cmdGetCancelDateColumn.Parameters.Append(prmRecID)
+							        prmRecID.value = CleanNumeric(lngRecordID)
 
-									Dim prmCancelDateColumn = cmdGetCancelDateColumn.CreateParameter("CancelDateColumn", 11, 2) ' 11=bit, 2=output
-									cmdGetCancelDateColumn.Parameters.Append(prmCancelDateColumn)
+							        Dim prmCancelDateColumn = cmdGetCancelDateColumn.CreateParameter("CancelDateColumn", 11, 2) ' 11=bit, 2=output
+							        cmdGetCancelDateColumn.Parameters.Append(prmCancelDateColumn)
 			
-									Err.Clear()
-									cmdGetCancelDateColumn.Execute()
+							        Err.Clear()
+							        cmdGetCancelDateColumn.Execute()
 
-									If (Err.Number <> 0) Then
-										sErrorDescription = "Unable to check for a Cancelled Course Date." & vbCrLf & formatError(Err.Description)
-									End If
+							        If (Err.Number <> 0) Then
+							            sErrorDescription = "Unable to check for a Cancelled Course Date." & vbCrLf & FormatError(Err.Description)
+							        End If
 
-									If Len(sErrorDescription) = 0 Then
-										fCancelDateColumn = cmdGetCancelDateColumn.Parameters("CancelDateColumn").Value
-									End If
+							        If Len(sErrorDescription) = 0 Then
+							            fCancelDateColumn = cmdGetCancelDateColumn.Parameters("CancelDateColumn").Value
+							        End If
 			
-									' Release the ADO command object.
-									cmdGetCancelDateColumn = Nothing
-								End If
+							        ' Release the ADO command object.
+							        cmdGetCancelDateColumn = Nothing
+							    End If
 
 								If Len(sErrorDescription) = 0 Then
 									' Get the find records.

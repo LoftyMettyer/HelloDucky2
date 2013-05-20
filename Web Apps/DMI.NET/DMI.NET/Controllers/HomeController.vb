@@ -3007,7 +3007,7 @@ Namespace Controllers
     <HttpPost(), ValidateInput(False)>
     Function util_def_expression_Submit()
 
-      Dim objExpression
+      Dim objExpression As HR.Intranet.Server.Expression
       Dim iExprType As Integer
       Dim iReturnType As Integer
       Dim sUtilType As String
@@ -4814,7 +4814,46 @@ Namespace Controllers
 			Else
 				convertLocaleDateToSQL = ""
 			End If
-		End Function
+    End Function
+
+
+
+#Region "Standard Reports"
+
+    Public Function stdrpt_AbsenceCalendar() As ActionResult
+      Return PartialView()
+    End Function
+
+    Public Function stdrpt_AbsenceCalendar_details() As ActionResult
+      Return View()
+    End Function
+
+    <HttpPost()>
+    Function stdrpt_AbsenceCalendar_submit(value As FormCollection)
+
+      Session("stdrpt_AbsenceCalendar_StartMonth") = Request.Form("txtStartMonth")
+      Session("stdrpt_AbsenceCalendar_StartYear") = Request.Form("txtStartYear")
+      Session("stdrpt_AbsenceCalendar_IncludeBankHolidays") = Request.Form("txtIncludeBankHolidays")
+      Session("stdrpt_AbsenceCalendar_IncludeWorkingDaysOnly") = Request.Form("txtIncludeWorkingDaysOnly")
+      Session("stdrpt_AbsenceCalendar_ShowBankHolidays") = Request.Form("txtShowBankHolidays")
+      Session("stdrpt_AbsenceCalendar_ShowCaptions") = Request.Form("txtShowCaptions")
+      Session("stdrpt_AbsenceCalendar_ShowWeekends") = Request.Form("txtShowWeekends")
+      Return RedirectToAction("stdrpt_AbsenceCalendar")
+
+    End Function
+
+    Public Function stdrpt_def_absence() As ActionResult
+      Return View()
+    End Function
+
+    <HttpPost()>
+    Public Function stdrpt_run_AbsenceBreakdown() As ActionResult
+      Return View()
+    End Function
+
+#End Region
+
+
 	End Class
 
   Public Class ErrMsgJsonAjaxResponse

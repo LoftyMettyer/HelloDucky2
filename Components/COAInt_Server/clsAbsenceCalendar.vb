@@ -6,8 +6,6 @@ Public Class AbsenceCalendar
   Private CELLSIZE As Short
 
   Private mstrBackgroundColour As String
-  Private miFirstDayOfWeek As Short
-
   Private mstrClientDateFormat As String
 
   Private mstrRealSource As String
@@ -148,13 +146,6 @@ Public Class AbsenceCalendar
 
   Private Const FULL_WP As String = "SSMMTTWWTTFFSS"
 
-  Private Function CalculateWeekendsInYear(ByVal pdYearStart As Date) As Short
-
-    ' How many weekends in the current year
-    CalculateWeekendsInYear = 60
-
-  End Function
-
   Public ReadOnly Property DisableRegions() As Boolean
     Get
       DisableRegions = mblnDisableRegions
@@ -166,6 +157,7 @@ Public Class AbsenceCalendar
       DisableWPs = mblnDisableWPs
     End Get
   End Property
+
   Public ReadOnly Property ErrorMSG() As String
     Get
       ErrorMSG = mstrErrorMSG
@@ -185,13 +177,12 @@ Public Class AbsenceCalendar
     End Set
   End Property
 
-
   ' Used by the ASP to calculate the default start month of the absence calendar
-  Public Property StartMonth() As Object
+  Public Property StartMonth() As Integer
     Get
       StartMonth = Month(mdCalendarStartDate)
     End Get
-    Set(ByVal Value As Object)
+    Set(ByVal Value As Integer)
 
       'UPGRADE_WARNING: IsEmpty was upgraded to IsNothing and has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
       If IsNumeric(Value) And Not IsNothing(Value) Then
@@ -208,26 +199,25 @@ Public Class AbsenceCalendar
     End Set
   End Property
 
-
   ' Used by the ASP to calculate the default start year of the absence calendar
-  Public Property StartYear() As Object
+  Public Property StartYear() As Integer
     Get
       StartYear = Year(mdCalendarStartDate)
     End Get
-    Set(ByVal Value As Object)
+    Set(ByVal Value As Integer)
 
       'UPGRADE_WARNING: IsEmpty was upgraded to IsNothing and has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
       If IsNumeric(Value) And Not IsNothing(Value) Then
         'UPGRADE_WARNING: Couldn't resolve default property of object piStartYear. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         mdCalendarStartDate = DateSerial(Value, Month(mdCalendarStartDate), 1)
-        mdCalendarEndDate = System.DateTime.FromOADate(DateAdd(Microsoft.VisualBasic.DateInterval.Year, 1, mdCalendarStartDate).ToOADate - System.DateTime.FromOADate(0.5).ToOADate)
+        mdCalendarEndDate = DateTime.FromOADate(DateAdd(DateInterval.Year, 1, mdCalendarStartDate).ToOADate - DateTime.FromOADate(0.5).ToOADate)
       End If
 
     End Set
   End Property
 
-  Public WriteOnly Property RecordID() As Object
-    Set(ByVal Value As Object)
+  Public WriteOnly Property RecordID() As Long
+    Set(ByVal Value As Long)
 
       'UPGRADE_WARNING: IsEmpty was upgraded to IsNothing and has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
       If IsNumeric(Value) And Not IsNothing(Value) Then
@@ -239,58 +229,44 @@ Public Class AbsenceCalendar
   End Property
 
   Public WriteOnly Property Username() As String
-    Set(ByVal Value As String)
-      ' Username passed in from the asp page
-      gsUsername = Value
+    Set(ByVal value As String)
+      gsUsername = value
     End Set
   End Property
 
   Public WriteOnly Property Connection() As Object
-    Set(ByVal Value As Object)
-
-      ' Connection object passed in from the asp page
-
-      ' JDM - Create connection object differently if we are in development mode (i.e. debug mode)
-      If ASRDEVELOPMENT Then
-        gADOCon = New ADODB.Connection
-        'UPGRADE_WARNING: Couldn't resolve default property of object vConnection. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        gADOCon.Open(Value)
-      Else
-        gADOCon = Value
-      End If
-
+    Set(ByVal value As Object)
+      gADOCon = value
     End Set
   End Property
 
   Public WriteOnly Property ClientDateFormat() As String
-    Set(ByVal Value As String)
+    Set(ByVal value As String)
       ' Clients date format passed in from the asp page
-      mstrClientDateFormat = Value
+      mstrClientDateFormat = value
     End Set
   End Property
 
   ' How many absence records were found
-  Public ReadOnly Property AbsenceRecordCount() As Object
+  Public ReadOnly Property AbsenceRecordCount() As Integer
     Get
-      'UPGRADE_WARNING: Couldn't resolve default property of object AbsenceRecordCount. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      AbsenceRecordCount = miAbsenceRecordsFound
+      Return miAbsenceRecordsFound
     End Get
   End Property
 
-  Public WriteOnly Property RealSource() As Object
-    Set(ByVal Value As Object)
+  Public WriteOnly Property RealSource() As String
+    Set(ByVal value As String)
 
       'UPGRADE_WARNING: IsEmpty was upgraded to IsNothing and has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
-      If Not IsNothing(Value) Then
-        'UPGRADE_WARNING: Couldn't resolve default property of object pstrRealSource. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        mstrRealSource = Value
+      If Not IsNothing(value) Then
+        mstrRealSource = value
       End If
 
     End Set
   End Property
 
-  Public WriteOnly Property ShowWeekends() As Object
-    Set(ByVal Value As Object)
+  Public WriteOnly Property ShowWeekends() As String
+    Set(ByVal Value As String)
       ' Are the weekends to be shown (if parameter is empty read the default DB value)
       'UPGRADE_WARNING: IsEmpty was upgraded to IsNothing and has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
       'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -298,8 +274,8 @@ Public Class AbsenceCalendar
     End Set
   End Property
 
-  Public WriteOnly Property ShowCaptions() As Object
-    Set(ByVal Value As Object)
+  Public WriteOnly Property ShowCaptions() As String
+    Set(ByVal Value As String)
       ' Are the captions to be shown (if parameter is empty read the default DB value)
       'UPGRADE_WARNING: IsEmpty was upgraded to IsNothing and has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
       'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -307,8 +283,8 @@ Public Class AbsenceCalendar
     End Set
   End Property
 
-  Public WriteOnly Property ShowBankHolidays() As Object
-    Set(ByVal Value As Object)
+  Public WriteOnly Property ShowBankHolidays() As String
+    Set(ByVal Value As String)
       ' Are the bank holidays to be shown (if parameter is empty read the default DB value)
       'UPGRADE_WARNING: IsEmpty was upgraded to IsNothing and has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
       'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -316,8 +292,8 @@ Public Class AbsenceCalendar
     End Set
   End Property
 
-  Public WriteOnly Property IncludeBankHolidays() As Object
-    Set(ByVal Value As Object)
+  Public WriteOnly Property IncludeBankHolidays() As String
+    Set(ByVal Value As String)
       ' Are the bank holidays to be included (if parameter is empty read the default DB value)
       'UPGRADE_WARNING: IsEmpty was upgraded to IsNothing and has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
       'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -325,8 +301,8 @@ Public Class AbsenceCalendar
     End Set
   End Property
 
-  Public WriteOnly Property IncludeWorkingDaysOnly() As Object
-    Set(ByVal Value As Object)
+  Public WriteOnly Property IncludeWorkingDaysOnly() As String
+    Set(ByVal Value As String)
       ' Are the working days only to be shown (if parameter is empty read the default DB value)
       'UPGRADE_WARNING: IsEmpty was upgraded to IsNothing and has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
       'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -335,7 +311,7 @@ Public Class AbsenceCalendar
   End Property
 
   ' Used by the ASP to calculate the whether we have access to the absence table
-  Public ReadOnly Property AbsenceTableAccess() As Object
+  Public ReadOnly Property AbsenceTableAccess() As Boolean
     Get
       'UPGRADE_WARNING: Couldn't resolve default property of object AbsenceTableAccess. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
       AbsenceTableAccess = IIf(mblnFailReport, "0", "1")
@@ -352,9 +328,7 @@ Public Class AbsenceCalendar
 
   ' Converts RGB value into a hex code for IExplorer
   Private Function GetHexColour(ByRef iRed As Short, ByRef iGreen As Short, ByRef iBlue As Short) As String
-
-    GetHexColour = "#" & Right("0" & Hex(iRed), 2) & Right("0" & Hex(iGreen), 2) & Right("0" & Hex(iBlue), 2)
-
+    Return "#" & Right("0" & Hex(iRed), 2) & Right("0" & Hex(iGreen), 2) & Right("0" & Hex(iBlue), 2)
   End Function
 
   ' Load the defaults
@@ -362,15 +336,12 @@ Public Class AbsenceCalendar
   Private Sub Class_Initialize_Renamed()
 
     ReDim mvarTableViews(3, 0)
-    Dim mstrViews(0) As Object
     ReDim mavWorkingPatternChanges(1, 0)
     ReDim mavRegionChanges(1, 1)
 
     CELLSIZE = 17
 
     mstrBackgroundColour = "white"
-
-    miFirstDayOfWeek = FirstDayOfWeek.Sunday
 
     ' Define the colours for the absence calendar
     mstrHexColour_EnabledDayNumber = GetHexColour(128, 128, 255)
@@ -402,10 +373,9 @@ Public Class AbsenceCalendar
     Class_Initialize_Renamed()
   End Sub
 
-  Public Function HTML_SelectedStartMonthCombo(ByVal piStartMonth As Object) As Object
+  Public Function HTML_SelectedStartMonthCombo(ByVal piStartMonth As Integer) As String
 
     'Build month selection dropdown combo
-    Dim strDropdownComboHTML As String
     Dim iCount As Short
     Dim strHTML As String
 
@@ -431,7 +401,7 @@ Public Class AbsenceCalendar
 
   End Function
 
-  Private Function HTML_Calendar_Heading() As Object
+  Private Function HTML_Calendar_Heading() As String
 
     'Build month selection dropdown combo
     Dim strHTML As String
@@ -443,13 +413,6 @@ Public Class AbsenceCalendar
     iStartNumber = Weekday(dTempDate, FirstDayOfWeek.Sunday)
 
     strHTML = "<TR>" & mstrBlankSpace & vbNewLine & "<TD><TABLE style=""HEIGHT: 100%; WIDTH: 100%"" align=left class='invisible' cellPadding=0 cellSpacing=0 width=""100%"" height=""100%""> " & vbNewLine & "<TBODY align=center style=""FONT-SIZE: x-small"">"
-
-    '  strHTML = strHTML & "<TR>"
-    '
-    '  For iCount = 0 To 36
-    '    strHTML = strHTML & mstrBlankSpace
-    '  Next iCount
-
     strHTML = strHTML & "<TR>"
 
     ' Before first day of month
@@ -461,8 +424,7 @@ Public Class AbsenceCalendar
 
     strHTML = strHTML & "</TR>"
 
-    'UPGRADE_WARNING: Couldn't resolve default property of object HTML_Calendar_Heading. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    HTML_Calendar_Heading = strHTML & "</TBODY></TABLE>" & vbNewLine & "</TD>" & vbNewLine & "</TR>" & vbNewLine
+    Return strHTML & "</TBODY></TABLE>" & vbNewLine & "</TD>" & vbNewLine & "</TR>" & vbNewLine
 
   End Function
 
@@ -475,8 +437,6 @@ Public Class AbsenceCalendar
     Dim iStartNumber As Short
     Dim iEndNumber As Short
     Dim dTempDate As Date
-    Dim bWeekend As Boolean
-    Dim strCalIndex As String
     Dim iIndexAM As String
     Dim iIndexPM As String
     Dim strHTMLMouseCode As String
@@ -540,16 +500,6 @@ Public Class AbsenceCalendar
           strHTMLCellString = "<TD name=DateID_" & LTrim(Str(CDbl(iIndexAM))) & " id=DateID_" & LTrim(Str(CDbl(iIndexAM))) & "class=""calendar_nonday"" HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP>&nbsp;</TD>" & vbNewLine
         Else
           'Build the cell string
-          '        strHTMLCellString = "<TD style='font-size: " & IIf(Len(mavAbsences(iIndexAM, 2)) < 2, "8", "6") & "pt;' name=DateID_" & LTrim(Str(iIndexAM)) & " id=DateID_" & LTrim(Str(iIndexAM)) & " HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP><FONT SIZE='1'>" & mavAbsences(iIndexAM, 2) & "</FONT></TD>" & vbNewLine
-
-          ' Build the colour for this morning session
-          'strHTMLColourCode = "bgColor=" & IIf(mavAbsences(iIndexAM, 0), mavAbsences(iIndexAM, 5), mstrHexColour_EnabledDayCell)
-
-          ' Build Mouse Hover code
-          '        strHTMLMouseCode = IIf(mavAbsences(iIndexAM, 0), "LANGUAGE=javascript " _
-          '& " onmouseover=""this.style.cursor='hand';image_abs_" & mavAbsences(iIndexAM, 6) & ".style.visibility='visible';""" _
-          '& " onmouseout=""this.style.cursor='default';image_abs_" & mavAbsences(iIndexAM, 6) & ".style.visibility='hidden';""" _
-          ', "")
 
           ' Build onclick event code
           'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexAM, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -635,15 +585,8 @@ Public Class AbsenceCalendar
 
   End Function
 
-  Private Function NumberOfDaysInMonth(ByRef dtInput As Date) As Object
-
-    'Return the number of days in the month
-
-    Dim dtNextMonth As Date
-
-    dtNextMonth = DateAdd(Microsoft.VisualBasic.DateInterval.Month, 1, dtInput)
-    NumberOfDaysInMonth = VB.Day(DateAdd(Microsoft.VisualBasic.DateInterval.Day, VB.Day(dtNextMonth) * -1, dtNextMonth))
-
+  Private Function NumberOfDaysInMonth(ByRef dtInput As Date) As Integer
+    Return DateTime.DaysInMonth(Year(dtInput), Month(dtInput))
   End Function
 
   Private Function GetAbsenceRecordSet() As Short
@@ -841,7 +784,7 @@ errLoadColourKey:
 
   End Function
 
-  Public Function HTML_LoadColourKey() As Object
+  Public Function HTML_LoadColourKey() As String
 
     ' Load the colour key variables
     If Not LoadColourKey() Then
@@ -943,13 +886,11 @@ errLoadColourKey:
     strHTML = strHTML & "</TD></TR></TABLE>"
 
     ' If we are here, then notify calling procedure of success and exit
-    'UPGRADE_WARNING: Couldn't resolve default property of object HTML_LoadColourKey. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    HTML_LoadColourKey = strHTML
-    Exit Function
+    Return strHTML
 
   End Function
 
-  Public Function HTML_Calendar() As Object
+  Public Function HTML_Calendar() As String
 
     Dim strHTML As String
     Dim iMonth As Short
@@ -957,7 +898,7 @@ errLoadColourKey:
     Dim iCount As Short
 
     ' Base HTML for the table
-    strHTML = "<TABLE id=MainGrid border=0 cellPadding=0 cellSpacing=0 width=""100%""" & ">" & "<TBODY>"
+    strHTML = "<table id=MainGrid border=0 cellPadding=0 cellSpacing=0 width=""100%""" & ">" & "<tbody>"
 
     ' Calculate the bank holidays
     FillGridWithData()
@@ -978,34 +919,30 @@ errLoadColourKey:
     Next iCount
 
     ' Finish off the table text
-    strHTML = strHTML & "</TBODY></TABLE>"
+    strHTML = strHTML & "</tbody></table>"
 
     ' Return HTML code for the main calendar
-    'UPGRADE_WARNING: Couldn't resolve default property of object HTML_Calendar. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    HTML_Calendar = strHTML
+    Return strHTML
 
   End Function
 
-  Private Function FillGridWithData() As Object
+  Private Sub FillGridWithData()
 
     ' Populate the grid with data
     On Error Resume Next
 
     ' Load the colour key variables
     If Not LoadColourKey() Then
-      Exit Function
+      Exit Sub
     End If
 
-    Dim counter As Short
     Dim intStart As Short
     Dim intEnd As Short
-
-    Dim sSQL As String
 
     ' If there are no absence records for the current employee then skip
     ' this bit (but still show the form)
     If mrstAbsenceRecords.BOF And mrstAbsenceRecords.EOF Then
-      Exit Function
+      Exit Sub
     End If
 
     mstrAbsWPattern = ""
@@ -1021,20 +958,20 @@ errLoadColourKey:
         ' JDM - Kak-Handed way of sorting out American settings on different versions of IIS
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
         If IsDBNull(.Fields("StartDate").Value) Then
-          mdAbsStartDate = DateSerial(Year(Now), Month(Now), VB.Day(Now))
+          mdAbsStartDate = DateSerial(Year(Now), Month(Now), Now.Day)
         Else
-          mdAbsStartDate = DateSerial(Year(.Fields("StartDate").Value), Month(.Fields("StartDate").Value), VB.Day(.Fields("StartDate").Value))
+          mdAbsStartDate = DateSerial(Year(.Fields("StartDate").Value), Month(.Fields("StartDate").Value), CDate(.Fields("StartDate").Value).Day)
         End If
 
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
         If IsDBNull(.Fields("EndDate").Value) Then
-          mdAbsEndDate = DateSerial(Year(Now), Month(Now), VB.Day(Now))
+          mdAbsEndDate = DateSerial(Year(Now), Month(Now), Now.Day)
         Else
-          mdAbsEndDate = DateSerial(Year(.Fields("EndDate").Value), Month(.Fields("EndDate").Value), VB.Day(.Fields("EndDate").Value))
+          mdAbsEndDate = DateSerial(Year(.Fields("EndDate").Value), Month(.Fields("EndDate").Value), CDate(.Fields("EndDate").Value).Day)
         End If
 
-        mstrAbsStartSession = UCase(.Fields("StartSession").Value)
-        mstrAbsEndSession = UCase(.Fields("EndSession").Value)
+        mstrAbsStartSession = CStr(.Fields("StartSession").Value).ToUpper()
+        mstrAbsEndSession = CStr(.Fields("EndSession").Value).ToUpper()
 
         'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
         mstrAbsType = IIf(IsDBNull(.Fields("Type").Value), "", .Fields("Type").Value)
@@ -1047,8 +984,8 @@ errLoadColourKey:
         mstrAbsReason = IIf(IsDBNull(.Fields("Reason").Value), "", .Fields("Reason").Value)
 
         If mdAbsStartDate <= mdCalendarEndDate And mdAbsEndDate >= mdCalendarStartDate Then
-          intStart = GetCalIndex(mdAbsStartDate, IIf(mstrAbsStartSession = "PM", True, False))
-          intEnd = GetCalIndex(mdAbsEndDate, IIf(mstrAbsEndSession = "PM", True, False))
+          intStart = GetCalIndex(mdAbsStartDate, mstrAbsStartSession = "PM")
+          intEnd = GetCalIndex(mdAbsEndDate, mstrAbsEndSession = "PM")
 
           FillCalBoxes(intStart, intEnd)
         End If
@@ -1057,7 +994,7 @@ errLoadColourKey:
       Loop
     End With
 
-  End Function
+  End Sub
 
   Private Function GetPersonnelRecordSet() As Boolean
 
@@ -1066,6 +1003,9 @@ errLoadColourKey:
     Dim lngCount As Integer
     Dim sSQL As String
     Dim prstPersonnelData As ADODB.Recordset
+
+    ' Botch as we have a lot of rubbish code that does not handle nulls at all.
+    mdLeavingDate = DateTime.FromOADate(0)
 
     If Not mblnFailReport Then
       sSQL = vbNullString
@@ -1194,7 +1134,7 @@ PersonnelERROR:
 
   End Function
 
-  Public Function HTML_EmployeeInformation() As Object
+  Public Function HTML_EmployeeInformation() As String
 
     Dim strHTML As String
 
@@ -1228,12 +1168,11 @@ PersonnelERROR:
       strHTML = strHTML & "</TR>" & vbNewLine
     End If
 
-    'UPGRADE_WARNING: Couldn't resolve default property of object HTML_EmployeeInformation. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    HTML_EmployeeInformation = strHTML
+    Return strHTML
 
   End Function
 
-  Public Function HTML_ToggleDisplay() As Object
+  Public Function HTML_ToggleDisplay() As String
 
     Dim strHTML As String
 
@@ -1249,12 +1188,10 @@ PersonnelERROR:
     Dim strCaption As String
 
     ' Create function header strings
-    strHTML = "<SCRIPT ID=clientEventHandlersJS LANGUAGE=javascript>" & vbNewLine
+    strHTML = "<script type=""text/javascript"">" & vbNewLine
 
     strHTML_Refresh = vbNullString
-    strHTML_Refresh = strHTML_Refresh & "function refreshDateSpecifics() " & vbNewLine
-    strHTML_Refresh = strHTML_Refresh & " {" & vbNewLine
-
+    strHTML_Refresh = strHTML_Refresh & "function refreshDateSpecifics() {" & vbNewLine
     strHTML_Refresh = strHTML_Refresh & " refreshToggleValues();" & vbNewLine
 
     ' Create option strings
@@ -1337,8 +1274,7 @@ PersonnelERROR:
     strHTML_Refresh = strHTML_Refresh & " }" & vbNewLine
 
     ' Concatenate functions into HTML string
-    'UPGRADE_WARNING: Couldn't resolve default property of object HTML_ToggleDisplay. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    HTML_ToggleDisplay = strHTML & strHTML_Refresh & vbNewLine & "</SCRIPT>" & vbNewLine
+    Return strHTML & strHTML_Refresh & vbNewLine & "</script>" & vbNewLine
 
   End Function
 
@@ -1350,9 +1286,7 @@ PersonnelERROR:
     On Error GoTo Error_FillCalBoxes
 
     Dim Count As Short
-    Dim dtmNextChangeDate As Date
     Dim dtmCurrentDate As Date
-    Dim rstHistoricWPatterns As ADODB.Recordset
     Dim strColour As String
     Dim iArrayCount As Short
 
@@ -1494,11 +1428,9 @@ Error_FillCalBoxes:
     ' The colour for 'Other' which is Black
 
     Dim iCount As Short
-    Dim bFound As Boolean
     Dim strColourString As String
 
     ' Default
-    bFound = False
     strColourString = "black"
 
     For iCount = 0 To miStrAbsenceTypes 'UBound(mastrAbsenceTypes, 1) - 1
@@ -1515,32 +1447,32 @@ Error_FillCalBoxes:
   End Function
 
 
-  Public Function HTML_HighlightAbsenceTypes() As Object
+  Public Function HTML_HighlightAbsenceTypes() As String
 
     'Build a function for highlighting the current absence type
     Dim strHTML As String
 
     ' Create function header strings
-    strHTML = "<SCRIPT ID=clientEventHandlersJS LANGUAGE=javascript>" & vbNewLine & "function HighlightAbsenceTypes(pstrAbsenceType, pbWorkingDay){" & vbNewLine
+    strHTML = "<script type=""text/javascript"">" & vbNewLine & "function HighlightAbsenceTypes(pstrAbsenceType, pbWorkingDay){" & vbNewLine
 
     strHTML = strHTML & "if (pbWorkingDay == true and frmChangeDetails.txtIncludeWorkingDaysOnly.value == ""included"")" & "{" & "opener.document.getElementById(pstrAbsenceType).style.visibility=""hidden""}" & vbNewLine
 
 
     'UPGRADE_WARNING: Couldn't resolve default property of object HTML_HighlightAbsenceTypes. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    HTML_HighlightAbsenceTypes = strHTML & vbNewLine & "}" & vbNewLine & "</SCRIPT>" & vbNewLine
+    HTML_HighlightAbsenceTypes = strHTML & vbNewLine & "}" & vbNewLine & "</script>" & vbNewLine
 
   End Function
 
-  Public Function HTML_UnHighlightAbsenceTypes() As Object
+  Public Function HTML_UnHighlightAbsenceTypes() As String
 
     'Build a function for highlighting the current absence type
     Dim strHTML As String
 
     ' Create function header strings
-    strHTML = "<SCRIPT ID=clientEventHandlersJS LANGUAGE=javascript>" & vbNewLine & "function UnHighlightAbsenceTypes(pstrAbsenceType, pbWorkingDay){" & vbNewLine
+    strHTML = "<acript type""=javascript"">" & vbNewLine & "function UnHighlightAbsenceTypes(pstrAbsenceType, pbWorkingDay){" & vbNewLine
 
     'UPGRADE_WARNING: Couldn't resolve default property of object HTML_UnHighlightAbsenceTypes. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    HTML_UnHighlightAbsenceTypes = strHTML & vbNewLine & "}" & vbNewLine & "</SCRIPT>" & vbNewLine
+    HTML_UnHighlightAbsenceTypes = strHTML & vbNewLine & "}" & vbNewLine & "</script>" & vbNewLine
 
   End Function
 
@@ -1565,7 +1497,7 @@ Error_FillCalBoxes:
 
   End Function
 
-  Public Function HTML_ForwardBackYear() As Object
+  Public Function HTML_ForwardBackYear() As String
 
     Dim strHTML As String
 
@@ -1596,8 +1528,7 @@ Error_FillCalBoxes:
     strHTML = strHTML & "  </TD>" & vbNewLine
     strHTML = strHTML & "</TR>" & vbNewLine
 
-    'UPGRADE_WARNING: Couldn't resolve default property of object HTML_ForwardBackYear. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    HTML_ForwardBackYear = strHTML
+    Return strHTML
 
   End Function
 
@@ -1726,7 +1657,7 @@ Error_FillCalBoxes:
 
   End Function
 
-  Public Function HTML_DisplayOptions() As Object
+  Public Function HTML_DisplayOptions() As String
 
     'Build the display options HTML
     Dim strHTML As String
@@ -1747,11 +1678,11 @@ Error_FillCalBoxes:
     strHTML = strHTML & "<tr><td colSpan=""2"">" & "<input id=""chkShowWeekends"" name=""chkShowWeekends"" type=""checkbox"" tabindex=-1 " & "onclick=""return refreshDateSpecifics()""" & "onmouseover=""try{checkbox_onMouseOver(this);}catch(e){}""" & "onmouseout=""try{checkbox_onMouseOut(this);}catch(e){}""" & IIf(mbDisplay_ShowWeekends, " CHECKED ", "") & ">" & "<label for=""chkShowWeekends"" Class=""checkbox"" TabIndex = 0" & "    onkeypress = ""try{checkboxLabel_onKeyPress(this);}catch(e){}""" & "    onmouseover = ""try{checkboxLabel_onMouseOver(this);}catch(e){}""" & "    onmouseout = ""try{checkboxLabel_onMouseOut(this);}catch(e){}""" & "    onfocus = ""try{checkboxLabel_onFocus(this);}catch(e){}""" & "    onblur=""try{checkboxLabel_onBlur(this);}catch(e){}"">" & "&nbsp;Show Weekends" & "</label></td></tr>"
 
     'UPGRADE_WARNING: Couldn't resolve default property of object HTML_DisplayOptions. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    HTML_DisplayOptions = strHTML
+    Return strHTML
 
   End Function
 
-  Private Function GetWorkingPatterns() As Object
+  Private Sub GetWorkingPatterns()
 
     Dim iCount As Short
     Dim rstHistoricWPatterns As ADODB.Recordset
@@ -1863,96 +1794,9 @@ Error_FillCalBoxes:
       mavWorkingPatternChanges(1, 0) = FULL_WP
     End If
 
-  End Function
+  End Sub
 
-  Private Function GetRegions() As Object
-
-    ' This function returns true if the date of the index passed to it is defined
-    ' as a bank holiday for the current employee.
-    Dim strRegionAtCurrentDate As String
-    Dim rstBankHolRegion As ADODB.Recordset
-    Dim strSQL As String
-    Dim iCount As Short
-    Dim iIndex As Short
-
-
-    ' Define a blank region array
-    ReDim mavRegionChanges(1, 1)
-    'UPGRADE_WARNING: Couldn't resolve default property of object mavRegionChanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    mavRegionChanges(0, 0) = CDate("01/01/1899")
-    'UPGRADE_WARNING: Couldn't resolve default property of object mavRegionChanges(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    mavRegionChanges(1, 0) = ""
-
-    ' If we are using historic region, get the employees region on this day
-    If modPersonnelSpecifics.grtRegionType = modPersonnelSpecifics.RegionType.rtHistoricRegion Then
-
-      ' NB : have to format the date to mm/dd/yy here otherwise sql doesnt like it
-      strSQL = "SELECT TOP 1" & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & ", " & gsPersonnelHRegionDateColumnName & " AS 'DateEffective' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " <= '" & VB6.Format(mdCalendarStartDate, "mm/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " DESC"
-      rstBankHolRegion = datGeneral.GetRecords(strSQL)
-
-      If Not (rstBankHolRegion.BOF And rstBankHolRegion.EOF) Then
-
-        rstBankHolRegion.MoveFirst()
-
-        ' Start region for this employee
-        'UPGRADE_WARNING: Couldn't resolve default property of object mavRegionChanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        mavRegionChanges(0, 0) = rstBankHolRegion.Fields("DateEffective").Value
-        'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-        'UPGRADE_WARNING: Couldn't resolve default property of object mavRegionChanges(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        mavRegionChanges(1, 0) = IIf(IsDBNull(rstBankHolRegion.Fields("Region").Value), Space(14), rstBankHolRegion.Fields("Region").Value)
-
-      End If
-
-      ' Get rest of regions for this employee
-      strSQL = "SELECT " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & ", " & gsPersonnelHRegionDateColumnName & " AS 'DateEffective' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " >= '" & VB6.Format(mdCalendarStartDate, "mm/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC"
-      rstBankHolRegion = datGeneral.GetRecords(strSQL)
-
-      If Not (rstBankHolRegion.EOF And rstBankHolRegion.BOF) Then
-
-        ' Size the array for the amount of regions this employee has.
-        ReDim Preserve mavRegionChanges(1, rstBankHolRegion.RecordCount)
-
-        rstBankHolRegion.MoveFirst()
-
-        ' Load all the working patterns into array
-        For iCount = 1 To rstBankHolRegion.RecordCount
-
-          'UPGRADE_WARNING: Couldn't resolve default property of object mavRegionChanges(0, iCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-          mavRegionChanges(0, iCount) = rstBankHolRegion.Fields("DateEffective").Value
-          'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          'UPGRADE_WARNING: Couldn't resolve default property of object mavRegionChanges(1, iCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-          mavRegionChanges(1, iCount) = IIf(IsDBNull(rstBankHolRegion.Fields("Region").Value), Space(14), rstBankHolRegion.Fields("Region").Value)
-
-          ' Go to next record
-          rstBankHolRegion.MoveNext()
-
-        Next iCount
-
-      Else
-        'UPGRADE_WARNING: Couldn't resolve default property of object mavRegionChanges(0, 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        mavRegionChanges(0, 1) = CDate("31/12/9999")
-        'UPGRADE_WARNING: Couldn't resolve default property of object mavRegionChanges(1, 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        mavRegionChanges(1, 1) = ""
-
-      End If
-
-
-
-
-      'UPGRADE_NOTE: Object rstBankHolRegion may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-      rstBankHolRegion = Nothing
-
-    Else
-      ' Define static region
-      'UPGRADE_WARNING: Couldn't resolve default property of object mavRegionChanges(0, 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      mavRegionChanges(0, 1) = CDate("01/01/1899")
-      'UPGRADE_WARNING: Couldn't resolve default property of object mavRegionChanges(1, 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      mavRegionChanges(1, 1) = mstrRegion
-    End If
-
-  End Function
-
-  Private Function GenerateRegionData() As Object
+  Private Sub GenerateRegionData()
 
     Dim intTemp As Short
     Dim bNewRegionFound As Boolean
@@ -2148,13 +1992,7 @@ Error_FillCalBoxes:
       End If
     End If 'Not mblnDisableRegions
 
-  End Function
-
-  Function DateDDMMYYYY(ByRef pdInputDate As Object) As String
-    'UPGRADE_WARNING: Couldn't resolve default property of object pdInputDate. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    DateDDMMYYYY = Str(VB.Day(pdInputDate)) & "/" & Str(Month(pdInputDate)) & "/" & Str(Year(pdInputDate))
-  End Function
-
+  End Sub
 
   Private Function CheckPermission_RegionInfo() As Boolean
 
@@ -2300,8 +2138,6 @@ DisableRegions:
     GoTo TidyUpAndExit
 
   End Function
-
-
 
   Private Function CheckPermission_WPInfo() As Boolean
 
@@ -2675,9 +2511,6 @@ FailReport:
     Dim blnColumnOK As Boolean
     Dim blnFound As Boolean
     Dim blnNoSelect As Boolean
-    Dim iLoop1 As Short
-    Dim intLoop As Short
-    Dim strColumnCode As String
     Dim strSource As String
     Dim intNextIndex As Short
     Dim blnOK As Boolean
@@ -2689,9 +2522,6 @@ FailReport:
     ' Set flags with their starting values
     blnOK = True
     blnNoSelect = False
-
-    strTable = vbNullString
-    strColumn = vbNullString
 
     ' Load the temp variables
     lngTempTableID = plngTableID
@@ -2836,4 +2666,5 @@ FailReport:
     CheckPermission_Columns = True
 
   End Function
+
 End Class

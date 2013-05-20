@@ -15,12 +15,13 @@
 	' FollowPage  - page to go to if YES is clicked <util_run.asp>
 	if session("action") = "STDREPORT_DATEPROMPT" or session("optionaction") = "STDREPORT_DATEPROMPT" then
 		bStandardReportPrompt = true
-	else
-		bStandardReportPrompt = false
-		session("utiltype") = Request.Form("utiltype")
-		session("utilid") = Request.Form("utilid")
-		session("utilname") = Request.Form("utilname")
-		session("action") = Request.Form("action")
+        Session("utilname") = ""
+    Else
+        bStandardReportPrompt = False
+        Session("utiltype") = Request.Form("utiltype")
+        Session("utilid") = Request.Form("utilid")
+        Session("utilname") = Request.Form("utilname")
+        Session("action") = Request.Form("action")
 	end if
 %>
 
@@ -36,11 +37,6 @@
 
         var frmPromptedValues = OpenHR.getForm("workframe", "frmPromptedValues");
 
-        //var frmPromptedValues = $("#frmPromptedValues");        // document.getElementById('frmPromptedValues');
-        //var frmPromptedValues = document.getElementById('frmPromptedValues');
-
-
-
         frmPromptedValues.txtLocaleDateFormat.value = OpenHR.LocaleDateFormat;
         frmPromptedValues.txtLocaleDecimalSeparator.value = OpenHR.LocaleDecimalSeparator;
         frmPromptedValues.txtLocaleThousandSeparator.value = OpenHR.LocaleThousandSeparator;
@@ -53,17 +49,24 @@
                 $("#reportframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");                
             }
         }
+
         if (frmPromptedValues.txtPromptCount.value == 0) {
-            //    OpenHR.submitForm(frmPromptedValues);
-            OpenHR.showInReportFrame(frmPromptedValues);
+
+            if (frmPromptedValues.StandardReportPrompt.value == "True") {
+                OpenHR.submitForm(frmPromptedValues);
+            }
+            else {
+                OpenHR.showInReportFrame(frmPromptedValues);
+            }
+
 
         } else {
             // Set focus on the first prompt control.
             var controlCollection = frmPromptedValues.elements;
             if (controlCollection != null) {
-                for (i = 0; i < controlCollection.length; i++) {
-                    sControlName = controlCollection.item(i).name;
-                    sControlPrefix = sControlName.substr(0, 7);
+                for (var i = 0; i < controlCollection.length; i++) {
+                    var sControlName = controlCollection.item(i).name;
+                    var sControlPrefix = sControlName.substr(0, 7);
 
                     if ((sControlPrefix == "prompt_") || (sControlName.substr(0, 13) == "promptLookup_")) {
                         controlCollection.item(i).focus();
@@ -502,8 +505,6 @@ Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCou
     }
 
     function CancelClick() {
-
-        debugger;
         
         if (frmPromptedValues.StandardReportPrompt.value == "True")
         {

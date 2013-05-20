@@ -157,9 +157,9 @@
 		ElseIf Session("utiltype") = "9" Then
 	        Html.RenderPartial("~/Views/Home/util_run_mailmerge.ascx")
 		ElseIf Session("utiltype") = "15" Then
-			'Html.RenderPartial("~/Views/Home/stdrpt_run_AbsenceBreakdown.ascx")
+	        Html.RenderPartial("~/Views/Home/stdrpt_run_AbsenceBreakdown.ascx")
 		ElseIf Session("utiltype") = "16" Then
-			'Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
+	        Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
 		ElseIf Session("utiltype") = "17" Then
 			'Html.RenderPartial("~/Views/Home/util_run_calendarreport_main.ascx")
 		Else

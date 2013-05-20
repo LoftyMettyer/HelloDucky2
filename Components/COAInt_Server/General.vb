@@ -246,48 +246,48 @@ ErrorTrap:
 		Class_Initialize_Renamed()
 	End Sub
 	
-	Public Function GetValueForRecordIndependantCalc(ByRef lngExprID As Integer, Optional ByRef pvarPrompts As Object = Nothing) As Object
-		
-		Dim objExpr As clsExprExpression
-		Dim rsTemp As ADODB.Recordset
-		Dim strSQL As String
-		Dim fOK As Boolean
-		Dim lngViews() As Integer
-		
-		ReDim lngViews(0)
-		
-		On Error GoTo LocalErr
-		
-		'UPGRADE_WARNING: Couldn't resolve default property of object GetValueForRecordIndependantCalc. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		GetValueForRecordIndependantCalc = vbNullString
-		
-		objExpr = New clsExprExpression
-		With objExpr
-			' Initialise the filter expression object.
-			fOK = .Initialise(0, lngExprID, modExpression.ExpressionTypes.giEXPR_RECORDINDEPENDANTCALC, modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
-			
-			If fOK Then
-				fOK = objExpr.RuntimeCalculationCode(lngViews, strSQL, True, False, pvarPrompts)
-			End If
-			
-			If fOK Then
-				rsTemp = GetReadOnlyRecords("SELECT " & strSQL)
-				If Not rsTemp.BOF And Not rsTemp.EOF Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object GetValueForRecordIndependantCalc. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					GetValueForRecordIndependantCalc = rsTemp.Fields(0).Value
-				End If
-			End If
-			
-		End With
-		'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objExpr = Nothing
-		
-		
-		Exit Function
-		
-LocalErr: 
-		
-	End Function
+  Public Function GetValueForRecordIndependantCalc(ByRef lngExprID As Integer, Optional ByRef pvarPrompts As Object = Nothing) As Object
+
+    Dim objExpr As clsExprExpression
+    Dim rsTemp As ADODB.Recordset
+    Dim strSQL As String
+    Dim fOK As Boolean
+    Dim lngViews() As Integer
+
+    ReDim lngViews(0)
+
+    On Error GoTo LocalErr
+
+    'UPGRADE_WARNING: Couldn't resolve default property of object GetValueForRecordIndependantCalc. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+    GetValueForRecordIndependantCalc = vbNullString
+
+    objExpr = New clsExprExpression
+    With objExpr
+      ' Initialise the filter expression object.
+      fOK = .Initialise(0, lngExprID, modExpression.ExpressionTypes.giEXPR_RECORDINDEPENDANTCALC, modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
+
+      If fOK Then
+        fOK = objExpr.RuntimeCalculationCode(lngViews, strSQL, True, False, pvarPrompts)
+      End If
+
+      If fOK Then
+        rsTemp = GetReadOnlyRecords("SELECT " & strSQL)
+        If Not rsTemp.BOF And Not rsTemp.EOF Then
+          'UPGRADE_WARNING: Couldn't resolve default property of object GetValueForRecordIndependantCalc. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+          GetValueForRecordIndependantCalc = rsTemp.Fields(0).Value
+        End If
+      End If
+
+    End With
+    'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    objExpr = Nothing
+
+
+    Exit Function
+
+LocalErr:
+
+  End Function
 	
 	Public Function GetActualLogin() As String
 		

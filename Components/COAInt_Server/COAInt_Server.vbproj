@@ -215,7 +215,6 @@
     <Compile Include="modUtilityAccess.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="StandardReports.vb" />
     <Compile Include="TablePrivilege.vb">
       <SubType>Code</SubType>
     </Compile>

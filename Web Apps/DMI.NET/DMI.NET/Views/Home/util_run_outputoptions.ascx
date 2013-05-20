@@ -5,8 +5,6 @@
 <script type="text/javascript">
     function output_setOptions() {
 
-        debugger;
-
         var frmExport = OpenHR.getForm("reportframe", "frmExportData");
         var outType = "#optOutputFormat" + frmExport.txtFormat.value;
         var i;

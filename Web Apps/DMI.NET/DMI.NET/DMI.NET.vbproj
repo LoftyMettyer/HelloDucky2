@@ -550,6 +550,7 @@
     <None Include="My Project\PublishProfiles\Arcade Server.pubxml" />
     <None Include="My Project\PublishProfiles\HarpDev02.pubxml" />
     <None Include="My Project\PublishProfiles\Local DMIPublished.pubxml" />
+    <Content Include="Scripts\date.js" />
     <Content Include="Scripts\FormScripts\find.js" />
     <Content Include="misc\mainmenu.htm" />
     <Content Include="Scripts\FormScripts\optionData.js" />
@@ -974,6 +975,9 @@
     <Content Include="Views\Home\orderselect.ascx" />
     <Content Include="Views\Home\promptedValues.aspx" />
     <Content Include="Views\Home\promptedValues_completed.aspx" />
+    <Content Include="Views\Home\stdrpt_AbsenceCalendar.ascx" />
+    <Content Include="Views\Home\stdrpt_AbsenceCalendar_details.aspx" />
+    <Content Include="Views\Home\stdrpt_run_AbsenceBreakdown.ascx" />
     <Content Include="Views\Home\tbAddFromWaitingListFind.ascx" />
     <Content Include="Views\Home\tbBookCourseFind.ascx" />
     <Content Include="Views\Home\tbBulkBooking.ascx" />
@@ -1066,6 +1070,7 @@
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridSelectedColumns.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridSortOrder.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_nav.ascx" />
+    <Content Include="Views\Home\stdrpt_def_Absence.ascx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1088,6 +1093,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Views\Home\pictures\" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="ADODB">
