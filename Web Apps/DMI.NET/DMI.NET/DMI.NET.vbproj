@@ -549,6 +549,7 @@
     <Content Include="Content\fonts\SSI80v194934\SSI80v1.woff" />
     <None Include="My Project\PublishProfiles\Arcade Server.pubxml" />
     <None Include="My Project\PublishProfiles\HarpDev02.pubxml" />
+    <None Include="My Project\PublishProfiles\HarpQA05.pubxml" />
     <None Include="My Project\PublishProfiles\Local DMIPublished.pubxml" />
     <Content Include="Scripts\date.js" />
     <Content Include="Scripts\FormScripts\find.js" />
