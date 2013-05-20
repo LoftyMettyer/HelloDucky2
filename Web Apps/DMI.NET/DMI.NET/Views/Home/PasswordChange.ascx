@@ -238,10 +238,10 @@
         %>
         </form>
 
-        <form action="passwordChange_Submit" method="post" id="frmGoto" name="frmGoto">
-            <input type="hidden" id="txtAction" name="txtAction">
+        <form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
             <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
         </form>
+
     </div>
     <%
         On Error Resume Next
