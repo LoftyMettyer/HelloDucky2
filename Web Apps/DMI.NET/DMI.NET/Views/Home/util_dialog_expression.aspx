@@ -10,6 +10,7 @@
     <link href="<%: Url.Content("~/Content/OpenHR.css") %>" rel="stylesheet" type="text/css" />
 
     <script src="<%: Url.Content("~/bundles/jQuery")%>" type="text/javascript"></script>
+    <script src="<%: Url.Content("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
     <script src="<%: Url.Content("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 
 <script type="text/javascript">
