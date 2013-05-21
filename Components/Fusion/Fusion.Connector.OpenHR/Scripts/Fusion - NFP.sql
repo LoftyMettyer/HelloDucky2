@@ -501,14 +501,82 @@ BEGIN
 
 	SET NOCOUNT ON;
 
-	DECLARE @messageName varchar(255),
-			@parentID	integer;
+	DECLARE @messageName	varchar(255),
+			@bSendChildren	bit,
+			@childID		integer,
+			@parentID		integer;
+
+	SET @bSendChildren = 1;
 
 	-- Personnel Records
 	IF @TableID = 1
 	BEGIN
 		EXEC fusion.[pSendFusionMessageCheckContext] @MessageType='StaffChange', @LocalId=@RecordID;
 		EXEC fusion.[pSendFusionMessageCheckContext] @MessageType='StaffPictureChange', @LocalId=@RecordID;
+
+		IF @bSendChildren = 1
+		BEGIN
+
+
+			-- Force Legal Documents
+			DECLARE temp cursor FOR
+				SELECT ID FROM Legal_Documents WHERE ID_1 = @RecordID;
+			OPEN temp
+			FETCH NEXT FROM temp INTO @childID
+			WHILE @@FETCH_STATUS=0
+			BEGIN
+				EXEC fusion.[pSendFusionMessageCheckContext] @MessageType='StaffLegalDocumentChange', @LocalId=@childID;
+				FETCH NEXT FROM temp INTO @childID
+			END
+			CLOSE temp
+			DEALLOCATE temp
+
+
+			-- Force Contacts
+			DECLARE temp cursor FOR
+				SELECT ID FROM Contacts WHERE ID_1 = @RecordID;
+			OPEN temp
+			FETCH NEXT FROM temp INTO @childID
+			WHILE @@FETCH_STATUS=0
+			BEGIN
+				EXEC fusion.[pSendFusionMessageCheckContext] @MessageType='StaffContactChange', @LocalId=@childID;
+				FETCH NEXT FROM temp INTO @childID
+			END
+			CLOSE temp
+			DEALLOCATE temp
+
+
+			-- Force Skills
+			DECLARE temp cursor FOR
+				SELECT ID FROM Training_Booking WHERE ID_1 = @RecordID;
+			OPEN temp
+			FETCH NEXT FROM temp INTO @childID
+			WHILE @@FETCH_STATUS=0
+			BEGIN
+				EXEC fusion.[pSendFusionMessageCheckContext] @MessageType='StaffSkillChange', @LocalId=@childID;
+				FETCH NEXT FROM temp INTO @childID
+			END
+			CLOSE temp
+			DEALLOCATE temp
+
+
+			-- Force Contracts
+			DECLARE temp cursor FOR
+				SELECT TOP 1 ID FROM Appointments
+					WHERE ID_1 = @RecordID AND [Appointment_Start_Date] <= DATEADD(dd, 0, DATEDIFF(dd, 0, GETDATE())) 
+					ORDER BY [Appointment_Start_Date] DESC
+			OPEN temp
+			FETCH NEXT FROM temp INTO @childID
+			WHILE @@FETCH_STATUS=0
+			BEGIN
+				EXEC fusion.[pSendFusionMessageCheckContext] @MessageType='StaffContractChange', @LocalId=@childID;
+				FETCH NEXT FROM temp INTO @childID
+			END
+			CLOSE temp
+			DEALLOCATE temp
+
+		END
+
 	END
 
 	-- Address 
