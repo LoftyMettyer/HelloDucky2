@@ -384,9 +384,8 @@
     CallByName(objUtilities, "Connection", CallType.Let, Session("databaseConnection"))
 	Session("UtilitiesObject") = objUtilities
 	
-    Dim objOLE As Object
-    objOLE = CreateObject("COAIntServer.clsOLE")
-	CallByName(objOLE, "Connection", CallType.Let, Session("databaseConnection"))
+    Dim objOLE As New HR.Intranet.Server.Ole
+    CallByName(objOLE, "Connection", CallType.Let, Session("databaseConnection"))
 	objOLE.TempLocationPhysical = "\\" & Request.ServerVariables("SERVER_NAME") & "\HRProTemp$\"
 	Session("OLEObject") = objOLE
 	objOLE = Nothing
