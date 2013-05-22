@@ -5,9 +5,11 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DMI.NET", "DMI.NET\DMI.NET.
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "COAInt_Server", "..\..\Components\COAInt_Server\COAInt_Server.vbproj", "{2AF7F0B5-431D-4892-B0B1-9397C73EBFD7}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "OpenHR Database", "..\..\Database\OpenHR Database\OpenHR Database.sqlproj", "{1FBF3387-F785-464A-9446-707A6C28B2C1}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
+		SccNumberOfProjects = 4
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
 		SccLocalPath0 = .
@@ -17,6 +19,9 @@ Global
 		SccProjectUniqueName2 = ..\\..\\Components\\COAInt_Server\\COAInt_Server.vbproj
 		SccProjectName2 = ../../Components/COAInt_Server
 		SccLocalPath2 = ..\\..\\Components\\COAInt_Server
+		SccProjectUniqueName3 = ..\\..\\Database\\OpenHR\u0020Database\\OpenHR\u0020Database.sqlproj
+		SccProjectName3 = ../../Database/OpenHR\u0020Database
+		SccLocalPath3 = ..\\..\\Database\\OpenHR\u0020Database
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +36,12 @@ Global
 		{2AF7F0B5-431D-4892-B0B1-9397C73EBFD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AF7F0B5-431D-4892-B0B1-9397C73EBFD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2AF7F0B5-431D-4892-B0B1-9397C73EBFD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FBF3387-F785-464A-9446-707A6C28B2C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FBF3387-F785-464A-9446-707A6C28B2C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FBF3387-F785-464A-9446-707A6C28B2C1}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{1FBF3387-F785-464A-9446-707A6C28B2C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FBF3387-F785-464A-9446-707A6C28B2C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FBF3387-F785-464A-9446-707A6C28B2C1}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
