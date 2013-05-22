@@ -9,6 +9,8 @@ CREATE PROCEDURE [dbo].[sp_ASR_Bradford_DeleteAbsences]
 AS
 BEGIN
 
+	SET NOCOUNT ON;
+
 	declare @piID as integer;
 	declare @pdStartDate as datetime;
 	declare @pdEndDate as datetime;

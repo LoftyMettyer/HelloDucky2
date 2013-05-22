@@ -6,6 +6,9 @@ CREATE PROCEDURE [dbo].[sp_ASR_Bradford_MergeAbsences]
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	declare @sSql as varchar(MAX);
 
 	/* Variables to hold current absence record */

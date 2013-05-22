@@ -7,6 +7,8 @@ CREATE PROCEDURE [dbo].[sp_ASR_Bradford_CalculateDurations]
 AS
 BEGIN
 
+	SET NOCOUNT ON;
+
 	declare @pdStartDate as datetime
 	declare @pdEndDate as datetime
 	declare @pcStartSession as char(2)

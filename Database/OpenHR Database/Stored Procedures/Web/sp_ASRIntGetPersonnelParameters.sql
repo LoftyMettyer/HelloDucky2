@@ -3,6 +3,9 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetPersonnelParameters] (
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	/* Return a recordset of the given screen's definition and table permission info. */
 	DECLARE @fOK			bit,
 		@fSysSecMgr			bit,

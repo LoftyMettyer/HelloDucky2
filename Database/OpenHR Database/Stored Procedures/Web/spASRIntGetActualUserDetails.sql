@@ -6,10 +6,13 @@ CREATE PROCEDURE [dbo].[spASRIntGetActualUserDetails]
 )
 AS
 BEGIN
+
+	SET NOCOUNT ON;
+
 	DECLARE @iFound		int
 	DECLARE @sSQLVersion int
-  DECLARE @sProgramName varchar(500)
-  DECLARE @sPermissionItemKey varchar(500)
+	DECLARE @sProgramName varchar(500)
+	DECLARE @sPermissionItemKey varchar(500)
   
   SET @sPermissionItemKey = ''
   SET @sProgramName = ''

@@ -6,6 +6,9 @@ CREATE PROCEDURE [dbo].[sp_ASR_AbsenceBreakdown_Run]
 ) 
 AS 
 BEGIN
+
+	SET NOCOUNT ON;
+
 	declare @pdStartDate as datetime
 	declare @pdEndDate as datetime
 	declare @pcStartSession as char(2)

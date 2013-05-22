@@ -5,8 +5,10 @@ CREATE PROCEDURE [dbo].[spASRIntGetSelfServiceRecordID] (
 )
 AS
 BEGIN
-	DECLARE
-		@sViewName			sysname,
+
+	SET NOCOUNT ON;
+
+	DECLARE	@sViewName		sysname,
 		@sCommand			nvarchar(MAX),
 		@sParamDefinition	nvarchar(500),
 		@iRecordID			integer,
@@ -18,8 +20,8 @@ BEGIN
 	SET @iRecordCount = 0;
 
 	SELECT @sViewName = viewName
-	FROM ASRSysViews
-	WHERE viewID = @piViewID;
+		FROM ASRSysViews
+		WHERE viewID = @piViewID;
 
 	IF len(@sViewName) > 0
 	BEGIN
