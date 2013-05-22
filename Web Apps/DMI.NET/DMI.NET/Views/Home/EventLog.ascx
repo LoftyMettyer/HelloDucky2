@@ -127,17 +127,14 @@
         }
 	
         frmLog.txtELDeletePermission.value =  menu_GetItemValue("txtSysPerm_EVENTLOG_DELETE");
-        frmLog.txtELViewAllPermission.value =menu_GetItemValue("txtSysPerm_EVENTLOG_VIEWALL");
+        frmLog.txtELViewAllPermission.value = menu_GetItemValue("txtSysPerm_EVENTLOG_VIEWALL");
         frmLog.txtELPurgePermission.value = menu_GetItemValue("txtSysPerm_EVENTLOG_PURGE");
         frmLog.txtELEmailPermission.value = menu_GetItemValue("txtSysPerm_EVENTLOG_EMAIL");
 
         refreshUsers();
 
     }
-</script>
-
-
-    
+</script>  
 
 <script type="text/javascript">
 	
@@ -287,8 +284,8 @@
 	
         // Get menu to refresh the menu.
         menu_refreshMenu();
-	
-        refreshStatusBar()
+
+        refreshStatusBar();
 	
         if (frmPurge.txtShowPurgeMSG.value == 1)
         {
@@ -337,8 +334,8 @@
         return sSQL;
     }
 	
-    function refreshGrid()
-    {
+    function refreshGrid() {
+
         var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
         frmGetDataForm.txtAction.value = "LOADEVENTLOG";
 	
@@ -354,37 +351,35 @@
 
     }
 
-    function viewEvent()
-    {
+    function viewEvent() {
         var sURL;
-	
-        if (frmLog.ssOleDBGridEventLog.Rows > 0 && frmLog.ssOleDBGridEventLog.SelBookmarks.Count == 1)
-        {
+
+        if (frmLog.ssOleDBGridEventLog.Rows > 0 && frmLog.ssOleDBGridEventLog.SelBookmarks.Count == 1) {
             frmDetails.txtEventID.value = frmLog.ssOleDBGridEventLog.Columns(0).text;
-		
+
             frmDetails.txtEventName.value = frmLog.ssOleDBGridEventLog.Columns(5).text;
             frmDetails.txtEventMode.value = frmLog.ssOleDBGridEventLog.Columns(7).text;
-		
+
             frmDetails.txtEventStartTime.value = frmLog.ssOleDBGridEventLog.Columns(1).text;
             frmDetails.txtEventEndTime.value = frmLog.ssOleDBGridEventLog.Columns(2).text;
             frmDetails.txtEventDuration.value = frmLog.ssOleDBGridEventLog.Columns(3).text;
-		
+
             frmDetails.txtEventType.value = frmLog.ssOleDBGridEventLog.Columns(4).text;
             frmDetails.txtEventStatus.value = frmLog.ssOleDBGridEventLog.Columns(6).text;
             frmDetails.txtEventUser.value = frmLog.ssOleDBGridEventLog.Columns(8).text;
 
             frmDetails.txtEventSuccessCount.value = frmLog.ssOleDBGridEventLog.Columns(12).text;
             frmDetails.txtEventFailCount.value = frmLog.ssOleDBGridEventLog.Columns(13).text;
-		
+
             frmDetails.txtEventBatchName.value = frmLog.ssOleDBGridEventLog.Columns("BatchName").text;
             frmDetails.txtEventBatchJobID.value = frmLog.ssOleDBGridEventLog.Columns("BatchJobID").text;
             frmDetails.txtEventBatchRunID.value = frmLog.ssOleDBGridEventLog.Columns("BatchRunID").text;
-		
+
             frmDetails.txtEmailPermission.value = frmLog.txtELEmailPermission.value;
-	
+
             sURL = "eventLogDetails" +
                 "?txtEventID=" + frmDetails.txtEventID.value +
-                "&txtEventName=" + escape(frmDetails.txtEventName.value) + 
+                "&txtEventName=" + escape(frmDetails.txtEventName.value) +
                 "&txtEventMode=" + escape(frmDetails.txtEventMode.value) +
                 "&txtEventStartTime=" + frmDetails.txtEventStartTime.value +
                 "&txtEventEndTime=" + frmDetails.txtEventEndTime.value +
@@ -401,7 +396,7 @@
 
             openDialog(sURL, 750, 450);
         }
-	
+
         refreshButtons();
     }
 
@@ -643,7 +638,6 @@
 	<PARAM NAME="PrinterDefault" VALUE="1">
 	<PARAM NAME="ToPage" VALUE="0">
 	<PARAM NAME="Orientation" VALUE="1"></OBJECT>
-
 
 <form id=frmLog>
 <table align=center class="outline" cellPadding=5 cellSpacing=0 width=100% height=100%>
@@ -1424,6 +1418,6 @@
 
 
 <script type="text/javascript">
-    eventlog_addActiveXHandlers();
     eventLog_window_onload();   
+    eventlog_addActiveXHandlers();
 </script>
