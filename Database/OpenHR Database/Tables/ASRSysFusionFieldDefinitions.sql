@@ -1,0 +1,23 @@
+﻿CREATE TABLE [dbo].[ASRSysFusionFieldDefinitions](
+	[NodeKey] [varchar](255) NOT NULL,
+	[FusionTypeID] [int] NOT NULL,
+	[DataType] [tinyint] NOT NULL,
+	[Mandatory] [bit] NOT NULL,
+	[Description] [char](40) NOT NULL,
+	[AlwaysTransfer] [bit] NULL,
+	[IsKeyField] [bit] NULL,
+	[IsCompanyCode] [bit] NULL,
+	[IsEmployeeCode] [bit] NULL,
+	[Direction] [int] NULL,
+	[ASRMapType] [int] NULL,
+	[ASRTableID] [int] NULL,
+	[ASRColumnID] [int] NULL,
+	[ASRExprID] [int] NULL,
+	[ASRValue] [char](40) NULL,
+	[ConvertData] [bit] NULL,
+	[IsEmployeeName] [bit] NULL,
+	[IsDepartmentCode] [bit] NULL,
+	[IsDepartmentName] [bit] NULL,
+	[IsFusionCode] [bit] NULL,
+	[PreventModify] [bit] NULL
+) ON [PRIMARY]

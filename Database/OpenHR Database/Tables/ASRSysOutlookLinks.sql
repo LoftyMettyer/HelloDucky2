@@ -1,0 +1,19 @@
+﻿CREATE TABLE [dbo].[ASRSysOutlookLinks](
+	[LinkID] [int] NULL,
+	[TableID] [int] NULL,
+	[Title] [varchar](50) NULL,
+	[FilterID] [int] NULL,
+	[BusyStatus] [int] NULL,
+	[StartDate] [int] NULL,
+	[EndDate] [int] NULL,
+	[TimeRange] [int] NULL,
+	[FixedStartTime] [varchar](5) NULL,
+	[FixedEndTime] [varchar](5) NULL,
+	[ColumnStartTime] [int] NULL,
+	[ColumnEndTime] [int] NULL,
+	[Subject] [int] NULL,
+	[Content] [text] NULL,
+	[Reminder] [bit] NULL,
+	[ReminderOffset] [int] NULL,
+	[ReminderPeriod] [int] NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]

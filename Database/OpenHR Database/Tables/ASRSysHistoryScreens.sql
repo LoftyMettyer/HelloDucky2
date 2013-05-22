@@ -1,0 +1,10 @@
+﻿CREATE TABLE [dbo].[ASRSysHistoryScreens](
+	[ID] [int] NOT NULL,
+	[parentScreenID] [int] NOT NULL,
+	[historyScreenID] [int] NOT NULL,
+	[order] [smallint] NULL,
+ CONSTRAINT [PK_ASRSysHistoryScreens] PRIMARY KEY NONCLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 90) ON [PRIMARY]
+) ON [PRIMARY]

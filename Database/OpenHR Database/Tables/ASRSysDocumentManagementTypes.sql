@@ -1,0 +1,21 @@
+﻿CREATE TABLE [dbo].[ASRSysDocumentManagementTypes](
+	[DocumentMapID] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](255) NULL,
+	[Description] [nvarchar](max) NULL,
+	[Access] [varchar](2) NULL,
+	[Username] [varchar](50) NULL,
+	[CategoryRecordID] [int] NULL,
+	[TypeRecordID] [int] NULL,
+	[TargetTableID] [int] NULL,
+	[TargetKeyFieldColumnID] [int] NULL,
+	[TargetColumnID] [int] NULL,
+	[TargetCategoryColumnID] [int] NULL,
+	[TargetTypeColumnID] [int] NULL,
+	[TargetGUIDColumnID] [int] NULL,
+	[Parent1TableID] [int] NULL,
+	[Parent1KeyFieldColumnID] [int] NULL,
+	[Parent2TableID] [int] NULL,
+	[Parent2KeyFieldColumnID] [int] NULL,
+	[ManualHeader] [bit] NULL,
+	[HeaderText] [nvarchar](max) NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]

@@ -1,0 +1,11 @@
+﻿CREATE TABLE [dbo].[ASRSysOrders](
+	[OrderID] [int] NOT NULL,
+	[Name] [varchar](255) NOT NULL,
+	[TableID] [int] NOT NULL,
+	[Timestamp] [timestamp] NULL,
+	[Type] [smallint] NULL,
+ CONSTRAINT [PK_ASRSysOrders] PRIMARY KEY NONCLUSTERED 
+(
+	[OrderID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 90) ON [PRIMARY]
+) ON [PRIMARY]

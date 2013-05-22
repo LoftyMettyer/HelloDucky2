@@ -1,0 +1,14 @@
+﻿CREATE TABLE [dbo].[ASRSysWorkflowTriggeredLinks](
+	[linkID] [int] NULL,
+	[workflowID] [int] NULL,
+	[tableID] [int] NULL,
+	[filterID] [int] NULL,
+	[effectiveDate] [datetime] NULL,
+	[type] [smallint] NULL,
+	[recordInsert] [bit] NULL,
+	[recordUpdate] [bit] NULL,
+	[recordDelete] [bit] NULL,
+	[dateColumn] [int] NULL,
+	[dateOffset] [int] NULL,
+	[dateOffsetPeriod] [smallint] NULL
+) ON [PRIMARY]

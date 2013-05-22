@@ -1,0 +1,38 @@
+﻿CREATE TABLE [dbo].[ASRSysCustomReportsName](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [varchar](50) NULL,
+	[Description] [varchar](255) NULL,
+	[BaseTable] [int] NULL,
+	[AllRecords] [bit] NOT NULL,
+	[Picklist] [int] NULL,
+	[Filter] [int] NULL,
+	[Parent1Table] [int] NULL,
+	[Parent1Filter] [int] NULL,
+	[Parent2Table] [int] NULL,
+	[Parent2Filter] [int] NULL,
+	[Summary] [bit] NOT NULL,
+	[PrintFilterHeader] [bit] NOT NULL,
+	[UserName] [varchar](50) NULL,
+	[Timestamp] [timestamp] NULL,
+	[Parent1AllRecords] [bit] NULL,
+	[Parent1Picklist] [int] NULL,
+	[Parent2AllRecords] [bit] NULL,
+	[Parent2Picklist] [int] NULL,
+	[OutputPreview] [bit] NULL,
+	[OutputFormat] [int] NULL,
+	[OutputScreen] [bit] NULL,
+	[OutputPrinter] [bit] NULL,
+	[OutputPrinterName] [varchar](255) NULL,
+	[OutputSave] [bit] NULL,
+	[OutputSaveExisting] [int] NULL,
+	[OutputEmail] [bit] NULL,
+	[OutputEmailAddr] [int] NULL,
+	[OutputEmailSubject] [varchar](255) NULL,
+	[OutputFilename] [varchar](255) NULL,
+	[OutputEmailAttachAs] [varchar](255) NULL,
+	[IgnoreZeros] [bit] NULL,
+ CONSTRAINT [PK_ASRSysCustomReportsName_ID] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
