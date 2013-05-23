@@ -4,7 +4,8 @@ CREATE PROCEDURE [dbo].[sp_ASRIntCheckLogin] (
 	@piMinPassordLength		integer			OUTPUT,
 	@psIntranetAppVersion	varchar(50),
 	@piPasswordLength		integer,
-	@piUserType				integer			OUTPUT
+	@piUserType				integer			OUTPUT,
+	@fSelfServiceUserType   integer			OUTPUT
 )
 AS
 BEGIN
@@ -16,6 +17,8 @@ BEGIN
 		@piMinPassordLength is the configured minimum password length
 		@psIntranetAppVersion is the intranet application version passed into the stored procedure (set as a session variable in the global.asa file. 
 		@piPasswordLength is the length of the user's current password. 
+		@fDmiNetUserType is te DMI or SSI path 1 for SSi 0 for DMI
+
 	*/
 	SET NOCOUNT ON;
 	
@@ -74,6 +77,9 @@ BEGIN
 		@sSQLVersion					int,
 		@sLockMessage					varchar(200),
 		@fNewSettingFound				bit,
+		@usergroup						varchar(255),
+		@iCurrentItemKey				integer,
+		@sCurrentItemKey				varchar(50),
 		@fOldSettingFound				bit;
 		
 	SET @piSuccessFlag = 1;
@@ -83,13 +89,60 @@ BEGIN
 	SET @iFullUsers = 0;
 	SET @iSSUsers = 0;
 	SET @iSSIUsers = 0;
-	
 	SET @fSelfService = 0;
-	IF APP_NAME() = 'OpenHR Self-service Intranet'
+	SET @fSelfServiceUserType = 0;
+	
+	/* Deriving the User-group at the correct time especially after new users created was crucial so used this bit of code from later to do it */
+	SET @usergroup = (SELECT CASE 
+				WHEN (usg.uid IS null) THEN null
+				ELSE usg.name
+			END as groupname
+		FROM sysusers usu 
+		LEFT OUTER JOIN (sysmembers mem INNER JOIN sysusers usg ON mem.groupuid = usg.uid) ON usu.uid = mem.memberuid
+		LEFT OUTER JOIN master.dbo.syslogins lo ON usu.sid = lo.sid
+		WHERE (usu.islogin = 1 AND usu.isaliased = 0 AND usu.hasdbaccess = 1) 
+			AND (usg.issqlrole = 1 OR usg.uid IS null)
+			AND lo.loginname = system_user
+			AND CASE 
+				WHEN (usg.uid IS null) THEN null
+				ELSE usg.name
+				END NOT LIKE 'ASRSys%' AND usg.name NOT LIKE 'db_owner'
+			AND CASE 
+				WHEN (usg.uid IS null) THEN null
+				ELSE usg.name
+				END IN (
+					SELECT [groupName]
+					FROM [dbo].[ASRSysGroupPermissions]
+					WHERE itemID IN (
+									SELECT [itemID]
+									FROM [dbo].[ASRSysPermissionItems]
+									WHERE categoryID = 1
+									AND itemKey LIKE '%INTRANET%'
+								)  
+					AND [permitted] = 1))
+	/* End of deriving user-group */
+
+	/*	IF (@sCurrentItemKey = 'INTRANET_SELFSERVICE' and @iCurrentItemKey >= 1) or ( @iCurrentItemKey >= 1)	-- Must be a DMI Single User with SSI
+		IF @sCurrentItemKey <> 'INTRANET_SELFSERVICE' and @iCurrentItemKey > 1		-- Must be a DMI Multi with SSI 
+		IF @sCurrentItemKey = 'INTRANET_SELFSERVICE' and @iCurrentItemKey = 0		-- leave as they are just a DMI 	*/
+	SET @sCurrentItemKey = (SELECT itemKey FROM ASRSysPermissionItems inner join ASRSysGroupPermissions ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
+	WHERE ASRSysGroupPermissions.groupName = @usergroup and permitted = 1 and categoryID = 1
+	and ASRSysPermissionItems.itemKey = 'INTRANET_SELFSERVICE');
+	
+	SET @iCurrentItemKey = (SELECT count(*) FROM ASRSysPermissionItems inner join ASRSysGroupPermissions ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
+	WHERE ASRSysGroupPermissions.groupName = @usergroup and permitted = 1 and categoryID = 1
+	and ASRSysPermissionItems.itemKey = 'SSINTRANET');
+
+	IF (@sCurrentItemKey = 'INTRANET_SELFSERVICE' and @iCurrentItemKey >= 1) or ( @iCurrentItemKey >= 1)
 	BEGIN
+		/* Must be a DMI Single User with SSI access so go to SSI landing page or just SSI*/
 		SET @fSelfService = 1;
 	END
-	
+
+	SET @fSelfServiceUserType = 1; 
+
+	/*' Check if the current user is a SQL Server System Administrator.
+	We do not allow these users to login to the intranet module. */	
 	/*' Check if the current user is a SQL Server System Administrator.
 	We do not allow these users to login to the intranet module. */
 	IF current_user = 'dbo'
@@ -112,7 +165,6 @@ BEGIN
 	/* Check if anyone has locked the system. */
 	IF @piSuccessFlag = 1
 	BEGIN
-
 		DECLARE @tmpSysProcess1 TABLE(
 			hostname nvarchar(50), 
 			loginname nvarchar(50),
@@ -158,7 +210,6 @@ BEGIN
 				  'Machine :  ' + @sHostName +  '<BR>' +
 				  'Type :  ' + @sDescription
 		END
-
 	END
 	IF @piSuccessFlag = 1
 	BEGIN
@@ -484,8 +535,8 @@ BEGIN
 		EXEC dbo.spASRIntGetActualUserDetails
 			@sActualUserName OUTPUT,
 			@sRoleName OUTPUT,
-			@iActualUserGroupID OUTPUT
-					        
+			@iActualUserGroupID OUTPUT					        
+
 		IF @sRoleName IS NULL
 		BEGIN
 			SET @piSuccessFlag = 0
@@ -583,7 +634,6 @@ BEGIN
 			END
 		END
 		SET @iValue = 0
-
 		/* Don't use uid as it sometimes is 0 when youdon't expect it to be. */
 		DECLARE @tmpSysProcess2 TABLE (
 			hostname		nvarchar(50),
