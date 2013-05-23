@@ -1,5 +1,7 @@
 Option Strict Off
 Option Explicit On
+
+Imports System.Globalization
 Imports VB = Microsoft.VisualBasic
 Public Class AbsenceCalendar
 
@@ -599,9 +601,9 @@ Public Class AbsenceCalendar
     sSQL = "SELECT " & mstrSQLSelect_AbsenceStartDate & " as 'StartDate', " & vbNewLine & mstrSQLSelect_AbsenceStartSession & " as 'StartSession', " & vbNewLine
 
     If Not IsDBNull(mdLeavingDate) Then
-      sSQL = sSQL & "isnull(" & mstrSQLSelect_AbsenceEndDate & ",'" & Replace(VB6.Format(mdLeavingDate, "mm/dd/yyyy"), clsUI.GetSystemDateSeparator, "/") & "') as 'EndDate', " & vbNewLine
+      sSQL = sSQL & "isnull(" & mstrSQLSelect_AbsenceEndDate & ",'" & Replace(VB6.Format(mdLeavingDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "') as 'EndDate', " & vbNewLine
     Else
-      sSQL = sSQL & "isnull(" & mstrSQLSelect_AbsenceEndDate & ",'" & Replace(VB6.Format(Now, "mm/dd/yyyy"), clsUI.GetSystemDateSeparator, "/") & "') as 'EndDate', " & vbNewLine
+      sSQL = sSQL & "isnull(" & mstrSQLSelect_AbsenceEndDate & ",'" & Replace(VB6.Format(Now, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "') as 'EndDate', " & vbNewLine
     End If
 
     sSQL = sSQL & mstrSQLSelect_AbsenceEndSession & " as 'EndSession', " & vbNewLine & mstrSQLSelect_AbsenceType & " as 'Type', " & vbNewLine & mstrSQLSelect_AbsenceTypeCalCode & " as 'CalendarCode', " & vbNewLine & mstrSQLSelect_AbsenceTypeCode & " as 'Code', " & vbNewLine & mstrSQLSelect_AbsenceReason & " as 'Reason', " & vbNewLine & mstrSQLSelect_AbsenceDuration & " as 'Duration' " & vbNewLine
@@ -1100,7 +1102,8 @@ errLoadColourKey:
 
       Else
         ' Its a historic working pattern, so get topmost from the history
-        prstPersonnelData = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " <= '" & Replace(VB6.Format(Now, "mm/dd/yy"), UI.GetSystemDateSeparator, "/") & "' " & "ORDER BY " & gsPersonnelHWorkingPatternDateColumnName & " DESC")
+        prstPersonnelData = datGeneral.GetRecords("SELECT TOP 1 " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " <= '" _
+                                                  & Replace(VB6.Format(Now, "mm/dd/yy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & "ORDER BY " & gsPersonnelHWorkingPatternDateColumnName & " DESC")
       End If
 
       If Not prstPersonnelData.BOF And Not prstPersonnelData.EOF Then
@@ -1903,8 +1906,8 @@ Error_FillCalBoxes:
               Next lngCount
               sSQL = sSQL & "         WHERE " & mstrSQLSelect_RegInfoRegion & " = '" & strRegionAtCurrentDate & "') " & vbNewLine
 
-              sSQL = sSQL & " AND " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & Replace(VB6.Format(dtmCurrentDate, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "' " & vbNewLine
-              sSQL = sSQL & " AND " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & Replace(VB6.Format(System.DateTime.FromOADate(dtmNextChangeDate.ToOADate - 1), "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "' " & vbNewLine
+              sSQL = sSQL & " AND " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & Replace(VB6.Format(dtmCurrentDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & vbNewLine
+              sSQL = sSQL & " AND " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & Replace(VB6.Format(System.DateTime.FromOADate(dtmNextChangeDate.ToOADate - 1), "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & vbNewLine
               sSQL = sSQL & "ORDER BY " & gsBHolDateColumnName & " ASC"
               rstBankHolRegion = datGeneral.GetRecords(sSQL)
 

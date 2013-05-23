@@ -121,9 +121,9 @@ Public Module svrCleanup
             Mid(psDate, 7, 4) & Mid(sLocaleFormat, iIndex + 4)
       End If
 
-      convertSQLDateToLocale = sLocaleFormat
+      ConvertSQLDateToLocale = sLocaleFormat
     Else
-      convertSQLDateToLocale = ""
+      ConvertSQLDateToLocale = ""
     End If
   End Function
 

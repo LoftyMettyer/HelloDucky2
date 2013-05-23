@@ -1,5 +1,8 @@
 Option Strict Off
 Option Explicit On
+
+Imports System.Globalization
+
 Public Class clsDiary
   '----------------------------------------------------------------------
   'THIS SQL WILL TAKE THE EVENTTIME AND INCORPORATE IT INTO THE EVENTDATE
@@ -371,7 +374,7 @@ Public Class clsDiary
   End Function
 
   Public Function SQLCurrentDateTime() As String
-    SQLCurrentDateTime = Replace(VB6.Format(Now, "mm/dd/yyyy hh"), UI.GetSystemDateSeparator, "/") & ":" & VB6.Format(Now, "nn")
+    SQLCurrentDateTime = Replace(VB6.Format(Now, "mm/dd/yyyy hh"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & ":" & VB6.Format(Now, "nn")
   End Function
 
 
@@ -654,7 +657,7 @@ Public Class clsDiary
     'If not only counting records in filter then retreive actual data
     If Not blnOnlyCountFilterMatch Then
 
-      strSQLWhere = "WHERE EventDate BETWEEN " & "'" & Replace(VB6.Format(dtStartDate, mstrDATESQL), UI.GetSystemDateSeparator, "/") & " 00:00' AND " & "'" & Replace(VB6.Format(dtEndDate, mstrDATESQL), UI.GetSystemDateSeparator, "/") & " 23:59' AND "
+      strSQLWhere = "WHERE EventDate BETWEEN " & "'" & Replace(VB6.Format(dtStartDate, mstrDATESQL), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & " 00:00' AND " & "'" & Replace(VB6.Format(dtEndDate, mstrDATESQL), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & " 23:59' AND "
 
       strSQL = strSQLSelect & strSQLFrom & strSQLWhere & SQLFilter() & strSQLOrderBy
       ' Set rsTables = datData.OpenRecordset(strSQL, adOpenStatic, adLockReadOnly)
@@ -1031,7 +1034,7 @@ Public Class clsDiary
 
     If mintCurrentView <> mintVIEWBYLIST Then
       Call GetDateRange(dtStartDate, dtEndDate) 'This sets up these two variables
-      strEventDateMatch = "(EventDate BETWEEN " & "'" & Replace(VB6.Format(dtStartDate, mstrDATESQL), UI.GetSystemDateSeparator, "/") & " 00:00' AND " & "'" & Replace(VB6.Format(dtEndDate, mstrDATESQL), UI.GetSystemDateSeparator, "/") & " 23:59')" & " AND "
+      strEventDateMatch = "(EventDate BETWEEN " & "'" & Replace(VB6.Format(dtStartDate, mstrDATESQL), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & " 00:00' AND " & "'" & Replace(VB6.Format(dtEndDate, mstrDATESQL), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & " 23:59')" & " AND "
     End If
 
     strSQL = "SELECT COUNT(DiaryEventsID) AS recCount " & "FROM ASRSysDiaryEvents WHERE " & strEventDateMatch & "Alarm = '" & CStr(intAlarmSetting) & "' AND " & SQLFilter()

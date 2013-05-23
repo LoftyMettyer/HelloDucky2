@@ -358,10 +358,8 @@ Public Class Report
 
   Public ReadOnly Property OutputArray_Data() As Object
     Get
-
       ' Holds the HTML for the actual data (and closes object tag)
       OutputArray_Data = VB6.CopyArray(mvarOutputArray_Data)
-
     End Get
   End Property
 
@@ -3414,6 +3412,7 @@ CheckRecordSet_ERROR:
               Else
                 'Dates need to be formatted with yyyy for boc to work ok
                 'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(17, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+
                 If mvarColDetails(17, iColumnIndex) Then 'Date
                   'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
                   'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -6577,5 +6576,6 @@ UDFFunctions_ERROR:
     UDFFunctions = False
 
   End Function
+
 
 End Class

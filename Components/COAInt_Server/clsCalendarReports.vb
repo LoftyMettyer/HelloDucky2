@@ -1,5 +1,7 @@
 Option Strict Off
 Option Explicit On
+
+Imports System.Globalization
 Imports VB = Microsoft.VisualBasic
 Public Class clsCalendarReportsRUN
 
@@ -732,12 +734,12 @@ Public Class clsCalendarReportsRUN
 
   Public ReadOnly Property ReportEndDate_CalendarString() As String
     Get
-      ReportEndDate_CalendarString = Replace(VB6.Format(mdtEndDate, CALREP_DATEFORMAT), UI.GetSystemDateSeparator, "/")
+      ReportEndDate_CalendarString = Replace(VB6.Format(mdtEndDate, CALREP_DATEFORMAT), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/")
     End Get
   End Property
   Public ReadOnly Property ReportStartDate_CalendarString() As String
     Get
-      ReportStartDate_CalendarString = Replace(VB6.Format(mdtStartDate, CALREP_DATEFORMAT), UI.GetSystemDateSeparator, "/")
+      ReportStartDate_CalendarString = Replace(VB6.Format(mdtStartDate, CALREP_DATEFORMAT), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/")
     End Get
   End Property
 
@@ -1998,8 +2000,8 @@ ErrorTrap:
         ElseIf IsDBNull(.Fields("EndSession").Value) Then
           mstrEventEndSession_Output = mstrEventStartSession_Output
         Else
-          mstrEventStartSession_Output = UCase(.Fields("StartSession").Value)
-          mstrEventEndSession_Output = UCase(.Fields("EndSession").Value)
+          mstrEventStartSession_Output = UCase(.Fields("StartSession").Value.ToString())
+          mstrEventEndSession_Output = UCase(.Fields("EndSession").Value.ToString())
         End If
 
         mstrDuration_Output = .Fields("Duration").Value
@@ -2971,7 +2973,7 @@ ErrorTrap:
 
     strDateFormat = mstrClientDateFormat
 
-    strDateSeparator = UI.GetSystemDateSeparator
+    strDateSeparator = CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator
 
     blnDateComplete = False
     blnMonthDone = False
@@ -3781,7 +3783,7 @@ ErrorTrap:
       End If
 
       'JPD 20040729 Fault 8972 & Fault 8990
-      If LCase(.Fields("Username").Value) <> LCase(gsUsername) And CurrentUserAccess(modUtilAccessLog.UtilityType.utlCalendarReport, mlngCalendarReportID) = ACCESS_HIDDEN Then
+      If LCase(.Fields("Username").Value.ToString()) <> LCase(gsUsername) And CurrentUserAccess(modUtilAccessLog.UtilityType.utlCalendarReport, mlngCalendarReportID) = ACCESS_HIDDEN Then
         GetCalendarReportDefinition = False
         mstrErrorString = "Report has been made hidden by another user."
         Exit Function
@@ -6608,23 +6610,23 @@ GenerateSQLJoin_ERROR:
         mstrSQLBaseDateClause = mstrSQLBaseDateClause & "    AND (" & vbNewLine & vbNewLine
 
         ' 1 Event Start Date before Report Start Date, Duration carrys event into, but not beyond the Report Range.
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "        (" & mstrSQLBaseStartDateColumn & " < convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "')" & vbNewLine
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "      AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") >= convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "'))" & vbNewLine
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "        AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") <= convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "')))" & vbNewLine & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "        (" & mstrSQLBaseStartDateColumn & " < convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "')" & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "      AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") >= convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "'))" & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "        AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") <= convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "')))" & vbNewLine & vbNewLine
 
         ' 2 Event Start Date within Report Range, Duration carrys event beyond Report End Date.
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "     OR ((" & mstrSQLBaseStartDateColumn & " >= convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "'))" & vbNewLine
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "        AND (" & mstrSQLBaseStartDateColumn & " <= convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "'))" & vbNewLine
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "      AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") > convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "')))" & vbNewLine & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "     OR ((" & mstrSQLBaseStartDateColumn & " >= convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "'))" & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "        AND (" & mstrSQLBaseStartDateColumn & " <= convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "'))" & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "      AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") > convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "')))" & vbNewLine & vbNewLine
 
         ' 3 Event Start Date within Report Range and Duration keeps event within Report Range.
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "     OR ((" & mstrSQLBaseStartDateColumn & " >= convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "'))" & vbNewLine
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "        AND (" & mstrSQLBaseStartDateColumn & " <= convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "'))" & vbNewLine
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "      AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") <= convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "')))" & vbNewLine & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "     OR ((" & mstrSQLBaseStartDateColumn & " >= convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "'))" & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "        AND (" & mstrSQLBaseStartDateColumn & " <= convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "'))" & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "      AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") <= convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "')))" & vbNewLine & vbNewLine
 
         ' 4 Event Start Date before Report Start Date and Duration carrys event beyond Report End Date.
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "     OR ((" & mstrSQLBaseStartDateColumn & " < convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "'))" & vbNewLine
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "      AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") > convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/") & "')))" & vbNewLine & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "     OR ((" & mstrSQLBaseStartDateColumn & " < convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "'))" & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "      AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") > convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "')))" & vbNewLine & vbNewLine
 
         mstrSQLBaseDateClause = mstrSQLBaseDateClause & "        )" & vbNewLine
 
