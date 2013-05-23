@@ -370,14 +370,14 @@
 		    <td colSpan=5></td>
 	    </tr>
 <%
-	If (Session("MSBrowser") = True) And (Session("IEVersion") < 8.0) Then
+	If (Session("MSBrowser") = True) And (Session("IEVersion") < 9.0) Then
 %>
         <tr height=10>
 	        <td colSpan=5></td>
 	    </tr>
 	    <tr height=10>
 		    <td width=15></td>
-		    <td colSpan=3>OpenHR Intranet can only be accessed using Microsoft Internet Explorer 8 or later.</td>
+		    <td colSpan=3>OpenHR Intranet can only be accessed using Microsoft Internet Explorer 9 or later.</td>
     		<td width=15></td>
 	    </tr>
 <%
@@ -529,7 +529,7 @@ End If
 	<INPUT type="hidden" id=txtWordVer name=txtWordVer value="12">
 	<INPUT type="hidden" id=txtExcelVer name=txtExcelVer value="12">
 
-<%if (session("MSBrowser") = False) or (session("MSBrowser") = true) and (session("IEVersion") > 7.0) then%>
+<%If (Session("MSBrowser") = False) Or (Session("MSBrowser") = True) And (Session("IEVersion") > 8.0) Then%>
 
 	<script type="text/javascript">
 		
