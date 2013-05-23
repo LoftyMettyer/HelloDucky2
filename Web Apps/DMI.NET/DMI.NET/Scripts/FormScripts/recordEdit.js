@@ -51,6 +51,779 @@ function applyLocation(formItem, controlItemArray, bordered) {
     formItem.style.position = "absolute";
 }
 
+
+function applyDefaultValues() {
+	//From activeX control recordDMI
+	//Populate the screen contrls with the defined column default values.
+	//NB calculated default values are handled elsewhere
+	//this method also clears all other controls
+
+	$('input[id^="txtRecEditControl_"]').each(function(index) {
+		var objScreenControl = getScreenControl_Collection($(this).val());
+
+		//NB we don#t use .Tag any more. Removed as we can grab controls from the txtRecordEditControl_ list instead.
+		
+		if ((objScreenControl.ColumnID > 0) &&
+			(objScreenControl.SelectGranted)) {
+
+			var sDefaultValue = objScreenControl.DefaultValue;
+			var lngColumnID = objScreenControl.ColumnID;
+			
+			//use updatecontrol???
+			updateControl(lngColumnID, sDefaultValue);
+		}
+	});
+}
+
+function ClearUniqueColumnControls() {
+
+	$('input[id^="txtRecEditControl_"]').each(function (index) {
+		var objScreenControl = getScreenControl_Collection($(this).val());
+
+		//NB we don#t use .Tag any more. Removed as we can grab controls from the txtRecordEditControl_ list instead.
+
+		if ((objScreenControl.ColumnID > 0) &&
+			(objScreenControl.TableID = $("#txtRecEditTableID").val()) &&
+			(objScreenControl.SelectGranted)) {
+
+			if ((objScreenControl.UniqueCheck) || (!objScreenControl.UpdateGranted)) {
+
+				var sDefaultValue = objScreenControl.DefaultValue;
+				var lngColumnID = objScreenControl.ColumnID;
+
+				//use updatecontrol???
+				updateControl(lngColumnID, sDefaultValue);
+
+			}
+		}
+	});
+}
+
+function CalculatedDefaultColumns() {
+	var sColsAndCalcs = "";
+
+	$('input[id^="txtRecEditControl_"]').each(function (index) {				
+		var objScreenControl = getScreenControl_Collection($(this).val());
+
+		if ((objScreenControl.ColumnID > 0) &&
+			(objScreenControl.TableID = $("#txtRecEditTableID").val()) &&
+			(objScreenControl.SelectGranted) &&
+			(objScreenControl.DfltValueExprID > 0)) {
+			
+			sColsAndCalcs += (sColsAndCalcs.length > 0?",":"") + objScreenControl.ColumnID;
+		}
+	});
+
+	return sColsAndCalcs;
+}
+
+
+function insertUpdateDef() {
+	
+
+// Adapted from recordDMI.ocx.
+//	Return the SQL string for inserting/updating the current record.
+	var  fFound = false;
+	var fColumnDone = false;
+	var sTag = "";
+	var iLoop = 0;
+	var iLoop2 = 0;
+	var iNextIndex = 0;
+	var sColumnName = "";
+	var sColumnID = "";
+	var sInsertUpdateDef = "";
+//	Dim objControl As Control
+	var asColumns = new Array();
+	var asColumnsToAdd = [0, 0, 0, 0];
+	var sTemp = "";
+	var fDoControl = false;
+	var bCopyImageDataType = false;
+
+	//TODO: Check if there's unsaved changes in the controls.. Can this happen?
+//	If Not UserControl.ActiveControl Is Nothing Then
+//	If Not LostFocusCheck(UserControl.ActiveControl) Then
+//	Exit Function
+//	End If
+//	End If
+
+//	Dimension the array of columns and values to be updated.
+//	NB. Column 1 = column name in uppercase.
+//	    Column 2 = column value as it needs to appear in the SQL update/insert string.
+//	    Column 3 = column ID (unless it is a relationship column in which case this is the column name eg. ID_1).
+//	    Column 4 = column value formatted for SQL (dates, numbers) but without enclosing within single quotes,
+//	               or doubling up single quotes
+//	ReDim asColumns(4, 0)
+	
+//	' Loop through the screen controls, creating an array of columns and values with
+	//	' which we'll construct an insert or update SQL string.
+
+	var uniqueIdentifier = 0;
+
+	$('input[id^="txtRecEditControl_"]').each(function (index) {
+
+		uniqueIdentifier += 1;
+		
+		var objScreenControl = getScreenControl_Collection($(this).val()); //the properties for the screen element
+				
+		//because we can display a column on the screen multiple times, with different properties (e.g. readonly),
+		//we need to ensure we're dealing with the right one. So, unique id is used.
+		var uniqueID = "FI_" + objScreenControl.ColumnID + "_" + objScreenControl.ControlType + "_" + uniqueIdentifier;
+		var objControl = $("#" + uniqueID);	//the actual screen object.
+
+		if ($(objControl).length == 0) {			
+			fDoControl = false;
+		}
+
+		//	sTag = objControl.Tag
+		//	' Check if it is a user editable control.
+		//	If Len(sTag) > 0 Then
+		//	' Check that the control is associated with a column in the current table/view,
+		//	' and is updatable.
+//	If (mobjScreenControls.Item(sTag).ColumnID > 0) And _
+//		(Not TypeOf objControl Is COA_Label) And (Not TypeOf objControl Is COA_Navigation) Then
+
+		//only process column controls. (not labels, frames etc...)
+		if ((objScreenControl.ColumnID > 0) && ((objScreenControl.ControlType !== 256) && (objScreenControl.ControlType !== Math.pow(2, 14)))) {
+
+			//		'JPD 20040706 Fault 8884
+			fDoControl = (!$(objControl).is(":disabled")); //objScreenControl.enabled;
+
+			if (fDoControl) {
+				if((objScreenControl.ControlType == 64) && (objScreenControl.Multiline)) {	//tdbtextctl.tdbtext
+					// NPG20120801 Fault HRPRO-2276
+					// Use the original control value for ReadOnly, not the inherited control value.
+					// fDoControl = Not objControl.ReadOnly
+					// fDoControl = Not mobjScreenControls.Item(sTag).ReadOnly
+					// Fault HRPRO-2860 - try again. Neither screen readonly nor db readonly should be included.
+					if ((objScreenControl.ReadOnly) || (objScreenControl.ScreenReadOnly)) {
+						fDoControl = false;
+					}
+				}
+			}
+
+			if (fDoControl) {
+				//	Get the name of the column associated with the current control.
+				if (objScreenControl.ControlType == 2048) { //command button. TODO: should this include nav control?
+					sColumnName = "ID_" + objScreenControl.LinkTableID;
+					sColumnID = sColumnName;
+				}
+				else {
+					sColumnName = objScreenControl.ColumnName;
+					sColumnID = objScreenControl.ColumnID;
+				}
+
+				//	Check if the column's update string has already been constructed.
+				fColumnDone = false;
+				//TODO: test this:
+				if (asColumns.length > 0) {
+					ubound = asColumns.length - 1;
+					for (iNextIndex = 0; iNextIndex <= ubound; iNextIndex++) {
+						if (asColumns[iNextIndex][0] == sColumnName) {
+							fColumnDone = true;
+							break;
+						}
+					}
+				}
+				
+				if (!fColumnDone) {
+					//TODO: ready to go when we have a malngChangedOLEPhotos array....
+					if (objScreenControl.ControlType == 1024) fDoControl = false;
+					//if ((objScreenControl.ControlType == 4) || (objScreenControl.ControlType == 8)) { //coa_image or coaint_OLE
+					//	fFound = false;
+					//	for (iLoop2 = 1; iLoop2 <= malngChangedOLEPhotos.length; iLoop2++) {
+					//		if (malngChangedOLEPhotos(iLoop2) == objScreenControl.ColumnID) {
+					//			fFound = true;
+					//			break;
+					//		}
+					//	}
+					//	if (!fFound) {
+					//		fColumnDone = true;
+					//	}
+					//}
+				}
+
+				if (!fColumnDone) {
+					//	Add the column name to the array of columns that have already been entered in the
+					//	SQL update/insert string.
+					//  iNextIndex = UBound(asColumns, 2) + 1
+					//	ReDim Preserve asColumns(4, iNextIndex)
+					//	asColumns(1, iNextIndex) = sColumnName
+					//	asColumns(2, iNextIndex) = ""
+					//	asColumns(3, iNextIndex) = sColumnID
+					//	asColumns(4, iNextIndex) = ""
+					asColumnsToAdd = [sColumnName, "", sColumnID, ""];
+					
+					//NB: javascript zero based arrays
+
+					//	Construct the SQL update/insert string for the column.
+					if ((objScreenControl.ControlType == 64) && (objScreenControl.Multiline)) {
+						// Multi-line character field from a masked textbox (CHAR type column). Save the text from the control.
+						$(objControl).val(CaseConversion($(objControl).val(), objScreenControl.ConvertCase));
+
+						if (ConvertData($(objControl).val(), objScreenControl.DataType) == null) {
+							asColumnsToAdd[1] = "''";
+							asColumnsToAdd[3] = "";
+						} else {
+							asColumnsToAdd[1] = "'" + ConvertData($(objControl).val(), objScreenControl.DataType).replace("'", "''") + "'";
+							//JPD 20051121 Fault 10583
+							//asColumns(4, iNextIndex) = ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType)
+							asColumnsToAdd[3] = ConvertData($(objControl).val(), objScreenControl.DataType).replace("\t", " ");
+						}
+					}
+
+					else if (objScreenControl.ControlType == 4) {
+						//COA_Image
+						//TODO: somehow.....
+						if (objScreenControl.OLEType < 2) {
+							//	sTemp = objControl.ASRDataField
+							//	asColumns(2, iNextIndex) = "'" & Replace(sTemp, "'", "''") & "'"
+							//	asColumns(4, iNextIndex) = CStr(objControl.OLEType) & sTemp
+						} else {
+							//	asColumns(2, iNextIndex) = asColumns(1, iNextIndex)
+							//	asColumns(4, iNextIndex) = CStr(objControl.OLEType) & asColumns(1, iNextIndex)
+							//	bCopyImageDataType = True
+						}
+					}
+					
+					else if ((objScreenControl.ControlType == 64) && (objScreenControl.Multiline == false) && (objScreenControl.Mask.length > 0)) {
+						//TDBMask6Ctl.TDBMask Then
+						//	Character field from a masked textbox (CHAR type column). Save the text from the control.
+						if ($(objControl).val() == 0) {
+							asColumnsToAdd[1] = "null";
+							asColumnsToAdd[3] = "null";
+						} else {
+							$(objControl).val(CaseConversion($(objControl).val(), objScreenControl.ConvertCase));
+							asColumnsToAdd[1] = "'" + $(objControl).val().replace("'", "''") + "'";
+							//	JPD 20051121 Fault 10583
+							//	'asColumns(4, iNextIndex) = objControl.Text
+							asColumnsToAdd[3] = $(objControl).val().replace("\t", " ");
+						}
+					}
+					
+					else if (((objScreenControl.ControlType == 64) &&
+						(!objScreenControl.Multiline)) &&
+						((objScreenControl.DataType !== 2) &&
+						(objScreenControl.DataType !== 4) &&
+						(objScreenControl.DataType !== 11))
+					) {
+						//TextBox Then
+						//	Character field from an unmasked textbox (CHAR type column). Save the text from the control.
+						$(objControl).val(CaseConversion($(objControl).val(), objScreenControl.ConvertCase));
+						asColumnsToAdd[1] = "'" + $(objControl).val().replace("'", "''") + "'";
+						//	JPD 20051121 Fault 10583
+						//	asColumns(4, iNextIndex) = objControl.Text
+						asColumnsToAdd[3] = $(objControl).val().replace("\t", " ");
+					}
+					
+					else if ((objScreenControl.ControlType == 64) && 
+						((objScreenControl.DataType == 2) || (objScreenControl.DataType==4))) {
+						//TDBNumber6Ctl.TDBNumber Then
+						//	Integer or Numeric field from a numeric textbox (INT or NUM type column). Save the value from the control.
+						if (ConvertData($(objControl).val(), objScreenControl.DataType) == null) {
+							asColumnsToAdd[1] = "null";
+							asColumnsToAdd[3] = "null";
+						} else {
+							asColumnsToAdd[1] = ConvertData($(objControl).val(), objScreenControl.DataType);
+							asColumnsToAdd[1] = ConvertNumberForSQL(asColumnsToAdd[1]);
+							asColumnsToAdd[3] = asColumnsToAdd[1];
+						}
+					}
+					
+					else if (objScreenControl.ControlType == 1) {
+						//CheckBox Then
+						//	 Logic field (BIT type column). Save 1 for true, 0 for False.
+						asColumnsToAdd[1] = $(objControl).is(":checked") ? "1" : "0";						
+						asColumnsToAdd[3] = $(objControl).is(":checked") ? "1" : "0";
+					}
+					
+					else if (objScreenControl.ControlType == 2) {
+												
+						//	Character field from a combo (CHAR type column). Save the text from the combo.
+						asColumnsToAdd[1] = "'" + $(objControl).val().replace("'", "''") + "'";
+						//	'JPD 20051121 Fault 10583
+						//	'asColumns(4, iNextIndex) = objControl.Text
+						asColumnsToAdd[3] = $(objControl).val().replace("\t", " ");
+					}
+					
+					else if (objScreenControl.ControlType == 2)  { //&& (objScreenControl.ColumnType == 1))
+						// objControl Is COAInt_Lookup Then
+						//	Lookup field from a combo (unknown type column). Get the column type and save the appropraite value from the combo.
+						switch (objScreenControl.DataType) {
+						case 12, -1:
+							asColumnsToAdd[1] = "'" + $(objControl).val().replace("'", "''") + "'";
+						//	JPD 20051121 Fault 10583
+						//	asColumns(4, iNextIndex) = objControl.Text
+							asColumnsToAdd[3] = $(objControl).val().replace("\t", " ");
+							break;
+						case 2, 4:
+							if ($(objControl).val(), length > 0) {
+								asColumnsToAdd[1] = $(objControl).val();
+								//	'TM20070328 - Fault 12053
+								asColumnsToAdd[1] = ConvertData($(objControl).val(), objScreenControl.DataType);
+								//TODO: remove the next line and fetch value from 'somewhere'...
+								var msLocaleThousandSeparator = ",";
+								asColumnsToAdd[1] = ConvertNumberForSQL(asColumns(2, iNextIndex)).replace(msLocaleThousandSeparator, "");
+								asColumnsToAdd[3] = ConvertNumberForSQL(asColumns(2, iNextIndex)).replace(msLocaleThousandSeparator, "");
+							} else {
+								asColumnsToAdd[1] = "null";
+								asColumnsToAdd[3] = "null";
+							}
+							break;
+						case 11:
+							if ($(objControl).val().length > 0) {
+								//asColumnsToAdd[1] = "'" + Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/") & "'"
+								asColumnsToAdd[1] = "'" + OpenHR.convertLocaleDateToSQL($(objControl).val()) + "'"; 
+								//	'JPD 20051121 Fault 10583
+								//	'asColumns(4, iNextIndex) = Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/")
+								// asColumns(4, iNextIndex) = Replace(Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/"), vbTab, " ")
+								asColumnsToAdd[4] = OpenHR.convertLocaleDateToSQL($(objControl).val()).replace("\t", " ");
+							} else {
+								asColumnsToAdd[1] = "null";
+								asColumnsToAdd[3] = "null";
+							}
+							break;
+						default :
+							asColumnsToAdd[0] = "";
+						}
+					}
+					
+					else if (objScreenControl.ControlType == 16) {						
+						//TypeOf objControl Is COAInt_OptionGroup Then
+						//	 Character field from an option group (CHAR type column). Save the text from the option group.
+						var optionSelected = $("input:radio[name='" + $(objControl).attr("id") + "']:checked").val();
+						
+						if (optionSelected == undefined) {
+							asColumnsToAdd[1] = "";
+							asColumnsToAdd[3] = "";
+						} else {
+							asColumnsToAdd[1] = "'" + optionSelected.replace("'", "''") + "'";
+							//asColumnsToAdd[1] = "'" + $(objControl).val().replace("'", "''") + "'";
+							//	'JPD 20051121 Fault 10583
+							//	'asColumns(4, iNextIndex) = objControl.Text
+							asColumnsToAdd[3] = optionSelected.replace("\t", " ");
+						}
+					}
+					
+					else if (objScreenControl.ControlType == 8) {
+						fDoControl = false;
+						//TODO: OLE stuff....
+						//TypeOf objControl Is COAInt_OLE Then
+						//	' OLE field (CHAR type column). Save the name of the OLE file.
+						//if Len(objControl.FileName) > 0 And objControl.OLEType < 2 Then
+						//	asColumns(2, iNextIndex) = "'" & Replace(Mid(objControl.FileName, InStrRev(objControl.FileName, "\") + 1), "'", "''") & "'"
+						//	asColumns(4, iNextIndex) = CStr(objControl.OLEType) & Mid(objControl.FileName, InStrRev(objControl.FileName, "\") + 1)
+						//ElseIf objControl.OLEType < 2 Then
+						//	asColumns(2, iNextIndex) = "''"
+						//	asColumns(4, iNextIndex) = CStr(objControl.OLEType)
+						//	Else
+						//	asColumns(2, iNextIndex) = asColumns(1, iNextIndex)
+						//	asColumns(4, iNextIndex) = CStr(objControl.OLEType) & asColumns(1, iNextIndex)
+						//	bCopyImageDataType = True
+
+						//	End If
+					}
+					
+					else if (objScreenControl.ControlType == 32) {
+						//TypeOf objControl Is COA_Spinner Then
+						//	' Integer field from an spinner (INT type column). Save the value from the spinner.
+						asColumnsToAdd[1] = $.trim($(objControl).val());
+						asColumnsToAdd[3] = $.trim($(objControl).val());
+					}
+						//	'JPD 20040714 Fault 8333
+						//	'ElseIf TypeOf objControl Is GTMaskDate.GTMaskDate Then
+					else if ((objScreenControl.ControlType == 64) && (objScreenControl.DataType == 11)) {
+						//TypeOf objControl Is TDBDate6Ctl.TDBDate Then
+						//	' Date field from a date control (DATETIME type column). Save the value from the control formatted as 'mm/dd/yyyy' for SQL.
+						if (ConvertData($(objControl).val(), objScreenControl.DataType) == null) {
+							asColumnsToAdd[1] = "null";
+							asColumnsToAdd[3] = "null";
+						} else {
+							//	asColumns(2, iNextIndex) = "'" & Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/") & "'"
+							asColumnsToAdd[1] = "'" + OpenHR.convertLocaleDateToSQL($(objControl).val()) + "'";
+							//	'JPD 20051121 Fault 10583
+							//	'asColumns(4, iNextIndex) = Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/")
+							//	asColumns(4, iNextIndex) = Replace(Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/"), vbTab, " ")
+							asColumnsToAdd[3] = OpenHR.convertLocaleDateToSQL($(objControl).val()).replace("\t", " ");
+						}
+					}
+
+					else if (objScreenControl.ControlType == 4096) {
+						fDoControl = false;
+						//TODO: Working patterns...
+						//TypeOf objControl Is COA_WorkingPattern Then
+						//	' Working Pattern Field (CHAR type column, len 14).
+						//	asColumns(2, iNextIndex) = "'" & Replace(objControl.Value, "'", "''") & "'"
+						//	'JPD 20051121 Fault 10583
+						//	'asColumns(4, iNextIndex) = objControl.Value
+						//	asColumns(4, iNextIndex) = Replace(objControl.Value, vbTab, " ")
+					}
+					
+					else if (objScreenControl.ControlType == Math.pow(2, 15)) {
+						fDoControl = false;
+						//TODO: Colour picker...
+						//TypeOf objControl Is COA_ColourSelector Then
+						//	asColumns(2, iNextIndex) = Val(objControl.BackColor)
+						//	asColumns(4, iNextIndex) = Val(objControl.BackColor)
+					}
+					
+					//TODO: else if(objScreenControl.ControlType == ??????) TypeOf objControl Is CommandButton Then
+					//	If mobjScreenControls.Item(sTag).LinkTableID <> mlngParentTableID Then
+					//	For iLoop = 1 To UBound(mavIDColumns, 2)
+					//	If UCase(mavIDColumns(2, iLoop)) = "ID_" & Trim(Str(mobjScreenControls.Item(sTag).LinkTableID)) Then
+					//	asColumns(2, iNextIndex) = Trim(Str(mavIDColumns(3, iLoop)))
+					//	asColumns(4, iNextIndex) = Trim(Str(mavIDColumns(3, iLoop)))
+					//	Exit For
+					//	End If
+					//	Next iLoop
+					//	Else
+					//	asColumns(2, iNextIndex) = Trim(Str(mlngParentRecordID))
+					//	asColumns(4, iNextIndex) = Trim(Str(mlngParentRecordID))
+					//	End If
+					//	End If
+					//	End If
+				}
+			}
+			//	End If
+			
+			if((fDoControl) && (!fColumnDone)) asColumns.push(asColumnsToAdd);
+
+		}
+
+		
+	});
+	
+//	Next objControl
+//	Set objControl = Nothing
+
+//	See if we are a history screen and if we are save away the id of the parent also
+	if($("txtCurrentParentTableID").val() > 0)
+	{
+		//	Check if the column's update string has already been constructed.
+		fColumnDone = false;
+		var ubound = asColumns.length -1;
+		for (iNextIndex = 0; iNextIndex <= ubound; iNextIndex++) {
+			if (asColumns[iNextIndex][0] == "ID_" + $("#txtCurrentParentTableID").val()) {
+				fColumnDone = true;
+				break;
+			}
+		}
+
+		if (!fColumnDone) {
+			//	Add the column name to the array of columns that have already been entered in the
+			//	SQL update/insert string.
+			iNextIndex = asColumns.length + 1; //TODO: check this...			
+			asColumnsToAdd[iNextIndex][0] = "ID_" + $.trim($("#txtCurrentParentTableID").val());
+			asColumnsToAdd[iNextIndex][1] = $.trim($("#txtCurrentParentRecordID").val());
+			asColumnsToAdd[iNextIndex][2] = "ID_" + $.trim($("#txtCurrentParentTableID").val());
+			asColumnsToAdd[iNextIndex][3] = $.trim($("#txtCurrentParentRecordID").val());
+			
+			asColumns.push(asColumnsToAdd);
+		}
+	}
+
+	if (asColumns.length > 0) {
+		//	Create a SQL string to update the record with.
+		if ($("#txtCurrentRecordID").val() == 0) {
+			sInsertUpdateDef = $("#txtRecEditRealSource").val() + "\t";
+
+			if (bCopyImageDataType) {
+				sInsertUpdateDef += "1" + "\t";
+			} else {
+				sInsertUpdateDef += "0" + "\t";
+			}
+
+			sInsertUpdateDef += $("#txtCopiedRecordID").val() + "\t";
+			ubound = asColumns.length - 1;
+			for (iLoop = 0; iLoop <= ubound; iLoop++) {
+				if (asColumns[iLoop][0].length > 0) {
+					sInsertUpdateDef += asColumns[iLoop][2] + "\t" + asColumns[iLoop][3] + "\t";
+				}
+			}
+		} else {
+			//	Construct the SQL update string from the array of columns and values.
+			ubound = asColumns.length - 1;
+			for (iLoop = 0; iLoop <= ubound; iLoop++) {
+				if (asColumns[iLoop][0].length > 0) {
+					sInsertUpdateDef += asColumns[iLoop][2] + "\t" + asColumns[iLoop][3] + "\t";
+				}
+			}
+		}
+	}
+
+	if (console) {
+		console.log(sInsertUpdateDef);
+	}
+	
+	return sInsertUpdateDef;
+
+}
+
+
+function ConvertNumberForSQL(strInput) {
+	// Get a number in the correct format for a SQL string
+	// (e.g. on french systems replace decimal comma for a decimal point)
+	// TODO: return strInput.replace(msLocaleDecimalSeparator, ".");
+	return strInput;
+
+}
+
+
+function ConvertData(pvData, pDataType) {
+	//TODO: Test this function!!
+	// Convert the given variant value into the given data type.
+	var vReturnData;
+
+	if (pvData == null) {
+		vReturnData = null;
+	} else {
+		switch (pDataType) {
+			case -7:
+				//sqlBoolean
+				vReturnData = Boolean(pvData);
+				break;
+			case 12, -1:
+				//sqlVarChar, sqlLongVarChar
+				vReturnData = (pvData).replace(/~+$/, ''); //rtrim function
+				if (vReturnData.length == 0) {
+					vReturnData = null;
+				}
+				break;
+			case 11:
+				//sqlDate				
+				if (isValidDate(new Date(pvData))) {
+					vReturnData =Date.parse(pvData);
+				} else {
+					vReturnData = null;
+				}
+				break;
+			case 2:
+				//sqlNumeric
+				if ($.trim(pvData).length == 0) {
+					vReturnData = null;
+				} else {
+					vReturnData = Number(pvData);
+				}
+				break;
+			case 4:
+				// sqlInteger
+				if ($.trim(pvData).length == 0) {
+
+					vReturnData = null;
+				} else {
+					vReturnData = Number(pvData);
+				}
+				break;
+
+			default:
+				vReturnData = pvData;
+		}
+	}
+
+return vReturnData;
+
+}
+
+	function isValidDate(d) {
+		if ( Object.prototype.toString.call(d) !== "[object Date]" )
+			return false;
+		return !isNaN(d.getTime());
+	}
+
+function CaseConversion(psText, piCaseConversion) {	
+	// Perform the required case conversion on the given text.
+	var lngPos;
+	var sLastCharacter = "";
+
+	// Do nothing if the given text is empty.
+	if ($.trim(psText).length > 0) {
+		// Do nothing if the given text is numeric.
+		if (isNaN(psText)) {
+			switch (piCaseConversion) {
+			case 0:
+				//No conversion
+				break;
+			case 1:
+				//Upper case
+				psText = psText.toUpperCase();
+				break;
+			case 2:
+				//Lower case
+				psText = psText.toLowerCase();
+				break;
+			case 3:
+				//Proper conversion
+				//First LCase everything !
+				psText = $.trim(psText).toLowerCase();
+
+				// Then Ucase first letter
+				psText = psText.charAt(0).toUpperCase() + psText.slice(1); //UCase(Left(psText, 1)) & Right(psText, Len(psText) - 1)
+				for (lngPos = 1; lngPos <= psText.length; lngPos++) {
+					sLastCharacter = psText.substr(lngPos - 1, 1);
+					if (((sLastCharacter < "A") || (sLastCharacter > "Z")) &&
+						((sLastCharacter < "a") || (sLastCharacter > "z")) &&
+						((sLastCharacter < "À") || (sLastCharacter > "Ö")) &&
+						((sLastCharacter < "Ù") || (sLastCharacter > "Ý")) &&
+						((sLastCharacter < "ß") || (sLastCharacter > "ö")) &&
+						((sLastCharacter < "ù") || (sLastCharacter > "ÿ"))) {
+						psText = Left(psText, lngPos - 1) + psText.substr(lngPos -1, 1).toUpperCase() + Right(psText, psText.length - lngPos);
+						//psText = psText.substr(0, lngPos - 1) + psText.substr(lngPos, 1).toUpperCase() + Right(psText, psText.length - lngPos);
+					} else if (lngPos > 2) {
+						// Catch the McName.
+						if ((psText.substr(lngPos - 2, 1) == "M") && (sLastCharacter = "c")) {
+							psText = Left(psText, lngPos - 1) & psText.substr(lngPos -1, 1).toUpperCase() & Right(psText, psText.length - lngPos);
+							//psText = psText.substr(0, lngPos - 1) + psText.substr(lngPos, 1).toUpperCase() + Right(psText, psText.length - lngPos);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return psText;
+
+}
+
+function Left(str, n) {
+	if (n <= 0)
+		return "";
+	else if (n > String(str).length)
+		return str;
+	else
+		return String(str).substring(0, n);
+}
+
+function Right(str, n){
+	if (n <= 0)
+		return "";
+	else if (n > String(str).length)
+		return str;
+	else {
+		var iLen = String(str).length;
+		return String(str).substring(iLen, iLen - n);
+	}
+}
+
+function allDefaults()
+{
+	//TODO:
+	//this function checks if all the user updatable controls have defaults, this is so the save button can be enabled if the all controls have defaults.
+	return false;
+}
+
+function validateSave() {
+	// Validate the recordd before saving.
+	var fValid = true;
+	var fLinked = false;
+	var fHasParents = false;
+	var iLoop;
+	
+	//converted from activeX function validateSave()
+	// Check that at least one parent is linked to.
+	if (Number($("#txtCurrentParentRecordID").val()) == 0) {
+		fHasParents = false;
+		fLinked = false;
+
+		var ubound = (this.mavIDColumns.length / 3);
+		
+		for (iLoop = 1; iLoop <= (ubound); iLoop++) {
+
+			if (this.mavIDColumns[iLoop][2].length > 2) {
+				// Must be parent id column (ID_) rather that own record id column (id)
+				fHasParents = true;
+
+				if (Number(this.mavIDColumns[iLoop][3]) > 0) {
+					fLinked = true;
+					break;
+				}
+			}
+		}
+
+	if ((!fLinked) && (fHasParents)) {
+			fValid = false;
+			OpenHR.messageBox("Unable to save record, a link must be made with the parent table.", vbExclamation + vbOKOnly, "OpenHR Intranet");
+		}
+	}
+
+	return fValid;		
+}
+
+
+function getScreenControl_Collection(screenControlValue) {
+
+	var controlItemArray = screenControlValue.split("\t");
+
+		var screenControls = {
+			PageNo: Number(controlItemArray[0]),
+			TableID: Number(controlItemArray[1]),
+			ColumnID: Number(controlItemArray[2]),
+			ControlType: Number(controlItemArray[3]),
+			TopCoord: Number(controlItemArray[4]),
+			LeftCoord: Number(controlItemArray[5]),
+			Height: Number(controlItemArray[6]),
+			Width: Number(controlItemArray[7]),
+			Caption: controlItemArray[8],
+			BackColor: Number(controlItemArray[9]),
+			ForeColor: Number(controlItemArray[10]),
+			FontName: controlItemArray[11],
+			FontSize: Number(controlItemArray[12]),
+			FontBold: (Number(controlItemArray[13]) != 0),
+			FontItalic: (Number(controlItemArray[14]) != 0),
+			FontStrikethru: (Number(controlItemArray[15]) != 0),
+			FontUnderline: (Number(controlItemArray[16]) != 0),
+			DisplayType: Number(controlItemArray[17]),
+			TabIndex: Number(controlItemArray[18]),
+			BorderStyle: Number(controlItemArray[19]),
+			Alignment: Number(controlItemArray[20]),
+			ColumnName: controlItemArray[21],
+			ColumnType: Number(controlItemArray[22]),
+			DataType: Number(controlItemArray[23]),
+			DefaultValue: controlItemArray[24],
+			Size: Number(controlItemArray[25]),
+			Decimals: Number(controlItemArray[26]),
+			LookupTableID: Number(controlItemArray[27]),
+			LookupColumnID: Number(controlItemArray[28]),
+			SpinnerMinimum: Number(controlItemArray[29]),
+			SpinnerMaximum: Number(controlItemArray[30]),
+			SpinnerIncrement: Number(controlItemArray[31]),
+			Mandatory: (Number(controlItemArray[32]) != 0),
+			UniqueCheck: (Number(controlItemArray[33]) != 0),
+			ConvertCase: Number(controlItemArray[34]),
+			Mask: controlItemArray[35],
+			BlankIfZero: (Number(controlItemArray[36]) != 0),
+			Multiline: (Number(controlItemArray[37]) != 0),
+			ColumnAlignment: Number(controlItemArray[38]),
+			DfltValueExprID: Number(controlItemArray[39]),
+			ReadOnly: (Number(controlItemArray[40]) != 0),
+			StatusBarMessage: controlItemArray[41],
+			LinkTableID: Number(controlItemArray[42]),
+			LinkOrderID: Number(controlItemArray[43]),
+			LinkViewID: Number(controlItemArray[44]),
+			AFDEnabled: (Number(controlItemArray[45]) != 0),
+			TableName: controlItemArray[46],
+			SelectGranted: (Number(controlItemArray[47]) != 0),
+			UpdateGranted: (Number(controlItemArray[48]) != 0),
+			OLEOnServer: (Number(controlItemArray[49]) != 0),
+			PictureID: Number(controlItemArray[50]),
+			TrimmingType: Number(controlItemArray[51]),
+			Use1000Separator: (Number(controlItemArray[52]) != 0),
+			LookupFilterColumnID: Number(controlItemArray[53]),
+			LookupFilterValueID: Number(controlItemArray[54]),
+			OLEType: Number(controlItemArray[55]),
+			EmbeddedEnabled: (Number(controlItemArray[56]) != 0),
+			MaxOleSize: Number(controlItemArray[57]),
+			NavigateTo: controlItemArray[58],
+			NavigateIn: controlItemArray[59],
+			NavigateOnSave: controlItemArray[60],
+			ScreenReadOnly: (Number(controlItemArray[61]) != 0)
+		};
+
+
+	return screenControls;
+
+}
+
+
+
 // -------------------------------------------------- Add the record Edit controls ------------------------------------------------
 function AddHtmlControl(controlItem, txtcontrolID, key) {
     try {
@@ -795,7 +1568,7 @@ function recEdit_setData(columnID, value) {
 
     if (columnID.toUpperCase() == "TIMESTAMP") {
         // The column is the timestamp column.
-        // mlngTimestamp = CDbl(pvValue)
+	    $("#txtRecEditTimeStamp").val(value);
     }
     else {
         var tmp = this.mavIDColumns.indexOf(Number(columnID));
@@ -813,12 +1586,13 @@ function recEdit_setData(columnID, value) {
 function recEdit_setRecordID(plngRecordID) {
     var frmRecordEditForm = document.getElementById("frmRecordEditForm");
     frmRecordEditForm.txtCurrentRecordID.value = plngRecordID;
-    frmRecordEditForm.ctlRecordEdit.recordID = plngRecordID;
+    //frmRecordEditForm.ctlRecordEdit.recordID = plngRecordID;
 }
 
 function recEdit_setCopiedRecordID(plngRecordID) {
-    var frmRecordEditForm = document.getElementById("frmRecordEditForm");
-    frmRecordEditForm.ctlRecordEdit.CopiedRecordID = plngRecordID;
+	var frmRecordEditForm = document.getElementById("frmRecordEditForm");
+	frmRecordEditForm.txtCopiedRecordID.value = plngRecordID;
+    //frmRecordEditForm.ctlRecordEdit.CopiedRecordID = plngRecordID;
 }
 
 function recEdit_setParentTableID(plngParentTableID) {
@@ -837,112 +1611,152 @@ function recEdit_setParentRecordID(plngParentRecordID) {
 
 
 function updateControl(lngColumnID, value) {
-   
-    //get the column type, then add this value to it/them.
-    $("#ctlRecordEdit").find("[data-columnID='" + lngColumnID + "']").each(function () {
-        //TODO: is this control tagged to a column?
+	
+	//get the column type, then add this value to it/them.
+	$("#ctlRecordEdit").find("[data-columnID='" + lngColumnID + "']").each(function () {
 
-        //TODO: is this controls columnID = lngColumnID?
-        
-        //Get the controlType from the ID
-        try {
-            var arrIDProps = $(this).attr("id").split("_");
-        } catch (e) {
-            return false;
-        }
+		//TODO: is this control tagged to a column?
 
-        var controlType = Number(arrIDProps[2]);
-                
-        if ($(this).is("textarea")) {
-            $(this).val(value);
-        }
+		//TODO: is this controls columnID = lngColumnID?
 
-        //TODO if coa_image.....
+		//Get the controlType from the ID
+		try {
+			var arrIDProps = $(this).attr("id").split("_");
+		} catch (e) {
+			return false;
+		}
 
-        //TODO if mask
+		var controlType = Number(arrIDProps[2]);
 
-        //Input type controls...
-        if ($(this).is("input")) {                       
-            switch ($(this).attr("type")) {
-                case "text":
-                    $(this).val(value);
-                    break;
-                case "number":
-                    $(this).val(Number(value));
-                    break;
-                case "checkbox":                    
-                    $(this).prop("checked", value == "True" ? true : false);
-                    break;
-                case "button":
-                    //link button or nav control
-                    if (controlType == Math.pow(2, 14)) {
-                        //Navigation Control
-                        if (value.length <= 0) {
-                            $(this).attr("href", "about:blank");
-                        } else {
-                            $(this).attr("href", value);
-                        }
-                    }
-                    //TODO: link button.
-                default:
-                    $(this).val(value);
+		if ($(this).is("textarea")) {
+			//was TDBText6Ctl.TDBText
+			$(this).val(value);
+		}
 
-            }
-        }
+		//TODO if coa_image.....
+		//If InStr(1, CStr(pvValue), "::LINKED_OLE_DOCUMENT::", vbTextCompare) Then
+		//.SetPicturePath Replace(CStr(pvValue), "::LINKED_OLE_DOCUMENT::", "")
+		//.ASRDataField = GetFileNameOnly(Replace(CStr(pvValue), "::LINKED_OLE_DOCUMENT::", ""))
+		//.OLEType = 3
+	 // ElseIf InStr(1, CStr(pvValue), "::EMBEDDED_OLE_DOCUMENT::", vbTextCompare) Then
+	 //.SetPicturePath Replace(CStr(pvValue), "::EMBEDDED_OLE_DOCUMENT::", "")
+	 //.ASRDataField = GetFileNameOnly(Replace(CStr(pvValue), "::EMBEDDED_OLE_DOCUMENT::", ""))
+	 //.OLEType = 2
+	 // Else
+	 // 	.SetPicturePath msPhotoPath & "\" & CStr(pvValue)
+	 // 	.ASRDataField = CStr(pvValue)
+	 // 	.OLEType = mobjScreenControls.Item(sTag).OLEType
+		// End If
+		
+		//TODO if mask
+		// .Text = RTrim(CStr(pvValue) & vbNullString)
+		
+		//Input type controls...
+		if ($(this).is("input")) {
+			switch ($(this).attr("type")) {
+				case "text":
+					if ($(this).hasClass("datepicker")) {
+						//date control
+						if (value.length == 0) {
+							$(this).val("");
+						} else {
+							$(this).val(OpenHR.ConvertSQLDateToLocale(value));
+						}
+					} else {
+						$(this).val(value);
+					}
+					break;
+				case "number":
+					$(this).val(Number(value));
+					break;
+				case "checkbox":
+					$(this).prop("checked", value == "True" ? true : false);
+					break;
+				case "button":
+					//link button or nav control
+					if (controlType == Math.pow(2, 14)) {
+						//Navigation Control
+						if (value.length <= 0) {
+							$(this).attr("href", "about:blank");
+						} else {
+							$(this).attr("href", value);
+						}
+					}
+					//TODO: link button.
+				default:
+					$(this).val(value);
 
-        //Working pattern & Option group
-        if ($(this).is("fieldset")) {
-            if ($(this).attr("data-datatype") === "Working Pattern")                
-            {                
-                //ensure the value is 14 characters long.
-                if (value.length < 14) value = value.concat("              ").substring(0, 14);
-                var tthisId = "#" + $(this).attr("id");
-                //tick relevant boxes.
-                for (var i = 1; i <= 14; i++) {                    
-                    $(tthisId + "_" + i).prop("checked", value.substring(i - 1 , i) != " " ? true : false);
-                }
-            }
+			}
+		}
 
-            if ($(this).attr("data-datatype") === "Option Group") {
-            //TODO
-  
-            }
-        }
+		//Working pattern & Option group
+		if ($(this).is("fieldset")) {
+			if ($(this).attr("data-datatype") === "Working Pattern") {
+				//ensure the value is 14 characters long.
+				if (value.length < 14) value = value.concat("              ").substring(0, 14);
+				var tthisId = "#" + $(this).attr("id");
+				//tick relevant boxes.
+				for (var i = 1; i <= 14; i++) {
+					$(tthisId + "_" + i).prop("checked", value.substring(i - 1, i) != " " ? true : false);
+				}
+			}
 
-
-
-        //ComboBox
-        if (($(this).is("select")) && (this.length > 0)) {
-            $(this).val(value);
-        }
-
-        //Lookup
-        if (($(this).is("select")) && (this.length == 0)) {
-            var option = document.createElement('option');
-            option.value = value;
-            option.appendChild(document.createTextNode(value));
-            $(this).append(option);
-            $(this).val(value);
-        }
-
-        //Option Group
-
-        //OLE
-
-        //Spinner - done nwith number above..
-
-        //Nav controls
-        if ($(this).is("a")) {
-
-            if (value.length <= 0) {
-                $(this).attr("href", "about:blank");
-            } else {
-                $(this).attr("href", value);
-            }
-        }
+			if ($(this).attr("data-datatype") === "Option Group") {
+				//TODO
+				$("input[name='" + $(this).attr("id") + "'][value='" + value + "']").prop('checked', true);
+			}
+		}
 
 
-    });
+		if ($(this).is("select")) {
+
+			//does value exist in the dropdown?
+			if ($(this).find('option[value="' + value + '"]').length) {
+				$(this).val(value);
+			} else {
+				var option = document.createElement('option');
+				option.value = value;
+				option.appendChild(document.createTextNode(value));
+				$(this).append(option);
+				$(this).val(value);
+			}
+
+
+		}
+
+
+		////ComboBox
+		//if (($(this).is("select")) && (this.length > 0)) {
+		//	$(this).val(value);
+		//}
+
+		////Lookup
+		//if (($(this).is("select")) && (this.length == 0)) {
+		//	var option = document.createElement('option');
+		//	option.value = value;
+		//	option.appendChild(document.createTextNode(value));
+		//	$(this).append(option);
+		//	$(this).val(value);
+		//}
+
+		//Option Group
+
+		//OLE
+
+		//Spinner - done nwith number above..
+
+		//Nav controls
+		if ($(this).is("a")) {
+
+			if (value.length <= 0) {
+				$(this).attr("href", "about:blank");
+			} else {
+				$(this).attr("href", value);
+			}
+		}
+
+
+	});
 
 
 }
@@ -959,5 +1773,135 @@ function getTabCaption(tabNumber) {
     var tabCaption = arr[tabNumber - 1];
 
     return tabCaption;
+
+}
+
+
+
+function TBCourseRecordID() {
+	// Training Booking specific.
+	// Return the Course Record ID.
+	// Used when editing a Training Booking record.
+	var iLoop;
+
+	var TBCourseRecordID = 0;
+	var mlngCourseTableID = $("#txtRecEditCourseTableID").val();
+	var mlngParentTableID = $("#txtCurrentParentTableID").val();
+	var mlngParentRecordID = $("#txtCurrentParentRecordID").val();
+	
+	if (mlngCourseTableID > 0) {
+		if (mlngCourseTableID == mlngParentTableID) {
+			TBCourseRecordID = mlngParentRecordID;
+		} else {
+			//TODO: Linked record not saved?
+			//For iLoop = 1 To UBound(mavIDColumns, 2)
+			//If UCase(mavIDColumns(2, iLoop)) = "ID_" & Trim(Str(mlngCourseTableID)) Then
+			//TBCourseRecordID = mavIDColumns(3, iLoop)
+			//Exit For
+			//End If
+			//Next iLoop
+		}
+	}
+}
+
+function TBEmployeeRecordID() {
+	// Training Booking specific.
+	// Return the Employee Record ID.
+	// Used when editing a Training Booking record.
+	var iLoop;
+
+	var TBEmployeeRecordID = 0;
+	var mlngEmployeeTableID = $("#txtRecEditEmpTableID").val();
+	var mlngParentTableID = $("#txtCurrentParentTableID").val();
+	var mlngParentRecordID = $("#txtCurrentParentRecordID").val();
+
+	if (mlngEmployeeTableID > 0) {
+		if (mlngEmployeeTableID == mlngParentTableID) {
+			TBEmployeeRecordID = mlngParentRecordID;
+		} else {
+			//TODO: linked records?
+			//For iLoop = 1 To UBound(mavIDColumns, 2)
+			//If UCase(mavIDColumns(2, iLoop)) = "ID_" & Trim(Str(mlngEmployeeTableID)) Then
+			//TBEmployeeRecordID = mavIDColumns(3, iLoop)
+			//Exit For
+			//End If
+			//Next iLoop
+		}
+	}
+}
+
+function TBBookingStatusValue() {
+	//TODO: 
+	//' Training Booking specific.
+	//' Return the Booking Status Value.
+	//' Used when editing a Training Booking record.
+	//Dim sTag As String
+	//Dim objControl As Control
+	//Dim objScreenControl As clsScreenControl
+  
+	//TBBookingStatusValue = ""
+  
+	//If mlngTBStatusColumnID > 0 Then
+	//For Each objControl In UserControl.Controls
+	//sTag = objControl.Tag
+
+	//' Check if it is a user editable control.
+	//If Len(sTag) > 0 Then
+	//' Check that the control is associated with a column in the current table/view,
+	//' and is updatable.
+	//If mobjScreenControls.Item(sTag).ColumnID = mlngTBStatusColumnID Then
+	//If TypeOf objControl Is TDBText6Ctl.TDBText Then
+          
+	//' Multi-line character field from a masked textbox (CHAR type column). Save the text from the control.
+	//If IsNull(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType)) Then
+	//TBBookingStatusValue = ""
+	//Else
+	//TBBookingStatusValue = ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType)
+	//End If
+
+	//ElseIf TypeOf objControl Is TDBMask6Ctl.TDBMask Then
+	//' Character field from a masked textbox (CHAR type column). Save the text from the control.
+	//If Len(objControl.Value) = 0 Then
+	//TBBookingStatusValue = ""
+	//Else
+	//TBBookingStatusValue = objControl.Text
+	//End If
+
+	//ElseIf TypeOf objControl Is TextBox Then
+	//' Character field from an unmasked textbox (CHAR type column). Save the text from the control.
+	//TBBookingStatusValue = objControl.Text
+
+	//ElseIf TypeOf objControl Is ComboBox Then
+	//' Character field from a combo (CHAR type column). Save the text from the combo.
+	//TBBookingStatusValue = objControl.Text
+
+	//ElseIf TypeOf objControl Is COAInt_Lookup Then
+	//' Lookup field from a combo (unknown type column). Get the column type and save the appropraite value from the combo.
+	//Select Case mobjScreenControls.Item(sTag).DataType
+	//Case sqlVarChar, sqlLongVarChar
+	//TBBookingStatusValue = objControl.Text
+	//Case Else
+	//TBBookingStatusValue = ""
+	//End Select
+
+	//ElseIf TypeOf objControl Is COAInt_OptionGroup Then
+	//' Character field from an option group (CHAR type column). Save the text from the option group.
+	//TBBookingStatusValue = objControl.Text
+	//End If
+          
+	//Exit For
+	//End If
+	//End If
+	//Next objControl
+	//Set objControl = Nothing
+	//End If
+  
+
+}
+
+
+
+function ExecutePostSaveCode() {
+	//TODO:
 
 }

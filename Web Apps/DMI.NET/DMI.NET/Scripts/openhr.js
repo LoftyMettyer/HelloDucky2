@@ -246,6 +246,148 @@
 				mmwordCreateTemplateFile = function (psTemplatePath) {
 					//TODO
 					return true;
+				},
+				convertLocaleDateToSQL = function (psDateString) {
+					/* Convert the given date string (in locale format) into 
+						SQL format (mm/dd/yyyy). */
+					var sDateFormat;
+					var iDays;
+					var iMonths;
+					var iYears;
+					var sDays;
+					var sMonths;
+					var sYears;
+					var iValuePos;
+					var sTempValue;
+					var sValue;
+					var iLoop;
+
+					sDateFormat = OpenHR.LocaleDateFormat();
+
+					sDays = "";
+					sMonths = "";
+					sYears = "";
+					iValuePos = 0;
+
+					// Trim leading spaces.
+					sTempValue = psDateString.substr(iValuePos, 1);
+					while (sTempValue.charAt(0) == " ") {
+						iValuePos = iValuePos + 1;
+						sTempValue = psDateString.substr(iValuePos, 1);
+					}
+
+					for (iLoop = 0; iLoop < sDateFormat.length; iLoop++) {
+						if ((sDateFormat.substr(iLoop, 1).toUpperCase() == 'D') && (sDays.length == 0)) {
+							sDays = psDateString.substr(iValuePos, 1);
+							iValuePos = iValuePos + 1;
+							sTempValue = psDateString.substr(iValuePos, 1);
+
+							if (isNaN(sTempValue) == false) {
+								sDays = sDays.concat(sTempValue);
+							}
+							iValuePos = iValuePos + 1;
+						}
+
+						if ((sDateFormat.substr(iLoop, 1).toUpperCase() == 'M') && (sMonths.length == 0)) {
+							sMonths = psDateString.substr(iValuePos, 1);
+							iValuePos = iValuePos + 1;
+							sTempValue = psDateString.substr(iValuePos, 1);
+
+							if (isNaN(sTempValue) == false) {
+								sMonths = sMonths.concat(sTempValue);
+							}
+							iValuePos = iValuePos + 1;
+						}
+
+						if ((sDateFormat.substr(iLoop, 1).toUpperCase() == 'Y') && (sYears.length == 0)) {
+							sYears = psDateString.substr(iValuePos, 1);
+							iValuePos = iValuePos + 1;
+							sTempValue = psDateString.substr(iValuePos, 1);
+
+							if (isNaN(sTempValue) == false) {
+								sYears = sYears.concat(sTempValue);
+							}
+							iValuePos = iValuePos + 1;
+							sTempValue = psDateString.substr(iValuePos, 1);
+
+							if (isNaN(sTempValue) == false) {
+								sYears = sYears.concat(sTempValue);
+							}
+							iValuePos = iValuePos + 1;
+							sTempValue = psDateString.substr(iValuePos, 1);
+
+							if (isNaN(sTempValue) == false) {
+								sYears = sYears.concat(sTempValue);
+							}
+							iValuePos = iValuePos + 1;
+						}
+
+						// Skip non-numerics
+						sTempValue = psDateString.substr(iValuePos, 1);
+						while (isNaN(sTempValue) == true) {
+							iValuePos = iValuePos + 1;
+							sTempValue = psDateString.substr(iValuePos, 1);
+						}
+					}
+
+					while (sDays.length < 2) {
+						sTempValue = "0";
+						sDays = sTempValue.concat(sDays);
+					}
+
+					while (sMonths.length < 2) {
+						sTempValue = "0";
+						sMonths = sTempValue.concat(sMonths);
+					}
+
+					while (sYears.length < 2) {
+						sTempValue = "0";
+						sYears = sTempValue.concat(sYears);
+					}
+
+					if (sYears.length == 2) {
+						var iValue = parseInt(sYears);
+						if (iValue < 30) {
+							sTempValue = "20";
+						} else {
+							sTempValue = "19";
+						}
+
+						sYears = sTempValue.concat(sYears);
+					}
+
+					while (sYears.length < 4) {
+						sTempValue = "0";
+						sYears = sTempValue.concat(sYears);
+					}
+
+					sTempValue = sMonths.concat("/");
+					sTempValue = sTempValue.concat(sDays);
+					sTempValue = sTempValue.concat("/");
+					sTempValue = sTempValue.concat(sYears);
+
+					sValue = OpenHR.ConvertSQLDateToLocale(sTempValue);
+
+					iYears = parseInt(sYears);
+
+					while (sMonths.substr(0, 1) == "0") {
+						sMonths = sMonths.substr(1);
+					}
+					iMonths = parseInt(sMonths);
+
+					while (sDays.substr(0, 1) == "0") {
+						sDays = sDays.substr(1);
+					}
+					iDays = parseInt(sDays);
+
+					var newDateObj = new Date(iYears, iMonths - 1, iDays);
+					if ((newDateObj.getDate() != iDays) ||
+						(newDateObj.getMonth() + 1 != iMonths) ||
+						(newDateObj.getFullYear() != iYears)) {
+						return "";
+					} else {
+						return sTempValue;
+					}
 				};
 
 	window.OpenHR = {
@@ -272,7 +414,8 @@
 		ValidateFilePath: validateFilePath,
 		sendMail: sendMail,
 		currentWorkPage: currentWorkPage,
-		MM_WORD_CreateTemplateFile: mmwordCreateTemplateFile
+		MM_WORD_CreateTemplateFile: mmwordCreateTemplateFile,
+		convertLocaleDateToSQL: convertLocaleDateToSQL
 	};
 
 })(window, jQuery);

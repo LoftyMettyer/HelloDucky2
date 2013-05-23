@@ -13,14 +13,15 @@ Namespace App_Start
 
 
       ' JQuery core
-      bundles.Add(New ScriptBundle("~/bundles/jQuery").Include(
-          "~/Scripts/jquery/jquery-{version}.js",
-          "~/Scripts/jquery/jquery-cookie.js",
-          "~/Scripts/jquery/jquery-flip.js",
-          "~/Scripts/jquery/jquery-unobtrusive-ajax.js",
-          "~/Scripts/jquery/jquery-validate-vsdoc.js",
-          "~/Scripts/jquery/jquery-validate.js",
-          "~/Scripts/jquery/jquery-validate-unobtrusive.js"))
+			bundles.Add(New ScriptBundle("~/bundles/jQuery").Include(
+					"~/Scripts/jquery/jquery-{version}.js",
+					"~/Scripts/jquery/jquery-cookie.js",
+					"~/Scripts/jquery/jquery-flip.js",
+					"~/Scripts/jquery/jquery-unobtrusive-ajax.js",
+					"~/Scripts/jquery/jquery-validate-vsdoc.js",
+					"~/Scripts/jquery/jquery-validate.js",
+					"~/Scripts/jquery/jquery-validate-unobtrusive.js",
+					"~/Scripts/date.js"))
 
 
       ' JQuery UI
@@ -73,11 +74,11 @@ Namespace App_Start
         "~/Scripts/FormScripts/util_def_mailmerge.js"))
 
       ' Record Editing
-      bundles.Add(New ScriptBundle("~/bundles/recordedit").Include(
-        "~/Scripts/jquery/jquery.jqGrid.src.js",
-        "~/Scripts/FormScripts/find.js",
-        "~/Scripts/FormScripts/optionData.js",
-        "~/Scripts/FormScripts/recordEdit.js"))
+			bundles.Add(New ScriptBundle("~/bundles/recordedit").Include(
+				"~/Scripts/jquery/jquery.jqGrid.src.js",
+				"~/Scripts/FormScripts/find.js",
+				"~/Scripts/FormScripts/optionData.js",
+				"~/Scripts/FormScripts/recordEdit.js"))
 
 #If DEBUG Then
 

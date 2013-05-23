@@ -15,7 +15,6 @@
     function recordEdit_window_onload() {
         //public variables
         this.mavIDColumns = new Array(3);
-	    
         var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
 
         var fOK;
@@ -82,13 +81,12 @@
                 frmGoto.txtGotoRecordID.value = frmRecordEditForm.txtCurrentRecordID.value;
                 frmGoto.txtGotoParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
                 frmGoto.txtGotoParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
-                frmGoto.txtGotoPage.value = "recordEdit.asp";
+                frmGoto.txtGotoPage.value = "recordEdit";
 
                 HRProNavigationFlag.value = 1;
                 //frmGoto.submit();
                 OpenHR.submitForm(frmGoto);
-            } else {
-
+            } else {		                        
                 // Set the recEdit control properties.               
                 //TODO: initialise clears the recordDMI activeX object and sets the module variables as below.
                 //fOK = recEditCtl.initialise(
@@ -218,20 +216,23 @@
 
                 if (fOK == true) {
                     // Get the data.asp to get the required data.
-                    var action = document.getElementById("txtAction");
+                    //var action = document.getElementById("txtAction");
+                    var dataForm = OpenHR.getForm("dataframe", "frmGetData");
+
                     if (((frmRecordEditForm.txtAction.value == "NEW") ||
                             (frmRecordEditForm.txtAction.value == "COPY")) &&
                         (frmRecordEditForm.txtRecEditInsertGranted.value == "True")) {
-                        action.value = frmRecordEditForm.txtAction.value;
+                    	// action.value = frmRecordEditForm.txtAction.value;
+                    	dataForm.txtAction.value = frmRecordEditForm.txtAction.value;
                     } else {
-                        action.value = "LOAD";
+                    	dataForm.txtAction.value = "LOAD";
                     }
 
                     if (frmRecordEditForm.txtCurrentOrderID.value != frmRecordEditForm.txtRecEditOrderID.value) {
                         frmRecordEditForm.txtCurrentOrderID.value = frmRecordEditForm.txtRecEditOrderID.value;
                     }
 
-                    var dataForm = OpenHR.getForm("dataframe", "frmGetData");
+                    
                     dataForm.txtCurrentTableID.value = frmRecordEditForm.txtCurrentTableID.value;
                     dataForm.txtCurrentScreenID.value = frmRecordEditForm.txtCurrentScreenID.value;
                     dataForm.txtCurrentViewID.value = frmRecordEditForm.txtCurrentViewID.value;
@@ -243,10 +244,9 @@
                     dataForm.txtRecordID.value = frmRecordEditForm.txtCurrentRecordID.value;
                     dataForm.txtParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
                     dataForm.txtParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
-                    //dataForm.txtDefaultCalcCols.value = recEditCtl.CalculatedDefaultColumns();
+                    dataForm.txtDefaultCalcCols.value = CalculatedDefaultColumns();
 
                     //this should be in scope by now.
-                    //TODO: NPG
                     data_refreshData(); //window.parent.frames("dataframe").refreshData();
                 }
 
@@ -273,10 +273,29 @@
             //parent.window.resizeBy(1, 1);
         } catch (e) {
         }
+	    
+
+    	//Add 'changed' event handler to monitor for data changes    
+	    //checkbox
+      //$("input:checkbox").change(function () {enableSaveButton();});
+
+			//date, checkbox, text lostfocus, optiongroup, 
+			$('input[id^="FI_"]').on("change", function () {enableSaveButton();});
+
+    	//need char live, spinner, dropdown, textarea,
+			$('input[id^="FI_"]').on("keypress", function () {
+				//TODO: check this; fires change too.....
+				enableSaveButton();				
+			});
 
     }
 
-
+    function enableSaveButton() {
+	    if ($("#ctlRecordEdit #changed").val() == "false") {
+		    $("#ctlRecordEdit #changed").val("true");
+		    menu_toolbarEnableItem("mnutoolSaveRecord", true);
+	    }
+    }
 
 
 
@@ -327,7 +346,8 @@
         var fOK;
 
         fOK = true;
-        if (frmRecordEditForm.ctlRecordEdit.recordID == 0) {
+    	//if (frmRecordEditForm.ctlRecordEdit.recordID == 0) {
+        if($("#txtCurrentRecordID").val() == 0) {
             OpenHR.messageBox("Unable to edit photo fields until the record has been saved.");
             fOK = false;
         }
@@ -353,7 +373,8 @@
         var sKey = new String('');
 
         fOK = true;
-        if (frmRecordEditForm.ctlRecordEdit.recordID == 0) {
+    	//if (frmRecordEditForm.ctlRecordEdit.recordID == 0) {
+        if ($("#txtCurrentRecordID").val() == 0) {
             OpenHR.messageBox("Unable to edit OLE fields until the record has been saved.");
             fOK = false;
         }
@@ -413,7 +434,7 @@
         frmGetDataForm.txtRecordID.value = OpenHR.getForm("dataframe", "frmData").txtRecordID.value;
         frmGetDataForm.txtParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
         frmGetDataForm.txtParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
-        //TODO frmGetDataForm.txtDefaultCalcCols.value = frmRecordEditForm.ctlRecordEdit.CalculatedDefaultColumns();
+        frmGetDataForm.txtDefaultCalcCols.value = CalculatedDefaultColumns();
         frmGetDataForm.txtInsertUpdateDef.value = "";
         frmGetDataForm.txtTimestamp.value = "";
 
@@ -477,6 +498,7 @@
 <div id="ctlRecordEdit" style="margin:0 auto;">
     <ul id="tabHeaders">        
     </ul>
+		<input type="hidden" id="changed" value="false"/>
 </div>
 
 <%
@@ -489,7 +511,10 @@
     Response.Write("<INPUT type='hidden' id=txtCurrentParentTableID name=txtCurrentParentTableID value=" & Session("parentTableID") & ">" & vbCrLf)
     Response.Write("<INPUT type='hidden' id=txtCurrentParentRecordID name=txtCurrentParentRecordID value=" & Session("parentRecordID") & ">" & vbCrLf)
     Response.Write("<INPUT type='hidden' id=txtLineage name=txtLineage value=" & Session("lineage") & ">" & vbCrLf)
-    Response.Write("<INPUT type='hidden' id=txtCurrentRecPos name=txtCurrentRecPos value=" & Session("parentRecordID") & ">" & vbCrLf)
+	Response.Write("<INPUT type='hidden' id=txtCurrentRecPos name=txtCurrentRecPos value=" & Session("parentRecordID") & ">" & vbCrLf)
+	Response.Write("<INPUT type='hidden' id=txtCopiedRecordID name=txtCopiedRecordID value=''>" & vbCrLf)
+	Response.Write("<INPUT type='hidden' id=txtRecEditTimeStamp name=txtRecEditTimeStamp value=''>" & vbCrLf)
+	
 	
 	if len(sErrorDescription) = 0 then
 		' Read the screen definition from the database into 'hidden' controls.

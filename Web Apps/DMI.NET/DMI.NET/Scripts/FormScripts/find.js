@@ -1,9 +1,9 @@
 ﻿
-    //todo remove this function!
-    //New functionality - get the selected row's record ID from the hidden tag		
-    function getRecordID(rowID) {	        
-        return $("#findGridTable").find("#" + rowID + " input[type=hidden]").val();
-    }
+//todo remove this function!
+//New functionality - get the selected row's record ID from the hidden tag		
+function getRecordID(rowID) {
+	return $("#findGridTable").find("#" + rowID + " input[type=hidden]").val();
+}
 
 function rowCount() {
     return $("#findGridTable tr").length - 1;
@@ -211,75 +211,85 @@ function locateRecord(psSearchFor, pfIdMatch) {
 
     var frmFindForm = document.getElementById("frmFindForm");
 
-    fFound = false;
-    frmFindForm.ssOleDBGridFindRecords.redraw = false;
-
-    if (pfIdMatch == true) {
-        // Locate the ID column in the grid.
-        iIdColumnIndex = -1;
-        for (iIndex = 0; iIndex < frmFindForm.ssOleDBGridFindRecords.Cols; iIndex++) {
-            sColumnName = frmFindForm.ssOleDBGridFindRecords.Columns(iIndex).Name;
-            if (sColumnName.toUpperCase() == "ID") {
-                iIdColumnIndex = iIndex;
-                break;
-            }
-        }
-
-        if (iIdColumnIndex >= 0) {
-            frmFindForm.ssOleDBGridFindRecords.MoveLast();
-            frmFindForm.ssOleDBGridFindRecords.MoveFirst();
-
-            for (iIndex = 1; iIndex <= frmFindForm.ssOleDBGridFindRecords.rows; iIndex++) {
-                if (frmFindForm.ssOleDBGridFindRecords.Columns(iIdColumnIndex).value == psSearchFor) {
-                    frmFindForm.ssOleDBGridFindRecords.FirstRow = frmFindForm.ssOleDBGridFindRecords.Bookmark;
-                    if ((frmFindForm.ssOleDBGridFindRecords.Rows - frmFindForm.ssOleDBGridFindRecords.AddItemRowIndex(frmFindForm.ssOleDBGridFindRecords.FirstRow) + 1) < frmFindForm.ssOleDBGridFindRecords.VisibleRows) {
-                        if (frmFindForm.ssOleDBGridFindRecords.Rows - frmFindForm.ssOleDBGridFindRecords.VisibleRows + 1 >= 1) {
-                            frmFindForm.ssOleDBGridFindRecords.FirstRow = frmFindForm.ssOleDBGridFindRecords.AddItemBookmark(frmFindForm.ssOleDBGridFindRecords.Rows - frmFindForm.ssOleDBGridFindRecords.VisibleRows + 1);
-                        }
-                        else {
-                            frmFindForm.ssOleDBGridFindRecords.FirstRow = frmFindForm.ssOleDBGridFindRecords.AddItemBookmark(0);
-                        }
-                    }
-
-                    frmFindForm.ssOleDBGridFindRecords.SelBookmarks.Add(frmFindForm.ssOleDBGridFindRecords.Bookmark);
-                    fFound = true;
-                    break;
-                }
-
-                if (iIndex < frmFindForm.ssOleDBGridFindRecords.rows) {
-                    frmFindForm.ssOleDBGridFindRecords.MoveNext();
-                }
-                else {
-                    break;
-                }
-            }
-        }
+		//select the grid row that contains the record with the passed in ID.
+    var rowNumber = $("#findGridTable input[value='" + psSearchFor + "']").parent().parent().attr("id");
+    if (rowNumber >= 0) {
+    	$("#findGridTable").jqGrid('setSelection', rowNumber);
+    } else {
+    	$("#findGridTable").jqGrid('setSelection', 1);
     }
-    else {
-        for (iIndex = 1; iIndex <= frmFindForm.ssOleDBGridFindRecords.rows; iIndex++) {
-            var sGridValue = new String(frmFindForm.ssOleDBGridFindRecords.Columns(0).value);
-            sGridValue = sGridValue.substr(0, psSearchFor.length).toUpperCase();
-            if (sGridValue == psSearchFor.toUpperCase()) {
-                frmFindForm.ssOleDBGridFindRecords.SelBookmarks.Add(frmFindForm.ssOleDBGridFindRecords.Bookmark);
-                fFound = true;
-                break;
-            }
+	
 
-            if (iIndex < frmFindForm.ssOleDBGridFindRecords.rows) {
-                frmFindForm.ssOleDBGridFindRecords.MoveNext();
-            }
-            else {
-                break;
-            }
-        }
-    }
 
-    if ((fFound == false) && (frmFindForm.ssOleDBGridFindRecords.rows > 0)) {
-        // Select the top row.
-        frmFindForm.ssOleDBGridFindRecords.MoveFirst();
-        frmFindForm.ssOleDBGridFindRecords.SelBookmarks.Add(frmFindForm.ssOleDBGridFindRecords.Bookmark);
-    }
+    //fFound = false;
+    //frmFindForm.ssOleDBGridFindRecords.redraw = false;
 
-    frmFindForm.ssOleDBGridFindRecords.redraw = true;
+    //if (pfIdMatch == true) {
+    //    // Locate the ID column in the grid.
+    //    iIdColumnIndex = -1;
+    //    for (iIndex = 0; iIndex < frmFindForm.ssOleDBGridFindRecords.Cols; iIndex++) {
+    //        sColumnName = frmFindForm.ssOleDBGridFindRecords.Columns(iIndex).Name;
+    //        if (sColumnName.toUpperCase() == "ID") {
+    //            iIdColumnIndex = iIndex;
+    //            break;
+    //        }
+    //    }
+
+    //    if (iIdColumnIndex >= 0) {
+    //        frmFindForm.ssOleDBGridFindRecords.MoveLast();
+    //        frmFindForm.ssOleDBGridFindRecords.MoveFirst();
+
+    //        for (iIndex = 1; iIndex <= frmFindForm.ssOleDBGridFindRecords.rows; iIndex++) {
+    //            if (frmFindForm.ssOleDBGridFindRecords.Columns(iIdColumnIndex).value == psSearchFor) {
+    //                frmFindForm.ssOleDBGridFindRecords.FirstRow = frmFindForm.ssOleDBGridFindRecords.Bookmark;
+    //                if ((frmFindForm.ssOleDBGridFindRecords.Rows - frmFindForm.ssOleDBGridFindRecords.AddItemRowIndex(frmFindForm.ssOleDBGridFindRecords.FirstRow) + 1) < frmFindForm.ssOleDBGridFindRecords.VisibleRows) {
+    //                    if (frmFindForm.ssOleDBGridFindRecords.Rows - frmFindForm.ssOleDBGridFindRecords.VisibleRows + 1 >= 1) {
+    //                        frmFindForm.ssOleDBGridFindRecords.FirstRow = frmFindForm.ssOleDBGridFindRecords.AddItemBookmark(frmFindForm.ssOleDBGridFindRecords.Rows - frmFindForm.ssOleDBGridFindRecords.VisibleRows + 1);
+    //                    }
+    //                    else {
+    //                        frmFindForm.ssOleDBGridFindRecords.FirstRow = frmFindForm.ssOleDBGridFindRecords.AddItemBookmark(0);
+    //                    }
+    //                }
+
+    //                frmFindForm.ssOleDBGridFindRecords.SelBookmarks.Add(frmFindForm.ssOleDBGridFindRecords.Bookmark);
+    //                fFound = true;
+    //                break;
+    //            }
+
+    //            if (iIndex < frmFindForm.ssOleDBGridFindRecords.rows) {
+    //                frmFindForm.ssOleDBGridFindRecords.MoveNext();
+    //            }
+    //            else {
+    //                break;
+    //            }
+    //        }
+    //    }
+    //}
+    //else {
+    //    for (iIndex = 1; iIndex <= frmFindForm.ssOleDBGridFindRecords.rows; iIndex++) {
+    //        var sGridValue = new String(frmFindForm.ssOleDBGridFindRecords.Columns(0).value);
+    //        sGridValue = sGridValue.substr(0, psSearchFor.length).toUpperCase();
+    //        if (sGridValue == psSearchFor.toUpperCase()) {
+    //            frmFindForm.ssOleDBGridFindRecords.SelBookmarks.Add(frmFindForm.ssOleDBGridFindRecords.Bookmark);
+    //            fFound = true;
+    //            break;
+    //        }
+
+    //        if (iIndex < frmFindForm.ssOleDBGridFindRecords.rows) {
+    //            frmFindForm.ssOleDBGridFindRecords.MoveNext();
+    //        }
+    //        else {
+    //            break;
+    //        }
+    //    }
+    //}
+
+    //if ((fFound == false) && (frmFindForm.ssOleDBGridFindRecords.rows > 0)) {
+    //    // Select the top row.
+    //    frmFindForm.ssOleDBGridFindRecords.MoveFirst();
+    //    frmFindForm.ssOleDBGridFindRecords.SelBookmarks.Add(frmFindForm.ssOleDBGridFindRecords.Bookmark);
+    //}
+
+    //frmFindForm.ssOleDBGridFindRecords.redraw = true;
 }
 	

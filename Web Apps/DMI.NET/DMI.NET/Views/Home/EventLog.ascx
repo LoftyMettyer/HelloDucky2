@@ -138,7 +138,7 @@
 
 <script type="text/javascript">
 	
-    function moveRecord(psMovement)
+	function eventlog_moveRecord(psMovement)
     {
         var frmGetData = OpenHR.getForm("dataframe", "frmGetData");
         var frmData = OpenHR.getForm("dataframe", "frmData");

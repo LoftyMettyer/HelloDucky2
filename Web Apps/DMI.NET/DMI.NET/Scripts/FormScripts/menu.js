@@ -360,7 +360,7 @@ function menu_abMainMenu_DataReady() {
 function menu_abMainMenu_Click(pTool) {
 	//reject disabled icon clicks
 	if ($("#" + pTool).hasClass("disabled")) return false;
-	menu_MenuClick(pTool);
+	menu_MenuClick(pTool);	
 }
 
 
@@ -487,7 +487,7 @@ function menu_MenuClick(sTool) {
 
 	if (sToolName == "mnutoolFind") {
 	    if (menu_saveChanges(sTool, true, false) != 2) { // 2 = vbCancel
-			ShowWait("Loading find records. Please wait...");
+			//TODO: ShowWait("Loading find records. Please wait...");
 			menu_disableMenu();
 					
 			menu_loadFindPage();
@@ -952,9 +952,8 @@ function menu_refreshMenu() {
 		menu_setVisibleMenuItem("mnutoolCopyRecord", true);
 		menu_toolbarEnableItem("mnutoolCopyRecord", (fMnutoolNewRecord && (frmRecEdit.txtCurrentRecordID.value > 0)));
 		menu_setVisibleMenuItem("mnutoolEditRecord", false);
-		menu_setVisibleMenuItem("mnutoolSaveRecord", true);
-		//TODO: menu_enableMenuItem("mnutoolSaveRecord", (frmRecEdit.ctlRecordEdit.changed == true));
-		menu_toolbarEnableItem("mnutoolSaveRecord", false);
+		menu_setVisibleMenuItem("mnutoolSaveRecord", true);		
+		menu_toolbarEnableItem("mnutoolSaveRecord", ($("#ctlRecordEdit #changed").val() == "true"));
 		menu_setVisibleMenuItem("mnutoolDeleteRecord", true);
 		menu_toolbarEnableItem("mnutoolDeleteRecord", ((frmRecEdit.txtRecEditDeleteGranted.value.toUpperCase() == "TRUE") &&
 				(frmRecEdit.txtCurrentRecordID.value > 0) &&
@@ -1001,7 +1000,7 @@ function menu_refreshMenu() {
 				(frmRecEdit.txtCurrentParentTableID.value > 0)));
 		menu_setVisibleMenuItem("mnutoolClearFilter", true);
 		menu_toolbarEnableItem("mnutoolClearFilter", (frmRecEdit.txtRecEditFilterDef.value.length > 0));
-		menu_setVisibleMenuItem("mnutoolPrint", true);
+		menu_setVisibleMenuItem("mnutoolPrint", false);
 		menu_setVisibletoolbarGroup("mnutoolOrder", true);
 		
 		// Standard reports (record menu)
@@ -1755,19 +1754,18 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var sCurrentPage;
 	var frmRecEdit;
 	var frmDataArea;
-	var frmRecEditArea;
+	var frmRecEditArea;	
 	
 	iResult = 7; // 7 = vbNo
 	sCurrentPage = OpenHR.currentWorkPage();
-    //TODO: NPG
-	return 7;
 	if ((sCurrentPage == "RECORDEDIT") ||
 		(sCurrentPage == "LOOKUPFIND") ||
 		(sCurrentPage == "LINKFIND") ||
 		(sCurrentPage == "TBTRANSFERCOURSEFIND")) {
 
 		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
-		if (frmRecEdit.ctlRecordEdit.changed == true) {
+		//if (frmRecEdit.ctlRecordEdit.changed == true) {
+		if($("#ctlRecordEdit #changed").val() == "true") {
 			// Expand the work frame and hide the option frame.
 			//window.parent.document.all.item("workframeset").cols = "*, 0";
 			
@@ -1786,8 +1784,9 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 				frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
 				frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 
-				// Validate the record first.
-				if (frmRecEditArea.ctlRecordEdit.validateSave() == true) {
+				// Validate the record first.				
+
+				if (validateSave() == true) {
 					frmDataArea.txtAction.value = "SAVE";
 					frmDataArea.txtReaction.value = psAction;
 
@@ -1802,19 +1801,20 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 					frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
 					frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
 					frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
-					frmDataArea.txtDefaultCalcCols.value = frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
-					frmDataArea.txtInsertUpdateDef.value = frmRecEditArea.ctlRecordEdit.insertUpdateDef();
-					frmDataArea.txtTimestamp.value = frmRecEditArea.ctlRecordEdit.timestamp;
-					frmDataArea.txtTBCourseRecordID.value = frmRecEditArea.ctlRecordEdit.TBCourseRecordID();
-					frmDataArea.txtTBEmployeeRecordID.value = frmRecEditArea.ctlRecordEdit.TBEmployeeRecordID();
-					frmDataArea.txtTBBookingStatusValue.value = frmRecEditArea.ctlRecordEdit.TBBookingStatusValue();
+					frmDataArea.txtDefaultCalcCols.value = CalculatedDefaultColumns();
+					frmDataArea.txtInsertUpdateDef.value = insertUpdateDef();
+					frmDataArea.txtTimestamp.value = $("#txtRecEditTimeStamp").val();
+					frmDataArea.txtTBCourseRecordID.value = TBCourseRecordID();
+					frmDataArea.txtTBEmployeeRecordID.value = TBEmployeeRecordID();
+					frmDataArea.txtTBBookingStatusValue.value = TBBookingStatusValue();
 					frmDataArea.txtTBOverride.value = pfTBOverride;
+
 
 					if (frmDataArea.txtInsertUpdateDef.value != "") {
 						//ShowWait("Saving record. Please wait...");
 						menu_disableMenu();
 
-                        frmRecEditArea.ctlRecordEdit.ExecutePostSaveCode();
+            ExecutePostSaveCode();
 
 						data_refreshData();
 					}
@@ -1851,7 +1851,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	}
 
     // Set current page to defsel
-    $("#workframe").attr("data-framesource", "DEFAULT");
+    //$("#workframe").attr("data-framesource", "DEFAULT");
 
 	return iResult;
 }
@@ -2033,48 +2033,48 @@ function menu_loadRecordEditPage(psToolName) {
 }
 
 function menu_loadFindPage() {
-//	var frmWorkArea;
-//	var frmRecEdit;
-//	
-//	ShowWait("Loading find records. Please wait...");
-//	disableMenu();
+	var frmWorkArea;
+	var frmRecEdit;
+	var frmWorkAreaInfo;
+	
+	//TODO: ShowWait("Loading find records. Please wait...");
+	menu_disableMenu();
+	frmWorkAreaInfo = document.getElementById("frmWorkAreaInfo");	
+	frmWorkAreaInfo.txtHRProNavigation.value = 1;
+	
+	// Submit the current "workframe" form, and then load the required record Edit page.
+	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+	frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
+	
+	frmWorkArea.txtGotoTableID.value = frmRecEdit.txtCurrentTableID.value;
+	frmWorkArea.txtGotoViewID.value = frmRecEdit.txtCurrentViewID.value;
+	frmWorkArea.txtGotoScreenID.value = frmRecEdit.txtCurrentScreenID.value;
+	frmWorkArea.txtGotoOrderID.value = frmRecEdit.txtCurrentOrderID.value;
+	frmWorkArea.txtGotoRecordID.value = frmRecEdit.txtCurrentRecordID.value;
+	frmWorkArea.txtGotoFirstRecPos.value = 1;
+	frmWorkArea.txtGotoCurrentRecCount.value = 0;
 
-//	frmWorkAreaInfo.txtHRProNavigation.value = 1;
-//	
-//	// Submit the current "workframe" form, and then load the required record Edit page.
-//	frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
-//	frmRecEdit = window.parent.frames("workframe").document.forms("frmRecordEditForm");
-//	
-//	frmWorkArea.txtGotoTableID.value = frmRecEdit.txtCurrentTableID.value;
-//	frmWorkArea.txtGotoViewID.value = frmRecEdit.txtCurrentViewID.value;
-//	frmWorkArea.txtGotoScreenID.value = frmRecEdit.txtCurrentScreenID.value;
-//	frmWorkArea.txtGotoOrderID.value = frmRecEdit.txtCurrentOrderID.value;
-//	frmWorkArea.txtGotoRecordID.value = frmRecEdit.txtCurrentRecordID.value;
-//	frmWorkArea.txtGotoFirstRecPos.value = 1;
-//	frmWorkArea.txtGotoCurrentRecCount.value = 0;
+	if (frmRecEdit.txtCurrentRecordID.value > 0) {
+		frmWorkArea.txtGotoLocateValue.value = frmRecEdit.txtCurrentRecordID.value;
+		frmWorkArea.txtAction.value = "LOCATEID";
+	}	
 
-//	if (frmRecEdit.txtCurrentRecordID.value > 0)
-//	{
-//		frmWorkArea.txtGotoLocateValue.value = frmRecEdit.txtCurrentRecordID.value
-//		frmWorkArea.txtAction.value = "LOCATEID";
-//	}	
+	if (frmRecEdit.txtCurrentParentTableID.value > 0) {
+		frmWorkArea.txtGotoParentTableID.value = frmRecEdit.txtCurrentParentTableID.value;
+		frmWorkArea.txtGotoParentRecordID.value = frmRecEdit.txtCurrentParentRecordID.value;
+	}
+	else {
+		frmWorkArea.txtGotoParentTableID.value = 0;
+		frmWorkArea.txtGotoParentRecordID.value = 0;
+	}
 
-//	if (frmRecEdit.txtCurrentParentTableID.value > 0) {
-//		frmWorkArea.txtGotoParentTableID.value = frmRecEdit.txtCurrentParentTableID.value;
-//		frmWorkArea.txtGotoParentRecordID.value = frmRecEdit.txtCurrentParentRecordID.value;
-//	}
-//	else {
-//		frmWorkArea.txtGotoParentTableID.value = 0;
-//		frmWorkArea.txtGotoParentRecordID.value = 0;
-//	}
+	frmWorkArea.txtGotoRealSource.value = frmRecEdit.txtRecEditRealSource.value;
+	frmWorkArea.txtGotoFilterDef.value = frmRecEdit.txtRecEditFilterDef.value;
+	frmWorkArea.txtGotoFilterSQL.value = frmRecEdit.txtRecEditFilterSQL.value;
+	frmWorkArea.txtGotoLineage.value = frmRecEdit.txtLineage.value;
+	frmWorkArea.txtGotoPage.value = "find";
 
-//	frmWorkArea.txtGotoRealSource.value = frmRecEdit.txtRecEditRealSource.value;
-//	frmWorkArea.txtGotoFilterDef.value = frmRecEdit.txtRecEditFilterDef.value;
-//	frmWorkArea.txtGotoFilterSQL.value = frmRecEdit.txtRecEditFilterSQL.value;
-//	frmWorkArea.txtGotoLineage.value = frmRecEdit.txtLineage.value;
-//	frmWorkArea.txtGotoPage.value = "find.asp";
-
-//	frmWorkArea.submit();
+	OpenHR.submitForm(frmWorkArea);
 }
 
 function menu_loadFindPageFirst(psToolName) {
@@ -2805,114 +2805,113 @@ function menu_mnutoolAboutHRPro() {
 
 
 
-function menu_newRecord() {
-//	var sCurrentWorkPage;
-//	var frmDataArea;
-//	var frmRecEditArea;
-//	var frmWorkArea;
-//	var frmFindArea;
-//	
-//	sCurrentWorkPage = currentWorkPage();
+function menu_newRecord() {	
+	var sCurrentWorkPage;
+	var frmDataArea;
+	var frmRecEditArea;
+	var frmWorkArea;
+	var frmFindArea;
+	
+	sCurrentWorkPage = OpenHR.currentWorkPage();
 
-//	if (sCurrentWorkPage == "RECORDEDIT") {
-//		if (saveChanges("NEW", true, false) != 2) { // 2 = vbCancel
-//			// Get the data.asp to get the default values for a NEW record.
-//			frmDataArea = window.parent.frames("dataframe").document.forms("frmGetData");
-//			frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
+	if (sCurrentWorkPage == "RECORDEDIT") {
+		if (menu_saveChanges("NEW", true, false) != 2) { // 2 = vbCancel
+			// Get the data.asp to get the default values for a NEW record.
+			frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
+			frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 
-//			frmDataArea.txtAction.value = "NEW";
-//			frmDataArea.txtCurrentTableID.value = frmRecEditArea.txtCurrentTableID.value;
-//			frmDataArea.txtCurrentScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
-//			frmDataArea.txtCurrentViewID.value = frmRecEditArea.txtCurrentViewID.value;
-//			frmDataArea.txtSelectSQL.value = frmRecEditArea.txtRecEditSelectSQL.value;
-//			frmDataArea.txtFromDef.value = frmRecEditArea.txtRecEditFromDef.value;
-//			frmDataArea.txtFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
-//			frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
-//			frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
-//			frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
-//			frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
-//			frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
-//			frmDataArea.txtDefaultCalcCols.value = frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
+			frmDataArea.txtAction.value = "NEW";
+			frmDataArea.txtCurrentTableID.value = frmRecEditArea.txtCurrentTableID.value;
+			frmDataArea.txtCurrentScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
+			frmDataArea.txtCurrentViewID.value = frmRecEditArea.txtCurrentViewID.value;
+			frmDataArea.txtSelectSQL.value = frmRecEditArea.txtRecEditSelectSQL.value;
+			frmDataArea.txtFromDef.value = frmRecEditArea.txtRecEditFromDef.value;
+			frmDataArea.txtFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
+			frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
+			frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
+			frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
+			frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
+			frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
+			frmDataArea.txtDefaultCalcCols.value = CalculatedDefaultColumns(); //TODO: frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
 
-//			data_refreshData();
-//		}
-//	}
-//	else {
-//		if (sCurrentWorkPage == "FIND") {
-//			// Submit the current "workframe" form, and then load the required record Edit page.
-//			// And then get it to create a new record.
-//			ShowWait("Loading screen. Please wait...");
-//			disableMenu();
-//				
-//			frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
-//			frmFindArea = window.parent.frames("workframe").document.forms("frmFindForm");
-//			frmWorkArea.txtAction.value = "NEW";
-//			frmWorkArea.txtGotoTableID.value = frmFindArea.txtCurrentTableID.value;
-//			frmWorkArea.txtGotoViewID.value = frmFindArea.txtCurrentViewID.value;
-//			frmWorkArea.txtGotoScreenID.value = frmFindArea.txtCurrentScreenID.value;
-//			frmWorkArea.txtGotoOrderID.value = frmFindArea.txtCurrentOrderID.value;
-//			frmWorkArea.txtGotoRecordID.value = 0;
-//			frmWorkArea.txtGotoParentTableID.value = frmFindArea.txtCurrentParentTableID.value;
-//			frmWorkArea.txtGotoParentRecordID.value = frmFindArea.txtCurrentParentRecordID.value;
-//			frmWorkArea.txtGotoLineage.value = frmFindArea.txtLineage.value;
+			data_refreshData();
+		}
+	}
+	else {
+		if (sCurrentWorkPage == "FIND") {
+			// Submit the current "workframe" form, and then load the required record Edit page.
+			// And then get it to create a new record.
+			//TODO: ShowWait("Loading screen. Please wait...");
+			menu_disableMenu();
+				
+			frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+			frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
+			frmWorkArea.txtAction.value = "NEW";
+			frmWorkArea.txtGotoTableID.value = frmFindArea.txtCurrentTableID.value;
+			frmWorkArea.txtGotoViewID.value = frmFindArea.txtCurrentViewID.value;
+			frmWorkArea.txtGotoScreenID.value = frmFindArea.txtCurrentScreenID.value;
+			frmWorkArea.txtGotoOrderID.value = frmFindArea.txtCurrentOrderID.value;
+			frmWorkArea.txtGotoRecordID.value = 0;
+			frmWorkArea.txtGotoParentTableID.value = frmFindArea.txtCurrentParentTableID.value;
+			frmWorkArea.txtGotoParentRecordID.value = frmFindArea.txtCurrentParentRecordID.value;
+			frmWorkArea.txtGotoLineage.value = frmFindArea.txtLineage.value;
 
-//			frmWorkArea.txtGotoPage.value = "recordEdit.asp";
-//			frmWorkArea.submit();
-//		}
-//	}
+			frmWorkArea.txtGotoPage.value = "recordEdit";
+			OpenHR.submitForm(frmWorkArea);
+		}
+	}
 }
 
 function menu_copyRecord() {
-//	var sCurrentWorkPage;
-//	var frmDataArea;
-//	var frmRecEditArea;
-//	var frmWorkArea;
-//	var frmFindArea;
-//	var lngRecordID;
+	var sCurrentWorkPage;
+	var frmDataArea;
+	var frmRecEditArea;
+	var frmWorkArea;
+	var frmFindArea;
+	var lngRecordID;
+	sCurrentWorkPage = OpenHR.currentWorkPage();
 
-//	sCurrentWorkPage = currentWorkPage();
+	if (sCurrentWorkPage == "RECORDEDIT") {
+		if (menu_saveChanges("COPY", true, false) != 2) { // 2 = vbCancel
+			frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
+			frmDataArea = OpenHR.getForm("dataframe", "frmData");
 
-//	if (sCurrentWorkPage == "RECORDEDIT") {
-//		if (saveChanges("COPY", true, false) != 2) { // 2 = vbCancel
-//			frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
-//			frmDataArea = window.parent.frames("dataframe").document.forms("frmData");
+			recEdit_setRecordID(0);			
+			frmDataArea.txtRecordPosition.value = frmDataArea.txtRecordCount.value + 1;
+			
+			ClearUniqueColumnControls();
+			$("#ctlRecordEdit #changed").val("true");
+			//TODO: frmRecEditArea.ctlRecordEdit.ChangedOLEPhoto(0, "ALL");
+			menu_refreshMenu();
+		}
+	}
+	else {
+		if (sCurrentWorkPage == "FIND") {			
+			// Submit the current "workframe" form, and then load the required record Edit page.
+			// And then get it to create a new record.
+			//TODO: ShowWait("Loading screen. Please wait...");
+			menu_disableMenu();
+				
+			lngRecordID = selectedRecordID();	// function in find.aspx
 
-//			window.parent.frames("workframe").setRecordID(0);			
-//			frmDataArea.txtRecordPosition.value = frmDataArea.txtRecordCount.value + 1;
-//			
-//			frmRecEditArea.ctlRecordEdit.ClearUniqueColumnControls();
-//			frmRecEditArea.ctlRecordEdit.changed = true;
-//			frmRecEditArea.ctlRecordEdit.ChangedOLEPhoto(0, "ALL");
-//			menu_refreshMenu();
-//		}
-//	}
-//	else {
-//		if (sCurrentWorkPage == "FIND") {
-//			// Submit the current "workframe" form, and then load the required record Edit page.
-//			// And then get it to create a new record.
-//			ShowWait("Loading screen. Please wait...");
-//			disableMenu();
-//				
-//			lngRecordID = window.parent.frames("workframe").selectedRecordID();
+			frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+			frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
+			frmWorkArea.txtAction.value = "COPY";
+			frmWorkArea.txtGotoTableID.value = frmFindArea.txtCurrentTableID.value;
+			frmWorkArea.txtGotoViewID.value = frmFindArea.txtCurrentViewID.value;
+			frmWorkArea.txtGotoScreenID.value = frmFindArea.txtCurrentScreenID.value;
+			frmWorkArea.txtGotoOrderID.value = frmFindArea.txtCurrentOrderID.value;
+			frmWorkArea.txtGotoRecordID.value = lngRecordID;
+			frmWorkArea.txtGotoParentTableID.value = frmFindArea.txtCurrentParentTableID.value;
+			frmWorkArea.txtGotoParentRecordID.value = frmFindArea.txtCurrentParentRecordID.value;
+			frmWorkArea.txtGotoLineage.value = frmFindArea.txtLineage.value;
+			frmWorkArea.txtGotoFilterDef.value = frmFindArea.txtFilterDef.value;
+			frmWorkArea.txtGotoFilterSQL.value = frmFindArea.txtFilterSQL.value;
 
-//			frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
-//			frmFindArea = window.parent.frames("workframe").document.forms("frmFindForm");
-//			frmWorkArea.txtAction.value = "COPY";
-//			frmWorkArea.txtGotoTableID.value = frmFindArea.txtCurrentTableID.value;
-//			frmWorkArea.txtGotoViewID.value = frmFindArea.txtCurrentViewID.value;
-//			frmWorkArea.txtGotoScreenID.value = frmFindArea.txtCurrentScreenID.value;
-//			frmWorkArea.txtGotoOrderID.value = frmFindArea.txtCurrentOrderID.value;
-//			frmWorkArea.txtGotoRecordID.value = lngRecordID;
-//			frmWorkArea.txtGotoParentTableID.value = frmFindArea.txtCurrentParentTableID.value;
-//			frmWorkArea.txtGotoParentRecordID.value = frmFindArea.txtCurrentParentRecordID.value;
-//			frmWorkArea.txtGotoLineage.value = frmFindArea.txtLineage.value;
-//			frmWorkArea.txtGotoFilterDef.value = frmFindArea.txtFilterDef.value;
-//			frmWorkArea.txtGotoFilterSQL.value = frmFindArea.txtFilterSQL.value;
-
-//			frmWorkArea.txtGotoPage.value = "recordEdit.asp";
-//			frmWorkArea.submit();
-//		}
-//	}
+			frmWorkArea.txtGotoPage.value = "recordEdit";
+			OpenHR.submitForm(frmWorkArea);
+		}
+	}
 }
 
 function menu_editRecord() {
@@ -2984,17 +2983,18 @@ function menu_deleteRecord() {
 			frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
 			frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
 			frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
-			frmDataArea.txtDefaultCalcCols.value = frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
-			frmDataArea.txtInsertUpdateDef.value = frmRecEditArea.ctlRecordEdit.insertUpdateDef();
-			frmDataArea.txtTimestamp.value = frmRecEditArea.ctlRecordEdit.timestamp;
+			frmDataArea.txtDefaultCalcCols.value = CalculatedDefaultColumns();
+			frmDataArea.txtInsertUpdateDef.value = insertUpdateDef();
+			frmDataArea.txtTimestamp.value = $("#txtRecEditTimeStamp").val();	// frmRecEditArea.ctlRecordEdit.timestamp;
 
 			data_refreshData();
 		}
 	}
 	else {
 		if (sCurrentWorkPage == "FIND") {
-			lngRecordID = selectedRecordID();
-	
+			
+			lngRecordID = selectedRecordID();	
+
 			if (lngRecordID > 0) {
 				if (OpenHR.messageBox("Delete the current record, are you sure ?", 36) == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
 					// Get the data.asp to get the save the current record.
@@ -3029,323 +3029,333 @@ function menu_deleteRecord() {
 }
 
 function menu_loadParentRecord() {
-//	var lngTableID;
-//	var lngViewID;
-//	var lngScreenID;
-//	var lngOrderID;
-//	var lngRecordID;
-//	var lngParentTableID;
-//	var lngParentRecordID;
-//	var sSubString;
-//	var sLineage;
-//	var iIndex;
-//	var frmWorkArea;
-//	var frmFindArea;
-//	var sCurrentWorkPage;
-//	
-//	sCurrentWorkPage = currentWorkPage();
+	var lngTableID;
+	var lngViewID;
+	var lngScreenID;
+	var lngOrderID;
+	var lngRecordID;
+	var lngParentTableID;
+	var lngParentRecordID;
+	var sSubString;
+	var sLineage;
+	var iIndex;
+	var frmWorkArea;
+	var frmFindArea;
+	var sCurrentWorkPage;
+	var frmWorkAreaInfo;
+	
+	sCurrentWorkPage = OpenHR.currentWorkPage();
 
-//	// Submit the current "workframe" form, and then load the required Record Edit page.
-//	frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
+	// Submit the current "workframe" form, and then load the required Record Edit page.
+	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+	
+	if (sCurrentWorkPage == "RECORDEDIT") {
+		if (menu_saveChanges("PARENT", true, false) != 2) { // 2 = vbCancel
+			menu_loadParent();
+		}
+	}
+	else {
+		if (sCurrentWorkPage == "FIND") {
+			//TODO: ShowWait("Loading screen. Please wait...");
 
-//	if (sCurrentWorkPage == "RECORDEDIT") {
-//		if (saveChanges("PARENT", true, false) != 2) { // 2 = vbCancel
-//			loadParent();
-//		}
-//	}
-//	else {
-//		if (sCurrentWorkPage == "FIND") {
-//			ShowWait("Loading screen. Please wait...");
-//			disableMenu();
-//				
-//			frmFindArea = window.parent.frames("workframe").document.forms("frmFindForm");
-//			
-//			frmWorkAreaInfo.txtHRProNavigation.value = 1;
-//				
-//			// Get the table, view and screen info from the tool name.
-//			sSubString = frmFindArea.txtLineage.value;
-//			iIndex = sSubString.indexOf("_");
-//			lngTableID = sSubString.substr(0, iIndex);
-//			sSubString = sSubString.substr(iIndex + 1);
-//			iIndex = sSubString.indexOf("_");
-//			lngViewID = sSubString.substr(0, iIndex);
-//			sSubString = sSubString.substr(iIndex + 1);
-//			iIndex = sSubString.indexOf("_");
-//			lngScreenID = sSubString.substr(0, iIndex);
-//			sSubString = sSubString.substr(iIndex + 1);
-//			iIndex = sSubString.indexOf("_");
-//			lngOrderID = sSubString.substr(0, iIndex);
-//			sSubString = sSubString.substr(iIndex + 1);
-//			iIndex = sSubString.indexOf("_");
-//			lngRecordID = sSubString.substr(0, iIndex);
-//			sSubString = sSubString.substr(iIndex + 1);
-//			iIndex = sSubString.indexOf("_");
-//			lngParentTableID = sSubString.substr(0, iIndex);
-//			sSubString = sSubString.substr(iIndex + 1);
-//			iIndex = sSubString.indexOf(":");
-//			lngParentRecordID = sSubString.substr(0, iIndex);
-//			sLineage = sSubString.substr(iIndex + 1);
+			frmWorkAreaInfo = document.getElementById("frmWorkAreaInfo");
+			
+			menu_disableMenu();
+				
+			frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
+			
 
-//			frmWorkArea.txtAction.value = "LOAD";
-//			frmWorkArea.txtGotoTableID.value = lngTableID;
-//			frmWorkArea.txtGotoViewID.value = lngViewID;
-//			frmWorkArea.txtGotoScreenID.value = lngScreenID;
-//			frmWorkArea.txtGotoOrderID.value = lngOrderID;
-//			frmWorkArea.txtGotoRecordID.value = lngRecordID;
-//			frmWorkArea.txtGotoParentTableID.value = lngParentTableID;
-//			frmWorkArea.txtGotoParentRecordID.value = lngParentRecordID;
-//			frmWorkArea.txtGotoLineage.value = sLineage;
+			frmWorkAreaInfo.txtHRProNavigation.value = 1;
+				
+			// Get the table, view and screen info from the tool name.
+			sSubString = frmFindArea.txtLineage.value;
+			iIndex = sSubString.indexOf("_");
+			lngTableID = sSubString.substr(0, iIndex);
+			sSubString = sSubString.substr(iIndex + 1);
+			iIndex = sSubString.indexOf("_");
+			lngViewID = sSubString.substr(0, iIndex);
+			sSubString = sSubString.substr(iIndex + 1);
+			iIndex = sSubString.indexOf("_");
+			lngScreenID = sSubString.substr(0, iIndex);
+			sSubString = sSubString.substr(iIndex + 1);
+			iIndex = sSubString.indexOf("_");
+			lngOrderID = sSubString.substr(0, iIndex);
+			sSubString = sSubString.substr(iIndex + 1);
+			iIndex = sSubString.indexOf("_");
+			lngRecordID = sSubString.substr(0, iIndex);
+			sSubString = sSubString.substr(iIndex + 1);
+			iIndex = sSubString.indexOf("_");
+			lngParentTableID = sSubString.substr(0, iIndex);
+			sSubString = sSubString.substr(iIndex + 1);
+			iIndex = sSubString.indexOf(":");
+			lngParentRecordID = sSubString.substr(0, iIndex);
+			sLineage = sSubString.substr(iIndex + 1);
 
-//			frmWorkArea.txtGotoPage.value = "recordEdit.asp";
-//			frmWorkArea.submit();
-//		}
-//	}
+			frmWorkArea.txtAction.value = "LOAD";
+			frmWorkArea.txtGotoTableID.value = lngTableID;
+			frmWorkArea.txtGotoViewID.value = lngViewID;
+			frmWorkArea.txtGotoScreenID.value = lngScreenID;
+			frmWorkArea.txtGotoOrderID.value = lngOrderID;
+			frmWorkArea.txtGotoRecordID.value = lngRecordID;
+			frmWorkArea.txtGotoParentTableID.value = lngParentTableID;
+			frmWorkArea.txtGotoParentRecordID.value = lngParentRecordID;
+			frmWorkArea.txtGotoLineage.value = sLineage;
+
+			frmWorkArea.txtGotoPage.value = "recordEdit";
+			OpenHR.submitForm(frmWorkArea);
+		}
+	}
 }
 
 function menu_loadParent() {
-//	var lngTableID;
-//	var lngViewID;
-//	var lngScreenID;
-//	var lngOrderID;
-//	var lngRecordID;
-//	var lngParentTableID;
-//	var lngParentRecordID;
-//	var sSubString;
-//	var sLineage;
-//	var frmWorkArea;
-//	var frmRecEditArea;
-//	var iIndex;
+	var lngTableID;
+	var lngViewID;
+	var lngScreenID;
+	var lngOrderID;
+	var lngRecordID;
+	var lngParentTableID;
+	var lngParentRecordID;
+	var sSubString;
+	var sLineage;
+	var frmWorkArea;
+	var frmWorkAreaInfo;
+	var frmRecEditArea;
+	var iIndex;
 
-//	ShowWait("Loading screen. Please wait...");
-//	disableMenu();
-//					
-//	frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
-//	frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
-//			
-//	frmWorkAreaInfo.txtHRProNavigation.value = 1;
-//				
-//	// Get the table, view and screen info from the tool name.
-//	sSubString = frmRecEditArea.txtLineage.value;
-//	iIndex = sSubString.indexOf("_");
-//	lngTableID = sSubString.substr(0, iIndex);
-//	sSubString = sSubString.substr(iIndex + 1);
-//	iIndex = sSubString.indexOf("_");
-//	lngViewID = sSubString.substr(0, iIndex);
-//	sSubString = sSubString.substr(iIndex + 1);
-//	iIndex = sSubString.indexOf("_");
-//	lngScreenID = sSubString.substr(0, iIndex);
-//	sSubString = sSubString.substr(iIndex + 1);
-//	iIndex = sSubString.indexOf("_");
-//	lngOrderID = sSubString.substr(0, iIndex);
-//	sSubString = sSubString.substr(iIndex + 1);
-//	iIndex = sSubString.indexOf("_");
-//	lngRecordID = sSubString.substr(0, iIndex);
-//	sSubString = sSubString.substr(iIndex + 1);
-//	iIndex = sSubString.indexOf("_");
-//	lngParentTableID = sSubString.substr(0, iIndex);
-//	sSubString = sSubString.substr(iIndex + 1);
-//	iIndex = sSubString.indexOf(":");
-//	lngParentRecordID = sSubString.substr(0, iIndex);
-//	sLineage = sSubString.substr(iIndex + 1);
-//	
-//	frmWorkArea.txtAction.value = "LOAD";
-//	frmWorkArea.txtGotoTableID.value = lngTableID;
-//	frmWorkArea.txtGotoViewID.value = lngViewID;
-//	frmWorkArea.txtGotoScreenID.value = lngScreenID;
-//	frmWorkArea.txtGotoOrderID.value = lngOrderID;
-//	frmWorkArea.txtGotoRecordID.value = lngRecordID;
-//	frmWorkArea.txtGotoParentTableID.value = lngParentTableID;
-//	frmWorkArea.txtGotoParentRecordID.value = lngParentRecordID;
-//	frmWorkArea.txtGotoLineage.value = sLineage;
+	//TODO: ShowWait("Loading screen. Please wait...");
+	menu_disableMenu();
+					
+	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
+	frmWorkAreaInfo = document.getElementById("frmWorkAreaInfo");
+			
+	frmWorkAreaInfo.txtHRProNavigation.value = 1;
+				
+	// Get the table, view and screen info from the tool name.
+	sSubString = frmRecEditArea.txtLineage.value;
+	iIndex = sSubString.indexOf("_");
+	lngTableID = sSubString.substr(0, iIndex);
+	sSubString = sSubString.substr(iIndex + 1);
+	iIndex = sSubString.indexOf("_");
+	lngViewID = sSubString.substr(0, iIndex);
+	sSubString = sSubString.substr(iIndex + 1);
+	iIndex = sSubString.indexOf("_");
+	lngScreenID = sSubString.substr(0, iIndex);
+	sSubString = sSubString.substr(iIndex + 1);
+	iIndex = sSubString.indexOf("_");
+	lngOrderID = sSubString.substr(0, iIndex);
+	sSubString = sSubString.substr(iIndex + 1);
+	iIndex = sSubString.indexOf("_");
+	lngRecordID = sSubString.substr(0, iIndex);
+	sSubString = sSubString.substr(iIndex + 1);
+	iIndex = sSubString.indexOf("_");
+	lngParentTableID = sSubString.substr(0, iIndex);
+	sSubString = sSubString.substr(iIndex + 1);
+	iIndex = sSubString.indexOf(":");
+	lngParentRecordID = sSubString.substr(0, iIndex);
+	sLineage = sSubString.substr(iIndex + 1);
+	
+	frmWorkArea.txtAction.value = "LOAD";
+	frmWorkArea.txtGotoTableID.value = lngTableID;
+	frmWorkArea.txtGotoViewID.value = lngViewID;
+	frmWorkArea.txtGotoScreenID.value = lngScreenID;
+	frmWorkArea.txtGotoOrderID.value = lngOrderID;
+	frmWorkArea.txtGotoRecordID.value = lngRecordID;
+	frmWorkArea.txtGotoParentTableID.value = lngParentTableID;
+	frmWorkArea.txtGotoParentRecordID.value = lngParentRecordID;
+	frmWorkArea.txtGotoLineage.value = sLineage;
 
-//	frmWorkArea.txtGotoPage.value = "recordEdit.asp";
-//	frmWorkArea.submit();
+	frmWorkArea.txtGotoPage.value = "recordEdit";
+	OpenHR.submitForm(frmWorkArea);
 }
 
 function menu_loadBackPage() {
-//	var frmFindArea;
-//	var lngRecordID;
-//	var frmWorkArea;
-//	
-//	// Submit the current "workframe" form, and then load the required Record Edit page.
-//	frmFindArea = window.parent.frames("workframe").document.forms("frmFindForm");
+	alert("backpage function");
+	var frmFindArea;
+	var lngRecordID;
+	var frmWorkArea;
+	var frmWorkAreaInfo;
+	
+	// Submit the current "workframe" form, and then load the required Record Edit page.
+	frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
+	frmWorkAreaInfo = document.getElementById("frmWorkAreaInfo");
+	
+	lngRecordID = frmFindArea.txtCurrentRecordID.value;
+	
+	if (lngRecordID > 0) {
+		//TODO: ShowWait("Loading screen. Please wait...");
+		menu_disableMenu();
+		
+		frmWorkAreaInfo.txtHRProNavigation.value = 1;
+	
+		// Submit the current "workframe" form, and then load the required record Edit page.
+		frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+		frmWorkArea.txtGotoTableID.value = frmFindArea.txtCurrentTableID.value;
+		frmWorkArea.txtGotoViewID.value = frmFindArea.txtCurrentViewID.value;
+		frmWorkArea.txtGotoScreenID.value = frmFindArea.txtCurrentScreenID.value;
+		frmWorkArea.txtGotoOrderID.value = frmFindArea.txtCurrentOrderID.value;
+		frmWorkArea.txtGotoRecordID.value = lngRecordID;
+		frmWorkArea.txtGotoParentTableID.value = frmFindArea.txtCurrentParentTableID.value;
+		frmWorkArea.txtGotoParentRecordID.value = frmFindArea.txtCurrentParentRecordID.value;
+		frmWorkArea.txtGotoLineage.value = frmFindArea.txtLineage.value;
+		frmWorkArea.txtGotoFilterDef.value = frmFindArea.txtFilterDef.value;
+		frmWorkArea.txtGotoFilterSQL.value = frmFindArea.txtFilterSQL.value;
 
-//	lngRecordID = frmFindArea.txtCurrentRecordID.value;
-//	
-//	if (lngRecordID > 0) {
-//		ShowWait("Loading screen. Please wait...");
-//		disableMenu();
-//		
-//		frmWorkAreaInfo.txtHRProNavigation.value = 1;
-//	
-//		// Submit the current "workframe" form, and then load the required record Edit page.
-//		frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
-//		frmWorkArea.txtGotoTableID.value = frmFindArea.txtCurrentTableID.value;
-//		frmWorkArea.txtGotoViewID.value = frmFindArea.txtCurrentViewID.value;
-//		frmWorkArea.txtGotoScreenID.value = frmFindArea.txtCurrentScreenID.value;
-//		frmWorkArea.txtGotoOrderID.value = frmFindArea.txtCurrentOrderID.value;
-//		frmWorkArea.txtGotoRecordID.value = lngRecordID;
-//		frmWorkArea.txtGotoParentTableID.value = frmFindArea.txtCurrentParentTableID.value;
-//		frmWorkArea.txtGotoParentRecordID.value = frmFindArea.txtCurrentParentRecordID.value;
-//		frmWorkArea.txtGotoLineage.value = frmFindArea.txtLineage.value;
-//		frmWorkArea.txtGotoFilterDef.value = frmFindArea.txtFilterDef.value;
-//		frmWorkArea.txtGotoFilterSQL.value = frmFindArea.txtFilterSQL.value;
-
-//		frmWorkArea.txtGotoPage.value = "recordEdit.asp";
-//		frmWorkArea.submit();
-//	}
+		frmWorkArea.txtGotoPage.value = "recordEdit";
+		OpenHR.submitForm(frmWorkArea.submit);
+	}
 }
 
 function menu_moveRecord(psMovement) {
-//	var sCurrentWorkPage;
-//	var sSaveChangesTag;
-//	var sAction;
-//	var frmDataArea;
-//	var frmRecEditArea;
-//	var frmOptionGetDataArea;
-//	var frmOptionDataArea;
-//	var frmOptionArea;
-//	var frmEventLog;
-//	
-//	sCurrentWorkPage = currentWorkPage();
+	var sCurrentWorkPage;
+	var sSaveChangesTag;
+	var sAction;
+	var frmDataArea;
+	var frmRecEditArea;
+	var frmOptionGetDataArea;
+	var frmOptionDataArea;
+	var frmOptionArea;
+	var frmEventLog;
+	
+	sCurrentWorkPage = OpenHR.currentWorkPage();
 
-//	sSaveChangesTag = psMovement;
-//	sAction = psMovement;
-//	
-//	if (sCurrentWorkPage == "EVENTLOG")	{
-//		window.parent.frames("workframe").moveRecord(psMovement);
-//		return;
-//	}
-//	
-//	if (sCurrentWorkPage == "RECORDEDIT") {
-//		if (saveChanges(sSaveChangesTag, true, false) != 2) { // 2 = vbCancel
-//			// Get the data.asp to get the move to the FIRST record.
-//			ShowWait("Locating record. Please wait...");
-//			disableMenu();
-//					
-//			frmDataArea = window.parent.frames("dataframe").document.forms("frmGetData");
-//			frmRecEditArea = window.parent.frames("workframe").document.forms("frmRecordEditForm");
-//			
-//			if ((psMovement == "MOVEPREVIOUS") &&
-//				(frmRecEditArea.txtCurrentRecordID.value == 0)) {
-//				sAction = "MOVELAST";
-//			}
-//			
-//			frmDataArea.txtAction.value = sAction;
-//			
-//			frmDataArea.txtCurrentTableID.value = frmRecEditArea.txtCurrentTableID.value;
-//			frmDataArea.txtCurrentScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
-//			frmDataArea.txtCurrentViewID.value = frmRecEditArea.txtCurrentViewID.value;
-//			frmDataArea.txtSelectSQL.value = frmRecEditArea.txtRecEditSelectSQL.value;
-//			frmDataArea.txtFromDef.value = frmRecEditArea.txtRecEditFromDef.value;
-//			frmDataArea.txtFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
-//			frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
-//			frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
-//			frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
-//			frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
-//			frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
-//			data_refreshData();
-//		}
-//		
-//		return;
-//	}
+	sSaveChangesTag = psMovement;
+	sAction = psMovement;
+	
+	if (sCurrentWorkPage == "EVENTLOG")	{
+		eventlog_moveRecord(psMovement);  //should be in scope.
+		return;
+	}
+	
+	if (sCurrentWorkPage == "RECORDEDIT") {
+		if (menu_saveChanges(sSaveChangesTag, true, false) != 2) { // 2 = vbCancel
+			// Get the data.asp to get the move to the FIRST record.
+			//TODO: ShowWait("Locating record. Please wait...");
+			menu_disableMenu();
+					
+			frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
+			frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
+			
+			if ((psMovement == "MOVEPREVIOUS") &&
+				(frmRecEditArea.txtCurrentRecordID.value == 0)) {
+				sAction = "MOVELAST";
+			}
+			
+			frmDataArea.txtAction.value = sAction;
+			
+			frmDataArea.txtCurrentTableID.value = frmRecEditArea.txtCurrentTableID.value;
+			frmDataArea.txtCurrentScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
+			frmDataArea.txtCurrentViewID.value = frmRecEditArea.txtCurrentViewID.value;
+			frmDataArea.txtSelectSQL.value = frmRecEditArea.txtRecEditSelectSQL.value;
+			frmDataArea.txtFromDef.value = frmRecEditArea.txtRecEditFromDef.value;
+			frmDataArea.txtFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
+			frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
+			frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
+			frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
+			frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
+			frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
+			data_refreshData();
+		}
+		
+		return;
+	}
 
-//	if (sCurrentWorkPage == "FIND") {
-//		reloadFindPage(sAction, "");
-//		return;
-//	}
+	if (sCurrentWorkPage == "FIND") {
+		menu_reloadFindPage(sAction, "");
+		return;
+	}
 
-//	if (sCurrentWorkPage == "LINKFIND") {
-//		// Get the optionData.asp to get the link find records.
-//		frmOptionGetDataArea =  OpenHR.getForm("optiondataframe", "frmGetOptionData");
-//		frmOptionDataArea = window.parent.frames("optiondataframe").document.forms("frmOptionData");
-//		frmOptionArea = window.parent.frames("optionframe").document.forms("frmLinkFindForm");
-//		frmOptionGetDataArea.txtOptionAction.value = "LOADFIND";
-//		frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
-//		frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
-//		frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.txtOptionLinkOrderID.value;
-//		frmOptionGetDataArea.txtOptionPageAction.value = sAction;
-//		frmOptionGetDataArea.txtOptionFirstRecPos.value = frmOptionDataArea.txtFirstRecPos.value;
-//		frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmOptionDataArea.txtRecordCount.value;
+	if (sCurrentWorkPage == "LINKFIND") {
+		// Get the optionData.asp to get the link find records.
+		frmOptionGetDataArea =  OpenHR.getForm("optiondataframe", "frmGetOptionData");
+		frmOptionDataArea = OpenHR.getForm("optiondataframe", "frmOptionData");
+		frmOptionArea = OpenHR.getForm("optionframe", "frmLinkFindForm");
+		frmOptionGetDataArea.txtOptionAction.value = "LOADFIND";
+		frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
+		frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
+		frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.txtOptionLinkOrderID.value;
+		frmOptionGetDataArea.txtOptionPageAction.value = sAction;
+		frmOptionGetDataArea.txtOptionFirstRecPos.value = frmOptionDataArea.txtFirstRecPos.value;
+		frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmOptionDataArea.txtRecordCount.value;
 
-//		refreshOptionData(); //should be in scope
-//		return;
-//	}
+		refreshOptionData(); //should be in scope
+		return;
+	}
 
-//	if (sCurrentWorkPage == "LOOKUPFIND") {
-//		// Get the optionData.asp to get the link find records.
-//		frmOptionGetDataArea =  OpenHR.getForm("optiondataframe", "frmGetOptionData");
-//		frmOptionDataArea = window.parent.frames("optiondataframe").document.forms("frmOptionData");
-//		frmOptionArea = window.parent.frames("optionframe").document.forms("frmLookupFindForm");
-//		frmOptionGetDataArea.txtOptionAction.value = "LOADLOOKUPFIND";
-//		frmOptionGetDataArea.txtOptionColumnID.value = frmOptionArea.txtOptionColumnID.value;		
-//		frmOptionGetDataArea.txtOptionLookupColumnID.value = frmOptionArea.txtOptionLookupColumnID.value;
-//		frmOptionGetDataArea.txtOptionLookupFilterValue.value = frmOptionArea.txtOptionLookupFilterValue.value;
-//		frmOptionGetDataArea.txtOptionPageAction.value = sAction;
-//		frmOptionGetDataArea.txtOptionFirstRecPos.value = frmOptionDataArea.txtFirstRecPos.value;
-//		frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmOptionDataArea.txtRecordCount.value;
-//		frmOptionGetDataArea.txtOptionIsLookupTable.value = frmOptionArea.txtIsLookupTable.value;
-//		frmOptionGetDataArea.txtOptionRecordID.value = window.parent.frames("workframe").document.forms("frmRecordEditForm").txtCurrentRecordID.value;
+	if (sCurrentWorkPage == "LOOKUPFIND") {
+		// Get the optionData.asp to get the link find records.
+		frmOptionGetDataArea =  OpenHR.getForm("optiondataframe", "frmGetOptionData");
+		frmOptionDataArea = OpenHR.getForm("optiondataframe", "frmOptionData");
+		frmOptionArea = OpenHR.getForm("optionframe", "frmLookupFindForm");
+		frmOptionGetDataArea.txtOptionAction.value = "LOADLOOKUPFIND";
+		frmOptionGetDataArea.txtOptionColumnID.value = frmOptionArea.txtOptionColumnID.value;		
+		frmOptionGetDataArea.txtOptionLookupColumnID.value = frmOptionArea.txtOptionLookupColumnID.value;
+		frmOptionGetDataArea.txtOptionLookupFilterValue.value = frmOptionArea.txtOptionLookupFilterValue.value;
+		frmOptionGetDataArea.txtOptionPageAction.value = sAction;
+		frmOptionGetDataArea.txtOptionFirstRecPos.value = frmOptionDataArea.txtFirstRecPos.value;
+		frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmOptionDataArea.txtRecordCount.value;
+		frmOptionGetDataArea.txtOptionIsLookupTable.value = frmOptionArea.txtIsLookupTable.value;
+		frmOptionGetDataArea.txtOptionRecordID.value = OpenHR.getForm("workframe", "frmRecordEditForm").txtCurrentRecordID.value;
 
-//		frmOptionGetDataArea.txtOptionParentTableID.value = window.parent.frames("workframe").document.forms("frmRecordEditForm").txtCurrentParentTableID.value;
-//		frmOptionGetDataArea.txtOptionParentRecordID.value = window.parent.frames("workframe").document.forms("frmRecordEditForm").txtCurrentParentRecordID.value;
+		frmOptionGetDataArea.txtOptionParentTableID.value = OpenHR.getForm("workframe", "frmRecordEditForm").txtCurrentParentTableID.value;
+		frmOptionGetDataArea.txtOptionParentRecordID.value = OpenHR.getForm("workframe", "frmRecordEditForm").txtCurrentParentRecordID.value;
 
-//		if (frmOptionArea.txtIsLookupTable.value == "False") {
-//			frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
-//			frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.selectView.options[frmOptionArea.selectView.selectedIndex].value;
-//			frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.selectOrder.options[frmOptionArea.selectOrder.selectedIndex].value;
-//		}
-//		else {
-//			frmOptionGetDataArea.txtOptionTableID.value = 0;
-//			frmOptionGetDataArea.txtOptionViewID.value = 0;
-//			frmOptionGetDataArea.txtOptionOrderID.value = 0;
-//		}
+		if (frmOptionArea.txtIsLookupTable.value == "False") {
+			frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;
+			frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.selectView.options[frmOptionArea.selectView.selectedIndex].value;
+			frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.selectOrder.options[frmOptionArea.selectOrder.selectedIndex].value;
+		}
+		else {
+			frmOptionGetDataArea.txtOptionTableID.value = 0;
+			frmOptionGetDataArea.txtOptionViewID.value = 0;
+			frmOptionGetDataArea.txtOptionOrderID.value = 0;
+		}
 
-//		refreshOptionData(); //should be in scope
-//		return;
-//	}
-//	
-//	if ((sCurrentWorkPage == "TBBOOKCOURSEFIND") ||
-//		(sCurrentWorkPage == "TBTRANSFERBOOKINGFIND") ||
-//		(sCurrentWorkPage == "TBTRANSFERCOURSEFIND") ||
-//		(sCurrentWorkPage == "TBADDFROMWAITINGLISTFIND")) {
-//		// Get the optionData.asp to get the find records.
-//		frmOptionGetDataArea =  OpenHR.getForm("optiondataframe", "frmGetOptionData");
-//		frmOptionDataArea = window.parent.frames("optiondataframe").document.forms("frmOptionData");
-//		frmOptionArea =OpenHR.getForm("optionframe", "frmFindForm");
-//				
-//		if (sCurrentWorkPage == "TBTRANSFERBOOKINGFIND") {
-//			frmOptionGetDataArea.txtOptionAction.value = "LOADTRANSFERBOOKING";
-//		}
-//		else {
-//			if (sCurrentWorkPage == "TBADDFROMWAITINGLISTFIND") {
-//				frmOptionGetDataArea.txtOptionAction.value = "LOADADDFROMWAITINGLIST";
-//			}
-//			else {
-//				if (sCurrentWorkPage == "TBTRANSFERCOURSEFIND") {
-//					frmOptionGetDataArea.txtOptionAction.value = "LOADTRANSFERCOURSE";
-//				}
-//				else {
-//					frmOptionGetDataArea.txtOptionAction.value = "LOADBOOKCOURSE";
-//				}
-//			}
-//		}
-//		
-//		frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;;
-//		frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
-//		frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.txtOptionLinkOrderID.value;
+		refreshOptionData(); //should be in scope
+		return;
+	}
+	
+	if ((sCurrentWorkPage == "TBBOOKCOURSEFIND") ||
+		(sCurrentWorkPage == "TBTRANSFERBOOKINGFIND") ||
+		(sCurrentWorkPage == "TBTRANSFERCOURSEFIND") ||
+		(sCurrentWorkPage == "TBADDFROMWAITINGLISTFIND")) {
+		// Get the optionData.asp to get the find records.
+		frmOptionGetDataArea =  OpenHR.getForm("optiondataframe", "frmGetOptionData");
+		frmOptionDataArea = OpenHR.getForm("optiondataframe", "frmOptionData");
+		frmOptionArea = OpenHR.getForm("optionframe", "frmFindForm");
+				
+		if (sCurrentWorkPage == "TBTRANSFERBOOKINGFIND") {
+			frmOptionGetDataArea.txtOptionAction.value = "LOADTRANSFERBOOKING";
+		}
+		else {
+			if (sCurrentWorkPage == "TBADDFROMWAITINGLISTFIND") {
+				frmOptionGetDataArea.txtOptionAction.value = "LOADADDFROMWAITINGLIST";
+			}
+			else {
+				if (sCurrentWorkPage == "TBTRANSFERCOURSEFIND") {
+					frmOptionGetDataArea.txtOptionAction.value = "LOADTRANSFERCOURSE";
+				}
+				else {
+					frmOptionGetDataArea.txtOptionAction.value = "LOADBOOKCOURSE";
+				}
+			}
+		}
+		
+		frmOptionGetDataArea.txtOptionTableID.value = frmOptionArea.txtOptionLinkTableID.value;;
+		frmOptionGetDataArea.txtOptionViewID.value = frmOptionArea.txtOptionLinkViewID.value;
+		frmOptionGetDataArea.txtOptionOrderID.value = frmOptionArea.txtOptionLinkOrderID.value;
 
-//		if (sCurrentWorkPage == "TBTRANSFERCOURSEFIND") {
-//			frmOptionGetDataArea.txtOptionCourseTitle.value = frmOptionArea.txtOptionCourseTitle.value;
-//		}
+		if (sCurrentWorkPage == "TBTRANSFERCOURSEFIND") {
+			frmOptionGetDataArea.txtOptionCourseTitle.value = frmOptionArea.txtOptionCourseTitle.value;
+		}
 
-//		frmOptionGetDataArea.txtOptionRecordID.value = frmOptionArea.txtOptionRecordID.value;
-//		frmOptionGetDataArea.txtOptionPageAction.value = sAction;
-//		frmOptionGetDataArea.txtOptionFirstRecPos.value = frmOptionDataArea.txtFirstRecPos.value;
-//		frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmOptionDataArea.txtRecordCount.value;
+		frmOptionGetDataArea.txtOptionRecordID.value = frmOptionArea.txtOptionRecordID.value;
+		frmOptionGetDataArea.txtOptionPageAction.value = sAction;
+		frmOptionGetDataArea.txtOptionFirstRecPos.value = frmOptionDataArea.txtFirstRecPos.value;
+		frmOptionGetDataArea.txtOptionCurrentRecCount.value = frmOptionDataArea.txtRecordCount.value;
 
-//		refreshOptionData(); //should be in scope
-//	}
+		refreshOptionData(); //should be in scope
+	}
 }
 
 function menu_loadQuickFind() 
@@ -3573,11 +3583,10 @@ function menu_cancelCourse() {
 	frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
 	frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
 	frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
-	frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
-	//TODO: 
-	//frmDataArea.txtDefaultCalcCols.value = frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
-	//frmDataArea.txtInsertUpdateDef.value = frmRecEditArea.ctlRecordEdit.insertUpdateDef();
-	//frmDataArea.txtTimestamp.value = frmRecEditArea.ctlRecordEdit.timestamp;
+	frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;	
+	frmDataArea.txtDefaultCalcCols.value = CalculatedDefaultColumns();	
+	frmDataArea.txtInsertUpdateDef.value = insertUpdateDef();	// frmRecEditArea.ctlRecordEdit.insertUpdateDef();
+	frmDataArea.txtTimestamp.value = $("#txtRecEditTimeStamp").val();	//frmRecEditArea.ctlRecordEdit.timestamp;
 
 	data_refreshData();
 }
@@ -3783,10 +3792,9 @@ function menu_transferCourse(plngNewCourseRecordID, pfBookingsExist) {
 	frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
 	frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
 	frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
-	//TODO:
-	//frmDataArea.txtDefaultCalcCols.value = frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
-	//frmDataArea.txtInsertUpdateDef.value = frmRecEditArea.ctlRecordEdit.insertUpdateDef();
-	//frmDataArea.txtTimestamp.value = frmRecEditArea.ctlRecordEdit.timestamp;
+	frmDataArea.txtDefaultCalcCols.value = CalculatedDefaultColumns();
+	frmDataArea.txtInsertUpdateDef.value = insertUpdateDef();	// frmRecEditArea.ctlRecordEdit.insertUpdateDef();
+	frmDataArea.txtTimestamp.value = $("#txtRecEditTimeStamp").val(); //frmRecEditArea.ctlRecordEdit.timestamp;
 	frmDataArea.txtTBCourseRecordID.value = plngNewCourseRecordID;
 	frmDataArea.txtTBCreateWLRecords.value = (iResult != 7);
 	

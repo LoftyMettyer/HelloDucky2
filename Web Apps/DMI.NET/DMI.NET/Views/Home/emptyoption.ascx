@@ -128,7 +128,8 @@
 					fNoAction = false;
 					var recEditControl = OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit;
 					recEditControl.setData(txtColumnID.value, txtFile.value);
-					recEditControl.timestamp = <%=session("timestamp")%>;
+					//recEditControl.timestamp = <%=session("timestamp")%>;
+					$("#txtRecEditTimeStamp").val("<%=session("timestamp")%>");
 					//recEditControl.changed = true;
 
 					$("#optionframe").attr("data-framesource", "EMPTYOPTION");

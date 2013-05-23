@@ -30,7 +30,7 @@
 		//TODO
 		window.location = "Login";
 	}
-	else {		
+	else {
 		// Do nothing if the menu controls are not yet instantiated.
 		if (frmWorkAreaInfo != null) {
 			var sCurrentWorkPage = OpenHR.currentWorkPage();
@@ -279,7 +279,7 @@
 				}
 
 				if (sAction == "NEW") {
-					recEditControl.applyDefaultValues();
+					applyDefaultValues();					
 				}
 
 				var sControlName;
@@ -291,6 +291,7 @@
 				if (dataCollection!=null) {
 					// Need to hide the popup in case setdata causes
 					// the intrecedit control to display an error message.
+					$("#ctlRecordEdit #changed").val("false");
 					menu_refreshMenu();
 
 					for (var i=0; i<dataCollection.length; i++)  {
@@ -335,7 +336,7 @@
 						frmGetData.txtRecordID.value = frmData.txtRecordID.value;
 						frmGetData.txtParentTableID.value = frmData.txtParentTableID.value;
 						frmGetData.txtParentRecordID.value = frmData.txtParentRecordID.value;
-						frmGetData.txtDefaultCalcCols.value = recEditControl.CalculatedDefaultColumns();
+						frmGetData.txtDefaultCalcCols.value = CalculatedDefaultColumns();
 						data_refreshData();
 					}
 					else {
@@ -358,7 +359,7 @@
 							frmGetData.txtRecordID.value = frmData.txtRecordID.value;
 							frmGetData.txtParentTableID.value = frmData.txtParentTableID.value;
 							frmGetData.txtParentRecordID.value = frmData.txtParentRecordID.value;
-							frmGetData.txtDefaultCalcCols.value = recEditControl.CalculatedDefaultColumns();
+							frmGetData.txtDefaultCalcCols.value = CalculatedDefaultColumns();
 							data_refreshData();
 						}
 						else {
@@ -378,13 +379,13 @@
 					recEdit_setRecordID(0); //workframe
 					recEdit_setCopiedRecordID(<%= CLng(session("recordID"))%>); //workframe
 					frmData.txtRecordPosition.value = frmData.txtRecordCount.value + 1;
-					recEditControl.ClearUniqueColumnControls();
-					recEditControl.ChangedOLEPhoto(0, "ALL");
-					recEditControl.changed = true;
+					ClearUniqueColumnControls();
+					//TODO: recEditControl.ChangedOLEPhoto(0, "ALL");
+					$("#ctlRecordEdit #changed").val("true");
 				}
 
 				if (sAction == "NEW") {
-					recEditControl.changed = recEditControl.allDefaults();
+					$("#ctlRecordEdit #changed").val(allDefaults());
 				}
 
 			    // Get menu to refresh the menu.
@@ -444,22 +445,27 @@
 
 				// No error deleting 
 				if (frmData.txtAction.value == "REFRESHFINDAFTERDELETE") {
-					var ctlFindGrid = frmFindForm.ssOleDBGridFindRecords;   
-					var iAbsRowNo = ctlFindGrid.AddItemRowIndex(ctlFindGrid.Bookmark);
-					if(ctlFindGrid.Rows == 1) {
-						ctlFindGrid.removeAll();
-					}
-					else {
-						ctlFindGrid.RemoveItem(iAbsRowNo);
-					}					
 
-		      if (iAbsRowNo < ctlFindGrid.Rows) {
-						ctlFindGrid.Bookmark = ctlFindGrid.AddItemBookmark(iAbsRowNo);
-		      }
-    		  else if (ctlFindGrid.Rows > 0) {
-						ctlFindGrid.Bookmark = ctlFindGrid.AddItemBookmark(ctlFindGrid.Rows - 1);
-		      }
-    		  ctlFindGrid.SelBookmarks.Add(ctlFindGrid.Bookmark);
+					var iRowID = $("#findGridTable").getGridParam('selrow');
+					$('#findGridTable').jqGrid('delRowData', iRowID);
+					
+
+			  //  	var ctlFindGrid = frmFindForm.ssOleDBGridFindRecords;   
+			  //  	var iAbsRowNo = ctlFindGrid.AddItemRowIndex(ctlFindGrid.Bookmark);
+			  //  	if(ctlFindGrid.Rows == 1) {
+			  //  		ctlFindGrid.removeAll();
+			  //  	}
+			  //  	else {
+			  //  		ctlFindGrid.RemoveItem(iAbsRowNo);
+			  //  	}					
+
+		      //if (iAbsRowNo < ctlFindGrid.Rows) {
+			  //  		ctlFindGrid.Bookmark = ctlFindGrid.AddItemBookmark(iAbsRowNo);
+		      //}
+    		  //else if (ctlFindGrid.Rows > 0) {
+			  //  		ctlFindGrid.Bookmark = ctlFindGrid.AddItemBookmark(ctlFindGrid.Rows - 1);
+		      //}
+    		  //ctlFindGrid.SelBookmarks.Add(ctlFindGrid.Bookmark);
 
 					// Update controls in the find form to ensure the displayed
 					// record count is correct.
@@ -516,51 +522,16 @@
 
 <script type="text/javascript">
 
-	function data_refreshData() {
+	function data_refreshData() {		
 		var f = document.getElementById("frmGetData");
 		OpenHR.submitForm(f);
-	}
-
-	//TODO !!!!!!!!
-	function currentWorkPage() {
-		// Return the current page in the workframeset.
-		var sCols = window.parent.document.all.item("workframeset").cols;
-		var sCurrentPage;
-		var re = / /gi;
-		
-		sCols = sCols.replace(re, "");
-
-		sCols = sCols.substr(0, 1);
-
-		if (sCols == "*") {
-			// Work frame is in view.
-			sCurrentPage = window.parent.frames("workframe").document.location;
-		}
-		else {
-			// Option frame is in view.
-			sCurrentPage = window.parent.frames("optionframe").document.location;
-		}
-		sCurrentPage = sCurrentPage.toString();
-
-		if (sCurrentPage.lastIndexOf("/") > 0) {
-			sCurrentPage = sCurrentPage.substr(sCurrentPage.lastIndexOf("/") + 1);
-		}
-
-		if (sCurrentPage.indexOf(".") > 0) {
-			sCurrentPage = sCurrentPage.substr(0, sCurrentPage.indexOf("."));
-		}
-
-		sCurrentPage = sCurrentPage.replace(re, "");
-		sCurrentPage = sCurrentPage.toUpperCase();
-
-		return (sCurrentPage);
 	}
 
 </script>
 
 <div>
 
-<form action="data_submit" method=post id=frmGetData name=frmGetData>
+<form action="data_submit" method=post id=frmGetData name=frmGetData data-formname="data.ascx">
 	<INPUT type="hidden" id=txtAction name=txtAction>
 	<INPUT type="hidden" id=txtReaction name=txtReaction>
 	<INPUT type="hidden" id=txtCurrentTableID name=txtCurrentTableID>
