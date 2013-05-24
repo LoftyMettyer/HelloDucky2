@@ -151,11 +151,10 @@ Namespace Controllers
 
 		<HttpPost()>
 		Function Login(values As FormCollection, Optional isWidgetLogin As Boolean = False,
- Optional widgetUser As String = "",
- Optional widgetPassword As String = "",
- Optional widgetDatabase As String = "",
- Optional widgetServer As String = "") As ActionResult
-
+					Optional widgetUser As String = "",
+					Optional widgetPassword As String = "",
+					Optional widgetDatabase As String = "",
+					Optional widgetServer As String = "") As ActionResult
 
 			'On Error Resume Next
 
@@ -174,13 +173,6 @@ Namespace Controllers
 
 			fForcePasswordChange = False
 			Session("ConvertedDesktopColour") = "#f9f7fb"
-
-			' Only try to login if the referring page was the login page.
-			' If it wasn't then redirect to the login page.
-			'sReferringPage = Request.ServerVariables("HTTP_REFERER")
-			'If InStrRev(sReferringPage, "/") > 0 Then
-			'	sReferringPage = Mid(sReferringPage, InStrRev(sReferringPage, "/") + 1)
-			'End If
 
 			If Not isWidgetLogin Then
 				' Read the User Name and Password from the Login form.
@@ -206,21 +198,14 @@ Namespace Controllers
 				' widgetServer
 				bWindowsAuthentication = ""
 				sLocaleDateFormat = "ddmmYYYY"
-				' Request.Form("txtLocaleDateFormat")
 				sLocaleDateSeparator = "/"
-				'Request.Form("txtLocaleDateSeparator")
 
 				sLocaleDecimalSeparator = "."
-				'Request.Form("txtLocaleDecimalSeparator")
 				sLocaleThousandSeparator = ","
-				'Request.Form("txtLocaleThousandSeparator")
 
 				Session("WordVer") = "12"
-				'Request.Form("txtWordVer")
 				Session("ExcelVer") = "12"
-				' Request.Form("txtExcelVer")
 			End If
-
 
 			Session("LocaleDateFormat") = sLocaleDateFormat
 			Session("LocaleDateSeparator") = sLocaleDateSeparator
@@ -280,18 +265,10 @@ Namespace Controllers
 				End If
 			End Try
 
-
-
-
-
-			' Set a 5 minute command timeout
-			'conX.CommandTimeout = 300
 			' Set no command timeout
 			conX.CommandTimeout = 0
 
-			' Enter the current session in the poll table. This will
-			' ensure that even if the login checks fail, the session will still be killed
-			' after 1 minute.
+			' Enter the current session in the poll table. This will ensure that even if the login checks fail, the session will still be killed after 1 minute.
 			Dim cmdHit = New ADODB.Command
 			cmdHit.CommandText = "sp_ASRIntPoll"
 			cmdHit.CommandType = 4
@@ -319,10 +296,7 @@ Namespace Controllers
 
 			Session("databaseConnection") = conX
 
-
 			' Successful login.
-
-
 			' Get the desktop colour.
 			Dim cmdDesktopColour = New ADODB.Command
 			cmdDesktopColour.CommandText = "sp_ASRIntGetSetting"
@@ -364,79 +338,54 @@ Namespace Controllers
 			Select Case CStr(Session("DesktopColour"))
 				Case "-2147483648"
 					Session("ConvertedDesktopColour") = "scrollbar"
-
 				Case "-2147483647"
 					Session("ConvertedDesktopColour") = "background"
-
 				Case "-2147483646"
 					Session("ConvertedDesktopColour") = "activecaption"
-
 				Case "-2147483645"
 					Session("ConvertedDesktopColour") = "inactivecaption"
-
 				Case "-2147483644"
 					Session("ConvertedDesktopColour") = "menu"
-
 				Case "-2147483643"
 					Session("ConvertedDesktopColour") = "window"
-
 				Case "-2147483642"
 					Session("ConvertedDesktopColour") = "windowframe"
-
 				Case "-2147483641"
 					Session("ConvertedDesktopColour") = "menutext"
-
 				Case "-2147483640"
 					Session("ConvertedDesktopColour") = "windowtext"
-
 				Case "-2147483639"
 					Session("ConvertedDesktopColour") = "captiontext"
-
 				Case "-2147483638"
 					Session("ConvertedDesktopColour") = "activeborder"
-
 				Case "-2147483637"
 					Session("ConvertedDesktopColour") = "inactiveborder"
-
 				Case "-2147483636"
 					Session("ConvertedDesktopColour") = "appworkspace"
-
 				Case "-2147483635"
 					Session("ConvertedDesktopColour") = "highlight"
-
 				Case "-2147483634"
 					Session("ConvertedDesktopColour") = "highlighttext"
-
 				Case "-2147483633"
 					Session("ConvertedDesktopColour") = "threedface"
-
 				Case "-2147483632"
 					Session("ConvertedDesktopColour") = "threedshadow"
-
 				Case "-2147483631"
 					Session("ConvertedDesktopColour") = "graytext"
-
 				Case "-2147483630"
 					Session("ConvertedDesktopColour") = "buttontext"
-
 				Case "-2147483629"
 					Session("ConvertedDesktopColour") = "inactivecaptiontext"
-
 				Case "-2147483628"
 					Session("ConvertedDesktopColour") = "threedhighlight"
-
 				Case "-2147483627"
 					Session("ConvertedDesktopColour") = "threeddarkshadow"
-
 				Case "-2147483626"
 					Session("ConvertedDesktopColour") = "threedlightshadow"
-
 				Case "-2147483625"
 					Session("ConvertedDesktopColour") = "infotext"
-
 				Case "-2147483624"
 					Session("ConvertedDesktopColour") = "infobackground"
-
 				Case Else
 					Dim sColour = Hex(CLng(Session("DesktopColour")))
 
@@ -458,22 +407,23 @@ Namespace Controllers
 			cmdLoginCheck.CommandType = 4	' Stored Procedure
 			cmdLoginCheck.ActiveConnection = conX
 
-			Dim prmSuccessFlag = cmdLoginCheck.CreateParameter("SuccessFlag", 3, 2)	' 3 = integer, 2 = output
+			Dim prmSuccessFlag = cmdLoginCheck.CreateParameter("SuccessFlag", 3, 2)										' 3 = integer,		2 = output
 			cmdLoginCheck.Parameters.Append(prmSuccessFlag)
-			Dim prmErrorMessage = cmdLoginCheck.CreateParameter("ErrorMessage", 200, 2, 8000)	' 200 = varchar, 2 = output, 8000 = size
+			Dim prmErrorMessage = cmdLoginCheck.CreateParameter("ErrorMessage", 200, 2, 8000)					' 200 = varchar,	2 = output,		8000 = size
 			cmdLoginCheck.Parameters.Append(prmErrorMessage)
-			Dim prmMinPasswordLength = cmdLoginCheck.CreateParameter("MinPasswordLength", 3, 2)	' 3 = integer, 2 = output
+			Dim prmMinPasswordLength = cmdLoginCheck.CreateParameter("MinPasswordLength", 3, 2)				' 3 = integer,		2 = output
 			cmdLoginCheck.Parameters.Append(prmMinPasswordLength)
-			Dim prmIntranetVersion = cmdLoginCheck.CreateParameter("version", 200, 1, 50)	' 200 = varchar, 1 = INPUT, 50 = size
+			Dim prmIntranetVersion = cmdLoginCheck.CreateParameter("version", 200, 1, 50)							' 200 = varchar,	1 = INPUT,		50 = size
 			cmdLoginCheck.Parameters.Append(prmIntranetVersion)
 			prmIntranetVersion.Value = Session("version")
-			Dim prmPasswordLength = cmdLoginCheck.CreateParameter("pwdLength", 3, 1) ' 3 = integer, 1 = INPUT
+			Dim prmPasswordLength = cmdLoginCheck.CreateParameter("pwdLength", 3, 1)									' 3 = integer,		1 = INPUT
 			cmdLoginCheck.Parameters.Append(prmPasswordLength)
 			prmPasswordLength.Value = CleanNumeric(Len(sPassword))
-			Dim prmUserType = cmdLoginCheck.CreateParameter("userType", 3, 2)	' 3 = integer, 2 = output
+			Dim prmUserType = cmdLoginCheck.CreateParameter("userType", 3, 2)													' 3 = integer,		2 = output
 			cmdLoginCheck.Parameters.Append(prmUserType)
-
-			Dim prmSelfServiceUserType = cmdLoginCheck.CreateParameter("SelfServiceUserType", 3, 2)	' 3 = integer, 2 = output
+			Dim prmUserGroup = cmdLoginCheck.CreateParameter("UserGroup", 200, 2, 250)								' 200 = varchar,	2 = output,		250 = size
+			cmdLoginCheck.Parameters.Append(prmUserGroup)
+			Dim prmSelfServiceUserType = cmdLoginCheck.CreateParameter("SelfServiceUserType", 3, 2)		' 3 = integer,		2 = output
 			cmdLoginCheck.Parameters.Append(prmSelfServiceUserType)
 
 			Err.Clear()
@@ -481,7 +431,6 @@ Namespace Controllers
 
 			If (Err.Number <> 0) Then
 				Session("ErrorTitle") = "Login Page"
-
 				If Err.Number = -2147217900 Then
 					Session("ErrorText") = "Unable to login to the OpenHR database:<p>" &
 					 FormatError(
@@ -490,13 +439,13 @@ Namespace Controllers
 				Else
 					Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
 					 FormatError(Err.Description)
-
 				End If
 				Return RedirectToAction("Loginerror")
 			End If
 
 			Session("userType") = cmdLoginCheck.Parameters("userType").Value
 			Session("SelfServiceUserType") = cmdLoginCheck.Parameters("SelfServiceUserType").Value
+			Session("UserGroup") = cmdLoginCheck.Parameters("UserGroup").Value
 
 			If cmdLoginCheck.Parameters("SuccessFlag").Value = 0 Then
 				Session("ErrorTitle") = "Login Page"
@@ -510,199 +459,6 @@ Namespace Controllers
 				'End If
 			End If
 
-			If Session("SelfServiceUserType") = 1 Then
-				' Firstly Retrieve the user's group name and assign it to a session variable
-				Dim cmdSsiOnlyDetail = New ADODB.Command
-				cmdSsiOnlyDetail.CommandText = "spASRGetActualUserDetails"
-				cmdSsiOnlyDetail.CommandType = 4 ' Stored Procedure      
-				cmdSsiOnlyDetail.ActiveConnection = conX
-
-				Dim prmSsiUserName = cmdSsiOnlyDetail.CreateParameter("UserName", 200, 2, 255) ' 200=varchar, 2=output, 255=size
-				cmdSsiOnlyDetail.Parameters.Append(prmSsiUserName)
-				Dim prmSsiUserGroup = cmdSsiOnlyDetail.CreateParameter("Group", 200, 2, 255) ' 200=varchar, 2=output, 255=size
-				cmdSsiOnlyDetail.Parameters.Append(prmSsiUserGroup)
-				Dim prmSsiGroupID = cmdSsiOnlyDetail.CreateParameter("GroupID", 3, 2, 50)	' 3=integer, 2=output, 50=size
-				cmdSsiOnlyDetail.Parameters.Append(prmSsiGroupID)
-				Dim prmSsiModuleKey = cmdSsiOnlyDetail.CreateParameter("ModuleKey", 200, 1, 20, "SSINTRANET")	' 200=varchar, 1=input, 20=size
-				cmdSsiOnlyDetail.Parameters.Append(prmSsiModuleKey)
-
-				Err.Clear()
-				cmdSsiOnlyDetail.Execute()
-
-				If (Err.Number <> 0) Then
-					Session("ErrorTitle") = "Login Page"
-
-					If Err.Number = -2147217900 Then
-						Session("ErrorText") = "Unable to login to the OpenHR database:<p>" &
-						 FormatError(
-							"Please ask the System Administrator to update the database in the System Manager.")
-					Else
-						Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
-						 FormatError(Err.Description)
-					End If
-					Return RedirectToAction("Loginerror")
-				End If
-
-				Session("Usergroup") = cmdSsiOnlyDetail.Parameters("Group").Value
-
-				' Now we want to check if we have Only SSI Only access?	
-				Dim cmdSsiOnly = New ADODB.Command
-				cmdSsiOnly.CommandText =
-					"SELECT count(ItemID) as blah" & vbNewLine & _
-					"FROM ASRSysGroupPermissions" & vbNewLine & _
-					"WHERE ASRSysGroupPermissions.itemID = (SELECT ASRSysPermissionItems.itemID" & vbNewLine & _
-					"FROM ASRSysPermissionItems" & vbNewLine & _
-					"INNER JOIN ASRSysPermissionCategories ON ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID" & vbNewLine & _
-					"WHERE (ASRSysPermissionItems.itemKey = 'SSINTRANET'" & vbNewLine & _
-					"AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')" & vbNewLine & _
-					"AND ASRSysGroupPermissions.groupName = '" & Session("Usergroup") & "'" & vbNewLine & _
-					"AND ASRSysGroupPermissions.permitted = 1)" & vbNewLine
-				cmdSsiOnly.ActiveConnection = conX
-
-				Err.Clear()
-				Dim ssiresult = cmdSsiOnly.Execute()
-				If (Err.Number <> 0) Then
-					Session("ErrorTitle") = "Login Page"
-					If Err.Number = -2147217900 Then
-						Session("ErrorText") = "Unable to login to the OpenHR database:<p>" &
-							FormatError(
-							"Please ask the System Administrator to update the database in the System Manager.")
-					Else
-						Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
-							FormatError(Err.Description)
-					End If
-					Return RedirectToAction("Loginerror")
-				End If
-
-				Dim ssiRecordUserAccessCount = ssiresult.Fields(0).Value
-
-				If CLng(ssiRecordUserAccessCount) > 0 Then
-					' We are a SSI Only user Set session var for this and interrogate later 
-					Session("SsiUser") = True
-				Else
-					Session("SsiUser") = False
-				End If
-				cmdSsiOnly = Nothing
-
-				' Retrieve the user's group name and assign it to a session variable
-				Dim cmdSsiDetail = New ADODB.Command
-				cmdSsiDetail.CommandText = "spASRGetActualUserDetails"
-				cmdSsiDetail.CommandType = 4 ' Stored Procedure      
-				cmdSsiDetail.ActiveConnection = conX
-
-				Dim prmUserName = cmdSsiDetail.CreateParameter("UserName", 200, 2, 255)	' 200=varchar, 2=output, 255=size
-				cmdSsiDetail.Parameters.Append(prmUserName)
-				Dim prmUserGroup = cmdSsiDetail.CreateParameter("Group", 200, 2, 255)	' 200=varchar, 2=output, 255=size
-				cmdSsiDetail.Parameters.Append(prmUserGroup)
-				Dim prmGroupID = cmdSsiDetail.CreateParameter("GroupID", 3, 2, 50) ' 3=integer, 2=output, 50=size
-				cmdSsiDetail.Parameters.Append(prmGroupID)
-				Dim prmModuleKey = cmdSsiDetail.CreateParameter("ModuleKey", 200, 1, 20, "INTRANET") ' 200=varchar, 1=input, 20=size
-				cmdSsiDetail.Parameters.Append(prmModuleKey)
-
-				Err.Clear()
-				cmdSsiDetail.Execute()
-
-				If (Err.Number <> 0) Then
-					Session("ErrorTitle") = "Login Page"
-
-					If Err.Number = -2147217900 Then
-						Session("ErrorText") = "Unable to login to the OpenHR database:<p>" &
-						 FormatError(
-							"Please ask the System Administrator to update the database in the System Manager.")
-					Else
-						Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
-						 FormatError(Err.Description)
-					End If
-					Return RedirectToAction("Loginerror")
-				End If
-
-				Session("Usergroup") = cmdSsiDetail.Parameters("Group").Value
-
-				' Do we have DMI Multi-record access?	
-				Dim cmdDmiUser = New ADODB.Command
-				cmdDmiUser.CommandText =
-					"SELECT count(ItemID) as blah" & vbNewLine & _
-					"FROM ASRSysGroupPermissions" & vbNewLine & _
-					"WHERE ASRSysGroupPermissions.itemID = (SELECT ASRSysPermissionItems.itemID" & vbNewLine & _
-					"FROM ASRSysPermissionItems" & vbNewLine & _
-					"INNER JOIN ASRSysPermissionCategories ON ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID" & vbNewLine & _
-					"WHERE (ASRSysPermissionItems.itemKey = 'INTRANET'" & vbNewLine & _
-					"AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')" & vbNewLine & _
-					"AND ASRSysGroupPermissions.groupName = '" & Session("Usergroup") & "'" & vbNewLine & _
-					"AND ASRSysGroupPermissions.permitted = 1)" & vbNewLine
-				cmdDmiUser.ActiveConnection = conX
-
-				Err.Clear()
-				Dim result = cmdDmiUser.Execute()
-
-				If (Err.Number <> 0) Then
-					Session("ErrorTitle") = "Login Page"
-
-					If Err.Number = -2147217900 Then
-						Session("ErrorText") = "Unable to login to the OpenHR database:<p>" &
-						 FormatError(
-							"Please ask the System Administrator to update the database in the System Manager.")
-					Else
-						Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
-						 FormatError(Err.Description)
-					End If
-					Return RedirectToAction("Loginerror")
-				End If
-
-				Dim superUserAccessCount = result.Fields(0).Value
-
-				If CLng(superUserAccessCount) > 0 Then
-					' We are a superUser i.e. INTRANET in permission category terms.
-					Session("DmiMulti") = True
-				Else
-					Session("DmiMulti") = False
-					' Release the ADO command object.
-					cmdSsiDetail = Nothing
-				End If
-
-				Dim cmdDmiSingleRecordUser = New ADODB.Command
-				' Now we want to check if we have Only DMI Single-record access?	
-				cmdDmiSingleRecordUser.CommandText =
-					"SELECT count(ItemID) as blah" & vbNewLine & _
-					"FROM ASRSysGroupPermissions" & vbNewLine & _
-					"WHERE ASRSysGroupPermissions.itemID = (SELECT ASRSysPermissionItems.itemID" & vbNewLine & _
-					"FROM ASRSysPermissionItems" & vbNewLine & _
-					"INNER JOIN ASRSysPermissionCategories ON ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID" & vbNewLine & _
-					"WHERE (ASRSysPermissionItems.itemKey = 'INTRANET_SELFSERVICE'" & vbNewLine & _
-					"AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')" & vbNewLine & _
-					"AND ASRSysGroupPermissions.groupName = '" & Session("Usergroup") & "'" & vbNewLine & _
-					"AND ASRSysGroupPermissions.permitted = 1)" & vbNewLine
-				cmdDmiSingleRecordUser.ActiveConnection = conX
-
-				Err.Clear()
-				Dim newResult = cmdDmiSingleRecordUser.Execute()
-
-				If (Err.Number <> 0) Then
-					Session("ErrorTitle") = "Login Page"
-
-					If Err.Number = -2147217900 Then
-						Session("ErrorText") = "Unable to login to the OpenHR database:<p>" &
-							FormatError(
-							"Please ask the System Administrator to update the database in the System Manager.")
-					Else
-						Session("ErrorText") = "You could not login to the OpenHR database because of the following error:<p>" &
-							FormatError(Err.Description)
-					End If
-					Return RedirectToAction("Loginerror")
-				End If
-
-				Dim dmiSingleRecordUserAccessCount = newResult.Fields(0).Value
-
-				If CLng(dmiSingleRecordUserAccessCount) > 0 Then
-					' We are a DMI Single Record User Set session var for this and interrogate later 
-					' With Session("IntranetSelfServiceUser") so we can go to straight to Links Main
-					Session("DmiSingle") = True
-				Else
-					Session("DmiSingle") = False
-				End If
-				cmdDmiSingleRecordUser = Nothing
-			End If
-
 			' If the users default database is not 'master' then make it so.
 			Dim cmdDefaultDB = New ADODB.Command
 			cmdDefaultDB.CommandText =
@@ -712,10 +468,8 @@ Namespace Controllers
 			cmdDefaultDB.Execute()
 			cmdDefaultDB = Nothing
 
-			' RH 22/03/01 - Put the username in a session variable	
+			' Put the username in a session variable	
 			Session("Server") = sServerName
-			' Moved the following to above the call for forcedpasswordchange.
-			' Session("Username") = LCase(sUserName)
 			Session("Database") = sDatabaseName
 			Session("WinAuth") = (bWindowsAuthentication = "on")
 
@@ -846,16 +600,12 @@ Namespace Controllers
 					' Check if the current user OutOfOffice
 					cmdWorkflow = New ADODB.Command
 					cmdWorkflow.CommandText = "spASRWorkflowOutOfOfficeCheck"
-					cmdWorkflow.CommandType = 4
-					' Stored Procedure
+					cmdWorkflow.CommandType = 4	' Stored Procedure
 					cmdWorkflow.ActiveConnection = conX
 
-					Dim prmWFOutOfOffice = cmdWorkflow.CreateParameter("wfOutOfOffice", 11, 2)
-					' 11=boolean, 2=output
+					Dim prmWFOutOfOffice = cmdWorkflow.CreateParameter("wfOutOfOffice", 11, 2) ' 11=boolean, 2=output
 					cmdWorkflow.Parameters.Append(prmWFOutOfOffice)
-
-					Dim prmWFRecordCount = cmdWorkflow.CreateParameter("wfRecordCount", 3, 2)
-					' 3=integer, 2=output
+					Dim prmWFRecordCount = cmdWorkflow.CreateParameter("wfRecordCount", 3, 2)	' 3=integer, 2=output
 					cmdWorkflow.Parameters.Append(prmWFRecordCount)
 
 					Err.Number = 0
@@ -874,84 +624,64 @@ Namespace Controllers
 			' Get Training Booking module parameters		
 			Dim cmdTrainingBooking = New ADODB.Command
 			cmdTrainingBooking.CommandText = "sp_ASRIntGetTrainingBookingParameters"
-			cmdTrainingBooking.CommandType = 4
-			' Stored Procedure
+			cmdTrainingBooking.CommandType = 4	' Stored Procedure
 			cmdTrainingBooking.ActiveConnection = conX
 
-			prmEmpTableID = cmdTrainingBooking.CreateParameter("empTableID", 3, 2)
-			' 3=integer, 2=output
+			prmEmpTableID = cmdTrainingBooking.CreateParameter("empTableID", 3, 2)	' 3=integer, 2=output
 			cmdTrainingBooking.Parameters.Append(prmEmpTableID)
 
-			Dim prmCourseTableID = cmdTrainingBooking.CreateParameter("courseTableID", 3, 2)
-			' 3=integer, 2=output
+			Dim prmCourseTableID = cmdTrainingBooking.CreateParameter("courseTableID", 3, 2) ' 3=integer, 2=output
 			cmdTrainingBooking.Parameters.Append(prmCourseTableID)
 
-			Dim prmCourseCancelDateColumnID = cmdTrainingBooking.CreateParameter("courseCancelDateColumnID", 3, 2)
-			' 3=integer, 2=output
+			Dim prmCourseCancelDateColumnID = cmdTrainingBooking.CreateParameter("courseCancelDateColumnID", 3, 2) ' 3=integer, 2=output
 			cmdTrainingBooking.Parameters.Append(prmCourseCancelDateColumnID)
 
-			Dim prmTBTableID = cmdTrainingBooking.CreateParameter("tbTableID", 3, 2)
-			' 3=integer, 2=output
+			Dim prmTBTableID = cmdTrainingBooking.CreateParameter("tbTableID", 3, 2) ' 3=integer, 2=output
 			cmdTrainingBooking.Parameters.Append(prmTBTableID)
 
-			Dim prmTBTableSelect = cmdTrainingBooking.CreateParameter("tbTableSelect", 11, 2)
-			' 11=boolean, 2=output
+			Dim prmTBTableSelect = cmdTrainingBooking.CreateParameter("tbTableSelect", 11, 2)	' 11=boolean, 2=output
 			cmdTrainingBooking.Parameters.Append(prmTBTableSelect)
 
-			Dim prmTBTableInsert = cmdTrainingBooking.CreateParameter("tbTableInsert", 11, 2)
-			' 11=boolean, 2=output
+			Dim prmTBTableInsert = cmdTrainingBooking.CreateParameter("tbTableInsert", 11, 2)	' 11=boolean, 2=output
 			cmdTrainingBooking.Parameters.Append(prmTBTableInsert)
 
-			Dim prmTBTableUpdate = cmdTrainingBooking.CreateParameter("tbTableUpdate", 11, 2)
-			' 11=boolean, 2=output
+			Dim prmTBTableUpdate = cmdTrainingBooking.CreateParameter("tbTableUpdate", 11, 2)	' 11=boolean, 2=output
 			cmdTrainingBooking.Parameters.Append(prmTBTableUpdate)
 
-			Dim prmTBStatusColumnID = cmdTrainingBooking.CreateParameter("tbStatusColumnID", 3, 2)
-			' 3=integer, 2=output
+			Dim prmTBStatusColumnID = cmdTrainingBooking.CreateParameter("tbStatusColumnID", 3, 2) ' 3=integer, 2=output
 			cmdTrainingBooking.Parameters.Append(prmTBStatusColumnID)
 
-			Dim prmTBStatusColumnUpdate = cmdTrainingBooking.CreateParameter("tbStatusColumnUpdate", 11, 2)
-			' 11=boolean, 2=output
+			Dim prmTBStatusColumnUpdate = cmdTrainingBooking.CreateParameter("tbStatusColumnUpdate", 11, 2)	' 11=boolean, 2=output
 			cmdTrainingBooking.Parameters.Append(prmTBStatusColumnUpdate)
 
-			Dim prmTBCancelDateColumnID = cmdTrainingBooking.CreateParameter("tbCancelDateColumnID", 3, 2)
-			' 3=integer, 2=output
+			Dim prmTBCancelDateColumnID = cmdTrainingBooking.CreateParameter("tbCancelDateColumnID", 3, 2) ' 3=integer, 2=output
 			cmdTrainingBooking.Parameters.Append(prmTBCancelDateColumnID)
 
-			Dim prmTBCancelDateColumnUpdate = cmdTrainingBooking.CreateParameter("tbCancelDateColumnUpdate", 11, 2)
-			' 11=boolean, 2=output
+			Dim prmTBCancelDateColumnUpdate = cmdTrainingBooking.CreateParameter("tbCancelDateColumnUpdate", 11, 2)	' 11=boolean, 2=output
 			cmdTrainingBooking.Parameters.Append(prmTBCancelDateColumnUpdate)
 
-			Dim prmTBStatusPExists = cmdTrainingBooking.CreateParameter("tbStatusPExists", 11, 2)
-			' 11=boolean, 2=output
+			Dim prmTBStatusPExists = cmdTrainingBooking.CreateParameter("tbStatusPExists", 11, 2)	' 11=boolean, 2=output
 			cmdTrainingBooking.Parameters.Append(prmTBStatusPExists)
 
-			Dim prmWaitListTableID = cmdTrainingBooking.CreateParameter("waitListTableID", 3, 2)
-			' 3=integer, 2=output
+			Dim prmWaitListTableID = cmdTrainingBooking.CreateParameter("waitListTableID", 3, 2) ' 3=integer, 2=output
 			cmdTrainingBooking.Parameters.Append(prmWaitListTableID)
 
-			Dim prmWaitListTableInsert = cmdTrainingBooking.CreateParameter("waitListTableInsert", 11, 2)
-			' 11=boolean, 2=output
+			Dim prmWaitListTableInsert = cmdTrainingBooking.CreateParameter("waitListTableInsert", 11, 2)	' 11=boolean, 2=output
 			cmdTrainingBooking.Parameters.Append(prmWaitListTableInsert)
 
-			Dim prmWaitListTableDelete = cmdTrainingBooking.CreateParameter("waitListTableDelete", 11, 2)
-			' 11=boolean, 2=output
+			Dim prmWaitListTableDelete = cmdTrainingBooking.CreateParameter("waitListTableDelete", 11, 2)	' 11=boolean, 2=output
 			cmdTrainingBooking.Parameters.Append(prmWaitListTableDelete)
 
-			Dim prmWaitListCourseTitleColumnID = cmdTrainingBooking.CreateParameter("waitListCourseTitleColumnID", 3, 2)
-			' 3=integer, 2=output
+			Dim prmWaitListCourseTitleColumnID = cmdTrainingBooking.CreateParameter("waitListCourseTitleColumnID", 3, 2) ' 3=integer, 2=output
 			cmdTrainingBooking.Parameters.Append(prmWaitListCourseTitleColumnID)
 
-			Dim prmWaitListCourseTitleColumnUpdate = cmdTrainingBooking.CreateParameter("waitListCourseTitleColumnUpdate", 11, 2)
-			' 11=boolean, 2=output
+			Dim prmWaitListCourseTitleColumnUpdate = cmdTrainingBooking.CreateParameter("waitListCourseTitleColumnUpdate", 11, 2)	' 11=boolean, 2=output
 			cmdTrainingBooking.Parameters.Append(prmWaitListCourseTitleColumnUpdate)
 
-			Dim prmWaitListCourseTitleColumnSelect = cmdTrainingBooking.CreateParameter("waitListCourseTitleColumnSelect", 11, 2)
-			' 11=boolean, 2=output
+			Dim prmWaitListCourseTitleColumnSelect = cmdTrainingBooking.CreateParameter("waitListCourseTitleColumnSelect", 11, 2)	' 11=boolean, 2=output
 			cmdTrainingBooking.Parameters.Append(prmWaitListCourseTitleColumnSelect)
 
-			Dim prmBulkBookingDefaultViewID = cmdTrainingBooking.CreateParameter("bulkBookingDefaultViewID", 3, 2)
-			' 3=integer, 2=output
+			Dim prmBulkBookingDefaultViewID = cmdTrainingBooking.CreateParameter("bulkBookingDefaultViewID", 3, 2) ' 3=integer, 2=output
 			cmdTrainingBooking.Parameters.Append(prmBulkBookingDefaultViewID)
 
 			'		Set prmWaitListOverRideColumnID = cmdTrainingBooking.CreateParameter("WaitListOverRideColumnID", 3, 2) ' 3=integer, 2=output
@@ -1072,46 +802,29 @@ Namespace Controllers
 
 			End Select
 
-			'   sBGImage = Url.Content("~/Pictures/" & sBGImage)
-
-			'   If (Len(sTempPath) > 0) And (Len(sBGImage) > 0) Then
-			'	Session("BodyTag") = "STYLE=""height: 100%; background-image:url('" & sBGImage &
-			'	 "'); background-repeat:" & strRepeat & "; background-position:" & strBGPos & """" & vbCrLf
-			'   Else
-			'	Session("BodyTag") = "height: 100%;" & vbCrLf
-			'   End If
-			'Session("BodyColour") = "" & vbCrLf
-
-
 			' Get the Find Window Block Size.
 			Dim cmdFindSize = New ADODB.Command
 			cmdFindSize.CommandText = "sp_ASRIntGetSetting"
-			cmdFindSize.CommandType = 4
-			' Stored procedure.
+			cmdFindSize.CommandType = 4	' Stored procedure.
 			cmdFindSize.ActiveConnection = Session("databaseConnection")
 
-			prmSection = cmdFindSize.CreateParameter("section", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmSection = cmdFindSize.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 			cmdFindSize.Parameters.Append(prmSection)
 			prmSection.Value = "IntranetFindWindow"
 
-			prmKey = cmdFindSize.CreateParameter("key", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmKey = cmdFindSize.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 			cmdFindSize.Parameters.Append(prmKey)
 			prmKey.Value = "BlockSize"
 
-			prmDefault = cmdFindSize.CreateParameter("default", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmDefault = cmdFindSize.CreateParameter("default", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 			cmdFindSize.Parameters.Append(prmDefault)
 			prmDefault.Value = "1000"
 
-			prmUserSetting = cmdFindSize.CreateParameter("userSetting", 11, 1)
-			' 11=bit, 1=input
+			prmUserSetting = cmdFindSize.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
 			cmdFindSize.Parameters.Append(prmUserSetting)
 			prmUserSetting.Value = 1
 
-			prmResult = cmdFindSize.CreateParameter("result", 200, 2, 8000)
-			' 200=varchar, 2=output, 8000=size
+			prmResult = cmdFindSize.CreateParameter("result", 200, 2, 8000)	' 200=varchar, 2=output, 8000=size
 			cmdFindSize.Parameters.Append(prmResult)
 
 			Err.Number = 0
@@ -1129,32 +842,26 @@ Namespace Controllers
 			' Get the Primary Record Editing Start Mode.
 			Dim cmdPrimaryStartMode = New ADODB.Command
 			cmdPrimaryStartMode.CommandText = "sp_ASRIntGetSetting"
-			cmdPrimaryStartMode.CommandType = 4
-			' Stored procedure.
+			cmdPrimaryStartMode.CommandType = 4	' Stored procedure.
 			cmdPrimaryStartMode.ActiveConnection = Session("databaseConnection")
 
-			prmSection = cmdPrimaryStartMode.CreateParameter("section", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmSection = cmdPrimaryStartMode.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 			cmdPrimaryStartMode.Parameters.Append(prmSection)
 			prmSection.Value = "RecordEditing"
 
-			prmKey = cmdPrimaryStartMode.CreateParameter("key", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmKey = cmdPrimaryStartMode.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 			cmdPrimaryStartMode.Parameters.Append(prmKey)
 			prmKey.Value = "Primary"
 
-			prmDefault = cmdPrimaryStartMode.CreateParameter("default", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmDefault = cmdPrimaryStartMode.CreateParameter("default", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 			cmdPrimaryStartMode.Parameters.Append(prmDefault)
 			prmDefault.Value = "3"
 
-			prmUserSetting = cmdPrimaryStartMode.CreateParameter("userSetting", 11, 1)
-			' 11=bit, 1=input
+			prmUserSetting = cmdPrimaryStartMode.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
 			cmdPrimaryStartMode.Parameters.Append(prmUserSetting)
 			prmUserSetting.Value = 1
 
-			prmResult = cmdPrimaryStartMode.CreateParameter("result", 200, 2, 8000)
-			' 200=varchar, 2=output, 8000=size
+			prmResult = cmdPrimaryStartMode.CreateParameter("result", 200, 2, 8000)	' 200=varchar, 2=output, 8000=size
 			cmdPrimaryStartMode.Parameters.Append(prmResult)
 
 			Err.Number = 0
@@ -1165,32 +872,26 @@ Namespace Controllers
 			' Get the History Record Editing Start Mode.
 			Dim cmdHistoryStartMode = New ADODB.Command
 			cmdHistoryStartMode.CommandText = "sp_ASRIntGetSetting"
-			cmdHistoryStartMode.CommandType = 4
-			' Stored procedure.
+			cmdHistoryStartMode.CommandType = 4	' Stored procedure.
 			cmdHistoryStartMode.ActiveConnection = Session("databaseConnection")
 
-			prmSection = cmdHistoryStartMode.CreateParameter("section", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmSection = cmdHistoryStartMode.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 			cmdHistoryStartMode.Parameters.Append(prmSection)
 			prmSection.Value = "RecordEditing"
 
-			prmKey = cmdHistoryStartMode.CreateParameter("key", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmKey = cmdHistoryStartMode.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 			cmdHistoryStartMode.Parameters.Append(prmKey)
 			prmKey.Value = "History"
 
-			prmDefault = cmdHistoryStartMode.CreateParameter("default", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmDefault = cmdHistoryStartMode.CreateParameter("default", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 			cmdHistoryStartMode.Parameters.Append(prmDefault)
 			prmDefault.Value = "3"
 
-			prmUserSetting = cmdHistoryStartMode.CreateParameter("userSetting", 11, 1)
-			' 11=bit, 1=input
+			prmUserSetting = cmdHistoryStartMode.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
 			cmdHistoryStartMode.Parameters.Append(prmUserSetting)
 			prmUserSetting.Value = 1
 
-			prmResult = cmdHistoryStartMode.CreateParameter("result", 200, 2, 8000)
-			' 200=varchar, 2=output, 8000=size
+			prmResult = cmdHistoryStartMode.CreateParameter("result", 200, 2, 8000)	' 200=varchar, 2=output, 8000=size
 			cmdHistoryStartMode.Parameters.Append(prmResult)
 
 			Err.Number = 0
@@ -1201,32 +902,26 @@ Namespace Controllers
 			' Get the Lookup Record Editing Start Mode.
 			Dim cmdLookupStartMode = New ADODB.Command
 			cmdLookupStartMode.CommandText = "sp_ASRIntGetSetting"
-			cmdLookupStartMode.CommandType = 4
-			' Stored procedure.
+			cmdLookupStartMode.CommandType = 4 ' Stored procedure.
 			cmdLookupStartMode.ActiveConnection = Session("databaseConnection")
 
-			prmSection = cmdLookupStartMode.CreateParameter("section", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmSection = cmdLookupStartMode.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
 			cmdLookupStartMode.Parameters.Append(prmSection)
 			prmSection.Value = "RecordEditing"
 
-			prmKey = cmdLookupStartMode.CreateParameter("key", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmKey = cmdLookupStartMode.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
 			cmdLookupStartMode.Parameters.Append(prmKey)
 			prmKey.Value = "LookUp"
 
-			prmDefault = cmdLookupStartMode.CreateParameter("default", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmDefault = cmdLookupStartMode.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
 			cmdLookupStartMode.Parameters.Append(prmDefault)
 			prmDefault.Value = "2"
 
-			prmUserSetting = cmdLookupStartMode.CreateParameter("userSetting", 11, 1)
-			' 11=bit, 1=input
+			prmUserSetting = cmdLookupStartMode.CreateParameter("userSetting", 11, 1)	' 11=bit, 1=input
 			cmdLookupStartMode.Parameters.Append(prmUserSetting)
 			prmUserSetting.Value = 1
 
-			prmResult = cmdLookupStartMode.CreateParameter("result", 200, 2, 8000)
-			' 200=varchar, 2=output, 8000=size
+			prmResult = cmdLookupStartMode.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
 			cmdLookupStartMode.Parameters.Append(prmResult)
 
 			Err.Number = 0
@@ -1237,32 +932,26 @@ Namespace Controllers
 			' Get the Quick Access Record Editing Start Mode.
 			Dim cmdQuickAccessStartMode = New ADODB.Command
 			cmdQuickAccessStartMode.CommandText = "sp_ASRIntGetSetting"
-			cmdQuickAccessStartMode.CommandType = 4
-			' Stored procedure.
+			cmdQuickAccessStartMode.CommandType = 4	' Stored procedure.
 			cmdQuickAccessStartMode.ActiveConnection = Session("databaseConnection")
 
-			prmSection = cmdQuickAccessStartMode.CreateParameter("section", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmSection = cmdQuickAccessStartMode.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 			cmdQuickAccessStartMode.Parameters.Append(prmSection)
 			prmSection.Value = "RecordEditing"
 
-			prmKey = cmdQuickAccessStartMode.CreateParameter("key", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmKey = cmdQuickAccessStartMode.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 			cmdQuickAccessStartMode.Parameters.Append(prmKey)
 			prmKey.Value = "QuickAccess"
 
-			prmDefault = cmdQuickAccessStartMode.CreateParameter("default", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmDefault = cmdQuickAccessStartMode.CreateParameter("default", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 			cmdQuickAccessStartMode.Parameters.Append(prmDefault)
 			prmDefault.Value = "1"
 
-			prmUserSetting = cmdQuickAccessStartMode.CreateParameter("userSetting", 11, 1)
-			' 11=bit, 1=input
+			prmUserSetting = cmdQuickAccessStartMode.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
 			cmdQuickAccessStartMode.Parameters.Append(prmUserSetting)
 			prmUserSetting.Value = 1
 
-			prmResult = cmdQuickAccessStartMode.CreateParameter("result", 200, 2, 8000)
-			' 200=varchar, 2=output, 8000=size
+			prmResult = cmdQuickAccessStartMode.CreateParameter("result", 200, 2, 8000)	' 200=varchar, 2=output, 8000=size
 			cmdQuickAccessStartMode.Parameters.Append(prmResult)
 
 			Err.Number = 0
@@ -1273,32 +962,26 @@ Namespace Controllers
 			' Get the Expression Colour setting.
 			Dim cmdExprColourMode = New ADODB.Command
 			cmdExprColourMode.CommandText = "sp_ASRIntGetSetting"
-			cmdExprColourMode.CommandType = 4
-			' Stored procedure.
+			cmdExprColourMode.CommandType = 4	' Stored procedure.
 			cmdExprColourMode.ActiveConnection = Session("databaseConnection")
 
-			prmSection = cmdExprColourMode.CreateParameter("section", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmSection = cmdExprColourMode.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 			cmdExprColourMode.Parameters.Append(prmSection)
 			prmSection.Value = "ExpressionBuilder"
 
-			prmKey = cmdExprColourMode.CreateParameter("key", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmKey = cmdExprColourMode.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 			cmdExprColourMode.Parameters.Append(prmKey)
 			prmKey.Value = "ViewColours"
 
-			prmDefault = cmdExprColourMode.CreateParameter("default", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmDefault = cmdExprColourMode.CreateParameter("default", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 			cmdExprColourMode.Parameters.Append(prmDefault)
 			prmDefault.Value = "1"
 
-			prmUserSetting = cmdExprColourMode.CreateParameter("userSetting", 11, 1)
-			' 11=bit, 1=input
+			prmUserSetting = cmdExprColourMode.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
 			cmdExprColourMode.Parameters.Append(prmUserSetting)
 			prmUserSetting.Value = 1
 
-			prmResult = cmdExprColourMode.CreateParameter("result", 200, 2, 8000)
-			' 200=varchar, 2=output, 8000=size
+			prmResult = cmdExprColourMode.CreateParameter("result", 200, 2, 8000)	' 200=varchar, 2=output, 8000=size
 			cmdExprColourMode.Parameters.Append(prmResult)
 
 			Err.Number = 0
@@ -1309,32 +992,26 @@ Namespace Controllers
 			' Get the Expression Node Expansion setting.
 			Dim cmdExprNodeMode = New ADODB.Command
 			cmdExprNodeMode.CommandText = "sp_ASRIntGetSetting"
-			cmdExprNodeMode.CommandType = 4
-			' Stored procedure.
+			cmdExprNodeMode.CommandType = 4	' Stored procedure.
 			cmdExprNodeMode.ActiveConnection = Session("databaseConnection")
 
-			prmSection = cmdExprNodeMode.CreateParameter("section", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmSection = cmdExprNodeMode.CreateParameter("section", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 			cmdExprNodeMode.Parameters.Append(prmSection)
 			prmSection.Value = "ExpressionBuilder"
 
-			prmKey = cmdExprNodeMode.CreateParameter("key", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmKey = cmdExprNodeMode.CreateParameter("key", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 			cmdExprNodeMode.Parameters.Append(prmKey)
 			prmKey.Value = "NodeSize"
 
-			prmDefault = cmdExprNodeMode.CreateParameter("default", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmDefault = cmdExprNodeMode.CreateParameter("default", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
 			cmdExprNodeMode.Parameters.Append(prmDefault)
 			prmDefault.Value = "1"
 
-			prmUserSetting = cmdExprNodeMode.CreateParameter("userSetting", 11, 1)
-			' 11=bit, 1=input
+			prmUserSetting = cmdExprNodeMode.CreateParameter("userSetting", 11, 1) ' 11=bit, 1=input
 			cmdExprNodeMode.Parameters.Append(prmUserSetting)
 			prmUserSetting.Value = 1
 
-			prmResult = cmdExprNodeMode.CreateParameter("result", 200, 2, 8000)
-			' 200=varchar, 2=output, 8000=size
+			prmResult = cmdExprNodeMode.CreateParameter("result", 200, 2, 8000)	' 200=varchar, 2=output, 8000=size
 			cmdExprNodeMode.Parameters.Append(prmResult)
 
 			Err.Number = 0
@@ -1345,32 +1022,26 @@ Namespace Controllers
 			'Support details - tel no
 			Dim cmdSupportInfo = New ADODB.Command
 			cmdSupportInfo.CommandText = "sp_ASRIntGetSetting"
-			cmdSupportInfo.CommandType = 4
-			' Stored procedure.
+			cmdSupportInfo.CommandType = 4 ' Stored procedure.
 			cmdSupportInfo.ActiveConnection = Session("databaseConnection")
 
-			prmSection = cmdSupportInfo.CreateParameter("section", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmSection = cmdSupportInfo.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
 			cmdSupportInfo.Parameters.Append(prmSection)
 			prmSection.Value = "Support"
 
-			prmKey = cmdSupportInfo.CreateParameter("key", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmKey = cmdSupportInfo.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
 			cmdSupportInfo.Parameters.Append(prmKey)
 			prmKey.Value = "Telephone No"
 
-			prmDefault = cmdSupportInfo.CreateParameter("default", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmDefault = cmdSupportInfo.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
 			cmdSupportInfo.Parameters.Append(prmDefault)
 			prmDefault.Value = "+44 (0)1582 714820"
 
-			prmUserSetting = cmdSupportInfo.CreateParameter("userSetting", 11, 1)
-			' 11=bit, 1=input
+			prmUserSetting = cmdSupportInfo.CreateParameter("userSetting", 11, 1)	' 11=bit, 1=input
 			cmdSupportInfo.Parameters.Append(prmUserSetting)
 			prmUserSetting.Value = 0
 
-			prmResult = cmdSupportInfo.CreateParameter("result", 200, 2, 8000)
-			' 200=varchar, 2=output, 8000=size
+			prmResult = cmdSupportInfo.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
 			cmdSupportInfo.Parameters.Append(prmResult)
 
 			Err.Number = 0
@@ -1381,32 +1052,26 @@ Namespace Controllers
 			'Support details - Fax
 			cmdSupportInfo = New ADODB.Command
 			cmdSupportInfo.CommandText = "sp_ASRIntGetSetting"
-			cmdSupportInfo.CommandType = 4
-			' Stored procedure.
+			cmdSupportInfo.CommandType = 4 ' Stored procedure.
 			cmdSupportInfo.ActiveConnection = Session("databaseConnection")
 
-			prmSection = cmdSupportInfo.CreateParameter("section", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmSection = cmdSupportInfo.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
 			cmdSupportInfo.Parameters.Append(prmSection)
 			prmSection.Value = "Support"
 
-			prmKey = cmdSupportInfo.CreateParameter("key", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmKey = cmdSupportInfo.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
 			cmdSupportInfo.Parameters.Append(prmKey)
 			prmKey.Value = "Fax"
 
-			prmDefault = cmdSupportInfo.CreateParameter("default", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmDefault = cmdSupportInfo.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
 			cmdSupportInfo.Parameters.Append(prmDefault)
 			prmDefault.Value = "+44 (0)1582 714814 "
 
-			prmUserSetting = cmdSupportInfo.CreateParameter("userSetting", 11, 1)
-			' 11=bit, 1=input
+			prmUserSetting = cmdSupportInfo.CreateParameter("userSetting", 11, 1)	' 11=bit, 1=input
 			cmdSupportInfo.Parameters.Append(prmUserSetting)
 			prmUserSetting.Value = 0
 
-			prmResult = cmdSupportInfo.CreateParameter("result", 200, 2, 8000)
-			' 200=varchar, 2=output, 8000=size
+			prmResult = cmdSupportInfo.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
 			cmdSupportInfo.Parameters.Append(prmResult)
 
 			Err.Number = 0
@@ -1417,32 +1082,26 @@ Namespace Controllers
 			'Support details - Email
 			cmdSupportInfo = New ADODB.Command
 			cmdSupportInfo.CommandText = "sp_ASRIntGetSetting"
-			cmdSupportInfo.CommandType = 4
-			' Stored procedure.
+			cmdSupportInfo.CommandType = 4 ' Stored procedure.
 			cmdSupportInfo.ActiveConnection = Session("databaseConnection")
 
-			prmSection = cmdSupportInfo.CreateParameter("section", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmSection = cmdSupportInfo.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
 			cmdSupportInfo.Parameters.Append(prmSection)
 			prmSection.Value = "Support"
 
-			prmKey = cmdSupportInfo.CreateParameter("key", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmKey = cmdSupportInfo.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
 			cmdSupportInfo.Parameters.Append(prmKey)
 			prmKey.Value = "Email"
 
-			prmDefault = cmdSupportInfo.CreateParameter("default", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmDefault = cmdSupportInfo.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
 			cmdSupportInfo.Parameters.Append(prmDefault)
 			prmDefault.Value = "service.delivery@advancedcomputersoftware.com"
 
-			prmUserSetting = cmdSupportInfo.CreateParameter("userSetting", 11, 1)
-			' 11=bit, 1=input
+			prmUserSetting = cmdSupportInfo.CreateParameter("userSetting", 11, 1)	' 11=bit, 1=input
 			cmdSupportInfo.Parameters.Append(prmUserSetting)
 			prmUserSetting.Value = 0
 
-			prmResult = cmdSupportInfo.CreateParameter("result", 200, 2, 8000)
-			' 200=varchar, 2=output, 8000=size
+			prmResult = cmdSupportInfo.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
 			cmdSupportInfo.Parameters.Append(prmResult)
 
 			Err.Number = 0
@@ -1453,32 +1112,26 @@ Namespace Controllers
 			'Support details - Webpage
 			cmdSupportInfo = New ADODB.Command
 			cmdSupportInfo.CommandText = "sp_ASRIntGetSetting"
-			cmdSupportInfo.CommandType = 4
-			' Stored procedure.
+			cmdSupportInfo.CommandType = 4 ' Stored procedure.
 			cmdSupportInfo.ActiveConnection = Session("databaseConnection")
 
-			prmSection = cmdSupportInfo.CreateParameter("section", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmSection = cmdSupportInfo.CreateParameter("section", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
 			cmdSupportInfo.Parameters.Append(prmSection)
 			prmSection.Value = "Support"
 
-			prmKey = cmdSupportInfo.CreateParameter("key", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmKey = cmdSupportInfo.CreateParameter("key", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
 			cmdSupportInfo.Parameters.Append(prmKey)
 			prmKey.Value = "Webpage"
 
-			prmDefault = cmdSupportInfo.CreateParameter("default", 200, 1, 8000)
-			' 200=varchar, 1=input, 8000=size
+			prmDefault = cmdSupportInfo.CreateParameter("default", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
 			cmdSupportInfo.Parameters.Append(prmDefault)
 			prmDefault.Value = "service.delivery@advancedcomputersoftware.com"
 
-			prmUserSetting = cmdSupportInfo.CreateParameter("userSetting", 11, 1)
-			' 11=bit, 1=input
+			prmUserSetting = cmdSupportInfo.CreateParameter("userSetting", 11, 1)	' 11=bit, 1=input
 			cmdSupportInfo.Parameters.Append(prmUserSetting)
 			prmUserSetting.Value = 0
 
-			prmResult = cmdSupportInfo.CreateParameter("result", 200, 2, 8000)
-			' 200=varchar, 2=output, 8000=size
+			prmResult = cmdSupportInfo.CreateParameter("result", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
 			cmdSupportInfo.Parameters.Append(prmResult)
 
 			Err.Number = 0
@@ -1490,16 +1143,13 @@ Namespace Controllers
 			' Get the configured Single record view ID. 	For the dashboard.
 			Dim cmdModuleInfo = New ADODB.Command
 			cmdModuleInfo.CommandText = "spASRIntGetSingleRecordViewID"
-			cmdModuleInfo.CommandType = 4
-			' Stored Procedure
+			cmdModuleInfo.CommandType = 4	' Stored Procedure
 			cmdModuleInfo.ActiveConnection = conX
 
-			Dim prmTableID = cmdModuleInfo.CreateParameter("tableID", 3, 2)
-			' 3=integer, 2=output
+			Dim prmTableID = cmdModuleInfo.CreateParameter("tableID", 3, 2)	' 3=integer, 2=output
 			cmdModuleInfo.Parameters.Append(prmTableID)
 
-			Dim prmViewID = cmdModuleInfo.CreateParameter("viewID", 3, 2)
-			' 3=integer, 2=output
+			Dim prmViewID = cmdModuleInfo.CreateParameter("viewID", 3, 2)	' 3=integer, 2=output
 			cmdModuleInfo.Parameters.Append(prmViewID)
 
 			Err.Number = 0
@@ -1546,20 +1196,7 @@ Namespace Controllers
 			objButtonInfo = Nothing
 			objDropdownInfo = Nothing
 
-			' Enable/Disable SQL 2000 functions
-			'Dim cmdVersion = New ADODB.Command
-			'cmdVersion.CommandText = "spASRIntUDFFunctionsEnabled"
-			'cmdVersion.CommandType = 4	' Stored procedure.
-			'cmdVersion.ActiveConnection = Session("databaseConnection")
-
-			'prmResult = cmdVersion.CreateParameter("result", 11, 2) ' 11=bit, 2=output
-			'cmdVersion.Parameters.Append(prmResult)
-
-			'Err.Number = 0
-			'cmdVersion.Execute()
 			Session("EnableSQL2000Functions") = False
-			' cmdVersion.Parameters("result").Value
-			' cmdVersion = Nothing
 
 			If Session("WinAuth") Then
 				' Do not force password change for Windows Authenticated users.
@@ -1570,16 +1207,13 @@ Namespace Controllers
 				' Force password change only if there are no other users logged in with the same name.
 				Dim cmdCheckUserSessions = New ADODB.Command
 				cmdCheckUserSessions.CommandText = "spASRGetCurrentUsersCountOnServer"
-				cmdCheckUserSessions.CommandType = 4
-				' Stored procedure.
+				cmdCheckUserSessions.CommandType = 4 ' Stored procedure.
 				cmdCheckUserSessions.ActiveConnection = Session("databaseConnection")
 
-				Dim prmCount = cmdCheckUserSessions.CreateParameter("count", 3, 2)
-				' 3=integer, 2=output
+				Dim prmCount = cmdCheckUserSessions.CreateParameter("count", 3, 2) ' 3=integer, 2=output
 				cmdCheckUserSessions.Parameters.Append(prmCount)
 
-				Dim prmUserName = cmdCheckUserSessions.CreateParameter("userName", 200, 1, 8000)
-				' 200=varchar, 1=input, 8000=size
+				Dim prmUserName = cmdCheckUserSessions.CreateParameter("userName", 200, 1, 8000) ' 200=varchar, 1=input, 8000=size
 				cmdCheckUserSessions.Parameters.Append(prmUserName)
 				prmUserName.Value = Session("Username")
 
@@ -1598,31 +1232,24 @@ Namespace Controllers
 				If isWidgetLogin Then
 					' call the widget function if applicable
 					'Dim str As String = ASRIntranetFunctions.GetDBValue(Session("databaseConnection"))
-
 				Else
 					Try
-
 						' grab some more info for the dashboard						
 						Dim sErrorDescription = ""
 
 						' Get the self-service record ID.
 						Dim cmdSSRecord = New ADODB.Command
-						cmdSSRecord.CommandText = "spASRIntGetSelfServiceRecordID"
-						'Get Single Record ID
-						cmdSSRecord.CommandType = 4
-						' Stored Procedure
+						cmdSSRecord.CommandText = "spASRIntGetSelfServiceRecordID" 'Get Single Record ID
+						cmdSSRecord.CommandType = 4	' Stored Procedure
 						cmdSSRecord.ActiveConnection = Session("databaseConnection")
 
-						Dim prmRecordID = cmdSSRecord.CreateParameter("@piRecordID", 3, 2)
-						' 3=integer, 2=output
+						Dim prmRecordID = cmdSSRecord.CreateParameter("@piRecordID", 3, 2) ' 3=integer, 2=output
 						cmdSSRecord.Parameters.Append(prmRecordID)
 
-						Dim prmRecordCount = cmdSSRecord.CreateParameter("@piRecordCount", 3, 2)
-						' 3=integer, 2=output
+						Dim prmRecordCount = cmdSSRecord.CreateParameter("@piRecordCount", 3, 2) ' 3=integer, 2=output
 						cmdSSRecord.Parameters.Append(prmRecordCount)
 
-						prmViewID = cmdSSRecord.CreateParameter("@piViewID", 3, 1)
-						' 3=integer, 1=input
+						prmViewID = cmdSSRecord.CreateParameter("@piViewID", 3, 1) ' 3=integer, 1=input
 						cmdSSRecord.Parameters.Append(prmViewID)
 						prmViewID.Value = CleanNumeric(Session("SingleRecordViewID"))
 
@@ -1655,33 +1282,26 @@ Namespace Controllers
 						Dim cmdGetRecordDesc As ADODB.Command = New ADODB.Command
 
 						cmdGetRecordDesc.CommandText = "sp_ASRIntGetRecordDescription"
-						cmdGetRecordDesc.CommandType = 4
-						' Stored procedure
+						cmdGetRecordDesc.CommandType = 4 ' Stored procedure
 						cmdGetRecordDesc.ActiveConnection = Session("databaseConnection")
 
-						prmTableID = cmdGetRecordDesc.CreateParameter("tableID", 3, 1)
-						' 3 = integer, 1 = input
+						prmTableID = cmdGetRecordDesc.CreateParameter("tableID", 3, 1) ' 3 = integer, 1 = input
 						cmdGetRecordDesc.Parameters.Append(prmTableID)
-						prmTableID.Value = CleanNumeric(Session("SingleRecordTableID"))
-						' cleanNumeric(Session("tableID"))
+						prmTableID.Value = CleanNumeric(Session("SingleRecordTableID"))	' cleanNumeric(Session("tableID"))
 
-						prmRecordID = cmdGetRecordDesc.CreateParameter("recordID", 3, 1)
-						' 3 = integer, 1 = input
+						prmRecordID = cmdGetRecordDesc.CreateParameter("recordID", 3, 1) ' 3 = integer, 1 = input
 						cmdGetRecordDesc.Parameters.Append(prmRecordID)
 						prmRecordID.Value = CleanNumeric(Session("TopLevelRecID"))
 
-						Dim prmParentTableID = cmdGetRecordDesc.CreateParameter("parentTableID", 3, 1)
-						' 3 = integer, 1 = input
+						Dim prmParentTableID = cmdGetRecordDesc.CreateParameter("parentTableID", 3, 1) ' 3 = integer, 1 = input
 						cmdGetRecordDesc.Parameters.Append(prmParentTableID)
 						prmParentTableID.Value = CleanNumeric(Session("parentTableID"))
 
-						Dim prmParentRecordID = cmdGetRecordDesc.CreateParameter("parentRecordID", 3, 1)
-						' 3=integer, 1=input
+						Dim prmParentRecordID = cmdGetRecordDesc.CreateParameter("parentRecordID", 3, 1) ' 3=integer, 1=input
 						cmdGetRecordDesc.Parameters.Append(prmParentRecordID)
 						prmParentRecordID.Value = CleanNumeric(Session("parentRecordID"))
 
-						Dim prmRecordDesc = cmdGetRecordDesc.CreateParameter("recordDesc", 200, 2, 8000)
-						' 200=varchar, 2=output, 8000=size
+						Dim prmRecordDesc = cmdGetRecordDesc.CreateParameter("recordDesc", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
 						cmdGetRecordDesc.Parameters.Append(prmRecordDesc)
 
 						Const DEADLOCK_ERRORNUMBER = -2147467259
@@ -1761,21 +1381,18 @@ Namespace Controllers
 					cookie("WindowsAuthentication") = Request.Form("chkWindowsAuthentication")
 					Response.Cookies.Add(cookie)
 
-					If Session("DmiMulti") Then
-						Return RedirectToAction("Main", "Home")
-					End If
-
-					If Session("DmiSingle") And Session("SsiUser") Then
-						Return RedirectToAction("LinksMain", "Home")
-					End If
-
-					If Session("DmiSingle") Then
-						Return RedirectToAction("Main", "Home")
-					End If
-
-					If Session("SsiUser") Then
-						Return RedirectToAction("LinksMain", "Home")
-					End If
+					Select Case Session("SelfServiceUserType")
+						Case 1		'IF DMI Multi
+							Return RedirectToAction("Main", "Home")
+						Case 2		'IF DMI Single
+							Return RedirectToAction("Main", "Home")
+						Case 3		'IF DMI Single And SSI
+							Return RedirectToAction("LinksMain", "Home")
+						Case 4		'IF SSI Only
+							Return RedirectToAction("LinksMain", "Home")
+						Case Else
+							Return RedirectToAction("login", "account")
+					End Select
 				End If
 			End If
 
@@ -1988,7 +1605,7 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		Function AboutHRPro() As ActionResult
+		Function About() As ActionResult
 			Return View()
 		End Function
 
