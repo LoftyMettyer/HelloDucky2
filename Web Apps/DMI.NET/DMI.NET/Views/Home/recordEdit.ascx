@@ -302,16 +302,19 @@
 </script>
 
 <script type="text/javascript">
-    function addActiveXHandlers() {
-        //TODO: NPG
-        return false;
-        OpenHR.addActiveXHandler("ctlRecordEdit", "dataChanged", ctlRecordEdit_dataChanged);
-        OpenHR.addActiveXHandler("ctlRecordEdit", "ToolClickRequest", ctlRecordEdit_ToolClickRequest);
-        OpenHR.addActiveXHandler("ctlRecordEdit", "LinkButtonClick", ctlRecordEdit_LinkButtonClick);
-        OpenHR.addActiveXHandler("ctlRecordEdit", "LookupClick", ctlRecordEdit_LookupClick);
-        OpenHR.addActiveXHandler("ctlRecordEdit", "ImageClick4", ctlRecordEdit_ImageClick4);
-        OpenHR.addActiveXHandler("ctlRecordEdit", "OLEClick4", ctlRecordEdit_OLEClick4);
-    }
+	function addActiveXHandlers() {
+		//TODO: NPG      
+		//OpenHR.addActiveXHandler("ctlRecordEdit", "dataChanged", ctlRecordEdit_dataChanged);
+		//OpenHR.addActiveXHandler("ctlRecordEdit", "ToolClickRequest", ctlRecordEdit_ToolClickRequest);
+		//OpenHR.addActiveXHandler("ctlRecordEdit", "LinkButtonClick", ctlRecordEdit_LinkButtonClick);
+		//OpenHR.addActiveXHandler("ctlRecordEdit", "LookupClick", ctlRecordEdit_LookupClick);
+		$("#ctlRecordEdit").find("[data-columntype='lookup']").click(function () {
+			ctlRecordEdit_LookupClick(this);	//TODO: add the parameters here....
+		});
+
+		//OpenHR.addActiveXHandler("ctlRecordEdit", "ImageClick4", ctlRecordEdit_ImageClick4);
+		//OpenHR.addActiveXHandler("ctlRecordEdit", "OLEClick4", ctlRecordEdit_OLEClick4);
+	}
 </script>
 
 
@@ -334,10 +337,17 @@
         menu_loadLinkPage(plngLinkTableID, plngLinkOrderID, plngLinkViewID, plngLinkRecordID);
     }
 
-    function ctlRecordEdit_LookupClick(plngColumnID, plngLookupColumnID, psLookupValue, pfMandatory, pstrFilterValue) {
+    function ctlRecordEdit_LookupClick(objLookup) {
         // A lookup button has been pressed in the recEdit control,
-        // so open the lookup page.
-        menu_loadLookupPage(plngColumnID, plngLookupColumnID, psLookupValue, pfMandatory, pstrFilterValue);
+    	// so open the lookup page.    	
+    	var plngColumnID = $(objLookup).attr("data-columnID");
+    	var plngLookupColumnID = $(objLookup).attr("data-LookupColumnID");
+    	var psLookupValue = $(objLookup).val();
+    	var pfMandatory = $(objLookup).attr("data-Mandatory");
+	    var pLookupFilterValueID = $(objLookup).attr("data-LookupFilterValueID");
+	    var pstrFilterValue = $("#ctlRecordEdit").find("[data-columnID='" + pLookupFilterValueID + "']").val();
+	    
+      menu_loadLookupPage(plngColumnID, plngLookupColumnID, psLookupValue, pfMandatory, pstrFilterValue);
     }
 
     function ctlRecordEdit_ImageClick4(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize, pbIsReadOnly) {
@@ -703,6 +713,7 @@
 
 
 <script type="text/javascript">
-    addActiveXHandlers();
     recordEdit_window_onload();
+	//must run after onload (which populates the screen)
+    addActiveXHandlers();
 </script>

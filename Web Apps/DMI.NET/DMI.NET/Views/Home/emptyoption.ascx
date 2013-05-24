@@ -104,9 +104,10 @@
 
 				if (txtAction.value == "SELECTLOOKUP") {
 					fNoAction = false;
-					var recEditControl = OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit;
-					recEditControl.setData(txtColumnID.value, txtValue.value);
-					recEditControl.changed = true;
+					recEditControl = OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit;
+					recEdit_setData(txtColumnID.value, txtValue.value);
+					$("#ctlRecordEdit #changed").val("true");
+					enableSaveButton();
 
 					$("#optionframe").attr("data-framesource", "EMPTYOPTION");
 					//window.setTimeout("window.parent.frames('menuframe').refreshMenu()", 100);

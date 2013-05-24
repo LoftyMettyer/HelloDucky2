@@ -1,146 +1,130 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="DMI.NET" %>
 
-<%@ Language=VBScript %>
-<!--#INCLUDE FILE="include/svrCleanup.asp" -->
-<%
-	Dim sReferringPage
+<script src="<%: Url.Content("~/Scripts/ctl_SetFont.js") %>" type="text/javascript"></script>
 
-	' Only open the form if there was a referring page.
-	' If it wasn't then redirect to the login page.
-	sReferringPage = Request.ServerVariables("HTTP_REFERER") 
-	if inStrRev(sReferringPage, "/") > 0 then
-		sReferringPage = mid(sReferringPage, inStrRev(sReferringPage, "/") + 1)
-	end if
+<script type="text/javascript">
 
-	if len(sReferringPage) = 0 then
-		Response.Redirect("login.asp")
-	end if
-
-%>
-<HTML>
-<HEAD>
-<META NAME="GENERATOR" Content="Microsoft Visual Studio 6.0">
-<LINK href="OpenHR.css" rel=stylesheet type=text/css >
-<TITLE>OpenHR Intranet</TITLE>
-<meta http-equiv="X-UA-Compatible" content="IE=5">
-<!--#include file="include\ctl_SetFont.txt"-->
-
-<OBJECT 
-	classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331" 
-	id="Microsoft_Licensed_Class_Manager_1_0" 
-	VIEWASTEXT>
-	<PARAM NAME="LPKPath" VALUE="lpks/main.lpk">
-</OBJECT>
-
-<SCRIPT FOR=window EVENT=onload LANGUAGE=JavaScript>
-<!--
-	var fOK
-	fOK = true;	
-	
-	var sErrMsg = frmLookupFindForm.txtErrorDescription.value;
-	if (sErrMsg.length > 0) {
-		fOK = false;
-		window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sErrMsg);
-		window.parent.location.replace("login.asp");
-	}
-
-	if (fOK == true) {
-		sErrMsg = frmLookupFindForm.txtFailureDescription.value;
+	function lookupFind_window_onload() {
+		var fOK;
+		fOK = true;
+		var frmLookupFindForm = document.getElementById("frmLookupFindForm");
+		var sErrMsg = frmLookupFindForm.txtErrorDescription.value;
 		if (sErrMsg.length > 0) {
 			fOK = false;
-			window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sErrMsg);
-			window.parent.location.replace("login.asp");
+			OpenHR.messageBox(sErrMsg);
+			window.parent.location.replace("login");
+		}
+
+		if (fOK == true) {
+			sErrMsg = frmLookupFindForm.txtFailureDescription.value;
+			if (sErrMsg.length > 0) {
+				fOK = false;
+				OpenHR.messageBox(sErrMsg);
+				window.parent.location.replace("login");
+			}
+		}
+
+		if (fOK == true) {
+			setGridFont(frmLookupFindForm.ssOleDBGrid);
+
+			// Expand the option frame and hide the work frame.
+			//window.parent.document.all.item("workframeset").cols = "0, *";	
+			$("#optionframe").attr("data-framesource", "LOOKUPFIND");
+			$("#workframe").hide();
+			$("#optionframe").show();
+
+			// Set focus onto one of the form controls. 
+			// NB. This needs to be done before making any reference to the grid
+			frmLookupFindForm.cmdCancel.focus();
+
+			// Fault 3503
+			//todo: window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "hidden";
+
+			// Get the optionData.asp to get the link find records.
+			var optionDataForm = OpenHR.getForm("optiondataframe", "frmGetOptionData");
+			optionDataForm.txtOptionAction.value = "LOADLOOKUPFIND";
+			optionDataForm.txtOptionColumnID.value = frmLookupFindForm.txtOptionColumnID.value;
+			optionDataForm.txtOptionLookupColumnID.value = frmLookupFindForm.txtOptionLookupColumnID.value;
+			optionDataForm.txtOptionLookupFilterValue.value = frmLookupFindForm.txtOptionLookupFilterValue.value;
+			optionDataForm.txtOptionPageAction.value = "LOAD";
+			optionDataForm.txtOptionFirstRecPos.value = 1;
+			optionDataForm.txtOptionCurrentRecCount.value = 0;
+			optionDataForm.txtOptionIsLookupTable.value = frmLookupFindForm.txtIsLookupTable.value;
+			optionDataForm.txtOptionRecordID.value = OpenHR.getForm("workframe", "frmRecordEditForm").txtCurrentRecordID.value;
+
+			optionDataForm.txtOptionParentTableID.value = OpenHR.getForm("workframe", "frmRecordEditForm").txtCurrentParentTableID.value;
+			optionDataForm.txtOptionParentRecordID.value = OpenHR.getForm("workframe", "frmRecordEditForm").txtCurrentParentRecordID.value;
+
+			if (frmLookupFindForm.txtIsLookupTable.value == "False") {
+				optionDataForm.txtOptionTableID.value = frmLookupFindForm.txtOptionLinkTableID.value;
+				optionDataForm.txtOptionViewID.value = frmLookupFindForm.selectView.options[frmLookupFindForm.selectView.selectedIndex].value;
+				optionDataForm.txtOptionOrderID.value = frmLookupFindForm.selectOrder.options[frmLookupFindForm.selectOrder.selectedIndex].value;
+			}
+			else {
+				optionDataForm.txtOptionTableID.value = 0;
+				optionDataForm.txtOptionViewID.value = 0;
+				optionDataForm.txtOptionOrderID.value = 0;
+			}
+
+			refreshOptionData();	//should be in scope now...
 		}
 	}
+</script>
 
-	if (fOK == true) {
-		setGridFont(frmLookupFindForm.ssOleDBGrid);
-	
-		// Expand the option frame and hide the work frame.
-		window.parent.document.all.item("workframeset").cols = "0, *";	
-				
-		// Set focus onto one of the form controls. 
-		// NB. This needs to be done before making any reference to the grid
-		frmLookupFindForm.cmdCancel.focus();
+<script type="text/javascript">
+	function SelectLookup() {
+		var frmLookupFindForm = document.getElementById("frmLookupFindForm");
+		var frmGotoOption = document.getElementById("frmGotoOption");
 
-		// Fault 3503
-		window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "hidden";
-
-		// Get the optionData.asp to get the link find records.
-		var optionDataForm = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
-		optionDataForm.txtOptionAction.value = "LOADLOOKUPFIND";
-		optionDataForm.txtOptionColumnID.value = frmLookupFindForm.txtOptionColumnID.value;
-		optionDataForm.txtOptionLookupColumnID.value = frmLookupFindForm.txtOptionLookupColumnID.value;
-		optionDataForm.txtOptionLookupFilterValue.value = frmLookupFindForm.txtOptionLookupFilterValue.value;
-		optionDataForm.txtOptionPageAction.value = "LOAD"
-		optionDataForm.txtOptionFirstRecPos.value = 1;
-		optionDataForm.txtOptionCurrentRecCount.value = 0;
-		optionDataForm.txtOptionIsLookupTable.value = frmLookupFindForm.txtIsLookupTable.value;
-		optionDataForm.txtOptionRecordID.value = window.parent.frames("workframe").document.forms("frmRecordEditForm").txtCurrentRecordID.value;
-
-		optionDataForm.txtOptionParentTableID.value = window.parent.frames("workframe").document.forms("frmRecordEditForm").txtCurrentParentTableID.value;
-		optionDataForm.txtOptionParentRecordID.value = window.parent.frames("workframe").document.forms("frmRecordEditForm").txtCurrentParentRecordID.value;
-
-		if (frmLookupFindForm.txtIsLookupTable.value == "False") {
-			optionDataForm.txtOptionTableID.value = frmLookupFindForm.txtOptionLinkTableID.value;
-			optionDataForm.txtOptionViewID.value = frmLookupFindForm.selectView.options[frmLookupFindForm.selectView.selectedIndex].value;
-			optionDataForm.txtOptionOrderID.value = frmLookupFindForm.selectOrder.options[frmLookupFindForm.selectOrder.selectedIndex].value;
-		}
-		else {
-			optionDataForm.txtOptionTableID.value = 0;
-			optionDataForm.txtOptionViewID.value = 0;
-			optionDataForm.txtOptionOrderID.value = 0;
-		}
-
-		window.parent.frames("optiondataframe").refreshOptionData();
-	}
-	-->
-</SCRIPT>
-
-<script LANGUAGE="JavaScript">
-<!--
-	function SelectLookup()
-	{  
 		if (frmLookupFindForm.ssOleDBGrid.SelBookmarks.Count > 0) {
 			// Fault 3503
-			window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
+			//TODO: ?window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
+			$("#optionframe").hide();
+			$("#workframe").show();
 
 			frmGotoOption.txtGotoOptionColumnID.value = frmLookupFindForm.txtOptionColumnID.value;
 			frmGotoOption.txtGotoOptionLookupColumnID.value = frmLookupFindForm.txtOptionLookupColumnID.value;
 			frmGotoOption.txtGotoOptionLookupValue.value = selectedValue();
 			frmGotoOption.txtGotoOptionAction.value = "SELECTLOOKUP";
-			frmGotoOption.txtGotoOptionPage.value = "emptyoption.asp";
-			frmGotoOption.submit();
+			frmGotoOption.txtGotoOptionPage.value = "emptyoption";
+			OpenHR.submitForm(frmGotoOption);
 		}
 	}
 
-	function ClearLookup()
-	{  
+	function ClearLookup() {
+		var frmLookupFindForm = document.getElementById("frmLookupFindForm");
+		var frmGotoOption = document.getElementById("frmGotoOption");
 		// Fault 3503
-		window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
+		//TODO: ?window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
+		$("#optionframe").hide();
+		$("#workframe").show();
 
 		frmGotoOption.txtGotoOptionColumnID.value = frmLookupFindForm.txtOptionColumnID.value;
 		frmGotoOption.txtGotoOptionLookupColumnID.value = frmLookupFindForm.txtOptionLookupColumnID.value;
 		frmGotoOption.txtGotoOptionLookupValue.value = "";
 		frmGotoOption.txtGotoOptionAction.value = "SELECTLOOKUP";
-		frmGotoOption.txtGotoOptionPage.value = "emptyoption.asp";
-		frmGotoOption.submit();
+		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
+		OpenHR.submitForm(frmGotoOption);
 	}
 
-	function CancelLookup()
-	{  
+	function CancelLookup() {
 		// Fault 3503
-		window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
+		//TODO: ?window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
+		$("#optionframe").hide();
+		$("#workframe").show();
+
+		var frmGotoOption = document.getElementById("frmGotoOption");
 
 		frmGotoOption.txtGotoOptionAction.value = "CANCEL";
-		frmGotoOption.txtGotoOptionPage.value = "emptyoption.asp";
-		frmGotoOption.submit();
+		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
+		OpenHR.submitForm(frmGotoOption);
 	}
 
 	/* Return the value of the record selected in the find form. */
-	function selectedValue()
-	{  
-		var sValue
+	function selectedValue() {
+		var frmLookupFindForm = document.getElementById("frmLookupFindForm");
+		var sValue;
 
 		sValue = "";
 		if (frmLookupFindForm.ssOleDBGrid.SelBookmarks.Count > 0) {
@@ -152,29 +136,29 @@
 			}
 		}
 
-		return(sValue);
+		return (sValue);
 	}
 
 	/* Sequential search the grid for the required OLE. */
-	function locateRecord(psFileName, pfExactMatch)
-	{  
+	function locateRecord(psFileName, pfExactMatch) {
+		var frmLookupFindForm = document.getElementById("frmLookupFindForm");
 		var fFound;
 		var iPos;
-	
+
 		iPos = 0;
 		if (frmLookupFindForm.txtIsLookupTable.value == "False") {
 			iPos = parseInt(frmLookupFindForm.txtLookupColumnGridPosition.value);
 		}
 
 		fFound = false;
-	
+
 		frmLookupFindForm.ssOleDBGrid.redraw = false;
 
 		frmLookupFindForm.ssOleDBGrid.MoveLast();
 		frmLookupFindForm.ssOleDBGrid.MoveFirst();
 
-		for (iIndex = 1; iIndex <= frmLookupFindForm.ssOleDBGrid.rows; iIndex++) {		
-			if (pfExactMatch == true) {	
+		for (var iIndex = 1; iIndex <= frmLookupFindForm.ssOleDBGrid.rows; iIndex++) {
+			if (pfExactMatch == true) {
 				if (frmLookupFindForm.ssOleDBGrid.Columns(iPos).value == psFileName) {
 					frmLookupFindForm.ssOleDBGrid.SelBookmarks.Add(frmLookupFindForm.ssOleDBGrid.Bookmark);
 					fFound = true;
@@ -190,7 +174,7 @@
 					break;
 				}
 			}
-		
+
 			if (iIndex < frmLookupFindForm.ssOleDBGrid.rows) {
 				frmLookupFindForm.ssOleDBGrid.MoveNext();
 			}
@@ -209,6 +193,9 @@
 	}
 
 	function refreshControls() {
+		//lookupFind...
+		var frmLookupFindForm = document.getElementById("frmLookupFindForm");
+
 		if (frmLookupFindForm.ssOleDBGrid.rows > 0) {
 			if (frmLookupFindForm.ssOleDBGrid.SelBookmarks.Count > 0) {
 				button_disable(frmLookupFindForm.cmdSelectLookup, false);
@@ -226,23 +213,25 @@
 		}
 		else {
 			button_disable(frmLookupFindForm.cmdClearLookup, false);
-		}	
+		}
 	}
 
 	function goView() {
-		var optionDataForm = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
+		var frmLookupFindForm = document.getElementById("frmLookupFindForm");
+
+		var optionDataForm = OpenHR.getForm("optiondataframe", "frmGetOptionData");
 		optionDataForm.txtOptionAction.value = "LOADLOOKUPFIND";
 		optionDataForm.txtOptionColumnID.value = frmLookupFindForm.txtOptionColumnID.value;
 		optionDataForm.txtOptionLookupColumnID.value = frmLookupFindForm.txtOptionLookupColumnID.value;
 		optionDataForm.txtOptionLookupFilterValue.value = frmLookupFindForm.txtOptionLookupFilterValue.value;
-		optionDataForm.txtOptionPageAction.value = "LOAD"
+		optionDataForm.txtOptionPageAction.value = "LOAD";
 		optionDataForm.txtOptionFirstRecPos.value = 1;
 		optionDataForm.txtOptionCurrentRecCount.value = 0;
 		optionDataForm.txtOptionIsLookupTable.value = frmLookupFindForm.txtIsLookupTable.value;
-		optionDataForm.txtOptionRecordID.value = window.parent.frames("workframe").document.forms("frmRecordEditForm").txtCurrentRecordID.value;
+		optionDataForm.txtOptionRecordID.value = OpenHR.getForm("workframe", "frmRecordEditForm").txtCurrentRecordID.value;
 
-		optionDataForm.txtOptionParentTableID.value = window.parent.frames("workframe").document.forms("frmRecordEditForm").txtCurrentParentTableID.value;
-		optionDataForm.txtOptionParentRecordID.value = window.parent.frames("workframe").document.forms("frmRecordEditForm").txtCurrentParentRecordID.value;
+		optionDataForm.txtOptionParentTableID.value = OpenHR.getForm("workframe", "frmRecordEditForm").txtCurrentParentTableID.value;
+		optionDataForm.txtOptionParentRecordID.value = OpenHR.getForm("workframe", "frmRecordEditForm").txtCurrentParentRecordID.value;
 
 		if (frmLookupFindForm.txtIsLookupTable.value == "False") {
 			optionDataForm.txtOptionTableID.value = frmLookupFindForm.txtOptionLinkTableID.value;
@@ -254,24 +243,26 @@
 			optionDataForm.txtOptionViewID.value = 0;
 			optionDataForm.txtOptionOrderID.value = 0;
 		}
-		
-		window.parent.frames("optiondataframe").refreshOptionData();
+
+		refreshOptionData();	//should be in scope...
 	}
 
 	function goOrder() {
-		var optionDataForm = window.parent.frames("optiondataframe").document.forms("frmGetOptionData");
+		var frmLookupFindForm = document.getElementById("frmLookupFindForm");
+
+		var optionDataForm = OpenHR.getForm("optiondataframe", "frmGetOptionData");
 		optionDataForm.txtOptionAction.value = "LOADLOOKUPFIND";
 		optionDataForm.txtOptionColumnID.value = frmLookupFindForm.txtOptionColumnID.value;
 		optionDataForm.txtOptionLookupColumnID.value = frmLookupFindForm.txtOptionLookupColumnID.value;
 		optionDataForm.txtOptionLookupFilterValue.value = frmLookupFindForm.txtOptionLookupFilterValue.value;
-		optionDataForm.txtOptionPageAction.value = "LOAD"
+		optionDataForm.txtOptionPageAction.value = "LOAD";
 		optionDataForm.txtOptionFirstRecPos.value = 1;
 		optionDataForm.txtOptionCurrentRecCount.value = 0;
 		optionDataForm.txtOptionIsLookupTable.value = frmLookupFindForm.txtIsLookupTable.value;
-		optionDataForm.txtOptionRecordID.value = window.parent.frames("workframe").document.forms("frmRecordEditForm").txtCurrentRecordID.value;
+		optionDataForm.txtOptionRecordID.value = OpenHR.getForm("workframe", "frmRecordEditForm").txtCurrentRecordID.value;
 
-		optionDataForm.txtOptionParentTableID.value = window.parent.frames("workframe").document.forms("frmRecordEditForm").txtCurrentParentTableID.value;
-		optionDataForm.txtOptionParentRecordID.value = window.parent.frames("workframe").document.forms("frmRecordEditForm").txtCurrentParentRecordID.value;
+		optionDataForm.txtOptionParentTableID.value = OpenHR.getForm("workframe", "frmRecordEditForm").txtCurrentParentTableID.value;
+		optionDataForm.txtOptionParentRecordID.value = OpenHR.getForm("workframe", "frmRecordEditForm").txtCurrentParentRecordID.value;
 
 		if (frmLookupFindForm.txtIsLookupTable.value == "False") {
 			optionDataForm.txtOptionTableID.value = frmLookupFindForm.txtOptionLinkTableID.value;
@@ -283,447 +274,446 @@
 			optionDataForm.txtOptionViewID.value = 0;
 			optionDataForm.txtOptionOrderID.value = 0;
 		}
-		
-		window.parent.frames("optiondataframe").refreshOptionData();
+
+		refreshOptionData();	//should be in scope...
 	}
-	-->
+
 </script>
 
-<SCRIPT FOR=ssOleDBGrid EVENT=dblClick LANGUAGE=JavaScript>
-<!--
-	SelectLookup();
-	-->
-</script>
-
-<SCRIPT FOR=ssOleDBGrid EVENT=KeyPress(iKeyAscii) LANGUAGE=JavaScript>
-<!--
-	if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {	
-		var dtTicker = new Date();
-		var iThisTick = new Number(dtTicker.getTime());
-		if (txtLastKeyFind.value.length > 0) {
-			var iLastTick = new Number(txtTicker.value);
-		}
-		else {
-			var iLastTick = new Number("0");
-		}
-		
-		if (iThisTick > (iLastTick + 1500)) {
-			var sFind = String.fromCharCode(iKeyAscii);
-		}
-		else {
-			var sFind = txtLastKeyFind.value + String.fromCharCode(iKeyAscii);
-		}
-		
-		txtTicker.value = iThisTick;
-		txtLastKeyFind.value = sFind;
-
-		locateRecord(sFind, false);
+<script type="text/javascript">
+	function lookupFind_addhandlers() {
+		OpenHR.addActiveXHandler("ssOleDBGrid", "dblClick", ssOleDBGrid_dblClick);
+		OpenHR.addActiveXHandler("ssOleDBGrid", "click", ssOleDBGrid_click);
+		OpenHR.addActiveXHandler("ssOleDBGrid", "KeyPress", ssOleDBGrid_KeyPress);
 	}
-	-->
+
+	function ssOleDBGrid_dblClick() {
+		SelectLookup();
+	}
+
+	function ssOleDBGrid_click() {
+		refreshControls();
+	}
+
+	function ssOleDBGrid_KeyPress(iKeyAscii) {
+		var iLastTick;
+		var sFind;
+
+		if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {
+			var dtTicker = new Date();
+			var iThisTick = new Number(dtTicker.getTime());
+			if ($("#txtLastKeyFind").val().length > 0) {
+				iLastTick = new Number($("#txtTicker").val());
+			}
+			else {
+				iLastTick = new Number("0");
+			}
+
+			if (iThisTick > (iLastTick + 1500)) {
+				sFind = String.fromCharCode(iKeyAscii);
+			}
+			else {
+				sFind = $("#txtLastKeyFind").val() + String.fromCharCode(iKeyAscii);
+			}
+
+			$("#txtTicker").val(iThisTick);
+			$("#txtLastKeyFind").val(sFind);
+
+			locateRecord(sFind, false);
+		}
+
+	}
 </script>
 
-<SCRIPT FOR=ssOleDBGrid EVENT=click LANGUAGE=JavaScript>
-<!--
-	refreshControls();
-	-->
-</script>
-<!--#INCLUDE FILE="include/ctl_SetStyles.txt" -->
-</HEAD>
+<script src="<%: Url.Content("~/Scripts/ctl_SetStyles.js") %>" type="text/javascript"></script>
 
-<BODY <%=session("BodyTag")%>>
-<FORM action="" method=POST id=frmLookupFindForm name=frmLookupFindForm>
-<%
+<div <%=session("BodyTag")%>>
+	<form action="" method="POST" id="frmLookupFindForm" name="frmLookupFindForm">
+		<%
 
-	fIsLookupTable = false
-	lngLookupTableID = 0
+			Dim fIsLookupTable = False
+			Dim lngLookupTableID = 0
+			Dim sErrorDescription = ""
+			Dim sFailureDescription = ""
 	
-	Set cmdGetTable = Server.CreateObject("ADODB.Command")
-	cmdGetTable.CommandText = "spASRIntGetColumnTableID"
-	cmdGetTable.CommandType = 4 ' Stored procedure
-	Set cmdGetTable.ActiveConnection = session("databaseConnection")
+			Dim cmdGetTable = CreateObject("ADODB.Command")
+			cmdGetTable.CommandText = "spASRIntGetColumnTableID"
+			cmdGetTable.CommandType = 4	' Stored procedure
+			cmdGetTable.ActiveConnection = Session("databaseConnection")
 
-	Set prmColumnID = cmdGetTable.CreateParameter("LookupColumnID",3,1)
-	cmdGetTable.Parameters.Append prmColumnID
-	prmColumnID.value = cleanNumeric(session("optionLookupColumnID"))
+			Dim prmColumnID = cmdGetTable.CreateParameter("LookupColumnID", 3, 1)
+			cmdGetTable.Parameters.Append(prmColumnID)
+			prmColumnID.value = CleanNumeric(Session("optionLookupColumnID"))
 
-	Set prmTableID = cmdGetTable.CreateParameter("tableID",3,2) ' 3=integer, 2=output
-	cmdGetTable.Parameters.Append prmTableID
+			Dim prmTableID = cmdGetTable.CreateParameter("tableID", 3, 2)	' 3=integer, 2=output
+			cmdGetTable.Parameters.Append(prmTableID)
 
-	err = 0
-	cmdGetTable.Execute
+			Err.Clear()
+			cmdGetTable.Execute()
 	
-	if (err <> 0) then
-		sErrorDescription = "Error getting the lookup column table ID." & vbcrlf & formatError(Err.Description)
-	else
-		lngLookupTableID = clng(cmdGetTable.Parameters("tableID").Value)
-	end if
+			If (Err.Number <> 0) Then
+				sErrorDescription = "Error getting the lookup column table ID." & vbCrLf & FormatError(Err.Description)
+			Else
+				lngLookupTableID = CType(cmdGetTable.Parameters("tableID").Value, Integer)
+			End If
 
-	set cmdGetTable = nothing
+			cmdGetTable = Nothing
 
-	if len(sErrorDescription) = 0 then
-		Set cmdIsLookupTable = Server.CreateObject("ADODB.Command")
-		cmdIsLookupTable.CommandText = "spASRIntIsLookupTable"
-		cmdIsLookupTable.CommandType = 4 ' Stored procedure
-		Set cmdIsLookupTable.ActiveConnection = session("databaseConnection")
+			If Len(sErrorDescription) = 0 Then
+				Dim cmdIsLookupTable = CreateObject("ADODB.Command")
+				cmdIsLookupTable.CommandText = "spASRIntIsLookupTable"
+				cmdIsLookupTable.CommandType = 4 ' Stored procedure
+				cmdIsLookupTable.ActiveConnection = Session("databaseConnection")
 
-		Set prmTableID = cmdIsLookupTable.CreateParameter("tableID",3,1)
-		cmdIsLookupTable.Parameters.Append prmTableID
-		prmTableID.value = cleanNumeric(lngLookupTableID)
+				prmTableID = cmdIsLookupTable.CreateParameter("tableID", 3, 1)
+				cmdIsLookupTable.Parameters.Append(prmTableID)
+				prmTableID.value = CleanNumeric(lngLookupTableID)
 
-		Set prmIsLookup = cmdIsLookupTable.CreateParameter("isLookup",11,2) ' 11=bit, 2=output
-		cmdIsLookupTable.Parameters.Append prmIsLookup
+				Dim prmIsLookup = cmdIsLookupTable.CreateParameter("isLookup", 11, 2)	' 11=bit, 2=output
+				cmdIsLookupTable.Parameters.Append(prmIsLookup)
 
-		err = 0
-		cmdIsLookupTable.Execute
+				Err.Clear()
+				cmdIsLookupTable.Execute()
 	
-		if (err <> 0) then
-			sErrorDescription = "Error checking the lookup column table type." & vbcrlf & formatError(Err.Description)
-		else
-			fIsLookupTable = cbool(cmdIsLookupTable.Parameters("isLookup").Value)
-		end if
+				If (Err.Number <> 0) Then
+					sErrorDescription = "Error checking the lookup column table type." & vbCrLf & FormatError(Err.Description)
+				Else
+					fIsLookupTable = CBool(cmdIsLookupTable.Parameters("isLookup").Value)
+				End If
 
-		set cmdIsLookupTable = nothing
-	end if
-%>
+				cmdIsLookupTable = Nothing
+			End If
+		%>
 
-<table align=center class="outline" cellPadding=5 cellSpacing=0 width=100% height=100%>
-	<TR>
-		<TD>
-			<TABLE WIDTH="100%" height="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
-				<TR>
-					<TD height=10 colspan=3></td>
-				</tr>
-				<TR>
-					<TD align=center height=10 colspan=3>
-						<h3 align=center>Find Lookup Record</h3>
-					</td>
-				</tr>
-				
-<%if not fIsLookupTable then%>
-				<tr>
-					<td height=10>&nbsp;&nbsp;</td>
-					<td height="10">
-						<table WIDTH=100% class="invisible" CELLSPACING="0" CELLPADDING="0">
-							<TR>
-								<TD width=40>
-									View :
-								</TD>
-								<TD width=10>
-									&nbsp;
-								</TD>
-								<TD width=175>
-									<SELECT id=selectView name=selectView class="combo" style="HEIGHT: 22px; WIDTH: 200px">
-<%
-	on error resume next
+		<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">
+			<tr>
+				<td>
+					<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
+						<tr>
+							<td height="10" colspan="3"></td>
+						</tr>
+						<tr>
+							<td align="center" height="10" colspan="3">
+								<h3 align="center">Find Lookup Record</h3>
+							</td>
+						</tr>
 
-	if (len(sErrorDescription) = 0) and (len(sFailureDescription) = 0) then
-		' Get the view records.
-		Set cmdViewRecords = Server.CreateObject("ADODB.Command")
-		cmdViewRecords.CommandText = "spASRIntGetLookupViews"
-		cmdViewRecords.CommandType = 4 ' Stored Procedure
-		Set cmdViewRecords.ActiveConnection = session("databaseConnection")
+						<%If Not fIsLookupTable Then%>
+						<tr>
+							<td height="10">&nbsp;&nbsp;</td>
+							<td height="10">
+								<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+									<tr>
+										<td width="40">View :
+										</td>
+										<td width="10">&nbsp;
+										</td>
+										<td width="175">
+											<select id="selectView" name="selectView" class="combo" style="HEIGHT: 22px; WIDTH: 200px">
+												<%
+													On Error Resume Next
 
-		Set prmTableID = cmdViewRecords.CreateParameter("tableID",3,1)
-		cmdViewRecords.Parameters.Append prmTableID
-		prmTableID.value = cleanNumeric(lngLookupTableID)
+													If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
+														' Get the view records.
+														Dim cmdViewRecords = CreateObject("ADODB.Command")
+														cmdViewRecords.CommandText = "spASRIntGetLookupViews"
+														cmdViewRecords.CommandType = 4 ' Stored Procedure
+														cmdViewRecords.ActiveConnection = Session("databaseConnection")
 
-		Set prmDfltOrderID = cmdViewRecords.CreateParameter("dfltOrderID",3,2) ' 11=integer, 2=output
-		cmdViewRecords.Parameters.Append prmDfltOrderID
+														prmTableID = cmdViewRecords.CreateParameter("tableID", 3, 1)
+														cmdViewRecords.Parameters.Append(prmTableID)
+														prmTableID.value = CleanNumeric(lngLookupTableID)
 
-		Set prmColumnID = cmdViewRecords.CreateParameter("columnID",3,1)
-		cmdViewRecords.Parameters.Append prmColumnID
-		prmColumnID.value = cleanNumeric(session("optionColumnID"))
+														Dim prmDfltOrderID = cmdViewRecords.CreateParameter("dfltOrderID", 3, 2) ' 11=integer, 2=output
+														cmdViewRecords.Parameters.Append(prmDfltOrderID)
 
-		err = 0
-		Set rstViewRecords = cmdViewRecords.Execute
+														prmColumnID = cmdViewRecords.CreateParameter("columnID", 3, 1)
+														cmdViewRecords.Parameters.Append(prmColumnID)
+														prmColumnID.value = CleanNumeric(Session("optionColumnID"))
 
-		if (err <> 0) then
-			sErrorDescription = "The lookup view records could not be retrieved." & vbcrlf & formatError(Err.Description)
-		end if
+														Err.Clear()
+														Dim rstViewRecords = cmdViewRecords.Execute
 
-		if (len(sErrorDescription) = 0) and (len(sFailureDescription) = 0) then
-			do while not rstViewRecords.EOF
-				Response.Write "						<OPTION value=" & rstViewRecords.Fields(0).Value 
-				if rstViewRecords.Fields(0).Value = clng(session("optionLinkViewID")) then
-					Response.Write " SELECTED"
-				end if
+														If (Err.Number <> 0) Then
+															sErrorDescription = "The lookup view records could not be retrieved." & vbCrLf & FormatError(Err.Description)
+														End If
 
-				if rstViewRecords.Fields(0).Value = 0 then
-					Response.Write ">" & replace(rstViewRecords.Fields(1).Value, "_", " ") & "</OPTION>" & vbcrlf
-				else
-					Response.Write ">'" & replace(rstViewRecords.Fields(1).Value, "_", " ") & "' view</OPTION>" & vbcrlf
-				end if
+														If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
+															Do While Not rstViewRecords.EOF
+																Response.Write("						<OPTION value=" & rstViewRecords.Fields(0).Value)
+																If rstViewRecords.Fields(0).Value = CLng(Session("optionLinkViewID")) Then
+																	Response.Write(" SELECTED")
+																End If
 
-				rstViewRecords.MoveNext
-			loop
+																If rstViewRecords.Fields(0).Value = 0 Then
+																	Response.Write(">" & Replace(rstViewRecords.Fields(1).Value, "_", " ") & "</OPTION>" & vbCrLf)
+																Else
+																	Response.Write(">'" & Replace(rstViewRecords.Fields(1).Value, "_", " ") & "' view</OPTION>" & vbCrLf)
+																End If
+
+																rstViewRecords.MoveNext()
+															Loop
 			
-			if (rstViewRecords.EOF and rstViewRecords.BOF) then
-				sFailureDescription = "You do not have permission to read the lookup table."
-			end if
+															If (rstViewRecords.EOF And rstViewRecords.BOF) Then
+																sFailureDescription = "You do not have permission to read the lookup table."
+															End If
 		
-			' Release the ADO recordset object.
-			rstViewRecords.close
-			Set rstViewRecords = nothing
+															' Release the ADO recordset object.
+															rstViewRecords.close()
+															rstViewRecords = Nothing
 	
-			' NB. IMPORTANT ADO NOTE.
-			' When calling a stored procedure which returns a recordset AND has output parameters
-			' you need to close the recordset and set it to nothing before using the output parameters. 
-			if session("optionLookupOrderID") <= 0 then
-				session("optionLookupOrderID") = cmdViewRecords.Parameters("dfltOrderID").Value
-			end if
-		end if
+															' NB. IMPORTANT ADO NOTE.
+															' When calling a stored procedure which returns a recordset AND has output parameters
+															' you need to close the recordset and set it to nothing before using the output parameters. 
+															If Session("optionLookupOrderID") <= 0 Then
+																Session("optionLookupOrderID") = cmdViewRecords.Parameters("dfltOrderID").Value
+															End If
+														End If
 
-		' Release the ADO command object.
-		Set cmdViewRecords = nothing
-	end if
-%>
-									</SELECT>						
-								</TD>
-								<TD width=10>
-									<INPUT type="button" value="Go" class="btn" id=btnGoView name=btnGoView 
-									    onclick="goView()"
-	                                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-	                                    onmouseout="try{button_onMouseOut(this);}catch(e){}"
-	                                    onfocus="try{button_onFocus(this);}catch(e){}"
-	                                    onblur="try{button_onBlur(this);}catch(e){}" />
-								</TD>
-								<TD>
-									&nbsp;
-								</TD>
-								<TD width=40>
-									Order :
-								</TD>
-								<TD width=10>
-									&nbsp;
-								</TD>
-								<TD width=175>
-									<SELECT id=selectOrder name=selectOrder class="combo" style="HEIGHT: 22px; WIDTH: 200px">
-<%
-	if (len(sErrorDescription) = 0) and (len(sFailureDescription) = 0) then
-		' Get the order records.
-		Set cmdOrderRecords = Server.CreateObject("ADODB.Command")
-		cmdOrderRecords.CommandText = "sp_ASRIntGetTableOrders"
-		cmdOrderRecords.CommandType = 4 ' Stored Procedure
-		Set cmdOrderRecords.ActiveConnection = session("databaseConnection")
+														' Release the ADO command object.
+														cmdViewRecords = Nothing
+													End If
+												%>
+											</select>
+										</td>
+										<td width="10">
+											<input type="button" value="Go" class="btn" id="btnGoView" name="btnGoView"
+												onclick="goView()"
+												onmouseover="try{button_onMouseOver(this);}catch(e){}"
+												onmouseout="try{button_onMouseOut(this);}catch(e){}"
+												onfocus="try{button_onFocus(this);}catch(e){}"
+												onblur="try{button_onBlur(this);}catch(e){}" />
+										</td>
+										<td>&nbsp;
+										</td>
+										<td width="40">Order :
+										</td>
+										<td width="10">&nbsp;
+										</td>
+										<td width="175">
+											<select id="selectOrder" name="selectOrder" class="combo" style="HEIGHT: 22px; WIDTH: 200px">
+												<%
+													If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
+														' Get the order records.
+														Dim cmdOrderRecords = CreateObject("ADODB.Command")
+														cmdOrderRecords.CommandText = "sp_ASRIntGetTableOrders"
+														cmdOrderRecords.CommandType = 4	' Stored Procedure
+														cmdOrderRecords.ActiveConnection = Session("databaseConnection")
 
-		Set prmTableID = cmdOrderRecords.CreateParameter("tableID",3,1)
-		cmdOrderRecords.Parameters.Append prmTableID
-		prmTableID.value = cleanNumeric(lngLookupTableID)
+														prmTableID = cmdOrderRecords.CreateParameter("tableID", 3, 1)
+														cmdOrderRecords.Parameters.Append(prmTableID)
+														prmTableID.value = CleanNumeric(lngLookupTableID)
 
-		Set prmViewID = cmdOrderRecords.CreateParameter("viewID",3,1)
-		cmdOrderRecords.Parameters.Append prmViewID
-		prmViewID.value = 0
+														Dim prmViewID = cmdOrderRecords.CreateParameter("viewID", 3, 1)
+														cmdOrderRecords.Parameters.Append(prmViewID)
+														prmViewID.value = 0
 
-		err = 0
-		Set rstOrderRecords = cmdOrderRecords.Execute
+														Err.Clear()
+														Dim rstOrderRecords = cmdOrderRecords.Execute
 
-		if (err <> 0) then
-			sErrorDescription = "The order records could not be retrieved." & vbcrlf & formatError(Err.Description)
-		end if
+														If (Err.Number <> 0) Then
+															sErrorDescription = "The order records could not be retrieved." & vbCrLf & FormatError(Err.Description)
+														End If
 
-		if (len(sErrorDescription) = 0) and (len(sFailureDescription) = 0) then
-			do while not rstOrderRecords.EOF
-				Response.Write "						<OPTION value=" & rstOrderRecords.Fields(1).Value 
-				if rstOrderRecords.Fields(1).Value = cint(session("optionOrderID")) then
-					Response.Write " SELECTED"
-				end if
+														If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
+															Do While Not rstOrderRecords.EOF
+																Response.Write("						<OPTION value=" & rstOrderRecords.Fields(1).Value)
+																If rstOrderRecords.Fields(1).Value = CInt(Session("optionOrderID")) Then
+																	Response.Write(" SELECTED")
+																End If
 
-				Response.Write ">" & replace(rstOrderRecords.Fields(0).Value, "_", " ") & "</OPTION>" & vbcrlf
+																Response.Write(">" & Replace(rstOrderRecords.Fields(0).Value, "_", " ") & "</OPTION>" & vbCrLf)
 
-				rstOrderRecords.MoveNext
-			loop
+																rstOrderRecords.MoveNext()
+															Loop
 
-			' Release the ADO recordset object.
-			rstOrderRecords.close
-			Set rstOrderRecords = nothing
-		end if
+															' Release the ADO recordset object.
+															rstOrderRecords.close()
+															rstOrderRecords = Nothing
+														End If
 	
-		' Release the ADO command object.
-		Set cmdOrderRecords = nothing
-	end if
-%>
-									</SELECT>
-								</TD>
-								<TD width=10>
-									<INPUT type="button" value="Go" class="btn" id=btnGoOrder name=btnGoOrder 
-									    onclick="goOrder()"
-	                                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-	                                    onmouseout="try{button_onMouseOut(this);}catch(e){}"
-	                                    onfocus="try{button_onFocus(this);}catch(e){}"
-	                                    onblur="try{button_onBlur(this);}catch(e){}" />
-								</TD>
-							</TR>
-						</table>
-					</td>
-					<td height=10>&nbsp;&nbsp;</td>
-				</tr>
-				<TR>
-					<TD height=10 colspan=3></td>
-				</tr>
-<%end if 'if fIsLookupTable then%>
-				
-				<TR>
-					<td width=10></td>
-					<TD>
-						<OBJECT classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id=ssOleDBGrid name=ssOleDBGrid  codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:100%">
-							<PARAM NAME="ScrollBars" VALUE="4">
-							<PARAM NAME="_Version" VALUE="196617">
-							<PARAM NAME="DataMode" VALUE="2">				
-							<PARAM NAME="Cols" VALUE="0">
-							<PARAM NAME="Rows" VALUE="0">
-							<PARAM NAME="BorderStyle" VALUE="1">
-							<PARAM NAME="RecordSelectors" VALUE="0">
-							<PARAM NAME="GroupHeaders" VALUE="0">
-							<PARAM NAME="ColumnHeaders" VALUE="-1">
-							<PARAM NAME="GroupHeadLines" VALUE="1">
-							<PARAM NAME="HeadLines" VALUE="1">
-							<PARAM NAME="FieldDelimiter" VALUE="(None)">
-							<PARAM NAME="FieldSeparator" VALUE="(Tab)">
-							<PARAM NAME="Col.Count" VALUE="0">
-							<PARAM NAME="stylesets.count" VALUE="0">
-							<PARAM NAME="TagVariant" VALUE="EMPTY">
-							<PARAM NAME="UseGroups" VALUE="0">
-							<PARAM NAME="HeadFont3D" VALUE="0">
-							<PARAM NAME="Font3D" VALUE="0">
-							<PARAM NAME="DividerType" VALUE="3">
-							<PARAM NAME="DividerStyle" VALUE="1">
-							<PARAM NAME="DefColWidth" VALUE="0">
-							<PARAM NAME="BeveColorScheme" VALUE="2">
-							<PARAM NAME="BevelColorFrame" VALUE="-2147483642">
-							<PARAM NAME="BevelColorHighlight" VALUE="-2147483628">
-							<PARAM NAME="BevelColorShadow" VALUE="-2147483632">
-							<PARAM NAME="BevelColorFace" VALUE="-2147483633">
-							<PARAM NAME="CheckBox3D" VALUE="-1">
-							<PARAM NAME="AllowAddNew" VALUE="0">
-							<PARAM NAME="AllowDelete" VALUE="0">
-							<PARAM NAME="AllowUpdate" VALUE="0">
-							<PARAM NAME="MultiLine" VALUE="0">
-							<PARAM NAME="ActiveCellStyleSet" VALUE="">
-							<PARAM NAME="RowSelectionStyle" VALUE="0">
-							<PARAM NAME="AllowRowSizing" VALUE="0">
-							<PARAM NAME="AllowGroupSizing" VALUE="0">
-							<PARAM NAME="AllowColumnSizing" VALUE="-1">
-							<PARAM NAME="AllowGroupMoving" VALUE="0">
-							<PARAM NAME="AllowColumnMoving" VALUE="0">
-							<PARAM NAME="AllowGroupSwapping" VALUE="0">
-							<PARAM NAME="AllowColumnSwapping" VALUE="0">
-							<PARAM NAME="AllowGroupShrinking" VALUE="0">
-							<PARAM NAME="AllowColumnShrinking" VALUE="0">
-							<PARAM NAME="AllowDragDrop" VALUE="0">
-							<PARAM NAME="UseExactRowCount" VALUE="-1">
-							<PARAM NAME="SelectTypeCol" VALUE="0">
-							<PARAM NAME="SelectTypeRow" VALUE="1">
-							<PARAM NAME="SelectByCell" VALUE="-1">
-							<PARAM NAME="BalloonHelp" VALUE="0">
-							<PARAM NAME="RowNavigation" VALUE="1">
-							<PARAM NAME="CellNavigation" VALUE="0">
-							<PARAM NAME="MaxSelectedRows" VALUE="1">
-							<PARAM NAME="HeadStyleSet" VALUE="">
-							<PARAM NAME="StyleSet" VALUE="">
-							<PARAM NAME="ForeColorEven" VALUE="0">
-							<PARAM NAME="ForeColorOdd" VALUE="0">
-							<PARAM NAME="BackColorEven" VALUE="16777215">
-							<PARAM NAME="BackColorOdd" VALUE="16777215">
-							<PARAM NAME="Levels" VALUE="1">
-							<PARAM NAME="RowHeight" VALUE="503">
-							<PARAM NAME="ExtraHeight" VALUE="0">
-							<PARAM NAME="ActiveRowStyleSet" VALUE="">
-							<PARAM NAME="CaptionAlignment" VALUE="2">
-							<PARAM NAME="SplitterPos" VALUE="0">
-							<PARAM NAME="SplitterVisible" VALUE="0">
-							<PARAM NAME="Columns.Count" VALUE="0">
-							<PARAM NAME="UseDefaults" VALUE="-1">
-							<PARAM NAME="TabNavigation" VALUE="1">
-							<PARAM NAME="_ExtentX" VALUE="17330">
-							<PARAM NAME="_ExtentY" VALUE="1323">
-							<PARAM NAME="_StockProps" VALUE="79">
-							<PARAM NAME="Caption" VALUE="">
-							<PARAM NAME="ForeColor" VALUE="0">
-							<PARAM NAME="BackColor" VALUE="16777215">
-							<PARAM NAME="Enabled" VALUE="-1">
-							<PARAM NAME="DataMember" VALUE="">
-							<PARAM NAME="Row.Count" VALUE="0">
-						</OBJECT>
-					</TD>
-					<td width=10></td>
-				</TR>
-				<TR>
-					<td height=10 colspan=3>
-					</td>
-				</TR>
-				<tr>
-					<td width=20></td>
-					<td height="10">
-						<table WIDTH=100% class="invisible" CELLSPACING="0" CELLPADDING="0">
-							<TR>
-								<TD colspan=6>
-								</TD>
-							</TR>
-							<tr>	
-								<td>
-								</td>
-								<td width=10>
-									<input id="cmdSelectLookup" name="cmdSelectLookup" type="button" value="Select" style="WIDTH: 75px" width="75" class="btn"
-									    onclick="SelectLookup()"
-	                                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-	                                    onmouseout="try{button_onMouseOut(this);}catch(e){}"
-	                                    onfocus="try{button_onFocus(this);}catch(e){}"
-	                                    onblur="try{button_onBlur(this);}catch(e){}" />
-								</td>
-								<td width=40>
-								</td>
-								<td width=10>
-									<input id="cmdClearLookup" name="cmdClearLookup" type="button" value="Clear" style="WIDTH: 75px" width="75" class="btn"
-									    onclick="ClearLookup()"
-	                                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-	                                    onmouseout="try{button_onMouseOut(this);}catch(e){}"
-	                                    onfocus="try{button_onFocus(this);}catch(e){}"
-	                                    onblur="try{button_onBlur(this);}catch(e){}" />
-								</td>
-								<td width=40>
-								</td>
-								<td width=10>
-									<input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" style="WIDTH: 75px" width="75" class="btn" 
-									    onclick="CancelLookup()"
-	                                    onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-	                                    onmouseout="try{button_onMouseOut(this);}catch(e){}"
-	                                    onfocus="try{button_onFocus(this);}catch(e){}"
-	                                    onblur="try{button_onBlur(this);}catch(e){}" />
-								</td>
-							</tr>			
-						</table>
-					</td>
-					<td width=20></td>
-				</tr>
-				<TR>
-					<TD height=10 colspan=3></td>
-				</tr>
-			</TABLE>
-		</td>
-	</tr>
-</TABLE>
+														' Release the ADO command object.
+														cmdOrderRecords = Nothing
+													End If
+												%>
+											</select>
+										</td>
+										<td width="10">
+											<input type="button" value="Go" class="btn" id="btnGoOrder" name="btnGoOrder"
+												onclick="goOrder()"
+												onmouseover="try{button_onMouseOver(this);}catch(e){}"
+												onmouseout="try{button_onMouseOut(this);}catch(e){}"
+												onfocus="try{button_onFocus(this);}catch(e){}"
+												onblur="try{button_onBlur(this);}catch(e){}" />
+										</td>
+									</tr>
+								</table>
+							</td>
+							<td height="10">&nbsp;&nbsp;</td>
+						</tr>
+						<tr>
+							<td height="10" colspan="3"></td>
+						</tr>
+						<%End If 'if fIsLookupTable then%>
 
-	<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value="<%=sErrorDescription%>">
-	<INPUT type='hidden' id=txtFailureDescription name=txtFailureDescription value="<%=sFailureDescription%>">
-	<INPUT type='hidden' id=txtOptionColumnID name=txtOptionColumnID value=<%=session("optionColumnID")%>>
-	<INPUT type='hidden' id=txtOptionLookupColumnID name=txtOptionLookupColumnID value=<%=session("optionLookupColumnID")%>>
-	<INPUT type='hidden' id=txtOptionLookupMandatory name=txtOptionLookupMandatory value=<%=session("optionLookupMandatory")%>>
-	<INPUT type='hidden' id=txtOptionLookupValue name=txtOptionLookupValue value=<%=session("optionLookupValue")%>>
-	<INPUT type='hidden' id=txtOptionLookupFilterValue name=txtOptionLookupFilterValue value="<%=session("optionLookupFilterValue")%>">	
-	<INPUT type='hidden' id=txtIsLookupTable name=txtIsLookupTable value="<%=fIsLookupTable%>">	
-	<INPUT type='hidden' id=txtOptionLinkTableID name=txtOptionLinkTableID value=<%=lngLookupTableID%>>	
-	<INPUT type='hidden' id=txtLookupColumnGridPosition name=txtLookupColumnGridPosition value=0>	
-</FORM>
+						<tr>
+							<td width="10"></td>
+							<td>
+								<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id="ssOleDBGrid" name="ssOleDBGrid" codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 400px">
+									<param name="ScrollBars" value="4">
+									<param name="_Version" value="196617">
+									<param name="DataMode" value="2">
+									<param name="Cols" value="0">
+									<param name="Rows" value="0">
+									<param name="BorderStyle" value="1">
+									<param name="RecordSelectors" value="0">
+									<param name="GroupHeaders" value="0">
+									<param name="ColumnHeaders" value="-1">
+									<param name="GroupHeadLines" value="1">
+									<param name="HeadLines" value="1">
+									<param name="FieldDelimiter" value="(None)">
+									<param name="FieldSeparator" value="(Tab)">
+									<param name="Col.Count" value="0">
+									<param name="stylesets.count" value="0">
+									<param name="TagVariant" value="EMPTY">
+									<param name="UseGroups" value="0">
+									<param name="HeadFont3D" value="0">
+									<param name="Font3D" value="0">
+									<param name="DividerType" value="3">
+									<param name="DividerStyle" value="1">
+									<param name="DefColWidth" value="0">
+									<param name="BeveColorScheme" value="2">
+									<param name="BevelColorFrame" value="-2147483642">
+									<param name="BevelColorHighlight" value="-2147483628">
+									<param name="BevelColorShadow" value="-2147483632">
+									<param name="BevelColorFace" value="-2147483633">
+									<param name="CheckBox3D" value="-1">
+									<param name="AllowAddNew" value="0">
+									<param name="AllowDelete" value="0">
+									<param name="AllowUpdate" value="0">
+									<param name="MultiLine" value="0">
+									<param name="ActiveCellStyleSet" value="">
+									<param name="RowSelectionStyle" value="0">
+									<param name="AllowRowSizing" value="0">
+									<param name="AllowGroupSizing" value="0">
+									<param name="AllowColumnSizing" value="-1">
+									<param name="AllowGroupMoving" value="0">
+									<param name="AllowColumnMoving" value="0">
+									<param name="AllowGroupSwapping" value="0">
+									<param name="AllowColumnSwapping" value="0">
+									<param name="AllowGroupShrinking" value="0">
+									<param name="AllowColumnShrinking" value="0">
+									<param name="AllowDragDrop" value="0">
+									<param name="UseExactRowCount" value="-1">
+									<param name="SelectTypeCol" value="0">
+									<param name="SelectTypeRow" value="1">
+									<param name="SelectByCell" value="-1">
+									<param name="BalloonHelp" value="0">
+									<param name="RowNavigation" value="1">
+									<param name="CellNavigation" value="0">
+									<param name="MaxSelectedRows" value="1">
+									<param name="HeadStyleSet" value="">
+									<param name="StyleSet" value="">
+									<param name="ForeColorEven" value="0">
+									<param name="ForeColorOdd" value="0">
+									<param name="BackColorEven" value="16777215">
+									<param name="BackColorOdd" value="16777215">
+									<param name="Levels" value="1">
+									<param name="RowHeight" value="503">
+									<param name="ExtraHeight" value="0">
+									<param name="ActiveRowStyleSet" value="">
+									<param name="CaptionAlignment" value="2">
+									<param name="SplitterPos" value="0">
+									<param name="SplitterVisible" value="0">
+									<param name="Columns.Count" value="0">
+									<param name="UseDefaults" value="-1">
+									<param name="TabNavigation" value="1">
+									<param name="_ExtentX" value="17330">
+									<param name="_ExtentY" value="1323">
+									<param name="_StockProps" value="79">
+									<param name="Caption" value="">
+									<param name="ForeColor" value="0">
+									<param name="BackColor" value="16777215">
+									<param name="Enabled" value="-1">
+									<param name="DataMember" value="">
+									<param name="Row.Count" value="0">
+								</object>
+							</td>
+							<td width="10"></td>
+						</tr>
+						<tr>
+							<td height="10" colspan="3"></td>
+						</tr>
+						<tr>
+							<td width="20"></td>
+							<td height="10">
+								<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+									<tr>
+										<td colspan="6"></td>
+									</tr>
+									<tr>
+										<td></td>
+										<td width="10">
+											<input id="cmdSelectLookup" name="cmdSelectLookup" type="button" value="Select" style="WIDTH: 75px" width="75" class="btn"
+												onclick="SelectLookup()"
+												onmouseover="try{button_onMouseOver(this);}catch(e){}"
+												onmouseout="try{button_onMouseOut(this);}catch(e){}"
+												onfocus="try{button_onFocus(this);}catch(e){}"
+												onblur="try{button_onBlur(this);}catch(e){}" />
+										</td>
+										<td width="40"></td>
+										<td width="10">
+											<input id="cmdClearLookup" name="cmdClearLookup" type="button" value="Clear" style="WIDTH: 75px" width="75" class="btn"
+												onclick="ClearLookup()"
+												onmouseover="try{button_onMouseOver(this);}catch(e){}"
+												onmouseout="try{button_onMouseOut(this);}catch(e){}"
+												onfocus="try{button_onFocus(this);}catch(e){}"
+												onblur="try{button_onBlur(this);}catch(e){}" />
+										</td>
+										<td width="40"></td>
+										<td width="10">
+											<input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" style="WIDTH: 75px" width="75" class="btn"
+												onclick="CancelLookup()"
+												onmouseover="try{button_onMouseOver(this);}catch(e){}"
+												onmouseout="try{button_onMouseOut(this);}catch(e){}"
+												onfocus="try{button_onFocus(this);}catch(e){}"
+												onblur="try{button_onBlur(this);}catch(e){}" />
+										</td>
+									</tr>
+								</table>
+							</td>
+							<td width="20"></td>
+						</tr>
+						<tr>
+							<td height="10" colspan="3"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
 
-<INPUT type='hidden' id=txtTicker name=txtTicker value=0>
-<INPUT type='hidden' id=txtLastKeyFind name=txtLastKeyFind value="">
+		<input type='hidden' id="txtErrorDescription" name="txtErrorDescription" value="<%=sErrorDescription%>">
+		<input type='hidden' id="txtFailureDescription" name="txtFailureDescription" value="<%=sFailureDescription%>">
+		<input type='hidden' id="txtOptionColumnID" name="txtOptionColumnID" value='<%=session("optionColumnID")%>'>
+		<input type='hidden' id="txtOptionLookupColumnID" name="txtOptionLookupColumnID" value='<%=session("optionLookupColumnID")%>'>
+		<input type='hidden' id="txtOptionLookupMandatory" name="txtOptionLookupMandatory" value='<%=session("optionLookupMandatory")%>'>
+		<input type='hidden' id="txtOptionLookupValue" name="txtOptionLookupValue" value='<%=session("optionLookupValue")%>'>
+		<input type='hidden' id="txtOptionLookupFilterValue" name="txtOptionLookupFilterValue" value="<%=session("optionLookupFilterValue")%>">
+		<input type='hidden' id="txtIsLookupTable" name="txtIsLookupTable" value="<%=fIsLookupTable%>">
+		<input type='hidden' id="txtOptionLinkTableID" name="txtOptionLinkTableID" value="<%=lngLookupTableID%>">
+		<input type='hidden' id="txtLookupColumnGridPosition" name="txtLookupColumnGridPosition" value="0">
+	</form>
 
-<FORM action="lookupFind_Submit.asp" method=post id=frmGotoOption name=frmGotoOption>
-<!--#include file="include\gotoOption.txt"-->
-</FORM>
+	<input type='hidden' id="txtTicker" name="txtTicker" value="0">
+	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
 
-</BODY>
-</HTML>
+	<form action="lookupFind_Submit" method="post" id="frmGotoOption" name="frmGotoOption">
+		<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
+	</form>
 
-<!-- Embeds createActiveX.js script reference -->
-<!--#include file="include\ctl_CreateControl.txt"-->
+</div>
+
+<script type="text/javascript">
+	lookupFind_addhandlers();
+	lookupFind_window_onload();
+</script>

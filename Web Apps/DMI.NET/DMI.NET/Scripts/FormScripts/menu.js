@@ -2145,7 +2145,8 @@ function menu_loadFindPageFirst(psToolName) {
 function menu_loadLookupPage(plngColumnID, plngLookupColumnID, psLookupValue, pfMandatory, psFilterLookupValue) {
 	var frmRecEditArea;
 	var frmOptionArea;
-
+	var frmWorkAreaInfo = document.getElementById("frmWorkAreaInfo");
+	
 	//ShowWait("Loading lookup find records. Please wait...");
 	menu_disableMenu();
 

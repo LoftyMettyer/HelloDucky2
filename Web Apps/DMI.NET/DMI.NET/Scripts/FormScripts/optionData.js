@@ -10,33 +10,31 @@
         } else {
             // Do nothing if the menu controls are not yet instantiated.
             var sCurrentWorkPage = OpenHR.currentWorkPage();
-
-            if (sCurrentWorkPage == "LINKFIND") {
-                var sErrorMsg = frmOptionData.txtErrorMessage.value;
-                if (sErrorMsg.length > 0) {
+	        var sErrorMsg;
+	        var sAction;
+	        var dataCollection;
+	        var sControlName;
+	        var sColumnName;
+	        var iColumnType;
+	        var iCount;
+	        var sAddString;
+	        var fRecordAdded;
+	        if (sCurrentWorkPage == "LINKFIND") {
+		        sErrorMsg = frmOptionData.txtErrorMessage.value;
+		        if (sErrorMsg.length > 0) {
                     // We've got an error so don't update the record edit form.
 
                     // Get menu.asp to refresh the menu.
                     menu_refreshMenu();                        
                     OpenHR.messageBox(sErrorMsg);
                 }
-
-                var sAction = frmOptionData.txtOptionAction.value;
-
-                // Refresh the link find grid with the data if required.
+		        sAction = frmOptionData.txtOptionAction.value; // Refresh the link find grid with the data if required.
                 var grdLinkFind = OpenHR.getForm("optionframe","frmLinkFindForm").ssOleDBGridLinkRecords;
 
                 grdLinkFind.redraw = false;
                 grdLinkFind.removeAll();
                 grdLinkFind.columns.removeAll();
-
-                var dataCollection = frmOptionData.elements;
-                var sControlName;
-                var sColumnName;
-                var iColumnType;
-                var iCount;
-
-                // Configure the grid columns.
+		        dataCollection = frmOptionData.elements; // Configure the grid columns.
                 if (dataCollection != null) {
                     for (i = 0; i < dataCollection.length; i++) {
                         sControlName = dataCollection.item(i).name;
@@ -74,9 +72,7 @@
                 }
 
                 // Add the grid records.
-                var sAddString;
-                var fRecordAdded;
-                fRecordAdded = false;
+		        fRecordAdded = false;
                 iCount = 0;
                 if (dataCollection != null) {
                     for (i = 0; i < dataCollection.length; i++) {
@@ -85,7 +81,7 @@
                         if (sControlName == "txtOptionData_") {
                             grdLinkFind.addItem(dataCollection.item(i).value);
                             fRecordAdded = true;
-                            iCount = iCount + 1
+	                        iCount = iCount + 1;
                         }
                     }
                 }
@@ -94,19 +90,19 @@
                 frmOptionData.txtRecordCount.value = iCount;
 
                 if (fRecordAdded == true) {
-                    OpenHR.getFrame("optionframe").locateRecord(OpenHR.getForm("optionframe","frmLinkFindForm").txtOptionLinkRecordID.value, true);
+                    locateRecord(OpenHR.getForm("optionframe","frmLinkFindForm").txtOptionLinkRecordID.value, true); //should be in scope!
                 }
 
-                OpenHR.getFrame("optionframe").refreshControls();
+                refreshControls();  ///should be in scope - from lookupFind.ascx
                     
 
                 // Get menu.asp to refresh the menu.
                 menu_refreshMenu();
             }
-
-            if (sCurrentWorkPage == "LOOKUPFIND") {
-                var sErrorMsg = frmOptionData.txtErrorMessage.value;
-                if (sErrorMsg.length > 0) {
+	        var grdFind;
+	        if (sCurrentWorkPage == "LOOKUPFIND") {
+	            sErrorMsg = frmOptionData.txtErrorMessage.value;
+	            if (sErrorMsg.length > 0) {
                     // We've got an error so don't update the record edit form.
 
                     // Get menu.asp to refresh the menu.
@@ -119,35 +115,27 @@
                 {
                     OpenHR.messageBox("You do not have 'read' permission on the lookup filter value column. No filter will be applied.");
                 }
-
-                var sAction = frmOptionData.txtOptionAction.value;
-
-                OpenHR.getFrame("optionframe").document.forms("frmLookupFindForm").txtLookupColumnGridPosition.value = frmOptionData.txtLookupColumnGridPosition.value;
+	            sAction = frmOptionData.txtOptionAction.value;
+	            OpenHR.getForm("optionframe", "frmLookupFindForm").txtLookupColumnGridPosition.value = frmOptionData.txtLookupColumnGridPosition.value;
 
                 // Refresh the link find grid with the data if required.
-                var grdFind = OpenHR.getForm("optionframe","frmLookupFindForm").ssOleDBGrid;                    
-
-                // Clear the grid.
+	            grdFind = OpenHR.getForm("optionframe", "frmLookupFindForm").ssOleDBGrid; // Clear the grid.
+		        
                 grdFind.redraw = false;
                 grdFind.removeAll();
                 grdFind.columns.removeAll();
-
-                var dataCollection = frmOptionData.elements;
-                var sControlName;
-                var sColumnName;
-                var iColumnType;
-                var iCount;
-
-                // Configure the grid columns.
+                dataCollection = frmOptionData.elements; // Configure the grid columns.
+                var sColumnType;
+		        
                 if (dataCollection != null) {
-                    for (i = 0; i < dataCollection.length; i++) {
+                    for (var i = 0; i < dataCollection.length; i++) {
                         sControlName = dataCollection.item(i).name;
                         sControlName = sControlName.substr(0, 16);
                         if (sControlName == "txtOptionColDef_") {
                             // Get the column name and type from the control.
-                            sColDef = dataCollection.item(i).value;
+                            var sColDef = dataCollection.item(i).value;
 
-                            iIndex = sColDef.indexOf("	");
+                            var iIndex = sColDef.indexOf("	");
                             if (iIndex >= 0) {
                                 sColumnName = sColDef.substr(0, iIndex);
                                 sColumnType = sColDef.substr(iIndex + 1);
@@ -176,9 +164,7 @@
                 }
 
                 // Add the grid records.
-                var sAddString;
-                var fRecordAdded;
-                fRecordAdded = false;
+								fRecordAdded = false;
                 iCount = 0;
                 if (dataCollection != null) {
                     for (i = 0; i < dataCollection.length; i++) {
@@ -187,7 +173,7 @@
                         if (sControlName == "txtOptionData_") {
                             grdFind.addItem(dataCollection.item(i).value);
                             fRecordAdded = true;
-                            iCount = iCount + 1
+	                        iCount = iCount + 1;
                         }
                     }
                 }
@@ -197,10 +183,10 @@
                 frmOptionData.txtRecordCount.value = iCount;
 
                 if (fRecordAdded == true) {
-                    OpenHR.getFrame("optionframe").locateRecord(OpenHR.getForm("optionframe","frmLookupFindForm").txtOptionLookupValue.value, true);
+                    locateRecord(OpenHR.getForm("optionframe","frmLookupFindForm").txtOptionLookupValue.value, true);
                 }
 
-                OpenHR.getFrame("optionframe").refreshControls();
+                refreshControls();
 
                 // Get menu.asp to refresh the menu.
                 menu_refreshMenu();
@@ -210,8 +196,8 @@
                 (sCurrentWorkPage == "TBBOOKCOURSEFIND") ||
                 (sCurrentWorkPage == "TBADDFROMWAITINGLISTFIND") ||
                 (sCurrentWorkPage == "TBTRANSFERBOOKINGFIND")) {
-                var sErrorMsg = frmOptionData.txtErrorMessage.value;
-                if (sErrorMsg.length > 0) {
+	            sErrorMsg = frmOptionData.txtErrorMessage.value;
+	            if (sErrorMsg.length > 0) {
                     // We've got an error.
                     // Get menu.asp to refresh the menu.
                     menu_refreshMenu();
@@ -220,8 +206,8 @@
 
                 if ((sCurrentWorkPage == "TBTRANSFERBOOKINGFIND") ||
                     (sCurrentWorkPage == "TBADDFROMWAITINGLISTFIND")) {
-                    var sErrorMsg = frmOptionData.txtErrorMessage2.value;
-                    if (sErrorMsg.length > 0) {
+	                sErrorMsg = frmOptionData.txtErrorMessage2.value;
+	                if (sErrorMsg.length > 0) {
                         // We've got an error.
                         Cancel(); //should be in scope!
                     	//window.parent.frames("menuframe").ASRIntranetFunctions.ClosePopup();
@@ -229,22 +215,12 @@
                         return;
                     }
                 }
-
-                var sAction = frmOptionData.txtOptionAction.value;
-
-                // Refresh the link find grid with the data if required.
-                var grdFind = OpenHR.getForm("optionframe", "frmtbFindForm").ssOleDBGridRecords;
-                grdFind.redraw = false;
+	            sAction = frmOptionData.txtOptionAction.value; // Refresh the link find grid with the data if required.
+	            grdFind = OpenHR.getForm("optionframe", "frmtbFindForm").ssOleDBGridRecords;
+	            grdFind.redraw = false;
                 grdFind.removeAll();
                 grdFind.columns.removeAll();
-
-                var dataCollection = frmOptionData.elements;
-                var sControlName;
-                var sColumnName;
-                var iColumnType;
-                var iCount;
-
-                // Configure the grid columns.
+	            dataCollection = frmOptionData.elements; // Configure the grid columns.
                 if (dataCollection != null) {
                     for (i = 0; i < dataCollection.length; i++) {
                         sControlName = dataCollection.item(i).name;
@@ -282,9 +258,7 @@
                 }
 
                 // Add the grid records.
-                var sAddString;
-                var fRecordAdded;
-                fRecordAdded = false;
+	            fRecordAdded = false;
                 iCount = 0;
                 if (dataCollection != null) {
                     for (i = 0; i < dataCollection.length; i++) {
@@ -293,7 +267,7 @@
                         if (sControlName == "txtOptionData_") {
                             grdFind.addItem(dataCollection.item(i).value);
                             fRecordAdded = true;
-                            iCount = iCount + 1
+	                        iCount = iCount + 1;
                         }
                     }
                 }
@@ -359,23 +333,12 @@
             }
 
             if (sCurrentWorkPage == "UTIL_DEF_PICKLIST") {
-                var sAction = frmOptionData.txtOptionAction.value;
-
-                // Refresh the link find grid with the data if required.
-                var grdFind = OpenHR.getForm("workframe","frmDefinition").ssOleDBGrid;
-                grdFind.redraw = false;
+	            sAction = frmOptionData.txtOptionAction.value; // Refresh the link find grid with the data if required.
+	            grdFind = OpenHR.getForm("workframe","frmDefinition").ssOleDBGrid;
+	            grdFind.redraw = false;
                 grdFind.removeAll();
-
-                var dataCollection = frmOptionData.elements;
-                var sControlName;
-                var sColumnName;
-                var iColumnType;
-                var iCount;
-
-                // Add the grid records.
-                var sAddString;
-                var fRecordAdded;
-                fRecordAdded = false;
+	            dataCollection = frmOptionData.elements; // Add the grid records.
+	            fRecordAdded = false;
                 iCount = 0;
 
                 if (dataCollection != null) {
@@ -422,14 +385,11 @@
             }
 
             if (sCurrentWorkPage == "UTIL_DEF_EXPRCOMPONENT") {
-                var sAction = frmOptionData.txtOptionAction.value;
-                var sControlName;
-
-                if ((sAction == "LOADEXPRFIELDCOLUMNS") ||
+	            sAction = frmOptionData.txtOptionAction.value;
+	            if ((sAction == "LOADEXPRFIELDCOLUMNS") ||
                     (sAction == "LOADEXPRLOOKUPCOLUMNS")) {
-                    var dataCollection = frmOptionData.elements;
-
-                    if (dataCollection != null) {
+	                dataCollection = frmOptionData.elements;
+	                if (dataCollection != null) {
                         for (i = 0; i < dataCollection.length; i++) {
                             sControlName = dataCollection.item(i).name;
                             sControlName = sControlName.substr(0, 10);
@@ -443,9 +403,8 @@
                 }
 
                 if (sAction == "LOADEXPRLOOKUPVALUES") {
-                    var dataCollection = frmOptionData.elements;
-
-                    if (dataCollection != null) {
+	                dataCollection = frmOptionData.elements;
+	                if (dataCollection != null) {
                         for (i = 0; i < dataCollection.length; i++) {
                             sControlName = dataCollection.item(i).name;
                             sControlName = sControlName.substr(0, 9);
@@ -463,9 +422,8 @@
             }
 
             if (sCurrentWorkPage == "FIND") {
-                var sAction = frmOptionData.txtOptionAction.value;
-
-                if ((sAction == "BOOKCOURSEERROR") ||
+	            sAction = frmOptionData.txtOptionAction.value;
+	            if ((sAction == "BOOKCOURSEERROR") ||
                     (sAction == "TRANSFERBOOKINGERROR") ||
                     (sAction == "ADDFROMWAITINGLISTERROR") ||
                     (sAction == "BULKBOOKINGERROR")) {

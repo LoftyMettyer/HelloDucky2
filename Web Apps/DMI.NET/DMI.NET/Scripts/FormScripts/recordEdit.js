@@ -990,7 +990,9 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
             addControl(iPageNo, span);
 
             break;
-        case 2: //ctlCombo
+    	case 2: //ctlCombo
+
+
             var selector = document.createElement('select');
             selector.id = controlID;
             applyLocation(selector, controlItemArray, true);
@@ -1001,7 +1003,17 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
             selector.style.borderWidth = "1px";
             selector.setAttribute("data-columnID", columnID);
             selector.setAttribute("data-control-key", key);
-            
+            if (controlItemArray[22] == 1) {
+            	//column type = ---- LOOKUPS ----
+            	selector.setAttribute("data-columntype", "lookup");
+            	//plngColumnID, plngLookupColumnID, psLookupValue, pfMandatory, pstrFilterValue
+            	selector.setAttribute("data-LookupTableID", controlItemArray[27]);
+            	selector.setAttribute("data-LookupColumnID", controlItemArray[28]);
+            	selector.setAttribute("data-LookupFilterColumnID", controlItemArray[53]);
+            	selector.setAttribute("data-LookupFilterValueID", controlItemArray[54]);
+            	selector.setAttribute("data-Mandatory", controlItemArray[32]);
+            }
+
             if (!fControlEnabled) selector.disabled = true;
 
             if (tabIndex > 0) selector.tabindex = tabIndex;
@@ -1709,19 +1721,19 @@ function updateControl(lngColumnID, value) {
 
 
 		if ($(this).is("select")) {
-
 			//does value exist in the dropdown?
 			if ($(this).find('option[value="' + value + '"]').length) {
 				$(this).val(value);
-			} else {
+			} else {				
+
+				if ($(this).attr("data-columntype") == "lookup") $(this).empty();	//For lookups, clear out all values, so the newly selected value is all there is.							
+
 				var option = document.createElement('option');
 				option.value = value;
 				option.appendChild(document.createTextNode(value));
 				$(this).append(option);
 				$(this).val(value);
 			}
-
-
 		}
 
 

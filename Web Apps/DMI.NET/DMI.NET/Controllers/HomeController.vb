@@ -4817,39 +4817,107 @@ Namespace Controllers
     End Function
 
 
+		Function lookupFind() As ActionResult
+			Return View()
+		End Function
+
+		<HttpPost()>
+	 Function lookupFind_Submit(value As FormCollection)
+
+			On Error Resume Next
+
+			Dim sErrorMsg = ""
+
+			' Read the information from the calling form.
+			Dim sNextPage = Request.Form("txtGotoOptionPage")
+			Dim sAction = Request.Form("txtGotoOptionAction")
+
+			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
+			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
+			Session("optionViewID") = Request.Form("txtGotoOptionViewID")
+			Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
+			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
+			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
+			Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
+			Session("optionValue") = Request.Form("txtGotoOptionValue")
+			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
+			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
+			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
+			Session("optionRecordID") = Request.Form("txtGotoOptionLinkRecordID")
+			Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
+			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
+			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
+			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
+			Session("optionFile") = Request.Form("txtGotoOptionFile")
+			Session("optionExtension") = Request.Form("txtGotoOptionExtension")
+			'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
+			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
+			Session("optionAction") = sAction
+			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
+			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
+			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
+			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
+			Session("optionExprType") = Request.Form("txtGotoOptionExprType")
+			Session("optionExprID") = Request.Form("txtGotoOptionExprID")
+			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
+			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
+
+			If sAction = "" Then
+				' Go to the requested page.
+				'Return RedirectToAction(sNextPage)
+			End If
+
+			If sAction = "CANCEL" Then
+				' Go to the requested page.
+				Session("errorMessage") = sErrorMsg
+				'Return RedirectToAction(sNextPage)
+			End If
+
+			If sAction = "SELECTLOOKUP" Then
+				Session("errorMessage") = sErrorMsg
+
+				' Go to the requested page.
+				'Return RedirectToAction(sNextPage)
+			End If
+
+			' Go to the requested page.
+			Return RedirectToAction(sNextPage)
+
+		End Function
+
 
 #Region "Standard Reports"
 
-    Public Function stdrpt_AbsenceCalendar() As ActionResult
-      Return PartialView()
-    End Function
+		Public Function stdrpt_AbsenceCalendar() As ActionResult
+			Return PartialView()
+		End Function
 
-    Public Function stdrpt_AbsenceCalendar_details() As ActionResult
-      Return View()
-    End Function
+		Public Function stdrpt_AbsenceCalendar_details() As ActionResult
+			Return View()
+		End Function
 
-    <HttpPost()>
-    Function stdrpt_AbsenceCalendar_submit(value As FormCollection)
+		<HttpPost()>
+		Function stdrpt_AbsenceCalendar_submit(value As FormCollection)
 
-      Session("stdrpt_AbsenceCalendar_StartMonth") = Request.Form("txtStartMonth")
-      Session("stdrpt_AbsenceCalendar_StartYear") = Request.Form("txtStartYear")
-      Session("stdrpt_AbsenceCalendar_IncludeBankHolidays") = Request.Form("txtIncludeBankHolidays")
-      Session("stdrpt_AbsenceCalendar_IncludeWorkingDaysOnly") = Request.Form("txtIncludeWorkingDaysOnly")
-      Session("stdrpt_AbsenceCalendar_ShowBankHolidays") = Request.Form("txtShowBankHolidays")
-      Session("stdrpt_AbsenceCalendar_ShowCaptions") = Request.Form("txtShowCaptions")
-      Session("stdrpt_AbsenceCalendar_ShowWeekends") = Request.Form("txtShowWeekends")
-      Return RedirectToAction("stdrpt_AbsenceCalendar")
+			Session("stdrpt_AbsenceCalendar_StartMonth") = Request.Form("txtStartMonth")
+			Session("stdrpt_AbsenceCalendar_StartYear") = Request.Form("txtStartYear")
+			Session("stdrpt_AbsenceCalendar_IncludeBankHolidays") = Request.Form("txtIncludeBankHolidays")
+			Session("stdrpt_AbsenceCalendar_IncludeWorkingDaysOnly") = Request.Form("txtIncludeWorkingDaysOnly")
+			Session("stdrpt_AbsenceCalendar_ShowBankHolidays") = Request.Form("txtShowBankHolidays")
+			Session("stdrpt_AbsenceCalendar_ShowCaptions") = Request.Form("txtShowCaptions")
+			Session("stdrpt_AbsenceCalendar_ShowWeekends") = Request.Form("txtShowWeekends")
+			Return RedirectToAction("stdrpt_AbsenceCalendar")
 
-    End Function
+		End Function
 
-    Public Function stdrpt_def_absence() As ActionResult
-      Return View()
-    End Function
+		Public Function stdrpt_def_absence() As ActionResult
+			Return View()
+		End Function
 
-    <HttpPost()>
-    Public Function stdrpt_run_AbsenceBreakdown() As ActionResult
-      Return View()
-    End Function
+		<HttpPost()>
+		Public Function stdrpt_run_AbsenceBreakdown() As ActionResult
+			Return View()
+		End Function
 
 #End Region
 
