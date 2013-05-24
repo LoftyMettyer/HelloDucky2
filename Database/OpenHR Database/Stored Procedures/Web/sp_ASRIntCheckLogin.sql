@@ -5,7 +5,8 @@ CREATE PROCEDURE [dbo].[sp_ASRIntCheckLogin] (
 	@psIntranetAppVersion	varchar(50),
 	@piPasswordLength		integer,
 	@piUserType				integer			OUTPUT,
-	@fSelfServiceUserType   integer			OUTPUT
+	@psUserGroup			varchar(250)	OUTPUT,
+	@iSelfServiceUserType   integer			OUTPUT
 )
 AS
 BEGIN
@@ -77,11 +78,14 @@ BEGIN
 		@sSQLVersion					int,
 		@sLockMessage					varchar(200),
 		@fNewSettingFound				bit,
-		@usergroup						varchar(255),
 		@iCurrentItemKey				integer,
 		@sCurrentItemKey				varchar(50),
+		@sPermissionItemKey varchar(500),
+		@iSSIntranetCount AS integer,
+		@sIntranet_SelfService AS varchar(255),
+		@sIntranet AS varchar(255),
 		@fOldSettingFound				bit;
-		
+
 	SET @piSuccessFlag = 1;
 	SET @psErrorMessage = '';
 	SET @piMinPassordLength = 0;
@@ -90,10 +94,12 @@ BEGIN
 	SET @iSSUsers = 0;
 	SET @iSSIUsers = 0;
 	SET @fSelfService = 0;
-	SET @fSelfServiceUserType = 0;
-	
+	SET @iSelfServiceUserType = 0;
+	SET @psUserGroup = '';
+	SET @sPermissionItemKey = '';
+
 	/* Deriving the User-group at the correct time especially after new users created was crucial so used this bit of code from later to do it */
-	SET @usergroup = (SELECT CASE 
+	SET @psUserGroup = (SELECT CASE 
 				WHEN (usg.uid IS null) THEN null
 				ELSE usg.name
 			END as groupname
@@ -102,7 +108,7 @@ BEGIN
 		LEFT OUTER JOIN master.dbo.syslogins lo ON usu.sid = lo.sid
 		WHERE (usu.islogin = 1 AND usu.isaliased = 0 AND usu.hasdbaccess = 1) 
 			AND (usg.issqlrole = 1 OR usg.uid IS null)
-			AND lo.loginname = system_user
+			AND lo.loginname = SYSTEM_USER
 			AND CASE 
 				WHEN (usg.uid IS null) THEN null
 				ELSE usg.name
@@ -120,31 +126,60 @@ BEGIN
 									AND itemKey LIKE '%INTRANET%'
 								)  
 					AND [permitted] = 1))
-	/* End of deriving user-group */
-
-	/*	IF (@sCurrentItemKey = 'INTRANET_SELFSERVICE' and @iCurrentItemKey >= 1) or ( @iCurrentItemKey >= 1)	-- Must be a DMI Single User with SSI
-		IF @sCurrentItemKey <> 'INTRANET_SELFSERVICE' and @iCurrentItemKey > 1		-- Must be a DMI Multi with SSI 
-		IF @sCurrentItemKey = 'INTRANET_SELFSERVICE' and @iCurrentItemKey = 0		-- leave as they are just a DMI 	*/
-	SET @sCurrentItemKey = (SELECT itemKey FROM ASRSysPermissionItems inner join ASRSysGroupPermissions ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
-	WHERE ASRSysGroupPermissions.groupName = @usergroup and permitted = 1 and categoryID = 1
+	
+	SET @sIntranet = (SELECT itemKey FROM ASRSysPermissionItems inner join ASRSysGroupPermissions ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
+	WHERE ASRSysGroupPermissions.groupName = @psUserGroup and permitted = 1 and categoryID = 1
+	and ASRSysPermissionItems.itemKey = 'INTRANET');
+	
+	SET @sIntranet_SelfService = (SELECT itemKey FROM ASRSysPermissionItems inner join ASRSysGroupPermissions ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
+	WHERE ASRSysGroupPermissions.groupName = @psUserGroup and permitted = 1 and categoryID = 1
 	and ASRSysPermissionItems.itemKey = 'INTRANET_SELFSERVICE');
 	
-	SET @iCurrentItemKey = (SELECT count(*) FROM ASRSysPermissionItems inner join ASRSysGroupPermissions ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
-	WHERE ASRSysGroupPermissions.groupName = @usergroup and permitted = 1 and categoryID = 1
+	SET @iSSIntranetCount = (SELECT count(*) FROM ASRSysPermissionItems inner join ASRSysGroupPermissions ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
+	WHERE ASRSysGroupPermissions.groupName = @psUserGroup and permitted = 1 and categoryID = 1
 	and ASRSysPermissionItems.itemKey = 'SSINTRANET');
-
-	IF (@sCurrentItemKey = 'INTRANET_SELFSERVICE' and @iCurrentItemKey >= 1) or ( @iCurrentItemKey >= 1)
+		
+	If (@sIntranet is null) and (@sIntranet_SelfService is null) and (@iSSINTRANETcount = 0)
+	/* No permissions at all  */
 	BEGIN
-		/* Must be a DMI Single User with SSI access so go to SSI landing page or just SSI*/
-		SET @fSelfService = 1;
+		SET @sPermissionItemKey = 'NO PERMS'
+		SET @iSelfServiceUserType = 0
+		SET @fSelfService = 0
+	END
+	
+	IF @sIntranet = 'INTRANET'
+	/* IF DMI Multi automatically*/ 
+	BEGIN
+		SET @sPermissionItemKey = 'INTRANET'
+		SET @iSelfServiceUserType = 1
+		SET @fSelfService = 0
+	END
+	
+	IF (@sIntranet_SelfService = 'INTRANET_SELFSERVICE') and (@iSSIntranetCount = 0)
+	/* IF DMI Single Only*/ 
+	BEGIN
+		SET @sPermissionItemKey = 'INTRANET'
+		SET @iSelfServiceUserType = 2
+		SET @fSelfService = 0
+	END	
+	
+	IF (@sIntranet_SelfService = 'INTRANET_SELFSERVICE') and (@iSSIntranetCount = 1)
+	/* IF DMI Single And SSI */ 
+	BEGIN
+		SET @sPermissionItemKey = 'SSINTRANET'
+		SET @iSelfServiceUserType = 3
+		SET @fSelfService = 1
+	END	
+	
+	IF  @iSSIntranetCount = 1 and (@sIntranet is null and  @sIntranet_SelfService is null)
+	/* IF SSI Only */ 
+	BEGIN
+		SET @sPermissionItemKey = 'SSINTRANET'
+		SET @iSelfServiceUserType = 4
+		SET @fSelfService = 1
 	END
 
-	SET @fSelfServiceUserType = 1; 
-
-	/*' Check if the current user is a SQL Server System Administrator.
-	We do not allow these users to login to the intranet module. */	
-	/*' Check if the current user is a SQL Server System Administrator.
-	We do not allow these users to login to the intranet module. */
+	/*' Check if the current user is a SQL Server System Administrator.	We do not allow these users to login to the intranet module. */	
 	IF current_user = 'dbo'
 	BEGIN
 		SET @piSuccessFlag = 0;

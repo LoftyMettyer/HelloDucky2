@@ -12,16 +12,19 @@ BEGIN
 	DECLARE @iFound		int
 	DECLARE @sSQLVersion int
 	DECLARE @sProgramName varchar(500)
-    DECLARE @sPermissionItemKey varchar(500)
-	DECLARE @usergroup AS varchar(255);
-	DECLARE @sCurrentItemKey AS varchar(255);
-	DECLARE @iCurrentItemKey AS integer;
-
-	SET @sPermissionItemKey = ''
-	SET @sProgramName = ''
+  DECLARE @sPermissionItemKey varchar(500)
+	DECLARE @sCurrentItemKey varchar(255)
+	DECLARE @iCurrentItemKey integer
+	DECLARE @iSSINTRANETcount AS integer
+	DECLARE @sIntranet_SelfService AS varchar(255)
+	DECLARE @sIntranet AS varchar(255)
+	
+	SET @psUserGroup = '';
+	SET @sPermissionItemKey = '';
+	SET @sProgramName = '';
 
 	/* Deriving the User-group at the correct time especially after new users created was crucial so used this bit of code from later to do it */
-	SET @usergroup = (SELECT CASE 
+	SET @psUserGroup = (SELECT CASE 
 				WHEN (usg.uid IS null) THEN null
 				ELSE usg.name
 			END as groupname
@@ -30,7 +33,7 @@ BEGIN
 		LEFT OUTER JOIN master.dbo.syslogins lo ON usu.sid = lo.sid
 		WHERE (usu.islogin = 1 AND usu.isaliased = 0 AND usu.hasdbaccess = 1) 
 			AND (usg.issqlrole = 1 OR usg.uid IS null)
-			AND lo.loginname = system_user
+			AND lo.loginname = SYSTEM_USER
 			AND CASE 
 				WHEN (usg.uid IS null) THEN null
 				ELSE usg.name
@@ -48,25 +51,48 @@ BEGIN
 									AND itemKey LIKE '%INTRANET%'
 								)  
 					AND [permitted] = 1))
-	/* End of deriving user-group */
 
-	SET @sCurrentItemKey = (SELECT itemKey FROM ASRSysPermissionItems inner join ASRSysGroupPermissions ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
-	WHERE ASRSysGroupPermissions.groupName = @usergroup and permitted = 1 and categoryID = 1
+	SET @sIntranet = (SELECT itemKey FROM ASRSysPermissionItems inner join ASRSysGroupPermissions ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
+	WHERE ASRSysGroupPermissions.groupName = @psUserGroup and permitted = 1 and categoryID = 1
+	and ASRSysPermissionItems.itemKey = 'INTRANET');
+
+	SET @sIntranet_SelfService = (SELECT itemKey FROM ASRSysPermissionItems inner join ASRSysGroupPermissions ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
+	WHERE ASRSysGroupPermissions.groupName = @psUserGroup and permitted = 1 and categoryID = 1
 	and ASRSysPermissionItems.itemKey = 'INTRANET_SELFSERVICE');
 	
-	SET @iCurrentItemKey = (SELECT count(*) FROM ASRSysPermissionItems inner join ASRSysGroupPermissions ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
-	WHERE ASRSysGroupPermissions.groupName = @usergroup and permitted = 1 and categoryID = 1
+	SET @iSSINTRANETcount = (SELECT count(*) FROM ASRSysPermissionItems inner join ASRSysGroupPermissions ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
+	WHERE ASRSysGroupPermissions.groupName = @psUserGroup and permitted = 1 and categoryID = 1
 	and ASRSysPermissionItems.itemKey = 'SSINTRANET');
 
-	IF (@sCurrentItemKey = 'INTRANET_SELFSERVICE' and @iCurrentItemKey >= 1) or ( @iCurrentItemKey >= 1)
-		/*IF @CurrentItemKey = 'SSINTRANET'*/
-		BEGIN
-		  SET @sPermissionItemKey = 'SSINTRANET'
-		END
-	  ELSE
-		BEGIN
-		  SET @sPermissionItemKey = 'INTRANET'
-		END
+	If (@sIntranet is null) and (@sIntranet_SelfService is null) and (@iSSINTRANETcount = 0)
+	/* No permissions at all  */
+	BEGIN
+		SET @sPermissionItemKey = 'NO PERMS'
+	END
+	
+	IF @sIntranet = 'INTRANET'
+	/* IF DMI Multi automatically */ 
+	BEGIN
+		SET @sPermissionItemKey = 'INTRANET'
+	END
+	
+	IF (@sIntranet_SelfService = 'INTRANET_SELFSERVICE' and @iSSIntranetCount = 0)
+	/* IF DMI Single Only */ 
+	BEGIN
+		SET @sPermissionItemKey = 'INTRANET'
+	END	
+	
+	IF (@sIntranet_SelfService = 'INTRANET_SELFSERVICE' and @iSSIntranetCount = 1)
+	/* IF DMI Single And SSI */ 
+	BEGIN
+		SET @sPermissionItemKey = 'SSINTRANET'
+	END	
+	
+	IF  @iSSIntranetCount = 1 and (@sIntranet is null and  @sIntranet_SelfService is null)
+	/* IF SSI Only */ 
+	BEGIN
+		SET @sPermissionItemKey = 'SSINTRANET'
+	END
 
 	SET @sSQLVersion = convert(int,convert(float,substring(@@version,charindex('-',@@version)+2,2)))
 
