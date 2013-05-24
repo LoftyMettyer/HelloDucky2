@@ -7,8 +7,7 @@ Friend Class clsExprFunction
 	Private mlngFunctionID As Integer
 	Private msFunctionName As String
 	Private miReturnType As modExpression.ExpressionValueTypes
-	Private msSPName As String
-	
+
 	' Definition for expanded/unexpanded status of the component
 	Private mbExpanded As Boolean
 	
@@ -53,51 +52,41 @@ ErrorTrap:
 		
 	End Function
 	
-	
-	
-	
-	
-	
-	
-	
-	Public Function PrintComponent(ByRef piLevel As Short) As Boolean
-		Dim Printer As New Printer
-		' Print the component definition to the printer object.
-		On Error GoTo ErrorTrap
-		
-		Dim fOK As Boolean
-		Dim objParameter As clsExprComponent
-		
-		fOK = True
-		
-		' Position the printing.
-		With Printer
-			.CurrentX = giPRINT_XINDENT + (piLevel * giPRINT_XSPACE)
-			.CurrentY = .CurrentY + giPRINT_YSPACE
-			Printer.Print("Function : " & ComponentDescription)
-		End With
-		
-		' Print the function's parameter expressions.
-		For	Each objParameter In mcolParameters
-			'UPGRADE_WARNING: Couldn't resolve default property of object objParameter.Component.PrintComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			objParameter.Component.PrintComponent(piLevel + 1)
-		Next objParameter
-		
-TidyUpAndExit: 
-		'UPGRADE_NOTE: Object objParameter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objParameter = Nothing
-		PrintComponent = fOK
-		Exit Function
-		
-ErrorTrap: 
-		fOK = False
-		Resume TidyUpAndExit
-		
-	End Function
-	
-	
-	
-	
+  Public Function PrintComponent(ByRef piLevel As Short) As Boolean
+    Dim Printer As New Printer
+    ' Print the component definition to the printer object.
+    On Error GoTo ErrorTrap
+
+    Dim fOK As Boolean
+    Dim objParameter As clsExprComponent
+
+    fOK = True
+
+    ' Position the printing.
+    With Printer
+      .CurrentX = giPRINT_XINDENT + (piLevel * giPRINT_XSPACE)
+      .CurrentY = .CurrentY + giPRINT_YSPACE
+      Printer.Print("Function : " & ComponentDescription)
+    End With
+
+    ' Print the function's parameter expressions.
+    For Each objParameter In mcolParameters
+      'UPGRADE_WARNING: Couldn't resolve default property of object objParameter.Component.PrintComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+      objParameter.Component.PrintComponent(piLevel + 1)
+    Next objParameter
+
+TidyUpAndExit:
+    'UPGRADE_NOTE: Object objParameter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+    objParameter = Nothing
+    PrintComponent = fOK
+    Exit Function
+
+ErrorTrap:
+    fOK = False
+    Resume TidyUpAndExit
+
+  End Function
+
 	Public Function RuntimeCode(ByRef psRuntimeCode As String, ByRef palngSourceTables As Object, ByRef pfApplyPermissions As Boolean, ByRef pfValidating As Boolean, ByRef pavPromptedValues As Object, Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As Boolean
 		' Return the SQL code for the component.
 		On Error GoTo ErrorTrap
@@ -543,7 +532,7 @@ ErrorTrap:
 						strTempTableID = "ID_" & Trim(Str(glngPersonnelTableID))
 					End If
 					
-					sCode = "(dbo.udf_ASRFn_AbsenceBetweenTwoDates(" & sParamCode1 & "," & sParamCode2 & "," & sParamCode3 & "," & strTempTableName & "." & strTempTableID & "," & "convert(datetime,'" & VB6.Format(Now, "mm/dd/yyyy") & "')" & "))"
+          sCode = "(dbo.udf_ASRFn_AbsenceBetweenTwoDates(" & sParamCode1 & "," & sParamCode2 & "," & sParamCode3 & "," & strTempTableName & "." & strTempTableID & "," & "convert(datetime,'" & VB6.Format(Now, "MM/dd/yyyy") & "')" & "))"
 					
 				Case 48 ' Round Up to nearest whole number.
 					' JPD20030116 Fault 4910
@@ -1116,8 +1105,7 @@ ErrorTrap:
 		
 		msFunctionName = "<unknown>"
 		miReturnType = modExpression.ExpressionValueTypes.giEXPRVALUE_UNDEFINED
-		msSPName = vbNullString
-		
+
 		' Clear the parameter collection.
 		ClearParameters()
 		
@@ -1130,9 +1118,7 @@ ErrorTrap:
 			If fOK Then
 				msFunctionName = .Fields("functionName").Value
 				miReturnType = .Fields("ReturnType").Value
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				msSPName = IIf(IsDbNull(.Fields("SPName").Value), "", .Fields("SPName").Value)
-			End If
+      End If
 			
 			.Close()
 		End With

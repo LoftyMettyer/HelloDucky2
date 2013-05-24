@@ -40,7 +40,7 @@ Friend Class clsGeneral
 
     Dim i As Short
 
-    ' eg. DateFormat = "mm/dd/yyyy"
+    ' eg. DateFormat = "MM/dd/yyyy"
     '     Calendar   = "dd/mm/yyyy"
     '     DateString = "06/02/2000"
     '     Compare to = 02/06/2000
@@ -254,7 +254,7 @@ ErrorTrap:
     Dim rsTemp As ADODB.Recordset
     Dim strSQL As String
     Dim fOK As Boolean
-    Dim lngViews() As Integer
+    Dim lngViews() As Long
 
     ReDim lngViews(0)
 

@@ -771,14 +771,14 @@ ErrorTrap:
 									End If
 								Else
 									' Get the permission object for the table.
-									objOrderTableView = gcoTablePrivileges.Item(.Fields("TableName"))
+                  objOrderTableView = gcoTablePrivileges.Item(.Fields("TableName").Value)
 									objOrderColumns = GetColumnPrivileges((objOrderTableView.TableName))
 									
-									fColumnOK = objOrderColumns.Item(.Fields("ColumnName")).AllowSelect
+                  fColumnOK = objOrderColumns.Item(.Fields("ColumnName").Value).AllowSelect
 									
 									If fColumnOK Then
 										' Column can be read directly from the table.
-										sOrderCode = sOrderCode & IIf(Len(sOrderCode) > 0, ", ", "") & objOrderTableView.RealSource & "." & .Fields("ColumnName").Value & IIf(miSelectionType = modExpression.FieldSelectionTypes.giSELECT_LASTRECORD, IIf(.Fields("Ascending").Value, " DESC", ""), IIf(.Fields("Ascending").Value, "", " DESC"))
+                    sOrderCode = sOrderCode & IIf(Len(sOrderCode) > 0, ", ", "") & objOrderTableView.RealSource & "." & .Fields("ColumnName").Value & IIf(miSelectionType = FieldSelectionTypes.giSELECT_LASTRECORD, IIf(.Fields("Ascending").Value, " DESC", ""), IIf(.Fields("Ascending").Value, "", " DESC"))
 										
 										If (.Fields("TableID").Value <> mlngTableID) And ((.Fields("TableID").Value <> mobjBaseComponent.ParentExpression.BaseTableID) Or pfUDFCode) Then
 											
@@ -812,35 +812,35 @@ ErrorTrap:
 													
 													objViewColumns = GetColumnPrivileges((objView.ViewName))
 													
-													If objViewColumns.IsValid(.Fields("ColumnName")) Then
-														If objViewColumns.Item(.Fields("ColumnName")).AllowSelect Then
-															' Add the view info to an array to be put into the column list or order code below.
-															iNextIndex = UBound(asViews) + 1
-															ReDim Preserve asViews(iNextIndex)
-															asViews(iNextIndex) = objView.ViewName
-															
-															' Add the view to the Join code.
-															' Check if the view has already been added to the join code.
-															fFound = False
-															For iNextIndex = 1 To UBound(avOrderJoinTables, 2)
-																'UPGRADE_WARNING: Couldn't resolve default property of object avOrderJoinTables(2, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-																If avOrderJoinTables(1, iNextIndex) = .Fields("TableID").Value And avOrderJoinTables(2, iNextIndex) = objView.ViewName Then
-																	fFound = True
-																	Exit For
-																End If
-															Next iNextIndex
-															
-															If Not fFound Then
-																' The view has not yet been added to the join code, so add it to the array and the join code.
-																iNextIndex = UBound(avOrderJoinTables, 2) + 1
-																ReDim Preserve avOrderJoinTables(2, iNextIndex)
-																'UPGRADE_WARNING: Couldn't resolve default property of object avOrderJoinTables(1, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-																avOrderJoinTables(1, iNextIndex) = .Fields("TableID").Value
-																'UPGRADE_WARNING: Couldn't resolve default property of object avOrderJoinTables(2, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-																avOrderJoinTables(2, iNextIndex) = objView.ViewName
-															End If
-														End If
-													End If
+                          If objViewColumns.IsValid(.Fields("ColumnName").Value) Then
+                            If objViewColumns.Item(.Fields("ColumnName").Value).AllowSelect Then
+                              ' Add the view info to an array to be put into the column list or order code below.
+                              iNextIndex = UBound(asViews) + 1
+                              ReDim Preserve asViews(iNextIndex)
+                              asViews(iNextIndex) = objView.ViewName
+
+                              ' Add the view to the Join code.
+                              ' Check if the view has already been added to the join code.
+                              fFound = False
+                              For iNextIndex = 1 To UBound(avOrderJoinTables, 2)
+                                'UPGRADE_WARNING: Couldn't resolve default property of object avOrderJoinTables(2, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                                If avOrderJoinTables(1, iNextIndex) = .Fields("TableID").Value And avOrderJoinTables(2, iNextIndex) = objView.ViewName Then
+                                  fFound = True
+                                  Exit For
+                                End If
+                              Next iNextIndex
+
+                              If Not fFound Then
+                                ' The view has not yet been added to the join code, so add it to the array and the join code.
+                                iNextIndex = UBound(avOrderJoinTables, 2) + 1
+                                ReDim Preserve avOrderJoinTables(2, iNextIndex)
+                                'UPGRADE_WARNING: Couldn't resolve default property of object avOrderJoinTables(1, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                                avOrderJoinTables(1, iNextIndex) = .Fields("TableID").Value
+                                'UPGRADE_WARNING: Couldn't resolve default property of object avOrderJoinTables(2, iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+                                avOrderJoinTables(2, iNextIndex) = objView.ViewName
+                              End If
+                            End If
+                          End If
 													
 													'UPGRADE_NOTE: Object objViewColumns may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 													objViewColumns = Nothing

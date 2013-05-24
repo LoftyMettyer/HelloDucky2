@@ -1540,7 +1540,7 @@ GetDetailsRecordsets_ERROR:
 
     Dim blnOK As Boolean
     Dim sCalcCode As String
-    Dim alngSourceTables(,) As Integer
+    Dim alngSourceTables(,) As Object
     Dim objCalcExpr As clsExprExpression
     Dim objTableView As CTablePrivilege
 
@@ -2172,7 +2172,7 @@ Error_Trap:
                   'TM20030124 Fault 4974
                   'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
                   If Not IsDBNull(rsParent.Fields(iFields).Value) Then
-                    sVALUES = sVALUES & "'" & VB6.Format(rsParent.Fields(iFields).Value, "mm/dd/yyyy") & "',"
+                    sVALUES = sVALUES & "'" & VB6.Format(rsParent.Fields(iFields).Value, "MM/dd/yyyy") & "',"
                   Else
                     sVALUES = sVALUES & "NULL,"
                   End If
@@ -2206,7 +2206,7 @@ Error_Trap:
                       'TM20030124 Fault 4974
                       'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
                       If Not IsDBNull(avChildRecordsets(0, iChildCount).Fields(iFields).Value) Then
-                        sVALUES = sVALUES & "'" & VB6.Format(avChildRecordsets(0, iChildCount).Fields(iFields).Value, "mm/dd/yyyy") & "',"
+                        sVALUES = sVALUES & "'" & VB6.Format(avChildRecordsets(0, iChildCount).Fields(iFields).Value, "MM/dd/yyyy") & "',"
                       Else
                         sVALUES = sVALUES & "NULL,"
                       End If
@@ -2263,7 +2263,7 @@ Error_Trap:
                 'TM20030124 Fault 4974
                 'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
                 If Not IsDBNull(rsParent.Fields(iFields).Value) Then
-                  sVALUES = sVALUES & "'" & VB6.Format(rsParent.Fields(iFields).Value, "mm/dd/yyyy") & "',"
+                  sVALUES = sVALUES & "'" & VB6.Format(rsParent.Fields(iFields).Value, "MM/dd/yyyy") & "',"
                 Else
                   sVALUES = sVALUES & "NULL,"
                 End If
@@ -4180,7 +4180,7 @@ LoadRecords_ERROR:
                 ' Date column.
                 'UPGRADE_WARNING: Couldn't resolve default property of object pavColumns(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
                 'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                sWhereCode = sWhereCode & "([" & CStr(mvarColDetails(0, iColumnIndex)) & "] = '" & VB6.Format(pavColumns(3, iColumnIndex), "mm/dd/yyyy") & "')"
+                sWhereCode = sWhereCode & "([" & CStr(mvarColDetails(0, iColumnIndex)) & "] = '" & VB6.Format(pavColumns(3, iColumnIndex), "MM/dd/yyyy") & "')"
               Else
                 'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(18, iColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
                 If mvarColDetails(18, iColumnIndex) Then

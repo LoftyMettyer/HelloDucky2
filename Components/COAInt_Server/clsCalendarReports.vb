@@ -327,7 +327,7 @@ Public Class clsCalendarReportsRUN
 
     Dim i As Short
 
-    ' eg. DateFormat = "mm/dd/yyyy"
+    ' eg. DateFormat = "MM/dd/yyyy"
     '     Calendar   = "dd/mm/yyyy"
     '     DateString = "06/02/2000"
     '     Compare to = 02/06/2000
@@ -717,7 +717,7 @@ Public Class clsCalendarReportsRUN
   End Property
   Public ReadOnly Property ReportStartDate_US() As String
     Get
-      ReportStartDate_US = VB6.Format(mdtStartDate, "mm/dd/yyyy")
+      ReportStartDate_US = VB6.Format(mdtStartDate, "MM/dd/yyyy")
     End Get
   End Property
   Public ReadOnly Property ReportStartDate_Calendar() As Date
@@ -745,7 +745,7 @@ Public Class clsCalendarReportsRUN
 
   Public ReadOnly Property ReportEndDate_US() As String
     Get
-      ReportEndDate_US = VB6.Format(mdtEndDate, "mm/dd/yyyy")
+      ReportEndDate_US = VB6.Format(mdtEndDate, "MM/dd/yyyy")
     End Get
   End Property
   Public ReadOnly Property CalendarReportTitle() As String
@@ -2966,7 +2966,7 @@ ErrorTrap:
 
     Dim i As Short
 
-    ' eg. DateFormat = "mm/dd/yyyy"
+    ' eg. DateFormat = "MM/dd/yyyy"
     '     Calendar   = "dd/mm/yyyy"
     '     DateString = "06/02/2000"
     '     Compare to = 02/06/2000
@@ -3352,7 +3352,7 @@ Error_Trap:
               ' THEY ARE PASSED IN FROM THE ASPs AS STRING VALUES IN THE CORRECT
               ' FORMAT (mm/dd/yyyy) AND DOING ANY KIND OF CONVERSION JUST SCREWS
               ' THINGS UP.
-              'mvarPrompts(1, iLoop) = CDate(Format(pavPromptedValues(1, iLoop), "mm/dd/yyyy"))
+              'mvarPrompts(1, iLoop) = CDate(Format(pavPromptedValues(1, iLoop), "MM/dd/yyyy"))
               'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
               mvarPrompts(1, iLoop) = pavPromptedValues(1, iLoop)
@@ -4451,7 +4451,7 @@ ErrorTrap:
             lngBaseRecordID = .Fields("ID_" & CStr(mlngCalendarReportsBaseTable)).Value
             blnNewBaseRecord = True
             lngBaseRowCount = lngBaseRowCount + 1
-            '          dtStartDate = Format(.Fields(gsPersonnelHRegionDateColumnName).Value, "mm/dd/yyyy")
+            '          dtStartDate = Format(.Fields(gsPersonnelHRegionDateColumnName).Value, "MM/dd/yyyy")
             dtStartDate = .Fields(gsPersonnelHRegionDateColumnName).Value
 
             'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(0, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -4467,7 +4467,7 @@ ErrorTrap:
             mavCareerRanges(4, intNextIndex) = .Fields("CareerChanges").Value 'Career Change Count
 
           Else
-            '          dtStartDate = Format(.Fields(gsPersonnelHRegionDateColumnName).Value, "mm/dd/yyyy")
+            '          dtStartDate = Format(.Fields(gsPersonnelHRegionDateColumnName).Value, "MM/dd/yyyy")
             dtStartDate = .Fields(gsPersonnelHRegionDateColumnName).Value
 
             dtEndDate = dtStartDate
@@ -4607,9 +4607,9 @@ ErrorTrap:
       If fFinalCareerChange Then
         strSQLDateRegion = strSQLDateRegion & "( " & vbNewLine
         'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        strSQLDateRegion = strSQLDateRegion & "(" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= CONVERT(datetime, '" & VB6.Format(mavCareerRanges(1, intCount), "mm/dd/yyyy") & "')) " & vbNewLine
-        strSQLDateRegion = strSQLDateRegion & " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "') " & vbNewLine
-        strSQLDateRegion = strSQLDateRegion & " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "mm/dd/yyyy") & "') " & vbNewLine
+        strSQLDateRegion = strSQLDateRegion & "(" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= CONVERT(datetime, '" & VB6.Format(mavCareerRanges(1, intCount), "MM/dd/yyyy") & "')) " & vbNewLine
+        strSQLDateRegion = strSQLDateRegion & " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine
+        strSQLDateRegion = strSQLDateRegion & " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine
         strSQLDateRegion = strSQLDateRegion & " AND " & vbNewLine
         'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         strSQLDateRegion = strSQLDateRegion & "(" & mstrSQLSelect_RegInfoRegion & " = '" & mavCareerRanges(3, intCount) & "') " & vbNewLine
@@ -4618,9 +4618,9 @@ ErrorTrap:
       Else
         strSQLDateRegion = strSQLDateRegion & "( " & vbNewLine
         'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        strSQLDateRegion = strSQLDateRegion & "(" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= CONVERT(datetime, '" & VB6.Format(mavCareerRanges(1, intCount), "mm/dd/yyyy") & "') " & vbNewLine & " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " < CONVERT(datetime, '" & VB6.Format(mavCareerRanges(1, intCount + 1), "mm/dd/yyyy") & "'))) " & vbNewLine
-        strSQLDateRegion = strSQLDateRegion & " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "') " & vbNewLine
-        strSQLDateRegion = strSQLDateRegion & " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "mm/dd/yyyy") & "') " & vbNewLine
+        strSQLDateRegion = strSQLDateRegion & "(" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= CONVERT(datetime, '" & VB6.Format(mavCareerRanges(1, intCount), "MM/dd/yyyy") & "') " & vbNewLine & " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " < CONVERT(datetime, '" & VB6.Format(mavCareerRanges(1, intCount + 1), "MM/dd/yyyy") & "'))) " & vbNewLine
+        strSQLDateRegion = strSQLDateRegion & " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine
+        strSQLDateRegion = strSQLDateRegion & " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine
         'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
         strSQLDateRegion = strSQLDateRegion & " AND (" & mstrSQLSelect_RegInfoRegion & " = '" & mavCareerRanges(3, intCount) & "') " & vbNewLine
         strSQLDateRegion = strSQLDateRegion & ") " & vbNewLine
@@ -4848,11 +4848,11 @@ ErrorTrap:
     strSQLAllBHols = strSQLAllBHols & "           ON  " & gsBHolRegionTableName & ".ID = " & gsBHolTableRealSource & ".ID_" & glngBHolRegionTableID & vbNewLine
 
     If Len(Trim(mstrSQLIDs)) > 0 Then
-      strSQLAllBHols = strSQLAllBHols & "     WHERE (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "') " & vbNewLine
-      strSQLAllBHols = strSQLAllBHols & "         AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "mm/dd/yyyy") & "') " & vbNewLine
+      strSQLAllBHols = strSQLAllBHols & "     WHERE (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine
+      strSQLAllBHols = strSQLAllBHols & "         AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine
     Else
-      strSQLAllBHols = strSQLAllBHols & "     WHERE (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "') " & vbNewLine
-      strSQLAllBHols = strSQLAllBHols & "         AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "mm/dd/yyyy") & "') " & vbNewLine
+      strSQLAllBHols = strSQLAllBHols & "     WHERE (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine
+      strSQLAllBHols = strSQLAllBHols & "         AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine
     End If
 
     strSQLAllBHols = strSQLAllBHols & "    ) AS [RegionInfo] " & vbNewLine
@@ -6431,7 +6431,7 @@ GenerateSQLFrom_ERROR:
           'add clause to SQL, so that only dates within the specified range are retrieved.
           If (objEvent.StartDateID > 0) And (objEvent.EndDateID > 0) And bViewContains_StartColumn And bViewContains_EndColumn Then
             'event is defined by start date and end date
-            mstrSQLJoin = mstrSQLJoin & " AND ((" & objTableView.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "') AND " & objTableView.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "'))" & vbNewLine & " OR (" & objTableView.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "') AND " & objTableView.RealSource & "." & objEvent.EndDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "mm/dd/yyyy") & "'))" & vbNewLine & " OR (((" & objTableView.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "')) AND (" & objTableView.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "mm/dd/yyyy") & "'))) AND " & objTableView.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtEndDate, "mm/dd/yyyy") & "'))" & vbNewLine & " OR (" & objTableView.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "') AND " & objTableView.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "'))" & vbNewLine
+            mstrSQLJoin = mstrSQLJoin & " AND ((" & objTableView.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objTableView.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "'))" & vbNewLine & " OR (" & objTableView.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objTableView.RealSource & "." & objEvent.EndDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))" & vbNewLine & " OR (((" & objTableView.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "')) AND (" & objTableView.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))) AND " & objTableView.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))" & vbNewLine & " OR (" & objTableView.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objTableView.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "'))" & vbNewLine
             mstrSQLJoin = mstrSQLJoin & ")" & vbNewLine
             mstrSQLJoin = mstrSQLJoin & " AND (" & objTableView.RealSource & "." & objEvent.EndDateName & " >= " & objTableView.RealSource & "." & objEvent.StartDateName & ")" & vbNewLine
 
@@ -6441,7 +6441,7 @@ GenerateSQLFrom_ERROR:
 
           ElseIf (objEvent.StartDateID) > 0 And (objEvent.EndDateID < 1) And (objEvent.DurationID < 1) And bViewContains_StartColumn Then
             'event is defined by just the start date - one off event with a range of one
-            mstrSQLJoin = mstrSQLJoin & " AND ((" & objTableView.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "') AND " & objTableView.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "mm/dd/yyyy") & "'))" & vbNewLine
+            mstrSQLJoin = mstrSQLJoin & " AND ((" & objTableView.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objTableView.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))" & vbNewLine
             mstrSQLJoin = mstrSQLJoin & ")" & vbNewLine
 
           End If
@@ -6483,7 +6483,7 @@ GenerateSQLFrom_ERROR:
           'add clause to SQL, so that only dates within the specified range are retrieved.
           If (objEvent.StartDateID > 0 And objEvent.EndDateID > 0) Then
             'event is defined by start date and end date
-            sChildJoinCode = sChildJoinCode & " AND ((" & objChildTable.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "') AND " & objChildTable.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "'))" & vbNewLine & " OR (" & objChildTable.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "') AND " & objChildTable.RealSource & "." & objEvent.EndDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "mm/dd/yyyy") & "'))" & vbNewLine & " OR (((" & objChildTable.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "')) AND (" & objChildTable.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "mm/dd/yyyy") & "'))) AND " & objChildTable.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtEndDate, "mm/dd/yyyy") & "'))" & vbNewLine & " OR (" & objChildTable.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "') AND " & objChildTable.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "'))" & vbNewLine
+            sChildJoinCode = sChildJoinCode & " AND ((" & objChildTable.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objChildTable.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "'))" & vbNewLine & " OR (" & objChildTable.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objChildTable.RealSource & "." & objEvent.EndDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))" & vbNewLine & " OR (((" & objChildTable.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "')) AND (" & objChildTable.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))) AND " & objChildTable.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))" & vbNewLine & " OR (" & objChildTable.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objChildTable.RealSource & "." & objEvent.EndDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "'))" & vbNewLine
             sChildJoinCode = sChildJoinCode & ")" & vbNewLine
             sChildJoinCode = sChildJoinCode & " AND (" & objChildTable.RealSource & "." & objEvent.EndDateName & " >= " & objChildTable.RealSource & "." & objEvent.StartDateName & ") "
 
@@ -6493,7 +6493,7 @@ GenerateSQLFrom_ERROR:
 
           ElseIf objEvent.StartDateID > 0 And (objEvent.EndDateID < 1) And (objEvent.DurationID < 1) Then
             'event is defined by just the start date - one off event with a range of one
-            sChildJoinCode = sChildJoinCode & " AND ((" & objChildTable.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "') AND " & objChildTable.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "mm/dd/yyyy") & "'))" & vbNewLine
+            sChildJoinCode = sChildJoinCode & " AND ((" & objChildTable.RealSource & "." & objEvent.StartDateName & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & objChildTable.RealSource & "." & objEvent.StartDateName & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))" & vbNewLine
             sChildJoinCode = sChildJoinCode & ")" & vbNewLine
 
           End If
@@ -6597,10 +6597,10 @@ GenerateSQLJoin_ERROR:
       'add clause to SQL, so that only dates within the specified range are retrieved.
       If objEvent.StartDateID > 0 And objEvent.EndDateID > 0 Then
         'event is defined by start date and end date
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "((" & mstrSQLBaseStartDateColumn & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "') AND " & mstrSQLBaseEndDateColumn & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "'))" & vbNewLine
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & " OR (" & mstrSQLBaseStartDateColumn & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "') AND " & mstrSQLBaseEndDateColumn & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "mm/dd/yyyy") & "'))" & vbNewLine
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & " OR (((" & mstrSQLBaseStartDateColumn & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "')) AND (" & mstrSQLBaseStartDateColumn & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "mm/dd/yyyy") & "'))) AND " & mstrSQLBaseEndDateColumn & " >= convert(datetime, '" & VB6.Format(mdtEndDate, "mm/dd/yyyy") & "'))" & vbNewLine
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & " OR (" & mstrSQLBaseStartDateColumn & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "') AND " & mstrSQLBaseEndDateColumn & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "')))" & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "((" & mstrSQLBaseStartDateColumn & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & mstrSQLBaseEndDateColumn & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "'))" & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & " OR (" & mstrSQLBaseStartDateColumn & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & mstrSQLBaseEndDateColumn & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))" & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & " OR (((" & mstrSQLBaseStartDateColumn & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "')) AND (" & mstrSQLBaseStartDateColumn & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))) AND " & mstrSQLBaseEndDateColumn & " >= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "'))" & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & " OR (" & mstrSQLBaseStartDateColumn & " <= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & mstrSQLBaseEndDateColumn & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "')))" & vbNewLine
         mstrSQLBaseDateClause = mstrSQLBaseDateClause & " AND (" & mstrSQLBaseEndDateColumn & ">=" & mstrSQLBaseStartDateColumn & ")"
 
       ElseIf (objEvent.StartDateID > 0) And (objEvent.DurationID > 0) Then
@@ -6610,29 +6610,29 @@ GenerateSQLJoin_ERROR:
         mstrSQLBaseDateClause = mstrSQLBaseDateClause & "    AND (" & vbNewLine & vbNewLine
 
         ' 1 Event Start Date before Report Start Date, Duration carrys event into, but not beyond the Report Range.
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "        (" & mstrSQLBaseStartDateColumn & " < convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "')" & vbNewLine
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "      AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") >= convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "'))" & vbNewLine
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "        AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") <= convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "')))" & vbNewLine & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "        (" & mstrSQLBaseStartDateColumn & " < convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "')" & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "      AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") >= convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "'))" & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "        AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") <= convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "')))" & vbNewLine & vbNewLine
 
         ' 2 Event Start Date within Report Range, Duration carrys event beyond Report End Date.
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "     OR ((" & mstrSQLBaseStartDateColumn & " >= convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "'))" & vbNewLine
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "        AND (" & mstrSQLBaseStartDateColumn & " <= convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "'))" & vbNewLine
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "      AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") > convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "')))" & vbNewLine & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "     OR ((" & mstrSQLBaseStartDateColumn & " >= convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "'))" & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "        AND (" & mstrSQLBaseStartDateColumn & " <= convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "'))" & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "      AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") > convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "')))" & vbNewLine & vbNewLine
 
         ' 3 Event Start Date within Report Range and Duration keeps event within Report Range.
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "     OR ((" & mstrSQLBaseStartDateColumn & " >= convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "'))" & vbNewLine
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "        AND (" & mstrSQLBaseStartDateColumn & " <= convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "'))" & vbNewLine
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "      AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") <= convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "')))" & vbNewLine & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "     OR ((" & mstrSQLBaseStartDateColumn & " >= convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "'))" & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "        AND (" & mstrSQLBaseStartDateColumn & " <= convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "'))" & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "      AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") <= convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "')))" & vbNewLine & vbNewLine
 
         ' 4 Event Start Date before Report Start Date and Duration carrys event beyond Report End Date.
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "     OR ((" & mstrSQLBaseStartDateColumn & " < convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "'))" & vbNewLine
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "      AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") > convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "mm/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "')))" & vbNewLine & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "     OR ((" & mstrSQLBaseStartDateColumn & " < convert(datetime, '" & Replace(VB6.Format(mdtStartDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "'))" & vbNewLine
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "      AND (DATEADD(day, " & mstrSQLBaseDurationColumn & ", " & mstrSQLBaseStartDateColumn & ") > convert(datetime, '" & Replace(VB6.Format(mdtEndDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "')))" & vbNewLine & vbNewLine
 
         mstrSQLBaseDateClause = mstrSQLBaseDateClause & "        )" & vbNewLine
 
       ElseIf objEvent.StartDateID > 0 And (objEvent.EndDateID < 1) And (objEvent.DurationID < 1) Then
         'event is defined by just the start date - one off event with a range of one
-        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "(" & mstrSQLBaseStartDateColumn & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "mm/dd/yyyy") & "') AND " & mstrSQLBaseStartDateColumn & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "mm/dd/yyyy") & "')) "
+        mstrSQLBaseDateClause = mstrSQLBaseDateClause & "(" & mstrSQLBaseStartDateColumn & " >= convert(datetime, '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') AND " & mstrSQLBaseStartDateColumn & " <= convert(datetime, '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "')) "
 
       End If
 

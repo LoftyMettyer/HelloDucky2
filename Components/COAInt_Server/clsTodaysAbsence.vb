@@ -4,7 +4,7 @@ Public Class clsTodaysAbsence
   Private mclsData As New clsDataAccess
   Private AbsentList As Collection
 
-  Private Const mstrDATESQL As String = "mm/dd/yyyy"
+  Private Const mstrDATESQL As String = "MM/dd/yyyy"
   Private mobjTableView As CTablePrivilege
   Private mobjColumnPrivileges As CColumnPrivileges
   Private mstrRealSource As String

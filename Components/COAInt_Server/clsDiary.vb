@@ -21,7 +21,7 @@ Public Class clsDiary
   Private Const mintVIEWBYLIST As Short = 3
 
   Private Const mstrDATEDAY As String = "ddd dd"
-  Private Const mstrDATESQL As String = "mm/dd/yyyy"
+  Private Const mstrDATESQL As String = "MM/dd/yyyy"
   Private Const mstrDATEMONTHYEAR As String = "mmm yyyy"
   Private Const mstrDATEMEDIUM As String = "ddd d mmm yyyy"
   Private Const mstrDATELONG As String = "Long Date" 'Control Panel, Regional Settings

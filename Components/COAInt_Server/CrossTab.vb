@@ -1405,7 +1405,7 @@ LocalErr:
               Case CStr(Declarations.SQLDataType.sqlDate)
                 'strHeading(lngCount) = Format(.Fields(0).Value, mclsUI.DateFormat)
                 strHeading(lngCount) = VB6.Format(.Fields(0).Value, mstrClientDateFormat)
-                strSearch(lngCount) = strColumnName & " = '" & VB6.Format(.Fields(0).Value, "mm/dd/yyyy") & "'"
+                strSearch(lngCount) = strColumnName & " = '" & VB6.Format(.Fields(0).Value, "MM/dd/yyyy") & "'"
 
               Case CStr(Declarations.SQLDataType.sqlBoolean)
                 strHeading(lngCount) = IIf(.Fields(0).Value, "True", "False")

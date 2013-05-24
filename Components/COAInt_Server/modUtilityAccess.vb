@@ -229,79 +229,60 @@ ErrorTrap:
 	End Function
 	
 	
-	
-	Public Function ValidateCalculation(ByRef plngID As Integer) As RecordSelectionValidityCodes
-		' Return an integer code representing the validity of the Calculation.
-		' Return 0 if the Calculation is OK.
-		' Return 1 if the Calculation has been deleted by another user.
-		' Return 2 if the Calculation is hidden, and is owned by the current user.
-		' Return 3 if the Calculation is hidden, and is NOT owned by the current user.
-		' Return 4 if the Calculation is no longer valid.
-		On Error GoTo ErrorTrap
-		
-		Dim iResult As RecordSelectionValidityCodes
-		Dim rstemp As ADODB.Recordset
-		Dim sSQL As String
-		Dim objExpr As clsExprExpression
-		Dim datData As clsDataAccess
-		
-		sSQL = ""
-		iResult = RecordSelectionValidityCodes.REC_SEL_VALID_OK
-		
-		If plngID > 0 Then
-			datData = New clsDataAccess
-			
-			sSQL = "SELECT access, userName" & " FROM ASRSysExpressions" & " WHERE exprID = " & CStr(plngID)
-			
-			rstemp = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
-			
-			If rstemp.BOF And rstemp.EOF Then
-				' Filter no longer exists
-				iResult = RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
-			Else
-				If (rstemp.Fields("Access").Value = ACCESS_HIDDEN) Or HasHiddenComponents(CInt(plngID)) Then
-					If (LCase(Trim(rstemp.Fields("Username").Value)) = LCase(Trim(gsUsername))) Then
-						' Calculation is hidden by the current user.
-						iResult = RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYUSER
-					Else
-						' Calculation is hidden by another user.
-						iResult = RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
-					End If
-				Else
-					'JPD 20040804 This function is only called when validating calculations
-					' used in reports. It takes a long time to do all of its validation checks,
-					' and in truth the calc should not have become invalid (if somebody has changed it to be invalid
-					' the full check will be made when they try to save the calc.). So I don't want
-					' to do this full check now.
-					'        Set objExpr = New clsExprExpression
-					'        With objExpr
-					'          .ExpressionID = CLng(plngID)
-					'          .ConstructExpression
-					'          If (.ValidateExpression(True) <> giEXPRVALIDATION_NOERRORS) Then
-					'            iResult = REC_SEL_VALID_INVALID
-					'          End If
-					'        End With
-					'        Set objExpr = Nothing
-				End If
-			End If
-			
-			rstemp.Close()
-			'UPGRADE_NOTE: Object rstemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			rstemp = Nothing
-			
-			'UPGRADE_NOTE: Object datData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			datData = Nothing
-		End If
-		
-TidyUpAndExit: 
-		ValidateCalculation = iResult
-		Exit Function
-		
-ErrorTrap: 
-		iResult = RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
-		Resume TidyUpAndExit
-		
-	End Function
+  Public Function ValidateCalculation(ByVal plngID As Integer) As RecordSelectionValidityCodes
+    ' Return an integer code representing the validity of the Calculation.
+    ' Return 0 if the Calculation is OK.
+    ' Return 1 if the Calculation has been deleted by another user.
+    ' Return 2 if the Calculation is hidden, and is owned by the current user.
+    ' Return 3 if the Calculation is hidden, and is NOT owned by the current user.
+    ' Return 4 if the Calculation is no longer valid.
+    On Error GoTo ErrorTrap
+
+    Dim iResult As RecordSelectionValidityCodes
+    Dim rstemp As ADODB.Recordset
+    Dim sSQL As String
+    Dim datData As clsDataAccess
+
+    iResult = RecordSelectionValidityCodes.REC_SEL_VALID_OK
+
+    If plngID > 0 Then
+      datData = New clsDataAccess
+
+      sSQL = "SELECT access, userName" & " FROM ASRSysExpressions" & " WHERE exprID = " & CStr(plngID)
+
+      rstemp = datData.OpenRecordset(sSQL, ADODB.CursorTypeEnum.adOpenForwardOnly, ADODB.LockTypeEnum.adLockReadOnly)
+
+      If rstemp.BOF And rstemp.EOF Then
+        ' Filter no longer exists
+        iResult = RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
+      Else
+        If (rstemp.Fields("Access").Value = ACCESS_HIDDEN) Or HasHiddenComponents(CInt(plngID)) Then
+          If (LCase(Trim(rstemp.Fields("Username").Value)) = LCase(Trim(gsUsername))) Then
+            ' Calculation is hidden by the current user.
+            iResult = RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYUSER
+          Else
+            ' Calculation is hidden by another user.
+            iResult = RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYOTHER
+          End If
+        End If
+      End If
+
+      rstemp.Close()
+      'UPGRADE_NOTE: Object rstemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+      rstemp = Nothing
+
+      'UPGRADE_NOTE: Object datData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+      datData = Nothing
+    End If
+
+TidyUpAndExit:
+    Return iResult
+
+ErrorTrap:
+    iResult = RecordSelectionValidityCodes.REC_SEL_VALID_INVALID
+    Resume TidyUpAndExit
+
+  End Function
 	
 	
 	
