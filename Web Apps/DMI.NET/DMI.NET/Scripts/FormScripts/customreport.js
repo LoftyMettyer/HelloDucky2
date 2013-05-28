@@ -97,6 +97,7 @@ function ssHiddenGrid_PrintError(lngPrintError, iResponse) {
 
 
 function ShowReport() {
+
     var iPollPeriod;
     var iPollCounter;
 

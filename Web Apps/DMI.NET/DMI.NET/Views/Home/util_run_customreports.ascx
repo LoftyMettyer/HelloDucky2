@@ -1132,7 +1132,3 @@
     <%
         Response.Write("<INPUT type=""hidden"" id=txtDatabase name=txtDatabase value=""" & Replace(Session("Database"), """", "&quot;") & """>")
     %>
-
-<script type="text/javascript">
-    reports_window_onload();
-</script>
