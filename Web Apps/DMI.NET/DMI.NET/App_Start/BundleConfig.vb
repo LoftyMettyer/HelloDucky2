@@ -64,6 +64,10 @@ Namespace App_Start
         "~/Scripts/FormScripts/calendarreportdef.js",
         "~/Scripts/FormScripts/general.js"))
 
+      ' Standard Reports
+      bundles.Add(New ScriptBundle("~/bundles/utilities_standardreports").Include(
+        "~/Scripts/FormScripts/stdrpt_def_absence.js"))
+
       ' Expression Builder
       bundles.Add(New ScriptBundle("~/bundles/utilities_expressions").Include(
         "~/Scripts/FormScripts/util_def_expression.js",

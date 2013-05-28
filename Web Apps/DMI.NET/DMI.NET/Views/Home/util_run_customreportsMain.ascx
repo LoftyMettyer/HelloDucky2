@@ -8,7 +8,6 @@
     Response.Write("{" & vbCrLf)
     Response.Write("  var iCount;" & vbCrLf & vbCrLf)
     
-    Response.Write("  debugger;" & vbCrLf & vbCrLf)
     Response.Write("  iCount = new Number(txtLoadCount.value);" & vbCrLf)
     Response.Write("  txtLoadCount.value = iCount + 1" & vbCrLf & vbCrLf)
    

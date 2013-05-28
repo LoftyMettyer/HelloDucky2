@@ -10,65 +10,65 @@
         var i;
 
         $(outType)[0].checked = true;
-        frmDefinition.chkDestination0.checked = frmExport.txtScreen;
+        frmOutputDef.chkDestination0.checked = frmExport.txtScreen;
 
         if (frmExport.txtPrinter.value.toLowerCase() == "false" && frmExport.txtFormat.value != 0) {
-            frmDefinition.chkDestination1.checked = false;
+            frmOutputDef.chkDestination1.checked = false;
         } else {
-            frmDefinition.chkDestination1.checked = true;
+            frmOutputDef.chkDestination1.checked = true;
             populatePrinters();
-            for (i = 0; i < frmDefinition.cboPrinterName.options.length; i++) {
-                if (frmDefinition.cboPrinterName.options(i).innerText == frmExport.txtPrinterName.value) {
-                    frmDefinition.cboPrinterName.selectedIndex = i;
+            for (i = 0; i < frmOutputDef.cboPrinterName.options.length; i++) {
+                if (frmOutputDef.cboPrinterName.options(i).innerText == frmExport.txtPrinterName.value) {
+                    frmOutputDef.cboPrinterName.selectedIndex = i;
                     break;
                 }
             }
         }
 
         if (frmExport.txtSave.value.toLowerCase() == "false") {
-            frmDefinition.chkDestination2.checked = false;
+            frmOutputDef.chkDestination2.checked = false;
         } else {
-            frmDefinition.chkDestination2.checked = true;
+            frmOutputDef.chkDestination2.checked = true;
             populateSaveExisting();
-            frmDefinition.cboSaveExisting.selectedIndex = frmExport.txtSaveExisting.value;
+            frmOutputDef.cboSaveExisting.selectedIndex = frmExport.txtSaveExisting.value;
         }
 
         if (frmExport.txtEmail.value.toLowerCase() == "false") {
-            frmDefinition.chkDestination3.checked = false;
+            frmOutputDef.chkDestination3.checked = false;
         } else {
-            frmDefinition.chkDestination3.checked = true;
-            frmDefinition.txtEmailGroupID.value = frmExport.txtEmailAddr.value;
-            frmDefinition.txtEmailGroup.value = frmExport.txtEmailAddrName.value;
-            frmDefinition.txtEmailSubject.value = frmExport.txtEmailSubject.value;
-            frmDefinition.txtEmailAttachAs.value = frmExport.txtEmailAttachAs.value;
+            frmOutputDef.chkDestination3.checked = true;
+            frmOutputDef.txtEmailGroupID.value = frmExport.txtEmailAddr.value;
+            frmOutputDef.txtEmailGroup.value = frmExport.txtEmailAddrName.value;
+            frmOutputDef.txtEmailSubject.value = frmExport.txtEmailSubject.value;
+            frmOutputDef.txtEmailAttachAs.value = frmExport.txtEmailAttachAs.value;
         }
 
-        frmDefinition.txtFilename.value = frmExport.txtFileName.value;
+        frmOutputDef.txtFilename.value = frmExport.txtFileName.value;
         outputOptionsRefreshControls();
-        frmDefinition.cmdOK.focus();
+        frmOutputDef.cmdOK.focus();
 
     }
 
     function outputOptionsFormatClick(index)
     {
-        frmDefinition.chkDestination0.checked = false;
-        frmDefinition.chkDestination1.checked = false;
-        frmDefinition.chkDestination2.checked = false;
-        frmDefinition.chkDestination3.checked = false;
+        frmOutputDef.chkDestination0.checked = false;
+        frmOutputDef.chkDestination1.checked = false;
+        frmOutputDef.chkDestination2.checked = false;
+        frmOutputDef.chkDestination3.checked = false;
 
         if (index == 1) 
         {
-            frmDefinition.chkDestination2.checked = true;
-            frmDefinition.cboSaveExisting.length = 0;
-            frmDefinition.txtFilename.value = '';	
+            frmOutputDef.chkDestination2.checked = true;
+            frmOutputDef.cboSaveExisting.length = 0;
+            frmOutputDef.txtFilename.value = '';	
         }
         else if (index == 0) 
         {
-            frmDefinition.chkDestination1.checked = true;
+            frmOutputDef.chkDestination1.checked = true;
         }
         else 
         {
-            frmDefinition.chkDestination0.checked = true;
+            frmOutputDef.chkDestination0.checked = true;
         }
 	
         outputOptionsRefreshControls();
@@ -76,7 +76,7 @@
 
     function outputOptionsRefreshControls()
     {
-        with (frmDefinition)
+        with (frmOutputDef)
         {
             if (optOutputFormat0.checked == true)		//Data Only
             {
@@ -364,7 +364,7 @@
 
     function populatePrinters()
     {
-        with (frmDefinition.cboPrinterName)
+        with (frmOutputDef.cboPrinterName)
         {
             strCurrentPrinter = '';
             if (selectedIndex > 0) 
@@ -395,7 +395,7 @@
 
     function populateSaveExisting()
     {
-        with (frmDefinition.cboSaveExisting)
+        with (frmOutputDef.cboSaveExisting)
         {
             lngCurrentOption = 0;
             if (selectedIndex > 0) 
@@ -424,9 +424,9 @@
             oOption.innerText = "Append to file";
             oOption.value = 3;
 		
-            if ((frmDefinition.optOutputFormat4.checked) ||
-                (frmDefinition.optOutputFormat5.checked) ||
-                (frmDefinition.optOutputFormat6.checked)) 
+            if ((frmOutputDef.optOutputFormat4.checked) ||
+                (frmOutputDef.optOutputFormat5.checked) ||
+                (frmOutputDef.optOutputFormat6.checked)) 
             {
                 var oOption = document.createElement("OPTION");
                 options.add(oOption);
@@ -461,7 +461,7 @@
     {
         var sURL;
 	
-        frmEmailSelection.EmailSelCurrentID.value = frmDefinition.txtEmailGroupID.value; 
+        frmEmailSelection.EmailSelCurrentID.value = frmOutputDef.txtEmailGroupID.value; 
 
         sURL = "util_emailSelection" +
             "?EmailSelCurrentID=" + frmEmailSelection.EmailSelCurrentID.value;
@@ -470,17 +470,17 @@
 
     function outputOptionsOKClick() 
     {
-        if ((frmDefinition.chkDestination0.checked == false) && 
-            (frmDefinition.chkDestination1.checked == false) && 
-            (frmDefinition.chkDestination2.checked == false) && 
-            (frmDefinition.chkDestination3.checked == false)) 
+        if ((frmOutputDef.chkDestination0.checked == false) && 
+            (frmOutputDef.chkDestination1.checked == false) && 
+            (frmOutputDef.chkDestination2.checked == false) && 
+            (frmOutputDef.chkDestination3.checked == false)) 
         {
             OpenHR.MessageBox("You must select a destination",48,"Output Options");
             window.focus();
             return;
         }
 
-        var sAttachmentName = new String(frmDefinition.txtEmailAttachAs.value);
+        var sAttachmentName = new String(frmOutputDef.txtEmailAttachAs.value);
         if ((sAttachmentName.indexOf("/") != -1) || 
             (sAttachmentName.indexOf(":") != -1) || 
             (sAttachmentName.indexOf("?") != -1) || 
@@ -496,24 +496,24 @@
             return;
         }
 
-        if ((frmDefinition.txtFilename.value == "") 
-            && (frmDefinition.cmdFilename.disabled == false)) 
+        if ((frmOutputDef.txtFilename.value == "") 
+            && (frmOutputDef.cmdFilename.disabled == false)) 
         {
             OpenHR.MessageBox("You must enter a file name",48,"Output Options");
             window.focus();
             return;
         }
 
-        if ((frmDefinition.txtEmailGroup.value == "") 
-            && (frmDefinition.cmdEmailGroup.disabled == false)) 
+        if ((frmOutputDef.txtEmailGroup.value == "") 
+            && (frmOutputDef.cmdEmailGroup.disabled == false)) 
         {
             OpenHR.MessageBox("You must select an email group",48,"Output Options");
             window.focus();
             return;
         }
 
-        if ((frmDefinition.chkDestination3.checked) 
-            && (frmDefinition.txtEmailAttachAs.value == ''))
+        if ((frmOutputDef.chkDestination3.checked) 
+            && (frmOutputDef.txtEmailAttachAs.value == ''))
         {
             OpenHR.MessageBox("You must enter an email attachment file name.",48,"Output Options");
             window.focus();
@@ -532,56 +532,56 @@
         var frmExportData = OpenHR.getForm("reportdataframe", "frmExportData");
 
         frmExportData.txtFormat.value = 0;
-        if (frmDefinition.optOutputFormat1.checked == true) {frmExportData.txtFormat.value = 1; }	
+        if (frmOutputDef.optOutputFormat1.checked == true) {frmExportData.txtFormat.value = 1; }	
 
         //CSV
-        if (frmDefinition.optOutputFormat2.checked == true) {frmExportData.txtFormat.value = 2; }	
+        if (frmOutputDef.optOutputFormat2.checked == true) {frmExportData.txtFormat.value = 2; }	
 
         //HTML
-        if (frmDefinition.optOutputFormat3.checked == true) {frmExportData.txtFormat.value = 3; }	
+        if (frmOutputDef.optOutputFormat3.checked == true) {frmExportData.txtFormat.value = 3; }	
 
         //WORD
-        if (frmDefinition.optOutputFormat4.checked == true) {frmExportData.txtFormat.value = 4; }	
+        if (frmOutputDef.optOutputFormat4.checked == true) {frmExportData.txtFormat.value = 4; }	
 
         //EXCEL
-        if (frmDefinition.optOutputFormat5.checked == true) {frmExportData.txtFormat.value = 5; }	
+        if (frmOutputDef.optOutputFormat5.checked == true) {frmExportData.txtFormat.value = 5; }	
 
         //GRAPH
-        if (frmDefinition.optOutputFormat6.checked == true) {frmExportData.txtFormat.value = 6; }	
+        if (frmOutputDef.optOutputFormat6.checked == true) {frmExportData.txtFormat.value = 6; }	
 
         //PIVOT
 
-        frmExportData.txtScreen.value = frmDefinition.chkDestination0.checked;
+        frmExportData.txtScreen.value = frmOutputDef.chkDestination0.checked;
 
-        frmExportData.txtPrinter.value = frmDefinition.chkDestination1.checked;
+        frmExportData.txtPrinter.value = frmOutputDef.chkDestination1.checked;
         frmExportData.txtPrinterName.value = '';
-        if (frmDefinition.cboPrinterName.selectedIndex != -1) 
+        if (frmOutputDef.cboPrinterName.selectedIndex != -1) 
         {
-            frmExportData.txtPrinterName.value = frmDefinition.cboPrinterName.options(frmDefinition.cboPrinterName.selectedIndex).innerText;
+            frmExportData.txtPrinterName.value = frmOutputDef.cboPrinterName.options(frmOutputDef.cboPrinterName.selectedIndex).innerText;
         }
 
-        frmExportData.txtSave.value = frmDefinition.chkDestination2.checked;
-        frmExportData.txtSaveExisting.value = frmDefinition.cboSaveExisting.selectedIndex;
-        frmExportData.txtEmail.value = frmDefinition.chkDestination3.checked;
-        frmExportData.txtEmailAddr.value = frmDefinition.txtEmailGroupID.value;
-        frmExportData.txtEmailAddrName.value = frmDefinition.txtEmailGroup.value;
-        frmExportData.txtEmailSubject.value = frmDefinition.txtEmailSubject.value;
-        frmExportData.txtEmailAttachAs.value = frmDefinition.txtEmailAttachAs.value;
-        frmExportData.txtFileName.value = frmDefinition.txtFilename.value;
+        frmExportData.txtSave.value = frmOutputDef.chkDestination2.checked;
+        frmExportData.txtSaveExisting.value = frmOutputDef.cboSaveExisting.selectedIndex;
+        frmExportData.txtEmail.value = frmOutputDef.chkDestination3.checked;
+        frmExportData.txtEmailAddr.value = frmOutputDef.txtEmailGroupID.value;
+        frmExportData.txtEmailAddrName.value = frmOutputDef.txtEmailGroup.value;
+        frmExportData.txtEmailSubject.value = frmOutputDef.txtEmailSubject.value;
+        frmExportData.txtEmailAttachAs.value = frmOutputDef.txtEmailAttachAs.value;
+        frmExportData.txtFileName.value = frmOutputDef.txtFilename.value;
 
         var frmGetDataForm = OpenHR.getForm("reportdataframe", "frmGetReportData");
 	
-        if (frmDefinition.txtEmailGroupID.value > 0) 
+        if (frmOutputDef.txtEmailGroupID.value > 0) 
         {
-            if (frmDefinition.txtUtilType.value == 17)
+            if (frmOutputDef.txtUtilType.value == 17)
             {
-                frmGetDataForm.txtEmailGroupID.value = frmDefinition.txtEmailGroupID.value;
+                frmGetDataForm.txtEmailGroupID.value = frmOutputDef.txtEmailGroupID.value;
                 window.ExportData("OUTPUTRUN");
             }
             else
             {
                 frmGetDataForm.txtMode.value = "EMAILGROUP";
-                frmGetDataForm.txtEmailGroupID.value = frmDefinition.txtEmailGroupID.value;
+                frmGetDataForm.txtEmailGroupID.value = frmOutputDef.txtEmailGroupID.value;
                 OpenHR.submitForm(frmGetDataForm);
             }
         }
@@ -591,7 +591,7 @@
             window.ExportData("OUTPUTRUN");
         }
 		
-        if (frmDefinition.txtUtilType.value == 2)
+        if (frmOutputDef.txtUtilType.value == 2)
         {		
             window.ShowDataFrame();
         }
@@ -603,41 +603,41 @@
         dialog.DialogTitle = "Output Document";
         dialog.Flags = 2621444;
 
-        if (frmDefinition.optOutputFormat1.checked == true) 
+        if (frmOutputDef.optOutputFormat1.checked == true) 
         {
             //CSV
             dialog.Filter = "Comma Separated Values (*.csv)|*.csv";
         }
-        else if (frmDefinition.optOutputFormat2.checked == true) 
+        else if (frmOutputDef.optOutputFormat2.checked == true) 
         {
             //HTML
             dialog.Filter = "HTML Document (*.htm)|*.htm";
         }
-        else if (frmDefinition.optOutputFormat3.checked == true) 
+        else if (frmOutputDef.optOutputFormat3.checked == true) 
         {
             //WORD
             //dialog.Filter = "Word Document (*.doc)|*.doc";
-            dialog.Filter = frmDefinition.txtWordFormats.value;
-            dialog.FilterIndex = frmDefinition.txtWordFormatDefaultIndex.value;
+            dialog.Filter = frmOutputDef.txtWordFormats.value;
+            dialog.FilterIndex = frmOutputDef.txtWordFormatDefaultIndex.value;
         }
         else 
         {
             //EXCEL
             //dialog.Filter = "Excel Workbook (*.xls)|*.xls";
-            dialog.Filter = frmDefinition.txtExcelFormats.value;
-            dialog.FilterIndex = frmDefinition.txtExcelFormatDefaultIndex.value;
+            dialog.Filter = frmOutputDef.txtExcelFormats.value;
+            dialog.FilterIndex = frmOutputDef.txtExcelFormatDefaultIndex.value;
         }
 
-        if (frmDefinition.txtFilename.value.length == 0) 
+        if (frmOutputDef.txtFilename.value.length == 0) 
         {
             sKey = new String("documentspath_");
-            sKey = sKey.concat(frmDefinition.txtDatabase.value);
+            sKey = sKey.concat(frmOutputDef.txtDatabase.value);
             sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
             dialog.InitDir = sPath;
         }
         else 
         {
-            dialog.FileName = frmDefinition.txtFilename.value;
+            dialog.FileName = frmOutputDef.txtFilename.value;
         }
 
         try 
@@ -651,7 +651,7 @@
                 return;
             }
 
-            frmDefinition.txtFilename.value = dialog.FileName;
+            frmOutputDef.txtFilename.value = dialog.FileName;
         }
         catch(e) {}
     }
@@ -694,7 +694,7 @@
 	<PARAM NAME="ToPage" VALUE="0">
 	<PARAM NAME="Orientation" VALUE="1"></OBJECT>
 
-<form id="frmDefinition" name="frmDefinition">
+<form id="frmOutputDef" name="frmOutputDef">
     <table align=center class="outline" cellPadding=5 width=100% height=100% cellSpacing=0>
 	<TR>
 		<TD>

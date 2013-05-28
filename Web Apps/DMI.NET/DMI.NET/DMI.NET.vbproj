@@ -555,6 +555,7 @@
     <Content Include="Scripts\FormScripts\find.js" />
     <Content Include="misc\mainmenu.htm" />
     <Content Include="Scripts\FormScripts\optionData.js" />
+    <Content Include="Scripts\FormScripts\stdrpt_def_absence.js" />
     <Content Include="Scripts\FormScripts\util_def_mailmerge.js" />
     <Content Include="Scripts\jquery\jquery-ui-1.9.2.custom.js" />
     <Content Include="Scripts\jquery\jquery.jqGrid.src.js" />
