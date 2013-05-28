@@ -930,9 +930,22 @@ function menu_refreshMenu() {
 	
 	//$("#toolbarHome").click();
 
+    //Standard reports (reports menu)
+	fStdRptAbsenceCalendarVisible = ((frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
+            (frmMenuInfo.txtUserType.value == 0) &&
+            ($("#txtAbsenceEnabled").val() == 1));
+	fStdRptAbsenceBreakdownVisible = ((frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
+            (frmMenuInfo.txtUserType.value == 0) &&
+            ($("#txtAbsenceEnabled").val() == 1));
+	fStdRptBradfordFactorVisible = ((frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
+            (frmMenuInfo.txtUserType.value == 0) &&
+            ($("#txtAbsenceEnabled").val() == 1));
+	fStdRptAbsenceCalendarEnabled = ((fCanRunAbsenceCalendar == true) && (fStdRptAbsenceCalendarVisible));
+	fStdRptAbsenceBreakdownEnabled = ((fCanRunAbsenceBreakdown == true) && (fStdRptAbsenceBreakdownVisible));
+	fStdRptBradfordFactorEnabled = ((fCanRunBradfordFactor == true) && (fStdRptBradfordFactorVisible));
 
 	sCurrentWorkPage = OpenHR.currentWorkPage();
-	
+
 	if (sCurrentWorkPage == "RECORDEDIT") {
 		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
 		var frmData = OpenHR.getForm("dataframe", "frmData");
@@ -1002,7 +1015,7 @@ function menu_refreshMenu() {
 		menu_toolbarEnableItem("mnutoolClearFilter", (frmRecEdit.txtRecEditFilterDef.value.length > 0));
 		menu_setVisibleMenuItem("mnutoolPrint", false);
 		menu_setVisibletoolbarGroup("mnutoolOrder", true);
-		
+	
 		// Standard reports (record menu)
 		fStdRptAbsenceCalendarVisible = ((frmRecEdit.txtCurrentTableID.value == frmMenuInfo.txtPersonnel_EmpTableID.value) &&
 				(frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
@@ -1064,6 +1077,25 @@ function menu_refreshMenu() {
 
 		menu_setVisibleMenuItem("mnutoolHistory", true);
 		$("#mnutoolHistory").click();
+
+	    // Standard reports (toolbar)
+		menu_setVisibleMenuItem("mnutoolStdRpt_AbsenceCalendar", fStdRptAbsenceCalendarVisible);	//Toolbar Icon
+		menu_toolbarEnableItem("mnutoolStdRpt_AbsenceCalendar", fStdRptAbsenceCalendarEnabled);	//Toolbar Icon
+		menu_setVisibleMenuItem("mnutoolStdRpt_BreakdownREC", fStdRptAbsenceBreakdownVisible);	//Toolbar Icon
+		menu_toolbarEnableItem("mnutoolStdRpt_BreakdownREC", fStdRptAbsenceBreakdownEnabled);	//Toolbar Icon
+		menu_setVisibleMenuItem("mnutoolStdRpt_BradfordREC", fStdRptBradfordFactorVisible);	//Toolbar Icon
+		menu_toolbarEnableItem("mnutoolStdRpt_BradfordREC", fStdRptBradfordFactorEnabled);	//Toolbar Icon
+
+	    // Calendar Reports (toolbar)
+		menu_setVisibleMenuItem("mnutoolCalendarReportsRec", fCalendarReportsVisible);	//Toolbar icon
+		menu_toolbarEnableItem("mnutoolCalendarReportsRec", fCalendarReportsEnabled);	//Toolbar Icon
+
+	    // Mail Merge (Toolbar!)
+		menu_setVisibleMenuItem("mnutoolMailMergeRec", fMailMergeVisible);
+		menu_toolbarEnableItem("mnutoolMailMergeRec", fMailMergeEnabled);
+
+	    //Hide Calendar Reports Group if all items are hidden.
+		menu_setVisibletoolbarGroup("mnutoolCalendarReportsRec", (fCalendarReportsVisible || fStdRptAbsenceCalendarVisible || fStdRptAbsenceBreakdownVisible || fStdRptBradfordFactorVisible || fMailMergeVisible));
 
         //dynamically created function, found in menu.ascx...
 		menu_refreshHistoryScreensMenu(frmRecEdit.txtCurrentScreenID.value);
@@ -1228,8 +1260,8 @@ function menu_refreshMenu() {
 
 			menu_setVisibleMenuItem("mnutoolHistory", false);
 		    $("#mnutoolDatabase").click();
-		    
-            
+
+		    menu_setVisibletoolbarGroup("mnutoolCalendarReportsRec", false);
 
 			fBookCourseVisible = ((frmFind.txtCurrentTableID.value == frmMenuInfo.txtTB_WaitListTableID.value) &&
 					(frmMenuInfo.txtUserType.value == 0));
@@ -1518,6 +1550,11 @@ function menu_refreshMenu() {
 	//	end if
 	//%>
 
+	    menu_setVisibleMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownVisible);	//Context menu item
+	    menu_enableMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownEnabled);	//Context menu item
+	    menu_setVisibleMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorVisible);	//Context menu item
+	    menu_enableMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorEnabled);	//Context menu item
+
 	
 			menu_setVisibleMenuItem("mnutoolCancelCourse", fCancelCourseVisible);
 			menu_toolbarEnableItem("mnutoolCancelCourse", fCancelCourseEnabled);
@@ -1542,73 +1579,7 @@ function menu_refreshMenu() {
 			//if all these are false, then hide the Course Booking group.			
 			menu_setVisibletoolbarGroup("mnutoolBookCourse", ((fBookCourseVisible) || (fCancelCourseVisible)));			
 
-			// Standard reports (toolbar)
-			menu_setVisibleMenuItem("mnutoolStdRpt_AbsenceCalendar", fStdRptAbsenceCalendarVisible);	//Toolbar Icon
-			menu_toolbarEnableItem("mnutoolStdRpt_AbsenceCalendar", fStdRptAbsenceCalendarEnabled);	//Toolbar Icon
-			menu_setVisibleMenuItem("mnutoolStdRpt_BreakdownREC", fStdRptAbsenceBreakdownVisible);	//Toolbar Icon
-			menu_toolbarEnableItem("mnutoolStdRpt_BreakdownREC", fStdRptAbsenceBreakdownEnabled);	//Toolbar Icon
-			menu_setVisibleMenuItem("mnutoolStdRpt_BradfordREC", fStdRptBradfordFactorVisible);	//Toolbar Icon
-			menu_toolbarEnableItem("mnutoolStdRpt_BradfordREC", fStdRptBradfordFactorEnabled);	//Toolbar Icon
 
-	// Calendar Reports (toolbar)
-			menu_setVisibleMenuItem("mnutoolCalendarReportsRec", fCalendarReportsVisible);	//Toolbar icon
-			menu_toolbarEnableItem("mnutoolCalendarReportsRec", fCalendarReportsEnabled);	//Toolbar Icon
-
-			// Mail Merge (Toolbar!)
-			menu_setVisibleMenuItem("mnutoolMailMergeRec", fMailMergeVisible);
-			menu_toolbarEnableItem("mnutoolMailMergeRec", fMailMergeEnabled);
-
-	 //Standard reports (reports menu)
-	fStdRptAbsenceCalendarVisible = ((frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
-			(frmMenuInfo.txtUserType.value == 0) &&
-			($("#txtAbsenceEnabled").val() == 1));
-	fStdRptAbsenceBreakdownVisible = ((frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
-			(frmMenuInfo.txtUserType.value == 0) &&
-			($("#txtAbsenceEnabled").val() == 1));
-	fStdRptBradfordFactorVisible = ((frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
-			(frmMenuInfo.txtUserType.value == 0) &&
-			($("#txtAbsenceEnabled").val() == 1));
-
-	fStdRptAbsenceCalendarEnabled = ((fCanRunAbsenceCalendar == true) &&
-			(fStdRptAbsenceCalendarVisible));
-	fStdRptAbsenceBreakdownEnabled = ((fCanRunAbsenceBreakdown == true) &&
-			(fStdRptAbsenceBreakdownVisible));
-	fStdRptBradfordFactorEnabled = ((fCanRunBradfordFactor == true) &&
-			(fStdRptBradfordFactorVisible));
-
-	//		abMainMenu.Tools("mnutoolStdRpt_AbsenceBreakdown").visible = fStdRptAbsenceBreakdownVisible;
-	//		abMainMenu.Tools("mnutoolStdRpt_AbsenceBreakdown").enabled = fStdRptAbsenceBreakdownEnabled;
-	//		abMainMenu.Tools("mnutoolStdRpt_BradfordFactor").visible = fStdRptBradfordFactorVisible;
-	//		abMainMenu.Tools("mnutoolStdRpt_BradfordFactor").enabled = fStdRptBradfordFactorEnabled;
-	//		abMainMenu.Tools("mnutoolStdRpt_TurnoverReport").visible = fStdRptTurnoverVisible;
-	//		abMainMenu.Tools("mnutoolStdRpt_TurnoverReport").enabled = fStdRptTurnoverEnabled;
-	//		abMainMenu.Tools("mnutoolStdRpt_StabilityReport").visible = fStdRptStabilityVisible;
-	//		abMainMenu.Tools("mnutoolStdRpt_StabilityReport").enabled = fStdRptStabilityEnabled;
-
-	menu_setVisibleMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownVisible);	//Context menu item
-	menu_enableMenuItem("mnutoolStdRpt_AbsenceBreakdown", fStdRptAbsenceBreakdownEnabled);	//Context menu item
-	menu_setVisibleMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorVisible);	//Context menu item
-	menu_enableMenuItem("mnutoolStdRpt_BradfordFactor", fStdRptBradfordFactorEnabled);	//Context menu item
-	menu_setVisibleMenuItem("mnutoolStdRpt_TurnoverReport", fStdRptTurnoverVisible);	//Context menu item
-	menu_enableMenuItem("mnutoolStdRpt_TurnoverReport", fStdRptTurnoverEnabled);	//Context menu item
-	menu_setVisibleMenuItem("mnutoolStdRpt_StabilityReport", fStdRptStabilityVisible);	//Context menu item
-	menu_enableMenuItem("mnutoolStdRpt_StabilityReport", fStdRptStabilityEnabled);	//Context menu item
-
-    //Hide Calendar Reports Group if all items are hidden.
-	menu_setVisibletoolbarGroup("mnutoolCalendarReportsRec", (fCalendarReportsVisible && fStdRptAbsenceCalendarVisible && fStdRptAbsenceBreakdownVisible && fStdRptBradfordFactorVisible && fMailMergeVisible));
-
-
-
-	//no beginGroup functionality 
-	//		if ((abMainMenu.Tools("mnutoolStdRpt_AbsenceBreakdown").visible == false) && 
-	//			(abMainMenu.Tools("mnutoolStdRpt_BradfordFactor").visible == true)) {
-	//			abMainMenu.Bands("mnubandReports").Tools("mnutoolStdRpt_BradfordFactor").beginGroup = true;
-	//		}
-
-	//		if ((abMainMenu.Tools("mnutoolStdRpt_BreakdownREC").visible == false) && 
-	//			(abMainMenu.Tools("mnutoolStdRpt_AbsenceCalendar").visible == true)) {
-	//			abMainMenu.Bands("mnubandMainToolBar").Tools("mnutoolStdRpt_AbsenceCalendar").beginGroup = true;
-	//		}
 
 	fCanSeeLookupTableMenu = true;
 	//		if (txtSysPerm_MENU_VIEWLOOKUPTABLES != null) {

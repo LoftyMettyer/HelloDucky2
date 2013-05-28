@@ -30,11 +30,6 @@
  
     function promptedvalues_window_onload() {
 
-        //remmed this - don't need to set current workframe source - leave as defsel.
-        $("#reportframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");       
-
-        $("#reportframe").show();
-
         var frmPromptedValues = OpenHR.getForm("workframe", "frmPromptedValues");
 
         frmPromptedValues.txtLocaleDateFormat.value = OpenHR.LocaleDateFormat;
@@ -42,11 +37,13 @@
         frmPromptedValues.txtLocaleThousandSeparator.value = OpenHR.LocaleThousandSeparator;
 
         if (frmPromptedValues.RunInOptionFrame.value == "True") {
-            $("#reportframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
-
+            $("#optionframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
+            $("#workframe").hide();
+            $("#optionframe").show();
         } else {
             if (frmPromptedValues.StandardReportPrompt.value == "True") {
-                $("#reportframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");                
+                $("#reportframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
+                $("#reportframe").show();
             }
         }
 

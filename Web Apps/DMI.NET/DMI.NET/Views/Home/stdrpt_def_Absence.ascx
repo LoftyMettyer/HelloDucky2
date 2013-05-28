@@ -1374,32 +1374,32 @@ end if
 
 				<tr height=10> 
 					<td colspan=3></td>
-				</tr> 
-
-				<TR height=10>
-					<TD width=10></TD>
-					<TD>
-						<TABLE WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
-							<TR>
-								<TD>&nbsp;</TD>
-								<TD width=80>
-									<input type=button id=cmdOK name=cmdOK class="btn" value=Run style="WIDTH: 100%" 
-									    onclick="absence_okClick()"
-		                                onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-		                                onmouseout="try{button_onMouseOut(this);}catch(e){}"
-		                                onfocus="try{button_onFocus(this);}catch(e){}"
-		                                onblur="try{button_onBlur(this);}catch(e){}" />
-								</TD>
-								<TD width=10></TD>
-							</TR>
-						</TABLE>
-					</TD>
-					<TD width=10></TD>
-				</TR> 
-
-				<tr height=5> 
-					<td colspan=3></td>
 				</tr>
+
+    <tr height="10">
+        <td width="10"></td>
+        <td>
+            <table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td>&nbsp;</td>
+                    <td width="80">
+                        <input type="button" id="cmdBack" name="cmdBack" class="btn" value="Back"
+                            onclick="absence_returnToRecEdit()" />
+                    </td>
+                    <td>
+                        <input type="button" id="cmdOK" name="cmdOK" class="btn" value="Run"
+                            onclick="absence_okClick()" />
+                    </td>
+                    <td width="10"></td>
+                </tr>
+            </table>
+        </td>
+        <td width="10"></td>
+    </tr>
+
+    <tr height="5">
+        <td colspan="3"></td>
+    </tr>
 			</TABLE>
 		</TD>
 	</TR>
@@ -1499,6 +1499,10 @@ end if
     <%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 </form>
 
+<form action="tbAddFromWaitingListFind_Submit" method="post" id="frmGotoOption" name="frmGotoOption">
+    <%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
+</form>
+
 <!-- Form to return to record edit screen -->
 <form action="emptyoption" method="post" id="frmRecordEdit" name="frmRecordEdit">
 </form>
@@ -1538,7 +1542,6 @@ end if
         cmdDefinition = Nothing
     %>
 </form>
-
 
 <script type="text/javascript">
     stdrpt_def_absence_window_onload();

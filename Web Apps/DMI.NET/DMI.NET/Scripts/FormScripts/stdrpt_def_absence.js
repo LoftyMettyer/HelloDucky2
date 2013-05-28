@@ -2,10 +2,16 @@
 function stdrpt_def_absence_window_onload() {
 
     $("#workframe").attr("data-framesource", "STDRPT_DEF_ABSENCE");
-        
+       
     // Set the frameset as 1 because 0 doesn't clear any combo boxes /dropdown controls
     if (frmPostDefinition.txtRecSelCurrentID.value > 0) {
-        $("#workframe").show();
+        $("#workframe").hide();
+        
+        $("#toolbarUtilities").show();
+        $("#toolbarUtilities").click();
+
+    } else {
+        $("#cmdBack").hide();
     }
 
     menu_refreshMenu();
@@ -225,6 +231,12 @@ function validateAbsenceTab3()
     }
 		
     return (true);
+}
+
+function absence_returnToRecEdit() {
+    $("#optionframe").hide();
+    $("#workframe").show();
+    $("#toolbarRecord").click();
 }
 
 function absence_okClick(){
