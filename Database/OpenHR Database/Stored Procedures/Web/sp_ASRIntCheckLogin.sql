@@ -19,7 +19,6 @@ BEGIN
 		@psIntranetAppVersion is the intranet application version passed into the stored procedure (set as a session variable in the global.asa file. 
 		@piPasswordLength is the length of the user's current password. 
 		@fDmiNetUserType is te DMI or SSI path 1 for SSi 0 for DMI
-
 	*/
 	SET NOCOUNT ON;
 	
@@ -80,11 +79,13 @@ BEGIN
 		@fNewSettingFound				bit,
 		@iCurrentItemKey				integer,
 		@sCurrentItemKey				varchar(50),
-		@sPermissionItemKey varchar(500),
-		@iSSIntranetCount AS integer,
-		@sIntranet_SelfService AS varchar(255),
-		@sIntranet AS varchar(255),
 		@fOldSettingFound				bit;
+		
+	DECLARE @sPermissionItemKey varchar(500);
+	DECLARE @iSSIntranetCount AS integer;
+	DECLARE @sIntranet_SelfService AS varchar(255);
+	DECLARE @sIntranet AS varchar(255);
+	DECLARE @psItemKey AS varchar(50);
 
 	SET @piSuccessFlag = 1;
 	SET @psErrorMessage = '';
@@ -98,35 +99,17 @@ BEGIN
 	SET @psUserGroup = '';
 	SET @sPermissionItemKey = '';
 
-	/* Deriving the User-group at the correct time especially after new users created was crucial so used this bit of code from later to do it */
-	SET @psUserGroup = (SELECT CASE 
-				WHEN (usg.uid IS null) THEN null
-				ELSE usg.name
-			END as groupname
-		FROM sysusers usu 
-		LEFT OUTER JOIN (sysmembers mem INNER JOIN sysusers usg ON mem.groupuid = usg.uid) ON usu.uid = mem.memberuid
-		LEFT OUTER JOIN master.dbo.syslogins lo ON usu.sid = lo.sid
-		WHERE (usu.islogin = 1 AND usu.isaliased = 0 AND usu.hasdbaccess = 1) 
-			AND (usg.issqlrole = 1 OR usg.uid IS null)
-			AND lo.loginname = SYSTEM_USER
-			AND CASE 
-				WHEN (usg.uid IS null) THEN null
-				ELSE usg.name
-				END NOT LIKE 'ASRSys%' AND usg.name NOT LIKE 'db_owner'
-			AND CASE 
-				WHEN (usg.uid IS null) THEN null
-				ELSE usg.name
-				END IN (
-					SELECT [groupName]
-					FROM [dbo].[ASRSysGroupPermissions]
-					WHERE itemID IN (
-									SELECT [itemID]
-									FROM [dbo].[ASRSysPermissionItems]
-									WHERE categoryID = 1
-									AND itemKey LIKE '%INTRANET%'
-								)  
-					AND [permitted] = 1))
-	
+	SET @psItemKey = 'INTRANET';
+	EXEC	[dbo].[sp_ASRIntGetUserGroup]
+			@psItemKey = 'INTRANET',
+			@psUserGroup = @psUserGroup OUTPUT				        
+
+		IF @psUserGroup IS NULL
+		BEGIN
+			SET @piSuccessFlag = 0
+			SET @psErrorMessage = 'The  user is not a member of any OpenHR user group.'
+		END
+		
 	SET @sIntranet = (SELECT itemKey FROM ASRSysPermissionItems inner join ASRSysGroupPermissions ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
 	WHERE ASRSysGroupPermissions.groupName = @psUserGroup and permitted = 1 and categoryID = 1
 	and ASRSysPermissionItems.itemKey = 'INTRANET');
