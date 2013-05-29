@@ -690,4 +690,7 @@
     <Build Include="Stored Procedures\Other\sp_ASRInsertNewRecord.sql" />
     <Build Include="Stored Procedures\Other\sp_ASRInsertNewUtility.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Stored Procedures\Web\sp_ASRIntGetUserGroup.sql" />
+  </ItemGroup>
 </Project>
