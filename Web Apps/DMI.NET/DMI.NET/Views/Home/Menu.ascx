@@ -247,8 +247,12 @@
     Response.Write("  //}" & vbCrLf & vbCrLf)
 
     Response.Write("  //abMainMenu.Bands(""mnubandHistory"").Tools.RemoveAll();" & vbCrLf & vbCrLf)
-    Response.Write("  $('#mnubandHistory').empty();" & vbCrLf & vbCrLf)
-    Dim iLastParentScreenID = 0
+	' Response.Write("  $('#mnubandHistory').empty();" & vbCrLf & vbCrLf)	
+	' This is horrible. Need to clear out history menu, but accordion or jstree (or both) clears out all ids/classes etc,
+	' so removing all li's that begin with HT_ instead. dodgy.
+	Response.Write("  $('li[id^=""HT_""').empty();" & vbCrLf & vbCrLf)
+	
+	Dim iLastParentScreenID = 0
     Dim iDoneCount = 0
     Dim iLastChildTableID = 0
     Dim iNextChildTableID

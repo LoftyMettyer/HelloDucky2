@@ -30,7 +30,7 @@ function find_window_onload() {
     $(function () {
         tableToGrid("#findGridTable", {
             onSelectRow: function (rowID) {
-                menu_refreshMenu();
+                //menu_refreshMenu();
             },
             ondblClickRow: function (rowID) {
                 menu_editRecord();

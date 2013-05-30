@@ -12,7 +12,7 @@
 		})();	
 
 
-    function recordEdit_window_onload() {
+		function recordEdit_window_onload() {
         //public variables
         this.mavIDColumns = new Array(3);
         var frmRecordEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
@@ -344,11 +344,13 @@
     	var plngLookupColumnID = $(objLookup).attr("data-LookupColumnID");
     	var psLookupValue = $(objLookup).val();
     	var pfMandatory = $(objLookup).attr("data-Mandatory");
-	    var pLookupFilterValueID = $(objLookup).attr("data-LookupFilterValueID");
-	    var pstrFilterValue = $("#ctlRecordEdit").find("[data-columnID='" + pLookupFilterValueID + "']").val();
-	    
+    	var pLookupFilterValueID = $(objLookup).attr("data-LookupFilterValueID");    	
+    	var pstrFilterValue = $("#ctlRecordEdit").find("[data-columnID='" + pLookupFilterValueID + "']").val();
+	    if (pstrFilterValue == undefined) pstrFilterValue = "";
+	    	    
       menu_loadLookupPage(plngColumnID, plngLookupColumnID, psLookupValue, pfMandatory, pstrFilterValue);
-    }
+    }    
+
 
     function ctlRecordEdit_ImageClick4(plngColumnID, psImage, plngOLEType, plngMaxEmbedSize, pbIsReadOnly) {
         // An image has been pressed in the recEdit control,

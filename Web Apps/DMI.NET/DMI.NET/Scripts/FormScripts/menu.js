@@ -945,7 +945,7 @@ function menu_refreshMenu() {
 	fStdRptBradfordFactorEnabled = ((fCanRunBradfordFactor == true) && (fStdRptBradfordFactorVisible));
 
 	sCurrentWorkPage = OpenHR.currentWorkPage();
-
+	
 	if (sCurrentWorkPage == "RECORDEDIT") {
 		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
 		var frmData = OpenHR.getForm("dataframe", "frmData");
@@ -1015,7 +1015,7 @@ function menu_refreshMenu() {
 		menu_toolbarEnableItem("mnutoolClearFilter", (frmRecEdit.txtRecEditFilterDef.value.length > 0));
 		menu_setVisibleMenuItem("mnutoolPrint", false);
 		menu_setVisibletoolbarGroup("mnutoolOrder", true);
-	
+		
 		// Standard reports (record menu)
 		fStdRptAbsenceCalendarVisible = ((frmRecEdit.txtCurrentTableID.value == frmMenuInfo.txtPersonnel_EmpTableID.value) &&
 				(frmMenuInfo.txtPersonnel_EmpTableID.value > 0) &&
@@ -1260,7 +1260,7 @@ function menu_refreshMenu() {
 
 			menu_setVisibleMenuItem("mnutoolHistory", false);
 		    $("#mnutoolDatabase").click();
-
+		    
 		    menu_setVisibletoolbarGroup("mnutoolCalendarReportsRec", false);
 
 			fBookCourseVisible = ((frmFind.txtCurrentTableID.value == frmMenuInfo.txtTB_WaitListTableID.value) &&

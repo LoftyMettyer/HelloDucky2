@@ -111,6 +111,7 @@
 
 					$("#optionframe").attr("data-framesource", "EMPTYOPTION");
 					//window.setTimeout("window.parent.frames('menuframe').refreshMenu()", 100);
+					menu_refreshMenu();
 				}
 
 				if ((txtAction.value == "SELECTIMAGE") || (txtAction.value == "SELECTOLE")) {
@@ -122,6 +123,7 @@
 
 					$("#optionframe").attr("data-framesource", "EMPTYOPTION");
 					//window.setTimeout("window.parent.frames('menuframe').refreshMenu()", 100);
+					menu_refreshMenu();
 				}
 
 				if (txtAction.value == "LINKOLE") {
