@@ -374,7 +374,7 @@ Public Class clsDiary
   End Function
 
   Public Function SQLCurrentDateTime() As String
-    SQLCurrentDateTime = Replace(VB6.Format(Now, "mm/dd/yyyy hh"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & ":" & VB6.Format(Now, "nn")
+    SQLCurrentDateTime = Replace(VB6.Format(Now, "MM/dd/yyyy hh"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & ":" & VB6.Format(Now, "nn")
   End Function
 
 

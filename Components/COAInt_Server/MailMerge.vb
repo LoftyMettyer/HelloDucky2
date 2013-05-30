@@ -1830,23 +1830,23 @@ LocalErr:
     FormatData = Replace(FormatData, Chr(34), "'")
 
     Select Case mintType(intColIndex)
-      Case Declarations.SQLDataType.sqlNumeric
+      Case SQLDataType.sqlNumeric
         If mintDecimals(intColIndex) <> 0 Then
-          FormatData = VB6.Format(FormatData, "0." & New String("0", mintDecimals(intColIndex)))
+          FormatData = Format(FormatData, "0." & New String("0", mintDecimals(intColIndex)))
         Else
           If mlngSize(intColIndex) > 0 Then
             If FormatData = "0" Then
-              FormatData = VB6.Format(FormatData, "0")
+              FormatData = Format(FormatData, "0")
             Else
-              FormatData = VB6.Format(FormatData, "#")
+              FormatData = Format(FormatData, "#")
             End If
           End If
         End If
 
-      Case Declarations.SQLDataType.sqlDate
+      Case SQLDataType.sqlDate
         FormatData = VB6.Format(FormatData, mstrClientDateFormat)
 
-      Case Declarations.SQLDataType.sqlBoolean
+      Case SQLDataType.sqlBoolean
         FormatData = IIf(CBool(FormatData), "Y", "N")
 
       Case Else

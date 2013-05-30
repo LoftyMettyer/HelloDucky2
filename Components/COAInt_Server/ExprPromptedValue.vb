@@ -165,7 +165,12 @@ ErrorTrap:
 		
 		fOK = True
 		
-		sSQL = "INSERT INTO ASRSysExprComponents" & " (componentID, exprID, type, promptDescription," & " valueType, promptSize, promptDecimals, promptMask," & " valueCharacter, valueNumeric, valueLogic, valueDate, fieldColumnID,PromptDateType)" & " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(modExpression.ExpressionComponentTypes.giCOMPONENT_PROMPTEDVALUE)) & "," & " '" & Replace(Trim(msPrompt), "'", "''") & "'," & " " & Trim(Str(miType)) & "," & " " & Trim(Str(miReturnSize)) & "," & " " & Trim(Str(miReturnDecimals)) & "," & " '" & Replace(Trim(msFormat), "'", "''") & "'," & " '" & Replace(Trim(msDefaultCharacterValue), "'", "''") & "'," & " " & Trim(Str(mdblDefaultNumericValue)) & "," & " " & IIf(mfDefaultLogicValue, "1", "0") & "," & IIf(mdtDefaultDateValue = System.Date.FromOADate(0), " null,", " '" & VB6.Format(mdtDefaultDateValue, "MM/dd/yyyy") & "',") & " " & Trim(Str(mlngLookupColumnID)) & "," & " " & Trim(Str(miDefaultDateType)) & ")"
+    sSQL = "INSERT INTO ASRSysExprComponents" & " (componentID, exprID, type, promptDescription," & " valueType, promptSize, promptDecimals, promptMask," & " valueCharacter, valueNumeric, valueLogic, valueDate, fieldColumnID,PromptDateType)" _
+        & " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " _
+        & Trim(Str(ExpressionComponentTypes.giCOMPONENT_PROMPTEDVALUE)) & "," & " '" & Replace(Trim(msPrompt), "'", "''") & "'," & " " & Trim(Str(miType)) & "," _
+        & " " & Trim(Str(miReturnSize)) & "," & " " & Trim(Str(miReturnDecimals)) & "," & " '" & Replace(Trim(msFormat), "'", "''") & "'," & " '" & Replace(Trim(msDefaultCharacterValue), "'", "''") _
+        & "'," & " " & Trim(Str(mdblDefaultNumericValue)) & "," & " " & IIf(mfDefaultLogicValue, "1", "0") & "," & IIf(mdtDefaultDateValue = System.DateTime.FromOADate(0), " null,", " '" _
+        & VB6.Format(mdtDefaultDateValue, "MM/dd/yyyy") & "',") & " " & Trim(Str(mlngLookupColumnID)) & "," & " " & Trim(Str(miDefaultDateType)) & ")"
 		
 		gADOCon.Execute(sSQL,  , ADODB.CommandTypeEnum.adCmdText)
 		

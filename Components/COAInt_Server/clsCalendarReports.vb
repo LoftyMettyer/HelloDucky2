@@ -881,7 +881,7 @@ CreateTempTable_ERROR:
         iDecimals = datGeneral.GetDecimalsSize(plngColumnID)
         strFormat = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
         'UPGRADE_WARNING: Couldn't resolve default property of object pvarValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-        strTempEventDesc = VB6.Format(pvarValue, strFormat)
+        strTempEventDesc = Format(pvarValue, strFormat)
 
       ElseIf datGeneral.GetColumnDataType(plngColumnID) = Declarations.SQLDataType.sqlBoolean Then
         'UPGRADE_WARNING: Couldn't resolve default property of object pvarValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -1306,7 +1306,7 @@ ErrorTrap:
             iDecimals = datGeneral.GetDecimalsSize(mlngDescription1)
             strFormat = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
             'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            strBaseDescription1 = VB6.Format(.Fields("Description1").Value, strFormat)
+            strBaseDescription1 = Format(.Fields("Description1").Value, strFormat)
           ElseIf datGeneral.BitColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
             'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             strBaseDescription1 = IIf(.Fields("Description1").Value, "Y", "N")
@@ -1329,7 +1329,7 @@ ErrorTrap:
             iDecimals = datGeneral.GetDecimalsSize(mlngDescription2)
             strFormat = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
             'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            strBaseDescription2 = VB6.Format(.Fields("Description2").Value, strFormat)
+            strBaseDescription2 = Format(.Fields("Description2").Value, strFormat)
           ElseIf datGeneral.BitColumn("C", mlngCalendarReportsBaseTable, mlngDescription2) Then
             'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             strBaseDescription2 = IIf(.Fields("Description2").Value, "Y", "N")
@@ -6995,7 +6995,7 @@ ErrTrap:
         Case 3
           'UPGRADE_WARNING: Couldn't resolve default property of object pvarDesc1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
           'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-          strBaseDescription1 = VB6.Format(pvarDesc1, mstrFormat_BaseDesc1)
+          strBaseDescription1 = Format(pvarDesc1, mstrFormat_BaseDesc1)
         Case 2
           'UPGRADE_WARNING: Couldn't resolve default property of object pvarDesc1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
           'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'

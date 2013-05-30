@@ -128,7 +128,11 @@ ErrorTrap:
 		
 		'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-		sSQL = "INSERT INTO ASRSysExprComponents" & " (componentID, exprID, type," & " valueType, valueCharacter, valueNumeric, valueLogic, valuedate," & " LookupTableID, LookupColumnID)" & " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " & Trim(Str(modExpression.ExpressionComponentTypes.giCOMPONENT_TABLEVALUE)) & "," & " " & Trim(Str(miType)) & "," & " '" & Replace(msCharacterValue, "'", "''") & "'," & " " & Trim(Str(mdblNumericValue)) & "," & " " & IIf(mfLogicValue, "1", "0") & "," & " " & IIf(IsDbNull(mdtDateValue), "null", "'" & VB6.Format(mdtDateValue, "MM/dd/yyyy") & "'") & ", " & Trim(Str(miTableID)) & ", " & Trim(Str(miColumnID)) & ")"
+    sSQL = "INSERT INTO ASRSysExprComponents" & " (componentID, exprID, type," & " valueType, valueCharacter, valueNumeric, valueLogic, valuedate," & " LookupTableID, LookupColumnID)" _
+      & " VALUES(" & Trim(Str(mobjBaseComponent.ComponentID)) & "," & " " & Trim(Str(mobjBaseComponent.ParentExpression.ExpressionID)) & "," & " " _
+      & Trim(Str(ExpressionComponentTypes.giCOMPONENT_TABLEVALUE)) & "," & " " & Trim(Str(miType)) & "," & " '" & Replace(msCharacterValue, "'", "''") & "'," _
+      & " " & Trim(Str(mdblNumericValue)) & "," & " " & IIf(mfLogicValue, "1", "0") & "," & " " & IIf(IsDBNull(mdtDateValue), "null", "'" & VB6.Format(mdtDateValue, "MM/dd/yyyy") & "'") _
+      & ", " & Trim(Str(miTableID)) & ", " & Trim(Str(miColumnID)) & ")"
 		
 		gADOCon.Execute(sSQL,  , ADODB.CommandTypeEnum.adCmdText)
 		

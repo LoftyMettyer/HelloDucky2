@@ -3948,7 +3948,7 @@ LoadRecords_ERROR:
           If mvarColDetails(2, pintLoop) <> 0 Then
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            vData = VB6.Format(vData, "0." & New String("0", mvarColDetails(2, pintLoop)))
+            vData = Format(vData, "0." & New String("0", mvarColDetails(2, pintLoop)))
             'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             vData = Replace(vData, ".", mstrLocalDecimalSeparator)
           Else
@@ -3957,10 +3957,10 @@ LoadRecords_ERROR:
               'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
               If vData = "0" Then
                 'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                vData = VB6.Format(vData, "0")
+                vData = Format(vData, "0")
               Else
                 'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-                vData = VB6.Format(vData, "#")
+                vData = Format(vData, "#")
               End If
             End If
           End If
@@ -3989,10 +3989,10 @@ LoadRecords_ERROR:
           If mvarColDetails(2, pintLoop) <> 0 Then
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            vData = VB6.Format(vData, "#,0." & New String("0", mvarColDetails(2, pintLoop)))
+            vData = Format(vData, "#,0." & New String("0", mvarColDetails(2, pintLoop)))
           Else
             'UPGRADE_WARNING: Couldn't resolve default property of object vData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            vData = VB6.Format(vData, "#,0")
+            vData = Format(vData, "#,0")
           End If
 
         End If
@@ -4363,13 +4363,13 @@ LoadRecords_ERROR:
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
           ElseIf mvarColDetails(1, iLoop) > 0 And mvarColDetails(2, iLoop) = 0 Then
-            strAggrValue = VB6.Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value, "#0")
+            strAggrValue = Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value, "#0")
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
           ElseIf mvarColDetails(2, iLoop) = 0 Then
             strAggrValue = rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value
           Else
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            strAggrValue = VB6.Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value, "0." & New String("0", mvarColDetails(2, iLoop)))
+            strAggrValue = Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value, "0." & New String("0", mvarColDetails(2, iLoop)))
           End If
 
           'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -4377,17 +4377,17 @@ LoadRecords_ERROR:
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             If mvarColDetails(2, iLoop) = 0 And (InStr(1, strAggrValue, ".") <= 0) Then
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              strAggrValue = VB6.Format(strAggrValue, "#,0" & New String("0", mvarColDetails(2, iLoop)))
+              strAggrValue = Format(strAggrValue, "#,0" & New String("0", mvarColDetails(2, iLoop)))
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             ElseIf (mvarColDetails(1, iLoop) > 0) And (mvarColDetails(2, iLoop) = 0) Then
-              strAggrValue = VB6.Format(strAggrValue, "#,0")
+              strAggrValue = Format(strAggrValue, "#,0")
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             ElseIf mvarColDetails(2, iLoop) = 0 Then
-              strAggrValue = VB6.Format(strAggrValue, "#,0.#")
+              strAggrValue = Format(strAggrValue, "#,0.#")
             Else
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              strAggrValue = VB6.Format(strAggrValue, "#,0." & New String("0", mvarColDetails(2, iLoop)))
+              strAggrValue = Format(strAggrValue, "#,0." & New String("0", mvarColDetails(2, iLoop)))
             End If
           End If
 
@@ -4439,7 +4439,7 @@ LoadRecords_ERROR:
 
           ' Count.
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          sCountAddString = sCountAddString & IIf(IsDBNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value), "0", VB6.Format(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value, "0")) & vbTab
+          sCountAddString = sCountAddString & IIf(IsDBNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value), "0", Format(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value, "0")) & vbTab
 
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
           If Not IsDBNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value) Then
@@ -4495,10 +4495,10 @@ LoadRecords_ERROR:
             strAggrValue = rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
           ElseIf mvarColDetails(2, iLoop) = 0 Then
-            strAggrValue = VB6.Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value, "0")
+            strAggrValue = Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value, "0")
           Else
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            strAggrValue = VB6.Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value, "0." & New String("0", mvarColDetails(2, iLoop)))
+            strAggrValue = Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value, "0." & New String("0", mvarColDetails(2, iLoop)))
           End If
 
           'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -4506,10 +4506,10 @@ LoadRecords_ERROR:
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             If mvarColDetails(2, iLoop) = 0 Then
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              strAggrValue = VB6.Format(strAggrValue, "#,0" & New String("0", mvarColDetails(2, iLoop)))
+              strAggrValue = Format(strAggrValue, "#,0" & New String("0", mvarColDetails(2, iLoop)))
             Else
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              strAggrValue = VB6.Format(strAggrValue, "#,0." & New String("0", mvarColDetails(2, iLoop)))
+              strAggrValue = Format(strAggrValue, "#,0." & New String("0", mvarColDetails(2, iLoop)))
             End If
           End If
 
@@ -4833,13 +4833,13 @@ LoadRecords_ERROR:
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
           ElseIf mvarColDetails(1, iLoop) > 0 And mvarColDetails(2, iLoop) = 0 Then
-            strAggrValue = VB6.Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value, "#0")
+            strAggrValue = Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value, "#0")
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
           ElseIf mvarColDetails(2, iLoop) = 0 Then
             strAggrValue = rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value
           Else
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            strAggrValue = VB6.Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value, "0." & New String("0", mvarColDetails(2, iLoop)))
+            strAggrValue = Format(rsTemp.Fields("avg_" & Trim(Str(iLoop))).Value, "0." & New String("0", mvarColDetails(2, iLoop)))
           End If
 
           'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -4847,17 +4847,17 @@ LoadRecords_ERROR:
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             If mvarColDetails(2, iLoop) = 0 And (InStr(1, strAggrValue, ".") <= 0) Then
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              strAggrValue = VB6.Format(strAggrValue, "#,0" & New String("0", mvarColDetails(2, iLoop)))
+              strAggrValue = Format(strAggrValue, "#,0" & New String("0", mvarColDetails(2, iLoop)))
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             ElseIf (mvarColDetails(1, iLoop) > 0) And (mvarColDetails(2, iLoop) = 0) Then
-              strAggrValue = VB6.Format(strAggrValue, "#,0")
+              strAggrValue = Format(strAggrValue, "#,0")
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             ElseIf mvarColDetails(2, iLoop) = 0 Then
-              strAggrValue = VB6.Format(strAggrValue, "#,0.#")
+              strAggrValue = Format(strAggrValue, "#,0.#")
             Else
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              strAggrValue = VB6.Format(strAggrValue, "#,0." & New String("0", mvarColDetails(2, iLoop)))
+              strAggrValue = Format(strAggrValue, "#,0." & New String("0", mvarColDetails(2, iLoop)))
             End If
           End If
 
@@ -4885,7 +4885,7 @@ LoadRecords_ERROR:
           End If
 
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-          sCountAddString = sCountAddString & IIf(IsDBNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value), "0", VB6.Format(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value, "0")) & vbTab
+          sCountAddString = sCountAddString & IIf(IsDBNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value), "0", Format(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value, "0")) & vbTab
 
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
           If Not IsDBNull(rsTemp.Fields("cnt_" & Trim(Str(iLoop))).Value) Then
@@ -4919,11 +4919,11 @@ LoadRecords_ERROR:
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
           ElseIf mvarColDetails(2, iLoop) = 0 Then
             '          sTotalAddString = sTotalAddString & Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))), "0") & vbTab
-            strAggrValue = VB6.Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value, "0")
+            strAggrValue = Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value, "0")
           Else
             '          sTotalAddString = sTotalAddString & Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))), "0." & String(mvarColDetails(2, iLoop), "0")) & vbTab
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            strAggrValue = VB6.Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value, "0." & New String("0", mvarColDetails(2, iLoop)))
+            strAggrValue = Format(rsTemp.Fields("ttl_" & Trim(Str(iLoop))).Value, "0." & New String("0", mvarColDetails(2, iLoop)))
           End If
 
           'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(22, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -4931,10 +4931,10 @@ LoadRecords_ERROR:
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(2, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             If (mvarColDetails(2, iLoop) = 0) Then
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              strAggrValue = VB6.Format(strAggrValue, "#,0" & New String("0", mvarColDetails(2, iLoop)))
+              strAggrValue = Format(strAggrValue, "#,0" & New String("0", mvarColDetails(2, iLoop)))
             Else
               'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-              strAggrValue = VB6.Format(strAggrValue, "#,0." & New String("0", mvarColDetails(2, iLoop)))
+              strAggrValue = Format(strAggrValue, "#,0." & New String("0", mvarColDetails(2, iLoop)))
             End If
           End If
 

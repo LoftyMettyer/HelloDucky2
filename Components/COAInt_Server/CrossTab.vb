@@ -1415,7 +1415,7 @@ LocalErr:
                 'strHeading(lngCount) = .Fields(0).Value
                 'strSearch(lngCount) = strColumnName & " = " & .Fields(0).Value
 
-                strHeading(lngCount) = datGeneral.ConvertNumberForDisplay(VB6.Format(.Fields(0).Value, mstrFormat(lngLoop)))
+                strHeading(lngCount) = datGeneral.ConvertNumberForDisplay(Format(.Fields(0).Value, mstrFormat(lngLoop)))
                 strSearch(lngCount) = strColumnName & " = " & datGeneral.ConvertNumberForSQL(.Fields(0).Value)
 
               Case Else
@@ -1467,7 +1467,7 @@ LocalErr:
       strSearch(0) = strColumnName & " IS NULL"
 
       'Second element of range for those less than minimum value of range...
-      strHeading(1) = "< " & datGeneral.ConvertNumberForDisplay(VB6.Format(mdblMin(lngLoop), mstrFormat(lngLoop)))
+      strHeading(1) = "< " & datGeneral.ConvertNumberForDisplay(Format(mdblMin(lngLoop), mstrFormat(lngLoop)))
       'MH20010411 Fault 1978 Convert to int stops overflow error !
       'strSearch(1) = "Convert(int," & strColumnName & ") < " & datGeneral.ConvertNumberForSQL(mdblMin(lngLoop))
       strSearch(1) = "Convert(float," & strColumnName & ") < " & datGeneral.ConvertNumberForSQL(CStr(mdblMin(lngLoop)))
@@ -1485,7 +1485,7 @@ LocalErr:
         ReDim Preserve strHeading(lngCount)
         ReDim Preserve strSearch(lngCount)
         dblGroupMax = dblGroup + mdblStep(lngLoop) - dblUnit
-        strHeading(lngCount) = datGeneral.ConvertNumberForDisplay(VB6.Format(dblGroup, mstrFormat(lngLoop))) & IIf(dblGroupMax <> dblGroup, " - " & datGeneral.ConvertNumberForDisplay(VB6.Format(dblGroupMax, mstrFormat(lngLoop))), "")
+        strHeading(lngCount) = datGeneral.ConvertNumberForDisplay(Format(dblGroup, mstrFormat(lngLoop))) & IIf(dblGroupMax <> dblGroup, " - " & datGeneral.ConvertNumberForDisplay(Format(dblGroupMax, mstrFormat(lngLoop))), "")
         'MH20010411 Fault 1978 Convert to int stops overflow error !
         'strSearch(lngCount) = "Convert(int," & strColumnName & ") BETWEEN " & _
         'datGeneral.ConvertNumberForSQL(dblGroup) & " AND " & datGeneral.ConvertNumberForSQL(dblGroupMax)
@@ -1770,7 +1770,7 @@ LocalErr:
 
           Case CStr(Declarations.SQLDataType.sqlNumeric), CStr(Declarations.SQLDataType.sqlInteger)
             'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            If UCase(mvarHeadings(Index)(lngCount)) = datGeneral.ConvertNumberForDisplay(VB6.Format(strValue, mstrFormat(Index))) Then
+            If UCase(mvarHeadings(Index)(lngCount)) = datGeneral.ConvertNumberForDisplay(Format(strValue, mstrFormat(Index))) Then
               'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
               GetGroupNumber = lngCount
               Exit For
@@ -2044,7 +2044,7 @@ LocalErr:
       End If
 
       If strMask <> vbNullString Then
-        FormatCell = VB6.Format(dblCellValue, strMask)
+        FormatCell = Format(dblCellValue, strMask)
       End If
 
     End If
@@ -2159,7 +2159,7 @@ LocalErr:
           Else
             'MH20040128 Fault 7995 - Round average to 2 decimal places
             'strOutput = strOutput & .Fields("Value").Value & vbTab
-            strOutput = strOutput & VB6.Format(.Fields("Value").Value, "0.00") & vbTab
+            strOutput = strOutput & Format(.Fields("Value").Value, "0.00") & vbTab
           End If
 
         End If
@@ -2167,7 +2167,7 @@ LocalErr:
         If mblnIntersection Then
           'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
           If Not IsDBNull(.Fields("Ins").Value) Then
-            strOutput = strOutput & vbTab & VB6.Format(.Fields("Ins").Value, mstrIntersectionMask)
+            strOutput = strOutput & vbTab & Format(.Fields("Ins").Value, mstrIntersectionMask)
           End If
         End If
 
