@@ -440,9 +440,16 @@ Public Class AbsenceCalendar
             'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexAM, 11). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexAM, 6). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexAM, 5). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            strHtmlCellString = "<TD style='font-size: " & IIf(Len(mavAbsences(CInt(iIndexAM), 2)) < 2, "8", "6") & "pt;background-color:" & mavAbsences(CInt(iIndexAM), 5) & "' name=DateID_" & LTrim(Str(CDbl(iIndexAM))) & " id=DateID_" & LTrim(Str(CDbl(iIndexAM))) & " HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP " & " onmouseover=""this.style.cursor='hand';image_abs_" & mavAbsences(CInt(iIndexAM), 6) & ".style.visibility='visible';""" & " onmouseout=""this.style.cursor='default';image_abs_" & mavAbsences(CInt(iIndexAM), 6) & ".style.visibility='hidden';""" & " onclick=""ShowDetails('" & VB6.Format(mavAbsences(CInt(iIndexAM), 10), mstrClientDateFormat) & "','" & mavAbsences(CInt(iIndexAM), 11) & "','" & VB6.Format(mavAbsences(CInt(iIndexAM), 12), mstrClientDateFormat) & "','" & mavAbsences(CInt(iIndexAM), 13) & "','" & mavAbsences(CInt(iIndexAM), 9) & "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexAM), 6), 0), "'", "") & "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexAM), 6), 5), "'", "") & "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexAM), 6), 4), "'", "") & "','" & HTMLEncode(Left(mavAbsences(CInt(iIndexAM), 7), 100)) & "','" & mavAbsences(CInt(iIndexAM), 14) & "','" & mavAbsences(CInt(iIndexAM), 8) & "')"">" & "<FONT SIZE='1'>" & mavAbsences(CInt(iIndexAM), 2) & "</FONT>" & "</TD>" & vbNewLine
+            strHtmlCellString = "<TD style='font-size: " & IIf(Len(mavAbsences(CInt(iIndexAM), 2)) < 2, "8", "6") & "pt;background-color:" & mavAbsences(CInt(iIndexAM), 5) & "' name=DateID_" _
+                & LTrim(Str(CDbl(iIndexAM))) & " id=DateID_" & LTrim(Str(CDbl(iIndexAM))) & " HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP " _
+                & " onclick=""ShowDetails('" & VB6.Format(mavAbsences(CInt(iIndexAM), 10), mstrClientDateFormat) & "','" _
+                & mavAbsences(CInt(iIndexAM), 11) & "','" & VB6.Format(mavAbsences(CInt(iIndexAM), 12), mstrClientDateFormat) & "','" & mavAbsences(CInt(iIndexAM), 13) & "','" & mavAbsences(CInt(iIndexAM), 9) & "','" _
+                & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexAM), 6), 0), "'", "") & "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexAM), 6), 5), "'", "") & "','" _
+                & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexAM), 6), 4), "'", "") & "','" & HTMLEncode(Left(mavAbsences(CInt(iIndexAM), 7), 100)) & "','" & mavAbsences(CInt(iIndexAM), 14) & "','" _
+                & mavAbsences(CInt(iIndexAM), 8) & "')"">" & "<FONT SIZE='1'>" & mavAbsences(CInt(iIndexAM), 2) & "</FONT>" & "</TD>" & vbNewLine
           Else
-            strHtmlCellString = "<TD name=DateID_" & LTrim(Str(CDbl(iIndexAM))) & " id=DateID_" & LTrim(Str(CDbl(iIndexAM))) & " class=""calendar_day"" HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP>&nbsp;</TD>" & vbNewLine
+            strHtmlCellString = "<TD name=DateID_" & LTrim(Str(CDbl(iIndexAM))) & " id=DateID_" & LTrim(Str(CDbl(iIndexAM))) & " class=""calendar_day"" HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" _
+                & CELLSIZE & " NOWRAP>&nbsp;</TD>" & vbNewLine
           End If
 
         End If
@@ -472,7 +479,13 @@ Public Class AbsenceCalendar
             'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexPM, 11). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexPM, 6). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
             'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexPM, 5). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-            strHtmlCellString = "<TD style='font-size: " & IIf(Len(mavAbsences(CInt(iIndexPM), 2)) < 2, "8", "6") & "pt;background-color:" & mavAbsences(CInt(iIndexPM), 5) & "' name=DateID_" & LTrim(Str(CDbl(iIndexPM))) & " id=DateID_" & LTrim(Str(CDbl(iIndexPM))) & " HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP" & " onmouseover=""this.style.cursor='hand';image_abs_" & mavAbsences(CInt(iIndexPM), 6) & ".style.visibility='visible';""" & " onmouseout=""this.style.cursor='default';image_abs_" & mavAbsences(CInt(iIndexPM), 6) & ".style.visibility='hidden';""" & " onclick=""ShowDetails('" & VB6.Format(mavAbsences(CInt(iIndexPM), 10), mstrClientDateFormat) & "','" & mavAbsences(CInt(iIndexPM), 11) & "','" & VB6.Format(mavAbsences(CInt(iIndexPM), 12), mstrClientDateFormat) & "','" & mavAbsences(CInt(iIndexPM), 13) & "','" & mavAbsences(CInt(iIndexPM), 9) & "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexPM), 6), 0), "'", "") & "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexPM), 6), 5), "'", "") & "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexPM), 6), 4), "'", "") & "','" & HTMLEncode(Left(mavAbsences(CInt(iIndexPM), 7), 100)) & "','" & mavAbsences(CInt(iIndexPM), 14) & "','" & mavAbsences(CInt(iIndexPM), 8) & "')"">" & "<FONT SIZE='1'>" & mavAbsences(CInt(iIndexAM), 2) & "</FONT>" & "</TD>" & vbNewLine
+            strHtmlCellString = "<TD style='font-size: " & IIf(Len(mavAbsences(CInt(iIndexPM), 2)) < 2, "8", "6") & "pt;background-color:" & mavAbsences(CInt(iIndexPM), 5) & "' name=DateID_" & LTrim(Str(CDbl(iIndexPM))) & " id=DateID_" & LTrim(Str(CDbl(iIndexPM))) _
+                & " HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP" _
+                & " onclick=""ShowDetails('" & VB6.Format(mavAbsences(CInt(iIndexPM), 10), mstrClientDateFormat) & "','" & mavAbsences(CInt(iIndexPM), 11) & "','" _
+                & VB6.Format(mavAbsences(CInt(iIndexPM), 12), mstrClientDateFormat) & "','" & mavAbsences(CInt(iIndexPM), 13) & "','" & mavAbsences(CInt(iIndexPM), 9) _
+                & "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexPM), 6), 0), "'", "") & "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexPM), 6), 5), "'", "") _
+                & "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexPM), 6), 4), "'", "") & "','" & HTMLEncode(Left(mavAbsences(CInt(iIndexPM), 7), 100)) & "','" _
+                & mavAbsences(CInt(iIndexPM), 14) & "','" & mavAbsences(CInt(iIndexPM), 8) & "')"">" & "<FONT SIZE='1'>" & mavAbsences(CInt(iIndexAM), 2) & "</FONT>" & "</TD>" & vbNewLine
           Else
             strHtmlCellString = "<TD name=DateID_" & LTrim(Str(CDbl(iIndexPM))) & " id=DateID_" & LTrim(Str(CDbl(iIndexPM))) & " class=""calendar_day"" HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP>&nbsp;</TD>"
           End If
@@ -743,8 +756,6 @@ errLoadColourKey:
       'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
       strHTML_KeyType = strHTML_KeyType & "   <TD width=" & CELLSIZE & ">" & vbNewLine
       'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      strHTML_KeyType = strHTML_KeyType & "     <IMG " & "style=""visibility=hidden"" id=imgKey" & strKeyCode & " name=image_abs_" & strKeyCode & " src=" & mstrAbsenceHighlightImage & ">" & vbNewLine
-      'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
       strHTML_KeyType = strHTML_KeyType & "   </TD>" & vbNewLine
       'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
       strHTML_KeyType = strHTML_KeyType & "   <TD style='font-size: " & IIf(Len(strKeyCaption) < 2, "8", "6") & "pt;' ID=KEY_" & intCounter & " NAME=KEY_" & intCounter & " class='bordered' height=" & CELLSIZE & " width=" & CELLSIZE & " align=center valign=middle NOWRAP bgColor=""" & strKeyColour & """>" & vbNewLine
@@ -782,7 +793,7 @@ errLoadColourKey:
       strKeyCode = "junkpointer" & LTrim(Str(intCounter))
 
       'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-      strHTML_KeyType = "<TABLE class=""invisible"" cellPadding=0 cellSpacing=2>" & "<TR>" & "<TD width=" & CELLSIZE & "><IMG " & "style=""visibility=hidden"" id=imgKey" & strKeyCode & " name=image_abs_" & strKeyCode & " src=" & mstrAbsenceHighlightImage & "></TD>" & "<TD width=10%>&nbsp&nbsp&nbsp&nbsp&nbsp</TD>" & "<TD></TD>" & "</TR>" & "</TABLE>"
+      strHTML_KeyType = "<TABLE class=""invisible"" cellPadding=0 cellSpacing=2>" & "<TR>" & "<TD width=" & CELLSIZE & "></TD>" & "<TD width=10%>&nbsp&nbsp&nbsp&nbsp&nbsp</TD>" & "<TD></TD>" & "</TR>" & "</TABLE>"
 
       ' Add current key to key table
       'UPGRADE_WARNING: Couldn't resolve default property of object strHTML_KeyType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
