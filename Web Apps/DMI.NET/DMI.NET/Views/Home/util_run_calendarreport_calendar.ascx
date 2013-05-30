@@ -1,23 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 
-<script type="text/javascript">
+<script src="<%: Url.Content("~/bundles/utilities_calendarreport_run")%>" type="text/javascript"></script>  
 
-    function util_run_calendarreport_calendar_window_onload() {
-        loadAddRecords('calendar');
-    }
-    
-    function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
-        dlgwinprops = "center:yes;" +
-            "dialogHeight:" + pHeight + "px;" +
-            "dialogWidth:" + pWidth + "px;" +
-            "help:no;" +
-            "resizable:" + psResizable + ";" +
-            "scroll:" + psScroll + ";" +
-            "status:no;";
-        window.showModalDialog(pDestination, self, dlgwinprops);
-    }
 
-</script>
 
 <form name="frmCalendar" id="frmCalendar">
 <table align=center class="invisible" cellPadding=0 cellSpacing=0 width=100%>
@@ -35,7 +20,7 @@
     Dim strConvertedBaseRecDesc As String
     Dim intDescEmpty As Integer
     Dim blnDescEmpty As Boolean
-    Dim objCalendar As Object
+    Dim objCalendar As HR.Intranet.Server.CalendarReport
     Dim intBaseRecCount As Integer
     Dim lngCurrentRecordID As Long
     Dim strCurrentBaseRegion As String
@@ -113,58 +98,65 @@
                 End If
                 Response.Write("</object>" & vbCrLf)
 				
-                'Response.Write("<script FOR=ctlCalRec_" & intBaseRecCount & " EVENT=""CalDateClick(pvarLabel)"" LANGUAGE=JavaScript>" & vbCrLf)
-                'Response.Write("  var strKey;" & vbCrLf)
-                'Response.Write("	var lngOriginalLeft;" & vbCrLf)
-                'Response.Write("	var lngOriginalTop;" & vbCrLf)
-                'Response.Write("	var strDate;" & vbCrLf)
-                'Response.Write("	var strSession = new String('');" & vbCrLf)
-                'Response.Write("	var sURL;" & vbCrLf)
-				
-                'Response.Write("	var	CALDATES_BOXWIDTH = new Number(200);" & vbCrLf)
-                'Response.Write("	var	CALDATES_BOXHEIGHT = new Number(200);" & vbCrLf)
-				
-                'Response.Write("" & vbCrLf)
-                'Response.Write("	with (frmEventDetails)" & vbCrLf)
-                'Response.Write("		{" & vbCrLf)
-                'Response.Write("		if (Number(ctlCalRec_" & intBaseRecCount & ".TagInfo_Get(pvarLabel.Tag, ""HAS_EVENT"")) > 0)" & vbCrLf)
-                'Response.Write("			{" & vbCrLf)
-                'Response.Write("			strDate = ctlCalRec_" & intBaseRecCount & ".ConvertTagDateToString(ctlCalRec_" & intBaseRecCount & ".TagInfo_Get(pvarLabel.Tag, ""DATE""));" & vbCrLf)
-                'Response.Write("			strSession = ctlCalRec_" & intBaseRecCount & ".TagInfo_Get(pvarLabel.Tag, ""SESSION"");" & vbCrLf)
-			
-                'Response.Write("			txtBaseIndex.value = " & intBaseRecCount & ";" & vbCrLf)
-                'Response.Write("			txtLabelIndex.value = pvarLabel.Index;" & vbCrLf)
-				
-                'If objCalendar.IncludeBankHolidays_Enabled Then
-                '    Response.Write("			txtShowRegion.value = 1;" & vbCrLf)
-                'Else
-                '    Response.Write("			txtShowRegion.value = 0;" & vbCrLf)
-                'End If
-				
-                'If objCalendar.IncludeWorkingDaysOnly_Enabled Then
-                '    Response.Write("			txtShowWorkingPattern.value = 1;" & vbCrLf)
-                'Else
-                '    Response.Write("			txtShowWorkingPattern.value = 0;" & vbCrLf)
-                'End If
-				
-                'Response.Write("			txtBreakdownCaption.value = 'Calendar Report Breakdown - ' + strDate + ' ' + strSession.toLowerCase();" & vbCrLf)
-				
-                'Response.Write("			sURL = ""util_run_calendarreport_breakdown"" +" & vbCrLf & _
-                '    """?txtBreakdownCaption="" + escape(frmEventDetails.txtBreakdownCaption.value) +" & vbCrLf & _
-                '    """&txtShowRegion="" + escape(frmEventDetails.txtShowRegion.value) + " & vbCrLf & _
-                '    """&txtShowWorkingPattern="" + escape(frmEventDetails.txtShowWorkingPattern.value) +" & vbCrLf & _
-                '    """&txtBaseIndex="" + escape(frmEventDetails.txtBaseIndex.value) +" & vbCrLf & _
-                '    """&CalRepUtilID="" + escape(frmCalendar.txtCalRep_UtilID.value) +" & vbCrLf & _
-                '    """&txtLabelIndex="" + escape(frmEventDetails.txtLabelIndex.value);" & vbCrLf & _
-                '    "openDialog(sURL, 370,475, ""yes"", ""no"");" & vbCrLf)
+                Response.Write("<script type=""text/javascript"">")
+                Response.Write("function ctlCalRec_CalDateClick" & intBaseRecCount & "(pvarLabel) {")
 
-                'Response.Write("			}" & vbCrLf)
-                'Response.Write("		}	" & vbCrLf)
-                'Response.Write("</script>")
+                Response.Write("    var strKey;" & vbCrLf)
+                Response.Write("	var lngOriginalLeft;" & vbCrLf)
+                Response.Write("	var lngOriginalTop;" & vbCrLf)
+                Response.Write("	var strDate;" & vbCrLf)
+                Response.Write("	var strSession = new String('');" & vbCrLf)
+                Response.Write("	var sURL;" & vbCrLf)
+				
+                Response.Write("	var	CALDATES_BOXWIDTH = new Number(200);" & vbCrLf)
+                Response.Write("	var	CALDATES_BOXHEIGHT = new Number(200);" & vbCrLf)
+
+                Response.Write("    var CalRec = $(""#ctlCalRec_" & intBaseRecCount & """)[0];" & vbCrLf & vbCrLf)
+                
+                Response.Write("	with (frmEventDetails)" & vbCrLf)
+                Response.Write("		{" & vbCrLf)
+                Response.Write("		if (Number(CalRec.TagInfo_Get(pvarLabel.Tag, ""HAS_EVENT"")) > 0)" & vbCrLf)
+                Response.Write("			{" & vbCrLf)
+                Response.Write("			strDate = CalRec.ConvertTagDateToString(CalRec.TagInfo_Get(pvarLabel.Tag, ""DATE""));" & vbCrLf)
+                Response.Write("			strSession = CalRec.TagInfo_Get(pvarLabel.Tag, ""SESSION"");" & vbCrLf)
+			
+                Response.Write("			txtBaseIndex.value = " & intBaseRecCount & ";" & vbCrLf)
+                Response.Write("			txtLabelIndex.value = pvarLabel.Index;" & vbCrLf)
+				
+                If objCalendar.IncludeBankHolidays_Enabled Then
+                    Response.Write("			txtShowRegion.value = 1;" & vbCrLf)
+                Else
+                    Response.Write("			txtShowRegion.value = 0;" & vbCrLf)
+                End If
+				
+                If objCalendar.IncludeWorkingDaysOnly_Enabled Then
+                    Response.Write("			txtShowWorkingPattern.value = 1;" & vbCrLf)
+                Else
+                    Response.Write("			txtShowWorkingPattern.value = 0;" & vbCrLf)
+                End If
+				
+                Response.Write("			txtBreakdownCaption.value = 'Calendar Report Breakdown - ' + strDate + ' ' + strSession.toLowerCase();" & vbCrLf)
+				
+                Response.Write("			sURL = ""util_run_calendarreport_breakdown"" +" & vbCrLf & _
+                    """?txtBreakdownCaption="" + escape(frmEventDetails.txtBreakdownCaption.value) +" & vbCrLf & _
+                    """&txtShowRegion="" + escape(frmEventDetails.txtShowRegion.value) + " & vbCrLf & _
+                    """&txtShowWorkingPattern="" + escape(frmEventDetails.txtShowWorkingPattern.value) +" & vbCrLf & _
+                    """&txtBaseIndex="" + escape(frmEventDetails.txtBaseIndex.value) +" & vbCrLf & _
+                    """&CalRepUtilID="" + escape(frmCalendar.txtCalRep_UtilID.value) +" & vbCrLf & _
+                    """&txtLabelIndex="" + escape(frmEventDetails.txtLabelIndex.value);" & vbCrLf & _
+                    "openDialog(sURL, 370,475, ""yes"", ""no"");" & vbCrLf)
+
+                Response.Write("			}" & vbCrLf)
+                Response.Write("		}	" & vbCrLf)
+                Response.Write("	}	" & vbCrLf)
+
+                Response.Write("OpenHR.addActiveXHandler(""ctlCalRec_" & intBaseRecCount & """, ""CalDateClick"", ctlCalRec_CalDateClick" & intBaseRecCount & ");" & vbCrLf)
+
+                Response.Write("</script>")
 
                 Response.Write("</td>" & vbCrLf)
                 Response.Write("</tr>" & vbCrLf)
-			end if
+            End If
 			
             objCalendar.BaseIndex_Add(CInt(intBaseRecordCount), CLng(lngCurrentRecordID))
 			

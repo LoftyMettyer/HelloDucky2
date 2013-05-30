@@ -3,7 +3,7 @@ Option Explicit On
 
 Imports System.Globalization
 Imports VB = Microsoft.VisualBasic
-Public Class clsCalendarReportsRUN
+Public Class CalendarReport
 
   Private mstrSQLSelect_RegInfoRegion As String
   Private mstrSQLSelect_BankHolDate As String
@@ -14,10 +14,7 @@ Public Class clsCalendarReportsRUN
   Private mstrSQLSelect_PersonnelHDate As String
   Private mstrSQLSelect_PersonnelStaticWP As String
 
-  Private mstrBaseTableName As String
-
   Private mvarTableViews(,) As Object
-  Private mstrTempRealSource As String
 
   'TableViews
   Private mstrRealSource As String
@@ -59,7 +56,6 @@ Public Class clsCalendarReportsRUN
   Private mstrDescription2 As String
   Private mblnDesc2IsDate As Boolean
   Private mlngDescriptionExpr As Integer
-  Private mstrDescriptionExpr As String
   Private mblnDescExprIsDate As Boolean
 
   Private mstrDescriptionSeparator As String
@@ -76,10 +72,8 @@ Public Class clsCalendarReportsRUN
   Private mblnGroupByDescription As Boolean
 
   Private mlngStartDateExpr As Integer
-  Private mstrStartDate As String
   Private mdtStartDate As Date
   Private mlngEndDateExpr As Integer
-  Private mstrEndDate As String
   Private mdtEndDate As String
 
   Private mblnShowBankHolidays As Boolean
@@ -110,13 +104,8 @@ Public Class clsCalendarReportsRUN
   Private mrsCalendarReportsOutput As ADODB.Recordset
   Private mrsCalendarBaseInfo As ADODB.Recordset
 
-  'Array to store data for each session label object,
-  'array also holds information on working days and bank holidays etc.
-  Private mvarDateLabelInfo() As Object
-
   Private mstrClientDateFormat As String
   Private mstrLocalDecimalSeparator As String
-  Private mlngColumnLimit As Integer
 
   'Strings to hold the SQL statement
   Private mstrSQLEvent As String
@@ -147,8 +136,6 @@ Public Class clsCalendarReportsRUN
 
   ' Classes
   Private mclsData As clsDataAccess
-  Private mclsGeneral As clsGeneral
-  Private mclsUI As clsUI
   Private mobjEventLog As clsEventLog
 
   'Array holding the columns to sort the report by
@@ -160,18 +147,12 @@ Public Class clsCalendarReportsRUN
   'Instance of the previewform
   'Private mfrmOutput As frmCalendarReportPreview
 
-
-  'Batch Job Mode ?
-  Private mblnBatchMode As Boolean
-
   'Has the user cancelled the report ?
   Private mblnUserCancelled As Boolean
 
   'Does the report generate no records ?
   Private mblnNoRecords As Boolean
 
-  'Is the current user the definition owner ?
-  Private mblnDefinitionOwner As Boolean
 
   'Runnning report for single record only!
   Private mlngSingleRecordID As Integer
@@ -217,9 +198,8 @@ Public Class clsCalendarReportsRUN
   Private mlngYear_Output As Integer
 
   Private mintCurrentBaseIndex_Output As Short
-  Private mintBaseCount_Output As Short
   Private mstrBaseRecDesc_Output As String
-  Private mintBaseRecordCount_Output As Short
+  Private mintBaseRecordCount_Output As Integer
 
   Private mcolBaseDescIndex_Output As Collection
 
@@ -239,33 +219,6 @@ Public Class clsCalendarReportsRUN
 
   '****************************************************
   'variables for checking for multiple events
-  Private mavLegendDateIndex() As Object
-
-  Private mintFirstDayOfMonth_Legend As Short
-  Private mintDaysInMonth_Legend As Short
-
-  Private mintRangeStartIndex_Legend As Short
-  Private mintRangeEndIndex_Legend As Short
-
-  Private mdtVisibleStartDate_Legend As Date
-  Private mdtVisibleEndDate_Legend As Date
-
-  Private mdtEventStartDate_Legend As Date
-  Private mstrEventStartSession_Legend As String
-  Private mdtEventEndDate_Legend As Date
-  Private mstrEventEndSession_Legend As String
-  Private mstrDuration_Legend As String
-  Private mstrEventLegend_Legend As String
-
-  Private mlngMonth_Legend As Integer
-  Private mlngYear_Legend As Integer
-
-  Private mintCurrentBaseIndex_Legend As Short
-  Private mintBaseCount_Legend As Short
-  Private mstrBaseRecDesc_Legend As String
-  Private mintBaseRecordCount_Legend As Short
-
-  Private mcolBaseDescIndex_Legend As Collection
 
   Private mblnHasMultipleEvents As Boolean
   '****************************************************
@@ -276,9 +229,8 @@ Public Class clsCalendarReportsRUN
   Private mstrCurrentEventKey As String
   Private mstrBaseRecDesc As String
   Private mlngCurrentRecordID As Integer
-  Private mstrCurrentBaseRegion As String
 
-  Private Const CALREP_DATEFORMAT As String = "dd/mm/yyyy"
+  Private Const CALREP_DATEFORMAT As String = "dd/MM/yyyy"
 
   'default output colours
   Private mlngBC_Data As Integer
@@ -422,7 +374,6 @@ Public Class clsCalendarReportsRUN
     End Set
   End Property
 
-
   Public ReadOnly Property NoRecords() As Boolean
     Get
       ' Does the report have any records ?
@@ -508,9 +459,6 @@ Public Class clsCalendarReportsRUN
     End Get
   End Property
 
-
-
-
   Public ReadOnly Property HasMultipleEvents() As Boolean
     Get
       HasMultipleEvents = mblnHasMultipleEvents
@@ -538,10 +486,6 @@ Public Class clsCalendarReportsRUN
       End If
     End Get
   End Property
-
-
-
-
 
   Public WriteOnly Property LocalDecimalSeparator() As String
     Set(ByVal Value As String)
@@ -582,11 +526,13 @@ Public Class clsCalendarReportsRUN
       SQLOutput = mstrSQL
     End Get
   End Property
+
   Public ReadOnly Property StaticWP() As Boolean
     Get
       StaticWP = mblnStaticWP
     End Get
   End Property
+
   Public ReadOnly Property StaticReg() As Boolean
     Get
       StaticReg = mblnStaticReg
@@ -598,6 +544,7 @@ Public Class clsCalendarReportsRUN
       UserCancelled = mblnUserCancelled
     End Get
   End Property
+
   Public Property CalendarReportID() As Integer
     Get
       CalendarReportID = mlngCalendarReportID
@@ -606,11 +553,13 @@ Public Class clsCalendarReportsRUN
       mlngCalendarReportID = Value
     End Set
   End Property
+
   Public WriteOnly Property SingleRecordID() As Integer
     Set(ByVal Value As Integer)
       mlngSingleRecordID = Value
     End Set
   End Property
+
   Public Property ErrorString() As String
     Get
       ErrorString = mstrErrorString
@@ -626,6 +575,7 @@ Public Class clsCalendarReportsRUN
       gsUsername = Value
     End Set
   End Property
+
   Public WriteOnly Property Connection() As Object
     Set(ByVal Value As Object)
 
@@ -654,26 +604,31 @@ Public Class clsCalendarReportsRUN
       BaseIDColumn = "?ID_" & mstrCalendarReportsBaseTableName
     End Get
   End Property
+
   Public ReadOnly Property EventIDColumn() As String
     Get
       EventIDColumn = "?ID_EventID"
     End Get
   End Property
+
   Public ReadOnly Property PersonnelBase() As Boolean
     Get
       PersonnelBase = (mlngCalendarReportsBaseTable = glngPersonnelTableID)
     End Get
   End Property
+
   Public ReadOnly Property BaseTableRealSource() As String
     Get
       BaseTableRealSource = mstrBaseTableRealSource
     End Get
   End Property
+
   Public ReadOnly Property BaseTableID() As String
     Get
       BaseTableID = CStr(mlngCalendarReportsBaseTable)
     End Get
   End Property
+
   Public ReadOnly Property BaseDesc1IsDate() As Boolean
     Get
       BaseDesc1IsDate = mblnDesc1IsDate
@@ -685,21 +640,25 @@ Public Class clsCalendarReportsRUN
       BaseDesc2IsDate = mblnDesc2IsDate
     End Get
   End Property
+
   Public ReadOnly Property BaseDescExprIsDate() As Boolean
     Get
       BaseDescExprIsDate = mblnDescExprIsDate
     End Get
   End Property
+
   Public ReadOnly Property SQLIDs() As String
     Get
       SQLIDs = mstrSQLIDs
     End Get
   End Property
+
   Public ReadOnly Property StaticRegionColumn() As String
     Get
       StaticRegionColumn = mstrRegion
     End Get
   End Property
+
   Public ReadOnly Property StaticRegionColumnID() As Integer
     Get
       StaticRegionColumnID = mlngRegion
@@ -766,12 +725,12 @@ Public Class clsCalendarReportsRUN
       CalendarReportName = mstrCalendarReportsName
     End Get
   End Property
-  Public ReadOnly Property EventsRecordset() As ADODB.Recordset
+  Public ReadOnly Property EventsRecordset() As Object
     Get
       EventsRecordset = mrsCalendarReportsOutput
     End Get
   End Property
-  Public ReadOnly Property BaseRecordset() As ADODB.Recordset
+  Public ReadOnly Property BaseRecordset() As Object
     Get
       BaseRecordset = mrsCalendarBaseInfo
     End Get
@@ -874,12 +833,6 @@ Public Class clsCalendarReportsRUN
     End Get
   End Property
 
-  Public Sub DEBUG_TEXT(ByRef DEBUG_STRING As String)
-    FileOpen(1, My.Application.Info.DirectoryPath & "\calrep.txt", OpenMode.Append)
-    PrintLine(1, VB6.Format(Now, "dd mmm yyyy    hh:mm:ss") & vbTab & DEBUG_STRING & vbNewLine & vbNewLine)
-    FileClose(1)
-  End Sub
-
   Public Function OutputArray_Clear() As Object
     ReDim mvarOutputArray_Definition(0)
     ReDim mvarOutputArray_Columns(0)
@@ -915,7 +868,7 @@ CreateTempTable_ERROR:
 
   End Function
 
-  Public Function ConvertEventDescription(ByRef plngColumnID As Integer, ByRef pvarValue As Object) As String
+  Public Function ConvertEventDescription(ByVal plngColumnID As Integer, ByVal pvarValue As Object) As String
 
     Dim strTempEventDesc As String
     Dim iDecimals As Short
@@ -1162,7 +1115,6 @@ AddError:
 
   End Function
 
-
   Private Function AddToArray_Definition(ByRef pstrRowToAdd As String) As Boolean
 
     On Error GoTo AddError
@@ -1181,7 +1133,6 @@ AddError:
 
   End Function
 
-
   Private Function DaysInMonth(ByRef pdtMonth As Date) As Short
 
     'Return the number of days in the month
@@ -1192,36 +1143,7 @@ AddError:
     DaysInMonth = VB.Day(DateAdd(Microsoft.VisualBasic.DateInterval.Day, VB.Day(dtNextMonth) * -1, dtNextMonth))
 
   End Function
-
-
-
-  Private Sub DebugMSG(ByRef strInput As String, Optional ByRef blnOverwriteExisting As Boolean = False)
-
-    'Ignore any errors in here...
-    On Error GoTo LocalErr
-
-    Dim strFileName As String
-
-    strFileName = My.Application.Info.DirectoryPath & "\debug.txt"
-
-    If blnOverwriteExisting Then
-      'UPGRADE_WARNING: Dir has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
-      If Dir(strFileName) <> vbNullString Then
-        Kill(strFileName)
-      End If
-    End If
-
-    FileOpen(99, strFileName, OpenMode.Append)
-
-    PrintLine(99, Now & "  " & strInput)
-    FileClose(99)
-
-LocalErr:
-    Err.Clear()
-
-  End Sub
-
-
+  
   Public Function OutputReport(ByRef blnPrompt As Boolean) As Boolean
 
     Dim intMonth As Short
@@ -1372,7 +1294,6 @@ ErrorTrap:
         GoTo TidyUpAndExit
       End If
 
-      mintBaseCount_Output = .RecordCount
       ReDim mavOutputDateIndex(2, 0)
 
       .MoveFirst()
@@ -1457,11 +1378,6 @@ ErrorTrap:
             blnDescEmpty = False
 
             mstrBaseRecDesc = strTempRecordDesc
-
-            If Len(Trim(mstrRegionColumnRealSource)) > 0 Then
-              'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-              mstrCurrentBaseRegion = IIf(IsDBNull(.Fields("Region").Value), "", .Fields("Region").Value)
-            End If
             mintBaseRecordCount_Output = mintBaseRecordCount_Output + 1
           End If
           mlngCurrentRecordID = .Fields(mstrBaseIDColumn).Value
@@ -1473,10 +1389,6 @@ ErrorTrap:
             mstrBaseRecDesc = strTempRecordDesc
 
             mlngCurrentRecordID = .Fields(mstrBaseIDColumn).Value
-            If Len(Trim(mstrRegionColumnRealSource)) > 0 Then
-              'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-              mstrCurrentBaseRegion = IIf(IsDBNull(.Fields("Region").Value), "", .Fields("Region").Value)
-            End If
             mintBaseRecordCount_Output = mintBaseRecordCount_Output + 1
           End If
 
@@ -2252,19 +2164,17 @@ ErrorTrap:
 
   Public Sub SetLastRun()
 
-    Call UtilUpdateLastRun(modUtilAccessLog.UtilityType.utlCalendarReport, mlngCalendarReportID)
+    Call UtilUpdateLastRun(UtilityType.utlCalendarReport, mlngCalendarReportID)
 
   End Sub
 
-  Private Function SetOutputStyles() As Boolean
+  Private Sub SetOutputStyles()
 
-    Dim intBaseRowCount As Short
+    Dim intBaseRowCount As Integer
 
     intBaseRowCount = mintBaseRecordCount_Output
 
     'add merge for the empty top left cells
-    'mobjOutput.AddMerge 0, 0, 0, 1
-
     AddToArray_Merges("0" & vbTab & "0" & vbTab & "0" & vbTab & "1")
 
     '******************************************************************************
@@ -2272,39 +2182,21 @@ ErrorTrap:
 
     If ShowWeekends Then
       'first Sunday column (Sunday only)
-      '    mobjOutput.AddStyle "", 1, 2, _
-      ''                          1, CLng((2 * intBaseRowCount) + 1), _
-      ''                            CLng(lblWeekend.BackColor), lblWeekend.ForeColor, False, False, True
       AddToArray_Styles("" & vbTab & "1" & vbTab & "2" & vbTab & "1" & vbTab & CStr(CInt((2 * intBaseRowCount) + 1)) & vbTab & CStr(mlngColor_Weekend) & vbTab & CStr(mlngColor_Weekend) & vbTab & "false" & vbTab & "false" & vbTab & "true")
 
       'first Sat, second Sunday
-      '    mobjOutput.AddStyle "", 7, 2, _
-      ''                          8, CLng((2 * intBaseRowCount) + 1), _
-      ''                            CLng(lblWeekend.BackColor), lblWeekend.ForeColor, False, False, True
       AddToArray_Styles("" & vbTab & "7" & vbTab & "2" & vbTab & "8" & vbTab & CStr(CInt((2 * intBaseRowCount) + 1)) & vbTab & CStr(mlngColor_Weekend) & vbTab & CStr(mlngColor_Weekend) & vbTab & "false" & vbTab & "false" & vbTab & "true")
 
       'second Sat, third Sunday
-      '    mobjOutput.AddStyle "", 14, 2, _
-      ''                          15, CLng((2 * intBaseRowCount) + 1), _
-      ''                            CLng(lblWeekend.BackColor), lblWeekend.ForeColor, False, False, True
       AddToArray_Styles("" & vbTab & "14" & vbTab & "2" & vbTab & "15" & vbTab & CStr(CInt((2 * intBaseRowCount) + 1)) & vbTab & CStr(mlngColor_Weekend) & vbTab & CStr(mlngColor_Weekend) & vbTab & "false" & vbTab & "false" & vbTab & "true")
 
       'third Sat, fourth Sunday
-      '    mobjOutput.AddStyle "", 21, 2, _
-      ''                          22, CLng((2 * intBaseRowCount) + 1), _
-      ''                            CLng(lblWeekend.BackColor), lblWeekend.ForeColor, False, False, True
       AddToArray_Styles("" & vbTab & "21" & vbTab & "2" & vbTab & "22" & vbTab & CStr(CInt((2 * intBaseRowCount) + 1)) & vbTab & CStr(mlngColor_Weekend) & vbTab & CStr(mlngColor_Weekend) & vbTab & "false" & vbTab & "false" & vbTab & "true")
 
       'fourth Sat, fifth Sunday
-      '    mobjOutput.AddStyle "", 28, 2, _
-      ''                          29, CLng((2 * intBaseRowCount) + 1), _
-      ''                            CLng(lblWeekend.BackColor), lblWeekend.ForeColor, False, False, True
       AddToArray_Styles("" & vbTab & "28" & vbTab & "2" & vbTab & "29" & vbTab & CStr(CInt((2 * intBaseRowCount) + 1)) & vbTab & CStr(mlngColor_Weekend) & vbTab & CStr(mlngColor_Weekend) & vbTab & "false" & vbTab & "false" & vbTab & "true")
 
       'fifth Sat, sixth Sunday
-      '    mobjOutput.AddStyle "", 35, 2, _
-      ''                          36, CLng((2 * intBaseRowCount) + 1), _
-      ''                            CLng(lblWeekend.BackColor), lblWeekend.ForeColor, False, False, True
       AddToArray_Styles("" & vbTab & "35" & vbTab & "2" & vbTab & "36" & vbTab & CStr(CInt((2 * intBaseRowCount) + 1)) & vbTab & CStr(mlngColor_Weekend) & vbTab & CStr(mlngColor_Weekend) & vbTab & "false" & vbTab & "false" & vbTab & "true")
     End If
 
@@ -2314,17 +2206,11 @@ ErrorTrap:
     'add style for the outside of report date boundaries
     'first out of range (if required)
     If (mintRangeStartIndex_Output > 0) Then
-      '    mobjOutput.AddStyle "", 1, 2, _
-      ''                         CLng(mintRangeStartIndex_Output), CLng((2 * intBaseRowCount) + 1), _
-      ''                           CLng(lblRangeDisabled.BackColor), lblRangeDisabled.ForeColor, False, False, True
       AddToArray_Styles("" & vbTab & "1" & vbTab & "2" & vbTab & CStr(CInt(mintRangeStartIndex_Output)) & vbTab & CStr(CInt((2 * intBaseRowCount) + 1)) & vbTab & CStr(mlngColor_RangeDisabled) & vbTab & CStr(mlngColor_RangeDisabled) & vbTab & "false" & vbTab & "false" & vbTab & "true")
     End If
 
     'second out of range (if required)
     If (mintRangeEndIndex_Output > 0) And (mintRangeEndIndex_Output < 38) Then
-      '    mobjOutput.AddStyle "", CLng(mintRangeEndIndex_Output), 2, _
-      ''                         37, CLng((2 * intBaseRowCount) + 1), _
-      ''                            CLng(lblRangeDisabled.BackColor), lblRangeDisabled.ForeColor, False, False, True
       AddToArray_Styles("" & vbTab & CStr(CInt(mintRangeEndIndex_Output)) & vbTab & "2" & vbTab & "37" & vbTab & CStr(CInt((2 * intBaseRowCount) + 1)) & vbTab & CStr(mlngColor_RangeDisabled) & vbTab & CStr(mlngColor_RangeDisabled) & vbTab & "false" & vbTab & "false" & vbTab & "true")
     End If
 
@@ -2332,21 +2218,15 @@ ErrorTrap:
     'add style for the disabled ranges
     'first disabled range (if required)
     If (mintFirstDayOfMonth_Output > 1) Then
-      '    mobjOutput.AddStyle "", 1, 2, _
-      ''                         (mintFirstDayOfMonth_Output - 1), CLng((2 * intBaseRowCount) + 1), _
-      ''                           CLng(lblDisabled.BackColor), lblDisabled.ForeColor, False, False, True
       AddToArray_Styles("" & vbTab & "1" & vbTab & "2" & vbTab & CStr(mintFirstDayOfMonth_Output - 1) & vbTab & CStr(CInt((2 * intBaseRowCount) + 1)) & vbTab & CStr(mlngColor_Disabled) & vbTab & CStr(mlngColor_Disabled) & vbTab & "false" & vbTab & "false" & vbTab & "true")
     End If
 
     'second disabled range (if required)
     If ((mintFirstDayOfMonth_Output + mintDaysInMonth_Output) <= 37) Then
-      '    mobjOutput.AddStyle "", (mintFirstDayOfMonth_Output + mintDaysInMonth_Output), 2, _
-      ''                         37, CLng((2 * intBaseRowCount) + 1), _
-      ''                            CLng(lblDisabled.BackColor), lblDisabled.ForeColor, False, False, True
       AddToArray_Styles("" & vbTab & CStr(mintFirstDayOfMonth_Output + mintDaysInMonth_Output) & vbTab & "2" & vbTab & "37" & vbTab & CStr(CInt((2 * intBaseRowCount) + 1)) & vbTab & CStr(mlngColor_Disabled) & vbTab & CStr(mlngColor_Disabled) & vbTab & "false" & vbTab & "false" & vbTab & "true")
     End If
 
-  End Function
+  End Sub
 
   Private Function OutputArray_GetLegendArray() As Boolean
 
@@ -3417,8 +3297,6 @@ ErrorTrap:
     '           used for table usage information
 
     mclsData = New clsDataAccess
-    mclsGeneral = New clsGeneral
-    mclsUI = New clsUI
     mobjEventLog = New clsEventLog
     mcolBaseDescIndex = New Collection
 
@@ -3463,8 +3341,7 @@ ErrorTrap:
     ' Purpose : Clears references to other classes.
     'UPGRADE_NOTE: Object mclsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
     mclsData = Nothing
-    'UPGRADE_NOTE: Object mclsGeneral may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    mclsGeneral = Nothing
+
     'Set mfrmOutput = Nothing
     'UPGRADE_NOTE: Object mcolEvents may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
     mcolEvents = Nothing
@@ -3499,8 +3376,7 @@ ErrorTrap:
     On Error GoTo ExecuteSQL_ERROR
 
     '  'get all the base & event data into a recordset
-    mstrSQL = vbNullString
-    mstrSQL = mstrSQL & "SELECT * FROM [" & mstrTempTableName & "] "
+    mstrSQL = "SELECT * FROM [" & mstrTempTableName & "] "
 
     'get the ORDER BY statement which applies to the entire UNIONed query.
     GenerateSQLOrderBy()
@@ -3851,10 +3727,8 @@ ErrorTrap:
           mblnDescExprIsDate = False
         End If
         mlngBaseDescriptionType = objExpression.ReturnType
-        mstrDescriptionExpr = objExpression.Name
       Else
         mlngBaseDescriptionType = -1
-        mstrDescriptionExpr = vbNullString
         mblnDescExprIsDate = False
       End If
       'UPGRADE_NOTE: Object objExpression may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -3889,8 +3763,6 @@ ErrorTrap:
       'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
       mlngEndDateExpr = IIf(IsDBNull(.Fields("EndDateExpr").Value), 0, .Fields("EndDateExpr").Value)
 
-      'validate all filters/picklist & calculationshere before, actually using them
-      mblnDefinitionOwner = (LCase(Trim(gsUsername)) = LCase(Trim(.Fields("Username").Value)))
       If Not IsRecordSelectionValid() Then
         GetCalendarReportDefinition = False
         GoTo TidyUpAndExit
@@ -4954,29 +4826,25 @@ ErrorTrap:
 
   End Function
 
-  Public Function HTML_MonthCombo(ByVal piStartMonth As Object) As Object
+  Public Function HTML_MonthCombo(ByVal piStartMonth As Integer) As String
 
     'Build month selection dropdown combo
-    Dim iCount As Short
+    Dim iCount As Integer
     Dim strHTML As String
-
-    'UPGRADE_WARNING: Couldn't resolve default property of object piStartMonth. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    piStartMonth = IIf(IsNumeric(piStartMonth), piStartMonth, 1)
 
     strHTML = "<select name='cboMonth' id='cboMonth' class='combo' style='WIDTH: 100px' onChange='monthChange();'>" & vbNewLine
 
     For iCount = 1 To 12
 
       If iCount = 1 Then
-        strHTML = strHTML & "<OPTION selected value=" & Trim(Str(iCount)) & ">" & StrConv(MonthName(iCount), VbStrConv.ProperCase) & vbNewLine
+        strHTML = strHTML & "<option selected value=" & Trim(Str(iCount)) & ">" & StrConv(MonthName(iCount), VbStrConv.ProperCase) & vbNewLine
       Else
-        strHTML = strHTML & "<OPTION value=" & Trim(Str(iCount)) & ">" & StrConv(MonthName(iCount), VbStrConv.ProperCase) & vbNewLine
+        strHTML = strHTML & "<option value=" & Trim(Str(iCount)) & ">" & StrConv(MonthName(iCount), VbStrConv.ProperCase) & vbNewLine
       End If
 
     Next iCount
 
-    'UPGRADE_WARNING: Couldn't resolve default property of object HTML_MonthCombo. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-    HTML_MonthCombo = strHTML & "  </SELECT>"
+    HTML_MonthCombo = strHTML & "  </select>"
 
   End Function
 
@@ -5606,7 +5474,12 @@ DisableWPs:
           sTempDesc2Name = vbNullString
         End If
 
-        mcolEvents.Add(.Fields("EventKey").Value, .Fields("Name").Value, .Fields("TableID").Value, sTempTableName, .Fields("FilterID").Value, .Fields("EventStartDateID").Value, sTempStartDateName, .Fields("EventStartSessionID").Value, sTempStartSessionName, .Fields("EventEndDateID").Value, sTempEndDateName, .Fields("EventEndSessionID").Value, sTempEndSessionName, .Fields("EventDurationID").Value, sTempDurationName, .Fields("LegendType").Value, .Fields("LegendCharacter").Value, .Fields("LegendLookupTableID").Value, sTempLegendTableName, .Fields("LegendLookupColumnID").Value, sTempLegendColumnName, .Fields("LegendLookupCodeID").Value, sTempLegendCodeName, .Fields("LegendEventColumnID").Value, sTempLegendEventTypeName, .Fields("EventDesc1ColumnID").Value, sTempDesc1Name, .Fields("EventDesc2ColumnID").Value, sTempDesc2Name)
+        mcolEvents.Add(.Fields("EventKey").Value, .Fields("Name").Value, .Fields("TableID").Value, sTempTableName, .Fields("FilterID").Value, .Fields("EventStartDateID").Value _
+                       , sTempStartDateName, .Fields("EventStartSessionID").Value, sTempStartSessionName, .Fields("EventEndDateID").Value, sTempEndDateName, .Fields("EventEndSessionID").Value _
+                       , sTempEndSessionName, .Fields("EventDurationID").Value, sTempDurationName, .Fields("LegendType").Value, .Fields("LegendCharacter").Value _
+                       , .Fields("LegendLookupTableID").Value, sTempLegendTableName, .Fields("LegendLookupColumnID").Value, sTempLegendColumnName, .Fields("LegendLookupCodeID").Value _
+                       , sTempLegendCodeName, .Fields("LegendEventColumnID").Value, sTempLegendEventTypeName, .Fields("EventDesc1ColumnID").Value, sTempDesc1Name, .Fields("EventDesc2ColumnID").Value _
+                       , sTempDesc2Name)
 
         .MoveNext()
       Loop
@@ -6735,9 +6608,6 @@ GenerateSQLOrderBy_ERROR:
     mstrRegion = vbNullString
     mblnGroupByDescription = False
 
-    mstrStartDate = vbNullString
-    mstrEndDate = vbNullString
-
     mblnShowBankHolidays = False
     mblnShowCaptions = False
     mblnShowWeekends = False
@@ -6758,8 +6628,6 @@ GenerateSQLOrderBy_ERROR:
     mstrOutputEmailSubject = vbNullString
     mstrOutputEmailAttachAs = vbNullString
     mstrOutputFilename = vbNullString
-
-    mblnDefinitionOwner = False
 
     ' Recordsets
     'UPGRADE_NOTE: Object mrsCalendarReportsOutput may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -6785,10 +6653,7 @@ GenerateSQLOrderBy_ERROR:
     ' Class references
     'UPGRADE_NOTE: Object mclsData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
     mclsData = Nothing
-    'UPGRADE_NOTE: Object mclsGeneral may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    mclsGeneral = Nothing
-    'UPGRADE_NOTE: Object mclsUI may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-    mclsUI = Nothing
+
     'UPGRADE_NOTE: Object mobjEventLog may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
     mobjEventLog = Nothing
     'UPGRADE_NOTE: Object mcolBaseDescIndex may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -6936,18 +6801,10 @@ ClearUp_ERROR:
 
   End Function
 
-  Public Function EventToolTipText(ByRef pdtStartDate As Date, ByRef pstrStartSession As String, ByRef pdtEndDate As Date, ByRef pstrEndSession As String) As String
+  Public Function EventToolTipText(ByVal pdtStartDate As Date, ByVal pstrStartSession As String, ByVal pdtEndDate As Date, ByVal pstrEndSession As String) As String
 
-    Dim strToolTip As String
-
-    strToolTip = vbNullString
-    strToolTip = strToolTip & "Start Date: " & VB6.Format(pdtStartDate, "dd-mmm-yyyy ")
-    strToolTip = strToolTip & LCase(pstrStartSession)
-    strToolTip = strToolTip & "  --->  "
-    strToolTip = strToolTip & "End Date: " & VB6.Format(pdtEndDate, "dd-mmm-yyyy ")
-    strToolTip = strToolTip & LCase(pstrEndSession)
-
-    EventToolTipText = strToolTip
+    Return String.Format("Start Date: {0}{1} ---> {2}{3}" _
+      , VB6.Format(pdtStartDate, "dd-MMM-yyyy "), LCase(pstrStartSession), VB6.Format(pdtEndDate, "dd-MMM-yyyy "), LCase(pstrEndSession))
 
   End Function
 
@@ -7125,9 +6982,9 @@ ErrTrap:
 
   End Function
 
-  Public Function ConvertDescription(ByRef pvarDesc1 As Object, ByRef pvarDesc2 As Object, ByRef pvarDesc3 As Object) As String
+  Public Function ConvertDescription(ByVal pvarDesc1 As String, ByVal pvarDesc2 As String, ByVal pvarDesc3 As String) As String
 
-    Dim strBaseDescription1, strBaseDescription2 As Object
+    Dim strBaseDescription1, strBaseDescription2 As String
     Dim strBaseDescriptionExpr As String
     Dim strTempRecordDesc As String
 
@@ -7205,7 +7062,8 @@ ErrTrap:
     strTempRecordDesc = strTempRecordDesc & IIf((Len(strTempRecordDesc) > 0) And (Len(strBaseDescription2) > 0), mstrDescriptionSeparator, "") & strBaseDescription2
     strTempRecordDesc = strTempRecordDesc & IIf((Len(strTempRecordDesc) > 0) And (Len(strBaseDescriptionExpr) > 0), mstrDescriptionSeparator, "") & strBaseDescriptionExpr
 
-    ConvertDescription = strTempRecordDesc
+    Return strTempRecordDesc
 
   End Function
+
 End Class

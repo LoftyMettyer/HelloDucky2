@@ -1,41 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 
-<object
-    classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-    id="Microsoft_Licensed_Class_Manager_1_0">
-    <param name="LPKPath" value="lpks/main.lpk">
-</object>
-
-<script type="text/javascript">
-
-    function refreshInfo() {
-        var frmUseful = OpenHR.getForm("calendarworkframe", "frmUseful");
-
-        if (frmUseful.txtLoading.value == 0) {
-            refreshDateSpecifics();
-        }
-
-        setOptions();
-        return true;
-    }
-
-    function setOptions() {
-        var frmNavFillerOptions = OpenHR.getForm("workframefiller", "frmOptions");
-
-        with (frmNavFillerOptions) {
-            txtIncludeBankHolidays.value = (frmOptions.chkIncludeBHols.checked);
-            txtIncludeWorkingDaysOnly.value = (frmOptions.chkIncludeWorkingDaysOnly.checked);
-            txtShowBankHolidays.value = (frmOptions.chkShadeBHols.checked);
-            txtShowCaptions.value = (frmOptions.chkCaptions.checked);
-            txtShowWeekends.value = (frmOptions.chkShadeWeekends.checked);
-
-            submit();
-            return;
-        }
-    }
-
-</script>
-
 
 <form name="frmOptions" id="frmOptions">
     <table align="center" class="outline" cellpadding="0" cellspacing="0" width="100%" height="100%">
@@ -51,7 +15,7 @@
                                     <td width="5"></td>
                                     <td height="1">
                                         <%
-                                            Dim objCalendar As Object
+                                            Dim objCalendar As HR.Intranet.Server.CalendarReport
 	
                                             objCalendar = Session("objCalendar" & Session("CalRepUtilID"))
 
@@ -73,7 +37,7 @@
                                         <%
                                         ElseIf objCalendar.IncludeBankHolidays_Enabled And objCalendar.IncludeBankHolidays = False Then
                                         %>
-                                        <input name="chkIncludeBHols" id="Checkbox1" type="checkbox" tabindex="-1"
+                                        <input name="chkIncludeBHols" id="chkIncludeBHols" type="checkbox" tabindex="-1"
                                             onclick="refreshInfo();"
                                             onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
                                             onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
@@ -89,7 +53,7 @@
                                         <%
                                         Else
                                         %>
-                                        <input name="chkIncludeBHols" id="Checkbox2" type="checkbox" disabled="disabled" tabindex="-1"
+                                        <input name="chkIncludeBHols" id="chkIncludeBHols" type="checkbox" disabled="disabled" tabindex="-1"
                                             onclick="refreshInfo();"
                                             onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
                                             onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
@@ -132,7 +96,7 @@
                                         <%
                                         ElseIf objCalendar.IncludeWorkingDaysOnly_Enabled And objCalendar.IncludeWorkingDaysOnly = False Then
                                         %>
-                                        <input name="chkIncludeWorkingDaysOnly" id="Checkbox3" type="checkbox" tabindex="-1"
+                                        <input name="chkIncludeWorkingDaysOnly" id="chkIncludeWorkingDaysOnly" type="checkbox" tabindex="-1"
                                             onclick="refreshInfo();"
                                             onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
                                             onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
@@ -148,7 +112,7 @@
                                         <%
                                         Else
                                         %>
-                                        <input name="chkIncludeWorkingDaysOnly" id="Checkbox4" type="checkbox" disabled="disabled" tabindex="-1"
+                                        <input name="chkIncludeWorkingDaysOnly" id="chkIncludeWorkingDaysOnly" type="checkbox" disabled="disabled" tabindex="-1"
                                             onclick="refreshInfo();"
                                             onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
                                             onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
@@ -192,7 +156,7 @@
                                         <%
                                         ElseIf objCalendar.ShowBankHolidays_Enabled And objCalendar.ShowBankHolidays = False Then
                                         %>
-                                        <input name="chkShadeBHols" id="Checkbox5" type="checkbox" tabindex="-1"
+                                        <input name="chkShadeBHols" id="chkShadeBHols" type="checkbox" tabindex="-1"
                                             onclick="refreshInfo();"
                                             onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
                                             onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
@@ -208,7 +172,7 @@
                                         <%
                                         Else
                                         %>
-                                        <input name="chkShadeBHols" id="Checkbox6" type="checkbox" disabled="disabled" tabindex="-1"
+                                        <input name="chkShadeBHols" id="chkShadeBHols" type="checkbox" disabled="disabled" tabindex="-1"
                                             onclick="refreshInfo();"
                                             onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
                                             onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
@@ -242,7 +206,7 @@
                                         <%
                                         Else
                                         %>
-                                        <input name="chkCaptions" id="Checkbox7" type="checkbox" tabindex="-1"
+                                        <input name="chkCaptions" id="chkCaptions" type="checkbox" tabindex="-1"
                                             onclick="refreshInfo();"
                                             onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
                                             onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
@@ -276,7 +240,7 @@
                                         <%
                                         Else
                                         %>
-                                        <input name="chkShadeWeekends" id="Checkbox8" type="checkbox" tabindex="-1"
+                                        <input name="chkShadeWeekends" id="chkShadeWeekends" type="checkbox" tabindex="-1"
                                             onclick="refreshInfo();"
                                             onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
                                             onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />

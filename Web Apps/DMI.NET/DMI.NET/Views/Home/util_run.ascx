@@ -2,6 +2,9 @@
 
 <%
     
+    Session("CALREP_firstLoad") = 1
+    Session("EmailGroupID") = 0
+    
     Session("OutputOptions_Format") = 0
     Session("OutputOptions_Screen") = "true"
     Session("OutputOptions_Printer") = "false"
@@ -161,7 +164,7 @@
 		ElseIf Session("utiltype") = "16" Then
 	        Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
 		ElseIf Session("utiltype") = "17" Then
-			'Html.RenderPartial("~/Views/Home/util_run_calendarreport_main.ascx")
+	        Html.RenderPartial("~/Views/Home/util_run_calendarreport_main.ascx")
 		Else
 			' blah.
 		End If

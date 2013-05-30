@@ -127,6 +127,16 @@ Public Module svrCleanup
     End If
   End Function
 
+  Function ConvertSQLDateToLocale(pobjDate As Object) As String
+
+    If IsDate(pobjDate) Then
+      Return pobjDate.ToShortDateString()
+    End If
+
+    Return ""
+
+  End Function
+
   Function ConvertLocaleDateToSQL(psDate As String) As String
     Dim sLocaleFormat As String
     Dim sSQLFormat As String

@@ -545,7 +545,7 @@ LocalErr:
 
   End Function
 
-  Public Function GetOrder(ByRef lOrderID As Integer) As ADODB.Recordset
+  Public Function GetOrder(ByVal lOrderID As Integer) As ADODB.Recordset
 
     Dim sSQL As String
     Dim rsOrder As ADODB.Recordset
@@ -557,7 +557,7 @@ LocalErr:
 
   End Function
 
-  Public Function GetColumnName(ByRef plngColumnID As Integer) As String
+  Public Function GetColumnName(ByVal plngColumnID As Integer) As String
     ' Return the name of the given column.
     Dim sSQL As String
     Dim rsTemp As ADODB.Recordset

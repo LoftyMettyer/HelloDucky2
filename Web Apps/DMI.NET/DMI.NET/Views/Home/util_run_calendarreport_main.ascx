@@ -1,13 +1,9 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
 
-<object
-    classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-    id="Microsoft_Licensed_Class_Manager_1_0">
-    <param name="LPKPath" value="lpks/main.lpk">
-</object>
+<script src="<%: Url.Content("~/bundles/utilities_calendarreport_run")%>" type="text/javascript"></script>  
 
-<object
+<%--<object
     classid="CLSID:41021C13-8D42-4364-8388-9506F0755AE3"
     codebase="cabs/COAInt_CalRepDates.cab#version=1,0,0,2"
     id="tempCalDates"
@@ -25,7 +21,7 @@
     style="LEFT: 0px; VISIBILITY: hidden; WIDTH: 0px; TOP: 0px">
     <param name="_ExtentX" value="14737">
     <param name="_ExtentY" value="714">
-</object>
+</object>--%>
 
 <object
     classid="CLSID:8E2F1EF1-3812-4678-A084-16384DE3EA6D"
@@ -36,23 +32,17 @@
     height="0"
     style="VISIBILITY: hidden; width: 0px; height: 0px">
 </object>
-
 									
 <%
-	dim icount
-	dim definition
-	dim fok
-    Dim objCalendar As HR.Intranet.Server.clsCalendarReportsRUN
-	dim fNotCancelled
-	dim fBadUtilDef
-	dim fNoRecords
+    Dim icount As Integer
+    Dim fok As Boolean
+    Dim objCalendar As HR.Intranet.Server.CalendarReport
+    Dim fNotCancelled As Boolean
+    Dim fBadUtilDef As Boolean
+    Dim fNoRecords As Boolean
     Dim blnShowCalendar As Boolean
-    Dim CalRep_UtilID
+    'Dim CalRep_UtilID As Integer
     Dim aPrompts
-	
-	CalRep_UtilID = Session("UtilID")
-    Session("firstload") = 0
-
     
 	fBadUtilDef = (session("utiltype") = "") or _ 
 	   (session("utilname") = "") or _ 
@@ -62,13 +52,13 @@
 	fok = not fBadUtilDef
 	fNotCancelled = true
 	
-    objCalendar = Nothing
-    Session("objCalendar" & CalRep_UtilID) = Nothing
-	Session("objCalendar" & CalRep_UtilID) = ""
+    'objCalendar = Nothing
+    Session("objCalendar" & Session("UtilID")) = Nothing
+    Session("objCalendar" & Session("UtilID")) = ""
 	
 	if fOK then	
 		' Create the reference to the DLL (Report Class)
-        objCalendar = New HR.Intranet.Server.clsCalendarReportsRUN
+        objCalendar = New HR.Intranet.Server.CalendarReport
         
 		' Pass required info to the DLL
 		objCalendar.Username = session("username")
@@ -78,7 +68,7 @@
 		objCalendar.LocalDecimalSeparator = session("LocaleDecimalSeparator")
 		objCalendar.SingleRecordID = Session("singleRecordID")
 		
-		aPrompts =  Session("Prompts_" & session("utiltype") & "_" & CalRep_UtilID)
+        aPrompts = Session("Prompts_" & Session("utiltype") & "_" & Session("UtilID"))
 		if fok then 
 			fok = objCalendar.SetPromptedValues(aPrompts)
 			fNotCancelled = Response.IsClientConnected 
@@ -144,373 +134,11 @@
 		
 		blnShowCalendar = (objCalendar.OutputPreview Or (objCalendar.OutputFormat = 0 And objCalendar.OutputScreen))
 		
-        Session("objCalendar" & CalRep_UtilID) = objCalendar
+        Session("objCalendar" & Session("UtilID")) = objCalendar
+
+        
 	end if
-%>
 
-<script type="text/javascript">
-
-    function util_run_calendarreport_main_window_onload() {
-
-        return;
-
-        if ((txtPreview.value == 0) && (txtOK.value == "True")) {
-            setGridFont(frmOutput.grdCalendarOutput);
-            setGridFont(frmOutput.ssHiddenGrid);
-
-            outputReport();
-            document.getElementById('tdDisplay').innerText = 'Calendar Report Output Complete.';
-            document.getElementById('Cancel').value = 'OK';
-        } else {
-            window.parent.document.all.item("myframeset").document.title = txtTitle.value;
-
-            if (txtOK.value == "True") {
-                try {
-                    var lngPreviewWidth = new Number(760);
-                    var lngPreviewHeight = new Number(540);
-                    window.parent.moveTo((screen.width - lngPreviewWidth) / 2, (screen.height - lngPreviewHeight) / 2);
-                    window.parent.resizeTo(lngPreviewWidth, lngPreviewHeight);
-                } catch(e) {
-                }
-            } else {
-                // Resize the popup.
-                iResizeByHeight = frmPopup.offsetParent.scrollHeight - frmPopup.offsetParent.offsetHeight;
-                if (frmPopup.offsetParent.offsetHeight + iResizeByHeight > screen.height) {
-                    try {
-                        window.parent.moveTo((screen.width - frmPopup.offsetParent.offsetWidth) / 2, 0);
-                        window.parent.resizeTo(frmPopup.offsetParent.offsetWidth, screen.height);
-                    } catch(e) {
-                    }
-                } else {
-                    try {
-                        window.parent.moveTo((screen.width - frmPopup.offsetParent.offsetWidth) / 2, (screen.height - (frmPopup.offsetParent.offsetHeight + iResizeByHeight)) / 2);
-                        window.parent.resizeBy(0, iResizeByHeight);
-                    } catch(e) {
-                    }
-                }
-
-                iResizeByWidth = frmPopup.offsetParent.scrollWidth - frmPopup.offsetParent.offsetWidth;
-                if (frmPopup.offsetParent.offsetWidth + iResizeByWidth > screen.width) {
-                    try {
-                        window.parent.moveTo(0, (screen.height - frmPopup.offsetParent.offsetHeight) / 2);
-                        window.parent.resizeTo(screen.width, frmPopup.offsetParent.offsetHeight);
-                    } catch(e) {
-                    }
-                } else {
-                    try {
-                        window.parent.moveTo((screen.width - (frmPopup.offsetParent.offsetWidth + iResizeByWidth)) / 2, (screen.height - frmPopup.offsetParent.offsetHeight) / 2);
-                        window.parent.resizeBy(iResizeByWidth, 0);
-                    } catch(e) {
-                    }
-                }
-            }
-        }
-    }
-</script>
-
-<script type="text/javascript">
-
-    function refreshDefSelAndClose()
-    {
-        try
-        {
-            window.parent.opener.window.parent.frames("menuframe").refreshDefSel();
-        }
-        catch(e) {}
-	
-        window.parent.self.close();
-    }
-
-    function replace(sExpression, sFind, sReplace)
-    {
-        //gi (global search, ignore case)
-        var re = new RegExp(sFind,"gi");
-        sExpression = sExpression.replace(re, sReplace);
-        return(sExpression);
-    }
-
-    function dataOnlyPrint()
-    {
-        var lngPageColumnCount = 3;
-        var lngActualRow = new Number(0);
-        var blnSettingsDone = false;
-        var sColHeading = new String('');
-        var iColDataType = new Number(12);
-        var iColDecimals = new Number(0);
-        var blnNewPage = true;
-        var lngPageCount = new Number(0);
-
-        frmOutput.grdCalendarOutput.focus();
-        frmOutput.grdCalendarOutput.caption = replace(frmOutput.grdCalendarOutput.caption,'&','&&')
-	
-        if (frmOutput.ssHiddenGrid.Columns.Count > 0) 
-        {
-            frmOutput.ssHiddenGrid.Columns.RemoveAll();
-        }
-		
-        if (frmOutput.ssHiddenGrid.Rows > 0)
-        {	
-            frmOutput.ssHiddenGrid.RemoveAll();
-        }
-		
-        frmOutput.ssHiddenGrid.Font.Name = "Verdana";
-        frmOutput.ssHiddenGrid.Font.Size = 8;
-        frmOutput.ssHiddenGrid.Font.Bold = false;
-        frmOutput.ssHiddenGrid.Font.Underline = false;
-        frmOutput.ssHiddenGrid.focus();
-	
-        frmOriginalDefinition.txtOptionsDone.value = 0;
-	
-        // Need to loop through the grid, selecting rows until we find a '*' in
-        // the first column ('PageBreak').  
-        frmOriginalDefinition.txtCancelPrint.value = 0;
-        frmOutput.grdCalendarOutput.MoveFirst();
-        for (var lngRow=0; lngRow<frmOutput.grdCalendarOutput.Rows; lngRow++)
-        {
-            bm = frmOutput.grdCalendarOutput.AddItemBookmark(lngRow);
-	
-            if (lngRow == (frmOutput.grdCalendarOutput.Rows - 1))
-            {
-                sBreakValue = frmOutput.grdCalendarOutput.Columns(1).CellText(bm);
-                frmOutput.ssHiddenGrid.Caption = txtTitle.value + ' - ' + sBreakValue;
-
-                // PRINT DATA
-                if (frmOriginalDefinition.txtOptionsDone.value == 0) 
-                {
-                    frmOutput.ssHiddenGrid.PrintData(23,false,true);	
-                    frmOriginalDefinition.txtOptionsDone.value = 1;
-                    if (frmOriginalDefinition.txtCancelPrint.value == 1) 
-                    {
-                        frmOutput.grdCalendarOutput.redraw = true;
-                        return;
-                    }
-                }
-                else 
-                {
-                    frmOutput.ssHiddenGrid.PrintData(23,false,false);	
-                }
-                frmOutput.ssHiddenGrid.RemoveAll();			
-                blnBreakCheck = true;
-                sBreakValue = '';
-                lngActualRow = 0;
-            }
-            else if ((frmOutput.grdCalendarOutput.Columns(0).CellText(bm) == '*') 
-                  && (!blnBreakCheck))
-            {
-                sBreakValue = frmOutput.grdCalendarOutput.Columns(1).CellText(bm);
-                frmOutput.ssHiddenGrid.Caption = txtTitle.value + ' - ' + sBreakValue;
-
-                // PRINT DATA
-                if (frmOriginalDefinition.txtOptionsDone.value == 0) 
-                {
-                    frmOutput.ssHiddenGrid.PrintData(23,false,true);	
-                    frmOriginalDefinition.txtOptionsDone.value  = 1;
-                    if (frmOriginalDefinition.txtCancelPrint.value == 1) 
-                    {
-                        frmOutput.grdCalendarOutput.redraw = true;
-                        return;
-                    }
-                }
-                else 
-                {
-                    frmOutput.ssHiddenGrid.PrintData(23,false,false);	
-                }
-                frmOutput.ssHiddenGrid.RemoveAll();
-                frmOutput.ssHiddenGrid.Columns.RemoveAll();
-			
-                lngPageColumnCount = 38;
-                lngPageCount++;
-                blnBreakCheck = true;
-                sBreakValue = '';
-                lngActualRow = 0;
-                blnNewPage = true;
-            } 
-            else if (frmOutput.grdCalendarOutput.Columns(0).CellText(bm) != '*')
-            {
-                if (blnNewPage)
-                {
-                    for (var lngCol=0; lngCol<lngPageColumnCount; lngCol++)
-                    {
-                        // ADD COLUMN TO GRID
-                        frmOutput.ssHiddenGrid.Columns.Add(lngCol);
-                        frmOutput.ssHiddenGrid.Columns(lngCol).width = 15;
-                    }
-                }
-                blnBreakCheck = false;
-                blnNewPage = false;
-
-                // CREATE TAB DELIMITED STRING AND ADD TO GRID
-                sAddItem = new String("");
-                for (var lngCol=0; lngCol<lngPageColumnCount; lngCol++)
-                {
-                    if (frmOutput.grdCalendarOutput.Columns(lngCol).visible)
-                    {
-                        if (lngCol > 0) 
-                        {
-                            sAddItem = sAddItem + "	";
-                        }
-                        var sValue = new String(trim(frmOutput.grdCalendarOutput.Columns(lngCol).CellText(bm)));
-                        sAddItem = sAddItem + sValue;
-                        if ((sValue.length * 8) > frmOutput.ssHiddenGrid.Columns(lngCol).width)
-                        {
-                            frmOutput.ssHiddenGrid.Columns(lngCol).width = (sValue.length * 8);
-                        }
-                    }
-                }
-                frmOutput.ssHiddenGrid.AddItem(sAddItem);
-            }
-		
-            if (!blnNewPage) 
-            {
-                lngActualRow = lngActualRow + 1; 
-            }
-        }
-    }
-
-    function trim(strInput)
-    {
-        if (strInput.length < 1)
-        {
-            return "";
-        }
-		
-        while (strInput.substr(strInput.length-1, 1) == " ") 
-        {
-            strInput = strInput.substr(0, strInput.length - 1);
-        }
-	
-        while (strInput.substr(0, 1) == " ") 
-        {
-            strInput = strInput.substr(1, strInput.length);
-        }
-	
-        return strInput;
-    }
-	
-    function styleArgument(psDefnString, psParameter)
-    {
-        var iCharIndex;
-        var sDefn;
-	
-        sDefn = new String(psDefnString);
-        psParameter = psParameter.toUpperCase(); 
-	
-        iCharIndex = sDefn.indexOf("	");
-        if (iCharIndex >= 0) 
-        {
-            if (psParameter == "TYPE") return sDefn.substr(0, iCharIndex);
-            sDefn = sDefn.substr(iCharIndex + 1);
-            iCharIndex = sDefn.indexOf("	");
-            if (iCharIndex >= 0) 
-            {
-                if (psParameter == "STARTCOL") return sDefn.substr(0, iCharIndex);
-                sDefn = sDefn.substr(iCharIndex + 1);
-                iCharIndex = sDefn.indexOf("	");
-                if (iCharIndex >= 0) 
-                {
-                    if (psParameter == "STARTROW") return sDefn.substr(0, iCharIndex);
-                    sDefn = sDefn.substr(iCharIndex + 1);
-                    iCharIndex = sDefn.indexOf("	");
-                    if (iCharIndex >= 0) 
-                    {
-                        if (psParameter == "ENDCOL") return sDefn.substr(0, iCharIndex);
-                        sDefn = sDefn.substr(iCharIndex + 1);
-                        iCharIndex = sDefn.indexOf("	");
-                        if (iCharIndex >= 0) 
-                        {
-                            if (psParameter == "ENDROW") return sDefn.substr(0, iCharIndex);
-                            sDefn = sDefn.substr(iCharIndex + 1);
-                            iCharIndex = sDefn.indexOf("	");
-                            if (iCharIndex >= 0) 
-                            {
-                                if (psParameter == "BACKCOLOR") return sDefn.substr(0, iCharIndex);
-                                sDefn = sDefn.substr(iCharIndex + 1);
-                                iCharIndex = sDefn.indexOf("	");
-                                if (iCharIndex >= 0) 
-                                {
-                                    if (psParameter == "FORECOLOR") return sDefn.substr(0, iCharIndex);
-                                    sDefn = sDefn.substr(iCharIndex + 1);
-                                    iCharIndex = sDefn.indexOf("	");
-                                    if (iCharIndex >= 0) 
-                                    {
-                                        if (psParameter == "BOLD") return sDefn.substr(0, iCharIndex);
-                                        sDefn = sDefn.substr(iCharIndex + 1);
-                                        iCharIndex = sDefn.indexOf("	");
-                                        if (iCharIndex >= 0) 
-                                        {
-                                            if (psParameter == "UNDERLINE") return sDefn.substr(0, iCharIndex);
-                                            sDefn = sDefn.substr(iCharIndex + 1);
-
-                                            if (psParameter == "GRIDLINES") return sDefn;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-	
-        return "";
-    }
-
-    function mergeArgument(psDefnString, psParameter)
-    {
-        var iCharIndex;
-        var sDefn;
-	
-        sDefn = new String(psDefnString);
-        psParameter = psParameter.toUpperCase(); 
-	
-        iCharIndex = sDefn.indexOf("	");
-        if (iCharIndex >= 0) 
-        {
-            if (psParameter == "STARTCOL") return sDefn.substr(0, iCharIndex);
-            sDefn = sDefn.substr(iCharIndex + 1);
-            iCharIndex = sDefn.indexOf("	");
-            if (iCharIndex >= 0) 
-            {
-                if (psParameter == "STARTROW") return sDefn.substr(0, iCharIndex);
-                sDefn = sDefn.substr(iCharIndex + 1);
-                iCharIndex = sDefn.indexOf("	");
-                if (iCharIndex >= 0) 
-                {
-                    if (psParameter == "ENDCOL") return sDefn.substr(0, iCharIndex);
-                    sDefn = sDefn.substr(iCharIndex + 1);
-
-                    if (psParameter == "ENDROW") return sDefn;
-                }
-            }
-        }
-	
-        return "";	
-    }
-
-    function getDBName()
-    {
-        return window.parent.opener.window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value;
-    }
-	
-    function loadAddRecords(sFrom) {
-        var iCount;
-	
-        iCount = new Number(txtLoadCount.value);
-
-        txtLoadCount.value = iCount + 1;
-
-        if (iCount > 1)	
-        {	
-            startCalendar();
-        }
-
-    }
-
-</script>
-
-
-
-<%	
 	if fok then
 %>	
 <INPUT type='hidden' id=txtLoadCount name=txtLoadCount value=0>
@@ -562,10 +190,10 @@
     </div>
 
     <div id="optionsframeset">
-        <div id="calendarframe_key" data-framesource="util_run_calendarreport_key" style="display: block;">
+        <div id="calendarframe_key" data-framesource="util_run_calendarreport_key" style="display: block; width: 75%; float: left">
              <%Html.RenderPartial("~/views/home/util_run_calendarreport_key.ascx")%>
         </div>
-        <div id="calendarframe_options" data-framesource="util_run_calendarreport_options" style="display: block;">
+        <div id="calendarframe_options" data-framesource="util_run_calendarreport_options" style="display: block; width: 25%; float: left">
              <%Html.RenderPartial("~/views/home/util_run_calendarreport_options.ascx")%>
         </div>
     </div>
@@ -802,37 +430,34 @@
             
     <%
 
-        Session("firstload") = 1
+        If fok Then
+        		
+            Dim iPage As Integer
+            Dim iStyle As Integer
+            Dim iMerge As Integer
+            Dim arrayPageStyles
+            Dim arrayPageMerges
 			
-			if fok then 
-				on error resume next
-				
-				dim iPage
-				dim iStyle
-				dim iMerge
-				dim arrayPageStyles
-				dim arrayPageMerges
-			
-        For iPage = 0 To UBound(arrayMerges)
-            arrayPageMerges = arrayMerges(iPage)
-            Response.Write("<form id=frmCalendarMerge_" & iPage & " name=frmCalendarMerge_" & iPage & " style=""visibility:hidden;display:none"">" & vbCrLf)
-            For iMerge = 0 To UBound(arrayPageMerges)
-                INPUT_VALUE = arrayPageMerges(iMerge)
-                Response.Write("	<INPUT type=hidden name=Merge_" & iPage & "_" & iMerge & " ID=Merge_" & iPage & "_" & iMerge & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
+            For iPage = 0 To UBound(arrayMerges)
+                arrayPageMerges = arrayMerges(iPage)
+                Response.Write("<form id=frmCalendarMerge_" & iPage & " name=frmCalendarMerge_" & iPage & " style=""visibility:hidden;display:none"">" & vbCrLf)
+                For iMerge = 0 To UBound(arrayPageMerges)
+                    INPUT_VALUE = arrayPageMerges(iMerge)
+                    Response.Write("	<INPUT type=hidden name=Merge_" & iPage & "_" & iMerge & " ID=Merge_" & iPage & "_" & iMerge & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
+                Next
+                Response.Write("</form>" & vbCrLf)
             Next
-            Response.Write("</form>" & vbCrLf)
-        Next
 
-        For iPage = 0 To UBound(arrayStyles)
-            arrayPageStyles = arrayStyles(iPage)
-            Response.Write("<form id=frmCalendarStyle_" & iPage & " name=frmCalendarStyle_" & iPage & " style=""visibility:hidden;display:none"">" & vbCrLf)
-            For iStyle = 0 To UBound(arrayPageStyles)
-                INPUT_VALUE = arrayPageStyles(iStyle)
-                Response.Write("	<INPUT type=hidden name=Style_" & iPage & "_" & iStyle & " ID=Style_" & iPage & "_" & iStyle & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
+            For iPage = 0 To UBound(arrayStyles)
+                arrayPageStyles = arrayStyles(iPage)
+                Response.Write("<form id=frmCalendarStyle_" & iPage & " name=frmCalendarStyle_" & iPage & " style=""visibility:hidden;display:none"">" & vbCrLf)
+                For iStyle = 0 To UBound(arrayPageStyles)
+                    INPUT_VALUE = arrayPageStyles(iStyle)
+                    Response.Write("	<INPUT type=hidden name=Style_" & iPage & "_" & iStyle & " ID=Style_" & iPage & "_" & iStyle & " VALUE=""" & INPUT_VALUE & """>" & vbCrLf)
+                Next
+                Response.Write("</form>" & vbCrLf)
             Next
-            Response.Write("</form>" & vbCrLf)
-        Next
-			end if
+        End If
 			
 			if fok then
 				objCalendar.OutputArray_Clear
@@ -841,9 +466,11 @@
     'Write the function that Outputs the report to the Output Classes in the Client DLL.
     Response.Write("<script type=""text/javascript"">" & vbCrLf)
 
-    Response.Write("function outputReport() " & vbCrLf)
+        Response.Write("function outputCalendarReport() " & vbCrLf)
     Response.Write("	{" & vbCrLf & vbCrLf)
-	
+
+        Response.Write("debugger;" & vbCrLf)
+        
     Response.Write("	var lngPageColumnCount = 3;" & vbCrLf)
     Response.Write("  var lngActualRow = new Number(0);" & vbCrLf)
     Response.Write("  var blnSettingsDone = false;" & vbCrLf)
@@ -949,18 +576,17 @@
     Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "DataBackcolour", "15988214"))) & ", ")
     Response.Write(CleanStringForJavaScript(objUser.GetWordColourIndex(objUser.GetUserSetting("Output", "DataForecolour", "6697779"))) & ");" & vbCrLf)
 			
-    Dim lngFormat
-    Dim blnScreen
-    Dim blnPrinter
-    Dim strPrinterName
-    Dim blnSave
-    Dim lngSaveExisting
-    Dim blnEmail
-    Dim lngEmailGroupID
-    Dim strEmailSubject
-    Dim strEmailAttachAs
+        Dim lngFormat As Long
+        Dim blnScreen As Boolean
+        Dim blnPrinter As Boolean
+        Dim strPrinterName As String
+        Dim blnSave As Boolean
+        Dim lngSaveExisting As Long
+        Dim blnEmail As Boolean
+        Dim lngEmailGroupID As Long
+        Dim strEmailSubject As String
+        Dim strEmailAttachAs As String
     Dim strFileName As String
-    Dim sCloseFunction As String
 			
 			lngFormat = cleanStringForJavaScript(objCalendar.OutputFormat)
 			blnScreen = cleanStringForJavaScript(LCase(objCalendar.OutputScreen))
@@ -1235,9 +861,9 @@
 		end if
 	else
 		if fBadUtilDef then 
-%>
+    %>
 
-<input type='hidden' id=Hidden1 name=txtOK value="False">
+<input type='hidden' id="txtOK" name=txtOK value="False">
 <table align=center class="outline" cellPadding=5 cellSpacing=0>
 	<TR>
 		<TD>
@@ -1291,11 +917,7 @@
 			    <tr> 
 			        <td colspan=3 height=10 align=center> 
 						<INPUT TYPE=button VALUE=Close NAME=cmdClose style="WIDTH: 80px" width=80 id=cmdClose class="btn"
-						    OnClick=window.parent.self.close(); 
-                            onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                            onfocus="try{button_onFocus(this);}catch(e){}"
-                            onblur="try{button_onBlur(this);}catch(e){}" />
+						    onclick="closeclick();" />
 			        </td>
 			    </tr>
 			    <tr> 
@@ -1311,7 +933,7 @@
 		else
 %>
 
-<input type='hidden' id=Hidden2 name=txtOK value="False">
+<input type='hidden' id=txtOK name=txtOK value="False">
 <FORM ID=frmPopup Name=frmPopup>
 <table align=center class="outline" cellPadding=5 cellSpacing=0>
 	<TR>
@@ -1329,10 +951,10 @@
 
     If fNoRecords Then
         Response.Write("						<H4>Calendar Report '" & Session("utilname") & "' Completed successfully.</H4>" & vbCrLf)
-        sCloseFunction = "window.parent.self.close();"
+        sCloseFunction = "closeclick();"
     Else
         Response.Write("						<H4>Calendar Report '" & Session("utilname") & "' Failed." & vbCrLf)
-        sCloseFunction = "refreshDefSelAndClose();"
+        sCloseFunction = "closeclick();"
     End If
     Response.Write("			    </td>" & vbCrLf)
     Response.Write("			    <td width=20></td> " & vbCrLf)
@@ -1351,11 +973,7 @@
 			    <tr> 
 			        <td colspan=3 height=10 align=center> 
 						<INPUT TYPE=button VALUE=Close NAME=cmdClose style="WIDTH: 80px" width=80 id=Button1 class="btn"
-						    OnClick="<%sCloseFunction.ToString()%>" 
-                            onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                            onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                            onfocus="try{button_onFocus(this);}catch(e){}"
-                            onblur="try{button_onBlur(this);}catch(e){}" />
+						    onclick="<%sCloseFunction.ToString()%>" />
                     </td>
 			    </tr>
 			    <tr> 
@@ -1393,18 +1011,17 @@ objCalendar = Nothing
                 <input type="hidden" id="txtOptionsMarginTop" name="txtOptionsMarginTop">
                 <input type="hidden" id="txtOptionsMarginBottom" name="txtOptionsMarginBottom">
                 <input type="hidden" id="txtOptionsCopies" name="txtOptionsCopies">
-                <input type="hidden" id="txtCalRep_UtilID" name="txtCalRep_UtilID" value="<%CalRep_UtilID.ToString()%>">
+                <input type="hidden" id="txtCalRep_UtilID" name="txtCalRep_UtilID" value="<%Session("UtilID").ToString()%>">
             </form>
 
             
 <script type="text/javascript">
    
-    $("#workframe").hide();
     $("#reportframe").show();
+
+    util_run_calendarreport_main_window_onload();
 
     $("#top").hide();
     $("#calendarframeset").show();
 
-    util_run_calendarreport_main_window_onload();
-    
 </script>

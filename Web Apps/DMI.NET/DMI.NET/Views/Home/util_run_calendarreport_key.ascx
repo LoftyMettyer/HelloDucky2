@@ -1,52 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 
-<object
-    classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-    id="Microsoft_Licensed_Class_Manager_1_0">
-    <param name="LPKPath" value="lpks/main.lpk">
-</object>
-
-	
-<script type="text/javascript">
-
-    function populateKey()
-    {
-        var strKey, strDescription, strCode;
-        var lngColour;
-        var strControlName = '';
-	
-        frmKey.ctlKey.Clear_Key();
-	
-        for (var i=1; i<=frmKeyInfo.key_Count.value; i++)
-        {
-            strControlName = 'key_ID'+i;
-            strKey = document.getElementById(strControlName).getAttribute('value');
-            strControlName = 'key_Name'+i;
-            strDescription = document.getElementById(strControlName).getAttribute('value');
-            strControlName = 'key_Code'+i;
-            strCode = document.getElementById(strControlName).getAttribute('value');
-            strControlName = 'key_Colour'+i;
-            lngColour = Number(document.getElementById(strControlName).getAttribute('value'));
-		
-            frmKey.ctlKey.Add_Key(strKey, strDescription, strCode, lngColour);
-        }
-	
-        frmKey.ctlKey.Sort();
-	
-        if (frmKeyInfo.txtHasMultiple.value == '1')
-        {
-            strKey = "EVENT_MULTIPLE";
-            strDescription = "Multiple Events";
-            strCode = ".";
-            lngColour = 16777215;
-	
-            frmKey.ctlKey.Add_Key(strKey, strDescription, strCode, lngColour);
-        }
-	
-        return true;
-    }
-
-</script>
+<script src="<%: Url.Content("~/bundles/utilities_calendarreport_run")%>" type="text/javascript"></script>  
 
 <form id="frmKey" name="frmKey">
     <table align="center" class="outline" cellpadding="0" cellspacing="0" width="100%" height="100%">
@@ -117,7 +71,7 @@
     cmdColours = Nothing
 	
     Dim rsKey As Object
-    Dim objCalendar As Object
+    Dim objCalendar As HR.Intranet.Server.CalendarReport
   
     Dim intCount As Integer
     Dim strEventID As String

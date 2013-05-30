@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 
 <%
-    Dim objCalendar As Object
+    Dim objCalendar As HR.Intranet.Server.CalendarReport
 	
     objCalendar = Session("objCalendar" & Session("CalRepUtilID"))
 
@@ -14,7 +14,7 @@
 	end if
 %>
 
-<form name="frmOptions" id="frmOptions" action="util_run_calendarreport_navfiller.asp?CalRepUtilID=<%=Session("CalRepUtilID").ToString()%>" style="visibility: hidden; display: none" method="post">
+<form name="frmNavFillerOptions" id="frmNavFillerOptions" action="util_run_calendarreport_navfiller?CalRepUtilID=<%=Session("CalRepUtilID").ToString()%>" style="visibility: hidden; display: none" method="post">
     <input type="hidden" name="txtIncludeBankHolidays" id="txtIncludeBankHolidays">
     <input type="hidden" name="txtIncludeWorkingDaysOnly" id="txtIncludeWorkingDaysOnly">
     <input type="hidden" name="txtShowBankHolidays" id="txtShowBankHolidays">

@@ -162,6 +162,16 @@
     <Content Include="Content\images\ABSLogo\OpenHRLogo72.png" />
     <Content Include="Content\images\ABSLogo\OpenHRLogo748x1024.png" />
     <Content Include="Content\images\ABSLogo\OpenHRLogo768x1004.png" />
+    <Content Include="Content\images\CalendarReports\First_Disabled.gif" />
+    <Content Include="Content\images\CalendarReports\First_Enabled.gif" />
+    <Content Include="Content\images\CalendarReports\Last_Disabled.gif" />
+    <Content Include="Content\images\CalendarReports\Last_Enabled.gif" />
+    <Content Include="Content\images\CalendarReports\Next_Disabled.gif" />
+    <Content Include="Content\images\CalendarReports\Next_Enabled.gif" />
+    <Content Include="Content\images\CalendarReports\Previous_Disabled.gif" />
+    <Content Include="Content\images\CalendarReports\Previous_Enabled.gif" />
+    <Content Include="Content\images\CalendarReports\Today_Disabled.gif" />
+    <Content Include="Content\images\CalendarReports\Today_Enabled.gif" />
     <Content Include="Content\images\COAInt_Splash.png" />
     <Content Include="Content\images\COAInt_TopBar.png" />
     <Content Include="Content\themes\cupertino\images\animated-overlay.gif" />
@@ -557,6 +567,7 @@
     <Content Include="Scripts\FormScripts\optionData.js" />
     <Content Include="Scripts\FormScripts\stdrpt_def_absence.js" />
     <Content Include="Scripts\FormScripts\util_def_mailmerge.js" />
+    <Content Include="Scripts\FormScripts\util_run_calendarreports.js" />
     <Content Include="Scripts\jquery\jquery-ui-1.9.2.custom.js" />
     <Content Include="Scripts\jquery\jquery.jqGrid.src.js" />
     <None Include="_bin_deployableAssemblies\Microsoft.Web.Infrastructure.dll" />
@@ -996,6 +1007,7 @@
     <Content Include="Views\Home\util_def_calendarreportdates_data.ascx" />
     <Content Include="Views\Home\util_def_calendarreportdates_main.aspx" />
     <Content Include="Views\Home\util_def_mailmerge.ascx" />
+    <Content Include="Views\Home\util_run_calendarreport_breakdown.aspx" />
     <Content Include="Views\Home\util_run_mailmerge.ascx" />
     <Content Include="Views\Home\util_run_mailmerge_completed.ascx" />
     <Content Include="Views\Home\util_run_outputoptions.ascx" />
@@ -1067,6 +1079,7 @@
     <None Include="Scripts\modernizr-1.7.min.js" />
     <Content Include="Views\Shared\Util_Def_CustomReports\dialog.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\grdColProps.ascx" />
+    <Content Include="Views\Shared\Util_Def_CustomReports\ssHiddenGrid.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridAvailableColumns.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridChildren.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridRepetition.ascx" />
