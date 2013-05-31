@@ -70,7 +70,8 @@ function applyDefaultValues() {
 			var lngColumnID = objScreenControl.ColumnID;
 			
 			//use updatecontrol???
-			updateControl(lngColumnID, sDefaultValue);
+			if((sDefaultValue != null) && (sDefaultValue != undefined)) 
+				updateControl(lngColumnID, sDefaultValue);
 		}
 	});
 }
@@ -92,7 +93,8 @@ function ClearUniqueColumnControls() {
 				var lngColumnID = objScreenControl.ColumnID;
 
 				//use updatecontrol???
-				updateControl(lngColumnID, sDefaultValue);
+				if ((sDefaultValue != null) && (sDefaultValue != undefined))
+					updateControl(lngColumnID, sDefaultValue);
 
 			}
 		}
@@ -1590,6 +1592,7 @@ function recEdit_setData(columnID, value) {
         }
 
         if (!fIsIDColumn) {
+        	if ((value != null) && (value != undefined))
             updateControl(Number(columnID), value);
         }
     }
@@ -1759,11 +1762,14 @@ function updateControl(lngColumnID, value) {
 
 		//Nav controls
 		if ($(this).is("a")) {
-
-			if (value.length <= 0) {
+			if ((value == null) || (value == undefined)) {
 				$(this).attr("href", "about:blank");
 			} else {
-				$(this).attr("href", value);
+				if (value.length <= 0) {
+					$(this).attr("href", "about:blank");
+				} else {
+					$(this).attr("href", value);
+				}
 			}
 		}
 

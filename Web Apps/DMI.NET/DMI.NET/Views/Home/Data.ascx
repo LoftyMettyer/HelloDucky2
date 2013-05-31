@@ -312,7 +312,7 @@
 				
 				//TODO: recEditControl.ChangedOLEPhoto(0, "NONE");				
 			    
-				recEdit_setData(frmData.txtRecordID.value); //workframe
+				recEdit_setRecordID(frmData.txtRecordID.value); //workframe
 				recEdit_setParentTableID(frmData.txtParentTableID.value); //workframe
 				recEdit_setParentRecordID(frmData.txtParentRecordID.value); //workframe
 				

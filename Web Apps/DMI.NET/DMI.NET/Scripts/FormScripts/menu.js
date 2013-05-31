@@ -3189,8 +3189,7 @@ function menu_moveRecord(psMovement) {
 	var frmOptionArea;
 	var frmEventLog;
 	
-	sCurrentWorkPage = OpenHR.currentWorkPage();
-
+	sCurrentWorkPage = OpenHR.currentWorkPage();	
 	sSaveChangesTag = psMovement;
 	sAction = psMovement;
 	

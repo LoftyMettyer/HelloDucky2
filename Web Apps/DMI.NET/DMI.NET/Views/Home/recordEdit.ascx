@@ -232,7 +232,6 @@
                         frmRecordEditForm.txtCurrentOrderID.value = frmRecordEditForm.txtRecEditOrderID.value;
                     }
 
-                    
                     dataForm.txtCurrentTableID.value = frmRecordEditForm.txtCurrentTableID.value;
                     dataForm.txtCurrentScreenID.value = frmRecordEditForm.txtCurrentScreenID.value;
                     dataForm.txtCurrentViewID.value = frmRecordEditForm.txtCurrentViewID.value;
