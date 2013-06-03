@@ -329,9 +329,11 @@
             //window.parent.document.all.item("workframeset").cols = "*, 0";
         }
 	    
-
         if (rowCount() > 0) {
-						moveFirst();
+	        moveFirst();
+        } else {
+        	//enable the new button.
+        	menu_toolbarEnableItem("mnutoolNewUtil", true);
         }
 
     }
@@ -417,8 +419,7 @@
     //}
 
     function refreshControls() {
-	    
-        //show the utilities menu block.
+      //show the utilities menu block.
     	//$("#mnuSectionUtilities").show();
     	menu_toolbarEnableItem("mnutoolNewUtil", true);
     	menu_toolbarEnableItem("mnutoolEditUtil", true);
