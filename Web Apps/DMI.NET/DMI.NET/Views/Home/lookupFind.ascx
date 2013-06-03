@@ -183,6 +183,14 @@
 		}
 	}
 
+	function lookupFind_rowCount() {
+		return $("#ssOleDBGrid tr").length - 1;
+	}
+
+	function lookupFind_moveFirst() {
+		$("#ssOleDBGrid").jqGrid('setSelection', 1);
+	}
+
 	function goView() {
 
 		//need this as this grid won't accept live changes :/		

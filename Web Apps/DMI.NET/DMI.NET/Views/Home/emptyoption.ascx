@@ -111,7 +111,8 @@
 
 					$("#optionframe").attr("data-framesource", "EMPTYOPTION");
 					//window.setTimeout("window.parent.frames('menuframe').refreshMenu()", 100);
-					menu_refreshMenu();
+					//HRPRO-2987 - no need to refresh toolbar/menu any more.
+					//menu_refreshMenu();
 				}
 
 				if ((txtAction.value == "SELECTIMAGE") || (txtAction.value == "SELECTOLE")) {

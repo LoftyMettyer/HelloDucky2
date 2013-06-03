@@ -236,6 +236,12 @@ function optiondata_onload() {
 			//no longer required - we pop out the menu now...
 			//menu_refreshMenu();
 
+			//select top row.
+			if (lookupFind_rowCount() > 0) {
+					// Select the top row.
+					lookupFind_moveFirst();
+			}
+
 		}
 
 
