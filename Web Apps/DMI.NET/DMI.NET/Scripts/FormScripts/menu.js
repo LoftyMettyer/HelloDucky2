@@ -249,8 +249,8 @@ function menu_abMainMenu_DataReady() {
 	        frmWorkArea.txtReset.value = iReset;
 	    } catch(e) {
 	    }
-	    //TODO 
-		//autoLoadPage("workflowPendingSteps", true);
+
+	    menu_autoLoadPage("workflowPendingSteps", true);
 	}
 }
 
