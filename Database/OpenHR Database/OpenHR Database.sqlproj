@@ -583,6 +583,7 @@
     <Build Include="User Defined Functions\udfsys_wholemonthsbetweentwodates.sql" />
     <Build Include="User Defined Functions\udfsys_wholeyearsbetweentwodates.sql" />
     <Build Include="User Defined Functions\udfsys_workingdaysbetweentwodates.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntGetUserGroup.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />
@@ -689,8 +690,5 @@
     <Build Include="Stored Procedures\Other\sp_ASRInsertChildView2.sql" />
     <Build Include="Stored Procedures\Other\sp_ASRInsertNewRecord.sql" />
     <Build Include="Stored Procedures\Other\sp_ASRInsertNewUtility.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Stored Procedures\Web\sp_ASRIntGetUserGroup.sql" />
   </ItemGroup>
 </Project>
