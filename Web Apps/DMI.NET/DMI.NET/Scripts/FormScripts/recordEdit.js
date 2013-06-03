@@ -552,10 +552,6 @@ function insertUpdateDef() {
 		}
 	}
 
-	if (console) {
-		console.log(sInsertUpdateDef);
-	}
-	
 	return sInsertUpdateDef;
 
 }
