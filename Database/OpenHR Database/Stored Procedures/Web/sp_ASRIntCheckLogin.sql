@@ -19,6 +19,7 @@ BEGIN
 		@psIntranetAppVersion is the intranet application version passed into the stored procedure (set as a session variable in the global.asa file. 
 		@piPasswordLength is the length of the user's current password. 
 		@fDmiNetUserType is te DMI or SSI path 1 for SSi 0 for DMI
+
 	*/
 	SET NOCOUNT ON;
 	
@@ -79,14 +80,9 @@ BEGIN
 		@fNewSettingFound				bit,
 		@iCurrentItemKey				integer,
 		@sCurrentItemKey				varchar(50),
+		@psItemKey						varchar(50),
 		@fOldSettingFound				bit;
 		
-	DECLARE @sPermissionItemKey varchar(500);
-	DECLARE @iSSIntranetCount AS integer;
-	DECLARE @sIntranet_SelfService AS varchar(255);
-	DECLARE @sIntranet AS varchar(255);
-	DECLARE @psItemKey AS varchar(50);
-
 	SET @piSuccessFlag = 1;
 	SET @psErrorMessage = '';
 	SET @piMinPassordLength = 0;
@@ -97,72 +93,21 @@ BEGIN
 	SET @fSelfService = 0;
 	SET @iSelfServiceUserType = 0;
 	SET @psUserGroup = '';
-	SET @sPermissionItemKey = '';
-
+	
 	SET @psItemKey = 'INTRANET';
-	EXEC	[dbo].[sp_ASRIntGetUserGroup]
+	EXEC	[dbo].[spASRIntGetUserGroup]
 			@psItemKey = 'INTRANET',
-			@psUserGroup = @psUserGroup OUTPUT				        
+			@psUserGroup = @psUserGroup OUTPUT,
+			@iSelfServiceUserType = @iSelfServiceUserType OUTPUT,
+			@fSelfService = @fSelfService OUTPUT				        
 
-		IF @psUserGroup IS NULL
-		BEGIN
-			SET @piSuccessFlag = 0
-			SET @psErrorMessage = 'The  user is not a member of any OpenHR user group.'
-		END
-		
-	SET @sIntranet = (SELECT itemKey FROM ASRSysPermissionItems inner join ASRSysGroupPermissions ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
-	WHERE ASRSysGroupPermissions.groupName = @psUserGroup and permitted = 1 and categoryID = 1
-	and ASRSysPermissionItems.itemKey = 'INTRANET');
-	
-	SET @sIntranet_SelfService = (SELECT itemKey FROM ASRSysPermissionItems inner join ASRSysGroupPermissions ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
-	WHERE ASRSysGroupPermissions.groupName = @psUserGroup and permitted = 1 and categoryID = 1
-	and ASRSysPermissionItems.itemKey = 'INTRANET_SELFSERVICE');
-	
-	SET @iSSIntranetCount = (SELECT count(*) FROM ASRSysPermissionItems inner join ASRSysGroupPermissions ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
-	WHERE ASRSysGroupPermissions.groupName = @psUserGroup and permitted = 1 and categoryID = 1
-	and ASRSysPermissionItems.itemKey = 'SSINTRANET');
-		
-	If (@sIntranet is null) and (@sIntranet_SelfService is null) and (@iSSINTRANETcount = 0)
-	/* No permissions at all  */
+	IF @psUserGroup IS NULL
 	BEGIN
-		SET @sPermissionItemKey = 'NO PERMS'
-		SET @iSelfServiceUserType = 0
-		SET @fSelfService = 0
-	END
-	
-	IF @sIntranet = 'INTRANET'
-	/* IF DMI Multi automatically*/ 
-	BEGIN
-		SET @sPermissionItemKey = 'INTRANET'
-		SET @iSelfServiceUserType = 1
-		SET @fSelfService = 0
-	END
-	
-	IF (@sIntranet_SelfService = 'INTRANET_SELFSERVICE') and (@iSSIntranetCount = 0)
-	/* IF DMI Single Only*/ 
-	BEGIN
-		SET @sPermissionItemKey = 'INTRANET'
-		SET @iSelfServiceUserType = 2
-		SET @fSelfService = 0
-	END	
-	
-	IF (@sIntranet_SelfService = 'INTRANET_SELFSERVICE') and (@iSSIntranetCount = 1)
-	/* IF DMI Single And SSI */ 
-	BEGIN
-		SET @sPermissionItemKey = 'SSINTRANET'
-		SET @iSelfServiceUserType = 3
-		SET @fSelfService = 1
-	END	
-	
-	IF  @iSSIntranetCount = 1 and (@sIntranet is null and  @sIntranet_SelfService is null)
-	/* IF SSI Only */ 
-	BEGIN
-		SET @sPermissionItemKey = 'SSINTRANET'
-		SET @iSelfServiceUserType = 4
-		SET @fSelfService = 1
+		SET @piSuccessFlag = 0
+		SET @psErrorMessage = 'The user is not a member of any OpenHR user group or has no permissions to use this system.'
 	END
 
-	/*' Check if the current user is a SQL Server System Administrator.	We do not allow these users to login to the intranet module. */	
+	/*' Check if the current user is a SQL Server System Administrator.	We do not allow these users to login to the intranet module. */			
 	IF current_user = 'dbo'
 	BEGIN
 		SET @piSuccessFlag = 0;
