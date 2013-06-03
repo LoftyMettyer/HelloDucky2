@@ -13,7 +13,8 @@ BEGIN
 		@sIntranet_SelfService AS varchar(255),
 		@sIntranet AS varchar(255);
 	
-	set @psUserGroup = '';
+	SET @psUserGroup = '';
+
 	/* SET NOCOUNT ON added to prevent extra result sets from interfering with SELECT statements. */
 	SET NOCOUNT ON;
 	SET @psUserGroup = (SELECT CASE 
@@ -57,7 +58,7 @@ END
 	WHERE ASRSysGroupPermissions.groupName = @psUserGroup and permitted = 1 and categoryID = 1
 	and ASRSysPermissionItems.itemKey = 'SSINTRANET');
 		
-	If (@sIntranet is null) and (@sIntranet_SelfService is null) and (@iSSINTRANETcount = 0)
+	IF (@sIntranet is null) and (@sIntranet_SelfService is null) and (@iSSINTRANETcount = 0)
 	/* No permissions at all  */
 	BEGIN
 		SET @sPermissionItemKey = 'NO PERMS'
