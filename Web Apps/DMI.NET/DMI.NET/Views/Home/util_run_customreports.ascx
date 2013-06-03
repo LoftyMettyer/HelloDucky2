@@ -1086,13 +1086,10 @@
 					    <td colspan=3 height=10>&nbsp;</td>
 					  </tr>
 					  <tr> 
-					    <td colspan=3 height=10 align=center> 
-                <input type=button id=cmdClose name=cmdClose value=Close style="WIDTH: 80px" width=80 class="btn"                    
-                                      onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-                                      onmouseout="try{button_onMouseOut(this);}catch(e){}"
-                                      onfocus="try{button_onFocus(this);}catch(e){}"
-                                      onblur="try{button_onBlur(this);}catch(e){}" />
-					    </td>
+					    <td colspan=3 height=10 align=center>
+                            <input type="button" id="cmdClose" name="cmdClose" value="Close" style="WIDTH: 80px" width="80" class="btn"
+                                onclick="closeclick();" />
+                        </td>
 					  </tr>
 					  <tr> 
 					    <td colspan=3 height=10></td>

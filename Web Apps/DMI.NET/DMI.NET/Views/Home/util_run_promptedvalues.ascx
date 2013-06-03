@@ -416,22 +416,14 @@
 							<TD width=20>&nbsp;</TD>
 							<td width=80>
 
-								<input type=button class="btn" name=Submit value=OK style="WIDTH: 80px" 
-								    onclick="SubmitPrompts()"
-	                                onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-	                                onmouseout="try{button_onMouseOut(this);}catch(e){}"
-	                                onfocus="try{button_onFocus(this);}catch(e){}"
-	                                onblur="try{button_onBlur(this);}catch(e){}" />
-							</td>
+                                <input type="button" class="btn" name="Submit" value="OK" style="WIDTH: 80px"
+                                    onclick="SubmitPrompts()" />
+                            </td>
 							<td width=20>&nbsp;</td>
 							<td width=80>
-								<input type=button class="btn" name=Cancel value=Cancel style="WIDTH: 80px"
-								    onclick="CancelClick()" 
-	                                onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-	                                onmouseout="try{button_onMouseOut(this);}catch(e){}"
-	                                onfocus="try{button_onFocus(this);}catch(e){}"
-	                                onblur="try{button_onBlur(this);}catch(e){}" />
-							</td>
+                                <input type="button" class="btn" name="Cancel" value="Cancel" style="WIDTH: 80px"
+                                    onclick="CancelClick()" />
+                            </td>
 						</table>
 					</td>
 					<td width=20>&nbsp;</td>
