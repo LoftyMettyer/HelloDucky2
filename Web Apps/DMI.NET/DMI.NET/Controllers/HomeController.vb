@@ -1130,7 +1130,7 @@ Namespace Controllers
       Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
       Session("optionOLEMaxEmbedSize") = Request.Form("txtGotoOptionOLEMaxEmbedSize")
       Session("optionOLEReadOnly") = Request.Form("txtGotoOptionOLEReadOnly")
-      Session("optionOnlyNumerics") = CLng(Request.Form("txtOptionOnlyNumerics"))
+      Session("optionOnlyNumerics") = Request.Form("txtOptionOnlyNumerics")
 
       ' Go to the requested page.
       Return RedirectToAction(Request.Form("txtGotoOptionPage"))
@@ -1411,7 +1411,7 @@ Namespace Controllers
       Session("optionValue") = Request.Form("txtOptionValue")
       Session("optionSQL") = Request.Form("txtOptionSQL")
       Session("optionPromptSQL") = Request.Form("txtOptionPromptSQL")
-      Session("optionOnlyNumerics") = CLng(Request.Form("txtOptionOnlyNumerics"))
+      Session("optionOnlyNumerics") = Request.Form("txtOptionOnlyNumerics")
       Session("optionLookupColumnID") = Request.Form("txtOptionLookupColumnID")
       Session("optionFilterValue") = Request.Form("txtOptionLookupFilterValue")
       Session("IsLookupTable") = Request.Form("txtOptionIsLookupTable")
