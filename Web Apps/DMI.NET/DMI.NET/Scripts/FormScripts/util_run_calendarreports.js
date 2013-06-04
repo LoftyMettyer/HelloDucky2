@@ -309,8 +309,8 @@ function enableDisableNavigation() {
     if (dtShownStart <= dtReportStart)
     {
         bNextEnabled = false;
-        document.getElementById('imgPrevMonth').src = window.ROOT + "/Content/images/CalendarReports/previous_disabled.gif";
-        document.getElementById('imgFirstMonth').src = window.ROOT + "/Content/images/CalendarReports/first_disabled.gif";
+        document.getElementById('imgPrevMonth').src = window.ROOT + "Content/images/CalendarReports/previous_disabled.gif";
+        document.getElementById('imgFirstMonth').src = window.ROOT + "Content/images/CalendarReports/first_disabled.gif";
         image_disable(document.getElementById('imgPrevMonth'), true);
         image_disable(document.getElementById('imgFirstMonth'), true);
         document.getElementById('imgPrevMonth').style.cursor = 'default';
@@ -319,8 +319,8 @@ function enableDisableNavigation() {
     else
     {
         bNextEnabled = true;
-        document.getElementById('imgPrevMonth').src = window.ROOT + "/Content/images/CalendarReports/previous_enabled.gif";
-        document.getElementById('imgFirstMonth').src = window.ROOT + "/Content/images/CalendarReports/first_enabled.gif";
+        document.getElementById('imgPrevMonth').src = window.ROOT + "Content/images/CalendarReports/previous_enabled.gif";
+        document.getElementById('imgFirstMonth').src = window.ROOT + "Content/images/CalendarReports/first_enabled.gif";
         image_disable(document.getElementById('imgPrevMonth'), false);
         image_disable(document.getElementById('imgFirstMonth'), false);
         document.getElementById('imgPrevMonth').style.cursor = 'hand';
@@ -330,8 +330,8 @@ function enableDisableNavigation() {
     if (dtShownEnd >= dtReportEnd)
     {
         bPrevEnabled = false;
-        document.getElementById('imgNextMonth').src = window.ROOT + "/Content/images/CalendarReports/next_disabled.gif";
-        document.getElementById('imgLastMonth').src = window.ROOT + "/Content/images/CalendarReports/last_disabled.gif";
+        document.getElementById('imgNextMonth').src = window.ROOT + "Content/images/CalendarReports/next_disabled.gif";
+        document.getElementById('imgLastMonth').src = window.ROOT + "Content/images/CalendarReports/last_disabled.gif";
         image_disable(document.getElementById('imgNextMonth'), true);
         image_disable(document.getElementById('imgLastMonth'), true);
         document.getElementById('imgNextMonth').style.cursor = 'default';
@@ -340,8 +340,8 @@ function enableDisableNavigation() {
     else
     {
         bPrevEnabled = true;
-        document.getElementById('imgNextMonth').src = window.ROOT + "/Content/images/CalendarReports/Next_Enabled.gif";
-        document.getElementById('imgLastMonth').src = window.ROOT + "/Content/images/CalendarReports/Last_Enabled.gif";
+        document.getElementById('imgNextMonth').src = window.ROOT + "Content/images/CalendarReports/Next_Enabled.gif";
+        document.getElementById('imgLastMonth').src = window.ROOT + "Content/images/CalendarReports/Last_Enabled.gif";
         image_disable(document.getElementById('imgNextMonth'), false);
         image_disable(document.getElementById('imgLastMonth'), false);
         document.getElementById('imgNextMonth').style.cursor = 'hand';
@@ -359,19 +359,19 @@ function enableDisableNavigation() {
     if ((dtShownStart.getMonth() == dtSystemMonth.getMonth()) 
         && (dtShownStart.getFullYear() == dtSystemMonth.getFullYear()))
     {
-        document.getElementById('imgToday').src = window.ROOT + "/content/images/CalendarReports/today_disabled.gif";
+        document.getElementById('imgToday').src = window.ROOT + "content/images/CalendarReports/today_disabled.gif";
         image_disable(document.getElementById('imgToday'), true);
         document.getElementById('imgToday').style.cursor = 'default';
     }
     else if ((dtSystemMonth < dtReportEndMonth) && (dtSystemMonth > dtReportStartMonth))
     {
-        document.getElementById('imgToday').src = window.ROOT + "/images/CalendarReports/today_enabled.gif";
+        document.getElementById('imgToday').src = window.ROOT + "content/images/CalendarReports/today_enabled.gif";
         image_disable(document.getElementById('imgToday'), false);
         document.getElementById('imgToday').style.cursor = 'hand';
     }
     else
     {
-        document.getElementById('imgToday').src = window.ROOT + "/content/images/CalendarReports/today_disabled.gif";
+        document.getElementById('imgToday').src = window.ROOT + "content/images/CalendarReports/today_disabled.gif";
         image_disable(document.getElementById('imgToday'), true);
         document.getElementById('imgToday').style.cursor = 'default';
     }
