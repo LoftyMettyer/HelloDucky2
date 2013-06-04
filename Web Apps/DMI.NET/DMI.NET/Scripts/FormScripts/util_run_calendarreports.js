@@ -2,6 +2,7 @@
 //
 //Taken from util_run_calendarrepoart_nav.ascx
 //
+var frmUseful = OpenHR.getForm("calendarworkframe", "frmUseful");
 
 function util_run_calendarreport_window_onload() {
     loadAddRecords('nav');      
@@ -242,6 +243,7 @@ function startCalendar()
          || (fEndMonthAfterSysMonth && fStartMonthIsSysMonth)) 
       && (frmDate.txtStartOnCurrentMonth.value == 1));
 
+    var frmUseful = OpenHR.getForm("calendarworkframe", "frmUseful");
     frmUseful.txtLoading.value = 1;
     frmUseful.txtCTLsPopulated.value = 0;
 
@@ -509,6 +511,7 @@ function nextMonth()
 	
 function dateChange()
 {
+    
     frmUseful.txtChangingDate.value = 1;
 	
     refreshCalendar();

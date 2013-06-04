@@ -2925,14 +2925,11 @@ ErrorTrap:
     Dim blnColumnOK As Boolean
     Dim blnFound As Boolean
     Dim blnNoSelect As Boolean
-    Dim iLoop1 As Short
-    Dim intLoop As Short
-    Dim strColumnCode As String
     Dim strSource As String
     Dim intNextIndex As Short
     Dim blnOK As Boolean
-    Dim strTable As String
-    Dim strColumn As String
+    Dim strTable As String = vbNullString
+    Dim strColumn As String = vbNullString
 
     Dim pintNextIndex As Short
 
@@ -2942,9 +2939,6 @@ ErrorTrap:
     blnOK = True
     blnNoSelect = False
     bDateColumn = False
-
-    strTable = vbNullString
-    strColumn = vbNullString
 
     ' Load the temp variables
     lngTempTableID = plngTableID
@@ -2961,11 +2955,12 @@ ErrorTrap:
       blnColumnOK = mobjColumnPrivileges.Item(strTempColumnName).AllowSelect
     End If
 
-    If mobjColumnPrivileges.Item(strTempColumnName).DataType = Declarations.SQLDataType.sqlDate Then
-      bDateColumn = True
-    End If
-
     If blnColumnOK Then
+
+      If mobjColumnPrivileges.Item(strTempColumnName).DataType = Declarations.SQLDataType.sqlDate Then
+        bDateColumn = True
+      End If
+
       ' this column can be read direct from the tbl/view or from a parent table
       strTable = mstrRealSource
       strColumn = strTempColumnName

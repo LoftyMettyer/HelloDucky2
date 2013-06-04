@@ -255,11 +255,7 @@
 							<td width=20></td>
 					        <td align=center>
 						        <INPUT id=Cancel style="WIDTH: 80px" type=button width=80 value=Cancel name=Cancel class="btn"
-						            onclick=window.parent.self.close(); 
-	                                onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-	                                onmouseout="try{button_onMouseOut(this);}catch(e){}"
-	                                onfocus="try{button_onFocus(this);}catch(e){}"
-	                                onblur="try{button_onBlur(this);}catch(e){}" />
+                                    onclick="closeclick();" />
 							</td>
 							<td width=20></td>
 					    </tr>
@@ -468,8 +464,6 @@
 
         Response.Write("function outputCalendarReport() " & vbCrLf)
     Response.Write("	{" & vbCrLf & vbCrLf)
-
-        Response.Write("debugger;" & vbCrLf)
         
     Response.Write("	var lngPageColumnCount = 3;" & vbCrLf)
     Response.Write("  var lngActualRow = new Number(0);" & vbCrLf)
@@ -972,8 +966,8 @@
 			    </tr>
 			    <tr> 
 			        <td colspan=3 height=10 align=center> 
-						<INPUT TYPE=button VALUE=Close NAME=cmdClose style="WIDTH: 80px" width=80 id=Button1 class="btn"
-						    onclick="<%sCloseFunction.ToString()%>" />
+						<INPUT TYPE=button VALUE=Close NAME=cmdClose style="WIDTH: 80px" width=80 id="cmdClose" class="btn"
+                            onclick="closeclick();" />
                     </td>
 			    </tr>
 			    <tr> 
@@ -1016,7 +1010,7 @@ objCalendar = Nothing
 
             
 <script type="text/javascript">
-   
+  
     $("#reportframe").show();
 
     util_run_calendarreport_main_window_onload();

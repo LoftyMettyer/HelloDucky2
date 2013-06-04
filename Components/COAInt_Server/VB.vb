@@ -12,12 +12,18 @@ Public Class VB6
     '    Return Microsoft.VisualBasic.Compatibility.VB6.Format([value], style, [firstDayOfWeek])
     Dim theDate As Date
 
-    If IsDate(value) Then
-      theDate = Convert.ToDateTime(value)
-      Return theDate.ToString(style)
+    If Not value Is Nothing Then
+
+      If IsDate(value) Then
+        theDate = Convert.ToDateTime(value)
+        Return theDate.ToString(style)
+      End If
+
+      Return [value].ToString()
+
     End If
 
-    Return [value].ToString()
+    Return vbNullString
 
   End Function
 

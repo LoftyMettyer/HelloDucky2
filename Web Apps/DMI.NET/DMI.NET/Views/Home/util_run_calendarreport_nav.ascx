@@ -10,12 +10,12 @@
 
 <script type="text/javascript">
 
-    function populateCTL_Collections()
-{
+    function populateCTL_Collections() {
+        
     var frmCalendar = OpenHR.getForm("calendarframe_calendar","frmCalendar");
-
-    if (frmCalendar.txtGroupByDesc.value == 1)
-    {
+    var frmUseful = OpenHR.getForm("calendarworkframe", "frmUseful");
+        
+    if (frmCalendar.txtGroupByDesc.value == 1) {
         frmUseful.txtCTLsPopulated.value = 1;
         return;
     }
@@ -32,7 +32,7 @@
     var intBHolCOUNT = new Number(0);
     var intRegionCOUNT = new Number(0);
     var intBaseID = new Number(0);
-	
+
     for (var i=1; i<=Number(frmCalendar.txtBaseCtlCount.value); i++) 
     {
         vControlName = 'ctlCalRec_' + i;

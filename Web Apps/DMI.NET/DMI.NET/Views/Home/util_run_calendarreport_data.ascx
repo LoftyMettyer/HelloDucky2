@@ -111,8 +111,13 @@
                     Else
                         strEventDesc1ColumnName_BD = CStr(.Fields("EventDescription1Column").Value)
                     End If
-					strEventDesc1Value_BD = objCalendar.ConvertEventDescription(.Fields("EventDescription1ColumnID").Value,.Fields("EventDescription1").Value)
-					
+                    
+                    If IsDBNull(.Fields("EventDescription1ColumnID").value) Then
+                        strEventDesc1Value_BD = vbNullString
+                    Else
+                        strEventDesc1Value_BD = objCalendar.ConvertEventDescription(.Fields("EventDescription1ColumnID").Value, .Fields("EventDescription1").Value)
+                    End If
+                    
                     If IsDBNull(.Fields("EventDescription2Column").Value) Then
                         strEventDesc2ColumnName_BD = vbNullString
                     Else

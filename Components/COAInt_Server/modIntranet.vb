@@ -133,8 +133,8 @@ LocalErr:
 	'
 	' Same effect as the Server.HTMLEncode method in ASP
 	Public Function HTMLEncode(ByVal Text As String) As String
-		Dim i As Short
-		Dim acode As Short
+    Dim i As Integer
+    Dim acode As Integer
 		Dim repl As String
 		
 		HTMLEncode = Text

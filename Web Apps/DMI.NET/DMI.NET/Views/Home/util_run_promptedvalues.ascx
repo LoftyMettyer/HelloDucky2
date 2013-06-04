@@ -41,8 +41,8 @@
             $("#workframe").hide();
             $("#optionframe").show();
         } else {
+            $("#reportframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
             if (frmPromptedValues.StandardReportPrompt.value == "True") {
-                $("#reportframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
                 $("#reportframe").show();
             }
         }
