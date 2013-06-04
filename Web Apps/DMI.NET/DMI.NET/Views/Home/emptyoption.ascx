@@ -106,7 +106,6 @@
 					fNoAction = false;
 					recEditControl = OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit;
 					recEdit_setData(txtColumnID.value, txtValue.value);
-					$("#ctlRecordEdit #changed").val("true");
 					enableSaveButton();
 
 					$("#optionframe").attr("data-framesource", "EMPTYOPTION");
