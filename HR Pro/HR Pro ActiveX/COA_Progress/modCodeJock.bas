@@ -55,6 +55,9 @@ Public Sub LoadSkin( _
     ' Handle some of those "interesting" 3rd party controls
     .AddWindowClass "MSMaskWndClass", "Edit"
   
+    ' Remove some controls that don't skin very well
+    .RemoveWindowClass "TabStripWndClass"
+  
     'Applies the currently loaded skin to the specified window
     .ApplyWindow frm.hWnd
   End With
