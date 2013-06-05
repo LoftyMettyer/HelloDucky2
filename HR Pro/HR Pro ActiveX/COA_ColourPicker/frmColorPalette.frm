@@ -151,7 +151,7 @@ Private Sub Form_Load()
     Dim R As RECT
     
     Me.ScaleMode = vbPixels
-    Me.Font.Name = "Arial"
+    Me.Font.Name = "Verdana"
     
 '    Call SetCapture(hwnd)
     
