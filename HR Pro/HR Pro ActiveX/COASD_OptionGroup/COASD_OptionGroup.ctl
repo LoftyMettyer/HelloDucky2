@@ -1,25 +1,15 @@
 VERSION 5.00
-Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
 Begin VB.UserControl COASD_OptionGroup 
-   ClientHeight    =   1695
+   ClientHeight    =   3735
    ClientLeft      =   0
    ClientTop       =   0
-   ClientWidth     =   3285
-   LockControls    =   -1  'True
-   ScaleHeight     =   1695
-   ScaleWidth      =   3285
-   Begin XtremeSuiteControls.GroupBox fraOptGroup 
-      Height          =   1050
-      Left            =   45
-      TabIndex        =   0
-      Top             =   0
-      Width           =   2670
-      _Version        =   851969
-      _ExtentX        =   4710
-      _ExtentY        =   1852
-      _StockProps     =   79
+   ClientWidth     =   5310
+   KeyPreview      =   -1  'True
+   ScaleHeight     =   3735
+   ScaleWidth      =   5310
+   Begin VB.Frame fraOptGroup 
       Caption         =   "No Options"
-      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+      BeginProperty Font 
          Name            =   "Verdana"
          Size            =   8.25
          Charset         =   0
@@ -28,29 +18,23 @@ Begin VB.UserControl COASD_OptionGroup
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      UseVisualStyle  =   -1  'True
+      Height          =   1005
+      Left            =   0
+      TabIndex        =   0
+      Top             =   0
+      Width           =   2805
       Begin VB.Frame fraInternal 
          BorderStyle     =   0  'None
          Caption         =   "Frame1"
          Enabled         =   0   'False
          Height          =   465
-         Left            =   135
+         Left            =   90
          TabIndex        =   1
-         Top             =   225
+         Top             =   180
          Width           =   1590
-         Begin XtremeSuiteControls.RadioButton Option1 
-            Height          =   330
-            Index           =   0
-            Left            =   45
-            TabIndex        =   2
-            Top             =   45
-            Width           =   1500
-            _Version        =   851969
-            _ExtentX        =   2646
-            _ExtentY        =   582
-            _StockProps     =   79
-            Caption         =   "RadioButton1"
-            BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Begin VB.OptionButton Option1 
+            Caption         =   "Option1"
+            BeginProperty Font 
                Name            =   "Verdana"
                Size            =   8.25
                Charset         =   0
@@ -59,7 +43,12 @@ Begin VB.UserControl COASD_OptionGroup
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            UseVisualStyle  =   -1  'True
+            Height          =   330
+            Index           =   0
+            Left            =   0
+            TabIndex        =   2
+            Top             =   45
+            Width           =   1230
          End
       End
    End
@@ -188,7 +177,7 @@ End Property
 
 Public Property Get ControlValueList() As String
   'Returns Tab delimited list of control values from the option group control array.
-  Dim ctl As RadioButton
+  Dim ctl As OptionButton
   Dim s As String
   
   For Each ctl In Option1
@@ -222,7 +211,7 @@ End Property
 
 Public Function SelectOption(psValue As String) As Boolean
 
-  Dim ctl As RadioButton
+  Dim ctl As OptionButton
   
   For Each ctl In Option1
     If (psValue = ctl.Caption) Then
@@ -261,6 +250,10 @@ Private Sub fraInternal_DblClick()
 
 End Sub
 
+Private Sub fraOptGroup_DblClick()
+  RaiseEvent DblClick
+End Sub
+
 Private Sub fraOptGroup_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   ' Pass the MouseDown event to the parent form.
@@ -272,11 +265,6 @@ Private Sub fraInternal_MouseDown(Button As Integer, Shift As Integer, X As Sing
   
   ' Pass the MouseDown event to the parent form.
   RaiseEvent MouseDown(Button, Shift, X, Y)
-
-End Sub
-
-Private Sub Option1_DblClick(Index As Integer)
-  RaiseEvent DblClick
 
 End Sub
 
@@ -495,11 +483,14 @@ Public Property Let BackColor(ByVal NewColor As OLE_COLOR)
 End Property
 
 Public Property Get BorderStyle() As Integer
-  BorderStyle = IIf(fraOptGroup.BorderStyle = xtpFrameBorder, 1, 0)
+  BorderStyle = fraOptGroup.BorderStyle
 End Property
 
 Public Property Let BorderStyle(ByVal NewValue As Integer)
-  fraOptGroup.BorderStyle = IIf(NewValue = 1, xtpFrameBorder, xtpFrameNone)
+  If NewValue = 0 Or NewValue = 1 Then
+    fraOptGroup.BorderStyle = NewValue
+  End If
+ 
   UserControl_Resize
 End Property
 
@@ -524,7 +515,7 @@ Public Property Let Enabled(ByVal NewEnabled As Boolean)
   UserControl.Enabled() = NewEnabled
   If Not NewEnabled Then
     For Each ctlTemp In UserControl.Controls
-        If TypeOf ctlTemp Is RadioButton Then
+        If TypeOf ctlTemp Is OptionButton Then
             ctlTemp.Enabled = False
         End If
     Next
