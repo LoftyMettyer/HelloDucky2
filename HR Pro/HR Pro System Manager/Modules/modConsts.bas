@@ -264,15 +264,16 @@ Public Const gsPARAMETERKEY_ALLOWDELETE = "Param_AllowDelete"
 Public Const gsPARAMETERKEY_ALLOWSTATUSCHANGE = "Param_AllowStatusChange"
 
 ' FUSION MODULE CONSTANTS
+' This can be deleted when it is confirmed its not needed
 'NHRD Prototype Fusion code
-Public Const gsMODULEKEY_FUSION = "MODULE_FUSION"
-Public Const gsPARAMETERKEY_FUSION_PURGEOPTION = "Param_PurgeOption"
-Public Const gsPARAMETERKEY_FUSION_PURGEOPTIONPERIOD = "Param_PurgeOptionPeriod"
-Public Const gsPARAMETERKEY_FUSION_PURGEOPTIONPERIODTYPE = "Param_PurgeOptionPeriodType"
-Public Const gsPARAMETERKEY_FUSION_DEFAULTSTATUS = "Param_DefaultStatus"
-Public Const gsPARAMETERKEY_FUSION_STATUSFORUTILITIES = "Param_StatusForUtilities"
-Public Const gsPARAMETERKEY_FUSION_ALLOWDELETE = "Param_AllowDelete"
-Public Const gsPARAMETERKEY_FUSION_ALLOWSTATUSCHANGE = "Param_AllowStatusChange"
+'Public Const gsMODULEKEY_FUSION = "MODULE_FUSION"
+'Public Const gsPARAMETERKEY_FUSION_PURGEOPTION = "Param_PurgeOption"
+'Public Const gsPARAMETERKEY_FUSION_PURGEOPTIONPERIOD = "Param_PurgeOptionPeriod"
+'Public Const gsPARAMETERKEY_FUSION_PURGEOPTIONPERIODTYPE = "Param_PurgeOptionPeriodType"
+'Public Const gsPARAMETERKEY_FUSION_DEFAULTSTATUS = "Param_DefaultStatus"
+'Public Const gsPARAMETERKEY_FUSION_STATUSFORUTILITIES = "Param_StatusForUtilities"
+'Public Const gsPARAMETERKEY_FUSION_ALLOWDELETE = "Param_AllowDelete"
+'Public Const gsPARAMETERKEY_FUSION_ALLOWSTATUSCHANGE = "Param_AllowStatusChange"
 
 ' AUDIT TABLE MODULE CONSTANTS
 Public Const gsMODULEKEY_AUDIT = "MODULE_AUDIT"

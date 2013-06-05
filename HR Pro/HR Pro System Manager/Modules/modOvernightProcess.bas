@@ -224,66 +224,67 @@ Private Function OvernightJob2(palngExpressions As Variant) As Boolean
   End If
   
 'NHRD Prototype Fusion Code***********************************************************
-  ' Fusion archiving functions
-   If 1 = 1 Then 'IsModuleEnabled(modFusion) Then
-    ' Get the archive options
-    With recModuleSetup
-      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTION
-      If .NoMatch Then
-        .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTION
-        If .NoMatch Then
-          bArchive = False
-        Else
-          bArchive = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-        End If
-      Else
-        bArchive = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-      End If
-      ' Get the purge period.
-      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIOD
-      If .NoMatch Then
-        .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIOD
-        If .NoMatch Then
-          iArchivePeriod = 0
-        Else
-          iArchivePeriod = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-        End If
-      Else
-        iArchivePeriod = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-      End If
-      ' Get the purge type.
-      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIODTYPE
-      If .NoMatch Then
-        .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIODTYPE
-        If .NoMatch Then
-          iArchivePeriodType = 0
-        Else
-          iArchivePeriodType = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-        End If
-      Else
-        iArchivePeriodType = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
-      End If
-    End With
-
-    ' Do we need to add the purge trigger code?
-    If bArchive Then
-      sSQL = sSQL & vbNewLine & "-- Fusion archiving" & vbNewLine
-      Select Case iArchivePeriodType
-        Case 0 'Days
-          sSQL = sSQL & "UPDATE ASRSysFusionTransactions SET Archived = 1 " _
-            & "WHERE [CreatedDateTime] < DATEADD(dd,-" & Trim$(Str$(iArchivePeriod)) & ",getdate())" & vbNewLine
-        Case 1 'Weeks
-          sSQL = sSQL & "UPDATE ASRSysFusionTransactions SET Archived = 1 " _
-            & "WHERE [CreatedDateTime] < DATEADD(wk,-" & Trim$(Str$(iArchivePeriod)) & ",getdate())" & vbNewLine
-        Case 2 'Months
-          sSQL = sSQL & "UPDATE ASRSysFusionTransactions SET Archived = 1 " _
-            & "WHERE [CreatedDateTime] < DATEADD(mm,-" & Trim$(Str$(iArchivePeriod)) & ",getdate())" & vbNewLine
-        Case 3 'Years
-          sSQL = sSQL & "UPDATE ASRSysFusionTransactions SET Archived = 1 " & vbNewLine _
-            & "WHERE [CreatedDateTime] < DATEADD(yy,-" & Trim$(Str$(iArchivePeriod)) & ",getdate())" & vbNewLine
-      End Select
-    End If
-  End If
+' This can be deleted when it is confirmed its not needed
+'  ' Fusion archiving functions
+'   If 1 = 1 Then 'IsModuleEnabled(modFusion) Then
+'    ' Get the archive options
+'    With recModuleSetup
+'      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTION
+'      If .NoMatch Then
+'        .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTION
+'        If .NoMatch Then
+'          bArchive = False
+'        Else
+'          bArchive = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
+'        End If
+'      Else
+'        bArchive = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
+'      End If
+'      ' Get the purge period.
+'      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIOD
+'      If .NoMatch Then
+'        .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIOD
+'        If .NoMatch Then
+'          iArchivePeriod = 0
+'        Else
+'          iArchivePeriod = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
+'        End If
+'      Else
+'        iArchivePeriod = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
+'      End If
+'      ' Get the purge type.
+'      .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIODTYPE
+'      If .NoMatch Then
+'        .Seek "=", gsMODULEKEY_FUSION, gsPARAMETERKEY_FUSION_PURGEOPTIONPERIODTYPE
+'        If .NoMatch Then
+'          iArchivePeriodType = 0
+'        Else
+'          iArchivePeriodType = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
+'        End If
+'      Else
+'        iArchivePeriodType = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
+'      End If
+'    End With
+'
+'    ' Do we need to add the purge trigger code?
+'    If bArchive Then
+'      sSQL = sSQL & vbNewLine & "-- Fusion archiving" & vbNewLine
+'      Select Case iArchivePeriodType
+'        Case 0 'Days
+'          sSQL = sSQL & "UPDATE ASRSysFusionTransactions SET Archived = 1 " _
+'            & "WHERE [CreatedDateTime] < DATEADD(dd,-" & Trim$(Str$(iArchivePeriod)) & ",getdate())" & vbNewLine
+'        Case 1 'Weeks
+'          sSQL = sSQL & "UPDATE ASRSysFusionTransactions SET Archived = 1 " _
+'            & "WHERE [CreatedDateTime] < DATEADD(wk,-" & Trim$(Str$(iArchivePeriod)) & ",getdate())" & vbNewLine
+'        Case 2 'Months
+'          sSQL = sSQL & "UPDATE ASRSysFusionTransactions SET Archived = 1 " _
+'            & "WHERE [CreatedDateTime] < DATEADD(mm,-" & Trim$(Str$(iArchivePeriod)) & ",getdate())" & vbNewLine
+'        Case 3 'Years
+'          sSQL = sSQL & "UPDATE ASRSysFusionTransactions SET Archived = 1 " & vbNewLine _
+'            & "WHERE [CreatedDateTime] < DATEADD(yy,-" & Trim$(Str$(iArchivePeriod)) & ",getdate())" & vbNewLine
+'      End Select
+'    End If
+'  End If
 'NHRD Prototype Fusion Code***********************************************************
   
   'JPD20011005 Fault 2899
