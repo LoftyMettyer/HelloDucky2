@@ -7162,12 +7162,12 @@ PRINT 'Step 10 - Fusion Services (may be superseded by Fusion Installer)'
 	IF NOT EXISTS(SELECT * FROM sys.schemas where name = 'fusion')
 		EXECUTE sp_executesql N'CREATE SCHEMA [fusion];';
 
-	-- Enable the service broker
-	IF NOT EXISTS(SELECT is_broker_enabled FROM sys.databases WHERE is_broker_enabled  = 1 AND name = @DBName)
-	BEGIN
-		SET @NVarCommand = 'ALTER DATABASE [' + @DBName + '] SET NEW_BROKER';
-		EXEC sp_executeSQL @NVarCommand;
-	END
+	---- Enable the service broker
+	--IF NOT EXISTS(SELECT is_broker_enabled FROM sys.databases WHERE is_broker_enabled  = 1 AND name = @DBName)
+	--BEGIN
+	--	SET @NVarCommand = 'ALTER DATABASE [' + @DBName + '] SET NEW_BROKER';
+	--	EXEC sp_executeSQL @NVarCommand;
+	--END
 
 	-- Configure the service broker
 	IF NOT EXISTS(SELECT name FROM sys.service_message_types WHERE name = 'TriggerFusionSend')
@@ -7687,8 +7687,8 @@ PRINT 'Step 10 - Fusion Services (may be superseded by Fusion Installer)'
 PRINT 'Step 11 - System Calculations'
 
 	DELETE FROM dbo.[tbstat_componentcode] WHERE [ID] = 4 AND [isoperator] = 1;
-	INSERT [dbo].[tbstat_componentcode] ([id], [objectid], [code], [datatype], [name], [isoperator], [operatortype], [aftercode]) 
-		VALUES (4, 'a34f7387-91a1-40d6-b42f-f8032609cfd6', '/ NULLIF(', NULL, 'Divided by', 1, 0, ',0)');
+	INSERT [dbo].[tbstat_componentcode] ([id], [code], [datatype], [name], [isoperator], [operatortype], [aftercode]) 
+		VALUES (4, '/ NULLIF(', NULL, 'Divided by', 1, 0, ',0)');
 
 	UPDATE dbo.[tbstat_componentcode] SET [recordidrequired] = 1 WHERE [ID] = 43 AND [isoperator] = 0;
 
