@@ -128,6 +128,7 @@ Public gbEnableUDFFunctions As Boolean
 
 Public gbReadToolbarDefaults As Boolean
 Public gbCloseDefSelAfterRun As Boolean
+Public gbRecentDisplayDefSel As Boolean
 
 Public giWeekdayStart As VbDayOfWeek
 
