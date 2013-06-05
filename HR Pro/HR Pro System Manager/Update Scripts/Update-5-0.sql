@@ -121,6 +121,9 @@ PRINT 'Step 1 - System procedures'
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_setmodulesetting]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spstat_setmodulesetting];
 
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRGetControlDetails]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[sp_ASRGetControlDetails];
+
 
 	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spASRDefragIndexes]
 		(@maxfrag DECIMAL)
@@ -3376,6 +3379,56 @@ PRINT 'Step 1 - System procedures'
 		END';
 
 	EXECUTE sp_executeSQL @sSPCode;
+
+
+	----------------------------------------------------------------------
+	-- sp_ASRGetControlDetails Stored Procedure
+	----------------------------------------------------------------------
+
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[sp_ASRGetControlDetails]')
+			AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+		DROP PROCEDURE [dbo].sp_ASRGetControlDetails;
+
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[sp_ASRGetControlDetails]
+		AS
+		BEGIN
+			DECLARE @iDummy integer;
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+	
+	SET @sSPCode = 'ALTER PROCEDURE [dbo].[sp_ASRGetControlDetails]
+		(
+			@piScreenID int
+		)
+		AS
+		BEGIN
+		SELECT cont.*, 
+			col.[columnName], col.[columnType], col.[datatype], col.[defaultValue],
+			col.[size], col.[decimals], col.[lookupTableID], 
+			col.[lookupColumnID], col.[lookupFilterColumnID], col.[lookupFilterOperator], col.[lookupFilterValueID], 
+			col.[spinnerMinimum], col.[spinnerMaximum], col.[spinnerIncrement], 
+			col.[mandatory], col.[uniquecheck], col.[uniquechecktype], col.[convertcase], 
+			col.[mask], col.[blankIfZero], col.[multiline], col.[alignment] AS colAlignment, 
+			col.[calcExprID], col.[gotFocusExprID], col.[lostFocusExprID], col.[dfltValueExprID], col.[calcTrigger], 
+			CASE WHEN ISNULL(col.readOnly,0) = 1 THEN 1 ELSE CASE WHEN ISNULL(cont.readOnly,0) = 1 THEN 1 ELSE 0 END END AS ''readOnly'', 
+			col.[statusBarMessage], col.[errorMessage], col.[linkTableID], col.[linkViewID],
+			col.[linkOrderID], col.[Afdenabled], tab.[TableName],col.[Trimming], col.[Use1000Separator],
+			col.[QAddressEnabled], col.[OLEType], col.[MaxOLESizeEnabled], col.[MaxOLESize], col.[AutoUpdateLookupValues],
+			col.[locked]
+		FROM [dbo].[ASRSysControls] cont
+			LEFT OUTER JOIN [dbo].[ASRSysTables] tab ON cont.[tableID] = tab.[tableID]
+			LEFT OUTER JOIN [dbo].[ASRSysColumns] col ON col.[tableID] = cont.[tableID] AND col.[columnID] = cont.[columnID]
+		WHERE cont.[ScreenID] = @piScreenID
+		ORDER BY cont.[PageNo], 
+			cont.[ControlLevel] DESC, 
+			cont.[tabIndex];
+		END';
+
+	EXECUTE sp_executeSQL @sSPCode;
+
+
 
 
 /* ------------------------------------------------------------- */

@@ -247,6 +247,8 @@ Public Function GetControls(plngScreenID As Long) As clsScreenControls
       objScreenControl.EmbeddedEnabled = IIf(IsNull(!MaxOLESizeEnabled), False, !MaxOLESizeEnabled)
       objScreenControl.MaxOLESize = IIf(IsNull(!MaxOLESize), 0, !MaxOLESize)
       objScreenControl.AutoUpdateLookupValues = IIf(IsNull(!AutoUpdateLookupValues), False, !AutoUpdateLookupValues)
+      objScreenControl.Locked = IIf(IsNull(!Locked), False, (!Locked <> 0))
+           
            
       ' Read the option group's control values.
       objScreenControl.ClearControlValues

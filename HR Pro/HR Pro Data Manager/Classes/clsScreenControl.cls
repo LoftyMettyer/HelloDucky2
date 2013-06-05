@@ -79,6 +79,7 @@ Private miOLEType As DataMgr.OLEType
 Private miMaxOLESize As Integer
 Private mbEmbeddedEnabled As Boolean
 Private mbAutoUpdateLookupValues As Boolean
+Private mfLocked As Boolean
 
 
 ' This needs to be removed once the 1000 separator has been rolled into the application
@@ -732,5 +733,14 @@ Public Property Get AutoUpdateLookupValues() As Boolean
   
 End Property
 
+Public Property Get Locked() As Boolean
+  Locked = mfLocked
+  
+End Property
+
+Public Property Let Locked(ByVal pfNewValue As Boolean)
+  mfLocked = pfNewValue
+  
+End Property
 
 
