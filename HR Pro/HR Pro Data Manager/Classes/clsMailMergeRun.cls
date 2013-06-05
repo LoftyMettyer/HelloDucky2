@@ -32,7 +32,7 @@ Private mlngFailCount As Long
 Private fOK As Boolean
 Private mstrStatusMessage As String
 Private mblnUserCancelled As Boolean
-Private mlngSingleRecordID As Long
+'Private mlngSingleRecordID As Long
 
 
 'Merge Definition Variables
@@ -136,6 +136,8 @@ Private mastrUDFsRequired() As String
 
 Private mobjFormatDetails(1) As HRProDataMgr.clsOutputStyle
 
+Private mstrPicklistFilterIDs As String
+
 Private Sub Class_Initialize()
   Set mdatData = New HRProDataMgr.clsDataAccess
 End Sub
@@ -207,13 +209,15 @@ Private Function MergeFieldExists() As Boolean
 
 End Function
 
-Public Function ExecuteMailMerge(lngMailMergeID As Long, Optional lngRecordID As Long) As Boolean
+'Public Function ExecuteMailMerge(lngMailMergeID As Long, Optional lngRecordID As Long) As Boolean
+Public Function ExecuteMailMerge(lngMailMergeID As Long, Optional strRecordIDs As String) As Boolean
 
   Dim strProcedureName As String
   Dim plngEventLogID As Long
 
   mlngMailMergeID = lngMailMergeID
-  mlngSingleRecordID = lngRecordID
+  'mlngSingleRecordID = lngRecordID
+  mstrPicklistFilterIDs = strRecordIDs
   fOK = True
 
   ReDim mastrUDFsRequired(0)
@@ -233,7 +237,12 @@ Public Function ExecuteMailMerge(lngMailMergeID As Long, Optional lngRecordID As
   
   If mbIsLabel Then
     If Progress Then Call RetrieveLabelDefinition
-    If Progress And Not gblnBatchMode And mlngSingleRecordID > 0 And Not mbIsEnvelope Then Call GetLabelStartPosition
+    'If Progress And Not gblnBatchMode And mlngSingleRecordID > 0 And Not mbIsEnvelope Then
+    If Progress And Not gblnBatchMode And Not mbIsEnvelope Then
+      If mstrPicklistFilterIDs <> "" And InStr(mstrPicklistFilterIDs, ",") = 0 Then
+        Call GetLabelStartPosition
+      End If
+    End If
   End If
   
   If Progress Then Call SQLGetMergeColumns
@@ -1663,8 +1672,12 @@ Private Function GetPicklistFilterSelect() As String
   On Error GoTo LocalErr
   
   
-  If mlngSingleRecordID > 0 Then
-    GetPicklistFilterSelect = CStr(mlngSingleRecordID)
+  'If mlngSingleRecordID > 0 Then
+  '  GetPicklistFilterSelect = CStr(mlngSingleRecordID)
+
+  If mstrPicklistFilterIDs <> "" Then
+    GetPicklistFilterSelect = mstrPicklistFilterIDs
+  
   
   ElseIf mlngDefPickListID > 0 Then
     
