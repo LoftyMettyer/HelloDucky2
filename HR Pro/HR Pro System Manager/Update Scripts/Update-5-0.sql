@@ -6149,10 +6149,10 @@ PRINT 'Step 10 - Fusion Services (may be superseded by Fusion Installer)'
 		EXECUTE sp_executesql N'CREATE SCHEMA [fusion];';
 
 	-- Should this run everytime or move into the system manager change platform code?
-	SET @NVarCommand = 'ALTER DATABASE ' + @DBName + ' SET ENABLE_BROKER WITH ROLLBACK IMMEDIATE';
+	SET @NVarCommand = 'ALTER DATABASE [' + @DBName + '] SET ENABLE_BROKER WITH ROLLBACK IMMEDIATE';
 	EXEC sp_executeSQL @NVarCommand;
 
-	SET @NVarCommand = 'ALTER DATABASE ' + @DBName + ' SET NEW_BROKER';
+	SET @NVarCommand = 'ALTER DATABASE [' + @DBName + '] SET NEW_BROKER';
 	EXEC sp_executeSQL @NVarCommand;
 
 
