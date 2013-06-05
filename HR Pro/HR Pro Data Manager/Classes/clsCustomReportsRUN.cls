@@ -646,7 +646,7 @@ Error_Trap:
   
 End Function
 
-Private Function OrderBy(plngTableID As Long)
+Private Function OrderBy(plngTableID As Long) As String
 
   ' This function creates an ORDER BY statement by searching
   ' through the columns defined as the reports sort order, then
@@ -4376,7 +4376,7 @@ CalculateBradfordFactors_ERROR:
   
 End Function
 
-Public Function GenerateSQLBradford()
+Public Function GenerateSQLBradford() As Boolean
 
     ' NOTE: Checks are made elsewhere to ensure that from and to dates are not blank
     ' NOTE: Put in some code to handle blank end dates (do we include as an option on the main screen ?)
@@ -4511,7 +4511,7 @@ GenerateSQLBradford_ERROR:
 
 End Function
 
-Private Function GetBradfordReportDefinition()
+Private Function GetBradfordReportDefinition() As Boolean
 
   '(mdtAbsenceFrom As Date, mdtAbsenceTo As Date) As Boolean
   
@@ -4918,7 +4918,8 @@ GetBradfordRecordSet_ERROR:
   mstrErrorString = "Error whilst retrieving the details recordsets'." & vbNewLine & Err.Description
   
 End Function
-Public Function RunBradfordReport(pstrPicklistFilterIDs As String)
+
+Public Function RunBradfordReport(pstrPicklistFilterIDs As String) As Boolean
 
 '(mdtAbsenceFrom As Date, mdtAbsenceTo As Date, pastrIncludeTypes() As String _
   , mblnOmitBeforeStart As Boolean, mblnOmitAfterEnd As Boolean, pbSRV As Boolean, pbShowTotals As Boolean _
