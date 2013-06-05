@@ -112,9 +112,9 @@ Begin VB.Form frmMatchDef
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmMatchDef.frx":0E98
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraFieldsSelected"
+      Tab(2).Control(0)=   "fraFieldButtons"
       Tab(2).Control(1)=   "fraFieldsAvailable"
-      Tab(2).Control(2)=   "fraFieldButtons"
+      Tab(2).Control(2)=   "fraFieldsSelected"
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmMatchDef.frx":0EB4
@@ -124,9 +124,9 @@ Begin VB.Form frmMatchDef
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmMatchDef.frx":0ED0
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraReportOptions"
+      Tab(4).Control(0)=   "fraOutputDestination"
       Tab(4).Control(1)=   "fraOutputFormat"
-      Tab(4).Control(2)=   "fraOutputDestination"
+      Tab(4).Control(2)=   "fraReportOptions"
       Tab(4).ControlCount=   3
       Begin VB.Frame fraInformation 
          Height          =   2355
@@ -1569,11 +1569,11 @@ Begin VB.Form frmMatchDef
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDef.frx":17F8
+            Picture         =   "frmMatchDef.frx":19EA
             Key             =   "IMG_CALC"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDef.frx":1D4A
+            Picture         =   "frmMatchDef.frx":1F3C
             Key             =   "IMG_MATCH"
          EndProperty
       EndProperty
@@ -1592,7 +1592,7 @@ Begin VB.Form frmMatchDef
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Bands           =   "frmMatchDef.frx":229C
+      Bands           =   "frmMatchDef.frx":248E
    End
 End
 Attribute VB_Name = "frmMatchDef"
@@ -4739,7 +4739,7 @@ Private Function SaveDefinition() As Boolean
           "OutputEmail = 1, " & _
           "OutputEmailAddr = " & txtEmailGroup.Tag & ", " & _
           "OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
-          "OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "', "
+          "OutputEmailAttachAs = '" & Replace(txtEMailAttachAs.Text, "'", "''") & "', "
     Else
       sSQL = sSQL & _
           "OutputEmail = 0, " & _
@@ -4749,7 +4749,7 @@ Private Function SaveDefinition() As Boolean
     End If
     
     sSQL = sSQL & _
-        "OutputFilename = '" & Replace(txtFilename.Text, "'", "''") & "'"
+        "OutputFilename = '" & Replace(txtFileName.Text, "'", "''") & "'"
 
     sSQL = sSQL & " WHERE MatchReportID = " & CStr(mlngMatchReportID)
 
@@ -4818,13 +4818,13 @@ Private Function SaveDefinition() As Boolean
       sSQL = sSQL & "1, " & _
           txtEmailGroup.Tag & ", " & _
           "'" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
-          "'" & Replace(txtEmailAttachAs.Text, "'", "''") & "', "
+          "'" & Replace(txtEMailAttachAs.Text, "'", "''") & "', "
     Else
       sSQL = sSQL & "0, 0, '', '', "
     End If
 
     sSQL = sSQL & _
-        "'" & Replace(txtFilename.Text, "'", "''") & "')"
+        "'" & Replace(txtFileName.Text, "'", "''") & "')"
 
     If Not ForceDefinitionToBeHiddenIfNeeded(True) Then
       SaveDefinition = False
@@ -6980,7 +6980,7 @@ Public Sub PrintDef(lMatchReportID As Long)
 
         If chkDestination(2).Value = vbChecked Then
           .PrintNormal "Output Destination : Save to file"
-          .PrintNormal "File Name : " & txtFilename.Text
+          .PrintNormal "File Name : " & txtFileName.Text
           .PrintNormal "File Options : " & cboSaveExisting.List(cboSaveExisting.ListIndex)
         End If
 
@@ -6988,7 +6988,7 @@ Public Sub PrintDef(lMatchReportID As Long)
           .PrintNormal "Output Destination : Send to email"
           .PrintNormal "Email Group : " & txtEmailGroup.Text
           .PrintNormal "Email Subject : " & txtEmailSubject.Text
-          .PrintNormal "Email Attach As : " & txtEmailAttachAs.Text
+          .PrintNormal "Email Attach As : " & txtEMailAttachAs.Text
         End If
 
         .PrintEnd
