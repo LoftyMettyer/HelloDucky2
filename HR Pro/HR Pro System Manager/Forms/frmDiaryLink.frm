@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmDiaryLink 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Diary Link"
@@ -124,16 +124,16 @@ Begin VB.Form frmDiaryLink
          Width           =   4395
       End
       Begin VB.CommandButton cmdFilter 
-Caption = "O"
-BeginProperty Font
-    Name = "Wingdings 2"
-    Size = 20.25
-    Charset = 2
-    Weight = 400
-    Underline = 0
-    Italic = 0
-    Strikethrough = 0
-EndProperty
+         Caption         =   "..."
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
          Height          =   315
          Left            =   5835
          TabIndex        =   5
@@ -552,7 +552,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   
   If gfCancelled = True Then
     
-    If mblnChanged = True And cmdOK.Enabled Then
+    If mblnChanged = True And cmdOk.Enabled Then
       
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
         
