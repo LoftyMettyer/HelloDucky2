@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmOutlookCalendarLink 
@@ -153,7 +153,7 @@ Begin VB.Form frmOutlookCalendarLink
             Style           =   2  'Dropdown List
             TabIndex        =   7
             Top             =   1040
-            Width           =   3150
+            Width           =   3195
          End
          Begin VB.TextBox txtFilter 
             BackColor       =   &H8000000F&
@@ -166,14 +166,22 @@ Begin VB.Form frmOutlookCalendarLink
             Width           =   2850
          End
          Begin VB.CommandButton cmdFilter 
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   315
             Left            =   4020
-            Picture         =   "frmOutlookCalendarLink.frx":122E
-            Style           =   1  'Graphical
             TabIndex        =   5
             Top             =   640
             UseMaskColor    =   -1  'True
-            Width           =   300
+            Width           =   330
          End
          Begin VB.TextBox txtTitle 
             Height          =   315
@@ -181,7 +189,7 @@ Begin VB.Form frmOutlookCalendarLink
             MaxLength       =   50
             TabIndex        =   2
             Top             =   240
-            Width           =   3150
+            Width           =   3195
          End
          Begin VB.Label Label2 
             AutoSize        =   -1  'True
@@ -220,9 +228,9 @@ Begin VB.Form frmOutlookCalendarLink
          Width           =   4500
          Begin VB.ListBox lstDestinations 
             Height          =   1860
-            ItemData        =   "frmOutlookCalendarLink.frx":137C
+            ItemData        =   "frmOutlookCalendarLink.frx":122E
             Left            =   200
-            List            =   "frmOutlookCalendarLink.frx":137E
+            List            =   "frmOutlookCalendarLink.frx":1230
             Style           =   1  'Checkbox
             TabIndex        =   9
             Top             =   300
@@ -246,9 +254,9 @@ Begin VB.Form frmOutlookCalendarLink
          Width           =   4620
          Begin VB.ComboBox cboOffsetPeriod 
             Height          =   315
-            ItemData        =   "frmOutlookCalendarLink.frx":1380
+            ItemData        =   "frmOutlookCalendarLink.frx":1232
             Left            =   3200
-            List            =   "frmOutlookCalendarLink.frx":1390
+            List            =   "frmOutlookCalendarLink.frx":1242
             Style           =   2  'Dropdown List
             TabIndex        =   32
             Top             =   240
@@ -501,14 +509,22 @@ Begin VB.Form frmOutlookCalendarLink
             Width           =   3580
          End
          Begin VB.CommandButton cmdSubject 
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   315
             Left            =   4755
-            Picture         =   "frmOutlookCalendarLink.frx":13B2
-            Style           =   1  'Graphical
             TabIndex        =   49
             Top             =   240
             UseMaskColor    =   -1  'True
-            Width           =   300
+            Width           =   330
          End
          Begin VB.TextBox txtBody 
             Height          =   3720
@@ -599,7 +615,7 @@ Begin VB.Form frmOutlookCalendarLink
             _Version        =   65536
             _ExtentX        =   3413
             _ExtentY        =   556
-            Caption         =   "frmOutlookCalendarLink.frx":1500
+            Caption         =   "frmOutlookCalendarLink.frx":1264
             BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
@@ -609,7 +625,7 @@ Begin VB.Form frmOutlookCalendarLink
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            Keys            =   "frmOutlookCalendarLink.frx":1565
+            Keys            =   "frmOutlookCalendarLink.frx":12C9
             AlignHorizontal =   0
             AlignVertical   =   0
             Appearance      =   1
@@ -655,7 +671,7 @@ Begin VB.Form frmOutlookCalendarLink
             _Version        =   65536
             _ExtentX        =   3413
             _ExtentY        =   556
-            Caption         =   "frmOutlookCalendarLink.frx":15A7
+            Caption         =   "frmOutlookCalendarLink.frx":130B
             BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
@@ -665,7 +681,7 @@ Begin VB.Form frmOutlookCalendarLink
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            Keys            =   "frmOutlookCalendarLink.frx":160C
+            Keys            =   "frmOutlookCalendarLink.frx":1370
             AlignHorizontal =   0
             AlignVertical   =   0
             Appearance      =   1
@@ -849,11 +865,11 @@ Begin VB.Form frmOutlookCalendarLink
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   2
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOutlookCalendarLink.frx":164E
+            Picture         =   "frmOutlookCalendarLink.frx":13B2
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOutlookCalendarLink.frx":1A1A
+            Picture         =   "frmOutlookCalendarLink.frx":177E
             Key             =   "IMG_CALC"
          EndProperty
       EndProperty
@@ -1579,7 +1595,7 @@ Private Sub ListView2_DblClick()
   
 End Sub
 
-Private Sub ListView1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -1598,7 +1614,7 @@ Private Sub ListView2_ItemClick(ByVal Item As ComctlLib.ListItem)
 
 End Sub
 
-Private Sub ListView2_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView2_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 
   If mblnReadOnly Then
     Exit Sub
@@ -1611,7 +1627,7 @@ Private Sub ListView2_MouseUp(Button As Integer, Shift As Integer, x As Single, 
 
 End Sub
 
-Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   ' Start the drag operation
   Dim objItem As ComctlLib.ListItem
@@ -1630,7 +1646,7 @@ Private Sub ListView1_MouseMove(Button As Integer, Shift As Integer, x As Single
 
 End Sub
 
-Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   'Start the drag operation
   Dim objItem As ComctlLib.ListItem
@@ -1648,7 +1664,7 @@ Private Sub ListView2_MouseMove(Button As Integer, Shift As Integer, x As Single
 
 End Sub
 
-Private Sub ListView1_DragDrop(Source As Control, x As Single, y As Single)
+Private Sub ListView1_DragDrop(Source As Control, X As Single, Y As Single)
   
   ' Perform the drop operation
   If Source Is ListView2 Then
@@ -1660,7 +1676,7 @@ Private Sub ListView1_DragDrop(Source As Control, x As Single, y As Single)
 
 End Sub
 
-Private Sub ListView2_DragDrop(Source As Control, x As Single, y As Single)
+Private Sub ListView2_DragDrop(Source As Control, X As Single, Y As Single)
   
   ' Perform the drop operation - action depends on source and destination
   
@@ -1683,7 +1699,7 @@ Private Sub ListView2_DragDrop(Source As Control, x As Single, y As Single)
 End Sub
 
 
-Private Sub fraColumns_DragOver(Index As Integer, Source As Control, x As Single, y As Single, State As Integer)
+Private Sub fraColumns_DragOver(Index As Integer, Source As Control, X As Single, Y As Single, State As Integer)
 
   ' Change pointer to the nodrop icon
   Source.DragIcon = picNoDrop.Picture
@@ -1691,7 +1707,7 @@ Private Sub fraColumns_DragOver(Index As Integer, Source As Control, x As Single
 End Sub
 
 
-Private Sub ListView2_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub ListView2_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
 
   ' Change pointer to drop icon
   If (Source Is ListView1) Or (Source Is ListView2) Then
@@ -1699,11 +1715,11 @@ Private Sub ListView2_DragOver(Source As Control, x As Single, y As Single, Stat
   End If
 
   ' Set DropHighlight to the mouse's coordinates.
-  Set ListView2.DropHighlight = ListView2.HitTest(x, y)
+  Set ListView2.DropHighlight = ListView2.HitTest(X, Y)
 
 End Sub
 
-Private Sub ListView1_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub ListView1_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
 
   ' Change pointer to drop icon
   If (Source Is ListView1) Or (Source Is ListView2) Then
@@ -1717,7 +1733,7 @@ Private Sub ListView1_GotFocus()
 End Sub
 
 Private Sub ListView1_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub ListView2_GotFocus()
@@ -1725,7 +1741,7 @@ Private Sub ListView2_GotFocus()
 End Sub
 
 Private Sub ListView2_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Function CopyToSelected(bAll As Boolean)
@@ -1975,12 +1991,12 @@ End Sub
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Public Property Let Changed(ByVal blnNewValue As Boolean)
   If Not mblnLoading Then
-    cmdOK.Enabled = blnNewValue And Not mblnReadOnly
+    cmdOk.Enabled = blnNewValue And Not mblnReadOnly
   End If
 End Property
 
@@ -2307,10 +2323,11 @@ Private Sub txtBody_GotFocus()
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-  cmdOK.Default = False
+  cmdOk.Default = False
 End Sub
 
 Private Sub txtBody_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
+
 
