@@ -173,8 +173,6 @@ Public Const giDefaultRecursionLevel = 8
 Public gbManualRecursionLevel As Boolean
 Public giManualRecursionLevel As Integer
 
-Public gbUsedotNetScriptEngine As Boolean
-
 Public gbDisableSpecialFunctionAutoUpdate As Boolean
 Public gbReorganiseIndexesInOvernightJob As Boolean
 

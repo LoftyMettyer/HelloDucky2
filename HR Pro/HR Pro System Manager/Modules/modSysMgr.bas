@@ -50,8 +50,8 @@ Public giSQLServerAuthenticationType As HRProSystemMgr.SQLServerAuthenticationTy
 Public gbAttemptRecovery As Boolean
 
 Public gADOCon As ADODB.Connection
-'Public rdoCon As rdo.rdoConnection
-'Public rdoEnv As RDO.rdoEnvironment
+Public gobjHRProEngine As HRProEngine.SysMgr
+
 Public daoWS As dao.Workspace
 Public daoDb As dao.Database
 Public recTabEdit As dao.Recordset

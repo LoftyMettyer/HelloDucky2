@@ -598,6 +598,7 @@ Public Sub Login()
 
   ' Clear any existing database connection.
   Set gADOCon = Nothing
+  Set gobjHRProEngine = New HRProEngine.SysMgr
   
   ' Establish the database connection.
   Set gADOCon = New ADODB.Connection
