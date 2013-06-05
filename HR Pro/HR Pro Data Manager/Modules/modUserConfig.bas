@@ -25,3 +25,9 @@ Public Const SQLWhereMandatoryColumn = _
 
 Public gbPrinterPrompt As Boolean
 Public gbPrinterConfirm As Boolean
+
+
+' Move this to modHRPro when it isn't checked out...
+Public glngBypassDefsel_ID As Long
+Public gbIsInPollMode As Boolean
+Public gbJustRunIt As Boolean

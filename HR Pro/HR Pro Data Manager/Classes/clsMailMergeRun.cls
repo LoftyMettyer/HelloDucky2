@@ -57,6 +57,8 @@ Private mblnDefSuppressBlankLines As Boolean
 Private mstrEmailAddr As String
 Private mlngEmailAddrCalc As Long
 Private mbIsLabel As Boolean
+Private mstrOutputPrinterName As String
+Private mlngDocumentMapID As Long
 
 Private mintType() As Integer
 Private mlngSize() As Long
@@ -235,6 +237,7 @@ Public Function ExecuteMailMerge(lngMailMergeID As Long, Optional lngRecordID As
   
   If Progress Then Call WrdCreateDataSource
   If Progress Then Call WrdPopulateDataSource
+  If Progress Then Call WrdSetV1HeaderText
   If Progress Then Call WrdOpenTemplate(False)
   
   If fOK Then
@@ -259,6 +262,9 @@ Public Function ExecuteMailMerge(lngMailMergeID As Long, Optional lngRecordID As
   End If
 
   If Progress Then Call WrdRunMailMerge
+  If Progress Then Call WrdPrintDocument(mstrOutputPrinterName)
+ 
+  
   
   'MH20041112 Fault 9001 & 9003
   'If Progress Then Call UDFFunctions(mastrUDFsRequired, False)
@@ -356,7 +362,7 @@ Private Sub InitialiseProgressBar()
       .Time = False
       .Cancel = True
       .Bar1Value = 0
-      .Bar1MaxValue = 18
+      .Bar1MaxValue = 19
       .Bar1Caption = IIf(mbIsLabel, "Envelopes & Labels", "Mail Merge") & " : " & mstrDefName
       .OpenProgress
     Else
@@ -449,39 +455,45 @@ Private Sub SQLGetMergeDefinition()
     mblnDefCloseDoc = !CloseDoc
     mbIsLabel = !IsLabel
     mlngLabelDefinitionID = IIf(IsNull(!LabelTypeID), 0, !LabelTypeID)
-
+    
     mlngEmailAddrCalc = 0
     mstrEmailAddr = vbNullString
         
     Select Case mintDefOutput
-    Case wdSendToNewDocument
-      mblnDefDocSave = !DocSave
-      mstrDefDocFile = !DocFileName
-    Case wdSendToEmail
-      'MH20040122 Fault 5665
-      If datGeneral.SystemPermission("EMAILADDRESSES", "VIEW") = False Then
-        mstrStatusMessage = "You do not have permission to use email addresses."
-        Set rsMailMergeDefinition = Nothing
-        fOK = False
-        Exit Sub
-      End If
-
-
-      If IIf(IsNull(!EmailAddrID), 0, !EmailAddrID) = 0 Then
-        mstrStatusMessage = "No destination email address selected."
-        Set rsMailMergeDefinition = Nothing
-        fOK = False
-        Exit Sub
-      End If
-      
-      'mstrDefEmailCol = !EmailAddrName  'GetTableAndColumnName(!EmailColumnID)
-      mblnDefEMailAttachment = !EMailAsAttachment
-      mstrDefAttachmentName = IIf(IsNull(!EmailAttachmentName), "", !EmailAttachmentName)
-      mstrDefEMailSubject = !EmailSubject
-      mlngEmailAddrCalc = !EmailAddrID
+      Case wdSendToNewDocument
+        mblnDefDocSave = !DocSave
+        mstrDefDocFile = !DocFileName
+      Case wdSendToEmail
+        'MH20040122 Fault 5665
+        If datGeneral.SystemPermission("EMAILADDRESSES", "VIEW") = False Then
+          mstrStatusMessage = "You do not have permission to use email addresses."
+          Set rsMailMergeDefinition = Nothing
+          fOK = False
+          Exit Sub
+        End If
+  
+  
+        If IIf(IsNull(!EmailAddrID), 0, !EmailAddrID) = 0 Then
+          mstrStatusMessage = "No destination email address selected."
+          Set rsMailMergeDefinition = Nothing
+          fOK = False
+          Exit Sub
+        End If
+        
+        'mstrDefEmailCol = !EmailAddrName  'GetTableAndColumnName(!EmailColumnID)
+        mblnDefEMailAttachment = !EMailAsAttachment
+        mstrDefAttachmentName = IIf(IsNull(!EmailAttachmentName), "", !EmailAttachmentName)
+        mstrDefEMailSubject = !EmailSubject
+        mlngEmailAddrCalc = !EmailAddrID
+    
+      Case wdSendToPrinter, 3 ' We use this as Version 1
+        mstrOutputPrinterName = !OutputPrinterName
+        mlngDocumentMapID = IIf(IsNull(!DocumentMapID), 0, !DocumentMapID)
+    
     End Select
 
     mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!UserName)))
+
 
   End With
 
@@ -611,7 +623,6 @@ LocalErr:
   fOK = False
 
 End Sub
-
 
 Private Sub WrdOpenTemplate(blnSuppressPrompt As Boolean)
 
@@ -1454,6 +1465,10 @@ Private Sub TidyUpAndExit()
     Kill mstrDefAttachmentName
   End If
 
+  ' We are not using the original template - kill this fake
+  If mlngDocumentMapID > 0 Then
+    Kill mstrDefTemplateFile
+  End If
 
   'Kill the data source
   wrdDocDataSource.Close SaveChanges:=False
@@ -2927,3 +2942,75 @@ CannotCreateTemplate:
   End Select
 
 End Sub
+
+Private Sub WrdPrintDocument(ByVal psPrinterName As String)
+
+  If Len(psPrinterName) > 0 Then
+    wrdApp.ActivePrinter = psPrinterName
+    wrdDocOutput.PrintOut Range:=wdPrintAllDocument, Item:= _
+        wdPrintDocumentContent, Copies:=1, Pages:="", PageType:=wdPrintAllPages, _
+        ManualDuplexPrint:=False, Collate:=True, Background:=True, PrintToFile:= _
+        False, PrintZoomColumn:=0, PrintZoomRow:=0, PrintZoomPaperWidth:=0, _
+        PrintZoomPaperHeight:=0
+         
+  End If
+ 
+End Sub
+
+Private Sub WrdSetV1HeaderText()
+
+  On Error GoTo LocalErr
+
+  Dim objFile As New FileSystemObject
+  Dim rsDocumentMap As ADODB.Recordset
+  Dim sTempTemplateFile As String
+  Dim sHeader As String
+  Dim sSQL As String
+
+  ' If Version1 and we have auto add header then insert the header text at the top of a copy of the source template
+  If mlngDocumentMapID > 0 Then
+    
+    sSQL = "SELECT * FROM dbo.[ASRSysDocumentMapping] WHERE [DocumentMapID] = " & mlngDocumentMapID
+    Set rsDocumentMap = datGeneral.GetRecords(sSQL)
+    If Not (rsDocumentMap.EOF And rsDocumentMap.BOF) Then
+      sHeader = IIf(IsNull(rsDocumentMap!HeaderText), "", rsDocumentMap!HeaderText)
+    End If
+    rsDocumentMap.Close
+    
+    ' Copy the source template
+    sTempTemplateFile = GetTmpFName
+    objFile.CopyFile mstrDefTemplateFile, sTempTemplateFile, True
+    
+    ' Insert the header text
+    Set wrdDocTemplate = wrdApp.Documents.Open( _
+        FileName:=sTempTemplateFile, _
+        ConfirmConversions:=False, _
+        ReadOnly:=False, _
+        AddToRecentFiles:=False, _
+        Revert:=False)
+        
+    wrdDocTemplate.ActiveWindow.Selection.Font.Size = 4
+    wrdDocTemplate.ActiveWindow.Selection.Font.Color = vbRed
+    wrdDocTemplate.ActiveWindow.Selection.TypeText sHeader
+    
+    wrdDocTemplate.Save
+    wrdDocTemplate.Close
+    
+    ' Set the mail merge to look at our new modified template
+    mstrDefTemplateFile = sTempTemplateFile
+  
+  End If
+
+  ' Tidy up
+  Set rsDocumentMap = Nothing
+  Set wrdDocTemplate = Nothing
+
+Exit Sub
+
+LocalErr:
+  mstrStatusMessage = "Error adding header to the Word template file <" & mstrDefTemplateFile & ">"
+  fOK = False
+
+End Sub
+
+
