@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmTabEdit 
@@ -50,11 +50,12 @@ Begin VB.Form frmTabEdit
       _Version        =   393216
       Style           =   1
       Tabs            =   6
+      Tab             =   3
       TabsPerRow      =   6
       TabHeight       =   520
       TabCaption(0)   =   "De&finition"
       TabPicture(0)   =   "frmTabEdit.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "lblRecordDescription"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "lblOrder"
@@ -116,7 +117,7 @@ Begin VB.Form frmTabEdit
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "Calendar Lin&ks"
       TabPicture(3)   =   "frmTabEdit.frx":0060
-      Tab(3).ControlEnabled=   0   'False
+      Tab(3).ControlEnabled=   -1  'True
       Tab(3).Control(0)=   "fraCalendarLinks"
       Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
@@ -129,9 +130,9 @@ Begin VB.Form frmTabEdit
       TabCaption(5)   =   "Audi&t"
       TabPicture(5)   =   "frmTabEdit.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraTableStats"
+      Tab(5).Control(0)=   "fraAudit"
       Tab(5).Control(0).Enabled=   0   'False
-      Tab(5).Control(1)=   "fraAudit"
+      Tab(5).Control(1)=   "fraTableStats"
       Tab(5).Control(1).Enabled=   0   'False
       Tab(5).ControlCount=   2
       Begin VB.Frame fraEmail 
@@ -184,7 +185,6 @@ Begin VB.Form frmTabEdit
             _Version        =   196617
             DataMode        =   2
             RecordSelectors =   0   'False
-            Col.Count       =   4
             DefColWidth     =   26458
             AllowUpdate     =   0   'False
             MultiLine       =   0   'False
@@ -210,7 +210,7 @@ Begin VB.Form frmTabEdit
             RowHeight       =   423
             Columns.Count   =   4
             Columns(0).Width=   5027
-            Columns(0).Caption=   "Title"
+            Columns(0).Caption=   "Name"
             Columns(0).Name =   "colTitle"
             Columns(0).DataField=   "Column 0"
             Columns(0).DataType=   8
@@ -362,7 +362,6 @@ Begin VB.Form frmTabEdit
             BackColorEven   =   -2147483643
             BackColorOdd    =   -2147483643
             RowHeight       =   423
-            ExtraHeight     =   185
             Columns.Count   =   3
             Columns(0).Width=   26458
             Columns(0).Visible=   0   'False
@@ -477,7 +476,7 @@ Begin VB.Form frmTabEdit
       Begin VB.Frame fraCalendarLinks 
          Caption         =   "Calendar Links :"
          Height          =   4150
-         Left            =   -74800
+         Left            =   200
          TabIndex        =   36
          Top             =   400
          Width           =   7340
@@ -527,7 +526,6 @@ Begin VB.Form frmTabEdit
             _Version        =   196617
             DataMode        =   2
             RecordSelectors =   0   'False
-            Col.Count       =   3
             DefColWidth     =   26458
             AllowUpdate     =   0   'False
             MultiLine       =   0   'False
@@ -551,7 +549,6 @@ Begin VB.Form frmTabEdit
             BackColorEven   =   -2147483643
             BackColorOdd    =   -2147483643
             RowHeight       =   423
-            ExtraHeight     =   185
             Columns.Count   =   3
             Columns(0).Width=   26458
             Columns(0).Visible=   0   'False
@@ -561,7 +558,7 @@ Begin VB.Form frmTabEdit
             Columns(0).DataType=   8
             Columns(0).FieldLen=   256
             Columns(1).Width=   5027
-            Columns(1).Caption=   "Title"
+            Columns(1).Caption=   "Name"
             Columns(1).Name =   "Title"
             Columns(1).DataField=   "Column 1"
             Columns(1).DataType=   8
@@ -618,7 +615,7 @@ Begin VB.Form frmTabEdit
          BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
-         Left            =   2100
+         Left            =   -72900
          Locked          =   -1  'True
          TabIndex        =   14
          TabStop         =   0   'False
@@ -628,7 +625,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdEmail 
          Caption         =   "..."
          Height          =   315
-         Left            =   7225
+         Left            =   -67775
          TabIndex        =   15
          Top             =   3200
          UseMaskColor    =   -1  'True
@@ -729,7 +726,7 @@ Begin VB.Form frmTabEdit
       End
       Begin VB.TextBox txtTableName 
          Height          =   315
-         Left            =   1000
+         Left            =   -74000
          MaxLength       =   30
          TabIndex        =   2
          Text            =   "txtTabName"
@@ -739,7 +736,7 @@ Begin VB.Form frmTabEdit
       Begin VB.Frame fraTableType 
          Caption         =   "Type :"
          Height          =   800
-         Left            =   200
+         Left            =   -74800
          TabIndex        =   3
          Top             =   1100
          Width           =   7340
@@ -774,7 +771,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdOrder 
          Caption         =   "..."
          Height          =   315
-         Left            =   7225
+         Left            =   -67775
          TabIndex        =   9
          Top             =   2200
          UseMaskColor    =   -1  'True
@@ -784,7 +781,7 @@ Begin VB.Form frmTabEdit
          BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
-         Left            =   2100
+         Left            =   -72900
          Locked          =   -1  'True
          TabIndex        =   8
          TabStop         =   0   'False
@@ -795,7 +792,7 @@ Begin VB.Form frmTabEdit
          BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
-         Left            =   2100
+         Left            =   -72900
          Locked          =   -1  'True
          TabIndex        =   11
          TabStop         =   0   'False
@@ -805,7 +802,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdRecordDescription 
          Caption         =   "..."
          Height          =   315
-         Left            =   7225
+         Left            =   -67775
          TabIndex        =   12
          Top             =   2700
          UseMaskColor    =   -1  'True
@@ -816,7 +813,7 @@ Begin VB.Form frmTabEdit
          BackStyle       =   0  'Transparent
          Caption         =   "Default Email :"
          Height          =   195
-         Left            =   200
+         Left            =   -74800
          TabIndex        =   13
          Top             =   3255
          Width           =   1440
@@ -835,7 +832,7 @@ Begin VB.Form frmTabEdit
          BackStyle       =   0  'Transparent
          Caption         =   "Name :"
          Height          =   195
-         Left            =   200
+         Left            =   -74800
          TabIndex        =   1
          Top             =   660
          Width           =   510
@@ -845,7 +842,7 @@ Begin VB.Form frmTabEdit
          BackStyle       =   0  'Transparent
          Caption         =   "Primary Order :"
          Height          =   195
-         Left            =   200
+         Left            =   -74800
          TabIndex        =   7
          Top             =   2265
          Width           =   1515
@@ -855,7 +852,7 @@ Begin VB.Form frmTabEdit
          BackStyle       =   0  'Transparent
          Caption         =   "Record Description :"
          Height          =   195
-         Left            =   200
+         Left            =   -74800
          TabIndex        =   10
          Top             =   2760
          Width           =   1725
