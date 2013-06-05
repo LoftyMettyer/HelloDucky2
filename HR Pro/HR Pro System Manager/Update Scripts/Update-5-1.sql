@@ -1744,8 +1744,11 @@ PRINT 'Step - Menu & Category enhancements'
 		WHERE s.Section = 'desktopsetting' AND s.SettingKey = 'bitmapid'
 			AND p.[name] IN ('Advanced Business Solutions Wallpaper 1024x768.jpg', 'Advanced Business Solutions Wallpaper 1280 x800.jpg',
 			'Advanced Business Solutions Wallpaper 1440x900.jpg', 'Advanced Business Solutions Wallpaper 2560x1600.jpg',
-			'ASRDesktopImagePersonnelnPost.bmp', 'ASR Splash.jpg', 'ASRDesktopImage 1024x768.jpg',
-			'COASolutionsDesktopImage-1024x768.jpg', 'HRProP.bmp', 'HRProPP.bmp', 'HRProPR.bmp', 'HRProPRP.bmp',
+			'ASRDesktopImagePersonnelnPost.bmp', 'ASR Splash.jpg', 'ASRDesktopImage2005.jpg', 'ASRDesktopImage2005b.jpg',
+			'ASRDesktopImage 1024x768.jpg', 'ASRDesktopImage 1600x1200.jpg',
+			'ASRDesktopImage-1024x768.jpg', 'ASRDesktopImage-1600x1200.jpg', 
+			'COASolutionsDesktopImage-1024x768.jpg', 'COASolutionsDesktopImage-1600x1200.jpg', 
+			'HRProP.bmp', 'HRProPP.bmp', 'HRProPR.bmp', 'HRProPRP.bmp',			
 			'HRProPRT.bmp',	'HRProPRTP.bmp', 'HRProPRTS.bmp', 'HRProPS.bmp', 'HRProPT.bmp', 'HRProPTP.bmp', 'HRProPTS.bmp',	'HRProT.bmp'))
 	BEGIN
 		-- Set backcolour to white, image to our newly inserted one and tile in the centre
