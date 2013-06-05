@@ -2,7 +2,7 @@ VERSION 5.00
 Begin VB.Form frmSSIntranetUtility 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Self-service Intranet Chart Utility"
-   ClientHeight    =   2355
+   ClientHeight    =   2085
    ClientLeft      =   45
    ClientTop       =   375
    ClientWidth     =   6615
@@ -20,7 +20,7 @@ Begin VB.Form frmSSIntranetUtility
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   2355
+   ScaleHeight     =   2085
    ScaleWidth      =   6615
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
@@ -29,23 +29,23 @@ Begin VB.Form frmSSIntranetUtility
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   5250
-      TabIndex        =   7
-      Top             =   1770
+      TabIndex        =   3
+      Top             =   1530
       Width           =   1200
    End
    Begin VB.CommandButton cmdOk 
       Caption         =   "&OK"
       Height          =   400
       Left            =   3975
-      TabIndex        =   6
-      Top             =   1770
+      TabIndex        =   2
+      Top             =   1530
       Width           =   1200
    End
    Begin VB.Frame fraHRProUtilityLink 
       Caption         =   "HR Pro Report / Utility :"
-      Height          =   1485
+      Height          =   1260
       Left            =   180
-      TabIndex        =   0
+      TabIndex        =   4
       Top             =   135
       Width           =   6300
       Begin VB.ComboBox cboHRProUtilityType 
@@ -54,7 +54,7 @@ Begin VB.Form frmSSIntranetUtility
          Left            =   1400
          List            =   "frmSSIntranetUtility.frx":000E
          Style           =   2  'Dropdown List
-         TabIndex        =   2
+         TabIndex        =   0
          Top             =   300
          Width           =   4700
       End
@@ -70,7 +70,7 @@ Begin VB.Form frmSSIntranetUtility
          Caption         =   "Type :"
          Height          =   195
          Left            =   195
-         TabIndex        =   5
+         TabIndex        =   6
          Top             =   360
          Width           =   645
       End
@@ -78,21 +78,9 @@ Begin VB.Form frmSSIntranetUtility
          Caption         =   "Name :"
          Height          =   195
          Left            =   195
-         TabIndex        =   4
+         TabIndex        =   5
          Top             =   765
          Width           =   780
-      End
-      Begin VB.Label lblHRProUtilityMessage 
-         AutoSize        =   -1  'True
-         Caption         =   "<message>"
-         ForeColor       =   &H000000FF&
-         Height          =   195
-         Left            =   1395
-         TabIndex        =   3
-         Top             =   1160
-         Visible         =   0   'False
-         Width           =   4695
-         WordWrap        =   -1  'True
       End
    End
 End
