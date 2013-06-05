@@ -11,6 +11,7 @@ Namespace Things
     Public Property BaseTableID As Integer
     Public Property BaseTable As Table
     Public Property AssociatedColumn As Column
+    'Public Property 
     Public UDF As ScriptDB.GeneratedUDF
     Public Property ExpressionType As ScriptDB.ExpressionType
 
@@ -1058,6 +1059,8 @@ Namespace Things
       End If
 
       ColumnRecursion.AddIfNew(ReferencedColumn)
+
+      ' If ReferencedColumn Is Me.AssociatedColumn Then
 
       If StatementObjects.Contains(ReferencedColumn) Then
         sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn))
