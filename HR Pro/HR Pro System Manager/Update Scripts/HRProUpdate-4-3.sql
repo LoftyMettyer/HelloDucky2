@@ -558,7 +558,7 @@ PRINT 'Step 9 - Drop all HR Pro defined object (schema binding)'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 9 - Add new calculation procedures'
+PRINT 'Step 11 - Add new calculation procedures'
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfstat_MaternityExpectedReturn]')AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfstat_MaternityExpectedReturn];
@@ -580,6 +580,9 @@ PRINT 'Step 9 - Add new calculation procedures'
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_getfunctionparametertype]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_getfunctionparametertype];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_getmodulesetting]') AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_getmodulesetting];
 		
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_getuniquecode]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_getuniquecode];
@@ -918,9 +921,6 @@ PRINT 'Step 9 - Add new calculation procedures'
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
 
-
-
-
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getfunctionparametertype]
 			(@functionid integer, @parameterindex integer)
 		RETURNS integer
@@ -934,6 +934,21 @@ PRINT 'Step 9 - Add new calculation procedures'
 		
 			RETURN @result;
 		
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getmodulesetting](
+			@module AS nvarchar(255),
+			@modulekey AS nvarchar(255))
+		RETURNS nvarchar(255)
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+			DECLARE @result nvarchar(255);
+			
+			SELECT @result = [ParameterValue] FROM dbo.[asrsysmodulesetup] WHERE [ModuleKey] = @module AND [parameterkey] = @modulekey;
+
+			RETURN @result;			
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
 
@@ -1683,6 +1698,14 @@ PRINT 'Step 14 - Convert audit table to view'
 	BEGIN
 		EXECUTE sp_executesql N'EXECUTE sp_rename [ASRSysAuditTrail], [tbsys_audittrail];';
 		EXEC spsys_setsystemsetting 'integration', 'auditlog', 0;
+	END
+
+	IF EXISTS(SELECT dbo.[udfsys_getmodulesetting]('MODULE_AUDIT','Param_AuditTable'))
+	BEGIN
+		SELECT @sSPCode = 'IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id = object_id(N''' + [tablename] + ''', ''U'') AND xtype = ''V'')
+			DROP VIEW dbo.[' + [tablename] + ']' FROM dbo.[tbsys_tables]
+			WHERE tableid = dbo.[udfsys_getmodulesetting]('MODULE_AUDIT','Param_AuditTable')
+		EXECUTE sp_executesql @sSPCode
 	END
 
 	-- Remove old audit view
