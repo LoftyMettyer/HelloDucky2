@@ -57,6 +57,9 @@ Sub Main()
   
   ASRDEVELOPMENT = Not vbCompiled
 
+  ' If we get problems, just in case...
+  gbDisableCodeJock = (InStr(LCase(Command$), "/skin=false") > 0)
+
   ' Default logged on user information
   gstrServerDefaultDomain = Environ("USERDOMAIN")
   gstrWindowsCurrentDomain = Environ("USERDOMAIN")
