@@ -639,6 +639,15 @@ PRINT 'Step - Add new calculation procedures'
 /* ------------------------------------------------------------- */
 PRINT 'Step - Add new calculation procedures'
 
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRFn_RemainingMonthsSinceWholeYears]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[sp_ASRFn_RemainingMonthsSinceWholeYears];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRFn_RoundDateToStartOfNearestMonth]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[sp_ASRFn_RoundDateToStartOfNearestMonth];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRFn_WeekdaysFromStartAndEndDates]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[sp_ASRFn_WeekdaysFromStartAndEndDates];
+
 	IF EXISTS (SELECT * FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_statutoryredundancypay]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_statutoryredundancypay];
 
@@ -750,6 +759,96 @@ PRINT 'Step - Add new calculation procedures'
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_workingdaysbetweentwodates]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_workingdaysbetweentwodates];
 	
+	
+	
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[sp_ASRFn_RemainingMonthsSinceWholeYears] 
+	(
+		@piResult	integer OUTPUT,
+		@pdtDate 	datetime
+	)
+	AS
+	BEGIN
+		DECLARE @dtToday datetime;
+
+		SET @dtToday = GETDATE();
+		SET @pdtDate = convert(datetime, convert(varchar(20), @pdtDate, 101));
+
+		-- Get the number of whole months
+		SET @piResult = month(@dtToday) - month(@pdtDate);
+	 
+		-- Test the day value
+		IF day(@pdtDate) > day(@dtToday)
+			SET @piResult = @piResult - 1;
+
+		IF @piResult < 0
+			SET @piResult = @piResult + 12;
+
+	END'
+	EXECUTE sp_executeSQL @sSPCode;	
+	
+	
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[sp_ASRFn_RoundDateToStartOfNearestMonth] 
+	(
+		@pdtResult 	datetime OUTPUT,
+		@pdtDate 	datetime
+	)
+	AS
+	BEGIN
+		DECLARE @dtDateNextMonth	datetime,
+				@dtDateThisMonth 	datetime;
+
+		SET @pdtDate = convert(datetime, convert(varchar(20), @pdtDate, 101));
+
+		-- Create a date with one month added to the date and move it to the first day of that month
+		SET @dtDateNextMonth = dateAdd(mm, 1, @pdtDate);
+		SET @dtDateNextMonth = dateAdd(dd, -1 * (day(@dtDateNextMonth) - 1), @dtDateNextMonth);
+
+		-- Create a date which is the first of the month passed in
+		SET @dtDateThisMonth = dateAdd(dd, -1 * (day(@pdtDate) - 1), @pdtDate);
+	    
+		-- See which is the greatest gap between the two start month dates and the passed in date
+		IF (@pdtDate - (@dtDateThisMonth) + 1) < ((@dtDateNextMonth) - (@pdtDate))
+		BEGIN
+			SET @pdtResult = @dtDateThisMonth
+		END
+		ELSE
+		BEGIN
+			SET @pdtResult = @dtDateNextMonth
+		END
+	END'
+	EXECUTE sp_executeSQL @sSPCode;	
+
+
+	SET @sSPCode = 'CREATE  PROCEDURE [dbo].[sp_ASRFn_WeekdaysFromStartAndEndDates] 
+	(
+		@piResult	integer OUTPUT,
+		@pdtDate1 	datetime,
+		@pdtDate2 	datetime
+	)
+	AS
+	BEGIN
+		DECLARE @iCounter	integer;
+
+		SET @piResult = 0;
+		SET @iCounter = 0;
+		SET @pdtDate1 = convert(datetime, convert(varchar(20), @pdtDate1, 101));
+		SET @pdtDate2 = convert(datetime, convert(varchar(20), @pdtDate2, 101));
+
+		WHILE @iCounter <= datediff(day, @pdtDate1, @pdtDate2)
+		BEGIN
+			IF datepart(dw, dateadd(day, @iCounter, @pdtDate1)) <> 1
+			BEGIN
+				IF datepart(dw, dateadd(day, @iCounter, @pdtDate1)) <> 7
+				BEGIN
+					SET @piResult = @piResult + 1
+				END
+			END
+
+			SET @iCounter = @iCounter + 1;
+		END
+	END'
+	EXECUTE sp_executeSQL @sSPCode;	
+
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfstat_MaternityExpectedReturn] (
 			@EWCDate datetime,
@@ -2156,29 +2255,20 @@ PRINT 'Step - Remove redundant procedures'
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRAudit]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[sp_ASRAudit];
 
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRFn_RemainingMonthsSinceWholeYears]') AND xtype = 'P')
-		DROP PROCEDURE [dbo].[sp_ASRFn_RemainingMonthsSinceWholeYears];
+	--IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRSysFnMaternityExpectedReturn]') AND xtype = 'P')
+	--	DROP PROCEDURE dbo.[spASRSysFnMaternityExpectedReturn]
 
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRFn_RoundDateToStartOfNearestMonth]') AND xtype = 'P')
-		DROP PROCEDURE [dbo].[sp_ASRFn_RoundDateToStartOfNearestMonth];
+	--IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRSysFnParentalLeaveEntitlement]') AND xtype = 'P')
+	--	DROP PROCEDURE dbo.[spASRSysFnParentalLeaveEntitlement]
 
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRFn_WeekdaysFromStartAndEndDates]') AND xtype = 'P')
-		DROP PROCEDURE [dbo].[sp_ASRFn_WeekdaysFromStartAndEndDates];
+	--IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRSysFnParentalLeaveTaken]') AND xtype = 'P')
+	--	DROP PROCEDURE dbo.[spASRSysFnParentalLeaveTaken]
 
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRSysFnMaternityExpectedReturn]') AND xtype = 'P')
-		DROP PROCEDURE dbo.[spASRSysFnMaternityExpectedReturn]
+	--IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRMaternityExpectedReturn]') AND xtype = 'P')
+	--	DROP PROCEDURE dbo.[spASRMaternityExpectedReturn]
 
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRSysFnParentalLeaveEntitlement]') AND xtype = 'P')
-		DROP PROCEDURE dbo.[spASRSysFnParentalLeaveEntitlement]
-
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRSysFnParentalLeaveTaken]') AND xtype = 'P')
-		DROP PROCEDURE dbo.[spASRSysFnParentalLeaveTaken]
-
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRMaternityExpectedReturn]') AND xtype = 'P')
-		DROP PROCEDURE dbo.[spASRMaternityExpectedReturn]
-
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRParentalLeaveEntitlement]') AND xtype = 'P')
-		DROP PROCEDURE dbo.[spASRParentalLeaveEntitlement]
+	--IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRParentalLeaveEntitlement]') AND xtype = 'P')
+	--	DROP PROCEDURE dbo.[spASRParentalLeaveEntitlement]
 
 	IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRAuditTable]') AND type in (N'P', N'PC'))
 		DROP PROCEDURE [dbo].[sp_ASRAuditTable]
