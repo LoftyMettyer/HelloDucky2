@@ -108,7 +108,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "10:39"
+            TextSave        =   "12:22"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -1191,16 +1191,14 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     
     ' <About>
     Case "HelpContentsAndIndex"
-      plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
-      If plngHelp = 0 Then
-        COAMsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
+  
+      If Not ShowAirHelp(0) Then
+        plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
+        If plngHelp = 0 Then
+          COAMsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to find and view the file " & App.HelpFile & ".", vbExclamation + vbOKOnly, App.EXEName
+        End If
       End If
-    
-      ' DOESNT SEEM TO WORK !
-      'CommonDialog1.HelpFile = "HRProHelp.chm"
-      'CommonDialog1.HelpCommand = cdlHelpContents
-      'CommonDialog1.ShowHelp
-      
+  
     ' <About>
     Case "HelpAbout"
       Screen.MousePointer = vbHourglass
