@@ -166,7 +166,7 @@ Begin VB.Form frmDocumentMap
             Width           =   1410
          End
          Begin VB.Label lblParent1Keyfield 
-            Caption         =   "Parent 1 Key Field :"
+            Caption         =   "Parent Key Field :"
             Height          =   375
             Left            =   5310
             TabIndex        =   32
@@ -174,7 +174,7 @@ Begin VB.Form frmDocumentMap
             Width           =   1815
          End
          Begin VB.Label lblParent1Table 
-            Caption         =   "Parent 1 Table :"
+            Caption         =   "Parent Table :"
             Height          =   195
             Left            =   225
             TabIndex        =   31
@@ -553,11 +553,11 @@ Private Function ValidateDefinition() As Boolean
   ' Keyfield of parent 1
   If Me.cboParent1Table.Enabled Then
     If GetComboItem(cboParent1Table) = 0 Then
-      strErrorMessage = strErrorMessage & "Parent 1 table must be specified." & vbNewLine
+      strErrorMessage = strErrorMessage & "Parent table must be specified." & vbNewLine
     End If
      
     If GetComboItem(cboParent1Keyfield) = 0 Then
-      strErrorMessage = strErrorMessage & "Parent 1 key field column must be specified." & vbNewLine
+      strErrorMessage = strErrorMessage & "Parent key field column must be specified." & vbNewLine
     End If
   End If
    
