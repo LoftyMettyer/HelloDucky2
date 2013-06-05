@@ -73,7 +73,7 @@ Partial Class MainForm
     Me.txtPassword.Name = "txtPassword"
     Me.txtPassword.Size = New System.Drawing.Size(100, 20)
     Me.txtPassword.TabIndex = 27
-    Me.txtPassword.Text = "asr"
+    Me.txtPassword.Text = "Password1"
     '
     'Label3
     '
@@ -111,7 +111,7 @@ Partial Class MainForm
     Me.txtServer.Name = "txtServer"
     Me.txtServer.Size = New System.Drawing.Size(100, 20)
     Me.txtServer.TabIndex = 23
-    Me.txtServer.Text = "harpdev02"
+    Me.txtServer.Text = "ABS16091"
     '
     'txtDatabase
     '
@@ -119,7 +119,7 @@ Partial Class MainForm
     Me.txtDatabase.Name = "txtDatabase"
     Me.txtDatabase.Size = New System.Drawing.Size(100, 20)
     Me.txtDatabase.TabIndex = 22
-    Me.txtDatabase.Text = "blank2"
+    Me.txtDatabase.Text = "PHSO"
     '
     'butScriptDB
     '

@@ -12,7 +12,7 @@ Public Class MainForm
 
         Dim objPhoenix As New SystemFramework.SysMgr
 
-        Dim sPath As String = "C:\dev\HR Pro\HR Pro Engine\Test Harness\"
+		Dim sPath As String = "C:\dev\abs\HR Pro\HR Pro Engine\Test Harness\"
 
         Dim objADO As New ADODB.Connection
         Dim objDAOEngine As New DAO.DBEngine
@@ -36,7 +36,6 @@ Public Class MainForm
             .ConnectionTimeout = 5
             .CursorLocation = ADODB.CursorLocationEnum.adUseServer
             .Mode = ADODB.ConnectModeEnum.adModeReadWrite
-            '.Properties("Packet Size") = 32767
             .Open()
         End With
 
@@ -60,15 +59,14 @@ Public Class MainForm
     objPhoenix.Options.DevelopmentMode = chkDebugMode.Checked
     objPhoenix.Options.RefreshObjects = True
 
-
     sw.Reset()
     sw.Start()
-      bOK = objPhoenix.Script.CreateObjects()
-      Console.WriteLine(String.Format("Create Objects: {0} milliseconds", sw.ElapsedMilliseconds))
+    bOK = objPhoenix.Script.CreateObjects()
+    Console.WriteLine(String.Format("Create Objects: {0} milliseconds", sw.ElapsedMilliseconds))
 
-      sw.Restart()
-      bOK = objPhoenix.Script.CreateTriggers()
-      Console.WriteLine(String.Format("Create Triggers: {0} milliseconds", sw.ElapsedMilliseconds))
+    sw.Restart()
+    bOK = objPhoenix.Script.CreateTriggers()
+    Console.WriteLine(String.Format("Create Triggers: {0} milliseconds", sw.ElapsedMilliseconds))
 
     sw.Restart()
     bOK = objPhoenix.Script.CreateFunctions
@@ -77,9 +75,6 @@ Public Class MainForm
     sw.Restart()
     bOK = objPhoenix.Script.ScriptIndexes
     Console.WriteLine(String.Format("Create Indexes: {0} milliseconds", sw.ElapsedMilliseconds))
-
-
-
 
     'bOK = objPhoenix.Script.CreateTableViews
     'bOK = objPhoenix.Script.CreateViews
@@ -104,9 +99,9 @@ Public Class MainForm
 
         '    End If
 
-        objPhoenix.ReturnErrorLog.OutputToFile("c:\dev\errors.txt")
+    '    objPhoenix.ReturnErrorLog.OutputToFile("c:\dev\errors.txt")
 
-        objPhoenix.ReturnTuningLog.OutputToFile("c:\dev\HR Pro\HR Pro Engine\Tuning.log")
+    '   objPhoenix.ReturnTuningLog.OutputToFile("c:\dev\HR Pro\HR Pro Engine\Tuning.log")
 
 
         'Dim objError As Phoenix.ErrorHandler.Error
