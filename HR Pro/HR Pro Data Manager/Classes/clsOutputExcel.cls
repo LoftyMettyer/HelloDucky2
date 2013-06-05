@@ -852,7 +852,10 @@ End Function
 
 Private Sub GetWorkBook(strWorkbook As String, strWorksheet As String)
 
+  Dim strFormat As String
+  Dim strTempFile As String
   Dim lngCount As Long
+  Dim lngOriginalFormat As Long
 
   If mblnApplyStyles Then
     If mstrXLTemplate <> "" And Dir(mstrXLTemplate) <> "" Then
@@ -871,7 +874,18 @@ Private Sub GetWorkBook(strWorkbook As String, strWorksheet As String)
   Select Case strWorkbook
   Case "New"
     'Create new workbook and ensure only 1 worksheet
-    Set mxlWorkBook = mxlApp.Workbooks.Add
+    
+    If GetOfficeExcelVersion >= 12 Then
+      'Make sure the new workbook is in the same format as the template
+      'otherwise we won't be able to copy sheets into the new workbook.
+      lngOriginalFormat = mxlApp.DefaultSaveFormat
+      mxlApp.DefaultSaveFormat = GetOfficeSaveAsFormat(mstrXLTemplate, GetOfficeExcelVersion)
+      Set mxlWorkBook = mxlApp.Workbooks.Add
+      mxlApp.DefaultSaveFormat = lngOriginalFormat
+    Else
+      Set mxlWorkBook = mxlApp.Workbooks.Add
+    End If
+    
     For lngCount = 1 To mxlWorkBook.Sheets.Count - 1
       mxlWorkBook.Sheets(1).Delete
     Next
@@ -890,7 +904,7 @@ Private Sub GetWorkBook(strWorkbook As String, strWorksheet As String)
 Exit Sub
 
 LocalErr:
-  mstrErrorMessage = Err.Description
+  mstrErrorMessage = "Error getting new workbook (" & Err.Description & ")"
 
 End Sub
 
@@ -898,6 +912,8 @@ End Sub
 Private Sub GetWorksheet(strSheetName As String)
   
   Dim blnFound As Boolean
+  
+  On Local Error GoTo LocalErr
   
   mblnAppending = False
   mlngAppendStartRow = 0
@@ -934,6 +950,11 @@ Private Sub GetWorksheet(strSheetName As String)
     mxlDeleteSheet.Delete
     Set mxlDeleteSheet = Nothing
   End If
+
+Exit Sub
+
+LocalErr:
+  mstrErrorMessage = "Error getting new worksheet (" & Err.Description & ")"
 
 End Sub
 
@@ -989,7 +1010,11 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
 
   On Local Error GoTo LocalErr
 
-
+  If mstrErrorMessage <> vbNullString Then
+    Exit Sub
+  End If
+  
+  
   'MH20060628 Fault 10840
   'If UBound(strArray, 1) > 255 Then
   If colColumns.Count + mlngDataStartCol > 255 Then
@@ -1250,6 +1275,7 @@ Private Sub CreatePivotTable(lngMaxRows As Long, lngMaxCols As Long, strHor As S
   ApplyCellOptions xlPivot.ColumnRange.Columns.Count, colStyles, True
   
   Set xlPivot = Nothing
+  mxlApp.DisplayAlerts = False
 
 Exit Sub
 
