@@ -286,14 +286,14 @@ Startup="Sub Main"
 HelpFile="HR Pro Data Manager.chm"
 Title="HR Pro Data Manager"
 ExeName32="HR Pro Data Manager.exe"
-Command32="/details=true /printer=true"
+Command32="/details=true "
 Name="HRProDataMgr"
 HelpContextID="0"
 Description="HR Pro Data Manager"
 CompatibleMode="0"
 MajorVer=4
 MinorVer=3
-RevisionVer=21
+RevisionVer=24
 AutoIncrementVer=1
 ServerSupportFiles=0
 VersionCompanyName="Advanced Business Software and Solutions Limited"
