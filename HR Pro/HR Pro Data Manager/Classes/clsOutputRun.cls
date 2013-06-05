@@ -1262,21 +1262,27 @@ Public Property Get UpdateProgressPerRow() As Boolean
 End Property
 
 
-Public Function GetOfficeFormat(lngFormat As Long, intOfficeVersion As Integer) As String
+Public Function GetOfficeFormat(strFileName As String, intOfficeVersion As Integer) As String
   
   Dim rsTemp As ADODB.Recordset
   Dim sSQL As String
+  Dim strExtension As String
   
   On Local Error GoTo LocalErr
   
   GetOfficeFormat = ""
+
+  If InStr(strFileName, ".") Then
+    strExtension = Mid(strFileName, InStrRev(strFileName, ".") + 1) 'Split(strFileName, ".")(1)
   
-  sSQL = "SELECT " & IIf(intOfficeVersion < 12, "Office2003", "Office2007") & _
-         " FROM ASRSysFileFormats WHERE ID = " & CStr(lngFormat)
-  Set rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
-  GetOfficeFormat = IIf(IsNull(rsTemp(0).Value), "", rsTemp(0).Value)
-  rsTemp.Close
-  Set rsTemp = Nothing
+    sSQL = "SELECT " & IIf(intOfficeVersion < 12, "Office2003", "Office2007") & _
+           " FROM ASRSysFileFormats WHERE Extension = '" & strExtension & "'"
+    Set rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
+    GetOfficeFormat = IIf(IsNull(rsTemp(0).Value), "", rsTemp(0).Value)
+    rsTemp.Close
+    Set rsTemp = Nothing
+  End If
+
 
 Exit Function
 

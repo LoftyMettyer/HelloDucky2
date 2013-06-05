@@ -611,6 +611,13 @@ Public Function GetFile(objParent As clsOutputRun, colStyles As Collection) As B
 
     Case 3  'Append to existing file
       'Start at the bottom of the document
+
+      If mobjParent.GetOfficeFormat(mstrFileName, giOfficeVersion_Word) = "" Then
+        mstrErrorMessage = "This definition is set to append to a file which is not compatible with your version of Microsoft Office."
+        GetFile = False
+        Exit Sub
+      End If
+
       Set mwrdDoc = mwrdApp.Documents.Open(mstrFileName)
       mwrdApp.Selection.EndKey Unit:=wdStory
       mwrdApp.Selection.InsertBreak Type:=wdPageBreak
@@ -1081,9 +1088,9 @@ Public Sub Complete()
     ''mwrdDoc.SaveAs mstrFileName, giOfficeSaveVersion_Word
     'mwrdDoc.SaveAs mstrFileName, mlngSaveFileFormat
     
-    strFormat = mobjParent.GetOfficeFormat(mlngSaveFileFormat, giOfficeVersion_Word)
+    strFormat = mobjParent.GetOfficeFormat(mstrFileName, giOfficeVersion_Word)
     If strFormat = "" Then
-      mstrErrorMessage = "This definition is set to save to a file format which is not compatible with your version of Microsoft Office."
+      mstrErrorMessage = "This definition is set to save in a file format which is not compatible with your version of Microsoft Office."
       GoTo TidyAndExit
     End If
     mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(strFormat)
@@ -1094,6 +1101,19 @@ Public Sub Complete()
   'EMAIL
   If mblnEmail Then
     mstrErrorMessage = "Error sending email"
+    
+    'If Not mblnSave Then
+      mstrFileName = mobjParent.GetTempFileName(mstrFileName)
+        
+      strFormat = mobjParent.GetOfficeFormat(mstrFileName, giOfficeVersion_Word)
+      If strFormat = "" Then
+        mstrErrorMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
+        GoTo TidyAndExit
+      End If
+      
+      mwrdDoc.SaveAs mstrFileName, Val(strFormat)
+    'End If
+    
     mobjParent.SendEmail mstrFileName
   End If
   'If Not mblnSave And mstrFileName <> vbNullString Then

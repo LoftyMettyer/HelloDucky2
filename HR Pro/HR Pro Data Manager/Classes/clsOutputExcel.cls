@@ -856,6 +856,12 @@ Private Sub GetWorkBook(strWorkbook As String, strWorksheet As String)
 
   If mblnApplyStyles Then
     If mstrXLTemplate <> "" And Dir(mstrXLTemplate) <> "" Then
+    
+      If mobjParent.GetOfficeFormat(mstrXLTemplate, giOfficeVersion_Excel) = "" Then
+        mstrErrorMessage = "Your output options are set to use a template format which is not compatible with your version of Microsoft Office."
+        Exit Sub
+      End If
+
       Set mxlTemplateBook = mxlApp.Workbooks.Open(mstrXLTemplate, ReadOnly:=True)
       Set mxlTemplateSheet = mxlTemplateBook.ActiveSheet
     End If
@@ -872,6 +878,11 @@ Private Sub GetWorkBook(strWorkbook As String, strWorksheet As String)
     Set mxlDeleteSheet = mxlWorkBook.Sheets(1)
 
   Case "Open"
+    If mobjParent.GetOfficeFormat(mstrFileName, giOfficeVersion_Excel) = "" Then
+      mstrErrorMessage = "This definition is set to append to a file which is not compatible with your version of Microsoft Office."
+      Exit Sub
+    End If
+    
     Set mxlWorkBook = mxlApp.Workbooks.Open(mstrFileName)
 
   End Select
@@ -1568,26 +1579,13 @@ Public Sub Complete()
   If mblnSave Then
     mstrErrorMessage = "Error saving file <" & mstrFileName & ">"
     
-    strFormat = mobjParent.GetOfficeFormat(mlngSaveFileFormat, giOfficeVersion_Excel)
+    strFormat = mobjParent.GetOfficeFormat(mstrFileName, giOfficeVersion_Excel)
     If strFormat = "" Then
-      mstrErrorMessage = "This definition is set to save to a file format which is not compatible with your version of Microsoft Office."
+      mstrErrorMessage = "This definition is set to save in a file format which is not compatible with your version of Microsoft Office."
       GoTo TidyAndExit
     End If
     
-    'blnOffice2007 = (Val(giOfficeVersion_Excel) >= 12)
-    'If blnOffice2007 Then
-      'If mxlWorkBook.FullName <> mstrFileName Then
-        mxlWorkBook.SaveAs mstrFileName, Val(strFormat)
-      'Else
-      '  mxlWorkBook.SaveAs mxlWorkBook.FullName, FileFormat:=Val(strFormat)
-      'End If
-    'Else
-    '  If mxlWorkBook.FullName <> mstrFileName Then
-    '    mxlWorkBook.SaveAs mstrFileName
-    '  Else
-    '    mxlWorkBook.Save
-    '  End If
-    'End If
+    mxlWorkBook.SaveAs mstrFileName, Val(strFormat)
 
   End If
 
@@ -1597,11 +1595,14 @@ Public Sub Complete()
     mstrErrorMessage = "Error sending email"
     If Not mblnSave Then
       mstrFileName = mobjParent.GetTempFileName(mstrFileName)
-      'If blnOffice2007 Then
-      '  mxlWorkBook.SaveAs mstrFileName, FileFormat:=mlngEmailFileFormat
-      'Else
-        mxlWorkBook.SaveAs mstrFileName
-      'End If
+      
+      strFormat = mobjParent.GetOfficeFormat(mstrFileName, giOfficeVersion_Excel)
+      If strFormat = "" Then
+        mstrErrorMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
+        GoTo TidyAndExit
+      End If
+      
+      mxlWorkBook.SaveAs mstrFileName, Val(strFormat)
     End If
     mobjParent.SendEmail mstrFileName
   End If
