@@ -88,17 +88,26 @@
           bReverseOrder = True
       End Select
 
+      '   Debug.Assert(Me.Name <> "udftab_Working_Patterns_Effective_Date(189)_Current_Working_Pattern(1236)_1_First")
+
+
       sOptions = "--WITH SCHEMABINDING"
 
       ' Build the where clause
       If Not RowDetails.Filter Is Nothing Then
         RowDetails.Filter.AssociatedColumn = Me.Parent.Objects(Enums.Type.Column)(0)
+
+        '  RowDetails.Filter.AssociatedColumn = IncludedColumns(3)
+
+
         RowDetails.Filter.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
         RowDetails.Filter.GenerateCode()
-        '        aryWheres.Add(String.Format("({0} = 1)", RowDetails.Filter.UDF.SelectCode))
 
-        aryWheres.Add(String.Format("({0} = 1)", RowDetails.Filter.UDF.CallingCode))
-
+        'If RowDetails.Filter.IsComplex Then
+        '  aryWheres.Add(String.Format("({0} = 1)", RowDetails.Filter.UDF.CallingCode))
+        'Else
+        aryWheres.Add(String.Format("({0} = 1)", RowDetails.Filter.UDF.SelectCode))
+        '    End If
 
         aryJoins.Add(RowDetails.Filter.UDF.JoinCode)
       End If
