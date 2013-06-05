@@ -3346,7 +3346,7 @@ Private Function ApplyChanges_NonChildTablePermissions() As Boolean
               Else
                 sSQL = "REVOKE SELECT ON " & sTableName & " TO " & sGroupName
                 gADOCon.Execute sSQL, , adExecuteNoRecords
-                gADOCon.Execute "GRANT SELECT(id) ON " & sTableName & " TO " & sGroupName
+                gADOCon.Execute "GRANT SELECT(ID, TimeStamp) ON " & sTableName & " TO " & sGroupName
               End If
 
               If objTable.SelectPrivilegeChanged Then
@@ -3365,7 +3365,7 @@ Private Function ApplyChanges_NonChildTablePermissions() As Boolean
                   
                   'MH20060620 Fault 11186
                   'sSQL = "GRANT UPDATE(" & sUpdateGrant.ToString & ") ON " & sTableName & " TO " & sGroupName
-                  sSQL = "GRANT UPDATE(ID,Timestamp," & sUpdateGrant.ToString & ") ON " & sTableName & " TO " & sGroupName
+                  sSQL = "GRANT UPDATE(ID, Timestamp," & sUpdateGrant.ToString & ") ON " & sTableName & " TO " & sGroupName
                   gADOCon.Execute sSQL, , adExecuteNoRecords
                 End If
               ElseIf objTable.UpdatePrivilege = giPRIVILEGES_NONEGRANTED Then
