@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Begin VB.Form frmSelection 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Selection"
@@ -762,7 +762,7 @@ Private Function lstItems_ExpressionsPopulate() As Boolean
   Dim fOK As Boolean
   Dim iNextIndex As Integer
   Dim sSQL As String
-  Dim rsRecords As DAO.Recordset
+  Dim rsRecords As dao.Recordset
   Dim objListItem As ListItem
 
   fOK = True
@@ -834,7 +834,7 @@ Private Function lstitems_OrdersPopulate() As Boolean
   
   Dim fOK As Boolean
   Dim sSQL As String
-  Dim rsRecords As DAO.Recordset
+  Dim rsRecords As dao.Recordset
   Dim objListItem As ListItem
     
   fOK = True
@@ -884,7 +884,7 @@ Private Function items_EmailPopulate() As Boolean
   
   Dim fOK As Boolean
   Dim sSQL As String
-  Dim rsRecords As DAO.Recordset
+  Dim rsRecords As dao.Recordset
   Dim objListItem As ListItem
 
   fOK = True
@@ -955,7 +955,7 @@ Private Function lstitems_OutlookFolderPopulate() As Boolean
   
   Dim fOK As Boolean
   Dim sSQL As String
-  Dim rsRecords As DAO.Recordset
+  Dim rsRecords As dao.Recordset
   Dim objListItem As ListItem
 
   fOK = True

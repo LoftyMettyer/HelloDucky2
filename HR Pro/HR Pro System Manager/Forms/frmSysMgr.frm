@@ -5038,7 +5038,7 @@ End Sub
 Private Function DoesTableExistInDB(ByRef lngObjectID As Long)
 
   Dim bFound As Boolean
-  Dim rstTables As DAO.Recordset
+  Dim rstTables As dao.Recordset
   Dim sSQL As String
   
   bFound = False
