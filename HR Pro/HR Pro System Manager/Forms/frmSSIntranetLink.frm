@@ -30,14 +30,124 @@ Begin VB.Form frmSSIntranetLink
    ScaleWidth      =   9360
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
-   Begin VB.ListBox lstDummySort 
-      Height          =   255
-      Left            =   195
-      Sorted          =   -1  'True
-      TabIndex        =   103
-      Top             =   7875
-      Visible         =   0   'False
-      Width           =   2085
+   Begin VB.Frame fraLinkSeparator 
+      Caption         =   "Separator :"
+      Height          =   2610
+      Left            =   2880
+      TabIndex        =   55
+      Top             =   5250
+      Width           =   6300
+      Begin VB.CheckBox chkSeparatorUseFormatting 
+         Caption         =   "Use formatting (overrides config.txt file)"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   117
+         Top             =   1260
+         Width           =   5415
+      End
+      Begin VB.TextBox txtSeparatorColour 
+         BackColor       =   &H00FFFFFF&
+         Enabled         =   0   'False
+         Height          =   315
+         Left            =   2580
+         TabIndex        =   116
+         Top             =   1545
+         Width           =   1170
+      End
+      Begin VB.CommandButton cmdSeparatorColPick 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   3765
+         TabIndex        =   115
+         Top             =   1530
+         UseMaskColor    =   -1  'True
+         Width           =   315
+      End
+      Begin VB.CommandButton cmdIcon 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   4830
+         TabIndex        =   58
+         Top             =   315
+         Width           =   315
+      End
+      Begin VB.TextBox txtIcon 
+         Enabled         =   0   'False
+         Height          =   330
+         Left            =   1050
+         TabIndex        =   57
+         Top             =   300
+         Width           =   3765
+      End
+      Begin VB.CommandButton cmdIconClear 
+         Caption         =   "O"
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   20.25
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Left            =   5160
+         MaskColor       =   &H000000FF&
+         TabIndex        =   59
+         ToolTipText     =   "Clear Path"
+         Top             =   315
+         UseMaskColor    =   -1  'True
+         Width           =   330
+      End
+      Begin VB.CheckBox chkNewColumn 
+         Caption         =   "Column &break"
+         Height          =   255
+         Left            =   1050
+         TabIndex        =   60
+         Top             =   690
+         Width           =   2040
+      End
+      Begin VB.Label lblSeparatorColour 
+         AutoSize        =   -1  'True
+         Caption         =   "Separator border colour :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   118
+         Top             =   1575
+         Width           =   2205
+      End
+      Begin VB.Line Line4 
+         BorderColor     =   &H80000015&
+         X1              =   210
+         X2              =   6075
+         Y1              =   1080
+         Y2              =   1080
+      End
+      Begin VB.Label lblNoOptions 
+         AutoSize        =   -1  'True
+         Caption         =   "There are no configurable options for this link type"
+         Height          =   195
+         Left            =   285
+         TabIndex        =   70
+         Top             =   2190
+         Visible         =   0   'False
+         Width           =   4350
+      End
+      Begin VB.Label lblIcon 
+         Caption         =   "Icon :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   56
+         Top             =   345
+         Width           =   615
+      End
+      Begin VB.Image imgIcon 
+         Height          =   495
+         Left            =   5565
+         Stretch         =   -1  'True
+         Top             =   330
+         Width           =   510
+      End
    End
    Begin VB.Frame fraDBValue 
       Caption         =   "Database Value :"
@@ -51,7 +161,7 @@ Begin VB.Form frmSSIntranetLink
          Index           =   2
          Left            =   210
          Style           =   2  'Dropdown List
-         TabIndex        =   113
+         TabIndex        =   112
          Top             =   4320
          Width           =   2730
       End
@@ -59,7 +169,7 @@ Begin VB.Form frmSSIntranetLink
          Height          =   315
          Index           =   2
          Left            =   2970
-         TabIndex        =   112
+         TabIndex        =   111
          Top             =   4320
          Width           =   645
       End
@@ -68,7 +178,7 @@ Begin VB.Form frmSSIntranetLink
          Index           =   2
          Left            =   3660
          Style           =   2  'Dropdown List
-         TabIndex        =   111
+         TabIndex        =   110
          Top             =   4320
          Width           =   1035
       End
@@ -78,7 +188,7 @@ Begin VB.Form frmSSIntranetLink
          Height          =   315
          Index           =   2
          Left            =   4740
-         TabIndex        =   110
+         TabIndex        =   109
          Text            =   "Formatted colour"
          Top             =   4320
          Width           =   990
@@ -88,7 +198,7 @@ Begin VB.Form frmSSIntranetLink
          Height          =   315
          Index           =   2
          Left            =   5745
-         TabIndex        =   109
+         TabIndex        =   108
          Top             =   4320
          UseMaskColor    =   -1  'True
          Width           =   315
@@ -98,7 +208,7 @@ Begin VB.Form frmSSIntranetLink
          Index           =   1
          Left            =   210
          Style           =   2  'Dropdown List
-         TabIndex        =   108
+         TabIndex        =   107
          Top             =   3960
          Width           =   2730
       End
@@ -106,7 +216,7 @@ Begin VB.Form frmSSIntranetLink
          Height          =   315
          Index           =   1
          Left            =   2970
-         TabIndex        =   107
+         TabIndex        =   106
          Top             =   3960
          Width           =   645
       End
@@ -115,7 +225,7 @@ Begin VB.Form frmSSIntranetLink
          Index           =   1
          Left            =   3660
          Style           =   2  'Dropdown List
-         TabIndex        =   106
+         TabIndex        =   105
          Top             =   3960
          Width           =   1035
       End
@@ -125,7 +235,7 @@ Begin VB.Form frmSSIntranetLink
          Height          =   315
          Index           =   1
          Left            =   4740
-         TabIndex        =   105
+         TabIndex        =   104
          Text            =   "Formatted colour"
          Top             =   3960
          Width           =   990
@@ -135,18 +245,10 @@ Begin VB.Form frmSSIntranetLink
          Height          =   315
          Index           =   1
          Left            =   5745
-         TabIndex        =   104
+         TabIndex        =   103
          Top             =   3960
          UseMaskColor    =   -1  'True
          Width           =   315
-      End
-      Begin VB.CommandButton cmdDBValSample 
-         Caption         =   "Preview ->"
-         Height          =   315
-         Left            =   1665
-         TabIndex        =   100
-         Top             =   5010
-         Width           =   1215
       End
       Begin VB.TextBox txtDBValueSample 
          Height          =   315
@@ -225,7 +327,7 @@ Begin VB.Form frmSSIntranetLink
          Width           =   2730
       End
       Begin VB.CheckBox chkConditionalFormatting 
-         Caption         =   "Use Conditional Formatting"
+         Caption         =   "Use conditional formatting"
          Height          =   195
          Left            =   210
          TabIndex        =   92
@@ -247,12 +349,12 @@ Begin VB.Form frmSSIntranetLink
          Width           =   1965
       End
       Begin VB.CheckBox chkDBVaUseThousandSeparator 
-         Caption         =   "Use 1000 Separator (,)"
+         Caption         =   "Use 1000 separator"
          Height          =   240
-         Left            =   3660
+         Left            =   3975
          TabIndex        =   87
-         Top             =   2430
-         Width           =   2280
+         Top             =   2415
+         Width           =   2040
       End
       Begin VB.CheckBox chkFormatting 
          Caption         =   "Use formatting"
@@ -264,21 +366,21 @@ Begin VB.Form frmSSIntranetLink
       End
       Begin VB.ComboBox cboColumns 
          Height          =   315
-         Left            =   1395
+         Left            =   1575
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   75
          Top             =   705
-         Width           =   3930
+         Width           =   4515
       End
       Begin VB.ComboBox cboParents 
          Height          =   315
-         Left            =   1395
+         Left            =   1575
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   73
          Top             =   315
-         Width           =   3930
+         Width           =   4515
       End
       Begin VB.OptionButton optAggregateType 
          Caption         =   "Count"
@@ -302,17 +404,17 @@ Begin VB.Form frmSSIntranetLink
       Begin VB.CommandButton cmdFilter 
          Caption         =   "..."
          Height          =   315
-         Left            =   4650
+         Left            =   5430
          TabIndex        =   78
          Top             =   1080
          Width           =   315
       End
       Begin VB.TextBox txtFilter 
          Height          =   330
-         Left            =   1395
+         Left            =   1575
          TabIndex        =   77
          Top             =   1080
-         Width           =   3225
+         Width           =   3870
       End
       Begin VB.CommandButton cmdFilterClear 
          Caption         =   "O"
@@ -326,7 +428,7 @@ Begin VB.Form frmSSIntranetLink
             Strikethrough   =   0   'False
          EndProperty
          Height          =   315
-         Left            =   4965
+         Left            =   5745
          MaskColor       =   &H000000FF&
          TabIndex        =   79
          ToolTipText     =   "Clear Path"
@@ -334,37 +436,46 @@ Begin VB.Form frmSSIntranetLink
          UseMaskColor    =   -1  'True
          Width           =   330
       End
+      Begin VB.Label lblDBValueSample 
+         Caption         =   "12345.21"
+         Height          =   255
+         Left            =   2655
+         TabIndex        =   100
+         Top             =   5100
+         Width           =   3255
+      End
+      Begin VB.Label lblDBValuePreview 
+         AutoSize        =   -1  'True
+         Caption         =   "Preview :"
+         Height          =   195
+         Left            =   1650
+         TabIndex        =   114
+         Top             =   5085
+         Width           =   810
+      End
       Begin VB.Label lblConditionWarning 
          AutoSize        =   -1  'True
          Caption         =   "(in priority order)"
          Height          =   195
          Left            =   4530
-         TabIndex        =   114
+         TabIndex        =   113
          Top             =   3315
          Width           =   1500
       End
       Begin VB.Label lblDBVSampleHeader 
          Caption         =   "Sample :"
          Height          =   195
-         Left            =   195
-         TabIndex        =   102
-         Top             =   4710
-         Width           =   870
-      End
-      Begin VB.Label lblDBValueSample 
-         Caption         =   "lblDBValueSample"
-         Height          =   315
-         Left            =   3060
+         Left            =   210
          TabIndex        =   101
-         Top             =   5070
-         Width           =   2910
+         Top             =   4725
+         Width           =   870
       End
       Begin VB.Line Line3 
          BorderColor     =   &H80000015&
-         X1              =   1110
+         X1              =   1080
          X2              =   6075
-         Y1              =   4815
-         Y2              =   4815
+         Y1              =   4830
+         Y2              =   4830
       End
       Begin VB.Line Line2 
          BorderColor     =   &H80000015&
@@ -443,82 +554,14 @@ Begin VB.Form frmSSIntranetLink
          Width           =   1785
       End
    End
-   Begin VB.Frame fraLinkSeparator 
-      Caption         =   "Separator :"
-      Height          =   1875
-      Left            =   2880
-      TabIndex        =   55
-      Top             =   7440
-      Width           =   6300
-      Begin VB.CommandButton cmdIcon 
-         Caption         =   "..."
-         Height          =   315
-         Left            =   4830
-         TabIndex        =   58
-         Top             =   315
-         Width           =   315
-      End
-      Begin VB.TextBox txtIcon 
-         Enabled         =   0   'False
-         Height          =   330
-         Left            =   1050
-         TabIndex        =   57
-         Top             =   300
-         Width           =   3765
-      End
-      Begin VB.CommandButton cmdIconClear 
-         Caption         =   "O"
-         BeginProperty Font 
-            Name            =   "Wingdings 2"
-            Size            =   20.25
-            Charset         =   2
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Left            =   5160
-         MaskColor       =   &H000000FF&
-         TabIndex        =   59
-         ToolTipText     =   "Clear Path"
-         Top             =   315
-         UseMaskColor    =   -1  'True
-         Width           =   330
-      End
-      Begin VB.CheckBox chkNewColumn 
-         Caption         =   "Column &break"
-         Height          =   255
-         Left            =   1050
-         TabIndex        =   60
-         Top             =   690
-         Width           =   2040
-      End
-      Begin VB.Label lblNoOptions 
-         AutoSize        =   -1  'True
-         Caption         =   "There are no configurable options for this link type"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   70
-         Top             =   1110
-         Visible         =   0   'False
-         Width           =   4350
-      End
-      Begin VB.Label lblIcon 
-         Caption         =   "Icon :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   56
-         Top             =   345
-         Width           =   615
-      End
-      Begin VB.Image imgIcon 
-         Height          =   495
-         Left            =   5565
-         Stretch         =   -1  'True
-         Top             =   330
-         Width           =   510
-      End
+   Begin VB.ListBox lstDummySort 
+      Height          =   255
+      Left            =   195
+      Sorted          =   -1  'True
+      TabIndex        =   102
+      Top             =   7875
+      Visible         =   0   'False
+      Width           =   2085
    End
    Begin VB.Frame fraHRProUtilityLink 
       Caption         =   "HR Pro Report / Utility :"
@@ -1670,6 +1713,7 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
                       psConditionalFormatting_Operator_1 As String, psConditionalFormatting_Value_1 As String, psConditionalFormatting_Style_1 As String, psConditionalFormatting_Colour_1 As String, _
                       psConditionalFormatting_Operator_2 As String, psConditionalFormatting_Value_2 As String, psConditionalFormatting_Style_2 As String, psConditionalFormatting_Colour_2 As String, _
                       psConditionalFormatting_Operator_3 As String, psConditionalFormatting_Value_3 As String, psConditionalFormatting_Style_3 As String, psConditionalFormatting_Colour_3 As String, _
+                      psSeparatorColour As String, _
                       ByRef pcolSSITableViews As clsSSITableViews)
    
   Set mcolSSITableViews = pcolSSITableViews
@@ -1826,6 +1870,8 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   ConditionalFormatting_Style_3 = psConditionalFormatting_Style_3
   ConditionalFormatting_Colour_3 = psConditionalFormatting_Colour_3
       
+  SeparatorBorderColour = psSeparatorColour
+        
   ' Hide Workflow items if not licensed
   If Not IsModuleEnabled(modWorkflow) Then optLink(SSINTLINKPWFSTEPS).Visible = False
   
@@ -1836,6 +1882,7 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   mfLoading = False
   
   If pfCopy Then mfChanged = True
+  
   RefreshControls
   
 End Sub
@@ -2007,6 +2054,10 @@ Private Sub RefreshControls()
       cmdDBValueColPick(jnCount).Enabled = chkConditionalFormatting
     Next
     
+    lblSeparatorColour.Enabled = chkSeparatorUseFormatting
+    txtSeparatorColour.Enabled = chkSeparatorUseFormatting
+    cmdSeparatorColPick.Enabled = chkSeparatorUseFormatting
+    
   Else
     ' NPG20100427 Fault HRPRO-888
     If Not txtPrompt.Enabled Then txtPrompt.Text = ""
@@ -2029,6 +2080,11 @@ Private Sub RefreshControls()
     imgIcon.Visible = False
     lblNoOptions.Visible = True
     lblNoOptions.Top = 345
+    lblSeparatorColour.Visible = False
+    txtSeparatorColour.Visible = False
+    cmdSeparatorColPick.Visible = False
+    chkSeparatorUseFormatting.Visible = False
+    Line4.Visible = False
     
   ElseIf (optLink(SSINTLINKSEPARATOR).value And miLinkType <> SSINTLINK_HYPERTEXT) Then
     ' Enable the icon and new column options for dashboard link separators...
@@ -2042,6 +2098,11 @@ Private Sub RefreshControls()
     imgIcon.Visible = True
     lblNoOptions.Visible = False
     lblNoOptions.Top = 345
+    lblSeparatorColour.Visible = True
+    txtSeparatorColour.Visible = True
+    cmdSeparatorColPick.Visible = True
+    chkSeparatorUseFormatting.Visible = True
+    Line4.Visible = True
   Else
     lblNoOptions.Visible = False
     lblNoOptions.Top = 345
@@ -2079,6 +2140,8 @@ Private Sub RefreshControls()
   
   End If
   
+  If optLink(SSINTLINKDB_VALUE) Then RefreshDBValueSample
+  
   mblnRefreshing = True
   GetStartModes
   mblnRefreshing = False
@@ -2086,10 +2149,94 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
 
 End Sub
+
+Private Function RefreshDBValueSample()
+  ' Display the sample value with all the formatting applied
+  Dim strFormatString As String
+  
+  If mfLoading Then Exit Function
+  
+  strFormatString = IIf(chkDBVaUseThousandSeparator, "###,###,###", "")
+  If spnDBValueDecimals.value > 0 Then
+    strFormatString = strFormatString & "."
+    For jnCount = 1 To spnDBValueDecimals.value
+      strFormatString = strFormatString + "0"
+    Next
+  End If
+  
+  lblDBValueSample.ForeColor = vbButtonText
+  lblDBValueSample.FontBold = False
+  lblDBValueSample.Visible = True
+  
+  If chkConditionalFormatting Then
+    ' Conditional formatting
+    ' Conditions are in priority order!
+    For jnCount = 0 To 2
+    If txtDBValueSample <> vbNullString And txtDBValCFValue(jnCount) <> vbNullString Then
+      Select Case cboDBValCFOperator(jnCount)
+        Case "is equal to"
+          If CDec(txtDBValueSample) = CDec(txtDBValCFValue(jnCount)) Then
+            lblDBValueSample.ForeColor = txtDBValCFColour(jnCount).BackColor
+            lblDBValueSample.FontBold = IIf(cboDBValCFStyle(jnCount) = "Bold", True, False)
+            lblDBValueSample.Visible = IIf(cboDBValCFStyle(jnCount) = "Hidden", False, True)
+            Exit For
+          End If
+      
+        Case "is not equal to"
+          If CDec(txtDBValueSample) <> CDec(txtDBValCFValue(jnCount)) Then
+            lblDBValueSample.ForeColor = txtDBValCFColour(jnCount).BackColor
+            lblDBValueSample.FontBold = IIf(cboDBValCFStyle(jnCount) = "Bold", True, False)
+            lblDBValueSample.Visible = IIf(cboDBValCFStyle(jnCount) = "Hidden", False, True)
+            Exit For
+          End If
+      
+        Case "is less than or equal to"
+          If CDec(txtDBValueSample) <= CDec(txtDBValCFValue(jnCount)) Then
+            lblDBValueSample.ForeColor = txtDBValCFColour(jnCount).BackColor
+            lblDBValueSample.FontBold = IIf(cboDBValCFStyle(jnCount) = "Bold", True, False)
+            lblDBValueSample.Visible = IIf(cboDBValCFStyle(jnCount) = "Hidden", False, True)
+            Exit For
+          End If
+      
+        Case "is greater than or equal to"
+          If CDec(txtDBValueSample) >= CDec(txtDBValCFValue(jnCount)) Then
+            lblDBValueSample.ForeColor = txtDBValCFColour(jnCount).BackColor
+            lblDBValueSample.FontBold = IIf(cboDBValCFStyle(jnCount) = "Bold", True, False)
+            lblDBValueSample.Visible = IIf(cboDBValCFStyle(jnCount) = "Hidden", False, True)
+            Exit For
+          End If
+      
+        Case "is less than"
+          If CDec(txtDBValueSample) < CDec(txtDBValCFValue(jnCount)) Then
+            lblDBValueSample.ForeColor = txtDBValCFColour(jnCount).BackColor
+            lblDBValueSample.FontBold = IIf(cboDBValCFStyle(jnCount) = "Bold", True, False)
+            lblDBValueSample.Visible = IIf(cboDBValCFStyle(jnCount) = "Hidden", False, True)
+            Exit For
+          End If
+      
+        Case "is greater than"
+          If CDec(txtDBValueSample) > CDec(txtDBValCFValue(jnCount)) Then
+            lblDBValueSample.ForeColor = txtDBValCFColour(jnCount).BackColor
+            lblDBValueSample.FontBold = IIf(cboDBValCFStyle(jnCount) = "Bold", True, False)
+            lblDBValueSample.Visible = IIf(cboDBValCFStyle(jnCount) = "Hidden", False, True)
+            Exit For
+          End If
+              
+      End Select
+    End If
+    Next
+  End If
+  
+  If chkFormatting Then
+    lblDBValueSample = txtDBValuePrefix + Format(txtDBValueSample, strFormatString) + txtDBValueSuffix
+  Else
+    lblDBValueSample = txtDBValueSample
+  End If
+End Function
 
 Private Sub GetStartModes()
 
@@ -2646,81 +2793,10 @@ Private Sub chkFormatting_Click()
   RefreshControls
 End Sub
 
-Private Sub cmdDBValSample_Click()
-  ' Display the sample value with all the formatting applied
-  Dim strFormatString As String
-  
-'  If Not chkFormatting Or Not chkConditionalFormatting Then
-'    lblDBValueSample = txtDBValueSample
-'    Exit Sub
-'  End If
-  
-  strFormatString = IIf(chkDBVaUseThousandSeparator, "###,###,###", "")
-  If spnDBValueDecimals.value > 0 Then
-    strFormatString = strFormatString & "."
-    For jnCount = 1 To spnDBValueDecimals.value
-      strFormatString = strFormatString + "0"
-    Next
-  End If
-  
-  ' Conditional formatting
-  ' Conditions are in priority order!
-  For jnCount = 0 To 2
-    Select Case cboDBValCFOperator(jnCount)
-      Case "is equal to"
-        If CDec(txtDBValueSample) = CDec(txtDBValCFValue(jnCount)) Then
-          lblDBValueSample.ForeColor = txtDBValCFColour(jnCount).BackColor
-          lblDBValueSample.FontBold = IIf(cboDBValCFStyle(jnCount) = "Bold", True, False)
-          lblDBValueSample.Visible = IIf(cboDBValCFStyle(jnCount) = "Hidden", False, True)
-          Exit For
-        End If
-    
-      Case "is not equal to"
-        If CDec(txtDBValueSample) <> CDec(txtDBValCFValue(jnCount)) Then
-          lblDBValueSample.ForeColor = txtDBValCFColour(jnCount).BackColor
-          lblDBValueSample.FontBold = IIf(cboDBValCFStyle(jnCount) = "Bold", True, False)
-          lblDBValueSample.Visible = IIf(cboDBValCFStyle(jnCount) = "Hidden", False, True)
-          Exit For
-        End If
-    
-      Case "is less than or equal to"
-        If CDec(txtDBValueSample) <= CDec(txtDBValCFValue(jnCount)) Then
-          lblDBValueSample.ForeColor = txtDBValCFColour(jnCount).BackColor
-          lblDBValueSample.FontBold = IIf(cboDBValCFStyle(jnCount) = "Bold", True, False)
-          lblDBValueSample.Visible = IIf(cboDBValCFStyle(jnCount) = "Hidden", False, True)
-          Exit For
-        End If
-    
-      Case "is greater than or equal to"
-        If CDec(txtDBValueSample) >= CDec(txtDBValCFValue(jnCount)) Then
-          lblDBValueSample.ForeColor = txtDBValCFColour(jnCount).BackColor
-          lblDBValueSample.FontBold = IIf(cboDBValCFStyle(jnCount) = "Bold", True, False)
-          lblDBValueSample.Visible = IIf(cboDBValCFStyle(jnCount) = "Hidden", False, True)
-          Exit For
-        End If
-    
-      Case "is less than"
-        If CDec(txtDBValueSample) < CDec(txtDBValCFValue(jnCount)) Then
-          lblDBValueSample.ForeColor = txtDBValCFColour(jnCount).BackColor
-          lblDBValueSample.FontBold = IIf(cboDBValCFStyle(jnCount) = "Bold", True, False)
-          lblDBValueSample.Visible = IIf(cboDBValCFStyle(jnCount) = "Hidden", False, True)
-          Exit For
-        End If
-    
-      Case "is greater than"
-        If CDec(txtDBValueSample) > CDec(txtDBValCFValue(jnCount)) Then
-          lblDBValueSample.ForeColor = txtDBValCFColour(jnCount).BackColor
-          lblDBValueSample.FontBold = IIf(cboDBValCFStyle(jnCount) = "Bold", True, False)
-          lblDBValueSample.Visible = IIf(cboDBValCFStyle(jnCount) = "Hidden", False, True)
-          Exit For
-        End If
-            
-    End Select
-  Next
-    
-  lblDBValueSample = txtDBValuePrefix + Format(txtDBValueSample, strFormatString) + txtDBValueSuffix
+Private Sub chkSeparatorUseFormatting_Click()
+  mfChanged = True
+  RefreshControls
 End Sub
-
 
 Private Sub cmdDBValueColPick_Click(Index As Integer)
   On Error GoTo ErrorTrap
@@ -2756,10 +2832,27 @@ Private Sub cmdFilterClear_Click()
   RefreshControls
 End Sub
 
+Private Sub cmdSeparatorColPick_Click()
+  On Error GoTo ErrorTrap
 
+  With ColorPicker
+    ' Set the colour properties of the dialogue box.
+    .Color = gForeColour
+    ' Display the dialogue box.
+    .ShowPalette
+    ' Read the colour properties of the dialogue box.
+    gForeColour = .Color
+  End With
 
-Private Sub COASD_Spinner1_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-
+  txtSeparatorColour.BackColor = gForeColour
+  txtSeparatorColour.ForeColor = UI.GetInverseColor(gForeColour)
+    
+  mfChanged = True
+  
+  RefreshControls
+ErrorTrap:
+  ' User pressed cancel.
+  
 End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
@@ -3343,6 +3436,32 @@ Private Sub txtDBValuePrefix_Change()
   RefreshControls
 End Sub
 
+Private Sub txtDBValueSample_Change()
+  RefreshControls
+End Sub
+
+Private Sub txtDBValueSample_KeyPress(KeyAscii As Integer)
+  Select Case KeyAscii
+    Case 8
+      'backspace is OK
+    Case 45
+      ' minus key is OK
+    Case 46
+      ' decimal point
+    Case 48 To 57
+      ' Numbers are fine...
+    Case Else
+      KeyAscii = 0
+  End Select
+  
+  
+  ' If KeyAscii < 48 Or KeyAscii > 57 Then KeyAscii = 0
+  ' 8 = bsp
+  ' 46 = .
+  ' 45 = -
+  
+End Sub
+
 Private Sub txtDBValueSuffix_Change()
   mfChanged = True
   RefreshControls
@@ -3853,11 +3972,19 @@ Public Property Let ChartShowValues(ByVal pfNewValue As Boolean)
 End Property
 
 Public Property Get UseFormatting() As Boolean
-  UseFormatting = chkFormatting.value
+  If optLink(SSINTLINKDB_VALUE) Then
+    UseFormatting = chkFormatting.value
+  ElseIf optLink(SSINTLINKSEPARATOR) Then
+    UseFormatting = chkSeparatorUseFormatting
+  End If
 End Property
 
 Public Property Let UseFormatting(ByVal pfNewValue As Boolean)
-  chkFormatting.value = IIf(pfNewValue, vbChecked, vbUnchecked)
+  If optLink(SSINTLINKDB_VALUE) Then
+    chkFormatting.value = IIf(pfNewValue, vbChecked, vbUnchecked)
+  ElseIf optLink(SSINTLINKSEPARATOR) Then
+    chkSeparatorUseFormatting.value = IIf(pfNewValue, vbChecked, vbUnchecked)
+  End If
 End Property
 
 Public Property Get Formatting_DecimalPlaces() As Integer
@@ -4052,8 +4179,6 @@ Public Property Let ConditionalFormatting_Style_3(ByVal psNewValue As String)
       End If
     Next iLoop
   End If
-
-'  cboDBValCFStyle(2).Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
 End Property
 
 Public Property Get ConditionalFormatting_Colour_3() As String
@@ -4063,5 +4188,14 @@ End Property
 Public Property Let ConditionalFormatting_Colour_3(ByVal psNewValue As String)
   txtDBValCFColour(2).BackColor = IIf(psNewValue <> vbNullString, UI.HexToSysColor(psNewValue), vbWindowBackground)
   txtDBValCFColour(2).ForeColor = UI.GetInverseColor(IIf(psNewValue <> vbNullString, UI.HexToSysColor(psNewValue), vbWindowBackground))
+End Property
+
+Public Property Get SeparatorBorderColour() As String
+  SeparatorBorderColour = UI.SysColorToHex(txtSeparatorColour.BackColor)
+End Property
+
+Public Property Let SeparatorBorderColour(ByVal psNewValue As String)
+  txtSeparatorColour.BackColor = IIf(psNewValue <> vbNullString, UI.HexToSysColor(psNewValue), vbWindowBackground)
+  txtSeparatorColour.ForeColor = UI.GetInverseColor(IIf(psNewValue <> vbNullString, UI.HexToSysColor(psNewValue), vbWindowBackground))
 End Property
 
