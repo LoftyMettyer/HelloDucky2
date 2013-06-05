@@ -52,7 +52,7 @@ Public Class SysMgr
       Things.PopulateSystemSettings()
 
       'TODO:
-      If False Then
+      If True Then
         Things.PopulateThings()
       Else
         Things.PopulateThings2()
