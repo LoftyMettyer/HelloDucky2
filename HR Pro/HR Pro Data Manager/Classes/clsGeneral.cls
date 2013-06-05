@@ -2516,14 +2516,26 @@ Public Function GetQuickEntryScreens() As ADODB.Recordset
 
 End Function
 
-Public Function GetColumnName(plngColumnID As Long) As String
+Public Function GetColumnName(plngColumnID As Long, Optional pbIncludeTableName As Boolean = False) As String
   ' Return the name of the given column.
   Dim sSQL As String
   Dim rsTemp As ADODB.Recordset
 
-  sSQL = "SELECT columnName FROM ASRSysColumns WHERE columnID = " & plngColumnID
+  If pbIncludeTableName Then
+    sSQL = "SELECT t.[tablename] + '.' + c.[columnName] FROM dbo.[ASRSysColumns] c " _
+        & "INNER JOIN dbo.[ASRSysTables] t ON t.[TableID] = c.[TableID]  " _
+        & "WHERE columnID = " & plngColumnID & ";"
+  Else
+    sSQL = "SELECT [columnName] FROM dbo.[ASRSysColumns] WHERE [columnID] = " & plngColumnID & ";"
+  End If
+  
   Set rsTemp = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
-  GetColumnName = rsTemp(0).Value
+  If (rsTemp.EOF And rsTemp.BOF) Then
+    GetColumnName = vbNullString
+  Else
+    GetColumnName = rsTemp(0).Value
+  End If
+  
   rsTemp.Close
   Set rsTemp = Nothing
     
