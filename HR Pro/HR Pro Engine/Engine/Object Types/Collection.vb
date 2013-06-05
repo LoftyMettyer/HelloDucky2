@@ -28,21 +28,19 @@ Namespace Things
 
     End Function
 
-    Public ReadOnly Property Table(ByVal ID As HCMGuid) As Things.Table Implements iObjectCollection.Table
-      Get
+    Public Function Table(ByRef ID As HCMGuid) As Things.Table Implements iObjectCollection.Table
 
-        Dim objChild As Things.Base
+      Dim objChild As Things.Base
 
-        For Each objChild In MyBase.Items
-          If objChild.ID = ID And objChild.Type = Type.Table Then
-            Return objChild
-          End If
-        Next
+      For Each objChild In MyBase.Items
+        If objChild.ID = ID And objChild.Type = Type.Table Then
+          Return objChild
+        End If
+      Next
 
-        Return Nothing
+      Return Nothing
 
-      End Get
-    End Property
+    End Function
 
   End Class
 

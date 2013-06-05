@@ -816,7 +816,6 @@ Namespace ScriptDB
           "    DECLARE @iCount        integer," & vbNewLine & _
           "            @isovernight   bit," & vbNewLine & _
           "            @forcerefresh  bit," & vbNewLine & _
-          "            @recorddesc    nvarchar(MAX), " & vbNewLine & _
           "            @user          varchar(255);" & vbNewLine & vbNewLine & _
           "    SELECT @isovernight = dbo.[udfsys_isovernightprocess]();" & vbNewLine & _
           "    SELECT @user =	CASE WHEN UPPER(LEFT(APP_NAME(), 15)) = 'HR PRO WORKFLOW' THEN 'HR Pro Workflow'" & vbNewLine & _

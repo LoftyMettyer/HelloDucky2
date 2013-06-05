@@ -1,8 +1,10 @@
 ﻿Imports System.IO
 Imports System.Xml
+Imports System.Runtime.InteropServices
 
 Namespace Things
 
+  <ClassInterface(ClassInterfaceType.None)> _
   Public Class Table
     Inherits Things.Base
     Implements COMInterfaces.iTable

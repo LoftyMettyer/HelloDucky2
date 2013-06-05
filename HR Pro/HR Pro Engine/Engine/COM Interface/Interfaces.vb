@@ -44,7 +44,7 @@
   End Interface
 
   Public Interface iObjectCollection
-    ReadOnly Property Table(ByVal [ID] As HCMGuid) As Things.Table
+    Function Table(ByRef [ID] As HCMGuid) As Things.Table
     Function Setting(ByVal [Module] As String, ByVal [Parameter] As String) As Things.Setting
   End Interface
 
