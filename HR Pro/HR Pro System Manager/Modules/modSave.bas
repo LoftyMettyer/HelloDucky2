@@ -71,7 +71,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
   'JDM - 19/02/02 - Fault 3504 - Moved the quick checks before calling the support mode, or checking for other users
   If fOK Then
     DoEvents
-    OutputCurrentProcess "Initialising Save Injector"
+    OutputCurrentProcess "Initialising Database Scripting"
     OutputCurrentProcess2 "Orders", 4
        
     fOK = QuickChecks_1
