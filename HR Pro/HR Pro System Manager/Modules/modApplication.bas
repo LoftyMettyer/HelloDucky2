@@ -2127,12 +2127,9 @@ Public Sub EditMobileDesigner()
 
 '  Dim objMobile As clsMobile
   Dim bOK As Boolean
-'
-'  Set objMobile = New clsMobile
-''  objMobile.Edit
 
- 'Dim obj As New MobileDesigner.DesignerForm
- ' obj.EditDesign
+' The mgic call
+' mobileDesigner.Initialise(gsTempDatabaseName)
 
 
 TidyUpAndExit:
