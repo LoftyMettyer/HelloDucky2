@@ -497,7 +497,7 @@ PRINT 'Step - Object scripting'
 
 				-- Order columns
 				INSERT dbo.[ASRSysOrderItems] (OrderID, ColumnID, [Type], Sequence, Ascending)
-					SELECT TOP 1 @orderID, [columnID], ''O'', 1,0
+					SELECT TOP 1 @orderID, [columnID], ''O'', 1,1
 					FROM dbo.tbsys_columns WHERE [tableID] = @tableID AND columnname NOT LIKE ''ID%'' ORDER BY [columnID];
 
 				-- Find window items
