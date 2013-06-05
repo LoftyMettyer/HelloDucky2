@@ -14,6 +14,7 @@ Public Enum Module
   modAccordPayroll = 512
   modWorkflow = 1024
   modOpenPay = 2048
+  modVersion1 = 4096
 End Enum
 
 
