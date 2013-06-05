@@ -10,16 +10,20 @@ Namespace Things
     Implements COMInterfaces.iTable
     Implements COMInterfaces.iObject
 
-    Public TableType As TableType
-    Public ManualSummaryColumnBreaks As Boolean
-    Public AuditInsert As Boolean
-    Public AuditDelete As Boolean
-    Public DefaultOrderID As HCMGuid
-    Public DefaultEmailID As HCMGuid
-    Public IsRemoteView As Boolean
+    Public Property TableType As TableType
+    Public Property ManualSummaryColumnBreaks As Boolean
+    Public Property AuditInsert As Boolean
+    Public Property AuditDelete As Boolean
+    Public Property DefaultOrderID As HCMGuid
+    Public Property DefaultEmailID As HCMGuid
+    Public Property IsRemoteView As Boolean
 
+    'TODO: NEW
     Public Property RecordDescription() As RecordDescription
-    Public Property Indexes() As ICollection(Of Index)
+    Public Property Columns() As IList(Of Column)
+    Public Property Indexes() As IList(Of Index)
+    Public Property Validation() As IList(Of Validation)
+    Public Property Views() As IList(Of View)
 
     Public DependsOnChildColumns As New Things.Collections.BaseCollection
     Public DependsOnParentColumns As New Things.Collections.BaseCollection
@@ -28,7 +32,10 @@ Namespace Things
     Public UpdateStatements As New ArrayList
 
     Public Sub New()
+      Columns = New List(Of Column)
       Indexes = New List(Of Index)
+      Validation = New List(Of Validation)
+      Views = New List(Of View)
     End Sub
 
     Public Overrides ReadOnly Property PhysicalName As String
@@ -79,31 +86,6 @@ Namespace Things
       End Get
 
     End Property
-
-#Region "Child Objects"
-
-    <System.Xml.Serialization.XmlIgnore(), System.ComponentModel.Browsable(False)> _
-    Public ReadOnly Property Columns As Things.Collections.Generic
-      Get
-        Return Me.Objects(Things.Type.Column)
-      End Get
-    End Property
-
-    <System.Xml.Serialization.XmlIgnore(), System.ComponentModel.Browsable(False)> _
-    Public ReadOnly Property Validations() As Things.Collections.Generic
-      Get
-        Return Me.Objects(Things.Type.Validation)
-      End Get
-    End Property
-
-    <System.Xml.Serialization.XmlIgnore(), System.ComponentModel.Browsable(False)> _
-    Public ReadOnly Property Views() As Things.Collections.Generic
-      Get
-        Return Me.Objects(Things.Type.View)
-      End Get
-    End Property
-
-#End Region
 
 #Region "Individual objects"
 

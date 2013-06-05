@@ -44,13 +44,6 @@
         Globals.Things.Add(table)
       Next
 
-      'TODO: Removed not in old code and tries to script trigger for table
-      ' Objects with no table attached
-      'Dim emptyTable = New Table With {.ID = 0, .Name = "System Objects"}
-      'emptyTable.Objects.Parent = emptyTable
-      'emptyTable.Objects.Root = emptyTable.Root
-      'Globals.Things.Add(emptyTable)
-
     End Sub
 
     Public Sub PopulateColumns()
@@ -85,7 +78,7 @@
         column.Table = table
         column.Parent = table
 
-        table.Objects.Add(column)
+        table.Columns.Add(column)
       Next
 
     End Sub
