@@ -2189,7 +2189,9 @@ Private Function CreateSSPStoredProcedure() As Boolean
       "        @dtLastWholeEndDate datetime," & vbNewLine & _
       "        @dtFirstLinkedWholeStartDate datetime," & vbNewLine & _
       "        @iYearDifference integer," & vbNewLine & _
-      "        @fSSPRunning bit" & vbNewLine & vbNewLine & _
+      "        @fSSPRunning bit," & vbNewLine & _
+      "        @iAbsenceRecordCount integer," & vbNewLine & _
+      "        @iCurrAbsRec integer" & vbNewLine & vbNewLine & _
       "    SET @fOK = 1" & vbNewLine
   
     sProcSQL = sProcSQL & vbNewLine & _
@@ -2295,11 +2297,17 @@ Private Function CreateSSPStoredProcedure() As Boolean
     sProcSQL = sProcSQL & _
       "    END" & vbNewLine
     
+    ' NPG20100609 Fault HRPRO-725
     sProcSQL = sProcSQL & vbNewLine & _
       "    IF @fOK = 1" & vbNewLine & _
       "    BEGIN" & vbNewLine & _
       "        SET @iConsecutiveRecords = 0" & vbNewLine & _
       "        SET @dtLastWholeEndDate = null" & vbNewLine & vbNewLine & _
+      "        /* Get count of absence records */" & vbNewLine & vbNewLine & _
+      "       SELECT Absence.id" & vbNewLine & _
+      "       FROM Absence" & vbNewLine & _
+      "       WHERE Absence.id_1 = @iPersonnelRecordID" & vbNewLine & vbNewLine & _
+      "       SET @iAbsenceRecordCount = @@ROWCOUNT" & vbNewLine & vbNewLine & _
       "        /* Create a cursor of the absence records for the current person. */" & vbNewLine & _
       "        SET @cursAbsenceRecords = CURSOR LOCAL FAST_FORWARD FOR" & vbNewLine & _
       "            SELECT " & mvar_sAbsenceTableName & ".id," & vbNewLine & _
@@ -2342,9 +2350,12 @@ Private Function CreateSSPStoredProcedure() As Boolean
       End Select
     End If
     
+    ' NPG20100609 Fault HRPRO-725
     sProcSQL = sProcSQL & vbNewLine & _
       "        WHILE (@@fetch_status = 0)" & vbNewLine & _
       "        BEGIN" & vbNewLine & _
+      "            /* Increment record count */" & vbNewLine & _
+      "            SET @iCurrAbsRec = @iCurrAbsRec + 1" & vbNewLine & vbNewLine & _
       "            /* Ignore incomplete absence records. */" & vbNewLine & _
       "            IF (NOT @dtStartDate IS null) AND (NOT @dtEndDate IS null)" & vbNewLine & _
       "            BEGIN" & vbNewLine & _
@@ -2570,7 +2581,7 @@ Private Function CreateSSPStoredProcedure() As Boolean
       "                                    /* The current date is the half day after the whole dated period end." & vbNewLine & _
       "                                    A half day qualifies only if this period of absence is consecutively followed by another. */" & vbNewLine & _
       "                                    IF (@dtConsecutiveEndDate > @dtEndDate) OR" & vbNewLine & _
-      "                                        ((@dtConsecutiveEndDate = @dtEndDate) AND (@sConsecutiveEndSession <> @sStartSession)) SET @dblAddAmount = 0.5" & vbNewLine & _
+      "                                        ((@dtConsecutiveEndDate = @dtEndDate) AND (@sConsecutiveEndSession <> @sStartSession) AND (@iCurrAbsRec <> @iAbsenceRecordCount)) SET @dblAddAmount = 0.5" & vbNewLine & _
       "                                END" & vbNewLine
                 
     sProcSQL = sProcSQL & _
