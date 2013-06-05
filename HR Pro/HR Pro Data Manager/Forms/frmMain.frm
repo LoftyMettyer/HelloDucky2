@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "08:08"
+            TextSave        =   "09:06"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -188,6 +188,11 @@ Dim pic As StdPicture, hMemDC As Long, pHeight As Long, pWidth As Long
 Dim mfMenuDisabled As Boolean
 
 Private mstrLastAlarmCheck As String
+
+Private Enum UserMenuType
+  RecentlyRun = 0
+  Favourites = 1
+End Enum
 
 Public Sub DisableMenu()
   'JPD 20030905 Fault 5184
@@ -408,11 +413,11 @@ Private Sub abMain_BandOpen(ByVal Band As ActiveBarLibraryCtl.Band)
   Select Case Band.Name
     
     Case "bndRecentReports"
-      RefreshRecentlyUsed
+      RefreshQuickLinks RecentlyRun
 
     Case "bndFavourites"
-      RefreshFavourites
-    
+      RefreshQuickLinks Favourites
+
     Case "mnuWindow"
       bNoSeparator = False
       With Band.Tools
@@ -3112,8 +3117,8 @@ Public Sub RefreshMainForm(pfrmCallingForm As Form, Optional ByVal pfUnLoad As B
       RefreshEditMenu
         
       ' Refresh personalised menus
-      RefreshRecentlyUsed
-      RefreshFavourites
+      RefreshQuickLinks RecentlyRun
+      RefreshQuickLinks Favourites
         
       ' Refresh the Record menu options.
       RefreshRecordMenu pfrmCallingForm, pfUnLoad
@@ -3141,7 +3146,9 @@ Public Sub RefreshMainForm(pfrmCallingForm As Form, Optional ByVal pfUnLoad As B
 
 End Sub
 
-Public Sub RefreshRecentlyUsed()
+
+' Refresh user specific menus
+Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
 
   Dim rsTemp As ADODB.Recordset
   Dim objFileTool As ActiveBarLibraryCtl.Tool
@@ -3149,13 +3156,26 @@ Public Sub RefreshRecentlyUsed()
   Dim sUtilityName As String
   Dim sType As String
   Dim iCount As Integer
+  Dim sBandName As String
+  Dim sProcName As String
+  
+  ' Menu specific stuff
+  Select Case MenuType
+    Case UserMenuType.RecentlyRun
+      sBandName = "bndRecentReports"
+      sProcName = "EXEC dbo.spstat_recentlyrunobjects"
+    Case UserMenuType.Favourites
+      sBandName = "bndFavourites"
+      sProcName = "EXEC dbo.spstat_getfavourites"
+  End Select
+   
 
   ' Clear existing
-  abMain.Bands("bndRecentReports").Tools.RemoveAll
+  abMain.Bands(sBandName).Tools.RemoveAll
   iCount = 0
 
   Set rsTemp = New ADODB.Recordset
-  rsTemp.Open "EXEC dbo.spstat_recentlyrunobjects", gADOCon, adOpenForwardOnly, adLockReadOnly
+  rsTemp.Open sProcName, gADOCon, adOpenForwardOnly, adLockReadOnly
   If Not rsTemp.BOF And Not rsTemp.EOF Then
     rsTemp.MoveFirst
     Do While Not rsTemp.EOF
@@ -3164,7 +3184,7 @@ Public Sub RefreshRecentlyUsed()
       iCount = iCount + 1
 
       With abMain
-        Set objFileTool = .Bands("bndRecentReports").Tools.Add(.Tools.Count + 1, "RC" & rsTemp("ObjectType").Value & ":" & rsTemp("ObjectID").Value)
+        Set objFileTool = .Bands(sBandName).Tools.Add(.Tools.Count + 1, "RC" & rsTemp("ObjectType").Value & ":" & rsTemp("ObjectID").Value)
         
         Select Case rsTemp("ObjectType").Value
           Case utlCustomReport
@@ -3213,8 +3233,6 @@ Public Sub RefreshRecentlyUsed()
         objFileTool.Caption = "&" & CStr(iCount) & " " & sType & rsTemp("name").Value
         objFileTool.SetPicture 0, LoadResPicture(sIconName, 1), COL_GREY
       
-   '     .Bands("bndRecentReports").Tools.Insert 0, objFileTool
-      
       End With
 
       rsTemp.MoveNext
@@ -3224,27 +3242,12 @@ Public Sub RefreshRecentlyUsed()
     Set objFileTool = abMain.Tools.Add(abMain.Tools.Count + 1, "RC_None")
     objFileTool.Caption = "<None>"
     objFileTool.Enabled = False
-    abMain.Bands("bndRecentReports").Tools.Insert 0, objFileTool
+    abMain.Bands(sBandName).Tools.Insert 0, objFileTool
   
   End If
   
   rsTemp.Close
   Set rsTemp = Nothing
-
-End Sub
-
-Public Sub RefreshFavourites()
-
-  Dim objFileTool As ActiveBarLibraryCtl.Tool
-
-  With abMain
-    .Bands("bndFavourites").Tools.RemoveAll
-  
-    Set objFileTool = .Tools.Add(.Tools.Count + 1, "RC_None")
-    objFileTool.Caption = "<None>"
-    objFileTool.Enabled = False
-    .Bands("bndFavourites").Tools.Insert 0, objFileTool
-  End With
 
 End Sub
 
