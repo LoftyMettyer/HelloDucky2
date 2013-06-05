@@ -558,6 +558,94 @@ ErrorTrap:
 
 End Function
 
+' Read any custom triggers so they can be recreated after the table has been recreated.
+Private Sub ReadCustomTriggers(ByVal sTableName As String, ByVal sPhysicalTableName As String, ByRef asTriggers() As String, ByRef asTriggerErrors() As String)
+
+  Dim lngLocation As String
+'  Dim bONfound As Boolean
+'  Dim bFORfound As Boolean
+'  Dim bNAMEfound As Boolean
+  Dim sSQL As String
+'
+'  Dim bIsComment As Boolean
+'  Dim bCommentStart As Boolean
+'  Dim bCommentEnd As Boolean
+
+  Dim rsTriggers As New ADODB.Recordset
+  Dim rsTriggerDefn As New ADODB.Recordset
+  Dim sTriggerDefn As String
+  Dim sTriggerName As String
+
+  ReDim asTriggers(0)
+  ReDim asTriggerErrors(0)
+
+  ' Get any non-HR Pro generted triggers.
+  sSQL = "SELECT triggerobjects.name" & _
+    " FROM sysobjects tableobjects" & _
+    " LEFT OUTER JOIN sysobjects triggerobjects ON tableobjects.id = triggerobjects.parent_obj" & _
+    " WHERE tableobjects.name = '" & sPhysicalTableName & "'" & _
+    " AND triggerobjects.xtype = 'TR'" & _
+    " AND triggerobjects.name <> 'trsys_" & sTableName & "_d01'" & _
+    " AND triggerobjects.name <> 'trsys_" & sTableName & "_d02'" & _
+    " AND triggerobjects.name <> 'trsys_" & sTableName & "_i01'" & _
+    " AND triggerobjects.name <> 'trsys_" & sTableName & "_i02'" & _
+    " AND triggerobjects.name <> 'trsys_" & sTableName & "_u01'" & _
+    " AND triggerobjects.name <> 'trsys_" & sTableName & "_u02'"
+  rsTriggers.Open sSQL, gADOCon, adOpenDynamic, adLockReadOnly
+
+  ' Loop through the custom triggers.
+  Do While Not rsTriggers.EOF
+    sTriggerDefn = vbNullString
+
+    ' Get the script for the custom trigger.
+    sTriggerName = rsTriggers!Name
+    sSQL = "sp_helptext '" & sTriggerName & "'"
+    rsTriggerDefn.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
+
+    If rsTriggerDefn.Fields.Count = 0 Then
+      ' Trigger code could not be read. Might be encrypted.
+      ReDim Preserve asTriggerErrors(UBound(asTriggerErrors) + 1)
+      asTriggerErrors(UBound(asTriggerErrors)) = sTriggerName
+    Else
+      Do While Not rsTriggerDefn.EOF
+      
+'        bONfound = bONfound Or InStr(1, " " & rsTriggerDefn!Text, "ON", vbTextCompare) > 0
+'        bFORfound = bFORfound Or InStr(1, " " & rsTriggerDefn!Text, "FOR", vbTextCompare) > 0
+'        bNAMEfound = bNAMEfound Or InStr(1, " " & rsTriggerDefn!Text, sTriggerName, vbTextCompare) > 0
+        
+'        If bONfound And Not bFORfound Then
+'          sTriggerDefn = sTriggerDefn & "ON " & sPhysicalTableName
+'        ElseIf bFORfound And Not bONfound Then
+          
+' original code
+    '      sTriggerDefn = sTriggerDefn & rsTriggerDefn!Text
+
+    If InStr(1, rsTriggerDefn!Text, sTableName, vbTextCompare) > 0 And InStr(1, rsTriggerDefn!Text, sPhysicalTableName, vbTextCompare) = 0 Then
+      sTriggerDefn = sTriggerDefn & Replace(LCase(rsTriggerDefn!Text), LCase(sTableName), sPhysicalTableName)
+    Else
+      sTriggerDefn = sTriggerDefn & rsTriggerDefn!Text
+    End If
+
+'        End If
+
+        rsTriggerDefn.MoveNext
+      Loop
+      rsTriggerDefn.Close
+
+      ReDim Preserve asTriggers(UBound(asTriggers) + 1)
+      asTriggers(UBound(asTriggers)) = sTriggerDefn
+    End If
+
+    rsTriggers.MoveNext
+  Loop
+  rsTriggers.Close
+
+  Set rsTriggerDefn = Nothing
+  Set rsTriggers = Nothing
+
+End Sub
+
+
 'Private Function TableSave(pavOldColumns As Variant) As Boolean
 Private Function TableSave(mfrmUse As frmUsage) As Boolean
   On Error GoTo ErrorTrap
@@ -573,9 +661,6 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
   Dim sTableName As String
   Dim sPhysicalTableName As String
   Dim sOriginalTableName As String
-  Dim rsTriggers As New ADODB.Recordset
-  Dim rsTriggerDefn As New ADODB.Recordset
-  Dim sTriggerDefn As String
   Dim asTriggers() As String
   Dim asTriggerErrors() As String
   Dim sMessage As String
@@ -591,15 +676,7 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
   Dim iColumnList As Integer
   Dim strErrorMessage As String
   Dim sAreaInCode As String
-  Dim lngLocation As String
-
-  'Dim sConnect As String
-  'Dim blnReconnect As Boolean
-
-  'sConnect = gADOCon.ConnectionString
-
-
-
+  
   sAreaInCode = ""
   ' Get the current table ID and name.
   lngTableID = recTabEdit!TableID
@@ -608,6 +685,9 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
   ' Extract data from this table into a temporary table.
   sTableName = recTabEdit!TableName
   sPhysicalTableName = "tbuser_" + LCase(sTableName)
+  
+  ' Get the custom triggers on this table
+  ReadCustomTriggers sTableName, sPhysicalTableName, asTriggers, asTriggerErrors
   
   sTempName = Database.GetTempTableName("Tmp_" & sTableName)
   sOriginalTableName = "tbuser_" + recTabEdit!OriginalTableName
@@ -619,67 +699,6 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
   End If
 
-  ' JPD20030110 Fault 4162
-  ' Read any custom triggers so they can be recreated after the table has been recreated.
-  ReDim asTriggers(0)
-  ReDim asTriggerErrors(0)
-
-  If glngSQLVersion >= 8 Then
-    ' Get any non-HR Pro generted triggers.
-    sSQL = "SELECT triggerobjects.name" & _
-      " FROM sysobjects tableobjects" & _
-      " LEFT OUTER JOIN sysobjects triggerobjects ON tableobjects.id = triggerobjects.parent_obj" & _
-      " WHERE tableobjects.name = '" & sPhysicalTableName & "'" & _
-      " AND triggerobjects.xtype = 'TR'" & _
-      " AND triggerobjects.name <> 'trsys_" & sTableName & "_d01'" & _
-      " AND triggerobjects.name <> 'trsys_" & sTableName & "_d02'" & _
-      " AND triggerobjects.name <> 'trsys_" & sTableName & "_i01'" & _
-      " AND triggerobjects.name <> 'trsys_" & sTableName & "_i02'" & _
-      " AND triggerobjects.name <> 'trsys_" & sTableName & "_u01'" & _
-      " AND triggerobjects.name <> 'trsys_" & sTableName & "_u02'"
-
-    rsTriggers.Open sSQL, gADOCon, adOpenDynamic, adLockReadOnly
-
-    ' Loop through the custom triggers.
-    Do While Not rsTriggers.EOF
-      sTriggerDefn = vbNullString
-
-      ' Get the script for the custom trigger.
-      sSQL = "sp_helptext '" & rsTriggers!Name & "'"
-
-      rsTriggerDefn.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
-
-      If rsTriggerDefn.Fields.Count = 0 Then
-        ' Trigger code could not be read. Might be encrypted.
-        ReDim Preserve asTriggerErrors(UBound(asTriggerErrors) + 1)
-        asTriggerErrors(UBound(asTriggerErrors)) = rsTriggers!Name
-      Else
-        Do While Not rsTriggerDefn.EOF
-        
-          If InStr(1, rsTriggerDefn!Text, "CREATE TRIGGER", vbTextCompare) > 0 Then
-            If InStr(1, rsTriggerDefn!Text, "tbuser_", vbTextCompare) > 0 Then
-              sSQLCodeLine = rsTriggerDefn!Text
-            Else
-              sSQLCodeLine = Replace(rsTriggerDefn!Text, sTableName, sPhysicalTableName, 1)
-            End If
-          Else
-            sSQLCodeLine = rsTriggerDefn!Text
-          End If
-        
-          sTriggerDefn = sTriggerDefn & sSQLCodeLine
-
-          rsTriggerDefn.MoveNext
-        Loop
-        rsTriggerDefn.Close
-
-        ReDim Preserve asTriggers(UBound(asTriggers) + 1)
-        asTriggers(UBound(asTriggers)) = sTriggerDefn
-      End If
-
-      rsTriggers.MoveNext
-    Loop
-    rsTriggers.Close
-  End If
 
   If UBound(asTriggerErrors) > 0 Then
     sMessage = "The following custom trigger" & IIf(UBound(asTriggerErrors) = 1, vbNullString, "s") & _
@@ -888,9 +907,6 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
   End If
 
 TidyUpAndExit:
-
-  Set rsTriggerDefn = Nothing
-  Set rsTriggers = Nothing
 
   ' Drop temporary tables.
   If Database.TableExists(sTempName) Then
