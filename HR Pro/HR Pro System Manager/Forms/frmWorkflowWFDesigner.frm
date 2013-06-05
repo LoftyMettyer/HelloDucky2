@@ -7336,24 +7336,24 @@ TidyUpAndExit:
   UI.UnlockWindow
   
   ' Position, Resize and Move Designer
-'  ' Resize form.
-'  If (PixelsToTwips(mwfElement.WebFormWidth) < MIN_FORM_WIDTH) Then
-'    Me.Width = (Screen.Width / 2) - 720
-'    mlngLastFormWidth = Me.Width
-'  Else
+  ' Resize form.
+  If (PixelsToTwips(mwfElement.WebFormWidth) = 0) Then
+    Me.Width = gLngDFLTSCREENWIDTH
+    mlngLastFormWidth = Me.Width
+  Else
     Me.Width = PixelsToTwips(mwfElement.WebFormWidth) + (Me.Width - Me.ScaleWidth)
     mlngLastFormWidth = Me.Width
-'  End If
-'
-'  DoEvents
-'
-'  If (PixelsToTwips(mwfElement.WebFormHeight) < MIN_FORM_HEIGHT) Then
-'    Me.Height = Forms(0).ScaleHeight / 2
-'    mlngLastFormheight = Me.Height
-'  Else
+  End If
+
+  DoEvents
+
+  If (PixelsToTwips(mwfElement.WebFormHeight) = 0) Then
+    Me.Height = gLngDFLTSCREENHEIGHT
+    mlngLastFormheight = Me.Height
+  Else
     Me.Height = PixelsToTwips(mwfElement.WebFormHeight) + (Me.Height - Me.ScaleHeight)
     mlngLastFormheight = Me.Height
-'  End If
+  End If
   
   ' Position the form.
   If Me.Height > Forms(0).ScaleHeight Then
