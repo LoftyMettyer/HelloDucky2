@@ -424,11 +424,22 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lngDocume
 
   Set mdatData = New HRProDataMgr.clsDataAccess
   Set mclsGeneral = New HRProDataMgr.clsGeneral
+  Dim sAccess As String
 
   PopulateCategoriesCombo
   LoadTableCombo cboTargetTable
 
-  If Not bNew Then
+  If bNew Then
+  
+    sAccess = GetUserSetting("utils&reports", "dfltaccess version1", ACCESS_READWRITE)
+    Select Case sAccess
+      Case ACCESS_READWRITE
+        optReadWrite.Value = True
+      Case Else
+        optReadOnly.Value = True
+    End Select
+  
+  Else
     mlngDocumentMapID = lngDocumentMapID
     
     RetreiveDefinition
