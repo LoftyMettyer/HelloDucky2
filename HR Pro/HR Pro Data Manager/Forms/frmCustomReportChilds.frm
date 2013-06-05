@@ -703,6 +703,15 @@ Private Sub cmdOrderClear_Click()
 
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   If UnloadMode <> vbFormCode Then
     Me.Cancelled = True

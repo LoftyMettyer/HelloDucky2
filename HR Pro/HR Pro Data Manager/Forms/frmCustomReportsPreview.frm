@@ -331,6 +331,15 @@ Private Sub cmdOutput_Click()
   mobjParent.OutputReport True
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   Me.Height = GetPCSetting("CustomReportPreview", "Height", dblFORM_MINHEIGHT)
   Me.Width = GetPCSetting("CustomReportPreview", "Width", dblFORM_MINWIDTH)
