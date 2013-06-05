@@ -64,6 +64,7 @@ Public Enum UtilityType
   utlWorkFlowPendingSteps = 26
   utlOrderDefinition = 27
   utlDocumentMapping = 28
+  utlReportPack = 29
 End Enum
 
 
