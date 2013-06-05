@@ -157,7 +157,7 @@ Namespace Things
         objOFilter = CType(objChild, Things.TableOrderFilter)
 
         If objOFilter.RowDetails.Order Is RowDetails.Order _
-            And objOFilter.RowDetails.Filter Is RowDetails.Filter() _
+            And objOFilter.RowDetails.Filter Is RowDetails.Filter _
             And objOFilter.RowDetails.Relation Is RowDetails.Relation _
             And objOFilter.RowDetails.RowNumber = RowDetails.RowNumber _
             And objOFilter.RowDetails.RowSelection = RowDetails.RowSelection Then

@@ -16,12 +16,12 @@
     Public Sub FormatDeclarations(ByRef Input As String)
     End Sub
 
-    Public Function MakeSingleLine(ByVal Input As String) As String
+    Public Function MakeSingleLine(ByRef Input As String) As String
 
       Dim sReturn As String = Input
-      sReturn = Replace(sReturn, vbNewLine, "", 1)
-      'sReturn = Replace(sReturn, " ", "")
-      sReturn = Replace(sReturn, vbTab, "")
+      sReturn = Replace(sReturn, Chr(13), " ")
+      sReturn = Replace(sReturn, Chr(10), "")
+      sReturn = Replace(sReturn, vbTab, " ")
 
       Return sReturn
 

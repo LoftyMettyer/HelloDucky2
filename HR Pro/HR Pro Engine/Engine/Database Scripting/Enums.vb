@@ -67,6 +67,7 @@
       [DiaryFilter] = 6
       [ColumnFilter] = 7
       [ReferencedColumn] = 8
+      [ViewFilter] = 9
     End Enum
 
     Enum OperatorSubType

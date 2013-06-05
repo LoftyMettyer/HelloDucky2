@@ -965,7 +965,7 @@ Namespace ScriptDB
         For Each objTable In Globals.Things
           For Each objTableOrderFilter In objTable.Objects(Things.Type.TableOrderFilter)
 
-            '  Debug.Assert(objTableOrderFilter.Name <> "udftab_Salary_Salary_Date_1_line_1")
+            '     Debug.Assert(objTableOrderFilter.Name <> "udftab_Post_Allocations_Post_Start_Date_Primary_Post_1_First")
 
             objTableOrderFilter.GenerateCode()
             ScriptDB.DropUDF("dbo", objTableOrderFilter.Name)

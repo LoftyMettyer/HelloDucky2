@@ -38,7 +38,7 @@
         End If
 
         If Not RowDetails.Filter Is Nothing Then
-          sName = sName + "_" + RowDetails.Filter.Name
+          sName = sName + "_" + String.Format("{0}({1})", RowDetails.Filter.Name, CInt(RowDetails.Filter.ID))
         End If
 
         If Not RowDetails.Relation Is Nothing Then
