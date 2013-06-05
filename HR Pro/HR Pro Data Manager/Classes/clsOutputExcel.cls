@@ -1001,7 +1001,7 @@ Public Function AddPage(strDefTitle As String, strSheetName As String, colStyles
     If Not mblnAppending Then
       mlngDataCurrentRow = 1
     End If
-    mlngDataStartCol = 5
+    mlngDataStartCol = 1
     mlngHeaderCols = 0
     mlngHeaderRows = 0
   End If
@@ -1100,7 +1100,7 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
       mstrErrorMessage = "Unable to create a pivot table for a single column of data."
     Else
       ApplyStyle UBound(strArray, 1), UBound(strArray, 2), colStyles
-      ApplyCellOptions UBound(strArray, 1), colStyles, True
+      'ApplyCellOptions UBound(strArray, 1), colStyles, True
       
       CreatePivotTable mlngDataCurrentRow + UBound(strArray, 2), mlngDataStartCol + UBound(strArray, 1), strArray(0, 0), strArray(1, 0), strArray(UBound(strArray), 0), colStyles, colColumns
     End If

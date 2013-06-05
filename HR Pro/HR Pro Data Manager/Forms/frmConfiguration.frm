@@ -51,39 +51,36 @@ Begin VB.Form frmConfiguration
       _Version        =   393216
       Style           =   1
       Tabs            =   7
+      Tab             =   5
       TabsPerRow      =   7
       TabHeight       =   520
       TabCaption(0)   =   "&Display Defaults"
       TabPicture(0)   =   "frmConfiguration.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraDisplay(1)"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraDisplay(0)"
-      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).Control(2)=   "fraDisplay(2)"
-      Tab(0).Control(2).Enabled=   0   'False
       Tab(0).Control(3)=   "frmReportsGeneral"
-      Tab(0).Control(3).Enabled=   0   'False
       Tab(0).ControlCount=   4
       TabCaption(1)   =   "&Reports && Utilities"
       TabPicture(1)   =   "frmConfiguration.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraReports(0)"
-      Tab(1).Control(1)=   "fraReports(1)"
+      Tab(1).Control(0)=   "fraReports(1)"
+      Tab(1).Control(1)=   "fraReports(0)"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Network Configuration"
       TabPicture(2)   =   "frmConfiguration.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "frmOutputs"
-      Tab(2).Control(1)=   "fraNetwork(1)"
-      Tab(2).Control(2)=   "fraNetwork(0)"
-      Tab(2).Control(3)=   "frmAutoLogin"
+      Tab(2).Control(0)=   "frmAutoLogin"
+      Tab(2).Control(1)=   "fraNetwork(0)"
+      Tab(2).Control(2)=   "fraNetwork(1)"
+      Tab(2).Control(3)=   "frmOutputs"
       Tab(2).ControlCount=   4
       TabCaption(3)   =   "&Batch Login"
       TabPicture(3)   =   "frmConfiguration.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraBatch(0)"
-      Tab(3).Control(1)=   "fraBatch(1)"
+      Tab(3).Control(0)=   "fraBatch(1)"
+      Tab(3).Control(1)=   "fraBatch(0)"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "E&vent Log"
       TabPicture(4)   =   "frmConfiguration.frx":007C
@@ -94,21 +91,24 @@ Begin VB.Form frmConfiguration
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Report Out&put"
       TabPicture(5)   =   "frmConfiguration.frx":0098
-      Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "Frame1"
+      Tab(5).ControlEnabled=   -1  'True
+      Tab(5).Control(0)=   "FraOutput(0)"
+      Tab(5).Control(0).Enabled=   0   'False
       Tab(5).Control(1)=   "FraOutput(1)"
-      Tab(5).Control(2)=   "FraOutput(0)"
+      Tab(5).Control(1).Enabled=   0   'False
+      Tab(5).Control(2)=   "Frame1"
+      Tab(5).Control(2).Enabled=   0   'False
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Tool&bars"
       TabPicture(6)   =   "frmConfiguration.frx":00B4
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).Control(0)=   "fraToolbars"
-      Tab(6).Control(1)=   "fraToolbarGeneral"
+      Tab(6).Control(0)=   "fraToolbarGeneral"
+      Tab(6).Control(1)=   "fraToolbars"
       Tab(6).ControlCount=   2
       Begin VB.Frame frmReportsGeneral 
          Caption         =   "Selection Screen :"
          Height          =   1335
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   133
          Top             =   5310
          Width           =   6735
@@ -293,7 +293,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame Frame1 
          Caption         =   "Excel Options :"
          Height          =   1750
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   105
          Top             =   4920
          Width           =   6735
@@ -608,7 +608,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Colours && Fonts :"
          Height          =   3225
          Index           =   1
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   79
          Top             =   400
          Width           =   6735
@@ -1432,7 +1432,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Diary Options :"
          Height          =   1215
          Index           =   2
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   15
          Top             =   4020
          Width           =   6735
@@ -1470,7 +1470,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Record Editing :"
          Height          =   2380
          Index           =   0
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   0
          Top             =   400
          Width           =   6735
@@ -1571,7 +1571,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Filters / Calculations :"
          Height          =   1155
          Index           =   1
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   10
          Top             =   2820
          Width           =   6735
@@ -1618,7 +1618,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Word Options :"
          Height          =   1200
          Index           =   0
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   98
          Top             =   3680
          Width           =   6735
@@ -1809,11 +1809,11 @@ Set OpenedMe = frm    'you can now idenify the calling Form and all its properti
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   If Not mbLoading Then
-    cmdOK.Enabled = pblnChanged
+    cmdOk.Enabled = pblnChanged
   End If
 End Property
 
@@ -3872,7 +3872,7 @@ Private Sub Form_Load()
   cboBackColour.Refresh
   
   grdUtilityReport.RowHeight = 239
-  cmdOK.Enabled = False
+  cmdOk.Enabled = False
 
   ' Resize the configuration form
   'SSTab1.Width = (fraDisplay(0).Left * 2) + fraDisplay(0).Width
