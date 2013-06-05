@@ -126,11 +126,11 @@ Begin VB.Form frmOutlookCalendarLink
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmOutlookCalendarLink.frx":11BC
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(0)"
+      Tab(1).Control(0)=   "fraColumns(2)"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraColumns(1)"
       Tab(1).Control(1).Enabled=   0   'False
-      Tab(1).Control(2)=   "fraColumns(2)"
+      Tab(1).Control(2)=   "fraColumns(0)"
       Tab(1).Control(2).Enabled=   0   'False
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Co&ntent"
@@ -852,7 +852,7 @@ Begin VB.Form frmOutlookCalendarLink
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOutlookCalendarLink.frx":177E
+            Picture         =   "frmOutlookCalendarLink.frx":1904
             Key             =   "IMG_CALC"
          EndProperty
       EndProperty
@@ -1725,7 +1725,7 @@ Private Sub ListView1_GotFocus()
 End Sub
 
 Private Sub ListView1_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub ListView2_GotFocus()
@@ -1733,7 +1733,7 @@ Private Sub ListView2_GotFocus()
 End Sub
 
 Private Sub ListView2_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Function CopyToSelected(bAll As Boolean)
@@ -1983,12 +1983,12 @@ End Sub
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Public Property Let Changed(ByVal blnNewValue As Boolean)
   If Not mblnLoading Then
-    cmdOK.Enabled = blnNewValue And Not mblnReadOnly
+    cmdOk.Enabled = blnNewValue And Not mblnReadOnly
   End If
 End Property
 
@@ -2243,8 +2243,8 @@ End Sub
 
 Private Sub PopulateFolders(lngSelected As Long)
   
-  Dim rsRecipients As DAO.Recordset
-  Dim rsTemp As DAO.Recordset
+  Dim rsRecipients As dao.Recordset
+  Dim rsTemp As dao.Recordset
   Dim strSQL As String
   Dim lngCount As Long
 
@@ -2315,11 +2315,11 @@ Private Sub txtBody_GotFocus()
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-  cmdOK.Default = False
+  cmdOk.Default = False
 End Sub
 
 Private Sub txtBody_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 
