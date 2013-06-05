@@ -506,6 +506,9 @@ End Function
 
 Sub Main()
 
+  ' If we get problems, just in case...
+  gbDisableCodeJock = (InStr(LCase(Command$), "/skin=false") > 0)
+
   m_fSafeForScripting = True
   m_fSafeForInitializing = True
 
