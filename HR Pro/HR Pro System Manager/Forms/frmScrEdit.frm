@@ -2,10 +2,10 @@ VERSION 5.00
 Begin VB.Form frmScrEdit 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Properties"
-   ClientHeight    =   7185
+   ClientHeight    =   6360
    ClientLeft      =   2595
    ClientTop       =   1515
-   ClientWidth     =   9930
+   ClientWidth     =   9510
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -22,8 +22,8 @@ Begin VB.Form frmScrEdit
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   7185
-   ScaleWidth      =   9930
+   ScaleHeight     =   6360
+   ScaleWidth      =   9510
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.Frame frmDefinition 
@@ -32,7 +32,7 @@ Begin VB.Form frmScrEdit
       Left            =   45
       TabIndex        =   4
       Top             =   90
-      Width           =   9780
+      Width           =   9375
       Begin VB.TextBox txtDescription 
          Height          =   1000
          Left            =   1320
@@ -148,12 +148,6 @@ Begin VB.Form frmScrEdit
          Top             =   720
          Width           =   1170
       End
-      Begin VB.Image imgIcon 
-         Height          =   330
-         Left            =   9315
-         Top             =   675
-         Width           =   330
-      End
       Begin VB.Label lblName 
          AutoSize        =   -1  'True
          BackStyle       =   0  'Transparent
@@ -177,31 +171,31 @@ Begin VB.Form frmScrEdit
    End
    Begin VB.Frame fraHistoryScreens 
       Caption         =   "History Screens :"
-      Height          =   4455
+      Height          =   3600
       Left            =   90
       TabIndex        =   2
       Top             =   2115
-      Width           =   9735
+      Width           =   9330
       Begin VB.CommandButton cmdMoveDown 
          Caption         =   "Move Down"
          Height          =   420
-         Left            =   5625
+         Left            =   7965
          TabIndex        =   22
-         Top             =   2835
+         Top             =   2745
          Width           =   1185
       End
       Begin VB.CommandButton cmdMoveUp 
          Caption         =   "Move Up"
          Height          =   375
-         Left            =   5625
+         Left            =   7965
          TabIndex        =   21
-         Top             =   2250
+         Top             =   2160
          Width           =   1185
       End
       Begin VB.CommandButton cmdDeselectAll 
          Caption         =   "D&eselect All"
          Height          =   400
-         Left            =   5625
+         Left            =   7965
          TabIndex        =   20
          Top             =   1470
          Width           =   1200
@@ -209,7 +203,7 @@ Begin VB.Form frmScrEdit
       Begin VB.CommandButton cmdSelectAll 
          Caption         =   "Select &All"
          Height          =   400
-         Left            =   5625
+         Left            =   7965
          TabIndex        =   19
          Top             =   870
          Width           =   1200
@@ -217,7 +211,7 @@ Begin VB.Form frmScrEdit
       Begin VB.CommandButton cmdSelectDeselect 
          Caption         =   "&Sel/Deselect"
          Height          =   400
-         Left            =   5625
+         Left            =   7965
          TabIndex        =   18
          Top             =   270
          Width           =   1200
@@ -229,25 +223,25 @@ Begin VB.Form frmScrEdit
          Style           =   1  'Checkbox
          TabIndex        =   3
          Top             =   250
-         Width           =   5070
+         Width           =   7680
       End
    End
    Begin VB.CommandButton cmdCancel 
       Cancel          =   -1  'True
       Caption         =   "&Cancel"
       Height          =   400
-      Left            =   8625
+      Left            =   8220
       TabIndex        =   1
-      Top             =   6660
+      Top             =   5805
       Width           =   1200
    End
    Begin VB.CommandButton cmdOk 
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
-      Left            =   7365
+      Left            =   6960
       TabIndex        =   0
-      Top             =   6660
+      Top             =   5805
       Width           =   1200
    End
 End
@@ -383,23 +377,68 @@ Private Sub cmdIconClear_Click()
   imgIcon_Refresh
 End Sub
 
-Private Sub cmdMoveUp_Click()
+Private Sub cmdMoveDown_Click()
 
-'  Dim iLoop As Integer
-'
-'  For iLoop = 0 To listHistoryScreens.ListCount - 1
-'    listHistoryScreens.Selected(iLoop) = False
-'
-'
-'  listHistoryScreens.Selected
-'
-'
-'
-'  Next iLoop
+  ' Move the selected Summary Field UP one position.
+  Dim sCurrentItemText As String
+  Dim iCurrentItemData As Integer
+  Dim iListboxIndex As Integer
+  
+  iListboxIndex = listHistoryScreens.ListIndex
+  
+  If iListboxIndex > 0 Then
+    With listHistoryScreens
+      If (.ListIndex >= 0) And _
+        (.ListIndex < (.ListCount - 1)) Then
+      
+        ' Swap the current Summary Field item with the one above it, keeping it selected.
+        sCurrentItemText = .List(.ListIndex)
+        iCurrentItemData = .ItemData(.ListIndex)
+      
+        .List(.ListIndex) = .List(.ListIndex + 1)
+        .ItemData(.ListIndex) = .ItemData(.ListIndex + 1)
+        
+        .List(.ListIndex + 1) = sCurrentItemText
+        .ItemData(.ListIndex + 1) = iCurrentItemData
+    
+'        .ListIndex = .ListIndex + 1
+      End If
+    End With
+  End If
 
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdMoveUp_Click()
+
+  ' Move the selected Summary Field UP one position.
+  Dim sCurrentItemText As String
+  Dim iCurrentItemData As Integer
+  Dim iListboxIndex As Integer
+  
+  iListboxIndex = listHistoryScreens.ListIndex
+  
+  If iListboxIndex > 0 Then
+    With listHistoryScreens
+      If .ListIndex > 0 Then
+      
+        ' Swap the current Summary Field item with the one above it, keeping it selected.
+        sCurrentItemText = .List(.ListIndex)
+        iCurrentItemData = .ItemData(.ListIndex)
+      
+        .List(.ListIndex) = .List(.ListIndex - 1)
+        .ItemData(.ListIndex) = .ItemData(.ListIndex - 1)
+        
+        .List(.ListIndex - 1) = sCurrentItemText
+        .ItemData(.ListIndex - 1) = iCurrentItemData
+        
+    '    .ListIndex = .ListIndex - 1
+      End If
+    End With
+  End If
+  
+End Sub
+
+Private Sub cmdOk_Click()
   ' Validate and save the changes.
   On Error GoTo ErrorTrap
   
@@ -798,15 +837,10 @@ Private Function imgIcon_Refresh() As Boolean
       .Index = "idxID"
       .Seek "=", PictureID
       If Not .NoMatch Then
-        strFileName = ReadPicture
-        Set imgIcon.Picture = LoadPicture(strFileName)
-        Kill strFileName
-        
-        txtIcon.Text = .Fields("Name")
+        txtIcon.Text = .Fields("Name").value
       End If
     End With
   Else
-    Set imgIcon.Picture = LoadPicture(vbNullString)
     txtIcon.Text = vbNullString
   End If
 End Function
@@ -815,10 +849,6 @@ Private Sub Form_Resize()
   'JPD 20030908 Fault 5756
   DisplayApplication
 
-End Sub
-
-Private Sub imgIcon_DblClick()
-  cmdIcon_Click
 End Sub
 
 Private Sub listHistoryScreens_Click()
@@ -1069,6 +1099,8 @@ Private Function SaveChanges() As Boolean
         !ID = UniqueColumnValue("tmpHistoryScreens", "ID")
         !parentScreenID = ScreenID
         !historyScreenID = listHistoryScreens.ItemData(iIndex)
+'        !orderno =
+        
         .Update
       End With
     End If
