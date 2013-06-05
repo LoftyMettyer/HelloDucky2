@@ -257,8 +257,7 @@ Private Sub Form_Load()
   
   lblSecurity = "User Group : " & gsUserGroup
   lblSql = datGeneral.GetSqlVersion
-  'lblCopyRight.Caption = "Copyright © COA Solutions Limited 1997-" & Format(Date, "yyyy")
-  lblCopyRight.Caption = "Copyright © COA Solutions Ltd."
+  lblCopyRight.Caption = "Copyright © Advanced Business Solutions Limited 2011"
   
   Set datGeneral = Nothing
   Screen.MousePointer = vbDefault
