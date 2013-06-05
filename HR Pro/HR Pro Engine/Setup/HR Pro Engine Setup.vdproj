@@ -237,7 +237,7 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:HR Pro System Framework 4.3"
+        "ProductName" = "8:HR Pro System Framework v4.3"
         "ProductCode" = "8:{5E307BD6-5A13-431A-A38B-00242F0719BB}"
         "PackageCode" = "8:{C11FFF35-69CD-4075-874D-353954234449}"
         "UpgradeCode" = "8:{416839EF-23B1-4660-A4AD-E908AB32842E}"

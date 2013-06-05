@@ -3051,7 +3051,7 @@ PRINT 'Final Step - Updating Versions'
 	EXEC spsys_setsystemsetting '.NET Assembly', 'minimum version', '4.2.0';
 	EXEC spsys_setsystemsetting 'outlook service', 'minimum version', '4.2.0';
 	EXEC spsys_setsystemsetting 'workflow service', 'minimum version', '4.2.0';
-	EXEC spsys_setsystemsetting 'system framework', 'version', '1.0.4272.15412';
+	EXEC spsys_setsystemsetting 'system framework', 'version', '1.0.4272.17857';
 
 
 insert into asrsysauditaccess
