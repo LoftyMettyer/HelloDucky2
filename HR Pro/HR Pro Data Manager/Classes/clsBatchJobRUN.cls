@@ -846,7 +846,7 @@ End If
   Loop
   
   'Insert TOC code here
-  If blnOutputTOC And gblnReportPackMode Then
+  If gblnReportPackMode And blnOutputSave And blnOutputTOC Then
     'Open word file
     If GetTOCFile(strOutputFilename) Then
       
@@ -858,12 +858,8 @@ End If
         .ParagraphFormat.Alignment = wdAlignParagraphCenter
         .MoveDown Unit:=wdLine, Count:=2
         
-        With ActiveDocument
-            .TablesOfContents.Add Range:=Selection.Range, RightAlignPageNumbers:= _
-                True, UseHeadingStyles:=True, UpperHeadingLevel:=1, _
-                LowerHeadingLevel:=3, IncludePageNumbers:=True, AddedStyles:="", _
-                UseHyperlinks:=True, HidePageNumbersInWeb:=True, UseOutlineLevels:= _
-                True
+        With mwrdDoc
+            .TablesOfContents.Add Range:=mwrdApp.Selection.Range, RightAlignPageNumbers:=True, UseHeadingStyles:=True, UpperHeadingLevel:=1, LowerHeadingLevel:=3, IncludePageNumbers:=True, AddedStyles:="", UseHyperlinks:=True, HidePageNumbersInWeb:=True, UseOutlineLevels:=True
             .TablesOfContents(1).TabLeader = wdTabLeaderDots
             .TablesOfContents.Format = wdIndexIndent
         End With
