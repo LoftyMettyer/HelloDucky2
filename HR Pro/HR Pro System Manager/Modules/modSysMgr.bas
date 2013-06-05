@@ -450,8 +450,8 @@ Public Enum ValidationType
 End Enum
 
 Public Enum Severity
-  SEVERITY_FAILURE = 0
-  SEVERITY_WARNING = 1
+  SEVERITY_WARNING = 0
+  SEVERITY_FAILURE = 1
   SEVERITY_INFORMATION = 2
 End Enum
 
