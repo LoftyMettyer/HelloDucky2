@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmAccordViewTransfers 
    Caption         =   "Payroll Transfers"
@@ -30,15 +30,15 @@ Begin VB.Form frmAccordViewTransfers
    Begin VB.Frame fraButtons 
       BorderStyle     =   0  'None
       Caption         =   "Frame1"
-      Height          =   4785
-      Left            =   11115
+      Height          =   4665
+      Left            =   11200
       TabIndex        =   11
-      Top             =   990
-      Width           =   1410
+      Top             =   1110
+      Width           =   1245
       Begin VB.CommandButton cmdUnblock 
          Caption         =   "&Unblock"
          Height          =   420
-         Left            =   90
+         Left            =   0
          TabIndex        =   15
          Top             =   1575
          Width           =   1245
@@ -46,7 +46,7 @@ Begin VB.Form frmAccordViewTransfers
       Begin VB.CommandButton cmdBlock 
          Caption         =   "&Block"
          Height          =   420
-         Left            =   90
+         Left            =   0
          TabIndex        =   14
          Top             =   1080
          Width           =   1245
@@ -54,15 +54,15 @@ Begin VB.Form frmAccordViewTransfers
       Begin VB.CommandButton cmdOK 
          Caption         =   "&OK"
          Height          =   420
-         Left            =   90
+         Left            =   0
          TabIndex        =   13
-         Top             =   4320
+         Top             =   4200
          Width           =   1245
       End
       Begin VB.CommandButton cmdEdit 
          Caption         =   "&Details..."
          Height          =   420
-         Left            =   90
+         Left            =   0
          TabIndex        =   12
          Top             =   90
          Width           =   1245
@@ -70,57 +70,59 @@ Begin VB.Form frmAccordViewTransfers
    End
    Begin VB.Frame fraFilters 
       Caption         =   "Filters :"
-      Height          =   870
+      Height          =   990
       Left            =   90
-      TabIndex        =   5
+      TabIndex        =   0
       Top             =   90
       Width           =   12405
       Begin VB.ComboBox cboType 
          Height          =   315
-         Left            =   4425
+         ItemData        =   "frmAccordViewTransfers.frx":000C
+         Left            =   8300
+         List            =   "frmAccordViewTransfers.frx":000E
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   1
-         Top             =   315
-         Width           =   1650
+         TabIndex        =   6
+         Top             =   495
+         Width           =   1200
       End
       Begin VB.ComboBox cboUsers 
          Height          =   315
-         Left            =   10005
+         Left            =   4000
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   3
-         Top             =   315
+         TabIndex        =   4
+         Top             =   500
          Width           =   2280
       End
       Begin VB.ComboBox cboTransfer 
          Height          =   315
-         ItemData        =   "frmAccordViewTransfers.frx":000C
-         Left            =   1170
-         List            =   "frmAccordViewTransfers.frx":000E
+         ItemData        =   "frmAccordViewTransfers.frx":0010
+         Left            =   150
+         List            =   "frmAccordViewTransfers.frx":0012
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   0
-         Top             =   315
+         TabIndex        =   2
+         Top             =   500
          Width           =   2550
       End
       Begin VB.ComboBox cboStatus 
          Height          =   315
-         Left            =   6990
+         Left            =   9700
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   2
-         Top             =   315
-         Width           =   2145
+         TabIndex        =   8
+         Top             =   500
+         Width           =   2500
       End
       Begin VB.Label lblType 
          AutoSize        =   -1  'True
          BackStyle       =   0  'Transparent
          Caption         =   "Type :"
          Height          =   195
-         Left            =   3825
-         TabIndex        =   9
-         Top             =   375
+         Left            =   8300
+         TabIndex        =   5
+         Top             =   250
          Width           =   555
       End
       Begin VB.Label lblUsers 
@@ -128,9 +130,9 @@ Begin VB.Form frmAccordViewTransfers
          BackStyle       =   0  'Transparent
          Caption         =   "User :"
          Height          =   195
-         Left            =   9360
-         TabIndex        =   8
-         Top             =   375
+         Left            =   4000
+         TabIndex        =   3
+         Top             =   250
          Width           =   570
       End
       Begin VB.Label lblTransfer 
@@ -138,27 +140,27 @@ Begin VB.Form frmAccordViewTransfers
          BackStyle       =   0  'Transparent
          Caption         =   "Transfer :"
          Height          =   195
-         Left            =   255
-         TabIndex        =   7
-         Top             =   375
+         Left            =   150
+         TabIndex        =   1
+         Top             =   250
          Width           =   810
       End
-      Begin VB.Label Label1 
+      Begin VB.Label lblStatus 
          AutoSize        =   -1  'True
          BackStyle       =   0  'Transparent
          Caption         =   "Status :"
          Height          =   195
-         Left            =   6255
-         TabIndex        =   6
-         Top             =   375
+         Left            =   9700
+         TabIndex        =   7
+         Top             =   250
          Width           =   705
       End
    End
    Begin SSDataWidgets_B.SSDBGrid grdTransferDetails 
-      Height          =   4650
+      Height          =   4530
       Left            =   90
-      TabIndex        =   4
-      Top             =   1080
+      TabIndex        =   9
+      Top             =   1200
       Width           =   10950
       _Version        =   196617
       DataMode        =   2
@@ -242,7 +244,7 @@ Begin VB.Form frmAccordViewTransfers
       Columns(8).FieldLen=   7
       TabNavigation   =   1
       _ExtentX        =   19315
-      _ExtentY        =   8202
+      _ExtentY        =   7990
       _StockProps     =   79
       BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -299,7 +301,7 @@ Begin VB.Form frmAccordViewTransfers
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Bands           =   "frmAccordViewTransfers.frx":0010
+      Bands           =   "frmAccordViewTransfers.frx":0014
    End
 End
 Attribute VB_Name = "frmAccordViewTransfers"
@@ -896,6 +898,10 @@ End Function
 
 Private Sub Form_Resize()
 
+  Const COMBO_GAP As Integer = 170
+  
+  Dim lngComboWidth As Long
+  
   Const lngGap As Long = 100
   
   On Error GoTo ErrorTrap
@@ -913,10 +919,27 @@ Private Sub Form_Resize()
   
   fraButtons.Left = Me.ScaleWidth - (fraButtons.Width + lngGap)
   fraButtons.Height = (Me.ScaleHeight - (fraFilters.Height + (lngGap * 2))) - StatusBar1.Height
-  cmdOk.Top = fraButtons.Height - cmdOk.Height
+  cmdOK.Top = fraButtons.Height - cmdOK.Height
   
-  fraFilters.Width = Me.Width - (lngGap * 4)
-  grdTransferDetails.Width = (fraFilters.Width - fraButtons.Width) - (lngGap * 3)
+  fraFilters.Width = Me.ScaleWidth - (lngGap * 2)
+  
+  cboStatus.Left = fraFilters.Width - (cboStatus.Width + COMBO_GAP)
+  lblStatus.Left = cboStatus.Left
+  
+  cboType.Left = cboStatus.Left - (cboType.Width + COMBO_GAP)
+  lblType.Left = cboType.Left
+  
+  
+  lngComboWidth = (cboType.Left - (COMBO_GAP * 3)) / 3
+  
+  cboTransfer.Move COMBO_GAP, 500, lngComboWidth * 2
+  lblTransfer.Left = cboTransfer.Left
+  
+  cboUsers.Move cboTransfer.Left + cboTransfer.Width + COMBO_GAP, 500, lngComboWidth
+  lblUsers.Left = cboUsers.Left
+  
+  
+  grdTransferDetails.Width = fraButtons.Left - (grdTransferDetails.Left + lngGap)
   grdTransferDetails.Height = Me.ScaleHeight - (fraFilters.Height + StatusBar1.Height + (lngGap * 3))
   
   DoColumnSizes
