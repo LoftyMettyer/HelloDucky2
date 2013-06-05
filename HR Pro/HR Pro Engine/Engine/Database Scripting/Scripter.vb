@@ -346,6 +346,7 @@ Namespace ScriptDB
       Dim sSQL As String = String.Empty
       Dim sValidation As String = String.Empty
       Dim sTriggerName As String = String.Empty
+      Dim sColumnName As String = String.Empty
 
       Dim sSQLCode_AuditInsert As String = String.Empty
       Dim sSQLCode_AuditUpdate As String = String.Empty
@@ -472,62 +473,68 @@ Namespace ScriptDB
                 objColumn.Calculation.AssociatedColumn = objColumn
                 objColumn.Calculation.GenerateCode()
 
+                If objColumn.CalculateIfEmpty Then
+                  sColumnName = String.Format("[{0}] = ISNULL([{0}], {1})", objColumn.Name, objColumn.Calculation.UDF.CallingCode)
+                Else
+                  sColumnName = String.Format("[{0}] = {1}", objColumn.Name, objColumn.Calculation.UDF.CallingCode)
+                End If
+
                 If objColumn.Calculation.CalculatePostAudit Then
-                  aryPostAuditCalcs.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.Calculation.UDF.CallingCode) & vbNewLine)
+                  aryPostAuditCalcs.Add(sColumnName & vbNewLine)
                 Else
-                  aryCalculatedColumns.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.Calculation.UDF.CallingCode) & vbNewLine)
+                  aryCalculatedColumns.Add(sColumnName & vbNewLine)
                 End If
 
               End If
 
-              If Not objColumn.IsReadOnly Then
-                Select Case objColumn.DataType
+                If Not objColumn.IsReadOnly Then
+                  Select Case objColumn.DataType
 
-                  Case ScriptDB.ColumnTypes.Binary
-                    aryBaseTableColumns.Add(String.Format("[{0}] = [inserted].[{0}]", objColumn.Name))
-                    aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
+                    Case ScriptDB.ColumnTypes.Binary
+                      aryBaseTableColumns.Add(String.Format("[{0}] = [inserted].[{0}]", objColumn.Name))
+                      aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
 
-                  Case ScriptDB.ColumnTypes.Date
-                    aryBaseTableColumns.Add(String.Format("[{0}] = DATEADD(dd, 0, DATEDIFF(dd, 0, [inserted].[{0}]))", objColumn.Name))
-                    aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
+                    Case ScriptDB.ColumnTypes.Date
+                      aryBaseTableColumns.Add(String.Format("[{0}] = DATEADD(dd, 0, DATEDIFF(dd, 0, [inserted].[{0}]))", objColumn.Name))
+                      aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
 
-                  Case Else
-                    aryBaseTableColumns.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.ApplyFormatting("inserted")))
-                    aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
+                    Case Else
+                      aryBaseTableColumns.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.ApplyFormatting("inserted")))
+                      aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
 
-                End Select
+                  End Select
 
-              End If
+                End If
 
 
-              ' Concatenate all the audited columns
-              If objColumn.Audit Then
-                If objColumn.IsCalculated Then
+                ' Concatenate all the audited columns
+                If objColumn.Audit Then
+                  If objColumn.IsCalculated Then
 
-                  aryAuditInserts.Add(String.Format("        SELECT base.ID, NULL, convert(nvarchar({4}),[{0}]), {1}, {5}, base.[_description]" & vbNewLine & _
-                                      "            FROM dbo.[{3}] base" _
-                                      , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, objColumn.Table.PhysicalName, objColumn.DataTypeSize, CInt(objTable.ID)))
-                  aryAuditUpdates.Add(String.Format("        SELECT d.ID, convert(nvarchar({4}),d.[{0}]), convert(nvarchar({4}), base.[{0}]), {1}, {5}, base.[_description]" & vbNewLine & _
-                                      "            FROM deleted d" & vbNewLine & _
-                                      "            INNER JOIN dbo.[{3}] base ON d.[id] = base.[id] AND NOT d.[{0}] = base.[{0}]" _
-                                      , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, objColumn.Table.PhysicalName, objColumn.DataTypeSize, CInt(objTable.ID)))
-                  aryAuditDeletes.Add(String.Format("        SELECT base.ID, convert(nvarchar({4}),{2}), NULL, {1}, {5}, base.[_description]" & vbNewLine & _
-                                      "            FROM deleted base" _
-                                      , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, "", objColumn.DataTypeSize, CInt(objTable.ID)))
-                Else
-                  aryAuditInserts.Add(String.Format("        SELECT ID, NULL, convert(nvarchar({2}),[{0}]), {1}, {3}, [_description]" & vbNewLine & _
-                                      "            FROM inserted WHERE [{0}] IS NOT NULL" _
-                                      , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize, CInt(objTable.ID)))
-                  aryAuditUpdates.Add(String.Format("        SELECT i.ID, convert(nvarchar({2}),d.[{0}]), convert(nvarchar({2}),i.[{0}]), {1}, {3}, i.[_description]" & vbNewLine & _
-                                      "            FROM inserted i" & vbNewLine & _
-                                      "            INNER JOIN deleted d ON i.[id] = d.[id] AND NOT d.[{0}] = i.[{0}] AND UPDATE([{0}])" _
-                                      , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize, CInt(objTable.ID)))
-                  aryAuditDeletes.Add(String.Format("        SELECT ID, convert(nvarchar({2}),[{0}]), NULL, {1}, {3}, [_description]" & vbNewLine & _
-                                      "            FROM deleted WHERE [{0}] IS NOT NULL" _
-                                      , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize, CInt(objTable.ID)))
+                    aryAuditInserts.Add(String.Format("        SELECT base.ID, NULL, convert(nvarchar({4}),[{0}]), {1}, {5}, base.[_description]" & vbNewLine & _
+                                        "            FROM dbo.[{3}] base" _
+                                        , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, objColumn.Table.PhysicalName, objColumn.DataTypeSize, CInt(objTable.ID)))
+                    aryAuditUpdates.Add(String.Format("        SELECT d.ID, convert(nvarchar({4}),d.[{0}]), convert(nvarchar({4}), base.[{0}]), {1}, {5}, base.[_description]" & vbNewLine & _
+                                        "            FROM deleted d" & vbNewLine & _
+                                        "            INNER JOIN dbo.[{3}] base ON d.[id] = base.[id] AND NOT d.[{0}] = base.[{0}]" _
+                                        , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, objColumn.Table.PhysicalName, objColumn.DataTypeSize, CInt(objTable.ID)))
+                    aryAuditDeletes.Add(String.Format("        SELECT base.ID, convert(nvarchar({4}),{2}), NULL, {1}, {5}, base.[_description]" & vbNewLine & _
+                                        "            FROM deleted base" _
+                                        , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, "", objColumn.DataTypeSize, CInt(objTable.ID)))
+                  Else
+                    aryAuditInserts.Add(String.Format("        SELECT ID, NULL, convert(nvarchar({2}),[{0}]), {1}, {3}, [_description]" & vbNewLine & _
+                                        "            FROM inserted WHERE [{0}] IS NOT NULL" _
+                                        , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize, CInt(objTable.ID)))
+                    aryAuditUpdates.Add(String.Format("        SELECT i.ID, convert(nvarchar({2}),d.[{0}]), convert(nvarchar({2}),i.[{0}]), {1}, {3}, i.[_description]" & vbNewLine & _
+                                        "            FROM inserted i" & vbNewLine & _
+                                        "            INNER JOIN deleted d ON i.[id] = d.[id] AND NOT d.[{0}] = i.[{0}] AND UPDATE([{0}])" _
+                                        , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize, CInt(objTable.ID)))
+                    aryAuditDeletes.Add(String.Format("        SELECT ID, convert(nvarchar({2}),[{0}]), NULL, {1}, {3}, [_description]" & vbNewLine & _
+                                        "            FROM deleted WHERE [{0}] IS NOT NULL" _
+                                        , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize, CInt(objTable.ID)))
+                  End If
                 End If
               End If
-            End If
           Next
 
 
