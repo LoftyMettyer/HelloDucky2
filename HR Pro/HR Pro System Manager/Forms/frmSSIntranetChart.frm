@@ -962,7 +962,7 @@ Private Sub cboTableX_Click()
     SetComboItemOrTopItem cboTableZ, Chart_TableID_2
     
     ' clear the filter box as the tables have changed
-    ClearFilter
+    ' ClearFilter
   End If
   
 
@@ -1144,9 +1144,9 @@ If Index = 0 Or (Index > 0 And cboAggregateType.ListCount = 1) Then
 End If
 ' clear the filter if it doesn't match the base table
 
-If MatchFilterToBaseTable = False Then
-  cmdFilterClear_Click
-End If
+'If MatchFilterToBaseTable = False Then
+'  cmdFilterClear_Click
+'End If
 
 RefreshControls
 
@@ -1228,6 +1228,11 @@ Private Sub RefreshControls()
     lblAggregateType.Enabled = True
     
   End If
+  
+  If MatchFilterToBaseTable = False Then
+    cmdFilterClear_Click
+  End If
+  
   
 End Sub
 
@@ -1569,7 +1574,7 @@ Private Sub ClearFilter()
   miFilterTableID = 0
   cmdFilterClear.Enabled = False
   mfChanged = True
-  RefreshControls
+  ' RefreshControls
 End Sub
 
 
