@@ -1416,7 +1416,7 @@ Public Sub CheckNotifications(lngBatchJobID As Long)
       Else
         If rsBatch!EmailSuccess > 0 Then
           Set frmSendEmail = New frmEmailSel
-          frmSendEmail.SendBatchNotification "OpenHR " & IIf(gblnReportPackMode, "Report Pack", "Batch Job") & " Succeeded: '" & rsBatch!Name & "'", mstrEventLogIDs, rsBatch!EmailFailed
+          frmSendEmail.SendBatchNotification "OpenHR " & IIf(gblnReportPackMode, "Report Pack", "Batch Job") & " Succeeded: '" & rsBatch!Name & "'", mstrEventLogIDs, rsBatch!EmailSuccess
           Set frmSendEmail = Nothing
         End If
       End If
