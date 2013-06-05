@@ -7702,7 +7702,7 @@ PRINT 'Step 12 - Auto Configuration'
 	SELECT @perstableid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup]
 		WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_TablePersonnel' AND [ParameterType] = 'PType_TableID';
 
-	IF @perstableid IS NOT NULL
+	IF @perstableid > 0
 	BEGIN
 
 		EXECUTE dbo.spstat_setdefaultmodulesetting 'MODULE_MOBILE', 'Param_TablePersonnel', @perstableid, 'PType_TableID';
