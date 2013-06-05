@@ -1,6 +1,8 @@
 VERSION 5.00
-Object = "{66DD2720-DB90-4D94-963B-369CC9DC8BF8}#5.4#0"; "COAWF_TabPage.ocx"
+Object = "{66DD2720-DB90-4D94-963B-369CC9DC8BF8}#5.6#0"; "COAWF_TabPage.ocx"
+Object = "{D5FE523D-FF52-40EC-931A-8D39BC9AB29C}#1.0#0"; "TabPage2.ocx"
 Begin VB.Form frmTestHarness 
+   BackColor       =   &H000000C0&
    Caption         =   "Form1"
    ClientHeight    =   6165
    ClientLeft      =   120
@@ -10,6 +12,31 @@ Begin VB.Form frmTestHarness
    ScaleHeight     =   6165
    ScaleWidth      =   10380
    StartUpPosition =   3  'Windows Default
+   Begin VB.Frame Frame1 
+      Caption         =   "Frame1"
+      Height          =   1320
+      Left            =   5805
+      TabIndex        =   7
+      Top             =   180
+      Width           =   3300
+      Begin VB.CommandButton Command5 
+         Caption         =   "Command5"
+         Height          =   375
+         Left            =   540
+         TabIndex        =   8
+         Top             =   495
+         Width           =   960
+      End
+   End
+   Begin Project1.COAWFTabPage2 COAWFTabPage21 
+      Height          =   2535
+      Left            =   7290
+      TabIndex        =   6
+      Top             =   3060
+      Width           =   2265
+      _ExtentX        =   3995
+      _ExtentY        =   4471
+   End
    Begin VB.CommandButton Command4 
       Caption         =   "Command4"
       Height          =   420
@@ -46,12 +73,12 @@ Begin VB.Form frmTestHarness
    End
    Begin COAWFTabPage.COAWF_TabPage objTabPages 
       Height          =   3435
-      Left            =   630
+      Left            =   450
       TabIndex        =   1
-      Top             =   945
+      Top             =   1215
       Width           =   3615
-      _extentx        =   6376
-      _extenty        =   6059
+      _ExtentX        =   6376
+      _ExtentY        =   6059
    End
    Begin VB.CommandButton Command1 
       Caption         =   "Load"
@@ -111,9 +138,9 @@ Private Sub Command4_Click()
 End Sub
 
 Private Sub objTabPages_Click()
-MsgBox "click"
+'MsgBox "click"
 End Sub
 
 Private Sub objTabPages_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
-MsgBox "mousedown"
+'MsgBox "mousedown"
 End Sub
