@@ -4414,6 +4414,7 @@ Private Function CopyControlProperties(pCtlSource As VB.Control, _
   Dim fRootIdentifierFound As Boolean
   Dim asItemValues() As String
   Dim pWasCut As Boolean
+  Dim iLoop As Integer
 
   ' Get the given control's type.
   iControlType = WebFormControl_Type(pCtlSource)
