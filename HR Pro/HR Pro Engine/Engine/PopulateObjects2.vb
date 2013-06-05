@@ -78,7 +78,7 @@
         column.Table = table
         column.Parent = table
 
-        table.Columns.Add(column)
+        table.Objects.Add(column)
       Next
 
     End Sub
