@@ -1883,8 +1883,7 @@ Public Function WebFormItemHasProperty(piItemType As WorkflowWebFormItemTypes, _
         Or (piItemType = giWFFORMITEM_LABEL) _
         Or (piItemType = giWFFORMITEM_INPUTVALUE_FILEUPLOAD) _
         Or (piItemType = giWFFORMITEM_DBFILE) _
-        Or (piItemType = giWFFORMITEM_WFFILE) _
-        Or (piItemType = giWFFORMITEM_PAGETAB)
+        Or (piItemType = giWFFORMITEM_WFFILE)
     
     Case WFITEMPROP_FONT ' 5
       fHasProperty = (piItemType = giWFFORMITEM_BUTTON) _
