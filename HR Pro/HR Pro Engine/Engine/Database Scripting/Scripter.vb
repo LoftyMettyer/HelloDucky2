@@ -578,8 +578,6 @@ Namespace ScriptDB
 
           'Next
 
-
-
           ' Update any parents
           If aryParentsToUpdate.ToArray.Length > 0 Then
             sSQLParentColumns = String.Format("    -- Refresh any parents" & vbNewLine & String.Join(vbNewLine, aryParentsToUpdate.ToArray()))
@@ -588,7 +586,7 @@ Namespace ScriptDB
 
           ' Validation
           sValidation = String.Format("    -- Validation" & vbNewLine & _
-              "    IF (SELECT TOP 1 [tablefromid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid ORDER BY [nestlevel] ASC) = {0}" & vbNewLine & _
+              "    IF @isovernight = 0 AND (SELECT TOP 1 [tablefromid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid ORDER BY [nestlevel] ASC) = {0}" & vbNewLine & _
               "    BEGIN" & vbNewLine & _
               "        SET @sValidation = '';" & vbNewLine & _
               "        SELECT @sValidation = @sValidation + dbo.[udfvalid_{1}](ID, [_description]) FROM inserted" & vbNewLine & _
@@ -618,8 +616,7 @@ Namespace ScriptDB
             sSQLWriteableColumns = String.Empty
           End If
 
-
-          ' Build Audit strings
+          ' Build audit strings
           If aryAuditUpdates.ToArray.Length > 0 Then
             sSQLCode_AuditInsert = String.Format("    INSERT @audit (id, oldvalue, newvalue, tableid, tablename, columnname, columnid, recorddesc)" & vbNewLine & _
                                            "{0};" _
@@ -631,7 +628,6 @@ Namespace ScriptDB
                                            "{0};" _
                                           , String.Join(vbNewLine & "        UNION" & vbNewLine, aryAuditDeletes.ToArray()))
           End If
-
 
           ' Update statement of all the calculated columns
           If aryCalculatedColumns.ToArray.Length > 0 Then
