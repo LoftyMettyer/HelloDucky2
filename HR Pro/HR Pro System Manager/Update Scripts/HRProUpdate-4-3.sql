@@ -1803,19 +1803,21 @@ PRINT 'Step - Trigger functionality'
 		[actiontype]  [tinyint] NOT NULL)'
 
 	EXEC spsys_setsystemsetting 'advanceddatabasesetting', 'globalupdatebatchsize', 1;
-
+	EXEC spsys_setsystemsetting 'advanceddatabasesetting', 'deadlockretrycount', 10;
 
 /* ------------------------------------------------------------- */
 PRINT 'Step - System metadata indexing'
 
 	IF  EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysEventLogDetails]') AND name = N'IDX_EventLogID')
 		DROP INDEX [IDX_EventLogID] ON [dbo].[ASRSysEventLogDetails] WITH ( ONLINE = OFF )
+	IF  EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysEmailQueue]') AND name = N'IDX_LinkRecordID')
+		DROP INDEX [IDX_LinkRecordID] ON [dbo].[ASRSysEmailQueue] WITH ( ONLINE = OFF )
 	IF  EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysEmailQueue]') AND name = N'IDX_RecordTableID')
 		DROP INDEX [IDX_RecordTableID] ON [dbo].[ASRSysEmailQueue] WITH ( ONLINE = OFF )
 
 	EXEC sp_executesql N'CREATE CLUSTERED INDEX [IDX_EventLogID] ON [dbo].[ASRSysEventLogDetails] ([EventLogID] ASC)'
 	EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_RecordTableID] ON [dbo].[ASRSysEmailQueue] ([RecordID] ASC, [TableID] ASC)'
-
+	EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_LinkRecordID] ON [dbo].[ASRSysEmailQueue] ([LinkID] ASC, [RecordID] ASC)'
 
 
 /* ------------------------------------------------------------- */
