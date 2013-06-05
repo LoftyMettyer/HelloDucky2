@@ -12702,7 +12702,7 @@ PRINT 'Step 11 of X - New Shared Table Transfer Types'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (1,72,1,''Employee Code'',0,1,2,1,1)'
 		EXEC sp_executesql @NVarCommand
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (2,72,1,''Absence Type'',0,0,2,1,0)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (2,72,1,''Absence Type'',0,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (3,72,0,''Absence Reason'',0,0,2,0,0)'
 		EXEC sp_executesql @NVarCommand
@@ -12720,7 +12720,14 @@ PRINT 'Step 11 of X - New Shared Table Transfer Types'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (10,72,0,''End Time'',0,0,2,0,0)'
 		EXEC sp_executesql @NVarCommand
+
 	END
+
+	-- Some test databases have had previous script run on this.
+	SELECT @NVarCommand = 'UPDATE [ASRSysAccordTransferFieldDefinitions]
+			SET [AlwaysTransfer] = 1
+			WHERE [TransferTypeID] = 72 AND [TransferFieldID] = 2;'
+	EXEC sp_executesql @NVarCommand
 
 
 	-- SAP Adoption
