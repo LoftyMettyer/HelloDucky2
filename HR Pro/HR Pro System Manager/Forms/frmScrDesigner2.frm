@@ -15,7 +15,7 @@ Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "COASD_SelectionBox.ocx
 Object = "{0BE8C79E-5090-4700-B420-B767D1E19561}#1.0#0"; "COASD_Spinner.ocx"
 Object = "{93EA589D-C793-4EE4-BE53-52A646038BAF}#1.0#0"; "COASD_WorkingPattern.ocx"
 Object = "{AD837810-DD1E-44E0-97C5-854390EA7D3A}#3.2#0"; "COA_Navigation.ocx"
-Object = "{F3E91317-CE60-4B7E-A1F0-2F0EC0BFFC34}#1.0#0"; "COASD_ColourSelector.ocx"
+Object = "{C1ECF24D-7ECA-4C65-BBFD-DD76B98E3DF2}#1.0#0"; "COASD_ColourSelector.ocx"
 Begin VB.Form frmScrDesigner2 
    AutoRedraw      =   -1  'True
    Caption         =   "Screen Designer"
@@ -52,7 +52,6 @@ Begin VB.Form frmScrDesigner2
       Width           =   2430
       _ExtentX        =   4286
       _ExtentY        =   556
-      InScreenDesigner=   -1  'True
    End
    Begin COANavigation.COA_Navigation ASRDummyNavigation 
       Height          =   510
