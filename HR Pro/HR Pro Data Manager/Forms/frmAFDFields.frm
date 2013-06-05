@@ -43,7 +43,6 @@ Begin VB.Form frmAFDFields
          _Version        =   196617
          DataMode        =   2
          RecordSelectors =   0   'False
-         Col.Count       =   8
          AllowUpdate     =   0   'False
          MultiLine       =   0   'False
          AllowRowSizing  =   0   'False
@@ -80,7 +79,7 @@ Begin VB.Form frmAFDFields
          Columns(1).DataField=   "Column 1"
          Columns(1).DataType=   8
          Columns(1).FieldLen=   256
-         Columns(2).Width=   1244
+         Columns(2).Width=   1482
          Columns(2).Caption=   "Initial(s)"
          Columns(2).Name =   "initial"
          Columns(2).DataField=   "Column 2"
@@ -157,13 +156,13 @@ Begin VB.Form frmAFDFields
          Width           =   2500
       End
       Begin VB.CheckBox chkCounty 
-         Caption         =   "Include ?"
+         Caption         =   "Include"
          Height          =   285
          Left            =   4300
          TabIndex        =   16
          Top             =   2625
          Value           =   1  'Checked
-         Width           =   1125
+         Width           =   1000
       End
       Begin VB.TextBox txtTelephone 
          Height          =   315
@@ -173,13 +172,13 @@ Begin VB.Form frmAFDFields
          Width           =   2500
       End
       Begin VB.CheckBox chkTelephone 
-         Caption         =   "Include ?"
+         Caption         =   "Include"
          Height          =   285
          Left            =   4300
          TabIndex        =   18
          Top             =   2940
          Value           =   1  'Checked
-         Width           =   1125
+         Width           =   1000
       End
       Begin VB.TextBox txtTown 
          Height          =   315
@@ -189,13 +188,13 @@ Begin VB.Form frmAFDFields
          Width           =   2500
       End
       Begin VB.CheckBox chkTown 
-         Caption         =   "Include ?"
+         Caption         =   "Include"
          Height          =   285
          Left            =   4300
          TabIndex        =   14
          Top             =   2310
          Value           =   1  'Checked
-         Width           =   1125
+         Width           =   1000
       End
       Begin VB.TextBox txtStreet 
          Height          =   315
@@ -205,13 +204,13 @@ Begin VB.Form frmAFDFields
          Width           =   2500
       End
       Begin VB.CheckBox chkStreet 
-         Caption         =   "Include ?"
+         Caption         =   "Include"
          Height          =   285
          Left            =   4300
          TabIndex        =   10
          Top             =   1680
          Value           =   1  'Checked
-         Width           =   1125
+         Width           =   1000
       End
       Begin VB.TextBox txtLocality 
          Height          =   315
@@ -221,13 +220,13 @@ Begin VB.Form frmAFDFields
          Width           =   2500
       End
       Begin VB.CheckBox chkLocality 
-         Caption         =   "Include ?"
+         Caption         =   "Include"
          Height          =   285
          Left            =   4300
          TabIndex        =   12
          Top             =   1995
          Value           =   1  'Checked
-         Width           =   1125
+         Width           =   1000
       End
       Begin VB.TextBox txtSurname 
          Height          =   315
@@ -237,13 +236,13 @@ Begin VB.Form frmAFDFields
          Width           =   2500
       End
       Begin VB.CheckBox chkSurname 
-         Caption         =   "Include ?"
+         Caption         =   "Include"
          Height          =   285
          Left            =   4300
          TabIndex        =   6
          Top             =   1050
          Value           =   1  'Checked
-         Width           =   1125
+         Width           =   1000
       End
       Begin VB.TextBox txtProperty 
          Height          =   315
@@ -253,13 +252,13 @@ Begin VB.Form frmAFDFields
          Width           =   2500
       End
       Begin VB.CheckBox chkProperty 
-         Caption         =   "Include ?"
+         Caption         =   "Include"
          Height          =   285
          Left            =   4300
          TabIndex        =   8
          Top             =   1365
          Value           =   1  'Checked
-         Width           =   1125
+         Width           =   1000
       End
       Begin VB.TextBox txtForename 
          Height          =   315
@@ -269,13 +268,13 @@ Begin VB.Form frmAFDFields
          Width           =   2500
       End
       Begin VB.CheckBox chkForename 
-         Caption         =   "Include ?"
+         Caption         =   "Include"
          Height          =   285
          Left            =   4300
          TabIndex        =   2
          Top             =   420
          Value           =   1  'Checked
-         Width           =   1125
+         Width           =   1000
       End
       Begin VB.TextBox txtInitials 
          Height          =   315
@@ -285,13 +284,13 @@ Begin VB.Form frmAFDFields
          Width           =   2500
       End
       Begin VB.CheckBox chkInitials 
-         Caption         =   "Include ?"
+         Caption         =   "Include"
          Height          =   285
          Left            =   4300
          TabIndex        =   4
          Top             =   735
          Value           =   1  'Checked
-         Width           =   1125
+         Width           =   1000
       End
       Begin VB.Label Label8 
          BackStyle       =   0  'Transparent
@@ -968,7 +967,6 @@ Private Sub ClearMerged()
   txtMergedTelephone = ""
 
 End Sub
-
 
 ' The following subs display the 'Data has changed' note on the form if the user
 ' amends any of the data returned by Afd before copying across to their database.
