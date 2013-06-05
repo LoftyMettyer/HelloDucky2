@@ -556,7 +556,7 @@ PRINT 'Step - Add abstraction layer to user defined tables'
 				EXECUTE sp_executesql @sqlCommand;
 
 				-- Read the security for the base table
-				IF EXISTS(SELECT * FROM sys.sysprotects WHERE OBJECT_ID('''' + @oldname + '''') = id)
+				IF EXISTS(SELECT * FROM sys.sysprotects WHERE OBJECT_ID('''' + @newname + '''') = id)
 				BEGIN
 
 					INSERT @permissions	EXEC sp_helprotect @name = @newname, @grantorname = ''dbo'';
@@ -572,7 +572,7 @@ PRINT 'Step - Add abstraction layer to user defined tables'
 					EXECUTE sp_executesql @sqlApplyPermissions;
 
 					-- Revoke existing permissions on the base table
-					SELECT @sqlRevokePermissions = @sqlRevokePermissions + ''REVOKE SELECT, UPDATE, DELETE, INSERT ON '' + p.[object] + '' TO ['' + p.[grantee] + ''];'' + CHAR(13)
+					SELECT @sqlRevokePermissions = @sqlRevokePermissions + ''REVOKE SELECT, UPDATE, DELETE, INSERT ON ['' + @newname + ''] TO ['' + p.[grantee] + ''];'' + CHAR(13)
 						FROM @permissions p
 					EXECUTE sp_executesql @sqlRevokePermissions;
 				END
@@ -593,6 +593,7 @@ PRINT 'Step - Add abstraction layer to user defined tables'
 	SELECT @NVarCommand = @NVarCommand + 'EXECUTE dbo.spASRConvertDataTablesToViews ''' + TableName + ''';'
 		FROM ASRSysTables;
 	EXECUTE sp_executesql @NVarCommand;
+
 
 /* ------------------------------------------------------------- */
 PRINT 'Step - Column sizing'
