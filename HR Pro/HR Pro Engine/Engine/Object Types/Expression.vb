@@ -674,14 +674,13 @@ Namespace Things
 
           objRelation = Me.BaseTable.GetRelation(objThisColumn.Table.ID)
 
-          '          Me.Dependencies.AddIfNew(objRelation)
-
           If objRelation.RelationshipType = ScriptDB.RelationshipType.Parent Then
-            LineOfCode.Code = String.Format("ISNULL([{0}].[{1}],{2})", objThisColumn.Table.Name, objThisColumn.Name, objThisColumn.SafeReturnType)
 
             If Not Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription Then
               Me.AssociatedColumn.Table.DependsOnColumns.AddIfNew(objThisColumn)
             End If
+
+            LineOfCode.Code = String.Format("ISNULL([{0}].[{1}],{2})", objThisColumn.Table.Name, objThisColumn.Name, objThisColumn.SafeReturnType)
 
             ' Add table join component
             sRelationCode = String.Format("LEFT JOIN [dbo].[{0}] ON [{0}].[ID] = base.[ID_{1}]" _
@@ -710,6 +709,9 @@ Namespace Things
             Me.ReferencesParent = True
 
           Else
+
+            ' Add to dependency stack
+            objThisColumn.Table.DependsOnColumns.AddIfNew(Me.AssociatedColumn)
 
             ' In a later release this can be tidied up to populate at load time
             [Component].ChildRowDetails.Order = objThisColumn.Table.GetObject(Enums.Type.TableOrder, [Component].ChildRowDetails.OrderID)

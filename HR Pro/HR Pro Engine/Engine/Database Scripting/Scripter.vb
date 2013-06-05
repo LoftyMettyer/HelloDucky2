@@ -413,12 +413,26 @@ Namespace ScriptDB
               aryAllWriteableColumns.Add(String.Format("[ID_{0}]", CInt(objRelation.ParentID)))
               aryAllWriteableFormatted.Add(String.Format("[ID_{0}]", CInt(objRelation.ParentID)))
 
-              aryParentsToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {1})" & vbNewLine & _
-                  "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM inserted)" & vbNewLine _
-                  , objRelation.PhysicalName, CInt(objRelation.ParentID)))
+              objRelatedTable = Globals.Things.GetObject(Things.Type.Table, objRelation.ParentID)
+              For Each objColumn In objTable.DependsOnColumns
+                If objColumn.Table Is objRelatedTable Then
+                  aryColumns.Add(String.Format("base.{0} = {1}", objColumn.Name, objColumn.Calculation.UDF.CallingCode))
+                End If
+              Next
 
-              aryParentsToUpdate_Delete.Add(String.Format("    UPDATE [dbo].[{1}] SET [updflag] = 1 WHERE [dbo].[{1}].[id] IN (SELECT DISTINCT [id_{2}] FROM deleted)" & vbNewLine & vbNewLine _
-                , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID)))
+              If aryColumns.Count > 0 Then
+                'aryParentsToUpdate.Add(String.Format("--    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {1})" & vbNewLine & _
+                '    "--        WITH base" & vbNewLine & _
+                '    "--            SELECT * FROM dbo.{0} WHERE [id} IN  (SELECT DISTINCT [id_{1}] FROM inserted)" & vbNewLine & _
+                '    "--        UPDATE [dbo].[{0}] base SET {2}" & vbNewLine _
+                '    , objRelation.PhysicalName, CInt(objRelation.ParentID), String.Join(vbNewLine & ", ", aryColumns.ToArray())))
+                aryParentsToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {1})" & vbNewLine & _
+                    "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM inserted)" & vbNewLine _
+                    , objRelation.PhysicalName, CInt(objRelation.ParentID)))
+
+                aryParentsToUpdate_Delete.Add(String.Format("    UPDATE [dbo].[{1}] SET [updflag] = 1 WHERE [dbo].[{1}].[id] IN (SELECT DISTINCT [id_{2}] FROM deleted)" & vbNewLine & vbNewLine _
+                    , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID)))
+              End If
 
             Else
 
