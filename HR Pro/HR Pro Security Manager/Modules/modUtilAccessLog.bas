@@ -29,6 +29,7 @@ Public Enum UtilityType
   utlCareer = 24
   utlWorkflow = 25
   utlVersion1 = 26
+  utlReportPack = 27
 End Enum
 
 
