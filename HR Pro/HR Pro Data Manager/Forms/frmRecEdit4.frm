@@ -7597,6 +7597,11 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
           .ForeColor = objScreenControl.ForeColor
         End If
 
+        ' Photo type
+        If iControlType = ctlPhoto Then
+          .BorderStyle = objScreenControl.BorderStyle
+        End If
+
         ' If the control is an image then load the Picture
         If iControlType = ctlImage Then
 
