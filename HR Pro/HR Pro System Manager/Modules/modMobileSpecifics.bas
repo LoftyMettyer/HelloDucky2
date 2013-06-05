@@ -329,7 +329,8 @@ Private Function CreateSP_MobileRegistration() As Boolean
     "          @iUserRecordID integer," & vbNewLine & _
     "          @sURL varchar(MAX)," & vbNewLine & _
     "          @sUserName varchar(MAX)," & vbNewLine & _
-    "          @sMessage varchar(MAX);" & vbNewLine & vbNewLine
+    "          @sMessage varchar(MAX)," & vbNewLine & _
+    "          @dtExpiryDate datetime;" & vbNewLine & vbNewLine
     
   sProcSQL = sProcSQL & "  SET @iCount = 0;" & vbNewLine & _
     "  SET @psMessage = '';" & vbNewLine & _
@@ -340,6 +341,15 @@ Private Function CreateSP_MobileRegistration() As Boolean
     "      SET @psMessage = 'No records exist with the given email address.';" & vbNewLine & _
     "  IF @iCount > 1" & vbNewLine & _
     "      SET @psMessage = 'More than 1 record exists with the given email address.';" & vbNewLine & vbNewLine
+
+sProcSQL = sProcSQL & "  IF @psMessage = ''" & vbNewLine & _
+    "  BEGIN" & vbNewLine & _
+    "    SELECT @dtExpiryDate = [" & mvar_sLeavingDateColumn & "]" & vbNewLine & _
+    "        FROM " & mvar_sLoginTable & vbNewLine & _
+    "        WHERE [" & mvar_sUniqueEmailColumn & "] = @psEmailAddress AND [" & mvar_sUniqueEmailColumn & "] IS NOT NULL;" & vbNewLine & vbNewLine & _
+    "    IF DATEDIFF(d, GETDATE(), ISNULL(@dtExpiryDate, GETDATE())) < 0" & vbNewLine & _
+    "        SET @psMessage = 'Unable to register you, please contact your administrator.';" & vbNewLine & _
+    "  END" & vbNewLine
 
   sProcSQL = sProcSQL & _
     "  SELECT @sURL = ParameterValue FROM ASRSysModuleSetup WHERE ModuleKey = 'MODULE_WORKFLOW' AND ParameterKey = 'Param_URL';" & vbNewLine & _
