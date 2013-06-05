@@ -136,7 +136,7 @@ Begin VB.Form frmSSIntranetChart
          Left            =   1425
          Style           =   2  'Dropdown List
          TabIndex        =   29
-         Top             =   1125
+         Top             =   375
          Width           =   1890
       End
       Begin VB.ComboBox cboColumns 
@@ -155,7 +155,7 @@ Begin VB.Form frmSSIntranetChart
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   23
-         Top             =   750
+         Top             =   1125
          Width           =   2670
       End
       Begin VB.ComboBox cboParents 
@@ -174,7 +174,7 @@ Begin VB.Form frmSSIntranetChart
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   22
-         Top             =   375
+         Top             =   750
          Width           =   2670
       End
       Begin VB.Label lblChartIntColour 
@@ -210,7 +210,7 @@ Begin VB.Form frmSSIntranetChart
          Height          =   195
          Left            =   210
          TabIndex        =   30
-         Top             =   1185
+         Top             =   435
          Width           =   1020
       End
       Begin VB.Label lblIntersectionColumn 
@@ -228,7 +228,7 @@ Begin VB.Form frmSSIntranetChart
          Height          =   195
          Left            =   210
          TabIndex        =   25
-         Top             =   810
+         Top             =   1185
          Width           =   795
       End
       Begin VB.Label lblIntersectionTable 
@@ -246,7 +246,7 @@ Begin VB.Form frmSSIntranetChart
          Height          =   195
          Left            =   210
          TabIndex        =   24
-         Top             =   420
+         Top             =   795
          Width           =   600
       End
    End
@@ -715,12 +715,15 @@ Private Sub cboAggregateType_Click(Index As Integer)
   mfChanged = True
   If Not mfLoading Then
   ChartAggregateType = cboAggregateType(Index).ItemData(cboAggregateType(Index).ListIndex)
-   RefreshControls
+  
+  ' disable intersection column for count
+  lblIntersectionColumn.Enabled = Not (cboAggregateType(0) = "Count")
+  cboColumns(2).Enabled = Not (cboAggregateType(0) = "Count")
+    
+  ' If not 'count' then filter columns by datatype of numeric...
+    
+  RefreshControls
  End If
-End Sub
-
-Private Sub cboChartColColumn_Change()
-
 End Sub
 
 Private Sub cboChartColColumn_Click()
@@ -737,8 +740,8 @@ Private Sub cboChartType_Click()
   If cboChartType = "Single Axis Chart" Then
     'hide the vertical frame
     Me.fraInt_Data.Height = 1275
-    Me.lblAggregateType.Top = 405
-    Me.cboAggregateType(0).Top = 360
+    'Me.lblAggregateType.Top = 405
+    'Me.cboAggregateType(0).Top = 360
 
     fraVer_Data.Visible = False
     fraInt_Data.Top = fraHor_Data.Top + fraHor_Data.Height + 90
@@ -751,8 +754,8 @@ Private Sub cboChartType_Click()
     Me.Height = 6935
   Else
     Me.fraInt_Data.Height = 2010
-    Me.lblAggregateType.Top = 1185
-    Me.cboAggregateType(0).Top = 1125
+    'Me.lblAggregateType.Top = 1185
+    'Me.cboAggregateType(0).Top = 1125
     
     ' display the vertical frame
     fraVer_Data.Visible = True
@@ -765,10 +768,10 @@ Private Sub cboChartType_Click()
     ' Me.Height = 8300
   End If
   
-  cmdOk.Top = fraChartFilter.Top + fraChartFilter.Height + 190
-  cmdCancel.Top = cmdOk.Top
+  cmdOK.Top = fraChartFilter.Top + fraChartFilter.Height + 190
+  cmdCancel.Top = cmdOK.Top
   
-  Me.Height = cmdOk.Top + 500 + cmdOk.Height + 190
+  Me.Height = cmdOK.Top + 500 + cmdOK.Height + 190
   
   EnableDisableCombos
 
@@ -1047,7 +1050,7 @@ End Sub
 Private Sub RefreshControls()
   
   
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
 End Sub
 
@@ -1232,7 +1235,7 @@ Private Sub Form_Load()
   
   For jnCount = 0 To 2
     cboSortOrder(jnCount).Clear
-    cboSortOrder(jnCount).AddItem ""
+    'cboSortOrder(jnCount).AddItem ""
     cboSortOrder(jnCount).AddItem "Ascending"
     cboSortOrder(jnCount).AddItem "Descending"
   Next
@@ -1639,7 +1642,7 @@ Private Function PopulateAggregateCombo(piAggregateType As Integer, Index As Int
     
   piColumnDataType = IIf(Index = 0, GetColumnDataType(mlngChartColumnID), GetColumnDataType(mlngChart_ColumnID_3))
   
-  If piColumnDataType = dtinteger Or piColumnDataType = dtNUMERIC Then
+  'If piColumnDataType = dtinteger Or piColumnDataType = dtNUMERIC Then
     cboAggregateType(0).AddItem "Total"
     cboAggregateType(0).ItemData(cboAggregateType(0).NewIndex) = 1
     cboAggregateType(0).AddItem "Average"
@@ -1648,7 +1651,7 @@ Private Function PopulateAggregateCombo(piAggregateType As Integer, Index As Int
     cboAggregateType(0).ItemData(cboAggregateType(0).NewIndex) = 3
     cboAggregateType(0).AddItem "Maximum"
     cboAggregateType(0).ItemData(cboAggregateType(0).NewIndex) = 4
-  End If
+  'End If
   
   ' Set the correct item as default
   For i = 0 To cboAggregateType(0).ListCount - 1
