@@ -55,7 +55,7 @@
         objAdapter.Fill(dsDataSet)
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(Phoenix.ErrorHandler.Section.LoadingData, "ExecuteQuery", Phoenix.ErrorHandler.Severity.Error, ex.Message, ex.InnerException.ToString)
+        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.LoadingData, "ExecuteQuery", DBScripter.ErrorHandler.Severity.Error, ex.Message, ex.InnerException.ToString)
         Return Nothing
 
       Finally

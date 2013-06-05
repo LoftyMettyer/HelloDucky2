@@ -10,9 +10,9 @@ Namespace ErrorHandler
     Inherits System.ComponentModel.BindingList(Of ErrorHandler.Error)
     Implements iErrors
 
-    Public Shadows Sub Add(ByVal Section As Phoenix.ErrorHandler.Section, ByVal ObjectName As String, ByVal Severity As Phoenix.ErrorHandler.Severity, ByVal Message As String, ByVal Detail As String)
+    Public Shadows Sub Add(ByVal Section As DBScripter.ErrorHandler.Section, ByVal ObjectName As String, ByVal Severity As DBScripter.ErrorHandler.Severity, ByVal Message As String, ByVal Detail As String)
 
-      Dim objError As Phoenix.ErrorHandler.Error
+      Dim objError As DBScripter.ErrorHandler.Error
 
       objError.Section = Section
       objError.ObjectName = ObjectName
@@ -29,7 +29,7 @@ Namespace ErrorHandler
     Public Sub OutputToFile(ByRef FileName As String) Implements Interfaces.iErrors.OutputToFile
 
       Dim objWriter As System.IO.StreamWriter
-      Dim objError As Phoenix.ErrorHandler.Error
+      Dim objError As DBScripter.ErrorHandler.Error
       Dim sMessage As String
 
       objWriter = System.IO.File.AppendText(FileName)
@@ -48,9 +48,9 @@ Namespace ErrorHandler
   End Class
 
   Public Structure [Error]
-    Public Section As Phoenix.ErrorHandler.Section
+    Public Section As DBScripter.ErrorHandler.Section
     Public ObjectName As String
-    Public Severity As Phoenix.ErrorHandler.Severity
+    Public Severity As DBScripter.ErrorHandler.Severity
     Public Message As String
     Public Detail As String
     Public DateTime As Date

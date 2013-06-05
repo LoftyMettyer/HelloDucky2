@@ -48,7 +48,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(Phoenix.ErrorHandler.Section.Views, "DropViews", Phoenix.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.Views, "DropViews", DBScripter.ErrorHandler.Severity.Error, ex.Message, vbNullString)
         bOK = False
 
       End Try
@@ -69,7 +69,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(Phoenix.ErrorHandler.Section.Views, objTable.Name, Phoenix.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.Views, objTable.Name, DBScripter.ErrorHandler.Severity.Error, ex.Message, vbNullString)
 
       End Try
 
@@ -160,7 +160,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(Phoenix.ErrorHandler.Section.TableAndColumns, "Views", Phoenix.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.TableAndColumns, "Views", DBScripter.ErrorHandler.Severity.Error, ex.Message, sSQL)
         bOK = False
 
       End Try
@@ -271,7 +271,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(Phoenix.ErrorHandler.Section.Views, sViewName, Phoenix.ErrorHandler.Severity.Error, ex.Message, sDefinitionSQL)
+        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.Views, sViewName, DBScripter.ErrorHandler.Severity.Error, ex.Message, sDefinitionSQL)
         bOK = False
 
       End Try
@@ -731,7 +731,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(Phoenix.ErrorHandler.Section.Triggers, sTriggerName, Phoenix.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.Triggers, sTriggerName, DBScripter.ErrorHandler.Severity.Error, ex.Message, sSQL)
         bOK = False
 
       Finally
@@ -796,10 +796,10 @@ Namespace ScriptDB
           "    PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
           "END" _
           , sTriggerName, [Role], Table.PhysicalName, sTriggerType, [BodyCode])
-          CommitDB.ScriptStatement(sSQL)
+        CommitDB.ScriptStatement(sSQL)
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(Phoenix.ErrorHandler.Section.UDFs, sTriggerName, Phoenix.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.UDFs, sTriggerName, DBScripter.ErrorHandler.Severity.Error, ex.Message, sSQL)
         Return False
 
       End Try
@@ -922,7 +922,7 @@ Namespace ScriptDB
         CommitDB.ScriptStatement(sSQL)
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(Phoenix.ErrorHandler.Section.UDFs, [ObjectName], Phoenix.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.UDFs, [ObjectName], DBScripter.ErrorHandler.Severity.Error, ex.Message, sSQL)
         Return False
 
       End Try
@@ -1045,7 +1045,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(Phoenix.ErrorHandler.Section.UDFs, sObjectName, Phoenix.ErrorHandler.Severity.Error, ex.Message, sUDFSQL)
+        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.UDFs, sObjectName, DBScripter.ErrorHandler.Severity.Error, ex.Message, sUDFSQL)
 
       Finally
         ProgressInfo.NextStep1()
@@ -1075,7 +1075,7 @@ Namespace ScriptDB
         ' End If
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(Phoenix.ErrorHandler.Section.UDFs, [ObjectName], Phoenix.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.UDFs, [ObjectName], DBScripter.ErrorHandler.Severity.Error, ex.Message, sSQL)
 
         ' dIDN;T work put a note in the error log and create a dummy UDF
         sSQL = String.Format("CREATE FUNCTION [{0}].[{1}] {2}" _
@@ -1204,7 +1204,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(Phoenix.ErrorHandler.Section.LoadingData, sObjectName, Phoenix.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.LoadingData, sObjectName, DBScripter.ErrorHandler.Severity.Error, ex.Message, vbNullString)
 
       Finally
         '     ProgressInfo.NextStep1()
@@ -1283,7 +1283,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(Phoenix.ErrorHandler.Section.UDFs, sObjectName, Phoenix.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.UDFs, sObjectName, DBScripter.ErrorHandler.Severity.Error, ex.Message, vbNullString)
         bOK = False
 
       Finally

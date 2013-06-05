@@ -6,12 +6,12 @@ Namespace Things
   Public Class GlobalModifyItem
     Inherits Things.Base
 
-    Public ColumnID As Phoenix.HCMGuid
+    Public ColumnID As DBScripter.HCMGuid
     Public Value As String
-    Public CalculationID As Phoenix.HCMGuid
-    Public RefColumnID As Phoenix.HCMGuid
-    Public LookupTableID As Phoenix.HCMGuid
-    Public LookupColumnID As Phoenix.HCMGuid
+    Public CalculationID As DBScripter.HCMGuid
+    Public RefColumnID As DBScripter.HCMGuid
+    Public LookupTableID As DBScripter.HCMGuid
+    Public LookupColumnID As DBScripter.HCMGuid
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
