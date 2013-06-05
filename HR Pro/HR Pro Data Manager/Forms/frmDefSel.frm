@@ -496,7 +496,7 @@ Private Sub cboOwner_Click()
 
   Dim sExtraFilter As String
 
-  If Not mblnScheduledJobs Then
+  If Not mblnScheduledJobs And txtSearchFor.Visible Then
     sExtraFilter = IIf(Len(mstrExtraWhereClause) > 0, "(" & mstrExtraWhereClause & ") AND ", "") & "(name LIKE '%" & Replace(txtSearchFor.Text, "'", "''") & "%')"
     GetSQL mutlUtilityType, sExtraFilter, False
     Call Populate_List
@@ -508,7 +508,7 @@ Private Sub cboTables_Click()
   
   Dim sExtraFilter As String
   
-  If Not mblnScheduledJobs Then
+  If Not mblnScheduledJobs And txtSearchFor.Visible Then
     With cboTables
       If .ListIndex > -1 Then
         If mlngTableID <> .ItemData(.ListIndex) Then
@@ -1039,7 +1039,7 @@ Public Sub Refresh_Controls()
   Dim iCount As Integer
   Dim lngTempIndex As Long
   Dim sType As String
-  Dim lngType As UtilityType
+  Dim lngTYPE As UtilityType
   Dim bSystemMgrDefined As Boolean
   
   If mblnLoading Then
@@ -1828,7 +1828,7 @@ Private Sub ShowControls()
   fraBottomButtons.Height = lngOffset + 10
    
   ' Table combo flag now used to show categories or tables
-  lblTables.Visible = Not (mutlUtilityType = utlWorkflow Or mutlUtilityType = utlDocumentMapping _
+  lblTables.Visible = Not (mutlUtilityType = utlWorkflow Or mutlUtilityType = utlDocumentMapping Or mutlUtilityType = utlEmailAddress _
                         Or mutlUtilityType = utlLabelType Or mutlUtilityType = utlEmailGroup Or mblnScheduledJobs)
   cboTables.Visible = lblTables.Visible
     
@@ -2172,7 +2172,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
     msSingularCaption = "Email Address"
     msTableName = "ASRSysEmailAddress"
     msIDField = "EmailID"
-    msRecordSource = "SELECT EmailID, Name FROM " & msTableName
+    msRecordSource = "SELECT EmailID, Name, " & sUtilityType & " FROM " & msTableName
     strExtraWhereClause = "Type = 0"
     mutlUtilityType = utlEmailAddress
     mblnApplyDefAccess = False
