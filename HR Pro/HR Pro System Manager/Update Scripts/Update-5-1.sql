@@ -1218,6 +1218,26 @@ END
 	END
 
 
+
+/* ------------------------------------------------------------- */
+/* Step - Reset Password Parameters */
+/* ------------------------------------------------------------- */
+--Get the existing Mobile Setup parameter
+DECLARE @parametervalue NVARCHAR(255);
+SELECT @parametervalue = [dbo].[udfsys_getmodulesetting]('MODULE_MOBILE', 'Param_UniqueEmailColumn')
+
+--Update Personnel Module Setup
+IF ISNULL(@parametervalue, '0') > 0 
+BEGIN
+EXEC spstat_setmodulesetting
+			'MODULE_PERSONNEL',
+			'Param_FieldsWorkEmail',
+			@parametervalue,
+			'PType_ColumnID';
+END
+
+
+
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
 /* Dont Set the flag to refresh the stored procedures            */
