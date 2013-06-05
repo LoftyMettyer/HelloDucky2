@@ -136,6 +136,10 @@ Namespace Things
       '  Debug.Print(Dependencies(icount).Name)
       'Next
 
+      ' If calculate only when empty add itself to the dependency stack
+      If Me.AssociatedColumn.CalculateIfEmpty Then
+        Dependencies.AddIfNew(Me.AssociatedColumn)
+      End If
 
       aryParameters1.Clear()
       aryParameters2.Clear()
@@ -172,7 +176,6 @@ Namespace Things
       'aryParameters2.Add(String.Format("base.[{0}]", Me.AssociatedColumn.Name))
       'aryParameters3.Add("@originalvalue")
       ' End If
-
 
       ' Add other dependancies
       For Each objDependency In Dependencies
@@ -233,6 +236,8 @@ Namespace Things
             "        END" _
             , String.Join(", ", aryDependsOn.ToArray()), Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.PhysicalName)
       End If
+
+
 
       ' Can object be schemabound
       If Me.BaseExpression.IsSchemaBound Then
@@ -817,6 +822,13 @@ Namespace Things
 
       ' Is this a unique value?
       If objCodeLibrary.IsUniqueCode Then
+
+        'objIDComponent = New Things.Component
+        'objIDComponent.SubType = ScriptDB.ComponentTypes.Value
+        'objIDComponent.ValueString = IIf(Me.ExpressionType <> ScriptDB.ExpressionType.ColumnCalculation, "0", "1")
+        'objIDComponent.ValueType = ScriptDB.ComponentValueTypes.SystemVariable
+        '[Component].Objects.Add(objIDComponent)
+
         Me.ContainsUniqueCode = True
         Me.IsComplex = True
       End If
@@ -1044,40 +1056,42 @@ Namespace Things
 
     End Property
 
-    Private Sub AddToDependencies(ByRef Dependencies As Things.Collection)
+    'Private Sub AddToDependencies(ByRef Dependencies As Things.Collection)
 
-      Dim objDependency As Things.Base
-      Dim objColumn As Things.Column
-      Dim objRelation As Things.Relation
+    '  Dim objDependency As Things.Base
+    '  Dim objColumn As Things.Column
+    '  Dim objRelation As Things.Relation
 
-      For Each objDependency In Dependencies
+    '  For Each objDependency In Dependencies
 
-        If objDependency.Type = Enums.Type.Column Then
-          objColumn = CType(objDependency, Things.Column)
-          If Not Dependencies.Contains(objColumn) Then
-            If objColumn.Table Is Me.BaseTable Then
-              Dependencies.Add(objDependency)
-            End If
-          End If
-        End If
+    '    If objDependency.Type = Enums.Type.Column Then
+    '      objColumn = CType(objDependency, Things.Column)
+    '      If Not Dependencies.Contains(objColumn) Then
+    '        If objColumn.Table Is Me.BaseTable Then
+    '          Dependencies.Add(objDependency)
+    '        End If
+    '      End If
+    '    End If
 
-        If objDependency.Type = Enums.Type.Relation Then
-          objRelation = CType(objDependency, Things.Relation)
-          If Not Dependencies.Contains(objRelation) Then
-            Dependencies.Add(objDependency)
-          End If
-        End If
+    '    If objDependency.Type = Enums.Type.Relation Then
+    '      objRelation = CType(objDependency, Things.Relation)
+    '      If Not Dependencies.Contains(objRelation) Then
+    '        Dependencies.Add(objDependency)
+    '      End If
+    '    End If
 
-      Next
+    '  Next
 
-    End Sub
+    'End Sub
 
     ' Adds a calculated column to the pre-requists stack. This is for efficiency so the UDF is called a minimum of times.
+
     Private Function AddCalculatedColumn(ByRef ReferencedColumn As Things.Column) As ScriptDB.CodeElement
 
       Dim sCallingCode As ScriptDB.CodeElement
       Dim sVariableName As String
       Dim iBackupType As ScriptDB.ExpressionType
+      Dim sStatement As String
 
       If ReferencedColumn.Calculation Is Nothing Then
         ReferencedColumn.Calculation = ReferencedColumn.Table.GetObject(Type.Expression, ReferencedColumn.CalcID)
@@ -1105,7 +1119,13 @@ Namespace Things
         ReferencedColumn.Calculation.ExpressionType = iBackupType
 
         Declarations.Add(String.Format("@part_{0} {1}", sVariableName, ReferencedColumn.DataTypeSyntax))
-        PreStatements.Add(String.Format("SELECT @part_{0} = {1}", sVariableName, ReferencedColumn.Calculation.UDF.CallingCode))
+
+        sStatement = ReferencedColumn.Calculation.UDF.CallingCode
+        If ReferencedColumn.CalculateIfEmpty Then
+          sStatement = String.Format("ISNULL(NULLIF(@prm_{0}, {2}), {1})", ReferencedColumn.Name, sStatement, ReferencedColumn.SafeReturnType)
+        End If
+
+        PreStatements.Add(String.Format("SELECT @part_{0} = {1}", sVariableName, sStatement))
         sCallingCode.Code = String.Format("@part_{0}", sVariableName)
       End If
 
