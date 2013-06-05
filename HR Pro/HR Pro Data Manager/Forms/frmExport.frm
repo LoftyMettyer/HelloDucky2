@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmExport 
@@ -79,11 +79,11 @@ Begin VB.Form frmExport
       TabCaption(1)   =   "Related &Tables"
       TabPicture(1)   =   "frmExport.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraChild"
+      Tab(1).Control(0)=   "fraParent1"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraParent2"
       Tab(1).Control(1).Enabled=   0   'False
-      Tab(1).Control(2)=   "fraParent1"
+      Tab(1).Control(2)=   "fraChild"
       Tab(1).Control(2).Enabled=   0   'False
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
@@ -101,21 +101,21 @@ Begin VB.Form frmExport
       TabCaption(4)   =   "O&ptions"
       TabPicture(4)   =   "frmExport.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraHeaderOptions"
+      Tab(4).Control(0)=   "fraDateOptions"
       Tab(4).Control(0).Enabled=   0   'False
-      Tab(4).Control(1)=   "fraDateOptions"
+      Tab(4).Control(1)=   "fraHeaderOptions"
       Tab(4).Control(1).Enabled=   0   'False
       Tab(4).ControlCount=   2
       TabCaption(5)   =   "O&utput"
       TabPicture(5)   =   "frmExport.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraOutputType"
+      Tab(5).Control(0)=   "fraDelimFile"
       Tab(5).Control(0).Enabled=   0   'False
-      Tab(5).Control(1)=   "fraOutputDestination"
+      Tab(5).Control(1)=   "fraCMGFile"
       Tab(5).Control(1).Enabled=   0   'False
-      Tab(5).Control(2)=   "fraCMGFile"
+      Tab(5).Control(2)=   "fraOutputDestination"
       Tab(5).Control(2).Enabled=   0   'False
-      Tab(5).Control(3)=   "fraDelimFile"
+      Tab(5).Control(3)=   "fraOutputType"
       Tab(5).Control(3).Enabled=   0   'False
       Tab(5).ControlCount=   4
       Begin VB.Frame fraOutputType 
@@ -573,9 +573,9 @@ Begin VB.Form frmExport
             RecordSelectors =   0   'False
             Col.Count       =   11
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -587,9 +587,9 @@ Begin VB.Form frmExport
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmExport.frx":0187
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -1711,7 +1711,7 @@ Public Property Let FormPrint(ByVal bPrint As Boolean)
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -1751,7 +1751,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Public Property Get SelectedID() As Long
@@ -5163,6 +5163,8 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
   Dim lngRecNumCount As Long
   Dim pintConvertCase As Integer  'NPG20071213 Fault 12867
   Dim bSuppNulls As Boolean   'NPG20080617 Suggestion S00816
+  
+  Dim lngLength As Long
 
   On Error GoTo Load_ERROR
   
@@ -5427,10 +5429,11 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
   Do Until rsTemp.EOF
     
     bIsAudited = datGeneral.IsColumnAudited(rsTemp!ColExprID)
+    lngLength = IIf(rsTemp!fillerlength > 999999, 999999, rsTemp!fillerlength)
     
     If rsTemp!Type = "X" Then
       pstrText = rsTemp!Type & vbTab & rsTemp!TableID & vbTab & rsTemp!ColExprID & vbTab _
-          & datGeneral.GetExpression(rsTemp!ColExprID) & vbTab & rsTemp!fillerlength & vbTab & rsTemp!CMGColumnCode & vbTab _
+          & datGeneral.GetExpression(rsTemp!ColExprID) & vbTab & CStr(lngLength) & vbTab & rsTemp!CMGColumnCode & vbTab _
           & IIf(bIsAudited = True, "1", "0") & vbTab
          
       If rsTemp!ColExprID > 0 Then
@@ -5474,7 +5477,7 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
       strHeading = datGeneral.GetTableName(rsTemp!TableID) & "." & datGeneral.GetColumnName(rsTemp!ColExprID)
       pstrText = rsTemp!Type & vbTab & rsTemp!TableID & vbTab & rsTemp!ColExprID & vbTab _
         & strHeading _
-        & vbTab & rsTemp!fillerlength & vbTab & rsTemp!CMGColumnCode & vbTab & IIf(bIsAudited = True, "1", "0") & vbTab
+        & vbTab & CStr(lngLength) & vbTab & rsTemp!CMGColumnCode & vbTab & IIf(bIsAudited = True, "1", "0") & vbTab
         
       If datGeneral.GetDataType(rsTemp!TableID, rsTemp!ColExprID) = sqlNumeric Then
         pstrText = pstrText & IIf(IsNull(rsTemp!Decimals) Or (rsTemp!Decimals = vbNullString), 0, rsTemp!Decimals)
@@ -5498,7 +5501,7 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
     Else
 
       pstrText = rsTemp!Type & vbTab & rsTemp!TableID & vbTab & rsTemp!ColExprID & vbTab & rsTemp!Data _
-        & vbTab & rsTemp!fillerlength & vbTab & rsTemp!CMGColumnCode & vbTab & IIf(bIsAudited = True, "1", "0") & vbTab & _
+        & vbTab & CStr(lngLength) & vbTab & rsTemp!CMGColumnCode & vbTab & IIf(bIsAudited = True, "1", "0") & vbTab & _
         vbNullString
 
       'Default to old heading
@@ -6415,6 +6418,8 @@ Public Sub PrintDef(lExportID As Long)
   Dim varBookmark As Variant
   Dim strPrintString As String
   
+  Dim lngLength As Long
+  
   mlngExportID = lExportID
   
   Set rsTemp = datGeneral.GetRecords("SELECT ASRSysExportName.*, " & _
@@ -6546,9 +6551,10 @@ Public Sub PrintDef(lExportID As Long)
 '                            vbTab & vbTab & rsColumns!Data & _
 '                            vbTab & vbTab & vbTab & "  " & rsColumns!fillerlength & _
 '                            vbTab & "    "
+            lngLength = IIf(rsTemp!fillerlength > 999999, 999999, rsTemp!fillerlength)
             strPrintString = pstrType & _
                             vbTab & vbTab & rsColumns!Data & _
-                            vbTab & vbTab & vbTab & "  " & rsColumns!fillerlength & _
+                            vbTab & vbTab & vbTab & "  " & CStr(lngLength) & _
                             vbTab & "    "
             
             If (rsColumns!Type = "C") Then

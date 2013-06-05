@@ -1013,7 +1013,7 @@ End Select
 End Sub
 
 Private Sub Form_Load()
-  txtLength.MaximumValue = VARCHAR_MAX_Size
+  txtLength.MaximumValue = 999999 'VARCHAR_MAX_Size
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
@@ -1268,20 +1268,26 @@ Public Function GetColumnSize(lColumnID As Long) As Long
   Dim rsColumns As Recordset
   
 '  sSQL = "Select Size, Datatype From ASRSysColumns Where ColumnID = " & lColumnID
-  sSQL = "SELECT [Size] FROM [dbo].[ASRSysColumns] WHERE [ColumnID] = " & lColumnID & ";"
-  
+  'sSQL = "SELECT [Size] FROM [dbo].[ASRSysColumns] WHERE [ColumnID] = " & lColumnID & ";"
+  sSQL = "SELECT [Size], [Datatype] FROM [dbo].[ASRSysColumns] WHERE [ColumnID] = " & CStr(lColumnID)
   Set rsColumns = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
 
-'  Select Case rsColumns("Datatype")
-'    Case sqlDate:
-'      GetColumnSize = 12
-'    Case sqlBoolean:
-'      GetColumnSize = 5
-'    Case Else:
-'      GetColumnSize = rsColumns(0)
-'  End Select
+  Select Case rsColumns("Datatype").Value
+    Case sqlDate
+      GetColumnSize = 12
+    Case sqlBoolean
+      GetColumnSize = 5
+    Case sqlLongVarChar
+      GetColumnSize = 14
+    Case Else:
+      If rsColumns(0).Value > 999999 Then
+        GetColumnSize = 999999
+      Else
+        GetColumnSize = rsColumns(0).Value
+      End If
+  End Select
   
-  GetColumnSize = rsColumns(0).Value
+  'GetColumnSize = rsColumns(0).Value
   
   Set rsColumns = Nothing
     
@@ -1328,7 +1334,7 @@ Public Sub SetCMGOptions(ByVal sDefaultCMGCode As String)
   'NPG20080617 Suggestion S000816
   ' Expand the size of the form and show the Suppress Nulls check box for CMG exports
   Me.Height = 5325
-  cmdOK.Top = 4350
+  cmdOk.Top = 4350
   cmdCancel.Top = 4350
   fraType.Height = 4020
   fraProperties.Height = 2775
