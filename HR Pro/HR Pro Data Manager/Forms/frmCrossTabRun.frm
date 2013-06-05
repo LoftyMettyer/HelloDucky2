@@ -4836,7 +4836,8 @@ Private Function FormatString(ByVal sHeading As String) As String
 
   Dim sReturnValue As String
 
-  sReturnValue = Left(Trim(Replace(sHeading, Chr(32), "")), 255)
+  'sReturnValue = Left(Trim(Replace(sHeading, Chr(32), "")), 255)
+  sReturnValue = Left(Trim(sHeading), 255)
   sReturnValue = Replace(sReturnValue, Chr(9), "")
   sReturnValue = Replace(sReturnValue, Chr(10), "")
   sReturnValue = Replace(sReturnValue, Chr(13), "")
