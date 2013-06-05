@@ -655,7 +655,8 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Const SCROLLBAR_WIDTH = 250
-Private Const MINFORMWIDTH = 13000
+Private Const MINFORM_WIDTH = 13000
+Private Const MINFORM_HEIGHT = 1000
 Private Const GAPOVERBUTTONS = 80
 Private Const GAPUNDERBUTTONS = 620
 
@@ -1170,12 +1171,12 @@ Public Function Initialise(plngInstanceStepID As Long, _
   If fOK Then fOK = DoHeaderInfo
   If fOK Then fOK = PopulateDetailsGrid
 
- ' If (mlngElementType >= LBound(masngFormDimensions, 2)) _
- '   And (mlngElementType <= UBound(masngFormDimensions, 2)) Then
+  If (mlngElementType >= LBound(masngFormDimensions, 2)) _
+    And (mlngElementType <= UBound(masngFormDimensions, 2)) Then
   
     Me.Height = masngFormDimensions(0, mlngElementType)
     Me.Width = masngFormDimensions(1, mlngElementType)
-'  End If
+  End If
 
   Dim sngMinFormHeight As Single
   Select Case mlngElementType
@@ -1193,7 +1194,7 @@ Public Function Initialise(plngInstanceStepID As Long, _
          + fraButtons.Height _
          + GAPUNDERBUTTONS
   End Select
-  Hook Me.hWnd, MINFORMWIDTH, CLng(sngMinFormHeight)
+  Hook Me.hWnd, MINFORM_WIDTH, CLng(sngMinFormHeight)
 
   If fOK Then Form_Resize
 
@@ -1760,8 +1761,8 @@ Private Sub Form_Load()
   grdStoredDataValues.RowHeight = 239
   
   ' Retrieve the size of the form when last viewed
-  sngHeight = Me.Height 'GetPCSetting("WorkflowLogStepDetails", "Height", Me.Height)
-  sngWidth = Me.Width ' GetPCSetting("WorkflowLogStepDetails", "Width", Me.Width)
+  sngHeight = GetPCSetting("WorkflowLogStepDetails", "Height", MINFORM_HEIGHT)
+  sngWidth = GetPCSetting("WorkflowLogStepDetails", "Width", MINFORM_WIDTH)
 
 '  Me.Height = sngHeight
 '  Me.Width = sngWidth
@@ -1793,8 +1794,8 @@ Private Sub Form_Load()
         sTemp = ""
     End Select
     
-    masngFormDimensions(0, iLoop) = sngHeight ' GetPCSetting("WorkflowLogStepDetails", "Height_" & sTemp, sngHeight)
-    masngFormDimensions(1, iLoop) = sngWidth  'GetPCSetting("WorkflowLogStepDetails", "Width_" & sTemp, sngWidth)
+    masngFormDimensions(0, iLoop) = GetPCSetting("WorkflowLogStepDetails", "Height_" & sTemp, sngHeight)
+    masngFormDimensions(1, iLoop) = GetPCSetting("WorkflowLogStepDetails", "Width_" & sTemp, sngWidth)
   Next iLoop
   
   fraBasicDetails.BackColor = vbButtonFace
@@ -1816,8 +1817,8 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   ' Store the size of the form for retrieval when next viewed
   Dim sTemp As String
   
-'  SavePCSetting "WorkflowLogStepDetails", "Height", Me.Height
-'  SavePCSetting "WorkflowLogStepDetails", "Width", Me.Width
+  SavePCSetting "WorkflowLogStepDetails", "Height", Me.Height
+  SavePCSetting "WorkflowLogStepDetails", "Width", Me.Width
 
   Select Case mlngElementType
     Case elem_Begin
@@ -1844,9 +1845,9 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
       sTemp = ""
   End Select
   
-'  SavePCSetting "WorkflowLogStepDetails", "Height_" & sTemp, Me.Height
-'  SavePCSetting "WorkflowLogStepDetails", "Width_" & sTemp, Me.Width
-'
+  SavePCSetting "WorkflowLogStepDetails", "Height_" & sTemp, Me.Height
+  SavePCSetting "WorkflowLogStepDetails", "Width_" & sTemp, Me.Width
+
 End Sub
 
 
