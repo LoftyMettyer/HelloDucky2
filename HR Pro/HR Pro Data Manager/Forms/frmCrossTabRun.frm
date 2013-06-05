@@ -6,7 +6,7 @@ Begin VB.Form frmCrossTabRun
    ClientHeight    =   7455
    ClientLeft      =   60
    ClientTop       =   345
-   ClientWidth     =   9435
+   ClientWidth     =   11430
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -25,7 +25,7 @@ Begin VB.Form frmCrossTabRun
    MinButton       =   0   'False
    ScaleHeight     =   7455
    ScaleMode       =   0  'User
-   ScaleWidth      =   9540.714
+   ScaleWidth      =   11558.07
    StartUpPosition =   2  'CenterScreen
    Begin MSComctlLib.ImageList ImageList1 
       Left            =   780
@@ -63,7 +63,7 @@ Begin VB.Form frmCrossTabRun
       Left            =   120
       TabIndex        =   0
       Top             =   120
-      Width           =   9240
+      Width           =   11034
       _Version        =   196617
       DataMode        =   2
       RecordSelectors =   0   'False
@@ -105,7 +105,7 @@ Begin VB.Form frmCrossTabRun
       Columns(0).DataType=   8
       Columns(0).FieldLen=   4096
       TabNavigation   =   1
-      _ExtentX        =   16298
+      _ExtentX        =   19463
       _ExtentY        =   9340
       _StockProps     =   79
       Caption         =   "SSDBGrid1"
@@ -214,14 +214,14 @@ Begin VB.Form frmCrossTabRun
       Left            =   6135
       TabIndex        =   8
       Top             =   5430
-      Width           =   3240
+      Width           =   5035
       Begin VB.TextBox txtPageBreakCol 
          Height          =   315
          Left            =   1140
          TabIndex        =   10
          Text            =   "Text1"
          Top             =   270
-         Width           =   1980
+         Width           =   3795
       End
       Begin VB.ComboBox cboPageBreak 
          Height          =   315
@@ -229,7 +229,7 @@ Begin VB.Form frmCrossTabRun
          Style           =   2  'Dropdown List
          TabIndex        =   12
          Top             =   675
-         Width           =   1980
+         Width           =   3795
       End
       Begin VB.Label lblValue 
          AutoSize        =   -1  'True
@@ -255,7 +255,7 @@ Begin VB.Form frmCrossTabRun
    Begin VB.CommandButton cmdOutput 
       Caption         =   "O&utput..."
       Height          =   400
-      Left            =   6885
+      Left            =   8680
       TabIndex        =   13
       Top             =   7005
       Width           =   1200
@@ -264,7 +264,7 @@ Begin VB.Form frmCrossTabRun
       Caption         =   "&Close"
       Default         =   -1  'True
       Height          =   400
-      Left            =   8175
+      Left            =   9969
       TabIndex        =   14
       Top             =   7005
       Width           =   1200
@@ -965,7 +965,7 @@ Private Function GetGroupNumber(strValue As String, Index As Integer)
 
       Case Else
         'MH20021018 Fault 4532 & 4533
-        If LCase(mvarHeadings(Index)(lngCount)) = LCase(Trim(strValue)) Then
+        If LCase(mvarHeadings(Index)(lngCount)) = LCase(FormatString(strValue)) Then
           GetGroupNumber = lngCount
           Exit For
         End If
@@ -1270,13 +1270,13 @@ Private Sub GetHeadingsAndSearchesForColumns(lngLoop As Long, strHeading() As St
     ''End If
     
     If mlngCrossTabType = cttAbsenceBreakdown And strColumnName = "Hor" Then
-     strSQL = "SELECT DISTINCT " & strColumnName & " ,Day_Number, DisplayOrder" & _
+     strSQL = "SELECT DISTINCT " & FormatSQLColumn(strColumnName) & " ,Day_Number, DisplayOrder" & _
              " FROM " & mstrTempTableName & _
              " ORDER BY DisplayOrder"
     Else
-      strSQL = "SELECT DISTINCT " & strColumnName & _
+      strSQL = "SELECT DISTINCT " & FormatSQLColumn(strColumnName) & _
              " FROM " & mstrTempTableName & _
-             " ORDER BY " & strColumnName
+             " ORDER BY 1"
     End If
 
     Set rsTemp = datData.OpenRecordset(strSQL, adOpenDynamic, adLockReadOnly)
@@ -1313,7 +1313,7 @@ Private Sub GetHeadingsAndSearchesForColumns(lngLoop As Long, strHeading() As St
 
           Case Else
             strHeading(lngCount) = FormatString(.Fields(0).Value)
-            strSearch(lngCount) = "ltrim(rtrim(" & strColumnName & ")) = '" & Trim(Replace(strFieldValue, "'", "''")) & "'"
+            strSearch(lngCount) = FormatSQLColumn(strColumnName) & " = '" & Trim(Replace(strFieldValue, "'", "''")) & "'"
 
           End Select
 
@@ -1458,7 +1458,8 @@ Private Sub BuildDataArrays()
       lngCol = GetGroupNumber(strTempValue, HOR)
 
       If Not IsNull(.Fields("VER")) Then
-        strTempValue = FormatString(.Fields("VER"))
+        'strTempValue = FormatString(.Fields("VER"))
+        strTempValue = .Fields("VER")
       Else
         strTempValue = vbNullString
       End If
@@ -2111,7 +2112,7 @@ With SSDBGrid1
         .CaptionAlignment = ssColCapAlignCenter
         
         If mlngCrossTabType = cttAbsenceBreakdown Then
-          .Width = 1130
+          .Width = 1150
         End If
       End With
     Next
@@ -3863,6 +3864,8 @@ Private Sub GetSQL2(strCol() As String)
   'Dim blnOK As Boolean
   Dim iCount As Integer
   Dim strCode As String
+  Dim strColumn As String
+  Dim blnCharColumn As Boolean
 
   On Error GoTo LocalErr
   
@@ -3890,6 +3893,11 @@ Private Sub GetSQL2(strCol() As String)
     
     Set objColumnPrivileges = Nothing
     
+    
+    If lngCount <= UBound(mlngColDataType) Then
+    blnCharColumn = (Val(mlngColDataType(lngCount)) = sqlVarChar)
+    End If
+    
     If fColumnOK Then
       ' The column can be read from the base table/view, or directly from a parent table.
       ' Add the column to the column list.
@@ -3904,10 +3912,14 @@ Private Sub GetSQL2(strCol() As String)
 '
 '      End If
 
+      strColumn = mstrSQLFrom & "." & strCol(1, lngCount)
+      If blnCharColumn Then
+        strColumn = FormatSQLColumn(strColumn)
+      End If
+      
       mstrSQLSelect = mstrSQLSelect & _
         IIf(Len(mstrSQLSelect) > 0, ", ", "") & _
-        mstrSQLFrom & "." & strCol(1, lngCount) & _
-        " AS '" & strCol(2, lngCount) & "'"
+        strColumn & " AS '" & strCol(2, lngCount) & "'"
 
     Else
 
@@ -4014,9 +4026,14 @@ Private Sub GetSQL2(strCol() As String)
       
         ' Add the column to the column list.
         If UBound(asViews) = 1 Then
+          strColumn = asViews(1) & "." & strCol(1, lngCount)
+          If blnCharColumn Then
+            strColumn = FormatSQLColumn(strColumn)
+          End If
+          
           mstrSQLSelect = mstrSQLSelect & _
             IIf(Len(mstrSQLSelect) > 0, ", ", "") & vbCrLf & _
-            asViews(1) & "." & strCol(1, lngCount) & " AS '" & strCol(2, lngCount) & "'"
+            strColumn & " AS '" & strCol(2, lngCount) & "'"
         Else
           sCaseStatement = ""
           For iNextIndex = 1 To UBound(asViews)
@@ -4026,10 +4043,14 @@ Private Sub GetSQL2(strCol() As String)
           Next iNextIndex
   
           If Len(sCaseStatement) > 0 Then
+            strColumn = "COALESCE(" & sCaseStatement & ")"
+            If blnCharColumn Then
+              strColumn = FormatSQLColumn(strColumn)
+            End If
+            
             mstrSQLSelect = mstrSQLSelect & _
               IIf(Len(mstrSQLSelect) > 0, ", ", "") & vbCrLf & _
-              "COALESCE(" & sCaseStatement & ")" & vbCrLf & _
-              "AS '" & strCol(2, lngCount) & "'"
+              strColumn & "AS '" & strCol(2, lngCount) & "'"
           End If
         End If
       
@@ -4832,15 +4853,33 @@ Private Function FormatDateSQL(dtTemp As Date) As String
   FormatDateSQL = Replace(Format(dtTemp, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/")
 End Function
 
+
+Private Function FormatSQLColumn(ByVal sColumn As String) As String
+
+  Dim sReturnValue As String
+
+  'sReturnValue = Left(Trim(Replace(sHeading, Chr(32), "")), 255)
+  sReturnValue = sColumn
+  sReturnValue = "left(rtrim(" & sReturnValue & "), 100)"
+  sReturnValue = "replace(" & sReturnValue & ",char(9),'')"
+  sReturnValue = "replace(" & sReturnValue & ",char(10),'')"
+  sReturnValue = "replace(" & sReturnValue & ",char(13),'')"
+
+  FormatSQLColumn = sReturnValue
+
+End Function
+
+
 Private Function FormatString(ByVal sHeading As String) As String
 
   Dim sReturnValue As String
 
   'sReturnValue = Left(Trim(Replace(sHeading, Chr(32), "")), 255)
-  sReturnValue = Left(Trim(sHeading), 255)
+  sReturnValue = Left(Trim(sHeading), 100)
   sReturnValue = Replace(sReturnValue, Chr(9), "")
   sReturnValue = Replace(sReturnValue, Chr(10), "")
   sReturnValue = Replace(sReturnValue, Chr(13), "")
+
 
   FormatString = sReturnValue
 

@@ -2022,7 +2022,10 @@ Private Sub cmbOrders_Click()
   
   End If
   
+  ResizeFindColumns
+  
   Screen.MousePointer = vbDefault
+  
 End Sub
 
 
