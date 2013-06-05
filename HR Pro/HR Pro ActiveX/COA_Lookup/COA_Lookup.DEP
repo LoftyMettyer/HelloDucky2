@@ -1,31 +1,19 @@
 [Version]
-Version=1.0.0.1
+Version=1.0.0.14
 
 [COA_Lookup.ocx <0009>]
-Dest=$(AppPath)
-Date=16/10/2009
-Time=10:50
-Version=1.0.0.1
+Dest=$(WinSysPath)
+Date=07/10/2010
+Time=15:20
+Version=1.0.0.14
 CABFilename=COA_Lookup.CAB
 CABINFFile=COA_Lookup.INF
-Uses1=MSVBVM60.DLL
+Uses1=msvbvm60.dll
 Uses2=OLEAUT32.DLL
 Uses3=OLEPRO32.DLL
 Uses4=ASYCFILT.DLL
 Uses5=STDOLE2.TLB
 Uses6=COMCAT.DLL
-Uses7=MSCOMCTL.OCX
+Uses7=mscomctl.OCX
 Uses8=Codejock.SkinFramework.v13.1.0.ocx
 Uses9=Codejock.Controls.v13.1.0.ocx
-
-[Codejock.SkinFramework.v13.1.0.ocx <0009>]
-Dest=$(WinSysPath)
-Date=16/06/2009
-Time=11:36
-Version=13.1.0.0
-
-[Codejock.Controls.v13.1.0.ocx <0009>]
-Dest=$(WinSysPath)
-Date=16/06/2009
-Time=11:35
-Version=13.1.0.0

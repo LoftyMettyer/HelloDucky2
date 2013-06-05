@@ -2,13 +2,13 @@
 Version=1.0.0.1
 
 [COA_OLE.ocx <0009>]
-Dest=$(AppPath)
-Date=16/10/2009
-Time=10:51
+Dest=$(WinSysPath)
+Date=07/10/2010
+Time=15:20
 Version=1.0.0.1
 CABFilename=COA_OLE.CAB
 CABINFFile=COA_OLE.INF
-Uses1=MSVBVM60.DLL
+Uses1=msvbvm60.dll
 Uses2=OLEAUT32.DLL
 Uses3=OLEPRO32.DLL
 Uses4=ASYCFILT.DLL
@@ -19,26 +19,8 @@ Uses8=msado25.tlb
 Uses9=Codejock.Controls.v13.1.0.ocx
 Uses10=Codejock.CommandBars.v13.1.0.ocx
 
-[objsafe.tlb <0009>]
-Dest=$(WinSysPath)
-Date=09/01/2009
-Time=12:07
-Version=0.0.0.0
-
-[msado25.tlb <0009>]
-Dest=$(WinSysPath)
-Date=28/04/2004
-Time=09:57
-Version=2.81.1117.0
-
-[Codejock.Controls.v13.1.0.ocx <0009>]
-Dest=$(WinSysPath)
-Date=16/06/2009
-Time=11:35
-Version=13.1.0.0
-
 [Codejock.CommandBars.v13.1.0.ocx <0009>]
 Dest=$(WinSysPath)
 Date=16/06/2009
-Time=11:35
+Time=12:35
 Version=13.1.0.0

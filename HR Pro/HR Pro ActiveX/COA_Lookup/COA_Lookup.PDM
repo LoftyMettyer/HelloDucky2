@@ -4,7 +4,7 @@ Most Recent Package=Dep File 1
 
 [Package|Dep File 1|Root]
 SubWizProgID=PDWizard.DepPkgSubWiz
-BuildFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Lookup
+BuildFolder=C:\DEV\HR Pro\HR Pro ActiveX\COA_Lookup
 Controls Design-Time Support=No
 
 [Package|Dep File 1|Configure DAO ISAMs]
@@ -19,29 +19,27 @@ ODBCDirect=
 [Package|Dep File 1|Files Released]
 
 [Package|Dep File 1|Missing Dependency Information]
-C:\Program Files\Codejock Software\ActiveX\Xtreme Controls ActiveX v13.1.0\Bin\Codejock.Controls.v13.1.0.ocx=
-C:\Program Files\Codejock Software\ActiveX\Xtreme Skin Framework Bundle ActiveX v13.1.0\Bin\Codejock.SkinFramework.v13.1.0.ocx=
 
 [Package|Dep File 1|Out-of-Date Dependency Information]
 
 [Package|Dep File 1|Files Added]
-C:\WINNT\system32\MsStkPrp.dll=This file is needed for usercontrol design-time support.
+C:\WINDOWS\system32\MsStkPrp.dll=This file is needed for usercontrol design-time support.
 
 [Package|Dep File 1|Files Removed]
-c:\winnt\system32\msstkprp.dll=
+c:\windows\system32\msstkprp.dll=
 
 [Package|Dep File 1|Files In Project]
-C:\dev\HR Pro\HR Pro ActiveX\COA_Lookup\COA_Lookup.ocx=Yes
-C:\WINNT\system32\MSVBVM60.DLL=Yes
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Lookup\COA_Lookup.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msvbvm60.dll=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=Yes
-C:\WINNT\system32\MSCOMCTL.OCX=Yes
-C:\Program Files\Codejock Software\ActiveX\Xtreme Skin Framework Bundle ActiveX v13.1.0\Bin\Codejock.SkinFramework.v13.1.0.ocx=Yes
-C:\Program Files\Codejock Software\ActiveX\Xtreme Controls ActiveX v13.1.0\Bin\Codejock.Controls.v13.1.0.ocx=Yes
-C:\WINNT\system32\MSSTKPRP.DLL=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomctl.OCX=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\Codejock.SkinFramework.v13.1.0.ocx=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\Codejock.Controls.v13.1.0.ocx=Yes
+C:\WINDOWS\system32\msstkprp.dll=No
 
 [Package|Dep File 1|Configure Registry Files]
 Applicable=
@@ -50,16 +48,16 @@ Applicable=
 Applicable=
 
 [Package|Dep File 1|Install Locations]
-C:\dev\HR Pro\HR Pro ActiveX\COA_Lookup\COA_Lookup.ocx=$(AppPath)
-C:\WINNT\system32\MSVBVM60.DLL=$(WinSysPathSysFile)
+C:\DEV\HR Pro\HR Pro ActiveX\COA_Lookup\COA_Lookup.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msvbvm60.dll=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
-C:\WINNT\system32\MSCOMCTL.OCX=$(WinSysPath)
-C:\Program Files\Codejock Software\ActiveX\Xtreme Skin Framework Bundle ActiveX v13.1.0\Bin\Codejock.SkinFramework.v13.1.0.ocx=$(WinSysPath)
-C:\Program Files\Codejock Software\ActiveX\Xtreme Controls ActiveX v13.1.0\Bin\Codejock.Controls.v13.1.0.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\mscomctl.OCX=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\Codejock.SkinFramework.v13.1.0.ocx=$(WinSysPath)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\Codejock.Controls.v13.1.0.ocx=$(WinSysPath)
 
 [Package|Dep File 1|Configure Shared Files]
 Applicable=
@@ -69,9 +67,9 @@ DepCabFile=COA_Lookup.CAB
 DepCabRun=COA_Lookup.INF
 
 [Package|Dep File 1|Package]
-PackageFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Lookup
-ProjectFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_Lookup
+PackageFolder=C:\DEV\HR Pro\HR Pro ActiveX\COA_Lookup
+ProjectFolder=C:\DEV\HR Pro\HR Pro ActiveX\COA_Lookup
 ServerSideCab=
-File1=C:\dev\HR Pro\HR Pro ActiveX\COA_Lookup\COA_Lookup.DEP
+File1=C:\DEV\HR Pro\HR Pro ActiveX\COA_Lookup\COA_Lookup.DEP
 Handler1=PDWizard.FolderDplySubWiz
 Handler2=PDWizard.WebPostDplySubWiz

@@ -3,9 +3,15 @@ Version=1.0.0.3
 
 [COA_Line.ocx <0009>]
 Dest=$(WinSysPath)
-Date=18/11/2009
-Time=16:45
+Date=07/10/2010
+Time=15:20
 Version=1.0.0.3
 CABFilename=COA_Line.CAB
 CABINFFile=COA_Line.INF
-Uses1=objsafe.tlb
+Uses1=msvbvm60.dll
+Uses2=OLEAUT32.DLL
+Uses3=OLEPRO32.DLL
+Uses4=ASYCFILT.DLL
+Uses5=STDOLE2.TLB
+Uses6=COMCAT.DLL
+Uses7=objsafe.tlb
