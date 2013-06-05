@@ -63,6 +63,7 @@ Begin VB.Form frmMailMerge
       _Version        =   393216
       Style           =   1
       Tabs            =   4
+      Tab             =   3
       TabsPerRow      =   6
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -76,7 +77,7 @@ Begin VB.Form frmMailMerge
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmMailMerge.frx":08D6
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraDefinition(1)"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraDefinition(0)"
@@ -85,11 +86,11 @@ Begin VB.Form frmMailMerge
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmMailMerge.frx":08F2
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(0)"
+      Tab(1).Control(0)=   "fraColumns(2)"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraColumns(1)"
       Tab(1).Control(1).Enabled=   0   'False
-      Tab(1).Control(2)=   "fraColumns(2)"
+      Tab(1).Control(2)=   "fraColumns(0)"
       Tab(1).Control(2).Enabled=   0   'False
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Sort Order"
@@ -100,7 +101,7 @@ Begin VB.Form frmMailMerge
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "Ou&tput"
       TabPicture(3)   =   "frmMailMerge.frx":092A
-      Tab(3).ControlEnabled=   0   'False
+      Tab(3).ControlEnabled=   -1  'True
       Tab(3).Control(0)=   "fraOutput(1)"
       Tab(3).Control(0).Enabled=   0   'False
       Tab(3).Control(1)=   "fraOutput(2)"
@@ -108,6 +109,115 @@ Begin VB.Form frmMailMerge
       Tab(3).Control(2)=   "fraOutput(0)"
       Tab(3).Control(2).Enabled=   0   'False
       Tab(3).ControlCount=   3
+      Begin VB.Frame fraOutput 
+         Caption         =   "Options :"
+         Height          =   1650
+         Index           =   0
+         Left            =   120
+         TabIndex        =   47
+         Top             =   360
+         Width           =   9600
+         Begin VB.CheckBox chkPromptForPrintStart 
+            Caption         =   "Prompt for page start location"
+            Height          =   195
+            Left            =   6000
+            TabIndex        =   55
+            Top             =   915
+            Visible         =   0   'False
+            Width           =   3060
+         End
+         Begin VB.CommandButton cmdLabelType 
+            Caption         =   "..."
+            DisabledPicture =   "frmMailMerge.frx":0946
+            Height          =   315
+            Left            =   4320
+            TabIndex        =   76
+            Top             =   315
+            UseMaskColor    =   -1  'True
+            Width           =   315
+         End
+         Begin VB.TextBox txtFileName 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Index           =   1
+            Left            =   1665
+            Locked          =   -1  'True
+            TabIndex        =   49
+            Text            =   "<None>"
+            Top             =   315
+            Width           =   2670
+         End
+         Begin VB.CommandButton cmdFileName 
+            Caption         =   "..."
+            Height          =   315
+            Index           =   1
+            Left            =   4320
+            Picture         =   "frmMailMerge.frx":0CA7
+            TabIndex        =   50
+            Top             =   315
+            UseMaskColor    =   -1  'True
+            Width           =   315
+         End
+         Begin VB.CheckBox chkSuppressBlank 
+            Caption         =   "S&uppress blank lines"
+            Height          =   195
+            Left            =   6000
+            TabIndex        =   54
+            Top             =   615
+            Value           =   1  'Checked
+            Width           =   2175
+         End
+         Begin VB.ComboBox cboOutput 
+            Height          =   315
+            ItemData        =   "frmMailMerge.frx":0D1F
+            Left            =   1665
+            List            =   "frmMailMerge.frx":0D21
+            Sorted          =   -1  'True
+            Style           =   2  'Dropdown List
+            TabIndex        =   52
+            Top             =   720
+            Width           =   3000
+         End
+         Begin VB.CheckBox chkPauseBeforeMerge 
+            Caption         =   "Pause &before merge"
+            Height          =   195
+            Left            =   6000
+            TabIndex        =   53
+            Top             =   315
+            Value           =   1  'Checked
+            Width           =   2175
+         End
+         Begin VB.CheckBox chkHistory 
+            Caption         =   "Correspondence &history"
+            Height          =   195
+            Left            =   6000
+            TabIndex        =   56
+            Top             =   1215
+            Visible         =   0   'False
+            Width           =   2445
+         End
+         Begin VB.Label lblPrimary 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Template :"
+            Height          =   195
+            Left            =   225
+            TabIndex        =   48
+            Top             =   365
+            Width           =   765
+         End
+         Begin VB.Label Label3 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Destination :"
+            Height          =   195
+            Left            =   225
+            TabIndex        =   51
+            Top             =   765
+            Width           =   915
+         End
+      End
       Begin VB.Frame fraSort 
          Caption         =   "Sort Order :"
          Height          =   4365
@@ -181,26 +291,26 @@ Begin VB.Form frmMailMerge
             RecordSelectors =   0   'False
             Col.Count       =   3
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
-            stylesets(0).Picture=   "frmMailMerge.frx":0946
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
-            stylesets(1).Picture=   "frmMailMerge.frx":0962
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Picture=   "frmMailMerge.frx":0D23
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Picture=   "frmMailMerge.frx":0D3F
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
             stylesets(2).BackColor=   -2147483643
-            stylesets(2).Picture=   "frmMailMerge.frx":097E
+            stylesets(2).Picture=   "frmMailMerge.frx":0D5B
             stylesets(3).Name=   "ssetHeaderEnabled"
             stylesets(3).ForeColor=   -2147483630
             stylesets(3).BackColor=   -2147483633
-            stylesets(3).Picture=   "frmMailMerge.frx":099A
+            stylesets(3).Picture=   "frmMailMerge.frx":0D77
             stylesets(4).Name=   "ssetDisabled"
             stylesets(4).ForeColor=   -2147483631
             stylesets(4).BackColor=   -2147483633
-            stylesets(4).Picture=   "frmMailMerge.frx":09B6
+            stylesets(4).Picture=   "frmMailMerge.frx":0D93
             AllowUpdate     =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -267,116 +377,6 @@ Begin VB.Form frmMailMerge
             EndProperty
          End
       End
-      Begin VB.Frame fraOutput 
-         Caption         =   "Options :"
-         Height          =   1650
-         Index           =   0
-         Left            =   -74880
-         TabIndex        =   47
-         Top             =   360
-         Width           =   9600
-         Begin VB.CheckBox chkPromptForPrintStart 
-            Caption         =   "Prompt for page start location"
-            Height          =   195
-            Left            =   6000
-            TabIndex        =   55
-            Top             =   915
-            Visible         =   0   'False
-            Width           =   3060
-         End
-         Begin VB.CommandButton cmdLabelType 
-            DisabledPicture =   "frmMailMerge.frx":09D2
-            Height          =   315
-            Left            =   4320
-            Picture         =   "frmMailMerge.frx":0D33
-            Style           =   1  'Graphical
-            TabIndex        =   76
-            Top             =   315
-            UseMaskColor    =   -1  'True
-            Width           =   315
-         End
-         Begin VB.TextBox txtFileName 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Index           =   1
-            Left            =   1665
-            Locked          =   -1  'True
-            TabIndex        =   49
-            Text            =   "<None>"
-            Top             =   315
-            Width           =   2670
-         End
-         Begin VB.CommandButton cmdFileName 
-            Caption         =   "..."
-            Height          =   315
-            Index           =   1
-            Left            =   4320
-            Picture         =   "frmMailMerge.frx":1094
-            TabIndex        =   50
-            Top             =   315
-            UseMaskColor    =   -1  'True
-            Width           =   315
-         End
-         Begin VB.CheckBox chkSuppressBlank 
-            Caption         =   "S&uppress blank lines"
-            Height          =   195
-            Left            =   6000
-            TabIndex        =   54
-            Top             =   615
-            Value           =   1  'Checked
-            Width           =   2175
-         End
-         Begin VB.ComboBox cboOutput 
-            Height          =   315
-            ItemData        =   "frmMailMerge.frx":110C
-            Left            =   1665
-            List            =   "frmMailMerge.frx":110E
-            Sorted          =   -1  'True
-            Style           =   2  'Dropdown List
-            TabIndex        =   52
-            Top             =   720
-            Width           =   3000
-         End
-         Begin VB.CheckBox chkPauseBeforeMerge 
-            Caption         =   "Pause &before merge"
-            Height          =   195
-            Left            =   6000
-            TabIndex        =   53
-            Top             =   315
-            Value           =   1  'Checked
-            Width           =   2175
-         End
-         Begin VB.CheckBox chkHistory 
-            Caption         =   "Correspondence &history"
-            Height          =   195
-            Left            =   6000
-            TabIndex        =   56
-            Top             =   1215
-            Visible         =   0   'False
-            Width           =   2445
-         End
-         Begin VB.Label lblPrimary 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Template :"
-            Height          =   195
-            Left            =   225
-            TabIndex        =   48
-            Top             =   365
-            Width           =   765
-         End
-         Begin VB.Label Label3 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Destination :"
-            Height          =   195
-            Left            =   225
-            TabIndex        =   51
-            Top             =   765
-            Width           =   915
-         End
-      End
       Begin VB.Frame fraDefinition 
          BeginProperty Font 
             Name            =   "Verdana"
@@ -389,7 +389,7 @@ Begin VB.Form frmMailMerge
          EndProperty
          Height          =   1950
          Index           =   0
-         Left            =   135
+         Left            =   -74865
          TabIndex        =   0
          Top             =   405
          Width           =   9600
@@ -446,7 +446,7 @@ Begin VB.Form frmMailMerge
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmMailMerge.frx":1110
+            stylesets(0).Picture=   "frmMailMerge.frx":0DAF
             stylesets(1).Name=   "ReadOnly"
             stylesets(1).ForeColor=   -2147483631
             stylesets(1).BackColor=   -2147483633
@@ -460,7 +460,7 @@ Begin VB.Form frmMailMerge
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmMailMerge.frx":112C
+            stylesets(1).Picture=   "frmMailMerge.frx":0DCB
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -665,7 +665,7 @@ Begin VB.Form frmMailMerge
          Caption         =   "Data :"
          Height          =   2385
          Index           =   1
-         Left            =   135
+         Left            =   -74865
          TabIndex        =   8
          Top             =   2385
          Width           =   9600
@@ -1081,7 +1081,7 @@ Begin VB.Form frmMailMerge
          Caption         =   "Email :"
          Height          =   2670
          Index           =   2
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   58
          Top             =   2160
          Width           =   9600
@@ -1105,9 +1105,9 @@ Begin VB.Form frmMailMerge
          End
          Begin VB.ComboBox cboEMailField 
             Height          =   315
-            ItemData        =   "frmMailMerge.frx":1148
+            ItemData        =   "frmMailMerge.frx":0DE7
             Left            =   1650
-            List            =   "frmMailMerge.frx":114A
+            List            =   "frmMailMerge.frx":0DE9
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   60
@@ -1158,7 +1158,7 @@ Begin VB.Form frmMailMerge
          Caption         =   "New Document :"
          Height          =   2670
          Index           =   1
-         Left            =   -74865
+         Left            =   135
          TabIndex        =   57
          Top             =   2130
          Width           =   9600
@@ -1196,7 +1196,7 @@ Begin VB.Form frmMailMerge
             Height          =   315
             Index           =   0
             Left            =   4305
-            Picture         =   "frmMailMerge.frx":114C
+            Picture         =   "frmMailMerge.frx":0DEB
             TabIndex        =   68
             Top             =   315
             UseMaskColor    =   -1  'True
@@ -1217,7 +1217,7 @@ Begin VB.Form frmMailMerge
       Height          =   510
       Index           =   0
       Left            =   5550
-      Picture         =   "frmMailMerge.frx":11C4
+      Picture         =   "frmMailMerge.frx":0E63
       ScaleHeight     =   450
       ScaleWidth      =   465
       TabIndex        =   74
@@ -1237,7 +1237,7 @@ Begin VB.Form frmMailMerge
       EndProperty
       Height          =   495
       Left            =   4515
-      Picture         =   "frmMailMerge.frx":1A8E
+      Picture         =   "frmMailMerge.frx":172D
       ScaleHeight     =   435
       ScaleWidth      =   465
       TabIndex        =   73
@@ -1285,11 +1285,11 @@ Begin VB.Form frmMailMerge
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   2
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMailMerge.frx":2358
+            Picture         =   "frmMailMerge.frx":1FF7
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMailMerge.frx":2724
+            Picture         =   "frmMailMerge.frx":23C3
             Key             =   "IMG_CALC"
          EndProperty
       EndProperty
@@ -1308,7 +1308,7 @@ Begin VB.Form frmMailMerge
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Bands           =   "frmMailMerge.frx":2B34
+      Bands           =   "frmMailMerge.frx":27D3
    End
 End
 Attribute VB_Name = "frmMailMerge"
