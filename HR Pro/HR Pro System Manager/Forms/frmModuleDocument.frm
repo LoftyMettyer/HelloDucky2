@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmModuleDocument 
    BorderStyle     =   1  'Fixed Single
@@ -37,10 +37,11 @@ Begin VB.Form frmModuleDocument
       _Version        =   393216
       Style           =   1
       Tabs            =   2
+      Tab             =   1
       TabHeight       =   520
       TabCaption(0)   =   "Types"
       TabPicture(0)   =   "frmModuleDocument.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraComponent(1)"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraTypes"
@@ -48,7 +49,7 @@ Begin VB.Form frmModuleDocument
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Mail Merge"
       TabPicture(1)   =   "frmModuleDocument.frx":0028
-      Tab(1).ControlEnabled=   0   'False
+      Tab(1).ControlEnabled=   -1  'True
       Tab(1).Control(0)=   "lblTransferTable"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "lblColumnName"
@@ -59,34 +60,33 @@ Begin VB.Form frmModuleDocument
       Tab(1).Control(3).Enabled=   0   'False
       Tab(1).Control(4)=   "cmdEdit"
       Tab(1).Control(4).Enabled=   0   'False
-      Tab(1).Control(5)=   "cboTransferTables"
+      Tab(1).Control(5)=   "cboTables"
       Tab(1).Control(5).Enabled=   0   'False
-      Tab(1).Control(6)=   "txtCategory"
+      Tab(1).Control(6)=   "cboCategory"
       Tab(1).Control(6).Enabled=   0   'False
       Tab(1).ControlCount=   7
-      Begin VB.TextBox txtCategory 
+      Begin VB.ComboBox cboCategory 
          Height          =   315
-         Left            =   -74070
-         MaxLength       =   30
-         TabIndex        =   16
-         Text            =   "txtColName"
-         Top             =   945
-         Width           =   7110
+         Left            =   945
+         Style           =   2  'Dropdown List
+         TabIndex        =   21
+         Top             =   495
+         Width           =   3255
       End
-      Begin VB.ComboBox cboTransferTables 
+      Begin VB.ComboBox cboTables 
          Height          =   315
-         Left            =   -74040
+         Left            =   960
          Style           =   2  'Dropdown List
          TabIndex        =   14
-         Top             =   540
+         Top             =   900
          Width           =   3255
       End
       Begin VB.CommandButton cmdEdit 
          Caption         =   "&Edit..."
          Enabled         =   0   'False
          Height          =   400
-         Left            =   -68115
-         TabIndex        =   18
+         Left            =   6885
+         TabIndex        =   17
          Top             =   1665
          Width           =   1200
       End
@@ -94,15 +94,15 @@ Begin VB.Form frmModuleDocument
          Caption         =   "Cle&ar"
          Enabled         =   0   'False
          Height          =   400
-         Left            =   -68115
-         TabIndex        =   19
+         Left            =   6885
+         TabIndex        =   18
          Top             =   2160
          Width           =   1200
       End
       Begin VB.Frame fraTypes 
          Caption         =   "Types : "
          Height          =   1755
-         Left            =   135
+         Left            =   -74865
          TabIndex        =   5
          Top             =   1935
          Width           =   5865
@@ -161,7 +161,7 @@ Begin VB.Form frmModuleDocument
          Caption         =   "Categories :"
          Height          =   1305
          Index           =   1
-         Left            =   135
+         Left            =   -74865
          TabIndex        =   12
          Tag             =   "6"
          Top             =   450
@@ -205,15 +205,15 @@ Begin VB.Form frmModuleDocument
       Begin SSDataWidgets_B.SSDBGrid grdTransferDetails 
          Height          =   3255
          Index           =   0
-         Left            =   -74865
-         TabIndex        =   17
+         Left            =   135
+         TabIndex        =   16
          Top             =   1665
          Width           =   6510
+         ScrollBars      =   2
          _Version        =   196617
          DataMode        =   2
          RecordSelectors =   0   'False
          GroupHeaders    =   0   'False
-         Col.Count       =   21
          stylesets.count =   2
          stylesets(0).Name=   "KeyField"
          stylesets(0).BackColor=   14024703
@@ -262,154 +262,36 @@ Begin VB.Form frmModuleDocument
          BackColorEven   =   -2147483643
          BackColorOdd    =   -2147483643
          RowHeight       =   423
-         Columns.Count   =   21
-         Columns(0).Width=   5292
-         Columns(0).Caption=   "Transfer Field"
-         Columns(0).Name =   "Description"
+         ExtraHeight     =   79
+         Columns.Count   =   4
+         Columns(0).Width=   3200
+         Columns(0).Visible=   0   'False
+         Columns(0).Caption=   "CategoryID"
+         Columns(0).Name =   "CategoryID"
          Columns(0).DataField=   "Column 0"
          Columns(0).DataType=   8
          Columns(0).FieldLen=   256
-         Columns(1).Width=   5741
-         Columns(1).Caption=   "HR Pro Value"
-         Columns(1).Name =   "Display_MapToValue"
+         Columns(1).Width=   5292
+         Columns(1).Caption=   "Heading"
+         Columns(1).Name =   "Heading"
          Columns(1).DataField=   "Column 1"
          Columns(1).DataType=   8
          Columns(1).FieldLen=   256
          Columns(2).Width=   3200
          Columns(2).Visible=   0   'False
-         Columns(2).Caption=   "ASRMapType"
-         Columns(2).Name =   "ASRMapType"
+         Columns(2).Caption=   "ColumnID"
+         Columns(2).Name =   "ColumnID"
          Columns(2).DataField=   "Column 2"
          Columns(2).DataType=   8
          Columns(2).FieldLen=   256
-         Columns(3).Width=   3200
-         Columns(3).Visible=   0   'False
-         Columns(3).Caption=   "ASRTableID"
-         Columns(3).Name =   "ASRTableID"
+         Columns(3).Width=   5636
+         Columns(3).Caption=   "Value"
+         Columns(3).Name =   "Value"
          Columns(3).DataField=   "Column 3"
          Columns(3).DataType=   8
          Columns(3).FieldLen=   256
-         Columns(4).Width=   3200
-         Columns(4).Visible=   0   'False
-         Columns(4).Caption=   "ASRColumnID"
-         Columns(4).Name =   "ASRColumnID"
-         Columns(4).DataField=   "Column 4"
-         Columns(4).DataType=   8
-         Columns(4).FieldLen=   256
-         Columns(5).Width=   3200
-         Columns(5).Visible=   0   'False
-         Columns(5).Caption=   "ASRExprID"
-         Columns(5).Name =   "ASRExprID"
-         Columns(5).DataField=   "Column 5"
-         Columns(5).DataType=   8
-         Columns(5).FieldLen=   256
-         Columns(6).Width=   3200
-         Columns(6).Visible=   0   'False
-         Columns(6).Caption=   "ASRValue"
-         Columns(6).Name =   "ASRValue"
-         Columns(6).DataField=   "Column 6"
-         Columns(6).DataType=   8
-         Columns(6).FieldLen=   256
-         Columns(7).Width=   3200
-         Columns(7).Visible=   0   'False
-         Columns(7).Caption=   "Mandatory"
-         Columns(7).Name =   "Mandatory"
-         Columns(7).DataField=   "Column 7"
-         Columns(7).DataType=   8
-         Columns(7).FieldLen=   256
-         Columns(8).Width=   3200
-         Columns(8).Visible=   0   'False
-         Columns(8).Caption=   "TransferFieldID"
-         Columns(8).Name =   "TransferFieldID"
-         Columns(8).DataField=   "Column 8"
-         Columns(8).DataType=   8
-         Columns(8).FieldLen=   256
-         Columns(9).Width=   3200
-         Columns(9).Visible=   0   'False
-         Columns(9).Caption=   "IsCompanyCode"
-         Columns(9).Name =   "IsCompanyCode"
-         Columns(9).DataField=   "Column 9"
-         Columns(9).DataType=   8
-         Columns(9).FieldLen=   256
-         Columns(10).Width=   3200
-         Columns(10).Visible=   0   'False
-         Columns(10).Caption=   "IsEmployeeCode"
-         Columns(10).Name=   "IsEmployeeCode"
-         Columns(10).DataField=   "Column 10"
-         Columns(10).DataType=   8
-         Columns(10).FieldLen=   256
-         Columns(11).Width=   3200
-         Columns(11).Visible=   0   'False
-         Columns(11).Caption=   "Direction"
-         Columns(11).Name=   "Direction"
-         Columns(11).DataField=   "Column 11"
-         Columns(11).DataType=   8
-         Columns(11).FieldLen=   256
-         Columns(12).Width=   3200
-         Columns(12).Visible=   0   'False
-         Columns(12).Caption=   "IsKeyField"
-         Columns(12).Name=   "IsKeyField"
-         Columns(12).DataField=   "Column 12"
-         Columns(12).DataType=   17
-         Columns(12).FieldLen=   256
-         Columns(13).Width=   3200
-         Columns(13).Visible=   0   'False
-         Columns(13).Caption=   "AlwaysTransfer"
-         Columns(13).Name=   "AlwaysTransfer"
-         Columns(13).DataField=   "Column 13"
-         Columns(13).DataType=   17
-         Columns(13).FieldLen=   256
-         Columns(14).Width=   3200
-         Columns(14).Visible=   0   'False
-         Columns(14).Caption=   "ConvertData"
-         Columns(14).Name=   "ConvertData"
-         Columns(14).DataField=   "Column 14"
-         Columns(14).DataType=   17
-         Columns(14).FieldLen=   256
-         Columns(15).Width=   3200
-         Columns(15).Visible=   0   'False
-         Columns(15).Caption=   "IsEmployeeName"
-         Columns(15).Name=   "IsEmployeeName"
-         Columns(15).DataField=   "Column 15"
-         Columns(15).DataType=   8
-         Columns(15).FieldLen=   256
-         Columns(16).Width=   3200
-         Columns(16).Visible=   0   'False
-         Columns(16).Caption=   "IsDepartmentCode"
-         Columns(16).Name=   "IsDepartmentCode"
-         Columns(16).DataField=   "Column 16"
-         Columns(16).DataType=   8
-         Columns(16).FieldLen=   256
-         Columns(17).Width=   3200
-         Columns(17).Visible=   0   'False
-         Columns(17).Caption=   "IsDepartmentName"
-         Columns(17).Name=   "IsDepartmentName"
-         Columns(17).DataField=   "Column 17"
-         Columns(17).DataType=   8
-         Columns(17).FieldLen=   256
-         Columns(18).Width=   3200
-         Columns(18).Visible=   0   'False
-         Columns(18).Caption=   "IsPayrollCode"
-         Columns(18).Name=   "IsPayrollCode"
-         Columns(18).DataField=   "Column 18"
-         Columns(18).DataType=   8
-         Columns(18).FieldLen=   256
-         Columns(19).Width=   3200
-         Columns(19).Visible=   0   'False
-         Columns(19).Caption=   "Group"
-         Columns(19).Name=   "Group"
-         Columns(19).DataField=   "Column 19"
-         Columns(19).DataType=   8
-         Columns(19).FieldLen=   256
-         Columns(20).Width=   3200
-         Columns(20).Visible=   0   'False
-         Columns(20).Caption=   "PreventModify"
-         Columns(20).Name=   "PreventModify"
-         Columns(20).DataField=   "Column 20"
-         Columns(20).DataType=   8
-         Columns(20).FieldLen=   256
          TabNavigation   =   1
-         _ExtentX        =   11483
+         _ExtentX        =   11492
          _ExtentY        =   5741
          _StockProps     =   79
          BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -436,17 +318,17 @@ Begin VB.Form frmModuleDocument
          BackStyle       =   0  'Transparent
          Caption         =   "Name :"
          Height          =   195
-         Left            =   -74775
+         Left            =   225
          TabIndex        =   15
-         Top             =   1005
+         Top             =   555
          Width           =   645
       End
       Begin VB.Label lblTransferTable 
          Caption         =   "Table : "
          Height          =   285
-         Left            =   -74775
+         Left            =   225
          TabIndex        =   13
-         Top             =   585
+         Top             =   945
          Width           =   600
       End
    End
@@ -455,7 +337,7 @@ Begin VB.Form frmModuleDocument
       Caption         =   "&Cancel"
       Height          =   405
       Left            =   7140
-      TabIndex        =   21
+      TabIndex        =   20
       Top             =   5850
       Width           =   1200
    End
@@ -465,7 +347,7 @@ Begin VB.Form frmModuleDocument
       Enabled         =   0   'False
       Height          =   405
       Left            =   5850
-      TabIndex        =   20
+      TabIndex        =   19
       Top             =   5850
       Width           =   1200
    End
@@ -479,6 +361,27 @@ Option Explicit
 
 Private mblnReadOnly As Boolean
 Private mbChanged As Boolean
+
+Private mavarCategoryTableIDs() As Variant
+
+
+Private Sub cboCategory_Click()
+
+  Dim iCount As Integer
+  Dim iIndex As Integer
+  'Set the base table
+  SetComboItem cboTables, CLng(mavarCategoryTableIDs(2, cboCategory.ListIndex))
+  
+  For iCount = grdTransferDetails.LBound To grdTransferDetails.UBound
+    grdTransferDetails(iCount).Visible = (cboCategory.ListIndex = iCount)
+    grdTransferDetails.Item(iCount).SelBookmarks.RemoveAll
+    GoTopOfGrid CLng(iCount), (cboTables = "<None>")
+  Next iCount
+  
+  mbChanged = True
+  RefreshButtons
+
+End Sub
 
 Private Sub cboCategoryTable_Click()
 
@@ -497,6 +400,37 @@ Private Sub cboCategoryTable_Click()
 
   mbChanged = True
 
+  RefreshButtons
+
+End Sub
+
+Private Sub cboTables_Click()
+
+  Dim lngIndex As Long
+
+  If SelectedComboItem(cboTables) <> mavarCategoryTableIDs(2, cboCategory.ListIndex) Then
+    
+    If mavarCategoryTableIDs(2, cboCategory.ListIndex) > 0 Then
+    
+      If MsgBox("Changing the base table will reset all the columns for this document type." & vbCrLf _
+        & "Are you sure you want to continue?", vbYesNo + vbQuestion, "Document Management Setup") = vbYes Then
+        
+        PopulateTransferDetails cboCategory.ListIndex, True
+        mavarCategoryTableIDs(2, cboCategory.ListIndex) = SelectedComboItem(cboTables)
+      Else
+        lngIndex = mavarCategoryTableIDs(2, cboCategory.ListIndex)
+        SetComboItem cboTables, lngIndex
+      End If
+    Else
+      mavarCategoryTableIDs(2, cboCategory.ListIndex) = SelectedComboItem(cboTables)
+      GoTopOfGrid 0, (cboTables = "<None>")
+      cmdEdit.Enabled = (cboTables = "<None>")
+    End If
+    
+    mbChanged = True
+    
+  End If
+  
   RefreshButtons
 
 End Sub
@@ -548,6 +482,13 @@ End Sub
 
 Private Function SaveChanges() As Boolean
 
+  Dim iLoop As Integer
+  Dim sSQL As String
+  Dim iLoopTypes As Integer
+  Dim iCategory As Integer
+
+  Screen.MousePointer = vbHourglass
+
   ' Category info
   SaveModuleSetting gsMODULEKEY_DOCMANAGEMENT, gsPARAMETERKEY_DOCMAN_CATEGORYTABLE, gsPARAMETERTYPE_TABLEID, GetComboItem(cboCategoryTable)
   SaveModuleSetting gsMODULEKEY_DOCMANAGEMENT, gsPARAMETERKEY_DOCMAN_CATEGORYCOLUMN, gsPARAMETERTYPE_COLUMNID, GetComboItem(cboCategoryColumn)
@@ -557,6 +498,51 @@ Private Function SaveChanges() As Boolean
   SaveModuleSetting gsMODULEKEY_DOCMANAGEMENT, gsPARAMETERKEY_DOCMAN_TYPECOLUMN, gsPARAMETERTYPE_COLUMNID, GetComboItem(cboTypeColumn)
   SaveModuleSetting gsMODULEKEY_DOCMANAGEMENT, gsPARAMETERKEY_DOCMAN_TYPECATEGORYCOLUMN, gsPARAMETERTYPE_COLUMNID, GetComboItem(cboTypeCategoryColumn)
 
+
+  ' Mail Merge Stuff
+  daoDb.Execute "DELETE FROM tmpDocumentManagementCategories", dbFailOnError
+
+  For iLoop = LBound(mavarCategoryTableIDs, 2) To UBound(mavarCategoryTableIDs, 2) - 1
+    sSQL = "INSERT INTO tmpDocumentManagementCategories" & _
+      " (CategoryID, Category, [TableID])" & _
+      " VALUES (" & _
+      CStr(mavarCategoryTableIDs(0, iLoop)) & "," & _
+      "'" & CStr(mavarCategoryTableIDs(1, iLoop)) & "', " & _
+      mavarCategoryTableIDs(2, iLoop) & ")"
+
+    daoDb.Execute sSQL, dbFailOnError
+  Next iLoop
+
+
+  ' Store the transfer details
+  daoDb.Execute "DELETE FROM tmpDocumentManagementHeaderInfo WHERE Type = 1", dbFailOnError
+  For iLoopTypes = 0 To cboCategory.ListCount - 1
+    With grdTransferDetails(iLoopTypes)
+      .Redraw = False
+      .MoveFirst
+      
+      iCategory = cboCategory.ItemData(iLoopTypes)
+      
+      For iLoop = 0 To (.Rows - 1)
+  
+        sSQL = "INSERT INTO tmpDocumentManagementHeaderInfo" & _
+          " (CategoryID, Heading, ColumnID, Type)" & _
+          " VALUES (" & _
+          iCategory & "," & _
+          "'" & .Columns("Heading").value & "'," & _
+          .Columns("ColumnID").value & "," & _
+          "1)"
+        
+        daoDb.Execute sSQL, dbFailOnError
+        .MoveNext
+      Next iLoop
+    End With
+  Next iLoopTypes
+
+
+
+  Screen.MousePointer = vbNormal
+  Application.Changed = True
   SaveChanges = True
 
 End Function
@@ -656,6 +642,10 @@ End Sub
 
 Private Sub Form_Load()
 
+  Dim iLoop As Integer
+
+  ReDim mavarCategoryTableIDs(2, 0)
+
   mblnReadOnly = (Application.AccessMode <> accFull And _
                  Application.AccessMode <> accSupportMode)
 
@@ -664,8 +654,13 @@ Private Sub Form_Load()
   End If
   
   InitialiseCombos
-  PopulateParentsCombo cboTransferTables
+  PopulateParentsCombo cboTables
+  PopulateCategories
 
+  ' Load the transfer types
+  For iLoop = 0 To cboCategory.ListCount - 1
+    PopulateTransferDetails iLoop, False
+  Next iLoop
 
   RetrieveDefinition
 
@@ -700,6 +695,115 @@ Private Sub PopulateParentsCombo(ByRef objCombo As ComboBox)
   
 End Sub
 
-Private Sub SSTab1_DblClick()
+Private Sub PopulateCategories()
+
+  Dim sSQL As String
+  Dim rsData As DAO.Recordset
+
+
+  sSQL = "SELECT CategoryID, Category, TableID FROM tmpDocumentManagementCategories" _
+      & " ORDER BY CategoryID"
+  Set rsData = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+
+  With rsData
+    While Not .EOF
+
+      mavarCategoryTableIDs(0, UBound(mavarCategoryTableIDs, 2)) = Trim(!CategoryID)
+      mavarCategoryTableIDs(1, UBound(mavarCategoryTableIDs, 2)) = !Category
+      mavarCategoryTableIDs(2, UBound(mavarCategoryTableIDs, 2)) = !TableID
+      ReDim Preserve mavarCategoryTableIDs(2, UBound(mavarCategoryTableIDs, 2) + 1)
+
+      cboCategory.AddItem Trim(!Category)
+      cboCategory.ItemData(cboCategory.NewIndex) = !CategoryID
+      
+      .MoveNext
+    Wend
+   
+    .Close
+  End With
+       
+  Set rsData = Nothing
+
+  ' Set to the top
+  cboCategory.ListIndex = 0
 
 End Sub
+
+
+Private Sub PopulateTransferDetails(ByVal plngTransferGrid As Long, pbReset As Boolean)
+
+  Dim sSQL As String
+  Dim strAddString As String
+  Dim strMapToDescription As String
+  Dim rsDefinition As DAO.Recordset
+  Dim ctlGrid As SSDBGrid
+  Dim iCategoryID As Integer
+
+  iCategoryID = cboCategory.ItemData(plngTransferGrid)
+
+  ' Unload grid if resetting
+  If pbReset Then
+    grdTransferDetails(plngTransferGrid).RemoveAll
+  Else
+
+    ' Load up a grid for this definition
+    If plngTransferGrid > 0 Then
+      Load grdTransferDetails(plngTransferGrid)
+      grdTransferDetails(plngTransferGrid).RemoveAll
+    End If
+  End If
+
+  sSQL = "SELECT *" & _
+    " FROM tmpDocumentManagementHeaderInfo" & _
+    " WHERE [CategoryID] = " & CStr(iCategoryID) & " AND [Type] = 1" & _
+    " ORDER BY CategoryID;"
+    
+  Set rsDefinition = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+
+  While Not rsDefinition.EOF
+    
+    If Not pbReset Then
+      If IsNull(rsDefinition!ColumnID) Then
+        strMapToDescription = ""
+      Else
+        strMapToDescription = GetColumnName(rsDefinition!ColumnID, False)
+      End If
+    Else
+      strMapToDescription = ""
+    End If
+    
+    strAddString = rsDefinition!CategoryID & vbTab & rsDefinition!Heading & vbTab & rsDefinition!ColumnID & vbTab & strMapToDescription
+                        
+    grdTransferDetails(plngTransferGrid).AddItem strAddString
+    rsDefinition.MoveNext
+    
+  Wend
+  GoTopOfGrid plngTransferGrid, (cboCategory.Text = "<None>")
+  cmdEdit.Enabled = (cboCategory.Text = "<None>")
+  
+  rsDefinition.Close
+  Set rsDefinition = Nothing
+
+End Sub
+
+Private Sub GoTopOfGrid(lngIndex As Long, fClearBookmarks As Boolean)
+
+  If fClearBookmarks Then
+    grdTransferDetails.Item(lngIndex).SelBookmarks.RemoveAll
+  Else
+    grdTransferDetails.Item(lngIndex).SelBookmarks.Add grdTransferDetails.Item(lngIndex).Bookmark
+    grdTransferDetails.Item(lngIndex).Bookmark = grdTransferDetails.Item(lngIndex).SelBookmarks(lngIndex)
+  End If
+
+End Sub
+
+Private Function SelectedComboItem(cboTemp As ComboBox) As Long
+  With cboTemp
+    If .ListIndex >= 0 Then
+      SelectedComboItem = .ItemData(.ListIndex)
+    Else
+      SelectedComboItem = 0
+    End If
+  End With
+End Function
+
