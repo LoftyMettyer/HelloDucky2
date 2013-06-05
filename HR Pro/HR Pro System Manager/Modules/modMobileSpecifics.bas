@@ -7,6 +7,7 @@ Private Const msMobileCheckPendingWorkflowSteps_PROCEDURENAME = "spASRSysMobileC
 Private Const msMobileGetUserIDFromEmail_PROCEDURENAME = "spASRSysMobileGetUserIDFromEmail"
 Private Const msMobileChangePassword_PROCEDURENAME = "spASRSysMobileChangePassword"
 Private Const msMobileForgotLogin_PROCEDURENAME = "spASRSysMobileForgotLogin"
+Private Const msMobileGetCurrentUserRecordID_PROCEDURENAME = "spASRSysMobileGetCurrentUserRecordID"
 
 Private mvar_fGeneralOK As Boolean
 Private mvar_sGeneralMsg As String
@@ -26,6 +27,7 @@ Public Sub DropMobileObjects()
   DropProcedure msMobileGetUserIDFromEmail_PROCEDURENAME
   DropProcedure msMobileChangePassword_PROCEDURENAME
   DropProcedure msMobileForgotLogin_PROCEDURENAME
+  DropProcedure msMobileGetCurrentUserRecordID_PROCEDURENAME
 End Sub
 
 
@@ -104,6 +106,14 @@ Public Function ConfigureMobileSpecifics() As Boolean
      fOK = CreateSP_MobileForgotLogin
     If Not fOK Then
       DropProcedure msMobileForgotLogin_PROCEDURENAME
+    End If
+  End If
+  
+  ' Create the Mobile Get Current User Record ID stored procedure
+  If fOK And mvar_fGeneralOK Then
+    fOK = CreateSP_MobileGetCurrentUserRecordID
+    If Not fOK Then
+      DropProcedure msMobileGetCurrentUserRecordID_PROCEDURENAME
     End If
   End If
   
@@ -388,123 +398,127 @@ Private Function CreateSP_MobileCheckPendingWorkflowSteps() As Boolean
     "  ) " & vbNewLine & _
     "AS" & vbNewLine & _
     "BEGIN" & vbNewLine & _
-"SET NOCOUNT ON;" & vbNewLine & _
-"DECLARE" & vbNewLine & _
-"@sURL varchar(MAX)," & vbNewLine & _
-"@sDescription varchar(MAX)," & vbNewLine & _
-"@sCalcDescription varchar(MAX)," & vbNewLine & _
-"@iInstanceID integer," & vbNewLine & _
-"@iInstanceStepID integer," & vbNewLine & _
-"@iElementID integer," & vbNewLine & _
-"@hResult integer," & vbNewLine & _
-"@objectToken integer," & vbNewLine & _
-"@sQueryString varchar(MAX)," & vbNewLine & _
-"@sParam1  varchar(MAX)," & vbNewLine & _
-"@sServerName sysname," & vbNewLine & _
-"@sDBName  sysname," & vbNewLine
+    "  SET NOCOUNT ON;" & vbNewLine & _
+    "  DECLARE" & vbNewLine
+    
+  sProcSQL = sProcSQL & "    @sURL varchar(MAX)," & vbNewLine & _
+    "    @sDescription varchar(MAX)," & vbNewLine & _
+    "    @sCalcDescription varchar(MAX)," & vbNewLine & _
+    "    @iInstanceID integer," & vbNewLine & _
+    "    @iInstanceStepID integer," & vbNewLine & _
+    "    @iElementID integer," & vbNewLine & _
+    "    @hResult integer," & vbNewLine & _
+    "    @objectToken integer," & vbNewLine & _
+    "    @sQueryString varchar(MAX)," & vbNewLine & _
+    "    @sParam1  varchar(MAX)," & vbNewLine & _
+    "    @sServerName sysname," & vbNewLine & _
+    "    @sDBName  sysname," & vbNewLine & _
+    "    @sSQLVersion  int," & vbNewLine
 
-sProcSQL = sProcSQL & "" & _
-"@sSQLVersion  int;" & vbNewLine & _
-"DECLARE @steps TABLE" & vbNewLine & _
-"(" & vbNewLine & _
-"[description] varchar(MAX)," & vbNewLine & _
-"[URL] varChar(MAX)," & vbNewLine & _
-"[instanceID] integer," & vbNewLine & _
-"[elementID] integer," & vbNewLine & _
-"[instanceStepID] integer" & vbNewLine & _
-")" & vbNewLine & _
-"SELECT @sURL = parameterValue" & vbNewLine & _
-"FROM ASRSysModuleSetup" & vbNewLine & _
-"WHERE moduleKey = 'MODULE_WORKFLOW'" & vbNewLine & _
-"AND parameterKey = 'Param_URL'" & vbNewLine & _
-"IF upper(right(@sURL, 5)) <> '.ASPX'" & vbNewLine & _
-"AND right(@sURL, 1) <> '/'" & vbNewLine
+  sProcSQL = sProcSQL & "    @sWorkflowName varchar(MAX)," & vbNewLine & _
+    "    @iPictureID int;" & vbNewLine & _
+    "  DECLARE @steps TABLE" & vbNewLine & _
+    "    (" & vbNewLine & _
+    "    [name] varchar(MAX)," & vbNewLine & _
+    "    [description] varchar(MAX)," & vbNewLine & _
+    "    [URL] varChar(MAX)," & vbNewLine & _
+    "    [instanceID] integer," & vbNewLine & _
+    "    [elementID] integer," & vbNewLine & _
+    "    [instanceStepID] integer," & vbNewLine & _
+    "    [PictureID] int" & vbNewLine & _
+    "  )" & vbNewLine
+  
+  sProcSQL = sProcSQL & "  SELECT @sURL = parameterValue" & vbNewLine & _
+    "    From ASRSysModuleSetup" & vbNewLine & _
+    "    WHERE moduleKey = 'MODULE_WORKFLOW'" & vbNewLine & _
+    "    AND parameterKey = 'Param_URL'" & vbNewLine & _
+    "  IF upper(right(@sURL, 5)) <> '.ASPX'" & vbNewLine & _
+    "    AND right(@sURL, 1) <> '/'" & vbNewLine & _
+    "    AND len(@sURL) > 0" & vbNewLine & _
+    "  BEGIN" & vbNewLine & _
+    "    SET @sURL = @sURL + '/'" & vbNewLine & _
+    "  End" & vbNewLine & _
+    "  SELECT @sParam1 = parameterValue" & vbNewLine & _
+    "    From ASRSysModuleSetup" & vbNewLine & _
+    "    WHERE moduleKey = 'MODULE_WORKFLOW'" & vbNewLine
+        
+  sProcSQL = sProcSQL & "    AND parameterKey = 'Param_Web1'" & vbNewLine & _
+    "  SET @sServerName = CONVERT(sysname,SERVERPROPERTY('servername'))" & vbNewLine & _
+    "  SET @sDBName = db_name()" & vbNewLine & _
+    "  SET @sSQLVersion = dbo.udfASRSQLVersion()" & vbNewLine & _
+    "  IF @sSQLVersion <= 8" & vbNewLine & _
+    "    EXEC @hResult = sp_OACreate 'vbpHRProServer.clsWorkflow', @objectToken OUTPUT" & vbNewLine & _
+    "  IF (@hResult = 0 OR @sSQLVersion > 8) AND (len(@sURL) > 0)" & vbNewLine & _
+    "  BEGIN" & vbNewLine & _
+    "    DECLARE @sEmailAddress_1 varchar(MAX)" & vbNewLine & _
+    "    SELECT @sEmailAddress_1 = replace(upper(ltrim(rtrim(" & mvar_sLoginTable & "." & mvar_sUniqueEmailColumn & "))), ' ', '')" & vbNewLine & _
+    "      From " & mvar_sLoginTable & vbNewLine & _
+    "      WHERE (ISNULL(" & mvar_sLoginTable & "." & mvar_sLoginColumn & ", '') = @psKeyParameter)" & vbNewLine
 
-sProcSQL = sProcSQL & "" & _
-"AND len(@sURL) > 0" & vbNewLine & _
-"BEGIN" & vbNewLine & _
-"SET @sURL = @sURL + '/'" & vbNewLine & _
-"END" & vbNewLine & _
-"SELECT @sParam1 = parameterValue" & vbNewLine & _
-"FROM ASRSysModuleSetup" & vbNewLine & _
-"WHERE moduleKey = 'MODULE_WORKFLOW'" & vbNewLine & _
-"AND parameterKey = 'Param_Web1'" & vbNewLine & _
-"SET @sServerName = CONVERT(sysname,SERVERPROPERTY('servername'))" & vbNewLine & _
-"SET @sDBName = db_name()" & vbNewLine & _
-"SET @sSQLVersion = dbo.udfASRSQLVersion()" & vbNewLine & _
-"IF @sSQLVersion <= 8" & vbNewLine & _
-"EXEC @hResult = sp_OACreate 'vbpHRProServer.clsWorkflow', @objectToken OUTPUT" & vbNewLine & _
-"IF (@hResult = 0 OR @sSQLVersion > 8) AND (len(@sURL) > 0)" & vbNewLine & _
-"BEGIN" & vbNewLine
+  sProcSQL = sProcSQL & "      AND len(" & mvar_sLoginTable & "." & mvar_sUniqueEmailColumn & ") > 0" & vbNewLine & _
+    "    print @sEmailAddress_1;" & vbNewLine & _
+    "    DECLARE steps_cursor CURSOR LOCAL FAST_FORWARD FOR" & vbNewLine & _
+    "    SELECT ASRSysWorkflowInstanceSteps.instanceID," & vbNewLine & _
+    "      ASRSysWorkflowInstanceSteps.elementID," & vbNewLine & _
+    "      ASRSysWorkflowInstanceSteps.ID," & vbNewLine & _
+    "      ASRSysWorkflows.name + ' - ' + ASRSysWorkflowElements.caption AS [description]," & vbNewLine & _
+    "      ASRSysWorkflows.name as [name]," & vbNewLine & _
+    "      ASRSysWorkflows.PictureID" & vbNewLine & _
+    "      From ASRSysWorkflowInstanceSteps" & vbNewLine & _
+    "      INNER JOIN ASRSysWorkflowElements ON ASRSysWorkflowInstanceSteps.elementID = ASRSysWorkflowElements.ID" & vbNewLine & _
+    "      INNER JOIN ASRSysWorkflows ON ASRSysWorkflowElements.workflowID = ASRSysWorkflows.ID" & vbNewLine & _
+    "      WHERE (ASRSysWorkflowInstanceSteps.Status = 2" & vbNewLine & _
+    "      OR ASRSysWorkflowInstanceSteps.Status = 7)" & vbNewLine
 
-sProcSQL = sProcSQL & "" & _
-"DECLARE @sEmailAddress_1 varchar(MAX)" & vbNewLine & _
-"SELECT @sEmailAddress_1 = replace(upper(ltrim(rtrim(" & mvar_sLoginTable & "." & mvar_sUniqueEmailColumn & "))), ' ', '')" & vbNewLine & _
-"FROM " & mvar_sLoginTable & vbNewLine & _
-"WHERE (ISNULL(" & mvar_sLoginTable & "." & mvar_sLoginColumn & ", '') = @psKeyParameter)" & vbNewLine & _
-"AND len(" & mvar_sLoginTable & "." & mvar_sUniqueEmailColumn & ") > 0" & vbNewLine & _
-"print @sEmailAddress_1;" & vbNewLine & _
-"DECLARE steps_cursor CURSOR LOCAL FAST_FORWARD FOR" & vbNewLine & _
-"SELECT ASRSysWorkflowInstanceSteps.instanceID," & vbNewLine & _
-"ASRSysWorkflowInstanceSteps.elementID," & vbNewLine & _
-"ASRSysWorkflowInstanceSteps.ID," & vbNewLine & _
-"ASRSysWorkflows.name + ' - ' + ASRSysWorkflowElements.caption AS [description]" & vbNewLine & _
-"FROM ASRSysWorkflowInstanceSteps" & vbNewLine & _
-"INNER JOIN ASRSysWorkflowElements ON ASRSysWorkflowInstanceSteps.elementID = ASRSysWorkflowElements.ID" & vbNewLine & _
-"INNER JOIN ASRSysWorkflows ON ASRSysWorkflowElements.workflowID = ASRSysWorkflows.ID" & vbNewLine & _
-"WHERE (ASRSysWorkflowInstanceSteps.Status = 2" & vbNewLine
+  sProcSQL = sProcSQL & "      AND (ASRSysWorkflowInstanceSteps.userName = @psKeyParameter --SUSER_SNAME()" & vbNewLine & _
+    "      OR (';' + replace(upper(ASRSysWorkflowInstanceSteps.userEmail), ' ', '') + ';' LIKE '%;' + @sEmailAddress_1 + ';%'" & vbNewLine & _
+    "      AND len(@sEmailAddress_1) > 0)" & vbNewLine & _
+    "      OR ((len(@sEmailAddress_1) > 0)" & vbNewLine & _
+    "      AND ((SELECT COUNT(*)" & vbNewLine & _
+    "      From ASRSysWorkflowStepDelegation" & vbNewLine & _
+    "      Where stepID = ASRSysWorkflowInstanceSteps.ID" & vbNewLine & _
+    "      AND ';' + replace(upper(ASRSysWorkflowStepDelegation.delegateEmail), ' ', '') + ';' LIKE '%;' + @sEmailAddress_1 + ';%') > 0)))" & vbNewLine & _
+    "    OPEN steps_cursor" & vbNewLine & _
+    "    FETCH NEXT FROM steps_cursor INTO @iInstanceID, @iElementID, @iInstanceStepID, @sDescription, @sWorkflowName, @iPictureID" & vbNewLine & _
+    "    WHILE (@@fetch_status = 0)" & vbNewLine & _
+    "    BEGIN" & vbNewLine & _
+    "      SET @sQueryString = ''" & vbNewLine
 
-sProcSQL = sProcSQL & "" & _
-"OR ASRSysWorkflowInstanceSteps.Status = 7)" & vbNewLine & _
-"AND (ASRSysWorkflowInstanceSteps.userName = @psKeyParameter --SUSER_SNAME()" & vbNewLine & _
-"OR (';' + replace(upper(ASRSysWorkflowInstanceSteps.userEmail), ' ', '') + ';' LIKE '%;' + @sEmailAddress_1 + ';%'" & vbNewLine & _
-"AND len(@sEmailAddress_1) > 0)" & vbNewLine & _
-"OR ((len(@sEmailAddress_1) > 0)" & vbNewLine & _
-"AND ((SELECT COUNT(*)" & vbNewLine & _
-"FROM ASRSysWorkflowStepDelegation" & vbNewLine & _
-"WHERE stepID = ASRSysWorkflowInstanceSteps.ID" & vbNewLine & _
-"AND ';' + replace(upper(ASRSysWorkflowStepDelegation.delegateEmail), ' ', '') + ';' LIKE '%;' + @sEmailAddress_1 + ';%') > 0)))" & vbNewLine & _
-"OPEN steps_cursor" & vbNewLine & _
-"FETCH NEXT FROM steps_cursor INTO @iInstanceID, @iElementID, @iInstanceStepID, @sDescription" & vbNewLine & _
-"WHILE (@@fetch_status = 0)" & vbNewLine & _
-"BEGIN" & vbNewLine & _
-"SET @sQueryString = ''" & vbNewLine & _
-"IF @sSQLVersion <=8" & vbNewLine
+  sProcSQL = sProcSQL & "      IF @sSQLVersion <=8" & vbNewLine & _
+    "      BEGIN" & vbNewLine & _
+    "        EXEC @hResult = sp_OAMethod @objectToken, 'GetQueryString', @sQueryString OUTPUT, @iInstanceID, @iElementID, @sParam1, @sServerName, @sDBName" & vbNewLine & _
+    "      IF @hResult <> 0" & vbNewLine & _
+    "      BEGIN" & vbNewLine & _
+    "        SET @sQueryString = ''" & vbNewLine & _
+    "      End" & vbNewLine & _
+    "    End" & vbNewLine & _
+    "    Else" & vbNewLine & _
+    "      SELECT @sQueryString = dbo.[udfASRNetGetWorkflowQueryString]( @iInstanceID, @iElementID, @sParam1, @sServerName, @sDBName)" & vbNewLine & _
+    "      IF len(@sQueryString) > 0" & vbNewLine & _
+    "      BEGIN" & vbNewLine & _
+    "        EXEC [dbo].[spASRWorkflowStepDescription]" & vbNewLine
 
-sProcSQL = sProcSQL & "" & _
-"BEGIN" & vbNewLine & _
-"EXEC @hResult = sp_OAMethod @objectToken, 'GetQueryString', @sQueryString OUTPUT, @iInstanceID, @iElementID, @sParam1, @sServerName, @sDBName" & vbNewLine & _
-"IF @hResult <> 0" & vbNewLine & _
-"BEGIN" & vbNewLine & _
-"SET @sQueryString = ''" & vbNewLine & _
-"END            END" & vbNewLine & _
-"ELSE" & vbNewLine & _
-"SELECT @sQueryString = dbo.[udfASRNetGetWorkflowQueryString]( @iInstanceID, @iElementID, @sParam1, @sServerName, @sDBName)" & vbNewLine & _
-"IF len(@sQueryString) > 0" & vbNewLine & _
-"BEGIN" & vbNewLine & _
-"EXEC [dbo].[spASRWorkflowStepDescription]" & vbNewLine & _
-"@iInstanceStepID," & vbNewLine & _
-"@sCalcDescription OUTPUT" & vbNewLine & _
-"IF len(@sCalcDescription) > 0 " & vbNewLine & _
-"BEGIN" & vbNewLine
+  sProcSQL = sProcSQL & "        @iInstanceStepID," & vbNewLine & _
+    "        @sCalcDescription OUTPUT" & vbNewLine & _
+    "        IF len(@sCalcDescription) > 0" & vbNewLine & _
+    "        BEGIN" & vbNewLine & _
+    "          SET @sDescription = @sCalcDescription" & vbNewLine & _
+    "        End" & vbNewLine & _
+    "        INSERT INTO @steps ([description], [url], [instanceID], [elementID], [instanceStepID], [name], [PictureID])  ----" & vbNewLine & _
+    "        VALUES (@sDescription, @sURL + '/?' + @sQueryString, @iInstanceID, @iElementID, @iInstanceStepID, @sWorkflowName, @iPictureID)" & vbNewLine & _
+    "      End" & vbNewLine & _
+    "      FETCH NEXT FROM steps_cursor INTO @iInstanceID, @iElementID, @iInstanceStepID, @sDescription, @sWorkflowName, @iPictureID" & vbNewLine & _
+    "    End" & vbNewLine & _
+    "    Close steps_cursor" & vbNewLine
 
-sProcSQL = sProcSQL & "" & _
-"SET @sDescription = @sCalcDescription" & vbNewLine & _
-"END" & vbNewLine & _
-"INSERT INTO @steps ([description], [url], [instanceID], [elementID], [instanceStepID])" & vbNewLine & _
-"VALUES (@sDescription, @sURL + '/?' + @sQueryString, @iInstanceID, @iElementID, @iInstanceStepID)" & vbNewLine & _
-"END" & vbNewLine & _
-"FETCH NEXT FROM steps_cursor INTO @iInstanceID, @iElementID, @iInstanceStepID, @sDescription" & vbNewLine & _
-"END" & vbNewLine & _
-"CLOSE steps_cursor" & vbNewLine & _
-"DEALLOCATE steps_cursor" & vbNewLine & _
-"IF @sSQLVersion <= 8" & vbNewLine & _
-"EXEC sp_OADestroy @objectToken" & vbNewLine & _
-"END" & vbNewLine & _
-"SELECT *" & vbNewLine & _
-"FROM @steps" & vbNewLine & _
-"ORDER BY [description]" & vbNewLine & _
-"END" & vbNewLine
+  sProcSQL = sProcSQL & "    DEALLOCATE steps_cursor" & vbNewLine & _
+    "    IF @sSQLVersion <= 8" & vbNewLine & _
+    "      EXEC sp_OADestroy @objectToken" & vbNewLine & _
+    "  End" & vbNewLine & _
+    "  SELECT *" & vbNewLine & _
+    "    FROM @steps" & vbNewLine & _
+    "    ORDER BY [description]" & vbNewLine & _
+    "END" & vbNewLine
 
   gADOCon.Execute sProcSQL, , adExecuteNoRecords
 
@@ -516,7 +530,7 @@ ErrorTrap:
   fCreatedOK = False
   OutputError "Error creating Mobile Check Pending Workflow Steps stored procedure (Mobile)"
   Resume TidyUpAndExit
-
+    
 End Function
 
 Private Function CreateSP_MobileGetUserIDFromEmail() As Boolean
@@ -526,7 +540,7 @@ Private Function CreateSP_MobileGetUserIDFromEmail() As Boolean
   Dim fCreatedOK As Boolean
   Dim sProcSQL As String
   Dim iCount As Integer
-  
+
   fCreatedOK = True
 
   ' Construct the stored procedure creation string.
@@ -544,7 +558,7 @@ Private Function CreateSP_MobileGetUserIDFromEmail() As Boolean
     "  FROM " & mvar_sLoginTable & vbNewLine & _
     "  WHERE " & mvar_sLoginTable & "." & mvar_sUniqueEmailColumn & " = @psEmail" & vbNewLine & _
     "END" & vbNewLine
-    
+
   gADOCon.Execute sProcSQL, , adExecuteNoRecords
 
 TidyUpAndExit:
@@ -694,6 +708,55 @@ TidyUpAndExit:
 ErrorTrap:
   fCreatedOK = False
   OutputError "Error creating Mobile Forgot Login stored procedure (Mobile)"
+  Resume TidyUpAndExit
+
+End Function
+
+Private Function CreateSP_MobileGetCurrentUserRecordID() As Boolean
+  ' Create the Change Password stored procedure.
+  On Error GoTo ErrorTrap
+
+  Dim fCreatedOK As Boolean
+  Dim sProcSQL As String
+  Dim iCount As Integer
+  
+  fCreatedOK = True
+
+  ' Construct the stored procedure creation string.
+  sProcSQL = "/* ------------------------------------------------ */" & vbNewLine & _
+    "/* Mobile module stored procedure.         */" & vbNewLine & _
+    "/* Automatically generated by the System manager.   */" & vbNewLine & _
+    "/* ------------------------------------------------ */" & vbNewLine & _
+    "CREATE PROCEDURE [dbo].[" & msMobileGetCurrentUserRecordID_PROCEDURENAME & "](" & vbNewLine & _
+    "    @psKeyParameter VARCHAR(MAX)," & vbNewLine & _
+    "    @piRecordID integer OUTPUT," & vbNewLine & _
+    "    @piRecordCount integer OUTPUT" & vbNewLine & _
+    "  ) " & vbNewLine & _
+    "AS" & vbNewLine & _
+    "BEGIN" & vbNewLine & _
+    "    DECLARE @iCount INTEGER;" & vbNewLine & _
+    "    SET @piRecordID = 0;" & vbNewLine & _
+    "    SET @piRecordCount = 0;" & vbNewLine & _
+    "    SELECT @piRecordCount = COUNT([" & mvar_sLoginColumn & "])" & vbNewLine & _
+    "    FROM " & mvar_sLoginTable & vbNewLine & _
+    "    WHERE (ISNULL(" & mvar_sLoginTable & "." & mvar_sLoginColumn & ", '') = @psKeyParameter)" & vbNewLine & _
+    "    IF @piRecordCount = 1" & vbNewLine & _
+    "    BEGIN" & vbNewLine & _
+    "        SELECT @piRecordID = " & mvar_sLoginTable & ".ID" & vbNewLine & _
+    "        FROM " & mvar_sLoginTable & vbNewLine & _
+    "        WHERE (ISNULL(" & mvar_sLoginTable & "." & mvar_sLoginColumn & ", '') = @psKeyParameter)" & vbNewLine & _
+    "    END" & vbNewLine & _
+    "END" & vbNewLine
+    
+  gADOCon.Execute sProcSQL, , adExecuteNoRecords
+
+TidyUpAndExit:
+  CreateSP_MobileGetCurrentUserRecordID = fCreatedOK
+  Exit Function
+
+ErrorTrap:
+  fCreatedOK = False
+  OutputError "Error creating Mobile Change Password stored procedure (Mobile)"
   Resume TidyUpAndExit
 
 
