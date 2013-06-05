@@ -830,7 +830,7 @@ Namespace Things
       'End If
 
       ' Is this expression reliant on the bank holiday table (I'm sure this can be tidyied up)
-      If objCodeLibrary.DependsOnBankHoliday And Me.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation Then
+      If objCodeLibrary.DependsOnBankHoliday And Me.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation Then ' And Not Me.IsComplex Then
         objTriggeredUpdate = New ScriptDB.TriggeredUpdate
         objTriggeredUpdate.Column = Me.AssociatedColumn
         objTriggeredUpdate.ID = Me.AssociatedColumn.ID
@@ -844,11 +844,29 @@ Namespace Things
         SQLCode_AddCodeLevel([Component].Objects, WhereCodeCluster)
         objTriggeredUpdate.Where = String.Format(sWhereClause, WhereCodeCluster.ToArray)
 
-        If Not Me.ReferencesChild And Not Me.ReferencesChild Then
+        If Not Me.ReferencesChild And Not objTriggeredUpdate.Where.Contains("@part_") Then
           Globals.OnBankHolidayUpdate.AddIfNew(objTriggeredUpdate)
         End If
 
         Me.ExpressionType = iBackupType
+
+        'objExpression = New Things.Expression
+        'objExpression.ExpressionType = ScriptDB.ExpressionType.TriggeredUpdate
+        'objExpression.BaseTable = Me.BaseTable
+        'objExpression.AssociatedColumn = Me.AssociatedColumn
+        'objExpression.BaseExpression = Me.BaseExpression
+        'objExpression.ReturnType = Component.ReturnType
+        'objExpression.Objects = Component.Objects
+        'objExpression.StartOfPartNumbers = Declarations.Count + Me.StartOfPartNumbers
+        'objExpression.StatementObjects = Me.StatementObjects
+
+        'objExpression.GenerateCode()
+
+        'objTriggeredUpdate.Where = String.Format(sWhereClause, WhereCodeCluster.ToArray)
+
+
+
+
 
       End If
 
