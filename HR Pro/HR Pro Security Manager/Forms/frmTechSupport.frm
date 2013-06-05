@@ -1,10 +1,10 @@
 VERSION 5.00
-Object = "{20C62CAE-15DA-101B-B9A8-444553540000}#1.1#0"; "MSMAPI32.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{20C62CAE-15DA-101B-B9A8-444553540000}#1.1#0"; "msmapi32.Ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Begin VB.Form frmTechSupport 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Technical Support"
-   ClientHeight    =   2655
+   ClientHeight    =   2325
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   4800
@@ -24,13 +24,13 @@ Begin VB.Form frmTechSupport
    MaxButton       =   0   'False
    MinButton       =   0   'False
    MouseIcon       =   "frmTechSupport.frx":000C
-   ScaleHeight     =   2655
+   ScaleHeight     =   2325
    ScaleWidth      =   4800
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.Frame fraSupportContacts 
       Caption         =   "Contacts for Technical Support :"
-      Height          =   1900
+      Height          =   1530
       Left            =   120
       TabIndex        =   1
       Top             =   100
@@ -42,20 +42,9 @@ Begin VB.Form frmTechSupport
          Height          =   195
          Index           =   1
          Left            =   195
-         TabIndex        =   9
+         TabIndex        =   7
          Top             =   400
          Width           =   1035
-      End
-      Begin VB.Label lblTitle 
-         AutoSize        =   -1  'True
-         BackStyle       =   0  'Transparent
-         Caption         =   "Fax :"
-         Height          =   195
-         Index           =   2
-         Left            =   195
-         TabIndex        =   8
-         Top             =   750
-         Width           =   375
       End
       Begin VB.Label lblTitle 
          AutoSize        =   -1  'True
@@ -64,8 +53,8 @@ Begin VB.Form frmTechSupport
          Height          =   195
          Index           =   3
          Left            =   195
-         TabIndex        =   7
-         Top             =   1095
+         TabIndex        =   6
+         Top             =   750
          Width           =   600
       End
       Begin VB.Label lblTitle 
@@ -75,8 +64,8 @@ Begin VB.Form frmTechSupport
          Height          =   195
          Index           =   4
          Left            =   195
-         TabIndex        =   6
-         Top             =   1450
+         TabIndex        =   5
+         Top             =   1110
          Width           =   735
       End
       Begin VB.Label lblTel 
@@ -85,19 +74,9 @@ Begin VB.Form frmTechSupport
          Caption         =   "+44 (0) 01582 714800"
          Height          =   195
          Left            =   1350
-         TabIndex        =   5
+         TabIndex        =   4
          Top             =   405
          Width           =   1935
-      End
-      Begin VB.Label lblFax 
-         AutoSize        =   -1  'True
-         BackStyle       =   0  'Transparent
-         Caption         =   "+44 (0) 01582 714814"
-         Height          =   195
-         Left            =   1350
-         TabIndex        =   4
-         Top             =   750
-         Width           =   2265
       End
       Begin VB.Label lblEMail 
          AutoSize        =   -1  'True
@@ -118,8 +97,8 @@ Begin VB.Form frmTechSupport
          MouseIcon       =   "frmTechSupport.frx":0316
          MousePointer    =   99  'Custom
          TabIndex        =   3
-         Top             =   1100
-         Width           =   2800
+         Top             =   750
+         Width           =   2805
       End
       Begin VB.Label lblURL 
          AutoSize        =   -1  'True
@@ -140,8 +119,8 @@ Begin VB.Form frmTechSupport
          MouseIcon       =   "frmTechSupport.frx":0468
          MousePointer    =   99  'Custom
          TabIndex        =   2
-         Top             =   1450
-         Width           =   2800
+         Top             =   1110
+         Width           =   2805
       End
    End
    Begin VB.CommandButton cmdOk 
@@ -150,7 +129,7 @@ Begin VB.Form frmTechSupport
       Height          =   400
       Left            =   3500
       TabIndex        =   0
-      Top             =   2150
+      Top             =   1770
       Width           =   1200
    End
    Begin MSMAPI.MAPIMessages MAPIMessages1 
@@ -273,7 +252,7 @@ Private Sub Form_Load()
   
   'Get all the required support details
   lblTel.Caption = GetSystemSetting("Support", "Telephone No", "")
-  lblFax.Caption = GetSystemSetting("Support", "Fax", "")
+'  lblFax.Caption = GetSystemSetting("Support", "Fax", "")
   lblEMail.Caption = GetSystemSetting("Support", "Email", "")
   lblURL.Caption = GetSystemSetting("Support", "Webpage", "")
 
@@ -348,14 +327,6 @@ Private Sub lblEMail_MouseMove(Button As Integer, Shift As Integer, X As Single,
 
 End Sub
 
-
-Private Sub lblTel_Click()
-
-End Sub
-
-Private Sub lblTitle_Click(Index As Integer)
-
-End Sub
 
 Private Sub lblURL_Click()
   On Error GoTo ErrTrap
