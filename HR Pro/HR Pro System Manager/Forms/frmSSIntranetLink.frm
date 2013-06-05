@@ -30,6 +30,59 @@ Begin VB.Form frmSSIntranetLink
    ScaleWidth      =   9360
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin VB.Frame fraHRProUtilityLink 
+      Caption         =   "HR Pro Report / Utility :"
+      Height          =   1485
+      Left            =   2880
+      TabIndex        =   29
+      Top             =   6180
+      Width           =   6300
+      Begin VB.ComboBox cboHRProUtility 
+         Height          =   315
+         Left            =   1400
+         Style           =   2  'Dropdown List
+         TabIndex        =   33
+         Top             =   700
+         Width           =   4700
+      End
+      Begin VB.ComboBox cboHRProUtilityType 
+         Height          =   315
+         ItemData        =   "frmSSIntranetLink.frx":000C
+         Left            =   1400
+         List            =   "frmSSIntranetLink.frx":000E
+         Style           =   2  'Dropdown List
+         TabIndex        =   31
+         Top             =   300
+         Width           =   4700
+      End
+      Begin VB.Label lblHRProUtilityMessage 
+         AutoSize        =   -1  'True
+         Caption         =   "<message>"
+         ForeColor       =   &H000000FF&
+         Height          =   195
+         Left            =   1395
+         TabIndex        =   34
+         Top             =   1160
+         Width           =   4695
+         WordWrap        =   -1  'True
+      End
+      Begin VB.Label lblHRProUtility 
+         Caption         =   "Name :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   32
+         Top             =   765
+         Width           =   780
+      End
+      Begin VB.Label lblHRProUtilityType 
+         Caption         =   "Type :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   30
+         Top             =   360
+         Width           =   645
+      End
+   End
    Begin VB.Frame fraChartLink 
       Caption         =   "Chart :"
       Height          =   5160
@@ -75,7 +128,7 @@ Begin VB.Form frmSSIntranetLink
       Begin MSChart20Lib.MSChart MSChart1 
          Height          =   2505
          Left            =   2730
-         OleObjectBlob   =   "frmSSIntranetLink.frx":000C
+         OleObjectBlob   =   "frmSSIntranetLink.frx":0010
          TabIndex        =   69
          Top             =   555
          Width           =   3330
@@ -122,9 +175,9 @@ Begin VB.Form frmSSIntranetLink
       End
       Begin VB.ComboBox cboChartType 
          Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":24FC
+         ItemData        =   "frmSSIntranetLink.frx":2500
          Left            =   195
-         List            =   "frmSSIntranetLink.frx":24FE
+         List            =   "frmSSIntranetLink.frx":2502
          Style           =   2  'Dropdown List
          TabIndex        =   63
          Top             =   555
@@ -434,9 +487,9 @@ Begin VB.Form frmSSIntranetLink
       Begin VB.ComboBox cboDBValCFStyle 
          Height          =   315
          Index           =   0
-         ItemData        =   "frmSSIntranetLink.frx":2500
+         ItemData        =   "frmSSIntranetLink.frx":2504
          Left            =   3660
-         List            =   "frmSSIntranetLink.frx":2502
+         List            =   "frmSSIntranetLink.frx":2506
          Style           =   2  'Dropdown List
          TabIndex        =   95
          Top             =   3600
@@ -685,59 +738,6 @@ Begin VB.Form frmSSIntranetLink
          TabIndex        =   80
          Top             =   1575
          Width           =   1785
-      End
-   End
-   Begin VB.Frame fraHRProUtilityLink 
-      Caption         =   "HR Pro Report / Utility :"
-      Height          =   1485
-      Left            =   2880
-      TabIndex        =   29
-      Top             =   6180
-      Width           =   6300
-      Begin VB.ComboBox cboHRProUtility 
-         Height          =   315
-         Left            =   1400
-         Style           =   2  'Dropdown List
-         TabIndex        =   33
-         Top             =   700
-         Width           =   4700
-      End
-      Begin VB.ComboBox cboHRProUtilityType 
-         Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":2504
-         Left            =   1400
-         List            =   "frmSSIntranetLink.frx":2506
-         Style           =   2  'Dropdown List
-         TabIndex        =   31
-         Top             =   300
-         Width           =   4700
-      End
-      Begin VB.Label lblHRProUtilityMessage 
-         AutoSize        =   -1  'True
-         Caption         =   "<message>"
-         ForeColor       =   &H000000FF&
-         Height          =   195
-         Left            =   1395
-         TabIndex        =   34
-         Top             =   1160
-         Width           =   4695
-         WordWrap        =   -1  'True
-      End
-      Begin VB.Label lblHRProUtility 
-         Caption         =   "Name :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   32
-         Top             =   765
-         Width           =   780
-      End
-      Begin VB.Label lblHRProUtilityType 
-         Caption         =   "Type :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   30
-         Top             =   360
-         Width           =   645
       End
    End
    Begin VB.Frame fraEmailLink 
@@ -1496,7 +1496,7 @@ Private Sub GetHRProUtilityTypes()
     .Clear
       
     .AddItem "Calendar Report"
-    .ItemData(.NewIndex) = utlCalendarReport
+    .ItemData(.NewIndex) = utlCalendarreport
         
     .AddItem "Custom Report"
     .ItemData(.NewIndex) = utlCustomReport
@@ -1583,7 +1583,7 @@ Private Sub GetHRProUtilities(pUtilityType As UtilityType)
       sTableName = "ASRSysBatchJobName"
       sIDColumnName = "ID"
       
-    Case utlCalendarReport
+    Case utlCalendarreport
       sTableName = "ASRSysCalendarReports"
       sIDColumnName = "ID"
     
@@ -1853,6 +1853,7 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   GetHRProTables
   GetHRProUtilityTypes
   UtilityType = psUtilityType
+  UtilityID = psUtilityID
   SetChartTypes
     
   Prompt = psPrompt
@@ -1865,8 +1866,6 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   URL = psURL
 
   StartMode = psStartMode
-  UtilityType = psUtilityType
-  UtilityID = psUtilityID
   NewWindow = pfNewWindow
   
   AppFilePath = psAppFilePath
@@ -1988,7 +1987,7 @@ Private Sub RefreshControls()
   lblStartMode.Enabled = cboHRProTable.Enabled
   
   ' Disable the UTILITY controls as required.
-  If Not optLink(SSINTLINKSCREEN_UTILITY).value Then
+  If Not optLink(SSINTLINKSCREEN_UTILITY).value And Not optLink(SSINTLINKCHART).value Then
     cboHRProUtilityType.Clear
     cboHRProUtility.Clear
   Else
@@ -2857,6 +2856,37 @@ Private Sub chkSeparatorUseFormatting_Click()
   RefreshControls
 End Sub
 
+Private Sub cmdChartReport_Click()
+  Dim frmSSIUtility As New frmSSIntranetUtility
+
+  With frmSSIUtility
+    ' .UtilityID = UtilityID
+    ' .UtilityType = UtilityType
+    .Initialize UtilityType, UtilityID
+    
+    .Show vbModal
+    
+    If Not .Cancelled Then
+      
+      ' Set the utilitytype and utility id for charts...
+      GetHRProUtilityTypes
+      
+      UtilityType = .UtilityType
+      UtilityID = .UtilityID
+      
+      mfChanged = True
+      
+      RefreshControls
+      
+    End If
+  
+    UnLoad frmSSIUtility
+    Set frmSSIUtility = Nothing
+    
+  End With
+
+End Sub
+
 Private Sub cmdDBValueColPick_Click(Index As Integer)
   On Error GoTo ErrorTrap
 
@@ -3233,7 +3263,7 @@ End Sub
 
 
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
 
   If ValidateLink Then
     Cancelled = False
@@ -3353,7 +3383,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
       Case vbCancel
         Cancel = True
       Case vbYes
-        cmdOK_Click
+        cmdOk_Click
         Cancel = True   'MH20021105 Fault 4694
     End Select
   End If
@@ -3440,7 +3470,7 @@ Private Sub optLink_Click(Index As Integer)
 
   GetHRProTables
   GetHRProUtilityTypes
-  UtilityType = CStr(utlCalendarReport)
+  UtilityType = CStr(utlCalendarreport)
   
   'dashboard
   If optLink(SSINTLINKSEPARATOR).value Then
@@ -3735,7 +3765,7 @@ End Property
 Public Property Get UtilityType() As String
 
   If (cboHRProUtility.ListIndex < 0) Or _
-    (Not optLink(SSINTLINKSCREEN_UTILITY).value) Then
+    ((Not optLink(SSINTLINKSCREEN_UTILITY).value) And (Not optLink(SSINTLINKCHART).value)) Then
     UtilityType = ""
   Else
     UtilityType = CStr(cboHRProUtilityType.ItemData(cboHRProUtilityType.ListIndex))
@@ -3746,7 +3776,7 @@ End Property
 Public Property Get UtilityID() As String
 
   If (cboHRProUtility.ListIndex < 0) Or _
-    (Not optLink(SSINTLINKSCREEN_UTILITY).value) Then
+    ((Not optLink(SSINTLINKSCREEN_UTILITY).value) And (Not optLink(SSINTLINKCHART).value)) Then
     
     UtilityID = ""
   Else
@@ -3881,7 +3911,7 @@ Public Property Let UtilityID(ByVal psNewValue As String)
 
   Dim iLoop As Integer
   
-  If (optLink(SSINTLINKSCREEN_UTILITY).value) And _
+  If ((optLink(SSINTLINKSCREEN_UTILITY).value) Or (optLink(SSINTLINKCHART).value)) And _
     (Len(psNewValue) > 0) Then
 
     For iLoop = 0 To cboHRProUtility.ListCount - 1
@@ -3890,6 +3920,7 @@ Public Property Let UtilityID(ByVal psNewValue As String)
         Exit For
       End If
     Next iLoop
+    
   End If
   
 End Property
@@ -3898,7 +3929,7 @@ Public Property Let UtilityType(ByVal psNewValue As String)
 
   Dim iLoop As Integer
 
-  If (optLink(SSINTLINKSCREEN_UTILITY).value) And _
+  If ((optLink(SSINTLINKSCREEN_UTILITY).value) Or (optLink(SSINTLINKCHART).value)) And _
     (Len(psNewValue) > 0) Then
 
     For iLoop = 0 To cboHRProUtilityType.ListCount - 1
@@ -3907,8 +3938,9 @@ Public Property Let UtilityType(ByVal psNewValue As String)
         Exit For
       End If
     Next iLoop
-
-    GetHRProUtilities cboHRProUtilityType.ItemData(cboHRProUtilityType.ListIndex)
+    
+    
+    If cboHRProUtilityType.ListIndex >= 0 Then GetHRProUtilities cboHRProUtilityType.ItemData(cboHRProUtilityType.ListIndex)
   End If
     
 End Property
