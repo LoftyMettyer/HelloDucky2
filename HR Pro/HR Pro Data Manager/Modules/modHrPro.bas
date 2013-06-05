@@ -2503,7 +2503,7 @@ Public Sub SetupTablesCollection()
         " INNER JOIN syscolumns ON sysprotects.id = syscolumns.id" & _
         " WHERE sysprotects.uid = " & Trim(Str(lngRoleID)) & _
         " AND (sysprotects.action = 193 or sysprotects.action = 197)" & _
-        " AND syscolumns.name <> 'timestamp'" & _
+        " AND syscolumns.name <> 'timestamp' AND syscolumns.name <> '_UPDFLAG'" & _
         " AND sysobjects.name in (" & sRealSourceList & ")" & _
         " AND (((convert(tinyint,substring(sysprotects.columns,1,1))&1) = 0" & _
         " AND (convert(int,substring(sysprotects.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)" & _
