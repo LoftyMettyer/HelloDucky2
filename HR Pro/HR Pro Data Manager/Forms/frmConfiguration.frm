@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
 Begin VB.Form frmConfiguration 
@@ -56,16 +56,16 @@ Begin VB.Form frmConfiguration
       TabCaption(0)   =   "&Display Defaults"
       TabPicture(0)   =   "frmConfiguration.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraDisplay(1)"
+      Tab(0).Control(0)=   "fraDisplay(2)"
       Tab(0).Control(1)=   "fraDisplay(0)"
-      Tab(0).Control(2)=   "fraDisplay(2)"
+      Tab(0).Control(2)=   "fraDisplay(1)"
       Tab(0).ControlCount=   3
       TabCaption(1)   =   "&Reports && Utilities"
       TabPicture(1)   =   "frmConfiguration.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraReports(0)"
+      Tab(1).Control(0)=   "fraReports(1)"
       Tab(1).Control(1)=   "frmReportsGeneral"
-      Tab(1).Control(2)=   "fraReports(1)"
+      Tab(1).Control(2)=   "fraReports(0)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Network Configuration"
       TabPicture(2)   =   "frmConfiguration.frx":0044
@@ -82,28 +82,28 @@ Begin VB.Form frmConfiguration
       TabCaption(3)   =   "&Batch Login"
       TabPicture(3)   =   "frmConfiguration.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraBatch(1)"
-      Tab(3).Control(1)=   "fraBatch(0)"
+      Tab(3).Control(0)=   "fraBatch(0)"
+      Tab(3).Control(1)=   "fraBatch(1)"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "E&vent Log"
       TabPicture(4)   =   "frmConfiguration.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "FraEventLog(0)"
+      Tab(4).Control(0)=   "FraEventLog(2)"
       Tab(4).Control(1)=   "FraEventLog(1)"
-      Tab(4).Control(2)=   "FraEventLog(2)"
+      Tab(4).Control(2)=   "FraEventLog(0)"
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Report Out&put"
       TabPicture(5)   =   "frmConfiguration.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "Frame1"
+      Tab(5).Control(0)=   "FraOutput(0)"
       Tab(5).Control(1)=   "FraOutput(1)"
-      Tab(5).Control(2)=   "FraOutput(0)"
+      Tab(5).Control(2)=   "Frame1"
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Tool&bars"
       TabPicture(6)   =   "frmConfiguration.frx":00B4
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).Control(0)=   "fraToolbarGeneral"
-      Tab(6).Control(1)=   "fraToolbars"
+      Tab(6).Control(0)=   "fraToolbars"
+      Tab(6).Control(1)=   "fraToolbarGeneral"
       Tab(6).ControlCount=   2
       Begin VB.Frame fraReports 
          Caption         =   "Report / Utility / Tool Selection && Access :"
@@ -3067,6 +3067,8 @@ Private Function SavePCSettings() As Boolean
 
   SavePCSettings = True
 
+  DebugOutput "MDIForm_Configuration", "PCSettingSaveStarted"
+
   'JPD 20030828 Fault 4287
   ' Tell the user that certain functionality will not be available if the
   ' Photo, OLE, Crystal, Documents or LocalOLE paths are not defined.
@@ -3119,9 +3121,17 @@ Private Function SavePCSettings() As Boolean
 '  bDefautlPrinterSet = objDefPrinter.SetPrinterAsDefault(gstrDefaultPrinterName)
 '  Set objDefPrinter = Nothing
   
-  Set objDefPrinter = New cSetDfltPrinter
-  objDefPrinter.SetPrinterAsDefault gstrDefaultPrinterName
-  Set objDefPrinter = Nothing
+  
+  ' NPG20110105 Fault HRPRO-1089
+  If gblnStartupPrinter Then
+  
+    DebugOutput "MDIForm_Configuration", "SetPrinterAsDefault"
+    
+    Set objDefPrinter = New cSetDfltPrinter
+    objDefPrinter.SetPrinterAsDefault gstrDefaultPrinterName
+    Set objDefPrinter = Nothing
+
+  End If
 
   '******************************************************************************
    
@@ -3159,7 +3169,11 @@ Private Function SavePCSettings() As Boolean
   End If
 
   ' Automatic logon
+  
   SavePCSetting "Login", "DataMgr_Bypass", chkBypassLogonDetails.Value
+
+  DebugOutput "MDIForm_Configuration", "PCSettingSaveCompleted"
+
 
   Changed = False
 
