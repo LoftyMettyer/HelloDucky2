@@ -50,7 +50,7 @@ Public Function ConfigureMobileSpecifics() As Boolean
     
 '  If fOK Then
 '    ' Read the Mobile parameters.
-'    fOK = ReadMobileParameters
+    fOK = ReadMobileParameters
 '    If Not fOK Then
 '      mvar_fGeneralOK = False
 '      sErrorMessage = "Mobile specifics not correctly configured." & vbNewLine & _
@@ -129,7 +129,7 @@ Public Function ConfigureMobileSpecifics() As Boolean
   End If
   
 TidyUpAndExit:
-  ConfigureMobileSpecifics = fOK
+  ConfigureMobileSpecifics = True
   Exit Function
   
 ErrorTrap:
