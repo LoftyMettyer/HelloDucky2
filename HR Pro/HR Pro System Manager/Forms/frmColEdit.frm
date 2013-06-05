@@ -7,7 +7,7 @@ Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
-Object = "{C23509CC-CE4D-421B-BF7F-1F30679B1EF1}#2.0#0"; "COA_ColourSelector.ocx"
+Object = "{C23509CC-CE4D-421B-BF7F-1F30679B1EF1}#1.0#0"; "COA_ColourSelector.ocx"
 Begin VB.Form frmColEdit 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Column Properties"
