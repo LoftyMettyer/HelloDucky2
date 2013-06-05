@@ -1017,10 +1017,8 @@ PRINT 'Step 11 - Add new calculation procedures'
 		
 			DECLARE @result nvarchar(255);
 
-			--SELECT @result = SUBSTRING([maxcodesuffix], LEN(LEFT([maxcodesuffix] + ''1''
-			--	, PATINDEX(''%[0-9]%'', [maxcodesuffix] + ''1'') )), 100)
-			--	+ @rowoffset
-			--	FROM ASRSysUniqueCodes WHERE [codeprefix] = @prefix;
+			SELECT @result = [maxcodesuffix] + @rowoffset
+				FROM tbsys_uniquecodes WHERE [codeprefix] = @prefix;
 
 			SELECT @result = convert(nvarchar(255),@rowoffset);
 			
@@ -1832,7 +1830,6 @@ PRINT 'Step 18 - System Functions'
 
 	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[tbsys_uniquecodes]') AND xtype = 'U')
 		EXECUTE sp_executesql N'EXECUTE sp_rename [ASRSysUniqueCodes], [tbsys_uniquecodes];';
-
 	
 /* ------------------------------------------------------------- */
 /* ------------------------------------------------------------- */
