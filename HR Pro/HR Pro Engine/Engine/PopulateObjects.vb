@@ -112,6 +112,7 @@
           objCodeLibrary.IsUniqueCode = objRow.Item("isuniquecode").ToString
           objCodeLibrary.IsGetFieldFromDB = objRow.Item("isgetfieldfromdb").ToString
           objCodeLibrary.CaseCount = objRow.Item("casecount").ToString
+          objCodeLibrary.OvernightOnly = objRow.Item("overnightonly").ToString
           objCodeLibrary.Tuning.Rating = objRow.Item("performancerating").ToString
           objCodeLibrary.Dependancies = PopulateCodeLibraryDependancies(objCodeLibrary)
 

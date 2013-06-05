@@ -9,6 +9,7 @@
     Public ReturnType As ScriptDB.ComponentValueTypes
     Public RowNumberRequired As Boolean
     Public RecordIDRequired As Boolean
+    Public OvernightOnly As Boolean = False
     Public CalculatePostAudit As Boolean
     Public IsGetFieldFromDB As Boolean = False
     Public IsUniqueCode As Boolean = False
