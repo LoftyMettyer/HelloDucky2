@@ -464,8 +464,8 @@ Public Function CreateTempTables() As Boolean
     daoDb.Execute sSQL
   
     ' Local copy of the security groups
-    sSQL = "SELECT uid AS ID, name INTO tmpmobileusergroups FROM sysusers " & _
-      " IN " & sSource & " WHERE gid = uid And gid > 0 AND not (name like 'ASRSys%') AND NOT (name like 'db[_]%')"
+    sSQL = "SELECT ASRSysGroups.*" & _
+      " INTO tmpGroups FROM ASRSysGroups IN " & sSource
     daoDb.Execute sSQL
    
     ' Mobile group workflows
@@ -2080,14 +2080,14 @@ ErrorTrap:
 End Function
 
 ' Add an itemkey and data to a combobox
-Public Function AddItemToComboBox(ByRef Combo As ComboBox, ItemText As String, ItemData As Variant) As Integer
+Public Function AddItemToComboBox(ByRef combo As ComboBox, ItemText As String, ItemData As Variant) As Integer
 
   Dim lngKey As Integer
 
-  Combo.AddItem ItemText
-  lngKey = Combo.NewIndex
+  combo.AddItem ItemText
+  lngKey = combo.NewIndex
   
-  Combo.ItemData(lngKey) = ItemData
+  combo.ItemData(lngKey) = ItemData
  
   AddItemToComboBox = lngKey
 
