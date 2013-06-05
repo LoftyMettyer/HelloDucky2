@@ -1072,33 +1072,11 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
               asCalcParentCode(8, iArrayIndex).TheString = vbNullString
             End If
             
-            'asCalcParentCode(5, iArrayIndex).TheString = "            SELECT @parentRecordID = inserted.ID_" & lngCalcTableID & vbNewLine & _
-            '  "                FROM inserted" & vbNewLine & _
-            '  "                WHERE id = @recordID" & vbNewLine & _
-            '  "            IF @parentRecordID IS NULL SET @parentRecordID = 0"
             asCalcParentCode(5, iArrayIndex).TheString = "            SET @parentRecordID = @insParentID_" & CStr(lngCalcTableID)
-
-            'asCalcParentCode(6, iArrayIndex).TheString = "            SELECT @parentRecordID = deleted.ID_" & lngCalcTableID & vbNewLine & _
-            '  "                FROM deleted" & vbNewLine & _
-            '  "                WHERE id = @recordID" & vbNewLine & _
-            '  "            IF @parentRecordID IS NULL SET @parentRecordID = 0"
             asCalcParentCode(6, iArrayIndex).TheString = "            SET @parentRecordID = @delParentID_" & CStr(lngCalcTableID)
-            
-            'asCalcParentCode(7, iArrayIndex).TheString = "            SELECT @oldParentRecordID = deleted.ID_" & lngCalcTableID & vbNewLine & _
-            '  "                FROM deleted" & vbNewLine & _
-            '  "                WHERE id = @recordID" & vbNewLine & _
-            '  "            IF @oldParentRecordID IS NULL SET @oldParentRecordID = 0"
             asCalcParentCode(7, iArrayIndex).TheString = "            SET @oldParentRecordID = @delParentID_" & CStr(lngCalcTableID)
-            
             asCalcParentCode(8, iArrayIndex).TheString = sCalcColumn
 
-'            asCalcParentCode(2, iArrayIndex).Append vbNewLine & _
-'              "            IF EXISTS (SELECT Name FROM sysobjects WHERE type = 'P' AND name = 'sp_ASRExpr_" & Trim$(Str$(lngExprID)) & "')" & vbNewLine & _
-'              "            BEGIN" & vbNewLine & _
-'              "                EXEC @hResult = dbo.sp_ASRExpr_" & Trim$(Str$(lngExprID)) & " @" & sExprName & " OUTPUT, @parentRecordID" & vbNewLine & _
-'              "                IF @hResult <> 0 " & sIfNullCode & vbNewLine & _
-'              "            END" & vbNewLine & _
-'              "            ELSE " & sIfNullCode & vbNewLine
             asCalcParentCode(2, iArrayIndex).Append vbNewLine & _
               "            EXEC @hResult = dbo.sp_ASRExpr_" & Trim$(Str$(lngExprID)) & " @" & sExprName & " OUTPUT, @parentRecordID" & vbNewLine & _
               "            IF @hResult <> 0 " & sIfNullCode & vbNewLine
@@ -2050,7 +2028,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "            SET @recordDesc = CONVERT(varchar(255), @recordDesc)" & vbNewLine & _
       "        END" & vbNewLine & _
       "        ELSE SET @recordDesc = ''" & vbNewLine & vbNewLine
-      
+    
     fSelfCalcs = asCalcSelfCode(1).Length <> 0 And _
        asCalcSelfCode(2).Length <> 0
     
@@ -2083,15 +2061,15 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     strDiaryProcName = "dbo.spASRDiary_" & CStr(pLngCurrentTableID)
       
     ' Create the trigger header.
-    sInsertTriggerSQL.Append "/* ------------------------------------- */" & vbNewLine & _
-      "/* HR Pro created trigger. */" & vbNewLine & _
-      "/* ------------------------------------- */" & vbNewLine & _
-      "CREATE TRIGGER INS_" & psTableName & " ON dbo." & psTableName & vbNewLine & _
-      "FOR INSERT" & vbNewLine & _
-      "AS" & vbNewLine & _
-      "BEGIN" & vbNewLine & _
-      "    SET NOCOUNT ON;" & vbNewLine & _
-      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([" & psTableName & "].[INS_" & psTableName & "]';" & vbNewLine & vbNewLine
+'    sInsertTriggerSQL.Append "/* ------------------------------------- */" & vbNewLine & _
+'      "/* HR Pro created trigger. */" & vbNewLine & _
+'      "/* ------------------------------------- */" & vbNewLine & _
+'      "CREATE TRIGGER INS_" & psTableName & " ON dbo." & psTableName & vbNewLine & _
+'      "FOR INSERT" & vbNewLine & _
+'      "AS" & vbNewLine & _
+'      "BEGIN" & vbNewLine & _
+'      "    SET NOCOUNT ON;" & vbNewLine & _
+'      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([" & psTableName & "].[INS_" & psTableName & "]';" & vbNewLine & vbNewLine
       
     sInsertTriggerSQL.Append _
       "    DECLARE @recordID int," & vbNewLine & _
@@ -2140,9 +2118,9 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "    SET @iAccordManualSendType = -1" & vbNewLine & _
       "    SET @fValidRecord = 1" & vbNewLine & vbNewLine
 
-    sInsertTriggerSQL.Append _
-      "       -- Only fire this trigger when called from the _u02" & vbNewLine & _
-      "       IF UPDATE([updflag]) RETURN;" & vbNewLine & vbNewLine
+'    sInsertTriggerSQL.Append _
+'      "       -- Only fire this trigger when called from the _u02" & vbNewLine & _
+'      "       IF UPDATE([updflag]) RETURN;" & vbNewLine & vbNewLine
 
     sInsertTriggerSQL.Append _
       "    IF EXISTS(SELECT [SettingValue] FROM ASRSysSystemSettings WHERE [Section] = 'TMP_AccordRunningInBatch' AND [SettingKey] = @@SPID)" & vbNewLine & _
@@ -2167,13 +2145,13 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     sInsertTriggerSQL.Append sDeclareInsCols.ToString & vbNewLine & vbNewLine & _
       sDeclareDelCols.ToString & vbNewLine & vbNewLine
   
-    sInsertTriggerSQL.Append _
-      "    /* ---------------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
-      "    /* Check that we are not exceeding the maximum number of nested trigger levels. */" & vbNewLine & _
-      "    /* ---------------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
-      "    SELECT @iTriggerLevel = TRIGGER_NESTLEVEL()" & vbNewLine & _
-      "    IF @iTriggerLevel = " & miTriggerRecursionLevel & " RETURN" & vbNewLine & _
-      "    IF @@nestLevel >= 30 RETURN" & vbNewLine & vbNewLine
+'    sInsertTriggerSQL.Append _
+'      "    /* ---------------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
+'      "    /* Check that we are not exceeding the maximum number of nested trigger levels. */" & vbNewLine & _
+'      "    /* ---------------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
+'      "    SELECT @iTriggerLevel = TRIGGER_NESTLEVEL()" & vbNewLine & _
+'      "    IF @iTriggerLevel = " & miTriggerRecursionLevel & " RETURN" & vbNewLine & _
+'      "    IF @@nestLevel >= 30 RETURN" & vbNewLine & vbNewLine
 
 
     'sInsertTriggerSQL.Append _
@@ -2467,19 +2445,19 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "        IF @fValidRecord = 1 FETCH NEXT FROM @cursInsertedRecords INTO @recordID, @TStamp" & sFetchInsCols.ToString & sFetchDelCols.ToString & vbNewLine & _
       "    END" & vbNewLine & _
       "    IF @fValidRecord = 1 CLOSE @cursInsertedRecords" & vbNewLine & _
-      "    DEALLOCATE @cursInsertedRecords" & vbNewLine & vbNewLine & _
-      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' End ([" & psTableName & "].[INS_" & psTableName & "]';" & vbNewLine & vbNewLine & _
-      "END" & vbNewLine
-
-
-    ' Remove the existing trigger if it exists.
-    sSQL = "IF EXISTS" & _
-      " (SELECT Name" & _
-      "   FROM sysobjects" & _
-      "   WHERE id = object_id('[INS_" & psTableName & "]')" & _
-      "     AND objectproperty(id, N'IsTrigger') = 1)" & _
-      " DROP TRIGGER [INS_" & psTableName & "]"
-    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+      "    DEALLOCATE @cursInsertedRecords" & vbNewLine & vbNewLine
+'      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' End ([" & psTableName & "].[INS_" & psTableName & "]';" & vbNewLine & vbNewLine & _
+'      "END" & vbNewLine
+'
+'
+'    ' Remove the existing trigger if it exists.
+'    sSQL = "IF EXISTS" & _
+'      " (SELECT Name" & _
+'      "   FROM sysobjects" & _
+'      "   WHERE id = object_id('[INS_" & psTableName & "]')" & _
+'      "     AND objectproperty(id, N'IsTrigger') = 1)" & _
+'      " DROP TRIGGER [INS_" & psTableName & "]"
+'    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
     '************  DEBUG CODE  *****************
     If GetSystemSetting("development", "debug triggers", "0") = 1 Then
@@ -2490,30 +2468,30 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     '*******************************************
     
     ' Execute the INSERT trigger creation.
-    gADOCon.Execute sInsertTriggerSQL.ToString, , adCmdText + adExecuteNoRecords
+ '   gADOCon.Execute sInsertTriggerSQL.ToString, , adCmdText + adExecuteNoRecords
     
     ' JPD20030110 Fault 4162
     ' Ensure the HR Pro trigger fires before any custom triggers.
     ' NB. Can only do this on SQL 2000 and above.
-    If glngSQLVersion >= 8 Then
-      sSQL = "EXEC dbo.sp_settriggerorder @triggername = '[INS_" & psTableName & "]', @order = 'LAST', @stmttype = 'INSERT'"
-      gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-    End If
+'    If glngSQLVersion >= 8 Then
+'      sSQL = "EXEC dbo.sp_settriggerorder @triggername = '[INS_" & psTableName & "]', @order = 'LAST', @stmttype = 'INSERT'"
+'      gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+'    End If
     
     '
     ' Create the UPDATE trigger creation string if required.
     '
     ' Create the trigger header.
-    sUpdateTriggerSQL.Append _
-      "/* ------------------------------------- */" & vbNewLine & _
-      "/* HR Pro created trigger. */" & vbNewLine & _
-      "/* ------------------------------------- */" & vbNewLine & _
-      "CREATE TRIGGER UPD_" & psTableName & " ON dbo." & psTableName & vbNewLine & _
-      "FOR UPDATE" & vbNewLine & _
-      "AS" & vbNewLine & _
-      "BEGIN" & vbNewLine & _
-      "    SET NOCOUNT ON" & vbNewLine & _
-      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([" & psTableName & "].[UPD_" & psTableName & "]';" & vbNewLine & vbNewLine
+'    sUpdateTriggerSQL.Append _
+'      "/* ------------------------------------- */" & vbNewLine & _
+'      "/* HR Pro created trigger. */" & vbNewLine & _
+'      "/* ------------------------------------- */" & vbNewLine & _
+'      "CREATE TRIGGER UPD_" & psTableName & " ON dbo." & psTableName & vbNewLine & _
+'      "FOR UPDATE" & vbNewLine & _
+'      "AS" & vbNewLine & _
+'      "BEGIN" & vbNewLine & _
+'      "    SET NOCOUNT ON" & vbNewLine & _
+'      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([" & psTableName & "].[UPD_" & psTableName & "]';" & vbNewLine & vbNewLine
 
     sUpdateTriggerSQL.Append _
       "    DECLARE @recordID int," & vbNewLine & _
@@ -2560,9 +2538,9 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "        @fResult bit" & vbNewLine & vbNewLine
       '"        @login_time datetime" & vbNewLine & vbNewLine
     
-    sUpdateTriggerSQL.Append _
-      "       -- Only fire this trigger when called from the _u02" & vbNewLine & _
-      "       IF UPDATE([updflag]) RETURN;" & vbNewLine & vbNewLine
+'    sUpdateTriggerSQL.Append _
+'      "       -- Only fire this trigger when called from the _u02" & vbNewLine & _
+'      "       IF UPDATE([updflag]) RETURN;" & vbNewLine & vbNewLine
     
     sUpdateTriggerSQL.Append _
       "    SET @RecalculateRecordDesc = 1" & vbNewLine & vbNewLine
@@ -2621,12 +2599,12 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "      SET @iAccordManualSendType = -1" & vbNewLine & "      SET @bAccordBypassFilter = 0" & vbNewLine & "    END" & vbNewLine & _
       "    ELSE SET @fUpdatingDateDependentColumns = 1" & vbNewLine & vbNewLine
 
-    sUpdateTriggerSQL.Append _
-      "    /* ---------------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
-      "    /* Check that we are not exceeding the maximum number of nested trigger levels. */" & vbNewLine & _
-      "    /* ---------------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
-      "    SELECT @iTriggerLevel = TRIGGER_NESTLEVEL()" & vbNewLine & _
-      "    IF @@nestLevel >= 30 RETURN" & vbNewLine & vbNewLine
+'    sUpdateTriggerSQL.Append _
+'      "    /* ---------------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
+'      "    /* Check that we are not exceeding the maximum number of nested trigger levels. */" & vbNewLine & _
+'      "    /* ---------------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
+'      "    SELECT @iTriggerLevel = TRIGGER_NESTLEVEL()" & vbNewLine & _
+'      "    IF @@nestLevel >= 30 RETURN" & vbNewLine & vbNewLine
 
       '"    IF @iTriggerLevel = " & miTriggerRecursionLevel & " RETURN" & vbNewLine & _
 
@@ -2642,8 +2620,9 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     ' Here we are adding the required FETCH statements to the UPDATE trigger.
     sUpdateTriggerSQL.Append _
       "    /* Loop through the virtual 'inserted' table, getting the record ID of each updated record. */" & vbNewLine & _
-      "    SET @cursInsertedRecords = CURSOR LOCAL FAST_FORWARD READ_ONLY FOR SELECT inserted.id, convert(int,inserted.timestamp)" & sSelectInsCols.ToString & sSelectDelCols.ToString & " FROM inserted" & vbNewLine & _
-      "        LEFT OUTER JOIN deleted ON inserted.id = deleted.id" & vbNewLine & _
+      "    SET @cursInsertedRecords = CURSOR LOCAL FAST_FORWARD READ_ONLY FOR SELECT inserted.id, convert(int,inserted.timestamp)" & sSelectInsCols.ToString & sSelectDelCols.ToString & vbNewLine & _
+      "        FROM deleted" & vbNewLine & _
+      "        LEFT OUTER JOIN dbo.[" & psTableName & "] inserted ON inserted.id = deleted.id" & vbNewLine & _
       "    OPEN @cursInsertedRecords" & vbNewLine & _
       "    FETCH NEXT FROM @cursInsertedRecords INTO @recordID, @TStamp" & sFetchInsCols.ToString & sFetchDelCols.ToString & vbNewLine
 
@@ -2789,19 +2768,19 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "        IF @fValidRecord = 1 FETCH NEXT FROM @cursInsertedRecords INTO @recordID, @TStamp" & sFetchInsCols.ToString & sFetchDelCols.ToString & vbNewLine & _
       "    END" & vbNewLine & _
       "    IF @fValidRecord = 1 CLOSE @cursInsertedRecords" & vbNewLine & _
-      "    DEALLOCATE @cursInsertedRecords" & vbNewLine & _
-      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' End ([" & psTableName & "].[UPD_" & psTableName & "]';" & vbNewLine & vbNewLine & _
-      "END" & vbNewLine
+      "    DEALLOCATE @cursInsertedRecords" & vbNewLine
+'      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' End ([" & psTableName & "].[UPD_" & psTableName & "]';" & vbNewLine & vbNewLine & _
+'      "END" & vbNewLine
 
-
-    ' Remove the existing trigger if it exists.
-    sSQL = "IF EXISTS" & _
-      " (SELECT Name" & _
-      "   FROM sysobjects" & _
-      "   WHERE id = object_id('[UPD_" & psTableName & "]')" & _
-      "     AND objectproperty(id, N'IsTrigger') = 1)" & _
-      " DROP TRIGGER [UPD_" & psTableName & "]"
-    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+'
+'    ' Remove the existing trigger if it exists.
+'    sSQL = "IF EXISTS" & _
+'      " (SELECT Name" & _
+'      "   FROM sysobjects" & _
+'      "   WHERE id = object_id('[UPD_" & psTableName & "]')" & _
+'      "     AND objectproperty(id, N'IsTrigger') = 1)" & _
+'      " DROP TRIGGER [UPD_" & psTableName & "]"
+'    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
     
     '************  DEBUG CODE  *****************
     If GetSystemSetting("development", "debug triggers", "0") = 1 Then
@@ -2810,33 +2789,33 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       Close #1
     End If
     '*******************************************
-    
-    ' Execute the UPDATE trigger creation.
-    gADOCon.Execute sUpdateTriggerSQL.ToString, , adCmdText + adExecuteNoRecords
+
+'    ' Execute the UPDATE trigger creation.
+'    gADOCon.Execute sUpdateTriggerSQL.ToString, , adCmdText + adExecuteNoRecords
 
     ' JPD20030110 Fault 4162
     ' Ensure the HR Pro trigger fires before any custom triggers.
     ' NB. Can only do this on SQL 2000 and above.
-    If glngSQLVersion >= 8 Then
-      sSQL = "EXEC dbo.sp_settriggerorder @triggername = '[UPD_" & psTableName & "]', @order = 'LAST', @stmttype = 'UPDATE'"
-      gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-    End If
-    
+'    If glngSQLVersion >= 8 Then
+'      sSQL = "EXEC dbo.sp_settriggerorder @triggername = '[UPD_" & psTableName & "]', @order = 'LAST', @stmttype = 'UPDATE'"
+'      gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+'    End If
+'
     '
     ' Create the DELETE trigger creation string if required.
     '
     ' Create the trigger header.
-    sDeleteTriggerSQL.Append _
-      "/* ------------------------------------- */" & vbNewLine & _
-      "/* HR Pro created trigger. */" & vbNewLine & _
-      "/* ------------------------------------- */" & vbNewLine & _
-      "CREATE TRIGGER DEL_" & psTableName & " ON dbo." & psTableName & vbNewLine & _
-      "FOR DELETE" & vbNewLine & _
-      "AS" & vbNewLine & _
-      "BEGIN" & vbNewLine & _
-      "    SET NOCOUNT ON" & vbNewLine & _
-      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([" & psTableName & "].[DEL_" & psTableName & "]';" & vbNewLine & vbNewLine
-      
+'    sDeleteTriggerSQL.Append _
+'      "/* ------------------------------------- */" & vbNewLine & _
+'      "/* HR Pro created trigger. */" & vbNewLine & _
+'      "/* ------------------------------------- */" & vbNewLine & _
+'      "CREATE TRIGGER DEL_" & psTableName & " ON dbo." & psTableName & vbNewLine & _
+'      "FOR DELETE" & vbNewLine & _
+'      "AS" & vbNewLine & _
+'      "BEGIN" & vbNewLine & _
+'      "    SET NOCOUNT ON" & vbNewLine & _
+'      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([" & psTableName & "].[DEL_" & psTableName & "]';" & vbNewLine & vbNewLine
+'
     sDeleteTriggerSQL.Append _
       "    DECLARE @recordID int," & vbNewLine & _
       "        @id int," & vbNewLine & _
@@ -2870,9 +2849,9 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "        @fResult bit," & vbNewLine & _
       "        @iTemp int" & vbNewLine & vbNewLine
       
-    sDeleteTriggerSQL.Append _
-      "       -- Only fire this trigger when called from the _u02" & vbNewLine & _
-      "       IF UPDATE([updflag]) RETURN;" & vbNewLine & vbNewLine
+'    sDeleteTriggerSQL.Append _
+'      "       -- Only fire this trigger when called from the _u02" & vbNewLine & _
+'      "       IF UPDATE([updflag]) RETURN;" & vbNewLine & vbNewLine
       
     sDeleteTriggerSQL.Append _
       "    SET @RecalculateRecordDesc = 0" & vbNewLine & _
@@ -2897,15 +2876,15 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     'NPG20080715 Fault 13266
     sDeleteTriggerSQL.Append _
       "    SET @fUpdatingDateDependentColumns = ISNULL(@fUpdatingDateDependentColumns, 0)" & vbNewLine & vbNewLine
-
-    sDeleteTriggerSQL.Append _
-      "    /* ---------------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
-      "    /* Check that we are not exceeding the maximum number of nested trigger levels. */" & vbNewLine & _
-      "    /* ---------------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
-      "    SELECT @iTriggerLevel = TRIGGER_NESTLEVEL()" & vbNewLine & _
-      "    IF @iTriggerLevel = " & miTriggerRecursionLevel & " RETURN" & vbNewLine & _
-      "    IF @@nestLevel >= 30 RETURN" & vbNewLine & vbNewLine
-    
+'
+'    sDeleteTriggerSQL.Append _
+'      "    /* ---------------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
+'      "    /* Check that we are not exceeding the maximum number of nested trigger levels. */" & vbNewLine & _
+'      "    /* ---------------------------------------------------------------------------------------------------------------------------- */" & vbNewLine & _
+'      "    SELECT @iTriggerLevel = TRIGGER_NESTLEVEL()" & vbNewLine & _
+'      "    IF @iTriggerLevel = " & miTriggerRecursionLevel & " RETURN" & vbNewLine & _
+'      "    IF @@nestLevel >= 30 RETURN" & vbNewLine & vbNewLine
+'
     sDeleteTriggerSQL.Append _
       "    IF EXISTS(SELECT [SettingValue] FROM ASRSysSystemSettings WHERE [Section] = 'TMP_AccordRunningInBatch' AND [SettingKey] = @@SPID)" & vbNewLine & _
       "    BEGIN" & vbNewLine & _
@@ -3253,20 +3232,20 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "        FETCH NEXT FROM @cursDeletedRecords INTO @recordID" & sFetchDelCols.ToString & vbNewLine & _
       "    END" & vbNewLine & _
       "    CLOSE @cursDeletedRecords" & vbNewLine & _
-      "    DEALLOCATE @cursDeletedRecords" & vbNewLine & _
-      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' End ([" & psTableName & "].[DEL_" & psTableName & "]';" & vbNewLine & vbNewLine & _
-      "END"
-
-    ' Remove the existing trigger if it exists.
-    sSQL = "IF EXISTS" & _
-      " (SELECT Name" & _
-      "   FROM sysobjects" & _
-      "   WHERE id = object_id('[DEL_" & psTableName & "]')" & _
-      "     AND objectproperty(id, N'IsTrigger') = 1)" & _
-      " DROP TRIGGER [DEL_" & psTableName & "]"
-    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-    
-    
+      "    DEALLOCATE @cursDeletedRecords" & vbNewLine
+'      "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' End ([" & psTableName & "].[DEL_" & psTableName & "]';" & vbNewLine & vbNewLine & _
+'      "END"
+'
+'    ' Remove the existing trigger if it exists.
+'    sSQL = "IF EXISTS" & _
+'      " (SELECT Name" & _
+'      "   FROM sysobjects" & _
+'      "   WHERE id = object_id('[DEL_" & psTableName & "]')" & _
+'      "     AND objectproperty(id, N'IsTrigger') = 1)" & _
+'      " DROP TRIGGER [DEL_" & psTableName & "]"
+'    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+'
+'
     'MH20090630
     sDeleteTriggerSQL.TheString = RemoveDuplicateDeclares(sDeleteTriggerSQL.ToString)
     
@@ -3280,15 +3259,15 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     '*******************************************
 
     ' Execute the DELETE trigger creation.
-    gADOCon.Execute sDeleteTriggerSQL.ToString, , adCmdText + adExecuteNoRecords
+  '  gADOCon.Execute sDeleteTriggerSQL.ToString, , adCmdText + adExecuteNoRecords
   
     ' JPD20030110 Fault 4162
     ' Ensure the HR Pro trigger fires before any custom triggers.
     ' NB. Can only do this on SQL 2000 and above.
-    If glngSQLVersion >= 8 Then
-      sSQL = "EXEC dbo.sp_settriggerorder @triggername = '[DEL_" & psTableName & "]', @order = 'LAST', @stmttype = 'DELETE'"
-      gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-    End If
+'    If glngSQLVersion >= 8 Then
+'      sSQL = "EXEC dbo.sp_settriggerorder @triggername = '[DEL_" & psTableName & "]', @order = 'LAST', @stmttype = 'DELETE'"
+'      gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+'    End If
     
     ' Pass this trigegr code to the engine
     objTable.SysMgrInsertTrigger = sInsertTriggerSQL.ToString
@@ -3823,7 +3802,7 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRPr
       .Close
       
     End With
-   
+
     ' If filter add it
     If lngFilterID > 0 Then
       sAccordFilter = Space$(10) & "EXEC @hResult = dbo.sp_ASRExpr_" & Trim$(Str$(lngFilterID)) & " @bFilter OUTPUT, @recordID" & vbNewLine _
