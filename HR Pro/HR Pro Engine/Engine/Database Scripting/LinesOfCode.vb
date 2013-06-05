@@ -15,7 +15,7 @@ Namespace ScriptDB
     Public CodeLevel As Integer
     Public NestedLevel As Integer
     Public ReturnType As ComponentValueTypes
-    'Public MakeTypeSafe As Boolean                    ' Auto add = in certain logic code elements
+    Public IsEvaluated As Boolean
 
     Public Sub New()
       mbAppendWildcard = False
@@ -122,48 +122,72 @@ Namespace ScriptDB
           bAddAutoIsEqualTo = False
           If Chunk.CaseNumber = CaseNumber Then
 
-            If ReturnType = ComponentValueTypes.Logic And Not Chunk.BypassValidation Then
+            If ReturnType = ComponentValueTypes.Logic Then 'And Not Chunk.BypassValidation Then
 
               If Chunk.CodeType = ComponentTypes.Operator Then
                 If Chunk.OperatorType = OperatorSubType.Comparison Then
                   bComparisonSinceLastLogic = True
                 ElseIf Chunk.OperatorType = OperatorSubType.Logic Then
-                  If Not bComparisonSinceLastLogic Then
-                    Statement = String.Format("({0} = 1)", Statement)
-                  Else
-                    Statement = String.Format("({0})", Statement)
-                  End If
+                  'If Not bComparisonSinceLastLogic Then
+                  '  Statement = String.Format("({0} = 1)", Statement)
+                  'Else
+                  '  Statement = String.Format("({0})", Statement)
+                  'End If
                   bComparisonSinceLastLogic = False
                 End If
               End If
 
-                ' Is there an operator after this component?
+              ' Is there an operator after this component?
               If Me.Items.Count - 1 > iThisElement Then
                 If Me.Items(iThisElement + 1).OperatorType = OperatorSubType.Logic Then
                   If Not bComparisonSinceLastLogic Then
                     bAddAutoIsEqualTo = True
                   End If
                 End If
+              Else
+                bAddAutoIsEqualTo = Me.IsEvaluated And Not bComparisonSinceLastLogic
               End If
 
-              ' Last component and has not had a comparision since the last logical operator
-              If iThisElement = Me.Items.Count - 1 And Not bComparisonSinceLastLogic Then
-                bAddAutoIsEqualTo = True
+              ' Am I the last component and was there an operator before me?
+              If iThisElement = Me.Items.Count - 1 And iThisElement > 0 Then
+                If Me.Items(iThisElement - 1).OperatorType = OperatorSubType.Logic Then
+                  If Not bComparisonSinceLastLogic Then
+                    bAddAutoIsEqualTo = True
+                    'Debug.Assert("hello")
+                  End If
+                End If
               End If
+
+
+              '' Last component and has not had a comparision since the last logical operator
+              'If iThisElement = Me.Items.Count - 1 And Not bComparisonSinceLastLogic Then
+              '  bAddAutoIsEqualTo = True
+              'End If
+
+
             End If
           End If
 
-          ' Build the statement
-          Statement = Statement & Chunk.Code
+          ' Does this code element make needing logic safe?
+          ' Some logic expressions return a simple logic while others are set specifically 
+          ' to logicval = 0, or have the not in front of them!
+          If bAddAutoIsEqualTo And Not Chunk.BypassEvaluation Then
+            Statement = Statement & String.Format("({0} = 1)", Chunk.Code)
+            bAddAutoIsEqualTo = False
+          Else
+            Statement = Statement & Chunk.Code
+          End If
+
+          ' Statement = Statement & Chunk.Code
           iThisElement = iThisElement + 1
 
         Next
 
         ' Some expressions need to have an equals to appended
-        If bAddAutoIsEqualTo And CodeLevel > 1 And Statement.Length > 1 Then
-          'If bAddAutoIsEqualTo And Statement.Length > 1 Then
-          Statement = String.Format("({0} = 1)", Statement)
-        End If
+        'If bAddAutoIsEqualTo And CodeLevel > 1 And Statement.Length > 1 Then
+        '  'If bAddAutoIsEqualTo And Statement.Length > 1 Then
+        '  Statement = String.Format("({0} = 1)", Statement)
+        'End If
 
       End Get
     End Property
@@ -178,9 +202,9 @@ Namespace ScriptDB
           Statement = Statement & "+ '%'"
         End If
 
-        If ReturnType = ComponentValueTypes.Logic Then
-          Statement = Statement
-        End If
+        'If ReturnType = ComponentValueTypes.Logic Then
+        '  Statement = Statement
+        'End If
 
       End Get
     End Property

@@ -382,6 +382,7 @@ Namespace Things
 
             ' Wrapper for when this function is used as a filter in an expression
           Case ScriptDB.ExpressionType.ColumnFilter
+            mcolLinesOfCode.IsEvaluated = True
             .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
             .SelectCode = String.Format("CASE WHEN ({0}) THEN 1 ELSE 0 END", mcolLinesOfCode.Statement)
@@ -713,9 +714,13 @@ Namespace Things
           objThisColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn
           objThisColumn.Calculation.AssociatedColumn = objThisColumn
           objThisColumn.Calculation.GenerateCode()
+
           mbRequiresRowNumber = mbRequiresRowNumber Or objThisColumn.Calculation.mbRequiresRowNumber
 
           If objThisColumn.Calculation.IsComplex Then
+
+            'AddToDependencies(objThisColumn.Calculation.mcolDependencies)
+
             LineOfCode.Code = objThisColumn.Calculation.UDF.CallingCode
           Else
             AddToDependencies(objThisColumn.Calculation.mcolDependencies)
@@ -815,7 +820,10 @@ Namespace Things
                 'objExpression.BaseExpression = Me.BaseExpression
                 '                objExpression.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
                 objExpression.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
+
                 objExpression.AssociatedColumn = objThisColumn
+
+                'objExpression.AssociatedColumn = Me.AssociatedColumn
 
                 'SQLCode_AddCodeLevel(objExpression.Objects, ChildCodeCluster)
                 'ChildCodeCluster.CodeLevel = [CodeCluster].CodeLevel + 1
@@ -829,6 +837,8 @@ Namespace Things
                 objExpression.Filters.Add(objExpression.UDF.SelectCode)
 
                 maryDeclarations.AddRange(objExpression.maryPrerequisitStatements)
+
+
                 '     maryPrerequisitStatement()
 
                 '     objExpression.UDF.Prerequisites
@@ -947,18 +957,8 @@ Namespace Things
               End If
 
               maryPrerequisitStatements.Add(sPartCode)
-
-              '        Debug.Assert(Me.Name <> "Holiday_Taken")
-
-              ' Add this column to the main executing statement
               LineOfCode.Code = String.Format("ISNULL(@part_{0},{1})", iPartNumber, objThisColumn.SafeReturnType)
 
-
-              ' Add the order and the direction.
-
-              ' How do we do specific line X?
-
-              '            , PhysicalName([Component].Item("columnorderid").ToString, ObjectPrefix.Column)))
             End If
 
             ' Add table join component
@@ -1044,7 +1044,9 @@ Namespace Things
         Next
       End If
 
+      'ChildCodeCluster.IsEvaluated = Not objCodeLibrary.BypassValidation
       SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
+      LineOfCode.BypassEvaluation = objCodeLibrary.BypassValidation
       LineOfCode.Code = String.Format(LineOfCode.Code, ChildCodeCluster.ToArray)
       mbRequiresRowNumber = mbRequiresRowNumber Or objCodeLibrary.RowNumberRequired
       mbCalculatePostAudit = mbCalculatePostAudit Or objCodeLibrary.CalculatePostAudit
@@ -1064,7 +1066,8 @@ Namespace Things
             'If Not Right( LineOfCode.Code,3) = "= 1)" the
 
             'LineOfCode.Code = String.Format("convert(bit, ({0}))", LineOfCode.Code)
-            LineOfCode.BypassValidation = objCodeLibrary.BypassValidation
+            'CodeCluster.IsEvaluated = Not objCodeLibrary.BypassValidation
+            'LineOfCode. = objCodeLibrary.BypassValidation
             'If Not objCodeLibrary.BypassValidation then
 
           Case ScriptDB.ComponentValueTypes.String
@@ -1079,6 +1082,7 @@ Namespace Things
       End If
 
       ' Attach the line of code
+
       [CodeCluster].Add(LineOfCode)
 
     End Sub
@@ -1124,9 +1128,15 @@ Namespace Things
 
         LineOfCode.Code = String.Format("@part_{0}", iPartNumber)
       Else
-        SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
-        LineOfCode.BypassValidation = Component.BypassValidation
+        SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)       
+
+        ' Debug.Assert(Component.IsEvaluated = False)
+
+        ChildCodeCluster.IsEvaluated = Component.IsEvaluated
         LineOfCode.Code = String.Format("({0})", ChildCodeCluster.Statement)
+
+
+
       End If
 
       [CodeCluster].Add(LineOfCode)
@@ -1250,6 +1260,7 @@ Namespace Things
 
       Dim objDependency As Things.Base
       Dim objColumn As Things.Column
+      Dim objRelation As Things.Relation
 
       For Each objDependency In Dependencies
 
@@ -1259,6 +1270,13 @@ Namespace Things
             If objColumn.Table Is Me.BaseTable Then
               mcolDependencies.Add(objDependency)
             End If
+          End If
+        End If
+
+        If objDependency.Type = Enums.Type.Relation Then
+          objRelation = CType(objDependency, Things.Relation)
+          If Not mcolDependencies.Contains(objRelation) Then
+            mcolDependencies.Add(objDependency)
           End If
         End If
 

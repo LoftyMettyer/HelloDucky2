@@ -33,6 +33,7 @@ Namespace Things
     Public ColumnOrderID As HCMGuid
     Public ColumnAggregiateType As ScriptDB.AggregiateNumeric
     Public IsColumnByReference As Boolean
+    Public IsEvaluated As Boolean = False
 
     Public LookupTableID As HCMGuid
     Public LookupColumnID As HCMGuid

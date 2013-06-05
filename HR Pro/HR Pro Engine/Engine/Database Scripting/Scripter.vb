@@ -820,14 +820,11 @@ Namespace ScriptDB
         sSQL = String.Format("CREATE TRIGGER [{1}].[{0}] ON [{1}].[{2}]" & vbNewLine & _
           "    {3}" & vbNewLine & "AS" & vbNewLine & _
           "BEGIN" & vbNewLine & _
-          "    PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([{2}].[{0}]';" & vbNewLine & _
+          "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([{2}].[{0}]';" & vbNewLine & _
           "    SET NOCOUNT ON;" & vbNewLine & _
           "    DECLARE @iCount integer;" & vbNewLine & vbNewLine & _
-         "    -- Only top level call (in case database property activating recursion is enabled)" & vbNewLine & _
-         "    --print TRIGGER_NESTLEVEL()" & vbNewLine & _
-         "    --IF TRIGGER_NESTLEVEL() > 15 RETURN" & vbNewLine & vbNewLine & _
           "{4}" & vbNewLine & vbNewLine & _
-          "    PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
+          "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
           "END" _
           , sTriggerName, [Role], Table.PhysicalName, sTriggerType, [BodyCode])
         CommitDB.ScriptStatement(sSQL)
@@ -1245,15 +1242,13 @@ Namespace ScriptDB
 
           '  Validation Masks
           For Each objExpression In objTable.Objects(Things.Type.Mask)
-            objExpression.GenerateCode()
             sObjectName = String.Format("{0}{1}", Consts.MaskUDF, CInt(objExpression.ID))
+            objExpression.GenerateCode()
             ScriptDB.DropUDF("dbo", sObjectName)
 
             If Not Globals.CommitDB.ScriptStatement(objExpression.UDF.Code) Then
               Globals.CommitDB.ScriptStatement(objExpression.UDF.CodeStub)
             End If
-
-            Debug.Print(objExpression.Name)
 
           Next
 
@@ -1268,7 +1263,7 @@ Namespace ScriptDB
 
                 sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
 
-                '   Debug.Assert(sObjectName <> "udfcalc_Table1.ChildFieldLastChangeDate")
+                ' Debug.Assert(sObjectName <> "udfcalc_Holiday_Requests.Request_Details")
 
                 ScriptDB.DropUDF("dbo", sObjectName)
 

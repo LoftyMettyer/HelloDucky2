@@ -111,6 +111,7 @@
       [Logic] = 3
       [Date] = 4
       [SystemVariable] = 5
+      [Condition] = 6            ' typically first parameter of a if then else (e.g. field = value)
       '[Another_Unknown] = 100
       '[Component_String] = 101
       '[Component_Numeric] = 102
