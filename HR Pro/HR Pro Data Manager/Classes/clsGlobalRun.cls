@@ -51,7 +51,7 @@ Private mlngTableViews() As Long
 Private mstrSQLJoin As String
 
 Private mstrPicklistFilterIDs As String
-
+Private miBatchSize As Single
 
 Public Property Get UserCancelled() As Boolean
   UserCancelled = mblnUserCancelled
@@ -104,6 +104,7 @@ Public Function RunGlobal(lngSelectedID As Long, intType As GlobalType, strPickl
   'mstrType = IIf(mintType = glAdd, "Global Add", "Global Update")
   mstrType = "Global " & Choose(mintType, "Add", "Update", "Delete")
   mstrPicklistFilterIDs = strPicklistFilterIDs
+  miBatchSize = GetSystemSetting("advanceddatabasesetting", "globalupdatebatchsize", 1)
 
   fOK = True
   mlngSelectedID = lngSelectedID
@@ -135,7 +136,14 @@ Public Function RunGlobal(lngSelectedID As Long, intType As GlobalType, strPickl
   Case glUpdate
     mbLogSuccessfulRecords = CBool(GetUserSetting("LogEvents", "Global_Update_Success", False))
     gobjEventLog.AddHeader eltGlobalUpdate, mstrFunctionName
-    If Progress Then Call UpdateRecords
+    
+    If Progress Then
+      If miBatchSize > 1 Then
+        UpdateRecords
+      Else
+        UpdateRecordsOLD
+      End If
+    End If
     Call UtilUpdateLastRun(utlGlobalUpdate, mlngSelectedID)
   
   Case glDelete
@@ -1200,7 +1208,7 @@ Private Sub BuildRecordIDArray()
   
   
   If Not gblnBatchMode Then
-    gobjProgress.Bar1MaxValue = UBound(mlngRecordIDs)
+    gobjProgress.Bar1MaxValue = UBound(mlngRecordIDs) / miBatchSize
   Else
     gobjProgress.Bar2MaxValue = UBound(mlngRecordIDs)
   End If
@@ -1256,7 +1264,6 @@ LocalErr:
 
 End Sub
 
-
 Private Sub UpdateRecords()
 
   Dim objDeadlock As clsDeadlock
@@ -1268,7 +1275,120 @@ Private Sub UpdateRecords()
   Dim strUpdateColumns As String
   Dim strRecordError As String
   Dim strOutput As String
+  Dim strRecordIDs As String
+  Dim lngBatchCount As Long
+  Dim bBatchFinished As Boolean
+ 
+  On Error GoTo LocalErr
+
+  Set objDeadlock = New clsDeadlock
+  bBatchFinished = False
+  lngBatchCount = 1
+  mlngSuccessCount = 0
+  mlngFailCount = 0
   
+  'Loop through columns building update string for this update
+  strUpdateColumns = vbNullString
+  For iNextIndex = 1 To UBound(mstrColumns, 2)
+
+    If Len(mstrColumns(2, iNextIndex)) > 0 Then
+      Select Case mstrColumns(3, iNextIndex)
+        Case globfuncvaltyp_CALCULATION
+          strColumnResult = mstrColumns(2, iNextIndex) & _
+              " WHERE " & mstrBaseRealSource & ".ID = base.ID"
+        
+        Case globfuncvaltyp_LOOKUPTABLE, globfuncvaltyp_STRAIGHTVALUE
+          strColumnResult = mstrColumns(2, iNextIndex)
+        
+        Case Else
+          strColumnResult = mstrColumns(1, iNextIndex)
+              
+      End Select
+  
+      strUpdateColumns = strUpdateColumns & _
+          IIf(LenB(strUpdateColumns) <> 0, ", ", "") & _
+          mstrColumns(1, iNextIndex) & " = " & _
+          "(" & strColumnResult & ")"
+          
+    End If
+    
+  Next
+      
+  Do While Not bBatchFinished
+    
+    ' Build the record selection filter
+    strRecordIDs = GetNextBatchIDs(mlngRecordIDs, lngBatchCount, miBatchSize, bBatchFinished)
+    
+    ' Loop through the array of tables/views, trying to performing the global update
+    For iNextIndex = 1 To UBound(mstrTableViews)
+    
+      strSQL = "WITH base AS (SELECT * FROM " & mstrTableViews(iNextIndex) & " WHERE [id] IN (" & strRecordIDs & "))" & vbNewLine & _
+        "    UPDATE base" & vbNewLine & _
+        "    SET " & strUpdateColumns & vbNewLine
+    
+      blnUpdated = objDeadlock.UpdateTableRecordJustDoIt(strSQL)
+      strRecordError = objDeadlock.ErrorString
+      If objDeadlock.FatalError Then
+        mstrStatusMessage = "Error updating records (" & objDeadlock.ErrorString & ")"
+        fOK = False
+        GoTo TidyUpAndExit
+      End If
+         
+      If blnUpdated Then
+        mlngSuccessCount = mlngSuccessCount + objDeadlock.RecordsAffected
+    
+      ElseIf strRecordError <> vbNullString Then
+        Call gobjEventLog.AddDetailEntry(strRecordError)
+        mlngFailCount = mlngFailCount + miBatchSize
+      End If
+      
+      gobjProgress.UpdateProgress gblnBatchMode
+      strOutput = "Records Processed : " & CStr(mlngSuccessCount) & " successful" & _
+                    IIf(mlngFailCount > 0, ", " & CStr(mlngFailCount) & " failed", "")
+    
+      If gblnBatchMode Then
+        gobjProgress.Bar2RecordsCaption = strOutput
+      Else
+        gobjProgress.Bar1RecordsCaption = strOutput
+      End If
+      
+      If gobjProgress.Cancelled Then
+        mblnUserCancelled = True
+        fOK = False
+        GoTo TidyUpAndExit
+      End If
+  
+    Next iNextIndex
+  
+  Loop
+
+  ' Commit the immediate emails
+  objEmail.SendImmediateEmails
+
+TidyUpAndExit:
+  Set objDeadlock = Nothing
+  Exit Sub
+
+LocalErr:
+  mstrStatusMessage = "Error updating records (" & Err.Description & ")"
+  fOK = False
+  GoTo TidyUpAndExit
+
+End Sub
+
+
+Private Sub UpdateRecordsOLD()
+
+  Dim objDeadlock As clsDeadlock
+  Dim strSQL As String
+  Dim lngRec As Long
+  Dim iNextIndex As Integer
+  Dim blnUpdated As Boolean
+  Dim strColumnResult As String
+  Dim strUpdateColumns As String
+  Dim strRecordError As String
+  Dim strOutput As String
+
   On Error GoTo LocalErr
 
   If mbBypassTrigger Then
@@ -1281,14 +1401,14 @@ Private Sub UpdateRecords()
   mlngSuccessCount = 0
   mlngFailCount = 0
   For lngRec = 1 To UBound(mlngRecordIDs)
-      
+
     'Loop through columns building update string for this recordID
     '(Need to be done here to include the record id for each calc)
     strUpdateColumns = vbNullString
     For iNextIndex = 1 To UBound(mstrColumns, 2)
 
       strColumnResult = mstrColumns(2, iNextIndex)
-      
+
       If mstrColumns(3, iNextIndex) = globfuncvaltyp_CALCULATION Then
         'strColumnResult = strColumnResult & _
             " WHERE " & mstrTableName & ".ID = " & _
@@ -1339,24 +1459,24 @@ Private Sub UpdateRecords()
 '''        'trying to update this record on any other views
 '''        Exit For
 '''      End If
-      
+
       'Updated this record sucessfully so don't bother
       'trying to update this record on any other views
       If blnUpdated Then
         Exit For
       End If
-    
+
     Next iNextIndex
-    
-    
+
+
     If blnUpdated Then
-      
+
       'JDM - 12/12/01 - Fault 3280 - Log successful records
       If mbLogSuccessfulRecords Then
         strRecordError = GetRecordDesc(mlngRecordIDs(lngRec)) & " Updated successfully"
         Call gobjEventLog.AddDetailEntry(strRecordError)
       End If
-      
+
       mlngSuccessCount = mlngSuccessCount + 1
 
     ElseIf strRecordError <> vbNullString Then
@@ -1367,12 +1487,12 @@ Private Sub UpdateRecords()
       Call gobjEventLog.AddDetailEntry(strRecordError)
       mlngFailCount = mlngFailCount + 1
       'fOK = False
-    
+
     'Else You can't see the record whose ID we just tried to update
-    
+
     End If
-    
-    
+
+
     gobjProgress.UpdateProgress gblnBatchMode
     strOutput = "Records Processed : " & CStr(mlngSuccessCount) & " successful" & _
                   IIf(mlngFailCount > 0, ", " & CStr(mlngFailCount) & " failed", "")
@@ -1382,13 +1502,13 @@ Private Sub UpdateRecords()
     Else
       gobjProgress.Bar1RecordsCaption = strOutput
     End If
-    
+
     If gobjProgress.Cancelled Then
       mblnUserCancelled = True
       fOK = False
       GoTo TidyUpAndExit
     End If
-  
+
   Next
 
   Set objDeadlock = Nothing
@@ -1899,7 +2019,6 @@ LocalErr:
 
 End Sub
 
-
 Private Function AddToViewArray(lngViewID As Long, strViewName As String) As Boolean
   
   Dim lngIndex As Integer
@@ -1919,5 +2038,23 @@ Private Function AddToViewArray(lngViewID As Long, strViewName As String) As Boo
   mstrSQLJoin = mstrSQLJoin & _
       "LEFT OUTER JOIN " & strViewName & " ON " & _
       mstrBaseRealSource & ".ID = " & strViewName & ".ID " & vbNewLine
+
+End Function
+
+Private Function GetNextBatchIDs(ByRef mlngRecordIDs() As Long, ByRef lngBatchCount As Long, iBatchSize As Single, ByRef bBatchFinished As Boolean) As String
+
+  Dim strRecordIDs As String
+  Dim lngStartPos As Long
+  Dim lngCount As Long
+  
+  lngStartPos = ((lngBatchCount - 1) * iBatchSize) + 1
+  For lngCount = lngStartPos To Minimum((iBatchSize + lngStartPos) - 1, UBound(mlngRecordIDs))
+    strRecordIDs = strRecordIDs & IIf(Len(strRecordIDs) > 0, ", ", "") & mlngRecordIDs(lngCount)
+  Next lngCount
+
+  lngBatchCount = lngBatchCount + 1
+  bBatchFinished = (lngCount >= UBound(mlngRecordIDs))
+
+  GetNextBatchIDs = strRecordIDs
 
 End Function
