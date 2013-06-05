@@ -38,12 +38,15 @@ Public Enum DataTypes
   dtINTEGER = 4
   dtTIMESTAMP = 11
   dtVARCHAR = 12
+  dtGUID = 15
 '  dtNVARCHARMAX = 13
  
   ' These are temp for frmworkflowelementitem - TM has the file checked out and JED needs a build.
   ' To be removed when frmworkflowelementitem is available
   rdTypeLONGVARBINARY = -4
   rdTypeVARBINARY = -3
+  
+  
   
 End Enum
 
@@ -306,7 +309,7 @@ Public Function TableExists(ByVal psTableName As String) As Boolean
     " WHERE name = '" & psTableName & "'"
   rsInfo.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
 
-  TableExists = (rsInfo.Fields(0).Value > 0)
+  TableExists = (rsInfo.Fields(0).value > 0)
   rsInfo.Close
   Set rsInfo = Nothing
   
