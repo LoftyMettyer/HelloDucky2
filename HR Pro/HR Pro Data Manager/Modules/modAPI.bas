@@ -86,6 +86,13 @@ Public Declare Function ImageList_Draw Lib "comctl32.dll" (ByVal himl&, ByVal i&
 ' Font handling API functions
 Public Declare Function EnumFontFamilies Lib "gdi32" Alias "EnumFontFamiliesA" (ByVal hDC As Long, ByVal lpszFamily As String, ByVal lpEnumFontFamProc As Long, lParam As Any) As Long
 
+'Private Declare Function GetSystemMenu Lib "user32" (ByVal hWnd As Long, ByVal bRevert As Long) As Long
+'Private Declare Function GetMenuItemCount Lib "user32" (ByVal hMenu As Long) As Long
+'Private Declare Function RemoveMenu Lib "user32" (ByVal hMenu As Long, ByVal nPosition As Long, ByVal wFlags As Long) As Long
+
+'Private Const MF_BYPOSITION = &H400&
+'Private Const MF_REMOVE = &H1000&
+
 
 ' API constants
 Public Const ERROR_SUCCESS = 0
@@ -365,3 +372,19 @@ Public Type NEWTEXTMETRIC
   ntmCellHeight As Long
   ntmAveWidth As Long
 End Type
+
+
+'Public Sub HideSystemMenu(frm As Form)
+'
+'  Dim hMenu As Long
+'  Dim lngCount As Long
+'  Dim lngIndex As Long
+'
+'  hMenu = GetSystemMenu(frm.hWnd, 0)
+'  lngCount = GetMenuItemCount(hMenu)
+'  For lngIndex = 0 To lngCount
+'    RemoveMenu hMenu, lngIndex, MF_REMOVE Or MF_BYPOSITION
+'  Next
+'
+'End Sub
+'
