@@ -511,7 +511,7 @@
           objColumn.IsReadOnly = objRow.Item("isreadonly")
           objColumn.CaseType = objRow.Item("case").ToString
           objColumn.CalculateIfEmpty = objRow.Item("calculateifempty")
-          objColumn.TrimType = NullSafe(objRow, "trimming", Enums.TrimType.None).ToString
+          objColumn.TrimType = NullSafe(objRow, "trimming", 0).ToString
           objColumn.Alignment = objRow.Item("alignment").ToString
 
           Table.Objects.Add(objColumn)
