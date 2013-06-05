@@ -60,10 +60,16 @@ Public Class MainForm
     objPhoenix.Options.DevelopmentMode = chkDebugMode.Checked
     objPhoenix.Options.RefreshObjects = True
 
-    bOK = objPhoenix.Script.CreateObjects()
+
+      sw.Reset()
+      sw.Start()
+
+      bOK = objPhoenix.Script.CreateObjects()
+      Console.WriteLine(String.Format("Create Objects: {0} milliseconds", sw.ElapsedMilliseconds))
     bOK = objPhoenix.Script.CreateTriggers()
     bOK = objPhoenix.Script.CreateFunctions
     bOK = objPhoenix.Script.ScriptIndexes
+
 
 
     'bOK = objPhoenix.Script.CreateTableViews

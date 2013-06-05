@@ -8,6 +8,46 @@ Namespace ScriptDB
   Public Class Script
     Implements COMInterfaces.ICommitDB
 
+#Region "General"
+
+      Public Shared Function SqlDropUDF(ByVal schema As String, ByVal name As String) As String
+
+         Return String.Format("IF EXISTS(SELECT o.[name] FROM sys.sysobjects o " &
+                              "INNER JOIN sys.sysusers u ON o.[uid] = u.[uid] " &
+                              "WHERE o.[name] = '{1}' AND [type] IN ('FN', 'TF') AND u.[name] = '{0}')" & vbNewLine &
+                              "DROP FUNCTION [{0}].[{1}]", schema, name)
+
+      End Function
+
+      Public Shared Function SqlDropProcedure(ByVal schema As String, ByVal name As String) As String
+
+         Return String.Format("IF EXISTS(SELECT o.[name] FROM sys.sysobjects o " &
+                              "INNER JOIN sys.sysusers u ON o.[uid] = u.[uid] " &
+                              "WHERE o.[name] = '{1}' AND [type] = 'P' AND u.[name] = '{0}')" & vbNewLine &
+                              "DROP PROCEDURE [{0}].[{1}]", schema, name)
+
+      End Function
+
+#End Region
+
+    Public Shared Function DropUDF(ByVal schema As String, ByVal name As String) As Boolean
+
+      Dim sql As String = SqlDropUDF(schema, name)
+
+      Try
+        CommitDB.ScriptStatement(sql)
+
+      Catch ex As Exception
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.UDFs, name, SystemFramework.ErrorHandler.Severity.Error, ex.Message, sql)
+        Return False
+      End Try
+
+      Return True
+
+    End Function
+
+
+
 #Region "Table Scripting"
 
     Private Sub DropView(ByVal [Role] As String, ByVal [ViewName] As String)
@@ -737,65 +777,65 @@ Namespace ScriptDB
           ' INSTEAD OF UPDATE
           ' -------------------
           sTriggerName = String.Format("{0}{1}_u01", Consts.Trigger, objTable.Name)
-          sSQL = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
-              "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
-              "    SET @sValidation = '';" & vbNewLine & _
-              "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-              sSQLCode_Bypass & _
-              "    INSERT [dbo].[{4}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {5}, 2, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
-              "{3}" & vbNewLine & vbNewLine & _
-              sValidation & vbNewLine & vbNewLine & _
-              "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {2};" & vbNewLine _
-              , objTable.Name, sTriggerName _
-              , objTable.ID _
-              , sSQLWriteableColumns _
-              , Tables.sysTriggerTransaction, objTable.ID)
+               sSQL = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
+                   "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
+                   "    SET @sValidation = '';" & vbNewLine & _
+                   "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
+                   sSQLCode_Bypass & _
+                   "    INSERT [dbo].[{4}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {5}, 2, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
+                   "{3}" & vbNewLine & vbNewLine & _
+                   sValidation & vbNewLine & vbNewLine & _
+                   "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {2};" & vbNewLine _
+                   , objTable.Name, sTriggerName _
+                   , objTable.ID _
+                   , sSQLWriteableColumns _
+                   , Consts.SysTriggerTransaction, objTable.ID)
           ScriptTrigger("dbo", objTable, TriggerType.InsteadOfUpdate, sSQL)
 
           ' -------------------
           ' AFTER UPDATE
           ' -------------------
           sTriggerName = String.Format("{0}{1}_u02", Consts.Trigger, objTable.Name)
-          sSQL = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), tableid integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
-              "    DECLARE @dChangeDate datetime," & vbNewLine & _
-              "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
-              "    SELECT @forcerefresh = dbo.[udfsys_triggerrequiresrefresh]();" & vbNewLine & _
-              "    SELECT TOP 1 @startingtrigger = ISNULL([actiontype],2) FROM dbo.[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3} ORDER BY [nestlevel] ASC;" & vbNewLine & _
-              "    SELECT TOP 1 @startingtriggertable = ISNULL([tablefromid],0) FROM dbo.[tbsys_intransactiontrigger] WHERE [spid] = @@spid ORDER BY [nestlevel] ASC;" & vbNewLine & _
-              "    SET @sValidation = '';" & vbNewLine & _
-              "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-              sSQLCalculatedColumns & vbNewLine & vbNewLine & _
-              sSQLParentColumns & vbNewLine & _
-              sSQLChildColumns & vbNewLine & vbNewLine & _
-              "{6}" & vbNewLine & _
-              sSQLCode_Audit & _
-              sSQLSpecialUpdate & _
-              "{7}" & vbNewLine & vbNewLine & _
-              "{8}" & vbNewLine & vbNewLine _
-              , objTable.Name, sTriggerName _
-              , "", objTable.ID, Tables.sysTriggerTransaction _
-              , "" _
-              , sSQLCode_AuditUpdate, sSQLPostAuditCalcs, objTable.SysMgrUpdateTrigger) & vbNewLine & vbNewLine
+               sSQL = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), tableid integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
+                   "    DECLARE @dChangeDate datetime," & vbNewLine & _
+                   "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
+                   "    SELECT @forcerefresh = dbo.[udfsys_triggerrequiresrefresh]();" & vbNewLine & _
+                   "    SELECT TOP 1 @startingtrigger = ISNULL([actiontype],2) FROM dbo.[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3} ORDER BY [nestlevel] ASC;" & vbNewLine & _
+                   "    SELECT TOP 1 @startingtriggertable = ISNULL([tablefromid],0) FROM dbo.[tbsys_intransactiontrigger] WHERE [spid] = @@spid ORDER BY [nestlevel] ASC;" & vbNewLine & _
+                   "    SET @sValidation = '';" & vbNewLine & _
+                   "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
+                   sSQLCalculatedColumns & vbNewLine & vbNewLine & _
+                   sSQLParentColumns & vbNewLine & _
+                   sSQLChildColumns & vbNewLine & vbNewLine & _
+                   "{6}" & vbNewLine & _
+                   sSQLCode_Audit & _
+                   sSQLSpecialUpdate & _
+                   "{7}" & vbNewLine & vbNewLine & _
+                   "{8}" & vbNewLine & vbNewLine _
+                   , objTable.Name, sTriggerName _
+                   , "", objTable.ID, Consts.SysTriggerTransaction _
+                   , "" _
+                   , sSQLCode_AuditUpdate, sSQLPostAuditCalcs, objTable.SysMgrUpdateTrigger) & vbNewLine & vbNewLine
           ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSQL)
 
           ' -------------------
           ' AFTER DELETE
           ' -------------------
           sTriggerName = String.Format("{0}{1}_d02", Consts.Trigger, objTable.Name)
-          sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tablename] varchar(255), [tableid] integer, [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
-              "    DECLARE @dChangeDate datetime;" & vbNewLine & _
-              "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-              "    INSERT [dbo].[{4}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {5}, 3, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
-              "    -- Audit Trail" & vbNewLine & _
-              "{2}" & vbNewLine & vbNewLine & _
-              sSQLCode_Audit & _
-              sSQLSpecialUpdate & _
-              "{3}" & vbNewLine & vbNewLine & _
-              "{6}" & vbNewLine & vbNewLine & _
-              "    -- Clear the temporary trigger status table" & vbNewLine & _
-              "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {5};" & vbNewLine & vbNewLine _
-              , objTable.Name, sTriggerName, sSQLCode_AuditDelete, sSQLParentColumns_Delete _
-              , Tables.sysTriggerTransaction, objTable.ID, objTable.SysMgrDeleteTrigger)
+               sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tablename] varchar(255), [tableid] integer, [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
+                   "    DECLARE @dChangeDate datetime;" & vbNewLine & _
+                   "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
+                   "    INSERT [dbo].[{4}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {5}, 3, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
+                   "    -- Audit Trail" & vbNewLine & _
+                   "{2}" & vbNewLine & vbNewLine & _
+                   sSQLCode_Audit & _
+                   sSQLSpecialUpdate & _
+                   "{3}" & vbNewLine & vbNewLine & _
+                   "{6}" & vbNewLine & vbNewLine & _
+                   "    -- Clear the temporary trigger status table" & vbNewLine & _
+                   "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {5};" & vbNewLine & vbNewLine _
+                   , objTable.Name, sTriggerName, sSQLCode_AuditDelete, sSQLParentColumns_Delete _
+                   , Consts.SysTriggerTransaction, objTable.ID, objTable.SysMgrDeleteTrigger)
           ScriptTrigger("dbo", objTable, TriggerType.AfterDelete, sSQL)
 
         Next
@@ -937,13 +977,16 @@ Namespace ScriptDB
 
       Try
 
+            Dim sw As New Stopwatch
+            sw.Start()
         ' Drop objects first (for schemabinding purposes)
         For Each objTable In Globals.Tables
           For Each objColumn In objTable.Columns
             sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
-            ScriptDB.DropUDF("dbo", sObjectName)
+                  Script.DropUDF("dbo", sObjectName)
           Next
-        Next
+            Next
+            Dim time = sw.ElapsedMilliseconds
 
         ' Now create the objects
         For Each objTable In Globals.Tables
@@ -952,7 +995,7 @@ Namespace ScriptDB
           If Not objTable.RecordDescription Is Nothing Then
             objTable.RecordDescription.GenerateCode()
             sObjectName = String.Format("{0}{1}", Consts.RecordDescriptionUDF, objTable.Name)
-            ScriptDB.DropUDF("dbo", sObjectName)
+                  Script.DropUDF("dbo", sObjectName)
 
             If Not Globals.CommitDB.ScriptStatement(objTable.RecordDescription.UDF.Code) Then
               Globals.CommitDB.ScriptStatement(objTable.RecordDescription.UDF.CodeStub)
@@ -963,7 +1006,7 @@ Namespace ScriptDB
           For Each objExpression In objTable.Masks
             sObjectName = String.Format("{0}{1}", Consts.MaskUDF, objExpression.ID)
             objExpression.GenerateCode()
-            ScriptDB.DropUDF("dbo", sObjectName)
+                  Script.DropUDF("dbo", sObjectName)
           Next
 
           ' Indexes for views
@@ -1021,7 +1064,7 @@ Namespace ScriptDB
           For Each objExpression In objTable.Masks
             sObjectName = String.Format("{0}{1}", Consts.MaskUDF, objExpression.ID)
             objExpression.GenerateCode()
-            ScriptDB.DropUDF("dbo", sObjectName)
+                  Script.DropUDF("dbo", sObjectName)
 
             If Not Globals.CommitDB.ScriptStatement(objExpression.UDF.Code) Then
               Globals.CommitDB.ScriptStatement(objExpression.UDF.CodeStub)
@@ -1034,7 +1077,7 @@ Namespace ScriptDB
         For Each objTable In Globals.Tables
           For Each objTableOrderFilter In objTable.TableOrderFilters
             objTableOrderFilter.GenerateCode()
-            ScriptDB.DropUDF("dbo", objTableOrderFilter.Name)
+                  Script.DropUDF("dbo", objTableOrderFilter.Name)
             Globals.CommitDB.ScriptStatement(objTableOrderFilter.UDF.Code)
           Next
         Next
@@ -1058,7 +1101,7 @@ Namespace ScriptDB
 
               sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
 
-              ScriptDB.DropUDF("dbo", sObjectName)
+                     Script.DropUDF("dbo", sObjectName)
 
               If objColumn.Calculation.IsValid Then
                 If Not Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.Code) Then
@@ -1082,7 +1125,7 @@ Namespace ScriptDB
 
               sObjectName = String.Format("{0}{1}.{2}", Consts.DefaultValueUDF, objTable.Name, objColumn.Name)
 
-              ScriptDB.DropUDF("dbo", sObjectName)
+              Script.DropUDF("dbo", sObjectName)
 
               If objColumn.DefaultCalculation.IsValid Then
                 If Not Globals.CommitDB.ScriptStatement(objColumn.DefaultCalculation.UDF.Code) Then
@@ -1400,19 +1443,20 @@ Namespace ScriptDB
 
 
         ' Generate the stored procedure
-        sSQLOvernightJob = "/* ------------------------------------------------------------------------------- */" & vbNewLine & _
-            "/* HR Pro system stored procedure.                  */" & vbNewLine & _
-            "/* Automatically generated by the .NET Framework.   */" & vbNewLine & _
-            "/* ------------------------------------------------------------------------------- */" & vbNewLine & _
-            "CREATE PROCEDURE [dbo].[" & sObjectName & "] AS" & vbNewLine & _
-            "BEGIN" & vbNewLine & vbNewLine & _
-            "    SET NOCOUNT ON;" & vbNewLine & _
-            "    DECLARE @iCount integer;" & vbNewLine & vbNewLine & _
-            "    -- Tables with date dependent calculations" & vbNewLine & _
-            sSQLOvernightJob & vbNewLine & _
-            "END"
-        ScriptDB.DropProcedure("dbo", sObjectName)
-        bOK = CommitDB.ScriptStatement(sSQLOvernightJob)
+            sSQLOvernightJob = "/* ------------------------------------------------------------------------------- */" & vbNewLine & _
+                "/* HR Pro system stored procedure.                  */" & vbNewLine & _
+                "/* Automatically generated by the .NET Framework.   */" & vbNewLine & _
+                "/* ------------------------------------------------------------------------------- */" & vbNewLine & _
+                "CREATE PROCEDURE [dbo].[" & sObjectName & "] AS" & vbNewLine & _
+                "BEGIN" & vbNewLine & vbNewLine & _
+                "    SET NOCOUNT ON;" & vbNewLine & _
+                "    DECLARE @iCount integer;" & vbNewLine & vbNewLine & _
+                "    -- Tables with date dependent calculations" & vbNewLine & _
+                sSQLOvernightJob & vbNewLine & _
+                "END"
+
+        bOK = CommitDB.ScriptStatement(Script.SqlDropProcedure("dbo", sObjectName))
+            bOK = CommitDB.ScriptStatement(sSQLOvernightJob)
 
 
       Catch ex As Exception

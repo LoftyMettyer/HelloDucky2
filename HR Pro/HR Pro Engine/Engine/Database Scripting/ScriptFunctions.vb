@@ -3,10 +3,6 @@ Namespace ScriptDB
 
   Public Module ScriptFunctions
 
-#Region "Numeric Functions"
-
-#End Region
-
     Public Function ConvertCurrency() As Boolean
 
       Dim bOK As Boolean = True
@@ -52,7 +48,7 @@ Namespace ScriptDB
                     "    RETURN ISNULL(@result,0);" & vbNewLine & _
                     "END", sObjectName, objConversionTable.Name, objValueColumn.Name, objNameColumn.Name, objDecimalsColumn.Name _
                       , objNameColumn.DataTypeSyntax)
-            ScriptDB.DropUDF("dbo", sObjectName)
+                  Script.DropUDF("dbo", sObjectName)
             bOK = CommitDB.ScriptStatement(sSQL)
           End If
 
@@ -205,7 +201,7 @@ Namespace ScriptDB
             "END" _
             , sObjectName, String.Join(vbNewLine, aryStatements.ToArray()))
 
-        ScriptDB.DropUDF("dbo", sObjectName)
+            Script.DropUDF("dbo", sObjectName)
         bOK = CommitDB.ScriptStatement(sSQL)
 
       Catch ex As Exception
