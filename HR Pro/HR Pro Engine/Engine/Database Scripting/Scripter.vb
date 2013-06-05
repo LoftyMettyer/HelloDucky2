@@ -544,14 +544,8 @@ Namespace ScriptDB
 
           ' Update statement of all the calculated columns
           If aryCalculatedColumns.ToArray.Length > 0 Then
-            'sSQLCalculatedColumns = String.Format("    -- Update any calculated columns" & vbNewLine & _
-            '  "    UPDATE base" & vbNewLine & _
-            '  "        SET {1}" & vbNewLine & _
-            '  "        FROM [dbo].[{0}] base" & vbNewLine & _
-            '  "        WHERE [id] IN (SELECT DISTINCT [id] FROM inserted);" & vbNewLine & vbNewLine _
-            '  , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryCalculatedColumns.ToArray()))
 
-            sSQLCalculatedColumns = String.Format("    -- Update any calculated columns" & vbNewLine & _
+            sSQLCalculatedColumns = String.Format("    -- Update calculated columns" & vbNewLine & _
               "    WITH base AS (" & vbNewLine & _
               "        SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
               "        FROM [dbo].[{0}]" & vbNewLine & _
@@ -634,13 +628,9 @@ Namespace ScriptDB
               "    -- Has the trigger been called from an update on another table?" & vbNewLine & _
               "    IF NOT UPDATE([updflag]) INSERT [dbo].[{5}] ([spid], [tablefromid]) VALUES (@@spid,{6});" & vbNewLine & vbNewLine & _
               "{2}" & vbNewLine & vbNewLine & _
-              "        ---------------------------" & vbNewLine & _
-              "        -- Commit writeable columns" & vbNewLine & _
-              "        ---------------------------" & vbNewLine & vbNewLine & _
+              "    -- Commit writeable columns" & vbNewLine & _
               "{3}" & vbNewLine & vbNewLine & _
-              "    ---------------------------" & vbNewLine & _
               "    -- Audit Trail" & vbNewLine & _
-              "    ---------------------------" & vbNewLine & _
               "{4}" & vbNewLine & vbNewLine & _
               "    INSERT dbo.[tbsys_audittrail] (username, datetimestamp, recordid, oldvalue, newvalue, tableid, columnid, deleted, recorddesc)" & vbNewLine & _
               "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, tableid, columnid, 0, recorddesc FROM @audit;" & vbNewLine & vbNewLine & _
@@ -668,18 +658,16 @@ Namespace ScriptDB
               sSQLParentColumns & vbNewLine & _
               sSQLChildColumns & vbNewLine & vbNewLine & _
               "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {3};" & vbNewLine & vbNewLine & _
-              "    ---------------------------" & vbNewLine & _
               "    -- Validation" & vbNewLine & _
-              "    ---------------------------" & vbNewLine & _
-              "    IF NOT UPDATE([updflag])" & vbNewLine & _
-              "    BEGIN" & vbNewLine & _
+              "    --IF NOT UPDATE([updflag])" & vbNewLine & _
+              "    --BEGIN" & vbNewLine & _
               "        SELECT @sValidation = dbo.[udfvalid_{0}](ID) FROM inserted WHERE LEN(dbo.[udfvalid_{0}](ID)) > 0" & vbNewLine & _
               "        IF LEN(@sValidation) > 0" & vbNewLine & _
               "        BEGIN" & vbNewLine & _
               "            RAISERROR(@sValidation, 16, 1);" & vbNewLine & _
               "            ROLLBACK;" & vbNewLine & _
               "        END" & vbNewLine & _
-              "     END" & vbNewLine & vbNewLine _
+              "     --END" & vbNewLine & vbNewLine _
               , objTable.Name, sTriggerName _
               , "", CInt(objTable.ID), Tables.sysTriggerTransaction _
               , String.Join(vbNewLine, aryUpdateUniqueCodes.ToArray()))
