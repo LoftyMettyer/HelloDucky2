@@ -125,7 +125,7 @@ Private Function ExpressionDelete()
   ' Drop any existing stored procedure with this name.
   sProcedureName = "sp_ASRExpr_" & lngExprID
   
- ' DropProcedure sProcedureName
+  DropProcedure sProcedureName
 
   fDeleteOK = True
   
@@ -264,7 +264,7 @@ Private Function ExpressionNew() As Boolean
             objExpression.ExpressionID = lngExprID
             
             fOK = True
-     '       fOK = objExpression.CreateStoredProcedure
+            fOK = objExpression.CreateStoredProcedure
             
             If Not fOK Then
               fNewExpr = False

@@ -239,11 +239,11 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
               'TM05052004 - Unique Not Mandatory
               If Not !Mandatory Then
                 Select Case !DataType
-                  Case dtVARCHAR, dtlongvarchar, dtLONGVARBINARY, dtVARBINARY
+                  Case dtVARCHAR, dtLONGVARCHAR, dtLONGVARBINARY, dtVARBINARY
                     sSPCode = sSPCode & _
                       "        AND (ISNULL(tmpA." & !ColumnName & ",'') <> '')" & vbNewLine
                   
-                  Case dtinteger, dtNUMERIC
+                  Case dtINTEGER, dtNUMERIC
                     sSPCode = sSPCode & _
                       "        AND (ISNULL(tmpA." & !ColumnName & ",0) <> 0)" & vbNewLine
                   
@@ -285,11 +285,11 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                 'TM05052004 - Unique Not Mandatory
                 If Not !Mandatory Then
                   Select Case !DataType
-                    Case dtVARCHAR, dtlongvarchar, dtLONGVARBINARY, dtVARBINARY
+                    Case dtVARCHAR, dtLONGVARCHAR, dtLONGVARBINARY, dtVARBINARY
                       sSPCode = sSPCode & _
                         "        AND (ISNULL(tmpA." & !ColumnName & ",'') <> '')" & vbNewLine
                     
-                    Case dtinteger, dtNUMERIC
+                    Case dtINTEGER, dtNUMERIC
                       sSPCode = sSPCode & _
                         "        AND (ISNULL(tmpA." & !ColumnName & ",0) <> 0)" & vbNewLine
                     
@@ -358,7 +358,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                 "    /* '" & !ColumnName & "' - mandatory check. */"
                 
               Select Case !DataType
-                Case dtVARCHAR, dtlongvarchar, dtLONGVARBINARY, dtVARBINARY
+                Case dtVARCHAR, dtLONGVARCHAR, dtLONGVARBINARY, dtVARBINARY
                   sSPCode = sSPCode & vbNewLine & _
                     "    SELECT @sTmpChar = " & !ColumnName & vbNewLine & _
                     "    FROM " & psCurrentTableName & vbNewLine & _
@@ -391,7 +391,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                     "            END" & vbNewLine & _
                     "        END" & vbNewLine & _
                     "    END" & vbNewLine
-                Case dtinteger, dtNUMERIC
+                Case dtINTEGER, dtNUMERIC
                   'JPD 20060105 Fault 10655
                   sSPCode = sSPCode & vbNewLine & _
                     "    SELECT @dblTmpNum = " & !ColumnName & vbNewLine & _
@@ -456,28 +456,15 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
             If !lostFocusExprID > 0 Then
               ' Add the column validation check code for the current column if required.
               sSPCode = sSPCode & vbNewLine & _
-                "    /* '" & !ColumnName & "' - custom validation check. */" & vbNewLine & _
-                "    IF EXISTS" & _
-                "    (" & vbNewLine & _
-                "        SELECT Name" & _
-                "        FROM sysobjects" & _
-                "        WHERE id = object_id('sp_ASRExpr_" & Trim(Str(!lostFocusExprID)) & "')" & _
-                "            AND sysstat & 0xf = 4" & vbNewLine & _
-                "    )" & _
+                "    -- " & !ColumnName & " - custom validation check." & vbNewLine & _
+                "    SELECT @fCustomResult = dbo.[udfmask_" & Trim(Str(!lostFocusExprID)) + "](@piRecordID);" & vbNewLine & _
+                "    IF @fCustomResult = 0" & vbNewLine & _
                 "    BEGIN" & vbNewLine & _
-                "        --exec dbo.sp_ASRExpr_" & Trim(Str(!lostFocusExprID)) & " @fCustomResult OUTPUT, @piRecordID" & vbNewLine & _
-                "        IF @fCustomResult = 0" & vbNewLine & _
-                "        BEGIN" & vbNewLine & _
-                "            SET @pfResult = 0" & vbNewLine & _
-                "            IF len(@psInvalidityMessage) = 0" & vbNewLine & _
-                "            BEGIN" & vbNewLine & _
-                "                SET @psInvalidityMessage = '''" & !ColumnName & "'' - " & IIf(IsNull(!ErrorMessage), "Validation failure", IIf(Len(LTrim(RTrim(!ErrorMessage))) = 0, "Validation failure", Replace(Replace(!ErrorMessage, "'", "''"), "%", "%%"))) & ".'" & vbNewLine & _
-                "            END" & vbNewLine & _
-                "            ELSE" & vbNewLine & _
-                "            BEGIN" & vbNewLine & _
-                "                SET @psInvalidityMessage = @psInvalidityMessage + char(13) + '''" & !ColumnName & "'' - " & IIf(IsNull(!ErrorMessage), "Validation failure", IIf(Len(LTrim(RTrim(!ErrorMessage))) = 0, "Validation failure", Replace(Replace(!ErrorMessage, "'", "''"), "%", "%%"))) & ".'" & vbNewLine & _
-                "            END" & vbNewLine & _
-                "        END" & vbNewLine & _
+                "        SET @pfResult = 0;" & vbNewLine & _
+                "        IF LEN(@psInvalidityMessage) = 0" & vbNewLine & _
+                "            SET @psInvalidityMessage = '''" & !ColumnName & "'' - " & IIf(IsNull(!ErrorMessage), "Validation failure", IIf(Len(LTrim(RTrim(!ErrorMessage))) = 0, "Validation failure", Replace(Replace(!ErrorMessage, "'", "''"), "%", "%%"))) & ".';" & vbNewLine & _
+                "        ELSE" & vbNewLine & _
+                "            SET @psInvalidityMessage = @psInvalidityMessage + char(13) + '''" & !ColumnName & "'' - " & IIf(IsNull(!ErrorMessage), "Validation failure", IIf(Len(LTrim(RTrim(!ErrorMessage))) = 0, "Validation failure", Replace(Replace(!ErrorMessage, "'", "''"), "%", "%%"))) & ".';" & vbNewLine & _
                 "    END" & vbNewLine
             End If
             
