@@ -230,6 +230,9 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
   Set sDateDependentUpdateCode = New SystemMgr.cStringBuilder
   Set sExprDeclarationCode = New SystemMgr.cStringBuilder
   
+  Set sUpdateAccordCode = New SystemMgr.cStringBuilder
+  Set sDeleteAccordCode = New SystemMgr.cStringBuilder
+  
   Set rsParents = New ADODB.Recordset
   'Set rsChildren = New ADODB.Recordset
   Set rsCalcColumns = New ADODB.Recordset
@@ -728,7 +731,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
   Dim fChildCalcs As Boolean
 
   Dim sAccordProhibitFields As String
-  Dim rsAccordDetails As dao.Recordset
+  Dim rsAccordDetails As DAO.Recordset
   Dim iAccordTypeID As Integer
   Dim mbAccordAllowDelete As Boolean
 
@@ -1977,7 +1980,7 @@ Private Function SetTableTriggers_SpecialFunctions( _
   On Error GoTo ErrorTrap
 
   Dim bOK As Boolean
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim iLoop As Long
   Dim sTableName As String
   'Dim sSubString As String
@@ -2614,8 +2617,8 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As Syst
   Dim sDefinitionSQL As String
   Dim sAccordDeclaration As String
   Dim sAccordFilter As String
-  Dim rsAccordDetails As dao.Recordset
-  Dim rsAssociatedColumns As dao.Recordset
+  Dim rsAccordDetails As DAO.Recordset
+  Dim rsAssociatedColumns As DAO.Recordset
   Dim iLoop As Long
   Dim bColFound As Boolean
   Dim sConvertInsCols As String
