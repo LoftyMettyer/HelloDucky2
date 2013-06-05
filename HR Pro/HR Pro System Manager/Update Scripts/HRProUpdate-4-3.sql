@@ -1771,6 +1771,10 @@ PRINT 'Step - Administration module stored procedures'
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_optimiserecordsave]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spadmin_optimiserecordsave];
 
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRAccordPopulateTransactionData]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spASRAccordPopulateTransactionData];
+
+
 	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spadmin_getcomponentcode]
 	AS
 	BEGIN
@@ -1826,6 +1830,41 @@ PRINT 'Step - Administration module stored procedures'
 		EXECUTE sp_executesql @sCode;
 	
 	END';
+
+
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spASRAccordPopulateTransactionData] (
+            @piTransactionID int,
+            @piColumnID int,
+            @psOldValue varchar(255),
+            @psNewValue varchar(255)
+            )
+      AS
+      BEGIN 
+            DECLARE @iRecCount integer
+                    ,@TransactionType integer;
+
+            SET NOCOUNT ON;
+      
+            SELECT @TransactionType = TransactionType FROM ASRSysAccordTransactions WHERE TransactionID = @piTransactionID;   
+            IF @psOldValue = @psNewValue AND @TransactionType = 0
+                  SET @psOldValue = '''';
+
+            SELECT @iRecCount = COUNT(FieldID) FROM ASRSysAccordTransactionData WHERE @piTransactionID = TransactionID and FieldID = @piColumnID;
+
+            -- Insert a record into the Accord Transaction table. 
+            IF @iRecCount = 0
+                  INSERT INTO ASRSysAccordTransactionData
+                        ([TransactionID],[FieldID], [OldData], [NewData])
+                  VALUES 
+                        (@piTransactionID,@piColumnID,@psOldValue,@psNewValue);
+            ELSE
+                  UPDATE ASRSysAccordTransactionData SET [OldData] = @psOldValue
+                        WHERE @piTransactionID = TransactionID and FieldID = @piColumnID;
+      END'
+
+
+
+
 
 /* ------------------------------------------------------------- */
 PRINT 'Step - Remove redundant procedures'
