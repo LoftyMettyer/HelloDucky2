@@ -1052,7 +1052,7 @@ LocalErr:
   Case 7  'Out of Memory
     If Val(mxlApp.Version) < 12 And Len(strArray(lngGridCol, lngGridRow)) > 65535 Then
       mstrErrorMessage = "Multi-line data is too large for this version of Excel."
-    Else
+    End If
   End Select
 
 End Sub
