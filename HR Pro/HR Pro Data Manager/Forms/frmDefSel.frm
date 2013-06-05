@@ -6,7 +6,7 @@ Begin VB.Form frmDefSel
    ClientHeight    =   7740
    ClientLeft      =   2715
    ClientTop       =   2535
-   ClientWidth     =   7200
+   ClientWidth     =   6015
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -23,7 +23,7 @@ Begin VB.Form frmDefSel
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   7740
-   ScaleWidth      =   7200
+   ScaleWidth      =   6015
    StartUpPosition =   1  'CenterOwner
    Begin MSComctlLib.ImageList imglistSmall 
       Left            =   4995
@@ -1181,6 +1181,10 @@ Public Sub Refresh_Controls()
   
   ' Set to the last category
   SetComboItem cboTables, mlngTableID
+
+  If Not List1.SelectedItem Is Nothing Then
+    List1.SelectedItem.EnsureVisible
+  End If
 
   If Not mblnBatchPrompt Then
     If List1.ListItems.Count > 0 Then
