@@ -207,7 +207,7 @@ Private Sub UserControl_Resize()
       If Not InResize Then
         InResize = True
         
-        If BorderStyle = 0 Then
+        If fraOptGroup.BorderStyle = xtpFrameNone Then
           intHeight = UserControl.TextHeight(Caption) * 0.5
           If intHeight < 200 Then intHeight = 200
           intWidth = 0
@@ -224,7 +224,11 @@ Private Sub UserControl_Resize()
             .Height = IIf(UserControl.TextHeight(.Caption) < 240, 240, UserControl.TextHeight(.Caption))
               
             If Index = 0 Then
-              .Top = UserControl.TextHeight(.Caption) + 50
+              If fraOptGroup.BorderStyle = xtpFrameNone Then
+                .Top = 60
+              Else
+                .Top = UserControl.TextHeight(.Caption) + 100
+              End If
             Else
               .Top = Option1(Index - 1).Top + UserControl.TextHeight(.Caption) + 50
             End If
@@ -237,8 +241,7 @@ Private Sub UserControl_Resize()
           End With
         Next Index
         
-        intWidth = intWidth + (GetAvgCharWidth(UserControl.hDC) * 2) + 50
-        intHeight = Option1(Option1.UBound).Top + (Option1(Option1.UBound).Height * 2)
+        intWidth = intWidth + (GetAvgCharWidth(UserControl.hDC) * 2) + 200
         
         With UserControl
           .Height = intHeight
@@ -253,19 +256,24 @@ Private Sub UserControl_Resize()
       If Not InResize Then
         InResize = True
         
-        If BorderStyle = 0 Then
+        If fraOptGroup.BorderStyle = xtpFrameNone Then
           intHeight = UserControl.TextHeight(Caption) * 0.5
           If intHeight < 240 Then intHeight = 240
           intWidth = 0
         Else
           intHeight = UserControl.TextHeight(Caption) * 1.5
           If intHeight < 400 Then intHeight = 400
-          intWidth = UserControl.TextWidth(Caption)
+          intWidth = UserControl.TextWidth(Caption) + 100
         End If
         
         For Index = Option1.LBound To Option1.UBound
           With Option1(Index)
-            .Top = 240
+          
+            If fraOptGroup.BorderStyle = xtpFrameNone Then
+              .Top = 60
+            Else
+              .Top = 300
+            End If
             .Width = 285 + UserControl.TextWidth(.Caption) + GetAvgCharWidth(UserControl.hDC)
             .Height = IIf(UserControl.TextHeight(.Caption) < 240, 240, UserControl.TextHeight(.Caption))
             
@@ -277,7 +285,7 @@ Private Sub UserControl_Resize()
           End With
         Next Index
         
-        intHeight = intHeight + Option1(Option1.UBound).Height
+        intHeight = intHeight + Option1(Option1.UBound).Height + 50
         
         If BorderStyle = 1 Then
           intWidth = (Option1(Option1.UBound).Left) + Option1(Option1.UBound).Width + UserControl.TextWidth("WW")
