@@ -2206,7 +2206,7 @@ End Property
 
 Public Property Let Changed(pblnNewValue As Boolean)
   mblnChanged = pblnNewValue
-  cmdOk.Enabled = mblnChanged
+  cmdOK.Enabled = mblnChanged
 End Property
 
 Public Property Get Changed() As Boolean
@@ -3241,7 +3241,7 @@ End Sub
 
 Private Sub cmdCancel_Click()
   Dim pintAnswer As Integer
-    If Changed = True And cmdOk.Enabled Then
+    If Changed = True And cmdOK.Enabled Then
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
       If pintAnswer = vbYes Then
         Me.MousePointer = vbHourglass
@@ -4866,7 +4866,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
   If mfCancelled = True Then
     If UnloadMode <> vbFormCode Then
-      If Changed = True And cmdOk.Enabled Then
+      If Changed = True And cmdOK.Enabled Then
         pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
         If pintAnswer = vbYes Then
           cmdOK_Click
@@ -5198,9 +5198,10 @@ Private Sub cboDataType_Click()
     
     If cboDataType.ItemData(cboDataType.ListIndex) <> dtTIMESTAMP Then
       Dim iAnswer As Integer
-      If Me.ssGrdDiaryLinks.Rows > 0 Or Me.ssGrdEmailLinks.Rows > 0 Then
+      'If Me.ssGrdDiaryLinks.Rows > 0 Or Me.ssGrdEmailLinks.Rows > 0 Then
+      If Me.ssGrdDiaryLinks.Rows > 0 Then
         iAnswer = MsgBox("Changing the data type of a column will remove all " & _
-                  "diary and email links defined for this column." & vbCrLf & _
+                  "diary links defined for this column. " & _
                   "Are you sure you want to change the data type of this column?" _
                   , vbYesNo + vbQuestion, App.Title)
         
@@ -6582,13 +6583,13 @@ End Sub
 Private Sub txtListValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOk.Default = False
+  cmdOK.Default = False
   
 End Sub
 
 Private Sub txtListValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOk.Default = True
+  cmdOK.Default = True
 
   ' Refresh the list of possible default values.
   cboDefault_Refresh
@@ -8032,22 +8033,22 @@ Public Sub PrintDefinition()
           End If
         End If
         
-        ' Email Links Tab
-        .PrintTitle "Email Links"
-        If ssGrdEmailLinks.Rows > 0 Then
-          .TabsOnPage = 6
-          
-          .PrintBold "Title" & vbTab & vbTab & "Offset" & vbTab & "Subject"
-          
-          ssGrdEmailLinks.MoveFirst
-          For iCount = 1 To ssGrdEmailLinks.Rows
-            .PrintNonBold ssGrdEmailLinks.Columns(0).value & vbTab & vbTab _
-                & ssGrdEmailLinks.Columns(1).value & vbTab & ssGrdEmailLinks.Columns(2).value
-            ssGrdDiaryLinks.MoveNext
-          Next iCount
-        Else
-          .PrintNonBold "<None>"
-        End If
+'        ' Email Links Tab
+'        .PrintTitle "Email Links"
+'        If ssGrdEmailLinks.Rows > 0 Then
+'          .TabsOnPage = 6
+'
+'          .PrintBold "Title" & vbTab & vbTab & "Offset" & vbTab & "Subject"
+'
+'          ssGrdEmailLinks.MoveFirst
+'          For iCount = 1 To ssGrdEmailLinks.Rows
+'            .PrintNonBold ssGrdEmailLinks.Columns(0).value & vbTab & vbTab _
+'                & ssGrdEmailLinks.Columns(1).value & vbTab & ssGrdEmailLinks.Columns(2).value
+'            ssGrdDiaryLinks.MoveNext
+'          Next iCount
+'        Else
+'          .PrintNonBold "<None>"
+'        End If
         
         ' AFD Postcode
         If IsModuleEnabled(modAFD) Then
