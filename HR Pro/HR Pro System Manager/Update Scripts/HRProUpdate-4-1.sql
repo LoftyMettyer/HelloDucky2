@@ -2817,7 +2817,7 @@ PRINT 'Step 8 - Updating Support Contact Details'
   SET @sSPCode_0 = 'INSERT INTO [ASRSysSystemSettings] ([ASRSysSystemSettings].[Section], 
                                                   [ASRSysSystemSettings].[SettingKey], 
                                                   [ASRSysSystemSettings].[SettingValue])
-                    VALUES (''support'', ''webpage'', ''webfirst.coasolutions.com'')'
+                    VALUES (''support'', ''webpage'', ''http://webfirst.coasolutions.com'')'
               
 	EXECUTE (@sSPCode_0)
 
