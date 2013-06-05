@@ -292,7 +292,7 @@ Private Sub Form_Load()
 '  cmdSysInfo.Left = cmdOK.Left
 '  cmdTech.Left = cmdOK.Left
 
-  Me.Width = cmdOk.Left + cmdOk.Width + 200
+  'Me.Width = cmdOK.Left + cmdOK.Width + 200
 
 TidyUpAndExit:
   Exit Sub

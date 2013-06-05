@@ -40,7 +40,7 @@ Begin VB.Form frmAbout
    Begin VB.CommandButton cmdTech 
       Caption         =   "&Support..."
       Height          =   400
-      Left            =   1395
+      Left            =   1440
       TabIndex        =   1
       Top             =   6105
       Width           =   1425
@@ -50,26 +50,28 @@ Begin VB.Form frmAbout
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
-      Left            =   4515
+      Left            =   4560
       TabIndex        =   0
       Top             =   6120
-      Width           =   1425
+      Width           =   1455
    End
    Begin VB.CommandButton cmdSysInfo 
       Caption         =   "System &Info..."
       Height          =   400
-      Left            =   2955
+      Left            =   3000
       TabIndex        =   2
       Top             =   6120
       Width           =   1425
    End
    Begin VB.Line Line2 
+      BorderColor     =   &H00808080&
       X1              =   120
       X2              =   6000
       Y1              =   5880
       Y2              =   5880
    End
    Begin VB.Line Line1 
+      BorderColor     =   &H00808080&
       X1              =   120
       X2              =   6000
       Y1              =   3360
@@ -312,7 +314,7 @@ Private Sub Form_Load()
   'cmdSysInfo.Left = cmdOK.Left
   'cmdTech.Left = cmdOK.Left
   
-  Me.Width = cmdOK.Left + cmdOK.Width + 200
+  'Me.Width = cmdOK.Left + cmdOK.Width + 200
   
   Exit Sub
     
