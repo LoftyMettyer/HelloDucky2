@@ -1884,7 +1884,7 @@ PRINT 'Step 19 - New Shared Table Transfer Types for ASPP'
 	SELECT @iRecCount = count(TransferTypeID) FROM ASRSysAccordTransferTypes WHERE TransferTypeID = 79
 	IF @iRecCount = 0
 	BEGIN
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (79, ''Keeping in Touch Days (ASPP Adoption)'' ,0,0,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (79, ''Keeping in Touch Days (ASPP Adoption)'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,79,1,''Company Code'',1,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
@@ -1904,7 +1904,7 @@ PRINT 'Step 19 - New Shared Table Transfer Types for ASPP'
 	SELECT @iRecCount = count(TransferTypeID) FROM ASRSysAccordTransferTypes WHERE TransferTypeID = 80
 	IF @iRecCount = 0
 	BEGIN
-		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (80, ''Keeping in Touch Days (ASPP Birth)'' ,0,0,1,1)'
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferTypes  (TransferTypeID, TransferType, ASRBaseTableID, FilterID, ForceAsUpdate, IsVisible) VALUES (80, ''Keeping in Touch Days (ASPP Birth)'' ,0,0,0,1)'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (0,80,1,''Company Code'',1,0,2,1,1)'
 		EXEC sp_executesql @NVarCommand
