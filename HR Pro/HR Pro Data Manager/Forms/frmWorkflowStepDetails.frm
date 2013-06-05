@@ -973,6 +973,10 @@ Private Function DoHeaderInfo() As Boolean
               IIf(iCount2 > 1, "; ", "") & _
               masActionedDelegatedEmailAddresses(iCount2)
           Next iCount2
+          
+          ' NPG20100520 Fault HRPRO-881
+          txtEmailAddressValue.Tag = Replace(sTemp, " - delegated to ", ";")
+          
         End If
         txtEmailAddressValue.Text = sTemp
 
@@ -1649,8 +1653,9 @@ Private Sub cmdResendEmail_Click()
   End If
 
   Set datData = New clsDataAccess
-  
-  sEmailTo = txtEmailAddressValue.Text
+  ' NPG20100520 Fault HRPRO-881 - Any delegated e-mail addresses are now stored in the tag so use that if populated.
+  ' sEmailTo = txtEmailAddressValue.Text
+  sEmailTo = IIf(txtEmailAddressValue.Tag = vbNullString, txtEmailAddressValue.Text, txtEmailAddressValue.Tag)
   sEmailCopyTo = txtEmailCCValue.Text
   sMessage = Replace(txtEmailMessage.Text, vbNewLine, vbCr)
   sSubject = Replace(lblEmailSubjectValue.Caption, "&&", "&")
