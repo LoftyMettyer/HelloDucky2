@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmWorkflowWFTabOrder 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Control Order"
@@ -255,18 +255,6 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private Type Rect
-  Left As Long
-  Top As Long
-  Right As Long
-  Bottom As Long
-End Type
-
-Private Declare Function GetWindowRect Lib "user32" (ByVal hWnd As Long, lpRect As Rect) As Long
-Private Declare Function ClipCursorRect Lib "user32" Alias "ClipCursor" (lpRect As Rect) As Long
-Private Declare Function ClipCursorClear Lib "user32" Alias "ClipCursor" (ByVal lpRect As Long) As Long
-Private Declare Function SetCursorPos Lib "user32" (ByVal X As Long, ByVal Y As Long) As Long
-
 Private mfCancelled As Boolean
 Private mfLoading As Boolean
 Private mfrmWebForm As frmWorkflowWFDesigner
@@ -356,7 +344,7 @@ ErrorTrap:
   
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
   
   ' Save the changes to the screen controls.
   On Error GoTo ErrorTrap
@@ -592,7 +580,7 @@ Private Sub ListView1_Click(Index As Integer)
 
 End Sub
 
-Private Sub ListView1_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub ListView1_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
   On Error GoTo ErrorTrap
   
   Dim iNewPos As Integer
@@ -632,7 +620,7 @@ ErrorTrap:
   
 End Sub
 
-Private Sub ListView1_DragOver(Index As Integer, Source As Control, X As Single, Y As Single, State As Integer)
+Private Sub ListView1_DragOver(Index As Integer, Source As Control, x As Single, y As Single, State As Integer)
 
   On Error GoTo ErrorTrap
   
@@ -640,7 +628,7 @@ Private Sub ListView1_DragOver(Index As Integer, Source As Control, X As Single,
   
   If Not mobjDragItem Is Nothing Then
     'Get the item at the mouse's coordinates.
-    Set objItem = ListView1(Index).HitTest(X, Y)
+    Set objItem = ListView1(Index).HitTest(x, y)
     
     'Check if the item at the mouse's coordinates is a control.
     If Not objItem Is Nothing Then
@@ -704,14 +692,14 @@ Private Sub ListView1_KeyUp(Index As Integer, KeyCode As Integer, Shift As Integ
 
 End Sub
 
-Private Sub ListView1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ListView1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   On Error GoTo ErrorTrap
   
   Dim objItem As ComctlLib.ListItem
   
   If Button = vbLeftButton Then
     'Get the item at the mouse position
-    Set objItem = ListView1(Index).HitTest(X, Y)
+    Set objItem = ListView1(Index).HitTest(x, y)
     
     If Not objItem Is Nothing Then
       'Check if this item is a control
@@ -734,7 +722,7 @@ ErrorTrap:
 
 End Sub
 
-Private Sub ListView1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ListView1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   On Error GoTo ErrorTrap
   
   Dim typRect As Rect
@@ -776,7 +764,7 @@ Private Sub RefreshUpDown(iCount As Integer, iSelIndex As Integer)
 
 End Sub
 
-Private Sub ListView1_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub ListView1_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
   
   ListView1(Index).Drag vbEndDrag
   Set mobjDragItem = Nothing
