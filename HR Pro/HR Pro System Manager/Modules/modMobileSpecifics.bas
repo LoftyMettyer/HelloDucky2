@@ -214,10 +214,13 @@ Private Function CreateSP_MobileCheckLogin() As Boolean
     "CREATE PROCEDURE [dbo].[" & msMobileCheckLogin_PROCEDURENAME & "](" & vbNewLine & _
     "  @psKeyParameter varchar(max)," & vbNewLine & _
     "  @psPWDParameter nvarchar(max) OUTPUT," & vbNewLine & _
+    "  @piUserGroupID integer OUTPUT," & vbNewLine & _
     "  @psMessage varchar(max) OUTPUT" & vbNewLine & _
     "  ) " & vbNewLine & _
     "AS" & vbNewLine & _
-    "BEGIN" & _
+    "BEGIN" & vbNewLine
+
+  sProcSQL = sProcSQL & _
     "  DECLARE @piuserID int" & vbNewLine & _
     "  SET @piuserID = 0;" & vbNewLine & _
     "  SET @psMessage = '';" & vbNewLine & _
@@ -232,6 +235,7 @@ Private Function CreateSP_MobileCheckLogin() As Boolean
     "      From [tbsys_mobilelogins]" & vbNewLine & _
     "      WHERE (ISNULL([tbsys_mobilelogins].[userid], '') = @piuserID);" & vbNewLine & _
     "  End" & vbNewLine
+    
   sProcSQL = sProcSQL & _
     "  IF @piuserID = 0" & vbNewLine & _
     "  BEGIN" & vbNewLine & _
@@ -240,7 +244,14 @@ Private Function CreateSP_MobileCheckLogin() As Boolean
     "  IF @psMessage='' AND ISNULL(@psPWDParameter, '')  = ''" & vbNewLine & _
     "    BEGIN" & vbNewLine & _
     "      SET @psMessage = 'Account not activated.';" & vbNewLine & _
-    "    END" & vbNewLine & _
+    "    END" & vbNewLine
+
+  ' Hack for development to continue. Will change in imminent future!
+  sProcSQL = sProcSQL & _
+    "SELECT TOP 1 @piUserGroupID = [uid] FROM sys.sysusers WHERE issqlrole = 1" & vbNewLine & _
+    "    ORDER BY [uid] DESC" & vbNewLine & vbNewLine
+    
+  sProcSQL = sProcSQL & _
     "END"
 
   gADOCon.Execute sProcSQL, , adExecuteNoRecords
