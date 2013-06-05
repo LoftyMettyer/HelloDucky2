@@ -10,6 +10,7 @@
       Dim objParameters As New Connectivity.Parameters
       Dim objSetting As Things.Setting
 
+
       Try
 
         ' Clear existing objects
@@ -23,20 +24,22 @@
           objSetting.Parameter = objRow.Item("parameterkey").ToString
           objSetting.SubType = objRow.Item("subtype").ToString
 
-          Select Case objSetting.SubType
-            Case Type.Table
-              objSetting.Table = Globals.Things.GetObject(Type.Table, objRow.Item("value").ToString)
-            Case Type.Column
-              objSetting.Value = objRow.Item("value").ToString
-              'If objRow.Item("tableid").ToString > 0 Then
-              'objSetting.Column = Globals.Things.GetObject(Type.Table, objRow.Item("tableid").ToString).Objects(Things.Type.Column).GetObject(Type.Column, objRow.Item("columnid").ToString)
-              'End If
-            Case Else
-              objSetting.Value = objRow.Item("value").ToString
+          If Not objRow.Item("value").ToString = "" Then
+            Select Case objSetting.SubType
+              Case Type.Table
+                objSetting.Table = Globals.Things.GetObject(Type.Table, objRow.Item("value").ToString)
+              Case Type.Column
+                objSetting.Value = objRow.Item("value").ToString
+                'If objRow.Item("tableid").ToString > 0 Then
+                'objSetting.Column = Globals.Things.GetObject(Type.Table, objRow.Item("tableid").ToString).Objects(Things.Type.Column).GetObject(Type.Column, objRow.Item("columnid").ToString)
+                'End If
+              Case Else
+                objSetting.Value = objRow.Item("value").ToString
 
-          End Select
+            End Select
 
-          Globals.ModuleSetup.Add(objSetting)
+            Globals.ModuleSetup.Add(objSetting)
+          End If
         Next
 
 

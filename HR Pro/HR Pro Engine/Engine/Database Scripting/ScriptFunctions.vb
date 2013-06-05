@@ -100,6 +100,7 @@ Namespace ScriptDB
       Dim objTable2 As Things.Table
       Dim objIndex As Things.Index
       Dim sVariableName As String
+      Dim objColumn As Things.Column
 
       Try
 
@@ -111,42 +112,45 @@ Namespace ScriptDB
           objTable1 = Globals.Things.Table(objPart1.TableID)
           objTable2 = Globals.Things.Table(objPart3.TableID)
 
-          Select Case objTable1.Column(objPart3.ColumnID).DataType
-            Case ColumnTypes.Date
-              sVariableName = "@result_date"
-            Case ColumnTypes.Numeric, ColumnTypes.Integer
-              sVariableName = "@result_numeric"
-            Case Else
-              sVariableName = "@result_string"
-          End Select
+          objColumn = objTable1.Column(objPart3.ColumnID)
+          If Not objColumn Is Nothing Then
+            Select Case objColumn.DataType
+              Case ColumnTypes.Date
+                sVariableName = "@result_date"
+              Case ColumnTypes.Numeric, ColumnTypes.Integer
+                sVariableName = "@result_numeric"
+              Case Else
+                sVariableName = "@result_string"
+            End Select
 
-          ' Even though the user can select different table for parameters 1 and 3 this
-          ' would return garbage data so ignore it!
-          If objTable1 Is objTable2 Then
-            sStatement = String.Format("    IF @searchcolumnid = '{0}-{1}' AND @returncolumnid = '{2}-{3}'" & vbNewLine & _
-              "        BEGIN" & vbNewLine & _
-              "            SELECT {7} = [{5}] FROM dbo.[{4}] WHERE [{6}] = @searchexpression;" & vbNewLine & _
-              "            RETURN {7};" & vbNewLine & _
-              "        END" & vbNewLine _
-            , objPart1.TableID.PadLeft, objPart1.ColumnID.PadLeft _
-            , objPart3.TableID.PadLeft, objPart3.ColumnID.PadLeft _
-            , objTable1.PhysicalName, objTable1.Column(objPart3.ColumnID).Name _
-            , objTable2.Column(objPart1.ColumnID).Name, sVariableName)
+            ' Even though the user can select different table for parameters 1 and 3 this
+            ' would return garbage data so ignore it!
+            If objTable1 Is objTable2 Then
+              sStatement = String.Format("    IF @searchcolumnid = '{0}-{1}' AND @returncolumnid = '{2}-{3}'" & vbNewLine & _
+                "        BEGIN" & vbNewLine & _
+                "            SELECT {7} = [{5}] FROM dbo.[{4}] WHERE [{6}] = @searchexpression;" & vbNewLine & _
+                "            RETURN {7};" & vbNewLine & _
+                "        END" & vbNewLine _
+              , objPart1.TableID.PadLeft, objPart1.ColumnID.PadLeft _
+              , objPart3.TableID.PadLeft, objPart3.ColumnID.PadLeft _
+              , objTable1.PhysicalName, objTable1.Column(objPart3.ColumnID).Name _
+              , objTable2.Column(objPart1.ColumnID).Name, sVariableName)
 
-            ' Only add if not already done so
-            If Not aryStatements.Contains(sStatement) Then
+              ' Only add if not already done so
+              If Not aryStatements.Contains(sStatement) Then
 
-              aryStatements.Add(sStatement)
+                aryStatements.Add(sStatement)
 
-              ' Put an index on this column
-              objIndex = New Things.Index
-              objIndex.Name = String.Format("IDX_getfromdb_{0}_{1}", objTable1.Column(objPart1.ColumnID).Name, objTable2.Column(objPart3.ColumnID).Name)
-              objIndex.Columns.Add(objTable1.Column(objPart1.ColumnID))
-              objIndex.IncludedColumns.Add(objTable2.Column(objPart3.ColumnID))
-              objIndex.IncludePrimaryKey = False
-              objIndex.IsTableIndex = True
+                ' Put an index on this column
+                objIndex = New Things.Index
+                objIndex.Name = String.Format("IDX_getfromdb_{0}_{1}", objTable1.Column(objPart1.ColumnID).Name, objTable2.Column(objPart3.ColumnID).Name)
+                objIndex.Columns.Add(objTable1.Column(objPart1.ColumnID))
+                objIndex.IncludedColumns.Add(objTable2.Column(objPart3.ColumnID))
+                objIndex.IncludePrimaryKey = False
+                objIndex.IsTableIndex = True
 
-              objTable1.Objects.Add(objIndex)
+                objTable1.Objects.Add(objIndex)
+              End If
             End If
           End If
         Next
