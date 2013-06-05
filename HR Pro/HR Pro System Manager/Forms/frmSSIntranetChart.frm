@@ -819,6 +819,9 @@ Private Sub cboColumnY_Click()
   SetComboItemOrTopItem cboAggregateType, ChartAggregateType
   PopulateColourCombo cboTableY.ItemData(cboTableY.ListIndex)
   
+  PopulateSortByCombo
+  SetComboItemOrTopItem cboSortByAgg, 0
+  
 mfChanged = True
 
 RefreshControls
