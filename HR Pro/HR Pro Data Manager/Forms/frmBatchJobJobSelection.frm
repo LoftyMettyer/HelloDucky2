@@ -159,58 +159,40 @@ End Select
 End Sub
 
 Private Sub Form_Load()
-  
   Set mclsData = New DataMgr.clsDataAccess
-  Dim blnReportItemsOnly As Boolean
-  
-  blnReportItemsOnly = Not frmBatchJob.SSTab1.TabVisible(2)
-  
-  
-  With cboJobType                                       'Add Job Types To Combo
-    If blnReportItemsOnly Then .AddItem "-- Pause --"
-    
-    'JPD 20040227 Fault 8156
-    If gfAbsenceEnabled Then
-      .AddItem "Absence Breakdown"    'MH20030114
-      .AddItem "Bradford Factor"      'MH20030114
-    End If
-    
-    .AddItem "Calendar Report"
-    .AddItem "Career Progression"   'MH20030519
-    .AddItem "Cross Tab"
-    .AddItem "Custom Report"
-    
-    If blnReportItemsOnly Then .AddItem "Data Transfer"
-    
-    .AddItem "Envelopes & Labels"
-    
-    If blnReportItemsOnly Then .AddItem "Export"
-    If blnReportItemsOnly Then .AddItem "Global Add"
-    If blnReportItemsOnly Then .AddItem "Global Delete"
-    If blnReportItemsOnly Then .AddItem "Global Update"
-    If blnReportItemsOnly Then .AddItem "Import"
-    
-    .AddItem "Mail Merge"
-    .AddItem "Match Report"
-    .AddItem "Record Profile"
-    
-    'JPD 20040227 Fault 8156
-    If gfPersonnelEnabled Then
-      .AddItem "Stability Index Report"      'MH20030114
-    End If
-    
-    .AddItem "Succession Planning"   'MH20030519
-    
-    'JPD 20040227 Fault 8156
-    If gfPersonnelEnabled Then
-      .AddItem "Turnover Report"       'MH20030114
-    End If
-    
-    .ListIndex = 0                                      'Set combo to first item
-  End With
-
+  ' Screen Item chagnes for Reprot Pack Options
+  If gblnReportPackMode Then Me.Caption = "Report Packs : Job Selection"
+  Label1.Visible = Not gblnReportPackMode
+  txtParameter.Visible = Not gblnReportPackMode
   Me.chkOnlyMine.Caption = Me.chkOnlyMine.Caption + " '" & gsUserName & "'"
-  
+  'Add Job Types To Combo -
+  'doesnt matter what order you .additem: sorted at runtime if property cboCombo.Sorted is true
+  With cboJobType
+      .AddItem "Calendar Report"
+      .AddItem "Career Progression"
+      .AddItem "Cross Tab"
+      .AddItem "Custom Report"
+      .AddItem "Envelopes & Labels"
+      .AddItem "Mail Merge"
+      .AddItem "Match Report"
+      .AddItem "Record Profile"
+      .AddItem "Succession Planning"
+      
+      If Not gblnReportPackMode Then .AddItem "-- Pause --"
+      If Not gblnReportPackMode Then .AddItem "Data Transfer"
+      If Not gblnReportPackMode Then .AddItem "Export"
+      If Not gblnReportPackMode Then .AddItem "Global Add"
+      If Not gblnReportPackMode Then .AddItem "Global Delete"
+      If Not gblnReportPackMode Then .AddItem "Global Update"
+      If Not gblnReportPackMode Then .AddItem "Import"
+      
+      If gfAbsenceEnabled Then .AddItem "Absence Breakdown": .AddItem "Bradford Factor"
+      
+      If gfPersonnelEnabled Then .AddItem "Stability Index Report"
+      If gfPersonnelEnabled Then .AddItem "Turnover Report"
+      'Set combo to first item
+      .ListIndex = 0
+    End With
 End Sub
 
 Public Function Initialise(pstrJobType As String, pstrJobName As String, Optional pstrParameter As String) As Boolean
