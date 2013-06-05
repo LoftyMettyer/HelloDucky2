@@ -4,7 +4,7 @@ Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "COA_Label.ocx"
 Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Object = "{98B2556E-F719-4726-9028-5F2EAB345800}#1.0#0"; "COASD_Checkbox.ocx"
-Object = "{3EBC9263-7DE3-4E87-8721-81ACE59CD84E}#1.0#0"; "COASD_Combo.ocx"
+Object = "{3EBC9263-7DE3-4E87-8721-81ACE59CD84E}#1.1#0"; "COASD_Combo.ocx"
 Object = "{3CCEDCBE-4766-494F-84C9-95993D77BD56}#1.0#0"; "COASD_Command.ocx"
 Object = "{FFAE31F9-C18D-4C20-AAF7-74C1356185D9}#1.0#0"; "COASD_Frame.ocx"
 Object = "{5F165695-EDF2-40E1-BD8E-8D2E6325BDCF}#1.0#0"; "COASD_Image.ocx"
@@ -2000,7 +2000,7 @@ Private Sub AutoFormatScreen()
   Dim objFont As StdFont
   Dim ctlControl As VB.Control
   Dim ctlLabelControl As COA_Label
-  Dim rsColumns As DAO.Recordset
+  Dim rsColumns As dao.Recordset
   'Dim WaitWindow As WaitMessage.MessageWindow
 '  Dim WaitWindow As NewWaitMsg.clsNewWaitMsg
   
@@ -3193,7 +3193,7 @@ Private Function ReadColumnControlValues(plngColumnID As Long) As Variant
   Dim avValues As Variant
   Dim asResults() As String
   Dim sSQL As String
-  Dim rsControlValues As DAO.Recordset
+  Dim rsControlValues As dao.Recordset
   
   ' Pull the column control values from the database.
   sSQL = "SELECT value" & _
