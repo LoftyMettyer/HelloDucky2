@@ -2406,6 +2406,7 @@ Private Function CreateQueryDefs() As Boolean
       ", c.[defaultvalue] as [defaultvalue]" & _
       ", c.[convertcase] as [case]" & _
       ", c.[readOnly] as [isreadonly]" & _
+      ", c.[uniquechecktype]" & _
       ", c.[Alignment], c.[trimming], c.[calculateifempty]" & _
       ", IIF(c.[deleted]=-1, 8 , IIF(c.[new]=-1,4 ,IIF(c.[changed]=-1,16, 2))) AS [state]" & _
       " FROM tmpColumns c WHERE c.tableid = @parentid" & _
