@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmEmailQueue 
    Caption         =   "Email Queue"
@@ -685,12 +685,12 @@ Private Sub Form_Resize()
 
   'AE20071005 Fault #12196
   'cmdOK.Left = Me.Width - (BUTTON_GAP + BUTTON_WIDTH)
-  cmdOK.Left = Me.ScaleWidth - (BUTTON_WIDTH + (BUTTON_GAP / 2))
-  cmdView.Left = cmdOK.Left
-  cmdRebuild.Left = cmdOK.Left
-  cmdPurge.Left = cmdOK.Left
+  cmdOk.Left = Me.ScaleWidth - (BUTTON_WIDTH + (BUTTON_GAP / 2))
+  cmdView.Left = cmdOk.Left
+  cmdRebuild.Left = cmdOk.Left
+  cmdPurge.Left = cmdOk.Left
 
-  fraFilters.Width = cmdOK.Left - BUTTON_GAP
+  fraFilters.Width = cmdOk.Left - BUTTON_GAP
   
   cboStatus.Left = fraFilters.Width - (cboStatus.Width + COMBO_GAP)
   lblStatus.Left = cboStatus.Left
@@ -804,8 +804,8 @@ Private Function RefreshGrid() As Boolean
         "SELECT isnull(w.name+' (Workflow)',isnull(l.Title,'')) as [QueueTitle]" & _
         "     , isnull(q.RecordDesc,'') as [RecDesc]" & _
         "     , isnull(t.TableName,'') as [TableName]" & _
-        "     , case when q.WorkflowInstanceID > 0 then '' else isnull(c.ColumnName,'<Multiple Columns>') end as [ColumnName]" & _
-        "     , case when q.WorkflowInstanceID > 0 then '' else isnull(q.ColumnValue,'<Multiple Values>') end as [ColumnValue]" & _
+        "     , case when q.WorkflowInstanceID > 0 or q.columnID IS NULL then '' else isnull(c.ColumnName,'<Multiple Columns>') end as [ColumnName]" & _
+        "     , case when q.WorkflowInstanceID > 0 or q.columnID IS NULL then '' else isnull(q.ColumnValue,'<Multiple Values>') end as [ColumnValue]" & _
         "     , q.DateDue as [DateDue]" & _
         "     , q.DateSent as [DateSent]" & _
         "     , isnull(q.QueueID,0) as [QueueID]" & _
