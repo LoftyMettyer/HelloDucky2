@@ -5,7 +5,7 @@ Begin VB.Form frmAbout
    ClientHeight    =   1845
    ClientLeft      =   1065
    ClientTop       =   2955
-   ClientWidth     =   6570
+   ClientWidth     =   7545
    ClipControls    =   0   'False
    BeginProperty Font 
       Name            =   "Verdana"
@@ -24,7 +24,7 @@ Begin VB.Form frmAbout
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   1845
-   ScaleWidth      =   6570
+   ScaleWidth      =   7545
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
    Begin VB.PictureBox picLogo 
@@ -51,7 +51,7 @@ Begin VB.Form frmAbout
    Begin VB.CommandButton cmdTech 
       Caption         =   "&Support..."
       Height          =   400
-      Left            =   5000
+      Left            =   5955
       TabIndex        =   2
       Top             =   1300
       Width           =   1425
@@ -61,7 +61,7 @@ Begin VB.Form frmAbout
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
-      Left            =   5000
+      Left            =   5955
       TabIndex        =   0
       Top             =   150
       Width           =   1425
@@ -69,7 +69,7 @@ Begin VB.Form frmAbout
    Begin VB.CommandButton cmdSysInfo 
       Caption         =   "System &Info..."
       Height          =   400
-      Left            =   5000
+      Left            =   5955
       TabIndex        =   1
       Top             =   725
       Width           =   1425
@@ -139,13 +139,13 @@ Begin VB.Form frmAbout
    Begin VB.Label lblCopyRight 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "Copyright © Advanced Business Solutions Limited 2011"
+      Caption         =   "Copyright © Advanced Business Software and Solutions Limited"
       ForeColor       =   &H00000000&
       Height          =   195
       Left            =   150
       TabIndex        =   4
       Top             =   1305
-      Width           =   4770
+      Width           =   5490
    End
    Begin VB.Label lblTitle 
       AutoSize        =   -1  'True
