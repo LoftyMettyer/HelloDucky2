@@ -63,12 +63,12 @@ Begin VB.Form frmSSIntranetSetup
       TabPicture(0)   =   "frmSSIntranetSetup.frx":000C
       Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraViews"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Hypertext Links"
       TabPicture(1)   =   "frmSSIntranetSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraHypertextLinks"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Dash&board"
       TabPicture(2)   =   "frmSSIntranetSetup.frx":0044
@@ -1968,7 +1968,7 @@ Private Sub RefreshControls()
 
   End Select
 
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   cmdPreview.Enabled = (cboSecurityGroup.Text <> "(All Groups)")
 
 End Sub
@@ -4537,7 +4537,7 @@ Private Sub cmdMoveTableViewUp_Click()
   MoveView MOVEDIRECTION_UP
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
   'AE20071119 Fault #12607
   'If ValidateSetup Then
     'SaveChanges
@@ -6175,9 +6175,9 @@ Private Function DisplayInBrowser() As Boolean
   Set IE = Nothing
 
   'MH20070301 Fault 12001
-  If strTempFileName <> vbNullString Then
-    If Dir(strTempFileName) <> vbNullString Then
-      Kill strTempFileName
+  If strFileName <> vbNullString Then
+    If Dir(strFileName) <> vbNullString Then
+      Kill strFileName
     End If
   End If
 
