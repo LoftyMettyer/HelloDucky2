@@ -17,7 +17,7 @@ Begin VB.Form frmAudit
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1004
+   HelpContextID   =   8004
    Icon            =   "frmAudit.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"

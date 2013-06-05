@@ -15,7 +15,7 @@ Begin VB.Form frmAuditView
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1011
+   HelpContextID   =   8011
    Icon            =   "frmAuditView.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
@@ -402,7 +402,7 @@ Public Sub Initialise(AuditType As audType, avView() As Boolean)
   End With
   
   cmdCancel.Top = dblCurrentHeight + iYGAP
-  cmdOK.Top = cmdCancel.Top
+  cmdOk.Top = cmdCancel.Top
     
   Me.Height = cmdCancel.Top + cmdCancel.Height + iYGAP + UI.CaptionHeight + (2 * UI.YFrame)
   Me.Width = iFORMWIDTH

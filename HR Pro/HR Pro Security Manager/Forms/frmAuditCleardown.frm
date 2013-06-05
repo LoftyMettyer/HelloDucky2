@@ -17,7 +17,7 @@ Begin VB.Form frmAuditCleardown
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1005
+   HelpContextID   =   8005
    Icon            =   "frmAuditCleardown.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
