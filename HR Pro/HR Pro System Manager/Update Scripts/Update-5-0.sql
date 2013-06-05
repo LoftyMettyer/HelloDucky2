@@ -2917,12 +2917,6 @@ BEGIN
 	SELECT @NVarCommand = 'ALTER TABLE tbsys_Workflows ADD 
 						PictureID [int] NULL'
 	EXEC sp_executesql @NVarCommand
-
-	--TODO PG
-	SET @NVarCommand = 'UPDATE tbsys_Workflows
-						SET tbsys_Workflows.PictureID = 0
-						WHERE tbsys_Workflows.PictureID IS NULL'
-	EXEC sp_executesql @NVarCommand
 END
 
 
