@@ -32,7 +32,7 @@ Begin VB.Form frmAbsenceSetup
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   4755
-      TabIndex        =   83
+      TabIndex        =   82
       Top             =   5535
       Width           =   1200
    End
@@ -41,14 +41,14 @@ Begin VB.Form frmAbsenceSetup
       Default         =   -1  'True
       Height          =   400
       Left            =   3510
-      TabIndex        =   82
+      TabIndex        =   81
       Top             =   5535
       Width           =   1200
    End
    Begin TabDlg.SSTab SSTab1 
       Height          =   5310
       Left            =   105
-      TabIndex        =   84
+      TabIndex        =   83
       Top             =   105
       Width           =   5850
       _ExtentX        =   10319
@@ -95,22 +95,22 @@ Begin VB.Form frmAbsenceSetup
       TabCaption(4)   =   "&Parental Leave"
       TabPicture(4)   =   "frmAbsenceSetup.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "Frame1"
+      Tab(4).Control(0)=   "Frame3"
       Tab(4).Control(1)=   "Frame2"
-      Tab(4).Control(2)=   "Frame3"
+      Tab(4).Control(2)=   "Frame1"
       Tab(4).ControlCount=   3
       Begin VB.Frame Frame3 
          Caption         =   "Personnel Records :"
          Height          =   825
          Left            =   -74850
-         TabIndex        =   63
+         TabIndex        =   62
          Top             =   390
          Width           =   5565
          Begin VB.ComboBox cboParentalLeaveRegion 
             Height          =   315
             Left            =   2910
             Style           =   2  'Dropdown List
-            TabIndex        =   65
+            TabIndex        =   64
             Top             =   300
             Width           =   2505
          End
@@ -120,7 +120,7 @@ Begin VB.Form frmAbsenceSetup
             Caption         =   "Parental Leave Region Column:"
             Height          =   195
             Left            =   150
-            TabIndex        =   64
+            TabIndex        =   63
             Top             =   360
             Width           =   2715
          End
@@ -146,7 +146,7 @@ Begin VB.Form frmAbsenceSetup
             Caption         =   "Calendar Start Month :"
             Height          =   195
             Left            =   195
-            TabIndex        =   86
+            TabIndex        =   85
             Top             =   360
             Width           =   2025
          End
@@ -155,14 +155,14 @@ Begin VB.Form frmAbsenceSetup
          Caption         =   "Dependants :"
          Height          =   2595
          Left            =   -74850
-         TabIndex        =   71
+         TabIndex        =   70
          Top             =   2555
          Width           =   5565
          Begin VB.ComboBox cboDependantsTable 
             Height          =   315
             Left            =   2910
             Style           =   2  'Dropdown List
-            TabIndex        =   73
+            TabIndex        =   72
             Top             =   300
             Width           =   2505
          End
@@ -170,7 +170,7 @@ Begin VB.Form frmAbsenceSetup
             Height          =   315
             Left            =   2910
             Style           =   2  'Dropdown List
-            TabIndex        =   81
+            TabIndex        =   80
             Top             =   2145
             Width           =   2505
          End
@@ -178,7 +178,7 @@ Begin VB.Form frmAbsenceSetup
             Height          =   315
             Left            =   2910
             Style           =   2  'Dropdown List
-            TabIndex        =   79
+            TabIndex        =   78
             Top             =   1740
             Width           =   2505
          End
@@ -186,7 +186,7 @@ Begin VB.Form frmAbsenceSetup
             Height          =   315
             Left            =   2910
             Style           =   2  'Dropdown List
-            TabIndex        =   77
+            TabIndex        =   76
             Top             =   1335
             Width           =   2505
          End
@@ -194,7 +194,7 @@ Begin VB.Form frmAbsenceSetup
             Height          =   315
             Left            =   2910
             Style           =   2  'Dropdown List
-            TabIndex        =   75
+            TabIndex        =   74
             Top             =   945
             Width           =   2505
          End
@@ -212,7 +212,7 @@ Begin VB.Form frmAbsenceSetup
             Caption         =   "Dependants Table :"
             Height          =   195
             Left            =   150
-            TabIndex        =   72
+            TabIndex        =   71
             Top             =   360
             Width           =   2085
          End
@@ -222,7 +222,7 @@ Begin VB.Form frmAbsenceSetup
             Caption         =   "Disabled Column :"
             Height          =   195
             Left            =   150
-            TabIndex        =   80
+            TabIndex        =   79
             Top             =   2205
             Width           =   1950
          End
@@ -232,7 +232,7 @@ Begin VB.Form frmAbsenceSetup
             Caption         =   "Adopted Date Column :"
             Height          =   195
             Left            =   150
-            TabIndex        =   78
+            TabIndex        =   77
             Top             =   1800
             Width           =   2355
          End
@@ -242,7 +242,7 @@ Begin VB.Form frmAbsenceSetup
             Caption         =   "Date of Birth Column :"
             Height          =   195
             Left            =   150
-            TabIndex        =   76
+            TabIndex        =   75
             Top             =   1395
             Width           =   2265
          End
@@ -252,7 +252,7 @@ Begin VB.Form frmAbsenceSetup
             Caption         =   "Child No. Column :"
             Height          =   195
             Left            =   150
-            TabIndex        =   74
+            TabIndex        =   73
             Top             =   1005
             Width           =   1995
          End
@@ -261,14 +261,14 @@ Begin VB.Form frmAbsenceSetup
          Caption         =   "Absence :"
          Height          =   1260
          Left            =   -74850
-         TabIndex        =   66
+         TabIndex        =   65
          Top             =   1250
          Width           =   5565
          Begin VB.ComboBox cboParentalLeaveAbsType 
             Height          =   315
             Left            =   2910
             Style           =   2  'Dropdown List
-            TabIndex        =   68
+            TabIndex        =   67
             Top             =   300
             Width           =   2505
          End
@@ -276,7 +276,7 @@ Begin VB.Form frmAbsenceSetup
             Height          =   315
             Left            =   2910
             Style           =   2  'Dropdown List
-            TabIndex        =   70
+            TabIndex        =   69
             Top             =   705
             Width           =   2505
          End
@@ -286,7 +286,7 @@ Begin VB.Form frmAbsenceSetup
             Caption         =   "Parental Leave Absence Type :"
             Height          =   195
             Left            =   150
-            TabIndex        =   67
+            TabIndex        =   66
             Top             =   360
             Width           =   2700
          End
@@ -296,7 +296,7 @@ Begin VB.Form frmAbsenceSetup
             Caption         =   "Child No. Column :"
             Height          =   195
             Left            =   150
-            TabIndex        =   69
+            TabIndex        =   68
             Top             =   760
             Width           =   1320
          End
@@ -387,17 +387,91 @@ Begin VB.Form frmAbsenceSetup
          Top             =   2430
          Width           =   5565
          Begin VB.Frame fraWorkingPattern 
-            Height          =   700
+            Height          =   1335
             Left            =   2910
             TabIndex        =   54
             Top             =   1050
             Width           =   1800
+            Begin VB.Frame Frame4 
+               Appearance      =   0  'Flat
+               BorderStyle     =   0  'None
+               Caption         =   "S"
+               ForeColor       =   &H80000008&
+               Height          =   240
+               Left            =   90
+               TabIndex        =   86
+               Top             =   135
+               Width           =   1635
+               Begin VB.Label lblQualifyingDays 
+                  Caption         =   "T"
+                  Height          =   240
+                  Index           =   1
+                  Left            =   575
+                  TabIndex        =   93
+                  Top             =   0
+                  Width           =   150
+               End
+               Begin VB.Label lblQualifyingDays 
+                  Caption         =   "W"
+                  Height          =   240
+                  Index           =   6
+                  Left            =   725
+                  TabIndex        =   92
+                  Top             =   0
+                  Width           =   165
+               End
+               Begin VB.Label lblQualifyingDays 
+                  Caption         =   "S"
+                  Height          =   240
+                  Index           =   5
+                  Left            =   1350
+                  TabIndex        =   91
+                  Top             =   0
+                  Width           =   150
+               End
+               Begin VB.Label lblQualifyingDays 
+                  Caption         =   "T"
+                  Height          =   240
+                  Index           =   4
+                  Left            =   960
+                  TabIndex        =   90
+                  Top             =   0
+                  Width           =   150
+               End
+               Begin VB.Label lblQualifyingDays 
+                  Caption         =   "F"
+                  Height          =   240
+                  Index           =   3
+                  Left            =   1160
+                  TabIndex        =   89
+                  Top             =   0
+                  Width           =   105
+               End
+               Begin VB.Label lblQualifyingDays 
+                  Caption         =   "S"
+                  Height          =   240
+                  Index           =   2
+                  Left            =   135
+                  TabIndex        =   88
+                  Top             =   0
+                  Width           =   150
+               End
+               Begin VB.Label lblQualifyingDays 
+                  Caption         =   "M"
+                  Height          =   240
+                  Index           =   0
+                  Left            =   350
+                  TabIndex        =   87
+                  Top             =   0
+                  Width           =   150
+               End
+            End
             Begin VB.CheckBox chkWorkingPattern 
                Caption         =   "Check1"
                Height          =   195
                Index           =   6
-               Left            =   1400
-               TabIndex        =   62
+               Left            =   1405
+               TabIndex        =   61
                Top             =   385
                Width           =   195
             End
@@ -406,7 +480,7 @@ Begin VB.Form frmAbsenceSetup
                Height          =   195
                Index           =   5
                Left            =   1200
-               TabIndex        =   61
+               TabIndex        =   60
                Top             =   385
                Width           =   195
             End
@@ -415,7 +489,7 @@ Begin VB.Form frmAbsenceSetup
                Height          =   195
                Index           =   4
                Left            =   1000
-               TabIndex        =   60
+               TabIndex        =   59
                Top             =   385
                Width           =   195
             End
@@ -424,7 +498,7 @@ Begin VB.Form frmAbsenceSetup
                Height          =   195
                Index           =   3
                Left            =   800
-               TabIndex        =   59
+               TabIndex        =   58
                Top             =   385
                Width           =   195
             End
@@ -433,7 +507,7 @@ Begin VB.Form frmAbsenceSetup
                Height          =   195
                Index           =   2
                Left            =   600
-               TabIndex        =   58
+               TabIndex        =   57
                Top             =   385
                Width           =   195
             End
@@ -442,7 +516,7 @@ Begin VB.Form frmAbsenceSetup
                Height          =   195
                Index           =   1
                Left            =   400
-               TabIndex        =   57
+               TabIndex        =   56
                Top             =   385
                Width           =   195
             End
@@ -452,17 +526,9 @@ Begin VB.Form frmAbsenceSetup
                Height          =   195
                Index           =   0
                Left            =   200
-               TabIndex        =   56
+               TabIndex        =   55
                Top             =   385
                Width           =   195
-            End
-            Begin VB.Label lblWorkingDays 
-               Caption         =   " S M T W T F S"
-               Height          =   195
-               Left            =   225
-               TabIndex        =   55
-               Top             =   150
-               Width           =   1440
             End
          End
          Begin VB.ComboBox cboWorkingDaysNumericValue 
@@ -752,7 +818,7 @@ Begin VB.Form frmAbsenceSetup
          Enabled         =   0   'False
          Height          =   4740
          Left            =   -74850
-         TabIndex        =   85
+         TabIndex        =   84
          Top             =   390
          Width           =   5565
          Begin COALine.COA_Line ASRDummyLine2 
@@ -3130,6 +3196,7 @@ Private Sub Form_Resize()
   DisplayApplication
 
 End Sub
+
 
 Private Sub optWorkingDaysType_Click(Index As Integer)
   ' Save the selected ID to a local variable.
