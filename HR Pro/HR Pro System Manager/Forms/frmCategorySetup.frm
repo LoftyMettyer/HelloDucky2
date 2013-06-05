@@ -15,7 +15,7 @@ Begin VB.Form frmCategorySetup
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   5101
+   HelpContextID   =   5100
    Icon            =   "frmCategorySetup.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
