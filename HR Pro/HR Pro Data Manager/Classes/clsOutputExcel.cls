@@ -1574,20 +1574,20 @@ Public Sub Complete()
       GoTo TidyAndExit
     End If
     
-    blnOffice2007 = (Val(giOfficeVersion_Excel) >= 12)
-    If blnOffice2007 Then
-      If mxlWorkBook.FullName <> mstrFileName Then
+    'blnOffice2007 = (Val(giOfficeVersion_Excel) >= 12)
+    'If blnOffice2007 Then
+      'If mxlWorkBook.FullName <> mstrFileName Then
         mxlWorkBook.SaveAs mstrFileName, Val(strFormat)
-      Else
-        mxlWorkBook.SaveAs mxlWorkBook.FullName, FileFormat:=Val(strFormat)
-      End If
-    Else
-      If mxlWorkBook.FullName <> mstrFileName Then
-        mxlWorkBook.SaveAs mstrFileName
-      Else
-        mxlWorkBook.Save
-      End If
-    End If
+      'Else
+      '  mxlWorkBook.SaveAs mxlWorkBook.FullName, FileFormat:=Val(strFormat)
+      'End If
+    'Else
+    '  If mxlWorkBook.FullName <> mstrFileName Then
+    '    mxlWorkBook.SaveAs mstrFileName
+    '  Else
+    '    mxlWorkBook.Save
+    '  End If
+    'End If
 
   End If
 
