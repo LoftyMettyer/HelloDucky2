@@ -316,7 +316,7 @@ Public Function CreateOutlookEventsForTable(lngTableID As Long, sCurrentTable As
             End If
   
             strSQLTemp = _
-            "  IF NOT (SELECT " & GetColumnName(!StartDate) & " FROM [" & sCurrentTable & "] WHERE ID = @RecordID) IS NULL" & vbCrLf & _
+            "  IF NOT (SELECT " & GetColumnName(!StartDate, True) & " FROM [" & sCurrentTable & "] WHERE ID = @RecordID) IS NULL" & vbCrLf & _
             "  BEGIN" & vbCrLf & _
             strSQLTemp & _
             "  END" & vbCrLf & _
