@@ -182,9 +182,9 @@ Namespace Things
 
     Private Sub AddDependancy(ByRef Thing As Things.Base)
 
-      If Not mcolDependencies.Contains(Thing) Then
-        mcolDependencies.Add(Thing)
-      End If
+      'If Not mcolDependencies.Contains(Thing) Then
+      '  mcolDependencies.Add(Thing)
+      'End If
 
     End Sub
 
@@ -281,16 +281,19 @@ Namespace Things
         End If
 
         If objDependency.Type = Enums.Type.Relation Then
-          aryParameters1.Add(String.Format("@pid_{0} integer", CInt(CType(objDependency, Things.Relation).ParentID)))
 
-          If CType(objDependency, Things.Relation).RelationshipType = ScriptDB.RelationshipType.Parent Then
-            aryParameters2.Add(String.Format("base.[ID_{0}]", CInt(CType(objDependency, Things.Relation).ParentID)))
-          Else
-            aryParameters2.Add("base.[ID]")
+          If Not aryParameters1.Contains(String.Format("@pid_{0} integer", CInt(CType(objDependency, Things.Relation).ParentID))) Then
+            aryParameters1.Add(String.Format("@pid_{0} integer", CInt(CType(objDependency, Things.Relation).ParentID)))
+
+            If CType(objDependency, Things.Relation).RelationshipType = ScriptDB.RelationshipType.Parent Then
+              aryParameters2.Add(String.Format("base.[ID_{0}]", CInt(CType(objDependency, Things.Relation).ParentID)))
+            Else
+              aryParameters2.Add("base.[ID]")
+            End If
+
           End If
 
         End If
-
         'If objDependency.Type = Enums.Type.Setting Then
         '  aryParameters1.Add(String.Format("@pid_{0} integer", CInt(CType(objDependency, Things.Setting).Value)))
         '  aryParameters2.Add(String.Format("base.[ID_{0}]", CInt(CType(objDependency, Things.Setting).Value)))
@@ -509,7 +512,10 @@ Namespace Things
 
       objTable = Globals.Things.GetObject(Enums.Type.Table, [Component].TableID)
       objRelation = AssociatedColumn.Table.GetRelation(objTable.ID)
-      AddDependancy(objRelation)
+
+      If Not mcolDependencies.Contains(objRelation) Then
+        mcolDependencies.Add(objRelation)
+      End If
 
       LineOfCode.Code = String.Format("@pid_{0}", CInt([Component].TableID))
 
@@ -841,7 +847,9 @@ Namespace Things
               Next
 
               If bAddRelation Then
-                mcolDependencies.Add(objRelation)
+                If Not mcolDependencies.Contains(objRelation) Then
+                  mcolDependencies.Add(objRelation)
+                End If
               End If
 
               maryPrerequisitStatements.Add(sPartCode)
@@ -855,19 +863,19 @@ Namespace Things
               ' How do we do specific line X?
 
               '            , PhysicalName([Component].Item("columnorderid").ToString, ObjectPrefix.Column)))
-            End If
+              End If
 
-            ' Add table join component
-            'maryJoins.Add(String.Format("INNER JOIN [dbo].[{0}] p{1} ON p{1}.[fk_{2}] = @pID AND p{1}.[_deleteddate] IS NULL" _
-            '  , PhysicalName(guidTableID, ObjectPrefix.Table) _
-            '  , maryJoins.Count _
-            '  , drRelation.Item("parentid").ToString))
+              ' Add table join component
+              'maryJoins.Add(String.Format("INNER JOIN [dbo].[{0}] p{1} ON p{1}.[fk_{2}] = @pID AND p{1}.[_deleteddate] IS NULL" _
+              '  , PhysicalName(guidTableID, ObjectPrefix.Table) _
+              '  , maryJoins.Count _
+              '  , drRelation.Item("parentid").ToString))
 
-            '' Add order
-            'If [Component].Item("columnorderid").ToString = ASR.Common.ASRGuid.Empty Then
-            '  maryOrders.Add(String.Format("--{0} DESC" _
-            '    , PhysicalName([Component].Item("columnorderid").ToString, ObjectPrefix.Table)))
-            'End If
+              '' Add order
+              'If [Component].Item("columnorderid").ToString = ASR.Common.ASRGuid.Empty Then
+              '  maryOrders.Add(String.Format("--{0} DESC" _
+              '    , PhysicalName([Component].Item("columnorderid").ToString, ObjectPrefix.Table)))
+              'End If
 
           End If
 
