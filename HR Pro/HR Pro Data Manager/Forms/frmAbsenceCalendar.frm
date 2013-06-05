@@ -221,7 +221,7 @@ Begin VB.Form frmAbsenceCalendar
       TabIndex        =   23
       Top             =   480
       Width           =   2700
-      Begin COAWorkingPattern.COA_WorkingPattern ASRWorkingPattern1
+      Begin COAWorkingPattern.COA_WorkingPattern ASRWorkingPattern1 
          Height          =   765
          Left            =   330
          TabIndex        =   24
@@ -1650,7 +1650,7 @@ Private Sub cboStartMonth_Click()
   sDateFormat = LCase(DateFormat)
   
   sDateFormat = Replace(sDateFormat, "dd", "01")
-  sDateFormat = Replace(sDateFormat, "mm", Me.cboStartMonth.ItemData(Me.cboStartMonth.ListIndex))
+  sDateFormat = Replace(sDateFormat, "mm", Me.cboStartMonth.ListIndex + 1)
   
   If InStr(sDateFormat, "yyyy") Then
     sDateFormat = Replace(sDateFormat, "yyyy", Me.lblCurrentYear.Caption)
@@ -1982,7 +1982,7 @@ Private Sub Form_Load()
   
   For iCount = 1 To 12
     cboStartMonth.AddItem StrConv(MonthName(iCount), vbProperCase)
-    cboStartMonth.ItemData(cboStartMonth.NewIndex) = iCount
+'    cboStartMonth.ItemData(cboStartMonth.NewIndex) = iCount
   Next iCount
 
  ' lblDay(1).Caption = StrConv(Left(WeekdayName(1), 1), vbProperCase)
