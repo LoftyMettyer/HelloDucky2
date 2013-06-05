@@ -318,18 +318,18 @@ Begin VB.Form frmToolbox
       Left            =   0
       MousePointer    =   7  'Size N S
       TabIndex        =   7
-      Top             =   1575
+      Top             =   1890
       Width           =   2940
    End
    Begin ComctlLib.TreeView trvStandardControls 
       DragIcon        =   "frmToolbox.frx":86C8
-      Height          =   1320
+      Height          =   1890
       Left            =   0
       TabIndex        =   0
       Top             =   0
       Width           =   3015
       _ExtentX        =   5318
-      _ExtentY        =   2328
+      _ExtentY        =   3334
       _Version        =   327682
       HideSelection   =   0   'False
       LabelEdit       =   1
@@ -353,7 +353,7 @@ Begin VB.Form frmToolbox
       Height          =   265
       Left            =   0
       TabIndex        =   5
-      Top             =   1890
+      Top             =   2025
       Width           =   3060
       Begin VB.Label lblTitleBar 
          AutoSize        =   -1  'True
@@ -389,7 +389,7 @@ Begin VB.Form frmToolbox
          Height          =   195
          Left            =   45
          TabIndex        =   4
-         Top             =   90
+         Top             =   180
          Width           =   495
       End
       Begin VB.Label lblTableName 
@@ -399,7 +399,7 @@ Begin VB.Form frmToolbox
          Height          =   285
          Left            =   720
          TabIndex        =   3
-         Top             =   60
+         Top             =   150
          Width           =   2160
       End
    End
@@ -408,7 +408,7 @@ Begin VB.Form frmToolbox
       Height          =   2055
       Left            =   0
       TabIndex        =   1
-      Top             =   2625
+      Top             =   2715
       Width           =   3015
       _ExtentX        =   5318
       _ExtentY        =   3625
@@ -448,105 +448,109 @@ Begin VB.Form frmToolbox
       MaskColor       =   12632256
       _Version        =   327682
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
-         NumListImages   =   25
+         NumListImages   =   26
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
             Picture         =   "frmToolbox.frx":9409
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
             Picture         =   "frmToolbox.frx":995B
-            Key             =   "IMG_BUTTON"
+            Key             =   "IMG_NAVIGATION"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":9EAD
-            Key             =   "IMG_WORKINGPATTERN"
+            Picture         =   "frmToolbox.frx":9CAD
+            Key             =   "IMG_BUTTON"
          EndProperty
          BeginProperty ListImage4 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":A3FF
-            Key             =   "IMG_WEBFORM"
+            Picture         =   "frmToolbox.frx":A1FF
+            Key             =   "IMG_WORKINGPATTERN"
          EndProperty
          BeginProperty ListImage5 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
             Picture         =   "frmToolbox.frx":A751
-            Key             =   ""
+            Key             =   "IMG_WEBFORM"
          EndProperty
          BeginProperty ListImage6 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
             Picture         =   "frmToolbox.frx":AAA3
-            Key             =   "IMG_GRID"
+            Key             =   ""
          EndProperty
          BeginProperty ListImage7 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":AFF5
-            Key             =   "IMG_COLUMN"
+            Picture         =   "frmToolbox.frx":ADF5
+            Key             =   "IMG_GRID"
          EndProperty
          BeginProperty ListImage8 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":B547
-            Key             =   "IMG_COMBOBOX"
+            Picture         =   "frmToolbox.frx":B347
+            Key             =   "IMG_COLUMN"
          EndProperty
          BeginProperty ListImage9 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":BA99
-            Key             =   "IMG_DATE"
+            Picture         =   "frmToolbox.frx":B899
+            Key             =   "IMG_COMBOBOX"
          EndProperty
          BeginProperty ListImage10 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":BFEB
-            Key             =   "IMG_LINE"
+            Picture         =   "frmToolbox.frx":BDEB
+            Key             =   "IMG_DATE"
          EndProperty
          BeginProperty ListImage11 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":C53D
-            Key             =   "IMG_IMAGE"
+            Picture         =   "frmToolbox.frx":C33D
+            Key             =   "IMG_LINE"
          EndProperty
          BeginProperty ListImage12 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":CA8F
-            Key             =   "IMG_FRAME"
+            Picture         =   "frmToolbox.frx":C88F
+            Key             =   "IMG_IMAGE"
          EndProperty
          BeginProperty ListImage13 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":CFE1
-            Key             =   "IMG_LABEL"
+            Picture         =   "frmToolbox.frx":CDE1
+            Key             =   "IMG_FRAME"
          EndProperty
          BeginProperty ListImage14 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":D533
-            Key             =   "IMG_LINK"
+            Picture         =   "frmToolbox.frx":D333
+            Key             =   "IMG_LABEL"
          EndProperty
          BeginProperty ListImage15 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":DA85
-            Key             =   "IMG_CHECKBOX"
+            Picture         =   "frmToolbox.frx":D885
+            Key             =   "IMG_LINK"
          EndProperty
          BeginProperty ListImage16 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":DFD7
-            Key             =   "IMG_LOOKUP"
+            Picture         =   "frmToolbox.frx":DDD7
+            Key             =   "IMG_CHECKBOX"
          EndProperty
          BeginProperty ListImage17 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":E529
-            Key             =   "IMG_NUMERIC"
+            Picture         =   "frmToolbox.frx":E329
+            Key             =   "IMG_LOOKUP"
          EndProperty
          BeginProperty ListImage18 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":EA7B
-            Key             =   "IMG_OLE"
+            Picture         =   "frmToolbox.frx":E87B
+            Key             =   "IMG_NUMERIC"
          EndProperty
          BeginProperty ListImage19 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":EFCD
-            Key             =   "IMG_PHOTO"
+            Picture         =   "frmToolbox.frx":EDCD
+            Key             =   "IMG_OLE"
          EndProperty
          BeginProperty ListImage20 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":F51F
-            Key             =   "IMG_PROPERTIES"
+            Picture         =   "frmToolbox.frx":F31F
+            Key             =   "IMG_PHOTO"
          EndProperty
          BeginProperty ListImage21 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":FA71
-            Key             =   "IMG_RADIO"
+            Picture         =   "frmToolbox.frx":F871
+            Key             =   "IMG_PROPERTIES"
          EndProperty
          BeginProperty ListImage22 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":FFC3
-            Key             =   "IMG_SPINNER"
+            Picture         =   "frmToolbox.frx":FDC3
+            Key             =   "IMG_RADIO"
          EndProperty
          BeginProperty ListImage23 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":10515
-            Key             =   "IMG_TEXTBOX"
+            Picture         =   "frmToolbox.frx":10315
+            Key             =   "IMG_SPINNER"
          EndProperty
          BeginProperty ListImage24 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":10A67
-            Key             =   "IMG_TOOLBOX"
+            Picture         =   "frmToolbox.frx":10867
+            Key             =   "IMG_TEXTBOX"
          EndProperty
          BeginProperty ListImage25 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":10FB9
+            Picture         =   "frmToolbox.frx":10DB9
+            Key             =   "IMG_TOOLBOX"
+         EndProperty
+         BeginProperty ListImage26 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "frmToolbox.frx":1130B
             Key             =   "IMG_WORKFLOW"
          EndProperty
       EndProperty
@@ -562,29 +566,33 @@ Begin VB.Form frmToolbox
       MaskColor       =   12632256
       _Version        =   327682
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
-         NumListImages   =   6
+         NumListImages   =   7
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":1150B
+            Picture         =   "frmToolbox.frx":1185D
             Key             =   "IMG_LABEL"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":11A5D
-            Key             =   "IMG_IMAGE"
+            Picture         =   "frmToolbox.frx":11DAF
+            Key             =   "IMG_NAVIGATION"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":11FAF
-            Key             =   "IMG_PAGETAB"
+            Picture         =   "frmToolbox.frx":12101
+            Key             =   "IMG_IMAGE"
          EndProperty
          BeginProperty ListImage4 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":12501
-            Key             =   "IMG_FRAME"
+            Picture         =   "frmToolbox.frx":12653
+            Key             =   "IMG_PAGETAB"
          EndProperty
          BeginProperty ListImage5 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":12A53
-            Key             =   "IMG_TOOLS"
+            Picture         =   "frmToolbox.frx":12BA5
+            Key             =   "IMG_FRAME"
          EndProperty
          BeginProperty ListImage6 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmToolbox.frx":12FA5
+            Picture         =   "frmToolbox.frx":130F7
+            Key             =   "IMG_TOOLS"
+         EndProperty
+         BeginProperty ListImage7 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "frmToolbox.frx":13649
             Key             =   "IMG_LINE"
          EndProperty
       EndProperty
@@ -966,6 +974,10 @@ Private Sub RefreshStandardControlsTreeView()
   
   ' Add the Line control node.
   Set objNode = trvStandardControls.Nodes.Add("STDROOT", tvwChild, "LINECTRL", "Line", "IMG_LINE", "IMG_LINE")
+  objNode.Expanded = True
+   
+  ' Add the Fire Button control
+  Set objNode = trvStandardControls.Nodes.Add("STDROOT", tvwChild, "NAVIGATIONCTRL", "Navigation", "IMG_NAVIGATION", "IMG_NAVIGATION")
   objNode.Expanded = True
   
   ' Disassociate the objNode variable.
