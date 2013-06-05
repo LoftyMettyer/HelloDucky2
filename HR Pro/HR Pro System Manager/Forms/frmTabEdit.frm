@@ -83,30 +83,18 @@ Begin VB.Form frmTabEdit
       TabCaption(1)   =   "Su&mmary Columns"
       TabPicture(1)   =   "frmTabEdit.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "lblParentTable"
-      Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "fraColumns"
-      Tab(1).Control(1).Enabled=   0   'False
-      Tab(1).Control(2)=   "cmdInsert"
-      Tab(1).Control(2).Enabled=   0   'False
-      Tab(1).Control(3)=   "cmdDown"
-      Tab(1).Control(3).Enabled=   0   'False
-      Tab(1).Control(4)=   "cmdUp"
-      Tab(1).Control(4).Enabled=   0   'False
-      Tab(1).Control(5)=   "cmdRemove"
-      Tab(1).Control(5).Enabled=   0   'False
-      Tab(1).Control(6)=   "cmdAdd"
-      Tab(1).Control(6).Enabled=   0   'False
-      Tab(1).Control(7)=   "fraSummaryFields"
-      Tab(1).Control(7).Enabled=   0   'False
-      Tab(1).Control(8)=   "cmdInsertBreak"
-      Tab(1).Control(8).Enabled=   0   'False
-      Tab(1).Control(9)=   "cboParentTable"
-      Tab(1).Control(9).Enabled=   0   'False
-      Tab(1).Control(10)=   "cmdColumnBreak"
-      Tab(1).Control(10).Enabled=   0   'False
-      Tab(1).Control(11)=   "chkManualColumnBreak"
-      Tab(1).Control(11).Enabled=   0   'False
+      Tab(1).Control(0)=   "chkManualColumnBreak"
+      Tab(1).Control(1)=   "cmdColumnBreak"
+      Tab(1).Control(2)=   "cboParentTable"
+      Tab(1).Control(3)=   "cmdInsertBreak"
+      Tab(1).Control(4)=   "fraSummaryFields"
+      Tab(1).Control(5)=   "cmdAdd"
+      Tab(1).Control(6)=   "cmdRemove"
+      Tab(1).Control(7)=   "cmdUp"
+      Tab(1).Control(8)=   "cmdDown"
+      Tab(1).Control(9)=   "cmdInsert"
+      Tab(1).Control(10)=   "fraColumns"
+      Tab(1).Control(11)=   "lblParentTable"
       Tab(1).ControlCount=   12
       TabCaption(2)   =   "Ema&il Links"
       TabPicture(2)   =   "frmTabEdit.frx":0044
@@ -118,21 +106,17 @@ Begin VB.Form frmTabEdit
       TabPicture(3)   =   "frmTabEdit.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraCalendarLinks"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "&Workflow Links"
       TabPicture(4)   =   "frmTabEdit.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraWorkflowLinks"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).ControlCount=   1
       TabCaption(5)   =   "Audi&t"
       TabPicture(5)   =   "frmTabEdit.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraAudit"
-      Tab(5).Control(0).Enabled=   0   'False
-      Tab(5).Control(1)=   "fraTableStats"
-      Tab(5).Control(1).Enabled=   0   'False
+      Tab(5).Control(0)=   "fraTableStats"
+      Tab(5).Control(1)=   "fraAudit"
       Tab(5).ControlCount=   2
       Begin VB.Frame fraEmail 
          Caption         =   "Email Links :"
@@ -3438,6 +3422,7 @@ Private Function DeleteRow(strType As String, ssgrd As SSDBGrid) As Boolean
   DeleteRow = True
 
   With ssgrd
+    .Redraw = False
     If .Rows = 1 Then
       .RemoveAll
     Else
@@ -3452,9 +3437,13 @@ Private Function DeleteRow(strType As String, ssgrd As SSDBGrid) As Boolean
         .SelBookmarks.Add .Bookmark
       End If
     End If
+    .Redraw = True
+    
   End With
  
   If Not mfLoading Then Changed = True
+ 
+
  
 End Function
 
