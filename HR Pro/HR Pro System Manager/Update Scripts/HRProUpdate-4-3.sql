@@ -612,9 +612,6 @@ PRINT 'Step - Add new calculation procedures'
 		SET @piResult = @iNewCodeSuffix;
 	END'
 
-
-
-
 /* ------------------------------------------------------------- */
 PRINT 'Step - Add new calculation procedures'
 
@@ -790,7 +787,7 @@ PRINT 'Step - Add new calculation procedures'
 			END
 		END
 		
-		RETURN @result
+		RETURN ISNULL(@result,0);
 		
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
@@ -823,7 +820,7 @@ PRINT 'Step - Add new calculation procedures'
 	            END
 	        END
 	        
-	    RETURN @result;
+	    RETURN ISNULL(@result,0);
 	
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
@@ -948,22 +945,22 @@ PRINT 'Step - Add new calculation procedures'
 	EXECUTE sp_executeSQL @sSPCode;
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getuniquecode](
-			@prefix AS varchar(255),
-			@rootvalue as integer,
-			@rowoffset AS integer)
-		RETURNS [nvarchar](255)
-		WITH SCHEMABINDING
-		AS
-		BEGIN
-		
-			DECLARE @result nvarchar(255);
+		@prefix AS varchar(255),
+		@rootvalue as integer,
+		@rowoffset AS integer)
+	RETURNS [nvarchar](255)
+	WITH SCHEMABINDING
+	AS
+	BEGIN
+	
+		DECLARE @result nvarchar(255);
 
-			SELECT @result = convert(integer, [maxcodesuffix]) + @rowoffset
-				FROM dbo.[tbsys_uniquecodes] WHERE [codeprefix] = @prefix;
-			
-			RETURN @result;
+		SELECT @result = convert(integer, [maxcodesuffix]) + @rowoffset
+			FROM dbo.[tbsys_uniquecodes] WHERE [codeprefix] = @prefix;
 		
-		END';
+		RETURN @result;
+	
+	END';
 	EXECUTE sp_executeSQL @sSPCode;
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getfunctionparametertype]
@@ -1045,7 +1042,7 @@ PRINT 'Step - Add new calculation procedures'
 
 		IF @input = 0 OR @input = '''' SELECT @result = 1;
 
-		RETURN @result
+		RETURN @result;
 
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
@@ -1061,7 +1058,7 @@ PRINT 'Step - Add new calculation procedures'
 
 		IF @input = 0 OR @input = '''' SELECT @result = 0;
 
-		RETURN @result
+		RETURN @result;
 
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
@@ -1197,7 +1194,7 @@ PRINT 'Step - Add new calculation procedures'
 		IF @iResult < 0
 			SET @iResult = @iResult + 12;
 
-		RETURN @iResult;
+		RETURN ISNULL(@iResult,0);
 
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
@@ -1261,38 +1258,38 @@ PRINT 'Step - Add new calculation procedures'
 	EXECUTE sp_executeSQL @sSPCode;
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_servicelength] (
-		     @startdate  datetime,
-		     @leavingdate  datetime,
-		     @period nvarchar(2))
-		RETURNS integer 
-		WITH SCHEMABINDING
-		AS
-		BEGIN
+	     @startdate		datetime,
+	     @leavingdate	datetime,
+	     @period		nvarchar(2))
+	RETURNS integer 
+	WITH SCHEMABINDING
+	AS
+	BEGIN
+	
+		DECLARE @result integer;
+		DECLARE @amount integer;
+	
+		-- If start date is in the future ignore
+		IF @startdate > GETDATE()
+			RETURN 0;
 		
-			DECLARE @result integer;
-			DECLARE @amount integer;
+		-- Trim the leaving date
+		IF @leavingdate IS NULL OR @leavingdate > GETDATE()
+			SET @leavingdate = GETDATE();
+	
+		SET @amount = [dbo].[udfsys_wholeyearsbetweentwodates](@startdate, @leavingdate);
+	
+		-- Years
+		IF @period = ''Y'' SET @result = @amount
 		
-			-- If start date is in the future ignore
-			IF @startdate > GETDATE()
-				RETURN 0;
-			
-			-- Trim the leaving date
-			IF @leavingdate IS NULL OR @leavingdate > GETDATE()
-				SET @leavingdate = GETDATE();
+		--Months
+		ELSE IF @period = ''M''
+			SET @result = [dbo].[udfsys_wholemonthsbetweentwodates]
+				(@startdate, @leavingdate) - (@amount * 12);
 		
-			SET @amount = [dbo].[udfsys_wholeyearsbetweentwodates](@startdate, @leavingdate);
-		
-			-- Years
-			IF @period = ''Y'' SET @result = @amount
-			
-			--Months
-			ELSE IF @period = ''M''
-				SET @result = [dbo].[udfsys_wholemonthsbetweentwodates]
-					(@startdate, @leavingdate) - (@amount * 12);
-			
-		    RETURN @result;
-		
-		END';
+	    RETURN ISNULL(@result,0);
+	
+	END';
 	EXECUTE sp_executeSQL @sSPCode;
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_triggerrequiresrefresh]()
@@ -1427,7 +1424,7 @@ PRINT 'Step - Add new calculation procedures'
 		IF @iAfterOct2006 = 0 AND @iAgeY = 64 
 			SET @pdblRedundancyPay = @pdblRedundancyPay * (12 - @iAgeM) / 12;
 
-		RETURN @pdblRedundancyPay;
+		RETURN ISNULL(@pdblRedundancyPay,0);
 
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
@@ -1613,7 +1610,7 @@ PRINT 'Step - Add new calculation procedures'
 				- CASE WHEN DATEPART(dw, @dateto) = 7 THEN 1 ELSE 0	END
 				END;
 				
-		RETURN @result;
+		RETURN ISNULL(@result,0);
 		
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
