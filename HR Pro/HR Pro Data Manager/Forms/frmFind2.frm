@@ -2368,7 +2368,8 @@ Private Function ConfigureGrid() As Boolean
   End If
 
   ' RH 13/10/00 - BUG 1121 - Only resize the window if its not min/max.
-  StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s")
+  StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s") & _
+        " - " & ssOleDBGridFindColumns.SelBookmarks.Count & " Selected"
   
   'Setting the form to disabled here stops the find window getting focus
   'when it shouldn't (i.e. when scrolling though RecEdit records!)
@@ -3685,6 +3686,11 @@ Private Sub ssOleDBGridFindColumns_Click()
   '  If Not IsNull(ssOleDBGridFindColumns.Bookmark) Then
   '    CurrentBookMark = ssOleDBGridFindColumns.Bookmark
   '  End If
+  
+  ' RH 13/10/00 - BUG 1121 - Only resize the window if its not min/max.
+  StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s") & _
+        IIf(ssOleDBGridFindColumns.SelBookmarks.Count > 1, " - " & ssOleDBGridFindColumns.SelBookmarks.Count & " Selected", "")
+  
 End Sub
 
 Private Sub ssOleDBGridFindColumns_PrintError(ByVal PrintError As Long, Response As Integer)
@@ -4601,7 +4607,7 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
   Dim varBookmark As Variant
 
   strSelectedRecords = GetSelectedIDs
-  iFirstRow = ssOleDBGridFindColumns.FirstRow
+  ' iFirstRow = ssOleDBGridFindColumns.FirstRow
   varBookmark = ssOleDBGridFindColumns.Bookmark
   
   If strSelectedRecords <> vbNullString Then
@@ -4676,11 +4682,16 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
     End If
     
     'NPG20100812 - Reinstate the selected items in the grid
-    If strSelectedRecords <> vbNullString Then
-      ReinstateSelectedRows (strSelectedRecords)
-      ssOleDBGridFindColumns.FirstRow = iFirstRow
-      ssOleDBGridFindColumns.Bookmark = varBookmark
-    End If
+    ' Remmed out cos it slows the find window down big style - review during 4.2
+'    If strSelectedRecords <> vbNullString Then
+'      ReinstateSelectedRows (strSelectedRecords)
+'      ssOleDBGridFindColumns.FirstRow = iFirstRow
+'      ssOleDBGridFindColumns.Bookmark = varBookmark
+      
+  StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s") & _
+        IIf(ssOleDBGridFindColumns.SelBookmarks.Count > 1, " - " & ssOleDBGridFindColumns.SelBookmarks.Count & " Selected", "")
+      
+'    End If
     
   End If
 
