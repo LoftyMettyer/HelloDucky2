@@ -449,8 +449,8 @@ Namespace ScriptDB
 
               If aryColumns.Count > 0 Then
                 aryChildrenToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3})" & vbNewLine & _
-                      "            AND EXISTS(SELECT i.ID FROM inserted i" & vbNewLine & _
-                      "                INNER JOIN dbo.[{2}] d ON d.ID = i.ID " & vbNewLine & _
+                      "            AND EXISTS(SELECT i.ID FROM dbo.[{2}] i" & vbNewLine & _
+                      "                INNER JOIN deleted d ON d.ID = i.ID " & vbNewLine & _
                       "                WHERE {4})" & vbNewLine & _
                       "        UPDATE dbo.[{0}] SET [updflag] = 1 WHERE ID_{1} IN (SELECT i.ID FROM inserted i);" _
                       , objRelatedTable.PhysicalName, CInt(objTable.ID), objTable.PhysicalName, CInt(objRelatedTable.ID) _
