@@ -553,6 +553,8 @@ Private Sub cmdDelete_Click()
   Dim sSQL As String
   Dim rsTemp As ADODB.Recordset
   Dim objExpression As clsExprExpression
+  Dim sType As String
+  Dim lngUtilityType As UtilityType
   
   lngHighLightIndex = List1.SelectedItem.Index
   lngSelectedID = GetIDFromTag(List1.SelectedItem.Tag)
@@ -579,47 +581,47 @@ Private Sub cmdDelete_Click()
     End If
     
   Else
+  
+    lngUtilityType = GetTypeFromTag(List1.SelectedItem.Tag)
+    sType = IIf(mutlUtilityType = utlAll, GetBatchJobType(lngUtilityType), msSingularCaption)
+  
     ' Ask for user confirmation to delete the utility definition
-    If COAMsgBox("Delete this " & LCase(msType) & ", are you sure ?", vbQuestion + vbYesNo, "Delete " & msType) = vbYes Then
-      If Not CheckForUseage(msType, lngSelectedID) Then
+    If COAMsgBox("Delete this " & LCase(sType) & ", are you sure ?", vbQuestion + vbYesNo, "Delete " & sType) = vbYes Then
+      If Not CheckForUseage(sType, lngSelectedID) Then
           
-        Select Case msType
-        Case "Batch Job"
+        Select Case lngUtilityType
+        Case utlBatchJob, utlReportPack
           datGeneral.DeleteRecord "AsrSysBatchJobDetails", "BatchJobNameID", lngSelectedID
           datGeneral.DeleteRecord "ASRSysBatchJobAccess", "ID", lngSelectedID
-          
-        Case "Report Pack"
-          datGeneral.DeleteRecord "AsrSysBatchJobDetails", "BatchJobNameID", lngSelectedID
-          datGeneral.DeleteRecord "ASRSysBatchJobAccess", "ID", lngSelectedID
-          
-        Case "Calendar Reports"
+                    
+        Case utlCalendarReport
           datGeneral.DeleteRecord "ASRSysCalendarReportEvents", "CalendarReportID", lngSelectedID
           datGeneral.DeleteRecord "ASRSysCalendarReportOrder", "CalendarReportID", lngSelectedID
           datGeneral.DeleteRecord "ASRSysCalendarReportAccess", "ID", lngSelectedID
         
-        Case "Cross Tab"
+        Case utlCrossTab
           datGeneral.DeleteRecord "ASRSysCrossTabAccess", "ID", lngSelectedID
         
-        Case "Custom Reports"
+        Case utlCustomReport
           datGeneral.DeleteRecord "ASRSysCustomReportAccess", "ID", lngSelectedID
           datGeneral.DeleteRecord "ASRSysCustomReportsDetails", "CustomReportID", lngSelectedID
         
-        Case "Data Transfer"
+        Case utlDataTransfer
           datGeneral.DeleteRecord "ASRSysDataTransferAccess", "ID", lngSelectedID
   
-        Case "Export"
+        Case utlExport
           datGeneral.DeleteRecord "AsrSysExportDetails", "ExportID", lngSelectedID
           datGeneral.DeleteRecord "ASRSysExportAccess", "ID", lngSelectedID
                     
-        Case "Global Add", "Global Delete", "Global Update"
+        Case utlGlobalAdd, utlGlobalDelete, utlGlobalUpdate
           datGeneral.DeleteRecord "ASRSysGlobalAccess", "ID", lngSelectedID
   
-        Case "Record Profile"
+        Case utlRecordProfile
           datGeneral.DeleteRecord "ASRSysRecordProfileDetails", "RecordProfileID", lngSelectedID
           datGeneral.DeleteRecord "ASRSysRecordProfileTables", "RecordProfileID", lngSelectedID
           datGeneral.DeleteRecord "ASRSysRecordProfileAccess", "ID", lngSelectedID
   
-        Case "Import"
+        Case utlImport
           datGeneral.DeleteRecord "ASRSysImportDetails", "ImportID", lngSelectedID
           datGeneral.DeleteRecord "ASRSysImportAccess", "ID", lngSelectedID
         
@@ -646,7 +648,7 @@ Private Sub cmdDelete_Click()
           rsTemp.Close
           Set rsTemp = Nothing
   
-        Case "Match Report", "Career Progression", "Succession Planning"
+        Case utlMatchReport, utlCareer, utlSuccession
           datGeneral.DeleteRecord "ASRSysMatchReportAccess", "ID", lngSelectedID
           
           'JPD 20040227 Fault 8160
@@ -694,11 +696,11 @@ Private Sub cmdDelete_Click()
           rsTemp.Close
           Set rsTemp = Nothing
   
-        Case "Mail Merge", "Envelopes & Labels"
+        Case utlMailMerge, utlLabel
           datGeneral.DeleteRecord "ASRSysMailMergeColumns", "MailMergeID", lngSelectedID
           datGeneral.DeleteRecord "ASRSysMailMergeAccess", "ID", lngSelectedID
   
-        Case "Envelope & Label Template"
+        Case utlLabelType
           datGeneral.DeleteRecord "ASRSysLabelTypes", "LabelTypeID", lngSelectedID
         
         End Select
@@ -716,7 +718,6 @@ Private Sub cmdDelete_Click()
         End If
   
         'Refresh_Controls
-        'CheckListViewColWidth List1
         Populate_List
       End If
     End If
@@ -1045,6 +1046,12 @@ Public Sub Refresh_Controls()
   
   If Not List1.SelectedItem Is Nothing Then
     bSystemMgrDefined = (GetTypeFromTag(List1.SelectedItem.Tag) = utlWorkflow)
+  End If
+  
+  ' Always refresh the security if searching all objects
+  If mutlUtilityType = utlAll And Not List1.SelectedItem Is Nothing Then
+    msTypeCode = GetTypeCode(GetTypeFromTag(List1.SelectedItem.Tag))
+    ApplySystemPermissions
   End If
   
   If mblnBatchPrompt Then
@@ -2045,6 +2052,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
     msAccessTableName = "ASRSysAllObjectAccess"
     mblnHideDesc = False
     sUtilityType = msTableName & ".objectType"
+    strExtraWhereClause = "ASRSysAllObjectAccess.objecttype = ASRSysAllObjectNames.objecttype"
   
   Case utlBatchJob
     msTypeCode = "BATCHJOBS"
@@ -2195,10 +2203,10 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
     mutlUtilityType = utlFilter
     Me.HelpContextID = 1093
     
-  Case UtlGlobalAdd, utlGlobalDelete, utlGlobalUpdate
+  Case utlGlobalAdd, utlGlobalDelete, utlGlobalUpdate
   
     Select Case lngUtilType
-    Case UtlGlobalAdd: msTypeCode = "GLOBALADD"
+    Case utlGlobalAdd: msTypeCode = "GLOBALADD"
         Me.HelpContextID = 1094
     
     Case utlGlobalUpdate: msTypeCode = "GLOBALUPDATE"
@@ -2403,7 +2411,8 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
       " FROM " & msTableName & _
       sCategoryFilter & _
       IIf(mblnApplyDefAccess, " INNER JOIN " & msAccessTableName & " ON " & msTableName & "." & msIDField & " = " & msAccessTableName & ".ID" & _
-        " AND " & msAccessTableName & ".groupname = '" & gsUserGroup & "'", vbNullString) & _
+        " AND " & msAccessTableName & ".groupname = '" & gsUserGroup & "'" & _
+        " AND " & msAccessTableName & ".access <> '" & ACCESS_HIDDEN & "'", vbNullString) & _
       IIf(strExtraWhereClause <> vbNullString, " WHERE " & strExtraWhereClause, "")
   ElseIf Len(msRecordSource) = 0 Then
     
@@ -2453,7 +2462,7 @@ Private Function DynamicallyChangeHelpContextID() As Integer
         Case utlExport
         DynamicallyChangeHelpContextID = 1092
         
-        Case UtlGlobalAdd
+        Case utlGlobalAdd
         DynamicallyChangeHelpContextID = 1094
         
         Case utlGlobalDelete
@@ -2589,6 +2598,92 @@ Private Function GetTypeFromTag(ByVal Tag As String) As UtilityType
   
   sValue = Mid(Tag, 1, InStr(1, Tag, "-", vbTextCompare) - 1)
   GetTypeFromTag = sValue
+
+End Function
+
+Private Function GetTypeCode(ByVal UtilityType As UtilityType) As String
+
+  Select Case UtilityType
+    
+    Case utlAll
+      GetTypeCode = "ALL"
+    
+    Case utlBatchJob
+      GetTypeCode = "BATCHJOBS"
+      
+    Case utlReportPack
+      GetTypeCode = "REPORTPACKS"
+  
+    Case utlCalendarReport
+      GetTypeCode = "CALENDARREPORTS"
+  
+    Case utlCalculation
+      GetTypeCode = "CALCULATIONS"
+  
+    Case utlCrossTab
+      GetTypeCode = "CROSSTABS"
+  
+    Case utlCustomReport
+      GetTypeCode = "CUSTOMREPORTS"
+  
+    Case utlDataTransfer
+      GetTypeCode = "DATATRANSFER"
+  
+    Case utlEmailAddress
+      GetTypeCode = "EMAILADDRESSES"
+  
+    Case utlEmailGroup
+      GetTypeCode = "EMAILGROUPS"
+  
+    Case utlExport
+      GetTypeCode = "EXPORT"
+    
+    Case utlFilter
+      GetTypeCode = "FILTERS"
+      
+    Case utlGlobalAdd
+      GetTypeCode = "GLOBALADD"
+    
+    Case utlGlobalDelete
+      GetTypeCode = "GLOBALDELETE"
+    
+    Case utlGlobalUpdate
+      GetTypeCode = "GLOBALUPDATE"
+    
+    Case utlImport
+      GetTypeCode = "IMPORT"
+  
+    Case utlMatchReport
+      GetTypeCode = "MATCHREPORTS"
+    
+    Case utlSuccession
+      GetTypeCode = "SUCCESSION"
+    
+    Case utlCareer
+      GetTypeCode = "CAREER"
+  
+    Case utlMailMerge
+      GetTypeCode = "MAILMERGE"
+      
+    Case utlLabel
+      GetTypeCode = "LABELS"
+  
+    Case utlLabelType
+      GetTypeCode = "LABELDEFINITION"
+  
+    Case utlDocumentMapping
+      GetTypeCode = "VERSION1"
+  
+    Case utlPicklist
+      GetTypeCode = "PICKLISTS"
+    
+    Case utlRecordProfile
+      GetTypeCode = "RECORDPROFILE"
+    
+    Case utlWorkflow
+      GetTypeCode = "WORKFLOW"
+
+  End Select
 
 End Function
 
