@@ -106,9 +106,9 @@
           If objOrderItem.ColumnType = "O" Then
             Select Case objOrderItem.Ascending
               Case Enums.Order.Ascending
-                aryOrderBy.Add(String.Format("[{0}]{1}", objOrderItem.Column.Name, IIf(bReverseOrder, " DESC", " ASC")))
+                aryOrderBy.Add(String.Format("[{0}].[{1}] {2}", objOrderItem.Column.Table, objOrderItem.Column.Name, IIf(bReverseOrder, "DESC", "ASC")))
               Case Else
-                aryOrderBy.Add(String.Format("[{0}]{1}", objOrderItem.Column.Name, IIf(bReverseOrder, " ASC", " DESC")))
+                aryOrderBy.Add(String.Format("[{0}].[{1}] {2}", objOrderItem.Column.Table, objOrderItem.Column.Name, IIf(bReverseOrder, "ASC", "DESC")))
             End Select
             objIndex.Columns.AddIfNew(objOrderItem.Column)
           End If
