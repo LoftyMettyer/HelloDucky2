@@ -1536,15 +1536,19 @@ Private Sub cmdDocumentMap_Click()
    
   With frmSelection
     Do While Not blnExit
+        
+      .Options = edtAdd + edtDelete + edtEdit + edtCopy + edtSelect + edtPrint + edtDeselect + edtProperties
+      'mlngOptions = edtAdd + edtDelete + edtEdit + edtCopy + edtSelect + edtPrint + edtDeselect + edtProperties
       
       .EnableRun = False
-      
+            
       If mlngLabelTypeID > 0 Then
         .SelectedID = mlngLabelTypeID
       End If
       
       If .ShowList(utlDocumentMapping) Then
         
+              
         .Show vbModal
         Select Case .Action
         Case edtAdd
@@ -1584,6 +1588,11 @@ Private Sub cmdDocumentMap_Click()
           Unload frmDefinition
           Set frmDefinition = Nothing
         
+        Case edtDeselect
+          txtDocumentMap.Text = vbNullString
+          blnExit = True
+          Me.Changed = True
+          
         Case 0
           blnExit = True  'cancel
 
