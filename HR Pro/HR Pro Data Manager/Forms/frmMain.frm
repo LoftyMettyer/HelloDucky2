@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "10:15"
+            TextSave        =   "13:21"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -2702,94 +2702,61 @@ Private Function DoExport(ByVal Action As EditOptions, ByRef SelectedID As Long,
   
 End Function
 
+Private Function DoBatchJob(ByVal Action As EditOptions, ByRef SelectedID As Long, FromCopy As Boolean, SelectedText As String) As Boolean
 
-Private Sub BatchJobsClick(ByRef UtilityID As Integer)
-  Dim fExit As Boolean
-  Dim frmSelection As frmDefSel
   Dim frmEdit As frmBatchJob
+  Dim bOK As Boolean
+  Dim strNotes As String
+  Dim objBatchJobRUN As clsBatchJobRUN
+  Dim lngEventLogID As Long
     
-  Screen.MousePointer = vbHourglass
-  
-  Set frmSelection = New frmDefSel
-  fExit = False
-  
-  With frmSelection
-    Do While Not fExit
-      
-      .EnableRun = True
-      
-      If .ShowList(utlBatchJob) Then
-        
-        .CustomShow vbModal
-        DoEvents
-        
-        Select Case .Action
-          Case edtAdd
-            Set frmEdit = New frmBatchJob
-            frmEdit.Initialise True, .FromCopy
-            frmEdit.Show vbModal
-            .SelectedID = frmEdit.SelectedID
-            Unload frmEdit
-            Set frmEdit = Nothing
-                      
-          Case edtEdit
-            Set frmEdit = New frmBatchJob
-            If frmEdit.Initialise(False, .FromCopy, .SelectedID) Then
-              frmEdit.Show vbModal
-              If .FromCopy And frmEdit.SelectedID > 0 Then
-                .SelectedID = frmEdit.SelectedID
-              End If
-            End If
-            Unload frmEdit
-            Set frmEdit = Nothing
-              
-          Case edtSelect
-            Dim pobjBatchJobRUN As clsBatchJobRUN
-            Dim plngEventLogID As Long
-            Dim strNotes As String
-            Set pobjBatchJobRUN = New clsBatchJobRUN
-            strNotes = pobjBatchJobRUN.RunBatchJob(.SelectedID, .SelectedText, plngEventLogID)
-
-
-'MH20030818 Fault 5673
-'            If InStr(UCase(strNotes), "SUCCESSFULLY") And InStr(UCase(strNotes), "FAILED") = 0 Then
-'            'If InStr(UCase(strNotes), "SUCCESS") Then
-'              COAMsgBox "Batch Job : " & .SelectedText & " Completed successfully.", vbInformation + vbOKOnly, "Batch Jobs"
-'            ElseIf InStr(UCase(strNotes), "CANCELLED") Then
-'              COAMsgBox "Batch Job : " & .SelectedText & " Cancelled by user.", vbExclamation + vbOKOnly, "Batch Jobs"
-'            Else
-'              COAMsgBox "Batch Job : " & .SelectedText & " " & vbCrLf & strNotes, vbExclamation + vbOKOnly, "Batch Jobs"
-'            End If
-            Select Case pobjBatchJobRUN.JobStatus
-            Case elsSuccessful
-              COAMsgBox "Batch Job : '" & .SelectedText & "' Completed successfully.", vbInformation + vbOKOnly, "Batch Jobs"
-            Case elsCancelled
-              COAMsgBox "Batch Job : '" & .SelectedText & "' Cancelled by user.", vbExclamation + vbOKOnly, "Batch Jobs"
-            Case Else
-              COAMsgBox "Batch Job : '" & .SelectedText & "' Failed." & vbCrLf & vbCrLf & strNotes, vbExclamation + vbOKOnly, "Batch Jobs"
-            End Select
-
-            Set pobjBatchJobRUN = Nothing
-            fExit = gbCloseDefSelAfterRun
-            
-          Case edtPrint
-            Set frmEdit = New frmBatchJob
-            frmEdit.PrintDef .SelectedID
-            Unload frmEdit
-            Set frmEdit = Nothing
-            
-          Case edtCancel
-            fExit = True
-  
-        End Select
+  bOK = True
+       
+  Select Case Action
+    Case edtAdd
+      Set frmEdit = New frmBatchJob
+      frmEdit.Initialise True, FromCopy
+      frmEdit.Show vbModal
+      SelectedID = frmEdit.SelectedID
+      Unload frmEdit
+      Set frmEdit = Nothing
+                
+    Case edtEdit
+      Set frmEdit = New frmBatchJob
+      If frmEdit.Initialise(False, FromCopy, SelectedID) Then
+        frmEdit.Show vbModal
+        If FromCopy And frmEdit.SelectedID > 0 Then
+          SelectedID = frmEdit.SelectedID
+        End If
       End If
-    Loop
-  End With
+      Unload frmEdit
+      Set frmEdit = Nothing
+        
+    Case edtSelect
 
-  Unload frmSelection
-  Set frmSelection = Nothing
+      Set objBatchJobRUN = New clsBatchJobRUN
+      strNotes = objBatchJobRUN.RunBatchJob(SelectedID, SelectedText, lngEventLogID)
 
-  Screen.MousePointer = vbDefault
+      Select Case objBatchJobRUN.JobStatus
+      Case elsSuccessful
+        COAMsgBox "Batch Job : '" & SelectedText & "' Completed successfully.", vbInformation + vbOKOnly, "Batch Jobs"
+      Case elsCancelled
+        COAMsgBox "Batch Job : '" & SelectedText & "' Cancelled by user.", vbExclamation + vbOKOnly, "Batch Jobs"
+      Case Else
+        COAMsgBox "Batch Job : '" & SelectedText & "' Failed." & vbCrLf & vbCrLf & strNotes, vbExclamation + vbOKOnly, "Batch Jobs"
+      End Select
+
+      
+    Case edtPrint
+      Set frmEdit = New frmBatchJob
+      frmEdit.PrintDef SelectedID
+      Unload frmEdit
+      Set frmEdit = Nothing
+              
+  End Select
+            
+  DoBatchJob = bOK
+  Set objBatchJobRUN = Nothing
 
   '# RH090300 To prevent toolbar locking after batch jobs
   With abMain
@@ -2797,88 +2764,61 @@ Private Sub BatchJobsClick(ByRef UtilityID As Integer)
     .Refresh
   End With
   
-End Sub
+End Function
 
+Private Function DoReportPack(ByVal Action As EditOptions, ByRef SelectedID As Long, FromCopy As Boolean, SelectedText As String) As Boolean
 
-Private Sub ReportPackClick(ByRef UtilityID As Long)
-  Dim fExit As Boolean
-  Dim frmSelection As frmDefSel
   Dim frmEdit As frmBatchJob
+  Dim objBatchJobRUN As clsBatchJobRUN
+  Dim lngEventLogID As Long
+  Dim strNotes As String
+  Dim bOK As Boolean
     
-  Screen.MousePointer = vbHourglass
-  
-  Set frmSelection = New frmDefSel
-  fExit = False
+  bOK = True
   
   gblnReportPackMode = True
   
-  With frmSelection
-    Do While Not fExit
-      
-      .EnableRun = True
-      
-      If .ShowList(utlReportPack) Then
-        
-        .CustomShow vbModal
-        DoEvents
-        
-        Select Case .Action
-          Case edtAdd
-            Set frmEdit = New frmBatchJob
-            frmEdit.Initialise True, .FromCopy
-            frmEdit.Show vbModal
-            .SelectedID = frmEdit.SelectedID
-            Unload frmEdit
-            Set frmEdit = Nothing
-                      
-          Case edtEdit
-            Set frmEdit = New frmBatchJob
-            If frmEdit.Initialise(False, .FromCopy, .SelectedID) Then
-              frmEdit.Show vbModal
-              If .FromCopy And frmEdit.SelectedID > 0 Then
-                .SelectedID = frmEdit.SelectedID
-              End If
-            End If
-            Unload frmEdit
-            Set frmEdit = Nothing
-              
-          Case edtSelect
-            Dim pobjBatchJobRUN As clsBatchJobRUN
-            Dim plngEventLogID As Long
-            Dim strNotes As String
-            Set pobjBatchJobRUN = New clsBatchJobRUN
-            strNotes = pobjBatchJobRUN.RunBatchJob(.SelectedID, .SelectedText, plngEventLogID)
-
-            Select Case pobjBatchJobRUN.JobStatus
-              Case elsSuccessful
-                COAMsgBox "Report Pack : '" & .SelectedText & "' Completed successfully.", vbInformation + vbOKOnly, "Report Pack"
-              Case elsCancelled
-                COAMsgBox "Report Pack : '" & .SelectedText & "' Cancelled by user.", vbExclamation + vbOKOnly, "Report Pack"
-              Case Else
-                COAMsgBox "Report Pack : '" & .SelectedText & "' Failed." & vbCrLf & vbCrLf & strNotes, vbExclamation + vbOKOnly, "Report Pack"
-            End Select
-
-            Set pobjBatchJobRUN = Nothing
-            fExit = gbCloseDefSelAfterRun
-            
-          Case edtPrint
-            Set frmEdit = New frmBatchJob
-            frmEdit.PrintDef .SelectedID
-            Unload frmEdit
-            Set frmEdit = Nothing
-            
-          Case edtCancel
-            fExit = True
-  
-        End Select
+  Select Case Action
+    Case edtAdd
+      Set frmEdit = New frmBatchJob
+      frmEdit.Initialise True, FromCopy
+      frmEdit.Show vbModal
+      SelectedID = frmEdit.SelectedID
+      Unload frmEdit
+      Set frmEdit = Nothing
+                
+    Case edtEdit
+      Set frmEdit = New frmBatchJob
+      If frmEdit.Initialise(False, FromCopy, SelectedID) Then
+        frmEdit.Show vbModal
+        If FromCopy And frmEdit.SelectedID > 0 Then
+          SelectedID = frmEdit.SelectedID
+        End If
       End If
-    Loop
-  End With
+      Unload frmEdit
+      Set frmEdit = Nothing
+        
+    Case edtSelect
+      Set objBatchJobRUN = New clsBatchJobRUN
+      strNotes = objBatchJobRUN.RunBatchJob(SelectedID, SelectedText, lngEventLogID)
 
-  Unload frmSelection
-  Set frmSelection = Nothing
+      Select Case objBatchJobRUN.JobStatus
+        Case elsSuccessful
+          COAMsgBox "Report Pack : '" & SelectedText & "' Completed successfully.", vbInformation + vbOKOnly, "Report Pack"
+        Case elsCancelled
+          COAMsgBox "Report Pack : '" & SelectedText & "' Cancelled by user.", vbExclamation + vbOKOnly, "Report Pack"
+        Case Else
+          COAMsgBox "Report Pack : '" & SelectedText & "' Failed." & vbCrLf & vbCrLf & strNotes, vbExclamation + vbOKOnly, "Report Pack"
+      End Select
+     
+    Case edtPrint
+      Set frmEdit = New frmBatchJob
+      frmEdit.PrintDef SelectedID
+      Unload frmEdit
+      Set frmEdit = Nothing
 
-  Screen.MousePointer = vbDefault
+  End Select
+
 
   '# RH090300 To prevent toolbar locking after batch jobs / Report Pack
   With abMain
@@ -2886,8 +2826,10 @@ Private Sub ReportPackClick(ByRef UtilityID As Long)
     .Refresh
   End With
   
-End Sub
-
+  Set objBatchJobRUN = Nothing
+  DoReportPack = bOK
+  
+End Function
 
 
 Public Sub RefreshMainForm(pfrmCallingForm As Form, Optional ByVal pfUnLoad As Boolean)
@@ -3129,9 +3071,9 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
           Case utlGlobalDelete
             sIconName = "GLOBALDELETE"
             sType = "Global Delete : "
-            
-            
-            
+          Case utlBatchJob
+            sIconName = "BATCHJOBS"
+            sType = "Batch Job : "
           Case utlReportPack
             sIconName = "BLANK"
             sType = "Report Park : "
@@ -3814,12 +3756,11 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
                 Case utlExport
                   DoExport .Action, .SelectedID, .FromCopy
         
-        
                 Case utlBatchJob
-               '   BatchJobsClick UtilityID
+                  DoBatchJob .Action, .SelectedID, .FromCopy, .SelectedText
         
                 Case utlReportPack
-                  ReportPackClick UtilityID
+                  DoReportPack .Action, .SelectedID, .FromCopy, .SelectedText
         
               End Select
             
