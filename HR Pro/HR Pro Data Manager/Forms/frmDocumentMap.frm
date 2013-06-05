@@ -537,12 +537,12 @@ Private Function ValidateDefinition() As Boolean
   
   ' Target column
   If GetComboItem(cboTargetColumn) = 0 Then
-    strErrorMessage = strErrorMessage & "Target column must be specified." & vbNewLine
+    strErrorMessage = strErrorMessage & "Document URL column must be specified." & vbNewLine
   End If
   
   ' Target keyfield
   If GetComboItem(cboTargetKeyField) = 0 Then
-    strErrorMessage = strErrorMessage & "Target keyfield column must be specified." & vbNewLine
+    strErrorMessage = strErrorMessage & "Key field column must be specified." & vbNewLine
   End If
    
    
@@ -553,7 +553,7 @@ Private Function ValidateDefinition() As Boolean
     End If
      
     If GetComboItem(cboParent1Keyfield) = 0 Then
-      strErrorMessage = strErrorMessage & "Parent 1 keyfield column must be specified." & vbNewLine
+      strErrorMessage = strErrorMessage & "Parent 1 key field column must be specified." & vbNewLine
     End If
   End If
    
@@ -565,7 +565,7 @@ Private Function ValidateDefinition() As Boolean
     End If
      
     If GetComboItem(cboParent2Keyfield) = 0 Then
-      strErrorMessage = strErrorMessage & "Parent 2 keyfield column must be specified." & vbNewLine
+      strErrorMessage = strErrorMessage & "Parent 2 key field column must be specified." & vbNewLine
     End If
   End If
    
