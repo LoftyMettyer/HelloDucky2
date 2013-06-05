@@ -192,7 +192,7 @@ Private Function CreateUDF_IsPostSubordinateOfUser(Optional pvByID As Variant) A
     
     sUDFSQL = sUDFSQL & _
       "    INSERT @postSubordinates" & vbNewLine & _
-      "        SELECT " & mvar_sIdentifyingColumnName & ", id, 0" & vbNewLine & _
+      "        SELECT DISTINCT " & mvar_sIdentifyingColumnName & ", id, 0" & vbNewLine & _
       "        FROM " & mvar_sHierarchyTableName & vbNewLine & _
       "        WHERE " & mvar_sReportsToColumnName & " IN (SELECT " & mvar_sHierarchyTableName & "." & mvar_sIdentifyingColumnName & vbNewLine & _
       "            FROM " & mvar_sHierarchyTableName & vbNewLine
@@ -257,7 +257,7 @@ Private Function CreateUDF_IsPostSubordinateOfUser(Optional pvByID As Variant) A
       
     sUDFSQL = sUDFSQL & _
       "        INSERT @postSubordinates" & vbNewLine & _
-      "            SELECT " & mvar_sHierarchyTableName & "." & mvar_sIdentifyingColumnName & ", " & mvar_sHierarchyTableName & ".id, 0" & vbNewLine & _
+      "            SELECT DISTINCT " & mvar_sHierarchyTableName & "." & mvar_sIdentifyingColumnName & ", " & mvar_sHierarchyTableName & ".id, 0" & vbNewLine & _
       "            FROM " & mvar_sHierarchyTableName & ", @postSubordinates s" & vbNewLine & _
       "            WHERE " & mvar_sHierarchyTableName & "." & mvar_sReportsToColumnName & " = s.identifier" & vbNewLine & _
       "                AND LEN(LTRIM(RTRIM(s.identifier))) > 0" & vbNewLine & _
@@ -373,7 +373,7 @@ Private Function CreateUDF_HasPostSubordinateUser(Optional pvByID As Variant) As
     
     sUDFSQL = sUDFSQL & _
       "    INSERT @postSuperordinates" & vbNewLine & _
-      "        SELECT " & mvar_sReportsToColumnName & ", id, 0" & vbNewLine & _
+      "        SELECT DISTINCT " & mvar_sReportsToColumnName & ", id, 0" & vbNewLine & _
       "        FROM " & mvar_sHierarchyTableName & vbNewLine & _
       "        WHERE " & mvar_sIdentifyingColumnName & " IN (SELECT " & mvar_sHierarchyTableName & "." & mvar_sReportsToColumnName & vbNewLine & _
       "            FROM " & mvar_sHierarchyTableName & vbNewLine
@@ -438,7 +438,7 @@ Private Function CreateUDF_HasPostSubordinateUser(Optional pvByID As Variant) As
 
     sUDFSQL = sUDFSQL & _
       "        INSERT @postSuperordinates" & vbNewLine & _
-      "            SELECT " & mvar_sHierarchyTableName & "." & mvar_sReportsToColumnName & ", " & mvar_sHierarchyTableName & ".id, 0" & vbNewLine & _
+      "            SELECT DISTINCT " & mvar_sHierarchyTableName & "." & mvar_sReportsToColumnName & ", " & mvar_sHierarchyTableName & ".id, 0" & vbNewLine & _
       "            FROM " & mvar_sHierarchyTableName & ", @postSuperordinates s" & vbNewLine & _
       "            WHERE " & mvar_sHierarchyTableName & "." & mvar_sIdentifyingColumnName & " = s.reportsTo" & vbNewLine & _
       "                AND LEN(LTRIM(RTRIM(s.reportsTo))) > 0" & vbNewLine & _
@@ -560,7 +560,7 @@ Private Function CreateUDF_IsPersonnelSubordinateOfUser(Optional pvByID As Varia
     
     sUDFSQL = sUDFSQL & _
       "    INSERT " & sTempBaseTable & vbNewLine & _
-      "        SELECT " & mvar_sIdentifyingColumnName & ", id, 0" & vbNewLine & _
+      "        SELECT DISTINCT " & mvar_sIdentifyingColumnName & ", id, 0" & vbNewLine & _
       "        FROM " & mvar_sHierarchyTableName & vbNewLine & _
       "        WHERE " & mvar_sReportsToColumnName & " IN (SELECT " & mvar_sHierarchyTableName & "." & mvar_sIdentifyingColumnName & vbNewLine & _
       "            FROM " & mvar_sHierarchyTableName & vbNewLine
@@ -626,7 +626,7 @@ Private Function CreateUDF_IsPersonnelSubordinateOfUser(Optional pvByID As Varia
       
     sUDFSQL = sUDFSQL & _
       "        INSERT " & sTempBaseTable & vbNewLine & _
-      "            SELECT " & mvar_sHierarchyTableName & "." & mvar_sIdentifyingColumnName & ", " & mvar_sHierarchyTableName & ".id, 0" & vbNewLine & _
+      "            SELECT DISTINCT " & mvar_sHierarchyTableName & "." & mvar_sIdentifyingColumnName & ", " & mvar_sHierarchyTableName & ".id, 0" & vbNewLine & _
       "            FROM " & mvar_sHierarchyTableName & ", " & sTempBaseTable & " s" & vbNewLine & _
       "            WHERE " & mvar_sHierarchyTableName & "." & mvar_sReportsToColumnName & " = s.identifier" & vbNewLine & _
       "                AND LEN(LTRIM(RTRIM(s.identifier))) > 0" & vbNewLine & _
@@ -771,7 +771,7 @@ Private Function CreateUDF_HasPersonnelSubordinateUser(Optional pvByID As Varian
     
     sUDFSQL = sUDFSQL & _
       "    INSERT " & sTempBaseTable & vbNewLine & _
-      "        SELECT " & mvar_sReportsToColumnName & ", id, 0" & vbNewLine & _
+      "        SELECT DISTINCT " & mvar_sReportsToColumnName & ", id, 0" & vbNewLine & _
       "        FROM " & mvar_sHierarchyTableName & vbNewLine & _
       "        WHERE " & mvar_sIdentifyingColumnName & " IN (SELECT " & mvar_sHierarchyTableName & "." & mvar_sReportsToColumnName & vbNewLine & _
       "            FROM " & mvar_sHierarchyTableName & vbNewLine
@@ -836,7 +836,7 @@ Private Function CreateUDF_HasPersonnelSubordinateUser(Optional pvByID As Varian
 
     sUDFSQL = sUDFSQL & _
       "        INSERT " & sTempBaseTable & vbNewLine & _
-      "            SELECT " & mvar_sHierarchyTableName & "." & mvar_sReportsToColumnName & ", " & mvar_sHierarchyTableName & ".id, 0" & vbNewLine & _
+      "            SELECT DISTINCT " & mvar_sHierarchyTableName & "." & mvar_sReportsToColumnName & ", " & mvar_sHierarchyTableName & ".id, 0" & vbNewLine & _
       "            FROM " & mvar_sHierarchyTableName & ", " & sTempBaseTable & " s" & vbNewLine & _
       "            WHERE " & mvar_sHierarchyTableName & "." & mvar_sIdentifyingColumnName & " = s.reportsTo" & vbNewLine & _
       "                AND LEN(LTRIM(RTRIM(s.reportsTo))) > 0" & vbNewLine & _
