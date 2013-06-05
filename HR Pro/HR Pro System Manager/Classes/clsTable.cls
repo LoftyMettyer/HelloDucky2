@@ -701,7 +701,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
       fGoodName = False
       Do While Not fGoodName
         With recTabEdit
-          .Index = "idxName"
+          .index = "idxName"
           .Seek "=", sTableName, False
           If Not .NoMatch Then
             iCounter = iCounter + 1
@@ -711,7 +711,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
 '            fGoodName = True
 '          End If
             
-            recViewEdit.Index = "idxViewName"
+            recViewEdit.index = "idxViewName"
             recViewEdit.Seek "=", sTableName, False
             
             If Not recViewEdit.NoMatch Then
@@ -763,7 +763,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
   If fOK Then
     If pfCopyData Then
       With recTabEdit
-        .Index = "idxTableID"
+        .index = "idxTableID"
         .Seek "=", objNewTable.TableID
         .Edit
         .Fields("copyDataTableID") = TableID
@@ -775,7 +775,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
   ' Remember the source table's 'ID' column ID.
   If fOK Then
     With recColEdit
-      .Index = "idxName"
+      .index = "idxName"
       .Seek "=", TableID, "ID", False
       
       fOK = Not .NoMatch
@@ -1415,7 +1415,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
             If pavCloneRegister(1, iIndex) = "EXPRESSION" And _
                pavCloneRegister(2, iIndex) = .Fields("FilterID") Then
 
-                recDiaryEdit.Index = "idxDiaryLinkID"
+                recDiaryEdit.index = "idxDiaryLinkID"
                 recDiaryEdit.Seek "=", .Fields("DiaryID")
 
                 If Not recDiaryEdit.NoMatch Then
@@ -1629,7 +1629,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
 '          End If
           If pavCloneRegister(1, iIndex) = "EXPRESSION" Then
             If pavCloneRegister(2, iIndex) = .Fields("fieldSelectionFilter") Then
-              recCompEdit.Index = "idxCompID"
+              recCompEdit.index = "idxCompID"
               recCompEdit.Seek "=", .Fields("componentID")
               If Not recCompEdit.NoMatch Then
                 recCompEdit.Edit
@@ -1639,7 +1639,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
             End If
           
             If pavCloneRegister(2, iIndex) = .Fields("calculationID") Then
-              recCompEdit.Index = "idxCompID"
+              recCompEdit.index = "idxCompID"
               recCompEdit.Seek "=", .Fields("componentID")
               If Not recCompEdit.NoMatch Then
                 recCompEdit.Edit
@@ -1698,7 +1698,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
         fGoodName = False
         Do While Not fGoodName
           With recScrEdit
-            .Index = "idxName"
+            .index = "idxName"
             .Seek "=", sScreenName, False
             If Not .NoMatch Then
               iCounter = iCounter + 1
@@ -1923,7 +1923,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
         fGoodName = False
         Do While Not fGoodName
           With recViewEdit
-            .Index = "idxViewName"
+            .index = "idxViewName"
             .Seek "=", sViewName, False
             If Not .NoMatch Then
               iCounter = iCounter + 1
@@ -2312,7 +2312,7 @@ Public Function FindTable() As Boolean
   On Error GoTo ErrorTrap
   
   With recTabEdit
-    .Index = "idxTableID"
+    .index = "idxTableID"
     .Seek "=", TableID
     FindTable = (Not .NoMatch)
   End With
@@ -2374,7 +2374,7 @@ Public Function ReadTable() As Boolean
   
   With recTabEdit
     'Store current index
-    sIndex = .Index
+    sIndex = .index
     
     'Find the table record
     fOK = FindTable
@@ -2450,7 +2450,7 @@ Public Function ReadTable() As Boolean
   
 TidyUpAndExit:
   'Restore original index
-  recTabEdit.Index = sIndex
+  recTabEdit.index = sIndex
   ReadTable = fOK
   Exit Function
 
@@ -2470,7 +2470,7 @@ Public Function ReadSummaryFields() As Boolean
   fOK = ClearSummaryFields
   
   With recSummaryEdit
-    .Index = "idxRealOrder"
+    .index = "idxRealOrder"
     .Seek ">=", TableID
     
     If Not .NoMatch Then
@@ -2486,7 +2486,7 @@ Public Function ReadSummaryFields() As Boolean
           gobjSummaryFields.Add objSummaryField
         End If
     
-        .Index = "idxRealOrder"
+        .index = "idxRealOrder"
         .Seek ">=", TableID, objSummaryField.Sequence, objSummaryField.SummaryColumnID
         
         Set objSummaryField = Nothing
@@ -2556,7 +2556,7 @@ Public Function WriteTable() As Boolean
   
   With recTabEdit
     'Store current index
-    sIndex = .Index
+    sIndex = .index
     
     'Check if a new table is being written
     fNewTable = (IsNew And Not IsChanged)
@@ -2671,7 +2671,7 @@ Public Function WriteTable() As Boolean
 
 TidyUpAndExit:
   ' Restore original index.
-  recTabEdit.Index = sIndex
+  recTabEdit.index = sIndex
   WriteTable = fOK
   Exit Function
 
@@ -2762,7 +2762,7 @@ Public Function AddIDColumn(pLngParentTableID As Long) As Boolean
     .Properties("decimals") = 0
     .Properties("columnType") = giCOLUMNTYPE_SYSTEM
     
-    recColEdit.Index = "idxName"
+    recColEdit.index = "idxName"
     recColEdit.Seek "=", TableID, .Properties("columnName"), False
     
     If recColEdit.NoMatch Then
@@ -2795,7 +2795,7 @@ Public Function HasRelations() As Boolean
   fHasRelations = False
   
   With recRelEdit
-    .Index = "idxParentID"
+    .index = "idxParentID"
     .Seek ">=", gLngTableID
     
     If Not .NoMatch Then
@@ -2821,7 +2821,7 @@ Public Function IsDescendantOf(plngTableID As Long) As Boolean
   Dim varBookmark As Variant
   
   With recRelEdit
-    .Index = "idxParentID"
+    .index = "idxParentID"
     .MoveFirst
     .Seek "=", plngTableID, gLngTableID
     IsDescendantOf = Not .NoMatch
@@ -2830,7 +2830,7 @@ Public Function IsDescendantOf(plngTableID As Long) As Boolean
   If Not IsDescendantOf Then
     ' Check if the given table is a parent of any of the parents of the current table object.
     With recRelEdit
-      .Index = "idxChildID"
+      .index = "idxChildID"
       .MoveFirst
       .Seek "=", gLngTableID
     
@@ -2845,7 +2845,7 @@ Public Function IsDescendantOf(plngTableID As Long) As Boolean
           objParentTable.TableID = !parentID
           IsDescendantOf = objParentTable.IsDescendantOf(plngTableID)
           Set objParentTable = Nothing
-          .Index = "idxChildID"
+          .index = "idxChildID"
           .Bookmark = varBookmark
 
           .MoveNext
@@ -2921,7 +2921,7 @@ Public Function DefaultExprChange(lngTableID As Long) As Boolean
         lngExprID = !dfltValueExprID
         
         With recExprEdit
-          .Index = "idxExprID"
+          .index = "idxExprID"
           .Seek "=", lngExprID, False
           If Not .NoMatch Then
             .Edit
@@ -3066,7 +3066,7 @@ Public Function RelationIsUsed(pLngChildTableID As Long, pfrmUsage As frmUsage) 
   lngPersonnelTableID = GetModuleSetting(gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_PERSONNELTABLE, 0)
   
   ' Get the child table name.
-  recTabEdit.Index = "idxTableID"
+  recTabEdit.index = "idxTableID"
   recTabEdit.Seek "=", pLngChildTableID
   If Not recTabEdit.NoMatch Then
     sChildTable = recTabEdit!TableName
@@ -3156,7 +3156,7 @@ Public Function RelationIsUsed(pLngChildTableID As Long, pfrmUsage As frmUsage) 
     fUsed = True
     Do Until rsScreens.EOF
       ' Get the expression's parent table name.
-      recTabEdit.Index = "idxTableID"
+      recTabEdit.index = "idxTableID"
       recTabEdit.Seek "=", rsScreens.Fields("tableID")
 
       If Not recTabEdit.NoMatch Then
@@ -3293,7 +3293,28 @@ Public Function RelationIsUsed(pLngChildTableID As Long, pfrmUsage As frmUsage) 
   End If
   rsInfo.Close
   
-
+  
+  
+  ' Find any email links which contain columns that are based on this relationship.
+  sSQL = "SELECT el.Title " & _
+         "FROM   tmpEmailLinks el, tmpLinkContent lc, tmpColumns c " & _
+         "WHERE  (el.SubjectContentID = lc.ContentID OR el.BodyContentID = lc.ContentID) " & _
+         "   AND lc.FieldCode = 'C'" & _
+         "   AND lc.FieldID = c.columnid" & _
+         "   AND c.tableID = " & CStr(gLngTableID) & _
+         "   AND el.TableID = " & CStr(pLngChildTableID)
+  Set rsInfo = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+  If Not (rsInfo.BOF And rsInfo.EOF) Then
+    fUsed = True
+    Do Until rsInfo.EOF
+      mfrmUse.AddToList ("Email Content : " & rsInfo!Title & " <" & sChildTable & ">")
+      rsInfo.MoveNext
+    Loop
+  End If
+  rsInfo.Close
+  
+  
+  
   ' Find any column definitions that use this relationship
   ' as part of the 'unique within sibling records' checks.
   sSQL = "SELECT DISTINCT tmpColumns.columnName, tmpTables.tableName" & _
@@ -3682,7 +3703,7 @@ Public Function RelationIsUsed(pLngChildTableID As Long, pfrmUsage As frmUsage) 
   If Not (rsDAOTemp.BOF And rsDAOTemp.EOF) Then
     Do Until rsDAOTemp.EOF
       
-      recWorkflowEdit.Index = "idxWorkflowID"
+      recWorkflowEdit.index = "idxWorkflowID"
       recWorkflowEdit.Seek "=", rsDAOTemp.Fields("workflowID")
 
       If Not recWorkflowEdit.NoMatch Then
@@ -3843,7 +3864,7 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
         lngExprParentTableID = objExpr.BaseTableID
 
         ' Get the expression's parent table name.
-        recTabEdit.Index = "idxTableID"
+        recTabEdit.index = "idxTableID"
         recTabEdit.Seek "=", lngExprParentTableID
 
         If Not recTabEdit.NoMatch Then
@@ -3876,7 +3897,7 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
     fUsed = True
     Do Until rsColumns.EOF
       ' Get the expression's parent table name.
-      recTabEdit.Index = "idxTableID"
+      recTabEdit.index = "idxTableID"
       recTabEdit.Seek "=", rsColumns.Fields("tableID")
       If Not recTabEdit.NoMatch Then
         sParentTable = recTabEdit!TableName
@@ -4403,7 +4424,7 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
       dbOpenForwardOnly, dbReadOnly)
     If Not (rsDAOTemp.BOF And rsDAOTemp.EOF) Then
       Do Until rsDAOTemp.EOF
-        recWorkflowEdit.Index = "idxWorkflowID"
+        recWorkflowEdit.index = "idxWorkflowID"
         recWorkflowEdit.Seek "=", rsDAOTemp.Fields("workflowID")
   
         If Not recWorkflowEdit.NoMatch Then
@@ -4983,7 +5004,7 @@ Public Function ReadEmailLinks()
   Set mcolEmailLinks = New Collection
   
   With recEmailLinksEdit
-    .Index = "idxTableID"
+    .index = "idxTableID"
     .Seek "=", gLngTableID
 
     If Not .NoMatch Then
@@ -5026,7 +5047,7 @@ Public Function ReadOutlookLinks()
   Set mcolOutlookLinks = New Collection
   
   With recOutlookLinks
-    .Index = "idxTableID"
+    .index = "idxTableID"
     .Seek "=", gLngTableID
 
     If Not .NoMatch Then
@@ -5069,7 +5090,7 @@ Public Function ReadWorkflowLinks() As Boolean
   Set mcolWorkflowTriggeredLinks = New Collection
 
   With recWorkflowTriggeredLinks
-    .Index = "idxTableID"
+    .index = "idxTableID"
     .Seek "=", gLngTableID
 
     If Not .NoMatch Then

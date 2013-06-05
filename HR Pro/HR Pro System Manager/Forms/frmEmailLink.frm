@@ -417,7 +417,6 @@ Begin VB.Form frmEmailLink
             TabIndex        =   9
             Tag             =   "0"
             Top             =   360
-            Value           =   -1  'True
             Width           =   1125
          End
          Begin VB.OptionButton optLinkType 
@@ -1150,6 +1149,10 @@ Private Sub cmdOK_Click()
 
 End Sub
 
+Private Sub Form_Activate()
+  Form_Resize
+End Sub
+
 Private Sub Form_Load()
 
   mblnLoading = True
@@ -1174,7 +1177,7 @@ Private Sub Form_Load()
   
   msDocumentsPath = GetPCSetting("DataPaths", "documentspath_" & gsDatabaseName, App.Path)
 
-  Form_Resize
+  optLinkType(0).value = True
   RemoveIcon Me
 
 End Sub
