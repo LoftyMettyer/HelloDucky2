@@ -738,10 +738,13 @@ Public Sub ResizeFindColumns()
     dblNewSize = dblNewSize - (UI.GetSystemMetrics(SM_CXFRAME) * 2)
     dblNewSize = dblNewSize - (UI.GetSystemMetrics(SM_CXBORDER) * Screen.TwipsPerPixelX)
 
+    ' Silly bug with resizing
+    If dblCurrentSize < 1 Or .Cols < 1 Then Exit Sub
+
     ' Calculate the ratio that the grid needs to be resized to
     dblResizeFactor = Round(dblNewSize / dblCurrentSize, 2)
 
-  ' Scroll through adjusting each column according to the resize factor
+    ' Scroll through adjusting each column according to the resize factor
     For iCount = 0 To (.Cols - 1)
       If .Columns(iCount).Visible Then
 
@@ -969,24 +972,19 @@ End Sub
 Private Sub cmdCancel_Click()
   mfCancelled = True
   Me.Hide
-
 End Sub
-
-
-
 
 Private Sub cmdSelect_Click()
   grdDelegates_DblClick
-
 End Sub
 
 Private Sub Form_Load()
 
   ' Get rid of the icon off the form
-  Me.Icon = Nothing
-  SetWindowLong Me.hWnd, GWL_EXSTYLE, WS_EX_WINDOWEDGE Or WS_EX_APPWINDOW Or WS_EX_DLGMODALFRAME
-
+  RemoveIcon Me
+  
   Hook Me.hWnd, dblFORM_MINWIDTH, dblFORM_MINHEIGHT
+  
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
@@ -998,91 +996,48 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 End Sub
 
 Private Sub Form_Resize()
+
   Dim lCount As Long
   Dim lWidth As Long
   Dim iLastColumnIndex As Integer
   Dim iMaxPosition As Integer
-    
+
   Const dblCOORD_XGAP = 200
   Const dblCOORD_YGAP = 200
-  
+
   'JPD 20030908 Fault 5756
   DisplayApplication
-  
-  ' Don't let the form get too narrow.
-'  If Me.Width < dblFORM_MINWIDTH Then
-'    Me.Width = dblFORM_MINWIDTH
-'  End If
-          
-  ' Don't let the form get too wide.
-'  If Me.Width > Screen.Width Then
-'    Me.Width = Screen.Width
-'  End If
-  
-  ' Set the height.
-'  If Not mfSizing Then
-'    mfSizing = True
-'    Me.Height = Screen.Height / 3
-'  End If
-'
-'  ' Don't let the form get too short.
-'  If Me.Height < dblFORM_MINHEIGHT Then
-'    mfSizing = True
-'    Me.Height = dblFORM_MINHEIGHT
-'  End If
-'
-'  ' Don't let the form get too tall.
-'  If Me.Height > Screen.Height Then
-'    Me.Height = Screen.Height
-'  End If
-      
-  'NPG20080220 Fault 12910
-  fraOrder.Width = Me.ScaleWidth - (dblCOORD_XGAP * 2)
-  cmbOrders.Width = fraOrder.Width - (dblCOORD_XGAP * 6)
-  cmbView.Width = fraOrder.Width - (dblCOORD_XGAP * 6)
-  
-  ' Size the grid.
-  With grdDelegates
+
+  If Me.WindowState = vbNormal Then
+
     'NPG20080220 Fault 12910
-    '.Width = Me.ScaleWidth - (dblCOORD_XGAP * 2)
-    .Width = fraOrder.Width
-    .Height = Me.ScaleHeight - .Top - fraButtons.Height - (2 * dblCOORD_YGAP)
-  End With
-      
-  fraButtons.Top = grdDelegates.Top + grdDelegates.Height + dblCOORD_YGAP
-  fraButtons.Left = Me.ScaleWidth - fraButtons.Width - dblCOORD_XGAP
+    fraOrder.Width = Me.ScaleWidth - (dblCOORD_XGAP * 2)
+    cmbOrders.Width = fraOrder.Width - (dblCOORD_XGAP * 6)
+    cmbView.Width = fraOrder.Width - (dblCOORD_XGAP * 6)
+  
+    ' Size the grid.
+    With grdDelegates
+      'NPG20080220 Fault 12910
+      '.Width = Me.ScaleWidth - (dblCOORD_XGAP * 2)
+      .Width = fraOrder.Width
+      .Height = Me.ScaleHeight - .Top - fraButtons.Height - (2 * dblCOORD_YGAP)
+    End With
+  
+    fraButtons.Top = grdDelegates.Top + grdDelegates.Height + dblCOORD_YGAP
+    fraButtons.Left = Me.ScaleWidth - fraButtons.Width - dblCOORD_XGAP
+  
+    DoEvents
+  
+    If ((grdDelegates.Rows - grdDelegates.FirstRow + 1) < (grdDelegates.VisibleRows)) And _
+      (grdDelegates.FirstRow > 1) Then
+  
+      grdDelegates.FirstRow = IIf(grdDelegates.Rows - grdDelegates.VisibleRows + 1 < 1, _
+        1, grdDelegates.Rows - grdDelegates.VisibleRows + 1)
+    End If
+  
+    ResizeFindColumns
 
-'  ' Stretch the last find column to fit the grid.
-'  iLastColumnIndex = -1
-'  iMaxPosition = -1
-'  With grdDelegates
-'    For lCount = 0 To (.Cols - 1)
-'      If .Columns(lCount).Visible Then
-'        lWidth = lWidth + .Columns(lCount).Width
-'        If .Columns(lCount).Position > iMaxPosition Then
-'          iMaxPosition = .Columns(lCount).Position
-'          iLastColumnIndex = lCount
-'        End If
-'      End If
-'    Next lCount
-'
-'    If (lWidth < .Width) And _
-'      (iLastColumnIndex >= 0) Then
-'      .Columns(iLastColumnIndex).Width = .Columns(iLastColumnIndex).Width + (.Width - lWidth)
-'    End If
-'  End With
-
-  DoEvents
-
-  If ((grdDelegates.Rows - grdDelegates.FirstRow + 1) < (grdDelegates.VisibleRows)) And _
-    (grdDelegates.FirstRow > 1) Then
-
-    grdDelegates.FirstRow = IIf(grdDelegates.Rows - grdDelegates.VisibleRows + 1 < 1, _
-      1, _
-      grdDelegates.Rows - grdDelegates.VisibleRows + 1)
   End If
-
-  ResizeFindColumns
 
 End Sub
 
@@ -1096,6 +1051,7 @@ Private Sub Form_Unload(Cancel As Integer)
   End If
   
   Unhook Me.hWnd
+
 End Sub
 
 
