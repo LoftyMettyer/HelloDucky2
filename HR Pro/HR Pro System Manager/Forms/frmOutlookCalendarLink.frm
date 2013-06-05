@@ -166,11 +166,11 @@ Begin VB.Form frmOutlookCalendarLink
             Width           =   2850
          End
          Begin VB.CommandButton cmdFilter 
-            Caption         =   "O"
+            Caption         =   "..."
             BeginProperty Font 
-               Name            =   "Wingdings 2"
-               Size            =   20.25
-               Charset         =   2
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
                Weight          =   400
                Underline       =   0   'False
                Italic          =   0   'False
@@ -509,11 +509,11 @@ Begin VB.Form frmOutlookCalendarLink
             Width           =   3580
          End
          Begin VB.CommandButton cmdSubject 
-            Caption         =   "O"
+            Caption         =   "..."
             BeginProperty Font 
-               Name            =   "Wingdings 2"
-               Size            =   20.25
-               Charset         =   2
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
                Weight          =   400
                Underline       =   0   'False
                Italic          =   0   'False

@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
@@ -162,16 +162,16 @@ Begin VB.Form frmEmailLink
             Width           =   6645
          End
          Begin VB.CommandButton cmdAttachmentClear 
-Caption = "O"
-BeginProperty Font
-    Name = "Wingdings 2"
-    Size = 20.25
-    Charset = 2
-    Weight = 400
-    Underline = 0
-    Italic = 0
-    Strikethrough = 0
-EndProperty
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   315
             Left            =   8295
             MaskColor       =   &H000000FF&
@@ -357,16 +357,16 @@ EndProperty
             Width           =   6540
          End
          Begin VB.CommandButton cmdFilter 
-Caption = "O"
-BeginProperty Font
-    Name = "Wingdings 2"
-    Size = 20.25
-    Charset = 2
-    Weight = 400
-    Underline = 0
-    Italic = 0
-    Strikethrough = 0
-EndProperty
+            Caption         =   "..."
+            BeginProperty Font 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   315
             Left            =   8340
             TabIndex        =   5
@@ -515,9 +515,9 @@ EndProperty
             BackColor       =   &H8000000F&
             Enabled         =   0   'False
             Height          =   315
-            ItemData        =   "frmEmailLink.frx":2A0E
+            ItemData        =   "frmEmailLink.frx":1DAC
             Left            =   3480
-            List            =   "frmEmailLink.frx":2A1E
+            List            =   "frmEmailLink.frx":1DBC
             Style           =   2  'Dropdown List
             TabIndex        =   24
             Top             =   705
@@ -535,9 +535,9 @@ EndProperty
             BackColor       =   &H8000000F&
             Enabled         =   0   'False
             Height          =   315
-            ItemData        =   "frmEmailLink.frx":2A3E
+            ItemData        =   "frmEmailLink.frx":1DDC
             Left            =   2040
-            List            =   "frmEmailLink.frx":2A4E
+            List            =   "frmEmailLink.frx":1DEC
             Style           =   2  'Dropdown List
             TabIndex        =   23
             Top             =   705
@@ -637,19 +637,19 @@ EndProperty
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   4
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmEmailLink.frx":2A6E
+            Picture         =   "frmEmailLink.frx":1E0C
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmEmailLink.frx":2FC0
+            Picture         =   "frmEmailLink.frx":235E
             Key             =   "IMG_CALC"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmEmailLink.frx":3512
+            Picture         =   "frmEmailLink.frx":28B0
             Key             =   "IMG_CUSTOM"
          EndProperty
          BeginProperty ListImage4 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmEmailLink.frx":3A64
+            Picture         =   "frmEmailLink.frx":2E02
             Key             =   "IMG_NO"
          EndProperty
       EndProperty
@@ -689,12 +689,12 @@ Private mcolRecipients() As Collection
 
 Public Property Let Changed(ByVal value As Boolean)
   If Not mblnLoading Then
-    cmdOK.Enabled = value
+    cmdOk.Enabled = value
   End If
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 
@@ -1251,8 +1251,8 @@ Private Sub Form_Resize()
   lngTop = Me.ScaleHeight - (cmdCancel.Height + GAP)
   cmdCancel.Move lngLeft, lngTop
   
-  lngLeft = lngLeft - (cmdOK.Width + GAP)
-  cmdOK.Move lngLeft, lngTop
+  lngLeft = lngLeft - (cmdOk.Width + GAP)
+  cmdOk.Move lngLeft, lngTop
   
   lngWidth = Me.ScaleWidth - (GAP * 2)
   lngHeight = lngTop - (GAP * 2)
@@ -1402,11 +1402,11 @@ Private Sub txtContent_Change(index As Integer)
 End Sub
 
 Private Sub txtContent_GotFocus(index As Integer)
-  cmdOK.Default = False
+  cmdOk.Default = False
 End Sub
 
 Private Sub txtContent_LostFocus(index As Integer)
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub txtFilter_Change()
