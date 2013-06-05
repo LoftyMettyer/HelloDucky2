@@ -90,7 +90,7 @@ Public Enum ControlTypes
   ctlCommand = 2048
   ctlWorkingPattern = 4096
   ctlLine = 2 ^ 13
-  ctlBrowser = 2 ^ 14
+  ctlNavigation = 2 ^ 14
 End Enum
   
 'Column type constants
