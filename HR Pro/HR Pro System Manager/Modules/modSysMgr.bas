@@ -38,7 +38,7 @@ Public Const gsEMAILSEND = "dbo.spASRSysEmailSend_"
 'Public Const gsDIARYPROCESSINGJOBNAME = "job_ASRDiaryProcessing_"
 
 'Public variables
-Public glngSQLVersion As Long
+Public glngSQLVersion As Double     'changed from Long to Double for SQL2008 R2 (i.e. version 10.5)
 Public gstrSQLFullVersion As String
 
 Public Const gstrWindowsAuthentication_DNSName = "HRPRO"
