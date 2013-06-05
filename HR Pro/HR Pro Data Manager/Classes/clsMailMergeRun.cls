@@ -265,7 +265,7 @@ Public Function ExecuteMailMerge(lngMailMergeID As Long, Optional lngRecordID As
       'may occur.
       If Progress Then Call WrdValidateTemplateMergeFields(True)
       If Progress Then Call WrdSetMergeOptions
-      If Progress Then Call WrdSetV1HeaderText
+      'If Progress Then Call WrdSetV1HeaderText
     
     Else
       'If not running in batch mode then
@@ -276,7 +276,7 @@ Public Function ExecuteMailMerge(lngMailMergeID As Long, Optional lngRecordID As
       If Progress Then Call WrdPauseBeforeMerge
       If Progress Then Call WrdValidateTemplateMergeFields(False)
       If Progress Then Call WrdCheckIfSaveTemplate
-      If Progress Then Call WrdSetV1HeaderText
+      'If Progress Then Call WrdSetV1HeaderText
     
     End If
   End If
@@ -3051,12 +3051,17 @@ Private Sub WrdSetV1HeaderText()
   
   Dim sTableName As String
   Dim sColumnName As String
+  Dim sDocDateColumn As String
   
   Dim sCategory As String
   Dim sType As String
+  Dim sColumn As String
   Dim sKeyField1 As String
   Dim sKeyField2 As String
   Dim sKeyField3 As String
+  
+  Dim iParent1TableID As String
+  Dim iParent2TableID As String
 
   ' If Version1 and we have auto add header then insert the header text at the top of a copy of the source template
   If mlngDocumentMapID > 0 And Not mbManualHeader Then
@@ -3084,7 +3089,6 @@ Private Sub WrdSetV1HeaderText()
       rsData.Close
       
       sKeyField1 = datGeneral.GetColumnName(rsDocumentMap!Parent1KeyfieldColumnID, True)
-      sKeyField2 = datGeneral.GetColumnName(rsDocumentMap!TargetKeyfieldColumnID, True)
       sKeyField3 = 0
       
       wrdDocTemplate.ActiveWindow.Selection.Font.Size = 10
@@ -3094,23 +3098,38 @@ Private Sub WrdSetV1HeaderText()
 
       With wrdDocTemplate.Fields
 
-        objWordSelection.TypeText "~~!:~~@[$TABLE:COMPLETE_FILES]~~@[DOC_SECTION:" & sCategory & "]"
+        objWordSelection.TypeText "~~!:~~@[$TABLE:COMPLETE_FILES]"
+        objWordSelection.TypeText "~~@[DOC_SECTION:" & sCategory & "]"
         objWordSelection.TypeText "~~@[DOC_TYPE:" & sType & "]"
-        
-        If Len(sKeyField1) > 0 Then
-          objWordSelection.TypeText "~~@[STAFF_NO:"
-          .Add objWordSelection.Range, wdFieldMergeField, Replace(sKeyField1, ".", "_", 1), False
-          objWordSelection.TypeText "]"
-        End If
 
-        If Len(sKeyField2) > 0 Then
-          objWordSelection.TypeText "~~@[DOCUMENT_KEY:"
-          .Add objWordSelection.Range, wdFieldMergeField, Replace(sKeyField2, ".", "_", 1), False
+        ' Keyfields based on the parent table, loaded from module setup in the system manager
+        Set rsData = datGeneral.GetRecords("SELECT [heading], [columnid], [value], [type] FROM dbo.[ASRSysDocumentManagementHeaderInfo]" & _
+                    "WHERE NOT [type] = 0 AND [tableid] = " & rsDocumentMap!Parent1TableID)
+        Do While Not (rsData.EOF Or rsData.BOF)
+          objWordSelection.TypeText "~~@[" & rsData.Fields("Heading").Value & ":"
+          
+          Select Case rsData.Fields("type").Value
+            Case 1
+              sColumn = datGeneral.GetColumnName(rsData!ColumnID, True)
+              .Add objWordSelection.Range, wdFieldMergeField, Replace(sColumn, ".", "_", 1), False
+          
+            Case 2
+              objWordSelection.TypeText rsData.Fields("Value").Value
+              
+            
+          End Select
+          
           objWordSelection.TypeText "]"
-        End If
+          rsData.MoveNext
+        Loop
+        rsData.Close
         
-        objWordSelection.TypeText "~~@[DOC_DATE:08/03/2010]~~"
-
+        ' The [DOC_DATE] comes from the keyfield in the document management type
+        sDocDateColumn = datGeneral.GetColumnName(rsDocumentMap!TargetKeyfieldColumnID, True)
+        objWordSelection.TypeText "~~@[DOC_DATE:"
+        .Add objWordSelection.Range, wdFieldMergeField, Replace(sDocDateColumn, ".", "_", 1), False
+        objWordSelection.TypeText "]~~"
+        
       End With
     End If
   
