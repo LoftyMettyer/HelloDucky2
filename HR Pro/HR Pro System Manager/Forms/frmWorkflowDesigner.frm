@@ -11939,6 +11939,10 @@ Public Function ValidateWorkflow(pfSaving As Boolean, _
           End If
         End If
       Else
+        
+        ' Hide the progress bar
+        gobjProgress.CloseProgress
+      
         MsgBox "The workflow definition is valid.", vbInformation + vbOKOnly, App.ProductName
       End If
     Else
