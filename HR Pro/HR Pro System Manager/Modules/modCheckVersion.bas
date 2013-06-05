@@ -359,7 +359,7 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
   
   ' Upload scripts
   If fOK Then
-    UploadHotfixes
+    fOK = UploadHotfixes
   End If
   
   ' If fOK and fVersionOK are true then the application and databases versions match.
@@ -665,7 +665,7 @@ Private Function UpdateDatabase( _
   
   ' Calculate how many files we're going to process
   Set fso = New FileSystemObject
-  lngNewVersions = fso.GetFolder(strScriptPath).Files.Count + 1 '- 14
+  lngNewVersions = fso.GetFolder(strScriptPath).Files.count + 1 '- 14
   Set fso = Nothing
     
   rsInfo.Open strSQLVersion, gADOCon, adOpenForwardOnly, adLockReadOnly
@@ -1280,40 +1280,113 @@ ErrorTrap:
 
 End Function
 
-Public Sub UploadHotfixes()
+Public Function UploadHotfixes() As Boolean
 
-'  Dim strScriptPath As String
-'  Dim sScript As String
-'  Dim sReadString As String
-'  Dim sFileName As String
-'
-'  strScriptPath = App.Path & "\Update Scripts\"
-'  sFileName = Dir$(strScriptPath & "HRProScript-*.Sql")
-'
-''  For Each File In Directory
-''
-''    sScript = vbNullString
-''
-''   ' sFileName =
-''
-''    Open sFileName For Input As #1
-''    Do While Not EOF(1)
-''      Line Input #1, sReadString
-''      sScript = sScript & sReadString & vbNewLine
-''    Loop
-''    Close #1
-''
-''    UploadScript (sScript)
-''  Next
+  Dim strScriptPath As String
+  Dim iLineNo As Integer
+  Dim strFile As String
+  Dim sReadString As String
+  Dim bOK As Boolean
+  
+  Dim iHotfixNumber As Integer
+  Dim iRunType As HotfixType
+  Dim sScript As String
+  Dim sRunInVersion As String
+  Dim bRunOnce As Boolean
+  Dim sChecksum As String
+  Dim bIsValid As Boolean
+  Dim sDescription As String
+  Dim iSequence As Integer
+  Dim DatabaseGUID As String
+  Dim bUploaded As Boolean
+ 
+  Dim cStream As New clsBinaryStream
+  Dim cCRC32 As New clsCRC
+  Dim lCRC32 As Long
+ 
+  bOK = True
+ 
+  On Error GoTo ErrorTrap
 
-'  If sUpdateScript <> vbNullString Then
-'    'Set rdoTempCon = rdoEnv.OpenConnection("", rdDriverNoPrompt, False, sConnect)
-'    gADOCon.Execute sUpdateScript, , adExecuteNoRecords
-'  End If
+  strScriptPath = App.Path & "\Update Scripts\"
+  strFile = Dir(strScriptPath & "script*.sql")
+  Do While strFile <> ""
 
-End Sub
+    sScript = vbNullString
+    sReadString = vbNullString
+    iLineNo = 1
+    bIsValid = True
+    
+    Open strScriptPath & strFile For Input As #1
+    Do While Not EOF(1)
+      Line Input #1, sReadString
+      
+      ' Process header line
+      Select Case iLineNo
+        Case 1, 10
+          ' Do nothing
+        Case 2
+          iHotfixNumber = Mid(sReadString, 15, 7)
+        Case 3
+          sDescription = Mid(sReadString, 18, Len(sReadString))
+        Case 4
+          iRunType = Mid(sReadString, 15, 1)
+        Case 5
+          sRunInVersion = Mid(sReadString, 21, 6)
+        Case 6
+          bRunOnce = IIf(Mid(sReadString, 15, 3) = "Yes", True, False)
+        Case 7
+          iSequence = Mid(sReadString, 15, Len(sReadString))
+        Case 8
+          DatabaseGUID = Mid(sReadString, 18, Len(sReadString))
+        Case 9
+          sChecksum = Mid(sReadString, 16, Len(sReadString))
+        Case Else
+          sScript = sScript & sReadString & vbNewLine
+        
+      End Select
+      
+      iLineNo = iLineNo + 1
+    
+    Loop
+    Close #1
+   
+    ' Validate the file?
+    'cStream.File = strScriptPath & strFile
+'    lCRC32 = cCRC32.GetFileCrc32(cStream)
+    bIsValid = (sChecksum = "0x" & Hex(GetChecksum(sScript)))
+   
+    ' Upload the file
+    If bIsValid And Not bUploaded Then
+      bOK = UploadScript(iRunType, sScript, bRunOnce, sRunInVersion, iSequence, sDescription)
+      
+      ' Mark file as uploaded
+      If bOK Then
+        Name strScriptPath & strFile As strScriptPath & "uploaded-" & strFile
+      End If
 
-Private Function UploadScript(ByVal strScript As String) As Boolean
+    End If
+    
+    strFile = Dir()
+    
+  Loop
+
+TidyUpAndExit:
+  UploadHotfixes = bOK
+  Exit Function
+
+ErrorTrap:
+
+  MsgBox "Error uploading custom scripts" & vbNewLine & Err.Description _
+      , vbOKOnly + vbExclamation, Application.Name
+
+  bOK = False
+  GoTo TidyUpAndExit
+
+End Function
+
+Private Function UploadScript(ByVal RunType As HotfixType, ByVal Script As String _
+    , RunOnce As Boolean, RunInVersion As String, Sequence As Integer, Description As String) As Boolean
 
   On Error GoTo ErrorTrap
 
@@ -1329,10 +1402,30 @@ Private Function UploadScript(ByVal strScript As String) As Boolean
     .CommandTimeout = 0
     Set .ActiveConnection = gADOCon
     
-    Set pmADO = .CreateParameter("script", adLongVarChar, adParamInput)
-    pmADO.value = strScript
+    Set pmADO = .CreateParameter("runtype", adInteger, adParamInput)
     .Parameters.Append pmADO
+    pmADO.value = RunType
     
+    Set pmADO = .CreateParameter("script", adLongVarChar, adParamInput, VARCHAR_MAX_Size)
+    .Parameters.Append pmADO
+    pmADO.value = Script
+    
+    Set pmADO = .CreateParameter("runonce", adBoolean, adParamInput)
+    .Parameters.Append pmADO
+    pmADO.value = RunOnce
+    
+    Set pmADO = .CreateParameter("runinversion", adLongVarChar, adParamInput, 10)
+    .Parameters.Append pmADO
+    pmADO.value = RunInVersion
+        
+    Set pmADO = .CreateParameter("sequence", adInteger, adParamInput)
+    .Parameters.Append pmADO
+    pmADO.value = Sequence
+
+    Set pmADO = .CreateParameter("description", adLongVarChar, adParamInput, VARCHAR_MAX_Size)
+    .Parameters.Append pmADO
+    pmADO.value = Description
+        
     .Execute
   End With
 
@@ -1347,7 +1440,23 @@ ErrorTrap:
 
 End Function
 
-
-
+  ' Calculates the checksum for a sentence
+  Public Function GetChecksum(ByVal sentence As String) As String
+    
+    ' Loop through all chars to get a checksum
+    Dim Character As String
+    Dim Checksum As Long
+    Dim iCount As Integer
+    
+    Checksum = 0
+    For iCount = 1 To Len(sentence)
+      Character = Mid(sentence, iCount, 1)
+      Checksum = Checksum + Asc(Character)
+    Next
+    
+    ' Return the checksum formatted as a two-character hexadecimal
+    GetChecksum = Checksum
+  
+  End Function
 
 
