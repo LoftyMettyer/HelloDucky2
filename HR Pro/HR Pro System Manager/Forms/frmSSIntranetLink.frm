@@ -538,7 +538,7 @@ Begin VB.Form frmSSIntranetLink
          Width           =   2235
       End
       Begin VB.OptionButton optLink 
-         Caption         =   "&Chart"
+         Caption         =   "Cha&rt"
          Height          =   315
          Index           =   6
          Left            =   195
