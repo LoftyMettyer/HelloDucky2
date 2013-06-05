@@ -1,5 +1,37 @@
 ﻿<%@ Page Title="" Language="VB" Inherits="System.Web.Mvc.ViewPage" MasterPageFile="~/Views/Shared/Site.Master" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ import Namespace="System.Web.Configuration" %>
+
+<script runat="server">
+    Private _txtDatabaseValue As String = "" 'To set the value of the txtDatabase input tag
+    Private _txtServerValue As String = "" 'To set the value of the txtServer input tag
+    
+    Private Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
+        'If no query string is present, hide the "Details" button and the Database and Server labels and input box controls
+        If Request.QueryString.Count = 0 Then
+            btnToggleDetailsDiv.Attributes.Add("style", "display: none")
+            DatabaseTextLabelDiv.Attributes.Add("style", "display: none")
+            DatabaseTextValueDiv.Attributes.Add("style", "display: none")
+            ServerTextLabelDiv.Attributes.Add("style", "display: none")
+            ServerTextValueDiv.Attributes.Add("style", "display: none")
+        Else 'Override database or server if a value is provided in the querystring
+            If Not String.IsNullOrEmpty(Request.QueryString("database")) Then
+                _txtDatabaseValue = Server.HtmlDecode(Request.QueryString("database"))
+            End If
+            If Not String.IsNullOrEmpty(Request.QueryString("server")) Then
+                _txtServerValue = Server.HtmlDecode(Request.QueryString("server"))
+            End If
+        End If
+
+        'If no override values were provided in the querystring, use default values from web.config
+        If String.IsNullOrEmpty(_txtDatabaseValue) Then
+            _txtDatabaseValue = WebConfigurationManager.AppSettings("LoginPage:Database")
+        End If
+        If String.IsNullOrEmpty(_txtServerValue) Then
+            _txtServerValue = WebConfigurationManager.AppSettings("LoginPage:Server")
+        End If
+    End Sub
+</script>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
     <%= GetPageTitle("Login") %>    
@@ -427,13 +459,13 @@ Else
 <%
 			if Request.ServerVariables("LOGON_USER") <> "" then
 %>			
-		    		    <tdstyle="font-weight: bold;" colspan="3" >
+		    		    <td style="font-weight: bold;" colspan="3" >
 		    		        <input id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" tabindex="-1"
 		    		            onclick="ToggleWindowsAuthentication()"/> 
 				            <label 
 				                for="chkWindowsAuthentication"
 				                class="checkbox"
-				                tabindex=0 
+				                tabindex="0"
 			                    onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
 					            onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
 					            onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
@@ -448,27 +480,32 @@ Else
 			else
 %>
 				        <td class="" colspan="3" >
-				            <input type="hidden" id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" />
+				            <input id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" />
 				        </td>
 <%
-			end if
+			end if 
 %>
                  </tr>
 
-			        <tr class="" style="display: block;visibility:hidden;display:none" id="trDetails1">
-			            <td style="width: 100px;font-weight: bold;">Database :</td>
-			            <td style="width: 10px">
-							</td>
-			            <td style="width: 200px;">
-			                <input id="txtDatabase"  autocomplete="off" autocorrect="off"  name="txtDatabase" style="height: 22px; width: 100%; " class="text" onkeypress="CheckKeyPressed(event)" />
-			            </td>
-			        </tr>
+			            <tr class="" style="display: block;visibility:hidden;display:none" id="trDetails1">
+			                <td style="width: 100px;font-weight: bold;"><div id="DatabaseTextLabelDiv" runat="server">Database :</div></td>
+			                <td style="width: 10px">
+							    </td>
+			                <td style="width: 200px;">
+                                <div id="DatabaseTextValueDiv" runat="server">
+                                    <input id="txtDatabase" autocomplete="off" autocorrect="off" name="txtDatabase" style="height: 22px; width: 100%; " class="text" onkeypress="CheckKeyPressed(event)" value="<%=_txtDatabaseValue%>" />
+                                </div>
+			                </td>
+			            </tr>
+                    
 			        <tr class="" style="display: block;visibility:hidden;display:none" id="trDetails2">
-			            <td style="width: 100px;font-weight: bold;">Server :</td>
+			            <td style="width: 100px;font-weight: bold;"><div id="ServerTextLabelDiv" runat="server">Server :</div></td>
 			            <td style="width: 10px">
 							</td>
 			            <td style="width: 200px;">
-			                <input id="txtServer"  autocomplete="off" autocorrect="off"  name="txtServer" style="height: 22px; width: 100%; " class="text" onkeypress="CheckKeyPressed(event)" />
+                            <div id="ServerTextValueDiv" runat="server">
+                                <input id="txtServer" autocomplete="off" autocorrect="off" name="txtServer" style="height: 22px; width: 100%; " class="text" onkeypress="CheckKeyPressed(event)" value="<%=_txtServerValue%>" />
+                            </div>
 			            </td>
 			        </tr>
 			    </table>
@@ -487,17 +524,17 @@ Else
                 <tr>
                     <td align="center">
 	                    <input type="button" id="submitLoginDetails" name="submitLoginDetails" class="ui-button" style="width: 90px;"
-	                           onclick="SubmitLoginDetails()" value="OK"/>
+	                           onclick="SubmitLoginDetails()" value="Login"/>
                     </td>
                     <td width="10"></td>
                     <td align="center">
-	                    <input type="button" id="cancel" name="cancel" class="ui-button" style="width: 90px;"
-	                           onclick="CancelLogin()" value="Cancel"/>                       
+	                    <%--<input type="button" id="cancel" name="cancel" class="ui-button" style="width: 90px;" onclick="CancelLogin()" value="Cancel"/>--%>
                     </td>
                     <td width="10"></td>
                     <td align="center">
-	                    <input type="button" id="details" name="details" class="ui-button" style=""
-	                           onclick="toggleDetails()" value="Details" />
+                        <div id="btnToggleDetailsDiv" runat="server">
+	                        <input type="button" id="details" name="details" class="ui-button" style="" onclick="toggleDetails()" value="Details" />
+                        </div>
                     </td>
                 </tr>
             </table>
@@ -549,3 +586,4 @@ End If
 
 
 </asp:Content>
+
