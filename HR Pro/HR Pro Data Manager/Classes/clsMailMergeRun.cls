@@ -459,7 +459,7 @@ Private Sub SQLGetMergeDefinition()
     mlngEmailAddrCalc = 0
     mstrEmailAddr = vbNullString
         
-    If IsFileCompatibleWithOfficeVersion(mstrDefTemplateFile, GetOfficeWordVersion) Then
+    If IsFileCompatibleWithWordVersion(mstrDefTemplateFile) Then
       mstrStatusMessage = "This definition is set to use a template file which is not compatible with your version of Microsoft Office."
       fOK = False
       GoTo TidyAndExit
@@ -470,7 +470,7 @@ Private Sub SQLGetMergeDefinition()
         mblnDefDocSave = !DocSave
         mstrDefDocFile = !DocFileName
       
-        If IsFileCompatibleWithOfficeVersion(mstrDefDocFile, GetOfficeWordVersion) Then
+        If IsFileCompatibleWithWordVersion(mstrDefDocFile) Then
           mstrStatusMessage = "This definition is set to save in a file format which is not compatible with your version of Microsoft Office."
           fOK = False
           GoTo TidyAndExit
@@ -499,7 +499,7 @@ Private Sub SQLGetMergeDefinition()
         mstrDefEMailSubject = !EmailSubject
         mlngEmailAddrCalc = !EmailAddrID
     
-        If IsFileCompatibleWithOfficeVersion(mstrDefAttachmentName, GetOfficeWordVersion) Then
+        If IsFileCompatibleWithWordVersion(mstrDefAttachmentName) Then
           mstrStatusMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
           fOK = False
           GoTo TidyAndExit

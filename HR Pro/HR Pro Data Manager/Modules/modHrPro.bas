@@ -4276,8 +4276,12 @@ Public Function COAMsgBox(sPrompt As String, iButtons As VbMsgBoxStyle, Optional
 End Function
 
 
-Public Function IsFileCompatibleWithOfficeVersion(strFileName As String, intOfficeVersion As Integer) As Boolean
-  IsFileCompatibleWithOfficeVersion = (GetOfficeSaveAsFormat(strFileName, intOfficeVersion) <> "")
+Public Function IsFileCompatibleWithWordVersion(strFileName As String)
+  IsFileCompatibleWithWordVersion = (GetOfficeSaveAsFormat(strFileName, GetOfficeWordVersion) <> "")
+End Function
+
+Public Function IsFileCompatibleWithExcelVersion(strFileName As String)
+  IsFileCompatibleWithExcelVersion = (GetOfficeSaveAsFormat(strFileName, GetOfficeExcelVersion) <> "")
 End Function
 
 
