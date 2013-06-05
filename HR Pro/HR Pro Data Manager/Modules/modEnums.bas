@@ -210,6 +210,16 @@ End Enum
 
 
 ' ------------
+' frmAccordViewTransfers
+' ------------
+Public Enum AccordViewMode
+  iLIVE_ALL = 0
+  iARCHIVE_ALL = 1
+  iCURRENT_RECORD = 2
+End Enum
+
+
+' ------------
 ' modHRPro
 ' ------------
 Public Enum LockType
@@ -253,4 +263,53 @@ End Enum
 
 Public Enum mceIDLPaths
   CSIDL_INTERNET_CACHE = &H20 ' * CSIDL_INTERNET_CACHE - File system directory for temporary Internet files.
+End Enum
+
+'Background type constants
+Public Enum BackgroundLocationTypes
+  giLOCATION_TOPLEFT = 0
+  giLOCATION_TOPRIGHT = 1
+  giLOCATION_CENTRE = 2
+  giLOCATION_LEFTTILE = 3
+  giLOCATION_RIGHTTILE = 4
+  giLOCATION_TOPTILE = 5
+  giLOCATION_BOTTOMTILE = 6
+  giLOCATION_TILE = 7
+End Enum
+
+Public Enum CrossTabType
+  cttNormal = 0
+  cttTurnover = 1
+  cttStability = 2
+  cttAbsenceBreakdown = 3
+End Enum
+
+Public Enum MatchReportType
+  mrtNormal = 0
+  mrtSucession = 1
+  mrtCareer = 2
+End Enum
+
+' Character trimming types
+Public Enum TrimmingTypes
+  giTRIMMING_NONE = 0
+  giTRIMMING_LEFTRIGHT = 1
+  giTRIMMING_LEFTONLY = 2
+  giTRIMMING_RIGHTONLY = 3
+End Enum
+
+Public Enum ReturnPrintDateType
+  RETURN_DEFAULT = 0
+  RETURN_MANUAL = 1
+  RETURN_CALCULATION = 2
+End Enum
+
+Public Enum ToolbarPositions
+  giTOOLBAR_NONE = 0
+  giTOOLBAR_TOP = 1
+  giTOOLBAR_BOTTOM = 2
+  giTOOLBAR_LEFT = 4
+  giTOOLBAR_RIGHT = 8
+  giTOOLBAR_FLOAT = 16
+  giTOOLBAR_POPUP = 32
 End Enum
