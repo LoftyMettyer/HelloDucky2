@@ -5305,7 +5305,8 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
     End If
     
     Do While Not .EOF
-      If !Enabled Then
+      ' JPD 2010/03/18 Jira HRPRO-821
+      If !Enabled Or WorkflowsWithStatus(recWorkflowEdit!id, giWFSTATUS_INPROGRESS) Then
 
         With recWorkflowElementEdit
           .Index = "idxWorkflowID"
