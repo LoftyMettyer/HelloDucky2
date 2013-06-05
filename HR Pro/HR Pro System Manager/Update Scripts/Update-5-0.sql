@@ -4174,8 +4174,6 @@ PRINT 'Step 8 - New Mobile User Logins Table'
 		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [ForeColor], [PictureID]) 
 		VALUES (50, 2, 2, N''lblNothingTodo'', N''You have nothing in your ''''action'''' list.'', N''Verdana'', 8.25, 0, 0, 0, NULL);';
 		
-
-
 	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_mobilegroupworkflows]') AND type in (N'U'))
 	BEGIN
 		EXEC sp_executesql N'CREATE TABLE [dbo].[tbsys_mobilegroupworkflows](
@@ -4183,6 +4181,14 @@ PRINT 'Step 8 - New Mobile User Logins Table'
 			[WorkflowID] [int] NOT NULL,
 			[Pos] [int] NOT NULL,
 		 CONSTRAINT [PK_tbsys_mobilegroupworkflows] PRIMARY KEY CLUSTERED ([UserGroupID] ASC, [WorkflowID] ASC));';
+	END
+
+	IF NOT EXISTS(SELECT * FROM sys.columns WHERE Name = N'TodoTitleForeColor' and Object_ID = Object_ID(N'tbsys_mobileformlayout')) 
+	BEGIN
+		ALTER TABLE dbo.tbsys_mobileformlayout ADD
+		TodoTitleForeColor int NULL,
+		TodoDescForeColor int NULL,
+		HomeItemForeColor int NULL
 	END
 		
 	----------------------------------------------------------------------
