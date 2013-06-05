@@ -1237,6 +1237,20 @@ Private Sub RefreshControls()
 End Sub
 
 Private Sub cmdCancel_Click()
+
+  Dim intAnswer As Integer
+  
+  ' Check if any changes have been made.
+  If mfChanged Then
+    intAnswer = MsgBox("The chart data definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
+    If intAnswer = vbYes Then
+      Call cmdOk_Click
+      Exit Sub
+    ElseIf intAnswer = vbCancel Then
+      Exit Sub
+    End If
+  End If
+
   Cancelled = True
   UnLoad Me
 End Sub
@@ -1396,7 +1410,11 @@ Public Sub Initialize(plngChartViewID As Long, _
 '  Chart_ColourID = plngChart_ColourID
     
   mfLoading = True
-    
+  
+  optChartType(0).value = (plngChart_TableID_2 = 0 And plngChart_TableID_3 = 0)
+  optChartType(1).value = (plngChart_TableID_3 > 0)
+  optChartType(2).value = (plngChart_TableID_2 > 0)
+  
   ' Populate the X-Axis table and column combos
   PopulateTableXCombo  ' populate X-Axis
   
@@ -1410,9 +1428,7 @@ Public Sub Initialize(plngChartViewID As Long, _
   SetComboItemOrTopItem cboTableZ, plngChart_TableID_2
   SetComboItemOrTopItem cboColumnZ, plngChart_ColumnID_2
         
-  optChartType(0).value = (plngChart_TableID_2 = 0 And plngChart_TableID_3 = 0)
-  optChartType(1).value = (plngChart_TableID_3 > 0)
-  optChartType(2).value = (plngChart_TableID_2 > 0)
+
   
   ChangeChartType ' display/hide relevant frames and combos
   
@@ -1442,6 +1458,7 @@ Public Sub Initialize(plngChartViewID As Long, _
   txtFilter.Tag = plngChartFilterID
   txtFilter.Text = GetExpressionName(txtFilter.Tag)
   mlngFilterBaseTableID = GetFilterBaseTableID(plngChartFilterID)
+  miFilterTableID = mlngFilterBaseTableID
   
   If txtFilter.Text = "" Then
     cmdFilterClear.Enabled = False
@@ -1574,6 +1591,8 @@ Private Sub ClearFilter()
   miFilterTableID = 0
   cmdFilterClear.Enabled = False
   mfChanged = True
+  
+  cmdOK.Enabled = True
   ' RefreshControls
 End Sub
 
@@ -1981,9 +2000,16 @@ Private Function MatchFilterToBaseTable() As Boolean
     GoTo TidyUpAndExit
   End If
   
-  If Chart_TableID_2 = 0 And Chart_TableID_3 = 0 Then
+  'If Chart_TableID_2 = 0 And Chart_TableID_3 = 0 Then
+  If optChartType(0).value Or (Chart_TableID_2 = 0 And Chart_TableID_3 = 0) Then
     ' Single axis chart, so use tableID 1 (X-axis)
     plngBaseTableID = ChartTableID
+  ElseIf optChartType(1).value Or (chart_tableID3 = 0) Then
+    If IsChildOfTable(ChartTableID, Chart_TableID_2) Then
+      plngBaseTableID = Chart_TableID_2
+    Else
+      plngBaseTableID = ChartTableID
+    End If
   Else
     ' IsChildOfTable(Parent, Child)
     If IsChildOfTable(Chart_TableID_3, Chart_TableID_2) Then
