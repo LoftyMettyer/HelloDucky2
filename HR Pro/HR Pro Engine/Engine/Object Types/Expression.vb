@@ -487,13 +487,9 @@ Namespace Things
     Private Sub SQLCode_AddColumn(ByRef [CodeCluster] As ScriptDB.LinesOfCode, ByRef [Component] As Things.Component)
 
       Dim objThisColumn As Things.Column
-      Dim objBaseColumn As Things.Column
-
-      Dim objExpression As Things.Expression
-      Dim ChildCodeCluster As ScriptDB.LinesOfCode
+      '      Dim objBaseColumn As Things.Column
 
       Dim objRelation As Things.Relation
-      Dim objOrder As Things.TableOrder
       Dim objOrderFilter As Things.TableOrderFilter
       Dim sRelationCode As String
       Dim sFromCode As String
@@ -515,12 +511,12 @@ Namespace Things
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Column
 
       ' there has to be a cleaner way, but for the moment put a dummy objbasecolumn in there so the function does not fail with a blah blah is not set to object error on the .TableID property.
-      objBaseColumn = Component.BaseExpression.AssociatedColumn
+      'objBaseColumn = Component.BaseExpression.AssociatedColumn
 
-      If objBaseColumn Is Nothing Then
-        objBaseColumn = New Things.Column
-        objBaseColumn.Table = Me.BaseTable
-      End If
+      'If objBaseColumn Is Nothing Then
+      '  objBaseColumn = New Things.Column
+      '  objBaseColumn.Table = Me.BaseTable
+      'End If
 
       '      objThisColumn = Globals.Things.GetObject(Enums.Type.Table, [Component].TableID).Objects.GetObject(Enums.Type.Column, Component.ColumnID)
       objThisColumn = mcolDependencies.GetObject(Enums.Type.Column, Component.ColumnID)
@@ -581,7 +577,7 @@ Namespace Things
 
         'If is this column on the base table then add directly to the main execute statement,
         ' otherwise add it into child/parent statements array
-        If objThisColumn.Table Is objBaseColumn.Table Then
+        If objThisColumn.Table Is Me.AssociatedColumn.Table Then
 
           Select Case Component.BaseExpression.ExpressionType
             Case ScriptDB.ExpressionType.ColumnFilter
@@ -636,7 +632,7 @@ Namespace Things
             End If
 
             ' Needs base table added
-            sFromCode = String.Format("FROM [dbo].[{0}] base", objBaseColumn.Table.Name)
+            sFromCode = String.Format("FROM [dbo].[{0}] base", Me.AssociatedColumn.Table.Name)
             If Not FromTables.Contains(sFromCode) Then
               FromTables.Add(sFromCode)
             End If
