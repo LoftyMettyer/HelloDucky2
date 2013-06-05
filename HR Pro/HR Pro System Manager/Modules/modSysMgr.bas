@@ -360,6 +360,15 @@ Public Const gsPARAMETERKEY_AUDITDESCRIPTIONCOLUMN = "Param_AuditDescriptionColu
 Public Const gsPARAMETERKEY_AUDITIDCOLUMN = "Param_AuditIDColumn"
 
 
+' DOCUMENT MANAGEMENT MODULE CONSTANTS
+Public Const gsMODULEKEY_DOCMANAGEMENT = "MODULE_DOCUMENTMANAGEMENT"
+Public Const gsPARAMETERKEY_DOCMAN_CATEGORYTABLE = "Param_DocmanCatageoryTable"
+Public Const gsPARAMETERKEY_DOCMAN_CATEGORYCOLUMN = "Param_DocManCatageoryColumn"
+Public Const gsPARAMETERKEY_DOCMAN_TYPETABLE = "Param_DocmanTypeTable"
+Public Const gsPARAMETERKEY_DOCMAN_TYPECOLUMN = "Param_DocManTypeColumn"
+Public Const gsPARAMETERKEY_DOCMAN_TYPECATEGORYCOLUMN = "Param_DocManTypeCategoryColumn"
+
+
 ' SQL 2005 CONSTANTS
 Public Const gsMODULEKEY_SQL = "MODULE_SQL"
 
@@ -6363,4 +6372,13 @@ Public Function GetClone(pavCloneRegister As Variant, strType As String, lngOldI
 
 End Function
 
+Public Function FormatGUID(ByRef GUID As Variant) As String
 
+  If IsNull(GUID) Then
+    FormatGUID = "NULL"
+  Else
+    FormatGUID = Replace(GUID, "{guid {", "")
+    FormatGUID = Replace(FormatGUID, "}}", "")
+  End If
+
+End Function
