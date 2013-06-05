@@ -104,6 +104,7 @@ End Property
 
 Public Property Let Read_Only(blnValue As Boolean)
   mblnReadOnly = blnValue
+  cmdSelect.Enabled = Not mblnReadOnly
 End Property
 
 Public Property Get ControlLevel() As Integer
