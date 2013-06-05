@@ -48,10 +48,11 @@ Begin VB.Form frmExprComponent
          Width           =   1000
          _ExtentX        =   1746
          _ExtentY        =   1746
-         _Version        =   65538
+         _Version        =   65536
          LabelEdit       =   1
          Style           =   6
          Indentation     =   525
+         Sorted          =   1
          HideSelection   =   0   'False
          PictureBackgroundUseMask=   0   'False
          HasFont         =   -1  'True
@@ -67,7 +68,6 @@ Begin VB.Form frmExprComponent
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         Sorted          =   1
       End
    End
    Begin VB.Frame fraComponent 
@@ -626,10 +626,11 @@ Begin VB.Form frmExprComponent
          Width           =   1000
          _ExtentX        =   1746
          _ExtentY        =   1746
-         _Version        =   65538
+         _Version        =   65536
          LabelEdit       =   1
          Style           =   6
          Indentation     =   525
+         Sorted          =   1
          HideSelection   =   0   'False
          PictureBackgroundUseMask=   0   'False
          HasFont         =   -1  'True
@@ -645,7 +646,6 @@ Begin VB.Form frmExprComponent
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         Sorted          =   1
       End
    End
    Begin VB.Frame fraComponent 
@@ -4397,8 +4397,6 @@ Private Sub Form_Initialize()
 End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
-
-
 ' JDM - 15/02/01 - fault 1868 - Error when pressing CTRL-X on treeview control
 ' For some reason the Sheridan treeview control wants to fire off it own cutn'paste functionality
 ' must trap it here not in it's own keydown event
@@ -4406,33 +4404,37 @@ If ActiveControl.Name = "ssTreeFuncFunction" Or ActiveControl.Name = "ssTreeOpOp
     KeyCode = 0
     Shift = 0
 End If
- 
-If KeyCode = 112 Then
-  'Dynamicly set HelpFileContextID so correct help screen is displayed
-  Select Case miComponentType
-    Case giCOMPONENT_FIELD
-      Me.HelpContextID = 1121
-    Case giCOMPONENT_FUNCTION
-      Me.HelpContextID = 1122
-    Case giCOMPONENT_CALCULATION
-      Me.HelpContextID = 1123
-    Case giCOMPONENT_VALUE
-      Me.HelpContextID = 1124
-    Case giCOMPONENT_OPERATOR
-      Me.HelpContextID = 1125
-    Case giCOMPONENT_TABLEVALUE
-      Me.HelpContextID = 1126
-    Case giCOMPONENT_PROMPTEDVALUE
-      Me.HelpContextID = 1127
-    Case giCOMPONENT_CUSTOMCALC
-      Me.HelpContextID = 1128
-    Case giCOMPONENT_EXPRESSION
-      Me.HelpContextID = 1129
-    Case giCOMPONENT_FILTER
-      Me.HelpContextID = 1130
-  End Select
-End If
+  
+'Dynamicly set HelpFileContextID
+Select Case miComponentType
+  Case giCOMPONENT_FIELD
+    Me.HelpContextID = 1121
+  Case giCOMPONENT_FUNCTION
+    Me.HelpContextID = 1122
+  Case giCOMPONENT_CALCULATION
+    Me.HelpContextID = 1123
+  Case giCOMPONENT_VALUE
+    Me.HelpContextID = 1124
+  Case giCOMPONENT_OPERATOR
+    Me.HelpContextID = 1125
+  Case giCOMPONENT_TABLEVALUE
+    Me.HelpContextID = 1126
+  Case giCOMPONENT_PROMPTEDVALUE
+    Me.HelpContextID = 1127
+  Case giCOMPONENT_CUSTOMCALC
+    Me.HelpContextID = 1128
+  Case giCOMPONENT_EXPRESSION
+    Me.HelpContextID = 1129
+  Case giCOMPONENT_FILTER
+    Me.HelpContextID = 1130
+End Select
 
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 

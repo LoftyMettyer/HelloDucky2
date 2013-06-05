@@ -513,6 +513,15 @@ Private Sub cmdPrint_Click()
 
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
+End Sub
+
 Private Sub Form_Load()
   RemoveIcon Me
   Hook Me.hWnd, (Me.Width - Me.ScaleWidth) + 6705, (Me.Height - Me.ScaleHeight) + 3660
