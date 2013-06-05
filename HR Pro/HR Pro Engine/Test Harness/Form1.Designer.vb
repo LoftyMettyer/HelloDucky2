@@ -42,6 +42,7 @@ Partial Class Form1
     Me.chkDebugMode = New System.Windows.Forms.CheckBox()
     Me.Label2 = New System.Windows.Forms.Label()
     Me.Label3 = New System.Windows.Forms.Label()
+    Me.butErrors = New System.Windows.Forms.Button()
     Me.SuspendLayout()
     '
     'Button1
@@ -179,7 +180,7 @@ Partial Class Form1
     Me.txtDatabase.Name = "txtDatabase"
     Me.txtDatabase.Size = New System.Drawing.Size(100, 20)
     Me.txtDatabase.TabIndex = 15
-    Me.txtDatabase.Text = "recur43"
+    Me.txtDatabase.Text = "getchild2"
     '
     'Button8
     '
@@ -228,11 +229,21 @@ Partial Class Form1
     Me.Label3.TabIndex = 20
     Me.Label3.Text = "Database"
     '
+    'butErrors
+    '
+    Me.butErrors.Location = New System.Drawing.Point(694, 356)
+    Me.butErrors.Name = "butErrors"
+    Me.butErrors.Size = New System.Drawing.Size(75, 23)
+    Me.butErrors.TabIndex = 21
+    Me.butErrors.Text = "View Errors"
+    Me.butErrors.UseVisualStyleBackColor = True
+    '
     'Form1
     '
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
     Me.ClientSize = New System.Drawing.Size(806, 426)
+    Me.Controls.Add(Me.butErrors)
     Me.Controls.Add(Me.Label3)
     Me.Controls.Add(Me.Label2)
     Me.Controls.Add(Me.chkDebugMode)
@@ -279,5 +290,6 @@ Partial Class Form1
   Friend WithEvents chkDebugMode As System.Windows.Forms.CheckBox
   Friend WithEvents Label2 As System.Windows.Forms.Label
   Friend WithEvents Label3 As System.Windows.Forms.Label
+  Friend WithEvents butErrors As System.Windows.Forms.Button
 
 End Class

@@ -291,6 +291,9 @@ Public Class Form1
     bOK = objPhoenix.Script.CreateObjects()
 
 
+    ' bOK = objPhoenix.Script.CreateTableViews
+    '    bOK = objPhoenix.Script.CreateViews
+
     bOK = objPhoenix.Script.CreateTriggers()
 
 
@@ -304,7 +307,7 @@ Public Class Form1
 
     bOK = objPhoenix.Script.CreateFunctions
 
-
+    bOK = objPhoenix.Script.ScriptIndexes
 
     objPhoenix.CloseSafely()
 
@@ -330,6 +333,9 @@ Public Class Form1
     '    objPhoenix.
 
     objPhoenix.ReturnErrorLog.OutputToFile("c:\dev\errors.txt")
+
+    objPhoenix.ReturnTuningLog.OutputToFile("c:\dev\HR Pro\HR Pro Engine\Tuning.log")
+
 
     'Dim objError As Phoenix.ErrorHandler.Error
     'Dim strMessage As String = vbNullString
@@ -404,20 +410,17 @@ Public Class Form1
 
   End Sub
 
-  Private Sub Button8_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button8.Click
+  Private Sub butErrors_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles butErrors.Click
 
-    Dim objHCM As New HRProEngine.HCM
+    Dim frmErrorLog As New HRProEngine.Forms.ErrorLog
 
-    '    objHCM.
+    '    objPhoenix.Initialise()
 
+    frmErrorLog.Show()
 
-    objHCM.Initialise()
-    objHCM.Login("sa", "asr", "phoenix", "harpdev01")
-    objHCM.Populate(HRProEngine.Things.Type.GlobalModify)
-
+    frmErrorLog = Nothing
 
 
 
   End Sub
-
 End Class
