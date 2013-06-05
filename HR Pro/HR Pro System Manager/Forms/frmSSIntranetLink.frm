@@ -927,7 +927,6 @@ Private miChartColumnID As Long
 Private miChartAggregateType As Integer
 Private miElementType As Integer
 Private msCombinedHiddenGroups As String
-
 Private mblnReadOnly As Boolean
 
 Private mcolSSITableViews As clsSSITableViews
@@ -1988,14 +1987,13 @@ Private Function ValidateLink() As Boolean
   ' Only one Pending Workflow Steps per security group...
   If fValid Then
     If optLink(SSINTLINKPWFSTEPS).value And Len(msCombinedHiddenGroups) > 0 Then
-      
       ' loop through the chosen security groups and check they're in the combined string
       
       psDuplicateGroups = ""
       pSelectedGroup = ""
       
       With grdAccess
-        For iLoop = 1 To (.Rows - 1)
+        For iLoop = 0 To (.Rows - 1)
           .Bookmark = .AddItemBookmark(iLoop)
           If .Columns("Access").value Then
             pSelectedGroup = vbTab & .Columns("GroupName").Text & vbTab
@@ -2014,7 +2012,6 @@ Private Function ValidateLink() As Boolean
                 psDuplicateGroups, vbOKOnly + vbExclamation, Application.Name
         grdAccess.SetFocus
       End If
-      
     End If
   End If
 
@@ -2848,7 +2845,7 @@ Public Property Get HiddenGroups() As String
   sHiddenGroups = ""
   
   With grdAccess
-    For iLoop = 1 To (.Rows - 1)
+    For iLoop = 0 To (.Rows - 1)
       .Bookmark = .AddItemBookmark(iLoop)
       If Not .Columns("Access").value Then
         sHiddenGroups = sHiddenGroups & .Columns("GroupName").Text & vbTab
