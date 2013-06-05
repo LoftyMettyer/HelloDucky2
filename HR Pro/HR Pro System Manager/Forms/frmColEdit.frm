@@ -6878,7 +6878,7 @@ Private Sub RefreshOptionsTab()
   chkAudit.value = IIf(chkAudit.Enabled, chkAudit.value, vbUnchecked)
   
   chkReadOnly.Enabled = fEnableOptions
-  chkReadOnly.value = IIf(chkReadOnly.Enabled, chkReadOnly.value, vbUnchecked)
+  chkReadOnly.value = chkReadOnly.value Or IIf(miControlType = giCTRL_NAVIGATION, 1, 0)
       
   fraOptions.Enabled = fEnableOptions
         
