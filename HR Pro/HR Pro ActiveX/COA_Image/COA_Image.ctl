@@ -8,10 +8,11 @@ Begin VB.UserControl COA_Image
    ScaleWidth      =   1485
    ToolboxBitmap   =   "COA_Image.ctx":0000
    Begin VB.PictureBox picPicture 
+      BorderStyle     =   0  'None
       Height          =   1455
       Left            =   0
-      ScaleHeight     =   1395
-      ScaleWidth      =   1395
+      ScaleHeight     =   1455
+      ScaleWidth      =   1455
       TabIndex        =   0
       Top             =   0
       Width           =   1455
@@ -278,7 +279,6 @@ End Property
 Public Property Let BorderStyle(ByVal New_BorderStyle As Integer)
   imgImage.BorderStyle() = New_BorderStyle
   PropertyChanged "BorderStyle"
-
 End Property
 
 Private Sub imgImage_Click()
