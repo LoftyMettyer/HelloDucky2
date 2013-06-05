@@ -1,9 +1,9 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
+Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
 Begin VB.Form frmConfiguration 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Configuration"
@@ -50,45 +50,45 @@ Begin VB.Form frmConfiguration
       _Version        =   393216
       Style           =   1
       Tabs            =   7
+      Tab             =   3
       TabsPerRow      =   7
       TabHeight       =   520
       TabCaption(0)   =   "&Display Defaults"
       TabPicture(0)   =   "frmConfiguration.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "fraDisplay(1)"
-      Tab(0).Control(0).Enabled=   0   'False
+      Tab(0).ControlEnabled=   0   'False
+      Tab(0).Control(0)=   "fraDisplay(2)"
       Tab(0).Control(1)=   "fraDisplay(0)"
-      Tab(0).Control(1).Enabled=   0   'False
-      Tab(0).Control(2)=   "fraDisplay(2)"
-      Tab(0).Control(2).Enabled=   0   'False
+      Tab(0).Control(2)=   "fraDisplay(1)"
       Tab(0).ControlCount=   3
       TabCaption(1)   =   "&Reports && Utilities"
       TabPicture(1)   =   "frmConfiguration.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraReports(1)"
+      Tab(1).Control(0)=   "fraReports(0)"
       Tab(1).Control(1)=   "frmReportsGeneral"
-      Tab(1).Control(2)=   "fraReports(0)"
+      Tab(1).Control(2)=   "fraReports(1)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Network Configuration"
       TabPicture(2)   =   "frmConfiguration.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "frmAutoLogin"
-      Tab(2).Control(1)=   "fraNetwork(0)"
-      Tab(2).Control(2)=   "fraNetwork(1)"
-      Tab(2).Control(3)=   "frmOutputs"
+      Tab(2).Control(0)=   "frmOutputs"
+      Tab(2).Control(1)=   "fraNetwork(1)"
+      Tab(2).Control(2)=   "fraNetwork(0)"
+      Tab(2).Control(3)=   "frmAutoLogin"
       Tab(2).ControlCount=   4
       TabCaption(3)   =   "&Batch Login"
       TabPicture(3)   =   "frmConfiguration.frx":0060
-      Tab(3).ControlEnabled=   0   'False
+      Tab(3).ControlEnabled=   -1  'True
       Tab(3).Control(0)=   "fraBatch(1)"
+      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).Control(1)=   "fraBatch(0)"
+      Tab(3).Control(1).Enabled=   0   'False
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "E&vent Log"
       TabPicture(4)   =   "frmConfiguration.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "FraEventLog(0)"
+      Tab(4).Control(0)=   "FraEventLog(2)"
       Tab(4).Control(1)=   "FraEventLog(1)"
-      Tab(4).Control(2)=   "FraEventLog(2)"
+      Tab(4).Control(2)=   "FraEventLog(0)"
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Report Out&put"
       TabPicture(5)   =   "frmConfiguration.frx":0098
@@ -1201,7 +1201,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Login Details :"
          Height          =   3160
          Index           =   0
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   52
          Top             =   400
          Width           =   6735
@@ -1320,9 +1320,9 @@ Begin VB.Form frmConfiguration
       End
       Begin VB.Frame fraBatch 
          Caption         =   "Email Errors :"
-         Height          =   3080
+         Height          =   1695
          Index           =   1
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   63
          Top             =   3600
          Width           =   6735
@@ -1396,7 +1396,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Diary Options :"
          Height          =   2650
          Index           =   2
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   14
          Top             =   4020
          Width           =   6735
@@ -1434,7 +1434,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Record Editing :"
          Height          =   2380
          Index           =   0
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   0
          Top             =   400
          Width           =   6735
@@ -1535,7 +1535,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Filters / Calculations :"
          Height          =   1155
          Index           =   1
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   9
          Top             =   2820
          Width           =   6735
@@ -1661,7 +1661,7 @@ Begin VB.Form frmConfiguration
       End
       Begin VB.Frame frmAutoLogin 
          Caption         =   "Login :"
-         Height          =   1960
+         Height          =   780
          Left            =   -74880
          TabIndex        =   125
          Top             =   4710
@@ -2248,7 +2248,6 @@ Public Function Initialise(blnUserSettings As Boolean) As Boolean
   
   Else
     Me.Caption = "PC Configuration"
-    
     ReadPCSettings
   
     ' JDM - 27/11/01 - Fault 3109 - Disable access to batch log on.
