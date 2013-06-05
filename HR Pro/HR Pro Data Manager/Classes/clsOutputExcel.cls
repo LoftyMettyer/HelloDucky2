@@ -1075,14 +1075,17 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
     
     CreateChart mlngDataCurrentRow + UBound(strArray, 2), mlngDataStartCol + UBound(strArray, 1), colStyles
     ApplyCellOptions UBound(strArray, 1), colStyles, False
-
+    
+    'Delete superfluous rows and cols if setup in User Config reports section
+    If mblnXLExcelOmitLeftCol Then mxlWorkSheet.Range("A:A").Delete
+    If mblnXLExcelOmitTopRow Then mxlWorkSheet.Range("1:1").Delete
+  
   ElseIf mblnPivotTable Then
 
     If UBound(strArray, 1) < 1 Then
       mstrErrorMessage = "Unable to create a pivot table for a single column of data."
     Else
       ApplyStyle UBound(strArray, 1), UBound(strArray, 2), colStyles
-      'ApplyCellOptions UBound(strArray, 1), colStyles, True
       
       CreatePivotTable mlngDataCurrentRow + UBound(strArray, 2), mlngDataStartCol + UBound(strArray, 1), strArray(0, 0), strArray(1, 0), strArray(UBound(strArray), 0), colStyles, colColumns
     End If
@@ -1093,7 +1096,11 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
       ApplyMerges colMerges
     End If
     ApplyCellOptions UBound(strArray, 1), colStyles, True
-
+      
+    'Delete superfluous rows and cols if setup in User Config reports section
+    If mblnXLExcelOmitLeftCol Then mxlWorkSheet.Range("A:A").Delete
+    If mblnXLExcelOmitTopRow Then mxlWorkSheet.Range("1:1").Delete
+      
   End If
 
   mlngDataCurrentRow = mlngDataCurrentRow + UBound(strArray, 2) + IIf(mblnApplyStyles, 2, 1)
@@ -1238,6 +1245,10 @@ Private Sub CreatePivotTable(lngMaxRows As Long, lngMaxCols As Long, strHor As S
 
   ApplyCellOptions xlPivot.ColumnRange.Columns.Count, colStyles, True
   
+  'Delete superfluous rows and cols if setup in User Config reports section
+  If mblnXLExcelOmitLeftCol Then mxlWorkSheet.Range("A:A").Delete
+  If mblnXLExcelOmitTopRow Then mxlWorkSheet.Range("1:1").Delete
+      
   Set xlPivot = Nothing
   mxlApp.DisplayAlerts = False
 
@@ -1375,9 +1386,9 @@ Private Sub ApplyCellOptions(lngColCount As Long, colStyles As Collection, blnGr
         End With
         .ColumnWidth = lngTitleColWidth
       End With
-      'Delete superfluous rows and cols if setup in User Config reports section
-      If mblnXLExcelOmitLeftCol Then mxlWorkSheet.Range("A:A").Delete
-      If mblnXLExcelOmitTopRow Then mxlWorkSheet.Range("1:1").Delete
+'      'Delete superfluous rows and cols if setup in User Config reports section
+'      If mblnXLExcelOmitLeftCol Then mxlWorkSheet.Range("A:A").Delete
+'      If mblnXLExcelOmitTopRow Then mxlWorkSheet.Range("1:1").Delete
     End If
   End If
 
