@@ -119,6 +119,8 @@ Namespace ScriptDB
                 sVariableName = "@result_date"
               Case ColumnTypes.Numeric, ColumnTypes.Integer
                 sVariableName = "@result_numeric"
+              Case ColumnTypes.Logic
+                sVariableName = "@result_boolean"
               Case Else
                 sVariableName = "@result_string"
             End Select
@@ -164,6 +166,7 @@ Namespace ScriptDB
             "AS" & vbNewLine & "BEGIN" & vbNewLine & _
             "    DECLARE @result_string     varchar(255)," & vbNewLine & _
             "            @result_numeric    numeric(38,8)," & vbNewLine & _
+            "            @result_boolean    bit," & vbNewLine & _
             "            @result_date       datetime;" & vbNewLine & vbNewLine & _
             "    SET @result_string = '';" & vbNewLine & _
             "    SET @result_numeric = 0;" & vbNewLine & vbNewLine & _
