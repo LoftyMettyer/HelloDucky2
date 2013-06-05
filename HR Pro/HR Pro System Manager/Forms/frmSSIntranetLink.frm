@@ -959,15 +959,15 @@ Private Sub FormatScreen()
       fraLink.Caption = "On-screen Document Display :"
   End Select
   
-'  ' Prompt only required for Button Links.
-'  lblPrompt.Visible = (miLinkType = SSINTLINK_BUTTON)
-'  txtPrompt.Visible = lblPrompt.Visible
-'
-'  ' Reposition the Text controls if required.
-'  If (miLinkType <> SSINTLINK_BUTTON) Then
-'    lblText.Top = lblPrompt.Top
-'    txtText.Top = txtPrompt.Top
-'  End If
+  ' Prompt only required for Button Links.
+  lblPrompt.Visible = (miLinkType = SSINTLINK_BUTTON)
+  txtPrompt.Visible = lblPrompt.Visible
+
+  ' Reposition the Text controls if required.
+  If (miLinkType <> SSINTLINK_BUTTON) Then
+    lblText.Top = lblPrompt.Top
+    txtText.Top = txtPrompt.Top
+  End If
   
   cboTableView.Top = txtText.Top + txtText.Height + GAPBETWEENTEXTBOXES
   lblTableView.Top = cboTableView.Top + (lblText.Top - txtText.Top)
@@ -1719,7 +1719,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 
 End Sub
