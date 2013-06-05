@@ -442,4 +442,8 @@ Public Class MainForm
 
 
   End Sub
+
+	Private Sub txtServer_TextChanged(sender As System.Object, e As System.EventArgs) Handles txtServer.TextChanged
+
+	End Sub
 End Class
