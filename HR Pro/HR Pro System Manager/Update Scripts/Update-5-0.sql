@@ -4177,12 +4177,15 @@ PRINT 'Step 8 - New Mobile User Logins Table'
 	UPDATE [dbo].[tbsys_mobileformelements] SET Caption = 'Enter your registration details and an activation email will be sent to you.' WHERE ID = 44;
 	UPDATE [dbo].[tbsys_mobileformelements] SET Caption = 'Forgot Username' WHERE ID = 13;
 	UPDATE [dbo].[tbsys_mobileformelements] SET Caption = 'Enter your email address and an email will be sent to you confirming your username.' WHERE ID = 39;
-	
+		
 	UPDATE [dbo].[tbsys_mobileformelements] SET FontBold = 0 WHERE Type = 3 AND FontBold  = 1;
 	
 	IF NOT EXISTS(SELECT * FROM [dbo].[tbsys_mobileformelements] WHERE ID = 50)
 		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [ForeColor], [PictureID]) 
 		VALUES (50, 2, 2, N''lblNothingTodo'', N''You have nothing in your ''''action'''' list.'', N''Verdana'', 8.25, 0, 0, 0, NULL);';
+	
+	UPDATE [dbo].[tbsys_mobileformelements] SET Caption = 'You have no items in your list.' WHERE ID = 46;
+	UPDATE [dbo].[tbsys_mobileformelements] SET Caption = 'You have no items in your list.' WHERE ID = 50;
 		
 	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_mobilegroupworkflows]') AND type in (N'U'))
 	BEGIN
