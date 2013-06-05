@@ -1,5 +1,4 @@
-﻿'Imports System.ComponentModel
-
+﻿
 Public Enum DatePeriod
     ThisMonth = 1
     LastMonth
