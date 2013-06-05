@@ -77,15 +77,15 @@ Begin VB.Form frmMailMerge
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmMailMerge.frx":08D6
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraDefinition(0)"
-      Tab(0).Control(1)=   "fraDefinition(1)"
+      Tab(0).Control(0)=   "fraDefinition(1)"
+      Tab(0).Control(1)=   "fraDefinition(0)"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmMailMerge.frx":08F2
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(0)"
+      Tab(1).Control(0)=   "fraColumns(2)"
       Tab(1).Control(1)=   "fraColumns(1)"
-      Tab(1).Control(2)=   "fraColumns(2)"
+      Tab(1).Control(2)=   "fraColumns(0)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Sort Order"
       TabPicture(2)   =   "frmMailMerge.frx":090E
@@ -283,13 +283,13 @@ Begin VB.Form frmMailMerge
             RecordSelectors =   0   'False
             Col.Count       =   3
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).Picture=   "frmMailMerge.frx":0D1F
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).Picture=   "frmMailMerge.frx":0D3B
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -3038,9 +3038,9 @@ Private Sub optOutputFormat_Click(Index As Integer)
   chkDocManManualHeader.Value = vbUnchecked
   chkDocManScreen.Value = vbUnchecked
   
-  FraOutput(0).Visible = (Index = 0)
-  FraOutput(1).Visible = (Index = 1)
-  FraOutput(2).Visible = (Index = 2)
+  fraOutput(0).Visible = (Index = 0)
+  fraOutput(1).Visible = (Index = 1)
+  fraOutput(2).Visible = (Index = 2)
   
   Me.Changed = True
 
@@ -5872,17 +5872,17 @@ Public Sub PrintDef(lMailMergeID As Long)
         .PrintTitle "Output Options"
   
         Select Case Val(rsTemp!OutputFormat)
-        Case 0: .PrintNormal "Output Format : " & optOutputFormat(0).Caption
-        Case 1: .PrintNormal "Output Format : " & optOutputFormat(1).Caption
-        Case 2: .PrintNormal "Output Format : " & optOutputFormat(2).Caption
+        Case 0: .PrintNormal "Output Format : Word Document"
+        Case 1: .PrintNormal "Output Format : Individual Emails"
+        Case 2: .PrintNormal "Output Format : Document Management"
         End Select
   
         Select Case Val(rsTemp!OutputFormat)
         Case 0  'Word Document
 
-            If chkPreview.Value = vbChecked Then
-              .PrintNormal "Output Destination : Preview on screen prior to output"
-            End If
+            'If chkPreview.Value = vbChecked Then
+            '  .PrintNormal "Output Destination : Preview on screen prior to output"
+            'End If
 
             If chkDestination(0).Value = vbChecked Then
               .PrintNormal "Output Destination : Display on screen"
@@ -5895,15 +5895,15 @@ Public Sub PrintDef(lMailMergeID As Long)
 
             If chkDestination(2).Value = vbChecked Then
               .PrintNormal "Output Destination : Save to file"
-              .PrintNormal "File Name : " & txtFilename.Text
-              .PrintNormal "File Options : " & cboSaveExisting.List(cboSaveExisting.ListIndex)
+              .PrintNormal "File Name : " & txtFilename(1).Text
+              '.PrintNormal "File Options : " & cboSaveExisting.List(cboSaveExisting.ListIndex)
             End If
 
         Case 1  'Individual Email
 
             .PrintNormal "Output Destination : Send to email"
-            If rsTemp!EmailID > 0 Then
-              .PrintNormal "Email Address : " & GetEmailName(rsTemp!EmailID)
+            If rsTemp!EmailAddrID > 0 Then
+              .PrintNormal "Email Address : " & GetEmailName(rsTemp!EmailAddrID)
             End If
             .PrintNormal "Email Subject : " & rsTemp!EmailSubject
             .PrintNormal "Email Attach As : " & IIf(IsNull(rsTemp!EmailAttachmentName), "", rsTemp!EmailAttachmentName)
@@ -5912,8 +5912,8 @@ Public Sub PrintDef(lMailMergeID As Long)
 
           .PrintNormal "Engine : " & IIf(IsNull(rsTemp!OutputPrinterName), "", rsTemp!OutputPrinterName)
           .PrintNormal "Document Type : " & IIf(IsNull(rsTemp!DocumentMapName), "", rsTemp!DocumentMapName)
-          .PrintNormal chkDocManManualHeader.Caption & " : " & IIf(IsNull(rsTemp!ManualDocManHeader), "", rsTemp!ManualDocManHeader)
-          .PrintNormal chkDocManScreen.Caption & " : " & IIf(IsNull(rsTemp!OutputScreen), "", rsTemp!OutputScreen)
+          .PrintNormal "Manual document header : " & IIf(IsNull(rsTemp!ManualDocManHeader), "", rsTemp!ManualDocManHeader)
+          .PrintNormal "Display output on screen : " & IIf(IsNull(rsTemp!OutputScreen), "", rsTemp!OutputScreen)
 
         End Select
 
