@@ -1409,7 +1409,7 @@ Begin VB.Form frmDiary
          MonthRows       =   2
          MonthBackColor  =   16184819
          ScrollRate      =   1
-         StartOfWeek     =   137560065
+         StartOfWeek     =   115146753
          TitleBackColor  =   6697779
          TitleForeColor  =   15988214
          TrailingForeColor=   -2147483643
@@ -1648,6 +1648,13 @@ End Sub
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
 Dim fManyEvents As Boolean
   
+Select Case KeyCode
+Case vbKeyF1
+  If ShowAirHelp(Me.HelpContextID) Then
+    KeyCode = 0
+  End If
+End Select
+
   'Holding CTRL
   If Shift And vbCtrlMask Then
     Select Case KeyCode
