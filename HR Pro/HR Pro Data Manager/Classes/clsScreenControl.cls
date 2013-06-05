@@ -62,6 +62,7 @@ Private mfMultiline As Boolean
 Private miColumnAlignment As Integer
 Private mlngGotFocusExprID As Long
 Private mfReadOnly As Boolean
+Private mbScreenReadOnly As Boolean
 Private msStatusBarMessage As String
 Private msErrorMessage As String
 Private mlngLinkTableID As Long
@@ -447,6 +448,14 @@ End Property
 
 Public Property Let ReadOnly(ByVal pfNewValue As Boolean)
   mfReadOnly = pfNewValue
+End Property
+
+Public Property Get ScreenReadOnly() As Boolean
+  ScreenReadOnly = mbScreenReadOnly
+End Property
+
+Public Property Let ScreenReadOnly(ByVal pbNewValue As Boolean)
+  mbScreenReadOnly = pbNewValue
 End Property
 
 Public Property Get StatusBarMessage() As String
