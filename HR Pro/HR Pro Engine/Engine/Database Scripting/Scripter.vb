@@ -370,13 +370,10 @@ Namespace ScriptDB
           aryBaseTableColumns = New ArrayList
           aryCalculatedColumns = New ArrayList
           aryPostAuditCalcs = New ArrayList
-          '      aryDebugColumns = New ArrayList
 
-
-
+          sSQLCalculatedColumns = String.Empty
           sSQLParentColumns = String.Empty
           sSQLParentColumns_Delete = String.Empty
-          '          sDebugCode = String.Empty
           sValidation = String.Empty
 
           sSQLCode_AuditInsert = String.Empty
@@ -612,7 +609,6 @@ Namespace ScriptDB
 
           ' Update statement of all the calculated columns
           If aryCalculatedColumns.ToArray.Length > 0 Then
-
             sSQLCalculatedColumns = String.Format("    -- Update calculated columns" & vbNewLine & _
               "    WITH base AS (" & vbNewLine & _
               "        SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
@@ -621,26 +617,17 @@ Namespace ScriptDB
               "    UPDATE base SET " & vbNewLine & _
               "        {1}" _
               , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryCalculatedColumns.ToArray()))
-
-            '            sDebugCode = String.Format("{0}", String.Join(vbNewLine, aryPerformanceTuneColumns.ToArray()))
-
-
-          Else
-            sSQLCalculatedColumns = "    -- No calculated columns" & vbNewLine & vbNewLine
           End If
 
           ' Any calculations that require to be saved after the audit
           If aryPostAuditCalcs.ToArray.Length > 0 Then
             sSQLPostAuditCalcs = String.Format("    -- Update columns that rely on audit log data" & vbNewLine & _
-              "    IF EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {2} AND [nestlevel] = 1)" & vbNewLine & _
-              "    BEGIN" & vbNewLine & _
-              "        WITH base AS (" & vbNewLine & _
-              "            SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
-              "            FROM [dbo].[{0}]" & vbNewLine & _
-              "            WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
-              "        UPDATE base" & vbNewLine & _
-              "        SET {1}" & vbNewLine & _
-              "    END" _
+              "    WITH base AS (" & vbNewLine & _
+              "        SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
+              "        FROM [dbo].[{0}]" & vbNewLine & _
+              "        WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
+              "    UPDATE base" & vbNewLine & _
+              "    SET {1}" & vbNewLine _
               , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryPostAuditCalcs.ToArray()), CInt(objTable.ID))
           End If
 
