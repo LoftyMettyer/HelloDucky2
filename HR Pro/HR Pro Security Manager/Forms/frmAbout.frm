@@ -237,7 +237,7 @@ Private Sub Form_Load()
   lblUser.Caption = "Current User : " & Trim(gsUserName)
   lblSecurity.Caption = "User Group : " & gsUserGroup
   lblSql.Caption = GetSqlVersion
-  lblCopyRight.Caption = "Copyright © COA Solutions Limited 1997-" & Format(Date, "yyyy")
+  lblCopyRight.Caption = "Copyright © Advanced Computer Solutions"
   
   sngMaxX = lblTitle.Left + lblTitle.Width
   sngMaxX = IIf(lblDatabase.Left + lblDatabase.Width > sngMaxX, lblDatabase.Left + lblDatabase.Width, sngMaxX)
@@ -246,11 +246,11 @@ Private Sub Form_Load()
   sngMaxX = IIf(lblSql.Left + lblSql.Width > sngMaxX, lblSql.Left + lblSql.Width, sngMaxX)
   sngMaxX = IIf(lblCopyRight.Left + lblCopyRight.Width > sngMaxX, lblCopyRight.Left + lblCopyRight.Width, sngMaxX)
   
-  cmdOk.Left = sngMaxX + 250
-  cmdSysInfo.Left = cmdOk.Left
-  cmdTech.Left = cmdOk.Left
+  cmdOK.Left = sngMaxX + 250
+  cmdSysInfo.Left = cmdOK.Left
+  cmdTech.Left = cmdOK.Left
   
-  Me.Width = cmdOk.Left + cmdOk.Width + 200
+  Me.Width = cmdOK.Left + cmdOK.Width + 200
   
   Exit Sub
     
