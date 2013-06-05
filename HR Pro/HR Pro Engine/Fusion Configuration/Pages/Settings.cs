@@ -31,7 +31,7 @@ namespace Fusion.Pages
 			}
 
 			if(_service == null) {
-				_service = new ServiceController(Properties.Settings.Default.Service_Name);
+				_service = new ServiceController(Properties.Settings.Default.Service_Name.Replace("{db_name}", Properties.Settings.Default.Login_Database));
 				_timeout = TimeSpan.FromMilliseconds(Properties.Settings.Default.Service_Timeout);
 
 				try {
