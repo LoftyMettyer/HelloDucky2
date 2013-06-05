@@ -1250,6 +1250,7 @@ Namespace ScriptDB
           '  Validation Masks
           For Each objExpression In objTable.Objects(Things.Type.Mask)
             sObjectName = String.Format("{0}{1}", Consts.MaskUDF, CInt(objExpression.ID))
+            objExpression.IsEvaluated = True
             objExpression.GenerateCode()
             ScriptDB.DropUDF("dbo", sObjectName)
 

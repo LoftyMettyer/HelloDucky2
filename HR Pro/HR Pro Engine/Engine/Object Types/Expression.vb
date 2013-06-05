@@ -391,6 +391,7 @@ Namespace Things
           Case ScriptDB.ExpressionType.Mask
             .Name = String.Format("[{0}].[{1}{2}]", Me.SchemaName, ScriptDB.Consts.MaskUDF, CInt(Me.BaseExpression.ID))
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters1.ToArray))
+            mcolLinesOfCode.IsEvaluated = True
             .SelectCode = mcolLinesOfCode.Statement
 
             .Code = String.Format("CREATE FUNCTION {0}(@prm_id integer)" & vbNewLine & _
@@ -1144,9 +1145,20 @@ Namespace Things
         ' Debug.Assert(Component.IsEvaluated = False)
 
         ChildCodeCluster.IsEvaluated = Component.IsEvaluated
+        ' Debug.Print(Component.SubType)
+
+        ' Debug.Print(Component.IsEvaluated)
+
+        '  ChildCodeCluster.IsEvaluated = (Component.ReturnType = ScriptDB.ComponentValueTypes.Logic)
+        ' [Component].
+
+        'If ChildCodeCluster.CodeLevel = 1 Then
+        '  ChildCodeCluster.IsEvaluated = True
+        'End If
+
         LineOfCode.Code = String.Format("({0})", ChildCodeCluster.Statement)
 
-
+        'Debug.Print()
 
       End If
 
