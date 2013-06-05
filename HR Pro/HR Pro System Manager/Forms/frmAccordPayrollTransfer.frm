@@ -18,7 +18,7 @@ Begin VB.Form frmAccordPayrollTransfer
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1060
+   HelpContextID   =   5060
    Icon            =   "frmAccordPayrollTransfer.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
