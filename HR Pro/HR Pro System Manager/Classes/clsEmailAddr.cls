@@ -775,6 +775,7 @@ Public Function PrintEmail() As Boolean
   Set objPrintDef = New clsPrintDef
 
   Screen.MousePointer = vbHourglass
+  strSelectedPrinter = vbNullString
 
   blnOK = (objPrintDef.IsOK And ConstructEmail)
 
@@ -800,6 +801,7 @@ Public Function PrintEmail() As Boolean
         End Select
 
         .PrintEnd
+      
       End If
     End With
 
@@ -807,12 +809,14 @@ Public Function PrintEmail() As Boolean
 
 TidyAndExit:
   Screen.MousePointer = vbDefault
-  If blnOK Then
-    'MH20040127 Fault 7991
-    'MsgBox "Email Address : " & Me.EmailName & " printing complete." & vbCrLf & vbCrLf & "(" & Printer.DeviceName & ")", vbInformation, "Email Address"
-    MsgBox "Email Address : " & Me.EmailName & " printing complete." & vbCrLf & vbCrLf & "(" & strSelectedPrinter & ")", vbInformation, "Email Address"
-  Else
-    MsgBox "Printing Email Address Definition Failed", vbExclamation, "Email Address"
+  If strSelectedPrinter <> vbNullString Then
+    If blnOK Then
+      'MH20040127 Fault 7991
+      'MsgBox "Email Address : " & Me.EmailName & " printing complete." & vbCrLf & vbCrLf & "(" & Printer.DeviceName & ")", vbInformation, "Email Address"
+      MsgBox "Email Address : " & Me.EmailName & " printing complete." & vbCrLf & vbCrLf & "(" & strSelectedPrinter & ")", vbInformation, "Email Address"
+    Else
+      MsgBox "Printing Email Address Definition Failed", vbExclamation, "Email Address"
+    End If
   End If
 
 Exit Function
