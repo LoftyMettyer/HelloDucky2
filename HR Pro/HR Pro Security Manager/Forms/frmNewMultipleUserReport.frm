@@ -265,7 +265,7 @@ Attribute VB_Exposed = False
 Private mstrSecurityGroupName As String
 Private mbCancelled As Boolean
 Private mbUsersCreated As Boolean
-Private miCreateMode As HrProSecurityMgr.CreateUserMode
+Private miCreateMode As SecurityMgr.CreateUserMode
 
 Public Property Get Cancelled() As Boolean
   Cancelled = mbCancelled
@@ -391,7 +391,7 @@ Private Sub PrintGrid()
   Dim strUserDescription As String
   Dim strPassword As String
   Dim strStatus As String
-  Dim objPrinter As New HrProSecurityMgr.clsPrintDef
+  Dim objPrinter As New SecurityMgr.clsPrintDef
   Dim objIcon As IPictureDisp
 
   On Error GoTo ErrorTrap
@@ -537,6 +537,6 @@ Private Sub grdAddedUsers_PrintError(ByVal PrintError As Long, Response As Integ
   
 End Sub
 
-Public Property Let CreateMode(ByVal piNewValue As HrProSecurityMgr.CreateUserMode)
+Public Property Let CreateMode(ByVal piNewValue As SecurityMgr.CreateUserMode)
   miCreateMode = piNewValue
 End Property

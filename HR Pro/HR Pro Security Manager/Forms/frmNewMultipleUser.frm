@@ -265,7 +265,7 @@ Private mlngPasswordExprID As Long
 Private mfCancelled As Boolean
 Private mstrSecurityGroupName As String
 Private mbForcePasswordChange As Boolean
-Private miAuthenticationMode As HrProSecurityMgr.CreateUserMode
+Private miAuthenticationMode As SecurityMgr.CreateUserMode
 Private mstrDomainName As String
 Private mbDisableDomainBrowsing As Boolean
 
@@ -721,7 +721,7 @@ Private Sub optAuthenticationMethod_Click(Index As Integer)
 End Sub
 
 ' Return the create mode
-Public Property Get CreateUserMode() As HrProSecurityMgr.CreateUserMode
+Public Property Get CreateUserMode() As SecurityMgr.CreateUserMode
   CreateUserMode = miAuthenticationMode
 End Property
 

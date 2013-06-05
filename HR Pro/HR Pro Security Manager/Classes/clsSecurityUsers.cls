@@ -31,7 +31,7 @@ Public Function Add(psUserName As String, _
   Optional psKey As String, _
   Optional plngPersonnelRecordID As Long, _
   Optional pbForcePasswordChange, _
-  Optional piLoginType As HrProSecurityMgr.LoginType, _
+  Optional piLoginType As SecurityMgr.LoginType, _
   Optional pbIsPolicyChecked As Boolean) As SecurityUser
     
   Dim objNewMember As SecurityUser

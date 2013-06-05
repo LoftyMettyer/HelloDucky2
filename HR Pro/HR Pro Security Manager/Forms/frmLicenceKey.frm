@@ -165,7 +165,7 @@ Begin VB.Form frmLicenceKey
       Width           =   2190
    End
    Begin VB.Label Label1 
-      Caption         =   "Please call HR Pro Support on"
+      Caption         =   "Please call OpenHR Support on"
       Height          =   615
       Left            =   210
       TabIndex        =   0
@@ -240,7 +240,7 @@ Private Sub Form_Load()
 
   Frame1.BackColor = Me.BackColor
   Label1.Caption = _
-    "Please call HR Pro Support on" & vbCrLf & _
+    "Please call OpenHR Support on" & vbCrLf & _
     "quoting your new licence details to obtain the authorisation code."
   lblSupportTel = GetSystemSetting("Support", "Telephone No", "")
 

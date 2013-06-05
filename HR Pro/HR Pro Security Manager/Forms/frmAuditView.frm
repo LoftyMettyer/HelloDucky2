@@ -44,7 +44,7 @@ Begin VB.Form frmAuditView
          Width           =   1440
       End
       Begin VB.CheckBox chkAction 
-         Caption         =   "&HR Pro Module"
+         Caption         =   "&OpenHR Module"
          Height          =   315
          Index           =   2
          Left            =   300

@@ -326,7 +326,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   MsgBox "Error reading the Domain." & vbNewLine & _
-          IIf(glngSQLVersion = 8, "Ensure the HR Pro Server DLL is registered." & vbNewLine, "") & _
+          IIf(glngSQLVersion = 8, "Ensure the OpenHR Server DLL is registered." & vbNewLine, "") & _
           "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
   ReDim InitialiseWindowsUsers(1, 0)
   GoTo TidyUpAndExit

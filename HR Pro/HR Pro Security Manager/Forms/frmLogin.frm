@@ -2,7 +2,7 @@ VERSION 5.00
 Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.Form frmLogin 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "HR Pro Security Manager - Login"
+   Caption         =   "OpenHR Security Manager - Login"
    ClientHeight    =   3675
    ClientLeft      =   1530
    ClientTop       =   3285
@@ -207,7 +207,7 @@ Private Declare Function SQLDrivers Lib "odbc32.dll" (ByVal henv&, ByVal fDirect
 Const SQL_SUCCESS As Long = 0
 Const SQL_FETCH_NEXT As Long = 1
 
-' HR Pro constants.
+' Constants.
 Const ODBCDRIVER As String = "SQL Server"
 
 ' Private classes.
@@ -291,8 +291,6 @@ Private Sub Form_Load()
 
   ' Position the login screen in the centre of the screen.
   UI.frmAtCenter Me
-
-  'lblVersion.Caption = "HR Pro Security Manager - Version " & App.Major & "." & App.Minor & "." & App.Revision
   lblVersion.Caption = "Version " & App.Major & "." & App.Minor & "." & App.Revision
 
   If ASRDEVELOPMENT Then
@@ -314,7 +312,7 @@ Private Sub Form_Load()
   ' Check that the SQL Server driver is installed.
   If Not CheckSQLDriver Then
     MsgBox "The required ODBC driver '" & ODBCDRIVER & "' is not installed" & vbCrLf & _
-      "Install the driver before running HR Pro", _
+      "Install the driver before running OpenHR", _
       vbExclamation + vbOKOnly, App.ProductName
     Unload frmLogin
     Exit Sub
@@ -383,7 +381,7 @@ Private Sub DisplayOtherUsers(ByVal pasUsers As Variant)
   fOneUser = (UBound(pasUsers, 2) = 1)
   
   ' First warning row.
-  sDisplay = "The following user" & IIf(fOneUser, " is", "s are") & " currently logged into the HR Pro databases :" & vbCrLf
+  sDisplay = "The following user" & IIf(fOneUser, " is", "s are") & " currently logged into the OpenHR databases :" & vbCrLf
   
   ' User rows.
   For iLoop = 1 To UBound(pasUsers, 2)
@@ -391,7 +389,7 @@ Private Sub DisplayOtherUsers(ByVal pasUsers As Variant)
   Next iLoop
 
   ' Second warning row.
-  sDisplay = sDisplay & vbCrLf & vbCrLf & "All users must be logged off before the HR Pro Security Manager can be used."
+  sDisplay = sDisplay & vbCrLf & vbCrLf & "All users must be logged off before the OpenHR Security Manager can be used."
   
   ' Display the warning.
   MsgBox sDisplay, vbOKOnly, App.ProductName
@@ -519,223 +517,6 @@ Private Sub txtUID_GotFocus()
   UI.txtSelText
   
 End Sub
-
-'Private Function CheckForLock(sUserName As String, sLock As String) As Boolean
-'  ' Check if the system has been locked.
-'  Dim sSQL As String
-'
-'  sSQL = "exec sp_ASRGetLockInfo"
-'  Set rsTemp = rdoCon.OpenResultset(sSQL)
-'
-'  If rsTemp(0) <> "No Lock" Then
-'    If rsTemp(0) <> sUserName Then
-'      CheckForLock = True
-'    End If
-'
-'    sLock = rsTemp(0)
-'  End If
-'
-'  rsTemp.Close
-'  Set rsTemp = Nothing
-'
-'End Function
-
-
-'Private Function CheckUsersOld() As Boolean
-'
-'  Dim sDisplay As String
-'  Dim sSQL As String
-'  Dim sDatabase As String
-'  Dim sComputerName As String
-'  Dim blnFoundThisApp As Boolean
-'
-'  Dim sSystemName As String
-'  Dim sSecurityName As String
-'  Dim sUserModuleName As String
-'
-'  Dim sProgName As String
-'  Dim sHostName As String
-'
-'  sComputerName = UI.GetHostName
-'  sDatabase = txtDatabase.Text
-'
-'  'Now we're connected, check for number of users logged on. First check if anyone is using
-'  'System Manager or Security Manager
-'  sSQL = "Select * From ASRSysConfig"
-'  On Error GoTo 0
-'  Set rsUsers = rdoCon.OpenResultset(sSQL, rdOpenForwardOnly, rdConcurReadOnly, rdExecDirect)
-'
-'  If rsUsers.BOF And rsUsers.EOF Then
-'    MsgBox "No Configuration Data Setup, please contact HR Pro Support", vbExclamation
-'    CheckUsers = False
-'    Exit Function
-'  End If
-'
-'  sSystemName = IIf(IsNull(rsUsers!SystemManagerAppName), "", rsUsers!SystemManagerAppName)
-'  sSecurityName = IIf(IsNull(rsUsers!SecurityManagerAppName), "", rsUsers!SecurityManagerAppName)
-'  sUserModuleName = IIf(IsNull(rsUsers!UserModuleAppName), "", rsUsers!UserModuleAppName)
-'
-'  rsUsers.Close
-'
-'
-'  sSQL = "exec sp_ASRGetUsersAndApp '" & sDatabase & "'"
-'  Set rsUsers = rdoCon.OpenResultset(sSQL, rdOpenForwardOnly, rdConcurReadOnly, rdExecDirect)
-'  Do While Not rsUsers.EOF
-'
-'    sProgName = Trim$(rsUsers!Program_name)
-'    sHostName = Trim$(rsUsers!HostName)
-'
-'    'Debug.Print Trim$(rsUsers!HostName), Trim$(rsUsers!loginame), Trim$(rsUsers!Program_name)
-'
-'    If sHostName = sComputerName And _
-'       sProgName = App.ProductName And _
-'       Not blnFoundThisApp Then
-'        'Found the app that you are running
-'        blnFoundThisApp = True
-'
-'    ElseIf sProgName = sSystemName Or _
-'           sProgName = sSecurityName Or _
-'           sProgName = sUserModuleName Then
-'        'Found a HR Pro module running so report it
-'        sDisplay = sDisplay & _
-'                   "User '" & Trim(rsUsers!Loginame) & "'" & _
-'                   " logged onto Machine '" & sHostName & "'" & _
-'                   " is currently using " & sProgName & "." & vbCrLf
-'    End If
-'
-'    rsUsers.MoveNext
-'  Loop
-'  rsUsers.Close
-'
-'
-'
-'  CheckUsers = (sDisplay = vbNullString)
-'  If Not CheckUsers Then
-'    If ASRDEVELOPMENT Then
-'      CheckUsers = True
-'    Else
-'      Set rdoCon = Nothing
-'    End If
-'
-'    sDisplay = "The following user(s) are currently logged into the HR Pro databases :" & vbCrLf & vbCrLf & _
-'               sDisplay & vbCrLf & vbCrLf & _
-'               "All user must be logged off before the " & App.ProductName & " can be used"
-'    MsgBox sDisplay, vbOKOnly, App.ProductName
-'  End If
-'
-'End Function
-
-
-'Private Function CheckUsers() As Boolean
-'
-'  Dim sDisplay As String
-'  Dim sSQL As String
-'  Dim sDatabase As String
-'  Dim sComputerName As String
-'
-'  Dim sSystemName As String
-'  Dim sSecurityName As String
-'  Dim sUserModuleName As String
-'  Dim sIntranetName As String
-'
-'  Dim sProgName As String
-'  Dim sHostName As String
-'  Dim sLoginName As String
-'
-'  sComputerName = UI.GetHostName
-'  sDatabase = txtDatabase.Text
-'
-'  'Now we're connected, check for number of users logged on. First check if anyone is using
-'  'System Manager or Security Manager
-'  sSQL = "Select * From ASRSysConfig"
-'  Set rsUsers = rdoCon.OpenResultset(sSQL, rdOpenForwardOnly, rdConcurReadOnly, rdExecDirect)
-'
-'  If rsUsers.BOF And rsUsers.EOF Then
-'    MsgBox "No Configuration Data Setup, please contact HR Pro Support.", vbExclamation
-'    CheckUsers = False
-'    Exit Function
-'  End If
-'
-'  sSystemName = IIf(IsNull(rsUsers!SystemManagerAppName), "", rsUsers!SystemManagerAppName)
-'  sSecurityName = IIf(IsNull(rsUsers!SecurityManagerAppName), "", rsUsers!SecurityManagerAppName)
-'  sUserModuleName = IIf(IsNull(rsUsers!UserModuleAppName), "", rsUsers!UserModuleAppName)
-'  sIntranetName = IIf(IsNull(rsUsers!IntranetModuleAppName), "", rsUsers!IntranetModuleAppName)
-'  rsUsers.Close
-'
-'  ' RH 29/09/00
-'  '
-'  ' LOGIN CHECKS...Noticed that when retrieving the recordset via an SQL
-'  ' stored procedure, it sometime 'duplicates' one entry, which could be
-'  ' the reason why Lloyds doesnt work. Avoid this by using the stored
-'  ' procedure code direct in VB.
-'  '
-'  ' In this case, if the stored procedure exists, use it, otherwise, use the
-'  ' VB Code
-'  '
-'
-'  sSQL = "select count(*) as cnt from sysobjects where name = 'sp_asrgetusersandapp'"
-'  Set rsUsers = rdoCon.OpenResultset(sSQL, rdOpenForwardOnly, rdConcurReadOnly, rdExecDirect)
-'
-'  If rsUsers!cnt = 0 Then
-'
-'      sSQL = "SELECT DISTINCT hostname, loginame, program_name, hostprocess " & _
-'         "FROM master..sysprocesses " & _
-'         "WHERE dbid in (" & _
-'                         "SELECT dbid " & _
-'                         "FROM master..sysdatabases " & _
-'                         "WHERE name = '" & gsDatabaseName & "') " & _
-'         "and spid <> @@spid " & _
-'         "ORDER BY loginame"
-'
-'  Else
-'
-'    sSQL = "exec sp_ASRGetUsersAndApp '" & sDatabase & "'"
-'
-'  End If
-'
-'
-'  Set rsUsers = rdoCon.OpenResultset(sSQL, rdOpenForwardOnly, rdConcurReadOnly, rdExecDirect)
-'
-'  Do While Not rsUsers.EOF
-'
-'    sProgName = Trim(rsUsers!Program_name)
-'    sHostName = Trim(rsUsers!HostName)
-'    sLoginName = Trim(rsUsers!Loginame)
-'
-'    If LCase(Trim(sProgName)) = LCase(Trim(sSystemName)) Or _
-'       LCase(Trim(sProgName)) = LCase(Trim(sSecurityName)) Or _
-'       LCase(Trim(sProgName)) = LCase(Trim(sUserModuleName)) Or _
-'       LCase(Trim(sProgName)) = LCase(Trim(sIntranetName)) Then
-'        'Found a HR Pro module running so report it
-'        sDisplay = sDisplay & _
-'                   "User '" & Trim(sLoginName) & "'" & _
-'                   " logged onto Machine '" & Trim(sHostName) & "'" & _
-'                   " is currently using " & Trim(sProgName) & "." & vbCrLf
-'
-'    End If
-'
-'    rsUsers.MoveNext
-'  Loop
-'
-'  rsUsers.Close
-'
-'  CheckUsers = (sDisplay = vbNullString)
-'  If Not CheckUsers Then
-'    If ASRDEVELOPMENT Then
-'      CheckUsers = True
-'    Else
-'      Set rdoCon = Nothing
-'    End If
-'
-'    sDisplay = "The following user(s) are currently logged into the HR Pro databases :" & vbCrLf & vbCrLf & _
-'               sDisplay & vbCrLf & vbCrLf & _
-'               "All user must be logged off before the " & App.ProductName & " can be used." & _
-'               IIf(ASRDEVELOPMENT, vbCrLf & "(ASR Development bypass!)", "")
-'    MsgBox sDisplay, vbOKOnly, App.ProductName
-'  End If
-'
-'End Function
-
 
 Private Sub CheckPassword()
 
@@ -924,7 +705,7 @@ Private Sub Login()
   Else
     Screen.MousePointer = vbNormal
     gobjProgress.CloseProgress
-    MsgBox "Please enter the name of the server on which the HR Pro database is located", _
+    MsgBox "Please enter the name of the server on which the OpenHR database is located", _
       vbExclamation + vbOKOnly, App.ProductName
     Exit Sub
   End If
@@ -947,7 +728,7 @@ Private Sub Login()
   Else
     Screen.MousePointer = vbNormal
     gobjProgress.CloseProgress
-    MsgBox "Please enter the name of the HR Pro database", _
+    MsgBox "Please enter the name of the OpenHR database", _
       vbExclamation + vbOKOnly, App.ProductName
     Exit Sub
   End If
@@ -991,13 +772,13 @@ Private Sub Login()
   End With
   Set rsSQLInfo = Nothing
   
-  ' The version of SQL Server is not 2000 so tell the user.
-  If glngSQLVersion < 9 Then
+  ' The version of SQL Server is not 2008 so tell the user.
+  If glngSQLVersion < 10 Then
     ' The version of SQL Server is neither 6.5 nor 7.0 so tell the user.
     Screen.MousePointer = vbNormal
     gobjProgress.CloseProgress
-    MsgBox "You are running an invalid version of SQL Server." & vbCrLf & vbCrLf & _
-      "HR Pro requires SQL Server version 2005 or above.", _
+    MsgBox "You are running an unsupported version of SQL Server." & vbCrLf & vbCrLf & _
+      "OpenHR requires SQL Server version 2008 or above.", _
       vbOKOnly, App.ProductName
     Exit Sub
   End If
@@ -1009,7 +790,7 @@ Private Sub Login()
     Screen.MousePointer = vbNormal
     gobjProgress.CloseProgress
     MsgBox "Windows authenticated users are not supported on your SQL Server" & vbCrLf & vbCrLf & _
-      "HR Pro requires SQL Server version 2000 or above.", _
+      "OpenHR requires SQL Server version 2008 or above.", _
       vbExclamation, App.ProductName
     Exit Sub
   End If
@@ -1309,7 +1090,7 @@ Public Sub CheckCommandLine()
       gobjProgress.AVI = dbLogin
       gobjProgress.NumberOfBars = 0
       gobjProgress.MainCaption = "Login"
-      gobjProgress.Caption = "Attempting log on to HR Pro..."
+      gobjProgress.Caption = "Attempting log on to OpenHR..."
       gobjProgress.OpenProgress
       Login
     End If
@@ -1399,7 +1180,7 @@ Private Sub CheckApplicationAccess()
     Application.AccessMode = accNone
     Screen.MousePointer = vbNormal
     MsgBox "You do not have permission to run the Security Manager." & vbCrLf & vbCrLf & _
-           "Please contact your HR Pro security administrator.", vbOKOnly + vbExclamation, App.ProductName
+           "Please contact your OpenHR security administrator.", vbOKOnly + vbExclamation, App.ProductName
     Exit Sub
   End If
 

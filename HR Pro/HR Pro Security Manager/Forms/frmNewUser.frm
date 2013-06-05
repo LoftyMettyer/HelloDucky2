@@ -143,7 +143,7 @@ Private mstrDomainName As String
 Private mfCancelled As Boolean
 Private msUserName As String
 Private msUserNamesLoginTypes As String
-Private miLoginType As HrProSecurityMgr.LoginType
+Private miLoginType As SecurityMgr.LoginType
 
 Public Property Get UserLogin() As String
 '  Return the entered user login.
@@ -234,9 +234,9 @@ End Sub
 
 Private Sub cmdGetWindowsLogins_Click()
 
-  Dim frmUserList As HrProSecurityMgr.frmNewTrustedUser
+  Dim frmUserList As SecurityMgr.frmNewTrustedUser
   
-  Set frmUserList = New HrProSecurityMgr.frmNewTrustedUser
+  Set frmUserList = New SecurityMgr.frmNewTrustedUser
   
   With frmUserList
     .DomainName = cboDomain.Text
@@ -354,7 +354,7 @@ Private Sub Form_Load()
   Dim objGroup As SecurityGroup
   Dim objUser As SecurityUser
   Dim astrDomainList() As String
-  Dim objNetwork As New HrProSecurityMgr.Net
+  Dim objNetwork As New SecurityMgr.Net
   Dim rsRecords As New ADODB.Recordset
   Dim iResizeArray As Integer
   
@@ -473,7 +473,7 @@ Private Sub Form_Resize()
 
 End Sub
 
-Public Property Get LoginType() As HrProSecurityMgr.LoginType
+Public Property Get LoginType() As SecurityMgr.LoginType
 '  Return the login type.
   LoginType = miLoginType
 End Property
