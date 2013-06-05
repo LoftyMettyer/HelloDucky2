@@ -76,6 +76,9 @@ Public Const gsWorkingDaysBetween2Dates_PROCEDURENAME = "sp_ASRFn_WorkingDaysBet
 Private mvar_fGeneralOK As Boolean
 Private mvar_sGeneralMsg As String
 
+' NPG Fault HRPRO-735
+Private mvar_fSSPGeneralOK As Boolean
+Private mvar_sSSPGeneralMsg As String
 
 Public Function ConfigureAbsenceSpecifics() As Boolean
   ' Configure module specific objects (eg. stored procedures)
@@ -86,6 +89,9 @@ Public Function ConfigureAbsenceSpecifics() As Boolean
   
   mvar_fGeneralOK = True
   mvar_sGeneralMsg = ""
+  
+  mvar_fSSPGeneralOK = True
+  mvar_sSSPGeneralMsg = ""
   
   ' RH 20/11/00 - Create the AbsenceBetween2Dates Stored Procedure.
   fOK = CreateAbsenceBetween2DatesStoredProcedure
@@ -130,12 +136,15 @@ Public Function ConfigureAbsenceSpecifics() As Boolean
   'DropSSPStoredProcedure
   DropProcedure gsSSP_PROCEDURENAME
   
-  ' Create the SSP stored procedure.
-  If fOK And mvar_fGeneralOK Then
-    fOK = CreateSSPStoredProcedure
-    If Not fOK Then
-      'DropSSPStoredProcedure
-      DropProcedure gsSSP_PROCEDURENAME
+  ' NPG20100607 Fault HRPRO-735
+  If mvar_fSSPGeneralOK Then
+    ' Create the SSP stored procedure.
+    If fOK And mvar_fGeneralOK Then
+      fOK = CreateSSPStoredProcedure
+      If Not fOK Then
+        'DropSSPStoredProcedure
+        DropProcedure gsSSP_PROCEDURENAME
+      End If
     End If
   End If
   
@@ -2191,7 +2200,7 @@ Private Function CreateSSPStoredProcedure() As Boolean
     ' 22/03/2002 JPD Check to avoid recurrent running of the SSP stored procedure.
     rsInfo.Open "SELECT COUNT(*) FROM sysobjects WHERE name = 'ASRSysSSPRunning' AND type = 'U'", gADOCon, adOpenForwardOnly, adLockReadOnly
     If Not rsInfo.BOF And Not rsInfo.EOF Then
-      fSSPRunningTableExists = (rsInfo.Fields(0).Value > 0)
+      fSSPRunningTableExists = (rsInfo.Fields(0).value > 0)
     Else
       fSSPRunningTableExists = False
     End If
@@ -3393,6 +3402,7 @@ Private Function ReadAbsenceRecordParameters() As Boolean
   On Error GoTo ErrorTrap
   
   Dim fOK As Boolean
+  Dim iSSPColsConfigured As Integer
   
   With recModuleSetup
     .Index = "idxModuleParameter"
@@ -3402,13 +3412,13 @@ Private Function ReadAbsenceRecordParameters() As Boolean
     fOK = Not .NoMatch
     If fOK Then
       'fOK = Not IsNull(!parametervalue)
-      fOK = (IIf(IsNull(!parametervalue), 0, Val(!parametervalue)) > 0)
+      fOK = (IIf(IsNull(!parametervalue), 0, val(!parametervalue)) > 0)
     End If
     If Not fOK Then
       mvar_fGeneralOK = False
       mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  'Absence' table not defined."
     Else
-      mvar_lngAbsenceTableID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+      mvar_lngAbsenceTableID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
 
       With recTabEdit
         .Index = "idxTableID"
@@ -3434,14 +3444,14 @@ Private Function ReadAbsenceRecordParameters() As Boolean
       fOK = Not .NoMatch
       If fOK Then
         'fOK = Not IsNull(!parametervalue)
-        fOK = (IIf(IsNull(!parametervalue), 0, Val(!parametervalue)) > 0)
+        fOK = (IIf(IsNull(!parametervalue), 0, val(!parametervalue)) > 0)
       End If
       If Not fOK Then
         mvar_fGeneralOK = False
         
         mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'Start Date' column not defined."
       Else
-        mvar_lngAbsence_StartDateColumnID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngAbsence_StartDateColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       
         With recColEdit
           .Index = "idxColumnID"
@@ -3474,7 +3484,7 @@ Private Function ReadAbsenceRecordParameters() As Boolean
         
         mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'End Date' column not defined."
       Else
-        mvar_lngAbsence_EndDateColumnID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngAbsence_EndDateColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       
         With recColEdit
           .Index = "idxColumnID"
@@ -3507,7 +3517,7 @@ Private Function ReadAbsenceRecordParameters() As Boolean
         
         mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'Start Session' column not defined."
       Else
-        mvar_lngAbsence_StartSessionColumnID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngAbsence_StartSessionColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       
         With recColEdit
           .Index = "idxColumnID"
@@ -3540,7 +3550,7 @@ Private Function ReadAbsenceRecordParameters() As Boolean
         
         mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'End Session' column not defined."
       Else
-        mvar_lngAbsence_EndSessionColumnID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngAbsence_EndSessionColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       
         With recColEdit
           .Index = "idxColumnID"
@@ -3560,6 +3570,9 @@ Private Function ReadAbsenceRecordParameters() As Boolean
         End With
       End If
     End If
+    
+    ' NPG20100607 Fault HRPRO-735
+    iSSPColsConfigured = 0
   
     If mvar_fGeneralOK Then
       ' Get the Absence SSP Applies column ID.
@@ -3569,11 +3582,11 @@ Private Function ReadAbsenceRecordParameters() As Boolean
         fOK = Not IsNull(!parametervalue)
       End If
       If Not fOK Then
-        mvar_fGeneralOK = False
+        mvar_fSSPGeneralOK = False
         
-        mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'SSP Applies' column not defined."
+        mvar_sSSPGeneralMsg = mvar_sSSPGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'SSP Applies' column not defined."
       Else
-        mvar_lngAbsence_SSPAppliesColumnID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngAbsence_SSPAppliesColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       
         With recColEdit
           .Index = "idxColumnID"
@@ -3584,11 +3597,12 @@ Private Function ReadAbsenceRecordParameters() As Boolean
             fOK = Not IsNull(!ColumnName)
           End If
           If Not fOK Then
-            mvar_fGeneralOK = False
+            mvar_fSSPGeneralOK = False
             
-            mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'SSP Applies' column not found."
+            mvar_sSSPGeneralMsg = mvar_sSSPGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'SSP Applies' column not found."
           Else
             mvar_sAbsence_SSPAppliesColumnName = !ColumnName
+            iSSPColsConfigured = iSSPColsConfigured + 1
           End If
         End With
       End If
@@ -3602,11 +3616,11 @@ Private Function ReadAbsenceRecordParameters() As Boolean
         fOK = Not IsNull(!parametervalue)
       End If
       If Not fOK Then
-        mvar_fGeneralOK = False
+        mvar_fSSPGeneralOK = False
         
-        mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'SSP Qualifying Days' column not defined."
+        mvar_sSSPGeneralMsg = mvar_sSSPGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'SSP Qualifying Days' column not defined."
       Else
-        mvar_lngAbsence_QualifyingDaysColumnID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngAbsence_QualifyingDaysColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       
         With recColEdit
           .Index = "idxColumnID"
@@ -3617,11 +3631,12 @@ Private Function ReadAbsenceRecordParameters() As Boolean
             fOK = Not IsNull(!ColumnName)
           End If
           If Not fOK Then
-            mvar_fGeneralOK = False
+            mvar_fSSPGeneralOK = False
             
-            mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'SSP Qualifying Days' column not found."
+            mvar_sSSPGeneralMsg = mvar_sSSPGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'SSP Qualifying Days' column not found."
           Else
             mvar_sAbsence_QualifyingDaysColumnName = !ColumnName
+            iSSPColsConfigured = iSSPColsConfigured + 1
           End If
         End With
       End If
@@ -3637,9 +3652,9 @@ Private Function ReadAbsenceRecordParameters() As Boolean
       If Not fOK Then
         mvar_fGeneralOK = False
         
-        mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'SSP Waiting Days' column not defined."
+        mvar_sSSPGeneralMsg = mvar_sSSPGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'SSP Waiting Days' column not defined."
       Else
-        mvar_lngAbsence_WaitingDaysColumnID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngAbsence_WaitingDaysColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       
         With recColEdit
           .Index = "idxColumnID"
@@ -3650,11 +3665,12 @@ Private Function ReadAbsenceRecordParameters() As Boolean
             fOK = Not IsNull(!ColumnName)
           End If
           If Not fOK Then
-            mvar_fGeneralOK = False
+            mvar_fSSPGeneralOK = False
             
-            mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'SSP Waiting Days' column not found."
+            mvar_sSSPGeneralMsg = mvar_sSSPGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'SSP Waiting Days' column not found."
           Else
             mvar_sAbsence_WaitingDaysColumnName = !ColumnName
+            iSSPColsConfigured = iSSPColsConfigured + 1
           End If
         End With
       End If
@@ -3668,11 +3684,11 @@ Private Function ReadAbsenceRecordParameters() As Boolean
         fOK = Not IsNull(!parametervalue)
       End If
       If Not fOK Then
-        mvar_fGeneralOK = False
+        mvar_fSSPGeneralOK = False
         
-        mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'SSP Paid Days' column not defined."
+        mvar_sSSPGeneralMsg = mvar_sSSPGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'SSP Paid Days' column not defined."
       Else
-        mvar_lngAbsence_PaidDaysColumnID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngAbsence_PaidDaysColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       
         With recColEdit
           .Index = "idxColumnID"
@@ -3683,15 +3699,25 @@ Private Function ReadAbsenceRecordParameters() As Boolean
             fOK = Not IsNull(!ColumnName)
           End If
           If Not fOK Then
-            mvar_fGeneralOK = False
+            mvar_fSSPGeneralOK = False
             
-            mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'SSP Paid Days' column not found."
+            mvar_sSSPGeneralMsg = mvar_sSSPGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'SSP Paid Days' column not found."
           Else
             mvar_sAbsence_PaidDaysColumnName = !ColumnName
+            iSSPColsConfigured = iSSPColsConfigured + 1
           End If
         End With
       End If
     End If
+  
+    ' NPG20100607 Fault HRPRO-735
+    ' If all SSP columns are undefined don't warn during save any more. If ANY are defined report as necessary
+    If iSSPColsConfigured > 0 Then
+      mvar_fGeneralOK = mvar_fSSPGeneralOK
+      mvar_sGeneralMsg = mvar_sGeneralMsg & mvar_sSSPGeneralMsg
+    End If
+  
+  
   
     If mvar_fGeneralOK Then
       ' Get the Absence Type column ID.
@@ -3705,7 +3731,7 @@ Private Function ReadAbsenceRecordParameters() As Boolean
         
         mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTableName & "' table 'Type' column not defined."
       Else
-        mvar_lngAbsence_TypeColumnID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngAbsence_TypeColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       
         With recColEdit
           .Index = "idxColumnID"
@@ -3767,7 +3793,7 @@ Private Function ReadAbsenceRecordParameters() As Boolean
             
             mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  Absence Working Days column not defined."
           Else
-            mvar_lngAbsenceWorkingDaysColumnID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+            mvar_lngAbsenceWorkingDaysColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
           
             With recColEdit
               .Index = "idxColumnID"
@@ -3803,7 +3829,7 @@ Private Function ReadAbsenceRecordParameters() As Boolean
       If fOK Then
         fOK = Not IsNull(!parametervalue)
         
-        mvar_lngAbsenceContinuousColumnID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngAbsenceContinuousColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       
         With recColEdit
           .Index = "idxColumnID"
@@ -3826,7 +3852,7 @@ Private Function ReadAbsenceRecordParameters() As Boolean
       If fOK Then
         fOK = Not IsNull(!parametervalue)
         
-        mvar_lngAbsenceDurationColumnID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngAbsenceDurationColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       
         With recColEdit
           .Index = "idxColumnID"
@@ -3876,7 +3902,7 @@ Private Function ReadAbsenceTypeRecordParameters() As Boolean
       
       mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  'Absence Type' table not defined."
     Else
-      mvar_lngAbsenceTypeTableID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+      mvar_lngAbsenceTypeTableID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
 
       With recTabEdit
         .Index = "idxTableID"
@@ -3908,7 +3934,7 @@ Private Function ReadAbsenceTypeRecordParameters() As Boolean
         
         mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTypeTableName & "' table 'Type' column not defined."
       Else
-        mvar_lngAbsenceType_TypeColumnID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngAbsenceType_TypeColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       
         With recColEdit
           .Index = "idxColumnID"
@@ -3937,11 +3963,14 @@ Private Function ReadAbsenceTypeRecordParameters() As Boolean
         fOK = Not IsNull(!parametervalue)
       End If
       If Not fOK Then
-        mvar_fGeneralOK = False
+        ' NPG20100607 Fault HRPRO-735
+        ' mvar_fGeneralOK = False
+        mvar_fSSPGeneralOK = False
         
-        mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTypeTableName & "' table 'SSP Applies' column not defined."
+        ' NPG20100607 Fault HRPRO-735
+        ' mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTypeTableName & "' table 'SSP Applies' column not defined."
       Else
-        mvar_lngAbsenceType_SSPAppliesColumnID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngAbsenceType_SSPAppliesColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       
         With recColEdit
           .Index = "idxColumnID"
@@ -3952,9 +3981,12 @@ Private Function ReadAbsenceTypeRecordParameters() As Boolean
             fOK = Not IsNull(!ColumnName)
           End If
           If Not fOK Then
-            mvar_fGeneralOK = False
+            ' NPG20100607 Fault HRPRO-735
+            ' mvar_fGeneralOK = False
+            mvar_fSSPGeneralOK = False
             
-            mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTypeTableName & "' table 'SSP Applies' column not found."
+            ' NPG20100607 Fault HRPRO-735
+            ' mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sAbsenceTypeTableName & "' table 'SSP Applies' column not found."
           Else
             mvar_sAbsenceType_SSPAppliesColumnName = !ColumnName
           End If
@@ -3997,7 +4029,7 @@ Private Function ReadPersonnelRecordParameters() As Boolean
       
       mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  'Personnel' table not defined."
     Else
-      mvar_lngPersonnelTableID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+      mvar_lngPersonnelTableID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
 
       With recTabEdit
         .Index = "idxTableID"
@@ -4025,7 +4057,7 @@ Private Function ReadPersonnelRecordParameters() As Boolean
       .Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_DATEOFBIRTH
       If Not .NoMatch Then
         If Not IsNull(!parametervalue) Then
-          mvar_lngPersonnel_DateOfBirthColumnID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+          mvar_lngPersonnel_DateOfBirthColumnID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
         
           With recColEdit
             .Index = "idxColumnID"
