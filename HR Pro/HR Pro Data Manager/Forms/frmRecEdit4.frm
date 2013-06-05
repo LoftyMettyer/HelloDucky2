@@ -3,9 +3,9 @@ Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
 Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "tinumb6.ocx"
 Object = "{E2D000D0-2DA1-11D2-B358-00104B59D73D}#1.0#0"; "titext6.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
-Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
+Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
 Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
@@ -14,6 +14,7 @@ Object = "{4FD0EB05-F124-4460-A61D-CB587234FB75}#1.0#0"; "COA_Image.ocx"
 Object = "{EDB7B7A8-7908-4896-B964-57CE7262666E}#1.0#0"; "COA_OLE.ocx"
 Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "COA_Label.ocx"
 Object = "{3389D561-C8E1-4CB0-A73E-77582EA68D3C}#1.1#0"; "COA_Lookup.ocx"
+Object = "{AD837810-DD1E-44E0-97C5-854390EA7D3A}#3.1#0"; "COA_Navigation.ocx"
 Begin VB.Form frmRecEdit4 
    BorderStyle     =   1  'Fixed Single
    ClientHeight    =   5835
@@ -59,6 +60,40 @@ Begin VB.Form frmRecEdit4
       Top             =   795
       Visible         =   0   'False
       Width           =   6000
+      Begin COANavigation.COA_Navigation COA_Navigation1 
+         Height          =   645
+         Index           =   0
+         Left            =   2160
+         TabIndex        =   20
+         Top             =   1530
+         Width           =   1185
+         _ExtentX        =   2090
+         _ExtentY        =   1138
+         Caption         =   "Navigate..."
+         DisplayType     =   1
+         NavigateIn      =   0
+         NavigateTo      =   ""
+         InScreenDesigner=   0   'False
+         ColumnID        =   0
+         ColumnName      =   ""
+         Selected        =   0   'False
+         Enabled         =   -1  'True
+         BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   -1  'True
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         FontBold        =   0   'False
+         FontSize        =   8.25
+         FontStrikethrough=   0   'False
+         FontUnderline   =   -1  'True
+         ForeColor       =   0
+         NavigateOnSave  =   0   'False
+      End
       Begin XtremeSuiteControls.GroupBox Frame1 
          Height          =   330
          Index           =   0
@@ -1259,6 +1294,59 @@ Private Sub ASRUserImage1_SpacePressed(Index As Integer)
 
   ASRUserImage1_Click (Index)
   
+End Sub
+
+Private Sub COA_Navigation1_ToolClickRequest(Index As Integer, ByVal Tool As String)
+
+  On Error GoTo ErrorTrap
+
+  Dim objTool As New ActiveBarLibraryCtl.Tool
+  Dim sTool As Variant
+  Dim lngStart As Long
+  Dim lngEnd As Long
+  Dim asTools() As String
+  Dim bPreviousCloseDefSelAfterRun As Boolean
+  Dim sParameter As String
+  
+  gbCloseDefSelAfterRun = True
+  gblnBatchMode = True
+  gbJustRunIt = True
+  
+  asTools = Split(Tool, ";")
+  For Each sTool In asTools
+    
+    lngStart = InStr(1, sTool, "(")
+    lngEnd = InStr(1, sTool, ")")
+    If lngStart > 0 And lngEnd > 0 Then
+      sParameter = Mid(sTool, lngStart + 1, (lngEnd - lngStart) - 1)
+      If IsNumeric(sParameter) Then
+        glngBypassDefsel_ID = CLng(sParameter)
+      Else
+        ' Calculate the parameter code
+      End If
+      
+      'objTool.Tag = Replace(sParameter, """", "")
+      objTool.Name = Mid(sTool, 1, lngStart - 1)
+    Else
+      objTool.Name = sTool
+    End If
+    
+    frmMain.abMain_Click objTool
+    
+    glngBypassDefsel_ID = 0
+  
+  Next sTool
+
+TidyUpAndExit:
+  gbCloseDefSelAfterRun = bPreviousCloseDefSelAfterRun
+  gblnBatchMode = False
+  gbJustRunIt = False
+  
+  Exit Sub
+
+ErrorTrap:
+  GoTo TidyUpAndExit
+
 End Sub
 
 Private Sub Combo1_KeyPress(Index As Integer, KeyAscii As Integer)
@@ -4447,6 +4535,13 @@ Public Sub UpdateControls(Optional pfNoWarnings As Boolean)
                   .Value = mrsRecords(sColumnName).Value & vbNullString
                 End If
               
+              ElseIf TypeOf objControl Is COA_Navigation Then
+                If fResetControl Then
+                  .NavigateTo = ""
+                Else
+                  .NavigateTo = mrsRecords(sColumnName).Value & vbNullString
+                End If
+              
               ElseIf TypeOf objControl Is CommandButton Then
                 lngParentRecordID = 0
                 If Not fResetControl Then
@@ -4805,6 +4900,11 @@ Public Function Update(Optional pfDeactivating As Variant) As Boolean
           If TypeOf objControl Is TDBText6Ctl.TDBText Then
             fDoControl = Not objControl.ReadOnly
           End If
+          
+          If TypeOf objControl Is COA_Navigation Then
+            fDoControl = False
+          End If
+          
         End If
         
         If fDoControl Then
@@ -5107,6 +5207,10 @@ Public Function Update(Optional pfDeactivating As Variant) As Boolean
   End If
   
   If fSavedOK Then
+    
+    ' Do any bespoke post save navigation code
+    ExecutePostSaveCode
+    
     ' Refresh the recordset as the current record may no longer be in it.
     RefreshRecordset
     
@@ -6596,7 +6700,7 @@ Public Function SaveChanges(Optional pfUpdateControls As Variant, _
         mfCancelled = True
         Database.Validation = False
     End Select
-    
+       
     'If Not mfCancelled Then
     If Not mfCancelled And Not mfUnloading Then
       frmMain.RefreshMainForm Me
@@ -7549,7 +7653,7 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
 
         ' Set the BackColor property for all controls
         ' except Images and tabs....and OLE's
-        If (iControlType And (ctlImage Or ctlTab Or ctlOle Or ctlPhoto Or ctlCommand Or ctlLine)) = 0 Then
+        If (iControlType And (ctlImage Or ctlTab Or ctlOle Or ctlPhoto Or ctlCommand Or ctlLine Or ctlNavigation)) = 0 Then
           .BackColor = objScreenControl.BackColor
         End If
 
@@ -7622,6 +7726,17 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
 
           ' JPD20021016 Fault 4605
           objNewControl.Enabled = False
+        End If
+
+        ' Navigation control
+        If iControlType = ctlNavigation Then
+          .ColumnID = objScreenControl.ColumnID
+          .Caption = objScreenControl.Caption
+          .DisplayType = objScreenControl.DisplayType
+          .NavigateTo = objScreenControl.NavigateTo
+          .NavigateIn = objScreenControl.NavigateIn
+          .NavigateOnSave = objScreenControl.NavigateOnSave
+          .Enabled = True
         End If
 
         ' If the control is a radio then set it's Options and borderstyle properties
@@ -7830,7 +7945,13 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
               End If
 
               ' Disable control if no permission is granted.
-              .Enabled = Not objScreenControl.ReadOnly
+              If TypeOf objNewControl Is COA_Navigation Then
+                .Enabled = True
+                .NavigateOnSave = objScreenControl.NavigateOnSave
+              Else
+                .Enabled = Not objScreenControl.ReadOnly
+              End If
+              
               If .Enabled Then
                 'Fix for date and lookup control
                 If (TypeOf objNewControl Is GTMaskDate.GTMaskDate) Or _
@@ -7900,12 +8021,13 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
           End If
         Else
           ' Parent table control.
-          If (iControlType And (ctlLabel Or ctlFrame Or ctlImage Or ctlLine)) = 0 Then
+          If (iControlType And (ctlLabel Or ctlFrame Or ctlImage Or ctlLine Or ctlNavigation)) = 0 Then
             .Enabled = False
 
             If (iControlType <> ctlImage) And _
               (iControlType <> ctlPhoto) And _
               (iControlType <> ctlWorkingPattern) And _
+              (iControlType <> ctlNavigation) And _
               (iControlType <> ctlOle) Then 'NPG20080519 Fault 13003
               .BackColor = COL_GREY
               'NHRD23032007 Fault 11675 Making readonly multiline fields scrollable
@@ -8137,6 +8259,9 @@ Private Function GetControlArray(ByRef pobjScreenControl As clsScreenControl) As
       
     Case ctlWorkingPattern
       Set objControlArray = Me.ASRWorkingPattern1
+      
+    Case ctlNavigation
+      Set objControlArray = Me.COA_Navigation1
       
     Case Else
       Set objControlArray = Nothing
@@ -10989,8 +11114,9 @@ Public Sub MailMergeClick()
       .EnableRun = True
 
       If .ShowList(utlMailMerge) Then
-
-        .Show vbModal
+        
+        .CustomShow vbModal
+        
         Select Case .Action
         Case edtSelect
           Set objExecution = New clsMailMergeRun
@@ -11153,7 +11279,7 @@ Public Sub DataTransferClick()
 
       If .ShowList(utlDataTransfer) Then
 
-        .Show vbModal
+        .CustomShow vbModal
         
         Select Case .Action
           Case edtSelect
@@ -11347,7 +11473,7 @@ Public Sub LabelsClick()
 
       If .ShowList(utlLabel) Then
 
-        .Show vbModal
+        .CustomShow vbModal
         Select Case .Action
         Case edtSelect
           Set objExecution = New clsMailMergeRun
@@ -11417,7 +11543,7 @@ Public Sub MatchReportClick(mrtMatchReportType As MatchReportType)
 
       If .ShowList(lngTYPE, "MatchReportType = " & CStr(mrtMatchReportType)) Then
 
-        .Show vbModal
+        .CustomShow vbModal
         Select Case .Action
         Case edtAdd
           Set frmEdit = New frmMatchDef
@@ -11511,7 +11637,7 @@ Public Sub RecordProfileClick()
 
       If .ShowList(utlRecordProfile) Then
 
-        .Show vbModal
+        .CustomShow vbModal
         Select Case .Action
         Case edtSelect
           Set objRecordProfile = New clsRecordProfileRUN
@@ -11565,7 +11691,7 @@ Public Sub CalendarReportClick()
 
       If .ShowList(utlCalendarReport) Then
 
-        .Show vbModal
+        .CustomShow vbModal
         Select Case .Action
         Case edtSelect
           Set objCalendarReport = New clsCalendarReportsRUN
@@ -11911,6 +12037,27 @@ Public Sub EnableNavigation(blnEnabled As Boolean)
     ActiveBar1.Tools("PreviousRecord").Enabled = blnEnabled
     ActiveBar1.Tools("NextRecord").Enabled = blnEnabled
     ActiveBar1.Tools("LastRecord").Enabled = blnEnabled
+
+End Sub
+
+' Executes any code thats in the hidden navigation control
+Private Sub ExecutePostSaveCode()
+
+  On Error GoTo ErrorTrap
+  
+  Dim objControl As Control
+
+  For Each objControl In Me.Controls
+    If TypeOf objControl Is COA_Navigation Then
+      objControl.ExecutePostSave
+    End If
+  Next objControl
+
+TidyUpAndExit:
+  Exit Sub
+
+ErrorTrap:
+  GoTo TidyUpAndExit
 
 End Sub
 
