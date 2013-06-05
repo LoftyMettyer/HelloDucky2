@@ -1080,6 +1080,7 @@ Public Sub Complete()
   Dim strDefaultPrinter As String
   Dim strFormat As String
   Dim strTempFile As String
+  Dim strExtension As String
   
   On Local Error GoTo LocalErr
   
@@ -1121,10 +1122,23 @@ Public Sub Complete()
       mstrErrorMessage = "This definition is set to save in a file format which is not compatible with your version of Microsoft Office."
       GoTo TidyAndExit
     End If
-    mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(strFormat)
+    
+    ' calculate the appropriate output type
+    strExtension = LCase(Mid(mstrFileName, InStr(1, mstrFileName, ".", vbTextCompare) + 1, 3))
+    Select Case strExtension
+    Case "pdf"
+      mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatPDF)
+    Case "doc"
+      mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatDocument97)
+    Case "docx"
+      mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatXMLDocument)
+    Case "txt"
+      mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatText)
+    Case "rtf"
+      mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(wdFormatRTF)
+    End Select
 
   End If
-  
   
   'PRINTER
   If mblnPrinter Then
