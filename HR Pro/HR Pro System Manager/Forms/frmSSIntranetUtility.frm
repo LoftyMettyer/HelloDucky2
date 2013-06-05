@@ -107,8 +107,9 @@ Public Sub Initialize(psUtilityType As String, psUtilityID As String)
   UtilityType = psUtilityType
   UtilityID = psUtilityID
 
+  cmdOK.Enabled = (val(psUtilityID) = 0)
   
-  RefreshControls
+  'RefreshControls
 End Sub
 
 
@@ -139,6 +140,8 @@ If cboHRProUtilityType.ListIndex >= 0 Then
     End If
   End If
 End If
+
+cmdOK.Enabled = True
 
 End Sub
 
