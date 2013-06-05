@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
 Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "coasd_selectionbox.ocx"
 Object = "{F3C5146D-8FDA-4D29-8E41-0C27C803C808}#1.0#0"; "coawf_beginend.ocx"
 Object = "{08EDC6C1-0A62-485F-8917-8D9FB93DB156}#1.0#0"; "coawf_decision.ocx"
@@ -11647,8 +11647,10 @@ Public Function ValidateWorkflow(pfSaving As Boolean, _
   Dim fLinkOK As Boolean
   Dim sSQL As String
   Dim rsInfo As New ADODB.Recordset
+  Dim bProgressDisplayed As Boolean
        
   ' Punch up a progress bar
+  bProgressDisplayed = gobjProgress.Visible
   With gobjProgress
     .Caption = "Workflow Designer"
     .NumberOfBars = 1
@@ -11974,6 +11976,7 @@ Public Function ValidateWorkflow(pfSaving As Boolean, _
   
 TidyUpAndExit:
   Screen.MousePointer = vbDefault
+  gobjProgress.Visible = bProgressDisplayed
   
   ValidateWorkflow = fContinue
   Exit Function
