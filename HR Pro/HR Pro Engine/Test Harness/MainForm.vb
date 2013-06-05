@@ -65,7 +65,11 @@ Public Class MainForm
     sw.Start()
       bOK = objPhoenix.Script.CreateObjects()
       Console.WriteLine(String.Format("Create Objects: {0} milliseconds", sw.ElapsedMilliseconds))
-    'bOK = objPhoenix.Script.CreateTriggers()
+
+      sw.Restart()
+      bOK = objPhoenix.Script.CreateTriggers()
+      Console.WriteLine(String.Format("Create Triggers: {0} milliseconds", sw.ElapsedMilliseconds))
+
     'bOK = objPhoenix.Script.CreateFunctions
     'bOK = objPhoenix.Script.ScriptIndexes
 

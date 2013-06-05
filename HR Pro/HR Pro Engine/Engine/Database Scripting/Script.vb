@@ -380,6 +380,9 @@ Namespace ScriptDB
          Dim aryAuditDeletes As ArrayList
 
          Try
+            'Build list of existing system UDF
+            Dim existingTriggers = (From f In DatabaseMetadata.GetTriggers()
+                             ).ToDictionary(Function(f) f.Name, StringComparer.InvariantCultureIgnoreCase)
 
             For Each objTable In Globals.Tables
 
@@ -752,7 +755,7 @@ Namespace ScriptDB
                    , objTable.Name, sTriggerName _
                    , objTable.ID _
                    , String.Join(",", aryAllWriteableColumns.ToArray()), String.Join("," & vbNewLine, aryAllWriteableFormatted.ToArray()))
-               ScriptTrigger("dbo", objTable, TriggerType.InsteadOfInsert, sSQL)
+               ScriptTrigger("dbo", objTable, TriggerType.InsteadOfInsert, sSQL, existingTriggers)
 
                ' -------------------
                ' AFTER INSERT
@@ -770,7 +773,7 @@ Namespace ScriptDB
                    "    DELETE [dbo].[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3};" & vbNewLine & vbNewLine & _
                    "{4}" & vbNewLine & vbNewLine _
                    , objTable.Name, sTriggerName, sSQLCode_AuditInsert, objTable.ID, objTable.SysMgrInsertTrigger)
-               ScriptTrigger("dbo", objTable, TriggerType.AfterInsert, sSQL)
+               ScriptTrigger("dbo", objTable, TriggerType.AfterInsert, sSQL, existingTriggers)
 
                ' -------------------
                ' INSTEAD OF UPDATE
@@ -789,7 +792,7 @@ Namespace ScriptDB
                    , objTable.ID _
                    , sSQLWriteableColumns _
                    , Consts.SysTriggerTransaction, objTable.ID)
-               ScriptTrigger("dbo", objTable, TriggerType.InsteadOfUpdate, sSQL)
+               ScriptTrigger("dbo", objTable, TriggerType.InsteadOfUpdate, sSQL, existingTriggers)
 
                ' -------------------
                ' AFTER UPDATE
@@ -815,7 +818,7 @@ Namespace ScriptDB
                    , "", objTable.ID, Consts.SysTriggerTransaction _
                    , "" _
                    , sSQLCode_AuditUpdate, sSQLPostAuditCalcs, objTable.SysMgrUpdateTrigger) & vbNewLine & vbNewLine
-               ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSQL)
+               ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSQL, existingTriggers)
 
                ' -------------------
                ' AFTER DELETE
@@ -835,7 +838,7 @@ Namespace ScriptDB
                    "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {5};" & vbNewLine & vbNewLine _
                    , objTable.Name, sTriggerName, sSQLCode_AuditDelete, sSQLParentColumns_Delete _
                    , Consts.SysTriggerTransaction, objTable.ID, objTable.SysMgrDeleteTrigger)
-               ScriptTrigger("dbo", objTable, TriggerType.AfterDelete, sSQL)
+               ScriptTrigger("dbo", objTable, TriggerType.AfterDelete, sSQL, existingTriggers)
 
             Next
 
@@ -851,7 +854,7 @@ Namespace ScriptDB
 
       End Function
 
-      Private Function ScriptTrigger(ByVal [Role] As String, ByVal [Table] As Table, ByVal [TriggerType] As TriggerType, ByVal [BodyCode] As String) As Boolean
+      Private Function ScriptTrigger(ByVal [Role] As String, ByVal [Table] As Table, ByVal [TriggerType] As TriggerType, ByVal [BodyCode] As String, existingTriggers As IDictionary(Of String, ScriptedMetadata)) As Boolean
 
          Dim sSQL As String = String.Empty
          Dim sTriggerType As String = String.Empty
@@ -893,10 +896,6 @@ Namespace ScriptDB
 
             End Select
 
-            ' Drop existing trigger
-            sSQL = String.Format("IF EXISTS(SELECT [name] FROM sys.sysobjects WHERE [type] = 'TR' AND [name] = '{0}')  DROP TRIGGER [{0}]", sTriggerName)
-            CommitDB.ScriptStatement(sSQL)
-
             ' Create new trigger code
             sSQL = String.Format("CREATE TRIGGER [{1}].[{0}] ON [{1}].[{2}]" & vbNewLine & _
               "    {3}" & vbNewLine & "AS" & vbNewLine & _
@@ -918,12 +917,24 @@ Namespace ScriptDB
               , sTriggerName, [Role], Table.PhysicalName, sTriggerType, [BodyCode] _
               , If(Globals.Options.DevelopmentMode, "", "--"))
 
-            ' Compile the trigger and put the apply correct firing order
-            If CommitDB.ScriptStatement(sSQL) Then
+            Dim existingTrigger As ScriptedMetadata = Nothing
+            existingTriggers.TryGetValue(sTriggerName, existingTrigger)
 
+            If existingTrigger IsNot Nothing AndAlso existingTrigger.Definition = sSQL Then
+               'trigger exists and is the same, do nothing
+            Else
+               If existingTrigger Is Nothing Then
+                  'create trigger
+                  CommitDB.ScriptStatement(sSQL)
+               Else
+                  'update trigger
+                  sSQL = sSQL.Replace("CREATE TRIGGER", "ALTER TRIGGER")
+                  CommitDB.ScriptStatement(sSQL)
+               End If
+
+               'wether creating or altering we need to set the trigger alter
                If TriggerType = TriggerType.AfterDelete Or TriggerType = TriggerType.AfterUpdate Or TriggerType = TriggerType.AfterInsert Then
-                  sSQL = String.Format("EXEC sp_settriggerorder @triggername=N'[{0}].[{1}]', @order=N'First', @stmttype=N'{2}'" _
-                      , [Role], sTriggerName, sTriggerFireType)
+                  sSQL = String.Format("EXEC sp_settriggerorder @triggername=N'[{0}].[{1}]', @order=N'First', @stmttype=N'{2}'", [Role], sTriggerName, sTriggerFireType)
                   CommitDB.ScriptStatement(sSQL)
                End If
             End If
@@ -1471,7 +1482,6 @@ Namespace ScriptDB
          Return bOK
 
       End Function
-
 
    End Class
 
