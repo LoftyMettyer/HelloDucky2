@@ -46,14 +46,14 @@ Begin VB.Form frmBatchJob
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmBatchJob.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraScheduling"
-      Tab(0).Control(1)=   "fraInfo"
+      Tab(0).Control(0)=   "fraInfo"
+      Tab(0).Control(1)=   "fraScheduling"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Jobs"
       TabPicture(1)   =   "frmBatchJob.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "Frame1"
-      Tab(1).Control(1)=   "fraJobs"
+      Tab(1).Control(0)=   "fraJobs"
+      Tab(1).Control(1)=   "Frame1"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmBatchJob.frx":0044
@@ -664,15 +664,11 @@ Begin VB.Form frmBatchJob
             GroupHeaders    =   0   'False
             Col.Count       =   5
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
-            stylesets(0).Picture=   "frmBatchJob.frx":0098
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
-            stylesets(1).HasFont=   -1  'True
-            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
+            stylesets(0).HasFont=   -1  'True
+            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
                Charset         =   0
@@ -681,6 +677,10 @@ Begin VB.Form frmBatchJob
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
+            stylesets(0).Picture=   "frmBatchJob.frx":0098
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).Picture=   "frmBatchJob.frx":00B4
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -1324,10 +1324,10 @@ Private Sub RefreshColumnsGrid()
 End Sub
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = pblnChanged
+  cmdOK.Enabled = pblnChanged
 End Property
 
 Private Function JobUtilityType(psJobType As String) As UtilityType
@@ -1673,14 +1673,14 @@ End Sub
 Private Sub cmdFilterClear_Click()
   txtOverrideFilter = ""
   txtOverrideFilter.Tag = 0
-  cmdFilterClear.Enabled = False
+  cmdfilterClear.Enabled = False
   cmdOverrideFilter.SetFocus
   Changed = Not mblnLoading
 End Sub
 
 Private Sub cmdOverrideFilter_Click()
   GetFilter txtFilterSource, txtOverrideFilter
-  cmdFilterClear.Enabled = txtOverrideFilter.Text <> ""
+  cmdfilterClear.Enabled = txtOverrideFilter.Text <> ""
   Changed = Not mblnLoading
 End Sub
 Private Sub GetFilter(ctlSource As Control, ctlTarget As Control)
@@ -2166,7 +2166,7 @@ Private Function RetrieveBatchJobDetails() As Boolean
     txtOverrideFilter.Tag = prstTemp!OverrideFilterID
     
     cmdTitlePageClear.Enabled = Not txtTitlePage.Text = ""
-    cmdFilterClear.Enabled = Not txtOverrideFilter.Text = ""
+    cmdfilterClear.Enabled = Not txtOverrideFilter.Text = ""
     
     optOutputFormat(prstTemp!OutputFormat).Value = True
     mobjOutputDef.PopulateOutputControls prstTemp
@@ -3007,7 +3007,7 @@ Private Function SaveDefinition2() As Boolean
       sSQL = sSQL & "OutputScreen = " & IIf(chkDestination(desScreen).Value = vbChecked, "1", "0") & ", "
       'Printer Options
       sSQL = sSQL & IIf(chkDestination(desPrinter), (" OutputPrinterName = '" & Replace(cboPrinterName.Text, " '", "''") & "',"), (" OutputPrinterName = '', "))
-      sSQL = sSQL & "OutputFilename = '" & Replace(txtFilename.Text, "'", "''") & "',"
+      sSQL = sSQL & "OutputFilename = '" & Replace(txtFileName.Text, "'", "''") & "',"
       'outputSaveExisting
       If chkDestination(desSave).Value = vbChecked Then
         sSQL = sSQL & "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
@@ -3023,7 +3023,7 @@ Private Function SaveDefinition2() As Boolean
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmail = 1, "), ("OutputEmail = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAddr = " & txtEmailGroup.Tag & ", "), ("OutputEmailAddr = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("OutputEmailSubject = '', "))
-    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
+    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEMailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
     
     'FINAL WHERE CLAUSE
     sSQL = sSQL & " WHERE ID = " & mlngBatchJobID
@@ -3109,9 +3109,9 @@ Private Function SaveDefinition2() As Boolean
           'outputEmailSubject
           sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("'', "))
           'outputFilename
-          sSQL = sSQL & "'" & Replace(txtFilename.Text, "'", "''") & "',"
+          sSQL = sSQL & "'" & Replace(txtFileName.Text, "'", "''") & "',"
           'outputEmailAttachAs
-          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailAttachAs.Text, "'", "''") & "',"), ("'',"))
+          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEMailAttachAs.Text, "'", "''") & "',"), ("'',"))
           'outputTitlePage
           sSQL = sSQL & "'" & Replace(txtTitlePage.Text, "'", "''") & "', "
           'outputReportPackTitle
@@ -3455,7 +3455,7 @@ Private Function ValidDestination() As Boolean
   ValidDestination = False
 
   If chkDestination(desSave).Value = vbChecked Then
-    If txtFilename.Text = vbNullString Then
+    If txtFileName.Text = vbNullString Then
       COAMsgBox "You must enter a file name.", vbExclamation, Caption
       Exit Function
     End If
@@ -3474,20 +3474,20 @@ Private Function ValidDestination() As Boolean
       Exit Function
     End If
 
-    If txtEmailAttachAs.Text = vbNullString Then
+    If txtEMailAttachAs.Text = vbNullString Then
       COAMsgBox "You must enter an email attachment file name.", vbExclamation, Caption
       Exit Function
     End If
     
-    If InStr(txtEmailAttachAs.Text, "/") Or _
-       InStr(txtEmailAttachAs.Text, ":") Or _
-       InStr(txtEmailAttachAs.Text, "?") Or _
-       InStr(txtEmailAttachAs.Text, Chr(34)) Or _
-       InStr(txtEmailAttachAs.Text, "<") Or _
-       InStr(txtEmailAttachAs.Text, ">") Or _
-       InStr(txtEmailAttachAs.Text, "|") Or _
-       InStr(txtEmailAttachAs.Text, "\") Or _
-       InStr(txtEmailAttachAs.Text, "*") Then
+    If InStr(txtEMailAttachAs.Text, "/") Or _
+       InStr(txtEMailAttachAs.Text, ":") Or _
+       InStr(txtEMailAttachAs.Text, "?") Or _
+       InStr(txtEMailAttachAs.Text, Chr(34)) Or _
+       InStr(txtEMailAttachAs.Text, "<") Or _
+       InStr(txtEMailAttachAs.Text, ">") Or _
+       InStr(txtEMailAttachAs.Text, "|") Or _
+       InStr(txtEMailAttachAs.Text, "\") Or _
+       InStr(txtEMailAttachAs.Text, "*") Then
           COAMsgBox "The email attachment file name cannot contain any of the following characters:" & vbCrLf & _
                  "/  :  ?  " & Chr(34) & "  <  >  |  \  *", vbExclamation, Caption
           Exit Function
@@ -4324,7 +4324,10 @@ Private Function OnlyPauseJobsDefined() As Boolean
 
 End Function
 Private Sub optOutputFormat_Click(Index As Integer)
-  If Not mblnLoading Then txtTitlePage = vbNullString
+  If Not mblnLoading Then
+    txtTitlePage = vbNullString
+    cmdTitlePageClear.Enabled = False
+  End If
   mobjOutputDef.FormatClick Index
   Changed = True
 End Sub
@@ -4352,10 +4355,6 @@ Private Sub SSTab1_Click(PreviousTab As Integer)
     cmdClearAll.Enabled = False
   End If
   
-End Sub
-
-Private Sub Text1_Change()
-
 End Sub
 
 Private Sub txtEmailAttachAs_Change()
