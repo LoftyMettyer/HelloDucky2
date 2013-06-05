@@ -699,14 +699,18 @@ Public Function UpdateTableRecordJustDoIt(psUpdateSQL As String) As Boolean
   Dim ADOErr As ADODB.Error
   Dim ODBC As New ODBC
   Dim lngRecordsAffected As Long
+  Dim lngOriginalTimeout As Long
+
 
   ' Clear the properties each time we run the function
   ClearProperties
   
   iOldCursorLocation = gADOCon.CursorLocation
+  lngOriginalTimeout = gADOCon.CommandTimeout
   fUpdatedOK = True
   iRetryCount = 0
   
+  gADOCon.CommandTimeout = 60
   fDeadlock = True
   Do While fDeadlock
     fDeadlock = False
@@ -720,6 +724,8 @@ Public Function UpdateTableRecordJustDoIt(psUpdateSQL As String) As Boolean
 UpdateDeadlockRecoveryPoint:
         'gADOCon.Execute psUpdateSQL, , adExecuteNoRecords
         gADOCon.Execute psUpdateSQL, lngRecordsAffected, adExecuteNoRecords
+       
+       lngRecordsAffected = 1
        
         On Error GoTo ErrorTrap
     
@@ -780,6 +786,8 @@ TidyUpAndExit:
   Else
     gADOCon.CursorLocation = adUseServer
   End If
+  
+  gADOCon.CommandTimeout = lngOriginalTimeout
   Set ODBC = Nothing
   UpdateTableRecordJustDoIt = fUpdatedOK
   Exit Function
@@ -810,6 +818,20 @@ UpdateErrorTrap:
         "Another user is deadlocking the database."
       Resume TidyUpAndExit
     End If
+       
+'  ' Query timeout
+'  ElseIf (Err.Number = QUERYTIMEOUT_ERRORNUMBER) _
+'    And LCase(Err.Description) = LCase(QUERYTIMEOUT_ERRORMESSAGE) Then
+'    If iRetryCount < iRETRIES Then
+'      iRetryCount = iRetryCount + 1
+'      Resume UpdateDeadlockRecoveryPoint
+'    Else
+'      fUpdatedOK = False
+'      mstrErrorString = "The record could not be updated." & vbCrLf & vbCrLf & _
+'        "Another user is deadlocking the database."
+'      Resume TidyUpAndExit
+'    End If
+
   Else
     fUpdatedOK = False
     mstrErrorString = ODBC.FormatError(Err.Description)
