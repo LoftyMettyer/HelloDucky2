@@ -795,8 +795,7 @@ Private Function GetSQLEmailContent(lngTableID As Long, strTableName As String, 
   Set content = New clsLinkContent
   content.ReadDetail lngSubjectID
   strSQL = strSQL & _
-      content.GetSQL(lngTableID, strTableName, lngRecDescID, "@Subject") & vbNewLine & _
-      "    IF rtrim(@Subject) = '' SET @Subject = char(9)" & vbNewLine & vbNewLine
+      content.GetSQL(lngTableID, strTableName, lngRecDescID, "@Subject") & vbNewLine & vbNewLine
   Set content = Nothing
   
   
