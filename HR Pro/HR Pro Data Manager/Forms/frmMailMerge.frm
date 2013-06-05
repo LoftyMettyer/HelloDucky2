@@ -77,15 +77,15 @@ Begin VB.Form frmMailMerge
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmMailMerge.frx":08D6
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraDefinition(0)"
-      Tab(0).Control(1)=   "fraDefinition(1)"
+      Tab(0).Control(0)=   "fraDefinition(1)"
+      Tab(0).Control(1)=   "fraDefinition(0)"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmMailMerge.frx":08F2
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(0)"
+      Tab(1).Control(0)=   "fraColumns(2)"
       Tab(1).Control(1)=   "fraColumns(1)"
-      Tab(1).Control(2)=   "fraColumns(2)"
+      Tab(1).Control(2)=   "fraColumns(0)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Sort Order"
       TabPicture(2)   =   "frmMailMerge.frx":090E
@@ -277,13 +277,13 @@ Begin VB.Form frmMailMerge
             RecordSelectors =   0   'False
             Col.Count       =   3
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).Picture=   "frmMailMerge.frx":0D23
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).Picture=   "frmMailMerge.frx":0D3F
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -1429,7 +1429,7 @@ End Sub
 
 Private Sub cmdDocumentMap_Click()
 
-  Dim frmDefinition As frmV1DocumentMap
+  Dim frmDefinition As frmDocumentMap
   Dim frmSelection As frmDefSel
   Dim blnExit As Boolean
   Dim blnOK As Boolean
@@ -1453,7 +1453,7 @@ Private Sub cmdDocumentMap_Click()
         .Show vbModal
         Select Case .Action
         Case edtAdd
-          Set frmDefinition = New frmV1DocumentMap
+          Set frmDefinition = New frmDocumentMap
           frmDefinition.Initialise True, .FromCopy, , False
           frmDefinition.Show vbModal
           .SelectedID = frmDefinition.SelectedID
@@ -1461,7 +1461,7 @@ Private Sub cmdDocumentMap_Click()
           Set frmDefinition = Nothing
                     
         Case edtEdit
-          Set frmDefinition = New frmV1DocumentMap
+          Set frmDefinition = New frmDocumentMap
           frmDefinition.Initialise False, .FromCopy, .SelectedID
           
           If Not frmDefinition.Cancelled Then
@@ -1484,7 +1484,7 @@ Private Sub cmdDocumentMap_Click()
           Me.Changed = True
 
         Case edtPrint
-          Set frmDefinition = New frmV1DocumentMap
+          Set frmDefinition = New frmDocumentMap
           frmDefinition.PrintDefinition .SelectedID
           Unload frmDefinition
           Set frmDefinition = Nothing
