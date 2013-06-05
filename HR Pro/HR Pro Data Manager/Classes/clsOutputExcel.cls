@@ -24,7 +24,6 @@ Private mobjParent As clsOutputRun
 
 Private mlngHeaderRows As Long
 Private mlngHeaderCols As Long
-'Private mblnHeaderVertical As Boolean
 Private mlngDataCurrentRow As Long
 Private mlngDataStartRow As Long
 Private mlngDataStartCol As Long
@@ -33,10 +32,8 @@ Private mblnScreen As Boolean
 Private mblnPrinter As Boolean
 Private mstrPrinterName As String
 Private mblnSave As Boolean
-'Private mlngSaveFileFormat As Long
 Private mlngSaveExisting As Long
 Private mblnEmail As Boolean
-'Private mlngEmailFileFormat As Long
 Private mstrFileName As String
 Private mblnSizeColumnsIndependently As Boolean
 Private mblnApplyStyles As Boolean
@@ -50,8 +47,7 @@ Private mstrErrorMessage As String
 
 Private mblnChart As Boolean
 Private mblnPivotTable As Boolean
-'Private mstrIntersectionFormat As String
-
+Private mstrPackTemplate As String
 Private mstrXLTemplate As String
 Private mblnXLExcelGridlines As Boolean
 Private mblnXLExcelOmitTopRow As Boolean
@@ -60,11 +56,8 @@ Private mblnXLExcelHeaders As Boolean
 Private mblnXLAutoFitCols As Boolean
 Private mblnXLLandscape As Boolean
 
-
 Public Sub ClearUp()
-  
   On Local Error Resume Next
-
   'Always close the template...
   If Not mxlTemplateBook Is Nothing Then
     mxlTemplateBook.Saved = True
@@ -708,7 +701,7 @@ End Function
 
 
 Private Sub Class_Initialize()
-  
+  mstrPackTemplate = GetUserSetting("Output", "PackTemplate", "")
   mstrXLTemplate = GetUserSetting("Output", "ExcelTemplate", vbNullString)
   mblnXLExcelGridlines = (GetUserSetting("Output", "ExcelGridlines", "0") = "1")
   mblnXLExcelOmitTopRow = (GetUserSetting("Output", "ExcelOmitSpacerRow", "0") = "1")
@@ -760,14 +753,6 @@ End Property
 Public Property Let Email(blnEmail As Boolean)
   mblnEmail = blnEmail
 End Property
-
-'Public Property Let EmailFileFormat(lngEmailFileFormat As Long)
-'  mlngEmailFileFormat = lngEmailFileFormat
-'End Property
-'
-'Public Property Get EmailFileFormat() As Long
-'  EmailFileFormat = mlngEmailFileFormat
-'End Property
 
 Public Property Let FileName(strFileName As String)
   mstrFileName = strFileName
@@ -868,7 +853,9 @@ Private Sub GetWorkBook(strWorkbook As String, strWorksheet As String)
   Dim strTempFile As String
   Dim lngCount As Long
   Dim lngOriginalFormat As Long
-
+  
+  If gblnReportPackMode Then mstrXLTemplate = mstrPackTemplate
+    
   If mblnApplyStyles And mstrXLTemplate <> "" And Dir(mstrXLTemplate) <> "" Then
     
     If Not IsFileCompatibleWithExcelVersion(mstrXLTemplate) Then
@@ -877,7 +864,6 @@ Private Sub GetWorkBook(strWorkbook As String, strWorksheet As String)
     End If
 
     Set mxlTemplateBook = mxlApp.Workbooks.Open(mstrXLTemplate, ReadOnly:=True)
-    
     
     'Save a temp template in the format of the output...
     If mstrFileName <> vbNullString Then
@@ -893,7 +879,6 @@ Private Sub GetWorkBook(strWorkbook As String, strWorksheet As String)
     Set mxlTemplateSheet = mxlTemplateBook.ActiveSheet
   
   End If
-
 
   mstrSheetMode = strWorksheet
   Select Case strWorkbook
@@ -1031,7 +1016,6 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
   Dim lngXLRow As Long
   Dim strCell As String
   Dim sDateFormat As String
-  
 
   On Local Error GoTo LocalErr
 
@@ -1039,8 +1023,6 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
     Exit Sub
   End If
   
-  
-  'MH20060628 Fault 10840
   'If UBound(strArray, 1) > 255 Then
   If colColumns.Count + mlngDataStartCol > 255 Then
     mstrErrorMessage = "Maximum of 255 columns exceeded"
@@ -1058,7 +1040,6 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
 
       With mxlWorkSheet.Cells(lngXLRow + lngGridRow, lngXLCol + lngGridCol)
 
-        'MH20050104 Fault 9648
         If .NumberFormat = sDateFormat & ";@" Then
           If strArray(lngGridCol, lngGridRow) Like "??/??/????" Or strArray(lngGridCol, lngGridRow) = vbNullString Then
             strArray(lngGridCol, lngGridRow) = Replace(Format(strArray(lngGridCol, lngGridRow), "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/")
@@ -1068,17 +1049,10 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
           End If
         End If
 
-        'MH20031113 Fault 7601
-        '.FormulaR1C1 = strArray(lngGridCol, lngGridRow)
         .FormulaR1C1 = _
           IIf(Left$(strArray(lngGridCol, lngGridRow), 1) = "'", "'", vbNullString) & _
           strArray(lngGridCol, lngGridRow)
-
-        'If lngGridRow < mlngHeaderRows Then
-        '  .HorizontalAlignment = xlCenter
-        'End If
       End With
-
     Next
 
     If lngGridRow Mod 100 = 0 Then
@@ -1155,16 +1129,10 @@ Private Sub CreateChart(lngMaxRows As Long, lngMaxCols As Long, colStyles As Col
     .ChartType = xl3DColumnClustered
     .SetSourceData Source:=xlData, PlotBy:=xlColumns
     .Location Where:=xlLocationAsNewSheet
-    '.ChartTitle.Caption = mstrDefTitle
     .HasTitle = True
-    
-    'MH20061204 Fault 11230
-    '.ChartTitle.Characters.Text = mstrDefTitle
     .ChartTitle.Text = mstrDefTitle
-    
     .ChartTitle.Font.Bold = colStyles("Title").Bold
     .ChartTitle.Font.Size = 12
-    'NHRD11112004 Fault 8989
     .ChartTitle.Font.Underline = colStyles("Title").Underline
     .ChartTitle.Font.Color = colStyles("Title").ForeCol
   End With
@@ -1173,8 +1141,6 @@ Private Sub CreateChart(lngMaxRows As Long, lngMaxCols As Long, colStyles As Col
   If mxlFirstSheet Is Nothing Then
     Set mxlFirstSheet = mxlWorkBook.ActiveChart
   End If
-
-
 Exit Sub
 
 LocalErr:
@@ -1243,17 +1209,11 @@ Private Sub CreatePivotTable(lngMaxRows As Long, lngMaxCols As Long, strHor As S
       xlFunc = xlSum
     End Select
     
-    '.PivotFields(strInt).Orientation = xlDataField
-    '.PivotFields(strInt).Function = xlFunc
-    
-    'AE20080702 Fault #12540
     With .PivotFields(strInt)
         .Orientation = xlDataField
         .Name = mobjParent.PivotDataFunction & " of " & strInt
         .Function = xlFunc
     End With
-    
-    '.AddDataField Field:=.PivotFields(strInt), Caption:=mobjParent.PivotDataFunction, Function:=xlFunc
     
     .NullString = IIf(mobjParent.PivotSuppressBlanks, "", "0")
       
@@ -1269,7 +1229,6 @@ Private Sub CreatePivotTable(lngMaxRows As Long, lngMaxCols As Long, strHor As S
     mxlApp.DisplayAlerts = True
   End With
 
- 
   ApplyStyleToRange xlStart, colStyles("Heading")
   ApplyStyleToRange xlPivot.RowRange, colStyles("Heading")
   ApplyStyleToRange xlPivot.ColumnRange, colStyles("Heading")
@@ -1297,31 +1256,18 @@ Private Sub PrepareRows(lngRowCount As Long, colColumns As Collection, colStyles
 
   On Local Error GoTo LocalErr
 
-
   With mxlWorkSheet
-
-'    If mstrXLTemplate <> vbNullString Then
-'      For lngCount = 1 To lngRowCount
-'        .Rows(mlngDataCurrentRow + mlngHeaderRows).Select
-'        mxlApp.Selection.Copy
-'        mxlApp.Selection.Insert Shift:=xlDown
-'      Next
-'      mxlApp.CutCopyMode = False
-'    End If
     If .Visible Then
       .Range("A1").Select
     End If
-
     
     If mlngHeaderRows > 0 Then
-      'With .Range(.Cells(mlngDataCurrentRow, mlngDataStartCol + lngCount), .Cells(mlngDataCurrentRow + mlngHeaderRows, mlngDataStartCol + lngCount))
       With .Range(.Cells(mlngDataCurrentRow, mlngDataStartCol), .Cells(mlngDataCurrentRow + mlngHeaderRows - 1, mlngDataStartCol + colColumns.Count))
         .NumberFormat = "@"
       End With
     End If
 
     For lngCount = 0 To colColumns.Count - 1
-
       Set objColumn = colColumns(lngCount + 1)
 
       With .Range(.Cells(mlngDataCurrentRow + mlngHeaderRows, mlngDataStartCol + lngCount), .Cells(mlngDataCurrentRow + lngRowCount, mlngDataStartCol + lngCount))
@@ -1341,7 +1287,6 @@ Private Sub PrepareRows(lngRowCount As Long, colColumns As Collection, colStyles
         Case sqlUnknown
           'Leave it alone! (Required for percentages on Standard Reports)
         Case sqlDate
-          'MH20050104 Fault 9648
           'Adding ;@ to the end formats it as "short date" so excel will look at the
           'regional settings when opening the workbook rather than force it to always
           'be in the format of the user who created the workbook.
@@ -1350,11 +1295,8 @@ Private Sub PrepareRows(lngRowCount As Long, colColumns As Collection, colStyles
           .NumberFormat = "@"
         End Select
       End With
-
     Next
-
   End With
-
 Exit Sub
 
 LocalErr:
@@ -1414,8 +1356,6 @@ Private Sub ApplyCellOptions(lngColCount As Long, colStyles As Collection, blnGr
       Set objRange = mxlWorkSheet.Cells(colStyles("Title").StartRow, colStyles("Title").StartCol)
       ApplyStyleToRange objRange, colStyles("Title")
       
-      
-      'MH20020807 Fault 6562
       'Merge cells for the title column so that if you append to the file
       'then the title is not taken into account during column sizing.
       With mxlWorkSheet.Columns(colStyles("Title").StartCol)
@@ -1624,11 +1564,6 @@ Public Sub Complete()
     mxlWorkBook.Close
     mobjParent.SendEmail strTempFile
     Set mxlWorkBook = mxlApp.Workbooks.Open(strTempFile)
-
-    'If Dir(strTempFile) <> vbNullString Then
-    '  Kill strTempFile
-    'End If
-
   End If
 
 
@@ -1656,7 +1591,6 @@ Public Sub Complete()
     End Select
 
   End If
-
 
   'PRINTER
   If mblnPrinter Then
@@ -1811,9 +1745,7 @@ Private Function SetSheetName(objObject As Object, ByVal strSheetName As String)
     Loop While Err.Number > 0
   End If
 
-
   On Local Error Resume Next
-  'MH20031117 Fault 7629
   If mxlTemplateSheet Is Nothing Then
     With objObject.PageSetup
       .LeftFooter = "Created on &D at &T by " & gsUserName
