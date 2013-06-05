@@ -50,8 +50,6 @@ Public Sub LoadSkin( _
     .ExcludeModule "ws2_32.dll"
     .ExcludeModule "ws2help.dll"
     .ExcludeModule "netapi32.dll"
-    .ExcludeModule "MobileDesigner.dll"
-    .ExcludeModule "MobileDesigner.tlb"
 
     'Loads the skin
     If Trim(sStylePath) = vbNullString Then
@@ -67,7 +65,6 @@ Public Sub LoadSkin( _
     .RemoveWindowClass "TabStripWndClass"
     .RemoveWindowClass "Afx:27800000:8"
     .RemoveWindowClass "SSDataWidgetsEdit"
-    .RemoveWindowClass "WindowsForms10.Window.8.app.0.10a5a10_r65_ad1"
     
     'Applies the currently loaded skin to the specified window
     .ApplyWindow frm.hWnd
