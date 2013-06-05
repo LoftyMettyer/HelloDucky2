@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>
+    </SchemaVersion>
+    <ProjectGuid>{C475177F-6A94-43B0-BAEE-427642923108}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>DBScripter</RootNamespace>
+    <AssemblyName>DBScript</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>Windows</MyType>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>DBScript.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <RegisterForComInterop>true</RegisterForComInterop>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>Full</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>DBScript.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+    <RegisterForComInterop>true</RegisterForComInterop>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="VsWebSite.Interop90, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Classes\HCMErrors.vb" />
+    <Compile Include="Classes\HCMGuid.vb" />
+    <Compile Include="Classes\HCMOptions.vb" />
+    <Compile Include="Classes\HCMProgressBar.vb" />
+    <Compile Include="COM Interface\Interfaces.vb" />
+    <Compile Include="Connectivity\AccessDB.vb" />
+    <Compile Include="Connectivity\ADOClassic.vb" />
+    <Compile Include="Connectivity\Connection.vb" />
+    <Compile Include="Connectivity\Login.vb" />
+    <Compile Include="Connectivity\Enums.vb" />
+    <Compile Include="Connectivity\Parameter.vb" />
+    <Compile Include="Connectivity\Parameters.vb" />
+    <Compile Include="Connectivity\SQL.vb" />
+    <Compile Include="Database Scripting\CodeElement.vb" />
+    <Compile Include="Database Scripting\Consts.vb" />
+    <Compile Include="Database Scripting\Enums.vb" />
+    <Compile Include="Database Scripting\GeneralStuff.vb" />
+    <Compile Include="Database Scripting\GeneratedUDF.vb" />
+    <Compile Include="Database Scripting\LinesOfCode.vb" />
+    <Compile Include="Database Scripting\Scripter.vb" />
+    <Compile Include="Globals.vb" />
+    <Compile Include="HCM.vb" />
+    <Compile Include="ModuleSettings.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Object Definitions\DataSource.Designer.vb">
+      <DependentUpon>DataSource.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Object Definitions\DataSource.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Object Types\Base.vb" />
+    <Compile Include="Object Types\Datasource.vb" />
+    <Compile Include="Object Types\GlobalModify.vb" />
+    <Compile Include="Object Types\GlobalModifyItem.vb" />
+    <Compile Include="Object Types\TableOrder.vb" />
+    <Compile Include="Object Types\TableOrderItem.vb" />
+    <Compile Include="Object Types\View.vb" />
+    <Compile Include="PopulateObjects.vb" />
+    <Compile Include="Object Types\CodeLibrary.vb" />
+    <Compile Include="Object Types\Collection.vb" />
+    <Compile Include="Object Types\Column.vb" />
+    <Compile Include="Object Types\Component.vb" />
+    <Compile Include="Object Types\DiaryLink.vb" />
+    <Compile Include="Object Types\EmailLink.vb" />
+    <Compile Include="Object Types\Enums.vb" />
+    <Compile Include="Object Types\Expression.vb" />
+    <Compile Include="Object Types\Interfaces.vb" />
+    <Compile Include="Object Types\RecordDescription.vb" />
+    <Compile Include="Object Types\Relation.vb" />
+    <Compile Include="Object Types\Screen.vb" />
+    <Compile Include="Object Types\Setting.vb" />
+    <Compile Include="Object Types\Table.vb" />
+    <Compile Include="Object Types\Value.vb" />
+    <Compile Include="Object Types\Workflow.vb" />
+    <Compile Include="Object Types\WorkflowElement.vb" />
+    <Compile Include="Object Types\WorkflowElementColumn.vb" />
+    <Compile Include="Object Types\WorkflowElementItem.vb" />
+    <Compile Include="Structure Port Scripting\Outputer.vb" />
+    <Compile Include="Structure Port Scripting\XMLExport.vb" />
+    <Compile Include="SysMgr.vb" />
+    <Compile Include="Web.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Object Definitions\DataSource.resx">
+      <DependentUpon>DataSource.vb</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="ADODB">
+      <Guid>{2A75196C-D9EB-4129-B803-931327F72D5C}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>8</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="DAO">
+      <Guid>{00025E01-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Connectivity\Access DB Stored Procedures\spadmin_gettables.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Object Types\Old Scripting\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
