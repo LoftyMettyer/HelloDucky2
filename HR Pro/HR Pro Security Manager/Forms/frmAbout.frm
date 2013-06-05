@@ -150,13 +150,13 @@ Begin VB.Form frmAbout
    Begin VB.Label lblCopyRight 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "Copyright © COA Solutions"
+      Caption         =   "Copyright © COA Solutions Ltd."
       ForeColor       =   &H00000000&
       Height          =   195
       Left            =   150
       TabIndex        =   2
       Top             =   1305
-      Width           =   2355
+      Width           =   2730
    End
 End
 Attribute VB_Name = "frmAbout"
@@ -237,7 +237,7 @@ Private Sub Form_Load()
   lblUser.Caption = "Current User : " & Trim(gsUserName)
   lblSecurity.Caption = "User Group : " & gsUserGroup
   lblSql.Caption = GetSqlVersion
-  lblCopyRight.Caption = "Copyright © COA Solutions"
+  lblCopyRight.Caption = "Copyright © COA Solutions Ltd."
   
   sngMaxX = lblTitle.Left + lblTitle.Width
   sngMaxX = IIf(lblDatabase.Left + lblDatabase.Width > sngMaxX, lblDatabase.Left + lblDatabase.Width, sngMaxX)

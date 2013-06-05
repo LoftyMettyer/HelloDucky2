@@ -143,13 +143,13 @@ Begin VB.Form frmAbout
    Begin VB.Label lblCopyRight 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "Copyright © Advanced Computer Solutions"
+      Caption         =   "Copyright © COA Solutions Ltd."
       ForeColor       =   &H00000000&
       Height          =   195
       Left            =   150
       TabIndex        =   4
       Top             =   1305
-      Width           =   3720
+      Width           =   2730
    End
    Begin VB.Label lblTitle 
       AutoSize        =   -1  'True
@@ -252,7 +252,7 @@ Private Sub Form_Load()
   lblSecurity = "User Group : " & gsUserGroup
   lblSql = datGeneral.GetSqlVersion
   'lblCopyRight.Caption = "Copyright © COA Solutions Limited 1997-" & Format(Date, "yyyy")
-  lblCopyRight.Caption = "Copyright © Advanced Computer Solutions"
+  lblCopyRight.Caption = "Copyright © COA Solutions Ltd."
   
   Set datGeneral = Nothing
   Screen.MousePointer = vbDefault

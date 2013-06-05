@@ -139,13 +139,13 @@ Begin VB.Form frmAbout
    Begin VB.Label lblCopyRight 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "Copyright © Advanced Computer Software"
+      Caption         =   "Copyright © COA Solutions Ltd."
       ForeColor       =   &H00000000&
       Height          =   195
       Left            =   150
       TabIndex        =   4
       Top             =   1305
-      Width           =   3705
+      Width           =   2730
    End
    Begin VB.Label lblTitle 
       AutoSize        =   -1  'True
@@ -243,7 +243,7 @@ Private Sub Form_Load()
   lblUser.Caption = "Current User : " & Trim(gsUserName)
   lblSecurity.Caption = "User Group : " & gsSecurityGroup
   lblSql.Caption = GetSqlVersion
-  lblCopyRight.Caption = "Copyright © Advanced Computer Solutions"
+  lblCopyRight.Caption = "Copyright © COA Solutions Ltd."
 
   sngMaxX = lblTitle.Left + lblTitle.Width
   sngMaxX = IIf(lblDatabase.Left + lblDatabase.Width > sngMaxX, lblDatabase.Left + lblDatabase.Width, sngMaxX)
