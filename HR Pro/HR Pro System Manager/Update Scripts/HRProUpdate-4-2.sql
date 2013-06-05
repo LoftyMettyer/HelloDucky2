@@ -383,6 +383,62 @@ PRINT 'Step 4 of X - Add new formatting columns to ASRSysSSIntranetLinks'
 	END
 
 
+--------------------------------------------------------------------------------------------
+-- Initial Display Mode for Charts
+--------------------------------------------------------------------------------------------
+
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'InitialDisplayMode')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD InitialDisplayMode int NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET InitialDisplayMode = 0'
+	END
+
+--------------------------------------------------------------------------------------------
+-- Additional Data columns for Multi-Axis Charts
+--------------------------------------------------------------------------------------------
+
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'Chart_TableID_2')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD Chart_TableID_2 int NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET Chart_TableID_2 = 0'
+	END
+
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'Chart_ColumnID_2')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD Chart_ColumnID_2 int NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET Chart_ColumnID_2 = 0'
+	END
+
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'Chart_TableID_3')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD Chart_TableID_3 int NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET Chart_TableID_3 = 0'
+	END
+
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'Chart_ColumnID_3')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD Chart_ColumnID_3 int NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET Chart_ColumnID_3 = 0'
+	END		
+
+--------------------------------------------------------------------------------------------
+-- Sort Order column for Charts
+--------------------------------------------------------------------------------------------
+
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'Chart_SortOrderID')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD Chart_SortOrderID int NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET Chart_SortOrderID = 0'
+	END
+	
+
+	
 
 /* ------------------------------------------------------------- */
 PRINT 'Step X of X - '
