@@ -773,11 +773,8 @@ Private Function GetSQLEmailContent(lngTableID As Long, strTableName As String, 
 Exit Function
 
 LocalErr:
-  If ASRDEVELOPMENT Then
-    MsgBox Err.Description, vbCritical, "ASRDEVELOPMENT"
-    Stop
-    Resume Next
-  End If
+  MsgBox Err.Description, vbCritical
+  GetSQLEmailContent = "SELECT @To='', @Cc='', @Bcc='', @Subject='', @Message='', @Attachment=''"
 
 End Function
 
