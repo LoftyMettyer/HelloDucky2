@@ -6,7 +6,7 @@ Namespace Things
   Public Class Table
     Inherits Things.Base
 
-    Public TableType As Integer
+    Public TableType As TableType
     Public ManualSummaryColumnBreaks As Boolean
     Public AuditInsert As Boolean
     Public AuditDelete As Boolean

@@ -170,110 +170,68 @@ Namespace ScriptDB
 
     Public Function CreateTableViews() As Boolean Implements iCommitDB.ScriptTableViews
 
-      'Dim bOK As Boolean = True
-      'Dim sDefinitionSQL As String = String.Empty
-      'Dim sViewName As String = String.Empty
-      'Dim sActualTableName As String = String.Empty
-      'Dim sOptions As String = String.Empty
+      Dim bOK As Boolean = True
+      Dim sDefinitionSQL As String = String.Empty
+      Dim sViewName As String = String.Empty
+      Dim sActualTableName As String = String.Empty
+      Dim sOptions As String = String.Empty
 
-      'Dim objTable As Things.Table
-      'Dim objColumn As Things.Column
-      'Dim objRelation As Things.Relation
-      'Dim objExpression As Things.Expression
+      Dim objTable As Things.Table
+      Dim objColumn As Things.Column
+      Dim objRelation As Things.Relation
+      Dim objExpression As Things.Expression
 
-      'Try
+      Try
 
-      '  '     sSchemaName = "dbo"
-      '  sOptions = vbNewLine & "WITH SCHEMABINDING" & vbNewLine
+        For Each objTable In Globals.Things
 
-      '  '        ProgressInfo.TotalSteps2 = Globals.Things.Count
-      '  For Each objTable In Globals.Things
+          sViewName = objTable.Name
+          sActualTableName = String.Format("{0}{1}", Consts.UserTable, objTable.Name)
 
-      '    sViewName = objTable.Name
-      '    sActualTableName = String.Format("{0}{1}", Consts.UserTable, objTable.Name)
+          sDefinitionSQL = "AS SELECT [id], [timestamp]" & vbNewLine
 
-      '    sDefinitionSQL = "AS SELECT [id], [guid], [timestamp], [updflag]" & vbNewLine
-
-      '    ' Add relations
-      '    For Each objRelation In objTable.Objects(Things.Type.Relation)
-      '      If objRelation.RelationshipType = RelationshipType.Parent Then
-      '        sDefinitionSQL = sDefinitionSQL & String.Format(", [ID_{0}]", CInt(objRelation.ParentID)) & vbNewLine
-      '      End If
-      '    Next
+          ' Add relations
+          For Each objRelation In objTable.Objects(Things.Type.Relation)
+            If objRelation.RelationshipType = RelationshipType.Parent Then
+              sDefinitionSQL = sDefinitionSQL & String.Format(", [ID_{0}]", CInt(objRelation.ParentID)) & vbNewLine
+            End If
+          Next
 
 
-      '    ' Is it a physical HR Pro table or a connection to a remote table/database
-      '    If objTable.IsRemoteView Then
+          ' Add columns
+          For Each objColumn In objTable.Objects(Things.Type.Column)
 
-      '      ' Create dummy place holder for view
-      '      For Each objColumn In objTable.Objects(Things.Type.Column)
-      '        sDefinitionSQL = sDefinitionSQL & String.Format("{0} AS [{1}]", objColumn.BlankDefintion, objColumn.Name) & vbNewLine
-      '      Next
+            If objColumn.IsCalculated And objColumn.IsReadOnly And objTable.TableType = Things.TableType.Parent Then
+              If Not objColumn.Calculation.RequiresRowNumber Then
 
-      '    Else
+                sDefinitionSQL = sDefinitionSQL & String.Format(", {0} AS [{1}]", objColumn.Calculation.UDF.CallingCode.Replace("@prm_", "base."), objColumn.Name & vbNewLine)
+              End If
+            Else
+              sDefinitionSQL = sDefinitionSQL & (String.Format(", base.[{0}] AS [{0}]", objColumn.Name) & vbNewLine)
+            End If
+          Next
 
-      '      'aryJoinCode = New ArrayList
-
-      '      ' Add columns
-      '      For Each objColumn In objTable.Objects(Things.Type.Column)
-
-      '        If Not objColumn.State = System.Data.DataRowState.Deleted Then
-
-      '          If objColumn.IsCalculated And 1 = 2 Then  'tempry 1=2 because I want to test just having it in the trigger
-      '            objExpression = New Things.Expression
-      '            objExpression = objTable.Objects.GetObject(Things.Type.Expression, objColumn.CalcID)
-      '            If Not objExpression Is Nothing Then
-      '              '    objExpression.ExpressionType = ScriptDB.ExpressionType.ViewCode
-      '              objExpression.AssociatedColumn = objColumn
-      '              '    sColumnCalculation = objExpression.Code
-      '              '    If objExpression.IsSimpleCalc Then  'And objExpression.IsValid Then
-      '              '      sSQL = sSQL & String.Format(", {0} AS [{1}]", sColumnCalculation, objColumn.Name) & vbNewLine
-      '              '    Else
-      '              '      sSQL = sSQL & String.Format(", [{0}]", objColumn.Name) & vbNewLine
-      '              '    End If
-
-      '              '    '    aryJoinCode.
-
-      '              '    '    aryJoinCode.Add(objExpression.Joins)
-      '              sDefinitionSQL = sDefinitionSQL & String.Format(", {0} AS [{1}]", objExpression.UDF.CallingCode, objColumn.Name) & vbNewLine
+          ' Add the base table
+          sDefinitionSQL = sDefinitionSQL & vbNewLine & String.Format("FROM [dbo].[{0}] base", sActualTableName)
 
 
-      '            End If
-      '            'If objColumn.DataType = ColumnTypes.Binary Then
+          DropView(objTable.SchemaName, sViewName)
 
-      '          Else
-      '            sDefinitionSQL = sDefinitionSQL & String.Format(", base.[{0}]", objColumn.Name) & vbNewLine
-      '            'End If
-      '            'Else
-
-      '          End If
-      '        End If
-      '      Next
-
-      '      ' Add the base table
-      '      sDefinitionSQL = sDefinitionSQL & vbNewLine & String.Format("FROM [dbo].[{0}] base", sActualTableName)
-      '    End If
+          sDefinitionSQL = String.Format("CREATE VIEW [{0}].[{1}] {2} {3}", objTable.SchemaName, sViewName, sOptions, sDefinitionSQL)
+          CommitDB.ScriptStatement(sDefinitionSQL)
 
 
-      '    DropView(objTable.SchemaName, sViewName)
-
-      '    sDefinitionSQL = String.Format("CREATE VIEW [{0}].[{1}] {2} {3}", objTable.SchemaName, sViewName, sOptions, sDefinitionSQL)
-      '    CommitDB.ScriptStatement(sDefinitionSQL)
-
-      '    sDefinitionSQL = String.Format("IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[{0}]') AND name = N'IDX_ID')" & vbNewLine & _
-      '        "CREATE UNIQUE CLUSTERED INDEX [IDX_ID] ON [dbo].[{0}] ([ID] ASC)", objTable.Name)
-      '    CommitDB.ScriptStatement(sDefinitionSQL)
 
 
-      '  Next
+        Next
 
-      'Catch ex As Exception
-      '  Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.Views, sViewName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sDefinitionSQL)
-      '  bOK = False
+      Catch ex As Exception
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.Views, sViewName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sDefinitionSQL)
+        bOK = False
 
-      'End Try
+      End Try
 
-      'Return bOK
+      Return bOK
 
     End Function
 
@@ -293,11 +251,15 @@ Namespace ScriptDB
 
             sDefinition = New StringBuilder
             sDefinition.AppendLine(String.Format("CREATE VIEW [{0}].[{1}]", objTable.SchemaName, objView.Name))
-            sDefinition.AppendLine("WITH SCHEMABINDING")
+            sDefinition.AppendLine("--WITH SCHEMABINDING")
             sDefinition.AppendLine("AS SELECT [id], [timestamp]")
 
             For Each objColumn In objView.Objects(Things.Type.Column)
-              sDefinition.AppendLine(String.Format(", base.[{0}] AS [{0}]", objColumn.Name))
+              If objColumn.IsCalculated And objColumn.IsReadOnly Then
+                sDefinition.AppendLine(String.Format(", {0} AS [{1}]", objColumn.Calculation.UDF.CallingCode.Replace("@prm_", "base."), objColumn.Name))
+              Else
+                sDefinition.AppendLine(String.Format(", base.[{0}] AS [{0}]", objColumn.Name))
+              End If
             Next
 
             sDefinition.AppendLine(String.Format("FROM [{0}].[{1}] base", objTable.SchemaName, objTable.Name))
@@ -318,8 +280,6 @@ Namespace ScriptDB
 
           Next
         Next
-
-
 
       Catch ex As Exception
         Globals.ErrorLog.Add(ErrorHandler.Section.Views, "Views", ErrorHandler.Severity.Error, ex.Message, sDefinition.ToString)
@@ -999,27 +959,27 @@ Namespace ScriptDB
 
             '   Debug.Print(objColumn.Name)
             If objColumn.IsCalculated Then
-              If objColumn.Calculation.IsComplex Then
+              '     If objColumn.Calculation.IsComplex Then
 
-                objColumn.Calculation.GenerateCode()
-                Globals.TuningLog.Expressions.Add(objColumn)
+              objColumn.Calculation.GenerateCode()
+              Globals.TuningLog.Expressions.Add(objColumn)
 
-                sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
-                'Debug.Assert(sObjectName <> "udfcalc_Personnel_Records.Trigger_to_Payroll")
+              sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
+              'Debug.Assert(sObjectName <> "udfcalc_Personnel_Records.Trigger_to_Payroll")
 
-                '  Debug.Assert(objColumn.Calculation.UDF.Name <> "[dbo].[udfcalc__Personnel_Records.Trigger_to_Payroll")
-                'Debug.Assert(sObjectName <> "udfcalc_Table1.calclevel2")
+              '  Debug.Assert(objColumn.Calculation.UDF.Name <> "[dbo].[udfcalc__Personnel_Records.Trigger_to_Payroll")
+              'Debug.Assert(sObjectName <> "udfcalc_Table1.calclevel2")
 
-                ScriptDB.DropUDF("dbo", sObjectName)
+              ScriptDB.DropUDF("dbo", sObjectName)
 
-                If objColumn.Calculation.IsValid Then
-                  If Not Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.Code) Then
-                    Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.CodeStub)
-                  End If
-                Else
+              If objColumn.Calculation.IsValid Then
+                If Not Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.Code) Then
                   Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.CodeStub)
                 End If
+              Else
+                Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.CodeStub)
               End If
+              'End If
             End If
           Next
         Next

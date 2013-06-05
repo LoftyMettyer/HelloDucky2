@@ -35,6 +35,12 @@
       TableOrderFilter = 27
     End Enum
 
+    Public Enum TableType
+      Parent = 0
+      Child = 1
+      Lookup = 2
+    End Enum
+
     Public Enum DisplayStyle
       Hierarchy = 0
       List = 1
