@@ -181,7 +181,7 @@ END
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_addtofavourites]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spstat_addtofavourites];
-	EXEC sp_executesql N'CREATE PROCEDURE dbo.[spstat_addtofavourites](@objecttype integer, @objectid integer, @count tinyint OUTPUT)
+	EXEC sp_executesql N'CREATE PROCEDURE dbo.[spstat_addtofavourites](@objecttype integer, @objectid integer)
 		AS
 		BEGIN
 
@@ -194,8 +194,6 @@ END
 				INSERT dbo.tbsys_userfavourites (username, objecttype, objectid, dateset)
 					VALUES (SYSTEM_USER, @objecttype, @objectid, @now);
 			END
-
-			SELECT @count = COUNT(*) FROM dbo.tbsys_userfavourites WHERE [username] = SYSTEM_USER;
 
 		END';
 	GRANT EXECUTE ON dbo.[spstat_addtofavourites] TO [ASRSysGroup];
