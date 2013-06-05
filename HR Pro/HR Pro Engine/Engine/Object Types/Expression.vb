@@ -839,7 +839,7 @@ Namespace Things
         objTriggeredUpdate.Where = String.Format(sWhereClause, WhereCodeCluster.ToArray)
 
         If Not Me.ReferencesChild And Not objTriggeredUpdate.Where.Contains("@part_") Then
-          objTriggeredUpdate.Where = objTriggeredUpdate.Where.Replace("@prm_", String.Format("{0}.", Me.BaseTable.PhysicalName))
+          objTriggeredUpdate.Where = objTriggeredUpdate.Where.Replace("@prm_", String.Format("[{0}].", Me.BaseTable.PhysicalName))
           Globals.OnBankHolidayUpdate.AddIfNew(objTriggeredUpdate)
         End If
 
