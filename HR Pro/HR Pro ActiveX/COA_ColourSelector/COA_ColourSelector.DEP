@@ -1,11 +1,11 @@
 [Version]
-Version=1.0.0.1
+Version=1.0.0.3
 
 [COA_ColourSelector.ocx <0009>]
 Dest=$(WinSysPath)
-Date=20/10/2010
-Time=09:19
-Version=1.0.0.1
+Date=26/01/2011
+Time=15:26
+Version=1.0.0.3
 CABFilename=COA_ColourSelector.CAB
 CABINFFile=COA_ColourSelector.INF
 Uses1=msvbvm60.dll
