@@ -40,8 +40,8 @@ DECLARE @admingroups TABLE(groupname nvarchar(255))
 /* ----------------------------------- */
 /* Avoid the (1 Row Affected) messages */
 /* ----------------------------------- */
-SET NOCOUNT ON
-SET @DBName = DB_NAME()
+SET NOCOUNT ON;
+SET @DBName = DB_NAME();
 
 /* ------------------------------------------------------- */
 /* Get the database version from the ASRSysSettings table. */
@@ -68,7 +68,18 @@ BEGIN
 END
 
 /* ------------------------------------------------------------- */
-/* Step - Calculation framework */
+PRINT 'Step - Fusion Integration'
+/* ------------------------------------------------------------- */
+
+	SET @NVarCommand = '';
+	SELECT @NVarCommand = @NVarCommand + 'IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID(''tbuser_' + tablename + ''', ''U'') AND name = ''_deleted'')
+		ALTER TABLE [tbuser_' + TableName + '] ADD [_deleted] bit, [_deleteddate] datetime;' FROM ASRSysTables
+			ORDER BY tablename;	
+	EXECUTE sp_executesql @NVarCommand;
+
+
+/* ------------------------------------------------------------- */
+PRINT 'Step - Calculation framework'
 /* ------------------------------------------------------------- */
 
 	IF EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('tbstat_componentcode', 'U') AND name = 'objectid')
@@ -113,7 +124,7 @@ END
 
 
 /* ------------------------------------------------------------- */
-/* Step - Object triggers */
+PRINT 'Step - Object triggers'
 /* ------------------------------------------------------------- */
 
 	IF  EXISTS (SELECT * FROM sys.triggers WHERE object_id = OBJECT_ID(N'[dbo].[DEL_ASRSysTables]'))
@@ -160,7 +171,7 @@ END
 
 
 /* ------------------------------------------------------------- */
-/* Step - Data Cleansing */
+PRINT  'Step - Data Cleansing'
 /* ------------------------------------------------------------- */
 
 	EXECUTE sp_executeSQL N'UPDATE ASRSysColumns SET lostFocusExprID = 0 WHERE (lostFocusExprID = - 1);';	
@@ -175,7 +186,7 @@ END
 
 
 /* ------------------------------------------------------------- */
-/* Step - Structure changes */
+PRINT 'Step - Structure changes'
 /* ------------------------------------------------------------- */
 	
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysWorkflowElementItems', 'U') AND name = 'LookupOrderID')
@@ -201,9 +212,8 @@ END
 
 
 /* ------------------------------------------------------------- */
-/* Basic object scripting engine								 */
+PRINT 'Step - Basic object scripting engine'
 /* ------------------------------------------------------------- */
-PRINT 'Step - Object scripting'
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_scriptnewcolumn]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spstat_scriptnewcolumn];
@@ -595,10 +605,8 @@ PRINT 'Step - Object scripting'
 
 
 /* ------------------------------------------------------------- */
-/* Update ASRSysBatchJob Table with columns       */
-/* for new management report pack functionality      */           
+PRINT 'Step - Report Packs'
 /* ------------------------------------------------------------- */
-PRINT 'Step - Adding fields required for Report Pack functionality'
 
 	SELECT @iRecCount = count(id) FROM syscolumns WHERE id = (select id from sysobjects where name = 'ASRSysBatchJobName') and name = 'OutputFormat'
 	IF @iRecCount = 0
@@ -627,42 +635,62 @@ PRINT 'Step - Adding fields required for Report Pack functionality'
 		EXECUTE sp_executeSQL N'UPDATE AsrSysBatchJobName SET IsBatch = 1;';	
 	  END 
   
--- Insert the system permissions for Report Packs and new picture too
-IF NOT EXISTS(SELECT * FROM dbo.[ASRSysPermissionCategories] WHERE [categoryID] = 44)
-BEGIN
-	INSERT dbo.[ASRSysPermissionCategories] ([CategoryID], [Description], [ListOrder], [CategoryKey], [picture])
-		VALUES (44, 'Report Packs', 10, 'REPORTPACKS',0x0000010001001010000001000800680500001600000028000000100000002000000001000800000000000001000000000000000000000001000000010000000000006F685D00736A5E00746B5F00726C60007E7365007B7467007F746600867E6F008B7F68004FA31A0052A21A0057A01A00EA840000EA880A008D806C009B8B76009C8C760093887800A6967D00B09D7E00E6A24900EBB56C00ECBB78004B32BF003B29D1003C29D100533BC1005442CE009D918100A4988400AFA08800ADA18D00B5A28200B6A48200B4A38400B8A48200BFA88300BFA98600AFACA700B7B4B000B8B6B100C1AC8400C5AF8700C8B28900CAB48B00CDB68D00E6BF8800C5CEA800C8D1A900D7CBB800E5D6BC00EDDABD00A398CB00BAB0C600D8D1C300DBD5C900EADCC200E4DECF00E7E1D700F1ECDF00F6F1E800FCF7ED00FDF8EE00FFFAF10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000FFFFFF00000000000000000000000000000000000000201E1D12080604010000000000000000203A332F0A313A0100000000000000002133150D0C0C3002040100000000000024390E0D191835063A010000000000002539160D191B360930020401000000002A3C34171C32371035063A01000000002A4029292927381336093002000000002D40294040283B1437103506000000002D40292929293D213813360F000000002D40404040403E243B143710000000002E2E2D2D2D2A2A213D2138130000000000002E40404040403E243B140000000000002E2E2D2D2D2A2A213D2100000000000000002E40404040403E2400000000000000002E2E2D2D2D2A2A210000FFFF0000C03F0000C03F0000C00F0000C00F0000C0030000C0030000C0030000C0030000C0030000C0030000C0030000F0030000F0030000FC030000FC03000000);
-	INSERT dbo.[ASRSysPermissionItems] ([ItemID], [CategoryID], [Description], [ListOrder], [ItemKey])
-		VALUES (158,44,'New', 10, 'NEW');
-	INSERT dbo.[ASRSysPermissionItems] ([ItemID], [CategoryID], [Description], [ListOrder], [ItemKey])
-		VALUES (159,44,'Edit', 20, 'EDIT');
-	INSERT dbo.[ASRSysPermissionItems] ([ItemID], [CategoryID], [Description], [ListOrder], [ItemKey])
-		VALUES (160,44,'View', 30, 'VIEW');
-	INSERT dbo.[ASRSysPermissionItems] ([ItemID], [CategoryID], [Description], [ListOrder], [ItemKey])
-		VALUES (161,44,'Delete', 40, 'DELETE');
-	INSERT dbo.[ASRSysPermissionItems] ([ItemID], [CategoryID], [Description], [ListOrder], [ItemKey])
-		VALUES (162,44,'Run', 40, 'RUN');		
-END
+	-- Insert the system permissions for Report Packs and new picture too
+	IF NOT EXISTS(SELECT * FROM dbo.[ASRSysPermissionCategories] WHERE [categoryID] = 44)
+	BEGIN
+		INSERT dbo.[ASRSysPermissionCategories] ([CategoryID], [Description], [ListOrder], [CategoryKey], [picture])
+			VALUES (44, 'Report Packs', 10, 'REPORTPACKS',0x0000010001001010000001000800680500001600000028000000100000002000000001000800000000000001000000000000000000000001000000010000000000006F685D00736A5E00746B5F00726C60007E7365007B7467007F746600867E6F008B7F68004FA31A0052A21A0057A01A00EA840000EA880A008D806C009B8B76009C8C760093887800A6967D00B09D7E00E6A24900EBB56C00ECBB78004B32BF003B29D1003C29D100533BC1005442CE009D918100A4988400AFA08800ADA18D00B5A28200B6A48200B4A38400B8A48200BFA88300BFA98600AFACA700B7B4B000B8B6B100C1AC8400C5AF8700C8B28900CAB48B00CDB68D00E6BF8800C5CEA800C8D1A900D7CBB800E5D6BC00EDDABD00A398CB00BAB0C600D8D1C300DBD5C900EADCC200E4DECF00E7E1D700F1ECDF00F6F1E800FCF7ED00FDF8EE00FFFAF10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000FFFFFF00000000000000000000000000000000000000201E1D12080604010000000000000000203A332F0A313A0100000000000000002133150D0C0C3002040100000000000024390E0D191835063A010000000000002539160D191B360930020401000000002A3C34171C32371035063A01000000002A4029292927381336093002000000002D40294040283B1437103506000000002D40292929293D213813360F000000002D40404040403E243B143710000000002E2E2D2D2D2A2A213D2138130000000000002E40404040403E243B140000000000002E2E2D2D2D2A2A213D2100000000000000002E40404040403E2400000000000000002E2E2D2D2D2A2A210000FFFF0000C03F0000C03F0000C00F0000C00F0000C0030000C0030000C0030000C0030000C0030000C0030000C0030000F0030000F0030000FC030000FC03000000);
+		INSERT dbo.[ASRSysPermissionItems] ([ItemID], [CategoryID], [Description], [ListOrder], [ItemKey])
+			VALUES (158,44,'New', 10, 'NEW');
+		INSERT dbo.[ASRSysPermissionItems] ([ItemID], [CategoryID], [Description], [ListOrder], [ItemKey])
+			VALUES (159,44,'Edit', 20, 'EDIT');
+		INSERT dbo.[ASRSysPermissionItems] ([ItemID], [CategoryID], [Description], [ListOrder], [ItemKey])
+			VALUES (160,44,'View', 30, 'VIEW');
+		INSERT dbo.[ASRSysPermissionItems] ([ItemID], [CategoryID], [Description], [ListOrder], [ItemKey])
+			VALUES (161,44,'Delete', 40, 'DELETE');
+		INSERT dbo.[ASRSysPermissionItems] ([ItemID], [CategoryID], [Description], [ListOrder], [ItemKey])
+			VALUES (162,44,'Run', 40, 'RUN');		
+	END
 
-/* ------------------------------------------------------------- */
-/* Step - Adding Report Pack field to Event Log for Report Pack  */
-/* ------------------------------------------------------------- */
-SELECT @iRecCount = count(id) FROM syscolumns
-where id = (select id from sysobjects where name = 'ASRSysEventLog')
-and name = 'ReportPack'
+	-- Adding Report Pack field to Event Log for Report Pack
+	SELECT @iRecCount = count(id) FROM syscolumns
+	where id = (select id from sysobjects where name = 'ASRSysEventLog')
+	and name = 'ReportPack'
 
-if @iRecCount = 0
-BEGIN
+	if @iRecCount = 0
+	BEGIN
 
- SELECT @NVarCommand = 'ALTER TABLE [dbo].[ASRSysEventLog] 
-    ADD [ReportPack] bit NULL'
- EXEC sp_executesql @NVarCommand
-END
+	 SELECT @NVarCommand = 'ALTER TABLE [dbo].[ASRSysEventLog] 
+		ADD [ReportPack] bit NULL'
+	 EXEC sp_executesql @NVarCommand
+	END
 
-/* ------------------------------------------------------------- */
-/* Step - Menu & Category Enhancements */
+	-- Extra file formats
+	IF NOT EXISTS(SELECT ID FROM syscolumns	WHERE ID = (SELECT ID FROM sysobjects where [name] = 'ASRSysFileFormats') AND [name] = 'Direction')
+	BEGIN
+		EXEC sp_executesql N'ALTER TABLE dbo.[ASRSysFileFormats] ADD [Direction] tinyint NULL;';
+		EXEC sp_executesql N'DELETE FROM ASRSysFileFormats WHERE ID > 922;';
+		EXEC sp_executesql N'UPDATE ASRSysFileFormats SET [direction] = 2;';
+	END
+
+	IF NOT EXISTS(SELECT * FROM ASRSysFileFormats where ID = 923)
+	BEGIN
+		EXEC sp_executesql N'INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default], [Direction])
+			VALUES (923, ''Word'', ''PDF (*.pdf)'', ''pdf'', NULL, 17, 0, 1);'
+		EXEC sp_executesql N'INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default], [Direction])
+			VALUES (924, ''Word'', ''Rich Text Format (*.rtf)'', ''rtf'', NULL, 6, 0, 1);'
+		EXEC sp_executesql N'INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default], [Direction])
+			VALUES (925, ''Word'', ''Plain Text (*.txt)'', ''txt'', NULL, 2, 0, 1);'
+		EXEC sp_executesql N'INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default], [Direction])
+			VALUES (926, ''Word'', ''Web Page (*.html)'', ''html'', NULL, 8, 0, 1);		'
+		EXEC sp_executesql N'INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default], [Direction])
+			VALUES (927, ''Excel'', ''Web Page (*.html)'', ''html'', NULL, 44, 0, 1);'
+	END
+
+
 /* ------------------------------------------------------------- */
 PRINT 'Step - Menu & Category enhancements'
+/* ------------------------------------------------------------- */
 
 	-- Categories
 	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = object_ID(N'tbsys_objectcategories') AND type in (N'U'))
@@ -1256,31 +1284,6 @@ PRINT 'Step - Menu & Category enhancements'
 
 	END
 
-
-/* ------------------------------------------------------------- */
-/* Step - Management Packs */
-/* ------------------------------------------------------------- */
-
-	IF NOT EXISTS(SELECT ID FROM syscolumns	WHERE ID = (SELECT ID FROM sysobjects where [name] = 'ASRSysFileFormats') AND [name] = 'Direction')
-	BEGIN
-		EXEC sp_executesql N'ALTER TABLE dbo.[ASRSysFileFormats] ADD [Direction] tinyint NULL;';
-		EXEC sp_executesql N'DELETE FROM ASRSysFileFormats WHERE ID > 922;';
-		EXEC sp_executesql N'UPDATE ASRSysFileFormats SET [direction] = 2;';
-	END
-
-	IF NOT EXISTS(SELECT * FROM ASRSysFileFormats where ID = 923)
-	BEGIN
-		EXEC sp_executesql N'INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default], [Direction])
-			VALUES (923, ''Word'', ''PDF (*.pdf)'', ''pdf'', NULL, 17, 0, 1);'
-		EXEC sp_executesql N'INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default], [Direction])
-			VALUES (924, ''Word'', ''Rich Text Format (*.rtf)'', ''rtf'', NULL, 6, 0, 1);'
-		EXEC sp_executesql N'INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default], [Direction])
-			VALUES (925, ''Word'', ''Plain Text (*.txt)'', ''txt'', NULL, 2, 0, 1);'
-		EXEC sp_executesql N'INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default], [Direction])
-			VALUES (926, ''Word'', ''Web Page (*.html)'', ''html'', NULL, 8, 0, 1);		'
-		EXEC sp_executesql N'INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default], [Direction])
-			VALUES (927, ''Excel'', ''Web Page (*.html)'', ''html'', NULL, 44, 0, 1);'
-	END
 
 
 /* ------------------------------------------------------------- */
@@ -2505,9 +2508,8 @@ PRINT 'Step - Menu & Category enhancements'
 	EXECUTE sp_executeSQL @sSPCode;
 
 /* ------------------------------------------------------------- */
-/* Step - Audit Log updates */
-/* ------------------------------------------------------------- */
 PRINT 'Step - Audit Log Updates'
+/* ------------------------------------------------------------- */
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_getaudittrail]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spstat_getaudittrail];
@@ -2644,9 +2646,8 @@ PRINT 'Step - Audit Log Updates'
 	END
  
 /* ------------------------------------------------------------- */
-/* Step - Indexing updates (HRPRO-2291) */
+PRINT 'Step - Indexing Update'
 /* ------------------------------------------------------------- */
-PRINT 'Step - Indexing Updates'
 
 	DECLARE @sql nvarchar(max)
 
