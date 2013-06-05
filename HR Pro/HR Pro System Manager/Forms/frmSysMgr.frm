@@ -715,23 +715,23 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     
     If Not blnReadonly Then
     
-      If frmDbMgr.ActiveView Is frmDbMgr.Treeview1 Then
+      If frmDbMgr.ActiveView Is frmDbMgr.TreeView1 Then
         
-        bCopyTable = DoesTableExistInDB(val(Mid(frmDbMgr.Treeview1.SelectedItem.key, 2)))
+        bCopyTable = DoesTableExistInDB(val(Mid(frmDbMgr.TreeView1.SelectedItem.key, 2)))
         
-        If frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATION Then
-          .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd) And (frmDbMgr.Treeview1.Nodes("TABLES").Children > 0)
+        If frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATION Then
+          .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd) And (frmDbMgr.TreeView1.Nodes("TABLES").Children > 0)
           .Tools("ID_CopyDef").Enabled = False
         Else
-          .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd)
+          .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd)
           .Tools("ID_CopyDef").Enabled = bCopyTable
         End If
         
         
         
-        .Tools("ID_Delete").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtDelete)
-        .Tools("ID_Properties").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtEdit)
-        .Tools("ID_Print").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtCopy)
+        .Tools("ID_Delete").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtDelete)
+        .Tools("ID_Properties").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtEdit)
+        .Tools("ID_Print").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtCopy)
       Else
         .Tools("ID_New").Enabled = (frmDbMgr.ListView1_SelectedTag And edtAdd)
         
@@ -754,7 +754,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     .Tools("ID_LargeIcons").Enabled = True
     .Tools("ID_SmallIcons").Enabled = True
     .Tools("ID_List").Enabled = True
-    .Tools("ID_Details").Enabled = ((frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLE))
+    .Tools("ID_Details").Enabled = ((frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLE))
     .Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Enabled And _
       (frmDbMgr.ListView1.View = lvwReport)
     frmSysMgr.tbMain.Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Enabled And _
@@ -768,7 +768,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
 '      .Tools("ID_List").Checked = False
 '      .Tools("ID_Details").Checked = True
       .Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Checked And _
-        ((frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLE))
+        ((frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLE))
 
       frmSysMgr.tbMain.Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Checked
     End If
@@ -804,18 +804,18 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     ' Configure the Edit menu.
     '==================================================
     ' Enable/disable the required tools.
-    If frmDbMgr.ActiveView Is frmDbMgr.Treeview1 Then
-      If frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATION Then
-        .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd) And (frmDbMgr.Treeview1.Nodes("TABLES").Children > 0) And Not blnReadonly
+    If frmDbMgr.ActiveView Is frmDbMgr.TreeView1 Then
+      If frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATION Then
+        .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd) And (frmDbMgr.TreeView1.Nodes("TABLES").Children > 0) And Not blnReadonly
         .Tools("ID_CopyDef").Enabled = False
         .Tools("ID_CopyDef").Visible = True
       Else
-        .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd) And Not blnReadonly
+        .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd) And Not blnReadonly
         .Tools("ID_CopyDef").Enabled = bCopyTable And Not blnReadonly
         .Tools("ID_CopyDef").Visible = True
       End If
-      .Tools("ID_Delete").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtDelete) And Not blnReadonly
-      .Tools("ID_Properties").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtEdit)
+      .Tools("ID_Delete").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtDelete) And Not blnReadonly
+      .Tools("ID_Properties").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtEdit)
       '.Tools("ID_CopyTable").Enabled = bCopyTable
       '.Tools("ID_CopyColumn").Enabled = False
       '.Tools("ID_CopyTable").Visible = True
@@ -855,7 +855,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
 
       End If
     End If
-    .Tools("ID_SelectAll").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag <> 0) And frmDbMgr.ListView1.ListItems.Count And Not blnReadonly
+    .Tools("ID_SelectAll").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag <> 0) And frmDbMgr.ListView1.ListItems.Count And Not blnReadonly
       
     ' Reassign shortcuts if required.
 '    .Tools("ID_ScreenObjectDelete").Shortcut = ssShortcutNone
@@ -899,7 +899,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     .Tools("ID_LargeIcons").Enabled = True
     .Tools("ID_SmallIcons").Enabled = True
     .Tools("ID_List").Enabled = True
-    .Tools("ID_Details").Enabled = ((frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLE))
+    .Tools("ID_Details").Enabled = ((frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLE))
  '(frmDbMgr.ListView1_SelectedTag = giNODE_COLUMN)
     
     If (frmDbMgr.ListView1.View = lvwReport) And _
@@ -1770,6 +1770,7 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     .Tools("ID_Post").Enabled = Application.PersonnelModule
     .Tools("ID_Absence").Enabled = Application.AbsenceModule
     .Tools("ID_AccordTransfer").Enabled = gbAccordPayrollModule
+    .Tools("ID_FusionIntegration").Enabled = True 'Application.FusionIntegration
     .Tools("ID_CMG").Enabled = gbCMGExportEnabled
     .Tools("ID_WorkflowSetup").Enabled = Application.WorkflowModule
     .Tools("ID_MobileSetup").Enabled = Application.MobileModule
@@ -1803,6 +1804,7 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     .Tools("ID_Maternity").Visible = True
     .Tools("ID_Post").Visible = True
     .Tools("ID_Absence").Visible = True
+    .Tools("ID_FusionIntegration").Visible = True
     .Tools("ID_AccordTransfer").Visible = True
     .Tools("ID_CMG").Visible = True
     .Tools("ID_WorkflowSetup").Visible = True
@@ -2116,7 +2118,7 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
        frmViewMgr.Show
        frmViewMgr.SetFocus
        frmSysMgr.RefreshMenu
-                  
+      
     Case "ID_TrainingBooking"
       ' Call up the Training Booking Module Setup screen.
       frmTrainingBookingSetup.Show vbModal
@@ -2135,6 +2137,11 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
+      
+    Case "ID_FusionIntegration"
+      ' Call up the Fusion Integration Module Setup screen.
+      frmFusionTransfer.Show vbModal
+      Set frmFusionTransfer = Nothing
          
     Case "ID_CMG"
       ' Call up the CMG/Centrefile module setup
@@ -2469,6 +2476,11 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
+      
+    Case "ID_FusionIntegration"
+      ' Call up the Fusion Integration Module Setup screen.
+      frmFusionTransfer.Show vbModal
+      Set frmFusionTransfer = Nothing
         
     Case "ID_CMG"
       ' Call up the CMG/Centrefile module setup
@@ -2819,6 +2831,11 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
     
+    Case "ID_FusionIntegration"
+      ' Call up the Fusion Integration module setup
+      frmFusionTransfer.Show vbModal
+      Set frmFusionTransfer = Nothing
+      
     Case "ID_CMG"
       ' Call up the CMG/Centrefile module setup
       frmCMGSetup.Show vbModal
@@ -3141,6 +3158,11 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
+      
+    Case "ID_FusionIntegration"
+      ' Call up the Fusion Integration module setup
+      frmFusionTransfer.Show vbModal
+      Set frmFusionTransfer = Nothing
 
     Case "ID_CMG"
       ' Call up the CMG/Centrefile module setup
@@ -3465,6 +3487,11 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
+      
+    Case "ID_FusionIntegration"
+      ' Call up the Fusion Integration module setup
+      frmFusionTransfer.Show vbModal
+      Set frmFusionTransfer = Nothing
             
     Case "ID_CMG"
       ' Call up the CMG/Centrefile module setup
@@ -3831,6 +3858,11 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
+      
+    Case "ID_FusionIntegration"
+      ' Call up the Fusion Integration module setup
+      frmFusionTransfer.Show vbModal
+      Set frmFusionTransfer = Nothing
             
     Case "ID_CMG"
       ' Call up the CMG/Centrefile module setup
@@ -4122,6 +4154,11 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
+      
+    Case "ID_FusionIntegration"
+      ' Call up the Fusion Integration module setup
+      frmFusionTransfer.Show vbModal
+      Set frmFusionTransfer = Nothing
             
     Case "ID_CMG"
       ' Call up the CMG/Centrefile module setup
@@ -4536,6 +4573,11 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
+      
+    Case "ID_FusionIntegration"
+      ' Call up the Fusion Integration module setup
+      frmFusionTransfer.Show vbModal
+      Set frmFusionTransfer = Nothing
             
     Case "ID_CMG"
       ' Call up the CMG/Centrefile module setup
