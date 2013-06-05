@@ -75,6 +75,8 @@ Public Class ExpressionDependencies
     Dim iPartNumber As Integer = 0
     Dim bFound As Boolean = False
     Dim sTypesafeCode As String
+    Dim aryParameters As New ArrayList
+
     objDepends.Thing = Child.Column
     objDepends.Filter = Child.Filter
     objDepends.Order = Child.Order
@@ -92,6 +94,8 @@ Public Class ExpressionDependencies
     ' Not in the list - add it and return this value
     If Not bFound Then
 
+      aryParameters.Add(String.Format("@prm_ID"))
+
       iPartNumber = colThings.Count
       objDepends.PartNumber = iPartNumber
 
@@ -103,13 +107,31 @@ Public Class ExpressionDependencies
         sTypesafeCode = Child.Column.SafeReturnType
       End If
 
+
+      ' Calculate the extra parameters we require if there's a filter attached
+      If Not Child.Filter Is Nothing Then
+
+        Child.Filter.AssociatedColumn = Child.Filter.BaseTable.Columns(0)
+        Child.Filter.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
+        Child.Filter.GenerateCodeForColumn()
+
+        ' Add the dependent columns
+        For Each objColumn In Child.Filter.Dependencies.Columns
+          If objColumn.Table Is Child.BaseTable Then
+            'aryParameters.Add(String.Format("@prm_{0}", objColumn.Name))
+          End If
+        Next
+
+      End If
+
       objOrderFilter = Child.Column.Table.TableOrderFilter(Child)
       objOrderFilter.IncludedColumns.AddIfNew(Child.Column)
 
       objDepends.Code = String.Format("SET @child_{0} = {2};" & vbNewLine & _
           "SELECT @child_{0} = ISNULL(base.[{1}],{2})" & vbNewLine & _
-          "    FROM [dbo].[{3}](@prm_ID) base" & vbNewLine _
-          , iPartNumber.ToString, Child.Column.Name, sTypesafeCode, objOrderFilter.Name)
+          "    FROM [dbo].[{3}]({4}) base" & vbNewLine _
+          , iPartNumber.ToString, Child.Column.Name, sTypesafeCode, objOrderFilter.Name _
+          , String.Join(", ", aryParameters.ToArray()))
 
       colThings.Add(objDepends)
     End If

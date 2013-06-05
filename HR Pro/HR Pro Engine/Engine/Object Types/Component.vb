@@ -37,6 +37,7 @@ Namespace Things
     Private mdecValueNumeric As Decimal = 0
 
     Private ConvertSubComponents As Boolean = True
+    Public Shared DepthCharge As Long
 
     Public Sub New()
       Components = New Collection(Of Component)
@@ -64,6 +65,8 @@ Namespace Things
 #Region "Convert components to expressions"
 
     Public Sub ConvertToExpression()
+
+      DepthCharge = 0
 
       Dim objRecursiveComponents As New Collection(Of Base)
       objRecursiveComponents.Add(Me.AssociatedColumn)
@@ -103,13 +106,17 @@ Namespace Things
         ElseIf Me.SubType = ScriptDB.ComponentTypes.Expression Then
 
           For Each objComponent As Component In Me.Components
+            DepthCharge = DepthCharge + 1
             objComponent.ConvertToExpression(Level, Recursion)
+            DepthCharge = DepthCharge - 1
           Next
 
         ElseIf Me.SubType = ScriptDB.ComponentTypes.Function Then
 
           For Each objComponent As Component In Me.Components
+            DepthCharge = DepthCharge + 1
             objComponent.ConvertToExpression(Level, Recursion)
+            DepthCharge = DepthCharge - 1
           Next
 
           ' Pull a calculated column directly in as an expression
@@ -135,8 +142,16 @@ Namespace Things
 
                 For Each objComponent As Component In Me.Components
                   objComponent.ConvertSubComponents = bConvertsSubComponents
+                  DepthCharge = DepthCharge + 1
                   objComponent.ConvertToExpression(Level, Recursion)
+                  DepthCharge = DepthCharge - 1
                 Next
+
+                'If DepthCharge > 60 Then
+                '  Debug.Print(Me.BaseExpression.Name)
+                'End If
+
+                '    Debug.Assert(DepthCharge < 50)
 
                 If lngThisLevel < Level Then
                   Recursion.Remove(objColumn)
@@ -146,7 +161,7 @@ Namespace Things
 
               End If
 
-            End If
+              End If
           End If
 
         End If

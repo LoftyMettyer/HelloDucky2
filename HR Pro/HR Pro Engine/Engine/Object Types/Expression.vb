@@ -136,6 +136,7 @@ Namespace Things
 
       ' Add the ID for the record if required
       '      If RequiresRecordID Or Me.IsComplex Or Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault Then
+
       If RequiresRecordID Or Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault Then
         aryParameters1.Add("@prm_ID integer")
         aryParameters2.Add("base.ID")
@@ -150,13 +151,11 @@ Namespace Things
       End If
 
       ' Add other dependancies
-
       For Each column In Dependencies.Columns
         If column.Table Is Me.BaseTable Then
           aryParameters1.Add(String.Format("@prm_{0} {1}", column.Name, column.DataTypeSyntax))
           aryParameters2.Add(String.Format("base.[{0}]", column.Name))
           aryParameters3.Add(String.Format("@prm_{0}", column.Name))
-          '          aryComments.Add(String.Format("Column: {0}", column.Name))
         End If
       Next
 
@@ -524,13 +523,8 @@ Namespace Things
         If objThisColumn.Table Is Me.AssociatedColumn.Table Then
 
           Select Case Component.BaseExpression.ExpressionType
-            Case ScriptDB.ExpressionType.ColumnFilter
+            Case ScriptDB.ExpressionType.ColumnFilter, ScriptDB.ExpressionType.Mask
               sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
-              Me.IsComplex = True
-
-            Case ScriptDB.ExpressionType.Mask
-              sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
-              Me.IsComplex = True
 
               ' Needs base table added
               sFromCode = String.Format("FROM [dbo].[{0}] base", objThisColumn.Table.Name)
@@ -538,11 +532,16 @@ Namespace Things
                 FromTables.Add(sFromCode)
               End If
 
-              ' Where clause
-              sWhereCode = String.Format("base.[ID] = @prm_ID")
-              If Not Wheres.Contains(sWhereCode) Then
-                Wheres.Add(sWhereCode)
-              End If
+              '' Where clause
+              'sWhereCode = String.Format("base.[ID] = @prm_ID")
+              'If Not Wheres.Contains(sWhereCode) Then
+              '  Wheres.Add(sWhereCode)
+              'End If
+
+              Me.IsComplex = True
+
+              Dependencies.Add(objThisColumn)
+
 
             Case Else
               sColumnName = String.Format("@prm_{0}", objThisColumn.Name)
@@ -576,8 +575,7 @@ Namespace Things
             End If
 
             ' Add table join component
-            sRelationCode = String.Format("LEFT JOIN [dbo].[{0}] ON [{0}].[ID] = base.[ID_{1}]" _
-              , objRelation.Name, objRelation.ParentID)
+            sRelationCode = String.Format("LEFT JOIN [dbo].[{0}] ON [{0}].[ID] = base.[ID_{1}]", objRelation.Name, objRelation.ParentID)
             If Not Joins.Contains(sRelationCode) Then
               Joins.Add(sRelationCode)
             End If
@@ -589,7 +587,12 @@ Namespace Things
             End If
 
             ' Where clause
-            sWhereCode = "base.[ID] = @prm_ID"
+            If Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter And Me.IsComplex Then
+              sWhereCode = String.Format("[{0}].[ID] = @prm_ID_{1}", objRelation.Name, objRelation.ParentID)
+            Else
+              sWhereCode = "base.[ID] = @prm_ID"
+            End If
+
             If Not Wheres.Contains(sWhereCode) Then
               Wheres.Add(sWhereCode)
             End If
@@ -601,16 +604,25 @@ Namespace Things
             ' Add to dependency stack
             objThisColumn.Table.DependsOnParentColumns.AddIfNew(Me.AssociatedColumn)
 
+            [Component].ChildRowDetails.BaseTable = Me.BaseTable
             [Component].ChildRowDetails.Order = objThisColumn.Table.TableOrders.GetById([Component].ChildRowDetails.OrderID)
             [Component].ChildRowDetails.Filter = objThisColumn.Table.Expressions.GetById([Component].ChildRowDetails.FilterID)
             [Component].ChildRowDetails.Relation = objRelation
             [Component].ChildRowDetails.Column = objThisColumn
             iPartNumber = Dependencies.Add([Component].ChildRowDetails)
 
+            ' Any columns used in child filters should be added to the udf chain 
+            If Not [Component].ChildRowDetails.Filter Is Nothing Then
+              For Each objColumn In [Component].ChildRowDetails.Filter.Dependencies.Columns
+                Me.Dependencies.Add(objColumn)
+              Next
+            End If
+
+
             LineOfCode.Code = String.Format("@child_{0}", iPartNumber)
             Me.ReferencesChild = True
 
-          End If
+            End If
         End If
       End If
 

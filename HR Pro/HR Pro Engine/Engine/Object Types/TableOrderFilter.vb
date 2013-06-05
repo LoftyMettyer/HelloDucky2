@@ -9,9 +9,11 @@
     Public UDF As ScriptDB.GeneratedUDF
     Public RowDetails As ChildRowDetails
     Public Property IncludedColumns As ICollection(Of Column)
+    Public Property Dependencies As ICollection(Of Column)
 
     Public Sub New()
       IncludedColumns = New Collection(Of Column)
+      Dependencies = New Collection(Of Column)
     End Sub
 
     Public Overrides Property Name As String
@@ -78,13 +80,22 @@
 
       ' Build the where clause
       If Not RowDetails.Filter Is Nothing Then
+
+        ' RowDetails.Filter.AssociatedColumn = Globals.Tables(0).Columns(0)
+
         RowDetails.Filter.AssociatedColumn = Me.Table.Columns(0)
         RowDetails.Filter.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
         RowDetails.Filter.GenerateCodeForColumn()
 
-        'If RowDetails.Filter.RequiresRecordID Then
-        '  aryParameters.Add("@prm_ID integer")
-        'End If
+        ' Add the dependent columns
+        For Each objColumn In RowDetails.Filter.Dependencies.Columns
+          Dependencies.Add(objColumn)
+        Next
+
+        'For Each objColumn In RowDetails.Filter.Dependencies.Columns
+        '  Dependencies.Add(objColumn)
+        'Next
+
 
         aryDeclarations.AddRange(RowDetails.Filter.Declarations)
         aryStatements.AddRange(RowDetails.Filter.PreStatements)
@@ -144,6 +155,13 @@
       objIndex.IncludePrimaryKey = False
       objIndex.IsTableIndex = True
       objIndex.IsClustered = False
+
+      ' Add any columns from the base table that are referenced by the child filter
+      For Each objColumn In Dependencies
+        If Not objColumn.Table Is Me.Table Then
+          'aryParameters.Add(String.Format("@prm_{0} {1}", objColumn.Name, objColumn.DataTypeSyntax))
+        End If
+      Next
 
       With UDF
         .Name = "[dbo].[" & Me.Name & "]"

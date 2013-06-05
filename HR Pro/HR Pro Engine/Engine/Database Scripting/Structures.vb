@@ -16,6 +16,7 @@
       Property Order As TableOrder
       Property Filter As Expression
       Property Relation As Relation
+      Property BaseTable As Table
     End Structure
 
   End Module
