@@ -52,7 +52,7 @@ Private mblnUpdateProgress As Boolean
 Private Function ConvertToGrid(pstrArray() As String, pGrdTemp As SSDBGrid) As SSDBGrid
 
   Dim strAddLine As String
-  Dim iCol As Long
+  Dim icol As Long
   Dim iRow As Long
     
   With pGrdTemp
@@ -62,21 +62,21 @@ Private Function ConvertToGrid(pstrArray() As String, pGrdTemp As SSDBGrid) As S
     .ColumnHeaders = False
       
     'add the columns to the grid
-    For iCol = 0 To UBound(pstrArray) Step 1
-      .Columns.Add iCol
-    Next iCol
+    For icol = 0 To UBound(pstrArray) Step 1
+      .Columns.Add icol
+    Next icol
     
     For iRow = 0 To UBound(pstrArray, 2) Step 1
         
       strAddLine = vbNullString
        
-      For iCol = 0 To UBound(pstrArray) Step 1
-        strAddLine = strAddLine & pstrArray(iCol, iRow)
+      For icol = 0 To UBound(pstrArray) Step 1
+        strAddLine = strAddLine & pstrArray(icol, iRow)
         
-        If iCol < UBound(pstrArray) Then
+        If icol < UBound(pstrArray) Then
           strAddLine = strAddLine & vbTab
         End If
-      Next iCol
+      Next icol
         
       .AddItem strAddLine
       
@@ -96,7 +96,7 @@ Private Function AutoSizeGridColumms(pSSDBGrid As SSDBGrid) As SSDBGrid
   
   'formats the size of the columns so all data is shown
 
-  Dim iCol As Long
+  Dim icol As Long
   Dim iRow As Long
   Dim lngTextWidth As Long
   Dim varBookmark As Variant
@@ -108,23 +108,23 @@ Private Function AutoSizeGridColumms(pSSDBGrid As SSDBGrid) As SSDBGrid
   With pSSDBGrid
     .Redraw = False
     .MoveFirst
-    For iCol = 0 To .Columns.Count - 1 Step 1
+    For icol = 0 To .Columns.Count - 1 Step 1
       
-      lngTextWidth = ((Len(Trim(.Columns(iCol).CellText(varBookmark)))) * TextWidthMultiplier)
+      lngTextWidth = ((Len(Trim(.Columns(icol).CellText(varBookmark)))) * TextWidthMultiplier)
       
-      If .Columns(iCol).Visible Then
+      If .Columns(icol).Visible Then
         For iRow = 0 To .Rows - 1 Step 1
           varBookmark = .AddItemBookmark(iRow)
           
-          If ((Len(Trim(.Columns(iCol).CellText(varBookmark)))) * TextWidthMultiplier) > lngTextWidth Then
-            lngTextWidth = ((Len(Trim(.Columns(iCol).CellText(varBookmark)))) * TextWidthMultiplier)
+          If ((Len(Trim(.Columns(icol).CellText(varBookmark)))) * TextWidthMultiplier) > lngTextWidth Then
+            lngTextWidth = ((Len(Trim(.Columns(icol).CellText(varBookmark)))) * TextWidthMultiplier)
           End If
         Next iRow
         
-        .Columns(iCol).Width = lngTextWidth + 150
+        .Columns(icol).Width = lngTextWidth + 150
       End If
       lngTextWidth = 0
-    Next iCol
+    Next icol
     .Redraw = True
   End With
   
@@ -621,6 +621,8 @@ Public Function SendEmail(strAttachment As String) As Boolean
   
   Dim strAddress() As String
   Dim lngCount As Long
+  
+  Dim blnProgressVisible As Boolean
 
   On Error GoTo LocalErr
 
@@ -653,6 +655,9 @@ Public Function SendEmail(strAttachment As String) As Boolean
 
       .Compose
 
+      blnProgressVisible = gobjProgress.Visible
+      gobjProgress.Visible = False
+      
       Do While Not rsEmail.EOF
         strAddress = Split(rsEmail!AddrFixed, ";")
         
@@ -679,7 +684,10 @@ Public Function SendEmail(strAttachment As String) As Boolean
         .AttachmentPathName = strAttachment
         .AttachmentName = mstrEmailAttachAs
       End If
+      
       .Send False
+      gobjProgress.Visible = blnProgressVisible
+    
     End With
   End If
   frmEmailSel.MAPIsignoff
@@ -800,15 +808,20 @@ Public Function SetOptions( _
     strPrinterName As String, _
     blnSave As Boolean, _
     lngSaveExisting As Long, _
+    lngSaveFileFormat As Long, _
     blnEmail As Boolean, _
     lngEmailAddr As Long, _
     strEmailSubject As String, _
     strEmailAttachAs As String, _
+    lngEmailFileFormat As Long, _
     strFileName As String) As Boolean
-
+  
+  
   Dim objColumn As clsColumn
   Dim blnCancelled As Boolean
   'Dim lngSaveExisting As Long
+  Dim strEmailFileExtension As String
+
 
   On Local Error GoTo LocalErr
 
@@ -846,8 +859,10 @@ Public Function SetOptions( _
         .txtEmailGroup.Tag = lngEmailAddr
         .txtEMailSubject.Text = strEmailSubject
         .txtEmailAttachAs.Text = strEmailAttachAs
+        .txtEmailAttachAs.Tag = lngEmailFileFormat
       End If
       .txtFileName.Text = strFileName
+      .txtFileName.Tag = lngSaveFileFormat
 
       .ShowFormats mblnData, mblnCSV, mblnHTML, mblnWord, mblnExcel, mblnChart, mblnPivot
       .PageRange = mblnPageRange
@@ -864,11 +879,18 @@ Public Function SetOptions( _
       blnPrinter = (.chkDestination(desPrinter).Value = vbChecked)
       strPrinterName = .cboPrinterName.Text
       blnSave = (.chkDestination(desSave).Value = vbChecked)
+
       blnEmail = (.chkDestination(desEmail).Value = vbChecked)
       lngEmailAddr = Val(.txtEmailGroup.Tag)
       strEmailSubject = .txtEMailSubject.Text
       strEmailAttachAs = .txtEmailAttachAs.Text
       strFileName = .txtFileName.Text
+
+      lngSaveFileFormat = Val(.txtFileName.Tag)
+      lngEmailFileFormat = Val(.txtEmailAttachAs.Tag)
+      If InStr(.txtEmailAttachAs.Tag, "|") > 0 Then
+        strEmailFileExtension = Split(.txtEmailAttachAs.Tag, "|")(1)
+      End If
 
       'If .cboEmailAddr.ListIndex <> -1 Then
         mlngEmailGroupID = .txtEmailGroup.Tag
@@ -876,9 +898,27 @@ Public Function SetOptions( _
         mstrEmailAttachAs = .txtEmailAttachAs.Text
       'End If
 
+
       If .cboSaveExisting.ListIndex <> -1 Then
         lngSaveExisting = .cboSaveExisting.ItemData(.cboSaveExisting.ListIndex)
       End If
+
+
+      Select Case mlngFormat
+      Case fmtCSV, fmtFixedLengthFile
+        CheckEmailAttachment "csv"
+        
+      Case fmtHTML
+        CheckEmailAttachment "htm"
+        
+      Case fmtWordDoc
+        CheckEmailAttachment strEmailFileExtension
+        
+      Case fmtExcelWorksheet, fmtExcelChart, fmtExcelPivotTable
+        CheckEmailAttachment strEmailFileExtension
+        
+      End Select
+
 
       blnCancelled = mfrmOutput.Cancelled
 
@@ -910,29 +950,23 @@ Public Function SetOptions( _
 
   Case fmtCSV, fmtFixedLengthFile
     Set mobjOutputType = New clsOutputCSV
-    CheckEmailAttachment "csv"
     
   Case fmtHTML
     Set mobjOutputType = New clsOutputHTML
-    CheckEmailAttachment "htm"
 
   Case fmtWordDoc
     Set mobjOutputType = New clsOutputWord
-    CheckEmailAttachment "doc"
 
   Case fmtExcelWorksheet
     Set mobjOutputType = New clsOutputExcel
-    CheckEmailAttachment "xls"
 
   Case fmtExcelChart
     Set mobjOutputType = New clsOutputExcel
     mobjOutputType.Chart = True
-    CheckEmailAttachment "xls"
 
   Case fmtExcelPivotTable
     Set mobjOutputType = New clsOutputExcel
     mobjOutputType.PivotTable = True
-    CheckEmailAttachment "xls"
 
   End Select
 
@@ -941,8 +975,10 @@ Public Function SetOptions( _
   mobjOutputType.Screen = blnScreen
   mobjOutputType.DestPrinter = blnPrinter
   mobjOutputType.Save = blnSave
+  mobjOutputType.SaveFileFormat = lngSaveFileFormat
   mobjOutputType.SaveExisting = lngSaveExisting
   mobjOutputType.Email = blnEmail
+  mobjOutputType.EmailFileFormat = lngEmailFileFormat
   mobjOutputType.FileName = strFileName
 
   mblnPrintData = (mlngFormat = fmtDataOnly And blnPrinter)
@@ -1224,3 +1260,27 @@ End Property
 Public Property Get UpdateProgressPerRow() As Boolean
   UpdateProgressPerRow = mblnUpdateProgress
 End Property
+
+
+Public Function GetOfficeFormat(lngFormat As Long, intOfficeVersion As Integer) As String
+  
+  Dim rsTemp As ADODB.Recordset
+  Dim sSQL As String
+  
+  On Local Error GoTo LocalErr
+  
+  GetOfficeFormat = ""
+  
+  sSQL = "SELECT " & IIf(intOfficeVersion < 12, "Office2003", "Office2007") & _
+         " FROM ASRSysFileFormats WHERE ID = " & CStr(lngFormat)
+  Set rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
+  GetOfficeFormat = IIf(IsNull(rsTemp(0).Value), "", rsTemp(0).Value)
+  rsTemp.Close
+  Set rsTemp = Nothing
+
+Exit Function
+
+LocalErr:
+  GetOfficeFormat = ""
+
+End Function

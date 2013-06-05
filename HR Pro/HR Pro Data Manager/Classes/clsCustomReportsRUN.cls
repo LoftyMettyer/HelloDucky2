@@ -49,10 +49,12 @@ Private mblnOutputPrinter As Boolean
 Private mstrOutputPrinterName As String
 Private mblnOutputSave As Boolean
 Private mlngOutputSaveExisting As Long
+Private mlngOutputSaveFormat As Long
 Private mblnOutputEmail As Boolean
 Private mlngOutputEmailAddr As Long
 Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
+Private mlngOutputEmailFileFormat As Long
 Private mstrOutputFilename As String
 Private mblnPreviewOnScreen As Boolean
 
@@ -1009,10 +1011,12 @@ Private Function GetCustomReportDefinition() As Boolean
     mstrOutputPrinterName = !OutputPrinterName
     mblnOutputSave = !OutputSave
     mlngOutputSaveExisting = !OutputSaveExisting
+    mlngOutputSaveFormat = !OutputSaveFormat
     mblnOutputEmail = !OutputEmail
     mlngOutputEmailAddr = !OutputEmailAddr
     mstrOutputEmailSubject = !OutputEmailSubject
     mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
+    mlngOutputEmailFileFormat = !OutputEmailFileFormat
     mstrOutputFilename = !OutputFilename
     
     mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
@@ -5086,9 +5090,9 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
   If objOutput.SetOptions _
       (blnPrompt, mlngOutputFormat, mblnOutputScreen, _
       mblnOutputPrinter, mstrOutputPrinterName, _
-      mblnOutputSave, mlngOutputSaveExisting, _
+      mblnOutputSave, mlngOutputSaveExisting, mlngOutputSaveFormat, _
       mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-      mstrOutputEmailAttachAs, mstrOutputFilename) Then
+      mstrOutputEmailAttachAs, mlngOutputEmailFileFormat, mstrOutputFilename) Then
 
     If Not gblnBatchMode Then
       If mbIsBradfordIndexReport Then
@@ -5999,10 +6003,12 @@ Public Sub SetOutputParameters( _
           strOutputPrinterName As String, _
           blnOutputSave As Boolean, _
           lngOutputSaveExisting As Long, _
+          lngOutputSaveFormat As Long, _
           blnOutputEmail As Boolean, _
           lngOutputEmailAddr As Long, _
           strOutputEmailSubject As String, _
           strOutputEmailAttachAs As String, _
+          lngOutputEmailFileFormat As Long, _
           strOutputFilename As String, _
           blnPreviewOnScreen As Boolean, _
           blnPrintFilterHeader As Boolean)
@@ -6013,10 +6019,12 @@ Public Sub SetOutputParameters( _
   mstrOutputPrinterName = strOutputPrinterName
   mblnOutputSave = blnOutputSave
   mlngOutputSaveExisting = lngOutputSaveExisting
+  mlngOutputSaveFormat = lngOutputSaveFormat
   mblnOutputEmail = blnOutputEmail
   mlngOutputEmailAddr = lngOutputEmailAddr
   mstrOutputEmailSubject = strOutputEmailSubject
   mstrOutputEmailAttachAs = strOutputEmailAttachAs
+  mlngOutputEmailFileFormat = lngOutputEmailFileFormat
   mstrOutputFilename = strOutputFilename
   mblnCustomReportsPrintFilterHeader = blnPrintFilterHeader
   mblnPreviewOnScreen = (blnPreviewOnScreen Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
@@ -6106,10 +6114,12 @@ Public Function GetReportConfig() As Boolean
   mstrOutputPrinterName = GetSystemSetting(strReportType, "PrinterName", vbNullString)
   mblnOutputSave = GetSystemSetting(strReportType, "Save", 0)
   mlngOutputSaveExisting = GetSystemSetting(strReportType, "SaveExisting", -1)
+  mlngOutputSaveFormat = GetSystemSetting(strReportType, "SaveFormat", 0)
   mblnOutputEmail = GetSystemSetting(strReportType, "Email", 0)
   mlngOutputEmailAddr = GetSystemSetting(strReportType, "EmailAddr", 0)
   mstrOutputEmailSubject = GetSystemSetting(strReportType, "EmailSubject", vbNullString)
   mstrOutputEmailAttachAs = GetSystemSetting(strReportType, "EmailAttachAs", vbNullString)
+  mlngOutputEmailFileFormat = GetSystemSetting(strReportType, "EmailFileFormat", 0)
   mstrOutputFilename = GetSystemSetting(strReportType, "FileName", vbNullString)
 
   'mblnPreviewOnScreen = (GetSystemSetting(strReportType, "Preview", vbNullString) Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
