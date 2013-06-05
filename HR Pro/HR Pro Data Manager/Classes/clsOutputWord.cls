@@ -1079,11 +1079,36 @@ Public Sub Complete()
   Dim objDefPrinter As cSetDfltPrinter
   Dim strDefaultPrinter As String
   Dim strFormat As String
+  Dim strTempFile As String
   
   On Local Error GoTo LocalErr
   
   If mstrErrorMessage <> vbNullString Then
     Exit Sub
+  End If
+  
+  
+  'EMAIL
+  If mblnEmail Then
+    mstrErrorMessage = "Error sending email"
+    
+    strFormat = GetOfficeSaveAsFormat(mobjParent.EmailAttachAs, GetOfficeWordVersion)
+    If strFormat = "" Then
+      mstrErrorMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
+      GoTo TidyAndExit
+    End If
+
+    strTempFile = mobjParent.GetTempFileName(mobjParent.EmailAttachAs)
+    mwrdDoc.SaveAs strTempFile, FileFormat:=Val(strFormat)
+    
+    mwrdDoc.Close
+    mobjParent.SendEmail strTempFile
+    Set mwrdDoc = mwrdApp.Documents.Open(strTempFile)
+
+'    If Dir(strTempFile) <> vbNullString Then
+'      Kill strTempFile
+'    End If
+
   End If
   
   
@@ -1101,28 +1126,6 @@ Public Sub Complete()
   End If
   
   
-  'EMAIL
-  If mblnEmail Then
-    mstrErrorMessage = "Error sending email"
-    
-    If Not mblnSave Then
-      strFormat = GetOfficeSaveAsFormat(mobjParent.EmailAttachAs, GetOfficeWordVersion)
-      If strFormat = "" Then
-        mstrErrorMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
-        GoTo TidyAndExit
-      End If
-      
-      mstrFileName = mobjParent.GetTempFileName(mstrFileName)
-      mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(strFormat)
-    End If
-    
-    mobjParent.SendEmail mstrFileName
-  End If
-  'If Not mblnSave And mstrFileName <> vbNullString Then
-  '  Kill mstrFileName
-  'End If
-
-
   'PRINTER
   If mblnPrinter Then
     Dim strCurrentPrinter As String

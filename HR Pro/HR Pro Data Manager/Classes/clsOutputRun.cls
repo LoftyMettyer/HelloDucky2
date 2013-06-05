@@ -616,6 +616,7 @@ End Function
 
 Public Function SendEmail(strAttachment As String) As Boolean
 
+  Dim objOutputEmail As clsOutputEMail
   Dim rsEmail As Recordset
   Dim strSQL As String
   
@@ -624,6 +625,8 @@ Public Function SendEmail(strAttachment As String) As Boolean
   Dim lngCount As Long
   Dim blnShowMessage As Boolean
   Dim blnProgressVisible As Boolean
+
+  Dim strTo As String
 
   On Error GoTo LocalErr
 
@@ -640,9 +643,9 @@ Public Function SendEmail(strAttachment As String) As Boolean
 
   Screen.MousePointer = vbHourglass
 
-  frmEmailSel.MAPISignon
-  If frmEmailSel.MAPISession1.SessionID <> 0 Then
-    With frmEmailSel.MAPIMessages1
+  'frmEmailSel.MAPISignon
+  'If frmEmailSel.MAPISession1.SessionID <> 0 Then
+  '  With frmEmailSel.MAPIMessages1
       strSQL = "SELECT ASRSysEmailGroupItems.*," & _
                " ASRSysEmailAddress.Name as 'AddrName', ASRSysEmailAddress.Fixed as 'AddrFixed'" & _
                " FROM ASRSysEmailGroupItems" & _
@@ -656,26 +659,28 @@ Public Function SendEmail(strAttachment As String) As Boolean
         Exit Function
       End If
 
-      .SessionID = frmEmailSel.MAPISession1.SessionID
-      .AddressResolveUI = True
-      .Compose
+  '    .SessionID = frmEmailSel.MAPISession1.SessionID
+  '    .AddressResolveUI = True
+  '    .Compose
 
       blnProgressVisible = gobjProgress.Visible
       gobjProgress.Visible = False
       
+      strTo = vbNullString
       strErrorTemp = "Error resolving email recipient(s)"
       Do While Not rsEmail.EOF
         strAddress = Split(rsEmail!AddrFixed, ";")
         
         For lngCount = 0 To UBound(strAddress)
           If Trim(strAddress(lngCount)) <> vbNullString Then
-            .RecipIndex = .RecipCount
-            .RecipType = mapToList
-            .RecipDisplayName = Trim(strAddress(lngCount))
-            .RecipAddress = "smtp:" & Trim(strAddress(lngCount))
-            If Not blnShowMessage Then
-              .ResolveName
-            End If
+            strTo = strTo & IIf(strTo <> vbNullString, ";", "") & strTo
+            '.RecipIndex = .RecipCount
+            '.RecipType = mapToList
+            '.RecipDisplayName = Trim(strAddress(lngCount))
+            '.RecipAddress = "smtp:" & Trim(strAddress(lngCount))
+            'If Not blnShowMessage Then
+            '  .ResolveName
+            'End If
           End If
         Next
         
@@ -686,44 +691,48 @@ Public Function SendEmail(strAttachment As String) As Boolean
       rsEmail.Close
       Set rsEmail = Nothing
 
-      .MsgSubject = mstrEmailSubject
-      .MsgNoteText = " "
-      If strAttachment <> "" Then
-        .AttachmentPosition = 0
-        .AttachmentType = 0
-        .AttachmentPathName = strAttachment
-        .AttachmentName = mstrEmailAttachAs
-      End If
+      '.MsgSubject = mstrEmailSubject
+      '.MsgNoteText = " "
+      'If strAttachment <> "" Then
+      '  .AttachmentPosition = 0
+      '  .AttachmentType = 0
+      '  .AttachmentPathName = strAttachment
+      '  .AttachmentName = mstrEmailAttachAs
+      'End If
       
-      .Send blnShowMessage
+      '.Send blnShowMessage
+
+      Set objOutputEmail = New clsOutputEMail
+      objOutputEmail.SendEmailFromClient strTo, "", "", mstrEmailSubject, "", strAttachment, False
+      Set objOutputEmail = Nothing
+
       gobjProgress.Visible = blnProgressVisible
     
-    End With
-  End If
-  frmEmailSel.MAPIsignoff
+    'End With
+  'End If
   
-  Set frmEmailSel = Nothing
+  'Set frmEmailSel = Nothing
   SendEmail = True
 
 Exit Function
 
 LocalErr:
-  If Err.Number = 48389 Then
-    'Simple MAPI is no longer supported in Microsoft Outlook 2007. It is still supported by Exchange Server 2003.
-    'http://msdn.microsoft.com/en-us/library/cc815424.aspx
-    
-    'Can't resolve recipients and get error on send so only option is to show the message..
-    blnShowMessage = True
-    Resume Next
-  Else
+'  If Err.Number = 48389 Then
+'    'Simple MAPI is no longer supported in Microsoft Outlook 2007. It is still supported by Exchange Server 2003.
+'    'http://msdn.microsoft.com/en-us/library/cc815424.aspx
+'
+'    'Can't resolve recipients and get error on send so only option is to show the message..
+'    blnShowMessage = True
+'    Resume Next
+'  Else
     If strErrorTemp = "" Then strErrorTemp = "Error sending email"
     mstrErrorMessage = strErrorTemp & _
       IIf(Err.Description <> vbNullString, " (" & Err.Description & ")", vbNullString)
     On Error Resume Next
-    frmEmailSel.MAPIsignoff
-    Set frmEmailSel = Nothing
+    'frmEmailSel.MAPIsignoff
+    'Set frmEmailSel = Nothing
     SendEmail = False
-  End If
+'  End If
 
 End Function
 
