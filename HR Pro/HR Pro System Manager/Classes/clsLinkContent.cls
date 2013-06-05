@@ -445,7 +445,9 @@ Public Function WriteDetail() As Long
 
 
   If mlngContentID = 0 Then
-    mlngContentID = Database.UniqueColumnValue("tmpLinkContent", "ContentID")
+    If mcolContentDetails.Count > 0 Then
+      mlngContentID = Database.UniqueColumnValue("tmpLinkContent", "ContentID")
+    End If
   Else
     strSQL = "DELETE FROM tmpLinkContent WHERE ContentID = " & CStr(mlngContentID)
     daoDb.Execute strSQL, dbFailOnError
