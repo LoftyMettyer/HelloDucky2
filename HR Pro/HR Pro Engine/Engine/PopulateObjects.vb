@@ -349,6 +349,8 @@
         '   Debug.Assert(Not objExpression.ID = 41839)
         '    Debug.Assert(Not objExpression.ID = 41814, False)
 
+        '   Debug.Assert(objExpression.Name <> "srp")
+
 
         Select Case Type
           Case ScriptDB.ComponentTypes.Function
