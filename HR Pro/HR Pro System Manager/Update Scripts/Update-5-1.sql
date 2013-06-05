@@ -635,7 +635,8 @@ PRINT 'Step - Report Packs'
 			[OutputReportPackTitle] [varchar](255) NULL,
 			[OutputOverrideFilter] [varchar](255) NULL,
 			[OutputTOC] [bit] NULL,
-			[OutputCoverSheet] [bit] NULL';
+			[OutputCoverSheet] [bit] NULL,
+			[OverrideFilterID] [int] NULL';
 		EXEC sp_executesql @NVarCommand;
 
 		EXECUTE sp_executeSQL N'UPDATE AsrSysBatchJobName SET IsBatch = 1;';	
