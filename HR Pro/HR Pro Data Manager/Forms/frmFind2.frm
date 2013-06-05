@@ -2013,6 +2013,8 @@ Private Sub ActiveBar1_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
   
   End Select
 
+  UpdateStatusBar
+
 End Sub
 
 Public Sub SelectFilter()
