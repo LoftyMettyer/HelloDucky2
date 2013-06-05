@@ -33,7 +33,7 @@ Begin VB.Form frmWorkflowElementItem
       Top             =   2760
       Width           =   3200
       Begin VB.CommandButton cmdFileFile 
-Caption = "..."
+         Caption         =   "..."
          Height          =   315
          Left            =   2300
          TabIndex        =   36
@@ -81,7 +81,7 @@ Caption = "..."
          Width           =   1000
       End
       Begin VB.CommandButton cmdCalcCalculation 
-Caption = "..."
+         Caption         =   "..."
          Height          =   315
          Left            =   2300
          TabIndex        =   32
@@ -108,9 +108,9 @@ Caption = "..."
       Width           =   3200
       Begin VB.ComboBox cboFormattingOption 
          Height          =   315
-         ItemData        =   "frmWorkflowElementItem.frx":02A8
+         ItemData        =   "frmWorkflowElementItem.frx":000C
          Left            =   1000
-         List            =   "frmWorkflowElementItem.frx":02B5
+         List            =   "frmWorkflowElementItem.frx":0019
          Style           =   2  'Dropdown List
          TabIndex        =   28
          Top             =   300
@@ -203,9 +203,9 @@ Caption = "..."
       Width           =   3700
       Begin VB.ComboBox cboDBValueRecordSelector 
          Height          =   315
-         ItemData        =   "frmWorkflowElementItem.frx":02CE
+         ItemData        =   "frmWorkflowElementItem.frx":0032
          Left            =   1770
-         List            =   "frmWorkflowElementItem.frx":02D0
+         List            =   "frmWorkflowElementItem.frx":0034
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   20
@@ -214,9 +214,9 @@ Caption = "..."
       End
       Begin VB.ComboBox cboDBValueWebForm 
          Height          =   315
-         ItemData        =   "frmWorkflowElementItem.frx":02D2
+         ItemData        =   "frmWorkflowElementItem.frx":0036
          Left            =   1770
-         List            =   "frmWorkflowElementItem.frx":02D4
+         List            =   "frmWorkflowElementItem.frx":0038
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   18
@@ -225,9 +225,9 @@ Caption = "..."
       End
       Begin VB.ComboBox cboDBValueRecord 
          Height          =   315
-         ItemData        =   "frmWorkflowElementItem.frx":02D6
+         ItemData        =   "frmWorkflowElementItem.frx":003A
          Left            =   1770
-         List            =   "frmWorkflowElementItem.frx":02D8
+         List            =   "frmWorkflowElementItem.frx":003C
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   16
@@ -766,7 +766,7 @@ Private Sub RefreshScreen()
       fEnableOK = fEnableOK And (Len(msAttachmentFile) > 0)
   End Select
   
-  cmdOK.Enabled = fEnableOK
+  cmdOk.Enabled = fEnableOK
   
 End Sub
 
@@ -1023,6 +1023,10 @@ Private Sub cboDBValueRecordSelector_Refresh()
 
         Set wfTemp = Nothing
       Next lngLoop
+    End If
+
+    If iElementType <> elem_WebForm Then
+      msDBRecordSelector = ""
     End If
 
     iIndex = -1
@@ -1848,7 +1852,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   If UnloadMode <> vbFormCode Then
 
     'Check if any changes have been made.
-    If mfChanged And cmdOK.Enabled Then
+    If mfChanged And cmdOk.Enabled Then
       iAnswer = MsgBox("You have changed the definition. Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
       If iAnswer = vbYes Then
         Call cmdOK_Click
