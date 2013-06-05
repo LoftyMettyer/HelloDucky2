@@ -4,7 +4,7 @@
 Public Class Modifications
   Implements IModifications
 
-  Dim bStructureChanged As Boolean
+  Dim _structureChanged As Boolean
 
   Public Property ExpressionChanged As Boolean Implements COMInterfaces.IModifications.ExpressionChanged
   Public Property ModuleSetupChanged As Boolean Implements COMInterfaces.IModifications.ModuleSetupChanged
@@ -15,14 +15,14 @@ Public Class Modifications
   Public Property StructureChanged As Boolean Implements COMInterfaces.IModifications.StructureChanged
     Get
       If Globals.Options.OptimiseSaveProcess Then
-        Return bStructureChanged
+        Return _structureChanged
       Else
         Return True
       End If
 
     End Get
     Set(ByVal value As Boolean)
-      bStructureChanged = value
+      _structureChanged = value
     End Set
   End Property
 

@@ -56,27 +56,6 @@
     Property Login As Connectivity.Login
   End Interface
 
-#Region "Collections"
-
-  Public Interface ICollection_Base
-    ReadOnly Property Objects(ByVal Type As Things.Type) As Things.Collections.Generic
-    Sub Add(ByVal [Object] As Things.Base)
-  End Interface
-
-  Public Interface ICollection_Objects
-    Function Table(ByVal [ID] As Integer) As Things.Table
-    Function Setting(ByVal [Module] As String, ByVal [Parameter] As String) As Things.Setting
-  End Interface
-
-  Public Interface ICollection_WorkflowElements
-    Function Element(ByVal [ID] As Integer) As Things.WorkflowElement
-    Function Elements() As Things.Collections.BaseCollection
-    Sub Add(ByVal objWorkflowElementItem As Things.WorkflowElementItem)
-  End Interface
-
-#End Region
-
-
   Public Interface IObject
     Property Name As String
     ReadOnly Property PhysicalName As String

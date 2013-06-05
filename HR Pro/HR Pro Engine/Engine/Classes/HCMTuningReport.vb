@@ -1,6 +1,4 @@
-﻿Option Strict On
-
-Imports System.Runtime.InteropServices
+﻿Imports System.Runtime.InteropServices
 
 Namespace Tuning
 

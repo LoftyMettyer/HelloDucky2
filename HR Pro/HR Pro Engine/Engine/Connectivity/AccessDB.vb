@@ -25,30 +25,32 @@
           ' Clear any previous parameters from the Command object
           Call .Parameters.Clear()
 
-          ' Convert passed in parameter array to sql parameters
-          sqlParms = objCommand.Parameters
-          For Each objParameter In Parms
+          If Parms IsNot Nothing Then
 
-            Select Case objParameter.DBType
-              Case Connectivity.DBType.Integer
-                sqlParm = sqlParms.AddWithValue(objParameter.Name, CInt(objParameter.Value))
+            ' Convert passed in parameter array to sql parameters
+            sqlParms = objCommand.Parameters
+            For Each objParameter In Parms
 
-              Case Connectivity.DBType.String
-                sqlParm = sqlParms.AddWithValue(objParameter.Name, objParameter.Value.ToString)
+              Select Case objParameter.DBType
+                Case Connectivity.DBType.Integer
+                  sqlParm = sqlParms.AddWithValue(objParameter.Name, CInt(objParameter.Value))
 
-              Case Connectivity.DBType.GUID
-                If objParameter.Value Is Nothing OrElse CType(objParameter.Value, Guid) = Guid.Empty Then
-                  sqlParm = sqlParms.AddWithValue(objParameter.Name, DBNull.Value)
-                Else
+                Case Connectivity.DBType.String
                   sqlParm = sqlParms.AddWithValue(objParameter.Name, objParameter.Value.ToString)
-                End If
 
-            End Select
+                Case Connectivity.DBType.GUID
+                  If objParameter.Value Is Nothing OrElse CType(objParameter.Value, Guid) = Guid.Empty Then
+                    sqlParm = sqlParms.AddWithValue(objParameter.Name, DBNull.Value)
+                  Else
+                    sqlParm = sqlParms.AddWithValue(objParameter.Name, objParameter.Value.ToString)
+                  End If
 
-            .Connection.Close()
+              End Select
 
-          Next
+              .Connection.Close()
 
+            Next
+          End If
         End With
 
         objAdapter.SelectCommand = objCommand

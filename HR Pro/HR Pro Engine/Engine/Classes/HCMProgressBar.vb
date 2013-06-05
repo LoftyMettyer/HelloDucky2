@@ -1,4 +1,6 @@
-﻿'Public Class HCMProgressBar
+﻿
+'TODO: REMOVE FILE
+'Public Class HCMProgressBar
 '  Public Event Update1(ByVal Value As Long)
 '  Public Event Update2(ByVal Value As Long)
 '  Private miTotalSteps1 As Integer

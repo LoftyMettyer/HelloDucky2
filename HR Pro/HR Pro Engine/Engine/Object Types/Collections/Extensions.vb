@@ -4,10 +4,10 @@ Imports SystemFramework.Things
 Public Module Extensions
 
   <Extension()>
-  Public Sub AddIfNew(Of T As Base)(ByVal list As IList(Of T), ByVal item As T)
+  Public Sub AddIfNew(Of T As Base)(ByVal items As IList(Of T), ByVal item As T)
 
-    If list.GetById(item.id) Is Nothing Then
-      list.Add(item)
+    If Not items.Any(Function(i) i.ID = item.ID AndAlso i.Type = item.Type) Then
+      items.Add(item)
     End If
 
   End Sub
@@ -18,5 +18,16 @@ Public Module Extensions
     Return items.SingleOrDefault(Function(item) item.ID = id)
 
   End Function
+
+  <Extension()>
+  Public Sub Merge(Of T As Base)(ByVal first As IList(Of T), ByVal second As IList(Of T))
+
+    For Each item As T In second
+      If Not first.Contains(item) Then
+        first.Add(item)
+      End If
+    Next
+
+  End Sub
 
 End Module

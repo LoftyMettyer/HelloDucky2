@@ -6,30 +6,30 @@ Namespace Connectivity
     Public Class Parameters
     Inherits System.ComponentModel.BindingList(Of Connectivity.Parameter)
 
-    Public Shadows Sub Add(ByVal [Name] As String, ByVal [Value] As Integer)
+    Public Overloads Sub Add(ByVal name As String, ByVal value As Integer)
 
-      Dim objParameter As New Connectivity.Parameter
+      Dim param As New Connectivity.Parameter
 
-      objParameter.Name = [Name]
-      objParameter.DBType = DBType.Integer
-      objParameter.Value = [Value]
-      Me.Items.Add(objParameter)
+      param.Name = [name]
+      param.DBType = DBType.Integer
+      param.Value = [value]
+      Me.Items.Add(param)
 
     End Sub
 
-    Public Shadows Sub Add(ByVal [Name] As String, ByVal [Value] As String)
+    Public Overloads Sub Add(ByVal name As String, ByVal value As String)
 
-      Dim objParameter As New Connectivity.Parameter
+      Dim param As New Connectivity.Parameter
 
-      objParameter.Name = [Name]
-      objParameter.DBType = DBType.String
+      param.Name = name
+      param.DBType = DBType.String
 
-      If [Value] Is Nothing Then
-        [Value] = ""
+      If value Is Nothing Then
+        value = ""
       End If
 
-      objParameter.Value = [Value]
-      Me.Items.Add(objParameter)
+      param.Value = value
+      Me.Items.Add(param)
 
     End Sub
 

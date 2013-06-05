@@ -20,7 +20,6 @@ Namespace ScriptDB
       Dim sObjectName As String
 
       Try
-
         objConversionTable = Globals.ModuleSetup.Setting("MODULE_CURRENCY", "Param_ConversionTable").Table
 
         If Not objConversionTable Is Nothing Then

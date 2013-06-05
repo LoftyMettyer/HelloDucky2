@@ -92,7 +92,7 @@ Public Class HCM
       'Things.PopulateSystemThings()
       '       PopulateSystemSettings()
       Things.PopulateTables()
-      Things.PopulateColumns()
+      Things.PopulateTableColumns()
       Things.PopulateScreens()
       Things.PopulateTableExpressions()
       Things.PopulateWorkflows()

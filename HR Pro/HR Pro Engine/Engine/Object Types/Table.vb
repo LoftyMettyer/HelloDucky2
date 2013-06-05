@@ -48,18 +48,17 @@ Namespace Things
       End Get
     End Property
 
-    'TODO: NOW
-    Public Function GetRelation(ByVal ID As Integer) As Things.Relation
+    Public Function GetRelation(ByVal ToTableID As Integer) As Things.Relation
 
       Dim relation As New Things.Relation
 
       For Each relation In Me.Relations
         If relation.RelationshipType = ScriptDB.RelationshipType.Child Then
-          If relation.ChildID = ID Then
+          If relation.ChildID = ToTableID Then
             Return relation
           End If
         Else
-          If relation.ParentID = ID Then
+          If relation.ParentID = ToTableID Then
             Return relation
           End If
         End If

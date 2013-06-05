@@ -982,7 +982,7 @@ Namespace ScriptDB
               objView.Filter.AssociatedColumn = objTable.Columns(0)
               objView.Filter.GenerateCode()
 
-              For Each objColumn In objView.Filter.Dependencies.Objects(Things.Type.Column)
+              For Each objColumn In objView.Filter.Dependencies.OfType(Of Things.Column)()
                 If objColumn.Type = Things.Type.Column Then
                   objIndex.Columns.AddIfNew(objColumn)
                 End If

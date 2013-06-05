@@ -1,4 +1,5 @@
-﻿'Namespace StructurePort
+﻿'TODO: REMOVE FILE
+'Namespace StructurePort
 
 '  <HideModuleName()>
 '  Public Module [Export]

@@ -1,6 +1,4 @@
-﻿Option Strict On
-
-Imports System.Runtime.InteropServices
+﻿Imports System.Runtime.InteropServices
 
 Namespace ErrorHandler
 
@@ -9,113 +7,83 @@ Namespace ErrorHandler
     Inherits System.ComponentModel.BindingList(Of ErrorHandler.Error)
     Implements COMInterfaces.IErrors
 
-    Private mbIsCatastrophic As Boolean
+    Private _isCatastrophic As Boolean
 
     Public Shadows Sub Add(ByVal Section As ErrorHandler.Section, ByVal ObjectName As String, ByVal Severity As SystemFramework.ErrorHandler.Severity, ByVal Message As String, ByVal Detail As String)
 
-      Dim objError As SystemFramework.ErrorHandler.Error
+      Dim item As ErrorHandler.Error
 
-      objError.Section = Section
-      objError.ObjectName = ObjectName
-      objError.Severity = Severity
-      objError.Message = Message
-      objError.Detail = Detail
-      objError.User = Globals.Login.UserName
-      objError.DateTime = Now
+      item.Section = Section
+      item.ObjectName = ObjectName
+      item.Severity = Severity
+      item.Message = Message
+      item.Detail = Detail
+      item.User = Globals.Login.UserName
+      item.DateTime = Now
 
-      MyBase.Add(objError)
+      MyBase.Add(item)
 
     End Sub
 
     Public Function DetailedReport() As String
 
-      Dim sMessage As String = vbNullString
+      Dim message As String = vbNullString
 
-      Try
+      For Each item As ErrorHandler.Error In Me.Items
+        message += String.Format("{1}{0}{1}{2}{1}", item.Message, vbNewLine, item.Detail)
+      Next
 
-        For Each objError In Me.Items
-          sMessage = sMessage & String.Format("{1}{0}{1}{2}{1}", objError.Message, vbNewLine, objError.Detail)
-        Next
-
-      Catch ex As Exception
-
-      End Try
-
-      Return sMessage
+      Return message
 
     End Function
 
     Public Function QuickReport() As String
 
-      Dim sMessage As String = vbNullString
+      Dim message As String = vbNullString
 
-      Try
+      For Each item As ErrorHandler.Error In Me.Items
 
-        For Each objError In Me.Items
+        Select Case item.Severity
+          Case Severity.Error
+            message = message & String.Format("{0} - {1}", item.ObjectName, item.Message)
 
-          Select Case objError.Severity
-            Case Severity.Error
-              sMessage = sMessage & String.Format("{0} - {1}", objError.ObjectName, objError.Message)
+          Case Severity.Warning
+            'sMessage = sMessage & String.Format("{1}{1}{1}{1}{0}{1}{2}{1}", objError.Message, vbNewLine, objError.Detail)
 
-            Case Severity.Warning
-              'sMessage = sMessage & String.Format("{1}{1}{1}{1}{0}{1}{2}{1}", objError.Message, vbNewLine, objError.Detail)
+        End Select
 
-          End Select
+      Next
 
-        Next
-
-      Catch ex As Exception
-
-      End Try
-
-      Return sMessage
+      Return message
 
     End Function
 
     Public Sub OutputToFile(ByRef FileName As String) Implements COMInterfaces.IErrors.OutputToFile
 
-      Dim objWriter As System.IO.StreamWriter
-      Dim objError As SystemFramework.ErrorHandler.Error
-      Dim sMessage As String
+      System.IO.File.Delete(FileName)
+      Dim objWriter As System.IO.StreamWriter = System.IO.File.AppendText(FileName)
 
-      Try
+      For Each objError As ErrorHandler.Error In Me.Items
+        Dim message As String = String.Format("{1}{1}{1}{1}{0}{1}{2}{1}", objError.Message, vbNewLine, objError.Detail)
+        objWriter.Write(message)
+      Next
 
-        System.IO.File.Delete(FileName)
-        objWriter = System.IO.File.AppendText(FileName)
-
-        For Each objError In Me.Items
-          sMessage = String.Format("{1}{1}{1}{1}{0}{1}{2}{1}", objError.Message, vbNewLine, objError.Detail)
-          objWriter.Write(sMessage)
-        Next
-
-        objWriter.Close()
-
-      Catch ex As Exception
-
-      End Try
+      objWriter.Close()
 
     End Sub
 
     Public ReadOnly Property IsCatastrophic As Boolean Implements IErrors.IsCatastrophic
       Get
-        Return mbIsCatastrophic
+        Return _isCatastrophic
       End Get
     End Property
 
     Public Sub Show() Implements IErrors.Show
 
-      Dim frmErrorLog As New Forms.ErrorLog
-
-      Try
-        frmErrorLog.ShowDialog()
-        mbIsCatastrophic = frmErrorLog.Abort
-
-      Catch ex As Exception
-
-      Finally
-        frmErrorLog = Nothing
-
-      End Try
+      Using frm As New Forms.ErrorLog
+        frm.ShowDialog()
+        _isCatastrophic = frm.Abort
+      End Using
 
     End Sub
 
@@ -150,7 +118,5 @@ Namespace ErrorHandler
     Views = 4
     TableAndColumns = 5
   End Enum
-
-
 
 End Namespace

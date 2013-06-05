@@ -5,9 +5,7 @@ Public Module Globals
   Public MetadataDB As IConnection
   Public CommitDB As IConnection
 
-  'Public Shared Connection As Connectivity.SQL
   Public MetadataProvider As Connectivity.MetadataProvider = Connectivity.MetadataProvider.PhoenixStoredProcs
-  '    Public User As Connectivity.User
 
   Public Tables As List(Of Table)
   Public Workflows As Things.Collections.Generic
@@ -16,8 +14,8 @@ Public Module Globals
   Public SelectedThings As Things.Collections.Generic
   Public ErrorLog As SystemFramework.ErrorHandler.Errors
   Public TuningLog As Tuning.Report
-  Public ModuleSetup As Things.Collections.Generic
-  Public SystemSettings As Things.Collections.Generic
+  Public ModuleSetup As SettingsCollection
+  Public SystemSettings As SettingsCollection
   Public Options As HCMOptions
   Public Modifications As Modifications
   Public GetFieldsFromDB As Things.Collections.Generic
@@ -38,11 +36,11 @@ Public Module Globals
     Functions = New List(Of CodeLibrary)
     ErrorLog = New SystemFramework.ErrorHandler.Errors
     TuningLog = New Tuning.Report
-    ModuleSetup = New Things.Collections.Generic
+    ModuleSetup = New SettingsCollection
     ScriptDB = New ScriptDB.Script
     Options = New HCMOptions
     Modifications = New Modifications
-    SystemSettings = New Things.Collections.Generic
+    SystemSettings = New SettingsCollection
 
     ' Dependency stack for special objects that will have procedures written for
     GetFieldsFromDB = New Things.Collections.Generic
@@ -52,3 +50,24 @@ Public Module Globals
   End Sub
 
 End Module
+
+Namespace Things
+
+  Public Class SettingsCollection
+    Inherits ObjectModel.Collection(Of Setting)
+
+    Public Function Setting(ByVal [module] As String, ByVal parameter As String) As Setting
+
+      Dim item = Items.SingleOrDefault(Function(s) s.Module.ToLower = [module].ToLower AndAlso parameter.ToLower = parameter)
+
+      If item IsNot Nothing Then
+        Return item
+      Else
+        Return New Setting
+      End If
+
+    End Function
+
+  End Class
+
+End Namespace

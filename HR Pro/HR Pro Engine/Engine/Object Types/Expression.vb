@@ -546,7 +546,7 @@ Namespace Things
 
     End Sub
 
-    Private Sub SQLCode_AddColumn(ByRef [CodeCluster] As ScriptDB.LinesOfCode, ByRef [Component] As Things.Component)
+    Private Sub SQLCode_AddColumn(ByVal [CodeCluster] As ScriptDB.LinesOfCode, ByVal [Component] As Things.Component)
 
       Dim objThisColumn As Things.Column
 
@@ -568,7 +568,7 @@ Namespace Things
 
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Column
 
-      objThisColumn = CType(Dependencies.GetObject(Enums.Type.Column, Component.ColumnID), Column)
+      objThisColumn = CType(Dependencies.SingleOrDefault(Function(o) o.Type = Enums.Type.Column AndAlso o.ID = Component.ColumnID), Column)
       objThisColumn.Tuning.Usage += 1
 
       'Dependencies.AddIfNew(objThisColumn.Table)
@@ -912,8 +912,8 @@ Namespace Things
 
         Declarations.AddRange(objExpression.Declarations)
         PreStatements.AddRange(objExpression.PreStatements)
-        Dependencies.MergeUnique(objExpression.Dependencies)
-        StatementObjects.MergeUnique(objExpression.StatementObjects)
+        Dependencies.Merge(objExpression.Dependencies)
+        StatementObjects.Merge(objExpression.StatementObjects)
 
         Me.RequiresRecordID = RequiresRecordID Or objExpression.RequiresRecordID
         Me.ContainsUniqueCode = ContainsUniqueCode Or objExpression.ContainsUniqueCode
@@ -1096,7 +1096,7 @@ Namespace Things
       Me.RequiresOvernight = RequiresOvernight Or ReferencedColumn.Calculation.RequiresOvernight
       Me.ReferencesParent = Me.ReferencesParent Or ReferencedColumn.Calculation.ReferencesParent
       Me.ReferencesChild = Me.ReferencesChild Or ReferencedColumn.Calculation.ReferencesChild
-      Dependencies.MergeUnique(ReferencedColumn.Calculation.Dependencies)
+      Dependencies.Merge(ReferencedColumn.Calculation.Dependencies)
 
       ReferencedColumn.Tuning.IncrementSelectAsCalculation()
 

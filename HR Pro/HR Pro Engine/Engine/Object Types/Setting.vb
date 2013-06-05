@@ -1,4 +1,5 @@
 ﻿Namespace Things
+
   Public Class Setting
     Inherits Things.Base
 

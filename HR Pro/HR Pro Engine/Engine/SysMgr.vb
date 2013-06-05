@@ -48,10 +48,13 @@ Public Class SysMgr
       Globals.CommitDB = mobjCommitDB
       Globals.Options.DevelopmentMode = False
 
+      Dim sw As New Stopwatch
+      sw.Start()
       Things.PopulateSystemThings()
       Things.PopulateSystemSettings()
       Things.PopulateThings()
       Things.PopulateModuleSettings()
+      Console.WriteLine(sw.ElapsedMilliseconds)
 
     Catch ex As Exception
       bOK = False

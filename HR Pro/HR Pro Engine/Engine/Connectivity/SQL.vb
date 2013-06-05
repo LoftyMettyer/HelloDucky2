@@ -113,8 +113,6 @@ Namespace Connectivity
 
       objCommand.CommandText = Statement
 
-      'Try
-
       If Login.UseContext Then
         Microsoft.SqlServer.Server.SqlContext.Pipe.ExecuteAndSend(objCommand)
       Else
@@ -123,15 +121,6 @@ Namespace Connectivity
       End If
 
       bOK = True
-
-      'Catch ex As Exception
-      '  Globals.ErrorLog.Add(HCM.ErrorHandler.Section.General, String.Empty, HCM.ErrorHandler.Severity.Error, ex.Message, Statement)
-      '  bOK = False
-
-      'Finally
-      '  objCommand.Dispose()
-
-      'End Try
 
       Return bOK
 
