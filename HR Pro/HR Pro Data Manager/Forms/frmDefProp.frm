@@ -1298,7 +1298,7 @@ Public Function CheckForUseage(piType As UtilityType, plngItemID As Long) As Boo
 
     If gfCurrentUserIsSysSecMgr Then
       Call GetNameWhereUsed( _
-        "SELECT DISTINCT 'Batch Job'," & _
+        "SELECT DISTINCT CASE WHEN ASRSysBatchJobName.IsBatch = 1 THEN 'Batch Job' ELSE 'Report Pack' END," & _
         " ASRSysBatchJobName.Name," & _
         " ASRSysBatchJobName.UserName," & _
         " '" & ACCESS_READWRITE & "' AS access" & _
@@ -1307,7 +1307,7 @@ Public Function CheckForUseage(piType As UtilityType, plngItemID As Long) As Boo
         " WHERE (EmailSuccess = " & strID & " OR EmailFailed = " & strID & ")")
     Else
       Call GetNameWhereUsed( _
-        "SELECT DISTINCT 'Batch Job'," & _
+        "SELECT DISTINCT CASE WHEN ASRSysBatchJobName.IsBatch = 1 THEN 'Batch Job' ELSE 'Report Pack' END," & _
         " ASRSysBatchJobName.Name," & _
         " ASRSysBatchJobName.UserName," & _
         " ASRSysBatchJobAccess.Access" & _
