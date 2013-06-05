@@ -960,8 +960,3 @@ Public Enum MOBITEMProperty
   MOBITEMPROP_LOOKUPFILTERVALUE = 74
 End Enum
 
-Public Enum ChangedStatus
-  None = 0
-  Minor = 1
-  Major = 2
-End Enum
