@@ -23,7 +23,7 @@ Namespace Things
     Public Dependencies As New Things.Collection
     Private mcolOrders As Things.Collection
 
-    Public StatementObjects As New ArrayList
+    Public StatementObjects As New Things.Collection
 
     Public Joins As ArrayList
     Public FromTables As ArrayList
@@ -76,9 +76,10 @@ Namespace Things
           Case ScriptDB.ComponentTypes.Column
 
             objColumn = Globals.Things.GetObject(Enums.Type.Table, objComponent.TableID).Objects.GetObject(Enums.Type.Column, objComponent.ColumnID)
-            If Not Dependencies.Contains(objColumn) Then
-              Dependencies.Add(objColumn)
-            End If
+            '  If Not Dependencies.Contains(objColumn) Then
+            Dependencies.AddIfNew(objColumn)
+            Dependencies.AddIfNew(objColumn.Table)
+            '   End If
 
           Case ScriptDB.ComponentTypes.Expression, ScriptDB.ComponentTypes.Function, ScriptDB.ComponentTypes.Calculation
             BuildDependancies(objComponent)
@@ -117,11 +118,17 @@ Namespace Things
 
       Joins.Clear()
       Wheres.Clear()
-      StatementObjects.Clear()
+      '      StatementObjects.Clear()
 
       ' Build the dependencies collection
       Dependencies.Clear()
       BuildDependancies(Me)
+
+      'Dim icount As Integer
+      'For icount = 0 To Dependencies.Count - 1
+      '  Debug.Print(Dependencies(icount).Name)
+      'Next
+
 
       aryParameters1.Clear()
       aryParameters2.Clear()
@@ -163,7 +170,7 @@ Namespace Things
       ' Add other dependancies
       For Each objDependency In Dependencies
         If objDependency.Type = Enums.Type.Column Then
-          If CType(objDependency, Things.Column).Table Is Me.BaseTable Then
+          If CType(objDependency, Things.Column).Table Is Me.BaseTable Then 'And Not CType(objDependency, Things.Column).IsCalculated Then
             aryParameters1.Add(String.Format("@prm_{0} {1}", objDependency.Name, CType(objDependency, Things.Column).DataTypeSyntax))
             aryParameters2.Add(String.Format("base.[{0}]", objDependency.Name))
             aryParameters3.Add(String.Format("@prm_{0}", objDependency.Name))
@@ -518,7 +525,11 @@ Namespace Things
 
       Dependencies.AddIfNew(objTable)
 
+      '   If [Component].TableID = Me.AssociatedColumn.Table.ID Then
+      'LineOfCode.Code = "@prm_ID"
+      '   Else
       LineOfCode.Code = String.Format("@prm_ID_{0}", CInt([Component].TableID))
+      '  End If
 
       [CodeCluster].Add(LineOfCode)
 
@@ -550,8 +561,8 @@ Namespace Things
       objThisColumn = Dependencies.GetObject(Enums.Type.Column, Component.ColumnID)
       objThisColumn.Tuning.Usage += 1
 
-      Dependencies.AddIfNew(objThisColumn.Table)
-      Dependencies.AddIfNew(objThisColumn)
+      'Dependencies.AddIfNew(objThisColumn.Table)
+      '      Dependencies.AddIfNew(objThisColumn)
 
       ' Is this column referencing the column that this udf is attaching itself to? (i.e. recursion)
       If Component.IsColumnByReference Then
@@ -680,6 +691,8 @@ Namespace Things
 
           Else
 
+            '      Debug.Assert(objThisColumn.Table.Name <> "Salary")
+
             ' Add to dependency stack
             objThisColumn.Table.DependsOnParentColumns.AddIfNew(Me.AssociatedColumn)
 
@@ -693,6 +706,9 @@ Namespace Things
             ' Add calculation for this foreign column to the pre-requisits array 
             iPartNumber = Declarations.Count + Me.StartOfPartNumbers
             bIsSummaryColumn = ([Component].ChildRowDetails.RowSelection = ScriptDB.ColumnRowSelection.Total Or [Component].ChildRowDetails.RowSelection = ScriptDB.ColumnRowSelection.Count)
+
+            '      Debug.Assert(iPartNumber <> 0)
+
 
             ' Add to prereqistits arrays
             If bIsSummaryColumn Then
@@ -815,6 +831,13 @@ Namespace Things
       End If
 
 
+      'Dim icount As Integer
+      'For icount = 0 To Declarations.Count - 1
+      '  Debug.Print(Declarations(icount).ToString)
+      'Next
+
+
+
       SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
       LineOfCode.Code = String.Format(LineOfCode.Code, ChildCodeCluster.ToArray)
       RequiresRowNumber = RequiresRowNumber Or objCodeLibrary.RowNumberRequired
@@ -871,6 +894,7 @@ Namespace Things
       ' Build code for the parameters
       ChildCodeCluster = New ScriptDB.LinesOfCode
 
+
       ChildCodeCluster.ReturnType = Component.ReturnType
       ChildCodeCluster.CodeLevel = CodeCluster.CodeLevel + 1
       '      ChildCodeCluster.NestedLevel = CodeCluster.NestedLevel
@@ -887,13 +911,25 @@ Namespace Things
         objExpression.ReturnType = Component.ReturnType
         objExpression.Objects = Component.Objects
         objExpression.StartOfPartNumbers = Declarations.Count + Me.StartOfPartNumbers
+        objExpression.StatementObjects = Me.StatementObjects
+
         objExpression.GenerateCode()
 
         Declarations.AddRange(objExpression.Declarations)
         PreStatements.AddRange(objExpression.PreStatements)
         Dependencies.MergeUnique(objExpression.Dependencies)
+        StatementObjects.MergeUnique(objExpression.StatementObjects)
+
+        Me.RequiresRecordID = RequiresRecordID Or objExpression.RequiresRecordID
+        Me.RequiresRowNumber = RequiresRowNumber Or objExpression.RequiresRowNumber
+        Me.RequiresOvernight = RequiresOvernight Or objExpression.RequiresOvernight
+        Me.ReferencesParent = Me.ReferencesParent Or objExpression.ReferencesParent
+        Me.ReferencesChild = Me.ReferencesChild Or objExpression.ReferencesChild
 
         iPartNumber = Declarations.Count + Me.StartOfPartNumbers
+
+        '   Debug.Assert(iPartNumber <> 7)
+
         Declarations.Add(String.Format("@part_{0} {1}", iPartNumber, objExpression.DataTypeSyntax))
 
         sPartCode = String.Format("{0}SELECT @part_{1} = {2}" & vbNewLine & _
@@ -1015,8 +1051,17 @@ Namespace Things
       'Else
       If StatementObjects.Contains(ReferencedColumn) Then
         sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn))
+
+        '   Debug.Assert(sCallingCode.Code <> "@part_3")
+
       Else
-        sVariableName = StatementObjects.Count + Me.StartOfPartNumbers
+
+        '     Debug.Assert(StatementObjects.Count + Me.StartOfPartNumbers <> 7)
+
+        '        sVariableName = StatementObjects.Count + Me.StartOfPartNumbers
+        sVariableName = Declarations.Count + Me.StartOfPartNumbers
+
+
         StatementObjects.Add(ReferencedColumn)
         Declarations.Add(String.Format("@part_{0} {1}", sVariableName, ReferencedColumn.DataTypeSyntax))
         PreStatements.Add(String.Format("SELECT @part_{0} = {1}", sVariableName, ReferencedColumn.Calculation.UDF.CallingCode))
@@ -1035,6 +1080,13 @@ Namespace Things
       Me.ReferencesParent = Me.ReferencesParent Or ReferencedColumn.Calculation.ReferencesParent
       Me.ReferencesChild = Me.ReferencesChild Or ReferencedColumn.Calculation.ReferencesChild
       Dependencies.MergeUnique(ReferencedColumn.Calculation.Dependencies)
+
+      'Dim icount As Integer
+      'For icount = 0 To Dependencies.Count - 1
+      '  Debug.Print(Dependencies(icount).Name)
+      'Next
+
+
 
       Return sCallingCode
 

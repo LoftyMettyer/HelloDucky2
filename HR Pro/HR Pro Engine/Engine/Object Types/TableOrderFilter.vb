@@ -34,7 +34,7 @@
         sName = String.Format("udftab_{0}", Parent.Name)
 
         If Not RowDetails.Order Is Nothing Then
-          sName = sName + "_" + RowDetails.Order.Name
+          sName = sName + "_" + String.Format("{0}({1})", RowDetails.Order.Name, CInt(RowDetails.Order.ID))
         End If
 
         If Not RowDetails.Filter Is Nothing Then

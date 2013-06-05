@@ -899,7 +899,6 @@ Namespace ScriptDB
             sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
             ScriptDB.DropUDF("dbo", sObjectName)
           Next
-
         Next
 
 
@@ -922,11 +921,6 @@ Namespace ScriptDB
             sObjectName = String.Format("{0}{1}", Consts.MaskUDF, CInt(objExpression.ID))
             objExpression.GenerateCode()
             ScriptDB.DropUDF("dbo", sObjectName)
-
-            If Not Globals.CommitDB.ScriptStatement(objExpression.UDF.Code) Then
-              Globals.CommitDB.ScriptStatement(objExpression.UDF.CodeStub)
-            End If
-
           Next
 
           ' Indexes for views
@@ -967,7 +961,7 @@ Namespace ScriptDB
                 If Not objColumn.Calculation Is Nothing Then
                   objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
                   objColumn.Calculation.AssociatedColumn = objColumn
-                  ' objColumn.Calculation.GenerateCode()
+                  objColumn.Calculation.GenerateCode()
                 End If
 
               End If
@@ -975,7 +969,24 @@ Namespace ScriptDB
 
           Next
 
+          '  Validation Masks
+          For Each objExpression In objTable.Objects(Things.Type.Mask)
+            sObjectName = String.Format("{0}{1}", Consts.MaskUDF, CInt(objExpression.ID))
+            objExpression.GenerateCode()
+            ScriptDB.DropUDF("dbo", sObjectName)
+
+            If Not Globals.CommitDB.ScriptStatement(objExpression.UDF.Code) Then
+              Globals.CommitDB.ScriptStatement(objExpression.UDF.CodeStub)
+            End If
+
+          Next
+
         Next
+
+
+
+
+
 
         ' Generate any table UDFs
         For Each objTable In Globals.Things
@@ -989,6 +1000,10 @@ Namespace ScriptDB
           Next
         Next
 
+
+
+
+
         ' Script the column calculations
         For Each objTable In Globals.Things
           For Each objColumn In objTable.Columns
@@ -1000,6 +1015,7 @@ Namespace ScriptDB
 
               objColumn.Calculation.AssociatedColumn = objColumn
               objColumn.Calculation.StartOfPartNumbers = 0
+              objColumn.Calculation.StatementObjects.Clear()
 
               objColumn.Calculation.ExpressionType = ExpressionType.ColumnCalculation
               objColumn.Calculation.GenerateCode()

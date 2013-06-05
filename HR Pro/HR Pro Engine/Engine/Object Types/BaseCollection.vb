@@ -21,7 +21,7 @@ Namespace Things
       Dim bFound As Boolean
 
       For Each objThing In Me.Items
-        If objThing.ID = Thing.ID Then
+        If objThing.ID = Thing.ID And objThing.Type = Thing.Type Then
           bFound = True
           Exit For
         End If
