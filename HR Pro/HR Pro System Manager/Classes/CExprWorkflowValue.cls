@@ -686,35 +686,37 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
         Case giEXPRVALUE_NUMERIC
           sProcCode = _
             "    DECLARE " & sVarName & " float" & vbNewLine & vbNewLine & _
-            "    SELECT " & sVarName & " = CASE" & vbNewLine & _
-            "        WHEN ASRSysWorkflowInstanceValues.elementID = @piTempElement THEN convert(float, isnull(ASRSysWorkflowInstanceValues.tempValue, 0))" & vbNewLine & _
-            "        ELSE convert(float, isnull(ASRSysWorkflowInstanceValues.value, 0))" & vbNewLine & _
+            "    SELECT @sValue = CASE" & vbNewLine & _
+            "        WHEN ASRSysWorkflowInstanceValues.elementID = @piTempElement THEN isnull(ASRSysWorkflowInstanceValues.tempValue, 0)" & vbNewLine & _
+            "        ELSE isnull(ASRSysWorkflowInstanceValues.value, 0)" & vbNewLine & _
             "    END" & vbNewLine & _
             "    FROM ASRSysWorkflowInstanceValues" & vbNewLine & _
             "    INNER JOIN ASRSysWorkflowElements ON ASRSysWorkflowInstanceValues.elementID = ASRSysWorkflowElements.ID" & vbNewLine & _
             "    WHERE ASRSysWorkflowElements.identifier = '" & Replace(msElementIdentifier, "'", "''") & "'" & vbNewLine & _
             "        AND ASRSysWorkflowInstanceValues.identifier = '" & Replace(msItemIdentifier, "'", "''") & "'" & vbNewLine & _
-            "        AND ASRSysWorkflowInstanceValues.instanceID = @piInstanceID"
+            "        AND ASRSysWorkflowInstanceValues.instanceID = @piInstanceID" & vbNewLine & vbNewLine & _
+            "    SET " & sVarName & " = convert(float, @sValue)"
     
         Case giEXPRVALUE_LOGIC
           sProcCode = _
             "    DECLARE " & sVarName & " bit" & vbNewLine & vbNewLine & _
-            "    SELECT " & sVarName & " = CASE" & vbNewLine & _
-            "        WHEN ASRSysWorkflowInstanceValues.elementID = @piTempElement THEN convert(bit, isnull(ASRSysWorkflowInstanceValues.tempValue, 0))" & vbNewLine & _
-            "        ELSE convert(bit, isnull(ASRSysWorkflowInstanceValues.value, 0))" & vbNewLine & _
+            "    SELECT @sValue = CASE" & vbNewLine & _
+            "        WHEN ASRSysWorkflowInstanceValues.elementID = @piTempElement THEN isnull(ASRSysWorkflowInstanceValues.tempValue, 0)" & vbNewLine & _
+            "        ELSE isnull(ASRSysWorkflowInstanceValues.value, 0)" & vbNewLine & _
             "    END" & vbNewLine & _
             "    FROM ASRSysWorkflowInstanceValues" & vbNewLine & _
             "    INNER JOIN ASRSysWorkflowElements ON ASRSysWorkflowInstanceValues.elementID = ASRSysWorkflowElements.ID" & vbNewLine & _
             "    WHERE ASRSysWorkflowElements.identifier = '" & Replace(msElementIdentifier, "'", "''") & "'" & vbNewLine & _
             "        AND ASRSysWorkflowInstanceValues.identifier = '" & Replace(msItemIdentifier, "'", "''") & "'" & vbNewLine & _
-            "        AND ASRSysWorkflowInstanceValues.instanceID = @piInstanceID"
+            "        AND ASRSysWorkflowInstanceValues.instanceID = @piInstanceID" & vbNewLine & vbNewLine & _
+            "    SET " & sVarName & " = convert(bit, @sValue)"
     
         Case giEXPRVALUE_DATE
           sProcCode = _
             "    DECLARE " & sVarName & " datetime" & vbNewLine & vbNewLine & _
-            "    SELECT " & sVarName & " = CASE" & vbNewLine & _
-            "        WHEN ASRSysWorkflowInstanceValues.elementID = @piTempElement THEN convert(datetime, ASRSysWorkflowInstanceValues.tempValue)" & vbNewLine & _
-            "        ELSE convert(datetime, ASRSysWorkflowInstanceValues.value)" & vbNewLine & _
+            "    SELECT @sValue = CASE" & vbNewLine & _
+            "        WHEN ASRSysWorkflowInstanceValues.elementID = @piTempElement THEN ASRSysWorkflowInstanceValues.tempValue" & vbNewLine & _
+            "        ELSE ASRSysWorkflowInstanceValues.value" & vbNewLine & _
             "    END" & vbNewLine & _
             "    FROM ASRSysWorkflowInstanceValues" & vbNewLine & _
             "    INNER JOIN ASRSysWorkflowElements ON ASRSysWorkflowInstanceValues.elementID = ASRSysWorkflowElements.ID" & vbNewLine & _
@@ -725,7 +727,8 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
             "        AND UPPER(LTRIM(RTRIM(isnull(CASE" & vbNewLine & _
             "                WHEN ASRSysWorkflowInstanceValues.elementID = @piTempElement THEN ASRSysWorkflowInstanceValues.tempValue" & vbNewLine & _
             "                ELSE ASRSysWorkflowInstanceValues.value" & vbNewLine & _
-            "            END, 'null')))) <> 'NULL'"
+            "            END, 'null')))) <> 'NULL'" & vbNewLine & vbNewLine & _
+            "    SET " & sVarName & " = convert(datetime, @sValue)"
         Case Else
           sProcCode = ""
       End Select
@@ -794,7 +797,11 @@ Public Function RuntimeCode(psRuntimeCode As String, _
     
         Case giEXPRVALUE_NUMERIC
           sCode = _
-            "    (SELECT convert(float, isnull(ASRSysWorkflowInstanceValues.value, 0))" & vbNewLine & _
+            "    (SELECT" & vbNewLine & _
+            "        CASE" & vbNewLine & _
+            "            WHEN isnumeric(ASRSysWorkflowInstanceValues.value) = 1 THEN convert(float, isnull(ASRSysWorkflowInstanceValues.value, 0))" & vbNewLine & _
+            "            ELSE 0" & vbNewLine & _
+            "        END" & vbNewLine & _
             "    FROM ASRSysWorkflowInstanceValues" & vbNewLine & _
             "    INNER JOIN ASRSysWorkflowElements ON ASRSysWorkflowInstanceValues.elementID = ASRSysWorkflowElements.ID" & vbNewLine & _
             "    WHERE ASRSysWorkflowElements.identifier = '" & Replace(msElementIdentifier, "'", "''") & "'" & vbNewLine & _
@@ -803,7 +810,11 @@ Public Function RuntimeCode(psRuntimeCode As String, _
     
         Case giEXPRVALUE_LOGIC
           sCode = _
-            "    (SELECT convert(bit, isnull(ASRSysWorkflowInstanceValues.value, 0))" & vbNewLine & _
+            "    (SELECT" & vbNewLine & _
+            "        CASE" & vbNewLine & _
+            "            WHEN isnumeric(ASRSysWorkflowInstanceValues.value) = 1 THEN convert(bit, isnull(ASRSysWorkflowInstanceValues.value, 0))" & vbNewLine & _
+            "            ELSE 0" & vbNewLine & _
+            "        END" & vbNewLine & _
             "    FROM ASRSysWorkflowInstanceValues" & vbNewLine & _
             "    INNER JOIN ASRSysWorkflowElements ON ASRSysWorkflowInstanceValues.elementID = ASRSysWorkflowElements.ID" & vbNewLine & _
             "    WHERE ASRSysWorkflowElements.identifier = '" & Replace(msElementIdentifier, "'", "''") & "'" & vbNewLine & _
@@ -812,7 +823,11 @@ Public Function RuntimeCode(psRuntimeCode As String, _
     
         Case giEXPRVALUE_DATE
           sCode = _
-            "    (SELECT convert(datetime, ASRSysWorkflowInstanceValues.value)" & vbNewLine & _
+            "    (SELECT " & vbNewLine & _
+            "        CASE" & vbNewLine & _
+            "            WHEN isdate(ASRSysWorkflowInstanceValues.value) = 1 THEN convert(datetime, isnull(ASRSysWorkflowInstanceValues.value, 0))" & vbNewLine & _
+            "            ELSE 0" & vbNewLine & _
+            "        END" & vbNewLine & _
             "    FROM ASRSysWorkflowInstanceValues" & vbNewLine & _
             "    INNER JOIN ASRSysWorkflowElements ON ASRSysWorkflowInstanceValues.elementID = ASRSysWorkflowElements.ID" & vbNewLine & _
             "    WHERE ASRSysWorkflowElements.identifier = '" & Replace(msElementIdentifier, "'", "''") & "'" & vbNewLine & _
