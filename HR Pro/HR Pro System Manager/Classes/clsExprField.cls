@@ -1628,8 +1628,8 @@ Public Function CloneComponent(pavCloneRegister As Variant)
   If ((mlngSelOrderID > 0) And (lngNewOrderID = 0)) Then
     lngNewOrderID = mlngSelOrderID
   End If
-  If ((mobjBaseComponent.ParentExpression.BaseTableID > 0) And (lngNewParentTableID = 0)) Then
-    lngNewParentTableID = mobjBaseComponent.ParentExpression.BaseTableID
+  If ((mobjBaseComponent.ParentExpression.BaseTableID > 0) And (lngNewParentTableID = 0) And (lngNewTableID = 0)) Then
+    lngNewTableID = mobjBaseComponent.ParentExpression.BaseTableID
   End If
   
   ' Copy the component's basic properties.
