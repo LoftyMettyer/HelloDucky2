@@ -17,7 +17,7 @@ Begin VB.Form frmWorkflowLink
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1077
+   HelpContextID   =   5077
    Icon            =   "frmWorkflowLink.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
@@ -246,15 +246,6 @@ Begin VB.Form frmWorkflowLink
       End
       Begin VB.CommandButton cmdFilter 
          Caption         =   "..."
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
          Height          =   315
          Left            =   5835
          TabIndex        =   5
@@ -577,8 +568,8 @@ Private Sub PopulateAvailable()
         End If
 
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) And _
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) And _
           (!DataType <> dtVARBINARY) And _
           (!DataType <> dtLONGVARBINARY) Then
 
@@ -622,13 +613,13 @@ End Sub
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 
 Public Property Let Changed(ByVal blnNewValue As Boolean)
   If Not mblnLoading Then
-    cmdOK.Enabled = blnNewValue And Not mblnReadOnly
+    cmdOk.Enabled = blnNewValue And Not mblnReadOnly
   End If
 End Property
 

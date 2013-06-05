@@ -15,7 +15,7 @@ Begin VB.Form frmSSIntranetView
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1058
+   HelpContextID   =   5058
    Icon            =   "frmSSIntranetView.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
@@ -401,7 +401,7 @@ Private Sub RefreshControls()
   End If
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged And fValid
+  cmdOk.Enabled = mfChanged And fValid
     
 End Sub
 

@@ -16,7 +16,7 @@ Begin VB.Form frmDbMgr
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1013
+   HelpContextID   =   5013
    Icon            =   "frmDbMgr.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
@@ -1588,7 +1588,7 @@ Private Function AddDetailsToListItem(pListView As ComctlLib.ListView) As Boolea
     '******************************************************************************
     'TM20011030 Fault 3038
     'Don't show the Default Display Width for Link fields, OLE Columns or Photo Columns.
-    If !ColumnType = giCOLUMNTYPE_LINK Or !DataType = sqlOle Or !DataType = sqlVarBinary Then
+    If !columnType = giCOLUMNTYPE_LINK Or !DataType = sqlOle Or !DataType = sqlVarBinary Then
       objItem.SubItems(iOrder) = ""
     Else
       If !MultiLine Then
@@ -1604,7 +1604,7 @@ Private Function AddDetailsToListItem(pListView As ComctlLib.ListView) As Boolea
     '******************************************************************************
     '   ColumnType
     '******************************************************************************
-    Select Case !ColumnType
+    Select Case !columnType
       Case giCOLUMNTYPE_SYSTEM
         objItem.SubItems(iOrder) = "System"
       Case giCOLUMNTYPE_DATA
@@ -2048,7 +2048,7 @@ Private Sub PopulateListView(pobjNode As ComctlLib.Node, Optional ByVal pfRefres
               
             ' Ignore deleted and system columns.
             If (Not .Fields("deleted")) And _
-              (Not !ColumnType = giCOLUMNTYPE_SYSTEM) Then
+              (Not !columnType = giCOLUMNTYPE_SYSTEM) Then
     
               ' Add an item to the listview for the column.
               AddDetailsToListItem Me.ListView1

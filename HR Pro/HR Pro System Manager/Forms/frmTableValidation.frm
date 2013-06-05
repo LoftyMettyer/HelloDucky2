@@ -15,7 +15,7 @@ Begin VB.Form frmTableValidation
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1088
+   HelpContextID   =   5088
    Icon            =   "frmTableValidation.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

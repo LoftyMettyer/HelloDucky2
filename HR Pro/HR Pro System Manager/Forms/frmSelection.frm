@@ -18,7 +18,7 @@ Begin VB.Form frmSelection
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1032
+   HelpContextID   =   5032
    Icon            =   "frmSelection.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -602,19 +602,19 @@ Private Function ObjectType() As ObjectTypes
   ' Return the current object type.
   If Not mobjExpression Is Nothing Then
     ObjectType = OBJECT_EXPRESSION
-    Me.HelpContextID = 1008
+    Me.HelpContextID = 5008
     Exit Function
   End If
   
   If Not mobjOrder Is Nothing Then
     ObjectType = OBJECT_ORDER
-    Me.HelpContextID = 1019
+    Me.HelpContextID = 5019
     Exit Function
   End If
   
   If Not mobjEmail Is Nothing Then
     ObjectType = OBJECT_EMAIL
-    Me.HelpContextID = 1015
+    Me.HelpContextID = 5015
     Exit Function
   End If
   
@@ -1146,7 +1146,7 @@ Private Sub lstItems_ItemClick(ByVal Item As ComctlLib.ListItem)
   
 End Sub
 
-Private Sub lstItems_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub lstItems_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 
   If Button = vbRightButton Then
   

@@ -16,7 +16,7 @@ Begin VB.Form frmViewCurrentUsers
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1039
+   HelpContextID   =   5039
    Icon            =   "frmViewCurrentUsers.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
@@ -185,6 +185,7 @@ Begin VB.Form frmViewCurrentUsers
          _Version        =   196617
          DataMode        =   2
          RecordSelectors =   0   'False
+         Col.Count       =   3
          AllowUpdate     =   0   'False
          MultiLine       =   0   'False
          AllowRowSizing  =   0   'False
@@ -600,17 +601,17 @@ Private Sub LockCheck()
   If Application.AccessMode = accFull Then
     If mintLockType = lckManual Then
       cmdLock.Caption = "Un&lock Database"
-      Me.HelpContextID = 1067
+      Me.HelpContextID = 5067
     Else
       cmdLock.Caption = "&Lock Database"
-      Me.HelpContextID = 1039
+      Me.HelpContextID = 5039
     End If
   ElseIf LCase(gsUserName) = "sa" And mintLockType = lckManual Then
     cmdLock.Caption = "Un&lock Database"
-    Me.HelpContextID = 1067
+    Me.HelpContextID = 5067
   Else
     cmdLock.Enabled = False
-    Me.HelpContextID = 1039
+    Me.HelpContextID = 5039
   End If
 
 End Sub

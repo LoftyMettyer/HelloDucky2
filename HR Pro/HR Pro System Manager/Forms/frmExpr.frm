@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
 Begin VB.Form frmExpr 
    Caption         =   "Expression Definition"
@@ -17,7 +17,7 @@ Begin VB.Form frmExpr
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1018
+   HelpContextID   =   5018
    Icon            =   "frmExpr.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"

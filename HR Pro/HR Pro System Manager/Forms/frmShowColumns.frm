@@ -15,7 +15,7 @@ Begin VB.Form frmShowColumns
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1063
+   HelpContextID   =   5063
    Icon            =   "frmShowColumns.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

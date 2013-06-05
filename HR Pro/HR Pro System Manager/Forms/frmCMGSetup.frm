@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmCMGSetup 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "CMG & Centrefile Setup"
@@ -17,7 +17,7 @@ Begin VB.Form frmCMGSetup
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1078
+   HelpContextID   =   5078
    Icon            =   "frmCMGSetup.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -277,10 +277,11 @@ Begin VB.Form frmCMGSetup
          RecordSelectors =   0   'False
          GroupHeaders    =   0   'False
          GroupHeadLines  =   0
+         Col.Count       =   3
          stylesets.count =   6
-         stylesets(0).Name=   "ssetSelected"
-         stylesets(0).ForeColor=   -2147483634
-         stylesets(0).BackColor=   -2147483635
+         stylesets(0).Name=   "ssetHeaderDisabled"
+         stylesets(0).ForeColor=   -2147483631
+         stylesets(0).BackColor=   -2147483633
          stylesets(0).HasFont=   -1  'True
          BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
@@ -292,9 +293,9 @@ Begin VB.Form frmCMGSetup
             Strikethrough   =   0   'False
          EndProperty
          stylesets(0).Picture=   "frmCMGSetup.frx":02A0
-         stylesets(1).Name=   "ssetHeaderDisabled"
-         stylesets(1).ForeColor=   -2147483631
-         stylesets(1).BackColor=   -2147483633
+         stylesets(1).Name=   "ssetSelected"
+         stylesets(1).ForeColor=   -2147483634
+         stylesets(1).BackColor=   -2147483635
          stylesets(1).HasFont=   -1  'True
          BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
@@ -541,17 +542,17 @@ Private mbReadOnly As Boolean
 Private Sub LoadSettings()
   Dim iRow As Integer
 
-  chkUseCSV.Value = IIf(gbCMGExportUseCSV, 1, 0)
-  chkIgnoreEmptyFields.Value = IIf(gbCMGIgnoreBlanks, 1, 0)
-  chkReverseOutput.Value = IIf(gbCMGReverseDateChanged, 1, 0)
-  chkExportFileCode.Value = IIf(gbCMGExportFileCode, 1, 0)
-  chkExportFieldCode.Value = IIf(gbCMGExportFieldCode, 1, 0)
-  chkExportLastDate.Value = IIf(gbCMGExportLastChangeDate, 1, 0)
-  spnMaxSize(0).Value = giCMGExportFileCodeSize
-  spnMaxSize(1).Value = giCMGEXportRecordIDSize
-  spnMaxSize(2).Value = giCMGExportFieldCodeSize
-  spnMaxSize(3).Value = giCMGExportOutputColumnSize
-  spnMaxSize(4).Value = giCMGExportLastChangeDateSize
+  chkUseCSV.value = IIf(gbCMGExportUseCSV, 1, 0)
+  chkIgnoreEmptyFields.value = IIf(gbCMGIgnoreBlanks, 1, 0)
+  chkReverseOutput.value = IIf(gbCMGReverseDateChanged, 1, 0)
+  chkExportFileCode.value = IIf(gbCMGExportFileCode, 1, 0)
+  chkExportFieldCode.value = IIf(gbCMGExportFieldCode, 1, 0)
+  chkExportLastDate.value = IIf(gbCMGExportLastChangeDate, 1, 0)
+  spnMaxSize(0).value = giCMGExportFileCodeSize
+  spnMaxSize(1).value = giCMGEXportRecordIDSize
+  spnMaxSize(2).value = giCMGExportFieldCodeSize
+  spnMaxSize(3).value = giCMGExportOutputColumnSize
+  spnMaxSize(4).value = giCMGExportLastChangeDateSize
   
   'NPG20090313 Fault 13595
   If giCMGEXportRecordIDOrderID + giCMGExportFileCodeOrderID + giCMGExportFieldCodeOrderID + giCMGExportOutputColumnOrderID + giCMGExportLastChangeDateOrderID = 0 Then
@@ -601,18 +602,18 @@ Private Function SaveChanges() As Boolean
   
   Screen.MousePointer = vbHourglass
 
-  gbCMGExportUseCSV = chkUseCSV.Value
-  gbCMGIgnoreBlanks = chkIgnoreEmptyFields.Value
-  gbCMGReverseDateChanged = chkReverseOutput.Value
+  gbCMGExportUseCSV = chkUseCSV.value
+  gbCMGIgnoreBlanks = chkIgnoreEmptyFields.value
+  gbCMGReverseDateChanged = chkReverseOutput.value
   
-  gbCMGExportFileCode = chkExportFileCode.Value
-  gbCMGExportFieldCode = chkExportFieldCode.Value
-  gbCMGExportLastChangeDate = chkExportLastDate.Value
-  giCMGExportFileCodeSize = spnMaxSize(0).Value
-  giCMGEXportRecordIDSize = spnMaxSize(1).Value
-  giCMGExportFieldCodeSize = spnMaxSize(2).Value
-  giCMGExportOutputColumnSize = spnMaxSize(3).Value
-  giCMGExportLastChangeDateSize = spnMaxSize(4).Value
+  gbCMGExportFileCode = chkExportFileCode.value
+  gbCMGExportFieldCode = chkExportFieldCode.value
+  gbCMGExportLastChangeDate = chkExportLastDate.value
+  giCMGExportFileCodeSize = spnMaxSize(0).value
+  giCMGEXportRecordIDSize = spnMaxSize(1).value
+  giCMGExportFieldCodeSize = spnMaxSize(2).value
+  giCMGExportOutputColumnSize = spnMaxSize(3).value
+  giCMGExportLastChangeDateSize = spnMaxSize(4).value
 
   'NPG20090313 Fault 13595
   With grdCMGLayout
@@ -626,26 +627,26 @@ Private Function SaveChanges() As Boolean
         
           Case "Record Identifier"
             giCMGEXportRecordIDOrderID = iRow
-            giCMGEXportRecordIDSize = .Columns(1).Value
+            giCMGEXportRecordIDSize = .Columns(1).value
             
           Case "Export File Code"
             giCMGExportFileCodeOrderID = iRow
-            gbCMGExportFileCode = .Columns(2).Value
-            giCMGExportFileCodeSize = .Columns(1).Value
+            gbCMGExportFileCode = .Columns(2).value
+            giCMGExportFileCodeSize = .Columns(1).value
             
           Case "Export Field Code"
             giCMGExportFieldCodeOrderID = iRow
-            gbCMGExportFieldCode = .Columns(2).Value
-            giCMGExportFieldCodeSize = .Columns(1).Value
+            gbCMGExportFieldCode = .Columns(2).value
+            giCMGExportFieldCodeSize = .Columns(1).value
             
           Case "Output Column"
             giCMGExportOutputColumnOrderID = iRow
-            giCMGExportOutputColumnSize = .Columns(1).Value
+            giCMGExportOutputColumnSize = .Columns(1).value
             
           Case "Export Last Change Date"
             giCMGExportLastChangeDateOrderID = iRow
-            gbCMGExportLastChangeDate = .Columns(2).Value
-            giCMGExportLastChangeDateSize = .Columns(1).Value
+            gbCMGExportLastChangeDate = .Columns(2).value
+            giCMGExportLastChangeDateSize = .Columns(1).value
             
         End Select
       .MoveNext
@@ -848,13 +849,13 @@ Private Sub RefreshButtons()
   Dim bCMGExportUseCSV As Boolean
   
   If Not mbReadOnly Then
-    bCMGExportUseCSV = (chkUseCSV.Value = vbChecked)
+    bCMGExportUseCSV = (chkUseCSV.value = vbChecked)
   
-    spnMaxSize(0).Enabled = IIf(chkExportFileCode.Value = vbChecked, True, False) And Not bCMGExportUseCSV
+    spnMaxSize(0).Enabled = IIf(chkExportFileCode.value = vbChecked, True, False) And Not bCMGExportUseCSV
     spnMaxSize(1).Enabled = Not bCMGExportUseCSV
-    spnMaxSize(2).Enabled = IIf(chkExportFieldCode.Value = vbChecked, True, False) And Not bCMGExportUseCSV
+    spnMaxSize(2).Enabled = IIf(chkExportFieldCode.value = vbChecked, True, False) And Not bCMGExportUseCSV
     spnMaxSize(3).Enabled = Not bCMGExportUseCSV
-    spnMaxSize(4).Enabled = IIf(chkExportLastDate.Value = vbChecked, True, False) And Not bCMGExportUseCSV
+    spnMaxSize(4).Enabled = IIf(chkExportLastDate.value = vbChecked, True, False) And Not bCMGExportUseCSV
     
     lblSize(0).Enabled = spnMaxSize(0).Enabled
     lblSize(1).Enabled = spnMaxSize(1).Enabled
@@ -862,7 +863,7 @@ Private Sub RefreshButtons()
     lblSize(3).Enabled = spnMaxSize(3).Enabled
     lblSize(4).Enabled = spnMaxSize(4).Enabled
   
-    cmdOK.Enabled = mfChanged
+    cmdOk.Enabled = mfChanged
   End If
 
 End Sub

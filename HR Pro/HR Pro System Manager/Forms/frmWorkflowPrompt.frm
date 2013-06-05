@@ -15,7 +15,7 @@ Begin VB.Form frmWorkflowPrompt
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1054
+   HelpContextID   =   5054
    Icon            =   "frmWorkflowPrompt.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
@@ -177,10 +177,10 @@ Public Property Let OutboundFlowInfo(pavInfo As Variant)
     sngLastTop = sngLastTop + 360
   Next iLoop
   
-  cmdOK.Top = sngLastTop + 180
-  cmdCancel.Top = cmdOK.Top
+  cmdOk.Top = sngLastTop + 180
+  cmdCancel.Top = cmdOk.Top
   
-  Me.Height = cmdOK.Top + cmdOK.Height + 600
+  Me.Height = cmdOk.Top + cmdOk.Height + 600
   
   miOutboundFlowCode = CInt(optChoice(1).Tag)
   

@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Begin VB.Form frmOrdEdit 
    BorderStyle     =   3  'Fixed Dialog
@@ -17,7 +17,7 @@ Begin VB.Form frmOrdEdit
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1019
+   HelpContextID   =   5019
    Icon            =   "frmOrdEdit.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -485,7 +485,7 @@ Private Sub cmdCancel_Click()
   If mfChanged Then
     intAnswer = MsgBox("The order definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
     If intAnswer = vbYes Then
-      If Me.cmdOK.Enabled Then
+      If Me.cmdOk.Enabled Then
         Call cmdOK_Click
         Exit Sub
       Else
@@ -646,7 +646,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     If mfChanged Then
       intAnswer = MsgBox("The order definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
       If intAnswer = vbYes Then
-        If Me.cmdOK.Enabled Then
+        If Me.cmdOk.Enabled Then
           Call cmdOK_Click
           If mfCancelled = True Then Cancel = 1
         Else
@@ -838,7 +838,7 @@ Private Sub FindColumns_RefreshControls()
     (Not fSelectedLastNode)
     
   ' Disable the OK command control if there are no order items specified.
-  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOk.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And Not mblnReadOnly
 
@@ -879,7 +879,7 @@ Private Sub SortColumns_RefreshControls()
     (Not fSelectedLastNode)
     
   ' Disable the OK command control if there are no order items specified.
-  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOk.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And Not mblnReadOnly
 
@@ -1307,7 +1307,7 @@ Private Sub trvFindColumns_DblClick()
   End If
 End Sub
 
-Private Sub trvFindColumns_DragDrop(Source As Control, x As Single, y As Single)
+Private Sub trvFindColumns_DragDrop(Source As Control, X As Single, Y As Single)
   ' Remove the selected item from the columns listview.
   If Not mblnReadOnly Then
     If Source Is trvSelectedFindColumns Then
@@ -1317,7 +1317,7 @@ Private Sub trvFindColumns_DragDrop(Source As Control, x As Single, y As Single)
   End If
 End Sub
 
-Private Sub trvFindColumns_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub trvFindColumns_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Start the drag-drop operation.
   Dim fGoodColumn As Boolean
   Dim objItem As ComctlLib.ListItem
@@ -1329,7 +1329,7 @@ Private Sub trvFindColumns_MouseDown(Button As Integer, Shift As Integer, x As S
 
   If Button = vbLeftButton Then
     'Get the item at the mouse position
-    Set nodSelection = trvFindColumns.HitTest(x, y)
+    Set nodSelection = trvFindColumns.HitTest(X, Y)
     If Not nodSelection Is Nothing Then
       'If this item is not the selected item, make it
       If Not nodSelection Is trvFindColumns.SelectedItem Then
@@ -1356,7 +1356,7 @@ Private Sub trvFindColumns_MouseDown(Button As Integer, Shift As Integer, x As S
   
 End Sub
 
-Private Sub trvFindColumns_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub trvFindColumns_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -1383,7 +1383,7 @@ Private Sub trvSelectedFindColumns_DblClick()
   End If
 End Sub
 
-Private Sub trvSelectedFindColumns_DragDrop(Source As Control, x As Single, y As Single)
+Private Sub trvSelectedFindColumns_DragDrop(Source As Control, X As Single, Y As Single)
   ' Drop a selected item from the columns treeview into the selected columns treeview.
   Dim fDropOk As Boolean
   Dim objHighlightNode As ComctlLib.Node
@@ -1452,7 +1452,7 @@ Private Sub trvSelectedFindColumns_DragDrop(Source As Control, x As Single, y As
 
 End Sub
 
-Private Sub trvSelectedFindColumns_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub trvSelectedFindColumns_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
   
   Dim objNode As ComctlLib.Node
 
@@ -1462,7 +1462,7 @@ Private Sub trvSelectedFindColumns_DragOver(Source As Control, x As Single, y As
   
   
   'Get the item at the mouse's coordinates.
-  Set objNode = trvSelectedFindColumns.HitTest(x, y)
+  Set objNode = trvSelectedFindColumns.HitTest(X, Y)
 
   ' Check if the item at the mouse's coordinates is a control.
   If Not objNode Is Nothing Then
@@ -1483,7 +1483,7 @@ Private Sub trvSelectedFindColumns_KeyUp(KeyCode As Integer, Shift As Integer)
   
 End Sub
 
-Private Sub trvSelectedFindColumns_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub trvSelectedFindColumns_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   Dim objNode As ComctlLib.Node
 
   If mblnReadOnly Then
@@ -1492,7 +1492,7 @@ Private Sub trvSelectedFindColumns_MouseDown(Button As Integer, Shift As Integer
   
   If Button = vbLeftButton Then
     ' Get the item at the mouse position
-    Set objNode = trvSelectedFindColumns.HitTest(x, y)
+    Set objNode = trvSelectedFindColumns.HitTest(X, Y)
     If Not objNode Is Nothing Then
       ' If this node is not the selected node, make it
       If Not objNode Is trvSelectedFindColumns.SelectedItem Then
@@ -1511,7 +1511,7 @@ Private Sub trvSelectedFindColumns_MouseDown(Button As Integer, Shift As Integer
 
 End Sub
 
-Private Sub trvSelectedFindColumns_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub trvSelectedFindColumns_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -1539,7 +1539,7 @@ Private Sub trvSelectedSortColumns_DblClick()
   End If
 End Sub
 
-Private Sub trvSelectedSortColumns_DragDrop(Source As Control, x As Single, y As Single)
+Private Sub trvSelectedSortColumns_DragDrop(Source As Control, X As Single, Y As Single)
   ' Drop a selected item from the columns treeview into the selected columns treeview.
   Dim fDropOk As Boolean
   Dim objHighlightNode As ComctlLib.Node
@@ -1610,7 +1610,7 @@ Private Sub trvSelectedSortColumns_DragDrop(Source As Control, x As Single, y As
 
 End Sub
 
-Private Sub trvSelectedSortColumns_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub trvSelectedSortColumns_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
   Dim objNode As ComctlLib.Node
 
   If mblnReadOnly Then
@@ -1618,7 +1618,7 @@ Private Sub trvSelectedSortColumns_DragOver(Source As Control, x As Single, y As
   End If
 
   'Get the item at the mouse's coordinates.
-  Set objNode = trvSelectedSortColumns.HitTest(x, y)
+  Set objNode = trvSelectedSortColumns.HitTest(X, Y)
 
   'TM20010921 Fault 2030 & 'TM20010921 Fault 2031
   'The following lines were off-centring the items
@@ -1648,7 +1648,7 @@ Private Sub trvSelectedSortColumns_KeyUp(KeyCode As Integer, Shift As Integer)
 
 End Sub
 
-Private Sub trvSelectedSortColumns_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub trvSelectedSortColumns_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   Dim objNode As ComctlLib.Node
 
   If mblnReadOnly Then
@@ -1657,7 +1657,7 @@ Private Sub trvSelectedSortColumns_MouseDown(Button As Integer, Shift As Integer
   
   If Button = vbLeftButton Then
     ' Get the item at the mouse position
-    Set objNode = trvSelectedSortColumns.HitTest(x, y)
+    Set objNode = trvSelectedSortColumns.HitTest(X, Y)
     If Not objNode Is Nothing Then
       ' If this node is not the selected node, make it
       If Not objNode Is trvSelectedSortColumns.SelectedItem Then
@@ -1676,7 +1676,7 @@ Private Sub trvSelectedSortColumns_MouseDown(Button As Integer, Shift As Integer
 
 End Sub
 
-Private Sub trvSelectedSortColumns_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub trvSelectedSortColumns_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -1710,7 +1710,7 @@ Private Sub trvSortColumns_DblClick()
   End If
 End Sub
 
-Private Sub trvSortColumns_DragDrop(Source As Control, x As Single, y As Single)
+Private Sub trvSortColumns_DragDrop(Source As Control, X As Single, Y As Single)
   
   If Not mblnReadOnly Then
     ' Remove the selected item from the columns listview.
@@ -1722,7 +1722,7 @@ Private Sub trvSortColumns_DragDrop(Source As Control, x As Single, y As Single)
 
 End Sub
 
-Private Sub trvSortColumns_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub trvSortColumns_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Start the drag-drop operation.
   Dim fGoodColumn As Boolean
   Dim objItem As ComctlLib.ListItem
@@ -1734,7 +1734,7 @@ Private Sub trvSortColumns_MouseDown(Button As Integer, Shift As Integer, x As S
 
   If Button = vbLeftButton Then
     'Get the item at the mouse position
-    Set nodSelection = trvSortColumns.HitTest(x, y)
+    Set nodSelection = trvSortColumns.HitTest(X, Y)
     If Not nodSelection Is Nothing Then
       'If this item is not the selected item, make it
       If Not nodSelection Is trvSortColumns.SelectedItem Then
@@ -1761,7 +1761,7 @@ Private Sub trvSortColumns_MouseDown(Button As Integer, Shift As Integer, x As S
   
 End Sub
 
-Private Sub trvSortColumns_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub trvSortColumns_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -1810,7 +1810,7 @@ Private Sub txtOrderName_Change(Index As Integer)
   mfChanged = True
   
   ' Disable the OK command control if there are no order items specified.
-  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOk.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And Not mblnReadOnly
 

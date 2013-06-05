@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
 Begin VB.Form frmScrEditOpts 
@@ -18,7 +18,7 @@ Begin VB.Form frmScrEditOpts
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1029
+   HelpContextID   =   5029
    Icon            =   "frmScrEditOpts.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -83,7 +83,7 @@ Begin VB.Form frmScrEditOpts
             Width           =   2500
          End
          Begin VB.CommandButton cmdForeColor 
-Caption = "..."
+            Caption         =   "..."
             Height          =   315
             Left            =   2715
             TabIndex        =   3
@@ -108,7 +108,7 @@ Caption = "..."
             Width           =   750
          End
          Begin VB.CommandButton cmdFont 
-Caption = "..."
+            Caption         =   "..."
             Height          =   315
             Left            =   2715
             TabIndex        =   0

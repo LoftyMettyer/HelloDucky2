@@ -16,7 +16,7 @@ Begin VB.Form frmAuditSetup
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1082
+   HelpContextID   =   5082
    Icon            =   "frmAuditSetup.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -287,8 +287,8 @@ Private Sub cboAuditTable_Click()
         End If
 
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
         
           If !DataType = dtTIMESTAMP Then
             cboAuditDate.AddItem !ColumnName

@@ -15,7 +15,7 @@ Begin VB.Form frmWorkflowWFValidation
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1080
+   HelpContextID   =   5080
    Icon            =   "frmWorkflowWFValidation.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -32,7 +32,7 @@ Begin VB.Form frmWorkflowWFValidation
       Top             =   100
       Width           =   6400
       Begin VB.CommandButton cmdValidationExpression 
-Caption = "..."
+         Caption         =   "..."
          Height          =   315
          Left            =   5885
          TabIndex        =   3
@@ -160,7 +160,7 @@ Private Sub RefreshScreen()
   
   fOKToSave = mfChanged And (Not mfReadOnly)
   
-  cmdOK.Enabled = fOKToSave
+  cmdOk.Enabled = fOKToSave
 
 End Sub
 

@@ -16,7 +16,7 @@ Begin VB.Form frmWorkflowEditOptions
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1076
+   HelpContextID   =   5076
    Icon            =   "frmWorkflowEditOptions.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -155,7 +155,7 @@ Private Sub RefreshScreen()
     ControlsDisableAll Me
   End If
 
-  cmdOK.Enabled = mfChanged And (Not fReadOnly)
+  cmdOk.Enabled = mfChanged And (Not fReadOnly)
 
 End Sub
 
@@ -179,7 +179,7 @@ Private Sub FormatForm()
   asrNewHeight.Left = asrNewWidth.Left
     
   cmdCancel.Left = asrNewWidth.Left + asrNewWidth.Width - cmdCancel.Width
-  cmdOK.Left = cmdCancel.Left - cmdOK.Width - GAP_ButtonToButton
+  cmdOk.Left = cmdCancel.Left - cmdOk.Width - GAP_ButtonToButton
   
   Me.Width = asrNewWidth.Left + asrNewWidth.Width + lblCurrentWidth.Left
     

@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmChangedPlatform 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Platform Change Details"
@@ -16,7 +16,7 @@ Begin VB.Form frmChangedPlatform
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1079
+   HelpContextID   =   5079
    Icon            =   "frmChangedPlatform.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

@@ -15,7 +15,7 @@ Begin VB.Form frmWorkflowWFToolbox
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1074
+   HelpContextID   =   5074
    Icon            =   "frmWorkflowWFToolbox.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
@@ -388,15 +388,6 @@ Begin VB.Form frmWorkflowWFToolbox
             AutoSize        =   -1  'True
             BackColor       =   &H80000002&
             Caption         =   "Workflow Values"
-            BeginProperty Font 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
             ForeColor       =   &H80000009&
             Height          =   195
             Index           =   2
@@ -428,15 +419,6 @@ Begin VB.Form frmWorkflowWFToolbox
             AutoSize        =   -1  'True
             BackColor       =   &H80000002&
             Caption         =   "Database Columns"
-            BeginProperty Font 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
             ForeColor       =   &H80000009&
             Height          =   195
             Index           =   1
@@ -459,15 +441,6 @@ Begin VB.Form frmWorkflowWFToolbox
             AutoSize        =   -1  'True
             BackColor       =   &H80000002&
             Caption         =   "Standard Element Items"
-            BeginProperty Font 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
             ForeColor       =   &H80000009&
             Height          =   195
             Index           =   0
@@ -1152,14 +1125,14 @@ Private Sub trvWorkflowValue_Click()
   End If
 End Sub
 
-Private Sub trvWorkflowValue_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub trvWorkflowValue_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   Dim ThisNode As ComctlLib.Node
     
   ' If the left mouse button is pressed ...
   If Button = vbLeftButton Then
     
     'Get the node at the mouse position
-    Set ThisNode = trvWorkflowValue.HitTest(x, y)
+    Set ThisNode = trvWorkflowValue.HitTest(X, Y)
     
     ' If we have selected a valid node ...
     If Not ThisNode Is Nothing Then
@@ -1238,7 +1211,7 @@ Private Sub trvWorkflowValue_MouseDown(Button As Integer, Shift As Integer, x As
   End If
 End Sub
 
-Private Sub trvWorkflowValue_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub trvWorkflowValue_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Cancel the control drag operation.
   trvWorkflowValue.Drag vbEndDrag
 End Sub
@@ -1406,21 +1379,21 @@ Private Sub Form_Unload(Cancel As Integer)
   Unhook Me.hWnd
 End Sub
 
-Private Sub fraToolboxSplit_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub fraToolboxSplit_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Record the split move start position.
-  mSngSplitStartY = y
+  mSngSplitStartY = Y
   ' Flag that the split is being moved.
   mfSplitMoving = True
 End Sub
 
-Private Sub fraToolboxSplit_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub fraToolboxSplit_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' If we are moving the split then move it.
   If mfSplitMoving Then
-    fraToolboxSplit(Index).Top = fraToolboxSplit(Index).Top + (y - mSngSplitStartY)
+    fraToolboxSplit(Index).Top = fraToolboxSplit(Index).Top + (Y - mSngSplitStartY)
   End If
 End Sub
 
-Private Sub fraToolboxSplit_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub fraToolboxSplit_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' If the split is being moved then call the routine that resizes the
   ' tree and list views accordingly.
   If mfSplitMoving Then
@@ -1436,14 +1409,14 @@ Private Sub trvColumns_Click()
 
 End Sub
 
-Private Sub trvColumns_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub trvColumns_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   Dim ThisNode As ComctlLib.Node
   
   ' If the left mouse button is pressed ...
   If Button = vbLeftButton Then
   
     'Get the node at the mouse position
-    Set ThisNode = trvColumns.HitTest(x, y)
+    Set ThisNode = trvColumns.HitTest(X, Y)
     
     ' If we have selected a valid node ...
     If Not ThisNode Is Nothing Then
@@ -1523,7 +1496,7 @@ Private Sub trvColumns_MouseDown(Button As Integer, Shift As Integer, x As Singl
   End If
 End Sub
 
-Private Sub trvColumns_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub trvColumns_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Signal that the drag operation has ended.
   trvColumns.Drag vbEndDrag
 End Sub
@@ -1535,14 +1508,14 @@ Private Sub trvStandardControls_Click()
   End If
 End Sub
 
-Private Sub trvStandardControls_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub trvStandardControls_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   Dim ThisNode As ComctlLib.Node
     
   ' If the left mouse button is pressed ...
   If Button = vbLeftButton Then
     
     'Get the node at the mouse position
-    Set ThisNode = trvStandardControls.HitTest(x, y)
+    Set ThisNode = trvStandardControls.HitTest(X, Y)
     
     ' If we have selected a valid node ...
     If Not ThisNode Is Nothing Then
@@ -1621,7 +1594,7 @@ Private Sub trvStandardControls_MouseDown(Button As Integer, Shift As Integer, x
   End If
 End Sub
 
-Private Sub trvStandardControls_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub trvStandardControls_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Cancel the control drag operation.
   trvColumns.Drag vbEndDrag
 End Sub

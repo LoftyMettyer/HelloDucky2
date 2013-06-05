@@ -15,7 +15,7 @@ Begin VB.Form frmWorkflowPrintOptions
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1068
+   HelpContextID   =   5068
    Icon            =   "frmWorkflowPrintOptions.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -75,7 +75,7 @@ Private mfPrintOverview As Boolean
 Private Sub RefreshButtons()
   mfPrintDetails = (chkPrintDetails.value = vbChecked)
   mfPrintOverview = (chkPrintOverview.value = vbChecked)
-  cmdOK.Enabled = mfPrintDetails Or mfPrintOverview
+  cmdOk.Enabled = mfPrintDetails Or mfPrintOverview
   
 End Sub
 

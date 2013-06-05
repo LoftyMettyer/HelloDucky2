@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmWorkflowWFTabOrder 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Control Order"
@@ -16,7 +16,7 @@ Begin VB.Form frmWorkflowWFTabOrder
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1073
+   HelpContextID   =   5073
    Icon            =   "frmWorkflowWFTabOrder.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

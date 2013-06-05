@@ -16,7 +16,7 @@ Begin VB.Form frmAbout
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1001
+   HelpContextID   =   5001
    Icon            =   "frmAbout.frx":0000
    LinkTopic       =   "Form2"
    LockControls    =   -1  'True
@@ -242,11 +242,11 @@ Private Sub Form_Load()
   sngMaxX = IIf(lblSql.Left + lblSql.Width > sngMaxX, lblSql.Left + lblSql.Width, sngMaxX)
   sngMaxX = IIf(lblCopyRight.Left + lblCopyRight.Width > sngMaxX, lblCopyRight.Left + lblCopyRight.Width, sngMaxX)
   
-  cmdOK.Left = sngMaxX + 250
-  cmdSysInfo.Left = cmdOK.Left
-  cmdTech.Left = cmdOK.Left
+  cmdOk.Left = sngMaxX + 250
+  cmdSysInfo.Left = cmdOk.Left
+  cmdTech.Left = cmdOk.Left
   
-  Me.Width = cmdOK.Left + cmdOK.Width + 200
+  Me.Width = cmdOk.Left + cmdOk.Width + 200
 TidyUpAndExit:
   Exit Sub
 

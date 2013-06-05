@@ -16,7 +16,7 @@ Begin VB.Form frmWorkflowFindUsage
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1065
+   HelpContextID   =   5065
    Icon            =   "frmWorkflowFindUsage.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -205,7 +205,7 @@ Private Sub FormatScreen()
   
   fraOptions.Height = sngCurrentY + Y_BORDERGAP
   
-  With cmdOK
+  With cmdOk
     .Top = fraOptions.Top + fraOptions.Height + Y_BORDERGAP
     cmdCancel.Top = .Top
   
@@ -397,7 +397,7 @@ Private Sub SelectOption(pwfOption As WorkflowFindUsageOption)
       cboItem.Enabled = False
       cboItem.BackColor = vbButtonFace ' AE20080221 Fault #12914
       
-      cmdOK.Enabled = True
+      cmdOk.Enabled = True
       
     Case wfElement
       If cboElement.ListCount > 0 Then
@@ -421,7 +421,7 @@ Private Sub SelectOption(pwfOption As WorkflowFindUsageOption)
       
       ' AE20080317 Fault #13038
       'cmdOK.Enabled = Not (Trim(cboElement.Text) = vbNullString)
-      cmdOK.Enabled = Not (Trim(cboElement.Text) = "<None>")
+      cmdOk.Enabled = Not (Trim(cboElement.Text) = "<None>")
             
     Case wfWebFormItem
       lblElement.Enabled = False
@@ -447,7 +447,7 @@ Private Sub SelectOption(pwfOption As WorkflowFindUsageOption)
             
       ' AE20080317 Fault #13038
       'cmdOK.Enabled = Not ((Trim(cboWebform.Text) = vbNullString) And (Trim(cboItem.Text) = vbNullString))
-      cmdOK.Enabled = Not ((Trim(cboWebform.Text) = "<None>") And (Trim(cboItem.Text) = "<None>"))
+      cmdOk.Enabled = Not ((Trim(cboWebform.Text) = "<None>") And (Trim(cboItem.Text) = "<None>"))
 
   End Select
   

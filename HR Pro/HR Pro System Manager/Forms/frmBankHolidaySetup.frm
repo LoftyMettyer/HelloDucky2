@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.0#0"; "COA_Line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Begin VB.Form frmBankHolidaySetup 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Bank Holidays Setup"
@@ -16,7 +16,7 @@ Begin VB.Form frmBankHolidaySetup
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1005
+   HelpContextID   =   5005
    Icon            =   "frmBankHolidaySetup.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -78,8 +78,6 @@ Begin VB.Form frmBankHolidaySetup
       Begin COALine.COA_Line ASRDummyLine4 
          Height          =   30
          Left            =   150
-         TabIndex        =   12
-         TabStop         =   0   'False
          Top             =   765
          Width           =   4845
          _ExtentX        =   8546
@@ -90,7 +88,7 @@ Begin VB.Form frmBankHolidaySetup
          Caption         =   "Bank Holiday Table :"
          Height          =   195
          Left            =   195
-         TabIndex        =   15
+         TabIndex        =   8
          Top             =   360
          Width           =   1905
       End
@@ -99,7 +97,7 @@ Begin VB.Form frmBankHolidaySetup
          Caption         =   "Date Column :"
          Height          =   195
          Left            =   195
-         TabIndex        =   14
+         TabIndex        =   12
          Top             =   1005
          Width           =   1425
       End
@@ -139,8 +137,6 @@ Begin VB.Form frmBankHolidaySetup
       Begin COALine.COA_Line ASRDummyLine3 
          Height          =   30
          Left            =   150
-         TabIndex        =   8
-         TabStop         =   0   'False
          Top             =   765
          Width           =   4845
          _ExtentX        =   8546
@@ -187,7 +183,7 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  cmdOK.Enabled = True
+  cmdOk.Enabled = True
 End Property
 
 Private Sub cboBHolDate_Change()
@@ -236,7 +232,7 @@ Private Sub Form_Load()
   
   'AE20080204 Fault #12829
   mfChanged = False
-  cmdOK.Enabled = False
+  cmdOk.Enabled = False
   Screen.MousePointer = vbDefault
 End Sub
 
@@ -352,8 +348,8 @@ Private Sub RefreshBHolRegionControls()
           Exit Do
         End If
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
 
           ' Load varchar fields
           If !DataType = dtVARCHAR Then
@@ -449,8 +445,8 @@ Private Sub RefreshBHolControls()
         End If
 
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
 
           ' Load date fields
           If !DataType = dtTIMESTAMP Then

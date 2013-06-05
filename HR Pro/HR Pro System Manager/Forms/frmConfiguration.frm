@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmConfiguration 
@@ -20,7 +20,7 @@ Begin VB.Form frmConfiguration
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1009
+   HelpContextID   =   5009
    Icon            =   "frmConfiguration.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -96,27 +96,27 @@ Begin VB.Form frmConfiguration
       TabCaption(2)   =   "&Display"
       TabPicture(2)   =   "frmConfiguration.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "frmBackgrounds"
+      Tab(2).Control(0)=   "frmExpressions"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraGeneral"
       Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).Control(2)=   "frmExpressions"
+      Tab(2).Control(2)=   "frmBackgrounds"
       Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "Dev"
       TabPicture(3)   =   "frmConfiguration.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraQuickAddress"
-      Tab(3).Control(1)=   "frmDeveloperAFD"
+      Tab(3).Control(0)=   "frmDeveloperAFD"
+      Tab(3).Control(1)=   "fraQuickAddress"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "&Advanced"
       TabPicture(4)   =   "frmConfiguration.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraTime"
+      Tab(4).Control(0)=   "fraAdvancedSettings"
       Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraOutlookCalendar"
       Tab(4).Control(1).Enabled=   0   'False
-      Tab(4).Control(2)=   "fraAdvancedSettings"
+      Tab(4).Control(2)=   "fraTime"
       Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       Begin VB.Frame fraAdvancedSettings 
@@ -789,15 +789,6 @@ Begin VB.Form frmConfiguration
          Width           =   6465
          Begin VB.CommandButton cmdColourPicker 
             Caption         =   "..."
-            BeginProperty Font 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
             Height          =   315
             Left            =   4380
             TabIndex        =   36

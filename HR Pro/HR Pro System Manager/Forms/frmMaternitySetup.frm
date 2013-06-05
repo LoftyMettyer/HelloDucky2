@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.0#0"; "COA_Line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Begin VB.Form frmMaternitySetup 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Maternity Setup"
@@ -16,7 +16,7 @@ Begin VB.Form frmMaternitySetup
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1047
+   HelpContextID   =   5047
    Icon            =   "frmMaternitySetup.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -76,8 +76,6 @@ Begin VB.Form frmMaternitySetup
       Begin COALine.COA_Line ASRDummyLine1 
          Height          =   30
          Left            =   180
-         TabIndex        =   3
-         TabStop         =   0   'False
          Top             =   755
          Width           =   4845
          _ExtentX        =   8546
@@ -88,7 +86,7 @@ Begin VB.Form frmMaternitySetup
          Caption         =   "Leave Type Column :"
          Height          =   195
          Left            =   180
-         TabIndex        =   13
+         TabIndex        =   3
          Top             =   1400
          Width           =   2010
       End
@@ -308,8 +306,8 @@ Private Sub cboMaternityTable_Click()
           End If
   
           If (Not !Deleted) And _
-            (!ColumnType <> giCOLUMNTYPE_LINK) And _
-            (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
+            (!columnType <> giCOLUMNTYPE_LINK) And _
+            (!columnType <> giCOLUMNTYPE_SYSTEM) Then
 
             If !DataType = dtTIMESTAMP Then
               cboEWCDate.AddItem !ColumnName
@@ -632,5 +630,5 @@ End Sub
 
 
 Private Sub RefreshControls()
-If Not mbLoading Then cmdOK.Enabled = mfChanged
+If Not mbLoading Then cmdOk.Enabled = mfChanged
 End Sub

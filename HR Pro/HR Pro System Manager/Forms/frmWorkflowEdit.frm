@@ -15,7 +15,7 @@ Begin VB.Form frmWorkflowEdit
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1052
+   HelpContextID   =   5052
    Icon            =   "frmWorkflowEdit.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

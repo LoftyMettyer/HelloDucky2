@@ -15,7 +15,7 @@ Begin VB.Form frmDefaultPermissions2
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1044
+   HelpContextID   =   5044
    Icon            =   "frmDefaultPermissions2.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

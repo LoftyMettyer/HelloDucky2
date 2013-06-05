@@ -31,7 +31,7 @@ Begin VB.Form frmScrDesigner2
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1027
+   HelpContextID   =   5027
    Icon            =   "frmScrDesigner2.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
@@ -305,6 +305,7 @@ Begin VB.Form frmScrDesigner2
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
             Caption         =   ""
+            Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
          EndProperty

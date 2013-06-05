@@ -16,7 +16,7 @@ Begin VB.Form frmCMGEdit
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1083
+   HelpContextID   =   5083
    Icon            =   "frmCMGEdit.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
 Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "COASD_SelectionBox.ocx"
 Object = "{F3C5146D-8FDA-4D29-8E41-0C27C803C808}#1.0#0"; "COAWF_BeginEnd.ocx"
 Object = "{08EDC6C1-0A62-485F-8917-8D9FB93DB156}#1.0#0"; "COAWF_Decision.ocx"
@@ -25,7 +25,7 @@ Begin VB.Form frmWorkflowDesigner
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1053
+   HelpContextID   =   5053
    Icon            =   "frmWorkflowDesigner.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form2"
@@ -263,7 +263,7 @@ Begin VB.Form frmWorkflowDesigner
       MousePointer    =   1
       Appearance      =   0
       Arrows          =   65536
-      Orientation     =   1179649
+      Orientation     =   1245185
    End
    Begin MSComCtl2.FlatScrollBar scrollVertical 
       Height          =   3375
@@ -276,7 +276,7 @@ Begin VB.Form frmWorkflowDesigner
       _Version        =   393216
       MousePointer    =   1
       Appearance      =   0
-      Orientation     =   1179648
+      Orientation     =   1245184
    End
    Begin ActiveBarLibraryCtl.ActiveBar abMenu 
       Left            =   120
@@ -412,8 +412,8 @@ Private Declare Function GetWindowRect Lib "user32" (ByVal hWnd As Long, lpRect 
 Private Declare Function GetCursorPos Lib "user32" (lpPoint As POINTAPI) As Long
 
 Private Type POINTAPI
-    x As Long
-    y As Long
+    X As Long
+    Y As Long
 End Type
 
 Private startPointSingle As POINTAPI
@@ -440,8 +440,8 @@ Private Type Rect
 End Type
 
 Private Type Page
-  x As Long
-  y As Long
+  X As Long
+  Y As Long
 End Type
 
 Private msngXOffset As Single
@@ -5688,8 +5688,8 @@ Private Sub ValidateElement_StoredData(pwfElement As VB.Control, _
       Else
         If !Deleted _
           Or (!TableID <> pwfElement.DataTableID) _
-          Or (!ColumnType = giCOLUMNTYPE_LINK) _
-          Or (!ColumnType = giCOLUMNTYPE_SYSTEM) Then
+          Or (!columnType = giCOLUMNTYPE_LINK) _
+          Or (!columnType = giCOLUMNTYPE_SYSTEM) Then
           fValid11 = False
         Else
           iColumnDataType = !DataType
@@ -5824,8 +5824,8 @@ Private Sub ValidateElement_StoredData(pwfElement As VB.Control, _
                 fValid13 = False
               Else
                 If !Deleted _
-                  Or (!ColumnType = giCOLUMNTYPE_LINK) _
-                  Or (!ColumnType = giCOLUMNTYPE_SYSTEM) Then
+                  Or (!columnType = giCOLUMNTYPE_LINK) _
+                  Or (!columnType = giCOLUMNTYPE_SYSTEM) Then
                   
                   fValid13 = False
                 Else
@@ -6327,8 +6327,8 @@ Private Sub ValidateElement_StoredData(pwfElement As VB.Control, _
                                 If Not (!Deleted _
                                   Or (!DataType = dtLONGVARBINARY) _
                                   Or (!DataType = dtVARBINARY) _
-                                  Or (!ColumnType = giCOLUMNTYPE_LINK) _
-                                  Or (!ColumnType = giCOLUMNTYPE_SYSTEM)) Then
+                                  Or (!columnType = giCOLUMNTYPE_LINK) _
+                                  Or (!columnType = giCOLUMNTYPE_SYSTEM)) Then
                                   
                                   iDBColumnDataType = !DataType
                                   iDBColumnSize = !Size
@@ -7031,15 +7031,15 @@ Public Sub PrintWorkflow()
           sngFirstPageXOffset = msngXOffset
           
           ' Print each element.
-          pgNextPage.x = 0
-          pgNextPage.y = 0
+          pgNextPage.X = 0
+          pgNextPage.Y = 0
   
-          Do While (pgNextPage.x >= 0) And (pgNextPage.y >= 0)
+          Do While (pgNextPage.X >= 0) And (pgNextPage.Y >= 0)
             sngPageRightMinX = -1
             sngPageBelowMinY = -1
     
-            pgCurrentPage.x = pgNextPage.x
-            pgCurrentPage.y = pgNextPage.y
+            pgCurrentPage.X = pgNextPage.X
+            pgCurrentPage.Y = pgNextPage.Y
           
             fNeedPageRight = False
             fNeedPageBelow = False
@@ -7082,17 +7082,17 @@ Public Sub PrintWorkflow()
               End If
             Next iLoop
   
-            pgNextPage.x = -1
-            pgNextPage.y = -1
+            pgNextPage.X = -1
+            pgNextPage.Y = -1
             
             If fNeedPageRight Then
-              pgNextPage.x = pgCurrentPage.x + 1
-              pgNextPage.y = pgCurrentPage.y
+              pgNextPage.X = pgCurrentPage.X + 1
+              pgNextPage.Y = pgCurrentPage.Y
               
               msngXOffset = mlngMarginLeft_Twips + MARGINCORRECTION + iGAPOFFPAGE - sngPageRightMinX
             ElseIf fNeedPageBelow Then
-              pgNextPage.x = 0
-              pgNextPage.y = pgCurrentPage.y + 1
+              pgNextPage.X = 0
+              pgNextPage.Y = pgCurrentPage.Y + 1
   
               msngXOffset = sngFirstPageXOffset
               msngYOffset = msngTopGap - sngPageBelowMinY
@@ -10900,16 +10900,16 @@ Private Sub ASRWFBeginEnd1_KeyDown(Index As Integer, KeyCode As Integer, Shift A
   Form_KeyDown KeyCode, Shift
 End Sub
 
-Private Sub ASRWFBeginEnd1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  WorkflowElement_MouseDown ASRWFBeginEnd1(Index).ControlIndex, Button, Shift, x, y
+Private Sub ASRWFBeginEnd1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WorkflowElement_MouseDown ASRWFBeginEnd1(Index).ControlIndex, Button, Shift, X, Y
 End Sub
 
-Private Sub ASRWFBeginEnd1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  WorkflowElement_MouseMove ASRWFBeginEnd1(Index).ControlIndex, Button, Shift, x, y
+Private Sub ASRWFBeginEnd1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WorkflowElement_MouseMove ASRWFBeginEnd1(Index).ControlIndex, Button, Shift, X, Y
 End Sub
 
-Private Sub ASRWFBeginEnd1_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  WorkflowElement_MouseUp ASRWFBeginEnd1(Index).ControlIndex, Button, Shift, x, y
+Private Sub ASRWFBeginEnd1_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WorkflowElement_MouseUp ASRWFBeginEnd1(Index).ControlIndex, Button, Shift, X, Y
 End Sub
 
 Private Sub ASRWFEmail1_DblClick(Index As Integer)
@@ -10920,16 +10920,16 @@ Private Sub ASRWFEmail1_KeyDown(Index As Integer, KeyCode As Integer, Shift As I
   Form_KeyDown KeyCode, Shift
 End Sub
 
-Private Sub ASRWFEmail1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  WorkflowElement_MouseDown ASRWFEmail1(Index).ControlIndex, Button, Shift, x, y
+Private Sub ASRWFEmail1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WorkflowElement_MouseDown ASRWFEmail1(Index).ControlIndex, Button, Shift, X, Y
 End Sub
 
-Private Sub ASRWFEmail1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  WorkflowElement_MouseMove ASRWFEmail1(Index).ControlIndex, Button, Shift, x, y
+Private Sub ASRWFEmail1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WorkflowElement_MouseMove ASRWFEmail1(Index).ControlIndex, Button, Shift, X, Y
 End Sub
 
-Private Sub ASRWFEmail1_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  WorkflowElement_MouseUp ASRWFEmail1(Index).ControlIndex, Button, Shift, x, y
+Private Sub ASRWFEmail1_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WorkflowElement_MouseUp ASRWFEmail1(Index).ControlIndex, Button, Shift, X, Y
 End Sub
 
 Private Sub ASRWFJunctionElement1_DblClick(Index As Integer)
@@ -10940,16 +10940,16 @@ Private Sub ASRWFJunctionElement1_KeyDown(Index As Integer, KeyCode As Integer, 
   Form_KeyDown KeyCode, Shift
 End Sub
 
-Private Sub ASRWFJunctionElement1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  WorkflowElement_MouseDown ASRWFJunctionElement1(Index).ControlIndex, Button, Shift, x, y
+Private Sub ASRWFJunctionElement1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WorkflowElement_MouseDown ASRWFJunctionElement1(Index).ControlIndex, Button, Shift, X, Y
 End Sub
 
-Private Sub ASRWFJunctionElement1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  WorkflowElement_MouseMove ASRWFJunctionElement1(Index).ControlIndex, Button, Shift, x, y
+Private Sub ASRWFJunctionElement1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WorkflowElement_MouseMove ASRWFJunctionElement1(Index).ControlIndex, Button, Shift, X, Y
 End Sub
 
-Private Sub ASRWFJunctionElement1_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  WorkflowElement_MouseUp ASRWFJunctionElement1(Index).ControlIndex, Button, Shift, x, y
+Private Sub ASRWFJunctionElement1_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WorkflowElement_MouseUp ASRWFJunctionElement1(Index).ControlIndex, Button, Shift, X, Y
 End Sub
 
 Private Sub ASRWFStoredData1_DblClick(Index As Integer)
@@ -10960,16 +10960,16 @@ Private Sub ASRWFStoredData1_KeyDown(Index As Integer, KeyCode As Integer, Shift
   Form_KeyDown KeyCode, Shift
 End Sub
 
-Private Sub ASRWFStoredData1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  WorkflowElement_MouseDown ASRWFStoredData1(Index).ControlIndex, Button, Shift, x, y
+Private Sub ASRWFStoredData1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WorkflowElement_MouseDown ASRWFStoredData1(Index).ControlIndex, Button, Shift, X, Y
 End Sub
 
-Private Sub ASRWFStoredData1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  WorkflowElement_MouseMove ASRWFStoredData1(Index).ControlIndex, Button, Shift, x, y
+Private Sub ASRWFStoredData1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WorkflowElement_MouseMove ASRWFStoredData1(Index).ControlIndex, Button, Shift, X, Y
 End Sub
 
-Private Sub ASRWFStoredData1_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  WorkflowElement_MouseUp ASRWFStoredData1(Index).ControlIndex, Button, Shift, x, y
+Private Sub ASRWFStoredData1_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WorkflowElement_MouseUp ASRWFStoredData1(Index).ControlIndex, Button, Shift, X, Y
 End Sub
 
 Private Sub ASRWFWebform1_DblClick(Index As Integer)
@@ -10980,16 +10980,16 @@ Private Sub ASRWFWebform1_KeyDown(Index As Integer, KeyCode As Integer, Shift As
   Form_KeyDown KeyCode, Shift
 End Sub
 
-Private Sub ASRWFWebform1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  WorkflowElement_MouseDown ASRWFWebform1(Index).ControlIndex, Button, Shift, x, y
+Private Sub ASRWFWebform1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WorkflowElement_MouseDown ASRWFWebform1(Index).ControlIndex, Button, Shift, X, Y
 End Sub
 
-Private Sub ASRWFWebform1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  WorkflowElement_MouseMove ASRWFWebform1(Index).ControlIndex, Button, Shift, x, y
+Private Sub ASRWFWebform1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WorkflowElement_MouseMove ASRWFWebform1(Index).ControlIndex, Button, Shift, X, Y
 End Sub
 
-Private Sub ASRWFWebform1_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  WorkflowElement_MouseUp ASRWFWebform1(Index).ControlIndex, Button, Shift, x, y
+Private Sub ASRWFWebform1_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WorkflowElement_MouseUp ASRWFWebform1(Index).ControlIndex, Button, Shift, X, Y
 End Sub
 
 Private Sub ASRWFDecision1_DblClick(Index As Integer)
@@ -11000,16 +11000,16 @@ Private Sub ASRWFDecision1_KeyDown(Index As Integer, KeyCode As Integer, Shift A
   Form_KeyDown KeyCode, Shift
 End Sub
 
-Private Sub ASRWFDecision1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  WorkflowElement_MouseDown ASRWFDecision1(Index).ControlIndex, Button, Shift, x, y
+Private Sub ASRWFDecision1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WorkflowElement_MouseDown ASRWFDecision1(Index).ControlIndex, Button, Shift, X, Y
 End Sub
 
-Private Sub ASRWFDecision1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  WorkflowElement_MouseMove ASRWFDecision1(Index).ControlIndex, Button, Shift, x, y
+Private Sub ASRWFDecision1_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WorkflowElement_MouseMove ASRWFDecision1(Index).ControlIndex, Button, Shift, X, Y
 End Sub
 
-Private Sub ASRWFDecision1_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
-  WorkflowElement_MouseUp ASRWFDecision1(Index).ControlIndex, Button, Shift, x, y
+Private Sub ASRWFDecision1_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WorkflowElement_MouseUp ASRWFDecision1(Index).ControlIndex, Button, Shift, X, Y
 End Sub
 
 'Private Sub ASRWFElement1_DblClick(Index As Integer)
@@ -11098,7 +11098,7 @@ Private Sub ASRWFLink1_KeyDown(Index As Integer, KeyCode As Integer, Shift As In
 
 End Sub
 
-Private Sub ASRWFLink1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ASRWFLink1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
 
   If Button = vbLeftButton Then
     If (Shift <> vbShiftMask) And (Shift <> vbCtrlMask) And (Not ASRWFLink1(Index).HighLighted) Then
@@ -11446,7 +11446,7 @@ Private Sub Form_Load()
   
 End Sub
 
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Reset the mousePointer if its been customised for ElementAdd mode.
   Me.MousePointer = vbNormal
 End Sub
@@ -12542,7 +12542,7 @@ ErrorTrap:
 
 End Sub
 
-Private Sub picDefinition_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub picDefinition_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   On Error GoTo ErrorTrap
 
   ' Only handle left button presses here.
@@ -12558,8 +12558,8 @@ Private Sub picDefinition_MouseDown(Button As Integer, Shift As Integer, x As Si
   If Not InElementAddMode Then
     ' Start the multi-selection frame.
     mfMultiSelecting = True
-    mlngMultiSelectionXStart = x
-    mlngMultiSelectionYStart = y
+    mlngMultiSelectionXStart = X
+    mlngMultiSelectionYStart = Y
       
     ' Position and display the multi-selection box.
     With asrboxMultiSelection
@@ -12585,7 +12585,7 @@ ErrorTrap:
 End Sub
 
 
-Private Sub picDefinition_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub picDefinition_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Position and size the multi-selection lines as required.
   On Error GoTo ErrorTrap
   
@@ -12604,20 +12604,20 @@ Private Sub picDefinition_MouseMove(Button As Integer, Shift As Integer, x As Si
 
   If mfMultiSelecting Then
     ' Calculate the cordinates of the multi-selection area.
-    If x < mlngMultiSelectionXStart Then
-      lngLeft = x
+    If X < mlngMultiSelectionXStart Then
+      lngLeft = X
       lngRight = mlngMultiSelectionXStart
     Else
       lngLeft = mlngMultiSelectionXStart
-      lngRight = x
+      lngRight = X
     End If
       
-    If y < mlngMultiSelectionYStart Then
-      lngTop = y
+    If Y < mlngMultiSelectionYStart Then
+      lngTop = Y
       lngBottom = mlngMultiSelectionYStart
     Else
       lngTop = mlngMultiSelectionYStart
-      lngBottom = y
+      lngBottom = Y
     End If
 
     ' Limit the multi-selection area to the form or tab page area.
@@ -12651,7 +12651,7 @@ ErrorTrap:
 End Sub
 
 
-Private Sub picDefinition_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub picDefinition_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Select control that lie within the multi-selection area.
   On Error GoTo ErrorTrap
   
@@ -12723,8 +12723,8 @@ Private Sub picDefinition_MouseUp(Button As Integer, Shift As Integer, x As Sing
           Set mactlUndoControls(UBound(mactlUndoControls)) = wfTemp
           
           With wfTemp
-            .Left = x - .InboundFlow_XOffset
-            .Top = y - .InboundFlow_YOffset
+            .Left = X - .InboundFlow_XOffset
+            .Top = Y - .InboundFlow_YOffset
             
             wfTemp2.Left = .Left + .Width + 200
             wfTemp2.Top = .Top
@@ -12744,8 +12744,8 @@ Private Sub picDefinition_MouseUp(Button As Integer, Shift As Integer, x As Sing
         End If
           
         If Not wfTemp Is Nothing Then
-          wfTemp.Left = x - wfTemp.InboundFlow_XOffset
-          wfTemp.Top = y - wfTemp.InboundFlow_YOffset
+          wfTemp.Left = X - wfTemp.InboundFlow_XOffset
+          wfTemp.Top = Y - wfTemp.InboundFlow_YOffset
           
           ' AE20080609 Fault #13202
           wfTemp.Visible = True
@@ -12806,8 +12806,8 @@ Private Sub picDefinition_MouseUp(Button As Integer, Shift As Integer, x As Sing
     ' Handle right button presses.
     Case vbRightButton
       UI.GetMousePos lngXMouse, lngYMouse
-      mlngXDrop = x
-      mlngYDrop = y
+      mlngXDrop = X
+      mlngYDrop = Y
       
       abMenu.Bands("ElementBand").TrackPopup -1, -1
   End Select
@@ -15312,7 +15312,7 @@ Public Sub FindUsage()
 
 End Sub
 
-Private Sub WorkflowElement_MouseMove(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub WorkflowElement_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Move the control(s)
   On Error GoTo ErrorTrap
   
@@ -15337,14 +15337,14 @@ Private Sub WorkflowElement_MouseMove(Index As Integer, Button As Integer, Shift
       End If
       
       ' move the control if they are different
-      If (currPoint.x > startPointSingle.x) Or (currPoint.x < startPointSingle.x) _
-        Or (currPoint.y > startPointSingle.y) Or (currPoint.y < startPointSingle.y) Then
+      If (currPoint.X > startPointSingle.X) Or (currPoint.X < startPointSingle.X) _
+        Or (currPoint.Y > startPointSingle.Y) Or (currPoint.Y < startPointSingle.Y) Then
         
         ' move the control
         With mcolwfElements(CStr(Index))
-          .Move .Left + picContainer.ScaleX(currPoint.x - startPointSingle.x, _
+          .Move .Left + picContainer.ScaleX(currPoint.X - startPointSingle.X, _
             vbPixels, contScaleMode), _
-            .Top + picContainer.ScaleY(currPoint.y - startPointSingle.y, _
+            .Top + picContainer.ScaleY(currPoint.Y - startPointSingle.Y, _
             vbPixels, contScaleMode)
           
           For Each wfTempLink In ASRWFLink1
@@ -15378,10 +15378,10 @@ ErrorTrap:
 
 End Sub
 
-Private Sub WorkflowElement_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub WorkflowElement_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
   
-  mlngXOffset = x
-  mlngYOffset = y
+  mlngXOffset = X
+  mlngYOffset = Y
   
   GetCursorPos startPointSingle
   GetCursorPos startPointMulti
@@ -15435,7 +15435,7 @@ Private Sub WorkflowElement_MouseDown(Index As Integer, Button As Integer, Shift
 
 End Sub
 
-Private Sub WorkflowElement_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub WorkflowElement_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   Call ClipCursorByNum(0)
   
@@ -15461,12 +15461,12 @@ Private Sub WorkflowElement_MouseUp(Index As Integer, Button As Integer, Shift A
     For Each ctl In mcolwfSelectedElements
       If ctl.ControlIndex <> Index Then
         ' move the control if they are different
-        If currPoint.x <> startPointMulti.x Or currPoint.y <> startPointMulti.y Then
+        If currPoint.X <> startPointMulti.X Or currPoint.Y <> startPointMulti.Y Then
           ' move the control
           With ctl
-            .Move .Left + picContainer.ScaleX(currPoint.x - startPointMulti.x, _
+            .Move .Left + picContainer.ScaleX(currPoint.X - startPointMulti.X, _
               vbPixels, contScaleMode), _
-              .Top + picContainer.ScaleY(currPoint.y - startPointMulti.y, _
+              .Top + picContainer.ScaleY(currPoint.Y - startPointMulti.Y, _
               vbPixels, contScaleMode)
                             
             For Each wfTempLink In ASRWFLink1
@@ -15499,8 +15499,8 @@ Private Sub WorkflowElement_MouseUp(Index As Integer, Button As Integer, Shift A
     
   ElseIf Button = vbRightButton Then ' Handle right button presses.
       UI.GetMousePos lngXMouse, lngYMouse
-      mlngXDrop = x
-      mlngYDrop = y
+      mlngXDrop = X
+      mlngYDrop = Y
       
       abMenu.Bands("ElementBand").TrackPopup -1, -1
   End If

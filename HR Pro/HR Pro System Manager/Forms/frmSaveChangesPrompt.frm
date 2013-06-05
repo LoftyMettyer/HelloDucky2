@@ -15,7 +15,7 @@ Begin VB.Form frmSaveChangesPrompt
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1026
+   HelpContextID   =   5026
    Icon            =   "frmSaveChangesPrompt.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"

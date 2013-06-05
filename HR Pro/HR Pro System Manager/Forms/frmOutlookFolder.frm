@@ -17,7 +17,7 @@ Begin VB.Form frmOutlookFolder
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1062
+   HelpContextID   =   5062
    Icon            =   "frmOutlookFolder.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
@@ -220,7 +220,7 @@ Public Sub Initialise(ByVal objNewValue As clsOutlookFolder, blnCopy As Boolean)
       Changed = False
     End If
 
-    If .FixedPath <> vbNullString And Treeview1.SelectedItem Is Nothing Then
+    If .FixedPath <> vbNullString And TreeView1.SelectedItem Is Nothing Then
       MsgBox "This definition is set to output to outlook folder '" & .FixedPath & _
        "' which you do not currently have access to.", vbExclamation, Me.Caption
     End If
@@ -243,9 +243,9 @@ Public Sub PopulateTreeView()
   Screen.MousePointer = vbHourglass
 
   lblDisabledTreeView.BackColor = vbWindowBackground
-  Treeview1.Visible = False
-  Treeview1.Nodes.Clear
-  Treeview1.Sorted = True
+  TreeView1.Visible = False
+  TreeView1.Nodes.Clear
+  TreeView1.Sorted = True
 
 
   Set olApp = New Outlook.Application
@@ -267,7 +267,7 @@ Public Sub PopulateTreeView()
   'Next iCount
 
 
-  Treeview1.Visible = (optFixed.value = True)
+  TreeView1.Visible = (optFixed.value = True)
   lblDisabledTreeView.BackColor = vbButtonFace
   Screen.MousePointer = vbDefault
 
@@ -291,9 +291,9 @@ Private Sub ProcessFolder(objParentFolder As MAPIFolder, Optional objParentNode 
 
     strIcon = IIf(objParentFolder.DefaultItemType = 1, "CALENDAR", "OPENFLDR")
     If objParentNode Is Nothing Then
-      Set objNode = Treeview1.Nodes.Add(, , , " " & objParentFolder.Name, strIcon, strIcon)
+      Set objNode = TreeView1.Nodes.Add(, , , " " & objParentFolder.Name, strIcon, strIcon)
     Else
-      Set objNode = Treeview1.Nodes.Add(objParentNode, tvwChild, , " " & objParentFolder.Name, strIcon, strIcon)
+      Set objNode = TreeView1.Nodes.Add(objParentNode, tvwChild, , " " & objParentFolder.Name, strIcon, strIcon)
     End If
 
     For Each objFolder In objParentFolder.Folders
@@ -413,20 +413,20 @@ End Sub
 
 Private Sub Form_Resize()
 
-  Treeview1.Refresh
+  TreeView1.Refresh
 
 End Sub
 
 Private Sub optCalculated_Click()
   'chkShowAll.Enabled = False
-  Treeview1.Visible = False
+  TreeView1.Visible = False
   cmdCalc.Enabled = True
   Changed = True
 End Sub
 
 Private Sub optFixed_Click()
   'chkShowAll.Enabled = True
-  Treeview1.Visible = True
+  TreeView1.Visible = True
   txtCalc.Tag = 0
   txtCalc.Text = vbNullString
   cmdCalc.Enabled = False
@@ -481,8 +481,8 @@ Private Sub Form_Load()
     txtName.Enabled = False
     optFixed.Enabled = False
     optCalculated.Enabled = False
-    Treeview1.BackColor = vbButtonFace
-    Treeview1.ForeColor = vbApplicationWorkspace
+    TreeView1.BackColor = vbButtonFace
+    TreeView1.ForeColor = vbApplicationWorkspace
   End If
 
 End Sub
@@ -524,7 +524,7 @@ Private Function ValidDefinition() As Boolean
 
 
   If optFixed.value = True Then
-    If Treeview1.SelectedItem Is Nothing Then
+    If TreeView1.SelectedItem Is Nothing Then
       MsgBox "You must select an outlook folder.", vbExclamation, Me.Caption
       Exit Function
     End If
@@ -557,7 +557,7 @@ Private Function SaveDefinition() As Boolean
     If optFixed.value = True Then
       .TableID = 0
       .FolderType = 0
-      .FixedPath = Treeview1.SelectedItem.Tag
+      .FixedPath = TreeView1.SelectedItem.Tag
       .CalcExprID = 0
     Else
       .TableID = mlngTableID
@@ -642,10 +642,10 @@ End Property
 'End Function
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Public Property Let Changed(ByVal blnNewValue As Boolean)
-  cmdOK.Enabled = blnNewValue And Not mblnReadOnly
+  cmdOk.Enabled = blnNewValue And Not mblnReadOnly
 End Property
 

@@ -15,7 +15,7 @@ Begin VB.Form frmSSIntranetLinkSeparator
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1087
+   HelpContextID   =   5087
    Icon            =   "frmSSIIntranetLinkSeparator.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
