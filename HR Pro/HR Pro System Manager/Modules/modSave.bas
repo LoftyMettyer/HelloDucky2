@@ -944,10 +944,13 @@ Private Function SaveModuleDefinitions() As Boolean
     'NHRD31012007 Open in New Window Development ammendment.
     'Added the newWindow variable
     'NPG20080125 Fault 12873 Added EMailAddress & EMail Subject
+    ' NPG20100126 SSI Dashboard elements added
     sSQL = "INSERT INTO ASRSysSSIntranetLinks" & _
       " (linkType, linkOrder, prompt, text, screenID, pageTitle, URL, startMode, utilityType, utilityID, " & _
       "viewID, newWindow, tableID, EMailAddress, EMailSubject, AppFilePath, AppParameters, " & _
-      "DocumentFilePath, DisplayDocumentHyperlink, IsSeparator)" & _
+      "DocumentFilePath, DisplayDocumentHyperlink, Element_Type, SeparatorOrientation, PictureID, Chart_ShowLegend, " & _
+      "Chart_Type, Chart_ShowGrid, Chart_StackSeries, Chart_viewID, Chart_TableID, Chart_ColumnID, Chart_FilterID, " & _
+      "Chart_AggregateType)" & _
       " VALUES(" & _
       CStr(rsLinks!LinkType) & "," & _
       CStr(rsLinks!linkOrder) & "," & _
@@ -955,7 +958,8 @@ Private Function SaveModuleDefinitions() As Boolean
       "'" & Replace(rsLinks!Text, "'", "''") & "'," & _
       CStr(rsLinks!ScreenID) & "," & _
       "'" & Replace(rsLinks!PageTitle, "'", "''") & "'," & _
-      "'" & Replace(IIf(IsNull(rsLinks!URL), "", rsLinks!URL), "'", "''") & "'," & _
+      "'" & Replace(IIf(IsNull(rsLinks!URL), "", rsLinks!URL), "'", "''") & "',"
+    sSQL = sSQL & _
       CStr(rsLinks!StartMode) & "," & _
       CStr(IIf(IsNull(rsLinks!UtilityType), 0, rsLinks!UtilityType)) & "," & _
       CStr(IIf(IsNull(rsLinks!UtilityID), 0, rsLinks!UtilityID)) & "," & _
@@ -963,13 +967,24 @@ Private Function SaveModuleDefinitions() As Boolean
       IIf(IsNull(rsLinks!NewWindow), "0", IIf(rsLinks!NewWindow, "1", "0")) & "," & _
       CStr(IIf(IsNull(rsLinks!TableID), 0, rsLinks!TableID)) & "," & _
       "'" & Replace(IIf(IsNull(rsLinks!EMailAddress), "", rsLinks!EMailAddress), "'", "''") & "'," & _
-      "'" & Replace(IIf(IsNull(rsLinks!EMailSubject), "", rsLinks!EMailSubject), "'", "''") & "',"
-    sSQL = sSQL & _
+      "'" & Replace(IIf(IsNull(rsLinks!EMailSubject), "", rsLinks!EMailSubject), "'", "''") & "'," & _
       "'" & Replace(IIf(IsNull(rsLinks!AppFilePath), "", rsLinks!AppFilePath), "'", "''") & "'," & _
       "'" & Replace(IIf(IsNull(rsLinks!AppParameters), "", rsLinks!AppParameters), "'", "''") & "'," & _
       "'" & Replace(IIf(IsNull(rsLinks!DocumentFilePath), "", rsLinks!DocumentFilePath), "'", "''") & "'," & _
       IIf(IsNull(rsLinks!DisplayDocumentHyperlink), "0", IIf(rsLinks!DisplayDocumentHyperlink, "1", "0")) & "," & _
-      IIf(IsNull(rsLinks!IsSeparator), "0", IIf(rsLinks!IsSeparator, "1", "0")) & "" & _
+      IIf(IsNull(rsLinks!Element_Type), "0", rsLinks!Element_Type) & ","
+    sSQL = sSQL & _
+      IIf(IsNull(rsLinks!SeparatorOrientation), 0, rsLinks!SeparatorOrientation) & "," & _
+      IIf(IsNull(rsLinks!PictureID), 0, rsLinks!PictureID) & "," & _
+      IIf(IsNull(rsLinks!Chart_ShowLegend), "0", IIf(rsLinks!Chart_ShowLegend, "1", "0")) & "," & _
+      CStr(IIf(IsNull(rsLinks!Chart_Type), 0, rsLinks!Chart_Type)) & "," & _
+      IIf(IsNull(rsLinks!Chart_ShowGrid), "0", IIf(rsLinks!Chart_ShowGrid, "1", "0")) & "," & _
+      IIf(IsNull(rsLinks!Chart_StackSeries), "0", IIf(rsLinks!Chart_StackSeries, "1", "0")) & "," & _
+      CStr(IIf(IsNull(rsLinks!Chart_ViewID), 0, rsLinks!Chart_ViewID)) & "," & _
+      CStr(IIf(IsNull(rsLinks!Chart_TableID), 0, rsLinks!Chart_TableID)) & "," & _
+      CStr(IIf(IsNull(rsLinks!Chart_ColumnID), 0, rsLinks!Chart_ColumnID)) & "," & _
+      CStr(IIf(IsNull(rsLinks!Chart_FilterID), 0, rsLinks!Chart_FilterID)) & "," & _
+      CStr(IIf(IsNull(rsLinks!Chart_AggregateType), 0, rsLinks!Chart_AggregateType)) & _
       ")"
 
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords

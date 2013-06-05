@@ -1,10 +1,11 @@
 VERSION 5.00
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
+Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "mschrt20.ocx"
 Begin VB.Form frmSSIntranetLink 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Self-service Intranet Link"
-   ClientHeight    =   11040
+   ClientHeight    =   12660
    ClientLeft      =   45
    ClientTop       =   435
    ClientWidth     =   9360
@@ -20,19 +21,204 @@ Begin VB.Form frmSSIntranetLink
    HelpContextID   =   1041
    Icon            =   "frmSSIntranetLink.frx":0000
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   11040
+   ScaleHeight     =   12660
    ScaleWidth      =   9360
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin VB.Frame fraChartLink 
+      Caption         =   "Chart :"
+      Height          =   3315
+      Left            =   2865
+      TabIndex        =   61
+      Top             =   8310
+      Width           =   6300
+      Begin VB.CommandButton cmdChartData 
+         Caption         =   "Data..."
+         Height          =   375
+         Left            =   210
+         TabIndex        =   68
+         Top             =   2100
+         Width           =   1200
+      End
+      Begin MSChart20Lib.MSChart MSChart1 
+         Height          =   2505
+         Left            =   2610
+         OleObjectBlob   =   "frmSSIntranetLink.frx":000C
+         TabIndex        =   67
+         Top             =   570
+         Width           =   3330
+      End
+      Begin VB.CheckBox chkStackSeries 
+         Caption         =   "S&tack Series"
+         Height          =   210
+         Left            =   195
+         TabIndex        =   66
+         Top             =   1695
+         Width           =   1665
+      End
+      Begin VB.CheckBox chkDottedGridlines 
+         Caption         =   "Dotted &Gridlines"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   65
+         Top             =   1350
+         Width           =   1980
+      End
+      Begin VB.CheckBox chkShowLegend 
+         Caption         =   "Show &Legend"
+         Height          =   240
+         Left            =   195
+         TabIndex        =   64
+         Top             =   990
+         Width           =   1710
+      End
+      Begin VB.ComboBox cboChartType 
+         Height          =   315
+         ItemData        =   "frmSSIntranetLink.frx":24FC
+         Left            =   195
+         List            =   "frmSSIntranetLink.frx":24FE
+         Style           =   2  'Dropdown List
+         TabIndex        =   62
+         Top             =   555
+         Width           =   2205
+      End
+      Begin VB.Label lblChartyType 
+         AutoSize        =   -1  'True
+         Caption         =   "Chart Type :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   63
+         Top             =   300
+         Width           =   1095
+      End
+   End
+   Begin VB.Frame fraLinkSeparator 
+      Caption         =   "Separator :"
+      Height          =   1170
+      Left            =   2880
+      TabIndex        =   55
+      Top             =   7440
+      Width           =   6300
+      Begin VB.CommandButton cmdIcon 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   4830
+         TabIndex        =   57
+         Top             =   315
+         Width           =   315
+      End
+      Begin VB.TextBox txtIcon 
+         Height          =   330
+         Left            =   1050
+         TabIndex        =   56
+         Top             =   300
+         Width           =   3765
+      End
+      Begin VB.CommandButton cmdIconClear 
+         Caption         =   "O"
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   20.25
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Left            =   5160
+         MaskColor       =   &H000000FF&
+         TabIndex        =   58
+         ToolTipText     =   "Clear Path"
+         Top             =   315
+         UseMaskColor    =   -1  'True
+         Width           =   330
+      End
+      Begin VB.CheckBox chkNewColumn 
+         Caption         =   "&Begin new column"
+         Height          =   255
+         Left            =   1050
+         TabIndex        =   59
+         Top             =   690
+         Width           =   2040
+      End
+      Begin VB.Label lblIcon 
+         Caption         =   "Icon :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   60
+         Top             =   345
+         Width           =   615
+      End
+      Begin VB.Image imgIcon 
+         Height          =   495
+         Left            =   5565
+         Stretch         =   -1  'True
+         Top             =   330
+         Width           =   510
+      End
+   End
+   Begin VB.Frame fraHRProUtilityLink 
+      Caption         =   "HR Pro Report / Utility :"
+      Height          =   1485
+      Left            =   2880
+      TabIndex        =   25
+      Top             =   6180
+      Width           =   6300
+      Begin VB.ComboBox cboHRProUtility 
+         Height          =   315
+         Left            =   1400
+         Style           =   2  'Dropdown List
+         TabIndex        =   29
+         Top             =   700
+         Width           =   4700
+      End
+      Begin VB.ComboBox cboHRProUtilityType 
+         Height          =   315
+         ItemData        =   "frmSSIntranetLink.frx":2500
+         Left            =   1400
+         List            =   "frmSSIntranetLink.frx":2502
+         Style           =   2  'Dropdown List
+         TabIndex        =   27
+         Top             =   300
+         Width           =   4700
+      End
+      Begin VB.Label lblHRProUtilityMessage 
+         AutoSize        =   -1  'True
+         Caption         =   "<message>"
+         ForeColor       =   &H000000FF&
+         Height          =   195
+         Left            =   1395
+         TabIndex        =   30
+         Top             =   1160
+         Width           =   4695
+         WordWrap        =   -1  'True
+      End
+      Begin VB.Label lblHRProUtility 
+         Caption         =   "Name :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   28
+         Top             =   765
+         Width           =   780
+      End
+      Begin VB.Label lblHRProUtilityType 
+         Caption         =   "Type :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   26
+         Top             =   360
+         Width           =   645
+      End
+   End
    Begin VB.Frame fraEmailLink 
       Caption         =   "Email Link :"
       Height          =   1245
       Left            =   2880
       TabIndex        =   41
-      Top             =   6360
+      Top             =   5310
       Width           =   6300
       Begin VB.TextBox txtEmailSubject 
          Height          =   315
@@ -74,7 +260,7 @@ Begin VB.Form frmSSIntranetLink
       Height          =   1125
       Left            =   2880
       TabIndex        =   31
-      Top             =   5520
+      Top             =   4470
       Width           =   6300
       Begin VB.TextBox txtURL 
          Height          =   315
@@ -104,9 +290,9 @@ Begin VB.Form frmSSIntranetLink
    Begin VB.Frame fraDocument 
       Caption         =   "Document :"
       Height          =   1125
-      Left            =   120
+      Left            =   165
       TabIndex        =   46
-      Top             =   9240
+      Top             =   6435
       Width           =   9060
       Begin VB.TextBox txtDocumentFilePath 
          Height          =   315
@@ -146,10 +332,10 @@ Begin VB.Form frmSSIntranetLink
       Height          =   1245
       Left            =   2880
       TabIndex        =   35
-      Top             =   4200
+      Top             =   3585
       Width           =   6300
       Begin VB.CommandButton cmdAppFilePathSel 
-Caption = "..."
+         Caption         =   "..."
          Height          =   315
          Left            =   5760
          TabIndex        =   38
@@ -194,18 +380,36 @@ Caption = "..."
    End
    Begin VB.Frame fraLinkType 
       Caption         =   "Link Type :"
-      Height          =   2535
+      Height          =   3315
       Left            =   150
       TabIndex        =   9
       Top             =   1920
       Width           =   2500
       Begin VB.OptionButton optLink 
+         Caption         =   "&Chart"
+         Height          =   315
+         Index           =   6
+         Left            =   195
+         TabIndex        =   54
+         Top             =   2385
+         Width           =   1305
+      End
+      Begin VB.OptionButton optLink 
+         Caption         =   "&Separator"
+         Height          =   315
+         Index           =   5
+         Left            =   195
+         TabIndex        =   53
+         Top             =   2040
+         Width           =   1305
+      End
+      Begin VB.OptionButton optLink 
          Caption         =   "&On-screen Document Display"
          Height          =   450
-         Index           =   5
+         Index           =   7
          Left            =   200
          TabIndex        =   15
-         Top             =   2010
+         Top             =   2670
          Visible         =   0   'False
          Width           =   2235
       End
@@ -289,9 +493,9 @@ Caption = "..."
       End
       Begin VB.ComboBox cboStartMode 
          Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":015A
+         ItemData        =   "frmSSIntranetLink.frx":2504
          Left            =   1575
-         List            =   "frmSSIntranetLink.frx":015C
+         List            =   "frmSSIntranetLink.frx":2506
          Style           =   2  'Dropdown List
          TabIndex        =   24
          Top             =   1500
@@ -336,7 +540,7 @@ Caption = "..."
       Height          =   400
       Left            =   6600
       TabIndex        =   50
-      Top             =   10440
+      Top             =   12150
       Width           =   2600
       Begin VB.CommandButton cmdOk 
          Caption         =   "&OK"
@@ -366,9 +570,9 @@ Caption = "..."
       Width           =   9000
       Begin VB.ComboBox cboTableView 
          Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":015E
+         ItemData        =   "frmSSIntranetLink.frx":2508
          Left            =   1485
-         List            =   "frmSSIntranetLink.frx":0160
+         List            =   "frmSSIntranetLink.frx":250A
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   6
@@ -416,7 +620,7 @@ Caption = "..."
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         stylesets(0).Picture=   "frmSSIntranetLink.frx":0162
+         stylesets(0).Picture=   "frmSSIntranetLink.frx":250C
          stylesets(1).Name=   "ReadOnly"
          stylesets(1).ForeColor=   -2147483631
          stylesets(1).BackColor=   -2147483633
@@ -430,7 +634,7 @@ Caption = "..."
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         stylesets(1).Picture=   "frmSSIntranetLink.frx":017E
+         stylesets(1).Picture=   "frmSSIntranetLink.frx":2528
          MultiLine       =   0   'False
          AllowRowSizing  =   0   'False
          AllowGroupSizing=   0   'False
@@ -527,59 +731,6 @@ Caption = "..."
          Width           =   840
       End
    End
-   Begin VB.Frame fraHRProUtilityLink 
-      Caption         =   "HR Pro Report / Utility :"
-      Height          =   1485
-      Left            =   2880
-      TabIndex        =   25
-      Top             =   7680
-      Width           =   6300
-      Begin VB.ComboBox cboHRProUtility 
-         Height          =   315
-         Left            =   1400
-         Style           =   2  'Dropdown List
-         TabIndex        =   29
-         Top             =   700
-         Width           =   4700
-      End
-      Begin VB.ComboBox cboHRProUtilityType 
-         Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":019A
-         Left            =   1400
-         List            =   "frmSSIntranetLink.frx":019C
-         Style           =   2  'Dropdown List
-         TabIndex        =   27
-         Top             =   300
-         Width           =   4700
-      End
-      Begin VB.Label lblHRProUtilityMessage 
-         AutoSize        =   -1  'True
-         Caption         =   "<message>"
-         ForeColor       =   &H000000FF&
-         Height          =   195
-         Left            =   1395
-         TabIndex        =   30
-         Top             =   1160
-         Width           =   4695
-         WordWrap        =   -1  'True
-      End
-      Begin VB.Label lblHRProUtility 
-         Caption         =   "Name :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   28
-         Top             =   765
-         Width           =   780
-      End
-      Begin VB.Label lblHRProUtilityType 
-         Caption         =   "Type :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   26
-         Top             =   360
-         Width           =   645
-      End
-   End
 End
 Attribute VB_Name = "frmSSIntranetLink"
 Attribute VB_GlobalNameSpace = False
@@ -595,7 +746,10 @@ Public Enum SSINTRANETSCREENTYPES
   'NPG20080125 Fault 12873
   SSINTLINKSCREEN_EMAIL = 3
   SSINTLINKSCREEN_APPLICATION = 4
-  SSINTLINKSCREEN_DOCUMENT = 5
+  'NPG Dashboard
+  SSINTLINKSEPARATOR = 5
+  SSINTLINKCHART = 6
+  SSINTLINKSCREEN_DOCUMENT = 7
 End Enum
 
 Private mblnCancelled As Boolean
@@ -606,8 +760,16 @@ Private mblnRefreshing As Boolean
 Private mlngTableID As Long
 Private mlngViewID As Long
 Private msTableViewName As String
-
+Private glngPictureID As Long
+Private miSeparatorOrientation As Integer
 Private mfNewWindow As Boolean
+Private miChartType As Integer
+Private miChartViewID As Long
+Private miChartFilterID As Long
+Private miChartTableID As Long
+Private miChartColumnID As Long
+Private miChartAggregateType As Integer
+Private miElementType As Integer
 
 Private mblnReadOnly As Boolean
 
@@ -632,7 +794,7 @@ Private Sub FormatScreen()
   
   Select Case miLinkType
     Case SSINTLINK_BUTTON
-      fraLink.Caption = "Button Link :"
+      fraLink.Caption = "Dashboard Link :"
     Case SSINTLINK_DROPDOWNLIST
       fraLink.Caption = "Dropdown List Link :"
     Case SSINTLINK_HYPERTEXT
@@ -680,6 +842,14 @@ Private Sub FormatScreen()
       fraApplicationLink.Top = .Top
       fraApplicationLink.Height = .Height
       fraApplicationLink.Left = .Left
+      
+      fraLinkSeparator.Top = .Top
+      fraLinkSeparator.Height = .Height
+      fraLinkSeparator.Left = .Left
+      
+      fraChartLink.Top = .Top
+      ' fraChartLink.Height = .Height
+      fraChartLink.Left = .Left
     End With
   End If
 
@@ -694,6 +864,53 @@ Private Sub FormatScreen()
   Me.Height = fraOKCancel.Top + fraOKCancel.Height + GAPUNDERBUTTONS
   
 End Sub
+
+
+Private Sub SetChartTypes()
+
+  ' Populate the Chart Types combo.
+  Dim iDefaultItem As Integer
+  
+  iDefaultItem = 0
+  
+  With cboChartType
+    .Clear
+      
+    .AddItem "3D Bar"
+    .ItemData(.NewIndex) = 0
+        
+    .AddItem "2D Bar"
+    .ItemData(.NewIndex) = 1
+    
+    .AddItem "3D Line"
+    .ItemData(.NewIndex) = 2
+        
+    .AddItem "2D Line"
+    .ItemData(.NewIndex) = 3
+        
+    .AddItem "3D Area"
+    .ItemData(.NewIndex) = 4
+        
+    .AddItem "2D Area"
+    .ItemData(.NewIndex) = 5
+        
+    .AddItem "3D Step"
+    .ItemData(.NewIndex) = 6
+        
+    .AddItem "2D Step"
+    .ItemData(.NewIndex) = 7
+        
+    .AddItem "2D Pie"
+    .ItemData(.NewIndex) = 14
+        
+    .AddItem "2D XY"
+    .ItemData(.NewIndex) = 16
+        
+    .ListIndex = iDefaultItem
+  End With
+ 
+End Sub
+
 
 Private Sub GetHRProUtilityTypes()
 
@@ -984,7 +1201,9 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
                       psAppParameters As String, _
                       psDocumentFilePath As String, _
                       pfDisplayDocumentHyperlink As Boolean, _
-                      pfIsSeparator As Boolean, _
+                      piElement_Type As Integer, piSeparatorOrientation As Integer, plngPictureID As Long, _
+                      pfChartShowLegend, piChartType, pfChartShowGrid, pfChartStackSeries, plngChartViewID, miChartTableID, _
+                      plngChartColumnID, plngChartFilterID, piChartAggregateType, _
                       ByRef pcolSSITableViews As clsSSITableViews)
   
   Set mcolSSITableViews = pcolSSITableViews
@@ -1017,7 +1236,7 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
     optLink(SSINTLINKSCREEN_DOCUMENT).value = True
   End If
   
-  If Len(psUtilityID) > 0 Then
+  If Len(psUtilityID) > 0 And piChartType = 0 Then
     If CLng(psUtilityID) > 0 Then
       optLink(SSINTLINKSCREEN_UTILITY).value = True
     End If
@@ -1034,10 +1253,32 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
     optLink(SSINTLINKSCREEN_DOCUMENT).value = True
   End If
   
+  If piElement_Type = 1 Then
+    optLink(SSINTLINKSEPARATOR).value = True
+    chkNewColumn.value = IIf(piSeparatorOrientation > 0, 1, 0)
+    
+    If miLinkType = SSINTLINK_HYPERTEXT Then
+      ' Disable the icon and new column options for hypertext link separators...
+      chkNewColumn.Visible = False
+      lblIcon.Visible = False
+      txtIcon.Visible = False
+      cmdIcon.Visible = False
+      cmdIconClear.Visible = False
+      imgIcon.Visible = False
+      fraLinkSeparator.Height = 820
+    End If
+  End If
+  
+  If piElement_Type = 2 Then
+    optLink(SSINTLINKCHART).value = True
+  End If
+  
+  
   GetHRProTables
   GetHRProUtilityTypes
   UtilityType = psUtilityType
-
+  SetChartTypes
+  
   Prompt = psPrompt
   Text = psText
   HRProScreenID = psHRProScreenID
@@ -1058,6 +1299,23 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   DocumentFilePath = psDocumentFilePath
   DisplayDocumentHyperlink = pfDisplayDocumentHyperlink
 
+  'NPG Dashboard
+  ' Separator...
+  glngPictureID = plngPictureID
+  miSeparatorOrientation = piSeparatorOrientation
+  imgIcon_Refresh
+  
+  'Chart Controls...
+  ChartType = piChartType
+  ChartViewID = plngChartViewID
+  ChartFilterID = plngChartFilterID
+  ChartTableID = miChartTableID
+  ChartColumnID = plngChartColumnID
+  ChartAggregateType = piChartAggregateType
+  ChartShowLegend = pfChartShowLegend
+  ChartShowGridlines = pfChartShowGrid
+  ChartStackSeries = pfChartStackSeries
+  
   PopulateAccessGrid psHiddenGroups
 
   mfChanged = False
@@ -1080,6 +1338,8 @@ Private Sub RefreshControls()
   fraEmailLink.Visible = optLink(SSINTLINKSCREEN_EMAIL).value
   fraApplicationLink.Visible = optLink(SSINTLINKSCREEN_APPLICATION).value
   fraDocument.Visible = optLink(SSINTLINKSCREEN_DOCUMENT).value
+  fraLinkSeparator.Visible = optLink(SSINTLINKSEPARATOR).value
+  fraChartLink.Visible = optLink(SSINTLINKCHART).value
   
   ' Disable the HR Pro screen controls as required.
   cboHRProTable.Enabled = (optLink(SSINTLINKSCREEN_HRPRO).value) And (cboHRProTable.ListCount > 0)
@@ -1181,6 +1441,30 @@ Private Sub RefreshControls()
     chkDisplayDocumentHyperlink.value = vbUnchecked
   End If
   
+  ' NPG Dashboard
+  If optLink(SSINTLINKSEPARATOR).value Or optLink(SSINTLINKCHART) Then
+    txtPrompt.Enabled = False
+    txtPrompt.BackColor = vbButtonFace
+        
+    If optLink(SSINTLINKSEPARATOR).value Then txtPrompt.Text = "<SEPARATOR>"
+    If optLink(SSINTLINKCHART).value Then txtPrompt.Text = "<CHART>"
+    
+    If optLink(SSINTLINKCHART).value Then
+      MSChart1.RowCount = 1
+    End If
+    
+    ' set the chart type
+    If ChartType > 0 Then
+      ' loop through combo and set charttype to stored entry
+    End If
+    
+  Else  ' chart
+    txtPrompt.Enabled = True
+    txtPrompt.BackColor = vbWindowBackground
+    
+    
+  End If
+  
   mblnRefreshing = True
   GetStartModes
   mblnRefreshing = False
@@ -1190,6 +1474,7 @@ Private Sub RefreshControls()
   ' Disable the OK button as required.
   cmdOk.Enabled = mfChanged
   
+
 End Sub
 
 Private Sub GetStartModes()
@@ -1245,6 +1530,62 @@ Private Sub GetStartModes()
   End With
   
 End Sub
+
+
+Private Sub RefreshChart()
+  
+  ' Set the chart type from the combo
+  MSChart1.ChartType = cboChartType.ItemData(cboChartType.ListIndex)
+
+  ' Display Legend
+  MSChart1.ShowLegend = chkShowLegend
+  
+  ' Display Dotted Gridlines
+  If chkDottedGridlines Then
+    With MSChart1.Plot.Axis(VtChAxisIdX).AxisGrid
+       .MajorPen.VtColor.Set 195, 195, 195
+       .MajorPen.Width = 1
+       .MajorPen.Style = VtPenStyleDotted
+       .MinorPen.Style = VtPenStyleNull
+    End With
+    With MSChart1.Plot.Axis(VtChAxisIdY).AxisGrid
+       .MajorPen.VtColor.Set 195, 195, 195
+       .MajorPen.Width = 1
+       .MajorPen.Style = VtPenStyleDotted
+       .MinorPen.Style = VtPenStyleNull
+    End With
+    With MSChart1.Plot.Axis(VtChAxisIdZ).AxisGrid
+       .MajorPen.VtColor.Set 195, 195, 195
+       .MajorPen.Width = 1
+       .MajorPen.Style = VtPenStyleDotted
+       .MinorPen.Style = VtPenStyleNull
+    End With
+  Else
+    With MSChart1.Plot.Axis(VtChAxisIdX).AxisGrid
+       .MajorPen.VtColor.Set 195, 195, 195
+       .MajorPen.Width = 0
+       .MajorPen.Style = VtPenStyleNull
+    End With
+    With MSChart1.Plot.Axis(VtChAxisIdY).AxisGrid
+       .MajorPen.VtColor.Set 195, 195, 195
+       .MajorPen.Width = 0
+       .MajorPen.Style = VtPenStyleNull
+    End With
+    With MSChart1.Plot.Axis(VtChAxisIdZ).AxisGrid
+       .MajorPen.VtColor.Set 195, 195, 195
+       .MajorPen.Width = 0
+       .MajorPen.Style = VtPenStyleNull
+    End With
+  End If
+  
+  ' Stack Series
+  MSChart1.Stacking = chkStackSeries
+
+
+
+
+End Sub
+
 
 Private Function ValidateLink() As Boolean
 
@@ -1368,6 +1709,98 @@ Private Function ValidateLink() As Boolean
   ValidateLink = fValid
   
 End Function
+
+Private Function imgIcon_Refresh() As Boolean
+  Dim strFileName As String
+  
+  If PictureID > 0 Then
+    With recPictEdit
+      .Index = "idxID"
+      .Seek "=", PictureID
+      If Not .NoMatch Then
+        strFileName = ReadPicture
+        Set imgIcon.Picture = LoadPicture(strFileName)
+        Kill strFileName
+        
+        txtIcon.Text = .Fields("Name")
+      End If
+    End With
+  Else
+    Set imgIcon.Picture = LoadPicture(vbNullString)
+    txtIcon.Text = vbNullString
+  End If
+End Function
+
+
+Private Sub cboChartType_Click()
+  mfChanged = True
+  ' Display new chart details
+  RefreshChart
+End Sub
+
+Private Sub chkDottedGridlines_Click()
+  mfChanged = True
+  ' refresh the chart
+  RefreshChart
+  
+  RefreshControls
+End Sub
+
+Private Sub chkNewColumn_Click()
+  mfChanged = True
+  RefreshControls
+End Sub
+
+Private Sub chkShowLegend_Click()
+  mfChanged = True
+  ' refresh the chart
+  RefreshChart
+  
+  RefreshControls
+End Sub
+
+Private Sub chkStackSeries_Click()
+  mfChanged = True
+  ' refresh the chart
+  RefreshChart
+  RefreshControls
+End Sub
+
+Private Sub cmdChartData_Click()
+  
+  
+  Dim frmSSIChart As New frmSSIntranetChart
+
+  With frmSSIChart
+    .Initialize 1, ChartTableID, ChartColumnID, 1, ChartAggregateType
+    
+    .Show vbModal
+    
+    If Not .Cancelled Then
+      ' miChartViewID = .cboTableView.ItemData(.cboTableView.ListIndex)
+      ChartTableID = .cboParents.ItemData(.cboParents.ListIndex)
+      ChartColumnID = .cboColumns.ItemData(.cboColumns.ListIndex)
+      ChartAggregateType = IIf(.optAggregateType(0).value, 0, 1)
+      
+      mfChanged = True
+      
+      RefreshControls
+      
+    End If
+  
+    UnLoad frmSSIChart
+    Set frmSSIChart = Nothing
+    
+  End With
+End Sub
+
+Private Sub cmdIconClear_Click()
+  glngPictureID = frmPictSel.SelectedPicture
+  imgIcon_Refresh
+  mfChanged = True
+  RefreshControls
+End Sub
+
 
 Private Sub cboHRProScreen_Click()
   mfChanged = True
@@ -1507,6 +1940,26 @@ Private Sub cmdCancel_Click()
   Cancelled = True
   UnLoad Me
 End Sub
+
+Private Sub cmdIcon_Click()
+  ' Display the icon selection form.
+
+  frmPictSel.SelectedPicture = glngPictureID
+  frmPictSel.PictureType = vbPicTypeBitmap ' vbPicTypeIcon
+
+  frmPictSel.Show vbModal
+  
+  If frmPictSel.SelectedPicture > 0 Then
+    glngPictureID = frmPictSel.SelectedPicture
+    imgIcon_Refresh
+  End If
+  
+  Set frmPictSel = Nothing
+
+
+End Sub
+
+
 
 Private Sub cmdOK_Click()
 
@@ -1717,6 +2170,15 @@ Private Sub optLink_Click(Index As Integer)
   GetHRProUtilityTypes
   UtilityType = CStr(utlCalendarReport)
   
+  'dash
+  If optLink(SSINTLINKSEPARATOR).value Then
+    ElementType = 1
+  ElseIf optLink(SSINTLINKCHART).value Then
+    ElementType = 2
+  Else
+    ElementType = 0
+  End If
+  
   mfChanged = True
   RefreshControls
 
@@ -1770,6 +2232,15 @@ Private Sub txtEmailSubject_GotFocus()
   UI.txtSelText
 End Sub
 
+'Private Sub txtLinkSeparator_Change()
+'  mfChanged = True
+'  If miLinkType = SSINTLINK_BUTTON Then
+'    Prompt = txtLinkSeparator.Text
+'  ElseIf miLinkType = SSINTLINK_HYPERTEXT Then
+'    Text = txtLinkSeparator.Text
+'  End If
+'End Sub
+
 Private Sub txtPageTitle_Change()
   mfChanged = True
   RefreshControls
@@ -1780,6 +2251,7 @@ Private Sub txtPageTitle_GotFocus()
 End Sub
 
 Private Sub txtPrompt_Change()
+'  If optLink(SSINTLINKSEPARATOR).value Then txtLinkSeparator.Text = Prompt  'keep them in sync
   mfChanged = True
   RefreshControls
 End Sub
@@ -1789,6 +2261,7 @@ Private Sub txtPrompt_GotFocus()
 End Sub
 
 Private Sub txtText_Change()
+  'txtLinkSeparator.Text = Text
   mfChanged = True
   RefreshControls
 End Sub
@@ -1962,6 +2435,7 @@ End Property
 
 Public Property Let Prompt(ByVal psNewValue As String)
   txtPrompt.Text = IIf(miLinkType = SSINTLINK_BUTTON, psNewValue, "")
+'  txtLinkSeparator.Text = psNewValue
 End Property
 
 Public Property Get HRProScreenID() As String
@@ -2090,6 +2564,16 @@ Public Property Let PageTitle(ByVal psNewValue As String)
     psNewValue, "")
 End Property
  
+Public Property Get PictureID() As Long
+  ' Return the selected picture's ID.
+  PictureID = glngPictureID
+End Property
+ 
+Public Property Get SeparatorOrientation() As Integer
+  ' Return the selected separator orientation.
+  SeparatorOrientation = miSeparatorOrientation
+End Property
+ 
 Public Property Get TableID() As Long
   TableID = mlngTableID
 End Property
@@ -2101,5 +2585,108 @@ End Property
 Public Property Get TableViewName() As String
   TableViewName = msTableViewName
 End Property
+
+Public Property Get ChartType() As Integer
+  ChartType = miChartType
+End Property
+
+Public Property Let ChartType(ByVal piNewValue As Integer)
+  miChartType = piNewValue
+  
+  Dim iLoop As Integer
+
+  If (optLink(SSINTLINKCHART).value) And piNewValue > 0 Then
+
+    For iLoop = 0 To cboChartType.ListCount - 1
+      If cboChartType.ItemData(iLoop) = piNewValue Then
+        cboChartType.ListIndex = iLoop
+        Exit For
+      End If
+    Next iLoop
+
+  End If
+  
+End Property
+
+Public Property Get ChartViewID() As Long
+  ChartViewID = miChartViewID
+End Property
+
+Public Property Let ChartViewID(ByVal plngNewValue As Long)
+  miChartViewID = plngNewValue
+End Property
+
+Public Property Get ChartFilterID() As Long
+  ChartFilterID = miChartFilterID
+End Property
+
+Public Property Let ChartFilterID(ByVal plngNewValue As Long)
+  miChartFilterID = plngNewValue
+End Property
+
+Public Property Get ChartTableID() As Long
+  ChartTableID = miChartTableID
+End Property
+
+Public Property Let ChartTableID(ByVal plngNewValue As Long)
+  miChartTableID = plngNewValue
+End Property
+
+Public Property Get ChartColumnID() As Long
+  ChartColumnID = miChartColumnID
+End Property
+
+Public Property Let ChartColumnID(ByVal plngNewValue As Long)
+  miChartColumnID = plngNewValue
+End Property
+
+Public Property Get ChartAggregateType() As Integer
+  ChartAggregateType = miChartAggregateType
+End Property
+
+Public Property Let ChartAggregateType(ByVal piNewValue As Integer)
+  miChartAggregateType = piNewValue
+End Property
+
+Public Property Get ElementType() As Integer
+  ElementType = miElementType
+End Property
+
+Public Property Let ElementType(ByVal piNewValue As Integer)
+  miElementType = piNewValue
+End Property
+
+Public Property Get ChartShowLegend() As Boolean
+  ChartShowLegend = chkShowLegend.value
+End Property
+
+Public Property Let ChartShowLegend(ByVal pfNewValue As Boolean)
+  chkShowLegend.value = IIf(pfNewValue, vbChecked, vbUnchecked)
+End Property
+
+Public Property Get ChartShowGridlines() As Boolean
+  ChartShowGridlines = chkDottedGridlines.value
+End Property
+
+Public Property Let ChartShowGridlines(ByVal pfNewValue As Boolean)
+  chkDottedGridlines.value = IIf(pfNewValue, vbChecked, vbUnchecked)
+End Property
+
+Public Property Get ChartStackSeries() As Boolean
+  ChartStackSeries = chkStackSeries.value
+End Property
+
+Public Property Let ChartStackSeries(ByVal pfNewValue As Boolean)
+  chkStackSeries.value = IIf(pfNewValue, vbChecked, vbUnchecked)
+End Property
+
+
+
+
+
+
+
+
+
 
 

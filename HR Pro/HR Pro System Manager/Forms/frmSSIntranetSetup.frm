@@ -32,7 +32,7 @@ Begin VB.Form frmSSIntranetSetup
       Default         =   -1  'True
       Height          =   400
       Left            =   6040
-      TabIndex        =   46
+      TabIndex        =   44
       Top             =   5700
       Width           =   1200
    End
@@ -41,7 +41,7 @@ Begin VB.Form frmSSIntranetSetup
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   7300
-      TabIndex        =   47
+      TabIndex        =   45
       Top             =   5700
       Width           =   1200
    End
@@ -56,23 +56,22 @@ Begin VB.Form frmSSIntranetSetup
       _Version        =   393216
       Style           =   1
       Tabs            =   5
+      Tab             =   2
       TabsPerRow      =   5
       TabHeight       =   520
       TabCaption(0)   =   "&General"
       TabPicture(0)   =   "frmSSIntranetSetup.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraViews"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Hypertext Links"
       TabPicture(1)   =   "frmSSIntranetSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraHypertextLinks"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
-      TabCaption(2)   =   "&Button Links"
+      TabCaption(2)   =   "Dash&board"
       TabPicture(2)   =   "frmSSIntranetSetup.frx":0044
-      Tab(2).ControlEnabled=   0   'False
+      Tab(2).ControlEnabled=   -1  'True
       Tab(2).Control(0)=   "fraButtonLinks"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
@@ -80,27 +79,25 @@ Begin VB.Form frmSSIntranetSetup
       TabPicture(3)   =   "frmSSIntranetSetup.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraDropdownListLinks"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "On-screen Docume&nt Display"
       TabPicture(4)   =   "frmSSIntranetSetup.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraDocuments"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).ControlCount=   1
       Begin VB.Frame fraDocuments 
          Caption         =   "On-screen Document Display :"
          Enabled         =   0   'False
          Height          =   4935
          Left            =   -74850
-         TabIndex        =   55
+         TabIndex        =   53
          Top             =   400
          Width           =   8120
          Begin VB.CommandButton cmdAddDocument 
             Caption         =   "&Add ..."
             Height          =   400
             Left            =   6720
-            TabIndex        =   39
+            TabIndex        =   37
             Top             =   750
             Width           =   1245
          End
@@ -108,7 +105,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Edit ..."
             Height          =   400
             Left            =   6720
-            TabIndex        =   40
+            TabIndex        =   38
             Top             =   1250
             Width           =   1245
          End
@@ -116,7 +113,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Remove"
             Height          =   400
             Left            =   6720
-            TabIndex        =   42
+            TabIndex        =   40
             Top             =   2250
             Width           =   1245
          End
@@ -124,7 +121,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Remo&ve All"
             Height          =   400
             Left            =   6720
-            TabIndex        =   43
+            TabIndex        =   41
             Top             =   2745
             Width           =   1245
          End
@@ -132,7 +129,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Cop&y ..."
             Height          =   400
             Left            =   6720
-            TabIndex        =   41
+            TabIndex        =   39
             Top             =   1750
             Width           =   1245
          End
@@ -141,7 +138,7 @@ Begin VB.Form frmSSIntranetSetup
             Left            =   2100
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   37
+            TabIndex        =   35
             Top             =   300
             Width           =   4515
          End
@@ -149,7 +146,7 @@ Begin VB.Form frmSSIntranetSetup
             Height          =   3945
             Index           =   0
             Left            =   195
-            TabIndex        =   38
+            TabIndex        =   36
             Top             =   750
             Visible         =   0   'False
             Width           =   6400
@@ -317,7 +314,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Up"
             Height          =   405
             Left            =   6720
-            TabIndex        =   44
+            TabIndex        =   42
             Top             =   3255
             Width           =   1245
          End
@@ -325,7 +322,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Do&wn"
             Height          =   405
             Left            =   6720
-            TabIndex        =   45
+            TabIndex        =   43
             Top             =   3750
             Width           =   1245
          End
@@ -333,7 +330,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Table (View) :"
             Height          =   195
             Left            =   195
-            TabIndex        =   56
+            TabIndex        =   54
             Top             =   360
             Width           =   1560
          End
@@ -343,17 +340,9 @@ Begin VB.Form frmSSIntranetSetup
          Enabled         =   0   'False
          Height          =   4935
          Left            =   -74850
-         TabIndex        =   48
+         TabIndex        =   46
          Top             =   405
          Width           =   8120
-         Begin VB.CommandButton cmdHypertextLinkSeparator 
-            Caption         =   "&Separator ..."
-            Height          =   400
-            Left            =   6720
-            TabIndex        =   13
-            Top             =   2250
-            Width           =   1245
-         End
          Begin VB.ComboBox cboHypertextLinkView 
             Height          =   315
             Left            =   2100
@@ -375,16 +364,16 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Remo&ve All"
             Height          =   400
             Left            =   6720
-            TabIndex        =   15
-            Top             =   3250
+            TabIndex        =   14
+            Top             =   2775
             Width           =   1245
          End
          Begin VB.CommandButton cmdRemoveHypertextLink 
             Caption         =   "&Remove"
             Height          =   400
             Left            =   6720
-            TabIndex        =   14
-            Top             =   2750
+            TabIndex        =   13
+            Top             =   2265
             Width           =   1245
          End
          Begin VB.CommandButton cmdEditHypertextLink 
@@ -416,7 +405,7 @@ Begin VB.Form frmSSIntranetSetup
             DataMode        =   2
             RecordSelectors =   0   'False
             GroupHeaders    =   0   'False
-            Col.Count       =   11
+            Col.Count       =   13
             AllowUpdate     =   0   'False
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
@@ -438,8 +427,8 @@ Begin VB.Form frmSSIntranetSetup
             BackColorEven   =   -2147483643
             BackColorOdd    =   -2147483643
             RowHeight       =   423
-            ExtraHeight     =   79
-            Columns.Count   =   11
+            ExtraHeight     =   265
+            Columns.Count   =   13
             Columns(0).Width=   10821
             Columns(0).Caption=   "Text"
             Columns(0).Name =   "Text"
@@ -514,11 +503,25 @@ Begin VB.Form frmSSIntranetSetup
             Columns(9).FieldLen=   256
             Columns(10).Width=   3200
             Columns(10).Visible=   0   'False
-            Columns(10).Caption=   "IsSeparator"
-            Columns(10).Name=   "IsSeparator"
+            Columns(10).Caption=   "Element_Type"
+            Columns(10).Name=   "Element_Type"
             Columns(10).DataField=   "Column 10"
-            Columns(10).DataType=   11
+            Columns(10).DataType=   8
             Columns(10).FieldLen=   256
+            Columns(11).Width=   3200
+            Columns(11).Visible=   0   'False
+            Columns(11).Caption=   "SeparatorOrientation"
+            Columns(11).Name=   "SeparatorOrientation"
+            Columns(11).DataField=   "Column 11"
+            Columns(11).DataType=   8
+            Columns(11).FieldLen=   256
+            Columns(12).Width=   3200
+            Columns(12).Visible=   0   'False
+            Columns(12).Caption=   "PictureID"
+            Columns(12).Name=   "PictureID"
+            Columns(12).DataField=   "Column 12"
+            Columns(12).DataType=   8
+            Columns(12).FieldLen=   256
             TabNavigation   =   1
             _ExtentX        =   11298
             _ExtentY        =   6959
@@ -547,23 +550,23 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Do&wn"
             Height          =   405
             Left            =   6720
-            TabIndex        =   17
-            Top             =   4245
+            TabIndex        =   16
+            Top             =   3765
             Width           =   1245
          End
          Begin VB.CommandButton cmdMoveHypertextLinkUp 
             Caption         =   "&Up"
             Height          =   405
             Left            =   6720
-            TabIndex        =   16
-            Top             =   3750
+            TabIndex        =   15
+            Top             =   3270
             Width           =   1245
          End
          Begin VB.Label lblHypertextLinkView 
             Caption         =   "Table (View) :"
             Height          =   195
             Left            =   195
-            TabIndex        =   49
+            TabIndex        =   47
             Top             =   360
             Width           =   1740
          End
@@ -571,8 +574,8 @@ Begin VB.Form frmSSIntranetSetup
       Begin VB.Frame fraViews 
          Caption         =   "Tables (Views) :"
          Height          =   4935
-         Left            =   150
-         TabIndex        =   54
+         Left            =   -74850
+         TabIndex        =   52
          Top             =   400
          Width           =   8120
          Begin VB.CommandButton cmdRemoveAllTableViews 
@@ -776,27 +779,19 @@ Begin VB.Form frmSSIntranetSetup
          End
       End
       Begin VB.Frame fraButtonLinks 
-         Caption         =   "Button Links :"
+         Caption         =   "Dashboard Links :"
          Enabled         =   0   'False
          Height          =   4935
-         Left            =   -74850
-         TabIndex        =   50
+         Left            =   150
+         TabIndex        =   48
          Top             =   405
          Width           =   8120
-         Begin VB.CommandButton cmdButtonLinkSeparator 
-            Caption         =   "&Separator ..."
-            Height          =   400
-            Left            =   6720
-            TabIndex        =   23
-            Top             =   2250
-            Width           =   1245
-         End
          Begin VB.ComboBox cboButtonLinkView 
             Height          =   315
             Left            =   2100
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   18
+            TabIndex        =   17
             Top             =   300
             Width           =   4515
          End
@@ -804,7 +799,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Cop&y ..."
             Height          =   400
             Left            =   6720
-            TabIndex        =   22
+            TabIndex        =   21
             Top             =   1750
             Width           =   1245
          End
@@ -812,7 +807,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Add ..."
             Height          =   400
             Left            =   6720
-            TabIndex        =   20
+            TabIndex        =   19
             Top             =   750
             Width           =   1245
          End
@@ -820,7 +815,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Edit ..."
             Height          =   400
             Left            =   6720
-            TabIndex        =   21
+            TabIndex        =   20
             Top             =   1250
             Width           =   1245
          End
@@ -828,23 +823,23 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Remove"
             Height          =   400
             Left            =   6720
-            TabIndex        =   24
-            Top             =   2750
+            TabIndex        =   22
+            Top             =   2265
             Width           =   1245
          End
          Begin VB.CommandButton cmdRemoveAllButtonLinks 
             Caption         =   "Remo&ve All"
             Height          =   400
             Left            =   6720
-            TabIndex        =   25
-            Top             =   3250
+            TabIndex        =   23
+            Top             =   2775
             Width           =   1245
          End
          Begin SSDataWidgets_B.SSDBGrid grdButtonLinks 
             Height          =   3945
             Index           =   0
             Left            =   195
-            TabIndex        =   19
+            TabIndex        =   18
             Top             =   750
             Visible         =   0   'False
             Width           =   6400
@@ -853,7 +848,7 @@ Begin VB.Form frmSSIntranetSetup
             DataMode        =   2
             RecordSelectors =   0   'False
             GroupHeaders    =   0   'False
-            Col.Count       =   15
+            Col.Count       =   26
             AllowUpdate     =   0   'False
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
@@ -875,8 +870,8 @@ Begin VB.Form frmSSIntranetSetup
             BackColorEven   =   -2147483643
             BackColorOdd    =   -2147483643
             RowHeight       =   423
-            ExtraHeight     =   79
-            Columns.Count   =   15
+            ExtraHeight     =   265
+            Columns.Count   =   26
             Columns(0).Width=   6324
             Columns(0).Caption=   "Prompt"
             Columns(0).Name =   "Prompt"
@@ -887,7 +882,7 @@ Begin VB.Form frmSSIntranetSetup
             Columns(0).FieldLen=   256
             Columns(0).Locked=   -1  'True
             Columns(1).Width=   4498
-            Columns(1).Caption=   "Button Text"
+            Columns(1).Caption=   "Element Text"
             Columns(1).Name =   "ButtonText"
             Columns(1).DataField=   "Column 1"
             Columns(1).DataType=   8
@@ -978,11 +973,88 @@ Begin VB.Form frmSSIntranetSetup
             Columns(13).FieldLen=   256
             Columns(14).Width=   3200
             Columns(14).Visible=   0   'False
-            Columns(14).Caption=   "IsSeparator"
-            Columns(14).Name=   "IsSeparator"
+            Columns(14).Caption=   "Element_Type"
+            Columns(14).Name=   "Element_Type"
             Columns(14).DataField=   "Column 14"
-            Columns(14).DataType=   11
+            Columns(14).DataType=   8
             Columns(14).FieldLen=   256
+            Columns(15).Width=   3200
+            Columns(15).Visible=   0   'False
+            Columns(15).Caption=   "SeparatorOrientation"
+            Columns(15).Name=   "SeparatorOrientation"
+            Columns(15).DataField=   "Column 15"
+            Columns(15).DataType=   8
+            Columns(15).FieldLen=   256
+            Columns(16).Width=   3200
+            Columns(16).Visible=   0   'False
+            Columns(16).Caption=   "PictureID"
+            Columns(16).Name=   "PictureID"
+            Columns(16).DataField=   "Column 16"
+            Columns(16).DataType=   8
+            Columns(16).FieldLen=   256
+            Columns(17).Width=   3200
+            Columns(17).Visible=   0   'False
+            Columns(17).Caption=   "ChartShowLegend"
+            Columns(17).Name=   "ChartShowLegend"
+            Columns(17).DataField=   "Column 17"
+            Columns(17).DataType=   8
+            Columns(17).FieldLen=   256
+            Columns(18).Width=   3200
+            Columns(18).Visible=   0   'False
+            Columns(18).Caption=   "ChartType"
+            Columns(18).Name=   "ChartType"
+            Columns(18).DataField=   "Column 18"
+            Columns(18).DataType=   8
+            Columns(18).FieldLen=   256
+            Columns(19).Width=   3200
+            Columns(19).Visible=   0   'False
+            Columns(19).Caption=   "ChartShowGrid"
+            Columns(19).Name=   "ChartShowGrid"
+            Columns(19).DataField=   "Column 19"
+            Columns(19).DataType=   8
+            Columns(19).FieldLen=   256
+            Columns(20).Width=   3200
+            Columns(20).Visible=   0   'False
+            Columns(20).Caption=   "ChartStackSeries"
+            Columns(20).Name=   "ChartStackSeries"
+            Columns(20).DataField=   "Column 20"
+            Columns(20).DataType=   8
+            Columns(20).FieldLen=   256
+            Columns(21).Width=   3200
+            Columns(21).Visible=   0   'False
+            Columns(21).Caption=   "ChartViewID"
+            Columns(21).Name=   "ChartViewID"
+            Columns(21).DataField=   "Column 21"
+            Columns(21).DataType=   8
+            Columns(21).FieldLen=   256
+            Columns(22).Width=   3200
+            Columns(22).Visible=   0   'False
+            Columns(22).Caption=   "ChartTableID"
+            Columns(22).Name=   "ChartTableID"
+            Columns(22).DataField=   "Column 22"
+            Columns(22).DataType=   8
+            Columns(22).FieldLen=   256
+            Columns(23).Width=   3200
+            Columns(23).Visible=   0   'False
+            Columns(23).Caption=   "ChartColumnID"
+            Columns(23).Name=   "ChartColumnID"
+            Columns(23).DataField=   "Column 23"
+            Columns(23).DataType=   8
+            Columns(23).FieldLen=   256
+            Columns(24).Width=   3200
+            Columns(24).Visible=   0   'False
+            Columns(24).Caption=   "ChartFilterID"
+            Columns(24).Name=   "ChartFilterID"
+            Columns(24).DataField=   "Column 24"
+            Columns(24).DataType=   8
+            Columns(24).FieldLen=   256
+            Columns(25).Width=   3200
+            Columns(25).Visible=   0   'False
+            Columns(25).Caption=   "ChartAggregateType"
+            Columns(25).Name=   "ChartAggregateType"
+            Columns(25).DataField=   "Column 25"
+            Columns(25).DataType=   8
+            Columns(25).FieldLen=   256
             TabNavigation   =   1
             _ExtentX        =   11289
             _ExtentY        =   6959
@@ -1011,23 +1083,23 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Up"
             Height          =   405
             Left            =   6720
-            TabIndex        =   26
-            Top             =   3750
+            TabIndex        =   24
+            Top             =   3270
             Width           =   1245
          End
          Begin VB.CommandButton cmdMoveButtonLinkDown 
             Caption         =   "Do&wn"
             Height          =   405
             Left            =   6720
-            TabIndex        =   27
-            Top             =   4245
+            TabIndex        =   25
+            Top             =   3765
             Width           =   1245
          End
          Begin VB.Label lblButtonLinkView 
             Caption         =   "Table (View) :"
             Height          =   195
             Left            =   195
-            TabIndex        =   51
+            TabIndex        =   49
             Top             =   360
             Width           =   1695
          End
@@ -1037,7 +1109,7 @@ Begin VB.Form frmSSIntranetSetup
          Enabled         =   0   'False
          Height          =   4935
          Left            =   -74850
-         TabIndex        =   52
+         TabIndex        =   50
          Top             =   405
          Width           =   8120
          Begin VB.ComboBox cboDropdownListLinkView 
@@ -1045,7 +1117,7 @@ Begin VB.Form frmSSIntranetSetup
             Left            =   2100
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   28
+            TabIndex        =   26
             Top             =   300
             Width           =   4515
          End
@@ -1053,7 +1125,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Cop&y ..."
             Height          =   400
             Left            =   6720
-            TabIndex        =   32
+            TabIndex        =   30
             Top             =   1750
             Width           =   1245
          End
@@ -1061,7 +1133,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Remo&ve All"
             Height          =   400
             Left            =   6720
-            TabIndex        =   34
+            TabIndex        =   32
             Top             =   2745
             Width           =   1245
          End
@@ -1069,7 +1141,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Remove"
             Height          =   400
             Left            =   6720
-            TabIndex        =   33
+            TabIndex        =   31
             Top             =   2250
             Width           =   1245
          End
@@ -1077,7 +1149,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Edit ..."
             Height          =   400
             Left            =   6720
-            TabIndex        =   31
+            TabIndex        =   29
             Top             =   1250
             Width           =   1245
          End
@@ -1085,7 +1157,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Add ..."
             Height          =   400
             Left            =   6720
-            TabIndex        =   30
+            TabIndex        =   28
             Top             =   750
             Width           =   1245
          End
@@ -1093,7 +1165,7 @@ Begin VB.Form frmSSIntranetSetup
             Height          =   3945
             Index           =   0
             Left            =   195
-            TabIndex        =   29
+            TabIndex        =   27
             Top             =   750
             Visible         =   0   'False
             Width           =   6400
@@ -1247,7 +1319,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Do&wn"
             Height          =   405
             Left            =   6720
-            TabIndex        =   36
+            TabIndex        =   34
             Top             =   3750
             Width           =   1245
          End
@@ -1255,7 +1327,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Up"
             Height          =   405
             Left            =   6720
-            TabIndex        =   35
+            TabIndex        =   33
             Top             =   3255
             Width           =   1245
          End
@@ -1263,7 +1335,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Table (View) :"
             Height          =   195
             Left            =   195
-            TabIndex        =   53
+            TabIndex        =   51
             Top             =   360
             Width           =   1650
          End
@@ -1696,7 +1768,19 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
   Dim sAppParameters As String
   Dim sDocumentFilePath As String
   Dim fDisplayDocumentHyperlink As Boolean
-  Dim fIsSeparator As Boolean
+  Dim sElement_Type As Integer
+  'NPG20100111
+  Dim sSeparatorOrientation As String
+  Dim sPictureID As String
+  Dim fChartShowLegend As Boolean
+  Dim sChartType As Integer
+  Dim fChartShowGrid As Boolean
+  Dim fChartStackSeries As Boolean
+  Dim sChartViewID As Integer
+  Dim sChartTableID As Integer
+  Dim sChartColumnID As Integer
+  Dim sChartFilterID As Integer
+  Dim sChartAggregateType As Integer
 
   Select Case piLinkType
     Case SSINTLINK_HYPERTEXT
@@ -1733,7 +1817,7 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
               sEMailSubject = .Columns("EMailSubject").CellText(varBookmark)
               sAppFilePath = .Columns("AppFilePath").CellText(varBookmark)
               sAppParameters = .Columns("AppParameters").CellText(varBookmark)
-              fIsSeparator = .Columns("IsSeparator").CellValue(varBookmark)
+              sElement_Type = .Columns("Element_Type").CellValue(varBookmark)
 
             Case SSINTLINK_BUTTON
               sPrompt = .Columns("Prompt").CellText(varBookmark)
@@ -1752,7 +1836,19 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
               sEMailSubject = .Columns("EMailSubject").CellText(varBookmark)
               sAppFilePath = .Columns("AppFilePath").CellText(varBookmark)
               sAppParameters = .Columns("AppParameters").CellText(varBookmark)
-              fIsSeparator = .Columns("IsSeparator").CellValue(varBookmark)
+              sElement_Type = .Columns("Element_Type").CellText(varBookmark)
+              sSeparatorOrientation = .Columns("SeparatorOrientation").CellText(varBookmark)
+              sPictureID = .Columns("PictureID").CellText(varBookmark)
+              fChartShowLegend = .Columns("ChartShowLegend").CellText(varBookmark)
+              sChartType = .Columns("ChartType").CellText(varBookmark)
+              fChartShowGrid = .Columns("ChartShowGrid").CellText(varBookmark)
+              fChartStackSeries = .Columns("ChartStackSeries").CellText(varBookmark)
+              sChartViewID = .Columns("ChartViewID").CellText(varBookmark)
+              sChartTableID = .Columns("ChartTableID").CellText(varBookmark)
+              sChartColumnID = .Columns("ChartColumnID").CellText(varBookmark)
+              sChartFilterID = .Columns("ChartFilterID").CellText(varBookmark)
+              sChartAggregateType = .Columns("ChartAggregateType").CellText(varBookmark)
+              
              
             Case SSINTLINK_DROPDOWNLIST
               sPrompt = ""
@@ -1804,11 +1900,16 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
             sUtilityType = "-1"
           End If
           
+          If Len(sPictureID) = 0 Then sPictureID = "0"
+          If Len(sSeparatorOrientation) = 0 Then sSeparatorOrientation = "0"
+          
           'NPG20080211 Fault 12873
           sSQL = "INSERT INTO tmpSSIntranetLinks" & _
             " ([linkType], [linkOrder], [prompt], [text], [screenID], [pageTitle], [url], [startMode], " & _
             "[utilityType], [utilityID], [viewID], [newWindow], [tableID], [EMailAddress], [EMailSubject], " & _
-            "[AppFilePath], [AppParameters], [DocumentFilePath], [DisplayDocumentHyperlink], [IsSeparator])" & _
+            "[AppFilePath], [AppParameters], [DocumentFilePath], [DisplayDocumentHyperlink], [Element_Type], " & _
+            "[SeparatorOrientation], [PictureID], [Chart_ShowLegend], [Chart_Type], [Chart_ShowGrid], [Chart_StackSeries], " & _
+            "[Chart_ViewID], [Chart_TableID], [Chart_ColumnID], [Chart_FilterID], [Chart_AggregateType])" & _
             " SELECT " & _
             CStr(piLinkType) & "," & _
             CStr(iLoop) & "," & _
@@ -1827,10 +1928,22 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
             "'" & Replace(sEMailSubject, "'", "''") & "'," & _
             "'" & Replace(sAppFilePath, "'", "''") & "'," & _
             "'" & Replace(sAppParameters, "'", "''") & "'," & _
-            "'" & Replace(sDocumentFilePath, "'", "''") & "'," & _
-            "" & IIf(fDisplayDocumentHyperlink, "1", "0") & "," & _
-            "" & IIf(fIsSeparator, "1", "0") & ""
+            "'" & Replace(sDocumentFilePath, "'", "''") & "',"
 
+          sSQL = sSQL & _
+            "" & IIf(fDisplayDocumentHyperlink, "1", "0") & "," & _
+            "" & sElement_Type & "," & _
+            sSeparatorOrientation & "," & _
+            sPictureID & "," & _
+            "" & IIf(fChartShowLegend, "1", "0") & "," & _
+            sChartType & "," & _
+            "" & IIf(fChartShowGrid, "1", "0") & "," & _
+            "" & IIf(fChartStackSeries, "1", "0") & "," & _
+            sChartViewID & "," & _
+            sChartTableID & "," & _
+            sChartColumnID & "," & _
+            sChartFilterID & "," & _
+            sChartAggregateType
 
           daoDb.Execute sSQL, dbFailOnError
         
@@ -1983,8 +2096,9 @@ Private Sub cmdAddButtonLink_Click()
       "", _
       "", _
       "", _
-      False, _
-      False, _
+      False, False, _
+      0, 0, _
+      False, 1, False, False, 0, 0, 0, 0, 0, _
       mcolSSITableViews
       
     .Show vbModal
@@ -2003,8 +2117,14 @@ Private Sub cmdAddButtonLink_Click()
         & vbTab & .EMailSubject _
         & vbTab & .AppFilePath _
         & vbTab & .AppParameters _
-        & vbTab & "0"
-        
+        & vbTab & IIf(.optLink(SSINTLINKSEPARATOR).value = True, 1, 0) _
+        & vbTab & IIf(.chkNewColumn.value = 0, "0", "1") _
+        & vbTab & IIf(Len(.txtIcon.Text) > 0, CStr(.PictureID), "") _
+        & vbTab & IIf(.chkShowLegend.value = 0, "0", "1") _
+        & vbTab & .cboChartType.ItemData(.cboChartType.ListIndex) _
+        & vbTab & IIf(.chkDottedGridlines.value = 0, "0", "1") _
+        & vbTab & IIf(.chkStackSeries.value = 0, "0", "1")
+                        
       For iLoop = 0 To cboButtonLinkView.ListCount - 1
         If cboButtonLinkView.List(iLoop) = .TableViewName Then
           cboButtonLinkView.ListIndex = iLoop
@@ -2069,8 +2189,9 @@ Private Sub cmdAddDropdownListLink_Click()
       "", _
       "", _
       "", _
-      False, _
-      False, _
+      False, False, _
+      0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, _
       mcolSSITableViews
       
     .Show vbModal
@@ -2153,8 +2274,9 @@ Private Sub cmdAddHyperTextLink_Click()
       "", _
       "", _
       "", _
-      False, _
-      False, _
+      False, False, _
+      0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, _
       mcolSSITableViews
       
     .Show vbModal
@@ -2169,7 +2291,9 @@ Private Sub cmdAddHyperTextLink_Click()
         & vbTab & .EMailSubject _
         & vbTab & .AppFilePath _
         & vbTab & .AppParameters _
-        & vbTab & "0"
+        & vbTab & IIf(.optLink(SSINTLINKSEPARATOR).value = True, 1, 0) _
+        & vbTab & IIf(.chkNewColumn.value = 0, "0", "1") _
+        & vbTab & IIf(Len(.txtIcon.Text) > 0, CStr(.PictureID), "")
         
       For iLoop = 0 To cboHypertextLinkView.ListCount - 1
         If cboHypertextLinkView.List(iLoop) = .TableViewName Then
@@ -2246,8 +2370,9 @@ Private Sub cmdAddDocument_Click()
       "", _
       "", _
       "", _
-      False, _
-      False, _
+      False, False, _
+      0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, _
       mcolSSITableViews
       
     .Show vbModal
@@ -2380,92 +2505,96 @@ Private Sub cmdAddTableView_Click()
 
 End Sub
 
-Private Sub cmdButtonLinkSeparator_Click()
-
-  Dim sRow As String
-  Dim lngRow As Long
-  Dim frmLinkSeparator As New frmSSIntranetLinkSeparator
-  Dim ctlSourceGrid As SSDBGrid
-  Dim ctlDestinationGrid As SSDBGrid
-  Dim iLoop As Integer
-  Dim sViews As String
-  Dim fNew As Boolean
-  
-  sViews = SelectedViews
-  
-  Set ctlSourceGrid = CurrentLinkGrid(SSINTLINK_BUTTON)
-  If ctlSourceGrid Is Nothing Then
-    Exit Sub
-  End If
-  
-  ctlSourceGrid.Bookmark = ctlSourceGrid.SelBookmarks(0)
-  lngRow = ctlSourceGrid.AddItemRowIndex(ctlSourceGrid.Bookmark)
-
-  fNew = (Not mfIsCopyingSeparator) And (Not mfIsEditingSeparator)
-
-  With frmLinkSeparator
-    .Initialize SSINTLINK_BUTTON, _
-      IIf(fNew, "", ctlSourceGrid.Columns("Prompt").Text), _
-      DecodeTag(ctlSourceGrid.Tag, False), _
-      DecodeTag(ctlSourceGrid.Tag, True), _
-      mfIsCopyingSeparator
-          
-    .Show vbModal
-
-    If Not .Cancelled Then
-      sRow = .Text _
-        & vbTab & "<SEPARATOR>" _
-        & vbTab & "" _
-        & vbTab & "" _
-        & vbTab & "" _
-        & vbTab & "" _
-        & vbTab & "" _
-        & vbTab & "" _
-        & vbTab & vbTab & "0" _
-        & vbTab & "" _
-        & vbTab & "" _
-        & vbTab & "" _
-        & vbTab & "" _
-        & vbTab & "1"
-
-      
-      With ctlSourceGrid
-        If mfIsEditingSeparator Then
-          ctlSourceGrid.RemoveItem lngRow
-
-          .AddItem sRow, lngRow
-          .Bookmark = .AddItemBookmark(lngRow)
-          .Update
-          .SelBookmarks.RemoveAll
-          .SelBookmarks.Add .AddItemBookmark(lngRow)
-          
-        ElseIf mfIsCopyingSeparator Then
-          .AddItem sRow, lngRow + 1
-          .Bookmark = .AddItemBookmark(lngRow + 1)
-          .Update
-          .SelBookmarks.RemoveAll
-          .SelBookmarks.Add .AddItemBookmark(lngRow + 1)
-          
-        Else
-          ' Adding a new separator.
-          .AddItem sRow
-          .Bookmark = .AddItemBookmark(.Rows - 1)
-          .Update
-          .SelBookmarks.RemoveAll
-          .SelBookmarks.Add .Bookmark
-        End If
-      End With
-      
-      mfIsEditingSeparator = False
-      mfIsCopyingSeparator = False
-      Changed = True
-    End If
-  End With
-
-  UnLoad frmLinkSeparator
-  Set frmLinkSeparator = Nothing
-
-End Sub
+'NPG Dashboard
+'Private Sub cmdButtonLinkSeparator_Click()
+'
+'  Dim sRow As String
+'  Dim lngRow As Long
+'  Dim frmLinkSeparator As New frmSSIntranetLinkSeparator
+'  Dim ctlSourceGrid As SSDBGrid
+'  Dim ctlDestinationGrid As SSDBGrid
+'  Dim iLoop As Integer
+'  Dim sViews As String
+'  Dim fNew As Boolean
+'
+'  sViews = SelectedViews
+'
+'  Set ctlSourceGrid = CurrentLinkGrid(SSINTLINK_BUTTON)
+'  If ctlSourceGrid Is Nothing Then
+'    Exit Sub
+'  End If
+'
+'  ctlSourceGrid.Bookmark = ctlSourceGrid.SelBookmarks(0)
+'  lngRow = ctlSourceGrid.AddItemRowIndex(ctlSourceGrid.Bookmark)
+'
+'  fNew = (Not mfIsCopyingSeparator) And (Not mfIsEditingSeparator)
+'
+'  With frmLinkSeparator
+'    .Initialize SSINTLINK_BUTTON, _
+'      IIf(fNew, "", ctlSourceGrid.Columns("Prompt").Text), _
+'      DecodeTag(ctlSourceGrid.Tag, False), _
+'      DecodeTag(ctlSourceGrid.Tag, True), _
+'      mfIsCopyingSeparator, _
+'      IIf(fNew, 0, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text)), _
+'      IIf(fNew, 0, Val(ctlSourceGrid.Columns("PictureID").Text))
+'    .Show vbModal
+'
+'    If Not .Cancelled Then
+'      sRow = .Text _
+'        & vbTab & "<SEPARATOR>" _
+'        & vbTab & "" _
+'        & vbTab & "" _
+'        & vbTab & "" _
+'        & vbTab & "" _
+'        & vbTab & "" _
+'        & vbTab & "" _
+'        & vbTab & vbTab & "0" _
+'        & vbTab & "" _
+'        & vbTab & "" _
+'        & vbTab & "" _
+'        & vbTab & "" _
+'        & vbTab & "1" _
+'        & vbTab & IIf(.chkNewColumn.value = 0, "0", "1") _
+'        & vbTab & IIf(Len(.txtIcon.Text) > 0, CStr(.PictureID), "")
+'
+'
+'      With ctlSourceGrid
+'        If mfIsEditingSeparator Then
+'          ctlSourceGrid.RemoveItem lngRow
+'
+'          .AddItem sRow, lngRow
+'          .Bookmark = .AddItemBookmark(lngRow)
+'          .Update
+'          .SelBookmarks.RemoveAll
+'          .SelBookmarks.Add .AddItemBookmark(lngRow)
+'
+'        ElseIf mfIsCopyingSeparator Then
+'          .AddItem sRow, lngRow + 1
+'          .Bookmark = .AddItemBookmark(lngRow + 1)
+'          .Update
+'          .SelBookmarks.RemoveAll
+'          .SelBookmarks.Add .AddItemBookmark(lngRow + 1)
+'
+'        Else
+'          ' Adding a new separator.
+'          .AddItem sRow
+'          .Bookmark = .AddItemBookmark(.Rows - 1)
+'          .Update
+'          .SelBookmarks.RemoveAll
+'          .SelBookmarks.Add .Bookmark
+'        End If
+'      End With
+'
+'      mfIsEditingSeparator = False
+'      mfIsCopyingSeparator = False
+'      Changed = True
+'    End If
+'  End With
+'
+'  UnLoad frmLinkSeparator
+'  Set frmLinkSeparator = Nothing
+'
+'End Sub
 
 Private Sub cmdCancel_Click()
   'AE20071119 Fault #12607
@@ -2505,13 +2634,6 @@ Private Sub cmdCopyButtonLink_Click()
   If ctlSourceGrid Is Nothing Then
     Exit Sub
   End If
-  
-  If (ctlSourceGrid.Columns("IsSeparator").CellValue(ctlSourceGrid.Bookmark) = True) Then
-    mfIsCopyingSeparator = True
-    cmdButtonLinkSeparator_Click
-    mfIsCopyingSeparator = False
-    Exit Sub
-  End If
 
   ctlSourceGrid.Bookmark = ctlSourceGrid.SelBookmarks(0)
   lngRow = ctlSourceGrid.AddItemRowIndex(ctlSourceGrid.Bookmark)
@@ -2520,6 +2642,7 @@ Private Sub cmdCopyButtonLink_Click()
   lngOriginalViewID = GetViewIDFromCollection(mcolSSITableViews, cboButtonLinkView.List(cboButtonLinkView.ListIndex))
   
   With frmLink
+  
     .Initialize SSINTLINK_BUTTON, _
       ctlSourceGrid.Columns("Prompt").Text, _
       ctlSourceGrid.Columns("ButtonText").Text, _
@@ -2530,20 +2653,20 @@ Private Sub cmdCopyButtonLink_Click()
       ctlSourceGrid.Columns("startMode").Text, _
       DecodeTag(ctlSourceGrid.Tag, True), _
       ctlSourceGrid.Columns("UtilityType").Text, _
-      ctlSourceGrid.Columns("UtilityID").Text, _
-      True, _
+      ctlSourceGrid.Columns("UtilityID").Text, True, _
       ctlSourceGrid.Columns("HiddenGroups").Text, _
       cboButtonLinkView.List(cboButtonLinkView.ListIndex), _
       ctlSourceGrid.Columns("NewWindow").Text, _
-      ctlSourceGrid.Columns("EMailAddress").Text, _
-      ctlSourceGrid.Columns("EMailSubject").Text, _
-      ctlSourceGrid.Columns("AppFilePath").Text, _
-      ctlSourceGrid.Columns("AppParameters").Text, _
-      "", _
-      False, _
-      False, _
-      mcolSSITableViews
-      
+      ctlSourceGrid.Columns("EMailAddress").Text, ctlSourceGrid.Columns("EMailSubject").Text, _
+      ctlSourceGrid.Columns("AppFilePath").Text, ctlSourceGrid.Columns("AppParameters").Text, "", False, _
+      ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), Val(ctlSourceGrid.Columns("PictureID").Text), _
+      ctlSourceGrid.Columns("ChartShowLegend").value, Val(ctlSourceGrid.Columns("ChartType").Text), _
+      ctlSourceGrid.Columns("ChartShowGrid").value, ctlSourceGrid.Columns("ChartStackSeries").value, _
+      Val(ctlSourceGrid.Columns("ChartViewID").Text), _
+      Val(ctlSourceGrid.Columns("ChartTableID").Text), _
+      Val(ctlSourceGrid.Columns("ChartColumnID").Text), _
+      Val(ctlSourceGrid.Columns("ChartFilterID").Text), _
+      Val(ctlSourceGrid.Columns("ChartAggregateType").Text), mcolSSITableViews
     .Show vbModal
 
     If Not .Cancelled Then
@@ -2559,7 +2682,19 @@ Private Sub cmdCopyButtonLink_Click()
         & vbTab & .EMailAddress _
         & vbTab & .EMailSubject _
         & vbTab & .AppFilePath _
-        & vbTab & .AppParameters
+        & vbTab & .AppParameters _
+        & vbTab & IIf(.optLink(SSINTLINKSEPARATOR).value, 1, IIf(.optLink(SSINTLINKCHART).value, 2, 0)) _
+        & vbTab & IIf(.chkNewColumn.value = 0, "0", "1") _
+        & vbTab & IIf(Len(.txtIcon.Text) > 0, CStr(.PictureID), "") _
+        & vbTab & IIf(.chkShowLegend.value = 0, "0", "1") _
+        & vbTab & .cboChartType.ItemData(.cboChartType.ListIndex) _
+        & vbTab & IIf(.chkDottedGridlines.value = 0, "0", "1") _
+        & vbTab & IIf(.chkStackSeries.value = 0, "0", "1") _
+        & vbTab & .ChartViewID _
+        & vbTab & .ChartTableID _
+        & vbTab & .ChartColumnID _
+        & vbTab & .ChartFilterID _
+        & vbTab & .ChartAggregateType
 
       For iLoop = 0 To cboButtonLinkView.ListCount - 1
         If cboButtonLinkView.List(iLoop) = .TableViewName Then
@@ -2658,8 +2793,9 @@ Private Sub cmdCopyDropdownListLink_Click()
       ctlSourceGrid.Columns("AppFilePath").Text, _
       ctlSourceGrid.Columns("AppParameters").Text, _
       "", _
-      False, _
-      False, _
+      False, False, _
+      0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, _
       mcolSSITableViews
     
     .Show vbModal
@@ -2750,13 +2886,6 @@ Private Sub cmdCopyHypertextLink_Click()
     Exit Sub
   End If
   
-  If (ctlSourceGrid.Columns("IsSeparator").CellValue(ctlSourceGrid.Bookmark) = True) Then
-    mfIsCopyingSeparator = True
-    cmdHypertextLinkSeparator_Click
-    mfIsCopyingSeparator = False
-    Exit Sub
-  End If
-
   ctlSourceGrid.Bookmark = ctlSourceGrid.SelBookmarks(0)
   lngRow = ctlSourceGrid.AddItemRowIndex(ctlSourceGrid.Bookmark)
 
@@ -2783,9 +2912,10 @@ Private Sub cmdCopyHypertextLink_Click()
       ctlSourceGrid.Columns("EMailSubject").Text, _
       ctlSourceGrid.Columns("AppFilePath").Text, _
       ctlSourceGrid.Columns("AppParameters").Text, _
-      "", _
-      False, _
-      False, _
+      "", False, _
+      ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
+      Val(ctlSourceGrid.Columns("PictureID").Text), _
+      False, 0, False, False, 0, 0, 0, 0, 0, _
       mcolSSITableViews
     
     .Show vbModal
@@ -2799,7 +2929,11 @@ Private Sub cmdCopyHypertextLink_Click()
         & vbTab & .EMailAddress _
         & vbTab & .EMailSubject _
         & vbTab & .AppFilePath _
-        & vbTab & .AppParameters
+        & vbTab & .AppParameters _
+        & vbTab & IIf(.optLink(SSINTLINKSEPARATOR).value = True, 1, 0) _
+        & vbTab & IIf(.chkNewColumn.value = 0, "0", "1") _
+        & vbTab & IIf(Len(.txtIcon.Text) > 0, CStr(.PictureID), "")
+        
         
       For iLoop = 0 To cboHypertextLinkView.ListCount - 1
         If cboHypertextLinkView.List(iLoop) = .TableViewName Then
@@ -2899,7 +3033,8 @@ Private Sub cmdCopyDocument_Click()
       "", _
       ctlSourceGrid.Columns("DocumentFilePath").Text, _
       ctlSourceGrid.Columns("DisplayDocumentHyperlink").value, _
-      False, _
+      False, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, _
       mcolSSITableViews
       
     .Show vbModal
@@ -2992,13 +3127,6 @@ Private Sub cmdEditButtonLink_Click()
   If ctlSourceGrid Is Nothing Then
     Exit Sub
   End If
-  
-  If (ctlSourceGrid.Columns("IsSeparator").CellValue(ctlSourceGrid.Bookmark) = True) Then
-    mfIsEditingSeparator = True
-    cmdButtonLinkSeparator_Click
-    mfIsEditingSeparator = False
-    Exit Sub
-  End If
 
   ctlSourceGrid.Bookmark = ctlSourceGrid.SelBookmarks(0)
   lngRow = ctlSourceGrid.AddItemRowIndex(ctlSourceGrid.Bookmark)
@@ -3017,20 +3145,18 @@ Private Sub cmdEditButtonLink_Click()
       ctlSourceGrid.Columns("startMode").Text, _
       DecodeTag(ctlSourceGrid.Tag, True), _
       ctlSourceGrid.Columns("UtilityType").Text, _
-      ctlSourceGrid.Columns("UtilityID").Text, _
-      False, _
+      ctlSourceGrid.Columns("UtilityID").Text, False, _
       ctlSourceGrid.Columns("HiddenGroups").Text, _
       cboButtonLinkView.List(cboButtonLinkView.ListIndex), _
       ctlSourceGrid.Columns("NewWindow").Text, _
-      ctlSourceGrid.Columns("EMailAddress").Text, _
-      ctlSourceGrid.Columns("EMailSubject").Text, _
-      ctlSourceGrid.Columns("AppFilePath").Text, _
-      ctlSourceGrid.Columns("AppParameters").Text, _
-      "", _
-      False, _
-      False, _
+      ctlSourceGrid.Columns("EMailAddress").Text, ctlSourceGrid.Columns("EMailSubject").Text, _
+      ctlSourceGrid.Columns("AppFilePath").Text, ctlSourceGrid.Columns("AppParameters").Text, _
+      "", False, _
+      ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), Val(ctlSourceGrid.Columns("PictureID").Text), _
+      ctlSourceGrid.Columns("ChartShowLegend").Text, Val(ctlSourceGrid.Columns("ChartType").Text), ctlSourceGrid.Columns("ChartShowGrid").Text, _
+      ctlSourceGrid.Columns("ChartStackSeries").Text, Val(ctlSourceGrid.Columns("ChartviewID").Text), Val(ctlSourceGrid.Columns("ChartTableID").Text), _
+      Val(ctlSourceGrid.Columns("ChartColumnID").Text), Val(ctlSourceGrid.Columns("ChartFilterID").Text), Val(ctlSourceGrid.Columns("ChartAggregateType").Text), _
       mcolSSITableViews
-          
     .Show vbModal
 
     If Not .Cancelled Then
@@ -3047,7 +3173,19 @@ Private Sub cmdEditButtonLink_Click()
         & vbTab & .EMailSubject _
         & vbTab & .AppFilePath _
         & vbTab & .AppParameters _
-        & vbTab & "0"
+        & vbTab & IIf(.optLink(SSINTLINKSEPARATOR).value, 1, IIf(.optLink(SSINTLINKCHART).value, 2, 0)) _
+        & vbTab & IIf(.chkNewColumn.value = 0, "0", "1") _
+        & vbTab & IIf(Len(.txtIcon.Text) > 0, CStr(.PictureID), "") _
+        & vbTab & IIf(.chkShowLegend = 0, "0", "1") _
+        & vbTab & .cboChartType.ItemData(.cboChartType.ListIndex) _
+        & vbTab & IIf(.chkDottedGridlines = 0, "0", "1") _
+        & vbTab & IIf(.chkStackSeries = 0, "0", "1") _
+        & vbTab & 0 _
+        & vbTab & .ChartTableID _
+        & vbTab & .ChartColumnID _
+        & vbTab & 0 _
+        & vbTab & .ChartAggregateType
+        ' above is missing viewid and filterid in that order. (the 0's)
         
       ctlSourceGrid.RemoveItem lngRow
       
@@ -3151,8 +3289,9 @@ Private Sub cmdEditDropdownListLink_Click()
       ctlSourceGrid.Columns("AppFilePath").Text, _
       ctlSourceGrid.Columns("AppParameters").Text, _
       "", _
-      False, _
-      False, _
+      False, False, _
+      0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, _
       mcolSSITableViews
     
     .Show vbModal
@@ -3246,13 +3385,6 @@ Private Sub cmdEditHypertextLink_Click()
     Exit Sub
   End If
 
-  If (ctlSourceGrid.Columns("IsSeparator").CellValue(ctlSourceGrid.Bookmark) = True) Then
-    mfIsEditingSeparator = True
-    cmdHypertextLinkSeparator_Click
-    mfIsEditingSeparator = False
-    Exit Sub
-  End If
-
   ctlSourceGrid.Bookmark = ctlSourceGrid.SelBookmarks(0)
   lngRow = ctlSourceGrid.AddItemRowIndex(ctlSourceGrid.Bookmark)
 
@@ -3279,9 +3411,10 @@ Private Sub cmdEditHypertextLink_Click()
       ctlSourceGrid.Columns("EMailSubject").Text, _
       ctlSourceGrid.Columns("AppFilePath").Text, _
       ctlSourceGrid.Columns("AppParameters").Text, _
-      "", _
-      False, _
-      False, _
+      "", False, _
+      ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
+      Val(ctlSourceGrid.Columns("PictureID").Text), _
+      False, 0, False, False, 0, 0, 0, 0, 0, _
       mcolSSITableViews
     
     .Show vbModal
@@ -3296,7 +3429,10 @@ Private Sub cmdEditHypertextLink_Click()
         & vbTab & .EMailSubject _
         & vbTab & .AppFilePath _
         & vbTab & .AppParameters _
-        & vbTab & "0"
+        & vbTab & IIf(.optLink(SSINTLINKSEPARATOR).value = True, 1, 0) _
+        & vbTab & IIf(.chkNewColumn.value = 0, "0", "1") _
+        & vbTab & IIf(Len(.txtIcon.Text) > 0, CStr(.PictureID), "")
+        
         
       ctlSourceGrid.RemoveItem lngRow
       
@@ -3401,7 +3537,8 @@ Private Sub cmdEditDocument_Click()
       "", _
       ctlSourceGrid.Columns("DocumentFilePath").Text, _
       ctlSourceGrid.Columns("DisplayDocumentHyperlink").Text, _
-      False, _
+      False, 0, 0, _
+      False, 0, False, False, 0, 0, 0, 0, 0, _
       mcolSSITableViews
           
     .Show vbModal
@@ -3621,87 +3758,89 @@ Private Sub cmdEditTableView_Click()
 
 End Sub
 
-
-Private Sub cmdHypertextLinkSeparator_Click()
-
-  Dim sRow As String
-  Dim lngRow As Long
-  Dim frmLinkSeparator As New frmSSIntranetLinkSeparator
-  Dim ctlSourceGrid As SSDBGrid
-  Dim iLoop As Integer
-  Dim sViews As String
-  Dim fNew As Boolean
-  
-  sViews = SelectedViews
-  
-  Set ctlSourceGrid = CurrentLinkGrid(SSINTLINK_HYPERTEXT)
-  If ctlSourceGrid Is Nothing Then
-    Exit Sub
-  End If
-
-  ctlSourceGrid.Bookmark = ctlSourceGrid.SelBookmarks(0)
-  lngRow = ctlSourceGrid.AddItemRowIndex(ctlSourceGrid.Bookmark)
-
-  fNew = (Not mfIsCopyingSeparator) And (Not mfIsEditingSeparator)
-  
-  With frmLinkSeparator
-    .Initialize SSINTLINK_HYPERTEXT, _
-      IIf(fNew, "", ctlSourceGrid.Columns("Text").CellValue(ctlSourceGrid.Bookmark)), _
-      DecodeTag(ctlSourceGrid.Tag, False), _
-      DecodeTag(ctlSourceGrid.Tag, True), _
-      mfIsCopyingSeparator
-          
-    .Show vbModal
-
-    If Not .Cancelled Then
-      sRow = .Text _
-        & vbTab & "" _
-        & vbTab & "" _
-        & vbTab & "" _
-        & vbTab & vbTab & "0" _
-        & vbTab & "" _
-        & vbTab & "" _
-        & vbTab & "" _
-        & vbTab & "" _
-        & vbTab & "1"
-
-      With ctlSourceGrid
-        If mfIsEditingSeparator Then
-          ctlSourceGrid.RemoveItem lngRow
-
-          .AddItem sRow, lngRow
-          .Bookmark = .AddItemBookmark(lngRow)
-          .Update
-          .SelBookmarks.RemoveAll
-          .SelBookmarks.Add .AddItemBookmark(lngRow)
-          
-        ElseIf mfIsCopyingSeparator Then
-          .AddItem sRow, lngRow + 1
-          .Bookmark = .AddItemBookmark(lngRow + 1)
-          .Update
-          .SelBookmarks.RemoveAll
-          .SelBookmarks.Add .AddItemBookmark(lngRow + 1)
-          
-        Else
-          ' Adding a new separator.
-          .AddItem sRow
-          .Bookmark = .AddItemBookmark(.Rows - 1)
-          .Update
-          .SelBookmarks.RemoveAll
-          .SelBookmarks.Add .Bookmark
-        End If
-      End With
-      
-      mfIsEditingSeparator = False
-      mfIsCopyingSeparator = False
-      Changed = True
-    End If
-  End With
-
-  UnLoad frmLinkSeparator
-  Set frmLinkSeparator = Nothing
-
-End Sub
+'NPG Dashboard
+'Private Sub cmdHypertextLinkSeparator_Click()
+'
+'  Dim sRow As String
+'  Dim lngRow As Long
+'  Dim frmLinkSeparator As New frmSSIntranetLinkSeparator
+'  Dim ctlSourceGrid As SSDBGrid
+'  Dim iLoop As Integer
+'  Dim sViews As String
+'  Dim fNew As Boolean
+'
+'  sViews = SelectedViews
+'
+'  Set ctlSourceGrid = CurrentLinkGrid(SSINTLINK_HYPERTEXT)
+'  If ctlSourceGrid Is Nothing Then
+'    Exit Sub
+'  End If
+'
+'  ctlSourceGrid.Bookmark = ctlSourceGrid.SelBookmarks(0)
+'  lngRow = ctlSourceGrid.AddItemRowIndex(ctlSourceGrid.Bookmark)
+'
+'  fNew = (Not mfIsCopyingSeparator) And (Not mfIsEditingSeparator)
+'
+'  With frmLinkSeparator
+'    .Initialize SSINTLINK_HYPERTEXT, _
+'      IIf(fNew, "", ctlSourceGrid.Columns("Text").CellValue(ctlSourceGrid.Bookmark)), _
+'      DecodeTag(ctlSourceGrid.Tag, False), _
+'      DecodeTag(ctlSourceGrid.Tag, True), _
+'      mfIsCopyingSeparator, _
+'      0, _
+'      0
+'
+'    .Show vbModal
+'
+'    If Not .Cancelled Then
+'      sRow = .Text _
+'        & vbTab & "" _
+'        & vbTab & "" _
+'        & vbTab & "" _
+'        & vbTab & vbTab & "0" _
+'        & vbTab & "" _
+'        & vbTab & "" _
+'        & vbTab & "" _
+'        & vbTab & "" _
+'        & vbTab & "1"
+'
+'      With ctlSourceGrid
+'        If mfIsEditingSeparator Then
+'          ctlSourceGrid.RemoveItem lngRow
+'
+'          .AddItem sRow, lngRow
+'          .Bookmark = .AddItemBookmark(lngRow)
+'          .Update
+'          .SelBookmarks.RemoveAll
+'          .SelBookmarks.Add .AddItemBookmark(lngRow)
+'
+'        ElseIf mfIsCopyingSeparator Then
+'          .AddItem sRow, lngRow + 1
+'          .Bookmark = .AddItemBookmark(lngRow + 1)
+'          .Update
+'          .SelBookmarks.RemoveAll
+'          .SelBookmarks.Add .AddItemBookmark(lngRow + 1)
+'
+'        Else
+'          ' Adding a new separator.
+'          .AddItem sRow
+'          .Bookmark = .AddItemBookmark(.Rows - 1)
+'          .Update
+'          .SelBookmarks.RemoveAll
+'          .SelBookmarks.Add .Bookmark
+'        End If
+'      End With
+'
+'      mfIsEditingSeparator = False
+'      mfIsCopyingSeparator = False
+'      Changed = True
+'    End If
+'  End With
+'
+'  UnLoad frmLinkSeparator
+'  Set frmLinkSeparator = Nothing
+'
+'End Sub
 
 Private Sub cmdMoveButtonLinkDown_Click()
   
@@ -4340,7 +4479,9 @@ Private Sub ReadParameters()
             vbTab & rsLinks!EMailSubject & _
             vbTab & rsLinks!AppFilePath & _
             vbTab & rsLinks!AppParameters & _
-            vbTab & IIf(IsNull(rsLinks!IsSeparator), "0", IIf(rsLinks!IsSeparator, "1", "0"))
+            vbTab & IIf(IsNull(rsLinks!Element_Type), "0", CStr(rsLinks!Element_Type)) & _
+            vbTab & IIf(IsNull(rsLinks!SeparatorOrientation), "0", CStr(rsLinks!SeparatorOrientation)) & _
+            vbTab & IIf(IsNull(rsLinks!PictureID), "0", CStr(rsLinks!PictureID))
         End If
         
       Case SSINTLINK_BUTTON
@@ -4368,7 +4509,18 @@ Private Sub ReadParameters()
             vbTab & rsLinks!EMailSubject & _
             vbTab & rsLinks!AppFilePath & _
             vbTab & rsLinks!AppParameters & _
-            vbTab & IIf(IsNull(rsLinks!IsSeparator), "0", IIf(rsLinks!IsSeparator, "1", "0"))
+            vbTab & CStr(IIf(IsNull(rsLinks!Element_Type), "0", CStr(rsLinks!Element_Type))) & _
+            vbTab & IIf(IsNull(rsLinks!SeparatorOrientation), "0", CStr(rsLinks!SeparatorOrientation)) & _
+            vbTab & IIf(IsNull(rsLinks!PictureID), "0", CStr(rsLinks!PictureID)) & _
+            vbTab & IIf(IsNull(rsLinks!Chart_ShowLegend), "0", IIf(rsLinks!Chart_ShowLegend, "1", "0")) & _
+            vbTab & CStr(rsLinks!Chart_Type) & _
+            vbTab & IIf(IsNull(rsLinks!Chart_ShowGrid), "0", IIf(rsLinks!Chart_ShowGrid, "1", "0")) & _
+            vbTab & IIf(IsNull(rsLinks!Chart_StackSeries), "0", IIf(rsLinks!Chart_StackSeries, "1", "0")) & _
+            vbTab & CStr(rsLinks!Chart_ViewID) & _
+            vbTab & CStr(rsLinks!Chart_TableID) & _
+            vbTab & CStr(rsLinks!Chart_ColumnID) & _
+            vbTab & CStr(rsLinks!Chart_FilterID) & _
+            vbTab & CStr(rsLinks!Chart_AggregateType)
        End If
           
       Case SSINTLINK_DROPDOWNLIST
@@ -4838,6 +4990,8 @@ Private Sub RefreshTableViewCombos()
       ' Add the selected single record & multiple record views to the link view combos.
       cboHypertextLinkView.AddItem sTableViewName
       cboButtonLinkView.AddItem sTableViewName
+      ' Add the viewID too!
+      cboButtonLinkView.ItemData(iLoop) = lngViewID
       cboDropdownListLinkView.AddItem sTableViewName
       cboDocumentView.AddItem sTableViewName
     
@@ -4950,13 +5104,7 @@ Private Sub grdButtonLinks_DblClick(Index As Integer)
   
   If Not mblnReadOnly Then
     If grdButtonLinks(Index).Rows > 0 Then
-      If grdButtonLinks(Index).Columns("IsSeparator").value = True Then
-        mfIsEditingSeparator = True
-        cmdButtonLinkSeparator_Click
-        mfIsEditingSeparator = False
-      Else
         cmdEditButtonLink_Click
-      End If
     Else
       cmdAddButtonLink_Click
     End If
@@ -5028,13 +5176,7 @@ Private Sub grdHypertextLinks_DblClick(Index As Integer)
   
   If Not mblnReadOnly Then
     If grdHypertextLinks(Index).Rows > 0 Then
-      If grdHypertextLinks(Index).Columns("IsSeparator").value = True Then
-        mfIsEditingSeparator = True
-        cmdHypertextLinkSeparator_Click
-        mfIsEditingSeparator = False
-      Else
         cmdEditHypertextLink_Click
-      End If
     Else
       cmdAddHyperTextLink_Click
     End If
