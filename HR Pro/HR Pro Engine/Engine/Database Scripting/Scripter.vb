@@ -680,8 +680,9 @@ Namespace ScriptDB
               "{2}" & vbNewLine & vbNewLine & _
               sSQLCode_Audit & _
               sValidation & vbNewLine & _
-              "    DELETE [dbo].[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3};" & vbNewLine _
-              , objTable.Name, sTriggerName, sSQLCode_AuditInsert, CInt(objTable.ID))
+              "    DELETE [dbo].[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3};" & vbNewLine & vbNewLine & _
+              "{4}" & vbNewLine & vbNewLine _
+              , objTable.Name, sTriggerName, sSQLCode_AuditInsert, CInt(objTable.ID), objTable.SysMgrInsertTrigger)
           ScriptTrigger("dbo", objTable, TriggerType.AfterInsert, sSQL)
 
           ' -------------------
@@ -718,11 +719,12 @@ Namespace ScriptDB
               sSQLUniqueCalcs & vbNewLine & vbNewLine & _
               "{6}" & vbNewLine & _
               sSQLCode_Audit & _
-              "{7}" & vbNewLine & vbNewLine _
+              "{7}" & vbNewLine & vbNewLine & _
+              "{8}" & vbNewLine & vbNewLine _
               , objTable.Name, sTriggerName _
               , "", CInt(objTable.ID), Tables.sysTriggerTransaction _
               , String.Join(vbNewLine, aryUpdateUniqueCodes.ToArray()) _
-              , sSQLCode_AuditUpdate, sSQLPostAuditCalcs) & vbNewLine & vbNewLine
+              , sSQLCode_AuditUpdate, sSQLPostAuditCalcs, objTable.SysMgrUpdateTrigger) & vbNewLine & vbNewLine
           ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSQL)
 
 
@@ -739,9 +741,10 @@ Namespace ScriptDB
               sSQLCode_Audit & _
               "{3}" & vbNewLine & vbNewLine & _
               "    -- Clear the temporary trigger status table" & vbNewLine & vbNewLine & _
-              "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {5};" & vbNewLine & vbNewLine _
+              "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {5};" & vbNewLine & vbNewLine & _
+              "{6}" & vbNewLine & vbNewLine _
               , objTable.Name, sTriggerName, sSQLCode_AuditDelete, sSQLParentColumns_Delete _
-              , Tables.sysTriggerTransaction, CInt(objTable.ID))
+              , Tables.sysTriggerTransaction, CInt(objTable.ID), objTable.SysMgrDeleteTrigger)
           ScriptTrigger("dbo", objTable, TriggerType.AfterDelete, sSQL)
 
         Next
@@ -813,6 +816,7 @@ Namespace ScriptDB
           "    DECLARE @iCount        integer," & vbNewLine & _
           "            @isovernight   bit," & vbNewLine & _
           "            @forcerefresh  bit," & vbNewLine & _
+          "            @recorddesc    nvarchar(MAX), " & vbNewLine & _
           "            @user          varchar(255);" & vbNewLine & vbNewLine & _
           "    SELECT @isovernight = dbo.[udfsys_isovernightprocess]();" & vbNewLine & _
           "    SELECT @user =	CASE WHEN UPPER(LEFT(APP_NAME(), 15)) = 'HR PRO WORKFLOW' THEN 'HR Pro Workflow'" & vbNewLine & _
