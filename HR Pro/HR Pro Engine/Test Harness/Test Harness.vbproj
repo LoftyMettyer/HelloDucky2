@@ -55,10 +55,6 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Infragistics2.Shared.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb" />
-    <Reference Include="Infragistics2.Win.UltraWinEditors.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
-    <Reference Include="Infragistics2.Win.UltraWinGrid.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
-    <Reference Include="Infragistics2.Win.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -114,18 +110,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Objects\HCMObjectMapping.Designer.vb">
-      <DependentUpon>HCMObjectMapping.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Objects\HCMObjectMapping.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Objects\HCMObjectPane.Designer.vb">
-      <DependentUpon>HCMObjectPane.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Objects\HCMObjectPane.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="ProgressBar.Designer.vb">
       <DependentUpon>ProgressBar.vb</DependentUpon>
     </Compile>
@@ -146,12 +130,6 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Objects\HCMObjectMapping.resx">
-      <DependentUpon>HCMObjectMapping.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Objects\HCMObjectPane.resx">
-      <DependentUpon>HCMObjectPane.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ProgressBar.resx">
       <DependentUpon>ProgressBar.vb</DependentUpon>
@@ -206,6 +184,9 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Objects\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
