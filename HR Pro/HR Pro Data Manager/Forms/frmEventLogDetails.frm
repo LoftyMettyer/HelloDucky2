@@ -946,10 +946,10 @@ Private Sub Form_Resize()
   
   lngLineWidth = lngInnerFrameWidth - 135
 
-  cmdOk.Left = Me.ScaleWidth - (BUTTON_WIDTH + (BUTTON_GAP / 2))
-  cmdOk.Top = Me.ScaleHeight - (BUTTON_HEIGHT + (BUTTON_GAP / 2))
+  cmdOK.Left = Me.ScaleWidth - (BUTTON_WIDTH + (BUTTON_GAP / 2))
+  cmdOK.Top = Me.ScaleHeight - (BUTTON_HEIGHT + (BUTTON_GAP / 2))
 
-  cmdPrint.Left = cmdOk.Left - (BUTTON_WIDTH + (BUTTON_GAP / 2))
+  cmdPrint.Left = cmdOK.Left - (BUTTON_WIDTH + (BUTTON_GAP / 2))
   cmdPrint.Top = Me.ScaleHeight - (BUTTON_HEIGHT + (BUTTON_GAP / 2))
 
   cmdEmail.Left = cmdPrint.Left - (BUTTON_WIDTH + (BUTTON_GAP / 2))
@@ -1087,7 +1087,7 @@ Private Function DoHeaderInfo(plngKey As Long) As Boolean
         lblMode.Caption = "Pack"
         lblBatchJobNameLabel.Caption = "Report Pack Name :"
         lblAllJobsLabel.Caption = "All Reports in Pack :"
-      Case False
+      Case Else
         lblMode.Caption = IIf(.Fields("Mode").Value, "Batch", "Manual")
     End Select
     

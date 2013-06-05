@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmEventLog 
    Caption         =   "Event Log"
@@ -989,7 +989,7 @@ Private Function RefreshGrid() As Boolean
   pstrSQL = pstrSQL & "[ASRSysEventLog].[Type],"
   pstrSQL = pstrSQL & "[ASRSysEventLog].[Name],"
   pstrSQL = pstrSQL & "CASE [ASRSysEventLog].[Status] WHEN 0 THEN 'Pending' WHEN 1 THEN 'Cancelled' WHEN 2 THEN 'Failed' WHEN 3 THEN 'Successful' WHEN 4 THEN 'Skipped' WHEN 5 THEN 'Error' END AS 'Status',"
-  pstrSQL = pstrSQL & "[ASRSysEventLog].[Mode],"
+  pstrSQL = pstrSQL & "CASE WHEN [ASRSysEventLog].[ReportPack] = 1 THEN 'Pack' WHEN [ASRSysEventLog].[Mode] = 1 THEN 'Batch' WHEN [ASRSysEventLog].[Mode] = 0 THEN 'Manual' END AS 'Mode',"
   pstrSQL = pstrSQL & "[ASRSysEventLog].[Username],"
   pstrSQL = pstrSQL & "[ASRSysEventLog].[BatchJobID],"
   pstrSQL = pstrSQL & "[ASRSysEventLog].[BatchRunID]"
@@ -1001,7 +1001,6 @@ Private Function RefreshGrid() As Boolean
   If cboType.ItemData(cboType.ListIndex) > 0 Then
     pstrSQL = pstrSQL & " AND [ASRSysEventLog].[Type] = " & CStr(cboType.ItemData(cboType.ListIndex))
   End If
-  
   
   If cboStatus.Text <> "<All>" Then
     pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & "[ASRSysEventLog].[status] = "
@@ -1041,9 +1040,12 @@ Private Function RefreshGrid() As Boolean
   
   ' RH 10/10/00 - BUG 1117 - Mode is either 0 or 1, so when sorting, you have to do the opposite order
   If pstrOrderField = "Mode" Then
-    pstrSQL = pstrSQL & " ORDER BY [" & pstrOrderField & "] " & IIf(pstrOrderOrder = "ASC", "DESC", "ASC")
-  Else
-    If pstrOrderField = "Type" Then
+
+      pstrSQL = pstrSQL & " ORDER BY CASE " & _
+        " WHEN [ASRSysEventLog].[ReportPack] = 1 THEN 'Pack' WHEN [ASRSysEventLog].[Mode] = 1 THEN 'Batch' WHEN [ASRSysEventLog].[Mode] = 0 THEN 'Manual' END " & _
+        IIf(pstrOrderOrder = "ASC", "ASC", "DESC")
+
+  ElseIf pstrOrderField = "Type" Then
       'NHRD15012003 Fault 4617 These items for the type column were
       'being ordered by the type field which is originally numericly based.
       'This code is inserted to order the types by their display names as found
@@ -1077,9 +1079,19 @@ Private Function RefreshGrid() As Boolean
         " WHEN [ASRSysEventLog].[Type] = 25 THEN 'Workflow Rebuild'" & _
         " ELSE ''" & _
         " END " & IIf(pstrOrderOrder = "ASC", "ASC", "DESC")
-    Else
+        
+  ElseIf pstrOrderField = "Status" Then
+  
+      pstrSQL = pstrSQL & " ORDER BY CASE " & _
+        " WHEN [ASRSysEventLog].[Status] = 1 THEN 'Cancelled'" & _
+        " WHEN [ASRSysEventLog].[Status] = 2 THEN 'Failed'" & _
+        " WHEN [ASRSysEventLog].[Status] = 3 THEN 'Successful'" & _
+        " WHEN [ASRSysEventLog].[Status] = 4 THEN 'Skipped'" & _
+        " WHEN [ASRSysEventLog].[Status] = 5 THEN 'Error'" & _
+        " ELSE 'Pending'" & _
+        " END " & IIf(pstrOrderOrder = "ASC", "ASC", "DESC")
+  Else
       pstrSQL = pstrSQL & " ORDER BY [ASRSysEventLog].[" & pstrOrderField & "] " & pstrOrderOrder
-    End If
   End If
   
   Set mrstHeaders = mclsData.OpenPersistentRecordset(pstrSQL, adOpenKeyset, adLockReadOnly)
@@ -1362,8 +1374,6 @@ Private Sub grdEventLog_UnboundReadData(ByVal RowBuf As SSDataWidgets_B.ssRowBuf
               RowBuf.Value(iRowIndex, iFieldIndex) = FormatEventDuration(mrstHeaders.Fields("Duration").Value)
             Case "Type"
               RowBuf.Value(iRowIndex, iFieldIndex) = GetUtilityType(mrstHeaders.Fields("Type"))
-            Case "Mode"
-              RowBuf.Value(iRowIndex, iFieldIndex) = cboMode.Text ' IIf(mrstHeaders.Fields("Mode") = False, "Manual", "Batch")
             Case Else
               RowBuf.Value(iRowIndex, iFieldIndex) = mrstHeaders(iFieldIndex)
           End Select
