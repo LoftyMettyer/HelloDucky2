@@ -71,6 +71,7 @@ Public Enum ControlTypes
   giCTRL_LINK = 2 ^ 11
   giCTRL_WORKINGPATTERN = 2 ^ 12
   giCTRL_LINE = 2 ^ 13
+  giCTRL_NAVIGATION = 2 ^ 14
 End Enum
 
 Public Enum PropertyConstants
@@ -130,6 +131,7 @@ Private gfPersonnelModule As Boolean
 Private gfAbsenceModule As Boolean
 Private gfSSIntranetModule As Boolean
 Private gfWorkflowModule As Boolean
+Private gfVersion1Module As Boolean
 
 ' Expression Type constants
 ' NB. If you modify this enum, you'll need to do the same to the mathcing enums in:
@@ -330,6 +332,21 @@ Public Enum AccordMapType
   MAPTYPE_COLUMN = 0
   MAPTYPE_EXPRESSION = 1
   MAPTYPE_VALUE = 2
+End Enum
+
+' Navigation Display Types
+Public Enum NavigationDisplayType
+  Hyperlink = 0
+  Button = 1
+  Browser = 2
+  Hidden = 3
+End Enum
+
+' Navigation execution types
+Public Enum NavigateIn
+  URL = 0
+  MenuBar = 1
+  DB = 2
 End Enum
 
 Public Property Get Changed() As Boolean
@@ -2013,6 +2030,10 @@ Private Sub ActivateModules()
   ' Payroll Module
   gbAccordPayrollModule = IsModuleEnabled(modAccordPayroll)
 
+  ' Version 1 Module
+  gfVersion1Module = IsModuleEnabled(modVersion1)
+  gfVersion1Module = True
+
   ' Postcode Integration modules
   gbAFDEnabled = IsModuleEnabled(modAFD)
   gbQAddressEnabled = IsModuleEnabled(modQAddress)
@@ -2089,14 +2110,15 @@ End Sub
 
 Public Property Get SelfServiceIntranetModule() As Boolean
   SelfServiceIntranetModule = gfSSIntranetModule
- 
 End Property
 
 Public Property Get WorkflowModule() As Boolean
   WorkflowModule = gfWorkflowModule
- 
 End Property
 
+Public Property Get Version1Module() As Boolean
+  Version1Module = gfVersion1Module
+End Property
 
 Public Property Get TrainingBookingModule() As Boolean
   TrainingBookingModule = gfTrainingBookingModule
@@ -2109,7 +2131,6 @@ End Property
 Public Property Get AbsenceModule() As Boolean
   AbsenceModule = gfAbsenceModule
 End Property
-
 
 Public Property Get ChangedDiaryLink() As Boolean
   ChangedDiaryLink = blnChangedDiaryLink
