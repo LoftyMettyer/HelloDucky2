@@ -533,21 +533,14 @@ Namespace Things
 
     Private Sub SQLCode_AddCodeLevel(ByRef [Components] As Things.Collection, ByRef [CodeCluster] As ScriptDB.LinesOfCode)
 
-      'Dim sFilter As String
       Dim objComponent As Things.Component
 
       Dim guiObjectID As HCMGuid
-      '   Dim iValueDataType As ScriptDB.ComponentValueTypes
 
       Dim iValueSubType As ScriptDB.ColumnTypes = Nothing
 
       Dim LineOfCode As ScriptDB.CodeElement
       Dim objCalculation As Things.Expression
-
-      'iReturnDataType = drObject.Item("DataType").ToString
-
-      '    mbAddBaseTable = False
-      '    sSQLFrom = 
 
       For Each objComponent In [Components]
         guiObjectID = objComponent.ID
@@ -576,7 +569,7 @@ Namespace Things
                 LineOfCode.Code = String.Format("{0}", objComponent.ValueNumeric)
 
               Case ScriptDB.ComponentValueTypes.String
-                LineOfCode.Code = String.Format("'{0}'", objComponent.ValueString)
+                LineOfCode.Code = String.Format("'{0}'", objComponent.ValueString.Replace("'", "''"))
 
               Case ScriptDB.ComponentValueTypes.Date
                 LineOfCode.Code = String.Format("'{0}'", objComponent.ValueDate.ToString("yyyy-MM-dd"))
@@ -1131,10 +1124,10 @@ Namespace Things
       '      ChildCodeCluster.
 
       ' Nesting is too deep - convert to part number
-      If ChildCodeCluster.NestedLevel > 12 Then 'And objCodeLibrary.SplitIntoCase Then
+      If ChildCodeCluster.NestedLevel > 11 Then 'And objCodeLibrary.SplitIntoCase Then
 
         objExpression = New Things.Expression
-        objExpression.ExpressionType = ScriptDB.ExpressionType.Mask
+        objExpression.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
         objExpression.BaseTable = Me.BaseTable
         objExpression.AssociatedColumn = Me.AssociatedColumn
         objExpression.ReturnType = Component.ReturnType
@@ -1155,7 +1148,7 @@ Namespace Things
 
         LineOfCode.Code = String.Format("@part_{0}", iPartNumber)
       Else
-        SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)       
+        SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
 
         ' Debug.Assert(Component.IsEvaluated = False)
 
