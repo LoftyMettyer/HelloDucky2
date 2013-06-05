@@ -15,10 +15,9 @@ Public Const E_NOINTERFACE = &H80004002
 Public Const E_FAIL = &H80004005
 Public Const MAX_GUIDLEN = 40
 
-Public Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" _
-   (pDest As Any, pSource As Any, ByVal ByteLen As Long)
-Public Declare Function StringFromGUID2 Lib "ole32.dll" (rguid As _
-   Any, ByVal lpstrClsId As Long, ByVal cbMax As Integer) As Long
+Public Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (pDest As Any, pSource As Any, ByVal ByteLen As Long)
+Private Declare Function CoCreateGuid Lib "ole32.dll" (tGUIDStructure As udtGUID) As Long
+Public Declare Function StringFromGUID2 Lib "ole32.dll" (rguid As Any, ByVal lpstrClsId As Long, ByVal cbMax As Long) As Long
 
 Public Type udtGUID
     Data1 As Long
@@ -36,3 +35,19 @@ Public m_fSafeForInitializing As Boolean
 '    m_fSafeForInitializing = True
 'End Sub
 
+Public Function CreateGUID() As String
+  Dim sGUID   As String
+  Dim tGUID   As udtGUID
+  Dim bGuid() As Byte
+  Dim lRtn    As Long
+  Const clLen As Long = 50
+  
+  If CoCreateGuid(tGUID) = 0 Then
+    bGuid = String(clLen, 0)
+    lRtn = StringFromGUID2(tGUID, VarPtr(bGuid(0)), clLen)
+    If lRtn > 0 Then
+      sGUID = Mid$(bGuid, 1, lRtn - 1)
+    End If
+    CreateGUID = sGUID
+  End If
+End Function
