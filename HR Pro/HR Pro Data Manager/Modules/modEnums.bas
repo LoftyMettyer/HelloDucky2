@@ -1,5 +1,10 @@
 Attribute VB_Name = "modEnums"
 
+Public Enum OfficeApp
+  oaWord = 0
+  oaExcel = 1
+End Enum
+
 ' Microsoft Word Output Types
 Public Enum WordOutputType
   wdFormatDocument = 0

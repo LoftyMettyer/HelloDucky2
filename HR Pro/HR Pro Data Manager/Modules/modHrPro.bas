@@ -183,9 +183,9 @@ Public Function CheckVersion(psServerName As String) As Boolean
   fVersionOK = ASRDEVELOPMENT
   If fOK Then
     ' Check the application version against the one for the current database.
-    If (App.Major = iMajorAppVersion) And _
-      (App.Minor = iMinorAppVersion) And _
-      (App.Revision = iRevisionAppVersion Or blnNewStyleVersionNo) Then
+    If (app.Major = iMajorAppVersion) And _
+      (app.Minor = iMinorAppVersion) And _
+      (app.Revision = iRevisionAppVersion Or blnNewStyleVersionNo) Then
       ' Application and database versions match.
       fVersionOK = True
     End If
@@ -194,9 +194,9 @@ Public Function CheckVersion(psServerName As String) As Boolean
     
   If fOK Then
     ' Check the application version against the one for the current database.
-    If (App.Major < iMajorAppVersion) Or _
-      ((App.Major = iMajorAppVersion) And (App.Minor < iMinorAppVersion)) Or _
-      ((App.Major = iMajorAppVersion) And (App.Minor = iMinorAppVersion) And (App.Revision < iRevisionAppVersion And Not blnNewStyleVersionNo)) Then
+    If (app.Major < iMajorAppVersion) Or _
+      ((app.Major = iMajorAppVersion) And (app.Minor < iMinorAppVersion)) Or _
+      ((app.Major = iMajorAppVersion) And (app.Minor = iMinorAppVersion) And (app.Revision < iRevisionAppVersion And Not blnNewStyleVersionNo)) Then
       ' Application is too old for the database.
 
       If ASRDEVELOPMENT Then
@@ -204,7 +204,7 @@ Public Function CheckVersion(psServerName As String) As Boolean
           "Contact your administrator for a new version of the application." & vbCrLf & vbCrLf & _
           "Database Name : " & gsDatabaseName & vbCrLf & _
           "Database Version : " & sDBVersion & vbCrLf & vbCrLf & _
-          "Application Version : " & CStr(App.Major) & "." & CStr(App.Minor) & vbCrLf & _
+          "Application Version : " & CStr(app.Major) & "." & CStr(app.Minor) & vbCrLf & _
           "(ASRDevelopment - Continue anyway?)", vbExclamation + vbYesNo, Application.Name)
 
         fOK = (iResponse = vbYes)
@@ -213,7 +213,7 @@ Public Function CheckVersion(psServerName As String) As Boolean
           "Contact your administrator for a new version of the application." & vbCrLf & vbCrLf & _
           "Database Name : " & gsDatabaseName & vbCrLf & _
           "Database Version : " & sDBVersion & vbCrLf & vbCrLf & _
-          "Application Version : " & CStr(App.Major) & "." & CStr(App.Minor), _
+          "Application Version : " & CStr(app.Major) & "." & CStr(app.Minor), _
           vbExclamation + vbOKOnly, Application.Name
 
         fOK = False
@@ -223,9 +223,9 @@ Public Function CheckVersion(psServerName As String) As Boolean
   End If
 
   If fOK Then
-    If (App.Major > iMajorAppVersion) Or _
-      ((App.Major = iMajorAppVersion) And (App.Minor > iMinorAppVersion)) Or _
-      ((App.Major = iMajorAppVersion) And (App.Minor = iMinorAppVersion) And (App.Revision > iRevisionAppVersion And Not blnNewStyleVersionNo)) Then
+    If (app.Major > iMajorAppVersion) Or _
+      ((app.Major = iMajorAppVersion) And (app.Minor > iMinorAppVersion)) Or _
+      ((app.Major = iMajorAppVersion) And (app.Minor = iMinorAppVersion) And (app.Revision > iRevisionAppVersion And Not blnNewStyleVersionNo)) Then
       ' Database is too old for the application. Try to update the database.
       
       If ASRDEVELOPMENT Then
@@ -233,7 +233,7 @@ Public Function CheckVersion(psServerName As String) As Boolean
           "Please ask the System Administrator to update the database in the System Manager." & vbCrLf & vbCrLf & _
           "Database Name : " & gsDatabaseName & vbCrLf & _
           "Database Version : " & sDBVersion & vbCrLf & vbCrLf & _
-          "Application Version : " & CStr(App.Major) & "." & CStr(App.Minor) & vbCrLf & _
+          "Application Version : " & CStr(app.Major) & "." & CStr(app.Minor) & vbCrLf & _
           "(ASRDevelopment - Continue anyway?)", _
           vbExclamation + vbYesNo, Application.Name)
         
@@ -243,7 +243,7 @@ Public Function CheckVersion(psServerName As String) As Boolean
           "Please ask the System Administrator to update the database in the System Manager." & vbCrLf & vbCrLf & _
           "Database Name : " & gsDatabaseName & vbCrLf & _
           "Database Version : " & sDBVersion & vbCrLf & vbCrLf & _
-          "Application Version : " & CStr(App.Major) & "." & CStr(App.Minor), _
+          "Application Version : " & CStr(app.Major) & "." & CStr(app.Minor), _
           vbExclamation + vbOKOnly, Application.Name
           
           fOK = False
@@ -266,9 +266,9 @@ Public Function CheckVersion(psServerName As String) As Boolean
         iRevisionAppVersion = Val(Split(sDBVersion, ".")(2))
       End If
       
-      If (App.Major < iMajorAppVersion) Or _
-        ((App.Major = iMajorAppVersion) And (App.Minor < iMinorAppVersion)) Or _
-        ((App.Major = iMajorAppVersion) And (App.Minor = iMinorAppVersion) And (App.Revision < iRevisionAppVersion And Not blnNewStyleVersionNo)) Then
+      If (app.Major < iMajorAppVersion) Or _
+        ((app.Major = iMajorAppVersion) And (app.Minor < iMinorAppVersion)) Or _
+        ((app.Major = iMajorAppVersion) And (app.Minor = iMinorAppVersion) And (app.Revision < iRevisionAppVersion And Not blnNewStyleVersionNo)) Then
 
         COAMsgBox "The application is now out of date due to an update to the intranet module." & vbCrLf & _
           "Contact your administrator for a new version of the application.", _
@@ -346,7 +346,7 @@ End Function
 Sub Main()
   
   If (InStr(LCase(Command$), "/debug=true") > 0) Then
-    gstrDebugOutputFile = App.Path & "\debug.txt"
+    gstrDebugOutputFile = app.Path & "\debug.txt"
     If Dir(gstrDebugOutputFile) <> vbNullString Then
       Kill gstrDebugOutputFile
     End If
@@ -430,10 +430,10 @@ Sub Main()
   gbDisableCodeJock = (InStr(LCase(Command$), "/skin=false") > 0)
   gbActivateJobServer = (InStr(LCase(Command$), "/jobseek=true") > 0)
 
-  If App.StartMode = vbSModeAutomation Then
+  If app.StartMode = vbSModeAutomation Then
     'If started via OLE automation, return control back to client application
     Exit Sub
-  ElseIf App.StartMode = vbSModeStandalone Then
+  ElseIf app.StartMode = vbSModeStandalone Then
     'Login to database
     DebugOutput "modHRPro.Main", "Application.Login"
     If Application.Login Then
@@ -667,7 +667,7 @@ TidyUpAndExit:
   
 ErrorTrap:
   COAMsgBox "Error checking if the database " & gsDatabaseName & " contains columns of the specified datatype." _
-          , vbExclamation + vbOKOnly, App.Title
+          , vbExclamation + vbOKOnly, app.Title
   DBContains_DataType = False
   Resume TidyUpAndExit
   
@@ -1650,7 +1650,7 @@ Public Function GetPictureFromDatabase(plngImageID As Long) As String
       If .BOF And .EOF Then
         ' Background image somehow deleted.
         SaveSystemSetting "DesktopSetting", "BitmapID", 0
-        COAMsgBox "The background image no longer exists.", vbExclamation + vbOKOnly, App.ProductName
+        COAMsgBox "The background image no longer exists.", vbExclamation + vbOKOnly, app.ProductName
       Else
         lngColSize = !Picture.ActualSize
         If lngColSize > 0 Then
@@ -1986,12 +1986,12 @@ Public Sub AddNewTableEntry(plngLookupTableID As Long)
       Exit Sub
     ElseIf rsTemp.RecordCount > 1 Then
       ' The lookup table has more than one screen defined for it. So tell the user.
-      COAMsgBox "The lookup table '" & sTableName & "' has more than one screen definition." & vbCrLf & "Please contact your system administrator for more information.", vbExclamation, App.ProductName
+      COAMsgBox "The lookup table '" & sTableName & "' has more than one screen definition." & vbCrLf & "Please contact your system administrator for more information.", vbExclamation, app.ProductName
       frmMain.ActiveForm.Enabled = True
     End If
   Else
     ' The lookup table has no screens defined for it. So tell the user.
-    COAMsgBox "The lookup table '" & sTableName & "' does not have a screen definition." & vbCrLf & "Please contact your system administrator for more information.", vbExclamation, App.ProductName
+    COAMsgBox "The lookup table '" & sTableName & "' does not have a screen definition." & vbCrLf & "Please contact your system administrator for more information.", vbExclamation, app.ProductName
     frmMain.ActiveForm.Enabled = True
   End If
   rsTemp.Close
@@ -2747,7 +2747,7 @@ Public Sub UtilityDefAmended(psTable As String, _
     strMBText = strMBText & vbCrLf & _
                 "Save as a new " & strType & "?"
     intMBButtons = vbExclamation + vbOKCancel
-    intMBResponse = COAMsgBox(strMBText, intMBButtons, App.ProductName)
+    intMBResponse = COAMsgBox(strMBText, intMBButtons, app.ProductName)
       
     Select Case intMBResponse
     Case vbOK         'save as new (but this may cause duplicate name message)
@@ -2779,7 +2779,7 @@ Public Sub UtilityDefAmended(psTable As String, _
       strMBText = "The current " & strType & " has been amended by another user. " & vbCrLf & _
                   "Would you like to overwrite this " & strType & "?" & vbCrLf
       intMBButtons = vbExclamation + vbYesNoCancel
-      intMBResponse = COAMsgBox(strMBText, intMBButtons, App.ProductName)
+      intMBResponse = COAMsgBox(strMBText, intMBButtons, app.ProductName)
       
       Select Case intMBResponse
       Case vbYes        'overwrite existing definition and any changes
@@ -2801,7 +2801,7 @@ Public Sub UtilityDefAmended(psTable As String, _
   
 Amended_ERROR:
   
-  COAMsgBox "Error whilst checking if utility definition has been amended." & vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error whilst checking if utility definition has been amended." & vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, app.Title
   blnContinueSave = False
   
 End Sub
@@ -3417,14 +3417,14 @@ Private Function Office_IsWordInstalled() As Boolean
 
   On Error GoTo NotInstalled
 
-  Dim App As New Word.Application
-  Set App = CreateObject("Word.Application")
-  App.Quit
+  Dim app As New Word.Application
+  Set app = CreateObject("Word.Application")
+  app.Quit
 
   Office_IsWordInstalled = True
 
 TidyUpAndExit:
-  Set App = Nothing
+  Set app = Nothing
   Exit Function
 
 NotInstalled:
@@ -3437,14 +3437,14 @@ Private Function Office_IsExcelInstalled() As Boolean
 
   On Error GoTo NotInstalled
 
-  Dim App As New Excel.Application
-  Set App = CreateObject("Excel.Application")
-  App.Quit
+  Dim app As New Excel.Application
+  Set app = CreateObject("Excel.Application")
+  app.Quit
 
   Office_IsExcelInstalled = True
   
 TidyUpAndExit:
-  Set App = Nothing
+  Set app = Nothing
   Exit Function
 
 NotInstalled:
@@ -3530,7 +3530,7 @@ Public Function ValidateGTMaskDate(dtTemp As GTMaskDate.GTMaskDate) As Boolean
         'COAMsgBox sometimes causes run time error but DoEvents prevents this!
         DoEvents
 
-        COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
+        COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, app.Title
         .ForeColor = vbWindowText
         .DateValue = Null
         If .Visible And .Enabled Then
@@ -4179,14 +4179,14 @@ Public Function COAMsgBox(sPrompt As String, Optional iButtons As VbMsgBoxStyle,
   
   On Local Error GoTo LocalErr
   
-  If sTitle = vbNullString Then sTitle = App.ProductName
+  If sTitle = vbNullString Then sTitle = app.ProductName
   gobjProgress.Visible = False
   
   DebugOutput "modHRPro.COAMsgBox", Replace(sPrompt, vbCrLf, " ")
   If Not gblnBatchJobsOnly Then
     COAMsgBox = MsgBox(sPrompt, iButtons, sTitle)
   Else
-    Open App.Path & "\batcherr.txt" For Append As #1
+    Open app.Path & "\batcherr.txt" For Append As #1
     Print #1, Format(Now, DateFormat & " hh:nn")
     Print #1, sPrompt
     Print #1, ""
@@ -4202,15 +4202,15 @@ End Function
 
 
 Public Function IsFileCompatibleWithWordVersion(strFileName As String)
-  IsFileCompatibleWithWordVersion = (GetOfficeSaveAsFormat(strFileName, GetOfficeWordVersion) <> "")
+  IsFileCompatibleWithWordVersion = (GetOfficeSaveAsFormat(strFileName, GetOfficeWordVersion, oaWord) <> "")
 End Function
 
 Public Function IsFileCompatibleWithExcelVersion(strFileName As String)
-  IsFileCompatibleWithExcelVersion = (GetOfficeSaveAsFormat(strFileName, GetOfficeExcelVersion) <> "")
+  IsFileCompatibleWithExcelVersion = (GetOfficeSaveAsFormat(strFileName, GetOfficeExcelVersion, oaExcel) <> "")
 End Function
 
 
-Public Function GetOfficeSaveAsFormat(strFileName As String, intOfficeVersion As Integer) As String
+Public Function GetOfficeSaveAsFormat(strFileName As String, intOfficeVersion As Integer, app As OfficeApp) As String
   
   Dim rsTemp As ADODB.Recordset
   Dim sSQL As String
@@ -4224,7 +4224,7 @@ Public Function GetOfficeSaveAsFormat(strFileName As String, intOfficeVersion As
     strExtension = Mid(strFileName, InStrRev(strFileName, ".") + 1)
   
     sSQL = "SELECT " & IIf(intOfficeVersion < 12, "Office2003", "Office2007") & _
-           " FROM ASRSysFileFormats WHERE Extension = '" & strExtension & "'" & _
+           " FROM ASRSysFileFormats WHERE Extension = '" & strExtension & "' AND Destination = '" & IIf(app = oaWord, "WORD", "EXCEL") & "'" & _
            " ORDER BY ID"
     Set rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
     GetOfficeSaveAsFormat = IIf(IsNull(rsTemp(0).Value), "", rsTemp(0).Value)
@@ -4242,22 +4242,22 @@ End Function
 
 Public Function GetOfficeWordVersion() As Integer
 
-  Dim App As Word.Application
+  Dim app As Word.Application
   
   On Error GoTo NotInstalled
 
   If giOfficeVersion_Word = 0 Then
     giOfficeVersion_Word = -1
     If InStr(LCase(Command$), "/msoffice=false") = 0 Then
-      Set App = CreateObject("Word.Application")
-      giOfficeVersion_Word = Val(App.Version)
-      App.Quit
+      Set app = CreateObject("Word.Application")
+      giOfficeVersion_Word = Val(app.Version)
+      app.Quit
     End If
   End If
 
 TidyUpAndExit:
   GetOfficeWordVersion = giOfficeVersion_Word
-  Set App = Nothing
+  Set app = Nothing
   
 Exit Function
 
@@ -4269,22 +4269,22 @@ End Function
 
 Public Function GetOfficeExcelVersion() As Integer
 
-  Dim App As Excel.Application
+  Dim app As Excel.Application
   
   On Error GoTo NotInstalled
 
   If giOfficeVersion_Excel = 0 Then
     giOfficeVersion_Excel = -1
     If InStr(LCase(Command$), "/msoffice=false") = 0 Then
-      Set App = CreateObject("Excel.Application")
-      giOfficeVersion_Excel = Val(App.Version)
-      App.Quit
+      Set app = CreateObject("Excel.Application")
+      giOfficeVersion_Excel = Val(app.Version)
+      app.Quit
     End If
   End If
 
 TidyUpAndExit:
   GetOfficeExcelVersion = giOfficeVersion_Excel
-  Set App = Nothing
+  Set app = Nothing
 
 Exit Function
 

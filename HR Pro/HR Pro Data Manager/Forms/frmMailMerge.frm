@@ -1,10 +1,10 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmMailMerge 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Mail Merge Definition"
@@ -2111,7 +2111,7 @@ Private Sub cmdFileName_Click(Index As Integer)
           On Error GoTo WordErr
 
           txtFilename(Index).Text = frmMain.CommonDialog1.FileName
-          strFormat = GetOfficeSaveAsFormat(frmMain.CommonDialog1.FileName, GetOfficeWordVersion)
+          strFormat = GetOfficeSaveAsFormat(frmMain.CommonDialog1.FileName, GetOfficeWordVersion, oaWord)
           
           Screen.MousePointer = vbHourglass
           gobjProgress.Caption = "Creating Word Document"
@@ -2216,7 +2216,7 @@ Private Sub cmdCalculations_Click()
             sMessage = IsCalcValid(.ExpressionID)
             If sMessage <> vbNullString Then
               COAMsgBox "This calculation has been deleted or hidden by another user." & vbCrLf & _
-                     "It cannot be added to this definition", vbExclamation, App.Title
+                     "It cannot be added to this definition", vbExclamation, app.Title
             Else
               If optCalc.Value And (cboTblAvailable.ItemData(cboTblAvailable.ListIndex) = .BaseTableID) Then
                 ListView1.ListItems(strKey).Selected = True
@@ -4557,7 +4557,7 @@ Private Function InsertMailMerge(pstrSQL As String) As Long
               
     If Not fSavedOK Then
       COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
-        Err.Description, vbOKOnly + vbExclamation, App.ProductName
+        Err.Description, vbOKOnly + vbExclamation, app.ProductName
         InsertMailMerge = 0
         Set cmADO = Nothing
         Exit Function

@@ -477,7 +477,7 @@ Private Sub SQLGetMergeDefinition()
     mlngDefPickListID = !PicklistID
     mlngDefFilterID = !FilterID
     mstrDefTemplateFile = !TemplateFileName
-    mstrDefTemplateFormat = GetOfficeSaveAsFormat(mstrDefTemplateFile, GetOfficeWordVersion)
+    mstrDefTemplateFormat = GetOfficeSaveAsFormat(mstrDefTemplateFile, GetOfficeWordVersion, oaWord)
     mblnDefPauseBeforeMerge = !PauseBeforeMerge
     mblnDefSuppressBlankLines = !SuppressBlanks
     mbIsLabel = !IsLabel
@@ -505,7 +505,7 @@ Private Sub SQLGetMergeDefinition()
         mstrOutputPrinterName = IIf(IsNull(!OutputPrinterName), "", !OutputPrinterName)
         mblnOutputSave = !OutputSave
         mstrOutputFileName = IIf(IsNull(!OutputFilename), "", !OutputFilename)
-        mstrOutputFileFormat = GetOfficeSaveAsFormat(mstrOutputFileName, GetOfficeWordVersion)
+        mstrOutputFileFormat = GetOfficeSaveAsFormat(mstrOutputFileName, GetOfficeWordVersion, oaWord)
         
         If Trim(mstrOutputFileName) <> "" And Trim(mstrOutputFileFormat) = "" Then
           mstrStatusMessage = "This definition is set to save in a file format which is not compatible with your version of Microsoft Office."
@@ -533,7 +533,7 @@ Private Sub SQLGetMergeDefinition()
         'mstrDefEmailCol = !EmailAddrName  'GetTableAndColumnName(!EmailColumnID)
         mblnDefEMailAttachment = !EMailAsAttachment
         mstrDefAttachmentName = IIf(IsNull(!EmailAttachmentName), "", !EmailAttachmentName)
-        mstrDefAttachmentFormat = GetOfficeSaveAsFormat(mstrDefAttachmentName, GetOfficeWordVersion)
+        mstrDefAttachmentFormat = GetOfficeSaveAsFormat(mstrDefAttachmentName, GetOfficeWordVersion, oaWord)
         mstrDefEMailSubject = !EmailSubject
         mlngEmailAddrCalc = !EmailAddrID
     
@@ -812,7 +812,7 @@ Private Sub WrdCreateDataSource()
   On Error GoTo LocalErr
 
   mstrDataSourceName = GetTmpFName
-  mstrDataSourceFormat = GetOfficeSaveAsFormat(".doc", GetOfficeWordVersion)
+  mstrDataSourceFormat = GetOfficeSaveAsFormat(".doc", GetOfficeWordVersion, oaWord)
   
   Set wrdDocDataSource = wrdApp.Documents.Add
   wrdDocDataSource.SaveAs FileName:=mstrDataSourceName, FileFormat:=Val(mstrDataSourceFormat), AddToRecentFiles:=False

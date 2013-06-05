@@ -397,7 +397,7 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
 
           ' Convert the text into a table.
           mwrdDoc.ActiveWindow.Selection.GoTo What:=wdGoToBookmark, Name:=strBookMark
-          mwrdDoc.ActiveWindow.Selection.EndKey unit:=wdStory, Extend:=wdExtend
+          mwrdDoc.ActiveWindow.Selection.EndKey Unit:=wdStory, Extend:=wdExtend
 
           Set mwrdTable = mwrdDoc.ActiveWindow.Selection.ConvertToTable _
             (Separator:=wdSeparateByTabs, _
@@ -471,7 +471,7 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
             pcolStyles.Remove pcolStyles.Count
           Loop
 
-          mwrdApp.Selection.EndKey unit:=wdStory
+          mwrdApp.Selection.EndKey Unit:=wdStory
 
           mwrdDoc.ActiveWindow.Selection.TypeParagraph
 
@@ -624,7 +624,7 @@ Public Function GetFile(objParent As clsOutputRun, colStyles As Collection) As B
         End If
   
         Set mwrdDoc = mwrdApp.Documents.Open(mstrFileName)
-        mwrdApp.Selection.EndKey unit:=wdStory
+        mwrdApp.Selection.EndKey Unit:=wdStory
         mwrdApp.Selection.InsertBreak Type:=wdPageBreak
   
       Case 4  'Create new worksheet within existing workbook...
@@ -674,7 +674,7 @@ Private Sub GetNewDocument()
     End If
 
     Set mwrdDoc = mwrdApp.Documents.Add(strTempFile)
-    mwrdApp.Selection.EndKey unit:=wdStory
+    mwrdApp.Selection.EndKey Unit:=wdStory
   Else
     Set mwrdDoc = mwrdApp.Documents.Add
     mwrdDoc.PageSetup.Orientation = IIf(mblnWrdLandscape, wdOrientLandscape, wdOrientPortrait)
@@ -693,7 +693,7 @@ Private Sub GetNewDocument()
       .Selection.Fields.Add Range:=.Selection.Range, Type:=wdFieldDate, _
           Text:="CREATEDATE \@ ""dd/MM/yyyy at HH:mm"" ", PreserveFormatting:=True
       .Selection.TypeText Text:=" by " & gsUserName
-      .Selection.MoveRight unit:=wdCell
+      .Selection.MoveRight Unit:=wdCell
   
       .Selection.ParagraphFormat.Alignment = wdAlignParagraphRight
       .Selection.TypeText Text:="Page "
@@ -743,7 +743,7 @@ Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As 
     If mlngPageCount = 1 Then
       If Not gblnReportPackMode Then
         .TypeText strDefTitle
-        .HomeKey unit:=wdLine, Extend:=wdExtend
+        .HomeKey Unit:=wdLine, Extend:=wdExtend
         ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
         .ParagraphFormat.Alignment = wdAlignParagraphCenter
         .EndKey
@@ -757,7 +757,7 @@ Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As 
 
     If mstrSheetName <> vbNullString And mobjParent.PageTitles Then
       .TypeText mstrSheetName
-      .HomeKey unit:=wdLine, Extend:=wdExtend
+      .HomeKey Unit:=wdLine, Extend:=wdExtend
       ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
       .EndKey
       .TypeParagraph
@@ -773,7 +773,7 @@ Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As 
         .TypeParagraph: .TypeParagraph: .TypeParagraph: .TypeParagraph
         .TypeParagraph: .TypeParagraph: .TypeParagraph: .TypeParagraph
         .TypeText gobjProgress.Bar2Caption
-        .HomeKey unit:=wdLine, Extend:=wdExtend
+        .HomeKey Unit:=wdLine, Extend:=wdExtend
         ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
         .ParagraphFormat.Alignment = wdAlignParagraphCenter
         .EndKey
@@ -783,13 +783,13 @@ Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As 
         
       Else
         .TypeParagraph: .TypeParagraph
-        .MoveUp unit:=wdLine, Count:=2
+        .MoveUp Unit:=wdLine, Count:=2
         .TypeText gobjProgress.Bar2Caption
-        .HomeKey unit:=wdLine, Extend:=wdExtend
+        .HomeKey Unit:=wdLine, Extend:=wdExtend
         ApplyStylesToRange mwrdApp.Selection.Range, colStyles("Title"), True
         .ParagraphFormat.Alignment = wdAlignParagraphCenter
         .EndKey
-        .MoveDown unit:=wdLine
+        .MoveDown Unit:=wdLine
         .Style = mwrdDoc.Styles("Normal")
       End If
     Else
@@ -799,7 +799,7 @@ Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As 
       .EndKey
     End If
     'Now move to the end of the document, store the formatting, ready for the data...
-    .EndKey unit:=wdStory
+    .EndKey Unit:=wdStory
     ApplyStylesToRange mwrdApp.Selection.Range, objStyle, False
   End With
 Exit Sub
@@ -872,7 +872,7 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
   Next
 
   mwrdDoc.ActiveWindow.Selection.GoTo What:=wdGoToBookmark, Name:=strBookMark
-  mwrdDoc.ActiveWindow.Selection.EndKey unit:=wdStory, Extend:=wdExtend
+  mwrdDoc.ActiveWindow.Selection.EndKey Unit:=wdStory, Extend:=wdExtend
 
   'convert selected text into a table
   Set mwrdTable = mwrdDoc.ActiveWindow.Selection.ConvertToTable _
@@ -953,7 +953,7 @@ Public Sub DataArray(strArray() As String, colColumns As Collection, colStyles A
   '  mwrdApp.Selection.Cells.DistributeWidth
   'End With
 
-  mwrdApp.Selection.EndKey unit:=wdStory
+  mwrdApp.Selection.EndKey Unit:=wdStory
   mwrdDoc.ActiveWindow.Selection.TypeParagraph
 
 Exit Sub
@@ -1115,7 +1115,7 @@ Public Sub Complete()
   If mblnSave Then
     mstrErrorMessage = "Error saving file <" & mstrFileName & ">"
     
-    strFormat = GetOfficeSaveAsFormat(mstrFileName, GetOfficeWordVersion)
+    strFormat = GetOfficeSaveAsFormat(mstrFileName, GetOfficeWordVersion, oaWord)
     If strFormat = "" Then
       mstrErrorMessage = "This definition is set to save in a file format which is not compatible with your version of Microsoft Office."
       GoTo TidyAndExit
@@ -1145,7 +1145,7 @@ Public Sub Complete()
   If mblnEmail Then
     mstrErrorMessage = "Error sending email"
     
-    strFormat = GetOfficeSaveAsFormat(mobjParent.EmailAttachAs, GetOfficeWordVersion)
+    strFormat = GetOfficeSaveAsFormat(mobjParent.EmailAttachAs, GetOfficeWordVersion, oaWord)
     If strFormat = "" Then
       mstrErrorMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
       GoTo TidyAndExit
@@ -1179,7 +1179,7 @@ Public Sub Complete()
   If mblnScreen Then
   
     mstrErrorMessage = "Error displaying Word"
-    mwrdApp.Selection.HomeKey unit:=wdStory
+    mwrdApp.Selection.HomeKey Unit:=wdStory
     mwrdApp.Visible = True
     mwrdApp.WindowState = wdWindowStateMaximize
     mwrdApp.Activate
