@@ -62,6 +62,7 @@
     <Reference Include="Infragistics3.Win.UltraWinGrid.ExcelExport.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
@@ -91,6 +92,11 @@
     </Compile>
     <Compile Include="AuditLog.vb">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DBContext.designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DBContext.dbml</DependentUpon>
     </Compile>
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>
@@ -132,6 +138,9 @@
     <EmbeddedResource Include="AuditLog.resx">
       <DependentUpon>AuditLog.vb</DependentUpon>
     </EmbeddedResource>
+    <None Include="DBContext.dbml.layout">
+      <DependentUpon>DBContext.dbml</DependentUpon>
+    </None>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.vb</DependentUpon>
     </EmbeddedResource>
@@ -151,6 +160,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="DBContext.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>DBContext.designer.vb</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
@@ -201,6 +215,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Objects\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

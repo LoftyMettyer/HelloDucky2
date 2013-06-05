@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="STD41" Class="DBContextDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=HARPDEV02;Initial Catalog=STD41;User ID=sa" SettingsObjectName="Test_Harness.My.MySettings" SettingsPropertyName="STD41ConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.ASRSysAuditTrail" Member="ASRSysAuditTrails">
+    <Type Name="ASRSysAuditTrail">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="UserName" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="DateTimeStamp" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="RecordID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RecordDesc" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="OldValue" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="NewValue" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="Tablename" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="Columnname" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="CMGExportDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CMGCommitDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ColumnID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Deleted" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+    </Type>
+  </Table>
+</Database>
