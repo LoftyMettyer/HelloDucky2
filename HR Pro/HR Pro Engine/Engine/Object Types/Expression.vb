@@ -20,7 +20,7 @@ Namespace Things
     Public ExpressionType As ScriptDB.ExpressionType
 
     Public DependsOnColumns As New Things.Collection
-    Public mcolDependencies As New Things.Collection
+    Public Dependencies As New Things.Collection
     Private mcolOrders As Things.Collection
 
     Public StatementObjects As New ArrayList
@@ -73,8 +73,8 @@ Namespace Things
             '  BuildDependancies(objComponent)
             'End If
 
-            If Not mcolDependencies.Contains(objColumn) Then
-              mcolDependencies.Add(objColumn)
+            If Not Dependencies.Contains(objColumn) Then
+              Dependencies.Add(objColumn)
             End If
 
           Case ScriptDB.ComponentTypes.Expression, ScriptDB.ComponentTypes.Function, ScriptDB.ComponentTypes.Calculation
@@ -120,7 +120,7 @@ Namespace Things
       ' Debug.Assert(Me.AssociatedColumn.Name <> "justthistablecols")
 
       ' Build the dependencies collection
-      mcolDependencies.Clear()
+      Dependencies.Clear()
       BuildDependancies(Me)
 
       '   BuildDependancies(Me)
@@ -156,7 +156,7 @@ Namespace Things
 
 
       ' Add other dependancies
-      For Each objDependency In mcolDependencies
+      For Each objDependency In Dependencies
         If objDependency.Type = Enums.Type.Column Then
           If CType(objDependency, Things.Column).Table Is Me.BaseTable Then
             aryParameters1.Add(String.Format("@prm_{0} {1}", objDependency.Name, CType(objDependency, Things.Column).DataTypeSyntax))
@@ -215,8 +215,8 @@ Namespace Things
       With UDF
 
         If Not Me.IsComplex Then
-          .Comments = mcolLinesOfCode.Statement
-          .Comments = ScriptDB.Beautify.MakeSingleLine(.Comments.Replace("@prm_", "base."))
+          .InlineCode = mcolLinesOfCode.Statement
+          .InlineCode = ScriptDB.Beautify.MakeSingleLine(.InlineCode.Replace("@prm_", "base."))
         End If
 
         ScriptDB.Beautify.MakeSingleLine(Me.Description)
@@ -233,7 +233,7 @@ Namespace Things
               "----------------------------------------------------------------" & vbNewLine _
               , Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.Name, Me.BaseExpression.Name _
               , String.Join(", ", aryDependsOn.ToArray()), Now().ToString _
-              , Me.Tuning.Rating, Me.Tuning.ExpressionComplexity, .Comments, Me.Description)
+              , Me.Tuning.Rating, Me.Tuning.ExpressionComplexity, .InlineCode, Me.Description)
         .Declarations = IIf(Declarations.Count > 0, "DECLARE " & String.Join("," & vbNewLine, Declarations.ToArray()) & ";" & vbNewLine, "")
         .Prerequisites = IIf(PreStatements.Count > 0, String.Join(vbNewLine, PreStatements.ToArray()) & vbNewLine & vbNewLine, "")
         .JoinCode = IIf(Joins.Count > 0, String.Format("{0}", String.Join(vbNewLine, Joins.ToArray)) & vbNewLine, "")
@@ -251,7 +251,6 @@ Namespace Things
             .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
             .SelectCode = mcolLinesOfCode.Statement
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
-
             .Code = String.Format("{11}CREATE FUNCTION {0}({1})" & vbNewLine & _
                            "RETURNS {2}" & vbNewLine & _
                            "{3}" & vbNewLine & _
@@ -453,7 +452,7 @@ Namespace Things
             ' An expression or a parameter
           Case ScriptDB.ComponentTypes.Expression
             SQLCode_AddParameter(objComponent, [CodeCluster])
-            Me.IsComplex = True
+            '            Me.IsComplex = True
 
             ' Expression 
           Case ScriptDB.ComponentTypes.Calculation, ScriptDB.ComponentTypes.Expression
@@ -498,8 +497,8 @@ Namespace Things
       objTable = Globals.Things.GetObject(Enums.Type.Table, [Component].TableID)
       objRelation = AssociatedColumn.Table.GetRelation(objTable.ID)
 
-      If Not mcolDependencies.Contains(objRelation) Then
-        mcolDependencies.Add(objRelation)
+      If Not Dependencies.Contains(objRelation) Then
+        Dependencies.Add(objRelation)
       End If
 
       LineOfCode.Code = String.Format("@prm_ID_{0}", CInt([Component].TableID))
@@ -543,11 +542,11 @@ Namespace Things
       'End If
 
       '      objThisColumn = Globals.Things.GetObject(Enums.Type.Table, [Component].TableID).Objects.GetObject(Enums.Type.Column, Component.ColumnID)
-      objThisColumn = mcolDependencies.GetObject(Enums.Type.Column, Component.ColumnID)
+      objThisColumn = Dependencies.GetObject(Enums.Type.Column, Component.ColumnID)
       objThisColumn.Tuning.Usage += 1
 
-      mcolDependencies.AddIfNew(objThisColumn.Table)
-      mcolDependencies.AddIfNew(objThisColumn)
+      Dependencies.AddIfNew(objThisColumn.Table)
+      Dependencies.AddIfNew(objThisColumn)
 
       ' Is this column referencing the column that this udf is attaching itself to? (i.e. recursion)
       If Component.IsColumnByReference Then
@@ -593,13 +592,12 @@ Namespace Things
         '    , [CodeCluster].Indentation, iPartNumber, objThisColumn.DataTypeSyntax))
         'PreStatements.Add(sPartCode)
 
-        AddToDependencies(objThisColumn.Calculation.mcolDependencies)
+        '  AddToDependencies(objThisColumn.Calculation.Dependencies)
         objThisColumn.Calculation.ExpressionType = iBackupType
 
         LineOfCode = AddCalculatedColumn(objThisColumn)
 
         objThisColumn.Tuning.IncrementSelectAsCalculation()
-        Me.IsComplex = True
 
       Else
 
@@ -862,6 +860,7 @@ Namespace Things
 
         objExpression = New Things.Expression
         objExpression.ExpressionType = Me.ExpressionType ' ScriptDB.ExpressionType.ColumnCalculation
+        Me.IsComplex = True
 
         objExpression.BaseTable = Me.BaseTable
         objExpression.AssociatedColumn = Me.AssociatedColumn
@@ -993,17 +992,17 @@ Namespace Things
 
         If objDependency.Type = Enums.Type.Column Then
           objColumn = CType(objDependency, Things.Column)
-          If Not mcolDependencies.Contains(objColumn) Then
+          If Not Dependencies.Contains(objColumn) Then
             If objColumn.Table Is Me.BaseTable Then
-              mcolDependencies.Add(objDependency)
+              Dependencies.Add(objDependency)
             End If
           End If
         End If
 
         If objDependency.Type = Enums.Type.Relation Then
           objRelation = CType(objDependency, Things.Relation)
-          If Not mcolDependencies.Contains(objRelation) Then
-            mcolDependencies.Add(objDependency)
+          If Not Dependencies.Contains(objRelation) Then
+            Dependencies.Add(objDependency)
           End If
         End If
 
@@ -1017,21 +1016,27 @@ Namespace Things
       Dim sCallingCode As ScriptDB.CodeElement
       Dim sVariableName As String
 
-      If StatementObjects.Contains(ReferencedColumn) Then
-        sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn) + 1)
+      If Not ReferencedColumn.Calculation.IsComplex Then
+        sCallingCode.Code = ReferencedColumn.Calculation.UDF.SelectCode
       Else
-        StatementObjects.Add(ReferencedColumn)
-        sVariableName = StatementObjects.Count
-        Declarations.Add(String.Format("@part_{0} {1}", sVariableName, ReferencedColumn.DataTypeSyntax))
-        PreStatements.Add(String.Format("SELECT @part_{0} = {1}", sVariableName, ReferencedColumn.Calculation.UDF.CallingCode))
-        sCallingCode.Code = String.Format("@part_{0}", sVariableName)
+        If StatementObjects.Contains(ReferencedColumn) Then
+          sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn) + 1)
+        Else
+          StatementObjects.Add(ReferencedColumn)
+          sVariableName = StatementObjects.Count
+          Declarations.Add(String.Format("@part_{0} {1}", sVariableName, ReferencedColumn.DataTypeSyntax))
+          PreStatements.Add(String.Format("SELECT @part_{0} = {1}", sVariableName, ReferencedColumn.Calculation.UDF.CallingCode))
+          sCallingCode.Code = String.Format("@part_{0}", sVariableName)
+        End If
+
+        Me.BaseExpression.IsComplex = True
         Me.Tuning.Rating += ReferencedColumn.Calculation.Tuning.Rating
+
       End If
 
-      Me.BaseExpression.IsComplex = True
-      Me.BaseExpression.IsSchemaBound = False
       Me.RequiresRecordID = RequiresRecordID Or ReferencedColumn.Calculation.RequiresRecordID
       Me.RequiresRowNumber = RequiresRowNumber Or ReferencedColumn.Calculation.RequiresRowNumber
+      Dependencies.MergeUnique(ReferencedColumn.Calculation.Dependencies)
 
       Return sCallingCode
 

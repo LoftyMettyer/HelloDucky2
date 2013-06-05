@@ -41,6 +41,19 @@ Namespace Things
 
     End Sub
 
+    'TO DO - This can probably be done using some inbuilt property on the collection, but its late and I'm hungry, so this will have to do.
+    Public Function MergeUnique(ByRef Items As Things.Collection)
+
+      Dim objThing As Things.Base
+
+      For Each objThing In Items
+        If Not Me.Items.Contains(objThing) Then
+          Me.Items.Add(objThing)
+        End If
+      Next
+
+    End Function
+
     'Public Root As iSystemObject
 
     'Public Sub New()

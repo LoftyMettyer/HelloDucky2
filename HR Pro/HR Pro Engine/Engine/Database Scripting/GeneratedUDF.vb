@@ -4,6 +4,7 @@
     Public Name As String
     Public Code As String
     Public CallingCode As String
+    Public InlineCode As String
     Public Type As Things.Type
 
     Public CodeStub As String
