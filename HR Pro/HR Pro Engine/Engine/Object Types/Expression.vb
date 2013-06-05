@@ -690,10 +690,9 @@ Namespace Things
               , CInt(objThisColumn.ID).ToString.PadLeft(8, "0"))
 
         ElseIf objThisColumn Is objBaseColumn _
-          And Not (Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter _
-                   Or Me.ExpressionType = ScriptDB.ExpressionType.Mask _
-                   Or Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription) Then
-          '   LineOfCode.Code = String.Format("[dbo].[{0}].[{1}]", objThisColumn.Table.PhysicalName, objThisColumn.Name)
+            And Not (Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter _
+            Or Me.ExpressionType = ScriptDB.ExpressionType.Mask _
+            Or Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription) Then
           LineOfCode.Code = String.Format("@prm_{0}", objThisColumn.Name)
 
         ElseIf objThisColumn Is Me.AssociatedColumn _
@@ -979,12 +978,12 @@ Namespace Things
         End If
       End If
 
-      ' Add this column (or reference to it) to the main execute statement
-      [CodeCluster].Add(LineOfCode)
+        ' Add this column (or reference to it) to the main execute statement
+        [CodeCluster].Add(LineOfCode)
 
-      ' Add this column's tableID to the dependency stack
-      '  AddTableToDependencies(objThisColumn.Table.ID)
-      '   AddColumnToDependencies(objThisColumn)
+        ' Add this column's tableID to the dependency stack
+        '  AddTableToDependencies(objThisColumn.Table.ID)
+        '   AddColumnToDependencies(objThisColumn)
 
     End Sub
 

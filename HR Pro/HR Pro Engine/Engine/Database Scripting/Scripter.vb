@@ -1268,11 +1268,7 @@ Namespace ScriptDB
 
                 sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
 
-                '                Debug.Assert(sObjectName <> "forename_surname_and_trigger_order_value_calc_minus_5_days")
-                ' Debug.Assert(sObjectName <> "udfcalc_Personnel_Records.Holiday_Taken")
-
-                'Debug.Assert(objColumn.Name <> "")
-
+                '   Debug.Assert(sObjectName <> "udfcalc_Table1.ChildFieldLastChangeDate")
 
                 ScriptDB.DropUDF("dbo", sObjectName)
 
