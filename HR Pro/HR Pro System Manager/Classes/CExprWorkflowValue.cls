@@ -686,6 +686,7 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
         Case giEXPRVALUE_NUMERIC
           sProcCode = _
             "    DECLARE " & sVarName & " float" & vbNewLine & vbNewLine & _
+            "    SET @sValue = null;" & vbNewLine & vbNewLine & _
             "    SELECT @sValue = CASE" & vbNewLine & _
             "        WHEN ASRSysWorkflowInstanceValues.elementID = @piTempElement THEN isnull(ASRSysWorkflowInstanceValues.tempValue, 0)" & vbNewLine & _
             "        ELSE isnull(ASRSysWorkflowInstanceValues.value, 0)" & vbNewLine & _
@@ -700,6 +701,7 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
         Case giEXPRVALUE_LOGIC
           sProcCode = _
             "    DECLARE " & sVarName & " bit" & vbNewLine & vbNewLine & _
+            "    SET @sValue = null;" & vbNewLine & vbNewLine & _
             "    SELECT @sValue = CASE" & vbNewLine & _
             "        WHEN ASRSysWorkflowInstanceValues.elementID = @piTempElement THEN isnull(ASRSysWorkflowInstanceValues.tempValue, 0)" & vbNewLine & _
             "        ELSE isnull(ASRSysWorkflowInstanceValues.value, 0)" & vbNewLine & _
@@ -714,6 +716,7 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
         Case giEXPRVALUE_DATE
           sProcCode = _
             "    DECLARE " & sVarName & " datetime" & vbNewLine & vbNewLine & _
+            "    SET @sValue = null;" & vbNewLine & vbNewLine & _
             "    SELECT @sValue = CASE" & vbNewLine & _
             "        WHEN ASRSysWorkflowInstanceValues.elementID = @piTempElement THEN ASRSysWorkflowInstanceValues.tempValue" & vbNewLine & _
             "        ELSE ASRSysWorkflowInstanceValues.value" & vbNewLine & _
