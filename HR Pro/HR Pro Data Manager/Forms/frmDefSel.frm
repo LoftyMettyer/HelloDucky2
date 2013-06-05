@@ -2385,7 +2385,14 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
    
   ' Show only unassigned utilities
   If mlngTableID > -1 And Not mblnTableComboVisible And Not blnScheduledJobs Then
-    sCategoryFilter = " LEFT JOIN dbo.tbsys_objectcategories cat ON cat.objectid = " & msTableName & "." & msIDField & " AND cat.objecttype = " & CStr(mutlUtilityType)
+    sCategoryFilter = " LEFT JOIN dbo.tbsys_objectcategories cat ON cat.objectid = " & msTableName & "." & msIDField & ""
+    
+    If mutlUtilityType = utlAll Then
+      strExtraWhereClause = strExtraWhereClause & IIf(strExtraWhereClause <> vbNullString, " AND ", "") & " ASRSysAllObjectAccess.objecttype = cat.objecttype"
+    Else
+      sCategoryFilter = sCategoryFilter & " AND cat.objecttype = " & CStr(mutlUtilityType)
+    End If
+    
     strExtraWhereClause = strExtraWhereClause & IIf(strExtraWhereClause <> vbNullString, " AND ", "") & "(ISNULL(cat.categoryid,0) = " & mlngTableID & ")"
   End If
   
