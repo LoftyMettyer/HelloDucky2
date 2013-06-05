@@ -26,6 +26,24 @@ Namespace Connectivity
       NativeObject.CommitTrans()
     End Sub
 
+    Public Function ExecSql(ByVal sql As String) As DataSet
+
+      Dim command As New ADODB.Command
+      command.CommandType = ADODB.CommandTypeEnum.adCmdText
+      command.CommandText = sql
+      command.ActiveConnection = NativeObject
+
+      Dim rs As ADODB.Recordset = command.Execute
+
+      Dim da As New OleDb.OleDbDataAdapter
+      Dim ds As New DataSet
+
+      da.Fill(ds, rs, "mytable")
+
+      Return ds
+
+    End Function
+
     Public Function ExecStoredProcedure(ByVal ProcedureName As String, ByVal Parms As Parameters) As System.Data.DataSet Implements COMInterfaces.IConnection.ExecStoredProcedure
 
       Dim objAdapter As New OleDb.OleDbDataAdapter
@@ -59,9 +77,6 @@ Namespace Connectivity
 
         ' Convert recordset to ADO.NET dataset
         objAdapter.Fill(dsDataSet, rsDataset, "mytable")
-
-        objAdapter = Nothing
-        objCommand = Nothing
 
         Return dsDataSet
 

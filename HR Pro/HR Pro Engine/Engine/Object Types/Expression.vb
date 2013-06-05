@@ -73,355 +73,354 @@ Namespace Things
 
     End Sub
 
-    Public Overridable Sub GenerateCode()
+      Public Overridable Sub GenerateCode()
 
-      Dim sOptions As String = String.Empty
-      Dim sCode As String = String.Empty
-      Dim sBypassUDFCode As String = String.Empty
-      Dim aryDependsOn As New ArrayList
-      Dim aryComments As New ArrayList
-      Dim aryParameters1 As New ArrayList
-      Dim aryParameters2 As New ArrayList
-      Dim aryParameters3 As New ArrayList
+         Dim sOptions As String = String.Empty
+         Dim sCode As String = String.Empty
+         Dim sBypassUDFCode As String = String.Empty
+         Dim aryDependsOn As New ArrayList
+         Dim aryComments As New ArrayList
+         Dim aryParameters1 As New ArrayList
+         Dim aryParameters2 As New ArrayList
+         Dim aryParameters3 As New ArrayList
 
-      ' Initialise code object
-      Me.IsComplex = False
-      Me.CaseCount = 0
+         ' Initialise code object
+         Me.IsComplex = False
+         Me.CaseCount = 0
 
-      _linesOfCode = New ScriptDB.LinesOfCode
-      _linesOfCode.Clear()
-      _linesOfCode.ReturnType = ReturnType
-      _linesOfCode.CodeLevel = If(Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter, 2, 1)
+         _linesOfCode = New ScriptDB.LinesOfCode
+         _linesOfCode.Clear()
+         _linesOfCode.ReturnType = ReturnType
+         _linesOfCode.CodeLevel = If(Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter, 2, 1)
 
-      Joins = New ArrayList
-      FromTables = New ArrayList
-      Wheres = New ArrayList
+         Joins = New ArrayList
+         FromTables = New ArrayList
+         Wheres = New ArrayList
 
-      Declarations.Clear()
-      PreStatements.Clear()
+         Declarations.Clear()
+         PreStatements.Clear()
 
-      Joins.Clear()
-      Wheres.Clear()
-      '      StatementObjects.Clear()
+         Joins.Clear()
+         Wheres.Clear()
+         '      StatementObjects.Clear()
 
-      ' Build the dependencies collection
-      Dependencies.Clear()
-      BuildDependancies(Me)
+         ' Build the dependencies collection
+         Dependencies.Clear()
+         BuildDependancies(Me)
 
-      ' If calculate only when empty add itself to the dependency stack
-      If Me.AssociatedColumn.CalculateIfEmpty Then
-        Dependencies.AddIfNew(Me.AssociatedColumn)
-      End If
+         ' If calculate only when empty add itself to the dependency stack
+         If Me.AssociatedColumn.CalculateIfEmpty Then
+            Dependencies.AddIfNew(Me.AssociatedColumn)
+         End If
 
-      aryParameters1.Clear()
-      aryParameters2.Clear()
-      aryParameters3.Clear()
+         aryParameters1.Clear()
+         aryParameters2.Clear()
+         aryParameters3.Clear()
 
-      ' Build the execution code
-      SQLCode_AddCodeLevel(Me.Components, _linesOfCode)
+         ' Build the execution code
+         SQLCode_AddCodeLevel(Me.Components, _linesOfCode)
 
-      ' Always add the ID for the record
-      If RequiresRecordID Or Me.IsComplex Or Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault Then
-        aryParameters1.Add("@prm_ID integer")
-        aryParameters2.Add("base.ID")
-        aryParameters3.Add("@prm_ID")
-      End If
+         ' Always add the ID for the record
+         If RequiresRecordID Or Me.IsComplex Or Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault Then
+            aryParameters1.Add("@prm_ID integer")
+            aryParameters2.Add("base.ID")
+            aryParameters3.Add("@prm_ID")
+         End If
 
-      ' Some function require the row number of the record as a parameter
-      If RequiresOvernight Then
-        aryParameters1.Add("@isovernight bit")
-        aryParameters2.Add("@isovernight")
-        aryParameters3.Add("@isovernight")
-      End If
-
-
-      ' Is this function going to check to see if any of the dependant tables were called as part of this transaction?
-      'If mbCheckTriggerStack Then
-      'aryParameters1.Add(String.Format("@originalvalue {0}", Me.AssociatedColumn.DataTypeSyntax))
-      'aryParameters2.Add(String.Format("base.[{0}]", Me.AssociatedColumn.Name))
-      'aryParameters3.Add("@originalvalue")
-      ' End If
-
-      ' Add other dependancies
-      For Each column In Dependencies.OfType(Of Column)()
-
-        If column.Table Is Me.BaseTable Then
-          aryParameters1.Add(String.Format("@prm_{0} {1}", column.Name, column.DataTypeSyntax))
-          aryParameters2.Add(String.Format("base.[{0}]", column.Name))
-          aryParameters3.Add(String.Format("@prm_{0}", column.Name))
-          aryComments.Add(String.Format("Column: {0}", column.Name))
-        End If
-      Next
-
-      For Each relation In Dependencies.OfType(Of Relation)()
-
-        If Not aryParameters1.Contains(String.Format("@prm_ID_{0} integer", relation.ParentID)) Then
-          aryParameters1.Add(String.Format("@prm_ID_{0} integer", relation.ParentID))
-
-          If relation.RelationshipType = RelationshipType.Parent Then
-            aryParameters2.Add(String.Format("base.[ID_{0}]", relation.ParentID))
-            aryParameters3.Add(String.Format("@prm_ID_{0}", relation.ParentID))
-            aryComments.Add(String.Format("Relation :{0}", relation.Name))
-          Else
-            aryParameters2.Add("base.[ID]")
-            aryParameters3.Add(String.Format("@prm_ID"))
-            aryComments.Add(String.Format("Relation : {0}", relation.Name))
-          End If
-
-        End If
-      Next
-
-      For Each table In Dependencies.OfType(Of Table)()
-
-        aryComments.Add(String.Format("Table : {0}", table.Name))
-        aryDependsOn.Add(String.Format("{0}", table.ID))
-      Next
-
-      ' Do we have caching on this UDF?
-      If Me.IsComplex And aryDependsOn.Count > 0 And Not Me.ReferencesParent Then
-
-        ' Flag to force updates through
-        If Me.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn Then
-          aryParameters1.Add("@forcerefresh bit")
-          aryParameters2.Add("@forcerefresh")
-          aryParameters3.Add("1")
-        Else
-          aryParameters1.Add("@forcerefresh bit")
-          aryParameters2.Add("@forcerefresh")
-          aryParameters3.Add("@forcerefresh")
-        End If
+         ' Some function require the row number of the record as a parameter
+         If RequiresOvernight Then
+            aryParameters1.Add("@isovernight bit")
+            aryParameters2.Add("@isovernight")
+            aryParameters3.Add("@isovernight")
+         End If
 
 
-        ' COMMENTED OUT THE BELOW 1) Because the overnight was taking too long to refresh all tables.
-        '                         2) Dubious about how much time is saves.
-        'sBypassUDFCode = String.Format("    -- Return the original value if none of the dependent tables are in the trigger stack." & vbNewLine &
-        '    "    IF @@NESTLEVEL > 30 OR (@forcerefresh = 0 AND NOT EXISTS (SELECT [tablefromid] FROM [dbo].[tbsys_intransactiontrigger] WHERE [tablefromid] IN ({0}) AND [spid] = @@SPID))" & vbNewLine & _
-        '    "        BEGIN" & vbNewLine & _
-        '    "            SELECT @result = [{1}] FROM dbo.[{2}] WHERE [ID] = @prm_ID;" & vbNewLine & _
-        '    "            RETURN @result;" & vbNewLine & _
-        '    "        END" _
-        '    , String.Join(", ", aryDependsOn.ToArray()), Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.PhysicalName)
+         ' Is this function going to check to see if any of the dependant tables were called as part of this transaction?
+         'If mbCheckTriggerStack Then
+         'aryParameters1.Add(String.Format("@originalvalue {0}", Me.AssociatedColumn.DataTypeSyntax))
+         'aryParameters2.Add(String.Format("base.[{0}]", Me.AssociatedColumn.Name))
+         'aryParameters3.Add("@originalvalue")
+         ' End If
 
-        sBypassUDFCode = String.Format("    -- Return the original value if we somehow get stuck in a recursive loop (shouldn't happen)" & vbNewLine &
-            "    IF @@NESTLEVEL > 15" & vbNewLine & _
-            "        BEGIN" & vbNewLine & _
-            "            SELECT @result = [{1}] FROM dbo.[{2}] WHERE [ID] = @prm_ID;" & vbNewLine & _
-            "            RETURN @result;" & vbNewLine & _
-            "        END" _
-            , String.Join(", ", aryDependsOn.ToArray()), Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.PhysicalName)
+         ' Add other dependancies
+         For Each column In Dependencies.OfType(Of Column)()
+
+            If column.Table Is Me.BaseTable Then
+               aryParameters1.Add(String.Format("@prm_{0} {1}", column.Name, column.DataTypeSyntax))
+               aryParameters2.Add(String.Format("base.[{0}]", column.Name))
+               aryParameters3.Add(String.Format("@prm_{0}", column.Name))
+               aryComments.Add(String.Format("Column: {0}", column.Name))
+            End If
+         Next
+
+         For Each relation In Dependencies.OfType(Of Relation)()
+
+            If Not aryParameters1.Contains(String.Format("@prm_ID_{0} integer", relation.ParentID)) Then
+               aryParameters1.Add(String.Format("@prm_ID_{0} integer", relation.ParentID))
+
+               If relation.RelationshipType = RelationshipType.Parent Then
+                  aryParameters2.Add(String.Format("base.[ID_{0}]", relation.ParentID))
+                  aryParameters3.Add(String.Format("@prm_ID_{0}", relation.ParentID))
+                  aryComments.Add(String.Format("Relation :{0}", relation.Name))
+               Else
+                  aryParameters2.Add("base.[ID]")
+                  aryParameters3.Add(String.Format("@prm_ID"))
+                  aryComments.Add(String.Format("Relation : {0}", relation.Name))
+               End If
+
+            End If
+         Next
+
+         For Each table In Dependencies.OfType(Of Table)()
+
+            aryComments.Add(String.Format("Table : {0}", table.Name))
+            aryDependsOn.Add(String.Format("{0}", table.ID))
+         Next
+
+         ' Do we have caching on this UDF?
+         If Me.IsComplex And aryDependsOn.Count > 0 And Not Me.ReferencesParent Then
+
+            ' Flag to force updates through
+            If Me.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn Then
+               aryParameters1.Add("@forcerefresh bit")
+               aryParameters2.Add("@forcerefresh")
+               aryParameters3.Add("1")
+            Else
+               aryParameters1.Add("@forcerefresh bit")
+               aryParameters2.Add("@forcerefresh")
+               aryParameters3.Add("@forcerefresh")
+            End If
 
 
-      End If
+            ' COMMENTED OUT THE BELOW 1) Because the overnight was taking too long to refresh all tables.
+            '                         2) Dubious about how much time is saves.
+            'sBypassUDFCode = String.Format("    -- Return the original value if none of the dependent tables are in the trigger stack." & vbNewLine &
+            '    "    IF @@NESTLEVEL > 30 OR (@forcerefresh = 0 AND NOT EXISTS (SELECT [tablefromid] FROM [dbo].[tbsys_intransactiontrigger] WHERE [tablefromid] IN ({0}) AND [spid] = @@SPID))" & vbNewLine & _
+            '    "        BEGIN" & vbNewLine & _
+            '    "            SELECT @result = [{1}] FROM dbo.[{2}] WHERE [ID] = @prm_ID;" & vbNewLine & _
+            '    "            RETURN @result;" & vbNewLine & _
+            '    "        END" _
+            '    , String.Join(", ", aryDependsOn.ToArray()), Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.PhysicalName)
+
+            sBypassUDFCode = String.Format("    -- Return the original value if we somehow get stuck in a recursive loop (shouldn't happen)" & vbNewLine &
+                "    IF @@NESTLEVEL > 15" & vbNewLine & _
+                "        BEGIN" & vbNewLine & _
+                "            SELECT @result = [{1}] FROM dbo.[{2}] WHERE [ID] = @prm_ID;" & vbNewLine & _
+                "            RETURN @result;" & vbNewLine & _
+                "        END" _
+                , String.Join(", ", aryDependsOn.ToArray()), Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.PhysicalName)
 
 
-
-      ' Can object be schemabound
-      If Me.BaseExpression.IsSchemaBound Then
-        sOptions = "--WITH SCHEMABINDING"
-      End If
-
-      ' Calling statement
-      With UDF
-
-        If Not Me.IsComplex Then
-          .InlineCode = ResultWrapper(_linesOfCode.Statement)
-          .InlineCode = .InlineCode.Replace("@prm_", "base.")
-          .InlineCode = .InlineCode.Replace("@rownumber", "[rownumber]")
-          .InlineCode = ScriptDB.Beautify.MakeSingleLine(.InlineCode)
-        End If
-
-        Me.Description = ScriptDB.Beautify.MakeSingleLine(Me.Description)
-
-        .BoilerPlate = String.Format("-----------------------------------------------------------------" & vbNewLine & _
-              "-- Auto generated by the Advanced .NET Database Scripting Engine" & vbNewLine & _
-              "-- Column      : {1}.{0}" & vbNewLine & _
-              "-- Expression  : {2}" & vbNewLine & _
-              "-- Description : {7}" & vbNewLine & _
-              "-- Depends on  : {3}" & vbNewLine & _
-              "-- Date        : {4}" & vbNewLine & _
-              "-- Complexity  : ({5}) {6}" & vbNewLine & _
-              "----------------------------------------------------------------" & vbNewLine _
-              , Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.Name, Me.BaseExpression.Name _
-              , String.Join(", ", aryDependsOn.ToArray()), Now().ToString _
-              , Me.Tuning.Rating, Me.Tuning.ExpressionComplexity, Me.Description)
-        .Declarations = If(Declarations.Count > 0, "DECLARE " & String.Join("," & vbNewLine, Declarations.ToArray()) & ";" & vbNewLine, "")
-        .Prerequisites = If(PreStatements.Count > 0, String.Join(vbNewLine, PreStatements.ToArray()) & vbNewLine & vbNewLine, "")
-        .JoinCode = If(Joins.Count > 0, String.Format("{0}", String.Join(vbNewLine, Joins.ToArray)) & vbNewLine, "")
-        .FromCode = If(FromTables.Count > 0, String.Format("{0}", String.Join(",", FromTables.ToArray)) & vbNewLine, "")
-        .WhereCode = If(Wheres.Count > 0, String.Format("WHERE {0}", String.Join(" AND ", Wheres.ToArray)) & vbNewLine, "")
-
-        ' Code beautify
-        .Prerequisites = ScriptDB.Beautify.CleanWhitespace(.Prerequisites)
-
-        Select Case Me.ExpressionType
-
-          Case ScriptDB.ExpressionType.ColumnDefault
-            .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.DefaultValueUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
-            .SelectCode = _linesOfCode.Statement
-            .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
-            .Code = String.Format("{11}CREATE FUNCTION {0}({1})" & vbNewLine & _
-                           "RETURNS {2}" & vbNewLine & _
-                           "{3}" & vbNewLine & _
-                           "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                           "    DECLARE @Result AS {15};" & vbNewLine & vbNewLine & _
-                           "    {13}" & vbNewLine & vbNewLine & _
-                           "    {4}{5}" & vbNewLine & vbNewLine & _
-                           "    -- Execute calculation code" & vbNewLine & _
-                           "    SELECT @Result = {6}" & vbNewLine & _
-                           "                 {7}{8}{9}" & vbNewLine & _
-                           "    RETURN {14};" & vbNewLine & _
-                           "END" _
-                          , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                          , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode _
-                          , Me.AssociatedColumn.SafeReturnType, .BoilerPlate, .Comments, sBypassUDFCode, ResultWrapper("@Result"), ResultDefinition)
+         End If
 
 
 
-            ' Wrapper for calculations with associated columns
-          Case ScriptDB.ExpressionType.ColumnCalculation
-            .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
-            .SelectCode = _linesOfCode.Statement
-            .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
-            .Code = String.Format("{11}CREATE FUNCTION {0}({1})" & vbNewLine & _
-                           "RETURNS {2}" & vbNewLine & _
-                           "{3}" & vbNewLine & _
-                           "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                           "    DECLARE @Result AS {15};" & vbNewLine & vbNewLine & _
-                           "    {13}" & vbNewLine & vbNewLine & _
-                           "    {4}{5}" & vbNewLine & vbNewLine & _
-                           "    -- Execute calculation code" & vbNewLine & _
-                           "    SELECT @Result = {6}" & vbNewLine & _
-                           "                 {7}{8}{9}" & vbNewLine & _
-                           "    RETURN {14};" & vbNewLine & _
-                           "END" _
-                          , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                          , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode _
-                          , Me.AssociatedColumn.SafeReturnType, .BoilerPlate, .Comments, sBypassUDFCode, ResultWrapper("@Result"), ResultDefinition)
+         ' Can object be schemabound
+         If Me.BaseExpression.IsSchemaBound Then
+            sOptions = "--WITH SCHEMABINDING"
+         End If
 
-            .CodeStub = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
-                           "RETURNS {2}" & vbNewLine & _
-                           "{3}" & vbNewLine & _
-                           "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                           "    DECLARE @Result as {2};" & vbNewLine & vbNewLine & _
-                           "-- Could not generate this procedure. " & vbNewLine & _
-                           "/*" & vbNewLine & _
-                           "{4}" & vbNewLine & vbNewLine & _
-                           "{5}" & vbNewLine & vbNewLine & _
-                           "    -- Execute calculation code" & vbNewLine & _
-                           "SELECT @Result = {6}" & vbNewLine & _
-                           "                 {7}" & vbNewLine & _
-                           "                 {8}" & vbNewLine & _
-                           "                 {9}" & vbNewLine & vbNewLine & _
-                           "*/" & vbNewLine & _
-                           "    RETURN ISNULL(@Result, {10});" & vbNewLine & _
-                           "END" _
-                          , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                          , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode _
-                          , Me.AssociatedColumn.SafeReturnType)
+         ' Calling statement
+         With UDF
 
-            ' Wrapper for when this function is used as a filter in an expression
-          Case ScriptDB.ExpressionType.ColumnFilter
-            .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
-            .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
-            '.SelectCode = String.Format("CASE WHEN ({0}) THEN 1 ELSE 0 END", mcolLinesOfCode.Statement)
-            .SelectCode = _linesOfCode.Statement
+            If Not Me.IsComplex Then
+               .InlineCode = ResultWrapper(_linesOfCode.Statement)
+               .InlineCode = .InlineCode.Replace("@prm_", "base.")
+               .InlineCode = .InlineCode.Replace("@rownumber", "[rownumber]")
+               .InlineCode = ScriptDB.Beautify.MakeSingleLine(.InlineCode)
+            End If
 
-            ' Wrapper for when expression is used as a filter in a view
-          Case ScriptDB.ExpressionType.Mask
-            .Name = String.Format("[{0}].[{1}{2}]", Me.SchemaName, ScriptDB.Consts.MaskUDF, Me.BaseExpression.ID)
-            .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters1.ToArray))
-            .SelectCode = _linesOfCode.Statement
+            Me.Description = ScriptDB.Beautify.MakeSingleLine(Me.Description)
 
-            .Code = String.Format("CREATE FUNCTION {0}(@prm_ID integer)" & vbNewLine & _
-                           "RETURNS bit" & vbNewLine & _
-                           "--WITH SCHEMABINDING" & vbNewLine & _
-                           "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                           "    DECLARE @Result AS bit;" & vbNewLine & vbNewLine & _
-                           "{4}" & vbNewLine & vbNewLine & _
-                           "{5}" & vbNewLine & vbNewLine & _
-                           "    -- Execute calculation code" & vbNewLine & _
-                           "SELECT @Result = {6}" & vbNewLine & _
-                           "                 {7}" & vbNewLine & _
-                           "                 {8}" & vbNewLine & _
-                           "                 {9}" & vbNewLine & _
-                           "    RETURN ISNULL(@Result, 0);" & vbNewLine & _
-                           "END" _
-                          , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                          , "", "", .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
+            .BoilerPlate = String.Format("-----------------------------------------------------------------" & vbNewLine & _
+                  "-- Auto generated by the Advanced .NET Database Scripting Engine" & vbNewLine & _
+                  "-- Column      : {1}.{0}" & vbNewLine & _
+                  "-- Expression  : {2}" & vbNewLine & _
+                  "-- Description : {7}" & vbNewLine & _
+                  "-- Depends on  : {3}" & vbNewLine & _
+                  "-- Date        : {4}" & vbNewLine & _
+                  "-- Complexity  : ({5}) {6}" & vbNewLine & _
+                  "----------------------------------------------------------------" & vbNewLine _
+                  , Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.Name, Me.BaseExpression.Name _
+                  , String.Join(", ", aryDependsOn.ToArray()), Now().ToString _
+                  , Me.Tuning.Rating, Me.Tuning.ExpressionComplexity, Me.Description)
+            .Declarations = If(Declarations.Count > 0, "DECLARE " & String.Join("," & vbNewLine, Declarations.ToArray()) & ";" & vbNewLine, "")
+            .Prerequisites = If(PreStatements.Count > 0, String.Join(vbNewLine, PreStatements.ToArray()) & vbNewLine & vbNewLine, "")
+            .JoinCode = If(Joins.Count > 0, String.Format("{0}", String.Join(vbNewLine, Joins.ToArray)) & vbNewLine, "")
+            .FromCode = If(FromTables.Count > 0, String.Format("{0}", String.Join(",", FromTables.ToArray)) & vbNewLine, "")
+            .WhereCode = If(Wheres.Count > 0, String.Format("WHERE {0}", String.Join(" AND ", Wheres.ToArray)) & vbNewLine, "")
 
-            .CodeStub = String.Format("CREATE FUNCTION {0}(@prm_ID integer)" & vbNewLine & _
-                           "RETURNS bit" & vbNewLine & _
-                           "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                           "    DECLARE @Result AS bit;" & vbNewLine & vbNewLine & _
-                           "/*{4}" & vbNewLine & vbNewLine & _
-                           "{5}" & vbNewLine & vbNewLine & _
-                           "    -- Execute calculation code" & vbNewLine & _
-                           "SELECT @Result = CASE WHEN ({6}) THEN 1 ELSE 0 END" & vbNewLine & _
-                           "                 {7}" & vbNewLine & _
-                           "                 {8}" & vbNewLine & _
-                           "                 {9}*/" & vbNewLine & _
-                           "    RETURN ISNULL(@Result, 1);" & vbNewLine & _
-                           "END" _
-                          , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                          , "", "", .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
+            ' Code beautify
+            .Prerequisites = ScriptDB.Beautify.CleanWhitespace(.Prerequisites)
 
-          Case ScriptDB.ExpressionType.ReferencedColumn
-            .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
-            .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters3.ToArray))
-            .SelectCode = _linesOfCode.Statement
+            Select Case Me.ExpressionType
 
-          Case ScriptDB.ExpressionType.RecordDescription
-            .Name = String.Format("[{0}].[{1}{2}]", Me.SchemaName, ScriptDB.Consts.RecordDescriptionUDF, Me.BaseTable.Name)
-            .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
-            .SelectCode = _linesOfCode.Statement
-
-            .Code = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
-                           "RETURNS nvarchar(MAX)" & vbNewLine & _
-                           "{3}" & vbNewLine & _
-                           "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                           "    DECLARE @Result AS nvarchar(MAX);" & vbNewLine & vbNewLine & _
-                           "{4}" & vbNewLine & vbNewLine & _
-                           "{5}" & vbNewLine & vbNewLine & _
-                           "    -- Execute calculation code" & vbNewLine & _
-                           "SELECT @Result = {6}" & vbNewLine & _
-                           "                 {7}" & vbNewLine & _
-                           "                 {8}" & vbNewLine & _
-                           "                 {9}" & vbNewLine & _
-                           "    RETURN ISNULL(@Result, '');" & vbNewLine & _
-                           "END" _
-                          , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                          , "", sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
-
-            .CodeStub = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
-                           "RETURNS nvarchar(MAX)" & vbNewLine & _
-                           "{3}" & vbNewLine & _
-                           "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                           "    DECLARE @Result AS nvarchar(MAX);" & vbNewLine & vbNewLine & _
-                           "-- Could not generate this procedure. " & vbNewLine & _
-                           "/*" & vbNewLine & _
-                           "{4}" & vbNewLine & vbNewLine & _
-                           "{5}" & vbNewLine & vbNewLine & _
-                           "    -- Execute calculation code" & vbNewLine & _
-                           "SELECT @Result = {6}" & vbNewLine & _
-                           "                 {7}" & vbNewLine & _
-                           "                 {8}" & vbNewLine & _
-                           "                 {9}" & vbNewLine & vbNewLine & _
-                           "*/" & vbNewLine & _
-                           "    RETURN ISNULL(@Result, '');" & vbNewLine & _
-                           "END" _
-                          , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                          , "", sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
+               Case ScriptDB.ExpressionType.ColumnDefault
+                  .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.DefaultValueUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
+                  .SelectCode = _linesOfCode.Statement
+                  .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
+                  .Code = String.Format("{11}CREATE FUNCTION {0}({1})" & vbNewLine & _
+                                 "RETURNS {2}" & vbNewLine & _
+                                 "{3}" & vbNewLine & _
+                                 "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+                                 "    DECLARE @Result AS {15};" & vbNewLine & vbNewLine & _
+                                 "    {13}" & vbNewLine & vbNewLine & _
+                                 "    {4}{5}" & vbNewLine & vbNewLine & _
+                                 "    -- Execute calculation code" & vbNewLine & _
+                                 "    SELECT @Result = {6}" & vbNewLine & _
+                                 "                 {7}{8}{9}" & vbNewLine & _
+                                 "    RETURN {14};" & vbNewLine & _
+                                 "END" _
+                                , .Name, String.Join(", ", aryParameters1.ToArray()) _
+                                , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode _
+                                , Me.AssociatedColumn.SafeReturnType, .BoilerPlate, .Comments, sBypassUDFCode, ResultWrapper("@Result"), ResultDefinition)
 
 
-            ' Should never be called, but just in case...
-          Case Else
-            .SelectCode = _linesOfCode.Statement
 
-        End Select
+                  ' Wrapper for calculations with associated columns
+               Case ScriptDB.ExpressionType.ColumnCalculation
+                  .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
+                  .SelectCode = _linesOfCode.Statement
+                  .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
+                  .Code = String.Format("{11}CREATE FUNCTION {0}({1})" & vbNewLine & _
+                                 "RETURNS {2}" & vbNewLine & _
+                                 "{3}" & vbNewLine & _
+                                 "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+                                 "    DECLARE @Result AS {15};" & vbNewLine & vbNewLine & _
+                                 "    {13}" & vbNewLine & vbNewLine & _
+                                 "    {4}{5}" & vbNewLine & vbNewLine & _
+                                 "    -- Execute calculation code" & vbNewLine & _
+                                 "    SELECT @Result = {6}" & vbNewLine & _
+                                 "                 {7}{8}{9}" & vbNewLine & _
+                                 "    RETURN {14};" & vbNewLine & _
+                                 "END" _
+                                , .Name, String.Join(", ", aryParameters1.ToArray()) _
+                                , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode _
+                                , Me.AssociatedColumn.SafeReturnType, .BoilerPlate, .Comments, sBypassUDFCode, ResultWrapper("@Result"), ResultDefinition)
 
-      End With
+                  .CodeStub = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
+                                 "RETURNS {2}" & vbNewLine & _
+                                 "{3}" & vbNewLine & _
+                                 "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+                                 "    DECLARE @Result as {2};" & vbNewLine & vbNewLine & _
+                                 "-- Could not generate this procedure. " & vbNewLine & _
+                                 "/*" & vbNewLine & _
+                                 "{4}" & vbNewLine & vbNewLine & _
+                                 "{5}" & vbNewLine & vbNewLine & _
+                                 "    -- Execute calculation code" & vbNewLine & _
+                                 "SELECT @Result = {6}" & vbNewLine & _
+                                 "                 {7}" & vbNewLine & _
+                                 "                 {8}" & vbNewLine & _
+                                 "                 {9}" & vbNewLine & vbNewLine & _
+                                 "*/" & vbNewLine & _
+                                 "    RETURN ISNULL(@Result, {10});" & vbNewLine & _
+                                 "END" _
+                                , .Name, String.Join(", ", aryParameters1.ToArray()) _
+                                , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode _
+                                , Me.AssociatedColumn.SafeReturnType)
 
-    End Sub
+                  ' Wrapper for when this function is used as a filter in an expression
+               Case ScriptDB.ExpressionType.ColumnFilter
+                  .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
+                  .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
+                  .SelectCode = _linesOfCode.Statement
+
+                  ' Wrapper for when expression is used as a filter in a view
+               Case ScriptDB.ExpressionType.Mask
+                  .Name = String.Format("[{0}].[{1}{2}]", Me.SchemaName, ScriptDB.Consts.MaskUDF, Me.BaseExpression.ID)
+                  .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters1.ToArray))
+                  .SelectCode = _linesOfCode.Statement
+
+                  .Code = String.Format("CREATE FUNCTION {0}(@prm_ID integer)" & vbNewLine & _
+                                 "RETURNS bit" & vbNewLine & _
+                                 "--WITH SCHEMABINDING" & vbNewLine & _
+                                 "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+                                 "    DECLARE @Result AS bit;" & vbNewLine & vbNewLine & _
+                                 "{4}" & vbNewLine & vbNewLine & _
+                                 "{5}" & vbNewLine & vbNewLine & _
+                                 "    -- Execute calculation code" & vbNewLine & _
+                                 "SELECT @Result = {6}" & vbNewLine & _
+                                 "                 {7}" & vbNewLine & _
+                                 "                 {8}" & vbNewLine & _
+                                 "                 {9}" & vbNewLine & _
+                                 "    RETURN ISNULL(@Result, 0);" & vbNewLine & _
+                                 "END" _
+                                , .Name, String.Join(", ", aryParameters1.ToArray()) _
+                                , "", "", .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
+
+                  .CodeStub = String.Format("CREATE FUNCTION {0}(@prm_ID integer)" & vbNewLine & _
+                                 "RETURNS bit" & vbNewLine & _
+                                 "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+                                 "    DECLARE @Result AS bit;" & vbNewLine & vbNewLine & _
+                                 "/*{4}" & vbNewLine & vbNewLine & _
+                                 "{5}" & vbNewLine & vbNewLine & _
+                                 "    -- Execute calculation code" & vbNewLine & _
+                                 "SELECT @Result = CASE WHEN ({6}) THEN 1 ELSE 0 END" & vbNewLine & _
+                                 "                 {7}" & vbNewLine & _
+                                 "                 {8}" & vbNewLine & _
+                                 "                 {9}*/" & vbNewLine & _
+                                 "    RETURN ISNULL(@Result, 1);" & vbNewLine & _
+                                 "END" _
+                                , .Name, String.Join(", ", aryParameters1.ToArray()) _
+                                , "", "", .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
+
+               Case ScriptDB.ExpressionType.ReferencedColumn
+                  .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
+                  .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters3.ToArray))
+                  .SelectCode = _linesOfCode.Statement
+
+               Case ScriptDB.ExpressionType.RecordDescription
+                  .Name = String.Format("[{0}].[{1}{2}]", Me.SchemaName, ScriptDB.Consts.RecordDescriptionUDF, Me.BaseTable.Name)
+                  .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
+                  .SelectCode = _linesOfCode.Statement
+
+                  .Code = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
+                                 "RETURNS nvarchar(MAX)" & vbNewLine & _
+                                 "{3}" & vbNewLine & _
+                                 "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+                                 "    DECLARE @Result AS nvarchar(MAX);" & vbNewLine & vbNewLine & _
+                                 "{4}" & vbNewLine & vbNewLine & _
+                                 "{5}" & vbNewLine & vbNewLine & _
+                                 "    -- Execute calculation code" & vbNewLine & _
+                                 "SELECT @Result = {6}" & vbNewLine & _
+                                 "                 {7}" & vbNewLine & _
+                                 "                 {8}" & vbNewLine & _
+                                 "                 {9}" & vbNewLine & _
+                                 "    RETURN ISNULL(@Result, '');" & vbNewLine & _
+                                 "END" _
+                                , .Name, String.Join(", ", aryParameters1.ToArray()) _
+                                , "", sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
+
+                  .CodeStub = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
+                                 "RETURNS nvarchar(MAX)" & vbNewLine & _
+                                 "{3}" & vbNewLine & _
+                                 "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+                                 "    DECLARE @Result AS nvarchar(MAX);" & vbNewLine & vbNewLine & _
+                                 "-- Could not generate this procedure. " & vbNewLine & _
+                                 "/*" & vbNewLine & _
+                                 "{4}" & vbNewLine & vbNewLine & _
+                                 "{5}" & vbNewLine & vbNewLine & _
+                                 "    -- Execute calculation code" & vbNewLine & _
+                                 "SELECT @Result = {6}" & vbNewLine & _
+                                 "                 {7}" & vbNewLine & _
+                                 "                 {8}" & vbNewLine & _
+                                 "                 {9}" & vbNewLine & vbNewLine & _
+                                 "*/" & vbNewLine & _
+                                 "    RETURN ISNULL(@Result, '');" & vbNewLine & _
+                                 "END" _
+                                , .Name, String.Join(", ", aryParameters1.ToArray()) _
+                                , "", sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
+
+
+                  ' Should never be called, but just in case...
+               Case Else
+                  .SelectCode = _linesOfCode.Statement
+
+            End Select
+
+         End With
+
+      End Sub
 
     Private Sub SQLCode_AddCodeLevel(ByVal [Components] As ICollection(Of Component), ByVal [CodeCluster] As ScriptDB.LinesOfCode)
 

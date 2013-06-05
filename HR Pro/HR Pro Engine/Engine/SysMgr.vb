@@ -41,10 +41,9 @@ Public Class SysMgr
     Dim bOK As Boolean = True
 
     Try
-      'TODO: ensure successive calls to populate objects works as expected, better still get rid off it
-      If Options Is Nothing Then
-        Globals.Initialise()
-      End If
+         If Options Is Nothing Then
+            Globals.Initialise()
+         End If
 
       Globals.MetadataDB = objMetadataDB
       Globals.CommitDB = mobjCommitDB
