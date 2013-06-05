@@ -78,33 +78,25 @@ Begin VB.Form frmAbsenceSetup
       TabPicture(1)   =   "frmAbsenceSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraAbsenceType"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Calen&dar"
       TabPicture(2)   =   "frmAbsenceSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraCalendarDef"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraCalendarInclude"
-      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "&SSP"
       TabPicture(3)   =   "frmAbsenceSetup.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraWorkingDays"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).Control(1)=   "fraSSPColumns"
-      Tab(3).Control(1).Enabled=   0   'False
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "&Parental Leave"
       TabPicture(4)   =   "frmAbsenceSetup.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "Frame1"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "Frame2"
-      Tab(4).Control(1).Enabled=   0   'False
       Tab(4).Control(2)=   "Frame3"
-      Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       Begin VB.Frame Frame3 
          Caption         =   "Personnel Records :"
@@ -2280,6 +2272,16 @@ End Sub
 Private Function SaveChanges() As Boolean
   'AE20071119 Fault #12607
   SaveChanges = False
+  
+  'Check Start and End Dates and Sessions are not the same as this will cause an error at save time
+  If cboEndSession.Text = cboStartSession.Text Then
+    MsgBox "The Start Session Column and the End Session Column are the same value.", vbOKOnly + vbInformation, App.ProductName
+    Exit Function
+  End If
+  If cboEndDate.Text = cboStartDate.Text Then
+    MsgBox "The Start Date Column and the End Date Column are the same value.", vbOKOnly + vbInformation, App.ProductName
+    Exit Function
+  End If
   
   If Not ValidateSetup Then
     Exit Function
