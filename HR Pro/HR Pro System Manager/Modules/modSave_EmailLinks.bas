@@ -696,7 +696,7 @@ Private Function AddColumnToTrigger( _
 End Function
 
 
-Private Function GetSQLEmailContent(lngTableID As Long, strTableName As String, lngRecDescID As Long, lngLinkID As Long, lngSubjectID As Long, lngBodyID As Long, strAttachment As String)
+Private Function GetSQLEmailContent(lngTableID As Long, strTableName As String, lngRecDescID As Long, lngLinkID As Long, lngSubjectID As Long, lngBodyID As Long, strAttachment As String) As String
 
   Dim content As clsLinkContent
   Dim recEmailRecipients As New ADODB.Recordset
