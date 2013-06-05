@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form frmSSIntranetChart 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   " "
+   Caption         =   " Self-service Intranet Chart Data"
    ClientHeight    =   6210
    ClientLeft      =   45
    ClientTop       =   375
@@ -29,11 +29,11 @@ Begin VB.Form frmSSIntranetChart
       EndProperty
       Height          =   5310
       Left            =   150
-      TabIndex        =   30
+      TabIndex        =   35
       Top             =   165
       Width           =   2310
       Begin VB.OptionButton optChartType 
-         Caption         =   "Three Dimensional"
+         Caption         =   "Three Tables"
          BeginProperty Font 
             Name            =   "Verdana"
             Size            =   8.25
@@ -46,12 +46,12 @@ Begin VB.Form frmSSIntranetChart
          Height          =   195
          Index           =   2
          Left            =   210
-         TabIndex        =   33
+         TabIndex        =   2
          Top             =   1065
-         Width           =   1950
+         Width           =   1680
       End
       Begin VB.OptionButton optChartType 
-         Caption         =   "Two Dimensional"
+         Caption         =   "Two Tables"
          BeginProperty Font 
             Name            =   "Verdana"
             Size            =   8.25
@@ -64,12 +64,12 @@ Begin VB.Form frmSSIntranetChart
          Height          =   195
          Index           =   1
          Left            =   210
-         TabIndex        =   32
+         TabIndex        =   1
          Top             =   720
-         Width           =   1830
+         Width           =   1500
       End
       Begin VB.OptionButton optChartType 
-         Caption         =   "One Dimensional"
+         Caption         =   "One Table"
          BeginProperty Font 
             Name            =   "Verdana"
             Size            =   8.25
@@ -82,13 +82,13 @@ Begin VB.Form frmSSIntranetChart
          Height          =   195
          Index           =   0
          Left            =   210
-         TabIndex        =   31
+         TabIndex        =   0
          Top             =   345
-         Width           =   1770
+         Width           =   1410
       End
    End
    Begin VB.Frame fra_Y_Data 
-      Caption         =   "Data (Y-Axis) :"
+      Caption         =   "Data Values (Y-Axis) :"
       BeginProperty Font 
          Name            =   "Verdana"
          Size            =   8.25
@@ -100,9 +100,26 @@ Begin VB.Form frmSSIntranetChart
       EndProperty
       Height          =   1635
       Left            =   2520
-      TabIndex        =   21
+      TabIndex        =   30
       Top             =   1530
       Width           =   8940
+      Begin VB.ComboBox cboChartColColumn 
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Left            =   5970
+         Style           =   2  'Dropdown List
+         TabIndex        =   11
+         Top             =   1125
+         Width           =   2670
+      End
       Begin VB.ComboBox cboSortByAgg 
          BeginProperty Font 
             Name            =   "Verdana"
@@ -118,7 +135,7 @@ Begin VB.Form frmSSIntranetChart
          Left            =   5970
          List            =   "frmSSIntranetChart.frx":0016
          Style           =   2  'Dropdown List
-         TabIndex        =   36
+         TabIndex        =   10
          Top             =   750
          Width           =   2670
       End
@@ -137,7 +154,7 @@ Begin VB.Form frmSSIntranetChart
          Left            =   5970
          List            =   "frmSSIntranetChart.frx":003B
          Style           =   2  'Dropdown List
-         TabIndex        =   28
+         TabIndex        =   9
          Top             =   375
          Width           =   2670
       End
@@ -154,7 +171,7 @@ Begin VB.Form frmSSIntranetChart
          Height          =   315
          Left            =   1425
          Style           =   2  'Dropdown List
-         TabIndex        =   26
+         TabIndex        =   6
          Top             =   375
          Width           =   2670
       End
@@ -172,7 +189,7 @@ Begin VB.Form frmSSIntranetChart
          Left            =   1425
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   23
+         TabIndex        =   8
          Top             =   1125
          Width           =   2670
       End
@@ -190,9 +207,27 @@ Begin VB.Form frmSSIntranetChart
          Left            =   1425
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   22
+         TabIndex        =   7
          Top             =   750
          Width           =   2670
+      End
+      Begin VB.Label lblChartIntColour 
+         Caption         =   "Chart Colour Column :"
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   390
+         Left            =   4530
+         TabIndex        =   37
+         Top             =   1080
+         Width           =   1170
+         WordWrap        =   -1  'True
       End
       Begin VB.Label lblSortByAgg 
          AutoSize        =   -1  'True
@@ -208,7 +243,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   4530
-         TabIndex        =   37
+         TabIndex        =   36
          Top             =   810
          Width           =   780
       End
@@ -226,7 +261,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   4530
-         TabIndex        =   29
+         TabIndex        =   34
          Top             =   435
          Width           =   1050
       End
@@ -244,7 +279,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   27
+         TabIndex        =   33
          Top             =   435
          Width           =   1020
       End
@@ -262,7 +297,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   25
+         TabIndex        =   32
          Top             =   1185
          Width           =   795
       End
@@ -280,7 +315,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   24
+         TabIndex        =   31
          Top             =   795
          Width           =   600
       End
@@ -297,26 +332,9 @@ Begin VB.Form frmSSIntranetChart
       EndProperty
       Height          =   915
       Left            =   2520
-      TabIndex        =   9
+      TabIndex        =   24
       Top             =   4575
       Width           =   8925
-      Begin VB.ComboBox cboChartColColumn 
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Left            =   5970
-         Style           =   2  'Dropdown List
-         TabIndex        =   34
-         Top             =   360
-         Width           =   2670
-      End
       Begin VB.CommandButton cmdFilter 
          Caption         =   "..."
          BeginProperty Font 
@@ -330,7 +348,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   315
          Left            =   3420
-         TabIndex        =   12
+         TabIndex        =   16
          Top             =   360
          Width           =   315
       End
@@ -346,7 +364,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   330
          Left            =   1425
-         TabIndex        =   11
+         TabIndex        =   15
          Top             =   360
          Width           =   1995
       End
@@ -364,29 +382,11 @@ Begin VB.Form frmSSIntranetChart
          Height          =   315
          Left            =   3750
          MaskColor       =   &H000000FF&
-         TabIndex        =   10
+         TabIndex        =   17
          ToolTipText     =   "Clear Path"
          Top             =   360
          UseMaskColor    =   -1  'True
          Width           =   330
-      End
-      Begin VB.Label lblChartIntColour 
-         Caption         =   "Chart Colour Column :"
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   390
-         Left            =   4530
-         TabIndex        =   35
-         Top             =   315
-         Width           =   1170
-         WordWrap        =   -1  'True
       End
       Begin VB.Label lblFilter 
          AutoSize        =   -1  'True
@@ -402,7 +402,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   20
+         TabIndex        =   29
          Top             =   405
          Width           =   555
       End
@@ -420,7 +420,7 @@ Begin VB.Form frmSSIntranetChart
       EndProperty
       Height          =   400
       Left            =   8925
-      TabIndex        =   1
+      TabIndex        =   19
       Top             =   5640
       Width           =   1200
    End
@@ -437,7 +437,7 @@ Begin VB.Form frmSSIntranetChart
       EndProperty
       Height          =   1275
       Left            =   2520
-      TabIndex        =   2
+      TabIndex        =   18
       Top             =   165
       Width           =   8955
       Begin VB.ComboBox cboTableX 
@@ -454,7 +454,7 @@ Begin VB.Form frmSSIntranetChart
          Left            =   1425
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   8
+         TabIndex        =   3
          Top             =   375
          Width           =   2670
       End
@@ -473,7 +473,7 @@ Begin VB.Form frmSSIntranetChart
          Left            =   5970
          List            =   "frmSSIntranetChart.frx":0060
          Style           =   2  'Dropdown List
-         TabIndex        =   7
+         TabIndex        =   5
          Top             =   360
          Width           =   2670
       End
@@ -491,7 +491,7 @@ Begin VB.Form frmSSIntranetChart
          Left            =   1425
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   0
+         TabIndex        =   4
          Top             =   750
          Width           =   2670
       End
@@ -509,7 +509,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   4530
-         TabIndex        =   6
+         TabIndex        =   23
          Top             =   420
          Width           =   1050
       End
@@ -527,7 +527,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   5
+         TabIndex        =   22
          Top             =   810
          Width           =   795
       End
@@ -545,7 +545,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   4
+         TabIndex        =   21
          Top             =   420
          Width           =   600
       End
@@ -563,7 +563,7 @@ Begin VB.Form frmSSIntranetChart
       EndProperty
       Height          =   400
       Left            =   10215
-      TabIndex        =   3
+      TabIndex        =   20
       Top             =   5640
       Width           =   1200
    End
@@ -580,7 +580,7 @@ Begin VB.Form frmSSIntranetChart
       EndProperty
       Height          =   1245
       Left            =   2520
-      TabIndex        =   13
+      TabIndex        =   25
       Top             =   3255
       Width           =   8925
       Begin VB.ComboBox cboTableZ 
@@ -597,7 +597,7 @@ Begin VB.Form frmSSIntranetChart
          Left            =   1425
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   16
+         TabIndex        =   12
          Top             =   375
          Width           =   2670
       End
@@ -634,7 +634,7 @@ Begin VB.Form frmSSIntranetChart
          Left            =   1425
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   15
+         TabIndex        =   13
          Top             =   750
          Width           =   2670
       End
@@ -652,7 +652,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   19
+         TabIndex        =   28
          Top             =   435
          Width           =   600
       End
@@ -670,7 +670,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   18
+         TabIndex        =   27
          Top             =   795
          Width           =   795
       End
@@ -688,7 +688,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   4530
-         TabIndex        =   17
+         TabIndex        =   26
          Top             =   420
          Width           =   1050
       End
@@ -1095,7 +1095,7 @@ End Sub
 Private Sub RefreshControls()
   
   
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
 End Sub
 
