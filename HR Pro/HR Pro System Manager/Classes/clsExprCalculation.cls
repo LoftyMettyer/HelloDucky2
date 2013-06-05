@@ -178,7 +178,7 @@ TidyUpAndExit:
   Exit Function
 
 ErrorTrap:
-  sProcCode = ""
+  sProcCode.TheString = ""
   Err = False
   Resume TidyUpAndExit
 

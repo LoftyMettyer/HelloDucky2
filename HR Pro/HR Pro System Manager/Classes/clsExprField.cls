@@ -113,7 +113,7 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
   Dim sLocalResult As String
   Dim sConvertCode As String
   Dim sFetchNextCode As String
-  Dim rsInfo As DAO.Recordset
+  Dim rsInfo As dao.Recordset
   Dim avOrderJoinTables() As Variant
   Dim objColumn As Column
  
@@ -920,7 +920,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
   Dim sParentTableName As String
   Dim sOrderCode As String
   Dim sFilterCode As String
-  Dim rsInfo As DAO.Recordset
+  Dim rsInfo As dao.Recordset
   Dim avOrderJoinTables() As Variant
   Dim objFilterExpr As CExpression
   Dim fWorkflowExpression As Boolean
