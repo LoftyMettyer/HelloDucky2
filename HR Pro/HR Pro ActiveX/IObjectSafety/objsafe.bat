@@ -1,0 +1,1 @@
+MKTYPLIB objsafe.odl /tlb objsafe.tlb /win32 /nocpp
