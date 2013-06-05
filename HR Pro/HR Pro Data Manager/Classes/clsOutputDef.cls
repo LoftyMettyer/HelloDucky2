@@ -162,9 +162,6 @@ Private Sub EnableReportPackOutputs(blnTOC As Boolean, blnRetainPivot As Boolean
     'Force Cover
     .chkForceCoverSheet.Enabled = blnForceCover
     .chkTOC.Value = vbUnchecked
-    'BlankTitle
-    .txtTitlePage.Enabled = blnBlankTitle
-    .chkTOC.Value = vbUnchecked
   End With
 End Sub
 
