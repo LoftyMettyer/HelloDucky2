@@ -1133,6 +1133,8 @@ PRINT 'Step 3 - Office Output Formats'
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(921,''Excel'',''Excel 97-2003 Workbook (*.xls)'',''xls'', -4143,56,1)'
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(922,''Excel'',''Excel Workbook (*.xlsx)''       ,''xlsx'', null,51,0)'
 
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(921,''ExcelTemplate'',''Excel 97-2003 Template (*.xlt)'',''xlt'', 17,17,1)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(922,''ExcelTemplate'',''Excel Template (*.xltx)''       ,''xltx'', null,17,0)'
 
 
 /* ------------------------------------------------------------- */
