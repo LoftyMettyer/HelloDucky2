@@ -961,7 +961,7 @@ Private Function SaveModuleDefinitions() As Boolean
       "ConditionalFormatting_Style_1, ConditionalFormatting_Colour_1, ConditionalFormatting_Operator_2, ConditionalFormatting_Value_2, " & _
       "ConditionalFormatting_Style_2, ConditionalFormatting_Colour_2, ConditionalFormatting_Operator_3, ConditionalFormatting_Value_3, " & _
       "ConditionalFormatting_Style_3, ConditionalFormatting_Colour_3, SeparatorColour, InitialDisplayMode, Chart_TableID_2, Chart_ColumnID_2, " & _
-      "Chart_TableID_3, Chart_ColumnID_3, Chart_SortOrderID, Chart_SortDirection, Chart_ColourID)" & _
+      "Chart_TableID_3, Chart_ColumnID_3, Chart_SortOrderID, Chart_SortDirection, Chart_ColourID, Chart_ShowPercentages)" & _
       " VALUES(" & _
       CStr(rsLinks!LinkType) & "," & _
       CStr(rsLinks!linkOrder) & "," & _
@@ -1021,7 +1021,7 @@ Private Function SaveModuleDefinitions() As Boolean
       CStr(IIf(IsNull(rsLinks!Chart_TableID_2), 0, rsLinks!Chart_TableID_2)) & "," & CStr(IIf(IsNull(rsLinks!Chart_ColumnID_2), 0, rsLinks!Chart_ColumnID_2)) & "," & _
       CStr(IIf(IsNull(rsLinks!Chart_TableID_3), 0, rsLinks!Chart_TableID_3)) & "," & CStr(IIf(IsNull(rsLinks!Chart_ColumnID_3), 0, rsLinks!Chart_ColumnID_3)) & "," & _
       CStr(IIf(IsNull(rsLinks!Chart_SortOrderID), 0, rsLinks!Chart_SortOrderID)) & "," & CStr(IIf(IsNull(rsLinks!Chart_SortDirection), 0, rsLinks!Chart_SortDirection)) & "," & _
-      CStr(IIf(IsNull(rsLinks!Chart_ColourID), 0, rsLinks!Chart_ColourID)) & ")"
+      CStr(IIf(IsNull(rsLinks!Chart_ColourID), 0, rsLinks!Chart_ColourID)) & "," & IIf(IsNull(rsLinks!Chart_ShowPercentages), "0", IIf(rsLinks!Chart_ShowPercentages, "1", "0")) & ")"
 
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 

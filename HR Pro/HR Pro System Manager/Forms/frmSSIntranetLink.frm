@@ -37,6 +37,14 @@ Begin VB.Form frmSSIntranetLink
       TabIndex        =   61
       Top             =   6375
       Width           =   6300
+      Begin VB.CheckBox chkShowPercentages 
+         Caption         =   "Show Values as Percent"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   130
+         Top             =   2730
+         Width           =   2355
+      End
       Begin VB.CheckBox chkPrimaryDisplay 
          Caption         =   "D&isplay Data Grid First"
          Height          =   195
@@ -1830,7 +1838,7 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
                       psConditionalFormatting_Operator_1 As String, psConditionalFormatting_Value_1 As String, psConditionalFormatting_Style_1 As String, psConditionalFormatting_Colour_1 As String, _
                       psConditionalFormatting_Operator_2 As String, psConditionalFormatting_Value_2 As String, psConditionalFormatting_Style_2 As String, psConditionalFormatting_Colour_2 As String, _
                       psConditionalFormatting_Operator_3 As String, psConditionalFormatting_Value_3 As String, psConditionalFormatting_Style_3 As String, psConditionalFormatting_Colour_3 As String, _
-                      psSeparatorColour As String, _
+                      psSeparatorColour As String, pfShowPercentages As Boolean, _
                       ByRef pcolSSITableViews As clsSSITableViews)
    
   Set mcolSSITableViews = pcolSSITableViews
@@ -1961,6 +1969,7 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   ChartStackSeries = pfChartStackSeries
   ChartShowValues = pfChartShowValues
   chkPrimaryDisplay.value = IIf(InitialDisplayMode = 1, 1, 0)
+  ChartShowPercentages = pfShowPercentages
   
   ' Set up 'Database Value' combos...
   PopulateParentsCombo (miChartTableID) ' populate and set default value
@@ -2448,7 +2457,6 @@ Private Sub RefreshChart()
   
   Dim numSeries As Integer, iCount As Integer
   Dim iLoop As Integer
-  
   ' Set the chart type from the combo
   MSChart1.ChartType = cboChartType.ItemData(cboChartType.ListIndex)
 
@@ -2520,6 +2528,12 @@ Private Sub RefreshChart()
       
       If chkShowValues Then
         .Plot.SeriesCollection.Item(iCount).DataPoints.Item(-1).DataPointLabel.LocationType = VtChLabelLocationTypeAbovePoint
+        If chkShowPercentages Then
+          .Plot.SeriesCollection.Item(iCount).DataPoints.Item(-1).DataPointLabel.Component = VtChLabelComponentPercent
+          .Plot.SeriesCollection.Item(iCount).DataPoints.Item(-1).DataPointLabel.PercentFormat = "0%"
+        Else
+          .Plot.SeriesCollection.Item(iCount).DataPoints.Item(-1).DataPointLabel.Component = VtChLabelComponentValue
+        End If
       Else
         .Plot.SeriesCollection.Item(iCount).DataPoints.Item(-1).DataPointLabel.LocationType = VtChLabelLocationTypeNone
       End If
@@ -2914,7 +2928,7 @@ Private Sub cboColumns_Click()
   piColumnDataType = GetColumnDataType(lngColumnID)
   
   ' Disable 'total' option if not numeric or integer
-  If piColumnDataType <> dtINTEGER And piColumnDataType <> dtNUMERIC Then
+  If piColumnDataType <> dtinteger And piColumnDataType <> dtNUMERIC Then
     optAggregateType(0).value = True
     optAggregateType(1).Enabled = False
     optAggregateType(1).ForeColor = vbButtonFace
@@ -3014,6 +3028,15 @@ End Sub
 
 Private Sub chkSeparatorUseFormatting_Click()
   mfChanged = True
+  RefreshControls
+End Sub
+
+Private Sub chkShowPercentages_Click()
+If mfLoading Then Exit Sub
+  mfChanged = True
+  ' refresh the chart
+  RefreshChart
+  
   RefreshControls
 End Sub
 
@@ -4297,6 +4320,15 @@ End Property
 Public Property Let ChartShowValues(ByVal pfNewValue As Boolean)
   chkShowValues.value = IIf(pfNewValue, vbChecked, vbUnchecked)
 End Property
+
+Public Property Get ChartShowPercentages() As Boolean
+  ChartShowPercentages = chkShowPercentages.value
+End Property
+
+Public Property Let ChartShowPercentages(ByVal pfNewValue As Boolean)
+  chkShowPercentages.value = IIf(pfNewValue, vbChecked, vbUnchecked)
+End Property
+
 
 Public Property Get UseFormatting() As Boolean
   If optLink(SSINTLINKDB_VALUE) Then
