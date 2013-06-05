@@ -299,16 +299,16 @@ LocalErr:
 End Function
 
 
-Public Function GetColumnNames(plngTableID As Long) As ADODB.Recordset
+Public Function GetColumnNames(plngTableID As Long, ByVal IncludeIDs As Boolean) As ADODB.Recordset
 
   ' Return a recordset of the the columns in the given table.
   Dim sSQL As String
   Dim rsColumns As ADODB.Recordset
-    
-  sSQL = "SELECT *" & _
+
+  sSQL = "SELECT ColumnName, ColumnID" & _
     " FROM ASRSysColumns" & _
-    " WHERE tableID = " & Trim(Str(plngTableID)) & _
-    " ORDER BY ColumnName"
+    " WHERE tableID = " & Trim(Str(plngTableID)) & IIf(Not IncludeIDs, " AND columntype <> 3", "") & _
+    " ORDER BY ColumnName;"
   Set rsColumns = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
   Set GetColumnNames = rsColumns
 

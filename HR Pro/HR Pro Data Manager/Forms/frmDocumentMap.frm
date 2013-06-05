@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
+Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
 Begin VB.Form frmDocumentMap 
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Document Management Type"
@@ -667,7 +667,7 @@ Private Sub cboParent1Table_Click()
 
   ' Columns for the parent table
   If cboParent1Table.Enabled Then
-    Set rsCols = mclsGeneral.GetColumnNames(GetComboItem(cboParent1Table))
+    Set rsCols = mclsGeneral.GetColumnNames(GetComboItem(cboParent1Table), False)
     Do While Not rsCols.EOF
     
       With cboParent1Keyfield
@@ -688,7 +688,7 @@ Private Sub cboParent2Table_Click()
 
   ' Columns for the parent table
   If cboParent2Table.Enabled Then
-    Set rsCols = mclsGeneral.GetColumnNames(GetComboItem(cboParent2Table))
+    Set rsCols = mclsGeneral.GetColumnNames(GetComboItem(cboParent2Table), False)
     Do While Not rsCols.EOF
     
       With cboParent2Keyfield
@@ -760,7 +760,7 @@ Private Sub cboTargetTable_Click()
   
   
   
-  Set rsCols = datGeneral.GetColumnNames(GetComboItem(cboTargetTable))
+  Set rsCols = datGeneral.GetColumnNames(GetComboItem(cboTargetTable), False)
   Do While Not rsCols.EOF
   
     With cboTargetColumn
