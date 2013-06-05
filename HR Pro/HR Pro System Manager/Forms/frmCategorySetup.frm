@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form frmCategorySetup 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "Category"
+   Caption         =   "Categories"
    ClientHeight    =   2235
    ClientLeft      =   45
    ClientTop       =   375
@@ -109,7 +109,7 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  If Not mbLoading Then cmdOK.Enabled = True
+  If Not mbLoading Then cmdOk.Enabled = True
 End Property
 
 Private Sub cboCategoryTable_Click()
@@ -269,7 +269,7 @@ Private Sub Form_Load()
   ' Initialise all controls with the current settings, or defaults.
   InitialiseBaseTableCombos
 
-  cmdOK.Enabled = False
+  cmdOk.Enabled = False
   Changed = False
   mbLoading = False
   Screen.MousePointer = vbDefault
