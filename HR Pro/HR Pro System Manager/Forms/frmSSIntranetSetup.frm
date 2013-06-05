@@ -27,6 +27,72 @@ Begin VB.Form frmSSIntranetSetup
    ScaleWidth      =   8565
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin VB.PictureBox picButton 
+      Height          =   330
+      Left            =   3870
+      Picture         =   "frmSSIntranetSetup.frx":000C
+      ScaleHeight     =   270
+      ScaleWidth      =   495
+      TabIndex        =   63
+      Top             =   5820
+      Visible         =   0   'False
+      Width           =   555
+   End
+   Begin VB.PictureBox picBottomLeftCorner 
+      Height          =   330
+      Left            =   3165
+      Picture         =   "frmSSIntranetSetup.frx":09EE
+      ScaleHeight     =   270
+      ScaleWidth      =   495
+      TabIndex        =   62
+      Top             =   5805
+      Visible         =   0   'False
+      Width           =   555
+   End
+   Begin VB.PictureBox picTopLeftCorner 
+      Height          =   330
+      Left            =   2490
+      Picture         =   "frmSSIntranetSetup.frx":1448
+      ScaleHeight     =   270
+      ScaleWidth      =   495
+      TabIndex        =   61
+      Top             =   5805
+      Visible         =   0   'False
+      Width           =   555
+   End
+   Begin VB.PictureBox picPieChart 
+      Height          =   330
+      Left            =   1800
+      Picture         =   "frmSSIntranetSetup.frx":1EA2
+      ScaleHeight     =   270
+      ScaleWidth      =   495
+      TabIndex        =   60
+      Top             =   5805
+      Visible         =   0   'False
+      Width           =   555
+   End
+   Begin VB.PictureBox pic2DBar 
+      Height          =   330
+      Left            =   1140
+      Picture         =   "frmSSIntranetSetup.frx":B344
+      ScaleHeight     =   270
+      ScaleWidth      =   495
+      TabIndex        =   59
+      Top             =   5805
+      Visible         =   0   'False
+      Width           =   555
+   End
+   Begin VB.PictureBox pic3DBar 
+      Height          =   330
+      Left            =   480
+      Picture         =   "frmSSIntranetSetup.frx":13422
+      ScaleHeight     =   270
+      ScaleWidth      =   495
+      TabIndex        =   58
+      Top             =   5805
+      Visible         =   0   'False
+      Width           =   555
+   End
    Begin VB.CommandButton cmdOK 
       Caption         =   "&OK"
       Default         =   -1  'True
@@ -60,28 +126,28 @@ Begin VB.Form frmSSIntranetSetup
       TabsPerRow      =   5
       TabHeight       =   520
       TabCaption(0)   =   "&General"
-      TabPicture(0)   =   "frmSSIntranetSetup.frx":000C
+      TabPicture(0)   =   "frmSSIntranetSetup.frx":1BBE0
       Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraViews"
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Hypertext Links"
-      TabPicture(1)   =   "frmSSIntranetSetup.frx":0028
+      TabPicture(1)   =   "frmSSIntranetSetup.frx":1BBFC
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraHypertextLinks"
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Dash&board"
-      TabPicture(2)   =   "frmSSIntranetSetup.frx":0044
+      TabPicture(2)   =   "frmSSIntranetSetup.frx":1BC18
       Tab(2).ControlEnabled=   -1  'True
       Tab(2).Control(0)=   "fraButtonLinks"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "&Dropdown List Links"
-      TabPicture(3)   =   "frmSSIntranetSetup.frx":0060
+      TabPicture(3)   =   "frmSSIntranetSetup.frx":1BC34
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraDropdownListLinks"
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "On-screen Docume&nt Display"
-      TabPicture(4)   =   "frmSSIntranetSetup.frx":007C
+      TabPicture(4)   =   "frmSSIntranetSetup.frx":1BC50
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraDocuments"
       Tab(4).ControlCount=   1
@@ -888,7 +954,7 @@ Begin VB.Form frmSSIntranetSetup
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmSSIntranetSetup.frx":0098
+            stylesets(0).Picture=   "frmSSIntranetSetup.frx":1BC6C
             stylesets(1).Name=   "ssDisabled"
             stylesets(1).ForeColor=   0
             stylesets(1).BackColor=   16777215
@@ -902,7 +968,7 @@ Begin VB.Form frmSSIntranetSetup
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmSSIntranetSetup.frx":00B4
+            stylesets(1).Picture=   "frmSSIntranetSetup.frx":1BC88
             AllowUpdate     =   0   'False
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
@@ -5092,11 +5158,39 @@ End Sub
 
 Private Sub cmdPreview_Click()
   Dim strFileName As String
+  Dim strTmpFName As String
+  Dim strTmpFolder As String
+  Dim piImageCount As Integer
+  Dim picX
+  Dim pstrTmpGifName As String
+  
+  ' Create gifs in temporary folder.
+  strTmpFName = GetTmpFName
+  If strTmpFName <> vbNullString Then
+    strTmpFolder = Left(strTmpFName, InStrRev(strTmpFName, "\"))  ' includes trailing backslash
     
-  strFileName = GeneratePreviewHTML()
-  
-  DisplayInBrowser
-  
+    Set picX = pic3DBar.Picture
+    SavePicture picX, strTmpFolder & "3DBar.bmp"
+    
+    Set picX = pic2DBar.Picture
+    SavePicture picX, strTmpFolder & "2DBar.bmp"
+    
+    Set picX = picPieChart.Picture
+    SavePicture picX, strTmpFolder & "PieChart.bmp"
+    
+    Set picX = picTopLeftCorner.Picture
+    SavePicture picX, strTmpFolder & "TopLeft.bmp"
+    
+    Set picX = picBottomLeftCorner.Picture
+    SavePicture picX, strTmpFolder & "BottLeft.bmp"
+    
+    Set picX = picButton.Picture
+    SavePicture picX, strTmpFolder & "Button.bmp"
+    
+    strFileName = GeneratePreviewHTML(strTmpFolder)
+    
+    DisplayInBrowser (strTmpFolder)
+  End If
 End Sub
 
 Private Sub cmdRemoveAllButtonLinks_Click()
@@ -5925,7 +6019,7 @@ Private Sub PopulateWFAccessGroup(ctlSourceGrid As SSDBGrid, ExcludeRowNum As Lo
 End Sub
 
 
-Private Function GeneratePreviewHTML() As String
+Private Function GeneratePreviewHTML(ByVal strTmpFolder As String) As String
 
   Dim bOK As Boolean
   Dim iVersionsCount As Integer
@@ -5954,7 +6048,7 @@ Private Function GeneratePreviewHTML() As String
   Set ctlGrid = grdButtonLinks(iIndex)
   
   ' Generate the HTML...
-  strFileName = GenerateUniqueName
+  strFileName = strTmpFolder & Replace(gsUserName, " ", "") & "dat_PreviewSSIDash.htm" ' GenerateUniqueName
   
   ' If filename specified already exists then delete it first.
   If Len(Dir(strFileName)) > 0 Then
@@ -5979,7 +6073,7 @@ Private Function GeneratePreviewHTML() As String
             "<table width='100%' height='100%' border='0' cellspacing='0' cellpadding='0'>" & vbCrLf & _
             "  <tr bgcolor='#b0b2f5'><td colspan='3' height='6' style='text-align:right'></td></tr>" & vbCrLf & _
             "  <tr style='height: 39px;'><td width='40' valign='top' style='height: 39px;'>" & vbCrLf & _
-            "<img src=data:image/png;base64,R0lGODlhJwAnAMQAAP///7Cy9ezt/bGz9e/v/ff3/ufo/Le49svM+La49uXm/Le59r2+9/39/+Pk+8/Q+d7f+83O+bW39tbX+sDC9/Ly/fT0/rK09eDh+8jJ+L/A97i69r6/99ra+snL+AAAACH5BAAAAAAALAAAAAAnACcAAAWgYCCOZGmeZEJFkOM0aCwHR6YAeI7PvCg9BZ1w14sxBMMkoHjSVJRKJumAhEalg4nVKt0Et1BmBLwtQsjl2cCATscuhLb7NIjLuTH2HX/C7OckCH+AIguDhAMWh3wjWothJIaPkCNVk0kkFJeUAXabQyMMn1cBlqM6PqeYAQ+qoAFfrjk0skIBHrWoN7k7vDkJvjgcwQCCwR3Eer5PwQ3EIQA7' alt='Corner Top' />" & vbCrLf & _
+            "<img src='" & strTmpFolder & "/TopLeft.bmp' alt='Corner Top' />" & vbCrLf & _
             "</td></tr>"
   Print #intFileNo, strHTML
   
@@ -6021,8 +6115,7 @@ Private Function GeneratePreviewHTML() As String
           Else
             Print #intFileNo, "  <td align='center'  style='background-position:center;background-repeat:no-repeat;white-space:nowrap' nowrap='nowrap' width='200px'"
           End If
-            Print #intFileNo, "background='data:image/gif;base64,R0lGODlhyAAYALMAACkpOSkxOTMzRj0/WkpKZ2Fkh4qMw6it7LW197W9972998HG98rO/9jb/+Ln/////ywAAAAAyAAYAAAE/vDJSZ+7LevNu/9gKI5kaZ5oqlVsO12YKs90bd8qoy+uCzsbnXBILBqPyKRyyWw6n9DocLFQ9CowjZDK7Xq/4LB4TC6bz+i0ev1VJBBXS4xRVbgT+Lx+z+/7/4CBgoOEhYaHhnaKbghwPUFVb42TlJWWl5iZmpucnZ6foKGil5IHB48ZdAqjrK2ur7CxspMHBgYtWlWzu7y9vr+Wpr"
-            Print #intFileNo, "YtW6vAx8jJypi1tgUsOwuSy9TV1rDNBc8VXMbX3+DhmdkELN3i6Ongtdrl3HXq8fLI7AQDLIvz+vuxwgUDAvDZmcavoEFO/ggIAMDioMOHmvwNAHCvgqmLpiBqLCgRAMMWkLYMYNxIUt1FAwUIePzIImTIiyVjWjuJcqLHK9q0uRSJsafPn0CDCh1KtKjRo0iTKsXoUptNlj1ySp1KtarVq1izat3KtavXr2C32lsJIEAcCQTSql3Ltq3bt3Djyp1Lt67du3jzth0AkCzUsw8ACljot7Dhw4gTK17MuLHjx5AjPwbcQrLly5gza96c+WwEAAA7'>"
+            Print #intFileNo, "background='" & strTmpFolder & "/button.bmp'>"
             Print #intFileNo, " <font face='Verdana' color='#333366' style='font-size: 10pt'>"
             Print #intFileNo, Trim(.Columns("ButtonText").CellText(varBookMark))
             Print #intFileNo, "    </font>"
@@ -6083,40 +6176,12 @@ Private Function GeneratePreviewHTML() As String
             Select Case .Columns("ChartType").CellText(varBookMark)
               Case "1", "3", "5", "7", "9", "16"
                 ' 2d bar chart image
-                Print #intFileNo, "<img src='data:image/gif;base64,R0lGODlh3ACRALMAAAAAAAgAADkxMa3W97W1vcachMbOhM7Oxt7v9/fv9/f///+tjP/nnP/v1v//5////ywAAAAA3ACRAAAE/vDJSau9OOvNu/9gKI5kaZ5oqq5s675wLM90bd94ru98758NAgFBCRIUPcVh+Gs6PYoCoVBAPqLUI8+RfXq/lkRiaW0UEFwiryEYgN9gg0D7MCvSEwR1z+/7/4AHgoMHBgSEg4CKi4yNjo+QjF54dVWUDwhCAlJCnZ6foKGdBqSlApulqaKrrK2ur7CxrAJNZlNnUlFTdBRSLg6pwcIGVnA8tD9KVEQHbmZnF74twMPVxcY6yNgZ0izU1cLX2zfaYuZi290r3+Cp4uM1yAkD9PVu2Ooq7O2k7/Az8uzVmxDlHocDamTkS7GPn79/MQIKNGgkAQIFCIwguJiRwIAC/gISwliIomG7hxBfSBQoQYGBj4aCUJlDQGaAKQZjkDxhEhzKlC1W2pPA5ZSUJQU+ClmCVEqCGTtN9LQ"
-                Print #intFileNo, "GNJ6EeROvHlDQ4ADIQyA/zpEDVuSLqCWmDvtZVYXQgRkOzGGrk8AvfsHotj2hrSpaEmrD7ZXRF+jfEYHzDo44+LCIxO4Wwyic0nEIyKX0ShZBGaJlEJj7bXbR+d/nD6GJjQ7qZAyCpxO6Inx32kNqzas9lMYR5RQvkHMt1O5wO/eK3Tcwcq0yISk3u9PwRjaeAjlvdcB5ZSKwick66ZmpV38ixWydkHlmbjrgDbxo8Xyb6JotxcEhr+aHcygO34T1GkWd/oLAS72hJxx07bmHW38X/GeMfhvwx+AIDsIBoQYSThgCMnc44OGH6SD4nYLbAGAiAOS0NEyId4Fz4osoGvNiileseAVwA2imwCELgnBhBmrBCCMcM9rAoY07ZlSAV2cYIAUVAzC5zFd6JOVVTiX8iEFPQgpJ5Ik0uiRMS0NwUUAANz0pQJq7PPnRmWyaN4KWF5gEoztgvlGkVTWOeWMnnHglxFGGvGTIk53ogWWWIuozzIuKPRAjGHvScKSfypzxDAJXOllTRqAKisUADcg5Z"
-                Print #intFileNo, "6MXMCCgbY+eGGkFXfIiaZ55TvAiL0VWOquJFgx5nIp+PogqBs4R16qJr9raJQA5/i0LZpfFOMurstNKsOyvVyAiCIscBKGZnZCGB6uzFEjrbLTmUjspuW41NmwFcnm337HhvlPtAwfs6euu0yqg77/V5lqrriVU+MZhTJpqAZfsagDwpPzG9nC5AvO6b8QoGAwGnRe42DDFXlpbK8YiBzwyxjPqSjCF7r7Az8fSqgsyxBPPXDKK5t5bsBNytEGBqgZWwLEF7oWc7s02y4x00innPN4P9nFFhwNteHugy+6hXPG6I1das9JNHx3fE1ZXcgc0Qr97gnsGROz1wF3HbbLOW5OsEtnFmn2JXKf4RgECEwUOF9HCAFCN2ycuoPgCLy7+tomLM5644irT+uzJ/qw1caUEzZiRUdDNoQq44IFjcOyYYQMQeeOUy62645NLfu/EK0v6tA9sBHCKUgXKKsFCo5POUseFu5rK1q/DCPvsscv+uvNJay337X6JLnxWxAfjtLpdLk9z86w732X0YvvXcgX"
-                Print #intFileNo, "BX0+P6fSGzL2Q3s+8euzlPz5+xuf/rf5Q2bev8wPic1781DU/yLXOYpir3MXG1hbg7W9wFWDbBSJHwQoqboIWpGDtfKCxLzjwgYuSgAQtkMESYrCEB4TYEzhkQW7pD4TsA88JURi5GZZwgz2QRwuvEASExEZhNfjgA2MoHRvScAFGtCAOj3GVHWIBbQ+QQghtIMT9EREvSURh/hY1iLkm6LCCLfkKG+aAKN9wim9iCUneVFBF9V2RH1vMYBzB+IYvUpBMRFiAb5LCACkEYUBeISOnhtYL68FwYSOswBHvSMJFXrCOTaRjks5DxlMsIUDZ0dQa2WjIISKSRIp05CND6Ug42LGGKPijC9p4vTqx7R2iHCUFYmnKljTglrhsQApK1aMOsFJ4rgTlLGnZyFJCci+/JF0wwQNLYpJykbVEZiet+ElmFtOYzzxiNBs4TTdWUzrSwuYwxemFDsagK9fIDm262cpv4sVc0CRh+OR4zB/oUVZHucjV0AfCEKYmZ8+jpyLnuUMwmBMGZOjFMqLBTmC68"
-                Print #intFileNo, "2W1El9A/uk40OYV9AsHfUFCJ9CUYvCtbyJKnzcr8M+ILk+L8rQoRTH6hITykgiXCJ0FRNpOkrJtTwUM6P1uBj+JqtCLTgDaEeoD0nXOtJ/LBKdJU+i9fYXzY0Btwhh8aJE6zIahRz2kTYu21AD61HLL+ur/cpi/PCD1oe3AaU5bV8MiCXB+be3iDjLahGQKLqnv7OpbwehWgvJVrtkoqwRo6tCtgket3uNiyPaq2AWSVZpZ9aRhlTotBDS2qb5ibArd9wO6/sCupUOrx6p1WbFOS7Pl4+AEPsRaF5pVqxQoKWmbulkk9tWiyrObah/gACdutA5ADGJDlSnaaiD2reHDGGOT/rtEGvVWkviZAAPURsXh3rW49JrAWveq3HkyF7BVLUEDcIOM5zLyRksY0KGiqwPQYm+yeZ3tXr97Wu/GTrex2eQHlAC6DZS3oFFILyluMUUauHd48IUoaXvq1czad3KODSN1N5AAKHLgv3Rkw1AtWRPm7ODA/EtwWnPW2Pt91bQ/5WiBfRlcCmD4vBdQwoQ"
-                Print #intFileNo, "VYt3Qini0Ya3g0TYLudTGZlUicElwOvBiVGagAbD5cI3fG9ub5jiDQ3IrjzeLXyZClp+wXW0ix0lOCTiTpU5QQJJbshF/gBiCWs7aNeOZTRpuE3dUKEbvjIplyTZZzW1285r1bFAnPKMYbPhcfpaM/uA7y3DPfOayNuv5g9/a4RLb6Y5ICEvcGx8O0SjNswnDcI5Oe3rMq2WtqEftgHd4lgWOtgQUq2QU9rzWzmm2pqY3PeuL5kFbuB5EqhjA6177+tcMMHVrFlqfpBiCzi+ENVFeiWlaKzrRt841rncN7GrzWthNEKpL3BBIOZ15fdgVTK1t7WVRXuCM0kYEta0NbGxzM7LUtPRami3QZ2f6b+nW1rrZ7Wt3Vw/eIzW0dJppbnqvNNr51rUF+F1tfxuG0CEWOF4I3mUAFhx9CSfEvhkebAucugff9iezx33wclcc3RnfOMMdXhmIo3nZwtTul2V+8owrvAIc/zXLPeNy/nDLW9z2vjfN2Yxvm7sa5znv9c5N03ORx9zkFZ/5YI1+9J8l/"
-                Print #intFileNo, "doen8CnXTvYs/48WVAn+tAXjXGjq5zf2FaCvvHRdLw6xOAlt3jNzb7wq3e8Ahya9p/MsGIchNztJ4E7jIkidUxQ/ezsTrvesSCXKOWzK0oGeE0l/naSD563hUd5whFvbcWvfUcgScqZBCCovo+k7eEGu9y7bF6xT53uSL+659V9hSEU5El6kJffUf/16QTd2YS/eNFtzvmGZz1bn0cyVwZ5hGNHvs7xpnzgLW/k1Wb+8HWX/fHVTvsMRKHFp5d8YaXvE8FXP/hzJ372k572jbh/I1zHhNfJTxXq/i9uYdeHvdW1j3f59Ow3RjFo4ldp9Ddv9idL6Od6hqd/0mV3S4cDaRBozVFgf5d6vjd2ZGd9wodwKbd+OfeAN8AGZ5MQOCJngkAFBzBmlHZdvScuv1dvCZiBHLh5HshxIGgDIhhT55EQH+U3rxZ9sTZw5nd/JJV/6hd77Hd8PsAFpBIShmAfO7hPyQaEMCdrL0hurSeDr3eE+5eE/VcLu/MAxwYc3sZ7BQh0GAhtmLeBW9iBSPiBSvh"
-                Print #intFileNo, "v0BdwQThxQ4iAa5h+btiFcPiF7zaHk1eHlXeFJZeFariAXNiA/OdigiV/WVaFQniASFSEbIiIe6iIXsiIVzaFdAiJdiiJ/vhXiZqXb8XXbnH4cAPIgmeoerE0ibFlhJcoAXZ3d5r4h5wYiJ44iGkodHmogKOYbqWoc6fYcqloY6t4gWGnhYbIi5ZIg29og8PIc8XIZII4fYR4ecsIfG3ojHwIjX4oh7c4ftVYfqBIiXrIjZjYh5qoANUWfytojONYf9d4fr2ohc1IijW4ctvXjhKgERaAERpQKmdhhvFogPNIhK8oitj3jPr4hewIbGEEJQs3ZAdieiJQgS34HgeJh9kIg9uIjwyJdvsIkbxVHnwzBb5RE77Rg0ohBb5hCCiAkcfogruojR1JbvcIjPkokg7JjyLUN2Q0AH2kknOwAARglEgh8pTZAZMnIJMFiYbJqIY3GXe/KG3B2G8j+WtXkR17ZEmbEHqGgJQoSXpfwZQm4JS5aI016ZFTeXk5aZU7mXhZ6WsaoF/iFRYU0G1YBYjim"
-                Print #intFileNo, "JbkuJGuqIHnCJLd2JDrSGoBCX4dMB9TY2y+E0UE6ZfyuJZYCIvoKIsOGI05kINo82gW9juRyVsjB5ih6Ei6VHaJiJmLOAEfl0oCMIL9qGo8CJS0WZu2eZu4mZu6uZu82Zu++ZvAWZsBUAuaBCqBJoFpoyF70ZonIGRzkQvqJIXKmRLM2Zwb8RRVhRH6JJ3T+Q/VmQOE1J180hbwJ54QUXU5EAEAADs=' />"
+                Print #intFileNo, "<img src='" & strTmpFolder & "/2DBar.bmp' />"
               Case "0", "2", "4", "6", "8"
                 ' 3d Bar chart image
-                Print #intFileNo, "<img src='data:image/gif;base64,R0lGODlh3ACZALMAAC42Kz5KTlZaRYRrS4yLiKbCqs25l9bX1PnAa/e2hvmcn/Xo1fD1+vv4+f//8////ywAAAAA3ACZAAAE/rC1JyWd+Ompu/9gKI5kaZ5oqq5sa1YZXFGXa994ru88GtObH6dHLBqPyNUMM2FsOsOkdEqttmJDxjBj7Xq/XkujcMAQMIdBGcxuu3OzAuBAIRTuDUFaSzgAzgIEfQ93AkxRbzeIIz9AjiQZTiIyFokXEmoNdmMEDAESBwVnog0AmndnBwIakkGLlpNiJ7I1MyFLlQwHu7y8AgDAAIZcbTKZm6QAFACkB2emDQGiD6oVzoLY2drb2QtgS7OUQVogC9zn2WUTC8OP3zN9p5yly6TT0Mypww2hBNJ3AAMKHFhAgMGDCBMqXMiwoTof4DAUDLCQIMBKHmA8WPDpUo5g/spYVGAgoIC5PoJK7SrZJ9muAM5"
-                Print #intFileNo, "0Gaqhyl0KBgty6tzJs6fPnz7TgBxKFGQAo0UB5NSCaCQIWw1IAnm1AqRIDqoCaTJYII9BbwVLPhhgsAyZAWdg1KwBqwRGqhkpODG1LCldDrLgeuB46GMwRVBsKumwtm3gWE9ePDFl9y+jxxrYPXkVhQODVkOsugVTGNYWjB0cOACdgugHxzc8KZbbq5cHzUwvffbSGVbr260X6A0xVETI1AFU6ML9wAkDkKHoWNtVi/Yqww3ISkdHYICB3SB6myia3TFqDZo7IPcTbA0DOcECdZIwlJaV2omiHxygoL79+wSuVw0/wu7pxg9w/ideY1qEAhIZfSSV2HvPeSafQfTdJ2F+2P3HH2/+DdiYgBNsaIozRpVkF15dwOcGJhBGKKF9FO5nmm+/gYeadgtoF6BjpYxHHjDFEXDgjgAwMMAAVlXYg4knkiXAkCviZwALygBYQnggVVDjXxxoliMwvbR3JZdDnYQeMEbygGQxSjLZZH35QSmjgt29eCOZBVaZJY4"
-                Print #intFileNo, "67mKnVXZaUKVzhlGQpopNtlnVa3C+KeCcIR1XpKIbgHTZpH9W6WGMVZzJxoNqrmmoCphq6J2UjFbQ3p08QspKqVsy5qFgSGj6zaBrsvnkof2Nqutvf7YKjaqMiiZqXTxeWuYOsn7BKaEr/ubnAK4wFvsdlcH4aSewIAkLaavcPrJbX7ZMBZVsXFTTwyEaJRYuFLTW+mlpoQ7LH7WpMhojvZhqxud3KVhQXUn8GEQOAQALmUlBaV1i7rGQSCDawxBHvMiytSrwLgoXQjrvjBxP2/G9HzPqW8N5kOHNcKvYIQpJK2lixxnkBBybDg5cUx111bWyQbue3grqhfoGHbKiINe7sdG7Fg1JHWQU90kp0ZVhBz7WzMTPHdLofINoWRmkskWdfECxuz7DuyGiGYpMNNq8kqq2vXLeMoEo8QQH9TFySABTV9VIIAqRg+jQQM0IfU3QAFqP3bObbsNtI75Ft532247zK/YE/nqYc0BHpuCNDwN9rIVVO4ITfpDhAyE"
-                Print #intFileNo, "uNs+Flo2xqJbb+zbkbMtrOdBxQ6KGj7v0kfIdzAQgiDJ2OJNYNVrbwHXhFt2hekasN+s6ZAFSEW+01xuBF8EFUFCQJClRRkzfDI9gutfNF/A8uylWfHEsfhNgvdnZH6ERJeveLwkGoHdPmgvnC0T61rez9pEtHBoIQPKMUD8LNZAIUamEBIyDhZg1xxGkWOAVuibA5hFQUAZc3CwSSA4pPHBYVsAFVCQ4rvxNo3wj4CDqBPJBxbVOBdHQIBFOCCwq4O9+EhRXXryXFhiGQIYDTFz0JjQ9xCjQiKAKFBKiMA0eBOx0SVxd/ghvqAIFzk+KU6jiDgI4w4DUcIlOWoEXp8BDMN5AjDRDogeVuEXpqVGHPWijG10AxxyQMYvQqyMT7/jFPR6hjzj44xy1uCRmDbKLeOSBHg25AkRuTY4WOaMg0wjJQrqxEcSIC3aqCEUPKDKTdGyk+5pIgjViKFGKoYchsYC/DjAlXba8QEp4cMrDpbJTXEyBK+MES0ZEpXo"
-                Print #intFileNo, "9fEO6huiOcIXrPEWMI/MWGUhVHrCT2JvcUywTnGSeiH+C8IYzusIJdThDOSbxnxhIwUtM+pKRwLQjNl8ZuXrdggaSm2QSmICNBVwDGnQ7wEkGwIn+LYGdY3Rn6n7pSE4KU4cZm5Mx/sWDQgcd5zL8kF8aBlG8VRzAoOyMCujWk9BpohKeDWURK0cwTAfSk23VUo2UFjUFzAXgKL0LGN6QJ7zuhdQfwJiJNLFITfZBaJWEXJA3Z5cUPVROWkV5mBQkoIdy6kMND+ioJv7g02gSQn7tNOk7q7kkpB4mCph5YhC0FVHtNIYOAGoMxGTjEY/IAFZQCNgpjEcRIu0VADhNQwCwGgewlpSoJyVrSm31FKmK7YmzoVztbuTSZJKJFUDihWjudzlnwgovfugK6OagBSeM5DIbuKUHLKk8hdIwlWW9JgYittnBiSYACxgNW5Yq2cn2dgMOWMCYmEGGh/FjF8NZQ1R4/hFJV0QEXVyoZSVYC0DXmhG2i7XYkzBggO5"
-                Print #intFileNo, "697veFUBudZuYiEo2UeZNyh0OsFlnoCUr62mAOZakHLfclQm1ABcMVPvVHvRyoYyM7eJsO6QhLaTA/dxtej8mp4w1Zr2iMUdu5Yugj1KgZgWImV5IE91lOtMW1G3Bf18b4OwaSjRKmk+BB5CAFneXABP2bWXPZtkHFxfD8y3ATbuSWjLgt5QtCDELRnzdEq9yAihGiHVanAAEOBkBLR7AeGUMu7Ux1Z72Eu6BTBZcQYhCFOfcQCgSIeQVEBkgmjwq2ZDsgBQvyQBNfvKTEyBlbS1VaJGraLCCO9z1jvckobuaNZob/kbDDhV9RS2gNUU4ODcPQM6QpvOU9YzCo+WTbYPTcjAg/KwLWwZdliizCs7sPK0tIMUm1s8D2qxkSMtZ0p2m9JXz3EOriMZRwKhtRKCgrf95QdQpILX6tEaw+biPDhpg9XxcPec6V5Zo+QzJ4zxWLQcMZTScxYttsQ1kHQAbBcL+YLEF7KkhKBtCzHYyrB2oTRpX7qm5xra3gLt"
-                Print #intFileNo, "ZvN7zCTrDBQ1CCWJD+9G6aM73uLNrMXMXGN3pljQxaQq7uHHH3asZzHMx8+H99tu/AC91RgZesYKH5uBLSreTpbxw864Nd3iOUuwgKAbo3neCL9fAt08QboEb230GN3DIRU7y/iM4dZYt33UQ9k3LDszcBDXf+M3dlfM0iRwBPTfCzz95CV0UCLnH/WhUNvGAX5C8sBgXK4ChwHGcf1znj+a5N3yObKqjASaa6GkpvNy/TXSCFNP1dyIzPmylq5npZ3e62pEw9U9OEBgVrkaQzjkMZtAB71sJareTzXcCbuXv5Q48wtMd9SIUHoyHL4szZPY0PQxD7qT0pyDWcOgOJnYDZQd8skGeds6vXeptB70ECDaWlawkQPxQwyo8YY9oziOsiB0r7Jee+dmj/emdJ8LnA9WX0N3UIHPPGja6kuFdyAChrS9jwP1O7kI1ffPMjn4Ppk99MWi9F1k3jo/1PUHI/ocfkMvHvPk1v3PbEz73bkd0AphXdTUZLjN5lCd"
-                Print #intFileNo, "2JEZ2zLd/HUB70Hd7ngeAUpQ/gfEW+3ZPpHR/iXZ55dcsUbBi/edqCqdUOsB+lORtendJClhkDKh/IOgB0oF+riZl+AUHFoCCKYgDR1cCSfeCHzghIdhIQyJykoZLijA3Z7CDRdCDJPCD+ReE+GFwS9JIRmiDJugCZsBjTNgDTmg+lWdzMCiEH1eFIxhpX4eAHcB1XcgDXygCUFgHDRiDs9dIZwhpBuAA+yM4E8CGbUg9JvCGIRCHHkhwS1iHKxZnzJaHuwUHWdU9f+hhoFZLGwB+/9aC4weEhkiF06GIeMiI/kZgB5E4FRn4Q0NnAS80eYQYe823ageHFp4oZ90Va0Qgin84DhfUF80xQVh1WIj2enI4hlMYeENCALH4ZLN4BLbYhiTyXEF3GILCepeYfGMXhZtIjLCYbsmYbD2wjMxYHOJAS9VBTpWQCb7oesoXjFLIIk1XjCK3javWjZDIhOgiPOzBDGPQFQT1MmEjBubIga83OKzogK5IhATwjqB"
-                Print #intFileNo, "YBN5IddTwDI94aszRdcKVYcogXvxADqGAMMiHPt11OK3hAMUWT3RYkESIkGr4AQtJPU0BcyVEdLoYF5uxDKfwVSGhB+RkChapBk5AN8Jgb8GGRAZAN9jgZn1lAKjWcYdI/pIFZpI+2QIpCQm69kMxhwVio5KC8IicYDd6sAlBAhO9pxG9yIHF5iEqhpRUWJLaqB8nqQFPaUxZ1wu6QYngIkqTcAlyIDVdIQh6sDnC5Ttj0ZfRpQeERnNyNG5EYYZ2uI5scpZLmZahtANtWZUXsAAGsCLqAArIhXUY4E+mZW9qQVyowD1eIQA7uQrOiAnSuHfTNG6NJAhokTqK6XF1iJaLqJYKOY8vIAEL0CSXmQaBAF9McWolYUGPMUHbxwmO8IyXQwP/OI2IxpoB0ZECIYzsWIa06Wrd9Zg6EJnbJF+8mWnxgBMVNjgFYADChWxQ1BQqEJbOGQgvhhDRGZTT/hmbSalsjVmb2pkD3JkRVsKbXIMgJUERGRYZv/Bznek"
-                Print #intFileNo, "F7Kmap/OeBxGfA0Gdi2md94mdtlmLuGlf3mmZxokKYNYHWoBhA9qUR5CgLLigBgCd8imf83mNszmhn5ifOLCf6pKhEtKb2OB9ocAUqzeYSECirVU4DMoVKkoQECqbSlmEjimiKyCj4kKZEmIAlxmO2vYsPDqiFPijWHSi8DmkABFe9MmYSIqfSqoCTOpcUllXK0SAvkYFPlpdzKOlDWoRXnqNo2GfYUqhMHoDZfoE3FYBfUqKKrQpjtCmscRrhQmfctpdRbqEBJYitUehz1IZ23mhI3RvZbKWbqkzhDpC/qalSNBZntK5oh2nlvKFao/6iZ0Wczawp7coNw94pT7gCJ6KqKEqqrVyomgmDNeJnf34Y2uKoX7YqhARLptqX0Awq3GaPhBqAL8QDBThqAlnAAAwAOrEWavKhcIaDrhUrCSjFquJqMoam856fUTIYurGZC1GMIAFd2xhRE4QrNlKArsQl+UIqyeAE60RFs8Jrs1TpM0KDOS6JMboYitmYDd"
-                Print #intFileNo, "1FMKgDi3JAnuAqYFCFmHDLqkJk1/FoXRzU0Pxrcnar4pplBg7rg1hEAB7sB8rilSxYdQwAGNKj02gCU5AWAU0Eq84H0RBsjZrs9QqCvxqEfp3osVIFiQLssIgDDdb/rQf+3NAlIWEobLxWpcVIF5fmUAIixTOCljrSrICcLNNpbMby7N9VbAKYbPjarRkG7TCgFFBpxdp0LR1eQFQ+4+YMLJaS7YG8bEAe7UHqxDNI59ZexBla7Rj+7eAy1UPgYQfsLZsu000IJSFKx9yK7jXRxFFew7gqqLfpWNWC7lFaxSau7nAMAiG6wGIm7j3lI/KMQTS8biCm7U3NUP5iqKherlH0blky7m0e7CZS1B5OrqkW5xbALFEgrd/y7rSsAtkcBsAGqex610Tobq3i7vC+7wIGw8xxLS9uwIQOzydW7fFixu98KkE0ZGsG7jSO7XRe7ufC2P4s7YOu4PZ/jsAswu53Hu83tsPz1oS6TMRdlu+Zuu8zxtUjGoNunu966k"
-                Print #intFileNo, "eghC/w8u69Ou9okCuAjFwBtu//CvBEzy1AwoKA0zAKAC82IDAdKvA9csLQHW/CDG0GDu45/u//qvCTWMuGrzBBowWI1y28xvCvUPBuCu45Fu+O8zDv0lQLwzDrpkNHnyzNWzDPlLB0JvC6LvCtAsSQHyLoLEFliqDBqwNRYy1IIwbx9vATKzCSmy3wnspADspvMuy+VWA/JkX8oEOWUyuO2bDzvCxYTy1YVwUJIwQC9CZ6XLGOzgSHeZrT1vCV7wNb3zEIewPdHzHTqy1SYENf7B6pXiD4JCywso//pMyWkmBsLchPOgAv9GLyL0AEPYLvXVsx7NrFwvsGvLVERFEcWk6BH78x25Lskm5xu0aFZF8DsFrtCXBwMeryEvcxDU7u6wLMLksPqqRP0FnWuVivaMoROKjCWeVvdogw7/gy/RLBkJJxGK7wkkhw9qgN7ckBI0gNp5wV3RlrVgBzfHqHtEhC6OHEULSmtyQzZOrDcSrw49MEDrUUiygGko7b6I"
-                Print #intFileNo, "bxebzFMlGiwSYV+acgTiYWoAFiTDn0G2MDvjMz1Z7t0VBmpk8Kb8KAgC9AgJtA0/jgwptAXa2BNw2GclZyVfQjC6XbZAcCOKcDWTxuHiMdkqSPC6sbUllAyMt/hLIVKmr5qe05aeVTH8rq7igFgQclBDZ8Ac1bdP/GtGhWTyBfETt0HJjGtLC0U1aSBdmxhMtlhNHPdFGrc42EBVLYb5WqwbeS3bCU8hR7Rol5KtqTBjDsLCN2EpVGgJBrQRQc6kRFosJYNb+VKATEV/RkTVZG6JaKMyYQS4XhJKefM1oAQ2xzEL56cJp/FA4ENg4NNj9UtiRlluX4aHieU4M4ADl2ZfcvEBCN6O+SsVcXQehg09DfDOuqdkO7bRa3W1e7QoUywp2c2/QGAQlHQ6m/WrjlaNgJkCSkAavqR6wDI7YDdPEHV14oAm905DF4yOm5QdDqQ36FEMNcgPD/n2aULDMFjDZtq0RymAkbLYAhr0TofMyK/OhQXl3gnDXZxoYH1U"
-                Print #intFileNo, "G+3AKJHEHF7CP3YNRiCfLg1Xew2Mm6U3SeEQLYsAUy5xXe/iWxguwplkmhd1ic2bWhCMMeLAyIPRRFJF7IwG6zOE33YMSfmOc4bjO2O0RBYEWNX3eIpAsJ+DVZ7oE6bxf3FCwaEGJNBdcnljW4yWll6Bb/MaLurp6z2CyF0COTUDZ92WAXpG+US3hOjDc5SyVNaK3A5Fak7wuS6PkccZkZu0w6rxCQeQKYDbgOMEP8sXQk3gI8+pP/lS1gMUL07rjYJ4D6y1QOOFPfmC+MHEbLxnTA12V9b0T/hCD1M9YcdhRGcTAxzAuEFhLER5QWhcAX5A8GD1umjigVvk4n8dsNcXtmSytpFSc0N2JGOccq6c5UufgklmNBl4zJPMtNyo0xRNQE7Ot1mTnI1M9zh8dxP0i552+khZHSzFgzb8C3LawhxrQNwOIzkU7EIV7AQfq7GtddLtl7qBwXKDAMjHBCr8u1p1FLngNCsOAGxp9U1IJ3y7dvmw7QbwedHjHY/K"
-                Print #intFileNo, "FEnPgMnhDAySxJNfeWVwNFVHtmgULVsy0xkE0AzPD79k67wgyBmYRyWNACKTpfT52HqN+usH3C4KcFwmfEASh1i+5nPlFDM1O7omeE9mtBXvsoU2QBjGuvieAFTO6QCJ6zsbqagE9ASTrihuS2tfOZesX2PDkzgg+0qzy4AwccQbmsO1nwKjeAs9Elzz5iHiFoBBqHvUpyB7z4H1jkBNYDl1mOueUjDPZwMbjbvZnDwppnLYYOHRyQcldl7kRrfTa9mPqYvd/HEFoKkTrfOEiXBSXWc6KC6ifhvGGfy7PODN0Je/+Xh3UOi7iIhhvUeO/Xfm6F8jPdYpAlLQVj1ezrl8zT/qwH/uyP/u0X/u2f/u4D/sRAAAAOw==' />"
-                
+                Print #intFileNo, "<img src='" & strTmpFolder & "/3DBar.bmp' />"
               Case Else
-                Print #intFileNo, "<img src='data:image/gif;base64,R0lGODlh3ACoALMAAF9iT5Kxxtalf9PCvbjjlcHnq87p7O337vmlhfucmP+koPzfzP/08fv99/f//////ywAAAAA3ACoAAAE/vDJSau9OOvNu/9gKI5kaZ5oqq5s675wLM90bd94ru987//AoHBILBqPyKRyyWw6n9CodPpgKK7XgWHLNVC/zgV2nCibB4F0uts9gN89K9ZMr5fR6ryeDe+/GoB2goMJeHqHhwQFgA1+jiMMVoSTdYaIlwEEmooHB41TDqGio48YkZKUqXeYrJuuBp1RDqwOpRMNC7mqu6usiAWuwQSxTrOYtQ+4A8tuEwsGz0+4vNSFvojC2cRLxpfIDAIAAAFezgEIAWEL1dSW12nZ8QvNSd2I3+HkDQMC5M/oTHSxa/cuD7B42QoUoGfE3iF84wIcCDcOHcAkuRQMrObuGsKP/goZDnGo5xsaCQv6VTyX7kjGjew6+"
-                Print #intFileNo, "vpIU+GnkbQkMDj5YIG4lReLiIE5UGYrmjVvBiGZB1mDA+V2LoNGtYgcokULwkOKVCHOY1RQYY2pNRNXrgVGjlo7RexYslrPyk1ryweDt0SNXpI7V2ldG5Hw5o3Lt+/fG24Fw31XmO+iwzQSK+ZIuPHZhX4hr5A8mSBjy4Ufa2bBuTMvvXpANxY9GkVp07tQ51G9OnPrEK9hq5Kd5iBtx7dL5NadirfZ36GDixhOnJJx5JbpKu/AvPmk59BXT+fQQKN1mLx9Z5+7fcPd7+A9jtde/sJ59BstRUy9vnZ7Cu/hZ00j7pD4+obd/ledfoPI5x+A0dl2m3cE7sffgQg2tkB7AzZoh4H0RRiaSK0NZaGDPxmkYXQcarbOdwgIIABWqP034lklHuZhcykCsOJgmLj4Ylcx2jJjcxTdmB4mO1rWYyknWhfOkizmWORqR/rxI3EI/ARAk5fo+CRSCjqSJHpM4gjhloV12ceXH8aXJZmWyZjmWEZpyeZHZoJxgCZ"
-                Print #intFileNo, "vDjnmnHLVhcsmQuZ52l58FhblFHcGo6KgsRFaKF+lNKDlooxe5+ijMD6SKEKUVnrhL5gC54ekXAXqaS8ZhpppHw3I1empMqkqKhxycnqqNYnIepkfqiHgaUe6zgrGb5UCG+yub2QnqLHH/qKV7HhvutMsecPW96G00zr7xabWEohttkl9MaKpzX0LLkjivviqbpacq60U3I5L7mTtulsTFbUCOK9g9dqL0EJT5KvvvnCqIbC9E0px8MCdGeIvUglHsXCEBDv4ME0RPzHxuHjhcTFShxax8YtvefzxRyFT0CpCKZsw8o5YnoxyCCvH03IJLxc5pMws0zwzBgoEgIzL52bFc88g1KzNBAx0coADC+jj9NAh5EwmZUfb7DPS4PwEjT9ej3CA1Wz6uttxWbtyczI/gxPAAlosA3XYIpA957qCoJG2MGsrzbdO/cC9xgPoBABAOVXLXHEhewvDWgd+B9PMTgbslIYb/j6JgzgIdheK9xmN//1B5GpbsI8BV"
-                Print #intFileNo, "OOc9ecDhC550j/H0Hmo67r+OghO5+50nSjMLquQtpfuhO+6rhj8Jmv7QPzxzSbfw/LMB+s8D9BHL+v0O1RvfajY66D99o927z34oYs/Pvl7m5/D9+hvqT4O7IduZfgSk2nlT+fOX+j7N8QvzP33y5b++MQ/G/hvEwAEoADxt7/6vSiArmBgswY4pwLW4IAEoGAEFygO+kGBVCPSYDwS+D8GSlATGtRfCk+IQhGO53HDeyALs5HADkawhh0kIQJxCIAb2rCFCkRQxjQmwxkGg4c+5GEQgYjDHf6wiUIMWBFd2MIjShCCGRyg/ha3+EQTXtGIyLHgDXaERJpwsYdORCMT05hENM4Pi1n8YXakI4UildGKS6SgHr8oxzi6EX8r7CNy6BiFLUGRiXk84R672EcVAlKJapzjFxYwpyAqkY2YXKMmMflGSK4HYOmqpBdHqcZFRvKMePxjDj35wmeJcpVyRGUm/ThLWtKSivUhJLw0FMlU2nKTpkxiLR0Jy14"
-                Print #intFileNo, "iCJTVQpAROxlLPp5Skc4U5hqpaEzV6HIKvGQhMW2IxWBm0pu2hCMYo9OHeI2HlYhMZDPXWco7/vKS0IEhFUiXHXf6UYe/zOcZ8anPQ/7mmlOg5zmX2MZ3QpOdbBRhIHFJTj+YM3oMLRRA/ueJwVBFlE8TpcJDj3fROdlibOTrKJkyuq2QjrNQfwFp+441RE2t9FiQAeFLuWeimaqKd2+QKUSd6EHN6DR4NlySIIskxiRUlE9opEg1iaqc+NlTmZpQKtqeVFQlOPWpcmHoKilSwe2wD5JLNeM4Q6TUrpbne6YcqljVqquqOkGZy2QrQkSK0fugBEAuTCs7LUnQLSGzBbjIhWAHi9MbUHI9eXVmN5vozyL9FbCTYIBQEBtXUvK1hveE447cmozISmAf/UldDjZqGWp60ZebrKI0NzuDBni2Cv3ox+Z08JR6ghGXsvwIXWnD2c++1nIpCQBFDEAR4fZnBqQtjGkb/onP5Wo2QjVwLSEkC9v+TKQ/VTrcc"
-                Print #intFileNo, "GmQ3KzeVrGLFSRW61PYE0h3ENS13NPQQFyJXPcAwRWtC7rLFeemM7y9hKeGymve3/Ikc+MobnFtQN+1VhOCCI5mQfMJIP72d7pLOCxoEsvNg7YTobVcT28rcF5BUFcJC7AahVX5TEaW+MTH3DCHx8BiBXw4wqWdYW4NiuHUxlPFMmqMXtNI4gufuMefxDFkJHwWsKayuSTU7yCFXFPvNva+eu2hkmnzWLumAL5FxuxcmZnfBD9SrnLZhpVZ8CebMnk6ZV7pmbfzlKOGb83tAYSbyeSJMWePeXC28wTmrKE867kCCjlaAVr6VOceSIrPVCZpoXcwNkSHRtGL7kGjp6UQSEcaCJMOVaX9fGkSwJfITxr0PDptp04cMHekdsRTTD2eeYg51R/VndNArTZZd8LBsH7Eqm2d61772gQRAAA7' />"
+                Print #intFileNo, "<img src='" & strTmpFolder & "/PieChart.bmp' />"
                 
             End Select
                 
@@ -6157,7 +6222,7 @@ Private Function GeneratePreviewHTML() As String
   
   ' Bottom of the document
   strHTML = "<tr ><td valign='bottom'>" & vbCrLf & _
-      "<img src=data:image/png;base64,R0lGODlhJwAnAMQAAP///7Cy9ezt/bGz9e/v/ff3/ufo/Le49svM+La49uXm/Le59r2+9/39/+Pk+8/Q+d7f+83O+bW39tbX+sDC9/Ly/fT0/rK09eDh+8jJ+L/A97i69r6/99ra+snL+AAAACH5BAAAAAAALAAAAAAnACcAAAWlYAOMZGmeaDo6auum7Cu/0Gyr0a2b1O4Did8uINQFFEVbIJOcBQ5NWSBQiLqmD2trKtGqpgGBFwVmjE/gQOVcSmvYpHQYDpBD4fLABC8fVM95ARtsgQE5Y4UBNV6JAQaMiQMEWo0BF5NRlQEDj02aUxienwEISaNTCxZCp1MDez6sYAtiRrFgFJhOtmkMtC+7eRIPf1/AgQceSGTGjQkcCB0GFQ0hADs='/>" & _
+      "<img src='" & strTmpFolder & "/BottLeft.bmp'/>" & _
       "</td></tr>" & _
       "<tr bgcolor='#b0b2f5'><td colspan='3' height='6'></td></tr>" & vbCrLf
   Print #intFileNo, strHTML
@@ -6182,7 +6247,7 @@ Private Function GenerateUniqueName() As String
 
 End Function
 
-Private Function DisplayInBrowser() As Boolean
+Private Function DisplayInBrowser(ByVal strTmpFolder As String) As Boolean
 
   Dim IE As SHDocVw.InternetExplorer
   Dim dblWait As Double
@@ -6193,7 +6258,7 @@ Private Function DisplayInBrowser() As Boolean
 
   On Error GoTo LocalErr
 
-  strFileName = GenerateUniqueName
+  strFileName = strTmpFolder & Replace(gsUserName, " ", "") & "dat_PreviewSSIDash.htm" ' GenerateUniqueName
 
   blnOK = True
   dblWait = Timer + 10
