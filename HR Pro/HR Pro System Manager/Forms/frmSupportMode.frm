@@ -5,7 +5,7 @@ Begin VB.Form frmSupportMode
    ClientHeight    =   2715
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   4305
+   ClientWidth     =   5070
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -22,7 +22,7 @@ Begin VB.Form frmSupportMode
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   2715
-   ScaleWidth      =   4305
+   ScaleWidth      =   5070
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.Frame Frame1 
@@ -30,7 +30,7 @@ Begin VB.Form frmSupportMode
       BorderStyle     =   0  'None
       Caption         =   "Frame1"
       Height          =   375
-      Left            =   120
+      Left            =   480
       TabIndex        =   3
       Top             =   1560
       Width           =   4095
@@ -160,7 +160,7 @@ Begin VB.Form frmSupportMode
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
-      Left            =   930
+      Left            =   1290
       TabIndex        =   0
       Top             =   2160
       Width           =   1200
@@ -169,7 +169,7 @@ Begin VB.Form frmSupportMode
       Cancel          =   -1  'True
       Caption         =   "&Cancel"
       Height          =   400
-      Left            =   2260
+      Left            =   2625
       TabIndex        =   1
       Top             =   2160
       Width           =   1200
@@ -187,7 +187,7 @@ Begin VB.Form frmSupportMode
          Strikethrough   =   0   'False
       EndProperty
       Height          =   315
-      Left            =   480
+      Left            =   840
       TabIndex        =   13
       Top             =   1080
       Width           =   3375
@@ -205,10 +205,10 @@ Begin VB.Form frmSupportMode
          Strikethrough   =   0   'False
       EndProperty
       Height          =   195
-      Left            =   2205
+      Left            =   2880
       TabIndex        =   2
       Top             =   240
-      Width           =   1245
+      Width           =   1965
    End
    Begin VB.Label Label1 
       Caption         =   "Please call ASR Support on"
