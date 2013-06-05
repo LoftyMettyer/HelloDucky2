@@ -72,9 +72,12 @@ END
 /* ------------------------------------------------------------- */
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysScreens', 'U') AND name = 'category')
+	BEGIN
 		EXEC sp_executesql N'ALTER TABLE ASRSysScreens ADD
 				[category] nvarchar(255),
 				[groupscreens] bit;';
+		EXECUTE sp_executeSQL N'UPDATE ASRSysScreens SET groupscreens = 0 WHERE groupscreens IS NULL';				
+	END
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysScreens', 'U') AND name = 'description')
 		EXEC sp_executesql N'ALTER TABLE ASRSysScreens ADD [description] nvarchar(MAX);';
@@ -809,7 +812,10 @@ PRINT 'Step - Menu & Category enhancements'
 		AS
 		BEGIN
 			-- Return a recordset of the history screens that hang off the given parent screen.
-			SELECT ISNULL(dbo.udfsys_getcategory(cs.category),t.tableName) AS tableName, 
+			SELECT CASE WHEN ISNULL(cs.category,0) = 0 OR ISNULL(parentScreen.groupscreens,0) = 0
+				THEN t.tableName
+				ELSE ISNULL(dbo.udfsys_getcategory(cs.category),t.tableName)
+				END AS tableName,
 				t.tableID,
 				cs.screenID,
 				cs.name,
