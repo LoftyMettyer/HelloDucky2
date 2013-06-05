@@ -50,10 +50,10 @@ Public Enum ViewItemTypes
 End Enum
 
 ' Control type constants
-Public Enum OLEDisplayTypes
-  giOLEDISPLAYCONTENTS = 0
-  giOLEDISPLAYICON = 1
-End Enum
+'Public Enum OLEDisplayTypes
+'  giOLEDISPLAYCONTENTS = 0
+'  giOLEDISPLAYICON = 1
+'End Enum
 
 ' Control type constants
 Public Enum ControlTypes
