@@ -1850,7 +1850,7 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
             Set rsTemp = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
             With rsTemp
               If Not (.BOF And .EOF) Then
-                lngElementID = !ID
+                lngElementID = !id
                 iElementType = !Type
               End If
               
@@ -2038,7 +2038,7 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
           Set rsTemp = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
           With rsTemp
             If Not (.BOF And .EOF) Then
-              lngElementID = !ID
+              lngElementID = !id
               iElementType = !Type
             End If
     
@@ -2457,7 +2457,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
           Set rsTemp = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
           With rsTemp
             If Not (.BOF And .EOF) Then
-              lngElementID = !ID
+              lngElementID = !id
               iElementType = !Type
             End If
             
@@ -3553,5 +3553,8 @@ End Sub
 '
 'End Sub
 
-
+' Code stub for .NET migration
+Public Function GetSQLElementCode() As String
+  GetSQLElementCode = vbNullString
+End Function
 

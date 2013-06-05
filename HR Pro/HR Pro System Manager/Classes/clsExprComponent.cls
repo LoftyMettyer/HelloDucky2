@@ -652,3 +652,8 @@ End Sub
 '    Set mvComponent = Nothing
 '  End If
 'End Sub
+
+' Code stub for .NET migration
+Public Function GetSQLElementCode() As String
+  GetSQLElementCode = vbNullString
+End Function

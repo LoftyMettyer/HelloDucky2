@@ -906,3 +906,8 @@ Public Property Let WorkflowElementProperty(ByVal piNewValue As WorkflowElementP
   miElementProperty = piNewValue
   
 End Property
+
+' Code stub for .NET migration
+Public Function GetSQLElementCode() As String
+  GetSQLElementCode = vbNullString
+End Function
