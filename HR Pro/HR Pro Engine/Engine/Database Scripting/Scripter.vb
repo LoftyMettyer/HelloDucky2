@@ -331,6 +331,7 @@ Namespace ScriptDB
       Dim sSQLParentColumns As String
       Dim sSQLParentColumns_Delete As String
       Dim sSQLChildColumns As String
+
       Dim sSQLSpecialUpdate As String
 
       Dim aryCalculatedColumns As ArrayList
@@ -603,7 +604,11 @@ Namespace ScriptDB
               "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
               , objTable.PhysicalName, String.Join(", " & vbNewLine & vbTab & vbTab & vbTab, aryBaseTableColumns.ToArray()))
           Else
-            sSQLWriteableColumns = String.Empty
+            sSQLWriteableColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
+              "    UPDATE [dbo].[{0}]" & vbNewLine & _
+              "        SET [updflag] = base.[updflag]" & vbNewLine & _
+              "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
+              , objTable.PhysicalName)
           End If
 
 
@@ -617,7 +622,11 @@ Namespace ScriptDB
               "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
               , objTable.PhysicalName, String.Join(", " & vbNewLine & vbTab & vbTab & vbTab, aryColumnsWithDefaultValues.ToArray()))
           Else
-            SQLAfterInsertColumns = String.Empty
+            SQLAfterInsertColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
+              "    UPDATE [dbo].[{0}]" & vbNewLine & _
+              "        SET [updflag] = base.[updflag]" & vbNewLine & _
+              "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
+              , objTable.PhysicalName)
           End If
 
 
@@ -787,6 +796,7 @@ Namespace ScriptDB
               "    -- Audit Trail" & vbNewLine & _
               "{2}" & vbNewLine & vbNewLine & _
               sSQLCode_Audit & _
+              sSQLSpecialUpdate & _
               "{3}" & vbNewLine & vbNewLine & _
               "    -- Clear the temporary trigger status table" & vbNewLine & vbNewLine & _
               "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {5};" & vbNewLine & vbNewLine & _
@@ -1004,20 +1014,17 @@ Namespace ScriptDB
               '            End If
             End If
 
+            ' Build default value code
             If CInt(objColumn.DefaultCalcID) > 0 Then
               objColumn.DefaultCalculation = objTable.Objects.GetObject(Things.Type.Expression, objColumn.DefaultCalcID)
 
-              '              sObjectName = String.Format("{0}{1}.{2}", Consts.DefaultValueUDF, objTable.Name, objColumn.Name)
-
-              If Not objColumn.Calculation Is Nothing Then
+              If Not objColumn.DefaultCalculation Is Nothing Then
                 objColumn.DefaultCalculation.ExpressionType = ScriptDB.ExpressionType.ColumnDefault
                 objColumn.DefaultCalculation.AssociatedColumn = objColumn
                 objColumn.DefaultCalculation.GenerateCode()
               End If
 
-
             End If
-
 
           Next
 
@@ -1235,13 +1242,18 @@ Namespace ScriptDB
         For Each objTriggeredUpdate In Globals.OnBankHolidayUpdate
           aryTriggerCode.Add(String.Format("    WITH base AS (" & vbNewLine &
               "        SELECT {0} FROM dbo.[{1}]" & vbNewLine & _
-              "        INNER JOIN inserted ON inserted.{2} {3})" & vbNewLine & _
+              "        INNER JOIN @dates bankholidays ON bankholidays.{2} {3})" & vbNewLine & _
               "    UPDATE base SET [{0}] = [{0}];" _
               , objTriggeredUpdate.Column.Name, objTriggeredUpdate.Column.Table.PhysicalName, objColumn.Name, objTriggeredUpdate.Where))
         Next
 
-        sCode = vbNewLine & vbNewLine & String.Format(vbNewLine & "SET @iCount = @iCount;" & vbNewLine & "-- Bank Holiday update" & vbNewLine & _
-          "{0}", String.Join(vbNewLine & vbNewLine, aryTriggerCode.ToArray())) & vbNewLine
+        sCode = vbNewLine & vbNewLine & String.Format(vbNewLine & "-- Bank Holiday update" & vbNewLine & _
+              "DECLARE @dates TABLE ([{0}] datetime);" & vbNewLine &
+              "INSERT @dates" & vbNewLine &
+             "    SELECT [{0}] FROM inserted" & vbNewLine &
+             "    UNION" & vbNewLine &
+             "    SELECT [{0}] FROM deleted;" & vbNewLine & vbNewLine &
+              "{1}", objColumn.Name, String.Join(vbNewLine & vbNewLine, aryTriggerCode.ToArray())) & vbNewLine
 
       End If
 
