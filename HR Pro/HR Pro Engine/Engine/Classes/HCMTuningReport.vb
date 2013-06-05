@@ -28,7 +28,7 @@ Namespace Tuning
 
       For Each objTable In Globals.Tables
         For Each objColumn In objTable.Columns
-          If objColumn.IsCalculated Then
+          If objColumn.IsCalculated And objColumn.State <> DataRowState.Deleted Then
             sMessage = String.Format("({0}) {1}.{2}     | Expression = {3} - ({4})", objColumn.Tuning.Usage.ToString.PadLeft(3) _
                   , objColumn.Table.Name, objColumn.Name, objColumn.Calculation.Name _
                   , If(objColumn.Calculation.IsComplex, "Complex ", "Simple")) & vbNewLine

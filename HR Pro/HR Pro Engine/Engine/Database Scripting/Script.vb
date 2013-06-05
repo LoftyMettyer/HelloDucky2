@@ -1144,37 +1144,40 @@ Namespace ScriptDB
                ' Calculations
                For Each column In table.Columns
 
-                  If column.IsCalculated Then
+            If column.State <> DataRowState.Deleted Then
 
-              column.Calculation = table.Expressions.GetById(column.CalcID).Clone
+              If column.IsCalculated Then
 
-              column.Calculation.SetRootNode(column.Calculation)
+                column.Calculation = table.Expressions.GetById(column.CalcID).Clone
+                column.Calculation.SetRootNode(column.Calculation)
 
-              '   Debug.Assert(column.Name <> "Intranet_Self_Service_Login")
+                If Not column.Calculation Is Nothing Then
+                  column.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
 
-                     If Not column.Calculation Is Nothing Then
-                        column.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
+                  column.Calculation.AssociatedColumn = column
+                  column.Calculation.ConvertToExpression()
+                  column.Calculation.GenerateCode()
+                End If
 
-                column.Calculation.AssociatedColumn = column
-                column.Calculation.ConvertToExpression()
-                column.Calculation.GenerateCode()
-                     End If
+              End If
 
-                  End If
+              ' Build default value code
+              If column.DefaultCalcID > 0 Then
+                column.DefaultCalculation = table.Expressions.GetById(column.DefaultCalcID)
 
-                  ' Build default value code
-                  If column.DefaultCalcID > 0 Then
-                     column.DefaultCalculation = table.Expressions.GetById(column.DefaultCalcID)
+                If column.DefaultCalculation Is Nothing Then
+                  Globals.ErrorLog.Add(ErrorHandler.Section.LoadingData, column.Name, ErrorHandler.Severity.Error, "Default calculation not found", CStr(column.DefaultCalcID))
+                Else
+                  column.DefaultCalculation.ExpressionType = ScriptDB.ExpressionType.ColumnDefault
+                  column.DefaultCalculation.AssociatedColumn = column
+                  column.DefaultCalculation.GenerateCode()
+                End If
+              End If
 
-                     If column.DefaultCalculation Is Nothing Then
-                        Globals.ErrorLog.Add(ErrorHandler.Section.LoadingData, column.Name, ErrorHandler.Severity.Error, "Default calculation not found", CStr(column.DefaultCalcID))
-                     Else
-                        column.DefaultCalculation.ExpressionType = ScriptDB.ExpressionType.ColumnDefault
-                        column.DefaultCalculation.AssociatedColumn = column
-                        column.DefaultCalculation.GenerateCode()
-                     End If
-                  End If
-               Next
+            End If
+
+
+          Next
 
                '  Validation Masks
           For Each expression In table.Masks
@@ -1199,47 +1202,51 @@ Namespace ScriptDB
         For Each table In Globals.Tables
           For Each column In table.Columns
 
-            If column.IsCalculated Then
+            If column.State <> DataRowState.Deleted Then
 
-              With column.Calculation
-                .StartOfPartNumbers = 0
-                .StatementObjects.Clear()
-                .ExpressionType = ExpressionType.ColumnCalculation
-                .AssociatedColumn = column
-                .GenerateCode()
+              If column.IsCalculated Then
+
+                With column.Calculation
+                  .StartOfPartNumbers = 0
+                  .StatementObjects.Clear()
+                  .ExpressionType = ExpressionType.ColumnCalculation
+                  .AssociatedColumn = column
+                  .GenerateCode()
 
 
-                Globals.TuningLog.Expressions.Add(column)
+                  Globals.TuningLog.Expressions.Add(column)
 
-                If .IsValid Then
-                  functions.Add(.UDF)
-                Else
-                  Dim newUdf = .UDF
-                  newUdf.Code = newUdf.CodeStub
-                  functions.Add(newUdf)
-                End If
-              End With
-            End If
+                  If .IsValid Then
+                    functions.Add(.UDF)
+                  Else
+                    Dim newUdf = .UDF
+                    newUdf.Code = newUdf.CodeStub
+                    functions.Add(newUdf)
+                  End If
+                End With
+              End If
 
-            If column.DefaultCalcID > 0 And Not column.DefaultCalculation Is Nothing Then
+              If column.DefaultCalcID > 0 And Not column.DefaultCalculation Is Nothing Then
 
-              With column.DefaultCalculation
-                .StartOfPartNumbers = 0
-                .StatementObjects.Clear()
+                With column.DefaultCalculation
+                  .StartOfPartNumbers = 0
+                  .StatementObjects.Clear()
 
-                .ExpressionType = ExpressionType.ColumnDefault
-                .AssociatedColumn = column
-                .GenerateCode()
-                Globals.TuningLog.Expressions.Add(column)
+                  .ExpressionType = ExpressionType.ColumnDefault
+                  .AssociatedColumn = column
+                  .GenerateCode()
+                  Globals.TuningLog.Expressions.Add(column)
 
-                If .IsValid Then
-                  functions.Add(.UDF)
-                Else
-                  Dim newUdf = .UDF
-                  newUdf.Code = newUdf.CodeStub
-                  functions.Add(newUdf)
-                End If
-              End With
+                  If .IsValid Then
+                    functions.Add(.UDF)
+                  Else
+                    Dim newUdf = .UDF
+                    newUdf.Code = newUdf.CodeStub
+                    functions.Add(newUdf)
+                  End If
+                End With
+              End If
+
             End If
 
           Next
