@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmTabEdit 
@@ -56,57 +56,57 @@ Begin VB.Form frmTabEdit
       TabCaption(0)   =   "De&finition"
       TabPicture(0)   =   "frmTabEdit.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "lblRecordDescription"
+      Tab(0).Control(0)=   "txtEmail"
       Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "lblOrder"
+      Tab(0).Control(1)=   "cmdEmail"
       Tab(0).Control(1).Enabled=   0   'False
-      Tab(0).Control(2)=   "lblTableName"
+      Tab(0).Control(2)=   "txtTableName"
       Tab(0).Control(2).Enabled=   0   'False
-      Tab(0).Control(3)=   "lblEmail"
+      Tab(0).Control(3)=   "fraTableType"
       Tab(0).Control(3).Enabled=   0   'False
-      Tab(0).Control(4)=   "cmdRecordDescription"
+      Tab(0).Control(4)=   "cmdOrder"
       Tab(0).Control(4).Enabled=   0   'False
-      Tab(0).Control(5)=   "txtRecordDescription"
+      Tab(0).Control(5)=   "txtOrder"
       Tab(0).Control(5).Enabled=   0   'False
-      Tab(0).Control(6)=   "txtOrder"
+      Tab(0).Control(6)=   "txtRecordDescription"
       Tab(0).Control(6).Enabled=   0   'False
-      Tab(0).Control(7)=   "cmdOrder"
+      Tab(0).Control(7)=   "cmdRecordDescription"
       Tab(0).Control(7).Enabled=   0   'False
-      Tab(0).Control(8)=   "fraTableType"
+      Tab(0).Control(8)=   "lblEmail"
       Tab(0).Control(8).Enabled=   0   'False
-      Tab(0).Control(9)=   "txtTableName"
+      Tab(0).Control(9)=   "lblTableName"
       Tab(0).Control(9).Enabled=   0   'False
-      Tab(0).Control(10)=   "cmdEmail"
+      Tab(0).Control(10)=   "lblOrder"
       Tab(0).Control(10).Enabled=   0   'False
-      Tab(0).Control(11)=   "txtEmail"
+      Tab(0).Control(11)=   "lblRecordDescription"
       Tab(0).Control(11).Enabled=   0   'False
       Tab(0).ControlCount=   12
       TabCaption(1)   =   "Su&mmary Columns"
       TabPicture(1)   =   "frmTabEdit.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "lblParentTable"
+      Tab(1).Control(0)=   "chkManualColumnBreak"
       Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "fraColumns"
+      Tab(1).Control(1)=   "cmdColumnBreak"
       Tab(1).Control(1).Enabled=   0   'False
-      Tab(1).Control(2)=   "cmdInsert"
+      Tab(1).Control(2)=   "cboParentTable"
       Tab(1).Control(2).Enabled=   0   'False
-      Tab(1).Control(3)=   "cmdDown"
+      Tab(1).Control(3)=   "cmdInsertBreak"
       Tab(1).Control(3).Enabled=   0   'False
-      Tab(1).Control(4)=   "cmdUp"
+      Tab(1).Control(4)=   "fraSummaryFields"
       Tab(1).Control(4).Enabled=   0   'False
-      Tab(1).Control(5)=   "cmdRemove"
+      Tab(1).Control(5)=   "cmdAdd"
       Tab(1).Control(5).Enabled=   0   'False
-      Tab(1).Control(6)=   "cmdAdd"
+      Tab(1).Control(6)=   "cmdRemove"
       Tab(1).Control(6).Enabled=   0   'False
-      Tab(1).Control(7)=   "fraSummaryFields"
+      Tab(1).Control(7)=   "cmdUp"
       Tab(1).Control(7).Enabled=   0   'False
-      Tab(1).Control(8)=   "cmdInsertBreak"
+      Tab(1).Control(8)=   "cmdDown"
       Tab(1).Control(8).Enabled=   0   'False
-      Tab(1).Control(9)=   "cboParentTable"
+      Tab(1).Control(9)=   "cmdInsert"
       Tab(1).Control(9).Enabled=   0   'False
-      Tab(1).Control(10)=   "cmdColumnBreak"
+      Tab(1).Control(10)=   "fraColumns"
       Tab(1).Control(10).Enabled=   0   'False
-      Tab(1).Control(11)=   "chkManualColumnBreak"
+      Tab(1).Control(11)=   "lblParentTable"
       Tab(1).Control(11).Enabled=   0   'False
       Tab(1).ControlCount=   12
       TabCaption(2)   =   "Ema&il Links"
@@ -130,9 +130,9 @@ Begin VB.Form frmTabEdit
       TabCaption(5)   =   "Audi&t"
       TabPicture(5)   =   "frmTabEdit.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraAudit"
+      Tab(5).Control(0)=   "fraTableStats"
       Tab(5).Control(0).Enabled=   0   'False
-      Tab(5).Control(1)=   "fraTableStats"
+      Tab(5).Control(1)=   "fraAudit"
       Tab(5).Control(1).Enabled=   0   'False
       Tab(5).ControlCount=   2
       Begin VB.Frame fraEmail 
@@ -185,6 +185,7 @@ Begin VB.Form frmTabEdit
             _Version        =   196617
             DataMode        =   2
             RecordSelectors =   0   'False
+            Col.Count       =   4
             DefColWidth     =   26458
             AllowUpdate     =   0   'False
             MultiLine       =   0   'False
@@ -526,6 +527,7 @@ Begin VB.Form frmTabEdit
             _Version        =   196617
             DataMode        =   2
             RecordSelectors =   0   'False
+            Col.Count       =   3
             DefColWidth     =   26458
             AllowUpdate     =   0   'False
             MultiLine       =   0   'False
@@ -2677,7 +2679,11 @@ Public Sub PrintDefinition()
       
                   ' Size
                   If Database.ColumnHasSize(.Fields("DataType").value) Then
-                    strSize = Trim(Str(.Fields("Size").value))
+                    If .Fields("Size").value = VARCHAR_MAX_Size Then
+                      strSize = vbNullString
+                    Else
+                      strSize = Trim(Str(.Fields("Size").value))
+                    End If
                     If Database.ColumnHasScale(.Fields("DataType").value) Then
                       strDecimals = Trim(Str(.Fields("Decimals").value))
                     Else
