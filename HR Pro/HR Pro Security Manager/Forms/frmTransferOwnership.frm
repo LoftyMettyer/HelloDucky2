@@ -466,7 +466,7 @@ TidyUpAndExit:
   
 ErrorTrap:
   WriteReport = False
-  MsgBox "Error writing report for " & sUserName & "." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
+  MsgBox "Error writing report for " & sUserName & "." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
   Resume TidyUpAndExit
 
 End Function
@@ -584,7 +584,7 @@ Private Function BuildReportSQL(sUserName As String) As String
 
   sSQL = sSQL & "Union " & vbCrLf
   sSQL = sSQL & "SELECT  DocumentMapID, 'DOCUMENT TYPE' AS Type, Name, Username " & vbCrLf
-  sSQL = sSQL & "From ASRSysDocumentMapping " & vbCrLf
+  sSQL = sSQL & "From ASRSysDocumentManagementTypes " & vbCrLf
   sSQL = sSQL & sWhere
 
   sSQL = sSQL & "ORDER BY Type, Name " & vbCrLf
@@ -595,7 +595,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  MsgBox "Error whilst creating report SQL string." & vbCrLf & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
+  MsgBox "Error whilst creating report SQL string." & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
   Resume TidyUpAndExit
 
 End Function
