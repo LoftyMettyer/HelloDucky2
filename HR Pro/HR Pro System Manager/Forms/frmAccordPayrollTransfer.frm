@@ -1678,8 +1678,7 @@ Private Sub PopulateBaseTables()
     Do While Not .EOF
 
       If Not !Deleted Then
-        cboTransferTables.AddItem !TableName
-        cboTransferTables.ItemData(cboTransferTables.NewIndex) = !TableID
+        AddItemToComboBox cboTransferTables, !TableName, !TableID
       End If
       
       .MoveNext
