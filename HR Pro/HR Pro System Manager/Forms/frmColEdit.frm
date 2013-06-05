@@ -3698,7 +3698,7 @@ Private Sub cmdOk_Click()
     End If
     
     ' Ensure that the column name is not a database keyword.
-    If UCase(sColumnName) = "ID" Or Database.IsKeyword(sColumnName) _
+    If UCase(sColumnName) = "ID" Or IsKeyword(sColumnName) _
       Or (UCase(Left(sColumnName, 3)) = "ID_" And val(Mid(sColumnName, 4)) > 0) Then
       ' Flag to the user that the column name is a database keyword.
       MsgBox "'" & sColumnName & "' is a reserved word" & vbCr & _
@@ -3785,7 +3785,7 @@ Private Sub cmdOk_Click()
   '  End If
     
     ' Flag to the user if the column size is invalid.
-    If Database.ColumnHasSize(miDataType) And (val(asrSize.Text) < 1) Then
+    If ColumnHasSize(miDataType) And (val(asrSize.Text) < 1) Then
       MsgBox "Invalid column size.", vbOKOnly + vbExclamation, Application.Name
       tabColProps.Tab = iPAGE_DEFINITION
       If asrSize.Enabled Then
@@ -4918,7 +4918,7 @@ Private Sub Form_Load()
   'SetDateComboFormat Me.ASRDate1
 
   'Set maximum column name length
-  txtColumnName.MaxLength = Database.MaxColumnNameLength
+  txtColumnName.MaxLength = MaxColumnNameLength
   
   ' Ensure the frames on each of the tab pages have the same
   ' background colour as the tab pages themselves.
@@ -5250,7 +5250,7 @@ Private Sub txtColumnName_Change()
 
   If Not mfLoading Then
     'JPD 20090102 Fault 13484
-    sValidatedName = Database.ValidateName(txtColumnName.Text)
+    sValidatedName = ValidateName(txtColumnName.Text)
     
     If sValidatedName <> txtColumnName.Text Then
       iSelStart = txtColumnName.SelStart
@@ -5274,7 +5274,7 @@ Private Sub txtColumnName_GotFocus()
 End Sub
 
 Private Sub txtColumnName_KeyPress(KeyAscii As Integer)
-  KeyAscii = Database.ValidNameChar(KeyAscii, txtColumnName.SelStart)
+  KeyAscii = ValidNameChar(KeyAscii, txtColumnName.SelStart)
   
 End Sub
 
@@ -6815,7 +6815,7 @@ Private Sub RefreshDefinitionTab()
   ' Only allow the user to change the data size control
   ' if the selected data type requires a size.
   asrSize.Enabled = fEnableDataType And Not mblnReadOnly
-  asrSize.Visible = Database.ColumnHasSize(miDataType) And Not (chkMultiLine.value = vbChecked And miDataType = dtVARCHAR)
+  asrSize.Visible = ColumnHasSize(miDataType) And Not (chkMultiLine.value = vbChecked And miDataType = dtVARCHAR)
   lblSize.Enabled = asrSize.Enabled And Not mblnReadOnly
   lblSize.Visible = asrSize.Visible
   asrSize.BackColor = IIf(asrSize.Enabled, vbWindowBackground, vbButtonFace)
@@ -6846,7 +6846,7 @@ Private Sub RefreshDefinitionTab()
   ' Only allow the user to change the data decimals
   ' control if the selected data type requires decimals.
   asrDecimals.Enabled = fEnableDataType And Not mblnReadOnly
-  asrDecimals.Visible = Database.ColumnHasScale(miDataType)
+  asrDecimals.Visible = ColumnHasScale(miDataType)
   lblDecimals.Enabled = asrDecimals.Enabled And Not mblnReadOnly
   lblDecimals.Visible = asrDecimals.Visible
   asrDecimals.BackColor = IIf(asrDecimals.Enabled, vbWindowBackground, vbButtonFace)
@@ -8016,12 +8016,12 @@ Public Sub PrintDefinition()
         .PrintNormal "Data Type : " & cboDataType.Text
         
         iTabs = 0
-        If Database.ColumnHasSize(miDataType) Then
+        If ColumnHasSize(miDataType) Then
           strSize = "Size : " & asrSize.Text & vbTab
           iTabs = 1
         End If
         
-        If Database.ColumnHasScale(miDataType) Then
+        If ColumnHasScale(miDataType) Then
           strSize = strSize & "Decimals : " & asrDecimals.Text
           iTabs = iTabs + 1
         End If
@@ -8344,11 +8344,11 @@ Public Sub CopyDefinitionToClipboard()
   strClipboardText = strClipboardText & "Column Type : " & strColumnType & vbCrLf
   strClipboardText = strClipboardText & "Data Type : " & cboDataType.Text & vbCrLf
   
-  If Database.ColumnHasSize(miDataType) Then
+  If ColumnHasSize(miDataType) Then
     strClipboardText = strClipboardText & "Size : " & asrSize.Text & vbCrLf
   End If
   
-  If Database.ColumnHasScale(miDataType) Then
+  If ColumnHasScale(miDataType) Then
     strClipboardText = strClipboardText & "Decimals : " & asrDecimals.Text & vbCrLf
   End If
   

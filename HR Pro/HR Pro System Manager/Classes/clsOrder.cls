@@ -1074,7 +1074,7 @@ Public Function WriteOrder() As Boolean
       'Replace the select max from access table with new method....
       'check the SQL database directly (incase anybody in Data Manager
       'has created a new expression.
-      '''OrderID = Database.UniqueColumnValue("tmpOrders", "orderID")
+      '''OrderID = UniqueColumnValue("tmpOrders", "orderID")
       OrderID = GetUniqueID("Orders", "tmpOrders", "orderID")
 
 

@@ -117,11 +117,11 @@ Public Sub Initialise(lngMethod As Long, strProfile As String, strServer As Stri
 
   txtRecipient.Text = GetSystemSetting("test email", "recipient", "")
   txtSubject.Text = GetSystemSetting("test email", "subject", "Test Message")
-  txtMessage.Text = Database.ServerName & " " & gsDatabaseName & vbCrLf & CStr(Now)
+  txtMessage.Text = gsServerName & " " & gsDatabaseName & vbCrLf & CStr(Now)
 
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
 
   Dim rsTemp As New ADODB.Recordset
   Dim strProcName As String
@@ -211,6 +211,3 @@ Select Case KeyCode
 End Select
 End Sub
 
-Private Sub Form_Load()
-
-End Sub

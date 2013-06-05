@@ -582,7 +582,7 @@ Public Function GetUniqueID(strSetting As String, strTable As String, strColumn 
 'BEGIN TRANS
   gADOCon.BeginTrans
 
-  lngOldMethodID = Database.UniqueColumnValue(strTable, strColumn)
+  lngOldMethodID = UniqueColumnValue(strTable, strColumn)
   lngNewMethodID = GetSystemSetting("AutoID", strSetting, 0) + 1
 
   GetUniqueID = IIf(lngOldMethodID > lngNewMethodID, lngOldMethodID, lngNewMethodID)

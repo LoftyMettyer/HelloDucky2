@@ -872,7 +872,7 @@ End Function
 '
 '        If fOK Then
 '          ' Copy the source table into a temporary table.
-'          sTempCopy = Database.GetTempTableName("Tmp_" & sSourceTableName)
+'          sTempCopy = GetTempTableName("Tmp_" & sSourceTableName)
 '          fOK = Not (sTempCopy = vbNullString)
 '        End If
 '

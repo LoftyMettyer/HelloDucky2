@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Begin VB.Form frmOrdEdit 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Order Definition"
@@ -1798,7 +1798,7 @@ Private Sub txtOrderName_Change(Index As Integer)
   Dim iSelLen As Integer
   
   'JPD 20090102 Fault 13484
-  sValidatedName = Database.ValidateName(txtOrderName(Index).Text)
+  sValidatedName = ValidateName(txtOrderName(Index).Text)
   
   If sValidatedName <> txtOrderName(Index).Text Then
     iSelStart = txtOrderName(Index).SelStart
@@ -1833,6 +1833,6 @@ End Sub
 
 Private Sub txtOrderName_KeyPress(Index As Integer, KeyAscii As Integer)
   ' Validate the character entered.
-  KeyAscii = Database.ValidNameChar(KeyAscii, txtOrderName(Index).SelStart)
+  KeyAscii = ValidNameChar(KeyAscii, txtOrderName(Index).SelStart)
 
 End Sub

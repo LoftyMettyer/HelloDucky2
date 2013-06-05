@@ -446,7 +446,7 @@ Public Function WriteDetail() As Long
 
   If mlngContentID = 0 Then
     If mcolContentDetails.Count > 0 Then
-      mlngContentID = Database.UniqueColumnValue("tmpLinkContent", "ContentID")
+      mlngContentID = UniqueColumnValue("tmpLinkContent", "ContentID")
     End If
   Else
     strSQL = "DELETE FROM tmpLinkContent WHERE ContentID = " & CStr(mlngContentID)
@@ -462,9 +462,9 @@ Public Function WriteDetail() As Long
 End Function
 
 
-Private Function Exists(col As Collection, id As String) As Boolean
+Private Function Exists(col As Collection, ID As String) As Boolean
   On Local Error GoTo LocalErr
-  Exists = (val(col(id)) > 0)
+  Exists = (val(col(ID)) > 0)
 Exit Function
 LocalErr:
   Exists = False

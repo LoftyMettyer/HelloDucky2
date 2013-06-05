@@ -1111,12 +1111,12 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
       End With
     Loop
     ' Get a unique ID for the new record.
-    lngWorkflowID = Database.UniqueColumnValue("tmpWorkflows", "ID")
+    lngWorkflowID = UniqueColumnValue("tmpWorkflows", "ID")
 
     ' Add a new record in the database for the copied screen definition.
     recWorkflowEdit.AddNew
   
-    recWorkflowEdit!ID = lngWorkflowID
+    recWorkflowEdit!id = lngWorkflowID
     recWorkflowEdit!Changed = False
     recWorkflowEdit!New = True
     recWorkflowEdit!Deleted = False
@@ -1249,8 +1249,8 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
         ' Add a new record in the database for the copied screen control definition.
         recWorkflowElementEdit.AddNew
 
-        lngNewID = Database.UniqueColumnValue("tmpWorkflowElements", "ID")
-        recWorkflowElementEdit!ID = lngNewID
+        lngNewID = UniqueColumnValue("tmpWorkflowElements", "ID")
+        recWorkflowElementEdit!id = lngNewID
 
         recWorkflowElementEdit!WorkflowID = lngWorkflowID
         recWorkflowElementEdit!Type = .Fields("Type")
@@ -1424,8 +1424,8 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
         ' Add a new record in the database for the copied element item definition.
         recWorkflowElementItemEdit.AddNew
 
-        lngNewID = Database.UniqueColumnValue("tmpWorkflowElementItems", "ID")
-        recWorkflowElementItemEdit!ID = lngNewID
+        lngNewID = UniqueColumnValue("tmpWorkflowElementItems", "ID")
+        recWorkflowElementItemEdit!id = lngNewID
 
         For iLoop = 1 To UBound(alngElementIDs, 2)
           If alngElementIDs(0, iLoop) = .Fields("ElementID") Then
@@ -1619,8 +1619,8 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
         ' Add a new record in the database for the copied element column definition.
         recWorkflowElementColumnEdit.AddNew
 
-        lngNewID = Database.UniqueColumnValue("tmpWorkflowElementColumns", "ID")
-        recWorkflowElementColumnEdit!ID = lngNewID
+        lngNewID = UniqueColumnValue("tmpWorkflowElementColumns", "ID")
+        recWorkflowElementColumnEdit!id = lngNewID
 
         For iLoop = 1 To UBound(alngElementIDs, 2)
           If alngElementIDs(0, iLoop) = .Fields("ElementID") Then
@@ -1641,7 +1641,7 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
         End If
         recWorkflowElementColumnEdit!ColumnID = lngTempNewID
         
-        recWorkflowElementColumnEdit!valueType = .Fields("ValueType")
+        recWorkflowElementColumnEdit!ValueType = .Fields("ValueType")
         recWorkflowElementColumnEdit!value = .Fields("Value")
         recWorkflowElementColumnEdit!WFFormIdentifier = .Fields("WFFormIdentifier")
         recWorkflowElementColumnEdit!WFValueIdentifier = .Fields("WFValueIdentifier")
@@ -1695,8 +1695,8 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
         ' Add a new record in the database for the copied element Validation definition.
         recWorkflowElementValidationEdit.AddNew
 
-        lngNewID = Database.UniqueColumnValue("tmpWorkflowElementValidations", "ID")
-        recWorkflowElementValidationEdit!ID = lngNewID
+        lngNewID = UniqueColumnValue("tmpWorkflowElementValidations", "ID")
+        recWorkflowElementValidationEdit!id = lngNewID
 
         For iLoop = 1 To UBound(alngElementIDs, 2)
           If alngElementIDs(0, iLoop) = .Fields("ElementID") Then
@@ -1741,8 +1741,8 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
         ' Add a new record in the database for the copied link definition.
         recWorkflowLinkEdit.AddNew
 
-        lngNewID = Database.UniqueColumnValue("tmpWorkflowLinks", "ID")
-        recWorkflowLinkEdit!ID = lngNewID
+        lngNewID = UniqueColumnValue("tmpWorkflowLinks", "ID")
+        recWorkflowLinkEdit!id = lngNewID
 
         recWorkflowLinkEdit!WorkflowID = lngWorkflowID
         recWorkflowLinkEdit!StartOutboundFlowCode = .Fields("StartOutboundFlowCode")
@@ -5134,16 +5134,16 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
     
     Do While Not .EOF
       ' JPD 2010/03/18 Jira HRPRO-821
-      If !Enabled Or WorkflowsWithStatus(recWorkflowEdit!ID, giWFSTATUS_INPROGRESS) Then
+      If !Enabled Or WorkflowsWithStatus(recWorkflowEdit!id, giWFSTATUS_INPROGRESS) Then
 
         With recWorkflowElementEdit
           .Index = "idxWorkflowID"
-          .Seek ">=", recWorkflowEdit!ID
+          .Seek ">=", recWorkflowEdit!id
       
           If Not .NoMatch Then
             Do While Not .EOF
               'If no more elements for this workflow exit loop
-              If !WorkflowID <> recWorkflowEdit!ID Then
+              If !WorkflowID <> recWorkflowEdit!id Then
                 Exit Do
               End If
       
@@ -5152,12 +5152,12 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
                 
                 ' Form validations
                 recWorkflowElementValidationEdit.Index = "idxElementID"
-                recWorkflowElementValidationEdit.Seek ">=", recWorkflowElementEdit!ID
+                recWorkflowElementValidationEdit.Seek ">=", recWorkflowElementEdit!id
 
                 If Not recWorkflowElementValidationEdit.NoMatch Then
                   Do While Not recWorkflowElementValidationEdit.EOF
                     'If no more Validations for this element exit loop
-                    If recWorkflowElementValidationEdit!elementID <> recWorkflowElementEdit!ID Then
+                    If recWorkflowElementValidationEdit!elementID <> recWorkflowElementEdit!id Then
                       Exit Do
                     End If
 
@@ -5171,7 +5171,7 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
                       String(4, vbTab) & "@fResult OUTPUT," & vbNewLine & _
                       String(4, vbTab) & "@dtResult OUTPUT," & vbNewLine & _
                       String(4, vbTab) & "@fltResult OUTPUT," & vbNewLine & _
-                      String(4, vbTab) & CStr(recWorkflowElementEdit!ID) & vbNewLine & vbNewLine
+                      String(4, vbTab) & CStr(recWorkflowElementEdit!id) & vbNewLine & vbNewLine
                     
                     strWebFormSQL = strWebFormSQL & _
                       String(3, vbTab) & "IF @fResult = 0" & vbNewLine & _
@@ -5188,12 +5188,12 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
                 
                 ' Mandatory checks
                 recWorkflowElementItemEdit.Index = "idxElementID"
-                recWorkflowElementItemEdit.Seek ">=", recWorkflowElementEdit!ID
+                recWorkflowElementItemEdit.Seek ">=", recWorkflowElementEdit!id
                 
                 If Not recWorkflowElementItemEdit.NoMatch Then
                   Do While Not recWorkflowElementItemEdit.EOF
                     'If no more items for this element exit loop
-                    If recWorkflowElementItemEdit!elementID <> recWorkflowElementEdit!ID Then
+                    If recWorkflowElementItemEdit!elementID <> recWorkflowElementEdit!id Then
                       Exit Do
                     End If
           
@@ -5287,7 +5287,7 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
                     String(2, vbTab) & "------------------------------------------------------" & vbNewLine & _
                     String(2, vbTab) & "-- Workflow '" & recWorkflowEdit!Name & "', Web Form '" & recWorkflowElementEdit!Identifier & "'" & vbNewLine & _
                     String(2, vbTab) & "------------------------------------------------------" & vbNewLine & _
-                    String(2, vbTab) & "IF @piElementID = " & CStr(recWorkflowElementEdit!ID) & vbNewLine & _
+                    String(2, vbTab) & "IF @piElementID = " & CStr(recWorkflowElementEdit!id) & vbNewLine & _
                     String(2, vbTab) & "BEGIN" & vbNewLine & _
                     strWebFormSQL & vbNewLine & _
                     String(2, vbTab) & "END" & vbNewLine

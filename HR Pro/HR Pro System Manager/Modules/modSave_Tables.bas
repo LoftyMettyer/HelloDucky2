@@ -210,7 +210,7 @@ Private Function TableDelete() As Boolean
 
   ' Drop the table.
   sOriginalName = "tbuser_" & recTabEdit!OriginalTableName
-  If Database.TableExists(sOriginalName) Then
+  If TableExists(sOriginalName) Then
     
     sSQL = "DROP VIEW " & recTabEdit!OriginalTableName
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
@@ -310,7 +310,7 @@ Private Function TableNew() As Boolean
       ' Commit the summary objects
       For Each objSummaryField In objTable.SummaryFields
         sSQL = "INSERT INTO ASRSysSummaryFields (ID, historyTableID, parentColumnID, sequence, startOfGroup,StartOfColumn)" & _
-          " VALUES(" & objSummaryField.id & ", " & _
+          " VALUES(" & objSummaryField.ID & ", " & _
           objSummaryField.HistoryTableID & ", " & _
           objSummaryField.SummaryColumnID & ", " & _
           objSummaryField.Sequence & ", " & _
@@ -723,7 +723,7 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
   ' Get the custom triggers on this table
   ReadCustomTriggers sTableName, sPhysicalTableName, asTriggers, asTriggerErrors
   
-  sTempName = Database.GetTempTableName("Tmp_" & sTableName)
+  sTempName = GetTempTableName("Tmp_" & sTableName)
   sOriginalTableName = "tbuser_" + recTabEdit!OriginalTableName
   fOK = Not (sTempName = vbNullString)
 
@@ -943,7 +943,7 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
 TidyUpAndExit:
 
   ' Drop temporary tables.
-  If Database.TableExists(sTempName) Then
+  If TableExists(sTempName) Then
     sSQL = "DROP TABLE " & sTempName
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
   End If

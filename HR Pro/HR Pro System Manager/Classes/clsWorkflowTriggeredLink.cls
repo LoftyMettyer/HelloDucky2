@@ -315,7 +315,7 @@ Public Function WriteLink() As Boolean
 
   With recWorkflowTriggeredLinks
     If mlngLinkID = 0 Then
-      mlngLinkID = Database.UniqueColumnValue("tmpWorkflowTriggeredLinks", "linkID")
+      mlngLinkID = UniqueColumnValue("tmpWorkflowTriggeredLinks", "linkID")
     End If
 
     .AddNew

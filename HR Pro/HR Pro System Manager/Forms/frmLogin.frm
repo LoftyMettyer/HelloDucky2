@@ -699,8 +699,7 @@ TryUsingGroupSecurity:
     SavePCSetting "Login", "SysMgr_AuthenticationMode", chkUseWindowsAuthentication.value
   End If
 
-  Database.ServerName = Trim(txtServer.Text)
-  
+  gsServerName = Trim(txtServer.Text)
   
   ' Is the user a system administrator on the server or is logged in as 'sa'
   sSQL = "SELECT IS_SRVROLEMEMBER('sysadmin') AS Permission"
