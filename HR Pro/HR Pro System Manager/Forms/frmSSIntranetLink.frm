@@ -1652,6 +1652,9 @@ Private Sub RefreshControls()
   Else
     txtPrompt.Enabled = True
     txtPrompt.BackColor = vbWindowBackground
+    ' NPG20100427 Fault HRPRO-910
+    txtText.Enabled = True
+    txtText.BackColor = vbWindowBackground
   End If
   
   If (optLink(SSINTLINKSEPARATOR).value And miLinkType = SSINTLINK_HYPERTEXT) Or optLink(SSINTLINKPWFSTEPS).value Or miLinkType = SSINTLINK_DROPDOWNLIST Then
