@@ -1013,57 +1013,6 @@ PRINT 'Step 11 - Add new calculation procedures'
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
 
-	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_isfieldpopulated](
-			@inputcolumn as nvarchar(MAX))
-		RETURNS bit
-		WITH SCHEMABINDING
-		AS
-		BEGIN
-		
-			DECLARE @result bit;
-			
-			SET @result = 0;
-			SELECT @result = (
-				CASE 
-					WHEN @inputcolumn IS NULL THEN 0 
-					ELSE
-						CASE
-		--					WHEN LEN(convert(nvarchar(1),@inputcolumn)) = 0 THEN 0
-							WHEN DATALENGTH(@inputcolumn) = 0 THEN 0
-							ELSE 1
-						END
-					END);
-		
-			RETURN @result;
-			
-		END';
-	EXECUTE sp_executeSQL @sSPCode;
-
-	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_isfieldempty](
-		@inputcolumn as nvarchar(MAX))
-	RETURNS bit
-	WITH SCHEMABINDING
-	AS
-	BEGIN
-	
-		DECLARE @result bit;
-		
-		SET @result = 0;			
-		SELECT @result = (
-			CASE 
-				WHEN @inputcolumn IS NULL THEN 1
-				ELSE
-					CASE
-						WHEN DATALENGTH(@inputcolumn) = 0 THEN 1
-						ELSE 0
-					END
-				END);
-	
-		RETURN @result;
-		
-	END';
-	EXECUTE sp_executeSQL @sSPCode;
-
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_isovernightprocess] ()
 	RETURNS bit 
 	WITH SCHEMABINDING
@@ -1593,7 +1542,8 @@ PRINT 'Step 12 - Populate code generation tables'
 			[calculatepostaudit] [bit] NULL,
 			[isgetfieldfromdb] [bit],
 			[isuniquecode] [bit],
-			[performancerating] [integer] NULL
+			[performancerating] [integer] NULL,
+			[casecount] [tinyint]
 		) ON [PRIMARY]';
 
 	EXEC sp_executesql N'CREATE TABLE [dbo].[tbstat_componentdependancy](
@@ -1643,18 +1593,18 @@ PRINT 'Step 12 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''a774b4f7-5792-41c5-99fb-301af38f0e68'', N''LEFT({0}, {1})'', 1, N''Extract Characters from the Left'', NULL, 0, 0, 6)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''0d948a6a-e6db-440f-b5fc-25ac323425ae'', N''RIGHT({0}, {1})'', 1, N''Extract Characters from the Right'', NULL, 0, 0, 13)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''5c4e830d-6b52-481d-b94e-e6d65912cde2'', N''SUBSTRING({0}, {1}, {2})'', 1, N''Extract Part of a Character String'', NULL, 0, 0, 14)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [calculatepostaudit], [performancerating]) VALUES (N''f61ea313-4866-4a29-a19f-e2d4fe3db23d'', N''dbo.udfsys_fieldchangedbetweentwodates({0}, {1}, {2}, {3})'', 3, N''Field Changed between Two Dates'', NULL, 0, 0, 53, 1, 10)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [calculatepostaudit], [performancerating], [recordidrequired]) VALUES (N''f61ea313-4866-4a29-a19f-e2d4fe3db23d'', N''dbo.udfsys_fieldchangedbetweentwodates({0}, {1}, {2}, {3})'', 3, N''Field Changed between Two Dates'', NULL, 0, 0, 53, 1, 10, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (53, 2, '''', '''', ''@prm_ID'')';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [calculatepostaudit], [performancerating]) VALUES (N''532861e4-23ac-474b-ae04-1a85724e7988'', N''dbo.udfsys_fieldlastchangedate({0}, {1})'', 4, N''Field Last Change Date'', NULL, 0, 0, 52, 1, 10)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [calculatepostaudit], [performancerating], [recordidrequired]) VALUES (N''532861e4-23ac-474b-ae04-1a85724e7988'', N''dbo.udfsys_fieldlastchangedate({0}, {1})'', 4, N''Field Last Change Date'', NULL, 0, 0, 52, 1, 10, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (52, 2, '''', '''', ''@prm_ID'')';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''4be2a715-f36b-4507-8090-9b1159de3aab'', N''DATEADD(dd, 1 - DATEPART(dd,{0}), {0})'', 2, N''First Day of Month'', NULL, 0, 0, 55)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''e3f98ac8-bfbf-4a98-8dd3-89f2830c1c95'', N''DATEADD(dd, 1 - DATEPART(dy, {0}), {0})'', 2, N''First Day of Year'', NULL, 0, 0, 57)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''263f4cc8-7c8d-4c5d-bdea-9e4ced21f078'', N''[dbo].[udfsys_firstnamefromforenames]({0})'', 1, N''First Name from Forenames'', NULL, 0, 0, 21)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''f14ebf8d-98e6-4e36-a1e1-35efd0023c55'', N''CASE WHEN ({0}) = 1 THEN {1} ELSE {2} END'', 0, N''If... Then... Else...'', NULL, 0, 0, 4)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [casecount]) VALUES (N''f14ebf8d-98e6-4e36-a1e1-35efd0023c55'', N''CASE WHEN ({0}) = 1 THEN {1} ELSE {2} END'', 0, N''If... Then... Else...'', NULL, 0, 0, 4, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''5feedcc3-e731-46b0-b7fe-2027e1e9ded4'', N''[dbo].[udfsys_initialsfromforenames]({0},0)'', 1, N''Initials from Forenames'', NULL, 0, 0, 20)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''7d539e37-6d9f-44b3-a694-7db9638a2502'', N''CASE WHEN ({0}) BETWEEN ({1}) AND ({2}) THEN 1 ELSE 0 END'', 0, N''Is Between'', NULL, 0, 0, 38)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''a9997816-add0-467f-999d-79ef30c2b713'', N''[dbo].[udfsys_isfieldempty]({0})'', 3, N''Is Field Empty'', NULL, 0, 0, 16)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''8caf9f74-dee4-4618-8d59-e292847f202a'', N''[dbo].[udfsys_isfieldpopulated]({0})'', 3, N''Is Field Populated'', NULL, 0, 0, 61)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [casecount]) VALUES (N''7d539e37-6d9f-44b3-a694-7db9638a2502'', N''CASE WHEN ({0}) BETWEEN ({1}) AND ({2}) THEN 1 ELSE 0 END'', 0, N''Is Between'', NULL, 0, 0, 38, 1)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [casecount]) VALUES (N''a9997816-add0-467f-999d-79ef30c2b713'', N''(CASE WHEN DATALENGTH({0}) = 0 OR DATALENGTH({0}) IS NULL THEN 1 ELSE 0 END)'', 3, N''Is Field Empty'', NULL, 0, 0, 16, 1)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [casecount]) VALUES (N''8caf9f74-dee4-4618-8d59-e292847f202a'', N''(CASE WHEN DATALENGTH({0}) = 0 OR DATALENGTH({0}) IS NULL THEN 0 ELSE 1 END)'', 3, N''Is Field Populated'', NULL, 0, 0, 61, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''63d90dd1-1fb0-42a7-8135-83cb25293d7b'', N''[dbo].[udfsys_isovernightprocess]() '', 3, N''Is Overnight Process'', NULL, 0, 0, 50)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [performancerating]) VALUES (N''94127e4f-8046-4516-83a0-2062dd0ea2e6'', N'''', 3, N''Is Personnel That Current User Reports To'', NULL, 0, 0, 72, 20)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [performancerating]) VALUES (N''17d67659-4e60-40ee-bb72-763f4f85a645'', N'''', 3, N''Is Personnel That Reports To Current User'', NULL, 0, 0, 68, 20)';
@@ -1664,8 +1614,8 @@ PRINT 'Step 12 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''bc2ce0fc-6e2c-43a2-86f9-0ed45cba129a'', N''DATEADD(dd, -1, DATEADD(yy, 1, DATEADD(dd, 1 - DATEPART(dy, {0}), {0})))'', 4, N''Last Day of Year'', NULL, 0, 0, 58)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''18babc7b-b84e-4ca9-9e10-c630bb004891'', N''LEN({0})'', 2, N''Length of Character Field'', NULL, 0, 0, 7)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [recordidrequired]) VALUES (N''bba7fff7-bd75-4953-abd1-2f70418bbb80'', N''[dbo].[udfsys_maternityexpectedreturndate](@prm_ID)'', 4, N''Maternity Expected Return Date'', NULL, 0, 0, 64, 1)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''5acc9ebe-af46-438e-9ebd-2741b42e26e0'', N''CASE WHEN {0} > {1} THEN {0} ELSE {1} END'', 1, N''Maximum'', NULL, 0, 0, 9)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''e03d8884-8835-425c-b268-1eec196917eb'', N''CASE WHEN {0} < {1} THEN {0} ELSE {1} END'', 1, N''Minimum'', NULL, 0, 0, 10)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [casecount]) VALUES (N''5acc9ebe-af46-438e-9ebd-2741b42e26e0'', N''CASE WHEN {0} > {1} THEN {0} ELSE {1} END'', 1, N''Maximum'', NULL, 0, 0, 9, 1)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [casecount]) VALUES (N''e03d8884-8835-425c-b268-1eec196917eb'', N''CASE WHEN {0} < {1} THEN {0} ELSE {1} END'', 1, N''Minimum'', NULL, 0, 0, 10, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''7d1376aa-5bdc-4844-9e5d-b3499b807639'', N''DATEPART(MM, {0})'', 2, N''Month of Date'', NULL, 0, 0, 33)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''fbff11aa-2aa9-43c9-b75f-5f2333ff880e'', N''DATENAME(weekday, {0})'', 1, N''Name of Day'', NULL, 0, 0, 60)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''d97bb954-d303-4eeb-90ce-1466287de905'', N''DATENAME(month, {0})'', 1, N''Name of Month'', NULL, 0, 0, 59)';
@@ -1724,6 +1674,7 @@ PRINT 'Step 13 - Administration module stored procedures'
 			, ISNULL([isgetfieldfromdb],0) AS [isgetfieldfromdb]
 			, ISNULL([isuniquecode],0) AS [isuniquecode]
 			, ISNULL([performancerating],1) AS [performancerating]
+			, ISNULL([casecount],0) AS [casecount]		
 			FROM dbo.[tbstat_componentcode] WHERE [id] IS NOT NULL;
 	END';
 
