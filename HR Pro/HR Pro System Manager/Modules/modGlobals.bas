@@ -154,3 +154,19 @@ Public gblnAutomaticLogon As Boolean
 Public gblnAutomaticScript As Boolean
 Public gblnAutomaticSave As Boolean
 
+' Email links
+Public glngExpressionTableIDForDeleteTrigger As Long
+Public glngEmailMethod As Long
+Public gstrEmailProfile As String
+Public gstrEmailServer As String
+Public gstrEmailAccount As String
+
+Public glngEmailDateFormat As Long
+Public gstrEmailAttachmentPath As String
+Public gstrEmailTestAddr As String
+
+Public gstrUpdateEmailCode As String
+Public gstrDeleteEmailCode As String
+
+
+
