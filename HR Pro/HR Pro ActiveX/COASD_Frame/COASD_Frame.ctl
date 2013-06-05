@@ -44,6 +44,8 @@ Public Event MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Sing
 Public Event KeyDown(KeyCode As Integer, Shift As Integer)
 Public Event DblClick()
 
+Dim lastclicktime As Long
+
 ' Constant values.
 Const gLngMinHeight = 180
 Const gLngMinWidth = 180
@@ -60,6 +62,7 @@ Public Enum ASRBackStyleConstants
   BACKSTYLE_OPAQUE = 1
 End Enum
 
+Private Declare Function GetTickCount Lib "kernel32" () As Long
 Private miBackStyle As ASRBackStyleConstants
 Public Property Get BackStyle() As ASRBackStyleConstants
   BackStyle = miBackStyle
@@ -171,8 +174,19 @@ End Sub
 
 
 Private Sub fraFrame_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
-  ' Pass the MouseUp event to the parent form.
-  RaiseEvent MouseUp(Button, Shift, X, Y)
+   
+  Dim clicktime As Long
+  
+  clicktime = GetTickCount
+  
+  If clicktime - lastclicktime < 300 Then
+    RaiseEvent DblClick
+  Else
+    ' Pass the MouseUp event to the parent form.
+    RaiseEvent MouseUp(Button, Shift, X, Y)
+  End If
+  
+  lastclicktime = GetTickCount
 
 End Sub
 
