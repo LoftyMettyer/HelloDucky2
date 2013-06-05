@@ -478,7 +478,7 @@ Namespace ScriptDB
                 End If
 
                 If objColumn.CalculateIfEmpty Then
-                  sColumnName = String.Format("[{0}] = ISNULL([{0}], {1})", objColumn.Name, sCalculationCode)
+                  sColumnName = String.Format("[{0}] = ISNULL(NULLIF([{0}], {2}), {1})", objColumn.Name, sCalculationCode, objColumn.SafeReturnType)
                 Else
                   sColumnName = String.Format("[{0}] = {1}", objColumn.Name, sCalculationCode)
                 End If
