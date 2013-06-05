@@ -15,6 +15,7 @@ Begin VB.Form frmTableValidation
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
+   HelpContextID   =   1088
    Icon            =   "frmTableValidation.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -170,12 +171,12 @@ Public Property Get Cancelled() As Boolean
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Public Property Let Changed(ByVal NewValue As Boolean)
   If Not mbLoading Then
-    cmdOK.Enabled = NewValue And Not mbReadOnly
+    cmdOk.Enabled = NewValue And Not mbReadOnly
   End If
 End Property
 
