@@ -2083,7 +2083,7 @@ Private Sub cmdFileClear_Click(Index As Integer)
               IIf(Index = 0, "Excel", "Word") & " Template?"
   
   If MsgBox(strMBText, vbQuestion + vbYesNoCancel, Me.Caption) = vbYes Then
-    txtFileName(Index).Text = vbNullString
+    txtFilename(Index).Text = vbNullString
     Changed = True
   End If
 
@@ -2094,10 +2094,10 @@ Private Sub cmdFileName_Click(Index As Integer)
   On Local Error GoTo LocalErr
 
   With frmMain.CommonDialog1
-    If Len(Trim(txtFileName(Index).Text)) = 0 Or txtFileName(Index).Text = "<None>" Then
+    If Len(Trim(txtFilename(Index).Text)) = 0 Or txtFilename(Index).Text = "<None>" Then
       .InitDir = gsDocumentsPath
     Else
-      .FileName = txtFileName(Index).Text
+      .FileName = txtFilename(Index).Text
     End If
 
     .CancelError = True
@@ -2120,7 +2120,7 @@ Private Sub cmdFileName_Click(Index As Integer)
     End If
 
     If .FileName <> "" Then
-      txtFileName(Index) = .FileName
+      txtFilename(Index) = .FileName
       Changed = True
     End If
   
@@ -2131,7 +2131,7 @@ Exit Sub
 LocalErr:
   If Err.Number <> 32755 Then   '32755 = Cancel was selected.
     MsgBox "Error selecting file", vbCritical, Me.Caption
-    txtFileName(Index) = vbNullString
+    txtFilename(Index) = vbNullString
   End If
 
 End Sub
@@ -2944,7 +2944,7 @@ Private Sub txtDatabase_Change()
 End Sub
 
 Private Sub txtFilename_Change(Index As Integer)
-  cmdFileClear(Index).Enabled = (Trim(txtFileName(Index).Text) <> vbNullString)
+  cmdFileClear(Index).Enabled = (Trim(txtFilename(Index).Text) <> vbNullString)
 End Sub
 
 Private Sub txtPWD_Change()
@@ -3178,8 +3178,8 @@ Private Sub SaveUserSettings()
     SaveUserSetting "Output", "DataForecolour", .ForeCol
   End With
 
-  SaveUserSetting "Output", "ExcelTemplate", txtFileName(0).Text
-  SaveUserSetting "Output", "WordTemplate", txtFileName(1).Text
+  SaveUserSetting "Output", "ExcelTemplate", txtFilename(0).Text
+  SaveUserSetting "Output", "WordTemplate", txtFilename(1).Text
   SaveUserSetting "Output", "ExcelHeaders", IIf(chkExcelHeaders.Value = vbChecked, 1, 0)
   SaveUserSetting "Output", "ExcelGridlines", IIf(chkExcelGridlines.Value = vbChecked, 1, 0)
  
@@ -3304,8 +3304,8 @@ Private Sub PopulateControlsUserSettings()
     .ListIndex = 0
   End With
 
-  mlngWordFormat = GetOutputFormats("Word", cboWordFormat)
-  mlngExcelFormat = GetOutputFormats("Excel", cboExcelFormat)
+  mlngWordFormat = GetOutputFormats("Word", cboWordFormat, GetOfficeWordVersion)
+  mlngExcelFormat = GetOutputFormats("Excel", cboExcelFormat, GetOfficeExcelVersion)
 
 End Sub
 
@@ -3379,8 +3379,8 @@ Private Sub ReadUserSettings()
   End With
 
   
-  txtFileName(0).Text = GetUserSetting("Output", "ExcelTemplate", vbNullString)
-  txtFileName(1).Text = GetUserSetting("Output", "WordTemplate", vbNullString)
+  txtFilename(0).Text = GetUserSetting("Output", "ExcelTemplate", vbNullString)
+  txtFilename(1).Text = GetUserSetting("Output", "WordTemplate", vbNullString)
   chkExcelHeaders.Value = IIf(GetUserSetting("Output", "ExcelHeaders", 0) = 1, vbChecked, vbUnchecked)
   chkExcelGridlines.Value = IIf(GetUserSetting("Output", "ExcelGridlines", 0) = 1, vbChecked, vbUnchecked)
 
@@ -4299,17 +4299,21 @@ Private Function CurrentToolBarIndex() As Integer
 End Function
 
 
-Private Function GetOutputFormats(strDestin As String, cboTemp As ComboBox) As Long
+Private Function GetOutputFormats(strDestin As String, cboTemp As ComboBox, intOfficeVersion As Integer) As Long
 
   Dim rsTemp As Recordset
   Dim strSQL As String
   Dim strOutput As String
   Dim lngDefault As Long
+  Dim strFormatField As String
   
   On Local Error GoTo LocalErr
   
+  strFormatField = IIf(intOfficeVersion < 12, "Office2003", "Office2007")
+  
   strSQL = "SELECT * FROM ASRSysFileFormats " & _
            "WHERE Destination = '" & Replace(strDestin, "'", "''") & "' " & _
+           "  AND  NOT " & strFormatField & " IS NULL " & _
            "ORDER BY ID"
   Set rsTemp = datGeneral.GetRecords(strSQL)
     
@@ -4319,10 +4323,10 @@ Private Function GetOutputFormats(strDestin As String, cboTemp As ComboBox) As L
   
     Do While Not rsTemp.EOF
       .AddItem rsTemp.Fields("Description").Value
-      .ItemData(.NewIndex) = rsTemp.Fields("Value").Value
+      .ItemData(.NewIndex) = rsTemp.Fields(strFormatField).Value
       
       If rsTemp.Fields("Default").Value = True Then
-        lngDefault = rsTemp.Fields("Value").Value
+        lngDefault = rsTemp.Fields(strFormatField).Value
       End If
       
       rsTemp.MoveNext
