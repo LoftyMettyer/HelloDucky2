@@ -495,13 +495,19 @@ Namespace ScriptDB
 
               End If
 
+              ' Build list of default values
+              If CInt(objColumn.DefaultCalcID) > 0 Then
+                objColumn.DefaultCalculation.AssociatedColumn = objColumn
+                objColumn.DefaultCalculation.ExpressionType = ExpressionType.ColumnDefault
+                objColumn.DefaultCalculation.GenerateCode()
+
+                sCalculationCode = objColumn.DefaultCalculation.UDF.CallingCode
+                aryColumnsWithDefaultValues.Add(String.Format("[{0}] = {1}", objColumn.Name, sCalculationCode))
+              End If
+
+
               If Not objColumn.IsReadOnly Then
                 Select Case objColumn.DataType
-
-                  'Case ScriptDB.ColumnTypes.Binary
-                  '  aryBaseTableColumns.Add(String.Format("[{0}] = [inserted].[{0}]", objColumn.Name))
-                  '  aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
-                  '  aryAllWriteableFormatted.Add(String.Format("[{0}]", objColumn.Name))
 
                   Case ScriptDB.ColumnTypes.Date
                     aryBaseTableColumns.Add(String.Format("[{0}] = DATEADD(dd, 0, DATEDIFF(dd, 0, base.[{0}]))", objColumn.Name))
@@ -514,22 +520,6 @@ Namespace ScriptDB
                     aryAllWriteableFormatted.Add(String.Format("[{0}]", objColumn.Name))
 
                 End Select
-
-              ElseIf CInt(objColumn.DefaultCalcID) > 0 Then
-                objColumn.DefaultCalculation.AssociatedColumn = objColumn
-                objColumn.DefaultCalculation.ExpressionType = ExpressionType.ColumnDefault
-                objColumn.DefaultCalculation.GenerateCode()
-
-                '             If objColumn.DefaultCalculation.IsComplex Then
-                sCalculationCode = objColumn.DefaultCalculation.UDF.CallingCode
-                '               Else
-                '                sCalculationCode = objColumn.DefaultCalculation.UDF.InlineCode
-                '                End If
-
-                '                aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
-                '               aryAllWriteableFormatted.Add(sCalculationCode)
-
-                aryColumnsWithDefaultValues.Add(String.Format("[{0}] = {1}", objColumn.Name, sCalculationCode))
 
               End If
 
@@ -623,7 +613,7 @@ Namespace ScriptDB
 
           ' Update the default values
           If aryColumnsWithDefaultValues.ToArray.Length > 0 Then
-            aryColumnsWithDefaultValues.AddRange(aryBaseTableColumns)
+            'aryColumnsWithDefaultValues.AddRange(aryBaseTableColumns)
             SQLAfterInsertColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
               "    UPDATE [dbo].[{0}]" & vbNewLine & _
               "        SET [updflag] = base.[updflag]," & vbNewLine & _
