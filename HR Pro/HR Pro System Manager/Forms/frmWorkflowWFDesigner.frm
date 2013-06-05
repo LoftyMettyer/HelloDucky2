@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
+Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "actbar.ocx"
 Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "coa_label.ocx"
 Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Object = "{98B2556E-F719-4726-9028-5F2EAB345800}#1.0#0"; "coasd_checkbox.ocx"
@@ -3041,14 +3041,26 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
     ' If there are no selected controls and no tab pages then nothing happens.
     If Not bHandled Then
       If KeyCode = vbKeyDelete Then
+      
         If SelectedControlsCount > 0 Then
-          If Not DeleteSelectedControls Then
+          If tabPages.Selected Then
+            DeleteTabPage tabPages.SelectedItem.Index, True
+            bHandled = True
+          ElseIf Not DeleteSelectedControls Then
             MsgBox "Unable to delete controls." & vbCr & vbCr & _
               Err.Description, vbExclamation + vbOKOnly, App.ProductName
-          Else
-            bHandled = True
+          End If
+        Else
+          If tabPages.Tabs.Count > 0 Then
+            If Not DeleteTabPage(tabPages.SelectedItem.Index, True) Then
+              MsgBox "Unable to delete the tab." & vbCr & vbCr & _
+                Err.Description, vbExclamation + vbOKOnly, App.ProductName
+            Else
+              bHandled = True
+            End If
           End If
         End If
+      
       End If
     End If
     
