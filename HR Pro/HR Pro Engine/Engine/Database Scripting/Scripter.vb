@@ -48,7 +48,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.Views, "DropViews", DBScripter.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.Views, "DropViews", HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
         bOK = False
 
       End Try
@@ -69,7 +69,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.Views, objTable.Name, DBScripter.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.Views, objTable.Name, HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
 
       End Try
 
@@ -160,7 +160,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.TableAndColumns, "Views", DBScripter.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.TableAndColumns, "Views", HRProEngine.ErrorHandler.Severity.Error, ex.Message, sSQL)
         bOK = False
 
       End Try
@@ -271,7 +271,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.Views, sViewName, DBScripter.ErrorHandler.Severity.Error, ex.Message, sDefinitionSQL)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.Views, sViewName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sDefinitionSQL)
         bOK = False
 
       End Try
@@ -729,7 +729,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.Triggers, sTriggerName, DBScripter.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.Triggers, sTriggerName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sSQL)
         bOK = False
 
       Finally
@@ -797,7 +797,7 @@ Namespace ScriptDB
         CommitDB.ScriptStatement(sSQL)
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.UDFs, sTriggerName, DBScripter.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, sTriggerName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sSQL)
         Return False
 
       End Try
@@ -920,7 +920,7 @@ Namespace ScriptDB
         CommitDB.ScriptStatement(sSQL)
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.UDFs, [ObjectName], DBScripter.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, [ObjectName], HRProEngine.ErrorHandler.Severity.Error, ex.Message, sSQL)
         Return False
 
       End Try
@@ -1043,7 +1043,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.UDFs, sObjectName, DBScripter.ErrorHandler.Severity.Error, ex.Message, sUDFSQL)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, sObjectName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sUDFSQL)
 
       Finally
         ProgressInfo.NextStep1()
@@ -1073,7 +1073,7 @@ Namespace ScriptDB
         ' End If
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.UDFs, [ObjectName], DBScripter.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, [ObjectName], HRProEngine.ErrorHandler.Severity.Error, ex.Message, sSQL)
 
         ' dIDN;T work put a note in the error log and create a dummy UDF
         sSQL = String.Format("CREATE FUNCTION [{0}].[{1}] {2}" _
@@ -1202,7 +1202,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.LoadingData, sObjectName, DBScripter.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, sObjectName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
 
       Finally
         '     ProgressInfo.NextStep1()
@@ -1281,7 +1281,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.UDFs, sObjectName, DBScripter.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, sObjectName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
         bOK = False
 
       Finally

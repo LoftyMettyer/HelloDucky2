@@ -8,10 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("DB Scripter")> 
-<Assembly: AssemblyDescription("ACS - Database Scripting Engine")> 
+<Assembly: AssemblyTitle("HR Pro Engine")> 
+<Assembly: AssemblyDescription("HR Pro Engine")> 
 <Assembly: AssemblyCompany("Advanced Business Software and Solutions Limited")> 
-<Assembly: AssemblyProduct("DB Scripter")> 
+<Assembly: AssemblyProduct("HR Pro Engine")> 
 <Assembly: AssemblyCopyright("Copyright ©  2011")> 
 <Assembly: AssemblyTrademark("")> 
 

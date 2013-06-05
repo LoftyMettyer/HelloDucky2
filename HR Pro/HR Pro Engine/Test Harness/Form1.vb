@@ -161,7 +161,7 @@ Public Class Form1
 
   Private Sub Button5_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button5.Click
 
-    Dim objPhoenix As New DBScripter.SysMgr
+    Dim objPhoenix As New HRProEngine.SysMgr
 
     Dim objADO As New ADODB.Connection
     Dim objDAOEngine As New DAO.DBEngine
@@ -242,7 +242,7 @@ Public Class Form1
 
   Private Sub Button7_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button7.Click
 
-    Dim objPhoenix As New DBScripter.SysMgr
+    Dim objPhoenix As New HRProEngine.SysMgr
 
     Dim objADO As New ADODB.Connection
     Dim objDAOEngine As New DAO.DBEngine
@@ -339,7 +339,7 @@ Public Class Form1
 
   Private Sub cmdDatasource_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDatasource.Click
 
-    Dim objPhoenix As New DBScripter.SysMgr
+    Dim objPhoenix As New HRProEngine.SysMgr
 
     Dim objADO As New ADODB.Connection
     Dim objDAOEngine As New DAO.DBEngine
@@ -392,14 +392,14 @@ Public Class Form1
 
   Private Sub Button8_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button8.Click
 
-    Dim objHCM As New DBScripter.HCM
+    Dim objHCM As New HRProEngine.HCM
 
     '    objHCM.
 
 
     objHCM.Initialise()
     objHCM.Login("sa", "asr", "phoenix", "harpdev01")
-    objHCM.Populate(DBScripter.Things.Type.GlobalModify)
+    objHCM.Populate(HRProEngine.Things.Type.GlobalModify)
 
 
 

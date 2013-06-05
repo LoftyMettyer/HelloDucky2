@@ -12,7 +12,7 @@ Public Module Globals
   Public Operators As Things.Collection
   Public Functions As Things.Collection
   Public SelectedThings As Things.Collection
-  Public ErrorLog As DBScripter.ErrorHandler.Errors
+  Public ErrorLog As HRProEngine.ErrorHandler.Errors
   Public ModuleSetup As Things.Collection
   Public Options As HCMOptions
 
@@ -24,7 +24,7 @@ Public Module Globals
     Workflows = New Things.Collection
     Operators = New Things.Collection
     Functions = New Things.Collection
-    ErrorLog = New DBScripter.ErrorHandler.Errors
+    ErrorLog = New HRProEngine.ErrorHandler.Errors
     ModuleSetup = New Things.Collection
     ScriptDB = New ScriptDB.Script
     Options = New HCMOptions

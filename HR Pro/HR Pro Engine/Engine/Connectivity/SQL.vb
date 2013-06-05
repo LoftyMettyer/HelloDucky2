@@ -40,7 +40,7 @@ Namespace Connectivity
         mConn.Open()
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.LoadingData, String.Empty, DBScripter.ErrorHandler.Severity.Error, ex.Message, sConnection)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sConnection)
 
       End Try
 

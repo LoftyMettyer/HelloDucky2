@@ -55,7 +55,7 @@
         objAdapter.Fill(dsDataSet)
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.LoadingData, "ExecuteQuery", DBScripter.ErrorHandler.Severity.Error, ex.Message, ex.InnerException.ToString)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, "ExecuteQuery", HRProEngine.ErrorHandler.Severity.Error, ex.Message, ex.InnerException.ToString)
         Return Nothing
 
       Finally

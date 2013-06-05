@@ -153,7 +153,7 @@ Public Class HCM
 
   End Function
 
-  Public Function Populate(ByVal Type As DBScripter.Things.Enums.Type) As Boolean
+  Public Function Populate(ByVal Type As HRProEngine.Things.Enums.Type) As Boolean
 
     Dim bOK As Boolean
 

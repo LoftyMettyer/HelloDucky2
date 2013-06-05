@@ -36,7 +36,7 @@
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.LoadingData, String.Empty, DBScripter.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
 
       End Try
 
@@ -65,7 +65,7 @@
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.LoadingData, String.Empty, DBScripter.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
 
       End Try
 
@@ -112,7 +112,7 @@
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.LoadingData, String.Empty, DBScripter.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
 
       End Try
 
@@ -215,7 +215,7 @@
 
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.LoadingData, String.Empty, DBScripter.ErrorHandler.Severity.Error, ex.Message, String.Empty)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, String.Empty)
 
       Finally
 
@@ -314,7 +314,7 @@
 
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.LoadingData, String.Empty, DBScripter.ErrorHandler.Severity.Error, ex.Message, String.Empty)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, String.Empty)
 
       End Try
 
@@ -451,7 +451,7 @@
 
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(DBScripter.ErrorHandler.Section.LoadingData, String.Empty, DBScripter.ErrorHandler.Severity.Error, ex.Message, String.Empty)
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, String.Empty)
 
       Finally
         objDataset = Nothing
