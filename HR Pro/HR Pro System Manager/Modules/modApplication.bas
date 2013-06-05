@@ -1507,9 +1507,9 @@ Public Function DropTempTables() As Boolean
   daoDb.Execute "DROP TABLE tmpFusionTypes"
 
   ' Mobile Navigation Tables
+  daoDb.Execute "DROP TABLE tmpGroups"
   daoDb.Execute "DROP TABLE tmpmobileformlayout"
   daoDb.Execute "DROP TABLE tmpmobileformelements"
-  daoDb.Execute "DROP TABLE tmpmobileusergroups"
   daoDb.Execute "DROP TABLE tmpmobilegroupworkflows"
 
   recMailMerge.Close
@@ -2133,8 +2133,14 @@ Public Sub EditMobileDesigner()
   
   Screen.MousePointer = vbDefault
   
+  Dim changesMade As Boolean
   Dim frm As New DesignerForm
-  frm.ShowDialog
+  changesMade = frm.ShowForVB6
+  
+  If changesMade Then
+    Application.Changed = True
+    frmSysMgr.RefreshMenu True
+  End If
   
   Exit Sub
 ErrorTrap:
