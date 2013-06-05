@@ -46,8 +46,11 @@ Partial Class MainForm
     Me.TextBox2 = New System.Windows.Forms.TextBox()
     Me.Button2 = New System.Windows.Forms.Button()
     Me.Label7 = New System.Windows.Forms.Label()
+    Me.Button3 = New System.Windows.Forms.Button()
+    Me.GroupBox1 = New System.Windows.Forms.GroupBox()
     Me.pnlScripting.SuspendLayout()
     Me.Panel1.SuspendLayout()
+    Me.GroupBox1.SuspendLayout()
     Me.SuspendLayout()
     '
     'pnlScripting
@@ -278,11 +281,31 @@ Partial Class MainForm
     Me.Label7.TabIndex = 36
     Me.Label7.Text = "Mobile Designer"
     '
+    'Button3
+    '
+    Me.Button3.Location = New System.Drawing.Point(58, 46)
+    Me.Button3.Name = "Button3"
+    Me.Button3.Size = New System.Drawing.Size(135, 23)
+    Me.Button3.TabIndex = 37
+    Me.Button3.Text = "ErrorWarningBox"
+    Me.Button3.UseVisualStyleBackColor = True
+    '
+    'GroupBox1
+    '
+    Me.GroupBox1.Controls.Add(Me.Button3)
+    Me.GroupBox1.Location = New System.Drawing.Point(399, 240)
+    Me.GroupBox1.Name = "GroupBox1"
+    Me.GroupBox1.Size = New System.Drawing.Size(221, 138)
+    Me.GroupBox1.TabIndex = 38
+    Me.GroupBox1.TabStop = False
+    Me.GroupBox1.Text = "GroupBox1"
+    '
     'MainForm
     '
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
     Me.ClientSize = New System.Drawing.Size(806, 426)
+    Me.Controls.Add(Me.GroupBox1)
     Me.Controls.Add(Me.Label7)
     Me.Controls.Add(Me.Label5)
     Me.Controls.Add(Me.Label6)
@@ -299,6 +322,7 @@ Partial Class MainForm
     Me.pnlScripting.PerformLayout()
     Me.Panel1.ResumeLayout(False)
     Me.Panel1.PerformLayout()
+    Me.GroupBox1.ResumeLayout(False)
     Me.ResumeLayout(False)
     Me.PerformLayout()
 
@@ -326,6 +350,8 @@ Partial Class MainForm
   Friend WithEvents TextBox2 As System.Windows.Forms.TextBox
   Friend WithEvents Button2 As System.Windows.Forms.Button
     Friend WithEvents Label7 As System.Windows.Forms.Label
-    Friend WithEvents txtPassword As System.Windows.Forms.TextBox
+  Friend WithEvents txtPassword As System.Windows.Forms.TextBox
+  Friend WithEvents Button3 As System.Windows.Forms.Button
+  Friend WithEvents GroupBox1 As System.Windows.Forms.GroupBox
 
 End Class

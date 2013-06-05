@@ -405,4 +405,46 @@ Public Class MainForm
   Private Sub txtDatabase_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtDatabase.TextChanged
 
   End Sub
+
+  Private Sub Button3_Click(sender As System.Object, e As System.EventArgs) Handles Button3.Click
+
+    Dim objPhoenix As New SystemFramework.SysMgr
+
+    Dim objError As SystemFramework.ErrorHandler.Error
+
+    objPhoenix.Initialise()
+
+    'objError = New SystemFramework.ErrorHandler.Error
+    'objError.DateTime = Now
+    'objError.Detail = "my detail"
+    'objError.Severity = SystemFramework.ErrorHandler.Severity.Error
+    'objError.Message = "the error message"
+    'objPhoenix.ReturnErrorLog.Add(objError)
+
+
+    objError = New SystemFramework.ErrorHandler.Error
+    objError.DateTime = Now
+    objError.Detail = "my wanring detail"
+    objError.Severity = SystemFramework.ErrorHandler.Severity.Warning
+    objError.Message = "the warning message"
+    objPhoenix.ReturnErrorLog.Add(objError)
+
+
+    objError = New SystemFramework.ErrorHandler.Error
+    objError.DateTime = Now
+    objError.Detail = "my wanring detail123234"
+    objError.Severity = SystemFramework.ErrorHandler.Severity.Warning
+    objError.Message = "the warning message"
+    objPhoenix.ReturnErrorLog.Add(objError)
+
+
+    objPhoenix.ReturnErrorLog.Show()
+
+
+
+
+
+
+
+  End Sub
 End Class
