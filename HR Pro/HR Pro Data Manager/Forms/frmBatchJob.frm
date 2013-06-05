@@ -1331,7 +1331,7 @@ Public Property Let Changed(ByVal pblnChanged As Boolean)
   cmdOk.Enabled = pblnChanged
 End Property
 
-Private Function JobUtilityType(psJobType As String) As utilityType
+Private Function JobUtilityType(psJobType As String) As UtilityType
   ' Return the utility type code fot the given job type code.
     
   Select Case UCase(psJobType)
@@ -1789,7 +1789,7 @@ End Sub
 Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional plngBatchJobID As Long) As Boolean
   
   Set mclsData = New DataMgr.clsDataAccess           'Instantiate class
-  Dim iUtilityType As utilityType
+  Dim iUtilityType As UtilityType
   Dim lngFormat As Long
   
   Screen.MousePointer = vbHourglass
@@ -2090,7 +2090,7 @@ Private Function RetrieveBatchJobDetails() As Boolean
   Dim sRoleToPrompt As String
   Dim fJobOK As Boolean
   Dim sMessage As String
-  Dim iUtilityType As utilityType
+  Dim iUtilityType As UtilityType
   
   On Error GoTo Load_ERROR
   
@@ -2128,9 +2128,9 @@ Private Function RetrieveBatchJobDetails() As Boolean
   
   GetObjectCategories cboCategory, iUtilityType, mlngBatchJobID
   
-  mblnReadOnly = Not datGeneral.SystemPermission("BATCHJOBS", "EDIT")
+  mblnReadOnly = Not datGeneral.SystemPermission("REPORTPACKS", "EDIT")
   If (Not mblnReadOnly) And (Not mblnDefinitionCreator) Then
-    mblnReadOnly = (CurrentUserAccess(utlBatchJob, mlngBatchJobID) = ACCESS_READONLY)
+    mblnReadOnly = (CurrentUserAccess(iUtilityType, mlngBatchJobID) = ACCESS_READONLY)
   End If
   
   chkScheduled.Value = IIf(prstTemp!scheduled = True, vbChecked, vbUnchecked)
@@ -2752,7 +2752,7 @@ Private Function SaveDefinition() As Boolean
   Dim pstrPeriod As String
   Dim pintLoop As Integer
   Dim pvarbookmark As Variant
-  Dim iUtilityType As utilityType
+  Dim iUtilityType As UtilityType
 
   On Error GoTo Err_Trap
   
@@ -3822,7 +3822,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
   Dim varBookmark As Variant
   Dim lngJobID As Long
   Dim rsAccess As ADODB.Recordset
-  Dim sUtilityType As utilityType
+  Dim sUtilityType As UtilityType
   Dim avJobs() As Variant
   Dim fFound As Boolean
   Dim sUserGroupName As String
@@ -4515,7 +4515,7 @@ Public Sub PrintDef(lBatchJobID As Long)
   Dim sTemp As String
   Dim iLoop As Integer
   Dim varBookmark As Variant
-  Dim iUtilityType As utilityType
+  Dim iUtilityType As UtilityType
   
   mlngBatchJobID = lBatchJobID
   
