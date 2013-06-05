@@ -77,12 +77,15 @@ Begin VB.Form frmAbsenceSetup
       TabPicture(1)   =   "frmAbsenceSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraAbsenceType"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Calen&dar"
       TabPicture(2)   =   "frmAbsenceSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraCalendarInclude"
-      Tab(2).Control(1)=   "fraCalendarDef"
+      Tab(2).Control(0)=   "fraCalendarDef"
+      Tab(2).Control(0).Enabled=   0   'False
+      Tab(2).Control(1)=   "fraCalendarInclude"
+      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "&SSP"
       TabPicture(3)   =   "frmAbsenceSetup.frx":0060
@@ -95,9 +98,12 @@ Begin VB.Form frmAbsenceSetup
       TabCaption(4)   =   "&Parental Leave"
       TabPicture(4)   =   "frmAbsenceSetup.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "Frame3"
+      Tab(4).Control(0)=   "Frame1"
+      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "Frame2"
-      Tab(4).Control(2)=   "Frame1"
+      Tab(4).Control(1).Enabled=   0   'False
+      Tab(4).Control(2)=   "Frame3"
+      Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       Begin VB.Frame Frame3 
          Caption         =   "Personnel Records :"
@@ -387,7 +393,7 @@ Begin VB.Form frmAbsenceSetup
          Top             =   2430
          Width           =   5565
          Begin VB.Frame fraWorkingPattern 
-            Height          =   1335
+            Height          =   750
             Left            =   2910
             TabIndex        =   54
             Top             =   1050
