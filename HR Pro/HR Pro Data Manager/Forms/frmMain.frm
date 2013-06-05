@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
 Begin VB.MDIForm frmMain 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "08:08"
+            TextSave        =   "10:57"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -3738,7 +3738,8 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long, By
       With frmSelection
       
         ' If browsing goto last known selected item
-        If UtilityID = 0 And gbRememberDefSelID Then
+        If UtilityID = 0 And gbRememberDefSelID And Not (lngUtilityType = utlWorkflow) Then
+          
           .SelectedID = GetUserSetting("defsel_" & UtilType, "SelectedID", 0)
           glngCurrentCategoryID = GetUserSetting("defsel_" & UtilType, "CategoryID", -1)
         Else
