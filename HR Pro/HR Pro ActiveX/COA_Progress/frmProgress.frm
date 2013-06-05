@@ -21,7 +21,7 @@ Begin VB.Form frmProgress
    Icon            =   "frmProgress.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
-   Picture         =   "frmProgress.frx":058A
+   Picture         =   "frmProgress.frx":1CFA
    ScaleHeight     =   3810
    ScaleWidth      =   6015
    ShowInTaskbar   =   0   'False
@@ -227,7 +227,7 @@ Begin VB.Form frmProgress
    Begin VB.Image Image1 
       Height          =   900
       Left            =   -2975
-      Picture         =   "frmProgress.frx":2C77
+      Picture         =   "frmProgress.frx":43E7
       Top             =   0
       Width           =   9000
    End
