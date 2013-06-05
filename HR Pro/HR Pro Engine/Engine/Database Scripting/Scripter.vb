@@ -449,7 +449,6 @@ Namespace ScriptDB
             End If
           Next
 
-
           For Each objColumn In objTable.Columns
 
             If Not objColumn.State = System.Data.DataRowState.Deleted Then
@@ -483,7 +482,7 @@ Namespace ScriptDB
 
               End If
 
-              If Not objColumn.IsReadOnly Then
+              If Not objColumn.IsReadOnly Then 'Or CInt(objColumn.DefaultCalcID) > 0 Then
                 Select Case objColumn.DataType
 
                   Case ScriptDB.ColumnTypes.Binary
@@ -994,6 +993,7 @@ Namespace ScriptDB
 
               End If
             End If
+
           Next
 
         Next

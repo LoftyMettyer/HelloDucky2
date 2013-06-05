@@ -496,6 +496,8 @@
           objColumn.Table = Table
           objColumn.State = objRow.Item("state")
 
+          objColumn.DefaultCalcID = objRow.Item("defaultcalcid").ToString
+          objColumn.DefaultValue = objRow.Item("defaultvalue").ToString
           objColumn.CalcID = objRow.Item("calcid").ToString
           objColumn.DataType = objRow.Item("datatype")
           objColumn.Size = objRow.Item("size")

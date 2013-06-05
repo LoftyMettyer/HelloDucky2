@@ -27,6 +27,7 @@
 
     Public CalcID As HCMGuid
     Public DefaultCalcID As HCMGuid
+    Public DefaultValue As String
 
     Public ReferencedBy As Things.Collection
 
