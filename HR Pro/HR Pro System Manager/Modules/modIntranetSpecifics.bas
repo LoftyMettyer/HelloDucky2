@@ -2,6 +2,7 @@ Attribute VB_Name = "modIntranetSpecifics"
 Option Explicit
 
 Private Const msResetPassword_PROCEDURENAME = "spadmin_resetpassword"
+Private Const msWorkEMailColumnNotDefined = "'Work email' column not defined."
 
 Private mvar_fGeneralOK As Boolean
 Private mvar_sGeneralMsg As String
@@ -25,6 +26,7 @@ Public Function ConfigureIntranetSpecifics() As Boolean
   
   Dim fOK As Boolean
   Dim sErrorMessage As String
+  Dim sTemp As String
   
   fOK = True
   
@@ -35,8 +37,15 @@ Public Function ConfigureIntranetSpecifics() As Boolean
   fOK = ReadIntranetParameters
   If Not fOK Then
     mvar_fGeneralOK = False
+    
+    If mvar_sGeneralMsg Like "*" & msWorkEMailColumnNotDefined & "*" Then
+      sTemp = "The Forgot Password"
+    Else
+      sTemp = "Some"
+    End If
+    
     sErrorMessage = "Intranet specifics not correctly configured in Personnel Module Setup." & vbNewLine & _
-      "Some functionality will be disabled if you do not change your configuration." & vbNewLine & mvar_sGeneralMsg
+      sTemp & " functionality will be disabled if you do not change your configuration." & vbNewLine & mvar_sGeneralMsg
     
     fOK = (OutputMessage(sErrorMessage & vbNewLine & vbNewLine & "Continue saving changes ?") = vbYes)
   End If
@@ -110,7 +119,7 @@ Private Function ReadIntranetParameters() As Boolean
       End If
       
       fOK = (mvar_lngWorkEmailColumn > 0)
-      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "  'Work email' column not defined."
+      If Not fOK Then mvar_sGeneralMsg = mvar_sGeneralMsg & vbCrLf & "  " & msWorkEMailColumnNotDefined
     End If
     
     If fOK Then
