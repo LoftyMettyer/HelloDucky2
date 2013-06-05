@@ -143,6 +143,7 @@ Begin VB.Form frmEmailLink
       TabPicture(1)   =   "frmEmailLink.frx":1D90
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "frmContent"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       Begin VB.Frame frmContent 
          Height          =   6240
@@ -662,7 +663,7 @@ Private Type POINTAPI
     Y As Long
 End Type
 
-Private Declare Function SendMessageLong Lib "user32" Alias "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
+Private Declare Function SendMessageLong Lib "user32" Alias "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal LParam As Long) As Long
 
 Private mlngTableID As Long
 Private mstrTableName As String
@@ -891,6 +892,7 @@ Private Sub cmdRecipients_Click(Index As Integer)
   
     If .SelectEmail(mblnReadOnly, True) Then
       Set mcolRecipients(Index) = .EmailIDs
+      Changed = True
     End If
 
   End With
@@ -947,6 +949,7 @@ Private Sub cmdAttachment_Click()
     If .Cancelled = False Then
       txtAttachment.Text = .FileName
       cmdAttachmentClear.Enabled = (txtAttachment.Text <> vbNullString And Not mblnReadOnly)
+      Changed = True
     End If
   End With
 
@@ -959,6 +962,7 @@ Private Sub cmdAttachmentClear_Click()
 
   If MsgBox("Are you sure you wish to remove this attachment ?", vbYesNo + vbQuestion, "Remove Attachment") = vbYes Then
     txtAttachment.Text = ""
+    Changed = True
   End If
   cmdAttachmentClear.Enabled = (txtAttachment.Text <> "")
   
@@ -994,6 +998,7 @@ Private Sub cmdFilter_Click()
     If .SelectExpression Then
       txtFilter.Tag = .ExpressionID
       txtFilter.Text = GetExpressionName(txtFilter.Tag)
+      Changed = True
     Else
       ' Check in case the original expression has been deleted.
       txtFilter.Text = GetExpressionName(txtFilter.Tag)
@@ -1550,8 +1555,8 @@ Private Sub PopulateColumnNodes(lngTableID As Long, strTableName As String)
 
 
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) And _
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) And _
           (!ControlType <> giCTRL_OLE) And _
           (!ControlType <> giCTRL_PHOTO) And _
           (!ControlType <> giCTRL_LINK) Then
@@ -1589,8 +1594,8 @@ Private Sub PopulateColumns(lngTableID As Long)
 
 
         If (Not !Deleted) And _
-          (!ColumnType <> giCOLUMNTYPE_LINK) And _
-          (!ColumnType <> giCOLUMNTYPE_SYSTEM) And _
+          (!columnType <> giCOLUMNTYPE_LINK) And _
+          (!columnType <> giCOLUMNTYPE_SYSTEM) And _
           (!ControlType <> giCTRL_OLE) And _
           (!ControlType <> giCTRL_PHOTO) And _
           (!ControlType <> giCTRL_LINK) Then
