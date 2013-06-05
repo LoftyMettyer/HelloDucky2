@@ -3653,13 +3653,18 @@ EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRInsertNewRecord]
 	BEGIN
 		SET NOCOUNT ON;
 
-		DECLARE @ssql nvarchar(MAX);
+		DECLARE @ssql nvarchar(MAX),
+				@tablename varchar(255);
 
 		-- Run the given SQL INSERT
 		EXECUTE sp_executesql @psInsertString;
 
 		-- Calculate the ID
-		SET @ssql = ''SELECT @ID = MAX(ID) FROM '' + SUBSTRING(@psInsertString,7, CHARINDEX('' ('', @psInsertString)-7)
+		SET  @psInsertString = REPLACE('' '' + @psInsertString,'' INSERT INTO '','''')
+		SET  @psInsertString = REPLACE('' '' + @psInsertString,'' INSERT '','''')
+		SET @tablename = SUBSTRING(@psInsertString,0, CHARINDEX(''('', @psInsertString));
+
+		SET @ssql = ''SELECT @ID = MAX(ID) FROM '' + @tablename;
 		EXECUTE sp_executesql @ssql, N''@ID int OUTPUT'', @ID = @piNewRecordID OUTPUT;
 
 END'
