@@ -590,11 +590,11 @@ Public Function GetFile(objParent As clsOutputRun, colStyles As Collection) As B
   End If
   
   If gblnReportPackMode And mlngSaveExisting = 0 And gobjProgress.Bar1Value > 0 Then
-      ' reset write mode to append in order that the  previous report job doesnt get overwritten
+      ' reset write mode to append to the previous report
       mlngSaveExisting = 3
-      'mstrFileName = objParent.SequentialFileName
   End If
   'mwrdApp.Visible = True
+  
   'Check if file already exists...
   If Dir(mstrFileName) <> vbNullString And mstrFileName <> vbNullString Then
 
@@ -613,7 +613,6 @@ Public Function GetFile(objParent As clsOutputRun, colStyles As Collection) As B
   
       Case 2  'Add Sequential number to file
         mstrFileName = mobjParent.GetSequentialNumberedFile(mstrFileName)
-        'objParent.SequentialFileName = mstrFileName
         GetNewDocument
   
       Case 3  'Append to existing file
