@@ -216,7 +216,9 @@ Namespace Things
 
         If Not Me.IsComplex Then
           .InlineCode = mcolLinesOfCode.Statement
-          .InlineCode = ScriptDB.Beautify.MakeSingleLine(.InlineCode.Replace("@prm_", "base."))
+          .InlineCode = .InlineCode.Replace("@prm_", "base.")
+          .InlineCode = .InlineCode.Replace("@rownumber", "[rownumber]")
+          .InlineCode = ScriptDB.Beautify.MakeSingleLine(.InlineCode)
         End If
 
         ScriptDB.Beautify.MakeSingleLine(Me.Description)

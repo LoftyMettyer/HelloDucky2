@@ -19,9 +19,9 @@
     Public Function MakeSingleLine(ByVal Input As String) As String
 
       Dim sReturn As String = Input
-
-      sReturn.Replace(vbNewLine, "")
-      sReturn.Replace(" ", "")
+      sReturn = Replace(sReturn, vbNewLine, "", 1)
+      'sReturn = Replace(sReturn, " ", "")
+      sReturn = Replace(sReturn, vbTab, "")
 
       Return sReturn
 

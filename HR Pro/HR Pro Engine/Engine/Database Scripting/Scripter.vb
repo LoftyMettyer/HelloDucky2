@@ -343,7 +343,8 @@ Namespace ScriptDB
       Dim objRelation As Things.Relation
       Dim objIndex As Things.Index
       Dim sSQL As String = String.Empty
-      Dim sValidation As String = String.Empty
+      Dim sCalculationCode As String
+      '  Dim sValidation As String = String.Empty
       Dim sTriggerName As String = String.Empty
       Dim sColumnName As String = String.Empty
 
@@ -474,10 +475,16 @@ Namespace ScriptDB
                 objColumn.Calculation.ExpressionType = ExpressionType.ColumnCalculation
                 objColumn.Calculation.GenerateCode()
 
-                If objColumn.CalculateIfEmpty Then
-                  sColumnName = String.Format("[{0}] = ISNULL([{0}], {1})", objColumn.Name, objColumn.Calculation.UDF.CallingCode)
+                If objColumn.Calculation.IsComplex Then
+                  sCalculationCode = objColumn.Calculation.UDF.CallingCode
                 Else
-                  sColumnName = String.Format("[{0}] = {1}", objColumn.Name, objColumn.Calculation.UDF.CallingCode)
+                  sCalculationCode = objColumn.Calculation.UDF.InlineCode
+                End If
+
+                If objColumn.CalculateIfEmpty Then
+                  sColumnName = String.Format("[{0}] = ISNULL([{0}], {1})", objColumn.Name, sCalculationCode)
+                Else
+                  sColumnName = String.Format("[{0}] = {1}", objColumn.Name, sCalculationCode)
                 End If
 
                 If objColumn.Calculation.CalculatePostAudit Then
