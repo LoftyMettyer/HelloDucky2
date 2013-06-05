@@ -1814,11 +1814,13 @@ PRINT 'Step - System metadata indexing'
 		DROP INDEX [IDX_LinkRecordID] ON [dbo].[ASRSysEmailQueue] WITH ( ONLINE = OFF )
 	IF  EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysEmailQueue]') AND name = N'IDX_RecordTableID')
 		DROP INDEX [IDX_RecordTableID] ON [dbo].[ASRSysEmailQueue] WITH ( ONLINE = OFF )
+	IF  EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_intransactiontrigger]') AND name = N'IDX_Transaction')
+		DROP INDEX [IDX_Transaction] ON [dbo].[tbsys_intransactiontrigger] WITH ( ONLINE = OFF )
 
 	EXEC sp_executesql N'CREATE CLUSTERED INDEX [IDX_EventLogID] ON [dbo].[ASRSysEventLogDetails] ([EventLogID] ASC)'
 	EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_RecordTableID] ON [dbo].[ASRSysEmailQueue] ([RecordID] ASC, [TableID] ASC)'
 	EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_LinkRecordID] ON [dbo].[ASRSysEmailQueue] ([LinkID] ASC, [RecordID] ASC)'
-
+	EXEC sp_executesql N'CREATE UNIQUE NONCLUSTERED INDEX [IDX_Transaction] ON [dbo].[tbsys_intransactiontrigger] ([tablefromid] ASC, [spid] ASC)'
 
 /* ------------------------------------------------------------- */
 PRINT 'Step - New Shared Table Transfer Types for ASPP'
