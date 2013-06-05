@@ -164,7 +164,6 @@ Namespace Things
       Next
 
       For Each table In Dependencies.OfType(Of Table)()
-
         aryComments.Add(String.Format("Table : {0}", table.Name))
         aryDependsOn.Add(String.Format("{0}", table.ID))
       Next
@@ -184,26 +183,16 @@ Namespace Things
         End If
 
 
-        ' COMMENTED OUT THE BELOW 1) Because the overnight was taking too long to refresh all tables.
-        '                         2) Dubious about how much time is saves.
-        'sBypassUDFCode = String.Format("    -- Return the original value if none of the dependent tables are in the trigger stack." & vbNewLine &
-        '    "    IF @@NESTLEVEL > 30 OR (@forcerefresh = 0 AND NOT EXISTS (SELECT [tablefromid] FROM [dbo].[tbsys_intransactiontrigger] WHERE [tablefromid] IN ({0}) AND [spid] = @@SPID))" & vbNewLine & _
-        '    "        BEGIN" & vbNewLine & _
-        '    "            SELECT @result = [{1}] FROM dbo.[{2}] WHERE [ID] = @prm_ID;" & vbNewLine & _
-        '    "            RETURN @result;" & vbNewLine & _
-        '    "        END" _
-        '    , String.Join(", ", aryDependsOn.ToArray()), Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.PhysicalName)
+        sBypassUDFCode = String.Format("    -- Return the original value if we somehow get stuck in a recursive loop (shouldn't happen)" & vbNewLine &
+          "    IF @@NESTLEVEL > 15" & vbNewLine &
+          "        BEGIN" & vbNewLine &
+          "            SELECT @result = [{1}] FROM dbo.[{2}] WHERE [ID] = @prm_ID;" & vbNewLine &
+          "            RETURN @result;" & vbNewLine &
+          "        END" _
+          , String.Join(", ", aryDependsOn.ToArray()), Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.PhysicalName)
+
 
       End If
-
-
-      'sBypassUDFCode = String.Format("    -- Return the original value if we somehow get stuck in a recursive loop (shouldn't happen)" & vbNewLine &
-      '    "    IF @@NESTLEVEL > 31" & vbNewLine &
-      '    "        BEGIN" & vbNewLine &
-      '    "            SELECT @result = [{1}] FROM dbo.[{2}] WHERE [ID] = @prm_ID;" & vbNewLine &
-      '    "            RETURN @result;" & vbNewLine &
-      '    "        END" _
-      '    , String.Join(", ", aryDependsOn.ToArray()), Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.PhysicalName)
 
 
       ' Can object be schemabound
