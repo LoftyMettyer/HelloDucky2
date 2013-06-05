@@ -11437,7 +11437,7 @@ Private Sub Form_Load()
     End If
   End If
   
-  cmdOk.Enabled = IsNew
+  cmdOK.Enabled = IsNew
   
   scrollVertical.SmallChange = SMALLSCROLL
   scrollHorizontal.SmallChange = SMALLSCROLL
@@ -13708,13 +13708,13 @@ End Property
 Public Property Let IsChanged(pfNewValue As Boolean)
   mfChanged = pfNewValue
   mfPerge = pfNewValue
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
 End Property
 
 Public Sub SetChanged(pfPerge As Boolean)
   mfChanged = True
   mfPerge = (mfPerge Or pfPerge)
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
 End Sub
 
 Public Function IsUniqueIdentifier(psIdentifier As String, plngIgnoreElementIndex As Long) As Boolean
