@@ -1,5 +1,10 @@
 
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[PERSONNEL_RECORDS]') AND xtype = 'TR')
+-- Obsolete
+RETURN
+
+
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[fusion_table1]') AND xtype = 'TR')
 		DROP TRIGGER [dbo].[fusion_table1];
 
 go
@@ -10,7 +15,7 @@ CREATE TRIGGER fusion_table1
 AS 
 BEGIN
 	SET NOCOUNT ON;
-
+--return
 	DECLARE @LocalId integer,
 			@ParentID integer,
 			@startingtrigger integer;
