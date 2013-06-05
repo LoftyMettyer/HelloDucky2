@@ -3378,6 +3378,14 @@ Private Sub Form_Activate()
   'frmMain.RefreshMainForm Me
   frmMain.RefreshMainForm Screen.ActiveForm
   
+  ' Refresh any navigation controls because Version One has some teething troubles
+  For Each objControl In Me.Controls
+    If TypeOf objControl Is COA_Navigation Then
+      objControl.RefreshControls
+    End If
+  Next
+  DoEvents
+  
   ' Refresh the form icon
   'GetIcon mlngPictureID
     
