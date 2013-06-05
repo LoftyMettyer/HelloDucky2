@@ -944,7 +944,7 @@ Namespace ScriptDB
 
             If objColumn.IsCalculated Then
 
-              Debug.Assert(objColumn.Name <> "Current_Salary")
+              'Debug.Assert(objColumn.Name <> "Current_Salary")
 
               objColumn.Calculation = objTable.Objects.GetObject(Things.Type.Expression, objColumn.CalcID)
               If Not objColumn.Calculation.State = System.Data.DataRowState.Unchanged Or Globals.Options.RefreshObjects Then
@@ -982,7 +982,7 @@ Namespace ScriptDB
             '   Debug.Print(objColumn.Name)
             If objColumn.IsCalculated Then
               '     If objColumn.Calculation.IsComplex Then
-              Debug.Assert(objColumn.Name <> "Current_Salary_Size_2")
+              '  Debug.Assert(objColumn.Name <> "Current_Salary_Size_2")
 
               objColumn.Calculation.AssociatedColumn = objColumn
               objColumn.Calculation.GenerateCode()
