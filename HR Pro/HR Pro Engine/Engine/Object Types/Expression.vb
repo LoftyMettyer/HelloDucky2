@@ -38,7 +38,8 @@ Namespace Things
     Private mcolLinesOfCode As ScriptDB.LinesOfCode
     'Private mbAddBaseTable As Boolean
     Private mbIsValid As Boolean
-    Private mbRequiresRowNumber = False
+    Private mbRequiresRowNumber As Boolean = False
+    Private mbCalculatePostAudit As Boolean = False
 
     'tempry - must solve later
     Private miRecuriveStop As Integer
@@ -50,20 +51,11 @@ Namespace Things
       End Get
     End Property
 
-    '' Some functions (unique value) need to know the row number of the insert/update row thats functioning because the UDF can't update the underlying data.
-    'Public Property RequiresRowNumber As Boolean
-    '  Get
-    '    Return mbRequiresRowNumber
-    '  End Get
-    '  Set(ByVal value As Boolean)
-    '    mbRequiresRowNumber = value
-    '    If Not Me.BaseExpression Is Me Then
-    '      Me.BaseExpression.RequiresRowNumber = mbRequiresRowNumber
-    '    End If
-    '  End Set
-    'End Property
-
-
+    Public ReadOnly Property CalculatePostAudit As Boolean
+      Get
+        Return mbCalculatePostAudit
+      End Get
+    End Property
 
 #Region "Generate code"
 
@@ -663,7 +655,7 @@ Namespace Things
       'Dim drRelations() As DataRow
       'Dim drRelation As System.Data.DataRow
 
-      Dim guidTableID As HCMGuid
+      '     Dim guidTableID As HCMGuid
 
       'Dim sFilter As String
 
@@ -691,14 +683,13 @@ Namespace Things
         Globals.ErrorLog.Add(ErrorHandler.Section.General, Me.ExpressionType, ErrorHandler.Severity.Error, "SQLCode_AddColumn", "can't find column is dependency stack")
       Else
 
-
-        '  Debug.Assert(Me.AssociatedColumn.Name <> "Function_Is_Between_Current_Salary_10000_and_20000")
-
-
-        guidTableID = objThisColumn.Table.ID
-
         ' Is this column referencing the column that this udf is attaching itself to? (i.e. recursion)
-        If objThisColumn Is objBaseColumn _
+        If Component.IsColumnByReference Then
+          LineOfCode.Code = String.Format("'{0}-{1}'" _
+              , CInt(objThisColumn.Table.ID).ToString.PadLeft(8, "0") _
+              , CInt(objThisColumn.ID).ToString.PadLeft(8, "0"))
+
+        ElseIf objThisColumn Is objBaseColumn _
           And Not (Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter _
                    Or Me.ExpressionType = ScriptDB.ExpressionType.Mask _
                    Or Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription) Then
@@ -714,8 +705,6 @@ Namespace Things
           LineOfCode.Code = String.Format("[dbo].[{0}](@pID)", objThisColumn.Name)
 
         ElseIf objThisColumn.IsCalculated And objThisColumn.Table Is Me.AssociatedColumn.Table Then
-
-          'objCalculatedColumn = objThisColumn.Table.GetObject(Type.Expression, objThisColumn.CalcID)
 
           If objThisColumn.Calculation Is Nothing Then
             objThisColumn.Calculation = objThisColumn.Table.GetObject(Type.Expression, objThisColumn.CalcID)
@@ -735,20 +724,6 @@ Namespace Things
 
           objThisColumn.Calculation.ExpressionType = iBackupType
 
-          'objCalculatedColumn.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn
-          'objCalculatedColumn.AssociatedColumn = objThisColumn
-          'objCalculatedColumn.GenerateCode()
-
-          'If objCalculatedColumn.IsComplex Then
-          '  LineOfCode.Code = objCalculatedColumn.UDF.CallingCode
-          'Else
-          '  AddToDependencies(objCalculatedColumn.mcolDependencies)
-          '  LineOfCode.Code = objCalculatedColumn.UDF.SelectCode
-          'End If
-
-          'objCalculatedColumn = Nothing
-
-          ' No calcs to worry about, just read the column directly (its a free entry text field)
         Else
 
           'If is this column on the base table then add directly to the main execute statement,
@@ -1066,13 +1041,13 @@ Namespace Things
 
           End Select
 
-
         Next
       End If
 
       SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
       LineOfCode.Code = String.Format(LineOfCode.Code, ChildCodeCluster.ToArray)
       mbRequiresRowNumber = mbRequiresRowNumber Or objCodeLibrary.RowNumberRequired
+      mbCalculatePostAudit = mbCalculatePostAudit Or objCodeLibrary.CalculatePostAudit
 
       ' For functions that return mixed type, make it type safe
       If objCodeLibrary.ReturnType = ScriptDB.ComponentValueTypes.Unknown Then

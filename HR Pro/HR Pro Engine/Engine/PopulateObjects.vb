@@ -109,6 +109,7 @@
           objCodeLibrary.OperatorType = objRow.Item("operatortype").ToString
           objCodeLibrary.BypassValidation = objRow.Item("bypassvalidation").ToString
           objCodeLibrary.RowNumberRequired = objRow.Item("rownumberrequired").ToString
+          objCodeLibrary.CalculatePostAudit = objRow.Item("calculatepostaudit").ToString
           objCodeLibrary.Dependancies = PopulateCodeLibraryDependancies(objCodeLibrary)
 
           If objRow.Item("isoperator") Then

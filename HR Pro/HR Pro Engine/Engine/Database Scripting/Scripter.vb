@@ -356,11 +356,13 @@ Namespace ScriptDB
       Dim sSQLCode_DiaryLinks As String = String.Empty
       Dim sSQLWriteableColumns As String
       Dim sSQLCalculatedColumns As String
+      Dim sSQLPostAuditCalcs As String
       Dim sSQLParentColumns As String
       Dim sSQLParentColumns_Delete As String
       Dim sSQLChildColumns As String
 
       Dim aryCalculatedColumns As ArrayList
+      Dim aryPostAuditCalcs As ArrayList
       Dim aryDebugColumns As ArrayList
       Dim aryBaseTableColumns As ArrayList
       Dim aryParentsToUpdate As ArrayList
@@ -446,6 +448,7 @@ Namespace ScriptDB
           ' Build list of columns in this table
           aryBaseTableColumns = New ArrayList
           aryCalculatedColumns = New ArrayList
+          aryPostAuditCalcs = New ArrayList
           aryDebugColumns = New ArrayList
 
           sSQLCode_AuditInsert = String.Empty
@@ -468,7 +471,13 @@ Namespace ScriptDB
                 objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
                 objColumn.Calculation.AssociatedColumn = objColumn
                 objColumn.Calculation.GenerateCode()
-                aryCalculatedColumns.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.Calculation.UDF.CallingCode) & vbNewLine)
+
+                If objColumn.Calculation.CalculatePostAudit Then
+                  aryPostAuditCalcs.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.Calculation.UDF.CallingCode) & vbNewLine)
+                Else
+                  aryCalculatedColumns.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.Calculation.UDF.CallingCode) & vbNewLine)
+                End If
+
               End If
 
               If Not objColumn.IsReadOnly Then
@@ -609,6 +618,21 @@ Namespace ScriptDB
             sSQLCalculatedColumns = "    -- No calculated columns" & vbNewLine & vbNewLine
           End If
 
+          ' Any calculations that require to be saved after the audit
+          If aryPostAuditCalcs.ToArray.Length > 0 Then
+            sSQLPostAuditCalcs = String.Format("    -- Update columns that rely on audit log data" & vbNewLine & _
+              "    WITH base AS (" & vbNewLine & _
+              "        SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
+              "        FROM [dbo].[{0}]" & vbNewLine & _
+              "        WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
+              "    UPDATE base" & vbNewLine & _
+              "        SET {1}" _
+              , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryPostAuditCalcs.ToArray()))
+          Else
+            sSQLPostAuditCalcs = vbNullString
+          End If
+
+
           ' -------------------
           ' INSTEAD OF INSERT
           ' -------------------
@@ -673,14 +697,15 @@ Namespace ScriptDB
               "    ---------------------------" & vbNewLine & _
               "{4}" & vbNewLine & vbNewLine & _
               "    INSERT dbo.[tbsys_audittrail] (username, datetimestamp, recordid, oldvalue, newvalue, tableid, columnid, deleted, recorddesc)" & vbNewLine & _
-              "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, tableid, columnid, 0, recorddesc FROM @audit" & vbNewLine & vbNewLine & _
+              "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, tableid, columnid, 0, recorddesc FROM @audit;" & vbNewLine & vbNewLine & _
+              "{7}" & vbNewLine & vbNewLine & _
               "    -- Clear the temporary trigger status table" & vbNewLine & vbNewLine & _
               "    DELETE [dbo].[{5}] WHERE [spid] = @@spid AND [tablefromid] = {6};" & vbNewLine & vbNewLine _
               , objTable.Name, sTriggerName _
               , String.Join(vbNewLine, aryValidationStatements.ToArray()) _
               , sSQLWriteableColumns _
               , sSQLCode_AuditUpdate _
-              , Tables.sysTriggerTransaction, CInt(objTable.ID))
+              , Tables.sysTriggerTransaction, CInt(objTable.ID), sSQLPostAuditCalcs)
           ScriptTrigger("dbo", objTable, TriggerType.InsteadOfUpdate, sSQL)
 
 

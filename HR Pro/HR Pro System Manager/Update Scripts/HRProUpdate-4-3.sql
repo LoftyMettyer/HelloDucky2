@@ -570,7 +570,13 @@ PRINT 'Step 11 - Add new calculation procedures'
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_convertcurrency]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_convertcurrency];
-		
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_fieldchangedbetweentwodates]')AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_fieldchangedbetweentwodates];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_fieldlastchangedate]')AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_fieldlastchangedate];
+
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_firstnamefromforenames]')AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_firstnamefromforenames];
 
@@ -892,6 +898,63 @@ PRINT 'Step 11 - Add new calculation procedures'
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
 
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_fieldchangedbetweentwodates](
+		@colrefID	varchar(32),
+		@fromdate	datetime,
+		@todate		datetime,
+		@recordID	integer
+	)
+	RETURNS bit
+	AS
+	BEGIN
+
+		DECLARE @result		bit,
+				@tableid	integer,
+				@columnid	integer;
+		
+		SET @tableid = SUBSTRING(@colrefID, 1, 8);
+		SET @columnid = SUBSTRING(@colrefID, 10, 8);
+		SET @fromdate = DATEADD(dd, 0, DATEDIFF(dd, 0, @fromdate));
+		SET @todate = DATEADD(dd, 0, DATEDIFF(dd, 0, @todate));
+
+		SELECT @result = CASE WHEN
+				EXISTS(SELECT [DateTimeStamp] FROM [tbsys_audittrail]
+					WHERE [ColumnID] = @columnid AND [TableID] = @tableID
+					AND @recordID = [RecordID] 
+					AND [DateTimeStamp] >= @fromdate AND DateTimeStamp < @todate + 1)
+				THEN 1 ELSE 0 END;
+
+		RETURN @result;
+
+	END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_fieldlastchangedate](
+		@colrefID	varchar(32),
+		@recordID	integer
+	)
+	RETURNS datetime
+	AS
+	BEGIN
+
+		DECLARE @result		datetime,
+				@tableid	integer,
+				@columnid	integer;
+		
+		SET @tableid = SUBSTRING(@colrefID, 1, 8);
+		SET @columnid = SUBSTRING(@colrefID, 10, 8);
+
+		SELECT TOP 1 @result = [DateTimeStamp] FROM [tbsys_audittrail]
+			WHERE [ColumnID] = @columnid AND [TableID] = @tableID
+				AND @recordID = [RecordID]
+			ORDER BY [DateTimeStamp] DESC ;
+
+		RETURN @result;
+
+	END'
+	EXECUTE sp_executeSQL @sSPCode;
+
+
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getfieldfromdatabaserecord](
 			@searchcolumn AS nvarchar(255),
 			@searchexpression AS nvarchar(MAX),
@@ -998,7 +1061,6 @@ PRINT 'Step 11 - Add new calculation procedures'
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
 
-
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_isbetween](
 			@column1 AS nvarchar(MAX),
 			@column2 AS nvarchar(MAX),
@@ -1017,7 +1079,6 @@ PRINT 'Step 11 - Add new calculation procedures'
 			
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
-
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_isfieldpopulated](
 			@inputcolumn as nvarchar(MAX))
@@ -1132,9 +1193,6 @@ PRINT 'Step 11 - Add new calculation procedures'
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
 
-
-
-
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_propercase](
 			@text as nvarchar(max))
 		RETURNS nvarchar(max)
@@ -1165,7 +1223,6 @@ PRINT 'Step 11 - Add new calculation procedures'
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
 
-
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_remainingmonthssincewholeyears]
 		(@pdtDate 	datetime, @dtToday datetime)
 	RETURNS integer
@@ -1191,7 +1248,6 @@ PRINT 'Step 11 - Add new calculation procedures'
 
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
-
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_roundtostartofnearestmonth]
 		(@pdtDate 	datetime)
@@ -1223,9 +1279,6 @@ PRINT 'Step 11 - Add new calculation procedures'
 
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
-
-
-
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_servicelength] (
 		     @startdate  datetime,
@@ -1451,7 +1504,8 @@ PRINT 'Step 10 - Populate code generation tables'
 			[operatortype] [tinyint] NULL,
 			[id] [int] NULL,
 			[bypassvalidation] [bit] NULL,
-			[rownumberrequired] [bit] NULL
+			[rownumberrequired] [bit] NULL,
+			[calculatepostaudit] [bit] NULL
 		) ON [PRIMARY]';
 
 	EXEC sp_executesql N'CREATE TABLE [dbo].[tbstat_componentdependancy](
@@ -1510,8 +1564,10 @@ PRINT 'Step 10 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''a774b4f7-5792-41c5-99fb-301af38f0e68'', N''LEFT({0}, {1})'', 1, 0, 0, N''Extract Characters from the Left'', NULL, 0, 0, 6, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''0d948a6a-e6db-440f-b5fc-25ac323425ae'', N''RIGHT({0}, {1})'', 1, 0, 0, N''Extract Characters from the Right'', NULL, 0, 0, 13, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5c4e830d-6b52-481d-b94e-e6d65912cde2'', N''SUBSTRING({0}, {1}, {2})'', 1, 0, 0, N''Extract Part of a Character String'', NULL, 0, 0, 14, 0)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''f61ea313-4866-4a29-a19f-e2d4fe3db23d'', N'''', 3, 0, 0, N''Field Changed between Two Dates'', NULL, 0, 0, 53, 0)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''532861e4-23ac-474b-ae04-1a85724e7988'', N'''', 4, 0, 0, N''Field Last Change Date'', NULL, 0, 0, 52, 0)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation], [calculatepostaudit]) VALUES (N''f61ea313-4866-4a29-a19f-e2d4fe3db23d'', N''dbo.udfsys_fieldchangedbetweentwodates({0}, {1}, {2}, {3})'', 3, 0, 0, N''Field Changed between Two Dates'', NULL, 0, 0, 53, 0, 1)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (53, 2, '''', '''', ''@prm_ID'')';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation], [calculatepostaudit]) VALUES (N''532861e4-23ac-474b-ae04-1a85724e7988'', N''dbo.udfsys_fieldlastchangedate({0}, {1})'', 4, 0, 0, N''Field Last Change Date'', NULL, 0, 0, 52, 0, 1)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (52, 2, '''', '''', ''@prm_ID'')';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''4be2a715-f36b-4507-8090-9b1159de3aab'', N''DATEADD(dd, 1 - DATEPART(dd,{0}), {0})'', 2, 0, 0, N''First Day of Month'', NULL, 0, 0, 55, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''e3f98ac8-bfbf-4a98-8dd3-89f2830c1c95'', N''DATEADD(dd, 1 - DATEPART(dy, {0}), {0})'', 2, 0, 0, N''First Day of Year'', NULL, 0, 0, 57, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''263f4cc8-7c8d-4c5d-bdea-9e4ced21f078'', N''[dbo].[udfsys_firstnamefromforenames]({0})'', 1, 0, 0, N''First Name from Forenames'', NULL, 0, 0, 21, 0)';
@@ -1586,6 +1642,7 @@ PRINT 'Step 11 - Administration module stored procedures'
 			, [appendwildcard], [splitintocase]
 			, [aftercode], [isoperator], [operatortype], [aftercode] 
 			, [bypassvalidation], ISNULL([rownumberrequired], 0) AS [rownumberrequired]
+			, ISNULL([CalculatePostAudit],0) AS [calculatepostaudit]
 			FROM tbstat_componentcode WHERE [id] IS NOT NULL;
 	END';
 
