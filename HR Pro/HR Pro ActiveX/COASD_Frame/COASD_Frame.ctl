@@ -1,4 +1,5 @@
 VERSION 5.00
+Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
 Begin VB.UserControl COASD_Frame 
    ClientHeight    =   3600
    ClientLeft      =   0
@@ -6,13 +7,27 @@ Begin VB.UserControl COASD_Frame
    ClientWidth     =   4800
    ScaleHeight     =   3600
    ScaleWidth      =   4800
-   Begin VB.Frame fraFrame 
-      Caption         =   "Frame1"
-      Height          =   1290
-      Left            =   675
+   Begin XtremeSuiteControls.GroupBox fraFrame 
+      Height          =   1050
+      Left            =   45
       TabIndex        =   0
-      Top             =   660
-      Width           =   2010
+      Top             =   0
+      Width           =   1995
+      _Version        =   851969
+      _ExtentX        =   3519
+      _ExtentY        =   1852
+      _StockProps     =   79
+      Caption         =   "Frame"
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Verdana"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      UseVisualStyle  =   -1  'True
    End
 End
 Attribute VB_Name = "COASD_Frame"
@@ -140,11 +155,6 @@ Public Property Get MinimumWidth() As Long
   MinimumWidth = gLngMinWidth
   
 End Property
-
-Private Sub fraFrame_DblClick()
-  RaiseEvent DblClick
-
-End Sub
 
 Private Sub fraFrame_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Pass the MouseDown event to the parent form.
