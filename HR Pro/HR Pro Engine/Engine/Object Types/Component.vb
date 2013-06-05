@@ -117,6 +117,7 @@ Namespace Things
           objExpression = Globals.Expressions.GetById(Me.CalculationID).Clone
           Me.Components = objExpression.Components
           Me.TableID = objExpression.TableID
+          Me.ReturnType = objExpression.ReturnType
           Me.SubType = ScriptDB.ComponentTypes.Expression
 
           If Me.TableID <> Me.BaseExpression.TableID Then
