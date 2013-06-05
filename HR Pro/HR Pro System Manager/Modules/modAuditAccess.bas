@@ -266,7 +266,7 @@ Public Function ConfigureCustomAuditLog() As Boolean
         & "        SELECT " & Join(saryFromList, ", ") & vbNewLine _
         & "            FROM inserted;" & vbNewLine & vbNewLine _
         & "END"
-'      gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+      gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
       ' Generate delete trigger
       If Len(sIDColumn) > 0 Then
@@ -276,7 +276,7 @@ Public Function ConfigureCustomAuditLog() As Boolean
           & "    DELETE FROM [dbo].[" & sAuditTableName & "] WHERE [" & sIDColumn & "]" _
           & " IN (SELECT [id] FROM deleted);" & vbNewLine & vbNewLine _
           & "END"
- '     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+      gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
 
     End If
