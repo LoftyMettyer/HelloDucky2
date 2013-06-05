@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
 Begin VB.Form frmLogin 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "HR Pro Data Manager - Login"
@@ -553,10 +553,21 @@ Private Sub CheckRegistrySettings()
   
   ' Retrieve all the paths
   
-  sDocumentsPath = GetPCSetting("Datapaths", "documentspath_" & gsDatabaseName, vbNullString)
-  sLocalOLEPath = GetPCSetting("Datapaths", "localolepath_" & gsDatabaseName, vbNullString)
-  sOLEPath = GetPCSetting("Datapaths", "olepath_" & gsDatabaseName, vbNullString)
-  sPhotoPath = GetPCSetting("Datapaths", "photopath_" & gsDatabaseName, vbNullString)
+  ' NPG20110118 - Fault HRPRO-1340
+'  sDocumentsPath = GetPCSetting("Datapaths", "documentspath_" & gsDatabaseName, vbNullString)
+'  sLocalOLEPath = GetPCSetting("Datapaths", "localolepath_" & gsDatabaseName, vbNullString)
+'  sOLEPath = GetPCSetting("Datapaths", "olepath_" & gsDatabaseName, vbNullString)
+'  sPhotoPath = GetPCSetting("Datapaths", "photopath_" & gsDatabaseName, vbNullString)
+ 
+  gsPhotoPath = GetPCSetting("DataPaths", "PhotoPath_" & gsDatabaseName, vbNullString)
+  gsOLEPath = GetPCSetting("DataPaths", "OLEPath_" & gsDatabaseName, vbNullString)
+  gsCrystalPath = GetPCSetting("DataPaths", "crystalpath_" & gsDatabaseName, vbNullString)
+  gsDocumentsPath = GetPCSetting("DataPaths", "documentspath_" & gsDatabaseName, vbNullString)
+  gsLocalOLEPath = GetPCSetting("DataPaths", "localolePath_" & gsDatabaseName, vbNullString)
+ 
+  gbPrinterPrompt = GetPCSetting("Printer", "Prompt", True)
+  gbPrinterConfirm = GetPCSetting("Printer", "Confirm", False)
+ 
  
   bHasOleColumn = DBContains_DataType(sqlOle)
   bHasPhotoColumn = DBContains_DataType(sqlVarBinary)
@@ -566,7 +577,7 @@ Private Sub CheckRegistrySettings()
 
   'JDM - 09/10/01 - Fault 2932 - Only allow if user has access to PC configuration
 '  If datGeneral.SystemPermission("CONFIGURATION", "PC") Then
-    If Not gblnBatchJobsOnly And Not ASRDEVELOPMENT Then
+    If Not gblnBatchJobsOnly Then 'And Not ASRDEVELOPMENT Then
       'TM20011008 Fault 2261
       'Only show the message if the database has columns of these particular datatypes and
       ' a path has not yet been defined.
