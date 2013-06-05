@@ -49,24 +49,34 @@ Namespace Things
 
     Private Sub BuildDependancies(ByVal expression As Component)
 
+      Dim bAddThis As Boolean
+
       For Each component As Component In expression.Components
+
+        bAddThis = False
 
         Select Case component.SubType
           Case ScriptDB.ComponentTypes.Column
-
-            Dim table As Table = Globals.Tables.GetById(component.TableID)
-            Dim column As Column = table.Columns.GetById(component.ColumnID)
-
-            Dependencies.Add(column)
-            Dependencies.Add(column.Table)
+            bAddThis = True
 
           Case ScriptDB.ComponentTypes.Function, ScriptDB.ComponentTypes.Expression, ScriptDB.ComponentTypes.Calculation
             BuildDependancies(component)
 
           Case ScriptDB.ComponentTypes.ConvertedCalculatedColumn
             BuildDependancies(component)
+            bAddThis = True
 
         End Select
+
+        If bAddThis Then
+
+          Dim table As Table = Globals.Tables.GetById(component.TableID)
+          Dim column As Column = table.Columns.GetById(component.ColumnID)
+
+          Dependencies.Add(column)
+          Dependencies.Add(column.Table)
+
+        End If
 
       Next
 
@@ -398,11 +408,11 @@ Namespace Things
 
             ' Calculated columns are sucked into this expressions
           Case ScriptDB.ComponentTypes.ConvertedCalculatedColumn
-            SQLCode_AddParameter(objComponent, [CodeCluster])
+            SQLCode_AddParameter(objComponent, [CodeCluster], True)
 
             ' An expression or a parameter
           Case ScriptDB.ComponentTypes.Expression
-            SQLCode_AddParameter(objComponent, [CodeCluster])
+            SQLCode_AddParameter(objComponent, [CodeCluster], False)
 
             ' Calculation 
           Case ScriptDB.ComponentTypes.Calculation
@@ -415,7 +425,7 @@ Namespace Things
               objCalculation.BaseExpression = objComponent.BaseExpression
               objComponent.Components = objCalculation.CloneComponents
               objComponent.ReturnType = objCalculation.ReturnType
-              SQLCode_AddParameter(objComponent, [CodeCluster])
+              SQLCode_AddParameter(objComponent, [CodeCluster], False)
 
             Else
               Globals.ErrorLog.Add(ErrorHandler.Section.General, Me.AssociatedColumn.Name, ErrorHandler.Severity.Error, _
@@ -732,11 +742,12 @@ Namespace Things
 
     End Sub
 
-    Private Sub SQLCode_AddParameter(ByVal [Component] As Component, ByVal [CodeCluster] As ScriptDB.LinesOfCode)
+    Private Sub SQLCode_AddParameter(ByVal [Component] As Component, ByVal [CodeCluster] As ScriptDB.LinesOfCode, ByVal ConvertedFromColumn As Boolean)
 
       Dim ChildCodeCluster As ScriptDB.LinesOfCode
       Dim LineOfCode As ScriptDB.CodeElement
       Dim objExpression As Expression
+      Dim objColumn As Column
 
       ' Build code for the parameters
       ChildCodeCluster = New ScriptDB.LinesOfCode
@@ -785,6 +796,14 @@ Namespace Things
 
         SQLCode_AddCodeLevel(Component.Components, ChildCodeCluster)
         LineOfCode.Code = String.Format("({0})", ChildCodeCluster.Statement)
+      End If
+
+      ' JIRA-2507 - Hack to handle problems with unique code
+      If ConvertedFromColumn Then
+        objColumn = BaseTable.Columns.GetById(Component.ColumnID)
+        If objColumn.CalculateIfEmpty And Not objColumn.SafeReturnType = "NULL" Then
+          LineOfCode.Code = String.Format("ISNULL(NULLIF(@prm_{0},{2}),{1})", objColumn.Name, LineOfCode.Code, objColumn.SafeReturnType)
+        End If
       End If
 
       [CodeCluster].Add(LineOfCode)

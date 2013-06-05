@@ -145,6 +145,7 @@ Namespace Things
                 Me.SubType = ScriptDB.ComponentTypes.ConvertedCalculatedColumn
 
               End If
+
             End If
           End If
 
