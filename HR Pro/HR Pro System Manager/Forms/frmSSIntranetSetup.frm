@@ -1436,6 +1436,7 @@ Private Enum MoveDirection
 End Enum
 
 Private mcolSSITableViews As clsSSITableViews
+Private mcolGroups As Collection
 
 Private mfIsEditingSeparator As Boolean
 Private mfIsCopyingSeparator As Boolean
@@ -1761,7 +1762,7 @@ Private Sub RefreshControls()
 
   End Select
 
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
 
 End Sub
 
@@ -1815,7 +1816,7 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
   Dim sUtilityID As String
   Dim sNewWindow As String
   Dim lngMaxID As Long
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim sGroupName As String
   Dim sGroupNames As String
   Dim sTableID As String
@@ -1904,12 +1905,12 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
               sChartType = .Columns("ChartType").CellText(varBookmark)
               fChartShowGrid = .Columns("ChartShowGrid").CellText(varBookmark)
               fChartStackSeries = .Columns("ChartStackSeries").CellText(varBookmark)
-              sChartViewID = Val(.Columns("ChartViewID").CellText(varBookmark))
-              sChartTableID = Val(.Columns("ChartTableID").CellText(varBookmark))
-              sChartColumnID = Val(.Columns("ChartColumnID").CellText(varBookmark))
-              sChartFilterID = Val(.Columns("ChartFilterID").CellText(varBookmark))
-              sChartAggregateType = Val(.Columns("ChartAggregateType").CellText(varBookmark))
-              fChartShowValues = Val(.Columns("ChartShowValues").CellText(varBookmark))
+              sChartViewID = val(.Columns("ChartViewID").CellText(varBookmark))
+              sChartTableID = val(.Columns("ChartTableID").CellText(varBookmark))
+              sChartColumnID = val(.Columns("ChartColumnID").CellText(varBookmark))
+              sChartFilterID = val(.Columns("ChartFilterID").CellText(varBookmark))
+              sChartAggregateType = val(.Columns("ChartAggregateType").CellText(varBookmark))
+              fChartShowValues = val(.Columns("ChartShowValues").CellText(varBookmark))
              
             Case SSINTLINK_DROPDOWNLIST
               sPrompt = ""
@@ -2143,14 +2144,15 @@ Private Sub cmdAddButtonLink_Click()
   Dim ctlCurrentGrid As SSDBGrid
   Dim ctlSourceGrid As SSDBGrid
   Dim iLoop As Integer
-  Dim sAllWFHiddenGroups As String
   
   Set ctlSourceGrid = CurrentLinkGrid(SSINTLINK_BUTTON)
   If ctlSourceGrid Is Nothing Then
     Exit Sub
   End If
   
-  sAllWFHiddenGroups = getHiddenGroups(ctlSourceGrid)
+  BuildUserGroupCollection
+  
+  PopulateWFAccessGroup ctlSourceGrid, -1
   
   With frmLink
     .Initialize SSINTLINK_BUTTON, _
@@ -2175,7 +2177,7 @@ Private Sub cmdAddButtonLink_Click()
       "", _
       False, False, _
       0, 0, _
-      True, 1, False, False, 0, 0, 0, 0, 0, 0, sAllWFHiddenGroups, _
+      True, 1, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
       mcolSSITableViews
       
     .Show vbModal
@@ -2272,7 +2274,7 @@ Private Sub cmdAddDropdownListLink_Click()
       "", _
       False, False, _
       0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, 0, "", _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
       mcolSSITableViews
       
     .Show vbModal
@@ -2357,7 +2359,7 @@ Private Sub cmdAddHyperTextLink_Click()
       "", _
       False, False, _
       0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, 0, "", _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
       mcolSSITableViews
       
     .Show vbModal
@@ -2453,7 +2455,7 @@ Private Sub cmdAddDocument_Click()
       "", _
       False, False, _
       0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, 0, "", _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
       mcolSSITableViews
       
     .Show vbModal
@@ -2712,7 +2714,6 @@ Private Sub cmdCopyButtonLink_Click()
   Dim iLoop As Integer
   Dim lngOriginalTableID As Long
   Dim lngOriginalViewID As Long
-  Dim sAllWFHiddenGroups As String
 
   Set ctlSourceGrid = CurrentLinkGrid(SSINTLINK_BUTTON)
   If ctlSourceGrid Is Nothing Then
@@ -2725,7 +2726,8 @@ Private Sub cmdCopyButtonLink_Click()
   lngOriginalTableID = GetTableIDFromCollection(mcolSSITableViews, cboButtonLinkView.List(cboButtonLinkView.ListIndex))
   lngOriginalViewID = GetViewIDFromCollection(mcolSSITableViews, cboButtonLinkView.List(cboButtonLinkView.ListIndex))
   
-  sAllWFHiddenGroups = getHiddenGroups(ctlSourceGrid)
+  BuildUserGroupCollection
+  PopulateWFAccessGroup ctlSourceGrid, -1
   
   With frmLink
   
@@ -2745,15 +2747,15 @@ Private Sub cmdCopyButtonLink_Click()
       ctlSourceGrid.Columns("NewWindow").Text, _
       ctlSourceGrid.Columns("EMailAddress").Text, ctlSourceGrid.Columns("EMailSubject").Text, _
       ctlSourceGrid.Columns("AppFilePath").Text, ctlSourceGrid.Columns("AppParameters").Text, "", False, _
-      ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), Val(ctlSourceGrid.Columns("PictureID").Text), _
-      ctlSourceGrid.Columns("ChartShowLegend").value, Val(ctlSourceGrid.Columns("ChartType").Text), _
+      ctlSourceGrid.Columns("Element_Type").value, val(ctlSourceGrid.Columns("SeparatorOrientation").Text), val(ctlSourceGrid.Columns("PictureID").Text), _
+      ctlSourceGrid.Columns("ChartShowLegend").value, val(ctlSourceGrid.Columns("ChartType").Text), _
       ctlSourceGrid.Columns("ChartShowGrid").value, ctlSourceGrid.Columns("ChartStackSeries").value, _
-      Val(ctlSourceGrid.Columns("ChartViewID").Text), _
-      Val(ctlSourceGrid.Columns("ChartTableID").Text), _
-      Val(ctlSourceGrid.Columns("ChartColumnID").Text), _
-      Val(ctlSourceGrid.Columns("ChartFilterID").Text), _
-      Val(ctlSourceGrid.Columns("ChartAggregateType").Text), _
-      ctlSourceGrid.Columns("ChartShowValues").value, sAllWFHiddenGroups, mcolSSITableViews
+      val(ctlSourceGrid.Columns("ChartViewID").Text), _
+      val(ctlSourceGrid.Columns("ChartTableID").Text), _
+      val(ctlSourceGrid.Columns("ChartColumnID").Text), _
+      val(ctlSourceGrid.Columns("ChartFilterID").Text), _
+      val(ctlSourceGrid.Columns("ChartAggregateType").Text), _
+      ctlSourceGrid.Columns("ChartShowValues").value, mcolGroups, mcolSSITableViews
     .Show vbModal
 
     If Not .Cancelled Then
@@ -2882,7 +2884,7 @@ Private Sub cmdCopyDropdownListLink_Click()
       "", _
       False, False, _
       0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, 0, "", _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
       mcolSSITableViews
     
     .Show vbModal
@@ -3000,9 +3002,9 @@ Private Sub cmdCopyHypertextLink_Click()
       ctlSourceGrid.Columns("AppFilePath").Text, _
       ctlSourceGrid.Columns("AppParameters").Text, _
       "", False, _
-      ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
-      Val(ctlSourceGrid.Columns("PictureID").Text), _
-      False, 0, False, False, 0, 0, 0, 0, 0, 0, "", _
+      ctlSourceGrid.Columns("Element_Type").value, val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
+      val(ctlSourceGrid.Columns("PictureID").Text), _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
       mcolSSITableViews
     
     .Show vbModal
@@ -3121,7 +3123,7 @@ Private Sub cmdCopyDocument_Click()
       ctlSourceGrid.Columns("DocumentFilePath").Text, _
       ctlSourceGrid.Columns("DisplayDocumentHyperlink").value, _
       False, 0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, 0, "", _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
       mcolSSITableViews
       
     .Show vbModal
@@ -3207,7 +3209,6 @@ Private Sub cmdEditButtonLink_Click()
   Dim sViews As String
   Dim lngOriginalTableID As Long
   Dim lngOriginalViewID As Long
-  Dim sAllWFHiddenGroups As String
       
   sViews = SelectedViews
   
@@ -3223,8 +3224,9 @@ Private Sub cmdEditButtonLink_Click()
   lngOriginalViewID = GetViewIDFromCollection(mcolSSITableViews, cboButtonLinkView.List(cboButtonLinkView.ListIndex))
   
   ' If pending workflow steps get the visibility details for all other wf steps...
-  If sAllWFHiddenGroups = getHiddenGroups(ctlSourceGrid) = 3 Then
-    sAllWFHiddenGroups = getHiddenGroups(ctlSourceGrid)
+  If ctlSourceGrid.Columns("Element_Type").value = 3 Then
+    BuildUserGroupCollection
+    PopulateWFAccessGroup ctlSourceGrid, lngRow
   End If
   
   With frmLink
@@ -3245,11 +3247,11 @@ Private Sub cmdEditButtonLink_Click()
       ctlSourceGrid.Columns("EMailAddress").Text, ctlSourceGrid.Columns("EMailSubject").Text, _
       ctlSourceGrid.Columns("AppFilePath").Text, ctlSourceGrid.Columns("AppParameters").Text, _
       "", False, _
-      ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), Val(ctlSourceGrid.Columns("PictureID").Text), _
-      ctlSourceGrid.Columns("ChartShowLegend").Text, Val(ctlSourceGrid.Columns("ChartType").Text), ctlSourceGrid.Columns("ChartShowGrid").Text, _
-      ctlSourceGrid.Columns("ChartStackSeries").Text, Val(ctlSourceGrid.Columns("ChartviewID").Text), Val(ctlSourceGrid.Columns("ChartTableID").Text), _
-      Val(ctlSourceGrid.Columns("ChartColumnID").Text), Val(ctlSourceGrid.Columns("ChartFilterID").Text), Val(ctlSourceGrid.Columns("ChartAggregateType").Text), _
-      ctlSourceGrid.Columns("ChartShowValues").Text, sAllWFHiddenGroups, mcolSSITableViews
+      ctlSourceGrid.Columns("Element_Type").value, val(ctlSourceGrid.Columns("SeparatorOrientation").Text), val(ctlSourceGrid.Columns("PictureID").Text), _
+      ctlSourceGrid.Columns("ChartShowLegend").Text, val(ctlSourceGrid.Columns("ChartType").Text), ctlSourceGrid.Columns("ChartShowGrid").Text, _
+      ctlSourceGrid.Columns("ChartStackSeries").Text, val(ctlSourceGrid.Columns("ChartviewID").Text), val(ctlSourceGrid.Columns("ChartTableID").Text), _
+      val(ctlSourceGrid.Columns("ChartColumnID").Text), val(ctlSourceGrid.Columns("ChartFilterID").Text), val(ctlSourceGrid.Columns("ChartAggregateType").Text), _
+      ctlSourceGrid.Columns("ChartShowValues").Text, mcolGroups, mcolSSITableViews
     .Show vbModal
 
     If Not .Cancelled Then
@@ -3383,7 +3385,7 @@ Private Sub cmdEditDropdownListLink_Click()
       "", _
       False, False, _
       0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, 0, "", _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
       mcolSSITableViews
     
     .Show vbModal
@@ -3504,9 +3506,9 @@ Private Sub cmdEditHypertextLink_Click()
       ctlSourceGrid.Columns("AppFilePath").Text, _
       ctlSourceGrid.Columns("AppParameters").Text, _
       "", False, _
-      ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
-      Val(ctlSourceGrid.Columns("PictureID").Text), _
-      False, 0, False, False, 0, 0, 0, 0, 0, 0, "", _
+      ctlSourceGrid.Columns("Element_Type").value, val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
+      val(ctlSourceGrid.Columns("PictureID").Text), _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
       mcolSSITableViews
     
     .Show vbModal
@@ -3630,7 +3632,7 @@ Private Sub cmdEditDocument_Click()
       ctlSourceGrid.Columns("DocumentFilePath").Text, _
       ctlSourceGrid.Columns("DisplayDocumentHyperlink").Text, _
       False, 0, 0, _
-      False, 0, False, False, 0, 0, 0, 0, 0, 0, "", _
+      False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
       mcolSSITableViews
           
     .Show vbModal
@@ -4222,47 +4224,6 @@ Private Sub cmdOK_Click()
   End If
 End Sub
 
-Private Function getHiddenGroups(ctlSourceGrid As SSDBGrid) As String
-  Dim iLoop As Integer
-  Dim jLoop As Integer
-  Dim sHiddenGroups As String
-  Dim aHiddenGroups As Variant
-  Dim varBookmark As Variant
-  Dim sCombinedHiddenGroups As String
-  Dim fNoGroupsFound As Boolean
-  
-  ' this function will find all the hidden access (user) groups for Workflow Pending Steps only
-  ' and concatenate the list into a string. This will be used in link validation to ensure only one
-  ' workflow pending steps is on screen per access (user) group.
-  
-  fNoGroupsFound = True
-  
-  sCombinedHiddenGroups = vbTab & ""
-  For iLoop = 0 To ctlSourceGrid.Rows - 1
-    varBookmark = ctlSourceGrid.AddItemBookmark(iLoop)
-    sHiddenGroups = ctlSourceGrid.Columns("HiddenGroups").CellText(varBookmark)
-    
-    If ctlSourceGrid.Columns("Element_Type").CellText(varBookmark) = 3 Then
-    
-      fNoGroupsFound = False
-      
-      aHiddenGroups = Split(sHiddenGroups, vbTab)
-  
-      For jLoop = 1 To UBound(aHiddenGroups)
-        If InStr(sCombinedHiddenGroups, vbTab + aHiddenGroups(jLoop) + vbTab) = 0 Then
-          sCombinedHiddenGroups = sCombinedHiddenGroups & vbTab & aHiddenGroups(jLoop)
-        End If
-      Next
-      
-    End If
-  Next
-  
-  sCombinedHiddenGroups = sCombinedHiddenGroups & vbTab
-    
-  getHiddenGroups = IIf(fNoGroupsFound, "", sCombinedHiddenGroups)
-End Function
-
-
 Private Function ValidateSetup() As Boolean
   On Error GoTo ValidateError
   
@@ -4516,8 +4477,8 @@ Private Sub ReadParameters()
   ' Read the parameter values from the database into local variables.
   ' Read the Self-service Intranet parameter values from the database into the grids.
   Dim sSQL As String
-  Dim rsLinks As dao.Recordset
-  Dim rsHiddenGroups As dao.Recordset
+  Dim rsLinks As DAO.Recordset
+  Dim rsHiddenGroups As DAO.Recordset
   Dim sAddString As String
   Dim ctlGrid As SSDBGrid
   Dim sHiddenGroups As String
@@ -5510,5 +5471,96 @@ Private Sub AddTableViewGrids(plngTableID As Long, plngViewID As Long)
   End If
   
   RefreshTableViewsCollection
+  
+End Sub
+
+
+Private Sub BuildUserGroupCollection()
+  ' Populate the access grid.
+  Dim sSQL As String
+  Dim rsGroups As New ADODB.Recordset
+  
+  Dim objGroup As clsSecgroup
+
+  Set mcolGroups = New Collection
+      
+  ' Get the recordset of user groups and their access on this definition.
+  sSQL = "SELECT name FROM sysusers" & _
+    " WHERE gid = uid AND gid > 0" & _
+    "   AND not (name like 'ASRSys%') AND not (name like 'db[_]%')" & _
+    " ORDER BY name"
+  rsGroups.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
+
+  With rsGroups
+    Do While Not .EOF
+      Set objGroup = New clsSecgroup
+                  
+      objGroup.GroupName = Trim(!Name)
+      objGroup.Allow = True
+      
+      mcolGroups.Add objGroup, objGroup.GroupName
+            
+      .MoveNext
+    Loop
+    
+    .Close
+  End With
+  Set rsGroups = Nothing
+      
+End Sub
+
+Public Function Exists(ByVal sColKey As String) As Boolean
+  ' Return TRUE if the given key exists in the collection.
+  Dim Item As Boolean
+  
+  On Error GoTo err_Exists
+  
+  Item = mcolGroups(sColKey).Allow
+  Exists = True
+  
+  Exit Function
+  
+err_Exists:
+  Exists = False
+  
+End Function
+
+
+Private Sub PopulateWFAccessGroup(ctlSourceGrid As SSDBGrid, ExcludeRowNum As Long)
+  Dim iLoop As Integer
+  Dim jLoop As Integer
+  Dim sHiddenGroups As String
+  Dim aHiddenGroups As Variant
+  Dim varBookmark As Variant
+  Dim sCombinedHiddenGroups As String
+  Dim fNoGroupsFound As Boolean
+  
+  ' this function will find all the hidden access (user) groups for Workflow Pending Steps only
+  ' and concatenate the list into a string. This will be used in link validation to ensure only one
+  ' workflow pending steps is on screen per access (user) group.
+  
+  fNoGroupsFound = True
+  
+  sCombinedHiddenGroups = vbTab & ""
+  For iLoop = 0 To ctlSourceGrid.Rows - 1
+    varBookmark = ctlSourceGrid.AddItemBookmark(iLoop)
+    sHiddenGroups = ctlSourceGrid.Columns("HiddenGroups").CellText(varBookmark)
+    
+    If ctlSourceGrid.Columns("Element_Type").CellText(varBookmark) = 3 And iLoop <> ExcludeRowNum Then
+    
+      fNoGroupsFound = False
+      
+      aHiddenGroups = Split(sHiddenGroups, vbTab)
+    
+      For jLoop = 1 To mcolGroups.Count
+        ' if the hidden group list doesn't contain this security group it's visible (duh) so
+        ' change the allow property to false
+        If InStr(sHiddenGroups, vbTab & mcolGroups(jLoop).GroupName) & vbTab = 0 Then
+          mcolGroups(jLoop).Allow = False
+        End If
+      Next
+      
+    End If
+  Next
   
 End Sub

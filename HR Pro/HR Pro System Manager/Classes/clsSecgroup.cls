@@ -18,7 +18,7 @@ Private mblnAllow As Boolean
 
 
 Public Property Get GroupName() As String
-  GroupName = mstrName
+  GroupName = mstrGroupName
 End Property
 
 Public Property Let GroupName(val As String)
