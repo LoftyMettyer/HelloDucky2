@@ -45,7 +45,7 @@ namespace Fusion
 
 			mapper.Class<Table>(ca => ca.Subselect("SELECT tableid as id, tablename as name FROM ASRSysTables"));
 
-			mapper.Class<Column>(ca => ca.Subselect("SELECT columnid as ID, columnname as Name, tableID, datatype, size, decimals, lookupTableId FROM ASRSysColumns"));
+			mapper.Class<Column>(ca => ca.Subselect("SELECT columnid as ID, columnname as Name, tableID, datatype, size, decimals, controltype FROM ASRSysColumns"));
 
 			mapper.Class<FusionCategory>(ca => { ca.Schema("fusion"); ca.Table("Category"); });
 

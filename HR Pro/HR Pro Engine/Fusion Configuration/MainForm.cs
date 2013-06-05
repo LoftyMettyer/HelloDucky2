@@ -8,6 +8,7 @@ using Infragistics.Win.UltraWinToolbars;
 using NHibernate;
 using NHibernate.Linq;
 using Resources = Fusion.Properties.Resources;
+using Fusion.Properties;
 
 namespace Fusion
 {
@@ -22,7 +23,7 @@ namespace Fusion
 		public MainForm()
 		{
 			InitializeComponent();
-			Text = Text.Replace("TITLE", Resources.App_Title);
+			Text = Text.Replace("TITLE", Resources.App_Title) + " - " + Settings.Default.Login_Database;
 
 			//TODO app icon
 			//TODO message element filter

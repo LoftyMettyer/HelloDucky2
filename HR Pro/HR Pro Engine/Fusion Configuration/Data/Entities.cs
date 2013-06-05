@@ -6,15 +6,21 @@ namespace Fusion
 	public enum DataType
 	{
 		Logic = -7,
-		Unknown1 = -4,
-		Unknown2 = -3,
-		Ole = -2,
-		Unknown3 = -1,
+		Ole = -4, 
+		Link = -2,
+		Photo = -3,
+		WorkingPattern = -1,
 		Numeric = 2,
 		Integer = 4,
 		Date = 11,
 		Character = 12,
 		Guid = 15
+	}
+
+	public enum ControlType
+	{
+		DropdownList = 2,
+		OptionGroup = 16
 	}
 
 	public class Entity
@@ -35,7 +41,7 @@ namespace Fusion
 		public virtual DataType DataType { get; set; }
 		public virtual int Size { get; set; }
 		public virtual int Decimals { get; set; }
-		public virtual int LookupTableId { get; set; }
+		public virtual ControlType ControlType { get; set; }
 		public override string ToString() { return Name; }
 	}
 

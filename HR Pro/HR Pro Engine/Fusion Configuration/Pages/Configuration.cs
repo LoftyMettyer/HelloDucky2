@@ -98,13 +98,13 @@ namespace Fusion.Pages
 
 		private IEnumerable<Column> GetAvailableColumnsForElement(FusionElement element)
 		{
-            var columns = _session.Query<Column>().Where(x => x.Table == element.Category.Table);//&& x.DataType == element.DataType);
+         var columns = _session.Query<Column>().Where(x => x.Table == element.Category.Table);//&& x.DataType == element.DataType);
 
 			if (element.DataType == DataType.Character)
-				columns = columns.Where(x => (!element.MinSize.HasValue || x.Size >= element.MinSize) 
-					&& (!element.MaxSize.HasValue || x.Size <= element.MaxSize));
+				columns = columns.Where(x => (!element.MinSize.HasValue || x.Size >= element.MinSize) && (!element.MaxSize.HasValue || x.Size <= element.MaxSize));
+
 			if (element.Lookup)
-				columns = columns.Where(x => x.LookupTableId > 0);
+				columns = columns.Where(x => x.ControlType == ControlType.DropdownList || x.ControlType == ControlType.OptionGroup);
 
 			return columns.OrderBy(c => c.Name).ToList();
 		}
