@@ -37,7 +37,6 @@ Begin VB.MDIForm frmSysMgr
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -1769,6 +1768,7 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     .Tools("ID_AccordTransfer").Enabled = gbAccordPayrollModule
     .Tools("ID_CMG").Enabled = gbCMGExportEnabled
     .Tools("ID_WorkflowSetup").Enabled = Application.WorkflowModule
+    .Tools("ID_ModuleDocument").Enabled = Application.Version1Module
     .Tools("ID_AuditModule").Enabled = True
     
     'MH20010831 Fault 2752 Bank Holidays are only required for Personnel
@@ -1820,6 +1820,7 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     .Tools("ID_AccordTransfer").Visible = gbAccordPayrollModule
     .Tools("ID_CMG").Visible = gbCMGExportEnabled
     .Tools("ID_WorkflowSetup").Visible = Application.WorkflowModule
+    .Tools("ID_ModuleDocument").Visible = Application.Version1Module
     .Tools("ID_AuditModule").Visible = True
 
     'MH20010831 Fault 2752 Bank Holidays are only required for Personnel
@@ -2200,6 +2201,11 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmWorkflowSetup.Show vbModal
       Set frmWorkflowSetup = Nothing
 
+    Case "ID_ModuleDocument"
+      ' Call up the Version 1 Module Setup screen
+      frmModuleDocument.Show vbModal
+      Set frmModuleDocument = Nothing
+
     Case "ID_SaveChanges"
       '01/08/2001 MH Fault 2382
       '' Save changes without exiting.
@@ -2545,6 +2551,11 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmWorkflowSetup.Show vbModal
       Set frmWorkflowSetup = Nothing
 
+    Case "ID_ModuleDocument"
+      ' Call up the Version 1 Module Setup screen
+      frmModuleDocument.Show vbModal
+      Set frmModuleDocument = Nothing
+    
     Case "ID_SaveChanges"
       '01/08/2001 MH Fault 2382
       '' Save changes without exiting.
@@ -2878,6 +2889,11 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmWorkflowSetup.Show vbModal
       Set frmWorkflowSetup = Nothing
 
+    Case "ID_ModuleDocument"
+      ' Call up the Version 1 Module Setup screen
+      frmModuleDocument.Show vbModal
+      Set frmModuleDocument = Nothing
+
     Case "ID_SaveChanges"
       '01/08/2001 MH Fault 2382
       '' Save changes without exiting.
@@ -3185,6 +3201,11 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmWorkflowSetup.Show vbModal
       Set frmWorkflowSetup = Nothing
 
+    Case "ID_ModuleDocument"
+      ' Call up the Version 1 Module Setup screen
+      frmModuleDocument.Show vbModal
+      Set frmModuleDocument = Nothing
+      
     Case "ID_SaveChanges"
       '01/08/2001 MH Fault 2382
       '' Save changes without exiting.
@@ -3493,6 +3514,11 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmWorkflowSetup.Show vbModal
       Set frmWorkflowSetup = Nothing
 
+    Case "ID_ModuleDocument"
+      ' Call up the Version 1 Module Setup screen
+      frmModuleDocument.Show vbModal
+      Set frmModuleDocument = Nothing
+      
     Case "ID_SaveChanges"
       '01/08/2001 MH Fault 2382
       '' Save changes without exiting.
@@ -3844,6 +3870,11 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmWorkflowSetup.Show vbModal
       Set frmWorkflowSetup = Nothing
 
+    Case "ID_ModuleDocument"
+      ' Call up the Version 1 Module Setup screen
+      frmModuleDocument.Show vbModal
+      Set frmModuleDocument = Nothing
+
     Case "ID_SaveChanges"
       '01/08/2001 MH Fault 2382
       '' Save changes without exiting.
@@ -4122,6 +4153,11 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmWorkflowSetup.Show vbModal
       Set frmWorkflowSetup = Nothing
 
+    Case "ID_ModuleDocument"
+      ' Call up the Version 1 Module Setup screen
+      frmModuleDocument.Show vbModal
+      Set frmModuleDocument = Nothing
+      
     Case "ID_SaveChanges"
       '01/08/2001 MH Fault 2382
       SaveChanges_Click
@@ -4519,6 +4555,11 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Workflow Module Setup screen.
       frmWorkflowSetup.Show vbModal
       Set frmWorkflowSetup = Nothing
+
+    Case "ID_ModuleDocument"
+      ' Call up the Version 1 Module Setup screen
+      frmModuleDocument.Show vbModal
+      Set frmModuleDocument = Nothing
 
     Case "ID_SaveChanges"
       '01/08/2001 MH Fault 2382
