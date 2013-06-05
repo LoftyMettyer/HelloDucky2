@@ -3052,7 +3052,7 @@ Private Sub cmdCopyButtonLink_Click()
     .Chart_SortOrderID = ctlSourceGrid.Columns("Chart_SortOrderID").Text
     .Chart_SortDirection = ctlSourceGrid.Columns("Chart_SortDirection").Text
     .Chart_ColourID = ctlSourceGrid.Columns("Chart_ColourID").Text
-    .ChartShowPercentages = ctlSourceGrid.Columns("ChartShowPercentages").Text
+    ' .ChartShowPercentages = ctlSourceGrid.Columns("ChartShowPercentages").Text
     
     .Initialize SSINTLINK_BUTTON, _
       ctlSourceGrid.Columns("Prompt").Text, ctlSourceGrid.Columns("ButtonText").Text, _
@@ -3097,7 +3097,7 @@ Private Sub cmdCopyButtonLink_Click()
         & vbTab & .ConditionalFormatting_Operator_2 & vbTab & .ConditionalFormatting_Value_2 & vbTab & .ConditionalFormatting_Style_2 & vbTab & .ConditionalFormatting_Colour_2 _
         & vbTab & .ConditionalFormatting_Operator_3 & vbTab & .ConditionalFormatting_Value_3 & vbTab & .ConditionalFormatting_Style_3 & vbTab & .ConditionalFormatting_Colour_3 _
         & vbTab & .SeparatorBorderColour & vbTab & .InitialDisplayMode & vbTab & .Chart_TableID_2 & vbTab & .Chart_ColumnID_2 & vbTab & .Chart_TableID_3 _
-        & vbTab & .Chart_ColumnID_3 & vbTab & .Chart_SortOrderID & vbTab & .Chart_SortDirection & vbTab & .Chart_ColourID
+        & vbTab & .Chart_ColumnID_3 & vbTab & .Chart_SortOrderID & vbTab & .Chart_SortDirection & vbTab & .Chart_ColourID & vbTab & .ChartShowPercentages
 
       For iLoop = 0 To cboButtonLinkView.ListCount - 1
         If cboButtonLinkView.List(iLoop) = .TableViewName Then
