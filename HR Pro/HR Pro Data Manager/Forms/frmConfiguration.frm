@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
@@ -51,11 +51,12 @@ Begin VB.Form frmConfiguration
       _Version        =   393216
       Style           =   1
       Tabs            =   7
+      Tab             =   5
       TabsPerRow      =   7
       TabHeight       =   520
       TabCaption(0)   =   "&Display Defaults"
       TabPicture(0)   =   "frmConfiguration.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraDisplay(1)"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraDisplay(0)"
@@ -107,7 +108,7 @@ Begin VB.Form frmConfiguration
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Report Out&put"
       TabPicture(5)   =   "frmConfiguration.frx":0098
-      Tab(5).ControlEnabled=   0   'False
+      Tab(5).ControlEnabled=   -1  'True
       Tab(5).Control(0)=   "FraOutput(0)"
       Tab(5).Control(0).Enabled=   0   'False
       Tab(5).Control(1)=   "FraOutput(1)"
@@ -279,7 +280,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame Frame2 
          Caption         =   "Email :"
          Height          =   690
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   18
          Top             =   4850
          Width           =   6735
@@ -295,7 +296,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame Frame1 
          Caption         =   "Excel Options :"
          Height          =   1215
-         Left            =   -70845
+         Left            =   4155
          TabIndex        =   127
          Top             =   3775
          Width           =   2700
@@ -333,10 +334,12 @@ Begin VB.Form frmConfiguration
             Width           =   330
          End
          Begin VB.CommandButton cmdDocumentsPathClear 
-            Caption         =   "X"
+            DisabledPicture =   "frmConfiguration.frx":0140
             Height          =   315
             Left            =   6200
             MaskColor       =   &H000000FF&
+            Picture         =   "frmConfiguration.frx":0512
+            Style           =   1  'Graphical
             TabIndex        =   34
             ToolTipText     =   "Clear Path"
             Top             =   390
@@ -414,9 +417,9 @@ Begin VB.Form frmConfiguration
          Width           =   6735
          Begin VB.ComboBox cboToolbars 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":0140
+            ItemData        =   "frmConfiguration.frx":08ED
             Left            =   2200
-            List            =   "frmConfiguration.frx":0142
+            List            =   "frmConfiguration.frx":08EF
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   125
@@ -529,7 +532,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Colours && Fonts :"
          Height          =   3225
          Index           =   1
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   78
          Top             =   400
          Width           =   6735
@@ -942,10 +945,12 @@ Begin VB.Form frmConfiguration
             Width           =   330
          End
          Begin VB.CommandButton cmdCrystalPathClear 
-            Caption         =   "X"
+            DisabledPicture =   "frmConfiguration.frx":08F1
             Height          =   315
             Left            =   6200
             MaskColor       =   &H000000FF&
+            Picture         =   "frmConfiguration.frx":0CC3
+            Style           =   1  'Graphical
             TabIndex        =   46
             Top             =   1515
             UseMaskColor    =   -1  'True
@@ -953,10 +958,12 @@ Begin VB.Form frmConfiguration
             Width           =   330
          End
          Begin VB.CommandButton cmdPhotoPathClear 
-            Caption         =   "X"
+            DisabledPicture =   "frmConfiguration.frx":109E
             Height          =   315
             Left            =   6200
             MaskColor       =   &H000000FF&
+            Picture         =   "frmConfiguration.frx":1470
+            Style           =   1  'Graphical
             TabIndex        =   43
             ToolTipText     =   "Clear Path"
             Top             =   1110
@@ -964,10 +971,12 @@ Begin VB.Form frmConfiguration
             Width           =   330
          End
          Begin VB.CommandButton cmdLocalOLEPathClear 
-            Caption         =   "X"
+            DisabledPicture =   "frmConfiguration.frx":184B
             Height          =   315
             Left            =   6200
             MaskColor       =   &H000000FF&
+            Picture         =   "frmConfiguration.frx":1C1D
+            Style           =   1  'Graphical
             TabIndex        =   40
             ToolTipText     =   "Clear Path"
             Top             =   705
@@ -975,10 +984,12 @@ Begin VB.Form frmConfiguration
             Width           =   330
          End
          Begin VB.CommandButton cmdOLEPathClear 
-            Caption         =   "X"
+            DisabledPicture =   "frmConfiguration.frx":1FF8
             Height          =   315
             Left            =   6200
             MaskColor       =   &H000000FF&
+            Picture         =   "frmConfiguration.frx":23CA
+            Style           =   1  'Graphical
             TabIndex        =   37
             ToolTipText     =   "Clear Path"
             Top             =   300
@@ -1294,9 +1305,9 @@ Begin VB.Form frmConfiguration
          Width           =   6735
          Begin VB.ListBox lstWarningMsg 
             Height          =   1185
-            ItemData        =   "frmConfiguration.frx":0144
+            ItemData        =   "frmConfiguration.frx":27A5
             Left            =   195
-            List            =   "frmConfiguration.frx":0146
+            List            =   "frmConfiguration.frx":27A7
             Style           =   1  'Checkbox
             TabIndex        =   24
             Top             =   600
@@ -1315,15 +1326,15 @@ Begin VB.Form frmConfiguration
          Caption         =   "Diary Options :"
          Height          =   1215
          Index           =   2
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   14
          Top             =   3610
          Width           =   6735
          Begin VB.ComboBox cboDiaryView 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":0148
+            ItemData        =   "frmConfiguration.frx":27A9
             Left            =   2200
-            List            =   "frmConfiguration.frx":014A
+            List            =   "frmConfiguration.frx":27AB
             Style           =   2  'Dropdown List
             TabIndex        =   16
             Top             =   300
@@ -1353,15 +1364,15 @@ Begin VB.Form frmConfiguration
          Caption         =   "Record Editing :"
          Height          =   1980
          Index           =   0
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   0
          Top             =   400
          Width           =   6735
          Begin VB.ComboBox cboQuickAccess 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":014C
+            ItemData        =   "frmConfiguration.frx":27AD
             Left            =   2200
-            List            =   "frmConfiguration.frx":014E
+            List            =   "frmConfiguration.frx":27AF
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   8
@@ -1370,9 +1381,9 @@ Begin VB.Form frmConfiguration
          End
          Begin VB.ComboBox cboLookUp 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":0150
+            ItemData        =   "frmConfiguration.frx":27B1
             Left            =   2200
-            List            =   "frmConfiguration.frx":0152
+            List            =   "frmConfiguration.frx":27B3
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   6
@@ -1381,9 +1392,9 @@ Begin VB.Form frmConfiguration
          End
          Begin VB.ComboBox cboHistory 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":0154
+            ItemData        =   "frmConfiguration.frx":27B5
             Left            =   2200
-            List            =   "frmConfiguration.frx":0156
+            List            =   "frmConfiguration.frx":27B7
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   4
@@ -1392,9 +1403,9 @@ Begin VB.Form frmConfiguration
          End
          Begin VB.ComboBox cboPrimary 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":0158
+            ItemData        =   "frmConfiguration.frx":27B9
             Left            =   2200
-            List            =   "frmConfiguration.frx":015A
+            List            =   "frmConfiguration.frx":27BB
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   2
@@ -1446,15 +1457,15 @@ Begin VB.Form frmConfiguration
          Caption         =   "Filters / Calculations :"
          Height          =   1155
          Index           =   1
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   9
          Top             =   2410
          Width           =   6735
          Begin VB.ComboBox cboNodeSize 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":015C
+            ItemData        =   "frmConfiguration.frx":27BD
             Left            =   2200
-            List            =   "frmConfiguration.frx":015E
+            List            =   "frmConfiguration.frx":27BF
             Style           =   2  'Dropdown List
             TabIndex        =   13
             Top             =   700
@@ -1462,9 +1473,9 @@ Begin VB.Form frmConfiguration
          End
          Begin VB.ComboBox cboColours 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":0160
+            ItemData        =   "frmConfiguration.frx":27C1
             Left            =   2200
-            List            =   "frmConfiguration.frx":0162
+            List            =   "frmConfiguration.frx":27C3
             Style           =   2  'Dropdown List
             TabIndex        =   11
             Top             =   300
@@ -1493,17 +1504,19 @@ Begin VB.Form frmConfiguration
          Caption         =   "Templates :"
          Height          =   1215
          Index           =   0
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   106
          Top             =   3775
          Width           =   3800
          Begin VB.CommandButton cmdFileClear 
-            Caption         =   "X"
+            DisabledPicture =   "frmConfiguration.frx":27C5
             Enabled         =   0   'False
             Height          =   315
             Index           =   1
             Left            =   3345
             MaskColor       =   &H000000FF&
+            Picture         =   "frmConfiguration.frx":2B97
+            Style           =   1  'Graphical
             TabIndex        =   94
             ToolTipText     =   "Clear Path"
             Top             =   705
@@ -1555,12 +1568,14 @@ Begin VB.Form frmConfiguration
             Width           =   330
          End
          Begin VB.CommandButton cmdFileClear 
-            Caption         =   "X"
+            DisabledPicture =   "frmConfiguration.frx":2F72
             Enabled         =   0   'False
             Height          =   315
             Index           =   0
             Left            =   3345
             MaskColor       =   &H000000FF&
+            Picture         =   "frmConfiguration.frx":3344
+            Style           =   1  'Graphical
             TabIndex        =   91
             ToolTipText     =   "Clear Path"
             Top             =   300
