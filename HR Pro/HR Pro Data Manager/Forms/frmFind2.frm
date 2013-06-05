@@ -47,6 +47,7 @@ Begin VB.Form frmFind2
             Object.Width           =   10689
             Text            =   "x Records"
             TextSave        =   "x Records"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -3520,12 +3521,27 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
       If ShowAirHelp(Me.HelpContextID) Then
         KeyCode = 0
       End If
-    Case KeyCode <> vbKeyF1
+    
+    Case vbKeyF3
+      frmMain.LogOff
+    
+    Case vbKeyN
+      If Shift = vbCtrlMask Then
+        AddNew
+      End If
+    
+    Case vbKeyE
+      If Shift = vbCtrlMask Then
+        EditRecord
+      End If
+    
+    Case Else
       bHandled = frmMain.abMain.OnKeyDown(KeyCode, Shift)
       If bHandled Then
         KeyCode = 0
         Shift = 0
       End If
+  
   End Select
 End Sub
 
