@@ -83,7 +83,6 @@ Begin VB.Form frmAccordPayrollTransfer
       TabPicture(0)   =   "frmAccordPayrollTransfer.frx":000C
       Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraTransferDefinition"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Settings"
       TabPicture(1)   =   "frmAccordPayrollTransfer.frx":0028
@@ -1620,46 +1619,6 @@ Private Function SelectedComboItem(cboTemp As ComboBox) As Long
     End If
   End With
 End Function
-
-Private Sub PopulateColumnsCombo(ByRef cboTemp As ComboBox, plngTableID As Long, plngDefaultColumnID As Long)
- 
-  Dim lngLookupColumnListIndex As Long
- 
-  cboTemp.Clear
-  cboTemp.AddItem "<None>"
-
-  With recColEdit
-    .Index = "idxName"
-    .Seek ">=", plngTableID
-
-    If Not .NoMatch Then
-      Do While Not .EOF
-        If !TableID <> plngTableID Then
-          Exit Do
-        End If
-
-        If (Not !Deleted) And _
-          (!columntype <> giCOLUMNTYPE_LINK) And _
-          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
-
-            cboTemp.AddItem !ColumnName
-            cboTemp.ItemData(cboTemp.NewIndex) = !ColumnID
-        
-            If !ColumnID = plngDefaultColumnID Then
-              lngLookupColumnListIndex = cboTemp.NewIndex
-            End If
-        
-        End If
-
-        .MoveNext
-      Loop
-    End If
-  End With
-
-  cboTemp.ListIndex = lngLookupColumnListIndex
-
-
-End Sub
 
 Private Sub PopulateTransferTypes()
 
