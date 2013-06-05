@@ -221,7 +221,7 @@ Namespace Things
         End If
 
         sBypassUDFCode = String.Format("    -- Return the original value if none of the dependent tables are in the trigger stack." & vbNewLine &
-            "    IF @forcerefresh = 0 AND NOT EXISTS (SELECT [tablefromid] FROM [dbo].[tbsys_intransactiontrigger] WHERE [tablefromid] IN ({0}) AND [spid] = @@SPID)" & vbNewLine & _
+            "    IF @@NESTLEVEL > 30 OR (@forcerefresh = 0 AND NOT EXISTS (SELECT [tablefromid] FROM [dbo].[tbsys_intransactiontrigger] WHERE [tablefromid] IN ({0}) AND [spid] = @@SPID))" & vbNewLine & _
             "        BEGIN" & vbNewLine & _
             "            SELECT @result = [{1}] FROM dbo.[{2}] WHERE [ID] = @prm_ID;" & vbNewLine & _
             "            RETURN @result;" & vbNewLine & _
@@ -576,7 +576,6 @@ Namespace Things
       Dim sColumnFilter As String
       Dim sColumnJoinCode As String = String.Empty
 
-      Dim iBackupType As ScriptDB.ExpressionType
       Dim sPartCode As String
       Dim iPartNumber As Integer
       Dim bIsSummaryColumn As Boolean
@@ -625,35 +624,7 @@ Namespace Things
           And Not Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter And Not Me.ExpressionType = ScriptDB.ExpressionType.Mask _
           And Not Me Is objThisColumn.Calculation Then
 
-        ' And Not ColumnRecursion.Contains(objThisColumn)
-
-        If objThisColumn.Calculation Is Nothing Then
-          objThisColumn.Calculation = objThisColumn.Table.GetObject(Type.Expression, objThisColumn.CalcID)
-        End If
-
-        ' Protect against recursion
-        '    If ColumnRecursion.Contains(objThisColumn) Then
-
-        '      Else
-        'Debug.Print("hhehh")
-
-        ColumnRecursion.AddIfNew(objThisColumn)
-
-        iBackupType = objThisColumn.Calculation.ExpressionType
-        objThisColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn
-        objThisColumn.Calculation.AssociatedColumn = objThisColumn
-
-        objThisColumn.Calculation.StartOfPartNumbers = Me.StartOfPartNumbers + Declarations.Count
-        '          objThisColumn.Calculation.StatementObjects = Me.StatementObjects
-
-        objThisColumn.Calculation.ColumnRecursion = ColumnRecursion
-        objThisColumn.Calculation.GenerateCode()
-        objThisColumn.Calculation.ExpressionType = iBackupType
-
-        '    End If
-
         LineOfCode = AddCalculatedColumn(objThisColumn)
-        objThisColumn.Tuning.IncrementSelectAsCalculation()
 
       Else
 
@@ -1107,26 +1078,33 @@ Namespace Things
 
       Dim sCallingCode As ScriptDB.CodeElement
       Dim sVariableName As String
+      Dim iBackupType As ScriptDB.ExpressionType
 
-      'If Not ReferencedColumn.Calculation.IsComplex Then
-      '  sCallingCode.Code = ReferencedColumn.Calculation.UDF.SelectCode
-      'Else
+      If ReferencedColumn.Calculation Is Nothing Then
+        ReferencedColumn.Calculation = ReferencedColumn.Table.GetObject(Type.Expression, ReferencedColumn.CalcID)
+      End If
+
+      If ColumnRecursion.Contains(ReferencedColumn) Then
+      End If
+
+      ColumnRecursion.AddIfNew(ReferencedColumn)
+
       If StatementObjects.Contains(ReferencedColumn) Then
         sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn))
-
-        '  '   Debug.Assert(sCallingCode.Code <> "@part_3")
-        'ElseIf ColumnRecursion.Contains(ReferencedColumn) Then
-        '  sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn))
-
       Else
-
-        '     Debug.Assert(StatementObjects.Count + Me.StartOfPartNumbers <> 7)
-
-        '        sVariableName = StatementObjects.Count + Me.StartOfPartNumbers
         sVariableName = Declarations.Count + Me.StartOfPartNumbers
-
-
         StatementObjects.Add(ReferencedColumn)
+
+        iBackupType = ReferencedColumn.Calculation.ExpressionType
+        ReferencedColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn
+        ReferencedColumn.Calculation.AssociatedColumn = ReferencedColumn
+
+        ReferencedColumn.Calculation.StartOfPartNumbers = Me.StartOfPartNumbers + Declarations.Count
+
+        ReferencedColumn.Calculation.ColumnRecursion = ColumnRecursion
+        ReferencedColumn.Calculation.GenerateCode()
+        ReferencedColumn.Calculation.ExpressionType = iBackupType
+
         Declarations.Add(String.Format("@part_{0} {1}", sVariableName, ReferencedColumn.DataTypeSyntax))
         PreStatements.Add(String.Format("SELECT @part_{0} = {1}", sVariableName, ReferencedColumn.Calculation.UDF.CallingCode))
         sCallingCode.Code = String.Format("@part_{0}", sVariableName)
@@ -1136,8 +1114,6 @@ Namespace Things
       Me.BaseExpression.IsComplex = True
       Me.Tuning.Rating += ReferencedColumn.Calculation.Tuning.Rating
 
-      '      End If
-
       Me.RequiresRecordID = RequiresRecordID Or ReferencedColumn.Calculation.RequiresRecordID
       Me.ContainsUniqueCode = ContainsUniqueCode Or ReferencedColumn.Calculation.ContainsUniqueCode
       Me.RequiresOvernight = RequiresOvernight Or ReferencedColumn.Calculation.RequiresOvernight
@@ -1145,11 +1121,7 @@ Namespace Things
       Me.ReferencesChild = Me.ReferencesChild Or ReferencedColumn.Calculation.ReferencesChild
       Dependencies.MergeUnique(ReferencedColumn.Calculation.Dependencies)
 
-      'Dim icount As Integer
-      'For icount = 0 To Dependencies.Count - 1
-      '  Debug.Print(Dependencies(icount).Name)
-      'Next
-
+      ReferencedColumn.Tuning.IncrementSelectAsCalculation()
 
 
       Return sCallingCode
