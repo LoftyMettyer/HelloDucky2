@@ -1348,6 +1348,7 @@ End Sub
 Private Sub WrdRunMailMerge()
 
   Dim strTempFileName As String
+  Dim strOriginalDefaultPrinter As String
 
   On Error GoTo LocalErr
 
@@ -1411,6 +1412,7 @@ Private Sub WrdRunMailMerge()
 
   If mblnOutputPrinter Then
     If Trim(mstrOutputPrinterName) <> "" Then
+      strOriginalDefaultPrinter = wrdApp.ActivePrinter
       wrdApp.ActivePrinter = mstrOutputPrinterName
     End If
 
@@ -1430,9 +1432,12 @@ Private Sub WrdRunMailMerge()
     Loop
     wrdApp.Visible = mblnAppVisible
     gobjProgress.Visible = True
+  
+    If Trim(strOriginalDefaultPrinter) <> "" Then
+      wrdApp.ActivePrinter = strOriginalDefaultPrinter
+    End If
+  
   End If
-
-
 
 Exit Sub
 
