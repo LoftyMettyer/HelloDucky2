@@ -43,738 +43,26 @@ Begin VB.Form frmLabelTypeDefinition
       TabCaption(0)   =   "&Dimensions"
       TabPicture(0)   =   "frmLabelTypeDefinition.frx":000C
       Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "fraDefinition"
+      Tab(0).Control(0)=   "fraEnvelope"
       Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "fraType"
+      Tab(0).Control(1)=   "fraLabel"
       Tab(0).Control(1).Enabled=   0   'False
-      Tab(0).Control(2)=   "fraMeasurements"
+      Tab(0).Control(2)=   "fraDefinition"
       Tab(0).Control(2).Enabled=   0   'False
-      Tab(0).Control(3)=   "fraEnvelope"
+      Tab(0).Control(3)=   "fraType"
       Tab(0).Control(3).Enabled=   0   'False
-      Tab(0).Control(4)=   "fraLabel"
+      Tab(0).Control(4)=   "fraMeasurements"
       Tab(0).Control(4).Enabled=   0   'False
       Tab(0).ControlCount=   5
       TabCaption(1)   =   "&Format"
       TabPicture(1)   =   "frmLabelTypeDefinition.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraPreview"
-      Tab(1).Control(1)=   "fraFont(1)"
+      Tab(1).Control(0)=   "ImageList1"
+      Tab(1).Control(1)=   "picColour"
       Tab(1).Control(2)=   "fraFont(0)"
-      Tab(1).Control(3)=   "picColour"
-      Tab(1).Control(4)=   "ImageList1"
+      Tab(1).Control(3)=   "fraFont(1)"
+      Tab(1).Control(4)=   "fraPreview"
       Tab(1).ControlCount=   5
-      Begin VB.Frame fraLabel 
-         Caption         =   "Label :"
-         Height          =   3795
-         Left            =   3105
-         TabIndex        =   40
-         Top             =   2415
-         Width           =   6210
-         Begin VB.ComboBox cboLabelPageSize 
-            Height          =   315
-            ItemData        =   "frmLabelTypeDefinition.frx":0044
-            Left            =   1665
-            List            =   "frmLabelTypeDefinition.frx":0046
-            Style           =   2  'Dropdown List
-            TabIndex        =   10
-            Top             =   315
-            Width           =   3960
-         End
-         Begin VB.CheckBox chkLabelPageLandscape 
-            Caption         =   "L&andscape"
-            Height          =   240
-            Left            =   165
-            TabIndex        =   13
-            Top             =   1260
-            Width           =   2430
-         End
-         Begin MSComCtl2.UpDown upnLabelPageHeight 
-            Height          =   240
-            Left            =   5355
-            TabIndex        =   41
-            Top             =   810
-            Width           =   255
-            _ExtentX        =   450
-            _ExtentY        =   423
-            _Version        =   393216
-            Value           =   100
-            OrigLeft        =   2805
-            OrigTop         =   3360
-            OrigRight       =   3060
-            OrigBottom      =   3840
-            Increment       =   5
-            Max             =   7000
-            Enabled         =   -1  'True
-         End
-         Begin MSComCtl2.UpDown upnLabelPageWidth 
-            Height          =   240
-            Left            =   2535
-            TabIndex        =   42
-            Top             =   810
-            Width           =   255
-            _ExtentX        =   450
-            _ExtentY        =   423
-            _Version        =   393216
-            Value           =   100
-            OrigLeft        =   2805
-            OrigTop         =   3360
-            OrigRight       =   3060
-            OrigBottom      =   3840
-            Increment       =   5
-            Max             =   7000
-            Enabled         =   -1  'True
-         End
-         Begin MSComCtl2.UpDown upnLabelNumberDown 
-            Height          =   240
-            Left            =   5355
-            TabIndex        =   43
-            TabStop         =   0   'False
-            Top             =   3225
-            Width           =   255
-            _ExtentX        =   450
-            _ExtentY        =   423
-            _Version        =   393216
-            OrigLeft        =   2805
-            OrigTop         =   3360
-            OrigRight       =   3060
-            OrigBottom      =   3840
-            Increment       =   100
-            Max             =   7000
-            Enabled         =   -1  'True
-         End
-         Begin MSComCtl2.UpDown upnLabelNumberAcross 
-            Height          =   255
-            Left            =   5355
-            TabIndex        =   44
-            TabStop         =   0   'False
-            Top             =   2760
-            Width           =   255
-            _ExtentX        =   450
-            _ExtentY        =   450
-            _Version        =   393216
-            OrigLeft        =   2805
-            OrigTop         =   3360
-            OrigRight       =   3060
-            OrigBottom      =   3840
-            Increment       =   100
-            Max             =   7000
-            Enabled         =   -1  'True
-         End
-         Begin MSComCtl2.UpDown upnLabelWidth 
-            Height          =   255
-            Left            =   5355
-            TabIndex        =   45
-            TabStop         =   0   'False
-            Top             =   2295
-            Width           =   255
-            _ExtentX        =   450
-            _ExtentY        =   450
-            _Version        =   393216
-            OrigLeft        =   2805
-            OrigTop         =   3360
-            OrigRight       =   3060
-            OrigBottom      =   3840
-            Increment       =   5
-            Max             =   7000
-            Enabled         =   -1  'True
-         End
-         Begin MSComCtl2.UpDown upnLabelHeight 
-            Height          =   255
-            Left            =   5355
-            TabIndex        =   46
-            TabStop         =   0   'False
-            Top             =   1845
-            Width           =   255
-            _ExtentX        =   450
-            _ExtentY        =   450
-            _Version        =   393216
-            OrigLeft        =   2805
-            OrigTop         =   3360
-            OrigRight       =   3060
-            OrigBottom      =   3840
-            Increment       =   5
-            Max             =   7000
-            Enabled         =   -1  'True
-         End
-         Begin MSComCtl2.UpDown upnLabelHorizontalPitch 
-            Height          =   240
-            Left            =   2535
-            TabIndex        =   47
-            TabStop         =   0   'False
-            Top             =   2760
-            Width           =   255
-            _ExtentX        =   450
-            _ExtentY        =   423
-            _Version        =   393216
-            OrigLeft        =   2805
-            OrigTop         =   3360
-            OrigRight       =   3060
-            OrigBottom      =   3840
-            Increment       =   5
-            Max             =   7000
-            Enabled         =   -1  'True
-         End
-         Begin MSComCtl2.UpDown upnLabelVerticalPitch 
-            Height          =   255
-            Left            =   2535
-            TabIndex        =   48
-            TabStop         =   0   'False
-            Top             =   3225
-            Width           =   255
-            _ExtentX        =   450
-            _ExtentY        =   450
-            _Version        =   393216
-            OrigLeft        =   2805
-            OrigTop         =   3360
-            OrigRight       =   3060
-            OrigBottom      =   3840
-            Increment       =   5
-            Max             =   7000
-            Enabled         =   -1  'True
-         End
-         Begin MSComCtl2.UpDown upnLabelSideMargin 
-            Height          =   255
-            Left            =   2535
-            TabIndex        =   49
-            TabStop         =   0   'False
-            Top             =   2295
-            Width           =   255
-            _ExtentX        =   450
-            _ExtentY        =   450
-            _Version        =   393216
-            OrigLeft        =   2805
-            OrigTop         =   3360
-            OrigRight       =   3060
-            OrigBottom      =   3840
-            Increment       =   5
-            Max             =   7000
-            Enabled         =   -1  'True
-         End
-         Begin MSComCtl2.UpDown upnLabelTopMargin 
-            Height          =   255
-            Left            =   2535
-            TabIndex        =   50
-            TabStop         =   0   'False
-            Top             =   1845
-            Width           =   255
-            _ExtentX        =   450
-            _ExtentY        =   450
-            _Version        =   393216
-            OrigLeft        =   2805
-            OrigTop         =   3360
-            OrigRight       =   3060
-            OrigBottom      =   3840
-            Increment       =   5
-            Max             =   7000
-            Enabled         =   -1  'True
-         End
-         Begin VB.TextBox txtLabelPageHeight 
-            BackColor       =   &H8000000F&
-            BeginProperty DataFormat 
-               Type            =   1
-               Format          =   "0.00"
-               HaveTrueFalseNull=   0
-               FirstDayOfWeek  =   0
-               FirstWeekOfYear =   0
-               LCID            =   2057
-               SubFormatType   =   1
-            EndProperty
-            Enabled         =   0   'False
-            Height          =   300
-            Left            =   4485
-            MaxLength       =   35
-            TabIndex        =   12
-            Top             =   780
-            Width           =   1150
-         End
-         Begin VB.TextBox txtLabelPageWidth 
-            BackColor       =   &H8000000F&
-            BeginProperty DataFormat 
-               Type            =   1
-               Format          =   "0.00"
-               HaveTrueFalseNull=   0
-               FirstDayOfWeek  =   0
-               FirstWeekOfYear =   0
-               LCID            =   2057
-               SubFormatType   =   1
-            EndProperty
-            Enabled         =   0   'False
-            Height          =   300
-            Left            =   1665
-            MaxLength       =   35
-            TabIndex        =   11
-            Top             =   780
-            Width           =   1150
-         End
-         Begin VB.TextBox txtLabelHeight 
-            BeginProperty DataFormat 
-               Type            =   1
-               Format          =   "0.00"
-               HaveTrueFalseNull=   0
-               FirstDayOfWeek  =   0
-               FirstWeekOfYear =   0
-               LCID            =   2057
-               SubFormatType   =   1
-            EndProperty
-            Height          =   300
-            Left            =   4485
-            MaxLength       =   35
-            TabIndex        =   18
-            Text            =   "1.00 cm"
-            Top             =   1815
-            Width           =   1150
-         End
-         Begin VB.TextBox txtLabelWidth 
-            BeginProperty DataFormat 
-               Type            =   1
-               Format          =   "0.00"
-               HaveTrueFalseNull=   0
-               FirstDayOfWeek  =   0
-               FirstWeekOfYear =   0
-               LCID            =   2057
-               SubFormatType   =   1
-            EndProperty
-            Height          =   300
-            Left            =   4485
-            MaxLength       =   35
-            TabIndex        =   19
-            Text            =   "1.00 cm"
-            Top             =   2265
-            Width           =   1150
-         End
-         Begin VB.TextBox txtLabelNumberAcross 
-            BeginProperty DataFormat 
-               Type            =   1
-               Format          =   "0.00"
-               HaveTrueFalseNull=   0
-               FirstDayOfWeek  =   0
-               FirstWeekOfYear =   0
-               LCID            =   2057
-               SubFormatType   =   1
-            EndProperty
-            Height          =   300
-            Left            =   4485
-            MaxLength       =   35
-            TabIndex        =   20
-            Text            =   "1"
-            Top             =   2730
-            Width           =   1150
-         End
-         Begin VB.TextBox txtLabelNumberDown 
-            BeginProperty DataFormat 
-               Type            =   1
-               Format          =   "0.00"
-               HaveTrueFalseNull=   0
-               FirstDayOfWeek  =   0
-               FirstWeekOfYear =   0
-               LCID            =   2057
-               SubFormatType   =   1
-            EndProperty
-            Height          =   300
-            Left            =   4485
-            MaxLength       =   35
-            TabIndex        =   21
-            Text            =   "1"
-            Top             =   3195
-            Width           =   1150
-         End
-         Begin VB.TextBox txtLabelTopMargin 
-            BeginProperty DataFormat 
-               Type            =   1
-               Format          =   "0.00"
-               HaveTrueFalseNull=   0
-               FirstDayOfWeek  =   0
-               FirstWeekOfYear =   0
-               LCID            =   2057
-               SubFormatType   =   1
-            EndProperty
-            Height          =   300
-            Left            =   1665
-            MaxLength       =   35
-            TabIndex        =   14
-            Text            =   "1.00 cm"
-            Top             =   1815
-            Width           =   1150
-         End
-         Begin VB.TextBox txtLabelSideMargin 
-            BeginProperty DataFormat 
-               Type            =   1
-               Format          =   "0.00"
-               HaveTrueFalseNull=   0
-               FirstDayOfWeek  =   0
-               FirstWeekOfYear =   0
-               LCID            =   2057
-               SubFormatType   =   1
-            EndProperty
-            Height          =   300
-            Left            =   1665
-            MaxLength       =   35
-            TabIndex        =   15
-            Text            =   "1.00 cm"
-            Top             =   2265
-            Width           =   1150
-         End
-         Begin VB.TextBox txtLabelVerticalPitch 
-            BeginProperty DataFormat 
-               Type            =   1
-               Format          =   "0.00"
-               HaveTrueFalseNull=   0
-               FirstDayOfWeek  =   0
-               FirstWeekOfYear =   0
-               LCID            =   2057
-               SubFormatType   =   1
-            EndProperty
-            Height          =   300
-            Left            =   1665
-            MaxLength       =   35
-            TabIndex        =   17
-            Text            =   "1.00 cm"
-            Top             =   3195
-            Width           =   1150
-         End
-         Begin VB.TextBox txtLabelHorizontalPitch 
-            BeginProperty DataFormat 
-               Type            =   1
-               Format          =   "0.00"
-               HaveTrueFalseNull=   0
-               FirstDayOfWeek  =   0
-               FirstWeekOfYear =   0
-               LCID            =   2057
-               SubFormatType   =   1
-            EndProperty
-            Height          =   300
-            Left            =   1665
-            MaxLength       =   35
-            TabIndex        =   16
-            Text            =   "1.00 cm"
-            Top             =   2730
-            Width           =   1150
-         End
-         Begin VB.Label lblPageSize 
-            Caption         =   "Page Size :"
-            Height          =   300
-            Left            =   165
-            TabIndex        =   61
-            Top             =   375
-            Width           =   1485
-         End
-         Begin VB.Label lblTopMargin 
-            Caption         =   "Top Margin :"
-            Height          =   255
-            Left            =   165
-            TabIndex        =   60
-            Top             =   1845
-            Width           =   1290
-         End
-         Begin VB.Label lblSideMargin 
-            Caption         =   "Side Margin :"
-            Height          =   255
-            Left            =   165
-            TabIndex        =   59
-            Top             =   2325
-            Width           =   1290
-         End
-         Begin VB.Label lblVerticalPitch 
-            Caption         =   "Vertical Pitch :"
-            Height          =   255
-            Left            =   165
-            TabIndex        =   58
-            Top             =   3270
-            Width           =   1290
-         End
-         Begin VB.Label lblHorizontalPitch 
-            Caption         =   "Horizontal Pitch :"
-            Height          =   255
-            Left            =   165
-            TabIndex        =   57
-            Top             =   2790
-            Width           =   1515
-         End
-         Begin VB.Label lblLabelHeight 
-            Caption         =   "Label Height :"
-            Height          =   255
-            Left            =   3000
-            TabIndex        =   56
-            Top             =   1845
-            Width           =   1290
-         End
-         Begin VB.Label lblLabelWidth 
-            Caption         =   "Label Width :"
-            Height          =   255
-            Left            =   3000
-            TabIndex        =   55
-            Top             =   2325
-            Width           =   1290
-         End
-         Begin VB.Label lblNumberAcross 
-            Caption         =   "Number Across :"
-            Height          =   255
-            Left            =   3000
-            TabIndex        =   54
-            Top             =   2790
-            Width           =   1470
-         End
-         Begin VB.Label lblNumberDown 
-            Caption         =   "Number Down :"
-            Height          =   255
-            Left            =   3000
-            TabIndex        =   53
-            Top             =   3270
-            Width           =   1290
-         End
-         Begin VB.Label lblPageWidth 
-            Caption         =   "Width :"
-            Height          =   255
-            Left            =   165
-            TabIndex        =   52
-            Top             =   840
-            Width           =   1170
-         End
-         Begin VB.Label lblPageHeight 
-            Caption         =   "Height :"
-            Height          =   255
-            Left            =   3015
-            TabIndex        =   51
-            Top             =   840
-            Width           =   990
-         End
-      End
-      Begin VB.Frame fraEnvelope 
-         Caption         =   "Envelope :"
-         Height          =   3795
-         Left            =   3105
-         TabIndex        =   64
-         Top             =   2415
-         Visible         =   0   'False
-         Width           =   6210
-         Begin VB.ComboBox cboEnvelopePageSize 
-            Height          =   315
-            ItemData        =   "frmLabelTypeDefinition.frx":0048
-            Left            =   1620
-            List            =   "frmLabelTypeDefinition.frx":004A
-            Style           =   2  'Dropdown List
-            TabIndex        =   22
-            Top             =   315
-            Width           =   3780
-         End
-         Begin VB.CheckBox chkEnvelopeAlign 
-            Caption         =   "Align te&xt with longest edge"
-            Height          =   240
-            Left            =   225
-            TabIndex        =   25
-            Top             =   1260
-            Value           =   1  'Checked
-            Width           =   3270
-         End
-         Begin VB.CheckBox chkEnvelopeAutoTop 
-            Caption         =   "A&utomatic"
-            Height          =   195
-            Left            =   2940
-            TabIndex        =   27
-            Top             =   1845
-            Width           =   1305
-         End
-         Begin VB.CheckBox chkEnvelopeAutoLeft 
-            Caption         =   "&Automatic"
-            Height          =   255
-            Left            =   2940
-            TabIndex        =   29
-            Top             =   2280
-            Width           =   1425
-         End
-         Begin MSComCtl2.UpDown upnEnvelopeDefinition 
-            Height          =   240
-            Index           =   2
-            Left            =   2490
-            TabIndex        =   65
-            Top             =   1815
-            Width           =   255
-            _ExtentX        =   450
-            _ExtentY        =   423
-            _Version        =   393216
-            Value           =   100
-            OrigLeft        =   2805
-            OrigTop         =   3360
-            OrigRight       =   3060
-            OrigBottom      =   3840
-            Increment       =   5
-            Max             =   7000
-            Enabled         =   -1  'True
-         End
-         Begin MSComCtl2.UpDown upnEnvelopeDefinition 
-            Height          =   240
-            Index           =   3
-            Left            =   2490
-            TabIndex        =   66
-            Top             =   2280
-            Width           =   255
-            _ExtentX        =   450
-            _ExtentY        =   423
-            _Version        =   393216
-            Value           =   100
-            OrigLeft        =   2805
-            OrigTop         =   3360
-            OrigRight       =   3060
-            OrigBottom      =   3840
-            Increment       =   5
-            Max             =   7000
-            Enabled         =   -1  'True
-         End
-         Begin MSComCtl2.UpDown upnEnvelopeDefinition 
-            Height          =   240
-            Index           =   1
-            Left            =   5115
-            TabIndex        =   67
-            Top             =   810
-            Width           =   255
-            _ExtentX        =   450
-            _ExtentY        =   423
-            _Version        =   393216
-            Value           =   100
-            OrigLeft        =   2805
-            OrigTop         =   3360
-            OrigRight       =   3060
-            OrigBottom      =   3840
-            Increment       =   5
-            Max             =   7000
-            Enabled         =   -1  'True
-         End
-         Begin MSComCtl2.UpDown upnEnvelopeDefinition 
-            Height          =   240
-            Index           =   0
-            Left            =   2490
-            TabIndex        =   68
-            Top             =   810
-            Width           =   255
-            _ExtentX        =   450
-            _ExtentY        =   423
-            _Version        =   393216
-            Value           =   100
-            OrigLeft        =   2805
-            OrigTop         =   3360
-            OrigRight       =   3060
-            OrigBottom      =   3840
-            Increment       =   5
-            Max             =   7000
-            Enabled         =   -1  'True
-         End
-         Begin VB.TextBox txtEnvelopeDimension 
-            BackColor       =   &H00FFFFFF&
-            BeginProperty DataFormat 
-               Type            =   1
-               Format          =   "0.00"
-               HaveTrueFalseNull=   0
-               FirstDayOfWeek  =   0
-               FirstWeekOfYear =   0
-               LCID            =   2057
-               SubFormatType   =   1
-            EndProperty
-            Height          =   300
-            Index           =   3
-            Left            =   1620
-            TabIndex        =   28
-            Text            =   "1.00 cm"
-            Top             =   2250
-            Width           =   1150
-         End
-         Begin VB.TextBox txtEnvelopeDimension 
-            BackColor       =   &H00FFFFFF&
-            BeginProperty DataFormat 
-               Type            =   1
-               Format          =   "0.00"
-               HaveTrueFalseNull=   0
-               FirstDayOfWeek  =   0
-               FirstWeekOfYear =   0
-               LCID            =   2057
-               SubFormatType   =   1
-            EndProperty
-            Height          =   300
-            Index           =   2
-            Left            =   1620
-            TabIndex        =   26
-            Text            =   "1.00 cm"
-            Top             =   1785
-            Width           =   1150
-         End
-         Begin VB.TextBox txtEnvelopeDimension 
-            BackColor       =   &H8000000F&
-            BeginProperty DataFormat 
-               Type            =   1
-               Format          =   "0.00"
-               HaveTrueFalseNull=   0
-               FirstDayOfWeek  =   0
-               FirstWeekOfYear =   0
-               LCID            =   2057
-               SubFormatType   =   1
-            EndProperty
-            Enabled         =   0   'False
-            Height          =   300
-            Index           =   1
-            Left            =   4245
-            TabIndex        =   24
-            Top             =   780
-            Width           =   1150
-         End
-         Begin VB.TextBox txtEnvelopeDimension 
-            BackColor       =   &H8000000F&
-            BeginProperty DataFormat 
-               Type            =   1
-               Format          =   "0.00"
-               HaveTrueFalseNull=   0
-               FirstDayOfWeek  =   0
-               FirstWeekOfYear =   0
-               LCID            =   2057
-               SubFormatType   =   1
-            EndProperty
-            Enabled         =   0   'False
-            Height          =   300
-            Index           =   0
-            Left            =   1620
-            TabIndex        =   23
-            Top             =   780
-            Width           =   1150
-         End
-         Begin VB.Label Label4 
-            Caption         =   "Height :"
-            Height          =   255
-            Left            =   2790
-            TabIndex        =   73
-            Top             =   840
-            Width           =   1170
-         End
-         Begin VB.Label Label3 
-            Caption         =   "Width :"
-            Height          =   255
-            Left            =   225
-            TabIndex        =   72
-            Top             =   840
-            Width           =   930
-         End
-         Begin VB.Label lblEnvelopeSize 
-            Caption         =   "Envelope Size : "
-            Height          =   330
-            Left            =   225
-            TabIndex        =   71
-            Top             =   375
-            Width           =   1410
-         End
-         Begin VB.Label lblEnvelopeFromTop 
-            Caption         =   "From Top :"
-            Height          =   270
-            Left            =   225
-            TabIndex        =   70
-            Top             =   1845
-            Width           =   930
-         End
-         Begin VB.Label lblEnvelopeFromLeft 
-            Caption         =   "From Left :"
-            Height          =   210
-            Left            =   225
-            TabIndex        =   69
-            Top             =   2325
-            Width           =   930
-         End
-      End
       Begin VB.Frame fraPreview 
          Caption         =   "Preview :"
          Height          =   3690
@@ -893,9 +181,9 @@ Begin VB.Form frmLabelTypeDefinition
          Begin VB.ComboBox cboFontSize 
             Height          =   315
             Index           =   1
-            ItemData        =   "frmLabelTypeDefinition.frx":004C
+            ItemData        =   "frmLabelTypeDefinition.frx":0044
             Left            =   1020
-            List            =   "frmLabelTypeDefinition.frx":004E
+            List            =   "frmLabelTypeDefinition.frx":0046
             Style           =   2  'Dropdown List
             TabIndex        =   83
             Top             =   720
@@ -955,9 +243,9 @@ Begin VB.Form frmLabelTypeDefinition
          Begin VB.ComboBox cboFontSize 
             Height          =   315
             Index           =   0
-            ItemData        =   "frmLabelTypeDefinition.frx":0050
+            ItemData        =   "frmLabelTypeDefinition.frx":0048
             Left            =   1020
-            List            =   "frmLabelTypeDefinition.frx":0052
+            List            =   "frmLabelTypeDefinition.frx":004A
             Style           =   2  'Dropdown List
             TabIndex        =   77
             Top             =   720
@@ -1239,6 +527,718 @@ Begin VB.Form frmLabelTypeDefinition
          MaskColor       =   12632256
          UseMaskColor    =   0   'False
          _Version        =   393216
+      End
+      Begin VB.Frame fraLabel 
+         Caption         =   "Label :"
+         Height          =   3795
+         Left            =   3105
+         TabIndex        =   40
+         Top             =   2415
+         Width           =   6210
+         Begin VB.ComboBox cboLabelPageSize 
+            Height          =   315
+            ItemData        =   "frmLabelTypeDefinition.frx":004C
+            Left            =   1665
+            List            =   "frmLabelTypeDefinition.frx":004E
+            Style           =   2  'Dropdown List
+            TabIndex        =   10
+            Top             =   315
+            Width           =   4290
+         End
+         Begin VB.CheckBox chkLabelPageLandscape 
+            Caption         =   "L&andscape"
+            Height          =   240
+            Left            =   165
+            TabIndex        =   13
+            Top             =   1260
+            Width           =   2430
+         End
+         Begin MSComCtl2.UpDown upnLabelPageHeight 
+            Height          =   240
+            Left            =   5685
+            TabIndex        =   41
+            Top             =   810
+            Width           =   255
+            _ExtentX        =   450
+            _ExtentY        =   423
+            _Version        =   393216
+            Value           =   100
+            OrigLeft        =   2805
+            OrigTop         =   3360
+            OrigRight       =   3060
+            OrigBottom      =   3840
+            Increment       =   5
+            Max             =   7000
+            Enabled         =   -1  'True
+         End
+         Begin MSComCtl2.UpDown upnLabelPageWidth 
+            Height          =   240
+            Left            =   2735
+            TabIndex        =   42
+            Top             =   810
+            Width           =   255
+            _ExtentX        =   450
+            _ExtentY        =   423
+            _Version        =   393216
+            Value           =   100
+            OrigLeft        =   2805
+            OrigTop         =   3360
+            OrigRight       =   3060
+            OrigBottom      =   3840
+            Increment       =   5
+            Max             =   7000
+            Enabled         =   -1  'True
+         End
+         Begin MSComCtl2.UpDown upnLabelNumberDown 
+            Height          =   240
+            Left            =   5685
+            TabIndex        =   43
+            TabStop         =   0   'False
+            Top             =   3225
+            Width           =   255
+            _ExtentX        =   450
+            _ExtentY        =   423
+            _Version        =   393216
+            OrigLeft        =   2805
+            OrigTop         =   3360
+            OrigRight       =   3060
+            OrigBottom      =   3840
+            Increment       =   100
+            Max             =   7000
+            Enabled         =   -1  'True
+         End
+         Begin MSComCtl2.UpDown upnLabelNumberAcross 
+            Height          =   255
+            Left            =   5685
+            TabIndex        =   44
+            TabStop         =   0   'False
+            Top             =   2760
+            Width           =   255
+            _ExtentX        =   450
+            _ExtentY        =   450
+            _Version        =   393216
+            OrigLeft        =   2805
+            OrigTop         =   3360
+            OrigRight       =   3060
+            OrigBottom      =   3840
+            Increment       =   100
+            Max             =   7000
+            Enabled         =   -1  'True
+         End
+         Begin MSComCtl2.UpDown upnLabelWidth 
+            Height          =   255
+            Left            =   5685
+            TabIndex        =   45
+            TabStop         =   0   'False
+            Top             =   2295
+            Width           =   255
+            _ExtentX        =   450
+            _ExtentY        =   450
+            _Version        =   393216
+            OrigLeft        =   2805
+            OrigTop         =   3360
+            OrigRight       =   3060
+            OrigBottom      =   3840
+            Increment       =   5
+            Max             =   7000
+            Enabled         =   -1  'True
+         End
+         Begin MSComCtl2.UpDown upnLabelHeight 
+            Height          =   255
+            Left            =   5685
+            TabIndex        =   46
+            TabStop         =   0   'False
+            Top             =   1845
+            Width           =   255
+            _ExtentX        =   450
+            _ExtentY        =   450
+            _Version        =   393216
+            OrigLeft        =   2805
+            OrigTop         =   3360
+            OrigRight       =   3060
+            OrigBottom      =   3840
+            Increment       =   5
+            Max             =   7000
+            Enabled         =   -1  'True
+         End
+         Begin MSComCtl2.UpDown upnLabelHorizontalPitch 
+            Height          =   240
+            Left            =   2735
+            TabIndex        =   47
+            TabStop         =   0   'False
+            Top             =   2760
+            Width           =   255
+            _ExtentX        =   450
+            _ExtentY        =   423
+            _Version        =   393216
+            OrigLeft        =   2805
+            OrigTop         =   3360
+            OrigRight       =   3060
+            OrigBottom      =   3840
+            Increment       =   5
+            Max             =   7000
+            Enabled         =   -1  'True
+         End
+         Begin MSComCtl2.UpDown upnLabelVerticalPitch 
+            Height          =   255
+            Left            =   2735
+            TabIndex        =   48
+            TabStop         =   0   'False
+            Top             =   3225
+            Width           =   255
+            _ExtentX        =   450
+            _ExtentY        =   450
+            _Version        =   393216
+            OrigLeft        =   2805
+            OrigTop         =   3360
+            OrigRight       =   3060
+            OrigBottom      =   3840
+            Increment       =   5
+            Max             =   7000
+            Enabled         =   -1  'True
+         End
+         Begin MSComCtl2.UpDown upnLabelSideMargin 
+            Height          =   255
+            Left            =   2735
+            TabIndex        =   49
+            TabStop         =   0   'False
+            Top             =   2295
+            Width           =   255
+            _ExtentX        =   450
+            _ExtentY        =   450
+            _Version        =   393216
+            OrigLeft        =   2805
+            OrigTop         =   3360
+            OrigRight       =   3060
+            OrigBottom      =   3840
+            Increment       =   5
+            Max             =   7000
+            Enabled         =   -1  'True
+         End
+         Begin MSComCtl2.UpDown upnLabelTopMargin 
+            Height          =   255
+            Left            =   2735
+            TabIndex        =   50
+            TabStop         =   0   'False
+            Top             =   1845
+            Width           =   255
+            _ExtentX        =   450
+            _ExtentY        =   450
+            _Version        =   393216
+            OrigLeft        =   2805
+            OrigTop         =   3360
+            OrigRight       =   3060
+            OrigBottom      =   3840
+            Increment       =   5
+            Max             =   7000
+            Enabled         =   -1  'True
+         End
+         Begin VB.TextBox txtLabelPageHeight 
+            BackColor       =   &H8000000F&
+            BeginProperty DataFormat 
+               Type            =   1
+               Format          =   "0.00"
+               HaveTrueFalseNull=   0
+               FirstDayOfWeek  =   0
+               FirstWeekOfYear =   0
+               LCID            =   2057
+               SubFormatType   =   1
+            EndProperty
+            Enabled         =   0   'False
+            Height          =   300
+            Left            =   4620
+            MaxLength       =   35
+            TabIndex        =   12
+            Top             =   780
+            Width           =   1350
+         End
+         Begin VB.TextBox txtLabelPageWidth 
+            BackColor       =   &H8000000F&
+            BeginProperty DataFormat 
+               Type            =   1
+               Format          =   "0.00"
+               HaveTrueFalseNull=   0
+               FirstDayOfWeek  =   0
+               FirstWeekOfYear =   0
+               LCID            =   2057
+               SubFormatType   =   1
+            EndProperty
+            Enabled         =   0   'False
+            Height          =   300
+            Left            =   1665
+            MaxLength       =   35
+            TabIndex        =   11
+            Top             =   780
+            Width           =   1350
+         End
+         Begin VB.TextBox txtLabelHeight 
+            BeginProperty DataFormat 
+               Type            =   1
+               Format          =   "0.00"
+               HaveTrueFalseNull=   0
+               FirstDayOfWeek  =   0
+               FirstWeekOfYear =   0
+               LCID            =   2057
+               SubFormatType   =   1
+            EndProperty
+            Height          =   300
+            Left            =   4620
+            MaxLength       =   35
+            TabIndex        =   18
+            Text            =   "1.00 cm"
+            Top             =   1815
+            Width           =   1350
+         End
+         Begin VB.TextBox txtLabelWidth 
+            BeginProperty DataFormat 
+               Type            =   1
+               Format          =   "0.00"
+               HaveTrueFalseNull=   0
+               FirstDayOfWeek  =   0
+               FirstWeekOfYear =   0
+               LCID            =   2057
+               SubFormatType   =   1
+            EndProperty
+            Height          =   300
+            Left            =   4620
+            MaxLength       =   35
+            TabIndex        =   19
+            Text            =   "1.00 cm"
+            Top             =   2265
+            Width           =   1350
+         End
+         Begin VB.TextBox txtLabelNumberAcross 
+            BeginProperty DataFormat 
+               Type            =   1
+               Format          =   "0.00"
+               HaveTrueFalseNull=   0
+               FirstDayOfWeek  =   0
+               FirstWeekOfYear =   0
+               LCID            =   2057
+               SubFormatType   =   1
+            EndProperty
+            Height          =   300
+            Left            =   4620
+            MaxLength       =   35
+            TabIndex        =   20
+            Text            =   "1"
+            Top             =   2730
+            Width           =   1350
+         End
+         Begin VB.TextBox txtLabelNumberDown 
+            BeginProperty DataFormat 
+               Type            =   1
+               Format          =   "0.00"
+               HaveTrueFalseNull=   0
+               FirstDayOfWeek  =   0
+               FirstWeekOfYear =   0
+               LCID            =   2057
+               SubFormatType   =   1
+            EndProperty
+            Height          =   300
+            Left            =   4620
+            MaxLength       =   35
+            TabIndex        =   21
+            Text            =   "1"
+            Top             =   3195
+            Width           =   1350
+         End
+         Begin VB.TextBox txtLabelTopMargin 
+            BeginProperty DataFormat 
+               Type            =   1
+               Format          =   "0.00"
+               HaveTrueFalseNull=   0
+               FirstDayOfWeek  =   0
+               FirstWeekOfYear =   0
+               LCID            =   2057
+               SubFormatType   =   1
+            EndProperty
+            Height          =   300
+            Left            =   1665
+            MaxLength       =   35
+            TabIndex        =   14
+            Text            =   "1.00 cm"
+            Top             =   1815
+            Width           =   1350
+         End
+         Begin VB.TextBox txtLabelSideMargin 
+            BeginProperty DataFormat 
+               Type            =   1
+               Format          =   "0.00"
+               HaveTrueFalseNull=   0
+               FirstDayOfWeek  =   0
+               FirstWeekOfYear =   0
+               LCID            =   2057
+               SubFormatType   =   1
+            EndProperty
+            Height          =   300
+            Left            =   1665
+            MaxLength       =   35
+            TabIndex        =   15
+            Text            =   "1.00 cm"
+            Top             =   2265
+            Width           =   1350
+         End
+         Begin VB.TextBox txtLabelVerticalPitch 
+            BeginProperty DataFormat 
+               Type            =   1
+               Format          =   "0.00"
+               HaveTrueFalseNull=   0
+               FirstDayOfWeek  =   0
+               FirstWeekOfYear =   0
+               LCID            =   2057
+               SubFormatType   =   1
+            EndProperty
+            Height          =   300
+            Left            =   1665
+            MaxLength       =   35
+            TabIndex        =   17
+            Text            =   "1.00 cm"
+            Top             =   3195
+            Width           =   1350
+         End
+         Begin VB.TextBox txtLabelHorizontalPitch 
+            BeginProperty DataFormat 
+               Type            =   1
+               Format          =   "0.00"
+               HaveTrueFalseNull=   0
+               FirstDayOfWeek  =   0
+               FirstWeekOfYear =   0
+               LCID            =   2057
+               SubFormatType   =   1
+            EndProperty
+            Height          =   300
+            Left            =   1665
+            MaxLength       =   35
+            TabIndex        =   16
+            Text            =   "1.00 cm"
+            Top             =   2730
+            Width           =   1350
+         End
+         Begin VB.Label lblPageSize 
+            Caption         =   "Page Size :"
+            Height          =   300
+            Left            =   165
+            TabIndex        =   61
+            Top             =   375
+            Width           =   1485
+         End
+         Begin VB.Label lblTopMargin 
+            Caption         =   "Top Margin :"
+            Height          =   255
+            Left            =   165
+            TabIndex        =   60
+            Top             =   1845
+            Width           =   1290
+         End
+         Begin VB.Label lblSideMargin 
+            Caption         =   "Side Margin :"
+            Height          =   255
+            Left            =   165
+            TabIndex        =   59
+            Top             =   2325
+            Width           =   1290
+         End
+         Begin VB.Label lblVerticalPitch 
+            Caption         =   "Vertical Pitch :"
+            Height          =   255
+            Left            =   165
+            TabIndex        =   58
+            Top             =   3270
+            Width           =   1290
+         End
+         Begin VB.Label lblHorizontalPitch 
+            Caption         =   "Horizontal Pitch :"
+            Height          =   255
+            Left            =   165
+            TabIndex        =   57
+            Top             =   2790
+            Width           =   1515
+         End
+         Begin VB.Label lblLabelHeight 
+            Caption         =   "Label Height :"
+            Height          =   255
+            Left            =   3100
+            TabIndex        =   56
+            Top             =   1845
+            Width           =   1290
+         End
+         Begin VB.Label lblLabelWidth 
+            Caption         =   "Label Width :"
+            Height          =   255
+            Left            =   3100
+            TabIndex        =   55
+            Top             =   2325
+            Width           =   1290
+         End
+         Begin VB.Label lblNumberAcross 
+            Caption         =   "Number Across :"
+            Height          =   255
+            Left            =   3100
+            TabIndex        =   54
+            Top             =   2790
+            Width           =   1470
+         End
+         Begin VB.Label lblNumberDown 
+            Caption         =   "Number Down :"
+            Height          =   255
+            Left            =   3100
+            TabIndex        =   53
+            Top             =   3270
+            Width           =   1425
+         End
+         Begin VB.Label lblPageWidth 
+            Caption         =   "Width :"
+            Height          =   255
+            Left            =   165
+            TabIndex        =   52
+            Top             =   840
+            Width           =   1170
+         End
+         Begin VB.Label lblPageHeight 
+            Caption         =   "Height :"
+            Height          =   255
+            Left            =   3100
+            TabIndex        =   51
+            Top             =   840
+            Width           =   990
+         End
+      End
+      Begin VB.Frame fraEnvelope 
+         Caption         =   "Envelope :"
+         Height          =   3795
+         Left            =   3105
+         TabIndex        =   64
+         Top             =   2415
+         Visible         =   0   'False
+         Width           =   6210
+         Begin VB.ComboBox cboEnvelopePageSize 
+            Height          =   315
+            ItemData        =   "frmLabelTypeDefinition.frx":0050
+            Left            =   1620
+            List            =   "frmLabelTypeDefinition.frx":0052
+            Style           =   2  'Dropdown List
+            TabIndex        =   22
+            Top             =   315
+            Width           =   3980
+         End
+         Begin VB.CheckBox chkEnvelopeAlign 
+            Caption         =   "Align te&xt with longest edge"
+            Height          =   240
+            Left            =   225
+            TabIndex        =   25
+            Top             =   1260
+            Value           =   1  'Checked
+            Width           =   3270
+         End
+         Begin VB.CheckBox chkEnvelopeAutoTop 
+            Caption         =   "A&utomatic"
+            Height          =   195
+            Left            =   3240
+            TabIndex        =   27
+            Top             =   1845
+            Width           =   1305
+         End
+         Begin VB.CheckBox chkEnvelopeAutoLeft 
+            Caption         =   "&Automatic"
+            Height          =   255
+            Left            =   3240
+            TabIndex        =   29
+            Top             =   2280
+            Width           =   1425
+         End
+         Begin MSComCtl2.UpDown upnEnvelopeDefinition 
+            Height          =   240
+            Index           =   2
+            Left            =   2690
+            TabIndex        =   65
+            Top             =   1815
+            Width           =   255
+            _ExtentX        =   450
+            _ExtentY        =   423
+            _Version        =   393216
+            Value           =   100
+            OrigLeft        =   2805
+            OrigTop         =   3360
+            OrigRight       =   3060
+            OrigBottom      =   3840
+            Increment       =   5
+            Max             =   7000
+            Enabled         =   -1  'True
+         End
+         Begin MSComCtl2.UpDown upnEnvelopeDefinition 
+            Height          =   240
+            Index           =   3
+            Left            =   2690
+            TabIndex        =   66
+            Top             =   2280
+            Width           =   255
+            _ExtentX        =   450
+            _ExtentY        =   423
+            _Version        =   393216
+            Value           =   100
+            OrigLeft        =   2805
+            OrigTop         =   3360
+            OrigRight       =   3060
+            OrigBottom      =   3840
+            Increment       =   5
+            Max             =   7000
+            Enabled         =   -1  'True
+         End
+         Begin MSComCtl2.UpDown upnEnvelopeDefinition 
+            Height          =   240
+            Index           =   1
+            Left            =   5315
+            TabIndex        =   67
+            Top             =   810
+            Width           =   255
+            _ExtentX        =   450
+            _ExtentY        =   423
+            _Version        =   393216
+            Value           =   100
+            OrigLeft        =   2805
+            OrigTop         =   3360
+            OrigRight       =   3060
+            OrigBottom      =   3840
+            Increment       =   5
+            Max             =   7000
+            Enabled         =   -1  'True
+         End
+         Begin MSComCtl2.UpDown upnEnvelopeDefinition 
+            Height          =   240
+            Index           =   0
+            Left            =   2690
+            TabIndex        =   68
+            Top             =   810
+            Width           =   255
+            _ExtentX        =   450
+            _ExtentY        =   423
+            _Version        =   393216
+            Value           =   100
+            OrigLeft        =   2805
+            OrigTop         =   3360
+            OrigRight       =   3060
+            OrigBottom      =   3840
+            Increment       =   5
+            Max             =   7000
+            Enabled         =   -1  'True
+         End
+         Begin VB.TextBox txtEnvelopeDimension 
+            BackColor       =   &H00FFFFFF&
+            BeginProperty DataFormat 
+               Type            =   1
+               Format          =   "0.00"
+               HaveTrueFalseNull=   0
+               FirstDayOfWeek  =   0
+               FirstWeekOfYear =   0
+               LCID            =   2057
+               SubFormatType   =   1
+            EndProperty
+            Height          =   300
+            Index           =   3
+            Left            =   1620
+            TabIndex        =   28
+            Text            =   "1.00 cm"
+            Top             =   2250
+            Width           =   1350
+         End
+         Begin VB.TextBox txtEnvelopeDimension 
+            BackColor       =   &H00FFFFFF&
+            BeginProperty DataFormat 
+               Type            =   1
+               Format          =   "0.00"
+               HaveTrueFalseNull=   0
+               FirstDayOfWeek  =   0
+               FirstWeekOfYear =   0
+               LCID            =   2057
+               SubFormatType   =   1
+            EndProperty
+            Height          =   300
+            Index           =   2
+            Left            =   1620
+            TabIndex        =   26
+            Text            =   "1.00 cm"
+            Top             =   1785
+            Width           =   1350
+         End
+         Begin VB.TextBox txtEnvelopeDimension 
+            BackColor       =   &H8000000F&
+            BeginProperty DataFormat 
+               Type            =   1
+               Format          =   "0.00"
+               HaveTrueFalseNull=   0
+               FirstDayOfWeek  =   0
+               FirstWeekOfYear =   0
+               LCID            =   2057
+               SubFormatType   =   1
+            EndProperty
+            Enabled         =   0   'False
+            Height          =   300
+            Index           =   1
+            Left            =   4245
+            TabIndex        =   24
+            Top             =   780
+            Width           =   1350
+         End
+         Begin VB.TextBox txtEnvelopeDimension 
+            BackColor       =   &H8000000F&
+            BeginProperty DataFormat 
+               Type            =   1
+               Format          =   "0.00"
+               HaveTrueFalseNull=   0
+               FirstDayOfWeek  =   0
+               FirstWeekOfYear =   0
+               LCID            =   2057
+               SubFormatType   =   1
+            EndProperty
+            Enabled         =   0   'False
+            Height          =   300
+            Index           =   0
+            Left            =   1620
+            TabIndex        =   23
+            Top             =   780
+            Width           =   1350
+         End
+         Begin VB.Label Label4 
+            Caption         =   "Height :"
+            Height          =   255
+            Left            =   3220
+            TabIndex        =   73
+            Top             =   840
+            Width           =   855
+         End
+         Begin VB.Label Label3 
+            Caption         =   "Width :"
+            Height          =   255
+            Left            =   225
+            TabIndex        =   72
+            Top             =   840
+            Width           =   930
+         End
+         Begin VB.Label lblEnvelopeSize 
+            Caption         =   "Envelope Size : "
+            Height          =   330
+            Left            =   225
+            TabIndex        =   71
+            Top             =   375
+            Width           =   1410
+         End
+         Begin VB.Label lblEnvelopeFromTop 
+            Caption         =   "From Top :"
+            Height          =   270
+            Left            =   225
+            TabIndex        =   70
+            Top             =   1845
+            Width           =   1065
+         End
+         Begin VB.Label lblEnvelopeFromLeft 
+            Caption         =   "From Left :"
+            Height          =   210
+            Left            =   225
+            TabIndex        =   69
+            Top             =   2325
+            Width           =   1065
+         End
       End
    End
    Begin VB.CommandButton cmdImportFromWord 
@@ -2417,7 +2417,6 @@ Private Sub Form_Resize()
   DisplayApplication
 
 End Sub
-
 
 Private Sub optMeasurement_Click(Index As Integer)
 
