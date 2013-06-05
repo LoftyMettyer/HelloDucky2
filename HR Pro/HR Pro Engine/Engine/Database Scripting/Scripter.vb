@@ -986,8 +986,6 @@ Namespace ScriptDB
 
 
 
-
-
         ' Generate any table UDFs
         For Each objTable In Globals.Things
           For Each objTableOrderFilter In objTable.Objects(Things.Type.TableOrderFilter)

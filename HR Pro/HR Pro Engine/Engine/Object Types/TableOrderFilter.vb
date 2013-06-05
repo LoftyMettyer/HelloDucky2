@@ -95,7 +95,11 @@
         RowDetails.Filter.AssociatedColumn = Me.Parent.Objects(Enums.Type.Column)(0)
         RowDetails.Filter.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
         RowDetails.Filter.GenerateCode()
-        aryWheres.Add(String.Format("({0} = 1)", RowDetails.Filter.UDF.SelectCode))
+        '        aryWheres.Add(String.Format("({0} = 1)", RowDetails.Filter.UDF.SelectCode))
+
+        aryWheres.Add(String.Format("({0} = 1)", RowDetails.Filter.UDF.CallingCode))
+
+
         aryJoins.Add(RowDetails.Filter.UDF.JoinCode)
       End If
 
@@ -157,6 +161,8 @@
              "RETURNS @results TABLE({2})" & vbNewLine & _
              "{9}" & vbNewLine & _
              "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+             "DECLARE @forcerefresh bit;" & vbNewLine & _
+             "SET @forcerefresh = 1;" & vbNewLine & vbNewLine & _
              "WITH base AS (" & vbNewLine & _
              "    SELECT *, [rownumber] = ROW_NUMBER() OVER ({7})" & vbNewLine & _
              "    FROM {4} base" & vbNewLine & _
@@ -176,6 +182,8 @@
                          "RETURNS @results TABLE({2})" & vbNewLine & _
                          "{9}" & vbNewLine & _
                          "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+                         "DECLARE @forcerefresh bit;" & vbNewLine & _
+                         "SET @forcerefresh = 1;" & vbNewLine & vbNewLine & _
                          "INSERT @Results SELECT{8} {3}" & vbNewLine & _
                          "        FROM dbo.[{4}] base" & vbNewLine & _
                          "        {5}" & vbNewLine & _
