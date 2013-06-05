@@ -2063,7 +2063,7 @@ Public Function CreateQueryDefs() As Boolean
   daoDb.CreateQueryDef "spadmin_getdescriptions", sSQL
 
   ' spadmin_getmasks
-  sSQL = "SELECT [exprid] AS ID, [columnid], [Name], [Type], [Description], [ReturnType], [ReturnSize] AS [size], [ReturnDecimals] AS decimals, IIF([tmpexpressions.deleted]=-1, 8 , IIF([tmpexpressions.new]=-1,4 ,IIF([tmpexpressions.changed]=-1,16, 2))) AS state, tmpcolumns.TableID" & vbNewLine & _
+  sSQL = "SELECT DISTINCT [exprid] AS ID, [Name], [Type], [Description], [ReturnType], [ReturnSize] AS [size], [ReturnDecimals] AS decimals, IIF([tmpexpressions.deleted]=-1, 8 , IIF([tmpexpressions.new]=-1,4 ,IIF([tmpexpressions.changed]=-1,16, 2))) AS state, tmpcolumns.TableID" & vbNewLine & _
          "FROM tmpcolumns" & vbNewLine & _
          "INNER JOIN tmpexpressions ON tmpcolumns.[lostfocusexprid] = tmpexpressions.[exprid];"
   daoDb.CreateQueryDef "spadmin_getmasks", sSQL
