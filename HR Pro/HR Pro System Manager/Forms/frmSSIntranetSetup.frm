@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmSSIntranetSetup 
    BorderStyle     =   3  'Fixed Dialog
@@ -1896,7 +1896,7 @@ Private Sub RefreshControls()
 
   End Select
 
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
 
 End Sub
 
@@ -2062,14 +2062,14 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
               sChartType = .Columns("ChartType").CellText(varBookmark)
               fChartShowGrid = .Columns("ChartShowGrid").CellText(varBookmark)
               fChartStackSeries = .Columns("ChartStackSeries").CellText(varBookmark)
-              sChartViewID = Val(.Columns("ChartViewID").CellText(varBookmark))
-              sChartTableID = Val(.Columns("ChartTableID").CellText(varBookmark))
-              sChartColumnID = Val(.Columns("ChartColumnID").CellText(varBookmark))
-              sChartFilterID = Val(.Columns("ChartFilterID").CellText(varBookmark))
-              sChartAggregateType = Val(.Columns("ChartAggregateType").CellText(varBookmark))
-              fChartShowValues = Val(.Columns("ChartShowValues").CellText(varBookmark))
+              sChartViewID = val(.Columns("ChartViewID").CellText(varBookmark))
+              sChartTableID = val(.Columns("ChartTableID").CellText(varBookmark))
+              sChartColumnID = val(.Columns("ChartColumnID").CellText(varBookmark))
+              sChartFilterID = val(.Columns("ChartFilterID").CellText(varBookmark))
+              sChartAggregateType = val(.Columns("ChartAggregateType").CellText(varBookmark))
+              fChartShowValues = val(.Columns("ChartShowValues").CellText(varBookmark))
               fUseFormatting = .Columns("UseFormatting").CellText(varBookmark)
-              iFormatting_DecimalPlaces = Val(.Columns("Formatting_DecimalPlaces").CellText(varBookmark))
+              iFormatting_DecimalPlaces = val(.Columns("Formatting_DecimalPlaces").CellText(varBookmark))
               fFormatting_Use1000Separator = .Columns("Formatting_Use1000Separator").CellText(varBookmark)
               sFormatting_Prefix = .Columns("Formatting_Prefix").CellText(varBookmark)
               sFormatting_Suffix = .Columns("Formatting_Suffix").CellText(varBookmark)
@@ -2928,16 +2928,16 @@ Private Sub cmdCopyButtonLink_Click()
       ctlSourceGrid.Columns("HiddenGroups").Text, cboButtonLinkView.List(cboButtonLinkView.ListIndex), _
       ctlSourceGrid.Columns("NewWindow").Text, ctlSourceGrid.Columns("EMailAddress").Text, ctlSourceGrid.Columns("EMailSubject").Text, _
       ctlSourceGrid.Columns("AppFilePath").Text, ctlSourceGrid.Columns("AppParameters").Text, "", False, _
-      ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), Val(ctlSourceGrid.Columns("PictureID").Text), _
-      ctlSourceGrid.Columns("ChartShowLegend").value, Val(ctlSourceGrid.Columns("ChartType").Text), _
+      ctlSourceGrid.Columns("Element_Type").value, val(ctlSourceGrid.Columns("SeparatorOrientation").Text), val(ctlSourceGrid.Columns("PictureID").Text), _
+      ctlSourceGrid.Columns("ChartShowLegend").value, val(ctlSourceGrid.Columns("ChartType").Text), _
       ctlSourceGrid.Columns("ChartShowGrid").value, ctlSourceGrid.Columns("ChartStackSeries").value, _
-      Val(ctlSourceGrid.Columns("ChartViewID").Text), Val(ctlSourceGrid.Columns("ChartTableID").Text), _
-      Val(ctlSourceGrid.Columns("ChartColumnID").Text), Val(ctlSourceGrid.Columns("ChartFilterID").Text), _
-      Val(ctlSourceGrid.Columns("ChartAggregateType").Text), ctlSourceGrid.Columns("ChartShowValues").value, mcolGroups, _
-      ctlSourceGrid.Columns("UseFormatting").Text, _
+      val(ctlSourceGrid.Columns("ChartViewID").Text), val(ctlSourceGrid.Columns("ChartTableID").Text), _
+      val(ctlSourceGrid.Columns("ChartColumnID").Text), val(ctlSourceGrid.Columns("ChartFilterID").Text), _
+      val(ctlSourceGrid.Columns("ChartAggregateType").Text), ctlSourceGrid.Columns("ChartShowValues").value, mcolGroups, _
+      ctlSourceGrid.Columns("UseFormatting").value, _
       ctlSourceGrid.Columns("Formatting_DecimalPlaces").Text, ctlSourceGrid.Columns("Formatting_Use1000Separator").Text, _
       ctlSourceGrid.Columns("Formatting_Prefix").Text, ctlSourceGrid.Columns("Formatting_Suffix").Text, _
-      ctlSourceGrid.Columns("UseConditionalFormatting").Text, _
+      ctlSourceGrid.Columns("UseConditionalFormatting").value, _
       ctlSourceGrid.Columns("ConditionalFormatting_Operator_1").Text, ctlSourceGrid.Columns("ConditionalFormatting_Value_1").Text, ctlSourceGrid.Columns("ConditionalFormatting_Style_1").Text, ctlSourceGrid.Columns("ConditionalFormatting_Colour_1").Text, _
       ctlSourceGrid.Columns("ConditionalFormatting_Operator_2").Text, ctlSourceGrid.Columns("ConditionalFormatting_Value_2").Text, ctlSourceGrid.Columns("ConditionalFormatting_Style_2").Text, ctlSourceGrid.Columns("ConditionalFormatting_Colour_2").Text, _
       ctlSourceGrid.Columns("ConditionalFormatting_Operator_3").Text, ctlSourceGrid.Columns("ConditionalFormatting_Value_3").Text, ctlSourceGrid.Columns("ConditionalFormatting_Style_3").Text, ctlSourceGrid.Columns("ConditionalFormatting_Colour_3").Text, _
@@ -3189,8 +3189,8 @@ Private Sub cmdCopyHypertextLink_Click()
       ctlSourceGrid.Columns("AppFilePath").Text, _
       ctlSourceGrid.Columns("AppParameters").Text, _
       "", False, _
-      ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
-      Val(ctlSourceGrid.Columns("PictureID").Text), _
+      ctlSourceGrid.Columns("Element_Type").value, val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
+      val(ctlSourceGrid.Columns("PictureID").Text), _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
       False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
       mcolSSITableViews
@@ -3429,10 +3429,10 @@ Private Sub cmdEditButtonLink_Click()
       ctlSourceGrid.Columns("HiddenGroups").Text, cboButtonLinkView.List(cboButtonLinkView.ListIndex), _
       ctlSourceGrid.Columns("NewWindow").Text, ctlSourceGrid.Columns("EMailAddress").Text, ctlSourceGrid.Columns("EMailSubject").Text, _
       ctlSourceGrid.Columns("AppFilePath").Text, ctlSourceGrid.Columns("AppParameters").Text, _
-      "", False, ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), Val(ctlSourceGrid.Columns("PictureID").Text), _
-      ctlSourceGrid.Columns("ChartShowLegend").Text, Val(ctlSourceGrid.Columns("ChartType").Text), ctlSourceGrid.Columns("ChartShowGrid").Text, _
-      ctlSourceGrid.Columns("ChartStackSeries").Text, Val(ctlSourceGrid.Columns("ChartviewID").Text), Val(ctlSourceGrid.Columns("ChartTableID").Text), _
-      Val(ctlSourceGrid.Columns("ChartColumnID").Text), Val(ctlSourceGrid.Columns("ChartFilterID").Text), Val(ctlSourceGrid.Columns("ChartAggregateType").Text), _
+      "", False, ctlSourceGrid.Columns("Element_Type").value, val(ctlSourceGrid.Columns("SeparatorOrientation").Text), val(ctlSourceGrid.Columns("PictureID").Text), _
+      ctlSourceGrid.Columns("ChartShowLegend").Text, val(ctlSourceGrid.Columns("ChartType").Text), ctlSourceGrid.Columns("ChartShowGrid").Text, _
+      ctlSourceGrid.Columns("ChartStackSeries").Text, val(ctlSourceGrid.Columns("ChartviewID").Text), val(ctlSourceGrid.Columns("ChartTableID").Text), _
+      val(ctlSourceGrid.Columns("ChartColumnID").Text), val(ctlSourceGrid.Columns("ChartFilterID").Text), val(ctlSourceGrid.Columns("ChartAggregateType").Text), _
       ctlSourceGrid.Columns("ChartShowValues").Text, mcolGroups, _
       ctlSourceGrid.Columns("UseFormatting").Text, _
       ctlSourceGrid.Columns("Formatting_DecimalPlaces").Text, ctlSourceGrid.Columns("Formatting_Use1000Separator").Text, _
@@ -3689,8 +3689,8 @@ Private Sub cmdEditHypertextLink_Click()
       ctlSourceGrid.Columns("AppFilePath").Text, _
       ctlSourceGrid.Columns("AppParameters").Text, _
       "", False, _
-      ctlSourceGrid.Columns("Element_Type").value, Val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
-      Val(ctlSourceGrid.Columns("PictureID").Text), _
+      ctlSourceGrid.Columns("Element_Type").value, val(ctlSourceGrid.Columns("SeparatorOrientation").Text), _
+      val(ctlSourceGrid.Columns("PictureID").Text), _
       False, 0, False, False, 0, 0, 0, 0, 0, 0, mcolGroups, _
       False, 0, False, "", "", 0, "", "", "", "", "", "", "", "", "", "", "", "", "", _
       mcolSSITableViews
@@ -4877,7 +4877,7 @@ Private Sub ReadParameters()
                 
       sSQL = "SELECT *" & _
         " FROM tmpSSIHiddenGroups" & _
-        " WHERE linkID = " & CStr(rsLinks!ID)
+        " WHERE linkID = " & CStr(rsLinks!id)
       Set rsHiddenGroups = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
       While Not rsHiddenGroups.EOF
         sHiddenGroups = sHiddenGroups & rsHiddenGroups!GroupName & vbTab
