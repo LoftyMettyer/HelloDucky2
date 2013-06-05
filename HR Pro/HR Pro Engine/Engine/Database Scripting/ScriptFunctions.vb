@@ -68,8 +68,7 @@ Namespace ScriptDB
 
     End Function
 
-
-    Public Function UniqueCodeView() As Boolean
+    Public Function UniqueCodeViews() As Boolean
 
       Dim bOK As Boolean = True
       Dim sSQL As String = vbNullString
@@ -80,6 +79,67 @@ Namespace ScriptDB
         bOK = CommitDB.ScriptStatement(sSQL)
 
       Catch ex As Exception
+        bOK = False
+      End Try
+
+      Return bOK
+
+    End Function
+
+    Public Function GetFieldFromDatabases() As Boolean
+
+      Dim bOK As Boolean = True
+      Dim sObjectName As String = "udfsys_getfieldfromdatabaserecord"
+      Dim sSQL As String = vbNullString
+      Dim aryStatements As New ArrayList
+      Dim objComponent As Things.Component
+      Dim objPart1 As Things.Component
+      Dim objPart3 As Things.Component
+      Dim objTable1 As Things.Table
+      Dim objTable2 As Things.Table
+
+      Try
+
+        For Each objComponent In Globals.GetFieldsFromDB
+
+          ' The parameters as down a couple of component levels 
+          objPart1 = CType(objComponent.Objects(0).Objects(0), Things.Component)
+          objPart3 = CType(objComponent.Objects(2).Objects(0), Things.Component)
+          objTable1 = Globals.Things.Table(objPart1.TableID)
+          objTable2 = Globals.Things.Table(objPart3.TableID)
+
+          ' Even though the user can select different table for parameters 1 and 3 this
+          ' would return garbage data so ignore it!
+          If objTable1 Is objTable2 Then
+            aryStatements.Add(String.Format("    IF @searchcolumnid = '{0}-{1}' AND @returncolumnid = '{2}-{3}'" & vbNewLine & _
+              "        SELECT @result = [{5}] FROM dbo.[{4}] WHERE [{6}] = @searchexpression;" & vbNewLine _
+            , objPart1.TableID.PadLeft, objPart1.ColumnID.PadLeft _
+            , objPart3.TableID.PadLeft, objPart3.ColumnID.PadLeft _
+            , objTable1.PhysicalName, objTable1.Column(objPart3.ColumnID).Name _
+            , objTable2.Column(objPart1.ColumnID).Name))
+          End If
+
+        Next
+
+        ' Build the stored procedure
+        sSQL = String.Format("CREATE FUNCTION [dbo].[{0}](" & vbNewLine &
+            "    @searchcolumnid AS varchar(17)," & vbNewLine & _
+            "    @searchexpression AS nvarchar(MAX)," & vbNewLine & _
+            "    @returncolumnid AS varchar(17))" & vbNewLine & _
+            "RETURNS nvarchar(MAX)" & vbNewLine & _
+            "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+            "    DECLARE @result nvarchar(MAX);" & vbNewLine & _
+            "    SET @result = '';" & vbNewLine & vbNewLine & _
+            "{1}" & vbNewLine & _
+            "    RETURN @result;" & vbNewLine & _
+            "END" _
+            , sObjectName, String.Join(vbNewLine, aryStatements.ToArray()))
+
+        ScriptDB.DropUDF("dbo", sObjectName)
+        bOK = CommitDB.ScriptStatement(sSQL)
+
+      Catch ex As Exception
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.Triggers, sObjectName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sSQL)
         bOK = False
       End Try
 

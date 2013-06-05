@@ -102,14 +102,14 @@
           objCodeLibrary.ID = objRow.Item("id").ToString
           objCodeLibrary.Name = objRow.Item("name").ToString
           objCodeLibrary.Code = objRow.Item("code").ToString
-          'objCodeLibrary.SplitIntoCase = objRow.Item("splitintocase")
-          'objCodeLibrary.AppendWildcard = objRow.Item("appendwildcard")
           objCodeLibrary.PreCode = objRow.Item("precode").ToString
           objCodeLibrary.AfterCode = objRow.Item("aftercode").ToString
           objCodeLibrary.ReturnType = objRow.Item("returntype").ToString
           objCodeLibrary.OperatorType = objRow.Item("operatortype").ToString
           objCodeLibrary.RowNumberRequired = objRow.Item("rownumberrequired").ToString
           objCodeLibrary.CalculatePostAudit = objRow.Item("calculatepostaudit").ToString
+          objCodeLibrary.IsUniqueCode = objRow.Item("isuniquecode").ToString
+          objCodeLibrary.IsGetFieldFromDB = objRow.Item("isgetfieldfromdb").ToString
           objCodeLibrary.Dependancies = PopulateCodeLibraryDependancies(objCodeLibrary)
 
           If objRow.Item("isoperator") Then

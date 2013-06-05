@@ -16,11 +16,13 @@ Public Module Globals
   Public ModuleSetup As Things.Collection
   Public Options As HCMOptions
   Public UniqueCodes As Things.Collection
+  Public GetFieldsFromDB As Things.Collection
 
   Public ScriptDB As ScriptDB.Script
 
   Public Sub Initialise()
 
+    ' Metadata objects
     Things = New Things.Collection
     Workflows = New Things.Collection
     Operators = New Things.Collection
@@ -29,6 +31,11 @@ Public Module Globals
     ModuleSetup = New Things.Collection
     ScriptDB = New ScriptDB.Script
     Options = New HCMOptions
+
+    ' Dependency stack for special objects that will have procedures written for
+    UniqueCodes = New Things.Collection
+    GetFieldsFromDB = New Things.Collection
+
   End Sub
 
 End Module

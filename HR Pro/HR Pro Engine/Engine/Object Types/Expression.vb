@@ -984,6 +984,16 @@ Namespace Things
         Next
       End If
 
+      ' Does this component need adding to the 'Get Field From Database' stack?
+      If objCodeLibrary.IsGetFieldFromDB Then
+        Globals.GetFieldsFromDB.Add([Component])
+      End If
+
+      ' Is this a unique value that needs evaluating?
+      If objCodeLibrary.IsUniqueCode Then
+        Globals.UniqueCodes.Add([Component])
+      End If
+
       'ChildCodeCluster.IsEvaluated = Not objCodeLibrary.BypassValidation
       SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
       LineOfCode.Code = String.Format(LineOfCode.Code, ChildCodeCluster.ToArray)

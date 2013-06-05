@@ -103,7 +103,6 @@
     <Compile Include="Database Scripting\ScriptFunctions.vb" />
     <Compile Include="Globals.vb" />
     <Compile Include="HCM.vb" />
-    <Compile Include="ModuleSettings.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -157,7 +156,6 @@
     <Compile Include="Structure Port Scripting\Outputer.vb" />
     <Compile Include="Structure Port Scripting\XMLExport.vb" />
     <Compile Include="SysMgr.vb" />
-    <Compile Include="Web.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">

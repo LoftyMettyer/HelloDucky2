@@ -133,6 +133,13 @@ Namespace Things
       End Set
     End Property
 
+    Public ReadOnly Property Objects(ByVal Index As Integer) As Things.Base
+      Get
+        Return mobjChildObjects.Item(Index)
+      End Get
+    End Property
+
+
     ' Returns all child objects of specified type
     '    <System.ComponentModel.Browsable(False)> _
 

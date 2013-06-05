@@ -12,6 +12,8 @@
     'Public BypassValidation As Boolean
     Public RowNumberRequired As Boolean
     Public CalculatePostAudit As Boolean
+    Public IsGetFieldFromDB As Boolean = False
+    Public IsUniqueCode As Boolean = False
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get

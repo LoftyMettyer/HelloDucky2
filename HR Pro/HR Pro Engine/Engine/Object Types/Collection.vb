@@ -108,6 +108,8 @@ Namespace Things
 
     'End Sub
 
+
+
     Public Function GetObject(ByVal [Type] As Things.Type, ByVal [ID] As HCMGuid) As Things.Base ' Things.iSystemObject
 
       Dim objChild As Things.Base ' iSystemObject
@@ -142,22 +144,23 @@ Namespace Things
 
     End Function
 
+    Public ReadOnly Property Table(ByVal ID As HCMGuid) As Things.Table
+      Get
+
+        Dim objChild As Things.Base
+
+        For Each objChild In MyBase.Items
+          If objChild.ID = ID And objChild.Type = Type.Table Then
+            Return objChild
+          End If
+        Next
+
+        Return Nothing
+
+      End Get
+    End Property
+
 #End Region
-
-
-    'Default Public ReadOnly Property Objects(ByVal Type As Things.Type) As Things.Collection
-    '  Get
-    '    Return MyBase.Items.
-    '  End Get
-    'End Property
-
-    'Public ReadOnly Property Datasources() As Things.Datasource
-    '  Get
-    '    'Return MyBase.Items(
-    '  End Get
-    'End Property
-
-    ' End Function
 
 #Region "System.Xml.Serialization.IXmlSerializable"
 

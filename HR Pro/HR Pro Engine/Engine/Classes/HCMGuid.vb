@@ -15,6 +15,13 @@ Public Structure HCMGuid
     End Set
   End Property
 
+  Public ReadOnly Property PadLeft() As String
+    Get
+      Return mintValue.ToString.PadLeft(8, "0")
+    End Get
+  End Property
+
+
 #Region "IConvertible Interface"
 
   Public Function GetTypeCode() As TypeCode Implements IConvertible.GetTypeCode

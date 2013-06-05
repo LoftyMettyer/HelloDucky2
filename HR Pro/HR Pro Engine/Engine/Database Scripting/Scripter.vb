@@ -1025,7 +1025,8 @@ Namespace ScriptDB
       Try
 
         bOK = ScriptFunctions.ConvertCurrency
-        bOK = bOK And ScriptFunctions.UniqueCodeView
+        bOK = bOK And ScriptFunctions.UniqueCodeViews
+        bOK = bOK And ScriptFunctions.GetFieldFromDatabases
 
       Catch ex As Exception
         bOK = False
