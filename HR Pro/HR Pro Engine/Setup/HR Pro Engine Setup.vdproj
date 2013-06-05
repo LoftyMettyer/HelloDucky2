@@ -21,14 +21,14 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_64A94834F18A48339DC3AC2694BA4D97"
-        "OwnerKey" = "8:_UNDEFINED"
+        "MsmKey" = "8:_5A3EBDE1052BAD1A162FEE9DCF1BCCD1"
+        "OwnerKey" = "8:_64A94834F18A48339DC3AC2694BA4D97"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_9FC007E9F83BD607D644C32BA220CADD"
-        "OwnerKey" = "8:_64A94834F18A48339DC3AC2694BA4D97"
+        "MsmKey" = "8:_64A94834F18A48339DC3AC2694BA4D97"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -82,7 +82,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\HR Pro System Framework.msi"
+        "OutputFilename" = "8:Release\\OpenFramework.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -162,10 +162,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9FC007E9F83BD607D644C32BA220CADD"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5A3EBDE1052BAD1A162FEE9DCF1BCCD1"
             {
-            "SourcePath" = "8:HRProEngine.tlb"
-            "TargetName" = "8:HRProEngine.tlb"
+            "SourcePath" = "8:SystemFramework.tlb"
+            "TargetName" = "8:SystemFramework.tlb"
             "Tag" = "8:"
             "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
             "Condition" = "8:"
@@ -770,7 +770,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_64A94834F18A48339DC3AC2694BA4D97"
             {
-            "SourcePath" = "8:..\\Engine\\obj\\Release\\HRProEngine.dll"
+            "SourcePath" = "8:..\\Engine\\obj\\Release\\SystemFramework.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
