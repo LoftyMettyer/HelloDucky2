@@ -112,8 +112,9 @@
       If Not RowDetails.Order Is Nothing And _
           Not (RowDetails.RowSelection = ScriptDB.ColumnRowSelection.Total Or RowDetails.RowSelection = ScriptDB.ColumnRowSelection.Count) Then
         For Each objOrderItem In RowDetails.Order.Objects
-          If objOrderItem.ColumnType = "O" Then
-            If Not objOrderItem.Column Is Nothing Then
+          If objOrderItem.ColumnType = "O" And Not objOrderItem.Column Is Nothing Then
+
+            If Not objOrderItem.Column Is Nothing And objOrderItem.Column.Table Is Me.Parent Then
               Select Case objOrderItem.Ascending
                 Case Enums.Order.Ascending
                   aryOrderBy.Add(String.Format("base.[{1}] {2}", objOrderItem.Column.Table.Name, objOrderItem.Column.Name, IIf(bReverseOrder, "DESC", "ASC")))
@@ -124,6 +125,8 @@
             End If
           End If
         Next
+        aryOrderBy.Add("base.[ID] ASC")
+
       End If
 
       ' Add foreign key
