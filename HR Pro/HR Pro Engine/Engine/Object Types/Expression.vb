@@ -41,6 +41,7 @@ Namespace Things
     Public RequiresOvernight As Boolean = False
     Public ContainsUniqueCode As Boolean = False
     Public ReferencesParent As Boolean = False
+    Public ReferencesChild As Boolean = False
 
     Public IsComplex As Boolean = False
     Public IsValid As Boolean = True
@@ -559,11 +560,9 @@ Namespace Things
             , CInt(objThisColumn.ID).ToString.PadLeft(8, "0"))
         'Me.IsComplex = True
 
-      ElseIf Me.ExpressionType = ScriptDB.ExpressionType.TriggeredUpdate Then
-        LineOfCode.Code = String.Format("[{0}].[{1}]", objThisColumn.Table.PhysicalName, objThisColumn.Name)
-
       ElseIf objThisColumn Is Me.AssociatedColumn _
           And Not (Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter _
+          Or Me.ExpressionType = ScriptDB.ExpressionType.TriggeredUpdate _
           Or Me.ExpressionType = ScriptDB.ExpressionType.Mask _
           Or Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription) Then
         LineOfCode.Code = String.Format("@prm_{0}", objThisColumn.Name)
@@ -600,31 +599,36 @@ Namespace Things
         ' otherwise add it into child/parent statements array
         If objThisColumn.Table Is Me.AssociatedColumn.Table Then
 
-          Select Case Component.BaseExpression.ExpressionType
-            Case ScriptDB.ExpressionType.ColumnFilter
-              sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
-              Me.IsComplex = True
+          If Me.ExpressionType = ScriptDB.ExpressionType.TriggeredUpdate Then
+            sColumnName = String.Format("[{0}].[{1}]", objThisColumn.Table.PhysicalName, objThisColumn.Name)
+          Else
 
-            Case ScriptDB.ExpressionType.Mask
-              sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
-              Me.IsComplex = True
+            Select Case Component.BaseExpression.ExpressionType
+              Case ScriptDB.ExpressionType.ColumnFilter
+                sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
+                Me.IsComplex = True
 
-              ' Needs base table added
-              sFromCode = String.Format("FROM [dbo].[{0}] base", objThisColumn.Table.Name)
-              If Not FromTables.Contains(sFromCode) Then
-                FromTables.Add(sFromCode)
-              End If
+              Case ScriptDB.ExpressionType.Mask
+                sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
+                Me.IsComplex = True
 
-              ' Where clause
-              sWhereCode = String.Format("base.[ID] = @prm_ID")
-              If Not Wheres.Contains(sWhereCode) Then
-                Wheres.Add(sWhereCode)
-              End If
+                ' Needs base table added
+                sFromCode = String.Format("FROM [dbo].[{0}] base", objThisColumn.Table.Name)
+                If Not FromTables.Contains(sFromCode) Then
+                  FromTables.Add(sFromCode)
+                End If
 
-            Case Else
-              sColumnName = String.Format("@prm_{0}", objThisColumn.Name)
+                ' Where clause
+                sWhereCode = String.Format("base.[ID] = @prm_ID")
+                If Not Wheres.Contains(sWhereCode) Then
+                  Wheres.Add(sWhereCode)
+                End If
 
-          End Select
+              Case Else
+                sColumnName = String.Format("@prm_{0}", objThisColumn.Name)
+
+            End Select
+          End If
 
           LineOfCode.Code = String.Format("ISNULL({0},{1})", sColumnName, objThisColumn.SafeReturnType)
 
@@ -675,9 +679,6 @@ Namespace Things
             [Component].ChildRowDetails.Order = objThisColumn.Table.GetObject(Enums.Type.TableOrder, [Component].ChildRowDetails.OrderID)
             [Component].ChildRowDetails.Filter = objThisColumn.Table.Objects.GetObject(Things.Type.Expression, [Component].ChildRowDetails.FilterID)
             [Component].ChildRowDetails.Relation = objRelation
-
-            '       Debug.Assert(Not Me.AssociatedColumn.Name = "Personnel_Area")
-
             objOrderFilter = objThisColumn.Table.TableOrderFilter([Component].ChildRowDetails)
             objOrderFilter.IncludedColumns.AddIfNew(objThisColumn)
 
@@ -708,6 +709,9 @@ Namespace Things
             Else
               LineOfCode.Code = String.Format("ISNULL(@part_{0},{1})", iPartNumber, objThisColumn.SafeReturnType)
             End If
+
+            Me.ReferencesChild = True
+
           End If
         End If
       End If
@@ -794,7 +798,9 @@ Namespace Things
         SQLCode_AddCodeLevel([Component].Objects, WhereCodeCluster)
         objTriggeredUpdate.Where = String.Format(sWhereClause, WhereCodeCluster.ToArray)
 
-        Globals.OnBankHolidayUpdate.AddIfNew(objTriggeredUpdate)
+        If Not Me.ReferencesChild And Not Me.ReferencesChild Then
+          Globals.OnBankHolidayUpdate.AddIfNew(objTriggeredUpdate)
+        End If
 
         Me.ExpressionType = iBackupType
 
@@ -1019,6 +1025,7 @@ Namespace Things
       Me.RequiresRowNumber = RequiresRowNumber Or ReferencedColumn.Calculation.RequiresRowNumber
       Me.RequiresOvernight = RequiresOvernight Or ReferencedColumn.Calculation.RequiresOvernight
       Me.ReferencesParent = Me.ReferencesParent Or ReferencedColumn.Calculation.ReferencesParent
+      Me.ReferencesChild = Me.ReferencesChild Or ReferencedColumn.Calculation.ReferencesChild
       Dependencies.MergeUnique(ReferencedColumn.Calculation.Dependencies)
 
       Return sCallingCode
