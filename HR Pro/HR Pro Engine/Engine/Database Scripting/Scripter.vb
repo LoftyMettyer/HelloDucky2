@@ -983,6 +983,8 @@ Namespace ScriptDB
               '  Debug.Assert(objColumn.Name <> "Current_Salary_Size_2")
 
               objColumn.Calculation.AssociatedColumn = objColumn
+              objColumn.Calculation.StartOfPartNumbers = 0
+
               objColumn.Calculation.GenerateCode()
               Globals.TuningLog.Expressions.Add(objColumn)
 

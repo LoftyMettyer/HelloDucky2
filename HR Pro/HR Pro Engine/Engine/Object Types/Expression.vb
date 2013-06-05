@@ -493,11 +493,8 @@ Namespace Things
               ' There has to be a cleaner way, but once again I'm in  a hurry and this DOES work. Amazingly!
               ' I'm still in a hurry!!! :-(
               objCalculation = CType(objComponent.BaseExpression.BaseTable.Objects.GetObject(Enums.Type.Expression, objComponent.CalculationID), Things.Expression).Clone
-              '              objCalculation.SetBaseExpression(objComponent.BaseExpression)
-
+              'objCalculation.StartOfPartNumbers = 0
               objCalculation.BaseExpression = objComponent.BaseExpression
-
-              '              objComponent.BypassValidation = True
               objComponent.Objects = objCalculation.Objects
               objComponent.ReturnType = objCalculation.ReturnType
               SQLCode_AddParameter(objComponent, [CodeCluster])
