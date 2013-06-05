@@ -2111,7 +2111,7 @@ With SSDBGrid1
         .CaptionAlignment = ssColCapAlignCenter
         
         If mlngCrossTabType = cttAbsenceBreakdown Then
-          .Width = 1000
+          .Width = 1130
         End If
       End With
     Next
