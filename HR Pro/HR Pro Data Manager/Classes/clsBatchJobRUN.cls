@@ -1059,6 +1059,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
                 .TablesOfContents(1).TabLeader = wdTabLeaderDots
                 .TablesOfContents.Format = wdIndexIndent
               End With
+              
+              mwrdApp.Selection.HomeKey
               .InsertBreak Type:=wdPageBreak
               .MoveLeft unit:=wdCharacter
               .HomeKey unit:=wdStory, Extend:=wdExtend
@@ -1078,11 +1080,13 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
               .InsertBreak Type:=wdPageBreak
               .HomeKey unit:=wdStory
               .TypeParagraph: .TypeParagraph: .TypeParagraph: .TypeParagraph
+              
               If strOutputReportPackTitle = vbNullString Then
                 .TypeText Text:=sBatchJobName
               Else
                 .TypeText Text:=strOutputReportPackTitle
               End If
+              
               .HomeKey unit:=wdLine, Extend:=wdExtend
               ApplyStylesToRange mwrdApp.Selection.Range, mcolStyles("Heading"), True
               .Font.Size = 20
