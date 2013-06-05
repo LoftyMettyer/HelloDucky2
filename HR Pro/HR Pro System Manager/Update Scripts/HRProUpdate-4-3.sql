@@ -2207,7 +2207,7 @@ PRINT 'Step - Trigger functionality'
 
 	EXEC spsys_setsystemsetting 'advanceddatabasesetting', 'globalupdatebatchsize', 1;
 	EXEC spsys_setsystemsetting 'advanceddatabasesetting', 'deadlockretrycount', 10;
-	EXEC spsys_setsystemsetting 'overnight', 'refreshalltables', 1;
+	EXEC spsys_setsystemsetting 'overnight', 'refreshalltables', 0;
 
 /* ------------------------------------------------------------- */
 PRINT 'Step - System metadata indexing'
