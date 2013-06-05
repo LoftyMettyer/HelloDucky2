@@ -63,7 +63,7 @@
 
   Public Interface ITable
     Inherits IObject
-    Property CustomTriggers As Things.Collections.BaseCollection
+    Property CustomTriggers As ICollection(Of String)
     ' These eventually will be gotten rid of when we port the rest of sysmgr into this framework.
     Property SysMgrInsertTrigger As String
     Property SysMgrUpdateTrigger As String

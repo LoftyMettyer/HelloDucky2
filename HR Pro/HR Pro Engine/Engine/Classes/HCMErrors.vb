@@ -9,7 +9,7 @@ Namespace ErrorHandler
 
     Private _isCatastrophic As Boolean
 
-    Public Shadows Sub Add(ByVal Section As ErrorHandler.Section, ByVal ObjectName As String, ByVal Severity As SystemFramework.ErrorHandler.Severity, ByVal Message As String, ByVal Detail As String)
+    Public Overloads Sub Add(ByVal Section As ErrorHandler.Section, ByVal ObjectName As String, ByVal Severity As SystemFramework.ErrorHandler.Severity, ByVal Message As String, ByVal Detail As String)
 
       Dim item As ErrorHandler.Error
 

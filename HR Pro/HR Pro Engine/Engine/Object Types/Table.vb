@@ -33,8 +33,12 @@ Namespace Things
     Public Property DependsOnChildColumns As New List(Of Column)
     Public Property DependsOnParentColumns As New List(Of Column)
 
-    Public Property CustomTriggers As New Things.Collections.BaseCollection Implements ITable.CustomTriggers
+    Public Property CustomTriggers As ICollection(Of String) Implements ITable.CustomTriggers
     Public Property UpdateStatements As New ArrayList
+
+    Public Sub New()
+      CustomTriggers = New Collection(Of String)
+    End Sub
 
     Public Overrides ReadOnly Property PhysicalName As String
       Get
@@ -48,17 +52,17 @@ Namespace Things
       End Get
     End Property
 
-    Public Function GetRelation(ByVal ToTableID As Integer) As Things.Relation
+    Public Function GetRelation(ByVal ID As Integer) As Things.Relation
 
       Dim relation As New Things.Relation
 
       For Each relation In Me.Relations
         If relation.RelationshipType = ScriptDB.RelationshipType.Child Then
-          If relation.ChildID = ToTableID Then
+          If relation.ChildID = ID Then
             Return relation
           End If
         Else
-          If relation.ParentID = ToTableID Then
+          If relation.ParentID = ID Then
             Return relation
           End If
         End If

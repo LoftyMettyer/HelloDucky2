@@ -7,8 +7,8 @@ Namespace Things
     Inherits Things.Base
     Implements IWorkflowElementItem
 
-    Public Shadows Property ID As Integer Implements IWorkflowElementItem.ID
-    Public Shadows Property Description As String Implements IWorkflowElementItem.Description
+    Public Overloads Property ID As Integer Implements IWorkflowElementItem.ID
+    Public Overloads Property Description As String Implements IWorkflowElementItem.Description
     Public Property ItemType As Integer Implements IWorkflowElementItem.ItemType
     Public Property Caption As String Implements IWorkflowElementItem.Caption
     Public Property DBColumnID As Integer Implements IWorkflowElementItem.DBColumnID
