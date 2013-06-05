@@ -74,7 +74,7 @@ Namespace Things
 
         Dim sValue As String
 
-        sValue = mdblValueNumeric.ToString.Replace(",", ".")
+        sValue = mdecValueNumeric.ToString.Replace(",", ".")
 
         ' JIRA-1976 - SQL interprets values as integer if no decimal place - causes problems with divisions.
         If sValue.IndexOf(".") = -1 Then
