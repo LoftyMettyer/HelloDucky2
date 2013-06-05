@@ -18,7 +18,7 @@ Public Class MainForm
         Dim objDAOEngine As New DAO.DBEngine
         Dim objDAODB As DAO.Database
         '    Dim objRecordset As DAO.Recordset
-        Dim sADOConnect As String = String.Format("Driver=SQL Server;Server={0};UID=sa;PWD=asr;Database={1};" _
+    Dim sADOConnect As String = String.Format("Driver=SQL Server;Server={0};UID=sa;PWD=asr;Database={1};" _
                               , txtServer.Text, txtDatabase.Text)
         '  Dim objADOLogin As Phoenix.Connectivity.Login
 
@@ -70,8 +70,14 @@ Public Class MainForm
       bOK = objPhoenix.Script.CreateTriggers()
       Console.WriteLine(String.Format("Create Triggers: {0} milliseconds", sw.ElapsedMilliseconds))
 
-    'bOK = objPhoenix.Script.CreateFunctions
-    'bOK = objPhoenix.Script.ScriptIndexes
+    sw.Restart()
+    bOK = objPhoenix.Script.CreateFunctions
+    Console.WriteLine(String.Format("Create Functions: {0} milliseconds", sw.ElapsedMilliseconds))
+
+    sw.Restart()
+    bOK = objPhoenix.Script.ScriptIndexes
+    Console.WriteLine(String.Format("Create Indexes: {0} milliseconds", sw.ElapsedMilliseconds))
+
 
 
 
@@ -336,66 +342,66 @@ Public Class MainForm
 
         'objHRPro.Disconnect()
 
-        Dim con = String.Format("Initial Catalog={0}; Server={1};User ID={2}; Password={3}; APP={4};",
-                             txtDatabase2.Text, txtServer2.Text, txtUser2.Text, txtPassword2.Text, "ScriptDB")
+    'Dim con = String.Format("Initial Catalog={0}; Server={1};User ID={2}; Password={3}; APP={4};",
+    '                     txtDatabase2.Text, txtServer2.Text, txtUser2.Text, txtPassword2.Text, "ScriptDB")
 
-        Dim f As New AuditLogForm With {.ConString = con}
-        f.ShowDialog()
+    'Dim f As New AuditLogForm With {.ConString = con}
+    'f.ShowDialog()
 
     End Sub
 
   Private Sub Button2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button2.Click
 
 
-    Dim sPath As String = "C:\dev\HR Pro\HR Pro Engine\Test Harness\"
-    Dim objData As New MobileDesigner.DataManager
-    Dim objADO As New ADODB.Connection
-    Dim sADOConnect As String = String.Format("Driver=SQL Server;Server={0};UID=sa;PWD=asr;Database={1};" _
-                          , txtServer.Text, txtDatabase.Text)
+    'Dim sPath As String = "C:\dev\HR Pro\HR Pro Engine\Test Harness\"
+    'Dim objData As New MobileDesigner.DataManager
+    'Dim objADO As New ADODB.Connection
+    'Dim sADOConnect As String = String.Format("Driver=SQL Server;Server={0};UID=sa;PWD=asr;Database={1};" _
+    '                      , txtServer.Text, txtDatabase.Text)
 
-    Dim objDAOEngine As New DAO.DBEngine
-    Dim objDAODB As DAO.Database
+    'Dim objDAOEngine As New DAO.DBEngine
+    'Dim objDAODB As DAO.Database
 
-    Dim conStr As String = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" & sPath & "AsrTemp_" & txtDatabase.Text & ".mdb"
+    'Dim conStr As String = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" & sPath & "AsrTemp_" & txtDatabase.Text & ".mdb"
 
-    objDAODB = objDAOEngine.OpenDatabase(sPath & "asrtemp_" & txtDatabase.Text & ".mdb", , False, conStr)
+    'objDAODB = objDAOEngine.OpenDatabase(sPath & "asrtemp_" & txtDatabase.Text & ".mdb", , False, conStr)
 
-    With objADO
-      .ConnectionString = sADOConnect
-      .Provider = "SQLOLEDB"
-      .CommandTimeout = 0
-      .ConnectionTimeout = 5
-      .CursorLocation = ADODB.CursorLocationEnum.adUseServer
-      .Mode = ADODB.ConnectModeEnum.adModeReadWrite
-      '.Properties("Packet Size") = 32767
-      .Open()
-    End With
-
-
-    '   Dim objMobileDesigner As New MobileDesigner.DesignerForm
-
-    '  objMobileDesigner.MetadataDB = objDAODB
+    'With objADO
+    '  .ConnectionString = sADOConnect
+    '  .Provider = "SQLOLEDB"
+    '  .CommandTimeout = 0
+    '  .ConnectionTimeout = 5
+    '  .CursorLocation = ADODB.CursorLocationEnum.adUseServer
+    '  .Mode = ADODB.ConnectModeEnum.adModeReadWrite
+    '  '.Properties("Packet Size") = 32767
+    '  .Open()
+    'End With
 
 
-    '   objPhoenix.MetadataDB = objDAODB
-    '  objPhoenix.CommitDB = objADO
+    ''   Dim objMobileDesigner As New MobileDesigner.DesignerForm
+
+    ''  objMobileDesigner.MetadataDB = objDAODB
 
 
-    '    Dim objInterface As New MobileDesigner.DataManager
-    '    objInterface.SysMgrInterface.CommitDB = objADO
+    ''   objPhoenix.MetadataDB = objDAODB
+    ''  objPhoenix.CommitDB = objADO
 
-    ' objInterface()
 
-    '    objData.SQLConnection = "Data Source=HARPDEV02;Initial Catalog=OpenHRMobile;Persist Security Info=True;User ID=sa;Password=asr"
-    '  objData.SQLConnection = sADOConnect ' objADO.ConnectionString ' "Data Source=HARPDEV02;Initial Catalog=OpenHRMobile;Persist Security Info=True;User ID=sa;Password=asr"
-    '  objData.BuildSessionFactory()
+    ''    Dim objInterface As New MobileDesigner.DataManager
+    ''    objInterface.SysMgrInterface.CommitDB = objADO
 
-    '    Dim obj1 As New MobileDesigner.MobileDesignerSerivce("C:\dev\HR Pro\HR Pro Engine\Test Harness\asrtemp_openhrmobile.mdb")
+    '' objInterface()
 
-    '    obj1()
+    ''    objData.SQLConnection = "Data Source=HARPDEV02;Initial Catalog=OpenHRMobile;Persist Security Info=True;User ID=sa;Password=asr"
+    ''  objData.SQLConnection = sADOConnect ' objADO.ConnectionString ' "Data Source=HARPDEV02;Initial Catalog=OpenHRMobile;Persist Security Info=True;User ID=sa;Password=asr"
+    ''  objData.BuildSessionFactory()
 
-    '    obj1.Initialise("C:\dev\HR Pro\HR Pro Engine\Test Harness\asrtemp_openhrmobile.mdb")
-    ' obj1.Show()
+    ''    Dim obj1 As New MobileDesigner.MobileDesignerSerivce("C:\dev\HR Pro\HR Pro Engine\Test Harness\asrtemp_openhrmobile.mdb")
+
+    ''    obj1()
+
+    ''    obj1.Initialise("C:\dev\HR Pro\HR Pro Engine\Test Harness\asrtemp_openhrmobile.mdb")
+    '' obj1.Show()
 
 
   End Sub

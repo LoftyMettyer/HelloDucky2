@@ -314,6 +314,7 @@ Namespace Things
         expression.Decimals = row.Item("decimals")
         expression.BaseTable = table
         expression.BaseExpression = expression
+        expression.Level = 1
 
         expression.Components = Things.LoadComponents(expression, ScriptDB.ComponentTypes.Expression)
 
@@ -428,6 +429,7 @@ Namespace Things
         component.IsColumnByReference = row.Item("iscolumnbyreference").ToString
         component.CalculationID = row.Item("calculationid").ToString
         component.ValueType = row.Item("valuetype").ToString
+        component.Level = expression.Level + 1
 
         Select Case component.ValueType
           Case ScriptDB.ComponentValueTypes.Date

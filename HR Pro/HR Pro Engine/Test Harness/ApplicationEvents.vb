@@ -13,7 +13,7 @@
 
             Dim stream = New IO.MemoryStream(My.Resources.Office2007Blue)
 
-            Infragistics.Win.AppStyling.StyleManager.Load(stream)
+      '       Infragistics.Win.AppStyling.StyleManager.Load(stream)
         End Sub
     End Class
 

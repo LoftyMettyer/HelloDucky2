@@ -106,7 +106,7 @@ Partial Class MainForm
     Me.txtDatabase.Name = "txtDatabase"
     Me.txtDatabase.Size = New System.Drawing.Size(100, 20)
     Me.txtDatabase.TabIndex = 22
-    Me.txtDatabase.Text = "openhr5"
+    Me.txtDatabase.Text = "blank"
     '
     'butScriptDB
     '
@@ -248,7 +248,7 @@ Partial Class MainForm
     Me.TextBox2.Name = "TextBox2"
     Me.TextBox2.Size = New System.Drawing.Size(100, 20)
     Me.TextBox2.TabIndex = 32
-    Me.TextBox2.Text = "openhr5"
+    Me.TextBox2.Text = "blank"
     '
     'Button2
     '

@@ -62,16 +62,6 @@
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Infragistics2.Shared.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb" />
-    <Reference Include="Infragistics2.Win.Misc.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb" />
-    <Reference Include="Infragistics2.Win.UltraWinEditors.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
-    <Reference Include="Infragistics2.Win.UltraWinGrid.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
-    <Reference Include="Infragistics2.Win.UltraWinSchedule.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
-    <Reference Include="Infragistics2.Win.UltraWinTabControl.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb" />
-    <Reference Include="Infragistics2.Win.UltraWinToolbars.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb" />
-    <Reference Include="Infragistics2.Win.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb" />
-    <Reference Include="Infragistics3.Excel.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb" />
-    <Reference Include="Infragistics3.Win.UltraWinGrid.ExcelExport.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Linq" />
@@ -100,7 +90,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
-    <Compile Include="AuditLogModel.vb" />
     <Compile Include="HRProData.designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -111,18 +100,6 @@
     </Compile>
     <Compile Include="MainForm.Designer.vb">
       <DependentUpon>MainForm.vb</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AuditLogForm.Designer.vb">
-      <DependentUpon>AuditLogForm.vb</DependentUpon>
-    </Compile>
-    <Compile Include="AuditLogForm.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Import &amp; Export Definitions\ViewObjects.Designer.vb">
-      <DependentUpon>ViewObjects.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Import &amp; Export Definitions\ViewObjects.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="modGeneral.vb" />
@@ -149,14 +126,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AuditLogForm.resx">
-      <DependentUpon>AuditLogForm.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Import &amp; Export Definitions\ViewObjects.resx">
-      <DependentUpon>ViewObjects.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\licenses.licx" />
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -236,6 +207,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Import &amp; Export Definitions\" />
     <Folder Include="My Project\DataSources\" />
     <Folder Include="Objects\" />
   </ItemGroup>

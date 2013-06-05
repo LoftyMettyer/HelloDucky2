@@ -32,6 +32,7 @@ Namespace Things
     Public Property IsTimeDependant As Boolean
 
     Public Property Components As ICollection(Of Component)
+    Public Property Level As Long = 0
 
     Public Sub New()
       Components = New Collection(Of Component)
