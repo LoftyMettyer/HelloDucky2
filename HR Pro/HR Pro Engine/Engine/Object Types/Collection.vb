@@ -127,6 +127,21 @@ Namespace Things
 
     'End Sub
 
+    'Default Public ReadOnly Property GetSingleObject(ByVal ID As HCMGuid) As Things.Base
+    '  Get
+
+    '    Dim objChild As Things.Base
+
+    '    For Each objChild In MyBase.Items
+    '      If objChild.ID = ID And objChild.Type = Type.Table Then
+    '        Return objChild
+    '      End If
+    '    Next
+
+    '    Return Nothing
+
+    '  End Get
+    'End Property
 
 
     Public Function GetObject(ByVal [Type] As Things.Type, ByVal [ID] As HCMGuid) As Things.Base ' Things.iSystemObject

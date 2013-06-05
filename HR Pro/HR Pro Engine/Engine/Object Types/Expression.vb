@@ -548,26 +548,11 @@ Namespace Things
             sColumnOrder = String.Empty
             bIsSummaryColumn = False
 
-
-            ' I think if we're a byreference component this would have been dealt with higher up the case statement!
-            ''''''''''''''''''
-            ' Is parent or child?
-            '            If Component.IsColumnByReference Then
-            'objRelation = New Things.Relation
-            'objRelation.RelationshipType = ScriptDB.RelationshipType.Unknown
-            'Else
-            'objRelation = objBaseColumn.Table.GetRelation(objThisColumn.Table.ID)
             objRelation = Me.BaseTable.GetRelation(objThisColumn.Table.ID)
-            'End If
 
             If objRelation.RelationshipType = ScriptDB.RelationshipType.Parent Then
               LineOfCode.Code = String.Format("ISNULL([{0}].[{1}],{2})", objThisColumn.Table.Name, objThisColumn.Name, objThisColumn.SafeReturnType)
-
-              'objThisColumn.Table.Column(objThisColumn.ID).ReferencedBy.AddIfNew(Me.AssociatedColumn.Table)
-
-              objThisColumn.ReferencedBy.AddIfNew(Me.AssociatedColumn.Table)
-
-              '              objThisColumn.Table.DependantChildTableColumns.AddIfNew(objThisColumn)
+              Me.AssociatedColumn.Table.DependsOnColumns.AddIfNew(objThisColumn)
 
               ' Add table join component
               sRelationCode = String.Format("LEFT JOIN [dbo].[{0}] ON [{0}].[ID] = base.[ID_{1}]" _
@@ -588,13 +573,15 @@ Namespace Things
                 Wheres.Add(sWhereCode)
               End If
 
-              ' Mark this relation has having to be updated in the parent triggers
-              If Not Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription Then
-                objRelation = objThisColumn.Table.GetRelation(Me.AssociatedColumn.Table.ID)
-                objRelation.DependantOnParent = True
-              End If
+              '' Mark this relation has having to be updated in the parent triggers
+              'If Not Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription Then
+              '  objRelation = objThisColumn.Table.GetRelation(Me.AssociatedColumn.Table.ID)
+              '  objRelation.DependantOnParent = True
+              'End If
 
             Else
+
+              'Me.AssociatedColumn.Table.DependsOnColumns.AddIfNew(objThisColumn)
 
               ' Derive code for any filter on this column in a child table
               If CInt([Component].ColumnFilterID) > 0 Then
@@ -655,8 +642,6 @@ Namespace Things
               ' Code for the order on this column in a child table
               If CInt([Component].ColumnOrderID) > 0 Then
                 sColumnOrder = SQLCode_AddOrder(objThisColumn.Table, [Component].ColumnOrderID, bReverseOrder)
-
-                '                objThisColumn.Table.Parent = objt
                 Globals.PerformanceIndexes.AddIfNew(objThisColumn)
               End If
 
@@ -670,26 +655,14 @@ Namespace Things
                     , [CodeCluster].Indentation, iPartNumber, objThisColumn.DataTypeSyntax))
               End If
 
-
-              ' TODO - this needs to reference the relationship to the parent table, how do we deal with get field from db record?!!!!
-              If Component.IsColumnByReference Then
-
-                sPartCode = sPartCode & String.Format("{0}FROM [dbo].[{1}]" & vbNewLine _
-                    & "{0} " & vbNewLine _
-                    & "{0}{2}" & vbNewLine _
-                    , [CodeCluster].Indentation _
-                    , objThisColumn.Table.Name _
-                    , sColumnFilter, sColumnOrder)
-              Else
-                sPartCode = sPartCode & String.Format("{0}FROM [dbo].[{1}] base" & vbNewLine _
-                    & "{5}" & vbNewLine _
-                    & "{0}WHERE [id_{2}] = @prm_ID_{2} " & vbNewLine _
-                    & "{0}{3}" & vbNewLine _
-                    & "{0}{4}" & vbNewLine _
-                    , [CodeCluster].Indentation _
-                    , objThisColumn.Table.Name _
-                    , CInt(Me.BaseTable.ID), sColumnFilter, sColumnOrder, sColumnJoinCode)
-              End If
+              sPartCode = sPartCode & String.Format("{0}FROM [dbo].[{1}] base" & vbNewLine _
+                  & "{5}" & vbNewLine _
+                  & "{0}WHERE [id_{2}] = @prm_ID_{2} " & vbNewLine _
+                  & "{0}{3}" & vbNewLine _
+                  & "{0}{4}" & vbNewLine _
+                  , [CodeCluster].Indentation _
+                  , objThisColumn.Table.Name _
+                  , CInt(Me.BaseTable.ID), sColumnFilter, sColumnOrder, sColumnJoinCode)
 
               ' Add relation to the dependency stack
               bAddRelation = True

@@ -338,7 +338,7 @@ Namespace ScriptDB
 
       Dim bOK As Boolean = True
       Dim objTable As Things.Table
-      Dim objChildTable As Things.Table
+      Dim objRelatedTable As Things.Table
       Dim objColumn As Things.Column
       Dim objRelation As Things.Relation
       Dim sSQL As String = String.Empty
@@ -371,6 +371,10 @@ Namespace ScriptDB
       Dim aryAfterInsertColumns As ArrayList
       Dim aryAllWriteableColumns As ArrayList
 
+      Dim aryColumns As New ArrayList
+
+      'Dim colRelatedTables As New Things.Collection
+
       Dim aryAuditUpdates As ArrayList
       Dim aryAuditInserts As ArrayList
       Dim aryAuditDeletes As ArrayList
@@ -398,6 +402,9 @@ Namespace ScriptDB
           aryPostAuditCalcs = New ArrayList
           aryDebugColumns = New ArrayList
 
+
+
+
           sDebugCode = String.Empty
 
           sSQLCode_AuditInsert = String.Empty
@@ -409,6 +416,42 @@ Namespace ScriptDB
             objTable.RecordDescription.GenerateCode()
             aryCalculatedColumns.Add(String.Format("[_description] = {0}", objTable.RecordDescription.UDF.CallingCode))
           End If
+
+          ' Add any relationship columns
+          For Each objRelation In objTable.Objects(Things.Type.Relation)
+
+            aryColumns = New ArrayList
+            If objRelation.RelationshipType = RelationshipType.Parent Then
+              aryBaseTableColumns.Add(String.Format("[ID_{0}] = [inserted].[ID_{0}]", CInt(objRelation.ParentID)))
+              aryAllWriteableColumns.Add(String.Format("[ID_{0}]", CInt(objRelation.ParentID)))
+
+              aryParentsToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {1})" & vbNewLine & _
+                  "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM inserted)" & vbNewLine _
+                  , objRelation.PhysicalName, CInt(objRelation.ParentID)))
+
+              aryParentsToUpdate_Delete.Add(String.Format("    UPDATE [dbo].[{1}] SET [updflag] = 1 WHERE [dbo].[{1}].[id] IN (SELECT DISTINCT [id_{2}] FROM deleted)" & vbNewLine & vbNewLine _
+                , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID)))
+
+            Else
+
+              objRelatedTable = Globals.Things.GetObject(Things.Type.Table, objRelation.ChildID)
+              For Each objColumn In objRelatedTable.DependsOnColumns
+                If objColumn.Table Is objTable Then
+                  aryColumns.Add(String.Format("NOT i.{0} = d.{0}", objColumn.Name))
+                End If
+              Next
+
+              If aryColumns.Count > 0 Then
+                aryChildrenToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3})" & vbNewLine & _
+                      "        UPDATE dbo.[{0}] SET [updflag] = 1 WHERE ID_{1} IN (SELECT i.ID FROM inserted i" & vbNewLine & _
+                      "        INNER JOIN dbo.[{2}] d ON d.ID = i.ID " & vbNewLine & _
+                      "        WHERE {4});" _
+                      , objRelatedTable.PhysicalName, CInt(objTable.ID), objTable.PhysicalName, CInt(objRelatedTable.ID) _
+                      , String.Join(" OR ", aryColumns.ToArray())))
+              End If
+            End If
+          Next
+
 
           For Each objColumn In objTable.Columns
 
@@ -474,10 +517,14 @@ Namespace ScriptDB
               End If
             End If
 
-
             'For Each objChildTable In objColumn.ReferencedBy
-            '  aryChildrenToUpdate.Add(String.Format("--NOT i.[{0}] = d.[{0}]", objColumn.Name, objChildTable.PhysicalName))
 
+            '  '   colRelatedTables(objChildTable).id = 1
+
+
+            '  If colRelatedTables.Contains(objChildTable) Then
+            '    colRelatedTables.Table(objChildTable.ID).UpdateStatements.Add(String.Format("--NOT i.[{0}] = d.[{0}]", objColumn.Name, objChildTable.PhysicalName))
+            '  End If
             'Next
 
             ' Add any relationship columns
@@ -493,37 +540,6 @@ Namespace ScriptDB
 
 
             '
-          Next
-
-
-          ' Add any relationship columns
-          For Each objRelation In objTable.Objects(Things.Type.Relation)
-            If objRelation.RelationshipType = RelationshipType.Parent Then
-              aryBaseTableColumns.Add(String.Format("[ID_{0}] = [inserted].[ID_{0}]", CInt(objRelation.ParentID)))
-              aryAllWriteableColumns.Add(String.Format("[ID_{0}]", CInt(objRelation.ParentID)))
-
-              aryParentsToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {1})" & vbNewLine & _
-                  "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM inserted)" & vbNewLine _
-                  , objRelation.PhysicalName, CInt(objRelation.ParentID)))
-
-              aryParentsToUpdate_Delete.Add(String.Format("    UPDATE [dbo].[{1}] SET [updflag] = 1 WHERE [dbo].[{1}].[id] IN (SELECT DISTINCT [id_{2}] FROM deleted)" & vbNewLine & vbNewLine _
-                , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID)))
-
-            ElseIf objRelation.DependantOnParent Then
-              aryChildrenToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3})" & vbNewLine & _
-                      "        UPDATE base SET [updflag] = 1 FROM dbo.[{1}] base WHERE [ID_{2}] IN (SELECT DISTINCT [id] FROM inserted);" & vbNewLine _
-                      , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID), CInt(objRelation.ChildID)))
-
-
-              ' We have dependant tables
-              'If i.colparent3 <> d.colparent 3 or i.blah1 <> d.blah1 etc
-              'objTable.Columns
-
-
-
-
-
-            End If
           Next
 
 
@@ -550,7 +566,7 @@ Namespace ScriptDB
 
           ' Update child records
           If aryChildrenToUpdate.ToArray.Length > 0 Then
-            sSQLChildColumns = String.Format("    -- Refresh children" & vbNewLine & String.Join(vbNewLine, aryChildrenToUpdate.ToArray()))
+            sSQLChildColumns = String.Format("    -- Update children" & vbNewLine & String.Join(vbNewLine & vbNewLine, aryChildrenToUpdate.ToArray()))
           Else
             sSQLChildColumns = "    -- No children to refresh" & vbNewLine & vbNewLine
           End If
@@ -590,8 +606,8 @@ Namespace ScriptDB
               "        SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
               "        FROM [dbo].[{0}]" & vbNewLine & _
               "        WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
-              "    UPDATE base" & vbNewLine & _
-              "        SET {1}" _
+              "    UPDATE base SET " & vbNewLine & _
+              "        {1}" _
               , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryCalculatedColumns.ToArray()))
 
             sDebugCode = String.Format("{0}", String.Join(vbNewLine, aryPerformanceTuneColumns.ToArray()))

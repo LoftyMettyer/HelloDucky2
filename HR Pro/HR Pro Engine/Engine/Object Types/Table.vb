@@ -14,11 +14,16 @@ Namespace Things
     Public DefaultEmailID As HCMGuid
     Public IsRemoteView As Boolean
 
-    '    Public DependantChildTableColumns As Things.Collection
+    Public DependsOnColumns As New Things.Collection
 
     'Public Sub New()
     '  DependantChildTableColumns = New Things.Collection
     'End Sub
+
+    Public UpdateStatements As New ArrayList
+
+
+
 
     Public Overrides ReadOnly Property PhysicalName As String
       Get

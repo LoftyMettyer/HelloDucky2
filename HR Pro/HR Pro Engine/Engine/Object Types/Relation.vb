@@ -4,14 +4,15 @@
     Inherits Things.Base
 
     Public RelationshipType As ScriptDB.RelationshipType
-
     Public ParentID As HCMGuid
     Public ChildID As HCMGuid
 
-    Public DependantOnParent As Boolean = False
+    Public DependantColumns As Things.Collection
+    '    Public DependantOnParent As Boolean = False
 
-    'Public Overrides Function Commit() As Boolean
-    'End Function
+    Public Sub New()
+      DependantColumns = New Things.Collection
+    End Sub
 
     Public Overrides ReadOnly Property PhysicalName As String
       Get
