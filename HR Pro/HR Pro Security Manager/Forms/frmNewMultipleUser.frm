@@ -69,10 +69,10 @@ Begin VB.Form frmNewMultipleUser
          Width           =   3120
       End
       Begin VB.CommandButton cmdWindowsUsername 
+         Caption         =   "..."
          Height          =   315
          Left            =   4530
          Picture         =   "frmNewMultipleUser.frx":000C
-         Style           =   1  'Graphical
          TabIndex        =   15
          Top             =   2400
          UseMaskColor    =   -1  'True
@@ -117,20 +117,20 @@ Begin VB.Form frmNewMultipleUser
          Width           =   3705
       End
       Begin VB.CommandButton cmdPassword 
+         Caption         =   "..."
          Height          =   315
          Left            =   4530
          Picture         =   "frmNewMultipleUser.frx":0084
-         Style           =   1  'Graphical
          TabIndex        =   10
          Top             =   1125
          UseMaskColor    =   -1  'True
          Width           =   315
       End
       Begin VB.CommandButton cmdSQLUserName 
+         Caption         =   "..."
          Height          =   315
          Left            =   4530
          Picture         =   "frmNewMultipleUser.frx":00FC
-         Style           =   1  'Graphical
          TabIndex        =   7
          Top             =   720
          UseMaskColor    =   -1  'True
@@ -231,10 +231,10 @@ Begin VB.Form frmNewMultipleUser
          Width           =   3870
       End
       Begin VB.CommandButton cmdFilter 
+         Caption         =   "..."
          Height          =   315
          Left            =   4530
          Picture         =   "frmNewMultipleUser.frx":0174
-         Style           =   1  'Graphical
          TabIndex        =   19
          Top             =   300
          UseMaskColor    =   -1  'True
