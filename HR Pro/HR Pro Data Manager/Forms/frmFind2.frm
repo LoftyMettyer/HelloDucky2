@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{4A4AA691-3E6F-11D2-822F-00104B9E07A1}#3.0#0"; "ssdw3bo.ocx"
 Begin VB.Form frmFind2 
@@ -47,6 +47,7 @@ Begin VB.Form frmFind2
             Object.Width           =   10689
             Text            =   "x Records"
             TextSave        =   "x Records"
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -820,7 +821,7 @@ Private Function GetFindRecords() As Boolean
   Dim fColumnOK As Boolean
   Dim fFound As Boolean
   Dim fNoSelect As Boolean
-  Dim iIndex As Integer
+  Dim iIndex As Long ' Integer
   Dim iNextIndex As Integer
   Dim lngFirstFindColumnID As Long
   Dim sSQL As String
