@@ -127,7 +127,7 @@ Public Function SetTriggers(palngExpressions() As Long, pfRefreshDatabase As Boo
      
       If Not !Deleted Then
         ' Create the triggers.
-        strTableName = .Fields("TableName").Value
+        strTableName = .Fields("TableName").value
 
         OutputCurrentProcess2 strTableName, lngRecordCount
         gobjProgress.UpdateProgress2
@@ -346,7 +346,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
     With recTabEdit
       
       ' Table level audit insert stuff
-      If .Fields("AuditInsert").Value = True Then
+      If .Fields("AuditInsert").value = True Then
         sInsertAuditCode.Append vbNewLine & vbTab & "/* Table level audit */" & _
           vbNewLine & vbTab & "EXECUTE dbo.sp_ASRAuditTable " & pLngCurrentTableID & ", @recordID, @recordDesc, '* New Record *'" & vbNewLine
       Else
@@ -365,7 +365,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
 '      End If
     
       ' Table level audit delete stuff
-      If .Fields("AuditDelete").Value = True Then
+      If .Fields("AuditDelete").value = True Then
         sDeleteAuditCode.Append vbNewLine & vbTab & "/* Table level audit */" & _
           vbNewLine & vbTab & "EXECUTE dbo.sp_ASRAuditTable " & pLngCurrentTableID & ", @recordID, @recordDesc, '* Deleted Record *'" & vbNewLine
       Else
@@ -422,8 +422,8 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
             ' This change was driven by the performance degradation reported by
             ' Islington.
             
-            lngColumnID = .Fields("ColumnID").Value
-            strColumnName = .Fields("ColumnName").Value
+            lngColumnID = .Fields("ColumnID").value
+            strColumnName = .Fields("ColumnName").value
             strColumnID = Trim$(Str$(lngColumnID))
             
             ReDim Preserve alngAuditColumns(UBound(alngAuditColumns) + 1)
@@ -674,8 +674,8 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
         'Increase the array size in chunks of 100 to improve performance.
         If iIndex > UBound(avExpressions, 2) Then ReDim Preserve avExpressions(2, iIndex + 100)
         
-        avExpressions(1, iIndex) = rsExpressions(0).Value 'ExprID
-        avExpressions(2, iIndex) = rsExpressions(1).Value 'ReturnType
+        avExpressions(1, iIndex) = rsExpressions(0).value 'ExprID
+        avExpressions(2, iIndex) = rsExpressions(1).value 'ReturnType
         rsExpressions.MoveNext
       Loop
     
@@ -730,14 +730,14 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
 
       ' Loop through the calculated columns that use the expression.
       Do While Not rsCalcColumns.EOF
-        lngCalcTableID = rsCalcColumns(0).Value   ' rsCalcColumns!TableID
-        sCalcTable = rsCalcColumns(1).Value       ' rsCalcColumns!TableName
-        lngCalcColumnID = rsCalcColumns(2).Value  ' rsCalcColumns!ColumnID
-        sCalcColumn = rsCalcColumns(3).Value      ' rsCalcColumns!ColumnName
-        iCalcDataType = rsCalcColumns(4).Value    ' rsCalcColumns!DataType
-        iCalcSize = rsCalcColumns(5).Value        ' rsCalcColumns!Size
-        blnCalculateIfEmpty = rsCalcColumns(8).Value        ' rsCalcColumns!CalculateIfEmpty
-        bIsMaxSize = IIf(IsNull(rsCalcColumns(9).Value), False, rsCalcColumns(9).Value)
+        lngCalcTableID = rsCalcColumns(0).value   ' rsCalcColumns!TableID
+        sCalcTable = rsCalcColumns(1).value       ' rsCalcColumns!TableName
+        lngCalcColumnID = rsCalcColumns(2).value  ' rsCalcColumns!ColumnID
+        sCalcColumn = rsCalcColumns(3).value      ' rsCalcColumns!ColumnName
+        iCalcDataType = rsCalcColumns(4).value    ' rsCalcColumns!DataType
+        iCalcSize = rsCalcColumns(5).value        ' rsCalcColumns!Size
+        blnCalculateIfEmpty = rsCalcColumns(8).value        ' rsCalcColumns!CalculateIfEmpty
+        bIsMaxSize = IIf(IsNull(rsCalcColumns(9).value), False, rsCalcColumns(9).value)
 
         ReDim Preserve alngColumns(UBound(alngColumns) + 1)
         alngColumns(UBound(alngColumns)) = lngCalcColumnID
@@ -840,16 +840,18 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
             If iCalcDataType = dtNUMERIC Then
               dblMaxValue = 10 ^ (iCalcSize - rsCalcColumns!Decimals)
               asCalcSelfCode(1).Append _
-                sIndent & "        IF @" & sExprName & " >= " & Trim$(Str$(dblMaxValue)) & " SET @col" & Trim$(Str$(lngCalcColumnID)) & " = 0" & vbNewLine & _
-                sIndent & "        IF @" & sExprName & " <= -" & Trim$(Str$(dblMaxValue)) & " SET @col" & Trim$(Str$(lngCalcColumnID)) & " = 0" & vbNewLine & _
-                sIndent & "        IF (@" & sExprName & " < " & Trim$(Str$(dblMaxValue)) & ") AND (@" & sExprName & " > -" & Trim$(Str$(dblMaxValue)) & ") SET @col" & Trim$(Str$(lngCalcColumnID)) & " = " & sConvertCode & "@" & sExprName & IIf(LenB(sConvertCode) <> 0, ")", vbNullString) & vbNewLine & _
-                sIndent & "        IF convert(float, @inscol_" & Trim$(Str$(lngCalcColumnID)) & ") <> @col" & Trim$(Str$(lngCalcColumnID)) & " SET @changesMade = 1" & vbNewLine & _
-                sIndent & "        SET @inscol_" & Trim$(Str$(lngCalcColumnID)) & " = @col" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
+                sIndent & "        IF @" & sExprName & " >= " & CStr(dblMaxValue) & " SET @col" & CStr(lngCalcColumnID) & " = 0" & vbNewLine & _
+                sIndent & "        IF @" & sExprName & " <= -" & CStr(dblMaxValue) & " SET @col" & CStr(lngCalcColumnID) & " = 0" & vbNewLine & _
+                sIndent & "        IF (@" & sExprName & " < " & CStr(dblMaxValue) & ") AND (@" & sExprName & " > -" & CStr(dblMaxValue) & ") SET @col" & CStr(lngCalcColumnID) & " = " & sConvertCode & "@" & sExprName & IIf(LenB(sConvertCode) <> 0, ")", vbNullString) & vbNewLine & _
+                sIndent & "        IF convert(float, @inscol_" & CStr(lngCalcColumnID) & ") <> @col" & CStr(lngCalcColumnID) & " SET @changesMade = 1" & vbNewLine & _
+                sIndent & "        SET @delcol_" & CStr(lngCalcColumnID) & " = @inscol_" & CStr(lngCalcColumnID) & vbNewLine & _
+                sIndent & "        SET @inscol_" & CStr(lngCalcColumnID) & " = @col" & CStr(lngCalcColumnID) & vbNewLine
             Else
               asCalcSelfCode(1).Append _
-                sIndent & "        SET @col" & Trim$(Str$(lngCalcColumnID)) & " = " & sConvertCode & "@" & sExprName & IIf(LenB(sConvertCode) <> 0, ")", vbNullString) & vbNewLine & _
-                sIndent & "        IF @inscol_" & Trim$(Str$(lngCalcColumnID)) & " <> @col" & Trim$(Str$(lngCalcColumnID)) & " SET @changesMade = 1" & vbNewLine & _
-                sIndent & "        SET @inscol_" & Trim$(Str$(lngCalcColumnID)) & " = @col" & Trim$(Str$(lngCalcColumnID)) & vbNewLine
+                sIndent & "        SET @col" & CStr(lngCalcColumnID) & " = " & sConvertCode & "@" & sExprName & IIf(LenB(sConvertCode) <> 0, ")", vbNullString) & vbNewLine & _
+                sIndent & "        IF @inscol_" & CStr(lngCalcColumnID) & " <> @col" & CStr(lngCalcColumnID) & " SET @changesMade = 1" & vbNewLine & _
+                sIndent & "        SET @delcol_" & CStr(lngCalcColumnID) & " = @inscol_" & CStr(lngCalcColumnID) & vbNewLine & _
+                sIndent & "        SET @inscol_" & CStr(lngCalcColumnID) & " = @col" & CStr(lngCalcColumnID) & vbNewLine
             End If
             
             
@@ -1487,7 +1489,7 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
                   
                       ' Looks like this line in the trigger does nothing, but it does pick up on any trimming and case-conversion that is required.
                       asCalcSelfCode(1).Append _
-                        "            IF LTRIM(RTRIM(@col" & strColumnID & ")) = '" & Trim(Replace(recContValEdit!Value, "'", "''")) & "' SET @col" & strColumnID & " = '" & Replace(recContValEdit!Value, "'", "''") & "'" & vbNewLine
+                        "            IF LTRIM(RTRIM(@col" & strColumnID & ")) = '" & Trim(Replace(recContValEdit!value, "'", "''")) & "' SET @col" & strColumnID & " = '" & Replace(recContValEdit!value, "'", "''") & "'" & vbNewLine
                   
                       recContValEdit.MoveNext
                     Loop
@@ -1767,19 +1769,19 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
         
     Do While Not rsParents.EOF
       sDfltExprDeclarationCode.Append _
-        "        DECLARE @id_" & Trim(Str(rsParents.Fields(0).Value)) & " integer" & vbNewLine
+        "        DECLARE @id_" & Trim(Str(rsParents.Fields(0).value)) & " integer" & vbNewLine
       iNextIndex = UBound(alngParents) + 1
       ReDim Preserve alngParents(iNextIndex)
-      alngParents(iNextIndex) = rsParents.Fields(0).Value
+      alngParents(iNextIndex) = rsParents.Fields(0).value
            
-      sSelectInsCols.Append ", isnull(inserted.ID_" & Trim(Str(rsParents.Fields(0).Value)) & ",0)"
-      sSelectDelCols.Append ", isnull(deleted.ID_" & Trim(Str(rsParents.Fields(0).Value)) & ",0)"
+      sSelectInsCols.Append ", isnull(inserted.ID_" & Trim(Str(rsParents.Fields(0).value)) & ",0)"
+      sSelectDelCols.Append ", isnull(deleted.ID_" & Trim(Str(rsParents.Fields(0).value)) & ",0)"
       
-      sFetchInsCols.Append ", @insParentID_" & Trim(Str(rsParents.Fields(0).Value))
-      sFetchDelCols.Append ", @delParentID_" & Trim(Str(rsParents.Fields(0).Value))
+      sFetchInsCols.Append ", @insParentID_" & Trim(Str(rsParents.Fields(0).value))
+      sFetchDelCols.Append ", @delParentID_" & Trim(Str(rsParents.Fields(0).value))
       
-      sDeclareInsCols.Append ", @insParentID_" & Trim(Str(rsParents.Fields(0).Value)) & " integer"
-      sDeclareDelCols.Append ", @delParentID_" & Trim(Str(rsParents.Fields(0).Value)) & " integer"
+      sDeclareInsCols.Append ", @insParentID_" & Trim(Str(rsParents.Fields(0).value)) & " integer"
+      sDeclareDelCols.Append ", @delParentID_" & Trim(Str(rsParents.Fields(0).value)) & " integer"
 
       rsParents.MoveNext
     Loop
@@ -1798,10 +1800,10 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
     lngLastExprID = 0
     With rsDfltColumns
       Do While Not .EOF
-        lngExprID = rsDfltColumns(0).Value
+        lngExprID = rsDfltColumns(0).value
         sExprName = "dfltexpr" & Trim$(Str$(lngExprID))
-        sDfltColumn = rsDfltColumns(3).Value
-        sDfltColumnID = Trim(Str(rsDfltColumns(2).Value))
+        sDfltColumn = rsDfltColumns(3).value
+        sDfltColumnID = Trim(Str(rsDfltColumns(2).value))
     
         ' Create the data type size conversion code.
         Select Case !DataType
@@ -1908,8 +1910,8 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
     With rsDfltColumns
       Do While Not .EOF
         sDfltValue = "dfltvalue"
-        sDfltColumn = rsDfltColumns(1).Value
-        sDfltColumnID = Trim(Str(rsDfltColumns(0).Value))
+        sDfltColumn = rsDfltColumns(1).value
+        sDfltColumnID = Trim(Str(rsDfltColumns(0).value))
     
         ' Create the data type size conversion code.
         Select Case !DataType
@@ -1966,16 +1968,16 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
               "            SET @" & sDfltValue & "_" & sDfltColumnID & " = '" & Replace(!DefaultValue, "'", "''") & "'" & vbNewLine
           Case dtINTEGER
             sCalcDfltCode.Append _
-              "            SET @" & sDfltValue & "_" & sDfltColumnID & " = " & Trim(Str(Val(!DefaultValue))) & vbNewLine
+              "            SET @" & sDfltValue & "_" & sDfltColumnID & " = " & Trim(Str(val(!DefaultValue))) & vbNewLine
           Case dtNUMERIC
             dblMaxValue = 10 ^ (!Size - !Decimals)
             sCalcDfltCode.Append _
-              "            SET @" & sDfltValue & "_" & sDfltColumnID & " = " & Trim(Str(Val(!DefaultValue))) & vbNewLine & _
+              "            SET @" & sDfltValue & "_" & sDfltColumnID & " = " & Trim(Str(val(!DefaultValue))) & vbNewLine & _
               "            IF @" & sDfltValue & "_" & sDfltColumnID & " >= " & Trim$(Str$(dblMaxValue)) & " SET @" & sDfltValue & "_" & sDfltColumnID & " = 0" & vbNewLine & _
               "            IF @" & sDfltValue & "_" & sDfltColumnID & " <= -" & Trim$(Str$(dblMaxValue)) & " SET @" & sDfltValue & "_" & sDfltColumnID & " = 0" & vbNewLine
           Case dtBIT
             sCalcDfltCode.Append _
-              "            SET @" & sDfltValue & "_" & sDfltColumnID & " = " & Trim(Str(Val(!DefaultValue))) & vbNewLine
+              "            SET @" & sDfltValue & "_" & sDfltColumnID & " = " & Trim(Str(val(!DefaultValue))) & vbNewLine
         End Select
     
         sCalcDfltCode.Append _
@@ -3368,22 +3370,22 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         If mbAccordAllowDelete Then
           sDeleteTriggerSQL.Append vbNewLine & _
             "        -- Prohibit delete if record has been transferred to Payroll" & vbNewLine & _
-            "        EXEC spASRAccordIsRecordInPayroll @recordID, " & rsAccordDetails.Fields("TransferTypeID").Value & ", @hResult OUTPUT" & vbNewLine & _
+            "        EXEC spASRAccordIsRecordInPayroll @recordID, " & rsAccordDetails.Fields("TransferTypeID").value & ", @hResult OUTPUT" & vbNewLine & _
             "        IF @hResult <> 1" & vbNewLine & _
             "        BEGIN" & vbNewLine & _
-            "          EXEC spASRAccordDeleteTransactionsForRecord @recordID, " & rsAccordDetails.Fields("TransferTypeID").Value & vbNewLine & _
+            "          EXEC spASRAccordDeleteTransactionsForRecord @recordID, " & rsAccordDetails.Fields("TransferTypeID").value & vbNewLine & _
             "        END" & vbNewLine & vbNewLine
         Else
           sDeleteTriggerSQL.Append vbNewLine & _
             "        -- Prohibit delete if record has been transferred to Payroll" & vbNewLine & _
-            "        EXEC spASRAccordIsRecordInPayroll @recordID, " & rsAccordDetails.Fields("TransferTypeID").Value & ", @hResult OUTPUT" & vbNewLine & _
+            "        EXEC spASRAccordIsRecordInPayroll @recordID, " & rsAccordDetails.Fields("TransferTypeID").value & ", @hResult OUTPUT" & vbNewLine & _
             "        IF @hResult = 1" & vbNewLine & _
             "        BEGIN" & vbNewLine & _
             "          RAISERROR ('You cannot delete a record that has been transferred to payroll.',16,@hResult)" & vbNewLine & _
             "          ROLLBACK TRANSACTION" & vbNewLine & _
             "          RETURN" & vbNewLine & _
             "        END" & vbNewLine & _
-            "        ELSE EXEC spASRAccordDeleteTransactionsForRecord @recordID, " & rsAccordDetails.Fields("TransferTypeID").Value & vbNewLine & vbNewLine
+            "        ELSE EXEC spASRAccordDeleteTransactionsForRecord @recordID, " & rsAccordDetails.Fields("TransferTypeID").value & vbNewLine & vbNewLine
         End If
       End If
     End If
@@ -3843,8 +3845,8 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRPr
 
   Do While Not rsAccordDetails.EOF
     ReDim Preserve aiTransferTypes(1, UBound(aiTransferTypes, 2) + 1)
-    aiTransferTypes(0, UBound(aiTransferTypes, 2)) = rsAccordDetails(0).Value
-    aiTransferTypes(1, UBound(aiTransferTypes, 2)) = IIf(rsAccordDetails(1).Value = True, 1, 0)
+    aiTransferTypes(0, UBound(aiTransferTypes, 2)) = rsAccordDetails(0).value
+    aiTransferTypes(1, UBound(aiTransferTypes, 2)) = IIf(rsAccordDetails(1).value = True, 1, 0)
     rsAccordDetails.MoveNext
   Loop
 
@@ -4004,10 +4006,10 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRPr
                     Select Case GetColumnDataType(lngASRColumnID)
                     Case dtINTEGER, dtNUMERIC, dtBIT
                       strCurrentUpdate.Append _
-                        " ISNULL(@insCol_" & rsAssociatedColumns.Fields(0).Value & ",0) <> ISNULL(@delCol_" & rsAssociatedColumns.Fields(0).Value & ",0)"
+                        " ISNULL(@insCol_" & rsAssociatedColumns.Fields(0).value & ",0) <> ISNULL(@delCol_" & rsAssociatedColumns.Fields(0).value & ",0)"
                     Case Else
                       strCurrentUpdate.Append _
-                        " ISNULL(@insCol_" & rsAssociatedColumns.Fields(0).Value & ",'') <> ISNULL(@delCol_" & rsAssociatedColumns.Fields(0).Value & ",'')"
+                        " ISNULL(@insCol_" & rsAssociatedColumns.Fields(0).value & ",'') <> ISNULL(@delCol_" & rsAssociatedColumns.Fields(0).value & ",'')"
                     End Select
                     
                     rsAssociatedColumns.MoveNext
@@ -4314,14 +4316,14 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sInsertAccordCode As HRPr
   Set rsAccordDetails = daoDb.OpenRecordset(sDefinitionSQL, dbOpenForwardOnly, dbReadOnly)
   
   If Not (rsAccordDetails.EOF And rsAccordDetails.BOF) Then
-    iTransferTypeID = rsAccordDetails.Fields("TransferTypeID").Value
+    iTransferTypeID = rsAccordDetails.Fields("TransferTypeID").value
    
     Do While Not rsAccordDetails.EOF
     
-      sAccordProhibitFields.Append "              IF @inscol_" & rsAccordDetails.Fields("ColumnID").Value _
-        & " <> " & "@delcol_" & rsAccordDetails.Fields("ColumnID").Value & vbNewLine _
+      sAccordProhibitFields.Append "              IF @inscol_" & rsAccordDetails.Fields("ColumnID").value _
+        & " <> " & "@delcol_" & rsAccordDetails.Fields("ColumnID").value & vbNewLine _
         & "              BEGIN" & vbNewLine _
-        & "                  RAISERROR ('You cannot update " & rsAccordDetails.Fields("ColumnName").Value & ", because it has been transferred to payroll.',16,@hResult)" & vbNewLine _
+        & "                  RAISERROR ('You cannot update " & rsAccordDetails.Fields("ColumnName").value & ", because it has been transferred to payroll.',16,@hResult)" & vbNewLine _
         & "                  ROLLBACK TRANSACTION" & vbNewLine _
         & "                  RETURN" & vbNewLine _
         & "              END" & vbNewLine & vbNewLine
@@ -6264,8 +6266,8 @@ Private Function GetTriggerRelationshipCode(pLngCurrentTableID)
   
   ' Loop through the current table's children.
   Do While Not rsChildren.EOF
-    lngChildTableID = rsChildren.Fields(1).Value
-    sChildTable = rsChildren.Fields(0).Value
+    lngChildTableID = rsChildren.Fields(1).value
+    sChildTable = rsChildren.Fields(0).value
     
     ' Create the code for deleting all records in the child table that
     ' are related to the record that has just been deleted in the given table.
@@ -6287,7 +6289,7 @@ Private Function GetTriggerRelationshipCode(pLngCurrentTableID)
     Do While Not rsParents.EOF
       ' Ensure that rows are only deleted when all parents are deleted.
       iParentCalc = iParentCalc + 1
-      sRelationshipCode.Append "            AND " & sChildTable & ".ID_" & Trim(Str(rsParents(0).Value)) & " IS NULL" & vbNewLine
+      sRelationshipCode.Append "            AND " & sChildTable & ".ID_" & Trim(Str(rsParents(0).value)) & " IS NULL" & vbNewLine
       rsParents.MoveNext
     Loop
     
