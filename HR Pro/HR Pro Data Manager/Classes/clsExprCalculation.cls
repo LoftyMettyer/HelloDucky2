@@ -195,7 +195,6 @@ Public Property Get ComponentDescription() As String
 End Property
 
 
-
 Public Property Set BaseComponent(ByVal pobjNewValue As clsExprComponent)
   ' Set the component's base component object property.
   Set mobjBaseComponent = pobjNewValue
@@ -203,10 +202,7 @@ Public Property Set BaseComponent(ByVal pobjNewValue As clsExprComponent)
 End Property
 
 
-
-
-
-Public Function WriteComponent()
+Public Function WriteComponent() As Boolean
   ' Write the component definition to the component recordset.
   On Error GoTo ErrorTrap
   
