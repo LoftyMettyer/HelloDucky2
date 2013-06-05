@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}#1.1#0"; "ieframe.dll"
-Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
+Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
 Begin VB.UserControl COA_Navigation 
    ClientHeight    =   2010
    ClientLeft      =   0
@@ -601,3 +601,11 @@ Public Sub ExecutePostSave()
   End If
 
 End Sub
+
+Public Property Get MinimumHeight() As Long
+  MinimumHeight = UserControl.TextHeight("X")
+End Property
+
+Public Property Get MinimumWidth() As Long
+  MinimumWidth = UserControl.TextWidth("W")
+End Property
