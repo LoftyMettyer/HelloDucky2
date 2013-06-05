@@ -655,7 +655,10 @@ Private Function IsInCurrentFilter() As Boolean
       Exit Function
     End If
 
-    blnPast = (DateDiff("n", CDate(Format(cboDate.DateValue, DateFormat) & " " & mskTime.Text), Now) > 0)
+
+
+
+    blnPast = (DateDiff("n", CDate(Format(cboDate.DateValue, DateFormat) & " " & Replace(mskTime.Text, "_", "0")), Now) > 0)
     If (.FilterPastPresent = 1 And Not blnPast) Or _
        (.FilterPastPresent = 2 And blnPast) Then
       IsInCurrentFilter = False
@@ -665,7 +668,6 @@ Private Function IsInCurrentFilter() As Boolean
   End With
 
 End Function
-
 
 Private Function SaveChanges() As Boolean
 
