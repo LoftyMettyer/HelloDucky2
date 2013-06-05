@@ -126,12 +126,14 @@ Begin VB.Form frmDbMgr
          NumPanels       =   2
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
+            TextSave        =   ""
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   9393
+            TextSave        =   ""
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
@@ -483,11 +485,11 @@ Private Sub SetColumnSizes()
  
   Const iEXTRALENGTH = 3
   
-  If Treeview1.SelectedItem Is Nothing Then Exit Sub
+  If TreeView1.SelectedItem Is Nothing Then Exit Sub
   
-  If (Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Then
+  If (TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Then
     Set objShowColumns = gpropShowColumns_DataMgrTable
-  ElseIf (Treeview1.SelectedItem.Tag = giNODE_TABLE) Then
+  ElseIf (TreeView1.SelectedItem.Tag = giNODE_TABLE) Then
     Set objShowColumns = gpropShowColumns_DataMgr
   Else
     Exit Sub
@@ -619,7 +621,7 @@ End Sub
 
 Private Sub Form_GotFocus()
   ' Set focus on the treeview.
-  Treeview1.SetFocus
+  TreeView1.SetFocus
   
 End Sub
 
@@ -678,7 +680,7 @@ Private Sub Form_Load()
   ' Position controls.
   Label1.Left = 0
   Label1.Caption = " All Folders"
-  ListView1.Top = Treeview1.Top
+  ListView1.Top = TreeView1.Top
   fraSplit.Width = UI.GetSystemMetrics(SM_CXFRAME) * Screen.TwipsPerPixelX
   
   ' Format the listview with correct headers
@@ -688,7 +690,7 @@ Private Sub Form_Load()
   ' Populate the treeview.
   InitialiseTreeView
   
-  With Treeview1
+  With TreeView1
     ' Populate the listview.
     PopulateListView .Nodes("TABLES")
     .Nodes("TABLES").Selected = True
@@ -735,13 +737,13 @@ Private Sub Form_Resize()
     ' Position the label controls on the form.
     Label1.Top = 0
     Label2.Top = Label1.Top
-    Treeview1.Top = Label1.Top + Label1.Height
-    ListView1.Top = Treeview1.Top
+    TreeView1.Top = Label1.Top + Label1.Height
+    ListView1.Top = TreeView1.Top
     
     ' Size the tree and list view controls.
-    lngHeight = Me.ScaleHeight - (Treeview1.Top + StatusBar1.Height)
+    lngHeight = Me.ScaleHeight - (TreeView1.Top + StatusBar1.Height)
     If lngHeight < 0 Then lngHeight = 0
-    Treeview1.Height = lngHeight
+    TreeView1.Height = lngHeight
     ListView1.Height = lngHeight
   
     ' Position and size the split frame.
@@ -749,7 +751,7 @@ Private Sub Form_Resize()
       With fraSplit
         .Width = UI.GetSystemMetrics(SM_CXFRAME) * Screen.TwipsPerPixelX
         .Top = Label1.Top
-        .Height = Label1.Height + Treeview1.Height
+        .Height = Label1.Height + TreeView1.Height
         If .Left + .Width > Me.ScaleWidth - 810 Then
           .Left = Me.ScaleWidth - (810 + .Width)
         End If
@@ -812,16 +814,16 @@ Private Sub fraSplit_MouseDown(piButton As Integer, piShift As Integer, pSngX As
   
 End Sub
 
-Private Sub fraSplit_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub fraSplit_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   ' If we are moving the split then move it.
   If gfSplitMoving Then
-    fraSplit.Left = fraSplit.Left + (x - gSngSplitStartX)
+    fraSplit.Left = fraSplit.Left + (X - gSngSplitStartX)
   End If
   
 End Sub
 
-Private Sub fraSplit_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub fraSplit_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   ' If the split is being moved then call the routine that resizes the
   ' tree and list views accordingly.
@@ -855,12 +857,12 @@ Private Sub ListView1_DblClick()
   If ListView1.ListItems.Count > 0 Then
   
     ' If the select edlistview item has children ...
-    If Treeview1.SelectedItem.Children > 0 Then
+    If TreeView1.SelectedItem.Children > 0 Then
       
       ' Set the selected item to be the selected item in the treeview.
-      Set ThisNode = Treeview1.Nodes(ListView1.SelectedItem.key)
+      Set ThisNode = TreeView1.Nodes(ListView1.SelectedItem.key)
       ThisNode.EnsureVisible
-      Treeview1.SelectedItem = ThisNode
+      TreeView1.SelectedItem = ThisNode
       
       ' Populate the listview with the children of the selected item.
       PopulateListView ThisNode
@@ -932,7 +934,7 @@ Private Sub ListView1_KeyUp(KeyCode As Integer, Shift As Integer)
 
 End Sub
 
-Private Sub ListView1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub ListView1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   Dim lXMouse As Long
   Dim lYMouse As Long
   
@@ -994,7 +996,7 @@ Private Sub TreeView1_Expand(ByVal Node As ComctlLib.Node)
 End Sub
 
 Private Sub TreeView1_GotFocus()
-  Set ActiveView = Treeview1
+  Set ActiveView = TreeView1
   frmSysMgr.RefreshMenu
   
 End Sub
@@ -1022,7 +1024,7 @@ Private Sub TreeView1_KeyPress(KeyAscii As Integer)
 
 End Sub
 
-Private Sub TreeView1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub TreeView1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   Dim lXMouse As Long
   Dim lYMouse As Long
 
@@ -1050,7 +1052,7 @@ End Sub
 Private Sub TreeView1_NodeClick(ByVal Node As ComctlLib.Node)
 
   ' Update the treeview tag.
-  Treeview1.Tag = Treeview1.SelectedItem.Tag
+  TreeView1.Tag = TreeView1.SelectedItem.Tag
   
   ' If we are changing node then clear any selections from the listview.
   If Node.key <> gsTreeViewNodeKey Then
@@ -1083,8 +1085,8 @@ Private Function CheckRelations(ByVal pObjTable As HRProSystemMgr.Table) As Bool
     ' If the given table has relations, add it to the relations treeview.
     If pObjTable.HasRelations Then
     
-      If Not Misc.IsItemInCollection(Treeview1.Nodes, "R" & pObjTable.TableID) Then
-        Set objNode = Treeview1.Nodes.Add("RELATION", _
+      If Not Misc.IsItemInCollection(TreeView1.Nodes, "R" & pObjTable.TableID) Then
+        Set objNode = TreeView1.Nodes.Add("RELATION", _
           tvwChild, "R" & pObjTable.TableID, pObjTable.TableName, "IMG_RELATIONGROUP", "IMG_RELATIONGROUP")
         With objNode
           .Tag = giNODE_RELATION
@@ -1095,8 +1097,8 @@ Private Function CheckRelations(ByVal pObjTable As HRProSystemMgr.Table) As Bool
       
     Else
       ' If the given table has no relations, remove it from the relations treeview.
-      If Misc.IsItemInCollection(Treeview1.Nodes, "R" & pObjTable.TableID) Then
-        Treeview1.Nodes.Remove "R" & pObjTable.TableID
+      If Misc.IsItemInCollection(TreeView1.Nodes, "R" & pObjTable.TableID) Then
+        TreeView1.Nodes.Remove "R" & pObjTable.TableID
       End If
     End If
     
@@ -1162,12 +1164,12 @@ Public Sub EditMenu(psMenuItem As String)
     
     Case "ID_CustomiseColumns"
       ' Customise column view...
-      If (Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Then
+      If (TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Then
         Set frmShowColumns = New HRProSystemMgr.frmShowColumns
         frmShowColumns.PropertySet = gpropShowColumns_DataMgrTable
         frmShowColumns.Show vbModal
         SetColumnSizes
-      ElseIf (Treeview1.SelectedItem.Tag = giNODE_TABLE) Then
+      ElseIf (TreeView1.SelectedItem.Tag = giNODE_TABLE) Then
         Set frmShowColumns = New HRProSystemMgr.frmShowColumns
         frmShowColumns.PropertySet = gpropShowColumns_DataMgr
         frmShowColumns.Show vbModal
@@ -1181,7 +1183,7 @@ Public Sub EditMenu(psMenuItem As String)
   'Get the selected item type
   If Not ActiveView Is Nothing Then
     If ActiveView.SelectedItem Is Nothing Then
-      Select Case Treeview1.SelectedItem.Tag
+      Select Case TreeView1.SelectedItem.Tag
         Case 0 ' Root node.
           lngItemType = giNODE_TABLEGROUP
         Case giNODE_TABLEGROUP
@@ -1223,8 +1225,8 @@ Public Sub EditMenu(psMenuItem As String)
     
     'NHRD30072003 Fault 6255 Added the ID_SelectAll check because it was refreshing the view and wiping out selection
     ' Ensure the list view has the correct display for the current treeview selection.
-    If (Not Treeview1.SelectedItem Is Nothing) And (psMenuItem <> "ID_SelectAll") Then
-      PopulateListView Treeview1.SelectedItem, True
+    If (Not TreeView1.SelectedItem Is Nothing) And (psMenuItem <> "ID_SelectAll") Then
+      PopulateListView TreeView1.SelectedItem, True
     End If
 
     RefreshListView
@@ -1241,13 +1243,13 @@ Private Sub InitialiseTreeView()
   Dim objNode As ComctlLib.Node
   
   ' Clear the treeview.
-  Treeview1.Nodes.Clear
+  TreeView1.Nodes.Clear
   
   ' Add the root 'Database' node in the treeview.
   '
   ' DATABASE
   '
-  Set objNode = Treeview1.Nodes.Add(, tvwChild, "DATABASE", "Database", "IMG_DATABASE")
+  Set objNode = TreeView1.Nodes.Add(, tvwChild, "DATABASE", "Database", "IMG_DATABASE")
   With objNode
     .Tag = 0
     .Expanded = True
@@ -1260,7 +1262,7 @@ Private Sub InitialiseTreeView()
   '     |
   '     +--TABLES
   '
-  Set objNode = Treeview1.Nodes.Add("DATABASE", tvwChild, "TABLES", "Tables", "IMG_TABLE")
+  Set objNode = TreeView1.Nodes.Add("DATABASE", tvwChild, "TABLES", "Tables", "IMG_TABLE")
   With objNode
     .Tag = giNODE_TABLEGROUP
     .Expanded = True
@@ -1299,7 +1301,7 @@ Private Sub InitialiseTreeView()
             sIconKey = "IMG_UNKNOWN"
         End Select
 
-        Set objNode = Treeview1.Nodes.Add("TABLES", tvwChild, _
+        Set objNode = TreeView1.Nodes.Add("TABLES", tvwChild, _
           "T" & .Fields("tableID"), .Fields("tableName"), sIconKey, sIconKey)
         objNode.Tag = giNODE_TABLE
         objNode.Sorted = True
@@ -1319,7 +1321,7 @@ Private Sub InitialiseTreeView()
   '     |
   '     +--RELATIONSHIPS
   '
-  Set objNode = Treeview1.Nodes.Add("DATABASE", tvwChild, "RELATION", "Relationships", "IMG_RELATIONGROUP")
+  Set objNode = TreeView1.Nodes.Add("DATABASE", tvwChild, "RELATION", "Relationships", "IMG_RELATIONGROUP")
   With objNode
     .Tag = giNODE_RELATIONGROUP
     .Expanded = True
@@ -1357,7 +1359,7 @@ Private Sub InitialiseTreeView()
         
         If Not recTabEdit.NoMatch Then
         
-          Set objNode = Treeview1.Nodes.Add("RELATION", tvwChild, _
+          Set objNode = TreeView1.Nodes.Add("RELATION", tvwChild, _
             "R" & lngTableID, recTabEdit!TableName, "IMG_RELATIONGROUP")
           objNode.Tag = giNODE_RELATION
         End If
@@ -1646,6 +1648,8 @@ Private Function AddDetailsToListItem(pListView As ComctlLib.ListView) As Boolea
       objItem.SubItems(iOrder) = "Text Box"
     Case giCTRL_WORKINGPATTERN
       objItem.SubItems(iOrder) = "Working Pattern"
+    Case giCTRL_NAVIGATION
+      objItem.SubItems(iOrder) = "Navigation Control"
     Case Else
       objItem.SubItems(iOrder) = ""
     End Select
@@ -2120,7 +2124,7 @@ Private Sub PopulateListView(pobjNode As ComctlLib.Node, Optional ByVal pfRefres
         iCount = 0
         
         ' Add items to the listview for each of the specified node's children.
-        Set objChildNode = Treeview1.Nodes(iNodeIndex)
+        Set objChildNode = TreeView1.Nodes(iNodeIndex)
         Set objItem = ListView1.ListItems.Add(, objChildNode.key, objChildNode.Text, _
           objChildNode.Image, objChildNode.Image)
           iCount = iCount + 1
@@ -2411,10 +2415,10 @@ End Sub
 Private Sub RemoveNode(psKey As String)
 
   ' Remove the specified node from the treeview.
-  Treeview1.Nodes.Remove psKey
+  TreeView1.Nodes.Remove psKey
   
   ' Populate the listview with items for the defaulted treeview item.
-  PopulateListView Treeview1.SelectedItem, True
+  PopulateListView TreeView1.SelectedItem, True
   
 End Sub
 
@@ -2428,8 +2432,8 @@ Private Sub SplitMove()
   End If
   
   ' Resize the tree view.
-  Treeview1.Width = fraSplit.Left - Treeview1.Left
-  Label1.Width = Treeview1.Width
+  TreeView1.Width = fraSplit.Left - TreeView1.Left
+  Label1.Width = TreeView1.Width
   
   ' Resize the listview.
   ListView1.Left = fraSplit.Left + fraSplit.Width
@@ -2526,7 +2530,7 @@ Private Sub ColumnDelete()
   UI.LockWindow Me.hWnd
   
   Set objTable = New HRProSystemMgr.Table
-  objTable.TableID = Val(Mid(Treeview1.SelectedItem.key, 2))
+  objTable.TableID = Val(Mid(TreeView1.SelectedItem.key, 2))
   
   ' Loop through all of the listview items to see which ones are selected.
   iLoop = 1
@@ -2679,11 +2683,11 @@ Private Sub TableDelete()
         If fOK Then
           
           ' Remove table node from treeview
-          Treeview1.Nodes.Remove "T" & objTable.TableID
+          TreeView1.Nodes.Remove "T" & objTable.TableID
           
           ' Remove table relation node from treeview if it exists.
-          If Misc.IsItemInCollection(Treeview1.Nodes, "R" & objTable.TableID) Then
-            Treeview1.Nodes.Remove "R" & objTable.TableID
+          If Misc.IsItemInCollection(TreeView1.Nodes, "R" & objTable.TableID) Then
+            TreeView1.Nodes.Remove "R" & objTable.TableID
           End If
           
         End If
@@ -2869,7 +2873,7 @@ Private Sub ColumnAdd()
   Dim objItem As ComctlLib.ListItem
   
   Set objTable = New HRProSystemMgr.Table
-  objTable.TableID = Val(Mid(Treeview1.SelectedItem.key, 2))
+  objTable.TableID = Val(Mid(TreeView1.SelectedItem.key, 2))
       
   fOK = objTable.ReadTable
   
@@ -2918,7 +2922,7 @@ Private Sub TableAdd()
         sImage = "IMG_TABLE"
     End Select
     
-    Set objNode = Treeview1.Nodes.Add("TABLES", _
+    Set objNode = TreeView1.Nodes.Add("TABLES", _
       tvwChild, "T" & objTable.TableID, objTable.TableName, _
       sImage, sImage)
     objNode.Tag = giNODE_TABLE
@@ -2926,7 +2930,7 @@ Private Sub TableAdd()
   
     'Make sure new table is visible and selected in the treeview.
     objNode.EnsureVisible
-    Treeview1.SelectedItem = objNode
+    TreeView1.SelectedItem = objNode
   
     ' Disassociate object variables.
     Set objNode = Nothing
@@ -2971,7 +2975,7 @@ Private Sub ColumnEdit()
   Screen.MousePointer = vbHourglass
   
   Set objTable = New HRProSystemMgr.Table
-  objTable.TableID = Val(Mid(Treeview1.SelectedItem.key, 2))
+  objTable.TableID = Val(Mid(TreeView1.SelectedItem.key, 2))
 
   Set objColumn = New HRProSystemMgr.Column
   objColumn.TableID = objTable.TableID
@@ -3001,7 +3005,7 @@ Private Sub ColumnCopy()
   Screen.MousePointer = vbHourglass
   
   Set objTable = New HRProSystemMgr.Table
-  objTable.TableID = Val(Mid(Treeview1.SelectedItem.key, 2))
+  objTable.TableID = Val(Mid(TreeView1.SelectedItem.key, 2))
 
   Set objColumn = New HRProSystemMgr.Column
   objColumn.TableID = objTable.TableID
@@ -3062,12 +3066,12 @@ Private Sub TableEdit()
     
     If ActiveView Is ListView1 Then
     
-      Set objNode = Treeview1.Nodes("T" & objTable.TableID)
+      Set objNode = TreeView1.Nodes("T" & objTable.TableID)
       objNode.EnsureVisible
-      Treeview1.SelectedItem = objNode
-      Treeview1.SelectedItem.Text = objTable.TableName
-      Treeview1.SelectedItem.Image = sImage             'MH20010131 Fault 1673
-      Treeview1.SelectedItem.SelectedImage = sImage     'MH20010131 Fault 1673
+      TreeView1.SelectedItem = objNode
+      TreeView1.SelectedItem.Text = objTable.TableName
+      TreeView1.SelectedItem.Image = sImage             'MH20010131 Fault 1673
+      TreeView1.SelectedItem.SelectedImage = sImage     'MH20010131 Fault 1673
 
       ' Disassociate object variables.
       Set objNode = Nothing
@@ -3080,10 +3084,10 @@ Private Sub TableEdit()
     End If
   
     ' Sort the treeview order in case the name of a table has changed.
-    Treeview1.Nodes("TABLES").Sorted = True
+    TreeView1.Nodes("TABLES").Sorted = True
   
-    If Misc.IsItemInCollection(Treeview1.Nodes, "R" & objTable.TableID) Then
-      Treeview1.Nodes("R" & objTable.TableID).Text = objTable.TableName
+    If Misc.IsItemInCollection(TreeView1.Nodes, "R" & objTable.TableID) Then
+      TreeView1.Nodes("R" & objTable.TableID).Text = objTable.TableName
       'JPD 20051128 Fault 10597
       'Treeview1.Nodes("R" & objTable.TableID).Image = sImage             'MH20010131 Fault 1673
       'Treeview1.Nodes("R" & objTable.TableID).SelectedImage = sImage     'MH20010131 Fault 1673
@@ -3241,7 +3245,7 @@ Private Sub RelationChildAdd()
 
   ' Adding a relation child is the same as looking at the properties of
   ' a relation parent.
-  RelationEdit Val(Mid(Treeview1.SelectedItem.key, 2))
+  RelationEdit Val(Mid(TreeView1.SelectedItem.key, 2))
   
 End Sub
 Private Sub RelationChildDelete()
@@ -3284,7 +3288,7 @@ Private Sub RelationChildDelete()
   Next iLoop
            
   Set objTable = New HRProSystemMgr.Table
-  objTable.TableID = Val(Mid(Treeview1.SelectedItem.key, 2))
+  objTable.TableID = Val(Mid(TreeView1.SelectedItem.key, 2))
   
   ' Change the mouse pointer.
   Screen.MousePointer = vbHourglass
@@ -3347,7 +3351,7 @@ Private Sub RelationChildEdit()
 
   ' Adding a relation child is the same as looking at the properties of
   ' a relation parent.
-  RelationEdit Val(Mid(Treeview1.SelectedItem.key, 2))
+  RelationEdit Val(Mid(TreeView1.SelectedItem.key, 2))
 
 End Sub
 
@@ -3601,9 +3605,9 @@ Private Sub TableCopy()
       InitialiseTreeView
 
       ' Make sure new table is visible and selected in the treeview.
-      Set objNode = Treeview1.Nodes("T" & objNewTable.TableID)
+      Set objNode = TreeView1.Nodes("T" & objNewTable.TableID)
       objNode.EnsureVisible
-      Treeview1.SelectedItem = objNode
+      TreeView1.SelectedItem = objNode
       Set objNode = Nothing
       
       ListView1.SetFocus
