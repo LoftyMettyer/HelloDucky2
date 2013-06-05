@@ -134,14 +134,6 @@ Namespace Things
         aryParameters3.Add("@isovernight")
       End If
 
-
-      ' Is this function going to check to see if any of the dependant tables were called as part of this transaction?
-      'If mbCheckTriggerStack Then
-      'aryParameters1.Add(String.Format("@originalvalue {0}", Me.AssociatedColumn.DataTypeSyntax))
-      'aryParameters2.Add(String.Format("base.[{0}]", Me.AssociatedColumn.Name))
-      'aryParameters3.Add("@originalvalue")
-      ' End If
-
       ' Add other dependancies
       For Each column In Dependencies.OfType(Of Column)()
 
@@ -562,15 +554,11 @@ Namespace Things
       objThisColumn = CType(Dependencies.OfType(Of Column).FirstOrDefault(Function(o) o.ID = Component.ColumnID), Column)
       objThisColumn.Tuning.Usage += 1
 
-      'Dependencies.AddIfNew(objThisColumn.Table)
-      '      Dependencies.AddIfNew(objThisColumn)
-
       ' Is this column referencing the column that this udf is attaching itself to? (i.e. recursion)
       If Component.IsColumnByReference Then
         LineOfCode.Code = String.Format("'{0}-{1}'" _
             , objThisColumn.Table.ID.ToString.PadLeft(8, "0"c) _
             , objThisColumn.ID.ToString.PadLeft(8, "0"c))
-        'Me.IsComplex = True
 
       ElseIf objThisColumn Is Me.AssociatedColumn _
           And Not (Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter _
@@ -698,9 +686,6 @@ Namespace Things
             ' Add calculation for this foreign column to the pre-requisits array 
             iPartNumber = Declarations.Count + CInt(Me.StartOfPartNumbers)
             bIsSummaryColumn = ([Component].ChildRowDetails.RowSelection = ScriptDB.ColumnRowSelection.Total Or [Component].ChildRowDetails.RowSelection = ScriptDB.ColumnRowSelection.Count)
-
-            '      Debug.Assert(iPartNumber <> 0)
-
 
             ' Add to prereqistits arrays
             If bIsSummaryColumn Then
@@ -872,10 +857,6 @@ Namespace Things
 
           Case ScriptDB.ComponentValueTypes.String
             LineOfCode.Code = String.Format("convert(nvarchar(MAX), ({0}))", LineOfCode.Code)
-            'LineOfCode.Code = 
-
-            'Case ScriptDB.ColumnTypes.Integer
-            '  LineOfCode.Code = String.Format("convert(integer, ({0}))", LineOfCode.Code)
 
         End Select
 
@@ -899,13 +880,9 @@ Namespace Things
 
       ChildCodeCluster.ReturnType = Component.ReturnType
       ChildCodeCluster.CodeLevel = CodeCluster.CodeLevel + 1
-      '      ChildCodeCluster.NestedLevel = CodeCluster.NestedLevel
 
       ' Nesting is too deep - convert to part number
-
       If Me.CaseCount > 8 Then
-
-        ' Debug.Assert(Me.Name <> "Annual_Rounded")
 
         objExpression = New Expression
         objExpression.ExpressionType = Me.ExpressionType
@@ -1018,36 +995,6 @@ Namespace Things
 
     End Property
 
-    'Private Sub AddToDependencies(ByVal Dependencies As Collection)
-
-    '  Dim objDependency As Base
-    '  Dim objColumn As Column
-    '  Dim objRelation As Relation
-
-    '  For Each objDependency In Dependencies
-
-    '    If objDependency.Type = Enums.Type.Column Then
-    '      objColumn = CType(objDependency, Column)
-    '      If Not Dependencies.Contains(objColumn) Then
-    '        If objColumn.Table Is Me.BaseTable Then
-    '          Dependencies.Add(objDependency)
-    '        End If
-    '      End If
-    '    End If
-
-    '    If objDependency.Type = Enums.Type.Relation Then
-    '      objRelation = CType(objDependency, Relation)
-    '      If Not Dependencies.Contains(objRelation) Then
-    '        Dependencies.Add(objDependency)
-    '      End If
-    '    End If
-
-    '  Next
-
-    'End Sub
-
-    ' Adds a calculated column to the pre-requists stack. This is for efficiency so the UDF is called a minimum of times.
-
     Private Function AddCalculatedColumn(ByVal ReferencedColumn As Column) As ScriptDB.CodeElement
 
       Dim sCallingCode As ScriptDB.CodeElement
@@ -1060,12 +1007,7 @@ Namespace Things
         ReferencedColumn.Calculation = ReferencedColumn.Table.Expressions.GetById(ReferencedColumn.CalcID)
       End If
 
-      If ColumnRecursion.Contains(ReferencedColumn) Then
-      End If
-
       ColumnRecursion.AddIfNew(ReferencedColumn)
-
-      ' If ReferencedColumn Is Me.AssociatedColumn Then
 
       If StatementObjects.Contains(ReferencedColumn) Then
         sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn))
@@ -1075,7 +1017,6 @@ Namespace Things
 
         iBackupType = ReferencedColumn.Calculation.ExpressionType
         BackupColumn = ReferencedColumn.Calculation.AssociatedColumn
-        '   iBackupStart = ReferencedColumn.Calculation.StartOfPartNumbers
 
         ReferencedColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn
         ReferencedColumn.Calculation.AssociatedColumn = ReferencedColumn
@@ -1085,7 +1026,6 @@ Namespace Things
         ReferencedColumn.Calculation.ColumnRecursion = ColumnRecursion
         ReferencedColumn.Calculation.GenerateCode()
 
-        '     ReferencedColumn.Calculation.StartOfPartNumbers = iBackupStart
         ReferencedColumn.Calculation.ExpressionType = iBackupType
         ReferencedColumn.Calculation.AssociatedColumn = BackupColumn
 
@@ -1121,57 +1061,6 @@ Namespace Things
       Return sCallingCode
 
     End Function
-
-    'Private Function AddChildColumn(ByVal ChildView As TableOrderFilter, ByVal ReferencedColumn As Column) As ScriptDB.CodeElement
-
-    '  Dim sCallingCode As ScriptDB.CodeElement
-    '  Dim sVariableName As String
-    '  Dim objChildView As TableOrderFilter
-
-    '  If StatementObjects.Contains(ChildView) Then
-    '    sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn) + 1)
-
-    '    ' append to select statement
-
-
-    '  Else
-
-    '    StatementObjects.Add(ChildView)
-    '    sVariableName = StatementObjects.Count
-
-    '    ' What type/line number are we dealing with?
-    '    Select Case ChildView.RowDetails.RowSelection
-
-    '      Case ScriptDB.ColumnRowSelection.First, ScriptDB.ColumnRowSelection.Last, ScriptDB.ColumnRowSelection.Specific
-    '        Declarations.Add(String.Format("@part_{1} {2};", sVariableName, ReferencedColumn.DataTypeSyntax))
-    '        sCallingCode.Code = String.Format("@part_{0} = base.[{1}]", sVariableName, ReferencedColumn.Name)
-
-    '      Case ScriptDB.ColumnRowSelection.Total
-    '        Declarations.Add(String.Format("@part_{0} numeric(38,8);", sVariableName))
-    '        sCallingCode.Code = String.Format("@part_{0} = SUM(base.[{1}])", sVariableName, ReferencedColumn.Name)
-
-    '      Case ScriptDB.ColumnRowSelection.Count
-    '        Declarations.Add(String.Format("@part_{0} numeric(38,8);", sVariableName))
-    '        sCallingCode.Code = String.Format("@part_{0} = COUNT(base.[{1}])", sVariableName, ReferencedColumn.Name)
-
-    '    End Select
-
-    '    PreStatements.Add(String.Format("SELECT @part_{0} = {1}", sVariableName, ReferencedColumn.Calculation.UDF.CallingCode))
-
-
-
-    '    sPartCode = sPartCode & String.Format("{0} FROM [dbo].[{1}](@prm_ID) base" _
-    '        , [CodeCluster].Indentation, objOrderFilter.Name)
-
-
-    '    PreStatements.Add(sPartCode)
-    '    LineOfCode.Code = String.Format("ISNULL(@part_{0},{1})", iPartNumber, objThisColumn.SafeReturnType)
-
-    '  End If
-
-    '  Return sCallingCode
-
-    'End Function
 
     Private Function ResultDataType(ByVal ColumnType As ColumnTypes) As String
 
