@@ -4615,7 +4615,7 @@ End Property
 
 Public Property Get Chart_Utility_Description() As String
     
-  If Len(UtilityType) > 0 Then
+  If Len(UtilityType) > 0 And ChartColumnID <> 0 Then
     Chart_Utility_Description = cboHRProUtilityType.Text & " - " & cboHRProUtility.Text
   Else
     Chart_Utility_Description = ""
