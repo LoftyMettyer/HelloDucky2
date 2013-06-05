@@ -1770,7 +1770,8 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     .Tools("ID_Post").Enabled = Application.PersonnelModule
     .Tools("ID_Absence").Enabled = Application.AbsenceModule
     .Tools("ID_AccordTransfer").Enabled = gbAccordPayrollModule
-    .Tools("ID_FusionIntegration").Enabled = True 'Application.FusionIntegration
+'NHRD Prototype Fusion Code***********************************************************
+    .Tools("ID_FusionIntegration").Enabled = gbFusionModule
     .Tools("ID_CMG").Enabled = gbCMGExportEnabled
     .Tools("ID_WorkflowSetup").Enabled = Application.WorkflowModule
     .Tools("ID_MobileSetup").Enabled = Application.MobileModule
@@ -1804,6 +1805,7 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     .Tools("ID_Maternity").Visible = True
     .Tools("ID_Post").Visible = True
     .Tools("ID_Absence").Visible = True
+'NHRD Prototype Fusion Code***********************************************************
     .Tools("ID_FusionIntegration").Visible = True
     .Tools("ID_AccordTransfer").Visible = True
     .Tools("ID_CMG").Visible = True
@@ -2137,7 +2139,8 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
-      
+  
+'NHRD Prototype Fusion Code***********************************************************
     Case "ID_FusionIntegration"
       ' Call up the Fusion Integration Module Setup screen.
       frmFusionTransfer.Show vbModal
@@ -2477,6 +2480,7 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
       
+'NHRD Prototype Fusion Code***********************************************************
     Case "ID_FusionIntegration"
       ' Call up the Fusion Integration Module Setup screen.
       frmFusionTransfer.Show vbModal
@@ -2830,7 +2834,8 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
-    
+
+'NHRD Prototype Fusion Code***********************************************************
     Case "ID_FusionIntegration"
       ' Call up the Fusion Integration module setup
       frmFusionTransfer.Show vbModal
@@ -3159,7 +3164,8 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
       
-    Case "ID_FusionIntegration"
+'NHRD Prototype Fusion Code***********************************************************
+  Case "ID_FusionIntegration"
       ' Call up the Fusion Integration module setup
       frmFusionTransfer.Show vbModal
       Set frmFusionTransfer = Nothing
@@ -3488,6 +3494,7 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
       
+'NHRD Prototype Fusion Code***********************************************************
     Case "ID_FusionIntegration"
       ' Call up the Fusion Integration module setup
       frmFusionTransfer.Show vbModal
@@ -3859,6 +3866,7 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
       
+'NHRD Prototype Fusion Code***********************************************************
     Case "ID_FusionIntegration"
       ' Call up the Fusion Integration module setup
       frmFusionTransfer.Show vbModal
@@ -4155,6 +4163,7 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
       
+'NHRD Prototype Fusion Code***********************************************************
     Case "ID_FusionIntegration"
       ' Call up the Fusion Integration module setup
       frmFusionTransfer.Show vbModal
@@ -4574,6 +4583,7 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
       
+'NHRD Prototype Fusion Code***********************************************************
     Case "ID_FusionIntegration"
       ' Call up the Fusion Integration module setup
       frmFusionTransfer.Show vbModal
