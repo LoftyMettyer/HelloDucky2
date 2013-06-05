@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   7800
@@ -1065,7 +1065,7 @@ Public Sub Refresh_Controls()
   Dim iCount As Integer
   Dim lngTempIndex As Long
   Dim sType As String
-  Dim lngTYPE As UtilityType
+  Dim lngType As UtilityType
   Dim bSystemMgrDefined As Boolean
   
   If mblnLoading Then
@@ -2086,7 +2086,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
   Case utlAll
     msTypeCode = "ALL"
     msType = "All"
-    msGeneralCaption = "All Reports & Utilities"
+    msGeneralCaption = "Search"
     msSingularCaption = "Report and Utility"
     msTableName = "ASRSysAllObjectNames"
     msIDField = "ID"
