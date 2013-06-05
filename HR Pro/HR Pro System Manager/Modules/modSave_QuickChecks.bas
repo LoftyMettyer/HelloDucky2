@@ -180,7 +180,7 @@ Public Function QuickChecks_3() As Boolean
       Do While (Not .EOF) And fOK
         
         If (!TableType = TableTypes.iTabChild) Then
-          If (Not !Deleted) Then
+          If (Not !Deleted) And Not (recRelEdit.BOF And recRelEdit.EOF) Then
             ' Check if it has any relationships.
             recRelEdit.MoveFirst
             recRelEdit.Index = "idxChildID"
@@ -266,14 +266,14 @@ Public Function QuickChecks_4() As Boolean
     Else
       ' AE20080410 Fault #13087
       'strEncrypted = IIf(IsNull(!ParameterValue) Or Len(!ParameterValue) = 0, 0, !ParameterValue)
-      strEncrypted = IIf(IsNull(!ParameterValue) Or Len(!ParameterValue) = 0, vbNullString, !ParameterValue)
+      strEncrypted = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, vbNullString, !parametervalue)
     End If
   End With
 
   ' Test the encrypted logon
   Set rstTest = New ADODB.Recordset
   rstTest.Open "SELECT dbo.udfASRNetIsProcessValid('" & Replace(strEncrypted, "'", "''") & "')", gADOCon, adOpenForwardOnly, adLockReadOnly
-  bOK = (rstTest.Fields(0).Value = True)
+  bOK = (rstTest.Fields(0).value = True)
   rstTest.Close
 
   
@@ -326,19 +326,19 @@ Public Function RegenerateProcessAccount() As Boolean
       !moduleKey = gsMODULEKEY_SQL
       !parameterkey = gsPARAMETERKEY_LOGINDETAILS
       !ParameterType = gsPARAMETERTYPE_ENCYPTED
-      !ParameterValue = EncryptLogonDetails("", "", gsDatabaseName, gsServerName)
+      !parametervalue = EncryptLogonDetails("", "", gsDatabaseName, gsServerName)
       .Update
       
       glngProcessMethod = iPROCESSADMIN_SERVICEACCOUNT
       
     Else
-      strEncrypted = IIf(IsNull(!ParameterValue) Or Len(!ParameterValue) = 0, 0, !ParameterValue)
+      strEncrypted = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
       
       DecryptLogonDetails strEncrypted, sName, sPassword, sDatabase, sServer
       strEncrypted = EncryptLogonDetails(sName, sPassword, gsDatabaseName, gsServerName)
       
       .Edit
-      !ParameterValue = strEncrypted
+      !parametervalue = strEncrypted
       .Update
       
     End If
