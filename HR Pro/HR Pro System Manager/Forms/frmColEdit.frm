@@ -2206,7 +2206,7 @@ End Property
 
 Public Property Let Changed(pblnNewValue As Boolean)
   mblnChanged = pblnNewValue
-  cmdOK.Enabled = mblnChanged
+  cmdOk.Enabled = mblnChanged
 End Property
 
 Public Property Get Changed() As Boolean
@@ -3241,7 +3241,7 @@ End Sub
 
 Private Sub cmdCancel_Click()
   Dim pintAnswer As Integer
-    If Changed = True And cmdOK.Enabled Then
+    If Changed = True And cmdOk.Enabled Then
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
       If pintAnswer = vbYes Then
         Me.MousePointer = vbHourglass
@@ -4866,7 +4866,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
   If mfCancelled = True Then
     If UnloadMode <> vbFormCode Then
-      If Changed = True And cmdOK.Enabled Then
+      If Changed = True And cmdOk.Enabled Then
         pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
         If pintAnswer = vbYes Then
           cmdOK_Click
@@ -6057,6 +6057,10 @@ Private Sub cboControl_Refresh()
           If miColumnType <> giCOLUMNTYPE_LOOKUP Then
             .AddItem "Text Box"
             .ItemData(.NewIndex) = giCTRL_TEXTBOX
+            
+            .AddItem "Navigation"
+            .ItemData(.NewIndex) = giCTRL_NAVIGATION
+                        
           End If
           
         ' OLE.
@@ -6458,7 +6462,7 @@ Private Sub cboDataType_Initialize()
     
     .AddItem "Date"
     .ItemData(.NewIndex) = dtTIMESTAMP
-    
+       
     .AddItem "OLE object"
     .ItemData(.NewIndex) = dtLONGVARBINARY
     
@@ -6473,6 +6477,9 @@ Private Sub cboDataType_Initialize()
           
     .AddItem "Photo"
     .ItemData(.NewIndex) = dtVARBINARY
+    
+'    .AddItem "Unique Identifier"
+'    .ItemData(.NewIndex) = dtGUID
     
     .AddItem "Working Pattern"
     .ItemData(.NewIndex) = dtLONGVARCHAR
@@ -6583,13 +6590,13 @@ End Sub
 Private Sub txtListValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOK.Default = False
+  cmdOk.Default = False
   
 End Sub
 
 Private Sub txtListValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOK.Default = True
+  cmdOk.Default = True
 
   ' Refresh the list of possible default values.
   cboDefault_Refresh
