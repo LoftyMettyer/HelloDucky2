@@ -11446,7 +11446,7 @@ Private Sub Form_Load()
     End If
   End If
   
-  cmdOk.Enabled = IsNew
+  cmdOK.Enabled = IsNew
   
   scrollVertical.SmallChange = SMALLSCROLL
   scrollHorizontal.SmallChange = SMALLSCROLL
@@ -12965,7 +12965,7 @@ Private Function LoadWorkflow() As Boolean
       mbLocked = IIf(IsNull(.Fields("locked")), False, .Fields("locked"))
       
       ' Set the screen caption and size.
-      Me.Caption = "Workflow Manager - " & IIf(IsNull(.Fields("name")), "unnamed", .Fields("name")) & vbNullString
+      Me.Caption = "Workflow Designer - " & IIf(IsNull(.Fields("name")), "unnamed", .Fields("name")) & vbNullString
 '''      Me.Height = IIf(IsNull(.Fields("height")), gLngDFLTSCREENHEIGHT, .Fields("height") + 450)
 '''      Me.Width = IIf(IsNull(.Fields("width")), gLngDFLTSCREENWIDTH, .Fields("width"))
     
@@ -13717,13 +13717,13 @@ End Property
 Public Property Let IsChanged(pfNewValue As Boolean)
   mfChanged = pfNewValue
   mfPerge = pfNewValue
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
 End Property
 
 Public Sub SetChanged(pfPerge As Boolean)
   mfChanged = True
   mfPerge = (mfPerge Or pfPerge)
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
 End Sub
 
 Public Function IsUniqueIdentifier(psIdentifier As String, plngIgnoreElementIndex As Long) As Boolean
