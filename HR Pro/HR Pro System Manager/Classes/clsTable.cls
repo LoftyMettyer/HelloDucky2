@@ -4483,6 +4483,35 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
     rsDAOTemp.Close
   End If
   
+  ' NPG20100427 Fault HRPRO-912
+  If Application.SelfServiceIntranetModule Then
+    ' Check that it is not used in SSI Charting.
+    sSQL = "SELECT DISTINCT tmpSSIntranetLinks.ID," & _
+      "   tmpSSIntranetLinks.Element_Type," & _
+      "   tmpSSIntranetLinks.text" & _
+      " FROM tmpSSIntranetLinks" & _
+      " WHERE tmpSSIntranetLinks.Chart_tableID = " & Trim(Str(gLngTableID)) & _
+      " AND tmpSSIntranetLinks.Element_Type in (2, 4)"
+  
+    Set rsDAOTemp = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+    If Not (rsDAOTemp.BOF And rsDAOTemp.EOF) Then
+      fUsed = True
+      Do Until rsDAOTemp.EOF
+          Select Case rsDAOTemp.Fields("Element_Type")
+          Case 2  ' Chart
+            mfrmUse.AddToList ("Self Service Intranet Chart : " & rsDAOTemp.Fields("text"))
+          Case 4  ' Database Value
+            mfrmUse.AddToList ("Self Service Intranet Database Value : " & rsDAOTemp.Fields("text"))
+          Case Else
+            mfrmUse.AddToList ("Self Service Intranet Module Setup : " & rsDAOTemp.Fields("text"))
+          End Select
+        rsDAOTemp.MoveNext
+      Loop
+    End If
+    'Close temporary recordset
+    rsDAOTemp.Close
+  End If
+ 
 TidyUpAndExit:
   ' Disassociate object variables.
   Set rsDAOTemp = Nothing
