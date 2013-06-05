@@ -376,7 +376,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
               strDelCol = "isnull(@delCol_" & CStr(lngColumnID) & ",'')"
             End Select
             strCheckColumns = IIf(strCheckColumns <> vbNullString, strCheckColumns & " OR ", "") & _
-                strInsCol & " <> " & strDelCol
+                strInsCol & " <> " & strDelCol & " OR (@startingtrigger = 1 AND @startingtriggertable = " & lngTableID & ")"
 
 
             strInsertUpdateOne = _
@@ -446,6 +446,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
                   alngAuditColumns, sDeclareInsCols, sDeclareDelCols, _
                   sSelectInsCols, sSelectDelCols, sFetchInsCols, sFetchDelCols)
 
+            strCheckColumns = IIf(strCheckColumns <> vbNullString, strCheckColumns & " OR (@startingtrigger = 1 AND @startingtriggertable = " & lngTableID & ")", "")
           End If
           
           
