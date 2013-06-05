@@ -1752,6 +1752,14 @@ Private Function ConfigureModuleSpecifics() As Boolean
   End If
 
   fOK = modAuditAccess.ConfigureCustomAuditLog
+  
+  ' NPG20111208
+  modMobileSpecifics.DropMobileObjects
+  If Application.MobileModule Then
+    OutputCurrentProcess2 "Mobile"
+    fOK = modMobileSpecifics.ConfigureWorkflowSpecifics
+  End If
+  
 
 TidyAndExit:
   ConfigureModuleSpecifics = fOK
