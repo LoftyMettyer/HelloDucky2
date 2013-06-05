@@ -53,8 +53,8 @@ Begin VB.Form frmWorkflowSetup
       TabCaption(1)   =   "&Personnel Identification"
       TabPicture(1)   =   "frmWorkflowSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraDelegation"
-      Tab(1).Control(1)=   "fraPersonnelTable"
+      Tab(1).Control(0)=   "fraPersonnelTable"
+      Tab(1).Control(1)=   "fraDelegation"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Service"
       TabPicture(2)   =   "frmWorkflowSetup.frx":0044
@@ -1383,6 +1383,13 @@ Private Sub RefreshControls()
   lblEmail.Enabled = cmdEmail.Enabled
   
   chkCopyDelegateEmail.Enabled = (Not mblnReadOnly)
+  
+  ' ------------------------------------------
+  ' Refresh the Mobile Key controls
+  ' ------------------------------------------
+  ' Refresh the Mobile Key controls
+  lblGetMobileKey.Enabled = (Application.MobileModule)
+  cmdGenMobileKey.Enabled = (Application.MobileModule)
   
   ' Disable the OK button as required.
   cmdOK.Enabled = mfChanged
