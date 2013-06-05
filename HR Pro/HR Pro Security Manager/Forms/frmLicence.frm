@@ -15,7 +15,7 @@ Begin VB.Form frmLicence
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1019
+   HelpContextID   =   8019
    Icon            =   "frmLicence.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -403,7 +403,7 @@ Private Sub Text1_Change()
 
 End Sub
 
-Private Sub lstModules_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub lstModules_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
     Button = 0
     Shift = 0
 End Sub

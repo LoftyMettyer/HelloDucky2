@@ -571,7 +571,7 @@ Private Sub Initialise()
   grdPermission.Visible = False
   grdRecords.Visible = True
   grdGroup.Visible = False
-  Me.HelpContextID = 1045
+  Me.HelpContextID = 8045
   Set mgrdAudit = grdRecords
   
   ' Set column visible array
@@ -735,14 +735,14 @@ Private Sub ReloadRecords(Optional bFilter As Boolean)
       grdPermission.Visible = False
       grdGroup.Visible = False
       grdAccess.Visible = False
-      Me.HelpContextID = 1045
+      Me.HelpContextID = 8045
       Set mgrdAudit = grdRecords
     Case audPermissions
       grdRecords.Visible = False
       grdPermission.Visible = True
       grdGroup.Visible = False
       grdAccess.Visible = False
-      Me.HelpContextID = 1046
+      Me.HelpContextID = 8046
       Set mgrdAudit = grdPermission
     Case audGroups
       grdRecords.Visible = False
@@ -750,14 +750,14 @@ Private Sub ReloadRecords(Optional bFilter As Boolean)
       grdAccess.Visible = False
       grdGroup.Visible = True
       Set mgrdAudit = grdGroup
-      Me.HelpContextID = 1047
+      Me.HelpContextID = 8047
     Case audAccess
       grdRecords.Visible = False
       grdPermission.Visible = False
       grdGroup.Visible = False
       grdAccess.Visible = True
       Set mgrdAudit = grdAccess
-      Me.HelpContextID = 1048
+      Me.HelpContextID = 8048
   End Select
   
   Form_Resize
