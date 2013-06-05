@@ -3,20 +3,20 @@ Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
 Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "tinumb6.ocx"
 Object = "{E2D000D0-2DA1-11D2-B358-00104B59D73D}#1.0#0"; "titext6.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
-Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
-Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
+Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
+Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "coa_workingpattern.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Object = "{E28F058B-8430-42F1-9D74-4BEDD2F27CCE}#1.0#0"; "COA_OptionGroup.ocx"
 Object = "{4FD0EB05-F124-4460-A61D-CB587234FB75}#1.0#0"; "COA_Image.ocx"
 Object = "{EDB7B7A8-7908-4896-B964-57CE7262666E}#1.0#0"; "COA_OLE.ocx"
-Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "COA_Label.ocx"
+Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "coa_label.ocx"
 Object = "{3389D561-C8E1-4CB0-A73E-77582EA68D3C}#1.1#0"; "COA_Lookup.ocx"
-Object = "{AD837810-DD1E-44E0-97C5-854390EA7D3A}#3.2#0"; "COA_Navigation.ocx"
-Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
-Object = "{19400013-2704-42FE-AAA4-45D1A725A895}#1.0#0"; "COA_ColourSelector.ocx"
+Object = "{AD837810-DD1E-44E0-97C5-854390EA7D3A}#3.2#0"; "coa_navigation.ocx"
+Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "coa_colourpicker.ocx"
+Object = "{19400013-2704-42FE-AAA4-45D1A725A895}#1.0#0"; "coa_colourselector.ocx"
 Begin VB.Form frmRecEdit4 
    BorderStyle     =   1  'Fixed Single
    ClientHeight    =   5835
@@ -5668,6 +5668,7 @@ Private Function CaseConversion(psText As String, piCaseConversion As Integer) A
             sLastCharacter = Mid(psText, lngPos - 1, 1)
             If ((sLastCharacter < "A") Or (sLastCharacter > "Z")) And _
               ((sLastCharacter < "a") Or (sLastCharacter > "z")) And _
+              ((sLastCharacter < "0") Or (sLastCharacter > "9")) And _
               ((sLastCharacter < "À") Or (sLastCharacter > "Ö")) And _
               ((sLastCharacter < "Ù") Or (sLastCharacter > "Ý")) And _
               ((sLastCharacter < "ß") Or (sLastCharacter > "ö")) And _
