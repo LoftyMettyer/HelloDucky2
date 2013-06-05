@@ -1222,7 +1222,7 @@ Public Function GetScreens() As Boolean
         If avPrimaryMenuInfo(11, iLoop) > 0 Then
           LoadMenuPicture CLng(avPrimaryMenuInfo(11, iLoop)), objFileTool
         Else
-          objFileTool.SetPicture 0, LoadResPicture("SCREEN", 1), COL_GREY
+          objFileTool.SetPicture 0, LoadResPicture("SCREEN", 0), COL_GREY
         End If
         
         'Add the new tool to the main menu
@@ -1242,7 +1242,7 @@ Public Function GetScreens() As Boolean
         If avPrimaryMenuInfo(12, iLoop) > 0 Then
           LoadMenuPicture CLng(avPrimaryMenuInfo(12, iLoop)), objFileTool
         Else
-          objFileTool.SetPicture 0, LoadResPicture("VIEW", 1), COL_GREY
+          objFileTool.SetPicture 0, LoadResPicture("VIEW", 0), COL_GREY
         End If
         .Bands("mnuFile").Tools.Insert 0, objFileTool
       
@@ -1260,7 +1260,7 @@ Public Function GetScreens() As Boolean
         iFileMenuCount = iFileMenuCount + 1
         objFileTool.Caption = RemoveUnderScores(CStr(avPrimaryMenuInfo(2, iLoop)))
         objFileTool.SubBand = sBand
-        objFileTool.SetPicture 0, LoadResPicture("TABLE", 1), COL_GREY
+        objFileTool.SetPicture 0, LoadResPicture("TABLE", 0), COL_GREY
         
         'Add it to the main menu
         .Bands("mnuFile").Tools.Insert 0, objFileTool
@@ -1281,7 +1281,7 @@ Public Function GetScreens() As Boolean
             If avSubMenuInfo(5, iLoop2) > 0 Then
               LoadMenuPicture CLng(avSubMenuInfo(5, iLoop2)), objFileTool
             Else
-              objFileTool.SetPicture 0, LoadResPicture("VIEW", 1), COL_GREY
+              objFileTool.SetPicture 0, LoadResPicture("VIEW", 0), COL_GREY
             End If
             .Bands(sBand).Tools.Insert 0, objFileTool
           Else
@@ -1292,7 +1292,7 @@ Public Function GetScreens() As Boolean
             If avSubMenuInfo(5, iLoop2) > 0 Then
               LoadMenuPicture CLng(avSubMenuInfo(5, iLoop2)), objFileTool
             Else
-              objFileTool.SetPicture 0, LoadResPicture("SCREEN", 1), COL_GREY
+              objFileTool.SetPicture 0, LoadResPicture("SCREEN", 0), COL_GREY
             End If
             .Bands(sBand).Tools.Insert 0, objFileTool
           End If
@@ -1330,9 +1330,9 @@ Public Function GetScreens() As Boolean
               LoadMenuPicture rsTemp!PictureID, objFileTool
             Else
               If gcoTablePrivileges.Item(rsTemp!TableName).TableType = tabLookup Then
-                objFileTool.SetPicture 0, LoadResPicture("LOOKUP_TABLE", 1), COL_GREY
+                objFileTool.SetPicture 0, LoadResPicture("LOOKUP_TABLE", 0), COL_GREY
               Else
-                objFileTool.SetPicture 0, LoadResPicture("SCREEN", 1), COL_GREY
+                objFileTool.SetPicture 0, LoadResPicture("SCREEN", 0), COL_GREY
               End If
             End If
           
@@ -1362,7 +1362,7 @@ Public Function GetScreens() As Boolean
           If rsScreens!PictureID > 0 Then
             LoadMenuPicture rsScreens!PictureID, objFileTool
           Else
-            objFileTool.SetPicture 0, LoadResPicture("SCREEN", 1), COL_GREY
+            objFileTool.SetPicture 0, LoadResPicture("SCREEN", 0), COL_GREY
           End If
 
           .Bands("bndQuickEntry").Tools.Insert 0, objFileTool
