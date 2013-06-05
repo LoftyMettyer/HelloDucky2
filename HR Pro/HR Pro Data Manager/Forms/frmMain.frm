@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "11:57"
+            TextSave        =   "09:19"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -3330,7 +3330,7 @@ Public Sub PopulateHistoryMenu()
           .Bands(sBand).Tools.RemoveAll
           
           Set objBandTool = .Tools.Add(.Tools.Count + 1, sBand)
-          objBandTool.Caption = objHistoryScreens.Item(iLoop).TableName
+          objBandTool.Caption = Replace(objHistoryScreens.Item(iLoop).TableName, "&", "&&")
           objBandTool.SetPicture 0, LoadResPicture("SCREEN", 0), COL_GREY
           objBandTool.SubBand = sBand
           
