@@ -359,6 +359,7 @@ Private Sub PopulateModules()
     .AddItem "Quick Address": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Payroll (Shared Table)": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Workflow": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
+    .AddItem "Version 1 Integration": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     
     lngBit = lngBit * 2
   End With
