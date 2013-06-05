@@ -128,7 +128,6 @@ Public gbIsUserSystemAdmin As Boolean
 Public gsSecurityGroup As String
 
 Public Application As SystemMgr.Application
-Public Database As SystemMgr.Database
 Public ODBC As SystemMgr.ODBC
 Public UI As New UI
 
