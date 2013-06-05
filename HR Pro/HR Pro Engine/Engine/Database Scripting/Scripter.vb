@@ -323,6 +323,7 @@ Namespace ScriptDB
       Dim sValidation As String
 
       Dim sSQLWriteableColumns As String
+      Dim sQLInsteadOfInsertColumns As String
       Dim SQLAfterInsertColumns As String
 
       Dim sSQLCalculatedColumns As String
@@ -387,6 +388,7 @@ Namespace ScriptDB
           sSQLPostAuditCalcs = String.Empty
           '       sWritebackColumns = String.Empty
           sSQLSpecialUpdate = String.Empty
+          sQLInsteadOfInsertColumns = String.Empty
 
           ' Build in indexes
           objAuditIndex = New Things.Index
@@ -632,7 +634,17 @@ Namespace ScriptDB
               , objTable.PhysicalName)
           End If
 
-
+          ' Instead of writeable columns
+          If aryAllWriteableColumns.ToArray.Length > 0 Then
+            sQLInsteadOfInsertColumns = String.Format("    -- Commit writeable columns" & vbNewLine & _
+                      "    INSERT [dbo].[{0}] ({1})" & vbNewLine & _
+                      "        SELECT {2} FROM inserted base;" & vbNewLine & vbNewLine _
+                      , objTable.PhysicalName, String.Join(",", aryAllWriteableColumns.ToArray()), String.Join("," & vbNewLine, aryAllWriteableFormatted.ToArray()))
+          Else
+            sQLInsteadOfInsertColumns = String.Format("    -- Commit writeable columns" & vbNewLine & _
+                      "    INSERT [dbo].[{0}] ([updflag]) VALUES (1);" & vbNewLine & vbNewLine _
+                      , objTable.PhysicalName)
+          End If
 
           ' Build audit strings
           If aryAuditUpdates.ToArray.Length > 0 Then
@@ -687,20 +699,6 @@ Namespace ScriptDB
               , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryPostAuditCalcs.ToArray()), CInt(objTable.ID))
           End If
 
-          '' Any calculations that have the unique code (or an function that requires some writeback)
-          'If aryWritebackColumns.ToArray.Length > 0 Then
-          '  sWritebackColumns = String.Format("    -- Update columns that requires a writeback from the UDFs" & vbNewLine & _
-          '    "--    IF EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {2} AND [nestlevel] = 1)" & vbNewLine & _
-          '    " --   BEGIN" & vbNewLine & _
-          '    "  --      WITH base AS (" & vbNewLine & _
-          '    "  --          SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
-          '    "  --          FROM [dbo].[{0}]" & vbNewLine & _
-          '    "   --         WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
-          '    "   --     UPDATE base" & vbNewLine & _
-          '    "   /*     SET {1} */" & vbNewLine & _
-          '    "  --  END" _
-          '    , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryWritebackColumns.ToArray()), CInt(objTable.ID))
-          'End If
 
           ' Special bypass trigger code
           sSQLCode_Bypass = SpecialTrigger_SSP(objTable)
@@ -718,9 +716,7 @@ Namespace ScriptDB
               "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
               "    INSERT [dbo].[tbsys_intransactiontrigger] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {2}, 1, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
-              "    -- Commit writeable columns" & vbNewLine & _
-              "    INSERT [dbo].[{0}] ({3})" & vbNewLine & _
-              "        SELECT {4} FROM inserted base;" & vbNewLine & vbNewLine _
+              sQLInsteadOfInsertColumns _
               , objTable.Name, sTriggerName _
               , CInt(objTable.ID) _
               , String.Join(",", aryAllWriteableColumns.ToArray()), String.Join("," & vbNewLine, aryAllWriteableFormatted.ToArray()))
