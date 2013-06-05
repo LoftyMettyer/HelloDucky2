@@ -663,11 +663,11 @@ Private Function UpdateDatabase( _
       Exit Function
     End If
     
-    ' Generate drop script
-    If bOK Then
-      bOK = GenerateDropServerAssemblySP(True)
-      gobjProgress.UpdateProgress False
-    End If
+'    ' Generate drop script
+'    If bOK Then
+'      bOK = GenerateDropServerAssemblySP(True)
+'      gobjProgress.UpdateProgress False
+'    End If
        
     If bOK Then
       'NHRD21112011 renamed from HRProAssembly.sql
