@@ -204,79 +204,79 @@ Begin VB.Form frmDbMgr
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   19
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":12526
+            Picture         =   "frmDbMgr.frx":12440
             Key             =   "IMG_PARENTTABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":12BB8
+            Picture         =   "frmDbMgr.frx":12AD2
             Key             =   "IMG_CHARACTER"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1324A
+            Picture         =   "frmDbMgr.frx":13164
             Key             =   "IMG_WORKINGPATTERN"
          EndProperty
          BeginProperty ListImage4 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":138DC
+            Picture         =   "frmDbMgr.frx":137F6
             Key             =   "IMG_LOGIC"
          EndProperty
          BeginProperty ListImage5 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":13F6E
+            Picture         =   "frmDbMgr.frx":13E88
             Key             =   "IMG_RELATION"
          EndProperty
          BeginProperty ListImage6 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":14600
+            Picture         =   "frmDbMgr.frx":1451A
             Key             =   "IMG_RELATIONGROUP"
          EndProperty
          BeginProperty ListImage7 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":14C92
+            Picture         =   "frmDbMgr.frx":14BAC
             Key             =   "IMG_DATE"
          EndProperty
          BeginProperty ListImage8 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":15324
+            Picture         =   "frmDbMgr.frx":1523E
             Key             =   "IMG_LABEL"
          EndProperty
          BeginProperty ListImage9 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":159B6
+            Picture         =   "frmDbMgr.frx":158D0
             Key             =   "IMG_LINK"
          EndProperty
          BeginProperty ListImage10 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":16048
+            Picture         =   "frmDbMgr.frx":15F62
             Key             =   ""
          EndProperty
          BeginProperty ListImage11 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1639A
+            Picture         =   "frmDbMgr.frx":162B4
             Key             =   "IMG_NUMERIC"
          EndProperty
          BeginProperty ListImage12 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":16A2C
+            Picture         =   "frmDbMgr.frx":16946
             Key             =   "IMG_OLE"
          EndProperty
          BeginProperty ListImage13 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":170BE
+            Picture         =   "frmDbMgr.frx":16FD8
             Key             =   "IMG_RADIO"
          EndProperty
          BeginProperty ListImage14 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":17750
+            Picture         =   "frmDbMgr.frx":1766A
             Key             =   "IMG_PHOTO"
          EndProperty
          BeginProperty ListImage15 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":17DE2
+            Picture         =   "frmDbMgr.frx":17CFC
             Key             =   "IMG_LOOKUP"
          EndProperty
          BeginProperty ListImage16 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":18474
+            Picture         =   "frmDbMgr.frx":1838E
             Key             =   "IMG_CHILDTABLE"
          EndProperty
          BeginProperty ListImage17 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":18B06
+            Picture         =   "frmDbMgr.frx":18A20
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage18 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":19198
+            Picture         =   "frmDbMgr.frx":190B2
             Key             =   "IMG_UNKNOWN"
          EndProperty
          BeginProperty ListImage19 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1982A
+            Picture         =   "frmDbMgr.frx":19744
             Key             =   "IMG_COLUMN"
          EndProperty
       EndProperty
@@ -304,87 +304,87 @@ Begin VB.Form frmDbMgr
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   21
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":19EBC
+            Picture         =   "frmDbMgr.frx":19DD6
             Key             =   "IMG_DATABASE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1A70E
+            Picture         =   "frmDbMgr.frx":1A628
             Key             =   "IMG_NUMERIC"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1AC60
+            Picture         =   "frmDbMgr.frx":1AB7A
             Key             =   "IMG_DATE"
          EndProperty
          BeginProperty ListImage4 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1B1B2
+            Picture         =   "frmDbMgr.frx":1B0CC
             Key             =   "IMG_PARENTTABLE"
          EndProperty
          BeginProperty ListImage5 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1B704
+            Picture         =   "frmDbMgr.frx":1B61E
             Key             =   "IMG_LOOKUP"
          EndProperty
          BeginProperty ListImage6 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1BC56
+            Picture         =   "frmDbMgr.frx":1BB70
             Key             =   "IMG_CHILDTABLE"
          EndProperty
          BeginProperty ListImage7 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1C1A8
+            Picture         =   "frmDbMgr.frx":1C0C2
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage8 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1C6FA
+            Picture         =   "frmDbMgr.frx":1C614
             Key             =   "IMG_RELATIONGROUP"
          EndProperty
          BeginProperty ListImage9 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1CC4C
+            Picture         =   "frmDbMgr.frx":1CB66
             Key             =   "IMG_RELATION"
          EndProperty
          BeginProperty ListImage10 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1D19E
+            Picture         =   "frmDbMgr.frx":1D0B8
             Key             =   "IMG_UNKNOWN"
          EndProperty
          BeginProperty ListImage11 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1D6F0
+            Picture         =   "frmDbMgr.frx":1D60A
             Key             =   "IMG_PHOTO"
          EndProperty
          BeginProperty ListImage12 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1DC42
+            Picture         =   "frmDbMgr.frx":1DB5C
             Key             =   "IMG_SPINNER"
          EndProperty
          BeginProperty ListImage13 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1E194
+            Picture         =   "frmDbMgr.frx":1E0AE
             Key             =   "IMG_CHARACTER"
          EndProperty
          BeginProperty ListImage14 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1E6E6
+            Picture         =   "frmDbMgr.frx":1E600
             Key             =   "IMG_WORKINGPATTERN"
          EndProperty
          BeginProperty ListImage15 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1EC38
+            Picture         =   "frmDbMgr.frx":1EB52
             Key             =   "IMG_BUTTON"
          EndProperty
          BeginProperty ListImage16 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1F18A
+            Picture         =   "frmDbMgr.frx":1F0A4
             Key             =   "IMG_LOGIC"
          EndProperty
          BeginProperty ListImage17 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1F560
+            Picture         =   "frmDbMgr.frx":1F5F6
             Key             =   "IMG_COLUMN"
          EndProperty
          BeginProperty ListImage18 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1FAB2
+            Picture         =   "frmDbMgr.frx":1FB48
             Key             =   "IMG_LABEL"
          EndProperty
          BeginProperty ListImage19 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":1FE4B
+            Picture         =   "frmDbMgr.frx":2009A
             Key             =   "IMG_LINK"
          EndProperty
          BeginProperty ListImage20 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":2039D
+            Picture         =   "frmDbMgr.frx":205EC
             Key             =   "IMG_OLE"
          EndProperty
          BeginProperty ListImage21 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmDbMgr.frx":208EF
+            Picture         =   "frmDbMgr.frx":20B3E
             Key             =   "IMG_RADIO"
          EndProperty
       EndProperty
@@ -485,11 +485,11 @@ Private Sub SetColumnSizes()
  
   Const iEXTRALENGTH = 3
   
-  If TreeView1.SelectedItem Is Nothing Then Exit Sub
+  If Treeview1.SelectedItem Is Nothing Then Exit Sub
   
-  If (TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Then
+  If (Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Then
     Set objShowColumns = gpropShowColumns_DataMgrTable
-  ElseIf (TreeView1.SelectedItem.Tag = giNODE_TABLE) Then
+  ElseIf (Treeview1.SelectedItem.Tag = giNODE_TABLE) Then
     Set objShowColumns = gpropShowColumns_DataMgr
   Else
     Exit Sub
@@ -516,70 +516,77 @@ End Sub
 
 Private Sub abDbMgr_Click(ByVal pTool As ActiveBarLibraryCtl.Tool)
 
-    '==================================================
-    ' Edit menu.
-    '==================================================
-Select Case pTool.Name
-    
-    Case "ID_New"
-      ' Pass the menu choice onto the active form to process.
-      EditMenu pTool.Name
-    
-    Case "ID_Open"
-      ' Pass the menu choice onto the active form to process.
-      EditMenu pTool.Name
-
-    Case "ID_Delete"
-      ' Pass the menu choice onto the active form to process.
-      EditMenu pTool.Name
-
-    Case "ID_CopyTable"
-      ' Pass the menu choice onto the active form to process.
-      EditMenu pTool.Name
-
-    Case "ID_CopyColumn"
-      ' Pass the menu choice onto the active form to process.
-      EditMenu pTool.Name
-
-    Case "ID_Properties"
-      ' Pass the menu choice onto the active form to process.
-      EditMenu pTool.Name
-
-    Case "ID_SaveChanges"
-      ' Pass the menu choice onto the active form to process.
-      EditMenu pTool.Name
-    
-    Case "ID_Print"
-      EditMenu pTool.Name
-    
-    Case "ID_CopyClipboard"
-      EditMenu pTool.Name
-    
-    '==================================================
-    ' View menu.
-    '==================================================
-    Case "ID_LargeIcons"
-      ' Change the view to display large icons.
-      ChangeView lvwIcon
+'  '==================================================
+'  ' Edit menu.
+'  '==================================================
+'  Select Case pTool.Name
+'
+'    Case "ID_New"
+'      ' Pass the menu choice onto the active form to process.
+'      EditMenu pTool.Name
+'
+'    Case "ID_Open"
+'      ' Pass the menu choice onto the active form to process.
+'      EditMenu pTool.Name
+'
+'    Case "ID_Delete"
+'      ' Pass the menu choice onto the active form to process.
+'      EditMenu pTool.Name
+'
+'    Case "ID_CopyTable"
+'      ' Pass the menu choice onto the active form to process.
+'      EditMenu pTool.Name
+'
+'    Case "ID_CopyColumn"
+'      ' Pass the menu choice onto the active form to process.
+'      EditMenu pTool.Name
+'
+'    Case "ID_Properties"
+'      ' Pass the menu choice onto the active form to process.
+'      EditMenu pTool.Name
+'
+'    Case "ID_SaveChanges"
+'      ' Pass the menu choice onto the active form to process.
+'      EditMenu pTool.Name
+'
+'    Case "ID_Print"
+'      EditMenu pTool.Name
+'
+'    Case "ID_CopyClipboard"
+'      EditMenu pTool.Name
+'
+'    '==================================================
+'    ' View menu.
+'    '==================================================
+'    Case "ID_LargeIcons"
+'      ' Change the view to display large icons.
+'      ChangeView lvwIcon
+'
+'    Case "ID_SmallIcons"
+'      ' Change the view to display small icons.
+'      ChangeView lvwSmallIcon
+'
+'    Case "ID_List"
+'      ' Change the view to display a list.
+'      ChangeView lvwList
+'
+'    Case "ID_Details"
+'      ' Change the view to display details.
+'      ChangeView lvwReport
+'
+'    Case "ID_CustomiseColumns"
+'      ' Change which columns are displayed
+'      EditMenu pTool.Name
+'
+'  End Select
   
-    Case "ID_SmallIcons"
-      ' Change the view to display small icons.
-      ChangeView lvwSmallIcon
-  
-    Case "ID_List"
-      ' Change the view to display a list.
-      ChangeView lvwList
+  Select Case pTool.Name
+  Case "ID_LargeIcons", "ID_SmallIcons", "ID_List", "ID_Details"
+    ChangeView lvwReport
+  Case Else
+    EditMenu pTool.Name
+  End Select
 
-    Case "ID_Details"
-      ' Change the view to display details.
-      ChangeView lvwReport
-
-    Case "ID_CustomiseColumns"
-      ' Change which columns are displayed
-      EditMenu pTool.Name
-
-End Select
-  
 End Sub
 
 Private Sub abDbMgr_PreCustomizeMenu(ByVal Cancel As ActiveBarLibraryCtl.ReturnBool)
@@ -603,7 +610,7 @@ End Sub
 
 Private Sub Form_GotFocus()
   ' Set focus on the treeview.
-  TreeView1.SetFocus
+  Treeview1.SetFocus
   
 End Sub
 
@@ -662,7 +669,7 @@ Private Sub Form_Load()
   ' Position controls.
   Label1.Left = 0
   Label1.Caption = " All Folders"
-  ListView1.Top = TreeView1.Top
+  ListView1.Top = Treeview1.Top
   fraSplit.Width = UI.GetSystemMetrics(SM_CXFRAME) * Screen.TwipsPerPixelX
   
   ' Format the listview with correct headers
@@ -672,7 +679,7 @@ Private Sub Form_Load()
   ' Populate the treeview.
   InitialiseTreeView
   
-  With TreeView1
+  With Treeview1
     ' Populate the listview.
     PopulateListView .Nodes("TABLES")
     .Nodes("TABLES").Selected = True
@@ -723,20 +730,20 @@ Private Sub Form_Resize()
     ' Position the label controls on the form.
     Label1.Top = 0
     Label2.Top = Label1.Top
-    TreeView1.Top = Label1.Top + Label1.Height
-    ListView1.Top = TreeView1.Top
+    Treeview1.Top = Label1.Top + Label1.Height
+    ListView1.Top = Treeview1.Top
     
     ' Size the tree and list view controls.
-    lngHeight = Me.ScaleHeight - (TreeView1.Top + StatusBar1.Height)
+    lngHeight = Me.ScaleHeight - (Treeview1.Top + StatusBar1.Height)
     If lngHeight < 0 Then lngHeight = 0
-    TreeView1.Height = lngHeight
+    Treeview1.Height = lngHeight
     ListView1.Height = lngHeight
   
     ' Position and size the split frame.
     With fraSplit
       .Width = UI.GetSystemMetrics(SM_CXFRAME) * Screen.TwipsPerPixelX
       .Top = Label1.Top
-      .Height = Label1.Height + TreeView1.Height
+      .Height = Label1.Height + Treeview1.Height
       If .Left + .Width > Me.ScaleWidth - 810 Then
         .Left = Me.ScaleWidth - (810 + .Width)
       End If
@@ -839,12 +846,12 @@ Private Sub ListView1_DblClick()
   If ListView1.ListItems.Count > 0 Then
   
     ' If the select edlistview item has children ...
-    If TreeView1.SelectedItem.Children > 0 Then
+    If Treeview1.SelectedItem.Children > 0 Then
       
       ' Set the selected item to be the selected item in the treeview.
-      Set ThisNode = TreeView1.Nodes(ListView1.SelectedItem.key)
+      Set ThisNode = Treeview1.Nodes(ListView1.SelectedItem.key)
       ThisNode.EnsureVisible
-      TreeView1.SelectedItem = ThisNode
+      Treeview1.SelectedItem = ThisNode
       
       ' Populate the listview with the children of the selected item.
       PopulateListView ThisNode
@@ -978,7 +985,7 @@ Private Sub TreeView1_Expand(ByVal Node As ComctlLib.Node)
 End Sub
 
 Private Sub TreeView1_GotFocus()
-  Set ActiveView = TreeView1
+  Set ActiveView = Treeview1
   frmSysMgr.RefreshMenu
   
 End Sub
@@ -1034,7 +1041,7 @@ End Sub
 Private Sub TreeView1_NodeClick(ByVal Node As ComctlLib.Node)
 
   ' Update the treeview tag.
-  TreeView1.Tag = TreeView1.SelectedItem.Tag
+  Treeview1.Tag = Treeview1.SelectedItem.Tag
   
   ' If we are changing node then clear any selections from the listview.
   If Node.key <> gsTreeViewNodeKey Then
@@ -1067,8 +1074,8 @@ Private Function CheckRelations(ByVal pObjTable As HRProSystemMgr.Table) As Bool
     ' If the given table has relations, add it to the relations treeview.
     If pObjTable.HasRelations Then
     
-      If Not Misc.IsItemInCollection(TreeView1.Nodes, "R" & pObjTable.TableID) Then
-        Set objNode = TreeView1.Nodes.Add("RELATION", _
+      If Not Misc.IsItemInCollection(Treeview1.Nodes, "R" & pObjTable.TableID) Then
+        Set objNode = Treeview1.Nodes.Add("RELATION", _
           tvwChild, "R" & pObjTable.TableID, pObjTable.TableName, "IMG_RELATIONGROUP", "IMG_RELATIONGROUP")
         With objNode
           .Tag = giNODE_RELATION
@@ -1079,8 +1086,8 @@ Private Function CheckRelations(ByVal pObjTable As HRProSystemMgr.Table) As Bool
       
     Else
       ' If the given table has no relations, remove it from the relations treeview.
-      If Misc.IsItemInCollection(TreeView1.Nodes, "R" & pObjTable.TableID) Then
-        TreeView1.Nodes.Remove "R" & pObjTable.TableID
+      If Misc.IsItemInCollection(Treeview1.Nodes, "R" & pObjTable.TableID) Then
+        Treeview1.Nodes.Remove "R" & pObjTable.TableID
       End If
     End If
     
@@ -1146,12 +1153,12 @@ Public Sub EditMenu(psMenuItem As String)
     
     Case "ID_CustomiseColumns"
       ' Customise column view...
-      If (TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Then
+      If (Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Then
         Set frmShowColumns = New HRProSystemMgr.frmShowColumns
         frmShowColumns.PropertySet = gpropShowColumns_DataMgrTable
         frmShowColumns.Show vbModal
         SetColumnSizes
-      ElseIf (TreeView1.SelectedItem.Tag = giNODE_TABLE) Then
+      ElseIf (Treeview1.SelectedItem.Tag = giNODE_TABLE) Then
         Set frmShowColumns = New HRProSystemMgr.frmShowColumns
         frmShowColumns.PropertySet = gpropShowColumns_DataMgr
         frmShowColumns.Show vbModal
@@ -1165,7 +1172,7 @@ Public Sub EditMenu(psMenuItem As String)
   'Get the selected item type
   If Not ActiveView Is Nothing Then
     If ActiveView.SelectedItem Is Nothing Then
-      Select Case TreeView1.SelectedItem.Tag
+      Select Case Treeview1.SelectedItem.Tag
         Case 0 ' Root node.
           lngItemType = giNODE_TABLEGROUP
         Case giNODE_TABLEGROUP
@@ -1207,8 +1214,8 @@ Public Sub EditMenu(psMenuItem As String)
     
     'NHRD30072003 Fault 6255 Added the ID_SelectAll check because it was refreshing the view and wiping out selection
     ' Ensure the list view has the correct display for the current treeview selection.
-    If (Not TreeView1.SelectedItem Is Nothing) And (psMenuItem <> "ID_SelectAll") Then
-      PopulateListView TreeView1.SelectedItem, True
+    If (Not Treeview1.SelectedItem Is Nothing) And (psMenuItem <> "ID_SelectAll") Then
+      PopulateListView Treeview1.SelectedItem, True
     End If
 
     RefreshListView
@@ -1225,13 +1232,13 @@ Private Sub InitialiseTreeView()
   Dim objNode As ComctlLib.Node
   
   ' Clear the treeview.
-  TreeView1.Nodes.Clear
+  Treeview1.Nodes.Clear
   
   ' Add the root 'Database' node in the treeview.
   '
   ' DATABASE
   '
-  Set objNode = TreeView1.Nodes.Add(, tvwChild, "DATABASE", "Database", "IMG_DATABASE")
+  Set objNode = Treeview1.Nodes.Add(, tvwChild, "DATABASE", "Database", "IMG_DATABASE")
   With objNode
     .Tag = 0
     .Expanded = True
@@ -1244,7 +1251,7 @@ Private Sub InitialiseTreeView()
   '     |
   '     +--TABLES
   '
-  Set objNode = TreeView1.Nodes.Add("DATABASE", tvwChild, "TABLES", "Tables", "IMG_TABLE")
+  Set objNode = Treeview1.Nodes.Add("DATABASE", tvwChild, "TABLES", "Tables", "IMG_TABLE")
   With objNode
     .Tag = giNODE_TABLEGROUP
     .Expanded = True
@@ -1283,7 +1290,7 @@ Private Sub InitialiseTreeView()
             sIconKey = "IMG_UNKNOWN"
         End Select
 
-        Set objNode = TreeView1.Nodes.Add("TABLES", tvwChild, _
+        Set objNode = Treeview1.Nodes.Add("TABLES", tvwChild, _
           "T" & .Fields("tableID"), .Fields("tableName"), sIconKey, sIconKey)
         objNode.Tag = giNODE_TABLE
         objNode.Sorted = True
@@ -1303,7 +1310,7 @@ Private Sub InitialiseTreeView()
   '     |
   '     +--RELATIONSHIPS
   '
-  Set objNode = TreeView1.Nodes.Add("DATABASE", tvwChild, "RELATION", "Relationships", "IMG_RELATIONGROUP")
+  Set objNode = Treeview1.Nodes.Add("DATABASE", tvwChild, "RELATION", "Relationships", "IMG_RELATIONGROUP")
   With objNode
     .Tag = giNODE_RELATIONGROUP
     .Expanded = True
@@ -1341,7 +1348,7 @@ Private Sub InitialiseTreeView()
         
         If Not recTabEdit.NoMatch Then
         
-          Set objNode = TreeView1.Nodes.Add("RELATION", tvwChild, _
+          Set objNode = Treeview1.Nodes.Add("RELATION", tvwChild, _
             "R" & lngTableID, recTabEdit!TableName, "IMG_RELATIONGROUP")
           objNode.Tag = giNODE_RELATION
         End If
@@ -2104,7 +2111,7 @@ Private Sub PopulateListView(pobjNode As ComctlLib.Node, Optional ByVal pfRefres
         iCount = 0
         
         ' Add items to the listview for each of the specified node's children.
-        Set objChildNode = TreeView1.Nodes(iNodeIndex)
+        Set objChildNode = Treeview1.Nodes(iNodeIndex)
         Set objItem = ListView1.ListItems.Add(, objChildNode.key, objChildNode.Text, _
           objChildNode.Image, objChildNode.Image)
           iCount = iCount + 1
@@ -2395,10 +2402,10 @@ End Sub
 Private Sub RemoveNode(psKey As String)
 
   ' Remove the specified node from the treeview.
-  TreeView1.Nodes.Remove psKey
+  Treeview1.Nodes.Remove psKey
   
   ' Populate the listview with items for the defaulted treeview item.
-  PopulateListView TreeView1.SelectedItem, True
+  PopulateListView Treeview1.SelectedItem, True
   
 End Sub
 
@@ -2412,8 +2419,8 @@ Private Sub SplitMove()
   End If
   
   ' Resize the tree view.
-  TreeView1.Width = fraSplit.Left - TreeView1.Left
-  Label1.Width = TreeView1.Width
+  Treeview1.Width = fraSplit.Left - Treeview1.Left
+  Label1.Width = Treeview1.Width
   
   ' Resize the listview.
   ListView1.Left = fraSplit.Left + fraSplit.Width
@@ -2510,7 +2517,7 @@ Private Sub ColumnDelete()
   UI.LockWindow Me.hWnd
   
   Set objTable = New HRProSystemMgr.Table
-  objTable.TableID = Val(Mid(TreeView1.SelectedItem.key, 2))
+  objTable.TableID = Val(Mid(Treeview1.SelectedItem.key, 2))
   
   ' Loop through all of the listview items to see which ones are selected.
   iLoop = 1
@@ -2663,11 +2670,11 @@ Private Sub TableDelete()
         If fOK Then
           
           ' Remove table node from treeview
-          TreeView1.Nodes.Remove "T" & objTable.TableID
+          Treeview1.Nodes.Remove "T" & objTable.TableID
           
           ' Remove table relation node from treeview if it exists.
-          If Misc.IsItemInCollection(TreeView1.Nodes, "R" & objTable.TableID) Then
-            TreeView1.Nodes.Remove "R" & objTable.TableID
+          If Misc.IsItemInCollection(Treeview1.Nodes, "R" & objTable.TableID) Then
+            Treeview1.Nodes.Remove "R" & objTable.TableID
           End If
           
         End If
@@ -2754,7 +2761,7 @@ Private Sub EditMenuTable(psMenuItem As String)
       TableEdit
       
     ' Copy the table.
-    Case "ID_CopyTable"
+    Case "ID_CopyDef"  '"ID_CopyTable"
       gfMenuActionKey = True
       TableCopy
       
@@ -2791,7 +2798,7 @@ Private Sub EditMenuColumn(psMenuItem As String)
       ColumnEdit
 
     ' Copy the currently selected column
-    Case "ID_CopyColumn"
+    Case "ID_CopyDef"  '"ID_CopyColumn"
       gfMenuActionKey = True
       ColumnCopy
     
@@ -2853,7 +2860,7 @@ Private Sub ColumnAdd()
   Dim objItem As ComctlLib.ListItem
   
   Set objTable = New HRProSystemMgr.Table
-  objTable.TableID = Val(Mid(TreeView1.SelectedItem.key, 2))
+  objTable.TableID = Val(Mid(Treeview1.SelectedItem.key, 2))
       
   fOK = objTable.ReadTable
   
@@ -2902,7 +2909,7 @@ Private Sub TableAdd()
         sImage = "IMG_TABLE"
     End Select
     
-    Set objNode = TreeView1.Nodes.Add("TABLES", _
+    Set objNode = Treeview1.Nodes.Add("TABLES", _
       tvwChild, "T" & objTable.TableID, objTable.TableName, _
       sImage, sImage)
     objNode.Tag = giNODE_TABLE
@@ -2910,7 +2917,7 @@ Private Sub TableAdd()
   
     'Make sure new table is visible and selected in the treeview.
     objNode.EnsureVisible
-    TreeView1.SelectedItem = objNode
+    Treeview1.SelectedItem = objNode
   
     ' Disassociate object variables.
     Set objNode = Nothing
@@ -2955,7 +2962,7 @@ Private Sub ColumnEdit()
   Screen.MousePointer = vbHourglass
   
   Set objTable = New HRProSystemMgr.Table
-  objTable.TableID = Val(Mid(TreeView1.SelectedItem.key, 2))
+  objTable.TableID = Val(Mid(Treeview1.SelectedItem.key, 2))
 
   Set objColumn = New HRProSystemMgr.Column
   objColumn.TableID = objTable.TableID
@@ -2985,7 +2992,7 @@ Private Sub ColumnCopy()
   Screen.MousePointer = vbHourglass
   
   Set objTable = New HRProSystemMgr.Table
-  objTable.TableID = Val(Mid(TreeView1.SelectedItem.key, 2))
+  objTable.TableID = Val(Mid(Treeview1.SelectedItem.key, 2))
 
   Set objColumn = New HRProSystemMgr.Column
   objColumn.TableID = objTable.TableID
@@ -3046,12 +3053,12 @@ Private Sub TableEdit()
     
     If ActiveView Is ListView1 Then
     
-      Set objNode = TreeView1.Nodes("T" & objTable.TableID)
+      Set objNode = Treeview1.Nodes("T" & objTable.TableID)
       objNode.EnsureVisible
-      TreeView1.SelectedItem = objNode
-      TreeView1.SelectedItem.Text = objTable.TableName
-      TreeView1.SelectedItem.Image = sImage             'MH20010131 Fault 1673
-      TreeView1.SelectedItem.SelectedImage = sImage     'MH20010131 Fault 1673
+      Treeview1.SelectedItem = objNode
+      Treeview1.SelectedItem.Text = objTable.TableName
+      Treeview1.SelectedItem.Image = sImage             'MH20010131 Fault 1673
+      Treeview1.SelectedItem.SelectedImage = sImage     'MH20010131 Fault 1673
 
       ' Disassociate object variables.
       Set objNode = Nothing
@@ -3064,10 +3071,10 @@ Private Sub TableEdit()
     End If
   
     ' Sort the treeview order in case the name of a table has changed.
-    TreeView1.Nodes("TABLES").Sorted = True
+    Treeview1.Nodes("TABLES").Sorted = True
   
-    If Misc.IsItemInCollection(TreeView1.Nodes, "R" & objTable.TableID) Then
-      TreeView1.Nodes("R" & objTable.TableID).Text = objTable.TableName
+    If Misc.IsItemInCollection(Treeview1.Nodes, "R" & objTable.TableID) Then
+      Treeview1.Nodes("R" & objTable.TableID).Text = objTable.TableName
       'JPD 20051128 Fault 10597
       'Treeview1.Nodes("R" & objTable.TableID).Image = sImage             'MH20010131 Fault 1673
       'Treeview1.Nodes("R" & objTable.TableID).SelectedImage = sImage     'MH20010131 Fault 1673
@@ -3225,7 +3232,7 @@ Private Sub RelationChildAdd()
 
   ' Adding a relation child is the same as looking at the properties of
   ' a relation parent.
-  RelationEdit Val(Mid(TreeView1.SelectedItem.key, 2))
+  RelationEdit Val(Mid(Treeview1.SelectedItem.key, 2))
   
 End Sub
 Private Sub RelationChildDelete()
@@ -3268,7 +3275,7 @@ Private Sub RelationChildDelete()
   Next iLoop
            
   Set objTable = New HRProSystemMgr.Table
-  objTable.TableID = Val(Mid(TreeView1.SelectedItem.key, 2))
+  objTable.TableID = Val(Mid(Treeview1.SelectedItem.key, 2))
   
   ' Change the mouse pointer.
   Screen.MousePointer = vbHourglass
@@ -3331,7 +3338,7 @@ Private Sub RelationChildEdit()
 
   ' Adding a relation child is the same as looking at the properties of
   ' a relation parent.
-  RelationEdit Val(Mid(TreeView1.SelectedItem.key, 2))
+  RelationEdit Val(Mid(Treeview1.SelectedItem.key, 2))
 
 End Sub
 
@@ -3585,9 +3592,9 @@ Private Sub TableCopy()
       InitialiseTreeView
 
       ' Make sure new table is visible and selected in the treeview.
-      Set objNode = TreeView1.Nodes("T" & objNewTable.TableID)
+      Set objNode = Treeview1.Nodes("T" & objNewTable.TableID)
       objNode.EnsureVisible
-      TreeView1.SelectedItem = objNode
+      Treeview1.SelectedItem = objNode
       Set objNode = Nothing
       
       ListView1.SetFocus
