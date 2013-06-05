@@ -328,7 +328,7 @@ Private mbEnableBlocking As Boolean
 
 Private miViewMode As AccordViewMode
 
-Const MaxTop = 100000
+Const MaxTop = 10000
 
 Public Property Let ConnectionType(ByVal piNewValue As DataMgr.AccordConnection)
   miConnectionType = piNewValue
@@ -445,7 +445,7 @@ objString.Append vbTab & IIf(.Fields("Archived").Value = 1, "Yes", "No")
       End If
 '
 '      grdTransferDetails.AddItem strAddString
-grdTransferDetails.AddItem objString.ToString
+      grdTransferDetails.AddItem objString.ToString
 '
       .MoveNext
     Wend
