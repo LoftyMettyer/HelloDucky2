@@ -34,7 +34,7 @@ LocalErr:
   bOK = False
   Screen.MousePointer = vbDefault
   Err.Clear
-  OutputError "Error setting database compatability."
+  OutputError "Error setting database compatibility."
   GoTo TidyUpAndExit
 
 End Function
