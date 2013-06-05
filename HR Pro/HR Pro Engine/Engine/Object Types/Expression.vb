@@ -540,7 +540,7 @@ Namespace Things
       Dim sWhereCode As String
 
       Dim sColumnFilter As String
-      Dim sColumnOrder As String
+      '      Dim sColumnOrder As String
       Dim sColumnJoinCode As String = String.Empty
 
       Dim iBackupType As ScriptDB.ExpressionType
@@ -661,7 +661,7 @@ Namespace Things
         Else
 
           sColumnFilter = String.Empty
-          sColumnOrder = String.Empty
+          '    sColumnOrder = String.Empty
           RequiresRecordID = True
           bIsSummaryColumn = False
           Me.IsComplex = True
@@ -720,17 +720,18 @@ Namespace Things
             iPartNumber = Declarations.Count + Me.StartOfPartNumbers
             bIsSummaryColumn = ([Component].ChildRowDetails.RowSelection = ScriptDB.ColumnRowSelection.Total Or [Component].ChildRowDetails.RowSelection = ScriptDB.ColumnRowSelection.Count)
 
-            sPartCode = String.Format("{0}SELECT @part_{1} = base.[{2}]" & vbNewLine _
-                , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
 
             ' Add to prereqistits arrays
             If bIsSummaryColumn Then
-              Declarations.Add(String.Format("@part_{1} numeric(38,8)" _
-                  , [CodeCluster].Indentation, iPartNumber))
-              sColumnOrder = vbNullString
+              Declarations.Add(String.Format("@part_{1} numeric(38,8)", [CodeCluster].Indentation, iPartNumber))
+              sPartCode = String.Format("{0}SELECT @part_{1} = ISNULL(base.[{2}], 0)" & vbNewLine _
+                  , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name, objThisColumn.SafeReturnType)
+
             Else
-              Declarations.Add(String.Format("@part_{1} {2}" _
-                  , [CodeCluster].Indentation, iPartNumber, objThisColumn.DataTypeSyntax))
+              Declarations.Add(String.Format("@part_{1} {2}", [CodeCluster].Indentation, iPartNumber, objThisColumn.DataTypeSyntax))
+              sPartCode = String.Format("{0}SELECT @part_{1} = ISNULL(base.[{2}],{3})" & vbNewLine _
+                  , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name, objThisColumn.SafeReturnType)
+
             End If
 
             sPartCode = sPartCode & String.Format("{0} FROM [dbo].[{1}](@prm_ID) base" _
@@ -868,7 +869,7 @@ Namespace Things
 
       '  Debug.Assert(Me.AssociatedColumn.Name <> "Duration")
       ' Nesting is too deep - convert to part number
-      If Me.CaseCount > 9 Then
+      If Me.CaseCount > 8 Then
 
         objExpression = New Things.Expression
         objExpression.ExpressionType = Me.ExpressionType ' ScriptDB.ExpressionType.ColumnCalculation
