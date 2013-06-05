@@ -21,6 +21,8 @@ SELECT @fusionschemaID = [SCHEMA_ID] FROM sys.schemas WHERE [name] = 'fusion'
 	IF EXISTS (SELECT * FROM sys.objects WHERE name = 'MessageTracking' AND type in (N'U') AND schema_id = @fusionschemaID)
 		DROP TABLE [fusion].[MessageTracking]
 
+	IF EXISTS (SELECT * FROM sys.objects WHERE name = 'MessageDefinition' AND type in (N'V') AND schema_id = @fusionschemaID)
+		DROP VIEW [fusion].[MessageDefinition]
 
 
 
@@ -152,4 +154,33 @@ GO
 		[ID] ASC
 	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 	) ON [PRIMARY]
+
+
+GO
+
+CREATE VIEW fusion.MessageDefinition
+AS
+	SELECT m.name AS xmlmessageID,
+		me.NodeKey AS xmlnodekey,
+		me.Position,
+		me.Nillable AS nilable,
+		me.minOccurs,
+		me.maxOccurs,
+		ISNULL(c.TableID, 0) AS TableID,
+		ISNULL(e.ColumnID, 0) AS ColumnID,
+		me.MinSize,
+		me.MaxSize,
+		'' AS value
+		FROM fusion.[MessageElements] me
+			INNER JOIN fusion.Message m ON m.ID = me.MessageID
+			INNER JOIN fusion.Element e ON e.ID = me.ElementID
+			INNER JOIN fusion.Category c ON c.ID = e.categoryID
+
+
+
+
+
+
+
+
 

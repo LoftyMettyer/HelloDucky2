@@ -19,5 +19,4 @@ WHERE c.ID IS NOT NULL AND (fd.ASRTableID IS NULL OR fd.ASRTableID = tt.ASRBaseT
 ORDER BY TransferTypeID, TransferFieldID
 
 
-
-
+-- Populate message definitions
