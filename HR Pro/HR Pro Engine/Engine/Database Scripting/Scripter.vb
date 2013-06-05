@@ -316,6 +316,8 @@ Namespace ScriptDB
       Dim sSQLCode_AuditUpdate As String = String.Empty
       Dim sSQLCode_AuditDelete As String = String.Empty
 
+      Dim sValidation As String
+
       'Dim sSQLCode_RecordDescription As New StringBuilder
       'Dim sSQLCode_DiaryLinks As String = String.Empty
 
@@ -370,8 +372,10 @@ Namespace ScriptDB
 
 
 
-
+          sSQLParentColumns = String.Empty
+          sSQLParentColumns_Delete = String.Empty
           sDebugCode = String.Empty
+          sValidation = String.Empty
 
           sSQLCode_AuditInsert = String.Empty
           sSQLCode_AuditUpdate = String.Empty
@@ -552,11 +556,20 @@ Namespace ScriptDB
           If aryParentsToUpdate.ToArray.Length > 0 Then
             sSQLParentColumns = String.Format("    -- Refresh any parents" & vbNewLine & String.Join(vbNewLine, aryParentsToUpdate.ToArray()))
             sSQLParentColumns_Delete = String.Format("    -- Refresh any parents" & vbNewLine & String.Join(vbNewLine, aryParentsToUpdate_Delete.ToArray()))
-          Else
-            sSQLParentColumns = "    -- No parents to refresh" & vbNewLine & vbNewLine
-            sSQLParentColumns_Delete = "    -- No parents to refresh" & vbNewLine & vbNewLine
           End If
 
+          ' Validation
+          sValidation = String.Format("    -- Validation" & vbNewLine & _
+              "    IF (SELECT TOP 1 [tablefromid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid ORDER BY [nestlevel] ASC) = {0}" & vbNewLine & _
+              "    BEGIN" & vbNewLine & _
+              "        SET @sValidation = '';" & vbNewLine & _
+              "        SELECT @sValidation = @sValidation + dbo.[udfvalid_{1}](ID, [_description]) FROM inserted" & vbNewLine & _
+              "        IF LEN(@sValidation) > 0" & vbNewLine & _
+              "        BEGIN" & vbNewLine & _
+              "            RAISERROR(@sValidation, 16, 1);" & vbNewLine & _
+              "            ROLLBACK;" & vbNewLine & _
+              "        END" & vbNewLine & _
+              "    END" & vbNewLine, CInt(objTable.ID), objTable.Name)
 
           ' Update child records
           If aryChildrenToUpdate.ToArray.Length > 0 Then
@@ -639,8 +652,7 @@ Namespace ScriptDB
               "    INSERT [dbo].[tbsys_intransactiontrigger] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {2}, 1, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
               "    -- Commit writeable columns" & vbNewLine & _
               "    INSERT [dbo].[{0}] ({3})" & vbNewLine & _
-              "        SELECT {3} FROM inserted;" & vbNewLine & vbNewLine & _
-              "    DELETE [dbo].[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {2};" & vbNewLine _
+              "        SELECT {3} FROM inserted;" & vbNewLine & vbNewLine _
               , objTable.Name, sTriggerName _
               , CInt(objTable.ID) _
               , String.Join(",", aryAllWriteableColumns.ToArray()))
@@ -652,14 +664,17 @@ Namespace ScriptDB
           ' -------------------
           sTriggerName = String.Format("{0}{1}_i02", ScriptDB.Consts.Trigger, objTable.Name)
           sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] nvarchar(MAX), [newvalue] nvarchar(MAX), [tableid] integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
-              "    DECLARE @dChangeDate datetime;" & vbNewLine & _
+              "    DECLARE @dChangeDate datetime," & vbNewLine & _
+              "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
               sSQLWriteableColumns & vbNewLine & _
               "    -- Audit Trail" & vbNewLine & _
               "{2}" & vbNewLine & vbNewLine & _
               "    INSERT dbo.[ASRSysAuditTrail] (username, datetimestamp, recordid, oldvalue, newvalue, tableid, tablename, columnname, columnid, deleted, recorddesc)" & vbNewLine & _
-              "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, tableid, tablename, columnname, columnid, 0, recorddesc FROM @audit" & vbNewLine & vbNewLine _
-              , objTable.Name, sTriggerName, sSQLCode_AuditInsert)
+              "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, tableid, tablename, columnname, columnid, 0, recorddesc FROM @audit" & vbNewLine & vbNewLine & _
+              sValidation & vbNewLine & _
+              "    DELETE [dbo].[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3};" & vbNewLine _
+              , objTable.Name, sTriggerName, sSQLCode_AuditInsert, CInt(objTable.ID))
           ScriptTrigger("dbo", objTable, TriggerType.AfterInsert, sSQL)
 
           ' -------------------
@@ -672,6 +687,7 @@ Namespace ScriptDB
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
               "    INSERT [dbo].[{4}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {5}, 2, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
               "{3}" & vbNewLine & vbNewLine & _
+              sValidation & vbNewLine & vbNewLine & _
               "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {2};" & vbNewLine _
               , objTable.Name, sTriggerName _
               , CInt(objTable.ID) _
@@ -692,18 +708,7 @@ Namespace ScriptDB
               "    --INSERT [dbo].[{4}] ([spid], [tablefromid]) VALUES (@@spid,{3});" & vbNewLine & vbNewLine & _
               sSQLParentColumns & vbNewLine & _
               sSQLChildColumns & vbNewLine & vbNewLine & _
-              "    -- Validation" & vbNewLine & _
-              "    IF EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3} AND [nestlevel] = 1)" & vbNewLine & _
-              "    BEGIN" & vbNewLine & _
-              "        SET @sValidation = '';" & vbNewLine & _
-              "        SELECT @sValidation = @sValidation + dbo.[udfvalid_{0}](ID, [_description]) FROM inserted" & vbNewLine & _
-              "        IF LEN(@sValidation) > 0" & vbNewLine & _
-              "        BEGIN" & vbNewLine & _
-              "            RAISERROR(@sValidation, 16, 1);" & vbNewLine & _
-              "            ROLLBACK;" & vbNewLine & _
-              "        END" & vbNewLine & _
-              "    END" & vbNewLine & vbNewLine & _
-              "{6}" & vbNewLine & vbNewLine & _
+              "{6}" & vbNewLine & _
               "    INSERT dbo.[ASRSysAuditTrail] (username, datetimestamp, recordid, oldvalue, newvalue, tableid, tablename, columnname, columnid, deleted, recorddesc)" & vbNewLine & _
               "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, tableid, tablename, columnname, columnid, 0, recorddesc FROM @audit;" & vbNewLine & vbNewLine & _
               "{7}" & vbNewLine & vbNewLine _
