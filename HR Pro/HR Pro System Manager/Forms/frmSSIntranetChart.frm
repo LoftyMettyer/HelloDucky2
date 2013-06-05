@@ -307,6 +307,13 @@ Private Sub cboParents_Click()
   PopulateColumnsCombo (mlngTableID)
 End Sub
 
+Private Sub cmdFilterClear_Click()
+  txtFilter.Text = vbNullString
+  txtFilter.Tag = 0
+  mlngChartFilterID = 0
+  mfChanged = True
+End Sub
+
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
   Cancelled = True

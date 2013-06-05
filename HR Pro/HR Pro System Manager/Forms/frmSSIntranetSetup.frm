@@ -2698,7 +2698,7 @@ Private Sub cmdCopyButtonLink_Click()
         & vbTab & .EMailSubject _
         & vbTab & .AppFilePath _
         & vbTab & .AppParameters _
-        & vbTab & IIf(.optLink(SSINTLINKSEPARATOR).value, 1, IIf(.optLink(SSINTLINKCHART).value, 2, 0)) _
+        & vbTab & IIf(.optLink(SSINTLINKSEPARATOR).value, 1, IIf(.optLink(SSINTLINKCHART).value, 2, IIf(.optLink(SSINTLINKPWFSTEPS).value, 3, IIf(.optLink(SSINTLINKDB_VALUE).value, 4, 0)))) _
         & vbTab & IIf(.chkNewColumn.value = 0, "0", "1") _
         & vbTab & IIf(Len(.txtIcon.Text) > 0, CStr(.PictureID), "") _
         & vbTab & IIf(.chkShowLegend.value = 0, "0", "1") _
