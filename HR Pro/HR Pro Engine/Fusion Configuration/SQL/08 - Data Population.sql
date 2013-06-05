@@ -1,25 +1,30 @@
---select * from asrsysAccordtransferfielddefinitions where transfertypeid = 0 order by description 
--- select * from ASRSysAccordTransferTypes  order by transfertype
--- select * FROM asrsysModuleSetup
-
---select * from [fusion].[Element] 
 
 DECLARE @columnID integer,
 		@tableID integer;
 
-DELETE FROM fusion.[MessageRelations]
-DELETE FROM fusion.[MessageElements]
-DELETE FROM fusion.[Message]
+DECLARE @bResetAll bit;
 
-DELETE FROM [fusion].[Element]
-DELETE FROM [fusion].[Category]
+SET @bResetAll = 0
 
-DBCC CHECKIDENT ('fusion.[MessageElements]', RESEED, 0)
+IF @bResetAll = 1
+BEGIN
 
+	DELETE FROM fusion.[MessageRelations]
+	DELETE FROM fusion.[MessageElements]
+	DELETE FROM fusion.[Message]
 
+	DELETE FROM [fusion].[Element]
+	DELETE FROM [fusion].[Category]
 
+	DBCC CHECKIDENT ('fusion.[MessageElements]', RESEED, 0)
 
+END
 
+-- Bomb out if already defined
+IF EXISTS(SELECT * FROM [fusion].[Category])	
+	RETURN
+
+	
 	-- Categories
 	EXEC dbo.spsys_getaccordmodulesetting 'MODULE_PERSONNEL', 'Param_TablePersonnel', 'PType_TableID', @tableID OUTPUT;
 	INSERT [fusion].[Category] ([ID], [Name], [TableID], [TranslationName], [IsDataList]) VALUES (0, N'Employee', @tableID, 'staff', 0);

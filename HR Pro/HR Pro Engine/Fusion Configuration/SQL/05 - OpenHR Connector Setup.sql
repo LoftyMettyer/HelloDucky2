@@ -1,18 +1,4 @@
 
-DROP TABLE [fusion].[temptable]
-GO
-
-
-CREATE TABLE [fusion].[temptable](
-	[Message] [varchar](max) NULL,
-	[recid] integer,
-	[CreatedDateTime] [datetime] NULL)
-	
- 
-
-
-
-
 ----------------------------------------------------------------------------
 -- OpenHR specifics
 ----------------------------------------------------------------------------
@@ -75,8 +61,6 @@ AS
 BEGIN
 
 	SET NOCOUNT ON;
-
-	INSERT [fusion].[temptable] (message, createddatetime, recid) VALUES (@xml, getdate(), @id)
 
 DECLARE @xmlCode xml;
 
@@ -191,12 +175,7 @@ SET @executeCode = @executeCode
 	+ ' SELECT @ID;';
 
 
-
 SET @ParmDefinition = N'@xmlCode xml, @ID integer OUTPUT';
-
-INSERT [fusion].[temptable] (message, createddatetime) VALUES (@executeCode, GETDATE())
-
-print @executeCode
 
 IF LEN(@executeCode) > 0
 	EXEC sp_executeSQL @executeCode, @ParmDefinition, @xmlcode = @xmlcode, @id = @id

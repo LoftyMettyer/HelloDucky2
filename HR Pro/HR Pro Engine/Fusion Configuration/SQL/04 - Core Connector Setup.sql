@@ -70,7 +70,6 @@
 	 
 		SET CONTEXT_INFO @ContextInfo
 	END'
-	
 
 	EXECUTE sp_executesql N'
 	---------------------------------------------------------------------------------
