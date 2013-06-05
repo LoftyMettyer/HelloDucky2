@@ -1226,7 +1226,7 @@ Private Function SaveModuleDefinitions() As Boolean
   While Not rsFusion.EOF
     
     sSQL = "INSERT INTO ASRSysFusionFieldDefinitions" & _
-      " (FusionTypeID, Nodekey, Mandatory, Description, ASRMapType, ASRTableID, ASRColumnID, ASRExprID, ASRValue, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ConvertData" & _
+      " (FusionTypeID, Nodekey, Mandatory, Description, ASRMapType, ASRTableID, ASRColumnID, ASRExprID, ASRValue, IsCompanyCode, IsEmployeeCode, IsKeyField, AlwaysTransfer, ConvertData" & _
       ", IsEmployeeName, IsDepartmentCode, IsDepartmentName, PreventModify, DataType) " & _
       " VALUES (" & _
       CStr(rsFusion!FusionTypeID) & ",'" & _
@@ -1240,7 +1240,7 @@ Private Function SaveModuleDefinitions() As Boolean
       "'" & Replace(IIf(IsNull(rsFusion!ASRValue), vbNullString, rsFusion!ASRValue), "'", "''") & "'," & _
       IIf(rsFusion!IsCompanyCode, "1", "0") & "," & _
       IIf(rsFusion!IsEmployeeCode, "1", "0") & "," & _
-      CStr(rsFusion!Direction) & "," & _
+      "" & _
       IIf(rsFusion!IsKeyField, "1", "0") & "," & _
       IIf(rsFusion!AlwaysTransfer, "1", "0") & "," & _
       IIf(rsFusion!ConvertData, "1", "0") & "," & _
