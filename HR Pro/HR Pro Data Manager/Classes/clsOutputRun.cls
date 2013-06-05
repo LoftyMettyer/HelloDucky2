@@ -221,7 +221,7 @@ Private Sub InitialiseStyles()
     .Name = "Data"
     .StartCol = Val(GetUserSetting("Output", "DataCol", "2"))
     .StartRow = Val(GetUserSetting("Output", "DataRow", "4"))
-    .Gridlines = (GetUserSetting("Output", "DataGridLines", "0") = "1")
+    .Gridlines = (GetUserSetting("Output", "DataGridLines", "1") = "1")
     .Bold = (GetUserSetting("Output", "DataBold", "0") = "1")
     .Underline = (GetUserSetting("Output", "DataUnderline", "0") = "1")
     .BackCol = Val(GetUserSetting("Output", "DataBackcolour", GetColour("Pale Grey")))
