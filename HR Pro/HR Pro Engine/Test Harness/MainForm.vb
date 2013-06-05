@@ -18,8 +18,8 @@ Public Class MainForm
         Dim objDAOEngine As New DAO.DBEngine
         Dim objDAODB As DAO.Database
         '    Dim objRecordset As DAO.Recordset
-    Dim sADOConnect As String = String.Format("Driver=SQL Server;Server={0};UID=sa;PWD=asr;Database={1};" _
-                              , txtServer.Text, txtDatabase.Text)
+        Dim sADOConnect As String = String.Format("Driver=SQL Server;Server={0};UID=sa;PWD={2};Database={1};" _
+                                  , txtServer.Text, txtDatabase.Text, txtPassword.Text)
         '  Dim objADOLogin As Phoenix.Connectivity.Login
 
         ' THIS IS SYSTEM MGR RECCREATION
