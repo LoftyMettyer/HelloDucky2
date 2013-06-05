@@ -774,6 +774,7 @@ Private Function CreateSP_MobileForgotLogin() As Boolean
     "BEGIN" & vbNewLine & _
     "    DECLARE @iCount integer," & vbNewLine & _
     "    @sLogin varchar(max)," & vbNewLine & _
+    "    @dtExpiryDate datetime," & vbNewLine & _
     "    @sMessage varchar(max);" & vbNewLine
 
   sProcSQL = sProcSQL & "    SET @iCount = 0;" & vbNewLine & _
@@ -792,10 +793,10 @@ Private Function CreateSP_MobileForgotLogin() As Boolean
     "END;" & vbNewLine & _
     "    IF @iCount = 1" & vbNewLine & _
     "    BEGIN" & vbNewLine & _
-    "        SELECT @sLogin = ISNULL(" & mvar_sLoginColumn & ", '')" & vbNewLine & _
+    "        SELECT @sLogin = ISNULL(" & mvar_sLoginColumn & ", ''), @dtExpiryDate = [" & mvar_sLeavingDateColumn & "]" & vbNewLine & _
     "    FROM " & mvar_sLoginTable & vbNewLine & _
     "    WHERE ISNULL(" & mvar_sLoginTable & "." & mvar_sUniqueEmailColumn & ", '') = @psEmailAddress;" & vbNewLine & _
-    "    IF (LEN(@sLogin) = 0) OR (LEN(@sLogin) = 0)" & vbNewLine & _
+    "    IF (LEN(@sLogin) = 0) OR (LEN(@sLogin) = 0)  OR (DATEDIFF(d, GETDATE(), ISNULL(@dtExpiryDate, GETDATE())) < 0)" & vbNewLine & _
     "    BEGIN" & vbNewLine & _
     "      SET @psMessage = 'No registered user exists with the given email address.';" & vbNewLine & _
     "    End" & vbNewLine & _
