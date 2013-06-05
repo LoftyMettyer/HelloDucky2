@@ -612,7 +612,10 @@ Namespace Things
 
           If objRelation.RelationshipType = ScriptDB.RelationshipType.Parent Then
             LineOfCode.Code = String.Format("ISNULL([{0}].[{1}],{2})", objThisColumn.Table.Name, objThisColumn.Name, objThisColumn.SafeReturnType)
-            Me.AssociatedColumn.Table.DependsOnColumns.AddIfNew(objThisColumn)
+
+            If Not Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription Then
+              Me.AssociatedColumn.Table.DependsOnColumns.AddIfNew(objThisColumn)
+            End If
 
             ' Add table join component
             sRelationCode = String.Format("LEFT JOIN [dbo].[{0}] ON [{0}].[ID] = base.[ID_{1}]" _
