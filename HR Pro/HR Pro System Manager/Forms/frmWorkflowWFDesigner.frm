@@ -5,13 +5,14 @@ Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Object = "{98B2556E-F719-4726-9028-5F2EAB345800}#1.0#0"; "coasd_checkbox.ocx"
 Object = "{3EBC9263-7DE3-4E87-8721-81ACE59CD84E}#1.1#0"; "coasd_combo.ocx"
 Object = "{3CCEDCBE-4766-494F-84C9-95993D77BD56}#1.0#0"; "coasd_command.ocx"
-Object = "{FFAE31F9-C18D-4C20-AAF7-74C1356185D9}#1.0#0"; "coasd_frame.ocx"
+Object = "{FFAE31F9-C18D-4C20-AAF7-74C1356185D9}#1.0#0"; "COASD_Frame.ocx"
 Object = "{5F165695-EDF2-40E1-BD8E-8D2E6325BDCF}#1.0#0"; "coasd_image.ocx"
 Object = "{CE18FF03-F3BF-4C4F-81DC-192ED1E1B91F}#1.0#0"; "coasd_optiongroup.ocx"
 Object = "{58F88252-94BB-43CE-9EF9-C971F73B93D4}#1.0#0"; "coasd_selection.ocx"
 Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "coasd_selectionbox.ocx"
 Object = "{63212438-5384-4CC0-B836-A2C015CCBF9B}#1.0#0"; "COAWF_WebForm.ocx"
 Object = "{BD3A90B9-91E4-40D5-A504-C6DFB4380BBC}#1.0#0"; "coasd_grid.ocx"
+Object = "{66DD2720-DB90-4D94-963B-369CC9DC8BF8}#5.3#0"; "COAWF_TabPage.ocx"
 Begin VB.Form frmWorkflowWFDesigner 
    AutoRedraw      =   -1  'True
    BackColor       =   &H80000005&
@@ -40,6 +41,27 @@ Begin VB.Form frmWorkflowWFDesigner
    ScaleWidth      =   5940
    ShowInTaskbar   =   0   'False
    Visible         =   0   'False
+   Begin VB.PictureBox objTabContainer 
+      Height          =   510
+      Index           =   0
+      Left            =   5130
+      ScaleHeight     =   450
+      ScaleWidth      =   540
+      TabIndex        =   16
+      Top             =   315
+      Visible         =   0   'False
+      Width           =   600
+   End
+   Begin COAWFTabPage.COAWF_TabPage TabPages 
+      Height          =   825
+      Left            =   3690
+      TabIndex        =   15
+      Top             =   90
+      Visible         =   0   'False
+      Width           =   1230
+      _ExtentX        =   2170
+      _ExtentY        =   1455
+   End
    Begin COASDCommand.COASD_Command ASRDummyFileUpload 
       Height          =   375
       Index           =   0
@@ -392,6 +414,8 @@ Private mlngWorkflowID As Long
 
 Private maobjOriginalExpressions() As CExpression
 Private mfExpressionsChanged As Boolean
+
+Private mlngCurrentPageNo As Long
 
 Private Function ControlIsUsed(pctlControl As VB.Control, _
   Optional pavMessages As Variant) As Boolean
@@ -1036,8 +1060,8 @@ Public Function UpdateIdentifiers(pfElement As Boolean, _
                     Or (plngNewParameter = dtLONGVARCHAR)
                 Case dtTIMESTAMP
                     fItemOK = (plngNewParameter = dtTIMESTAMP)
-                Case dtINTEGER, dtNUMERIC
-                  fItemOK = (plngNewParameter = dtINTEGER) _
+                Case dtinteger, dtNUMERIC
+                  fItemOK = (plngNewParameter = dtinteger) _
                     Or (plngNewParameter = dtNUMERIC)
                 Case Else
                   fItemOK = False
@@ -2132,7 +2156,7 @@ ErrorTrap:
   
 End Sub
 
-Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control, pSngX As Single, pSngY As Single) As Boolean
+Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control, pSngX As Single, pSngY As Single, pctlDestination As Control) As Boolean
   
   ' Drop the given control onto the screen.
   On Error GoTo ErrorTrap
@@ -2375,217 +2399,228 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
         
       ' If we are dropping a standard control ...
       ElseIf pCtlSource Is frmWorkflowWFToolbox.trvStandardControls Then
-        sAutoLabel = ""
-        iControlType = giWFFORMITEM_UNKNOWN
+       
+        ' Add a tab page.
+        If frmWorkflowWFToolbox.trvStandardControls.SelectedItem.key = "PAGETABCTRL" Then
+          fOK = DropTabPage
+        Else
+         
+          sAutoLabel = ""
+          iControlType = giWFFORMITEM_UNKNOWN
+          
+          ' Add the new control to the screen.
+          Select Case frmWorkflowWFToolbox.trvStandardControls.SelectedItem.key
+          
+            Case "BUTTON"
+              iControlType = giWFFORMITEM_BUTTON
+  
+            Case "IMAGECTRL"
+              iControlType = giWFFORMITEM_IMAGE
+              
+            Case "PAGETABCTRL"
+              iControlType = giWFFORMITEM_PAGETAB
+              
+            Case "INPUT_CHARACTER"
+              iControlType = giWFFORMITEM_INPUTVALUE_CHAR
+  
+            Case "INPUT_DATE"
+              iControlType = giWFFORMITEM_INPUTVALUE_DATE
+            
+            Case "INPUT_DROPDOWN"
+              iControlType = giWFFORMITEM_INPUTVALUE_DROPDOWN
+            
+            Case "INPUT_LOGIC"
+              iControlType = giWFFORMITEM_INPUTVALUE_LOGIC
+              
+            Case "INPUT_LOOKUP"
+              iControlType = giWFFORMITEM_INPUTVALUE_LOOKUP
+              
+            Case "INPUT_NUMERIC"
+              iControlType = giWFFORMITEM_INPUTVALUE_NUMERIC
+            
+            Case "INPUT_GRID"
+              iControlType = giWFFORMITEM_INPUTVALUE_GRID
+              
+            Case "INPUT_OPTIONGROUP"
+              iControlType = giWFFORMITEM_INPUTVALUE_OPTIONGROUP
+  
+            Case "LABELCTRL"
+              iControlType = giWFFORMITEM_LABEL
+              
+            Case "FRAMECTRL"
+              iControlType = giWFFORMITEM_FRAME
+  
+            Case "LINECTRL"
+              iControlType = giWFFORMITEM_LINE
+          
+            Case "INPUT_FILEUPLOAD"
+              iControlType = giWFFORMITEM_INPUTVALUE_FILEUPLOAD
+            
+            
+          End Select
         
-        ' Add the new control to the screen.
-        Select Case frmWorkflowWFToolbox.trvStandardControls.SelectedItem.key
-        
-          Case "BUTTON"
-            iControlType = giWFFORMITEM_BUTTON
-
-          Case "IMAGECTRL"
-            iControlType = giWFFORMITEM_IMAGE
-            
-          Case "INPUT_CHARACTER"
-            iControlType = giWFFORMITEM_INPUTVALUE_CHAR
-
-          Case "INPUT_DATE"
-            iControlType = giWFFORMITEM_INPUTVALUE_DATE
+          If iControlType <> giWFFORMITEM_UNKNOWN Then
+            Set ctlControl = AddControl(iControlType)
+            sCaption = UniqueCaption(ctlControl)
+       
+            If WebFormControl_HasAutoLabel(iControlType) Then
+              sAutoLabel = sCaption
+            End If
+          End If
           
-          Case "INPUT_DROPDOWN"
-            iControlType = giWFFORMITEM_INPUTVALUE_DROPDOWN
+          fOK = Not (ctlControl Is Nothing)
           
-          Case "INPUT_LOGIC"
-            iControlType = giWFFORMITEM_INPUTVALUE_LOGIC
+          'Check that a new control was added successfully
+          If fOK Then
+    
+            With ctlControl
+  
+              ' Set the last action flag and enable the Undo menu option.
+              If (Me.abWebForm.Tools("ID_AutoLabel").Checked) And (Len(sAutoLabel) > 0) Then
+                giLastActionFlag = giACTION_DROPCONTROLAUTOLABEL
+              Else
+                giLastActionFlag = giACTION_DROPCONTROL
+              End If
+              giUndo_ControlIndex = .Index
+              gsUndo_ControlType = .Name
             
-          Case "INPUT_LOOKUP"
-            iControlType = giWFFORMITEM_INPUTVALUE_LOOKUP
+              Set .Container = pVarPageContainer
+              .Left = AlignX(CLng(pSngX))
+              .Top = AlignY(CLng(pSngY))
+              
+              ' Setting this to 0 reset the defaulted table for recordSelectors!
+              '.ColumnID = 0
+              
+              iControlType = .WFItemType
+              
+              If WebFormItemHasProperty(iControlType, WFITEMPROP_WFIDENTIFIER) Then
+                .WFIdentifier = sCaption
+              End If
+              
+              ' Initialise the new control's font and forecolour.
+              If WebFormItemHasProperty(iControlType, WFITEMPROP_FONT) Then
+                Set objFont = New StdFont
+                objFont.Name = Me.Font.Name
+                objFont.Size = Me.Font.Size
+                objFont.Bold = Me.Font.Bold
+                objFont.Italic = Me.Font.Italic
+                Set .Font = objFont
+                Set objFont = Nothing
+              End If
+              
+              If WebFormItemHasProperty(iControlType, WFITEMPROP_HEADFONT) Then
+                Set objFont = New StdFont
+                objFont.Name = Me.Font.Name
+                objFont.Size = Me.Font.Size
+                objFont.Bold = Me.Font.Bold
+                objFont.Italic = Me.Font.Italic
+                Set ctlControl.HeadFont = objFont
+                Set objFont = Nothing
+              End If
+                
+              If WebFormItemHasProperty(iControlType, WFITEMPROP_DEFAULTVALUE_NUMERIC) Then
+                .WFInputSize = 8
+                .WFInputDecimals = 0
+              End If
+              
+              If WebFormItemHasProperty(iControlType, WFITEMPROP_DEFAULTVALUE_CHAR) Then
+                .WFInputSize = 50
+                .WFInputDecimals = 0
+              End If
+              
+              If iControlType = giWFFORMITEM_INPUTVALUE_FILEUPLOAD Then
+                .WFInputSize = WORKFLOWWEBFORM_MAXSIZE_FILEUPLOAD
+              End If
+              
+              If WebFormItemHasProperty(iControlType, WFITEMPROP_FORECOLOR) Then
+                .ForeColor = Me.ForeColor
+              End If
+              
+              If WebFormItemHasProperty(iControlType, WFITEMPROP_BACKCOLOR) Then
+                Select Case iControlType
+                  Case giWFFORMITEM_BUTTON, _
+                    giWFFORMITEM_INPUTVALUE_FILEUPLOAD
+                    .BackColor = 16249587
+                  
+                  Case giWFFORMITEM_LINE
+                    .BackColor = 10172547
+                  
+                  Case giWFFORMITEM_INPUTVALUE_CHAR, _
+                    giWFFORMITEM_INPUTVALUE_DATE, _
+                    giWFFORMITEM_INPUTVALUE_NUMERIC, _
+                    giWFFORMITEM_INPUTVALUE_DROPDOWN, _
+                    giWFFORMITEM_INPUTVALUE_LOOKUP
+                    ctlControl.BackColor = 15988214
+                  
+                  Case giWFFORMITEM_INPUTVALUE_GRID
+                    ctlControl.BackColor = 16777215
+                  
+                  Case Else
+                    ctlControl.BackColor = Me.BackColor
+                  End Select
+              End If
+              
+              If WebFormItemHasProperty(iControlType, WFITEMPROP_HEADERBACKCOLOR) Then
+                ctlControl.HeaderBackColor = 16248553
+              End If
+              
+              If WebFormItemHasProperty(iControlType, WFITEMPROP_FORECOLOREVEN) Then
+                ctlControl.ForeColorEven = 6697779
+              End If
+              
+              If WebFormItemHasProperty(iControlType, WFITEMPROP_FORECOLORODD) Then
+                ctlControl.ForeColorOdd = 6697779
+              End If
+              
+              If WebFormItemHasProperty(iControlType, WFITEMPROP_BACKCOLOREVEN) Then
+                ctlControl.BackColorEven = 15988214
+              End If
+                          
+              If WebFormItemHasProperty(iControlType, WFITEMPROP_BACKCOLORODD) Then
+                ctlControl.BackColorOdd = 15988214
+              End If
+                          
+              If WebFormItemHasProperty(iControlType, WFITEMPROP_BACKCOLORHIGHLIGHT) Then
+                ctlControl.BackColorHighlight = 10480637
+              End If
+                          
+              If WebFormItemHasProperty(iControlType, WFITEMPROP_FORECOLORHIGHLIGHT) Then
+                ctlControl.ForeColorHighlight = 2774907
+              End If
+              
+              If WebFormItemHasProperty(iControlType, WFITEMPROP_CAPTION) Then
+                .Caption = sCaption
+              End If
+              
+              ' Default the control's propertes.
+              fOK = AutoSizeControl(ctlControl)
+              
+              If fOK Then
+                ctlControl.Selected = True
+                fOK = SelectControl(ctlControl)
+              End If
+              
+              If fOK Then
+                If (Me.abWebForm.Tools("ID_AutoLabel").Checked) And (Len(sAutoLabel) > 0) Then
+                  AutoLabel pVarPageContainer, pSngX, pSngY, sAutoLabel
+                End If
+                
+                .Visible = True
+                
+                ' Put frame at the back
+                If iControlType = giWFFORMITEM_FRAME And gbAutoSendFrameToBack Then
+                  .ZOrder 1
+                Else
+                  .ZOrder 0
+                End If
+              
+              End If
+            End With
             
-          Case "INPUT_NUMERIC"
-            iControlType = giWFFORMITEM_INPUTVALUE_NUMERIC
-          
-          Case "INPUT_GRID"
-            iControlType = giWFFORMITEM_INPUTVALUE_GRID
-            
-          Case "INPUT_OPTIONGROUP"
-            iControlType = giWFFORMITEM_INPUTVALUE_OPTIONGROUP
-
-          Case "LABELCTRL"
-            iControlType = giWFFORMITEM_LABEL
-            
-          Case "FRAMECTRL"
-            iControlType = giWFFORMITEM_FRAME
-
-          Case "LINECTRL"
-            iControlType = giWFFORMITEM_LINE
-        
-          Case "INPUT_FILEUPLOAD"
-            iControlType = giWFFORMITEM_INPUTVALUE_FILEUPLOAD
-          
-        End Select
-      
-        If iControlType <> giWFFORMITEM_UNKNOWN Then
-          Set ctlControl = AddControl(iControlType)
-          sCaption = UniqueCaption(ctlControl)
-      
-          If WebFormControl_HasAutoLabel(iControlType) Then
-            sAutoLabel = sCaption
+            ' Disassociate object variables.
+            Set ctlControl = Nothing
           End If
         End If
-        
-        fOK = Not (ctlControl Is Nothing)
-        
-        'Check that a new control was added successfully
-        If fOK Then
-  
-          With ctlControl
-
-            ' Set the last action flag and enable the Undo menu option.
-            If (Me.abWebForm.Tools("ID_AutoLabel").Checked) And (Len(sAutoLabel) > 0) Then
-              giLastActionFlag = giACTION_DROPCONTROLAUTOLABEL
-            Else
-              giLastActionFlag = giACTION_DROPCONTROL
-            End If
-            giUndo_ControlIndex = .Index
-            gsUndo_ControlType = .Name
-          
-            Set .Container = pVarPageContainer
-            .Left = AlignX(CLng(pSngX))
-            .Top = AlignY(CLng(pSngY))
-            
-            ' Setting this to 0 reset the defaulted table for recordSelectors!
-            '.ColumnID = 0
-            
-            iControlType = .WFItemType
-            
-            If WebFormItemHasProperty(iControlType, WFITEMPROP_WFIDENTIFIER) Then
-              .WFIdentifier = sCaption
-            End If
-            
-            ' Initialise the new control's font and forecolour.
-            If WebFormItemHasProperty(iControlType, WFITEMPROP_FONT) Then
-              Set objFont = New StdFont
-              objFont.Name = Me.Font.Name
-              objFont.Size = Me.Font.Size
-              objFont.Bold = Me.Font.Bold
-              objFont.Italic = Me.Font.Italic
-              Set .Font = objFont
-              Set objFont = Nothing
-            End If
-            
-            If WebFormItemHasProperty(iControlType, WFITEMPROP_HEADFONT) Then
-              Set objFont = New StdFont
-              objFont.Name = Me.Font.Name
-              objFont.Size = Me.Font.Size
-              objFont.Bold = Me.Font.Bold
-              objFont.Italic = Me.Font.Italic
-              Set ctlControl.HeadFont = objFont
-              Set objFont = Nothing
-            End If
-              
-            If WebFormItemHasProperty(iControlType, WFITEMPROP_DEFAULTVALUE_NUMERIC) Then
-              .WFInputSize = 8
-              .WFInputDecimals = 0
-            End If
-            
-            If WebFormItemHasProperty(iControlType, WFITEMPROP_DEFAULTVALUE_CHAR) Then
-              .WFInputSize = 50
-              .WFInputDecimals = 0
-            End If
-            
-            If iControlType = giWFFORMITEM_INPUTVALUE_FILEUPLOAD Then
-              .WFInputSize = WORKFLOWWEBFORM_MAXSIZE_FILEUPLOAD
-            End If
-            
-            If WebFormItemHasProperty(iControlType, WFITEMPROP_FORECOLOR) Then
-              .ForeColor = Me.ForeColor
-            End If
-            
-            If WebFormItemHasProperty(iControlType, WFITEMPROP_BACKCOLOR) Then
-              Select Case iControlType
-                Case giWFFORMITEM_BUTTON, _
-                  giWFFORMITEM_INPUTVALUE_FILEUPLOAD
-                  .BackColor = 16249587
-                
-                Case giWFFORMITEM_LINE
-                  .BackColor = 10172547
-                
-                Case giWFFORMITEM_INPUTVALUE_CHAR, _
-                  giWFFORMITEM_INPUTVALUE_DATE, _
-                  giWFFORMITEM_INPUTVALUE_NUMERIC, _
-                  giWFFORMITEM_INPUTVALUE_DROPDOWN, _
-                  giWFFORMITEM_INPUTVALUE_LOOKUP
-                  ctlControl.BackColor = 15988214
-                
-                Case giWFFORMITEM_INPUTVALUE_GRID
-                  ctlControl.BackColor = 16777215
-                
-                Case Else
-                  ctlControl.BackColor = Me.BackColor
-                End Select
-            End If
-            
-            If WebFormItemHasProperty(iControlType, WFITEMPROP_HEADERBACKCOLOR) Then
-              ctlControl.HeaderBackColor = 16248553
-            End If
-            
-            If WebFormItemHasProperty(iControlType, WFITEMPROP_FORECOLOREVEN) Then
-              ctlControl.ForeColorEven = 6697779
-            End If
-            
-            If WebFormItemHasProperty(iControlType, WFITEMPROP_FORECOLORODD) Then
-              ctlControl.ForeColorOdd = 6697779
-            End If
-            
-            If WebFormItemHasProperty(iControlType, WFITEMPROP_BACKCOLOREVEN) Then
-              ctlControl.BackColorEven = 15988214
-            End If
-                        
-            If WebFormItemHasProperty(iControlType, WFITEMPROP_BACKCOLORODD) Then
-              ctlControl.BackColorOdd = 15988214
-            End If
-                        
-            If WebFormItemHasProperty(iControlType, WFITEMPROP_BACKCOLORHIGHLIGHT) Then
-              ctlControl.BackColorHighlight = 10480637
-            End If
-                        
-            If WebFormItemHasProperty(iControlType, WFITEMPROP_FORECOLORHIGHLIGHT) Then
-              ctlControl.ForeColorHighlight = 2774907
-            End If
-            
-            If WebFormItemHasProperty(iControlType, WFITEMPROP_CAPTION) Then
-              .Caption = sCaption
-            End If
-            
-            ' Default the control's propertes.
-            fOK = AutoSizeControl(ctlControl)
-            
-            If fOK Then
-              ctlControl.Selected = True
-              fOK = SelectControl(ctlControl)
-            End If
-            
-            If fOK Then
-              If (Me.abWebForm.Tools("ID_AutoLabel").Checked) And (Len(sAutoLabel) > 0) Then
-                AutoLabel pVarPageContainer, pSngX, pSngY, sAutoLabel
-              End If
-              
-              .Visible = True
-              
-              ' Put frame at the back
-              If iControlType = giWFFORMITEM_FRAME And gbAutoSendFrameToBack Then
-                .ZOrder 1
-              Else
-                .ZOrder 0
-              End If
-            
-            End If
-          End With
-        End If
-        
-        ' Disassociate object variables.
-        Set ctlControl = Nothing
         
       ' If we are dropping a workflow web form value ...
       ElseIf pCtlSource Is frmWorkflowWFToolbox.trvWorkflowValue Then
@@ -2754,7 +2789,7 @@ Private Sub Form_DragDrop(Source As Control, X As Single, Y As Single)
   On Error GoTo ErrorTrap
   
   If CurrentContainer Is Me Then
-    If Not DropControl(Me, Source, X, Y) Then
+    If Not DropControl(Me, Source, X, Y, Source) Then
       MsgBox "Unable to drop the control." & vbCr & vbCr & _
         Err.Description, vbExclamation + vbOKOnly, App.ProductName
     End If
@@ -2838,6 +2873,9 @@ Private Sub Form_Initialize()
     .Top = -.Height
     .Visible = False
   End With
+  
+  ' Clear the tab strip.
+  TabPages.Tabs.Clear
   
   ' Disable the 'undo' menu option until we have somethig to undo.
   giLastActionFlag = giACTION_NOACTION
@@ -4039,7 +4077,7 @@ ErrorTrap:
 End Function
 
 Private Function CopyControlProperties(pCtlSource As VB.Control, _
-  pCtlDestination As VB.Control, _
+  pctlDestination As VB.Control, _
   pfPasting As Boolean) As Boolean
   ' Copy the properties from the pCtlSource control to the pCtlDestination control.
   On Error GoTo ErrorTrap
@@ -4059,7 +4097,7 @@ Private Function CopyControlProperties(pCtlSource As VB.Control, _
   ' Get the given control's type.
   iControlType = WebFormControl_Type(pCtlSource)
 
-  With pCtlDestination
+  With pctlDestination
     ' Copy the source control's properties to the destination control.
     If WebFormItemHasProperty(iControlType, WFITEMPROP_WFIDENTIFIER) Then
       sIdentifier = pCtlSource.WFIdentifier
@@ -4554,8 +4592,46 @@ ErrorTrap:
   
 End Function
 
+Private Function AddTabPage(ByVal Captions As String) As VB.Control
+
+  On Error GoTo ErrorTrap
+
+  Dim aryCaptions() As String
+  Dim lngCount As Long
+
+  aryCaptions = Split(Captions, ";")
+  lngCount = 0
+  For lngCount = LBound(aryCaptions) To UBound(aryCaptions) - 1
+    TabPages.AddTabPage aryCaptions(lngCount)
+    TabPages.TabPage(lngCount + 1).Tag = lngCount + 1
+    
+    Load objTabContainer(TabPages.Tabs.Count)
+    With objTabContainer(TabPages.Tabs.Count)
+      .BorderStyle = 0
+      .Left = TabPages.Left + 50
+      .Top = TabPages.Top + 100
+      .Width = TabPages.Width - 100
+      .Height = TabPages.Height - 100
+    End With
+    
+  Next
+
+  Set AddTabPage = TabPages
+  TabPages.Visible = True
+
+TidyUpAndExit:
+  Exit Function
+
+ErrorTrap:
+  MsgBox "Unable to load tab page." & vbCr & vbCr & _
+    Err.Description, vbExclamation + vbOKOnly, Application.Name
+  Set AddTabPage = Nothing
+  Resume TidyUpAndExit
+
+End Function
+
 Private Function AddControl(piElementType As WorkflowWebFormItemTypes) As VB.Control
-  
+ 
   On Error GoTo ErrorTrap
 
   Select Case piElementType
@@ -5432,7 +5508,10 @@ Public Function IsWebFormControl(pctlControl As VB.Control) As Boolean
   sName = pctlControl.Name
   fIsWebFormControl = False
   
-  If sName = "asrDummyLabel" Or _
+  If sName = "TabPages" Then
+    fIsWebFormControl = (pctlControl.Tabs.Count > 0)
+  
+  ElseIf sName = "asrDummyLabel" Or _
     sName = "asrDummyTextBox" Or _
     sName = "asrDummyPhoto" Or _
     sName = "asrDummyOLEContents" Or _
@@ -5448,7 +5527,7 @@ Public Function IsWebFormControl(pctlControl As VB.Control) As Boolean
     sName = "ASRDummyGrid" Or _
     sName = "btnWorkflow" Or _
     sName = "ASRDummyFileUpload" Then
-    
+        
     ' Do not bother with the dummy screen controls.
     If (pctlControl.Index > 0) Then
     
@@ -5471,7 +5550,7 @@ Public Function IsWebFormControl(pctlControl As VB.Control) As Boolean
           End If
         Next iIndex
       End If
-      
+   
     End If
   End If
   
@@ -5594,6 +5673,7 @@ Private Function SaveWebFormItems(pwfElement As COAWF_Webform) As Boolean
   Dim iSQLDataType As SQLDataType
   Dim sDescription As String
   Dim fDoingRealElement As Boolean
+  Dim lngPageIndex As Long
   
   fSaveOK = True
   fDoingRealElement = (pwfElement Is mwfElement)
@@ -5615,7 +5695,7 @@ Private Function SaveWebFormItems(pwfElement As COAWF_Webform) As Boolean
       
       With ctlControl
         iWFItemType = CLng(.WFItemType)
-        
+               
         ' Save all the properties.
         
         'Description
@@ -5645,6 +5725,8 @@ Private Function SaveWebFormItems(pwfElement As COAWF_Webform) As Boolean
             sDescription = "Workflow value - " & .WFWorkflowForm & "." & .WFWorkflowValue
           Case giWFFORMITEM_FORMATCODE
             sDescription = "Formatting - " & FormatDescription(IIf(Len(.Caption) > 0, Replace(.Caption, "&&", "&"), vbNullString))
+          Case giWFFORMITEM_PAGETAB
+            sDescription = "Page Tab Control"
           Case Else
             sDescription = ""
         End Select
@@ -5724,7 +5806,7 @@ Private Function SaveWebFormItems(pwfElement As COAWF_Webform) As Boolean
             asItems(6, iNewIndex) = giEXPRVALUE_OLE
           Case dtVARBINARY
             asItems(6, iNewIndex) = giEXPRVALUE_PHOTO
-          Case dtINTEGER, dtNUMERIC
+          Case dtinteger, dtNUMERIC
             asItems(6, iNewIndex) = giEXPRVALUE_NUMERIC
           Case dtBIT
             asItems(6, iNewIndex) = giEXPRVALUE_LOGIC
@@ -5826,6 +5908,10 @@ Private Function SaveWebFormItems(pwfElement As COAWF_Webform) As Boolean
         
           'File Extensions List (Tab delimited string)
           asItems(66, iNewIndex) = ctlControl.WFFileExtensions
+        
+        ElseIf iWFItemType = giWFFORMITEM_PAGETAB Then
+          asItems(3, iNewIndex) = ctlControl.GetCaptions
+        
         Else
           'Input Return Type
           asItems(6, iNewIndex) = giEXPRVALUE_UNDEFINED
@@ -6151,6 +6237,9 @@ Private Function SaveWebFormItems(pwfElement As COAWF_Webform) As Boolean
         End If
       End With
       
+      ' Page number of the control
+      asItems(78, iNewIndex) = GetControlPageNo(ctlControl)
+      
     End If
   Next ctlControl
   
@@ -6207,7 +6296,7 @@ Private Function WebFormControl_DragDrop(pctlControl As VB.Control, pCtlSource A
   Dim fOK As Boolean
   
   With pctlControl
-    fOK = DropControl(.Container, pCtlSource, pSngX + .Left, pSngY + .Top)
+    fOK = DropControl(.Container, pCtlSource, pSngX + .Left, pSngY + .Top, pctlControl)
   End With
   
 TidyUpAndExit:
@@ -6650,6 +6739,8 @@ Public Function LoadWebFormItems() As Boolean
   Dim avTabIndexes() As Variant
   Dim sCaption As String
   Dim lngExprID As Long
+  Dim iPageNo As Integer
+  Dim objPageTab As PictureBox
   
   iNextIndex = 1
   fLoadOk = True
@@ -6679,15 +6770,36 @@ Public Function LoadWebFormItems() As Boolean
     
     asItems = mwfElement.Items
     
+    ' Add the page tabs first
+    For iLoop = 1 To UBound(asItems, 2) Step 1
+      iWFItemType = CInt(asItems(2, iLoop))
+      If iWFItemType = giWFFORMITEM_PAGETAB Then
+        AddTabPage asItems(3, iLoop)
+      End If
+    Next
+    
+    ' Now add all the other controls
     For iLoop = 1 To UBound(asItems, 2) Step 1
     
       ' Get the control's type.
       iWFItemType = CInt(asItems(2, iLoop))
   
       ' Create the new control.
-      Set ctlControl = AddControl(iWFItemType)
+      If iWFItemType = giWFFORMITEM_PAGETAB Then
+        Set ctlControl = TabPages
+      Else
+        Set ctlControl = AddControl(iWFItemType)
+      End If
 
       If Not ctlControl Is Nothing Then             ' Indent 05 - start
+        
+        ' Set the page container of the page that contains the control.
+        iPageNo = IIf(IsNumeric(asItems(78, iLoop)), asItems(78, iLoop), 0)
+        If iPageNo = 0 Then
+          Set ctlControl.Container = Me
+        Else
+          Set ctlControl.Container = objTabContainer(iPageNo)
+        End If
         
         ' Set the Web form Item Identifier for this control.
         If WebFormItemHasProperty(iWFItemType, WFITEMPROP_WFIDENTIFIER) Then
@@ -6858,7 +6970,17 @@ Public Function LoadWebFormItems() As Boolean
         ctlControl.Width = PixelsToTwips(CLng(asItems(15, iLoop)))
         ctlControl.Height = PixelsToTwips(CLng(asItems(16, iLoop)))
        
-       ' Set the control's size/behaviour properties
+        ' Dock the panels to the tab page
+        If iWFItemType = giWFFORMITEM_PAGETAB Then
+          For Each objPageTab In objTabContainer
+            objPageTab.Top = 400 'PixelsToTwips(CLng(tabPages.ClientTop))
+            objPageTab.Left = 100 'PixelsToTwips(CLng(tabPages.ClientLeft))
+            objPageTab.Width = TabPages.Width - 200
+            objPageTab.Height = TabPages.Height - 500
+          Next
+        End If
+       
+        ' Set the control's size/behaviour properties
         If WebFormItemHasProperty(iWFItemType, WFITEMPROP_VERTICALOFFSET) Then
           ctlControl.VerticalOffsetBehaviour = asItems(59, iLoop)
           ctlControl.VerticalOffset = asItems(61, iLoop)
@@ -7203,6 +7325,7 @@ Private Function LoadWebForm() As Boolean
        
   ' Load the web form items (controls)
   LoadWebFormItems
+  tabPages_Click
 
   IsChanged = False
   
@@ -7886,4 +8009,386 @@ Public Function Default_ColumnWidth_Numeric(ByRef plngNumeric As Long, ByRef pln
   Default_ColumnWidth_Numeric = (plngNumeric * 105) + 120 + 60 + lngSeperators
 End Function
 
+
+Private Function DropTabPage(Optional piTabPageIndex As Integer) As Boolean
+  ' Add a tab to the page. If none exist then move all existing controls onto
+  ' the new tab.
+  On Error GoTo ErrorTrap
+
+  Dim fOK As Boolean
+  Dim fControlsMoved As Boolean
+  Dim ctlControl As VB.Control
+  Dim iCount As Integer
+  
+  ' Do not exceed the maximum number of pages.
+  If TabPages.Tabs.Count = giMAXTABS Then
+    ' Flag the error to the user if we are not just loading the screen.
+    If Not gfLoading Then
+      MsgBox "Unable to add more than " & Trim(Str(giMAXTABS)) & " page tabs."
+    End If
+    
+    DropTabPage = False
+    Exit Function
+  End If
+  
+  ' Get the index of the new tab page.
+  If (IsMissing(piTabPageIndex)) Or (piTabPageIndex = 0) Then
+    piTabPageIndex = TabPages.Tabs.Count + 1
+  ElseIf (piTabPageIndex > TabPages.Tabs.Count + 1) Then
+    piTabPageIndex = TabPages.Tabs.Count + 1
+  End If
+   
+  ' If we are adding the first tab page then move all existing controls onto this page
+  If TabPages.Tabs.Count = 0 Then
+  
+    ' Add the new tab, and initialise its caption.
+    TabPages.AddTabPage "Page 1"
+       
+    ' Move all screen controls onto the new tab page's picture container.
+    GetControlLevel (Me.hWnd)
+
+    Load objTabContainer(piTabPageIndex)
+    With objTabContainer(piTabPageIndex)
+      .BorderStyle = 0
+      .Left = 50
+      .Top = 50
+      .Width = TabPages.Width - 100
+      .Height = TabPages.Height - 100
+      .Visible = True
+      .ZOrder 1
+    End With
+
+    fControlsMoved = False
+    For Each ctlControl In Me.Controls
+      If IsWebFormControl(ctlControl) And ctlControl.Name <> "TabPages" Then
+        Set ctlControl.Container = objTabContainer(piTabPageIndex)
+        fControlsMoved = True
+      End If
+    Next ctlControl
+    ' Disassociate object variables.
+    Set ctlControl = Nothing
+
+
+    ' Ensure that the z-order of the controls is the same as before.
+    SetControlLevel
+
+    ' If we moving controls from the form onto the new tabpage then increase the
+    ' form dimensions to allow for the tabs.
+    If fControlsMoved Then
+      With Me
+        .Height = .Height + (TabPages.Height - TabPages.ClientHeight) + (2 * YFrame)
+        .Width = .Width + (4 * XFrame)
+      End With
+    
+      ' JDM - 22/08/02 - Fault 4264 - Refresh the selection markers
+      For iCount = 1 To ASRSelectionMarkers.Count - 1
+        With ASRSelectionMarkers(iCount)
+          Set .Container = objTabContainer(piTabPageIndex)
+        End With
+      Next iCount
+    
+    End If
+    
+  Else
+    ' Add the new tab.
+    TabPages.AddTabPage "Page " & TabPages.Tabs.Count + 1
+       
+  End If
+  
+  ' Set the 'tag' property of the tab page. We use to relate a tab page
+  ' with its associated picture container control.
+  TabPages.TabPage(piTabPageIndex).Tag = piTabPageIndex
+
+  ' Display the tab strip.
+  fOK = TabPages_Resize
+  TabPages.Visible = True
+  
+  ' Select the new page if we are not just loading the screen.
+  If Not gfLoading Then
+    tabPages_Click
+  End If
+  
+TidyUpAndExit:
+  ' Disassociate object variables.
+  Set ctlControl = Nothing
+  DropTabPage = fOK
+  Exit Function
+
+ErrorTrap:
+  MsgBox "Error adding tab page." & vbCr & vbCr & _
+    Err.Description, vbExclamation + vbOKOnly, App.ProductName
+  fOK = False
+  Resume TidyUpAndExit
+  
+End Function
+
+
+Private Function TabPages_Resize() As Boolean
+  ' Resize the tab pages.
+  On Error GoTo ErrorTrap
+  
+  Dim fOK As Boolean
+  Dim ctlPictureBox As PictureBox
+  
+  ' Position and size the tabstrip to fill the form's client area.
+  TabPages.Move XFrame, YFrame, Me.ScaleWidth - (XFrame * 2), _
+    Me.ScaleHeight - (YFrame * 2)
+
+  ' Position and size the picture box containers of the tabstrip.
+  For Each ctlPictureBox In objTabContainer
+    ctlPictureBox.Move TabPages.Left + XFrame, TabPages.Top + 200 + (YFrame * 2), _
+      TabPages.Width - (XFrame * 2), TabPages.Height - (YFrame + 2) - 200
+  Next ctlPictureBox
+
+  fOK = True
+  
+TidyUpAndExit:
+  ' Disassociate object variales.
+  Set ctlPictureBox = Nothing
+  TabPages_Resize = fOK
+  Exit Function
+
+ErrorTrap:
+  MsgBox "Error resizing Screen Designer tab pages." & vbCr & vbCr & _
+    Err.Description, vbExclamation + vbOKOnly, App.ProductName
+  Resume TidyUpAndExit
+  
+End Function
+
+Private Sub objTabContainer_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+
+  ' Drop a control onto the screen.
+  On Error GoTo ErrorTrap
+  
+  If Not DropControl(objTabContainer(Index), Source, X, Y, Nothing) Then
+    MsgBox "Unable to drop the control." & vbCr & vbCr & _
+      Err.Description, vbExclamation + vbOKOnly, App.ProductName
+  End If
+  
+TidyUpAndExit:
+  Exit Sub
+  
+ErrorTrap:
+  Err = False
+  Resume TidyUpAndExit
+
+End Sub
+
+Private Sub objTabContainer_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  ' Pass the MouseDown event to the parent form.
+  Form_MouseDown Button, Shift, X, Y
+End Sub
+
+Private Sub objTabContainer_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  ' Pass the MouseMove event to the parent form.
+  Form_MouseMove Button, Shift, X, Y
+End Sub
+
+Private Sub objTabContainer_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  ' Pass the MouseUp event to the parent form.
+  Form_MouseUp Button, Shift, X, Y
+End Sub
+
+
+Private Sub tabPages_Click()
+
+  Dim iOldPage As Integer
+  Dim ctlPictureBox As PictureBox
+  
+  ' Select a tab page.
+  Static fInClick As Boolean
+  
+  If Not fInClick Then
+    fInClick = True
+  
+    TabPages.Enabled = False
+    Screen.MousePointer = vbHourglass
+  
+    ' Set the active page.
+    If TabPages.Tabs.Count > 0 Then
+      mlngCurrentPageNo = TabPages.SelectedItem.Index
+           
+      For Each ctlPictureBox In objTabContainer
+      With ctlPictureBox
+        If .Index = mlngCurrentPageNo Then
+          .Enabled = True
+          .Visible = True
+          .ZOrder 0
+        Else
+          .Enabled = False
+          .Visible = False
+        End If
+      End With
+      Next ctlPictureBox
+    Else
+      mlngCurrentPageNo = 0
+    End If
+           
+    ' Refresh the properties screen.
+    Set frmWorkflowWFItemProps.CurrentWebForm = Me
+    frmWorkflowWFItemProps.RefreshProperties
+  
+    TabPages.Enabled = True
+    Screen.MousePointer = vbDefault
+  
+    fInClick = False
+    
+  End If
+
+End Sub
+
+Private Sub tabPages_DragDrop(Source As Control, X As Single, Y As Single)
+  WebFormControl_DragDrop TabPages, Source, X, Y
+End Sub
+
+Private Sub tabPages_GotFocus()
+
+  ' Do nothing if we are just activating the form.
+  If gfActivating Then
+    gfActivating = False
+    Exit Sub
+  End If
+  
+  ' Deselect all controls.
+  If TabPages.Tabs.Count > 0 Then
+    If mlngCurrentPageNo <> TabPages.SelectedItem.Index Then
+      DeselectAllControls
+  
+      ' Refresh the menu.
+      frmSysMgr.RefreshMenu
+      
+      ' Refresh the properties screen.
+      Set frmWorkflowWFItemProps.CurrentWebForm = Me
+      frmWorkflowWFItemProps.RefreshProperties
+      
+    End If
+  End If
+
+End Sub
+
+'
+'Public Property Let PageNo(piPageNumber As Integer)
+'  ' Set the tabstrip page number.
+'  On Error GoTo ErrorTrap
+'
+'  Dim iPageTag As Integer
+'  Dim ctlPictureBox As PictureBox
+'
+'  ' Do nothing if there are no tabpages.
+'  If tabPages.Tabs.Count > 0 Then
+'
+'    ' If the given page number is not valid, just select the first page.
+'    If piPageNumber > tabPages.Tabs.Count Then
+'      piPageNumber = 1
+'    End If
+'
+'    iPageTag = tabPages.TabPage(piPageNumber).Tag
+'
+'    ' Position and size the picture box containers of the tabstrip.
+'    For Each ctlPictureBox In picPageContainer
+'      With ctlPictureBox
+'        If .Index = iPageTag Then
+'          .Enabled = True
+'          .Visible = True
+'          .ZOrder 0
+'        Else
+'          .Enabled = False
+'          .Visible = False
+'        End If
+'      End With
+'    Next ctlPictureBox
+'
+'    tabPages.TabPage(piPageNumber).Selected = True
+'
+'    ' If the page has changed then ensure that the old page
+'    ' controls are deselected.
+'    DeselectAllControls
+'  Else
+'    For Each ctlPictureBox In picPageContainer
+'      With ctlPictureBox
+'        .Enabled = False
+'        .Visible = False
+'      End With
+'    Next ctlPictureBox
+'  End If
+'
+'  frmSysMgr.RefreshMenu
+'
+'TidyUpAndExit:
+'  ' Disassociate object variables.
+'  Set ctlPictureBox = Nothing
+'  Exit Property
+'
+'ErrorTrap:
+'  MsgBox "Error setting page number." & vbCr & vbCr & _
+'    Err.Description, vbExclamation + vbOKOnly, App.ProductName
+'  Resume TidyUpAndExit
+'
+'End Property
+'
+'Public Property Get PageNo() As Integer
+'  ' Return the current tabstrip page number.
+'  On Error GoTo ErrorTrap
+'
+'  Dim iPageNo As Integer
+'
+'  If tabPages.Tabs.Count = 0 Then
+'    iPageNo = 0
+'  Else
+'    iPageNo = tabPages.SelectedItem.Index
+'  End If
+'
+'TidyUpAndExit:
+'  PageNo = iPageNo
+'  Exit Function
+'
+'ErrorTrap:
+'  iPageNo = 0
+'  Resume TidyUpAndExit
+'
+'End Property
+
+Private Sub tabPages_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WebFormControl_MouseDown TabPages, Button, Shift, X, Y
+End Sub
+
+Private Sub tabPages_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WebFormControl_MouseMove TabPages, Button, X, Y
+End Sub
+
+Private Sub tabPages_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+  WebFormControl_MouseUp TabPages, Button, Shift, X, Y
+End Sub
+
+Public Function GetControlPageNo(pctlControl As VB.Control) As Integer
+  ' Return the page number on which the given control is located.
+  ' =0 - no tab pages. ie. the form itself.
+  ' >0 - the tab page index.
+  On Error GoTo ErrorTrap
+  
+  Dim iPageNo As Integer
+  Dim objTabPage As Object
+  
+  iPageNo = 0
+        
+  If (TabPages.Tabs.Count > 0) And (Not pctlControl.Container Is Me) Then
+    For Each objTabPage In TabPages.Tabs
+      If objTabPage.Tag = pctlControl.Container.Index Then
+        iPageNo = objTabPage.Index
+      End If
+    Next objTabPage
+  End If
+
+TidyUpAndExit:
+  ' Disassociate object variables.
+  Set objTabPage = Nothing
+  ' Return the page number.
+  GetControlPageNo = iPageNo
+  Exit Function
+
+ErrorTrap:
+  iPageNo = 0
+  Resume TidyUpAndExit
+  
+End Function
 

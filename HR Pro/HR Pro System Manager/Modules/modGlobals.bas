@@ -96,7 +96,6 @@ Public recWorkflowElementColumnEdit As DAO.Recordset
 Public recWorkflowElementValidationEdit As DAO.Recordset
 Public recWorkflowTriggeredLinks As DAO.Recordset
 Public recWorkflowTriggeredLinkColumns As DAO.Recordset
-Public recWorkflowElementPageCaptions As DAO.Recordset
 
 Public recEmailAddrEdit As DAO.Recordset
 Public recEmailLinksEdit As DAO.Recordset

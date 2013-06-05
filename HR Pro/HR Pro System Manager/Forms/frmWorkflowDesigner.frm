@@ -12266,7 +12266,12 @@ Private Function SaveElementsAndLinks() As Boolean
             End If
             
             .Fields("CalcID") = val(asItems(56, iLoop))
+            .Fields("pageno") = val(asItems(78, iLoop))
             
+            If (recWorkflowElementItemEdit.Fields("itemType") = giWFFORMITEM_BUTTON) Then
+              .Fields("buttonstyle") = val(asItems(79, iLoop))
+            End If
+
             .Update
           End With
         Next iLoop
@@ -13380,6 +13385,8 @@ Public Function LoadElementsAndLinks() As Boolean
                 End If
                 
                 asItems(56, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("calcID").value), 0, recWorkflowElementItemEdit.Fields("calcID").value)
+                asItems(78, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("pageno").value), 0, recWorkflowElementItemEdit.Fields("pageno").value)
+                asItems(79, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("buttonstyle").value), 0, recWorkflowElementItemEdit.Fields("buttonstyle").value)
                 
                 recWorkflowElementItemEdit.MoveNext
               Loop

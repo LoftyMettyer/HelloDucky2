@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmWorkflowWFToolbox 
    Caption         =   "Toolbox"
    ClientHeight    =   9180
@@ -559,113 +559,117 @@ Begin VB.Form frmWorkflowWFToolbox
       MaskColor       =   12632256
       _Version        =   327682
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
-         NumListImages   =   27
+         NumListImages   =   28
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
             Picture         =   "frmWorkflowWFToolbox.frx":AEEF
             Key             =   "IMG_WORKINGPATTERN"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
             Picture         =   "frmWorkflowWFToolbox.frx":B441
-            Key             =   "IMG_WEBFORM"
+            Key             =   "IMG_PAGETAB"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":B993
-            Key             =   ""
+            Picture         =   "frmWorkflowWFToolbox.frx":B61B
+            Key             =   "IMG_WEBFORM"
          EndProperty
          BeginProperty ListImage4 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":BCE5
-            Key             =   "IMG_BUTTON"
+            Picture         =   "frmWorkflowWFToolbox.frx":BB6D
+            Key             =   ""
          EndProperty
          BeginProperty ListImage5 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":C237
-            Key             =   "IMG_GRID"
+            Picture         =   "frmWorkflowWFToolbox.frx":BEBF
+            Key             =   "IMG_BUTTON"
          EndProperty
          BeginProperty ListImage6 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":C789
-            Key             =   "IMG_COLUMN"
+            Picture         =   "frmWorkflowWFToolbox.frx":C411
+            Key             =   "IMG_GRID"
          EndProperty
          BeginProperty ListImage7 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":CCDB
-            Key             =   "IMG_COMBOBOX"
+            Picture         =   "frmWorkflowWFToolbox.frx":C963
+            Key             =   "IMG_COLUMN"
          EndProperty
          BeginProperty ListImage8 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":D22D
-            Key             =   "IMG_DATE"
+            Picture         =   "frmWorkflowWFToolbox.frx":CEB5
+            Key             =   "IMG_COMBOBOX"
          EndProperty
          BeginProperty ListImage9 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":D77F
-            Key             =   "IMG_LINE"
+            Picture         =   "frmWorkflowWFToolbox.frx":D407
+            Key             =   "IMG_DATE"
          EndProperty
          BeginProperty ListImage10 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":DCD1
-            Key             =   "IMG_IMAGE"
+            Picture         =   "frmWorkflowWFToolbox.frx":D959
+            Key             =   "IMG_LINE"
          EndProperty
          BeginProperty ListImage11 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":E223
-            Key             =   "IMG_FRAME"
+            Picture         =   "frmWorkflowWFToolbox.frx":DEAB
+            Key             =   "IMG_IMAGE"
          EndProperty
          BeginProperty ListImage12 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":E775
-            Key             =   "IMG_LABEL"
+            Picture         =   "frmWorkflowWFToolbox.frx":E3FD
+            Key             =   "IMG_FRAME"
          EndProperty
          BeginProperty ListImage13 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":ECC7
-            Key             =   "IMG_LINK"
+            Picture         =   "frmWorkflowWFToolbox.frx":E94F
+            Key             =   "IMG_LABEL"
          EndProperty
          BeginProperty ListImage14 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":F219
-            Key             =   "IMG_CHECKBOX"
+            Picture         =   "frmWorkflowWFToolbox.frx":EEA1
+            Key             =   "IMG_LINK"
          EndProperty
          BeginProperty ListImage15 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":F76B
-            Key             =   "IMG_LOOKUP"
+            Picture         =   "frmWorkflowWFToolbox.frx":F3F3
+            Key             =   "IMG_CHECKBOX"
          EndProperty
          BeginProperty ListImage16 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":FCBD
-            Key             =   "IMG_NUMERIC"
+            Picture         =   "frmWorkflowWFToolbox.frx":F945
+            Key             =   "IMG_LOOKUP"
          EndProperty
          BeginProperty ListImage17 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":1020F
-            Key             =   "IMG_OLE"
+            Picture         =   "frmWorkflowWFToolbox.frx":FE97
+            Key             =   "IMG_NUMERIC"
          EndProperty
          BeginProperty ListImage18 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":10761
-            Key             =   "IMG_PHOTO"
+            Picture         =   "frmWorkflowWFToolbox.frx":103E9
+            Key             =   "IMG_OLE"
          EndProperty
          BeginProperty ListImage19 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":10CB3
-            Key             =   "IMG_PROPERTIES"
+            Picture         =   "frmWorkflowWFToolbox.frx":1093B
+            Key             =   "IMG_PHOTO"
          EndProperty
          BeginProperty ListImage20 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":11205
-            Key             =   "IMG_FILEUPLOAD"
+            Picture         =   "frmWorkflowWFToolbox.frx":10E8D
+            Key             =   "IMG_PROPERTIES"
          EndProperty
          BeginProperty ListImage21 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":11757
-            Key             =   "IMG_FILEDOWNLOAD"
+            Picture         =   "frmWorkflowWFToolbox.frx":113DF
+            Key             =   "IMG_FILEUPLOAD"
          EndProperty
          BeginProperty ListImage22 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":11CA9
-            Key             =   "IMG_RADIO"
+            Picture         =   "frmWorkflowWFToolbox.frx":11931
+            Key             =   "IMG_FILEDOWNLOAD"
          EndProperty
          BeginProperty ListImage23 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":121FB
-            Key             =   "IMG_SPINNER"
+            Picture         =   "frmWorkflowWFToolbox.frx":11E83
+            Key             =   "IMG_RADIO"
          EndProperty
          BeginProperty ListImage24 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":1274D
-            Key             =   "IMG_TABLE"
+            Picture         =   "frmWorkflowWFToolbox.frx":123D5
+            Key             =   "IMG_SPINNER"
          EndProperty
          BeginProperty ListImage25 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":12C9F
-            Key             =   "IMG_TEXTBOX"
+            Picture         =   "frmWorkflowWFToolbox.frx":12927
+            Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage26 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":131F1
-            Key             =   "IMG_TOOLBOX"
+            Picture         =   "frmWorkflowWFToolbox.frx":12E79
+            Key             =   "IMG_TEXTBOX"
          EndProperty
          BeginProperty ListImage27 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFToolbox.frx":13743
+            Picture         =   "frmWorkflowWFToolbox.frx":133CB
+            Key             =   "IMG_TOOLBOX"
+         EndProperty
+         BeginProperty ListImage28 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "frmWorkflowWFToolbox.frx":1391D
             Key             =   "IMG_WORKFLOW"
          EndProperty
       EndProperty
@@ -1062,6 +1066,10 @@ Private Sub RefreshStandardControlsTreeView()
   
   ' Add the Image control node.
   Set objNode = trvStandardControls.Nodes.Add("STDROOT", tvwChild, "IMAGECTRL", "Image", "IMG_IMAGE", "IMG_IMAGE")
+  objNode.Expanded = True
+  
+  ' Add the page tab control node.
+  Set objNode = trvStandardControls.Nodes.Add("STDROOT", tvwChild, "PAGETABCTRL", "Page Tab", "IMG_PAGETAB", "IMG_PAGETAB")
   objNode.Expanded = True
   
   '----------------------------------------------------------------------------
