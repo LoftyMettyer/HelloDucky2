@@ -94,6 +94,14 @@ Public Function Activate() As Boolean
     CheckScheduledBatchJobs
   End If
 
+  DebugOutput "Application.Activate", "CheckScheduledReportPacks"
+  
+  'Does the user have permission to run report packs ?
+  If datGeneral.SystemPermission("REPORTPACKS", "RUN") = True Then
+    frmSplash.Visible = False
+    CheckScheduledReportPacks
+  End If
+
   ' Are any workflow steps pending for the current user to action?
   If gbWorkflowEnabled Then
     frmSplash.Visible = False
@@ -251,35 +259,6 @@ Private Sub Class_Terminate()
   Set ODBC = Nothing
 End Sub
 
-'Public Function GetBatchLock() As Integer
-'
-'  Dim iStatus As Integer
-'  Dim cmADO As ADODB.Command
-'  Dim pmADO As ADODB.Parameter
-'
-'  Set cmADO = New ADODB.Command
-'  With cmADO
-'    .CommandText = "sp_ASRGetBatchLock"
-'    .CommandType = adCmdStoredProc
-'    Set .ActiveConnection = gADOCon
-'
-'    Set pmADO = .CreateParameter("Ret", adInteger, adParamOutput)
-'    .Parameters.Append pmADO
-'
-'    Set pmADO = Nothing
-'
-'    cmADO.Execute
-'
-'    iStatus = .Parameters(0).Value
-'  End With
-'
-'  Set cmADO = Nothing
-'
-'  GetBatchLock = iStatus
-'
-'End Function
-'
-'
 
 Public Sub CheckScheduledBatchJobs()
 
@@ -333,6 +312,59 @@ Public Sub CheckScheduledBatchJobs()
   End If
 
 End Sub
+
+
+Public Sub CheckScheduledReportPacks()
+  Dim frmPrompt As frmDefSel
+  Dim strEventLogIDs As String
+  Dim fExit As Boolean
+  Dim dblTimeOut As Double
+
+  Set frmPrompt = New frmDefSel
+  Screen.MousePointer = vbDefault
+  
+  Do
+
+    frmPrompt.Options = edtProperties + edtSelect
+    frmPrompt.EnableRun = True
+    frmPrompt.BatchPrompt = True
+    frmPrompt.EventLogIDs = strEventLogIDs
+    frmPrompt.ShowList utlReportPack, , True
+    fExit = True
+    If frmPrompt.ListCount > 0 Then
+      If gblnBatchJobsOnly Then
+        frmPrompt.RunSelectedJobs
+        fExit = True
+      Else
+        frmPrompt.Show vbModal
+        strEventLogIDs = frmPrompt.EventLogIDs
+        fExit = (frmPrompt.Action = edtCancel)
+      End If
+    End If
+
+  Loop While Not fExit
+
+  Unload frmPrompt
+  Set frmPrompt = Nothing
+
+  'MH20010515
+  If gblnBatchJobsOnly Then
+
+    dblTimeOut = Timer + 5
+    If dblTimeOut > 86395 Then  'Just in case it gets stuck in a loop at midnight
+      dblTimeOut = 0
+    End If
+
+    'Delay to prevent RunTime 440 and finish sending any emails, if required
+    Do
+      DoEvents
+    Loop While objEmail.StillExecuting And dblTimeOut > Timer
+
+    End
+  End If
+
+End Sub
+
 
 
 Private Sub CheckOvernightJob()
