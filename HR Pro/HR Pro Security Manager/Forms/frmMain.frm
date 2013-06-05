@@ -217,6 +217,10 @@ End If
    
 End Sub
 
+Private Sub abSecurity_MenuItemEnter(ByVal Tool As ActiveBarLibraryCtl.Tool)
+  DoEvents
+End Sub
+
 Private Sub abSecurity_PreCustomizeMenu(ByVal Cancel As ActiveBarLibraryCtl.ReturnBool)
   ' Do not let the user modify the layout.
   Cancel = True

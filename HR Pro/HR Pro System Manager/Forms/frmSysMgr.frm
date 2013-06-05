@@ -4945,6 +4945,10 @@ Private Sub tbMain_Click(ByVal pTool As ActiveBarLibraryCtl.Tool)
 
 End Sub
 
+Private Sub tbMain_MenuItemEnter(ByVal Tool As ActiveBarLibraryCtl.Tool)
+  DoEvents
+End Sub
+
 Private Sub tbMain_MouseEnter(ByVal Tool As ActiveBarLibraryCtl.Tool)
 
 '  If Tool.Name = "ID_mnuModule" Or Tool.Name = "ID_mnuWindow" Then
