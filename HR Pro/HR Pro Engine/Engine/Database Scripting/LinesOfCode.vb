@@ -68,8 +68,6 @@ Namespace ScriptDB
           bNeedsIsEqualTo = False
           bNewLine = False
 
-          Debug.Print(Chunk.Code)
-
           If ReturnType = ComponentValueTypes.Logic Then
 
             If Chunk.CodeType = ComponentTypes.Operator Then
