@@ -27,10 +27,10 @@
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
     <DocumentationFile>SystemFramework.xml</DocumentationFile>
-    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</NoWarn>
+    <NoWarn>
+    </NoWarn>
     <RegisterForComInterop>true</RegisterForComInterop>
-    <WarningsAsErrors>
-    </WarningsAsErrors>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>Full</DebugType>
@@ -39,12 +39,12 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DocumentationFile>SystemFramework.xml</DocumentationFile>
-    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</NoWarn>
+    <NoWarn>
+    </NoWarn>
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
     <RegisterForComInterop>true</RegisterForComInterop>
     <DebugSymbols>true</DebugSymbols>
-    <WarningsAsErrors>
-    </WarningsAsErrors>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup>
     <OptionExplicit>On</OptionExplicit>
@@ -53,7 +53,7 @@
     <OptionCompare>Binary</OptionCompare>
   </PropertyGroup>
   <PropertyGroup>
-    <OptionStrict>Off</OptionStrict>
+    <OptionStrict>On</OptionStrict>
   </PropertyGroup>
   <PropertyGroup>
     <OptionInfer>On</OptionInfer>
@@ -84,22 +84,21 @@
     <Import Include="System" />
     <Import Include="System.Collections" />
     <Import Include="System.Collections.Generic" />
+    <Import Include="System.Collections.ObjectModel" />
     <Import Include="System.Data" />
     <Import Include="System.Diagnostics" />
     <Import Include="System.Linq" />
     <Import Include="System.Xml.Linq" />
+    <Import Include="SystemFramework.Things" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\HCMErrors.vb" />
-    <Compile Include="Classes\HCMGuid.vb" />
     <Compile Include="Classes\HCMOptions.vb" />
-    <Compile Include="Classes\HCMProgressBar.vb" />
     <Compile Include="Classes\HCMTuningReport.vb" />
     <Compile Include="Classes\Modifications.vb" />
     <Compile Include="COM Interface\Interfaces.vb" />
     <Compile Include="Connectivity\AccessDB.vb" />
     <Compile Include="Connectivity\ADOClassic.vb" />
-    <Compile Include="Connectivity\Connection.vb" />
     <Compile Include="Connectivity\Login.vb" />
     <Compile Include="Connectivity\Enums.vb" />
     <Compile Include="Connectivity\Parameter.vb" />
@@ -109,10 +108,10 @@
     <Compile Include="Database Scripting\CodeElement.vb" />
     <Compile Include="Database Scripting\Consts.vb" />
     <Compile Include="Database Scripting\Enums.vb" />
-    <Compile Include="Database Scripting\General.vb" />
     <Compile Include="Database Scripting\GeneratedUDF.vb" />
     <Compile Include="Database Scripting\LinesOfCode.vb" />
-    <Compile Include="Database Scripting\Scripter.vb" />
+    <Compile Include="Database Scripting\Script.vb" />
+    <Compile Include="Database Scripting\DatabaseMetadata.vb" />
     <Compile Include="Database Scripting\ScriptFunctions.vb" />
     <Compile Include="Database Scripting\Structures.vb" />
     <Compile Include="Database Scripting\TriggeredUpdate.vb" />
@@ -152,14 +151,14 @@
     <Compile Include="Forms\DataSource.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Object Types\Base.vb" />
-    <Compile Include="Object Types\Collections\BaseCollection.vb" />
-    <Compile Include="Object Types\Collections\WorkflowElementItems.vb" />
+    <Compile Include="Object Types\Core\Base.vb" />
+    <Compile Include="Object Types\Core\Extensions.vb" />
     <Compile Include="Object Types\Datasource.vb" />
     <Compile Include="Object Types\GlobalModify.vb" />
     <Compile Include="Object Types\GlobalModifyItem.vb" />
     <Compile Include="Object Types\Index.vb" />
     <Compile Include="Object Types\Mask.vb" />
+    <Compile Include="Object Types\SettingCollection.vb" />
     <Compile Include="Object Types\TableOrderFilter.vb" />
     <Compile Include="Object Types\TableOrder.vb" />
     <Compile Include="Object Types\TableOrderItem.vb" />
@@ -167,14 +166,12 @@
     <Compile Include="Object Types\View.vb" />
     <Compile Include="PopulateObjects.vb" />
     <Compile Include="Object Types\CodeLibrary.vb" />
-    <Compile Include="Object Types\Collections\Collection.vb" />
     <Compile Include="Object Types\Column.vb" />
     <Compile Include="Object Types\Component.vb" />
     <Compile Include="Object Types\DiaryLink.vb" />
     <Compile Include="Object Types\EmailLink.vb" />
     <Compile Include="Object Types\Enums.vb" />
     <Compile Include="Object Types\Expression.vb" />
-    <Compile Include="Object Types\Interfaces.vb" />
     <Compile Include="Object Types\RecordDescription.vb" />
     <Compile Include="Object Types\Relation.vb" />
     <Compile Include="Object Types\Screen.vb" />
@@ -184,9 +181,6 @@
     <Compile Include="Object Types\WorkflowElement.vb" />
     <Compile Include="Object Types\WorkflowElementColumn.vb" />
     <Compile Include="Object Types\WorkflowElementItem.vb" />
-    <Compile Include="PopulateObjects2.vb" />
-    <Compile Include="Structure Port Scripting\Outputer.vb" />
-    <Compile Include="Structure Port Scripting\XMLExport.vb" />
     <Compile Include="SysMgr.vb" />
   </ItemGroup>
   <ItemGroup>
