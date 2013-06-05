@@ -749,7 +749,9 @@ Private Sub cboAggregateType_Click()
   
     ' Disable the Y column if aggregate is set to 'Count'
   cboColumnY.Enabled = (cboAggregateType.Text <> "Count")
-
+  
+  ChartAggregateType = cboAggregateType.ListIndex
+  
   mfChanged = True
     
   RefreshControls
@@ -816,7 +818,7 @@ End Sub
 
 Private Sub cboColumnY_Click()
   ' set the aggregate
-  PopulateAggregateCombo cboColumnY.ItemData(cboColumnY.ListIndex)
+  If mfLoading Then PopulateAggregateCombo cboColumnY.ItemData(cboColumnY.ListIndex)
   SetComboItemOrTopItem cboAggregateType, ChartAggregateType
   PopulateColourCombo cboTableY.ItemData(cboTableY.ListIndex)
   
