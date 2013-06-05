@@ -94,7 +94,17 @@ Namespace Things
 
       ' Initialise code object
       Me.IsComplex = False
-      Me.CaseCount = 3
+
+      Select Case Me.ExpressionType
+        Case ScriptDB.ExpressionType.ColumnFilter
+          Me.CaseCount = 0
+        Case ScriptDB.ExpressionType.ColumnCalculation
+          Me.CaseCount = 3
+        Case Else
+          Me.CaseCount = 0
+      End Select
+
+
 
       _linesOfCode = New ScriptDB.LinesOfCode
       _linesOfCode.Clear()
