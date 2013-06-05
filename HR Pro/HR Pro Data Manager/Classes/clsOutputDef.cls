@@ -682,11 +682,13 @@ Private Sub cmdEmailGroup_Click()
         Case edtSelect
           mfrmParent.txtEmailGroup.Text = .SelectedText
           mfrmParent.txtEmailGroup.Tag = .SelectedID
+          mfrmParent.Changed = True
           blnExit = True
 
         Case edtDeselect
           mfrmParent.txtEmailGroup.Text = "<None>"
           mfrmParent.txtEmailGroup.Tag = 0
+          mfrmParent.Changed = True
           blnExit = True
 
         Case 0
