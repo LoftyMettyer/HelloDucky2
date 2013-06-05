@@ -545,127 +545,132 @@ PRINT 'Step 9 - Add new calculation procedures'
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_absencebetweentwodates]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_absencebetweentwodates]
+		DROP FUNCTION [dbo].[udfsys_absencebetweentwodates];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_firstnamefromforenames]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_firstnamefromforenames]
+		DROP FUNCTION [dbo].[udfsys_firstnamefromforenames];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_getfieldfromdatabaserecord]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_getfieldfromdatabaserecord]
+		DROP FUNCTION [dbo].[udfsys_getfieldfromdatabaserecord];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_getfunctionparametertype]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_getfunctionparametertype]
+		DROP FUNCTION [dbo].[udfsys_getfunctionparametertype];
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_getuniquecode]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_getuniquecode];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_initialsfromforenames]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_initialsfromforenames]
+		DROP FUNCTION [dbo].[udfsys_initialsfromforenames];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_isbetween]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_isbetween]
+		DROP FUNCTION [dbo].[udfsys_isbetween];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_isfieldempty]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_isfieldempty]
+		DROP FUNCTION [dbo].[udfsys_isfieldempty];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_isfieldpopulated]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_isfieldpopulated]
+		DROP FUNCTION [dbo].[udfsys_isfieldpopulated];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_isovernightprocess]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_isovernightprocess]
+		DROP FUNCTION [dbo].[udfsys_isovernightprocess];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_maternityexpectedreturndate]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_maternityexpectedreturndate]
+		DROP FUNCTION [dbo].[udfsys_maternityexpectedreturndate];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_nicedate]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_nicedate]
+		DROP FUNCTION [dbo].[udfsys_nicedate];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_nicetime]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_nicetime]
+		DROP FUNCTION [dbo].[udfsys_nicetime];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_parentalleaveentitlement]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_parentalleaveentitlement]
+		DROP FUNCTION [dbo].[udfsys_parentalleaveentitlement];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_parentalleavetaken]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_parentalleavetaken]
+		DROP FUNCTION [dbo].[udfsys_parentalleavetaken];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_propercase]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_propercase]
+		DROP FUNCTION [dbo].[udfsys_propercase];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_remainingmonthssincewholeyears]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_remainingmonthssincewholeyears]
+		DROP FUNCTION [dbo].[udfsys_remainingmonthssincewholeyears];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_roundtostartofnearestmonth]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_roundtostartofnearestmonth]
+		DROP FUNCTION [dbo].[udfsys_roundtostartofnearestmonth];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_servicelength]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_servicelength]
+		DROP FUNCTION [dbo].[udfsys_servicelength];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_statutoryredundancypay]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_statutoryredundancypay]
+		DROP FUNCTION [dbo].[udfsys_statutoryredundancypay];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_uniquecode]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_uniquecode]
+		DROP FUNCTION [dbo].[udfsys_uniquecode];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_username]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_username]
+		DROP FUNCTION [dbo].[udfsys_username];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_wholemonthsbetweentwodates]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_wholemonthsbetweentwodates]
+		DROP FUNCTION [dbo].[udfsys_wholemonthsbetweentwodates];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_wholeyearsbetweentwodates]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_wholeyearsbetweentwodates]
+		DROP FUNCTION [dbo].[udfsys_wholeyearsbetweentwodates];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_workingdaysbetweentwodates]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_workingdaysbetweentwodates]
+		DROP FUNCTION [dbo].[udfsys_workingdaysbetweentwodates];
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_justdate]')
 			AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_justdate]
+		DROP FUNCTION [dbo].[udfsys_justdate];
 
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_wholemonthsbetweentwodates] 
@@ -811,6 +816,22 @@ PRINT 'Step 9 - Add new calculation procedures'
 		
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getuniquecode](
+			@prefix AS nvarchar(255))
+		RETURNS [nvarchar](255)
+		WITH SCHEMABINDING
+		AS
+		BEGIN
+		
+			DECLARE @result nvarchar(255);
+			RETURN @result;
+		
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+
+
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getfunctionparametertype]
 			(@functionid integer, @parameterindex integer)
