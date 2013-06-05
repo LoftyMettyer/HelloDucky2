@@ -78,7 +78,7 @@ Namespace Forms
     End Sub
 
     Private Sub cmdCopy_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdCopy.Click
-      Clipboard.SetText(txtDetails.Text)
+      Clipboard.SetText(Globals.ErrorLog.DetailedReport)
     End Sub
 
     Private Sub LinkWeb_LinkClicked(ByVal sender As System.Object, ByVal e As System.Windows.Forms.LinkLabelLinkClickedEventArgs) Handles LinkWeb.LinkClicked
@@ -91,7 +91,7 @@ Namespace Forms
 
       Try
 
-        sMessage = txtDetails.Text.Replace(vbNewLine, "%0d")
+        sMessage = Globals.ErrorLog.DetailedReport.Replace(vbNewLine, "%0d")
         sMessage = sMessage.Replace("""", "'")
 
         sMessage = String.Format("{0}OpenHR System Framework version : {1}" & _
