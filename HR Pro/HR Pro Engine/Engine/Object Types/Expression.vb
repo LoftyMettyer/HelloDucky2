@@ -40,6 +40,7 @@ Namespace Things
     Public RequiresRowNumber As Boolean = False
     Public RequiresOvernight As Boolean = False
     Public ContainsUniqueCode As Boolean = False
+    Public ReferencesParent As Boolean = False
 
     Public IsComplex As Boolean = False
     Public IsValid As Boolean = True
@@ -210,7 +211,7 @@ Namespace Things
       Next
 
       ' Do we have caching on this UDF?
-      If Me.IsComplex And aryDependsOn.Count > 0 Then
+      If Me.IsComplex And aryDependsOn.Count > 0 And Not Me.ReferencesParent Then
         sBypassUDFCode = String.Format("    -- Return the original value if none of the dependent tables are in the trigger stack." & vbNewLine &
             "    IF NOT EXISTS (SELECT [tablefromid] FROM [dbo].[tbsys_intransactiontrigger] WHERE [tablefromid] IN ({0}) AND [spid] = @@SPID)" & vbNewLine & _
             "        BEGIN" & vbNewLine & _
@@ -701,6 +702,7 @@ Namespace Things
             '  objRelation = objThisColumn.Table.GetRelation(Me.AssociatedColumn.Table.ID)
             '  objRelation.DependantOnParent = True
             'End If
+            Me.ReferencesParent = True
 
           Else
 
@@ -1055,6 +1057,7 @@ Namespace Things
       Me.RequiresRecordID = RequiresRecordID Or ReferencedColumn.Calculation.RequiresRecordID
       Me.RequiresRowNumber = RequiresRowNumber Or ReferencedColumn.Calculation.RequiresRowNumber
       Me.RequiresOvernight = RequiresOvernight Or ReferencedColumn.Calculation.RequiresOvernight
+      Me.ReferencesParent = Me.ReferencesParent Or ReferencedColumn.Calculation.ReferencesParent
       Dependencies.MergeUnique(ReferencedColumn.Calculation.Dependencies)
 
       Return sCallingCode
