@@ -607,6 +607,7 @@ Begin VB.Form frmRecEdit4
       BeginProperty Tabs {0713E432-850A-101B-AFC0-4210102A8DA7} 
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
+            Caption         =   ""
             Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
@@ -3411,10 +3412,10 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
       End If
     Case Else
       fHandled = frmMain.abMain.OnKeyDown(KeyCode, Shift)
-      'If fHandled Then
+      If fHandled Then
         KeyCode = 0
         Shift = 0
-      'End If
+      End If
       DoEvents
       
   End Select
