@@ -671,7 +671,7 @@ Namespace ScriptDB
                   , objTriggeredUpdate.Column.Name, objTriggeredUpdate.Column.Table.PhysicalName, objModuleColumn.Name, objTriggeredUpdate.Where))
             Next
 
-            sSQLSpecialUpdate = vbNewLine & vbNewLine & String.Format("-- Bank Holiday update" & vbNewLine & _
+            sSQLSpecialUpdate = vbNewLine & vbNewLine & String.Format(vbNewLine & "SET @iCount = @iCount;" & vbNewLine & "-- Bank Holiday update" & vbNewLine & _
               "{0}", String.Join(vbNewLine & vbNewLine, arySpecialUpdate.ToArray())) & vbNewLine
 
           End If
