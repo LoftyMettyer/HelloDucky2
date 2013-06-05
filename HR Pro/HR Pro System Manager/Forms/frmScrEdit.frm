@@ -1022,7 +1022,11 @@ Private Sub listHistoryScreens_Refresh()
   Loop
     
   ' Select the top item
-  listHistoryScreens.ListIndex = 0
+  If listHistoryScreens.ListCount > 0 Then
+    listHistoryScreens.ListIndex = 0
+  Else
+    listHistoryScreens.Enabled = False
+  End If
         
 Exit_listHistoryScreens_Refresh:
   
