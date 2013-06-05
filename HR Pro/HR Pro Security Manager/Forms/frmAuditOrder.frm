@@ -17,6 +17,7 @@ Begin VB.Form frmAuditOrder
    EndProperty
    HelpContextID   =   8009
    Icon            =   "frmAuditOrder.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -995,7 +996,7 @@ Public Sub Initialise(AuditType As audType)
   End With
   
   cmdCancel.Top = dblCurrentHeight + iYGAP
-  cmdOk.Top = cmdCancel.Top
+  cmdOK.Top = cmdCancel.Top
   cmdClear.Top = cmdCancel.Top
   
   Me.Height = cmdCancel.Top + cmdCancel.Height + iYGAP + UI.CaptionHeight + (2 * UI.YFrame)
@@ -1302,6 +1303,15 @@ RefreshButton
 
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   If UnloadMode = vbFormControlMenu Then
     mfCancelled = True
@@ -1349,7 +1359,7 @@ End Sub
 
 Private Sub RefreshButton()
 
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
   If fraRecords.Visible Then
   

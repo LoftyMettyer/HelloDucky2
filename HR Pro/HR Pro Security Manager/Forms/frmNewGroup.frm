@@ -18,6 +18,7 @@ Begin VB.Form frmNewGroup
    EndProperty
    HelpContextID   =   8014
    Icon            =   "frmNewGroup.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -308,10 +309,10 @@ Public Sub Initialise(piAction As groupAction)
   fAccessFrameVisible = (piAction = GROUPACTION_NEW)
   fraAccess.Visible = fAccessFrameVisible
   
-  cmdOk.Top = IIf(fAccessFrameVisible, fraAccess.Top + fraAccess.Height, txtGroupName.Top + txtGroupName.Height) + GAPABOVEBUTTONS
-  cmdCancel.Top = cmdOk.Top
+  cmdOK.Top = IIf(fAccessFrameVisible, fraAccess.Top + fraAccess.Height, txtGroupName.Top + txtGroupName.Height) + GAPABOVEBUTTONS
+  cmdCancel.Top = cmdOK.Top
   
-  Me.Height = cmdOk.Top + cmdOk.Height + GAPUNDERBUTTONS
+  Me.Height = cmdOK.Top + cmdOK.Height + GAPUNDERBUTTONS
   
   If fAccessFrameVisible Then
     ' Populate the group combo.
@@ -454,6 +455,15 @@ Private Sub Form_Activate()
   
   txtGroupName.SetFocus
   
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_Load()

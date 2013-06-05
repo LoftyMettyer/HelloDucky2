@@ -609,16 +609,17 @@ Begin VB.Form frmExprComponent
          Width           =   1000
          _ExtentX        =   1746
          _ExtentY        =   1746
-         _Version        =   65538
+         _Version        =   65536
          LabelEdit       =   1
          Style           =   6
          Indentation     =   525
+         Sorted          =   1
          HideSelection   =   0   'False
          PictureBackgroundUseMask=   0   'False
          HasFont         =   -1  'True
          HasMouseIcon    =   0   'False
          HasPictureBackground=   0   'False
-         ImageList       =   "<None>"
+         ImageList       =   "(None)"
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
@@ -628,7 +629,6 @@ Begin VB.Form frmExprComponent
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         Sorted          =   1
       End
    End
    Begin VB.Frame fraComponent 
@@ -841,16 +841,17 @@ Begin VB.Form frmExprComponent
          Width           =   1000
          _ExtentX        =   1746
          _ExtentY        =   1746
-         _Version        =   65538
+         _Version        =   65536
          LabelEdit       =   1
          Style           =   6
          Indentation     =   525
+         Sorted          =   1
          HideSelection   =   0   'False
          PictureBackgroundUseMask=   0   'False
          HasFont         =   -1  'True
          HasMouseIcon    =   0   'False
          HasPictureBackground=   0   'False
-         ImageList       =   "<None>"
+         ImageList       =   "(None)"
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
@@ -860,7 +861,6 @@ Begin VB.Form frmExprComponent
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         Sorted          =   1
       End
    End
    Begin VB.Frame fraComponent 
@@ -1676,7 +1676,7 @@ Private Sub cboPValColumn_Refresh()
     cboPValDefaultTabVal_Refresh
   End If
   
-  cmdOk.Enabled = (Len(Trim(mobjComponent.Component.Prompt)) > 0) And _
+  cmdOK.Enabled = (Len(Trim(mobjComponent.Component.Prompt)) > 0) And _
     ((mobjComponent.Component.valueType <> giEXPRVALUE_TABLEVALUE) Or (cboPValColumn.Enabled))
 
   Exit Sub
@@ -1860,7 +1860,7 @@ Private Sub InitializeTableValueControls()
 
   ' Only allow the user to confirm the component definition if a valid
   ' table value is selected.
-  cmdOk.Enabled = cboTabValValue.Enabled
+  cmdOK.Enabled = cboTabValValue.Enabled
 
   ' Set the dropdowns to the selected table & column
   If cboTabValTable.Enabled Then
@@ -2093,7 +2093,7 @@ Private Sub cboTabValValue_Refresh()
   
 TidyUpAndExit:
   Set rsLookupValues = Nothing
-  cmdOk.Enabled = cboTabValValue.Enabled
+  cmdOK.Enabled = cboTabValValue.Enabled
   Exit Sub
   
 ErrorTrap:
@@ -2125,7 +2125,7 @@ ErrorTrap:
     ssTreeOpOperator.SelectedItem = ssTreeOpOperator.Nodes(1)
   End If
   
-  cmdOk.Enabled = False
+  cmdOK.Enabled = False
       
 End Sub
 
@@ -2250,7 +2250,7 @@ Private Sub InitializeValueControls()
   asrValDateValue.Text = IIf(IsNull(dDateValue), vbNullString, dDateValue)
   
   ' Ensure the user can confirm the component definition.
-  cmdOk.Enabled = True
+  cmdOK.Enabled = True
 
 End Sub
 
@@ -2289,7 +2289,7 @@ Private Sub InitializeCalcControls()
   
   ' Only allow the user to confirm the component definition if a valid
   ' calculation is selected.
-  cmdOk.Enabled = listCalcCalculation.Enabled
+  cmdOK.Enabled = listCalcCalculation.Enabled
     
 End Sub
 
@@ -2306,7 +2306,7 @@ Private Sub InitializeFilterControls()
   
   ' Only allow the user to confirm the component definition if a valid
   ' calculation is selected.
-  cmdOk.Enabled = listCalcFilters.Enabled
+  cmdOK.Enabled = listCalcFilters.Enabled
     
 End Sub
 
@@ -2516,7 +2516,7 @@ ErrorTrap:
     ssTreeFuncFunction.SelectedItem = ssTreeFuncFunction.Nodes(1)
   End If
   
-  cmdOk.Enabled = False
+  cmdOK.Enabled = False
   
 End Sub
 
@@ -3011,7 +3011,7 @@ Private Sub cboFldColumn_Refresh()
       cboFldColumn.ListIndex = 0
     End If
     
-    cmdOk.Enabled = .Enabled
+    cmdOK.Enabled = .Enabled
   End With
 
 End Sub
@@ -3636,7 +3636,7 @@ Private Sub chkOnlyMine_Click()
     listCalcCalculation.ListIndex = iIndex
   End If
 
-  cmdOk.Enabled = listCalcCalculation.ListCount > 0
+  cmdOK.Enabled = listCalcCalculation.ListCount > 0
 
 End Sub
 
@@ -3667,7 +3667,7 @@ Private Sub chkOnlyMyFilters_Click()
     listCalcFilters.ListIndex = iIndex
   End If
 
-  cmdOk.Enabled = listCalcFilters.ListCount > 0
+  cmdOK.Enabled = listCalcFilters.ListCount > 0
 
 
 End Sub
@@ -4269,18 +4269,20 @@ End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
 
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 
 ' JDM - 15/02/01 - fault 1868 - Error when pressing CTRL-X on treeview control
 ' For some reason the Sheridan treeview control wants to fire off it own cutn'paste functionality
 ' must trap it here not in it's own keydown event
 If ActiveControl.Name = "ssTreeFuncFunction" Or ActiveControl.Name = "ssTreeOpOperator" Then
-    
     KeyCode = 0
     Shift = 0
-
 End If
-
-
 End Sub
 
 
@@ -4351,15 +4353,15 @@ Private Sub FormatScreen()
     .Top = iYFRAMEGAP + iYGAP + iFRAMEHEIGHT
     .Left = fraComponent(fraComponent.LBound).Left + _
       fraComponent(fraComponent.LBound).Width - .Width
-    cmdOk.Top = .Top
-    cmdOk.Left = .Left - iXGAP - cmdOk.Width
+    cmdOK.Top = .Top
+    cmdOK.Left = .Left - iXGAP - cmdOK.Width
   End With
   
   ' Size the form.
   Me.Width = fraComponent(fraComponent.UBound).Left + _
     fraComponent(fraComponent.UBound).Width + iXFRAMEGAP + _
     (UI.GetSystemMetrics(SM_CXFRAME) * Screen.TwipsPerPixelX)
-  Me.Height = cmdOk.Top + cmdOk.Height + iXFRAMEGAP + _
+  Me.Height = cmdOK.Top + cmdOK.Height + iXFRAMEGAP + _
     (Screen.TwipsPerPixelY * (UI.GetSystemMetrics(SM_CYCAPTION) + UI.GetSystemMetrics(SM_CYFRAME)))
 
 End Sub
@@ -4908,7 +4910,7 @@ End Sub
 
 Private Sub listCalcCalculation_DblClick()
   ' Confirm the selection.
-  If cmdOk.Enabled Then
+  If cmdOK.Enabled Then
     cmdOK_Click
   End If
 
@@ -4938,7 +4940,7 @@ End Sub
 
 Private Sub listCalcFilters_DblClick()
   ' Confirm the selection.
-  If cmdOk.Enabled Then
+  If cmdOK.Enabled Then
     cmdOK_Click
   End If
 
@@ -5056,7 +5058,7 @@ End Sub
 
 Private Sub ssTreeFuncFunction_DblClick()
   ' Confirm the function selection.
-  If cmdOk.Enabled Then
+  If cmdOK.Enabled Then
     cmdOK_Click
   End If
 
@@ -5077,7 +5079,7 @@ Private Sub ssTreeFuncFunction_NodeClick(Node As SSActiveTreeView.SSNode)
   
   ' Only enable the OK button if a function has been selected.
   ' ie. not when the root node, or one of the category nodes is selected.
-  cmdOk.Enabled = fFunctionSelected
+  cmdOK.Enabled = fFunctionSelected
 
 End Sub
 
@@ -5093,7 +5095,7 @@ End Sub
 
 Private Sub ssTreeOpOperator_DblClick()
   ' Confirm the operator selection.
-  If cmdOk.Enabled Then
+  If cmdOK.Enabled Then
     cmdOK_Click
   End If
 
@@ -5113,7 +5115,7 @@ Private Sub ssTreeOpOperator_NodeClick(Node As SSActiveTreeView.SSNode)
   
   ' Only enable the OK button if an operator has been selected.
   ' ie. not when the root node, or one of the category nodes is selected.
-  cmdOk.Enabled = fOperatorSelected
+  cmdOK.Enabled = fOperatorSelected
 
 End Sub
 
@@ -5181,7 +5183,7 @@ Private Sub txtPValPrompt_Change()
     
   ' Only enable the OK button if a prompt is entered and
   ' there is a valid column selected for table type prompted values.
-  cmdOk.Enabled = (Len(Trim(txtPValPrompt.Text)) > 0) And _
+  cmdOK.Enabled = (Len(Trim(txtPValPrompt.Text)) > 0) And _
     (mobjComponent.Component.valueType <> giEXPRVALUE_TABLEVALUE Or _
     mobjComponent.Component.LookupColumn > 0)
 

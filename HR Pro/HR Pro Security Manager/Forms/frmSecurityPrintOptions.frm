@@ -17,6 +17,7 @@ Begin VB.Form frmSecurityPrintOptions
    EndProperty
    HelpContextID   =   8024
    Icon            =   "frmSecurityPrintOptions.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -135,7 +136,7 @@ Private Sub RefreshControls()
   'JPD 20030515 - Only enable the OK button if the user
   ' has selected something to print.
   'NHRD28012004 Fault 6922, 6953
-  cmdOk.Enabled = (chkUser.Value = vbChecked) Or _
+  cmdOK.Enabled = (chkUser.Value = vbChecked) Or _
     (chkTablesViews.Value = vbChecked) Or _
     (chkSysPerms.Value = vbChecked)
 
@@ -190,6 +191,15 @@ Private Sub Form_Initialize()
   mbPrintDataPerms = True
   mbPrintColumnPerms = False
   mbPrintSystemPerms = True
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_Load()

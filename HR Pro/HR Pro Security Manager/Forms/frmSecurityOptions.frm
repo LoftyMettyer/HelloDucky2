@@ -19,6 +19,7 @@ Begin VB.Form frmSecurityOptions
    EndProperty
    HelpContextID   =   8036
    Icon            =   "frmSecurityOptions.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -67,9 +68,9 @@ Begin VB.Form frmSecurityOptions
       TabCaption(1)   =   "&Advanced"
       TabPicture(1)   =   "frmSecurityOptions.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "frmWindowsAuth"
+      Tab(1).Control(0)=   "fraOrphanedAccounts"
       Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "fraOrphanedAccounts"
+      Tab(1).Control(1)=   "frmWindowsAuth"
       Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       Begin VB.Frame frmWindowsAuth 
@@ -340,7 +341,7 @@ Private mblnReadOnly As Boolean
 
 Public Property Let Changed(pblnNewValue As Boolean)
   mblnChanged = pblnNewValue
-  cmdOk.Enabled = pblnNewValue
+  cmdOK.Enabled = pblnNewValue
 End Property
 
 
@@ -754,6 +755,15 @@ Private Sub cmdOK_Click()
       Unload Me
     End If
   End If
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)

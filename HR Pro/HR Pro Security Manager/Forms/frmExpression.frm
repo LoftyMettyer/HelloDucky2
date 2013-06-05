@@ -131,18 +131,19 @@ Begin VB.Form frmExpression
          Width           =   6900
          _ExtentX        =   12171
          _ExtentY        =   6879
-         _Version        =   65538
+         _Version        =   65536
          NodeSelectionStyle=   2
          PictureAlignment=   0
          Style           =   6
          Indentation     =   315
+         LoadStyleRoot   =   1
          AutoSearch      =   0   'False
          HideSelection   =   0   'False
          PictureBackgroundUseMask=   0   'False
          HasFont         =   -1  'True
          HasMouseIcon    =   0   'False
          HasPictureBackground=   0   'False
-         ImageList       =   "<None>"
+         ImageList       =   "(None)"
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
@@ -152,7 +153,6 @@ Begin VB.Form frmExpression
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         LoadStyleRoot   =   1
       End
    End
    Begin VB.Frame fraDefinition 
@@ -360,11 +360,11 @@ Private Function AccessState(lngExprID As Long) As String
 End Function
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOk.Enabled = blnChanged
+  cmdOK.Enabled = blnChanged
 End Property
 
 Private Sub RemoveComponentNode(psNodeKey As String)
@@ -1374,6 +1374,13 @@ End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
 
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+
 ' JDM - 15/03/01 - Fault 1934 - Only do things if we have access
 If mfModifiable = False Then
   KeyCode = 0
@@ -1978,7 +1985,7 @@ Private Sub sstrvComponents_AfterLabelEdit(Cancel As SSActiveTreeView.SSReturnBo
   mfLabelEditing = False
   
   ' RH - Fault 1909 - Put the default button back on
-  cmdOk.Default = True
+  cmdOK.Default = True
   
   ' Validate the entered label.
   If Len(NewString) = 0 Then
@@ -2012,7 +2019,7 @@ Private Sub sstrvComponents_BeforeLabelEdit(Cancel As SSActiveTreeView.SSReturnB
   CreateUndoView (giUNDO_RENAME)
   
   ' RH - Fault 1909 - Remove the default button
-  cmdOk.Default = False
+  cmdOK.Default = False
   
   ' Only allow sub-expression labels to be edited.
   If sstrvComponents.SelectedItem.Key = ROOTKEY Then
@@ -2130,7 +2137,7 @@ Private Sub sstrvComponents_KeyPress(KeyAscii As Integer)
   
 End Sub
 
-Private Sub sstrvComponents_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub sstrvComponents_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Pop-up the menu.
   Dim fRenamable As Boolean
 
@@ -2245,12 +2252,12 @@ End Sub
 Private Sub txtDescription_GotFocus()
   ' Select the entire contents of the textbox.
   UI.txtSelText
-  cmdOk.Default = False
+  cmdOK.Default = False
 
 End Sub
 
 Private Sub txtDescription_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub txtExpressionName_Change()

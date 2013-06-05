@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.Form frmLogin 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "HR Pro Security Manager - Login"
@@ -1521,9 +1521,14 @@ Public Function CreateLoginErrFile(sMsg As String) As String
 End Function
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
-  If ((Shift And vbShiftMask) > 0) Then
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+  Case ((Shift And vbShiftMask) > 0)
     gbShiftSave = True
-  End If
+End Select
 End Sub
 
 Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)

@@ -96,7 +96,7 @@ Public gfrmCurrentForm As Form
 Private mblnReadOnly As Boolean
 
 ' Functions to tile the background image
-Private Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal x As Long, ByVal y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
+Private Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal X As Long, ByVal Y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
 Private Declare Function CreateCompatibleDC Lib "gdi32" (ByVal lDC As Long) As Long
 Private Declare Function DeleteDC Lib "gdi32" (ByVal lDC As Long) As Long
 Private Declare Function SelectObject Lib "gdi32" (ByVal lDC As Long, ByVal hObject As Long) As Long
@@ -105,7 +105,7 @@ Dim pic As StdPicture, hMemDC As Long, pHeight As Long, pWidth As Long
 Private mfLogoffCancelled As Boolean
 Public Sub SetBackground(ByRef mbIsLoading As Boolean)
 
-  Dim x, y, hMemDC, pHeight, pWidth As Long
+  Dim X, Y, hMemDC, pHeight, pWidth As Long
   Dim pic As StdPicture
   Dim lngPictureID As Long
   Dim sFileName As String
@@ -146,24 +146,24 @@ Public Sub SetBackground(ByRef mbIsLoading As Boolean)
 
       ' Tiled backdrop
       If glngDesktopBitmapLocation = giLOCATION_TILE Then
-        For x = 0 To Me.ScaleWidth Step pWidth
-          For y = 0 To Me.ScaleHeight Step pHeight
-            BitBlt picWork.hDC, x \ Screen.TwipsPerPixelX, y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For X = 0 To Me.ScaleWidth Step pWidth
+          For Y = 0 To Me.ScaleHeight Step pHeight
+            BitBlt picWork.hDC, X \ Screen.TwipsPerPixelX, Y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
           Next
         Next
       End If
 
       ' Tiled down the lefthand side
       If glngDesktopBitmapLocation = giLOCATION_LEFTTILE Then
-        For y = 0 To Me.ScaleHeight Step pHeight
-          BitBlt picWork.hDC, 0, y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For Y = 0 To Me.ScaleHeight Step pHeight
+          BitBlt picWork.hDC, 0, Y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
         Next
       End If
 
       ' Tiled down the righthand side
       If glngDesktopBitmapLocation = giLOCATION_RIGHTTILE Then
-        For y = 0 To Me.ScaleHeight Step pHeight
-          BitBlt picWork.hDC, (Me.ScaleWidth - pWidth) \ Screen.TwipsPerPixelX, y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For Y = 0 To Me.ScaleHeight Step pHeight
+          BitBlt picWork.hDC, (Me.ScaleWidth - pWidth) \ Screen.TwipsPerPixelX, Y \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
         Next
       End If
 
@@ -179,22 +179,22 @@ Public Sub SetBackground(ByRef mbIsLoading As Boolean)
 
       ' Centred on the backdrop
       If glngDesktopBitmapLocation = giLOCATION_CENTRE Then
-        x = (ScaleWidth - pWidth) \ 2: x = x \ Screen.TwipsPerPixelX
-        y = (ScaleHeight - pHeight) \ 2: y = y \ Screen.TwipsPerPixelY
-        BitBlt picWork.hDC, x, y, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        X = (ScaleWidth - pWidth) \ 2: X = X \ Screen.TwipsPerPixelX
+        Y = (ScaleHeight - pHeight) \ 2: Y = Y \ Screen.TwipsPerPixelY
+        BitBlt picWork.hDC, X, Y, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
       End If
 
       ' Tiled across the top
       If glngDesktopBitmapLocation = giLOCATION_TOPTILE Then
-        For x = 0 To Me.ScaleWidth Step pWidth
-          BitBlt picWork.hDC, x \ Screen.TwipsPerPixelX, 0, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For X = 0 To Me.ScaleWidth Step pWidth
+          BitBlt picWork.hDC, X \ Screen.TwipsPerPixelX, 0, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
         Next
       End If
 
       'Tiled across the bottom
       If glngDesktopBitmapLocation = giLOCATION_BOTTOMTILE Then
-        For x = 0 To Me.ScaleWidth Step pWidth
-          BitBlt picWork.hDC, x \ Screen.TwipsPerPixelX, (Me.ScaleHeight - pHeight) \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
+        For X = 0 To Me.ScaleWidth Step pWidth
+          BitBlt picWork.hDC, X \ Screen.TwipsPerPixelX, (Me.ScaleHeight - pHeight) \ Screen.TwipsPerPixelX, pWidth \ Screen.TwipsPerPixelX, pHeight \ Screen.TwipsPerPixelY, hMemDC, 0, 0, vbSrcCopy
         Next
       End If
 

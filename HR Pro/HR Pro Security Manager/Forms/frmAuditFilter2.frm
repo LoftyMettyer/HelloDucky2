@@ -18,6 +18,7 @@ Begin VB.Form frmAuditFilter2
    EndProperty
    HelpContextID   =   8007
    Icon            =   "frmAuditFilter2.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -588,6 +589,15 @@ End With
   
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   
   If UnloadMode = vbFormControlMenu Then
@@ -822,7 +832,7 @@ End Sub
 Private Sub txtValue_LostFocus()
 
   cmdAddToList.Default = False
-  cmdOk.Default = False
+  cmdOK.Default = False
   
 End Sub
 
