@@ -338,3 +338,7 @@ Public Class MainForm
     End Sub
 
 End Class
+
+Public Class abc
+
+End Class

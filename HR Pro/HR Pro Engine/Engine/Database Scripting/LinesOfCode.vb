@@ -67,7 +67,7 @@ Namespace ScriptDB
         returnArrayList.Add(objCodeElement.Code)
       Next
 
-      ToArray = returnArrayList.ToArray(GetType(String))
+            ToArray = returnArrayList.ToArray(GetType(String))
 
     End Function
 

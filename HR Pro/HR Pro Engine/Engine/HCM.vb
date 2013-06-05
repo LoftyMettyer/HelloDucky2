@@ -45,7 +45,7 @@ Public Class HCM
       GetAuditLogDataSource = objDataset
 
     Catch ex As Exception
-
+            GetAuditLogDataSource = Nothing
     End Try
 
   End Function
@@ -62,7 +62,7 @@ Public Class HCM
       GetAuditLogDescriptions = objDataset
 
     Catch ex As Exception
-
+            GetAuditLogDescriptions = Nothing
     End Try
 
   End Function
