@@ -1080,8 +1080,9 @@ PRINT 'Step 3 - Office Output Formats'
 
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 1,''Word 97-2003 Document (*.doc)''    ,''doc'',  0,1,0)'
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 2,''Word 2007-2010 Document (*.docx)'' ,''docx'',16,0,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 3,''PDF format (*.pdf)''               ,''pdf'', 17,0,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 4,''XML document format (*.xml)''      ,''xml'', 12,0,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 3,''XML document format (*.xml)''      ,''xml'', 12,0,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 4,''PDF format (*.pdf)''               ,''pdf'', 17,0,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 5,''XPS format (*.xps)''               ,''xps'', 18,0,0)'
 
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''WordTemplate'', 1,''Word 97-2003 Document (*.doc)''    ,''doc'', 0,0,0)'
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''WordTemplate'', 2,''Word 97-2003 Template (*.dot)''    ,''dot'', 0,1,0)'
