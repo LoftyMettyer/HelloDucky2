@@ -447,6 +447,13 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lngDocume
     RetreiveDefinition
   End If
   
+  mblnReadOnly = Not datGeneral.SystemPermission("VERSION1", "EDIT")
+  If mblnReadOnly Then
+    ControlsDisableAll Me, False
+    EnableControl cmdOK, True
+    EnableControl cmdCancel, True
+  End If
+  
   mbChanged = False
   
 End Function
