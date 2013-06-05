@@ -15,7 +15,7 @@ BEGIN
 			@ParentID integer,
 			@startingtrigger integer;
 
-	IF TRIGGER_NESTLEVEL(OBJECT_ID('fusion_table1')) = 1  AND TRIGGER_NESTLEVEL() = 1
+	IF TRIGGER_NESTLEVEL(OBJECT_ID('fusion_table1')) = 1  AND TRIGGER_NESTLEVEL() = 2
 	BEGIN
 
 		-- Cursor over inserted virtual table causing message to be triggered for each
@@ -30,7 +30,7 @@ BEGIN
 		BEGIN 
 
 			IF ISNULL(@ParentID,0) > 0
-			BEGIN
+			BEGIN		
 				EXEC fusion.[pSendMessageCheckContext] @MessageType='StaffChange', @LocalId=@ParentID
 				EXEC fusion.[pSendMessageCheckContext] @MessageType='StaffPostChange', @LocalId=@LocalId
 			END

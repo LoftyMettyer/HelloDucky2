@@ -168,6 +168,7 @@ AS
 		me.maxOccurs,
 		ISNULL(c.TableID, 0) AS TableID,
 		ISNULL(e.ColumnID, 0) AS ColumnID,
+		e.DataType,
 		me.MinSize,
 		me.MaxSize,
 		'' AS value
