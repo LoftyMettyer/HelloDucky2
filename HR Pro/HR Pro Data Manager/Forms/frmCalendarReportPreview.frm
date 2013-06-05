@@ -88,23 +88,27 @@ Begin VB.Form frmCalendarReportPreview
          Enabled         =   0   'False
          Height          =   315
          Left            =   3915
+         MaskColor       =   &H00FFFFFF&
          Picture         =   "frmCalendarReportPreview.frx":1AFF
          Style           =   1  'Graphical
          TabIndex        =   7
          ToolTipText     =   "Next Month"
          Top             =   0
+         UseMaskColor    =   -1  'True
          Width           =   285
       End
       Begin VB.CommandButton cmdPrevMonth 
-         DisabledPicture =   "frmCalendarReportPreview.frx":1EBA
+         DisabledPicture =   "frmCalendarReportPreview.frx":1E43
          Enabled         =   0   'False
          Height          =   315
          Left            =   480
-         Picture         =   "frmCalendarReportPreview.frx":2269
+         MaskColor       =   &H00FFFFFF&
+         Picture         =   "frmCalendarReportPreview.frx":21F2
          Style           =   1  'Graphical
          TabIndex        =   3
          ToolTipText     =   "Previous Month"
          Top             =   0
+         UseMaskColor    =   -1  'True
          Width           =   285
       End
       Begin COASpinner.COA_Spinner spnYear 
@@ -572,7 +576,7 @@ Begin VB.Form frmCalendarReportPreview
       AllowGroupShrinking=   0   'False
       AllowDragDrop   =   0   'False
       SelectTypeCol   =   0
-      PictureRecordSelectors=   "frmCalendarReportPreview.frx":261D
+      PictureRecordSelectors=   "frmCalendarReportPreview.frx":2536
       BalloonHelp     =   0   'False
       RowNavigation   =   1
       MaxSelectedRows =   0

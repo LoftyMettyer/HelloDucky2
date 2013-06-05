@@ -49,14 +49,16 @@ Begin VB.Form frmAbsenceCalendar
       EndProperty
       Height          =   315
       Left            =   11340
+      MaskColor       =   &H00FFFFFF&
       Picture         =   "frmAbsenceCalendar.frx":03BF
       Style           =   1  'Graphical
       TabIndex        =   2
       Top             =   105
+      UseMaskColor    =   -1  'True
       Width           =   285
    End
    Begin VB.CommandButton cmdYearSubtract 
-      DisabledPicture =   "frmAbsenceCalendar.frx":077A
+      DisabledPicture =   "frmAbsenceCalendar.frx":0703
       BeginProperty Font 
          Name            =   "Verdana"
          Size            =   11.25
@@ -68,10 +70,12 @@ Begin VB.Form frmAbsenceCalendar
       EndProperty
       Height          =   315
       Left            =   9000
-      Picture         =   "frmAbsenceCalendar.frx":0B29
+      MaskColor       =   &H00FFFFFF&
+      Picture         =   "frmAbsenceCalendar.frx":0A47
       Style           =   1  'Graphical
       TabIndex        =   1
       Top             =   105
+      UseMaskColor    =   -1  'True
       Width           =   285
    End
    Begin VB.PictureBox HiddenPict 
@@ -433,9 +437,9 @@ Begin VB.Form frmAbsenceCalendar
             Strikethrough   =   0   'False
          EndProperty
          Height          =   315
-         ItemData        =   "frmAbsenceCalendar.frx":0EDD
+         ItemData        =   "frmAbsenceCalendar.frx":0D8B
          Left            =   1290
-         List            =   "frmAbsenceCalendar.frx":0EDF
+         List            =   "frmAbsenceCalendar.frx":0D8D
          Style           =   2  'Dropdown List
          TabIndex        =   3
          Top             =   210
