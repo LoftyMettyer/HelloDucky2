@@ -1761,7 +1761,7 @@ Private Sub RefreshControls()
 
   End Select
 
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
 
 End Sub
 
@@ -4716,7 +4716,7 @@ Private Sub ReadParameters()
                 
       sSQL = "SELECT *" & _
         " FROM tmpSSIHiddenGroups" & _
-        " WHERE linkID = " & CStr(rsLinks!ID)
+        " WHERE linkID = " & CStr(rsLinks!id)
       Set rsHiddenGroups = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
       While Not rsHiddenGroups.EOF
         sHiddenGroups = sHiddenGroups & rsHiddenGroups!GroupName & vbTab
@@ -5304,7 +5304,7 @@ Private Sub grdButtonLinks_RowLoaded(Index As Integer, ByVal Bookmark As Variant
   
   If cboSecurityGroup.ListIndex >= 0 Then
       If (InStr(1, grdButtonLinks(Index).Columns("HiddenGroups").CellValue(Bookmark), cboSecurityGroup.List(cboSecurityGroup.ListIndex), vbTextCompare) > 0) _
-            And cboSecurityGroup.List(cboSecurityGroup.ListIndex) <> "(All Groups)" Then
+            Or cboSecurityGroup.List(cboSecurityGroup.ListIndex) = "(All Groups)" Then
         grdButtonLinks(Index).Columns(0).CellStyleSet "ssDisabled"
         grdButtonLinks(Index).Columns(1).CellStyleSet "ssDisabled"
       Else
