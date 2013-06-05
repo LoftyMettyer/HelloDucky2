@@ -778,7 +778,7 @@ Private Sub cmdTitlePageTemplate_Click()
 
     .CancelError = True
     .DialogTitle = "Report Pack Output Template"
-    .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames
+    .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames + cdlOFNFileMustExist
     
     .ShowOpen
 
