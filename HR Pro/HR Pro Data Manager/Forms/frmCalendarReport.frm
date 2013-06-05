@@ -70,9 +70,9 @@ Begin VB.Form frmCalendarReport
       TabCaption(2)   =   "Report Detai&ls"
       TabPicture(2)   =   "frmCalendarReport.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraDisplayOptions"
+      Tab(2).Control(0)=   "fraReportStart"
       Tab(2).Control(1)=   "fraReportEnd"
-      Tab(2).Control(2)=   "fraReportStart"
+      Tab(2).Control(2)=   "fraDisplayOptions"
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmCalendarReport.frx":0060
@@ -82,8 +82,8 @@ Begin VB.Form frmCalendarReport
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmCalendarReport.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraOutputFormat"
-      Tab(4).Control(1)=   "fraOutputDestination"
+      Tab(4).Control(0)=   "fraOutputDestination"
+      Tab(4).Control(1)=   "fraOutputFormat"
       Tab(4).ControlCount=   2
       Begin VB.Frame fraInformation 
          Height          =   2355
@@ -2005,7 +2005,8 @@ Public Sub PrintDef(plngCalendarReportID As Long)
       If .PrintStart(False) Then
         ' First section --------------------------------------------------------
         .PrintHeader "Calendar Report : " & txtName.Text
-    
+        
+        .PrintNormal "Category : " & GetObjectCategory(utlCalendarReport, mlngCalendarReportID)
         .PrintNormal "Description : " & txtDesc.Text
         .PrintNormal "Owner : " & txtUserName.Text
         

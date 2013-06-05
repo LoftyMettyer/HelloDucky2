@@ -79,11 +79,11 @@ Begin VB.Form frmExport
       TabCaption(1)   =   "Related &Tables"
       TabPicture(1)   =   "frmExport.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraParent1"
+      Tab(1).Control(0)=   "fraChild"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraParent2"
       Tab(1).Control(1).Enabled=   0   'False
-      Tab(1).Control(2)=   "fraChild"
+      Tab(1).Control(2)=   "fraParent1"
       Tab(1).Control(2).Enabled=   0   'False
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
@@ -100,16 +100,16 @@ Begin VB.Form frmExport
       TabCaption(4)   =   "O&ptions"
       TabPicture(4)   =   "frmExport.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraHeaderOptions"
-      Tab(4).Control(1)=   "fraDateOptions"
+      Tab(4).Control(0)=   "fraDateOptions"
+      Tab(4).Control(1)=   "fraHeaderOptions"
       Tab(4).ControlCount=   2
       TabCaption(5)   =   "O&utput"
       TabPicture(5)   =   "frmExport.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraOutputType"
-      Tab(5).Control(1)=   "fraOutputDestination"
-      Tab(5).Control(2)=   "fraCMGFile"
-      Tab(5).Control(3)=   "fraDelimFile"
+      Tab(5).Control(0)=   "fraDelimFile"
+      Tab(5).Control(1)=   "fraCMGFile"
+      Tab(5).Control(2)=   "fraOutputDestination"
+      Tab(5).Control(3)=   "fraOutputType"
       Tab(5).ControlCount=   4
       Begin VB.Frame fraInformation 
          Height          =   2355
@@ -769,9 +769,9 @@ Begin VB.Form frmExport
             RecordSelectors =   0   'False
             Col.Count       =   11
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -783,9 +783,9 @@ Begin VB.Form frmExport
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmExport.frx":01BF
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -6489,7 +6489,8 @@ Public Sub PrintDef(lExportID As Long)
         
         ' First section --------------------------------------------------------
         .PrintHeader "Export : " & rsTemp!Name
-    
+        
+        .PrintNormal "Category : " & GetObjectCategory(utlExport, mlngExportID)
         .PrintNormal "Description : " & rsTemp!Description
         .PrintNormal "Owner : " & rsTemp!UserName
         

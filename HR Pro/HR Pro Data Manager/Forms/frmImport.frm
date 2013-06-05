@@ -66,8 +66,8 @@ Begin VB.Form frmImport
       TabCaption(2)   =   "O&ptions"
       TabPicture(2)   =   "frmImport.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraFileDetails"
-      Tab(2).Control(1)=   "fraOptions"
+      Tab(2).Control(0)=   "fraOptions"
+      Tab(2).Control(1)=   "fraFileDetails"
       Tab(2).ControlCount=   2
       Begin VB.Frame fraInformation 
          Height          =   2355
@@ -957,7 +957,7 @@ Public Property Get SelectedID() As Long
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -991,7 +991,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Private Sub cboBaseTable_Click()
@@ -2142,13 +2142,13 @@ Private Sub txtDesc_GotFocus()
     .SelLength = Len(.Text)
   End With
 
-  cmdOK.Default = False
+  cmdOk.Default = False
   
 End Sub
 
 Private Sub txtDesc_LostFocus()
 
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 
@@ -3417,6 +3417,7 @@ Public Sub PrintDef(lImportID As Long)
         ' First section --------------------------------------------------------
         .PrintHeader "Import : " & rsTemp!Name
     
+        .PrintNormal "Category : " & GetObjectCategory(utlImport, mlngImportID)
         .PrintNormal "Description : " & rsTemp!Description
         .PrintNormal "Owner : " & rsTemp!UserName
         
