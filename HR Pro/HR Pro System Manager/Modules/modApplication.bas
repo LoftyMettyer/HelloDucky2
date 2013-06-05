@@ -2089,3 +2089,19 @@ Public Function AddItemToComboBox(ByRef Combo As ComboBox, ItemText As String, I
   AddItemToComboBox = lngKey
 
 End Function
+
+' Add an item to a listbox
+Public Function AddItemToListbox(ByRef TheListbox As ListBox, ItemText As String, ItemData As Variant, IsSelected As Boolean) As Integer
+
+  Dim lngKey As Integer
+
+  TheListbox.AddItem ItemText
+  lngKey = TheListbox.NewIndex
+          
+  TheListbox.ItemData(lngKey) = ItemData
+  TheListbox.Selected(lngKey) = IsSelected
+
+  AddItemToListbox = lngKey
+
+End Function
+
