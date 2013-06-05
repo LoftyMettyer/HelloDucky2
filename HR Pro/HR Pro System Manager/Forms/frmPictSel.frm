@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Begin VB.Form frmPictSel 
    Caption         =   "Open Picture"
    ClientHeight    =   4935
@@ -204,26 +204,29 @@ Private Sub Form_Activate()
         gobjProgress.OpenProgress
         
         Do While Not .EOF And Not gobjProgress.Cancelled
-          strKey = "I" & Trim(Str(.Fields("pictureID")))
         
-          strFileName = ReadPicture
+          If .Fields("picturetype") <> 5 Then
           
-          fGoodPicture = True
-          If Len(msExcludedExtensions) > 0 Then
-            iIndex = InStrRev(.Fields("name"), ".")
-            If iIndex > 0 Then
-              sExtension = ";" & UCase(Mid(.Fields("name"), iIndex)) & ";"
-              iIndex = InStr(msExcludedExtensions, sExtension)
-              fGoodPicture = (iIndex = 0)
+            strKey = "I" & Trim(Str(.Fields("pictureID")))
+            strFileName = ReadPicture
+            
+            fGoodPicture = True
+            If Len(msExcludedExtensions) > 0 Then
+              iIndex = InStrRev(.Fields("name"), ".")
+              If iIndex > 0 Then
+                sExtension = ";" & UCase(Mid(.Fields("name"), iIndex)) & ";"
+                iIndex = InStr(msExcludedExtensions, sExtension)
+                fGoodPicture = (iIndex = 0)
+              End If
             End If
-          End If
            
-          If fGoodPicture Then
-            ImageList2.ListImages.Add , strKey, LoadPicture(strFileName)
+            If fGoodPicture Then
+              ImageList2.ListImages.Add , strKey, LoadPicture(strFileName)
+            End If
+          
+            Kill strFileName
           End If
           
-          Kill strFileName
-        
            gobjProgress.UpdateProgress False
            
           .MoveNext
@@ -285,8 +288,8 @@ Private Sub Form_Resize()
   cmdCancel.Top = ListView1.Height + 100
   cmdCancel.Left = ListView1.Left + ListView1.Width - cmdCancel.Width - 100
   
-  cmdOK.Top = cmdCancel.Top
-  cmdOK.Left = cmdCancel.Left - cmdOK.Width - 200
+  cmdOk.Top = cmdCancel.Top
+  cmdOk.Left = cmdCancel.Left - cmdOk.Width - 200
   
 End Sub
 
@@ -333,7 +336,7 @@ Private Sub LoadViews()
       Do While Not .EOF
       
         ' Only display undeleted pictures.
-        If Not .Fields("deleted") Then
+        If Not .Fields("deleted") And .Fields("picturetype") <> 5 Then
 
           If (giPictureType = vbPicTypeNone) Or _
             (giPictureType = .Fields("PictureType")) Then

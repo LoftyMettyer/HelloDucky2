@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "actbar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Begin VB.Form frmPictMgr 
    Caption         =   "Picture Library"
    ClientHeight    =   3255
@@ -113,12 +113,14 @@ Begin VB.Form frmPictMgr
          NumPanels       =   2
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
+            TextSave        =   ""
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   7435
+            TextSave        =   ""
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
@@ -304,12 +306,15 @@ Private Sub Form_Activate()
       
 '        Do While Not .EOF And Not WaitWindow.Cancelled
         Do While Not .EOF And Not gobjProgress.Cancelled
-          strKey = "I" & Trim(Str(.Fields("pictureID")))
-          strFileName = ReadPicture
-          ImageList2.ListImages.Add , strKey, LoadPicture(strFileName)
-          ImageList1.ListImages.Add , strKey, LoadPicture(strFileName)
-          Kill strFileName
         
+          If .Fields("picturetype") <> 5 Then
+            strKey = "I" & Trim(Str(.Fields("pictureID")))
+            strFileName = ReadPicture
+            ImageList2.ListImages.Add , strKey, LoadPicture(strFileName)
+            ImageList1.ListImages.Add , strKey, LoadPicture(strFileName)
+            Kill strFileName
+          End If
+          
 '          WaitWindow.UpdateProgress
           gobjProgress.UpdateProgress False
           
@@ -735,7 +740,7 @@ Private Sub PopulateListView()
       ' Loop through the picture records, adding an item to the listview for each picture.
       Do While Not .EOF
       
-        If Not .Fields("deleted") Then
+        If Not .Fields("deleted") And .Fields("picturetype") <> 5 Then
         
           strKey = "I" & Trim(Str(.Fields("pictureID")))
           strName = Trim(.Fields("name"))
