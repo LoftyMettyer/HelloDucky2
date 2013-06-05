@@ -1024,7 +1024,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
       Case fmtWordDoc
         'Open word file
         If GetTOCFile(strOutputFilename) Then
-          mwrdApp.Visible = True
+          'mwrdApp.Visible = True
               With mwrdApp.Selection
                 .InsertBreak Type:=wdPageBreak
                 .HomeKey Unit:=wdStory

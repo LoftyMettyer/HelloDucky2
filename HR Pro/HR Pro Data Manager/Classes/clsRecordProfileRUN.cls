@@ -1471,6 +1471,7 @@ Private Function GetRecordProfileTables() As Boolean
   Dim iLoop As Integer
   Dim iLoop2 As Integer
   Dim lngFilterID As Long
+  Dim lngPicklistID As Long
   Dim lblnReportPackMode As Boolean
   
   lblnReportPackMode = gblnReportPackMode
@@ -1492,22 +1493,7 @@ Private Function GetRecordProfileTables() As Boolean
     msRecordProfileName = !Name
     mstrRecordProfileDescription = !Description
     mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!UserName)))
-  
-    'New Default Output Variables
-'    mlngOutputFormat = IIf(IsNull(!OutputFormat), 0, !OutputFormat)
-'    mblnOutputScreen = IIf(IsNull(!OutputScreen), False, !OutputScreen)
-'    mblnOutputPrinter = IIf(IsNull(!OutputPrinter), False, !OutputPrinter)
-'    mstrOutputPrinterName = IIf(IsNull(!OutputPrinterName), "", !OutputPrinterName)
-'    mblnOutputSave = IIf(IsNull(!OutputSave), False, !OutputSave)
-'    mlngOutputSaveExisting = IIf(IsNull(!OutputSaveExisting), 0, !OutputSaveExisting)
-'    'mlngOutputSaveFormat = IIf(IsNull(!OutputSaveFormat), 0, !OutputSaveFormat)
-'    mblnOutputEmail = IIf(IsNull(!OutputEmail), False, !OutputEmail)
-'    mlngOutputEmailAddr = IIf(IsNull(!OutputEmailAddr), 0, !OutputEmailAddr)
-'    mstrOutputEmailSubject = IIf(IsNull(!OutputEmailSubject), "", !OutputEmailSubject)
-'    mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), "", !OutputEmailAttachAs)
-'    'mlngOutputEmailFileFormat = IIf(IsNull(!OutputEmailFileFormat), 0, !OutputEmailFileFormat)
-'    mstrOutputFileName = IIf(IsNull(!OutputFilename), "", !OutputFilename)
-  
+    
     'Change Output Options to Report Pack owning these Jobs if in Report Pack mode
     mblnPreviewOnScreen = IIf(lblnReportPackMode, False, !OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
     mblnOutputScreen = IIf(lblnReportPackMode, False, (IIf(IsNull(!OutputScreen), False, !OutputScreen)))
@@ -1537,15 +1523,17 @@ Private Function GetRecordProfileTables() As Boolean
     ' Use Override filter if there is one
     If gblnReportPackMode Then
       lngFilterID = IIf(mlngOverrideFilterID <> 0, mlngOverrideFilterID, IIf(IsNull(!FilterID), 0, !FilterID))
+      lngPicklistID = IIf(mlngOverrideFilterID <> 0, 0, IIf(IsNull(!PicklistID), 0, !PicklistID))
     Else
       lngFilterID = !FilterID
+      lngPicklistID = !PicklistID
     End If
     
     Set objTempTable = mobjDefinition.Add(!BaseTable, _
       datGeneral.GetTableName(!BaseTable), _
       IIf(IsNull(!RecordDescExprID), 0, !RecordDescExprID), _
       lngFilterID, _
-      IIf(IsNull(!PicklistID), 0, !PicklistID), _
+      lngPicklistID, _
       lngTempOrderID, _
       0, _
       !Orientation, _
