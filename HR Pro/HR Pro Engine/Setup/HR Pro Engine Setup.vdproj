@@ -28,13 +28,13 @@
         "Entry"
         {
         "MsmKey" = "8:_0FBD6F559F233160B01BA2B091FD246B"
-        "OwnerKey" = "8:_D678DD2A7595AF247208B31310D9FB5B"
+        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_0FBD6F559F233160B01BA2B091FD246B"
-        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
+        "OwnerKey" = "8:_D678DD2A7595AF247208B31310D9FB5B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -58,7 +58,7 @@
         "Entry"
         {
         "MsmKey" = "8:_62AC4BE8505A65726694ECBBBC0EFA6C"
-        "OwnerKey" = "8:_D678DD2A7595AF247208B31310D9FB5B"
+        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -70,7 +70,7 @@
         "Entry"
         {
         "MsmKey" = "8:_62AC4BE8505A65726694ECBBBC0EFA6C"
-        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
+        "OwnerKey" = "8:_D678DD2A7595AF247208B31310D9FB5B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -130,31 +130,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_CD0BEBB93278B0D81902C556FCEDC569"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_0FBD6F559F233160B01BA2B091FD246B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_62AC4BE8505A65726694ECBBBC0EFA6C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_08DA41F5DDB9FE0D8F66F345415A3657"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_D678DD2A7595AF247208B31310D9FB5B"
+        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -166,7 +142,31 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
+        "OwnerKey" = "8:_D678DD2A7595AF247208B31310D9FB5B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_08DA41F5DDB9FE0D8F66F345415A3657"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_62AC4BE8505A65726694ECBBBC0EFA6C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_0FBD6F559F233160B01BA2B091FD246B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_CD0BEBB93278B0D81902C556FCEDC569"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -556,16 +556,16 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:OpenHR Framework v5.0"
-        "ProductCode" = "8:{75299667-96E2-463A-95CB-E47F9C30334F}"
-        "PackageCode" = "8:{805AEEDE-4B2F-45CB-A5D0-08057C00BEB2}"
+        "ProductName" = "8:OpenHR Framework v5.1"
+        "ProductCode" = "8:{E9412E54-88CE-489C-9854-4179893C7314}"
+        "PackageCode" = "8:{4D2EE7B2-A386-421B-80CA-7A152216BB88}"
         "UpgradeCode" = "8:{416839EF-23B1-4660-A4AD-E908AB32842E}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:5.0.17"
+        "ProductVersion" = "8:5.1.0"
         "Manufacturer" = "8:Advanced Business Software and Solutions Limited"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
