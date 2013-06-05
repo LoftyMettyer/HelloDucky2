@@ -64,17 +64,11 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.Linq" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -96,7 +90,6 @@
       <DependentUpon>MainForm.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="modGeneral.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -112,12 +105,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="ProgressBar.Designer.vb">
-      <DependentUpon>ProgressBar.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ProgressBar.vb">
-      <SubType>UserControl</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MainForm.resx">
@@ -129,9 +116,6 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ProgressBar.resx">
-      <DependentUpon>ProgressBar.vb</DependentUpon>
     </EmbeddedResource>
     <None Include="My Project\app.manifest" />
   </ItemGroup>
@@ -151,10 +135,6 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HR Pro Mobile Designer\MobileDesigner\MobileDesigner.csproj">
-      <Project>{6D7DBE8A-D215-4F00-9438-DD412B50E48B}</Project>
-      <Name>MobileDesigner</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Engine\System Framework.vbproj">
       <Project>{C475177F-6A94-43B0-BAEE-427642923108}</Project>
       <Name>System Framework</Name>
@@ -179,20 +159,9 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-    <COMReference Include="Microsoft.Office.Interop.Access.Dao">
-      <Guid>{4AC9E1DA-5BAD-4AC7-86E3-24F4CDCECA28}</Guid>
-      <VersionMajor>12</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Import &amp; Export Definitions\" />
     <Folder Include="My Project\DataSources\" />
-    <Folder Include="Objects\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />

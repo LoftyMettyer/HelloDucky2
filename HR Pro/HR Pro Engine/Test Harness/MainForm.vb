@@ -12,7 +12,7 @@ Public Class MainForm
 
         Dim objPhoenix As New SystemFramework.SysMgr
 
-    Dim sPath As String = "C:\dev\HR Pro\HR Pro Engine\Test Harness\"
+		Dim sPath As String = "C:\dev\abs\HR Pro\HR Pro Engine\"
 
         Dim objADO As New ADODB.Connection
         Dim objDAOEngine As New DAO.DBEngine
