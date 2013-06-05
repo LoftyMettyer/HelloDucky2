@@ -444,7 +444,20 @@ PRINT 'Step 4 - Add new formatting columns to ASRSysSSIntranetLinks'
 		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET Chart_SortDirection = 0'
 	END
 	
+
+--------------------------------------------------------------------------------------------
+-- Colour Code ID column for Charts
+--------------------------------------------------------------------------------------------
+
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIntranetLinks', 'U') AND name = 'Chart_ColourID')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIntranetLinks ADD Chart_ColourID int NULL'
+		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET Chart_ColourID = 0'
+	END
 	
+	
+		
 /* ------------------------------------------------------------- */
 PRINT 'Step 5 - Modifying Workflow Data Structures'
 
