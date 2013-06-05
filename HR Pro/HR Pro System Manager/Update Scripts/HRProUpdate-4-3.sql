@@ -1770,6 +1770,114 @@ PRINT 'Step - Administration module stored procedures'
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRAccordPopulateTransactionData]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spASRAccordPopulateTransactionData];
 
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRDefragIndexes]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spASRDefragIndexes];
+
+
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spASRDefragIndexes] (@maxfrag DECIMAL)
+	AS
+	BEGIN
+
+		SET NOCOUNT ON;
+
+		DECLARE @tablename VARCHAR (128),
+				@execstr nvarchar(MAX),
+				@objectid INT,
+				@objectowner VARCHAR(255),
+				@indexid INT,
+				@frag DECIMAL,
+				@indexname CHAR(255),
+				@dbname sysname,
+				@tableid INT,
+				@tableidchar VARCHAR(255),
+				@sSQLVersion int
+
+		SELECT @sSQLVersion = dbo.udfASRSQLVersion();
+
+		-- Checking fragmentation
+		DECLARE tables CURSOR FOR
+			SELECT convert(varchar,so.id)
+			FROM sysobjects so
+			JOIN sysindexes si ON so.id = si.id
+			WHERE so.type =''U'' AND si.indid < 2 AND si.rows > 0;
+
+		-- Create the temporary table to hold fragmentation information
+		DECLARE @fraglist TABLE(
+			ObjectName CHAR (255),
+			ObjectId INT,
+			IndexName CHAR (255),
+			IndexId INT,
+			Lvl INT,
+			CountPages INT,
+			CountRows INT,
+			MinRecSize INT,
+			MaxRecSize INT,
+			AvgRecSize INT,
+			ForRecCount INT,
+			Extents INT,
+			ExtentSwitches INT,
+			AvgFreeBytes INT,
+			AvgPageDensity INT,
+			ScanDensity DECIMAL,
+			BestCount INT,
+			ActualCount INT,
+			LogicalFrag DECIMAL,
+			ExtentFrag DECIMAL);
+
+		-- Open the cursor
+		OPEN tables;
+
+		-- Loop through all the tables in the database running dbcc showcontig on each one
+		FETCH NEXT FROM tables INTO @tableidchar;
+
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+			-- Do the showcontig of all indexes of the table
+			INSERT INTO @fraglist 
+				EXEC (''DBCC SHOWCONTIG ('' + @tableidchar + '') WITH FAST, TABLERESULTS, ALL_INDEXES, NO_INFOMSGS'');
+			FETCH NEXT FROM tables INTO @tableidchar;
+		END
+
+		-- Close and deallocate the cursor
+		CLOSE tables;
+		DEALLOCATE tables;
+
+		-- Begin Stage 2: (defrag) declare cursor for list of indexes to be defragged
+		DECLARE indexes CURSOR FOR
+		SELECT ObjectName, ObjectOwner = user_name(so.uid), ObjectId, IndexName, ScanDensity
+		FROM @fraglist f
+		JOIN sysobjects so ON f.ObjectId=so.id
+		WHERE ScanDensity <= @maxfrag
+			AND INDEXPROPERTY (ObjectId, IndexName, ''IndexDepth'') > 0;
+
+		-- Open the cursor
+		OPEN indexes;
+
+		-- Loop through the indexes
+		FETCH NEXT FROM indexes	INTO @tablename, @objectowner, @objectid, @indexname, @frag;
+
+		WHILE @@FETCH_STATUS = 0
+		BEGIN
+			SET QUOTED_IDENTIFIER ON;
+
+			IF (@sSQLVersion = 8)
+				SET @execstr = ''DBCC DBREINDEX ('''''' + RTRIM(@objectowner) + ''.'' + RTRIM(@tablename)  + '''''' , '' + RTRIM(@indexname) +'')'';
+			ELSE
+				SET @execstr = ''ALTER INDEX ['' +  RTRIM(@indexname) + ''] ON '' + RTRIM(@objectowner) + ''.'' + RTRIM(@tablename) + '' REBUILD'';
+
+			EXECUTE sp_executeSQL @execstr;
+
+			SET QUOTED_IDENTIFIER OFF;
+
+			FETCH NEXT FROM indexes INTO @tablename, @objectowner, @objectid, @indexname, @frag;
+		END
+
+		-- Close and deallocate the cursor
+		CLOSE indexes;
+		DEALLOCATE indexes;
+
+	END'
+
 
 	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spadmin_getcomponentcode]
 	AS
