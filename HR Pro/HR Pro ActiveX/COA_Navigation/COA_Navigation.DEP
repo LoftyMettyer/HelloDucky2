@@ -1,11 +1,11 @@
 [Version]
-Version=1.0.0.4
+Version=1.0.0.5
 
 [COA_Navigation.ocx <0009>]
 Dest=$(WinSysPath)
-Date=18/06/2010
-Time=11:24
-Version=1.0.0.4
+Date=23/06/2010
+Time=11:51
+Version=1.0.0.5
 CABFilename=COA_Navigation.CAB
 CABINFFile=COA_Navigation.INF
 Uses1=msvbvm60.dll
