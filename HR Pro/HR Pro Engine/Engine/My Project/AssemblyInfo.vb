@@ -8,10 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("HR Pro Engine")> 
-<Assembly: AssemblyDescription("HR Pro Engine")> 
+<Assembly: AssemblyTitle("HR Pro System Framework")> 
+<Assembly: AssemblyDescription("HR Pro System Framework")> 
 <Assembly: AssemblyCompany("Advanced Business Software and Solutions Limited")> 
-<Assembly: AssemblyProduct("HR Pro Engine")> 
+<Assembly: AssemblyProduct("HR Pro System Framework")> 
 <Assembly: AssemblyCopyright("Copyright ©  2011")> 
 <Assembly: AssemblyTrademark("")> 
 
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.0.0.0")> 
-<Assembly: AssemblyFileVersion("1.0.0.0")> 
+<Assembly: AssemblyVersion("4.3.16.0")> 
+<Assembly: AssemblyFileVersion("4.3.16.0")> 
