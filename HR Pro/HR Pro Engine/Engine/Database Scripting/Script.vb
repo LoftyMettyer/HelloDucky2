@@ -1527,12 +1527,12 @@ Namespace ScriptDB
                aryColumns = New ArrayList
                For Each objColumn In objTable.Columns
 
-                  If objColumn.IsCalculated Then
-                     If objColumn.Calculation.IsTimeDependant Then
-                        sUpdate = String.Format("[{0}] = {1}", objColumn.Name, objColumn.Calculation.UDF.CallingCode)
-                        aryColumns.Add(sUpdate)
-                     End If
-                  End If
+            If objColumn.IsCalculated And objColumn.State <> DataRowState.Deleted Then
+              If objColumn.Calculation.IsTimeDependant Then
+                sUpdate = String.Format("[{0}] = {1}", objColumn.Name, objColumn.Calculation.UDF.CallingCode)
+                aryColumns.Add(sUpdate)
+              End If
+            End If
 
                Next
 
