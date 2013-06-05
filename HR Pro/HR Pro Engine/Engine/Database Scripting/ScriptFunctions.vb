@@ -75,8 +75,8 @@ Namespace ScriptDB
 
       Try
 
-        sSQL = "spadmin_generateuniquecodes"
-        bOK = CommitDB.ScriptStatement(sSQL)
+        'sSQL = "spadmin_generateuniquecodes"
+        'bOK = CommitDB.ScriptStatement(sSQL)
 
       Catch ex As Exception
         bOK = False
@@ -112,7 +112,10 @@ Namespace ScriptDB
           ' would return garbage data so ignore it!
           If objTable1 Is objTable2 Then
             aryStatements.Add(String.Format("    IF @searchcolumnid = '{0}-{1}' AND @returncolumnid = '{2}-{3}'" & vbNewLine & _
-              "        SELECT @result = [{5}] FROM dbo.[{4}] WHERE [{6}] = @searchexpression;" & vbNewLine _
+              "        BEGIN" & vbNewLine & _
+              "            SELECT @result = [{5}] FROM dbo.[{4}] WHERE [{6}] = @searchexpression;" & vbNewLine & _
+              "            RETURN @result;" & vbNewLine & _
+              "        END" & vbNewLine _
             , objPart1.TableID.PadLeft, objPart1.ColumnID.PadLeft _
             , objPart3.TableID.PadLeft, objPart3.ColumnID.PadLeft _
             , objTable1.PhysicalName, objTable1.Column(objPart3.ColumnID).Name _

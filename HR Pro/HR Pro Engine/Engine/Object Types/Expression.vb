@@ -88,8 +88,9 @@ Namespace Things
     Public Overridable Sub GenerateCode()
 
       Dim objDependency As Things.Base
-      Dim sOptions As String = ""
-      Dim sCode As String = ""
+      Dim sOptions As String = String.Empty
+      Dim sCode As String = String.Empty
+      Dim sBypassUDFCode As String = String.Empty
       Dim aryDependsOn As New ArrayList
       Dim aryComments As New ArrayList
       Dim aryParameters1 As New ArrayList
@@ -185,21 +186,29 @@ Namespace Things
         sOptions = "--WITH SCHEMABINDING"
       End If
 
+      ' Do we have caching on this UDF?
+      If mbCheckTriggerStack Then
+        sBypassUDFCode = String.Format("    -- Return the original value if none of the dependent tables are in the trigger stack." & vbNewLine &
+            "    IF NOT EXISTS (SELECT * FROM [dbo].[tbsys_intransactiontrigger] WHERE [tablefromid] IN ({0}) AND [spid] = @@SPID)" & vbNewLine & _
+            "        BEGIN" & vbNewLine & _
+            "            SELECT @result = [{1}] FROM dbo.[{2}] WHERE [ID] = @prm_ID;" & vbNewLine & _
+            "            RETURN @result;" & vbNewLine & _
+            "        END" _
+            , String.Join(", ", aryDependsOn.ToArray()), Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.PhysicalName)
+      End If
+
       ' Calling statement
       With UDF
         .BoilerPlate = String.Format("---------------------------------------------------------------" & vbNewLine & _
               "-- System generated User Defined Function" & vbNewLine & _
               "-- Column     : {1}.{0}" & vbNewLine & _
               "-- Expression : {2}" & vbNewLine & _
-              "-- Date       : {3}" & vbNewLine & _
+              "-- Depends on : {3}" & vbNewLine & _
+              "-- Date       : {4}" & vbNewLine & _
               "---------------------------------------------------------------" & vbNewLine _
-              , Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.Name, Me.BaseExpression.Name, Now().ToString)
-        .Comments = String.Format("/*IF EXISTS (SELECT * FROM [dbo].[tbsys_intransactiontrigger] WHERE [tablefromid] IN ({0}) AND [spid] = @@SPID)" & vbNewLine & _
-              "    BEGIN" & vbNewLine & _
-              "{2}" & vbNewLine & _
-              " {1}" & vbNewLine & _
-              "    END */" & vbNewLine _
-              , String.Join(", ", aryDependsOn.ToArray()), String.Join(vbNewLine, aryComments.ToArray()), IIf(mbCheckTriggerStack, "yes", "no"))
+              , Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.Name, Me.BaseExpression.Name _
+              , String.Join(", ", aryDependsOn.ToArray()), Now().ToString)
+        .Comments = ""
 
         .Declarations = String.Join(vbNewLine, Declarations.ToArray())
         .Prerequisites = String.Join(vbNewLine, PreStatements.ToArray())
@@ -223,6 +232,7 @@ Namespace Things
                            "AS" & vbNewLine & "BEGIN" & vbNewLine & _
                            "{12}" & vbNewLine & _
                            "    DECLARE @Result as {2};" & vbNewLine & vbNewLine & _
+                           "{13}" & vbNewLine & vbNewLine & _                           
                            "{4}" & vbNewLine & vbNewLine & _
                            "{5}" & vbNewLine & vbNewLine & _
                            "    -- Execute calculation code" & vbNewLine & _
@@ -234,8 +244,7 @@ Namespace Things
                            "END" _
                           , .Name, String.Join(", ", aryParameters1.ToArray()) _
                           , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode _
-                          , Me.AssociatedColumn.SafeReturnType, .BoilerPlate, .Comments)
-
+                          , Me.AssociatedColumn.SafeReturnType, .BoilerPlate, .Comments, sBypassUDFCode)
 
             .CodeStub = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
                            "RETURNS {2}" & vbNewLine & _
