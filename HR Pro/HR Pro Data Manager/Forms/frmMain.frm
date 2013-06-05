@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "08:16"
+            TextSave        =   "08:52"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -3041,7 +3041,7 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
             sType = "Standard Report : "
           Case utlCalendarReport
             sIconName = "CALENDARREPORTS"
-            sType = "Calendar Report :"
+            sType = "Calendar Report : "
           Case utlRecordProfile
             sIconName = "RECORDPROFILE"
             sType = "Record Profile : "
