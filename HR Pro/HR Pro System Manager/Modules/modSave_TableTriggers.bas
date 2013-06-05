@@ -725,7 +725,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
 
   On Error GoTo ErrorTrap
 
-  Dim objTable As HRProEngine.Table
+  Dim objTable As SystemFramework.Table
   Dim fOK As Boolean
   Dim sSQL As String
   'Dim sGetRecordDesc As String
@@ -758,7 +758,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
 
   fOK = True
   
-  Dim iTableID As HRProEngine.HCMGuid
+  Dim iTableID As SystemFramework.HCMGuid
   iTableID.mintValue = pLngCurrentTableID
   Set objTable = gobjHRProEngine.Things.Table(iTableID)
 

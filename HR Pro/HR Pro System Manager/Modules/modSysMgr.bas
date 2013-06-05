@@ -50,7 +50,7 @@ Public giSQLServerAuthenticationType As SystemMgr.SQLServerAuthenticationType
 Public gbAttemptRecovery As Boolean
 
 Public gADOCon As ADODB.Connection
-Public gobjHRProEngine As HRProEngine.SysMgr
+Public gobjHRProEngine As SystemFramework.SysMgr
 
 Public daoWS As DAO.Workspace
 Public daoDb As DAO.Database
