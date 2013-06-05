@@ -1300,8 +1300,6 @@ Public Function UploadHotfixes() As Boolean
   Dim DatabaseGUID As String
   Dim bUploaded As Boolean
  
-  Dim cStream As New clsBinaryStream
-  Dim cCRC32 As New clsCRC
   Dim lCRC32 As Long
  
   bOK = True
