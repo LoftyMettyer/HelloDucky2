@@ -1186,6 +1186,12 @@ PRINT 'Step 4 - Overlapping dates functionality'
 								 ADD [EventTypeColumnID] integer';
 	END
 
+	-- Add columns to ASRSysTableValidations
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysTableValidations', 'U') AND name = 'ColumnID')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysTableValidations
+								 ADD [ColumnID] integer';
+	END
 
 
 /* ------------------------------------------------------------- */
