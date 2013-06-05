@@ -24,7 +24,8 @@ Public Function CreateOvernightProcess(palngExpressions As Variant, pfRefreshDat
     RunOvernightScript strScriptPath
   End If
   
-  fOK = OvernightJob2(palngExpressions)   'Always refresh Step 2 !!!
+  'fOK = OvernightJob2(palngExpressions)   'Always refresh Step 2 !!!
+  fOK = gobjHRProEngine.Script.ScriptOvernightStep2
 
   If pfRefreshDatabase Then
     If fOK Then fOK = OvernightJob1       'Step 1
