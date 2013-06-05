@@ -924,7 +924,7 @@ Namespace Things
 
               ' Add to prereqistits arrays
               If bIsSummaryColumn Then
-                maryDeclarations.Add(String.Format("{0}DECLARE @part_{1} numeric(10,0);" _
+                maryDeclarations.Add(String.Format("{0}DECLARE @part_{1} numeric(38,8);" _
                     , [CodeCluster].Indentation, iPartNumber))
                 sColumnOrder = vbNullString
               Else
