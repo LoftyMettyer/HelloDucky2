@@ -1159,6 +1159,27 @@ PRINT 'Step 3 - Office Output Formats'
 	END
 
 
+/* ------------------------------------------------------------- */
+PRINT 'Step 4 - Overlapping dates functionality'
+
+	IF OBJECT_ID('ASRSysTableValidations', N'U') IS NULL	
+	BEGIN
+		EXEC sp_executesql N'CREATE TABLE [dbo].[ASRSysTableValidations](
+			[ValidationID]				integer NOT NULL,
+			[TableID]					integer NOT NULL,
+			[Type]						tinyint NOT NULL,
+			[EventStartDateColumnID]	integer,
+			[EventStartSessionColumnID] integer,
+			[EventEndDateColumnID]		integer,
+			[EventEndSessionColumnID]	integer,
+			[FilterID]					integer,
+			[Severity]					tinyint,
+			[Message]					nvarchar(MAX)
+		 CONSTRAINT [PK_ASRSysTableValidations] PRIMARY KEY CLUSTERED 
+		([ValidationID] ASC)) ON [PRIMARY]'
+	END
+
+
 
 /* ------------------------------------------------------------- */
 /* ------------------------------------------------------------- */
