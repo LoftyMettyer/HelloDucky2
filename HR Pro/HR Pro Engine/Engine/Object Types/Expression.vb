@@ -68,26 +68,31 @@ Namespace Things
 
     Private Sub BuildDependancies(ByRef objExpression As Things.Component)
 
-      'Dim objColumn As Things.Column
       Dim objComponent As Things.Component
-      '      Dim objDependency As Things.Base
       Dim objColumn As Things.Column
+      Dim objTable As Things.Table
 
-      For Each objComponent In objExpression.Objects
-        Select Case objComponent.SubType
-          Case ScriptDB.ComponentTypes.Column
+      Try
 
-            objColumn = Globals.Things.GetObject(Enums.Type.Table, objComponent.TableID).Objects.GetObject(Enums.Type.Column, objComponent.ColumnID)
-            '  If Not Dependencies.Contains(objColumn) Then
-            Dependencies.AddIfNew(objColumn)
-            Dependencies.AddIfNew(objColumn.Table)
-            '   End If
+        For Each objComponent In objExpression.Objects
+          Select Case objComponent.SubType
+            Case ScriptDB.ComponentTypes.Column
 
-          Case ScriptDB.ComponentTypes.Expression, ScriptDB.ComponentTypes.Function, ScriptDB.ComponentTypes.Calculation
-            BuildDependancies(objComponent)
-        End Select
+              objTable = Globals.Things.GetObject(Enums.Type.Table, objComponent.TableID)
+              objColumn = objTable.Column(objComponent.ColumnID)
 
-      Next
+              Dependencies.AddIfNew(objColumn)
+              Dependencies.AddIfNew(objColumn.Table)
+
+            Case ScriptDB.ComponentTypes.Expression, ScriptDB.ComponentTypes.Function, ScriptDB.ComponentTypes.Calculation
+              BuildDependancies(objComponent)
+          End Select
+
+        Next
+
+      Catch ex As Exception
+        Globals.ErrorLog.Add(ErrorHandler.Section.General, objExpression.Name, ErrorHandler.Severity.Error, "Expression component missing", ex.Message)
+      End Try
 
     End Sub
 
