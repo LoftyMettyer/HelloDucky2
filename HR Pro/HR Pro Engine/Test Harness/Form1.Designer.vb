@@ -30,6 +30,7 @@ Partial Class Form1
     Me.txtDatabase = New System.Windows.Forms.TextBox()
     Me.butScriptDB = New System.Windows.Forms.Button()
     Me.Panel1 = New System.Windows.Forms.Panel()
+    Me.Button1 = New System.Windows.Forms.Button()
     Me.butImport = New System.Windows.Forms.Button()
     Me.txtServer2 = New System.Windows.Forms.TextBox()
     Me.txtDatabase2 = New System.Windows.Forms.TextBox()
@@ -112,6 +113,7 @@ Partial Class Form1
     '
     'Panel1
     '
+    Me.Panel1.Controls.Add(Me.Button1)
     Me.Panel1.Controls.Add(Me.butImport)
     Me.Panel1.Controls.Add(Me.txtServer2)
     Me.Panel1.Controls.Add(Me.txtDatabase2)
@@ -120,8 +122,17 @@ Partial Class Form1
     Me.Panel1.Controls.Add(Me.butViewObjects)
     Me.Panel1.Location = New System.Drawing.Point(348, 39)
     Me.Panel1.Name = "Panel1"
-    Me.Panel1.Size = New System.Drawing.Size(348, 163)
+    Me.Panel1.Size = New System.Drawing.Size(423, 163)
     Me.Panel1.TabIndex = 22
+    '
+    'Button1
+    '
+    Me.Button1.Location = New System.Drawing.Point(294, 70)
+    Me.Button1.Name = "Button1"
+    Me.Button1.Size = New System.Drawing.Size(117, 40)
+    Me.Button1.TabIndex = 26
+    Me.Button1.Text = "Audit"
+    Me.Button1.UseVisualStyleBackColor = True
     '
     'butImport
     '
@@ -139,7 +150,7 @@ Partial Class Form1
     Me.txtServer2.Name = "txtServer2"
     Me.txtServer2.Size = New System.Drawing.Size(100, 20)
     Me.txtServer2.TabIndex = 4
-    Me.txtServer2.Text = "harpdev01"
+    Me.txtServer2.Text = "harpdev02"
     '
     'txtDatabase2
     '
@@ -147,7 +158,7 @@ Partial Class Form1
     Me.txtDatabase2.Name = "txtDatabase2"
     Me.txtDatabase2.Size = New System.Drawing.Size(100, 20)
     Me.txtDatabase2.TabIndex = 3
-    Me.txtDatabase2.Text = "bibby"
+    Me.txtDatabase2.Text = "richmond"
     '
     'txtPassword2
     '
@@ -231,5 +242,6 @@ Partial Class Form1
   Friend WithEvents Label1 As System.Windows.Forms.Label
   Friend WithEvents Label4 As System.Windows.Forms.Label
   Friend WithEvents butImport As System.Windows.Forms.Button
+  Friend WithEvents Button1 As System.Windows.Forms.Button
 
 End Class

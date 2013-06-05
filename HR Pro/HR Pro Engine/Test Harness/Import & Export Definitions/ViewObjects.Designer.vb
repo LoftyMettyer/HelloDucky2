@@ -46,7 +46,7 @@ Partial Class ViewObjects
     Me.grdThings.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                 Or System.Windows.Forms.AnchorStyles.Left) _
                 Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.grdThings.Cursor = System.Windows.Forms.Cursors.Default
+    Me.grdThings.Cursor = System.Windows.Forms.Cursors.Hand
     Appearance2.BackColor = System.Drawing.SystemColors.Window
     Appearance2.BorderColor = System.Drawing.SystemColors.Window
     Me.grdThings.DisplayLayout.Appearance = Appearance2

@@ -10,7 +10,7 @@ Public Class Form1
 
   Private Sub butScriptDB_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles butScriptDB.Click
 
-    Dim objPhoenix As New HRProEngine.SysMgr
+    Dim objPhoenix As New SystemFramework.SysMgr
 
     Dim sPath As String = "C:\dev\HR Pro\HR Pro Engine\Test Harness\"
 
@@ -52,6 +52,8 @@ Public Class Form1
 
     objPhoenix.Initialise()
     objPhoenix.PopulateObjects()
+
+
 
     objPhoenix.Options.DevelopmentMode = chkDebugMode.Checked
     objPhoenix.Options.RefreshObjects = True
@@ -218,11 +220,11 @@ Public Class Form1
 
   Private Sub butViewObjects_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles butViewObjects.Click
 
-    Dim objHRPro As New HRProEngine.HCM
+    Dim objHRPro As New SystemFramework.HCM
     Dim objViewer As New ViewObjects
 
     '    Dim SQLDB As New HRProEngine.Connectivity.SQL
-    Dim objLogin As HRProEngine.Connectivity.Login
+    Dim objLogin As SystemFramework.Connectivity.Login
 
     With objLogin
       .UseContext = False
@@ -274,11 +276,11 @@ Public Class Form1
 
   Private Sub butImport_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles butImport.Click
 
-    Dim objHRPro As New HRProEngine.HCM
+    Dim objHRPro As New SystemFramework.HCM
     Dim objImport As New ViewObjects
 
     '    Dim SQLDB As New HRProEngine.Connectivity.SQL
-    Dim objLogin As HRProEngine.Connectivity.Login
+    Dim objLogin As SystemFramework.Connectivity.Login
 
     With objLogin
       .UseContext = False
@@ -304,5 +306,29 @@ Public Class Form1
 
 
 
+  Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+
+    Dim objHRPro As New SystemFramework.HCM
+    Dim objAudit As New AuditLog
+
+    Dim objLogin As SystemFramework.Connectivity.Login
+
+    With objLogin
+      .UseContext = False
+      .UserName = txtUser2.Text
+      .Password = txtPassword2.Text
+      .Database = txtDatabase2.Text
+      .Server = txtServer2.Text
+    End With
+
+    objHRPro.Connect(objLogin)
+
+    objAudit.Database = objHRPro
+    objAudit.ShowDialog()
+
+    objHRPro.Disconnect()
+
+
+  End Sub
 
 End Class

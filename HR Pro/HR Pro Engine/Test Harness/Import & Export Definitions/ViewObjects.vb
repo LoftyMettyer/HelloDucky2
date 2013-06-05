@@ -5,8 +5,8 @@ Imports Infragistics
 
 Public Class ViewObjects
 
-  Public Property Things As HRProEngine.Things.Collection
-  Public Property ExportObjects As New HRProEngine.Things.Collection
+  Public Property Things As SystemFramework.Things.Collections.Generic
+  Public Property ExportObjects As New SystemFramework.Things.Collections.Generic
 
   Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
@@ -99,9 +99,9 @@ Public Class ViewObjects
       Next
 
 
-    'AsrGrid1.DisplayLayout.Bands(0).Indentation = 10
-    'AsrGrid1.DisplayLayout.Bands(1).Indentation = 0
-    'AsrGrid1.DisplayLayout.Bands(1).IndentationGroupByRow = 0
+      'AsrGrid1.DisplayLayout.Bands(0).Indentation = 10
+      'AsrGrid1.DisplayLayout.Bands(1).Indentation = 0
+      'AsrGrid1.DisplayLayout.Bands(1).IndentationGroupByRow = 0
     End With
 
     'AsrGrid1.Rows.ExpandAll(True)
@@ -118,8 +118,7 @@ Public Class ViewObjects
   Private Sub butExport_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles butExport.Click
 
     Dim objRow As Infragistics.Win.UltraWinGrid.UltraGridRow
-    Dim objObject As HRProEngine.Things.Base
-    Dim strText As String
+    Dim objObject As SystemFramework.Things.Base
 
     ExportObjects.Clear()
 
