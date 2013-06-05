@@ -2,7 +2,7 @@ VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
 Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "tinumb6.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{4A4AA691-3E6F-11D2-822F-00104B9E07A1}#3.0#0"; "ssdw3bo.ocx"
 Begin VB.Form frmFind2 
    Caption         =   "Find"
@@ -482,7 +482,8 @@ Public Sub ResizeFindColumns()
           dblNewSize = dblNewSize - .Columns(iCount).Width
         End If
 
-        SaveUserSetting "FindOrder" + LTrim(Str(mlngOrderID)), .Columns(iCount).Name, .Columns(iCount).Width
+        ' SaveUserSetting "FindOrder" + LTrim(Str(mlngOrderID)), .Columns(iCount).Name, .Columns(iCount).Width
+        SaveUserSetting "FindOrder" + LTrim(Str(mlngOrderID)), .Columns(iCount).Caption, .Columns(iCount).Width
       End If
     Next iCount
 
@@ -2368,7 +2369,8 @@ Private Function ConfigureGrid() As Boolean
       End If
 
       'Has the user changed the width of this column
-      dblPreviousColumnWidth = GetUserSetting("FindOrder" + LTrim$(Str(mlngOrderID)), mrsFindRecords.Fields(iLoop).Name, 0)
+      ' dblPreviousColumnWidth = GetUserSetting("FindOrder" + LTrim$(Str(mlngOrderID)), mrsFindRecords.Fields(iLoop).Name, 0)
+      dblPreviousColumnWidth = GetUserSetting("FindOrder" + LTrim$(Str(mlngOrderID)), Replace(mrsFindRecords.Fields(iLoop).Name, "_", " "), 0)
       If dblPreviousColumnWidth > 0 Then .Columns(iLoop).Width = dblPreviousColumnWidth
 
       ' Total the size of the grid columns
@@ -3838,12 +3840,14 @@ Private Sub ssOleDBGridFindColumns_ColResize(ByVal ColIndex As Integer, Cancel A
     If .Columns(ColIndex + 1).Visible Then
       dblSizeAmendment = .Columns(ColIndex).Width - .ResizeWidth
       .Columns(ColIndex + 1).Width = .Columns(ColIndex + 1).Width + dblSizeAmendment
-      SaveUserSetting "FindOrder" + LTrim(Str(mlngOrderID)), .Columns(ColIndex + 1).Name, .Columns(ColIndex + 1).Width
+      ' SaveUserSetting "FindOrder" + LTrim(Str(mlngOrderID)), .Columns(ColIndex + 1).Name, .Columns(ColIndex + 1).Width
+      SaveUserSetting "FindOrder" + LTrim(Str(mlngOrderID)), .Columns(ColIndex + 1).Caption, .Columns(ColIndex + 1).Width
     End If
 
     'Save the resized column width
-    SaveUserSetting "FindOrder" + LTrim(Str(mlngOrderID)), .Columns(ColIndex).Name, .ResizeWidth
-
+    ' SaveUserSetting "FindOrder" + LTrim(Str(mlngOrderID)), .Columns(ColIndex).Name, .ResizeWidth
+    SaveUserSetting "FindOrder" + LTrim(Str(mlngOrderID)), .Columns(ColIndex).Caption, .ResizeWidth
+    
     .Redraw = True
 
   End With
