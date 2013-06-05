@@ -1074,7 +1074,7 @@ Namespace Things
 
         Select Case Component.ReturnType
           Case ScriptDB.ComponentValueTypes.Numeric
-            LineOfCode.Code = String.Format("convert(numeric(38,18), ({0}))", LineOfCode.Code)
+            LineOfCode.Code = String.Format("convert(float, ({0}))", LineOfCode.Code)
 
           Case ScriptDB.ComponentValueTypes.Date
             LineOfCode.Code = String.Format("convert(datetime, ({0}))", LineOfCode.Code)
