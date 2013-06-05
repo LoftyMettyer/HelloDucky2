@@ -1174,7 +1174,7 @@ Namespace Things
 
           Case ScriptDB.ColumnTypes.Integer, ScriptDB.ColumnTypes.Numeric
             If Me.AssociatedColumn.Decimals > 0 Then
-              sSize = String.Format("{0}.{1}", New String("9", Me.AssociatedColumn.Size - Me.AssociatedColumn.Decimals - 1), New String("9", Me.AssociatedColumn.Decimals))
+              sSize = String.Format("{0}.{1}", New String("9", Me.AssociatedColumn.Size - Me.AssociatedColumn.Decimals), New String("9", Me.AssociatedColumn.Decimals))
             Else
               sSize = New String("9", Me.AssociatedColumn.Size)
             End If
