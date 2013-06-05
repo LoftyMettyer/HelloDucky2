@@ -2,10 +2,10 @@ VERSION 5.00
 Begin VB.Form frmWorkflowEdit 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Properties"
-   ClientHeight    =   7515
+   ClientHeight    =   3870
    ClientLeft      =   -15
    ClientTop       =   375
-   ClientWidth     =   8475
+   ClientWidth     =   5790
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -19,11 +19,10 @@ Begin VB.Form frmWorkflowEdit
    Icon            =   "frmWorkflowEdit.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   7515
-   ScaleWidth      =   8475
+   ScaleHeight     =   3870
+   ScaleWidth      =   5790
    ShowInTaskbar   =   0   'False
    Begin VB.CommandButton cmdPictureClear 
       Caption         =   "O"
@@ -37,29 +36,29 @@ Begin VB.Form frmWorkflowEdit
          Strikethrough   =   0   'False
       EndProperty
       Height          =   315
-      Left            =   4950
+      Left            =   4610
       MaskColor       =   &H000000FF&
-      TabIndex        =   11
+      TabIndex        =   9
       ToolTipText     =   "Clear Icon"
-      Top             =   15
+      Top             =   2415
       UseMaskColor    =   -1  'True
       Width           =   330
    End
    Begin VB.TextBox txtPicture 
       Enabled         =   0   'False
       Height          =   330
-      Left            =   840
-      TabIndex        =   10
-      Top             =   0
-      Width           =   3765
+      Left            =   1380
+      TabIndex        =   7
+      Top             =   2400
+      Width           =   2860
    End
    Begin VB.CommandButton cmdPicture 
       Caption         =   "..."
       Height          =   315
-      Left            =   4620
-      TabIndex        =   9
+      Left            =   4280
+      TabIndex        =   8
       ToolTipText     =   "Select Icon"
-      Top             =   15
+      Top             =   2415
       Width           =   315
    End
    Begin VB.TextBox txtURL 
@@ -71,32 +70,32 @@ Begin VB.Form frmWorkflowEdit
       MaxLength       =   255
       TabIndex        =   5
       Top             =   1900
-      Width           =   3780
+      Width           =   4145
    End
    Begin VB.CheckBox chkEnabled 
       Caption         =   "&Enabled"
       Height          =   315
       Left            =   150
-      TabIndex        =   6
-      Top             =   2360
+      TabIndex        =   10
+      Top             =   2995
       Width           =   1215
    End
    Begin VB.CommandButton cmdOk 
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
-      Left            =   2650
-      TabIndex        =   7
-      Top             =   2700
+      Left            =   2890
+      TabIndex        =   11
+      Top             =   3300
       Width           =   1200
    End
    Begin VB.CommandButton cmdCancel 
       Cancel          =   -1  'True
       Caption         =   "&Cancel"
       Height          =   400
-      Left            =   3950
-      TabIndex        =   8
-      Top             =   2700
+      Left            =   4325
+      TabIndex        =   12
+      Top             =   3300
       Width           =   1200
    End
    Begin VB.TextBox txtName 
@@ -105,7 +104,7 @@ Begin VB.Form frmWorkflowEdit
       MaxLength       =   255
       TabIndex        =   1
       Top             =   200
-      Width           =   3780
+      Width           =   4145
    End
    Begin VB.TextBox txtDescription 
       Height          =   1015
@@ -114,22 +113,22 @@ Begin VB.Form frmWorkflowEdit
       MultiLine       =   -1  'True
       TabIndex        =   3
       Top             =   700
-      Width           =   3780
+      Width           =   4145
    End
    Begin VB.Image picPicture 
       Height          =   495
-      Left            =   5355
+      Left            =   5015
       Stretch         =   -1  'True
-      Top             =   30
+      Top             =   2430
       Width           =   510
    End
    Begin VB.Label lblPicture 
       Caption         =   "Picture :"
       Height          =   195
-      Left            =   0
-      TabIndex        =   12
-      Top             =   45
-      Width           =   615
+      Left            =   150
+      TabIndex        =   6
+      Top             =   2460
+      Width           =   750
    End
    Begin VB.Label lblURL 
       BackStyle       =   0  'Transparent
@@ -137,7 +136,7 @@ Begin VB.Form frmWorkflowEdit
       Height          =   195
       Left            =   150
       TabIndex        =   4
-      Top             =   1965
+      Top             =   1960
       Width           =   465
    End
    Begin VB.Label lblExpressionName 
@@ -156,7 +155,7 @@ Begin VB.Form frmWorkflowEdit
       Height          =   195
       Left            =   150
       TabIndex        =   2
-      Top             =   765
+      Top             =   760
       Width           =   1125
    End
 End
@@ -189,8 +188,8 @@ Private miInitiationType As WorkflowInitiationTypes
 
 Private mfrmCallingForm As Form
 
-Private Const MIN_FORM_HEIGHT = 3750
-Private Const MIN_FORM_WIDTH = 5385
+Private Const MIN_FORM_HEIGHT = 4290
+Private Const MIN_FORM_WIDTH = 5885
 
 Public Property Let Cancelled(ByVal pfNewValue As Boolean)
   mfCancelled = pfNewValue
@@ -207,61 +206,13 @@ Public Property Let Changed(ByVal pfNewValue As Boolean)
   End If
 End Property
 
-
 Private Sub FormatScreen()
-  Const X_GAP = 235
-  Const Y_BOTTOMGAP = 650
-  Const Y_GAP = 25
-  
-  With txtName
-  'NPG20090302 Fault 13501
-  ' .Width = Me.Width - .Left - X_GAP
-    .Width = Me.Width - .Left - X_GAP - (UI.GetSystemMetrics(SM_CXFRAME) * Screen.TwipsPerPixelX)
-  End With
-  
-  With cmdCancel
-    .Top = Me.Height _
-      - .Height _
-      - Y_BOTTOMGAP
-    .Left = Me.Width _
-      - .Width _
-      - X_GAP _
-      - (UI.GetSystemMetrics(SM_CXFRAME) * Screen.TwipsPerPixelX)
-    
-    cmdOK.Top = .Top
-    cmdOK.Left = .Left _
-      - cmdOK.Width _
-      - X_GAP
-    
-    chkEnabled.Top = .Top _
-      - chkEnabled.Height _
-      - Y_GAP
-  End With
-  
+            
   lblURL.Visible = (miInitiationType = WORKFLOWINITIATIONTYPE_EXTERNAL)
-  With txtURL
-    .Visible = (miInitiationType = WORKFLOWINITIATIONTYPE_EXTERNAL)
-    'NPG20090302 Fault 13501
-    ' .Width = Me.Width - .Left - X_GAP
-    .Width = Me.Width - .Left - X_GAP - (UI.GetSystemMetrics(SM_CXFRAME) * Screen.TwipsPerPixelX)
-    .Top = chkEnabled.Top _
-      - .Height _
-      - 245
-    lblURL.Top = .Top _
-      + 60
-    
-  End With
-  
-  With txtDescription
-    'NPG20090302 Fault 13501
-    ' .Width = Me.Width - txtDescription.Left - X_GAP
-    .Width = Me.Width - txtDescription.Left - X_GAP - (UI.GetSystemMetrics(SM_CXFRAME) * Screen.TwipsPerPixelX)
-    .Height = IIf(miInitiationType = WORKFLOWINITIATIONTYPE_EXTERNAL, _
-      txtURL.Top - 185, _
-      chkEnabled.Top - 145) _
-      - .Top
-  End With
+  txtURL.Visible = (miInitiationType = WORKFLOWINITIATIONTYPE_EXTERNAL)
 
+  txtDescription.Height = IIf(miInitiationType = WORKFLOWINITIATIONTYPE_EXTERNAL, txtURL.Top - 185, txtPicture.Top - 200) - txtDescription.Top
+   
 End Sub
 
 Private Function ValidateWorkflow() As Boolean
@@ -325,7 +276,7 @@ Private Sub RefreshScreen()
     ControlsDisableAll Me
   End If
 
-  cmdOK.Enabled = mfChanged And (Not fReadOnly)
+  cmdOk.Enabled = mfChanged And (Not fReadOnly)
 
 End Sub
 
@@ -391,8 +342,7 @@ Private Function SaveChanges() As Boolean
   
   If Not mfrmCallingForm Is Nothing Then
     If mfrmCallingForm.Name = "frmWorkflowOpen" Then
-      If WorkflowsWithStatus(WorkflowID, giWFSTATUS_COMPLETE) _
-        Or WorkflowsWithStatus(WorkflowID, giWFSTATUS_ERROR) Then
+      If WorkflowsWithStatus(WorkflowID, giWFSTATUS_COMPLETE) Or WorkflowsWithStatus(WorkflowID, giWFSTATUS_ERROR) Then
       
         fOK = (MsgBox("Saving these changes will purge all instances of this workflow from the log." & vbCrLf & _
           "Do you wish to continue?", vbQuestion + vbYesNo, App.ProductName) = vbYes)
@@ -648,7 +598,7 @@ Private Sub Form_Load()
   Next
   Set objControl = Nothing
 
-  cmdOK.Enabled = False
+  cmdOk.Enabled = False
   
   ' Position the form.
   UI.frmAtCenterOfParent Me, frmSysMgr
@@ -709,13 +659,13 @@ End Sub
 Private Sub txtDescription_GotFocus()
   ' Select the whole string.
   UI.txtSelText
-  cmdOK.Default = False
+  cmdOk.Default = False
 
 End Sub
 
 
 Private Sub txtDescription_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 
