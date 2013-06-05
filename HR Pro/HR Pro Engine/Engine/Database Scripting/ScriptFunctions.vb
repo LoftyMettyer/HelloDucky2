@@ -154,7 +154,7 @@ Namespace ScriptDB
         ' Build the stored procedure
         sSQL = String.Format("CREATE FUNCTION [dbo].[{0}](" & vbNewLine &
             "    @searchcolumnid AS varchar(17)," & vbNewLine & _
-            "    @searchexpression AS sql_variant," & vbNewLine & _
+            "    @searchexpression AS varchar(255)," & vbNewLine & _
             "    @returncolumnid AS varchar(17))" & vbNewLine & _
             "RETURNS sql_variant" & vbNewLine & _
             "AS" & vbNewLine & "BEGIN" & vbNewLine & _

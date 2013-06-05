@@ -214,9 +214,15 @@ Namespace Things
       If Me.IsComplex And aryDependsOn.Count > 0 And Not Me.ReferencesParent Then
 
         ' Flag to force updates through
-        aryParameters1.Add("@forcerefresh bit")
-        aryParameters2.Add("@forcerefresh")
-        aryParameters3.Add("@forcerefresh")
+        If Me.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn Then
+          aryParameters1.Add("@forcerefresh bit")
+          aryParameters2.Add("@forcerefresh")
+          aryParameters3.Add("1")
+        Else
+          aryParameters1.Add("@forcerefresh bit")
+          aryParameters2.Add("@forcerefresh")
+          aryParameters3.Add("@forcerefresh")
+        End If
 
         sBypassUDFCode = String.Format("    -- Return the original value if none of the dependent tables are in the trigger stack." & vbNewLine &
             "    IF @forcerefresh = 0 AND NOT EXISTS (SELECT [tablefromid] FROM [dbo].[tbsys_intransactiontrigger] WHERE [tablefromid] IN ({0}) AND [spid] = @@SPID)" & vbNewLine & _
