@@ -718,38 +718,38 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
         "    IF LEN(@psInvalidityMessage) > 0 SET @pfResult = 0;" & vbNewLine
     Next
         
-        
-    If fIsTopLevel Then
-      sSPCode = sSPCode & vbNewLine & _
-        "    /* Check the record is still in a view that can be seen by the user. */" & vbNewLine & _
-        "    IF (@pfResult = 1) AND (TRIGGER_NESTLEVEL() = 1)" & vbNewLine & _
-        "    BEGIN" & vbNewLine & _
-        "        SELECT @sGroupName = usg.name" & vbNewLine & _
-        "        FROM sysusers usu" & vbNewLine & _
-        "        LEFT OUTER JOIN" & vbNewLine & _
-        "        (sysmembers mem INNER JOIN sysusers usg ON mem.groupuid = usg.uid) ON usu.uid = mem.memberuid" & vbNewLine & _
-        "        WHERE (usu.islogin = 1 AND usu.isaliased = 0 AND usu.hasdbaccess = 1) AND" & vbNewLine & _
-        "         (usg.issqlrole = 1 OR usg.uid IS null) AND" & vbNewLine & _
-        "         usu.name =  dbo.udfsys_getsystemuser() AND NOT (usg.name LIKE 'ASRSys%') " & vbNewLine & _
-        "        IF EXISTS" & vbNewLine & _
-        "        (" & vbNewLine & _
-        "            SELECT Name" & vbNewLine & _
-        "            FROM sysobjects" & vbNewLine & _
-        "            WHERE id = object_id('sp_ASRValidateView_" & Trim$(Str$(pLngCurrentTableID)) & "_' + @sGroupName)" & vbNewLine & _
-        "                AND sysstat & 0xf = 4" & vbNewLine & _
-        "        ) AND NOT (@sGroupName = 'dbo')" & vbNewLine
-      sSPCode = sSPCode & _
-        "        BEGIN" & vbNewLine & _
-        "            SET @sParamDefinition = N'@result bit OUTPUT, @recordID integer'" & vbNewLine & _
-        "            SET @sCommandString = 'exec dbo.[sp_ASRValidateView_" & Trim$(Str$(pLngCurrentTableID)) & "_' + @sGroupName + '] @result output, @recordid'" & vbNewLine & _
-        "            EXECUTE sp_executesql @sCommandString, @sParamDefinition, @pfResult OUTPUT, @piRecordID" & vbNewLine & _
-        "            IF @pfResult = 0" & vbNewLine & _
-        "            BEGIN" & vbNewLine & _
-        "                SET @psInvalidityMessage = 'The current user would no longer have ''read'' permission on the record.'" & vbNewLine & _
-        "            END" & vbNewLine & _
-        "        END" & vbNewLine & _
-        "    END" & vbNewLine
-    End If
+' Handled by .NET engine
+'    If fIsTopLevel Then
+'      sSPCode = sSPCode & vbNewLine & _
+'        "    /* Check the record is still in a view that can be seen by the user. */" & vbNewLine & _
+'        "    IF (@pfResult = 1) AND (TRIGGER_NESTLEVEL() = 1)" & vbNewLine & _
+'        "    BEGIN" & vbNewLine & _
+'        "        SELECT @sGroupName = usg.name" & vbNewLine & _
+'        "        FROM sysusers usu" & vbNewLine & _
+'        "        LEFT OUTER JOIN" & vbNewLine & _
+'        "        (sysmembers mem INNER JOIN sysusers usg ON mem.groupuid = usg.uid) ON usu.uid = mem.memberuid" & vbNewLine & _
+'        "        WHERE (usu.islogin = 1 AND usu.isaliased = 0 AND usu.hasdbaccess = 1) AND" & vbNewLine & _
+'        "         (usg.issqlrole = 1 OR usg.uid IS null) AND" & vbNewLine & _
+'        "         usu.name =  dbo.udfsys_getsystemuser() AND NOT (usg.name LIKE 'ASRSys%') " & vbNewLine & _
+'        "        IF EXISTS" & vbNewLine & _
+'        "        (" & vbNewLine & _
+'        "            SELECT Name" & vbNewLine & _
+'        "            FROM sysobjects" & vbNewLine & _
+'        "            WHERE id = object_id('sp_ASRValidateView_" & Trim$(Str$(pLngCurrentTableID)) & "_' + @sGroupName)" & vbNewLine & _
+'        "                AND sysstat & 0xf = 4" & vbNewLine & _
+'        "        ) AND NOT (@sGroupName = 'dbo')" & vbNewLine
+'      sSPCode = sSPCode & _
+'        "        BEGIN" & vbNewLine & _
+'        "            SET @sParamDefinition = N'@result bit OUTPUT, @recordID integer'" & vbNewLine & _
+'        "            SET @sCommandString = 'exec dbo.[sp_ASRValidateView_" & Trim$(Str$(pLngCurrentTableID)) & "_' + @sGroupName + '] @result output, @recordid'" & vbNewLine & _
+'        "            EXECUTE sp_executesql @sCommandString, @sParamDefinition, @pfResult OUTPUT, @piRecordID" & vbNewLine & _
+'        "            IF @pfResult = 0" & vbNewLine & _
+'        "            BEGIN" & vbNewLine & _
+'        "                SET @psInvalidityMessage = 'The current user would no longer have ''read'' permission on the record.'" & vbNewLine & _
+'        "            END" & vbNewLine & _
+'        "        END" & vbNewLine & _
+'        "    END" & vbNewLine
+'    End If
   End If
 
   sSPCode = sSPCode & vbNewLine & vbNewLine & _
