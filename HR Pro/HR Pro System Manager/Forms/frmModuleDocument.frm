@@ -48,19 +48,19 @@ Begin VB.Form frmModuleDocument
       TabCaption(1)   =   "Mail Merge"
       TabPicture(1)   =   "frmModuleDocument.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "lblTransferTable"
+      Tab(1).Control(0)=   "cboCategory"
       Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "lblColumnName"
+      Tab(1).Control(1)=   "cboTables"
       Tab(1).Control(1).Enabled=   0   'False
-      Tab(1).Control(2)=   "grdTransferDetails(0)"
+      Tab(1).Control(2)=   "cmdEdit"
       Tab(1).Control(2).Enabled=   0   'False
       Tab(1).Control(3)=   "cmdDelete"
       Tab(1).Control(3).Enabled=   0   'False
-      Tab(1).Control(4)=   "cmdEdit"
+      Tab(1).Control(4)=   "grdTransferDetails(0)"
       Tab(1).Control(4).Enabled=   0   'False
-      Tab(1).Control(5)=   "cboTables"
+      Tab(1).Control(5)=   "lblColumnName"
       Tab(1).Control(5).Enabled=   0   'False
-      Tab(1).Control(6)=   "cboCategory"
+      Tab(1).Control(6)=   "lblTransferTable"
       Tab(1).Control(6).Enabled=   0   'False
       Tab(1).ControlCount=   7
       Begin VB.ComboBox cboCategory 
@@ -625,7 +625,7 @@ Private Sub InitialiseCombos()
 End Sub
 
 Private Sub RefreshButtons()
-  cmdOK.Enabled = mbChanged
+  cmdOk.Enabled = mbChanged
 End Sub
 
 Private Sub RetrieveDefinition()
@@ -645,8 +645,8 @@ Private Sub Form_Load()
 
   ReDim mavarCategoryTableIDs(2, 0)
 
-  tabOptions.TabVisible(0) = True
-  tabOptions.TabVisible(1) = False
+  SSTab1.TabVisible(0) = True
+  SSTab1.TabVisible(1) = False
 
   mblnReadOnly = (Application.AccessMode <> accFull And _
                  Application.AccessMode <> accSupportMode)
