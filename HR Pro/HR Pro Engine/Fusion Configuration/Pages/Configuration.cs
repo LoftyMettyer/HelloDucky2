@@ -98,7 +98,7 @@ namespace Fusion.Pages
 
 		private IEnumerable<Column> GetAvailableColumnsForElement(FusionElement element)
 		{
-			var columns = _session.Query<Column>().Where(x => x.Table == element.Category.Table && x.DataType == element.DataType);
+            var columns = _session.Query<Column>().Where(x => x.Table == element.Category.Table);//&& x.DataType == element.DataType);
 
 			if (element.DataType == DataType.Character)
 				columns = columns.Where(x => (!element.MinSize.HasValue || x.Size >= element.MinSize) 
