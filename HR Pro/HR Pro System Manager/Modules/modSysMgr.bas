@@ -526,12 +526,6 @@ Public Function IsChildOfTable(lngParentTableID As Long, lngChildTableID As Long
 
 End Function
 
-Public Function IsVersion7() As Boolean
-  ' Return TRUE if the SQL Server version we are logged into is version 7.0
-  IsVersion7 = (glngSQLVersion >= 7)
-  
-End Function
-
 ' Is this version of SQL 2008 or above
 Public Function IsVersion10() As Boolean
   IsVersion10 = (glngSQLVersion >= 10)
@@ -618,27 +612,23 @@ Private Function GrantTableViewPrivileges(psTableViewName As String) As Boolean
   End If
   
   ' Get a list of User Groups (Roles) from SQL Server
-  If IsVersion7 Then
-    rsGroups.Open "sp_helprole", gADOCon, adOpenForwardOnly, adLockReadOnly
+  rsGroups.Open "sp_helprole", gADOCon, adOpenForwardOnly, adLockReadOnly
+  
+  ' Creat an array of the standard system roles for SQL Server 7.0
+  ReDim asFixedRoles(0)
+  asFixedRoles(0) = "PUBLIC"
+  rsSysRoles.Open "sp_helpdbfixedrole", gADOCon, adOpenForwardOnly, adLockReadOnly
+  
+  With rsSysRoles
+    Do While Not .EOF
+      iNextIndex = UBound(asFixedRoles) + 1
+      ReDim Preserve asFixedRoles(iNextIndex)
+      asFixedRoles(iNextIndex) = UCase(Trim(.Fields(0).value))
+      .MoveNext
+    Loop
     
-    ' Creat an array of the standard system roles for SQL Server 7.0
-    ReDim asFixedRoles(0)
-    asFixedRoles(0) = "PUBLIC"
-    rsSysRoles.Open "sp_helpdbfixedrole", gADOCon, adOpenForwardOnly, adLockReadOnly
-    
-    With rsSysRoles
-      Do While Not .EOF
-        iNextIndex = UBound(asFixedRoles) + 1
-        ReDim Preserve asFixedRoles(iNextIndex)
-        asFixedRoles(iNextIndex) = UCase(Trim(.Fields(0).value))
-        .MoveNext
-      Loop
-      
-      .Close
-    End With
-  Else
-    rsGroups.Open "sp_helpgroup", gADOCon, adOpenForwardOnly, adLockReadOnly
-  End If
+    .Close
+  End With
   
   ' Grant/Deny INSERT and DELETE privileges for each User Group (Role).
   With rsGroups
@@ -648,14 +638,12 @@ Private Function GrantTableViewPrivileges(psTableViewName As String) As Boolean
       
         ' Check that the group is valid (ie. not a system user Group (Role).
         fGoodGroup = True
-        If IsVersion7 Then
-          For iNextIndex = 0 To UBound(asFixedRoles)
-            If asFixedRoles(iNextIndex) = sCurrentGroupName Then
-              fGoodGroup = False
-              Exit For
-            End If
-          Next iNextIndex
-        End If
+        For iNextIndex = 0 To UBound(asFixedRoles)
+          If asFixedRoles(iNextIndex) = sCurrentGroupName Then
+            fGoodGroup = False
+            Exit For
+          End If
+        Next iNextIndex
         
         If fGoodGroup Then
           fInsertGranted = False
@@ -667,32 +655,19 @@ Private Function GrantTableViewPrivileges(psTableViewName As String) As Boolean
             sUserGroupName = vbNullString
             sUserName = UCase$(Trim(gasTableViewPrivileges(2, iLoop)))
             
-            If IsVersion7 Then
-              sSQL = "SELECT su1.name AS groupName" & _
-                " FROM sysusers su1, sysusers su2" & _
-                " WHERE su2.name = '" & sUserName & "'" & _
-                " AND su2.gid = su1.uid"
-              
-              rsUserInfo.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly, adCmdText
-
-              With rsUserInfo
-                If Not (.EOF And .BOF) Then
-                  sUserGroupName = UCase(Trim(IIf(.Fields("groupName").value = "public", vbNullString, !GroupName!)))
-                End If
-                .Close
-              End With
-            Else
-              sSQL = "sp_helpuser '" & sUserName & "'"
-              rsUserInfo.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
-              
-              With rsUserInfo
-                If Not (.EOF And .BOF) Then
-                  sUserGroupName = IIf(IsNull(.Fields("groupName").value), "public", !GroupName)
-                End If
-                .Close
-              End With
+            sSQL = "SELECT su1.name AS groupName" & _
+              " FROM sysusers su1, sysusers su2" & _
+              " WHERE su2.name = '" & sUserName & "'" & _
+              " AND su2.gid = su1.uid"
             
-            End If
+            rsUserInfo.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly, adCmdText
+
+            With rsUserInfo
+              If Not (.EOF And .BOF) Then
+                sUserGroupName = UCase(Trim(IIf(.Fields("groupName").value = "public", vbNullString, !GroupName!)))
+              End If
+              .Close
+            End With
             
             If sCurrentGroupName = sUserGroupName Then
               If (gasTableViewPrivileges(3, iLoop) = "INSERT") Then
@@ -712,9 +687,9 @@ Private Function GrantTableViewPrivileges(psTableViewName As String) As Boolean
           If fInsertGranted Then
             sSQL = "GRANT INSERT" & _
               " ON " & psTableViewName & _
-              " TO " & IIf(IsVersion7, "[" & sCurrentGroupName & "]", sCurrentGroupName)
+              " TO [" & sCurrentGroupName & "]"
             gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-          ElseIf IsVersion7 Then
+          Else
             sSQL = "DENY INSERT" & _
               " ON " & psTableViewName & _
               " TO [" & sCurrentGroupName & "]"
@@ -725,9 +700,9 @@ Private Function GrantTableViewPrivileges(psTableViewName As String) As Boolean
           If fDeleteGranted Then
             sSQL = "GRANT DELETE" & _
               " ON " & psTableViewName & _
-              " TO " & IIf(IsVersion7, "[" & sCurrentGroupName & "]", sCurrentGroupName)
+              " TO [" & sCurrentGroupName & "]"
             gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-          ElseIf IsVersion7 Then
+          Else
             sSQL = "DENY DELETE" & _
               " ON " & psTableViewName & _
               " TO [" & sCurrentGroupName & "]"
