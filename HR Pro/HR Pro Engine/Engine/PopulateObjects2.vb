@@ -265,7 +265,7 @@
 
         description.Objects = LoadComponents2(description, ScriptDB.ComponentTypes.Expression)
 
-        table.RecordDescription = description
+        table.Objects.Add(description)
       Next
 
     End Sub

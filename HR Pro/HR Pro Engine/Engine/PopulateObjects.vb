@@ -631,7 +631,7 @@
           'Get all child objects for this expression
           objDescription.Objects = Things.LoadComponents(objDescription, ScriptDB.ComponentTypes.Expression)
 
-          Table.RecordDescription = objDescription
+          Table.Objects.Add(objDescription)
         Next
 
         ' Masks
