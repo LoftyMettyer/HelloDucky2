@@ -3,7 +3,7 @@ Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "COA_Label.ocx"
 Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Object = "{98B2556E-F719-4726-9028-5F2EAB345800}#1.0#0"; "COASD_Checkbox.ocx"
-Object = "{3EBC9263-7DE3-4E87-8721-81ACE59CD84E}#1.0#0"; "COASD_Combo.ocx"
+Object = "{3EBC9263-7DE3-4E87-8721-81ACE59CD84E}#1.1#0"; "COASD_Combo.ocx"
 Object = "{3CCEDCBE-4766-494F-84C9-95993D77BD56}#1.0#0"; "COASD_Command.ocx"
 Object = "{FFAE31F9-C18D-4C20-AAF7-74C1356185D9}#1.0#0"; "COASD_Frame.ocx"
 Object = "{5F165695-EDF2-40E1-BD8E-8D2E6325BDCF}#1.0#0"; "COASD_Image.ocx"
@@ -393,6 +393,41 @@ Private mlngWorkflowID As Long
 Private maobjOriginalExpressions() As CExpression
 Private mfExpressionsChanged As Boolean
 
+Private Function ControlIsUsed(pctlControl As VB.Control, _
+  Optional pavMessages As Variant) As Boolean
+  ' Return True if the given controls is used and connot be deleted.
+  
+  Dim ctlControl As VB.Control
+  Dim fControlIsUsed As Boolean
+
+  fControlIsUsed = False
+  
+  '----------
+  ' Check if any lookup items use the given control for filtering.
+  '----------
+  For Each ctlControl In Me.Controls
+    If IsWebFormControl(ctlControl) Then
+      With ctlControl
+        If CLng(.WFItemType) = giWFFORMITEM_INPUTVALUE_LOOKUP Then
+          If .LookupFilterValue = pctlControl.WFIdentifier Then
+
+            ReDim Preserve pavMessages(3, UBound(pavMessages, 2) + 1)
+            pavMessages(1, UBound(pavMessages, 2)) = GetWebFormItemTypeName(.WFItemType) & " (" & .WFIdentifier & ")"
+            pavMessages(2, UBound(pavMessages, 2)) = "Lookup filter value"
+            pavMessages(3, UBound(pavMessages, 2)) = .TabIndex
+          
+            fControlIsUsed = True
+          End If
+        End If
+      End With
+    End If
+  Next ctlControl
+  Set ctlControl = Nothing
+
+  ControlIsUsed = fControlIsUsed
+  
+End Function
+
 Public Function CurrentElementDefinition() As COAWF_Webform
   On Error GoTo ErrorTrap
   
@@ -607,7 +642,7 @@ Private Function WorkflowExpressionsChanged() As Boolean
   ' Return TRUE if any of the Workflow expressions have been modified or created.
   Dim fExpressionsChanged As Boolean
   Dim sSQL As String
-  Dim rsTemp As DAO.Recordset
+  Dim rsTemp As dao.Recordset
   Dim fFound As Boolean
   Dim iLoop As Integer
   Dim iLoop2 As Integer
@@ -694,7 +729,7 @@ End Function
 Private Sub RememberOriginalExpressions()
   ' Read all of the Workflows original expressions.
   Dim sSQL As String
-  Dim rsTemp As DAO.Recordset
+  Dim rsTemp As dao.Recordset
   Dim objExpression As CExpression
 
   ReDim maobjOriginalExpressions(0)
@@ -730,7 +765,7 @@ Private Sub RestoreOriginalExpressions()
   Dim iLoop As Integer
   Dim fChanged As Boolean
   Dim sOriginalExprIDs As String
-  Dim rsTemp As DAO.Recordset
+  Dim rsTemp As dao.Recordset
 
   sOriginalExprIDs = "0"
 
@@ -951,9 +986,12 @@ End Function
 Public Function UpdateIdentifiers(pfElement As Boolean, _
   psOldIdentifier As String, _
   psNewIdentifier As String, _
-  plngOldTableID As Long, _
-  plngNewTableID As Long)
+  plngOldParameter As Long, _
+  plngNewParameter As Long)
 
+  ' plngOldParameter/plngNewParameter refer to tableIDs if we're dealing with recordSelectors.
+  ' plngOldParameter/plngNewParameter refer to column data types if we're dealing with lookups.
+  
   Dim iLoop As Integer
   Dim fElementIdentifierChanged As Boolean
   Dim fElementTableChanged As Boolean
@@ -961,7 +999,7 @@ Public Function UpdateIdentifiers(pfElement As Boolean, _
   Dim frmUsage As frmUsage
   Dim asMessages() As String
   Dim sSQL As String
-  Dim rsTemp As DAO.Recordset
+  Dim rsTemp As dao.Recordset
   Dim objExpr As CExpression
   Dim objComp As CExprComponent
   Dim lngExprID As Long
@@ -969,17 +1007,68 @@ Public Function UpdateIdentifiers(pfElement As Boolean, _
   Dim sExprName As String
   Dim sComponentType As String
   Dim alngValidTables() As Long
+  Dim asItems() As String
+  Dim ctlControl As VB.Control
+  Dim iSQLDataType As SQLDataType
+  Dim fItemOK As Boolean
   
   ' Clear the array of validation messages
   ' Column 0 = The message
   ReDim asMessages(0)
   
+  '----------
+  ' Update any lookup items that used the old identifier for filtering.
+  '----------
+  For Each ctlControl In Me.Controls
+    If IsWebFormControl(ctlControl) Then
+      With ctlControl
+        If CLng(.WFItemType) = giWFFORMITEM_INPUTVALUE_LOOKUP Then
+          If .LookupFilterValue = psOldIdentifier Then
+          
+            ' Check if the datatype has changed, invalidating it's use in a lookup filter.
+            If (plngOldParameter <> plngNewParameter) Then
+              iSQLDataType = GetColumnDataType(.LookupFilterColumn)
+              fItemOK = True
+      
+              Select Case iSQLDataType
+                Case dtVARCHAR, dtlongvarchar
+                  fItemOK = (plngNewParameter = dtVARCHAR) _
+                    Or (plngNewParameter = dtlongvarchar)
+                Case dtTIMESTAMP
+                    fItemOK = (plngNewParameter = dtTIMESTAMP)
+                Case dtinteger, dtNUMERIC
+                  fItemOK = (plngNewParameter = dtinteger) _
+                    Or (plngNewParameter = dtNUMERIC)
+                Case Else
+                  fItemOK = False
+              End Select
+              
+              If Not fItemOK Then
+                ReDim Preserve asMessages(UBound(asMessages) + 1)
+                asMessages(UBound(asMessages)) = _
+                  GetWebFormItemTypeName(.WFItemType) & " (" & .WFIdentifier & ") : " & _
+                  "Invalid lookup filter value selected"
+              End If
+            End If
+            
+            .LookupFilterValue = psNewIdentifier
+          End If
+        End If
+      End With
+    End If
+  Next ctlControl
+  Set ctlControl = Nothing
+        
+  
+  '----------
+  ' Update any expressions that used the old identifier or the old table.
+  '----------
   If (UCase(Trim(psOldIdentifier)) <> UCase(Trim(psNewIdentifier))) _
-    Or (plngOldTableID <> plngNewTableID) Then
+    Or (plngOldParameter <> plngNewParameter) Then
     
     fElementIdentifierChanged = pfElement _
       And (UCase(Trim(psOldIdentifier)) <> UCase(Trim(psNewIdentifier)))
-    fElementTableChanged = (plngOldTableID <> plngNewTableID)
+    fElementTableChanged = (plngOldParameter <> plngNewParameter)
     
     ' Update the identifiers in any of this Workflow's expressions
     sSQL = "SELECT tmpComponents.componentID, tmpComponents.type, tmpComponents.workflowItem, tmpComponents.workflowRecordTableID" & _
@@ -1036,9 +1125,9 @@ Public Function UpdateIdentifiers(pfElement As Boolean, _
         daoDb.Execute sSQL, dbFailOnError
 
         ' Check if the recordSelector table is still valid.
-        If (plngOldTableID <> plngNewTableID) Then
+        If (plngOldParameter <> plngNewParameter) Then
           ReDim alngValidTables(0)
-          TableAscendants plngNewTableID, alngValidTables
+          TableAscendants plngNewParameter, alngValidTables
           
           fFound = False
 
@@ -1077,20 +1166,20 @@ Public Function UpdateIdentifiers(pfElement As Boolean, _
     Set frmUsage = New frmUsage
     frmUsage.ResetList
 
-      For iLoop = 1 To UBound(asMessages)
-        frmUsage.AddToList asMessages(iLoop)
-      Next iLoop
+    For iLoop = 1 To UBound(asMessages)
+      frmUsage.AddToList asMessages(iLoop)
+    Next iLoop
 
-      Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbNormal
 
-      frmUsage.Width = (3 * Screen.Width / 4)
+    frmUsage.Width = (3 * Screen.Width / 4)
 
-      frmUsage.ShowMessage "Workflow '" & Trim(mfrmCallingForm.WorkflowName) & "'", "The following Expressions made reference this web form" & IIf(pfElement, "", " item") & ", and will need reviewing:", _
-        UsageCheckObject.Workflow, _
-        USAGEBUTTONS_PRINT + USAGEBUTTONS_OK, "validation"
+    frmUsage.ShowMessage "Workflow '" & Trim(mfrmCallingForm.WorkflowName) & "'", "The following Expressions/Web Form items made reference this web form" & IIf(pfElement, "", " item") & ", and will need reviewing:", _
+      UsageCheckObject.Workflow, _
+      USAGEBUTTONS_PRINT + USAGEBUTTONS_OK, "validation"
 
-      UnLoad frmUsage
-      Set frmUsage = Nothing
+    UnLoad frmUsage
+    Set frmUsage = Nothing
   End If
   
 End Function
@@ -3576,7 +3665,12 @@ Private Function DeleteSelectedControls(Optional pbIsCutting As Boolean) As Bool
   Dim avWebFormControls() As Variant
   Dim ctlControl As VB.Control
   Dim iSelectedControls As Integer
-
+  Dim fDeleteOK As Boolean
+  Dim avMessages() As Variant
+  Dim iLoop As Integer
+  Dim frmUsage As frmUsage
+  Dim iItemIndex As Integer
+  
   ' How many controls do we have
   iSelectedControls = SelectedControlsCount
 
@@ -3597,15 +3691,8 @@ Private Function DeleteSelectedControls(Optional pbIsCutting As Boolean) As Bool
   
   ' Do nothing if there are no selected controls.
   If iSelectedControls > 0 Then
-  
-    ' Clear the array of deleted controls.
-    For iIndex = 1 To UBound(gactlUndo_DeletedControls)
-      Set ctlControl = gactlUndo_DeletedControls(iIndex)
-      UnLoad ctlControl
-      ' Disassociate object variables.
-      Set ctlControl = Nothing
-    Next iIndex
-    ReDim gactlUndo_DeletedControls(0)
+    fDeleteOK = True
+    ReDim avMessages(3, 0)
     
     ' Construct an array of the selected controls.
     ReDim avWebFormControls(0)
@@ -3615,55 +3702,127 @@ Private Function DeleteSelectedControls(Optional pbIsCutting As Boolean) As Bool
           iIndex = UBound(avWebFormControls) + 1
           ReDim Preserve avWebFormControls(iIndex)
           Set avWebFormControls(iIndex) = ctlControl
+          
+          If ControlIsUsed(ctlControl, avMessages) Then
+            fDeleteOK = False
+          End If
         End If
       End If
     Next ctlControl
     
     ' Disassociate object variables.
     Set ctlControl = Nothing
+  
+    If Not fDeleteOK Then
+      If UBound(avMessages, 2) > 0 Then
+        Set frmUsage = New frmUsage
+        frmUsage.ResetList
 
-    ' Move all selected screen controls from the screen into the array of deleted controls.
-    For iIndex = 1 To UBound(avWebFormControls)
-           
-      Set ctlControl = avWebFormControls(iIndex)
+        For iLoop = 1 To UBound(avMessages, 2)
+          frmUsage.AddToList avMessages(1, iLoop) & " - " & avMessages(2, iLoop), avMessages(3, iLoop)
+        Next iLoop
+    
+        ' Close progress bar
+        gobjProgress.CloseProgress
 
-      iIndex2 = UBound(gactlUndo_DeletedControls) + 1
-      ReDim Preserve gactlUndo_DeletedControls(iIndex2)
-      Set gactlUndo_DeletedControls(iIndex2) = ctlControl
+        Screen.MousePointer = vbNormal
+    
+        frmUsage.Width = (3 * Screen.Width / 4)
+    
+        frmUsage.ShowMessage "Web Form '" & Trim(msWFIdentifier) & "'", _
+          "The selected item(s) cannot be deleted as they are used as follows:", _
+          UsageCheckObject.Workflow, _
+          USAGEBUTTONS_PRINT + USAGEBUTTONS_OK + USAGEBUTTONS_SELECT
+    
+        If frmUsage.Choice = vbRetry Then
+          ' Highlight the item 'selected' in the usage check form.
+          DeselectAllControls
 
-      With ctlControl
-        If ctlControl.Tag > 0 Then
-          
-          ' Hide the selection markers
-          ASRSelectionMarkers(ctlControl.Tag).Visible = False
-          ASRSelectionMarkers(ctlControl.Tag).AttachedObject = gactlUndo_DeletedControls(iIndex2)
-          
-          ' Unload the control's selection markers.
-          gobjProgress.UpdateProgress
-          
-          If Not fOK Then
-            Exit For
+          If frmUsage.Selection >= 0 Then
+            iItemIndex = CInt(frmUsage.Selection)
+
+            If iItemIndex > 0 Then
+              For Each ctlControl In Me.Controls
+                If IsWebFormControl(ctlControl) Then
+                  If ctlControl.TabIndex = iItemIndex Then
+                    ctlControl.Selected = True
+                    SelectControl ctlControl
+                    Exit For
+                  End If
+                End If
+              Next ctlControl
+              
+              Set ctlControl = Nothing
+              
+'  '            mcolwfElements(CStr(iElementIndex).HighLighted = True
+'              SelectElement mcolwfElements(CStr(iElementIndex))
+'
+'              'JPD 20061129 Fault 11533 - Ensure the selected element is visible.
+'              MoveToItem mcolwfElements(CStr(iElementIndex))
+'
+'              ReDim Preserve miSelectionOrder(UBound(miSelectionOrder) + 1)
+'              miSelectionOrder(UBound(miSelectionOrder)) = iElementIndex
+'
+'              RefreshMenu
+            End If
           End If
         End If
+    
+        UnLoad frmUsage
+        Set frmUsage = Nothing
+      End If
+    Else
+      ' Clear the array of deleted controls.
+      For iIndex = 1 To UBound(gactlUndo_DeletedControls)
+        Set ctlControl = gactlUndo_DeletedControls(iIndex)
+        UnLoad ctlControl
+        ' Disassociate object variables.
+        Set ctlControl = Nothing
+      Next iIndex
+      ReDim gactlUndo_DeletedControls(0)
+    
+      ' Move all selected screen controls from the screen into the array of deleted controls.
+      For iIndex = 1 To UBound(avWebFormControls)
+             
+        Set ctlControl = avWebFormControls(iIndex)
   
-        '.Tag = 0
-        .Visible = False
-        .Selected = False
-      End With
+        iIndex2 = UBound(gactlUndo_DeletedControls) + 1
+        ReDim Preserve gactlUndo_DeletedControls(iIndex2)
+        Set gactlUndo_DeletedControls(iIndex2) = ctlControl
+  
+        With ctlControl
+          If ctlControl.Tag > 0 Then
+            
+            ' Hide the selection markers
+            ASRSelectionMarkers(ctlControl.Tag).Visible = False
+            ASRSelectionMarkers(ctlControl.Tag).AttachedObject = gactlUndo_DeletedControls(iIndex2)
+            
+            ' Unload the control's selection markers.
+            gobjProgress.UpdateProgress
+            
+            If Not fOK Then
+              Exit For
+            End If
+          End If
+    
+          '.Tag = 0
+          .Visible = False
+          .Selected = False
+        End With
+        
+        ' Disassociate object variables.
+        Set ctlControl = Nothing
+      Next iIndex
+  
+      ' Mark the screen as having changed.
+      mfChanged = True
       
-      ' Disassociate object variables.
-      Set ctlControl = Nothing
-    Next iIndex
-
-    ' Mark the screen as having changed.
-    mfChanged = True
-    
-    If fOK Then
-      ' Set the last action flag and enable the Undo menu option.
-      giLastActionFlag = giACTION_DELETECONTROLS
-      frmSysMgr.RefreshMenu
+      If fOK Then
+        ' Set the last action flag and enable the Undo menu option.
+        giLastActionFlag = giACTION_DELETECONTROLS
+        frmSysMgr.RefreshMenu
+      End If
     End If
-    
   End If
   
 TidyUpAndExit:
@@ -3759,7 +3918,7 @@ Private Function ReadColumnControlValues(plngColumnID As Long) As Variant
   Dim avValues As Variant
   Dim asResults() As String
   Dim sSQL As String
-  Dim rsControlValues As DAO.Recordset
+  Dim rsControlValues As dao.Recordset
   
   ' Pull the column control values from the database.
   sSQL = "SELECT value" & _
@@ -4174,6 +4333,18 @@ Private Function CopyControlProperties(pCtlSource As VB.Control, _
     
     If WebFormItemHasProperty(iControlType, WFITEMPROP_FILEEXTENSIONS) Then
       .WFFileExtensions = pCtlSource.WFFileExtensions
+    End If
+    
+    If WebFormItemHasProperty(iControlType, WFITEMPROP_LOOKUPFILTERCOLUMN) Then
+      .LookupFilterColumn = pCtlSource.LookupFilterColumn
+    End If
+    
+    If WebFormItemHasProperty(iControlType, WFITEMPROP_LOOKUPFILTEROPERATOR) Then
+      .LookupFilterOperator = pCtlSource.LookupFilterOperator
+    End If
+    
+    If WebFormItemHasProperty(iControlType, WFITEMPROP_LOOKUPFILTERVALUE) Then
+      .LookupFilterValue = pCtlSource.LookupFilterValue
     End If
     
     ' Copy the source control's position and dimension's to the destination control.
@@ -5960,6 +6131,24 @@ Private Function SaveWebFormItems(pwfElement As COAWF_Webform) As Boolean
         Else
           asItems(65, iNewIndex) = False
         End If
+        
+        If WebFormItemHasProperty(iWFItemType, WFITEMPROP_LOOKUPFILTERCOLUMN) Then
+          asItems(67, iNewIndex) = .LookupFilterColumn
+        Else
+          asItems(67, iNewIndex) = 0
+        End If
+        
+        If WebFormItemHasProperty(iWFItemType, WFITEMPROP_LOOKUPFILTEROPERATOR) Then
+          asItems(68, iNewIndex) = .LookupFilterOperator
+        Else
+          asItems(68, iNewIndex) = 0
+        End If
+        
+        If WebFormItemHasProperty(iWFItemType, WFITEMPROP_LOOKUPFILTERVALUE) Then
+          asItems(69, iNewIndex) = .LookupFilterValue
+        Else
+          asItems(69, iNewIndex) = ""
+        End If
       End With
       
     End If
@@ -6607,6 +6796,9 @@ Public Function LoadWebFormItems() As Boolean
           ctlControl.Caption = asItems(10, iLoop)
           ctlControl.LookupTableID = asItems(48, iLoop)
           ctlControl.LookupColumnID = asItems(49, iLoop)
+          ctlControl.LookupFilterColumn = asItems(67, iLoop)
+          ctlControl.LookupFilterOperator = asItems(68, iLoop)
+          ctlControl.LookupFilterValue = asItems(69, iLoop)
           
         ElseIf iWFItemType = giWFFORMITEM_INPUTVALUE_NUMERIC Then
           'Input Size

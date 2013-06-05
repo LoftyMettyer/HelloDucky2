@@ -1351,6 +1351,7 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
       " INNER JOIN tmpWorkflowElements ON tmpWorkflowElementItems.elementID = tmpWorkflowElements.id" & _
       " WHERE tmpWorkflowElementItems.dbColumnID = " & Trim(Str(gLngColumnID)) & _
       "   OR tmpWorkflowElementItems.LookupColumnID = " & Trim(Str(gLngColumnID)) & _
+      "   OR tmpWorkflowElementItems.LookupFilterColumnID = " & Trim(Str(gLngColumnID)) & _
       " ORDER BY tmpWorkflowElements.type DESC"
     Set rsDAOTemp = daoDb.OpenRecordset(sSQL, _
       dbOpenForwardOnly, dbReadOnly)

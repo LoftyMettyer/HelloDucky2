@@ -75,7 +75,7 @@ Begin VB.Form frmWorkflowTimeout
       _ExtentY        =   17277
       _Version        =   393216
       Style           =   1
-      Tab             =   1
+      Tab             =   2
       TabHeight       =   520
       TabCaption(0)   =   "&General"
       TabPicture(0)   =   "frmWorkflowTimeout.frx":000C
@@ -85,23 +85,23 @@ Begin VB.Form frmWorkflowTimeout
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "Appea&rance"
       TabPicture(1)   =   "frmWorkflowTimeout.frx":0028
-      Tab(1).ControlEnabled=   -1  'True
+      Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "picTabContainer(1)"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "&Data"
       TabPicture(2)   =   "frmWorkflowTimeout.frx":0044
-      Tab(2).ControlEnabled=   0   'False
+      Tab(2).ControlEnabled=   -1  'True
       Tab(2).Control(0)=   "picTabContainer(2)"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       Begin VB.PictureBox picTabContainer 
          BackColor       =   &H80000010&
          BorderStyle     =   0  'None
-         Height          =   7300
+         Height          =   9210
          Index           =   2
-         Left            =   -74850
-         ScaleHeight     =   7305
+         Left            =   150
+         ScaleHeight     =   9210
          ScaleWidth      =   8400
          TabIndex        =   117
          TabStop         =   0   'False
@@ -110,16 +110,16 @@ Begin VB.Form frmWorkflowTimeout
          Begin VB.Frame fraValidation 
             Caption         =   "Validation :"
             Height          =   2535
-            Left            =   2900
-            TabIndex        =   163
-            Top             =   2200
+            Left            =   120
+            TabIndex        =   170
+            Top             =   4200
             Width           =   5500
             Begin VB.TextBox txtFileExtensions 
                Height          =   375
                Left            =   4320
                MultiLine       =   -1  'True
                ScrollBars      =   2  'Vertical
-               TabIndex        =   171
+               TabIndex        =   178
                Top             =   2040
                Width           =   975
             End
@@ -128,7 +128,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   400
                Left            =   1500
-               TabIndex        =   166
+               TabIndex        =   173
                Top             =   1605
                Width           =   1200
             End
@@ -137,7 +137,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   400
                Left            =   4100
-               TabIndex        =   168
+               TabIndex        =   175
                Top             =   1605
                Width           =   1200
             End
@@ -146,7 +146,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   400
                Left            =   200
-               TabIndex        =   165
+               TabIndex        =   172
                Top             =   1605
                Width           =   1200
             End
@@ -155,7 +155,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   400
                Left            =   2800
-               TabIndex        =   167
+               TabIndex        =   174
                Top             =   1605
                Width           =   1200
             End
@@ -163,14 +163,14 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "&Mandatory"
                Height          =   195
                Left            =   200
-               TabIndex        =   169
+               TabIndex        =   176
                Top             =   2160
                Width           =   1410
             End
             Begin SSDataWidgets_B.SSDBGrid grdValidation 
                Height          =   1140
                Left            =   200
-               TabIndex        =   164
+               TabIndex        =   171
                Top             =   360
                Width           =   5100
                _Version        =   196617
@@ -264,7 +264,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "File Extensions :"
                Height          =   195
                Left            =   3000
-               TabIndex        =   170
+               TabIndex        =   177
                Top             =   2160
                Width           =   1170
             End
@@ -281,7 +281,7 @@ Begin VB.Form frmWorkflowTimeout
                EndProperty
                Height          =   555
                Left            =   3000
-               TabIndex        =   173
+               TabIndex        =   180
                Top             =   1920
                Width           =   1410
             End
@@ -444,9 +444,9 @@ Begin VB.Form frmWorkflowTimeout
          Begin VB.Frame fraControlValues 
             Caption         =   "Control Values : "
             Height          =   855
-            Left            =   5680
+            Left            =   0
             TabIndex        =   140
-            Top             =   900
+            Top             =   3240
             Width           =   1500
             Begin VB.TextBox txtControlValues 
                Height          =   375
@@ -460,11 +460,44 @@ Begin VB.Form frmWorkflowTimeout
          End
          Begin VB.Frame fraLookup 
             Caption         =   "Lookup :"
-            Height          =   1200
+            Height          =   3120
             Left            =   2900
             TabIndex        =   142
             Top             =   900
-            Width           =   2500
+            Width           =   5265
+            Begin VB.ComboBox cboLookupFilterColumn 
+               Height          =   315
+               Left            =   1680
+               Style           =   2  'Dropdown List
+               TabIndex        =   149
+               Top             =   1380
+               Width           =   2000
+            End
+            Begin VB.CheckBox chkLookupFilter 
+               Caption         =   "&Filter Lookup Values"
+               Height          =   255
+               Left            =   120
+               TabIndex        =   147
+               Top             =   1080
+               Width           =   3555
+            End
+            Begin VB.ComboBox cboLookupFilterValue 
+               Height          =   315
+               Left            =   1680
+               Sorted          =   -1  'True
+               Style           =   2  'Dropdown List
+               TabIndex        =   153
+               Top             =   2190
+               Width           =   2000
+            End
+            Begin VB.ComboBox cboLookupFilterOperator 
+               Height          =   315
+               Left            =   1680
+               Style           =   2  'Dropdown List
+               TabIndex        =   151
+               Top             =   1785
+               Width           =   2000
+            End
             Begin VB.ComboBox cboLookupTable 
                Height          =   315
                Left            =   1800
@@ -480,6 +513,30 @@ Begin VB.Form frmWorkflowTimeout
                TabIndex        =   146
                Top             =   700
                Width           =   500
+            End
+            Begin VB.Label lblLookupFilterColumn 
+               Caption         =   "Filter Column :"
+               Height          =   285
+               Left            =   120
+               TabIndex        =   148
+               Top             =   1440
+               Width           =   1395
+            End
+            Begin VB.Label lblLookupFilterValue 
+               Caption         =   "Filter Value :"
+               Height          =   270
+               Left            =   120
+               TabIndex        =   152
+               Top             =   2235
+               Width           =   1260
+            End
+            Begin VB.Label lblLookupFilterOperator 
+               Caption         =   "Filter Operator :"
+               Height          =   270
+               Left            =   120
+               TabIndex        =   150
+               Top             =   1845
+               Width           =   1425
             End
             Begin VB.Label lblLookupTable 
                AutoSize        =   -1  'True
@@ -573,14 +630,14 @@ Begin VB.Form frmWorkflowTimeout
          Begin VB.Frame fraDefaultValue 
             Caption         =   "Default Value :"
             Height          =   2100
-            Left            =   0
-            TabIndex        =   147
-            Top             =   4800
+            Left            =   120
+            TabIndex        =   154
+            Top             =   6960
             Width           =   7815
             Begin VB.TextBox txtDefaultValue 
                Height          =   315
                Left            =   1485
-               TabIndex        =   152
+               TabIndex        =   159
                Top             =   300
                Width           =   5730
             End
@@ -588,7 +645,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   315
                Left            =   2835
                Style           =   2  'Dropdown List
-               TabIndex        =   158
+               TabIndex        =   165
                Top             =   1500
                Width           =   1035
             End
@@ -596,7 +653,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "..."
                Height          =   315
                Left            =   6900
-               TabIndex        =   162
+               TabIndex        =   169
                Top             =   700
                UseMaskColor    =   -1  'True
                Width           =   315
@@ -606,7 +663,7 @@ Begin VB.Form frmWorkflowTimeout
                Enabled         =   0   'False
                Height          =   315
                Left            =   1470
-               TabIndex        =   161
+               TabIndex        =   168
                Top             =   700
                Width           =   5430
             End
@@ -615,7 +672,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   195
                Index           =   0
                Left            =   200
-               TabIndex        =   150
+               TabIndex        =   157
                Top             =   360
                Value           =   -1  'True
                Width           =   930
@@ -625,7 +682,7 @@ Begin VB.Form frmWorkflowTimeout
                Height          =   195
                Index           =   3
                Left            =   200
-               TabIndex        =   151
+               TabIndex        =   158
                Top             =   760
                Width           =   1320
             End
@@ -634,7 +691,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Frame1"
                Height          =   195
                Left            =   200
-               TabIndex        =   153
+               TabIndex        =   160
                Top             =   1160
                Width           =   2000
                Begin VB.OptionButton optDefaultValue 
@@ -642,7 +699,7 @@ Begin VB.Form frmWorkflowTimeout
                   Height          =   195
                   Index           =   1
                   Left            =   1130
-                  TabIndex        =   155
+                  TabIndex        =   162
                   Top             =   0
                   Value           =   -1  'True
                   Width           =   855
@@ -652,7 +709,7 @@ Begin VB.Form frmWorkflowTimeout
                   Height          =   195
                   Index           =   0
                   Left            =   0
-                  TabIndex        =   154
+                  TabIndex        =   161
                   Top             =   0
                   Width           =   810
                End
@@ -660,7 +717,7 @@ Begin VB.Form frmWorkflowTimeout
             Begin COAWorkingPattern.COA_WorkingPattern wpDefaultValue 
                Height          =   765
                Left            =   4020
-               TabIndex        =   159
+               TabIndex        =   166
                Top             =   1100
                Width           =   1830
                _ExtentX        =   3228
@@ -669,7 +726,7 @@ Begin VB.Form frmWorkflowTimeout
             Begin COASpinner.COA_Spinner spnDefaultValue 
                Height          =   315
                Left            =   1695
-               TabIndex        =   157
+               TabIndex        =   164
                Top             =   1500
                Width           =   1500
                _ExtentX        =   2646
@@ -690,7 +747,7 @@ Begin VB.Form frmWorkflowTimeout
             Begin TDBNumberCtrl.TDBNumber numDefaultValue 
                Height          =   315
                Left            =   5900
-               TabIndex        =   160
+               TabIndex        =   167
                Top             =   1500
                Visible         =   0   'False
                Width           =   1500
@@ -762,7 +819,7 @@ Begin VB.Form frmWorkflowTimeout
             Begin GTMaskDate.GTMaskDate dtDefaultValue 
                Height          =   315
                Left            =   200
-               TabIndex        =   156
+               TabIndex        =   163
                Top             =   1500
                Width           =   1500
                _Version        =   65537
@@ -825,7 +882,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Calculation :"
                Height          =   195
                Left            =   195
-               TabIndex        =   149
+               TabIndex        =   156
                Top             =   600
                Width           =   1065
             End
@@ -833,7 +890,7 @@ Begin VB.Form frmWorkflowTimeout
                Caption         =   "Value :"
                Height          =   195
                Left            =   195
-               TabIndex        =   148
+               TabIndex        =   155
                Top             =   195
                Width           =   495
             End
@@ -1486,7 +1543,7 @@ Begin VB.Form frmWorkflowTimeout
          BorderStyle     =   0  'None
          Height          =   7300
          Index           =   1
-         Left            =   150
+         Left            =   -74850
          ScaleHeight     =   7305
          ScaleWidth      =   8400
          TabIndex        =   63
@@ -2004,7 +2061,7 @@ Begin VB.Form frmWorkflowTimeout
       Caption         =   "<Size Tester>"
       Height          =   255
       Left            =   840
-      TabIndex        =   172
+      TabIndex        =   179
       Top             =   10005
       Visible         =   0   'False
       Width           =   1305
@@ -2130,6 +2187,9 @@ Private miItemType As WorkflowWebFormItemTypes
 '   LOOKUP FRAME
     ' LookupTable - held in the control
     ' LookupColumn - held in the control
+    ' LookupFilterColumn - held in the control
+    ' LookupFilterOperator - held in the control
+    ' LookupFilterValue - held in the control
 '   CONTROLVALUES FRAME
     ' ControlValues - held in the control
 '   DEFAULTVALUES FRAME
@@ -2137,6 +2197,25 @@ Private miItemType As WorkflowWebFormItemTypes
 '   VALIDATION FRAME
     ' FileExtensions - held in the control
 
+Private Enum FilterOperators
+  giFILTEROP_UNDEFINED = 0
+  giFILTEROP_EQUALS = 1
+  giFILTEROP_NOTEQUALTO = 2
+  giFILTEROP_ISATMOST = 3
+  giFILTEROP_ISATLEAST = 4
+  giFILTEROP_ISMORETHAN = 5
+  giFILTEROP_ISLESSTHAN = 6
+  giFILTEROP_ON = 7
+  giFILTEROP_NOTON = 8
+  giFILTEROP_AFTER = 9
+  giFILTEROP_BEFORE = 10
+  giFILTEROP_ONORAFTER = 11
+  giFILTEROP_ONORBEFORE = 12
+  giFILTEROP_CONTAINS = 13
+  giFILTEROP_IS = 14
+  giFILTEROP_DOESNOTCONTAIN = 15
+  giFILTEROP_ISNOT = 16
+End Enum
 Private Sub RefreshValidationControls()
   If WebFormItemHasProperty(miItemType, WFITEMPROP_VALIDATION) Then
     With grdValidation
@@ -2499,7 +2578,7 @@ Private Sub cboRecordIdentificationElement_refresh(ByVal psCurrentElement As Str
   Dim wfTemp As VB.Control
   Dim asItems() As String
   Dim sSQL As String
-  Dim rsTables As DAO.Recordset
+  Dim rsTables As dao.Recordset
   Dim fDone As Boolean
   Dim fFound As Boolean
   
@@ -2661,7 +2740,7 @@ Private Sub cboRecordIdentificationRecordSelector_refresh(ByVal psCurrentRecSel 
   Dim wfTemp As VB.Control
   Dim asItems() As String
   Dim sSQL As String
-  Dim rsTables As DAO.Recordset
+  Dim rsTables As dao.Recordset
   Dim fDone As Boolean
   Dim fFound As Boolean
   Dim fNeeded As Boolean
@@ -2915,7 +2994,7 @@ Private Sub cboRecordIdentificationRecord_refresh(ByVal piCurrentRecord As Workf
   Dim asItems() As String
   Dim sTableIDs As String
   Dim sSQL As String
-  Dim rsTables As DAO.Recordset
+  Dim rsTables As dao.Recordset
   Dim sValidTableIDs As String
   
   iIndex = -1
@@ -3131,7 +3210,7 @@ Private Sub cboRecordIdentificationRecordTable_refresh(ByVal plngCurrentRecordTa
   ' Populate the combo and select the current or default value.
   Dim iRecord As WorkflowRecordSelectorTypes
   Dim sSQL As String
-  Dim rsTables As DAO.Recordset
+  Dim rsTables As dao.Recordset
   Dim lngLoop As Long
   Dim iLoop As Integer
   Dim iLoop2 As Integer
@@ -3280,7 +3359,7 @@ End Sub
 Private Sub cboRecordIdentificationTable_refresh(ByVal pLngCurrentTableID As Long)
   ' Populate the combo and select the current or default value.
   Dim sSQL As String
-  Dim rsTables As DAO.Recordset
+  Dim rsTables As dao.Recordset
   Dim iLoop As Integer
   Dim iIndex As Integer
   Dim iDefaultIndex As Integer
@@ -3341,7 +3420,7 @@ End Sub
 Private Sub cboLookupTable_refresh(ByVal pLngCurrentTableID As Long)
   ' Populate the combo and select the current or default value.
   Dim sSQL As String
-  Dim rsTables As DAO.Recordset
+  Dim rsTables As dao.Recordset
   Dim iLoop As Integer
   Dim iIndex As Integer
   Dim iDefaultIndex As Integer
@@ -3385,6 +3464,7 @@ Private Sub cboLookupTable_refresh(ByVal pLngCurrentTableID As Long)
       .ListIndex = iIndex
     Else
       cboLookupColumn_refresh 0
+      cboLookupFilterColumn_Refresh 0
     End If
   End With
   
@@ -3459,6 +3539,357 @@ Private Sub cboLookupColumn_refresh(ByVal plngCurrentColumnID As Long)
   End With
   
 End Sub
+
+Private Sub cboLookupFilterValue_Refresh(ByVal psCurrentValue As String)
+  ' Populate the combo and select the current or default value.
+  Dim iLoop As Integer
+  Dim iIndex As Integer
+  Dim iDefaultIndex As Integer
+  Dim asItems() As String
+  Dim lngLookupFilterColumnType As DataTypes
+  Dim fItemOK As Boolean
+  Dim sItemDescription As String
+  
+  iIndex = -1
+  iDefaultIndex = 0
+
+  With cboLookupFilterValue
+    .Clear
+
+    .AddItem "<None>"
+    .ItemData(.NewIndex) = "0"
+    .ListIndex = 0
+
+    If (chkLookupFilter.value = vbChecked) And (cboLookupFilterOperator.ListIndex >= 0) Then
+      ' Get the filter column data type, etc.
+      With recColEdit
+        .Index = "idxColumnID"
+        .Seek "=", cboLookupFilterColumn.ItemData(cboLookupFilterColumn.ListIndex)
+    
+        If .NoMatch Then
+          lngLookupFilterColumnType = sqlUnknown
+        Else
+          lngLookupFilterColumnType = .Fields("DataType")
+        End If
+      End With
+      
+      asItems = mfrmCallingForm.CurrentElementDefinition.Items
+      
+      For iLoop = 1 To UBound(asItems, 2)
+
+        Select Case asItems(2, iLoop)
+          Case giWFFORMITEM_BUTTON
+            fItemOK = False
+
+          Case giWFFORMITEM_INPUTVALUE_CHAR
+            fItemOK = (lngLookupFilterColumnType = dtVARCHAR) _
+              Or (lngLookupFilterColumnType = dtlongvarchar)
+          
+          Case giWFFORMITEM_INPUTVALUE_NUMERIC
+            fItemOK = (lngLookupFilterColumnType = dtinteger) _
+              Or (lngLookupFilterColumnType = dtNUMERIC)
+
+          Case giWFFORMITEM_INPUTVALUE_LOGIC
+            fItemOK = (lngLookupFilterColumnType = dtBIT)
+
+          Case giWFFORMITEM_INPUTVALUE_DATE
+            fItemOK = (lngLookupFilterColumnType = dtTIMESTAMP)
+
+          Case giWFFORMITEM_INPUTVALUE_DROPDOWN
+            fItemOK = (lngLookupFilterColumnType = dtVARCHAR) _
+              Or (lngLookupFilterColumnType = dtlongvarchar)
+
+          Case giWFFORMITEM_INPUTVALUE_LOOKUP
+            Select Case GetColumnDataType(CLng(asItems(49, iLoop)))
+              Case dtlongvarchar
+                fItemOK = (lngLookupFilterColumnType = dtVARCHAR) _
+                  Or (lngLookupFilterColumnType = dtlongvarchar)
+              Case dtNUMERIC
+                fItemOK = (lngLookupFilterColumnType = dtinteger) _
+                  Or (lngLookupFilterColumnType = dtNUMERIC)
+              Case dtinteger
+                fItemOK = (lngLookupFilterColumnType = dtinteger) _
+                  Or (lngLookupFilterColumnType = dtNUMERIC)
+              Case dtTIMESTAMP
+                fItemOK = (lngLookupFilterColumnType = dtTIMESTAMP)
+              Case dtVARCHAR
+                fItemOK = (lngLookupFilterColumnType = dtVARCHAR) _
+                  Or (lngLookupFilterColumnType = dtlongvarchar)
+              Case Else
+                fItemOK = False
+            End Select
+
+          Case giWFFORMITEM_INPUTVALUE_OPTIONGROUP
+            fItemOK = (lngLookupFilterColumnType = dtVARCHAR) _
+              Or (lngLookupFilterColumnType = dtlongvarchar)
+
+          Case Else
+            fItemOK = False
+        
+        End Select
+
+        If fItemOK _
+          And (mctlSelectedControl.WFIdentifier <> asItems(9, iLoop)) Then
+          .AddItem asItems(9, iLoop)
+        End If
+      Next iLoop
+
+      ' Get the indexes of the required/default values
+      For iLoop = 0 To .ListCount - 1
+        If .List(iLoop) = psCurrentValue Then
+          iIndex = iLoop
+          Exit For
+        End If
+      Next iLoop
+
+      If iIndex < 0 Then
+        iIndex = iDefaultIndex
+      End If
+
+      .Enabled = (.ListCount > 0) And (Not mfReadOnly)
+      If .ListCount > 0 Then
+        .ListIndex = iIndex
+      End If
+    Else
+      .Enabled = False
+    End If
+
+    .BackColor = IIf(.Enabled, vbWindowBackground, vbButtonFace)
+    lblLookupFilterValue.Enabled = .Enabled
+  End With
+  
+End Sub
+
+
+Private Sub cboLookupFilterColumn_Refresh(ByVal plngCurrentColumnID As Long)
+  ' Populate the combo and select the current or default value.
+  Dim iLoop As Integer
+  Dim iIndex As Integer
+  Dim iDefaultIndex As Integer
+  Dim lngTableID As Long
+
+  iIndex = -1
+  iDefaultIndex = 0
+
+  With cboLookupFilterColumn
+    .Clear
+
+    .AddItem "<None>"
+    .ItemData(.NewIndex) = "0"
+    .ListIndex = 0
+
+    If chkLookupFilter.value = vbChecked Then
+      ' Get the selected table.
+        If cboLookupTable.ListCount > 0 Then
+        lngTableID = cboLookupTable.ItemData(cboLookupTable.ListIndex)
+      End If
+
+      If lngTableID > 0 Then
+        ' Populate the combo
+        recColEdit.Index = "idxName"
+        recColEdit.Seek ">=", lngTableID
+  
+        If Not recColEdit.NoMatch Then
+          Do While Not recColEdit.EOF
+            If recColEdit.Fields("tableID") <> lngTableID Then
+              Exit Do
+            End If
+  
+            ' Add each column name to the lookup filter columns combo.
+            ' NB. We only want to add certain types of column. There's not use in
+            ' looking up OLE or logic values.
+            If (recColEdit.Fields("columnType") <> giCOLUMNTYPE_SYSTEM) And _
+              (recColEdit.Fields("columnType") <> giCOLUMNTYPE_LINK) And _
+              (Not recColEdit.Fields("deleted")) And _
+              (recColEdit.Fields("dataType") <> dtLONGVARBINARY) And _
+              (recColEdit.Fields("dataType") <> dtVARBINARY) Then
+  
+              .AddItem recColEdit.Fields("columnName").value
+              .ItemData(.NewIndex) = recColEdit.Fields("columnID")
+            End If
+  
+            recColEdit.MoveNext
+          Loop
+  
+          ' Get the indexes of the required/default values
+          For iLoop = 0 To .ListCount - 1
+            If .ItemData(iLoop) = plngCurrentColumnID Then
+              iIndex = iLoop
+              Exit For
+            End If
+          Next iLoop
+  
+          If iIndex < 0 Then
+            iIndex = iDefaultIndex
+          End If
+  
+          .Enabled = (.ListCount > 0) And (Not mfReadOnly)
+          If .ListCount > 0 Then
+            .ListIndex = iIndex
+          End If
+        End If
+      End If
+    Else
+      .Enabled = False
+    End If
+    
+    .BackColor = IIf(.Enabled, vbWindowBackground, vbButtonFace)
+    lblLookupFilterColumn.Enabled = .Enabled
+  End With
+  
+End Sub
+
+
+Private Sub cboLookupFilterOperator_Refresh(ByVal piCurrentOperatorID As Integer)
+  ' Populate the combo and select the current or default value.
+  Dim iLoop As Integer
+  Dim iIndex As Integer
+  Dim iDefaultIndex As Integer
+  Dim lngLookupFilterColumnType As DataTypes
+
+  iIndex = -1
+  iDefaultIndex = 0
+
+  With cboLookupFilterOperator
+    .Clear
+
+    If chkLookupFilter.value = vbChecked Then
+
+      ' Get the filter column data type, etc.
+      With recColEdit
+        .Index = "idxColumnID"
+        .Seek "=", cboLookupFilterColumn.ItemData(cboLookupFilterColumn.ListIndex)
+    
+        If .NoMatch Then
+          lngLookupFilterColumnType = sqlUnknown
+        Else
+          lngLookupFilterColumnType = .Fields("DataType")
+        End If
+      End With
+              
+      Select Case lngLookupFilterColumnType
+        Case sqlOle  ' Not required as OLEs are not permitted in the Lookup Filter Column selection.
+        
+        Case sqlBoolean ' Logic columns.
+          .AddItem OperatorDescription(giFILTEROP_EQUALS)
+          .ItemData(.NewIndex) = giFILTEROP_EQUALS
+          .AddItem OperatorDescription(giFILTEROP_NOTEQUALTO)
+          .ItemData(.NewIndex) = giFILTEROP_NOTEQUALTO
+
+        Case sqlNumeric, sqlInteger ' Numeric and Integer columns.
+          .AddItem OperatorDescription(giFILTEROP_EQUALS)
+          .ItemData(.NewIndex) = giFILTEROP_EQUALS
+          .AddItem OperatorDescription(giFILTEROP_NOTEQUALTO)
+          .ItemData(.NewIndex) = giFILTEROP_NOTEQUALTO
+          .AddItem OperatorDescription(giFILTEROP_ISMORETHAN)
+          .ItemData(.NewIndex) = giFILTEROP_ISMORETHAN
+          .AddItem OperatorDescription(giFILTEROP_ISATLEAST)
+          .ItemData(.NewIndex) = giFILTEROP_ISATLEAST
+          .AddItem OperatorDescription(giFILTEROP_ISLESSTHAN)
+          .ItemData(.NewIndex) = giFILTEROP_ISLESSTHAN
+          .AddItem OperatorDescription(giFILTEROP_ISATMOST)
+          .ItemData(.NewIndex) = giFILTEROP_ISATMOST
+  
+        Case sqlDate ' Date columns.
+          .AddItem OperatorDescription(giFILTEROP_ON)
+          .ItemData(.NewIndex) = giFILTEROP_ON
+          .AddItem OperatorDescription(giFILTEROP_NOTON)
+          .ItemData(.NewIndex) = giFILTEROP_NOTON
+          .AddItem OperatorDescription(giFILTEROP_AFTER)
+          .ItemData(.NewIndex) = giFILTEROP_AFTER
+          .AddItem OperatorDescription(giFILTEROP_BEFORE)
+          .ItemData(.NewIndex) = giFILTEROP_BEFORE
+          .AddItem OperatorDescription(giFILTEROP_ONORAFTER)
+          .ItemData(.NewIndex) = giFILTEROP_ONORAFTER
+          .AddItem OperatorDescription(giFILTEROP_ONORBEFORE)
+          .ItemData(.NewIndex) = giFILTEROP_ONORBEFORE
+  
+        Case sqlVarChar, sqlLongVarChar, sqlVarBinary  ' Character and Photo columns (photo columns are really character columns).
+          .AddItem OperatorDescription(giFILTEROP_IS)
+          .ItemData(.NewIndex) = giFILTEROP_IS
+          .AddItem OperatorDescription(giFILTEROP_ISNOT)
+          .ItemData(.NewIndex) = giFILTEROP_ISNOT
+          .AddItem OperatorDescription(giFILTEROP_CONTAINS)
+          .ItemData(.NewIndex) = giFILTEROP_CONTAINS
+          .AddItem OperatorDescription(giFILTEROP_DOESNOTCONTAIN)
+          .ItemData(.NewIndex) = giFILTEROP_DOESNOTCONTAIN
+      End Select
+
+      ' Get the indexes of the required/default values
+      For iLoop = 0 To .ListCount - 1
+        If .ItemData(iLoop) = piCurrentOperatorID Then
+          iIndex = iLoop
+          Exit For
+        End If
+      Next iLoop
+
+      If iIndex < 0 Then
+        iIndex = iDefaultIndex
+      End If
+
+      .Enabled = (.ListCount > 0) And (Not mfReadOnly)
+      If .ListCount > 0 Then
+        .ListIndex = iIndex
+      End If
+    Else
+      .Enabled = False
+    End If
+    
+    .BackColor = IIf(.Enabled, vbWindowBackground, vbButtonFace)
+    lblLookupFilterOperator.Enabled = .Enabled
+
+  End With
+  
+End Sub
+
+
+
+Private Function OperatorDescription(piOperatorCode As Integer) As String
+  ' Return the textual description og the given operator.
+  Dim sDesc As String
+  
+  Select Case piOperatorCode
+    Case giFILTEROP_EQUALS
+      sDesc = "is equal to"
+    Case giFILTEROP_NOTEQUALTO
+      sDesc = "is NOT equal to"
+    Case giFILTEROP_ISATMOST
+      sDesc = "is less than or equal to"
+    Case giFILTEROP_ISATLEAST
+      sDesc = "is greater than or equal to"
+    Case giFILTEROP_ISMORETHAN
+      sDesc = "is greater than"
+    Case giFILTEROP_ISLESSTHAN
+      sDesc = "is less than"
+    Case giFILTEROP_ON
+      sDesc = "is equal to"
+    Case giFILTEROP_NOTON
+      sDesc = "is NOT equal to"
+    Case giFILTEROP_AFTER
+      sDesc = "after"
+    Case giFILTEROP_BEFORE
+      sDesc = "before"
+    Case giFILTEROP_ONORAFTER
+      sDesc = "is equal to or after"
+    Case giFILTEROP_ONORBEFORE
+      sDesc = "is equal to or before"
+    Case giFILTEROP_CONTAINS
+      sDesc = "contains"
+    Case giFILTEROP_IS
+      sDesc = "is equal to"
+    Case giFILTEROP_DOESNOTCONTAIN
+      sDesc = "does not contain"
+    Case giFILTEROP_ISNOT
+      sDesc = "is NOT equal to"
+    Case Else
+      sDesc = ""
+  End Select
+  
+  OperatorDescription = sDesc
+  
+End Function
+
+
 
 Private Sub cboVOffsetBehaviour_Refresh(ByVal piCurrentValue As VerticalOffset)
   ' Populate the combo and select the current or default value.
@@ -4434,17 +4865,17 @@ Private Sub SaveProperties()
   Dim fCalcDefault As Boolean
   Dim sTemp As String
   Dim sOriginalIdentifier As String
-  Dim lngOriginalTableID As Long
+  Dim lngOldParameter As Long
   Dim sNewIdentifier As String
-  Dim lngNewTableID As Long
+  Dim lngNewParameter As Long
   Dim fMessageOK As Boolean
   Dim iIndex As Integer
   Dim objForm As Form
   
   sOriginalIdentifier = ""
-  lngOriginalTableID = 0
+  lngOldParameter = 0
   sNewIdentifier = ""
-  lngNewTableID = 0
+  lngNewParameter = 0
   
   If miItemType = giWFFORMITEM_FORM Then
     Set varControl = mfrmCallingForm
@@ -4787,7 +5218,7 @@ Private Sub SaveProperties()
   ' RecordIdentification frame
   '--------------------------------------------------
   If WebFormItemHasProperty(miItemType, WFITEMPROP_TABLEID) Then
-    lngOriginalTableID = varControl.TableID
+    lngOldParameter = varControl.TableID
     
     If cboRecordIdentificationTable.ListCount > 0 Then
       varControl.TableID = cboRecordIdentificationTable.ItemData(cboRecordIdentificationTable.ListIndex)
@@ -4795,7 +5226,7 @@ Private Sub SaveProperties()
       varControl.TableID = 0
     End If
   
-    lngNewTableID = varControl.TableID
+    lngNewParameter = varControl.TableID
   End If
   
   If WebFormItemHasProperty(miItemType, WFITEMPROP_DBRECORD) _
@@ -4864,9 +5295,41 @@ Private Sub SaveProperties()
 
   If WebFormItemHasProperty(miItemType, WFITEMPROP_LOOKUPCOLUMNID) Then
     If cboLookupColumn.ListCount > 0 Then
-      varControl.LookupColumnID = cboLookupColumn.ItemData(cboLookupColumn.ListIndex)
+      lngOldParameter = GetColumnDataType(varControl.LookupColumnID)
+      
+      If cboLookupColumn.ListCount > 0 Then
+        varControl.LookupColumnID = cboLookupColumn.ItemData(cboLookupColumn.ListIndex)
+      Else
+        varControl.LookupColumnID = 0
+      End If
+
+      lngNewParameter = GetColumnDataType(varControl.LookupColumnID)
     Else
       varControl.LookupColumnID = 0
+    End If
+  End If
+
+  If WebFormItemHasProperty(miItemType, WFITEMPROP_LOOKUPFILTERCOLUMN) Then
+    If cboLookupFilterColumn.ListCount > 0 Then
+      varControl.LookupFilterColumn = cboLookupFilterColumn.ItemData(cboLookupFilterColumn.ListIndex)
+    Else
+      varControl.LookupFilterColumn = 0
+    End If
+  End If
+
+  If WebFormItemHasProperty(miItemType, WFITEMPROP_LOOKUPFILTEROPERATOR) Then
+    If cboLookupFilterOperator.ListCount > 0 Then
+      varControl.LookupFilterOperator = cboLookupFilterOperator.ItemData(cboLookupFilterOperator.ListIndex)
+    Else
+      varControl.LookupFilterOperator = 0
+    End If
+  End If
+
+  If WebFormItemHasProperty(miItemType, WFITEMPROP_LOOKUPFILTERVALUE) Then
+    If cboLookupFilterValue.ListCount > 0 Then
+      varControl.LookupFilterValue = cboLookupFilterValue.List(cboLookupFilterValue.ListIndex)
+    Else
+      varControl.LookupFilterValue = ""
     End If
   End If
 
@@ -5059,8 +5522,8 @@ Private Sub SaveProperties()
   mfrmCallingForm.UpdateIdentifiers (miItemType = giWFFORMITEM_FORM), _
     sOriginalIdentifier, _
     sNewIdentifier, _
-    lngOriginalTableID, _
-    lngNewTableID
+    lngOldParameter, _
+    lngNewParameter
 
 End Sub
 
@@ -5282,6 +5745,40 @@ Private Sub cboLookupColumn_Click()
 End Sub
 
 
+Private Sub cboLookupFilterColumn_Click()
+  Dim lngOperator As Long
+  Dim sValue As String
+  
+  lngOperator = 0
+  If cboLookupFilterOperator.ListIndex >= 0 Then
+    lngOperator = cboLookupFilterOperator.ItemData(cboLookupFilterOperator.ListIndex)
+  End If
+  
+  sValue = ""
+  If cboLookupFilterValue.ListIndex >= 0 Then
+    sValue = cboLookupFilterValue.List(cboLookupFilterValue.ListIndex)
+  End If
+  
+  cboLookupFilterOperator_Refresh lngOperator
+  cboLookupFilterValue_Refresh sValue
+
+  Changed = True
+
+End Sub
+
+
+Private Sub cboLookupFilterOperator_Click()
+  Changed = True
+
+End Sub
+
+
+Private Sub cboLookupFilterValue_Click()
+  Changed = True
+
+End Sub
+
+
 Private Sub cboLookupTable_Click()
   Dim lngCurrentColumnID As Long
   
@@ -5292,6 +5789,15 @@ Private Sub cboLookupTable_Click()
   End If
   
   cboLookupColumn_refresh lngCurrentColumnID
+  
+  If cboLookupFilterColumn.ListCount > 0 Then
+    lngCurrentColumnID = cboLookupFilterColumn.ItemData(cboLookupFilterColumn.ListIndex)
+  Else
+    lngCurrentColumnID = 0
+  End If
+  
+  cboLookupFilterColumn_Refresh lngCurrentColumnID
+  
   Changed = True
   
 End Sub
@@ -5468,6 +5974,15 @@ End Sub
 
 Private Sub chkExcludeWeekends_Click()
   Changed = True
+End Sub
+
+Private Sub chkLookupFilter_Click()
+  cboLookupFilterColumn_Refresh 0
+  cboLookupFilterOperator_Refresh 0
+  cboLookupFilterValue_Refresh ""
+    
+  Changed = True
+
 End Sub
 
 Private Sub chkPasswordType_Click()
@@ -9263,6 +9778,118 @@ Private Function FormatScreen_Frame_Lookup() As Boolean
     cboLookupColumn.Visible = False
   End If
   
+  ' Format the LookupFilter controls if required.
+  If WebFormItemHasProperty(miItemType, WFITEMPROP_LOOKUPFILTER) Then
+    fFrameNeeded = True
+
+    With chkLookupFilter
+      .Top = sngCurrentControlTop + YGAP_CONTROL_LABEL
+      .Left = X_COLUMN1
+      .Visible = True
+    
+      If miItemType = giWFFORMITEM_FORM Then
+        .value = vbUnchecked ' Not available for forms
+      Else
+        .value = IIf((mctlSelectedControl.LookupFilterColumn > 0) And (Len(mctlSelectedControl.LookupFilterValue) > 0), vbChecked, vbUnchecked)
+      End If
+    End With
+
+    sngCurrentControlTop = sngCurrentControlTop _
+      + YGAP_CONTROL_CONTROL
+  Else
+    chkLookupFilter.Visible = False
+  End If
+  
+  ' Format the LookupFilterColumn controls if required.
+  If WebFormItemHasProperty(miItemType, WFITEMPROP_LOOKUPFILTERCOLUMN) Then
+    fFrameNeeded = True
+
+    With lblLookupFilterColumn
+      .Top = sngCurrentControlTop + YGAP_CONTROL_LABEL
+      .Left = X_COLUMN1
+      .Visible = True
+    End With
+
+    With cboLookupFilterColumn
+      .Top = sngCurrentControlTop
+      .Left = X_COLUMN2
+      .Width = msngFrameWidth _
+        - .Left _
+        - X_COLUMN1
+      .Visible = True
+
+      If miItemType <> giWFFORMITEM_FORM Then
+        cboLookupFilterColumn_Refresh mctlSelectedControl.LookupFilterColumn
+      End If
+    End With
+
+    sngCurrentControlTop = sngCurrentControlTop _
+      + YGAP_CONTROL_CONTROL
+  Else
+    lblLookupFilterColumn.Visible = False
+    cboLookupFilterColumn.Visible = False
+  End If
+
+  ' Format the LookupFilterOperator controls if required.
+  If WebFormItemHasProperty(miItemType, WFITEMPROP_LOOKUPFILTEROPERATOR) Then
+    fFrameNeeded = True
+
+    With lblLookupFilterOperator
+      .Top = sngCurrentControlTop + YGAP_CONTROL_LABEL
+      .Left = X_COLUMN1
+      .Visible = True
+    End With
+
+    With cboLookupFilterOperator
+      .Top = sngCurrentControlTop
+      .Left = X_COLUMN2
+      .Width = msngFrameWidth _
+        - .Left _
+        - X_COLUMN1
+      .Visible = True
+
+      If miItemType <> giWFFORMITEM_FORM Then
+        cboLookupFilterOperator_Refresh mctlSelectedControl.LookupFilterOperator
+      End If
+    End With
+
+    sngCurrentControlTop = sngCurrentControlTop _
+      + YGAP_CONTROL_CONTROL
+  Else
+    lblLookupFilterOperator.Visible = False
+    cboLookupFilterOperator.Visible = False
+  End If
+
+  ' Format the LookupFilterValue controls if required.
+  If WebFormItemHasProperty(miItemType, WFITEMPROP_LOOKUPFILTERVALUE) Then
+    fFrameNeeded = True
+
+    With lblLookupFilterValue
+      .Top = sngCurrentControlTop + YGAP_CONTROL_LABEL
+      .Left = X_COLUMN1
+      .Visible = True
+    End With
+
+    With cboLookupFilterValue
+      .Top = sngCurrentControlTop
+      .Left = X_COLUMN2
+      .Width = msngFrameWidth _
+        - .Left _
+        - X_COLUMN1
+      .Visible = True
+
+      If miItemType <> giWFFORMITEM_FORM Then
+        cboLookupFilterValue_Refresh mctlSelectedControl.LookupFilterValue
+      End If
+    End With
+
+    sngCurrentControlTop = sngCurrentControlTop _
+      + YGAP_CONTROL_CONTROL
+  Else
+    lblLookupFilterValue.Visible = False
+    cboLookupFilterValue.Visible = False
+  End If
+
   ' Format the frame
   With fraLookup
     If fFrameNeeded Then
@@ -9307,7 +9934,7 @@ Private Function FormatScreen_Frame_RecordIdentification() As Boolean
   Dim fFrameNeeded As Boolean
   Dim sngCurrentControlTop As Single
   Dim sSQL As String
-  Dim rsTables As DAO.Recordset
+  Dim rsTables As dao.Recordset
   Dim alngValidTables() As Long
   Dim fFound As Boolean
   Dim lngLoop As Long

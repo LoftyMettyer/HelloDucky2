@@ -263,7 +263,7 @@ Begin VB.Form frmWorkflowDesigner
       MousePointer    =   1
       Appearance      =   0
       Arrows          =   65536
-      Orientation     =   1179649
+      Orientation     =   1245185
    End
    Begin MSComCtl2.FlatScrollBar scrollVertical 
       Height          =   3375
@@ -276,7 +276,7 @@ Begin VB.Form frmWorkflowDesigner
       _Version        =   393216
       MousePointer    =   1
       Appearance      =   0
-      Orientation     =   1179648
+      Orientation     =   1245184
    End
    Begin ActiveBarLibraryCtl.ActiveBar abMenu 
       Left            =   120
@@ -894,7 +894,7 @@ End Sub
 Private Sub RememberOriginalExpressions()
   ' Read all of the Workflows original expressions.
   Dim sSQL As String
-  Dim rsTemp As DAO.Recordset
+  Dim rsTemp As dao.Recordset
   Dim objExpression As CExpression
   
   ReDim maobjOriginalExpressions(0)
@@ -928,7 +928,7 @@ Private Sub RestoreOriginalExpressions()
   Dim objExpression As CExpression
   Dim iLoop As Integer
   Dim sOriginalExprIDs As String
-  Dim rsTemp As DAO.Recordset
+  Dim rsTemp As dao.Recordset
   Dim aWFAllElements() As VB.Control
   
   ReDim aWFAllElements(0)
@@ -985,7 +985,7 @@ Public Function WorkflowExpressionsChanged() As Boolean
   ' Return TRUE if any of the Workflow expressions have been modified or created.
   Dim fExpressionsChanged As Boolean
   Dim sSQL As String
-  Dim rsTemp As DAO.Recordset
+  Dim rsTemp As dao.Recordset
   Dim fFound As Boolean
   Dim iLoop As Integer
   Dim iLoop2 As Integer
@@ -5095,7 +5095,7 @@ Private Sub ValidateElement_StoredData(pwfElement As VB.Control, _
   Dim avColumns() As Variant
   Dim iTableType As Integer
   Dim sSQL As String
-  Dim rsInfo As DAO.Recordset
+  Dim rsInfo As dao.Recordset
   Dim iParentCount As Integer
   Dim sMessagePrefix As String
   Dim sMessagePrefix2 As String
@@ -7991,7 +7991,9 @@ Private Sub PrintElementDetails_WebForm(pwfElement As VB.Control)
   Dim asItems() As String
   Dim asItemValues() As String
   Dim asValidations() As String
-
+  Dim objOperatorDef As clsOperatorDef
+  Dim sOperatorName As String
+  
   With mobjPrinter
     ' Caption
     .PrintNormal "Caption : " & pwfElement.Caption
@@ -8246,6 +8248,23 @@ Private Sub PrintElementDetails_WebForm(pwfElement As VB.Control)
 
             .PrintNormal "          Input Type : Lookup"
             .PrintNormal "          Column : " & GetColumnName(CLng(asItems(49, iLoop)))
+
+            .PrintNormal "          Filter Lookup Values : " & IIf((CLng(asItems(67, iLoop)) > 0) And (Len(asItems(69, iLoop)) > 0), "Yes", "No")
+            If (CLng(asItems(67, iLoop)) > 0) And (Len(asItems(69, iLoop)) > 0) Then
+              .PrintNormal "               Filter Column : " & GetColumnName(CLng(asItems(67, iLoop)))
+              
+              gobjOperatorDefs.Initialise
+              If gobjOperatorDefs.IsValidID(CLng(asItems(68, iLoop))) Then
+                Set objOperatorDef = gobjOperatorDefs.Item("O" & Trim$(Str(CLng(asItems(68, iLoop)))))
+                sOperatorName = objOperatorDef.Name
+                Set objOperatorDef = Nothing
+              Else
+                sOperatorName = "<Unknown>"
+              End If
+              
+              .PrintNormal "               Filter Operator : " & sOperatorName
+              .PrintNormal "               Filter Value : " & asItems(69, iLoop)
+            End If
 
             If CInt(asItems(58, iLoop)) = giWFDATAVALUE_CALC Then
               .PrintNormal "          Default Value Type : Calculation"
@@ -8693,7 +8712,7 @@ Public Sub UpdateIdentifiers(pwfBaseElement As VB.Control, _
   Dim sTemp As String
   Dim sSubMessage1 As String
   Dim sSQL As String
-  Dim rsTemp As DAO.Recordset
+  Dim rsTemp As dao.Recordset
   Dim objExpr As CExpression
   Dim objComp As CExprComponent
   Dim lngExprID As Long
@@ -11446,7 +11465,7 @@ Private Sub Form_Load()
     End If
   End If
   
-  cmdOK.Enabled = IsNew
+  cmdOk.Enabled = IsNew
   
   scrollVertical.SmallChange = SMALLSCROLL
   scrollHorizontal.SmallChange = SMALLSCROLL
@@ -12256,6 +12275,10 @@ Private Function SaveElementsAndLinks() As Boolean
                 Next iLoop3
                 
               End If
+            
+              .Fields("LookupFilterColumnID") = asItems(67, iLoop)
+              .Fields("LookupFilterOperator") = asItems(68, iLoop)
+              .Fields("LookupFilterValue") = asItems(69, iLoop)
             End If
             
             .Fields("CalcID") = val(asItems(56, iLoop))
@@ -13177,6 +13200,9 @@ Public Function LoadElementsAndLinks() As Boolean
             ' Col 64 = Width Behaviour [Fixed = 0, Full = 1]
             ' Col 65 = PasswordType [Hide text]
             ' Col 66 = File Extensions
+            ' Col 67 = Lookup Filter Column ID
+            ' Col 68 = Lookup Filter Operator
+            ' Col 69 = Lookup Filter Value
             
             ' NB. IF YOU ADD ANY MORE ROWS TO THIS ARRAY YOU'LL NEED TO CHANGE
             ' THE 'WFITEMPROPERTYCOUNT' CONSTANT
@@ -13337,7 +13363,10 @@ Public Function LoadElementsAndLinks() As Boolean
                   asItems(64, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("WidthBehaviour").value), 0, recWorkflowElementItemEdit.Fields("WidthBehaviour").value)
                   asItems(65, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("PasswordType").value), False, recWorkflowElementItemEdit.Fields("PasswordType").value)
                   asItems(66, UBound(asItems, 2)) = vbNullString
-                
+                  asItems(67, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterColumnID").value), False, recWorkflowElementItemEdit.Fields("LookupFilterColumnID").value)
+                  asItems(68, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterOperator").value), False, recWorkflowElementItemEdit.Fields("LookupFilterOperator").value)
+                  asItems(69, UBound(asItems, 2)) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterValue").value), False, recWorkflowElementItemEdit.Fields("LookupFilterValue").value)
+
                   If (recWorkflowElementItemEdit.Fields("itemType") = giWFFORMITEM_INPUTVALUE_FILEUPLOAD) Then
 
                     sControlValueList = vbNullString
@@ -13664,7 +13693,7 @@ Public Property Let IsChanged(pfNewValue As Boolean)
   ' Set the 'workflow changed' flag.
   
   mfChanged = pfNewValue
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
   ' Menu may be dependent on the status of the screen.
   'frmSysMgr.RefreshMenu
@@ -14566,7 +14595,7 @@ Private Sub LocateInitiatorOrTriggeredRecord()
   Dim asValidations() As String
   Dim alElementExprID() As Long
   Dim sMessage As String
-  Dim rsTemp As DAO.Recordset
+  Dim rsTemp As dao.Recordset
   Dim objComp As CExprComponent
   
   Dim lngExprID As Long
@@ -14869,7 +14898,7 @@ Private Sub LocateElement(psElementIdentifier As String, Optional psItemIdentifi
   Dim avColumns() As Variant
   Dim asValidations() As String
   Dim alElementExprID() As Long
-  Dim rsTemp As DAO.Recordset
+  Dim rsTemp As dao.Recordset
   Dim objComp As CExprComponent
   Dim lngExprID As Long
   Dim fLocateItems As Boolean
