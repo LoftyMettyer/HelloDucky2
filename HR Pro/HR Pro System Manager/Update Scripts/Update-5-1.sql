@@ -640,6 +640,21 @@ END
 --END
 
 /* ------------------------------------------------------------- */
+/* Step - Adding Report Pack field to Event Log for Report Pack  */
+/* ------------------------------------------------------------- */
+SELECT @iRecCount = count(id) FROM syscolumns
+where id = (select id from sysobjects where name = 'ASRSysEventLog')
+and name = 'ReportPack'
+
+if @iRecCount = 0
+BEGIN
+
+ SELECT @NVarCommand = 'ALTER TABLE [dbo].[ASRSysEventLog] 
+    ADD [ReportPack] bit NULL'
+ EXEC sp_executesql @NVarCommand
+END
+
+/* ------------------------------------------------------------- */
 /* Step - Menu & Category Enhancements */
 /* ------------------------------------------------------------- */
 PRINT 'Step - Menu & Category enhancements'
