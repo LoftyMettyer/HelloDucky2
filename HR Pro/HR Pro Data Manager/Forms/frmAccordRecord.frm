@@ -583,39 +583,39 @@ Private Sub PopulateCombos()
   End With
 
   With cboStatus
+     
+    .AddItem "Unknown", 0
+    .ItemData(0) = ACCORD_STATUS_UNKNOWN
     
-    .AddItem "Unknown"
-    .ItemData(.NewIndex) = ACCORD_STATUS_UNKNOWN
+    .AddItem "Pending", 1
+    .ItemData(1) = ACCORD_STATUS_PENDING
     
-    .AddItem "Pending"
-    .ItemData(.NewIndex) = ACCORD_STATUS_PENDING
+    .AddItem "Success", 2
+    .ItemData(2) = ACCORD_STATUS_SUCCESS
     
-    .AddItem "Success"
-    .ItemData(.NewIndex) = ACCORD_STATUS_SUCCESS
+    .AddItem "Success With Warnings", 3
+    .ItemData(3) = ACCORD_STATUS_SUCCESS_WARNINGS
     
-    .AddItem "Success With Warnings"
-    .ItemData(.NewIndex) = ACCORD_STATUS_SUCCESS_WARNINGS
+    .AddItem "Unknown Failure", 4
+    .ItemData(4) = ACCORD_STATUS_FAILURE_UNKNOWN
     
-    .AddItem "Unknown Failure"
-    .ItemData(.NewIndex) = ACCORD_STATUS_FAILURE_UNKNOWN
+    .AddItem "Ignored", 5
+    .ItemData(5) = ACCORD_STATUS_IGNORED
     
-    .AddItem "Ignored"
-    .ItemData(.NewIndex) = ACCORD_STATUS_IGNORED
+    .AddItem "Record Already Exists", 6
+    .ItemData(6) = ACCORD_STATUS_ALREADY_EXISTS
     
-    .AddItem "Record Already Exists"
-    .ItemData(.NewIndex) = ACCORD_STATUS_ALREADY_EXISTS
-    
-    .AddItem "More Information Required"
-    .ItemData(.NewIndex) = ACCORD_STATUS_MOREINFO_REQUIRED
+    .AddItem "More Information Required", 7
+    .ItemData(7) = ACCORD_STATUS_MOREINFO_REQUIRED
         
-    .AddItem "Record Does Not Exist"
-    .ItemData(.NewIndex) = ACCORD_STATUS_DOESNOT_EXIST
+    .AddItem "Record Does Not Exist", 8
+    .ItemData(8) = ACCORD_STATUS_DOESNOT_EXIST
         
-    .AddItem "Blocked"
-    .ItemData(.NewIndex) = ACCORD_STATUS_BLOCKED
+    .AddItem "Blocked", 9
+    .ItemData(9) = ACCORD_STATUS_BLOCKED
     
-    .AddItem "Void"
-    .ItemData(.NewIndex) = ACCORD_STATUS_VOID
+    .AddItem "Void", 10
+    .ItemData(10) = ACCORD_STATUS_VOID
     
   End With
 
