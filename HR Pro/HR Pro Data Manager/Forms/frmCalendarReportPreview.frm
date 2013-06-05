@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{F563792C-3E4B-4D13-A0C5-81DA6B7B314B}#1.0#0"; "COA_CalRepDates.ocx"
 Begin VB.Form frmCalendarReportPreview 
@@ -72,11 +72,11 @@ Begin VB.Form frmCalendarReportPreview
          Width           =   405
       End
       Begin VB.CommandButton cmdLastMonth 
-         DisabledPicture =   "frmCalendarReportPreview.frx":0F99
+         DisabledPicture =   "frmCalendarReportPreview.frx":0EFA
          Enabled         =   0   'False
          Height          =   315
          Left            =   4275
-         Picture         =   "frmCalendarReportPreview.frx":135F
+         Picture         =   "frmCalendarReportPreview.frx":12C0
          Style           =   1  'Graphical
          TabIndex        =   8
          ToolTipText     =   "Last Month"
@@ -84,11 +84,11 @@ Begin VB.Form frmCalendarReportPreview
          Width           =   405
       End
       Begin VB.CommandButton cmdNextMonth 
-         DisabledPicture =   "frmCalendarReportPreview.frx":174C
+         DisabledPicture =   "frmCalendarReportPreview.frx":1604
          Enabled         =   0   'False
          Height          =   315
          Left            =   3915
-         Picture         =   "frmCalendarReportPreview.frx":1AFF
+         Picture         =   "frmCalendarReportPreview.frx":19B7
          Style           =   1  'Graphical
          TabIndex        =   7
          ToolTipText     =   "Next Month"
@@ -96,11 +96,11 @@ Begin VB.Form frmCalendarReportPreview
          Width           =   285
       End
       Begin VB.CommandButton cmdPrevMonth 
-         DisabledPicture =   "frmCalendarReportPreview.frx":1EBF
+         DisabledPicture =   "frmCalendarReportPreview.frx":1CFB
          Enabled         =   0   'False
          Height          =   315
          Left            =   480
-         Picture         =   "frmCalendarReportPreview.frx":226E
+         Picture         =   "frmCalendarReportPreview.frx":20AA
          Style           =   1  'Graphical
          TabIndex        =   3
          ToolTipText     =   "Previous Month"
@@ -572,7 +572,7 @@ Begin VB.Form frmCalendarReportPreview
       AllowGroupShrinking=   0   'False
       AllowDragDrop   =   0   'False
       SelectTypeCol   =   0
-      PictureRecordSelectors=   "frmCalendarReportPreview.frx":2624
+      PictureRecordSelectors=   "frmCalendarReportPreview.frx":23EE
       BalloonHelp     =   0   'False
       RowNavigation   =   1
       MaxSelectedRows =   0
