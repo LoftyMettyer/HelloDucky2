@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   6465
@@ -956,11 +956,11 @@ Private Sub List1_GotFocus()
   Refresh_Controls
 End Sub
 
-Private Sub Display_Button(Button As VB.CommandButton, ByVal BtnOpt As Long, ByVal x As Long, ByRef y As Long)
+Private Sub Display_Button(Button As VB.CommandButton, ByVal BtnOpt As Long, ByVal X As Long, ByRef Y As Long)
   If (Me.Options And BtnOpt) Then
-    Button.Move x, y
+    Button.Move X, Y
     Button.Visible = True
-    y = y + cmdNew.Height + ((UI.GetSystemMetrics(SM_CYFRAME) * Screen.TwipsPerPixelY) * 1.5)
+    Y = Y + cmdNew.Height + ((UI.GetSystemMetrics(SM_CYFRAME) * Screen.TwipsPerPixelY) * 1.5)
   Else
     Button.Visible = False
   End If
@@ -1463,7 +1463,8 @@ Dim fAllColumns As Boolean
   
   If List2.ListCount > 0 Then
     ' Add the columns to the grid.
-    fAllColumns = True
+    ' Unless this is a workflow pending steps. Fault HRPRO-2197.
+    If Not (mutlUtilityType = utlWorkflow) Then fAllColumns = True
   End If
   
   fAllColumns = fAllColumns And (List2.ListCount > 0)
@@ -1645,7 +1646,7 @@ Private Function CanStillSeeDefinition(lngDefID As Long) As Boolean
 
 End Function
 
-Private Sub List1_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub List1_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
 
   If Button = vbRightButton Then
   
