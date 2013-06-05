@@ -773,12 +773,12 @@ Private Sub Login()
   Set rsSQLInfo = Nothing
   
   ' The version of SQL Server is not 2008 so tell the user.
-  If glngSQLVersion < 10 Then
+  If glngSQLVersion < 9 Then
     ' The version of SQL Server is neither 6.5 nor 7.0 so tell the user.
     Screen.MousePointer = vbNormal
     gobjProgress.CloseProgress
     MsgBox "You are running an unsupported version of SQL Server." & vbCrLf & vbCrLf & _
-      "OpenHR requires SQL Server version 2008 or above.", _
+      "OpenHR requires SQL Server version 2005 or above.", _
       vbOKOnly, App.ProductName
     Exit Sub
   End If
