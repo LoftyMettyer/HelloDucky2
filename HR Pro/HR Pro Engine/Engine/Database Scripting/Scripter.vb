@@ -316,6 +316,7 @@ Namespace ScriptDB
       Dim sSQLCode_AuditInsert As String = String.Empty
       Dim sSQLCode_AuditUpdate As String = String.Empty
       Dim sSQLCode_AuditDelete As String = String.Empty
+      Dim sSQLCode_Audit As String = String.Empty
 
       Dim sValidation As String
 
@@ -377,6 +378,7 @@ Namespace ScriptDB
           sSQLCode_AuditInsert = String.Empty
           sSQLCode_AuditUpdate = String.Empty
           sSQLCode_AuditDelete = String.Empty
+          sSQLCode_Audit = String.Empty
           sSQLPostAuditCalcs = String.Empty
           sSQLUniqueCalcs = String.Empty
 
@@ -629,6 +631,8 @@ Namespace ScriptDB
             sSQLCode_AuditDelete = String.Format("    INSERT @audit (id, oldvalue, newvalue, tableid, tablename, columnname, columnid, recorddesc)" & vbNewLine & _
                                            "{0};" _
                                           , String.Join(vbNewLine & "        UNION" & vbNewLine, aryAuditDeletes.ToArray()))
+            sSQLCode_Audit = "    INSERT dbo.[ASRSysAuditTrail] ([username], [datetimestamp], [recordid], [oldvalue], [newvalue], [tableid], [tablename], [columnname], [columnid], [deleted], [recorddesc])" & vbNewLine & _
+                             "		     SELECT SYSTEM_USER, @dChangeDate, [id], [oldvalue], [newvalue], [tableid], [tablename], [columnname], [columnid], 1, [recorddesc] FROM @audit" & vbNewLine & vbNewLine
           End If
 
           ' Update statement of all the calculated columns
@@ -698,8 +702,7 @@ Namespace ScriptDB
               sSQLWriteableColumns & vbNewLine & _
               "    -- Audit Trail" & vbNewLine & _
               "{2}" & vbNewLine & vbNewLine & _
-              "    INSERT dbo.[ASRSysAuditTrail] (username, datetimestamp, recordid, oldvalue, newvalue, tableid, tablename, columnname, columnid, deleted, recorddesc)" & vbNewLine & _
-              "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, tableid, tablename, columnname, columnid, 0, recorddesc FROM @audit" & vbNewLine & vbNewLine & _
+              sSQLCode_Audit & _
               sValidation & vbNewLine & _
               "    DELETE [dbo].[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3};" & vbNewLine _
               , objTable.Name, sTriggerName, sSQLCode_AuditInsert, CInt(objTable.ID))
@@ -735,13 +738,11 @@ Namespace ScriptDB
               "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
               sSQLCalculatedColumns & vbNewLine & vbNewLine & _
-              "    --INSERT [dbo].[{4}] ([spid], [tablefromid]) VALUES (@@spid,{3});" & vbNewLine & vbNewLine & _
               sSQLParentColumns & vbNewLine & _
               sSQLChildColumns & vbNewLine & vbNewLine & _
               sSQLUniqueCalcs & vbNewLine & vbNewLine & _
               "{6}" & vbNewLine & _
-              "    INSERT dbo.[ASRSysAuditTrail] (username, datetimestamp, recordid, oldvalue, newvalue, tableid, tablename, columnname, columnid, deleted, recorddesc)" & vbNewLine & _
-              "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, tableid, tablename, columnname, columnid, 0, recorddesc FROM @audit;" & vbNewLine & vbNewLine & _
+              sSQLCode_Audit & _
               "{7}" & vbNewLine & vbNewLine _
               , objTable.Name, sTriggerName _
               , "", CInt(objTable.ID), Tables.sysTriggerTransaction _
@@ -760,8 +761,7 @@ Namespace ScriptDB
               "    INSERT [dbo].[{4}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {5}, 3, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
               "    -- Audit Trail" & vbNewLine & _
               "{2}" & vbNewLine & vbNewLine & _
-              "    INSERT dbo.[ASRSysAuditTrail] ([username], [datetimestamp], [recordid], [oldvalue], [newvalue], [tableid], [tablename], [columnname], [columnid], [deleted], [recorddesc])" & vbNewLine & _
-              "		     SELECT SYSTEM_USER, @dChangeDate, [id], [oldvalue], [newvalue], [tableid], [tablename], [columnname], [columnid], 1, [recorddesc] FROM @audit" & vbNewLine & vbNewLine & _
+              sSQLCode_Audit & _
               "{3}" & vbNewLine & vbNewLine & _
               "    -- Clear the temporary trigger status table" & vbNewLine & vbNewLine & _
               "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {5};" & vbNewLine & vbNewLine _
