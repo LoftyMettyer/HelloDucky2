@@ -1251,8 +1251,8 @@ Private Sub DeleteViews()
   Dim sViewName As String
   Dim aLngViewID() As Long
   Dim sSQL As String
-  Dim rsModules As dao.Recordset
-  Dim rsTemp As dao.Recordset
+  Dim rsModules As DAO.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim sModuleName As String
   Dim frmUse As frmUsage
   Dim fUsed As Boolean
@@ -1682,7 +1682,7 @@ Private Function lstColumns_Refresh() As Boolean
   Dim lngTableID As Long
   Dim sSQL As String
   Dim sMessage As String
-  Dim rsColumns As dao.Recordset
+  Dim rsColumns As DAO.Recordset
   
   sMessage = ""
   
@@ -1846,7 +1846,7 @@ Private Function AddViewColumns_Transaction(plngViewID As Long, plngViewTableID 
   Dim sNodeLabel As String
   Dim frmViewProperties As frmViewProp
   Dim nodX As SSNode
-  Dim rsColumns As dao.Recordset
+  Dim rsColumns As DAO.Recordset
   
   ' Begin the transaction of data to the local database.
   daoWS.BeginTrans

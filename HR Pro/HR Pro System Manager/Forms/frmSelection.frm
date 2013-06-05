@@ -762,7 +762,7 @@ Private Function lstItems_ExpressionsPopulate() As Boolean
   Dim fOK As Boolean
   Dim iNextIndex As Integer
   Dim sSQL As String
-  Dim rsRecords As dao.Recordset
+  Dim rsRecords As DAO.Recordset
   Dim objListItem As ListItem
 
   fOK = True
@@ -834,7 +834,7 @@ Private Function lstitems_OrdersPopulate() As Boolean
   
   Dim fOK As Boolean
   Dim sSQL As String
-  Dim rsRecords As dao.Recordset
+  Dim rsRecords As DAO.Recordset
   Dim objListItem As ListItem
     
   fOK = True
@@ -884,7 +884,7 @@ Private Function items_EmailPopulate() As Boolean
   
   Dim fOK As Boolean
   Dim sSQL As String
-  Dim rsRecords As dao.Recordset
+  Dim rsRecords As DAO.Recordset
   Dim objListItem As ListItem
 
   fOK = True
@@ -955,7 +955,7 @@ Private Function lstitems_OutlookFolderPopulate() As Boolean
   
   Dim fOK As Boolean
   Dim sSQL As String
-  Dim rsRecords As dao.Recordset
+  Dim rsRecords As DAO.Recordset
   Dim objListItem As ListItem
 
   fOK = True
