@@ -25,6 +25,8 @@ Private mblnSave As Boolean
 Private mlngSaveExisting As Long
 Private mblnEmail As Boolean
 Private mstrFileName As String
+Private mlngSaveFileFormat As Long
+Private mlngEmailFileFormat As Long
 
 Private mstrErrorMessage As String
 Private mlngPageCount As Long
@@ -1064,6 +1066,7 @@ Public Sub Complete()
 
   Dim objDefPrinter As cSetDfltPrinter
   Dim strDefaultPrinter As String
+  Dim strFormat As String
   
   On Local Error GoTo LocalErr
   
@@ -1075,7 +1078,16 @@ Public Sub Complete()
   'SAVE
   If mstrFileName <> vbNullString Then
     mstrErrorMessage = "Error saving file <" & mstrFileName & ">"
-    mwrdDoc.SaveAs mstrFileName, giOfficeSaveVersion_Word
+    ''mwrdDoc.SaveAs mstrFileName, giOfficeSaveVersion_Word
+    'mwrdDoc.SaveAs mstrFileName, mlngSaveFileFormat
+    
+    strFormat = mobjParent.GetOfficeFormat(mlngSaveFileFormat, giOfficeVersion_Word)
+    If strFormat = "" Then
+      mstrErrorMessage = "This definition is set to save to a file format which is not compatible with your version of Microsoft Office."
+      GoTo TidyAndExit
+    End If
+    mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(strFormat)
+
   End If
   
   
@@ -1112,12 +1124,12 @@ Public Sub Complete()
     mwrdApp.Activate
     Set mwrdApp = Nothing     'Stops word quitting!
   Else
-    Do While mwrdApp.BackgroundPrintingStatus > 0
+    Do While mwrdApp.BackgroundPrintingStatus > 0 Or mwrdApp.BackgroundSavingStatus > 0
       DoEvents
     Loop
     
     mwrdDoc.Close False
-    mwrdApp.Quit
+'    mwrdApp.Quit
   End If
 
   mstrErrorMessage = vbNullString
@@ -1191,3 +1203,18 @@ Public Property Get ErrorMessage() As String
   ErrorMessage = mstrErrorMessage
 End Property
 
+Public Property Let SaveFileFormat(lngSaveFileFormat As Long)
+  mlngSaveFileFormat = lngSaveFileFormat
+End Property
+
+Public Property Get SaveFileFormat() As Long
+  SaveFileFormat = mlngSaveFileFormat
+End Property
+
+Public Property Let EmailFileFormat(lngEmailFileFormat As Long)
+  mlngEmailFileFormat = lngEmailFileFormat
+End Property
+
+Public Property Get EmailFileFormat() As Long
+  EmailFileFormat = mlngEmailFileFormat
+End Property
