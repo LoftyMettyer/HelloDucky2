@@ -223,11 +223,12 @@ Private Function CreateSP_MobileCheckLogin() As Boolean
   sProcSQL = sProcSQL & _
     "  DECLARE @iuserID integer," & vbNewLine & _
     "          @sActualUserName varchar(255)," & vbNewLine & _
-    "          @sRoleName varchar(255);" & vbNewLine & _
+    "          @sRoleName varchar(255)," & vbNewLine & _
+    "          @dtExpiryDate datetime;" & vbNewLine & _
     "  SET @iuserID = 0;" & vbNewLine & _
     "  SET @psMessage = '';" & vbNewLine & _
     "  -- Get the record id for this user" & vbNewLine & _
-    "  SELECT @iuserID = [ID]" & vbNewLine & _
+    "  SELECT @iuserID = [ID], @dtExpiryDate = [" & mvar_sLeavingDateColumn & "]" & vbNewLine & _
     "    FROM [" & mvar_sLoginTable & "]" & vbNewLine & _
     "    WHERE ISNULL([" & mvar_sLoginColumn & "], '') = @psKeyParameter" & vbNewLine & _
     "  IF @iuserID > 0" & vbNewLine & _
@@ -242,7 +243,9 @@ Private Function CreateSP_MobileCheckLogin() As Boolean
     "  IF @iuserID = 0" & vbNewLine & _
     "      SET @psMessage = 'Account not found.';" & vbNewLine & _
     "  IF @psMessage = '' AND ISNULL(@psPWDParameter, '')  = ''" & vbNewLine & _
-    "      SET @psMessage = 'Account not activated.';" & vbNewLine
+    "      SET @psMessage = 'Account not activated.';" & vbNewLine & _
+    "  IF @psMessage = '' AND DATEDIFF(d, GETDATE(), ISNULL(@dtExpiryDate, GETDATE())) < 0" & vbNewLine & _
+    "      SET @psMessage = 'Account Expired.';" & vbNewLine
 
   sProcSQL = sProcSQL & _
     "    EXEC dbo.spASRIntGetActualUserDetailsForLogin" & vbNewLine & _
