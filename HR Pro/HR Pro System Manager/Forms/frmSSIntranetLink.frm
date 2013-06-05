@@ -27,81 +27,6 @@ Begin VB.Form frmSSIntranetLink
    ScaleWidth      =   9360
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
-   Begin VB.Frame fraChartLink 
-      Caption         =   "Chart :"
-      Height          =   3375
-      Left            =   2880
-      TabIndex        =   61
-      Top             =   8280
-      Width           =   6300
-      Begin MSChart20Lib.MSChart MSChart1 
-         Height          =   2505
-         Left            =   2730
-         OleObjectBlob   =   "frmSSIntranetLink.frx":000C
-         TabIndex        =   69
-         Top             =   555
-         Width           =   3330
-      End
-      Begin VB.CheckBox chkShowValues 
-         Caption         =   "Show &Values"
-         Height          =   210
-         Left            =   195
-         TabIndex        =   66
-         Top             =   1695
-         Width           =   1665
-      End
-      Begin VB.CommandButton cmdChartData 
-         Caption         =   "Data..."
-         Height          =   375
-         Left            =   180
-         TabIndex        =   68
-         Top             =   2355
-         Width           =   1200
-      End
-      Begin VB.CheckBox chkStackSeries 
-         Caption         =   "S&tack Series"
-         Height          =   210
-         Left            =   210
-         TabIndex        =   67
-         Top             =   2040
-         Width           =   1665
-      End
-      Begin VB.CheckBox chkDottedGridlines 
-         Caption         =   "Dotted &Gridlines"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   65
-         Top             =   1350
-         Width           =   1980
-      End
-      Begin VB.CheckBox chkShowLegend 
-         Caption         =   "Show &Legend"
-         Height          =   240
-         Left            =   195
-         TabIndex        =   64
-         Top             =   990
-         Width           =   1710
-      End
-      Begin VB.ComboBox cboChartType 
-         Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":24FC
-         Left            =   195
-         List            =   "frmSSIntranetLink.frx":24FE
-         Style           =   2  'Dropdown List
-         TabIndex        =   63
-         Top             =   555
-         Width           =   2205
-      End
-      Begin VB.Label lblChartyType 
-         AutoSize        =   -1  'True
-         Caption         =   "Chart Type :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   62
-         Top             =   300
-         Width           =   1095
-      End
-   End
    Begin VB.Frame fraDBValue 
       Caption         =   "Database Value :"
       Height          =   1875
@@ -215,6 +140,81 @@ Begin VB.Form frmSSIntranetLink
          TabIndex        =   80
          Top             =   1575
          Width           =   1785
+      End
+   End
+   Begin VB.Frame fraChartLink 
+      Caption         =   "Chart :"
+      Height          =   3255
+      Left            =   2880
+      TabIndex        =   61
+      Top             =   8280
+      Width           =   6300
+      Begin MSChart20Lib.MSChart MSChart1 
+         Height          =   2505
+         Left            =   2730
+         OleObjectBlob   =   "frmSSIntranetLink.frx":000C
+         TabIndex        =   69
+         Top             =   555
+         Width           =   3330
+      End
+      Begin VB.CheckBox chkShowValues 
+         Caption         =   "Show &Values"
+         Height          =   210
+         Left            =   195
+         TabIndex        =   66
+         Top             =   1695
+         Width           =   1665
+      End
+      Begin VB.CommandButton cmdChartData 
+         Caption         =   "Data..."
+         Height          =   375
+         Left            =   180
+         TabIndex        =   68
+         Top             =   2355
+         Width           =   1200
+      End
+      Begin VB.CheckBox chkStackSeries 
+         Caption         =   "S&tack Series"
+         Height          =   210
+         Left            =   210
+         TabIndex        =   67
+         Top             =   2040
+         Width           =   1665
+      End
+      Begin VB.CheckBox chkDottedGridlines 
+         Caption         =   "Dotted &Gridlines"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   65
+         Top             =   1350
+         Width           =   1980
+      End
+      Begin VB.CheckBox chkShowLegend 
+         Caption         =   "Show &Legend"
+         Height          =   240
+         Left            =   195
+         TabIndex        =   64
+         Top             =   990
+         Width           =   1710
+      End
+      Begin VB.ComboBox cboChartType 
+         Height          =   315
+         ItemData        =   "frmSSIntranetLink.frx":24FC
+         Left            =   195
+         List            =   "frmSSIntranetLink.frx":24FE
+         Style           =   2  'Dropdown List
+         TabIndex        =   63
+         Top             =   555
+         Width           =   2205
+      End
+      Begin VB.Label lblChartyType 
+         AutoSize        =   -1  'True
+         Caption         =   "Chart Type :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   62
+         Top             =   300
+         Width           =   1095
       End
    End
    Begin VB.Frame fraLinkSeparator 
@@ -419,39 +419,6 @@ Begin VB.Form frmSSIntranetLink
          TabIndex        =   36
          Top             =   360
          Width           =   570
-      End
-   End
-   Begin VB.Frame fraDocument 
-      Caption         =   "Document :"
-      Height          =   1125
-      Left            =   165
-      TabIndex        =   50
-      Top             =   5895
-      Width           =   9060
-      Begin VB.TextBox txtDocumentFilePath 
-         Height          =   315
-         Left            =   1400
-         MaxLength       =   500
-         TabIndex        =   52
-         Top             =   300
-         Width           =   7365
-      End
-      Begin VB.CheckBox chkDisplayDocumentHyperlink 
-         Caption         =   "Displa&y hyperlink to document"
-         Height          =   330
-         Left            =   1395
-         TabIndex        =   53
-         Top             =   690
-         Width           =   3720
-      End
-      Begin VB.Label lblDocumentFilePath 
-         AutoSize        =   -1  'True
-         Caption         =   "URL :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   51
-         Top             =   360
-         Width           =   390
       End
    End
    Begin MSComDlg.CommonDialog CommonDialog1 
@@ -883,6 +850,39 @@ Begin VB.Form frmSSIntranetLink
          Width           =   840
       End
    End
+   Begin VB.Frame fraDocument 
+      Caption         =   "Document :"
+      Height          =   1125
+      Left            =   165
+      TabIndex        =   50
+      Top             =   5895
+      Width           =   9060
+      Begin VB.TextBox txtDocumentFilePath 
+         Height          =   315
+         Left            =   1400
+         MaxLength       =   500
+         TabIndex        =   52
+         Top             =   300
+         Width           =   7365
+      End
+      Begin VB.CheckBox chkDisplayDocumentHyperlink 
+         Caption         =   "Displa&y hyperlink to document"
+         Height          =   330
+         Left            =   1395
+         TabIndex        =   53
+         Top             =   690
+         Width           =   3720
+      End
+      Begin VB.Label lblDocumentFilePath 
+         AutoSize        =   -1  'True
+         Caption         =   "URL :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   51
+         Top             =   360
+         Width           =   390
+      End
+   End
 End
 Attribute VB_Name = "frmSSIntranetLink"
 Attribute VB_GlobalNameSpace = False
@@ -1105,7 +1105,7 @@ Private Sub GetHRProTables()
 
   ' Populate the tables combo.
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   Dim iDefaultItem As Integer
   
   iDefaultItem = 0
@@ -1156,7 +1156,7 @@ Private Sub GetHRProUtilities(pUtilityType As UtilityType)
   Dim sSQL As String
   Dim sWhereSQL As String
   Dim rsUtilities As New ADODB.Recordset
-  Dim rsLocalUtilities As dao.Recordset
+  Dim rsLocalUtilities As DAO.Recordset
   Dim sTableName As String
   Dim sIDColumnName As String
   Dim fLocalTable As Boolean
@@ -1280,7 +1280,7 @@ Private Sub GetHRProScreens()
 
   ' Populate the screens combo.
   Dim sSQL As String
-  Dim rsScreens As dao.Recordset
+  Dim rsScreens As DAO.Recordset
 
   If miLinkType <> SSINTLINK_HYPERTEXT Then
     cboHRProScreen.Clear
@@ -1666,6 +1666,7 @@ Private Sub RefreshControls()
     txtIcon.Visible = False
     cmdIcon.Visible = False
     cmdIconClear.Visible = False
+    cmdIconClear.Enabled = False
     imgIcon.Visible = False
     lblNoOptions.Visible = True
     lblNoOptions.Top = 345
@@ -1677,12 +1678,16 @@ Private Sub RefreshControls()
     txtIcon.Visible = True
     cmdIcon.Visible = True
     cmdIconClear.Visible = True
+    cmdIconClear.Enabled = txtIcon.Text <> ""
+    cmdFilterClear.Enabled = txtFilter.Text <> ""
     imgIcon.Visible = True
     lblNoOptions.Visible = False
     lblNoOptions.Top = 345
   Else
     lblNoOptions.Visible = False
     lblNoOptions.Top = 345
+    cmdIconClear.Enabled = txtIcon.Text <> ""
+    cmdFilterClear.Enabled = txtFilter.Text <> ""
   End If
   
   If optLink(SSINTLINKPWFSTEPS).value Then
@@ -2062,13 +2067,14 @@ Private Function imgIcon_Refresh() As Boolean
         strFileName = ReadPicture
         Set imgIcon.Picture = LoadPicture(strFileName)
         Kill strFileName
-        
         txtIcon.Text = .Fields("Name")
+        cmdIconClear.Enabled = True
       End If
     End With
   Else
     Set imgIcon.Picture = LoadPicture(vbNullString)
     txtIcon.Text = vbNullString
+    cmdIconClear.Enabled = False
   End If
 End Function
 
@@ -2239,8 +2245,10 @@ Private Sub cmdFilterClear_Click()
   txtFilter.Text = vbNullString
   txtFilter.Tag = 0
   miChartFilterID = 0
-  mfChanged = True
   
+  cmdFilterClear.Enabled = txtFilter.Text <> ""
+  mfChanged = True
+    
   RefreshControls
 End Sub
 
@@ -2275,7 +2283,7 @@ Private Sub cmdFilter_Click()
     If .SelectExpression Then
       txtFilter.Tag = .ExpressionID
       txtFilter.Text = GetExpressionName(txtFilter.Tag)
-      
+      cmdFilterClear.Enabled = txtFilter.Text <> ""
       miChartFilterID = .ExpressionID
       mfChanged = True
       
@@ -2287,6 +2295,9 @@ Private Sub cmdFilter_Click()
       If txtFilter.Text = vbNullString Then
         txtFilter.Tag = 0
       End If
+      
+      cmdFilterClear.Enabled = txtFilter.Text <> ""
+      
     End If
 
   End With
@@ -2372,6 +2383,7 @@ End Sub
 Private Sub cmdIconClear_Click()
   glngPictureID = frmPictSel.SelectedPicture
   imgIcon_Refresh
+  cmdIconClear.Enabled = False
   mfChanged = True
   RefreshControls
 End Sub
@@ -2764,6 +2776,8 @@ Private Sub optLink_Click(Index As Integer)
   End If
   
   mfChanged = True
+ ' mfChanged = False
+  
   RefreshControls
 
 End Sub
@@ -3051,7 +3065,7 @@ Public Property Let HRProScreenID(ByVal psNewValue As String)
   Dim iLoop As Integer
   Dim iLoop2 As Integer
   Dim sSQL As String
-  Dim rsScreens As dao.Recordset
+  Dim rsScreens As DAO.Recordset
   
   If (miLinkType <> SSINTLINK_HYPERTEXT) And _
     (optLink(SSINTLINKSCREEN_HRPRO).value) And _

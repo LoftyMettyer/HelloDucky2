@@ -336,6 +336,7 @@ Private Sub cboParents_Click()
     Else
       txtFilter.Tag = 0
       txtFilter.Text = ""
+      cmdFilterClear.Enabled = False
     End If
   End With
   
@@ -345,6 +346,7 @@ Private Sub cmdFilterClear_Click()
   txtFilter.Text = vbNullString
   txtFilter.Tag = 0
   mlngChartFilterID = 0
+  cmdFilterClear.Enabled = False
   mfChanged = True
 End Sub
 
@@ -398,7 +400,7 @@ Private Sub cmdFilter_Click()
     If .SelectExpression Then
       txtFilter.Tag = .ExpressionID
       txtFilter.Text = GetExpressionName(txtFilter.Tag)
-      
+      cmdFilterClear.Enabled = True
       mlngChartFilterID = .ExpressionID
       mfChanged = True
       
@@ -408,6 +410,7 @@ Private Sub cmdFilter_Click()
       txtFilter.Text = GetExpressionName(txtFilter.Tag)
       If txtFilter.Text = vbNullString Then
         txtFilter.Tag = 0
+        cmdFilterClear.Enabled = False
       End If
     End If
 
@@ -504,8 +507,11 @@ Private Sub Form_Load()
   
   txtFilter.Tag = mlngChartFilterID
   txtFilter.Text = GetExpressionName(txtFilter.Tag)
-  
-  
+  If txtFilter.Text = "" Then
+    cmdFilterClear.Enabled = False
+  Else
+    cmdFilterClear.Enabled = True
+  End If
   txtFilter.Enabled = False
   txtFilter.BackColor = vbButtonFace
   
