@@ -12823,7 +12823,7 @@ DECLARE @iMaxColOrder integer
 SELECT @iMaxColOrder = MAX(ColOrder) from ASRSysColours
 IF @iMaxColOrder IS NULL SET @iMaxColOrder = 1
 
-IF NOT EXISTS (SELECT COUNT(*) FROM ASRSysColours WHERE ColDesc = 'Midnight Blue')
+IF NOT EXISTS (SELECT * FROM ASRSysColours WHERE ColDesc = 'Midnight Blue')
 BEGIN
 	SET @iMaxColOrder = @iMaxColOrder + 1
 	SELECT @NVarCommand = 'INSERT INTO ASRSYSCOLOURS (ColOrder, ColValue, ColDesc, WordColourIndex, CalendarLegendColour)
@@ -12831,7 +12831,7 @@ BEGIN
 	EXEC sp_executesql @NVarCommand
 END
 
-IF NOT EXISTS (SELECT COUNT(*) FROM ASRSysColours WHERE ColDesc = 'Dolphin Blue')
+IF NOT EXISTS (SELECT * FROM ASRSysColours WHERE ColDesc = 'Dolphin Blue')
 BEGIN
 	SET @iMaxColOrder = @iMaxColOrder + 1	
 	SELECT @NVarCommand = 'INSERT INTO ASRSYSCOLOURS (ColOrder, ColValue, ColDesc, WordColourIndex, CalendarLegendColour)
@@ -12839,7 +12839,7 @@ BEGIN
 	EXEC sp_executesql @NVarCommand
 END
 	
-IF NOT EXISTS (SELECT COUNT(*) FROM ASRSysColours WHERE ColDesc = 'Pale Grey')
+IF NOT EXISTS (SELECT * FROM ASRSysColours WHERE ColDesc = 'Pale Grey')
 BEGIN
 	SET @iMaxColOrder = @iMaxColOrder + 1	
 	SELECT @NVarCommand = 'INSERT INTO ASRSYSCOLOURS (ColOrder, ColValue, ColDesc, WordColourIndex, CalendarLegendColour)
