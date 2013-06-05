@@ -30,283 +30,6 @@ Begin VB.Form frmSSIntranetLink
    ScaleWidth      =   9360
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
-   Begin VB.Frame fraLinkSeparator 
-      Caption         =   "Separator :"
-      Height          =   2610
-      Left            =   2880
-      TabIndex        =   55
-      Top             =   5250
-      Width           =   6300
-      Begin VB.CheckBox chkSeparatorUseFormatting 
-         Caption         =   "Use &formatting"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   113
-         Top             =   1260
-         Width           =   1800
-      End
-      Begin VB.TextBox txtSeparatorColour 
-         BackColor       =   &H00FFFFFF&
-         Enabled         =   0   'False
-         Height          =   315
-         Left            =   2580
-         TabIndex        =   112
-         Top             =   1545
-         Width           =   1170
-      End
-      Begin VB.CommandButton cmdSeparatorColPick 
-         Caption         =   "..."
-         Height          =   315
-         Left            =   3765
-         TabIndex        =   111
-         Top             =   1530
-         UseMaskColor    =   -1  'True
-         Width           =   315
-      End
-      Begin VB.CommandButton cmdIcon 
-         Caption         =   "..."
-         Height          =   315
-         Left            =   4830
-         TabIndex        =   58
-         Top             =   315
-         Width           =   315
-      End
-      Begin VB.TextBox txtIcon 
-         Enabled         =   0   'False
-         Height          =   330
-         Left            =   1050
-         TabIndex        =   57
-         Top             =   300
-         Width           =   3765
-      End
-      Begin VB.CommandButton cmdIconClear 
-         Caption         =   "O"
-         BeginProperty Font 
-            Name            =   "Wingdings 2"
-            Size            =   20.25
-            Charset         =   2
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Left            =   5160
-         MaskColor       =   &H000000FF&
-         TabIndex        =   59
-         ToolTipText     =   "Clear Path"
-         Top             =   315
-         UseMaskColor    =   -1  'True
-         Width           =   330
-      End
-      Begin VB.CheckBox chkNewColumn 
-         Caption         =   "Column &break"
-         Height          =   255
-         Left            =   1050
-         TabIndex        =   60
-         Top             =   690
-         Width           =   2040
-      End
-      Begin VB.Label lblSeparatorColour 
-         AutoSize        =   -1  'True
-         Caption         =   "Separator border colour :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   114
-         Top             =   1575
-         Width           =   2205
-      End
-      Begin VB.Line Line4 
-         BorderColor     =   &H80000015&
-         X1              =   210
-         X2              =   6075
-         Y1              =   1080
-         Y2              =   1080
-      End
-      Begin VB.Label lblNoOptions 
-         AutoSize        =   -1  'True
-         Caption         =   "There are no configurable options for this link type"
-         Height          =   195
-         Left            =   285
-         TabIndex        =   69
-         Top             =   2190
-         Visible         =   0   'False
-         Width           =   4350
-      End
-      Begin VB.Label lblIcon 
-         Caption         =   "Icon :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   56
-         Top             =   345
-         Width           =   615
-      End
-      Begin VB.Image imgIcon 
-         Height          =   495
-         Left            =   5565
-         Stretch         =   -1  'True
-         Top             =   330
-         Width           =   510
-      End
-   End
-   Begin VB.Frame fraChartLink 
-      Caption         =   "Chart :"
-      Height          =   5160
-      Left            =   2880
-      TabIndex        =   61
-      Top             =   6375
-      Width           =   6300
-      Begin VB.CommandButton cmdChartData 
-         Caption         =   "..."
-         Height          =   315
-         Left            =   5715
-         TabIndex        =   123
-         Top             =   3315
-         Width           =   315
-      End
-      Begin VB.TextBox txtChartDescription 
-         Enabled         =   0   'False
-         Height          =   330
-         Left            =   1935
-         TabIndex        =   122
-         Top             =   3315
-         Width           =   3780
-      End
-      Begin VB.CommandButton cmdChartReportClear 
-         Caption         =   "O"
-         BeginProperty Font 
-            Name            =   "Wingdings 2"
-            Size            =   20.25
-            Charset         =   2
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Left            =   5715
-         MaskColor       =   &H000000FF&
-         TabIndex        =   120
-         ToolTipText     =   "Clear Path"
-         Top             =   3705
-         UseMaskColor    =   -1  'True
-         Width           =   330
-      End
-      Begin VB.CommandButton cmdChartReport 
-         Caption         =   "..."
-         Height          =   315
-         Left            =   5385
-         TabIndex        =   119
-         Top             =   3705
-         Width           =   315
-      End
-      Begin VB.TextBox txtChartUtility 
-         Enabled         =   0   'False
-         Height          =   330
-         Left            =   1935
-         TabIndex        =   118
-         Top             =   3705
-         Width           =   3450
-      End
-      Begin VB.OptionButton optPrimaryDisplay 
-         Caption         =   "Display Data Grid first"
-         Height          =   195
-         Index           =   1
-         Left            =   210
-         TabIndex        =   116
-         Top             =   2775
-         Visible         =   0   'False
-         Width           =   2220
-      End
-      Begin VB.OptionButton optPrimaryDisplay 
-         Caption         =   "Display Chart first"
-         Height          =   195
-         Index           =   0
-         Left            =   210
-         TabIndex        =   115
-         Top             =   2475
-         Value           =   -1  'True
-         Visible         =   0   'False
-         Width           =   2070
-      End
-      Begin MSChart20Lib.MSChart MSChart1 
-         Height          =   2505
-         Left            =   2730
-         OleObjectBlob   =   "frmSSIntranetLink.frx":000C
-         TabIndex        =   68
-         Top             =   555
-         Width           =   3330
-      End
-      Begin VB.CheckBox chkShowValues 
-         Caption         =   "Show &Values"
-         Height          =   210
-         Left            =   195
-         TabIndex        =   66
-         Top             =   1695
-         Width           =   1665
-      End
-      Begin VB.CheckBox chkStackSeries 
-         Caption         =   "S&tack Series"
-         Height          =   210
-         Left            =   210
-         TabIndex        =   67
-         Top             =   2040
-         Width           =   1665
-      End
-      Begin VB.CheckBox chkDottedGridlines 
-         Caption         =   "Dotted &Gridlines"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   65
-         Top             =   1350
-         Width           =   1980
-      End
-      Begin VB.CheckBox chkShowLegend 
-         Caption         =   "Show &Legend"
-         Height          =   240
-         Left            =   195
-         TabIndex        =   64
-         Top             =   990
-         Width           =   1710
-      End
-      Begin VB.ComboBox cboChartType 
-         Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":24FC
-         Left            =   195
-         List            =   "frmSSIntranetLink.frx":24FE
-         Style           =   2  'Dropdown List
-         TabIndex        =   63
-         Top             =   555
-         Width           =   2205
-      End
-      Begin VB.Label lblChartData 
-         AutoSize        =   -1  'True
-         Caption         =   "Chart Data :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   121
-         Top             =   3360
-         Width           =   1080
-      End
-      Begin VB.Label lblUtility 
-         AutoSize        =   -1  'True
-         Caption         =   "Drill down utility :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   117
-         Top             =   3750
-         Width           =   1515
-      End
-      Begin VB.Label lblChartyType 
-         AutoSize        =   -1  'True
-         Caption         =   "Chart Type :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   62
-         Top             =   300
-         Width           =   1095
-      End
-   End
    Begin VB.Frame fraDBValue 
       Caption         =   "Database Value :"
       Height          =   6060
@@ -456,9 +179,9 @@ Begin VB.Form frmSSIntranetLink
       Begin VB.ComboBox cboDBValCFStyle 
          Height          =   315
          Index           =   0
-         ItemData        =   "frmSSIntranetLink.frx":2500
+         ItemData        =   "frmSSIntranetLink.frx":000C
          Left            =   3660
-         List            =   "frmSSIntranetLink.frx":2502
+         List            =   "frmSSIntranetLink.frx":000E
          Style           =   2  'Dropdown List
          TabIndex        =   93
          Top             =   3915
@@ -743,6 +466,283 @@ Begin VB.Form frmSSIntranetLink
          TabIndex        =   79
          Top             =   1575
          Width           =   1785
+      End
+   End
+   Begin VB.Frame fraLinkSeparator 
+      Caption         =   "Separator :"
+      Height          =   2610
+      Left            =   2880
+      TabIndex        =   55
+      Top             =   5250
+      Width           =   6300
+      Begin VB.CheckBox chkSeparatorUseFormatting 
+         Caption         =   "Use &formatting"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   113
+         Top             =   1260
+         Width           =   1800
+      End
+      Begin VB.TextBox txtSeparatorColour 
+         BackColor       =   &H00FFFFFF&
+         Enabled         =   0   'False
+         Height          =   315
+         Left            =   2580
+         TabIndex        =   112
+         Top             =   1545
+         Width           =   1170
+      End
+      Begin VB.CommandButton cmdSeparatorColPick 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   3765
+         TabIndex        =   111
+         Top             =   1530
+         UseMaskColor    =   -1  'True
+         Width           =   315
+      End
+      Begin VB.CommandButton cmdIcon 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   4830
+         TabIndex        =   58
+         Top             =   315
+         Width           =   315
+      End
+      Begin VB.TextBox txtIcon 
+         Enabled         =   0   'False
+         Height          =   330
+         Left            =   1050
+         TabIndex        =   57
+         Top             =   300
+         Width           =   3765
+      End
+      Begin VB.CommandButton cmdIconClear 
+         Caption         =   "O"
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   20.25
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Left            =   5160
+         MaskColor       =   &H000000FF&
+         TabIndex        =   59
+         ToolTipText     =   "Clear Path"
+         Top             =   315
+         UseMaskColor    =   -1  'True
+         Width           =   330
+      End
+      Begin VB.CheckBox chkNewColumn 
+         Caption         =   "Column &break"
+         Height          =   255
+         Left            =   1050
+         TabIndex        =   60
+         Top             =   690
+         Width           =   2040
+      End
+      Begin VB.Label lblSeparatorColour 
+         AutoSize        =   -1  'True
+         Caption         =   "Separator border colour :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   114
+         Top             =   1575
+         Width           =   2205
+      End
+      Begin VB.Line Line4 
+         BorderColor     =   &H80000015&
+         X1              =   210
+         X2              =   6075
+         Y1              =   1080
+         Y2              =   1080
+      End
+      Begin VB.Label lblNoOptions 
+         AutoSize        =   -1  'True
+         Caption         =   "There are no configurable options for this link type"
+         Height          =   195
+         Left            =   285
+         TabIndex        =   69
+         Top             =   2190
+         Visible         =   0   'False
+         Width           =   4350
+      End
+      Begin VB.Label lblIcon 
+         Caption         =   "Icon :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   56
+         Top             =   345
+         Width           =   615
+      End
+      Begin VB.Image imgIcon 
+         Height          =   495
+         Left            =   5565
+         Stretch         =   -1  'True
+         Top             =   330
+         Width           =   510
+      End
+   End
+   Begin VB.Frame fraChartLink 
+      Caption         =   "Chart :"
+      Height          =   5160
+      Left            =   2880
+      TabIndex        =   61
+      Top             =   6375
+      Width           =   6300
+      Begin VB.CommandButton cmdChartData 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   5715
+         TabIndex        =   123
+         Top             =   3315
+         Width           =   315
+      End
+      Begin VB.TextBox txtChartDescription 
+         Enabled         =   0   'False
+         Height          =   330
+         Left            =   1935
+         TabIndex        =   122
+         Top             =   3315
+         Width           =   3780
+      End
+      Begin VB.CommandButton cmdChartReportClear 
+         Caption         =   "O"
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   20.25
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Left            =   5715
+         MaskColor       =   &H000000FF&
+         TabIndex        =   120
+         ToolTipText     =   "Clear Path"
+         Top             =   3705
+         UseMaskColor    =   -1  'True
+         Width           =   330
+      End
+      Begin VB.CommandButton cmdChartReport 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   5385
+         TabIndex        =   119
+         Top             =   3705
+         Width           =   315
+      End
+      Begin VB.TextBox txtChartUtility 
+         Enabled         =   0   'False
+         Height          =   330
+         Left            =   1935
+         TabIndex        =   118
+         Top             =   3705
+         Width           =   3450
+      End
+      Begin VB.OptionButton optPrimaryDisplay 
+         Caption         =   "Display Data Grid first"
+         Height          =   195
+         Index           =   1
+         Left            =   210
+         TabIndex        =   116
+         Top             =   2775
+         Visible         =   0   'False
+         Width           =   2220
+      End
+      Begin VB.OptionButton optPrimaryDisplay 
+         Caption         =   "Display Chart first"
+         Height          =   195
+         Index           =   0
+         Left            =   210
+         TabIndex        =   115
+         Top             =   2475
+         Value           =   -1  'True
+         Visible         =   0   'False
+         Width           =   2070
+      End
+      Begin MSChart20Lib.MSChart MSChart1 
+         Height          =   2505
+         Left            =   2730
+         OleObjectBlob   =   "frmSSIntranetLink.frx":0010
+         TabIndex        =   68
+         Top             =   555
+         Width           =   3330
+      End
+      Begin VB.CheckBox chkShowValues 
+         Caption         =   "Show &Values"
+         Height          =   210
+         Left            =   195
+         TabIndex        =   66
+         Top             =   1695
+         Width           =   1665
+      End
+      Begin VB.CheckBox chkStackSeries 
+         Caption         =   "S&tack Series"
+         Height          =   210
+         Left            =   210
+         TabIndex        =   67
+         Top             =   2040
+         Width           =   1665
+      End
+      Begin VB.CheckBox chkDottedGridlines 
+         Caption         =   "Dotted &Gridlines"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   65
+         Top             =   1350
+         Width           =   1980
+      End
+      Begin VB.CheckBox chkShowLegend 
+         Caption         =   "Show &Legend"
+         Height          =   240
+         Left            =   195
+         TabIndex        =   64
+         Top             =   990
+         Width           =   1710
+      End
+      Begin VB.ComboBox cboChartType 
+         Height          =   315
+         ItemData        =   "frmSSIntranetLink.frx":2500
+         Left            =   195
+         List            =   "frmSSIntranetLink.frx":2502
+         Style           =   2  'Dropdown List
+         TabIndex        =   63
+         Top             =   555
+         Width           =   2205
+      End
+      Begin VB.Label lblChartData 
+         AutoSize        =   -1  'True
+         Caption         =   "Chart Data :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   121
+         Top             =   3360
+         Width           =   1080
+      End
+      Begin VB.Label lblUtility 
+         AutoSize        =   -1  'True
+         Caption         =   "Drill down utility :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   117
+         Top             =   3750
+         Width           =   1515
+      End
+      Begin VB.Label lblChartyType 
+         AutoSize        =   -1  'True
+         Caption         =   "Chart Type :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   62
+         Top             =   300
+         Width           =   1095
       End
    End
    Begin VB.Frame fraHRProUtilityLink 
@@ -2731,10 +2731,19 @@ Private Function ValidateLink() As Boolean
 
   ' DBValues - fault HRPRO-1256
   If fValid Then
-    If optLink(SSINTLINKDB_VALUE).value And _
-      ChartColumnID = 0 Then
-      fValid = False
-      MsgBox "No Database Value data has been defined.", vbOKOnly + vbExclamation, Application.Name
+    If optLink(SSINTLINKDB_VALUE).value Then
+      If ChartColumnID = 0 Then
+        fValid = False
+        MsgBox "No Database Value data has been defined.", vbOKOnly + vbExclamation, Application.Name
+      End If
+      
+      For jnCount = 0 To 2
+      If Trim(cboDBValCFOperator(jnCount).Text) <> vbNullString And cboDBValCFStyle(jnCount).Text = vbNullString Then
+        fValid = False
+        MsgBox "Conditional formatting style has not been defined.", vbOKOnly + vbExclamation, Application.Name
+        Exit For
+      End If
+      Next
     End If
   End If
   
