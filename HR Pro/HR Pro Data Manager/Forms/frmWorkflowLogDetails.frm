@@ -326,19 +326,6 @@ Private mfrmWorkflowLog As frmWorkflowLog
 Private mavarElementIndex() As Variant
 Private mlngNextIndex As Long
 
-Public Enum ElementType
-  elem_Begin = 0
-  elem_Terminator = 1
-  elem_WebForm = 2
-  elem_Email = 3
-  elem_Decision = 4
-  elem_StoredData = 5
-  elem_SummingJunction = 6
-  elem_Or = 7
-  elem_Connector1 = 8
-  elem_Connector2 = 9
-End Enum
-
 Private malngTempElements() As Long
 
 Private Sub AddRowToGrid()
@@ -1094,7 +1081,7 @@ Private Function ViewWorkflowStep()
 
   If IsNumeric(grdWorkflowLog.Columns("ID").Value) Then
     Set frmDetails = New frmWorkflowStepDetails
-    If frmDetails.Initialise(grdWorkflowLog.Columns("ID").Value, Me) Then
+    If frmDetails.Initialise(grdWorkflowLog.Columns("ID").Value, Me, grdWorkflowLog.Columns("Element Type").Value) Then
       frmDetails.Show vbModal
       
       RefreshLog

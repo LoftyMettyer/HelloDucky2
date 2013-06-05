@@ -38,6 +38,18 @@ Public Enum WorkflowStepStatus
 End Enum
 
 
+Public Enum ElementType
+  elem_Begin = 0
+  elem_Terminator = 1
+  elem_WebForm = 2
+  elem_Email = 3
+  elem_Decision = 4
+  elem_StoredData = 5
+  elem_SummingJunction = 6
+  elem_Or = 7
+  elem_Connector1 = 8
+  elem_Connector2 = 9
+End Enum
 Public Sub CheckWorkflowOutOfOffice()
   ' Check if the user is flagged as being OutOfOffice for Workflows.
   ' If they are, ask them if they want to turn it off.
@@ -457,6 +469,71 @@ ErrorTrap:
   
 End Function
 
+Public Function WorkflowElementTypeName(piElementType As Integer) As String
+  ' Return the name of the given workflow element type.
+  Dim sElementTypeName As String
+  
+  sElementTypeName = "<unknown>"
+  
+  Select Case piElementType
+    Case elem_Begin
+      sElementTypeName = "Begin"
+    Case elem_Terminator
+      sElementTypeName = "Terminator"
+    Case elem_WebForm
+      sElementTypeName = "Web Form"
+    Case elem_Email
+      sElementTypeName = "Email"
+    Case elem_Decision
+      sElementTypeName = "Decision"
+    Case elem_StoredData
+      sElementTypeName = "Stored Data"
+    Case elem_SummingJunction
+      sElementTypeName = "And"
+    Case elem_Or
+      sElementTypeName = "Or"
+    Case elem_Connector1
+      sElementTypeName = "Connector (part 1)"
+    Case elem_Connector2
+      sElementTypeName = "Connector (part 2)"
+  End Select
+
+  WorkflowElementTypeName = sElementTypeName
+  
+End Function
+
+Public Function WorkflowElementTypeFromName(psElementTypeName As String) As Integer
+  ' Return the enum value of the given workflow element type.
+  Dim iElementType As Integer
+  
+  iElementType = -1
+  
+  Select Case UCase(psElementTypeName)
+    Case UCase(WorkflowElementTypeName(elem_Begin))
+      iElementType = elem_Begin
+    Case UCase(WorkflowElementTypeName(elem_Terminator))
+      iElementType = elem_Terminator
+    Case UCase(WorkflowElementTypeName(elem_WebForm))
+      iElementType = elem_WebForm
+    Case UCase(WorkflowElementTypeName(elem_Email))
+      iElementType = elem_Email
+    Case UCase(WorkflowElementTypeName(elem_Decision))
+      iElementType = elem_Decision
+    Case UCase(WorkflowElementTypeName(elem_StoredData))
+      iElementType = elem_StoredData
+    Case UCase(WorkflowElementTypeName(elem_SummingJunction))
+      iElementType = elem_SummingJunction
+    Case UCase(WorkflowElementTypeName(elem_Or))
+      iElementType = elem_Or
+    Case UCase(WorkflowElementTypeName(elem_Connector1))
+      iElementType = elem_Connector1
+    Case UCase(WorkflowElementTypeName(elem_Connector2))
+      iElementType = elem_Connector2
+  End Select
+
+  WorkflowElementTypeFromName = iElementType
+  
+End Function
 Public Sub WorkflowOutOfOffice()
   ' Set/reset the user as being OutOfOffice for Workflows.
   On Error GoTo ErrorTrap
