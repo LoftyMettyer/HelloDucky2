@@ -39,7 +39,7 @@ Public Property Let LoggedIn(ByVal vData As Boolean)
 End Property
 
 Public Property Get Name() As String
-  Name = App.ProductName
+  Name = app.ProductName
 End Property
 
 Public Function Activate() As Boolean
@@ -102,6 +102,10 @@ Public Function Activate() As Boolean
       frmSplash.Visible = False
       CheckScheduledReportPacks
     gblnReportPackMode = False
+  End If
+
+  If gblnBatchJobsOnly Then
+    End
   End If
 
   ' Are any workflow steps pending for the current user to action?
@@ -310,7 +314,6 @@ Public Sub CheckScheduledBatchJobs()
       DoEvents
     Loop While objEmail.StillExecuting And dblTimeOut > Timer
 
-    End
   End If
 
 End Sub
@@ -363,7 +366,6 @@ Public Sub CheckScheduledReportPacks()
       DoEvents
     Loop While objEmail.StillExecuting And dblTimeOut > Timer
 
-    End
   End If
 
 End Sub
