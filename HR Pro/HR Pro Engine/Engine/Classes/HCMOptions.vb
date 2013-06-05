@@ -10,14 +10,14 @@ Public Class HCMOptions
   Public Property RefreshObjects As Boolean Implements COMInterfaces.iOptions.RefreshObjects
   Public Property DevelopmentMode As Boolean Implements COMInterfaces.iOptions.DevelopmentMode
 
-  Public Property OverflowSafety As Boolean Implements COMInterfaces.iOptions.OverflowSafety
-    Get
-      Return mbOverflowSafety
-    End Get
-    Set(ByVal value As Boolean)
-      mbOverflowSafety = value
-    End Set
-  End Property
+    Public Property OverflowSafety As Boolean Implements COMInterfaces.iOptions.OverflowSafety
+        Get
+            Return mbOverflowSafety
+        End Get
+        Set(ByVal value As Boolean)
+            mbOverflowSafety = value
+        End Set
+    End Property
 
 End Class
 
