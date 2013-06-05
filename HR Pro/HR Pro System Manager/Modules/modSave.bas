@@ -1216,7 +1216,7 @@ Private Function SaveModuleDefinitions() As Boolean
       CStr(rsFusion!FusionTypeID) & "," & _
       "'" & CStr(rsFusion!FusionType) & "'," & _
       CStr(rsFusion!FilterID) & "," & _
-      CStr(rsFusion!ASRBaseTableID) & "," & _
+      IIf(IsNull(rsFusion!ASRBaseTableID), "0", CStr(rsFusion!ASRBaseTableID)) & "," & _
       IIf(rsFusion!IsVisible, "1", "0") & "," & _
       "1" & ")"
     
