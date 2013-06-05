@@ -1905,6 +1905,10 @@ PRINT 'Step - Remove redundant procedures'
 	IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRAuditTable]') AND type in (N'P', N'PC'))
 		DROP PROCEDURE [dbo].[sp_ASRAuditTable]
 
+	IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASR_AbsenceSSP]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [dbo].[sp_ASR_AbsenceSSP]
+
+
 /* ------------------------------------------------------------- */
 PRINT 'Step - Server settings'
 
