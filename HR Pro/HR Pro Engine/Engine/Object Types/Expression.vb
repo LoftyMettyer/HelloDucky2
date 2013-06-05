@@ -414,7 +414,7 @@ Namespace Things
             SQLCode_AddParameter(objComponent, [CodeCluster], False)
 
             ' Calculation 
-          Case ScriptDB.ComponentTypes.Calculation
+          Case ScriptDB.ComponentTypes.Calculation, ScriptDB.ComponentTypes.Filter
 
             If Not objComponent.BaseExpression.BaseTable.Expressions.GetById(objComponent.CalculationID) Is Nothing Then
 
