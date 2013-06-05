@@ -236,7 +236,7 @@ Private Sub Form_Load()
   lblUser.Caption = "Current User : " & Trim(gsUserName)
   lblSecurity.Caption = "User Group : " & gsSecurityGroup
   lblSql.Caption = GetSqlVersion
-  lblCopyRight.Caption = "Copyright © Advanced Business Software and Solutions Limited"
+  lblCopyRight.Caption = "Copyright © Advanced Business Software and Solutions Ltd 2012"
 
   sngMaxX = lblTitle.Left + lblTitle.Width
   sngMaxX = IIf(lblDatabase.Left + lblDatabase.Width > sngMaxX, lblDatabase.Left + lblDatabase.Width, sngMaxX)
@@ -245,11 +245,11 @@ Private Sub Form_Load()
   sngMaxX = IIf(lblSql.Left + lblSql.Width > sngMaxX, lblSql.Left + lblSql.Width, sngMaxX)
   sngMaxX = IIf(lblCopyRight.Left + lblCopyRight.Width > sngMaxX, lblCopyRight.Left + lblCopyRight.Width, sngMaxX)
   
-  cmdOk.Left = sngMaxX + 250
-  cmdSysInfo.Left = cmdOk.Left
-  cmdTech.Left = cmdOk.Left
+  cmdOK.Left = sngMaxX + 250
+  cmdSysInfo.Left = cmdOK.Left
+  cmdTech.Left = cmdOK.Left
   
-  Me.Width = cmdOk.Left + cmdOk.Width + 200
+  Me.Width = cmdOK.Left + cmdOK.Width + 200
 TidyUpAndExit:
   Exit Sub
 
