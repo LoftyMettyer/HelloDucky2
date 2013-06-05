@@ -49,11 +49,11 @@ Begin VB.Form frmAbout
       Width           =   1155
       Begin VB.Image imgASR 
          Appearance      =   0  'Flat
-         Height          =   960
+         Height          =   1125
          Left            =   90
          Picture         =   "frmAbout.frx":000C
          Top             =   15
-         Width           =   960
+         Width           =   1020
       End
    End
    Begin VB.CommandButton cmdOK 
@@ -90,7 +90,7 @@ Begin VB.Form frmAbout
       ForeColor       =   &H00FF0000&
       Height          =   195
       Left            =   150
-      MouseIcon       =   "frmAbout.frx":08EB
+      MouseIcon       =   "frmAbout.frx":3C14
       MousePointer    =   99  'Custom
       TabIndex        =   10
       Top             =   1510
@@ -246,11 +246,11 @@ Private Sub Form_Load()
   sngMaxX = IIf(lblSql.Left + lblSql.Width > sngMaxX, lblSql.Left + lblSql.Width, sngMaxX)
   sngMaxX = IIf(lblCopyRight.Left + lblCopyRight.Width > sngMaxX, lblCopyRight.Left + lblCopyRight.Width, sngMaxX)
   
-  cmdOK.Left = sngMaxX + 250
-  cmdSysInfo.Left = cmdOK.Left
-  cmdTech.Left = cmdOK.Left
+  cmdOk.Left = sngMaxX + 250
+  cmdSysInfo.Left = cmdOk.Left
+  cmdTech.Left = cmdOk.Left
   
-  Me.Width = cmdOK.Left + cmdOK.Width + 200
+  Me.Width = cmdOk.Left + cmdOk.Width + 200
   
   Exit Sub
     
