@@ -778,7 +778,8 @@ Private Function GetDetailsRecordsets() As Boolean
         mvarColDetails(4, pintTemp) = datGeneral.GetColumnName(CLng(!ColExprID))
       End If
       mvarColDetails(5, pintTemp) = !Data
-      mvarColDetails(6, pintTemp) = !fillerlength
+      'mvarColDetails(6, pintTemp) = !fillerlength
+      mvarColDetails(6, pintTemp) = IIf(!fillerlength > 999999, 999999, !fillerlength)
       mvarColDetails(7, pintTemp) = datGeneral.DateColumn(!Type, !TableID, !ColExprID)
 
       mvarColDetails(8, pintTemp) = IIf(IsNull(!CMGColumnCode), "", !CMGColumnCode) ' The CMG Code for this column
