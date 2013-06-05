@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.MDIForm frmSysMgr 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
@@ -37,7 +37,6 @@ Begin VB.MDIForm frmSysMgr
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -718,7 +717,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     
       If frmDbMgr.ActiveView Is frmDbMgr.TreeView1 Then
         
-        bCopyTable = DoesTableExistInDB(Val(Mid(frmDbMgr.TreeView1.SelectedItem.key, 2)))
+        bCopyTable = DoesTableExistInDB(val(Mid(frmDbMgr.TreeView1.SelectedItem.key, 2)))
         
         If frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATION Then
           .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd) And (frmDbMgr.TreeView1.Nodes("TABLES").Children > 0)
@@ -740,7 +739,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
           .Tools("ID_Delete").Enabled = (frmDbMgr.ListView1_SelectedTag And edtDelete)
           
           If frmDbMgr.ListView1_SelectedCount = 1 Then
-            bCopyTable = DoesTableExistInDB(Val(Mid(frmDbMgr.ListView1.SelectedItem.key, 2))) And frmDbMgr.ListView1_SelectedTag = giNODE_TABLE
+            bCopyTable = DoesTableExistInDB(val(Mid(frmDbMgr.ListView1.SelectedItem.key, 2))) And frmDbMgr.ListView1_SelectedTag = giNODE_TABLE
             .Tools("ID_CopyDef").Enabled = bCopyTable Or (frmDbMgr.ListView1_SelectedTag = giNODE_COLUMN Or frmDbMgr.ListView1_SelectedTag = giNODE_TABLE)
             .Tools("ID_Properties").Enabled = (frmDbMgr.ListView1.SelectedItem.Tag And edtEdit)
             .Tools("ID_Print").Enabled = (frmDbMgr.ListView1_SelectedTag = giNODE_COLUMN Or frmDbMgr.ListView1_SelectedTag = giNODE_TABLE)
@@ -5046,7 +5045,7 @@ End Sub
 Private Function DoesTableExistInDB(ByRef lngObjectID As Long)
 
   Dim bFound As Boolean
-  Dim rstTables As dao.Recordset
+  Dim rstTables As DAO.Recordset
   Dim sSQL As String
   
   bFound = False
