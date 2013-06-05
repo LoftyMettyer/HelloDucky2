@@ -8124,6 +8124,8 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
                       Next lngCount
                     End If
 
+                    .DecimalPoint = UI.GetSystemDecimalSeparator
+                    .Separator = UI.GetSystemThousandSeparator
                     .Format = sFormat
                     .DisplayFormat = sFormat
 
