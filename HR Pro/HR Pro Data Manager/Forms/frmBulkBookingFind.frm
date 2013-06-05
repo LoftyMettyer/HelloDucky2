@@ -1094,11 +1094,9 @@ End Sub
 
 Private Sub Form_Load()
 
-  ' Get rid of the icon off the form
-  Me.Icon = Nothing
-  SetWindowLong Me.hWnd, GWL_EXSTYLE, WS_EX_WINDOWEDGE Or WS_EX_APPWINDOW Or WS_EX_DLGMODALFRAME
-
   Hook Me.hWnd, dblFINDFORM_MINWIDTH, dblFINDFORM_MINHEIGHT
+  RemoveIcon Me
+  
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)

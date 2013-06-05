@@ -107,7 +107,7 @@ End Function
 Public Sub RemoveIcon(ByRef pobjForm As Form)
 
   pobjForm.Icon = Nothing
-  SetWindowLong pobjForm.hWnd, GWL_EXSTYLE, WS_EX_WINDOWEDGE Or WS_EX_APPWINDOW Or WS_EX_DLGMODALFRAME
+  SetWindowLong pobjForm.hWnd, GWL_EXSTYLE, WS_EX_DLGMODALFRAME
 
 End Sub
 

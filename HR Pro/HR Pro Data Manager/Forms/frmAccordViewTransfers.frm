@@ -280,6 +280,7 @@ Begin VB.Form frmAccordViewTransfers
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   21696
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -547,8 +548,7 @@ Public Function Initialise()
   gobjProgress.CloseProgress
   
   ' Get rid of the icon off the form
-  Me.Icon = Nothing
-  SetWindowLong Me.hWnd, GWL_EXSTYLE, WS_EX_WINDOWEDGE Or WS_EX_APPWINDOW Or WS_EX_DLGMODALFRAME
+  RemoveIcon Me
   
   mbLoading = False
 
@@ -913,7 +913,7 @@ Private Sub Form_Resize()
   
   fraButtons.Left = Me.ScaleWidth - (fraButtons.Width + lngGap)
   fraButtons.Height = (Me.ScaleHeight - (fraFilters.Height + (lngGap * 2))) - StatusBar1.Height
-  cmdOK.Top = fraButtons.Height - cmdOK.Height
+  cmdOk.Top = fraButtons.Height - cmdOk.Height
   
   fraFilters.Width = Me.Width - (lngGap * 4)
   grdTransferDetails.Width = (fraFilters.Width - fraButtons.Width) - (lngGap * 3)
