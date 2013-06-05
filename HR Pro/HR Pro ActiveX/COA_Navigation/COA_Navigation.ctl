@@ -40,7 +40,7 @@ Begin VB.UserControl COA_Navigation
       NoFolders       =   0   'False
       Transparent     =   0   'False
       ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
-      Location        =   ""
+      Location        =   "http:///"
    End
    Begin VB.PictureBox picHidden 
       Appearance      =   0  'Flat
@@ -314,7 +314,11 @@ Public Sub RefreshControls()
   WebBrowser1.Visible = (miDisplayType = enum_DisplayType.Browser) And Not gbInScreenDesigner
 
   If miDisplayType = Browser And gbInScreenDesigner = False Then
-    WebBrowser1.Navigate mstrNavigateTo
+    If Len(mstrNavigateTo) = 0 Then
+      WebBrowser1.Navigate "about:blank"
+    Else
+      WebBrowser1.Navigate mstrNavigateTo
+    End If
   End If
 
 End Sub
