@@ -75,12 +75,10 @@ Declare Function ReleaseDC Lib "user32" (ByVal hWnd As Long, ByVal hDC As Long) 
 
 ' Icon extracting functions
 Public Declare Function SHGetFileInfo Lib "shell32.dll" Alias "SHGetFileInfoA" (ByVal pszPath As String, ByVal dwFileAttributes As Long, psfi As typSHFILEINFO, ByVal cbSizeFileInfo As Long, ByVal uFlags As Long) As Long
-Public Declare Function ImageList_Draw Lib "comctl32.dll" (ByVal himl&, ByVal i&, ByVal hDCDest&, ByVal x&, ByVal Y&, ByVal Flags&) As Long
+Public Declare Function ImageList_Draw Lib "comctl32.dll" (ByVal himl&, ByVal i&, ByVal hDCDest&, ByVal x&, ByVal y&, ByVal Flags&) As Long
+Public Declare Function SendMessageLong Lib "user32" Alias "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
 
-Public Declare Function SendMessageLong Lib "user32" Alias "SendMessageA" ( _
-      ByVal hWnd As Long, ByVal wMsg As Long, _
-      ByVal wParam As Long, ByVal lParam As Long _
-   ) As Long
+
 
 Public Type typSHFILEINFO
   hIcon As Long
