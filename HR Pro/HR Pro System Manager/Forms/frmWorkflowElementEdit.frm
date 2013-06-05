@@ -847,12 +847,12 @@ Begin VB.Form frmWorkflowElementEdit
             BackColor       =   &H8000000F&
             Enabled         =   0   'False
             Height          =   315
-            Left            =   1620
+            Left            =   1650
             Locked          =   -1  'True
             TabIndex        =   41
             TabStop         =   0   'False
             Top             =   650
-            Width           =   2685
+            Width           =   2655
          End
          Begin VB.CommandButton cmdDecisionFlowExpression 
             Caption         =   "..."
@@ -865,12 +865,12 @@ Begin VB.Form frmWorkflowElementEdit
          End
          Begin VB.ComboBox cboDecisionFlowButton 
             Height          =   315
-            Left            =   1620
+            Left            =   1650
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   40
             Top             =   250
-            Width           =   3000
+            Width           =   2970
          End
          Begin VB.OptionButton optDecisionFlowType 
             Caption         =   "Ca&lculation"
@@ -894,13 +894,13 @@ Begin VB.Form frmWorkflowElementEdit
       Begin VB.ComboBox cboDecisionCaption 
          Height          =   315
          ItemData        =   "frmWorkflowElementEdit.frx":0065
-         Left            =   1965
+         Left            =   1860
          List            =   "frmWorkflowElementEdit.frx":0075
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   36
          Top             =   300
-         Width           =   3000
+         Width           =   2970
       End
       Begin VB.Label lblDecisionCaption 
          AutoSize        =   -1  'True
@@ -4754,8 +4754,8 @@ Private Sub Form_Resize()
         ResizeGridColumns ssgrdColumns
     
       Case elem_Decision
-        txtCaption.Left = fraElement(1).Left + cboDecisionFlowButton.Left
-        txtCaption.Width = cboDecisionFlowButton.Width
+        txtCaption.Left = cboDecisionCaption.Left
+        txtCaption.Width = cboDecisionCaption.Width
         
         Me.Height = fraElement(1).Height + fraElement(1).Top + iYFRAMEGAP + fraButtons.Height + iXFRAMEGAP + (Screen.TwipsPerPixelY * (UI.GetSystemMetrics(SM_CYCAPTION) + UI.GetSystemMetrics(SM_CYFRAME)))
         Me.Width = fraElement(1).Width + fraElement(1).Left + iXFRAMEGAP + (UI.GetSystemMetrics(SM_CXFRAME) * Screen.TwipsPerPixelX)
