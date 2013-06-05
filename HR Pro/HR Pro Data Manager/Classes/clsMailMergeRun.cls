@@ -535,6 +535,7 @@ Private Sub SQLGetMergeDefinition()
         End If
       
       Case 2    'Document Management
+        mblnOutputScreen = !OutputScreen
         mblnOutputPrinter = True
         mstrOutputPrinterName = !OutputPrinterName
         mlngDocumentMapID = IIf(IsNull(!DocumentMapID), 0, !DocumentMapID)
@@ -1430,6 +1431,8 @@ Private Sub WrdRunMailMerge()
     Do While wrdApp.BackgroundPrintingStatus > 0
       DoEvents
     Loop
+    
+    
     wrdApp.Visible = mblnAppVisible
     gobjProgress.Visible = True
   
