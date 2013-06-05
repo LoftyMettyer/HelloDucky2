@@ -1269,10 +1269,10 @@ Private Sub RefreshColumnsGrid()
 End Sub
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Private Function JobUtilityType(psJobType As String) As UtilityType
@@ -3024,7 +3024,7 @@ Private Function SaveDefinition2() As Boolean
       sSQL = sSQL & "OutputScreen = " & IIf(chkDestination(desScreen).Value = vbChecked, "1", "0") & ", "
       'Printer Options
       sSQL = sSQL & IIf(chkDestination(desPrinter), (" OutputPrinterName = '" & Replace(cboPrinterName.Text, " '", "''") & "',"), (" OutputPrinterName = '', "))
-      sSQL = sSQL & "OutputFilename = '" & Replace(txtFilename.Text, "'", "''") & "',"
+      sSQL = sSQL & "OutputFilename = '" & Replace(txtFileName.Text, "'", "''") & "',"
       'outputSaveExisting
       If chkDestination(desSave).Value = vbChecked Then
         sSQL = sSQL & "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
@@ -3126,7 +3126,7 @@ Private Function SaveDefinition2() As Boolean
           'outputEmailSubject
           sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("'', "))
           'outputFilename
-          sSQL = sSQL & "'" & Replace(txtFilename.Text, "'", "''") & "',"
+          sSQL = sSQL & "'" & Replace(txtFileName.Text, "'", "''") & "',"
           'outputEmailAttachAs
           sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEMailAttachAs.Text, "'", "''") & "',"), ("'',"))
           'outputTitlePage
@@ -3468,7 +3468,7 @@ Private Function ValidDestination() As Boolean
   ValidDestination = False
 
   If chkDestination(desSave).Value = vbChecked Then
-    If txtFilename.Text = vbNullString Then
+    If txtFileName.Text = vbNullString Then
       COAMsgBox "You must enter a file name.", vbExclamation, Caption
       Exit Function
     End If
@@ -4575,8 +4575,9 @@ Public Sub PrintDef(lBatchJobID As Long)
           .PrintNormal "Report Pack Title : " & rsTemp!OutputReportPackTitle
           .PrintNormal " "
           .PrintNormal "Override Filter : " & rsTemp!OutputOverrideFilter
-          .PrintNormal "Print Table Of Contents : " & rsTemp!OutputTOC
-          .PrintNormal "Force Cover Sheet : " & rsTemp!OutputCoverSheet
+          .PrintNormal "Create Table Of Contents : " & IIf(rsTemp!OutputTOC = True, "Yes", "No")
+          .PrintNormal "Force Cover Sheet : " & IIf(rsTemp!OutputCoverSheet = True, "Yes", "No")
+          
           .PrintNormal " "
           
           Select Case rsTemp!OutputFormat
