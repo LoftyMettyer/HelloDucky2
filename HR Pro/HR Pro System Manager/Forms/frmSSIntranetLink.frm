@@ -3401,6 +3401,21 @@ LocalErr:
 End Sub
 
 Private Sub cmdCancel_Click()
+
+  Dim intAnswer As Integer
+  
+  ' Check if any changes have been made.
+  If mfChanged Then
+    intAnswer = MsgBox("The chart definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
+    If intAnswer = vbYes Then
+      Call cmdOk_Click
+      Exit Sub
+    ElseIf intAnswer = vbCancel Then
+      Exit Sub
+    End If
+  End If
+
+
   Cancelled = True
   UnLoad Me
 End Sub
