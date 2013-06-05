@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "mschrt20.ocx"
 Begin VB.Form frmSSIntranetLink 
@@ -909,6 +909,7 @@ End Enum
 Private mblnCancelled As Boolean
 Private miLinkType As SSINTRANETLINKTYPES
 Private mfChanged As Boolean
+Private mfLoading As Boolean
 'Private mlngPersonnelTableID As Long
 Private mblnRefreshing As Boolean
 Private mlngTableID As Long
@@ -1365,6 +1366,8 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   
   Set mcolSSITableViews = pcolSSITableViews
   
+  mfLoading = True
+  
   miLinkType = piType
   'mlngPersonnelTableID = plngPersonnelTableID
   mlngTableID = plngTableID
@@ -1493,6 +1496,9 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
   PopulateAccessGrid psHiddenGroups
 
   mfChanged = False
+  
+  mfLoading = False
+  
   If pfCopy Then mfChanged = True
   RefreshControls
   
@@ -2110,12 +2116,15 @@ Private Function PopulateColumnsCombo(plngTableID As Long) As Boolean
 
 
     ' Set the correct item as default
+
     For i = 0 To cboColumns.ListCount - 1
       If cboColumns.ItemData(i) = ChartColumnID Then
         cboColumns.ListIndex = i
         Exit For
       End If
     Next
+
+    If cboColumns.ListIndex < 0 Then cboColumns.ListIndex = 0
   End If
 
 TidyUpAndExit:
@@ -2167,6 +2176,23 @@ Private Sub cboParents_Click()
 
   miChartTableID = cboParents.ItemData(cboParents.ListIndex)
   PopulateColumnsCombo (miChartTableID)
+  
+  ' Check if the selected expression is for the current table.
+  With recExprEdit
+    .Index = "idxExprID"
+    .Seek "=", txtFilter.Tag, False
+    
+    If Not .NoMatch Then
+      If (!TableID <> miChartTableID) Then
+        txtFilter.Tag = 0
+        txtFilter.Text = ""
+      End If
+    Else
+      txtFilter.Tag = 0
+      txtFilter.Text = ""
+    End If
+  End With
+  
   
   RefreshControls
 End Sub

@@ -272,6 +272,7 @@ Private mblnCancelled As Boolean
 
 ' Component definition variables.
 Private mfChanged As Boolean
+Private mfLoading As Boolean
 Private mobjComponent As CExprComponent
 Private miComponentType As ExpressionComponentTypes
 Private mavColumns() As Variant
@@ -320,6 +321,23 @@ Private Sub cboParents_Click()
 
   mlngTableID = cboParents.ItemData(cboParents.ListIndex)
   PopulateColumnsCombo (mlngTableID)
+  
+  ' Check if the selected expression is for the current table.
+  With recExprEdit
+    .Index = "idxExprID"
+    .Seek "=", txtFilter.Tag, False
+    
+    If Not .NoMatch Then
+      If (!TableID <> mlngTableID) Then
+        txtFilter.Tag = 0
+        txtFilter.Text = ""
+      End If
+    Else
+      txtFilter.Tag = 0
+      txtFilter.Text = ""
+    End If
+  End With
+  
 End Sub
 
 Private Sub cmdFilterClear_Click()
@@ -475,6 +493,7 @@ Private Sub cmdOK_Click()
 End Sub
 
 Private Sub Form_Load()
+  mfLoading = True
   PopulateParentsCombo (miChartTableID) ' populate and set default value
   PopulateColumnsCombo (cboParents.ItemData(cboParents.ListIndex))
   optAggregateType(0).value = IIf(ChartAggregateType = 0, True, False)
@@ -488,6 +507,11 @@ Private Sub Form_Load()
   
   txtFilter.Enabled = False
   txtFilter.BackColor = vbButtonFace
+  
+  mfLoading = False
+  
+  mfChanged = False
+  
 End Sub
 
 Private Sub PopulateParentsCombo(plngDefaultID As Long)
@@ -571,6 +595,9 @@ Private Function PopulateColumnsCombo(plngTableID As Long) As Boolean
         Exit For
       End If
     Next
+  
+    If cboColumns.ListIndex < 0 Then cboColumns.ListIndex = 0
+      
   End If
 
 TidyUpAndExit:
