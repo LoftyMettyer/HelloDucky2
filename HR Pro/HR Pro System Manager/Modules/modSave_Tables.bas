@@ -1080,6 +1080,9 @@ Private Function GetColCreateString(ByVal psColumnName As String, ByVal plngData
     Case dtVARBINARY, dtLONGVARBINARY
       GetColCreateString = "[" & Trim$(psColumnName) & "] [IMAGE]"
 
+    Case dtGUID
+      GetColCreateString = "[" & Trim$(psColumnName) & "] [UNIQUEIDENTIFIER]"
+
   End Select
 
 End Function
