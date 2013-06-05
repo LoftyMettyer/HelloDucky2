@@ -1039,6 +1039,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   '4
   'Insert TOC code here as all Report Pack Jobs Or Batch Jobs would be done by now
   ElseIf gblnReportPackMode And fOK And blnOutputSave And blnOutputTOC Then
+  
     If strOutputFilename = vbNullString Then
       If strOutputEmailAttachAs = vbNullString Then
       Else
@@ -1117,7 +1118,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
         End If
     End Select
   Else
-    If gblnReportPackMode And Not blnOutputTOC Then
+    If gblnReportPackMode And fOK And Not blnOutputTOC Then
       Select Case lngOutputFormat
         Case fmtHTML
           If strOutputReportPackTitle = vbNullString Then strOutputReportPackTitle = sBatchJobName
@@ -1156,7 +1157,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   End If
   
   'EMAIL
-  If gblnReportPackMode And blnOutputEmail Then
+  If gblnReportPackMode And fOK And blnOutputEmail Then
     'Check if file already exists...
     Set mobjParent = New clsOutputRun
     If Dir(strOutputFilename) <> vbNullString And strOutputFilename <> vbNullString Then
