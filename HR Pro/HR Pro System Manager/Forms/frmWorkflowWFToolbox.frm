@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Begin VB.Form frmWorkflowWFToolbox 
    Caption         =   "Toolbox"
    ClientHeight    =   9180
@@ -986,7 +986,8 @@ Private Sub RefreshColumnsTreeView()
     " AND tmpColumns.deleted = FALSE" & _
     " AND tmpColumns.columnType <>" & Trim(Str(giCOLUMNTYPE_SYSTEM)) & _
     " AND tmpColumns.columnType <>" & Trim(Str(giCOLUMNTYPE_LINK)) & _
-    " AND tmpColumns.TableID = tmpTables.TableID "
+    " AND tmpColumns.TableID = tmpTables.TableID " & _
+    " AND tmpCOlumns.ControlType <> " & CStr(giCTRL_COLOURPICKER)
   sSQL = sSQL & _
     " ORDER BY tmpTables.tableName, tmpColumns.columnName"
 
