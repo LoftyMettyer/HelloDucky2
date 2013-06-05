@@ -3840,6 +3840,12 @@ PRINT 'Step 6 - Changes to Shared Table Transfer for RTI'
 		EXEC sp_executesql @NVarCommand
 	END
 
+	IF (SELECT [Description] FROM ASRSysAccordTransferFieldDefinitions WHERE TransferTypeID = 0 AND TransferFieldID = 196) = 'Work Status'
+	BEGIN
+		SELECT @NVarCommand = 'UPDATE ASRSysAccordTransferFieldDefinitions  SET Description = ''Seconded''  WHERE TransferTypeID = 0 AND TransferFieldID = 196'
+		EXEC sp_executesql @NVarCommand
+	END
+
 	IF (SELECT [Description] FROM ASRSysAccordTransferFieldDefinitions WHERE TransferTypeID = 0 AND TransferFieldID = 197) = 'Analysis Code 3'
 	BEGIN
 		SELECT @NVarCommand = 'UPDATE ASRSysAccordTransferFieldDefinitions  SET Description = ''EPM6 (Modified) Scheme''  WHERE TransferTypeID = 0 AND TransferFieldID = 197'
@@ -3873,6 +3879,29 @@ PRINT 'Step 6 - Changes to Shared Table Transfer for RTI'
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (202,0,0,''Irregular Payment Pattern'',0,0,2,0,0)'
 		EXEC sp_executesql @NVarCommand
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (203,0,0,''Student Loan Indicator'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+	END
+
+	IF (SELECT [Description] FROM ASRSysAccordTransferFieldDefinitions WHERE TransferTypeID = 0 AND TransferFieldID = 202) = 'Irregular Payment Pattern'
+	BEGIN
+		SELECT @NVarCommand = 'UPDATE ASRSysAccordTransferFieldDefinitions  SET Description = ''Irregular Payment Indicator''  WHERE TransferTypeID = 0 AND TransferFieldID = 202'
+		EXEC sp_executesql @NVarCommand
+	END
+
+	SELECT @iRecCount = count(TransferFieldID) FROM ASRSysAccordTransferFieldDefinitions WHERE TransferFieldID = 204 AND TransferTypeID = 0
+	IF @iRecCount = 0
+	BEGIN
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (204,0,0,''Foreign Country'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (205,0,0,''Stay in UK for 6 months or more'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (206,0,0,''Stay in UK less than 6 Months'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (207,0,0,''Work both in/out UK but living abroad'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (208,0,0,''Pension paid because recently bereaved'',0,0,2,0,0)'
+		EXEC sp_executesql @NVarCommand
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (209,0,0,''Annual Pension'',0,0,2,0,0)'
 		EXEC sp_executesql @NVarCommand
 	END
 
