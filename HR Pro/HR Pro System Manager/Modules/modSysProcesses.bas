@@ -49,7 +49,7 @@ Public Function CurrentUsersPopulate(grdTemp As SSDBGrid, Optional strUsersToLog
 Exit Function
 
 LocalErr:
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Select Case Err.Number
   Case -2147217887
     ' .NET Error - SQL process account details incorrect
@@ -98,7 +98,7 @@ Public Function GetCurrentUsersCountOnServer(strUserName As String) As Long
 Exit Function
 
 LocalErr:
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   MsgBox "Error checking process information" & vbCr & _
          "(GetCurrentUsersCountOnServer - " & Err.Description & ")", vbCritical
 
@@ -133,7 +133,7 @@ Public Function GetCurrentUsersCountInApp() As Long
 Exit Function
 
 LocalErr:
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   MsgBox "Error checking process information" & vbCr & _
          "(GetCurrentUsersCountInApp - " & Err.Description & ")", vbCritical
 

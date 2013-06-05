@@ -238,13 +238,13 @@ Private Sub Form_Activate()
     If blnExit Then
       gobjProgress.CloseProgress
       UnLoad Me
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
     Else
       LoadViews
       Me.Loading = False
       
       If gobjProgress.Visible = True Then gobjProgress.CloseProgress
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
     End If
   End If
   
@@ -381,7 +381,7 @@ Private Sub LoadViews()
   
   UI.UnlockWindow
       
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
   If Not ListView1.SelectedItem Is Nothing Then
     ListView1.SelectedItem.EnsureVisible

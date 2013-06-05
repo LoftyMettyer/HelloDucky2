@@ -541,7 +541,7 @@ Private Function SaveChanges() As Boolean
 
 
 
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Application.Changed = True
   SaveChanges = True
 

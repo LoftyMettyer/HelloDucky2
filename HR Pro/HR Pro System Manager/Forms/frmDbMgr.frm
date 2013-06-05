@@ -2377,7 +2377,7 @@ Private Sub PopulateListView(pobjNode As ComctlLib.Node, Optional ByVal pfRefres
   RefreshStatusBar
 
   ' Set the mouse pointer back to normal.
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
 End Sub
 Private Sub RefreshStatusBar()
@@ -2602,7 +2602,7 @@ TidyUpAndExit:
   ' Unlock the frmPicMgr form to show the updated listview.
   UI.UnlockWindow
   ' Reset the mousepointer.
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   ' Disassociate object variables.
   Set objTable = Nothing
   Exit Sub
@@ -2721,7 +2721,7 @@ TidyUpAndExit:
   ' Unlock the frmPicMgr form to show the updated listview.
   UI.UnlockWindow
   ' Reset the mousepointer.
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Exit Sub
   
 ErrorTrap:
@@ -3218,7 +3218,7 @@ TidyUpAndExit:
   ' Unlock the frmPicMgr form to show the updated listview.
   UI.UnlockWindow
   ' Reset the mousepointer.
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Exit Sub
   
 ErrorTrap:
@@ -3348,7 +3348,7 @@ TidyUpAndExit:
   ' Unlock the frmPicMgr form to show the updated listview.
   UI.UnlockWindow
   ' Reset the mousepointer.
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Exit Sub
   
 ErrorTrap:
@@ -3504,7 +3504,7 @@ Private Sub TableCopy()
       frmUse.AddToList asSpecialFunctions(iLoop)
     Next iLoop
     
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     frmUse.ShowMessage GetTableName(val(Mid(ActiveView.SelectedItem.key, 2))) & " Table", "Unable to copy this table as the following expressions use the Hierarchy functions : ", UsageCheckObject.Table
     UnLoad frmUse
     Set frmUse = Nothing

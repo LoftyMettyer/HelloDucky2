@@ -1759,7 +1759,7 @@ Private Sub cmdOk_Click()
       End With
       
       If (frmUse.lstUsage.ListCount > 0) Then
-        Screen.MousePointer = vbNormal
+        Screen.MousePointer = vbDefault
         frmUse.ShowMessage sName & " Table", "The type of this table cannot be changed" & _
                 " as it is associated with the following view definitions :", UsageCheckObject.Table
         UnLoad frmUse

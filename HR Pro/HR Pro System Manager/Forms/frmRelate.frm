@@ -443,7 +443,7 @@ Private Sub Form_Load()
   PopulateListBoxes
   mfLoading = False
   
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
 End Sub
 

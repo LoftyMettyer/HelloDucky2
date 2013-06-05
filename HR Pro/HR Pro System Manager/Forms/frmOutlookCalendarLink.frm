@@ -1802,7 +1802,7 @@ Private Function CopyToSelected(bAll As Boolean)
   UpdateButtonStatus
 
   Me.Changed = True
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
 Exit Function
 
@@ -1853,7 +1853,7 @@ Private Function CopyToAvailable(bAll As Boolean)
   UpdateButtonStatus
 
   Me.Changed = True
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
 Exit Function
 

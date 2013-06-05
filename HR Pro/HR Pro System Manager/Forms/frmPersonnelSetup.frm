@@ -1647,7 +1647,7 @@ Private Sub cmdCancel_Click()
 '        'Me.MousePointer = vbHourglass
 '        Screen.MousePointer = vbHourglass
 '        cmdOK_Click 'This is just like saving
-'        Screen.MousePointer = vbNormal
+'        Screen.MousePointer = vbDefault
 '        'Me.MousePointer = vbNormal
 '        Exit Sub
 '      ElseIf pintAnswer = vbCancel Then
@@ -2190,7 +2190,7 @@ Private Function SaveChanges() As Boolean
   SaveChanges = True
   Application.Changed = True
   
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 End Function
 
 Private Sub RefreshHierarchyControls()

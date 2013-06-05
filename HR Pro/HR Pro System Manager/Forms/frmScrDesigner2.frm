@@ -2379,7 +2379,7 @@ TidyUpAndExit:
 '  Set WaitWindow = Nothing
   gobjProgress.CloseProgress
   ' Reset the mousepointer.
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   ' Unlock the window to show the modifications.
   UI.UnlockWindow
   gfLoading = False
@@ -2662,7 +2662,7 @@ TidyUpAndExit:
   Set VarPageContainer = Nothing
   
   ' Reset the screen mousepointer.
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Exit Sub
   
 ErrorTrap:
@@ -3210,7 +3210,7 @@ TidyUpAndExit:
   Me.Left = Int((Forms(0).ScaleWidth - Me.Width) / 2)
     
   ' Reset the screen moousepointer.
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
   LoadScreen = fLoadOk
   Exit Function
@@ -4366,7 +4366,7 @@ ExitSaveScreen:
   End If
   
   gobjProgress.CloseProgress
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   SaveScreen = fOK
   Exit Function
 
@@ -4416,7 +4416,7 @@ Private Function SelectAllPageControls() As Boolean
 TidyUpAndExit:
 
   'Reset the mousepointer
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
   ' Disassociate object variables.
   Set ctlControl = Nothing
@@ -6445,7 +6445,7 @@ TidyUpAndExit:
   UI.UnlockWindow
     
   ' Reset the screen moousepointer.
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
   LoadTabPage = fLoadOk
   Exit Function

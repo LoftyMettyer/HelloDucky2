@@ -192,7 +192,7 @@ Public Function DeleteEmail() As Boolean
     Set mfrmUse = New frmUsage
     mfrmUse.ResetList
     If EmailIsUsed(mfrmUse) Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       mfrmUse.ShowMessage Me.EmailName & " Email", "The email cannot be deleted as the email is used by the following:", UsageCheckObject.Email
       fOK = False
     End If

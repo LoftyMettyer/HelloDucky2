@@ -3941,7 +3941,7 @@ Private Sub cmdOk_Click()
         Set mfrmUse = New frmUsage
         mfrmUse.ResetList
         If mobjColumn.ColumnIsUsed(mfrmUse) Then
-          Screen.MousePointer = vbNormal
+          Screen.MousePointer = vbDefault
           mfrmUse.ShowMessage GetTableName(mobjColumn.TableID) & "." & mobjColumn.Properties("ColumnName").value & " Column", "The data type cannot be changed as the column is used in the following : ", UsageCheckObject.Column
           tabColProps.Tab = 0
           If Me.cboDataType.Enabled Then Me.cboDataType.SetFocus

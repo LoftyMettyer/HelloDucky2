@@ -1845,7 +1845,7 @@ Private Sub ActivateModules()
       frmChangedPlatform.Width = (3 * Screen.Width / 4)
       frmChangedPlatform.Height = (Screen.Height / 2)
 
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       Call LoadSkin(frmChangedPlatform, frmSysMgr.SkinFramework1)
       frmChangedPlatform.ShowMessage 1
       

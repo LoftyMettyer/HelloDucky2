@@ -133,7 +133,7 @@ Public Function SaveOutlookFolders() As Boolean
 '        mfrmUse.ResetList
 '        If objOutlookFolder.OutlookIsUsed(mfrmUse) Then
 '          gobjProgress.Visible = False
-'          Screen.MousePointer = vbNormal
+'          Screen.MousePointer = vbDefault
 '          mfrmUse.ShowMessage !Name & " Outlook", "The Outlook cannot be deleted as the Outlook is used by the following:", UsageCheckObject.Outlook
 '          fOK = False
 '        End If

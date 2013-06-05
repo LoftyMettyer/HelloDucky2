@@ -2423,7 +2423,7 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
         MsgBox "No version information found.", vbExclamation + vbOKOnly, Application.Name
       End If
       
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
 
     Case "ID_About"
       ' Call up the 'About' screen.
@@ -2760,7 +2760,7 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
         MsgBox "No version information found.", vbExclamation + vbOKOnly, Application.Name
       End If
       
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
 
 
     Case "ID_About"
@@ -3074,7 +3074,7 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
         MsgBox "No version information found.", vbExclamation + vbOKOnly, Application.Name
       End If
       
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       
 
     Case "ID_About"
@@ -3386,7 +3386,7 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
         MsgBox "No version information found.", vbExclamation + vbOKOnly, Application.Name
       End If
 
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
 
 
     Case "ID_About"
@@ -3727,7 +3727,7 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
         MsgBox "No version information found.", vbExclamation + vbOKOnly, Application.Name
       End If
       
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       
       
 
@@ -3987,7 +3987,7 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
         MsgBox "No version information found.", vbExclamation + vbOKOnly, Application.Name
       End If
       
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
     
     
     Case "ID_ViewCurrentUsers"
@@ -4012,7 +4012,7 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
         MsgBox "No version information found.", vbExclamation + vbOKOnly, Application.Name
       End If
       
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       
       
 
@@ -4407,7 +4407,7 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
         MsgBox "No version information found.", vbExclamation + vbOKOnly, Application.Name
       End If
       
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       
       
     Case "ID_About"
@@ -4818,7 +4818,7 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
         MsgBox "No version information found.", vbExclamation + vbOKOnly, Application.Name
       End If
       
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       
       
     Case "ID_About"

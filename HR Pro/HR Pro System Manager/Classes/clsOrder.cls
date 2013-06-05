@@ -168,7 +168,7 @@ Public Function CopyOrder() As Boolean
     Set frmEdit = New frmOrdEdit
     Set frmEdit.Order = Me
     
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     
     frmEdit.Show vbModal
     fOK = Not frmEdit.Cancelled
@@ -197,7 +197,7 @@ ExitCopyOrder:
     daoWS.Rollback
   End If
   CopyOrder = fOK
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Exit Function
 
 ErrorTrap:
@@ -220,7 +220,7 @@ Public Function DeleteOrder() As Boolean
     Set mfrmUse = New frmUsage
     mfrmUse.ResetList
     If OrderIsUsed(mfrmUse) Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       mfrmUse.ShowMessage Me.OrderName & " Order", "The order cannot be deleted as the order is used by the following:", UsageCheckObject.Order
       fOK = False
     End If
@@ -666,7 +666,7 @@ Public Function EditOrder() As Boolean
     Set frmEdit = New frmOrdEdit
     Set frmEdit.Order = Me
     
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     frmEdit.Show vbModal
     fOK = Not frmEdit.Cancelled
       
@@ -686,7 +686,7 @@ TidyUpAndExit:
     daoWS.Rollback
   End If
   EditOrder = fOK
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Exit Function
 
 ErrorTrap:
@@ -734,7 +734,7 @@ Public Function NewOrder() As Boolean
     Set frmEdit = New frmOrdEdit
     Set frmEdit.Order = Me
     
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
     frmEdit.Show vbModal
     fOK = Not frmEdit.Cancelled
   End If
@@ -762,7 +762,7 @@ TidyUpAndExit:
     daoWS.Rollback
   End If
   NewOrder = fOK
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Exit Function
   
 ErrorTrap:
