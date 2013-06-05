@@ -439,6 +439,52 @@ PRINT 'Step 4 of X - Add new formatting columns to ASRSysSSIntranetLinks'
 	
 
 	
+/* ------------------------------------------------------------- */
+PRINT 'Step 5 of X - Modifying Workflow Data Structures'
+
+	/* ASRSysWorkflowElementItems - Add new LookupFilterColumnID column */
+	SELECT @iRecCount = COUNT(id) FROM syscolumns
+	WHERE id = OBJECT_ID('ASRSysWorkflowElementItems', 'U')
+	AND name = 'LookupFilterColumnID';
+
+	IF @iRecCount = 0
+	BEGIN
+		SELECT @NVarCommand = 'ALTER TABLE ASRSysWorkflowElementItems ADD 
+							LookupFilterColumnID [int] NULL';
+		EXEC sp_executesql @NVarCommand;
+	END
+
+	/* ASRSysWorkflowElementItems - Add new LookupFilterOperator column */
+	SELECT @iRecCount = COUNT(id) FROM syscolumns
+	WHERE id = OBJECT_ID('ASRSysWorkflowElementItems', 'U')
+	AND name = 'LookupFilterOperator';
+
+	IF @iRecCount = 0
+	BEGIN
+		SELECT @NVarCommand = 'ALTER TABLE ASRSysWorkflowElementItems ADD 
+							LookupFilterOperator [int] NULL';
+		EXEC sp_executesql @NVarCommand;
+	END
+
+	/* ASRSysWorkflowElementItems - Add new LookupFilterValue column */
+	SELECT @iRecCount = COUNT(id) FROM syscolumns
+	WHERE id = OBJECT_ID('ASRSysWorkflowElementItems', 'U')
+	AND name = 'LookupFilterValue';
+
+	IF @iRecCount = 0
+	BEGIN
+		SELECT @NVarCommand = 'ALTER TABLE ASRSysWorkflowElementItems ADD 
+							LookupFilterValue [varchar] (200) NULL';
+		EXEC sp_executesql @NVarCommand;
+	END
+
+
+
+
+
+
+
+
 
 /* ------------------------------------------------------------- */
 PRINT 'Step X of X - '
