@@ -714,6 +714,7 @@ Namespace ScriptDB
           sTriggerName = String.Format("{0}{1}_u01", ScriptDB.Consts.Trigger, objTable.Name)
           sSQL = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
+              "    SELECT @isovernight = dbo.[udfsys_isovernightprocess]();" & vbNewLine & _
               "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
               "    INSERT [dbo].[{4}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {5}, 2, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
