@@ -96,10 +96,6 @@
       ' Build the where clause
       If Not RowDetails.Filter Is Nothing Then
         RowDetails.Filter.AssociatedColumn = Me.Parent.Objects(Enums.Type.Column)(0)
-
-        '  RowDetails.Filter.AssociatedColumn = IncludedColumns(3)
-
-
         RowDetails.Filter.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
         RowDetails.Filter.GenerateCode()
 
@@ -173,8 +169,9 @@
              "DECLARE @forcerefresh bit;" & vbNewLine & _
              "SET @forcerefresh = 1;" & vbNewLine & vbNewLine & _
              "WITH base AS (" & vbNewLine & _
-             "    SELECT *, [rownumber] = ROW_NUMBER() OVER ({7})" & vbNewLine & _
+             "    SELECT {3}, [rownumber] = ROW_NUMBER() OVER ({7})" & vbNewLine & _
              "    FROM {4} base" & vbNewLine & _
+             "    {5}" & vbNewLine & _
              "    {6})" & vbNewLine & _
              "INSERT @Results SELECT {3}" & vbNewLine & _
              "        FROM base" & vbNewLine & _
