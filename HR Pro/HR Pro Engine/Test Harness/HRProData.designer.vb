@@ -23,7 +23,7 @@ Imports System.Reflection
 
 
 <Global.System.Data.Linq.Mapping.DatabaseAttribute(Name:="STD41")>  _
-Partial Public Class OpenHRDataDataContext
+Partial Public Class HRProData
 	Inherits System.Data.Linq.DataContext
 	
 	Private Shared mappingSource As System.Data.Linq.Mapping.MappingSource = New AttributeMappingSource()
