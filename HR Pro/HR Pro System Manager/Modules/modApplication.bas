@@ -2125,17 +2125,15 @@ Public Sub EditMobileDesigner()
 
   On Error GoTo ErrorTrap
 
-'  Dim objMobile As clsMobile
   Dim bOK As Boolean
 
-' The mgic call
-' mobileDesigner.Initialise(gsTempDatabaseName)
-
-
-TidyUpAndExit:
-  'Set objMobile = Nothing
-  Exit Sub
-
+  Dim service As New MobileDesignerSerivce
+  service.InitialiseForVB6 ("C:\Users\paul.glynn\AppData\Local\Temp\" & gsTempDatabaseName)
+  Set service = Nothing
+  
+  Dim frm As New DesignerForm
+  frm.Show
+  
 ErrorTrap:
   bOK = False
 
