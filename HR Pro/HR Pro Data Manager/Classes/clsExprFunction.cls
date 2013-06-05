@@ -925,6 +925,9 @@ Public Function RuntimeCode(psRuntimeCode As String, _
         sCode = "(dbo.udf_ASRFn_BradfordFactor(" & sParamCode1 & "," & sParamCode2 _
             & "," & sParamCode3 & "," & strTempTableName & "." & strTempTableID & "))"
       
+      Case 77 'Replace characters in a string
+        sCode = "REPLACE(" & sParamCode1 & ", " & sParamCode2 & "," & sParamCode3 & ")"
+      
       Case Else
         fOK = False
         
@@ -2030,6 +2033,14 @@ Public Function EvaluateComponent(palngColumnValues As Variant, pvResult As Vari
       'Case 63 'PARENTAL LEAVE TAKEN
       'Case 64 'MATERNITY EXPECTED RETURN DATE
   
+      
+      Case 77 ' Replace Characters in a String
+         If vParam1 = vbNullString Then
+          pvResult = vbNullString
+        Else
+          pvResult = Replace(vParam1, vParam2, vParam3)
+        End If
+              
       Case Else
         fOK = False
     End Select
