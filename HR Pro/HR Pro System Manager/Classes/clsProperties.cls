@@ -26,15 +26,15 @@ Public Function Add(ByRef sName As String, Optional ByVal vValue As Variant) As 
   'Create a new object
   Dim objNewMember As Property
   
-  If LenB(Trim$(sName)) <> 0 Then
+  If Len(Trim$(sName)) <> 0 Then
     Set objNewMember = New Property
 
     'Set the properties passed into the method
-    objNewMember.Key = Trim$(sName)
+    objNewMember.key = Trim$(sName)
     objNewMember.Name = sName
-    If Not IsEmpty(vValue) Then objNewMember.Value = vValue
+    If Not IsEmpty(vValue) Then objNewMember.value = vValue
     
-    mCol.Add objNewMember, objNewMember.Key
+    mCol.Add objNewMember, objNewMember.key
 
     'Return the object created
     Set Add = objNewMember
