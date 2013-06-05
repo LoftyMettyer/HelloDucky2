@@ -176,6 +176,10 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   'Retrive the individual job information for the specified batch job id
   Set rsBatchDetails = mclsData.OpenPersistentRecordset("SELECT * FROM AsrSysBatchJobDetails WHERE BatchJobNameID = " & lBatchJobID & " ORDER BY JobOrder", adOpenKeyset, adLockReadOnly)
   
+  If sBatchJobName = "" Then
+    sBatchJobName = GetUtilName("Batch Job", lBatchJobID)
+  End If
+  
   If gblnReportPackMode Then
     strOutputOptions = "OutputPreview, OutputFormat, OutputScreen, OutputPrinter, OutputPrinterName, OutputSave, "
     strOutputOptions = strOutputOptions & "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, "
@@ -1165,6 +1169,7 @@ Private Function GetUtilName(strUtilType As String, lngUtilID As Long) As String
   GetUtilName = "<Unknown>"
   
   Select Case strUtilType
+  Case "Batch Job":          pstrSQL = "ASRSysBatchJobName WHERE ID"
   Case "Calendar Report":    pstrSQL = "ASRSysCalendarReports WHERE ID"
   Case "Cross Tab":          pstrSQL = "ASRSysCrossTab WHERE CrossTabID"
   Case "Custom Report":      pstrSQL = "ASRSysCustomReportsName WHERE ID"
