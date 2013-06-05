@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmOutlookQueue 
    Caption         =   "Outlook Calendar Queue"
@@ -43,16 +43,15 @@ Begin VB.Form frmOutlookQueue
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   19817
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
    End
    Begin SSDataWidgets_B.SSDBGrid grdOutlookQueue 
-      Height          =   3645
+      Height          =   3525
       Left            =   90
       TabIndex        =   3
-      Top             =   1065
+      Top             =   1185
       Width           =   10005
       _Version        =   196617
       DataMode        =   1
@@ -142,7 +141,7 @@ Begin VB.Form frmOutlookQueue
       Columns(9).FieldLen=   256
       TabNavigation   =   1
       _ExtentX        =   17648
-      _ExtentY        =   6429
+      _ExtentY        =   6218
       _StockProps     =   79
       BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -174,7 +173,7 @@ Begin VB.Form frmOutlookQueue
    End
    Begin VB.Frame fraFilters 
       Caption         =   "Filters :"
-      Height          =   825
+      Height          =   945
       Left            =   90
       TabIndex        =   5
       Top             =   90
@@ -182,27 +181,27 @@ Begin VB.Form frmOutlookQueue
       Begin VB.ComboBox cboStatus 
          Height          =   315
          ItemData        =   "frmOutlookQueue.frx":000C
-         Left            =   8160
+         Left            =   8410
          List            =   "frmOutlookQueue.frx":000E
          Style           =   2  'Dropdown List
          TabIndex        =   2
-         Top             =   315
-         Width           =   1650
+         Top             =   500
+         Width           =   1400
       End
       Begin VB.ComboBox cboTitle 
          Height          =   315
-         Left            =   1140
+         Left            =   150
          Style           =   2  'Dropdown List
          TabIndex        =   0
-         Top             =   315
+         Top             =   500
          Width           =   1905
       End
       Begin VB.ComboBox cboFolderLocation 
          Height          =   315
-         Left            =   4470
+         Left            =   3165
          Style           =   2  'Dropdown List
          TabIndex        =   1
-         Top             =   315
+         Top             =   500
          Width           =   2790
       End
       Begin VB.Label lblStatus 
@@ -210,9 +209,9 @@ Begin VB.Form frmOutlookQueue
          BackStyle       =   0  'Transparent
          Caption         =   "Status :"
          Height          =   195
-         Left            =   7440
+         Left            =   8410
          TabIndex        =   9
-         Top             =   375
+         Top             =   250
          Width           =   570
       End
       Begin VB.Label lblUser 
@@ -220,9 +219,9 @@ Begin VB.Form frmOutlookQueue
          BackStyle       =   0  'Transparent
          Caption         =   "Link Title :"
          Height          =   195
-         Left            =   195
+         Left            =   150
          TabIndex        =   8
-         Top             =   375
+         Top             =   250
          Width           =   900
       End
       Begin VB.Label lblType 
@@ -232,7 +231,7 @@ Begin VB.Form frmOutlookQueue
          Height          =   195
          Left            =   3165
          TabIndex        =   6
-         Top             =   375
+         Top             =   250
          Width           =   1230
       End
    End
@@ -364,6 +363,12 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 End Sub
 
 Private Sub Form_Resize()
+  
+  Const COMBO_GAP As Integer = 170
+  
+  Dim lngComboWidth As Long
+  
+  
   'JPD 20030908 Fault 5756
   DisplayApplication
 
@@ -385,13 +390,19 @@ Private Sub Form_Resize()
 
   fraFilters.Width = cmdOK.Left - BUTTON_GAP
   
-  cboStatus.Left = fraFilters.Width - cboStatus.Width - BUTTON_GAP
-  lblStatus.Left = cboStatus.Left - (BUTTON_GAP * 3)
+  cboStatus.Left = fraFilters.Width - (cboStatus.Width + COMBO_GAP)
+  lblStatus.Left = cboStatus.Left
+  
+  lngComboWidth = (cboStatus.Left - (COMBO_GAP * 3)) / 2
+  
+  cboTitle.Move COMBO_GAP, 500, lngComboWidth
+  lblUser.Left = cboTitle.Left
+  
+  cboFolderLocation.Move cboTitle.Left + cboTitle.Width + COMBO_GAP, 500, lngComboWidth
+  lblType.Left = cboFolderLocation.Left
 
-  cboFolderLocation.Width = (lblStatus.Left - BUTTON_GAP) - cboFolderLocation.Left
-
+  
   grdOutlookQueue.Width = fraFilters.Width
-  'grdOutlookQueue.Height = Me.Height - GAP_AFTER_LISTVIEW
   grdOutlookQueue.Height = Me.Height - (Me.Height - Me.ScaleHeight) - 1500
 
   DoColumnSizes
