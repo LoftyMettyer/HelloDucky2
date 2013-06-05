@@ -212,8 +212,14 @@ Namespace Things
 
       ' Do we have caching on this UDF?
       If Me.IsComplex And aryDependsOn.Count > 0 And Not Me.ReferencesParent Then
+
+        ' Flag to force updates through
+        aryParameters1.Add("@forcerefresh bit")
+        aryParameters2.Add("@forcerefresh")
+        aryParameters3.Add("@forcerefresh")
+
         sBypassUDFCode = String.Format("    -- Return the original value if none of the dependent tables are in the trigger stack." & vbNewLine &
-            "    IF NOT EXISTS (SELECT [tablefromid] FROM [dbo].[tbsys_intransactiontrigger] WHERE [tablefromid] IN ({0}) AND [spid] = @@SPID)" & vbNewLine & _
+            "    IF @forcerefresh = 0 AND NOT EXISTS (SELECT [tablefromid] FROM [dbo].[tbsys_intransactiontrigger] WHERE [tablefromid] IN ({0}) AND [spid] = @@SPID)" & vbNewLine & _
             "        BEGIN" & vbNewLine & _
             "            SELECT @result = [{1}] FROM dbo.[{2}] WHERE [ID] = @prm_ID;" & vbNewLine & _
             "            RETURN @result;" & vbNewLine & _

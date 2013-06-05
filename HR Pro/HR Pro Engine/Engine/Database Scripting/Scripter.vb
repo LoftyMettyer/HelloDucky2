@@ -733,6 +733,8 @@ Namespace ScriptDB
           sSQL = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), tableid integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
               "    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
+              "    SELECT @isovernight = dbo.[udfsys_isovernightprocess]();" & vbNewLine & _
+              "    SELECT @forcerefresh = dbo.[udfsys_triggerrequiresrefresh]();" & vbNewLine & _
               "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
               sSQLCalculatedColumns & vbNewLine & vbNewLine & _
@@ -837,8 +839,8 @@ Namespace ScriptDB
           "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([{2}].[{0}]';" & vbNewLine & _
           "    SET NOCOUNT ON;" & vbNewLine & _
           "    DECLARE @iCount integer," & vbNewLine & _
-          "            @isovernight bit;" & vbNewLine & vbNewLine & _
-          "    SELECT @isovernight = dbo.[udfsys_isovernightprocess]();" & vbNewLine & vbNewLine & _
+          "            @isovernight bit," & vbNewLine & _
+          "            @forcerefresh bit;" & vbNewLine & vbNewLine & _
           "{4}" & vbNewLine & vbNewLine & _
           "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
           "END" _
