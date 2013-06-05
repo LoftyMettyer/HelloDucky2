@@ -464,8 +464,8 @@ Sub Main()
   Set UI = New HRProDataMgr.UI
   
   'Instantiate Progress Bar class
-  Set gobjProgress = New COA_Progress
-  'Set gobjProgress = New clsProgress
+  'Set gobjProgress = New COA_Progress
+  Set gobjProgress = New clsProgress
   gobjProgress.StyleResource = CodeJockStylePath
   gobjProgress.StyleIni = CodeJockStyleIni
 
