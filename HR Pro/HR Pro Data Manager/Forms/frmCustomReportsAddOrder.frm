@@ -137,7 +137,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 'DataAccess Class
-Private datData As HRProDataMgr.clsDataAccess
+Private datData As DataMgr.clsDataAccess
 Private mblnEditingExisting As Boolean
 Private mfrmForm As frmCustomReports
 Private mblnInvalidOnInitialise As Boolean
@@ -208,7 +208,7 @@ Public Function Initialise(sBaseTable As String, iCols As Integer, Optional blnE
   mbLoading = True
   
   ' Set references to class modules
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
     
   Set mfrmForm = pfrmForm
   

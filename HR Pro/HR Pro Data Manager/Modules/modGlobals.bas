@@ -1,16 +1,16 @@
 Attribute VB_Name = "modGlobals"
 'Public classes
-Public Application As HRProDataMgr.Application
-Public Database As HRProDataMgr.Database
-Public datGeneral As HRProDataMgr.clsGeneral
+Public Application As DataMgr.Application
+Public Database As DataMgr.Database
+Public datGeneral As DataMgr.clsGeneral
 Public objEmail As clsEmail
-Public gobjDataAccess As HRProDataMgr.clsDataAccess
-Public gobjPerformance As HRProDataMgr.clsPerformance
+Public gobjDataAccess As DataMgr.clsDataAccess
+Public gobjPerformance As DataMgr.clsPerformance
 Public gsConnectionString As String
 
 
 ' Holds postcode for AFD and Quick Address
-Public oPostCode As HRProDataMgr.PostCode
+Public oPostCode As DataMgr.PostCode
 
 ' New Progress Bar - Global class to be used for progress bars
 'Public gobjProgress As COA_Progress
@@ -20,7 +20,7 @@ Public gobjProgress As New clsProgress
 Public gobjEventLog As New clsEventLog
 
 'Diary Stuff (MH19991021)
-Public gobjDiary As New HRProDataMgr.clsDiary
+Public gobjDiary As New DataMgr.clsDiary
 
 'Hold the current database name
 Public gsDatabaseName As String
@@ -28,7 +28,7 @@ Public gsCustomerName As String
 Public gsServerName As String
 
 ' Current User Information
-'Public gobjCurrentUser As HRProDataMgr.clsUser
+'Public gobjCurrentUser As DataMgr.clsUser
 
 ' Windows authentication stuff
 Public gbUseWindowsAuthentication As Boolean
@@ -60,7 +60,7 @@ Public gcLookUp As DefaultDisplay
 Public gcQuickAccess As DefaultDisplay
 
 
-Public UI As HRProDataMgr.UI
+Public UI As DataMgr.UI
 
 
 Public gcoLookupValues As CLookupValues

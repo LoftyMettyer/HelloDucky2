@@ -27,7 +27,7 @@ Private mbReadOnly As Boolean
 Private mbMandatory As Boolean
 Private msDefaultValue As String
 Private msStatusBarMessage As String
-Private miDataType As HRProDataMgr.SQLDataType
+Private miDataType As DataMgr.SQLDataType
 '#RH 07/09/99
 Private mbAfdEnabled As Boolean
 
@@ -37,13 +37,13 @@ AFDEnabled = mbAfdEnabled
 
 End Property
 
-Public Property Get DataType() As HRProDataMgr.SQLDataType
+Public Property Get DataType() As DataMgr.SQLDataType
   DataType = miDataType
 
 End Property
 
 
-Public Property Let DataType(ByVal piNewValue As HRProDataMgr.SQLDataType)
+Public Property Let DataType(ByVal piNewValue As DataMgr.SQLDataType)
   miDataType = piNewValue
 
 End Property

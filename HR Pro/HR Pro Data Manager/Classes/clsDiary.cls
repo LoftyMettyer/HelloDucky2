@@ -545,7 +545,7 @@ End Sub
 
 
 Private Sub Class_Initialize()
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   mdtSelectedDate = Now
 
   CheckAccessToSystemEvents
@@ -1077,7 +1077,7 @@ Public Function ShowAlarmedEvents(intFilterPastPresent As Integer, intViewMode A
     'NHRD07102004 Fault 4436 Adds a Bell resource icon to the System Tray
 
     RemoveSysTrayIcon
-    AddSysTrayIcon "HR Pro Alarmed Diary Event"
+    AddSysTrayIcon "OpenHR Alarmed Diary Event"
 
     'strMBText = "There are alarmed events " & _
                 IIf(intFilterPastPresent = 1, "prior to", "for the") & _
@@ -1184,7 +1184,7 @@ Private Sub Class_Terminate()
 
 End Sub
 
-Public Function GetPrintData(piDateRange As HRProDataMgr.ReturnPrintDateType, pdStartManualDate As Date _
+Public Function GetPrintData(piDateRange As DataMgr.ReturnPrintDateType, pdStartManualDate As Date _
     , pdEndManualDate As Date, plngStartExpressionID As Long, plngEndExpressionID As Long) As String
 
 
@@ -1856,7 +1856,7 @@ Exit Function
 LocalErr:
   tmrDiary.Enabled = False
   gobjErrorStack.Enable
-  COAMsgBox "An error occurred checking for alarmed diary events.  No further checks will be made for alarmed events until HR Pro is restarted." & _
+  COAMsgBox "An error occurred checking for alarmed diary events.  No further checks will be made for alarmed events until OpenHR is restarted." & _
         IIf(Err.Description <> vbNullString, vbCrLf & "(" & Err.Description & ")", ""), vbExclamation, "Alarmed Diary Events"
 
 End Function

@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form frmAbout 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "About HR Pro Data Manager"
+   Caption         =   "About OpenHR Data Manager"
    ClientHeight    =   1845
    ClientLeft      =   345
    ClientTop       =   4815
@@ -160,7 +160,7 @@ Begin VB.Form frmAbout
    Begin VB.Label lblTitle 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "HR Pro Data Manager - version"
+      Caption         =   "OpenHR Data Manager - version"
       ForeColor       =   &H80000008&
       Height          =   195
       Left            =   1500
@@ -238,13 +238,13 @@ Private Sub Form_Load()
   'Dim sAniPath As String
   Dim sSQL As String
   Dim rsUser As Recordset
-  Dim datGeneral As New HRProDataMgr.clsGeneral
+  Dim datGeneral As New DataMgr.clsGeneral
   Dim sngMaxX As Single
      
   'sAniPath = App.Path & "\Videos\about.avi"
   'aniAbout.Open sAniPath
     
-  lblTitle.Caption = "HR Pro Data Manager - v" & App.Major & "." & App.Minor & "." & App.Revision
+  lblTitle.Caption = "OpenHR Data Manager - v" & App.Major & "." & App.Minor & "." & App.Revision
   lblDatabase.Caption = "Database : " & gsDatabaseName
   lblUser.Caption = "Current User : " & gsUserName
   
@@ -371,7 +371,7 @@ GetKeyError:      ' Cleanup After An Error Has Occured...
     rc = RegCloseKey(hKey)                                  ' Close Registry Key
 End Function
 
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Redo link colour
   lblURL.ForeColor = &HFF0000
   DoEvents
@@ -404,17 +404,17 @@ Private Sub lblURL_Click()
   
   If plngID = 0 Then
     ' Uh oh...the browser wasnt initiated...tell the user
-    COAMsgBox "HR Pro cannot automatically open your default web browser." & vbCrLf & vbCrLf & "Please open your web browser manually and navigate to the " & vbCrLf & "web address which has been placed in your clipboard." & IIf(Err.Description = "", "", vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")"), vbInformation + vbOKOnly, "Technical Support"
+    COAMsgBox "OpenHR cannot automatically open your default web browser." & vbCrLf & vbCrLf & "Please open your web browser manually and navigate to the " & vbCrLf & "web address which has been placed in your clipboard." & IIf(Err.Description = "", "", vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")"), vbInformation + vbOKOnly, "Technical Support"
   End If
   
   Exit Sub
   
 ErrTrap:
-    COAMsgBox "HR Pro cannot automatically open your default web browser." & vbCrLf & vbCrLf & "Please open your web browser manually and navigate to the " & vbCrLf & "web address which has been placed in your clipboard." & IIf(Err.Description = "", "", vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")"), vbInformation + vbOKOnly, "Technical Support"
+    COAMsgBox "OpenHR cannot automatically open your default web browser." & vbCrLf & vbCrLf & "Please open your web browser manually and navigate to the " & vbCrLf & "web address which has been placed in your clipboard." & IIf(Err.Description = "", "", vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")"), vbInformation + vbOKOnly, "Technical Support"
 
 End Sub
 
-Private Sub lblURL_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub lblURL_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Highlight the link
   lblURL.ForeColor = vbRed
   DoEvents

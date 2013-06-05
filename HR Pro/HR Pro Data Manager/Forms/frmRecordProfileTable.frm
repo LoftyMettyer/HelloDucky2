@@ -280,7 +280,7 @@ Private mfLoading As Boolean
 Private mlngBaseTableID As Long
 
 'DataAccess Class
-Private datData As HRProDataMgr.clsDataAccess
+Private datData As DataMgr.clsDataAccess
 
 Private mfrmParent As frmRecordProfile
 
@@ -422,7 +422,7 @@ Public Function Initialize(pfNew As Boolean, _
   On Error GoTo Error_Trap
 
   ' Set references to class modules
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   
   mfNew = pfNew
   

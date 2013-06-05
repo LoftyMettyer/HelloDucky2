@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmMatchDefTable 
@@ -97,14 +97,14 @@ Begin VB.Form frmMatchDefTable
       TabCaption(1)   =   "Breakdown Colu&mns"
       TabPicture(1)   =   "frmMatchDefTable.frx":0E7C
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "cmdAdd"
-      Tab(1).Control(1)=   "cmdRemove"
-      Tab(1).Control(2)=   "cmdMoveUp"
-      Tab(1).Control(3)=   "cmdMoveDown"
-      Tab(1).Control(4)=   "cmdAddAll"
-      Tab(1).Control(5)=   "cmdRemoveAll"
-      Tab(1).Control(6)=   "fraFieldsAvailable"
-      Tab(1).Control(7)=   "fraFieldsSelected"
+      Tab(1).Control(0)=   "fraFieldsSelected"
+      Tab(1).Control(1)=   "fraFieldsAvailable"
+      Tab(1).Control(2)=   "cmdRemoveAll"
+      Tab(1).Control(3)=   "cmdAddAll"
+      Tab(1).Control(4)=   "cmdMoveDown"
+      Tab(1).Control(5)=   "cmdMoveUp"
+      Tab(1).Control(6)=   "cmdRemove"
+      Tab(1).Control(7)=   "cmdAdd"
       Tab(1).ControlCount=   8
       Begin VB.Frame fraExpressions 
          Height          =   2055
@@ -2227,10 +2227,6 @@ Private Sub AddToCollection(objTemp As Object)
   Set objColumnPrivileges = Nothing
   
   mblnLoading = False
-
-End Sub
-
-Private Sub picDocument_Click()
 
 End Sub
 

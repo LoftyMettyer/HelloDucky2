@@ -307,7 +307,7 @@ Init_ERROR:
     Case Else: pstrError = Err.Description
   End Select
   
-  If Not gblnBatchMode Then COAMsgBox pstrError, vbExclamation + vbOKOnly, "HR Pro"
+  If Not gblnBatchMode Then COAMsgBox pstrError, vbExclamation + vbOKOnly, Application.Name
   
 End Sub
 

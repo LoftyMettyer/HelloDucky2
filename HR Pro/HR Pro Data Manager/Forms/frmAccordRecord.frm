@@ -290,7 +290,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private miConnectionType As HRProDataMgr.AccordConnection
+Private miConnectionType As DataMgr.AccordConnection
 Private datData As clsDataAccess
 Private mbCancelled As Boolean
 Private mlngTransactionID As Long
@@ -306,7 +306,7 @@ Private Enum AccordTransactionTypes
   ACCORD_TRANSACTION_DELETE = 2
 End Enum
 
-Public Property Let ConnectionType(ByVal piNewValue As HRProDataMgr.AccordConnection)
+Public Property Let ConnectionType(ByVal piNewValue As DataMgr.AccordConnection)
   miConnectionType = piNewValue
 End Property
 
@@ -552,7 +552,7 @@ End Select
 End Sub
 
 Private Sub RefreshButtons()
-  cmdOk.Enabled = mbChanged
+  cmdOK.Enabled = mbChanged
 End Sub
 
 Private Function SaveChanges() As Boolean

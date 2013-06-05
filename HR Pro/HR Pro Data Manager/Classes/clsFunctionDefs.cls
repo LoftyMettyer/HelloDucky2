@@ -22,7 +22,7 @@ Private datData As clsDataAccess
 Private Sub Class_Initialize()
   'creates the collection when this class is created
   Set mvar_colFunctions = New Collection
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
 
 End Sub
 

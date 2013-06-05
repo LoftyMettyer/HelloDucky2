@@ -1070,13 +1070,13 @@ Public Sub CheckNotifications(lngBatchJobID As Long)
       If fOK = False Then
         If rsBatch!EmailFailed > 0 Then
           Set frmSendEmail = New frmEmailSel
-          frmSendEmail.SendBatchNotification "HR Pro Batch Job Failed: '" & rsBatch!Name & "'", mstrEventLogIDs, rsBatch!EmailFailed
+          frmSendEmail.SendBatchNotification "OpenHR Batch Job Failed: '" & rsBatch!Name & "'", mstrEventLogIDs, rsBatch!EmailFailed
           Set frmSendEmail = Nothing
         End If
       Else
         If rsBatch!EmailSuccess > 0 Then
           Set frmSendEmail = New frmEmailSel
-          frmSendEmail.SendBatchNotification "HR Pro Batch Job Succeeded: '" & rsBatch!Name & "'", mstrEventLogIDs, rsBatch!EmailSuccess
+          frmSendEmail.SendBatchNotification "OpenHR Batch Job Succeeded: '" & rsBatch!Name & "'", mstrEventLogIDs, rsBatch!EmailSuccess
           Set frmSendEmail = Nothing
         End If
       End If

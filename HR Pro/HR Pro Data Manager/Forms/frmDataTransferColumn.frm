@@ -192,11 +192,11 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 Private mbCancelled As Boolean
-Private datData As HRProDataMgr.clsDataAccess
+Private datData As DataMgr.clsDataAccess
 Private mintDataType As Integer
 Private mlngSize As Long
 Private mintDecimals As Integer
-Private miOLEType As HRProDataMgr.OLEType
+Private miOLEType As DataMgr.OLEType
 Private mstrColumnsAlreadySelected As String
 Private mfrmParent As frmDataTransfer
 Private mlngFromTableID As Long
@@ -222,7 +222,7 @@ Public Sub Initialise(bNew As Boolean, lFromTableID As Long, lToTableID As Long,
   Dim rsChild As Recordset
   Dim sParent As String
 
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   Call CheckWhichColumnsAreAlreadyUsed(bNew)
   
   

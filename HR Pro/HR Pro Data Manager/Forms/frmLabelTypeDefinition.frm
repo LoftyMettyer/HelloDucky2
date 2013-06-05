@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Begin VB.Form frmLabelTypeDefinition 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Envelope & Label Template Definition"
@@ -1322,7 +1322,7 @@ Private mblnCancelled As Boolean
 Private malngLabelDimensions(10) As Long
 Private malngEnvelopeDimensions(6) As Long
 
-Private datData As HRProDataMgr.clsDataAccess          'DataAccess Class
+Private datData As DataMgr.clsDataAccess          'DataAccess Class
 
 Private mbIsEnvelope As Boolean                        'Is this definition an envelope
 
@@ -1344,7 +1344,7 @@ Private mbIsLoading As Boolean
 Private mbPreviouslyWarned As Boolean
 Private mbLandscaping As Boolean
 
-Private mobjFormatDetails(1) As HRProDataMgr.clsOutputStyle
+Private mobjFormatDetails(1) As DataMgr.clsOutputStyle
 
 Private Sub cboEnvelopePageSize_Change()
   Me.Changed = True
@@ -2147,7 +2147,7 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lLabelDef
   ' Only allow import button if Word is XP or greater
   cmdImportFromWord.Enabled = IIf(GetOfficeWordVersion >= 10, True, False)
 
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
 
   Screen.MousePointer = vbHourglass
 
@@ -2161,8 +2161,8 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lLabelDef
 
   ' Format Tab
   PopulateFormatTab
-  Set mobjFormatDetails(0) = New HRProDataMgr.clsOutputStyle
-  Set mobjFormatDetails(1) = New HRProDataMgr.clsOutputStyle
+  Set mobjFormatDetails(0) = New DataMgr.clsOutputStyle
+  Set mobjFormatDetails(1) = New DataMgr.clsOutputStyle
 
   ' Remember pitch settings
   msngRememberVPitch = msngMinLabelHeight * 100
@@ -3026,7 +3026,7 @@ Public Sub PrintDefinition(plngLabelTypeID)
   Dim sngWidth As Single
   Dim sngHeight As Single
   
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   
   mlngLabelDefinitionID = plngLabelTypeID
   Set rsTemp = GetDefinition
@@ -3079,7 +3079,7 @@ Public Sub PrintDefinition(plngLabelTypeID)
     Exit Sub
   End If
    
-  Set objPrintDef = New HRProDataMgr.clsPrintDef
+  Set objPrintDef = New DataMgr.clsPrintDef
 
   If objPrintDef.IsOK Then
   

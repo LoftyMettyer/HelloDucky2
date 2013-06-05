@@ -375,7 +375,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 Private mbCancelled As Boolean                      'Has the operation been cancelled
-Private datData As HRProDataMgr.clsDataAccess              'Data Access Class
+Private datData As DataMgr.clsDataAccess              'Data Access Class
 Private mfrmForm As frmExport
 Private mblnNew As Boolean
 Private mblnAddAll As Boolean
@@ -540,7 +540,7 @@ Public Sub Initialise(bNew As Boolean, sType As String, lFromTableID As Long, lF
   Optional frmParentForm As frmExport, Optional iDecimals As Long, Optional strHeading As String, _
   Optional sConvertCase As String, Optional bSuppressNulls As Boolean, Optional bAddAll As Boolean)
 
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   Set mfrmForm = frmParentForm
   
   mblnNew = bNew
@@ -1334,7 +1334,7 @@ Public Sub SetCMGOptions(ByVal sDefaultCMGCode As String)
   'NPG20080617 Suggestion S000816
   ' Expand the size of the form and show the Suppress Nulls check box for CMG exports
   Me.Height = 5325
-  cmdOk.Top = 4350
+  cmdOK.Top = 4350
   cmdCancel.Top = 4350
   fraType.Height = 4020
   fraProperties.Height = 2775

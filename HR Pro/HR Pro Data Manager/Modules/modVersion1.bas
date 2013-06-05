@@ -40,7 +40,7 @@ Public Function GenerateV1MailMergeHeader(ByVal bManual As Boolean, ByVal sCateg
 
   On Error GoTo ErrorTrap
 
-  Dim objHeader As HRProDataMgr.clsStringBuilder
+  Dim objHeader As DataMgr.clsStringBuilder
   Dim bOK As Boolean
   Dim sKeyField As String
   Dim sParentKeyfield1 As String
@@ -51,7 +51,7 @@ Public Function GenerateV1MailMergeHeader(ByVal bManual As Boolean, ByVal sCateg
   sParentKeyfield1 = datGeneral.GetColumnName(lngParentKeyfield1, True)
   sParentKeyfield2 = datGeneral.GetColumnName(lngParentKeyfield2, True)
   
-  Set objHeader = New HRProDataMgr.clsStringBuilder
+  Set objHeader = New DataMgr.clsStringBuilder
   objHeader.TheString = vbNullString
   
   If Not bManual Then

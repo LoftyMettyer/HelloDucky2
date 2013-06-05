@@ -282,7 +282,7 @@ Option Explicit
 Public mblnLoading As Boolean
 'Private gblnBatchMode As Boolean
 Private CrossTabPrint As clsPrintGrid
-Private datData As HRProDataMgr.clsDataAccess          'DataAccess Class
+Private datData As DataMgr.clsDataAccess          'DataAccess Class
 Private fOK As Boolean
 Private mstrErrorMessage As String
 Private lngFileNum As Integer
@@ -530,7 +530,7 @@ Public Function AbsenceBreakdownExecuteReport(lngPersonnelID As Long) As Boolean
   'mlngPickListID = lngPicklistID
   'mlngFilterID = lngFilterID
 
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   mblnLoading = True
   
   ReDim mastrUDFsRequired(0)
@@ -675,7 +675,7 @@ End Function
 
 Public Function ExecuteCrossTab(lngCrossTabID As Long) As Boolean
   
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   mblnLoading = True
 
   mlngCrossTabType = cttNormal  'Not turnover nor stability report !
@@ -2337,11 +2337,11 @@ Private Sub Form_Load()
 '    Me.Height = Screen.Height
 '  End If
 
- Hook Me.hwnd, mlngMinFormWidth, mlngMinFormHeight
+ Hook Me.hWnd, mlngMinFormWidth, mlngMinFormHeight
 
 End Sub
 
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   If Screen.MousePointer <> vbDefault Then
     Screen.MousePointer = vbDefault
   End If
@@ -2456,7 +2456,7 @@ Private Sub Form_Unload(Cancel As Integer)
   Unload frmOutputOptions
   Set frmOutputOptions = Nothing
 
-  Unhook Me.hwnd
+  Unhook Me.hWnd
   
 End Sub
 
@@ -2895,7 +2895,7 @@ Private Sub SSDBGrid1_KeyDown(KeyCode As Integer, Shift As Integer)
 End Sub
 
 
-Private Sub SSDBGrid1_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub SSDBGrid1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' JPD 26/7/00
   Screen.MousePointer = vbArrow
 
@@ -3281,7 +3281,7 @@ End Function
 
 Public Function TurnoverExecuteReport() As Boolean
   
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   mblnLoading = True
   
   'NHRD09042002 Fault 3322 - Code Added
@@ -3329,7 +3329,7 @@ Public Function TurnoverStabilityReport() As Boolean
   
   Dim strReportType As String
   
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   mblnLoading = True
   
   ReDim mastrUDFsRequired(0)

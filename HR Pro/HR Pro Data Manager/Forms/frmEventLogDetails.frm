@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Begin VB.Form frmEventLogDetails 
    Caption         =   "Event Log Details"
    ClientHeight    =   4695
@@ -683,7 +683,7 @@ AskAgain:
     
   End If
   
-  Set objPrintDef = New HRProDataMgr.clsPrintDef
+  Set objPrintDef = New DataMgr.clsPrintDef
     
   If blnPrintAll Then
     'NHRD18012005 Fault 9082 Moved the objPrintDef.IsOK and objPrintDef.PrintStart(False) outside the

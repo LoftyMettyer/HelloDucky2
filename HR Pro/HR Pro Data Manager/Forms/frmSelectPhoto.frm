@@ -333,7 +333,7 @@ Private Sub EditFile_Part2()
     objProc.SetAppWatch pid
     objProc.SetAppCallback Me
 
-    ' Lock HR Pro until the photo edition has been done.
+    ' Lock OpenHR until the photo edition has been done.
     frmSystemLocked.LockType = giLOCKTYPE_PHOTO
     frmSystemLocked.Show vbModal
   End If

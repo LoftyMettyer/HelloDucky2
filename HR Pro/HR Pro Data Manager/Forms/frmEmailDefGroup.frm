@@ -952,7 +952,7 @@ Public Sub PrintDef(lngEmailGroupID As Long)
   End If
 
 
-  Set objPrintDef = New HRProDataMgr.clsPrintDef
+  Set objPrintDef = New DataMgr.clsPrintDef
 
   If objPrintDef.IsOK Then
   

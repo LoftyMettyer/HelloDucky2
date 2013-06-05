@@ -755,7 +755,7 @@ Public Function EncryptQueryString(plngInstanceID As Long, _
   ' Get the server name - gsServerName may be '.'
   ' which screws up the Workflow queryString if the web site is not
   ' on the same server as the SQL database.
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   'sSQL = "SELECT @@SERVERNAME AS [serverName]"
   sSQL = "SELECT SERVERPROPERTY('servername') AS [serverName]"
   Set rsTemp = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)

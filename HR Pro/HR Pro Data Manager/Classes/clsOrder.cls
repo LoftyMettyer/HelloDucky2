@@ -103,7 +103,7 @@ Public Function SelectOrder() As Boolean
       
       .ShowOrders sSQL, OrderID
     'NHRD dont know how this line got in here but it was stopping the order defsel from loading.
-    'Commented out for bug JIRA HR Pro 714
+    'Commented out for bug JIRA OpenHR 714
     'gcolSystemPermissions.Item (59)
 
       ' Display the selection form.

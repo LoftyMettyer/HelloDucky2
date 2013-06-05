@@ -562,7 +562,7 @@ Private Function SendEventLog() As Boolean
 
   If strError = vbNullString Then
 
-    strSubject = GetSystemSetting("Licence", "Customer Name", "<<Unknown Customer>>") & " - HR Pro Event Log"
+    strSubject = GetSystemSetting("Licence", "Customer Name", "<<Unknown Customer>>") & " - OpenHR Event Log"
     strMsgText = GetEventDetails(mstrEventLogIDs)
     If Trim(strMsgText) = vbNullString Then
       COAMsgBox "The selected Event Log record(s) have been deleted by another User.", vbOKOnly + vbExclamation, "Event Log"

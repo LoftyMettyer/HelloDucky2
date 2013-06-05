@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Begin VB.Form frmWorkflowStepDetails 
    Caption         =   "Workflow Step Details"
    ClientHeight    =   8700
@@ -1636,7 +1636,7 @@ Private Sub cmdResendEmail_Click()
   Dim sMessageSuffix_Hypertextlink As String
   Dim sMessageSuffix_Resent As String
   Dim sSubject As String
-  Dim datData As HRProDataMgr.clsDataAccess
+  Dim datData As DataMgr.clsDataAccess
   Dim iLoop As Integer
   Dim lngElementID As Long
   Dim sURL As String
@@ -1706,25 +1706,25 @@ Private Sub cmdResendEmail_Click()
       & sMessageSuffix_Resent
   
   sSQL = "INSERT ASRSysEmailQueue(RecordDesc, ColumnValue, DateDue, UserName, [Immediate], RecalculateRecordDesc, RepTo, MsgText, Subject, WorkflowInstanceID)" & _
-    " VALUES ('', '', getdate(), 'HR Pro Workflow', 1, 0, '" & Replace(sEmailTo, "'", "''") & "'" & _
+    " VALUES ('', '', getdate(), 'OpenHR Workflow', 1, 0, '" & Replace(sEmailTo, "'", "''") & "'" & _
     ", '" & Replace(sMessageWhole_To, "'", "''") & "', '" & Replace(sSubject, "'", "''") & "'," & CStr(mlngWorkflowInstanceID) & ")"
   datData.ExecuteSql (sSQL)
 
   If Len(sEmailCopyTo) > 0 Then
     sMessageWhole_CopyTo = _
-      "You have been copied in on the following HR Pro Workflow email with recipients:" & vbNewLine _
+      "You have been copied in on the following OpenHR Workflow email with recipients:" & vbNewLine _
       & vbTab & sEmailTo & vbNewLine & vbNewLine _
       & sMessage & vbNewLine & vbNewLine _
       & sMessageSuffix_Resent
   
     sSQL = "INSERT ASRSysEmailQueue(RecordDesc, ColumnValue, DateDue, UserName, [Immediate], RecalculateRecordDesc, RepTo, MsgText, Subject, WorkflowInstanceID)" & _
-      " VALUES ('', '', getdate(), 'HR Pro Workflow', 1, 0, '" & Replace(sEmailCopyTo, "'", "''") & "'" & _
+      " VALUES ('', '', getdate(), 'OpenHR Workflow', 1, 0, '" & Replace(sEmailCopyTo, "'", "''") & "'" & _
       ", '" & Replace(sMessageWhole_CopyTo, "'", "''") & "', '" & Replace(sSubject, "'", "''") & "'," & CStr(mlngWorkflowInstanceID) & ")"
     datData.ExecuteSql (sSQL)
   End If
 
   sTemp = gsUserName
-  gsUserName = "HR Pro Workflow"
+  gsUserName = "OpenHR Workflow"
   objEmail.SendImmediateEmails
   gsUserName = sTemp
 
@@ -2174,9 +2174,4 @@ End Sub
 Private Sub Form_Unload(Cancel As Integer)
   Unhook Me.hWnd
 End Sub
-
-Private Sub fraBasicDetails_DragDrop(Source As Control, X As Single, Y As Single)
-
-End Sub
-
 

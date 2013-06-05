@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmImport 
    BorderStyle     =   3  'Fixed Dialog
@@ -54,8 +54,8 @@ Begin VB.Form frmImport
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmImport.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraData"
-      Tab(0).Control(1)=   "fraDefinition(0)"
+      Tab(0).Control(0)=   "fraDefinition(0)"
+      Tab(0).Control(1)=   "fraData"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmImport.frx":0028
@@ -885,7 +885,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private mdatData As HRProDataMgr.clsDataAccess
+Private mdatData As DataMgr.clsDataAccess
 Private mblnLoading As Boolean
 Private mblnFromCopy As Boolean
 Private mlngImportID As Long
@@ -1402,7 +1402,7 @@ End Sub
 Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional plngImportID As Long) As Boolean
   
   ' Set reference to data access class module
-  Set mdatData = New HRProDataMgr.clsDataAccess
+  Set mdatData = New DataMgr.clsDataAccess
   
   Screen.MousePointer = vbHourglass
 
@@ -1427,7 +1427,7 @@ Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional pln
     mblnFromCopy = pblnCopy
     
     If Not RetrieveImportDetails(mlngImportID) Then
-      If COAMsgBox("HR Pro could not load all of the definition successfully. The recommendation is that" & vbCrLf & _
+      If COAMsgBox("OpenHR could not load all of the definition successfully. The recommendation is that" & vbCrLf & _
              "you delete the definition and create a new one, however, you may edit the existing" & vbCrLf & _
              "definition if you wish. Would you like to continue and edit this definition ?", vbQuestion + vbYesNo, "Import") = vbNo Then
         Initialise = False
@@ -3418,7 +3418,7 @@ Public Sub PrintDef(lImportID As Long)
   ' JDM - 20/08/01 - Fault 2701 - Asking user to save after printing definition
   Me.Changed = False
 
-  Set objPrintDef = New HRProDataMgr.clsPrintDef
+  Set objPrintDef = New DataMgr.clsPrintDef
 
   If objPrintDef.IsOK Then
   

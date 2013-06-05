@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmCalendarReport 
@@ -1626,7 +1626,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 'DataAccess Class
-Private datData As HRProDataMgr.clsDataAccess
+Private datData As DataMgr.clsDataAccess
 Private objOutputDef As clsOutputDef
 
 '' Collection Class (Holds column details such as heading, size etc)
@@ -1984,7 +1984,7 @@ Public Sub PrintDef(plngCalendarReportID As Long)
   
   mlngCalendarReportID = plngCalendarReportID
 
-  Set objPrintDef = New HRProDataMgr.clsPrintDef
+  Set objPrintDef = New DataMgr.clsPrintDef
 
   If objPrintDef.IsOK Then
   
@@ -2786,7 +2786,7 @@ Public Function Initialise(pbNew As Boolean, pbCopy As Boolean, Optional plngCal
   Screen.MousePointer = vbHourglass
   
   ' Set references to class modules
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
   
   mblnLoading = True
   mblnNew = pbNew
@@ -2847,7 +2847,7 @@ Public Function Initialise(pbNew As Boolean, pbCopy As Boolean, Optional plngCal
         Initialise = False
         Exit Function
       Else
-        If COAMsgBox("HR Pro could not load all of the definition successfully. The recommendation is that" & vbCrLf & _
+        If COAMsgBox("OpenHR could not load all of the definition successfully. The recommendation is that" & vbCrLf & _
                "you delete the definition and create a new one, however, you may edit the existing" & vbCrLf & _
                "definition if you wish. Would you like to continue and edit this definition ?", vbQuestion + vbYesNo, "Calendar Reports") = vbNo Then
           Me.Cancelled = True

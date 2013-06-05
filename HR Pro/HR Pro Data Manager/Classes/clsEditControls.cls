@@ -23,7 +23,7 @@ Public Function Add(ReadOnly As Boolean, Mandatory As Boolean, _
   plGotFocusExprID As Long, plLostFocusExprID As Long, _
   psErrorMessage As String, sKey As String, _
   psDefaultValue As String, psStatusBarMessage As String, _
-  AFDEnabled As Boolean, piDataType As HRProDataMgr.SQLDataType) As CEditControl
+  AFDEnabled As Boolean, piDataType As DataMgr.SQLDataType) As CEditControl
   On Error GoTo ErrorTrap
 
   Dim fOK As Boolean

@@ -147,8 +147,8 @@ Public Function RuntimeCode(psRuntimeCode As String, _
   Dim sCConvCurrDescCol As String
   Dim sCConvDecCol As String
   
-  Dim clsGeneral As HRProDataMgr.clsGeneral
-  Set clsGeneral = New HRProDataMgr.clsGeneral
+  Dim clsGeneral As DataMgr.clsGeneral
+  Set clsGeneral = New DataMgr.clsGeneral
   
   fOK = True
   sCode = ""

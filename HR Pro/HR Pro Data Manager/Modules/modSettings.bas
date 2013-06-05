@@ -265,7 +265,7 @@ Public Function LC_PCLocked() As Boolean
   
   If blnPCLocked Then
     strTimeRemaining = LC_FormatDateTimeMessage(DateDiff("s", Now(), DateAdd("s", glngCFG_LD, gdtPC_LKD)))
-    strMessage = "This PC has been temporarily locked from using HR Pro." & vbCrLf & vbCrLf & "The lock will be removed in " & strTimeRemaining & "."
+    strMessage = "This PC has been temporarily locked from using " & Application.Name & "." & vbCrLf & vbCrLf & "The lock will be removed in " & strTimeRemaining & "."
     COAMsgBox strMessage, vbOKOnly + vbExclamation, App.Title
   End If
   

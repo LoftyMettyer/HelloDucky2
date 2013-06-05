@@ -377,7 +377,7 @@ Private Sub EditFile_Part2()
     objProc.SetAppWatch pid
     objProc.SetAppCallback Me
 
-    ' Lock HR Pro until the edition has been done.
+    ' Lock OpenHR until the edition has been done.
     frmSystemLocked.LockType = giLOCKTYPE_OLE
     frmSystemLocked.Show vbModal
   End If
@@ -521,7 +521,7 @@ Private Sub cmdAdd_Click()
             If frmFileReplace.Replaced Then
               Screen.MousePointer = vbHourglass
               
-              ' Copy the file to the HR Pro OLE document directory on the server
+              ' Copy the file to the OpenHR OLE document directory on the server
               ' if it is not already there.
               If UCase(Trim(.FileName)) <> UCase(Trim(gsOLEPath & "\" & .FileTitle)) Then
                 FileCopy .FileName, gsOLEPath & "\" & .FileTitle
@@ -553,7 +553,7 @@ Private Sub cmdAdd_Click()
             If frmFileReplace.Replaced Then
               Screen.MousePointer = vbHourglass
               
-              ' Copy the file to the HR Pro OLE document directory on the local machine
+              ' Copy the file to the OpenHR OLE document directory on the local machine
               ' if it is not already there.
               If UCase(Trim(.FileName)) <> UCase(Trim(gsLocalOLEPath & "\" & .FileTitle)) Then
                 FileCopy .FileName, gsLocalOLEPath & "\" & .FileTitle

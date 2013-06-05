@@ -203,7 +203,7 @@ Private fIndividual As Boolean
 Private frmForm As frmRecEdit4 ' Form
 
 Private mbQuickAddressMode As Boolean
-Private mobjQAPostcodes() As HRProDataMgr.PostCode
+Private mobjQAPostcodes() As DataMgr.PostCode
                                                     
 Private Sub cmdBack_Click()
 
@@ -311,7 +311,7 @@ strUserMessage = ""
 On Error GoTo HandleError
     Call mProcStack.EnterProc("Form_Load", MODULE_NAME)
     
-    Hook Me.hwnd, 4800, 2610
+    Hook Me.hWnd, 4800, 2610
     
     lngOpenReturn = QA_Open("", "", lngHandle)
 
@@ -331,7 +331,7 @@ On Error GoTo HandleError
     'Set tab stops in lstResults
     arrTabs(1) = 235
     arrTabs(2) = 295
-    Call SendMessageA(lstResults.hwnd, LB_SETTABSTOPS, 2, arrTabs(1))
+    Call SendMessageA(lstResults.hWnd, LB_SETTABSTOPS, 2, arrTabs(1))
     
 ' End Error Handler
 Form_Load_Done:
@@ -550,7 +550,7 @@ Private Sub Form_Unload(Cancel As Integer)
         Cancel = 1
     End If
 
-  Unhook Me.hwnd
+  Unhook Me.hWnd
 End Sub
 
 '*****************************************************

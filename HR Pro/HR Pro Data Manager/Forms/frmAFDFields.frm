@@ -556,7 +556,7 @@ Private fIndividual As Boolean
 Private frmForm As frmRecEdit4 ' Form
 
 Private mbQuickAddressMode As Boolean
-Private mobjQAPostcodes() As HRProDataMgr.PostCode
+Private mobjQAPostcodes() As DataMgr.PostCode
 
 Public Function InitialiseAFD(PostCode As String, fIndiv As Boolean, frmCallingForm As Form, FieldName As String) As Boolean
 

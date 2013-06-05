@@ -75,7 +75,7 @@ Private mlngLinkOrderID As Long
 Private mbUse1000Separator As Boolean
 Private miTrimmingType As TrimmingTypes
 Private mfQAddressEnabled As Boolean
-Private miOLEType As HRProDataMgr.OLEType
+Private miOLEType As DataMgr.OLEType
 Private miMaxOLESize As Integer
 Private mbEmbeddedEnabled As Boolean
 Private mbAutoUpdateLookupValues As Boolean
@@ -698,11 +698,11 @@ Public Property Let QAddressEnabled(ByVal pfNewValue As Boolean)
   mfQAddressEnabled = pfNewValue
 End Property
 
-Public Property Get OLEType() As HRProDataMgr.OLEType
+Public Property Get OLEType() As DataMgr.OLEType
   OLEType = miOLEType
 End Property
 
-Public Property Let OLEType(ByVal piNewValue As HRProDataMgr.OLEType)
+Public Property Let OLEType(ByVal piNewValue As DataMgr.OLEType)
   miOLEType = piNewValue
 End Property
 

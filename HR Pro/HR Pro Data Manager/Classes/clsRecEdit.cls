@@ -18,7 +18,7 @@ Private datData As clsDataAccess
 Private Sub Class_Initialize()
 
 '  Set datData = New clsDataAccess
-  Set datData = New HRProDataMgr.clsDataAccess
+  Set datData = New DataMgr.clsDataAccess
 
 End Sub
 

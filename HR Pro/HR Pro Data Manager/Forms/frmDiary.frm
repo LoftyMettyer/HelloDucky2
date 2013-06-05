@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
 Begin VB.Form frmDiary 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Diary Events"
@@ -1409,7 +1409,7 @@ Begin VB.Form frmDiary
          MonthRows       =   2
          MonthBackColor  =   16184819
          ScrollRate      =   1
-         StartOfWeek     =   139984897
+         StartOfWeek     =   80150529
          TitleBackColor  =   6697779
          TitleForeColor  =   15988214
          TrailingForeColor=   -2147483643
@@ -2205,13 +2205,13 @@ Private Sub PrintDiaryEvents()
   ' RH 19/09/00 - BUG 950 - Grids return 'Cancelled by user' COAMsgBox if a printer
   '                         is not connected to the machine, so use the check in
   '                         clsPrintDef to check for printer existance first
-  Dim frmDiaryPrint As HRProDataMgr.frmDiaryPrintOptions
+  Dim frmDiaryPrint As DataMgr.frmDiaryPrintOptions
   Dim objPrintDef As clsPrintDef
   Dim bCancelled As Boolean
   Dim strErrorMessage As String
   Dim strDateRange As String
   
-  Set frmDiaryPrint = New HRProDataMgr.frmDiaryPrintOptions
+  Set frmDiaryPrint = New DataMgr.frmDiaryPrintOptions
   Set objPrintDef = New clsPrintDef
   
   'NHRD16072004 Fault 8738
@@ -2434,19 +2434,19 @@ Public Property Get DiaryToolBar() As ActiveBarLibraryCtl.Tools
 End Property
 
 
-Private Sub grdViewByWeek_MouseUp(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub grdViewByWeek_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
   If Button = vbRightButton Then
     Me.ActiveBar1.Bands("bndDiary").TrackPopup -1, -1
   End If
 End Sub
 
-Private Sub grdViewByDay_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub grdViewByDay_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   If Button = vbRightButton Then
     Me.ActiveBar1.Bands("bndDiary").TrackPopup -1, -1
   End If
 End Sub
 
-Private Sub mvwViewbyMonth_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub mvwViewbyMonth_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   If Button = vbRightButton Then
     Me.ActiveBar1.Bands("bndDiary").TrackPopup -1, -1
   Else
@@ -2455,7 +2455,7 @@ Private Sub mvwViewbyMonth_MouseUp(Button As Integer, Shift As Integer, x As Sin
   End If
 End Sub
 
-Private Sub grdViewByList_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub grdViewByList_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   If Button = vbRightButton Then
     Me.ActiveBar1.Bands("bndDiary").TrackPopup -1, -1
   End If

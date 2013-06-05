@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Begin VB.Form frmSelectEmbedded 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Select..."
@@ -225,7 +225,7 @@ Private mobjStream As ADODB.Stream
 ' Column information
 Private mbIsReadOnly As Boolean
 Private mbIsPhoto As Boolean
-Private miOLEType As HRProDataMgr.OLEType
+Private miOLEType As DataMgr.OLEType
 Private mbEmbeddedEnabled As Boolean
 Private mlngMaxOLESize As Long
 
@@ -270,11 +270,11 @@ Public Property Let IsPhoto(pbNewValue As Boolean)
   mbIsPhoto = pbNewValue
 End Property
 
-Public Property Let OLEType(piNewValue As HRProDataMgr.OLEType)
+Public Property Let OLEType(piNewValue As DataMgr.OLEType)
   miOLEType = piNewValue
 End Property
 
-Public Property Get OLEType() As HRProDataMgr.OLEType
+Public Property Get OLEType() As DataMgr.OLEType
   OLEType = miOLEType
 End Property
 
@@ -327,7 +327,7 @@ Public Sub Initialise(ByVal objStream As ADODB.Stream)
 
 End Sub
 
-Public Function CreateDocumentStream(piOLEType As HRProDataMgr.OLEType, pstrFileName As String, pbResetPath As Boolean) As Boolean
+Public Function CreateDocumentStream(piOLEType As DataMgr.OLEType, pstrFileName As String, pbResetPath As Boolean) As Boolean
 
   Dim objPropertiesStream As TextStream
   Dim objFile As New ADODB.Stream
@@ -665,7 +665,7 @@ Private Sub EditDocument()
       mbDocumentEdited = True
       
     Else
-      COAMsgBox "HR Pro has been unable to establish a connection to " & mstrFileName & " because another instance of this application is open." & vbCrLf _
+      COAMsgBox "OpenHR has been unable to establish a connection to " & mstrFileName & " because another instance of this application is open." & vbCrLf _
             & "Close the existing application and try again.", vbExclamation, "Error"
     End If
   End If
@@ -690,7 +690,7 @@ ErrorTrap:
     bResetFlags = False
     Resume Next
   Else
-    COAMsgBox "HR Pro has been unable to load " & mstrFileName & " because you do not have access." & vbCrLf, vbExclamation, "Error"
+    COAMsgBox "OpenHR has been unable to load " & mstrFileName & " because you do not have access." & vbCrLf, vbExclamation, "Error"
   End If
 
 
@@ -975,7 +975,7 @@ Private Function MapUNCToDriveLetter(pstrUNC As String) As String
 
 End Function
 
-Private Sub AddDocument(piOLEType As HRProDataMgr.OLEType)
+Private Sub AddDocument(piOLEType As DataMgr.OLEType)
 
   Dim lngIconNo As Long
   Dim strFileName As String

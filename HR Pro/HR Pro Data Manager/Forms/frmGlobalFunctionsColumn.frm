@@ -415,7 +415,7 @@ Public Sub Initialise(bNew As Boolean, lTableID As Long, typGlobal As GlobalType
 
   Dim objExpression As clsExprExpression
   
-  'Set datGlobal = New HRProDataMgr.clsGlobal
+  'Set datGlobal = New DataMgr.clsGlobal
   
   Call CheckWhichColumnsAreAlreadyUsed(bNew)
   

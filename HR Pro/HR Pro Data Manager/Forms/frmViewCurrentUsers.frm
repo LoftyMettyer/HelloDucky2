@@ -219,7 +219,7 @@ End Sub
 '
 ''  sSQL = "SELECT DISTINCT hostname, loginame, program_name, hostprocess " & _
 ''     "FROM ASRTempSysProcesses " & _
-''     "WHERE program_name like 'HR Pro%' " & _
+''     "WHERE program_name like 'OpenHR%' " & _
 ''     "AND dbid in (" & _
 ''                   "SELECT dbid " & _
 ''                   "FROM master..sysdatabases " & _
@@ -240,7 +240,7 @@ End Sub
 '       LCase(Trim(sProgName)) <> LCase(Trim(App.ProductName)) Or _
 '       LCase(Trim(sLoginName)) <> LCase(Trim(gsUserName)) Then
 '
-'      grdUsers.AddItem Trim(sLoginName) & vbTab & Trim(sHostName) & vbTab & IIf(LCase(Trim(sProgName)) = "", "HR Pro", Trim(sProgName))
+'      grdUsers.AddItem Trim(sLoginName) & vbTab & Trim(sHostName) & vbTab & IIf(LCase(Trim(sProgName)) = "", application.name, Trim(sProgName))
 '
 '    End If
 '

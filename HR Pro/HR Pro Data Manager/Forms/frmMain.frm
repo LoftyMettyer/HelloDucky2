@@ -6,7 +6,7 @@ Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.MDIForm frmMain 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
-   Caption         =   "HR Pro - Data Manager"
+   Caption         =   "OpenHR - Data Manager"
    ClientHeight    =   10080
    ClientLeft      =   2550
    ClientTop       =   2820
@@ -474,7 +474,7 @@ Private Sub MDIForm_Activate()
   ' Reset the mouse pointer.
   Screen.MousePointer = vbDefault
 
-  ' NPG20091007 Fault HR Pro-416
+  ' NPG20091007 Fault OpenHR-416
   ' set the new multi-size icons for taskbar, application, and alt-tab
   'SetIcon Me.hWnd, "TASKBAR", True
   SetIcon Me.hWnd, "!ABS", True
@@ -512,7 +512,7 @@ Private Sub MDIForm_Load()
   End With
   
   abMain.Attach
-  Me.Caption = "HR Pro Data Manager - " & gsDatabaseName
+  Me.Caption = "OpenHR Data Manager - " & gsDatabaseName
   DebugOutput "MDIForm_Load", "EnableTools"
   EnableTools
     
@@ -1233,15 +1233,15 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\HR Pro Data Manager Version Information.htm"
+      strVersionFilename = App.Path & "\OpenHR Data Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
         If plngHelp = 0 Then
-          COAMsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
+          COAMsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, "OpenHR Data Manager"
         End If
       Else
-        COAMsgBox "No version information found.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
+        COAMsgBox "No version information found.", vbExclamation + vbOKOnly, "OpenHR Data Manager"
       End If
       
       Screen.MousePointer = vbDefault
@@ -2673,7 +2673,7 @@ Public Sub WorkflowClick()
               ' Instantiation failed for some reason. Tell the user why.
               COAMsgBox "Workflow : '" & .SelectedText & "' initiation failed." & vbCrLf & vbCrLf & sMessage, vbExclamation + vbOKOnly, "Workflow"
             Else
-              ' Launch the default browser to hit the HR Pro Workflow webservice
+              ' Launch the default browser to hit the OpenHR Workflow webservice
               ' passing in the InstanceID and the InstanceStepID
               ' This is done for each form element that needs to be displayed.
               ReDim asForms(0)
@@ -3417,7 +3417,7 @@ Private Sub tmrDiary_Timer()
 'LocalErr:
 '  On Local Error Resume Next
 '  tmrDiary.Enabled = False
-'  COAMsgBox "An error occurred checking for alarmed diary events.  No further checks will be made for alarmed events until HR Pro is restarted." & _
+'  COAMsgBox "An error occurred checking for alarmed diary events.  No further checks will be made for alarmed events until OpenHR is restarted." & _
 '         IIf(Err.Description <> vbNullString, vbCrLf & "(" & Err.Description & ")", ""), vbExclamation, "Alarmed Diary Events"
 '
   gobjDiary.CheckAlarmedEvents tmrDiary, mstrLastAlarmCheck

@@ -32,12 +32,12 @@ Private ODBC As New ODBC
 Private mbValidation As Boolean
 
 'Private datGeneral As ASRUserData.clsGeneral
-Private datGeneral As HRProDataMgr.clsGeneral
+Private datGeneral As DataMgr.clsGeneral
 
 Private Sub Class_Initialize()
 
 '    Set datGeneral = New ASRUserData.clsGeneral
-  Set datGeneral = New HRProDataMgr.clsGeneral
+  Set datGeneral = New DataMgr.clsGeneral
 
 End Sub
 

@@ -255,14 +255,14 @@ Public Property Let SelectionType(ByVal piNewValue As Integer)
       Me.Caption = "Photographs"
       
       If Not mfQuietMode Then
-        lblPrompt.Caption = "The folder where the HR Pro photographs (non-linked) are stored is invalid." & vbCrLf & _
+        lblPrompt.Caption = "The folder where the OpenHR photographs (non-linked) are stored is invalid." & vbCrLf & _
                             "Please select a valid folder on the server."
       Else
-        lblPrompt.Caption = "You have opted to change the folder where the HR Pro photographs (non-linked) are stored." & vbCrLf & _
+        lblPrompt.Caption = "You have opted to change the folder where the OpenHR photographs (non-linked) are stored." & vbCrLf & _
                             "Please select a valid folder on the server."
         
         If Dir(frmConfiguration.txtPhotoPath.Text & IIf(Right(frmConfiguration.txtPhotoPath.Text, 1) = "\", "*.*", "\*.*"), vbDirectory) = vbNullString Then
-          COAMsgBox "The folder where the HR Pro photographs (non-linked) are stored is invalid." & vbCrLf & _
+          COAMsgBox "The folder where the OpenHR photographs (non-linked) are stored is invalid." & vbCrLf & _
                  "Please select a valid folder on the server.", _
                   vbExclamation + vbOKOnly, App.Title
         Else
@@ -275,14 +275,14 @@ Public Property Let SelectionType(ByVal piNewValue As Integer)
       Me.Caption = "Server OLE Documents"
       
       If Not mfQuietMode Then
-        lblPrompt.Caption = "The folder where the HR Pro OLE documents are stored is invalid." & vbCrLf & _
+        lblPrompt.Caption = "The folder where the OpenHR OLE documents are stored is invalid." & vbCrLf & _
                             "Please select a valid folder on the server."
       Else
-        lblPrompt.Caption = "You have opted to change the folder where the HR Pro OLE documents are stored." & vbCrLf & _
+        lblPrompt.Caption = "You have opted to change the folder where the OpenHR OLE documents are stored." & vbCrLf & _
                             "Please select a valid folder on the server."
         
         If Dir(frmConfiguration.txtOLEPath.Text & IIf(Right(frmConfiguration.txtOLEPath.Text, 1) = "\", "*.*", "\*.*"), vbDirectory) = vbNullString Then
-          COAMsgBox "The folder where the HR Pro OLE documents are stored is invalid." & vbCrLf & _
+          COAMsgBox "The folder where the OpenHR OLE documents are stored is invalid." & vbCrLf & _
                             "Please select a valid folder on the server.", _
                             vbExclamation + vbOKOnly, App.Title
         Else
@@ -295,14 +295,14 @@ Public Property Let SelectionType(ByVal piNewValue As Integer)
       Me.Caption = "Crystal Report Documents"
       
       If Not mfQuietMode Then
-        lblPrompt.Caption = "The folder where the HR Pro Crystal Report documents are stored is invalid." & vbCrLf & _
+        lblPrompt.Caption = "The folder where the OpenHR Crystal Report documents are stored is invalid." & vbCrLf & _
                             "Please select a valid folder on the server."
       Else
-        lblPrompt.Caption = "You have opted to change the folder where the HR Pro Crystal Report documents are stored." & vbCrLf & _
+        lblPrompt.Caption = "You have opted to change the folder where the OpenHR Crystal Report documents are stored." & vbCrLf & _
                             "Please select a valid folder on the server."
       
         If Dir(frmConfiguration.txtCrystalPath.Text & IIf(Right(frmConfiguration.txtCrystalPath.Text, 1) = "\", "*.*", "\*.*"), vbDirectory) = vbNullString Then
-          COAMsgBox "The folder where the HR Pro Crystal Report documents are stored is invalid." & vbCrLf & _
+          COAMsgBox "The folder where the OpenHR Crystal Report documents are stored is invalid." & vbCrLf & _
                             "Please select a valid folder on the server.", _
                             vbExclamation + vbOKOnly, App.Title
         Else
@@ -315,14 +315,14 @@ Public Property Let SelectionType(ByVal piNewValue As Integer)
       Me.Caption = "Document default output"
       
       If Not mfQuietMode Then
-        lblPrompt.Caption = "The folder where the HR Pro documents are stored is invalid." & vbCrLf & _
+        lblPrompt.Caption = "The folder where the OpenHR documents are stored is invalid." & vbCrLf & _
                             "Please select a valid folder on the server."
       Else
-        lblPrompt.Caption = "You have opted to change the folder where the HR Pro documents are stored." & vbCrLf & _
+        lblPrompt.Caption = "You have opted to change the folder where the OpenHR documents are stored." & vbCrLf & _
                             "Please select a valid folder on the server."
         
         If Dir(frmConfiguration.txtDocumentsPath.Text & IIf(Right(frmConfiguration.txtDocumentsPath.Text, 1) = "\", "*.*", "\*.*"), vbDirectory) = vbNullString Then
-          COAMsgBox "The folder where the HR Pro documents are stored is invalid." & vbCrLf & _
+          COAMsgBox "The folder where the OpenHR documents are stored is invalid." & vbCrLf & _
                             "Please select a valid folder on the server.", _
                             vbExclamation + vbOKOnly, App.Title
         Else
@@ -335,14 +335,14 @@ Public Property Let SelectionType(ByVal piNewValue As Integer)
       Me.Caption = "Local OLE Documents"
       
       If Not mfQuietMode Then
-        lblPrompt.Caption = "The folder where the Local HR Pro OLE documents are stored is invalid." & vbCrLf & _
+        lblPrompt.Caption = "The folder where the Local OpenHR OLE documents are stored is invalid." & vbCrLf & _
                             "Please select a valid folder."
       Else
-        lblPrompt.Caption = "You have opted to change the folder where the Local HR Pro OLE documents are stored." & vbCrLf & _
+        lblPrompt.Caption = "You have opted to change the folder where the Local OpenHR OLE documents are stored." & vbCrLf & _
                             "Please select a valid folder."
         
         If Dir(frmConfiguration.txtLocalOLEPath.Text & IIf(Right(frmConfiguration.txtLocalOLEPath.Text, 1) = "\", "*.*", "\*.*"), vbDirectory) = vbNullString Then
-          COAMsgBox "The folder where the Local HR Pro OLE documents are stored is invalid." & vbCrLf & _
+          COAMsgBox "The folder where the Local OpenHR OLE documents are stored is invalid." & vbCrLf & _
                             "Please select a valid folder.", _
                             vbExclamation + vbOKOnly, App.Title
         Else
