@@ -287,7 +287,7 @@ Private Function OvernightJob2(palngExpressions As Variant) As Boolean
 
           sSQL = sSQL & _
             "EXEC [spASRSysOvernightTableUpdate] " & _
-              "'" & Replace(!TableName, "'", "''") & "', '" & Replace(!ColumnName, "'", "''") & "', 2000" & vbNewLine
+              "'" & Replace(!TableName, "'", "''") & "', '" & Replace(!ColumnName, "'", "''") & "', 100" & vbNewLine
 
           'sSQL = sSQL & vbNewline & _
             "  --" & Replace(!TableName, "'", "''") & vbNewline & _
