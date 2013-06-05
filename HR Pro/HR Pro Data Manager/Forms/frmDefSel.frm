@@ -2438,7 +2438,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
   msFieldName = "Name"
    
   ' Show only unassigned utilities
-  If mlngTableID > -1 And Not mblnTableComboVisible And Not blnScheduledJobs Then
+  If mlngTableID > -1 And Not mblnTableComboVisible And Not blnScheduledJobs And Not lngUtilType = utlEmailGroup And Not lngUtilType = utlEmailAddress Then
     sCategoryFilter = " LEFT JOIN dbo.tbsys_objectcategories cat ON cat.objectid = " & msTableName & "." & msIDField & ""
     
     If mutlUtilityType = utlAll Then
@@ -2499,6 +2499,10 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
       sCategoryFilter & _
       IIf(strExtraWhereClause <> vbNullString, " WHERE " & strExtraWhereClause, "")
     
+  ElseIf Len(strExtraWhereClause) Then
+  
+    msRecordSource = msRecordSource & " WHERE " & strExtraWhereClause
+  
   End If
 
   If psRecordSourceWhere <> vbNullString Then
