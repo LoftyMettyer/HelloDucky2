@@ -48,12 +48,6 @@ Private Type Rect
   Bottom As Long
 End Type
 
-Public Enum EAlignment
-  eRight = DT_RIGHT
-  eLeft = DT_LEFT
-  eCenter = DT_CENTER
-End Enum
-
 Private miRecordProfilePageCounter As Integer
 Private mlngRecordProfileTopOffset As Long
 Private mlngRecordProfileBottomOffset As Long

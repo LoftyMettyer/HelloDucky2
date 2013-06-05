@@ -13,16 +13,6 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-' Enumeration - used by my custom DelimitedFile functions (ParseStr and ReplaceCS)
-Public Enum OpMode
-  StringBinaryCompare = vbBinaryCompare + 1
-  StringTextCompare = vbTextCompare + 1
-  StringDatabaseCompare = vbDatabaseCompare + 1
-  CharacterBinaryCompare = -(vbBinaryCompare + 1)
-  CharacterTextCompare = -(vbTextCompare + 1)
-  CharacterDatabaseCompare = -(vbDatabaseCompare + 1)
-End Enum
-
 ' Data access classes
 Private mclsData As clsDataAccess
 Private mclsGeneral As clsGeneral
@@ -2649,6 +2639,7 @@ Public Function ParseStr(ByVal strWork As String, _
 '  Else
 '    ParseStr = strTemp
 '  End If
+
   ParseStr = strTemp
   If intEncapStatus Then
     If Left(strTemp, 1) = strEncapChr Then
@@ -2662,54 +2653,6 @@ Public Function ParseStr(ByVal strWork As String, _
   
   
 End Function
-
-'Public Function ReplaceCS(ByVal strWork As String, ByVal strOld As String, ByVal strNew As String, Optional ByVal intOpMode As OpMode, Optional blnUpdated As Boolean) As String
-'
-'  On Error Resume Next
-'
-'  Dim intOldLen As Integer
-'  Dim intNewLen As Integer
-'  Dim intSPos As Long
-'  Dim intN As Integer
-'
-'  If intOpMode = 0 Then
-'    intOpMode = StringBinaryCompare
-'  End If
-'
-'  intNewLen = Len(strNew)
-'  intOldLen = Len(strOld)
-'
-'  intSPos = 1
-'  blnUpdated = False
-'
-'  If intOpMode < 0 Then
-'    intOpMode = Abs(intOpMode) - 1
-'    For intN = 1 To intOldLen
-'      intSPos = 1
-'      Do
-'        intSPos = InStr(intSPos, strWork, Mid(strOld, intN, 1), intOpMode)
-'        If intSPos Then
-'          strWork = Left(strWork, intSPos - 1) & strNew & Mid(strWork, intSPos + 1)
-'          intSPos = intSPos + intNewLen
-'          blnUpdated = True
-'        End If
-'      Loop While intSPos
-'    Next
-'  Else
-'    intOpMode = intOpMode - 1
-'    Do
-'      intSPos = InStr(intSPos, strWork, strOld, intOpMode)
-'      If intSPos Then
-'        strWork = Left(strWork, intSPos - 1) & strNew & Mid(strWork, intSPos + intOldLen)
-'        intSPos = intSPos + intNewLen
-'        blnUpdated = True
-'      End If
-'    Loop While intSPos
-'  End If
-'
-'  ReplaceCS = strWork
-'
-'End Function
 
 Function ProcessUploadFile(strFileName As String) As Long
   

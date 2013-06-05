@@ -873,7 +873,6 @@ Public Function CheckBatchNeedsRunning2(lBatchJobNameID As Long, sBatchJobName A
   Dim dStartDate As Date
   Dim sLastCompDate As String
   Dim bRunOnce As Boolean
-  Dim sEndDate As String
   
   ' For the event log header record
   'Dim plngEventLogID As Long
@@ -899,7 +898,6 @@ Public Function CheckBatchNeedsRunning2(lBatchJobNameID As Long, sBatchJobName A
     dStartDate = .Fields("StartDate").Value
     sLastCompDate = IIf(IsNull(.Fields("LastCompleted")), "", .Fields("LastCompleted"))
     bRunOnce = .Fields("RunOnce")
-    sEndDate = IIf(.Fields("Indefinitely") = 0, .Fields("EndDate"), "")
   End With
   
   
@@ -908,11 +906,6 @@ Public Function CheckBatchNeedsRunning2(lBatchJobNameID As Long, sBatchJobName A
 
   'do this until the test date is greater than todays date
   Do Until CDate(dTestDate) > Date
-
-    'If the batch job has an end date, exit the loop if testdate > end date
-    'If IsDate(sEndDate) Then
-    '  If dTestDate > CDate(sEndDate) Then Exit Do
-    'End If
 
     'If the batch job hasnt been run before, set lastcompdate to startdate and skip the
     'next IF line.

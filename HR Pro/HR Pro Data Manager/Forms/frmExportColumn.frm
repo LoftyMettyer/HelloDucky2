@@ -1229,15 +1229,6 @@ Private Sub txtHeading_GotFocus()
   End With
 End Sub
 
-Private Sub txtLength_Change()
-'NHRD25092006 Fault 11446 Fault calls for it to mirror Custom Report spinners
-'the easiest way to do that seems to be to just remove the coding here and spnDec_change
-'  If Me.spnDec.Value >= Me.txtLength.Value Then
-'    Me.spnDec.Value = IIf(Me.txtLength.Value < 1, 0, Me.txtLength.Value)
-'  End If
-  
-End Sub
-
 Private Sub txtOther_Change()
   txtLength.Text = Len(txtOther.Text)
 End Sub

@@ -370,15 +370,6 @@ Public Property Get Cancelled() As Boolean
   Cancelled = mbCancelled
 End Property
 
-Private Sub cboManualDate_Change(Index As Integer)
-  'madRangeDates(Index) = cboManualDate(Index).DateValue
-End Sub
-
-'Private Sub cboManualDate_DblClick(Index As Integer)
-'  'NHRD23072003 Fault 6295
-'  cboManualDate(Index).DateValue = Date
-'End Sub
-
 Private Sub cboManualDate_KeyUp(Index As Integer, KeyCode As Integer, Shift As Integer)
   'NHRD23072003 Fault 6295
   If KeyCode = vbKeyF2 Then

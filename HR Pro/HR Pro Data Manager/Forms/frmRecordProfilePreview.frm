@@ -101,7 +101,7 @@ Begin VB.Form frmRecordProfilePreview
       _ExtentY        =   2566
       _Version        =   393216
       Appearance      =   0
-      Orientation     =   1179648
+      Orientation     =   1572864
    End
    Begin MSComCtl2.FlatScrollBar scrollHorizontal 
       Height          =   255
@@ -114,7 +114,7 @@ Begin VB.Form frmRecordProfilePreview
       _Version        =   393216
       Appearance      =   0
       Arrows          =   65536
-      Orientation     =   1179649
+      Orientation     =   1572865
    End
    Begin VB.PictureBox picContainer 
       Height          =   1455
@@ -2493,13 +2493,6 @@ Private Sub grdOutput_RowLoaded(Index As Integer, ByVal Bookmark As Variant)
   
 End Sub
 
-
-Private Sub lblColumnSizingLabel_Click()
-  ' This control is used when the record profile results are
-  ' output to Excel.
-  
-End Sub
-
 Private Sub scrollHorizontal_Change()
   picOutput(asrPage.Value).Left = (CLng(scrollHorizontal.Value) * -1) * mdblHorizontalScrollRatio
 
@@ -2509,8 +2502,6 @@ Private Sub scrollVertical_Change()
   picOutput(asrPage.Value).Top = (CLng(scrollVertical.Value) * -1) * mdblVerticalScrollRatio
 
 End Sub
-
-
 
 Public Property Get Definition() As clsRecordProfileTabDtls
   Set Definition = mobjDefinition

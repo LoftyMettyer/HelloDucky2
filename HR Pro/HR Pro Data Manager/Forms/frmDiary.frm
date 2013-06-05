@@ -1409,7 +1409,7 @@ Begin VB.Form frmDiary
          MonthRows       =   2
          MonthBackColor  =   16184819
          ScrollRate      =   1
-         StartOfWeek     =   81723393
+         StartOfWeek     =   90243073
          TitleBackColor  =   6697779
          TitleForeColor  =   15988214
          TrailingForeColor=   -2147483643
@@ -1896,12 +1896,6 @@ Private Sub grdPrint_PrintInitialize(ByVal ssPrintInfo As SSDataWidgets_B.ssPrin
   grdPrint.Width = IIf(DiaryPrint.Portrait, 7845, 13000)
   grdPrint.Columns("Title").Width = grdPrint.Width - 1965
   Me.Font.Size = 8.25
-End Sub
-
-
-Private Sub grdViewByList_KeyDown(KeyCode As Integer, Shift As Integer)
-'NHRD25092006 Fault 11065 Was replicating the Form KeyDown so commented out
-'    Form_KeyDown KeyCode, Shift
 End Sub
 
 Private Sub grdViewByList_RowColChange(ByVal LastRow As Variant, ByVal LastCol As Integer)

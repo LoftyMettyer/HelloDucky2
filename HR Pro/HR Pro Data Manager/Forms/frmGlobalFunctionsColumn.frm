@@ -626,44 +626,8 @@ Private Sub ASRDateValue_LostFocus()
 
 End Sub
 
-Private Sub ASRDateValue_Validate(Cancel As Boolean)
-
-    ' Poxy new date control lets you lose focus for some invalid dates.
-'      If ASRDateValue.Text = "  /  /" Then
-'        Exit Sub
-'      End If
-'      If Not IsDate(ASRDateValue.Text) Then
-'        COAMsgBox "You have entered an invalid date.", vbExclamation + vbOKOnly, App.Title
-'        Cancel = True
-'        Exit Sub
-'      ElseIf CDate(ASRDateValue.Text) < "01/01/1800" Then
-'        COAMsgBox "You have entered an invalid date." & vbCrLf & "Date must be after 01/01/1800.", vbExclamation + vbOKOnly, App.Title
-'        Cancel = True
-'      End If
-  
-End Sub
-
 Private Sub cboColumns_Click()
   
-'  ' Clear existing parametes if the clumn data type has changed.
-'  If miColumnDataType <> datGlobal.GetDataType(cboColumns.ItemData(cboColumns.ListIndex)) Then
-'    ' Remember the new data type.
-'    miColumnDataType = datGlobal.GetDataType(cboColumns.ItemData(cboColumns.ListIndex))
-'
-'    ClearValueControls
-'
-'    If optField.Value Then
-'      ' Clear the Field parameters.
-'      GetParentColumns
-'
-'    End If
-'  End If
-'
-'  If optValue.Value Then
-'    ' Clear the Value parameters.
-'    FormatStraightValueControls
-'  End If
-
   If cboColumns.ListIndex <> -1 Then
     'miColumnDataType = GetDataType(cboColumns.ItemData(cboColumns.ListIndex))
     Call GetDataType(cboColumns.ItemData(cboColumns.ListIndex), miColumnDataType, miControlType)
