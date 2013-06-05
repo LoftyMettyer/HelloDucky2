@@ -3087,6 +3087,7 @@ Private Function PopulateGrid_FormatData(sfieldname As String, vData As Variant 
   ' alter the data returned.
   ' RH 09/10/00 - BUG - vbNewLine messess up exporting to word/excel, so
   '               remove the vbNewLine from the text
+  If Not IsNull(vData) Then vData = Replace(vData, Chr(0), "")
   If Not IsNull(vData) Then vData = Replace(vData, vbNewLine, " ")
   ' lose tabs too...
   If Not IsNull(vData) Then vData = Replace(vData, vbTab, " ")
