@@ -528,7 +528,7 @@ PRINT 'Step 2 of x - Updating Email Procedures'
 /* ------------------------------------------------------------- */
 PRINT 'Step 3 of x - Updating email queue'
 
-	DECLARE @iQueueID int,
+	SELECT @NVarCommand = 'DECLARE @iQueueID int,
 		@iRecordID int,
 		@iRecordDescID int,
 		@sRecordDesc varchar(8000)
@@ -547,10 +547,10 @@ PRINT 'Step 3 of x - Updating email queue'
 
 	WHILE (@@fetch_status = 0)
 	BEGIN
-		SET @sRecordDesc = ''
+		SET @sRecordDesc = ''''
 		
-		SELECT @sSQL = 'sp_ASRExpr_' + convert(varchar,@iRecordDescID)
-		IF EXISTS (SELECT * FROM sysobjects WHERE type = 'P' AND name = @sSQL)
+		SELECT @sSQL = ''sp_ASRExpr_'' + convert(varchar,@iRecordDescID)
+		IF EXISTS (SELECT * FROM sysobjects WHERE type = ''P'' AND name = @sSQL)
 		BEGIN
 			EXEC @sSQL @sRecordDesc OUTPUT, @iRecordID
 		END
@@ -559,7 +559,8 @@ PRINT 'Step 3 of x - Updating email queue'
 		FETCH NEXT FROM emailQueue_cursor INTO @iQueueID, @iRecordID, @iRecordDescID
 	END
 	CLOSE emailQueue_cursor
-	DEALLOCATE emailQueue_cursor
+	DEALLOCATE emailQueue_cursor'
+	EXEC sp_executesql @NVarCommand;
 			
 			
 /* ------------------------------------------------------------- */
