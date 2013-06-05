@@ -95,8 +95,6 @@ Public Class MainForm
 
     objPhoenix.CloseSafely()
 
-
-
         '    objPhoenix.ReturnErrorLog.Add(HRProEngine.ErrorHandler.Section.General, "hello", HRProEngine.ErrorHandler.Severity.Error, _
         '"SQLCode_AddCodeLevel", " -- Missing calculation")
 
@@ -105,8 +103,6 @@ Public Class MainForm
         '      objPhoenix.ReturnErrorLog.Show()
 
         '    End If
-
-
 
         objPhoenix.ReturnErrorLog.OutputToFile("c:\dev\errors.txt")
 
@@ -403,6 +399,10 @@ Public Class MainForm
     ''    obj1.Initialise("C:\dev\HR Pro\HR Pro Engine\Test Harness\asrtemp_openhrmobile.mdb")
     '' obj1.Show()
 
+
+  End Sub
+
+  Private Sub txtDatabase_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtDatabase.TextChanged
 
   End Sub
 End Class
