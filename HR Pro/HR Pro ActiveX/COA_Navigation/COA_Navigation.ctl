@@ -114,6 +114,7 @@ Public Event DBExecuteRequest(ByVal SQL As String)
 Public Event MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 Public Event MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
 Public Event MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Public Event KeyDown(KeyCode As Integer, Shift As Integer)
 
 Public Enum enum_DisplayType
   Hyperlink = 0
@@ -249,6 +250,11 @@ Private Sub UserControl_Initialize()
   mstrCaption = "Navigate..."
   gbInScreenDesigner = True
   mlngColumnID = 0
+End Sub
+
+Private Sub UserControl_KeyDown(KeyCode As Integer, Shift As Integer)
+  ' Pass the keydown event to the parent form.
+  RaiseEvent KeyDown(KeyCode, Shift)
 End Sub
 
 Private Sub UserControl_Resize()
