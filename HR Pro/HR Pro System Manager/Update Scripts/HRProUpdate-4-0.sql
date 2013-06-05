@@ -58,7 +58,7 @@ END
 
 /* ------------------------------------------------------------- */
 /* ------------------------------------------------------------- */
-PRINT 'Step 1 of X - Updating Email Definitions'
+PRINT 'Step 1 - Updating Email Definitions'
 
     DECLARE @MaxLink as nvarchar(max)
 
@@ -415,7 +415,7 @@ PRINT 'Step 1 of X - Updating Email Definitions'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 2 of x - Updating Email Procedures'
+PRINT 'Step 2 - Updating Email Procedures'
 
 	DECLARE	@sObjectName varchar(max)
 						
@@ -526,7 +526,7 @@ PRINT 'Step 2 of x - Updating Email Procedures'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 3 of x - Updating email queue'
+PRINT 'Step 3 - Updating email queue'
 
 	SELECT @NVarCommand = 'DECLARE @iQueueID int,
 		@iRecordID int,
@@ -565,7 +565,7 @@ PRINT 'Step 3 of x - Updating email queue'
 			
 			
 /* ------------------------------------------------------------- */
-PRINT 'Step 4 of x - Creating Conversion Function'
+PRINT 'Step 4 - Creating Conversion Function'
 
 
 	IF NOT OBJECT_ID('udfASRConvertNumeric', 'FN') IS NULL	
@@ -607,7 +607,7 @@ PRINT 'Step 4 of x - Creating Conversion Function'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 5 of X - Modifying Workflow Data Structures'
+PRINT 'Step 5 - Modifying Workflow Data Structures'
 
 	/* ASRSysWorkflowInstanceValues - Add new TempFileUpload_File column */
 	SELECT @iRecCount = COUNT(id) FROM syscolumns
@@ -647,7 +647,7 @@ PRINT 'Step 5 of X - Modifying Workflow Data Structures'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 6 of X - Upgrade system tables to handle new multiline support'
+PRINT 'Step 6 - Upgrade system tables to handle new multiline support'
 
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
@@ -747,7 +747,7 @@ PRINT 'Step 6 of X - Upgrade system tables to handle new multiline support'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 7 of X - Column Definition Data'
+PRINT 'Step 7 - Column Definition Data'
 
 	/* ASRSysColumns - Remove IsMaxSize column */
 	SELECT @iRecCount = COUNT(id) FROM syscolumns
@@ -798,14 +798,14 @@ PRINT 'Step 7 of X - Column Definition Data'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 8 of X - Shared Table Integration Enhancements'
+PRINT 'Step 8 - Shared Table Integration Enhancements'
 
 	SET @sSPCode_0 = 'UPDATE ASRSysAccordTransferTypes SET IsVisible = 1 WHERE TransferTypeID IN (5,6,7,8);'
 	EXEC sp_executesql @sSPCode_0;
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 9 of X - Removal of unused procedures (Resourcesafication)'
+PRINT 'Step 9 - Removal of unused procedures (Resourcesafication)'
 
 	-- sp_ASRColumnDefault
 	IF NOT OBJECT_ID('sp_ASRColumnDefault', N'P') IS NULL
@@ -891,7 +891,7 @@ PRINT 'Step 9 of X - Removal of unused procedures (Resourcesafication)'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 10 of X - Multiline Character Modifications'
+PRINT 'Step 10 - Multiline Character Modifications'
 
 	----------------------------------------------------------------------
 	-- sp_ASR_AbsenceBreakdown_Run
@@ -12637,7 +12637,7 @@ PRINT 'Step 10 of X - Multiline Character Modifications'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 11 of X - New Shared Table Transfer Types'
+PRINT 'Step 11 - New Shared Table Transfer Types'
 
 	-- SMP
 	SELECT @iRecCount = count(TransferTypeID) FROM ASRSysAccordTransferFieldDefinitions WHERE TransferTypeID = 6 AND TransferFieldID = 20
@@ -12824,7 +12824,7 @@ PRINT 'Step 11 of X - New Shared Table Transfer Types'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 12 of X - Adding New Standard Colours'
+PRINT 'Step 12 - Adding New Standard Colours'
 
 DECLARE @iMaxColOrder integer
 
@@ -12857,14 +12857,14 @@ END
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 13 of X - Expression amendments'
+PRINT 'Step 13 - Expression amendments'
 
 	SELECT @NVarCommand = 'UPDATE [dbo].[ASRSysFunctions] SET [spName] = ''sp_ASRFn_ConvertToProperCase'' WHERE [FunctionID] = 12;'
 	EXEC sp_executesql @NVarCommand
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 14 of X - Updating System Permissions Icons'
+PRINT 'Step 14 - Updating System Permissions Icons'
 
 /* Updating System Permissions Icon for Module Access */
 SELECT @iRecCount = count(*)
@@ -13430,6 +13430,16 @@ END
 
 
 
+/* ------------------------------------------------------------- */
+PRINT 'Step 15 - Updating support contact details'
+
+delete from asrsyssystemsettings
+where [Section] = 'support' and [SettingKey] = 'email'
+insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
+values('support', 'email', 'service.delivery@coasolutions.com')
+
+
+
 
 /* ------------------------------------------------------------- */
 /* ------------------------------------------------------------- */
@@ -13472,7 +13482,7 @@ DEALLOCATE curObjects
 /* Update the database version flag in the ASRSysSettings table. */
 /* Dont Set the flag to refresh the stored procedures            */
 /* ------------------------------------------------------------- */
-PRINT 'Step X of X - Updating Versions'
+PRINT 'Final Step - Updating Versions'
 
 delete from asrsyssystemsettings
 where [Section] = 'database' and [SettingKey] = 'version'
