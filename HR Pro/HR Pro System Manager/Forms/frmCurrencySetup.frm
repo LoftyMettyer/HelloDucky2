@@ -1,8 +1,8 @@
 VERSION 5.00
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Begin VB.Form frmCurrencySetup 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "Currency Setup"
+   Caption         =   "Currency"
    ClientHeight    =   3300
    ClientLeft      =   45
    ClientTop       =   330
@@ -47,7 +47,7 @@ Begin VB.Form frmCurrencySetup
       Width           =   1200
    End
    Begin VB.Frame fraCConv 
-      Caption         =   "Currency Conversion Table Information :"
+      Caption         =   "Currency Conversion Table :"
       Height          =   2565
       Left            =   120
       TabIndex        =   4

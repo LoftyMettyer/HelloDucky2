@@ -58,6 +58,10 @@ Public Property Get SelfServiceIntranetModule() As Boolean
   SelfServiceIntranetModule = gfSSIntranetModule
 End Property
 
+Public Property Get MobileModule() As Boolean
+  MobileModule = gfMobileModule
+End Property
+
 Public Property Get WorkflowModule() As Boolean
   WorkflowModule = gfWorkflowModule
 End Property

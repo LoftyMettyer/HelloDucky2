@@ -2,7 +2,7 @@ VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmScrOpen 
-   Caption         =   "Screen Manager"
+   Caption         =   "Screen Designer"
    ClientHeight    =   5670
    ClientLeft      =   315
    ClientTop       =   1665
@@ -112,6 +112,7 @@ Begin VB.Form frmScrOpen
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   9340
+            TextSave        =   ""
             Key             =   ""
             Object.Tag             =   ""
          EndProperty

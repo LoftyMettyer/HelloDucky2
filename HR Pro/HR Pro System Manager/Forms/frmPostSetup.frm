@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form frmPostSetup 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "Post Setup"
+   Caption         =   "Post"
    ClientHeight    =   3915
    ClientLeft      =   45
    ClientTop       =   330

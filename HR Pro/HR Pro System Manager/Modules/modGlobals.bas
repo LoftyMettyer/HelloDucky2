@@ -175,4 +175,5 @@ Public gfAbsenceModule As Boolean
 Public gfSSIntranetModule As Boolean
 Public gfWorkflowModule As Boolean
 Public gfVersion1Module As Boolean
+Public gfMobileModule As Boolean
 

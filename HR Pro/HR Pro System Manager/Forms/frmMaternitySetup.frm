@@ -1,8 +1,8 @@
 VERSION 5.00
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Begin VB.Form frmMaternitySetup 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "Maternity Setup"
+   Caption         =   "Maternity"
    ClientHeight    =   3330
    ClientLeft      =   45
    ClientTop       =   330

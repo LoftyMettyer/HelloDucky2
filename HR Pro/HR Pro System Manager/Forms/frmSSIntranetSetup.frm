@@ -3,7 +3,7 @@ Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmSSIntranetSetup 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "Self-service Intranet Module"
+   Caption         =   "Self-service Designer"
    ClientHeight    =   6240
    ClientLeft      =   45
    ClientTop       =   435
@@ -5071,7 +5071,7 @@ Private Sub ReadParameters()
                 
       sSQL = "SELECT *" & _
         " FROM tmpSSIHiddenGroups" & _
-        " WHERE linkID = " & CStr(rsLinks!id)
+        " WHERE linkID = " & CStr(rsLinks!ID)
       Set rsHiddenGroups = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
       While Not rsHiddenGroups.EOF
         sHiddenGroups = sHiddenGroups & rsHiddenGroups!GroupName & vbTab

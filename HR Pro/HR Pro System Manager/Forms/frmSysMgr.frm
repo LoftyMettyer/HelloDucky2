@@ -86,8 +86,8 @@ Begin VB.MDIForm frmSysMgr
       _StockProps     =   0
    End
    Begin ActiveBarLibraryCtl.ActiveBar tbMain 
-      Left            =   3855
-      Top             =   2760
+      Left            =   540
+      Top             =   2115
       _ExtentX        =   847
       _ExtentY        =   847
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -715,23 +715,23 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     
     If Not blnReadonly Then
     
-      If frmDbMgr.ActiveView Is frmDbMgr.Treeview1 Then
+      If frmDbMgr.ActiveView Is frmDbMgr.TreeView1 Then
         
-        bCopyTable = DoesTableExistInDB(val(Mid(frmDbMgr.Treeview1.SelectedItem.key, 2)))
+        bCopyTable = DoesTableExistInDB(val(Mid(frmDbMgr.TreeView1.SelectedItem.key, 2)))
         
-        If frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATION Then
-          .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd) And (frmDbMgr.Treeview1.Nodes("TABLES").Children > 0)
+        If frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATION Then
+          .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd) And (frmDbMgr.TreeView1.Nodes("TABLES").Children > 0)
           .Tools("ID_CopyDef").Enabled = False
         Else
-          .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd)
+          .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd)
           .Tools("ID_CopyDef").Enabled = bCopyTable
         End If
         
         
         
-        .Tools("ID_Delete").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtDelete)
-        .Tools("ID_Properties").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtEdit)
-        .Tools("ID_Print").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtCopy)
+        .Tools("ID_Delete").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtDelete)
+        .Tools("ID_Properties").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtEdit)
+        .Tools("ID_Print").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtCopy)
       Else
         .Tools("ID_New").Enabled = (frmDbMgr.ListView1_SelectedTag And edtAdd)
         
@@ -754,7 +754,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     .Tools("ID_LargeIcons").Enabled = True
     .Tools("ID_SmallIcons").Enabled = True
     .Tools("ID_List").Enabled = True
-    .Tools("ID_Details").Enabled = ((frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLE))
+    .Tools("ID_Details").Enabled = ((frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLE))
     .Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Enabled And _
       (frmDbMgr.ListView1.View = lvwReport)
     frmSysMgr.tbMain.Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Enabled And _
@@ -768,7 +768,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
 '      .Tools("ID_List").Checked = False
 '      .Tools("ID_Details").Checked = True
       .Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Checked And _
-        ((frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLE))
+        ((frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLE))
 
       frmSysMgr.tbMain.Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Checked
     End If
@@ -804,18 +804,18 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     ' Configure the Edit menu.
     '==================================================
     ' Enable/disable the required tools.
-    If frmDbMgr.ActiveView Is frmDbMgr.Treeview1 Then
-      If frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATION Then
-        .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd) And (frmDbMgr.Treeview1.Nodes("TABLES").Children > 0) And Not blnReadonly
+    If frmDbMgr.ActiveView Is frmDbMgr.TreeView1 Then
+      If frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATION Then
+        .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd) And (frmDbMgr.TreeView1.Nodes("TABLES").Children > 0) And Not blnReadonly
         .Tools("ID_CopyDef").Enabled = False
         .Tools("ID_CopyDef").Visible = True
       Else
-        .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd) And Not blnReadonly
+        .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd) And Not blnReadonly
         .Tools("ID_CopyDef").Enabled = bCopyTable And Not blnReadonly
         .Tools("ID_CopyDef").Visible = True
       End If
-      .Tools("ID_Delete").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtDelete) And Not blnReadonly
-      .Tools("ID_Properties").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtEdit)
+      .Tools("ID_Delete").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtDelete) And Not blnReadonly
+      .Tools("ID_Properties").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtEdit)
       '.Tools("ID_CopyTable").Enabled = bCopyTable
       '.Tools("ID_CopyColumn").Enabled = False
       '.Tools("ID_CopyTable").Visible = True
@@ -855,7 +855,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
 
       End If
     End If
-    .Tools("ID_SelectAll").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag <> 0) And frmDbMgr.ListView1.ListItems.Count And Not blnReadonly
+    .Tools("ID_SelectAll").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag <> 0) And frmDbMgr.ListView1.ListItems.Count And Not blnReadonly
       
     ' Reassign shortcuts if required.
 '    .Tools("ID_ScreenObjectDelete").Shortcut = ssShortcutNone
@@ -899,7 +899,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     .Tools("ID_LargeIcons").Enabled = True
     .Tools("ID_SmallIcons").Enabled = True
     .Tools("ID_List").Enabled = True
-    .Tools("ID_Details").Enabled = ((frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLE))
+    .Tools("ID_Details").Enabled = ((frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLE))
  '(frmDbMgr.ListView1_SelectedTag = giNODE_COLUMN)
     
     If (frmDbMgr.ListView1.View = lvwReport) And _
@@ -1754,97 +1754,62 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     '==================================================
     ' Enable/disable the required tools.
     ' Only enable the module menu options if the modules are not already active.
-
-
-
-'01/08/2001 MH
-'    .Tools("ID_DatMgr").Enabled = (piFormCount <= 1) Or (Not Me.ActiveForm Is frmDbMgr)
-'    '.Tools("ID_PicMgr").Enabled = (piFormCount <= 1) Or (Not Me.ActiveForm Is frmPictMgr)
-'    '.Tools("ID_ScrMgr").Enabled = (piFormCount <= 1) Or (Not Me.ActiveForm Is frmScrOpen)
-'    .Tools("ID_PicMgr").Enabled = ((piFormCount <= 1) Or (Not Me.ActiveForm Is frmPictMgr)) And Not blnReadOnly
-'    .Tools("ID_ScrMgr").Enabled = ((piFormCount <= 1) Or (Not Me.ActiveForm Is frmScrOpen)) And Not blnReadOnly
-'    .Tools("ID_ViewMgr").Enabled = (piFormCount <= 1) Or (Not Me.ActiveForm Is frmViewMgr)
     .Tools("ID_DatMgr").Enabled = (piFormCount <= 1)
     .Tools("ID_PicMgr").Enabled = (piFormCount <= 1 And Not blnReadonly)
     .Tools("ID_ScrMgr").Enabled = (piFormCount <= 1 And Not blnReadonly)
     .Tools("ID_WorkflowMgr").Enabled = (piFormCount <= 1)
     .Tools("ID_ViewMgr").Enabled = (piFormCount <= 1)
-    
-    
-    
-    ' Enable/disable Module setup menu options if the modules are activeted.
-    .Tools("ID_ModuleSetup").Enabled = (Application.TrainingBookingModule) Or _
-                                       (Application.PersonnelModule) Or _
-                                       (Application.AbsenceModule)
-  
+    .Tools("ID_MobileDesigner").Enabled = (piFormCount <= 1) And Application.MobileModule
+    .Tools("ID_SSIntranet").Enabled = (piFormCount <= 1) And Application.SelfServiceIntranetModule
+    .Tools("ID_SaveChanges").Enabled = Application.Changed
+             
+    ' Enable/disable Module setup menu options if the modules are activated.
     .Tools("ID_TrainingBooking").Enabled = Application.TrainingBookingModule
     .Tools("ID_Personnel").Enabled = Application.PersonnelModule
-    'JPD 20040226 Fault 6586
-    .Bands("ID_ModuleSetup").Tools("ID_Maternity").Enabled = Application.PersonnelModule
+    .Tools("ID_Maternity").Enabled = Application.PersonnelModule
     .Tools("ID_Post").Enabled = Application.PersonnelModule
     .Tools("ID_Absence").Enabled = Application.AbsenceModule
-    .Tools("ID_SSIntranet").Enabled = Application.SelfServiceIntranetModule
     .Tools("ID_AccordTransfer").Enabled = gbAccordPayrollModule
     .Tools("ID_CMG").Enabled = gbCMGExportEnabled
     .Tools("ID_WorkflowSetup").Enabled = Application.WorkflowModule
     .Tools("ID_ModuleDocument").Enabled = Application.Version1Module
     .Tools("ID_AuditModule").Enabled = True
-    
-    'MH20010831 Fault 2752 Bank Holidays are only required for Personnel
-    '.Tools("ID_BankHoliday").Enabled = True
     .Tools("ID_BankHoliday").Enabled = Application.PersonnelModule
-
-    'TM20011022 Implementation of Currency Module
     .Tools("ID_Currency").Enabled = True
-    .Tools("ID_Currency").Visible = True
-    
-    ' Only enable the Save Changes option if changes have been made.
-    .Tools("ID_SaveChanges").Enabled = Application.Changed
-    
-    ' Add the required separators to the tool and menu bars.
-    If Application.TrainingBookingModule Then
-'      .Tools("ID_mnuModule").Menu.Tools.Add "separator", , .Tools("ID_mnuModule").Menu.Tools("ID_ModuleSetup").Index
-      .Tools("ID_mnuModule").BeginGroup = True
-    End If
-    
-'    .Tools("ID_mnuModule").Menu.Tools.Add "separator", , .Tools("ID_mnuModule").Menu.Tools("ID_SaveChanges").Index
+    .Tools("ID_Configuration").Enabled = True
     
     ' Display the required menu and it's tools.
     .Tools("ID_mnuModule").Visible = True
-    
+    .Tools("ID_mnuConfiguration").Visible = True
     .Tools("ID_mnuAdministration").Visible = True
-    .Tools("ID_Configuration").Visible = True
     
     '27/07/2001 MH
     .Tools("ID_SupportMode").Visible = Not IsModuleEnabled(modFullSysMgr)
     .Tools("ID_SupportMode").Enabled = (Application.AccessMode = accLimited)
-    
-    
+       
+    ' Structure menu
     .Tools("ID_DatMgr").Visible = True
     .Tools("ID_ScrMgr").Visible = True
-    .Tools("ID_WorkflowMgr").Visible = Application.WorkflowModule
+    .Tools("ID_WorkflowMgr").Visible = True
     .Tools("ID_PicMgr").Visible = True
-    
     .Tools("ID_ViewMgr").Visible = True
-    .Tools("ID_ModuleSetup").Visible = (Application.TrainingBookingModule) Or _
-                                       (Application.PersonnelModule) Or _
-                                       (Application.AbsenceModule)
-    .Tools("ID_TrainingBooking").Visible = Application.TrainingBookingModule
-    .Tools("ID_Personnel").Visible = Application.PersonnelModule
-    'JPD 20040226 Fault 6586
-    .Bands("ID_ModuleSetup").Tools("ID_Maternity").Visible = Application.PersonnelModule
-    .Tools("ID_Post").Visible = Application.PersonnelModule
-    .Tools("ID_Absence").Visible = Application.AbsenceModule
-    .Tools("ID_SSIntranet").Visible = Application.SelfServiceIntranetModule
-    .Tools("ID_AccordTransfer").Visible = gbAccordPayrollModule
-    .Tools("ID_CMG").Visible = gbCMGExportEnabled
-    .Tools("ID_WorkflowSetup").Visible = Application.WorkflowModule
-    .Tools("ID_ModuleDocument").Visible = Application.Version1Module
+    .Tools("ID_SSIntranet").Visible = True
+    .Tools("ID_MobileDesigner").Visible = True
+    
+    ' Configuration menu
+    .Tools("ID_TrainingBooking").Visible = True
+    .Tools("ID_Personnel").Visible = True
+    .Tools("ID_Maternity").Visible = True
+    .Tools("ID_Post").Visible = True
+    .Tools("ID_Absence").Visible = True
+    .Tools("ID_AccordTransfer").Visible = True
+    .Tools("ID_CMG").Visible = True
+    .Tools("ID_WorkflowSetup").Visible = True
+    .Tools("ID_ModuleDocument").Visible = True
     .Tools("ID_AuditModule").Visible = True
-
-    'MH20010831 Fault 2752 Bank Holidays are only required for Personnel
-    '.Tools("ID_BankHoliday").Visible = True
-    .Tools("ID_BankHoliday").Visible = Application.PersonnelModule
+    .Tools("ID_BankHoliday").Visible = True
+    .Tools("ID_Currency").Visible = True
+    .Tools("ID_Configuration").Visible = True
     
     .Tools("ID_SaveChanges").Visible = True
     .Tools("ID_Logoff").Visible = True

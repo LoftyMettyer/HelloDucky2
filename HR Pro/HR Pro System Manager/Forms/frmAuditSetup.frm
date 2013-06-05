@@ -2,7 +2,7 @@ VERSION 5.00
 Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Begin VB.Form frmAuditSetup 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "Audit Setup"
+   Caption         =   "Audit Log"
    ClientHeight    =   5820
    ClientLeft      =   45
    ClientTop       =   345

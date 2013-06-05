@@ -3,7 +3,7 @@ Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Begin VB.Form frmAbsenceSetup 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "Absence Setup"
+   Caption         =   "Absence"
    ClientHeight    =   6075
    ClientLeft      =   45
    ClientTop       =   330
@@ -82,21 +82,21 @@ Begin VB.Form frmAbsenceSetup
       TabCaption(2)   =   "Calen&dar"
       TabPicture(2)   =   "frmAbsenceSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraCalendarInclude"
-      Tab(2).Control(1)=   "fraCalendarDef"
+      Tab(2).Control(0)=   "fraCalendarDef"
+      Tab(2).Control(1)=   "fraCalendarInclude"
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "&SSP"
       TabPicture(3)   =   "frmAbsenceSetup.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraSSPColumns"
-      Tab(3).Control(1)=   "fraWorkingDays"
+      Tab(3).Control(0)=   "fraWorkingDays"
+      Tab(3).Control(1)=   "fraSSPColumns"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "&Parental Leave"
       TabPicture(4)   =   "frmAbsenceSetup.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "Frame3"
+      Tab(4).Control(0)=   "Frame1"
       Tab(4).Control(1)=   "Frame2"
-      Tab(4).Control(2)=   "Frame1"
+      Tab(4).Control(2)=   "Frame3"
       Tab(4).ControlCount=   3
       Begin VB.Frame Frame3 
          Caption         =   "Personnel Records :"

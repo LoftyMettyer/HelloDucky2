@@ -3,7 +3,7 @@ Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmCMGSetup 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "CMG & Centrefile Setup"
+   Caption         =   "CMG & Centrefile"
    ClientHeight    =   4590
    ClientLeft      =   45
    ClientTop       =   435
@@ -280,9 +280,9 @@ Begin VB.Form frmCMGSetup
          GroupHeadLines  =   0
          Col.Count       =   3
          stylesets.count =   6
-         stylesets(0).Name=   "ssetSelected"
-         stylesets(0).ForeColor=   -2147483634
-         stylesets(0).BackColor=   -2147483635
+         stylesets(0).Name=   "ssetHeaderDisabled"
+         stylesets(0).ForeColor=   -2147483631
+         stylesets(0).BackColor=   -2147483633
          stylesets(0).HasFont=   -1  'True
          BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
@@ -294,9 +294,9 @@ Begin VB.Form frmCMGSetup
             Strikethrough   =   0   'False
          EndProperty
          stylesets(0).Picture=   "frmCMGSetup.frx":02A0
-         stylesets(1).Name=   "ssetHeaderDisabled"
-         stylesets(1).ForeColor=   -2147483631
-         stylesets(1).BackColor=   -2147483633
+         stylesets(1).Name=   "ssetSelected"
+         stylesets(1).ForeColor=   -2147483634
+         stylesets(1).BackColor=   -2147483635
          stylesets(1).HasFont=   -1  'True
          BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
