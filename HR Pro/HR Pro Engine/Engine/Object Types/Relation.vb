@@ -8,6 +8,8 @@
     Public ParentID As HCMGuid
     Public ChildID As HCMGuid
 
+    Public DependantOnParent As Boolean = False
+
     'Public Overrides Function Commit() As Boolean
     'End Function
 
@@ -22,6 +24,7 @@
         Return Enums.Type.Relation
       End Get
     End Property
+
   End Class
 
 End Namespace

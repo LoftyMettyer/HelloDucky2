@@ -550,11 +550,11 @@ Namespace ScriptDB
 
               aryParentsToUpdate_Delete.Add(String.Format("    UPDATE [dbo].[{1}] SET [updflag] = 1 WHERE [dbo].[{1}].[id] IN (SELECT DISTINCT [id_{2}] FROM deleted)" & vbNewLine & vbNewLine _
                 , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID)))
-            Else
+            ElseIf objRelation.DependantOnParent Then
 
-              aryChildrenToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3})" & vbNewLine & _
-                      "        UPDATE base SET [updflag] = 1 FROM dbo.[{1}] base WHERE [ID_{2}] IN (SELECT DISTINCT [id] FROM inserted);" & vbNewLine _
-                      , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID), CInt(objRelation.ChildID)))
+                aryChildrenToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3})" & vbNewLine & _
+                        "        UPDATE base SET [updflag] = 1 FROM dbo.[{1}] base WHERE [ID_{2}] IN (SELECT DISTINCT [id] FROM inserted);" & vbNewLine _
+                        , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID), CInt(objRelation.ChildID)))
 
             End If
           Next

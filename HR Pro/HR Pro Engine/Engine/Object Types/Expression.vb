@@ -666,6 +666,8 @@ Namespace Things
       IsComplex = False
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Column
 
+
+
       ' there has to be a cleaner way, but for the moment put a dummy objbasecolumn in there so the function does not fail with a blah blah is not set to object error on the .TableID property.
       If Not Component.BaseExpression Is Nothing Then
         objBaseColumn = Component.BaseExpression.AssociatedColumn
@@ -680,7 +682,7 @@ Namespace Things
       objThisColumn = mcolDependencies.GetObject(Enums.Type.Column, Component.ColumnID)
 
       '  Debug.Assert(objThisColumn.Name <> "Start_Date")
-
+      'Debug.Assert(objBaseColumn.Table.Name <> "Eye_Tests")
 
       ' Cannot find 
       If objThisColumn Is Nothing Then
@@ -812,7 +814,11 @@ Namespace Things
                 maryWhere.Add(sWhereCode)
               End If
 
-
+              ' Mark this relation has having to be updated in the parent triggers
+              If Not Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription Then
+                objRelation = objThisColumn.Table.GetRelation(Me.AssociatedColumn.Table.ID)
+                objRelation.DependantOnParent = True
+              End If
 
               ' mbAddBaseTable = True
 
@@ -985,7 +991,7 @@ Namespace Things
             '    , PhysicalName([Component].Item("columnorderid").ToString, ObjectPrefix.Table)))
             'End If
 
-          End If
+            End If
 
           End If
       End If
