@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmAccordPayrollTransfer 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Payroll Integration"
@@ -87,12 +87,15 @@ Begin VB.Form frmAccordPayrollTransfer
       TabPicture(1)   =   "frmAccordPayrollTransfer.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraDefaults"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraArchive"
+      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Login Parameters"
       TabPicture(2)   =   "frmAccordPayrollTransfer.frx":0044
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraLogonDetails"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       Begin VB.Frame fraLogonDetails 
          BeginProperty Font 
@@ -334,8 +337,9 @@ Begin VB.Form frmAccordPayrollTransfer
             Width           =   1200
          End
          Begin VB.CommandButton cmdFilter 
+            Caption         =   "..."
             BeginProperty Font 
-               Name            =   "MS Sans Serif"
+               Name            =   "Verdana"
                Size            =   8.25
                Charset         =   0
                Weight          =   400
@@ -345,8 +349,6 @@ Begin VB.Form frmAccordPayrollTransfer
             EndProperty
             Height          =   315
             Left            =   7770
-            Picture         =   "frmAccordPayrollTransfer.frx":0090
-            Style           =   1  'Graphical
             TabIndex        =   3
             Top             =   270
             UseMaskColor    =   -1  'True
@@ -413,7 +415,7 @@ Begin VB.Form frmAccordPayrollTransfer
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmAccordPayrollTransfer.frx":01DE
+            stylesets(0).Picture=   "frmAccordPayrollTransfer.frx":0090
             stylesets(1).Name=   "Mandatory"
             stylesets(1).BackColor=   15400959
             stylesets(1).HasFont=   -1  'True
@@ -426,7 +428,7 @@ Begin VB.Form frmAccordPayrollTransfer
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmAccordPayrollTransfer.frx":01FA
+            stylesets(1).Picture=   "frmAccordPayrollTransfer.frx":00AC
             AllowUpdate     =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False

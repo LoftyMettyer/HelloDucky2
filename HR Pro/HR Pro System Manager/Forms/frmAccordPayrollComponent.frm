@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmAccordPayrollComponent 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Payroll Transfer Field"
@@ -26,6 +26,99 @@ Begin VB.Form frmAccordPayrollComponent
    ScaleWidth      =   6885
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin VB.Frame fraDefinition 
+      Caption         =   "Definition : "
+      Height          =   795
+      Left            =   135
+      TabIndex        =   24
+      Top             =   135
+      Width           =   6650
+      Begin VB.CheckBox chkKeyField 
+         Caption         =   "Key Field"
+         Enabled         =   0   'False
+         Height          =   240
+         Left            =   5085
+         TabIndex        =   2
+         Top             =   315
+         Width           =   1230
+      End
+      Begin VB.ComboBox cboTransferField 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
+         Height          =   315
+         Left            =   1530
+         Style           =   2  'Dropdown List
+         TabIndex        =   1
+         Top             =   270
+         Width           =   3120
+      End
+      Begin VB.Label lblTransferField 
+         Caption         =   "Transfer Field : "
+         Height          =   240
+         Left            =   180
+         TabIndex        =   25
+         Top             =   315
+         Width           =   1320
+      End
+   End
+   Begin VB.CommandButton cmdCancel 
+      Cancel          =   -1  'True
+      Caption         =   "&Cancel"
+      Height          =   405
+      Left            =   5580
+      TabIndex        =   20
+      Top             =   4980
+      Width           =   1200
+   End
+   Begin VB.CommandButton cmdOK 
+      Caption         =   "&OK"
+      Default         =   -1  'True
+      Enabled         =   0   'False
+      Height          =   405
+      Left            =   4275
+      TabIndex        =   19
+      Top             =   4980
+      Width           =   1200
+   End
+   Begin VB.Frame fraComponentType 
+      Caption         =   "Type :"
+      Height          =   3930
+      Left            =   135
+      TabIndex        =   0
+      Top             =   960
+      Width           =   1890
+      Begin VB.OptionButton optComponentType 
+         Caption         =   "Colu&mn"
+         Height          =   315
+         Index           =   0
+         Left            =   165
+         TabIndex        =   3
+         Tag             =   "COMP_FIELD"
+         Top             =   300
+         Value           =   -1  'True
+         Width           =   1305
+      End
+      Begin VB.OptionButton optComponentType 
+         Caption         =   "C&alculation"
+         Height          =   315
+         Index           =   1
+         Left            =   165
+         TabIndex        =   4
+         Tag             =   "COMP_OPERATOR"
+         Top             =   650
+         Width           =   1590
+      End
+      Begin VB.OptionButton optComponentType 
+         Caption         =   "&Value"
+         Height          =   315
+         Index           =   2
+         Left            =   165
+         TabIndex        =   5
+         Tag             =   "COMP_VALUE"
+         Top             =   990
+         Width           =   1110
+      End
+   End
    Begin VB.Frame fraComponent 
       Caption         =   "Column :"
       Height          =   3930
@@ -204,8 +297,9 @@ Begin VB.Form frmAccordPayrollComponent
       Top             =   960
       Width           =   4665
       Begin VB.CommandButton cmdCalculation 
+         Caption         =   "..."
          BeginProperty Font 
-            Name            =   "MS Sans Serif"
+            Name            =   "Verdana"
             Size            =   8.25
             Charset         =   0
             Weight          =   400
@@ -216,7 +310,6 @@ Begin VB.Form frmAccordPayrollComponent
          Height          =   315
          Left            =   4110
          Picture         =   "frmAccordPayrollComponent.frx":0010
-         Style           =   1  'Graphical
          TabIndex        =   14
          Top             =   380
          UseMaskColor    =   -1  'True
@@ -247,99 +340,6 @@ Begin VB.Form frmAccordPayrollComponent
          TabIndex        =   15
          Top             =   380
          Width           =   4155
-      End
-   End
-   Begin VB.Frame fraDefinition 
-      Caption         =   "Definition : "
-      Height          =   795
-      Left            =   135
-      TabIndex        =   24
-      Top             =   135
-      Width           =   6650
-      Begin VB.CheckBox chkKeyField 
-         Caption         =   "Key Field"
-         Enabled         =   0   'False
-         Height          =   240
-         Left            =   5085
-         TabIndex        =   2
-         Top             =   315
-         Width           =   1230
-      End
-      Begin VB.ComboBox cboTransferField 
-         BackColor       =   &H8000000F&
-         Enabled         =   0   'False
-         Height          =   315
-         Left            =   1530
-         Style           =   2  'Dropdown List
-         TabIndex        =   1
-         Top             =   270
-         Width           =   3120
-      End
-      Begin VB.Label lblTransferField 
-         Caption         =   "Transfer Field : "
-         Height          =   240
-         Left            =   180
-         TabIndex        =   25
-         Top             =   315
-         Width           =   1320
-      End
-   End
-   Begin VB.CommandButton cmdCancel 
-      Cancel          =   -1  'True
-      Caption         =   "&Cancel"
-      Height          =   405
-      Left            =   5580
-      TabIndex        =   20
-      Top             =   4980
-      Width           =   1200
-   End
-   Begin VB.CommandButton cmdOK 
-      Caption         =   "&OK"
-      Default         =   -1  'True
-      Enabled         =   0   'False
-      Height          =   405
-      Left            =   4275
-      TabIndex        =   19
-      Top             =   4980
-      Width           =   1200
-   End
-   Begin VB.Frame fraComponentType 
-      Caption         =   "Type :"
-      Height          =   3930
-      Left            =   135
-      TabIndex        =   0
-      Top             =   960
-      Width           =   1890
-      Begin VB.OptionButton optComponentType 
-         Caption         =   "Colu&mn"
-         Height          =   315
-         Index           =   0
-         Left            =   165
-         TabIndex        =   3
-         Tag             =   "COMP_FIELD"
-         Top             =   300
-         Value           =   -1  'True
-         Width           =   1305
-      End
-      Begin VB.OptionButton optComponentType 
-         Caption         =   "C&alculation"
-         Height          =   315
-         Index           =   1
-         Left            =   165
-         TabIndex        =   4
-         Tag             =   "COMP_OPERATOR"
-         Top             =   650
-         Width           =   1590
-      End
-      Begin VB.OptionButton optComponentType 
-         Caption         =   "&Value"
-         Height          =   315
-         Index           =   2
-         Left            =   165
-         TabIndex        =   5
-         Tag             =   "COMP_VALUE"
-         Top             =   990
-         Width           =   1110
       End
    End
 End
@@ -377,7 +377,7 @@ Private mbForceAlwaysTransfer As Boolean
 Private mbPreventModify As Boolean
 
 Public Property Let Changed(pbNewValue As Boolean)
-  cmdOK.Enabled = pbNewValue And Not mbLoading
+  cmdOk.Enabled = pbNewValue And Not mbLoading
 End Property
 
 Public Property Let TransferFieldID(ByVal plngNewValue As Long)
@@ -623,14 +623,14 @@ Private Sub Form_Load()
   optComponentType(2).Enabled = IIf(mbIsEmployeeCode, False, True) And Not mbReadOnly
    
   mbLoading = False
-  cmdOK.Enabled = mbUndefined And Not mbReadOnly
+  cmdOk.Enabled = mbUndefined And Not mbReadOnly
 
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
   ' If the user cancels or tries to close the form
-  If UnloadMode <> vbFormCode And cmdOK.Enabled Then
+  If UnloadMode <> vbFormCode And cmdOk.Enabled Then
     Select Case MsgBox("Apply changes ?", vbYesNoCancel + vbQuestion, Me.Caption)
       Case vbCancel
         Cancel = True
