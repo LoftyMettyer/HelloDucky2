@@ -102,6 +102,7 @@ Namespace ScriptDB
       Dim objTable2 As Things.Table
       Dim objIndex As New Things.Index
       Dim sVariableName As String
+      Dim sSearchExpression As String
       Dim objColumn As Things.Column
       Dim bFound As Boolean
 
@@ -120,12 +121,22 @@ Namespace ScriptDB
             Select Case objColumn.DataType
               Case ColumnTypes.Date
                 sVariableName = "@result_date"
-              Case ColumnTypes.Numeric, ColumnTypes.Integer
+              Case ColumnTypes.Numeric
                 sVariableName = "@result_numeric"
               Case ColumnTypes.Logic
                 sVariableName = "@result_boolean"
+              Case ColumnTypes.Integer
+                sVariableName = "@result_integer"
               Case Else
                 sVariableName = "@result_string"
+            End Select
+
+            ' Make integers typesafe
+            Select Case objTable1.Column(objPart1.ColumnID).DataType
+              Case ColumnTypes.Integer
+                sSearchExpression = "convert(numeric(38,8), @searchexpression)"
+              Case Else
+                sSearchExpression = "@searchexpression"
             End Select
 
             ' Even though the user can select different table for parameters 1 and 3 this
@@ -133,13 +144,13 @@ Namespace ScriptDB
             If objTable1 Is objTable2 Then
               sStatement = String.Format("    IF @searchcolumnid = '{0}-{1}' AND @returncolumnid = '{2}-{3}'" & vbNewLine & _
                 "        BEGIN" & vbNewLine & _
-                "            SELECT {7} = [{5}] FROM dbo.[{4}] WHERE [{6}] = @searchexpression;" & vbNewLine & _
+                "            SELECT {7} = [{5}] FROM dbo.[{4}] WHERE [{6}] = {8};" & vbNewLine & _
                 "            RETURN {7};" & vbNewLine & _
                 "        END" & vbNewLine _
               , objPart1.TableID.PadLeft, objPart1.ColumnID.PadLeft _
               , objPart3.TableID.PadLeft, objPart3.ColumnID.PadLeft _
               , objTable1.PhysicalName, objTable1.Column(objPart3.ColumnID).Name _
-              , objTable2.Column(objPart1.ColumnID).Name, sVariableName)
+              , objTable2.Column(objPart1.ColumnID).Name, sVariableName, sSearchExpression)
 
               ' Only add if not already done so
               If Not aryStatements.Contains(sStatement) Then
@@ -185,9 +196,11 @@ Namespace ScriptDB
             "AS" & vbNewLine & "BEGIN" & vbNewLine & _
             "    DECLARE @result_string     varchar(255)," & vbNewLine & _
             "            @result_numeric    numeric(38,8)," & vbNewLine & _
+            "            @result_integer    integer," & vbNewLine & _
             "            @result_boolean    bit," & vbNewLine & _
             "            @result_date       datetime;" & vbNewLine & vbNewLine & _
             "    SET @result_string = '';" & vbNewLine & _
+            "    SET @result_integer = 0;" & vbNewLine & _
             "    SET @result_numeric = 0;" & vbNewLine & vbNewLine & _
             "{1}" & vbNewLine & _
             "    RETURN NULL;" & vbNewLine & _
