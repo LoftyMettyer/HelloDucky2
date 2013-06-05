@@ -243,9 +243,10 @@ Namespace Controllers
 
 			sConnectString = sConnectString & ";Persist Security Info=True;"
 
-			' Open a connection to the database.
-			Dim conX = New ADODB.Connection()
-			conX.ConnectionTimeout = 60
+      ' Open a connection to the database.
+      Dim conX As New ADODB.Connection
+
+      conX.ConnectionTimeout = 60
 
 			Try
 				conX.Open(sConnectString)
@@ -268,8 +269,8 @@ Namespace Controllers
 			' Set no command timeout
 			conX.CommandTimeout = 0
 
-			' Enter the current session in the poll table. This will ensure that even if the login checks fail, the session will still be killed after 1 minute.
-			Dim cmdHit = New ADODB.Command
+      ' Enter the current session in the poll table. This will ensure that even if the login checks fail, the session will still be killed after 1 minute.
+      Dim cmdHit = New ADODB.Command
 			cmdHit.CommandText = "sp_ASRIntPoll"
 			cmdHit.CommandType = 4
 			' Stored Procedure
@@ -296,6 +297,8 @@ Namespace Controllers
 
 			Session("databaseConnection") = conX
 
+
+
 			' Successful login.
 			' Get the desktop colour.
 			Dim cmdDesktopColour = New ADODB.Command
@@ -303,6 +306,7 @@ Namespace Controllers
 			cmdDesktopColour.CommandType = 4
 			' Stored procedure.
 			cmdDesktopColour.ActiveConnection = Session("databaseConnection")
+
 
 			Dim prmSection = cmdDesktopColour.CreateParameter("section", 200, 1, 8000)
 			' 200=varchar, 1=input, 8000=size
@@ -400,6 +404,7 @@ Namespace Controllers
 
 					Session("ConvertedDesktopColour") = sConvertedColour
 			End Select
+
 
 			' Check that its okay for the user to login.
 			Dim cmdLoginCheck = New ADODB.Command
@@ -735,10 +740,9 @@ Namespace Controllers
 
 			Dim objUtilities = New Global.HR.Intranet.Server.Utilities
 
-			objUtilities.Connection = Session("databaseConnection")
+      'objUtilities.Connection = Session("databaseConnection")
 
-			'CallByName(objUtilities, "Connection", CallType.Let, Session("databaseConnection"))
-
+      CallByName(objUtilities, "Connection", CallType.Let, Session("databaseConnection"))
 
 
 			sTempPath = Server.MapPath("~/pictures")
