@@ -67,7 +67,7 @@ Private mlngEmailAddrCalc As Long
 
 Private mintOutputFormat As Integer
 Private mblnOutputScreen As Boolean
-Private mblnOutputPrint As Boolean
+Private mblnOutputPrinter As Boolean
 Private mstrOutputPrinterName As String
 Private mblnOutputSave As Boolean
 Private mstrOutputFileName As String
@@ -492,7 +492,7 @@ Private Sub SQLGetMergeDefinition()
         'mstrDefDocFile = !DocFileName
         'mstrDefDocFileFormat = GetOfficeSaveAsFormat(mstrDefDocFile, GetOfficeWordVersion)
         mblnOutputScreen = !OutputScreen
-        mblnOutputPrint = !OutputPrinter
+        mblnOutputPrinter = !OutputPrinter
         mstrOutputPrinterName = !OutputPrinterName
         mblnOutputSave = !OutputSave
         mstrOutputFileName = !OutputFilename
@@ -535,6 +535,7 @@ Private Sub SQLGetMergeDefinition()
         End If
       
       Case 2    'Document Management
+        mblnOutputPrinter = True
         mstrOutputPrinterName = !OutputPrinterName
         mlngDocumentMapID = IIf(IsNull(!DocumentMapID), 0, !DocumentMapID)
         mbManualHeader = IIf(IsNull(!ManualDocManHeader), 0, !ManualDocManHeader)
@@ -1408,7 +1409,7 @@ Private Sub WrdRunMailMerge()
   End If
 
 
-  If mblnOutputPrint Then
+  If mblnOutputPrinter Then
     If Trim(mstrOutputPrinterName) <> "" Then
       wrdApp.ActivePrinter = mstrOutputPrinterName
     End If
