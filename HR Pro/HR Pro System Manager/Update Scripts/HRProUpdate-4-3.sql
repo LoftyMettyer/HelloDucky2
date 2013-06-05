@@ -2317,6 +2317,8 @@ PRINT 'Step - System metadata indexing'
 		DROP INDEX [IDX_SectionSettingKey] ON [dbo].[ASRSysSystemSettings] WITH ( ONLINE = OFF )
 	IF  EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysWorkflowElements]') AND name = N'IDX_IDType')
 		DROP INDEX [IDX_IDType] ON [dbo].[ASRSysWorkflowElements] WITH ( ONLINE = OFF )
+	IF  EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_scriptedobjects]') AND name = N'IDX_TargetObjectID')
+		DROP INDEX [IDX_TargetObjectID] ON [dbo].[tbsys_scriptedobjects] WITH ( ONLINE = OFF )
 
 	EXEC sp_executesql N'CREATE CLUSTERED INDEX [IDX_EventLogID] ON [dbo].[ASRSysEventLogDetails] ([EventLogID] ASC)'
 	EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_RecordTableID] ON [dbo].[ASRSysEmailQueue] ([RecordID] ASC, [TableID] ASC)'
@@ -2324,6 +2326,7 @@ PRINT 'Step - System metadata indexing'
 	EXEC sp_executesql N'CREATE UNIQUE NONCLUSTERED INDEX [IDX_Transaction] ON [dbo].[tbsys_intransactiontrigger] ([tablefromid] ASC, [spid] ASC)'
 	EXEC sp_executesql N'CREATE UNIQUE NONCLUSTERED INDEX [IDX_SectionSettingKey] ON [dbo].[ASRSysSystemSettings] ([Section] ASC, [SettingKey] ASC)'
 	EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_IDType] ON [dbo].[ASRSysWorkflowElements] ([Type] ASC, [ID] ASC)'
+	EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_TargetObjectID] ON [dbo].[tbsys_scriptedobjects] ([targetid] ASC, [objecttype] ASC)'
 
 	-- Clear up superfluous indexes
 	SET @NVarCommand = '';
