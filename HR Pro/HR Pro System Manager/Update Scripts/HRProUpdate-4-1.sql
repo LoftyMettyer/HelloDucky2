@@ -1069,28 +1069,28 @@ PRINT 'Step 3 - Office Output Formats'
 		DROP TABLE [dbo].[ASRSysFileFormats]'
 
 	EXEC sp_executesql N'CREATE TABLE [dbo].[ASRSysFileFormats]
-		( [Destination] [varchar](255) NULL
-		, [Sequence] [int] NULL
+		( [ID] [int] NULL
+		, [Destination] [varchar](255) NULL
 		, [Description] [varchar](255) NULL
 		, [Extension] [varchar](255) NULL
-		, [Value] [int] NULL
+		, [Office2003] [int] NULL
+		, [Office2007] [int] NULL
 		, [Default] [bit] NULL
-		, [MinimumVersion] [int] NULL
 		) ON [PRIMARY]'
 
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 1,''Word 97-2003 Document (*.doc)''    ,''doc'',  0,1,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 2,''Word 2007-2010 Document (*.docx)'' ,''docx'',16,0,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 3,''XML document format (*.xml)''      ,''xml'', 12,0,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 4,''PDF format (*.pdf)''               ,''pdf'', 17,0,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 5,''XPS format (*.xps)''               ,''xps'', 18,0,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(901,''Word'',''Word 97-2003 Document (*.doc)''           ,''doc'',     0, 0,1)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(902,''Word'',''Word 2007-2010 Document (*.docx)''        ,''docx'', null,16,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(903,''Word'',''XML document format (*.xml)''             ,''xml'',  null,12,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(904,''Word'',''PDF format (*.pdf)''                      ,''pdf'',  null,17,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(905,''Word'',''XPS format (*.xps)''                      ,''xps'',  null,18,0)'
 
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''WordTemplate'', 1,''Word 97-2003 Document (*.doc)''    ,''doc'', 0,0,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''WordTemplate'', 2,''Word 97-2003 Template (*.dot)''    ,''dot'', 0,1,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''WordTemplate'', 3,''Word 2007-2010 Document (*.docx)'' ,''docx'',0,0,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''WordTemplate'', 4,''Word 2007-2010 Template (*.dotx)'' ,''dotx'',0,0,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(911,''WordTemplate'',''Word 97-2003 Document (*.doc)''   ,''doc'',     0, 0,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(912,''WordTemplate'',''Word 97-2003 Template (*.dot)''   ,''dot'',     0, 0,1)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(913,''WordTemplate'',''Word 2007-2010 Document (*.docx)'',''docx'', null, 0,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(914,''WordTemplate'',''Word 2007-2010 Template (*.dotx)'',''dotx'', null, 0,0)'
 
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Excel'',1,''Excel 97-2003 Workbook (*.xls)''   ,''xls'', 56,1,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Excel'',2,''Excel 2007-2010 Workbook (*.xlsx)'',''xlsx'',51,0,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(921,''Excel'',''Excel 97-2003 Workbook (*.xls)''         ,''xls'', -4143,56,1)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(922,''Excel'',''Excel 2007-2010 Workbook (*.xlsx)''      ,''xlsx'', null,51,0)'
 
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysCalendarReports', 'U') AND name = 'OutputSaveFormat')
@@ -1100,8 +1100,8 @@ PRINT 'Step 3 - Office Output Formats'
             ADD OutputSaveFormat int NULL, OutputEmailFileFormat int NULL'
 		EXEC sp_executesql
 			N'UPDATE ASRSysCalendarReports
-            SET OutputSaveFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END,
-            OutputEmailFileFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END'
+            SET OutputSaveFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END,
+            OutputEmailFileFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END'
 	END
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysCrossTab', 'U') AND name = 'OutputSaveFormat')
@@ -1111,8 +1111,8 @@ PRINT 'Step 3 - Office Output Formats'
             ADD OutputSaveFormat int NULL, OutputEmailFileFormat int NULL'
 		EXEC sp_executesql
 			N'UPDATE ASRSysCrossTab
-            SET OutputSaveFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END,
-            OutputEmailFileFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END'
+            SET OutputSaveFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END,
+            OutputEmailFileFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END'
 	END
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysCustomReportsName', 'U') AND name = 'OutputSaveFormat')
@@ -1121,8 +1121,8 @@ PRINT 'Step 3 - Office Output Formats'
 			ADD OutputSaveFormat int NULL, OutputEmailFileFormat int NULL'
 		EXEC sp_executesql
 			N'UPDATE ASRSysCustomReportsName
-			SET OutputSaveFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END,
-			OutputEmailFileFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END'
+            SET OutputSaveFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END,
+            OutputEmailFileFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END'
 	END
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysExportName', 'U') AND name = 'OutputSaveFormat')
@@ -1132,8 +1132,8 @@ PRINT 'Step 3 - Office Output Formats'
             ADD OutputSaveFormat int NULL, OutputEmailFileFormat int NULL'
 		EXEC sp_executesql
 			N'UPDATE ASRSysExportName
-			SET OutputSaveFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END,
-			OutputEmailFileFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END'
+            SET OutputSaveFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END,
+            OutputEmailFileFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END'
 	END
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysMatchReportName', 'U') AND name = 'OutputSaveFormat')
@@ -1143,8 +1143,8 @@ PRINT 'Step 3 - Office Output Formats'
 			ADD OutputSaveFormat int NULL, OutputEmailFileFormat int NULL'
 		EXEC sp_executesql
 			N'UPDATE ASRSysMatchReportName
-			SET OutputSaveFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END,
-			OutputEmailFileFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END'
+            SET OutputSaveFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END,
+            OutputEmailFileFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END'
 	END
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysRecordProfileName', 'U') AND name = 'OutputSaveFormat')
@@ -1154,8 +1154,8 @@ PRINT 'Step 3 - Office Output Formats'
 			ADD OutputSaveFormat int NULL, OutputEmailFileFormat int NULL'
 		EXEC sp_executesql
 			N'UPDATE ASRSysRecordProfileName
-			SET OutputSaveFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END,
-            OutputEmailFileFormat = CASE WHEN OutputFormat in (4,5,6) THEN 56 ELSE 0 END'
+            SET OutputSaveFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END,
+            OutputEmailFileFormat = CASE WHEN OutputFormat = 3 THEN 921 WHEN OutputFormat IN (4,5,6) THEN 901 ELSE 0 END'
 	END
 
 
