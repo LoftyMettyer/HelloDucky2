@@ -50,17 +50,15 @@ Begin VB.Form frmConfiguration
       _Version        =   393216
       Style           =   1
       Tabs            =   7
+      Tab             =   5
       TabsPerRow      =   7
       TabHeight       =   520
       TabCaption(0)   =   "&Display Defaults"
       TabPicture(0)   =   "frmConfiguration.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraDisplay(1)"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraDisplay(0)"
-      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).Control(2)=   "fraDisplay(2)"
-      Tab(0).Control(2).Enabled=   0   'False
       Tab(0).ControlCount=   3
       TabCaption(1)   =   "&Reports && Utilities"
       TabPicture(1)   =   "frmConfiguration.frx":0028
@@ -92,10 +90,13 @@ Begin VB.Form frmConfiguration
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Report Out&put"
       TabPicture(5)   =   "frmConfiguration.frx":0098
-      Tab(5).ControlEnabled=   0   'False
+      Tab(5).ControlEnabled=   -1  'True
       Tab(5).Control(0)=   "FraOutput(0)"
+      Tab(5).Control(0).Enabled=   0   'False
       Tab(5).Control(1)=   "FraOutput(1)"
+      Tab(5).Control(1).Enabled=   0   'False
       Tab(5).Control(2)=   "Frame1"
+      Tab(5).Control(2).Enabled=   0   'False
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Tool&bars"
       TabPicture(6)   =   "frmConfiguration.frx":00B4
@@ -259,7 +260,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame Frame1 
          Caption         =   "Excel Options :"
          Height          =   1750
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   121
          Top             =   4920
          Width           =   6735
@@ -574,7 +575,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Colours && Fonts :"
          Height          =   3225
          Index           =   1
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   77
          Top             =   400
          Width           =   6735
@@ -1396,7 +1397,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Diary Options :"
          Height          =   2650
          Index           =   2
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   14
          Top             =   4020
          Width           =   6735
@@ -1434,7 +1435,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Record Editing :"
          Height          =   2380
          Index           =   0
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   0
          Top             =   400
          Width           =   6735
@@ -1535,7 +1536,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Filters / Calculations :"
          Height          =   1155
          Index           =   1
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   9
          Top             =   2820
          Width           =   6735
@@ -1582,7 +1583,7 @@ Begin VB.Form frmConfiguration
          Caption         =   "Word Options :"
          Height          =   1200
          Index           =   0
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   102
          Top             =   3680
          Width           =   6735
@@ -2056,6 +2057,8 @@ Private Sub cmdDefault_Click()
 ''    ReadUserSettingDefaults
 
     gADOCon.Execute "DELETE FROM ASRSYSUserSettings WHERE username = System_User"
+    cboWordFormat.ListIndex = -1
+    cboExcelFormat.ListIndex = -1
     ReadUserSettings
     Changed = True
 
@@ -2105,11 +2108,16 @@ Private Sub cmdFileName_Click(Index As Integer)
     Case 0
       .DialogTitle = "Excel Template"
       '.Filter = gsOfficeTemplateFilter_Excel
+      '.Filter = GetCommonDialogFormats("ExcelTemplate", GetOfficeExcelVersion)
+      'InitialiseCommonDialogFormats frmMain.CommonDialog1, "ExcelTemplate", GetOfficeExcelVersion
+      .Filter = "Excel Template (*.xlt;*.xltx;*.xls;*.xlsx)|*.xlt;*.xltx;*.xls;*.xlsx"
       .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames
       .ShowOpen
     Case 1
       .DialogTitle = "Word Template"
       '.Filter = gsOfficeTemplateFilter_Word
+      '.Filter = GetCommonDialogFormats("WordTemplate", GetOfficeWordVersion)
+      .Filter = "Word Template (*.dot;*.dotx;*.doc;*.docx)|*.dot;*.dotx;*.doc;*.docx"
       .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames
       .ShowOpen
     End Select
@@ -2120,7 +2128,7 @@ Private Sub cmdFileName_Click(Index As Integer)
     End If
 
     If .FileName <> "" Then
-      txtFilename(Index) = .FileName
+      txtFilename(Index).Text = .FileName
       Changed = True
     End If
   
@@ -2131,7 +2139,7 @@ Exit Sub
 LocalErr:
   If Err.Number <> 32755 Then   '32755 = Cancel was selected.
     MsgBox "Error selecting file", vbCritical, Me.Caption
-    txtFilename(Index) = vbNullString
+    txtFilename(Index).Text = vbNullString
   End If
 
 End Sub
@@ -3834,19 +3842,19 @@ Private Sub cboTextType_Click()
   Select Case cboTextType.ListIndex
   Case 0
     Set moutCurrent = moutTitle
-    chkGridlines.Enabled = False
+    chkGridLines.Enabled = False
     lblBackColour.Enabled = False
     cboBackColour.Enabled = False
     cboBackColour.BackColor = vbButtonFace
   Case 1
     Set moutCurrent = moutHeading
-    chkGridlines.Enabled = True
+    chkGridLines.Enabled = True
     lblBackColour.Enabled = True
     cboBackColour.Enabled = True
     cboBackColour.BackColor = vbWindowBackground
   Case 2
     Set moutCurrent = moutData
-    chkGridlines.Enabled = True
+    chkGridLines.Enabled = True
     lblBackColour.Enabled = True
     cboBackColour.Enabled = True
     cboBackColour.BackColor = vbWindowBackground
@@ -3868,7 +3876,7 @@ Private Sub cboTextType_Click()
   
   chkBold.Value = IIf(moutCurrent.Bold, vbChecked, vbUnchecked)
   chkUnderLine.Value = IIf(moutCurrent.Underline, vbChecked, vbUnchecked)
-  chkGridlines.Value = IIf(moutCurrent.Gridlines, vbChecked, vbUnchecked)
+  chkGridLines.Value = IIf(moutCurrent.Gridlines, vbChecked, vbUnchecked)
   
   mbLoading = False
   
@@ -3971,7 +3979,7 @@ Private Sub RefreshUnderLine(lngIndex, blnUnderline As Boolean)
 End Sub
 
 Private Sub chkGridlines_Click()
-  moutCurrent.Gridlines = (chkGridlines.Value = vbChecked)
+  moutCurrent.Gridlines = (chkGridLines.Value = vbChecked)
   RefreshGridlines cboTextType.ListIndex, moutCurrent.Gridlines
 End Sub
 
