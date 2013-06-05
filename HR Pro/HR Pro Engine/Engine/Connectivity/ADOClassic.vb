@@ -100,15 +100,17 @@ Namespace Connectivity
     Public Sub Open() Implements COMInterfaces.IConnection.Open
     End Sub
 
-    Public Function ScriptStatement(ByVal statement As String) As Boolean Implements COMInterfaces.IConnection.ScriptStatement
+    Public Function ScriptStatement(ByVal statement As String, ByRef IsCritical As Boolean) As Boolean Implements COMInterfaces.IConnection.ScriptStatement
 
       Dim bOK As Boolean = True
+      Dim iSeverity As ErrorHandler.Severity
 
       Try
-        NativeObject.Execute(Statement)
+        NativeObject.Execute(statement)
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(ErrorHandler.Section.General, "ADOClassic.ScriptStatement", ErrorHandler.Severity.Warning, ex.Message, Statement)
+        iSeverity = CType(IIf(IsCritical = True, ErrorHandler.Severity.Error, ErrorHandler.Severity.Warning), ErrorHandler.Severity)
+        Globals.ErrorLog.Add(ErrorHandler.Section.General, "ADOClassic.ScriptStatement", iSeverity, ex.Message, statement)
         bOK = False
       End Try
 

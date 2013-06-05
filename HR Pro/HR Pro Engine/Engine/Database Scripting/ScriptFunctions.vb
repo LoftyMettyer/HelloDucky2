@@ -49,7 +49,7 @@ Namespace ScriptDB
                     "END", sObjectName, objConversionTable.Name, objValueColumn.Name, objNameColumn.Name, objDecimalsColumn.Name _
                       , objNameColumn.DataTypeSyntax)
                   Script.DropUDF("dbo", sObjectName)
-            bOK = CommitDB.ScriptStatement(sSQL)
+            bOK = CommitDB.ScriptStatement(sSQL, True)
           End If
 
         End If
@@ -202,7 +202,7 @@ Namespace ScriptDB
             , sObjectName, String.Join(vbNewLine, aryStatements.ToArray()))
 
             Script.DropUDF("dbo", sObjectName)
-        bOK = CommitDB.ScriptStatement(sSQL)
+        bOK = CommitDB.ScriptStatement(sSQL, True)
 
       Catch ex As Exception
         Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.Triggers, sObjectName, SystemFramework.ErrorHandler.Severity.Error, ex.Message, sSQL)

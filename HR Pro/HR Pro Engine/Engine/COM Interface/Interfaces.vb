@@ -54,7 +54,7 @@ Public Module COMInterfaces
     Sub Open()
     Sub Close()
     Function ExecStoredProcedure(ByVal ProcedureName As String, ByVal Parms As Connectivity.Parameters) As System.Data.DataSet
-    Function ScriptStatement(ByVal statement As String) As Boolean
+    Function ScriptStatement(ByVal statement As String, ByRef IsCritical As Boolean) As Boolean
     Property Login As Connectivity.Login
   End Interface
 
