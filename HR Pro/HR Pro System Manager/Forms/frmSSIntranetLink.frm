@@ -2729,6 +2729,16 @@ Private Function ValidateLink() As Boolean
     End If
   End If
 
+  ' DBValues - fault HRPRO-1256
+  If fValid Then
+    If optLink(SSINTLINKDB_VALUE).value And _
+      ChartColumnID = 0 Then
+      fValid = False
+      MsgBox "No Database Value data has been defined.", vbOKOnly + vbExclamation, Application.Name
+    End If
+  End If
+  
+  
   
 
   ValidateLink = fValid
