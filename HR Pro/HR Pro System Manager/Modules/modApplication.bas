@@ -2145,5 +2145,5 @@ Public Sub EditMobileDesigner()
   
   Exit Sub
 ErrorTrap:
-  MsgBox "An error occurred while showing the mobile desigtner." & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, Application.Name
+  MsgBox "An error occurred while showing the mobile designer." & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, Application.Name
 End Sub
