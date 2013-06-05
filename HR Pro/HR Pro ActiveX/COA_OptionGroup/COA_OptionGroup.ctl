@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
+Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
 Begin VB.UserControl COA_OptionGroup 
    ClientHeight    =   915
    ClientLeft      =   0
@@ -191,15 +191,14 @@ Private Sub UserControl_InitProperties()
   Set Font = Ambient.Font
   ForeColor = Ambient.ForeColor
   BackColor = Ambient.BackColor
-  
-End Sub
 
+End Sub
 
 Private Sub UserControl_Resize()
 
   Dim Index As Integer
-  Dim intHeight As Integer
-  Dim intWidth As Integer
+  Dim intHeight As Long
+  Dim intWidth As Long
   Dim temp As Integer
   
   Select Case miAlignment
@@ -220,14 +219,14 @@ Private Sub UserControl_Resize()
         
         For Index = Option1.LBound To Option1.UBound
           With Option1(Index)
-            .Width = 350 + UserControl.TextWidth(.Caption) * 1.25
-            .Height = IIf(UserControl.TextHeight(.Caption) < 240, _
-              240, UserControl.TextHeight(.Caption))
+          
+            .Width = 350 + UserControl.TextWidth(.Caption)
+            .Height = IIf(UserControl.TextHeight(.Caption) < 240, 240, UserControl.TextHeight(.Caption))
               
             If Index = 0 Then
               .Top = UserControl.TextHeight(.Caption) + 50
             Else
-              .Top = Option1(Index - 1).Top + UserControl.TextHeight(.Caption) + 50 '20
+              .Top = Option1(Index - 1).Top + UserControl.TextHeight(.Caption) + 50
             End If
             
             .Left = UserControl.TextWidth("W")
@@ -238,7 +237,7 @@ Private Sub UserControl_Resize()
           End With
         Next Index
         
-        intWidth = intWidth + (GetAvgCharWidth(UserControl.hDC) * 2)
+        intWidth = intWidth + (GetAvgCharWidth(UserControl.hDC) * 2) + 50
         intHeight = Option1(Option1.UBound).Top + (Option1(Option1.UBound).Height * 2)
         
         With UserControl
@@ -256,7 +255,7 @@ Private Sub UserControl_Resize()
         
         If BorderStyle = 0 Then
           intHeight = UserControl.TextHeight(Caption) * 0.5
-          If intHeight < 200 Then intHeight = 200
+          If intHeight < 240 Then intHeight = 240
           intWidth = 0
         Else
           intHeight = UserControl.TextHeight(Caption) * 1.5
@@ -266,15 +265,9 @@ Private Sub UserControl_Resize()
         
         For Index = Option1.LBound To Option1.UBound
           With Option1(Index)
+            .Top = 240
             .Width = 285 + UserControl.TextWidth(.Caption) + GetAvgCharWidth(UserControl.hDC)
-            .Height = IIf(UserControl.TextHeight(.Caption) < 240, _
-              240, UserControl.TextHeight(.Caption))
-            
-            If Index = 0 Then
-              .Top = 0
-            Else
-              .Top = Option1(0).Top
-            End If
+            .Height = IIf(UserControl.TextHeight(.Caption) < 240, 240, UserControl.TextHeight(.Caption))
             
             If Index > 0 Then
               .Left = Option1(Index - 1).Left + Option1(Index - 1).Width + UserControl.TextWidth("WW")
@@ -284,7 +277,7 @@ Private Sub UserControl_Resize()
           End With
         Next Index
         
-        intHeight = Option1(Option1.UBound).Height
+        intHeight = intHeight + Option1(Option1.UBound).Height
         
         If BorderStyle = 1 Then
           intWidth = (Option1(Option1.UBound).Left) + Option1(Option1.UBound).Width + UserControl.TextWidth("WW")
