@@ -339,7 +339,7 @@ Begin VB.Form frmAuditCleardown
       End
    End
    Begin VB.Label lblWarning 
-      Caption         =   "WARNING: Purging the Data Records can affect the results of audit reporting && export functions."
+      Caption         =   "Warning: Purging Data can affect the results of Audit && Export Functions."
       ForeColor       =   &H000000FF&
       Height          =   405
       Left            =   105
