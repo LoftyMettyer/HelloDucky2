@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
-Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "tinumb6.ocx"
+Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "TIMASK6.OCX"
+Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "TINUMB6.OCX"
 Object = "{E2D000D0-2DA1-11D2-B358-00104B59D73D}#1.0#0"; "titext6.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
@@ -93,6 +93,7 @@ Begin VB.Form frmRecEdit4
          FontStrikethrough=   0   'False
          FontUnderline   =   -1  'True
          ForeColor       =   0
+         BackColor       =   -2147483633
          NavigateOnSave  =   0   'False
       End
       Begin XtremeSuiteControls.GroupBox Frame1 
@@ -430,8 +431,8 @@ Begin VB.Form frmRecEdit4
          TabIndex        =   10
          Top             =   240
          Visible         =   0   'False
-         Width           =   1125
-         _ExtentX        =   1984
+         Width           =   1140
+         _ExtentX        =   2011
          _ExtentY        =   1138
       End
       Begin VB.CommandButton Command1 
@@ -3375,6 +3376,14 @@ Private Sub Form_Activate()
   
   ' Refresh the form icon
   'GetIcon mlngPictureID
+  
+  ' Refresh any navigation controls because Version One has some teething troubles
+  For Each objControl In Me.Controls
+    If TypeOf objControl Is COA_Navigation Then
+      objControl.RefreshControls
+    End If
+  Next
+  DoEvents
   
 End Sub
 
