@@ -591,6 +591,7 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
   Dim iColumnList As Integer
   Dim strErrorMessage As String
   Dim sAreaInCode As String
+  Dim lngLocation As String
 
   'Dim sConnect As String
   'Dim blnReconnect As Boolean
@@ -655,8 +656,12 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
       Else
         Do While Not rsTriggerDefn.EOF
         
-          If InStr(1, rsTriggerDefn!Text, "CREATE TRIGGER", vbTextCompare) Then
-            sSQLCodeLine = Replace(rsTriggerDefn!Text, sTableName, sPhysicalTableName, 1)
+          If InStr(1, rsTriggerDefn!Text, "CREATE TRIGGER", vbTextCompare) > 0 Then
+            If InStr(1, rsTriggerDefn!Text, "tbuser_", vbTextCompare) > 0 Then
+              sSQLCodeLine = rsTriggerDefn!Text
+            Else
+              sSQLCodeLine = Replace(rsTriggerDefn!Text, sTableName, sPhysicalTableName, 1)
+            End If
           Else
             sSQLCodeLine = rsTriggerDefn!Text
           End If
