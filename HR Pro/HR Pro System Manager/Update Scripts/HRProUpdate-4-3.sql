@@ -617,6 +617,16 @@ PRINT 'Step 9 - Add new calculation procedures'
 		DROP FUNCTION [dbo].[udfsys_propercase]
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_remainingmonthssincewholeyears]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_remainingmonthssincewholeyears]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[udfsys_roundtostartofnearestmonth]')
+			AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfsys_roundtostartofnearestmonth]
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfsys_servicelength]')
 			AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_servicelength]
@@ -1061,6 +1071,33 @@ PRINT 'Step 9 - Add new calculation procedures'
 	EXECUTE sp_executeSQL @sSPCode;
 
 
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_remainingmonthssincewholeyears]
+		(@pdtDate 	datetime, @dtToday datetime)
+	RETURNS integer
+	WITH SCHEMABINDING
+	AS
+	BEGIN
+
+		DECLARE @iResult integer;
+
+		SET @pdtDate = convert(datetime, convert(varchar(20), @pdtDate, 101));
+
+		-- Get the number of whole months
+		SET @iResult = month(@dtToday) - month(@pdtDate);
+	 
+		-- Test the day value
+		IF DAY(@pdtDate) > DAY(@dtToday)
+			SET @iResult = @iResult - 1;
+
+		IF @iResult < 0
+			SET @iResult = @iResult + 12;
+
+		RETURN @iResult;
+
+	END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_roundtostartofnearestmonth]
 		(@pdtDate 	datetime)
 	RETURNS datetime
@@ -1339,7 +1376,7 @@ PRINT 'Step 10 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''84044568-fea7-48d5-ae8a-f8178b7ed927'', N''[dbo].[udfsys_parentalleaveentitlement](@prm_ID)'', 2, 0, 0, N''Parental Leave Entitlement'', NULL, 0, 0, 62, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5278a126-c44e-41c5-9e7a-1c890c297d3f'', N''[dbo].[udfsys_parentalleavetaken](@prm_ID)'', 2, 0, 0, N''Parental Leave Taken'', NULL, 0, 0, 63, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''ed3be9d9-28f1-4345-a8c8-ca9f0c18a3a2'', N''({0})'', 0, 0, 0, N''Parentheses'', NULL, 0, 0, 27, 1)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''06e67c1b-c376-4fc9-a260-e9a12022791f'', N'''', 2, 0, 0, N''Remaining Months since Whole Years'', NULL, 0, 0, 19, 0)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''06e67c1b-c376-4fc9-a260-e9a12022791f'', N''[dbo].[udfsys_remainingmonthssincewholeyears]({0}, GETDATE())'', 2, 0, 0, N''Remaining Months since Whole Years'', NULL, 0, 0, 19, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''b86c77e6-e393-499e-9114-95a201a316d4'', N''LTRIM(RTRIM({0}))'', 1, 0, 0, N''Remove Leading and Trailing Spaces'', NULL, 0, 0, 5, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5c2244b5-ee8b-4f80-bc9e-defb9ba10b36'', N''[dbo].[udfsys_roundtostartofnearestmonth]({0})'', 4, 0, 0, N''Round Date to Start of Nearest Month'', NULL, 0, 0, 37, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''07e1acb6-6943-4a92-956f-5df24aa2f3d2'', N''FLOOR({0})'', 2, 0, 0, N''Round Down to Nearest Whole Number'', NULL, 0, 0, 31, 0)';
@@ -1400,6 +1437,20 @@ PRINT 'Step 11 - Administration module stored procedures'
 			WHERE c.id = @componentid;
 	END'
 	EXECUTE sp_executeSQL @sSPCode;
+
+
+/* ------------------------------------------------------------- */
+PRINT 'Step 12 - Remove redundant procedures'
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRFn_RemainingMonthsSinceWholeYears]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[sp_ASRFn_RemainingMonthsSinceWholeYears];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRFn_RoundDateToStartOfNearestMonth]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[sp_ASRFn_RoundDateToStartOfNearestMonth];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRFn_WeekdaysFromStartAndEndDates]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[sp_ASRFn_WeekdaysFromStartAndEndDates];
+
 
 
 
