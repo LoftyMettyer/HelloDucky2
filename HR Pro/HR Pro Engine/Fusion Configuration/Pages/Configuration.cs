@@ -98,15 +98,41 @@ namespace Fusion.Pages
 
 		private IEnumerable<Column> GetAvailableColumnsForElement(FusionElement element)
 		{
-         var columns = _session.Query<Column>().Where(x => x.Table == element.Category.Table);//&& x.DataType == element.DataType);
-
+         var columns = _session.Query<Column>().Where(x => x.Table == element.Category.Table);
+			
+			switch(element.DataType) {
+				case DataType.Character:
+					columns = columns.Where(x => x.DataType == DataType.Character || x.DataType == DataType.WorkingPattern);
+					break;
+				case DataType.Integer:
+					columns = columns.Where(x => x.DataType == DataType.Integer || (x.DataType == DataType.Numeric && x.Decimals == 0));
+					break;
+				case DataType.Numeric:
+					if (element.Precision.GetValueOrDefault() == 0)
+						columns = columns.Where(x => x.DataType == DataType.Numeric || x.DataType == DataType.Integer);
+					else
+						columns = columns.Where(x => x.DataType == DataType.Numeric && x.Decimals == element.Precision);
+					break;
+				case DataType.Photo:
+				case DataType.Ole:
+					columns = columns.Where(x => (x.DataType == DataType.Photo || x.DataType == DataType.Ole) && (x.OleType == OleType.Embedded && x.MaxOLESizeEnabled));
+					break;
+				default:
+					columns = columns.Where(x => x.DataType == element.DataType);
+					break;
+			}
+			
 			if (element.DataType == DataType.Character)
 				columns = columns.Where(x => (!element.MinSize.HasValue || x.Size >= element.MinSize) && (!element.MaxSize.HasValue || x.Size <= element.MaxSize));
 
 			if (element.Lookup)
 				columns = columns.Where(x => x.ControlType == ControlType.DropdownList || x.ControlType == ControlType.OptionGroup);
 
-			return columns.OrderBy(c => c.Name).ToList();
+			var columnList = columns.OrderBy(c => c.Name).ToList();
+
+			Console.WriteLine(columnList.Count);
+
+			return columnList;
 		}
 
 		private void GrdElementsBeforeCellListDropDown(object sender, CancelableCellEventArgs e)

@@ -23,6 +23,13 @@ namespace Fusion
 		OptionGroup = 16
 	}
 
+	public enum OleType
+	{
+		Local = 0,
+		Server = 1,
+		Embedded = 2
+	}
+
 	public class Entity
 	{
 		public virtual int Id { get; set; }
@@ -42,6 +49,8 @@ namespace Fusion
 		public virtual int Size { get; set; }
 		public virtual int Decimals { get; set; }
 		public virtual ControlType ControlType { get; set; }
+		public virtual OleType OleType { get; set; }
+		public virtual bool MaxOLESizeEnabled { get; set; }
 		public override string ToString() { return Name; }
 	}
 
@@ -60,6 +69,7 @@ namespace Fusion
 		public virtual DataType DataType { get; set; }
 		public virtual int? MinSize { get; set; }
 		public virtual int? MaxSize { get; set; }
+		public virtual int? Precision { get; set; }
 		public virtual Column Column { get; set; }
 		public virtual bool Lookup { get; set; }
 	}

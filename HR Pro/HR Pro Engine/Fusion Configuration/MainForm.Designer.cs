@@ -62,16 +62,16 @@
 			Infragistics.Win.Appearance appearance6 = new Infragistics.Win.Appearance();
 			this.mainForm_Fill_Panel = new Infragistics.Win.Misc.UltraPanel();
 			this.viewPanel = new System.Windows.Forms.Panel();
-			this._mainForm_Toolbars_Dock_Area_Left = new Infragistics.Win.UltraWinToolbars.UltraToolbarsDockArea();
-			this._mainForm_Toolbars_Dock_Area_Right = new Infragistics.Win.UltraWinToolbars.UltraToolbarsDockArea();
-			this._mainForm_Toolbars_Dock_Area_Top = new Infragistics.Win.UltraWinToolbars.UltraToolbarsDockArea();
-			this._mainForm_Toolbars_Dock_Area_Bottom = new Infragistics.Win.UltraWinToolbars.UltraToolbarsDockArea();
-			this.timer1 = new System.Windows.Forms.Timer(this.components);
 			this.pageConfiguration = new Fusion.Pages.Configuration();
 			this.pageSettings = new Fusion.Pages.Settings();
 			this.pageLogs = new Fusion.Pages.Logs();
 			this.pageMessages = new Fusion.Pages.Messages();
+			this._mainForm_Toolbars_Dock_Area_Left = new Infragistics.Win.UltraWinToolbars.UltraToolbarsDockArea();
 			this.toolbarsManager = new Infragistics.Win.UltraWinToolbars.UltraToolbarsManager(this.components);
+			this._mainForm_Toolbars_Dock_Area_Right = new Infragistics.Win.UltraWinToolbars.UltraToolbarsDockArea();
+			this._mainForm_Toolbars_Dock_Area_Top = new Infragistics.Win.UltraWinToolbars.UltraToolbarsDockArea();
+			this._mainForm_Toolbars_Dock_Area_Bottom = new Infragistics.Win.UltraWinToolbars.UltraToolbarsDockArea();
+			this.timer1 = new System.Windows.Forms.Timer(this.components);
 			this.mainForm_Fill_Panel.ClientArea.SuspendLayout();
 			this.mainForm_Fill_Panel.SuspendLayout();
 			this.viewPanel.SuspendLayout();
@@ -88,7 +88,7 @@
 			this.mainForm_Fill_Panel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.mainForm_Fill_Panel.Location = new System.Drawing.Point(0, 127);
 			this.mainForm_Fill_Panel.Name = "mainForm_Fill_Panel";
-			this.mainForm_Fill_Panel.Size = new System.Drawing.Size(903, 478);
+			this.mainForm_Fill_Panel.Size = new System.Drawing.Size(993, 478);
 			this.mainForm_Fill_Panel.TabIndex = 0;
 			// 
 			// viewPanel
@@ -102,52 +102,8 @@
 			this.viewPanel.Controls.Add(this.pageMessages);
 			this.viewPanel.Location = new System.Drawing.Point(4, 4);
 			this.viewPanel.Name = "viewPanel";
-			this.viewPanel.Size = new System.Drawing.Size(895, 470);
+			this.viewPanel.Size = new System.Drawing.Size(985, 470);
 			this.viewPanel.TabIndex = 3;
-			// 
-			// _mainForm_Toolbars_Dock_Area_Left
-			// 
-			this._mainForm_Toolbars_Dock_Area_Left.AccessibleRole = System.Windows.Forms.AccessibleRole.Grouping;
-			this._mainForm_Toolbars_Dock_Area_Left.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(255)))));
-			this._mainForm_Toolbars_Dock_Area_Left.DockedPosition = Infragistics.Win.UltraWinToolbars.DockedPosition.Left;
-			this._mainForm_Toolbars_Dock_Area_Left.ForeColor = System.Drawing.SystemColors.ControlText;
-			this._mainForm_Toolbars_Dock_Area_Left.Location = new System.Drawing.Point(0, 127);
-			this._mainForm_Toolbars_Dock_Area_Left.Name = "_mainForm_Toolbars_Dock_Area_Left";
-			this._mainForm_Toolbars_Dock_Area_Left.Size = new System.Drawing.Size(0, 478);
-			this._mainForm_Toolbars_Dock_Area_Left.ToolbarsManager = this.toolbarsManager;
-			// 
-			// _mainForm_Toolbars_Dock_Area_Right
-			// 
-			this._mainForm_Toolbars_Dock_Area_Right.AccessibleRole = System.Windows.Forms.AccessibleRole.Grouping;
-			this._mainForm_Toolbars_Dock_Area_Right.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(255)))));
-			this._mainForm_Toolbars_Dock_Area_Right.DockedPosition = Infragistics.Win.UltraWinToolbars.DockedPosition.Right;
-			this._mainForm_Toolbars_Dock_Area_Right.ForeColor = System.Drawing.SystemColors.ControlText;
-			this._mainForm_Toolbars_Dock_Area_Right.Location = new System.Drawing.Point(903, 127);
-			this._mainForm_Toolbars_Dock_Area_Right.Name = "_mainForm_Toolbars_Dock_Area_Right";
-			this._mainForm_Toolbars_Dock_Area_Right.Size = new System.Drawing.Size(0, 478);
-			this._mainForm_Toolbars_Dock_Area_Right.ToolbarsManager = this.toolbarsManager;
-			// 
-			// _mainForm_Toolbars_Dock_Area_Top
-			// 
-			this._mainForm_Toolbars_Dock_Area_Top.AccessibleRole = System.Windows.Forms.AccessibleRole.Grouping;
-			this._mainForm_Toolbars_Dock_Area_Top.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(255)))));
-			this._mainForm_Toolbars_Dock_Area_Top.DockedPosition = Infragistics.Win.UltraWinToolbars.DockedPosition.Top;
-			this._mainForm_Toolbars_Dock_Area_Top.ForeColor = System.Drawing.SystemColors.ControlText;
-			this._mainForm_Toolbars_Dock_Area_Top.Location = new System.Drawing.Point(0, 0);
-			this._mainForm_Toolbars_Dock_Area_Top.Name = "_mainForm_Toolbars_Dock_Area_Top";
-			this._mainForm_Toolbars_Dock_Area_Top.Size = new System.Drawing.Size(903, 127);
-			this._mainForm_Toolbars_Dock_Area_Top.ToolbarsManager = this.toolbarsManager;
-			// 
-			// _mainForm_Toolbars_Dock_Area_Bottom
-			// 
-			this._mainForm_Toolbars_Dock_Area_Bottom.AccessibleRole = System.Windows.Forms.AccessibleRole.Grouping;
-			this._mainForm_Toolbars_Dock_Area_Bottom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(255)))));
-			this._mainForm_Toolbars_Dock_Area_Bottom.DockedPosition = Infragistics.Win.UltraWinToolbars.DockedPosition.Bottom;
-			this._mainForm_Toolbars_Dock_Area_Bottom.ForeColor = System.Drawing.SystemColors.ControlText;
-			this._mainForm_Toolbars_Dock_Area_Bottom.Location = new System.Drawing.Point(0, 605);
-			this._mainForm_Toolbars_Dock_Area_Bottom.Name = "_mainForm_Toolbars_Dock_Area_Bottom";
-			this._mainForm_Toolbars_Dock_Area_Bottom.Size = new System.Drawing.Size(903, 0);
-			this._mainForm_Toolbars_Dock_Area_Bottom.ToolbarsManager = this.toolbarsManager;
 			// 
 			// pageConfiguration
 			// 
@@ -176,6 +132,17 @@
 			this.pageMessages.Name = "pageMessages";
 			this.pageMessages.Size = new System.Drawing.Size(312, 151);
 			this.pageMessages.TabIndex = 0;
+			// 
+			// _mainForm_Toolbars_Dock_Area_Left
+			// 
+			this._mainForm_Toolbars_Dock_Area_Left.AccessibleRole = System.Windows.Forms.AccessibleRole.Grouping;
+			this._mainForm_Toolbars_Dock_Area_Left.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(255)))));
+			this._mainForm_Toolbars_Dock_Area_Left.DockedPosition = Infragistics.Win.UltraWinToolbars.DockedPosition.Left;
+			this._mainForm_Toolbars_Dock_Area_Left.ForeColor = System.Drawing.SystemColors.ControlText;
+			this._mainForm_Toolbars_Dock_Area_Left.Location = new System.Drawing.Point(0, 127);
+			this._mainForm_Toolbars_Dock_Area_Left.Name = "_mainForm_Toolbars_Dock_Area_Left";
+			this._mainForm_Toolbars_Dock_Area_Left.Size = new System.Drawing.Size(0, 478);
+			this._mainForm_Toolbars_Dock_Area_Left.ToolbarsManager = this.toolbarsManager;
 			// 
 			// toolbarsManager
 			// 
@@ -272,11 +239,44 @@
 			this.toolbarsManager.BeforeRibbonTabSelected += new Infragistics.Win.UltraWinToolbars.BeforeRibbonTabSelectedEventHandler(this.ToolbarsManagerBeforeRibbonTabSelected);
 			this.toolbarsManager.ToolClick += new Infragistics.Win.UltraWinToolbars.ToolClickEventHandler(this.ToolbarsManagerToolClick);
 			// 
+			// _mainForm_Toolbars_Dock_Area_Right
+			// 
+			this._mainForm_Toolbars_Dock_Area_Right.AccessibleRole = System.Windows.Forms.AccessibleRole.Grouping;
+			this._mainForm_Toolbars_Dock_Area_Right.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(255)))));
+			this._mainForm_Toolbars_Dock_Area_Right.DockedPosition = Infragistics.Win.UltraWinToolbars.DockedPosition.Right;
+			this._mainForm_Toolbars_Dock_Area_Right.ForeColor = System.Drawing.SystemColors.ControlText;
+			this._mainForm_Toolbars_Dock_Area_Right.Location = new System.Drawing.Point(993, 127);
+			this._mainForm_Toolbars_Dock_Area_Right.Name = "_mainForm_Toolbars_Dock_Area_Right";
+			this._mainForm_Toolbars_Dock_Area_Right.Size = new System.Drawing.Size(0, 478);
+			this._mainForm_Toolbars_Dock_Area_Right.ToolbarsManager = this.toolbarsManager;
+			// 
+			// _mainForm_Toolbars_Dock_Area_Top
+			// 
+			this._mainForm_Toolbars_Dock_Area_Top.AccessibleRole = System.Windows.Forms.AccessibleRole.Grouping;
+			this._mainForm_Toolbars_Dock_Area_Top.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(255)))));
+			this._mainForm_Toolbars_Dock_Area_Top.DockedPosition = Infragistics.Win.UltraWinToolbars.DockedPosition.Top;
+			this._mainForm_Toolbars_Dock_Area_Top.ForeColor = System.Drawing.SystemColors.ControlText;
+			this._mainForm_Toolbars_Dock_Area_Top.Location = new System.Drawing.Point(0, 0);
+			this._mainForm_Toolbars_Dock_Area_Top.Name = "_mainForm_Toolbars_Dock_Area_Top";
+			this._mainForm_Toolbars_Dock_Area_Top.Size = new System.Drawing.Size(993, 127);
+			this._mainForm_Toolbars_Dock_Area_Top.ToolbarsManager = this.toolbarsManager;
+			// 
+			// _mainForm_Toolbars_Dock_Area_Bottom
+			// 
+			this._mainForm_Toolbars_Dock_Area_Bottom.AccessibleRole = System.Windows.Forms.AccessibleRole.Grouping;
+			this._mainForm_Toolbars_Dock_Area_Bottom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(219)))), ((int)(((byte)(255)))));
+			this._mainForm_Toolbars_Dock_Area_Bottom.DockedPosition = Infragistics.Win.UltraWinToolbars.DockedPosition.Bottom;
+			this._mainForm_Toolbars_Dock_Area_Bottom.ForeColor = System.Drawing.SystemColors.ControlText;
+			this._mainForm_Toolbars_Dock_Area_Bottom.Location = new System.Drawing.Point(0, 605);
+			this._mainForm_Toolbars_Dock_Area_Bottom.Name = "_mainForm_Toolbars_Dock_Area_Bottom";
+			this._mainForm_Toolbars_Dock_Area_Bottom.Size = new System.Drawing.Size(993, 0);
+			this._mainForm_Toolbars_Dock_Area_Bottom.ToolbarsManager = this.toolbarsManager;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(903, 605);
+			this.ClientSize = new System.Drawing.Size(993, 605);
 			this.Controls.Add(this.mainForm_Fill_Panel);
 			this.Controls.Add(this._mainForm_Toolbars_Dock_Area_Left);
 			this.Controls.Add(this._mainForm_Toolbars_Dock_Area_Right);
