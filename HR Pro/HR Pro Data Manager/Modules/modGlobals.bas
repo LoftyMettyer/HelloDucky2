@@ -107,17 +107,17 @@ Public gobjErrorStack As clsErrorStack      ' Standard Error Handler
 Public glngSQLVersion As Long               ' SQL database Version
 
 ' Output options
-Public gbAllowOutput_Word As Boolean        ' Is Microsoft Word Installed
+'Public gbAllowOutput_Word As Boolean        ' Is Microsoft Word Installed
 Public giOfficeVersion_Word As Integer      ' Microsoft Word Version
-Public giOfficeSaveVersion_Word As Integer
-Public gsOfficeFileFilter_Word As String
-Public gsOfficeTemplateFilter_Word  As String
+'Public giOfficeSaveVersion_Word As Integer
+'Public gsOfficeFileFilter_Word As String
+'Public gsOfficeTemplateFilter_Word  As String
 
-Public gbAllowOutput_Excel As Boolean       ' Is Microsoft Excel Installed
+'Public gbAllowOutput_Excel As Boolean       ' Is Microsoft Excel Installed
 Public giOfficeVersion_Excel As Integer     ' Microsoft Excel Version
-Public giOfficeSaveVersion_Excel As Integer
-Public gsOfficeFileFilter_Excel As String
-Public gsOfficeTemplateFilter_Excel As String
+'Public giOfficeSaveVersion_Excel As Integer
+'Public gsOfficeFileFilter_Excel As String
+'Public gsOfficeTemplateFilter_Excel As String
 
 
 Public gcolSystemPermissions As Collection  ' Holds system permissions for this user

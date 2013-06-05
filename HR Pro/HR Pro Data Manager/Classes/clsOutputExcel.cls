@@ -857,7 +857,7 @@ Private Sub GetWorkBook(strWorkbook As String, strWorksheet As String)
   If mblnApplyStyles Then
     If mstrXLTemplate <> "" And Dir(mstrXLTemplate) <> "" Then
     
-      If IsFileCompatibleWithExcelVersion(mstrXLTemplate) Then
+      If Not IsFileCompatibleWithExcelVersion(mstrXLTemplate) Then
         mstrErrorMessage = "Your User Configuration Output Options are set to use a template file which is not compatible with your version of Microsoft Office."
         Exit Sub
       End If
@@ -878,7 +878,7 @@ Private Sub GetWorkBook(strWorkbook As String, strWorksheet As String)
     Set mxlDeleteSheet = mxlWorkBook.Sheets(1)
 
   Case "Open"
-    If IsFileCompatibleWithExcelVersion(mstrFileName) Then
+    If Not IsFileCompatibleWithExcelVersion(mstrFileName) Then
       mstrErrorMessage = "This definition is set to append to a file which is not compatible with your version of Microsoft Office."
       Exit Sub
     End If

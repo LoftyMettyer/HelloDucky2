@@ -519,21 +519,21 @@ Sub Main()
       frmSplash.Show
       frmSplash.Refresh
       
-      If gbAllowOutput_Word Then
-        'WdSaveFormat.wdFormatDocumentDefault
-        'WdSaveFormat.wdFormatDocument97
-        giOfficeSaveVersion_Word = GetSystemSetting("output", "save version word", WdSaveFormat.wdFormatDocument)
-        gsOfficeFileFilter_Word = GetSystemSetting("output", "file filter word", "Word Document (*.doc)|*.doc")
-        gsOfficeTemplateFilter_Word = GetSystemSetting("output", "template filter word", "Word Template (*.doc;*.dot)|*.doc;*.dot")
-      End If
-    
-      If gbAllowOutput_Excel Then
-        'XlFileFormat.xlWorkbookDefault
-        'XlFileFormat.xlExcel8
-        giOfficeSaveVersion_Excel = GetSystemSetting("output", "save version excel", 56)  'XlFileFormat.xlExcel8)
-        gsOfficeFileFilter_Excel = GetSystemSetting("output", "file filter excel", "Excel Workbook (*.xls)|*.xls")
-        gsOfficeTemplateFilter_Excel = GetSystemSetting("output", "template filter excel", "Excel Template (*.xls;*.xlt)|*.xls;*.xlt")
-      End If
+'      If gbAllowOutput_Word Then
+'        'WdSaveFormat.wdFormatDocumentDefault
+'        'WdSaveFormat.wdFormatDocument97
+'        giOfficeSaveVersion_Word = GetSystemSetting("output", "save version word", WdSaveFormat.wdFormatDocument)
+'        gsOfficeFileFilter_Word = GetSystemSetting("output", "file filter word", "Word Document (*.doc)|*.doc")
+'        gsOfficeTemplateFilter_Word = GetSystemSetting("output", "template filter word", "Word Template (*.doc;*.dot)|*.doc;*.dot")
+'      End If
+'
+'      If gbAllowOutput_Excel Then
+'        'XlFileFormat.xlWorkbookDefault
+'        'XlFileFormat.xlExcel8
+'        giOfficeSaveVersion_Excel = GetSystemSetting("output", "save version excel", 56)  'XlFileFormat.xlExcel8)
+'        gsOfficeFileFilter_Excel = GetSystemSetting("output", "file filter excel", "Excel Workbook (*.xls)|*.xls")
+'        gsOfficeTemplateFilter_Excel = GetSystemSetting("output", "template filter excel", "Excel Template (*.xls;*.xlt)|*.xls;*.xlt")
+'      End If
   
       'Activate The System
       Application.Activate

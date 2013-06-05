@@ -46,9 +46,11 @@ Private mlngDefFilterID As Long
 Private mintDefOutput As Integer
 Private mblnDefDocSave As Boolean
 Private mstrDefDocFile As String
+Private mstrDefDocFileFormat As String
 Private mstrDefEmailCol As String
 Private mstrDefEMailSubject As String
 Private mstrDefTemplateFile As String
+Private mstrDefTemplateFormat As String
 Private mblnDefCloseDoc As Boolean
 Private mblnDefPauseBeforeMerge As Boolean
 Private mblnDefEMailAttachment As Boolean
@@ -84,6 +86,7 @@ Private wrdDocTemplate As New Word.Document
 Private wrdDocDataSource As New Word.Document
 Private wrdDocOutput As New Word.Document
 Private mstrDataSourceName As String
+Private mstrDataSourceFormat As String
 Private mblnAppVisible As Boolean
 
 Private mbDefinitionOwner As Boolean
@@ -450,6 +453,7 @@ Private Sub SQLGetMergeDefinition()
     mlngDefFilterID = !FilterID
     mintDefOutput = !Output
     mstrDefTemplateFile = !TemplateFileName
+    mstrDefTemplateFormat = GetOfficeSaveAsFormat(mstrDefTemplateFormat, GetOfficeWordVersion)
     mblnDefSuppressBlankLines = !SuppressBlanks
     mblnDefPauseBeforeMerge = !PauseBeforeMerge
     mblnDefCloseDoc = !CloseDoc
@@ -459,7 +463,7 @@ Private Sub SQLGetMergeDefinition()
     mlngEmailAddrCalc = 0
     mstrEmailAddr = vbNullString
         
-    If IsFileCompatibleWithWordVersion(mstrDefTemplateFile) Then
+    If Not IsFileCompatibleWithWordVersion(mstrDefTemplateFile) Then
       mstrStatusMessage = "This definition is set to use a template file which is not compatible with your version of Microsoft Office."
       fOK = False
       GoTo TidyAndExit
@@ -469,8 +473,9 @@ Private Sub SQLGetMergeDefinition()
       Case wdSendToNewDocument
         mblnDefDocSave = !DocSave
         mstrDefDocFile = !DocFileName
+        mstrDefDocFileFormat = GetOfficeSaveAsFormat(mstrDefDocFile, GetOfficeWordVersion)
       
-        If IsFileCompatibleWithWordVersion(mstrDefDocFile) Then
+        If mstrDefDocFileFormat = "" Then
           mstrStatusMessage = "This definition is set to save in a file format which is not compatible with your version of Microsoft Office."
           fOK = False
           GoTo TidyAndExit
@@ -499,7 +504,7 @@ Private Sub SQLGetMergeDefinition()
         mstrDefEMailSubject = !EmailSubject
         mlngEmailAddrCalc = !EmailAddrID
     
-        If IsFileCompatibleWithWordVersion(mstrDefAttachmentName) Then
+        If Not IsFileCompatibleWithWordVersion(mstrDefAttachmentName) Then
           mstrStatusMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
           fOK = False
           GoTo TidyAndExit
@@ -739,8 +744,10 @@ Private Sub WrdCreateDataSource()
   On Error GoTo LocalErr
 
   mstrDataSourceName = GetTmpFName
+  mstrDataSourceFormat = GetOfficeSaveAsFormat(".doc", GetOfficeWordVersion)
+  
   Set wrdDocDataSource = wrdApp.Documents.Add
-  wrdDocDataSource.SaveAs FileName:=mstrDataSourceName, FileFormat:=giOfficeSaveVersion_Word, AddToRecentFiles:=False
+  wrdDocDataSource.SaveAs FileName:=mstrDataSourceName, FileFormat:=Val(mstrDataSourceFormat), AddToRecentFiles:=False
 
 Exit Sub
 
@@ -892,7 +899,7 @@ Private Sub WrdPopulateDataSource()
 
   End With
 
-  wrdDocDataSource.SaveAs FileFormat:=giOfficeSaveVersion_Word
+  wrdDocDataSource.SaveAs FileFormat:=Val(mstrDataSourceFormat)
   wrdDocDataSource.Close SaveChanges:=False
 
 Exit Sub
@@ -1065,14 +1072,14 @@ Private Sub WrdCheckIfSaveTemplate()
     If intMBResponse = vbYes Then
       wrdApp.Visible = True
       wrdApp.DisplayAlerts = wdAlertsAll
-      wrdDocTemplate.SaveAs FileFormat:=giOfficeSaveVersion_Word
+      wrdDocTemplate.SaveAs FileFormat:=Val(mstrDefTemplateFormat)
       
       If blnTemplateReadOnly Then
         strMBText = "This template file is currently in use by another user.  Please save as a new file."
         intMBButtons = vbInformation
         strMBTitle = "Mail Merge"
         intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
-        wrdDocTemplate.SaveAs FileFormat:=giOfficeSaveVersion_Word
+        wrdDocTemplate.SaveAs FileFormat:=Val(mstrDefTemplateFormat)
         blnTemplateReadOnly = False
         intMBResponse = vbYes
       End If
@@ -1345,7 +1352,7 @@ Private Sub WrdRunMailMerge()
       Kill mstrDefAttachmentName
     End If
     
-    wrdDocTemplate.SaveAs FileName:=mstrDefAttachmentName, FileFormat:=giOfficeSaveVersion_Word
+    wrdDocTemplate.SaveAs FileName:=mstrDefAttachmentName, FileFormat:=Val(mstrDefTemplateFormat)
 
   End If
 
@@ -1379,7 +1386,7 @@ Private Sub WrdRunMailMerge()
       If Dir$(mstrDefDocFile) <> vbNullString Then
         Kill mstrDefDocFile
       End If
-      wrdDocOutput.SaveAs FileName:=mstrDefDocFile, FileFormat:=giOfficeSaveVersion_Word
+      wrdDocOutput.SaveAs FileName:=mstrDefDocFile, FileFormat:=Val(mstrDefDocFileFormat)
     End If
   End Select
   
@@ -1475,7 +1482,7 @@ Private Sub TidyUpAndExit()
   
     wrdDocTemplate.MailMerge.MainDocumentType = wdNotAMergeDocument
     wrdDocTemplate.Saved = False    'MH20070124 Fault 11824 - Force save for Office 2007
-    wrdDocTemplate.SaveAs FileFormat:=giOfficeSaveVersion_Word
+    wrdDocTemplate.SaveAs FileFormat:=Val(mstrDefTemplateFormat)
   End If
   
   wrdDocTemplate.Close SaveChanges:=False
@@ -2694,7 +2701,7 @@ Private Sub WrdCreateLabelTemplate(blnSuppressPrompt As Boolean)
       Next intRows
     Next intColumns
     
-    wrdDocTemplate.SaveAs FileName:=mstrDefTemplateFile, FileFormat:=giOfficeSaveVersion_Word, AddToRecentFiles:=False
+    wrdDocTemplate.SaveAs FileName:=mstrDefTemplateFile, FileFormat:=Val(mstrDefTemplateFormat), AddToRecentFiles:=False
   End If
   
 TidyUpAndExit:
@@ -2943,7 +2950,7 @@ Private Sub WrdCreateEnvelopeTemplate(blnSuppressPrompt As Boolean)
   objRange.MoveDown wdParagraph, 1
   objRange.Range.Delete
   
-  wrdDocTemplate.SaveAs FileName:=mstrDefTemplateFile, FileFormat:=giOfficeSaveVersion_Word, AddToRecentFiles:=False
+  wrdDocTemplate.SaveAs FileName:=mstrDefTemplateFile, FileFormat:=Val(mstrDefTemplateFormat), AddToRecentFiles:=False
   
 TidyUpAndExit:
   wrdDocTemplate.Saved = True

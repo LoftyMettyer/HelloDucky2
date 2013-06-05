@@ -65,43 +65,43 @@ Begin VB.Form frmConfiguration
       TabCaption(1)   =   "&Reports && Utilities"
       TabPicture(1)   =   "frmConfiguration.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraReports(0)"
+      Tab(1).Control(0)=   "fraReports(1)"
       Tab(1).Control(1)=   "frmReportsGeneral"
-      Tab(1).Control(2)=   "fraReports(1)"
+      Tab(1).Control(2)=   "fraReports(0)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Network Configuration"
       TabPicture(2)   =   "frmConfiguration.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "frmOutputs"
-      Tab(2).Control(1)=   "fraNetwork(1)"
-      Tab(2).Control(2)=   "fraNetwork(0)"
-      Tab(2).Control(3)=   "frmAutoLogin"
+      Tab(2).Control(0)=   "frmAutoLogin"
+      Tab(2).Control(1)=   "fraNetwork(0)"
+      Tab(2).Control(2)=   "fraNetwork(1)"
+      Tab(2).Control(3)=   "frmOutputs"
       Tab(2).ControlCount=   4
       TabCaption(3)   =   "&Batch Login"
       TabPicture(3)   =   "frmConfiguration.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraBatch(0)"
-      Tab(3).Control(1)=   "fraBatch(1)"
+      Tab(3).Control(0)=   "fraBatch(1)"
+      Tab(3).Control(1)=   "fraBatch(0)"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "E&vent Log"
       TabPicture(4)   =   "frmConfiguration.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "FraEventLog(2)"
+      Tab(4).Control(0)=   "FraEventLog(0)"
       Tab(4).Control(1)=   "FraEventLog(1)"
-      Tab(4).Control(2)=   "FraEventLog(0)"
+      Tab(4).Control(2)=   "FraEventLog(2)"
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Report Out&put"
       TabPicture(5)   =   "frmConfiguration.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "Frame1"
+      Tab(5).Control(0)=   "FraOutput(0)"
       Tab(5).Control(1)=   "FraOutput(1)"
-      Tab(5).Control(2)=   "FraOutput(0)"
+      Tab(5).Control(2)=   "Frame1"
       Tab(5).ControlCount=   3
       TabCaption(6)   =   "Tool&bars"
       TabPicture(6)   =   "frmConfiguration.frx":00B4
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).Control(0)=   "fraToolbarGeneral"
-      Tab(6).Control(1)=   "fraToolbars"
+      Tab(6).Control(0)=   "fraToolbars"
+      Tab(6).Control(1)=   "fraToolbarGeneral"
       Tab(6).ControlCount=   2
       Begin VB.Frame fraReports 
          Caption         =   "Report / Utility / Tool Selection && Access :"
@@ -2083,33 +2083,33 @@ Private Sub cmdFileClear_Click(Index As Integer)
               IIf(Index = 0, "Excel", "Word") & " Template?"
   
   If MsgBox(strMBText, vbQuestion + vbYesNoCancel, Me.Caption) = vbYes Then
-    txtFilename(Index).Text = vbNullString
+    txtFileName(Index).Text = vbNullString
     Changed = True
   End If
 
 End Sub
 
-Private Sub cmdFilename_Click(Index As Integer)
+Private Sub cmdFileName_Click(Index As Integer)
   
   On Local Error GoTo LocalErr
 
   With frmMain.CommonDialog1
-    If Len(Trim(txtFilename(Index).Text)) = 0 Or txtFilename(Index).Text = "<None>" Then
+    If Len(Trim(txtFileName(Index).Text)) = 0 Or txtFileName(Index).Text = "<None>" Then
       .InitDir = gsDocumentsPath
     Else
-      .FileName = txtFilename(Index).Text
+      .FileName = txtFileName(Index).Text
     End If
 
     .CancelError = True
     Select Case Index
     Case 0
       .DialogTitle = "Excel Template"
-      .Filter = gsOfficeTemplateFilter_Excel
+      '.Filter = gsOfficeTemplateFilter_Excel
       .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames
       .ShowOpen
     Case 1
       .DialogTitle = "Word Template"
-      .Filter = gsOfficeTemplateFilter_Word
+      '.Filter = gsOfficeTemplateFilter_Word
       .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames
       .ShowOpen
     End Select
@@ -2120,7 +2120,7 @@ Private Sub cmdFilename_Click(Index As Integer)
     End If
 
     If .FileName <> "" Then
-      txtFilename(Index) = .FileName
+      txtFileName(Index) = .FileName
       Changed = True
     End If
   
@@ -2131,7 +2131,7 @@ Exit Sub
 LocalErr:
   If Err.Number <> 32755 Then   '32755 = Cancel was selected.
     MsgBox "Error selecting file", vbCritical, Me.Caption
-    txtFilename(Index) = vbNullString
+    txtFileName(Index) = vbNullString
   End If
 
 End Sub
@@ -2944,7 +2944,7 @@ Private Sub txtDatabase_Change()
 End Sub
 
 Private Sub txtFilename_Change(Index As Integer)
-  cmdFileClear(Index).Enabled = (Trim(txtFilename(Index).Text) <> vbNullString)
+  cmdFileClear(Index).Enabled = (Trim(txtFileName(Index).Text) <> vbNullString)
 End Sub
 
 Private Sub txtPWD_Change()
@@ -3178,8 +3178,8 @@ Private Sub SaveUserSettings()
     SaveUserSetting "Output", "DataForecolour", .ForeCol
   End With
 
-  SaveUserSetting "Output", "ExcelTemplate", txtFilename(0).Text
-  SaveUserSetting "Output", "WordTemplate", txtFilename(1).Text
+  SaveUserSetting "Output", "ExcelTemplate", txtFileName(0).Text
+  SaveUserSetting "Output", "WordTemplate", txtFileName(1).Text
   SaveUserSetting "Output", "ExcelHeaders", IIf(chkExcelHeaders.Value = vbChecked, 1, 0)
   SaveUserSetting "Output", "ExcelGridlines", IIf(chkExcelGridlines.Value = vbChecked, 1, 0)
  
@@ -3379,8 +3379,8 @@ Private Sub ReadUserSettings()
   End With
 
   
-  txtFilename(0).Text = GetUserSetting("Output", "ExcelTemplate", vbNullString)
-  txtFilename(1).Text = GetUserSetting("Output", "WordTemplate", vbNullString)
+  txtFileName(0).Text = GetUserSetting("Output", "ExcelTemplate", vbNullString)
+  txtFileName(1).Text = GetUserSetting("Output", "WordTemplate", vbNullString)
   chkExcelHeaders.Value = IIf(GetUserSetting("Output", "ExcelHeaders", 0) = 1, vbChecked, vbUnchecked)
   chkExcelGridlines.Value = IIf(GetUserSetting("Output", "ExcelGridlines", 0) = 1, vbChecked, vbUnchecked)
 
