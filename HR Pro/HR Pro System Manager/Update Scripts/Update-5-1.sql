@@ -211,6 +211,12 @@ PRINT 'Step - Structure changes'
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysWorkflowElementItems', 'U') AND name = 'LookupOrderID')
 		EXEC sp_executesql N'ALTER TABLE dbo.ASRSysWorkflowElementItems ADD LookupOrderID int NULL;';
 
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysWorkflowElementitems', 'U') AND name = 'HotSpotIdentifier')
+	BEGIN
+		EXEC sp_executesql N'ALTER TABLE dbo.ASRSysWorkflowElementItems ADD HotSpotIdentifier VARCHAR(200) NULL;';
+		EXEC sp_executesql N'UPDATE ASRSysWorkflowElementItems SET [HotSpotIdentifier] = '''';';
+	END
+	
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysScreens', 'U') AND name = 'category')
 	BEGIN
 		EXEC sp_executesql N'ALTER TABLE ASRSysScreens ADD
