@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "COA_Label.ocx"
 Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Object = "{98B2556E-F719-4726-9028-5F2EAB345800}#1.0#0"; "COASD_Checkbox.ocx"
@@ -144,7 +144,7 @@ Begin VB.Form frmScrDesigner2
       Top             =   2565
       Visible         =   0   'False
       Width           =   1500
-      _ExtentX        =   2990
+      _ExtentX        =   3440
       _ExtentY        =   1111
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -268,6 +268,8 @@ Begin VB.Form frmScrDesigner2
       BeginProperty Tabs {0713E432-850A-101B-AFC0-4210102A8DA7} 
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
+            Caption         =   ""
+            Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
          EndProperty
@@ -4432,21 +4434,13 @@ Public Function AutoSizeControl(pctlControl As VB.Control) As Boolean
                   
                     pctlControl.Width = sngWidth + (2 * XFrame)
                   Else
-                    pctlControl.Width = BigTextWidth(String(.Fields("size"), "W"), 0) + (2 * XFrame)
+                    pctlControl.Width = Default_ColumnWidth_Textbox(.Fields("size").value)
                   End If
                 End If
               Else
-                sngWidth = Me.TextWidth(String(.Fields("size"), "8"))
-                
-                If .Fields("decimals") > 0 Then
-                  sngWidth = sngWidth + Me.TextWidth(String(1, "."))
-                End If
+              
+                pctlControl.Width = Default_ColumnWidth_Numeric(.Fields("size").value, .Fields("decimals").value, .Fields("Use1000Separator").value)
 
-                If .Fields("Use1000Separator") = True Then
-                  sngWidth = sngWidth + Me.TextWidth(String(CInt((.Fields("size") - .Fields("decimals")) / 3), ","))
-                End If
-
-                pctlControl.Width = sngWidth + (2 * XFrame)
               End If
             End If
                 
@@ -6559,4 +6553,24 @@ Public Function BigTextWidth(ByRef sInString As Variant, ByVal MaximumSize As Lo
   End If
   
 End Function
+
+' Default column width following font change to Verdana (Textbox)
+Public Function Default_ColumnWidth_Textbox(ByRef plngColumnWidth As Long) As Long
+  Default_ColumnWidth_Textbox = CLng(((plngColumnWidth + 1) * 95 + 105) / 10) * 10
+End Function
+
+' Default column width following font change to Verdana (Textbox)
+Public Function Default_ColumnWidth_Numeric(ByRef plngNumeric As Long, ByRef plngDecimals As Long, ByRef pbSeperators As Boolean) As Long
+
+  Dim lngSeperators As Long
+  Dim lngWidth As Long
+
+  lngSeperators = 60 * IIf(pbSeperators, plngNumeric / 3, 0)
+  lngWidth = plngNumeric + IIf(plngDecimals > 0, plngDecimals + 1, 0) + 1
+
+  Default_ColumnWidth_Numeric = (plngNumeric * 105) + 120 + 60 + lngSeperators
+End Function
+
+
+
 
