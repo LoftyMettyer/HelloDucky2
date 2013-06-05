@@ -170,7 +170,7 @@ Public Enum OrderTypes
 End Enum
 
 'Table types
-Public Enum TableTypes
+Public Enum enum_TableTypes
   iTabView = 0
   iTabParent = 1
   iTabChild = 2

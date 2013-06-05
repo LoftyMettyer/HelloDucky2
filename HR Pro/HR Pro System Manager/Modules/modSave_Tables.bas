@@ -34,11 +34,11 @@ Public Function SaveTables(pfRefreshDatabase As Boolean, mfrmUse As frmUsage) ',
           gobjProgress.Visible = False
           Screen.MousePointer = vbDefault
           Select Case !TableType
-            Case TableTypes.iTabParent
+            Case enum_TableTypes.iTabParent
               mfrmUse.ShowMessage !TableName & " Table", "The table cannot be deleted as the table is used by the following:", UsageCheckObject.Table
-            Case TableTypes.iTabChild
+            Case enum_TableTypes.iTabChild
               mfrmUse.ShowMessage !TableName & " Child Table", "The table cannot be deleted as the table is used by the following:", UsageCheckObject.ChildTable
-            Case TableTypes.iTabLookup
+            Case enum_TableTypes.iTabLookup
               mfrmUse.ShowMessage !TableName & " Lookup Table", "The table cannot be deleted as the table is used by the following:", UsageCheckObject.LookupTable
           End Select
           

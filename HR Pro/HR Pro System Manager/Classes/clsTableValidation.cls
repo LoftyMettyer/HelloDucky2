@@ -15,14 +15,14 @@ Option Explicit
 
 Private mlngValidationID As Long
 Private mlngTableID As Long
-Private miValidationType As ValidationType
+Private miValidationType As enum_ValidationType
 Private mlngEventStartDateColumnID  As Long
 Private mlngEventStartSessionColumnID  As Long
 Private mlngEventEndDateColumnID  As Long
 Private mlngEventEndSessionColumnID  As Long
 Private mlngEventTypeColumnID As Long
 Private mlngFilterID As Long
-Private miSeverity As Severity
+Private miSeverity As enum_Severity
 Private mstrMessage As String
 
 Private mbIsNew As Boolean
@@ -45,11 +45,11 @@ Public Property Let TableID(ByVal NewValue As Long)
   mlngTableID = NewValue
 End Property
 
-Public Property Get ValidationType() As ValidationType
+Public Property Get ValidationType() As enum_ValidationType
   ValidationType = miValidationType
 End Property
 
-Public Property Let ValidationType(ByVal NewValue As ValidationType)
+Public Property Let ValidationType(ByVal NewValue As enum_ValidationType)
   miValidationType = NewValue
 End Property
 
@@ -93,11 +93,11 @@ Public Property Let FilterID(ByVal NewValue As Long)
   mlngFilterID = NewValue
 End Property
 
-Public Property Get Severity() As Severity
+Public Property Get Severity() As enum_Severity
   Severity = miSeverity
 End Property
 
-Public Property Let Severity(ByVal NewValue As Severity)
+Public Property Let Severity(ByVal NewValue As enum_Severity)
   miSeverity = NewValue
 End Property
 

@@ -40,24 +40,16 @@ Public Sub GrantAll()
   
 End Sub
 
-
-
-
-
-
 Public Property Let DeletePrivilege(ByVal pfData As Boolean)
   mvar_fDeletePrivilege = pfData
-
 End Property
 
 Public Property Get DeletePrivilege() As Boolean
   DeletePrivilege = mvar_fDeletePrivilege
-
 End Property
 
 Public Property Let UpdatePrivilege(ByVal piData As ColumnPrivilegeStates)
   mvar_iUpdatePrivilege = piData
-    
 End Property
 
 Public Property Get UpdatePrivilege() As ColumnPrivilegeStates
@@ -138,14 +130,9 @@ Public Property Let Name(ByVal psData As String)
   
 End Property
 
-
-
 Public Property Get Name() As String
   Name = mvar_sName
-  
 End Property
-
-
 
 Public Property Get Columns() As clsSecurityColumns
   If mvar_objColumns Is Nothing Then
@@ -158,7 +145,6 @@ End Property
 
 Public Property Set Columns(pobjData As clsSecurityColumns)
   Set mvar_objColumns = pobjData
-
 End Property
 
 Private Sub Class_Initialize()
@@ -175,28 +161,21 @@ Private Sub Class_Terminate()
   If Not mvar_objColumns Is Nothing Then
     Set mvar_objColumns = Nothing
   End If
-  
 End Sub
-
-
 
 Public Property Get TableType() As Integer
   TableType = mvar_iTableType
-
 End Property
 
 Public Property Get ParentJoinType() As Integer
   ParentJoinType = mvar_iParentJoinType
-
 End Property
-
 
 Public Property Let TableType(ByVal piNewValue As Integer)
   mvar_iTableType = piNewValue
-
 End Property
+
 Public Property Let ParentJoinType(ByVal piNewValue As Integer)
   mvar_iParentJoinType = piNewValue
-
 End Property
 
