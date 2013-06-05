@@ -128,8 +128,8 @@
 
       ' Add foreign key
       If Not RowDetails.Relation Is Nothing Then
-        aryParameters.Add(String.Format("@prmID_{0} integer", CInt(RowDetails.Relation.ParentID)))
-        aryWheres.Add(String.Format("[ID_{0}] = @prmID_{0}", CInt(RowDetails.Relation.ParentID)))
+        aryParameters.Add(String.Format("@prm_ID_{0} integer", CInt(RowDetails.Relation.ParentID)))
+        aryWheres.Add(String.Format("[ID_{0}] = @prm_ID_{0}", CInt(RowDetails.Relation.ParentID)))
         objIndex.Relations.AddIfNew(RowDetails.Relation)
       End If
 
