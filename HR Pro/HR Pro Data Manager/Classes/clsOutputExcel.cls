@@ -1235,14 +1235,14 @@ Private Sub CreatePivotTable(lngMaxRows As Long, lngMaxCols As Long, strHor As S
 
   mxlApp.DisplayAlerts = False
   
-  
-  'PivotCaches should be okay from Excel 2000 onwards?
-  'Set xlPivot = mxlWorkSheet.PivotTableWizard _
-      (SourceType:=xlDatabase, _
-      SourceData:=xlData, _
-      TableDestination:=xlStart)
-  Set xlPivot = mxlWorkBook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:=xlData). _
-                CreatePivotTable(TableDestination:=xlStart)
+  'MH20100628
+  If Val(mxlApp.Version) > 12 Then
+    Set xlPivot = mxlWorkBook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:=xlData). _
+                  CreatePivotTable(TableDestination:=xlStart)
+  Else
+    Set xlPivot = mxlWorkSheet.PivotTableWizard(SourceType:=xlDatabase, SourceData:=xlData, _
+                  TableDestination:=xlStart)
+  End If
 
   With xlPivot
     .AddFields RowFields:=strVer, ColumnFields:=strHor
