@@ -43,7 +43,6 @@ Public Module Globals
     SystemSettings = New Things.Collection
 
     ' Dependency stack for special objects that will have procedures written for
-    '   UniqueCodes = New Things.Collection
     GetFieldsFromDB = New Things.Collection
     OnBankHolidayUpdate = New Things.Collection
     PerformanceIndexes = New Things.Collection

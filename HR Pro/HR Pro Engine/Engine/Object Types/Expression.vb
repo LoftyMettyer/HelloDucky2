@@ -135,11 +135,6 @@ Namespace Things
       Dependencies.Clear()
       BuildDependancies(Me)
 
-      'Dim icount As Integer
-      'For icount = 0 To Dependencies.Count - 1
-      '  Debug.Print(Dependencies(icount).Name)
-      'Next
-
       ' If calculate only when empty add itself to the dependency stack
       If Me.AssociatedColumn.CalculateIfEmpty Then
         Dependencies.AddIfNew(Me.AssociatedColumn)
@@ -158,13 +153,6 @@ Namespace Things
         aryParameters2.Add("base.ID")
         aryParameters3.Add("@prm_ID")
       End If
-
-      '' Some function require the row number of the record as a parameter
-      'If RequiresRowNumber Then
-      '  aryParameters1.Add("@rownumber integer")
-      '  aryParameters2.Add("[rownumber]")
-      '  aryParameters3.Add("@rownumber")
-      'End If
 
       ' Some function require the row number of the record as a parameter
       If RequiresOvernight Then
@@ -232,13 +220,26 @@ Namespace Things
           aryParameters3.Add("@forcerefresh")
         End If
 
-        sBypassUDFCode = String.Format("    -- Return the original value if none of the dependent tables are in the trigger stack." & vbNewLine &
-            "    IF @@NESTLEVEL > 30 OR (@forcerefresh = 0 AND NOT EXISTS (SELECT [tablefromid] FROM [dbo].[tbsys_intransactiontrigger] WHERE [tablefromid] IN ({0}) AND [spid] = @@SPID))" & vbNewLine & _
+
+        ' COMMENTED OUT THE BELOW 1) Because the overnight was taking too long to refresh all tables.
+        '                         2) Dubious about how much time is saves.
+        'sBypassUDFCode = String.Format("    -- Return the original value if none of the dependent tables are in the trigger stack." & vbNewLine &
+        '    "    IF @@NESTLEVEL > 30 OR (@forcerefresh = 0 AND NOT EXISTS (SELECT [tablefromid] FROM [dbo].[tbsys_intransactiontrigger] WHERE [tablefromid] IN ({0}) AND [spid] = @@SPID))" & vbNewLine & _
+        '    "        BEGIN" & vbNewLine & _
+        '    "            SELECT @result = [{1}] FROM dbo.[{2}] WHERE [ID] = @prm_ID;" & vbNewLine & _
+        '    "            RETURN @result;" & vbNewLine & _
+        '    "        END" _
+        '    , String.Join(", ", aryDependsOn.ToArray()), Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.PhysicalName)
+
+        sBypassUDFCode = String.Format("    -- Return the original value if we somehow get stuck in a recursive loop (shouldn't happen)" & vbNewLine &
+            "    IF @@NESTLEVEL > 15" & vbNewLine & _
             "        BEGIN" & vbNewLine & _
             "            SELECT @result = [{1}] FROM dbo.[{2}] WHERE [ID] = @prm_ID;" & vbNewLine & _
             "            RETURN @result;" & vbNewLine & _
             "        END" _
             , String.Join(", ", aryDependsOn.ToArray()), Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.PhysicalName)
+
+
       End If
 
 
@@ -713,8 +714,6 @@ Namespace Things
 
           Else
 
-            '      Debug.Assert(objThisColumn.Table.Name <> "Salary")
-
             ' Add to dependency stack
             objThisColumn.Table.DependsOnParentColumns.AddIfNew(Me.AssociatedColumn)
 
@@ -783,7 +782,6 @@ Namespace Things
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Function
       objCodeLibrary = Globals.Functions.GetObject(Enums.Type.CodeLibrary, Component.FunctionID)
       LineOfCode.Code = objCodeLibrary.Code
-      '      CodeCluster.NestedLevel = CodeCluster.NestedLevel + objCodeLibrary.CaseCount
       Me.CaseCount += objCodeLibrary.CaseCount
 
       ' Get parameters
@@ -826,13 +824,6 @@ Namespace Things
 
       ' Is this a unique value?
       If objCodeLibrary.IsUniqueCode Then
-
-        'objIDComponent = New Things.Component
-        'objIDComponent.SubType = ScriptDB.ComponentTypes.Value
-        'objIDComponent.ValueString = IIf(Me.ExpressionType <> ScriptDB.ExpressionType.ColumnCalculation, "0", "1")
-        'objIDComponent.ValueType = ScriptDB.ComponentValueTypes.SystemVariable
-        '[Component].Objects.Add(objIDComponent)
-
         Me.ContainsUniqueCode = True
         Me.IsComplex = True
       End If
@@ -858,40 +849,16 @@ Namespace Things
 
         Me.ExpressionType = iBackupType
 
-        'objExpression = New Things.Expression
-        'objExpression.ExpressionType = ScriptDB.ExpressionType.TriggeredUpdate
-        'objExpression.BaseTable = Me.BaseTable
-        'objExpression.AssociatedColumn = Me.AssociatedColumn
-        'objExpression.BaseExpression = Me.BaseExpression
-        'objExpression.ReturnType = Component.ReturnType
-        'objExpression.Objects = Component.Objects
-        'objExpression.StartOfPartNumbers = Declarations.Count + Me.StartOfPartNumbers
-        'objExpression.StatementObjects = Me.StatementObjects
-
-        'objExpression.GenerateCode()
-
-        'objTriggeredUpdate.Where = String.Format(sWhereClause, WhereCodeCluster.ToArray)
-
-
-
-
-
       End If
-
-
-      'Dim icount As Integer
-      'For icount = 0 To Declarations.Count - 1
-      '  Debug.Print(Declarations(icount).ToString)
-      'Next
-
-
 
       SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
       LineOfCode.Code = String.Format(LineOfCode.Code, ChildCodeCluster.ToArray)
-      '    RequiresWriteback = RequiresWriteback Or objCodeLibrary.RequiresWriteback
+
       RequiresOvernight = RequiresOvernight Or objCodeLibrary.OvernightOnly
       mbCalculatePostAudit = mbCalculatePostAudit Or objCodeLibrary.CalculatePostAudit
-      Me.RequiresRecordID = RequiresRecordID Or objCodeLibrary.RecordIDRequired
+      Me.RequiresRecordID = Me.RequiresRecordID Or objCodeLibrary.RecordIDRequired
+      Me.IsTimeDependant = Me.IsTimeDependant Or objCodeLibrary.IsTimeDependant
+
       Me.Tuning.Rating += objCodeLibrary.Tuning.Rating
       objCodeLibrary.Tuning.Usage += 1
 

@@ -18,13 +18,13 @@ Namespace Things
       For Each objChild In MyBase.Items
         If objChild.Type = Type.Setting Then
           objSetting = CType(objChild, Things.Setting)
-          If objSetting.Module = [Module] And objSetting.Parameter = Parameter Then
+          If objSetting.Module.ToLower = [Module].ToLower And objSetting.Parameter.ToLower = Parameter.ToLower Then
             Return objSetting
           End If
         End If
       Next
 
-      Return objSetting
+      Return New Things.Setting
 
     End Function
 

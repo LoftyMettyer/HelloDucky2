@@ -11,6 +11,7 @@
     Function DropTableViews() As Boolean
     Function DropViews() As Boolean
     Function ApplySecurity() As Boolean
+    Function ScriptOvernightStep2() As Boolean
   End Interface
 
   Public Interface iSystemManager

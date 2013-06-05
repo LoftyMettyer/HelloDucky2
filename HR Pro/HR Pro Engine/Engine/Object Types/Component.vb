@@ -35,6 +35,7 @@ Namespace Things
 
     '    Public IsComplex As Boolean = False
     Public IsSchemaBound As Boolean = True
+    Public IsTimeDependant As Boolean = False
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get

@@ -16,7 +16,7 @@
     Public CaseCount As Integer = 0
     Public MakeTypeSafe As Boolean = False
     Public DependsOnBankHoliday As Boolean = False
-    '    Public RequiresWriteback As Boolean = False
+    Public IsTimeDependant As Boolean = False
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
