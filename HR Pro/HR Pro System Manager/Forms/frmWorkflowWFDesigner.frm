@@ -3591,12 +3591,12 @@ Private Sub Form_MouseUp(Button As Integer, Shift As Integer, x As Single, y As 
       Next ctlControl
       
       ' If no controls selected, try and select the tab page
-      If SelectedControlsCount = 0 And bOnTagePage Then
-        tabPages.Selected = True
-        SelectControl tabPages
-'      Else
-'        tabPages_Click
-      End If
+'      If SelectedControlsCount = 0 And bOnTagePage Then
+'        tabPages.Selected = True
+'        SelectControl tabPages
+''      Else
+''        tabPages_Click
+'      End If
       
       ' Disassociate object variables.
       Set ctlControl = Nothing
@@ -4274,7 +4274,7 @@ Public Property Let PageNo(piPageNumber As Integer)
     Next ctlPictureBox
   End If
 
-  frmSysMgr.RefreshMenu
+'  frmSysMgr.RefreshMenu
   
 TidyUpAndExit:
   ' Disassociate object variables.
@@ -8910,30 +8910,16 @@ Public Sub tabPages_Click()
       End If
     End With
     Next ctlPictureBox
-      
-'      If SelectedControlsCount = 0 And bOnTagePage Then
-'        tabPages.Selected = True
-'        SelectControl tabPages
-''      Else
-''        tabPages_Click
-'      End If
-      
-    ' Select the tabpage
-    If Not mbDontSelect Then
-      SelectAllControls False
-      tabPages.Selected = True
-      SelectControl tabPages
-    End If
-  
+        
   Else
     mlngCurrentPageNo = 0
   End If
 
 
   ' Refresh the properties screen.
-  Set frmWorkflowWFItemProps.CurrentWebForm = Me
-  frmWorkflowWFItemProps.RefreshProperties
-  frmSysMgr.RefreshMenu
+'  Set frmWorkflowWFItemProps.CurrentWebForm = Me
+'  frmWorkflowWFItemProps.RefreshProperties
+'  frmSysMgr.RefreshMenu
 
   tabPages.Enabled = True
   Screen.MousePointer = vbDefault
@@ -9154,7 +9140,6 @@ Private Function OLEType(iColumnID As Integer) As String
 
 End Function
 
-
 Public Function WebformControl_HasOptions(piControlType As Long) As Boolean
   ' Return true if the given control has an Options property.
   WebformControl_HasOptions = (piControlType = giWFFORMITEM_INPUTVALUE_OPTIONGROUP)
@@ -9168,3 +9153,11 @@ Public Function WebformControl_HasNavigation(piControlType As Long) As Boolean
   ' Return true if the given control has a NavigateTo property.
   WebformControl_HasNavigation = (piControlType = giCTRL_NAVIGATION)
 End Function
+
+Private Sub TabPages_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+
+  Set frmWorkflowWFItemProps.CurrentWebForm = Me
+  frmWorkflowWFItemProps.RefreshProperties
+  frmSysMgr.RefreshMenu
+
+End Sub
