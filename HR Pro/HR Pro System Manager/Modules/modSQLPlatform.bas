@@ -9,7 +9,7 @@ Public Function SetDatabaseCompatability() As Boolean
   On Error GoTo LocalErr
   
   bOK = True
-  Select Case glngSQLVersion
+  Select Case Int(glngSQLVersion)
     Case 7
       sSQL = "EXEC sp_dbcmptlevel '" & gsDatabaseName & "', 70"
       ' Fault 11855 - Do not issue for SQL7 databases.
@@ -56,7 +56,7 @@ Public Function MarkDatabaseAsTrustworthy() As Boolean
   rsTrusted.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
   
   If Not (rsTrusted.EOF And rsTrusted.BOF) Then
-    bTrusted = rsTrusted.Fields(0).Value
+    bTrusted = rsTrusted.Fields(0).value
   End If
       
   rsTrusted.Close
@@ -502,7 +502,7 @@ Public Function GetSystemLogon() As String
   rsLogon.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
   
   If Not (rsLogon.BOF And rsLogon.EOF) Then
-    GetSystemLogon = IIf(IsNull(rsLogon!parameterValue), vbNullString, rsLogon!parameterValue)
+    GetSystemLogon = IIf(IsNull(rsLogon!parametervalue), vbNullString, rsLogon!parametervalue)
   End If
 
   rsLogon.Close
@@ -530,7 +530,7 @@ Public Function TestSystemLogon() As Boolean
   rstTest.Open "SELECT dbo.udfASRNetIsProcessValid('" & Replace(strEncrypted, "'", "''") & "')", gADOCon, adOpenForwardOnly, adLockReadOnly
   
   If Not (rstTest.BOF And rstTest.EOF) Then
-    bOK = (rstTest.Fields(0).Value = True)
+    bOK = (rstTest.Fields(0).value = True)
   End If
   
   rstTest.Close
