@@ -2,7 +2,7 @@ VERSION 5.00
 Begin VB.Form frmAbout 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "About OpenHR Data Manager"
-   ClientHeight    =   1845
+   ClientHeight    =   2205
    ClientLeft      =   345
    ClientTop       =   4815
    ClientWidth     =   7425
@@ -23,7 +23,7 @@ Begin VB.Form frmAbout
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   1845
+   ScaleHeight     =   2205
    ScaleWidth      =   7425
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
@@ -84,6 +84,28 @@ Begin VB.Form frmAbout
       Top             =   725
       Width           =   1425
    End
+   Begin VB.Label lblAdvancedConnectURL 
+      AutoSize        =   -1  'True
+      BackStyle       =   0  'Transparent
+      Caption         =   "Click here to visit the customer website, for the latest OpenHR news and events "
+      BeginProperty Font 
+         Name            =   "Verdana"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   -1  'True
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FF0000&
+      Height          =   195
+      Left            =   150
+      MouseIcon       =   "frmAbout.frx":07C4
+      MousePointer    =   99  'Custom
+      TabIndex        =   12
+      Top             =   1800
+      Width           =   6915
+   End
    Begin VB.Label lblURL 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
@@ -100,7 +122,7 @@ Begin VB.Form frmAbout
       ForeColor       =   &H00FF0000&
       Height          =   195
       Left            =   150
-      MouseIcon       =   "frmAbout.frx":07C4
+      MouseIcon       =   "frmAbout.frx":0916
       MousePointer    =   99  'Custom
       TabIndex        =   11
       Top             =   1515
@@ -374,6 +396,7 @@ End Function
 Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Redo link colour
   lblURL.ForeColor = &HFF0000
+  lblAdvancedConnectURL.ForeColor = &HFF0000
   DoEvents
 
 End Sub
@@ -421,6 +444,39 @@ Private Sub lblURL_MouseMove(Button As Integer, Shift As Integer, X As Single, Y
 
 End Sub
 
+Private Sub lblAdvancedConnectURL_Click()
+  On Error GoTo ErrTrap
+
+  Dim plngID As Integer
+  Dim URLTarget As String
+  
+  URLTarget = "http://www.advancedconnect.co.uk/"
+  'Show that the 'hyperlink' has been clicked on
+  'lblAdvancedConnectURL.ForeColor = &H800080
+  DoEvents
+  
+  ' Replaced the following line in the hope of making ShellExecute work on all PCs.
+  ' Dont think it worked !
+  plngID = ShellExecute(0&, vbNullString, URLTarget, vbNullString, vbNullString, vbMaximizedFocus)
+  
+  If plngID = 0 Then
+    ' Uh oh...the browser wasnt initiated...tell the user
+    COAMsgBox "OpenHR cannot automatically open your default web browser." & vbCrLf & vbCrLf & "Please open your web browser manually and navigate to the " & vbCrLf & "web address which has been placed in your clipboard." & IIf(Err.Description = "", "", vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")"), vbInformation + vbOKOnly, "Technical Support"
+  End If
+  
+  Exit Sub
+  
+ErrTrap:
+    COAMsgBox "OpenHR cannot automatically open your default web browser." & vbCrLf & vbCrLf & "Please open your web browser manually and navigate to the " & vbCrLf & "web address which has been placed in your clipboard." & IIf(Err.Description = "", "", vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")"), vbInformation + vbOKOnly, "Technical Support"
+
+End Sub
+
+Private Sub lblAdvancedConnectURL_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+  ' Highlight the link
+  lblAdvancedConnectURL.ForeColor = vbRed
+  DoEvents
+
+End Sub
 
 Private Sub Picture1_Click()
   Text1.Text = ""
