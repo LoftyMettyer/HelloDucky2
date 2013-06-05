@@ -476,6 +476,7 @@ Private Function TableNew() As Boolean
 
     ' Add custom columns
     sTableCreate.Append IIf(sTableCreate.Length <> 0, ", ", vbNullString) & "[updflag] integer"
+    sTableCreate.Append IIf(sTableCreate.Length <> 0, ", ", vbNullString) & "[_description] nvarchar(MAX)"
     sTableCreate.Append IIf(sTableCreate.Length <> 0, ", ", vbNullString) & "TimeStamp"
    
     sCreateView.Append IIf(sCreateView.Length <> 0, ", ", vbNullString) & "TimeStamp"
