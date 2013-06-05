@@ -347,15 +347,12 @@ Public Sub Initialise(piAction As groupAction)
       .AddItem "<All Reports / Utilities>" & _
         vbTab & AccessDescription(ACCESS_HIDDEN) & _
         vbTab & "-1"
-'      .AddItem "Absence Breakdown" & _
-'        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-'        vbTab & utlAbsenceBreakdown
       .AddItem "Batch Job" & _
         vbTab & AccessDescription(ACCESS_HIDDEN) & _
         vbTab & utlBatchJob
-'      .AddItem "Bradford Factor" & _
-'        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-'        vbTab & utlBradfordFactor
+      .AddItem "Report Pack" & _
+        vbTab & AccessDescription(ACCESS_HIDDEN) & _
+        vbTab & utlReportPack
       .AddItem "Calendar Report" & _
         vbTab & AccessDescription(ACCESS_HIDDEN) & _
         vbTab & utlCalendarReport
@@ -371,9 +368,6 @@ Public Sub Initialise(piAction As groupAction)
       .AddItem "Data Transfer" & _
         vbTab & AccessDescription(ACCESS_HIDDEN) & _
         vbTab & utlDataTransfer
-'      .AddItem "Document Types" & _
-'        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-'        vbTab & utlVersion1
       .AddItem "Envelopes & Labels" & _
         vbTab & AccessDescription(ACCESS_HIDDEN) & _
         vbTab & utlLabel
@@ -392,9 +386,6 @@ Public Sub Initialise(piAction As groupAction)
       .AddItem "Import" & _
         vbTab & AccessDescription(ACCESS_HIDDEN) & _
         vbTab & utlImport
-'      .AddItem "Label Definition" & _
-'        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-'        vbTab & utlLabelType
       .AddItem "Mail Merge" & _
         vbTab & AccessDescription(ACCESS_HIDDEN) & _
         vbTab & utlMailMerge
