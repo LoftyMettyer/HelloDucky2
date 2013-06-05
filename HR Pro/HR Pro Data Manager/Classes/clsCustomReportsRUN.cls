@@ -15,11 +15,9 @@ Option Explicit
 
 ' To hold Properties
 Private mlngCustomReportID As Long
-Private mstrerrorstring As String
-
+Private mstrErrorString As String
 ' String to hold the temp table name
 Private mstrTempTableName As String
-
 ' Variables to store definition
 Private mstrCustomReportsName As String
 Private mstrCustomReportsDescription As String
@@ -34,15 +32,10 @@ Private mlngCustomReportsParent1FilterID As Long
 Private mlngCustomReportsParent2Table As Long
 Private mstrCustomReportsParent2TableName As String
 Private mlngCustomReportsParent2FilterID As Long
-'Private mlngCustomReportsChildTable As Long
-'Private mstrCustomReportsChildTableName As String
-'Private mlngCustomReportsChildFilterID As Long
-'Private mlngCustomReportsChildMaxRecords As Long
 Private mblnCustomReportsSummaryReport As Boolean
 Private mblnIgnoreZerosInAggregates As Boolean
 Private mblnCustomReportsPrintFilterHeader As Boolean
 Private mintReportJobNumberOrder As Integer
-
 'New Default Output Variables
 Private mlngOutputFormat As Long
 Private mblnOutputScreen As Boolean
@@ -61,6 +54,7 @@ Private mstrOutputReportPackTitle As String
 Private mstrOutputOverrideFilter As String
 Private mblnOutputTOC As Boolean
 Private mblnOutputCoverSheet As Boolean
+Private mlngOverrideFilterID As Long
           
 Private mlngPicklistFilterID As Long
 Private mstrPicklistFilterType As String
@@ -369,7 +363,7 @@ Private Function CreateMutipleChildTempTable() As Boolean
     'TM20020802 Fault 4272
     If (.BOF And .EOF) Then
       CreateMutipleChildTempTable = False
-      mstrerrorstring = "No records meet selection criteria."
+      mstrErrorString = "No records meet selection criteria."
       mblnNoRecords = True
       
       sMCTempTable = vbNullString
@@ -658,7 +652,7 @@ TidyUpAndExit:
 
 Error_Trap:
   
-  mstrerrorstring = "Error creating temporary table for multiple childs." & vbNewLine & "(" & Err.Description & ")"
+  mstrErrorString = "Error creating temporary table for multiple childs." & vbNewLine & "(" & Err.Description & ")"
   CreateMutipleChildTempTable = False
   GoTo TidyUpAndExit
   
@@ -712,11 +706,11 @@ Public Property Let CustomReportID(ByVal lNewID As Long)
 End Property
 
 Public Property Get ErrorString() As String
-  ErrorString = mstrerrorstring
+  ErrorString = mstrErrorString
 End Property
 
 Public Property Let ErrorString(ByVal sErrorString As String)
-  mstrerrorstring = sErrorString
+  mstrErrorString = sErrorString
 End Property
 
 Private Sub Class_Initialize()
@@ -749,10 +743,8 @@ Private Sub Class_Terminate()
 End Sub
 
 Public Function RunCustomReport(pstrPicklistFilterIDs As String) As Boolean
-
   ' Purpose : This function is called from frmDefsel and Batch Jobs.
   '           It is the main function which runs the report.
-
   On Error GoTo RunCustomReport_ERROR
   
   Dim fOK As Boolean
@@ -800,9 +792,11 @@ Public Function RunCustomReport(pstrPicklistFilterIDs As String) As Boolean
   If fOK Then fOK = PopulateGrid
 
   If fOK Then
-    If gblnBatchMode Or gblnReportPackMode Then
+    'If gblnBatchMode Or gblnReportPackMode Then
+    If gblnBatchMode Or gblnReportPackMode Or Not mblnPreviewOnScreen Then
       fOK = OutputReport(False)
-    ElseIf mblnPreviewOnScreen Or mblnOutputScreen Then
+    'ElseIf mblnPreviewOnScreen Or mblnOutputScreen Then
+    ElseIf mblnPreviewOnScreen Then
       Screen.MousePointer = vbDefault
       mfrmOutput.BaseTable = mstrCustomReportsBaseTableName
       mfrmOutput.Parent = Me
@@ -819,33 +813,33 @@ Public Function RunCustomReport(pstrPicklistFilterIDs As String) As Boolean
   Call UtilUpdateLastRun(utlCustomReport, mlngCustomReportID)
   mblnUserCancelled = _
     (mblnUserCancelled Or gobjProgress.Cancelled Or _
-    (InStr(LCase(mstrerrorstring), "cancelled by user") > 0))
+    (InStr(LCase(mstrErrorString), "cancelled by user") > 0))
 
   If mblnNoRecords Then
     gobjEventLog.ChangeHeaderStatus elsSuccessful
-    gobjEventLog.AddDetailEntry mstrerrorstring
-    mstrerrorstring = "Completed successfully." & vbNewLine & mstrerrorstring
+    gobjEventLog.AddDetailEntry mstrErrorString
+    mstrErrorString = "Completed successfully." & vbNewLine & mstrErrorString
     fOK = True
   ElseIf fOK Then
     gobjEventLog.ChangeHeaderStatus elsSuccessful
-    mstrerrorstring = "Completed successfully."
+    mstrErrorString = "Completed successfully."
   ElseIf mblnUserCancelled Then
     gobjEventLog.ChangeHeaderStatus elsCancelled
-    mstrerrorstring = "Cancelled by user."
+    mstrErrorString = "Cancelled by user."
   Else
     'Only details records for failures !
-    gobjEventLog.AddDetailEntry mstrerrorstring
+    gobjEventLog.AddDetailEntry mstrErrorString
     gobjEventLog.ChangeHeaderStatus elsFailed
-    mstrerrorstring = "Failed." & vbNewLine & vbNewLine & mstrerrorstring
+    mstrErrorString = "Failed." & vbNewLine & vbNewLine & mstrErrorString
   End If
 
-  mstrerrorstring = "Custom Report : '" & mstrCustomReportsName & "' " & mstrerrorstring
+  mstrErrorString = "Custom Report : '" & mstrCustomReportsName & "' " & mstrErrorString
 
   If Not gblnBatchMode Then
     If gobjProgress.Visible Then gobjProgress.CloseProgress
     'If (fOK = False) Or (mblnNoRecords = True) Then
     If (fOK = False) Or (mblnNoRecords = True) Or Not mblnPreviewOnScreen Then
-      COAMsgBox mstrerrorstring, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, "Custom Reports"
+      COAMsgBox mstrErrorString, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, "Custom Reports"
     End If
   End If
   
@@ -860,7 +854,7 @@ RunCustomReport_ERROR:
 
   fOK = False
   RunCustomReport = False
-  mstrerrorstring = "Error Whilst Running Custom Report." & vbNewLine & Err.Description
+  mstrErrorString = "Error Whilst Running Custom Report." & vbNewLine & Err.Description
   Resume Next
   
 End Function
@@ -881,7 +875,7 @@ Private Function AddTempTableToSQL() As Boolean
   
 AddTempTableToSQL_ERROR:
   
-  mstrerrorstring = "Error whilst retrieving unique temp table name." & vbNewLine & Err.Description
+  mstrErrorString = "Error whilst retrieving unique temp table name." & vbNewLine & Err.Description
   AddTempTableToSQL = False
   
 End Function
@@ -905,7 +899,7 @@ Private Function MergeSQLStrings() As Boolean
   
 MergeSQLStrings_ERROR:
 
-  mstrerrorstring = "Error whilst merging SQL string components." & vbNewLine & Err.Description
+  mstrErrorString = "Error whilst merging SQL string components." & vbNewLine & Err.Description
   MergeSQLStrings = False
   
 End Function
@@ -933,7 +927,7 @@ Private Function ExecuteSql() As Boolean
   Exit Function
   
 ExecuteSQL_ERROR:
-  mstrerrorstring = "Error whilst executing SQL statement." & vbNewLine & vbNewLine & Err.Description
+  mstrErrorString = "Error whilst executing SQL statement." & vbNewLine & vbNewLine & Err.Description
   ExecuteSql = False
   
 End Function
@@ -962,7 +956,7 @@ Private Function GetCustomReportDefinition() As Boolean
   
     If .BOF And .EOF Then
       GetCustomReportDefinition = False
-      mstrerrorstring = "Could not find specified Custom Report definition !"
+      mstrErrorString = "Could not find specified Custom Report definition !"
       Exit Function
     End If
     
@@ -972,7 +966,12 @@ Private Function GetCustomReportDefinition() As Boolean
     mstrCustomReportsBaseTableName = datGeneral.GetTableName(mlngCustomReportsBaseTable)
     mlngCustomReportsAllRecords = !AllRecords
     mlngCustomReportsPickListID = !picklist
-    mlngCustomReportsFilterID = !Filter
+    'if basetable is personnel and ReportPack Override filter exists use that swap
+    If mlngCustomReportsBaseTable = glngPersonnelTableID And gblnReportPackMode Then
+      mlngCustomReportsFilterID = mlngOverrideFilterID
+    Else
+      mlngCustomReportsFilterID = !Filter
+    End If
     mlngCustomReportsParent1Table = !parent1table
     mstrCustomReportsParent1TableName = datGeneral.GetTableName(mlngCustomReportsParent1Table)
     mlngCustomReportsParent1FilterID = !parent1filter
@@ -989,7 +988,7 @@ Private Function GetCustomReportDefinition() As Boolean
     mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!UserName)))
     mblnPreviewOnScreen = IIf(lblnReportPackMode, mblnPreviewOnScreen, !OutputPreview)
     mblnOutputScreen = IIf(lblnReportPackMode, mblnOutputScreen, !OutputScreen)
-    'Override OutputOption vars of the Report Pack owning these Jobs
+    'Output Option vars of the Report Pack owning these Jobs
     mlngOutputFormat = IIf(lblnReportPackMode, mlngOutputFormat, !OutputFormat)
     mblnOutputPrinter = IIf(lblnReportPackMode, mblnOutputPrinter, !OutputPrinter)
     mstrOutputPrinterName = IIf(lblnReportPackMode, mstrOutputPrinterName, !OutputPrinterName)
@@ -1000,6 +999,7 @@ Private Function GetCustomReportDefinition() As Boolean
     mstrOutputEmailSubject = IIf(lblnReportPackMode, mstrOutputEmailSubject, !OutputEmailSubject)
     mstrOutputEmailAttachAs = IIf(lblnReportPackMode, mstrOutputEmailAttachAs, !OutputEmailAttachAs)
     mstrOutputFileName = IIf(lblnReportPackMode, mstrOutputFileName, !OutputFilename)
+    mlngOverrideFilterID = IIf(lblnReportPackMode, mlngOverrideFilterID, 0)
   End With
   
   strSQL = "SELECT C.ChildTable, C.ChildFilter, C.ChildMaxRecords, T.TableName, C.ChildOrder " & _
@@ -1047,7 +1047,7 @@ Exit Function
 GetCustomReportDefinition_ERROR:
 
   GetCustomReportDefinition = False
-  mstrerrorstring = "Error whilst reading the Custom Report definition !" & vbNewLine & Err.Description
+  mstrErrorString = "Error whilst reading the Custom Report definition !" & vbNewLine & Err.Description
   Resume TidyAndExit
 
 End Function
@@ -1077,7 +1077,7 @@ Private Function GetDetailsRecordsets() As Boolean
   With mrstCustomReportsDetails
     If .BOF And .EOF Then
       GetDetailsRecordsets = False
-      mstrerrorstring = "No columns found in the specified Custom Report definition." & vbNewLine & "Please remove this definition and create a new one."
+      mstrErrorString = "No columns found in the specified Custom Report definition." & vbNewLine & "Please remove this definition and create a new one."
       Exit Function
     End If
     
@@ -1323,7 +1323,7 @@ Private Function GetDetailsRecordsets() As Boolean
   With prstCustomReportsSortOrder
     If .BOF And .EOF Then
       GetDetailsRecordsets = False
-      mstrerrorstring = "No columns have been defined as a sort order for the specified Custom Report definition." & vbNewLine & "Please remove this definition and create a new one."
+      mstrErrorString = "No columns have been defined as a sort order for the specified Custom Report definition." & vbNewLine & "Please remove this definition and create a new one."
       Exit Function
     End If
     Do Until .EOF
@@ -1344,7 +1344,7 @@ Private Function GetDetailsRecordsets() As Boolean
 GetDetailsRecordsets_ERROR:
   
   GetDetailsRecordsets = False
-  mstrerrorstring = "Error whilst retrieving the details recordsets'." & vbNewLine & Err.Description
+  mstrErrorString = "Error whilst retrieving the details recordsets'." & vbNewLine & Err.Description
   
 End Function
 
@@ -1421,7 +1421,7 @@ Private Function GenerateSQLSelect() As Boolean
     
   If Not pblnOK Then
     GenerateSQLSelect = False
-    mstrerrorstring = "You do not have permission to read the base table" & vbNewLine & "either directly or through any views."
+    mstrErrorString = "You do not have permission to read the base table" & vbNewLine & "either directly or through any views."
     Exit Function
   End If
   
@@ -1595,7 +1595,7 @@ Private Function GenerateSQLSelect() As Boolean
           ' If we cant see a column, then get outta here
           If pblnNoSelect Then
             GenerateSQLSelect = False
-            mstrerrorstring = "You do not have permission to see the column '" & mvarColDetails(16, pintLoop) & "'" & vbNewLine & "either directly or through any views."
+            mstrErrorString = "You do not have permission to see the column '" & mvarColDetails(16, pintLoop) & "'" & vbNewLine & "either directly or through any views."
             Exit Function
           End If
           
@@ -1739,7 +1739,7 @@ Private Function GenerateSQLSelect() As Boolean
         Next iLoop1
       Else
         ' Permission denied on something in the calculation.
-        mstrerrorstring = "You do not have permission to use the '" & mvarColDetails(0, pintLoop) & "' calculation."
+        mstrErrorString = "You do not have permission to use the '" & mvarColDetails(0, pintLoop) & "' calculation."
         GenerateSQLSelect = False
         Exit Function
       End If
@@ -1757,7 +1757,7 @@ Private Function GenerateSQLSelect() As Boolean
 GenerateSQLSelect_ERROR:
   
   GenerateSQLSelect = False
-  mstrerrorstring = "Error whilst generating SQL Select statement." & vbNewLine & Err.Description
+  mstrErrorString = "Error whilst generating SQL Select statement." & vbNewLine & Err.Description
   
 End Function
 
@@ -1781,7 +1781,7 @@ Private Function GenerateSQLFrom() As Boolean
 GenerateSQLFrom_ERROR:
   
   GenerateSQLFrom = False
-  mstrerrorstring = "Error in GenerateSQLFrom." & vbNewLine & Err.Description
+  mstrErrorString = "Error in GenerateSQLFrom." & vbNewLine & Err.Description
   
 End Function
 
@@ -1957,7 +1957,7 @@ Private Function GenerateSQLJoin() As Boolean
             Else
               ' Permission denied on something in the filter.
 '              mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(mlngCustomReportsChildFilterID) & "' filter."
-              mstrerrorstring = "You do not have permission to use the '" & datGeneral.GetFilterName(lngTempFilterID) & "' filter."
+              mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(lngTempFilterID) & "' filter."
               GenerateSQLJoin = False
               Exit Function
             End If
@@ -1981,7 +1981,7 @@ Private Function GenerateSQLJoin() As Boolean
 GenerateSQLJoin_ERROR:
   
   GenerateSQLJoin = False
-  mstrerrorstring = "Error in GenerateSQLJoin." & vbNewLine & Err.Description
+  mstrErrorString = "Error in GenerateSQLJoin." & vbNewLine & Err.Description
   
 End Function
 
@@ -2169,7 +2169,7 @@ Private Function DoChildOrderString(rsTemp As Recordset, ByRef psJoinCode As Str
 DoChildOrderString_ERROR:
   
   Set pobjOrderCol = Nothing
-  mstrerrorstring = "Error while generating child order string" & vbNewLine & Err.Description
+  mstrErrorString = "Error while generating child order string" & vbNewLine & Err.Description
   DoChildOrderString = ""
 
 End Function
@@ -2241,7 +2241,7 @@ Private Function GenerateSQLWhere() As Boolean
     Set prstTemp = mclsData.OpenRecordset("EXEC sp_ASRGetPickListRecords " & mlngCustomReportsParent1PickListID, adOpenForwardOnly, adLockReadOnly)
     
     If prstTemp.BOF And prstTemp.EOF Then
-      mstrerrorstring = "The first parent table picklist contains no records."
+      mstrErrorString = "The first parent table picklist contains no records."
       GenerateSQLWhere = False
       Exit Function
     End If
@@ -2282,7 +2282,7 @@ Private Function GenerateSQLWhere() As Boolean
         IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & _
         mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent1Table & " IN (" & strFilterIDs & ") "
     Else
-      mstrerrorstring = "You do not have permission to use the '" & datGeneral.GetFilterName(mlngCustomReportsParent1FilterID) & "' filter."
+      mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(mlngCustomReportsParent1FilterID) & "' filter."
       GenerateSQLWhere = False
       Exit Function
     End If
@@ -2294,7 +2294,7 @@ Private Function GenerateSQLWhere() As Boolean
     Set prstTemp = mclsData.OpenRecordset("EXEC sp_ASRGetPickListRecords " & mlngCustomReportsParent2PickListID, adOpenForwardOnly, adLockReadOnly)
     
     If prstTemp.BOF And prstTemp.EOF Then
-      mstrerrorstring = "The second parent table picklist contains no records."
+      mstrErrorString = "The second parent table picklist contains no records."
       GenerateSQLWhere = False
       Exit Function
     End If
@@ -2335,7 +2335,7 @@ Private Function GenerateSQLWhere() As Boolean
         IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & _
         mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent2Table & " IN (" & strFilterIDs & ") "
     Else
-      mstrerrorstring = "You do not have permission to use the '" & datGeneral.GetFilterName(mlngCustomReportsParent2FilterID) & "' filter."
+      mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(mlngCustomReportsParent2FilterID) & "' filter."
       GenerateSQLWhere = False
       Exit Function
     End If
@@ -2348,7 +2348,7 @@ Private Function GenerateSQLWhere() As Boolean
     Set prstTemp = mclsData.OpenRecordset("EXEC sp_ASRGetPickListRecords " & mlngCustomReportsPickListID, adOpenForwardOnly, adLockReadOnly)
     
     If prstTemp.BOF And prstTemp.EOF Then
-      mstrerrorstring = "The selected picklist contains no records."
+      mstrErrorString = "The selected picklist contains no records."
       GenerateSQLWhere = False
       Exit Function
     End If
@@ -2389,7 +2389,7 @@ Private Function GenerateSQLWhere() As Boolean
         mstrSQLFrom & ".ID IN (" & strFilterIDs & ")"
     Else
       ' Permission denied on something in the filter.
-      mstrerrorstring = "You do not have permission to use the '" & datGeneral.GetFilterName(mlngCustomReportsFilterID) & "' filter."
+      mstrErrorString = "You do not have permission to use the '" & datGeneral.GetFilterName(mlngCustomReportsFilterID) & "' filter."
       GenerateSQLWhere = False
       Exit Function
     End If
@@ -2403,7 +2403,7 @@ Private Function GenerateSQLWhere() As Boolean
 GenerateSQLWhere_ERROR:
   
   GenerateSQLWhere = False
-  mstrerrorstring = "Error in GenerateSQLWhere." & vbNewLine & Err.Description
+  mstrErrorString = "Error in GenerateSQLWhere." & vbNewLine & Err.Description
   
 End Function
 
@@ -2499,7 +2499,7 @@ Private Function GenerateSQLOrderBy() As Boolean
       
       If pblnNoSelect Then
         GenerateSQLOrderBy = False
-        mstrerrorstring = "You do not have permission to see the column '" & mstrOrderByColumn & "' " & vbNewLine & "either directly or through any views."
+        mstrErrorString = "You do not have permission to see the column '" & mstrOrderByColumn & "' " & vbNewLine & "either directly or through any views."
         Exit Function
       End If
     End If
@@ -2574,7 +2574,7 @@ Private Function GenerateSQLOrderBy() As Boolean
     
       If pblnNoSelect Then
         GenerateSQLOrderBy = False
-        mstrerrorstring = "You do not have permission to see the column '" & mstrGroupByColumn & "' " & vbNewLine & "either directly or through any views."
+        mstrErrorString = "You do not have permission to see the column '" & mstrGroupByColumn & "' " & vbNewLine & "either directly or through any views."
         Exit Function
       End If
     End If
@@ -2627,7 +2627,7 @@ Private Function GenerateSQLOrderBy() As Boolean
 GenerateSQLOrderBy_ERROR:
   
   GenerateSQLOrderBy = False
-  mstrerrorstring = "Error in GenerateSQLOrderBy." & vbNewLine & Err.Description
+  mstrErrorString = "Error in GenerateSQLOrderBy." & vbNewLine & Err.Description
   
 End Function
 
@@ -2712,7 +2712,7 @@ Private Function CheckRecordSet() As Boolean
 
   If mrstCustomReportsOutput.BOF And mrstCustomReportsOutput.EOF Then
     CheckRecordSet = False
-    mstrerrorstring = "No records meet selection criteria."
+    mstrErrorString = "No records meet selection criteria."
     mblnNoRecords = True
     Exit Function
   End If
@@ -2722,7 +2722,7 @@ Private Function CheckRecordSet() As Boolean
   
 CheckRecordSet_ERROR:
   
-  mstrerrorstring = "Error while checking returned recordset." & vbNewLine & "(" & Err.Description & ")"
+  mstrErrorString = "Error while checking returned recordset." & vbNewLine & "(" & Err.Description & ")"
   CheckRecordSet = False
   
 End Function
@@ -2763,7 +2763,7 @@ Private Function PopulateGrid() As Boolean
 PopulateGrid_ERROR:
   
   PopulateGrid = False
-  mstrerrorstring = "Error populating grid." & vbNewLine & "(" & Err.Description & ")"
+  mstrErrorString = "Error populating grid." & vbNewLine & "(" & Err.Description & ")"
 
 End Function
 
@@ -2856,7 +2856,7 @@ Private Function PopulateGrid_InitForm() As Boolean
 InitForm_ERROR:
 
   PopulateGrid_InitForm = False
-  mstrerrorstring = "Error whilst initialising output form." & vbNewLine & "(" & Err.Description & ")"
+  mstrErrorString = "Error whilst initialising output form." & vbNewLine & "(" & Err.Description & ")"
 
 End Function
 
@@ -2939,7 +2939,7 @@ HideColumns_ERROR:
 
   PopulateGrid_HideColumns = False
   If Not gblnBatchMode Then gobjProgress.CloseProgress
-  mstrerrorstring = "Error in PopulateGrid_HideColumns." & vbNewLine & Err.Description
+  mstrErrorString = "Error in PopulateGrid_HideColumns." & vbNewLine & Err.Description
 
 End Function
 
@@ -3978,7 +3978,7 @@ Private Function PopulateGrid_DoGrandSummary() As Boolean
 PopulateGrid_DoGrandSummary_ERROR:
   
   Set rsTemp = Nothing
-  mstrerrorstring = "Error while calculating grand summary." & vbNewLine & "(" & Err.Description & ")"
+  mstrErrorString = "Error while calculating grand summary." & vbNewLine & "(" & Err.Description & ")"
   PopulateGrid_DoGrandSummary = False
   
 End Function
@@ -4079,7 +4079,7 @@ Private Function ClearUp() As Boolean
   
 ClearUp_ERROR:
   
-  mstrerrorstring = "Error whilst clearing data." & vbNewLine & "(" & Err.Description & ")"
+  mstrErrorString = "Error whilst clearing data." & vbNewLine & "(" & Err.Description & ")"
   ClearUp = False
   
 End Function
@@ -4132,81 +4132,81 @@ Private Function IsRecordSelectionValid() As Boolean
     iResult = ValidateRecordSelection(REC_SEL_FILTER, mlngCustomReportsFilterID)
     Select Case iResult
       Case REC_SEL_VALID_DELETED
-        mstrerrorstring = "The base table filter used in this definition has been deleted by another user."
+        mstrErrorString = "The base table filter used in this definition has been deleted by another user."
       Case REC_SEL_VALID_INVALID
-        mstrerrorstring = "The base table filter used in this definition is invalid."
+        mstrErrorString = "The base table filter used in this definition is invalid."
       Case REC_SEL_VALID_HIDDENBYOTHER
         If Not gfCurrentUserIsSysSecMgr Then
-          mstrerrorstring = "The base table filter used in this definition has been made hidden by another user."
+          mstrErrorString = "The base table filter used in this definition has been made hidden by another user."
         End If
     End Select
   ElseIf mlngCustomReportsPickListID > 0 Then
     iResult = ValidateRecordSelection(REC_SEL_PICKLIST, mlngCustomReportsPickListID)
     Select Case iResult
       Case REC_SEL_VALID_DELETED
-        mstrerrorstring = "The base table picklist used in this definition has been deleted by another user."
+        mstrErrorString = "The base table picklist used in this definition has been deleted by another user."
       Case REC_SEL_VALID_INVALID
-        mstrerrorstring = "The base table picklist used in this definition is invalid."
+        mstrErrorString = "The base table picklist used in this definition is invalid."
       Case REC_SEL_VALID_HIDDENBYOTHER
         If Not gfCurrentUserIsSysSecMgr Then
-          mstrerrorstring = "The base table picklist used in this definition has been made hidden by another user."
+          mstrErrorString = "The base table picklist used in this definition has been made hidden by another user."
         End If
       End Select
   End If
   
-  If Len(mstrerrorstring) = 0 Then
+  If Len(mstrErrorString) = 0 Then
     ' Parent 1 Table
     If mlngCustomReportsParent1FilterID > 0 Then
       iResult = ValidateRecordSelection(REC_SEL_FILTER, mlngCustomReportsParent1FilterID)
       Select Case iResult
         Case REC_SEL_VALID_DELETED
-          mstrerrorstring = "The first parent table filter used in this definition has been deleted by another user."
+          mstrErrorString = "The first parent table filter used in this definition has been deleted by another user."
         Case REC_SEL_VALID_INVALID
-          mstrerrorstring = "The first parent table filter used in this definition is invalid."
+          mstrErrorString = "The first parent table filter used in this definition is invalid."
         Case REC_SEL_VALID_HIDDENBYOTHER
           If Not gfCurrentUserIsSysSecMgr Then
-            mstrerrorstring = "The first parent table filter used in this definition has been made hidden by another user."
+            mstrErrorString = "The first parent table filter used in this definition has been made hidden by another user."
           End If
       End Select
     ElseIf mlngCustomReportsParent1PickListID > 0 Then
       iResult = ValidateRecordSelection(REC_SEL_PICKLIST, mlngCustomReportsParent1PickListID)
       Select Case iResult
         Case REC_SEL_VALID_DELETED
-          mstrerrorstring = "The first parent table picklist used in this definition has been deleted by another user."
+          mstrErrorString = "The first parent table picklist used in this definition has been deleted by another user."
         Case REC_SEL_VALID_INVALID
-          mstrerrorstring = "The first parent table picklist used in this definition is invalid."
+          mstrErrorString = "The first parent table picklist used in this definition is invalid."
         Case REC_SEL_VALID_HIDDENBYOTHER
           If Not gfCurrentUserIsSysSecMgr Then
-            mstrerrorstring = "The first parent table picklist used in this definition has been made hidden by another user."
+            mstrErrorString = "The first parent table picklist used in this definition has been made hidden by another user."
           End If
         End Select
     End If
   End If
   
   ' Parent 2 Table
-  If Len(mstrerrorstring) = 0 Then
+  If Len(mstrErrorString) = 0 Then
     If mlngCustomReportsParent2FilterID > 0 Then
       iResult = ValidateRecordSelection(REC_SEL_FILTER, mlngCustomReportsParent2FilterID)
       Select Case iResult
         Case REC_SEL_VALID_DELETED
-          mstrerrorstring = "The second parent table filter used in this definition has been deleted by another user."
+          mstrErrorString = "The second parent table filter used in this definition has been deleted by another user."
         Case REC_SEL_VALID_INVALID
-          mstrerrorstring = "The second parent table filter used in this definition is invalid."
+          mstrErrorString = "The second parent table filter used in this definition is invalid."
         Case REC_SEL_VALID_HIDDENBYOTHER
           If Not gfCurrentUserIsSysSecMgr Then
-            mstrerrorstring = "The second parent table filter used in this definition has been made hidden by another user."
+            mstrErrorString = "The second parent table filter used in this definition has been made hidden by another user."
           End If
       End Select
     ElseIf mlngCustomReportsParent2PickListID > 0 Then
       iResult = ValidateRecordSelection(REC_SEL_PICKLIST, mlngCustomReportsParent2PickListID)
       Select Case iResult
         Case REC_SEL_VALID_DELETED
-          mstrerrorstring = "The second parent table picklist used in this definition has been deleted by another user."
+          mstrErrorString = "The second parent table picklist used in this definition has been deleted by another user."
         Case REC_SEL_VALID_INVALID
-          mstrerrorstring = "The second parent table picklist used in this definition is invalid."
+          mstrErrorString = "The second parent table picklist used in this definition is invalid."
         Case REC_SEL_VALID_HIDDENBYOTHER
           If Not gfCurrentUserIsSysSecMgr Then
-            mstrerrorstring = "The second parent table picklist used in this definition has been made hidden by another user."
+            mstrErrorString = "The second parent table picklist used in this definition has been made hidden by another user."
           End If
       End Select
     End If
@@ -4216,7 +4216,7 @@ Private Function IsRecordSelectionValid() As Boolean
   Dim lngFilterID As Long
   
   ' Child Table
-  If Len(mstrerrorstring) = 0 Then
+  If Len(mstrErrorString) = 0 Then
     If miChildTablesCount > 0 Then
       For i = 0 To UBound(mvarChildTables, 2) Step 1
         lngFilterID = mvarChildTables(1, i)
@@ -4224,17 +4224,17 @@ Private Function IsRecordSelectionValid() As Boolean
           iResult = ValidateRecordSelection(REC_SEL_FILTER, lngFilterID)
           Select Case iResult
             Case REC_SEL_VALID_DELETED
-              mstrerrorstring = "The child table filter used in this definition has been deleted by another user."
+              mstrErrorString = "The child table filter used in this definition has been deleted by another user."
             Case REC_SEL_VALID_INVALID
-              mstrerrorstring = "The child table filter used in this definition is invalid."
+              mstrErrorString = "The child table filter used in this definition is invalid."
             Case REC_SEL_VALID_HIDDENBYOTHER
               If Not gfCurrentUserIsSysSecMgr Then
-                mstrerrorstring = "The child table filter used in this definition has been made hidden by another user."
+                mstrErrorString = "The child table filter used in this definition has been made hidden by another user."
               End If
           End Select
         End If
       
-        If Len(mstrerrorstring) > 0 Then
+        If Len(mstrErrorString) > 0 Then
           Exit For
         End If
       Next i
@@ -4245,7 +4245,7 @@ Private Function IsRecordSelectionValid() As Boolean
   If Not mbIsBradfordIndexReport Then
   
     '******* Check calculations for hidden/deleted elements *******
-    If Len(mstrerrorstring) = 0 Then
+    If Len(mstrErrorString) = 0 Then
       sSQL = "SELECT * FROM ASRSYSCustomReportsDetails " & _
                "WHERE CustomReportID = " & mlngCustomReportID & _
                " AND LOWER(Type) = 'e' "
@@ -4258,16 +4258,16 @@ Private Function IsRecordSelectionValid() As Boolean
             iResult = ValidateCalculation(!ColExprID)
             Select Case iResult
               Case REC_SEL_VALID_DELETED
-                mstrerrorstring = "A calculation used in this definition has been deleted by another user."
+                mstrErrorString = "A calculation used in this definition has been deleted by another user."
               Case REC_SEL_VALID_INVALID
-                mstrerrorstring = "A calculation used in this definition is invalid."
+                mstrErrorString = "A calculation used in this definition is invalid."
               Case REC_SEL_VALID_HIDDENBYOTHER
                 If Not gfCurrentUserIsSysSecMgr Then
-                  mstrerrorstring = "A calculation used in this definition has been made hidden by another user."
+                  mstrErrorString = "A calculation used in this definition has been made hidden by another user."
                 End If
             End Select
             
-            If Len(mstrerrorstring) > 0 Then
+            If Len(mstrErrorString) > 0 Then
               Exit Do
             End If
             
@@ -4280,7 +4280,7 @@ Private Function IsRecordSelectionValid() As Boolean
     End If
   End If
   
-  IsRecordSelectionValid = (Len(mstrerrorstring) = 0)
+  IsRecordSelectionValid = (Len(mstrErrorString) = 0)
   
 End Function
 
@@ -4481,7 +4481,7 @@ Public Function GenerateSQLBradford() As Boolean
 GenerateSQLBradford_ERROR:
   
     GenerateSQLBradford = False
-    mstrerrorstring = "Error in GenerateSQLBradford." & vbNewLine & Err.Description
+    mstrErrorString = "Error in GenerateSQLBradford." & vbNewLine & Err.Description
 
 End Function
 
@@ -4651,7 +4651,7 @@ TidyAndExit:
 GetBradfordReportDefinition_ERROR:
 
   GetBradfordReportDefinition = False
-  mstrerrorstring = "Error whilst reading the Custom Report definition !" & vbNewLine & Err.Description
+  mstrErrorString = "Error whilst reading the Custom Report definition !" & vbNewLine & Err.Description
   Resume TidyAndExit
 
 End Function
@@ -4723,7 +4723,7 @@ Private Function GetBradfordRecordSet() As Boolean
   For iCount = 1 To UBound(aStrRequiredFields, 1)
     If aStrRequiredFields(iCount, 1) = "0" Then
       GetBradfordRecordSet = False
-      mstrerrorstring = "Module setup has not been completed."
+      mstrErrorString = "Module setup has not been completed."
       Exit Function
     End If
   Next iCount
@@ -4889,7 +4889,7 @@ Private Function GetBradfordRecordSet() As Boolean
 GetBradfordRecordSet_ERROR:
   
   GetBradfordRecordSet = False
-  mstrerrorstring = "Error whilst retrieving the details recordsets'." & vbNewLine & Err.Description
+  mstrErrorString = "Error whilst retrieving the details recordsets'." & vbNewLine & Err.Description
   
 End Function
 
@@ -4944,7 +4944,7 @@ Public Function RunBradfordReport(pstrPicklistFilterIDs As String) As Boolean
   'Check that from and to dates have been entered
   If IsEmpty(mdtAbsenceFrom) Or IsEmpty(mdtAbsenceTo) Then
     fOK = False
-    mstrerrorstring = "Error Whilst Running Bradford Factor Report." & vbNewLine & "Report range dates not specified"
+    mstrErrorString = "Error Whilst Running Bradford Factor Report." & vbNewLine & "Report range dates not specified"
   End If
 
   If fOK Then fOK = GetBradfordRecordSet
@@ -4980,31 +4980,31 @@ Public Function RunBradfordReport(pstrPicklistFilterIDs As String) As Boolean
   
   mblnUserCancelled = _
     (mblnUserCancelled Or gobjProgress.Cancelled Or _
-    (InStr(LCase(mstrerrorstring), "cancelled by user") > 0))
+    (InStr(LCase(mstrErrorString), "cancelled by user") > 0))
   
   If mblnNoRecords Then
     gobjEventLog.ChangeHeaderStatus elsSuccessful
-    gobjEventLog.AddDetailEntry mstrerrorstring
-    mstrerrorstring = "Completed successfully." & vbNewLine & mstrerrorstring
+    gobjEventLog.AddDetailEntry mstrErrorString
+    mstrErrorString = "Completed successfully." & vbNewLine & mstrErrorString
     fOK = True
   ElseIf fOK Then
     gobjEventLog.ChangeHeaderStatus elsSuccessful
-    mstrerrorstring = "Completed successfully."
+    mstrErrorString = "Completed successfully."
   ElseIf mblnUserCancelled Then
     gobjEventLog.ChangeHeaderStatus elsCancelled
-    mstrerrorstring = "Cancelled by user."
+    mstrErrorString = "Cancelled by user."
   Else
     'Only details records for failures !
-    gobjEventLog.AddDetailEntry mstrerrorstring
+    gobjEventLog.AddDetailEntry mstrErrorString
     gobjEventLog.ChangeHeaderStatus elsFailed
-    mstrerrorstring = "Failed." & vbNewLine & vbNewLine & mstrerrorstring
+    mstrErrorString = "Failed." & vbNewLine & vbNewLine & mstrErrorString
   End If
   
-  mstrerrorstring = "Bradford Factor Report " & mstrerrorstring
+  mstrErrorString = "Bradford Factor Report " & mstrErrorString
   
   If Not gblnBatchMode Then
     If gobjProgress.Visible Then gobjProgress.CloseProgress
-    If (fOK = False) Or (mblnNoRecords = True) Then COAMsgBox mstrerrorstring, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, "Bradford Factor Report"
+    If (fOK = False) Or (mblnNoRecords = True) Then COAMsgBox mstrErrorString, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, "Bradford Factor Report"
   End If
   
   Screen.MousePointer = vbDefault
@@ -5018,7 +5018,7 @@ RunBradfordReport_ERROR:
 
   fOK = False
   RunBradfordReport = False
-  mstrerrorstring = "Error Whilst Running Bradford Factor Report." & vbNewLine & Err.Description
+  mstrErrorString = "Error Whilst Running Bradford Factor Report." & vbNewLine & Err.Description
   Resume Next
   
 End Function
@@ -5062,18 +5062,26 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
   End If
 
   If objOutput.SetOptions _
-      (blnPrompt, mlngOutputFormat, mblnOutputScreen, _
-      mblnOutputPrinter, mstrOutputPrinterName, _
-      mblnOutputSave, mlngOutputSaveExisting, _
-      mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-      mstrOutputEmailAttachAs, mstrOutputFileName, _
+      (blnPrompt, _
+      mlngOutputFormat, _
+      mblnOutputScreen, _
+      mblnOutputPrinter, _
+      mstrOutputPrinterName, _
+      mblnOutputSave, _
+      mlngOutputSaveExisting, _
+      mblnOutputEmail, _
+      mlngOutputEmailAddr, _
+      mstrOutputEmailSubject, _
+      mstrOutputEmailAttachAs, _
+      mstrOutputFileName, _
       mblnCustomReportsPrintFilterHeader, _
       mblnPreviewOnScreen, _
       mstrOutputTitlePage, _
       mstrOutputReportPackTitle, _
       mstrOutputOverrideFilter, _
       mblnOutputTOC, _
-      mblnOutputCoverSheet) Then
+      mblnOutputCoverSheet, _
+      mlngOverrideFilterID) Then
 
     If Not gblnBatchMode Then
       If mbIsBradfordIndexReport Then
@@ -5228,7 +5236,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
               If Not gblnBatchMode Then
                 gobjProgress.CloseProgress
               End If
-              mstrerrorstring = "Cancelled by user"
+              mstrErrorString = "Cancelled by user"
               If Not objOutput Is Nothing Then objOutput.ClearUp
               Set objOutput = Nothing
               OutputReport = False
@@ -5279,26 +5287,21 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
         objOutput.AddPage Replace(mfrmOutput.grdOutput.Caption, "&&", "&"), IIf(mbIsBradfordIndexReport, "Bradford Factor", mstrCustomReportsBaseTableName), mblnOutputCoverSheet
         objOutput.UpdateProgressPerRow = Not gblnBatchMode
         objOutput.DataGrid mfrmOutput.grdOutput
-        
       End If
     End If
 
     objOutput.Complete
     mblnUserCancelled = objOutput.UserCancelled
-    mstrerrorstring = objOutput.ErrorMessage
-    fOK = (mstrerrorstring = vbNullString)
-    
+    mstrErrorString = objOutput.ErrorMessage
+    fOK = (mstrErrorString = vbNullString)
   Else
     blnPrompt = (blnPrompt And Not objOutput.UserCancelled)
-    mstrerrorstring = objOutput.ErrorMessage
-    fOK = (mstrerrorstring = vbNullString)
-
+    mstrErrorString = objOutput.ErrorMessage
+    fOK = (mstrErrorString = vbNullString)
   End If
-    
     
   If blnPrompt Then
     gobjProgress.CloseProgress
-
     'Not ideal but the only way to prevent a runtime error was a doevents
     DoEvents
     
@@ -5306,7 +5309,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
       COAMsgBox strReportType & " Output complete.", _
           vbInformation, strMBTitle
     Else
-      COAMsgBox strReportType & " Output failed." & vbNewLine & vbNewLine & mstrerrorstring, _
+      COAMsgBox strReportType & " Output failed." & vbNewLine & vbNewLine & mstrErrorString, _
           vbExclamation, strMBTitle
     End If
   End If
@@ -5317,7 +5320,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
 End Function
 
 Public Property Get PreviewOnScreen() As Boolean
-  PreviewOnScreen = ((mstrerrorstring = vbNullString And mblnPreviewOnScreen) And Not gblnBatchMode)
+  PreviewOnScreen = ((mstrErrorString = vbNullString And mblnPreviewOnScreen) And Not gblnBatchMode)
 End Property
 
 Private Function PopulateGrid_LoadRecords() As Boolean
@@ -5495,11 +5498,6 @@ Private Function PopulateGrid_LoadRecords() As Boolean
                 End If
               End If
               
-'MH20030916
-'              If fBreak Then
-'                mblnPageBreak = True
-'              End If
-'              sBreakValue = IIf(Len(mvarColDetails(11, iColumnIndex)) < 1, "<Empty>", mvarColDetails(11, iColumnIndex)) & IIf(Len(sBreakValue) > 0, " - ", "") & sBreakValue
               If mvarColDetails(8, iColumnIndex) Then
                 sBreakValue = IIf(Len(mvarColDetails(11, iColumnIndex)) < 1, "<Empty>", mvarColDetails(11, iColumnIndex)) & IIf(Len(sBreakValue) > 0, " - ", "") & sBreakValue
               End If
@@ -5560,10 +5558,7 @@ Private Function PopulateGrid_LoadRecords() As Boolean
                 Next iLoop2
               End If
 
-              'RH 09/02/01
-              'Report was doing summary info even when no aggregate was
-              'selected for the column, so check for aggregate too, and only
-              'do summary info if its true.
+              'Check for aggregate too, and only do summary info if its true.
               If fBreak Then
                 PopulateGrid_DoSummaryInfo avColumns, iColumnIndex, iLoop
                 
@@ -5579,9 +5574,6 @@ Private Function PopulateGrid_LoadRecords() As Boolean
         Next iLoop
       End If
 
-'MH20030917
-'      If mblnPageBreak And (Not mblnCustomReportsSummaryReport) Then
-      
       If mblnPageBreak Then
         mfrmOutput.grdOutput.AddItem "*"
         mintPageBreakRowIndex = mintPageBreakRowIndex + 1
@@ -5682,22 +5674,12 @@ Private Function PopulateGrid_LoadRecords() As Boolean
               If (mrstCustomReportsOutput.Fields(iLoop).Value = "True") Or (mrstCustomReportsOutput.Fields(iLoop).Value = 1) Then mvarColDetails(11, iLoop + 1) = "Y"
               If (mrstCustomReportsOutput.Fields(iLoop).Value = "False") Or (mrstCustomReportsOutput.Fields(iLoop).Value = 0) Then mvarColDetails(11, iLoop + 1) = "N"
               If IsNull(mrstCustomReportsOutput.Fields(iLoop).Value) Then mvarColDetails(11, iLoop + 1) = ""
-              
             Else 'Varchar
               mvarColDetails(11, iLoop + 1) = mrstCustomReportsOutput.Fields(iLoop).Value
             End If
-          
           End If
-        
-'          If Not IsNull(mvarColDetails(11, iLoop + 1)) Then
-'            'If len of data is greater than the previous length of data, store len in the array.
-'            If (mfrmOutput.TextWidth(mvarColDetails(11, iLoop + 1)) + 150) > mlngColWidth(intColCounter) Then
-'              mlngColWidth(intColCounter) = mfrmOutput.TextWidth(mvarColDetails(11, iLoop + 1)) + 150
-'            End If
-'          End If
         End If
         
-'MH20050915 Fault
         If Not IsNull(vDisplayData) Then
           If BigTextWidth(vDisplayData, 0) > mlngColWidth(intColCounter) Then
             mlngColWidth(intColCounter) = BigTextWidth(vDisplayData, 0)
@@ -5797,7 +5779,6 @@ Private Function PopulateGrid_LoadRecords() As Boolean
         End If
       Next iLoop2
       
-      
       If iColumnIndex > 0 Then
         If (avColumns(1, iColumnIndex)) Then
 
@@ -5846,7 +5827,7 @@ LoadRecords_ERROR:
 
   PopulateGrid_LoadRecords = False
   If Not gblnBatchMode Then gobjProgress.CloseProgress
-  mstrerrorstring = "Error in PopulateGrid_LoadRecords." & vbNewLine & Err.Description
+  mstrErrorString = "Error in PopulateGrid_LoadRecords." & vbNewLine & Err.Description
 
 End Function
 Public Sub SetBradfordParameters( _
@@ -5927,7 +5908,8 @@ Public Sub SetOutputParameters( _
           Optional strOutputReportPackTitle As String, _
           Optional strOutputOverrideFilter As String, _
           Optional blnOutputTOC As Boolean, _
-          Optional blnOutputCoverSheet As Boolean)
+          Optional blnOutputCoverSheet As Boolean, _
+          Optional lngOverrideFilterID As Long)
 
   mlngOutputFormat = lngOutputFormat
   mblnOutputScreen = blnOutputScreen
@@ -5947,6 +5929,7 @@ Public Sub SetOutputParameters( _
   mstrOutputOverrideFilter = IIf(IsMissing(strOutputOverrideFilter), giEXPRVALUE_CHARACTER, strOutputOverrideFilter)
   mblnOutputTOC = IIf(IsMissing(blnOutputTOC), giEXPRVALUE_CHARACTER, blnOutputTOC)
   mblnOutputCoverSheet = IIf(IsMissing(blnOutputCoverSheet), giEXPRVALUE_CHARACTER, blnOutputCoverSheet)
+  mlngOverrideFilterID = IIf(IsMissing(lngOverrideFilterID), giEXPRVALUE_NUMERIC, lngOverrideFilterID)
 End Sub
 
 
@@ -5960,16 +5943,16 @@ Public Function GetReportConfig() As Boolean
 
   If GetSystemSetting(strReportType, "Custom Dates", "0") = "1" Then
     lngStartDateExprID = GetSystemSetting(strReportType, "Start Date", 0)
-    mstrerrorstring = IsCalcValid(lngStartDateExprID)
-    If mstrerrorstring <> vbNullString Then
+    mstrErrorString = IsCalcValid(lngStartDateExprID)
+    If mstrErrorString <> vbNullString Then
       GetReportConfig = False
       Exit Function
     End If
     mdtAbsenceFrom = datGeneral.GetValueForRecordIndependantCalc(lngStartDateExprID)
 
     lngEndDateExprID = GetSystemSetting(strReportType, "End Date", 0)
-    mstrerrorstring = IsCalcValid(lngEndDateExprID)
-    If mstrerrorstring <> vbNullString Then
+    mstrErrorString = IsCalcValid(lngEndDateExprID)
+    If mstrErrorString <> vbNullString Then
       GetReportConfig = False
       Exit Function
     End If
@@ -5977,7 +5960,7 @@ Public Function GetReportConfig() As Boolean
 
     'MH20030911 Fault 5991
     If DateDiff("d", mdtAbsenceFrom, mdtAbsenceTo) < 0 Then
-      mstrerrorstring = "The report end date is before the report start date."
+      mstrErrorString = "The report end date is before the report start date."
       GetReportConfig = False
       Exit Function
     End If

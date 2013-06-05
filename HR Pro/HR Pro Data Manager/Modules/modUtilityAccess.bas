@@ -824,6 +824,10 @@ Public Function GetUtilityAccessRecords(piUtilityType As UtilityType, _
       sAccessTableName = "ASRSysBatchJobAccess"
       sKey = "Batch Jobs"
 
+    Case utlReportPack
+      sAccessTableName = "ASRSysBatchJobAccess"
+      sKey = "Report Packs"
+      
     Case utlCalendarReport
       sAccessTableName = "ASRSysCalendarReportAccess"
       sKey = "Calendar Reports"

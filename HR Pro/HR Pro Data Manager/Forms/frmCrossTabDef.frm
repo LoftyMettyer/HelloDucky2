@@ -60,6 +60,7 @@ Begin VB.Form frmCrossTabDef
       _ExtentY        =   8837
       _Version        =   393216
       Style           =   1
+      Tab             =   2
       TabsPerRow      =   5
       TabHeight       =   520
       OLEDropMode     =   1
@@ -74,11 +75,9 @@ Begin VB.Form frmCrossTabDef
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmCrossTabDef.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "fraDefinition(1)"
-      Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "fraInformation"
-      Tab(0).Control(1).Enabled=   0   'False
+      Tab(0).ControlEnabled=   0   'False
+      Tab(0).Control(0)=   "fraInformation"
+      Tab(0).Control(1)=   "fraDefinition(1)"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmCrossTabDef.frx":0028
@@ -88,13 +87,15 @@ Begin VB.Form frmCrossTabDef
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmCrossTabDef.frx":0044
-      Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraOutputDestination"
-      Tab(2).Control(1)=   "fraOutputFormat"
+      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).Control(0)=   "fraOutputFormat"
+      Tab(2).Control(0).Enabled=   0   'False
+      Tab(2).Control(1)=   "fraOutputDestination"
+      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).ControlCount=   2
       Begin VB.Frame fraInformation 
          Height          =   2355
-         Left            =   135
+         Left            =   -74865
          TabIndex        =   76
          Top             =   405
          Width           =   9180
@@ -299,7 +300,7 @@ Begin VB.Form frmCrossTabDef
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
          Height          =   4440
-         Left            =   -72255
+         Left            =   2745
          TabIndex        =   56
          Top             =   405
          Width           =   6600
@@ -508,7 +509,7 @@ Begin VB.Form frmCrossTabDef
       Begin VB.Frame fraOutputFormat 
          Caption         =   "Output Format :"
          Height          =   4440
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   48
          Top             =   405
          Width           =   2500
@@ -581,7 +582,7 @@ Begin VB.Form frmCrossTabDef
          Caption         =   "Data :"
          Height          =   2015
          Index           =   1
-         Left            =   135
+         Left            =   -74865
          TabIndex        =   0
          Top             =   2835
          Width           =   9200
@@ -4001,7 +4002,7 @@ End Sub
 
 '*** OUTPUT OPTIONS ***
 Private Sub optOutputFormat_Click(Index As Integer)
-  mobjOutputDef.FormatClick Index
+  mobjOutputDef.FormatClick Index ', True
   Changed = True
 End Sub
 
