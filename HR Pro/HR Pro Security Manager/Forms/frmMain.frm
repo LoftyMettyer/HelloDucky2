@@ -9,7 +9,7 @@ Begin VB.MDIForm frmMain
    ClientLeft      =   2550
    ClientTop       =   2820
    ClientWidth     =   2760
-   HelpContextID   =   1001
+   HelpContextID   =   8001
    Icon            =   "frmMain.frx":0000
    LinkTopic       =   "MDIForm1"
    WindowState     =   2  'Maximized

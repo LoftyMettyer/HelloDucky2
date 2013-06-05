@@ -15,7 +15,7 @@ Begin VB.Form frmPasswordMaintenance
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1018
+   HelpContextID   =   8018
    Icon            =   "frmPasswordMaintenance.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -292,7 +292,7 @@ Private Sub cboUser_Click()
 End Sub
 
 Private Sub chkAccountIsLocked_Click()
-  cmdOK.Enabled = True
+  cmdOk.Enabled = True
 End Sub
 
 Private Sub chkEnforceExpiry_Click()
@@ -302,7 +302,7 @@ Private Sub chkEnforceExpiry_Click()
   End If
 
   chkForceChange.Enabled = (chkEnforceExpiry.Value = vbChecked) Or glngSQLVersion < 9
-  cmdOK.Enabled = True
+  cmdOk.Enabled = True
 
 End Sub
 
@@ -315,12 +315,12 @@ Private Sub chkEnforcePasswordPolicy_Click()
 
   chkEnforceExpiry.Enabled = (chkEnforcePasswordPolicy.Value = vbChecked)
   chkForceChange.Enabled = (chkEnforceExpiry.Value = vbChecked) Or glngSQLVersion < 9
-  cmdOK.Enabled = True
+  cmdOk.Enabled = True
 
 End Sub
 
 Private Sub chkForceChange_Click()
-  cmdOK.Enabled = True
+  cmdOk.Enabled = True
 End Sub
 
 Private Sub cmdCancel_Click()
@@ -621,5 +621,5 @@ End Sub
 
 Private Sub txtPassword_Change()
   chkForceChange.Enabled = (chkEnforceExpiry.Value = vbChecked) Or glngSQLVersion < 9
-  cmdOK.Enabled = True
+  cmdOk.Enabled = True
 End Sub

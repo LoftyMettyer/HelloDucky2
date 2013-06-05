@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Begin VB.Form frmOrder 
    BorderStyle     =   3  'Fixed Dialog
@@ -17,7 +17,7 @@ Begin VB.Form frmOrder
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1031
+   HelpContextID   =   8031
    Icon            =   "frmOrder.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
@@ -722,7 +722,7 @@ Private Sub SortColumns_RefreshControls()
     (Not mfReadOnly)
     
   ' Disable the OK command control if there are no order items specified.
-  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOk.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And _
     (Not mfReadOnly)
@@ -739,7 +739,7 @@ Private Sub cmdCancel_Click()
   If mfChanged Then
     intAnswer = MsgBox("The order definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
     If intAnswer = vbYes Then
-      If Me.cmdOK.Enabled Then
+      If Me.cmdOk.Enabled Then
         Call cmdOK_Click
         Exit Sub
       Else
@@ -799,7 +799,7 @@ Private Sub FindColumns_RefreshControls()
     (Not mfReadOnly)
     
   ' Disable the OK command control if there are no order items specified.
-  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOk.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And _
     (Not mfReadOnly)
@@ -1918,7 +1918,7 @@ Private Sub txtOrderName_Change(Index As Integer)
   mfChanged = True
   
   ' Disable the OK command control if there are no order items specified.
-  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOk.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And _
     (Not mfReadOnly)

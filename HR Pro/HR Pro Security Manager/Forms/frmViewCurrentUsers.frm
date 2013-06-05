@@ -16,7 +16,7 @@ Begin VB.Form frmViewCurrentUsers
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1023
+   HelpContextID   =   8023
    Icon            =   "frmViewCurrentUsers.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
@@ -177,6 +177,7 @@ Begin VB.Form frmViewCurrentUsers
          _Version        =   196617
          DataMode        =   2
          RecordSelectors =   0   'False
+         Col.Count       =   4
          AllowUpdate     =   0   'False
          MultiLine       =   0   'False
          AllowRowSizing  =   0   'False

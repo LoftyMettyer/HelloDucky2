@@ -16,7 +16,7 @@ Begin VB.Form frmTransferOwnership
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1022
+   HelpContextID   =   8022
    Icon            =   "frmTransferOwnership.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

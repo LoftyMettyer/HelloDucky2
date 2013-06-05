@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.Form frmNewMultipleUserReport 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Automatic User Add Report"
@@ -17,7 +17,7 @@ Begin VB.Form frmNewMultipleUserReport
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1030
+   HelpContextID   =   8030
    Icon            =   "frmNewMultipleUserReport.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

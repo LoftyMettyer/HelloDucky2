@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{20C62CAE-15DA-101B-B9A8-444553540000}#1.1#0"; "msmapi32.Ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{20C62CAE-15DA-101B-B9A8-444553540000}#1.1#0"; "msmapi32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Begin VB.Form frmTechSupport 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Technical Support"
@@ -17,7 +17,7 @@ Begin VB.Form frmTechSupport
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1002
+   HelpContextID   =   8002
    Icon            =   "frmTechSupport.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -283,7 +283,7 @@ End Sub
 'End Function
 
 
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
   
   ' Redo link colour
   lblEMail.ForeColor = &HFF0000
@@ -298,7 +298,7 @@ Private Sub Form_Resize()
 
 End Sub
 
-Private Sub fraSupportContacts_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub fraSupportContacts_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
   
   ' Redo link colour
   lblEMail.ForeColor = &HFF0000
@@ -319,7 +319,7 @@ Private Sub lblEMail_Click()
 End Sub
 
 
-Private Sub lblEMail_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub lblEMail_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
   
   ' Highlight the link
   lblEMail.ForeColor = vbRed
@@ -354,7 +354,7 @@ ErrTrap:
 End Sub
 
 
-Private Sub lblURL_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub lblURL_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
   
   ' Highlight the link
   lblURL.ForeColor = vbRed

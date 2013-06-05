@@ -15,7 +15,7 @@ Begin VB.Form frmNewMultipleUser
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1029
+   HelpContextID   =   8029
    Icon            =   "frmNewMultipleUser.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

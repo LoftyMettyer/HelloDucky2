@@ -15,7 +15,7 @@ Begin VB.Form frmPasswordEntry
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1017
+   HelpContextID   =   8017
    Icon            =   "frmPasswordEntry.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

@@ -15,7 +15,7 @@ Begin VB.Form frmUtilityOwnership
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1044
+   HelpContextID   =   8044
    Icon            =   "frmUtilityOwnership.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True

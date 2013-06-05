@@ -16,7 +16,7 @@ Begin VB.Form frmNewTrustedUser
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1037
+   HelpContextID   =   8037
    Icon            =   "frmNewTrustedUser.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -340,10 +340,10 @@ Private Sub Form_Resize()
   lvList.ColumnHeaders(2).Width = lvList.Width - (lvList.ColumnHeaders(1).Width + 325)
   
   chkShowMembers.Top = Me.Height - 1100
-  cmdOK.Top = chkShowMembers.Top
-  cmdOK.Left = Me.Width - ((cmdOK.Width + cmdCancel.Width) + 250)
+  cmdOk.Top = chkShowMembers.Top
+  cmdOk.Left = Me.Width - ((cmdOk.Width + cmdCancel.Width) + 250)
   cmdCancel.Top = chkShowMembers.Top
-  cmdCancel.Left = cmdOK.Left + cmdOK.Width + 50
+  cmdCancel.Left = cmdOk.Left + cmdOk.Width + 50
 
 End Sub
 
