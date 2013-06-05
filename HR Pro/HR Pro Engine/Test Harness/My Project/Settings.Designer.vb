@@ -57,17 +57,6 @@ Namespace My
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=HARPDEV02;Initial Catalog=STD41;Persist Security Info=True;User ID=sa"& _ 
-            ";Password=asr")>  _
-        Public ReadOnly Property STD41ConnectionString() As String
-            Get
-                Return CType(Me("STD41ConnectionString"),String)
-            End Get
-        End Property
-        
-        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),  _
          Global.System.Configuration.DefaultSettingValueAttribute("Data Source=HARPDEV02;Initial Catalog=STD41;User ID=sa")>  _
         Public ReadOnly Property STD41ConnectionString1() As String
             Get
