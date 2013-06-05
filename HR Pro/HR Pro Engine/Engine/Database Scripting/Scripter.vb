@@ -631,8 +631,8 @@ Namespace ScriptDB
             sSQLCode_AuditDelete = String.Format("    INSERT @audit (id, oldvalue, newvalue, tableid, tablename, columnname, columnid, recorddesc)" & vbNewLine & _
                                            "{0};" _
                                           , String.Join(vbNewLine & "        UNION" & vbNewLine, aryAuditDeletes.ToArray()))
-            sSQLCode_Audit = "    INSERT dbo.[ASRSysAuditTrail] ([username], [datetimestamp], [recordid], [oldvalue], [newvalue], [tableid], [tablename], [columnname], [columnid], [deleted], [recorddesc])" & vbNewLine & _
-                             "		     SELECT SYSTEM_USER, @dChangeDate, [id], [oldvalue], [newvalue], [tableid], [tablename], [columnname], [columnid], 1, [recorddesc] FROM @audit" & vbNewLine & vbNewLine
+            sSQLCode_Audit = vbNewLine & "    INSERT dbo.[ASRSysAuditTrail] ([username], [datetimestamp], [recordid], [oldvalue], [newvalue], [tableid], [tablename], [columnname], [columnid], [deleted], [recorddesc])" & vbNewLine & _
+                             "		     SELECT SYSTEM_USER, @dChangeDate, [id], [oldvalue], [newvalue], [tableid], [tablename], [columnname], [columnid], 1, [recorddesc] FROM @audit;" & vbNewLine & vbNewLine
           End If
 
           ' Update statement of all the calculated columns
