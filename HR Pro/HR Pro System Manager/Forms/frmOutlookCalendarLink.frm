@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmOutlookCalendarLink 
@@ -21,6 +21,7 @@ Begin VB.Form frmOutlookCalendarLink
    EndProperty
    HelpContextID   =   5061
    Icon            =   "frmOutlookCalendarLink.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form2"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -125,11 +126,11 @@ Begin VB.Form frmOutlookCalendarLink
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmOutlookCalendarLink.frx":11BC
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(2)"
+      Tab(1).Control(0)=   "fraColumns(0)"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraColumns(1)"
       Tab(1).Control(1).Enabled=   0   'False
-      Tab(1).Control(2)=   "fraColumns(0)"
+      Tab(1).Control(2)=   "fraColumns(2)"
       Tab(1).Control(2).Enabled=   0   'False
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Co&ntent"
@@ -1031,7 +1032,7 @@ Private Sub cmdSubject_Click()
   Set objExpr = New CExpression
   
   With objExpr
-    fOK = .Initialise(mobjOutlookLink.TableID, Val(txtSubject.Tag), giEXPR_OUTLOOKSUBJECT, giEXPRVALUE_CHARACTER)
+    fOK = .Initialise(mobjOutlookLink.TableID, val(txtSubject.Tag), giEXPR_OUTLOOKSUBJECT, giEXPRVALUE_CHARACTER)
   
     If fOK Then
       ' Instruct the expression object to display the
@@ -1047,7 +1048,7 @@ Private Sub cmdSubject_Click()
         ' Check in case the original expression has been deleted.
         With recExprEdit
           .Index = "idxExprID"
-          .Seek "=", Val(txtSubject.Tag), False
+          .Seek "=", val(txtSubject.Tag), False
   
           If .NoMatch Then
             txtSubject.Tag = 0
@@ -1061,6 +1062,15 @@ Private Sub cmdSubject_Click()
   ' Disassociate object variables.
   Set objExpr = Nothing
 
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_Load()
@@ -1125,7 +1135,7 @@ Private Function ValidDefinition() As Boolean
         .SetFocus
         Exit Function
       Else
-        If Val(Left(.Text, 2)) > 23 Or Val(Right(.Text, 2)) > 59 Then
+        If val(Left(.Text, 2)) > 23 Or val(Right(.Text, 2)) > 59 Then
           SSTab1.Tab = 0
           MsgBox "Invalid start time.", vbExclamation, Me.Caption
           .SetFocus
@@ -1141,7 +1151,7 @@ Private Function ValidDefinition() As Boolean
         .SetFocus
         Exit Function
       Else
-        If Val(Left(.Text, 2)) > 23 Or Val(Right(.Text, 2)) > 59 Then
+        If val(Left(.Text, 2)) > 23 Or val(Right(.Text, 2)) > 59 Then
           SSTab1.Tab = 0
           MsgBox "Invalid end time.", vbExclamation, Me.Caption
           .SetFocus
@@ -1154,8 +1164,8 @@ Private Function ValidDefinition() As Boolean
     
     'If no end date then check that the end time is after the start time
     If cboEndDate.ListIndex = 0 Then
-      lngStartTime = (Val(Left(TDBFixedStartTime.Text, 2)) * 60) + Val(Right(TDBFixedStartTime.Text, 2))
-      lngEndTime = (Val(Left(TDBFixedEndTime.Text, 2)) * 60) + Val(Right(TDBFixedEndTime.Text, 2))
+      lngStartTime = (val(Left(TDBFixedStartTime.Text, 2)) * 60) + val(Right(TDBFixedStartTime.Text, 2))
+      lngEndTime = (val(Left(TDBFixedEndTime.Text, 2)) * 60) + val(Right(TDBFixedEndTime.Text, 2))
   
       If lngStartTime > lngEndTime Then
         SSTab1.Tab = 0
@@ -1195,7 +1205,7 @@ Private Function SaveDefinition() As Boolean
   With mobjOutlookLink
 
     .Title = txtTitle.Text
-    .FilterID = Val(txtFilter.Tag)
+    .FilterID = val(txtFilter.Tag)
     .BusyStatus = SelectedComboItem(cboBusyStatus)
 
     .StartDate = SelectedComboItem(cboStartDate)
@@ -1211,7 +1221,7 @@ Private Function SaveDefinition() As Boolean
     .ReminderOffset = spnOffset.value
     .ReminderPeriod = SelectedComboItem(cboOffsetPeriod)
 
-    .Subject = Val(txtSubject.Tag)
+    .Subject = val(txtSubject.Tag)
     .content = txtBody.Text
 
 
@@ -1226,7 +1236,7 @@ Private Function SaveDefinition() As Boolean
     mobjOutlookLink.ClearColumns
     For lngCount = 1 To ListView2.ListItems.Count
       With ListView2.ListItems(lngCount)
-        mobjOutlookLink.AddColumn Val(Mid(.key, 2)), .SubItems(2), lngCount
+        mobjOutlookLink.AddColumn val(Mid(.key, 2)), .SubItems(2), lngCount
       End With
     Next
 
@@ -1283,8 +1293,8 @@ Private Sub PopulateAvailable(blnFirstLoad As Boolean)
           (!ColumnType <> giCOLUMNTYPE_SYSTEM) Then
 
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) And _
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) And _
           (!ControlType <> giCTRL_OLE) And _
           (!ControlType <> giCTRL_PHOTO) And _
           (!ControlType <> giCTRL_LINK) Then
@@ -1715,7 +1725,7 @@ Private Sub ListView1_GotFocus()
 End Sub
 
 Private Sub ListView1_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub ListView2_GotFocus()
@@ -1723,7 +1733,7 @@ Private Sub ListView2_GotFocus()
 End Sub
 
 Private Sub ListView2_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Function CopyToSelected(bAll As Boolean)
@@ -1818,7 +1828,7 @@ Private Function CopyToAvailable(bAll As Boolean)
     For iLoop = .Count To 1 Step -1
       If bAll Or .Item(iLoop).Selected Then
         strType = Left(.Item(iLoop).key, 1)
-        lngID = Val(Mid(.Item(iLoop).key, 2))
+        lngID = val(Mid(.Item(iLoop).key, 2))
         iTempItemIndex = iLoop
         .Remove .Item(iLoop).key
       End If
@@ -1973,12 +1983,12 @@ End Sub
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Public Property Let Changed(ByVal blnNewValue As Boolean)
   If Not mblnLoading Then
-    cmdOk.Enabled = blnNewValue And Not mblnReadOnly
+    cmdOK.Enabled = blnNewValue And Not mblnReadOnly
   End If
 End Property
 
@@ -2233,8 +2243,8 @@ End Sub
 
 Private Sub PopulateFolders(lngSelected As Long)
   
-  Dim rsRecipients As dao.Recordset
-  Dim rsTemp As dao.Recordset
+  Dim rsRecipients As DAO.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim strSQL As String
   Dim lngCount As Long
 
@@ -2305,11 +2315,11 @@ Private Sub txtBody_GotFocus()
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-  cmdOk.Default = False
+  cmdOK.Default = False
 End Sub
 
 Private Sub txtBody_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 

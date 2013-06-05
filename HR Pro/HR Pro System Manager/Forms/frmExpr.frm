@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
 Begin VB.Form frmExpr 
    Caption         =   "Expression Definition"
@@ -123,17 +123,18 @@ Begin VB.Form frmExpr
          Width           =   6900
          _ExtentX        =   12171
          _ExtentY        =   6218
-         _Version        =   65538
+         _Version        =   65536
          NodeSelectionStyle=   2
          Style           =   6
          Indentation     =   315
+         LoadStyleRoot   =   1
          AutoSearch      =   0   'False
          HideSelection   =   0   'False
          PictureBackgroundUseMask=   0   'False
          HasFont         =   -1  'True
          HasMouseIcon    =   0   'False
          HasPictureBackground=   0   'False
-         ImageList       =   "<None>"
+         ImageList       =   "(None)"
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
@@ -143,7 +144,6 @@ Begin VB.Form frmExpr
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         LoadStyleRoot   =   1
       End
    End
    Begin VB.Frame fraDefinition 
@@ -768,6 +768,13 @@ End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
 
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+
 ' JDM - 15/03/01 - Fault 1934 - Only do things if we have access
 If mfModifiable = False Then
     KeyCode = 0
@@ -1374,7 +1381,7 @@ Private Sub sstrvComponents_AfterLabelEdit(Cancel As SSActiveTreeView.SSReturnBo
   mfLabelEditing = False
   
   ' RH - Fault 1909 - Restore the default button
-  cmdOk.Default = True
+  cmdOK.Default = True
   
   ' Validate the entered label.
   If Len(NewString) = 0 Then
@@ -1390,7 +1397,7 @@ End Sub
 Private Sub sstrvComponents_BeforeLabelEdit(Cancel As SSActiveTreeView.SSReturnBoolean)
   
   ' RH - Fault 1909 - Stop the default button
-  cmdOk.Default = False
+  cmdOK.Default = False
   
   ' Only allow sub-expression labels to be edited.
   If sstrvComponents.SelectedItem.key = ROOTKEY Then
@@ -1930,7 +1937,7 @@ Private Function UniqueKey() As String
     sKey = sstrvComponents.Nodes(iLoop).key
     
     If sKey <> ROOTKEY Then
-      iKey = Val(sstrvComponents.Nodes(iLoop).key)
+      iKey = val(sstrvComponents.Nodes(iLoop).key)
     
       If iKey >= iNextKey Then
         iNextKey = iKey + 1

@@ -19,6 +19,7 @@ Begin VB.Form frmAccordPayrollComponent
    EndProperty
    HelpContextID   =   5059
    Icon            =   "frmAccordPayrollComponent.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -368,7 +369,7 @@ Private mbForceAlwaysTransfer As Boolean
 Private mbPreventModify As Boolean
 
 Public Property Let Changed(pbNewValue As Boolean)
-  cmdOk.Enabled = pbNewValue And Not mbLoading
+  cmdOK.Enabled = pbNewValue And Not mbLoading
 End Property
 
 Public Property Let TransferFieldID(ByVal plngNewValue As Long)
@@ -561,6 +562,15 @@ Private Sub cmdOK_Click()
   
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   Const GRIDROWHEIGHT = 239
   
@@ -614,14 +624,14 @@ Private Sub Form_Load()
   optComponentType(2).Enabled = IIf(mbIsEmployeeCode, False, True) And Not mbReadOnly
    
   mbLoading = False
-  cmdOk.Enabled = mbUndefined And Not mbReadOnly
+  cmdOK.Enabled = mbUndefined And Not mbReadOnly
 
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
   ' If the user cancels or tries to close the form
-  If UnloadMode <> vbFormCode And cmdOk.Enabled Then
+  If UnloadMode <> vbFormCode And cmdOK.Enabled Then
     Select Case MsgBox("Apply changes ?", vbYesNoCancel + vbQuestion, Me.Caption)
       Case vbCancel
         Cancel = True
@@ -887,7 +897,7 @@ Private Sub LoadMappings()
 
   Dim sSQL As String
   Dim strAddString As String
-  Dim rsDefinition As dao.Recordset
+  Dim rsDefinition As DAO.Recordset
 
   sSQL = "SELECT *" & _
     " FROM tmpAccordTransferFieldMappings" & _

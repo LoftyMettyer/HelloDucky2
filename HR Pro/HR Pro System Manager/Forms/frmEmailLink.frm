@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmEmailLink 
@@ -21,6 +21,7 @@ Begin VB.Form frmEmailLink
    EndProperty
    HelpContextID   =   5016
    Icon            =   "frmEmailLink.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form2"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -683,12 +684,12 @@ Private mlngSelectedID As Long
 
 Public Property Let Changed(ByVal value As Boolean)
   If Not mblnLoading Then
-    cmdOk.Enabled = value
+    cmdOK.Enabled = value
   End If
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 
@@ -1203,6 +1204,15 @@ Private Sub Form_Activate()
 
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
 
   mblnLoading = True
@@ -1285,8 +1295,8 @@ Private Sub Form_Resize()
   lngTop = Me.ScaleHeight - (cmdCancel.Height + GAP)
   cmdCancel.Move lngLeft, lngTop
 
-  lngLeft = lngLeft - (cmdOk.Width + GAP)
-  cmdOk.Move lngLeft, lngTop
+  lngLeft = lngLeft - (cmdOK.Width + GAP)
+  cmdOK.Move lngLeft, lngTop
 
   lngWidth = Me.ScaleWidth - (GAP * 2)
   lngHeight = lngTop - (GAP * 2)
@@ -1451,11 +1461,11 @@ Private Sub txtContent_Change(Index As Integer)
 End Sub
 
 Private Sub txtContent_GotFocus(Index As Integer)
-  cmdOk.Default = False
+  cmdOK.Default = False
 End Sub
 
 Private Sub txtContent_LostFocus(Index As Integer)
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub txtFilter_Change()
@@ -1569,8 +1579,8 @@ Private Sub PopulateColumnNodes(lngTableID As Long, strTableName As String)
 
 
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) And _
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) And _
           (!ControlType <> giCTRL_OLE) And _
           (!ControlType <> giCTRL_PHOTO) And _
           (!ControlType <> giCTRL_LINK) Then
@@ -1610,8 +1620,8 @@ Private Sub PopulateColumns(lngTableID As Long)
 
 
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) And _
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) And _
           (!ControlType <> giCTRL_OLE) And _
           (!ControlType <> giCTRL_PHOTO) And _
           (!ControlType <> giCTRL_LINK) Then

@@ -810,16 +810,17 @@ Begin VB.Form frmComponent
          Width           =   1005
          _ExtentX        =   1773
          _ExtentY        =   1138
-         _Version        =   65538
+         _Version        =   65536
          LabelEdit       =   1
          Style           =   6
          Indentation     =   525
+         Sorted          =   1
          HideSelection   =   0   'False
          PictureBackgroundUseMask=   0   'False
          HasFont         =   -1  'True
          HasMouseIcon    =   0   'False
          HasPictureBackground=   0   'False
-         ImageList       =   "<None>"
+         ImageList       =   "(None)"
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
@@ -829,7 +830,6 @@ Begin VB.Form frmComponent
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         Sorted          =   1
       End
    End
    Begin VB.Frame fraComponent 
@@ -1118,16 +1118,17 @@ Begin VB.Form frmComponent
          Width           =   2790
          _ExtentX        =   4921
          _ExtentY        =   1773
-         _Version        =   65538
+         _Version        =   65536
          LabelEdit       =   1
          Style           =   6
          Indentation     =   525
+         Sorted          =   1
          HideSelection   =   0   'False
          PictureBackgroundUseMask=   0   'False
          HasFont         =   -1  'True
          HasMouseIcon    =   0   'False
          HasPictureBackground=   0   'False
-         ImageList       =   "<None>"
+         ImageList       =   "(None)"
          BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
@@ -1137,7 +1138,6 @@ Begin VB.Form frmComponent
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         Sorted          =   1
       End
    End
    Begin VB.Frame fraComponent 
@@ -1755,11 +1755,11 @@ Private Sub cboWorkflowFieldColumn_Refresh()
             (!Deleted = False) And _
             (!DataType <> dtLONGVARBINARY) And _
             (!DataType <> dtVARBINARY) And _
-            (!columnType <> giCOLUMNTYPE_LINK) And _
-            (!columnType <> giCOLUMNTYPE_SYSTEM) And _
+            (!columntype <> giCOLUMNTYPE_LINK) And _
+            (!columntype <> giCOLUMNTYPE_SYSTEM) And _
             ((optWorkflowField(2).value = False) Or _
               (!DataType = dtNUMERIC) Or _
-              (!DataType = dtINTEGER)) Then
+              (!DataType = dtinteger)) Then
   
             cboWorkflowFieldColumn.AddItem .Fields("columnName")
             cboWorkflowFieldColumn.ItemData(cboWorkflowFieldColumn.NewIndex) = .Fields("columnID")
@@ -1843,11 +1843,11 @@ Private Sub cboFldColumn_Refresh()
           (!Deleted = False) And _
           (!DataType <> dtLONGVARBINARY) And _
           (!DataType <> dtVARBINARY) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) And _
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) And _
           ((optField(2).value = False) Or _
             (!DataType = dtNUMERIC) Or _
-            (!DataType = dtINTEGER)) Then
+            (!DataType = dtinteger)) Then
                           
           cboFldColumn.AddItem .Fields("columnName")
           cboFldColumn.ItemData(cboFldColumn.NewIndex) = .Fields("columnID")
@@ -1888,7 +1888,7 @@ Private Sub cboFldColumn_Refresh()
       cboFldColumn.ListIndex = 0
     End If
         
-    cmdOk.Enabled = .Enabled
+    cmdOK.Enabled = .Enabled
   End With
 
 End Sub
@@ -2333,8 +2333,8 @@ Private Sub cboTabValColumn_Refresh()
           ' Add each column name to the lookup columns combo.
           ' NB. We only want to add certain types of column. There's not use in
           ' looking up OLE or logic values.
-          If (!columnType <> giCOLUMNTYPE_SYSTEM) And _
-            (!columnType <> giCOLUMNTYPE_LINK) And _
+          If (!columntype <> giCOLUMNTYPE_SYSTEM) And _
+            (!columntype <> giCOLUMNTYPE_LINK) And _
             (Not !Deleted) And _
             (!DataType <> dtLONGVARBINARY) And _
             (!DataType <> dtVARBINARY) And _
@@ -2420,8 +2420,8 @@ Private Sub cboPValColumn_Refresh()
         Do While Not .EOF
           If (!TableID = lngTableID) And _
             (!Deleted = False) And _
-            (!columnType <> giCOLUMNTYPE_SYSTEM) And _
-            (!columnType <> giCOLUMNTYPE_LINK) And _
+            (!columntype <> giCOLUMNTYPE_SYSTEM) And _
+            (!columntype <> giCOLUMNTYPE_LINK) And _
             (!DataType <> dtLONGVARBINARY) And _
             (!DataType <> dtVARBINARY) And _
             (!DataType <> dtBIT) Then
@@ -2462,7 +2462,7 @@ Private Sub cboPValColumn_Refresh()
     cboPValDefaultTabVal_Refresh
   End If
   
-  cmdOk.Enabled = (Len(Trim(mobjComponent.Component.Prompt)) > 0) And _
+  cmdOK.Enabled = (Len(Trim(mobjComponent.Component.Prompt)) > 0) And _
     ((mobjComponent.Component.ValueType <> giEXPRVALUE_TABLEVALUE) Or (cboPValColumn.Enabled))
 
   Exit Sub
@@ -2504,9 +2504,9 @@ Private Sub cboPValDefaultTabVal_Refresh()
       ' Add an item to the combo for each lookup value.
       While Not .EOF
         Select Case mDataType
-          Case dtNUMERIC, dtINTEGER
+          Case dtNUMERIC, dtinteger
             cboPValDefaultTabVal.AddItem Trim(Str(!LookupValue))
-            If !LookupValue = Val(sDfltValue) Then
+            If !LookupValue = val(sDfltValue) Then
               iIndex = cboPValDefaultTabVal.NewIndex
             End If
 
@@ -2611,7 +2611,7 @@ Private Sub cboTabValValue_Refresh()
       ' Add an item to the combo for each function.
       While Not .EOF
         Select Case mDataType
-          Case dtNUMERIC, dtINTEGER
+          Case dtNUMERIC, dtinteger
             cboTabValValue.AddItem Trim(Str(!LookupValue))
           Case dtTIMESTAMP
             If IsDate(!LookupValue) Then
@@ -2644,7 +2644,7 @@ Private Sub cboTabValValue_Refresh()
 TidyUpAndExit:
   Set rsLookupValues = Nothing
   Set objMisc = Nothing
-  cmdOk.Enabled = cboTabValValue.Enabled
+  cmdOK.Enabled = cboTabValValue.Enabled
      
   Exit Sub
   
@@ -3271,7 +3271,7 @@ End Sub
 
 Private Sub asrFldSelLine_Change()
   ' Update the component object.
-  mobjComponent.Component.SelectionLine = Val(asrFldSelLine.Text)
+  mobjComponent.Component.SelectionLine = val(asrFldSelLine.Text)
 
 End Sub
 
@@ -3306,14 +3306,14 @@ End Sub
 
 Private Sub asrPValReturnDecimals_Change()
   ' Update the component object with the new value.
-  mobjComponent.Component.ReturnDecimals = Val(asrPValReturnDecimals.Text)
+  mobjComponent.Component.ReturnDecimals = val(asrPValReturnDecimals.Text)
   
 End Sub
 
 
 Private Sub asrPValReturnSize_Change()
   ' Update the component object with the new value.
-  mobjComponent.Component.ReturnSize = Val(asrPValReturnSize.Text)
+  mobjComponent.Component.ReturnSize = val(asrPValReturnSize.Text)
 
 End Sub
 
@@ -3347,7 +3347,7 @@ End Sub
 
 Private Sub asrWorkflowFldSelLine_Change()
   ' Update the component object.
-  mobjComponent.Component.SelectionLine = Val(asrWorkflowFldSelLine.Text)
+  mobjComponent.Component.SelectionLine = val(asrWorkflowFldSelLine.Text)
 
 End Sub
 
@@ -3431,11 +3431,11 @@ Private Sub cboTabValColumn_Click()
       Select Case mavColumns(2, iLoop)
         Case dtNUMERIC
           mobjComponent.Component.ReturnType = giEXPRVALUE_NUMERIC
-        Case dtINTEGER
+        Case dtinteger
           mobjComponent.Component.ReturnType = giEXPRVALUE_NUMERIC
         Case dtTIMESTAMP
           mobjComponent.Component.ReturnType = giEXPRVALUE_DATE
-        Case dtVARCHAR, dtLONGVARCHAR
+        Case dtVARCHAR, dtlongvarchar
           mobjComponent.Component.ReturnType = giEXPRVALUE_CHARACTER
       End Select
       
@@ -3460,7 +3460,7 @@ Private Sub cboTabValValue_Click()
   With mobjComponent.Component
     Select Case .ReturnType
       Case giEXPRVALUE_NUMERIC
-        .value = Val(cboTabValValue.List(cboTabValValue.ListIndex))
+        .value = val(cboTabValValue.List(cboTabValValue.ListIndex))
     
       Case giEXPRVALUE_DATE
         ' Validate the entered date.
@@ -4915,7 +4915,7 @@ Private Sub cmdOK_Click()
   ''   ValidateGTMaskDate(asrPValDefaultDate) = False Then
   ''    Exit Sub
   ''End If
-  cmdOk.SetFocus
+  cmdOK.SetFocus
   DoEvents
 
   ' Write the displayed control values to the component.
@@ -4957,13 +4957,20 @@ End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
 
-  ' JDM - 15/02/01 - Fault 1869 - Error when pressing CTRL-X on treeview control
-  ' For some reason the Sheridan treeview control wants to fire off it own cut'n'paste functionality
-  ' must trap it here not in it's own keydown event
-  If ActiveControl.Name = "ssTreeFuncFunction" Or ActiveControl.Name = "ssTreeOpOperator" Then
-    KeyCode = 0
-    Shift = 0
-  End If
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+
+' JDM - 15/02/01 - Fault 1869 - Error when pressing CTRL-X on treeview control
+' For some reason the Sheridan treeview control wants to fire off it own cut'n'paste functionality
+' must trap it here not in it's own keydown event
+If ActiveControl.Name = "ssTreeFuncFunction" Or ActiveControl.Name = "ssTreeOpOperator" Then
+  KeyCode = 0
+  Shift = 0
+End If
 
 End Sub
 
@@ -5127,15 +5134,15 @@ Private Sub FormatScreen()
     .Top = iYFRAMEGAP + iYGAP + iFRAMEHEIGHT
     .Left = fraComponent(fraComponent.LBound).Left + _
       fraComponent(fraComponent.LBound).Width - .Width
-    cmdOk.Top = .Top
-    cmdOk.Left = .Left - iXGAP - cmdOk.Width
+    cmdOK.Top = .Top
+    cmdOK.Left = .Left - iXGAP - cmdOK.Width
   End With
   
   ' Size the form.
   Me.Width = fraComponent(fraComponent.UBound).Left + _
     fraComponent(fraComponent.UBound).Width + iXFRAMEGAP + _
     (UI.GetSystemMetrics(SM_CXFRAME) * Screen.TwipsPerPixelX)
-  Me.Height = cmdOk.Top + cmdOk.Height + iXFRAMEGAP + _
+  Me.Height = cmdOK.Top + cmdOK.Height + iXFRAMEGAP + _
     (Screen.TwipsPerPixelY * (UI.GetSystemMetrics(SM_CYCAPTION) + UI.GetSystemMetrics(SM_CYFRAME)))
   
 End Sub
@@ -5169,7 +5176,7 @@ End Sub
 
 Private Sub listCalcCalculation_DblClick()
   ' Confirm the selection.
-  If cmdOk.Enabled Then
+  If cmdOK.Enabled Then
     cmdOK_Click
   End If
   
@@ -5241,7 +5248,7 @@ Private Sub InitializeValueControls()
   asrValDateValue.Text = dDateValue
   
   ' Ensure the user can confirm the component definition.
-  cmdOk.Enabled = True
+  cmdOK.Enabled = True
 
 End Sub
 Private Sub InitializeWorkflowValueControls()
@@ -5407,11 +5414,11 @@ Private Sub cboWFValueItem_Refresh()
             fItemOK = True
             
             Select Case GetColumnDataType(CLng(asItems(49, iLoop)))
-              Case dtLONGVARCHAR
+              Case dtlongvarchar
                 sDataTypeDescription = "working pattern"
               Case dtNUMERIC
                 sDataTypeDescription = "numeric"
-              Case dtINTEGER
+              Case dtinteger
                 sDataTypeDescription = "integer"
               Case dtTIMESTAMP
                 sDataTypeDescription = "date"
@@ -5486,7 +5493,7 @@ Private Sub cboWFValueItem_Refresh()
 
   ' Enable the combo if there are items.
   With cboWFValueItem
-    cmdOk.Enabled = (.ListCount > 0)
+    cmdOK.Enabled = (.ListCount > 0)
     
     If .ListCount > 0 Then
       .Enabled = True
@@ -5805,7 +5812,7 @@ ErrorTrap:
     ssTreeFuncFunction.SelectedItem = ssTreeFuncFunction.Nodes(1)
   End If
   
-  cmdOk.Enabled = False
+  cmdOK.Enabled = False
   
 End Sub
 Private Sub InitializeOperatorControls()
@@ -5831,7 +5838,7 @@ ErrorTrap:
     ssTreeOpOperator.SelectedItem = ssTreeOpOperator.Nodes(1)
   End If
   
-  cmdOk.Enabled = False
+  cmdOK.Enabled = False
       
 End Sub
 Private Sub InitializeTableValueControls()
@@ -5857,7 +5864,7 @@ Private Sub InitializeTableValueControls()
 
   ' Only allow the user to confirm the component definition if a valid
   ' table value is selected.
-  cmdOk.Enabled = cboTabValValue.Enabled
+  cmdOK.Enabled = cboTabValValue.Enabled
 
   ' Initialize controls.
   If cboTabValTable.Enabled Then
@@ -6105,7 +6112,7 @@ Private Function SaveTableValue() As Boolean
   With mobjComponent.Component
     Select Case .ReturnType
       Case giEXPRVALUE_NUMERIC
-        .value = Val(cboTabValValue.List(cboTabValValue.ListIndex))
+        .value = val(cboTabValValue.List(cboTabValValue.ListIndex))
     
       Case giEXPRVALUE_DATE
         ' Validate the entered date.
@@ -6178,7 +6185,7 @@ Private Sub InitializeCalcControls()
   
   ' Only allow the user to confirm the component definition if a valid
   ' calculation is selected.
-  cmdOk.Enabled = listCalcCalculation.Enabled
+  cmdOK.Enabled = listCalcCalculation.Enabled
     
 End Sub
 
@@ -6196,7 +6203,7 @@ Private Sub InitializeFilterControls()
   
   ' Only allow the user to confirm the component definition if a valid
   ' calculation is selected.
-  cmdOk.Enabled = listCalcFilters.Enabled
+  cmdOK.Enabled = listCalcFilters.Enabled
     
 End Sub
 
@@ -6590,7 +6597,7 @@ Private Sub FormatWorkflowFieldControls()
   '  End If
   'End If
 
-  cmdOk.Enabled = fOK
+  cmdOK.Enabled = fOK
   
 End Sub
 Private Sub FormatFunctionControls()
@@ -6730,7 +6737,7 @@ Private Sub FormatFunctionControls()
 
   'MH20070615 Fault 12332
   'cmdOk.Enabled = fOK
-  cmdOk.Enabled = (fOK And fFunctionSelected)
+  cmdOK.Enabled = (fOK And fFunctionSelected)
   
 End Sub
 
@@ -6991,7 +6998,7 @@ End Sub
 
 Private Sub ssTreeFuncFunction_DblClick()
   ' Confirm the function selection.
-  If cmdOk.Enabled Then
+  If cmdOK.Enabled Then
     cmdOK_Click
   End If
 
@@ -7015,7 +7022,7 @@ End Sub
 
 Private Sub ssTreeOpOperator_DblClick()
   ' Confirm the operator selection.
-  If cmdOk.Enabled Then
+  If cmdOK.Enabled Then
     cmdOK_Click
   End If
   
@@ -7035,7 +7042,7 @@ Private Sub ssTreeOpOperator_NodeClick(Node As SSActiveTreeView.SSNode)
   
   ' Only enable the OK button if an operator has been selected.
   ' ie. not when the root node, or one of the category nodes is selected.
-  cmdOk.Enabled = fOperatorSelected
+  cmdOK.Enabled = fOperatorSelected
   
 End Sub
 
@@ -7065,7 +7072,7 @@ Private Sub txtPValPrompt_Change()
     
   ' Only enable the OK button if a prompt is entered and
   ' there is a valid column selected for table type prompted values.
-  cmdOk.Enabled = (Len(Trim(txtPValPrompt.Text)) > 0) And _
+  cmdOK.Enabled = (Len(Trim(txtPValPrompt.Text)) > 0) And _
     (mobjComponent.Component.ValueType <> giEXPRVALUE_TABLEVALUE Or _
     mobjComponent.Component.LookupColumn > 0)
     
@@ -8062,8 +8069,8 @@ Private Function SavePromptedValue() As Boolean
         
       Case giEXPRVALUE_TABLEVALUE
         Select Case mDataType
-          Case dtNUMERIC, dtINTEGER
-            .DefaultValue = Val(cboPValDefaultTabVal.List(cboPValDefaultTabVal.ListIndex))
+          Case dtNUMERIC, dtinteger
+            .DefaultValue = val(cboPValDefaultTabVal.List(cboPValDefaultTabVal.ListIndex))
           Case dtTIMESTAMP
             If IsDate(cboPValDefaultTabVal.List(cboPValDefaultTabVal.ListIndex)) Then
               .DefaultValue = Replace(Format(CDate(cboPValDefaultTabVal.List(cboPValDefaultTabVal.ListIndex)), "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/")

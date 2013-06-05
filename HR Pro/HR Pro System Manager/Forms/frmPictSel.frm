@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Begin VB.Form frmPictSel 
    Caption         =   "Open Picture"
    ClientHeight    =   4935
@@ -17,6 +17,7 @@ Begin VB.Form frmPictSel
    EndProperty
    HelpContextID   =   5023
    Icon            =   "frmPictSel.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -249,6 +250,15 @@ Private Sub Form_Activate()
   
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   Me.Loading = True
   
@@ -275,8 +285,8 @@ Private Sub Form_Resize()
   cmdCancel.Top = ListView1.Height + 100
   cmdCancel.Left = ListView1.Left + ListView1.Width - cmdCancel.Width - 100
   
-  cmdOk.Top = cmdCancel.Top
-  cmdOk.Left = cmdCancel.Left - cmdOk.Width - 200
+  cmdOK.Top = cmdCancel.Top
+  cmdOK.Left = cmdCancel.Left - cmdOK.Width - 200
   
 End Sub
 
@@ -380,7 +390,7 @@ End Sub
 
 Private Function SelectPicture() As Boolean
   If Not ListView1.SelectedItem Is Nothing Then
-    glngPictureID = Val(Mid(ListView1.SelectedItem.key, 2))
+    glngPictureID = val(Mid(ListView1.SelectedItem.key, 2))
     SelectPicture = True
     
     UnLoad Me

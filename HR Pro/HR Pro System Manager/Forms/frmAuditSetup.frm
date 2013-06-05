@@ -18,6 +18,7 @@ Begin VB.Form frmAuditSetup
    EndProperty
    HelpContextID   =   5082
    Icon            =   "frmAuditSetup.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -259,20 +260,20 @@ Public Changed As Boolean
 Private Sub cboAuditTable_Click()
 
   Dim lngAuditTable As Long
-  Dim objCtl As Control
+  Dim objctl As Control
 
   lngAuditTable = GetComboItem(cboAuditTable)
 
   ' Clear the current contents of the combos.
-  For Each objCtl In Me
-    If TypeOf objCtl Is ComboBox And Not objCtl.Name = "cboAuditTable" Then
-      With objCtl
+  For Each objctl In Me
+    If TypeOf objctl Is ComboBox And Not objctl.Name = "cboAuditTable" Then
+      With objctl
         .Clear
         .AddItem "<None>"
         .ItemData(.NewIndex) = 0
       End With
     End If
-  Next objCtl
+  Next objctl
 
   With recColEdit
     .Index = "idxName"
@@ -287,8 +288,8 @@ Private Sub cboAuditTable_Click()
         End If
 
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
         
           If !DataType = dtTIMESTAMP Then
             cboAuditDate.AddItem !ColumnName
@@ -328,7 +329,7 @@ Private Sub cboAuditTable_Click()
               cboNewValue.ItemData(cboNewValue.NewIndex) = !ColumnID
             End If
           
-          ElseIf !DataType = dtINTEGER Then
+          ElseIf !DataType = dtinteger Then
           
             cboID.AddItem !ColumnName
             cboID.ItemData(cboID.NewIndex) = !ColumnID
@@ -420,6 +421,15 @@ Private Function ReadParam(strKey As String) As Long
 
 End Function
 
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
 
 Private Sub Form_Load()
  

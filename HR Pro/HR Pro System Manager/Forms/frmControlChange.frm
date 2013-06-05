@@ -17,6 +17,7 @@ Begin VB.Form frmControlChange
    EndProperty
    HelpContextID   =   5011
    Icon            =   "frmControlChange.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -129,6 +130,15 @@ Private Sub Form_Initialize()
 
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   ' Position the form.
   UI.frmAtCenterOfParent Me, frmSysMgr
@@ -198,10 +208,10 @@ Public Property Let ScreenList(ByVal vNewValue As Variant)
   lblInfo2.Top = lngYPosition + iYAFTERSCREENLISTGAP
   optChoice(0).Top = lblInfo2.Top + iYGAP
   optChoice(1).Top = optChoice(0).Top + iYGAP
-  cmdOk.Top = optChoice(1).Top + iYBUTTONGAP
-  cmdCancel.Top = cmdOk.Top
-  Me.Height = cmdOk.Top + 1000
-  Me.Height = cmdOk.Top + cmdOk.Height + iYBORDERGAP + _
+  cmdOK.Top = optChoice(1).Top + iYBUTTONGAP
+  cmdCancel.Top = cmdOK.Top
+  Me.Height = cmdOK.Top + 1000
+  Me.Height = cmdOK.Top + cmdOK.Height + iYBORDERGAP + _
     (Screen.TwipsPerPixelY * (UI.GetSystemMetrics(SM_CYCAPTION) + UI.GetSystemMetrics(SM_CYFRAME)))
 
 End Property

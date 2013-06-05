@@ -18,6 +18,7 @@ Begin VB.Form frmBankHolidaySetup
    EndProperty
    HelpContextID   =   5005
    Icon            =   "frmBankHolidaySetup.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -183,7 +184,7 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  cmdOk.Enabled = True
+  cmdOK.Enabled = True
 End Property
 
 Private Sub cboBHolDate_Change()
@@ -216,6 +217,15 @@ Private Sub cboBHolTable_Change()
   Changed = True
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   Screen.MousePointer = vbHourglass
 
@@ -232,7 +242,7 @@ Private Sub Form_Load()
   
   'AE20080204 Fault #12829
   mfChanged = False
-  cmdOk.Enabled = False
+  cmdOK.Enabled = False
   Screen.MousePointer = vbDefault
 End Sub
 
@@ -348,8 +358,8 @@ Private Sub RefreshBHolRegionControls()
           Exit Do
         End If
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
           ' Load varchar fields
           If !DataType = dtVARCHAR Then
@@ -413,24 +423,24 @@ Private Sub RefreshBHolControls()
   ' Refresh the BHol controls.
   Dim iBHolDateListIndex As Integer
   Dim iBHolDescriptionListIndex As Integer
-  Dim objCtl As Control
+  Dim objctl As Control
 
   iBHolDateListIndex = 0
   iBHolDescriptionListIndex = 0
 
   ' Clear the current contents of the combos.
-  For Each objCtl In Me
-    If TypeOf objCtl Is ComboBox And _
-      (objCtl.Name = "cboBHolDate" Or _
-      objCtl.Name = "cboBHolDescription") Then
+  For Each objctl In Me
+    If TypeOf objctl Is ComboBox And _
+      (objctl.Name = "cboBHolDate" Or _
+      objctl.Name = "cboBHolDescription") Then
         
-      With objCtl
+      With objctl
         .Clear
         .AddItem "<None>"
         .ItemData(.NewIndex) = 0
       End With
     End If
-  Next objCtl
+  Next objctl
 
   With recColEdit
     .Index = "idxName"
@@ -445,8 +455,8 @@ Private Sub RefreshBHolControls()
         End If
 
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
           ' Load date fields
           If !DataType = dtTIMESTAMP Then

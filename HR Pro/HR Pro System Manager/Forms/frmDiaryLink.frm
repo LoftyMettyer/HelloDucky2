@@ -19,6 +19,7 @@ Begin VB.Form frmDiaryLink
    EndProperty
    HelpContextID   =   5014
    Icon            =   "frmDiaryLink.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -460,6 +461,15 @@ Private Sub Form_Activate()
 
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   
   mfLoading = True
@@ -543,7 +553,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   
   If gfCancelled = True Then
     
-    If mblnChanged = True And cmdOk.Enabled Then
+    If mblnChanged = True And cmdOK.Enabled Then
       
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
         

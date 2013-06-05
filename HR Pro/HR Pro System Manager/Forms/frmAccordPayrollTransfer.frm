@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmAccordPayrollTransfer 
@@ -20,6 +20,7 @@ Begin VB.Form frmAccordPayrollTransfer
    EndProperty
    HelpContextID   =   1060
    Icon            =   "frmAccordPayrollTransfer.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -680,12 +681,12 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  cmdOk.Enabled = True
+  cmdOK.Enabled = True
 End Property
 Private Sub RefreshButtons()
   
   If Not mbLoading Then
-    cmdOk.Enabled = mfChanged And Not mbReadOnly
+    cmdOK.Enabled = mfChanged And Not mbReadOnly
     cmdEdit.Enabled = (cboTransferTables <> "<None>")
     cmdDelete.Enabled = (cboTransferTables <> "<None>") And (Not mbReadOnly)
     cmdNone.Enabled = (SelectedComboItem(cboTransferTables) > 0) And Not mbReadOnly
@@ -854,10 +855,10 @@ Private Sub cmdEdit_Click()
        
     .BaseTableID = GetComboItem(cboTransferTables)
     .Description = ctlGrid.Columns("Description").Text
-    .MapType = Val(ctlGrid.Columns("ASRMapType").Text)
-    .TableID = Val(ctlGrid.Columns("ASRTableID").Text)
-    .ColumnID = Val(ctlGrid.Columns("ASRColumnID").Text)
-    .ExprID = Val(ctlGrid.Columns("ASRExprID").Text)
+    .MapType = val(ctlGrid.Columns("ASRMapType").Text)
+    .TableID = val(ctlGrid.Columns("ASRTableID").Text)
+    .ColumnID = val(ctlGrid.Columns("ASRColumnID").Text)
+    .ExprID = val(ctlGrid.Columns("ASRExprID").Text)
     .value = ctlGrid.Columns("ASRValue").Text
     .IsKeyField = ctlGrid.Columns("IsKeyField").Text
     .IsCompanyCode = ctlGrid.Columns("IsCompanyCode").Text
@@ -1305,6 +1306,15 @@ End Sub
 
 
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
 
   Screen.MousePointer = vbHourglass
@@ -1353,7 +1363,7 @@ Private Sub Form_Load()
   
   mfChanged = False
   cmdDelete.Enabled = Not mbReadOnly
-  cmdOk.Enabled = False
+  cmdOK.Enabled = False
 
   Screen.MousePointer = vbNormal
 
@@ -1629,8 +1639,8 @@ Private Sub PopulateColumnsCombo(ByRef cboTemp As ComboBox, plngTableID As Long,
         End If
 
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
             cboTemp.AddItem !ColumnName
             cboTemp.ItemData(cboTemp.NewIndex) = !ColumnID
@@ -1653,7 +1663,7 @@ End Sub
 
 Private Sub PopulateTransferTypes()
 
-  Dim rsTransfterTypes As dao.Recordset
+  Dim rsTransfterTypes As DAO.Recordset
   Dim sSQL As String
 
   sSQL = "SELECT TransferType, TransferTypeID, FilterID, ASRBaseTableID, ForceAsUpdate FROM tmpAccordTransferTypes" _
@@ -1762,7 +1772,7 @@ Private Sub PopulateTransferDetails(ByVal plngTransferGrid As Long, pbReset As B
   Dim sSQL As String
   Dim strAddString As String
   Dim strMapToDescription As String
-  Dim rsDefinition As dao.Recordset
+  Dim rsDefinition As DAO.Recordset
   Dim ctlGrid As SSDBGrid
   Dim iTransferTypeID As Integer
 
@@ -1860,7 +1870,7 @@ End Sub
 
 Private Sub EnableDisableTabControls()
 
-  cmdOk.Enabled = Not mbReadOnly And mfChanged
+  cmdOK.Enabled = Not mbReadOnly And mfChanged
   cmdNone.Enabled = (tabOptions.Tab = 0) And Not mbReadOnly
   cmdEdit.Caption = IIf(mbReadOnly, "&View...", "&Edit...")
   cmdFilter.Enabled = (tabOptions.Tab = 0) And Not mbReadOnly

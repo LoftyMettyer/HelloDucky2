@@ -19,6 +19,7 @@ Begin VB.Form frmAbsenceSetup
    EndProperty
    HelpContextID   =   5004
    Icon            =   "frmAbsenceSetup.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -82,27 +83,27 @@ Begin VB.Form frmAbsenceSetup
       TabCaption(2)   =   "Calen&dar"
       TabPicture(2)   =   "frmAbsenceSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraCalendarInclude"
+      Tab(2).Control(0)=   "fraCalendarDef"
       Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraCalendarDef"
+      Tab(2).Control(1)=   "fraCalendarInclude"
       Tab(2).Control(1).Enabled=   0   'False
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "&SSP"
       TabPicture(3)   =   "frmAbsenceSetup.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraSSPColumns"
+      Tab(3).Control(0)=   "fraWorkingDays"
       Tab(3).Control(0).Enabled=   0   'False
-      Tab(3).Control(1)=   "fraWorkingDays"
+      Tab(3).Control(1)=   "fraSSPColumns"
       Tab(3).Control(1).Enabled=   0   'False
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "&Parental Leave"
       TabPicture(4)   =   "frmAbsenceSetup.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "Frame3"
+      Tab(4).Control(0)=   "Frame1"
       Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "Frame2"
       Tab(4).Control(1).Enabled=   0   'False
-      Tab(4).Control(2)=   "Frame1"
+      Tab(4).Control(2)=   "Frame3"
       Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       Begin VB.Frame Frame3 
@@ -1019,7 +1020,7 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
 End Property
 
 Private Sub cboAbsenceDuration_Click()
@@ -1150,7 +1151,7 @@ End Sub
 
 
 Private Sub cboWorkingDaysNumericValue_Click()
-  mvar_iAbsenceWorkingDaysNumericValue = Val(cboWorkingDaysNumericValue.Text)
+  mvar_iAbsenceWorkingDaysNumericValue = val(cboWorkingDaysNumericValue.Text)
   
   Changed = True
 End Sub
@@ -1193,6 +1194,15 @@ Private Sub cboAbsChildNo_Click()
   End With
   
   Changed = True
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 '
@@ -1568,7 +1578,7 @@ Private Sub RefreshAbsenceControls()
   Dim iAbsenceSSPWaitingDaysListIndex As Integer
   Dim iAbsenceSSPPaidDaysListIndex As Integer
   Dim iAbsenceChildNoListIndex As Integer
-  Dim objCtl As Control
+  Dim objctl As Control
 
   iAbsenceScreenListIndex = 0
   iAbsenceStartDateListIndex = 0
@@ -1585,31 +1595,31 @@ Private Sub RefreshAbsenceControls()
   iAbsenceChildNoListIndex = 0
   
   ' Clear the current contents of the combos.
-  For Each objCtl In Me
-    If TypeOf objCtl Is ComboBox And _
-      (objCtl.Name = "cboStartDate" Or _
-      objCtl.Name = "cboStartSession" Or _
-      objCtl.Name = "cboEndDate" Or _
-      objCtl.Name = "cboEndSession" Or _
-      objCtl.Name = "cboType" Or _
-      objCtl.Name = "cboReason" Or _
-      objCtl.Name = "cboAbsenceDuration" Or _
-      objCtl.Name = "cboContinuous" Or _
-      objCtl.Name = "cboSSPApplies" Or _
-      objCtl.Name = "cboSSPQualifyingDays" Or _
-      objCtl.Name = "cboSSPWaitingDays" Or _
-      objCtl.Name = "cboSSPPaidDays" Or _
-      objCtl.Name = "cboParentalLeaveAbsType" Or _
-      objCtl.Name = "cboAbsChildNo") Then
+  For Each objctl In Me
+    If TypeOf objctl Is ComboBox And _
+      (objctl.Name = "cboStartDate" Or _
+      objctl.Name = "cboStartSession" Or _
+      objctl.Name = "cboEndDate" Or _
+      objctl.Name = "cboEndSession" Or _
+      objctl.Name = "cboType" Or _
+      objctl.Name = "cboReason" Or _
+      objctl.Name = "cboAbsenceDuration" Or _
+      objctl.Name = "cboContinuous" Or _
+      objctl.Name = "cboSSPApplies" Or _
+      objctl.Name = "cboSSPQualifyingDays" Or _
+      objctl.Name = "cboSSPWaitingDays" Or _
+      objctl.Name = "cboSSPPaidDays" Or _
+      objctl.Name = "cboParentalLeaveAbsType" Or _
+      objctl.Name = "cboAbsChildNo") Then
 
-      With objCtl
+      With objctl
         .Clear
         .AddItem "<None>"
         .ItemData(.NewIndex) = 0
       End With
     End If
-  Next objCtl
-  Set objCtl = Nothing
+  Next objctl
+  Set objctl = Nothing
   
   With recColEdit
     .Index = "idxName"
@@ -1624,8 +1634,8 @@ Private Sub RefreshAbsenceControls()
         End If
 
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
           ' Only load date fields into the start/leaving date combos
           If !DataType = dtTIMESTAMP Then
@@ -1643,7 +1653,7 @@ Private Sub RefreshAbsenceControls()
           End If
 
           ' Only load numeric calc columns into the Duration Combo
-          If !DataType = dtNUMERIC And !columnType = 2 Then
+          If !DataType = dtNUMERIC And !columntype = 2 Then
             
             cboAbsenceDuration.AddItem !ColumnName
             cboAbsenceDuration.ItemData(cboAbsenceDuration.NewIndex) = !ColumnID
@@ -1692,7 +1702,7 @@ Private Sub RefreshAbsenceControls()
           End If
           
           
-          If !DataType = dtINTEGER Then
+          If !DataType = dtinteger Then
           
             cboAbsChildNo.AddItem !ColumnName
             cboAbsChildNo.ItemData(cboAbsChildNo.NewIndex) = !ColumnID
@@ -1789,23 +1799,23 @@ Private Sub RefreshAbsencePersonnelControls()
   Dim iWorkingDaysListIndex As Integer
   Dim sAbsenceTableName As String
   Dim sPersonnelTableName As String
-  Dim objCtl As Control
+  Dim objctl As Control
   
   iWorkingDaysListIndex = 0
   
   ' Clear the current contents of the combos.
-  For Each objCtl In Me
-    If TypeOf objCtl Is ComboBox And _
-      (objCtl.Name = "cboWorkingDaysField") Then
+  For Each objctl In Me
+    If TypeOf objctl Is ComboBox And _
+      (objctl.Name = "cboWorkingDaysField") Then
 
-      With objCtl
+      With objctl
         .Clear
         .AddItem "<None>"
         .ItemData(.NewIndex) = 0
       End With
     End If
-  Next objCtl
-  Set objCtl = Nothing
+  Next objctl
+  Set objctl = Nothing
   
   ' Read the historic wpattern stuff
   'ReadHistoricWP
@@ -1846,11 +1856,11 @@ Private Sub RefreshAbsencePersonnelControls()
         End If
 
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
           ' Only load integer and working pattern fields into the combo
-          If (!DataType = dtINTEGER) Or (!DataType = dtLONGVARCHAR) Then
+          If (!DataType = dtinteger) Or (!DataType = dtlongvarchar) Then
             cboWorkingDaysField.AddItem sAbsenceTableName & "." & !ColumnName
             cboWorkingDaysField.ItemData(cboWorkingDaysField.NewIndex) = !ColumnID
             If !ColumnID = mvar_lngAbsenceWorkingDaysID Then
@@ -1874,12 +1884,12 @@ Private Sub RefreshAbsencePersonnelControls()
         End If
 
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
           ' Only load integer and working pattern fields into the start/leaving date combos
 '          If (!DataType = 4) Or (!ColumnType = giColumntype_WORKINGPATTERN) Then
-          If (!DataType = dtINTEGER) Or (!DataType = dtLONGVARCHAR) Then
+          If (!DataType = dtinteger) Or (!DataType = dtlongvarchar) Then
             cboWorkingDaysField.AddItem sPersonnelTableName & "." & !ColumnName
             cboWorkingDaysField.ItemData(cboWorkingDaysField.NewIndex) = !ColumnID
             If !ColumnID = mvar_lngAbsenceWorkingDaysID Then
@@ -1950,7 +1960,7 @@ Private Sub RefreshAbsenceTypeControls()
   Dim iAbsenceTypeCalendarCodeListIndex As Integer
   'Dim iAbsenceTypeIncludeListIndex As Integer
   'Dim iAbsenceTypeBradfordListIndex As Integer
-  Dim objCtl As Control
+  Dim objctl As Control
 
   iAbsenceTypeTypeListIndex = 0
   iAbsenceTypeCodeListIndex = 0
@@ -1960,24 +1970,24 @@ Private Sub RefreshAbsenceTypeControls()
   'iAbsenceTypeBradfordListIndex = 0
 
   ' Clear the current contents of the combos.
-  For Each objCtl In Me
-    If TypeOf objCtl Is ComboBox And _
-      (objCtl.Name = "cboAbsenceTypeType" Or _
-      objCtl.Name = "cboAbsenceTypeCode" Or _
-      objCtl.Name = "cboAbsenceTypeSSPApplicable" Or _
-      objCtl.Name = "cboAbsenceTypeCalendarCode" Or _
-      objCtl.Name = "cboParentalLeaveAbsType") Then
+  For Each objctl In Me
+    If TypeOf objctl Is ComboBox And _
+      (objctl.Name = "cboAbsenceTypeType" Or _
+      objctl.Name = "cboAbsenceTypeCode" Or _
+      objctl.Name = "cboAbsenceTypeSSPApplicable" Or _
+      objctl.Name = "cboAbsenceTypeCalendarCode" Or _
+      objctl.Name = "cboParentalLeaveAbsType") Then
         
 'MH20030908 Fault 6888
       'objCtl.Name = "cboAbsenceTypeBradford" Or _
       'objCtl.Name = "cboAbsenceTypeInclude" Or
-        With objCtl
+        With objctl
           .Clear
           .AddItem "<None>"
           .ItemData(.NewIndex) = 0
         End With
       End If
-    Next objCtl
+    Next objctl
 
   With recColEdit
     .Index = "idxName"
@@ -1992,8 +2002,8 @@ Private Sub RefreshAbsenceTypeControls()
         End If
 
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
           ' Load Logic fields
           If !DataType = dtBIT Then
@@ -2087,7 +2097,7 @@ Private Function ValidateSetup() As Boolean
   
   Dim fSpecialFunctionUsed As Boolean
   Dim sSQL As String
-  Dim rsCheck As dao.Recordset
+  Dim rsCheck As DAO.Recordset
   Dim objComp As CExprComponent
   Dim lngExprID As Long
   Dim objExpr As CExpression
@@ -2500,7 +2510,7 @@ Private Function SaveChanges() As Boolean
           If recColEdit.NoMatch Then
             !parametervalue = 2
           Else
-            If recColEdit!DataType = dtLONGVARCHAR Then
+            If recColEdit!DataType = dtlongvarchar Then
               !parametervalue = 3
             Else
               !parametervalue = 2
@@ -3320,7 +3330,7 @@ Private Sub RefreshDependantsControls()
   Dim iDependantsDateOfBirthListIndex As Integer
   Dim iDependantsAdoptedDateListIndex As Integer
   Dim iDependantsDisabledListIndex As Integer
-  Dim objCtl As Control
+  Dim objctl As Control
 
   iDependantsChildNoListIndex = 0
   iDependantsDateOfBirthListIndex = 0
@@ -3328,21 +3338,21 @@ Private Sub RefreshDependantsControls()
   iDependantsDisabledListIndex = 0
   
   ' Clear the current contents of the combos.
-  For Each objCtl In Me
-    If TypeOf objCtl Is ComboBox And _
-      (objCtl.Name = "cboDepChildNo" Or _
-      objCtl.Name = "cboDepDateOfBirth" Or _
-      objCtl.Name = "cboDepAdoptedDate" Or _
-      objCtl.Name = "cboDepDisabled") Then
+  For Each objctl In Me
+    If TypeOf objctl Is ComboBox And _
+      (objctl.Name = "cboDepChildNo" Or _
+      objctl.Name = "cboDepDateOfBirth" Or _
+      objctl.Name = "cboDepAdoptedDate" Or _
+      objctl.Name = "cboDepDisabled") Then
 
-      With objCtl
+      With objctl
         .Clear
         .AddItem "<None>"
         .ItemData(.NewIndex) = 0
       End With
     End If
-  Next objCtl
-  Set objCtl = Nothing
+  Next objctl
+  Set objctl = Nothing
   
   With recColEdit
     .Index = "idxName"
@@ -3357,10 +3367,10 @@ Private Sub RefreshDependantsControls()
         End If
 
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
-          If !DataType = dtINTEGER Then
+          If !DataType = dtinteger Then
             'Dependants Child No
             cboDepChildNo.AddItem !ColumnName
             cboDepChildNo.ItemData(cboDepChildNo.NewIndex) = !ColumnID
@@ -3437,8 +3447,8 @@ Private Sub RefreshPersonnelControls()
         End If
 
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
           If !DataType = dtVARCHAR Then
             cboParentalLeaveRegion.AddItem !ColumnName

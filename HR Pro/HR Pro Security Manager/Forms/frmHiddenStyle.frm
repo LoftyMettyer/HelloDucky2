@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.Form frmHiddenStyle 
    Caption         =   "Hidden Form To Apply Styles"
@@ -80,12 +80,12 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
-  Select Case KeyCode
-    Case vbKeyF1
-      If ShowAirHelp(Me.HelpContextID) Then
-        KeyCode = 0
-      End If
-  End Select
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_Load()
