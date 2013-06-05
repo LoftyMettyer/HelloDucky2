@@ -4,8 +4,10 @@ Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
+Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
+Object = "{C23509CC-CE4D-421B-BF7F-1F30679B1EF1}#2.0#0"; "COA_ColourSelector.ocx"
 Begin VB.Form frmColEdit 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Column Properties"
@@ -26,7 +28,6 @@ Begin VB.Form frmColEdit
    Icon            =   "frmColEdit.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   6525
@@ -63,7 +64,7 @@ Begin VB.Form frmColEdit
       _Version        =   393216
       Style           =   1
       Tabs            =   8
-      Tab             =   3
+      Tab             =   2
       TabsPerRow      =   8
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -79,30 +80,27 @@ Begin VB.Form frmColEdit
       TabPicture(0)   =   "frmColEdit.frx":000C
       Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraDefinitionPage"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Screen Control "
       TabPicture(1)   =   "frmColEdit.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraControlPage"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Opt&ions"
       TabPicture(2)   =   "frmColEdit.frx":0044
-      Tab(2).ControlEnabled=   0   'False
+      Tab(2).ControlEnabled=   -1  'True
       Tab(2).Control(0)=   "fraOptionsPage"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "Valida&tion"
       TabPicture(3)   =   "frmColEdit.frx":0060
-      Tab(3).ControlEnabled=   -1  'True
+      Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraValidationPage"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "Diar&y Links"
       TabPicture(4)   =   "frmColEdit.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraDiaryLinkPage"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).ControlCount=   1
       TabCaption(5)   =   "Email Lin&ks"
       TabPicture(5)   =   "frmColEdit.frx":0098
@@ -682,205 +680,11 @@ Begin VB.Form frmColEdit
          BorderStyle     =   0  'None
          Enabled         =   0   'False
          Height          =   5350
-         Left            =   -74950
+         Left            =   50
          TabIndex        =   90
          Top             =   320
          Visible         =   0   'False
          Width           =   8205
-         Begin VB.Frame fraStorage 
-            Caption         =   "Storage Type : "
-            Height          =   1905
-            Left            =   210
-            TabIndex        =   165
-            Top             =   3075
-            Width           =   7815
-            Begin VB.CheckBox chkEnableOLEMaxSize 
-               Caption         =   "Enable document e&mbedding"
-               Enabled         =   0   'False
-               Height          =   285
-               Left            =   540
-               TabIndex        =   170
-               Top             =   1290
-               Width           =   2850
-            End
-            Begin VB.OptionButton optOLEStorageType 
-               Caption         =   "Lin&ked / Embedded in database"
-               Height          =   270
-               Index           =   2
-               Left            =   180
-               TabIndex        =   168
-               Top             =   945
-               Width           =   3270
-            End
-            Begin VB.OptionButton optOLEStorageType 
-               Caption         =   "Copi&ed to local OLE directory"
-               Height          =   270
-               Index           =   0
-               Left            =   180
-               TabIndex        =   167
-               Top             =   615
-               Width           =   3630
-            End
-            Begin VB.OptionButton optOLEStorageType 
-               Caption         =   "Co&pied to server OLE directory"
-               Height          =   270
-               Index           =   1
-               Left            =   180
-               TabIndex        =   166
-               Top             =   285
-               Value           =   -1  'True
-               Width           =   3630
-            End
-            Begin COASpinner.COA_Spinner asrMaxOLESize 
-               Height          =   315
-               Left            =   5700
-               TabIndex        =   171
-               Top             =   1275
-               Width           =   735
-               _ExtentX        =   1296
-               _ExtentY        =   556
-               BackColor       =   -2147483643
-               BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-                  Name            =   "Verdana"
-                  Size            =   8.25
-                  Charset         =   0
-                  Weight          =   400
-                  Underline       =   0   'False
-                  Italic          =   0   'False
-                  Strikethrough   =   0   'False
-               EndProperty
-               Enabled         =   0   'False
-               Increment       =   100
-               MaximumValue    =   8000
-               Text            =   "100"
-            End
-            Begin VB.Label lblMb 
-               Caption         =   "Kb"
-               Height          =   195
-               Left            =   6540
-               TabIndex        =   172
-               Top             =   1320
-               Width           =   285
-            End
-            Begin VB.Label lblMaximumOLESize 
-               Caption         =   "Maximum size :"
-               Height          =   300
-               Left            =   4215
-               TabIndex        =   169
-               Top             =   1320
-               Width           =   1395
-            End
-         End
-         Begin VB.Frame fraOptions 
-            Caption         =   "Options :"
-            Height          =   735
-            Left            =   210
-            TabIndex        =   110
-            Top             =   200
-            Width           =   7815
-            Begin VB.CheckBox chkReadOnly 
-               Caption         =   "Rea&d only"
-               Height          =   195
-               Left            =   200
-               TabIndex        =   32
-               Top             =   300
-               Width           =   1365
-            End
-            Begin VB.CheckBox chkAudit 
-               Caption         =   "&Audit"
-               Height          =   195
-               Left            =   4215
-               TabIndex        =   33
-               Top             =   300
-               Width           =   975
-            End
-         End
-         Begin VB.Frame fraFormat 
-            Caption         =   "Format :"
-            Height          =   1845
-            Left            =   210
-            TabIndex        =   111
-            Top             =   1095
-            Width           =   7815
-            Begin VB.CheckBox chkUse1000Separator 
-               Caption         =   "&Use 1000 separator (,)"
-               Height          =   255
-               Left            =   4215
-               TabIndex        =   42
-               Top             =   585
-               Width           =   2325
-            End
-            Begin VB.ComboBox cboTrimming 
-               Height          =   315
-               ItemData        =   "frmColEdit.frx":00F4
-               Left            =   1770
-               List            =   "frmColEdit.frx":0104
-               Style           =   2  'Dropdown List
-               TabIndex        =   40
-               Top             =   1410
-               Width           =   1755
-            End
-            Begin VB.ComboBox cboTextAlignment 
-               Height          =   315
-               ItemData        =   "frmColEdit.frx":0133
-               Left            =   1770
-               List            =   "frmColEdit.frx":0140
-               Style           =   2  'Dropdown List
-               TabIndex        =   38
-               Top             =   1005
-               Width           =   1755
-            End
-            Begin VB.ComboBox cboCase 
-               Height          =   315
-               ItemData        =   "frmColEdit.frx":0169
-               Left            =   1770
-               List            =   "frmColEdit.frx":0179
-               Style           =   2  'Dropdown List
-               TabIndex        =   36
-               Top             =   600
-               Width           =   1755
-            End
-            Begin VB.CheckBox chkZeroBlank 
-               Caption         =   "Blank if &zero"
-               Height          =   255
-               Left            =   4215
-               TabIndex        =   41
-               Top             =   240
-               Width           =   1560
-            End
-            Begin VB.CheckBox chkMultiLine 
-               Caption         =   "&Multi-line"
-               Height          =   255
-               Left            =   180
-               TabIndex        =   34
-               Top             =   240
-               Width           =   1365
-            End
-            Begin VB.Label lblTrimming 
-               Caption         =   "Trimming :"
-               Height          =   270
-               Left            =   210
-               TabIndex        =   39
-               Top             =   1470
-               Width           =   1230
-            End
-            Begin VB.Label lblTextAlignment 
-               Caption         =   "Text Alignment :"
-               Height          =   195
-               Left            =   210
-               TabIndex        =   37
-               Top             =   1065
-               Width           =   1500
-            End
-            Begin VB.Label lblCase 
-               Caption         =   "Case :"
-               Height          =   195
-               Left            =   210
-               TabIndex        =   35
-               Top             =   660
-               Width           =   690
-            End
-         End
          Begin VB.Frame fraDefault 
             Caption         =   "Default Value :"
             Height          =   2235
@@ -888,14 +692,6 @@ Begin VB.Form frmColEdit
             TabIndex        =   136
             Top             =   3075
             Width           =   7815
-            Begin VB.TextBox txtDefault 
-               Height          =   315
-               Left            =   1845
-               TabIndex        =   45
-               Text            =   "txtDefault"
-               Top             =   300
-               Width           =   5730
-            End
             Begin VB.ComboBox cboDefault 
                Height          =   315
                Left            =   2745
@@ -1068,7 +864,7 @@ Begin VB.Form frmColEdit
                   Italic          =   0   'False
                   Strikethrough   =   0   'False
                EndProperty
-               MouseIcon       =   "frmColEdit.frx":01AA
+               MouseIcon       =   "frmColEdit.frx":00F4
                MousePointer    =   0
             End
             Begin GTMaskDate.GTMaskDate ASRDate1 
@@ -1133,6 +929,217 @@ Begin VB.Form frmColEdit
                   Strikethrough   =   0   'False
                EndProperty
             End
+            Begin VB.TextBox txtDefault 
+               Height          =   315
+               Left            =   1845
+               TabIndex        =   45
+               Text            =   "txtDefault"
+               Top             =   300
+               Width           =   5730
+            End
+            Begin COAColourSelector.COA_ColourSelector selDefaultColour 
+               Height          =   315
+               Left            =   1755
+               TabIndex        =   173
+               Top             =   375
+               Width           =   1755
+               _ExtentX        =   3096
+               _ExtentY        =   556
+            End
+         End
+         Begin VB.Frame fraStorage 
+            Caption         =   "Storage Type : "
+            Height          =   1905
+            Left            =   210
+            TabIndex        =   165
+            Top             =   3075
+            Width           =   7815
+            Begin VB.CheckBox chkEnableOLEMaxSize 
+               Caption         =   "Enable document e&mbedding"
+               Enabled         =   0   'False
+               Height          =   285
+               Left            =   540
+               TabIndex        =   170
+               Top             =   1290
+               Width           =   2850
+            End
+            Begin VB.OptionButton optOLEStorageType 
+               Caption         =   "Lin&ked / Embedded in database"
+               Height          =   270
+               Index           =   2
+               Left            =   180
+               TabIndex        =   168
+               Top             =   945
+               Width           =   3270
+            End
+            Begin VB.OptionButton optOLEStorageType 
+               Caption         =   "Copi&ed to local OLE directory"
+               Height          =   270
+               Index           =   0
+               Left            =   180
+               TabIndex        =   167
+               Top             =   615
+               Width           =   3630
+            End
+            Begin VB.OptionButton optOLEStorageType 
+               Caption         =   "Co&pied to server OLE directory"
+               Height          =   270
+               Index           =   1
+               Left            =   180
+               TabIndex        =   166
+               Top             =   285
+               Value           =   -1  'True
+               Width           =   3630
+            End
+            Begin COASpinner.COA_Spinner asrMaxOLESize 
+               Height          =   315
+               Left            =   5700
+               TabIndex        =   171
+               Top             =   1275
+               Width           =   735
+               _ExtentX        =   1296
+               _ExtentY        =   556
+               BackColor       =   -2147483643
+               BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+                  Name            =   "Verdana"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
+               Enabled         =   0   'False
+               Increment       =   100
+               MaximumValue    =   8000
+               Text            =   "100"
+            End
+            Begin VB.Label lblMb 
+               Caption         =   "Kb"
+               Height          =   195
+               Left            =   6540
+               TabIndex        =   172
+               Top             =   1320
+               Width           =   285
+            End
+            Begin VB.Label lblMaximumOLESize 
+               Caption         =   "Maximum size :"
+               Height          =   300
+               Left            =   4215
+               TabIndex        =   169
+               Top             =   1320
+               Width           =   1395
+            End
+         End
+         Begin VB.Frame fraOptions 
+            Caption         =   "Options :"
+            Height          =   735
+            Left            =   210
+            TabIndex        =   110
+            Top             =   200
+            Width           =   7815
+            Begin VB.CheckBox chkReadOnly 
+               Caption         =   "Rea&d only"
+               Height          =   195
+               Left            =   200
+               TabIndex        =   32
+               Top             =   300
+               Width           =   1365
+            End
+            Begin VB.CheckBox chkAudit 
+               Caption         =   "&Audit"
+               Height          =   195
+               Left            =   4215
+               TabIndex        =   33
+               Top             =   300
+               Width           =   975
+            End
+         End
+         Begin VB.Frame fraFormat 
+            Caption         =   "Format :"
+            Height          =   1845
+            Left            =   210
+            TabIndex        =   111
+            Top             =   1095
+            Width           =   7815
+            Begin VB.CheckBox chkUse1000Separator 
+               Caption         =   "&Use 1000 separator (,)"
+               Height          =   255
+               Left            =   4215
+               TabIndex        =   42
+               Top             =   585
+               Width           =   2325
+            End
+            Begin VB.ComboBox cboTrimming 
+               Height          =   315
+               ItemData        =   "frmColEdit.frx":0110
+               Left            =   1770
+               List            =   "frmColEdit.frx":0120
+               Style           =   2  'Dropdown List
+               TabIndex        =   40
+               Top             =   1410
+               Width           =   1755
+            End
+            Begin VB.ComboBox cboTextAlignment 
+               Height          =   315
+               ItemData        =   "frmColEdit.frx":014F
+               Left            =   1770
+               List            =   "frmColEdit.frx":015C
+               Style           =   2  'Dropdown List
+               TabIndex        =   38
+               Top             =   1005
+               Width           =   1755
+            End
+            Begin VB.ComboBox cboCase 
+               Height          =   315
+               ItemData        =   "frmColEdit.frx":0185
+               Left            =   1770
+               List            =   "frmColEdit.frx":0195
+               Style           =   2  'Dropdown List
+               TabIndex        =   36
+               Top             =   600
+               Width           =   1755
+            End
+            Begin VB.CheckBox chkZeroBlank 
+               Caption         =   "Blank if &zero"
+               Height          =   255
+               Left            =   4215
+               TabIndex        =   41
+               Top             =   240
+               Width           =   1560
+            End
+            Begin VB.CheckBox chkMultiLine 
+               Caption         =   "&Multi-line"
+               Height          =   255
+               Left            =   180
+               TabIndex        =   34
+               Top             =   240
+               Width           =   1365
+            End
+            Begin VB.Label lblTrimming 
+               Caption         =   "Trimming :"
+               Height          =   270
+               Left            =   210
+               TabIndex        =   39
+               Top             =   1470
+               Width           =   1230
+            End
+            Begin VB.Label lblTextAlignment 
+               Caption         =   "Text Alignment :"
+               Height          =   195
+               Left            =   210
+               TabIndex        =   37
+               Top             =   1065
+               Width           =   1500
+            End
+            Begin VB.Label lblCase 
+               Caption         =   "Case :"
+               Height          =   195
+               Left            =   210
+               TabIndex        =   35
+               Top             =   660
+               Width           =   690
+            End
          End
       End
       Begin VB.Frame fraValidationPage 
@@ -1140,7 +1147,7 @@ Begin VB.Form frmColEdit
          BorderStyle     =   0  'None
          Enabled         =   0   'False
          Height          =   5350
-         Left            =   50
+         Left            =   -74950
          TabIndex        =   108
          Top             =   320
          Visible         =   0   'False
@@ -2129,6 +2136,12 @@ Begin VB.Form frmColEdit
             Width           =   510
          End
       End
+   End
+   Begin COAColourPicker.COA_ColourPicker COA_ColourPicker1 
+      Left            =   165
+      Top             =   5955
+      _ExtentX        =   820
+      _ExtentY        =   820
    End
 End
 Attribute VB_Name = "frmColEdit"
@@ -3265,6 +3278,68 @@ TidyUpAndExit:
 End Sub
 
 
+'Private Sub cmdDfltColourSelect_Click()
+'
+'  Dim lngPictureID As Long
+'  Dim sFileName As String
+'
+'  frmPictSel.PictureType = vbPicTypeBitmap
+'  frmPictSel.SelectedPicture = mlngDeskTopBitmapID
+'  frmPictSel.ExcludedExtensions = ".gif"
+'  frmPictSel.Show vbModal
+'
+'If (frmPictSel.SelectedPicture <> mlngDeskTopBitmapID) And (Not mblnLoading) Then Changed = True
+'
+'  If frmPictSel.SelectedPicture > 0 Then
+'    With recPictEdit
+'      .Index = "idxID"
+'      .Seek "=", frmPictSel.SelectedPicture
+'      If Not .NoMatch Then
+'        mlngDeskTopBitmapID = !PictureID
+'        txtDeskTopBitmapName.Text = !Name
+'        cboBitmapLocation.Enabled = True
+'        cmdPictureClear.Enabled = True
+'        sFileName = ReadPicture
+'        picWork.Picture = LoadPicture(sFileName)
+'        picWork.Move 0, 0, picHolder.ScaleWidth, picHolder.ScaleHeight
+'        SizeImage picWork
+'        picWork.Top = (picHolder.ScaleHeight - picWork.Height) \ 2
+'        picWork.Left = (picHolder.ScaleWidth - picWork.Width) \ 2
+'        Kill sFileName
+'        picHolder.Visible = True
+'      Else
+'        cboBitmapLocation.Enabled = False
+'        cmdPictureClear.Enabled = False
+'        picHolder.Visible = False
+'      End If
+'    End With
+'
+'  End If
+'
+'End Sub
+
+Private Sub selDefaultColour_Click()
+
+  On Error GoTo ErrorTrap
+
+  With COA_ColourPicker1
+    .Color = selDefaultColour.BackColor
+    .ShowPalette
+    If selDefaultColour.BackColor <> .Color Then
+      selDefaultColour.BackColor = .Color
+      Changed = True
+    End If
+  End With
+
+TidyUpAndExit:
+  Exit Sub
+
+ErrorTrap:
+  Err = False
+  Resume TidyUpAndExit
+
+End Sub
+
 Private Sub cmdDfltValueExpression_Click()
   Dim objExpr As CExpression
 
@@ -4332,6 +4407,8 @@ Private Sub cmdOK_Click()
             sDefault = ASRDefaultWorkingPattern.value
           Case giCTRL_NAVIGATION
             sDefault = Trim(txtDefault.Text)
+          Case giCTRL_COLOURPICKER
+            sDefault = CStr(selDefaultColour.BackColor)
           Case Else
             sDefault = vbNullString
         End Select
@@ -4842,6 +4919,12 @@ Private Sub Form_Load()
   TDBDefaultNumber.Left = iDFLTCONTROLLEFT
   TDBDefaultNumber.Top = iDFLTCONTROLTOP
   TDBDefaultNumber.Width = txtDefault.Width
+  
+  selDefaultColour.Left = iDFLTCONTROLLEFT
+  selDefaultColour.Top = iDFLTCONTROLTOP
+  'cmdDefaultColour.Left = iDFLTCONTROLLEFT + lblDfltColour.Width
+  'cmdDefaultColour.Top = iDFLTCONTROLTOP
+  
   
   'MH20010130 Fault 1610
   UI.FormatTDBNumberControl TDBDefaultNumber
@@ -5681,6 +5764,8 @@ Private Sub ReadColumnProperties()
       TDBDefaultNumber.MaxValue = 2147483647#
       TDBDefaultNumber.MinValue = -2147483648#
       TDBDefaultNumber.Text = msDefault
+      selDefaultColour.BackColor = val(msDefault)
+
     ElseIf miDataType = dtNUMERIC Then
       sFormat = ""
       For iCount = 1 To (asrSize.value - asrDecimals.value)
@@ -6105,6 +6190,8 @@ Private Sub cboControl_Refresh()
           .ItemData(.NewIndex) = giCTRL_SPINNER
           .AddItem "Text Box"
           .ItemData(.NewIndex) = giCTRL_TEXTBOX
+          .AddItem "Colour Picker"
+          .ItemData(.NewIndex) = giCTRL_COLOURPICKER
           
         ' Working Pattern.
         Case dtlongvarchar
@@ -6964,7 +7051,9 @@ Private Sub RefreshOptionsTab()
   
   'MH20030911 Fault 6125
   'chkUse1000Separator.Enabled = (miDataType = dtNUMERIC) And asrSize.Value > 3
-  fEnable1000Sep = (((miDataType = dtNUMERIC) And asrSize.value > 3) Or miDataType = dtinteger) And (Not miColumnType = giCOLUMNTYPE_LOOKUP)
+  'fEnable1000Sep = (((miDataType = dtNUMERIC) And asrSize.value > 3) Or miDataType = dtinteger) And (Not miColumnType = giCOLUMNTYPE_LOOKUP)
+  fEnable1000Sep = (((miDataType = dtNUMERIC) And asrSize.value > 3) Or miDataType = dtinteger) _
+          And (Not miColumnType = giCOLUMNTYPE_LOOKUP) And (Not miControlType = giCTRL_COLOURPICKER)
   chkUse1000Separator.Enabled = fEnable1000Sep
   If Not fEnable1000Sep And (Not miColumnType = giCOLUMNTYPE_LOOKUP) Then
     chkUse1000Separator.value = vbUnchecked
@@ -7009,7 +7098,9 @@ Private Sub RefreshOptionsTab()
   fraLogicDefaults.Visible = False
   asrDefault.Visible = False
   ASRDefaultWorkingPattern.Visible = False
-  
+  selDefaultColour.Visible = False
+  'cmdDefaultColour.Visible = False
+
   Select Case miControlType
     Case giCTRL_TEXTBOX
       If miDataType = dtTIMESTAMP Then
@@ -7083,6 +7174,12 @@ Private Sub RefreshOptionsTab()
       txtDefault.Visible = True
       txtDefault.MaxLength = Minimum(val(asrSize.Text), 8000)
       dblControlBottom = txtDefault.Top + txtDefault.Height
+      
+    Case giCTRL_COLOURPICKER
+      fEnableDefault = True
+      selDefaultColour.Visible = True
+      'cmdDefaultColour.Visible = True
+      dblControlBottom = selDefaultColour.Top + selDefaultColour.Height
       
     Case Else
       fEnableDefault = False
@@ -7614,6 +7711,7 @@ Private Function AfdToggleControlStatus(pfValue As Boolean)
   'Dim mbAddressType As Boolean
     
   For Each objControl In Me.Controls
+    If Not TypeOf objControl Is COA_ColourPicker Then
     If ((TypeOf objControl Is ComboBox) Or (TypeOf objControl Is Label)) And _
       (objControl.Container.Name = "fraFieldMapping") Then
       
@@ -7648,6 +7746,7 @@ Private Function AfdToggleControlStatus(pfValue As Boolean)
           If TypeOf objControl Is ComboBox Then objControl.BackColor = &H8000000F
         End If
       End If
+    End If
     End If
   Next objControl
   Set objControl = Nothing
@@ -8578,6 +8677,7 @@ Private Function QAToggleControlStatus(pfValue As Boolean)
   Dim objControl As Control
   
   For Each objControl In Me.Controls
+    If Not TypeOf objControl Is COA_ColourPicker Then
     If ((TypeOf objControl Is ComboBox) Or (TypeOf objControl Is Label)) And _
       (objControl.Container.Name = "fraFieldMapping") Then
       
@@ -8612,6 +8712,7 @@ Private Function QAToggleControlStatus(pfValue As Boolean)
           If TypeOf objControl Is ComboBox Then objControl.BackColor = &H8000000F
         End If
       End If
+    End If
     End If
   Next objControl
   Set objControl = Nothing

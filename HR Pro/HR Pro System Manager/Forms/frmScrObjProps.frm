@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
 Begin VB.Form frmScrObjProps 
@@ -1111,7 +1111,7 @@ Public Function RefreshProperties(Optional StayOnSameLine As Boolean) As Boolean
   Dim fPassedOnce As Boolean
   Dim iLoop As Integer
   Dim iDisplayType As NavigationDisplayType
-  Dim iControlType As Integer
+  Dim iControlType As Long
   Dim sDescription As String
   Dim objCtlFont As StdFont
   Dim ctlControl As VB.Control
@@ -1850,7 +1850,7 @@ Private Function UpdateControls(piProperty As Integer) As Boolean
   Dim blnDontRefresh As Boolean
   Dim lngTargetPageNumber As Long
   Dim sCaption As String
-  Dim iControlType As Integer
+  Dim iControlType As Long
   
   Dim iCount As Integer
 

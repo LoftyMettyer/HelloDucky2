@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "COA_Label.ocx"
 Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Object = "{98B2556E-F719-4726-9028-5F2EAB345800}#1.0#0"; "COASD_Checkbox.ocx"
@@ -15,6 +15,7 @@ Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "COASD_SelectionBox.ocx
 Object = "{0BE8C79E-5090-4700-B420-B767D1E19561}#1.0#0"; "COASD_Spinner.ocx"
 Object = "{93EA589D-C793-4EE4-BE53-52A646038BAF}#1.0#0"; "COASD_WorkingPattern.ocx"
 Object = "{AD837810-DD1E-44E0-97C5-854390EA7D3A}#3.2#0"; "COA_Navigation.ocx"
+Object = "{F3E91317-CE60-4B7E-A1F0-2F0EC0BFFC34}#1.0#0"; "COASD_ColourSelector.ocx"
 Begin VB.Form frmScrDesigner2 
    AutoRedraw      =   -1  'True
    Caption         =   "Screen Designer"
@@ -35,13 +36,24 @@ Begin VB.Form frmScrDesigner2
    Icon            =   "frmScrDesigner2.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MDIChild        =   -1  'True
    ScaleHeight     =   7365
    ScaleWidth      =   13905
    ShowInTaskbar   =   0   'False
    Visible         =   0   'False
+   Begin COASDColSelector.COASD_ColourSelector ASRColourSelector 
+      Height          =   315
+      Index           =   0
+      Left            =   2835
+      TabIndex        =   20
+      Top             =   3390
+      Visible         =   0   'False
+      Width           =   2430
+      _ExtentX        =   4286
+      _ExtentY        =   556
+      InScreenDesigner=   -1  'True
+   End
    Begin COANavigation.COA_Navigation ASRDummyNavigation 
       Height          =   510
       Index           =   0
@@ -671,6 +683,27 @@ Private Sub ASRDummyNavigation_MouseUp(Index As Integer, Button As Integer, Shif
 End Sub
 
 
+' ASR Colour Selector
+
+Private Sub ASRColourSelector_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+  ScreenControl_DragDrop ASRColourSelector(Index), Source, X, Y
+End Sub
+
+Private Sub ASRColourSelector_KeyDown(Index As Integer, KeyCode As Integer, Shift As Integer)
+  Form_KeyDown KeyCode, Shift
+End Sub
+
+Private Sub ASRColourSelector_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  ScreenControl_MouseDown ASRColourSelector(Index), Button, Shift, X, Y
+End Sub
+
+Private Sub ASRColourSelector_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  ScreenControl_MouseMove ASRColourSelector(Index), Button, X, Y
+End Sub
+
+Private Sub ASRColourSelector_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+  ScreenControl_MouseUp ASRColourSelector(Index), Button, Shift, X, Y
+End Sub
 
 
 
@@ -1067,6 +1100,10 @@ Private Sub ASRSelectionMarkers_StretchStart(Index As Integer, Direction As Stri
 
 End Sub
 
+Private Sub COA_ColourSelector1_GotFocus()
+
+End Sub
+
 Private Sub Form_Activate()
   ' Ensure the screen designer form is at the front of the display.
   On Error GoTo ErrorTrap
@@ -1097,7 +1134,7 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
   On Error GoTo ErrorTrap
   
   Dim fOK As Boolean
-  Dim iControlType As Integer
+  Dim iControlType As Long
   Dim lngColumnID As Long
   Dim sCaption As String
   Dim sTableName As String
@@ -1987,7 +2024,7 @@ Private Sub AutoFormatScreen()
   Dim iLoop As Integer
   Dim iStartPage As Integer
   Dim iColumnCount As Integer
-  Dim iControlType As Integer
+  Dim iControlType As Long
   Dim iCurrentPage As Integer
   Dim lngYPosition As Long
   Dim lngControlColumn As Long
@@ -2000,7 +2037,7 @@ Private Sub AutoFormatScreen()
   Dim objFont As StdFont
   Dim ctlControl As VB.Control
   Dim ctlLabelControl As COA_Label
-  Dim rsColumns As dao.Recordset
+  Dim rsColumns As DAO.Recordset
   'Dim WaitWindow As WaitMessage.MessageWindow
 '  Dim WaitWindow As NewWaitMsg.clsNewWaitMsg
   
@@ -3049,7 +3086,7 @@ Private Function LoadScreen() As Boolean
     
   Dim fLoadOk As Boolean
   Dim iPageNo As Integer
-  Dim iCtrlType As Integer
+  Dim iCtrlType As Long
   Dim iDisplayType As Integer
   Dim lngTableID As Long
   Dim lngPictureID As Long
@@ -3193,7 +3230,7 @@ Private Function ReadColumnControlValues(plngColumnID As Long) As Variant
   Dim avValues As Variant
   Dim asResults() As String
   Dim sSQL As String
-  Dim rsControlValues As dao.Recordset
+  Dim rsControlValues As DAO.Recordset
   
   ' Pull the column control values from the database.
   sSQL = "SELECT value" & _
@@ -3257,7 +3294,7 @@ Private Function CopySelectedControls() As Boolean
   
   Dim fOK As Boolean
   Dim iIndex As Integer
-  Dim iControlType As Integer
+  Dim iControlType As Long
   Dim ctlSourceControl As VB.Control
   Dim ctlCopiedControl As VB.Control
   
@@ -3331,7 +3368,7 @@ Private Function CopyControlProperties(pCtlSource As VB.Control, pCtlDestination
   On Error GoTo ErrorTrap
   
   Dim fOK As Boolean
-  Dim iControlType As Integer
+  Dim iControlType As Long
   Dim sFileName As String
   
   ' Get the given control's type.
@@ -3437,7 +3474,7 @@ Private Function PasteControls() As Boolean
   Dim fOK As Boolean
   Dim iIndex As Integer
   Dim iIndex2 As Integer
-  Dim iControlType As Integer
+  Dim iControlType As Long
   Dim lngXOffset As Long
   Dim lngYOffset As Long
   Dim ctlControl As VB.Control
@@ -3983,7 +4020,7 @@ ErrorTrap:
 End Function
 
 
-Private Function AddControl(piControlType As Integer) As VB.Control
+Private Function AddControl(piControlType As Long) As VB.Control
   On Error GoTo ErrorTrap
   
   Select Case piControlType
@@ -4050,6 +4087,10 @@ Private Function AddControl(piControlType As Integer) As VB.Control
     Case giCTRL_NAVIGATION
       Load ASRDummyNavigation(ASRDummyNavigation.UBound + 1)
       Set AddControl = ASRDummyNavigation(ASRDummyNavigation.UBound)
+      
+    Case giCTRL_COLOURPICKER
+      Load ASRColourSelector(ASRColourSelector.UBound + 1)
+      Set AddControl = ASRColourSelector(ASRColourSelector.UBound)
       
   End Select
   
@@ -5175,7 +5216,7 @@ ErrorTrap:
   
 End Function
 
-Private Function ScreenControl_NeedsLabelling(piControlType As Integer) As Boolean
+Private Function ScreenControl_NeedsLabelling(piControlType As Long) As Boolean
   ' Returns true if the current control type needs labelling on the screen.
   On Error GoTo ErrorTrap
   
@@ -5254,6 +5295,7 @@ Public Function IsScreenControl(pctlControl As VB.Control) As Boolean
     sName = "ASRCustomDummyWP" Or _
     sName = "ASRDummyLine" Or _
     sName = "ASRDummyNavigation" Or _
+    sName = "ASRColourSelector" Or _
     sName = "ASRDummyOptions" Then
     
     ' Do not bother with the dummy screen controls.
@@ -5292,7 +5334,7 @@ ErrorTrap:
   
 End Function
 
-Public Function ScreenControl_HasForeColor(piControlType As Integer) As Boolean
+Public Function ScreenControl_HasForeColor(piControlType As Long) As Boolean
   ' Return true if the given control has a ForeColor property.
   ScreenControl_HasForeColor = _
     (piControlType = giCTRL_CHECKBOX) Or _
@@ -5307,20 +5349,20 @@ Public Function ScreenControl_HasForeColor(piControlType As Integer) As Boolean
 
 End Function
 
-Public Function ScreenControl_HasDisplayType(piControlType As Integer) As Boolean
+Public Function ScreenControl_HasDisplayType(piControlType As Long) As Boolean
   ' Return true if the given control has a DisplayType property.
   ScreenControl_HasDisplayType = _
     (piControlType = giCTRL_NAVIGATION)
 
 End Function
 
-Public Function ScreenControl_HasNavigation(piControlType As Integer) As Boolean
+Public Function ScreenControl_HasNavigation(piControlType As Long) As Boolean
   ' Return true if the given control has a NavigateTo property.
   ScreenControl_HasNavigation = (piControlType = giCTRL_NAVIGATION)
 
 End Function
 
-Public Function ScreenControl_HasBackColor(piControlType As Integer) As Boolean
+Public Function ScreenControl_HasBackColor(piControlType As Long) As Boolean
   ' Return true if the given control has a BackColor property.
   ScreenControl_HasBackColor = _
     (piControlType = giCTRL_CHECKBOX) Or _
@@ -5334,7 +5376,7 @@ Public Function ScreenControl_HasBackColor(piControlType As Integer) As Boolean
 
 End Function
 
-Public Function ScreenControl_HasFont(piControlType As Integer) As Boolean
+Public Function ScreenControl_HasFont(piControlType As Long) As Boolean
   ' Return true if the given control has a Font property.
   ScreenControl_HasFont = _
     (piControlType = giCTRL_CHECKBOX) Or _
@@ -5350,7 +5392,7 @@ Public Function ScreenControl_HasFont(piControlType As Integer) As Boolean
 
 End Function
 
-Public Function ScreenControl_IsTabStop(piControlType As Integer) As Boolean
+Public Function ScreenControl_IsTabStop(piControlType As Long) As Boolean
   ' Return true if the given control has a TabStop property.
   ScreenControl_IsTabStop = (piControlType = giCTRL_CHECKBOX) Or _
     (piControlType = giCTRL_COMBOBOX) Or _
@@ -5365,7 +5407,7 @@ Public Function ScreenControl_IsTabStop(piControlType As Integer) As Boolean
 
 End Function
 
-Public Function ScreenControl_HasAlignment(piControlType As Integer) As Boolean
+Public Function ScreenControl_HasAlignment(piControlType As Long) As Boolean
   ' Return true if the given control has an Alignment property.
   ScreenControl_HasAlignment = _
     (piControlType = giCTRL_CHECKBOX) Or _
@@ -5373,7 +5415,7 @@ Public Function ScreenControl_HasAlignment(piControlType As Integer) As Boolean
 
 End Function
 
-Public Function ScreenControl_HasOrientation(piControlType As Integer) As Boolean
+Public Function ScreenControl_HasOrientation(piControlType As Long) As Boolean
   ' Return true if the given control has an Orientation property.
   ScreenControl_HasOrientation = _
     (piControlType = giCTRL_OPTIONGROUP) Or _
@@ -5383,19 +5425,19 @@ Public Function ScreenControl_HasOrientation(piControlType As Integer) As Boolea
 End Function
 
 
-Public Function ScreenControl_HasOptions(piControlType As Integer) As Boolean
+Public Function ScreenControl_HasOptions(piControlType As Long) As Boolean
   ' Return true if the given control has an Options property.
   ScreenControl_HasOptions = (piControlType = giCTRL_OPTIONGROUP)
 
 End Function
 
-Public Function ScreenControl_HasPicture(piControlType As Integer) As Boolean
+Public Function ScreenControl_HasPicture(piControlType As Long) As Boolean
   ' Return true if the given control has a Picture property.
   ScreenControl_HasPicture = (piControlType = giCTRL_IMAGE)
 
 End Function
 
-Public Function ScreenControl_HasWidth(piControlType As Integer) As Boolean
+Public Function ScreenControl_HasWidth(piControlType As Long) As Boolean
   ' Return true if the given control has a Width property.
   ScreenControl_HasWidth = (piControlType = giCTRL_CHECKBOX) Or _
     (piControlType = giCTRL_COMBOBOX) Or _
@@ -5408,13 +5450,14 @@ Public Function ScreenControl_HasWidth(piControlType As Integer) As Boolean
     (piControlType = giCTRL_LINE) Or _
     (piControlType = giCTRL_SPINNER) Or _
     (piControlType = giCTRL_NAVIGATION) Or _
+    (piControlType = giCTRL_COLOURPICKER) Or _
     (piControlType = giCTRL_TEXTBOX)
 
 End Function
 
 
 
-Public Function ScreenControl_HasBorderStyle(piControlType As Integer) As Boolean
+Public Function ScreenControl_HasBorderStyle(piControlType As Long) As Boolean
   ' Return true if the given control has a BorderStyle property.
 '  ScreenControl_HasBorderStyle = _
 '    (piControlType = giCTRL_IMAGE) Or _
@@ -5431,7 +5474,7 @@ Public Function ScreenControl_HasBorderStyle(piControlType As Integer) As Boolea
 
 End Function
 
-Public Function ScreenControl_HasReadOnly(piControlType As Integer) As Boolean
+Public Function ScreenControl_HasReadOnly(piControlType As Long) As Boolean
   'NPG20071022
   ' Return true if the given control has a Width property.
   ScreenControl_HasReadOnly = _
@@ -5442,6 +5485,7 @@ Public Function ScreenControl_HasReadOnly(piControlType As Integer) As Boolean
     (piControlType = giCTRL_TEXTBOX) Or _
     (piControlType = giCTRL_SPINNER) Or _
     (piControlType = giCTRL_PHOTO) Or _
+    (piControlType = giCTRL_COLOURPICKER) Or _
     (piControlType = giCTRL_WORKINGPATTERN)
 
 'NPG20071210 Fault 12694
@@ -5450,7 +5494,7 @@ Public Function ScreenControl_HasReadOnly(piControlType As Integer) As Boolean
 
 End Function
 
-Public Function ScreenControl_HasCaption(piControlType As Integer) As Boolean
+Public Function ScreenControl_HasCaption(piControlType As Long) As Boolean
   ' Return true if the given control has a Caption property.
   ScreenControl_HasCaption = _
     (piControlType = giCTRL_CHECKBOX) Or _
@@ -5462,7 +5506,7 @@ Public Function ScreenControl_HasCaption(piControlType As Integer) As Boolean
 
 End Function
 
-Public Function ScreenControl_HasText(piControlType As Integer) As Boolean
+Public Function ScreenControl_HasText(piControlType As Long) As Boolean
   ' Return true if the given control has a Caption property.
   ScreenControl_HasText = _
     (piControlType = giCTRL_TEXTBOX) Or _
@@ -5473,7 +5517,7 @@ Public Function ScreenControl_HasText(piControlType As Integer) As Boolean
 
 End Function
 
-Public Function ScreenControl_Type(pctlControl As VB.Control) As Integer
+Public Function ScreenControl_Type(pctlControl As VB.Control) As Long
   ' Return the control type of the given control.
   Select Case pctlControl.Name
     Case "asrDummyLabel"
@@ -5504,6 +5548,8 @@ Public Function ScreenControl_Type(pctlControl As VB.Control) As Integer
       ScreenControl_Type = giCTRL_LINE
     Case "ASRDummyNavigation"
       ScreenControl_Type = giCTRL_NAVIGATION
+    Case "ASRColourSelector"
+      ScreenControl_Type = giCTRL_COLOURPICKER
   End Select
   
 End Function
@@ -5513,7 +5559,7 @@ Private Function SaveControl(pctlControl As VB.Control) As Boolean
   On Error GoTo ErrorTrap
   
   Dim fSaveOK As Boolean
-  Dim iControlType As Integer
+  Dim iControlType As Long
   Dim objFont As StdFont
   Dim vNull As Variant
   
@@ -5672,7 +5718,7 @@ Private Function DeselectAllControls(Optional pctlException As VB.Control) As Bo
   
 End Function
 
-Public Function ScreenControl_HasHeight(piControlType As Integer) As Boolean
+Public Function ScreenControl_HasHeight(piControlType As Long) As Boolean
   ' Return true if the given control has a Height property.
   ScreenControl_HasHeight = (piControlType = giCTRL_CHECKBOX) Or _
     (piControlType = giCTRL_FRAME) Or _
@@ -5863,7 +5909,7 @@ Private Function AutoLabel(pVarPageContainer As Variant, pSngX As Single, pSngY 
   On Error GoTo ErrorTrap
   
   Dim fOK As Boolean
-  Dim iControlType As Integer
+  Dim iControlType As Long
   Dim lngColumnID As Long
   Dim sTableName As String
   Dim sColumnName As String
@@ -6010,7 +6056,7 @@ Private Sub ASRDummyLine_MouseUp(Index As Integer, Button As Integer, Shift As I
 
 End Sub
 
-Public Function ScreenControl_HasTabNumber(piControlType As Integer) As Boolean
+Public Function ScreenControl_HasTabNumber(piControlType As Long) As Boolean
   ' Return true if the given control has a Tab Index property.
   ScreenControl_HasTabNumber = (piControlType = giCTRL_TAB)
 
@@ -6128,7 +6174,7 @@ Public Function LoadTabPage(piPageNumber As Integer) As Boolean
     
   Dim fLoadOk As Boolean
   Dim iPageNo As Integer
-  Dim iCtrlType As Integer
+  Dim iCtrlType As Long
   Dim iDisplayType As Integer
   Dim lngTableID As Long
   Dim lngPictureID As Long

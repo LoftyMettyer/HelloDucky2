@@ -3,7 +3,7 @@ Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
 Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "tinumb6.ocx"
 Object = "{E2D000D0-2DA1-11D2-B358-00104B59D73D}#1.0#0"; "titext6.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
@@ -15,6 +15,8 @@ Object = "{EDB7B7A8-7908-4896-B964-57CE7262666E}#1.0#0"; "COA_OLE.ocx"
 Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "COA_Label.ocx"
 Object = "{3389D561-C8E1-4CB0-A73E-77582EA68D3C}#1.1#0"; "COA_Lookup.ocx"
 Object = "{AD837810-DD1E-44E0-97C5-854390EA7D3A}#3.2#0"; "COA_Navigation.ocx"
+Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
+Object = "{C23509CC-CE4D-421B-BF7F-1F30679B1EF1}#2.0#0"; "COA_ColourSelector.ocx"
 Begin VB.Form frmRecEdit4 
    BorderStyle     =   1  'Fixed Single
    ClientHeight    =   5835
@@ -39,6 +41,12 @@ Begin VB.Form frmRecEdit4
    MDIChild        =   -1  'True
    ScaleHeight     =   5835
    ScaleWidth      =   6465
+   Begin COAColourPicker.COA_ColourPicker ColourPicker1 
+      Left            =   4815
+      Top             =   45
+      _ExtentX        =   820
+      _ExtentY        =   820
+   End
    Begin VB.Frame fraTabPage 
       Appearance      =   0  'Flat
       BackColor       =   &H8000000C&
@@ -60,6 +68,17 @@ Begin VB.Form frmRecEdit4
       Top             =   795
       Visible         =   0   'False
       Width           =   6000
+      Begin COAColourSelector.COA_ColourSelector ColourSelector1 
+         Height          =   315
+         Index           =   0
+         Left            =   2205
+         TabIndex        =   21
+         Top             =   3285
+         Visible         =   0   'False
+         Width           =   1395
+         _ExtentX        =   2461
+         _ExtentY        =   556
+      End
       Begin COANavigation.COA_Navigation COA_Navigation1 
          Height          =   645
          Index           =   0
@@ -432,8 +451,8 @@ Begin VB.Form frmRecEdit4
          TabIndex        =   10
          Top             =   240
          Visible         =   0   'False
-         Width           =   1125
-         _ExtentX        =   1984
+         Width           =   1140
+         _ExtentX        =   2011
          _ExtentY        =   1138
       End
       Begin VB.CommandButton Command1 
@@ -609,7 +628,6 @@ Begin VB.Form frmRecEdit4
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
             Caption         =   ""
-            Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
          EndProperty
@@ -639,7 +657,6 @@ Begin VB.Form frmRecEdit4
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -1358,11 +1375,34 @@ ErrorTrap:
 
 End Sub
 
+Private Sub ColourSelector1_Click(Index As Integer)
+
+  On Error GoTo ErrorTrap
+
+  With ColourSelector1(Index)
+    ColourPicker1.Color = .BackColor
+    ColourPicker1.ShowPalette
+    If .BackColor <> ColourPicker1.Color Then
+      .BackColor = ColourPicker1.Color
+      mfDataChanged = True
+      frmMain.RefreshMainForm Me
+    End If
+  End With
+
+TidyUpAndExit:
+  Exit Sub
+
+ErrorTrap:
+  Err = False
+  Resume TidyUpAndExit
+  
+End Sub
+
 Private Sub Combo1_KeyPress(Index As Integer, KeyAscii As Integer)
 
   ' RH 31/07/00 - If space bar is pressed, then drop down the combo box
   If KeyAscii = 32 Then
-    UI.cboDropDown Combo1(Index).hWnd, True
+    UI.cboDropDown Combo1(Index).hwnd, True
   End If
   
 End Sub
@@ -2789,7 +2829,14 @@ Private Sub UpdateParentControls(plngParentTableID As Long, Optional plngParentR
             Else
               .NavigateTo = rsTemp(sColumnName) & vbNullString
             End If
-            
+
+          ElseIf TypeOf objControl Is COA_ColourSelector Then
+            If fResetControl Then
+              .BackColor = vbWhite
+            Else
+              .BackColor = Val(rsTemp(sColumnName))
+            End If
+          
           End If
         End With
       End If
@@ -3413,19 +3460,19 @@ Private Sub ctlNewLookup1_NewEntry(Index As Integer)
       '''' Only add a new ClookupValue to the ClookupValues collection if it
       '''' does not already exist.
       If gcoLookupValues.Count > 0 Then
-        If gcoLookupValues.IsValid(Me.hWnd) Then
-          gcoLookupValues.Remove CStr(Me.hWnd)
+        If gcoLookupValues.IsValid(Me.hwnd) Then
+          gcoLookupValues.Remove CStr(Me.hwnd)
         End If
       End If
       ' Add the ClookupValue to the ClookupValues collection.
-      Set objLUValue = gcoLookupValues.Add(sLookupColumnName, Me.hWnd, 0, mobjScreenControls.Item(ctlNewLookup1(Index).Tag).ColumnID)
+      Set objLUValue = gcoLookupValues.Add(sLookupColumnName, Me.hwnd, 0, mobjScreenControls.Item(ctlNewLookup1(Index).Tag).ColumnID)
   
       ' Disable the current record edit screen, and display the lookup table screen.
       DisableMe
       AddNewTableEntry mobjScreenControls.Item(sTag).LookupTableID
       
       ' Set the child Hwnd value in the ClookupValue object.
-      objLUValue.ChildHwnd = frmMain.ActiveForm.hWnd
+      objLUValue.ChildHwnd = frmMain.ActiveForm.hwnd
     End If
   End If
 
@@ -3809,7 +3856,7 @@ Private Sub Form_Unload(Cancel As Integer)
   If mfTableEntry Then
     ' Get the Hwnd value of the parent form.
     For Each objLUValue In gcoLookupValues.Collection
-      If objLUValue.ChildHwnd = Me.hWnd Then
+      If objLUValue.ChildHwnd = Me.hwnd Then
         lngParentHWnd = objLUValue.ParentHwnd
         Exit For
       End If
@@ -3818,7 +3865,7 @@ Private Sub Form_Unload(Cancel As Integer)
     
     ' Get the parent form.
     For Each fTemp In Forms
-      If fTemp.hWnd = lngParentHWnd Then
+      If fTemp.hwnd = lngParentHWnd Then
         fTemp.EnableMe
         
         If Not mfLeaveLookup Then
@@ -3868,7 +3915,7 @@ Private Sub Form_Unload(Cancel As Integer)
   Set mobjTableView = Nothing
 
   For Each fTemp In Forms
-    If fTemp.hWnd = lngParentHWnd Then
+    If fTemp.hwnd = lngParentHWnd Then
       fTemp.SetFocus
       frmMain.RefreshMainForm fTemp
       Exit For
@@ -4168,7 +4215,7 @@ Public Function LoadScreen(ByVal plngScreenID As Long, ByVal plngViewID As Long)
 
     ' Load the controls onto the screen.
     
-    UI.LockWindow Me.hWnd
+    UI.LockWindow Me.hwnd
     fOK = LoadControls(objScreen)
     UI.UnlockWindow
   End If
@@ -4695,6 +4742,13 @@ Public Sub UpdateControls(Optional pfNoWarnings As Boolean)
                   .NavigateTo = ""
                 Else
                   .NavigateTo = mrsRecords(sColumnName).Value & vbNullString
+                End If
+              
+              ElseIf TypeOf objControl Is COA_ColourSelector Then
+                If fResetControl Then
+                  .BackColor = vbWhite
+                Else
+                  .BackColor = Val(mrsRecords(sColumnName).Value)
                 End If
               
               ElseIf TypeOf objControl Is CommandButton Then
@@ -5245,6 +5299,9 @@ Public Function Update(Optional pfDeactivating As Variant) As Boolean
             ElseIf TypeOf objControl Is COA_WorkingPattern Then
               ' Working Pattern Field (CHAR type column, len 14).
               asColumns(2, iNextIndex) = "'" & Replace(objControl.Value, "'", "''") & "'"
+    
+            ElseIf TypeOf objControl Is COA_ColourSelector Then
+              asColumns(2, iNextIndex) = CStr(objControl.BackColor)
     
             ElseIf TypeOf objControl Is CommandButton Then
               If mobjScreenControls.Item(sTag).LinkTableID <> lngParentTableID Then
@@ -7281,6 +7338,9 @@ Private Sub SetControlDefaults(psTag As String, pobjControl As Control, lngParen
     ElseIf TypeOf pobjControl Is COA_Navigation Then
       .NavigateTo = sDefaultValue
     
+    ElseIf TypeOf objControl Is COA_ColourSelector Then
+      .BackColor = sDefaultValue
+    
     End If
   End With
 
@@ -7728,7 +7788,7 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
         If TypeOf objNewControl Is TDBText6Ctl.TDBText _
           Or TypeOf objNewControl Is TDBNumber6Ctl.TDBNumber _
           Or TypeOf objNewControl Is GTMaskDate.GTMaskDate Then
-              mobjBorders.SetBorder objNewControl.hWnd, ctTextBox, RGB(169, 177, 184)
+              mobjBorders.SetBorder objNewControl.hwnd, ctTextBox, RGB(169, 177, 184)
         End If
 
 '        ' Position the new control on the screen
@@ -7841,7 +7901,7 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
 
         ' Set the Font properties for all controls except
         ' images and OLE's
-        If (iControlType And (ctlImage Or ctlOle Or ctlPhoto Or ctlLine)) = 0 Then
+        If (iControlType And (ctlImage Or ctlOle Or ctlPhoto Or ctlLine Or ctlColourPicker)) = 0 Then
           If iControlType = ctlLabel Then
             .Font = objScreenControl.FontName
             .FontSize = objScreenControl.FontSize
@@ -7882,7 +7942,7 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
 
         ' Set the ForeColor property for all controls except
         ' images, ole's and tabs
-        If (iControlType And (ctlImage Or ctlOle Or ctlTab Or ctlPhoto Or ctlCommand Or ctlLine)) = 0 Then
+        If (iControlType And (ctlImage Or ctlOle Or ctlTab Or ctlPhoto Or ctlCommand Or ctlLine Or ctlColourPicker)) = 0 Then
           .ForeColor = objScreenControl.ForeColor
         End If
 
@@ -8440,6 +8500,9 @@ Private Function GetControlArray(ByRef pobjScreenControl As clsScreenControl) As
     Case ctlNavigation
       Set objControlArray = Me.COA_Navigation1
       
+    Case ctlColourPicker
+      Set objControlArray = ColourSelector1
+    
     Case Else
       Set objControlArray = Nothing
   End Select
@@ -9746,7 +9809,7 @@ Private Sub TabStrip1_Click()
   If Not mfLoading Then
   
     ' Lock the window refreshing.
-    UI.LockWindow Me.hWnd
+    UI.LockWindow Me.hwnd
   
     ' Get the index of the selected tabpage.
     iIndex = TabStrip1.SelectedItem.Index
@@ -9908,6 +9971,8 @@ Private Sub GotFocusCheck(pctlControl As VB.Control)
         mvOldValue = .Text
       ElseIf TypeOf pctlControl Is COA_WorkingPattern Then
         mvOldValue = .Value
+      ElseIf TypeOf pctlControl Is COA_ColourSelector Then
+        mvOldValue = CStr(.BackColor)
       Else
         mvOldValue = vbNullString
       End If
