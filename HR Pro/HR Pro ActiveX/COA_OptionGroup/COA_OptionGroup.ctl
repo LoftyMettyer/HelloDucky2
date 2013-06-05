@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
+Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
 Begin VB.UserControl COA_OptionGroup 
    ClientHeight    =   915
    ClientLeft      =   0
@@ -241,7 +241,7 @@ Private Sub UserControl_Resize()
           End With
         Next Index
         
-        intWidth = intWidth + (GetAvgCharWidth(UserControl.hDC) * 2) '+ 200
+        intWidth = intWidth + (GetAvgCharWidth(UserControl.hDC) * 2)
         
         With UserControl
           .Height = intHeight
@@ -454,7 +454,7 @@ Public Function SetOptions(ByRef pasOptions As Variant)
       End If
       
       With Option1(iIndex)
-        .Caption = pasOptions(0, iX)
+        .Caption = Replace(pasOptions(0, iX), "&", "&&")
         .Visible = True
       End With
       
@@ -467,7 +467,7 @@ Public Function SetOptions(ByRef pasOptions As Variant)
       End If
       
       With Option1(iIndex)
-        .Caption = pasOptions(iX)
+        .Caption = Replace(pasOptions(iX), "&", "&&")
         .Visible = True
       End With
       

@@ -592,7 +592,7 @@ Public Function SetOptions(ByRef pasOptions As Variant)
         Load Option1(iX)
       End If
       With Option1(iIndex)
-        .Caption = pasOptions(0, iX)
+        .Caption = Replace(pasOptions(0, iX), "&", "&&")
         .Visible = True
       End With
       iIndex = iIndex + 1
@@ -603,7 +603,7 @@ Public Function SetOptions(ByRef pasOptions As Variant)
         Load Option1(iX)
       End If
       With Option1(iIndex)
-        .Caption = pasOptions(iX)
+        .Caption = Replace(pasOptions(iX), "&", "&&")
         .Visible = True
       End With
       iIndex = iIndex + 1
