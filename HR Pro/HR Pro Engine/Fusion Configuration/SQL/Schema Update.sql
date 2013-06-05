@@ -1,15 +1,29 @@
-USE [OpenHR5]
-GO
+DECLARE @fusionschemaID integer
 
-/****** Object:  Table [fusion].[Category]    Script Date: 07/30/2012 17:26:21 ******/
-SET ANSI_NULLS ON
-GO
+SELECT @fusionschemaID = [SCHEMA_ID] FROM sys.schemas WHERE [name] = 'fusion'
 
-SET QUOTED_IDENTIFIER ON
-GO
 
-SET ANSI_PADDING ON
-GO
+	IF EXISTS (SELECT * FROM sys.objects WHERE name = 'MessageDefinition' AND type in (N'U') AND schema_id = @fusionschemaID)
+		DROP TABLE [fusion].[MessageDefinition]
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE name = 'MessageElements' AND type in (N'U') AND schema_id = @fusionschemaID)
+		DROP TABLE [fusion].[MessageElements]
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE name = 'Element' AND type in (N'U') AND schema_id = @fusionschemaID)
+		DROP TABLE [fusion].[Element]
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE name = 'Message' AND type in (N'U') AND schema_id = @fusionschemaID)
+		DROP TABLE [fusion].[Message]
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE name = 'Category' AND type in (N'U') AND schema_id = @fusionschemaID)
+		DROP TABLE [fusion].[Category]
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE name = 'MessageTracking' AND type in (N'U') AND schema_id = @fusionschemaID)
+		DROP TABLE [fusion].[MessageTracking]
+
+
+
+
 
 CREATE TABLE [fusion].[Category](
 	[ID] [int] NOT NULL,
@@ -21,24 +35,10 @@ CREATE TABLE [fusion].[Category](
 )WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
-GO
-
-SET ANSI_PADDING OFF
-GO
 
 
-USE [OpenHR5]
-GO
 
-/****** Object:  Table [fusion].[Element]    Script Date: 07/30/2012 17:26:27 ******/
-SET ANSI_NULLS ON
-GO
 
-SET QUOTED_IDENTIFIER ON
-GO
-
-SET ANSI_PADDING ON
-GO
 
 CREATE TABLE [fusion].[Element](
 	[ID] [int] NOT NULL,
@@ -68,18 +68,8 @@ GO
 ALTER TABLE [fusion].[Element] CHECK CONSTRAINT [FK_Element_Category]
 GO
 
-USE [OpenHR5]
-GO
 
-/****** Object:  Table [fusion].[Message]    Script Date: 07/30/2012 17:26:39 ******/
-SET ANSI_NULLS ON
-GO
 
-SET QUOTED_IDENTIFIER ON
-GO
-
-SET ANSI_PADDING ON
-GO
 
 CREATE TABLE [fusion].[Message](
 	[ID] [int] NOT NULL,
@@ -105,18 +95,6 @@ GO
 SET ANSI_PADDING OFF
 GO
 
-USE [OpenHR5]
-GO
-
-/****** Object:  Table [fusion].[MessageElements]    Script Date: 07/30/2012 17:26:46 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-SET ANSI_PADDING ON
-GO
 
 CREATE TABLE [fusion].[MessageElements](
 	[ID] [int] IDENTITY(1,1) NOT NULL,
@@ -156,35 +134,22 @@ GO
 ALTER TABLE [fusion].[MessageElements] CHECK CONSTRAINT [FK_MessageID]
 GO
 
-USE [OpenHR5]
-GO
 
-/****** Object:  Table [fusion].[MessageTracking]    Script Date: 07/30/2012 17:30:01 ******/
-SET ANSI_NULLS ON
-GO
 
-SET QUOTED_IDENTIFIER ON
-GO
 
-SET ANSI_PADDING ON
-GO
 
-CREATE TABLE [fusion].[MessageTracking](
-	[ID] [int] IDENTITY(1,1) NOT NULL,
-	[MessageType] [varchar](50) NOT NULL,
-	[BusRef] [uniqueidentifier] NOT NULL,
-	[LastGeneratedDate] [datetime] NULL,
-	[LastProcessedDate] [datetime] NULL,
-	[LastGeneratedXml] [varchar](max) NULL,
-	[Username] [varchar](255) NULL,
- CONSTRAINT [PK_MessageTracking] PRIMARY KEY CLUSTERED 
-(
-	[ID] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-) ON [PRIMARY]
 
-GO
-
-SET ANSI_PADDING OFF
-GO
+	CREATE TABLE [fusion].[MessageTracking](
+		[ID] [int] IDENTITY(1,1) NOT NULL,
+		[MessageType] [varchar](50) NOT NULL,
+		[BusRef] [uniqueidentifier] NOT NULL,
+		[LastGeneratedDate] [datetime] NULL,
+		[LastProcessedDate] [datetime] NULL,
+		[LastGeneratedXml] [varchar](max) NULL,
+		[Username] [varchar](255) NULL,
+	 CONSTRAINT [PK_MessageTracking] PRIMARY KEY CLUSTERED 
+	(
+		[ID] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+	) ON [PRIMARY]
 
