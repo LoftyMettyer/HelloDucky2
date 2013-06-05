@@ -7687,11 +7687,10 @@ PRINT 'Step 10 - Fusion Services (may be superseded by Fusion Installer)'
 PRINT 'Step 11 - System Calculations'
 
 	DELETE FROM dbo.[tbstat_componentcode] WHERE [ID] = 4 AND [isoperator] = 1;
-	INSERT [dbo].[tbstat_componentcode] ([id], [code], [datatype], [name], [isoperator], [operatortype], [aftercode]) 
-		VALUES (4, '/ NULLIF(', NULL, 'Divided by', 1, 0, ',0)');
+	INSERT [dbo].[tbstat_componentcode] ([id], [objectid], [code], [datatype], [name], [isoperator], [operatortype], [aftercode]) 
+		VALUES (4, 'a34f7387-91a1-40d6-b42f-f8032609cfd6', '/ NULLIF(', NULL, 'Divided by', 1, 0, ',0)');
 
 	UPDATE dbo.[tbstat_componentcode] SET [recordidrequired] = 1 WHERE [ID] = 43 AND [isoperator] = 0;
-
 
 
 /* ------------------------------------------------------------- */
