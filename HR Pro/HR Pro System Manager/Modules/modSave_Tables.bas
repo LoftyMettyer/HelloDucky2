@@ -604,6 +604,8 @@ Private Sub ReadCustomTriggers(ByVal sTableName As String, ByVal sPhysicalTableN
   Do While Not rsTriggers.EOF
     sTriggerDefn = vbNullString
     bTablenameConverted = False
+    bTRIGGERNAMEfound = False
+    ONfound = False
 
     ' Get the script for the custom trigger.
     sTriggerName = rsTriggers!Name
