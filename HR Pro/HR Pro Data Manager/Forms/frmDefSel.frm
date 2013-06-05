@@ -1848,7 +1848,7 @@ Private Sub ShowControls()
 
   ' Table combo flag now used to show categories or tables
   lblTables.Visible = Not (mutlUtilityType = utlWorkflow Or mutlUtilityType = utlDocumentMapping Or mutlUtilityType = utlEmailAddress _
-                        Or mutlUtilityType = utlLabelType Or mutlUtilityType = utlEmailGroup Or mblnScheduledJobs)
+                        Or mutlUtilityType = utlLabelType Or mutlUtilityType = utlEmailGroup Or mutlUtilityType = utlOrder Or mblnScheduledJobs)
   cboTables.Visible = lblTables.Visible
     
   If mblnTableComboVisible Then
