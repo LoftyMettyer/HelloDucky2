@@ -15,6 +15,12 @@
     Public UDF As ScriptDB.GeneratedUDF
     Public RowDetails As Things.ChildRowDetails
 
+    Public ReadOnly Property Table As Things.Table
+      Get
+        Return Parent
+      End Get
+    End Property
+
     Public ReadOnly Property IncludedColumns As Things.Collection
       Get
         Return Me.Objects
@@ -117,9 +123,17 @@
 
       ' Add the included columns
       For Each objColumn In IncludedColumns
-        aryColumnList.Add(String.Format("base.[{0}]", objColumn.Name))
+        Select Case RowDetails.RowSelection
+          Case ScriptDB.ColumnRowSelection.Count
+            aryColumnList.Add(String.Format("COUNT(base.[{0}])", objColumn.Name))
+          Case ScriptDB.ColumnRowSelection.Total
+            aryColumnList.Add(String.Format("SUM(base.[{0}])", objColumn.Name))
+          Case Else
+            aryColumnList.Add(String.Format("base.[{0}]", objColumn.Name))
+            objIndex.IncludedColumns.AddIfNew(objColumn)
+        End Select
+
         aryReturnDefintion.Add(String.Format("[{0}] {1}", objColumn.Name, objColumn.DataTypeSyntax))
-        objIndex.IncludedColumns.AddIfNew(objColumn)
       Next
 
       ' Create index for this object

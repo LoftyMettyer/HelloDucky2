@@ -30,6 +30,7 @@ Namespace Things
     Private Wheres As ArrayList
     Public Declarations As New ArrayList
     Public PreStatements As New ArrayList
+    Public ChildColumns As Things.Collection
 
     Private mcolLinesOfCode As ScriptDB.LinesOfCode
 
@@ -111,11 +112,13 @@ Namespace Things
       Joins = New ArrayList
       FromTables = New ArrayList
       Wheres = New ArrayList
+      '  BeforeStatments = New ArrayList
 
       '     If Declarations Is Nothing Then Declarations = New ArrayList
       '      If PreStatements Is Nothing Then PreStatements = New ArrayList
       Declarations.Clear()
       PreStatements.Clear()
+      'BeforeStatments.Clear()
 
       Joins.Clear()
       Wheres.Clear()
@@ -699,37 +702,16 @@ Namespace Things
             objOrderFilter = objThisColumn.Table.TableOrderFilter([Component].ChildRowDetails)
             objOrderFilter.IncludedColumns.AddIfNew(objThisColumn)
 
+            '            ChildColumns.AddIfNew(objOrderFilter)
             '     LineOfCode = AddChildColumn(objOrderFilter, objThisColumn)
+            '            objOrderFilter.Table
 
             ' Add calculation for this foreign column to the pre-requisits array 
             iPartNumber = Declarations.Count + Me.StartOfPartNumbers
-            '  bReverseOrder = False
+            bIsSummaryColumn = ScriptDB.ColumnRowSelection.Total Or ScriptDB.ColumnRowSelection.Count
 
-            ' What type/line number are we dealing with?
-            Select Case [Component].ChildRowDetails.RowSelection
-
-              Case ScriptDB.ColumnRowSelection.First, ScriptDB.ColumnRowSelection.Last, ScriptDB.ColumnRowSelection.Specific
-                sPartCode = String.Format("{0}SELECT @part_{1} = base.[{2}]" & vbNewLine _
-                    , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
-
-              Case ScriptDB.ColumnRowSelection.Total
-                sPartCode = String.Format("{0}SELECT @part_{1} = SUM(base.[{2}])" & vbNewLine _
-                    , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
-                bIsSummaryColumn = True
-
-              Case ScriptDB.ColumnRowSelection.Count
-                sPartCode = String.Format("{0}SELECT @part_{1} = COUNT(base.[{2}])" & vbNewLine _
-                    , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
-                bIsSummaryColumn = True
-
-              Case Else
-                '  sPartCode = String.Format("{0}SELECT TOP 1 @part_{1} = base.[{2}]" & vbNewLine _
-                '              , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
-                Debug.Assert(1 = 2)
-
-            End Select
-
-            'Globals.PerformanceIndexes.AddIfNew(objThisColumn)
+            sPartCode = String.Format("{0}SELECT @part_{1} = base.[{2}]" & vbNewLine _
+                , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
 
             ' Add to prereqistits arrays
             If bIsSummaryColumn Then
