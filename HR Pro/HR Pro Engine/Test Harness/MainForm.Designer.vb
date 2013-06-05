@@ -98,7 +98,7 @@ Partial Class MainForm
     Me.txtServer.Name = "txtServer"
     Me.txtServer.Size = New System.Drawing.Size(100, 20)
     Me.txtServer.TabIndex = 23
-    Me.txtServer.Text = "harpdev02"
+    Me.txtServer.Text = "cedric"
     '
     'txtDatabase
     '
@@ -106,7 +106,7 @@ Partial Class MainForm
     Me.txtDatabase.Name = "txtDatabase"
     Me.txtDatabase.Size = New System.Drawing.Size(100, 20)
     Me.txtDatabase.TabIndex = 22
-    Me.txtDatabase.Text = "blank"
+    Me.txtDatabase.Text = "richmond"
     '
     'butScriptDB
     '
