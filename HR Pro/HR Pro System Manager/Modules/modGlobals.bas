@@ -1,6 +1,8 @@
 Attribute VB_Name = "modGlobals"
 Option Explicit
 
+Public gsDatabaseName As String
+
 ' Globals for the desktop settings
 Public glngDesktopBitmapID As Long
 Public glngDesktopBitmapLocation As BackgroundLocationTypes

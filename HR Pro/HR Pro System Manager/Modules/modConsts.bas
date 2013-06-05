@@ -19,7 +19,6 @@ Public Const GWL_STYLE As Long = (-16)
 ' Advanced database settings to control the recursion levels in the database
 Public Const giDefaultRecursionLevel = 8
 
-
 Public Const gsDUMMY_CHARACTER = "ASRDUMMYCHARVALUE"
 Public Const gsDUMMY_NUMERIC = 1
 Public Const gsDUMMY_LOGIC = True
@@ -280,4 +279,7 @@ Public Const gsPARAMETERKEY_DOCMAN_TYPECATEGORYCOLUMN = "Param_DocManTypeCategor
 
 Public Const gsMODULEKEY_SQL = "MODULE_SQL"
 Public Const giEXPRVALUE_BYREF_OFFSET = 100
+
+Public Const gsSSP_PROCEDURENAME = "spsys_absencessp"
+Public Const gsWorkingDaysBetween2Dates_PROCEDURENAME = "sp_ASRFn_WorkingDaysBetweenTwoDates"
 
