@@ -1039,6 +1039,13 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   '4
   'Insert TOC code here as all Report Pack Jobs Or Batch Jobs would be done by now
   ElseIf gblnReportPackMode And fOK And blnOutputSave And blnOutputTOC Then
+    If strOutputFilename = vbNullString Then
+      If strOutputEmailAttachAs = vbNullString Then
+      Else
+        strOutputFilename = strOutputEmailAttachAs
+      End If
+    End If
+  
     Select Case lngOutputFormat
       Case fmtHTML
           FileNum = FreeFile()
@@ -1061,9 +1068,9 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
         'Open word file
         If GetTOCFile(strOutputFilename, lngOutputFormat, lngOutputSaveExisting) Then
           InitialiseStyles
-          'mwrdApp.Visible = True
+          mwrdApp.Visible = True
           With mwrdApp.Selection
-            .HomeKey Unit:=wdStory
+            .HomeKey unit:=wdStory
             'Insert TOC
             With mwrdDoc
               .TablesOfContents.Add Range:=mwrdApp.Selection.Range, RightAlignPageNumbers:=True, UseHeadingStyles:=True, UpperHeadingLevel:=1, LowerHeadingLevel:=3, IncludePageNumbers:=True, AddedStyles:="", UseHyperlinks:=True
@@ -1071,33 +1078,33 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
               .TablesOfContents.Format = wdIndexIndent
             End With
             .InsertBreak Type:=wdPageBreak
-            .MoveLeft Unit:=wdCharacter
-            .HomeKey Unit:=wdStory, Extend:=wdExtend
+            .MoveLeft unit:=wdCharacter
+            .HomeKey unit:=wdStory, Extend:=wdExtend
             ApplyStylesToRange mwrdApp.Selection.Range, mcolStyles("Data"), True
-            .HomeKey Unit:=wdStory
+            .HomeKey unit:=wdStory
             
             'Insert TOC header text
             .TypeParagraph: .TypeParagraph
-            .HomeKey Unit:=wdStory
+            .HomeKey unit:=wdStory
             .TypeText Text:="Table of Contents"
-            .HomeKey Unit:=wdLine, Extend:=wdExtend
+            .HomeKey unit:=wdLine, Extend:=wdExtend
             ApplyStylesToRange mwrdApp.Selection.Range, mcolStyles("Heading"), True
             .Font.Size = 14
             
             'Insert Report Title or Report Pack name if blank
-            .HomeKey Unit:=wdStory
+            .HomeKey unit:=wdStory
             .InsertBreak Type:=wdPageBreak
-            .HomeKey Unit:=wdStory
+            .HomeKey unit:=wdStory
             .TypeParagraph: .TypeParagraph: .TypeParagraph: .TypeParagraph
             If strOutputReportPackTitle = vbNullString Then
               .TypeText Text:=sBatchJobName
             Else
               .TypeText Text:=strOutputReportPackTitle
             End If
-            .HomeKey Unit:=wdLine, Extend:=wdExtend
+            .HomeKey unit:=wdLine, Extend:=wdExtend
             ApplyStylesToRange mwrdApp.Selection.Range, mcolStyles("Heading"), True
             .Font.Size = 20
-            .MoveLeft Unit:=wdCharacter
+            .MoveLeft unit:=wdCharacter
             
             'Update TOC page numbers
             mwrdDoc.TablesOfContents(1).UpdatePageNumbers
@@ -1115,24 +1122,32 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
         Case fmtHTML
           If strOutputReportPackTitle = vbNullString Then strOutputReportPackTitle = sBatchJobName
           
-          gstrHTMLOutputTOC = "<HTML><BODY><CENTER><FONT face=Verdana size=2>"
-          gstrHTMLOutputTOC = gstrHTMLOutputTOC & "<a id=" & "'" & "top" & "'" & "><h2>" & strOutputReportPackTitle & "</h2></a>"
-        
-          FileNum = FreeFile()
-          LineCount = 1
-          'Read the contents of the HTML file
-          Open strOutputFilename For Input As #FileNum
-            Do While Not EOF(FileNum)
-              Line Input #FileNum, NextLine
-              strReadInFileContents = strReadInFileContents & NextLine
-              LineCount = LineCount + 1
-            Loop
-          Close #FileNum
-          'Write back the contents with our added TOC HTML
-          Open strOutputFilename For Output As #FileNum
-              strReadInFileContents = gstrHTMLOutputTOC & strReadInFileContents
-              Print #FileNum, strReadInFileContents
-          Close #FileNum
+          If strOutputFilename = vbNullString Then
+            strNotes = "No file name has been specified in the Report Pack definition."
+            fOK = False
+            blnOutputEmail = False
+          Else
+            gstrHTMLOutputTOC = "<HTML><BODY><CENTER><FONT face=Verdana size=2>"
+            gstrHTMLOutputTOC = gstrHTMLOutputTOC & "<a id=" & "'" & "top" & "'" & "><h2>" & strOutputReportPackTitle & "</h2></a>"
+          
+            FileNum = FreeFile()
+            LineCount = 1
+            
+            'Read the contents of the HTML file
+            Open strOutputFilename For Input As #FileNum
+              Do While Not EOF(FileNum)
+                Line Input #FileNum, NextLine
+                strReadInFileContents = strReadInFileContents & NextLine
+                LineCount = LineCount + 1
+              Loop
+            Close #FileNum
+            
+            'Write back the contents with our added TOC HTML
+            Open strOutputFilename For Output As #FileNum
+                strReadInFileContents = gstrHTMLOutputTOC & strReadInFileContents
+                Print #FileNum, strReadInFileContents
+            Close #FileNum
+          End If
         
         Case fmtWordDoc
         Case fmtExcelchart, fmtExcelPivotTable, fmtExcelWorksheet
@@ -1245,6 +1260,22 @@ Private Sub InitialiseStyles()
 
   mcolStyles.Add objStyle, objStyle.Name
 
+
+  'New StyleSet for Report Pack
+  Set objStyle = New clsOutputStyle
+  With objStyle
+    .Name = "Heading2"
+    .StartCol = Val(GetUserSetting("Output", "TitleCol", "3"))
+    .StartRow = Val(GetUserSetting("Output", "TitleRow", "2"))
+    .Gridlines = (GetUserSetting("Output", "TitleGridLines", "0") = "1")
+    .Bold = (GetUserSetting("Output", "TitleBold", "1") = "1")
+    .Underline = (GetUserSetting("Output", "TitleUnderline", "1") = "1")
+    .BackCol = Val(GetUserSetting("Output", "TitleBackcolour", vbWhite))
+    .ForeCol = Val(GetUserSetting("Output", "TitleForecolour", GetColour("Midnight Blue")))
+  End With
+
+  mcolStyles.Add objStyle, objStyle.Name
+  
   Set objStyle = Nothing
 
 End Sub
