@@ -9,8 +9,6 @@ Namespace Forms
 
     Private Sub ErrorLog_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
-      Dim objListViewItem As ListViewItem
-
       lblTelephone.Text = "Telephone : " & Globals.SystemSettings.Setting("support", "telephone no").Value
       linkEmail.Text = Globals.SystemSettings.Setting("support", "email").Value
       LinkWeb.Text = Globals.SystemSettings.Setting("support", "webpage").Value
@@ -18,11 +16,8 @@ Namespace Forms
       linkEmail.Links.Add(0, linkEmail.Text.Length, linkEmail.Text)
       LinkWeb.Links.Add(0, LinkWeb.Text.Length, LinkWeb.Text)
 
-      'txtDetails.Text = Globals.ErrorLog.QuickReport()
-      '      txtDetails.Text = txtDetails.Text & Globals.ErrorLog.DetailedReport
-
       For Each objError As ErrorHandler.Error In Globals.ErrorLog
-				objListViewItem = lvwErrors.Items.Add("")
+				Dim objListViewItem = lvwErrors.Items.Add(objError.Message)
         objListViewItem.ImageIndex = objError.Severity
         objListViewItem.SubItems.Add(objError.Message)
         objListViewItem.SubItems.Add(objError.Detail)

@@ -49,12 +49,12 @@
 			'
 			'txtDetails
 			'
-			Me.txtDetails.Location = New System.Drawing.Point(420, 132)
+			Me.txtDetails.Location = New System.Drawing.Point(8, 390)
 			Me.txtDetails.Multiline = True
 			Me.txtDetails.Name = "txtDetails"
 			Me.txtDetails.ReadOnly = True
 			Me.txtDetails.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-			Me.txtDetails.Size = New System.Drawing.Size(279, 320)
+			Me.txtDetails.Size = New System.Drawing.Size(691, 63)
 			Me.txtDetails.TabIndex = 10
 			Me.txtDetails.Visible = False
 			'
@@ -63,7 +63,7 @@
 			Me.TextBox2.BackColor = System.Drawing.SystemColors.Control
 			Me.TextBox2.BorderStyle = System.Windows.Forms.BorderStyle.None
 			Me.TextBox2.Cursor = System.Windows.Forms.Cursors.Default
-			Me.TextBox2.Location = New System.Drawing.Point(71, 12)
+			Me.TextBox2.Location = New System.Drawing.Point(69, 12)
 			Me.TextBox2.Multiline = True
 			Me.TextBox2.Name = "TextBox2"
 			Me.TextBox2.ReadOnly = True
@@ -96,7 +96,7 @@
 			'lblTelephone
 			'
 			Me.lblTelephone.AutoSize = True
-			Me.lblTelephone.Location = New System.Drawing.Point(71, 47)
+			Me.lblTelephone.Location = New System.Drawing.Point(69, 47)
 			Me.lblTelephone.Name = "lblTelephone"
 			Me.lblTelephone.Size = New System.Drawing.Size(79, 13)
 			Me.lblTelephone.TabIndex = 1
@@ -105,7 +105,7 @@
 			'lblEmail
 			'
 			Me.lblEmail.AutoSize = True
-			Me.lblEmail.Location = New System.Drawing.Point(71, 71)
+			Me.lblEmail.Location = New System.Drawing.Point(69, 71)
 			Me.lblEmail.Name = "lblEmail"
 			Me.lblEmail.Size = New System.Drawing.Size(47, 13)
 			Me.lblEmail.TabIndex = 2
@@ -114,7 +114,7 @@
 			'lblWeb
 			'
 			Me.lblWeb.AutoSize = True
-			Me.lblWeb.Location = New System.Drawing.Point(71, 95)
+			Me.lblWeb.Location = New System.Drawing.Point(69, 95)
 			Me.lblWeb.Name = "lblWeb"
 			Me.lblWeb.Size = New System.Drawing.Size(41, 13)
 			Me.lblWeb.TabIndex = 4
@@ -123,7 +123,7 @@
 			'LinkWeb
 			'
 			Me.LinkWeb.AutoSize = True
-			Me.LinkWeb.Location = New System.Drawing.Point(142, 95)
+			Me.LinkWeb.Location = New System.Drawing.Point(140, 95)
 			Me.LinkWeb.Name = "LinkWeb"
 			Me.LinkWeb.Size = New System.Drawing.Size(50, 13)
 			Me.LinkWeb.TabIndex = 5
@@ -133,7 +133,7 @@
 			'linkEmail
 			'
 			Me.linkEmail.AutoSize = True
-			Me.linkEmail.Location = New System.Drawing.Point(142, 71)
+			Me.linkEmail.Location = New System.Drawing.Point(140, 71)
 			Me.linkEmail.Name = "linkEmail"
 			Me.linkEmail.Size = New System.Drawing.Size(59, 13)
 			Me.linkEmail.TabIndex = 3
@@ -152,7 +152,7 @@
 			'PictureBox1
 			'
 			Me.PictureBox1.Image = Global.SystemFramework.My.Resources.Resources.Cancel48
-			Me.PictureBox1.Location = New System.Drawing.Point(10, 12)
+			Me.PictureBox1.Location = New System.Drawing.Point(8, 12)
 			Me.PictureBox1.Name = "PictureBox1"
 			Me.PictureBox1.Size = New System.Drawing.Size(48, 48)
 			Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize
@@ -161,7 +161,7 @@
 			'
 			'cmdCopy
 			'
-			Me.cmdCopy.Location = New System.Drawing.Point(10, 459)
+			Me.cmdCopy.Location = New System.Drawing.Point(8, 458)
 			Me.cmdCopy.Name = "cmdCopy"
 			Me.cmdCopy.Size = New System.Drawing.Size(128, 23)
 			Me.cmdCopy.TabIndex = 11
@@ -188,9 +188,9 @@
 			Me.lvwErrors.AutoArrange = False
 			Me.lvwErrors.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Severity, Me.Message, Me.ID})
 			Me.lvwErrors.FullRowSelect = True
-			Me.lvwErrors.Location = New System.Drawing.Point(12, 132)
+			Me.lvwErrors.Location = New System.Drawing.Point(8, 132)
 			Me.lvwErrors.Name = "lvwErrors"
-			Me.lvwErrors.Size = New System.Drawing.Size(397, 320)
+			Me.lvwErrors.Size = New System.Drawing.Size(691, 252)
 			Me.lvwErrors.SmallImageList = Me.imagelist16
 			Me.lvwErrors.TabIndex = 9
 			Me.lvwErrors.UseCompatibleStateImageBehavior = False
@@ -198,7 +198,7 @@
 			'
 			'Severity
 			'
-			Me.Severity.Text = ""
+			Me.Severity.Text = "Message"
 			Me.Severity.Width = 20
 			'
 			'Message
