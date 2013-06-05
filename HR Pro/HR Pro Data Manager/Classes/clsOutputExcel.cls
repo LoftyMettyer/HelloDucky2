@@ -992,7 +992,7 @@ Public Function AddPage(strDefTitle As String, strSheetName As String, colStyles
   If mblnPivotTable Then
     GetWorksheet "Data " & strSheetName
   Else
-    GetWorksheet strSheetName
+    GetWorksheet IIf(gblnReportPackMode, strDefTitle, strSheetName)
   End If
   
   If Not mblnChart And Not mblnPivotTable Then
