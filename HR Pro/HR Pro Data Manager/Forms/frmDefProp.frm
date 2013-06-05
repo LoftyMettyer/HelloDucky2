@@ -1137,33 +1137,62 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
        "CALENDAR REPORT", "RECORD PROFILE", "ENVELOPES & LABELS", _
        "MATCH REPORT", "SUCCESSION PLANNING", "CAREER PROGRESSION"
 
-    'Check if this has been used in a batch job
-    'JPD 20030617 Fault 6051
-    If gfCurrentUserIsSysSecMgr Then
-      Call GetNameWhereUsed( _
-        "SELECT DISTINCT 'Batch Job'," & _
-        " ASRSysBatchJobName.Name," & _
-        " ASRSysBatchJobName.UserName," & _
-        " '" & ACCESS_READWRITE & "' AS access" & _
-        " FROM ASRSysBatchJobDetails" & _
-        " INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobDetails.BatchJobNameID = ASRSysBatchJobName.ID" & _
-        " WHERE ASRSysBatchJobDetails.JobType = '" & psType & "' " & _
-        "   AND ASRSysBatchJobDetails.JobID = " & strID)
-    Else
-      Call GetNameWhereUsed( _
-        "SELECT DISTINCT 'Batch Job'," & _
-        " ASRSysBatchJobName.Name," & _
-        " ASRSysBatchJobName.UserName," & _
-        " ASRSysBatchJobAccess.Access" & _
-        " FROM ASRSysBatchJobDetails" & _
-        " INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobDetails.BatchJobNameID = ASRSysBatchJobName.ID" & _
-        " INNER JOIN ASRSysBatchJobAccess ON AsrSysBatchJobName.ID = ASRSysBatchJobAccess.ID" & _
-        " INNER JOIN sysusers b ON ASRSysBatchJobAccess.groupname = b.name" & _
-        "   AND b.name = '" & gsUserGroup & "'" & _
-        " WHERE ASRSysBatchJobDetails.JobType = '" & psType & "' " & _
-        "   AND ASRSysBatchJobDetails.JobID = " & strID)
-    End If
-    
+      'Check if this has been used in a batch job
+      'JPD 20030617 Fault 6051
+      If gfCurrentUserIsSysSecMgr Then
+        Call GetNameWhereUsed( _
+          "SELECT DISTINCT 'Batch Job'," & _
+          " ASRSysBatchJobName.Name," & _
+          " ASRSysBatchJobName.UserName," & _
+          " '" & ACCESS_READWRITE & "' AS access" & _
+          " FROM ASRSysBatchJobDetails" & _
+          " INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobDetails.BatchJobNameID = ASRSysBatchJobName.ID" & _
+          " WHERE AsrSysBatchJobName.IsBatch = 1 " & _
+          "   AND ASRSysBatchJobDetails.JobType = '" & psType & "' " & _
+          "   AND ASRSysBatchJobDetails.JobID = " & strID)
+      Else
+        Call GetNameWhereUsed( _
+          "SELECT DISTINCT 'Batch Job'," & _
+          " ASRSysBatchJobName.Name," & _
+          " ASRSysBatchJobName.UserName," & _
+          " ASRSysBatchJobAccess.Access" & _
+          " FROM ASRSysBatchJobDetails" & _
+          " INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobDetails.BatchJobNameID = ASRSysBatchJobName.ID" & _
+          " INNER JOIN ASRSysBatchJobAccess ON AsrSysBatchJobName.ID = ASRSysBatchJobAccess.ID" & _
+          " INNER JOIN sysusers b ON ASRSysBatchJobAccess.groupname = b.name" & _
+          "   AND b.name = '" & gsUserGroup & "'" & _
+          " WHERE AsrSysBatchJobName.IsBatch = 1 " & _
+          "   AND ASRSysBatchJobDetails.JobType = '" & psType & "' " & _
+          "   AND ASRSysBatchJobDetails.JobID = " & strID)
+      End If
+      'Check if this has been used in a Report Pack
+      'JPD 20030617 Fault 6051
+      If gfCurrentUserIsSysSecMgr Then
+        Call GetNameWhereUsed( _
+          "SELECT DISTINCT 'Report Pack'," & _
+          " ASRSysBatchJobName.Name," & _
+          " ASRSysBatchJobName.UserName," & _
+          " '" & ACCESS_READWRITE & "' AS access" & _
+          " FROM ASRSysBatchJobDetails" & _
+          " INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobDetails.BatchJobNameID = ASRSysBatchJobName.ID" & _
+          " WHERE AsrSysBatchJobName.IsBatch = 1 " & _
+          "   AND ASRSysBatchJobDetails.JobType = '" & psType & "' " & _
+          "   AND ASRSysBatchJobDetails.JobID = " & strID)
+      Else
+        Call GetNameWhereUsed( _
+          "SELECT DISTINCT 'Report Pack'," & _
+          " ASRSysBatchJobName.Name," & _
+          " ASRSysBatchJobName.UserName," & _
+          " ASRSysBatchJobAccess.Access" & _
+          " FROM ASRSysBatchJobDetails" & _
+          " INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobDetails.BatchJobNameID = ASRSysBatchJobName.ID" & _
+          " INNER JOIN ASRSysBatchJobAccess ON AsrSysBatchJobName.ID = ASRSysBatchJobAccess.ID" & _
+          " INNER JOIN sysusers b ON ASRSysBatchJobAccess.groupname = b.name" & _
+          "   AND b.name = '" & gsUserGroup & "'" & _
+          " WHERE AsrSysBatchJobName.IsBatch = 1 " & _
+          "   AND ASRSysBatchJobDetails.JobType = '" & psType & "' " & _
+          "   AND ASRSysBatchJobDetails.JobID = " & strID)
+      End If
     'JPD 20040729 Fault 8978
     CheckModuleSetup psType, plngItemID
     
@@ -1521,6 +1550,13 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
       "FROM ASRSYSBatchJobDetails " & _
       "WHERE ASRSYSBatchJobDetails.BatchJobNameID = " & CStr(plngItemID) & " ORDER BY JobOrder", True)
 
+  Case "REPORT PACK", "SCHEDULED REPORT PACKS"
+    Call GetNameWhereUsed( _
+      "SELECT DISTINCT JobType, JobID, JobOrder, " & _
+      "'' as Username, '" & ACCESS_READONLY & "' as Access " & _
+      "FROM ASRSYSBatchJobDetails " & _
+      "WHERE ASRSYSBatchJobDetails.BatchJobNameID = " & CStr(plngItemID) & " ORDER BY JobOrder", True)
+      
   Case "LABEL TYPES"
     If gfCurrentUserIsSysSecMgr Then
       Call GetNameWhereUsed( _
@@ -1557,7 +1593,7 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
   End Select
 
   miUsageCount = List1.ListCount
-  CheckForUseage = (List1.ListCount > 0 And Not Trim(UCase(psType)) = "BATCH JOB")
+  CheckForUseage = (List1.ListCount > 0 And (Not Trim(UCase(psType)) = "BATCH JOB" Or Not Trim(UCase(psType)) = "REPORT PACK"))
 
   If miUsageCount = 0 Then
     List1.AddItem "<None>"
