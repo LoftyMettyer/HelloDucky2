@@ -593,7 +593,7 @@ Namespace ScriptDB
           ' Update child records
           If aryChildrenToUpdate.ToArray.Length > 0 Then
             sSQLChildColumns = "    --Update children" & vbNewLine & _
-                    "    IF @isovernight = 0" & vbNewLine & "    BEGIN" & vbNewLine & _
+                    "    IF @isovernight = 0 AND @startingtrigger = 2" & vbNewLine & "    BEGIN" & vbNewLine & _
                     String.Join(vbNewLine & vbNewLine, aryChildrenToUpdate.ToArray()) & vbNewLine & _
                    "     END"
           End If
@@ -771,6 +771,7 @@ Namespace ScriptDB
               "    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
               "    SELECT @forcerefresh = dbo.[udfsys_triggerrequiresrefresh]();" & vbNewLine & _
+              "    SELECT @startingtrigger = [actiontype] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3} AND nestlevel = 1" & vbNewLine & _
               "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
               sSQLCalculatedColumns & vbNewLine & vbNewLine & _
@@ -873,10 +874,11 @@ Namespace ScriptDB
           "BEGIN" & vbNewLine & _
           "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([{2}].[{0}]';" & vbNewLine & _
           "    SET NOCOUNT ON;" & vbNewLine & _
-          "    DECLARE @iCount        integer," & vbNewLine & _
-          "            @isovernight   bit," & vbNewLine & _
-          "            @forcerefresh  bit," & vbNewLine & _
-          "            @user          varchar(255);" & vbNewLine & vbNewLine & _
+          "    DECLARE @iCount          integer," & vbNewLine & _
+          "            @isovernight     bit," & vbNewLine & _
+          "            @startingtrigger tinyint," & vbNewLine & _
+          "            @forcerefresh    bit," & vbNewLine & _
+          "            @user            varchar(255);" & vbNewLine & vbNewLine & _
           "    SELECT @isovernight = dbo.[udfsys_isovernightprocess]();" & vbNewLine & _
           "    SELECT @user =	CASE WHEN UPPER(LEFT(APP_NAME(), 15)) = 'HR PRO WORKFLOW' THEN 'HR Pro Workflow'" & vbNewLine & _
           "          ELSE CASE WHEN @isovernight = 1 THEN 'HR Pro Overnight Process' ELSE SYSTEM_USER END END" & vbNewLine & vbNewLine & _
