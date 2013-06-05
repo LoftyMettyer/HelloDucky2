@@ -33,33 +33,33 @@ Begin VB.Form frmSupportMode
       Left            =   480
       TabIndex        =   3
       Top             =   1560
-      Width           =   4095
+      Width           =   4320
       Begin VB.TextBox txtLicence 
          Height          =   315
          Index           =   3
-         Left            =   2520
+         Left            =   2655
          MaxLength       =   4
          TabIndex        =   8
          Top             =   0
-         Width           =   700
+         Width           =   750
       End
       Begin VB.TextBox txtLicence 
          Height          =   315
          Index           =   2
-         Left            =   1680
+         Left            =   1770
          MaxLength       =   4
          TabIndex        =   7
          Top             =   0
-         Width           =   700
+         Width           =   750
       End
       Begin VB.TextBox txtLicence 
          Height          =   315
          Index           =   1
-         Left            =   840
+         Left            =   885
          MaxLength       =   4
          TabIndex        =   6
          Top             =   0
-         Width           =   700
+         Width           =   750
       End
       Begin VB.TextBox txtLicence 
          Height          =   315
@@ -68,16 +68,16 @@ Begin VB.Form frmSupportMode
          MaxLength       =   4
          TabIndex        =   5
          Top             =   0
-         Width           =   700
+         Width           =   750
       End
       Begin VB.TextBox txtLicence 
          Height          =   315
          Index           =   4
-         Left            =   3360
+         Left            =   3540
          MaxLength       =   4
          TabIndex        =   4
          Top             =   0
-         Width           =   700
+         Width           =   750
       End
       Begin VB.Label lblLicence 
          AutoSize        =   -1  'True
@@ -93,7 +93,7 @@ Begin VB.Form frmSupportMode
          EndProperty
          Height          =   240
          Index           =   2
-         Left            =   2415
+         Left            =   2550
          TabIndex        =   12
          Top             =   45
          Width           =   90
@@ -112,7 +112,7 @@ Begin VB.Form frmSupportMode
          EndProperty
          Height          =   240
          Index           =   1
-         Left            =   1575
+         Left            =   1665
          TabIndex        =   11
          Top             =   45
          Width           =   90
@@ -131,7 +131,7 @@ Begin VB.Form frmSupportMode
          EndProperty
          Height          =   240
          Index           =   0
-         Left            =   735
+         Left            =   780
          TabIndex        =   10
          Top             =   45
          Width           =   90
@@ -150,7 +150,7 @@ Begin VB.Form frmSupportMode
          EndProperty
          Height          =   240
          Index           =   3
-         Left            =   3255
+         Left            =   3435
          TabIndex        =   9
          Top             =   45
          Width           =   90
@@ -187,7 +187,7 @@ Begin VB.Form frmSupportMode
          Strikethrough   =   0   'False
       EndProperty
       Height          =   315
-      Left            =   840
+      Left            =   848
       TabIndex        =   13
       Top             =   1080
       Width           =   3375
@@ -205,18 +205,18 @@ Begin VB.Form frmSupportMode
          Strikethrough   =   0   'False
       EndProperty
       Height          =   195
-      Left            =   2880
+      Left            =   2970
       TabIndex        =   2
       Top             =   240
-      Width           =   1965
+      Width           =   2055
    End
    Begin VB.Label Label1 
-      Caption         =   "Please call ASR Support on"
+      Caption         =   "Please call HR Pro Support on"
       Height          =   615
-      Left            =   480
+      Left            =   345
       TabIndex        =   14
       Top             =   240
-      Width           =   3375
+      Width           =   4455
    End
 End
 Attribute VB_Name = "frmSupportMode"
@@ -301,6 +301,7 @@ Private Sub Form_Load()
     lblSupportTel = GetSystemSetting("Support", "Telephone No", "")
 
   Else
+    lblSupportTel.Visible = False
     Label1.Caption = "In order to proceed with saving changes please enter an authorisation code based on the following key:"
 
   End If
@@ -313,6 +314,8 @@ Private Sub Form_Load()
   
   Set mobjSupport = New COALicence.clsSupport
   lblOutputKey.Caption = mobjSupport.GetSupportString2
+
+  Screen.MousePointer = vbNormal
 
 End Sub
 
