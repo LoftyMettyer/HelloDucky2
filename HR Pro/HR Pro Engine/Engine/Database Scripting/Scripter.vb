@@ -416,7 +416,7 @@ Namespace ScriptDB
               objRelatedTable = Globals.Things.GetObject(Things.Type.Table, objRelation.ParentID)
               For Each objColumn In objTable.DependsOnColumns
                 If objColumn.Table Is objRelatedTable Then
-                  aryColumns.Add(String.Format("base.{0} = {1}", objColumn.Name, objColumn.Calculation.UDF.CallingCode))
+                  aryColumns.Add(String.Format("base.{0} = {0}", objColumn.Name))
                 End If
               Next
 
