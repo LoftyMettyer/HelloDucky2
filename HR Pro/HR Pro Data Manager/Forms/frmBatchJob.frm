@@ -2128,7 +2128,12 @@ Private Function RetrieveBatchJobDetails() As Boolean
   
   GetObjectCategories cboCategory, iUtilityType, mlngBatchJobID
   
-  mblnReadOnly = Not datGeneral.SystemPermission("REPORTPACKS", "EDIT")
+  If IsReportPack Then
+    mblnReadOnly = Not datGeneral.SystemPermission("REPORTPACKS", "EDIT")
+  Else
+    mblnReadOnly = Not datGeneral.SystemPermission("BATCHJOBS", "EDIT")
+  End If
+  
   If (Not mblnReadOnly) And (Not mblnDefinitionCreator) Then
     mblnReadOnly = (CurrentUserAccess(iUtilityType, mlngBatchJobID) = ACCESS_READONLY)
   End If
