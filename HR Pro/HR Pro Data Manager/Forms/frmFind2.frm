@@ -3719,16 +3719,18 @@ Private Sub Form_Unload(Cancel As Integer)
       Unload mfrmParent
     Else
       'JPD 20031009 Fault 7080
-      If (Not mfrmParent.Visible) And (mfrmParent.Recordset.State <> adStateClosed) Then
-        'Recedit is invisible and user selects somebody so make recedit visible and give focus
-        mfrmParent.Visible = True
-        mfrmParent.Enabled = True
-        frmMain.Enabled = True
-        If mfrmParent.Visible And mfrmParent.Enabled Then
-          mfrmParent.SetFocus
-        End If
-        frmMain.RefreshMainForm mfrmParent
-        Exit Sub
+      If (mfrmParent.Recordset.State <> adStateClosed) Then
+        'If Not mfrmParent.Visible Then
+          'Recedit is invisible and user selects somebody so make recedit visible and give focus
+          mfrmParent.Visible = True
+          mfrmParent.Enabled = True
+          frmMain.Enabled = True
+          If mfrmParent.Visible And mfrmParent.Enabled Then
+            mfrmParent.SetFocus
+          End If
+          frmMain.RefreshMainForm mfrmParent
+          Exit Sub
+        'End If
       End If
     End If
   End If
