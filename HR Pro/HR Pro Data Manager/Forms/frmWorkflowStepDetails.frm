@@ -656,7 +656,7 @@ Option Explicit
 
 Private Const SCROLLBAR_WIDTH = 250
 Private Const MINFORM_WIDTH = 13000
-Private Const MINFORM_HEIGHT = 1000
+Private Const MINFORM_HEIGHT = 1600
 Private Const GAPOVERBUTTONS = 80
 Private Const GAPUNDERBUTTONS = 620
 
