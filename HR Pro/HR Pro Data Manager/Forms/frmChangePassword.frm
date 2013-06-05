@@ -410,8 +410,16 @@ Private Function PasswordChange() As Boolean
               "Old Password=" & strOldPassword & ";" & _
               "Password=" & strNewPassword & ";"
               
-    Case 10 ' SQL Native Client 2008 / 2012
+    Case 10 ' SQL Native Client 2008
       sConn = "Provider=SQLNCLI10;Persist Security Info=False;DataTypeCompatibility=80;" & _
+              "Application Name=OpenHR Security Manager;" & _
+              "User ID=" & gsUserName & ";" & _
+              "Initial Catalog='';" & _
+              "Data Source=" & gsServerName & ";" & _
+              "Old Password=" & strOldPassword & ";" & _
+              "Password=" & strNewPassword & ";"
+    Case 11 ' SQL Native Client 2012
+      sConn = "Provider=SQLNCLI11;Persist Security Info=False;DataTypeCompatibility=80;" & _
               "Application Name=OpenHR Security Manager;" & _
               "User ID=" & gsUserName & ";" & _
               "Initial Catalog='';" & _
