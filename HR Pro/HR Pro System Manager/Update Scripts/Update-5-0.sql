@@ -2007,6 +2007,17 @@ PRINT 'Step 6 - New Shared Table Transfer Columns for Employee'
 	END
 
 
+/* ------------------------------------------------------------- */
+PRINT 'Step 7 - New Mobile User Logins Table'
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_mobilelogins]') AND type in (N'U'))
+BEGIN
+	EXEC sp_executesql N'CREATE TABLE [dbo].[tbsys_mobilelogins](
+												[userid] [integer] NOT NULL,
+												[password] [nvarchar](max) NULL,
+												[newpassword] [nvarchar](max) NULL);';
+END
+
 
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
