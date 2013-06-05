@@ -584,6 +584,7 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
   Dim sColumnName As String
   Dim objColumn As Column
   Dim lngNextIdentitySeed As Long
+  Dim sSQLCodeLine As String
 
   Dim asValueList() As String
   Dim asColumnList() As String
@@ -653,7 +654,14 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
         asTriggerErrors(UBound(asTriggerErrors)) = rsTriggers!Name
       Else
         Do While Not rsTriggerDefn.EOF
-          sTriggerDefn = sTriggerDefn & rsTriggerDefn!Text
+        
+          If InStr(1, rsTriggerDefn!Text, "CREATE TRIGGER", vbTextCompare) Then
+            sSQLCodeLine = Replace(rsTriggerDefn!Text, sTableName, sPhysicalTableName, 1)
+          Else
+            sSQLCodeLine = rsTriggerDefn!Text
+          End If
+        
+          sTriggerDefn = sTriggerDefn & sSQLCodeLine
 
           rsTriggerDefn.MoveNext
         Loop
