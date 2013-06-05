@@ -302,10 +302,7 @@ Namespace ScriptDB
       Dim objColumn As Things.Column
       Dim objRelation As Things.Relation
       Dim objIndex As Things.Index
-      Dim objTriggeredUpdate As ScriptDB.TriggeredUpdate
-      Dim objModuleColumn As Things.Column
 
-      Dim lngColumnID As HCMGuid
       Dim sSQL As String = String.Empty
       Dim sCalculationCode As String
       Dim sTriggerName As String = String.Empty
@@ -320,6 +317,8 @@ Namespace ScriptDB
       Dim sSQLCode_AuditUpdate As String = String.Empty
       Dim sSQLCode_AuditDelete As String = String.Empty
       Dim sSQLCode_Audit As String = String.Empty
+
+      Dim sSQLCode_Bypass As String = String.Empty
 
       Dim sValidation As String
 
@@ -342,7 +341,6 @@ Namespace ScriptDB
       Dim aryParentsToUpdate_Delete As ArrayList
       Dim aryAllWriteableColumns As ArrayList
       Dim aryAllWriteableFormatted As ArrayList
-      Dim arySpecialUpdate As ArrayList
 
       Dim aryColumns As New ArrayList
 
@@ -656,25 +654,33 @@ Namespace ScriptDB
               , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryUpdateUniqueCodes.ToArray()), CInt(objTable.ID))
           End If
 
-          ' Special bank holiday update
-          If objTable Is Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_TableBHol").Table Then
-            arySpecialUpdate = New ArrayList
+          ' Special bypass trigger code
+          sSQLCode_Bypass = SpecialTrigger_SSP(objTable)
 
-            lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldBHolDate").Value
-            objModuleColumn = objTable.Column(lngColumnID)
+          ' Add trigger code based on module setup
+          sSQLSpecialUpdate = SpecialTrigger_BankHolidays(objTable)
+          sSQLSpecialUpdate = sSQLSpecialUpdate & SpecialTrigger_Personnel(objTable)
 
-            For Each objTriggeredUpdate In Globals.OnBankHolidayUpdate
-              arySpecialUpdate.Add(String.Format("    WITH base AS (" & vbNewLine &
-                  "        SELECT {0} FROM dbo.[{1}]" & vbNewLine & _
-                  "        INNER JOIN inserted ON inserted.{2} {3})" & vbNewLine & _
-                  "    UPDATE base SET [{0}] = [{0}];" _
-                  , objTriggeredUpdate.Column.Name, objTriggeredUpdate.Column.Table.PhysicalName, objModuleColumn.Name, objTriggeredUpdate.Where))
-            Next
 
-            sSQLSpecialUpdate = vbNewLine & vbNewLine & String.Format(vbNewLine & "SET @iCount = @iCount;" & vbNewLine & "-- Bank Holiday update" & vbNewLine & _
-              "{0}", String.Join(vbNewLine & vbNewLine, arySpecialUpdate.ToArray())) & vbNewLine
+          '' Special bank holiday update
+          'If objTable Is Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_TableBHol").Table Then
+          '  arySpecialUpdate = New ArrayList
 
-          End If
+          '  lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldBHolDate").Value
+          '  objModuleColumn = objTable.Column(lngColumnID)
+
+          '  For Each objTriggeredUpdate In Globals.OnBankHolidayUpdate
+          '    arySpecialUpdate.Add(String.Format("    WITH base AS (" & vbNewLine &
+          '        "        SELECT {0} FROM dbo.[{1}]" & vbNewLine & _
+          '        "        INNER JOIN inserted ON inserted.{2} {3})" & vbNewLine & _
+          '        "    UPDATE base SET [{0}] = [{0}];" _
+          '        , objTriggeredUpdate.Column.Name, objTriggeredUpdate.Column.Table.PhysicalName, objModuleColumn.Name, objTriggeredUpdate.Where))
+          '  Next
+
+          '  sSQLSpecialUpdate = vbNewLine & vbNewLine & String.Format(vbNewLine & "SET @iCount = @iCount;" & vbNewLine & "-- Bank Holiday update" & vbNewLine & _
+          '    "{0}", String.Join(vbNewLine & vbNewLine, arySpecialUpdate.ToArray())) & vbNewLine
+
+          'End If
 
           ' -------------------
           ' INSTEAD OF INSERT
@@ -719,6 +725,7 @@ Namespace ScriptDB
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
               "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
+              sSQLCode_Bypass & _
               "    INSERT [dbo].[{4}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {5}, 2, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
               "{3}" & vbNewLine & vbNewLine & _
               sValidation & vbNewLine & vbNewLine & _
@@ -1141,6 +1148,117 @@ Namespace ScriptDB
       Return bOK
 
     End Function
+
+    Private Function SpecialTrigger_BankHolidays(ByRef Table As Things.Table) As String
+
+      Dim aryTriggerCode As ArrayList
+      Dim lngColumnID As HCMGuid
+      Dim objColumn As Things.Column
+      Dim sCode As String = ""
+      Dim objTriggeredUpdate As ScriptDB.TriggeredUpdate
+
+      ' Special bank holiday update
+      If Table Is Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_TableBHol").Table Then
+        aryTriggerCode = New ArrayList
+
+        lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldBHolDate").Value
+        objColumn = Table.Column(lngColumnID)
+
+        For Each objTriggeredUpdate In Globals.OnBankHolidayUpdate
+          aryTriggerCode.Add(String.Format("    WITH base AS (" & vbNewLine &
+              "        SELECT {0} FROM dbo.[{1}]" & vbNewLine & _
+              "        INNER JOIN inserted ON inserted.{2} {3})" & vbNewLine & _
+              "    UPDATE base SET [{0}] = [{0}];" _
+              , objTriggeredUpdate.Column.Name, objTriggeredUpdate.Column.Table.PhysicalName, objColumn.Name, objTriggeredUpdate.Where))
+        Next
+
+        sCode = vbNewLine & vbNewLine & String.Format(vbNewLine & "SET @iCount = @iCount;" & vbNewLine & "-- Bank Holiday update" & vbNewLine & _
+          "{0}", String.Join(vbNewLine & vbNewLine, aryTriggerCode.ToArray())) & vbNewLine
+
+      End If
+
+      Return sCode
+
+    End Function
+
+    Private Function SpecialTrigger_Personnel(ByRef Table As Things.Table) As String
+
+      Dim sCode As String = ""
+      Dim objAbsenceTable As Things.Table
+
+      If Table Is Globals.ModuleSetup.Setting("MODULE_PERSONNEL", "Param_TablePersonnel").Table Then
+        objAbsenceTable = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_TableAbsence").Table
+        If Not objAbsenceTable Is Nothing Then
+
+          sCode = String.Format("    -- Statutory Sick Pay" & vbNewLine _
+                  & "    IF EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {0})" & vbNewLine _
+                  & "        AND EXISTS(SELECT Name FROM sysobjects WHERE id = object_id('spsys_absencessp') AND sysstat & 0xf = 4)" & vbNewLine _
+                  & "    BEGIN" & vbNewLine _
+                  & "        SET @iCount = 0;" & vbNewLine _
+                  & "        WHILE @iCount IS NOT NULL" & vbNewLine _
+                  & "        BEGIN" & vbNewLine _
+                  & "            EXEC dbo.[spsys_absencessp] @iCount;" & vbNewLine _
+                  & "            SELECT @iCount=(SELECT MIN([ID]) FROM inserted WHERE [ID] > @iCount);" & vbNewLine _
+                  & "        END" & vbNewLine _
+                  & "    END;", CInt(objAbsenceTable.ID))
+        End If
+      End If
+
+      Return sCode
+
+    End Function
+
+
+    Private Function SpecialTrigger_SSP(ByRef Table As Things.Table) As String
+
+      Dim sCode As String = ""
+      Dim objPersonnelTable As Things.Table
+      Dim objColumn1 As Things.Column
+      Dim objColumn2 As Things.Column
+      Dim objColumn3 As Things.Column
+      Dim objColumn4 As Things.Column
+      Dim lngColumnID As HCMGuid
+
+
+      If Table Is Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_TableAbsence").Table Then
+
+        objPersonnelTable = Globals.ModuleSetup.Setting("MODULE_PERSONNEL", "Param_TablePersonnel").Table
+
+        lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldSSPApplies").Value
+        objColumn1 = Table.Column(lngColumnID)
+
+        lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldQualifyingDays").Value
+        objColumn2 = Table.Column(lngColumnID)
+
+        lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldWaitingDays").Value
+        objColumn3 = Table.Column(lngColumnID)
+
+        lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldPaidDays").Value
+        objColumn4 = Table.Column(lngColumnID)
+
+        If Not (objColumn1 Is Nothing Or objColumn2 Is Nothing Or objColumn3 Is Nothing Or objColumn4 Is Nothing Or objPersonnelTable Is Nothing) Then
+
+          sCode = vbNewLine & String.Format("    -- SSP bypass" & vbNewLine _
+                  & "    IF EXISTS (SELECT ID_{0} FROM inserted INNER JOIN dbo.[ASRSysSSPRunning] ON [PersonnelRecordID] = ID_{0} AND sspRunning = 1)" & vbNewLine _
+                  & "    BEGIN" & vbNewLine _
+                  & "        UPDATE dbo.[{1}]" & vbNewLine _
+                  & "           SET [{2}] = inserted.[{2}]," & vbNewLine _
+                  & "               [{3}] = inserted.[{3}]," & vbNewLine _
+                  & "               [{4}] = inserted.[{3}]," & vbNewLine _
+                  & "               [{5}] = inserted.[{3}]" & vbNewLine _
+                  & "        FROM [inserted] WHERE [inserted].[id] = [dbo].[{1}].[id]" & vbNewLine _
+                  & "        RETURN;" & vbNewLine _
+                  & "    END;" & vbNewLine & vbNewLine _
+                  , CInt(objPersonnelTable.ID), Table.PhysicalName _
+                  , objColumn1.Name, objColumn2.Name, objColumn3.Name, objColumn4.Name)
+
+        End If
+      End If
+
+      Return sCode
+
+    End Function
+
   End Class
 
 End Namespace
