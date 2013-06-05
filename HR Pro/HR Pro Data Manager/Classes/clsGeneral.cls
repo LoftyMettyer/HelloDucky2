@@ -861,7 +861,7 @@ Public Function GetAllTables() As ADODB.Recordset
   Dim sSQL As String
   Dim rsTables As ADODB.Recordset
     
-  sSQL = "SELECT tableID, tableName, tableType, defaultOrderID, recordDescExprID" & _
+  sSQL = "SELECT tableID, tableName, tableType, defaultOrderID, recordDescExprID, isremoteview" & _
     " FROM ASRSysTables"
     
   Set rsTables = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)

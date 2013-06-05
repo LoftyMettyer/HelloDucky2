@@ -27,7 +27,7 @@ End Property
 
 Public Function Add(psTableName As String, plngTableID As Long, piTableType As Integer, _
   plngDfltOrderID As Long, plngRecDescID As Long, pfIsTable As Boolean, _
-  plngViewID As Long, psViewName As String) As CTablePrivilege
+  plngViewID As Long, psViewName As String, pbIsRemoteView As Boolean) As CTablePrivilege
   ' Add a new member to the collection of table privileges.
   Dim sKey As String
   Dim objNewMember As CTablePrivilege
@@ -57,6 +57,8 @@ Public Function Add(psTableName As String, plngTableID As Long, piTableType As I
     .AllowUpdate = False
     .AllowDelete = False
     .AllowInsert = False
+    
+    .IsRemoteView = pbIsRemoteView
   End With
   
   mCol.Add objNewMember, sKey

@@ -757,6 +757,8 @@ UpdateDeadlockRecoveryPoint:
                   "Another user is deadlocking the database."
                 fUpdatedOK = False
               End If
+            ElseIf InStr(ADOErr.Description, ".[trsys_") Then
+            
             Else
               sErrorMsg = sErrorMsg & IIf(Len(sErrorMsg) > 0, vbCrLf, "") & _
                 ADOErr.Description
