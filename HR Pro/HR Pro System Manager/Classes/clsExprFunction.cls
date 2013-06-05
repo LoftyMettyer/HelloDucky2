@@ -1866,9 +1866,9 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
               ' WebForm
               sProcCode.Append _
                 "    -- Extra Section to read Workflow record identifiers" & vbNewLine & _
-                "    SELECT @iBaseRecordID = CASE" & vbNewLine & _
-                "            WHEN IV.elementID = @piTempElement THEN convert(integer, ISNULL(IV.tempValue, '0'))" & _
-                "            ELSE convert(integer, ISNULL(IV.value, '0'))" & vbNewLine & _
+                "    SELECT @sValue = CASE" & vbNewLine & _
+                "            WHEN IV.elementID = @piTempElement THEN ISNULL(IV.tempValue, '0')" & _
+                "            ELSE ISNULL(IV.value, '0')" & vbNewLine & _
                 "        END," & vbNewLine & _
                 "        @iWorkflowID = Es.workflowID," & vbNewLine & _
                 "        @iParent1TableID = CASE" & vbNewLine & _
@@ -1902,7 +1902,7 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
               ' StoredData
               sProcCode.Append _
                 "    -- Extra Section to read Workflow record identifiers" & vbNewLine & _
-                "    SELECT @iBaseRecordID = convert(integer, ISNULL(IV.value, '0'))," & vbNewLine & _
+                "    SELECT @sValue = ISNULL(IV.value, '0')," & vbNewLine & _
                 "       @iWorkflowID = Es.workflowID," & vbNewLine & _
                 "       @iParent1TableID = IV.parent1TableID," & vbNewLine & _
                 "       @iParent1RecordID = IV.parent1RecordID," & vbNewLine & _
@@ -1916,7 +1916,14 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
                 "        AND UPPER(LTRIM(RTRIM(Es.identifier))) = '" & Replace(UCase(Trim(msWorkflowElementIdentifier)), "'", "''") & "'" & vbNewLine & _
                 "    WHERE IV.instanceID = @piInstanceID" & vbNewLine & vbNewLine
             End If
-          
+            
+            sProcCode.Append _
+              "    SET @iBaseRecordID = " & vbNewLine & _
+              "        CASE" & vbNewLine & _
+              "            WHEN isnumeric(@sValue) = 1 THEN convert(integer, @sValue)" & vbNewLine & _
+              "            ELSE 0" & vbNewLine & _
+              "        END" & vbNewLine & vbNewLine
+
           Case giWFRECSEL_TRIGGEREDRECORD ' 4 = Triggered Base table record
             sProcCode.Append _
               "    -- Extra Section to read Workflow record identifiers" & vbNewLine & _
@@ -2054,9 +2061,9 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
             ' WebForm
             sProcCode.Append _
               "    -- Extra Section to read Workflow record identifiers" & vbNewLine & _
-              "    SELECT @iBaseRecordID = CASE" & vbNewLine & _
-              "            WHEN IV.elementID = @piTempElement THEN convert(integer, ISNULL(IV.tempValue, '0'))" & _
-              "            ELSE convert(integer, ISNULL(IV.value, '0'))" & vbNewLine & _
+              "    SELECT @sValue = CASE" & vbNewLine & _
+              "            WHEN IV.elementID = @piTempElement THEN ISNULL(IV.tempValue, '0')" & _
+              "            ELSE ISNULL(IV.value, '0')" & vbNewLine & _
               "        END," & vbNewLine & _
               "        @iWorkflowID = Es.workflowID," & vbNewLine & _
               "        @iParent1TableID = CASE" & vbNewLine & _
@@ -2090,7 +2097,7 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
             ' StoredData
             sProcCode.Append _
               "    -- Extra Section to read Workflow record identifiers" & vbNewLine & _
-              "    SELECT @iBaseRecordID = convert(integer, ISNULL(IV.value, '0'))," & vbNewLine & _
+              "    SELECT @sValue = ISNULL(IV.value, '0')," & vbNewLine & _
               "       @iWorkflowID = Es.workflowID," & vbNewLine & _
               "       @iParent1TableID = IV.parent1TableID," & vbNewLine & _
               "       @iParent1RecordID = IV.parent1RecordID," & vbNewLine & _
@@ -2104,6 +2111,13 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
               "        AND UPPER(LTRIM(RTRIM(Es.identifier))) = '" & Replace(UCase(Trim(msWorkflowElementIdentifier)), "'", "''") & "'" & vbNewLine & _
               "    WHERE IV.instanceID = @piInstanceID" & vbNewLine & vbNewLine
           End If
+          
+          sProcCode.Append _
+            "    SET @iBaseRecordID = " & vbNewLine & _
+            "        CASE" & vbNewLine & _
+            "            WHEN isnumeric(@sValue) = 1 THEN convert(integer, @sValue)" & vbNewLine & _
+            "            ELSE 0" & vbNewLine & _
+              "        END" & vbNewLine & vbNewLine
     
         Case giWFRECSEL_TRIGGEREDRECORD ' 4 = Triggered Base table record
           sProcCode.Append _
@@ -2473,7 +2487,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
             ' WebForm
             psPrefix = psPrefix & _
               "    -- Extra Section to read Workflow record identifiers" & vbNewLine & _
-              "    SELECT @iBaseRecordID = convert(integer, ISNULL(IV.value, '0'))," & vbNewLine & _
+              "    SELECT @sValue = ISNULL(IV.value, '0')," & vbNewLine & _
               "       @iWorkflowID = Es.workflowID," & vbNewLine & _
               "       @iParent1TableID = IV.parent1TableID," & vbNewLine & _
               "       @iParent1RecordID = IV.parent1RecordID," & vbNewLine & _
@@ -2492,7 +2506,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
             ' StoredData
             psPrefix = psPrefix & _
               "    -- Extra Section to read Workflow record identifiers" & vbNewLine & _
-              "    SELECT @iBaseRecordID = convert(integer, ISNULL(IV.value, '0'))," & vbNewLine & _
+              "    SELECT @sValue = ISNULL(IV.value, '0')," & vbNewLine & _
               "       @iWorkflowID = Es.workflowID," & vbNewLine & _
               "       @iParent1TableID = IV.parent1TableID," & vbNewLine & _
               "       @iParent1RecordID = IV.parent1RecordID," & vbNewLine & _
@@ -2506,6 +2520,13 @@ Public Function RuntimeCode(psRuntimeCode As String, _
               "        AND UPPER(LTRIM(RTRIM(Es.identifier))) = '" & Replace(UCase(Trim(msWorkflowElementIdentifier)), "'", "''") & "'" & vbNewLine & _
               "    WHERE IV.instanceID = @piInstanceID" & vbNewLine & vbNewLine
           End If
+          
+          psPrefix = psPrefix & _
+            "    SET @iBaseRecordID = " & vbNewLine & _
+            "        CASE" & vbNewLine & _
+            "            WHEN isnumeric(@sValue) = 1 THEN convert(integer, @sValue)" & vbNewLine & _
+            "            ELSE 0" & vbNewLine & _
+              "        END" & vbNewLine & vbNewLine
         
         Case giWFRECSEL_TRIGGEREDRECORD ' 4 = Triggered Base table record
           psPrefix = psPrefix & _
