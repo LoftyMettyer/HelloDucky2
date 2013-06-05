@@ -838,6 +838,7 @@ On Error GoTo SQLNCLI_Err
   ' Paths to the SQL Native Client registry keys
   Const sREGKEYSQLNCLI = "SOFTWARE\Microsoft\Microsoft SQL Native Client\CurrentVersion"
   Const sREGKEYSQLNCLI10 = "SOFTWARE\Microsoft\Microsoft SQL Server Native Client 10.0\CurrentVersion"
+  Const sREGKEYSQLNCLI11 = "SOFTWARE\Microsoft\Microsoft SQL Server Native Client 11.0\CurrentVersion"
 
   rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, sREGKEYSQLNCLI, 0, KEY_READ, hKey) ' Open Registry Key
   If (rc = 0) Then
@@ -850,6 +851,14 @@ On Error GoTo SQLNCLI_Err
     tmpKey = 10
     rc = RegCloseKey(hKey) ' Close Registry Key
   End If
+
+  rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, sREGKEYSQLNCLI11, 0, KEY_READ, hKey) ' Open Registry Key
+  If (rc = 0) Then
+    tmpKey = 10
+    rc = RegCloseKey(hKey) ' Close Registry Key
+  End If
+
+
 
 SQLNCLI_Err_Handler:
   GetSQLNCLIVersion = tmpKey
@@ -864,9 +873,13 @@ End Function
 ' Get native provider string
 Public Function GetSQLProviderString() As String
 
-  If GetSQLNCLIVersion = 9 Then
+Dim iVersion As Integer
+
+  iVersion = GetSQLNCLIVersion
+
+  If iVersion = 9 Then
     GetSQLProviderString = "Provider=SQLNCLI;"
-  ElseIf GetSQLNCLIVersion = 10 Then
+  ElseIf iVersion = 10 Or iVersion = 11 Then
     GetSQLProviderString = "Provider=SQLNCLI10;"
   Else
     GetSQLProviderString = vbNullString
