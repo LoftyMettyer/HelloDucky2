@@ -58,6 +58,7 @@ Public Function SaveExpressions(pfRefreshDatabase As Boolean) As Boolean
           If .Fields("ParentComponentID").value = 0 Then
             OutputCurrentProcess2 .Fields("Name").value
           End If
+          Debug.Print "Save Expression: " & !ExprID
           fOK = ExpressionSave
         Else
           OutputCurrentProcess2 vbNullString
@@ -195,7 +196,7 @@ Private Function ExpressionNew() As Boolean
     fNotNeeded = (rsTemp.EOF And rsTemp.BOF)
     If Not fNotNeeded Then
       ' JPD 2010/03/18 Jira HRPRO-821
-      fWorkflowEnabled = rsTemp!Enabled Or WorkflowsWithStatus(rsTemp!id, giWFSTATUS_INPROGRESS)
+      fWorkflowEnabled = rsTemp!Enabled Or WorkflowsWithStatus(rsTemp!ID, giWFSTATUS_INPROGRESS)
     End If
     rsTemp.Close
   Else
@@ -211,7 +212,7 @@ Private Function ExpressionNew() As Boolean
       fNotNeeded = (rsTemp.EOF And rsTemp.BOF)
       If Not fNotNeeded Then
         ' JPD 2010/03/18 Jira HRPRO-821
-        fWorkflowEnabled = rsTemp!Enabled Or WorkflowsWithStatus(rsTemp!id, giWFSTATUS_INPROGRESS)
+        fWorkflowEnabled = rsTemp!Enabled Or WorkflowsWithStatus(rsTemp!ID, giWFSTATUS_INPROGRESS)
       End If
       rsTemp.Close
     End If
