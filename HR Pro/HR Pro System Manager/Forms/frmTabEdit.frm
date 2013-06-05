@@ -50,63 +50,62 @@ Begin VB.Form frmTabEdit
       _Version        =   393216
       Style           =   1
       Tabs            =   6
-      Tab             =   3
       TabsPerRow      =   6
       TabHeight       =   520
       TabCaption(0)   =   "De&finition"
       TabPicture(0)   =   "frmTabEdit.frx":000C
-      Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "txtEmail"
+      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).Control(0)=   "lblRecordDescription"
       Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "cmdEmail"
+      Tab(0).Control(1)=   "lblOrder"
       Tab(0).Control(1).Enabled=   0   'False
-      Tab(0).Control(2)=   "txtTableName"
+      Tab(0).Control(2)=   "lblTableName"
       Tab(0).Control(2).Enabled=   0   'False
-      Tab(0).Control(3)=   "fraTableType"
+      Tab(0).Control(3)=   "lblEmail"
       Tab(0).Control(3).Enabled=   0   'False
-      Tab(0).Control(4)=   "cmdOrder"
+      Tab(0).Control(4)=   "cmdRecordDescription"
       Tab(0).Control(4).Enabled=   0   'False
-      Tab(0).Control(5)=   "txtOrder"
+      Tab(0).Control(5)=   "txtRecordDescription"
       Tab(0).Control(5).Enabled=   0   'False
-      Tab(0).Control(6)=   "txtRecordDescription"
+      Tab(0).Control(6)=   "txtOrder"
       Tab(0).Control(6).Enabled=   0   'False
-      Tab(0).Control(7)=   "cmdRecordDescription"
+      Tab(0).Control(7)=   "cmdOrder"
       Tab(0).Control(7).Enabled=   0   'False
-      Tab(0).Control(8)=   "lblEmail"
+      Tab(0).Control(8)=   "fraTableType"
       Tab(0).Control(8).Enabled=   0   'False
-      Tab(0).Control(9)=   "lblTableName"
+      Tab(0).Control(9)=   "txtTableName"
       Tab(0).Control(9).Enabled=   0   'False
-      Tab(0).Control(10)=   "lblOrder"
+      Tab(0).Control(10)=   "cmdEmail"
       Tab(0).Control(10).Enabled=   0   'False
-      Tab(0).Control(11)=   "lblRecordDescription"
+      Tab(0).Control(11)=   "txtEmail"
       Tab(0).Control(11).Enabled=   0   'False
       Tab(0).ControlCount=   12
       TabCaption(1)   =   "Su&mmary Columns"
       TabPicture(1)   =   "frmTabEdit.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "chkManualColumnBreak"
+      Tab(1).Control(0)=   "lblParentTable"
       Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "cmdColumnBreak"
+      Tab(1).Control(1)=   "fraColumns"
       Tab(1).Control(1).Enabled=   0   'False
-      Tab(1).Control(2)=   "cboParentTable"
+      Tab(1).Control(2)=   "cmdInsert"
       Tab(1).Control(2).Enabled=   0   'False
-      Tab(1).Control(3)=   "cmdInsertBreak"
+      Tab(1).Control(3)=   "cmdDown"
       Tab(1).Control(3).Enabled=   0   'False
-      Tab(1).Control(4)=   "fraSummaryFields"
+      Tab(1).Control(4)=   "cmdUp"
       Tab(1).Control(4).Enabled=   0   'False
-      Tab(1).Control(5)=   "cmdAdd"
+      Tab(1).Control(5)=   "cmdRemove"
       Tab(1).Control(5).Enabled=   0   'False
-      Tab(1).Control(6)=   "cmdRemove"
+      Tab(1).Control(6)=   "cmdAdd"
       Tab(1).Control(6).Enabled=   0   'False
-      Tab(1).Control(7)=   "cmdUp"
+      Tab(1).Control(7)=   "fraSummaryFields"
       Tab(1).Control(7).Enabled=   0   'False
-      Tab(1).Control(8)=   "cmdDown"
+      Tab(1).Control(8)=   "cmdInsertBreak"
       Tab(1).Control(8).Enabled=   0   'False
-      Tab(1).Control(9)=   "cmdInsert"
+      Tab(1).Control(9)=   "cboParentTable"
       Tab(1).Control(9).Enabled=   0   'False
-      Tab(1).Control(10)=   "fraColumns"
+      Tab(1).Control(10)=   "cmdColumnBreak"
       Tab(1).Control(10).Enabled=   0   'False
-      Tab(1).Control(11)=   "lblParentTable"
+      Tab(1).Control(11)=   "chkManualColumnBreak"
       Tab(1).Control(11).Enabled=   0   'False
       Tab(1).ControlCount=   12
       TabCaption(2)   =   "Ema&il Links"
@@ -117,7 +116,7 @@ Begin VB.Form frmTabEdit
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "Calendar Lin&ks"
       TabPicture(3)   =   "frmTabEdit.frx":0060
-      Tab(3).ControlEnabled=   -1  'True
+      Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraCalendarLinks"
       Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
@@ -130,9 +129,9 @@ Begin VB.Form frmTabEdit
       TabCaption(5)   =   "Audi&t"
       TabPicture(5)   =   "frmTabEdit.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraTableStats"
+      Tab(5).Control(0)=   "fraAudit"
       Tab(5).Control(0).Enabled=   0   'False
-      Tab(5).Control(1)=   "fraAudit"
+      Tab(5).Control(1)=   "fraTableStats"
       Tab(5).Control(1).Enabled=   0   'False
       Tab(5).ControlCount=   2
       Begin VB.Frame fraEmail 
@@ -477,7 +476,7 @@ Begin VB.Form frmTabEdit
       Begin VB.Frame fraCalendarLinks 
          Caption         =   "Calendar Links :"
          Height          =   4150
-         Left            =   200
+         Left            =   -74800
          TabIndex        =   36
          Top             =   400
          Width           =   7340
@@ -617,7 +616,7 @@ Begin VB.Form frmTabEdit
          BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
-         Left            =   -72900
+         Left            =   2100
          Locked          =   -1  'True
          TabIndex        =   14
          TabStop         =   0   'False
@@ -627,7 +626,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdEmail 
          Caption         =   "..."
          Height          =   315
-         Left            =   -67775
+         Left            =   7225
          TabIndex        =   15
          Top             =   3200
          UseMaskColor    =   -1  'True
@@ -728,7 +727,7 @@ Begin VB.Form frmTabEdit
       End
       Begin VB.TextBox txtTableName 
          Height          =   315
-         Left            =   -74000
+         Left            =   1000
          MaxLength       =   30
          TabIndex        =   2
          Text            =   "txtTabName"
@@ -738,7 +737,7 @@ Begin VB.Form frmTabEdit
       Begin VB.Frame fraTableType 
          Caption         =   "Type :"
          Height          =   800
-         Left            =   -74800
+         Left            =   200
          TabIndex        =   3
          Top             =   1100
          Width           =   7340
@@ -773,7 +772,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdOrder 
          Caption         =   "..."
          Height          =   315
-         Left            =   -67775
+         Left            =   7225
          TabIndex        =   9
          Top             =   2200
          UseMaskColor    =   -1  'True
@@ -783,7 +782,7 @@ Begin VB.Form frmTabEdit
          BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
-         Left            =   -72900
+         Left            =   2100
          Locked          =   -1  'True
          TabIndex        =   8
          TabStop         =   0   'False
@@ -794,7 +793,7 @@ Begin VB.Form frmTabEdit
          BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
-         Left            =   -72900
+         Left            =   2100
          Locked          =   -1  'True
          TabIndex        =   11
          TabStop         =   0   'False
@@ -804,7 +803,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdRecordDescription 
          Caption         =   "..."
          Height          =   315
-         Left            =   -67775
+         Left            =   7225
          TabIndex        =   12
          Top             =   2700
          UseMaskColor    =   -1  'True
@@ -815,7 +814,7 @@ Begin VB.Form frmTabEdit
          BackStyle       =   0  'Transparent
          Caption         =   "Default Email :"
          Height          =   195
-         Left            =   -74800
+         Left            =   200
          TabIndex        =   13
          Top             =   3255
          Width           =   1440
@@ -834,7 +833,7 @@ Begin VB.Form frmTabEdit
          BackStyle       =   0  'Transparent
          Caption         =   "Name :"
          Height          =   195
-         Left            =   -74800
+         Left            =   200
          TabIndex        =   1
          Top             =   660
          Width           =   510
@@ -844,7 +843,7 @@ Begin VB.Form frmTabEdit
          BackStyle       =   0  'Transparent
          Caption         =   "Primary Order :"
          Height          =   195
-         Left            =   -74800
+         Left            =   200
          TabIndex        =   7
          Top             =   2265
          Width           =   1515
@@ -854,7 +853,7 @@ Begin VB.Form frmTabEdit
          BackStyle       =   0  'Transparent
          Caption         =   "Record Description :"
          Height          =   195
-         Left            =   -74800
+         Left            =   200
          TabIndex        =   10
          Top             =   2760
          Width           =   1725
