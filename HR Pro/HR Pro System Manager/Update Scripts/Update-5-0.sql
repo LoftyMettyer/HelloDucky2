@@ -114,7 +114,7 @@ PRINT 'Step 1 - System procedures'
 		FROM [dbo].[sysobjects] 
 				INNER JOIN [sys].[schemas]
 				ON [dbo].[sysobjects].[uid] = [sys].[schemas].[schema_id]
-		WHERE LOWER([sys].[schemas].[name]) != ''dbo'' AND LOWER([sys].[schemas].[name]) != ''messagebus''
+		WHERE LOWER([sys].[schemas].[name]) != ''dbo'' AND LOWER([sys].[schemas].[name]) != ''fusion''
 				AND (OBJECTPROPERTY(id, N''IsUserTable'') = 1
 					OR OBJECTPROPERTY(id, N''IsProcedure'') = 1
 					OR OBJECTPROPERTY(id, N''IsInlineFunction'') = 1
@@ -2652,24 +2652,24 @@ DEALLOCATE c;
 /* ------------------------------------------------------------- */
 PRINT 'Step 10 - Message Bus Integration'
 
-	IF NOT EXISTS(SELECT * FROM sys.schemas where name = 'messagebus')
-		EXECUTE sp_executesql N'CREATE SCHEMA [messagebus];';
+	IF NOT EXISTS(SELECT * FROM sys.schemas where name = 'fusion')
+		EXECUTE sp_executesql N'CREATE SCHEMA [fusion];';
 
 	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'IdTranslation' AND xtype = 'U')
-		EXECUTE sp_executesql N'CREATE TABLE [messagebus].[IdTranslation](
+		EXECUTE sp_executesql N'CREATE TABLE [fusion].[IdTranslation](
 			[TranslationName] [varchar](50) NOT NULL,
 			[LocalId] [varchar](25) NOT NULL,
 			[BusRef] [uniqueidentifier] NOT NULL);';
 
 	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'MessageLog' AND xtype = 'U')
-		EXECUTE sp_executesql N'CREATE TABLE [messagebus].[MessageLog](
+		EXECUTE sp_executesql N'CREATE TABLE [fusion].[MessageLog](
 			[MessageType] [varchar](50) NOT NULL,
 			[MessageRef] [uniqueidentifier] NOT NULL,
 			[ReceivedDate] [datetime] NOT NULL,
 			[Originator] [varchar](50) NULL);';
 
 	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'MessageTracking' AND xtype = 'U')
-		EXECUTE sp_executesql N'CREATE TABLE [messagebus].[MessageTracking](
+		EXECUTE sp_executesql N'CREATE TABLE [fusion].[MessageTracking](
 			[MessageType] [varchar](50) NOT NULL,
 			[BusRef] [uniqueidentifier] NOT NULL,
 			[LastGeneratedDate] [datetime] NULL,
@@ -2681,9 +2681,9 @@ PRINT 'Step 10 - Message Bus Integration'
 			@columnid integer;
 
 	-- Message table mapping defintion
-	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'tbsys_MessageBusTables' AND xtype = 'U')
+	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'tbsys_fusionTables' AND xtype = 'U')
 	BEGIN
-		EXECUTE sp_executesql N'CREATE TABLE [dbo].[tbsys_MessageBusTables](
+		EXECUTE sp_executesql N'CREATE TABLE [dbo].[tbsys_fusionTables](
 			[MessageTypeID] [integer] NOT NULL,
 			[MessageType] [varchar](50) NOT NULL,
 			[BaseTableID] [integer],
@@ -2692,79 +2692,83 @@ PRINT 'Step 10 - Message Bus Integration'
 		SELECT @perstableid = [parametervalue] FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_TablePersonnel'
 			AND [ParameterType] = 'PType_TableID';
 
-		INSERT [dbo].[tbsys_MessageBusTables] ([MessageTypeID], [MessageType], [BaseTableID], [FilterID]) VALUES (1, 'staffchange', @perstableid, 0);
-		INSERT [dbo].[tbsys_MessageBusTables] ([MessageTypeID], [MessageType], [BaseTableID], [FilterID]) VALUES (2, 'staffpicturechange', @perstableid, 0);
+		INSERT [dbo].[tbsys_fusionTables] ([MessageTypeID], [MessageType], [BaseTableID], [FilterID]) VALUES (1, 'staffchange', @perstableid, 0);
+		INSERT [dbo].[tbsys_fusionTables] ([MessageTypeID], [MessageType], [BaseTableID], [FilterID]) VALUES (2, 'staffpicturechange', @perstableid, 0);
 
 	END
 
 
 	-- Message column mapping defintion
-	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'tbsys_MessageBusColumns' AND xtype = 'U')
+	IF NOT EXISTS(SELECT * FROM sys.sysobjects where name = 'tbsys_fusionColumns' AND xtype = 'U')
 	BEGIN
-		EXECUTE sp_executesql N'CREATE TABLE [dbo].[tbsys_MessageBusColumns](
+		EXECUTE sp_executesql N'CREATE TABLE [dbo].[tbsys_fusionColumns](
 			[MessageTypeID] [integer] NOT NULL,
 			[NodeKey] [nvarchar](50),
 			[ColumnID] [integer]);';
 
 		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsSurname' AND [ParameterType] = 'PType_ColumnID';
-		INSERT [dbo].[tbsys_MessageBusColumns] ([MessageTypeID], [NodeKey], [ColumnID]) VALUES (1,'SURNAME', @columnid)
+		INSERT [dbo].[tbsys_fusionColumns] ([MessageTypeID], [NodeKey], [ColumnID]) VALUES (1,'SURNAME', @columnid)
 
 		SELECT @columnid = ISNULL([parametervalue],0) FROM dbo.[ASRSysModuleSetup] WHERE ModuleKey = 'MODULE_PERSONNEL' AND ParameterKey = 'Param_FieldsForename' AND [ParameterType] = 'PType_ColumnID';
-		INSERT [dbo].[tbsys_MessageBusColumns] ([MessageTypeID], [NodeKey], [ColumnID]) VALUES (1,'FORENAME', @columnid)
+		INSERT [dbo].[tbsys_fusionColumns] ([MessageTypeID], [NodeKey], [ColumnID]) VALUES (1,'FORENAME', @columnid)
 
 	END
 
 
 	-- Configure the service broker
-	IF NOT EXISTS(SELECT name FROM sys.service_message_types WHERE name = 'TriggerMessageSend')
-		EXECUTE sp_executesql N'CREATE MESSAGE TYPE TriggerMessageSend VALIDATION = NONE;';
+	IF NOT EXISTS(SELECT name FROM sys.service_message_types WHERE name = 'TriggerFusionSend')
+		EXECUTE sp_executesql N'CREATE MESSAGE TYPE TriggerFusionSend VALIDATION = NONE;';
 
-	IF NOT EXISTS(SELECT name FROM sys.service_contracts WHERE name = 'TriggerMessageContract')
-		EXECUTE sp_executesql N'CREATE CONTRACT TriggerMessageContract (TriggerMessageSend SENT BY INITIATOR);';
+	IF NOT EXISTS(SELECT name FROM sys.service_contracts WHERE name = 'TriggerFusionContract')
+		EXECUTE sp_executesql N'CREATE CONTRACT TriggerFusionContract (TriggerFusionSend SENT BY INITIATOR);';
 
-	IF NOT EXISTS(SELECT name FROM sys.service_queues WHERE name = 'qMessage')
-		EXECUTE sp_executesql N'CREATE QUEUE messagebus.qMessage WITH STATUS = ON;';
+	IF NOT EXISTS(SELECT name FROM sys.service_queues WHERE name = 'qFusion')
+		EXECUTE sp_executesql N'CREATE QUEUE fusion.qFusion WITH STATUS = ON;';
 
-	IF NOT EXISTS(SELECT name FROM sys.services WHERE name = 'MessageApplicationService')
-		EXECUTE sp_executesql N'CREATE SERVICE MessageApplicationService ON QUEUE messagebus.qMessage (TriggerMessageContract);';
+	IF NOT EXISTS(SELECT name FROM sys.services WHERE name = 'FusionApplicationService')
+		EXECUTE sp_executesql N'CREATE SERVICE FusionApplicationService ON QUEUE fusion.qFusion (TriggerFusionContract);';
 
-	IF NOT EXISTS(SELECT name FROM sys.services WHERE name = 'MessageConnectorService')
-		EXECUTE sp_executesql N'CREATE SERVICE MessageConnectorService ON QUEUE messagebus.qMessage (TriggerMessageContract);';
+	IF NOT EXISTS(SELECT name FROM sys.services WHERE name = 'FusionConnectorService')
+		EXECUTE sp_executesql N'CREATE SERVICE FusionConnectorService ON QUEUE fusion.qFusion (TriggerFusionContract);';
 
 
 	-- Apply the stored procedures
-	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spSendMessage]') AND type in (N'P', N'PC'))
-		DROP PROCEDURE [messagebus].[spSendMessage]
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[fusion].[spSendMessage]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [fusion].[spSendMessage];
 
-	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spMessageTrackingSetLastProcessedDate]') AND type in (N'P', N'PC'))
-		DROP PROCEDURE [messagebus].[spMessageTrackingSetLastProcessedDate]
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[fusion].[spSendMessageCheckContext]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [fusion].[spSendMessageCheckContext];
 
-	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spMessageTrackingSetLastGeneratedXml]') AND type in (N'P', N'PC'))
-		DROP PROCEDURE [messagebus].[spMessageTrackingSetLastGeneratedXml]
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[fusion].[spMessageTrackingSetLastProcessedDate]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [fusion].[spMessageTrackingSetLastProcessedDate];
 
-	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spMessageTrackingSetLastGeneratedDate]') AND type in (N'P', N'PC'))
-		DROP PROCEDURE [messagebus].[spMessageTrackingSetLastGeneratedDate]
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[fusion].[spMessageTrackingSetLastGeneratedXml]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [fusion].[spMessageTrackingSetLastGeneratedXml];
 
-	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spMessageTrackingGetLastMessageDates]') AND type in (N'P', N'PC'))
-		DROP PROCEDURE [messagebus].[spMessageTrackingGetLastMessageDates]
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[fusion].[spMessageTrackingSetLastGeneratedDate]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [fusion].[spMessageTrackingSetLastGeneratedDate];
 
-	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spMessageTrackingGetLastGeneratedXml]') AND type in (N'P', N'PC'))
-		DROP PROCEDURE [messagebus].[spMessageTrackingGetLastGeneratedXml]
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[fusion].[spMessageTrackingGetLastMessageDates]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [fusion].[spMessageTrackingGetLastMessageDates];
 
-	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spMessageLogCheck]') AND type in (N'P', N'PC'))
-		DROP PROCEDURE [messagebus].[spMessageLogCheck]
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[fusion].[spMessageTrackingGetLastGeneratedXml]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [fusion].[spMessageTrackingGetLastGeneratedXml];
 
-	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spMessageLogAdd]') AND type in (N'P', N'PC'))
-		DROP PROCEDURE [messagebus].[spMessageLogAdd]
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[fusion].[spMessageLogCheck]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [fusion].[spMessageLogCheck];
 
-	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spIdTranslateSetBusRef]') AND type in (N'P', N'PC'))
-		DROP PROCEDURE [messagebus].[spIdTranslateSetBusRef]
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[fusion].[spMessageLogAdd]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [fusion].[spMessageLogAdd];
 
-	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spIdTranslateGetLocalId]') AND type in (N'P', N'PC'))
-		DROP PROCEDURE [messagebus].[spIdTranslateGetLocalId]
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[fusion].[spIdTranslateSetBusRef]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [fusion].[spIdTranslateSetBusRef];
 
-	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[messagebus].[spIdTranslateGetBusRef]') AND type in (N'P', N'PC'))
-		DROP PROCEDURE [messagebus].[spIdTranslateGetBusRef]
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[fusion].[spIdTranslateGetLocalId]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [fusion].[spIdTranslateGetLocalId];
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[fusion].[spIdTranslateGetBusRef]') AND type in (N'P', N'PC'))
+		DROP PROCEDURE [fusion].[spIdTranslateGetBusRef];
+
 
 
 	EXECUTE sp_executesql N'
@@ -2779,7 +2783,7 @@ PRINT 'Step 10 - Message Bus Integration'
 	-- Returns: 0 = success, 1 = failure
 	---------------------------------------------------------------------------------
 
-	CREATE PROCEDURE [messagebus].[spIdTranslateGetBusRef]
+	CREATE PROCEDURE [fusion].[spIdTranslateGetBusRef]
 		(
 			@TranslationName varchar(50),
 			@LocalId varchar(25),
@@ -2793,7 +2797,7 @@ PRINT 'Step 10 - Message Bus Integration'
 	
 		SET @BusRef = NULL;
 	
-		SELECT @BusRef = BusRef from [messagebus].IdTranslation WITH (ROWLOCK) 
+		SELECT @BusRef = BusRef from [fusion].IdTranslation WITH (ROWLOCK) 
 			WHERE TranslationName = @TranslationName AND LocalId = @LocalId;
 	
 		IF @@ROWCOUNT = 0
@@ -2802,7 +2806,7 @@ PRINT 'Step 10 - Message Bus Integration'
 			BEGIN
 				SET @BusRef = NEWID();
 			
-				INSERT [messagebus].IdTranslation WITH (ROWLOCK) (TranslationName, LocalId, BusRef) 
+				INSERT [fusion].IdTranslation WITH (ROWLOCK) (TranslationName, LocalId, BusRef) 
 						VALUES (@TranslationName, @LocalId, @BusRef);
 					
 				RETURN 0;
@@ -2824,7 +2828,7 @@ PRINT 'Step 10 - Message Bus Integration'
 	-- Returns: 
 	---------------------------------------------------------------------------------
 
-	CREATE PROCEDURE [messagebus].[spIdTranslateGetLocalId]
+	CREATE PROCEDURE [fusion].[spIdTranslateGetLocalId]
 		(
 			@TranslationName varchar(50),
 			@BusRef uniqueidentifier,
@@ -2837,7 +2841,7 @@ PRINT 'Step 10 - Message Bus Integration'
 	
 		SET @LocalId = null;
 	
-		SELECT @LocalId = LocalId from [messagebus].IdTranslation WITH (ROWLOCK) 
+		SELECT @LocalId = LocalId from [fusion].IdTranslation WITH (ROWLOCK) 
 			WHERE TranslationName = @TranslationName and BusRef = @BusRef;
 	END';
 
@@ -2851,7 +2855,7 @@ PRINT 'Step 10 - Message Bus Integration'
 	-- Returns: n/a
 	---------------------------------------------------------------------------------
 
-	CREATE PROCEDURE [messagebus].[spIdTranslateSetBusRef]
+	CREATE PROCEDURE [fusion].[spIdTranslateSetBusRef]
 		(
 			@TranslationName varchar(50),
 			@LocalId varchar(25),
@@ -2864,10 +2868,10 @@ PRINT 'Step 10 - Message Bus Integration'
 	
 		BEGIN TRAN;
 	
-		DELETE messagebus.IdTranslation WITH (ROWLOCK) 
+		DELETE fusion.IdTranslation WITH (ROWLOCK) 
 			WHERE TranslationName = @TranslationName and LocalId = @LocalId;
 		
-		INSERT messagebus.IdTranslation WITH (ROWLOCK) (TranslationName, LocalId, BusRef) 
+		INSERT fusion.IdTranslation WITH (ROWLOCK) (TranslationName, LocalId, BusRef) 
 			VALUES (@TranslationName, @LocalId, @BusRef);
 
 		COMMIT TRAN;
@@ -2883,7 +2887,7 @@ PRINT 'Step 10 - Message Bus Integration'
 	-- Returns: n/a
 	---------------------------------------------------------------------------------
 
-	CREATE PROCEDURE [messagebus].[spMessageLogAdd]
+	CREATE PROCEDURE [fusion].[spMessageLogAdd]
 		(
 			@MessageType varchar(50),
 			@MessageRef uniqueidentifier,
@@ -2894,7 +2898,7 @@ PRINT 'Step 10 - Message Bus Integration'
 	BEGIN
 		SET NOCOUNT ON;
 		
-		INSERT messagebus.MessageLog (MessageType, MessageRef, Originator, ReceivedDate) VALUES (@MessageType, @MessageRef, @Originator, GETUTCDATE());
+		INSERT fusion.MessageLog (MessageType, MessageRef, Originator, ReceivedDate) VALUES (@MessageType, @MessageRef, @Originator, GETUTCDATE());
 
 	END'
 
@@ -2908,7 +2912,7 @@ PRINT 'Step 10 - Message Bus Integration'
 	-- Returns: n/a
 	---------------------------------------------------------------------------------
 
-	CREATE PROCEDURE [messagebus].[spMessageLogCheck]
+	CREATE PROCEDURE [fusion].[spMessageLogCheck]
 		(
 			@MessageType varchar(50),
 			@MessageRef uniqueidentifier,
@@ -2919,7 +2923,7 @@ PRINT 'Step 10 - Message Bus Integration'
 	BEGIN
 		SET NOCOUNT ON;
 	
-		IF EXISTS ( SELECT * FROM messagebus.MessageLog WHERE MessageType = @MessageType AND MessageRef = @MessageRef )
+		IF EXISTS ( SELECT * FROM fusion.MessageLog WHERE MessageType = @MessageType AND MessageRef = @MessageRef )
 		BEGIN
 			SET @ReceivedBefore = 1
 		END
@@ -2939,7 +2943,7 @@ PRINT 'Step 10 - Message Bus Integration'
 	-- Returns: n/a
 	---------------------------------------------------------------------------------
 
-	CREATE PROCEDURE [messagebus].[spMessageTrackingGetLastGeneratedXml]
+	CREATE PROCEDURE [fusion].[spMessageTrackingGetLastGeneratedXml]
 		(
 			@MessageType varchar(50),
 			@BusRef uniqueidentifier
@@ -2950,7 +2954,7 @@ PRINT 'Step 10 - Message Bus Integration'
 		SET NOCOUNT ON;
 	
 		SELECT LastGeneratedXml
-			FROM messagebus.MessageTracking
+			FROM fusion.MessageTracking
 			WHERE MessageType = @MessageType AND BusRef = @BusRef;
 
 	END'
@@ -2966,7 +2970,7 @@ PRINT 'Step 10 - Message Bus Integration'
 	-- Returns: n/a
 	---------------------------------------------------------------------------------
 
-	CREATE PROCEDURE [messagebus].[spMessageTrackingGetLastMessageDates]
+	CREATE PROCEDURE [fusion].[spMessageTrackingGetLastMessageDates]
 		(
 			@MessageType varchar(50),
 			@BusRef uniqueidentifier
@@ -2977,7 +2981,7 @@ PRINT 'Step 10 - Message Bus Integration'
 		SET NOCOUNT ON;
 	
 		SELECT LastProcessedDate, LastGeneratedDate
-			FROM messagebus.MessageTracking
+			FROM fusion.MessageTracking
 			WHERE MessageType = @MessageType AND BusRef = @BusRef;
 
 	END'
@@ -2992,7 +2996,7 @@ PRINT 'Step 10 - Message Bus Integration'
 	-- Returns: n/a
 	---------------------------------------------------------------------------------
 
-	CREATE PROCEDURE [messagebus].[spMessageTrackingSetLastGeneratedDate]
+	CREATE PROCEDURE [fusion].[spMessageTrackingSetLastGeneratedDate]
 		(
 			@MessageType varchar(50),
 			@BusRef uniqueidentifier,
@@ -3003,16 +3007,16 @@ PRINT 'Step 10 - Message Bus Integration'
 	BEGIN
 		SET NOCOUNT ON;
 		
-		IF EXISTS (SELECT * FROM [messagebus].MessageTracking
+		IF EXISTS (SELECT * FROM [fusion].MessageTracking
 				   WHERE MessageType = @MessageType AND BusRef = @BusRef)
 		BEGIN	
-			UPDATE [messagebus].MessageTracking
+			UPDATE [fusion].MessageTracking
 			   SET LastGeneratedDate = @LastGeneratedDate
 			   WHERE MessageType = @MessageType AND BusRef = @BusRef
 		END
 		ELSE
 		BEGIN
-			INSERT [messagebus].MessageTracking (MessageType, BusRef, LastGeneratedDate)
+			INSERT [fusion].MessageTracking (MessageType, BusRef, LastGeneratedDate)
 				VALUES (@MessageType, @BusRef, @LastGeneratedDate)
 		END		
 	END'
@@ -3027,7 +3031,7 @@ PRINT 'Step 10 - Message Bus Integration'
 	-- Returns: n/a
 	---------------------------------------------------------------------------------
 
-	CREATE PROCEDURE [messagebus].[spMessageTrackingSetLastGeneratedXml]
+	CREATE PROCEDURE [fusion].[spMessageTrackingSetLastGeneratedXml]
 		(
 			@MessageType varchar(50),
 			@BusRef uniqueidentifier,
@@ -3038,16 +3042,16 @@ PRINT 'Step 10 - Message Bus Integration'
 	BEGIN
 		SET NOCOUNT ON;
 		
-		IF EXISTS (SELECT * FROM messagebus.MessageTracking
+		IF EXISTS (SELECT * FROM fusion.MessageTracking
 				   WHERE MessageType = @MessageType AND BusRef = @BusRef)
 		BEGIN	
-			UPDATE messagebus.MessageTracking
+			UPDATE fusion.MessageTracking
 			   SET LastGeneratedXml = @LastGeneratedXml
 			   WHERE MessageType = @MessageType AND BusRef = @BusRef
 		END
 		ELSE
 		BEGIN
-			INSERT messagebus.MessageTracking (MessageType, BusRef, LastGeneratedXml)
+			INSERT fusion.MessageTracking (MessageType, BusRef, LastGeneratedXml)
 				VALUES (@MessageType, @BusRef, @LastGeneratedXml)
 		END		
 	END'
@@ -3062,7 +3066,7 @@ PRINT 'Step 10 - Message Bus Integration'
 	-- Returns: n/a
 	---------------------------------------------------------------------------------
 
-	CREATE PROCEDURE [messagebus].[spMessageTrackingSetLastProcessedDate]
+	CREATE PROCEDURE [fusion].[spMessageTrackingSetLastProcessedDate]
 		(
 			@MessageType varchar(50),
 			@BusRef uniqueidentifier,
@@ -3073,16 +3077,16 @@ PRINT 'Step 10 - Message Bus Integration'
 	BEGIN
 		SET NOCOUNT ON;
 		
-		IF EXISTS (SELECT * FROM messagebus.MessageTracking
+		IF EXISTS (SELECT * FROM fusion.MessageTracking
 				   WHERE MessageType = @MessageType AND BusRef = @BusRef)
 		BEGIN	
-			UPDATE messagebus.MessageTracking
+			UPDATE fusion.MessageTracking
 			   SET LastProcessedDate = @LastProcessedDate
 			   WHERE MessageType = @MessageType AND BusRef = @BusRef
 		END
 		ELSE
 		BEGIN
-			INSERT messagebus.MessageTracking (MessageType, BusRef, LastProcessedDate)
+			INSERT fusion.MessageTracking (MessageType, BusRef, LastProcessedDate)
 				VALUES (@MessageType, @BusRef, @LastProcessedDate)
 		END		
 	END'
@@ -3097,7 +3101,7 @@ PRINT 'Step 10 - Message Bus Integration'
 	-- Returns: n/a
 	---------------------------------------------------------------------------------
 
-	CREATE PROCEDURE [messagebus].[spSendMessage]
+	CREATE PROCEDURE [fusion].[spSendMessage]
 		(
 			@MessageType varchar(50),
 			@LocalId int
@@ -3130,7 +3134,36 @@ PRINT 'Step 10 - Message Bus Integration'
 	END'
 
 
+	EXECUTE sp_executesql N'
+	---------------------------------------------------------------------------------
+	-- Name:    spSendMessageCheckContext
+	--
+	-- Purpose: Triggers a message to be sent, checking context
+	--          to see if we are in the process of updating according to
+	--          this same message being received (preventing multi-master
+	--          re-publish scenario)
+	--
+	-- Returns: n/a
+	---------------------------------------------------------------------------------
 
+	CREATE PROCEDURE [fusion].[spSendMessageCheckContext]
+		(
+			@MessageType varchar(50),
+			@LocalId int
+		)
+	AS
+	BEGIN
+		SET NOCOUNT ON;
+	
+		DECLARE @ContextInfo varbinary(128);
+ 
+		SELECT @ContextInfo = CAST( ''Fusion:''+@MessageType AS VARBINARY(128) );
+ 
+		IF CONTEXT_INFO() IS NULL OR CONTEXT_INFO() <> @ContextInfo
+		BEGIN	
+			EXEC fusion.spSendMessage @MessageType, @LocalId;
+		END
+	END'
 
 
 
