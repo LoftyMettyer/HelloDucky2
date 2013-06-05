@@ -334,7 +334,22 @@ Namespace Things
           ' Wrapper for calculations with associated columns
           Case ScriptDB.ExpressionType.ColumnCalculation
             .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
+
+
+            '  If Me.ReturnType = ScriptDB.ComponentValueTypes.Logic Then
+            '    .SelectCode = String.Format("CASE WHEN ({0}) THEN 1 ELSE 0 END", mcolLinesOfCode.Statement)
+            '  Else
             .SelectCode = mcolLinesOfCode.Statement
+            'End If
+
+
+            '            SELECT @Result = (CASE WHEN 
+            'dbo.udfsys_fieldchangedbetweentwodates((('00000001-00000009')), (('2011-05-01')), (('2011-05-31')), @prm_ID)
+            ' THEN 1 ELSE 0 END)
+
+
+
+            '            .SelectCode = mcolLinesOfCode.Statement
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
             '        .Where = String.Format("{0}", String.Join(",", Where.ToArray))
 
@@ -385,7 +400,8 @@ Namespace Things
             mcolLinesOfCode.IsEvaluated = True
             .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
-            .SelectCode = String.Format("CASE WHEN ({0}) THEN 1 ELSE 0 END", mcolLinesOfCode.Statement)
+            '.SelectCode = String.Format("CASE WHEN ({0}) THEN 1 ELSE 0 END", mcolLinesOfCode.Statement)
+            .SelectCode = mcolLinesOfCode.Statement
 
             ' Wrapper for when expression is used as a filter in a view
           Case ScriptDB.ExpressionType.Mask
@@ -401,7 +417,7 @@ Namespace Things
                            "{4}" & vbNewLine & vbNewLine & _
                            "{5}" & vbNewLine & vbNewLine & _
                            "    -- Execute calculation code" & vbNewLine & _
-                           "SELECT @Result = CASE WHEN ({6}) THEN 1 ELSE 0 END" & vbNewLine & _
+                           "SELECT @Result = {6}" & vbNewLine & _
                            "                 {7}" & vbNewLine & _
                            "                 {8}" & vbNewLine & _
                            "                 {9}" & vbNewLine & _
@@ -409,6 +425,9 @@ Namespace Things
                            "END" _
                           , .Name, String.Join(", ", aryParameters1.ToArray()) _
                           , "", "", .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
+
+            '                           "SELECT @Result = CASE WHEN ({6}) THEN 1 ELSE 0 END" & vbNewLine & _
+
 
             .CodeStub = String.Format("CREATE FUNCTION {0}(@prm_id integer)" & vbNewLine & _
                            "RETURNS bit" & vbNewLine & _
@@ -1065,7 +1084,14 @@ Namespace Things
       'ChildCodeCluster.IsEvaluated = Not objCodeLibrary.BypassValidation
       SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
       LineOfCode.BypassEvaluation = objCodeLibrary.BypassValidation
+
+      'bocth?
+      ' If objCodeLibrary.ID = 4 Then
+      'LineOfCode.Code = ChildCodeCluster.Statement
+      '  Else
       LineOfCode.Code = String.Format(LineOfCode.Code, ChildCodeCluster.ToArray)
+      '   End If
+
       mbRequiresRowNumber = mbRequiresRowNumber Or objCodeLibrary.RowNumberRequired
       mbCalculatePostAudit = mbCalculatePostAudit Or objCodeLibrary.CalculatePostAudit
 
@@ -1155,15 +1181,33 @@ Namespace Things
 
         ' Debug.Print(Component.IsEvaluated)
 
-        '  ChildCodeCluster.IsEvaluated = (Component.ReturnType = ScriptDB.ComponentValueTypes.Logic)
         ' [Component].
 
         'If ChildCodeCluster.CodeLevel = 1 Then
         '  ChildCodeCluster.IsEvaluated = True
         'End If
+        'ChildCodeCluster.IsEvaluated = (Component.ReturnType = ScriptDB.ComponentValueTypes.Logic)
+        'If Component.ReturnType = ScriptDB.ComponentValueTypes.Logic Then
+        '  Debug.Print("hhhd")
+        'End If
+        '        LineOfCode.Code = String.Format("(CASE WHEN {0} THEN 1 ELSE 0 END)", ChildCodeCluster.Statement)
+        '       Else
 
-        LineOfCode.Code = String.Format("({0})", ChildCodeCluster.Statement)
+        sPartCode = ChildCodeCluster.Statement
+        '  If ChildCodeCluster.IsCodeFlow Then
+        '     LineOfCode.Code = String.Format("(CASE WHEN ({0}=1) THEN 1 ELSE 0 END)", sPartCode)
+        '    Else
+        LineOfCode.Code = String.Format("{0}", sPartCode)
+        '     End If
 
+
+        'If Not ChildCodeCluster.IsComparison And Component.ReturnType = ScriptDB.ComponentValueTypes.Logic Then
+        '  LineOfCode.Code = String.Format("(CASE WHEN ({0}=1) THEN 1 ELSE 0 END)", sPartCode)
+        'Else
+        '  LineOfCode.Code = String.Format("{0}", sPartCode)
+        'End If
+
+        '        End If
         'Debug.Print()
 
       End If

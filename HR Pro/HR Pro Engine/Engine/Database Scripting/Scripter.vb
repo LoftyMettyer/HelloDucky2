@@ -1285,7 +1285,16 @@ Namespace ScriptDB
 
                 sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
 
-                '        Debug.Assert(sObjectName <> "udfcalc_srp.srp")
+                '                Debug.Assert(sObjectName <> "udfcalc_Table1.simplelogic")
+                'Debug.Assert(sObjectName <> "udfcalc_Table1.simplelogic")
+
+                '                Debug.Assert(sObjectName <> "udfcalc_Table1.simpleifthenelse")
+
+                '     Debug.Assert(sObjectName <> "udfcalc_Table1.simpleifthenelse3")
+
+                '    Debug.Assert(sObjectName <> "udfcalc_Table1.simple2")
+
+
 
                 ScriptDB.DropUDF("dbo", sObjectName)
 

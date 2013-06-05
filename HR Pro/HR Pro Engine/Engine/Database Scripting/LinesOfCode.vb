@@ -6,16 +6,17 @@ Namespace ScriptDB
   Public Class LinesOfCode
     Inherits System.ComponentModel.BindingList(Of ScriptDB.CodeElement)
 
-    'Private lngCodeStacks As Long
     Private mbAppendWildcard As Boolean
     Private mlngCaseStatements As Long
     Private mbAppendAftercode As Boolean
-    '    Private mbIsLogicCluster As Boolean
 
     Public CodeLevel As Integer
     Public NestedLevel As Integer
     Public ReturnType As ComponentValueTypes
     Public IsEvaluated As Boolean
+
+    ' Public IsCodeFlow As Boolean = False
+    Public IsComparision As Boolean = False
 
     Public Sub New()
       mbAppendWildcard = False
@@ -71,19 +72,6 @@ Namespace ScriptDB
 
     End Function
 
-    'Public Sub StartNewLogicCluster()
-
-    '  Dim LineOfCode As ScriptDB.CodeElement
-
-    '  If mbAppendWildcard = True Then
-    '    LineOfCode.Code = "+ '%'"
-    '    Me.Add(LineOfCode)
-    '  End If
-
-    '  'mbIsLogicCluster = True
-
-    'End Sub
-
     Public Sub SplitIntoCase()
 
       Dim LineOfCode As ScriptDB.CodeElement
@@ -102,12 +90,6 @@ Namespace ScriptDB
 
 #End Region
 
-    Public ReadOnly Property CaseCount() As Long
-      Get
-        CaseCount = mlngCaseStatements
-      End Get
-    End Property
-
     Public ReadOnly Property Statement(ByVal CaseNumber As Long) As String
       Get
         Statement = String.Empty
@@ -120,74 +102,55 @@ Namespace ScriptDB
         Statement = String.Empty
         For Each Chunk In Me.Items
           bAddAutoIsEqualTo = False
-          If Chunk.CaseNumber = CaseNumber Then
 
-            If ReturnType = ComponentValueTypes.Logic Then 'And Not Chunk.BypassValidation Then
+          If Chunk.OperatorType = OperatorSubType.Comparison Then Me.IsComparision = True
 
-              If Chunk.CodeType = ComponentTypes.Operator Then
-                If Chunk.OperatorType = OperatorSubType.Comparison Then
-                  bComparisonSinceLastLogic = True
-                ElseIf Chunk.OperatorType = OperatorSubType.Logic Then
-                  'If Not bComparisonSinceLastLogic Then
-                  '  Statement = String.Format("({0} = 1)", Statement)
-                  'Else
-                  '  Statement = String.Format("({0})", Statement)
-                  'End If
-                  bComparisonSinceLastLogic = False
-                End If
+          If ReturnType = ComponentValueTypes.Logic Then
+
+            If Chunk.CodeType = ComponentTypes.Operator Then
+              If Chunk.OperatorType = OperatorSubType.Comparison Then
+                bComparisonSinceLastLogic = True
+              ElseIf Chunk.OperatorType = OperatorSubType.Logic Then
+                bComparisonSinceLastLogic = False
               End If
-
-              ' Is there an operator after this component?
-              If Me.Items.Count - 1 > iThisElement Then
-                If Me.Items(iThisElement + 1).OperatorType = OperatorSubType.Logic Then
-                  If Not bComparisonSinceLastLogic Then
-                    bAddAutoIsEqualTo = True
-                  End If
-                End If
-              Else
-                bAddAutoIsEqualTo = Me.IsEvaluated And Not bComparisonSinceLastLogic
-              End If
-
-              ' Am I the last component and was there an operator before me?
-              If iThisElement = Me.Items.Count - 1 And iThisElement > 0 Then
-                If Me.Items(iThisElement - 1).OperatorType = OperatorSubType.Logic Then
-                  If Not bComparisonSinceLastLogic Then
-                    bAddAutoIsEqualTo = True
-                    'Debug.Assert("hello")
-                  End If
-                End If
-              End If
-
-
-              '' Last component and has not had a comparision since the last logical operator
-              'If iThisElement = Me.Items.Count - 1 And Not bComparisonSinceLastLogic Then
-              '  bAddAutoIsEqualTo = True
-              'End If
-
-
             End If
+
+            ' Is there an operator after this component?
+            If Me.Items.Count - 1 > iThisElement Then
+              If Me.Items(iThisElement + 1).OperatorType = OperatorSubType.Logic Then
+                If Not bComparisonSinceLastLogic Then
+                  bAddAutoIsEqualTo = True
+                End If
+              End If
+            Else
+              bAddAutoIsEqualTo = Not bComparisonSinceLastLogic
+            End If
+
+            ' Am I the last component and was there an operator before me?
+            If iThisElement = Me.Items.Count - 1 And iThisElement > 0 Then
+              If Me.Items(iThisElement - 1).OperatorType = OperatorSubType.Logic Then
+                If Not bComparisonSinceLastLogic Then
+                  bAddAutoIsEqualTo = True
+                End If
+              End If
+            End If
+
           End If
 
           ' Does this code element make needing logic safe?
           ' Some logic expressions return a simple logic while others are set specifically 
           ' to logicval = 0, or have the not in front of them!
-          If bAddAutoIsEqualTo And Not Chunk.BypassEvaluation Then
-            Statement = Statement & String.Format("({0} = 1)", Chunk.Code)
+          If bAddAutoIsEqualTo Then
+            Statement = vbNewLine & String.Format("{0}{1}{2} = 1", New String(vbTab, CodeLevel), Statement, Chunk.Code)
             bAddAutoIsEqualTo = False
           Else
-            Statement = Statement & Chunk.Code
+            Statement = vbNewLine & String.Format("{0}{1}{2}", New String(vbTab, CodeLevel), Statement, Chunk.Code)
           End If
 
           ' Statement = Statement & Chunk.Code
           iThisElement = iThisElement + 1
 
         Next
-
-        ' Some expressions need to have an equals to appended
-        'If bAddAutoIsEqualTo And CodeLevel > 1 And Statement.Length > 1 Then
-        '  'If bAddAutoIsEqualTo And Statement.Length > 1 Then
-        '  Statement = String.Format("({0} = 1)", Statement)
-        'End If
 
       End Get
     End Property
@@ -202,9 +165,12 @@ Namespace ScriptDB
           Statement = Statement & "+ '%'"
         End If
 
-        'If ReturnType = ComponentValueTypes.Logic Then
-        '  Statement = Statement
-        'End If
+        ' Wrap to return code chunks in safety
+        If Me.ReturnType = ComponentValueTypes.Logic Or Me.IsComparision Then
+          Statement = vbNewLine & String.Format("{0}CASE WHEN ({1}) THEN 1 ELSE 0 END", New String(vbTab, CodeLevel), Statement)
+        End If
+
+        Statement = String.Format("{0}", Statement)
 
       End Get
     End Property
