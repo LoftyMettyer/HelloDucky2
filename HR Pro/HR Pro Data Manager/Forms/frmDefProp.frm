@@ -399,7 +399,7 @@ Private Sub DrawControls(utlType As UtilityType)
   End If
   
   
-  cmdOK.Top = cmdOK.Top - lngOffset
+  cmdOk.Top = cmdOk.Top - lngOffset
   Me.Height = Me.Height - lngOffset
 
   ' Leave form size at its default if we are using as a change type form
@@ -1584,8 +1584,12 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
   End Select
 
   miUsageCount = List1.ListCount
-  CheckForUseage = (List1.ListCount > 0 And (Not Trim(UCase(psType)) = "BATCH JOB" Or Not Trim(UCase(psType)) = "REPORT PACK"))
-
+  If UCase(psType) = "BATCH JOB" Then
+    CheckForUseage = (List1.ListCount > 0 And Not Trim(UCase(psType)) = "BATCH JOB")
+  Else
+    CheckForUseage = (List1.ListCount > 0 And Not Trim(UCase(psType)) = "REPORT PACK")
+  End If
+  
   If miUsageCount = 0 Then
     List1.AddItem "<None>"
   End If

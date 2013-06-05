@@ -55,7 +55,12 @@ Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
 Private mstrOutputFileName As String
 Private mblnPreviewOnScreen As Boolean
-
+Private mstrOutputTitlePage As String
+Private mstrOutputReportPackTitle As String
+Private mstrOutputOverrideFilter As String
+Private mblnOutputTOC As Boolean
+Private mblnOutputCoverSheet As Boolean
+          
 Private mlngPicklistFilterID As Long
 Private mstrPicklistFilterType As String
 
@@ -786,20 +791,6 @@ Public Function RunCustomReport(pstrPicklistFilterIDs As String) As Boolean
   If fOK Then fOK = CheckRecordSet
   If fOK Then fOK = PopulateGrid
   'If fOK Then fOK = InitialiseOutPutFormWithDefaults
-  
-  'If fOK Then
-  '  'TM20020103 Fault 3269
-  '
-  '  If gblnBatchMode Then
-  '    fOK = mfrmOutput.OutputData(True)
-  '    If Not fOK Then mstrErrorString = mfrmOutput.ErrorMessage
-  '    gobjProgress.UpdateProgress True
-  '  Else
-  '    Screen.MousePointer = vbDefault
-  '    mfrmOutput.HelpContextID = 1017
-  '    mfrmOutput.Show vbModal
-  '  End If
-  'End If
 
   If fOK Then
     If gblnBatchMode Or Not mblnPreviewOnScreen Then
@@ -950,13 +941,13 @@ Private Function GetCustomReportDefinition() As Boolean
   On Error GoTo GetCustomReportDefinition_ERROR
 
   Dim rsTemp_Definition As Recordset
-  'Dim rsTemp_Details As Recordset
+  Dim rsBatchOutputOptions As Recordset
   Dim strSQL As String
-  'Dim strTable As String
-  'Dim strColumn As String
   Dim i As Integer
+  Dim lblnReportPackMode As Boolean
   
-  
+  lblnReportPackMode = gblnReportPackMode
+
   strSQL = "SELECT * FROM ASRSYSCustomReportsName " & _
            "WHERE ID = " & mlngCustomReportID & " "
   
@@ -983,41 +974,27 @@ Private Function GetCustomReportDefinition() As Boolean
     mlngCustomReportsParent2Table = !parent2table
     mstrCustomReportsParent2TableName = datGeneral.GetTableName(mlngCustomReportsParent2Table)
     mlngCustomReportsParent2FilterID = !parent2filter
-'    mlngCustomReportsChildTable = !ChildTable
-'    mstrCustomReportsChildTableName = datGeneral.GetTableName(mlngCustomReportsChildTable)
-'    mlngCustomReportsChildFilterID = !childFilter
-'    mlngCustomReportsChildMaxRecords = !ChildMaxRecords
     mblnCustomReportsSummaryReport = !Summary
     mblnIgnoreZerosInAggregates = !IgnoreZeros
     mblnCustomReportsPrintFilterHeader = !PrintFilterHeader
-'    mintCustomReportsDefaultOutput = IIf(IsNull(!DefaultOutput), 0, !DefaultOutput)
-'    mintCustomReportsDefaultExportTo = IIf(IsNull(!DefaultExportTo), "", !DefaultExportTo)
-'    mblnCustomReportsDefaultSave = !DefaultSave
-'    mstrCustomReportsDefaultSaveAs = IIf(IsNull(!DefaultSaveAs), "", !DefaultSaveAs)
-'    mblnCustomReportsDefaultCloseApp = !DefaultCloseApp
-    
     mlngCustomReportsParent1AllRecords = IIf(IsNull(!parent1AllRecords), 0, !parent1AllRecords)
     mlngCustomReportsParent1PickListID = IIf(IsNull(!parent1picklist), 0, !parent1picklist)
     mlngCustomReportsParent2AllRecords = IIf(IsNull(!parent2AllRecords), 0, !parent2AllRecords)
     mlngCustomReportsParent2PickListID = IIf(IsNull(!parent2picklist), 0, !parent2picklist)
-
     mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!UserName)))
-
-    'New Default Output Variables
-    mlngOutputFormat = !OutputFormat
-    mblnOutputScreen = !OutputScreen
-    mblnOutputPrinter = !OutputPrinter
-    mstrOutputPrinterName = !OutputPrinterName
-    mblnOutputSave = !OutputSave
-    mlngOutputSaveExisting = !OutputSaveExisting
-    mblnOutputEmail = !OutputEmail
-    mlngOutputEmailAddr = !OutputEmailAddr
-    mstrOutputEmailSubject = !OutputEmailSubject
-    mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
-    mstrOutputFileName = !OutputFilename
-    
-    mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
-
+    'Override OutputOption vars of the Report Pack owning these Jobs
+    mlngOutputFormat = IIf(lblnReportPackMode, mlngOutputFormat, !OutputFormat)
+    mblnOutputScreen = IIf(lblnReportPackMode, mblnOutputScreen, !OutputScreen)
+    mblnOutputPrinter = IIf(lblnReportPackMode, mblnOutputPrinter, !OutputPrinter)
+    mstrOutputPrinterName = IIf(lblnReportPackMode, mstrOutputPrinterName, !OutputPrinterName)
+    mblnOutputSave = IIf(lblnReportPackMode, mblnOutputSave, !OutputSave)
+    mlngOutputSaveExisting = IIf(lblnReportPackMode, mlngOutputSaveExisting, !OutputSaveExisting)
+    mblnOutputEmail = IIf(lblnReportPackMode, mblnOutputEmail, !OutputEmail)
+    mlngOutputEmailAddr = IIf(lblnReportPackMode, mlngOutputEmailAddr, !OutputEmailAddr)
+    mstrOutputEmailSubject = IIf(lblnReportPackMode, mstrOutputEmailSubject, !OutputEmailSubject)
+    mstrOutputEmailAttachAs = IIf(lblnReportPackMode, mstrOutputEmailAttachAs, !OutputEmailAttachAs)
+    mstrOutputFileName = IIf(lblnReportPackMode, mstrOutputFileName, !OutputFilename)
+    mblnPreviewOnScreen = IIf(lblnReportPackMode, mblnPreviewOnScreen, !OutputPreview)
   End With
   
   strSQL = "SELECT C.ChildTable, C.ChildFilter, C.ChildMaxRecords, T.TableName, C.ChildOrder " & _
@@ -2752,11 +2729,8 @@ Private Function PopulateGrid() As Boolean
   Dim fOK As Boolean
   
   fOK = True
-  
   fOK = PopulateGrid_InitForm
-  
   ' Turn the grid redraw off to speed it up a little (shaves 4 mins off 80k records)
-  
   mfrmOutput.grdOutput.Redraw = False
 
   If fOK Then
@@ -2767,18 +2741,7 @@ Private Function PopulateGrid() As Boolean
   If fOK Then
     fOK = PopulateGrid_HideColumns
   End If
-
-'  'JDM - 20/04/01 - Stretch columns to show all data
-'  If fOK And mbIsBradfordIndexReport Then
-'    'NHRD20030425 Fault 2470 Added the check below to make space in this column
-'    'for the inclusion of a Bradford Formula
-'    If mbBradfordWorkings Then
-'       mfrmOutput.grdOutput.Columns("Duration").Width = 1100
-'    Else
-'       mfrmOutput.grdOutput.Columns("Duration").Width = 1000
-'
-'    End If
-'  End If
+  
   ' Turn the grid redraw back on
   mfrmOutput.grdOutput.Redraw = True
   
@@ -5100,7 +5063,14 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
       mblnOutputPrinter, mstrOutputPrinterName, _
       mblnOutputSave, mlngOutputSaveExisting, _
       mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-      mstrOutputEmailAttachAs, mstrOutputFileName) Then
+      mstrOutputEmailAttachAs, mstrOutputFileName, _
+      mblnCustomReportsPrintFilterHeader, _
+      mblnPreviewOnScreen, _
+      mstrOutputTitlePage, _
+      mstrOutputReportPackTitle, _
+      mstrOutputOverrideFilter, _
+      mblnOutputTOC, _
+      mblnOutputCoverSheet) Then
 
     If Not gblnBatchMode Then
       If mbIsBradfordIndexReport Then
@@ -5112,7 +5082,7 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
 
     'MH20031117 Fault 7567
     'objOutput.IndicatorColumn = (mlngOutputFormat = fmtExcelChart Or mlngOutputFormat = fmtExcelPivotTable)
-    objOutput.IndicatorColumn = (mlngOutputFormat = fmtExcelChart Or mlngOutputFormat = fmtExcelPivotTable) And Not mblnCustomReportsSummaryReport
+    objOutput.IndicatorColumn = (mlngOutputFormat = fmtExcelChart Or mlngOutputFormat = fmtExcelPivotTable Or gblnReportPackMode) And Not mblnCustomReportsSummaryReport
     objOutput.SizeColumnsIndependently = True
     If objOutput.GetFile Then
 
@@ -5285,13 +5255,10 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
         If mblnReportHasSummaryInfo Then
           objOutput.AddColumn "Summary Info", sqlVarChar, 0, False
         End If
-      
+
         'No page breaks in the report therefore just pass the entire grid to the output run class.
         For lngIndex = 1 To UBound(mvarColDetails, 2)
           If mvarColDetails(19, lngIndex) = False Then
-
-'MH20050901 Fault 10291
-'            If mvarColDetails(17, lngIndex) Then
             If mvarColDetails(17, lngIndex) And mvarColDetails(24, lngIndex) = False Then
               objOutput.AddColumn _
                 CStr(mvarColDetails(0, lngIndex)), sqlDate, _
@@ -5305,7 +5272,6 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
                 CStr(mvarColDetails(0, lngIndex)), sqlVarChar, _
                 CLng(mvarColDetails(2, lngIndex)), (mvarColDetails(22, lngIndex) = True)
             End If
-
           End If
         Next
       
@@ -5389,14 +5355,8 @@ Private Function PopulateGrid_LoadRecords() As Boolean
   Dim iColumnIndex As Integer
   Dim iOtherColumnIndex As Integer
   Dim bSuppress As Boolean
-  'Dim bSuppressInTable As Boolean
-  
   Dim intColCounter As Integer
-  
   Dim sBreakValue As String
-  
-  'Dim DatabaseValue As Variant
-  
   'Group With Next Column variables
   Dim intRowIndex_GW As Integer
   Dim intColIndex_GW As Integer
@@ -5856,9 +5816,6 @@ Private Function PopulateGrid_LoadRecords() As Boolean
       If iColumnIndex > 0 Then
         If (avColumns(1, iColumnIndex)) Then
 
-'MH20030916
-'          mblnPageBreak = True
-'          sBreakValue = IIf(Len(mvarColDetails(11, iColumnIndex)) < 1, "<Empty>", mvarColDetails(11, iColumnIndex)) & IIf(Len(sBreakValue) > 0, " - ", "") & sBreakValue
           If mvarColDetails(8, iColumnIndex) Then
             mblnPageBreak = True
             sBreakValue = IIf(Len(mvarColDetails(11, iColumnIndex)) < 1, "<Empty>", mvarColDetails(11, iColumnIndex)) & IIf(Len(sBreakValue) > 0, " - ", "") & sBreakValue
@@ -5869,21 +5826,10 @@ Private Function PopulateGrid_LoadRecords() As Boolean
       End If
     Next iLoop
 
-'TM22092003
-'''MH20030917
-'    If mblnPageBreak And (Not mblnCustomReportsSummaryReport) Then
     If mblnPageBreak Then
-'      mfrmOutput.grdOutput.AddItem "*"
       mintPageBreakRowIndex = mintPageBreakRowIndex + 1
       AddPageBreakValue mintPageBreakRowIndex - 1, sBreakValue
     End If
-''
-''    'If its a summary report, then add a blank row before the grand summary info
-''    ElseIf mblnCustomReportsSummaryReport Then
-''      mfrmOutput.grdOutput.AddItem "*indicator*"
-''      mintPageBreakRowIndex = mintPageBreakRowIndex + 1
-''    End If
-''    sBreakValue = vbNullString
     
     ' Now do the grand summary information
     If Not mbIsBradfordIndexReport Then
@@ -5897,33 +5843,7 @@ Private Function PopulateGrid_LoadRecords() As Boolean
     End If
     
     ' Set the column widths to those stored in the array
-
-''MH20030822 Idea for Notes fields!
-''Dim lngMaxColWidth As Long
-''Dim lngMaxRows As Long
-''Dim lngNumRowsPerColumn As Long
-''lngMaxColWidth = 6000  'GetSystemSetting("Reports", "MaxColWidth", 0)
-''If lngMaxColWidth > 0 Then
-''  .grdOutput.Multiline = True
-''End If
-
     For iLoop = 0 To UBound(mlngColWidth) - 1
-    
-      ''MH20030822 Idea for Notes fields!
-      ''If lngMaxColWidth > 0 Then
-      ''  lngNumRowsPerColumn = mlngColWidth(iLoop) \ lngMaxColWidth
-      ''  If lngNumRowsPerColumn > 1 Then
-      ''    If lngNumRowsPerColumn < lngMaxRows Then
-      ''      lngNumRowsPerColumn = lngMaxRows
-      ''    End If
-      ''    mlngColWidth(iLoop) = mlngColWidth(iLoop) / lngNumRowsPerColumn
-      ''    If lngNumRowsPerColumn > lngMaxRows Then
-      ''      .grdOutput.RowHeight = 240 * lngNumRowsPerColumn
-      ''      lngMaxRows = lngNumRowsPerColumn
-      ''    End If
-      ''  End If
-      ''End If
-
       .grdOutput.Columns(iLoop).Width = mlngColWidth(iLoop) + 200
     Next iLoop
   
@@ -6015,9 +5935,14 @@ Public Sub SetOutputParameters( _
           lngOutputEmailAddr As Long, _
           strOutputEmailSubject As String, _
           strOutputEmailAttachAs As String, _
-          strOutputFilename As String, _
+          strOutputFileName As String, _
           blnPreviewOnScreen As Boolean, _
-          blnPrintFilterHeader As Boolean)
+          blnPrintFilterHeader As Boolean, _
+          Optional strOutputTitlePage As String, _
+          Optional strOutputReportPackTitle As String, _
+          Optional strOutputOverrideFilter As String, _
+          Optional blnOutputTOC As Boolean, _
+          Optional blnOutputCoverSheet As Boolean)
 
   mlngOutputFormat = lngOutputFormat
   mblnOutputScreen = blnOutputScreen
@@ -6029,10 +5954,14 @@ Public Sub SetOutputParameters( _
   mlngOutputEmailAddr = lngOutputEmailAddr
   mstrOutputEmailSubject = strOutputEmailSubject
   mstrOutputEmailAttachAs = strOutputEmailAttachAs
-  mstrOutputFileName = strOutputFilename
+  mstrOutputFileName = strOutputFileName
   mblnCustomReportsPrintFilterHeader = blnPrintFilterHeader
   mblnPreviewOnScreen = (blnPreviewOnScreen Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
-  
+  mstrOutputTitlePage = IIf(IsMissing(strOutputTitlePage), giEXPRVALUE_CHARACTER, strOutputTitlePage)
+  mstrOutputReportPackTitle = IIf(IsMissing(strOutputReportPackTitle), giEXPRVALUE_CHARACTER, strOutputReportPackTitle)
+  mstrOutputOverrideFilter = IIf(IsMissing(strOutputOverrideFilter), giEXPRVALUE_CHARACTER, strOutputOverrideFilter)
+  mblnOutputTOC = IIf(IsMissing(blnOutputTOC), giEXPRVALUE_CHARACTER, blnOutputTOC)
+  mblnOutputCoverSheet = IIf(IsMissing(blnOutputCoverSheet), giEXPRVALUE_CHARACTER, blnOutputCoverSheet)
 End Sub
 
 
