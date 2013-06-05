@@ -28,18 +28,19 @@ Namespace ErrorHandler
 
     Public Sub OutputToFile(ByRef FileName As String) Implements Interfaces.iErrors.OutputToFile
 
-      Dim objWriter As System.IO.StreamWriter
-      Dim objError As HRProEngine.ErrorHandler.Error
-      Dim sMessage As String
+            Dim objWriter As System.IO.StreamWriter
+            Dim objError As HRProEngine.ErrorHandler.Error
+            Dim sMessage As String
 
-      objWriter = System.IO.File.AppendText(FileName)
+            System.IO.File.Delete(FileName)
+            objWriter = System.IO.File.AppendText(FileName)
+            
+            For Each objError In Me.Items
 
-      For Each objError In Me.Items
+                sMessage = String.Format("{1}{1}{1}{1}{0}{1}{2}{1}", objError.Message, vbNewLine, objError.Detail)
+                objWriter.Write(sMessage)
 
-        sMessage = String.Format("{1}{1}{1}{1}{0}{1}{2}{1}", objError.Message, vbNewLine, objError.Detail)
-        objWriter.Write(sMessage)
-
-      Next
+            Next
 
       objWriter.Close()
 
