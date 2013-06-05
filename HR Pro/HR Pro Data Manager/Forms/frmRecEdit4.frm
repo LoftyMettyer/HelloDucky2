@@ -8,7 +8,7 @@ Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.0#0"; "COA_Line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Object = "{E28F058B-8430-42F1-9D74-4BEDD2F27CCE}#1.0#0"; "COA_OptionGroup.ocx"
 Object = "{4FD0EB05-F124-4460-A61D-CB587234FB75}#1.0#0"; "COA_Image.ocx"
 Object = "{EDB7B7A8-7908-4896-B964-57CE7262666E}#1.0#0"; "COA_OLE.ocx"
@@ -59,11 +59,34 @@ Begin VB.Form frmRecEdit4
       Top             =   795
       Visible         =   0   'False
       Width           =   6000
-      Begin TDBMask6Ctl.TDBMask TDBMask1 
+      Begin XtremeSuiteControls.GroupBox Frame1 
          Height          =   330
          Index           =   0
          Left            =   180
          TabIndex        =   19
+         Top             =   585
+         Width           =   1500
+         _Version        =   851969
+         _ExtentX        =   2646
+         _ExtentY        =   582
+         _StockProps     =   79
+         Caption         =   "GroupBox1"
+         BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         UseVisualStyle  =   -1  'True
+      End
+      Begin TDBMask6Ctl.TDBMask TDBMask1 
+         Height          =   330
+         Index           =   0
+         Left            =   180
+         TabIndex        =   18
          Top             =   1800
          Width           =   1500
          _Version        =   65536
@@ -120,7 +143,7 @@ Begin VB.Form frmRecEdit4
          Height          =   285
          Index           =   0
          Left            =   225
-         TabIndex        =   18
+         TabIndex        =   17
          Top             =   990
          Width           =   1455
          _Version        =   65536
@@ -179,7 +202,7 @@ Begin VB.Form frmRecEdit4
          Height          =   330
          Index           =   0
          Left            =   225
-         TabIndex        =   16
+         TabIndex        =   15
          Top             =   3015
          Width           =   1455
          _Version        =   851969
@@ -202,7 +225,7 @@ Begin VB.Form frmRecEdit4
          Height          =   315
          Index           =   0
          Left            =   200
-         TabIndex        =   15
+         TabIndex        =   14
          Top             =   2595
          Visible         =   0   'False
          Width           =   1500
@@ -273,7 +296,7 @@ Begin VB.Form frmRecEdit4
          Height          =   915
          Index           =   0
          Left            =   4140
-         TabIndex        =   13
+         TabIndex        =   12
          Top             =   135
          Visible         =   0   'False
          Width           =   1140
@@ -281,7 +304,7 @@ Begin VB.Form frmRecEdit4
             Height          =   750
             Index           =   0
             Left            =   90
-            TabIndex        =   14
+            TabIndex        =   13
             Top             =   105
             Width           =   975
             _ExtentX        =   1720
@@ -294,7 +317,7 @@ Begin VB.Form frmRecEdit4
          Height          =   300
          Index           =   0
          Left            =   4050
-         TabIndex        =   12
+         TabIndex        =   11
          Top             =   1755
          Width           =   1560
          _Version        =   65537
@@ -368,11 +391,11 @@ Begin VB.Form frmRecEdit4
          Height          =   720
          Index           =   0
          Left            =   2115
-         TabIndex        =   11
+         TabIndex        =   10
          Top             =   240
          Visible         =   0   'False
-         Width           =   1230
-         _ExtentX        =   2170
+         Width           =   1170
+         _ExtentX        =   2064
          _ExtentY        =   1270
       End
       Begin VB.CommandButton Command1 
@@ -389,7 +412,7 @@ Begin VB.Form frmRecEdit4
          Height          =   315
          Index           =   0
          Left            =   4000
-         TabIndex        =   6
+         TabIndex        =   5
          Top             =   3420
          Visible         =   0   'False
          Width           =   1500
@@ -407,27 +430,8 @@ Begin VB.Form frmRecEdit4
          Height          =   315
          Index           =   0
          Left            =   200
-         TabIndex        =   5
-         Top             =   2200
-         Visible         =   0   'False
-         Width           =   1500
-      End
-      Begin VB.Frame Frame1 
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Index           =   0
-         Left            =   200
-         MousePointer    =   1  'Arrow
          TabIndex        =   4
-         Top             =   600
+         Top             =   2200
          Visible         =   0   'False
          Width           =   1500
       End
@@ -446,7 +450,7 @@ Begin VB.Form frmRecEdit4
          Height          =   315
          Index           =   0
          Left            =   200
-         TabIndex        =   7
+         TabIndex        =   6
          Top             =   3800
          Visible         =   0   'False
          Width           =   1500
@@ -476,7 +480,7 @@ Begin VB.Form frmRecEdit4
          Height          =   315
          Index           =   0
          Left            =   200
-         TabIndex        =   8
+         TabIndex        =   7
          TabStop         =   0   'False
          Top             =   200
          Visible         =   0   'False
@@ -501,7 +505,7 @@ Begin VB.Form frmRecEdit4
          Height          =   315
          Index           =   0
          Left            =   4000
-         TabIndex        =   9
+         TabIndex        =   8
          Top             =   1400
          Visible         =   0   'False
          Width           =   1500
@@ -523,7 +527,7 @@ Begin VB.Form frmRecEdit4
          Height          =   765
          Index           =   0
          Left            =   4005
-         TabIndex        =   10
+         TabIndex        =   9
          Top             =   2205
          Visible         =   0   'False
          Width           =   1830
@@ -534,7 +538,7 @@ Begin VB.Form frmRecEdit4
          Height          =   315
          Index           =   0
          Left            =   2475
-         TabIndex        =   17
+         TabIndex        =   16
          Top             =   4050
          Width           =   1545
          _Version        =   851969
@@ -566,8 +570,6 @@ Begin VB.Form frmRecEdit4
       BeginProperty Tabs {0713E432-850A-101B-AFC0-4210102A8DA7} 
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
-            Caption         =   ""
-            Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
          EndProperty
@@ -597,7 +599,6 @@ Begin VB.Form frmRecEdit4
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -1369,7 +1370,6 @@ LocalErr:
   MsgBox Err.Description & vbCrLf & "(RecEdit4 - Form_Deactivate " & CStr(intErrorLine) & ")", vbCritical
 
 End Sub
-
 
 Private Sub GTMaskDate1_Change(Index As Integer)
   On Error GoTo Err_Trap
