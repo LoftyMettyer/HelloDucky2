@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "16:11"
+            TextSave        =   "16:39"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -1144,7 +1144,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
           Set frmChangePassword = Nothing
         Else
           COAMsgBox "Cannot change password. This account is currently being used " & _
-                  "by " & IIf(iUsers > 2, iUsers & " users", "another user") & " in the system.", vbExclamation + vbOKOnly, App.Title
+                  "by " & IIf(iUsers > 2, iUsers & " users", "another user") & " in the system.", vbExclamation + vbOKOnly, app.Title
         End If
       End If
 
@@ -1209,9 +1209,9 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     Case "HelpContentsAndIndex"
   
       If Not ShowAirHelp(0) Then
-        plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
+        plngHelp = ShellExecute(0&, vbNullString, app.Path & "\" & app.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
         If plngHelp = 0 Then
-          COAMsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to find and view the file " & App.HelpFile & ".", vbExclamation + vbOKOnly, App.EXEName
+          COAMsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to find and view the file " & app.HelpFile & ".", vbExclamation + vbOKOnly, app.EXEName
         End If
       End If
   
@@ -1229,7 +1229,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\OpenHR Data Manager Version Information.htm"
+      strVersionFilename = app.Path & "\OpenHR Data Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
@@ -1551,7 +1551,7 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
             If .AbsolutePosition = adPosUnknown Then
               ' The current record no longer exists. Try to move onto the next record.
               
-              COAMsgBox "The current record has been deleted by another user, screen will be refreshed.", vbExclamation, App.ProductName
+              COAMsgBox "The current record has been deleted by another user, screen will be refreshed.", vbExclamation, app.ProductName
               
               If (Not .EOF) Then .MoveNext
               
@@ -3148,9 +3148,9 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
         End Select
 
         If MenuType = Favourites Then
-          sCaption = sType & rsTemp("name").Value
+          sCaption = sType & Replace(rsTemp("name").Value, "&", "&&")
         Else
-          sCaption = "&" & CStr(iCount) & " " & sType & rsTemp("name").Value
+          sCaption = "&" & CStr(iCount) & " " & sType & Replace(rsTemp("name").Value, "&", "&&")
         End If
         
         objFileTool.Caption = sCaption
@@ -3452,7 +3452,7 @@ Private Sub Timer1_Timer()
     Set rsMessages = Nothing
   
     If Len(sMessage) > 0 Then
-      COAMsgBox sMessage, vbInformation + vbOKOnly, App.ProductName
+      COAMsgBox sMessage, vbInformation + vbOKOnly, app.ProductName
     End If
   End If
 
