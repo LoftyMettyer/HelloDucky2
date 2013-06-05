@@ -5440,9 +5440,9 @@ InsertDeadlockRecoveryPoint:
     Set cmADO = Nothing
   End If
   
-  If fInsertedOK Then
-    objEmail.SendImmediateEmails
-  End If
+  'If fInsertedOK Then
+  '  objEmail.SendImmediateEmails
+  'End If
 
 TidyUpAndExit:
   If (iOldCursorLocation = adUseClient) Or _
@@ -5626,9 +5626,9 @@ DeleteDeadlockRecoveryPoint:
   End If
   
   ' Fault 830 - Now send emails on deleting
-  If fDeletedOK Then
-    objEmail.SendImmediateEmails
-  End If
+  'If fDeletedOK Then
+  '  objEmail.SendImmediateEmails
+  'End If
   
 TidyUpAndExit:
   If (iOldCursorLocation = adUseClient) Or _
@@ -5829,9 +5829,9 @@ UpdateDeadlockRecoveryPoint:
     Set cmADO = Nothing
   End If
   
-  If fUpdatedOK Then
-    objEmail.SendImmediateEmails
-  End If
+  'If fUpdatedOK Then
+  '  objEmail.SendImmediateEmails
+  'End If
 
 TidyUpAndExit:
   If (iOldCursorLocation = adUseClient) Or _
