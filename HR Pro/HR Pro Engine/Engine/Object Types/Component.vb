@@ -7,20 +7,10 @@ Namespace Things
     Inherits Things.Base
     Implements ICloneable
 
-    '    Public SubType As ScriptDB.ComponentTypes
-
-    'Public ReturnType As ScriptDB.ColumnTypes
-
+    Public ReturnType As ScriptDB.ComponentValueTypes
     Public FunctionID As HCMGuid
     Public OperatorID As HCMGuid
     Public CalculationID As HCMGuid
-
-    Public ReturnType As ScriptDB.ComponentValueTypes
-    'Public IsScriptSafe As Boolean = True
-    Public BypassValidation As Boolean = False
-    'Public IsComplex As Boolean = False
-    'Public IsScriptSafe As Boolean = True
-
     Public ValueType As ScriptDB.ComponentValueTypes
     Public ValueNumeric As Integer
     Public ValueString As String
@@ -34,19 +24,14 @@ Namespace Things
     Public ColumnAggregiateType As ScriptDB.AggregiateNumeric
     Public SpecificLine As Integer
     Public IsColumnByReference As Boolean
-    'Public IsEvaluated As Boolean = False
-
     Public LookupTableID As HCMGuid
     Public LookupColumnID As HCMGuid
 
-    '<System.Xml.Serialization.XmlIgnore()> _
-    'Public EmbedDependencies As Boolean = True
-
-    <System.Xml.Serialization.XmlIgnore()> _
-Public InlineScript As Boolean = False
-
     <System.Xml.Serialization.XmlIgnore()> _
     Public BaseExpression As Things.Expression
+
+    '    Public IsComplex As Boolean = False
+    Public IsSchemaBound As Boolean = True
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
@@ -54,15 +39,15 @@ Public InlineScript As Boolean = False
       End Get
     End Property
 
-    Public Sub SetBaseExpression(ByRef objBaseExpression As Things.Component)
+    'Public Sub SetBaseExpression(ByRef objBaseExpression As Things.Component)
 
-      ' Attach the base component info
-      Me.BaseExpression = objBaseExpression
-      For Each objComponent As Things.Component In Me.Objects
-        objComponent.SetBaseExpression(objBaseExpression)
-      Next
+    '  ' Attach the base component info
+    '  Me.BaseExpression = objBaseExpression
+    '  For Each objComponent As Things.Component In Me.Objects
+    '    objComponent.SetBaseExpression(objBaseExpression)
+    '  Next
 
-    End Sub
+    'End Sub
 
     Public Function Clone() As Object Implements System.ICloneable.Clone
       Return Me.MemberwiseClone

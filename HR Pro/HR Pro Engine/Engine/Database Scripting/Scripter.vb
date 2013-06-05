@@ -865,6 +865,18 @@ Namespace ScriptDB
 
       Try
 
+        ' Drop objects first (for schemabinding purposes)
+        For Each objTable In Globals.Things
+
+          For Each objColumn In objTable.Columns
+            sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
+            ScriptDB.DropUDF("dbo", sObjectName)
+          Next
+
+        Next
+
+
+        ' Now create the objects
         For Each objTable In Globals.Things
 
           ' Record Descriptions
@@ -890,7 +902,6 @@ Namespace ScriptDB
 
           Next
 
-
           ' Calculations
           For Each objColumn In objTable.Columns
 
@@ -901,10 +912,7 @@ Namespace ScriptDB
 
                 sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
 
-                '                Debug.Assert(sObjectName <> "udfcalc_Table1.simplelogic")
                 Debug.Assert(sObjectName <> "udfcalc_Table1.divby0_triggerval")
-
-                ScriptDB.DropUDF("dbo", sObjectName)
 
                 If Not objColumn.Calculation Is Nothing Then
                   objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation

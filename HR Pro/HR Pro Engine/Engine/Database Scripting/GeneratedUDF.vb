@@ -8,8 +8,9 @@
 
     Public CodeStub As String
 
-    Public IsSimple As Boolean
-    Public IsGenerated As Boolean
+    '   Public IsSimple As Boolean
+    '    Public IsGenerated As Boolean
+    Public IsSchemaBound As Boolean
 
     Public JoinCode As String
     Public FromCode As String
@@ -18,6 +19,9 @@
     Public OrderCode As String
     Public Declarations As String
     Public Prerequisites As String
+
+    Public BoilerPlate As String
+    Public Comments As String
 
   End Structure
 End Namespace

@@ -26,7 +26,6 @@ Namespace Things
     '    Public Status As System.Data.DataRowState
     Public SchemaName As String
     Public Encrypted As Boolean = False
-    Public IsSchemaBound As Boolean = False
 
     Private msDescription As String
     Private mID As HCMGuid
