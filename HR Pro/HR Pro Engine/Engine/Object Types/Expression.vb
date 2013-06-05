@@ -33,10 +33,13 @@ Namespace Things
 
     Private mcolLinesOfCode As ScriptDB.LinesOfCode
 
+    Public CaseCount As Integer = 0
+    Public StartOfPartNumbers As Integer = 0
     Public RequiresRecordID As Boolean = False
     Public RequiresRowNumber As Boolean = False
 
     Public IsComplex As Boolean = False
+    Public IsValid As Boolean = True
 
     Private mbCalculatePostAudit As Boolean = False
     Private mbNeedsOriginalValue As Boolean = False
@@ -99,6 +102,7 @@ Namespace Things
 
       ' Initialise code object
       Me.IsComplex = False
+      Me.CaseCount = 0
       mcolLinesOfCode = New ScriptDB.LinesOfCode
       mcolLinesOfCode.Clear()
       mcolLinesOfCode.ReturnType = ReturnType
@@ -134,7 +138,7 @@ Namespace Things
       SQLCode_AddCodeLevel(Me.Objects, mcolLinesOfCode)
 
       ' Always add the ID for the record
-      If RequiresRecordID Then
+      If RequiresRecordID Or Me.IsComplex Then
         aryParameters1.Add("@prm_ID integer")
         aryParameters2.Add("base.ID")
         aryParameters3.Add("@prm_ID")
@@ -192,13 +196,8 @@ Namespace Things
 
       Next
 
-      ' Can object be schemabound
-      If Me.BaseExpression.IsSchemaBound Then
-        sOptions = "--WITH SCHEMABINDING"
-      End If
-
       ' Do we have caching on this UDF?
-      If mbCheckTriggerStack Then
+      If Me.IsComplex And aryDependsOn.Count > 0 Then
         sBypassUDFCode = String.Format("    -- Return the original value if none of the dependent tables are in the trigger stack." & vbNewLine &
             "    IF NOT EXISTS (SELECT [tablefromid] FROM [dbo].[tbsys_intransactiontrigger] WHERE [tablefromid] IN ({0}) AND [spid] = @@SPID)" & vbNewLine & _
             "        BEGIN" & vbNewLine & _
@@ -208,8 +207,10 @@ Namespace Things
             , String.Join(", ", aryDependsOn.ToArray()), Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.PhysicalName)
       End If
 
-      ' Bypass the bypass as I'm not convined it works.
-      sBypassUDFCode = ""
+      ' Can object be schemabound
+      If Me.BaseExpression.IsSchemaBound Then
+        sOptions = "--WITH SCHEMABINDING"
+      End If
 
       ' Calling statement
       With UDF
@@ -257,7 +258,8 @@ Namespace Things
                            "RETURNS {2}" & vbNewLine & _
                            "{3}" & vbNewLine & _
                            "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                           "    DECLARE @Result as {2};" & vbNewLine & _
+                           "    DECLARE @Result as {2};" & vbNewLine & vbNewLine & _
+                           "    {13}" & vbNewLine & vbNewLine & _
                            "    {4}{5}" & vbNewLine & vbNewLine & _
                            "    -- Execute calculation code" & vbNewLine & _
                            "    SELECT @Result = {6}" & vbNewLine & _
@@ -266,7 +268,7 @@ Namespace Things
                            "END" _
                           , .Name, String.Join(", ", aryParameters1.ToArray()) _
                           , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode _
-                          , Me.AssociatedColumn.SafeReturnType, .BoilerPlate, .Comments)
+                          , Me.AssociatedColumn.SafeReturnType, .BoilerPlate, .Comments, sBypassUDFCode)
 
             .CodeStub = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
                            "RETURNS {2}" & vbNewLine & _
@@ -412,7 +414,7 @@ Namespace Things
           ' A table relationship
           Case ScriptDB.ComponentTypes.Relation
             SQLCode_AddRelation([CodeCluster], objComponent)
-            Me.IsComplex = True
+            ' Me.IsComplex = True
 
             ' Column component
           Case ScriptDB.ComponentTypes.Column
@@ -476,8 +478,10 @@ Namespace Things
               SQLCode_AddParameter(objComponent, [CodeCluster])
 
             Else
-              Globals.ErrorLog.Add(ErrorHandler.Section.General, Me.AssociatedColumn.Name, ErrorHandler.Severity.Error, "SQLCode_AddCodeLevel", "can't find expression")
-
+              Globals.ErrorLog.Add(ErrorHandler.Section.General, Me.AssociatedColumn.Name, ErrorHandler.Severity.Error, _
+                  "SQLCode_AddCodeLevel", Me.AssociatedColumn.Table.Name & "." & Me.AssociatedColumn.Name & " -- Missing calculation")
+              Me.IsValid = False
+              Me.IsComplex = True
             End If
 
             Me.IsComplex = True
@@ -502,6 +506,8 @@ Namespace Things
       If Not Dependencies.Contains(objRelation) Then
         Dependencies.Add(objRelation)
       End If
+
+      Dependencies.AddIfNew(objTable)
 
       LineOfCode.Code = String.Format("@prm_ID_{0}", CInt([Component].TableID))
 
@@ -555,7 +561,7 @@ Namespace Things
         LineOfCode.Code = String.Format("'{0}-{1}'" _
             , CInt(objThisColumn.Table.ID).ToString.PadLeft(8, "0") _
             , CInt(objThisColumn.ID).ToString.PadLeft(8, "0"))
-        Me.IsComplex = True
+        'Me.IsComplex = True
 
       ElseIf objThisColumn Is Me.AssociatedColumn _
           And Not (Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter _
@@ -581,6 +587,8 @@ Namespace Things
         iBackupType = objThisColumn.Calculation.ExpressionType
         objThisColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn
         objThisColumn.Calculation.AssociatedColumn = objThisColumn
+
+        objThisColumn.Calculation.StartOfPartNumbers = Me.StartOfPartNumbers + Declarations.Count
         objThisColumn.Calculation.GenerateCode()
 
         'iPartNumber = Declarations.Count
@@ -647,6 +655,8 @@ Namespace Things
 
           objRelation = Me.BaseTable.GetRelation(objThisColumn.Table.ID)
 
+          '          Me.Dependencies.AddIfNew(objRelation)
+
           If objRelation.RelationshipType = ScriptDB.RelationshipType.Parent Then
             LineOfCode.Code = String.Format("ISNULL([{0}].[{1}],{2})", objThisColumn.Table.Name, objThisColumn.Name, objThisColumn.SafeReturnType)
 
@@ -691,9 +701,8 @@ Namespace Things
 
             '     LineOfCode = AddChildColumn(objOrderFilter, objThisColumn)
 
-
             ' Add calculation for this foreign column to the pre-requisits array 
-            iPartNumber = Declarations.Count + 1
+            iPartNumber = Declarations.Count + Me.StartOfPartNumbers
             '  bReverseOrder = False
 
             ' What type/line number are we dealing with?
@@ -760,11 +769,13 @@ Namespace Things
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Function
       objCodeLibrary = Globals.Functions.GetObject(Enums.Type.CodeLibrary, Component.FunctionID)
       LineOfCode.Code = objCodeLibrary.Code
+      '      CodeCluster.NestedLevel = CodeCluster.NestedLevel + objCodeLibrary.CaseCount
+      Me.CaseCount += objCodeLibrary.CaseCount
 
       ' Get parameters
       ChildCodeCluster = New ScriptDB.LinesOfCode
       ChildCodeCluster.CodeLevel = [CodeCluster].CodeLevel + 1
-      ChildCodeCluster.NestedLevel = CodeCluster.NestedLevel + 1
+      '     ChildCodeCluster.NestedLevel = CodeCluster.NestedLevel + 1
       ChildCodeCluster.ReturnType = objCodeLibrary.ReturnType
 
       ' Add module dependancy info for this function
@@ -778,6 +789,7 @@ Namespace Things
               objIDComponent.SubType = ScriptDB.ComponentTypes.Relation
               objIDComponent.TableID = objSetting.Value
               [Component].Objects.Add(objIDComponent)
+              Me.IsComplex = True
 
             Case SettingType.CodeItem
               objIDComponent = New Things.Component
@@ -807,6 +819,7 @@ Namespace Things
       mbCalculatePostAudit = mbCalculatePostAudit Or objCodeLibrary.CalculatePostAudit
       Me.RequiresRecordID = RequiresRecordID Or objCodeLibrary.RecordIDRequired
       Me.Tuning.Rating += objCodeLibrary.Tuning.Rating
+      objCodeLibrary.Tuning.Usage += 1
 
       ' For functions that return mixed type, make it type safe
       If objCodeLibrary.ReturnType = ScriptDB.ComponentValueTypes.Unknown Then
@@ -855,29 +868,30 @@ Namespace Things
 
       ChildCodeCluster.ReturnType = Component.ReturnType
       ChildCodeCluster.CodeLevel = CodeCluster.CodeLevel + 1
-      ChildCodeCluster.NestedLevel = CodeCluster.NestedLevel
+      '      ChildCodeCluster.NestedLevel = CodeCluster.NestedLevel
 
+      '  Debug.Assert(Me.AssociatedColumn.Name <> "Duration")
       ' Nesting is too deep - convert to part number
-      If ChildCodeCluster.NestedLevel > 9 Then
+      If Me.CaseCount > 9 Then
 
         objExpression = New Things.Expression
         objExpression.ExpressionType = Me.ExpressionType ' ScriptDB.ExpressionType.ColumnCalculation
-        Me.IsComplex = True
-
         objExpression.BaseTable = Me.BaseTable
         objExpression.AssociatedColumn = Me.AssociatedColumn
         objExpression.BaseExpression = Me.BaseExpression
         objExpression.ReturnType = Component.ReturnType
         objExpression.Objects = Component.Objects
-        objExpression.Declarations = Declarations
-        objExpression.PreStatements = PreStatements
+        '        objExpression.Declarations = Declarations
+        '       objExpression.PreStatements = PreStatements
+        objExpression.StartOfPartNumbers = Declarations.Count + Me.StartOfPartNumbers
         objExpression.GenerateCode()
 
-        Declarations = objExpression.Declarations
-        PreStatements = objExpression.PreStatements
+        Declarations.AddRange(objExpression.Declarations)
+        PreStatements.AddRange(objExpression.PreStatements)
+        Dependencies.MergeUnique(objExpression.Dependencies)
 
-        iPartNumber = Declarations.Count
-        Declarations.Add(String.Format("@part_{1} {2};", iPartNumber, objExpression.DataTypeSyntax))
+        iPartNumber = Declarations.Count + Me.StartOfPartNumbers
+        Declarations.Add(String.Format("@part_{0} {1}", iPartNumber, objExpression.DataTypeSyntax))
 
         sPartCode = String.Format("{0}SELECT @part_{1} = {2}" & vbNewLine & _
             "{0}{3}" & vbNewLine & _
@@ -887,7 +901,11 @@ Namespace Things
             , objExpression.UDF.SelectCode, objExpression.UDF.FromCode, objExpression.UDF.JoinCode, objExpression.UDF.WhereCode)
         PreStatements.Add(sPartCode)
 
+        StatementObjects.Add(objExpression)
         LineOfCode.Code = String.Format("@part_{0}", iPartNumber)
+        Me.CaseCount = 0
+        Me.IsComplex = True
+
       Else
         SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
         LineOfCode.Code = String.Format("{0}", ChildCodeCluster.Statement)
@@ -1022,15 +1040,16 @@ Namespace Things
         sCallingCode.Code = ReferencedColumn.Calculation.UDF.SelectCode
       Else
         If StatementObjects.Contains(ReferencedColumn) Then
-          sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn) + 1)
+          sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn))
         Else
+          sVariableName = StatementObjects.Count + Me.StartOfPartNumbers
           StatementObjects.Add(ReferencedColumn)
-          sVariableName = StatementObjects.Count
           Declarations.Add(String.Format("@part_{0} {1}", sVariableName, ReferencedColumn.DataTypeSyntax))
           PreStatements.Add(String.Format("SELECT @part_{0} = {1}", sVariableName, ReferencedColumn.Calculation.UDF.CallingCode))
           sCallingCode.Code = String.Format("@part_{0}", sVariableName)
         End If
 
+        Me.CaseCount += ReferencedColumn.Calculation.CaseCount
         Me.BaseExpression.IsComplex = True
         Me.Tuning.Rating += ReferencedColumn.Calculation.Tuning.Rating
 

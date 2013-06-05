@@ -130,13 +130,12 @@
              "{9}" & vbNewLine & _
              "AS" & vbNewLine & "BEGIN" & vbNewLine & _
              "WITH base AS (" & vbNewLine & _
-             "    SELECT *, [rownumber] = ROW_NUMBER() OVER (ORDER BY [column_date] DESC)" & vbNewLine & _
+             "    SELECT *, [rownumber] = ROW_NUMBER() OVER ({7})" & vbNewLine & _
              "    FROM {4} base" & vbNewLine & _
              "    {6})" & vbNewLine & _
              "INSERT @Results SELECT {3}" & vbNewLine & _
              "        FROM base" & vbNewLine & _
              "        WHERE [rownumber] = {10}" & vbNewLine & _
-             "        {7}" & vbNewLine & _
              "    RETURN;" & vbNewLine & _
              "END" _
             , Me.Name, String.Join(", ", aryParameters.ToArray()) _

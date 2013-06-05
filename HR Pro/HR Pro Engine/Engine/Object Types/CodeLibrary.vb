@@ -12,6 +12,7 @@
     Public CalculatePostAudit As Boolean
     Public IsGetFieldFromDB As Boolean = False
     Public IsUniqueCode As Boolean = False
+    Public CaseCount As Integer = 0
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get

@@ -946,7 +946,7 @@ Namespace ScriptDB
         For Each objTable In Globals.Things
           For Each objTableOrderFilter In objTable.Objects(Things.Type.TableOrderFilter)
 
-            Debug.Assert(objTableOrderFilter.Name <> "udftab_Training_Booking_122_all")
+            '  Debug.Assert(objTableOrderFilter.Name <> "udftab_Salary_Salary_Date_1_line_1")
 
             objTableOrderFilter.GenerateCode()
             ScriptDB.DropUDF("dbo", objTableOrderFilter.Name)
@@ -960,19 +960,26 @@ Namespace ScriptDB
 
             '   Debug.Print(objColumn.Name)
             If objColumn.IsCalculated Then
+              If objColumn.Calculation.IsComplex Then
 
-              objColumn.Calculation.GenerateCode()
-              Globals.TuningLog.Expressions.Add(objColumn)
+                objColumn.Calculation.GenerateCode()
+                Globals.TuningLog.Expressions.Add(objColumn)
 
-              sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
-              'Debug.Assert(sObjectName <> "udfcalc_Personnel_Records.Trigger_to_Payroll")
+                sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
+                'Debug.Assert(sObjectName <> "udfcalc_Personnel_Records.Trigger_to_Payroll")
 
-              '  Debug.Assert(objColumn.Calculation.UDF.Name <> "[dbo].[udfcalc__Personnel_Records.Trigger_to_Payroll")
-              'Debug.Assert(sObjectName <> "udfcalc_Table1.calclevel2")
+                '  Debug.Assert(objColumn.Calculation.UDF.Name <> "[dbo].[udfcalc__Personnel_Records.Trigger_to_Payroll")
+                'Debug.Assert(sObjectName <> "udfcalc_Table1.calclevel2")
 
-              ScriptDB.DropUDF("dbo", sObjectName)
-              If Not Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.Code) Then
-                Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.CodeStub)
+                ScriptDB.DropUDF("dbo", sObjectName)
+
+                If objColumn.Calculation.IsValid Then
+                  If Not Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.Code) Then
+                    Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.CodeStub)
+                  End If
+                Else
+                  Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.CodeStub)
+                End If
               End If
             End If
           Next

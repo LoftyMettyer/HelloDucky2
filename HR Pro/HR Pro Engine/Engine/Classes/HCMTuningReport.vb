@@ -27,6 +27,13 @@ Namespace Tuning
         objWriter.Write(sMessage)
       Next
 
+      objWriter.Write(String.Format("{0}{0}{1}{0}Functions{1}{0}{0}", vbNewLine, "-------------------"))
+      For Each objThing In Globals.Functions
+        sMessage = String.Format("({0}) - {1}", objThing.Tuning.Usage.ToString.PadLeft(5) _
+              , objThing.Name) & vbNewLine
+        objWriter.Write(sMessage)
+      Next
+
       objWriter.Close()
 
     End Sub

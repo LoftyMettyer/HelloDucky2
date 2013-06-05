@@ -12,7 +12,7 @@ Namespace ScriptDB
     Private mbIsComparison As Boolean = False
 
     Public CodeLevel As Integer
-    Public NestedLevel As Integer
+    '    Public NestedLevel As Integer
     Public ReturnType As ComponentValueTypes
 
     Public Overloads Sub Add(ByVal LineOfCode As ScriptDB.CodeElement)
@@ -114,6 +114,10 @@ Namespace ScriptDB
             Statement = vbNewLine & String.Format("{0}{1}{2}", New String(vbTab, CodeLevel), Statement, Chunk.Code)
           End If
 
+          'If iThisElement > 0 Then
+          '  Statement = vbNewLine & Statement
+          'End If
+
           ' Statement = Statement & Chunk.Code
           iThisElement = iThisElement + 1
 
@@ -121,7 +125,7 @@ Namespace ScriptDB
 
         ' Wrap to return code chunks in safety
         If Me.ReturnType = ComponentValueTypes.Logic Or mbIsComparison Then
-          Statement = vbNewLine & String.Format("{0}CASE WHEN ({1}) THEN 1 ELSE 0 END", New String(vbTab, CodeLevel), Statement)
+          Statement = String.Format("{0}CASE WHEN ({1}) THEN 1 ELSE 0 END", New String(vbTab, CodeLevel), Statement)
         End If
 
       End Get

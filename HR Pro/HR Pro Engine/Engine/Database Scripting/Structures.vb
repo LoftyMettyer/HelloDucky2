@@ -15,5 +15,10 @@
       Property Relation As Things.Relation
     End Structure
 
+    'Public Structure Invalidity
+    '  Property Number As Integer
+    '  Property Message As String
+    'End Structure
+
   End Module
 End Namespace
