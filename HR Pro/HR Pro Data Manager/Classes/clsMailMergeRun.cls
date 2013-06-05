@@ -550,6 +550,17 @@ Private Sub SQLGetMergeDefinition()
 
   fOK = IsRecordSelectionValid
 
+
+  If fOK Then
+    If Not ValidPrinter(mstrOutputPrinterName) Then
+      mstrStatusMessage = _
+          "This definition is set to output to printer " & mstrOutputPrinterName & _
+          " which is not set up on your PC."
+      fOK = False
+    End If
+  End If
+
+
 TidyAndExit:
   Set rsMailMergeDefinition = Nothing
 
@@ -561,6 +572,27 @@ LocalErr:
   Resume TidyAndExit
 
 End Sub
+
+Private Function ValidPrinter(strName As String) As Boolean
+
+  Dim objPrinter As Printer
+  Dim blnFound As Boolean
+
+  If strName <> vbNullString And strName <> "<Default Printer>" Then
+    blnFound = False
+    For Each objPrinter In Printers
+      If objPrinter.DeviceName = strName Then
+        blnFound = True
+        Exit For
+      End If
+    Next
+  Else
+    blnFound = True
+  End If
+
+  ValidPrinter = blnFound
+
+End Function
 
 Private Function IsRecordSelectionValid() As Boolean
 
