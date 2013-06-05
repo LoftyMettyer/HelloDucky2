@@ -234,7 +234,6 @@ Private Function CreateSP_MobileCheckLogin() As Boolean
     "/* ------------------------------------------------ */" & vbNewLine & _
     "CREATE PROCEDURE [dbo].[" & msMobileCheckLogin_PROCEDURENAME & "](" & vbNewLine & _
     "  @psKeyParameter varchar(max)," & vbNewLine & _
-    "  --@psPWDParameter nvarchar(max) OUTPUT," & vbNewLine & _
     "  @piUserGroupID integer OUTPUT," & vbNewLine & _
     "  @psMessage varchar(max) OUTPUT" & vbNewLine & _
     "  ) " & vbNewLine & _
@@ -246,39 +245,48 @@ Private Function CreateSP_MobileCheckLogin() As Boolean
     "          @fActivated bit," & vbNewLine & _
     "          @sActualUserName varchar(255)," & vbNewLine & _
     "          @sRoleName varchar(255)," & vbNewLine & _
-    "          @dtExpiryDate datetime;" & vbNewLine & _
+    "          @dtExpiryDate datetime," & vbNewLine & _
+    "          @bLicensed bit;" & vbNewLine & _
     "  SET @iuserID = 0;" & vbNewLine & _
-    "  SET @psMessage = '';" & vbNewLine & _
-    "  -- Get the record id for this user" & vbNewLine & _
-    "  SELECT @iuserID = [ID], @dtExpiryDate = [" & mvar_sLeavingDateColumn & "]" & vbNewLine & _
-    "    FROM [" & mvar_sLoginTable & "]" & vbNewLine & _
-    "    WHERE ISNULL([" & mvar_sLoginColumn & "], '') = @psKeyParameter" & vbNewLine & _
-    "  IF @iuserID > 0" & vbNewLine & _
+    "  SET @psMessage = '';" & vbNewLine & vbNewLine & _
+    "  --First is module licensed?" & vbNewLine & _
+    "  EXEC spASRIntActivateModule 'MOBILE', @bLicensed OUTPUT;" & vbNewLine & _
+    "  IF ISNULL(@bLicensed,0) = 0 SET @psMessage = 'You are not licensed for the OpenHR Mobile module. Please contact your Advanced Business Solutions Account Manager for details';" & vbNewLine
+ 
+ sProcSQL = sProcSQL & _
+    "  IF @psMessage = ''" & vbNewLine & _
     "  BEGIN" & vbNewLine & _
-    "    -- return the User Activated Status for the record id." & vbNewLine & _
-    "   SELECT @fActivated = [" & mvar_sActivatedUserColumn & "]" & vbNewLine & _
-    "        FROM [" & mvar_sLoginTable & "]" & vbNewLine & _
-    "        WHERE (ISNULL([" & mvar_sLoginTable & "].[ID], '') = @iuserID);" & vbNewLine & _
-    "  END" & vbNewLine
+    "    -- Get the record id for this user" & vbNewLine & _
+    "    SELECT @iuserID = [ID], @dtExpiryDate = [" & mvar_sLeavingDateColumn & "]" & vbNewLine & _
+    "      FROM [" & mvar_sLoginTable & "]" & vbNewLine & _
+    "      WHERE ISNULL([" & mvar_sLoginColumn & "], '') = @psKeyParameter" & vbNewLine & _
+    "    IF @iuserID > 0" & vbNewLine & _
+    "    BEGIN" & vbNewLine & _
+    "      -- return the User Activated Status for the record id." & vbNewLine & _
+    "     SELECT @fActivated = [" & mvar_sActivatedUserColumn & "]" & vbNewLine & _
+    "          FROM [" & mvar_sLoginTable & "]" & vbNewLine & _
+    "          WHERE (ISNULL([" & mvar_sLoginTable & "].[ID], '') = @iuserID);" & vbNewLine & _
+    "    END" & vbNewLine
     
   sProcSQL = sProcSQL & _
-    "  IF @iuserID = 0" & vbNewLine & _
-    "      SET @psMessage = 'Incorrect e-mail / password combination';" & vbNewLine & _
-    "  IF @psMessage = '' AND ISNULL(@fActivated, 0)  = 0" & vbNewLine & _
-    "      SET @psMessage = 'Account not activated.';" & vbNewLine & _
-    "  IF @psMessage = '' AND DATEDIFF(d, GETDATE(), ISNULL(@dtExpiryDate, GETDATE())) < 0" & vbNewLine & _
-    "      SET @psMessage = 'Account Expired.';" & vbNewLine
+    "    IF @iuserID = 0" & vbNewLine & _
+    "        SET @psMessage = 'Incorrect e-mail / password combination';" & vbNewLine & _
+    "    IF @psMessage = '' AND ISNULL(@fActivated, 0)  = 0" & vbNewLine & _
+    "        SET @psMessage = 'Account not activated.';" & vbNewLine & _
+    "    IF @psMessage = '' AND DATEDIFF(d, GETDATE(), ISNULL(@dtExpiryDate, GETDATE())) < 0" & vbNewLine & _
+    "        SET @psMessage = 'Account Expired.';" & vbNewLine
 
   sProcSQL = sProcSQL & _
-    "    EXEC dbo.spASRIntGetActualUserDetailsForLogin" & vbNewLine & _
-    "        @psKeyParameter," & vbNewLine & _
-    "        @psKeyParameter OUTPUT," & vbNewLine & _
-    "        @sRoleName OUTPUT," & vbNewLine & _
-    "        @piUserGroupID OUTPUT" & vbNewLine & vbNewLine & _
-    "    IF ISNULL(@piUserGroupID,0) = 0 SET @psMessage = 'No valid SQL account found.';" & vbNewLine & vbNewLine
+    "      EXEC dbo.spASRIntGetActualUserDetailsForLogin" & vbNewLine & _
+    "          @psKeyParameter," & vbNewLine & _
+    "          @psKeyParameter OUTPUT," & vbNewLine & _
+    "          @sRoleName OUTPUT," & vbNewLine & _
+    "          @piUserGroupID OUTPUT" & vbNewLine & vbNewLine & _
+    "      IF ISNULL(@piUserGroupID,0) = 0 SET @psMessage = 'No valid SQL account found.';" & vbNewLine & _
+    "  END;" & vbNewLine & vbNewLine
     
   sProcSQL = sProcSQL & _
-    "END"
+    "END;"
 
   gADOCon.Execute sProcSQL, , adExecuteNoRecords
 
