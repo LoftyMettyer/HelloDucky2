@@ -6029,6 +6029,7 @@ Private Function GeneratePreviewHTML(ByVal strTmpFolder As String) As String
   
   Dim sHexColour As String
   Dim fFirstRow As Boolean
+  Dim sUserName As String
   
   ' retrieve the list of links
   iIndex = 0
@@ -6041,7 +6042,8 @@ Private Function GeneratePreviewHTML(ByVal strTmpFolder As String) As String
   Set ctlGrid = grdButtonLinks(iIndex)
   
   ' Generate the HTML...
-  strFileName = strTmpFolder & Replace(gsUserName, " ", "") & "dat_PreviewSSIDash.htm" ' GenerateUniqueName
+  sUserName = Replace(gsUserName, "\", "")
+  strFileName = strTmpFolder & Replace(sUserName, " ", "") & "dat_PreviewSSIDash.htm" ' GenerateUniqueName
   
   ' If filename specified already exists then delete it first.
   If Len(Dir(strFileName)) > 0 Then
@@ -6248,10 +6250,12 @@ Private Function DisplayInBrowser(ByVal strTmpFolder As String) As Boolean
   Dim blnOK As Boolean
   Dim strTempFileName As String
   Dim strFileName As String
+  Dim sUserName As String
 
   On Error GoTo LocalErr
 
-  strFileName = strTmpFolder & Replace(gsUserName, " ", "") & "dat_PreviewSSIDash.htm" ' GenerateUniqueName
+  sUserName = Replace(gsUserName, "\", "")
+  strFileName = strTmpFolder & Replace(sUserName, " ", "") & "dat_PreviewSSIDash.htm" ' GenerateUniqueName
 
   blnOK = True
   dblWait = Timer + 10
