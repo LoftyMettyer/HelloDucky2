@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
 Begin VB.Form frmNewMultipleUserReport 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Automatic User Add Report"
@@ -213,6 +213,48 @@ Begin VB.Form frmNewMultipleUserReport
          EndProperty
       EndProperty
    End
+   Begin MSComctlLib.ImageList imlIconsSmall 
+      Left            =   2100
+      Top             =   4275
+      _ExtentX        =   1005
+      _ExtentY        =   1005
+      BackColor       =   -2147483643
+      ImageWidth      =   16
+      ImageHeight     =   16
+      MaskColor       =   12632256
+      _Version        =   393216
+      BeginProperty Images {2C247F25-8591-11D1-B16A-00C0F0283628} 
+         NumListImages   =   7
+         BeginProperty ListImage1 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmNewMultipleUserReport.frx":24FE
+            Key             =   "DATABASE"
+         EndProperty
+         BeginProperty ListImage2 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmNewMultipleUserReport.frx":28E3
+            Key             =   "STATUS_ALERT"
+         EndProperty
+         BeginProperty ListImage3 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmNewMultipleUserReport.frx":2CD2
+            Key             =   "MODE"
+         EndProperty
+         BeginProperty ListImage4 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmNewMultipleUserReport.frx":3026
+            Key             =   "SERVER"
+         EndProperty
+         BeginProperty ListImage5 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmNewMultipleUserReport.frx":33ED
+            Key             =   "STATUS_OK"
+         EndProperty
+         BeginProperty ListImage6 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmNewMultipleUserReport.frx":37A8
+            Key             =   "GROUP"
+         EndProperty
+         BeginProperty ListImage7 {2C247F27-8591-11D1-B16A-00C0F0283628} 
+            Picture         =   "frmNewMultipleUserReport.frx":3BC2
+            Key             =   "STATUS_ERROR"
+         EndProperty
+      EndProperty
+   End
 End
 Attribute VB_Name = "frmNewMultipleUserReport"
 Attribute VB_GlobalNameSpace = False
@@ -360,16 +402,16 @@ Private Sub PrintGrid()
       If .PrintStart(True) Then
         .PrintHeader "Automatic User Add Report"
      
-        Set objIcon = imlIcons.ListImages("GROUP").Picture
+        Set objIcon = imlIconsSmall.ListImages("GROUP").Picture
         .PrintNormal "User Group: " & mstrSecurityGroupName, objIcon
         
-        Set objIcon = imlIcons.ListImages("DATABASE").Picture
+        Set objIcon = imlIconsSmall.ListImages("DATABASE").Picture
         .PrintNormal "Database: " & gsDatabaseName, objIcon
         
-        Set objIcon = imlIcons.ListImages("SERVER").Picture
+        Set objIcon = imlIconsSmall.ListImages("SERVER").Picture
         .PrintNormal "Server: " & gsServerName, objIcon
         
-        Set objIcon = imlIcons.ListImages("MODE").Picture
+        Set objIcon = imlIconsSmall.ListImages("MODE").Picture
         If miCreateMode = iUSERCREATE_SQLLOGIN Then
           .PrintNormal "Mode: SQL Server Authentication", objIcon
         Else
@@ -388,7 +430,7 @@ Private Sub PrintGrid()
           strUserDescription = grdAddedUsers.Columns("User").Text
           strPassword = grdAddedUsers.Columns("Password").Text
           strStatus = grdAddedUsers.Columns("Status").Text
-          Set objIcon = imlIcons.ListImages(grdAddedUsers.Columns("ICON").Text).Picture
+          Set objIcon = imlIconsSmall.ListImages(grdAddedUsers.Columns("ICON").Text).Picture
     
           .PrintNonBold strUserName & vbTab & vbTab & vbTab & strUserDescription & vbTab & vbTab & strPassword & vbTab & vbTab & strStatus, objIcon
           grdAddedUsers.MoveNext
