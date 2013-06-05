@@ -1409,7 +1409,7 @@ Begin VB.Form frmDiary
          MonthRows       =   2
          MonthBackColor  =   16184819
          ScrollRate      =   1
-         StartOfWeek     =   80150529
+         StartOfWeek     =   81723393
          TitleBackColor  =   6697779
          TitleForeColor  =   15988214
          TrailingForeColor=   -2147483643
@@ -2249,13 +2249,19 @@ Private Sub PrintDiaryEvents()
           DiaryPrint.PrintGrid
           Set DiaryPrint = Nothing
           
+          
+          ' JIRA-1789 - If the gstrDefaultPrinterName is blank it just keeps looping.
           Dim objDefPrinter As cSetDfltPrinter
           Set objDefPrinter = New cSetDfltPrinter
-          Do
+'          Do
             objDefPrinter.SetPrinterAsDefault gstrDefaultPrinterName
-          Loop While Printer.DeviceName <> gstrDefaultPrinterName
+'          Loop While Printer.DeviceName <> gstrDefaultPrinterName
           Set objDefPrinter = Nothing
-          
+
+
+
+
+
         End If
       End With
     
