@@ -998,7 +998,7 @@ End Function
 Public Function GetSQLNCLIVersion() As Integer
 On Error GoTo SQLNCLI_Err
 
-  Dim Rc As Long                                          ' Return Code
+  Dim rc As Long                                          ' Return Code
   Dim hKey As Long                                        ' Handle To An Open Registry Key
   Dim tmpKey As Integer
   tmpKey = 0
@@ -1006,25 +1006,34 @@ On Error GoTo SQLNCLI_Err
   ' Paths to the SQL Native Client registry keys
   Const sREGKEYSQLNCLI = "SOFTWARE\Microsoft\Microsoft SQL Native Client\CurrentVersion"
   Const sREGKEYSQLNCLI10 = "SOFTWARE\Microsoft\Microsoft SQL Server Native Client 10.0\CurrentVersion"
+  Const sREGKEYSQLNCLI11 = "SOFTWARE\Microsoft\Microsoft SQL Server Native Client 11.0\CurrentVersion"
 
-  Rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, sREGKEYSQLNCLI, 0, KEY_READ, hKey) ' Open Registry Key
-  If (Rc = 0) Then
+  rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, sREGKEYSQLNCLI, 0, KEY_READ, hKey) ' Open Registry Key
+  If (rc = 0) Then
     tmpKey = 9
-    Rc = RegCloseKey(hKey) ' Close Registry Key
+    rc = RegCloseKey(hKey) ' Close Registry Key
   End If
 
-  Rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, sREGKEYSQLNCLI10, 0, KEY_READ, hKey) ' Open Registry Key
-  If (Rc = 0) Then
+  rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, sREGKEYSQLNCLI10, 0, KEY_READ, hKey) ' Open Registry Key
+  If (rc = 0) Then
     tmpKey = 10
-    Rc = RegCloseKey(hKey) ' Close Registry Key
+    rc = RegCloseKey(hKey) ' Close Registry Key
   End If
+
+  rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, sREGKEYSQLNCLI11, 0, KEY_READ, hKey) ' Open Registry Key
+  If (rc = 0) Then
+    tmpKey = 10
+    rc = RegCloseKey(hKey) ' Close Registry Key
+  End If
+
+
 
 SQLNCLI_Err_Handler:
   GetSQLNCLIVersion = tmpKey
   Exit Function
     
 SQLNCLI_Err:
-  Rc = RegCloseKey(hKey) ' Close Registry Key
+  rc = RegCloseKey(hKey) ' Close Registry Key
   tmpKey = 0
   Resume SQLNCLI_Err_Handler
 End Function

@@ -892,6 +892,7 @@ On Error GoTo SQLNCLI_Err
   ' Paths to the SQL Native Client registry keys
   Const sREGKEYSQLNCLI = "SOFTWARE\Microsoft\Microsoft SQL Native Client\CurrentVersion"
   Const sREGKEYSQLNCLI10 = "SOFTWARE\Microsoft\Microsoft SQL Server Native Client 10.0\CurrentVersion"
+  Const sREGKEYSQLNCLI11 = "SOFTWARE\Microsoft\Microsoft SQL Server Native Client 11.0\CurrentVersion"
 
   rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, sREGKEYSQLNCLI, 0, KEY_READ, hKey) ' Open Registry Key
   If (rc = 0) Then
@@ -904,6 +905,14 @@ On Error GoTo SQLNCLI_Err
     tmpKey = 10
     rc = RegCloseKey(hKey) ' Close Registry Key
   End If
+
+  rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE, sREGKEYSQLNCLI11, 0, KEY_READ, hKey) ' Open Registry Key
+  If (rc = 0) Then
+    tmpKey = 10
+    rc = RegCloseKey(hKey) ' Close Registry Key
+  End If
+
+
 
 SQLNCLI_Err_Handler:
   GetSQLNCLIVersion = tmpKey
