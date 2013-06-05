@@ -112,9 +112,9 @@ Begin VB.Form frmMatchDef
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmMatchDef.frx":0E98
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraFieldButtons"
+      Tab(2).Control(0)=   "fraFieldsSelected"
       Tab(2).Control(1)=   "fraFieldsAvailable"
-      Tab(2).Control(2)=   "fraFieldsSelected"
+      Tab(2).Control(2)=   "fraFieldButtons"
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmMatchDef.frx":0EB4
@@ -124,9 +124,9 @@ Begin VB.Form frmMatchDef
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmMatchDef.frx":0ED0
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraOutputDestination"
+      Tab(4).Control(0)=   "fraReportOptions"
       Tab(4).Control(1)=   "fraOutputFormat"
-      Tab(4).Control(2)=   "fraReportOptions"
+      Tab(4).Control(2)=   "fraOutputDestination"
       Tab(4).ControlCount=   3
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
