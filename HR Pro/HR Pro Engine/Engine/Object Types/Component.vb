@@ -11,6 +11,7 @@ Namespace Things
     Public Property FunctionID As Integer
     Public Property OperatorID As Integer
     Public Property CalculationID As Integer
+    Public Property FilterID As Integer
     Public Property ValueType As ScriptDB.ComponentValueTypes
     Public Property ValueString As String
     Public Property ValueDate As Date

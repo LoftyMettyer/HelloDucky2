@@ -443,6 +443,7 @@ Namespace Things
         component.ChildRowDetails.OrderID = row.Item("columnorderid").ToString
         component.IsColumnByReference = row.Item("iscolumnbyreference").ToString
         component.CalculationID = row.Item("calculationid").ToString
+        component.FilterID = row.Item("filterid").ToString
         component.ValueType = row.Item("valuetype").ToString
         component.Level = expression.Level + 1
 

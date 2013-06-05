@@ -414,7 +414,7 @@ Namespace Things
             SQLCode_AddParameter(objComponent, [CodeCluster], False)
 
             ' Calculation 
-          Case ScriptDB.ComponentTypes.Calculation, ScriptDB.ComponentTypes.Filter
+          Case ScriptDB.ComponentTypes.Calculation
 
             If Not objComponent.BaseExpression.BaseTable.Expressions.GetById(objComponent.CalculationID) Is Nothing Then
 
@@ -434,6 +434,29 @@ Namespace Things
             End If
 
             Me.IsComplex = True
+
+          Case ScriptDB.ComponentTypes.Filter
+
+            If Not objComponent.BaseExpression.BaseTable.Expressions.GetById(objComponent.FilterID) Is Nothing Then
+
+              objCalculation = CType(objComponent.BaseExpression.BaseTable.Expressions.GetById(objComponent.FilterID).Clone, Expression)
+
+              'objCalculation.StartOfPartNumbers = 0
+              objCalculation.BaseExpression = objComponent.BaseExpression
+              objComponent.Components = objCalculation.CloneComponents
+              objComponent.ReturnType = ScriptDB.ComponentValueTypes.Logic
+              SQLCode_AddParameter(objComponent, [CodeCluster], False)
+
+            Else
+              Globals.ErrorLog.Add(ErrorHandler.Section.General, Me.AssociatedColumn.Name, ErrorHandler.Severity.Error, _
+                  "SQLCode_AddCodeLevel", Me.AssociatedColumn.Table.Name & "." & Me.AssociatedColumn.Name & " -- Missing filter")
+              Me.IsValid = False
+              Me.IsComplex = True
+            End If
+
+            Me.IsComplex = True
+
+
 
         End Select
 
