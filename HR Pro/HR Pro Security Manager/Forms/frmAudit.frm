@@ -691,6 +691,14 @@ Private Sub Form_Resize()
     mgrdAudit.Height = lngHeight
   End If
 
+  ' Clear the icon off the caption bar
+  If Me.WindowState = vbMaximized Then
+    SetBlankIcon Me
+  Else
+    RemoveIcon Me
+    Me.BorderStyle = vbSizable
+  End If
+
   frmMain.RefreshMenu False
   
 End Sub
