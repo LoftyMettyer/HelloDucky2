@@ -430,8 +430,9 @@ Dim ErrorString As String
   ' Update the screen designer with the edit option changes.
   'On Error GoTo ErrorTrap
   ' Update the screen manager's grid size properties.
-  If (val(txtWidth.Text) > 5000) Or (val(txtHeight.Text) > 50000) Then
+  If (val(txtWidth.Text) > 9999) Or (val(txtHeight.Text) > 50000) Then
     ErrorString = "The Width or Height you have specified is too large." & vbCrLf & "A figure lower than 5000 is more practical for the screen designer."
+    ErrorString = "Value too high."
     MsgBox ErrorString, vbExclamation + vbOKOnly, "HR Pro"
     mblnOK = False
     Exit Function
