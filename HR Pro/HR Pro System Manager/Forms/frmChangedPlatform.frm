@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Begin VB.Form frmChangedPlatform 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Platform Change Details"
@@ -222,6 +222,7 @@ Private miMode As ScreenMode
 Private Enum ScreenMode
   miMODE_CHANGEDPLATFORM = 0
   miMODE_WORKFLOWURLS = 1
+  miMODE_MOBILECREDENTIALS = 2
 End Enum
 
 Public Property Get Choice() As Integer
@@ -422,6 +423,25 @@ Public Sub ShowMessage(Optional pvMode As Variant)
       Me.Width = (3 * Screen.Width / 4)
       Me.Height = (Screen.Height / 2)
 
+    Case miMODE_MOBILECREDENTIALS
+      sMessage = "Here is the MobileKey entry for web.custom.config :"
+      sFrameCaption = "Mobile Credentials"
+      imgIcon(0).Picture = LoadResPicture("IMG_INFORMATION", 1)
+      miButtons = USAGEBUTTONS_COPY + USAGEBUTTONS_PRINT + USAGEBUTTONS_OK
+      Me.Caption = "Mobile Credentials"
+
+      With lstUsage.ColumnHeaders
+        .Item(1).Text = "URL"
+        ' Hide unrequired columns
+        .Item(1).Width = lstUsage.Width
+        .Item(2).Width = 0
+        .Item(3).Width = 0
+        
+      End With
+
+      Me.Width = (3 * Screen.Width / 4)
+      Me.Height = (Screen.Height / 2)
+      
     Case Else
       sMessage = "The update script and System Manager save needs to be run on this system for the reasons detailed below. It is strongly recommended to make a backup of your database before continuing." _
         & vbCrLf & vbCrLf & "Would you like to continue?"
@@ -473,7 +493,11 @@ Private Function PrintUsage() As Boolean
               .PrintNormal "Old URL: " & lstUsage.ListItems(iLoop).SubItems(1)
               .PrintNormal "New URL: " & lstUsage.ListItems(iLoop).SubItems(2)
               .PrintNormal ""
-              
+            
+            Case miMODE_MOBILECREDENTIALS
+              .PrintNormal "Here is the MobileKey entry for web.custom.config :"
+              .PrintNormal lstUsage.ListItems(iLoop)
+                
             Case Else
               .PrintNormal lstUsage.ListItems(iLoop) & " : " _
                 & lstUsage.ListItems(iLoop).SubItems(1) & " -> " _
@@ -561,7 +585,10 @@ Private Function CopyData() As Boolean
           vbTab & "Old URL: " & lstUsage.ListItems(iLoop).SubItems(1) & vbNewLine
         Clipboard.SetText Clipboard.GetText & _
           vbTab & "New URL: " & lstUsage.ListItems(iLoop).SubItems(2) & vbNewLine & vbNewLine
-        
+      
+      Case miMODE_MOBILECREDENTIALS
+          Clipboard.SetText lstUsage.ListItems(iLoop)
+      
       Case Else
         Clipboard.SetText Clipboard.GetText & _
           lstUsage.ListItems(iLoop) & " : " _
@@ -632,6 +659,7 @@ Private Sub Form_Load()
   
   lstUsage.HideColumnHeaders = False
   lstUsage.Refresh
+  
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
