@@ -188,7 +188,7 @@ Begin VB.Form frmRecEdit4
          LengthAsByte    =   0
          Text            =   ""
          Furigana        =   0
-         HighlightText   =   0
+         HighlightText   =   -1
          IMEMode         =   0
          IMEStatus       =   0
          DropWndWidth    =   0
