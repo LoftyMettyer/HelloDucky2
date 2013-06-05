@@ -1179,7 +1179,7 @@ Private Sub RefreshControls()
   chkDisplayDocumentHyperlink.Enabled = txtDocumentFilePath.Enabled
   If Not txtDocumentFilePath.Enabled Then
     txtDocumentFilePath.Text = ""
-    chkDisplayDocumentHyperlink.value = ssCBUnchecked
+    chkDisplayDocumentHyperlink.value = vbUnchecked
   End If
   
   mblnRefreshing = True
