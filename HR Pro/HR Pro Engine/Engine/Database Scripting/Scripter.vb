@@ -575,8 +575,11 @@ Namespace ScriptDB
             sSQLParentColumns = "    -- Refresh parent records" & vbNewLine & _
                                 "    IF @isovernight = 0" & vbNewLine & "    BEGIN" & vbNewLine & _
                                 String.Join(vbNewLine, aryParentsToUpdate.ToArray()) & _
-                               "     END"
-            sSQLParentColumns_Delete = String.Format("    -- Refresh any parents" & vbNewLine & String.Join(vbNewLine, aryParentsToUpdate_Delete.ToArray()))
+                                "     END"
+            sSQLParentColumns_Delete = "    -- Refresh parents records" & vbNewLine & _
+                                "   IF @startingtrigger = 3" & vbNewLine & "    BEGIN" & vbNewLine & _
+                                String.Join(vbNewLine, aryParentsToUpdate_Delete.ToArray()) & _
+                                "     END"
           End If
 
           ' Validation
@@ -658,7 +661,7 @@ Namespace ScriptDB
                                            "{0};" _
                                           , String.Join(vbNewLine & "        UNION" & vbNewLine, aryAuditDeletes.ToArray()))
             sSQLCode_Audit = vbNewLine & "    INSERT dbo.[ASRSysAuditTrail] ([username], [datetimestamp], [recordid], [oldvalue], [newvalue], [tableid], [tablename], [columnname], [columnid], [deleted], [recorddesc])" & vbNewLine & _
-                             "		     SELECT @user, @dChangeDate, [id], [oldvalue], [newvalue], [tableid], [tablename], [columnname], [columnid], 1, [recorddesc] FROM @audit;" & vbNewLine & vbNewLine
+                             "		     SELECT @username, @dChangeDate, [id], [oldvalue], [newvalue], [tableid], [tablename], [columnname], [columnid], 1, [recorddesc] FROM @audit;" & vbNewLine & vbNewLine
           End If
 
           ' Table level audits
@@ -874,10 +877,10 @@ Namespace ScriptDB
           "            @isovernight     bit," & vbNewLine & _
           "            @startingtrigger tinyint," & vbNewLine & _
           "            @forcerefresh    bit," & vbNewLine & _
-          "            @user            varchar(255);" & vbNewLine & vbNewLine & _
+          "            @username        varchar(255);" & vbNewLine & vbNewLine & _
           "    SELECT @isovernight = dbo.[udfsys_isovernightprocess]();" & vbNewLine & _
-          "    SELECT @user =	CASE WHEN UPPER(LEFT(APP_NAME(), 15)) = 'HR PRO WORKFLOW' THEN 'HR Pro Workflow'" & vbNewLine & _
-          "          ELSE CASE WHEN @isovernight = 1 THEN 'HR Pro Overnight Process' ELSE SYSTEM_USER END END" & vbNewLine & vbNewLine & _
+          "    SELECT @username =	CASE WHEN UPPER(LEFT(APP_NAME(), 15)) = 'HR PRO WORKFLOW' THEN 'HR Pro Workflow'" & vbNewLine & _
+          "          ELSE CASE WHEN @isovernight = 1 THEN 'HR Pro Overnight Process' ELSE RTRIM(SYSTEM_USER) END END" & vbNewLine & vbNewLine & _
           "{4}" & vbNewLine & vbNewLine & _
           "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
           "END" _
