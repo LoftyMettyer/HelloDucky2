@@ -41,12 +41,19 @@ Private Function SendEmailFromClientUsingShell(strTo As String, strCC As String,
   
   strError = vbNullString
   
-  strCommand = "mailto:" & Replace(strTo, ";", ",") & " " & _
-               "?cc=" & Replace(strCC, ";", ",") & " " & _
-               "&bcc=" & Replace(strBCC, ";", ",") & " " & _
+  'NHRD23062011 JIRA HR Pro 1509
+  strCommand = "mailto:" & Replace(strTo, ",", ";") & " " & _
+               "?cc=" & Replace(strCC, ",", ";") & " " & _
+               "&bcc=" & Replace(strBCC, ",", ";") & " " & _
                "&subject=" & IIf(strSubject <> "", strSubject, " ") & _
                "&body=" & IIf(strMsgText <> "", Replace(strMsgText, vbCrLf, "%0A"), " ") & " "
   
+'  strCommand = "mailto:" & Replace(strTo, ";", ",") & " " & _
+'               "?cc=" & Replace(strCC, ";", ",") & " " & _
+'               "&bcc=" & Replace(strBCC, ";", ",") & " " & _
+'               "&subject=" & IIf(strSubject <> "", strSubject, " ") & _
+'               "&body=" & IIf(strMsgText <> "", Replace(strMsgText, vbCrLf, "%0A"), " ") & " "
+               
   ShellExecute 0&, vbNullString, strCommand, vbNullString, vbNullString, vbMaximizedFocus
 
 TidyAndExit:
