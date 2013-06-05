@@ -115,9 +115,9 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
   sSPCode = sSPCode & _
     "BEGIN" & vbNewLine & _
     "    DECLARE @iRecCount integer," & vbNewLine & _
-    "        @pfResult             bit," & vbNewLine & _
-    "        @piSeverity           integer," & vbNewLine & _
-    "        @psInvalidityMessage  varchar(MAX)," & vbNewLine & _
+    "        @pfResult bit," & vbNewLine & _
+    "        @piSeverity integer," & vbNewLine & _
+    "        @psInvalidityMessage varchar(MAX)," & vbNewLine & _
     "        @fCustomResult bit," & vbNewLine & _
     "        @fItemOK bit," & vbNewLine & _
     "        @fEmptyMask bit," & vbNewLine & _
@@ -171,7 +171,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
               "    SELECT @iParentID = id_" & Trim(Str(!parentID)) & vbNewLine & _
               "    FROM " & psCurrentTableName & vbNewLine & _
               "    WHERE id = @piRecordID" & vbNewLine & vbNewLine & _
-              "    IF (NOT @iParentID IS null) AND (@iParentID > 0)" & vbNewLine & _
+              "    IF ISNULL(@iParentID, 0) > 0" & vbNewLine & _
               "    BEGIN" & vbNewLine & _
               "        SET @iParentIDCount = @iParentIDCount + 1" & vbNewLine & _
               "        SELECT @iRecCount = COUNT(" & sParentTableName & ".id)" & vbNewLine & _
@@ -180,14 +180,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
               "        IF @iRecCount = 0" & vbNewLine & _
               "        BEGIN" & vbNewLine & _
               "            SET @pfResult = 0" & vbNewLine & _
-              "            IF len(@psInvalidityMessage) = 0" & vbNewLine & _
-              "            BEGIN" & vbNewLine & _
-              "                SET @psInvalidityMessage = 'The linked record in the ''" & sParentTableName & "'' table no longer exists.'" & vbNewLine & _
-              "            END" & vbNewLine & _
-              "            ELSE" & vbNewLine & _
-              "            BEGIN" & vbNewLine & _
-              "                SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The linked record in the ''" & sParentTableName & "'' table no longer exists.'" & vbNewLine & _
-              "            END" & vbNewLine & _
+              "            SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The linked record in the ''" & sParentTableName & "'' table no longer exists.'" & vbNewLine & _
               "        END" & vbNewLine & _
               "    END" & vbNewLine
               
@@ -260,14 +253,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                 "    IF @iRecCount > 0" & vbNewLine & _
                 "    BEGIN" & vbNewLine & _
                 "        SET @pfResult = 0" & vbNewLine & _
-                "        IF len(@psInvalidityMessage) = 0" & vbNewLine & _
-                "        BEGIN" & vbNewLine & _
-                "            SET @psInvalidityMessage = 'The ''" & !ColumnName & "'' field is not unique within the entire table.'" & vbNewLine & _
-                "        END" & vbNewLine & _
-                "        ELSE" & vbNewLine & _
-                "        BEGIN" & vbNewLine & _
-                "            SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' field is not unique within the entire table.'" & vbNewLine & _
-                "        END" & vbNewLine & _
+                "        SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' field is not unique within the entire table.'" & vbNewLine & _
                 "    END" & vbNewLine
             Else
               If (!uniqueCheckType = -2) Or (!uniqueCheckType > 0) Then
@@ -333,14 +319,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                   "    IF @iRecCount > 0" & vbNewLine & _
                   "    BEGIN" & vbNewLine & _
                   "        SET @pfResult = 0" & vbNewLine & _
-                  "        IF len(@psInvalidityMessage) = 0" & vbNewLine & _
-                  "        BEGIN" & vbNewLine & _
-                  "            SET @psInvalidityMessage = 'The ''" & !ColumnName & "'' field is not unique within sibling records.'" & vbNewLine & _
-                  "        END" & vbNewLine & _
-                  "        ELSE" & vbNewLine & _
-                  "        BEGIN" & vbNewLine & _
-                  "            SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' field is not unique within sibling records.'" & vbNewLine & _
-                  "        END" & vbNewLine & _
+                  "        SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' field is not unique within sibling records.'" & vbNewLine & _
                   "    END" & vbNewLine
               End If
             End If
@@ -365,14 +344,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                     "    IF @sTmpChar IS null" & vbNewLine & _
                     "    BEGIN" & vbNewLine & _
                     "        SET @pfResult = 0" & vbNewLine & _
-                    "        IF len(@psInvalidityMessage) = 0" & vbNewLine & _
-                    "        BEGIN" & vbNewLine & _
-                    "            SET @psInvalidityMessage = 'The ''" & !ColumnName & "'' field is mandatory.'" & vbNewLine & _
-                    "        END" & vbNewLine & _
-                    "        ELSE" & vbNewLine & _
-                    "        BEGIN" & vbNewLine & _
-                    "            SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' field is mandatory.'" & vbNewLine & _
-                    "        END" & vbNewLine & _
+                    "        SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' field is mandatory.'" & vbNewLine & _
                     "    END" & vbNewLine
                   sSPCode = sSPCode & _
                     "    ELSE" & vbNewLine & _
@@ -380,14 +352,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                     "        IF len(ltrim(rtrim(@sTmpChar))) = 0" & vbNewLine & _
                     "        BEGIN" & vbNewLine & _
                     "            SET @pfResult = 0" & vbNewLine & _
-                    "            IF len(@psInvalidityMessage) = 0" & vbNewLine & _
-                    "            BEGIN" & vbNewLine & _
-                    "                SET @psInvalidityMessage = 'The ''" & !ColumnName & "'' field is mandatory.'" & vbNewLine & _
-                    "            END" & vbNewLine & _
-                    "            ELSE" & vbNewLine & _
-                    "            BEGIN" & vbNewLine & _
-                    "                SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' field is mandatory.'" & vbNewLine & _
-                    "            END" & vbNewLine & _
+                    "            SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' field is mandatory.'" & vbNewLine & _
                     "        END" & vbNewLine & _
                     "    END" & vbNewLine
                 Case dtINTEGER, dtNUMERIC
@@ -400,14 +365,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                     "        OR @dblTmpNum = 0" & vbNewLine & _
                     "    BEGIN" & vbNewLine & _
                     "        SET @pfResult = 0" & vbNewLine & _
-                    "        IF len(@psInvalidityMessage) = 0" & vbNewLine & _
-                    "        BEGIN" & vbNewLine & _
-                    "            SET @psInvalidityMessage = 'The ''" & !ColumnName & "'' field is mandatory.'" & vbNewLine & _
-                    "        END" & vbNewLine & _
-                    "        ELSE" & vbNewLine & _
-                    "        BEGIN" & vbNewLine & _
-                    "            SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' field is mandatory.'" & vbNewLine & _
-                    "        END" & vbNewLine & _
+                    "        SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' field is mandatory.'" & vbNewLine & _
                     "    END" & vbNewLine
                 Case dtBIT
                   sSPCode = sSPCode & vbNewLine & _
@@ -420,14 +378,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                     "    IF @dtTmpDate IS null" & vbNewLine & _
                     "    BEGIN" & vbNewLine & _
                     "        SET @pfResult = 0" & vbNewLine & _
-                    "        IF len(@psInvalidityMessage) = 0" & vbNewLine & _
-                    "        BEGIN" & vbNewLine & _
-                    "            SET @psInvalidityMessage = 'The ''" & !ColumnName & "'' field is mandatory.'" & vbNewLine & _
-                    "        END" & vbNewLine & _
-                    "        ELSE" & vbNewLine & _
-                    "        BEGIN" & vbNewLine & _
-                    "            SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' field is mandatory.'" & vbNewLine & _
-                    "        END" & vbNewLine & _
+                    "        SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' field is mandatory.'" & vbNewLine & _
                     "    END" & vbNewLine
               End Select
             End If
@@ -460,10 +411,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                 "    IF @fCustomResult = 0" & vbNewLine & _
                 "    BEGIN" & vbNewLine & _
                 "        SET @pfResult = 0;" & vbNewLine & _
-                "        IF LEN(@psInvalidityMessage) = 0" & vbNewLine & _
-                "            SET @psInvalidityMessage = '''" & !ColumnName & "'' - " & IIf(IsNull(!ErrorMessage), "Validation failure", IIf(Len(LTrim(RTrim(!ErrorMessage))) = 0, "Validation failure", Replace(Replace(!ErrorMessage, "'", "''"), "%", "%%"))) & ".';" & vbNewLine & _
-                "        ELSE" & vbNewLine & _
-                "            SET @psInvalidityMessage = @psInvalidityMessage + char(13) + '''" & !ColumnName & "'' - " & IIf(IsNull(!ErrorMessage), "Validation failure", IIf(Len(LTrim(RTrim(!ErrorMessage))) = 0, "Validation failure", Replace(Replace(!ErrorMessage, "'", "''"), "%", "%%"))) & ".';" & vbNewLine & _
+                "        SET @psInvalidityMessage = @psInvalidityMessage + char(13) + '''" & !ColumnName & "'' - " & IIf(IsNull(!ErrorMessage), "Validation failure", IIf(Len(LTrim(RTrim(!ErrorMessage))) = 0, "Validation failure", Replace(Replace(!ErrorMessage, "'", "''"), "%", "%%"))) & ".';" & vbNewLine & _
                 "    END" & vbNewLine
             End If
             
@@ -478,14 +426,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                 "    IF @dblTmpNum < " & Trim(Str(!spinnerMinimum)) & vbNewLine & _
                 "    BEGIN" & vbNewLine & _
                 "        SET @pfResult = 0" & vbNewLine & _
-                "        IF len(@psInvalidityMessage) = 0" & vbNewLine & _
-                "        BEGIN" & vbNewLine & _
-                "            SET @psInvalidityMessage = 'The ''" & !ColumnName & "'' value is less than the defined minimum of " & Trim(Str(!spinnerMinimum)) & ".'" & vbNewLine & _
-                "        END" & vbNewLine & _
-                "        ELSE" & vbNewLine & _
-                "        BEGIN" & vbNewLine & _
-                "            SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' value is less than the defined minimum of " & Trim(Str(!spinnerMinimum)) & ".'" & vbNewLine & _
-                "        END" & vbNewLine & _
+                "        SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' value is less than the defined minimum of " & Trim(Str(!spinnerMinimum)) & ".'" & vbNewLine & _
                 "    END" & vbNewLine
               sSPCode = sSPCode & _
                 "    ELSE" & vbNewLine & _
@@ -493,14 +434,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                 "        IF @dblTmpNum > " & Trim(Str(!spinnerMaximum)) & vbNewLine & _
                 "        BEGIN" & vbNewLine & _
                 "            SET @pfResult = 0" & vbNewLine & _
-                "            IF len(@psInvalidityMessage) = 0" & vbNewLine & _
-                "            BEGIN" & vbNewLine & _
-                "                SET @psInvalidityMessage = 'The ''" & !ColumnName & "'' value is greater than the defined maximum of " & Trim(Str(!spinnerMaximum)) & ".'" & vbNewLine & _
-                "            END" & vbNewLine & _
-                "            ELSE" & vbNewLine & _
-                "            BEGIN" & vbNewLine & _
-                "                SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' value is greater than the defined maximum of " & Trim(Str(!spinnerMaximum)) & ".'" & vbNewLine & _
-                "            END" & vbNewLine & _
+                "            SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' value is greater than the defined maximum of " & Trim(Str(!spinnerMaximum)) & ".'" & vbNewLine & _
                 "        END" & vbNewLine & _
                 "    END" & vbNewLine
             End If
@@ -541,14 +475,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                 "    IF @fItemOK = 0" & vbNewLine & _
                 "    BEGIN" & vbNewLine & _
                 "        SET @pfResult = 0" & vbNewLine & _
-                "        IF len(@psInvalidityMessage) = 0" & vbNewLine & _
-                "        BEGIN" & vbNewLine & _
-                "            SET @psInvalidityMessage = 'The ''" & !ColumnName & "'' value is not in the list of valid values.'" & vbNewLine & _
-                "        END" & vbNewLine & _
-                "        ELSE" & vbNewLine & _
-                "        BEGIN" & vbNewLine & _
-                "            SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' value is not in the list of valid values.'" & vbNewLine & _
-                "        END" & vbNewLine & _
+                "        SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' value is not in the list of valid values.'" & vbNewLine & _
                 "    END" & vbNewLine
             End If
   
@@ -646,14 +573,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                 "        IF (@fItemOK = 0) AND (@fEmptyMask = 0)" & vbNewLine & _
                 "        BEGIN" & vbNewLine & _
                 "            SET @pfResult = 0" & vbNewLine & _
-                "            IF len(@psInvalidityMessage) = 0" & vbNewLine & _
-                "            BEGIN" & vbNewLine & _
-                "                SET @psInvalidityMessage = 'The ''" & !ColumnName & "'' value does not fit the defined mask.'" & vbNewLine & _
-                "            END" & vbNewLine & _
-                "            ELSE" & vbNewLine & _
-                "            BEGIN" & vbNewLine & _
-                "                SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' value does not fit the defined mask.'" & vbNewLine & _
-                "            END" & vbNewLine & _
+                "            SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'The ''" & !ColumnName & "'' value does not fit the defined mask.'" & vbNewLine & _
                 "        END" & vbNewLine & _
                 "    END" & vbNewLine
             End If
@@ -672,12 +592,6 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
         "    IF @iRecCount > 0" & vbNewLine & _
         "    BEGIN" & vbNewLine & _
         "        SET @pfResult = 0" & vbNewLine & _
-        "        IF len(@psInvalidityMessage) = 0" & vbNewLine & _
-        "        BEGIN" & vbNewLine & _
-        "            SET @psInvalidityMessage = 'Duplicate record found. Duplicate columns :' + " & vbNewLine & _
-        sDuplicateColumns & vbNewLine & _
-        "        END" & vbNewLine & _
-        "        ELSE" & vbNewLine & _
         "        BEGIN" & vbNewLine & _
         "            SET @psInvalidityMessage = @psInvalidityMessage + char(13) + 'Duplicate record found. Duplicate columns :' + " & vbNewLine & _
         sDuplicateColumns & vbNewLine & _
@@ -717,46 +631,12 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
         "        AND NOT dbo.[" & psCurrentTableName & "].[ID] = @piRecordID;" & vbNewLine & _
         "    IF LEN(@psInvalidityMessage) > 0 SET @pfResult = 0;" & vbNewLine
     Next
-        
-' Handled by .NET engine
-'    If fIsTopLevel Then
-'      sSPCode = sSPCode & vbNewLine & _
-'        "    /* Check the record is still in a view that can be seen by the user. */" & vbNewLine & _
-'        "    IF (@pfResult = 1) AND (TRIGGER_NESTLEVEL() = 1)" & vbNewLine & _
-'        "    BEGIN" & vbNewLine & _
-'        "        SELECT @sGroupName = usg.name" & vbNewLine & _
-'        "        FROM sysusers usu" & vbNewLine & _
-'        "        LEFT OUTER JOIN" & vbNewLine & _
-'        "        (sysmembers mem INNER JOIN sysusers usg ON mem.groupuid = usg.uid) ON usu.uid = mem.memberuid" & vbNewLine & _
-'        "        WHERE (usu.islogin = 1 AND usu.isaliased = 0 AND usu.hasdbaccess = 1) AND" & vbNewLine & _
-'        "         (usg.issqlrole = 1 OR usg.uid IS null) AND" & vbNewLine & _
-'        "         usu.name =  dbo.udfsys_getsystemuser() AND NOT (usg.name LIKE 'ASRSys%') " & vbNewLine & _
-'        "        IF EXISTS" & vbNewLine & _
-'        "        (" & vbNewLine & _
-'        "            SELECT Name" & vbNewLine & _
-'        "            FROM sysobjects" & vbNewLine & _
-'        "            WHERE id = object_id('sp_ASRValidateView_" & Trim$(Str$(pLngCurrentTableID)) & "_' + @sGroupName)" & vbNewLine & _
-'        "                AND sysstat & 0xf = 4" & vbNewLine & _
-'        "        ) AND NOT (@sGroupName = 'dbo')" & vbNewLine
-'      sSPCode = sSPCode & _
-'        "        BEGIN" & vbNewLine & _
-'        "            SET @sParamDefinition = N'@result bit OUTPUT, @recordID integer'" & vbNewLine & _
-'        "            SET @sCommandString = 'exec dbo.[sp_ASRValidateView_" & Trim$(Str$(pLngCurrentTableID)) & "_' + @sGroupName + '] @result output, @recordid'" & vbNewLine & _
-'        "            EXECUTE sp_executesql @sCommandString, @sParamDefinition, @pfResult OUTPUT, @piRecordID" & vbNewLine & _
-'        "            IF @pfResult = 0" & vbNewLine & _
-'        "            BEGIN" & vbNewLine & _
-'        "                SET @psInvalidityMessage = 'The current user would no longer have ''read'' permission on the record.'" & vbNewLine & _
-'        "            END" & vbNewLine & _
-'        "        END" & vbNewLine & _
-'        "    END" & vbNewLine
-'    End If
-  End If
-
+   
   sSPCode = sSPCode & vbNewLine & vbNewLine & _
     "    IF LEN(@psInvalidityMessage) > 0" & vbNewLine & _
     "        SET @psInvalidityMessage = ISNULL(@psDescription,'') + CHAR(13)" & vbNewLine & _
-    "           + '------------------------------------------' + CHAR(13)" & vbNewLine & _
-    "           + ISNULL(@psInvalidityMessage,'') + CHAR(13) + CHAR(13);" & vbNewLine & _
+    "           + '------------------------------------------'" & vbNewLine & _
+    "           + @psInvalidityMessage + CHAR(13) + CHAR(13);" & vbNewLine & _
     "    RETURN @psInvalidityMessage;" & vbNewLine & _
     "END"
 
