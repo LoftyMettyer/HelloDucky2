@@ -467,7 +467,7 @@ Private Sub cmdMoveUp_Click()
   
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
   ' Validate and save the changes.
   On Error GoTo ErrorTrap
   
@@ -768,10 +768,10 @@ Private Sub Form_Activate()
       
       End With
       
-      'cboTables.Enabled = False
-    
     Else
-      'cboTables.Enabled = Not gfLockedTable
+      
+      GetObjectCategories cboCategory, utlScreen, 0
+      cboCategory.ListIndex = 0
       Me.Caption = "Properties - New Screen"
     End If
         
