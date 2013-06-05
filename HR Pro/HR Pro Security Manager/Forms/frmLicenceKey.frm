@@ -5,7 +5,7 @@ Begin VB.Form frmLicenceKey
    ClientHeight    =   2235
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   5100
+   ClientWidth     =   5325
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -22,14 +22,14 @@ Begin VB.Form frmLicenceKey
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   2235
-   ScaleWidth      =   5100
+   ScaleWidth      =   5325
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.CommandButton cmdApply 
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
-      Left            =   1200
+      Left            =   1425
       TabIndex        =   9
       Top             =   1680
       Width           =   1200
@@ -38,7 +38,7 @@ Begin VB.Form frmLicenceKey
       Cancel          =   -1  'True
       Caption         =   "&Cancel"
       Height          =   400
-      Left            =   2625
+      Left            =   2715
       TabIndex        =   10
       Top             =   1680
       Width           =   1200
@@ -48,7 +48,7 @@ Begin VB.Form frmLicenceKey
       BorderStyle     =   0  'None
       Caption         =   "Frame1"
       Height          =   375
-      Left            =   435
+      Left            =   615
       TabIndex        =   1
       Top             =   1080
       Width           =   4095
@@ -159,7 +159,7 @@ Begin VB.Form frmLicenceKey
          Strikethrough   =   0   'False
       EndProperty
       Height          =   195
-      Left            =   2805
+      Left            =   2940
       TabIndex        =   11
       Top             =   240
       Width           =   2190
@@ -170,7 +170,7 @@ Begin VB.Form frmLicenceKey
       Left            =   210
       TabIndex        =   0
       Top             =   240
-      Width           =   3825
+      Width           =   4950
    End
 End
 Attribute VB_Name = "frmLicenceKey"
