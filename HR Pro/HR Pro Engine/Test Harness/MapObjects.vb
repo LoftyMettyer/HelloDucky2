@@ -30,7 +30,7 @@
       CurrentPhase.Text = "Populating Objects..."
       HRProEngine.Things.PopulateSystemThings()
       '   Phoenix.Things.PopulateThings(objProgress)
-      HRProEngine.Things.PopulateModuleSettings(objProgress)
+      HRProEngine.Things.PopulateModuleSettings()
 
       Initialised = True
     End If

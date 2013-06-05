@@ -244,17 +244,22 @@ Public Class Form1
 
     Dim objPhoenix As New HRProEngine.SysMgr
 
+    Dim sPath As String = "C:\dev\HR Pro\HR Pro Engine\Test Harness\"
+
     Dim objADO As New ADODB.Connection
     Dim objDAOEngine As New DAO.DBEngine
     Dim objDAODB As DAO.Database
     '    Dim objRecordset As DAO.Recordset
-    Dim sADOConnect As String = "Driver=SQL Server;Server={harpdev02};UID=sa;PWD=asr;Database=" & txtDatabase.Text & ";"""
+    Dim sADOConnect As String = "Driver=SQL Server;Server={harpdev01};UID=sa;PWD=asr;Database=" & txtDatabase.Text & ";"""
     '  Dim objADOLogin As Phoenix.Connectivity.Login
 
     ' THIS IS SYSTEM MGR RECCREATION
-    Dim conStr As String = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=c:\dev\play\AsrTemp_" & txtDatabase.Text & ".mdb"
+    Dim conStr As String = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" & sPath & "AsrTemp_" & txtDatabase.Text & ".mdb"
 
-    objDAODB = objDAOEngine.OpenDatabase("c:\dev\play\AsrTemp_" & txtDatabase.Text & ".mdb", , False, conStr)
+    Dim bOK As Boolean
+
+
+    objDAODB = objDAOEngine.OpenDatabase(sPath & "asrtemp_" & txtDatabase.Text & ".mdb", , False, conStr)
     '    objADO = ADODB
 
     With objADO
@@ -279,18 +284,26 @@ Public Class Form1
     objPhoenix.CommitDB = objADO
 
     objPhoenix.Initialise()
-    'objPhoenix.Options.RefreshObjects = True
 
-    ''  objPhoenix.Script.
-    objPhoenix.Script.DropViews()
-    objPhoenix.Script.DropTableViews()
-    objPhoenix.Script.CreateTables()
-    'objPhoenix.Options.RefreshObjects = True
-    objPhoenix.Script.CreateObjects()
-    objPhoenix.Script.CreateTableViews()
+
+    objPhoenix.Options.RefreshObjects = True
+    bOK = objPhoenix.Script.CreateObjects()
+
+
+    bOK = objPhoenix.Script.CreateTriggers()
+
+
+    'objPhoenix.Script.DropViews()
+    'objPhoenix.Script.DropTableViews()
+    'objPhoenix.Script.CreateTables()
+
+    'objPhoenix.Script.CreateTableViews()
     'objPhoenix.Script.CreateViews()
-    objPhoenix.Script.CreateTriggers()
     'objPhoenix.Script.ApplySecurity()
+
+    bOK = objPhoenix.Script.CreateFunctions
+
+
 
     objPhoenix.CloseSafely()
 
