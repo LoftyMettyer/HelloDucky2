@@ -3380,15 +3380,7 @@ Private Sub Form_Activate()
   
   ' Refresh the form icon
   'GetIcon mlngPictureID
-  
-  ' Refresh any navigation controls because Version One has some teething troubles
-  For Each objControl In Me.Controls
-    If TypeOf objControl Is COA_Navigation Then
-      objControl.RefreshControls
-    End If
-  Next
-  DoEvents
-  
+    
 End Sub
 
 Private Sub Form_Initialize()
@@ -9625,6 +9617,14 @@ Private Sub TabStrip1_Click()
     End If
   
     StatusBar1.SimpleText = TabStrip1.SelectedItem.Caption
+      
+    ' Refresh any navigation controls because Version One has some teething troubles
+    For Each objControl In Me.Controls
+      If TypeOf objControl Is COA_Navigation Then
+        objControl.RefreshControls
+      End If
+    Next
+    DoEvents
       
     ' Unlock the window refreshing.
     UI.UnlockWindow
