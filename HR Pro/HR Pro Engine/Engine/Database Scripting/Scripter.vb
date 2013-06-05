@@ -1249,14 +1249,15 @@ Namespace ScriptDB
               , objTriggeredUpdate.Column.Name, objTriggeredUpdate.Column.Table.PhysicalName, objColumn.Name, objTriggeredUpdate.Where))
         Next
 
-        sCode = vbNewLine & vbNewLine & String.Format(vbNewLine & "-- Bank Holiday update" & vbNewLine & _
-              "DECLARE @dates TABLE ([{0}] datetime);" & vbNewLine &
-              "INSERT @dates" & vbNewLine &
-             "    SELECT [{0}] FROM inserted" & vbNewLine &
-             "    UNION" & vbNewLine &
-             "    SELECT [{0}] FROM deleted;" & vbNewLine & vbNewLine &
-              "{1}", objColumn.Name, String.Join(vbNewLine & vbNewLine, aryTriggerCode.ToArray())) & vbNewLine
-
+        If aryTriggerCode.Count > 0 Then
+          sCode = vbNewLine & vbNewLine & String.Format(vbNewLine & "-- Bank Holiday update" & vbNewLine & _
+                "DECLARE @dates TABLE ([{0}] datetime);" & vbNewLine &
+                "INSERT @dates" & vbNewLine &
+               "    SELECT [{0}] FROM inserted" & vbNewLine &
+               "    UNION" & vbNewLine &
+               "    SELECT [{0}] FROM deleted;" & vbNewLine & vbNewLine &
+                "{1}", objColumn.Name, String.Join(vbNewLine & vbNewLine, aryTriggerCode.ToArray())) & vbNewLine
+        End If
       End If
 
       Return sCode
