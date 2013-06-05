@@ -427,6 +427,12 @@ End Property
 '  mlngOutputSaveFormat = plngOutputSaveFormat
 'End Property
 
+Public Property Let OutputCoverSheet(blnOutputCoverSheet As Long)
+  mblnOutputCoverSheet = blnOutputCoverSheet
+End Property
+Public Property Let OutputTOC(blnOutputTOC As Long)
+  mblnOutputTOC = blnOutputTOC
+End Property
 
 
 Public Function IsEmptyTableCaption(plngIndex As Long) As Boolean

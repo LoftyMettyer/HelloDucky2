@@ -37,6 +37,7 @@ Private mblnIgnoreZerosInAggregates As Boolean
 Private mblnCustomReportsPrintFilterHeader As Boolean
 Private mintReportJobNumberOrder As Integer
 'New Default Output Variables
+Private mlngOriginalOutputFormat As Long
 Private mlngOutputFormat As Long
 Private mblnOutputScreen As Boolean
 Private mblnOutputPrinter As Boolean
@@ -994,6 +995,7 @@ Private Function GetCustomReportDefinition() As Boolean
     mblnPreviewOnScreen = IIf(lblnReportPackMode, mblnPreviewOnScreen, !OutputPreview)
     mblnOutputScreen = IIf(lblnReportPackMode, mblnOutputScreen, !OutputScreen)
     'Output Option vars of the Report Pack owning these Jobs
+    mlngOriginalOutputFormat = !OutputFormat
     mlngOutputFormat = IIf(lblnReportPackMode, mlngOutputFormat, !OutputFormat)
     mblnOutputPrinter = IIf(lblnReportPackMode, mblnOutputPrinter, !OutputPrinter)
     mstrOutputPrinterName = IIf(lblnReportPackMode, mstrOutputPrinterName, !OutputPrinterName)
@@ -5090,8 +5092,8 @@ Public Function OutputReport(blnPrompt As Boolean) As Boolean
       mblnOutputTOC, _
       mblnOutputCoverSheet, _
       mlngOverrideFilterID, _
-      mblnOutputRetainPivotOrChart) Then ', _
-      'mblnOutputRetainCharts) Then
+      mblnOutputRetainPivotOrChart, _
+      mlngOriginalOutputFormat) Then
 
     If Not gblnBatchMode Then
       If mbIsBradfordIndexReport Then
@@ -5920,9 +5922,10 @@ Public Sub SetOutputParameters( _
           Optional blnOutputTOC As Boolean, _
           Optional blnOutputCoverSheet As Boolean, _
           Optional lngOverrideFilterID As Long, _
-          Optional blnOutputRetainPivotOrChart As Boolean) ', _
-          'Optional blnOutputRetainCharts As Boolean)
-
+          Optional blnOutputRetainPivotOrChart As Boolean, _
+          Optional lngOriginalOutputFormat As Long)
+          
+  mlngOriginalOutputFormat = lngOriginalOutputFormat
   mlngOutputFormat = lngOutputFormat
   mblnOutputScreen = blnOutputScreen
   mblnOutputPrinter = blnOutputPrinter
