@@ -901,25 +901,25 @@ Namespace ScriptDB
             End Select
 
             ' Create new trigger code
-            sSQL = String.Format("CREATE TRIGGER [{1}].[{0}] ON [{1}].[{2}]" & vbNewLine & _
-              "    {3}" & vbNewLine & "AS" & vbNewLine & _
-              "BEGIN" & vbNewLine & _
-              "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([{2}].[{0}]';" & vbNewLine & _
-              "    SET NOCOUNT ON;" & vbNewLine & _
-              "    DECLARE @iCount                integer," & vbNewLine & _
-              "            @isovernight           bit," & vbNewLine & _
-              "            @startingtrigger       tinyint," & vbNewLine & _
-              "            @startingtriggertable  integer," & vbNewLine & _
-              "            @forcerefresh          bit," & vbNewLine & _
-              "            @username              varchar(255);" & vbNewLine & vbNewLine & _
-              "    SELECT @isovernight = dbo.[udfsys_isovernightprocess]();" & vbNewLine & _
-              "    SELECT @username =	CASE WHEN UPPER(LEFT(APP_NAME(), 15)) = 'OpenHR WORKFLOW' THEN 'OpenHR Workflow'" & vbNewLine & _
-              "          ELSE CASE WHEN @isovernight = 1 THEN 'OpenHR Overnight Process' ELSE RTRIM(SYSTEM_USER) END END" & vbNewLine & vbNewLine & _
-              "{4}" & vbNewLine & vbNewLine & _
-              "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
-              "END" _
-              , sTriggerName, [Role], Table.PhysicalName, sTriggerType, [BodyCode] _
-              , If(Globals.Options.DevelopmentMode, "", "--"))
+        sSQL = String.Format("CREATE TRIGGER [{1}].[{0}] ON [{1}].[{2}]" & vbNewLine & _
+          "    {3}" & vbNewLine & "AS" & vbNewLine & _
+          "BEGIN" & vbNewLine & _
+          "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([{2}].[{0}]';" & vbNewLine & _
+          "    SET NOCOUNT ON;" & vbNewLine & _
+          "    DECLARE @iCount                integer," & vbNewLine & _
+          "            @isovernight           bit," & vbNewLine & _
+          "            @startingtrigger       tinyint," & vbNewLine & _
+          "            @startingtriggertable  integer," & vbNewLine & _
+          "            @forcerefresh          bit," & vbNewLine & _
+          "            @username              varchar(255);" & vbNewLine & vbNewLine & _
+          "    SELECT @isovernight = dbo.[udfsys_isovernightprocess]();" & vbNewLine & _
+          "    SELECT @username =	CASE WHEN UPPER(LEFT(APP_NAME(), 15)) = 'OPENHR WORKFLOW' THEN 'OpenHR Workflow'" & vbNewLine & _
+          "          ELSE CASE WHEN @isovernight = 1 THEN 'OpenHR Overnight Process' ELSE RTRIM(SYSTEM_USER) END END" & vbNewLine & vbNewLine & _
+          "{4}" & vbNewLine & vbNewLine & _
+          "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
+          "END" _
+          , sTriggerName, [Role], Table.PhysicalName, sTriggerType, [BodyCode] _
+          , If(Globals.Options.DevelopmentMode, "", "--"))
 
             Dim existingTrigger As ScriptedMetadata = Nothing
             existingTriggers.TryGetValue(sTriggerName, existingTrigger)
