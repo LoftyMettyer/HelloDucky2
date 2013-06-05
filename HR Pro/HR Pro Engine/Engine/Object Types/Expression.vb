@@ -622,36 +622,36 @@ Namespace Things
         ' otherwise add it into child/parent statements array
         If objThisColumn.Table Is Me.AssociatedColumn.Table Then
 
-          If Me.ExpressionType = ScriptDB.ExpressionType.TriggeredUpdate Then
-            sColumnName = String.Format("[{0}].[{1}]", objThisColumn.Table.PhysicalName, objThisColumn.Name)
-          Else
+          'If Me.ExpressionType = ScriptDB.ExpressionType.TriggeredUpdate Then
+          '  sColumnName = String.Format("[{0}].[{1}]", objThisColumn.Table.PhysicalName, objThisColumn.Name)
+          'Else
 
-            Select Case Component.BaseExpression.ExpressionType
-              Case ScriptDB.ExpressionType.ColumnFilter
-                sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
-                Me.IsComplex = True
+          Select Case Component.BaseExpression.ExpressionType
+            Case ScriptDB.ExpressionType.ColumnFilter
+              sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
+              Me.IsComplex = True
 
-              Case ScriptDB.ExpressionType.Mask
-                sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
-                Me.IsComplex = True
+            Case ScriptDB.ExpressionType.Mask
+              sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
+              Me.IsComplex = True
 
-                ' Needs base table added
-                sFromCode = String.Format("FROM [dbo].[{0}] base", objThisColumn.Table.Name)
-                If Not FromTables.Contains(sFromCode) Then
-                  FromTables.Add(sFromCode)
-                End If
+              ' Needs base table added
+              sFromCode = String.Format("FROM [dbo].[{0}] base", objThisColumn.Table.Name)
+              If Not FromTables.Contains(sFromCode) Then
+                FromTables.Add(sFromCode)
+              End If
 
-                ' Where clause
-                sWhereCode = String.Format("base.[ID] = @prm_ID")
-                If Not Wheres.Contains(sWhereCode) Then
-                  Wheres.Add(sWhereCode)
-                End If
+              ' Where clause
+              sWhereCode = String.Format("base.[ID] = @prm_ID")
+              If Not Wheres.Contains(sWhereCode) Then
+                Wheres.Add(sWhereCode)
+              End If
 
-              Case Else
-                sColumnName = String.Format("@prm_{0}", objThisColumn.Name)
+            Case Else
+              sColumnName = String.Format("@prm_{0}", objThisColumn.Name)
 
-            End Select
-          End If
+          End Select
+          'End If
 
           If objThisColumn.SafeReturnType = "NULL" Then
             LineOfCode.Code = sColumnName
@@ -748,8 +748,8 @@ Namespace Things
             Me.ReferencesChild = True
 
           End If
-            End If
-          End If
+        End If
+      End If
 
           ' Add this column (or reference to it) to the main execute statement
           [CodeCluster].Add(LineOfCode)
@@ -768,7 +768,7 @@ Namespace Things
       Dim objIDComponent As Component
       Dim objTriggeredUpdate As ScriptDB.TriggeredUpdate
       Dim sWhereClause As String = ""
-      Dim iBackupType As ScriptDB.ExpressionType
+      'Dim iBackupType As ScriptDB.ExpressionType
       Dim bAddDefaultDataType As Boolean
 
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Function
@@ -830,8 +830,8 @@ Namespace Things
         objTriggeredUpdate.ID = Me.AssociatedColumn.ID
 
         '' this is the messy bit!
-        iBackupType = Me.ExpressionType
-        Me.ExpressionType = ScriptDB.ExpressionType.TriggeredUpdate
+        '       iBackupType = Me.ExpressionType
+        '        Me.ExpressionType = ScriptDB.ExpressionType.TriggeredUpdate
 
         ' Get parameters
         WhereCodeCluster = New ScriptDB.LinesOfCode
@@ -839,10 +839,11 @@ Namespace Things
         objTriggeredUpdate.Where = String.Format(sWhereClause, WhereCodeCluster.ToArray)
 
         If Not Me.ReferencesChild And Not objTriggeredUpdate.Where.Contains("@part_") Then
+          objTriggeredUpdate.Where = objTriggeredUpdate.Where.Replace("@prm_", String.Format("{0}.", Me.BaseTable.PhysicalName))
           Globals.OnBankHolidayUpdate.AddIfNew(objTriggeredUpdate)
         End If
 
-        Me.ExpressionType = iBackupType
+        '        Me.ExpressionType = iBackupType
 
       End If
 
