@@ -11,6 +11,9 @@ Namespace ScriptDB
     Private mbAppendAfterNext As Boolean = False
     Private mbIsComparison As Boolean = False
 
+    Private miNextInsertPoint As Integer = 0
+    Private miLastInsertOperatorType As OperatorSubType
+
     Public CodeLevel As Integer
     '    Public NestedLevel As Integer
     Public ReturnType As ComponentValueTypes
@@ -22,15 +25,26 @@ Namespace ScriptDB
         mbAppendAfterNext = False
       Else
         Me.Items.Add(LineOfCode)
+
+        If miLastInsertOperatorType <> LineOfCode.OperatorType Then
+          miLastInsertOperatorType = LineOfCode.OperatorType
+          miNextInsertPoint = Me.Items.Count - 1
+        End If
       End If
 
     End Sub
 
     Public Overloads Sub InsertBeforePrevious(ByVal LineOfCode As ScriptDB.CodeElement)
-      Me.Items.Insert(Me.Items.Count - 1, LineOfCode)
+      Me.Items.Insert(miNextInsertPoint, LineOfCode)
+      '  miLastInsertOperatorType = LineOfCode.OperatorType
     End Sub
 
     Public Overloads Sub AppendAfterNext(ByVal LineOfCode As ScriptDB.CodeElement)
+
+      'If miLastInsertOperatorType <> LineOfCode.OperatorType Then
+      '  miNextInsertPoint = Items.Count
+      'End If
+
       mbAppendAfterNext = True
       Me.Items.Add(LineOfCode)
     End Sub
