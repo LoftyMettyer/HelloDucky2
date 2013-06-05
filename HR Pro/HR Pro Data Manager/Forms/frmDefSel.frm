@@ -2525,10 +2525,10 @@ Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWher
     Me.HelpContextID = 1082
 
   Case utlDocumentMapping
-    msTypeCode = "LABELDEFINITION"  ' change to when system permissions is done."V1DOCUMENTMAP"
-    msType = "Document Mapping"
-    msGeneralCaption = "Document Mappings"
-    msSingularCaption = "Document Mapping"
+    msTypeCode = "VERSION1"
+    msType = "Document Types"
+    msGeneralCaption = "Document Types"
+    msSingularCaption = "Document Type"
     msTableName = "ASRSysDocumentMapping"
     msIDField = "DocumentMapID"
     mutlUtilityType = utlDocumentMapping
