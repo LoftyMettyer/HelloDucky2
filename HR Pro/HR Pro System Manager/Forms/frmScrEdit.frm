@@ -201,6 +201,7 @@ Begin VB.Form frmScrEdit
       End
       Begin VB.CommandButton cmdMoveDown 
          Caption         =   "Move &Down"
+         Enabled         =   0   'False
          Height          =   420
          Left            =   7965
          TabIndex        =   22
@@ -209,6 +210,7 @@ Begin VB.Form frmScrEdit
       End
       Begin VB.CommandButton cmdMoveUp 
          Caption         =   "Move &Up"
+         Enabled         =   0   'False
          Height          =   375
          Left            =   7965
          TabIndex        =   21
