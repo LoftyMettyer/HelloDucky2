@@ -18,7 +18,6 @@ Begin VB.Form frmDocumentMap
    EndProperty
    Icon            =   "frmDocumentMap.frx":0000
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   7815
@@ -28,7 +27,7 @@ Begin VB.Form frmDocumentMap
    Begin XtremeSuiteControls.TabControl TabControl1 
       Height          =   7125
       Left            =   90
-      TabIndex        =   2
+      TabIndex        =   18
       Top             =   45
       Width           =   10545
       _Version        =   851969
@@ -45,7 +44,7 @@ Begin VB.Form frmDocumentMap
          Caption         =   "Record Identification : "
          Height          =   2850
          Left            =   90
-         TabIndex        =   18
+         TabIndex        =   27
          Top             =   4095
          Width           =   10335
          Begin VB.ComboBox cboParent2Table 
@@ -53,7 +52,7 @@ Begin VB.Form frmDocumentMap
             Left            =   1845
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   36
+            TabIndex        =   15
             Top             =   2295
             Width           =   3090
          End
@@ -62,35 +61,26 @@ Begin VB.Form frmDocumentMap
             Left            =   7065
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   35
+            TabIndex        =   16
             Top             =   2295
             Width           =   3090
          End
          Begin VB.ComboBox cboTargetCategory 
             Height          =   315
-            Left            =   7065
+            Left            =   1845
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   34
+            TabIndex        =   9
             Top             =   675
             Width           =   3090
          End
          Begin VB.ComboBox cboTargetType 
             Height          =   315
-            Left            =   7065
+            Left            =   1845
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   33
+            TabIndex        =   10
             Top             =   1080
-            Width           =   3090
-         End
-         Begin VB.ComboBox cboTargetGUID 
-            Height          =   315
-            Left            =   7065
-            Sorted          =   -1  'True
-            Style           =   2  'Dropdown List
-            TabIndex        =   32
-            Top             =   1485
             Width           =   3090
          End
          Begin VB.ComboBox cboParent1Keyfield 
@@ -98,7 +88,7 @@ Begin VB.Form frmDocumentMap
             Left            =   7065
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   28
+            TabIndex        =   14
             Top             =   1890
             Width           =   3090
          End
@@ -107,7 +97,7 @@ Begin VB.Form frmDocumentMap
             Left            =   1845
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   27
+            TabIndex        =   13
             Top             =   1890
             Width           =   3090
          End
@@ -116,16 +106,16 @@ Begin VB.Form frmDocumentMap
             Left            =   7065
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   21
+            TabIndex        =   11
             Top             =   270
             Width           =   3090
          End
          Begin VB.ComboBox cboTargetColumn 
             Height          =   315
-            Left            =   1845
+            Left            =   7065
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   20
+            TabIndex        =   12
             Top             =   675
             Width           =   3090
          End
@@ -134,7 +124,7 @@ Begin VB.Form frmDocumentMap
             Left            =   1845
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   19
+            TabIndex        =   8
             Top             =   270
             Width           =   3090
          End
@@ -142,7 +132,7 @@ Begin VB.Form frmDocumentMap
             Caption         =   "Parent 2 Table :"
             Height          =   195
             Left            =   225
-            TabIndex        =   38
+            TabIndex        =   36
             Top             =   2340
             Width           =   1725
          End
@@ -150,31 +140,23 @@ Begin VB.Form frmDocumentMap
             Caption         =   "Parent 2 Key Field :"
             Height          =   375
             Left            =   5310
-            TabIndex        =   37
+            TabIndex        =   35
             Top             =   2340
             Width           =   1815
-         End
-         Begin VB.Label lblDestinationGUID 
-            Caption         =   "Unique ID :"
-            Height          =   195
-            Left            =   5310
-            TabIndex        =   31
-            Top             =   1530
-            Width           =   1140
          End
          Begin VB.Label lblDestinationType 
             Caption         =   "Type : "
             Height          =   240
-            Left            =   5310
-            TabIndex        =   30
+            Left            =   225
+            TabIndex        =   34
             Top             =   1125
             Width           =   1095
          End
          Begin VB.Label lblDestinationCategory 
             Caption         =   "Category :"
             Height          =   285
-            Left            =   5310
-            TabIndex        =   29
+            Left            =   225
+            TabIndex        =   33
             Top             =   720
             Width           =   1410
          End
@@ -182,7 +164,7 @@ Begin VB.Form frmDocumentMap
             Caption         =   "Parent 1 Key Field :"
             Height          =   375
             Left            =   5310
-            TabIndex        =   26
+            TabIndex        =   32
             Top             =   1935
             Width           =   1815
          End
@@ -190,7 +172,7 @@ Begin VB.Form frmDocumentMap
             Caption         =   "Parent 1 Table :"
             Height          =   195
             Left            =   225
-            TabIndex        =   25
+            TabIndex        =   31
             Top             =   1935
             Width           =   1725
          End
@@ -198,15 +180,15 @@ Begin VB.Form frmDocumentMap
             Caption         =   "Table :"
             Height          =   285
             Left            =   225
-            TabIndex        =   24
+            TabIndex        =   30
             Top             =   315
             Width           =   1365
          End
          Begin VB.Label lblTargetColumn 
             Caption         =   "Document URL : "
             Height          =   330
-            Left            =   225
-            TabIndex        =   23
+            Left            =   5310
+            TabIndex        =   29
             Top             =   720
             Width           =   1455
          End
@@ -214,7 +196,7 @@ Begin VB.Form frmDocumentMap
             Caption         =   "Key Field :"
             Height          =   240
             Left            =   5310
-            TabIndex        =   22
+            TabIndex        =   28
             Top             =   315
             Width           =   1230
          End
@@ -223,7 +205,7 @@ Begin VB.Form frmDocumentMap
          Caption         =   "Document Description : "
          Height          =   1410
          Left            =   90
-         TabIndex        =   13
+         TabIndex        =   24
          Top             =   2520
          Width           =   10335
          Begin VB.ComboBox cboTypes 
@@ -231,7 +213,7 @@ Begin VB.Form frmDocumentMap
             Left            =   1845
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   15
+            TabIndex        =   7
             Top             =   765
             Width           =   3090
          End
@@ -240,7 +222,7 @@ Begin VB.Form frmDocumentMap
             Left            =   1845
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   14
+            TabIndex        =   6
             Top             =   360
             Width           =   3090
          End
@@ -248,7 +230,7 @@ Begin VB.Form frmDocumentMap
             Caption         =   "Type Value :"
             Height          =   285
             Left            =   270
-            TabIndex        =   17
+            TabIndex        =   26
             Top             =   810
             Width           =   1185
          End
@@ -257,7 +239,7 @@ Begin VB.Form frmDocumentMap
             Height          =   285
             Index           =   0
             Left            =   270
-            TabIndex        =   16
+            TabIndex        =   25
             Top             =   420
             Width           =   1500
          End
@@ -274,7 +256,7 @@ Begin VB.Form frmDocumentMap
          EndProperty
          Height          =   1950
          Left            =   90
-         TabIndex        =   3
+         TabIndex        =   19
          Top             =   405
          Width           =   10335
          Begin VB.TextBox txtUserName 
@@ -283,7 +265,7 @@ Begin VB.Form frmDocumentMap
             Height          =   315
             Left            =   7065
             MaxLength       =   30
-            TabIndex        =   8
+            TabIndex        =   2
             Top             =   315
             Width           =   3045
          End
@@ -291,7 +273,7 @@ Begin VB.Form frmDocumentMap
             Caption         =   "Read / &Write"
             Height          =   195
             Left            =   7065
-            TabIndex        =   7
+            TabIndex        =   4
             Top             =   765
             Value           =   -1  'True
             Width           =   1650
@@ -300,7 +282,7 @@ Begin VB.Form frmDocumentMap
             Caption         =   "&Read Only"
             Height          =   195
             Left            =   7065
-            TabIndex        =   6
+            TabIndex        =   5
             Top             =   1155
             Width           =   1470
          End
@@ -308,7 +290,7 @@ Begin VB.Form frmDocumentMap
             Height          =   315
             Left            =   1845
             MaxLength       =   50
-            TabIndex        =   5
+            TabIndex        =   1
             Top             =   315
             Width           =   3090
          End
@@ -318,7 +300,7 @@ Begin VB.Form frmDocumentMap
             MaxLength       =   255
             MultiLine       =   -1  'True
             ScrollBars      =   2  'Vertical
-            TabIndex        =   4
+            TabIndex        =   3
             Top             =   705
             Width           =   3090
          End
@@ -329,7 +311,7 @@ Begin VB.Form frmDocumentMap
             Height          =   195
             Index           =   4
             Left            =   5280
-            TabIndex        =   12
+            TabIndex        =   23
             Top             =   360
             Width           =   585
          End
@@ -340,7 +322,7 @@ Begin VB.Form frmDocumentMap
             Height          =   195
             Index           =   2
             Left            =   315
-            TabIndex        =   11
+            TabIndex        =   22
             Top             =   365
             Width           =   510
          End
@@ -351,7 +333,7 @@ Begin VB.Form frmDocumentMap
             Height          =   195
             Index           =   1
             Left            =   315
-            TabIndex        =   10
+            TabIndex        =   21
             Top             =   765
             Width           =   900
          End
@@ -362,7 +344,7 @@ Begin VB.Form frmDocumentMap
             Height          =   195
             Index           =   3
             Left            =   5280
-            TabIndex        =   9
+            TabIndex        =   20
             Top             =   765
             Width           =   600
          End
@@ -372,7 +354,7 @@ Begin VB.Form frmDocumentMap
       Cancel          =   -1  'True
       Height          =   375
       Left            =   9450
-      TabIndex        =   1
+      TabIndex        =   17
       Top             =   7290
       Width           =   1200
       _Version        =   851969
@@ -502,7 +484,6 @@ Private Sub RetreiveDefinition()
   SetComboItem cboTargetColumn, IIf(IsNull(rsTemp.Fields("TargetColumnID").Value), 0, rsTemp.Fields("TargetColumnID").Value)
   SetComboItem cboTargetCategory, IIf(IsNull(rsTemp.Fields("TargetCategoryColumnID").Value), 0, rsTemp.Fields("TargetCategoryColumnID").Value)
   SetComboItem cboTargetType, IIf(IsNull(rsTemp.Fields("TargetTypeColumnID").Value), 0, rsTemp.Fields("TargetTypeColumnID").Value)
-  SetComboItem cboTargetGUID, IIf(IsNull(rsTemp.Fields("TargetGUIDColumnID").Value), 0, rsTemp.Fields("TargetGUIDColumnID").Value)
 
   SetComboItem cboParent1Table, IIf(IsNull(rsTemp.Fields("Parent1TableID").Value), 0, rsTemp.Fields("Parent1TableID").Value)
   SetComboItem cboParent1Keyfield, IIf(IsNull(rsTemp.Fields("Parent1KeyFieldColumnID").Value), 0, rsTemp.Fields("Parent1KeyFieldColumnID").Value)
@@ -594,7 +575,7 @@ Private Function SaveDefinition() As Boolean
               & "[TargetColumnID] = " & GetComboItem(cboTargetColumn) & ", " _
               & "[TargetCategoryColumnID] = " & GetComboItem(cboTargetType) & ", " _
               & "[TargetTypeColumnID] = " & GetComboItem(cboTargetCategory) & ", " _
-              & "[TargetGUIDColumnID] = " & GetComboItem(cboTargetGUID) & ", " _
+              & "[TargetGUIDColumnID] = 0, " _
               & "[Parent1TableID] = " & GetComboItem(cboParent1Table) & ", " _
               & "[Parent1KeyFieldColumnID] = " & GetComboItem(cboParent1Keyfield) & ", " _
               & "[Parent2TableID] = " & GetComboItem(cboParent2Table) & ", " _
@@ -618,7 +599,7 @@ Private Function SaveDefinition() As Boolean
               & ", " & GetComboItem(cboTargetTable) & ", " & GetComboItem(cboTargetKeyField) & ", " & GetComboItem(cboTargetColumn) _
               & ", " & GetComboItem(cboParent1Table) & ", " & GetComboItem(cboParent1Keyfield) _
               & ", " & GetComboItem(cboParent2Table) & ", " & GetComboItem(cboParent2Keyfield) _
-              & ", " & GetComboItem(cboTargetCategory) & ", " & GetComboItem(cboTargetType) & ", " & GetComboItem(cboTargetGUID) _
+              & ", " & GetComboItem(cboTargetCategory) & ", " & GetComboItem(cboTargetType) & ", 0" _
               & ", " & GetComboItem(cboCategories) & ", " & GetComboItem(cboTypes) & ");"
 
     mlngDocumentMapID = InsertDocumentMap(sSQL)
@@ -711,15 +692,29 @@ Private Sub cboTargetTable_Click()
     .ItemData(.NewIndex) = 0
   End With
   
-  With cboTargetGUID
+'  With cboTargetGUID
+'    .Clear
+'    .AddItem "<None>"
+'    .ItemData(.NewIndex) = 0
+'  End With
+  
+  With cboTargetColumn
     .Clear
     .AddItem "<None>"
     .ItemData(.NewIndex) = 0
   End With
   
+  With cboTargetKeyField
+    .Clear
+    .AddItem "<None>"
+    .ItemData(.NewIndex) = 0
+  End With
   
   'Get all the columns for the selected table
-  Set rsCols = datGeneral.GetColumnNames(cboTargetTable.ItemData(cboTargetTable.ListIndex))
+  
+  
+  
+  Set rsCols = datGeneral.GetColumnNames(GetComboItem(cboTargetTable))
   Do While Not rsCols.EOF
   
     With cboTargetColumn
@@ -742,10 +737,10 @@ Private Sub cboTargetTable_Click()
       .ItemData(.NewIndex) = rsCols!ColumnID
     End With
     
-    With cboTargetGUID
-      .AddItem rsCols!ColumnName
-      .ItemData(.NewIndex) = rsCols!ColumnID
-    End With
+'    With cboTargetGUID
+'      .AddItem rsCols!ColumnName
+'      .ItemData(.NewIndex) = rsCols!ColumnID
+'    End With
     
     rsCols.MoveNext
   Loop
@@ -753,7 +748,7 @@ Private Sub cboTargetTable_Click()
 
 
   ' Get parent tables
-  sSQL = "SELECT [ParentID] FROM dbo.[ASRSysRelations] WHERE [ChildID] = " & cboTargetTable.ItemData(cboTargetTable.ListIndex) & ";"
+  sSQL = "SELECT [ParentID] FROM dbo.[ASRSysRelations] WHERE [ChildID] = " & GetComboItem(cboTargetTable) & ";"
   Set rsParents = mdatData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
     
   iParents = rsParents.RecordCount
