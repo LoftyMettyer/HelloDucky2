@@ -1248,7 +1248,7 @@ Namespace ScriptDB
 
                 sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
 
-                Debug.Assert(sObjectName <> "udfcalc_Personnel_Records.CHARACTER_FUNCTIONS_COMBINED_1")
+                '       Debug.Assert(sObjectName <> "udfcalc_Personnel_Records.CHARACTER_FUNCTIONS_COMBINED_1")
 
 
 
