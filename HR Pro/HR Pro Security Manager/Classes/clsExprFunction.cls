@@ -505,6 +505,10 @@ Public Function RuntimeCode(psRuntimeCode As String, _
           " THEN (" + sParamCode1 + ")-(" + strRemainString + ")" & _
           " ELSE (" + sParamCode1 + ")+(" + sParamCode2 + ")-(" + strRemainString + ") END"
         
+        'MH20100629
+        sCode = "CASE WHEN (" & sParamCode2 & " > 0) THEN " & sCode & " ELSE 0 END"
+        
+        
       'TM20011022 Currency Implementation
       Case 51
       '*********** runtime code to go here *************
