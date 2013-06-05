@@ -1401,22 +1401,24 @@ Namespace ScriptDB
     Private Function SpecialTrigger_Fusion(ByVal Table As Table) As String
 
       Dim sCode As String = vbNullString
-      Dim objRelation As Relation
-      Dim bRelationFound As Boolean = False
-      Dim aryRelations As ArrayList
+      ' Dim objRelation As Relation
+      '    Dim bRelationFound As Boolean = False
+      '   Dim aryRelations As New ArrayList
       Dim sCursorDec As String = vbNullString
       Dim sFetchNext As String = vbNullString
       Dim sExecFusion As String = vbNullString
 
       'aryRelations.Clear()
       'For Each objRelation In Table.Relations
-      '  aryRelations.Add(String.Format("ID_{0}", objRelation.ParentID))
+      '  aryRelations.Add(objRelation.ParentID)
       '  bRelationFound = True
       'Next
 
       'If bRelationFound Then
-      '  sCursorDec = ", " + aryRelations1.ToArray.Join(",")
-      '  sExecFusion = ''
+      '  sCursorDec = String.Join(", ID_", aryRelations.ToArray())
+      '  sFetchNext = String.Join(", @ParentID_", aryRelations.ToArray())
+
+
 
       'End If
 
