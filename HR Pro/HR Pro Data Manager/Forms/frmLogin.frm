@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.Form frmLogin 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "HR Pro Data Manager - Login"
@@ -167,11 +167,11 @@ Begin VB.Form frmLogin
       Y2              =   990
    End
    Begin VB.Image imgASR 
-      Height          =   525
+      Height          =   585
       Left            =   105
       Picture         =   "frmLogin.frx":000C
       Top             =   60
-      Width           =   2775
+      Width           =   1770
    End
    Begin VB.Label lblVersion 
       AutoSize        =   -1  'True
