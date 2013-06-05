@@ -13,7 +13,6 @@ Namespace Things
     Public Property OperatorID As Integer
     Public Property CalculationID As Integer
     Public Property ValueType As ScriptDB.ComponentValueTypes
-    Public Property ValueNumeric As Double
     Public Property ValueString As String
     Public Property ValueDate As Date
     Public Property ValueLogic As Boolean
@@ -33,6 +32,8 @@ Namespace Things
 
     Public Property Components As ICollection(Of Component)
     Public Property Level As Long = 0
+
+    Private mdblValueNumeric As Double = 0
 
     Public Sub New()
       Components = New Collection(Of Component)
@@ -65,6 +66,25 @@ Namespace Things
         Return sqlType
 
       End Get
+    End Property
+
+    Public Property ValueNumeric As String
+      Get
+
+        Dim sValue As String
+
+        sValue = mdblValueNumeric.ToString.Replace(",", ".")
+
+        ' JIRA-1976 - SQL interprets values as integer if no decimal place - causes problems with divisions.
+        If sValue.IndexOf(".") = -1 Then
+          sValue = String.Format("{0}.0", sValue)
+        End If
+
+        Return sValue
+      End Get
+      Set(ByVal value As String)
+        mdblValueNumeric = CDbl(value)
+      End Set
     End Property
 
   End Class
