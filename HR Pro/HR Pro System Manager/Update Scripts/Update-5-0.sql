@@ -6998,9 +6998,13 @@ PRINT 'Step 9 - System procedures'
 		SET  @psInsertString = REPLACE('' '' + @psInsertString,'' INSERT '','''')
 		SET @tablename = SUBSTRING(@psInsertString,0, CHARINDEX(''('', @psInsertString));
 
-		SET @ssql = ''SELECT @ID = MAX(ID) FROM '' + @tablename;
-		EXECUTE sp_executesql @ssql, N''@ID int OUTPUT'', @ID = @piNewRecordID OUTPUT;
-
+		IF NOT @tablename = ''''
+		BEGIN
+			SET @ssql = ''SELECT @ID = MAX(ID) FROM '' + @tablename;
+			EXECUTE sp_executesql @ssql, N''@ID int OUTPUT'', @ID = @piNewRecordID OUTPUT;
+		END
+		ELSE SET @piNewRecordID = 0	
+		
 END'
 
 	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRRecordAmended]
