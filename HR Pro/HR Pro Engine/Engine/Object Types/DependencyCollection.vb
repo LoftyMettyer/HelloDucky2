@@ -106,8 +106,9 @@ Public Class ExpressionDependencies
       objOrderFilter = Child.Column.Table.TableOrderFilter(Child)
       objOrderFilter.IncludedColumns.AddIfNew(Child.Column)
 
-      objDepends.Code = String.Format("SELECT @child_{0} = ISNULL(base.[{1}],{2})" & vbNewLine & _
-          "FROM [dbo].[{3}](@prm_ID) base" _
+      objDepends.Code = String.Format("SET @child_{0} = {2};" & vbNewLine & _
+          "SELECT @child_{0} = ISNULL(base.[{1}],{2})" & vbNewLine & _
+          "    FROM [dbo].[{3}](@prm_ID) base" & vbNewLine _
           , iPartNumber.ToString, Child.Column.Name, sTypesafeCode, objOrderFilter.Name)
 
       colThings.Add(objDepends)
