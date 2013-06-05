@@ -354,6 +354,7 @@ Namespace ScriptDB
       Dim sSQLChildColumns As String
 
       Dim sSQLSpecialUpdate As String
+      Dim sSQLCategoryUpdate As String
       Dim sSQLFusionCode As String
 
       Dim aryCalculatedColumns As ArrayList
@@ -776,6 +777,7 @@ Namespace ScriptDB
           ' Add trigger code based on module setup
           sSQLSpecialUpdate = SpecialTrigger_BankHolidays(objTable)
           sSQLSpecialUpdate = sSQLSpecialUpdate & SpecialTrigger_Personnel(objTable)
+          sSQLCategoryUpdate = SpecialTrigger_Categories(objTable)
 
           ' -------------------
           ' INSTEAD OF INSERT
@@ -872,10 +874,11 @@ Namespace ScriptDB
               sSQLSpecialUpdate & _
               "{2}" & vbNewLine & vbNewLine & _
               "{5}" & vbNewLine & vbNewLine & _
+              "{6}" & _
               "    -- Clear the temporary trigger status table" & vbNewLine & _
               "    DELETE [dbo].[{3}] WHERE [spid] = @@spid AND [tablefromid] = {4};" & vbNewLine & vbNewLine _
               , objTable.PhysicalName, sSQLCode_AuditDelete, sSQLParentColumns_Delete _
-              , Consts.SysTriggerTransaction, objTable.ID, objTable.SysMgrDeleteTrigger)
+              , Consts.SysTriggerTransaction, objTable.ID, objTable.SysMgrDeleteTrigger, sSQLCategoryUpdate)
             ScriptTrigger("dbo", objTable, TriggerType.InsteadOfDelete, sSQL, existingTriggers)
 
             ' -------------------
@@ -1378,6 +1381,24 @@ Namespace ScriptDB
 
     End Function
 
+    Private Function SpecialTrigger_Categories(ByVal Table As Table) As String
+
+      Dim sSQL As String = ""
+
+      If Table Is Globals.ModuleSetup.Setting("MODULE_CATEGORY", "Param_CategoryTable").Table Then
+
+        sSQL = vbTab & "-- Remove this category from reports and utilities." & vbNewLine & _
+          vbTab & "DELETE cats" & vbNewLine & _
+          vbTab & vbTab & "FROM dbo.tbsys_objectcategories cats, deleted" & vbNewLine & _
+          vbTab & vbTab & "WHERE cats.CategoryID = deleted.ID;" & vbNewLine & vbNewLine
+
+      End If
+
+      Return sSQL
+
+    End Function
+
+
     Private Function SpecialTrigger_BankHolidays(ByVal Table As Table) As String
 
       Dim aryTriggerCode As ArrayList
@@ -1546,7 +1567,7 @@ Namespace ScriptDB
           lngPayrollPeriod = CLng(Globals.ModuleSetup.Setting("MODULE_ACCORD", "Param_PurgeOptionPeriod").Value)
           lngPayrollPeriodType = CType(CInt(Globals.ModuleSetup.Setting("MODULE_ACCORD", "Param_PurgeOptionPeriodType").Value), AccordPurgeType)
 
-      sSQLOvernightJob = sSQLOvernightJob & vbNewLine & "    -- Archive payroll" & vbNewLine
+          sSQLOvernightJob = sSQLOvernightJob & vbNewLine & "    -- Archive payroll" & vbNewLine
 
           Dim datePart As String = Nothing
 
