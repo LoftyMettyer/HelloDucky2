@@ -973,7 +973,7 @@ Public Function EmailIsUsed(pfrmUsage As frmUsage) As Boolean
       If (rsModules!moduleKey = gsMODULEKEY_WORKFLOW) And (Not bWF) Then
           bWF = True
           sModuleName = "Workflow"
-          mfrmUse.AddToList (sModuleName & " module setup")
+          mfrmUse.AddToList (sModuleName & " Configuration")
       End If
 
       rsModules.MoveNext

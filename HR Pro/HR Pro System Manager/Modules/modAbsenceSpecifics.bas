@@ -336,7 +336,7 @@ Private Function CreateAbsenceDurationStoredProcedure(Optional pbCreateBreakdown
       CreateAbsenceDurationStoredProcedure = False
       gobjProgress.Visible = False
         MsgBox "The Absence module requires that you fully complete both" & vbNewLine & _
-               "the Absence and the Personnel module setup screens." & vbNewLine & _
+               "the Absence and the Personnel configuration screens." & vbNewLine & _
                "You do not have a 'Region' field defined.", vbExclamation + vbOKOnly, App.Title
       gobjProgress.Visible = True
       Exit Function
@@ -437,7 +437,7 @@ Private Function CreateAbsenceDurationStoredProcedure(Optional pbCreateBreakdown
       CreateAbsenceDurationStoredProcedure = False
       gobjProgress.Visible = False
         MsgBox "The Absence module requires that you fully complete both" & vbNewLine & _
-               "the Absence and the Personnel module setup screens." & vbNewLine & _
+               "the Absence and the Personnel configuration screens." & vbNewLine & _
                "You do not have a 'Working Pattern' field defined.", vbExclamation + vbOKOnly, App.Title
       gobjProgress.Visible = True
       Exit Function

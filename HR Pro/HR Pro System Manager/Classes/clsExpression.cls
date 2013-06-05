@@ -599,7 +599,7 @@ Public Function CalculatedColumnsThatUseThisExpression(ByRef pvColumns As Varian
   ' Return an array of the calculated columns that use this expression.
   Dim iNextIndex As Integer
   Dim sSQL As String
-  Dim rsCheck As dao.Recordset
+  Dim rsCheck As DAO.Recordset
   Dim objExpr As CExpression
   
   If mlngExpressionID > 0 Then
@@ -1363,7 +1363,7 @@ Public Function ValidateSelection() As Boolean
   Dim fOK As Boolean
   Dim sSQL As String
   Dim objExpr As CExpression
-  Dim rsCheck As dao.Recordset
+  Dim rsCheck As DAO.Recordset
   
   fOK = True
   
@@ -1899,7 +1899,7 @@ Public Sub PrintExpressionWithoutConstructing()
   Dim fOK As Boolean
   Dim sTableName As String
   Dim objComponent As CExprComponent
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   Dim objPrinter As clsPrintDef
   
   fOK = True
@@ -2580,7 +2580,7 @@ Public Sub DeleteExistingComponents()
   On Error GoTo ErrorTrap
   
   Dim sSQL As String
-  Dim rsSubExpressions As dao.Recordset
+  Dim rsSubExpressions As DAO.Recordset
   Dim objExpr As CExpression
     
   ' Get the expression's function components from the database.
@@ -2690,7 +2690,7 @@ Public Function ExpressionIsUsed(plngExprID As Long) As Boolean
   Dim rsADOCheck12 As ADODB.Recordset
   Dim rsADOCheck13 As ADODB.Recordset
   Dim rsADOCheck14 As ADODB.Recordset
-  Dim rsDAOCheck As dao.Recordset
+  Dim rsDAOCheck As DAO.Recordset
   Dim wfTempElement As VB.Control
   Dim lngLoop As Long
   Dim iLoop2 As Integer
@@ -3090,7 +3090,7 @@ Public Function ExpressionIsUsed(plngExprID As Long) As Boolean
     End With
     Set rsADOCheck10 = Nothing
     
-    ' JDM - 10/11/2004 - Fault 9415 - Payroll module setup
+    ' JDM - 10/11/2004 - Fault 9415 - Payroll setup
     'AE20071204 Fault #12658
     If gbAccordPayrollModule Then
       sSQL = "SELECT rtrim(t.TransferType) + ' - ' + f.Description AS Description" & _
@@ -3104,7 +3104,7 @@ Public Function ExpressionIsUsed(plngExprID As Long) As Boolean
         If Not (.EOF And .BOF) Then
           fUsed = True
           Do Until .EOF
-            mfrmUse.AddToList "Payroll module setup : " & Trim(!Description)
+            mfrmUse.AddToList "Payroll Configuration : " & Trim(!Description)
             .MoveNext
           Loop
         End If
@@ -3857,7 +3857,7 @@ End Function
 Public Function UsesCalculation(plngExprID As Long) As Variant
   ' Return TRUE if the expression (or any calculations within it) uses the given expressionn.
   Dim sSQL As String
-  Dim rsCheck As dao.Recordset
+  Dim rsCheck As DAO.Recordset
   Dim objExpr As CExpression
   
   ' Check if this expression uses the given expression as a calculation.
@@ -4605,7 +4605,7 @@ Public Function CopyExpressionToClipboard() As Boolean
   Dim fOK As Boolean
   Dim sTableName As String
   Dim objComponent As CExprComponent
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   Dim msClipboardText As String
   
   fOK = True
@@ -4698,7 +4698,7 @@ Public Function RootExpressionName() As String
   Dim fOK As Boolean
   Dim sSQL As String
   Dim objComp As CExpression
-  Dim rsExpressions As dao.Recordset
+  Dim rsExpressions As DAO.Recordset
   Dim sName As String
 
 If mlngParentComponentID = 0 Then

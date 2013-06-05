@@ -288,7 +288,7 @@ Public Function OrderIsUsed(pfrmUsage As frmUsage) As Boolean
   Dim sExprParentTable As String
   Dim objExpr As CExpression
   Dim objComp As CExprComponent
-  Dim rsCheck As dao.Recordset
+  Dim rsCheck As DAO.Recordset
   Dim sModuleName As String
   Dim rsUtils1 As ADODB.Recordset
   Dim rsUtils2 As ADODB.Recordset
@@ -444,7 +444,7 @@ Public Function OrderIsUsed(pfrmUsage As frmUsage) As Boolean
         Case Else
           sModuleName = "<Unknown>"
       End Select
-      mfrmUse.AddToList (sModuleName & " module setup")
+      mfrmUse.AddToList (sModuleName & " Configuration")
       rsCheck.MoveNext
     Loop
   End If
@@ -778,7 +778,7 @@ Public Function ConstructOrder() As Boolean
   Dim fOK As Boolean
   Dim sIndex As String
   Dim sSQL As String
-  Dim rsOrderItems As dao.Recordset
+  Dim rsOrderItems As DAO.Recordset
     
   With recOrdEdit
     'Store current index
@@ -971,7 +971,7 @@ Private Sub PrintOrder()
   Dim iSequence As Integer
   Dim sSQL As String
   Dim sTableName As String
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   Dim objOrderItem As OrderItem
   Dim objPrinter As clsPrintDef
 
@@ -1061,7 +1061,7 @@ Public Function WriteOrder() As Boolean
   Dim sSQL As String
   Dim objItem As OrderItem
   Dim objComp As CExprComponent
-  Dim rsCheck As dao.Recordset
+  Dim rsCheck As DAO.Recordset
   
   With recOrdEdit
     'Store current index
