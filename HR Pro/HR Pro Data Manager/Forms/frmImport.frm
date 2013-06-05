@@ -39,6 +39,7 @@ Begin VB.Form frmImport
       _ExtentY        =   8387
       _Version        =   393216
       Style           =   1
+      Tab             =   2
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -51,11 +52,9 @@ Begin VB.Form frmImport
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmImport.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraData"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraDefinition(0)"
-      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmImport.frx":0028
@@ -64,7 +63,7 @@ Begin VB.Form frmImport
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "O&ptions"
       TabPicture(2)   =   "frmImport.frx":0044
-      Tab(2).ControlEnabled=   0   'False
+      Tab(2).ControlEnabled=   -1  'True
       Tab(2).Control(0)=   "fraOptions"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraFileDetails"
@@ -275,7 +274,7 @@ Begin VB.Form frmImport
       Begin VB.Frame fraFileDetails 
          Caption         =   "File :"
          Height          =   2775
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   19
          Top             =   405
          Width           =   9400
@@ -563,7 +562,7 @@ Begin VB.Form frmImport
       Begin VB.Frame fraOptions 
          Caption         =   "Records :"
          Height          =   1350
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   43
          Top             =   3220
          Width           =   9400
@@ -635,7 +634,7 @@ Begin VB.Form frmImport
       Begin VB.Frame fraDefinition 
          Height          =   1950
          Index           =   0
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   0
          Top             =   405
          Width           =   9400
@@ -828,7 +827,7 @@ Begin VB.Form frmImport
       Begin VB.Frame fraData 
          Caption         =   "Data :"
          Height          =   2130
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   8
          Top             =   2445
          Width           =   9400
@@ -948,7 +947,7 @@ Public Property Get SelectedID() As Long
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -982,7 +981,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Private Sub cboBaseTable_Click()
@@ -1124,7 +1123,7 @@ Private Sub cboFileFormat_Click()
   mintCurrentFileFormat = cboFileFormat.ItemData(cboFileFormat.ListIndex)
   
   'AE20071105 Fault #12553
-  txtFileName.Text = vbNullString
+  txtFilename.Text = vbNullString
   
   'DisableLengthColumn (mintCurrentFileFormat)
 
@@ -1341,10 +1340,10 @@ Private Sub cmdFileName_Click()
   
     ' If there is a filename already select it, try and set the cdialog directory and
     ' filename property to match it.
-    If Len(Trim(txtFileName.Text)) = 0 Then
+    If Len(Trim(txtFilename.Text)) = 0 Then
       .InitDir = gsDocumentsPath
     Else
-      .FileName = txtFileName.Text
+      .FileName = txtFilename.Text
     End If
     
     ' Set flags
@@ -1367,7 +1366,8 @@ Private Sub cmdFileName_Click()
     Case 1
       .Filter = "Text (*.txt)|*.txt|All Files|*.*"
     Case 2
-      .Filter = "Excel Worksheet (*.xls)|*.xls"
+      '.Filter = "Excel Worksheet (*.xls)|*.xls"
+      InitialiseCommonDialogFormats CDialog, "Excel", GetOfficeExcelVersion
     End Select
     
     
@@ -1381,7 +1381,7 @@ Private Sub cmdFileName_Click()
     End If
     
     ' If they select an Excel file but not Excel Worksheet in the list disallow it
-    If cboFileFormat.ItemData(cboFileFormat.ListIndex) <> 2 And Right(.FileName, 3) = "xls" Then
+    If cboFileFormat.ItemData(cboFileFormat.ListIndex) <> 2 And (Right(.FileName, 3) = "xls" Or Right(.FileName, 3) = "xlsx") Then
       MsgBox "Cannot select an Excel file unless Excel Worksheet is selected as the file format.", vbExclamation + vbOKOnly, "Import"
       Exit Sub
     End If
@@ -1389,7 +1389,7 @@ Private Sub cmdFileName_Click()
     'AE20071105 Fault #12553
     ' If something was selected, then update the text box with the selected filename
     If .FileName <> "" Then
-      txtFileName.Text = .FileName
+      txtFilename.Text = .FileName
     End If
 
   End With
@@ -2118,13 +2118,13 @@ Private Sub txtDesc_GotFocus()
     .SelLength = Len(.Text)
   End With
 
-  cmdOK.Default = False
+  cmdOk.Default = False
   
 End Sub
 
 Private Sub txtDesc_LostFocus()
 
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 
@@ -2303,40 +2303,40 @@ Private Function ValidateDefinition() As Boolean
   End If
   
   ' Check a filename has been selected
-  If Len(Trim(txtFileName.Text)) = 0 Then
+  If Len(Trim(txtFilename.Text)) = 0 Then
     tabImport.Tab = 2
     MsgBox "You must select the file you wish to use with this import definition.", vbExclamation + vbOKOnly, "Import"
-    cmdFileName.SetFocus
+    cmdFilename.SetFocus
     ValidateDefinition = False
     Exit Function
   End If
   
-  ' Check the filename is of the correct type for the file format selected
-  Select Case cboFileFormat.ItemData(cboFileFormat.ListIndex)
-    Case 0:
-    'JPD20011003 No longer want to limit csv length files to be .txt or .csv files.
-'      If (LCase(Right(txtFilename.Text, 4)) <> ".txt") And (LCase(Right(txtFilename.Text, 4)) <> ".csv") Then
-'        MsgBox "Delimited files must have a '.txt' or '.csv' extension.", vbExclamation + vbOKOnly, "Import"
-'        txtFilename = ""
-'        ValidateDefinition = False
-'        Exit Function
-'      End If
-    Case 1:
-    'JPD20011003 No longer want to limit fixed length files to be .txt files.
-'      If (LCase(Right(txtFilename.Text, 4)) <> ".txt") Then
-'        MsgBox "Fixed length files must have a '.txt' extension.", vbExclamation + vbOKOnly, "Import"
-'        txtFilename = ""
-'        ValidateDefinition = False
-'        Exit Function
-'      End If
-    Case 2:
-      If (LCase(Right(txtFileName.Text, 4)) <> ".xls") Then
-        tabImport.Tab = 2
-        MsgBox "Excel worksheet files must have a '.xls' extension.", vbExclamation + vbOKOnly, "Import"
-        ValidateDefinition = False
-        Exit Function
-      End If
-  End Select
+''  ' Check the filename is of the correct type for the file format selected
+''  Select Case cboFileFormat.ItemData(cboFileFormat.ListIndex)
+''    Case 0:
+''    'JPD20011003 No longer want to limit csv length files to be .txt or .csv files.
+'''      If (LCase(Right(txtFilename.Text, 4)) <> ".txt") And (LCase(Right(txtFilename.Text, 4)) <> ".csv") Then
+'''        MsgBox "Delimited files must have a '.txt' or '.csv' extension.", vbExclamation + vbOKOnly, "Import"
+'''        txtFilename = ""
+'''        ValidateDefinition = False
+'''        Exit Function
+'''      End If
+''    Case 1:
+''    'JPD20011003 No longer want to limit fixed length files to be .txt files.
+'''      If (LCase(Right(txtFilename.Text, 4)) <> ".txt") Then
+'''        MsgBox "Fixed length files must have a '.txt' extension.", vbExclamation + vbOKOnly, "Import"
+'''        txtFilename = ""
+'''        ValidateDefinition = False
+'''        Exit Function
+'''      End If
+''    Case 2:
+''      If (LCase(Right(txtFilename.Text, 4)) <> ".xls") Then
+''        tabImport.Tab = 2
+''        MsgBox "Excel worksheet files must have a '.xls' extension.", vbExclamation + vbOKOnly, "Import"
+''        ValidateDefinition = False
+''        Exit Function
+''      End If
+''  End Select
   
   ' Check that there are columns defined in the definition
   If grdColumns.Rows = 0 Then
@@ -2621,7 +2621,7 @@ Private Function SaveDefinition() As Boolean
              "Description = '" & Replace(Me.txtDesc.Text, "'", "''") & "'," & _
              "BaseTable = " & Me.cboBaseTable.ItemData(Me.cboBaseTable.ListIndex) & "," & _
              "FileType = " & Me.cboFileFormat.ItemData(cboFileFormat.ListIndex) & "," & _
-             "FileName = '" & Replace(Me.txtFileName.Text, "'", "''") & "'," & _
+             "FileName = '" & Replace(Me.txtFilename.Text, "'", "''") & "'," & _
              "Delimiter = '" & cboDelimiter.Text & "'," & _
              "OtherDelimiter = '" & Replace(Me.txtDelimiter.Text, "'", "''") & "'," & _
              "DateFormat = '" & cboDateFormat.Text & "'," & _
@@ -2681,7 +2681,7 @@ Private Function SaveDefinition() As Boolean
 
 
     sSQL = sSQL & ", " & Me.cboFileFormat.ItemData(cboFileFormat.ListIndex)
-    sSQL = sSQL & ", '" & Replace(Me.txtFileName.Text, "'", "''") & "'"
+    sSQL = sSQL & ", '" & Replace(Me.txtFilename.Text, "'", "''") & "'"
     sSQL = sSQL & ", '" & cboDelimiter.Text & "'"
     sSQL = sSQL & ", '" & Replace(Me.txtDelimiter.Text, "'", "''") & "'"
     sSQL = sSQL & ", '" & Me.cboDateFormat.Text & "'"
@@ -2987,7 +2987,7 @@ Private Sub ClearForNew(Optional bPartialClear As Boolean)
     .txtName = vbNullString
     .txtDesc = vbNullString
     .txtUserName = gsUserName
-    .txtFileName.Text = ""
+    .txtFilename.Text = ""
     .optUpdateAll.Value = True
     'AE20071004
 '    .chkIgnoreFirstLine.Value = 0
@@ -3052,7 +3052,7 @@ Private Function RetrieveImportDetails(plngImportID As Long) As Boolean
   ''TM20011219 Fault 3039 - disable the length column if required.
   'DisableLengthColumn (rsTemp!filetype)
 
-  txtFileName.Text = rsTemp!FileName
+  txtFilename.Text = rsTemp!FileName
   
   'AE20071004 Fault 12488
   'SetComboText cboDelimiter, rsTemp!delimiter
