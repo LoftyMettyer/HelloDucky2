@@ -4,7 +4,7 @@ Namespace Forms
   Public Class ErrorLog
 
     Public Abort As Boolean
-    Private mlngInitialHeight As Integer = 160
+		Private mlngInitialHeight As Integer = 160
     Private ErrorSeverity As ErrorHandler.Severity = ErrorHandler.Severity.Warning
 
     Private Sub ErrorLog_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
@@ -18,9 +18,8 @@ Namespace Forms
 
       For Each objError As ErrorHandler.Error In Globals.ErrorLog
 				Dim objListViewItem = lvwErrors.Items.Add(objError.Message)
-        objListViewItem.ImageIndex = objError.Severity
-        objListViewItem.SubItems.Add(objError.Message)
-        objListViewItem.SubItems.Add(objError.Detail)
+				objListViewItem.ImageIndex = objError.Severity
+				objListViewItem.SubItems.Add(objError.Detail)
 
         If objError.Severity = ErrorHandler.Severity.Error Then
           ErrorSeverity = ErrorHandler.Severity.Error
@@ -48,10 +47,10 @@ Namespace Forms
       txtDetails.Visible = Not txtDetails.Visible
 
       If txtDetails.Visible Then
-        butDetails.Text = "Details <<<"
-        Me.Height = mlngInitialHeight + txtDetails.Height + 20 + cmdCopy.Height
+				butDetails.Text = "Details <<"
+				Me.Height = 515
       Else
-        butDetails.Text = "Details >>>"
+				butDetails.Text = "Details >>"
         Me.Height = mlngInitialHeight
       End If
 
@@ -100,10 +99,11 @@ Namespace Forms
 
     End Sub
 
-    Private Sub lvwErrors_Click(sender As Object, e As System.EventArgs) Handles lvwErrors.Click
-      txtDetails.Text = lvwErrors.SelectedItems(0).SubItems(2).Text
-    End Sub
-
-  End Class
+		Private Sub lvwErrors_SelectedIndexChanged(sender As System.Object, e As System.EventArgs) Handles lvwErrors.SelectedIndexChanged
+			If lvwErrors.SelectedItems.Count > 0 Then
+				txtDetails.Text = lvwErrors.SelectedItems(0).SubItems(1).Text
+			End If
+		End Sub
+	End Class
 
 End Namespace

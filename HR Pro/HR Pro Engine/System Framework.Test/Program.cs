@@ -20,7 +20,7 @@ namespace System_Framework.Test
 			errors.Add(Section.TableAndColumns, "ObjectName2", Severity.Warning, "Message", "Detail2");
 			errors.Add(Section.TableAndColumns, "ObjectName2", Severity.Warning, "Message", "Detail");
 			errors.Add(Section.TableAndColumns, "ObjectName3", Severity.Warning, "Message", "Detail");
-			errors.Add(Section.TableAndColumns, "ObjectName3", Severity.Warning, "Message", "Detail");
+			errors.Add(Section.TableAndColumns, "ObjectName3", Severity.Warning, "Message", "Detail999");
 
 			using (var f = new ErrorLog()) {
 				f.ShowDialog();

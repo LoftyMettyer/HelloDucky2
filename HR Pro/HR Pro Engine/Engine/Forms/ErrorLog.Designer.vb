@@ -42,7 +42,6 @@
 			Me.imagelist16 = New System.Windows.Forms.ImageList(Me.components)
 			Me.lvwErrors = New System.Windows.Forms.ListView()
 			Me.Severity = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
-			Me.Message = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
 			Me.ID = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
 			CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
 			Me.SuspendLayout()
@@ -81,7 +80,7 @@
 			Me.butDetails.Size = New System.Drawing.Size(89, 23)
 			Me.butDetails.TabIndex = 6
 			Me.butDetails.TabStop = False
-			Me.butDetails.Text = "Details >>>"
+			Me.butDetails.Text = "Details >>"
 			Me.butDetails.UseVisualStyleBackColor = True
 			'
 			'butContinue
@@ -186,7 +185,7 @@
 			'lvwErrors
 			'
 			Me.lvwErrors.AutoArrange = False
-			Me.lvwErrors.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Severity, Me.Message, Me.ID})
+			Me.lvwErrors.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.Severity, Me.ID})
 			Me.lvwErrors.FullRowSelect = True
 			Me.lvwErrors.Location = New System.Drawing.Point(8, 132)
 			Me.lvwErrors.Name = "lvwErrors"
@@ -199,12 +198,7 @@
 			'Severity
 			'
 			Me.Severity.Text = "Message"
-			Me.Severity.Width = 20
-			'
-			'Message
-			'
-			Me.Message.Text = "Message"
-			Me.Message.Width = 373
+			Me.Severity.Width = 687
 			'
 			'ID
 			'
@@ -214,7 +208,7 @@
 			'
 			Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 13.0!)
 			Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-			Me.ClientSize = New System.Drawing.Size(707, 485)
+			Me.ClientSize = New System.Drawing.Size(703, 485)
 			Me.ControlBox = False
 			Me.Controls.Add(Me.lvwErrors)
 			Me.Controls.Add(Me.cmdCopy)
@@ -260,7 +254,6 @@
     Friend WithEvents imagelist16 As System.Windows.Forms.ImageList
     Friend WithEvents lvwErrors As System.Windows.Forms.ListView
     Friend WithEvents Severity As System.Windows.Forms.ColumnHeader
-    Friend WithEvents Message As System.Windows.Forms.ColumnHeader
-    Friend WithEvents ID As System.Windows.Forms.ColumnHeader
+		Friend WithEvents ID As System.Windows.Forms.ColumnHeader
   End Class
 End Namespace
