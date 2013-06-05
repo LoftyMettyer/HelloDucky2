@@ -11706,7 +11706,7 @@ Public Function ValidateWorkflow(pfSaving As Boolean, _
     .Bar1MaxValue = 5
     .Bar1Caption = "Validating workflow..."
     .AVI = dbWorkflow
-    .MainCaption = "Workflow Designer"
+    .MainCaption = "Workflow"
     .Cancel = False
     .Time = False
     .OpenProgress
