@@ -385,7 +385,7 @@ End Function
 Public Function AddPage(strDefTitle As String, Optional mstrSheetName As String, Optional mblnOutputCoverSheet As Boolean)
   On Local Error Resume Next
   
-  mobjOutputType.AddPage strDefTitle, mstrSheetName, mcolStyles
+  mobjOutputType.AddPage strDefTitle, mstrSheetName, mcolStyles, mblnOutputCoverSheet
   
 End Function
 
@@ -839,7 +839,8 @@ Public Function SetOptions( _
     Optional strOutputOverrideFilter As String, _
     Optional blnOutputTOC As Boolean, _
     Optional blnOutputCoverSheet As Boolean, _
-    Optional lngOverrideFilterID As Long) As Boolean
+    Optional lngOverrideFilterID As Long, _
+    Optional blnOutputRetainPivotOrChart As Boolean)
 
   Dim objColumn As clsColumn
   Dim blnCancelled As Boolean
@@ -919,7 +920,7 @@ Public Function SetOptions( _
           CheckEmailAttachment "htm"
         Case fmtWordDoc
           CheckEmailAttachment strEmailFileExtension
-        Case fmtExcelWorksheet, fmtExcelChart, fmtExcelPivotTable
+        Case fmtExcelWorksheet, fmtExcelchart, fmtExcelPivotTable
           CheckEmailAttachment strEmailFileExtension
       End Select
 
@@ -939,7 +940,7 @@ Public Function SetOptions( _
   
   If gblnReportPackMode Then
     'Default should be excel if not set
-    mlngFormat = IIf(mlngFormat = 0, fmtExcelWorksheet, mlngFormat)
+    mlngFormat = IIf(mlngFormat = 4, IIf(blnOutputRetainPivotOrChart, fmtExcelchart, fmtExcelWorksheet), mlngFormat)
   Else
     mlngFormat = lngFormat
   End If
@@ -961,7 +962,7 @@ Public Function SetOptions( _
       Set mobjOutputType = New clsOutputWord
     Case fmtExcelWorksheet
       Set mobjOutputType = New clsOutputExcel
-    Case fmtExcelChart
+    Case fmtExcelchart
       Set mobjOutputType = New clsOutputExcel
       mobjOutputType.Chart = True
     Case fmtExcelPivotTable
@@ -1069,7 +1070,7 @@ Public Sub OpenProgress(strType As String, strName As String, lngMaxValue As Lon
     'If .Visible = False Then
     
       Select Case mlngFormat
-      Case fmtExcelChart, fmtExcelPivotTable, fmtExcelWorksheet
+      Case fmtExcelchart, fmtExcelPivotTable, fmtExcelWorksheet
         '.AviFile = App.Path & "\videos\excel.avi"
         .AVI = dbExcel
         .MainCaption = "Output to Excel"

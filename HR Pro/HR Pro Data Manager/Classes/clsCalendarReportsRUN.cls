@@ -82,6 +82,7 @@ Private mstrOutputOverrideFilter As String
 Private mblnOutputTOC As Boolean
 Private mblnOutputCoverSheet As Boolean
 Private mlngOverrideFilterID As Long
+Private mblnOutputRetainPivotOrChart As Boolean
 
 Private mblnChkPicklistFilter As Boolean ' might not be needed
 
@@ -803,7 +804,7 @@ Public Function RunCalendarReport(pstrPicklistFilterIDs As String) As Boolean
       If Not fOK Then mstrErrorString = mfrmOutput.ErrorMessage
       
     Else
-      If Not mblnPreviewOnScreen Then
+      If Not mblnOutputScreen Then
         fOK = mfrmOutput.OutputReport(False)
       Else
         fOK = mfrmOutput.ShowCalendar
@@ -814,7 +815,7 @@ Public Function RunCalendarReport(pstrPicklistFilterIDs As String) As Boolean
       If fOK And Not mblnUserCancelled Then
         gobjProgress.CloseProgress
         Screen.MousePointer = vbDefault
-        If fOK And mblnPreviewOnScreen Then
+        If fOK And mblnOutputScreen Then
           mfrmOutput.Show vbModal
         End If
       End If
@@ -1356,6 +1357,8 @@ Private Function GetCalendarReportDefinition() As Boolean
     mstrOutputEmailAttachAs = IIf(lblnReportPackMode, mstrOutputEmailAttachAs, !OutputEmailAttachAs)
     mstrOutputFileName = IIf(lblnReportPackMode, mstrOutputFileName, !OutputFilename)
     mlngOverrideFilterID = IIf(lblnReportPackMode, mlngOverrideFilterID, 0)
+    mblnOutputRetainPivotOrChart = IIf(lblnReportPackMode, mblnOutputRetainPivotOrChart, 0)
+
 
     If mstrPicklistFilterIDs <> vbNullString Then
       mstrSQLIDs = mstrPicklistFilterIDs
@@ -2951,7 +2954,8 @@ End Function
           Optional strOutputOverrideFilter As String, _
           Optional blnOutputTOC As Boolean, _
           Optional blnOutputCoverSheet As Boolean, _
-          Optional lngOverrideFilterID As Long)
+          Optional lngOverrideFilterID As Long, _
+          Optional blnOutputRetainPivotOrChart As Boolean)
 
   mlngOutputFormat = lngOutputFormat
   mblnOutputScreen = blnOutputScreen
@@ -2972,6 +2976,7 @@ End Function
   mblnOutputTOC = IIf(IsMissing(blnOutputTOC), giEXPRVALUE_CHARACTER, blnOutputTOC)
   mblnOutputCoverSheet = IIf(IsMissing(blnOutputCoverSheet), giEXPRVALUE_CHARACTER, blnOutputCoverSheet)
   mlngOverrideFilterID = IIf(IsMissing(lngOverrideFilterID), giEXPRVALUE_CHARACTER, lngOverrideFilterID)
+  mblnOutputRetainPivotOrChart = IIf(IsMissing(blnOutputRetainPivotOrChart), giEXPRVALUE_CHARACTER, blnOutputRetainPivotOrChart)
 End Sub
 
 

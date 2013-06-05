@@ -332,6 +332,7 @@ Private mstrOutputOverrideFilter As String
 Private mblnOutputTOC As Boolean
 Private mblnOutputCoverSheet As Boolean
 Private mlngOverrideFilterID As Long
+Private mblnOutputRetainPivotOrChart As Boolean
 
 Private mblnIndentRelatedTables As Boolean
 Private mblnSuppressEmptyRelatedTableTitles As Boolean
@@ -1554,7 +1555,8 @@ Public Function OutputReport(pfPrompt As Boolean) As Boolean
       mstrOutputOverrideFilter, _
       mblnOutputTOC, _
       mblnOutputCoverSheet, _
-      mlngOverrideFilterID) Then
+      mlngOverrideFilterID, _
+      mblnOutputRetainPivotOrChart) Then
     
     If objOutput.GetFile Then
 
@@ -1567,9 +1569,9 @@ Public Function OutputReport(pfPrompt As Boolean) As Boolean
           
           'objOutput.AddPage Me.Caption, IIf(cboPage.Enabled, cboPage.List(ctlPictureBox.Index), "")
           If cboPage.Enabled Then
-            objOutput.AddPage Me.Caption, cboPage.List(ctlPictureBox.Index - 1)
+            objOutput.AddPage Me.Caption, cboPage.List(ctlPictureBox.Index - 1), mblnOutputCoverSheet
           Else
-            objOutput.AddPage Me.Caption, msRecordProfileName & "(" & ctlPictureBox.Index & ")"
+            objOutput.AddPage Me.Caption, msRecordProfileName & "(" & ctlPictureBox.Index & ")", mblnOutputCoverSheet
           End If
           fOK = objOutput.RecordProfilePage(Me, ctlPictureBox.Index)
     

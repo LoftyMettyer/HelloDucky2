@@ -120,19 +120,29 @@ Public Sub FormatClick(Index As Integer, Optional blnDataToScreen As Boolean = T
   'HTML
   Case fmtHTML
     EnableDestinations True, False, True, True
-    If gblnReportPackMode Then mfrmParent.chkTOC.Enabled = True
+    If gblnReportPackMode Then
+      mfrmParent.chkTOC.Enabled = True
+      mfrmParent.chkRetainPivot.Enabled = False
+    End If
     frmMain.CommonDialog1.Filter = "HTML Document (*.htm)|*.htm"
   'WORD
   Case fmtWordDoc
     EnableDestinations True, True, True, True
-    If gblnReportPackMode Then mfrmParent.chkTOC.Enabled = True
+    If gblnReportPackMode Then
+      mfrmParent.chkTOC.Enabled = True
+      mfrmParent.chkRetainPivot.Value = vbUnchecked
+      mfrmParent.chkRetainPivot.Enabled = False
+    End If
     InitialiseCommonDialogFormats frmMain.CommonDialog1, "Word", GetOfficeWordVersion, DirectionOutput
   'EXCEL
-  Case fmtExcelWorksheet, fmtExcelChart, fmtExcelPivotTable
+  Case fmtExcelWorksheet, fmtExcelchart, fmtExcelPivotTable
     EnableDestinations True, True, True, True
     If gblnReportPackMode Then
       mfrmParent.chkTOC.Enabled = False
       mfrmParent.chkTOC.Value = False
+      mfrmParent.chkRetainPivot.Enabled = True
+      mfrmParent.chkRetainPivot.Value = vbUnchecked
+      
     End If
     InitialiseCommonDialogFormats frmMain.CommonDialog1, "Excel", GetOfficeExcelVersion, DirectionOutput
   'SQL TABLE
@@ -154,11 +164,15 @@ End Sub
 
 
 Private Sub CheckIfPreviewAvailable(Index As Integer)
-  
   On Local Error Resume Next
-
-  mfrmParent.chkPreview.Enabled = (Index <> fmtDataOnly)
-  mfrmParent.chkPreview.Value = IIf(Index = fmtDataOnly, vbUnchecked, vbChecked)
+  
+  If gblnReportPackMode Or gblnBatchMode Then
+    mfrmParent.chkPreview.Enabled = IIf(Index <> fmtDataOnly, True, False)
+    mfrmParent.chkPreview.Value = IIf(Index = fmtDataOnly, vbUnchecked, vbChecked)
+  Else
+    mfrmParent.chkPreview.Enabled = IIf(Index = fmtDataOnly, True, False)
+    mfrmParent.chkPreview.Value = IIf(Index <> fmtDataOnly, vbUnchecked, vbChecked)
+  End If
 
 End Sub
 
@@ -170,10 +184,8 @@ Private Sub EnableDestinations(blnScreen As Boolean, blnPrinter As Boolean, blnS
   On Local Error Resume Next
   
   blnEmail = (blnEmail And mfrmParent.cboEmailAddr.ListCount > 0)
-  
    
   With mfrmParent.chkDestination
-  
     'SCREEN
     .Item(desScreen).Enabled = blnScreen
     .Item(desScreen).Value = vbUnchecked
@@ -330,15 +342,10 @@ Public Sub PopulateCombos(blnPrinter As Boolean, blnSave As Boolean, blnEmail As
       lngListIndex = .ListIndex
       .Clear
       If gblnReportPackMode Then
-        .AddItem "Append to file"
+        .AddItem "Overwrite"
         .ItemData(.NewIndex) = 0
         .AddItem "Add sequential number to name"
-        .ItemData(.NewIndex) = 1
-  
-        If IsExcel Then
-          .AddItem "Create new sheet in workbook"
-          .ItemData(.NewIndex) = 2
-        End If
+        .ItemData(.NewIndex) = 2
       Else
         .AddItem "Overwrite"
         .ItemData(.NewIndex) = 0
@@ -376,7 +383,7 @@ Private Function IsExcel() As Boolean
 
   blnIsExcel = False
   blnIsExcel = (blnIsExcel Or mfrmParent.optOutputFormat(fmtExcelWorksheet).Value)
-  blnIsExcel = (blnIsExcel Or mfrmParent.optOutputFormat(fmtExcelChart).Value)
+  blnIsExcel = (blnIsExcel Or mfrmParent.optOutputFormat(fmtExcelchart).Value)
   blnIsExcel = (blnIsExcel Or mfrmParent.optOutputFormat(fmtExcelPivotTable).Value)
   IsExcel = blnIsExcel
 
@@ -409,7 +416,7 @@ Public Sub ShowFormats(blnData As Boolean, blnCSV As Boolean, blnHTML As Boolean
   lngTop = ShowFormat(fmtHTML, blnHTML, lngTop)
   lngTop = ShowFormat(fmtWordDoc, blnWord, lngTop)
   lngTop = ShowFormat(fmtExcelWorksheet, blnExcel, lngTop)
-  lngTop = ShowFormat(fmtExcelChart, blnChart, lngTop)
+  lngTop = ShowFormat(fmtExcelchart, blnChart, lngTop)
   lngTop = ShowFormat(fmtExcelPivotTable, blnPivot, lngTop)
 
 End Sub
