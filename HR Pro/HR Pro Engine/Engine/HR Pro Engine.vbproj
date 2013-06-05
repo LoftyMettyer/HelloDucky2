@@ -154,6 +154,7 @@
     <Compile Include="Object Types\Core\Base.vb" />
     <Compile Include="Object Types\Core\Extensions.vb" />
     <Compile Include="Object Types\Datasource.vb" />
+    <Compile Include="Object Types\DependencyCollection.vb" />
     <Compile Include="Object Types\FusionMessage.vb" />
     <Compile Include="Object Types\GlobalModify.vb" />
     <Compile Include="Object Types\GlobalModifyItem.vb" />

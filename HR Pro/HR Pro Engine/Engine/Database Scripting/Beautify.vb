@@ -13,6 +13,11 @@ Namespace ScriptDB
 
       End Function
 
+    Public Function CleanEmptyLines(ByVal value As String) As String
+      value = value.Replace(vbNewLine, vbNewLine & Space(4))
+      Return value
+    End Function
+
       Public Function MakeSingleLine(ByVal value As String) As String
 
          value = Replace(value, Chr(13), " ")

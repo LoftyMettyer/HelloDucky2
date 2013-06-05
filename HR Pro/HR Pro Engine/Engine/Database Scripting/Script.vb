@@ -531,7 +531,7 @@ Namespace ScriptDB
               If objColumn.IsCalculated Then
                 objColumn.Calculation.AssociatedColumn = objColumn
                 objColumn.Calculation.ExpressionType = ExpressionType.ColumnCalculation
-                objColumn.Calculation.GenerateCodeForColumn()
+                '                objColumn.Calculation.GenerateCodeForColumn()
 
                 If objColumn.Calculation.IsValid Then
                   If objColumn.Calculation.IsComplex Then
@@ -1112,7 +1112,7 @@ Namespace ScriptDB
           ' Record Descriptions
           If table.RecordDescription IsNot Nothing Then
             With table.RecordDescription
-              .GenerateCode()
+              .GenerateRecordDescription()
               functions.Add(.UDF)
             End With
           End If
@@ -1130,7 +1130,7 @@ Namespace ScriptDB
               view.Filter.AssociatedColumn = table.Columns(0)
               view.Filter.GenerateCodeForColumn()
 
-              For Each column In view.Filter.Dependencies.OfType(Of Column)()
+              For Each column In view.Filter.Dependencies.Columns
                 index.Columns.AddIfNew(column)
               Next
             End If
@@ -1171,8 +1171,6 @@ Namespace ScriptDB
                     column.Calculation.IsValid = False
                   End If
 
-
-
                 End If
 
               End If
@@ -1200,7 +1198,7 @@ Namespace ScriptDB
           '  Validation Masks
           For Each expression In table.Masks
             With expression
-              .GenerateCode()
+              .GenerateMaskCode()
               functions.Add(.UDF)
             End With
           Next
@@ -1225,21 +1223,14 @@ Namespace ScriptDB
               If column.IsCalculated Then
 
                 With column.Calculation
-                  .StartOfPartNumbers = 0
-                  .StatementObjects.Clear()
                   .ExpressionType = ExpressionType.ColumnCalculation
                   .AssociatedColumn = column
                   .GenerateCodeForColumn()
 
-
                   Globals.TuningLog.Expressions.Add(column)
 
-                  If .IsValid Then
+                  If .IsValid And .IsComplex Then
                     functions.Add(.UDF)
-                  Else
-                    Dim newUdf = .UDF
-                    newUdf.Code = newUdf.CodeStub
-                    functions.Add(newUdf)
                   End If
                 End With
               End If
@@ -1247,9 +1238,6 @@ Namespace ScriptDB
               If column.DefaultCalcID > 0 And Not column.DefaultCalculation Is Nothing Then
 
                 With column.DefaultCalculation
-                  .StartOfPartNumbers = 0
-                  .StatementObjects.Clear()
-
                   .ExpressionType = ExpressionType.ColumnDefault
                   .AssociatedColumn = column
                   .GenerateCodeForColumn()
@@ -1576,30 +1564,28 @@ Namespace ScriptDB
           lngPayrollPeriod = CLng(Globals.ModuleSetup.Setting("MODULE_ACCORD", "Param_PurgeOptionPeriod").Value)
           lngPayrollPeriodType = CType(CInt(Globals.ModuleSetup.Setting("MODULE_ACCORD", "Param_PurgeOptionPeriodType").Value), AccordPurgeType)
 
-          sSQLOvernightJob = sSQLOvernightJob & vbNewLine & "    -- Archive payroll" & vbNewLine
+      sSQLOvernightJob = sSQLOvernightJob & vbNewLine & "    -- Archive payroll" & vbNewLine
+
+          Dim datePart As String = Nothing
 
           Select Case lngPayrollPeriodType
-
             Case AccordPurgeType.Days
-              sSQLOvernightJob = sSQLOvernightJob & "    UPDATE dbo.[ASRSysAccordTransactions] SET [archived] = 1 " & vbNewLine _
-                & "        WHERE [CreatedDateTime] < DATEADD(dd,-" & lngPayrollPeriod & ", GETDATE())" & vbNewLine
-
+              datePart = "dd"
             Case AccordPurgeType.Weeks
-              sSQLOvernightJob = sSQLOvernightJob & "    UPDATE dbo.[ASRSysAccordTransactions] SET [archived] = 1 " & vbNewLine _
-                & "        WHERE [CreatedDateTime] < DATEADD(wk,-" & lngPayrollPeriod & ", GETDATE())" & vbNewLine
-
+              datePart = "wk"
             Case AccordPurgeType.Months
-              sSQLOvernightJob = sSQLOvernightJob & "    UPDATE dbo.[ASRSysAccordTransactions] SET [archived] = 1 " & vbNewLine _
-                & "        WHERE [CreatedDateTime] < DATEADD(mm,-" & lngPayrollPeriod & ", GETDATE())" & vbNewLine
-
+              datePart = "mm"
             Case AccordPurgeType.Years
-              sSQLOvernightJob = sSQLOvernightJob & "    UPDATE dbo.[ASRSysAccordTransactions] SET [archived] = 1 " & vbNewLine _
-                & "        WHERE [CreatedDateTime] < DATEADD(yy,-" & lngPayrollPeriod & ", GETDATE())" & vbNewLine
-
+              datePart = "yy"
           End Select
 
+          If Not datePart Is Nothing Then
+            sSQLOvernightJob += "    DECLARE @date datetime" & vbNewLine &
+                                "    SET @date = DATEADD(" & datePart & ", -" & lngPayrollPeriod & ", GETDATE())" & vbNewLine & vbNewLine &
+                                "    UPDATE dbo.[ASRSysAccordTransactions] SET [archived] = 1 " & vbNewLine &
+                                "    WHERE [CreatedDateTime] < @date AND [archived] = 0" & vbNewLine
+          End If
         End If
-
 
         ' Generate the stored procedure
         sSQLOvernightJob = "/* ------------------------------------------------------------------------------- */" & vbNewLine & _

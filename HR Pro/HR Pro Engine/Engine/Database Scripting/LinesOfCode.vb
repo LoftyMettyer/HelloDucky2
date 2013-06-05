@@ -7,13 +7,13 @@ Namespace ScriptDB
     Inherits Collection(Of CodeElement)
 
     Private mbAppendAfterNext As Boolean
-    Private mbIsComparison As Boolean
-
     Private miNextInsertPoint As Integer
     Private miLastInsertOperatorType As OperatorSubType
 
     Public Property CodeLevel As Integer
     Public Property ReturnType As ComponentValueTypes
+    Public Property MakeTypesafe As Boolean = True
+    Public Property IsLogicBlock As Boolean
 
     Public Overloads Sub Add(ByVal LineOfCode As CodeElement)
 
@@ -40,12 +40,12 @@ Namespace ScriptDB
       Me.Items.Add(LineOfCode)
     End Sub
 
-    ' Property to calculate the character indenation in the code (to beautify the code)
-    Public ReadOnly Property Indentation() As String
-      Get
-        Return Space(8)
-      End Get
-    End Property
+    '' Property to calculate the character indenation in the code (to beautify the code)
+    'Public ReadOnly Property Indentation() As String
+    '  Get
+    '    Return Space(8)
+    '  End Get
+    'End Property
 
     Public Function ToArray() As String()
       Return Me.Items.Select(Function(c) c.Code).ToArray()
@@ -53,27 +53,36 @@ Namespace ScriptDB
 
     Public ReadOnly Property Statement() As String
       Get
-        Statement = String.Empty
 
         Dim Chunk As CodeElement
         Dim iThisElement As Integer
         Dim bComparisonSinceLastLogic As Boolean
+
         Dim bAddAutoIsEqualTo As Boolean
+        Dim bNewLine As Boolean
 
         Statement = String.Empty
         For Each Chunk In Me.Items
           bAddAutoIsEqualTo = False
-
-          If Chunk.OperatorType = OperatorSubType.Comparison Then mbIsComparison = True
+          bNewLine = False
 
           If ReturnType = ComponentValueTypes.Logic Then
 
             If Chunk.CodeType = ComponentTypes.Operator Then
+
               If Chunk.OperatorType = OperatorSubType.Comparison Then
                 bComparisonSinceLastLogic = True
+                IsLogicBlock = True
+
               ElseIf Chunk.OperatorType = OperatorSubType.Logic Then
                 bComparisonSinceLastLogic = False
+                IsLogicBlock = True
+                bNewLine = True
+
+              ElseIf Chunk.OperatorType = OperatorSubType.Modifier Then
+                IsLogicBlock = True
               End If
+
             End If
 
             ' Is there an operator after this component?
@@ -98,28 +107,25 @@ Namespace ScriptDB
 
           End If
 
+
           ' Does this code element make needing logic safe?
           ' Some logic expressions return a simple logic while others are set specifically 
           ' to logicval = 0, or have the not in front of them!
           If bAddAutoIsEqualTo Then
-            Statement = vbNewLine & String.Format("{0}{1}{2} = 1", New String(CChar(vbTab), CodeLevel), Statement, Chunk.Code)
+            Statement = String.Format("{0}{1}{2} = 1", Statement, IIf(bNewLine, vbNewLine & New String(CChar(vbTab), CodeLevel), vbNullString), Chunk.Code)
+            IsLogicBlock = True
             bAddAutoIsEqualTo = False
           Else
-            Statement = vbNewLine & String.Format("{0}{1}{2}", New String(CChar(vbTab), CodeLevel), Statement, Chunk.Code)
+            Statement = String.Format("{0}{1}{2}", Statement, IIf(bNewLine, vbNewLine & New String(CChar(vbTab), CodeLevel), vbNullString), Chunk.Code)
           End If
 
-          'If iThisElement > 0 Then
-          '  Statement = vbNewLine & Statement
-          'End If
-
-          ' Statement = Statement & Chunk.Code
           iThisElement = iThisElement + 1
 
         Next
 
-        ' Wrap to return code chunks in safety
-        If Me.ReturnType = ComponentValueTypes.Logic Or mbIsComparison Then
-          Statement = String.Format("{0}CASE WHEN ({1}) THEN 1 ELSE 0 END", New String(CChar(vbTab), CodeLevel), Statement)
+        ' Wrap to return code chunks in safety (was there 'not' statement)
+        If IsLogicBlock And Me.ReturnType = ComponentValueTypes.Logic And MakeTypesafe Then
+          Statement = String.Format("CASE WHEN ({0}) THEN 1 ELSE 0 END", Statement)
         End If
 
       End Get

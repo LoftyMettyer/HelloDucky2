@@ -24,6 +24,9 @@
     Public BoilerPlate As String
     Public Comments As String
 
+    Public Declaration As String
+    Public PartNumber As Integer
+
     Public ReadOnly Property BaseName() As String
       Get
         ' Debug.Assert(Name.StartsWith("[dbo].["))

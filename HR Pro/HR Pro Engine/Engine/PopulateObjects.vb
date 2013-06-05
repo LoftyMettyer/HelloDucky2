@@ -395,7 +395,7 @@ Namespace Things
 
     End Sub
 
-    Public Function LoadComponents(ByVal expression As Component, ByVal type As ScriptDB.ComponentTypes) As ICollection(Of Component)
+    Public Function LoadComponents(ByVal Expression As Component, ByVal type As ScriptDB.ComponentTypes) As ICollection(Of Component)
 
       If componentfunction Is Nothing Then
         componentfunction = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_function", Nothing)
@@ -421,6 +421,7 @@ Namespace Things
       For Each row As DataRow In rows
 
         Dim component As New Component
+        component.Parent = Expression
         component.ID = row.Item("componentid").ToString
         component.SubType = row.Item("subtype")
         component.Name = row.Item("name")

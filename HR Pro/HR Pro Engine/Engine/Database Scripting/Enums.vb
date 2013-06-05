@@ -68,6 +68,7 @@
   End Enum
 
   Public Enum ComponentTypes
+    Unknown = 0
     Column = 1
     [Function] = 2
     Calculation = 3

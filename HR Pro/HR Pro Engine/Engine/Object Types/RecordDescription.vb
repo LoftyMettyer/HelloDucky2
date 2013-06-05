@@ -1,13 +1,13 @@
 ﻿Namespace Things
 
-   Public Class RecordDescription
-      Inherits Expression
+  Public Class RecordDescription
+    Inherits Expression
 
-      Public Overrides Sub GenerateCode()
-         Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription
-         Me.AssociatedColumn = Me.BaseExpression.BaseTable.Columns(0)    'needs to have at least one column.
-         MyBase.GenerateCode()
-      End Sub
+    Public Sub GenerateRecordDescription()
+      Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription
+      Me.AssociatedColumn = Me.BaseExpression.BaseTable.Columns(0)    'needs to have at least one column.
+      MyBase.GenerateCodeForColumn()
+    End Sub
 
-   End Class
+  End Class
 End Namespace

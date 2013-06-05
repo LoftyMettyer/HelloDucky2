@@ -4,9 +4,9 @@
   Public Class Mask
     Inherits Expression
 
-    Public Overrides Sub GenerateCode()
+    Public Sub GenerateMaskCode()
       Me.ExpressionType = ScriptDB.ExpressionType.Mask
-      MyBase.GenerateCode()
+      MyBase.GenerateCodeForColumn()
     End Sub
 
   End Class

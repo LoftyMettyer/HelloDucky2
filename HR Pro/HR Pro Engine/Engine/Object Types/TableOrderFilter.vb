@@ -61,9 +61,10 @@
       Dim aryParameters As New ArrayList
       Dim aryWheres As New ArrayList
       Dim aryJoins As New ArrayList
+      Dim aryDeclarations As New ArrayList
+      Dim aryStatements As New ArrayList
       Dim sRowSelection As String = vbNullString
       Dim bReverseOrder As Boolean
-      Dim sOptions As String = ""
       Dim objIndex As New Index
 
       ' What type of rows to retrieve
@@ -75,21 +76,17 @@
           bReverseOrder = True
       End Select
 
-      sOptions = "--WITH SCHEMABINDING"
-
       ' Build the where clause
       If Not RowDetails.Filter Is Nothing Then
         RowDetails.Filter.AssociatedColumn = Me.Table.Columns(0)
         RowDetails.Filter.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
-        RowDetails.Filter.GenerateCode()
+        RowDetails.Filter.GenerateCodeForColumn()
 
-        'If RowDetails.Filter.IsComplex Then
-        '  aryWheres.Add(String.Format("({0} = 1)", RowDetails.Filter.UDF.CallingCode))
-        'Else
+        aryDeclarations.AddRange(RowDetails.Filter.Declarations)
+        aryStatements.AddRange(RowDetails.Filter.PreStatements)
         aryWheres.Add(String.Format("({0} = 1)", RowDetails.Filter.UDF.SelectCode))
-        '    End If
-
         aryJoins.Add(RowDetails.Filter.UDF.JoinCode)
+
       End If
 
       ' Build the order by clause
@@ -143,17 +140,21 @@
       objIndex.IsTableIndex = True
       objIndex.IsClustered = False
 
-         With UDF
-            .Name = "[dbo].[" & Me.Name & "]"
-            .WhereCode = If(aryWheres.Count > 0, "WHERE ", "") & String.Join(" AND ", aryWheres.ToArray())
-            .OrderCode = If(aryOrderBy.Count > 0, "ORDER BY ", "") & String.Join(", ", aryOrderBy.ToArray())
+      With UDF
+        .Name = "[dbo].[" & Me.Name & "]"
 
-            If RowDetails.RowSelection = ScriptDB.ColumnRowSelection.Specific Then
+        .Declarations = If(aryDeclarations.Count > 0, vbTab & "DECLARE " & String.Join("," & vbNewLine & vbTab & vbTab & vbTab, aryDeclarations.ToArray()) & ";" & vbNewLine, "")
+        .Prerequisites = If(aryStatements.Count > 0, vbTab & String.Join(vbNewLine, aryStatements.ToArray()) & vbNewLine & vbNewLine, "")
+        .WhereCode = If(aryWheres.Count > 0, "WHERE ", "") & String.Join(" AND ", aryWheres.ToArray())
+        .OrderCode = If(aryOrderBy.Count > 0, "ORDER BY ", "") & String.Join(", ", aryOrderBy.ToArray())
+
+        If RowDetails.RowSelection = ScriptDB.ColumnRowSelection.Specific Then
 
           .Code = String.Format("CREATE FUNCTION dbo.[{0}]({1})" & vbNewLine & _
              "RETURNS @results TABLE({2})" & vbNewLine & _
-             "{9}" & vbNewLine & _
              "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+             "{10}" & vbNewLine & vbNewLine & _
+             "{11}" & vbNewLine & vbNewLine & _
              "WITH base AS (" & vbNewLine & _
              "    SELECT {3}, [rownumber] = ROW_NUMBER() OVER ({7})" & vbNewLine & _
              "    FROM {4} base" & vbNewLine & _
@@ -161,36 +162,43 @@
              "    {6})" & vbNewLine & _
              "INSERT @Results SELECT {3}" & vbNewLine & _
              "        FROM base" & vbNewLine & _
-             "        WHERE [rownumber] = {10}" & vbNewLine & _
+             "        WHERE [rownumber] = {9}" & vbNewLine & _
              "    RETURN;" & vbNewLine & _
              "END" _
             , Me.Name, String.Join(", ", aryParameters.ToArray()) _
             , String.Join(", ", aryReturnDefintion.ToArray()), String.Join(", ", aryColumnList.ToArray()) _
             , Me.Table.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode, sRowSelection _
-            , sOptions, RowDetails.RowNumber)
+            , RowDetails.RowNumber, .Declarations, .Prerequisites)
 
-            Else
-               .Code = String.Format("CREATE FUNCTION dbo.[{0}]({1})" & vbNewLine & _
-                              "RETURNS @results TABLE({2})" & vbNewLine & _
-                              "{9}" & vbNewLine & _
-                              "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                              "INSERT @Results SELECT{8} {3}" & vbNewLine & _
-                              "        FROM dbo.[{4}] base" & vbNewLine & _
-                              "        {5}" & vbNewLine & _
-                              "        {6}" & vbNewLine & _
-                              "        {7}" & vbNewLine & _
-                              "    RETURN;" & vbNewLine & _
-                              "END" _
-                             , Me.Name, String.Join(", ", aryParameters.ToArray()) _
-                             , String.Join(", ", aryReturnDefintion.ToArray()), String.Join(", ", aryColumnList.ToArray()) _
-                             , Me.Table.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode, sRowSelection _
-                             , sOptions)
-            End If
+        Else
+          .Code = String.Format("CREATE FUNCTION dbo.[{0}]({1})" & vbNewLine & _
+                         "RETURNS @results TABLE({2})" & vbNewLine & _
+                         "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+                         "{9}" & vbNewLine & vbNewLine & _
+                         "{10}" & vbNewLine & vbNewLine & _
+                         "INSERT @Results SELECT{8} {3}" & vbNewLine & _
+                         "        FROM dbo.[{4}] base" & vbNewLine & _
+                         "        {5}" & vbNewLine & _
+                         "        {6}" & vbNewLine & _
+                         "        {7}" & vbNewLine & _
+                         "    RETURN;" & vbNewLine & _
+                         "END" _
+                        , Me.Name, String.Join(", ", aryParameters.ToArray()) _
+                        , String.Join(", ", aryReturnDefintion.ToArray()), String.Join(", ", aryColumnList.ToArray()) _
+                        , Me.Table.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode, sRowSelection _
+                        , .Declarations, .Prerequisites)
+        End If
 
-            ' Add the index
+        ' Add the index
+        Select Case RowDetails.RowSelection
+          Case ScriptDB.ColumnRowSelection.Count
+          Case ScriptDB.ColumnRowSelection.Total
+          Case Else
             Me.Table.Indexes.Add(objIndex)
+        End Select
 
-         End With
+
+      End With
 
     End Sub
 
