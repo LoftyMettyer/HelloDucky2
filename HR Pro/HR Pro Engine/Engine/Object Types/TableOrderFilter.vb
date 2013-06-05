@@ -104,13 +104,15 @@
           Not (RowDetails.RowSelection = ScriptDB.ColumnRowSelection.Total Or RowDetails.RowSelection = ScriptDB.ColumnRowSelection.Count) Then
         For Each objOrderItem In RowDetails.Order.Objects
           If objOrderItem.ColumnType = "O" Then
-            Select Case objOrderItem.Ascending
-              Case Enums.Order.Ascending
-                aryOrderBy.Add(String.Format("base.[{1}] {2}", objOrderItem.Column.Table.Name, objOrderItem.Column.Name, IIf(bReverseOrder, "DESC", "ASC")))
-              Case Else
-                aryOrderBy.Add(String.Format("base.[{1}] {2}", objOrderItem.Column.Table.Name, objOrderItem.Column.Name, IIf(bReverseOrder, "ASC", "DESC")))
-            End Select
-            objIndex.Columns.AddIfNew(objOrderItem.Column)
+            If Not objOrderItem.Column Is Nothing Then
+              Select Case objOrderItem.Ascending
+                Case Enums.Order.Ascending
+                  aryOrderBy.Add(String.Format("base.[{1}] {2}", objOrderItem.Column.Table.Name, objOrderItem.Column.Name, IIf(bReverseOrder, "DESC", "ASC")))
+                Case Else
+                  aryOrderBy.Add(String.Format("base.[{1}] {2}", objOrderItem.Column.Table.Name, objOrderItem.Column.Name, IIf(bReverseOrder, "ASC", "DESC")))
+              End Select
+              objIndex.Columns.AddIfNew(objOrderItem.Column)
+            End If
           End If
         Next
       End If
