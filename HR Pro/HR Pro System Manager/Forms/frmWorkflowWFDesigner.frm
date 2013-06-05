@@ -9172,3 +9172,7 @@ Public Function WebformControl_HasNavigation(piControlType As Long) As Boolean
   ' Return true if the given control has a NavigateTo property.
   WebformControl_HasNavigation = (piControlType = giCTRL_NAVIGATION)
 End Function
+
+Private Sub TabPages_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+  tabPages_Click
+End Sub
