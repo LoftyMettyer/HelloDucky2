@@ -314,6 +314,22 @@ Private Sub cmdOK_Click()
     rsLogins.Close
   End If
   
+  
+  If fOK Then
+    ' Check that the user to be created is not 'OpenHR2IIS' as this is a fixed
+    ' username created by the 5.1 update script
+    If LCase(cboUserLogin.Text) = "openhr2iis" Then
+     MsgBox "Cannot create user 'OpenHR2IIS' as this is a reserved user name.", vbInformation + vbOKOnly, App.Title
+      If cboUserLogin.ListCount > 0 Then
+        cboUserLogin.ListIndex = 0
+      End If
+      cboUserLogin.SetFocus
+      fOK = False
+      
+    End If
+  End If
+  
+  
 TidyUpAndExit:
   Set rsLogins = Nothing
   
@@ -376,6 +392,7 @@ Private Sub Form_Load()
     " WHERE master.dbo.syslogins.sysadmin = 0 " & _
     " AND len(master.dbo.syslogins.loginname) <= 50 " & _
     " AND master.dbo.syslogins.IsNTName = 0" & _
+    " AND master.dbo.syslogins.loginname <> 'openhr2iis'" & _
     " AND (loginname not like '##MS_%') ORDER BY LoginName"
     
   FillCombo cboUserLogin, sSQL
