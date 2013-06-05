@@ -1108,7 +1108,7 @@ Private Function PictureIsUsed(glngPictureID As Long) As Boolean
   
   Dim fUsed As Boolean
   Dim sSQL As String
-  Dim rsScreens As DAO.Recordset
+  Dim rs As DAO.Recordset
   Dim sPictureName As String
   Dim sScreenName As String
   Dim sTableName As String
@@ -1129,16 +1129,15 @@ Private Function PictureIsUsed(glngPictureID As Long) As Boolean
     " FROM tmpScreens" & _
     " WHERE deleted=FALSE" & _
     " AND tmpScreens.pictureID=" & Trim(Str(glngPictureID))
-  Set rsScreens = daoDb.OpenRecordset(sSQL, _
-    dbOpenForwardOnly, dbReadOnly)
-  If Not (rsScreens.BOF And rsScreens.EOF) Then
+  Set rs = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+  If Not (rs.BOF And rs.EOF) Then
     fUsed = True
-    Do Until rsScreens.EOF
+    Do Until rs.EOF
         ' Get the names of the screen and its associated table.
-      sScreenName = rsScreens.Fields("name")
+      sScreenName = rs.Fields("name")
         
       recTabEdit.Index = "idxTableID"
-      recTabEdit.Seek "=", rsScreens.Fields("tableId")
+      recTabEdit.Seek "=", rs.Fields("tableId")
         
       If Not recTabEdit.NoMatch Then
         sTableName = recTabEdit!TableName
@@ -1147,27 +1146,26 @@ Private Function PictureIsUsed(glngPictureID As Long) As Boolean
       End If
       
       mfrmUse.AddToList ("Screen Icon : " & sScreenName & " <" & sTableName & ">")
-      rsScreens.MoveNext
+      rs.MoveNext
     Loop
   End If
   'Close temporary recordset
-  rsScreens.Close
+  rs.Close
   
   ' Check that it is not used as an image control on a screen.
   sSQL = "SELECT DISTINCT tmpScreens.name, tmpScreens.tableID" & _
     " FROM tmpScreens, tmpControls" & _
     " WHERE tmpControls.pictureID=" & Trim(Str(glngPictureID)) & _
     " AND tmpControls.screenID = tmpScreens.screenID"
-  Set rsScreens = daoDb.OpenRecordset(sSQL, _
-    dbOpenForwardOnly, dbReadOnly)
-  If Not (rsScreens.BOF And rsScreens.EOF) Then
+  Set rs = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+  If Not (rs.BOF And rs.EOF) Then
     fUsed = True
-    Do Until rsScreens.EOF
+    Do Until rs.EOF
       ' Get the names of the screen and its associated table.
-      sScreenName = rsScreens.Fields("name")
+      sScreenName = rs.Fields("name")
         
       recTabEdit.Index = "idxTableID"
-      recTabEdit.Seek "=", rsScreens.Fields("tableId")
+      recTabEdit.Seek "=", rs.Fields("tableId")
         
       If Not recTabEdit.NoMatch Then
         sTableName = recTabEdit!TableName
@@ -1176,11 +1174,11 @@ Private Function PictureIsUsed(glngPictureID As Long) As Boolean
       End If
       
       mfrmUse.AddToList ("Screen Image : " & sScreenName & " <" & sTableName & ">")
-      rsScreens.MoveNext
+      rs.MoveNext
     Loop
   End If
   'Close temporary recordset
-  rsScreens.Close
+  rs.Close
   
   ' Check that the picture is not used as the background.
   If glngPictureID = glngDesktopBitmapID Then
@@ -1190,31 +1188,43 @@ Private Function PictureIsUsed(glngPictureID As Long) As Boolean
 
   
   If Application.WorkflowModule Then
+    ' Check that it is not used as the workflow picture
+    sSQL = "SELECT Name FROM tmpWorkflows WHERE Deleted = 0 AND PictureID = " & glngPictureID
+    
+    Set rs = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+    If Not (rs.BOF And rs.EOF) Then
+      Do Until rs.EOF
+        fUsed = True
+        mfrmUse.AddToList ("Workflow Picture: " & rs("Name"))
+        rs.MoveLast
+      Loop
+    End If
+    rs.Close
+  
     ' Check that it is not used as a background picture on a workflow web form.
     sSQL = "SELECT DISTINCT tmpWorkflowElements.workflowID," & _
       "   tmpWorkflowElements.identifier" & _
       " FROM tmpWorkflowElements" & _
       " WHERE tmpWorkflowElements.webFormBGImageID = " & Trim(Str(glngPictureID))
   
-    Set rsScreens = daoDb.OpenRecordset(sSQL, _
-      dbOpenForwardOnly, dbReadOnly)
-    If Not (rsScreens.BOF And rsScreens.EOF) Then
-      Do Until rsScreens.EOF
+    Set rs = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+    If Not (rs.BOF And rs.EOF) Then
+      Do Until rs.EOF
         recWorkflowEdit.Index = "idxWorkflowID"
-        recWorkflowEdit.Seek "=", rsScreens.Fields("workflowID")
+        recWorkflowEdit.Seek "=", rs.Fields("workflowID")
   
         If Not recWorkflowEdit.NoMatch Then
           If recWorkflowEdit.Fields("deleted").value = False Then
             fUsed = True
-            mfrmUse.AddToList ("Workflow : " & recWorkflowEdit.Fields("name").value & " <'" & rsScreens.Fields("identifier") & "' web form background picture>")
+            mfrmUse.AddToList ("Workflow : " & recWorkflowEdit.Fields("name").value & " <'" & rs.Fields("identifier") & "' web form background picture>")
           End If
         End If
         
-        rsScreens.MoveNext
+        rs.MoveNext
       Loop
     End If
     'Close temporary recordset
-    rsScreens.Close
+    rs.Close
       
     ' Check that it is not used as a picture on a workflow web form.
     sSQL = "SELECT DISTINCT tmpWorkflowElements.workflowID," & _
@@ -1223,27 +1233,54 @@ Private Function PictureIsUsed(glngPictureID As Long) As Boolean
       " INNER JOIN tmpWorkflowElements ON tmpWorkflowElementItems.elementID = tmpWorkflowElements.id" & _
       " WHERE tmpWorkflowElementItems.pictureID = " & Trim(Str(glngPictureID))
   
-    Set rsScreens = daoDb.OpenRecordset(sSQL, _
-      dbOpenForwardOnly, dbReadOnly)
-    If Not (rsScreens.BOF And rsScreens.EOF) Then
-      Do Until rsScreens.EOF
+    Set rs = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+    If Not (rs.BOF And rs.EOF) Then
+      Do Until rs.EOF
         recWorkflowEdit.Index = "idxWorkflowID"
-        recWorkflowEdit.Seek "=", rsScreens.Fields("workflowID")
+        recWorkflowEdit.Seek "=", rs.Fields("workflowID")
             
         If Not recWorkflowEdit.NoMatch Then
           If recWorkflowEdit.Fields("deleted").value = False Then
             fUsed = True
-            mfrmUse.AddToList ("Workflow : " & recWorkflowEdit.Fields("name").value & " <'" & rsScreens.Fields("identifier") & "' web form picture>")
+            mfrmUse.AddToList ("Workflow : " & recWorkflowEdit.Fields("name").value & " <'" & rs.Fields("identifier") & "' web form picture>")
           End If
         End If
         
-        rsScreens.MoveNext
+        rs.MoveNext
       Loop
     End If
     'Close temporary recordset
-    rsScreens.Close
+    rs.Close
   End If
-      
+  
+  If Application.MobileModule Then
+  
+    ' Check that it is not used in the mobile layout
+    sSQL = "SELECT ID FROM tmpmobileformlayout WHERE ID = 1 AND (" & _
+    "HeaderPictureID = " & glngPictureID & _
+    " OR HeaderLogoID = " & glngPictureID & _
+    " OR MainPictureID = " & glngPictureID & _
+    " OR FooterPictureID = " & glngPictureID & _
+    ")"
+    
+    Set rs = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+    If Not (rs.BOF And rs.EOF) Then
+        fUsed = True
+        mfrmUse.AddToList ("Mobile Designer Picture")
+    End If
+    rs.Close
+    
+    ' Check that it is not used by a mobile page element
+    sSQL = "SELECT ID FROM tmpmobileformelements WHERE PictureID = " & glngPictureID
+    
+    Set rs = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+    If Not (rs.BOF And rs.EOF) Then
+        fUsed = True
+        mfrmUse.AddToList ("Mobile Designer Control Picture")
+    End If
+    rs.Close
+  End If
+  
   ' NPG20100427 Fault HRPRO-891
   If Application.SelfServiceIntranetModule Then
     ' Check that it is not used as a separator picture in the SSI.
@@ -1251,20 +1288,19 @@ Private Function PictureIsUsed(glngPictureID As Long) As Boolean
       " FROM tmpSSIntranetLinks" & _
       " WHERE tmpSSIntranetLinks.PictureID = " & Trim(Str(glngPictureID))
   
-    Set rsScreens = daoDb.OpenRecordset(sSQL, _
-      dbOpenForwardOnly, dbReadOnly)
-    If Not (rsScreens.BOF And rsScreens.EOF) Then
+    Set rs = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+    If Not (rs.BOF And rs.EOF) Then
             fUsed = True
             mfrmUse.AddToList ("Self Service Intranet Configuration")
     End If
     'Close temporary recordset
-    rsScreens.Close
+    rs.Close
   End If
       
       
 TidyUpAndExit:
   ' Disassociate object variables.
-  Set rsScreens = Nothing
+  Set rs = Nothing
   PictureIsUsed = fUsed
   Exit Function
 
