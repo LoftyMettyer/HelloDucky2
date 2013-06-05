@@ -7,8 +7,6 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OpenHR Framework Setup", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileDesigner", "..\HR Pro Mobile Designer\MobileDesigner\MobileDesigner.csproj", "{6D7DBE8A-D215-4F00-9438-DD412B50E48B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fusion.Configuration", "Fusion Configuration\Fusion.Configuration.csproj", "{A55797B6-EC39-43FF-9AF4-E014AE8BEB14}"
-EndProject
 Global
 	GlobalSection(SourceCodeControl) = preSolution
 		SccNumberOfProjects = 4
