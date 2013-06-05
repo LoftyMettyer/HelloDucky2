@@ -3,6 +3,11 @@ Most Recent Package=Dep File 1
 Most Recent Deploy=Folder Deployment 1
 
 
+[Deploy|Folder Deployment 1|Root]
+Package=Dep File 1
+Handler=PDWizard.FolderDplySubWiz
+Folder=C:\Temp\bob
+
 [Package|Dep File 1|Root]
 SubWizProgID=PDWizard.DepPkgSubWiz
 BuildFolder=C:\DEV\HR Pro\HR Pro ActiveX\COA_Navigation
@@ -22,6 +27,7 @@ ODBCDirect=
 [Package|Dep File 1|Missing Dependency Information]
 C:\Program Files\Codejock Software\ActiveX\Xtreme Controls ActiveX v13.1.0\Bin\Codejock.Controls.v13.1.0.ocx=
 C:\WINDOWS\system32\objsafe.tlb=
+C:\WINDOWS\system32\ieframe.dll=
 
 [Package|Dep File 1|Out-of-Date Dependency Information]
 
@@ -42,6 +48,7 @@ C:\DEV\HR Pro\HR Pro ActiveX\COA_Navigation\COA_Navigation.ocx=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msvbvm60.dll=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\objsafe.tlb=Yes
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\Codejock.Controls.v13.1.0.ocx=Yes
+C:\WINDOWS\system32\ieframe.dll=Yes
 
 [Package|Dep File 1|Configure Registry Files]
 Applicable=
@@ -64,6 +71,7 @@ C:\DEV\HR Pro\HR Pro ActiveX\COA_Navigation\COA_Navigation.ocx=$(WinSysPath)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\msvbvm60.dll=$(WinSysPathSysFile)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\objsafe.tlb=$(WinSysPath)
 C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\Codejock.Controls.v13.1.0.ocx=$(WinSysPath)
+C:\WINDOWS\system32\ieframe.dll=$(WinSysPath)
 
 [Package|Dep File 1|Configure Shared Files]
 Applicable=
@@ -79,9 +87,3 @@ ServerSideCab=
 File1=C:\DEV\HR Pro\HR Pro ActiveX\COA_Navigation\COA_Navigation.DEP
 Handler1=PDWizard.FolderDplySubWiz
 Handler2=PDWizard.WebPostDplySubWiz
-
-
-[Deploy|Folder Deployment 1|Root]
-Package=Dep File 1
-Handler=PDWizard.FolderDplySubWiz
-Folder=C:\Temp\bob
