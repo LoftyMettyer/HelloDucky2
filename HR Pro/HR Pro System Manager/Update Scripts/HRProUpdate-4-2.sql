@@ -57,9 +57,193 @@ END
 
 
 /* ------------------------------------------------------------- */
+PRINT 'Step 1 of X - Create New IsValidNINumber function'
+
+	DELETE FROM [ASRSysFunctions] WHERE FunctionID = 75
+	INSERT [ASRSysFunctions]
+	([functionID],[functionName],[returnType],[timeDependent],[category],[spName],[nonStandard],[runtime],[UDF])
+	VALUES
+	(75,'Is Valid NI Number',3,0,'Comparison','sp_ASRFn_IsValidNINumber',0,0,0)
+
+	DELETE FROM [ASRSysFunctionParameters] WHERE FunctionID = 75
+	INSERT [ASRSysFunctionParameters]
+	([functionID],[parameterIndex],[parameterType],[parameterName])
+	VALUES
+	(75,1,1,'<National Insurance Number>')
+
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[sp_ASRFn_IsValidNINumber]')
+			AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+		DROP PROCEDURE [dbo].[sp_ASRFn_IsValidNINumber];
+
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[sp_ASRFn_IsValidNINumber]
+		(
+			@result integer OUTPUT,
+			@input varchar(MAX)
+		)
+		AS
+		BEGIN
+
+			DECLARE @ValidPrefixes varchar(MAX);
+			DECLARE @ValidSuffixes varchar(MAX);
+			DECLARE @Prefix varchar(MAX);
+			DECLARE @Suffix varchar(MAX);
+			DECLARE @Numerics varchar(MAX);
+
+			SET @result = 1;
+			IF ISNULL(@input,'''') = '''' RETURN
+
+			SET @ValidPrefixes = 
+				''/AA/AB/AE/AH/AK/AL/AM/AP/AR/AS/AT/AW/AX/AY/AZ'' +
+				''/BA/BB/BE/BH/BK/BL/BM/BT'' +
+				''/CA/CB/CE/CH/CK/CL/CR'' +
+				''/EA/EB/EE/EH/EK/EL/EM/EP/ER/ES/ET/EW/EX/EY/EZ'' +
+				''/GY'' +
+				''/HA/HB/HE/HH/HK/HL/HM/HP/HR/HS/HT/HW/HX/HY/HZ'' +
+				''/JA/JB/JC/JE/JG/JH/JJ/JK/JL/JM/JN/JP/JR/JS/JT/JW/JX/JY/JZ'' +
+				''/KA/KB/KE/KH/KK/KL/KM/KP/KR/KS/KT/KW/KX/KY/KZ'' +
+				''/LA/LB/LE/LH/LK/LL/LM/LP/LR/LS/LT/LW/LX/LY/LZ'' +
+				''/MA/MW/MX'' +
+				''/NA/NB/NE/NH/NL/NM/NP/NR/NS/NW/NX/NY/NZ'' +
+				''/OA/OB/OE/OH/OK/OL/OM/OP/OR/OS/OX'' +
+				''/PA/PB/PC/PE/PG/PH/PJ/PK/PL/PM/PN/PP/PR/PS/PT/PW/PX/PY'' +
+				''/RA/RB/RE/RH/RK/RM/RP/RR/RS/RT/RW/RX/RY/RZ'' +
+				''/SA/SB/SC/SE/SG/SH/SJ/SK/SL/SM/SN/SP/SR/SS/ST/SW/SX/SY/SZ'' +
+				''/TA/TB/TE/TH/TK/TL/TM/TP/TR/TS/TT/TW/TX/TY/TZ'' +
+				''/WA/WB/WE/WK/WL/WM/WP'' +
+				''/YA/YB/YE/YH/YK/YL/YM/YP/YR/YS/YT/YW/YX/YY/YZ'' +
+				''/ZA/ZB/ZE/ZH/ZK/ZL/ZM/ZP/ZR/ZS/ZT/ZW/ZX/ZY'';
+
+			SET @ValidSuffixes = ''/ /A/B/C/D/'';
+
+			SET @Prefix = ''/''+left(@input+''  '',2)+''/''
+			SET @Suffix = ''/''+substring(@input+'' '',9,1)+''/''
+			SET @Numerics = SUBSTRING(@input,3,6)
+
+			IF charindex(@Prefix,@ValidPrefixes) = 0 OR charindex(@Suffix,@ValidSuffixes) = 0 OR ISNUMERIC(@Numerics) = 0
+				SET @result = 0;
+
+		END';
+		
+	EXECUTE sp_executeSQL @sSPCode;
+
+/* ------------------------------------------------------------- */
+PRINT 'Step 2 of X - Create New IsValidPayrollCharacterSet function'
+
+	DELETE FROM [ASRSysFunctions] WHERE FunctionID = 76
+	INSERT [ASRSysFunctions]
+	([functionID],[functionName],[returnType],[timeDependent],[category],[spName],[nonStandard],[runtime],[UDF])
+	VALUES
+	(76,'Is Valid Payroll Character Set',3,0,'Comparison','sp_ASRFn_IsValidForPayrollCharset',0,0,0)
+
+	DELETE FROM [ASRSysFunctionParameters] WHERE FunctionID = 76
+	INSERT [ASRSysFunctionParameters]
+	([functionID],[parameterIndex],[parameterType],[parameterName])
+	VALUES
+	(76,1,1,'<String>')
+	INSERT [ASRSysFunctionParameters]
+	([functionID],[parameterIndex],[parameterType],[parameterName])
+	VALUES
+	(76,2,1,'<Payroll Character Set>')
+
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[sp_ASRFn_IsValidForPayrollCharset]')
+			AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+		DROP PROCEDURE [dbo].[sp_ASRFn_IsValidForPayrollCharset];
+
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[sp_ASRFn_IsValidForPayrollCharset]
+		(
+			@result integer OUTPUT,
+			@input varchar(MAX),
+			@Charset varchar(1)
+		)
+		AS
+		BEGIN
+
+			--Charset A - typically Address
+			--Charset C - typically Forename
+			--Charset D - typically Surname
+
+			DECLARE @ValidCharacters varchar(MAX);
+			DECLARE @Index int;
+
+
+			IF      @Charset = ''A'' SET @ValidCharacters = ''abcdefghijhklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-''''0123456789,&/(). =!"%&*;<>+:?''
+			ELSE IF @Charset = ''B'' SET @ValidCharacters = ''abcdefghijhklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ''
+			ELSE IF @Charset = ''C'' SET @ValidCharacters = ''abcdefghijhklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-''''''
+			ELSE IF @Charset = ''D'' SET @ValidCharacters = ''abcdefghijhklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-''''0123456789,&/(). ''
+			ELSE IF @Charset = ''G'' SET @ValidCharacters = ''abcdefghijhklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-''''0123456789,&/(). =!"%&*;<>+:?''
+			ELSE IF @Charset = ''H'' SET @ValidCharacters = ''abcdefghijhklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-''''. ''
+			
+			SET @result = 1;
+			SET @Index = 1;
+			WHILE (@Index <= len(@input) AND @result = 1)
+			BEGIN
+				IF charindex(substring(@input,@Index,1),@ValidCharacters) = 0
+					SET @result = 0;
+				SET @Index = @Index + 1;
+			END	
+
+		END';
+	
+	EXECUTE sp_executeSQL @sSPCode;
+
+
+/* ------------------------------------------------------------- */
+PRINT 'Step 3 of X - Create New Replace Characters within a String function'
+
+	DELETE FROM [ASRSysFunctions] WHERE FunctionID = 77
+	INSERT [ASRSysFunctions]
+	([functionID],[functionName],[returnType],[timeDependent],[category],[spName],[nonStandard],[runtime],[UDF])
+	VALUES
+	(77,'Replace Characters in a String',1,0,'Character','sp_ASRFn_ReplaceCharsInString',0,1,0)
+
+	DELETE FROM [ASRSysFunctionParameters] WHERE FunctionID = 77
+	INSERT [ASRSysFunctionParameters]
+	([functionID],[parameterIndex],[parameterType],[parameterName])
+	VALUES
+	(77,1,1,'<String>')
+	INSERT [ASRSysFunctionParameters]
+	([functionID],[parameterIndex],[parameterType],[parameterName])
+	VALUES
+	(77,2,1,'<Search For>')
+	INSERT [ASRSysFunctionParameters]
+	([functionID],[parameterIndex],[parameterType],[parameterName])
+	VALUES
+	(77,3,1,'<Replace With>')
+
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[sp_ASRFn_ReplaceCharsInString]')
+			AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+		DROP PROCEDURE [dbo].[sp_ASRFn_ReplaceCharsInString];
+
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[sp_ASRFn_ReplaceCharsInString]
+		(
+			@psResult		varchar(MAX) OUTPUT,
+			@input varchar(MAX),
+			@searchstring varchar(MAX),
+			@replacestring varchar(MAX)
+		)
+		AS
+		BEGIN
+
+			IF ISNULL(@input, '''') = '''' RETURN;			
+			
+			SET @psResult = REPLACE(@input, @searchstring, @replacestring);
+
+		END';
+	
+	EXECUTE sp_executeSQL @sSPCode;
+
+
+
+
+
+/* ------------------------------------------------------------- */
 PRINT 'Step X of X - '
-
-
 
 	
 /* ------------------------------------------------------------- */
