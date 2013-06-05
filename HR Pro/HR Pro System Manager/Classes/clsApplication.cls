@@ -559,6 +559,12 @@ Public Function CreateTempTables() As Boolean
       " FROM ASRSysRelations IN " & sSource
     daoDb.Execute sSQL
     
+    ' Create the local Table Validations table.
+    sSQL = "SELECT ASRSysTableValidations.*," & _
+      " FALSE AS changed, FALSE AS new, FALSE AS deleted" & _
+      " INTO tmpTableValidations FROM ASRSysTableValidations IN " & sSource
+    daoDb.Execute sSQL
+    
     ' Create the local History Screens table.
     sSQL = "SELECT ASRSysHistoryScreens.* INTO tmpHistoryScreens" & _
       " FROM ASRSysHistoryScreens IN " & sSource
@@ -805,6 +811,28 @@ Public Function CreateTempTables() As Boolean
       
       .Indexes.Refresh
     End With
+    
+    
+    ' Create the indices for the local Table Validations table.
+    Set tbdTemp = daoDb.TableDefs("tmpTableValidations")
+    With tbdTemp
+      Set idxTemp = .CreateIndex("idxValidationID")
+      With idxTemp
+        .Fields.Append .CreateField("ValidationID")
+        .Unique = True
+      End With
+      .Indexes.Append idxTemp
+      
+      Set idxTemp = .CreateIndex("idxTableID")
+      With idxTemp
+        .Fields.Append .CreateField("tableID")
+        .Unique = False
+      End With
+      .Indexes.Append idxTemp
+     
+      .Indexes.Refresh
+    End With
+    
     
     ' Create the indices for the local Summary Fields table.
     Set tbdTemp = daoDb.TableDefs("tmpSummary")
@@ -1619,6 +1647,7 @@ Public Function CreateTempTables() As Boolean
   ' Open temporary table recordsets.
   Set recTabEdit = daoDb.OpenRecordset("tmpTables", dbOpenTable)
   Set recSummaryEdit = daoDb.OpenRecordset("tmpSummary", dbOpenTable)
+  Set recTableValidationEdit = daoDb.OpenRecordset("tmpTableValidations", dbOpenTable)
   Set recColEdit = daoDb.OpenRecordset("tmpColumns", dbOpenTable)
   Set recDiaryEdit = daoDb.OpenRecordset("tmpDiary", dbOpenTable)
   Set recContValEdit = daoDb.OpenRecordset("tmpControlValues", dbOpenTable)
@@ -1689,6 +1718,9 @@ Public Function DropTempTables() As Boolean
   ' Drop the local tables.
   recTabEdit.Close
   daoDb.Execute "DROP TABLE tmpTables"
+  
+  recTableValidationEdit.Close
+  daoDb.Execute "DROP TABLE tmpTableValidations"
   
   recSummaryEdit.Close
   daoDb.Execute "DROP TABLE tmpSummary"
