@@ -1702,10 +1702,15 @@ PRINT 'Step 14 - Convert audit table to view'
 
 	IF EXISTS(SELECT dbo.[udfsys_getmodulesetting]('MODULE_AUDIT','Param_AuditTable'))
 	BEGIN
-		SELECT @sSPCode = 'IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id = object_id(N''' + [tablename] + ''', ''U'') AND xtype = ''V'')
+		SELECT @sSPCode = 'IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id = object_id(N''' + [tablename] + ''', ''V''))
 			DROP VIEW dbo.[' + [tablename] + ']' FROM dbo.[tbsys_tables]
-			WHERE tableid = dbo.[udfsys_getmodulesetting]('MODULE_AUDIT','Param_AuditTable')
-		EXECUTE sp_executesql @sSPCode
+			WHERE tableid = dbo.[udfsys_getmodulesetting]('MODULE_AUDIT','Param_AuditTable');
+		EXECUTE sp_executesql @sSPCode;
+		
+		SELECT @sSPCode = 'CREATE VIEW dbo.[' + [tablename] + '] AS SELECT * FROM dbo.[tbuser_' + [tablename] + ']' FROM dbo.[tbsys_tables]
+			WHERE tableid = dbo.[udfsys_getmodulesetting]('MODULE_AUDIT','Param_AuditTable');
+		EXECUTE sp_executesql @sSPCode;
+
 	END
 
 	-- Remove old audit view
