@@ -75,11 +75,6 @@ Namespace Things
           Case ScriptDB.ComponentTypes.Column
 
             objColumn = Globals.Things.GetObject(Enums.Type.Table, objComponent.TableID).Objects.GetObject(Enums.Type.Column, objComponent.ColumnID)
-            'If objColumn.IsCalculated Then
-            '  objComponent = Globals.Things.GetObject(Enums.Type.Table, objColumn.Table.ID).Objects.GetObject(Enums.Type.Expression, objColumn.CalculationID)
-            '  BuildDependancies(objComponent)
-            'End If
-
             If Not Dependencies.Contains(objColumn) Then
               Dependencies.Add(objColumn)
             End If
@@ -115,30 +110,21 @@ Namespace Things
       Joins = New ArrayList
       FromTables = New ArrayList
       Wheres = New ArrayList
-      '  BeforeStatments = New ArrayList
 
-      '     If Declarations Is Nothing Then Declarations = New ArrayList
-      '      If PreStatements Is Nothing Then PreStatements = New ArrayList
       Declarations.Clear()
       PreStatements.Clear()
-      'BeforeStatments.Clear()
 
       Joins.Clear()
       Wheres.Clear()
       StatementObjects.Clear()
 
-      ' Debug.Assert(Me.AssociatedColumn.Name <> "justthistablecols")
-
       ' Build the dependencies collection
       Dependencies.Clear()
       BuildDependancies(Me)
 
-      '   BuildDependancies(Me)
       aryParameters1.Clear()
       aryParameters2.Clear()
       aryParameters3.Clear()
-
-      ' Debug.Assert(Me.Name <> "col1_plus_hello")
 
       ' Build the execution code
       SQLCode_AddCodeLevel(Me.Objects, mcolLinesOfCode)
@@ -848,14 +834,12 @@ Namespace Things
       If Me.CaseCount > 8 Then
 
         objExpression = New Things.Expression
-        objExpression.ExpressionType = Me.ExpressionType ' ScriptDB.ExpressionType.ColumnCalculation
+        objExpression.ExpressionType = Me.ExpressionType
         objExpression.BaseTable = Me.BaseTable
         objExpression.AssociatedColumn = Me.AssociatedColumn
         objExpression.BaseExpression = Me.BaseExpression
         objExpression.ReturnType = Component.ReturnType
         objExpression.Objects = Component.Objects
-        '        objExpression.Declarations = Declarations
-        '       objExpression.PreStatements = PreStatements
         objExpression.StartOfPartNumbers = Declarations.Count + Me.StartOfPartNumbers
         objExpression.GenerateCode()
 
@@ -876,7 +860,6 @@ Namespace Things
 
         StatementObjects.Add(objExpression)
         LineOfCode.Code = String.Format("@part_{0}", iPartNumber)
-        '   Me.CaseCount = 0
         Me.IsComplex = True
 
       Else
@@ -915,34 +898,6 @@ Namespace Things
       End If
 
     End Sub
-
-    'Public Function SQLCode_AddOrder(ByRef objTable As Things.Table, ByVal [OrderID] As HCMGuid, ByVal ReverseOrder As Boolean) As String
-
-    '  Dim objOrderItems As Things.Collection
-    '  Dim objOrderItem As Things.TableOrderItem
-    '  Dim sReturn As String = String.Empty
-    '  Dim aryOrderBy As New ArrayList
-
-    '  objOrderItems = objTable.GetObject(Enums.Type.TableOrder, OrderID).Objects
-
-    '  For Each objOrderItem In objOrderItems
-    '    If objOrderItem.ColumnType = "O" Then
-    '      Select Case objOrderItem.Ascending
-    '        Case Enums.Order.Ascending
-    '          aryOrderBy.Add(String.Format("[{0}]{1}", objOrderItem.Column.Name, IIf(ReverseOrder, " DESC", " ASC")))
-    '        Case Else
-    '          aryOrderBy.Add(String.Format("[{0}]{1}", objOrderItem.Column.Name, IIf(ReverseOrder, " ASC", " DESC")))
-    '      End Select
-    '    End If
-    '  Next
-
-    '  If aryOrderBy.Count > 0 Then
-    '    sReturn = "ORDER BY " & String.Join(", ", aryOrderBy.ToArray())
-    '  End If
-
-    '  Return sReturn
-
-    'End Function
 
 #End Region
 
