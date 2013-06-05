@@ -155,9 +155,9 @@
       <Project>{6D7DBE8A-D215-4F00-9438-DD412B50E48B}</Project>
       <Name>MobileDesigner</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Engine\HR Pro Engine.vbproj">
+    <ProjectReference Include="..\Engine\System Framework.vbproj">
       <Project>{C475177F-6A94-43B0-BAEE-427642923108}</Project>
-      <Name>Phoenix</Name>
+      <Name>System Framework</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
