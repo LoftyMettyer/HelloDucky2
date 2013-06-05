@@ -9,7 +9,7 @@ Namespace Things
     Public Property Table As Table
 
     Public Property CalcID As Integer
-    Public Property Calculation As Expression
+      Public Property Calculation As Expression
 
     Public Property DataType As ColumnTypes
     Public Property Size As Integer
