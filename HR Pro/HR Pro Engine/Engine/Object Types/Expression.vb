@@ -19,10 +19,8 @@ Namespace Things
     Public UDF As ScriptDB.GeneratedUDF
     Public ExpressionType As ScriptDB.ExpressionType
 
-    '   Public DependsOnColumns As New Things.Collection
     Public Dependencies As New Things.Collection
     Public ColumnRecursion As New Things.Collection
-    'Private mcolOrders As Things.Collection
 
     Public StatementObjects As New Things.Collection
 
@@ -31,15 +29,12 @@ Namespace Things
     Private Wheres As ArrayList
     Public Declarations As New ArrayList
     Public PreStatements As New ArrayList
-    '    Public ChildColumns As Things.Collection
 
     Private mcolLinesOfCode As ScriptDB.LinesOfCode
 
     Public CaseCount As Integer = 0
-    Public StartOfPartNumbers As Integer = 0
+    Private lngStartOfPartNumbers As Long = 0
     Public RequiresRecordID As Boolean = False
-    '    Public RequiresRowNumber As Boolean = False
-    'Public RequiresWriteback As Boolean = False
     Public RequiresOvernight As Boolean = False
     Public ContainsUniqueCode As Boolean = False
     Public ReferencesParent As Boolean = False
@@ -49,8 +44,6 @@ Namespace Things
     Public IsValid As Boolean = True
 
     Private mbCalculatePostAudit As Boolean = False
-    '   Private mbNeedsOriginalValue As Boolean = False
-    '    Private mbCheckTriggerStack As Boolean = False
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
@@ -63,6 +56,17 @@ Namespace Things
         Return mbCalculatePostAudit
       End Get
     End Property
+
+    Public Property StartOfPartNumbers As Long
+      Get
+        Return lngStartOfPartNumbers
+      End Get
+      Set(ByVal value As Long)
+        lngStartOfPartNumbers = value
+      End Set
+    End Property
+
+
 
 #Region "Generate code"
 
@@ -897,7 +901,7 @@ Namespace Things
 
         Select Case Component.ReturnType
           Case ScriptDB.ComponentValueTypes.Numeric
-            LineOfCode.Code = String.Format("convert(float, ({0}))", LineOfCode.Code)
+            LineOfCode.Code = String.Format("convert(numeric(38,8), ({0}))", LineOfCode.Code)
 
           Case ScriptDB.ComponentValueTypes.Date
             LineOfCode.Code = String.Format("convert(datetime, ({0}))", LineOfCode.Code)
@@ -1092,6 +1096,8 @@ Namespace Things
       Dim sVariableName As String
       Dim iBackupType As ScriptDB.ExpressionType
       Dim sStatement As String
+      Dim BackupColumn As Things.Column
+      Dim iBackupStart As Long
 
       If ReferencedColumn.Calculation Is Nothing Then
         ReferencedColumn.Calculation = ReferencedColumn.Table.GetObject(Type.Expression, ReferencedColumn.CalcID)
@@ -1109,6 +1115,9 @@ Namespace Things
         StatementObjects.Add(ReferencedColumn)
 
         iBackupType = ReferencedColumn.Calculation.ExpressionType
+        BackupColumn = ReferencedColumn.Calculation.AssociatedColumn
+        '   iBackupStart = ReferencedColumn.Calculation.StartOfPartNumbers
+
         ReferencedColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn
         ReferencedColumn.Calculation.AssociatedColumn = ReferencedColumn
 
@@ -1116,7 +1125,10 @@ Namespace Things
 
         ReferencedColumn.Calculation.ColumnRecursion = ColumnRecursion
         ReferencedColumn.Calculation.GenerateCode()
+
+        '     ReferencedColumn.Calculation.StartOfPartNumbers = iBackupStart
         ReferencedColumn.Calculation.ExpressionType = iBackupType
+        ReferencedColumn.Calculation.AssociatedColumn = BackupColumn
 
         Declarations.Add(String.Format("@part_{0} {1}", sVariableName, ReferencedColumn.DataTypeSyntax))
 
