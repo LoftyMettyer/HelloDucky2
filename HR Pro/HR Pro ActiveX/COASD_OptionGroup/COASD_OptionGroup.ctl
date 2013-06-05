@@ -188,7 +188,7 @@ End Property
 
 Public Property Get ControlValueList() As String
   'Returns Tab delimited list of control values from the option group control array.
-  Dim ctl As OptionButton
+  Dim ctl As RadioButton
   Dim s As String
   
   For Each ctl In Option1
@@ -222,7 +222,7 @@ End Property
 
 Public Function SelectOption(psValue As String) As Boolean
 
-  Dim ctl As OptionButton
+  Dim ctl As RadioButton
   
   For Each ctl In Option1
     If (psValue = ctl.Caption) Then
@@ -257,11 +257,6 @@ Public Property Get WFItemType() As Integer
 End Property
 
 Private Sub fraInternal_DblClick()
-  RaiseEvent DblClick
-
-End Sub
-
-Private Sub fraOptGroup_DblClick()
   RaiseEvent DblClick
 
 End Sub
@@ -528,7 +523,7 @@ Public Property Let Enabled(ByVal NewEnabled As Boolean)
   UserControl.Enabled() = NewEnabled
   If Not NewEnabled Then
     For Each ctlTemp In UserControl.Controls
-        If TypeOf ctlTemp Is OptionButton Then
+        If TypeOf ctlTemp Is RadioButton Then
             ctlTemp.Enabled = False
         End If
     Next
