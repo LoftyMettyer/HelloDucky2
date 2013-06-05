@@ -789,6 +789,7 @@ Namespace ScriptDB
       Dim sSQL As String = String.Empty
       Dim sTriggerType As String = String.Empty
       Dim sTriggerName As String = String.Empty
+      Dim sTriggerFireType As String = String.Empty
 
       Try
 
@@ -796,26 +797,32 @@ Namespace ScriptDB
           Case Enums.TriggerType.InsteadOfInsert
             sTriggerName = String.Format("{0}{1}_i01", ScriptDB.Consts.Trigger, Table.Name)
             sTriggerType = "INSTEAD OF INSERT"
+            sTriggerFireType = "INSERT"
 
           Case Enums.TriggerType.AfterInsert
             sTriggerName = String.Format("{0}{1}_i02", ScriptDB.Consts.Trigger, Table.Name)
             sTriggerType = "AFTER INSERT"
+            sTriggerFireType = "INSERT"
 
           Case Enums.TriggerType.InsteadOfUpdate
             sTriggerName = String.Format("{0}{1}_u01", ScriptDB.Consts.Trigger, Table.Name)
             sTriggerType = "INSTEAD OF UPDATE"
+            sTriggerFireType = "UPDATE"
 
           Case Enums.TriggerType.AfterUpdate
             sTriggerName = String.Format("{0}{1}_u02", ScriptDB.Consts.Trigger, Table.Name)
             sTriggerType = "AFTER UPDATE"
+            sTriggerFireType = "UPDATE"
 
           Case Enums.TriggerType.InsteadOfDelete
             sTriggerName = String.Format("{0}{1}_d01", ScriptDB.Consts.Trigger, Table.Name)
             sTriggerType = "INSTEAD OF DELETE"
+            sTriggerFireType = "DELETE"
 
           Case Enums.TriggerType.AfterDelete
             sTriggerName = String.Format("{0}{1}_d02", ScriptDB.Consts.Trigger, Table.Name)
             sTriggerType = "AFTER DELETE"
+            sTriggerFireType = "DELETE"
 
         End Select
 
@@ -835,6 +842,13 @@ Namespace ScriptDB
           "END" _
           , sTriggerName, [Role], Table.PhysicalName, sTriggerType, [BodyCode])
         CommitDB.ScriptStatement(sSQL)
+
+        ' Put the correct firing order on the trigger
+        If TriggerType = Enums.TriggerType.AfterDelete Or TriggerType = Enums.TriggerType.AfterUpdate Or TriggerType = Enums.TriggerType.AfterInsert Then
+          sSQL = String.Format("EXEC sp_settriggerorder @triggername=N'[{0}].[{1}]', @order=N'First', @stmttype=N'{2}'" _
+              , [Role], sTriggerName, sTriggerFireType)
+          CommitDB.ScriptStatement(sSQL)
+        End If
 
       Catch ex As Exception
         Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, sTriggerName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sSQL)
