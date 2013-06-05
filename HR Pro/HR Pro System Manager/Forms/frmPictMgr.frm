@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Begin VB.Form frmPictMgr 
    Caption         =   "Picture Manager"
    ClientHeight    =   3255
@@ -1233,6 +1233,24 @@ Private Function PictureIsUsed(glngPictureID As Long) As Boolean
     'Close temporary recordset
     rsScreens.Close
   End If
+      
+  ' NPG20100427 Fault HRPRO-891
+  If Application.SelfServiceIntranetModule Then
+    ' Check that it is not used as a separator picture in the SSI.
+    sSQL = "SELECT DISTINCT tmpSSIntranetLinks.ID" & _
+      " FROM tmpSSIntranetLinks" & _
+      " WHERE tmpSSIntranetLinks.PictureID = " & Trim(Str(glngPictureID))
+  
+    Set rsScreens = daoDb.OpenRecordset(sSQL, _
+      dbOpenForwardOnly, dbReadOnly)
+    If Not (rsScreens.BOF And rsScreens.EOF) Then
+            fUsed = True
+            mfrmUse.AddToList ("Self Service Intranet Module Setup")
+    End If
+    'Close temporary recordset
+    rsScreens.Close
+  End If
+      
       
 TidyUpAndExit:
   ' Disassociate object variables.
