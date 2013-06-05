@@ -952,24 +952,6 @@ PRINT 'Step - Add new calculation procedures'
 	END'
 	EXECUTE sp_executeSQL @sSPCode;
 
-	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getuniquecode](
-		@prefix AS varchar(255),
-		@rootvalue as integer)
-	RETURNS [nvarchar](255)
-	WITH SCHEMABINDING
-	AS
-	BEGIN
-	
-		DECLARE @result nvarchar(255);
-
-		SELECT @result = convert(integer, [maxcodesuffix])
-			FROM dbo.[tbsys_uniquecodes] WHERE [codeprefix] = @prefix;
-		
-		RETURN @result;
-	
-	END';
-	EXECUTE sp_executeSQL @sSPCode;
-
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getfunctionparametertype]
 			(@functionid integer, @parameterindex integer)
 		RETURNS integer
@@ -1644,6 +1626,7 @@ PRINT 'Step - Populate code generation tables'
 			[overnightonly] [bit] NULL,
 			[calculatepostaudit] [bit] NULL,
 			[isgetfieldfromdb] [bit],
+			[isuniquecode] [bit],
 			[performancerating] [integer] NULL,
 			[maketypesafe] bit NULL,
 			[casecount] [tinyint],
@@ -1744,7 +1727,7 @@ PRINT 'Step - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''2bf404b7-970e-4fdb-9977-00d516a6cc84'', N''[dbo].[udfsys_statutoryredundancypay]({0}, {1}, {2}, {3}, {4})'', 2, N''Statutory Redundancy Pay'', NULL, 0, 0, 41)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''1cce61bf-ee36-4779-83b9-233885440437'', N''(DATEADD(D, 0, DATEDIFF(D, 0, GETDATE())))'', 4, N''System Date'', NULL, 0, 0, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''1b77e32f-756b-4e97-94d2-f0b053b0baca'', N''CONVERT(varchar,GETDATE(),8)'', 1, N''System Time'', NULL, 0, 0, 15)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [maketypesafe]) VALUES (N''a8974869-0964-40e9-bbbf-4ac6157bf07f'', N''[dbo].[udfsys_getuniquecode] ({0}, {1})'', 0, N''Unique Code'', NULL, 0, 0, 43, 1)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [maketypesafe], [isuniquecode]) VALUES (N''a8974869-0964-40e9-bbbf-4ac6157bf07f'', N''[dbo].[udfstat_getuniquecode] ({0}, {1}, @prm_ID)'', 0, N''Unique Code'', NULL, 0, 0, 43, 1, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''09e7dfb0-3bc2-4db5-a596-9639eb3e77b5'', N''[dbo].[udfsys_weekdaysbetweentwodates] ({0}, {1})'', 2, N''Weekdays between Two Dates'', NULL, 0, 0, 22)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''fbccef52-27be-4ee4-8afa-d8228da2e952'', N''[dbo].[udfsys_wholemonthsbetweentwodates] ({0}, {1})'', 2, N''Whole Months between Two Dates'', NULL, 0, 0, 26)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''1b5082ad-36bb-4bf8-b859-22a1de8f8d2e'', N''[dbo].[udfsys_wholeyearsbetweentwodates] ({0}, {1})'', 2, N''Whole Years between Two Dates'', NULL, 0, 0, 54)';
@@ -1796,6 +1779,7 @@ PRINT 'Step - Administration module stored procedures'
 			, ISNULL([recordidrequired],0) AS [recordidrequired]			
 			, ISNULL([CalculatePostAudit],0) AS [calculatepostaudit]
 			, ISNULL([isgetfieldfromdb],0) AS [isgetfieldfromdb]
+			, ISNULL([isuniquecode], 0) AS [isuniquecode]
 			, ISNULL([performancerating],1) AS [performancerating]
 			, ISNULL([overnightonly],0) AS [overnightonly]
 			, ISNULL([casecount],0) AS [casecount]
