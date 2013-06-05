@@ -630,25 +630,25 @@ Private Sub CascadeForms()
 End Sub
 
 Private Function ChangeView(ViewStyle As ComctlLib.ListViewConstants) As Boolean
+  
   Static InChangeView As Boolean
+  Dim objListView As ListView
+  
   On Error GoTo ErrorTrap
   
   If InChangeView Then Exit Function
   
   InChangeView = True
   
-  'TM20010917 Fault 2040
-  'When the listview populates in smallicons view it looks un-tidy, so to have the arranged
-  'small icon view just simple switch to list view first.
-  If ViewStyle = lvwSmallIcon Then
-    Me.ActiveForm.ListView1.View = lvwList
-  End If
-  Me.ActiveForm.ListView1.View = ViewStyle
-  Me.ActiveForm.ListView1.Visible = True
+  Set objListView = Me.ActiveForm.Controls("ListView1")
   
-'TM20010914 Fault 1753
-'As ActiveBar does not support mutual exclusivity on its tools, the following code
-'ensures only one of the view options is selected at any one time.
+  If ViewStyle = lvwSmallIcon Then
+    objListView.View = lvwList
+  End If
+  objListView.View = ViewStyle
+  objListView.Visible = True
+  
+  ' As ActiveBar does not support mutual exclusivity on its tools, the following code ensures only one of the view options is selected at any one time.
   With tbMain
     Select Case ViewStyle
       Case lvwIcon
@@ -715,23 +715,23 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     
     If Not blnReadonly Then
     
-      If frmDbMgr.ActiveView Is frmDbMgr.TreeView1 Then
+      If frmDbMgr.ActiveView Is frmDbMgr.Treeview1 Then
         
-        bCopyTable = DoesTableExistInDB(val(Mid(frmDbMgr.TreeView1.SelectedItem.key, 2)))
+        bCopyTable = DoesTableExistInDB(val(Mid(frmDbMgr.Treeview1.SelectedItem.key, 2)))
         
-        If frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATION Then
-          .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd) And (frmDbMgr.TreeView1.Nodes("TABLES").Children > 0)
+        If frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATION Then
+          .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd) And (frmDbMgr.Treeview1.Nodes("TABLES").Children > 0)
           .Tools("ID_CopyDef").Enabled = False
         Else
-          .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd)
+          .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd)
           .Tools("ID_CopyDef").Enabled = bCopyTable
         End If
         
         
         
-        .Tools("ID_Delete").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtDelete)
-        .Tools("ID_Properties").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtEdit)
-        .Tools("ID_Print").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtCopy)
+        .Tools("ID_Delete").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtDelete)
+        .Tools("ID_Properties").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtEdit)
+        .Tools("ID_Print").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtCopy)
       Else
         .Tools("ID_New").Enabled = (frmDbMgr.ListView1_SelectedTag And edtAdd)
         
@@ -754,7 +754,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     .Tools("ID_LargeIcons").Enabled = True
     .Tools("ID_SmallIcons").Enabled = True
     .Tools("ID_List").Enabled = True
-    .Tools("ID_Details").Enabled = ((frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLE))
+    .Tools("ID_Details").Enabled = ((frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLE))
     .Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Enabled And _
       (frmDbMgr.ListView1.View = lvwReport)
     frmSysMgr.tbMain.Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Enabled And _
@@ -768,7 +768,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
 '      .Tools("ID_List").Checked = False
 '      .Tools("ID_Details").Checked = True
       .Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Checked And _
-        ((frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLE))
+        ((frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLE))
 
       frmSysMgr.tbMain.Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Checked
     End If
@@ -804,18 +804,18 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     ' Configure the Edit menu.
     '==================================================
     ' Enable/disable the required tools.
-    If frmDbMgr.ActiveView Is frmDbMgr.TreeView1 Then
-      If frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATION Then
-        .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd) And (frmDbMgr.TreeView1.Nodes("TABLES").Children > 0) And Not blnReadonly
+    If frmDbMgr.ActiveView Is frmDbMgr.Treeview1 Then
+      If frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATION Then
+        .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd) And (frmDbMgr.Treeview1.Nodes("TABLES").Children > 0) And Not blnReadonly
         .Tools("ID_CopyDef").Enabled = False
         .Tools("ID_CopyDef").Visible = True
       Else
-        .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd) And Not blnReadonly
+        .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd) And Not blnReadonly
         .Tools("ID_CopyDef").Enabled = bCopyTable And Not blnReadonly
         .Tools("ID_CopyDef").Visible = True
       End If
-      .Tools("ID_Delete").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtDelete) And Not blnReadonly
-      .Tools("ID_Properties").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtEdit)
+      .Tools("ID_Delete").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtDelete) And Not blnReadonly
+      .Tools("ID_Properties").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtEdit)
       '.Tools("ID_CopyTable").Enabled = bCopyTable
       '.Tools("ID_CopyColumn").Enabled = False
       '.Tools("ID_CopyTable").Visible = True
@@ -855,7 +855,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
 
       End If
     End If
-    .Tools("ID_SelectAll").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag <> 0) And frmDbMgr.ListView1.ListItems.Count And Not blnReadonly
+    .Tools("ID_SelectAll").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag <> 0) And frmDbMgr.ListView1.ListItems.Count And Not blnReadonly
       
     ' Reassign shortcuts if required.
 '    .Tools("ID_ScreenObjectDelete").Shortcut = ssShortcutNone
@@ -899,7 +899,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     .Tools("ID_LargeIcons").Enabled = True
     .Tools("ID_SmallIcons").Enabled = True
     .Tools("ID_List").Enabled = True
-    .Tools("ID_Details").Enabled = ((frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLE))
+    .Tools("ID_Details").Enabled = ((frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLE))
  '(frmDbMgr.ListView1_SelectedTag = giNODE_COLUMN)
     
     If (frmDbMgr.ListView1.View = lvwReport) And _
@@ -2105,8 +2105,11 @@ End Sub
 Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
   
   Dim strVersionFilename As String
-  ' Process tool click.
+  Dim objActiveForm As Object
+   
+  Set objActiveForm = Me.ActiveForm
   
+  ' Process tool click.
   Select Case pTool.Name
     '==================================================
     ' Module menu.
@@ -2230,19 +2233,6 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       Set frmModuleDocument = Nothing
 
     Case "ID_SaveChanges"
-      '01/08/2001 MH Fault 2382
-      '' Save changes without exiting.
-      'Set frmPrompt = New frmSaveChangesPrompt
-      'frmPrompt.Buttons = vbOKCancel
-      'frmPrompt.Show vbModal
-      'If frmPrompt.Choice = vbOK Then
-      '  Application.Changed = Not (SaveChanges(frmPrompt.RefreshDatabase))
-      '  If Not Me.ActiveForm Is Nothing Then
-      '    Me.ActiveForm.SetFocus
-      '  End If
-      '  frmSysMgr.RefreshMenu
-      'End If
-      'Set frmPrompt = Nothing
       SaveChanges_Click
 
     Case "ID_Exit"
@@ -2265,57 +2255,48 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
             End If
         End If
     
-'      ' Logoff the system.
-'      UnLoad frmSysMgr
-'      ' Close the temporary database.
-'      If Forms.Count < 1 Then
-'        If Not daoDb Is Nothing Then
-'          daoDb.Close
-'        End If
-'        Main
-'      End If
     '==================================================
     ' Edit menu.
     '==================================================
     Case "ID_New"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
     
     Case "ID_Open"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_Delete"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_CopyDef"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_SelectAll"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_Properties"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_ScreenProperties"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_CopyColumn"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
      
     Case "ID_Print"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
      
     Case "ID_CopyClipboard"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
      
     '==================================================
     ' Administration menu.
@@ -2366,26 +2347,26 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_LargeIcons"
       ' Change the view to display large icons.
       'ChangeView lvwIcon
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
       
     Case "ID_SmallIcons"
       ' Change the view to display small icons.
       'ChangeView lvwSmallIcon
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
       
     Case "ID_List"
       ' Change the view to display a list.
       'ChangeView lvwList
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
       
     Case "ID_Details"
       ' Change the view to display details.
       'ChangeView lvwReport
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
           
     Case "ID_CustomiseColumns"
       ' Customise which columns are displayed.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
           
     '==================================================
     ' Help menu.
@@ -2449,9 +2430,11 @@ End Sub
 Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
   
   Dim strVersionFilename As String
+  Dim objActiveForm As Object
+   
+  Set objActiveForm = Me.ActiveForm
   
   ' Process tool click.
-  
   Select Case pTool.Name
     '==================================================
     ' Module menu.
@@ -2582,8 +2565,8 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       'frmPrompt.Show vbModal
       'If frmPrompt.Choice = vbOK Then
       '  Application.Changed = Not (SaveChanges(frmPrompt.RefreshDatabase))
-      '  If Not Me.ActiveForm Is Nothing Then
-      '    Me.ActiveForm.SetFocus
+      '  If Not objActiveForm Is Nothing Then
+      '    objActiveForm.SetFocus
       '  End If
       '  frmSysMgr.RefreshMenu
       'End If
@@ -2641,27 +2624,27 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     '==================================================
     Case "ID_New"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
     
     Case "ID_Open"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_Delete"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_SelectAll"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_Properties"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_ScreenProperties"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
      
     '==================================================
     ' Window menu.
@@ -2696,26 +2679,26 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_LargeIcons"
       ' Change the view to display large icons.
       'ChangeView lvwIcon
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
       
     Case "ID_SmallIcons"
       ' Change the view to display small icons.
       'ChangeView lvwSmallIcon
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
       
     Case "ID_List"
       ' Change the view to display a list.
       'ChangeView lvwList
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
       
     Case "ID_Details"
       ' Change the view to display details.
       'ChangeView lvwReport
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
       
     Case "ID_CustomiseColumns"
       ' Customise which columns are displayed.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
       
     '==================================================
     ' Help menu.
@@ -2787,9 +2770,11 @@ End Sub
 Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
   
   Dim strVersionFilename As String
+  Dim objActiveForm As Object
+   
+  Set objActiveForm = Me.ActiveForm
     
   ' Process tool click.
-  
   Select Case pTool.Name
     '==================================================
     ' Module menu.
@@ -2920,8 +2905,8 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       'frmPrompt.Show vbModal
       'If frmPrompt.Choice = vbOK Then
       '  Application.Changed = Not (SaveChanges(frmPrompt.RefreshDatabase))
-      '  If Not Me.ActiveForm Is Nothing Then
-      '    Me.ActiveForm.SetFocus
+      '  If Not objActiveForm Is Nothing Then
+      '    objActiveForm.SetFocus
       '  End If
       '  frmSysMgr.RefreshMenu
       'End If
@@ -2978,31 +2963,31 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     '==================================================
     Case "ID_New"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
     
     Case "ID_Open"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_Delete"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_SelectAll"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_Properties"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_ScreenProperties"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
      
     Case "ID_CopyDef"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
     
     '==================================================
     ' Window menu.
@@ -3099,9 +3084,11 @@ End Sub
 Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
 
   Dim strVersionFilename As String
+  Dim objActiveForm As Object
+   
+  Set objActiveForm = Me.ActiveForm
 
   ' Process tool click.
-
   Select Case pTool.Name
     '==================================================
     ' Module menu.
@@ -3232,8 +3219,8 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       'frmPrompt.Show vbModal
       'If frmPrompt.Choice = vbOK Then
       '  Application.Changed = Not (SaveChanges(frmPrompt.RefreshDatabase))
-      '  If Not Me.ActiveForm Is Nothing Then
-      '    Me.ActiveForm.SetFocus
+      '  If Not objActiveForm Is Nothing Then
+      '    objActiveForm.SetFocus
       '  End If
       '  frmSysMgr.RefreshMenu
       'End If
@@ -3412,9 +3399,11 @@ End Sub
 Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
   
   Dim strVersionFilename As String
+  Dim objActiveForm As Object
+   
+  Set objActiveForm = Me.ActiveForm
     
   ' Process tool click.
-  
   Select Case pTool.Name
     '==================================================
     ' Module menu.
@@ -3545,8 +3534,8 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       'frmPrompt.Show vbModal
       'If frmPrompt.Choice = vbOK Then
       '  Application.Changed = Not (SaveChanges(frmPrompt.RefreshDatabase))
-      '  If Not Me.ActiveForm Is Nothing Then
-      '    Me.ActiveForm.SetFocus
+      '  If Not objActiveForm Is Nothing Then
+      '    objActiveForm.SetFocus
       '  End If
       '  frmSysMgr.RefreshMenu
       'End If
@@ -3604,31 +3593,31 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     '==================================================
     Case "ID_New"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
     
     Case "ID_Open"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_Delete"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
       
     Case "ID_CopyDef"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
       
     Case "ID_SelectAll"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_Properties"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_ScreenProperties"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
      
     '==================================================
     ' View menu.
@@ -3636,26 +3625,26 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_LargeIcons"
       ' Change the view to display large icons.
       'ChangeView lvwIcon
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
       
     Case "ID_SmallIcons"
       ' Change the view to display small icons.
       'ChangeView lvwSmallIcon
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
       
     Case "ID_List"
       ' Change the view to display a list.
       'ChangeView lvwList
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
       
     Case "ID_Details"
       ' Change the view to display details.
       'ChangeView lvwReport
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
       
     Case "ID_CustomiseColumns"
       ' Customise which columns are displayed.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
       
     '==================================================
     ' Window menu.
@@ -3752,9 +3741,11 @@ End Sub
 Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
   
   Dim strVersionFilename As String
+  Dim objActiveForm As Object
+   
+  Set objActiveForm = Me.ActiveForm
     
   ' Process the tool click.
-  
   Select Case pTool.Name
     '==================================================
     ' Module menu.
@@ -3901,8 +3892,8 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       'frmPrompt.Show vbModal
       'If frmPrompt.Choice = vbOK Then
       '  Application.Changed = Not (SaveChanges(frmPrompt.RefreshDatabase))
-      '  If Not Me.ActiveForm Is Nothing Then
-      '    Me.ActiveForm.SetFocus
+      '  If Not objActiveForm Is Nothing Then
+      '    objActiveForm.SetFocus
       '  End If
       '  frmSysMgr.RefreshMenu
       'End If
@@ -4038,9 +4029,11 @@ End Sub
 Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
   
   Dim strVersionFilename As String
+  Dim objActiveForm As Object
+   
+  Set objActiveForm = Me.ActiveForm
   
   ' Process tool click.
-  
   Select Case pTool.Name
     '==================================================
     ' Module menu.
@@ -4227,90 +4220,90 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
     '==================================================
     Case "ID_Undo"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_Cut"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_Copy"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_Paste"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_ScreenObjectDelete"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_ScreenSelectAll"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_Save"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_BringToFront"
       ' Bring selected controls to front
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
     
     Case "ID_SendToBack"
       ' Send selected controls to back
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_ScreenControlAlignLeft"
       'Align controls on the left
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_ScreenControlAlignCentre"
       'Align controls in the centre
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
   
     Case "ID_ScreenControlAlignRight"
       'Align controls on the right
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
     
     Case "ID_ScreenControlAlignTop"
       'Align controls at the top
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
     
     Case "ID_ScreenControlAlignMiddle"
       'Align controls in the middle
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
         
     Case "ID_ScreenControlAlignBottom"
       'Align controls at the bottom
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     '==================================================
     ' Tools menu.
     '==================================================
     Case "ID_ScreenDesignerScreenProperties"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_ObjectProperties"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_Toolbox"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_ObjectOrder"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_AutoFormat"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_Options"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_AutoLabel"
       If mblnAutoLabelling = True Then Exit Sub
@@ -4318,8 +4311,8 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       'TM20011015 Fault 2959
       'Set the checked property of the AutoLabel button.
       Me.tbMain.Tools("ID_AutoLabel").Checked = Not Me.tbMain.Tools("ID_AutoLabel").Checked
-      If TypeOf Me.ActiveForm Is frmScrDesigner2 Then
-        Me.ActiveForm.abScreen.Tools("ID_AutoLabel").Checked = (Me.tbMain.Tools("ID_AutoLabel").Checked)
+      If TypeOf objActiveForm Is frmScrDesigner2 Then
+        objActiveForm.abScreen.Tools("ID_AutoLabel").Checked = (Me.tbMain.Tools("ID_AutoLabel").Checked)
       Else
         Dim tmpform As Form
         For Each tmpform In Forms
@@ -4441,9 +4434,11 @@ End Sub
 Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
   
   Dim strVersionFilename As String
+  Dim objActiveForm As Object
+   
+  Set objActiveForm = Me.ActiveForm
   
   ' Process tool click.
-  
   Select Case pTool.Name
     '==================================================
     ' Module menu.
@@ -4630,98 +4625,98 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
     '==================================================
     Case "ID_Undo"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_Cut"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_Copy"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_Paste"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_ScreenObjectDelete"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_ScreenSelectAll"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_mnuWFSave"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_BringToFront"
       ' Bring selected controls to front
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
     
     Case "ID_SendToBack"
       ' Send selected controls to back
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_ScreenControlAlignLeft"
       'Align controls on the left
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_ScreenControlAlignCentre"
       'Align controls in the centre
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
   
     Case "ID_ScreenControlAlignRight"
       'Align controls on the right
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
     
     Case "ID_ScreenControlAlignTop"
       'Align controls at the top
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
     
     Case "ID_ScreenControlAlignMiddle"
       'Align controls in the middle
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
         
     Case "ID_ScreenControlAlignBottom"
       'Align controls at the bottom
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     '==================================================
     ' Tools menu.
     '==================================================
     Case "ID_ScreenDesignerScreenProperties"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_ObjectProperties"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_ObjectPropertiesScreen"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
     
     Case "ID_WebFormPropertiesScreen"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
     
     Case "ID_Toolbox"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_ObjectOrder"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_AutoFormat"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_Options"
       ' Pass the menu choice onto the active form to process.
-      Me.ActiveForm.EditMenu pTool.Name
+      objActiveForm.EditMenu pTool.Name
 
     Case "ID_AutoLabel"
       If mblnAutoLabelling = True Then Exit Sub
@@ -4729,8 +4724,8 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       'TM20011015 Fault 2959
       'Set the checked property of the AutoLabel button.
       Me.tbMain.Tools("ID_AutoLabel").Checked = Not Me.tbMain.Tools("ID_AutoLabel").Checked
-      If TypeOf Me.ActiveForm Is frmScrDesigner2 Then
-        Me.ActiveForm.abScreen.Tools("ID_AutoLabel").Checked = (Me.tbMain.Tools("ID_AutoLabel").Checked)
+      If TypeOf objActiveForm Is frmScrDesigner2 Then
+        objActiveForm.abScreen.Tools("ID_AutoLabel").Checked = (Me.tbMain.Tools("ID_AutoLabel").Checked)
       Else
         Dim tmpform As Form
         For Each tmpform In Forms
