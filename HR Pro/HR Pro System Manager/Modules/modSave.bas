@@ -497,6 +497,10 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       gobjProgress.UpdateProgress2
       
       If fOK Then
+        fOK = CreateLinkDocumentSP
+      End If
+      
+      If fOK Then
         OutputCurrentProcess2 "Configuring Procedures", 2
         fOK = ConfigureModuleSpecifics
         fOK = fOK And Not gobjProgress.Cancelled
