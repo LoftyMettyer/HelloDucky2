@@ -31,17 +31,21 @@ Namespace ErrorHandler
       Dim objError As HRProEngine.ErrorHandler.Error
       Dim sMessage As String
 
-      System.IO.File.Delete(FileName)
-      objWriter = System.IO.File.AppendText(FileName)
+      Try
 
-      For Each objError In Me.Items
+        System.IO.File.Delete(FileName)
+        objWriter = System.IO.File.AppendText(FileName)
 
-        sMessage = String.Format("{1}{1}{1}{1}{0}{1}{2}{1}", objError.Message, vbNewLine, objError.Detail)
-        objWriter.Write(sMessage)
+        For Each objError In Me.Items
+          sMessage = String.Format("{1}{1}{1}{1}{0}{1}{2}{1}", objError.Message, vbNewLine, objError.Detail)
+          objWriter.Write(sMessage)
+        Next
 
-      Next
+        objWriter.Close()
 
-      objWriter.Close()
+      Catch ex As Exception
+
+      End Try
 
     End Sub
 
