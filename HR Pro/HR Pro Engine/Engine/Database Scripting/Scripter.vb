@@ -302,11 +302,9 @@ Namespace ScriptDB
       Dim objColumn As Things.Column
       Dim objRelation As Things.Relation
       Dim objIndex As Things.Index
-      Dim objView As Things.View
 
       Dim sSQL As String = String.Empty
       Dim sCalculationCode As String
-      '  Dim sValidation As String = String.Empty
       Dim sTriggerName As String = String.Empty
       Dim sColumnName As String = String.Empty
       Dim sAuditDataBase As String = String.Empty
@@ -320,9 +318,6 @@ Namespace ScriptDB
       Dim sSQLCode_AuditDelete As String = String.Empty
 
       Dim sValidation As String
-
-      'Dim sSQLCode_RecordDescription As New StringBuilder
-      'Dim sSQLCode_DiaryLinks As String = String.Empty
 
       Dim sSQLWriteableColumns As String
       Dim sSQLCalculatedColumns As String
@@ -360,14 +355,11 @@ Namespace ScriptDB
 
         For Each objTable In Globals.Things
 
-          ' aryPerformanceTuneColumns = New ArrayList
           aryAllWriteableColumns = New ArrayList
           aryAllWriteableFormatted = New ArrayList
           aryAuditUpdates = New ArrayList
           aryAuditInserts = New ArrayList
           aryAuditDeletes = New ArrayList
-          'aryValidationStatements = New ArrayList
-          'aryAfterInsertColumns = New ArrayList
           aryUpdateUniqueCodes = New ArrayList
           aryParentsToUpdate = New ArrayList
           aryChildrenToUpdate = New ArrayList
@@ -414,7 +406,7 @@ Namespace ScriptDB
               aryAllWriteableFormatted.Add(String.Format("[ID_{0}]", CInt(objRelation.ParentID)))
 
               objRelatedTable = Globals.Things.GetObject(Things.Type.Table, objRelation.ParentID)
-              For Each objColumn In objTable.DependsOnColumns
+              For Each objColumn In objTable.DependsOnParentColumns
                 If objColumn.Table Is objRelatedTable Then
                   aryColumns.Add(String.Format("base.{0} = {0}", objColumn.Name))
                 End If
@@ -444,7 +436,7 @@ Namespace ScriptDB
               objIndex.Enabled = False
               '              objIndex.Relations.AddIfNew(objRelation)
 
-              For Each objColumn In objRelatedTable.DependsOnColumns
+              For Each objColumn In objRelatedTable.DependsOnChildColumns
                 If objColumn.Table Is objTable Then
                   aryColumns.Add(String.Format("NOT i.{0} = d.{0}", objColumn.Name))
                   objIndex.IncludedColumns.AddIfNew(objColumn)
@@ -453,9 +445,10 @@ Namespace ScriptDB
 
               If aryColumns.Count > 0 Then
                 aryChildrenToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3})" & vbNewLine & _
-                      "        UPDATE dbo.[{0}] SET [updflag] = 1 WHERE ID_{1} IN (SELECT i.ID FROM inserted i" & vbNewLine & _
-                      "        INNER JOIN dbo.[{2}] d ON d.ID = i.ID " & vbNewLine & _
-                      "        WHERE {4});" _
+                      "            AND EXISTS(SELECT i.ID FROM inserted i" & vbNewLine & _
+                      "                INNER JOIN dbo.[{2}] d ON d.ID = i.ID " & vbNewLine & _
+                      "                WHERE {4})" & vbNewLine & _
+                      "        UPDATE dbo.[{0}] SET [updflag] = 1 WHERE ID_{1} IN (SELECT i.ID FROM inserted i);" _
                       , objRelatedTable.PhysicalName, CInt(objTable.ID), objTable.PhysicalName, CInt(objRelatedTable.ID) _
                       , String.Join(" OR ", aryColumns.ToArray())))
                 objTable.Objects.Add(objIndex)
@@ -609,7 +602,7 @@ Namespace ScriptDB
           If aryChildrenToUpdate.ToArray.Length > 0 Then
             sSQLChildColumns = "    --Update children" & vbNewLine & _
                     "    IF @isovernight = 0" & vbNewLine & "    BEGIN" & vbNewLine & _
-                    String.Join(vbNewLine & vbNewLine, aryChildrenToUpdate.ToArray()) & _
+                    String.Join(vbNewLine & vbNewLine, aryChildrenToUpdate.ToArray()) & vbNewLine & _
                    "     END"
           End If
 

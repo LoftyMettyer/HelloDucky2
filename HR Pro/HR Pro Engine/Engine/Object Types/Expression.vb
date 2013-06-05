@@ -676,8 +676,9 @@ Namespace Things
 
           If objRelation.RelationshipType = ScriptDB.RelationshipType.Parent Then
 
-            If Not Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription Then
-              Me.AssociatedColumn.Table.DependsOnColumns.AddIfNew(objThisColumn)
+            '            If Not Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription Then
+            If Me.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation Then
+              Me.AssociatedColumn.Table.DependsOnChildColumns.AddIfNew(objThisColumn)
             End If
 
             LineOfCode.Code = String.Format("ISNULL([{0}].[{1}],{2})", objThisColumn.Table.Name, objThisColumn.Name, objThisColumn.SafeReturnType)
@@ -711,7 +712,7 @@ Namespace Things
           Else
 
             ' Add to dependency stack
-            objThisColumn.Table.DependsOnColumns.AddIfNew(Me.AssociatedColumn)
+            objThisColumn.Table.DependsOnParentColumns.AddIfNew(Me.AssociatedColumn)
 
             ' In a later release this can be tidied up to populate at load time
             [Component].ChildRowDetails.Order = objThisColumn.Table.GetObject(Enums.Type.TableOrder, [Component].ChildRowDetails.OrderID)

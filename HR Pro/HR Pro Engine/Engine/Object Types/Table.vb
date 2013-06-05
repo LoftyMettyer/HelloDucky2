@@ -14,7 +14,8 @@ Namespace Things
     Public DefaultEmailID As HCMGuid
     Public IsRemoteView As Boolean
 
-    Public DependsOnColumns As New Things.Collection
+    Public DependsOnChildColumns As New Things.Collection
+    Public DependsOnParentColumns As New Things.Collection
 
     Public ReadOnly Property Indexes As Things.Collection
       Get
