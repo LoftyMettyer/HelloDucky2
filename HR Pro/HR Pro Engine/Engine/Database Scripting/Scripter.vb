@@ -773,13 +773,14 @@ Namespace ScriptDB
         sSQL = String.Format("CREATE TRIGGER [{1}].[{0}] ON [{1}].[{2}]" & vbNewLine & _
           "    {3}" & vbNewLine & "AS" & vbNewLine & _
           "BEGIN" & vbNewLine & _
-          "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([{2}].[{0}]';" & vbNewLine & _
+          "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([{2}].[{0}]';" & vbNewLine & _
           "    SET NOCOUNT ON;" & vbNewLine & _
           "    DECLARE @iCount integer;" & vbNewLine & vbNewLine & _
           "{4}" & vbNewLine & vbNewLine & _
-          "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
+          "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
           "END" _
-          , sTriggerName, [Role], Table.PhysicalName, sTriggerType, [BodyCode])
+          , sTriggerName, [Role], Table.PhysicalName, sTriggerType, [BodyCode] _
+          , IIf(Globals.Options.DevelopmentMode, "", "--"))
         CommitDB.ScriptStatement(sSQL)
 
         ' Put the correct firing order on the trigger

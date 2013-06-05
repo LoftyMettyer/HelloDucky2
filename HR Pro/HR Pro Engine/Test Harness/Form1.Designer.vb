@@ -34,11 +34,14 @@ Partial Class Form1
     Me.Button5 = New System.Windows.Forms.Button()
     Me.Button6 = New System.Windows.Forms.Button()
     Me.Button7 = New System.Windows.Forms.Button()
-    Me.Label2 = New System.Windows.Forms.Label()
     Me.cmdDatasource = New System.Windows.Forms.Button()
     Me.txtErrors = New System.Windows.Forms.TextBox()
     Me.txtDatabase = New System.Windows.Forms.TextBox()
     Me.Button8 = New System.Windows.Forms.Button()
+    Me.txtServer = New System.Windows.Forms.TextBox()
+    Me.chkDebugMode = New System.Windows.Forms.CheckBox()
+    Me.Label2 = New System.Windows.Forms.Label()
+    Me.Label3 = New System.Windows.Forms.Label()
     Me.SuspendLayout()
     '
     'Button1
@@ -144,24 +147,16 @@ Partial Class Form1
     '
     'Button7
     '
-    Me.Button7.Location = New System.Drawing.Point(458, 354)
+    Me.Button7.Location = New System.Drawing.Point(454, 335)
     Me.Button7.Name = "Button7"
     Me.Button7.Size = New System.Drawing.Size(104, 45)
     Me.Button7.TabIndex = 11
-    Me.Button7.Text = "Create Structure"
+    Me.Button7.Text = "Go Script."
     Me.Button7.UseVisualStyleBackColor = True
-    '
-    'Label2
-    '
-    Me.Label2.AutoSize = True
-    Me.Label2.Location = New System.Drawing.Point(459, 338)
-    Me.Label2.Name = "Label2"
-    Me.Label2.Size = New System.Drawing.Size(66, 13)
-    Me.Label2.TabIndex = 12
-    Me.Label2.Text = "From dao db"
     '
     'cmdDatasource
     '
+    Me.cmdDatasource.Enabled = False
     Me.cmdDatasource.Location = New System.Drawing.Point(684, 18)
     Me.cmdDatasource.Name = "cmdDatasource"
     Me.cmdDatasource.Size = New System.Drawing.Size(75, 23)
@@ -171,11 +166,11 @@ Partial Class Form1
     '
     'txtErrors
     '
-    Me.txtErrors.Location = New System.Drawing.Point(48, 220)
+    Me.txtErrors.Location = New System.Drawing.Point(12, 177)
     Me.txtErrors.Multiline = True
     Me.txtErrors.Name = "txtErrors"
     Me.txtErrors.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-    Me.txtErrors.Size = New System.Drawing.Size(390, 179)
+    Me.txtErrors.Size = New System.Drawing.Size(359, 179)
     Me.txtErrors.TabIndex = 14
     '
     'txtDatabase
@@ -195,16 +190,57 @@ Partial Class Form1
     Me.Button8.Text = "Button8"
     Me.Button8.UseVisualStyleBackColor = True
     '
+    'txtServer
+    '
+    Me.txtServer.Location = New System.Drawing.Point(458, 274)
+    Me.txtServer.Name = "txtServer"
+    Me.txtServer.Size = New System.Drawing.Size(100, 20)
+    Me.txtServer.TabIndex = 17
+    Me.txtServer.Text = "harpdev01"
+    '
+    'chkDebugMode
+    '
+    Me.chkDebugMode.AutoSize = True
+    Me.chkDebugMode.Checked = True
+    Me.chkDebugMode.CheckState = System.Windows.Forms.CheckState.Checked
+    Me.chkDebugMode.Location = New System.Drawing.Point(575, 274)
+    Me.chkDebugMode.Name = "chkDebugMode"
+    Me.chkDebugMode.Size = New System.Drawing.Size(88, 17)
+    Me.chkDebugMode.TabIndex = 18
+    Me.chkDebugMode.Text = "Debug Mode"
+    Me.chkDebugMode.UseVisualStyleBackColor = True
+    '
+    'Label2
+    '
+    Me.Label2.AutoSize = True
+    Me.Label2.Location = New System.Drawing.Point(399, 277)
+    Me.Label2.Name = "Label2"
+    Me.Label2.Size = New System.Drawing.Size(38, 13)
+    Me.Label2.TabIndex = 19
+    Me.Label2.Text = "Server"
+    '
+    'Label3
+    '
+    Me.Label3.AutoSize = True
+    Me.Label3.Location = New System.Drawing.Point(399, 303)
+    Me.Label3.Name = "Label3"
+    Me.Label3.Size = New System.Drawing.Size(53, 13)
+    Me.Label3.TabIndex = 20
+    Me.Label3.Text = "Database"
+    '
     'Form1
     '
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
     Me.ClientSize = New System.Drawing.Size(806, 426)
+    Me.Controls.Add(Me.Label3)
+    Me.Controls.Add(Me.Label2)
+    Me.Controls.Add(Me.chkDebugMode)
+    Me.Controls.Add(Me.txtServer)
     Me.Controls.Add(Me.Button8)
     Me.Controls.Add(Me.txtDatabase)
     Me.Controls.Add(Me.txtErrors)
     Me.Controls.Add(Me.cmdDatasource)
-    Me.Controls.Add(Me.Label2)
     Me.Controls.Add(Me.Button7)
     Me.Controls.Add(Me.Button6)
     Me.Controls.Add(Me.Button5)
@@ -218,7 +254,7 @@ Partial Class Form1
     Me.Controls.Add(Me.ProgressBar1)
     Me.Controls.Add(Me.Button1)
     Me.Name = "Form1"
-    Me.Text = "Form1"
+    Me.Text = "DB"
     Me.ResumeLayout(False)
     Me.PerformLayout()
 
@@ -235,10 +271,13 @@ Partial Class Form1
   Friend WithEvents Button5 As System.Windows.Forms.Button
   Friend WithEvents Button6 As System.Windows.Forms.Button
   Friend WithEvents Button7 As System.Windows.Forms.Button
-  Friend WithEvents Label2 As System.Windows.Forms.Label
   Friend WithEvents cmdDatasource As System.Windows.Forms.Button
   Friend WithEvents txtErrors As System.Windows.Forms.TextBox
   Friend WithEvents txtDatabase As System.Windows.Forms.TextBox
   Friend WithEvents Button8 As System.Windows.Forms.Button
+  Friend WithEvents txtServer As System.Windows.Forms.TextBox
+  Friend WithEvents chkDebugMode As System.Windows.Forms.CheckBox
+  Friend WithEvents Label2 As System.Windows.Forms.Label
+  Friend WithEvents Label3 As System.Windows.Forms.Label
 
 End Class

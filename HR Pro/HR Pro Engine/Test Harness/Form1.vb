@@ -250,7 +250,8 @@ Public Class Form1
     Dim objDAOEngine As New DAO.DBEngine
     Dim objDAODB As DAO.Database
     '    Dim objRecordset As DAO.Recordset
-    Dim sADOConnect As String = "Driver=SQL Server;Server={harpdev01};UID=sa;PWD=asr;Database=" & txtDatabase.Text & ";"""
+    Dim sADOConnect As String = String.Format("Driver=SQL Server;Server={0};UID=sa;PWD=asr;Database={1};" _
+                          , txtServer.Text, txtDatabase.Text)
     '  Dim objADOLogin As Phoenix.Connectivity.Login
 
     ' THIS IS SYSTEM MGR RECCREATION
@@ -285,7 +286,7 @@ Public Class Form1
 
     objPhoenix.Initialise()
 
-
+    objPhoenix.Options.DevelopmentMode = chkDebugMode.Checked
     objPhoenix.Options.RefreshObjects = True
     bOK = objPhoenix.Script.CreateObjects()
 

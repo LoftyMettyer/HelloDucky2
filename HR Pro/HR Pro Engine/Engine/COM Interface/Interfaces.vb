@@ -28,7 +28,8 @@
   End Interface
 
   Public Interface iOptions
-    Property RefreshObjects() As Boolean
+    Property RefreshObjects As Boolean
+    Property DevelopmentMode As Boolean
   End Interface
 
   Public Interface iConnection
