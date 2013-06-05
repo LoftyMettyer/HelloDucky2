@@ -3,7 +3,7 @@ Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
 Begin VB.Form frmExpression 
    Caption         =   "Expression Definition"
-   ClientHeight    =   6285
+   ClientHeight    =   6390
    ClientLeft      =   60
    ClientTop       =   345
    ClientWidth     =   8805
@@ -23,12 +23,12 @@ Begin VB.Form frmExpression
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   6285
+   ScaleHeight     =   6390
    ScaleWidth      =   8805
    StartUpPosition =   1  'CenterOwner
    Begin VB.Frame fraDefinition 
       Caption         =   "Definition :"
-      Height          =   4305
+      Height          =   4405
       Index           =   1
       Left            =   100
       TabIndex        =   8
@@ -42,7 +42,7 @@ Begin VB.Form frmExpression
          Index           =   1
          Left            =   7200
          TabIndex        =   20
-         Top             =   3240
+         Top             =   3340
          Width           =   1200
          Begin VB.CommandButton cmdOk 
             Caption         =   "&OK"
@@ -124,13 +124,13 @@ Begin VB.Form frmExpression
          End
       End
       Begin SSActiveTreeView.SSTree sstrvComponents 
-         Height          =   3900
+         Height          =   4000
          Left            =   150
          TabIndex        =   6
          Top             =   255
          Width           =   6900
          _ExtentX        =   12171
-         _ExtentY        =   6879
+         _ExtentY        =   7064
          _Version        =   65538
          NodeSelectionStyle=   2
          PictureAlignment=   0
@@ -1490,7 +1490,7 @@ Private Sub Form_Load()
   Dim objOperatorDef As clsOperatorDef
   Dim objFunctionDef As clsFunctionDef
   
-  Hook Me.hWnd, 7155, 6300
+  Hook Me.hWnd, 7155, 6855
   
   ' JPD20021108
   ' Initialise the collections of operators and functions
