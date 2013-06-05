@@ -97,27 +97,27 @@ Begin VB.Form frmConfiguration
       TabCaption(2)   =   "&Display"
       TabPicture(2)   =   "frmConfiguration.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "frmExpressions"
+      Tab(2).Control(0)=   "frmBackgrounds"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraGeneral"
       Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).Control(2)=   "frmBackgrounds"
+      Tab(2).Control(2)=   "frmExpressions"
       Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "Dev"
       TabPicture(3)   =   "frmConfiguration.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "frmDeveloperAFD"
-      Tab(3).Control(1)=   "fraQuickAddress"
+      Tab(3).Control(0)=   "fraQuickAddress"
+      Tab(3).Control(1)=   "frmDeveloperAFD"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "&Advanced"
       TabPicture(4)   =   "frmConfiguration.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraAdvancedSettings"
+      Tab(4).Control(0)=   "fraTime"
       Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraOutlookCalendar"
       Tab(4).Control(1).Enabled=   0   'False
-      Tab(4).Control(2)=   "fraTime"
+      Tab(4).Control(2)=   "fraAdvancedSettings"
       Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       Begin VB.Frame fraAdvancedSettings 
@@ -1138,7 +1138,6 @@ Private Enum ProcessAccountStatus
   iPROCESS_NOUSERNAME = 5
 End Enum
 
-
 Private Function IsServer64Bit() As Boolean
 
   Dim rsTemp As ADODB.Recordset
@@ -1150,22 +1149,20 @@ Private Function IsServer64Bit() As Boolean
   Set rsTemp = Nothing
 
 End Function
-  
 
 Private Sub cboBitmapLocation_Populate()
 
   ' Stuff the values into the location combo
-  With cboBitmapLocation
-    .Clear
-    .AddItem "Top Left": .ItemData(.NewIndex) = 0
-    .AddItem "Top Right": .ItemData(.NewIndex) = 1
-    .AddItem "Centre": .ItemData(.NewIndex) = 2
-    .AddItem "Left Tile": .ItemData(.NewIndex) = 3
-    .AddItem "Right Tile": .ItemData(.NewIndex) = 4
-    .AddItem "Top Tile": .ItemData(.NewIndex) = 5
-    .AddItem "Bottom Tile": .ItemData(.NewIndex) = 6
-    .AddItem "Tile": .ItemData(.NewIndex) = 7
-  End With
+  cboBitmapLocation.Clear
+  AddItemToComboBox cboBitmapLocation, "Top Left", 0
+  AddItemToComboBox cboBitmapLocation, "Top Right", 1
+  AddItemToComboBox cboBitmapLocation, "Centre", 2
+  AddItemToComboBox cboBitmapLocation, "Left Tile", 3
+  AddItemToComboBox cboBitmapLocation, "Right Tile", 4
+  AddItemToComboBox cboBitmapLocation, "Top Tile", 5
+  AddItemToComboBox cboBitmapLocation, "Bottom Tile", 6
+  AddItemToComboBox cboBitmapLocation, "Tile", 7
+
 End Sub
 
 Private Sub cboBitmapLocation_Click()
@@ -1231,20 +1228,18 @@ Private Function cboEmailProfile_Populate()
 
   Const strDEFAULTPROFILE = "<Use Default Profile>"
 
-
   Dim rsProfiles As ADODB.Recordset
   Dim rsProfileAccount As ADODB.Recordset
   Dim sSQL As String
+  Dim lngNewIndex As Long
   
   On Error GoTo LocalErr
-  
   
   mlngDefaultEmailProfile = 0
 
   With cboEmailProfile
     .Clear
-    .AddItem strDEFAULTPROFILE
-    .ItemData(.NewIndex) = 0
+    AddItemToComboBox cboEmailProfile, strDEFAULTPROFILE, 0
 
     sSQL = "exec msdb..sysmail_help_principalprofile_sp"
     Set rsProfiles = New ADODB.Recordset
@@ -1252,15 +1247,14 @@ Private Function cboEmailProfile_Populate()
 
     Do While Not rsProfiles.EOF
 
-      .AddItem rsProfiles!profile_name
-      .ItemData(.NewIndex) = rsProfiles!profile_id
-
+      lngNewIndex = AddItemToComboBox(cboEmailProfile, rsProfiles!profile_name, rsProfiles!profile_id)
+      
       If rsProfiles!profile_name = gstrEmailProfile Then
-        .ListIndex = .NewIndex
+        .ListIndex = lngNewIndex
       End If
 
       If rsProfiles!is_default Then
-        mlngDefaultEmailProfile = .NewIndex
+        mlngDefaultEmailProfile = lngNewIndex
       End If
 
       rsProfiles.MoveNext
@@ -1297,17 +1291,12 @@ LocalErr:
       .ListIndex = 0
     Else
       .AddItem gstrEmailProfile
-      .ListIndex = .NewIndex
+      .ListIndex = lngNewIndex
     End If
     .Enabled = False
     .BackColor = vbButtonFace
   End With
   
-  'If Not mblnEmailProfilesHadError Then
-  '  MsgBox "Email profile option will be disabled as you do not have permission to view the Database Mail profiles on the SQL Server.", vbExclamation
-  '  mblnEmailProfilesHadError = True
-  'End If
-
   Resume TidyAndExit
 
 End Function
@@ -1489,7 +1478,7 @@ End Sub
 Private Sub cmdCancel_Click()
 'UnLoad Me
 Dim pintAnswer As Integer
-If Changed = True Or cmdOK.Enabled Then
+If Changed = True Or cmdOk.Enabled Then
   pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
   If pintAnswer = vbYes Then
     'AE20071108 Fault #12551
@@ -1497,7 +1486,7 @@ If Changed = True Or cmdOK.Enabled Then
     'after its been unloaded in cmdOK_Click, changed to Screen.MousePointer
     'Me.MousePointer = vbHourglass
     Screen.MousePointer = vbHourglass
-    cmdOK_Click 'This is just like saving
+    cmdOk_Click 'This is just like saving
     Screen.MousePointer = vbDefault
     'Me.MousePointer = vbNormal
     Exit Sub
@@ -1542,7 +1531,7 @@ ErrorTrap:
 
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
 
   Dim lngMethod As Long
   Dim iTestProcess As ProcessAccountStatus
@@ -2015,76 +2004,48 @@ End Sub
 
 Private Sub cboEmailDateFormat_Populate()
 
-  With cboEmailDateFormat
-    .Clear
-    .AddItem "dd/mm/yyyy": .ItemData(.NewIndex) = 103
-    .AddItem "dd-mm-yyyy": .ItemData(.NewIndex) = 105
-    .AddItem "dd.mm.yyyy": .ItemData(.NewIndex) = 104
-    .AddItem "dd mon yyyy": .ItemData(.NewIndex) = 106
-    .AddItem "mm/dd/yyyy": .ItemData(.NewIndex) = 101
-    .AddItem "mm-dd-yyyy": .ItemData(.NewIndex) = 110
-    .AddItem "mon dd, yyyy": .ItemData(.NewIndex) = 107
-    .AddItem "yyyy/mm/dd": .ItemData(.NewIndex) = 111
-    .AddItem "yyyy.mm.dd": .ItemData(.NewIndex) = 102
-    .AddItem "yyyymmdd": .ItemData(.NewIndex) = 112
-  End With
+  cboEmailDateFormat.Clear
+  AddItemToComboBox cboEmailDateFormat, "dd/mm/yyyy", 103
+  AddItemToComboBox cboEmailDateFormat, "dd-mm-yyyy", 105
+  AddItemToComboBox cboEmailDateFormat, "dd.mm.yyyy", 104
+  AddItemToComboBox cboEmailDateFormat, "dd mon yyyy", 106
+  AddItemToComboBox cboEmailDateFormat, "mm/dd/yyyy", 101
+  AddItemToComboBox cboEmailDateFormat, "mm-dd-yyyy", 110
+  AddItemToComboBox cboEmailDateFormat, "mon dd, yyyy", 107
+  AddItemToComboBox cboEmailDateFormat, "yyyy/mm/dd", 111
+  AddItemToComboBox cboEmailDateFormat, "yyyy.mm.dd", 102
+  AddItemToComboBox cboEmailDateFormat, "yyyymmdd", 112
 
 End Sub
 
-
 Private Sub cboEmailMethod_Populate()
 
-  With cboEmailMethod
-    .Clear
-    .AddItem "<Disable Emails>"
-    .ItemData(.NewIndex) = 0
+  cboEmailMethod.Clear
+  AddItemToComboBox cboEmailMethod, "<Disable Emails>", 0
+  
+  If Not IsServer64Bit And glngSQLVersion < 11 Then
+    AddItemToComboBox cboEmailMethod, "SQL Mail", 1
+  End If
 
-    If Not IsServer64Bit And glngSQLVersion < 11 Then
-      .AddItem "SQL Mail"
-      .ItemData(.NewIndex) = 1
-      If glngEmailMethod = 1 Then .ListIndex = .NewIndex
-    End If
+  If glngSQLVersion >= 9 Then
+    AddItemToComboBox cboEmailMethod, "Database Mail", 2
+  End If
 
-    If glngSQLVersion >= 9 Then
-      .AddItem "Database Mail"
-      .ItemData(.NewIndex) = 2
-      If glngEmailMethod = 2 Then .ListIndex = .NewIndex
-    End If
+  If ProcedureExists("master", "xp_SMTPSendMail80") Or glngEmailMethod = 3 Then
+    AddItemToComboBox cboEmailMethod, "Thorpe Software (xp_SMTPSendMail80)", 3
+  End If
 
-    If ProcedureExists("master", "xp_SMTPSendMail80") Or glngEmailMethod = 3 Then
-      .AddItem "Thorpe Software (xp_SMTPSendMail80)"
-      .ItemData(.NewIndex) = 3
-      If glngEmailMethod = 3 Then .ListIndex = .NewIndex
-    End If
-
-    If .ListIndex < 0 Then .ListIndex = 0
-  End With
-
+  SetComboItem cboEmailMethod, glngEmailMethod
 
 End Sub
 
 Private Sub cboProcessMethod_Populate()
 
-  With cboProcessMethod
-    .Clear
-    .AddItem "Public has been granted view server state"
-    .ItemData(.NewIndex) = 0
-    If glngProcessMethod = iPROCESSADMIN_DISABLED Then .ListIndex = .NewIndex
-
-    .AddItem "Trusted SQL Service Account"
-    .ItemData(.NewIndex) = 1
-    If glngProcessMethod = iPROCESSADMIN_SERVICEACCOUNT Then .ListIndex = .NewIndex
-
-    .AddItem "Specified SQL Account"
-    .ItemData(.NewIndex) = 2
-    If glngProcessMethod = iPROCESSADMIN_SQLACCOUNT Then .ListIndex = .NewIndex
-
-'    .AddItem "Every Account"
-'    .ItemData(.NewIndex) = 3
-'    If glngProcessMethod = iPROCESSADMIN_EVERYONE Then .ListIndex = .NewIndex
-
-    If .ListIndex < 0 Then .ListIndex = 0
-  End With
+  cboProcessMethod.Clear
+  AddItemToComboBox cboProcessMethod, "Public has been granted view server state", 0
+  AddItemToComboBox cboProcessMethod, "Trusted SQL Service Account", 1
+  AddItemToComboBox cboProcessMethod, "Specified SQL Account", 2
+  SetComboItem cboProcessMethod, glngProcessMethod
 
 End Sub
 
@@ -2104,8 +2065,6 @@ Private Function ProcedureExists(strDatabase As String, strName As String) As Bo
   Set rsProcs = Nothing
 
 End Function
-
-
 
 Private Sub cmdAttachmentsPath_Click()
   
@@ -2164,22 +2123,15 @@ End Sub
 Private Sub cboExpressions_Populate()
 
   ' Colour options
-  With cboColours
-    .AddItem "Black"
-    .ItemData(cboColours.NewIndex) = EXPRESSIONBUILDER_COLOUROFF
-    .AddItem "Colour Levels"
-    .ItemData(cboColours.NewIndex) = EXPRESSIONBUILDER_COLOURON
-  End With
+  cboColours.Clear
+  AddItemToComboBox cboColours, "Black", EXPRESSIONBUILDER_COLOUROFF
+  AddItemToComboBox cboColours, "Colour Levels", EXPRESSIONBUILDER_COLOURON
   
   ' Node statuses
-  With cboNodeSize
-    .AddItem "Minimized"
-    .ItemData(cboNodeSize.NewIndex) = EXPRESSIONBUILDER_NODESMINIMIZE
-    .AddItem "Expand All"
-    .ItemData(cboNodeSize.NewIndex) = EXPRESSIONBUILDER_NODESEXPAND
-    .AddItem "Expand Top Level"
-    .ItemData(cboNodeSize.NewIndex) = EXPRESSIONBUILDER_NODESTOPLEVEL
-  End With
+  cboNodeSize.Clear
+  AddItemToComboBox cboNodeSize, "Minimized", EXPRESSIONBUILDER_NODESMINIMIZE
+  AddItemToComboBox cboNodeSize, "Expand All", EXPRESSIONBUILDER_NODESEXPAND
+  AddItemToComboBox cboNodeSize, "Expand Top Level", EXPRESSIONBUILDER_NODESTOPLEVEL
 
 End Sub
 
@@ -2583,6 +2535,6 @@ End Property
 
 Private Property Let Changed(ByVal fNewValue As Boolean)
   mfChanged = fNewValue
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
 End Property
 

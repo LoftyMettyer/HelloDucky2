@@ -178,11 +178,9 @@ Private mblnLoading  As Boolean
 Private pintAnswer As Integer
 Private mblnReadOnly As Boolean
 
-
 Public Property Get Cancelled() As Boolean
   Cancelled = mblnCancelled
 End Property
-
 
 Public Property Let Changed(pChanged As Boolean)
   mfChanged = pChanged
@@ -197,15 +195,11 @@ Public Property Let Email(ByVal objNewValue As clsEmailAddr)
 End Property
 
 Private Sub cboColumn_Change()
-
   If Not mblnLoading Then mfChanged = True
-  
 End Sub
 
 Private Sub cboColumn_Click()
-
   If Not mblnLoading Then mfChanged = True
-
 End Sub
 
 Private Sub cmdCalculated_Click()
@@ -263,7 +257,7 @@ Private Sub cmdCancel_Click()
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
         
       If pintAnswer = vbYes Then
-        cmdOK_Click
+        cmdOk_Click
       ElseIf pintAnswer = vbCancel Then
         Exit Sub
       ElseIf pintAnswer = vbNo Then
@@ -405,8 +399,7 @@ Private Sub PopulateColumns()
 
     .Clear
     Do While Not rsTemp.EOF
-      .AddItem rsTemp!ColumnName
-      .ItemData(.NewIndex) = rsTemp!ColumnID
+      AddItemToComboBox cboColumn, rsTemp!ColumnName, rsTemp!ColumnID
       rsTemp.MoveNext
     Loop
 
@@ -501,7 +494,7 @@ Public Function Initialise(objEmail As clsEmailAddr)
 
 End Function
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
   ' Confirm the Email.
   On Error GoTo ErrorTrap
   
