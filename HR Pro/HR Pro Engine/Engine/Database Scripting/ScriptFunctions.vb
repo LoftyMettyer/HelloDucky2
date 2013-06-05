@@ -99,6 +99,7 @@ Namespace ScriptDB
       Dim objTable1 As Things.Table
       Dim objTable2 As Things.Table
       Dim objIndex As Things.Index
+      Dim sVariableName As String
 
       Try
 
@@ -110,18 +111,25 @@ Namespace ScriptDB
           objTable1 = Globals.Things.Table(objPart1.TableID)
           objTable2 = Globals.Things.Table(objPart3.TableID)
 
+          Select Case objTable1.Column(objPart3.ColumnID).DataType
+            Case ColumnTypes.Date
+              sVariableName = "@dateresult"
+            Case Else
+              sVariableName = "@result"
+          End Select
+
           ' Even though the user can select different table for parameters 1 and 3 this
           ' would return garbage data so ignore it!
           If objTable1 Is objTable2 Then
             sStatement = String.Format("    IF @searchcolumnid = '{0}-{1}' AND @returncolumnid = '{2}-{3}'" & vbNewLine & _
               "        BEGIN" & vbNewLine & _
-              "            SELECT @result = [{5}] FROM dbo.[{4}] WHERE [{6}] = @searchexpression;" & vbNewLine & _
-              "            RETURN @result;" & vbNewLine & _
+              "            SELECT {7} = [{5}] FROM dbo.[{4}] WHERE [{6}] = @searchexpression;" & vbNewLine & _
+              "            RETURN {7};" & vbNewLine & _
               "        END" & vbNewLine _
             , objPart1.TableID.PadLeft, objPart1.ColumnID.PadLeft _
             , objPart3.TableID.PadLeft, objPart3.ColumnID.PadLeft _
             , objTable1.PhysicalName, objTable1.Column(objPart3.ColumnID).Name _
-            , objTable2.Column(objPart1.ColumnID).Name)
+            , objTable2.Column(objPart1.ColumnID).Name, sVariableName)
 
             ' Only add if not already done so
             If Not aryStatements.Contains(sStatement) Then
@@ -144,15 +152,16 @@ Namespace ScriptDB
         ' Build the stored procedure
         sSQL = String.Format("CREATE FUNCTION [dbo].[{0}](" & vbNewLine &
             "    @searchcolumnid AS varchar(17)," & vbNewLine & _
-            "    @searchexpression AS nvarchar(MAX)," & vbNewLine & _
+            "    @searchexpression AS varchar(255)," & vbNewLine & _
             "    @returncolumnid AS varchar(17))" & vbNewLine & _
-            "RETURNS nvarchar(MAX)" & vbNewLine & _
+            "RETURNS varchar(255)" & vbNewLine & _
             "--WITH SCHEMABINDING" & vbNewLine & _
             "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-            "    DECLARE @result nvarchar(MAX);" & vbNewLine & _
+            "    DECLARE @result     varchar(255)," & vbNewLine & _
+            "            @dateresult datetime;" & vbNewLine & _
             "    SET @result = '';" & vbNewLine & vbNewLine & _
             "{1}" & vbNewLine & _
-            "    RETURN @result;" & vbNewLine & _
+            "    RETURN NULL;" & vbNewLine & _
             "END" _
             , sObjectName, String.Join(vbNewLine, aryStatements.ToArray()))
 
