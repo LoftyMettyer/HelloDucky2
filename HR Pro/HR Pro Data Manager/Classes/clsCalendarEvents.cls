@@ -23,7 +23,7 @@ Public Function Add(pstrKey As String, pstrName As String, _
                     Optional plngEndDateID As Long, Optional pstrEndDateName As String, _
                     Optional plngEndSessionID As Long, Optional pstrEndSessionName As String, _
                     Optional plngDurationID As Long, Optional pstrDurationName As String, _
-                    Optional pintLegendType As Integer, Optional pstrLegendCharacter As String, _
+                    Optional pintLegendType As Integer, Optional pstrLegendCharacter As String, Optional plngColour As Long, _
                     Optional plngLegendTableID As Long, Optional pstrLegendTableName As String, _
                     Optional plngLegendColumnID As Long, Optional pstrLegendColumnName As String, _
                     Optional plngLegendCodeID As Long, Optional pstrLegendCodeName As String, _
@@ -57,6 +57,7 @@ Public Function Add(pstrKey As String, pstrName As String, _
     If Not IsMissing(pstrDurationName) Then .DurationName = pstrDurationName
     If Not IsMissing(pintLegendType) Then .LegendType = pintLegendType
     If Not IsMissing(pstrLegendCharacter) Then .LegendCharacter = pstrLegendCharacter
+    If Not IsMissing(plngColour) Then .ColourValue = plngColour
     If Not IsMissing(plngLegendTableID) Then .LegendTableID = plngLegendTableID
     If Not IsMissing(pstrLegendTableName) Then .LegendTableName = pstrLegendTableName
     If Not IsMissing(plngLegendColumnID) Then .LegendColumnID = plngLegendColumnID
