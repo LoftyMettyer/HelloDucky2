@@ -1138,7 +1138,6 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
        "MATCH REPORT", "SUCCESSION PLANNING", "CAREER PROGRESSION"
 
       'Check if this has been used in a batch job
-      'JPD 20030617 Fault 6051
       If gfCurrentUserIsSysSecMgr Then
         Call GetNameWhereUsed( _
           "SELECT DISTINCT 'Batch Job'," & _
@@ -1166,7 +1165,6 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
           "   AND ASRSysBatchJobDetails.JobID = " & strID)
       End If
       'Check if this has been used in a Report Pack
-      'JPD 20030617 Fault 6051
       If gfCurrentUserIsSysSecMgr Then
         Call GetNameWhereUsed( _
           "SELECT DISTINCT 'Report Pack'," & _
@@ -1175,7 +1173,7 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
           " '" & ACCESS_READWRITE & "' AS access" & _
           " FROM ASRSysBatchJobDetails" & _
           " INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobDetails.BatchJobNameID = ASRSysBatchJobName.ID" & _
-          " WHERE AsrSysBatchJobName.IsBatch = 1 " & _
+          " WHERE AsrSysBatchJobName.IsBatch = 0 " & _
           "   AND ASRSysBatchJobDetails.JobType = '" & psType & "' " & _
           "   AND ASRSysBatchJobDetails.JobID = " & strID)
       Else
@@ -1189,7 +1187,7 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
           " INNER JOIN ASRSysBatchJobAccess ON AsrSysBatchJobName.ID = ASRSysBatchJobAccess.ID" & _
           " INNER JOIN sysusers b ON ASRSysBatchJobAccess.groupname = b.name" & _
           "   AND b.name = '" & gsUserGroup & "'" & _
-          " WHERE AsrSysBatchJobName.IsBatch = 1 " & _
+          " WHERE AsrSysBatchJobName.IsBatch = 0 " & _
           "   AND ASRSysBatchJobDetails.JobType = '" & psType & "' " & _
           "   AND ASRSysBatchJobDetails.JobID = " & strID)
       End If
@@ -1363,13 +1361,6 @@ Public Function CheckForUseage(psType As String, plngItemID As Long) As Boolean
         " WHERE AsrSysCustomReportsName.OutputEmailAddr = " & strID)
     End If
       
-'MH20020207 Need this in here after mail merge output is reviewed...
-'    'Mail Merge
-'    Call GetNameWhereUsed( _
-'      "SELECT DISTINCT 'Mail Merge', Name, UserName, Access " & _
-'      "FROM ASRSysMailMergeName " & _
-'      "WHERE OutputEmailAddr = " & strID)
-
     'Match Report
     If gfCurrentUserIsSysSecMgr Then
       Call GetNameWhereUsed( _
