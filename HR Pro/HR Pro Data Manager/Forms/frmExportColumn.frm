@@ -1274,7 +1274,7 @@ Public Function GetColumnSize(lColumnID As Long) As Long
 
   Select Case rsColumns("Datatype").Value
     Case sqlDate
-      GetColumnSize = 12
+      GetColumnSize = 10
     Case sqlBoolean
       GetColumnSize = 5
     Case sqlLongVarChar
