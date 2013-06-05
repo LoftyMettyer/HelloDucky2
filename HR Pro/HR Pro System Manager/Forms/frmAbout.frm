@@ -41,11 +41,11 @@ Begin VB.Form frmAbout
       Width           =   1155
       Begin VB.Image imgLogo 
          Appearance      =   0  'Flat
-         Height          =   960
-         Left            =   90
+         Height          =   720
+         Left            =   210
          Picture         =   "frmAbout.frx":000C
-         Top             =   15
-         Width           =   960
+         Top             =   135
+         Width           =   720
       End
    End
    Begin VB.CommandButton cmdTech 
@@ -90,7 +90,7 @@ Begin VB.Form frmAbout
       ForeColor       =   &H00FF0000&
       Height          =   195
       Left            =   150
-      MouseIcon       =   "frmAbout.frx":3050
+      MouseIcon       =   "frmAbout.frx":0D4E
       MousePointer    =   99  'Custom
       TabIndex        =   10
       Top             =   1515
@@ -203,7 +203,7 @@ Private Sub cmdSysInfo_Click()
   
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
   
   ' Unload the form.
   UnLoad Me
@@ -252,11 +252,11 @@ Private Sub Form_Load()
   sngMaxX = IIf(lblSql.Left + lblSql.Width > sngMaxX, lblSql.Left + lblSql.Width, sngMaxX)
   sngMaxX = IIf(lblCopyRight.Left + lblCopyRight.Width > sngMaxX, lblCopyRight.Left + lblCopyRight.Width, sngMaxX)
   
-  cmdOK.Left = sngMaxX + 250
-  cmdSysInfo.Left = cmdOK.Left
-  cmdTech.Left = cmdOK.Left
+  cmdOk.Left = sngMaxX + 250
+  cmdSysInfo.Left = cmdOk.Left
+  cmdTech.Left = cmdOk.Left
   
-  Me.Width = cmdOK.Left + cmdOK.Width + 200
+  Me.Width = cmdOk.Left + cmdOk.Width + 200
 TidyUpAndExit:
   Exit Sub
 
