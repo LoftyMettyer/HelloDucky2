@@ -6,39 +6,31 @@ Namespace ScriptDB
   Public Class LinesOfCode
     Inherits System.ComponentModel.BindingList(Of ScriptDB.CodeElement)
 
-    Private mbAppendWildcard As Boolean
-    Private mlngCaseStatements As Long
-    Private mbAppendAftercode As Boolean
+    Private mbAppendAfterNext As Boolean = False
     Private mbIsComparison As Boolean = False
 
     Public CodeLevel As Integer
     Public NestedLevel As Integer
     Public ReturnType As ComponentValueTypes
 
-
-    Public Sub New()
-      mbAppendWildcard = False
-      mlngCaseStatements = 0
-    End Sub
-
     Public Overloads Sub Add(ByVal LineOfCode As ScriptDB.CodeElement)
 
-      LineOfCode.CaseNumber = mlngCaseStatements
-
-      If mbAppendAftercode Then
+      If mbAppendAfterNext Then
         Me.Items.Insert(Me.Items.Count - 1, LineOfCode)
-        mbAppendAftercode = False
+        mbAppendAfterNext = False
       Else
         Me.Items.Add(LineOfCode)
       End If
 
     End Sub
 
-    Public Overloads Sub AddToEnd(ByVal LineOfCode As ScriptDB.CodeElement)
+    Public Overloads Sub InsertBeforePrevious(ByVal LineOfCode As ScriptDB.CodeElement)
+      Me.Items.Insert(Me.Items.Count - 1, LineOfCode)
+    End Sub
 
-      mbAppendAftercode = True
+    Public Overloads Sub AppendAfterNext(ByVal LineOfCode As ScriptDB.CodeElement)
+      mbAppendAfterNext = True
       Me.Items.Add(LineOfCode)
-
     End Sub
 
     ' Property to calculate the character indenation in the code (to beautify the code)
@@ -47,13 +39,6 @@ Namespace ScriptDB
         Indentation = Space(8)
       End Get
     End Property
-
-
-#Region "Code design switches"
-
-    Public Sub AppendWildcard()
-      mbAppendWildcard = True
-    End Sub
 
     Public Function ToArray() As String()
 
@@ -70,25 +55,7 @@ Namespace ScriptDB
 
     End Function
 
-    Public Sub SplitIntoCase()
-
-      Dim LineOfCode As ScriptDB.CodeElement
-
-      ' If we're to append a wildcard add it into the current case level
-      If mbAppendWildcard = True Then
-        LineOfCode.Code = "+ '%'"
-        Me.Add(LineOfCode)
-      End If
-
-      ' Increment the amount of components in the case statement
-      mlngCaseStatements = mlngCaseStatements + 1
-      mbAppendWildcard = False
-
-    End Sub
-
-#End Region
-
-    Public ReadOnly Property Statement(ByVal CaseNumber As Long) As String
+    Public ReadOnly Property Statement() As String
       Get
         Statement = String.Empty
 
@@ -150,25 +117,10 @@ Namespace ScriptDB
 
         Next
 
-      End Get
-    End Property
-
-    Public ReadOnly Property Statement() As String
-      Get
-
-        Statement = Statement(0)
-
-        ' If we're to append a wildcard add it into the current case level
-        If mbAppendWildcard = True Then
-          Statement = Statement & "+ '%'"
-        End If
-
         ' Wrap to return code chunks in safety
         If Me.ReturnType = ComponentValueTypes.Logic Or mbIsComparison Then
           Statement = vbNewLine & String.Format("{0}CASE WHEN ({1}) THEN 1 ELSE 0 END", New String(vbTab, CodeLevel), Statement)
         End If
-
-        Statement = String.Format("{0}", Statement)
 
       End Get
     End Property

@@ -4,17 +4,14 @@
 
     Public Code As String
     Public OperatorType As ScriptDB.OperatorSubType
-    Public SplitIntoCase As Boolean
-    Public AppendWildcard As Boolean
+    '   Public SplitIntoCase As Boolean
+    '    Public AppendWildcard As Boolean
+    Public PreCode As String
     Public AfterCode As String
     Public ReturnType As ScriptDB.ComponentValueTypes
-    Public BypassValidation As Boolean
+    'Public BypassValidation As Boolean
     Public RowNumberRequired As Boolean
     Public CalculatePostAudit As Boolean
-    '    Public Module_Dependancies As String
-
-    'Public Overrides Function Commit() As Boolean
-    'End Function
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get

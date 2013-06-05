@@ -282,12 +282,12 @@ Namespace Things
 
         If objDependency.Type = Enums.Type.Relation Then
 
-          If Not aryParameters1.Contains(String.Format("@pid_{0} integer", CInt(CType(objDependency, Things.Relation).ParentID))) Then
-            aryParameters1.Add(String.Format("@pid_{0} integer", CInt(CType(objDependency, Things.Relation).ParentID)))
+          If Not aryParameters1.Contains(String.Format("@prm_ID_{0} integer", CInt(CType(objDependency, Things.Relation).ParentID))) Then
+            aryParameters1.Add(String.Format("@prm_ID_{0} integer", CInt(CType(objDependency, Things.Relation).ParentID)))
 
             If CType(objDependency, Things.Relation).RelationshipType = ScriptDB.RelationshipType.Parent Then
               aryParameters2.Add(String.Format("base.[ID_{0}]", CInt(CType(objDependency, Things.Relation).ParentID)))
-              aryParameters3.Add(String.Format("@prm_{0}]", CInt(CType(objDependency, Things.Relation).ParentID)))
+              aryParameters3.Add(String.Format("@prm_ID_{0}", CInt(CType(objDependency, Things.Relation).ParentID)))
             Else
               aryParameters2.Add("base.[ID]")
               aryParameters3.Add(String.Format("@prm_ID"))
@@ -373,7 +373,7 @@ Namespace Things
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters1.ToArray))
             .SelectCode = mcolLinesOfCode.Statement
 
-            .Code = String.Format("CREATE FUNCTION {0}(@prm_id integer)" & vbNewLine & _
+            .Code = String.Format("CREATE FUNCTION {0}(@prm_ID integer)" & vbNewLine & _
                            "RETURNS bit" & vbNewLine & _
                            "AS" & vbNewLine & "BEGIN" & vbNewLine & _
                            "    DECLARE @Result AS bit;" & vbNewLine & vbNewLine & _
@@ -392,7 +392,7 @@ Namespace Things
             '                           "SELECT @Result = CASE WHEN ({6}) THEN 1 ELSE 0 END" & vbNewLine & _
 
 
-            .CodeStub = String.Format("CREATE FUNCTION {0}(@prm_id integer)" & vbNewLine & _
+            .CodeStub = String.Format("CREATE FUNCTION {0}(@prm_ID integer)" & vbNewLine & _
                            "RETURNS bit" & vbNewLine & _
                            "AS" & vbNewLine & "BEGIN" & vbNewLine & _
                            "    DECLARE @Result AS bit;" & vbNewLine & vbNewLine & _
@@ -499,9 +499,6 @@ Namespace Things
 
             ' Value component
           Case ScriptDB.ComponentTypes.Value, ScriptDB.ComponentTypes.TableValue
-
-            Debug.Assert(objComponent.ValueString <> "big'?<%")
-
             LineOfCode.CodeType = ScriptDB.ComponentTypes.Value
 
             Select Case objComponent.ValueType
@@ -571,7 +568,7 @@ Namespace Things
         mcolDependencies.Add(objRelation)
       End If
 
-      LineOfCode.Code = String.Format("@pid_{0}", CInt([Component].TableID))
+      LineOfCode.Code = String.Format("@prm_ID_{0}", CInt([Component].TableID))
 
       [CodeCluster].Add(LineOfCode)
 
@@ -660,7 +657,7 @@ Namespace Things
 
           ' Does the referenced column have default value on it, then reference the UDF/value of the default rather than the column itself.
         ElseIf (Not objThisColumn.DefaultCalcID = 0 And Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault) Then
-          LineOfCode.Code = String.Format("[dbo].[{0}](@pID)", objThisColumn.Name)
+          LineOfCode.Code = String.Format("[dbo].[{0}](@prm_ID)", objThisColumn.Name)
 
         ElseIf objThisColumn.IsCalculated And objThisColumn.Table Is Me.AssociatedColumn.Table _
             And Not Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter And Not Me.ExpressionType = ScriptDB.ExpressionType.Mask Then
@@ -717,7 +714,7 @@ Namespace Things
                 End If
 
                 ' Where clause
-                sWhereCode = String.Format("base.[ID] = @prm_id")
+                sWhereCode = String.Format("base.[ID] = @prm_ID")
                 If Not maryWhere.Contains(sWhereCode) Then
                   maryWhere.Add(sWhereCode)
                 End If
@@ -763,7 +760,7 @@ Namespace Things
               End If
 
               ' Where clause
-              sWhereCode = "base.[ID] = @prm_id"
+              sWhereCode = "base.[ID] = @prm_ID"
               If Not maryWhere.Contains(sWhereCode) Then
                 maryWhere.Add(sWhereCode)
               End If
@@ -890,7 +887,7 @@ Namespace Things
               Else
                 sPartCode = sPartCode & String.Format("{0}FROM [dbo].[{1}] base" & vbNewLine _
                     & "{5}" & vbNewLine _
-                    & "{0}WHERE [id_{2}] = @pID_{2} " & vbNewLine _
+                    & "{0}WHERE [id_{2}] = @prm_ID_{2} " & vbNewLine _
                     & "{0}{3}" & vbNewLine _
                     & "{0}{4}" & vbNewLine _
                     , [CodeCluster].Indentation _
@@ -920,18 +917,6 @@ Namespace Things
 
             End If
 
-            ' Add table join component
-            'maryJoins.Add(String.Format("INNER JOIN [dbo].[{0}] p{1} ON p{1}.[fk_{2}] = @pID AND p{1}.[_deleteddate] IS NULL" _
-            '  , PhysicalName(guidTableID, ObjectPrefix.Table) _
-            '  , maryJoins.Count _
-            '  , drRelation.Item("parentid").ToString))
-
-            '' Add order
-            'If [Component].Item("columnorderid").ToString = ASR.Common.ASRGuid.Empty Then
-            '  maryOrders.Add(String.Format("--{0} DESC" _
-            '    , PhysicalName([Component].Item("columnorderid").ToString, ObjectPrefix.Table)))
-            'End If
-
           End If
 
         End If
@@ -939,10 +924,6 @@ Namespace Things
 
       ' Add this column (or reference to it) to the main execute statement
       [CodeCluster].Add(LineOfCode)
-
-      ' Add this column's tableID to the dependency stack
-      '  AddTableToDependencies(objThisColumn.Table.ID)
-      '   AddColumnToDependencies(objThisColumn)
 
     End Sub
 
@@ -1005,7 +986,6 @@ Namespace Things
 
       'ChildCodeCluster.IsEvaluated = Not objCodeLibrary.BypassValidation
       SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
-      LineOfCode.BypassEvaluation = objCodeLibrary.BypassValidation
       LineOfCode.Code = String.Format(LineOfCode.Code, ChildCodeCluster.ToArray)
 
       mbRequiresRowNumber = mbRequiresRowNumber Or objCodeLibrary.RowNumberRequired
@@ -1144,29 +1124,30 @@ Namespace Things
       objCodeLibrary = Globals.Operators.GetObject(Enums.Type.CodeLibrary, objComponent.OperatorID)
 
       ' Handle 'OR' statements. Force the component builder to wrap the logic clusters into a case statement
-      If objCodeLibrary.SplitIntoCase Then
-        [CodeCluster].SplitIntoCase()
-      Else
+      'If objCodeLibrary.SplitIntoCase Then
+      '    [CodeCluster].SplitIntoCase()
+      'Else
 
-        ' We're starting a new section of logic components.
-        'If objCodeLibrary.OperatorType = ScriptDB.OperatorSubType.Logic Then
-        '  [CodeCluster].StartNewLogicCluster()
-        'End If
-
-        LineOfCode.Code = String.Format(" {0} ", objCodeLibrary.Code)
-        LineOfCode.OperatorType = objCodeLibrary.OperatorType
-        [CodeCluster].Add(LineOfCode)
-
-        If objCodeLibrary.AppendWildcard Then
-          [CodeCluster].AppendWildcard()
-        End If
-
-        If objCodeLibrary.AfterCode.Length > 0 Then
-          LineOfCode.Code = String.Format("{0}", objCodeLibrary.AfterCode)
-          [CodeCluster].AddToEnd(LineOfCode)
-        End If
-
+      If objCodeLibrary.PreCode.Length > 0 Then
+        LineOfCode.Code = objCodeLibrary.PreCode
+        CodeCluster.InsertBeforePrevious(LineOfCode)
       End If
+
+      LineOfCode.Code = String.Format(" {0} ", objCodeLibrary.Code)
+      LineOfCode.OperatorType = objCodeLibrary.OperatorType
+      [CodeCluster].Add(LineOfCode)
+
+      'If objCodeLibrary.AppendWildcard Then
+      '  [CodeCluster].AppendWildcard()
+      'End If
+
+      If objCodeLibrary.AfterCode.Length > 0 Then
+        LineOfCode.CodeType = ScriptDB.ComponentTypes.Value
+        LineOfCode.Code = objCodeLibrary.AfterCode
+        [CodeCluster].AppendAfterNext(LineOfCode)
+      End If
+
+      'End If
 
     End Sub
 
