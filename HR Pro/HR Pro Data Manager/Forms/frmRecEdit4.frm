@@ -3,7 +3,7 @@ Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
 Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "tinumb6.ocx"
 Object = "{E2D000D0-2DA1-11D2-B358-00104B59D73D}#1.0#0"; "titext6.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
@@ -1403,7 +1403,7 @@ Private Sub Combo1_KeyPress(Index As Integer, KeyAscii As Integer)
 
   ' RH 31/07/00 - If space bar is pressed, then drop down the combo box
   If KeyAscii = 32 Then
-    UI.cboDropDown Combo1(Index).hwnd, True
+    UI.cboDropDown Combo1(Index).hWnd, True
   End If
   
 End Sub
@@ -3461,19 +3461,19 @@ Private Sub ctlNewLookup1_NewEntry(Index As Integer)
       '''' Only add a new ClookupValue to the ClookupValues collection if it
       '''' does not already exist.
       If gcoLookupValues.Count > 0 Then
-        If gcoLookupValues.IsValid(Me.hwnd) Then
-          gcoLookupValues.Remove CStr(Me.hwnd)
+        If gcoLookupValues.IsValid(Me.hWnd) Then
+          gcoLookupValues.Remove CStr(Me.hWnd)
         End If
       End If
       ' Add the ClookupValue to the ClookupValues collection.
-      Set objLUValue = gcoLookupValues.Add(sLookupColumnName, Me.hwnd, 0, mobjScreenControls.Item(ctlNewLookup1(Index).Tag).ColumnID)
+      Set objLUValue = gcoLookupValues.Add(sLookupColumnName, Me.hWnd, 0, mobjScreenControls.Item(ctlNewLookup1(Index).Tag).ColumnID)
   
       ' Disable the current record edit screen, and display the lookup table screen.
       DisableMe
       AddNewTableEntry mobjScreenControls.Item(sTag).LookupTableID
       
       ' Set the child Hwnd value in the ClookupValue object.
-      objLUValue.ChildHwnd = frmMain.ActiveForm.hwnd
+      objLUValue.ChildHwnd = frmMain.ActiveForm.hWnd
     End If
   End If
 
@@ -3857,7 +3857,7 @@ Private Sub Form_Unload(Cancel As Integer)
   If mfTableEntry Then
     ' Get the Hwnd value of the parent form.
     For Each objLUValue In gcoLookupValues.Collection
-      If objLUValue.ChildHwnd = Me.hwnd Then
+      If objLUValue.ChildHwnd = Me.hWnd Then
         lngParentHWnd = objLUValue.ParentHwnd
         Exit For
       End If
@@ -3866,7 +3866,7 @@ Private Sub Form_Unload(Cancel As Integer)
     
     ' Get the parent form.
     For Each fTemp In Forms
-      If fTemp.hwnd = lngParentHWnd Then
+      If fTemp.hWnd = lngParentHWnd Then
         fTemp.EnableMe
         
         If Not mfLeaveLookup Then
@@ -3916,7 +3916,7 @@ Private Sub Form_Unload(Cancel As Integer)
   Set mobjTableView = Nothing
 
   For Each fTemp In Forms
-    If fTemp.hwnd = lngParentHWnd Then
+    If fTemp.hWnd = lngParentHWnd Then
       fTemp.SetFocus
       frmMain.RefreshMainForm fTemp
       Exit For
@@ -4216,7 +4216,7 @@ Public Function LoadScreen(ByVal plngScreenID As Long, ByVal plngViewID As Long)
 
     ' Load the controls onto the screen.
     
-    UI.LockWindow Me.hwnd
+    UI.LockWindow Me.hWnd
     fOK = LoadControls(objScreen)
     UI.UnlockWindow
   End If
@@ -9822,7 +9822,7 @@ Private Sub TabStrip1_Click()
   If Not mfLoading Then
   
     ' Lock the window refreshing.
-    UI.LockWindow Me.hwnd
+    UI.LockWindow Me.hWnd
   
     ' Get the index of the selected tabpage.
     iIndex = TabStrip1.SelectedItem.Index
