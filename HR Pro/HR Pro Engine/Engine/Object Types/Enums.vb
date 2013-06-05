@@ -104,6 +104,7 @@
     CodeItem = 2
     UpdateParameter = 3
     DefaultDataType = 4
+    ExpressionType = 5
   End Enum
 
   Public Enum AccordPurgeType

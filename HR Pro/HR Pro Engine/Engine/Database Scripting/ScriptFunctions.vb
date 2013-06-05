@@ -82,10 +82,10 @@ Namespace ScriptDB
 
     End Function
 
-    Public Function GetFieldFromDatabases() As Boolean
+    Public Function GetFieldFromDatabases(FunctionDataType As ComponentValueTypes) As Boolean
 
       Dim bOK As Boolean = True
-      Dim sObjectName As String = "udfsys_getfieldfromdatabaserecord"
+      Dim sObjectName As String
       Dim sSQL As String = vbNullString
       Dim sStatement As String = vbNullString
       Dim aryStatements As New ArrayList
@@ -95,12 +95,35 @@ Namespace ScriptDB
       Dim objTable1 As Table
       Dim objTable2 As Table
       Dim objIndex As New Index
-      Dim sVariableName As String
       Dim sSearchExpression As String
       Dim objColumn As Column
       Dim bFound As Boolean
+      Dim sReturnType As String
+      Dim sSafeReturnType As String
+      Dim bProcess As Boolean = False
+      Dim ReturnColumnType As ColumnTypes
 
       Try
+
+        ' Return types
+        Select Case FunctionDataType
+          Case ComponentValueTypes.Date
+            sObjectName = "udfsys_getfieldfromdatabaserecord_datetime"
+            sReturnType = "datetime"
+            sSafeReturnType = "NULL"
+          Case ComponentValueTypes.Numeric
+            sObjectName = "udfsys_getfieldfromdatabaserecord_numeric"
+            sReturnType = "numeric(38,8)"
+            sSafeReturnType = "0"
+          Case ComponentValueTypes.Logic
+            sObjectName = "udfsys_getfieldfromdatabaserecord_bit"
+            sReturnType = "bit"
+            sSafeReturnType = "0"
+          Case Else
+            sObjectName = "udfsys_getfieldfromdatabaserecord_string"
+            sReturnType = "varchar(255)"
+            sSafeReturnType = "''"
+        End Select
 
         For Each objComponent In Globals.GetFieldsFromDB
 
@@ -112,73 +135,75 @@ Namespace ScriptDB
 
           objColumn = objTable1.Columns.GetById(objPart3.ColumnID)
           If Not objColumn Is Nothing Then
-            Select Case objColumn.DataType
-              Case ColumnTypes.Date
-                sVariableName = "@result_date"
-              Case ColumnTypes.Numeric
-                sVariableName = "@result_numeric"
-              Case ColumnTypes.Logic
-                sVariableName = "@result_boolean"
-              Case ColumnTypes.Integer
-                sVariableName = "@result_integer"
+
+            ReturnColumnType = objTable1.Columns.GetById(objPart3.ColumnID).DataType
+
+            Select Case FunctionDataType
+              Case ComponentValueTypes.Date
+                bProcess = (ReturnColumnType = ColumnTypes.Date)
+              Case ComponentValueTypes.Numeric
+                bProcess = (ReturnColumnType = ColumnTypes.Numeric Or ReturnColumnType = ColumnTypes.Integer)
+              Case ComponentValueTypes.Logic
+                bProcess = (ReturnColumnType = ColumnTypes.Logic)
               Case Else
-                sVariableName = "@result_string"
+                bProcess = (ReturnColumnType = ColumnTypes.Text Or ReturnColumnType = ColumnTypes.WorkingPattern)
             End Select
 
-            ' Make integers typesafe
-            Select Case objTable1.Columns.GetById(objPart1.ColumnID).DataType
-              Case ColumnTypes.Integer
-                sSearchExpression = "convert(numeric(38,8), @searchexpression)"
-              Case Else
-                sSearchExpression = "@searchexpression"
-            End Select
+            If bProcess Then
 
-            ' Even though the user can select different table for parameters 1 and 3 this
-            ' would return garbage data so ignore it!
-            If objTable1 Is objTable2 Then
-              sStatement = String.Format("    IF @searchcolumnid = '{0}-{1}' AND @returncolumnid = '{2}-{3}'" & vbNewLine & _
-                "        BEGIN" & vbNewLine & _
-                "            SELECT {7} = [{5}] FROM dbo.[{4}] WHERE [{6}] = {8};" & vbNewLine & _
-                "            RETURN {7};" & vbNewLine & _
-                "        END" & vbNewLine _
-              , objPart1.TableID.ToString.PadLeft(8, "0"c), objPart1.ColumnID.ToString.PadLeft(8, "0"c) _
-              , objPart3.TableID.ToString.PadLeft(8, "0"c), objPart3.ColumnID.ToString.PadLeft(8, "0"c) _
-              , objTable1.PhysicalName, objTable1.Columns.GetById(objPart3.ColumnID).Name _
-              , objTable2.Columns.GetById(objPart1.ColumnID).Name, sVariableName, sSearchExpression)
+              ' Make integers typesafe
+              Select Case objTable1.Columns.GetById(objPart1.ColumnID).DataType
+                Case ColumnTypes.Integer
+                  sSearchExpression = "convert(numeric(38,8), @searchexpression)"
+                Case Else
+                  sSearchExpression = "@searchexpression"
+              End Select
 
-              ' Only add if not already done so
-              If Not aryStatements.Contains(sStatement) Then
+              ' Even though the user can select different table for parameters 1 and 3 this
+              ' would return garbage data so ignore it!
+              If objTable1 Is objTable2 Then
+                sStatement = String.Format("    IF @searchcolumnid = '{0}-{1}' AND @returncolumnid = '{2}-{3}'" & vbNewLine & _
+                  "        SELECT @result = [{5}] FROM dbo.[{4}] WHERE [{6}] = {7};" & vbNewLine _
+                , objPart1.TableID.ToString.PadLeft(8, "0"c), objPart1.ColumnID.ToString.PadLeft(8, "0"c) _
+                , objPart3.TableID.ToString.PadLeft(8, "0"c), objPart3.ColumnID.ToString.PadLeft(8, "0"c) _
+                , objTable1.Name, objTable1.Columns.GetById(objPart3.ColumnID).Name _
+                , objTable2.Columns.GetById(objPart1.ColumnID).Name, sSearchExpression)
 
-                aryStatements.Add(sStatement)
+                ' Only add if not already done so
+                If Not aryStatements.Contains(sStatement) Then
 
-                ' Put an index on this column
-                bFound = False
-                For Each objIndex In objTable1.Indexes
-                  If objIndex.Columns.Count > 0 Then
-                    If objIndex.Columns(0) Is objTable1.Columns.GetById(objPart1.ColumnID) Then
-                      bFound = True
-                      Exit For
+                  aryStatements.Add(sStatement)
+
+                  ' Put an index on this column
+                  bFound = False
+                  For Each objIndex In objTable1.Indexes
+                    If objIndex.Columns.Count > 0 Then
+                      If objIndex.Columns(0) Is objTable1.Columns.GetById(objPart1.ColumnID) Then
+                        bFound = True
+                        Exit For
+                      End If
                     End If
+                  Next
+
+                  If Not bFound Then
+                    objIndex = New Index
+                    objIndex.Name = String.Format("IDX_getfromdb_{0}", objTable1.Columns.GetById(objPart1.ColumnID).Name)
+                    objIndex.Columns.Add(objTable1.Columns.GetById(objPart1.ColumnID))
+                    objIndex.IncludePrimaryKey = False
+                    objIndex.IsTableIndex = True
                   End If
-                Next
 
-                If Not bFound Then
-                  objIndex = New Index
-                  objIndex.Name = String.Format("IDX_getfromdb_{0}", objTable1.Columns.GetById(objPart1.ColumnID).Name)
-                  objIndex.Columns.Add(objTable1.Columns.GetById(objPart1.ColumnID))
-                  objIndex.IncludePrimaryKey = False
-                  objIndex.IsTableIndex = True
+                  objIndex.IncludedColumns.AddIfNew(objTable2.Columns.GetById(objPart3.ColumnID))
+
+                  If Not bFound And Not objIndex.Columns(0).Multiline Then
+                    objTable1.Indexes.Add(objIndex)
+                  End If
+
                 End If
-
-                objIndex.IncludedColumns.AddIfNew(objTable2.Columns.GetById(objPart3.ColumnID))
-
-                If Not bFound And Not objIndex.Columns(0).Multiline Then
-                  objTable1.Indexes.Add(objIndex)
-                End If
-
               End If
             End If
           End If
+
         Next
 
         ' Build the stored procedure
@@ -186,22 +211,16 @@ Namespace ScriptDB
             "    @searchcolumnid AS varchar(17)," & vbNewLine & _
             "    @searchexpression AS varchar(255)," & vbNewLine & _
             "    @returncolumnid AS varchar(17))" & vbNewLine & _
-            "RETURNS sql_variant" & vbNewLine & _
+            "RETURNS {2}" & vbNewLine & _
             "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-            "    DECLARE @result_string     varchar(255)," & vbNewLine & _
-            "            @result_numeric    numeric(38,8)," & vbNewLine & _
-            "            @result_integer    integer," & vbNewLine & _
-            "            @result_boolean    bit," & vbNewLine & _
-            "            @result_date       datetime;" & vbNewLine & vbNewLine & _
-            "    SET @result_string = '';" & vbNewLine & _
-            "    SET @result_integer = 0;" & vbNewLine & _
-            "    SET @result_numeric = 0;" & vbNewLine & vbNewLine & _
+            "    DECLARE @result {2}" & vbNewLine & _
+            "    SET @result = {3};" & vbNewLine & _
             "{1}" & vbNewLine & _
-            "    RETURN NULL;" & vbNewLine & _
+            "    RETURN ISNULL(@result,{3});" & vbNewLine & _
             "END" _
-            , sObjectName, String.Join(vbNewLine, aryStatements.ToArray()))
+            , sObjectName, String.Join(vbNewLine, aryStatements.ToArray()), sReturnType, sSafeReturnType)
 
-            Script.DropUDF("dbo", sObjectName)
+        Script.DropUDF("dbo", sObjectName)
         bOK = CommitDB.ScriptStatement(sSQL, True)
 
       Catch ex As Exception

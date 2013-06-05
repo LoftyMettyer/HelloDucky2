@@ -1055,7 +1055,13 @@ Namespace ScriptDB
       Try
         bOK = ScriptFunctions.ConvertCurrency
         bOK = bOK And ScriptFunctions.UniqueCodeViews
-        bOK = bOK And ScriptFunctions.GetFieldFromDatabases
+
+        bOK = bOK And ScriptFunctions.GetFieldFromDatabases(ComponentValueTypes.Date)
+        bOK = bOK And ScriptFunctions.GetFieldFromDatabases(ComponentValueTypes.Numeric)
+        bOK = bOK And ScriptFunctions.GetFieldFromDatabases(ComponentValueTypes.Logic)
+        bOK = bOK And ScriptFunctions.GetFieldFromDatabases(ComponentValueTypes.String)
+
+
         'bOK = bOK And ScriptFunctions.BankHolidayUpdate
         'bOK = bOK And ScriptFunctions.GeneratePerformanceIndexes
 

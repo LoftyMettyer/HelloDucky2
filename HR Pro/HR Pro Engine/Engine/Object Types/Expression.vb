@@ -667,6 +667,7 @@ Namespace Things
       Dim objTriggeredUpdate As ScriptDB.TriggeredUpdate
       Dim sWhereClause As String = ""
       Dim bAddDefaultDataType As Boolean
+      Dim bAddExpressionType As Boolean = False
 
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Function
       objCodeLibrary = Globals.Functions.GetById(component.FunctionID)
@@ -704,6 +705,9 @@ Namespace Things
             Case SettingType.DefaultDataType
               bAddDefaultDataType = True
 
+            Case SettingType.ExpressionType
+              bAddExpressionType = True
+
           End Select
 
         Next
@@ -737,6 +741,23 @@ Namespace Things
       If bAddDefaultDataType Then
         ExtraCode = New ScriptDB.CodeElement
         ExtraCode.Code = CInt(component.Components(0).Components(0).ReturnType).ToString
+        ChildCodeCluster.Add(ExtraCode)
+      End If
+
+      If bAddExpressionType Then
+        ExtraCode = New ScriptDB.CodeElement
+
+        Select Case component.Components(2).Components(0).ReturnType
+          Case ScriptDB.ComponentValueTypes.ByRef_Date
+            ExtraCode.Code = "datetime"
+          Case ScriptDB.ComponentValueTypes.ByRef_Logic
+            ExtraCode.Code = "bit"
+          Case ScriptDB.ComponentValueTypes.ByRef_Numeric
+            ExtraCode.Code = "numeric"
+          Case Else
+            ExtraCode.Code = "string"
+        End Select
+
         ChildCodeCluster.Add(ExtraCode)
       End If
 

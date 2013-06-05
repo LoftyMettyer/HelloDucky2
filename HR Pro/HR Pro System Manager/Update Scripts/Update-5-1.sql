@@ -111,9 +111,9 @@ PRINT 'Step - Calculation framework'
 		DROP FUNCTION [dbo].[udfsys_divide];
 
 	-- Clear old component expressions
-	DELETE FROM tbstat_componentcode WHERE id IN (16, 61, 25, 4, 27) AND isoperator = 0
+	DELETE FROM tbstat_componentcode WHERE id IN (16, 61, 25, 4, 27, 42) AND isoperator = 0
 	DELETE FROM tbstat_componentcode WHERE id IN (4) AND isoperator = 1
-	DELETE FROM tbstat_componentdependancy WHERE id IN (16, 61, 25)
+	DELETE FROM tbstat_componentdependancy WHERE id IN (16, 61, 25, 42)
 
 	-- Is Field Empty
 	INSERT [dbo].[tbstat_componentcode] ([id], [code], [datatype], [name], [isoperator], [operatortype], [casecount])
@@ -140,6 +140,11 @@ PRINT 'Step - Calculation framework'
 	-- Divided By
 	INSERT [dbo].[tbstat_componentcode] ([id], [precode], [code], [aftercode], [name], [isoperator], [operatortype], [casecount])
 		VALUES (4, 'dbo.udfstat_divideby(', ',', ')', 'Divided by', 1, 0, 0);		
+
+	-- Get field from database value
+	INSERT [dbo].[tbstat_componentcode] ([id], [code], [datatype], [name], [isoperator], [operatortype], [casecount], [isgetfieldfromdb])
+		VALUES (42, '[dbo].[udfsys_getfieldfromdatabaserecord_{3}] ({0}, {1}, {2})', 0, 'Get field from database record', 0, 0, 0, 1);		
+	INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (42, 5, '', '', '');
 
 
 /* ------------------------------------------------------------- */

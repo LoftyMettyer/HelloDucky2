@@ -94,10 +94,10 @@
     [SystemVariable] = 5
     [Condition] = 6            ' typically first parameter of a if then else (e.g. field = value)
     '[Another_Unknown] = 100
-    '[Component_String] = 101
-    '[Component_Numeric] = 102
-    '[Component_Logic] = 103
-    '[Component_Date] = 104
+    [ByRef_String] = 101
+    [ByRef_Numeric] = 102
+    [ByRef_Logic] = 103
+    [ByRef_Date] = 104
   End Enum
 
   Public Enum CaseReturnType
