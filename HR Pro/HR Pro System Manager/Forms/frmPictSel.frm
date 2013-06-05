@@ -194,7 +194,7 @@ Private Sub Form_Activate()
       
         'gobjProgress.AviFile = ""
         gobjProgress.AVI = dbPicture
-        gobjProgress.MainCaption = "Picture Manager"
+        gobjProgress.MainCaption = "Picture Library"
         gobjProgress.Caption = Application.Name
         gobjProgress.NumberOfBars = 1
         gobjProgress.Bar1MaxValue = .RecordCount
