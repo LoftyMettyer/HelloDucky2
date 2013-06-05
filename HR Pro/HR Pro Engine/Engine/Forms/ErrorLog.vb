@@ -18,7 +18,7 @@ Namespace Forms
       linkEmail.Links.Add(0, linkEmail.Text.Length, linkEmail.Text)
       LinkWeb.Links.Add(0, LinkWeb.Text.Length, LinkWeb.Text)
 
-      txtDetails.Text = Globals.ErrorLog.QuickReport()
+      'txtDetails.Text = Globals.ErrorLog.QuickReport()
       txtDetails.Text = txtDetails.Text & Globals.ErrorLog.DetailedReport
 
       Me.Height = mlngInitialHeight

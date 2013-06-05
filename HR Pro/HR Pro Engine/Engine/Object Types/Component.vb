@@ -107,60 +107,79 @@ Namespace Things
       Dim bConvertsSubComponents As Boolean
       Dim lngThisLevel As Long
 
-      Level = Level + 1
-      lngThisLevel = Level
+      Try
 
-      If Me.SubType = ScriptDB.ComponentTypes.Calculation Then
+        Level = Level + 1
+        lngThisLevel = Level
 
-        objExpression = Me.BaseExpression.BaseTable.Expressions.GetById(Me.CalculationID).Clone
-        Me.Components = objExpression.Components
-        Me.TableID = Me.BaseExpression.BaseTable.ID
-        Me.SubType = ScriptDB.ComponentTypes.Expression
+        If Me.SubType = ScriptDB.ComponentTypes.Calculation Then
 
-      ElseIf Me.SubType = ScriptDB.ComponentTypes.Expression Then
-        For Each objComponent As Component In Me.Components
-          objComponent.ConvertToExpression(Level, Recursion)
-        Next
+          objExpression = Globals.Expressions.GetById(Me.CalculationID).Clone
+          Me.Components = objExpression.Components
+          Me.TableID = objExpression.TableID
+          Me.SubType = ScriptDB.ComponentTypes.Expression
 
-      ElseIf Me.SubType = ScriptDB.ComponentTypes.Function Then
-        For Each objComponent As Component In Me.Components
-          objComponent.ConvertToExpression(Level, Recursion)
-        Next
-
-        ' Pull a calculated column directly in as an expression
-      ElseIf Me.SubType = ScriptDB.ComponentTypes.Column And Me.ConvertSubComponents Then
-
-        objTable = Globals.Tables.GetById(Me.TableID)
-        objColumn = objTable.Columns.GetById(Me.ColumnID)
-
-        ' We've got ourselves into a recursive loop somehow
-        If Recursion.Contains(objColumn) Then
-
-        ElseIf objColumn.IsCalculated Then
-          If objColumn.Table Is Me.BaseExpression.BaseTable Then
-
-            objExpression = objColumn.Table.Expressions.GetById(objColumn.CalcID).Clone
-            Me.Components = objExpression.Components
-            Me.ReturnType = objColumn.ComponentReturnType
-            bConvertsSubComponents = Not Recursion.Contains(objColumn)
-
-            Recursion.AddIfNew(objColumn)
-
-            For Each objComponent As Component In Me.Components
-              objComponent.ConvertSubComponents = bConvertsSubComponents
-              objComponent.ConvertToExpression(Level, Recursion)
-            Next
-
-            If lngThisLevel < Level Then
-              Recursion.Remove(objColumn)
-            End If
-
-            Me.SubType = ScriptDB.ComponentTypes.ConvertedCalculatedColumn
-
+          If Me.TableID <> Me.BaseExpression.TableID Then
+            Globals.ErrorLog.Add(ErrorHandler.Section.UDFs, "", ErrorHandler.Severity.Error _
+            , String.Format("Error creating calculation for {0}.{1} ", Me.BaseExpression.BaseTable.Name, Me.BaseExpression.AssociatedColumn.Name) _
+              , "This is likely caused by copying a table and a calculation reference is still attached to the original column. In the associated calculation try re-selecting any calculations")
+            Me.BaseExpression.IsValid = False
           End If
+
+
+        ElseIf Me.SubType = ScriptDB.ComponentTypes.Expression Then
+
+          For Each objComponent As Component In Me.Components
+            objComponent.ConvertToExpression(Level, Recursion)
+          Next
+
+        ElseIf Me.SubType = ScriptDB.ComponentTypes.Function Then
+
+          For Each objComponent As Component In Me.Components
+            objComponent.ConvertToExpression(Level, Recursion)
+          Next
+
+          ' Pull a calculated column directly in as an expression
+        ElseIf Me.SubType = ScriptDB.ComponentTypes.Column And Me.ConvertSubComponents Then
+
+          objTable = Globals.Tables.GetById(Me.TableID)
+          objColumn = objTable.Columns.GetById(Me.ColumnID)
+
+          ' We've got ourselves into a recursive loop somehow
+          If Recursion.Contains(objColumn) Then
+
+          ElseIf objColumn.IsCalculated Then
+            If objColumn.Table Is Me.BaseExpression.BaseTable Then
+
+              objExpression = objColumn.Table.Expressions.GetById(objColumn.CalcID).Clone
+              Me.Components = objExpression.Components
+              Me.ReturnType = objColumn.ComponentReturnType
+              bConvertsSubComponents = Not Recursion.Contains(objColumn)
+
+              Recursion.AddIfNew(objColumn)
+
+              For Each objComponent As Component In Me.Components
+                objComponent.ConvertSubComponents = bConvertsSubComponents
+                objComponent.ConvertToExpression(Level, Recursion)
+              Next
+
+              If lngThisLevel < Level Then
+                Recursion.Remove(objColumn)
+              End If
+
+              Me.SubType = ScriptDB.ComponentTypes.ConvertedCalculatedColumn
+
+            End If
+          End If
+
         End If
 
-      End If
+      Catch ex As Exception
+
+        Globals.ErrorLog.Add(ErrorHandler.Section.UDFs, "", ErrorHandler.Severity.Error, "Calculation not found", CStr(Me.CalculationID))
+
+      End Try
+
 
     End Sub
 

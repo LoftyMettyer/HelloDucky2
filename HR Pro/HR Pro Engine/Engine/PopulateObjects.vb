@@ -306,6 +306,7 @@ Namespace Things
         Dim expression As New Expression
         expression.ID = row.Item("id").ToString
         expression.SubType = ScriptDB.ComponentTypes.Expression
+        expression.TableID = CInt(row.Item("tableid"))
         expression.Name = row.Item("name").ToString
         expression.ExpressionType = row.Item("type").ToString
         expression.SchemaName = "dbo"
@@ -321,6 +322,10 @@ Namespace Things
         expression.Components = Things.LoadComponents(expression, ScriptDB.ComponentTypes.Expression)
 
         table.Expressions.Add(expression)
+
+        ' Copy of all the expressions (sometimes calcs get their table references screwed up in the System Manager after being table copied.
+        Globals.Expressions.Add(expression)
+
       Next
 
     End Sub

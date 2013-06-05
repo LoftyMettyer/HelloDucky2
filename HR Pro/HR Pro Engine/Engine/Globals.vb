@@ -13,6 +13,7 @@ Public Module Globals
   Public Workflows As ICollection(Of Workflow)
   Public Operators As ICollection(Of CodeLibrary)
   Public Functions As ICollection(Of CodeLibrary)
+  Public Expressions As ICollection(Of Expression)
   Public ErrorLog As Errors
   Public TuningLog As Tuning.Report
   Public ModuleSetup As SettingCollection
@@ -35,6 +36,7 @@ Public Module Globals
     Workflows = New Collection(Of Workflow)
     Operators = New Collection(Of CodeLibrary)
     Functions = New Collection(Of CodeLibrary)
+    Expressions = New Collection(Of Expression)
     ErrorLog = New Errors
     TuningLog = New Tuning.Report
     ModuleSetup = New SettingCollection
