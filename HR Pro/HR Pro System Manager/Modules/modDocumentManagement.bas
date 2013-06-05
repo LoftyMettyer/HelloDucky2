@@ -58,7 +58,7 @@ Public Function CreateLinkDocumentSP() As Boolean
               "        @sTargetLinkColumn      nvarchar(255)," & vbNewLine & _
               "        @sTargetCategoryColumn  nvarchar(255)," & vbNewLine & _
               "        @sTargetTypeColumn      nvarchar(255)," & vbNewLine & _
-              "        @intTableType           bit," & vbNewLine & _
+              "        @intTableType           integer," & vbNewLine & _
               "        @sParent1Keyfield       nvarchar(255)," & vbNewLine & _
               "        @sParent1TableName      nvarchar(255)," & vbNewLine & _
               "        @intParent1TableID      integer," & vbNewLine & _
