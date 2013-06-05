@@ -16,24 +16,6 @@ Attribute VB_Ext_KEY = "Member0" ,"Properties"
 Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
 Option Explicit
 
-'Column type constants
-Public Enum ColumnTypes
-  giCOLUMNTYPE_DATA = 0
-  giCOLUMNTYPE_LOOKUP = 1
-  giCOLUMNTYPE_CALCULATED = 2
-  giCOLUMNTYPE_SYSTEM = 3
-  giCOLUMNTYPE_LINK = 4
-'  giCOLUMNTYPE_WORKINGPATTERN = 5
-End Enum
-
-Public Enum UniqueCheckTypes
-  giUNIQUECHECKTYPE_NONE = 0
-  giUNIQUECHECKTYPE_ENTIRE = -1
-  giUNIQUECHECKTYPE_SIBLINGSALL = -2
-  ' NB. Check types <type> where <type> 0 indicate a unique check within
-  ' sibling records related to records in the parent table with id <type>.
-End Enum
-
 ' Local variables to hold property values
 Private gLngColumnID As Long
 Private gLngTableID As Long

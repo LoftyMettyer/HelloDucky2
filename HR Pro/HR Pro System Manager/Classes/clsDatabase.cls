@@ -21,26 +21,6 @@ Private ODBC As New ODBC
 'Local variable to hold property values
 Private mvarServerName As String
 
-Public Enum DataTypes
-  dtBIT = -7
-  dtLONGVARBINARY = -4
-  dtVARBINARY = -3
-  dtBINARY = -2
-  dtLONGVARCHAR = -1
-  dtNUMERIC = 2
-  dtINTEGER = 4
-  dtTIMESTAMP = 11
-  dtVARCHAR = 12
-  dtGUID = 15
-'  dtNVARCHARMAX = 13
- 
-  ' These are temp for frmworkflowelementitem - TM has the file checked out and JED needs a build.
-  ' To be removed when frmworkflowelementitem is available
-  rdTypeLONGVARBINARY = -4
-  rdTypeVARBINARY = -3
-
-End Enum
-
 Public Property Get MaxColumnNameLength() As Integer
   MaxColumnNameLength = 100
 End Property

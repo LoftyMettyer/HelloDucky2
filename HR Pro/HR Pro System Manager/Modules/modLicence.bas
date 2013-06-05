@@ -1,22 +1,6 @@
 Attribute VB_Name = "modLicence"
 Option Explicit
 
-Public Enum Module
-  modPersonnel = 1
-  modRecruitment = 2
-  modAbsence = 4
-  modTraining = 8
-  modIntranet = 16
-  modAFD = 32
-  modFullSysMgr = 64
-  modCMG = 128
-  modQAddress = 256
-  modAccordPayroll = 512
-  modWorkflow = 1024
-  modVersion1 = 2048
-End Enum
-
-
 Public Function GetLicenceKey()
 
   'MH 26/07/2001

@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmSSIntranetSetup 
    BorderStyle     =   3  'Fixed Dialog
@@ -1689,13 +1689,6 @@ Private Const giPAGE_BUTTONLINKS = 2
 Private Const giPAGE_DROPDOWNLISTLINKS = 3
 Private Const giPAGE_DOCUMENTS = 4
 
-Public Enum SSINTRANETLINKTYPES
-  SSINTLINK_HYPERTEXT = 0
-  SSINTLINK_BUTTON = 1
-  SSINTLINK_DROPDOWNLIST = 2
-  SSINTLINK_DOCUMENT = 3
-End Enum
-
 Private mblnReadOnly As Boolean
 Private mfChanged As Boolean
 Private mlngPersonnelTableID As Long
@@ -2033,7 +2026,7 @@ Private Sub RefreshControls()
 
   End Select
 
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   cmdPreview.Enabled = (cboSecurityGroup.Text <> "(All Groups)")
 
 End Sub
