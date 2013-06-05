@@ -132,7 +132,12 @@ Public Class SysMgr
     End Get
   End Property
 
-#End Region
+  Public ReadOnly Property Modifications As Modifications Implements COMInterfaces.iSystemManager.Modifications
+    Get
+      Return Globals.Modifications
+    End Get
+  End Property
 
+#End Region
 
 End Class

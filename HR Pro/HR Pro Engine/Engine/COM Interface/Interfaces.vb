@@ -26,6 +26,7 @@
     Function PopulateObjects() As Boolean
     Function CloseSafely() As Boolean
     ReadOnly Property Version As System.Version
+    ReadOnly Property Modifications As Modifications
   End Interface
 
   Public Interface iErrors
@@ -44,6 +45,7 @@
     Property RefreshObjects As Boolean
     Property DevelopmentMode As Boolean
     Property OverflowSafety As Boolean
+    Property OptimiseSaveProcess As Boolean
   End Interface
 
   Public Interface iConnection
@@ -223,6 +225,17 @@
     Property LookupFilterValue As String
   End Interface
 
+  Public Interface iModifications
+    Property StructureChanged As Boolean
+    Property ExpressionChanged As Boolean
+    Property ScreenChanged As Boolean
+    Property WorkflowChanged As Boolean
+    Property ModuleSetupChanged As Boolean
+
+    Property PlatformChanged As Boolean
+
+
+  End Interface
 
 
   ' NOT YET USED

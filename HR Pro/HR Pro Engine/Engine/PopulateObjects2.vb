@@ -7,34 +7,50 @@
 
       Dim objDataset As DataSet
       Dim objRow As DataRow
-
+      Dim objParameters As New Connectivity.Parameters
       Dim objTable As Things.Table
 
-      Dim objParameters As New Connectivity.Parameters
+      Try
 
-      Globals.Things.Clear()
-      Globals.Workflows.Clear()
+        Globals.Things.Clear()
+        Globals.Workflows.Clear()
 
-      objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_gettables", objParameters)
-      For Each objRow In objDataset.Tables(0).Rows
+        objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_gettables", objParameters)
+        For Each objRow In objDataset.Tables(0).Rows
+          objTable = New Things.Table
+          objTable.ID = objRow.Item("id").ToString
+          objTable.TableType = objRow.Item("tabletype").ToString
+          objTable.Name = objRow.Item("name").ToString
+          objTable.SchemaName = "dbo"
+          objTable.IsRemoteView = objRow.Item("isremoteview")
+          objTable.AuditInsert = objRow.Item("auditinsert").ToString
+          objTable.AuditDelete = objRow.Item("auditdelete").ToString
+          objTable.DefaultEmailID = objRow.Item("defaultemailid").ToString
+          objTable.DefaultOrderID = objRow.Item("defaultorderid").ToString
+          objTable.State = objRow.Item("state")
+          objTable.Root = objTable
+
+          Globals.Things.Add(objTable)
+        Next
+
+        ' Objects with no table attached
         objTable = New Things.Table
-        objTable.ID = objRow.Item("id").ToString
-        objTable.TableType = objRow.Item("tabletype").ToString
-        objTable.Name = objRow.Item("name").ToString
-        objTable.SchemaName = "dbo"
-        objTable.IsRemoteView = objRow.Item("isremoteview")
-        objTable.AuditInsert = objRow.Item("auditinsert").ToString
-        objTable.AuditDelete = objRow.Item("auditdelete").ToString
-        objTable.DefaultEmailID = objRow.Item("defaultemailid").ToString
-        objTable.DefaultOrderID = objRow.Item("defaultorderid").ToString
-        objTable.State = objRow.Item("state")
-        objTable.Root = objTable
-
+        objTable.ID = 0
+        objTable.Name = "System Objects"
         Globals.Things.Add(objTable)
-      Next
 
-      objDataset = Nothing
-      objRow = Nothing
+      Catch ex As Exception
+
+      Finally
+        objDataset = Nothing
+        objRow = Nothing
+
+
+      End Try
+
+
+
+
 
     End Sub
 
@@ -77,7 +93,6 @@
       End Try
 
     End Sub
-
 
     Public Sub PopulateColumns()
 
@@ -172,6 +187,47 @@
 
     End Sub
 
+    Public Sub PopulateWorkflows()
+
+      Dim objDataset As DataSet
+      Dim objRow As DataRow
+      Dim objParameters As New Connectivity.Parameters
+
+      Dim objWorkflow As Things.Workflow
+      Dim objTable As Things.Table
+
+      Try
+
+        objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getworkflows", objParameters)
+        For Each objRow In objDataset.Tables(0).Rows
+
+          objWorkflow = New Things.Workflow
+          objWorkflow.ID = objRow.Item("id").ToString
+          objWorkflow.Name = objRow.Item("name").ToString
+          objWorkflow.SchemaName = "dbo"
+          objWorkflow.Description = objRow.Item("description").ToString
+          objWorkflow.InitiationType = objRow.Item("initiationType").ToString
+          objWorkflow.Enabled = objRow.Item("enabled").ToString
+          objWorkflow.State = objRow.Item("state")
+
+          ' Attach to table
+          objTable = Globals.Things.GetObject(Type.Table, objRow.Item("tableid").ToString)
+          objWorkflow.Table = objTable
+
+          objTable.Objects.Add(objWorkflow)
+        Next
+
+      Catch ex As Exception
+
+      Finally
+        objDataset = Nothing
+        objRow = Nothing
+
+      End Try
+
+    End Sub
+
+
     Private Function NullSafe(ByRef ObjectData As System.Data.DataRow, ByRef ColumnName As String, ByRef DefaultValue As Object)
 
       If ObjectData.IsNull(ColumnName) Then
@@ -181,8 +237,6 @@
       End If
 
     End Function
-
-
 
 
 

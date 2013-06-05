@@ -17,6 +17,7 @@ Public Module Globals
   Public ModuleSetup As Things.Collections.Generic
   Public SystemSettings As Things.Collections.Generic
   Public Options As HCMOptions
+  Public Modifications As Modifications
   '  Public UniqueCodes As Things.Collection
   Public GetFieldsFromDB As Things.Collections.Generic
   Public PerformanceIndexes As Things.Collections.Generic
@@ -40,6 +41,7 @@ Public Module Globals
     ModuleSetup = New Things.Collections.Generic
     ScriptDB = New ScriptDB.Script
     Options = New HCMOptions
+    Modifications = New Modifications
     SystemSettings = New Things.Collections.Generic
 
     ' Dependency stack for special objects that will have procedures written for

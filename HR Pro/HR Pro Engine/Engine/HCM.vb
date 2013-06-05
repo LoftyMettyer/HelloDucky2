@@ -31,6 +31,46 @@ Public Class HCM
 
   End Function
 
+  Public Function GetAuditLogDataSource() As DataSet
+
+    Dim objDataset As DataSet
+    Dim objParameters As New Connectivity.Parameters
+
+    Try
+
+      objParameters.Add("@piAuditType", 1)
+      objParameters.Add("@psOrder", "")
+      objDataset = objDatabase.ExecStoredProcedure("spstat_getaudittrail", objParameters)
+
+      GetAuditLogDataSource = objDataset
+
+    Catch ex As Exception
+
+    End Try
+
+  End Function
+
+  Public Function GetAuditLogDescriptions() As DataSet
+
+    Dim objDataset As DataSet
+    Dim objParameters As New Connectivity.Parameters
+
+    Try
+
+      objDataset = objDatabase.ExecStoredProcedure("spstat_getauditrecorddescriptions", objParameters)
+
+      GetAuditLogDescriptions = objDataset
+
+    Catch ex As Exception
+
+    End Try
+
+  End Function
+
+
+
+
+
   Public Function CloseSafely() As Boolean Implements iSystemManager.CloseSafely
     Return True
   End Function
@@ -55,6 +95,7 @@ Public Class HCM
       Things.PopulateColumns()
       Things.PopulateScreens()
       Things.PopulateExpressions()
+      Things.PopulateWorkflows()
 
 
       '        PopulateModuleSettings()
@@ -146,6 +187,10 @@ Public Class HCM
 
 #End Region
 
-
+  Public ReadOnly Property Modifications As Modifications Implements COMInterfaces.iSystemManager.Modifications
+    Get
+      Return Globals.Modifications
+    End Get
+  End Property
 End Class
 

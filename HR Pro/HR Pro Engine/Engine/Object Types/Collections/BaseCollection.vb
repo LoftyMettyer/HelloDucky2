@@ -295,6 +295,7 @@ Namespace Things.Collections
 
 
     Public Sub Add1(ByRef [Object] As Things.Base) Implements COMInterfaces.iCollection_Base.Add
+      [Object].Parent = Me.Parent
       Me.Items.Add([Object])
     End Sub
   End Class
