@@ -274,7 +274,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
       Case 21  ' First Name from Forenames
         sCode = _
           "case" & _
-          "    when charindex(' ', ltrim(" & sParamCode1 & ")) > 0 then substring(ltrim(" & sParamCode1 & "), 1, charindex(' ', ltrim(" & sParamCode1 & ")))" & _
+          "    when charindex(' ', ltrim(" & sParamCode1 & ")) > 0 then substring(ltrim(" & sParamCode1 & "), 1, charindex(' ', ltrim(" & sParamCode1 & "))-1)" & _
           "    else ltrim(" & sParamCode1 & ")" & _
           "end"
       
