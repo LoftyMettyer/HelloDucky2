@@ -2874,6 +2874,7 @@ Public Function EmailGenerationEnabled()
   Dim lngCount As Long
   Dim strTestEmailAddr As String
   Dim lngMethod As Long
+  Dim sMessage As String
 
   On Error GoTo LocalErr
 
@@ -2938,18 +2939,21 @@ Public Function EmailGenerationEnabled()
     adoCmd.ActiveConnection = objTestConn
     adoCmd.CommandTimeout = 30
     adoCmd.CommandText = "IF (SELECT Count(*) FROM AsrSysEmailLinks) > 0 " & _
-                         "begin" & vbCrLf & _
-                         "  exec spASRSendMail 0, '" & Replace(strTestEmailAddr, "'", "''") & "','','','','" & _
+                         "BEGIN" & vbCrLf & _
+                         "  EXEC spASRSendMail 0, '" & Replace(strTestEmailAddr, "'", "''") & "','','','','" & _
                          Replace(gsUserName & vbCrLf & gsDatabaseName & vbCrLf & UI.GetHostName, "'", "''") & "',''" & vbCrLf & _
-                         "end"
+                         "END"
     adoCmd.Execute
   
     For lngCount = 0 To objTestConn.Errors.Count - 1
-      If Trim(objTestConn.Errors(lngCount).Description) <> vbNullString Then
+    
+      sMessage = UCase(Trim(objTestConn.Errors(lngCount).Description))
+    
+      If sMessage <> vbNullString Then
         
-        If UCase(objTestConn.Errors(lngCount).Description) <> "MAIL SENT." And _
-            UCase(objTestConn.Errors(lngCount).Description) <> "MAIL QUEUED." Then
-          strOutput = strOutput & objTestConn.Errors(lngCount).Description & vbCrLf
+        If sMessage <> "MAIL SENT." And sMessage <> "MAIL QUEUED." And _
+            Not (InStr(1, sMessage, "MAIL (ID:") > 0 And InStr(1, sMessage, ") QUEUED.") > 0) Then
+          strOutput = strOutput & sMessage & vbCrLf
         End If
       
       End If
@@ -6104,10 +6108,10 @@ Public Function CMGCommit() As Boolean
 
   ' Commit the changes to the audit log
   Dim sSQL As String
-  Dim bOK As Boolean
+  Dim bOk As Boolean
  
   On Error GoTo ErrTrap
-  bOK = True
+  bOk = True
   
   ' Update the audit log to say these have been exported
   sSQL = "Update asrsysAuditTrail Set CMGCommitDate = Convert(smalldatetime,getdate()) " _
@@ -6115,11 +6119,11 @@ Public Function CMGCommit() As Boolean
   datData.ExecuteSql sSQL
   
 ExitPoint:
-  CMGCommit = bOK
+  CMGCommit = bOk
   Exit Function
   
 ErrTrap:
-  bOK = False
+  bOk = False
   Resume ExitPoint
 
 End Function
