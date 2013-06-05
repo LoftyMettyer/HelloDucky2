@@ -1,26 +1,28 @@
-﻿Namespace ScriptDB
+﻿Imports System.Text.RegularExpressions
 
-  Public Module Beautify
+Namespace ScriptDB
 
-    Public Function CleanWhitespace(ByVal value As String) As String
+   Public Module Beautify
 
-      value = value.Replace(vbNewLine, vbNewLine & Space(4))
-      value = value.Replace(vbNewLine & vbNewLine, vbNewLine)
+      Public Function CleanWhitespace(ByVal value As String) As String
 
-      Return value
+         value = value.Replace(vbNewLine, vbNewLine & Space(4))
+         value = value.Replace(vbNewLine & vbNewLine, vbNewLine)
 
-    End Function
+         Return value
 
-    Public Function MakeSingleLine(ByVal value As String) As String
+      End Function
 
-      value = Replace(value, Chr(13), " ")
-      value = Replace(value, Chr(10), "")
-      value = Replace(value, vbTab, " ")
+      Public Function MakeSingleLine(ByVal value As String) As String
 
-      Return value
+         value = Replace(value, Chr(13), " ")
+         value = Replace(value, Chr(10), "")
+         value = Replace(value, vbTab, " ")
 
-    End Function
+         Return value
 
-  End Module
+      End Function
+
+   End Module
 
 End Namespace

@@ -282,6 +282,7 @@ Namespace Things
                   .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
                   .SelectCode = _linesOfCode.Statement
                   .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
+
                   .Code = String.Format("{11}CREATE FUNCTION {0}({1})" & vbNewLine & _
                                  "RETURNS {2}" & vbNewLine & _
                                  "{3}" & vbNewLine & _
@@ -308,7 +309,7 @@ Namespace Things
                                  "{4}" & vbNewLine & vbNewLine & _
                                  "{5}" & vbNewLine & vbNewLine & _
                                  "    -- Execute calculation code" & vbNewLine & _
-                                 "SELECT @Result = {6}" & vbNewLine & _
+                                 "    SELECT @Result = {6}" & vbNewLine & _
                                  "                 {7}" & vbNewLine & _
                                  "                 {8}" & vbNewLine & _
                                  "                 {9}" & vbNewLine & vbNewLine & _
@@ -316,7 +317,7 @@ Namespace Things
                                  "    RETURN ISNULL(@Result, {10});" & vbNewLine & _
                                  "END" _
                                 , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                                , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode _
+                                , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode _
                                 , Me.AssociatedColumn.SafeReturnType)
 
                   ' Wrapper for when this function is used as a filter in an expression
@@ -339,14 +340,14 @@ Namespace Things
                                  "{4}" & vbNewLine & vbNewLine & _
                                  "{5}" & vbNewLine & vbNewLine & _
                                  "    -- Execute calculation code" & vbNewLine & _
-                                 "SELECT @Result = {6}" & vbNewLine & _
+                                 "    SELECT @Result = {6}" & vbNewLine & _
                                  "                 {7}" & vbNewLine & _
                                  "                 {8}" & vbNewLine & _
                                  "                 {9}" & vbNewLine & _
                                  "    RETURN ISNULL(@Result, 0);" & vbNewLine & _
                                  "END" _
                                 , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                                , "", "", .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
+                                , "", "", .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode)
 
                   .CodeStub = String.Format("CREATE FUNCTION {0}(@prm_ID integer)" & vbNewLine & _
                                  "RETURNS bit" & vbNewLine & _
@@ -355,14 +356,14 @@ Namespace Things
                                  "/*{4}" & vbNewLine & vbNewLine & _
                                  "{5}" & vbNewLine & vbNewLine & _
                                  "    -- Execute calculation code" & vbNewLine & _
-                                 "SELECT @Result = CASE WHEN ({6}) THEN 1 ELSE 0 END" & vbNewLine & _
+                                 "    SELECT @Result = CASE WHEN ({6}) THEN 1 ELSE 0 END" & vbNewLine & _
                                  "                 {7}" & vbNewLine & _
                                  "                 {8}" & vbNewLine & _
                                  "                 {9}*/" & vbNewLine & _
                                  "    RETURN ISNULL(@Result, 1);" & vbNewLine & _
                                  "END" _
                                 , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                                , "", "", .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
+                                , "", "", .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode)
 
                Case ScriptDB.ExpressionType.ReferencedColumn
                   .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
@@ -382,14 +383,14 @@ Namespace Things
                                  "{4}" & vbNewLine & vbNewLine & _
                                  "{5}" & vbNewLine & vbNewLine & _
                                  "    -- Execute calculation code" & vbNewLine & _
-                                 "SELECT @Result = {6}" & vbNewLine & _
+                                 "    SELECT @Result = {6}" & vbNewLine & _
                                  "                 {7}" & vbNewLine & _
                                  "                 {8}" & vbNewLine & _
                                  "                 {9}" & vbNewLine & _
                                  "    RETURN ISNULL(@Result, '');" & vbNewLine & _
                                  "END" _
                                 , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                                , "", sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
+                                , "", sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode)
 
                   .CodeStub = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
                                  "RETURNS nvarchar(MAX)" & vbNewLine & _
@@ -409,7 +410,7 @@ Namespace Things
                                  "    RETURN ISNULL(@Result, '');" & vbNewLine & _
                                  "END" _
                                 , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                                , "", sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
+                                , "", sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode)
 
 
                   ' Should never be called, but just in case...
