@@ -431,6 +431,7 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lngDocume
 
   If bNew Then
   
+    mlngDocumentMapID = 0
     sAccess = GetUserSetting("utils&reports", "dfltaccess version1", ACCESS_READWRITE)
     Select Case sAccess
       Case ACCESS_READWRITE
@@ -440,6 +441,7 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lngDocume
     End Select
   
   Else
+    mblnFromCopy = bCopy
     mlngDocumentMapID = lngDocumentMapID
     
     RetreiveDefinition
@@ -452,7 +454,13 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lngDocume
     EnableControl cmdCancel, True
   End If
   
-  mbChanged = False
+  'Reset pointer so copy will be saved as new
+  If mblnFromCopy Then
+    mlngDocumentMapID = 0
+    mbChanged = True
+  Else
+    mbChanged = False
+  End If
   
 End Function
 
