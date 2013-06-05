@@ -36,7 +36,7 @@ Namespace Things
     Public Property Components As ICollection(Of Component)
     Public Property Level As Long = 0
 
-    Private mdblValueNumeric As Double = 0
+    Private mdecValueNumeric As Decimal = 0
 
     Private ConvertSubComponents As Boolean = True
 
@@ -84,7 +84,7 @@ Namespace Things
         Return sValue
       End Get
       Set(ByVal value As String)
-        mdblValueNumeric = CDbl(value)
+        mdecValueNumeric = CDec(value)
       End Set
     End Property
 
