@@ -1,13 +1,13 @@
 VERSION 5.00
-Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "TIMASK6.OCX"
+Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
-Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
-Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
-Object = "{19400013-2704-42FE-AAA4-45D1A725A895}#1.0#0"; "COA_ColourSelector.ocx"
+Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "coa_colourpicker.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
+Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "coa_workingpattern.ocx"
+Object = "{19400013-2704-42FE-AAA4-45D1A725A895}#1.0#0"; "coa_colourselector.ocx"
 Begin VB.Form frmColEdit 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Column Properties"
@@ -4522,6 +4522,29 @@ Private Sub cmdOK_Click()
         .Properties("QAtown") = IIf(cboQATown.ListIndex > 0, cboQATown.ItemData(cboQATown.ListIndex), 0)
         .Properties("QAcounty") = IIf(cboQACounty.ListIndex > 0, cboQACounty.ItemData(cboQACounty.ListIndex), 0)
       End If
+      
+      ' Nulls causing problems with views over the metadata
+      .Properties("Afdenabled") = IIf(IsNull(.Properties("Afdenabled")), 0, .Properties("Afdenabled"))
+      .Properties("Afdindividual") = IIf(IsNull(.Properties("Afdindividual")), 0, .Properties("Afdindividual"))
+      .Properties("Afdforename") = IIf(IsNull(.Properties("Afdforename")), 0, .Properties("Afdforename"))
+      .Properties("Afdsurname") = IIf(IsNull(.Properties("Afdsurname")), 0, .Properties("Afdsurname"))
+      .Properties("Afdinitial") = IIf(IsNull(.Properties("Afdinitial")), 0, .Properties("Afdinitial"))
+      .Properties("Afdtelephone") = IIf(IsNull(.Properties("Afdtelephone")), 0, .Properties("Afdtelephone"))
+      .Properties("Afdaddress") = IIf(IsNull(.Properties("Afdaddress")), 0, .Properties("Afdaddress"))
+      .Properties("Afdproperty") = IIf(IsNull(.Properties("Afdproperty")), 0, .Properties("Afdproperty"))
+      .Properties("Afdstreet") = IIf(IsNull(.Properties("Afdstreet")), 0, .Properties("Afdstreet"))
+      .Properties("Afdlocality") = IIf(IsNull(.Properties("Afdlocality")), 0, .Properties("Afdlocality"))
+      .Properties("Afdtown") = IIf(IsNull(.Properties("Afdtown")), 0, .Properties("Afdtown"))
+      .Properties("Afdcounty") = IIf(IsNull(.Properties("Afdcounty")), 0, .Properties("Afdcounty"))
+      .Properties("QAddressEnabled") = IIf(IsNull(.Properties("QAddressEnabled")), 0, .Properties("QAddressEnabled"))
+      .Properties("QAindividual") = IIf(IsNull(.Properties("QAindividual")), 0, .Properties("QAindividual"))
+      .Properties("QAaddress") = IIf(IsNull(.Properties("QAaddress")), 0, .Properties("QAaddress"))
+      .Properties("QAproperty") = IIf(IsNull(.Properties("QAproperty")), 0, .Properties("QAproperty"))
+      .Properties("QAstreet") = IIf(IsNull(.Properties("QAstreet")), 0, .Properties("QAstreet"))
+      .Properties("QAlocality") = IIf(IsNull(.Properties("QAlocality")), 0, .Properties("QAlocality"))
+      .Properties("QAtown") = IIf(IsNull(.Properties("QAtown")), 0, .Properties("QAtown"))
+      .Properties("QAcounty") = IIf(IsNull(.Properties("QAcounty")), 0, .Properties("QAcounty"))
+      
       
     End With
       
