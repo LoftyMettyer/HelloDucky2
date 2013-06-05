@@ -90,7 +90,7 @@ Begin VB.Form frmAbout
       ForeColor       =   &H00FF0000&
       Height          =   195
       Left            =   150
-      MouseIcon       =   "frmAbout.frx":0D4E
+      MouseIcon       =   "frmAbout.frx":07C4
       MousePointer    =   99  'Custom
       TabIndex        =   10
       Top             =   1515
@@ -252,11 +252,11 @@ Private Sub Form_Load()
   sngMaxX = IIf(lblSql.Left + lblSql.Width > sngMaxX, lblSql.Left + lblSql.Width, sngMaxX)
   sngMaxX = IIf(lblCopyRight.Left + lblCopyRight.Width > sngMaxX, lblCopyRight.Left + lblCopyRight.Width, sngMaxX)
   
-  cmdOk.Left = sngMaxX + 250
-  cmdSysInfo.Left = cmdOk.Left
-  cmdTech.Left = cmdOk.Left
+  cmdOK.Left = sngMaxX + 250
+  cmdSysInfo.Left = cmdOK.Left
+  cmdTech.Left = cmdOK.Left
   
-  Me.Width = cmdOk.Left + cmdOk.Width + 200
+  Me.Width = cmdOK.Left + cmdOK.Width + 200
 TidyUpAndExit:
   Exit Sub
 
