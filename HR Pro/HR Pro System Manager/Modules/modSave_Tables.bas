@@ -629,9 +629,12 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
       " LEFT OUTER JOIN sysobjects triggerobjects ON tableobjects.id = triggerobjects.parent_obj" & _
       " WHERE tableobjects.name = '" & sPhysicalTableName & "'" & _
       " AND triggerobjects.xtype = 'TR'" & _
-      " AND triggerobjects.name <> 'INS_" & sTableName & "'" & _
-      " AND triggerobjects.name <> 'UPD_" & sTableName & "'" & _
-      " AND triggerobjects.name <> 'DEL_" & sTableName & "'"
+      " AND triggerobjects.name <> 'trsys_" & sTableName & "_d01'" & _
+      " AND triggerobjects.name <> 'trsys_" & sTableName & "_d02'" & _
+      " AND triggerobjects.name <> 'trsys_" & sTableName & "_i01'" & _
+      " AND triggerobjects.name <> 'trsys_" & sTableName & "_i02'" & _
+      " AND triggerobjects.name <> 'trsys_" & sTableName & "_u01'" & _
+      " AND triggerobjects.name <> 'trsys_" & sTableName & "_u02'"
 
     rsTriggers.Open sSQL, gADOCon, adOpenDynamic, adLockReadOnly
 
