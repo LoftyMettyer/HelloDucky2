@@ -893,32 +893,6 @@ Namespace ScriptDB
 
 #Region "Calculation Scripting"
 
-    Private Function ScriptDropUDF(ByRef [Role] As String, ByRef [ObjectName] As String) As Boolean
-
-      Dim sSQL As String = String.Empty
-      'Dim sDescription As String
-
-      'sDescription = String.Empty
-
-      Try
-
-        sSQL = String.Format("IF EXISTS(SELECT o.[name] FROM sys.sysobjects o " & _
-          "INNER JOIN sys.sysusers u ON o.[uid] = u.[uid] " & _
-          "WHERE o.[name] = '{1}' AND [type] = 'FN' AND u.[name] = '{0}')" & vbNewLine & _
-          " DROP FUNCTION [{0}].[{1}]", [Role], [ObjectName])
-
-        ' Commit
-        CommitDB.ScriptStatement(sSQL)
-
-      Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, [ObjectName], HRProEngine.ErrorHandler.Severity.Error, ex.Message, sSQL)
-        Return False
-
-      End Try
-
-      Return True
-
-    End Function
 
     Public Sub ScriptDiaryLinkFilters(ByRef ProgressInfo As HCMProgressBar)
 
@@ -933,7 +907,7 @@ Namespace ScriptDB
             If objDiaryLink.Filter.IsComplex Then
 
               sObjectName = String.Format("udfdiarylinkfilter_{0}.{1}", objTable.Name, objDiaryLink.Name)
-              ScriptDropUDF("dbo", sObjectName)
+              ScriptDB.DropUDF("dbo", sObjectName)
 
             End If
           End If
@@ -1022,7 +996,7 @@ Namespace ScriptDB
 
               ' Try and create the UDF, if not put dummy code in place and record the error. To be updated once project go-ahead has been given (in other words I don't
               ' won't to spend ages debugging the whole damn thing in case this never sees the light of day!!!!
-              If Not ScriptUDF("dbo", sObjectName, sUDFSQL, sSafeDummyUDF) Then
+              If Not ScriptDB.CreateUDF("dbo", sObjectName, sUDFSQL, sSafeDummyUDF) Then
                 objColumn.Calculation.IsScriptSafe = False
               End If
 
@@ -1042,43 +1016,6 @@ Namespace ScriptDB
       End Try
 
     End Sub
-
-    ' dummy uDF can be replaced at a later time - this is just to get things running for evaluation purposes.
-    Private Function ScriptUDF(ByRef [Role] As String, ByRef [ObjectName] As String, ByRef [BodyCode] As String, ByRef [SafeDummyUDF] As String) As Boolean
-
-      Dim sSQL As String = String.Empty
-
-      'Dim sDescription As String
-      'sDescription = String.Empty
-
-      Try
-
-        ScriptDropUDF([Role], [ObjectName])
-
-        sSQL = String.Format("CREATE FUNCTION [{0}].[{1}] {2}" _
-          , [Role], [ObjectName], [BodyCode], vbNewLine)
-
-        ' Commit
-        CommitDB.ScriptStatement(sSQL)
-
-        ' End If
-
-      Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, [ObjectName], HRProEngine.ErrorHandler.Severity.Error, ex.Message, sSQL)
-
-        ' dIDN;T work put a note in the error log and create a dummy UDF
-        sSQL = String.Format("CREATE FUNCTION [{0}].[{1}] {2}" _
-          , [Role], [ObjectName], [SafeDummyUDF], vbNewLine)
-
-        CommitDB.ScriptStatement(sSQL)
-
-
-        Return False
-
-      End Try
-
-      Return True
-    End Function
 
     ' Generates and stores the code for all the calculations
     '    Public Sub GenerateSQLCodeForObjects(ByRef ProgressInfo As HCMProgressBar)
@@ -1112,7 +1049,7 @@ Namespace ScriptDB
 
               sObjectName = String.Format("udfcalc_{0}.{1}", objTable.Name, objColumn.Name)
 
-              ScriptDropUDF("dbo", sObjectName)
+              ScriptDB.DropUDF("dbo", sObjectName)
 
               objColumn.Calculation = objTable.Objects.GetObject(Things.Type.Expression, objColumn.CalcID)
 
@@ -1203,6 +1140,26 @@ Namespace ScriptDB
 
     End Sub
 
+    Public Function CreateFunctions() As Boolean Implements iCommitDB.ScriptFunctions
+
+      Dim bOK As Boolean = True
+
+      Try
+
+        bOK = ScriptFunctions.ConvertCurrency
+
+
+
+      Catch ex As Exception
+        bOK = False
+
+      End Try
+
+      Return bOK
+
+    End Function
+
+
     Public Function CreateObjects() As Boolean Implements iCommitDB.ScriptObjects
 
       Dim objTable As Things.Table
@@ -1242,7 +1199,7 @@ Namespace ScriptDB
 
                 sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
 
-                ScriptDropUDF("dbo", sObjectName)
+                ScriptDB.DropUDF("dbo", sObjectName)
 
                 If Not objColumn.Calculation Is Nothing Then
                   objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation

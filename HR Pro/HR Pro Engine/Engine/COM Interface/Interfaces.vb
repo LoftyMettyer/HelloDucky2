@@ -4,6 +4,7 @@
     Function ScriptTables() As Boolean
     Function ScriptTableViews() As Boolean
     Function ScriptObjects() As Boolean
+    Function ScriptFunctions() As Boolean
     Function ScriptTriggers() As Boolean
     Function ScriptViews() As Boolean
     Function DropTableViews() As Boolean

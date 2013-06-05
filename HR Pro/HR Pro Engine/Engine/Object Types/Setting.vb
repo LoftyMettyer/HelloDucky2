@@ -4,6 +4,7 @@
 
     Public [Module] As String
     Public Parameter As String
+    Public ParameterType As String
     Public Table As Things.Table
     Public Column As Things.Column
     Public Value As String

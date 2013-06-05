@@ -3,7 +3,7 @@
   <HideModuleName()> _
   Public Module PopulateObjects
 
-    Public Sub PopulateModuleSettings(ByRef ProgressInfo As HCMProgressBar)
+    Public Sub PopulateModuleSettings()
 
       Dim objDataset As DataSet
       Dim objRow As DataRow
@@ -15,25 +15,31 @@
         ' Clear existing objects
         Globals.ModuleSetup.Clear()
 
-        objDataset = CommitDB.ExecStoredProcedure("spadmin_getmodulesettings", objParameters)
+        ' Populate module setup
+        objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getmodulesetup", objParameters)
         For Each objRow In objDataset.Tables(0).Rows
           objSetting = New Things.Setting
-          objSetting.SubType = objRow.Item("type").ToString
-          objSetting.Module = objRow.Item("module").ToString
-          objSetting.Parameter = objRow.Item("parameter").ToString
-          objSetting.Value = objRow.Item("value").ToString
+          objSetting.Module = objRow.Item("modulekey").ToString
+          objSetting.Parameter = objRow.Item("parameterkey").ToString
+          objSetting.SubType = objRow.Item("subtype").ToString
+
           Select Case objSetting.SubType
             Case Type.Table
               objSetting.Table = Globals.Things.GetObject(Type.Table, objRow.Item("value").ToString)
             Case Type.Column
-              If objRow.Item("tableid").ToString > 0 Then
-                objSetting.Column = Globals.Things.GetObject(Type.Table, objRow.Item("tableid").ToString).Objects(Things.Type.Column).GetObject(Type.Column, objRow.Item("columnid").ToString)
-              End If
+              objSetting.Value = objRow.Item("value").ToString
+              'If objRow.Item("tableid").ToString > 0 Then
+              'objSetting.Column = Globals.Things.GetObject(Type.Table, objRow.Item("tableid").ToString).Objects(Things.Type.Column).GetObject(Type.Column, objRow.Item("columnid").ToString)
+              'End If
+            Case Else
+              objSetting.Value = objRow.Item("value").ToString
+
           End Select
 
           Globals.ModuleSetup.Add(objSetting)
-
         Next
+
+
 
       Catch ex As Exception
         Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
@@ -114,11 +120,14 @@
       Catch ex As Exception
         Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
 
+      Finally
+        objDataset = Nothing
+
       End Try
 
     End Sub
 
-    Public Sub PopulateThings() 'ByRef ProgressInfo As HCMProgressBar)
+    Public Sub PopulateThings()
 
       Dim objDataset As DataSet
       Dim objRow As DataRow
@@ -464,7 +473,6 @@
 
     End Function
 
-    ' TODO? - Get all the child objects in one hit - means we only hit the db once for every table.
     Public Sub PopulateTable(ByRef Table As Things.Base)
 
       ', ByVal iObjectType As ObjectType
@@ -621,7 +629,6 @@
 
     End Sub
 
-
     Public Sub PopulateOrderItems(ByRef objOrder As Things.TableOrder)
 
       Dim objObjects As New Things.Collection
@@ -719,7 +726,6 @@
       End Try
 
     End Sub
-
 
   End Module
 

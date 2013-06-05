@@ -122,6 +122,8 @@ Namespace Things
 
     End Function
 
+#Region "Get specific objects from within the collection"
+
     Public Function GetSetting(ByVal [Module] As String, ByVal [Parameter] As String) As Things.Setting
 
       Dim objChild As Things.Base
@@ -139,6 +141,8 @@ Namespace Things
       Return Nothing
 
     End Function
+
+#End Region
 
 
     'Default Public ReadOnly Property Objects(ByVal Type As Things.Type) As Things.Collection

@@ -68,6 +68,7 @@ Public Class SysMgr
       'MakeAccessDBReady()
       Things.PopulateSystemThings()
       Things.PopulateThings()
+      Things.PopulateModuleSettings()
 
     Catch ex As Exception
       bOK = False

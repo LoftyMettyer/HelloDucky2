@@ -127,5 +127,24 @@ Namespace Things
       End Set
     End Property
 
+#Region "Get individual objects"
+
+    Public Function Column(ByRef [ColumnID] As HCMGuid) As Things.Column
+
+      Dim objChild As Things.Base
+
+      For Each objChild In Objects(Things.Type.Column)
+        If objChild.Type = Type.Column And objChild.ID = ColumnID Then
+          Return CType(objChild, Things.Column)
+        End If
+      Next
+
+      Return Nothing
+
+    End Function
+
+
+#End Region
+
   End Class
 End Namespace

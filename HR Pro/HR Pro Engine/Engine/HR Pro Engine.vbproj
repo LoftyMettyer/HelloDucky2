@@ -96,10 +96,11 @@
     <Compile Include="Database Scripting\CodeElement.vb" />
     <Compile Include="Database Scripting\Consts.vb" />
     <Compile Include="Database Scripting\Enums.vb" />
-    <Compile Include="Database Scripting\GeneralStuff.vb" />
+    <Compile Include="Database Scripting\General.vb" />
     <Compile Include="Database Scripting\GeneratedUDF.vb" />
     <Compile Include="Database Scripting\LinesOfCode.vb" />
     <Compile Include="Database Scripting\Scripter.vb" />
+    <Compile Include="Database Scripting\ScriptFunctions.vb" />
     <Compile Include="Globals.vb" />
     <Compile Include="HCM.vb" />
     <Compile Include="ModuleSettings.vb" />
