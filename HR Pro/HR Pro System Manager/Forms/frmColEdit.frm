@@ -2227,7 +2227,7 @@ End Property
 
 Public Property Let Changed(pblnNewValue As Boolean)
   mblnChanged = pblnNewValue
-  cmdOk.Enabled = mblnChanged
+  cmdOK.Enabled = mblnChanged
 End Property
 
 Public Property Get Changed() As Boolean
@@ -3268,11 +3268,11 @@ End Sub
 
 Private Sub cmdCancel_Click()
   Dim pintAnswer As Integer
-    If Changed = True And cmdOk.Enabled Then
+    If Changed = True And cmdOK.Enabled Then
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
       If pintAnswer = vbYes Then
         Me.MousePointer = vbHourglass
-        cmdOk_Click 'This is just like saving
+        cmdOK_Click 'This is just like saving
         Me.MousePointer = vbNormal
         Exit Sub
       ElseIf pintAnswer = vbCancel Then
@@ -3618,7 +3618,7 @@ Private Sub cmdLinkOrder_Click()
 
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
   
   'MH20020424 Fault 3760
   '(Avoid changing 01/13/2002 to 13/01/2002)
@@ -5033,10 +5033,10 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
   If mfCancelled = True Then
     If UnloadMode <> vbFormCode Then
-      If Changed = True And cmdOk.Enabled Then
+      If Changed = True And cmdOK.Enabled Then
         pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
         If pintAnswer = vbYes Then
-          cmdOk_Click
+          cmdOK_Click
           Exit Sub
         ElseIf pintAnswer = vbCancel Then
           Cancel = True
@@ -5164,7 +5164,7 @@ Private Sub spnDefaultDisplayWidth_Change()
 
 End Sub
 
-Private Sub spnMaxOLESize_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub spnMaxOLESize_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
 
   If Not mfLoading Then
     Changed = True
@@ -5594,13 +5594,54 @@ End Sub
 
 
 Private Sub cboLookupColumns_Click()
-  'If Not mfReading Then
-    ' Set the lookup column.
-    mlngLookupColumnID = cboLookupColumns.ItemData(cboLookupColumns.ListIndex)
+  
+  Dim objExpr As CExpression
+  Dim fValidCalcExpr As Boolean
+  
+  ' Set the lookup column.
+  mlngLookupColumnID = cboLookupColumns.ItemData(cboLookupColumns.ListIndex)
       
-    ' Get the column data type, etc.
-    GetLookupColumn
-  'End If
+  ' Get the column data type, etc.
+  GetLookupColumn
+      
+
+  ' Clear the defined calculation if it not of the defined return type.
+  Set objExpr = New CExpression
+  With objExpr
+    ' Set the properties of the expression object.
+    .ExpressionID = mlngCalcExprID
+
+    ' Read the required info from the expression.
+    fValidCalcExpr = .ReadExpressionDetails
+    If fValidCalcExpr Then
+      Select Case miDataType
+        Case dtVARCHAR
+          fValidCalcExpr = (.ReturnType = giEXPRVALUE_CHARACTER)
+        Case dtTIMESTAMP
+          fValidCalcExpr = (.ReturnType = giEXPRVALUE_DATE)
+        Case dtLONGVARBINARY
+          fValidCalcExpr = (.ReturnType = giEXPRVALUE_OLE)
+        Case dtVARBINARY
+          fValidCalcExpr = (.ReturnType = giEXPRVALUE_PHOTO)
+        Case dtINTEGER
+          fValidCalcExpr = (.ReturnType = giEXPRVALUE_NUMERIC)
+        Case dtBIT
+          fValidCalcExpr = (.ReturnType = giEXPRVALUE_LOGIC)
+        Case dtNUMERIC
+          fValidCalcExpr = (.ReturnType = giEXPRVALUE_NUMERIC)
+        Case dtLONGVARCHAR
+          fValidCalcExpr = (.ReturnType = giEXPRVALUE_CHARACTER)
+        Case Else
+          fValidCalcExpr = False
+      End Select
+    End If
+  End With
+  If Not fValidCalcExpr Then
+    mlngCalcExprID = 0
+    GetCalculationExpressionDetails
+  End If
+  Set objExpr = Nothing
+   
   
   If Not mfLoading Then Changed = True
   
@@ -6768,13 +6809,13 @@ End Sub
 Private Sub txtListValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOk.Default = False
+  cmdOK.Default = False
   
 End Sub
 
 Private Sub txtListValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOk.Default = True
+  cmdOK.Default = True
 
   ' Refresh the list of possible default values.
   cboDefault_Refresh
