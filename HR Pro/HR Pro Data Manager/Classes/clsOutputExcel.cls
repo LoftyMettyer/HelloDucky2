@@ -54,6 +54,8 @@ Private mblnPivotTable As Boolean
 
 Private mstrXLTemplate As String
 Private mblnXLExcelGridlines As Boolean
+Private mblnXLExcelOmitTopRow As Boolean
+Private mblnXLExcelOmitLeftCol As Boolean
 Private mblnXLExcelHeaders As Boolean
 Private mblnXLAutoFitCols As Boolean
 Private mblnXLLandscape As Boolean
@@ -663,8 +665,8 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
   
   'Put title in after autofit...
   With pcolStyles("Title")
-    .StartCol = IIf((GetUserSetting("Output", "ColSpacer", 1)), "1", "2")
-    .StartRow = IIf((GetUserSetting("Output", "RowSpacer", 1)), "1", "2")
+    .StartCol = Val(GetUserSetting("Output", "TitleCol", "3"))
+    .StartRow = IIf(mlngAppendStartRow > 0, mlngAppendStartRow, Val(GetUserSetting("Output", "TitleRow", "2")))
     .EndCol = .StartCol
     .EndRow = .StartRow
   End With
@@ -699,11 +701,13 @@ Private Sub Class_Initialize()
   
   mstrXLTemplate = GetUserSetting("Output", "ExcelTemplate", vbNullString)
   mblnXLExcelGridlines = (GetUserSetting("Output", "ExcelGridlines", "0") = "1")
+  mblnXLExcelOmitTopRow = (GetUserSetting("Output", "ExcelOmitSpacerRow", "0") = "1")
+  mblnXLExcelOmitLeftCol = (GetUserSetting("Output", "ExcelOmitSpacerCol", "0") = "1")
   mblnXLExcelHeaders = (GetUserSetting("Output", "ExcelHeaders", "0") = "1")
   mblnXLAutoFitCols = (GetUserSetting("Output", "AutoFitCols", "1") = "1")
   mblnXLLandscape = (GetUserSetting("Output", "Landscape", "1") = "1")
    
-  mlngDataStartRow = Val(GetUserSetting("Output", "DataRow", "5"))
+  mlngDataStartRow = Val(GetUserSetting("Output", "DataRow", "4"))
   mlngDataStartCol = Val(GetUserSetting("Output", "DataCol", "2"))
  
   mblnSizeColumnsIndependently = False
@@ -997,7 +1001,7 @@ Public Function AddPage(strDefTitle As String, strSheetName As String, colStyles
     If Not mblnAppending Then
       mlngDataCurrentRow = 1
     End If
-    mlngDataStartCol = 1
+    mlngDataStartCol = 5
     mlngHeaderCols = 0
     mlngHeaderRows = 0
   End If
@@ -1422,8 +1426,8 @@ Private Sub ApplyCellOptions(lngColCount As Long, colStyles As Collection, blnGr
     End If
 
     With colStyles("Title")
-      .StartCol = IIf(.OmitSpacerCol, 2, 3)
-      .StartRow = IIf(.OmitSpacerRow, 1, 2)
+      .StartCol = Val(GetUserSetting("Output", "TitleCol", "3"))
+      .StartRow = IIf(mlngAppendStartRow > 0, mlngAppendStartRow, Val(GetUserSetting("Output", "TitleRow", "2")))
       .EndCol = .StartCol
       .EndRow = .StartRow
     End With
@@ -1455,7 +1459,9 @@ Private Sub ApplyCellOptions(lngColCount As Long, colStyles As Collection, blnGr
         End With
         .ColumnWidth = lngTitleColWidth
       End With
-  
+      'Delete superfluous rows and cols if setup in User Config reports section
+      If mblnXLExcelOmitLeftCol Then mxlWorkSheet.Range("A:A").Delete
+      If mblnXLExcelOmitTopRow Then mxlWorkSheet.Range("1:1").Delete
     End If
   End If
 
@@ -1465,6 +1471,7 @@ LocalErr:
   mstrErrorMessage = Err.Description
 
 End Sub
+
 
 
 Private Sub ApplyStyle(lngNumCols As Long, lngNumRows As Long, colStyles As Collection)
@@ -1480,10 +1487,8 @@ Private Sub ApplyStyle(lngNumCols As Long, lngNumRows As Long, colStyles As Coll
   lngRow = mlngDataCurrentRow
 
   With colStyles("Title")
-    .StartCol = IIf(.OmitSpacerCol, 2, 3)
-    .StartRow = IIf(.OmitSpacerRow, 1, 2)
-    '.StartCol = IIf((GetUserSetting("Output", "ColSpacer", 1)), "1", "2")
-    '.StartRow = IIf((GetUserSetting("Output", "RowSpacer", 1)), "1", "2")
+    .StartCol = Val(GetUserSetting("Output", "TitleCol", "3"))
+    .StartRow = IIf(mlngAppendStartRow > 0, mlngAppendStartRow, Val(GetUserSetting("Output", "TitleRow", "2")))
     .EndCol = .StartCol
     .EndRow = .StartRow
   End With
@@ -1505,8 +1510,8 @@ Private Sub ApplyStyle(lngNumCols As Long, lngNumRows As Long, colStyles As Coll
   End If
 
   With colStyles("Data")
-    .StartCol = 0
-    .StartRow = 0
+    .StartCol = mlngHeaderCols
+    .StartRow = mlngHeaderRows
     .EndCol = lngNumCols
     .EndRow = lngNumRows
   End With
