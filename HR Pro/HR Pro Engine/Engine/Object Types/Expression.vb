@@ -290,6 +290,9 @@ Namespace Things
                           , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode _
                           , Me.AssociatedColumn.SafeReturnType, .BoilerPlate, .Comments, sBypassUDFCode)
 
+            '            SELECT @result = CASE WHEN @result > 999.99 THEN 0 ELSE @result END
+
+
             .CodeStub = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
                            "RETURNS {2}" & vbNewLine & _
                            "{3}" & vbNewLine & _
@@ -1120,6 +1123,45 @@ Namespace Things
     '  Return sCallingCode
 
     'End Function
+
+    Private Function ResultDataType(ByVal ColumnType As ScriptDB.ColumnTypes) As String
+
+      Dim sSQLType As String = String.Empty
+
+      Select Case CInt(ColumnType)
+        Case ScriptDB.ColumnTypes.Text
+          sSQLType = "varchar(MAX)"
+
+        Case ScriptDB.ColumnTypes.Integer
+          sSQLType = "integer"
+
+        Case ScriptDB.ColumnTypes.Numeric
+          sSQLType = "numeric(38,8)"
+
+        Case ScriptDB.ColumnTypes.Date
+          sSQLType = "datetime"
+
+        Case ScriptDB.ColumnTypes.Logic
+          sSQLType = "bit"
+
+        Case ScriptDB.ColumnTypes.WorkingPattern
+          sSQLType = "varchar(14)"
+
+        Case ScriptDB.ColumnTypes.Link
+          sSQLType = "varchar(255)"
+
+        Case ScriptDB.ColumnTypes.Photograph
+          sSQLType = "varchar(255)"
+
+        Case ScriptDB.ColumnTypes.Binary
+          sSQLType = "varbinary(MAX)"
+
+      End Select
+
+      Return sSQLType
+
+    End Function
+
 
   End Class
 End Namespace

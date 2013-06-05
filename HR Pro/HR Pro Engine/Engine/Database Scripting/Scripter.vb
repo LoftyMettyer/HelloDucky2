@@ -379,6 +379,7 @@ Namespace ScriptDB
           sSQLCalculatedColumns = String.Empty
           sSQLParentColumns = String.Empty
           sSQLParentColumns_Delete = String.Empty
+          sSQLChildColumns = String.Empty
           sValidation = String.Empty
 
           sSQLCode_AuditInsert = String.Empty
@@ -568,19 +569,12 @@ Namespace ScriptDB
             '
           Next
 
-
-          '     For Each objColumn In objTable.DependantChildTableColumns
-
-          'aryChildrenToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3})" & vbNewLine & _
-          '        "        UPDATE base SET [updflag] = 1 FROM dbo.[{1}] base WHERE [ID_{2}] IN (SELECT DISTINCT [id] FROM inserted);" & vbNewLine _
-          '        , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID), CInt(objRelation.ChildID)))
-
-
-          'Next
-
           ' Update any parents
           If aryParentsToUpdate.ToArray.Length > 0 Then
-            sSQLParentColumns = String.Format("    -- Refresh any parents" & vbNewLine & String.Join(vbNewLine, aryParentsToUpdate.ToArray()))
+            sSQLParentColumns = "    -- Refresh parent records" & vbNewLine & _
+                                "    IF @isovernight = 0" & vbNewLine & "    BEGIN" & vbNewLine & _
+                                String.Join(vbNewLine, aryParentsToUpdate.ToArray()) & _
+                               "     END"
             sSQLParentColumns_Delete = String.Format("    -- Refresh any parents" & vbNewLine & String.Join(vbNewLine, aryParentsToUpdate_Delete.ToArray()))
           End If
 
@@ -599,9 +593,10 @@ Namespace ScriptDB
 
           ' Update child records
           If aryChildrenToUpdate.ToArray.Length > 0 Then
-            sSQLChildColumns = String.Format("    -- Update children" & vbNewLine & String.Join(vbNewLine & vbNewLine, aryChildrenToUpdate.ToArray()))
-          Else
-            sSQLChildColumns = "    -- No children to refresh" & vbNewLine & vbNewLine
+            sSQLChildColumns = "    --Update children" & vbNewLine & _
+                    "    IF @isovernight = 0" & vbNewLine & "    BEGIN" & vbNewLine & _
+                    String.Join(vbNewLine & vbNewLine, aryChildrenToUpdate.ToArray()) & _
+                   "     END"
           End If
 
           ' Update statement of all the non read only columns (free entry columns)
@@ -634,10 +629,10 @@ Namespace ScriptDB
             sSQLCalculatedColumns = String.Format("    -- Update calculated columns" & vbNewLine & _
               "    WITH base AS (" & vbNewLine & _
               "        SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
-              "        FROM [dbo].[{0}]" & vbNewLine & _
-              "        WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
+              "            FROM [dbo].[{0}]" & vbNewLine & _
+              "            WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
               "    UPDATE base SET " & vbNewLine & _
-              "        {1}" _
+              "        {1}" & vbNewLine _
               , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryCalculatedColumns.ToArray()))
           End If
 
@@ -667,7 +662,6 @@ Namespace ScriptDB
               "    END" _
               , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryUpdateUniqueCodes.ToArray()), CInt(objTable.ID))
           End If
-
 
           ' -------------------
           ' INSTEAD OF INSERT
