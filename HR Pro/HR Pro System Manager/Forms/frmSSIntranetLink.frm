@@ -2306,7 +2306,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 
 End Sub
@@ -2695,7 +2695,7 @@ Private Function ValidateLink() As Boolean
     If optLink(SSINTLINKCHART).value And _
       ChartColumnID = 0 Then
       fValid = False
-      MsgBox "Please define chart data using the 'Data' button.", vbOKOnly + vbExclamation, Application.Name
+      MsgBox "No chart data has been defined.", vbOKOnly + vbExclamation, Application.Name
       cmdChartData.SetFocus
     End If
   End If
