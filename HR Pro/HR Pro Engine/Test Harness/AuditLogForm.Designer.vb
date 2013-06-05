@@ -25,7 +25,6 @@ Partial Class AuditLogForm
         Me.components = New System.ComponentModel.Container()
         Dim DateButton1 As Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton = New Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton()
         Dim DateButton2 As Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton = New Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton()
-        Dim Appearance14 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance()
         Dim Appearance3 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance("Highlight", 74988782)
         Me.datePanel = New System.Windows.Forms.Panel()
         Me.dateLabel = New Infragistics.Win.Misc.UltraLabel()
@@ -144,12 +143,11 @@ Partial Class AuditLogForm
         Me.auditLogsGrid.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Left) _
                     Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Appearance14.BackColor = System.Drawing.SystemColors.Window
-        Me.auditLogsGrid.DisplayLayout.Appearance = Appearance14
         Appearance3.BackColor = System.Drawing.SystemColors.Highlight
         Appearance3.ForeColor = System.Drawing.SystemColors.HighlightText
         Me.auditLogsGrid.DisplayLayout.Appearances.Add(Appearance3)
         Me.auditLogsGrid.DisplayLayout.AutoFitStyle = Infragistics.Win.UltraWinGrid.AutoFitStyle.ResizeAllColumns
+        Me.auditLogsGrid.DisplayLayout.EmptyRowSettings.ShowEmptyRows = True
         Me.auditLogsGrid.DisplayLayout.Override.AllowAddNew = Infragistics.Win.UltraWinGrid.AllowAddNew.No
         Me.auditLogsGrid.DisplayLayout.Override.AllowColSwapping = Infragistics.Win.UltraWinGrid.AllowColSwapping.NotAllowed
         Me.auditLogsGrid.DisplayLayout.Override.AllowDelete = Infragistics.Win.DefaultableBoolean.[False]

@@ -1,4 +1,4 @@
-﻿Imports System.ComponentModel
+﻿'Imports System.ComponentModel
 
 Public Enum DatePeriod
     ThisMonth = 1
@@ -8,7 +8,7 @@ End Enum
 
 Public Class AuditLogModel
 
-    Private db As DBContext
+    Private db As HRProData
     Public Property Period As DatePeriod = DatePeriod.ThisMonth
     Public Property DateFrom As Date?
     Public Property DateTo As Date?
@@ -17,7 +17,7 @@ Public Class AuditLogModel
     Public Property AuditLogs As IList
     Public Event AuditLogsChanged()
 
-    Public Sub New(ByVal db As DBContext)
+    Public Sub New(ByVal db As HRProData)
         Me.db = db
         Users = db.ASRSysAuditTrails.Select(Function(a) a.UserName).Distinct().ToList
     End Sub

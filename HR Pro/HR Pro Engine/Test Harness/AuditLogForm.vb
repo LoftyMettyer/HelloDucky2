@@ -7,7 +7,7 @@ Public Class AuditLogForm
 
     Private Sub AuditLog_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
-        model = New AuditLogModel(New DBContext(ConString))
+        model = New AuditLogModel(New HRProData(ConString))
 
         BindControls()
 

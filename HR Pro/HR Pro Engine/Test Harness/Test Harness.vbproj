@@ -97,11 +97,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuditLogModel.vb" />
-    <Compile Include="Form1.vb">
+    <Compile Include="HRProData.designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HRProData.dbml</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.vb">
-      <DependentUpon>Form1.vb</DependentUpon>
+    <Compile Include="MainForm.Designer.vb">
+      <DependentUpon>MainForm.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AuditLogForm.Designer.vb">
@@ -132,11 +137,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="OpenHRData.designer.vb">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>OpenHRData.dbml</DependentUpon>
-    </Compile>
     <Compile Include="ProgressBar.Designer.vb">
       <DependentUpon>ProgressBar.vb</DependentUpon>
     </Compile>
@@ -148,8 +148,8 @@
     <EmbeddedResource Include="AuditLogForm.resx">
       <DependentUpon>AuditLogForm.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.vb</DependentUpon>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Import &amp; Export Definitions\ViewObjects.resx">
       <DependentUpon>ViewObjects.vb</DependentUpon>
@@ -161,8 +161,8 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="OpenHRData.dbml.layout">
-      <DependentUpon>OpenHRData.dbml</DependentUpon>
+    <None Include="HRProData.dbml.layout">
+      <DependentUpon>HRProData.dbml</DependentUpon>
     </None>
     <EmbeddedResource Include="ProgressBar.resx">
       <DependentUpon>ProgressBar.vb</DependentUpon>
@@ -179,9 +179,9 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
-    <None Include="OpenHRData.dbml">
+    <None Include="HRProData.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
-      <LastGenOutput>OpenHRData.designer.vb</LastGenOutput>
+      <LastGenOutput>HRProData.designer.vb</LastGenOutput>
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
