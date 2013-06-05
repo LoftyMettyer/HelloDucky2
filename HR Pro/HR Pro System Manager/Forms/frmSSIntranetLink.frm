@@ -2175,7 +2175,7 @@ Private Sub RefreshControls()
   
   If optLink(SSINTLINKCHART).value And cboChartType.ListIndex >= 0 Then
   
-    chkStackSeries.Visible = False
+    ' chkStackSeries.Visible = False
     chkDottedGridlines.Enabled = True
     
     Select Case cboChartType.ItemData(cboChartType.ListIndex)
@@ -2206,7 +2206,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
 
 End Sub
