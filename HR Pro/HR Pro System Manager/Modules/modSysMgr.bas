@@ -568,6 +568,8 @@ Sub Main()
       frmSplash.Show
       frmSplash.Refresh
       
+      ApplyHotfixes (BEFORELOAD)
+      
       'Activate System Manager
       Application.Activate
       

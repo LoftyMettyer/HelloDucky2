@@ -10,6 +10,12 @@ Dim mstrOldServerName As String      ' Using @@SERVERNAME
 
 Public gfDatabaseServerChanged As Boolean
 
+Public Enum HotfixType
+  BEFORELOAD = 0
+  BEFORESAVE = 1
+  AFTERSAVE = 2
+End Enum
+
 Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQLSystemAdmin As Boolean) As Boolean
   ' Check that the database version is the right one for this application's version.
   ' If everything matches then return TRUE.
@@ -90,7 +96,7 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
         vbExclamation + vbOKOnly, Application.Name
     End If
   End If
-   
+     
   ' AE20080218 Fault #12834, 12859
   If fOK Then
     If (fReRunScript Or gblnAutomaticScript) And bIsSQLSystemAdmin Then
@@ -349,6 +355,11 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
   If fOK Then
     gfRefreshStoredProcedures = (GetSystemSetting("Database", "RefreshStoredProcedures", 0) = 1)
     Application.Changed = Application.Changed Or gfRefreshStoredProcedures
+  End If
+  
+  ' Upload scripts
+  If fOK Then
+    UploadHotfixes
   End If
   
   ' If fOK and fVersionOK are true then the application and databases versions match.
@@ -1235,11 +1246,106 @@ ErrorTrap:
   Resume TidyUpAndExit
 End Function
 
+Public Function ApplyHotfixes(ByRef RunType As HotfixType) As Boolean
 
+  On Error GoTo ErrorTrap
 
+  Dim cmdHotfixes As New ADODB.Command
+  Dim pmADO As ADODB.Parameter
+  Dim bOK As Boolean
 
+  bOK = True
 
+  With cmdHotfixes
+    .CommandText = "spASRApplyScripts"
+    .CommandType = adCmdStoredProc
+    .CommandTimeout = 0
+    Set .ActiveConnection = gADOCon
+    
+    Set pmADO = .CreateParameter("runtype", adInteger, adParamInput)
+    pmADO.value = RunType
+    .Parameters.Append pmADO
+    
+    .Execute
+  End With
 
+TidyUpAndExit:
+  Set cmdHotfixes = Nothing
+  ApplyHotfixes = bOK
+  Exit Function
+
+ErrorTrap:
+  bOK = False
+  GoTo TidyUpAndExit
+
+End Function
+
+Public Sub UploadHotfixes()
+
+'  Dim strScriptPath As String
+'  Dim sScript As String
+'  Dim sReadString As String
+'  Dim sFileName As String
+'
+'  strScriptPath = App.Path & "\Update Scripts\"
+'  sFileName = Dir$(strScriptPath & "HRProScript-*.Sql")
+'
+''  For Each File In Directory
+''
+''    sScript = vbNullString
+''
+''   ' sFileName =
+''
+''    Open sFileName For Input As #1
+''    Do While Not EOF(1)
+''      Line Input #1, sReadString
+''      sScript = sScript & sReadString & vbNewLine
+''    Loop
+''    Close #1
+''
+''    UploadScript (sScript)
+''  Next
+
+'  If sUpdateScript <> vbNullString Then
+'    'Set rdoTempCon = rdoEnv.OpenConnection("", rdDriverNoPrompt, False, sConnect)
+'    gADOCon.Execute sUpdateScript, , adExecuteNoRecords
+'  End If
+
+End Sub
+
+Private Function UploadScript(ByVal strScript As String) As Boolean
+
+  On Error GoTo ErrorTrap
+
+  Dim cmdHotfixes As New ADODB.Command
+  Dim pmADO As ADODB.Parameter
+  Dim bOK As Boolean
+
+  bOK = True
+
+  With cmdHotfixes
+    .CommandText = "spASRUploadScript"
+    .CommandType = adCmdStoredProc
+    .CommandTimeout = 0
+    Set .ActiveConnection = gADOCon
+    
+    Set pmADO = .CreateParameter("script", adLongVarChar, adParamInput)
+    pmADO.value = strScript
+    .Parameters.Append pmADO
+    
+    .Execute
+  End With
+
+TidyUpAndExit:
+  Set cmdHotfixes = Nothing
+  UploadScript = bOK
+  Exit Function
+
+ErrorTrap:
+  bOK = False
+  GoTo TidyUpAndExit
+
+End Function
 
 
 
