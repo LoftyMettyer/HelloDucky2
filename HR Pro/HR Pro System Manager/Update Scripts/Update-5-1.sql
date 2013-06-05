@@ -60,6 +60,30 @@ END
 	EXECUTE sp_executeSQL N'UPDATE ASRSysColumns SET lostFocusExprID = 0 WHERE (lostFocusExprID = - 1);';	
 	EXECUTE sp_executeSQL N'UPDATE ASRSysColumns SET dfltValueExprID = 0 WHERE (dfltValueExprID = - 1);';
 
+
+/* ------------------------------------------------------------- */
+/* Step - Management Packs */
+/* ------------------------------------------------------------- */
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysCustomReportsName', 'U') AND name = 'OutputSubFormat')
+		BEGIN
+			EXEC sp_executesql N'ALTER TABLE ASRSysCustomReportsName ADD OutputSubFormat tinyint NULL;';
+			EXEC sp_executesql N'UPDATE ASRSysCustomReportsName SET OutputSubFormat = 12;';
+		END
+
+select * from ASRSysFileFormats
+
+
+INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default])
+	VALUES (923, 'Word', 'PDF', 'pdf', 17, 17, 0);
+INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default])
+	VALUES (924, 'Word', 'Rich Text Format', 'rtf', 6, 6, 0);
+INSERT ASRSysFileFormats (ID, Destination, [Description], Extension, Office2003, Office2007, [Default])
+	VALUES (925, 'Word', 'Plain Text', 'txt', 2, 2, 0);
+	
+
+
+
 /* ------------------------------------------------------------- */
 /* Step - Updating workflow stored procedures */
 /* ------------------------------------------------------------- */
