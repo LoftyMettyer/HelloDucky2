@@ -804,7 +804,7 @@ Namespace Things
 
       If bAddDefaultDataType Then
         ExtraCode = New ScriptDB.CodeElement
-        ExtraCode.Code = component.Components(0).Components(0).SafeReturnType
+        ExtraCode.Code = CInt(component.Components(0).Components(0).ReturnType).ToString
         ChildCodeCluster.Add(ExtraCode)
       End If
 
