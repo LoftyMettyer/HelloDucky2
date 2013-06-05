@@ -13,6 +13,7 @@ Public Enum Module
   modQAddress = 256
   modAccord = 512
   modWorkflow = 1024
+  modVersion1 = 2048
 End Enum
 
 
