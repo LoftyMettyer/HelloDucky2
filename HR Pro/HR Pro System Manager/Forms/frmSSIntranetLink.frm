@@ -1649,6 +1649,9 @@ Private Sub RefreshControls()
       MSChart1.RowCount = 1
     End If
   Else
+    ' NPG20100427 Fault HRPRO-888
+    If Not txtPrompt.Enabled Then txtPrompt.Text = ""
+    
     txtPrompt.Enabled = True
     txtPrompt.BackColor = vbWindowBackground
     ' NPG20100427 Fault HRPRO-910
