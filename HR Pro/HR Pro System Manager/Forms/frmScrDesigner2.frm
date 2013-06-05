@@ -14,7 +14,7 @@ Object = "{58F88252-94BB-43CE-9EF9-C971F73B93D4}#1.0#0"; "COASD_Selection.ocx"
 Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "COASD_SelectionBox.ocx"
 Object = "{0BE8C79E-5090-4700-B420-B767D1E19561}#1.0#0"; "COASD_Spinner.ocx"
 Object = "{93EA589D-C793-4EE4-BE53-52A646038BAF}#1.0#0"; "COASD_WorkingPattern.ocx"
-Object = "{AD837810-DD1E-44E0-97C5-854390EA7D3A}#3.1#0"; "COA_Navigation.ocx"
+Object = "{AD837810-DD1E-44E0-97C5-854390EA7D3A}#3.2#0"; "COA_Navigation.ocx"
 Begin VB.Form frmScrDesigner2 
    AutoRedraw      =   -1  'True
    Caption         =   "Screen Designer"
@@ -35,6 +35,7 @@ Begin VB.Form frmScrDesigner2
    Icon            =   "frmScrDesigner2.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MDIChild        =   -1  'True
    ScaleHeight     =   7365
@@ -652,6 +653,10 @@ Private Sub ASRDummyNavigation_DragDrop(Index As Integer, Source As Control, X A
   ScreenControl_DragDrop ASRDummyNavigation(Index), Source, X, Y
 End Sub
 
+Private Sub ASRDummyNavigation_KeyDown(Index As Integer, KeyCode As Integer, Shift As Integer)
+  Form_KeyDown KeyCode, Shift
+End Sub
+
 Private Sub ASRDummyNavigation_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
   ScreenControl_MouseDown ASRDummyNavigation(Index), Button, Shift, X, Y
 End Sub
@@ -1114,7 +1119,7 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
         
         'Find the definition for the column being dropped
         With frmToolbox.trvColumns.SelectedItem
-          lngColumnID = Val(Mid(.key, 2))
+          lngColumnID = val(Mid(.key, 2))
         End With
           
         With recColEdit
@@ -3732,7 +3737,7 @@ Private Function DeleteTabPage(piTabIndex As Integer, pfPromptUser As Boolean) A
       Set ctlControl = actlScreenControls(iIndex)
       
       With ctlControl
-        iTag = Val(.Tag)
+        iTag = val(.Tag)
       
         If iTag > 0 Then
           ' Unload the control's selection markers.
@@ -3930,7 +3935,7 @@ Private Function DeleteControl(pctlControl As VB.Control) As Boolean
   fOK = True
   
   ' Get the index of the given control.
-  iIndex = Val(pctlControl.Tag)
+  iIndex = val(pctlControl.Tag)
   
   ' Do not delete the control array dummy (index = 0).
   If pctlControl.Index = 0 Then
