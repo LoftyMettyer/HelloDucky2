@@ -1,4 +1,5 @@
 Attribute VB_Name = "modCodeJock"
+Public gbDisableCodeJock As Boolean
 
 Public Sub LoadSkin( _
       ByRef frm As Form, _
@@ -34,6 +35,11 @@ Public Sub LoadSkin( _
 '        -LARGEFONTSROYALE.INI
 '        -NORMALROYALE.INI
 '  ************************************************************
+
+  ' Just in case...
+  If gbDisableCodeJock Then
+    Exit Sub
+  End If
 
   With objSkin
     'Some dlls don't like to be hooked.
