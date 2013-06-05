@@ -40,15 +40,14 @@ Private mvar_sLoginColumnName As String
 Private mvar_sSecondLoginColumnName As String
 
 Private mvar_fPostBased As Boolean
-Public Function ConfigureHierarchySpecifics() As Boolean
-  ' Configure module specific objects (eg. stored procedures)
+
+' Drop all the existing hierarchy specifics
+Public Function DropHierarchySpecifics() As Boolean
+
   On Error GoTo ErrorTrap
+  Dim bOk As Boolean
   
-  Dim fOK As Boolean
-  Dim sErrorMessage As String
-  
-  mvar_fGeneralOK = True
-  mvar_sGeneralMsg = ""
+  bOk = True
   
   ' Drop any existing UDFs.
   UDF_Drop HIER_FN_IsPersonnelSubordinateOfUser
@@ -60,7 +59,29 @@ Public Function ConfigureHierarchySpecifics() As Boolean
   UDF_Drop HIER_FN_IsPostSubordinateOfUser, BY_ID_PREFIX
   UDF_Drop HIER_FN_HasPersonnelSubordinateUser, BY_ID_PREFIX
   UDF_Drop HIER_FN_HasPostSubordinateUser, BY_ID_PREFIX
+
+TidyUpAndExit:
+  DropHierarchySpecifics = bOk
+  Exit Function
   
+ErrorTrap:
+  OutputError "Error dropping Hierarchy specifics"
+  bOk = False
+  Resume TidyUpAndExit
+
+End Function
+
+Public Function ConfigureHierarchySpecifics() As Boolean
+  ' Configure module specific objects (eg. stored procedures)
+  On Error GoTo ErrorTrap
+  
+  Dim fOK As Boolean
+  Dim sErrorMessage As String
+  
+  mvar_fGeneralOK = True
+  mvar_sGeneralMsg = ""
+  
+  fOK = DropHierarchySpecifics
   fOK = ReadParameters
   
   ' Create the UDFs.
@@ -160,6 +181,7 @@ Private Function CreateUDF_IsPostSubordinateOfUser(Optional pvByID As Variant) A
     IIf(fByID, "    @piID integer" & vbNewLine, "") & _
     ")" & vbNewLine & _
     "RETURNS @results TABLE (id integer)" & vbNewLine & _
+    "WITH SCHEMABINDING" & vbNewLine & _
     "AS" & vbNewLine & _
     "BEGIN" & vbNewLine & _
     "    DECLARE @iRowsAdded integer," & vbNewLine & _
@@ -168,7 +190,8 @@ Private Function CreateUDF_IsPostSubordinateOfUser(Optional pvByID As Variant) A
     "        @dtDate datetime," & vbNewLine & _
     "        @iCount integer" & vbNewLine & vbNewLine
 
-  sUDFSQL = sUDFSQL & "    SELECT @dtDate = [dbo].[udfASRGetDate]()" & vbNewLine & vbNewLine
+'  sUDFSQL = sUDFSQL & "    SELECT @dtDate = [dbo].[udfASRGetDate]()" & vbNewLine & vbNewLine
+  sUDFSQL = sUDFSQL & "    SELECT @dtDate = GETDATE();" & vbNewLine & vbNewLine
 
   sUDFSQL = sUDFSQL & _
     "    DECLARE @postSubordinates TABLE (" & vbNewLine & _
@@ -341,6 +364,7 @@ Private Function CreateUDF_HasPostSubordinateUser(Optional pvByID As Variant) As
     IIf(fByID, "    @piID integer" & vbNewLine, "") & _
     ")" & vbNewLine & _
     "RETURNS @results TABLE (id integer)" & vbNewLine & _
+    "WITH SCHEMABINDING" & vbNewLine & _
     "AS" & vbNewLine & _
     "BEGIN" & vbNewLine & _
     "    DECLARE @iRowsAdded integer," & vbNewLine & _
@@ -349,7 +373,8 @@ Private Function CreateUDF_HasPostSubordinateUser(Optional pvByID As Variant) As
     "        @dtDate datetime," & vbNewLine & _
     "        @iCount integer" & vbNewLine & vbNewLine
 
-  sUDFSQL = sUDFSQL & "    SELECT @dtDate = [dbo].[udfASRGetDate]()" & vbNewLine & vbNewLine
+'  sUDFSQL = sUDFSQL & "    SELECT @dtDate = [dbo].[udfASRGetDate]()" & vbNewLine & vbNewLine
+  sUDFSQL = sUDFSQL & "    SELECT @dtDate = GETDATE();" & vbNewLine & vbNewLine
 
   sUDFSQL = sUDFSQL & _
     "    DECLARE @postSuperordinates TABLE (" & vbNewLine & _
@@ -528,6 +553,7 @@ Private Function CreateUDF_IsPersonnelSubordinateOfUser(Optional pvByID As Varia
     IIf(fByID, "    @piID integer" & vbNewLine, "") & _
     ")" & vbNewLine & _
     "RETURNS @results TABLE (id integer)" & vbNewLine & _
+    "WITH SCHEMABINDING" & vbNewLine & _
     "AS" & vbNewLine & _
     "BEGIN" & vbNewLine & _
     "    DECLARE @iRowsAdded integer," & vbNewLine & _
@@ -536,7 +562,8 @@ Private Function CreateUDF_IsPersonnelSubordinateOfUser(Optional pvByID As Varia
     "        @dtDate datetime," & vbNewLine & _
     "        @iCount integer" & vbNewLine & vbNewLine
 
-  sUDFSQL = sUDFSQL & "    SELECT @dtDate = [dbo].[udfASRGetDate]()" & vbNewLine & vbNewLine
+'  sUDFSQL = sUDFSQL & "    SELECT @dtDate = [dbo].[udfASRGetDate]()" & vbNewLine & vbNewLine
+  sUDFSQL = sUDFSQL & "    SELECT @dtDate = GETDATE();" & vbNewLine & vbNewLine
 
   sUDFSQL = sUDFSQL & _
     "    DECLARE " & sTempBaseTable & " TABLE (" & vbNewLine & _
@@ -739,6 +766,7 @@ Private Function CreateUDF_HasPersonnelSubordinateUser(Optional pvByID As Varian
     IIf(fByID, "    @piID integer" & vbNewLine, "") & _
     ")" & vbNewLine & _
     "RETURNS @results TABLE (id integer)" & vbNewLine & _
+    "WITH SCHEMABINDING" & vbNewLine & _
     "AS" & vbNewLine & _
     "BEGIN" & vbNewLine & _
     "    DECLARE @iRowsAdded integer," & vbNewLine & _
@@ -747,7 +775,8 @@ Private Function CreateUDF_HasPersonnelSubordinateUser(Optional pvByID As Varian
     "        @dtDate datetime," & vbNewLine & _
     "        @iCount integer" & vbNewLine & vbNewLine
 
-  sUDFSQL = sUDFSQL & "    SELECT @dtDate = [dbo].[udfASRGetDate]()" & vbNewLine & vbNewLine
+  'sUDFSQL = sUDFSQL & "    SELECT @dtDate = [dbo].[udfASRGetDate]()" & vbNewLine & vbNewLine
+  sUDFSQL = sUDFSQL & "    SELECT @dtDate = GETDATE();" & vbNewLine & vbNewLine
 
   sUDFSQL = sUDFSQL & _
     "    DECLARE " & sTempBaseTable & " TABLE (" & vbNewLine & _
@@ -1011,12 +1040,12 @@ Private Function ReadParameters() As Boolean
   recModuleSetup.Index = "idxModuleParameter"
   recModuleSetup.Seek "=", gsMODULEKEY_HIERARCHY, gsPARAMETERKEY_HIERARCHYTABLE
   If Not recModuleSetup.NoMatch Then
-    lngTempID = recModuleSetup!ParameterValue
+    lngTempID = recModuleSetup!parametervalue
     mvar_lngHierarchyTableID = lngTempID
     recTabEdit.Index = "idxTableID"
     recTabEdit.Seek "=", lngTempID
     If Not recTabEdit.NoMatch Then
-      mvar_sHierarchyTableName = recTabEdit!TableName
+      mvar_sHierarchyTableName = "dbo." & recTabEdit!TableName
     Else
       mvar_lngHierarchyTableID = 0
       mvar_sHierarchyTableName = vbNullString
@@ -1032,7 +1061,7 @@ Private Function ReadParameters() As Boolean
     recModuleSetup.Index = "idxModuleParameter"
     recModuleSetup.Seek "=", gsMODULEKEY_HIERARCHY, gsPARAMETERKEY_IDENTIFIER
     If Not recModuleSetup.NoMatch Then
-      lngTempID = recModuleSetup!ParameterValue
+      lngTempID = recModuleSetup!parametervalue
       mvar_lngIdentifyingColumnID = lngTempID
       recColEdit.Index = "idxColumnID"
       recColEdit.Seek "=", lngTempID
@@ -1063,7 +1092,7 @@ Private Function ReadParameters() As Boolean
     recModuleSetup.Index = "idxModuleParameter"
     recModuleSetup.Seek "=", gsMODULEKEY_HIERARCHY, gsPARAMETERKEY_REPORTSTO
     If Not recModuleSetup.NoMatch Then
-      lngTempID = recModuleSetup!ParameterValue
+      lngTempID = recModuleSetup!parametervalue
       mvar_lngReportsToColumnID = lngTempID
       recColEdit.Index = "idxColumnID"
       recColEdit.Seek "=", lngTempID
@@ -1090,12 +1119,12 @@ Private Function ReadParameters() As Boolean
     recModuleSetup.Index = "idxModuleParameter"
     recModuleSetup.Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE
     If Not recModuleSetup.NoMatch Then
-      lngTempID = recModuleSetup!ParameterValue
+      lngTempID = recModuleSetup!parametervalue
       mvar_lngPersonnelTableID = lngTempID
       recTabEdit.Index = "idxTableID"
       recTabEdit.Seek "=", lngTempID
       If Not recTabEdit.NoMatch Then
-        mvar_sPersonnelTableName = recTabEdit!TableName
+        mvar_sPersonnelTableName = "dbo." & recTabEdit!TableName
       Else
         mvar_lngPersonnelTableID = 0
         mvar_sPersonnelTableName = vbNullString
@@ -1144,12 +1173,12 @@ Private Function ReadParameters() As Boolean
     recModuleSetup.Index = "idxModuleParameter"
     recModuleSetup.Seek "=", gsMODULEKEY_HIERARCHY, gsPARAMETERKEY_POSTALLOCATIONTABLE
     If Not recModuleSetup.NoMatch Then
-      lngTempID = recModuleSetup!ParameterValue
+      lngTempID = recModuleSetup!parametervalue
       mvar_lngPostAllocationTableID = lngTempID
       recTabEdit.Index = "idxTableID"
       recTabEdit.Seek "=", lngTempID
       If Not recTabEdit.NoMatch Then
-        mvar_sPostAllocationTableName = recTabEdit!TableName
+        mvar_sPostAllocationTableName = "dbo." & recTabEdit!TableName
       Else
         mvar_lngPostAllocationTableID = 0
         mvar_sPostAllocationTableName = vbNullString
@@ -1171,7 +1200,7 @@ Private Function ReadParameters() As Boolean
     recModuleSetup.Index = "idxModuleParameter"
     recModuleSetup.Seek "=", gsMODULEKEY_HIERARCHY, gsPARAMETERKEY_POSTALLOCSTARTDATE
     If Not recModuleSetup.NoMatch Then
-      lngTempID = recModuleSetup!ParameterValue
+      lngTempID = recModuleSetup!parametervalue
       mvar_lngStartDateColumnID = lngTempID
       recColEdit.Index = "idxColumnID"
       recColEdit.Seek "=", lngTempID
@@ -1191,7 +1220,7 @@ Private Function ReadParameters() As Boolean
     recModuleSetup.Index = "idxModuleParameter"
     recModuleSetup.Seek "=", gsMODULEKEY_HIERARCHY, gsPARAMETERKEY_POSTALLOCENDDATE
     If Not recModuleSetup.NoMatch Then
-      lngTempID = recModuleSetup!ParameterValue
+      lngTempID = recModuleSetup!parametervalue
       mvar_lngEndDateColumnID = lngTempID
       recColEdit.Index = "idxColumnID"
       recColEdit.Seek "=", lngTempID
@@ -1277,7 +1306,7 @@ Public Function IdentifyingColumnDataType() As SQLDataType
     If .NoMatch Then
       lngIdentifyingColumnID = 0
     Else
-      lngIdentifyingColumnID = IIf(IsNull(!ParameterValue) Or Len(!ParameterValue) = 0, 0, !ParameterValue)
+      lngIdentifyingColumnID = IIf(IsNull(!parametervalue) Or Len(!parametervalue) = 0, 0, !parametervalue)
     End If
   End With
 

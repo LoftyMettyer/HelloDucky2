@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
 Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "COASD_SelectionBox.ocx"
 Object = "{F3C5146D-8FDA-4D29-8E41-0C27C803C808}#1.0#0"; "COAWF_BeginEnd.ocx"
 Object = "{08EDC6C1-0A62-485F-8917-8D9FB93DB156}#1.0#0"; "COAWF_Decision.ocx"
@@ -478,6 +478,8 @@ Private mfFixableValidationFailures As Boolean
 Private mlngPersonnelTableID As Long
 Private maobjOriginalExpressions() As CExpression
 Private mfExpressionsChanged As Boolean
+
+Private mbLocked As Boolean
 
 Private Function ArrowSelect(piKeyCode As Integer) As Boolean
   Dim ctlCurrentItem As VB.Control
@@ -11465,7 +11467,7 @@ Private Sub Form_Load()
     End If
   End If
   
-  cmdOk.Enabled = IsNew
+  cmdOK.Enabled = IsNew
   
   scrollVertical.SmallChange = SMALLSCROLL
   scrollHorizontal.SmallChange = SMALLSCROLL
@@ -12894,7 +12896,7 @@ Public Property Let WorkflowID(pLngNewID As Long)
 
   IsChanged = False
   mfReadOnly = WorkflowsWithStatus(mlngWorkflowID, giWFSTATUS_INPROGRESS) _
-    Or (Application.AccessMode <> accFull And Application.AccessMode <> accSupportMode)
+    Or (Application.AccessMode <> accFull And Application.AccessMode <> accSupportMode) Or mbLocked
 
   SetLastActionFlag giACTION_NOACTION
   
@@ -12941,6 +12943,7 @@ Private Function LoadWorkflow() As Boolean
         IIf(miInitiationType = WORKFLOWINITIATIONTYPE_TRIGGERED, _
           giWFRECSEL_TRIGGEREDRECORD, giWFRECSEL_UNIDENTIFIED))
       mfChanged = False
+      mbLocked = IIf(IsNull(.Fields("locked")), False, .Fields("locked"))
       
       ' Set the screen caption and size.
       Me.Caption = "Workflow Manager - " & IIf(IsNull(.Fields("name")), "unnamed", .Fields("name")) & vbNullString
@@ -13693,7 +13696,7 @@ Public Property Let IsChanged(pfNewValue As Boolean)
   ' Set the 'workflow changed' flag.
   
   mfChanged = pfNewValue
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
   ' Menu may be dependent on the status of the screen.
   'frmSysMgr.RefreshMenu

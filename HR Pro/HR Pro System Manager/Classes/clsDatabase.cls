@@ -35,7 +35,7 @@ Public Enum DataTypes
   dtBINARY = -2
   dtLONGVARCHAR = -1
   dtNUMERIC = 2
-  dtINTEGER = 4
+  dtinteger = 4
   dtTIMESTAMP = 11
   dtVARCHAR = 12
   dtGUID = 15
@@ -190,7 +190,7 @@ Public Function GetDataDesc(ByVal DataType As DataTypes) As String
     Case dtVARCHAR
       sDesc = "Character"
 
-    Case dtINTEGER
+    Case dtinteger
       sDesc = "Integer"
 
     Case dtNUMERIC
@@ -314,35 +314,80 @@ Public Function TableExists(ByVal psTableName As String) As Boolean
   Set rsInfo = Nothing
   
 End Function
+
+' Gets the next identity for a metadata table from the database
+Public Function GetNextObjectIdentitySeed(ByRef ObjectType As String) As Long
+
+  On Error GoTo ErrorTrap
+
+  Dim cmADO As ADODB.Command
+  Dim pmADO As ADODB.Parameter
+  Dim rstValues As ADODB.Recordset
+  
+  Dim lngUniqueValue As Long
+
+  Set cmADO = New ADODB.Command
+  With cmADO
+    .CommandText = "spASRGetNextObjectIdentitySeed"
+    .CommandType = adCmdStoredProc
+    .CommandTimeout = 0
+    Set .ActiveConnection = gADOCon
+
+    Set pmADO = .CreateParameter("viewname", adVarChar, adParamInput, 255)
+    pmADO.value = ObjectType
+    .Parameters.Append pmADO
+
+    Set pmADO = .CreateParameter("nextid", adInteger, adParamOutput)
+    .Parameters.Append pmADO
+
+    cmADO.Execute
+
+    lngUniqueValue = IIf(IsNull(.Parameters(1).value), 0, .Parameters(1).value)
+  End With
+
+TidyUpAndExit:
+  GetNextObjectIdentitySeed = lngUniqueValue
+  Set pmADO = Nothing
+  Set cmADO = Nothing
+  Exit Function
+
+ErrorTrap:
+  lngUniqueValue = 0
+  Resume TidyUpAndExit
+
+End Function
+
 Public Function UniqueColumnValue(sTableName As String, sColumnName As String) As Long
   On Error GoTo ErrorTrap
 
   Dim lngUniqueValue As Long
-  Dim recUniqueValue As dao.Recordset
+  Dim recUniqueValue As DAO.Recordset
   Dim sSQL As String
-  
+
   ' Create a record set with a unique value for the given table and column.
   sSQL = "SELECT MAX(" & sColumnName & ")+1 AS newValue" & _
     " FROM " & sTableName
   Set recUniqueValue = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
-    
+
+
+
   ' Read the unique column value from temporary recordset.
   If IsNull(recUniqueValue.Fields("newValue")) Then
     lngUniqueValue = 1
   Else
     lngUniqueValue = recUniqueValue.Fields("newValue")
   End If
-  
+
   ' Close the temporary recordset.
   recUniqueValue.Close
-  
+
 TidyUpAndExit:
   ' Disassociate object variables.
   Set recUniqueValue = Nothing
   'Return the unique column value.
   UniqueColumnValue = lngUniqueValue
   Exit Function
-  
+
 ErrorTrap:
   lngUniqueValue = 1
   Resume TidyUpAndExit

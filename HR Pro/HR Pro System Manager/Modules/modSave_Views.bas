@@ -10,8 +10,10 @@ Public Function SaveViews(pfRefreshDatabase As Boolean) As Boolean
   Dim alngTempColumns() As Long
   Dim iCount As Integer
   Dim fChanged As Boolean
+  Dim bRefreshViews As Boolean
   
   fOK = True
+  bRefreshViews = True
   
   With recViewEdit
     If Not (.BOF And .EOF) Then
@@ -33,7 +35,7 @@ Public Function SaveViews(pfRefreshDatabase As Boolean) As Boolean
       If Not !Deleted Then
         If !New Then
           fOK = ViewNew
-        ElseIf !Changed Or pfRefreshDatabase Then
+        ElseIf !Changed Or pfRefreshDatabase Or bRefreshViews Then
           fOK = ViewSave
         Else
           ' JPD20021127 Fault 4325 - Check if the view's filter expression has changed.
@@ -160,7 +162,7 @@ Private Function ViewNew() As Boolean
   Dim sTable As String
   Dim sColumns As String
   Dim sWhereClauseCode As String
-  Dim rsColumns As dao.Recordset
+  Dim rsColumns As DAO.Recordset
   Dim objExpr As CExpression
   
   fOK = True
@@ -331,9 +333,10 @@ Private Function ViewSave() As Boolean
   Dim iNonSystemColumnsCount As Integer
   Dim sSQL As String
   Dim sTable As String
+  Dim sPhysicalTableName As String
   Dim sColumns As String
   Dim sWhereClauseCode As String
-  Dim rsColumns As dao.Recordset
+  Dim rsColumns As DAO.Recordset
   Dim objExpr As CExpression
   
   fOK = True
@@ -418,10 +421,12 @@ Private Function ViewSave() As Boolean
     .Index = "idxTableID"
     .Seek "=", recViewEdit.Fields("ViewTableID").value
     sTable = Trim(recTabEdit.Fields("TableName").value)
+    sPhysicalTableName = "tbuser_" & sTable
   End With
   
+
   ' Recreate the view in SQL Server
-  
+
   ' First get the columns
   iNonSystemColumnsCount = 0
   sSQL = "SELECT tmpColumns.ColumnName" & _
@@ -441,15 +446,15 @@ Private Function ViewSave() As Boolean
       .MoveNext
     Wend
   End With
-  
+
   ' The must be at least one non-system/non-link column in the view.
   fOK = (iNonSystemColumnsCount > 0)
-  
+
   If Not fOK Then
     MsgBox "At least one column must be included in the '" & recViewEdit!ViewName & "' view.", _
       vbCritical + vbOKOnly, App.Title
   Else
-  
+
     ' Add System and Link columns.
     sSQL = "SELECT tmpColumns.ColumnName" & _
       " FROM tmpColumns" & _
@@ -466,10 +471,10 @@ Private Function ViewSave() As Boolean
       Wend
     End With
     Set rsColumns = Nothing
-  
+
     ' Add the TimeStamp column.
     sColumns = sColumns & IIf(LenB(sColumns) <> 0, ", ", vbNullString) & sTable & ".TimeStamp" & vbNewLine
-    
+
     If fOK Then
       ' Now drop the view if it exists
       ' Drop the view from SQL Server
@@ -480,24 +485,37 @@ Private Function ViewSave() As Boolean
               "AND sysstat & 0xf = 2) " & _
               "DROP VIEW dbo." & recViewEdit.Fields("OriginalViewName").value
       gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
-      
+
       ' Get the 'where clause' code from the expression.
       Set objExpr = New CExpression
       objExpr.ExpressionID = recViewEdit!ExpressionID
       sWhereClauseCode = objExpr.ViewFilterCode
       Set objExpr = Nothing
-  
+
+      ' Now create the view
       If fOK Then
-        ' Now create the view
         sSQL = "CREATE VIEW dbo." & recViewEdit.Fields("ViewName").value & vbNewLine & _
+          "WITH SCHEMABINDING" & vbNewLine & _
           "AS" & vbNewLine & _
           "    SELECT " & sColumns & vbNewLine & _
-          "    FROM " & sTable & vbNewLine & _
+          "    FROM dbo." & sTable & vbNewLine & _
           IIf(LenB(sWhereClauseCode) <> 0, "    WHERE " & sWhereClauseCode, vbNullString)
         gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
       End If
+      
+'      ' Add an index
+'      If fOK Then
+'        sSQL = "IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[" & recViewEdit.Fields("ViewName").value & "]')" & _
+'              "AND name = N'IDX_ID')" & vbNewLine & _
+'              "CREATE UNIQUE CLUSTERED INDEX [IDX_ID] ON [dbo].[" & recViewEdit.Fields("ViewName").value & "] ([ID] ASC)"
+'        gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+'      End If
+      
     End If
   End If
+  
+  
+  
   
 TidyUpAndExit:
   Set objExpr = Nothing
@@ -513,4 +531,44 @@ ErrorTrap:
 
 End Function
 
+
+' Drop any views on the server (need to so that subsequent objects can be dropped as part of the schema binding job)
+Public Function DropViews() As Boolean
+  
+  On Error GoTo ErrorTrap
+  
+  Dim fOK As Boolean
+  Dim sSQL As String
+  
+  fOK = True
+  
+  With recViewEdit
+    If Not (.BOF And .EOF) Then
+      .MoveFirst
+    End If
+    Do While fOK And Not .EOF
+      
+      sSQL = "IF EXISTS " & _
+              "(SELECT Name " & _
+              "FROM sysobjects " & _
+              "WHERE id = object_id('dbo." & recViewEdit.Fields("viewname").value & "') " & _
+              "AND sysstat & 0xf = 2) " & _
+              "DROP VIEW dbo." & recViewEdit.Fields("viewname").value
+      gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+      
+      .MoveNext
+    Loop
+  
+  End With
+
+TidyUpAndExit:
+  DropViews = fOK
+  Exit Function
+  
+ErrorTrap:
+  OutputError "Error saving views"
+  fOK = False
+  Resume TidyUpAndExit
+  
+End Function
 

@@ -79,7 +79,7 @@ Private Function WorkflowDelete() As Boolean
   Dim fOK As Boolean
   Dim lngWorkflowID As Long
 
-  lngWorkflowID = recWorkflowEdit!ID
+  lngWorkflowID = recWorkflowEdit!id
 
   gADOCon.Execute "DELETE FROM ASRSysWorkflows WHERE ID=" & lngWorkflowID, , adCmdText + adExecuteNoRecords
   gADOCon.Execute "DELETE FROM ASRSysWorkflowElementItems WHERE elementID IN (SELECT ID FROM ASRSysWorkflowElements WHERE workflowID=" & lngWorkflowID & ")", , adCmdText + adExecuteNoRecords
@@ -146,14 +146,16 @@ Private Function WorkflowNew() As Boolean
   fOK = True
 
   ' Open the Workflows table on the server.
-  rsWorkflows.Open "ASRSysWorkflows", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTableDirect
+  rsWorkflows.Open "ASRSysWorkflows", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTable
     
   With rsWorkflows
     .AddNew
     For iLoop = 0 To .Fields.Count - 1
       sName = .Fields(iLoop).Name
-      If Not IsNull(recWorkflowEdit.Fields(sName).Value) Then
-        .Fields(iLoop).Value = recWorkflowEdit.Fields(sName).Value
+      If Not (sName = "locked" Or sName = "lastupdatedby" Or sName = "lastupdated") Then
+        If Not IsNull(recWorkflowEdit.Fields(sName).value) Then
+          .Fields(iLoop).value = recWorkflowEdit.Fields(sName).value
+        End If
       End If
     Next iLoop
     .Update
@@ -162,16 +164,16 @@ Private Function WorkflowNew() As Boolean
 
 
   ' Open the Workflow Elements table on the server.
-  rsElements.Open "ASRSysWorkflowElements", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTableDirect
+  rsElements.Open "ASRSysWorkflowElements", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTable
 
   With recWorkflowElementEdit
     .Index = "idxWorkflowID"
-    .Seek ">=", recWorkflowEdit!ID
+    .Seek ">=", recWorkflowEdit!id
 
     If Not .NoMatch Then
       Do While Not .EOF
         'If no more elements for this workflow exit loop
-        If !WorkflowID <> recWorkflowEdit!ID Then
+        If !WorkflowID <> recWorkflowEdit!id Then
           Exit Do
         End If
 
@@ -179,22 +181,22 @@ Private Function WorkflowNew() As Boolean
         rsElements.AddNew
         For iLoop = 0 To rsElements.Fields.Count - 1
           sName = rsElements.Fields(iLoop).Name
-          If Not IsNull(.Fields(sName).Value) Then
-            rsElements.Fields(iLoop).Value = .Fields(sName).Value
+          If Not IsNull(.Fields(sName).value) Then
+            rsElements.Fields(iLoop).value = .Fields(sName).value
           End If
         Next iLoop
         rsElements.Update
 
         ' Add the Element Items (if required)
-        rsElementItems.Open "ASRSysWorkflowElementItems", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTableDirect
+        rsElementItems.Open "ASRSysWorkflowElementItems", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTable
 
         recWorkflowElementItemEdit.Index = "idxElementID"
-        recWorkflowElementItemEdit.Seek ">=", recWorkflowElementEdit!ID
+        recWorkflowElementItemEdit.Seek ">=", recWorkflowElementEdit!id
 
         If Not recWorkflowElementItemEdit.NoMatch Then
           Do While Not recWorkflowElementItemEdit.EOF
             'If no more items for this element exit loop
-            If recWorkflowElementItemEdit!elementID <> recWorkflowElementEdit!ID Then
+            If recWorkflowElementItemEdit!elementID <> recWorkflowElementEdit!id Then
               Exit Do
             End If
 
@@ -202,23 +204,23 @@ Private Function WorkflowNew() As Boolean
             rsElementItems.AddNew
             For iLoop = 0 To rsElementItems.Fields.Count - 1
               sName = rsElementItems.Fields(iLoop).Name
-              If Not IsNull(recWorkflowElementItemEdit.Fields(sName).Value) Then
-                rsElementItems.Fields(iLoop).Value = recWorkflowElementItemEdit.Fields(sName).Value
+              If Not IsNull(recWorkflowElementItemEdit.Fields(sName).value) Then
+                rsElementItems.Fields(iLoop).value = recWorkflowElementItemEdit.Fields(sName).value
               End If
              Next iLoop
             rsElementItems.Update
 
             
              ' Add the Element Item Control Values (if required)
-            rsElementItemValues.Open "ASRSysWorkflowElementItemValues", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTableDirect
+            rsElementItemValues.Open "ASRSysWorkflowElementItemValues", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTable
             
             recWorkflowElementItemValuesEdit.Index = "idxItemID"
-            recWorkflowElementItemValuesEdit.Seek ">=", recWorkflowElementItemEdit!ID
+            recWorkflowElementItemValuesEdit.Seek ">=", recWorkflowElementItemEdit!id
             
             If Not recWorkflowElementItemValuesEdit.NoMatch Then
               Do While Not recWorkflowElementItemValuesEdit.EOF
                 'If no more item values for this element item exit loop
-                If recWorkflowElementItemValuesEdit!itemID <> recWorkflowElementItemEdit!ID Then
+                If recWorkflowElementItemValuesEdit!itemID <> recWorkflowElementItemEdit!id Then
                   Exit Do
                 End If
             
@@ -226,8 +228,8 @@ Private Function WorkflowNew() As Boolean
                 rsElementItemValues.AddNew
                 For iLoop = 0 To rsElementItemValues.Fields.Count - 1
                   sName = rsElementItemValues.Fields(iLoop).Name
-                  If Not IsNull(recWorkflowElementItemValuesEdit.Fields(sName).Value) Then
-                    rsElementItemValues.Fields(iLoop).Value = recWorkflowElementItemValuesEdit.Fields(sName).Value
+                  If Not IsNull(recWorkflowElementItemValuesEdit.Fields(sName).value) Then
+                    rsElementItemValues.Fields(iLoop).value = recWorkflowElementItemValuesEdit.Fields(sName).value
                   End If
                  Next iLoop
                 rsElementItemValues.Update
@@ -245,15 +247,15 @@ Private Function WorkflowNew() As Boolean
         rsElementItems.Close
 
         ' Add the Element Columns (if required)
-        rsElementColumns.Open "ASRSysWorkflowElementColumns", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTableDirect
+        rsElementColumns.Open "ASRSysWorkflowElementColumns", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTable
 
         recWorkflowElementColumnEdit.Index = "idxElementID"
-        recWorkflowElementColumnEdit.Seek ">=", recWorkflowElementEdit!ID
+        recWorkflowElementColumnEdit.Seek ">=", recWorkflowElementEdit!id
 
         If Not recWorkflowElementColumnEdit.NoMatch Then
           Do While Not recWorkflowElementColumnEdit.EOF
             'If no more columns for this element exit loop
-            If recWorkflowElementColumnEdit!elementID <> recWorkflowElementEdit!ID Then
+            If recWorkflowElementColumnEdit!elementID <> recWorkflowElementEdit!id Then
               Exit Do
             End If
 
@@ -274,15 +276,15 @@ Private Function WorkflowNew() As Boolean
         rsElementColumns.Close
 
         ' Add the Element Validations (if required)
-        rsElementValidations.Open "ASRSysWorkflowElementValidations", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTableDirect
+        rsElementValidations.Open "ASRSysWorkflowElementValidations", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTable
 
         recWorkflowElementValidationEdit.Index = "idxElementID"
-        recWorkflowElementValidationEdit.Seek ">=", recWorkflowElementEdit!ID
+        recWorkflowElementValidationEdit.Seek ">=", recWorkflowElementEdit!id
 
         If Not recWorkflowElementValidationEdit.NoMatch Then
           Do While Not recWorkflowElementValidationEdit.EOF
             'If no more Validations for this element exit loop
-            If recWorkflowElementValidationEdit!elementID <> recWorkflowElementEdit!ID Then
+            If recWorkflowElementValidationEdit!elementID <> recWorkflowElementEdit!id Then
               Exit Do
             End If
 
@@ -310,16 +312,16 @@ Private Function WorkflowNew() As Boolean
   rsElements.Close
 
   ' Open the Workflow Links table on the server.
-  rsLinks.Open "ASRSysWorkflowLinks", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTableDirect
+  rsLinks.Open "ASRSysWorkflowLinks", gADOCon, adOpenForwardOnly, adLockOptimistic, adCmdTable
     
   With recWorkflowLinkEdit
     .Index = "idxWorkflowID"
-    .Seek ">=", recWorkflowEdit!ID
+    .Seek ">=", recWorkflowEdit!id
 
     If Not .NoMatch Then
       Do While Not .EOF
         'If no more links for this workflow exit loop
-        If !WorkflowID <> recWorkflowEdit!ID Then
+        If !WorkflowID <> recWorkflowEdit!id Then
           Exit Do
         End If
 

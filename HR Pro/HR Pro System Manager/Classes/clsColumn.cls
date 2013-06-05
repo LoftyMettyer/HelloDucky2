@@ -309,17 +309,17 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   
   Dim fUsed As Boolean
   Dim sSQL As String
-  Dim rsOtherColumns As dao.Recordset
-  Dim rsExpressions As dao.Recordset
-  Dim rsScreens As dao.Recordset
-  Dim rsOrders As dao.Recordset
-  Dim rsViews As dao.Recordset
-  Dim rsEmail As dao.Recordset
-  Dim rsOutlook As dao.Recordset
-  Dim rsSummaryFields As dao.Recordset
-  Dim rsModules As dao.Recordset
-  Dim rsAccord As dao.Recordset
-  Dim rsValidations As dao.Recordset
+  Dim rsOtherColumns As DAO.Recordset
+  Dim rsExpressions As DAO.Recordset
+  Dim rsScreens As DAO.Recordset
+  Dim rsOrders As DAO.Recordset
+  Dim rsViews As DAO.Recordset
+  Dim rsEmail As DAO.Recordset
+  Dim rsOutlook As DAO.Recordset
+  Dim rsSummaryFields As DAO.Recordset
+  Dim rsModules As DAO.Recordset
+  Dim rsAccord As DAO.Recordset
+  Dim rsValidations As DAO.Recordset
   Dim sColumnName As String
   Dim sTableName As String
   Dim sName As String
@@ -328,7 +328,7 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   Dim sAccess As String
   Dim strSYSOrderIDs As String
   Dim strSYSCheckedOrderIDs As String
-  Dim rsDAOTemp As dao.Recordset
+  Dim rsDAOTemp As DAO.Recordset
 
   Dim rsUtils1 As ADODB.Recordset
   Dim rsUtils2 As ADODB.Recordset
@@ -1519,6 +1519,7 @@ Public Function EditColumn(pbSaveAsNew As Boolean) As Boolean
 '  If fOK Then
     Set frmEdit = New frmColEdit
     Set frmEdit.Column = Me
+    
 
     ' JDM - 27/03/01 - Clear the changed flag
     If pbSaveAsNew Then
@@ -1577,7 +1578,7 @@ ErrorTrap:
 End Function
 
 Public Function InitColumnProps() As Boolean
-  Dim ThisField As dao.Field
+  Dim ThisField As DAO.Field
   Dim fOK As Boolean
   
   Set Me.Properties = Nothing
@@ -1690,7 +1691,7 @@ Public Function ReadColumn() As Boolean
   
   Dim fOK As Boolean
   Dim sIndex As String
-  Dim objField As dao.Field
+  Dim objField As DAO.Field
   
   With recColEdit
     'Store current index and bookmark
@@ -1957,7 +1958,8 @@ Public Function WriteColumn() As Boolean
     
     If (IsNew And Not IsChanged) Then
       ' Get a new column ID value.
-      ColumnID = Database.UniqueColumnValue("tmpColumns", "columnID")
+      'ColumnID = Database.UniqueColumnValue("tmpColumns", "columnID")
+      ColumnID = Database.GetNextObjectIdentitySeed("ASRSysColumns")
       
       ' Add a new record for the Column.
       fOK = (ColumnID > 0)
@@ -2132,7 +2134,7 @@ Public Property Get ColumnDataType() As ExpressionValueTypes
     Case dtNUMERIC
       ColumnDataType = giEXPRVALUE_NUMERIC
  
-    Case dtINTEGER
+    Case dtinteger
       ColumnDataType = giEXPRVALUE_NUMERIC
     
     Case dtBIT
@@ -2540,6 +2542,11 @@ ErrorTrap:
 
 End Function
   
-
-
+Public Property Get Locked() As Boolean
+  If Properties("Locked") Is Nothing Then
+    Locked = False
+  Else
+    Locked = Properties("Locked")
+  End If
+End Property
 

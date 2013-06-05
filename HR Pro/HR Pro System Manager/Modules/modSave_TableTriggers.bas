@@ -72,44 +72,9 @@ Public Function SetTriggers(palngExpressions() As Long, pfRefreshDatabase As Boo
   
   fOK = True
   
-'  With recModuleSetup
-'    .Index = "idxModuleParameter"
-'
-'    ' Get the Personnel table ID.
-'    lngPersonnelTableID = 0
-'    .Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE
-'    If Not .NoMatch Then
-'      If Not IsNull(!parameterValue) Then
-'        lngPersonnelTableID = Val(!parameterValue)
-'      End If
-'    End If
-'
-'    ' Get the Absence table ID.
-'    lngAbsenceTableID = 0
-'    .Seek "=", gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETABLE
-'    If Not .NoMatch Then
-'      If Not IsNull(!parameterValue) Then
-'        lngAbsenceTableID = Val(!parameterValue)
-'      End If
-'    End If
-'
-'    ' Get the Dependants table ID.
-'    strDependantsTableName = vbNullString
-'    .Seek "=", gsMODULEKEY_ABSENCE, gsPARAMETERKEY_DEPENDANTSTABLE
-'    If Not .NoMatch Then
-'      If Not IsNull(!parameterValue) Then
-'        strDependantsTableName = GetTableName(Val(!parameterValue))
-'      End If
-'    End If
-'
-'  End With
-    
-  
   lngPersonnelTableID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE, 0)
   lngAbsenceTableID = GetModuleSetting(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETABLE, 0)
   strDependantsTableName = GetTableName(GetModuleSetting(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_DEPENDANTSTABLE, 0))
-
-  
   
   ' Create the triggers for each table.
   With recTabEdit
@@ -127,7 +92,7 @@ Public Function SetTriggers(palngExpressions() As Long, pfRefreshDatabase As Boo
      
       If Not !Deleted Then
         ' Create the triggers.
-        strTableName = .Fields("TableName").value
+        strTableName = "tbuser_" + .Fields("TableName").value
 
         OutputCurrentProcess2 strTableName, lngRecordCount
         gobjProgress.UpdateProgress2
@@ -137,14 +102,12 @@ Public Function SetTriggers(palngExpressions() As Long, pfRefreshDatabase As Boo
           IIf((IsNull(!RecordDescExprID)) Or (!RecordDescExprID < 0), 0, !RecordDescExprID), _
           palngExpressions, pfRefreshDatabase)
 
-
         If fOK Then
           fOK = SetTableTriggers_CreateTriggers(lngTableID, _
             strTableName, _
             IIf((IsNull(!RecordDescExprID)) Or (!RecordDescExprID < 0), 0, !RecordDescExprID), _
             lngPersonnelTableID, (lngTableID = lngAbsenceTableID), strDependantsTableName)
         End If
-
 
       End If
            
@@ -2264,129 +2227,87 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     sInsertTriggerSQL.Append sExprDeclarationCode.ToString & vbNewLine
     
     ' Insert the Self-referential Column Calculation trigger code.
-    If Not fSelfCalcs Then
-      sInsertTriggerSQL.Append _
-        "        /* -------------------------------------------------------------- */" & vbNewLine & _
-        "        /* No Self-referential Column Calculations. */" & vbNewLine & _
-        "        /* -------------------------------------------------------------- */" & vbNewLine & vbNewLine
-    Else
-      sInsertTriggerSQL.Append _
-        "        /* -------------------------------------------------------- */" & vbNewLine & _
-        "        /* Self-referential Column Calculations. */" & vbNewLine & _
-        "        /* -------------------------------------------------------- */" & vbNewLine & _
-        "        SET @changesMade = 0" & vbNewLine & _
-        asCalcSelfCode(1).ToString & vbNewLine & _
-        "        /* Check if an update needs to be performed. */" & _
-        asCalcSelfCode(3).ToString & vbNewLine & _
-        "        /* Update the record with the calculated values. */" & vbNewLine & _
-        "        IF @changesMade = 1" & vbNewLine & _
-        "        BEGIN" & vbNewLine & _
-        "            UPDATE " & psTableName & vbNewLine & _
-        "                SET " & asCalcSelfCode(2).ToString & vbNewLine & _
-        "                WHERE " & psTableName & ".ID = @recordID" & vbNewLine & _
-        "        END" & vbNewLine & vbNewLine
-    End If
-      
-    ' Insert the Parental Column Calculation trigger code.
-    If Not fParentCalcs Then
-      sInsertTriggerSQL.Append _
-        "        /* ---------------------------------------------------- */" & vbNewLine & _
-        "        /* No Parental Column Calculations. */" & vbNewLine & _
-        "        /* ---------------------------------------------------- */" & vbNewLine & vbNewLine
-    Else
-      sInsertTriggerSQL.Append _
-        "        /* ----------------------------------------------------------- */" & vbNewLine & _
-        "        /* Parental Column Calculations. */" & vbNewLine & _
-        "        /* ----------------------------------------------------------- */" & vbNewLine & _
-        "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
-        "        BEGIN" & vbNewLine
-      
-      For iLoop = 1 To UBound(asCalcParentCode, 2)
-        If asCalcParentCode(2, iLoop).Length <> 0 And _
-          asCalcParentCode(3, iLoop).Length <> 0 Then
-          
-          sInsertTriggerSQL.Append _
-            "            SET @changesMade = 0" & vbNewLine & vbNewLine & _
-            asCalcParentCode(5, iLoop).ToString & vbNewLine & _
-            "            IF @parentRecordID > 0" & vbNewLine & _
-            "            BEGIN" & vbNewLine & _
-            asCalcParentCode(2, iLoop).ToString & vbNewLine & _
-            "            /* Check if an update needs to be performed. */" & vbNewLine & _
-            asCalcParentCode(4, iLoop).ToString & vbNewLine & _
-            "            /* Update the parent record with the calculated values. */" & vbNewLine & _
-            "            IF @changesMade = 1" & vbNewLine & _
-            "            BEGIN" & vbNewLine & _
-            "                UPDATE " & asCalcParentCode(1, iLoop).ToString & vbNewLine & _
-            "                    SET " & asCalcParentCode(3, iLoop).ToString & vbNewLine & _
-            "                    WHERE " & asCalcParentCode(1, iLoop).ToString & ".ID = @parentRecordID" & vbNewLine & _
-            "            END" & vbNewLine & _
-            "        END" & vbNewLine & vbNewLine
-        End If
-      Next iLoop
-      
-      sInsertTriggerSQL.Append _
-        "        END" & vbNewLine
-    End If
-
-'    ' Insert the Child Column Calculation trigger code.
-'    If Not fChildCalcs Then
+'    If Not fSelfCalcs Then
 '      sInsertTriggerSQL.Append _
-'        "        /* ----------------------------------------------- */" & vbNewLine & _
-'        "        /* No Child Column Calculations. */" & vbNewLine & _
-'        "        /* ----------------------------------------------- */" & vbNewLine & vbNewLine
+'        "        /* -------------------------------------------------------------- */" & vbNewLine & _
+'        "        /* No Self-referential Column Calculations. */" & vbNewLine & _
+'        "        /* -------------------------------------------------------------- */" & vbNewLine & vbNewLine
 '    Else
 '      sInsertTriggerSQL.Append _
-'        "        /* ------------------------------------------------------ */" & vbNewLine & _
-'        "        /* Child Column Calculations. */" & vbNewLine & _
-'        "        /* ------------------------------------------------------ */" & vbNewLine & _
+'        "        /* -------------------------------------------------------- */" & vbNewLine & _
+'        "        /* Self-referential Column Calculations. */" & vbNewLine & _
+'        "        /* -------------------------------------------------------- */" & vbNewLine & _
+'        "        SET @changesMade = 0" & vbNewLine & _
+'        asCalcSelfCode(1).ToString & vbNewLine & _
+'        "        /* Check if an update needs to be performed. */" & _
+'        asCalcSelfCode(3).ToString & vbNewLine & _
+'        "        /* Update the record with the calculated values. */" & vbNewLine & _
+'        "        IF @changesMade = 1" & vbNewLine & _
+'        "        BEGIN" & vbNewLine & _
+'        "            UPDATE " & psTableName & vbNewLine & _
+'        "                SET " & asCalcSelfCode(2).ToString & vbNewLine & _
+'        "                WHERE " & psTableName & ".ID = @recordID" & vbNewLine & _
+'        "        END" & vbNewLine & vbNewLine
+'    End If
+      
+'    ' Insert the Parental Column Calculation trigger code.
+'    If Not fParentCalcs Then
+'      sInsertTriggerSQL.Append _
+'        "        /* ---------------------------------------------------- */" & vbNewLine & _
+'        "        /* No Parental Column Calculations. */" & vbNewLine & _
+'        "        /* ---------------------------------------------------- */" & vbNewLine & vbNewLine
+'    Else
+'      sInsertTriggerSQL.Append _
+'        "        /* ----------------------------------------------------------- */" & vbNewLine & _
+'        "        /* Parental Column Calculations. */" & vbNewLine & _
+'        "        /* ----------------------------------------------------------- */" & vbNewLine & _
 '        "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
 '        "        BEGIN" & vbNewLine
 '
-'      For iLoop = 1 To UBound(asCalcChildCode, 2)
-'        If (asCalcChildCode(2, iLoop).Length <> 0) And _
-'          (asCalcChildCode(3, iLoop).Length <> 0) Then
-'
-'          sCursorName = asCalcChildCode(1, iLoop).ToString & "_cursor"
+'      For iLoop = 1 To UBound(asCalcParentCode, 2)
+'        If asCalcParentCode(2, iLoop).Length <> 0 And _
+'          asCalcParentCode(3, iLoop).Length <> 0 Then
 '
 '          sInsertTriggerSQL.Append _
-'            asCalcChildCode(2, iLoop).ToString & vbNewLine & _
-'            "                /* Check if an update needs to be performed. */" & vbNewLine & _
-'            asCalcChildCode(4, iLoop).ToString & vbNewLine & _
-'            "                /* Update the child record with the calculated values. */" & vbNewLine & _
-'            "                IF @changesMade = 1" & vbNewLine & _
-'            "                BEGIN" & vbNewLine & _
-'            "                    UPDATE " & asCalcChildCode(1, iLoop).ToString & vbNewLine & _
-'            "                        SET " & asCalcChildCode(3, iLoop).ToString & vbNewLine & _
-'            "                        WHERE " & asCalcChildCode(1, iLoop).ToString & ".ID = @childRecordID" & vbNewLine & _
-'            "                END" & vbNewLine & vbNewLine & _
-'            "                FETCH NEXT FROM " & sCursorName & " INTO @childRecordID" & vbNewLine & vbNewLine & _
+'            "            SET @changesMade = 0" & vbNewLine & vbNewLine & _
+'            asCalcParentCode(5, iLoop).ToString & vbNewLine & _
+'            "            IF @parentRecordID > 0" & vbNewLine & _
+'            "            BEGIN" & vbNewLine & _
+'            asCalcParentCode(2, iLoop).ToString & vbNewLine & _
+'            "            /* Check if an update needs to be performed. */" & vbNewLine & _
+'            asCalcParentCode(4, iLoop).ToString & vbNewLine & _
+'            "            /* Update the parent record with the calculated values. */" & vbNewLine & _
+'            "            IF @changesMade = 1" & vbNewLine & _
+'            "            BEGIN" & vbNewLine & _
+'            "                UPDATE " & asCalcParentCode(1, iLoop).ToString & vbNewLine & _
+'            "                    SET " & asCalcParentCode(3, iLoop).ToString & vbNewLine & _
+'            "                    WHERE " & asCalcParentCode(1, iLoop).ToString & ".ID = @parentRecordID" & vbNewLine & _
 '            "            END" & vbNewLine & _
-'            "            CLOSE " & sCursorName & vbNewLine & _
-'            "            DEALLOCATE " & sCursorName & vbNewLine & vbNewLine
+'            "        END" & vbNewLine & vbNewLine
 '        End If
 '      Next iLoop
 '
 '      sInsertTriggerSQL.Append _
 '        "        END" & vbNewLine
 '    End If
-    
+
     'JPD 20050131 Fault 8820
-    sInsertTriggerSQL.Append _
-      sInsertSpecialFunctionsCode
-    
-    If sCalcDfltCode.Length = 0 Then
-      sInsertTriggerSQL.Append _
-        "        /* ------------------------------------------- */" & vbNewLine & _
-        "        /* No Default Value Calculations. */" & vbNewLine & _
-        "        /* ------------------------------------------- */" & vbNewLine & vbNewLine
-    Else
-      sInsertTriggerSQL.Append _
-        "        /* ------------------------------------------- */" & vbNewLine & _
-        "        /* Default Value Calculations. */" & vbNewLine & _
-        "        /* ------------------------------------------- */" & vbNewLine & _
-        sDfltExprDeclarationCode.ToString & vbNewLine & _
-        sCalcDfltCode.ToString & vbNewLine & vbNewLine
-    End If
+'    sInsertTriggerSQL.Append _
+'      sInsertSpecialFunctionsCode
+'
+'    If sCalcDfltCode.Length = 0 Then
+'      sInsertTriggerSQL.Append _
+'        "        /* ------------------------------------------- */" & vbNewLine & _
+'        "        /* No Default Value Calculations. */" & vbNewLine & _
+'        "        /* ------------------------------------------- */" & vbNewLine & vbNewLine
+'    Else
+'      sInsertTriggerSQL.Append _
+'        "        /* ------------------------------------------- */" & vbNewLine & _
+'        "        /* Default Value Calculations. */" & vbNewLine & _
+'        "        /* ------------------------------------------- */" & vbNewLine & _
+'        sDfltExprDeclarationCode.ToString & vbNewLine & _
+'        sCalcDfltCode.ToString & vbNewLine & vbNewLine
+'    End If
 
 
     If pfIsAbsenceTable Then
@@ -2412,38 +2333,38 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
 
     End If
     
-    sInsertTriggerSQL.Append vbNewLine & _
-      "        /* ------------------------------- */" & vbNewLine & _
-      "        /* Validate the record. */" & vbNewLine & _
-      "        /* ------------------------------- */" & vbNewLine & _
-      "        EXEC dbo." & gsVALIDATIONSPPREFIX & Trim$(Str$(pLngCurrentTableID)) & " @fValidRecord OUTPUT, @iValidationSeverity OUTPUT, @sInvalidityMessage OUTPUT, @recordID" & vbNewLine & _
-      "        IF @fValidRecord = 0" & vbNewLine & _
-      "        BEGIN" & vbNewLine & _
-      "            RAISERROR(@sInvalidityMessage, 16, 1);" & vbNewLine & _
-      "            IF @iValidationSeverity = 0 ROLLBACK;" & vbNewLine & _
-      "        END" & vbNewLine & vbNewLine & vbNewLine
-    
-    
+'    sInsertTriggerSQL.Append vbNewLine & _
+'      "        /* ------------------------------- */" & vbNewLine & _
+'      "        /* Validate the record. */" & vbNewLine & _
+'      "        /* ------------------------------- */" & vbNewLine & _
+'      "        EXEC dbo." & gsVALIDATIONSPPREFIX & Trim$(Str$(pLngCurrentTableID)) & " @fValidRecord OUTPUT, @iValidationSeverity OUTPUT, @sInvalidityMessage OUTPUT, @recordID" & vbNewLine & _
+'      "        IF @fValidRecord = 0" & vbNewLine & _
+'      "        BEGIN" & vbNewLine & _
+'      "            RAISERROR(@sInvalidityMessage, 16, 1);" & vbNewLine & _
+'      "            IF @iValidationSeverity = 0 ROLLBACK;" & vbNewLine & _
+'      "        END" & vbNewLine & vbNewLine & vbNewLine
+'
+'
     
     'MH20070726
     'sInsertTriggerSQL.Append _
       "IF EXISTS(SELECT * FROM ASRSysTrigger WHERE TableID = " & CStr(pLngCurrentTableID) & " AND RecordID = @RecordID AND login_time = @login_time AND [TimeStamp] = @TStamp)" & vbNewLine & _
       "BEGIN" & vbNewLine & vbNewLine
     
-    If sSelectInsCols2.Length > 0 Then
-      sInsertTriggerSQL.Append _
-        "        SELECT " & Mid(sSelectInsCols2.ToString, 2) & vbNewLine & _
-        "        FROM [" & psTableName & "]" & vbNewLine & _
-        "        WHERE id = @recordID" & vbNewLine & vbNewLine
-    End If
-    
-    If sSelectInsLargeCols2.Length > 0 Then
-      sInsertTriggerSQL.Append _
-        "        SELECT " & Mid(sSelectInsLargeCols2.ToString, 2) & vbNewLine & _
-        "        FROM inserted" & vbNewLine & _
-        "        WHERE id = @recordID" & vbNewLine & vbNewLine
-    End If
-    
+'    If sSelectInsCols2.Length > 0 Then
+'      sInsertTriggerSQL.Append _
+'        "        SELECT " & Mid(sSelectInsCols2.ToString, 2) & vbNewLine & _
+'        "        FROM [" & psTableName & "]" & vbNewLine & _
+'        "        WHERE id = @recordID" & vbNewLine & vbNewLine
+'    End If
+'
+'    If sSelectInsLargeCols2.Length > 0 Then
+'      sInsertTriggerSQL.Append _
+'        "        SELECT " & Mid(sSelectInsLargeCols2.ToString, 2) & vbNewLine & _
+'        "        FROM inserted" & vbNewLine & _
+'        "        WHERE id = @recordID" & vbNewLine & vbNewLine
+'    End If
+'
     
     
     '-------------------------------------------------------------------------------------------------------
@@ -2453,23 +2374,23 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       sGetRecordDesc
 
     
-    ' Insert the Audit trigger code.
-    If sInsertAuditCode.Length = 0 Then
-      sInsertTriggerSQL.Append _
-        "        /* ----------------------------------------- */" & vbNewLine & _
-        "        /* No Audit triggers required. */" & vbNewLine & _
-        "        /* ----------------------------------------- */" & vbNewLine & vbNewLine
-    Else
-      sInsertTriggerSQL.Append _
-        "        /* ----------------------- */" & vbNewLine & _
-        "        /* Audit Triggers. */" & vbNewLine & _
-        "        /* ----------------------- */" & vbNewLine & _
-        "        IF @fValidRecord = 1" & vbNewLine & _
-        "        BEGIN" & vbNewLine & _
-        sInsertAuditCode.ToString & vbNewLine & vbNewLine & _
-        "        END" & vbNewLine
-    End If
-    
+'    ' Insert the Audit trigger code.
+'    If sInsertAuditCode.Length = 0 Then
+'      sInsertTriggerSQL.Append _
+'        "        /* ----------------------------------------- */" & vbNewLine & _
+'        "        /* No Audit triggers required. */" & vbNewLine & _
+'        "        /* ----------------------------------------- */" & vbNewLine & vbNewLine
+'    Else
+'      sInsertTriggerSQL.Append _
+'        "        /* ----------------------- */" & vbNewLine & _
+'        "        /* Audit Triggers. */" & vbNewLine & _
+'        "        /* ----------------------- */" & vbNewLine & _
+'        "        IF @fValidRecord = 1" & vbNewLine & _
+'        "        BEGIN" & vbNewLine & _
+'        sInsertAuditCode.ToString & vbNewLine & vbNewLine & _
+'        "        END" & vbNewLine
+'    End If
+'
     
     sInsertTriggerSQL.Append vbNewLine & _
       "        /* ----------------------- */" & vbNewLine & _
@@ -2557,35 +2478,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         Space$(10) & "EXEC dbo.spASRAccordPurgeTemp @iTriggerLevel, @recordID" & vbNewLine & vbNewLine
     End If
     
-    '-------------------------------------------------------------------------------------------------------
-    
-    
-    
-'TM14072004 It has been decide to remove the GetFieldFromDatabaseRecord - AutoUpdate funcionality
-'due to it not being optional, this code should still be valid for a further solution to the
-'problem.
-'    'Auto Update for GetFieldFromDatabaseRecord column calculations
-'    If Len(mstrGetFieldAutoUpdateCode_INSERT) = 0 Then
-'      sInsertTriggerSQL.Append  vbNewLine & vbNewLine & _
-'        "        /* ----------------------------------------------------------------------------*/" & vbNewLine & _
-'        "        /* No AutoUpdate - Get Field From Database Record */" & vbNewLine & _
-'        "        /* ----------------------------------------------------------------------------*/" & vbNewLine
-'    Else
-'      sInsertTriggerSQL.Append  vbNewLine & vbNewLine & _
-'        "        /* ----------------------------------------------------------------------------*/" & vbNewLine & _
-'        "        /* AutoUpdate - Get Field From Database Record */" & vbNewLine & _
-'        "        /* ----------------------------------------------------------------------------*/" & vbNewLine & _
-'        mstrGetFieldAutoUpdateCode_INSERT & vbNewLine & vbNewLine
-'    End If
-    
-    'sInsertTriggerSQL.Append _
-      "IF @@nestLevel = 1" & vbNewLine & _
-      "  DELETE FROM ASRSysTrigger WHERE login_time = @login_time" & vbNewLine & vbNewLine
-
-    
-    'MH20070726
-    'sInsertTriggerSQL.Append _
-      "END" & vbNewLine
 
    ' JPD20020913 - instead of making multiple queries to the triggered table, and
     ' the 'inserted' and 'deleted' tables, we now get all of the required information in
@@ -2593,12 +2485,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     ' inserted/updated/deleted.
     ' Here we are adding the required FETCH statements to the INSERT trigger.
     'Get next record which has been inserted
-    'sInsertTriggerSQL.Append  vbNewLine & _
-      "        IF @fValidRecord = 1 FETCH NEXT FROM @cursInsertedRecords INTO @recordID" & vbNewLine & _
-      "    END" & vbNewLine & _
-      "    IF @fValidRecord = 1 CLOSE @cursInsertedRecords" & vbNewLine & _
-      "    DEALLOCATE @cursInsertedRecords" & vbNewLine & _
-      "END"
     sInsertTriggerSQL.Append vbNewLine & _
       "        IF @fValidRecord = 1 FETCH NEXT FROM @cursInsertedRecords INTO @recordID, @TStamp" & sFetchInsCols.ToString & sFetchDelCols.ToString & vbNewLine & _
       "    END" & vbNewLine & _
@@ -2772,13 +2658,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     ' the cursor that we used to loop through to get just the id of each record being
     ' inserted/updated/deleted.
     ' Here we are adding the required FETCH statements to the UPDATE trigger.
-    'sUpdateTriggerSQL.Append _
-      "    /* Loop through the virtual 'inserted' table, getting the record ID of each updated record. */" & vbNewLine & _
-      "    SET @cursInsertedRecords = CURSOR LOCAL FAST_FORWARD FOR SELECT id FROM inserted" & vbNewLine & _
-      "    OPEN @cursInsertedRecords" & vbNewLine & _
-      "    FETCH NEXT FROM @cursInsertedRecords INTO @recordID" & vbNewLine & _
-      "    WHILE (@@fetch_status = 0) AND (@fValidRecord = 1)" & vbNewLine & _
-      "    BEGIN" & vbNewLine
     sUpdateTriggerSQL.Append _
       "    /* Loop through the virtual 'inserted' table, getting the record ID of each updated record. */" & vbNewLine & _
       "    SET @cursInsertedRecords = CURSOR LOCAL FAST_FORWARD READ_ONLY FOR SELECT inserted.id, convert(int,inserted.timestamp)" & sSelectInsCols.ToString & sSelectDelCols.ToString & " FROM inserted" & vbNewLine & _
@@ -2790,14 +2669,6 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "    WHILE (@@fetch_status = 0) AND (@fValidRecord = 1)" & vbNewLine & _
       "    BEGIN" & vbNewLine
     
-    
-    'MH20070726
-    'sUpdateTriggerSQL.Append _
-      "IF @@nestLevel = 1" & vbNewLine & _
-      "  DELETE FROM ASRSysTrigger WHERE login_time = @login_time" & vbNewLine & vbNewLine & _
-      "IF NOT EXISTS(SELECT * FROM ASRSysTrigger WHERE TableID = " & CStr(pLngCurrentTableID) & " AND RecordID = @RecordID AND login_time = @login_time)" & vbNewLine & _
-      "  INSERT ASRSysTrigger(TableID, RecordID, login_time, [TimeStamp])" & vbNewLine & _
-      "  VALUES (" & CStr(pLngCurrentTableID) & ", @RecordID, @login_time, @TStamp)" & vbNewLine
     
     If sSelectInsLargeCols.Length > 0 Then
       sUpdateTriggerSQL.Append _
@@ -2827,170 +2698,170 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     sUpdateTriggerSQL.Append sExprDeclarationCode.ToString & vbNewLine
     
     ' Insert the Self-referential Column Calculation trigger code.
-    If Not fSelfCalcs Then
-      sUpdateTriggerSQL.Append _
-        "        /* -------------------------------------------------- */" & vbNewLine & _
-        "        /* No Self-referential Column Calculations. */" & vbNewLine & _
-        "        /* -------------------------------------------------- */" & vbNewLine & vbNewLine
-    Else
-      sUpdateTriggerSQL.Append _
-        "        /* -------------------------------------------------------------------- */" & vbNewLine & _
-        "        /* Self-referential Column Calculations. */" & vbNewLine & _
-        "        /* -------------------------------------------------------------------- */" & vbNewLine & _
-        "        SET @changesMade = 0" & vbNewLine & _
-        asCalcSelfCode(1).ToString & vbNewLine & _
-        "        /* Check if an update needs to be performed. */" & _
-        asCalcSelfCode(3).ToString & vbNewLine & _
-        "        /* Update the record with the calculated values. */" & vbNewLine & _
-        "        IF @changesMade = 1" & vbNewLine & _
-        "        BEGIN" & vbNewLine
-
-      'MH20071112 Fault
-      sUpdateTriggerSQL.Append _
-        "            IF @iTriggerLevel <= " & CStr(miTriggerRecursionLevel) & vbNewLine & _
-        "            BEGIN" & vbNewLine
-      
-      If sDateDependentUpdateCode.Length <> 0 Then
-        sUpdateTriggerSQL.Append _
-          "            IF (@fUpdatingDateDependentColumns = 1)" & vbNewLine & _
-          "            BEGIN" & vbNewLine & _
-          "                UPDATE " & psTableName & vbNewLine & _
-          "                    SET " & sDateDependentUpdateCode.ToString & vbNewLine & _
-          "                    WHERE " & psTableName & ".ID = @recordID" & vbNewLine & _
-          "            END" & vbNewLine & _
-          "            ELSE" & vbNewLine & _
-          "            BEGIN" & vbNewLine & _
-          "                UPDATE " & psTableName & vbNewLine & _
-          "                    SET " & asCalcSelfCode(2).ToString & vbNewLine & _
-          "                    WHERE " & psTableName & ".ID = @recordID" & vbNewLine & _
-          "            END" & vbNewLine
-      Else
-        sUpdateTriggerSQL.Append _
-          "            UPDATE " & psTableName & vbNewLine & _
-          "                SET " & asCalcSelfCode(2).ToString & vbNewLine & _
-          "                WHERE " & psTableName & ".ID = @recordID" & vbNewLine
-      End If
-    
-      'MH20071112 Fault
-      sUpdateTriggerSQL.Append _
-        "            END" & vbNewLine & vbNewLine
-      
-      sUpdateTriggerSQL.Append _
-        "        END" & vbNewLine & vbNewLine
-    End If
+'    If Not fSelfCalcs Then
+'      sUpdateTriggerSQL.Append _
+'        "        /* -------------------------------------------------- */" & vbNewLine & _
+'        "        /* No Self-referential Column Calculations. */" & vbNewLine & _
+'        "        /* -------------------------------------------------- */" & vbNewLine & vbNewLine
+'    Else
+'      sUpdateTriggerSQL.Append _
+'        "        /* -------------------------------------------------------------------- */" & vbNewLine & _
+'        "        /* Self-referential Column Calculations. */" & vbNewLine & _
+'        "        /* -------------------------------------------------------------------- */" & vbNewLine & _
+'        "        SET @changesMade = 0" & vbNewLine & _
+'        asCalcSelfCode(1).ToString & vbNewLine & _
+'        "        /* Check if an update needs to be performed. */" & _
+'        asCalcSelfCode(3).ToString & vbNewLine & _
+'        "        /* Update the record with the calculated values. */" & vbNewLine & _
+'        "        IF @changesMade = 1" & vbNewLine & _
+'        "        BEGIN" & vbNewLine
+'
+'      'MH20071112 Fault
+'      sUpdateTriggerSQL.Append _
+'        "            IF @iTriggerLevel <= " & CStr(miTriggerRecursionLevel) & vbNewLine & _
+'        "            BEGIN" & vbNewLine
+'
+'      If sDateDependentUpdateCode.Length <> 0 Then
+'        sUpdateTriggerSQL.Append _
+'          "            IF (@fUpdatingDateDependentColumns = 1)" & vbNewLine & _
+'          "            BEGIN" & vbNewLine & _
+'          "                UPDATE " & psTableName & vbNewLine & _
+'          "                    SET " & sDateDependentUpdateCode.ToString & vbNewLine & _
+'          "                    WHERE " & psTableName & ".ID = @recordID" & vbNewLine & _
+'          "            END" & vbNewLine & _
+'          "            ELSE" & vbNewLine & _
+'          "            BEGIN" & vbNewLine & _
+'          "                UPDATE " & psTableName & vbNewLine & _
+'          "                    SET " & asCalcSelfCode(2).ToString & vbNewLine & _
+'          "                    WHERE " & psTableName & ".ID = @recordID" & vbNewLine & _
+'          "            END" & vbNewLine
+'      Else
+'        sUpdateTriggerSQL.Append _
+'          "            UPDATE " & psTableName & vbNewLine & _
+'          "                SET " & asCalcSelfCode(2).ToString & vbNewLine & _
+'          "                WHERE " & psTableName & ".ID = @recordID" & vbNewLine
+'      End If
+'
+'      'MH20071112 Fault
+'      sUpdateTriggerSQL.Append _
+'        "            END" & vbNewLine & vbNewLine
+'
+'      sUpdateTriggerSQL.Append _
+'        "        END" & vbNewLine & vbNewLine
+'    End If
       
     ' Insert the Parental Column Calculation trigger code.
-    If Not fParentCalcs Then
-      sUpdateTriggerSQL.Append _
-        "        /* ---------------------------------------------------- */" & vbNewLine & _
-        "        /* No Parental Column Calculations. */" & vbNewLine & _
-        "        /* ---------------------------------------------------- */" & vbNewLine & vbNewLine
-    Else
-      sUpdateTriggerSQL.Append _
-        "        /* ----------------------------------------------------------- */" & vbNewLine & _
-        "        /* Parental Column Calculations. */" & vbNewLine & _
-        "        /* ----------------------------------------------------------- */" & vbNewLine & _
-        "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
-        "        BEGIN" & vbNewLine
-
-      'MH20071112 Fault
-      sUpdateTriggerSQL.Append _
-        "            IF @iTriggerLevel <= " & CStr(miTriggerRecursionLevel) & vbNewLine & _
-        "            BEGIN" & vbNewLine
-      
-      For iLoop = 1 To UBound(asCalcParentCode, 2)
-        If asCalcParentCode(2, iLoop).Length <> 0 And _
-          asCalcParentCode(3, iLoop).Length <> 0 Then
-          
-          sUpdateTriggerSQL.Append _
-            "            SET @changesMade = 0" & vbNewLine & vbNewLine & _
-            asCalcParentCode(5, iLoop).ToString & vbNewLine & _
-            "            IF @parentRecordID > 0" & vbNewLine & _
-            "            BEGIN" & vbNewLine & _
-            asCalcParentCode(2, iLoop).ToString & vbNewLine & _
-            "            /* Check if an update needs to be performed. */" & vbNewLine & _
-            asCalcParentCode(4, iLoop).ToString & vbNewLine & _
-            "            /* Update the parent record with the calculated values. */" & vbNewLine & _
-            "            IF @changesMade = 1" & vbNewLine & _
-            "            BEGIN" & vbNewLine & _
-            "                UPDATE " & asCalcParentCode(1, iLoop).ToString & vbNewLine & _
-            "                    SET " & asCalcParentCode(3, iLoop).ToString & vbNewLine & _
-            "                    WHERE " & asCalcParentCode(1, iLoop).ToString & ".ID = @parentRecordID" & vbNewLine & _
-            "            END" & vbNewLine & _
-            "        END" & vbNewLine & vbNewLine
-            
-          'JPD 20030410 Fault 5310
-          sUpdateTriggerSQL.Append _
-            asCalcParentCode(7, iLoop).ToString & vbNewLine & _
-            "            IF @parentRecordID <> @oldParentRecordID" & vbNewLine & _
-            "            BEGIN" & vbNewLine & _
-            "                UPDATE " & asCalcParentCode(1, iLoop).ToString & vbNewLine & _
-            "                    SET " & asCalcParentCode(8, iLoop).ToString & " = " & asCalcParentCode(8, iLoop).ToString & vbNewLine & _
-            "                    WHERE " & asCalcParentCode(1, iLoop).ToString & ".ID = @oldParentRecordID" & vbNewLine & _
-            "            END" & vbNewLine & vbNewLine
-
-        End If
-      Next iLoop
-    
-      'MH20071112 Fault
-      sUpdateTriggerSQL.Append _
-        "            END" & vbNewLine
-      
-      sUpdateTriggerSQL.Append vbNewLine & _
-        "        END" & vbNewLine
-    End If
-
-    ' Insert the Child Column Calculation trigger code.
-    If Not fChildCalcs Then
-      sUpdateTriggerSQL.Append _
-        "        /* ----------------------------------------------- */" & vbNewLine & _
-        "        /* No Child Column Calculations. */" & vbNewLine & _
-        "        /* ----------------------------------------------- */" & vbNewLine & vbNewLine
-    Else
-      sUpdateTriggerSQL.Append _
-        "        /* ------------------------------------------------------ */" & vbNewLine & _
-        "        /* Child Column Calculations. */" & vbNewLine & _
-        "        /* ------------------------------------------------------ */" & vbNewLine & _
-        "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
-        "        BEGIN" & vbNewLine
-        
-      'MH20071112 Fault
-      sUpdateTriggerSQL.Append _
-        "            IF @iTriggerLevel <= " & CStr(miTriggerRecursionLevel) & vbNewLine & _
-        "            BEGIN" & vbNewLine
-      
-      For iLoop = 1 To UBound(asCalcChildCode, 2)
-        If asCalcChildCode(2, iLoop).Length <> 0 And _
-          asCalcChildCode(3, iLoop).Length <> 0 Then
-
-          sCursorName = asCalcChildCode(1, iLoop).ToString & "_cursor"
-
-          sUpdateTriggerSQL.Append _
-            asCalcChildCode(2, iLoop).ToString & vbNewLine & _
-            "                /* Check if an update needs to be performed. */" & vbNewLine & _
-            asCalcChildCode(4, iLoop).ToString & vbNewLine & _
-            "                /* Update the child record with the calculated values. */" & vbNewLine & _
-            "                IF @changesMade = 1" & vbNewLine & _
-            "                BEGIN" & vbNewLine & _
-            "                    UPDATE " & asCalcChildCode(1, iLoop).ToString & vbNewLine & _
-            "                        SET " & asCalcChildCode(3, iLoop).ToString & vbNewLine & _
-            "                        WHERE " & asCalcChildCode(1, iLoop).ToString & ".ID = @childRecordID" & vbNewLine & _
-            "                END" & vbNewLine & vbNewLine & _
-            "                FETCH NEXT FROM " & sCursorName & " INTO @childRecordID" & vbNewLine & _
-            "            END" & vbNewLine & _
-            "            CLOSE " & sCursorName & vbNewLine & _
-            "            DEALLOCATE " & sCursorName & vbNewLine & vbNewLine
-        End If
-      Next iLoop
-    
-      'MH20071112 Fault
-      sUpdateTriggerSQL.Append _
-        "            END" & vbNewLine
-      
-      sUpdateTriggerSQL.Append vbNewLine & _
-        "        END" & vbNewLine
-    End If
-    
+'    If Not fParentCalcs Then
+'      sUpdateTriggerSQL.Append _
+'        "        /* ---------------------------------------------------- */" & vbNewLine & _
+'        "        /* No Parental Column Calculations. */" & vbNewLine & _
+'        "        /* ---------------------------------------------------- */" & vbNewLine & vbNewLine
+'    Else
+'      sUpdateTriggerSQL.Append _
+'        "        /* ----------------------------------------------------------- */" & vbNewLine & _
+'        "        /* Parental Column Calculations. */" & vbNewLine & _
+'        "        /* ----------------------------------------------------------- */" & vbNewLine & _
+'        "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
+'        "        BEGIN" & vbNewLine
+'
+'      'MH20071112 Fault
+'      sUpdateTriggerSQL.Append _
+'        "            IF @iTriggerLevel <= " & CStr(miTriggerRecursionLevel) & vbNewLine & _
+'        "            BEGIN" & vbNewLine
+'
+'      For iLoop = 1 To UBound(asCalcParentCode, 2)
+'        If asCalcParentCode(2, iLoop).Length <> 0 And _
+'          asCalcParentCode(3, iLoop).Length <> 0 Then
+'
+'          sUpdateTriggerSQL.Append _
+'            "            SET @changesMade = 0" & vbNewLine & vbNewLine & _
+'            asCalcParentCode(5, iLoop).ToString & vbNewLine & _
+'            "            IF @parentRecordID > 0" & vbNewLine & _
+'            "            BEGIN" & vbNewLine & _
+'            asCalcParentCode(2, iLoop).ToString & vbNewLine & _
+'            "            /* Check if an update needs to be performed. */" & vbNewLine & _
+'            asCalcParentCode(4, iLoop).ToString & vbNewLine & _
+'            "            /* Update the parent record with the calculated values. */" & vbNewLine & _
+'            "            IF @changesMade = 1" & vbNewLine & _
+'            "            BEGIN" & vbNewLine & _
+'            "                UPDATE " & asCalcParentCode(1, iLoop).ToString & vbNewLine & _
+'            "                    SET " & asCalcParentCode(3, iLoop).ToString & vbNewLine & _
+'            "                    WHERE " & asCalcParentCode(1, iLoop).ToString & ".ID = @parentRecordID" & vbNewLine & _
+'            "            END" & vbNewLine & _
+'            "        END" & vbNewLine & vbNewLine
+'
+'          'JPD 20030410 Fault 5310
+'          sUpdateTriggerSQL.Append _
+'            asCalcParentCode(7, iLoop).ToString & vbNewLine & _
+'            "            IF @parentRecordID <> @oldParentRecordID" & vbNewLine & _
+'            "            BEGIN" & vbNewLine & _
+'            "                UPDATE " & asCalcParentCode(1, iLoop).ToString & vbNewLine & _
+'            "                    SET " & asCalcParentCode(8, iLoop).ToString & " = " & asCalcParentCode(8, iLoop).ToString & vbNewLine & _
+'            "                    WHERE " & asCalcParentCode(1, iLoop).ToString & ".ID = @oldParentRecordID" & vbNewLine & _
+'            "            END" & vbNewLine & vbNewLine
+'
+'        End If
+'      Next iLoop
+'
+'      'MH20071112 Fault
+'      sUpdateTriggerSQL.Append _
+'        "            END" & vbNewLine
+'
+'      sUpdateTriggerSQL.Append vbNewLine & _
+'        "        END" & vbNewLine
+'    End If
+'
+'    ' Insert the Child Column Calculation trigger code.
+'    If Not fChildCalcs Then
+'      sUpdateTriggerSQL.Append _
+'        "        /* ----------------------------------------------- */" & vbNewLine & _
+'        "        /* No Child Column Calculations. */" & vbNewLine & _
+'        "        /* ----------------------------------------------- */" & vbNewLine & vbNewLine
+'    Else
+'      sUpdateTriggerSQL.Append _
+'        "        /* ------------------------------------------------------ */" & vbNewLine & _
+'        "        /* Child Column Calculations. */" & vbNewLine & _
+'        "        /* ------------------------------------------------------ */" & vbNewLine & _
+'        "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
+'        "        BEGIN" & vbNewLine
+'
+'      'MH20071112 Fault
+'      sUpdateTriggerSQL.Append _
+'        "            IF @iTriggerLevel <= " & CStr(miTriggerRecursionLevel) & vbNewLine & _
+'        "            BEGIN" & vbNewLine
+'
+'      For iLoop = 1 To UBound(asCalcChildCode, 2)
+'        If asCalcChildCode(2, iLoop).Length <> 0 And _
+'          asCalcChildCode(3, iLoop).Length <> 0 Then
+'
+'          sCursorName = asCalcChildCode(1, iLoop).ToString & "_cursor"
+'
+'          sUpdateTriggerSQL.Append _
+'            asCalcChildCode(2, iLoop).ToString & vbNewLine & _
+'            "                /* Check if an update needs to be performed. */" & vbNewLine & _
+'            asCalcChildCode(4, iLoop).ToString & vbNewLine & _
+'            "                /* Update the child record with the calculated values. */" & vbNewLine & _
+'            "                IF @changesMade = 1" & vbNewLine & _
+'            "                BEGIN" & vbNewLine & _
+'            "                    UPDATE " & asCalcChildCode(1, iLoop).ToString & vbNewLine & _
+'            "                        SET " & asCalcChildCode(3, iLoop).ToString & vbNewLine & _
+'            "                        WHERE " & asCalcChildCode(1, iLoop).ToString & ".ID = @childRecordID" & vbNewLine & _
+'            "                END" & vbNewLine & vbNewLine & _
+'            "                FETCH NEXT FROM " & sCursorName & " INTO @childRecordID" & vbNewLine & _
+'            "            END" & vbNewLine & _
+'            "            CLOSE " & sCursorName & vbNewLine & _
+'            "            DEALLOCATE " & sCursorName & vbNewLine & vbNewLine
+'        End If
+'      Next iLoop
+'
+'      'MH20071112 Fault
+'      sUpdateTriggerSQL.Append _
+'        "            END" & vbNewLine
+'
+'      sUpdateTriggerSQL.Append vbNewLine & _
+'        "        END" & vbNewLine
+'    End If
+'
     'JPD 20050131 Fault 8820
     sUpdateTriggerSQL.Append _
       sUpdateSpecialFunctionsCode2
@@ -3030,74 +2901,56 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     
     'Auto Update for Destination Tables for Lookup Column Type Values
     Dim sAULookupCode As String
-    sAULookupCode = SetTableTriggers_AutoUpdate(pLngCurrentTableID, psTableName)
-    If LenB(sAULookupCode) = 0 Then
-      sUpdateTriggerSQL.Append vbNewLine & vbNewLine & _
-        "        /* ------------------------------------------*/" & vbNewLine & _
-        "        /* No AutoUpdate - Referenced Lookup Values. */" & vbNewLine & _
-        "        /* ------------------------------------------*/" & vbNewLine & vbNewLine
-    Else
-      sUpdateTriggerSQL.Append vbNewLine & vbNewLine & _
-        "        /* -----------------------------------------------------------------*/" & vbNewLine & _
-        "        /* AutoUpdate - Referenced Lookup Values */" & vbNewLine & _
-        "        /* -----------------------------------------------------------------*/" & vbNewLine & _
-        sAULookupCode & vbNewLine & vbNewLine
-    End If
-       
-'TM14072004 It has been decide to remove the GetFieldFromDatabaseRecord - AutoUpdate funcionality
-'due to it not being optional, this code should still be valid for a further solution to the
-'problem.
-'    'Auto Update for GetFieldFromDatabaseRecord column calculations
-'    If Len(mstrGetFieldAutoUpdateCode_UPDATE) = 0 Then
-'      sUpdateTriggerSQL.Append  vbNewLine & vbNewLine & _
-'        "        /* ----------------------------------------------------------------------------*/" & vbNewLine & _
-'        "        /* No AutoUpdate - Get Field From Database Record */" & vbNewLine & _
-'        "        /* ----------------------------------------------------------------------------*/" & vbNewLine
+'    sAULookupCode = SetTableTriggers_AutoUpdate(pLngCurrentTableID, psTableName)
+'    If LenB(sAULookupCode) = 0 Then
+'      sUpdateTriggerSQL.Append vbNewLine & vbNewLine & _
+'        "        /* ------------------------------------------*/" & vbNewLine & _
+'        "        /* No AutoUpdate - Referenced Lookup Values. */" & vbNewLine & _
+'        "        /* ------------------------------------------*/" & vbNewLine & vbNewLine
 '    Else
-'      sUpdateTriggerSQL.Append  vbNewLine & vbNewLine & _
-'        "        /* ----------------------------------------------------------------------------*/" & vbNewLine & _
-'        "        /* AutoUpdate - Get Field From Database Record */" & vbNewLine & _
-'        "        /* ----------------------------------------------------------------------------*/" & vbNewLine & _
-'        mstrGetFieldAutoUpdateCode_UPDATE & vbNewLine & vbNewLine
+'      sUpdateTriggerSQL.Append vbNewLine & vbNewLine & _
+'        "        /* -----------------------------------------------------------------*/" & vbNewLine & _
+'        "        /* AutoUpdate - Referenced Lookup Values */" & vbNewLine & _
+'        "        /* -----------------------------------------------------------------*/" & vbNewLine & _
+'        sAULookupCode & vbNewLine & vbNewLine
 '    End If
-       
-      
-    sUpdateTriggerSQL.Append vbNewLine & _
-      "        /* ------------------------------- */" & vbNewLine & _
-      "        /* Validate the record. */" & vbNewLine & _
-      "        /* ------------------------------- */" & vbNewLine & _
-      "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
-      "        BEGIN" & vbNewLine & _
-      "            IF EXISTS(SELECT Name FROM sysobjects WHERE id = object_id('" & gsVALIDATIONSPPREFIX & Trim$(Str$(pLngCurrentTableID)) & "') AND sysstat & 0xf = 4)" & vbNewLine & _
-      "            BEGIN" & vbNewLine & _
-      "                EXEC " & gsVALIDATIONSPPREFIX & Trim$(Str$(pLngCurrentTableID)) & " @fValidRecord OUTPUT, @iValidationSeverity OUTPUT, @sInvalidityMessage OUTPUT, @recordID" & vbNewLine & _
-      "                IF @fValidRecord = 0" & vbNewLine & _
-      "                BEGIN" & vbNewLine & _
-      "                    RAISERROR(@sInvalidityMessage, 16, 1);" & vbNewLine & _
-      "                    IF @iValidationSeverity = 0 ROLLBACK;" & vbNewLine & _
-      "                END" & vbNewLine & _
-      "            END" & vbNewLine & _
-      "        END" & vbNewLine
-    
+'
+'    sUpdateTriggerSQL.Append vbNewLine & _
+'      "        /* ------------------------------- */" & vbNewLine & _
+'      "        /* Validate the record. */" & vbNewLine & _
+'      "        /* ------------------------------- */" & vbNewLine & _
+'      "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
+'      "        BEGIN" & vbNewLine & _
+'      "            IF EXISTS(SELECT Name FROM sysobjects WHERE id = object_id('" & gsVALIDATIONSPPREFIX & Trim$(Str$(pLngCurrentTableID)) & "') AND sysstat & 0xf = 4)" & vbNewLine & _
+'      "            BEGIN" & vbNewLine & _
+'      "                EXEC " & gsVALIDATIONSPPREFIX & Trim$(Str$(pLngCurrentTableID)) & " @fValidRecord OUTPUT, @iValidationSeverity OUTPUT, @sInvalidityMessage OUTPUT, @recordID" & vbNewLine & _
+'      "                IF @fValidRecord = 0" & vbNewLine & _
+'      "                BEGIN" & vbNewLine & _
+'      "                    RAISERROR(@sInvalidityMessage, 16, 1);" & vbNewLine & _
+'      "                    IF @iValidationSeverity = 0 ROLLBACK;" & vbNewLine & _
+'      "                END" & vbNewLine & _
+'      "            END" & vbNewLine & _
+'      "        END" & vbNewLine
+'
     
     'MH20070726
     'sUpdateTriggerSQL.Append _
       "IF (@fUpdatingDateDependentColumns =1) OR (EXISTS(SELECT * FROM ASRSysTrigger WHERE TableID = " & CStr(pLngCurrentTableID) & " AND RecordID = @RecordID AND SPID = @@Spid AND [TimeStamp] = @TStamp))" & vbNewLine & _
       "BEGIN" & vbNewLine & vbNewLine
     
-    If sSelectInsCols2.Length > 0 Then
-      sUpdateTriggerSQL.Append _
-        "        SELECT " & Mid(sSelectInsCols2.ToString, 2) & vbNewLine & _
-        "        FROM [" & psTableName & "]" & vbNewLine & _
-        "        WHERE id = @recordID" & vbNewLine & vbNewLine
-    End If
-    
-    If sSelectInsLargeCols2.Length > 0 Then
-      sUpdateTriggerSQL.Append _
-        "        SELECT " & Mid(sSelectInsLargeCols2.ToString, 2) & vbNewLine & _
-        "        FROM inserted" & vbNewLine & _
-        "        WHERE id = @recordID" & vbNewLine & vbNewLine
-    End If
+'    If sSelectInsCols2.Length > 0 Then
+'      sUpdateTriggerSQL.Append _
+'        "        SELECT " & Mid(sSelectInsCols2.ToString, 2) & vbNewLine & _
+'        "        FROM [" & psTableName & "]" & vbNewLine & _
+'        "        WHERE id = @recordID" & vbNewLine & vbNewLine
+'    End If
+'
+'    If sSelectInsLargeCols2.Length > 0 Then
+'      sUpdateTriggerSQL.Append _
+'        "        SELECT " & Mid(sSelectInsLargeCols2.ToString, 2) & vbNewLine & _
+'        "        FROM inserted" & vbNewLine & _
+'        "        WHERE id = @recordID" & vbNewLine & vbNewLine
+'    End If
     
     '-------------------------------------------------------------------------------------------------------
     sUpdateTriggerSQL.Append vbNewLine & _
@@ -3105,21 +2958,21 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
 
 
     ' Insert the Audit trigger code.
-    If sUpdateAuditCode.Length = 0 Then
-      sUpdateTriggerSQL.Append _
-        "        /* ----------------------------------------- */" & vbNewLine & _
-        "        /* No Audit triggers required. */" & vbNewLine & _
-        "        /* ----------------------------------------- */" & vbNewLine & vbNewLine
-    Else
-      sUpdateTriggerSQL.Append _
-        "        /* ----------------------- */" & vbNewLine & _
-        "        /* Audit Triggers. */" & vbNewLine & _
-        "        /* ----------------------- */" & vbNewLine & _
-        "        IF @fValidRecord = 1" & vbNewLine & _
-        "        BEGIN" & vbNewLine & _
-        sUpdateAuditCode.ToString & vbNewLine & _
-        "        END" & vbNewLine & vbNewLine
-    End If
+'    If sUpdateAuditCode.Length = 0 Then
+'      sUpdateTriggerSQL.Append _
+'        "        /* ----------------------------------------- */" & vbNewLine & _
+'        "        /* No Audit triggers required. */" & vbNewLine & _
+'        "        /* ----------------------------------------- */" & vbNewLine & vbNewLine
+'    Else
+'      sUpdateTriggerSQL.Append _
+'        "        /* ----------------------- */" & vbNewLine & _
+'        "        /* Audit Triggers. */" & vbNewLine & _
+'        "        /* ----------------------- */" & vbNewLine & _
+'        "        IF @fValidRecord = 1" & vbNewLine & _
+'        "        BEGIN" & vbNewLine & _
+'        sUpdateAuditCode.ToString & vbNewLine & _
+'        "        END" & vbNewLine & vbNewLine
+'    End If
 
 
     'A date is required to pass to the diary subroutine.  This is used for the rebuild function.
@@ -3441,18 +3294,18 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     End If
     
     ' Insert the Audit trigger code.
-    If sDeleteAuditCode.Length = 0 Then
-      sDeleteTriggerSQL.Append _
-        "        /* ----------------------------------------- */" & vbNewLine & _
-        "        /* No Audit triggers required. */" & vbNewLine & _
-        "        /* ----------------------------------------- */" & vbNewLine & vbNewLine
-    Else
-      sDeleteTriggerSQL.Append _
-        "        /* ----------------------- */" & vbNewLine & _
-        "        /* Audit Triggers. */" & vbNewLine & _
-        "        /* ----------------------- */" & vbNewLine & _
-        sDeleteAuditCode.ToString
-    End If
+'    If sDeleteAuditCode.Length = 0 Then
+'      sDeleteTriggerSQL.Append _
+'        "        /* ----------------------------------------- */" & vbNewLine & _
+'        "        /* No Audit triggers required. */" & vbNewLine & _
+'        "        /* ----------------------------------------- */" & vbNewLine & vbNewLine
+'    Else
+'      sDeleteTriggerSQL.Append _
+'        "        /* ----------------------- */" & vbNewLine & _
+'        "        /* Audit Triggers. */" & vbNewLine & _
+'        "        /* ----------------------- */" & vbNewLine & _
+'        sDeleteAuditCode.ToString
+'    End If
                
     ' Email stuff
     sDeleteTriggerSQL.Append vbNewLine & _
@@ -3516,86 +3369,86 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         
     ' Insert the expression variable declaration code.
     sDeleteTriggerSQL.Append sExprDeclarationCode.ToString & vbNewLine
-    
-    ' Insert the Parental Column Calculation trigger code.
-    If Not fParentCalcs Then
-      sDeleteTriggerSQL.Append _
-        "        /* ---------------------------------------------------- */" & vbNewLine & _
-        "        /* No Parental Column Calculations. */" & vbNewLine & _
-        "        /* ---------------------------------------------------- */" & vbNewLine & vbNewLine
-    Else
-      sDeleteTriggerSQL.Append _
-        "        /* ----------------------------------------------------------- */" & vbNewLine & _
-        "        /* Parental Column Calculations. */" & vbNewLine & _
-        "        /* ----------------------------------------------------------- */" & vbNewLine & _
-        "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
-        "        BEGIN" & vbNewLine
-      
-      For iLoop = 1 To UBound(asCalcParentCode, 2)
-        If asCalcParentCode(2, iLoop).Length <> 0 And _
-          asCalcParentCode(3, iLoop).Length <> 0 Then
-          
-          sDeleteTriggerSQL.Append _
-            "            SET @changesMade = 0" & vbNewLine & vbNewLine & _
-            asCalcParentCode(6, iLoop).ToString & vbNewLine & _
-            asCalcParentCode(2, iLoop).ToString & vbNewLine & _
-            "            /* Check if an update needs to be performed. */" & vbNewLine & _
-            asCalcParentCode(4, iLoop).ToString & vbNewLine & _
-            "            /* Update the parent record with the calculated values. */" & vbNewLine & _
-            "            IF @changesMade = 1" & vbNewLine & _
-            "            BEGIN" & vbNewLine & _
-            "                UPDATE " & asCalcParentCode(1, iLoop).ToString & vbNewLine & _
-            "                    SET " & asCalcParentCode(3, iLoop).ToString & vbNewLine & _
-            "                    WHERE " & asCalcParentCode(1, iLoop).ToString & ".ID = @parentRecordID" & vbNewLine & _
-            "            END" & vbNewLine & vbNewLine
-        End If
-      Next iLoop
-    
-      sDeleteTriggerSQL.Append vbNewLine & _
-        "        END" & vbNewLine
-    End If
-      
-    ' Insert the Child Column Calculation trigger code.
-    If Not fChildCalcs Then
-      sDeleteTriggerSQL.Append _
-        "        /* ----------------------------------------------- */" & vbNewLine & _
-        "        /* No Child Column Calculations. */" & vbNewLine & _
-        "        /* ----------------------------------------------- */" & vbNewLine & vbNewLine
-    Else
-      sDeleteTriggerSQL.Append _
-        "        /* ------------------------------------------------------ */" & vbNewLine & _
-        "        /* Child Column Calculations. */" & vbNewLine & _
-        "        /* ------------------------------------------------------ */" & vbNewLine & _
-        "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
-        "        BEGIN" & vbNewLine
-        
-      For iLoop = 1 To UBound(asCalcChildCode, 2)
-        If asCalcChildCode(2, iLoop).Length <> 0 And _
-          asCalcChildCode(3, iLoop).Length <> 0 Then
-
-          sCursorName = asCalcChildCode(1, iLoop).ToString & "_cursor"
-      
-          sDeleteTriggerSQL.Append _
-            asCalcChildCode(2, iLoop).ToString & _
-            "                /* Check if an update needs to be performed. */" & _
-            asCalcChildCode(4, iLoop).ToString & vbNewLine & _
-            "                /* Update the child record with the calculated values. */" & vbNewLine & _
-            "                IF @changesMade = 1" & vbNewLine & _
-            "                BEGIN" & vbNewLine & _
-            "                    UPDATE " & asCalcChildCode(1, iLoop).ToString & vbNewLine & _
-            "                    SET " & asCalcChildCode(3, iLoop).ToString & vbNewLine & _
-            "                    WHERE " & asCalcChildCode(1, iLoop).ToString & ".ID = @childRecordID" & vbNewLine & _
-            "                END" & vbNewLine & vbNewLine & _
-            "                FETCH NEXT FROM " & sCursorName & " INTO @childRecordID" & vbNewLine & _
-            "            END" & vbNewLine & _
-            "            CLOSE " & sCursorName & vbNewLine & _
-            "            DEALLOCATE " & sCursorName & vbNewLine & vbNewLine
-        End If
-      Next iLoop
-    
-      sDeleteTriggerSQL.Append _
-        "        END" & vbNewLine
-    End If
+'
+'    ' Insert the Parental Column Calculation trigger code.
+'    If Not fParentCalcs Then
+'      sDeleteTriggerSQL.Append _
+'        "        /* ---------------------------------------------------- */" & vbNewLine & _
+'        "        /* No Parental Column Calculations. */" & vbNewLine & _
+'        "        /* ---------------------------------------------------- */" & vbNewLine & vbNewLine
+'    Else
+'      sDeleteTriggerSQL.Append _
+'        "        /* ----------------------------------------------------------- */" & vbNewLine & _
+'        "        /* Parental Column Calculations. */" & vbNewLine & _
+'        "        /* ----------------------------------------------------------- */" & vbNewLine & _
+'        "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
+'        "        BEGIN" & vbNewLine
+'
+'      For iLoop = 1 To UBound(asCalcParentCode, 2)
+'        If asCalcParentCode(2, iLoop).Length <> 0 And _
+'          asCalcParentCode(3, iLoop).Length <> 0 Then
+'
+'          sDeleteTriggerSQL.Append _
+'            "            SET @changesMade = 0" & vbNewLine & vbNewLine & _
+'            asCalcParentCode(6, iLoop).ToString & vbNewLine & _
+'            asCalcParentCode(2, iLoop).ToString & vbNewLine & _
+'            "            /* Check if an update needs to be performed. */" & vbNewLine & _
+'            asCalcParentCode(4, iLoop).ToString & vbNewLine & _
+'            "            /* Update the parent record with the calculated values. */" & vbNewLine & _
+'            "            IF @changesMade = 1" & vbNewLine & _
+'            "            BEGIN" & vbNewLine & _
+'            "                UPDATE " & asCalcParentCode(1, iLoop).ToString & vbNewLine & _
+'            "                    SET " & asCalcParentCode(3, iLoop).ToString & vbNewLine & _
+'            "                    WHERE " & asCalcParentCode(1, iLoop).ToString & ".ID = @parentRecordID" & vbNewLine & _
+'            "            END" & vbNewLine & vbNewLine
+'        End If
+'      Next iLoop
+'
+'      sDeleteTriggerSQL.Append vbNewLine & _
+'        "        END" & vbNewLine
+'    End If
+'
+'    ' Insert the Child Column Calculation trigger code.
+'    If Not fChildCalcs Then
+'      sDeleteTriggerSQL.Append _
+'        "        /* ----------------------------------------------- */" & vbNewLine & _
+'        "        /* No Child Column Calculations. */" & vbNewLine & _
+'        "        /* ----------------------------------------------- */" & vbNewLine & vbNewLine
+'    Else
+'      sDeleteTriggerSQL.Append _
+'        "        /* ------------------------------------------------------ */" & vbNewLine & _
+'        "        /* Child Column Calculations. */" & vbNewLine & _
+'        "        /* ------------------------------------------------------ */" & vbNewLine & _
+'        "        IF (@fUpdatingDateDependentColumns = 0)" & vbNewLine & _
+'        "        BEGIN" & vbNewLine
+'
+'      For iLoop = 1 To UBound(asCalcChildCode, 2)
+'        If asCalcChildCode(2, iLoop).Length <> 0 And _
+'          asCalcChildCode(3, iLoop).Length <> 0 Then
+'
+'          sCursorName = asCalcChildCode(1, iLoop).ToString & "_cursor"
+'
+'          sDeleteTriggerSQL.Append _
+'            asCalcChildCode(2, iLoop).ToString & _
+'            "                /* Check if an update needs to be performed. */" & _
+'            asCalcChildCode(4, iLoop).ToString & vbNewLine & _
+'            "                /* Update the child record with the calculated values. */" & vbNewLine & _
+'            "                IF @changesMade = 1" & vbNewLine & _
+'            "                BEGIN" & vbNewLine & _
+'            "                    UPDATE " & asCalcChildCode(1, iLoop).ToString & vbNewLine & _
+'            "                    SET " & asCalcChildCode(3, iLoop).ToString & vbNewLine & _
+'            "                    WHERE " & asCalcChildCode(1, iLoop).ToString & ".ID = @childRecordID" & vbNewLine & _
+'            "                END" & vbNewLine & vbNewLine & _
+'            "                FETCH NEXT FROM " & sCursorName & " INTO @childRecordID" & vbNewLine & _
+'            "            END" & vbNewLine & _
+'            "            CLOSE " & sCursorName & vbNewLine & _
+'            "            DEALLOCATE " & sCursorName & vbNewLine & vbNewLine
+'        End If
+'      Next iLoop
+'
+'      sDeleteTriggerSQL.Append _
+'        "        END" & vbNewLine
+'    End If
     
     'JPD 20050131 Fault 8820
     sDeleteTriggerSQL.Append _

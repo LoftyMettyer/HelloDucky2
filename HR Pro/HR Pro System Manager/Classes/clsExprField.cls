@@ -953,7 +953,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
         If glngExpressionTableIDForDeleteTrigger = mlngTableID Then
           sTableName = "deleted"
         Else
-          sTableName = !TableName
+          sTableName = "dbo." & !TableName
         End If
 
         ' Get the name of the expressions parent table.

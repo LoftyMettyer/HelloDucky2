@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "TIMASK6.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
@@ -85,19 +85,16 @@ Begin VB.Form frmColEdit
       TabPicture(1)   =   "frmColEdit.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraControlPage"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Opt&ions"
       TabPicture(2)   =   "frmColEdit.frx":0044
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraOptionsPage"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "Valida&tion"
       TabPicture(3)   =   "frmColEdit.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraValidationPage"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "Diar&y Links"
       TabPicture(4)   =   "frmColEdit.frx":007C
@@ -2244,6 +2241,10 @@ Public Property Set Column(pcColumnObject As Column)
   'Read the column properties and initialize the form controls.
   ReadColumnProperties
   
+  'if mobjcolumn.TableID
+  
+  
+  
 End Property
 
 
@@ -3269,7 +3270,7 @@ Private Sub cmdCancel_Click()
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
       If pintAnswer = vbYes Then
         Me.MousePointer = vbHourglass
-        cmdOk_Click 'This is just like saving
+        cmdOK_Click 'This is just like saving
         Me.MousePointer = vbNormal
         Exit Sub
       ElseIf pintAnswer = vbCancel Then
@@ -3615,7 +3616,7 @@ Private Sub cmdLinkOrder_Click()
 
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
   
   'MH20020424 Fault 3760
   '(Avoid changing 01/13/2002 to 13/01/2002)
@@ -4867,7 +4868,8 @@ Private Sub Form_Load()
   tabColProps.TabVisible(iPAGE_EMAIL) = False
 
   mblnReadOnly = (Application.AccessMode <> accFull And _
-                  Application.AccessMode <> accSupportMode)
+                  Application.AccessMode <> accSupportMode) Or _
+                  mobjColumn.Locked
 
   If mblnReadOnly Then
     ControlsDisableAll Me
@@ -5009,7 +5011,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
       If Changed = True And cmdOk.Enabled Then
         pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
         If pintAnswer = vbYes Then
-          cmdOk_Click
+          cmdOK_Click
           Exit Sub
         ElseIf pintAnswer = vbCancel Then
           Cancel = True
@@ -5650,8 +5652,9 @@ Private Sub ReadColumnProperties()
   If mobjColumn.IsNew And (Not mfIsSaved) Then
     Me.Caption = "New Column"
   Else
-    Me.Caption = "Column Properties : " & mobjColumn.Properties("columnName")
+    Me.Caption = "Column Properties : " & mobjColumn.Properties("columnName") + IIf(mobjColumn.Locked, " (Locked)", "")
   End If
+  
   
   With mobjColumn
     ' Initialize member variables with column property values.

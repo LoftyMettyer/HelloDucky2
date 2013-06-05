@@ -121,6 +121,7 @@ Private Function TableDelete() As Boolean
   Dim fOK As Boolean
   Dim sSQL As String
   Dim strTableID As String
+  Dim sOriginalName As String
 
   fOK = True
   strTableID = CStr(recTabEdit!TableID)
@@ -208,9 +209,15 @@ Private Function TableDelete() As Boolean
   gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
   ' Drop the table.
-  If Database.TableExists(recTabEdit!OriginalTableName) Then
-    sSQL = "DROP TABLE " & recTabEdit!OriginalTableName
+  sOriginalName = "tbuser_" & recTabEdit!OriginalTableName
+  If Database.TableExists(sOriginalName) Then
+    
+    sSQL = "DROP VIEW " & recTabEdit!OriginalTableName
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+    
+    sSQL = "DROP TABLE " & sOriginalName
+    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+  
   End If
 
 
@@ -236,6 +243,7 @@ Private Function TableNew() As Boolean
   Dim sSQL As String
   Dim sName As String
   Dim sTableName As String
+  Dim sPhysicalTableName As String
   Dim sColCreate As String
   Dim rsColumns As ADODB.Recordset
   'Dim rsDiaryLinks As ADODB.Recordset
@@ -247,11 +255,13 @@ Private Function TableNew() As Boolean
   Dim objTableValidation As clsTableValidation
   Dim bEmbedded As Boolean
   Dim sTableCreate As HRProSystemMgr.cStringBuilder
+  Dim sCreateView As HRProSystemMgr.cStringBuilder
 
   ' Check that the table has a default order defined.
   fOK = (recTabEdit!defaultOrderID > 0)
 
   Set sTableCreate = New HRProSystemMgr.cStringBuilder
+  Set sCreateView = New HRProSystemMgr.cStringBuilder
   Set rsColumns = New ADODB.Recordset
   'Set rsDiaryLinks = New ADODB.Recordset
   
@@ -268,13 +278,13 @@ Private Function TableNew() As Boolean
   Else
     lngTableID = recTabEdit!TableID
     sTableName = recTabEdit!TableName
+    sPhysicalTableName = "tbuser_" & sTableName
 
     'MH20000728 Added Email
     sSQL = "INSERT INTO ASRSysTables (" & _
              "tableID, " & _
              "tableName, " & _
              "tableType, " & _
-             "lastUpdated, " & _
              "defaultOrderID, " & _
              "recordDescExprID, " & _
              "DefaultEmailID, " & _
@@ -284,17 +294,12 @@ Private Function TableNew() As Boolean
              lngTableID & ", '" & _
              sTableName & "', " & _
              recTabEdit!TableType & ", " & _
-             "{ts '" & TimeFormat(recTabEdit!LastUpdated, "yyyy-mm-dd hh:mm:ss") & "'}" & "," & _
              recTabEdit!defaultOrderID & "," & _
              recTabEdit!RecordDescExprID & "," & _
              IIf(IsNull(recTabEdit!DefaultEmailID), 0, recTabEdit!DefaultEmailID) & ", " & _
              IIf(recTabEdit!AuditInsert = True, 1, 0) & ", " & _
              IIf(recTabEdit!AuditDelete = True, 1, 0) & ", " & _
              IIf(recTabEdit!ManualSummaryColumnBreaks, 1, 0) & "," & IIf(recTabEdit!IsRemoteView, 1, 0) & ")"
-
-'             IIf(IsNull(recTabEdit!EmailInsert), 0, recTabEdit!EmailInsert) & ", " & _
-             IIf(IsNull(recTabEdit!EmailDelete), 0, recTabEdit!EmailDelete) & ", " & _
-
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
     ' Add the Summary Field values.
@@ -381,9 +386,11 @@ Private Function TableNew() As Boolean
               'of code in as a temporary measure so that they can save changes but we
               'need to look into how this will effect the replication process.
               '(Trade Team were getting: "Incorrect type for Parameter").
-              If sName <> "msrepl_synctran_ts" Then
-                If Not IsNull(recColEdit.Fields(sName).value) Then
-                  .Fields(iColumn).value = recColEdit.Fields(sName).value
+              If Not (sName = "locked" Or sName = "lastupdatedby" Or sName = "lastupdated") Then
+                If sName <> "msrepl_synctran_ts" Then
+                  If Not IsNull(recColEdit.Fields(sName).value) Then
+                    .Fields(iColumn).value = recColEdit.Fields(sName).value
+                  End If
                 End If
               End If
 
@@ -412,117 +419,8 @@ Private Function TableNew() As Boolean
             End If
           End With
 
-'          ' Add the diary link values.
-'          With recDiaryEdit
-'            If Not (.BOF And .EOF) Then
-'              .MoveFirst
-'
-'              Do While Not .EOF
-'                If !ColumnID = recColEdit!ColumnID Then
-'                  rsDiaryLinks.AddNew
-'                  rsDiaryLinks!diaryID = !diaryID
-'                  rsDiaryLinks!ColumnID = !ColumnID
-'                  rsDiaryLinks!Comment = !Comment
-'                  rsDiaryLinks!Offset = !Offset
-'                  rsDiaryLinks!Period = !Period
-'                  rsDiaryLinks!Reminder = !Reminder
-'                  rsDiaryLinks!FilterID = IIf(IsNull(!FilterID), 0, !FilterID)
-'                  rsDiaryLinks!EffectiveDate = IIf(IsNull(!EffectiveDate), "01/01/1980", !EffectiveDate)
-'                  rsDiaryLinks!CheckLeavingDate = IIf(IsNull(!CheckLeavingDate), True, !CheckLeavingDate)
-'                  rsDiaryLinks.Update
-'                End If
-'
-'                .MoveNext
-'              Loop
-'            End If
-'          End With
 
-
-'          With rsEmailLinks
-'            rsEmailLinks.Requery          'MH20061010 Fault 11470
-'            If Not (.BOF And .EOF) Then
-'              .MoveFirst
-'              Do While Not .EOF
-'                If !ColumnID = recColEdit!ColumnID Then
-'
-'                  With rsEmailRecipients
-'                    If Not .BOF Or Not .EOF Then
-'                      .MoveFirst
-'                      Do While Not .EOF
-'                        If !LinkID = rsEmailLinks!LinkID Then
-'                          .Delete
-'                        End If
-'                        .MoveNext
-'                      Loop
-'                    End If
-'                  End With
-'
-'                  .Delete
-'                End If
-'                .MoveNext
-'              Loop
-'            End If
-'          End With
-'
-'
-'          With recEmailLinksEdit
-'            If Not (.BOF And .EOF) Then
-'              .MoveFirst
-'
-'              Do While Not .EOF
-'                If !ColumnID = recColEdit!ColumnID Then
-'                  rsEmailLinks.AddNew
-'                  rsEmailLinks!LinkID = !LinkID
-'                  rsEmailLinks!ColumnID = !ColumnID
-'                  rsEmailLinks!Title = IIf(IsNull(!Title), vbNullString, !Title)
-'                  rsEmailLinks!FilterID = !FilterID
-'                  rsEmailLinks!Immediate = !Immediate
-'                  rsEmailLinks!Offset = !Offset
-'                  rsEmailLinks!Period = !Period
-'                  rsEmailLinks!EffectiveDate = !EffectiveDate
-'                  rsEmailLinks!Subject = IIf(IsNull(!Subject), vbNullString, !Subject)
-'                  'rsEmailLinks!Importance = !Importance
-'                  'rsEmailLinks!Sensitivity = !Sensitivity
-'                  rsEmailLinks!IncRecDesc = !IncRecDesc
-'                  rsEmailLinks!IncColDetail = !IncColDetail
-'                  rsEmailLinks!IncUsername = !IncUsername
-'                  rsEmailLinks!EmailInsert = !EmailInsert
-'                  rsEmailLinks!EmailDelete = !EmailDelete
-'                  rsEmailLinks!EmailUpdate = !EmailUpdate
-'
-'                  rsEmailLinks!Body = IIf(IsNull(!Body), vbNullString, !Body)
-'                  rsEmailLinks!Attachment = IIf(IsNull(!Attachment), vbNullString, !Attachment)
-'                  rsEmailLinks.Update
-'                  rsEmailLinks.MoveLast
-'
-'
-'                  ' Add references to email recipients
-'                  With recEmailRecipientsEdit
-'                    If Not (.BOF And .EOF) Then
-'                      .MoveFirst
-'
-'                      Do While Not .EOF
-'                        If !LinkID = recEmailLinksEdit!LinkID Then
-'                          rsEmailRecipients.AddNew
-'                          rsEmailRecipients!LinkID = recEmailLinksEdit!LinkID
-'                          rsEmailRecipients!RecipientID = !RecipientID
-'                          rsEmailRecipients!Mode = !Mode
-'                          rsEmailRecipients.Update
-'                        End If
-'
-'                        .MoveNext
-'                      Loop
-'                    End If
-'                  End With
-'
-'                End If
-'
-'                .MoveNext
-'              Loop
-'            End If
-'          End With
           SaveDiaryLinksForColumn recColEdit!ColumnID
-          'SaveEmailLinksForColumn recColEdit!ColumnID
 
 
           ' Add the column details to the SQL command string.
@@ -543,6 +441,7 @@ Private Function TableNew() As Boolean
 
           If fOK Then
             sTableCreate.Append IIf(sTableCreate.Length <> 0, ", ", vbNullString) & sColCreate
+            sCreateView.Append IIf(sCreateView.Length <> 0, ", ", vbNullString) & recColEdit!ColumnName
 
             ' If this column is the record ID, then make it the primary key.
             If (recColEdit!ColumnType = giCOLUMNTYPE_SYSTEM) And (recColEdit!ColumnName = "ID") Then
@@ -577,11 +476,19 @@ Private Function TableNew() As Boolean
 
     ' Add a timestamp column.
     sTableCreate.Append IIf(sTableCreate.Length <> 0, ", ", vbNullString) & "TimeStamp"
+    sCreateView.Append IIf(sCreateView.Length <> 0, ", ", vbNullString) & "TimeStamp"
 
     ' Complete the 'create table' SQL command string.
-    sSQL = "CREATE TABLE dbo." & sTableName & " (" & sTableCreate.ToString & ")"
+    sSQL = "CREATE TABLE dbo." & sPhysicalTableName & " (" & sTableCreate.ToString & ")"
+    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
-    ' Execute the 'create table' SQL command.
+    sSQL = "CREATE VIEW dbo." & sTableName & " WITH SCHEMABINDING AS SELECT " & sCreateView.ToString & " FROM dbo." & sPhysicalTableName
+    gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+
+    ' Add an index
+    sSQL = "IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[" & sTableName & "]')" & _
+          "AND name = N'IDX_ID')" & vbNewLine & _
+          "CREATE UNIQUE CLUSTERED INDEX [IDX_ID] ON [dbo].[" & sTableName & "] ([ID] ASC)"
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
     ' Close recordsets.
@@ -661,6 +568,7 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
   Dim sName As String
   Dim sTempName As String
   Dim sTableName As String
+  Dim sPhysicalTableName As String
   Dim sOriginalTableName As String
   Dim rsTriggers As New ADODB.Recordset
   Dim rsTriggerDefn As New ADODB.Recordset
@@ -694,8 +602,10 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
   'MH20010321
   ' Extract data from this table into a temporary table.
   sTableName = recTabEdit!TableName
+  sPhysicalTableName = "tbuser_" + LCase(sTableName)
+  
   sTempName = Database.GetTempTableName("Tmp_" & sTableName)
-  sOriginalTableName = recTabEdit!OriginalTableName
+  sOriginalTableName = "tbuser_" + recTabEdit!OriginalTableName
   fOK = Not (sTempName = vbNullString)
 
   If fOK Then
@@ -766,6 +676,8 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
 
   ' Whats the next identity insert value
   lngNextIdentitySeed = GetNextIdentitySeed(sOriginalTableName)
+
+
 
   If fOK Then
     ' Drop the table.
@@ -938,14 +850,14 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
     ' NB. We use the 'openResultSet' method to perform the 'SET IDENTITY_INSERT' operation
     ' now, instead of the 'execute' method which did not work under SQL Server 7.0.
     gADOCon.Execute _
-        "SET IDENTITY_INSERT " & sTableName & " ON" & vbNewLine & _
-        "INSERT INTO " & sTableName & " (" & Join(asColumnList, ",") & ")" & _
+        "SET IDENTITY_INSERT " & sPhysicalTableName & " ON" & vbNewLine & _
+        "INSERT INTO " & sPhysicalTableName & " (" & Join(asColumnList, ",") & ")" & _
         " SELECT " & Join(asValueList, ",") & " FROM " & sTempName & vbNewLine & _
-        "SET IDENTITY_INSERT " & sTableName & " OFF", , adCmdText + adExecuteNoRecords
+        "SET IDENTITY_INSERT " & sPhysicalTableName & " OFF", , adCmdText + adExecuteNoRecords
   End If
 
   ' Reseed the newly created table.
-  SetNextIdentitySeed sTableName, lngNextIdentitySeed
+  SetNextIdentitySeed sPhysicalTableName, lngNextIdentitySeed
 
   ' JPD20030110 Fault 4162
   ' Recreate any custom triggers.
@@ -1059,7 +971,7 @@ Private Function CreateMaxIDStoredProcedure() As Boolean
       sSPCode = sSPCode & vbNewLine & _
         "    IF @piTableID = " & Trim(Str(recTabEdit!TableID)) & vbNewLine & _
         "    BEGIN" & vbNewLine & _
-        "        SELECT @piMaxRecordID = MAX([id]) FROM [dbo].[" & recTabEdit!TableName & "];" & vbNewLine & _
+        "        SELECT @piMaxRecordID = MAX([id]) FROM [dbo].[tbuser_" & recTabEdit!TableName & "];" & vbNewLine & _
         "    END" & vbNewLine & vbNewLine
 
       .MoveNext
@@ -1109,7 +1021,7 @@ Private Function GetColCreateString(ByVal psColumnName As String, ByVal plngData
       GetColCreateString = "[" & Trim$(psColumnName) & "] [BIT]"
 
     Case dtVARBINARY, dtLONGVARBINARY
-      GetColCreateString = "[" & Trim$(psColumnName) & "] [IMAGE]"
+      GetColCreateString = "[" & Trim$(psColumnName) & "] [VARBINARY] (MAX)"
 
     Case dtGUID
       GetColCreateString = "[" & Trim$(psColumnName) & "] [UNIQUEIDENTIFIER]"

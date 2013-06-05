@@ -2972,9 +2972,9 @@ Public Function RuntimeCode(psRuntimeCode As String, _
           End If
           
           If fOK Then
-            sCode = "(SELECT TOP 1 " & sSrchTableName & "." & sRtnColumnName & _
-              " FROM " & sSrchTableName & _
-              " WHERE (" & sSrchTableName & "." & sSrchColumnName & " = " & sParamCode2 & "))"
+            sCode = "(SELECT TOP 1 dbo." & sSrchTableName & "." & sRtnColumnName & _
+              " FROM dbo." & sSrchTableName & _
+              " WHERE (dbo." & sSrchTableName & "." & sSrchColumnName & " = " & sParamCode2 & "))"
           End If
         End With
 
@@ -3253,12 +3253,12 @@ Public Function RuntimeCode(psRuntimeCode As String, _
         If (LenB(sPersonnelTableName) <> 0) Then
           If fWorkflowExpression Then
             If (miWorkflowRecordSelection = giWFRECSEL_UNIDENTIFIED) Then
-              sCode = "CASE WHEN " & sPersonnelTableName & ".id IN (SELECT id FROM dbo.udf_ASRFn_ByID_IsPersonnelSubordinateOfUser(" & sRequiredTableName & ".ID)) THEN 1 ELSE 0 END"
+              sCode = "CASE WHEN dbo." & sPersonnelTableName & ".id IN (SELECT id FROM dbo.udf_ASRFn_ByID_IsPersonnelSubordinateOfUser(" & sRequiredTableName & ".ID)) THEN 1 ELSE 0 END"
             Else
-              sCode = "CASE WHEN " & sPersonnelTableName & ".id IN (SELECT id FROM dbo.udf_ASRFn_ByID_IsPersonnelSubordinateOfUser(" & sVarName & ")) THEN 1 ELSE 0 END"
+              sCode = "CASE WHEN dbo." & sPersonnelTableName & ".id IN (SELECT id FROM dbo.udf_ASRFn_ByID_IsPersonnelSubordinateOfUser(" & sVarName & ")) THEN 1 ELSE 0 END"
             End If
           Else
-            sCode = "CASE WHEN " & sPersonnelTableName & ".id IN (SELECT id FROM dbo.udf_ASRFn_IsPersonnelSubordinateOfUser()) THEN 1 ELSE 0 END"
+            sCode = "CASE WHEN dbo." & sPersonnelTableName & ".id IN (SELECT id FROM dbo.udf_ASRFn_IsPersonnelSubordinateOfUser()) THEN 1 ELSE 0 END"
           End If
         Else
           sCode = "0"
