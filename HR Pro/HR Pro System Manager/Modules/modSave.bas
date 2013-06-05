@@ -234,7 +234,6 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
         gobjProgress.UpdateProgress2
         fOK = fOK And Not gobjProgress.Cancelled
       End If
-         
       ' Generate stored procedures for the manual export
       If fOK Then
         OutputCurrentProcess2 "Generating Transfer Procedures ..."
@@ -246,7 +245,40 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
     Else
       gobjProgress.UpdateProgress False
     End If
-  
+
+'NHRD Prototype Fusion Code***********************************************************
+    'Create Fusion lookup column calculations
+    If gbFusionModule Then
+      If fOK Then
+        DoEvents
+        OutputCurrentProcess "Fusion Integration"
+        gobjProgress.UpdateProgress False
+        OutputCurrentProcess2 "Generating And Fusion Calculations ...", 3
+        fOK = CreateFusionExpressionSPs(pfRefreshDatabase)
+        gobjProgress.UpdateProgress2
+        fOK = fOK And Not gobjProgress.Cancelled
+      End If
+       
+      'Create Fusion purge trigger
+      If fOK Then
+        OutputCurrentProcess2 "Generating Fusion Purge Trigger ..."
+        fOK = CreateFusionTransferTriggers(pfRefreshDatabase)
+        gobjProgress.UpdateProgress2
+        fOK = fOK And Not gobjProgress.Cancelled
+      End If
+      ' Generate stored procedures for the manual export
+      If fOK Then
+        OutputCurrentProcess2 "Generating Fusion Transfer Procedures ..."
+        fOK = CreateFusionTransferSPs(pfRefreshDatabase)
+        gobjProgress.UpdateProgress2
+        fOK = fOK And Not gobjProgress.Cancelled
+      End If
+         
+    Else
+      gobjProgress.UpdateProgress False
+    End If
+'NHRD Prototype Fusion Code***********************************************************
+
     ' Save all Relation definitons (MsgBoxErr Done)
     If fOK Then
       gobjProgress.ResetBar2

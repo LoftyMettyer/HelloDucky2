@@ -1220,13 +1220,6 @@ Private Function ApplyPermissions_ChildTables2() As Boolean
         sAllSQLCommands = sAllSQLCommands & vbNewLine & sSQL
         gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
       End If
-
-'''''      If Len(sNonSysSecRoles) > 0 Then
-'''''        sSQL = "DENY DELETE, INSERT, SELECT, UPDATE ON " & .Fields(0).Value & " TO " & sNonSysSecRoles
-'''''        sAllSQLCommands = sAllSQLCommands & vbNewLine & sSQL
-'''''        gADOCon.Execute sSQL, , adExecuteNoRecords
-'''''      End If
-
       .MoveNext
     Loop
   
@@ -1885,13 +1878,16 @@ Public Function ApplyDatabaseOwnership() As Boolean
   astrRevokedTables(0) = "ASRSysAccordTransactionData"
   astrRevokedTables(1) = "ASRSysAccordTransactions"
   astrRevokedTables(2) = "ASRSysAccordTransactionWarnings"
-
   'MH20071107 Fault 5141
   astrRevokedTables(3) = "ASRSysAuditAccess"
   astrRevokedTables(4) = "ASRSysAuditCleardown"
   astrRevokedTables(5) = "ASRSysAuditGroup"
   astrRevokedTables(6) = "ASRSysAuditPermissions"
   astrRevokedTables(7) = "ASRSysAuditTrail"
+  'NHRD Prototype Fusion Code
+  astrRevokedTables(0) = "ASRSysFusionTransactionData"
+  astrRevokedTables(1) = "ASRSysFusionTransactions"
+  astrRevokedTables(2) = "ASRSysFusionTransactionWarnings"
 
   Set rsTemp1 = New ADODB.Recordset
   Set rsTemp2 = New ADODB.Recordset
@@ -1955,16 +1951,12 @@ Public Function ApplyDatabaseOwnership() As Boolean
     rsTemp1.MoveNext
   Loop
   rsTemp1.Close
-
   
   'MH20071107 Fault 5141
   'ReDim Preserve astrCommands(lngNextIndex)
   ReDim Preserve astrCommands(lngNextIndex + 2)
   astrCommands(lngNextIndex + 1) = "GRANT SELECT(DateTimeStamp, RecordID, ColumnID) ON ASRSysAuditTrail TO ASRSysGroup"
   astrCommands(lngNextIndex + 2) = "GRANT INSERT ON ASRSysAuditAccess TO ASRSysGroup"
-
-
-
   ' Merge all the procedures into a stored procedure and run that.
   'sSQL = "IF EXISTS (SELECT Name FROM sysobjects WHERE id = object_id('tmpAllocOwnership') AND sysstat & 0xf = 4) DROP PROCEDURE tmpAllocOwnership"
   'gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords

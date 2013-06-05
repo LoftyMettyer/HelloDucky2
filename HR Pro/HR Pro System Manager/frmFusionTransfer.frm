@@ -87,8 +87,8 @@ Begin VB.Form frmFusionTransfer
       TabCaption(1)   =   "&Settings"
       TabPicture(1)   =   "frmFusionTransfer.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraDefaults"
-      Tab(1).Control(1)=   "fraArchive"
+      Tab(1).Control(0)=   "fraArchive"
+      Tab(1).Control(1)=   "fraDefaults"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Login Parameters"
       TabPicture(2)   =   "frmFusionTransfer.frx":0044
@@ -285,7 +285,7 @@ Begin VB.Form frmFusionTransfer
             Columns(8).Width=   3200
             Columns(8).Visible=   0   'False
             Columns(8).Caption=   "TransferFieldID"
-            Columns(8).Name =   "TransferFieldID"
+            Columns(8).Name =   "FusionFieldID"
             Columns(8).DataField=   "Column 8"
             Columns(8).DataType=   8
             Columns(8).FieldLen=   256
@@ -355,7 +355,7 @@ Begin VB.Form frmFusionTransfer
             Columns(18).Width=   3200
             Columns(18).Visible=   0   'False
             Columns(18).Caption=   "IsPayrollCode"
-            Columns(18).Name=   "IsPayrollCode"
+            Columns(18).Name=   "IsFusionCode"
             Columns(18).DataField=   "Column 18"
             Columns(18).DataType=   8
             Columns(18).FieldLen=   256
@@ -864,7 +864,7 @@ Private Sub cmdEdit_Click()
     .IsCompanyCode = ctlGrid.Columns("IsCompanyCode").Text
     .IsEmployeeCode = ctlGrid.Columns("IsEmployeeCode").Text
     .IsDepartmentCode = ctlGrid.Columns("IsDepartmentCode").Text
-    .IsFusionCode = ctlGrid.Columns("IsPayrollCode").Text
+    .IsFusionCode = ctlGrid.Columns("IsFusionCode").Text
     .IsEmployeeName = ctlGrid.Columns("IsEmployeeName").Text
     .IsDepartmentName = ctlGrid.Columns("IsDepartmentName").Text
     .Group = CLng(ctlGrid.Columns("Group").Text)
@@ -873,7 +873,7 @@ Private Sub cmdEdit_Click()
     .Direction = ctlGrid.Columns("Direction").Text
     .AlwaysTransferFieldID = ctlGrid.Columns("AlwaysTransfer").Text
     .ConvertData = ctlGrid.Columns("ConvertData").Text
-    .FusionFieldID = ctlGrid.Columns("TransferFieldID").Text
+    .FusionFieldID = ctlGrid.Columns("FusionFieldID").Text
     .FusionTransferID = GetComboItem(cboFusionType)
     
     strIsCompanyCode = ctlGrid.Columns("IsCompanyCode").Text
@@ -881,10 +881,10 @@ Private Sub cmdEdit_Click()
     strIsEmployeeName = ctlGrid.Columns("IsEmployeeName").Text
     strIsDepartmentCode = ctlGrid.Columns("IsDepartmentCode").Text
     strIsDepartmentName = ctlGrid.Columns("IsDepartmentName").Text
-    strIsFusionCode = ctlGrid.Columns("IsPayrollCode").Text
+    strIsFusionCode = ctlGrid.Columns("IsFusionCode").Text
     
     strMandatory = ctlGrid.Columns("Mandatory").Text
-    strFusionFieldID = ctlGrid.Columns("TransferFieldID").Text
+    strFusionFieldID = ctlGrid.Columns("FusionFieldID").Text
     
     .Show vbModal
     
@@ -1030,7 +1030,7 @@ Private Sub cmdNone_Click()
 
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
 
   'AE20071119 Fault #12607
   'If ValidateSetup Then
@@ -1211,7 +1211,7 @@ Private Function SaveChanges() As Boolean
       sSQL = "INSERT INTO tmpFusionFieldDefinitions" & _
         " (FusionFieldID, FusionTypeID, Mandatory, Description, ASRMapType, ASRTableID, ASRColumnID, ASRExprID, ASRValue, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ConvertData, IsEmployeeName, IsDepartmentCode, IsDepartmentName, IsFusionCode, GroupBy, PreventModify)" & _
         " VALUES (" & _
-        .Columns("TransferFieldID").value & "," & _
+        .Columns("FusionFieldID").value & "," & _
         iFusionType & "," & _
         IIf(.Columns("Mandatory").value = True, "1", "0") & "," & _
         "'" & Replace(.Columns("Description").Text, "'", "''") & "'," & _
@@ -1229,7 +1229,7 @@ Private Function SaveChanges() As Boolean
         IIf(.Columns("IsEmployeeName").Text = True, "1", "0") & "," & _
         IIf(.Columns("IsDepartmentCode").Text = True, "1", "0") & "," & _
         IIf(.Columns("IsDepartmentName").Text = True, "1", "0") & "," & _
-        IIf(.Columns("IsPayrollCode").Text = True, "1", "0") & ", " & _
+        IIf(.Columns("IsFusionCode").Text = True, "1", "0") & ", " & _
         .Columns("Group").Text & ", " & _
         IIf(.Columns("PreventModify").Text = True, "1", "0") & ")"
       
@@ -1403,15 +1403,15 @@ Private Sub grdFusionDetails_RowLoaded(Index As Integer, ByVal Bookmark As Varia
 
   Dim iCount As Integer
   Dim strType As String
-  
+
   If grdFusionDetails(Index).Columns("Mandatory").Text = "True" Then
     strType = "Mandatory"
   End If
-  
+
   If grdFusionDetails(Index).Columns("IsKeyField").Text = "True" Then
     strType = "Mandatory"
   End If
-  
+
   If strType <> "" Then
     For iCount = 0 To grdFusionDetails(Index).Columns.Count - 1
       grdFusionDetails(Index).Columns(iCount).CellStyleSet strType
