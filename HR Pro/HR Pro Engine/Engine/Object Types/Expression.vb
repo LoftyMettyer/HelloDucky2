@@ -1133,11 +1133,11 @@ Namespace Things
             sWrapped = Statement
 
           Case ScriptDB.ColumnTypes.Text, ScriptDB.ColumnTypes.Link
-            If Me.AssociatedColumn.Multiline Then
-              sWrapped = Statement
-            Else
-              sWrapped = String.Format("CASE WHEN LEN(ISNULL({0}, '')) > {1} THEN '' ELSE {0} END", Statement, Me.AssociatedColumn.Size)
-            End If
+            'If Me.AssociatedColumn.Multiline Then
+            sWrapped = Statement
+            'Else
+            'sWrapped = String.Format("CASE WHEN LEN(ISNULL({0}, '')) > {1} THEN '' ELSE {0} END", Statement, Me.AssociatedColumn.Size)
+            'End If
 
           Case ScriptDB.ColumnTypes.Integer, ScriptDB.ColumnTypes.Numeric
             If Me.AssociatedColumn.Decimals > 0 Then
