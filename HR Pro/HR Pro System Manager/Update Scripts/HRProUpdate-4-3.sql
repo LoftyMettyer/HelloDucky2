@@ -980,7 +980,9 @@ PRINT 'Step 11 - Add new calculation procedures'
 		
 			DECLARE @result nvarchar(255);
 
-			SELECT @result = [maxcodesuffix] + @rowoffset
+			SELECT @result = SUBSTRING([maxcodesuffix], LEN(LEFT([maxcodesuffix] + ''1''
+				, PATINDEX(''%[0-9]%'', [maxcodesuffix] + ''1'') )), 100)
+				+ @rowoffset
 				FROM ASRSysUniqueCodes WHERE [codeprefix] = @prefix;
 			
 			RETURN @result;
