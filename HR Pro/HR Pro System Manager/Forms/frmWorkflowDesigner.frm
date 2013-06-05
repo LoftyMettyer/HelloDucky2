@@ -894,7 +894,7 @@ End Sub
 Private Sub RememberOriginalExpressions()
   ' Read all of the Workflows original expressions.
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim objExpression As CExpression
   
   ReDim maobjOriginalExpressions(0)
@@ -928,7 +928,7 @@ Private Sub RestoreOriginalExpressions()
   Dim objExpression As CExpression
   Dim iLoop As Integer
   Dim sOriginalExprIDs As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim aWFAllElements() As VB.Control
   
   ReDim aWFAllElements(0)
@@ -985,7 +985,7 @@ Public Function WorkflowExpressionsChanged() As Boolean
   ' Return TRUE if any of the Workflow expressions have been modified or created.
   Dim fExpressionsChanged As Boolean
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim fFound As Boolean
   Dim iLoop As Integer
   Dim iLoop2 As Integer
@@ -5095,7 +5095,7 @@ Private Sub ValidateElement_StoredData(pwfElement As VB.Control, _
   Dim avColumns() As Variant
   Dim iTableType As Integer
   Dim sSQL As String
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   Dim iParentCount As Integer
   Dim sMessagePrefix As String
   Dim sMessagePrefix2 As String
@@ -8712,7 +8712,7 @@ Public Sub UpdateIdentifiers(pwfBaseElement As VB.Control, _
   Dim sTemp As String
   Dim sSubMessage1 As String
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim objExpr As CExpression
   Dim objComp As CExprComponent
   Dim lngExprID As Long
@@ -11139,7 +11139,7 @@ Private Sub cmdCancel_Click()
 
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
  If SaveWorkflow Then
    UnLoad Me
  End If
@@ -11465,7 +11465,7 @@ Private Sub Form_Load()
     End If
   End If
   
-  cmdOK.Enabled = IsNew
+  cmdOk.Enabled = IsNew
   
   scrollVertical.SmallChange = SMALLSCROLL
   scrollHorizontal.SmallChange = SMALLSCROLL
@@ -13693,7 +13693,7 @@ Public Property Let IsChanged(pfNewValue As Boolean)
   ' Set the 'workflow changed' flag.
   
   mfChanged = pfNewValue
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
   ' Menu may be dependent on the status of the screen.
   'frmSysMgr.RefreshMenu
@@ -14595,7 +14595,7 @@ Private Sub LocateInitiatorOrTriggeredRecord()
   Dim asValidations() As String
   Dim alElementExprID() As Long
   Dim sMessage As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim objComp As CExprComponent
   
   Dim lngExprID As Long
@@ -14898,7 +14898,7 @@ Private Sub LocateElement(psElementIdentifier As String, Optional psItemIdentifi
   Dim avColumns() As Variant
   Dim asValidations() As String
   Dim alElementExprID() As Long
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim objComp As CExprComponent
   Dim lngExprID As Long
   Dim fLocateItems As Boolean
