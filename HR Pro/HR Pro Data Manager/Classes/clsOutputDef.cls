@@ -666,6 +666,7 @@ Private Sub cmdEmailGroup_Click()
   
   With frmSelection
 
+    .SelectedUtilityType = utlEmailGroup
     .Options = edtAdd + edtDelete + edtEdit + edtCopy + edtPrint + edtProperties + edtSelect + edtDeselect
     .EnableRun = False
     .TableComboVisible = False

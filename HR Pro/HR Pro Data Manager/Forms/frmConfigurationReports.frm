@@ -90,8 +90,8 @@ Begin VB.Form frmConfigurationReports
       TabCaption(1)   =   "O&utput"
       TabPicture(1)   =   "frmConfigurationReports.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraOutputFormat"
-      Tab(1).Control(1)=   "fraOutputDestination"
+      Tab(1).Control(0)=   "fraOutputDestination"
+      Tab(1).Control(1)=   "fraOutputFormat"
       Tab(1).ControlCount=   2
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
@@ -1531,7 +1531,7 @@ Private Sub cmdPicklist_Click()
   fExit = False
 
   With frmDefSel
-      
+    .SelectedUtilityType = utlPicklist
     .TableID = glngPersonnelTableID
     .TableComboVisible = True
     .TableComboEnabled = False
