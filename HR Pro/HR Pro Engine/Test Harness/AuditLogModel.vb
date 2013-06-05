@@ -1,58 +1,83 @@
 ﻿Imports System.ComponentModel
 
-'Public Enum DatePeriod
-'    ThisMonth = 1
-'    LastMonth
-'End Enum
+Public Enum DatePeriod
+    ThisMonth = 1
+    LastMonth
+    SpecificDates
+End Enum
 
-'Public Class AuditLogModel
+Public Class AuditLogModel
+    Inherits ModelBase
 
-'    Private db As DBContext
+    Friend Context As DBContext
 
-'    Public Property Period As DatePeriod
-'    Public Property DateFrom As Date?
-'    Public Property DateTo As Date?
-'    Public Property CanShow As Boolean = True
-'    Public Property Periods As IList(Of Lookup)
-'    Public Property AuditLogs As IList
+#Region "    Public Property Period As DatePeriod"
 
-'    Public Event Bind()
+    'cant use auto property for period cos havent implemented auto inotifypropertychanged code
+    Private _period As DatePeriod = DatePeriod.ThisMonth
+    Public Property Period() As DatePeriod
+        Get
+            Return _period
+        End Get
+        Set(ByVal value As DatePeriod)
+            _period = value
+            OnPropertyChanged("Period")
+        End Set
+    End Property
+#End Region
+    Public Property DateFrom As Date?
+    Public Property DateTo As Date?
+    Public Property AuditLogs As IList
 
-'    Public Sub New(ByVal db As DBContext)
-'        Me.db = db
-'        Period = DatePeriod.ThisMonth
-'        Periods = New List(Of Lookup) From {New Lookup(0, ""), New Lookup(DatePeriod.ThisMonth, "This Month"), New Lookup(DatePeriod.LastMonth, "Last Month")}
-'        AuditLogs = GetAuditLogs()
-'    End Sub
+    Public Sub Show()
 
-'    Public Sub Show()
-'        AuditLogs = GetAuditLogs()
-'        RaiseEvent Bind()
-'    End Sub
+        Dim monthStart As Date = New Date(Today.Year, Today.Month, 1)
 
-'    Private Function GetAuditLogs() As IList
+        Dim query = From a In Context.ASRSysAuditTrails
 
-'        Dim data = From a In db.ASRSysAuditTrails
-'                   Select a
+        Select Case Period
+            Case DatePeriod.ThisMonth
+                query = query.Where(Function(a) a.DateTimeStamp >= monthStart And a.DateTimeStamp < monthStart.AddMonths(1))
+            Case DatePeriod.LastMonth
+                query = query.Where(Function(a) a.DateTimeStamp >= monthStart.AddMonths(-1) And a.DateTimeStamp < monthStart)
+            Case DatePeriod.SpecificDates
+                If DateFrom.HasValue Then
+                    query = query.Where(Function(a) a.DateTimeStamp >= DateFrom.Value)
+                End If
 
-'        If DateFrom.HasValue Then
-'            data = data.Where(Function(a) a.DateTimeStamp >= DateFrom.Value)
-'        End If
+                If DateTo.HasValue Then
+                    query = query.Where(Function(a) a.DateTimeStamp < DateTo.Value.AddDays(1.0))
+                End If
+        End Select
 
-'        If DateTo.HasValue Then
-'            data = data.Where(Function(a) a.DateTimeStamp < DateTo.Value.AddDays(1.0))
-'        End If
+        Dim data = From a In query
+                   Select New With {
+                    .User = a.UserName,
+                    .Date = a.DateTimeStamp,
+                    .Table = a.Tablename,
+                    .Column = a.Columnname,
+                    .OldValue = a.OldValue,
+                    .NewValue = a.NewValue,
+                    .RecordDescription = a.RecordDesc,
+                    .Id = a.id
+                   }
 
-'        Return data.ToList
-'    End Function
+        AuditLogs = data.ToList
+        OnPropertyChanged("AuditLogs")
+    End Sub
 
-'End Class
+End Class
 
-'Public Class Lookup
-'    Public Sub New(ByVal id As Integer, ByVal name As String)
-'        Me.Id = id
-'        Me.Name = name
-'    End Sub
-'    Public Id As Integer
-'    Public Name As String
-'End Class
+#Region "Framework"
+
+Public Class ModelBase
+    Implements INotifyPropertyChanged
+
+    Public Event PropertyChanged(ByVal sender As Object, ByVal e As System.ComponentModel.PropertyChangedEventArgs) Implements System.ComponentModel.INotifyPropertyChanged.PropertyChanged
+
+    Protected Sub OnPropertyChanged(ByVal propertyName As String)
+        RaiseEvent PropertyChanged(Me, New PropertyChangedEventArgs(propertyName))
+    End Sub
+End Class
+
+#End Region

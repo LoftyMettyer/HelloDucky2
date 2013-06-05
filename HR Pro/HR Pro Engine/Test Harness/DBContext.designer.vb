@@ -40,7 +40,7 @@ Partial Public Class DBContext
   #End Region
 	
 	Public Sub New()
-		MyBase.New(Global.Test_Harness.My.MySettings.Default.STD41ConnectionString, mappingSource)
+		MyBase.New(Global.Test_Harness.My.MySettings.Default.STD41ConnectionString1, mappingSource)
 		OnCreated
 	End Sub
 	

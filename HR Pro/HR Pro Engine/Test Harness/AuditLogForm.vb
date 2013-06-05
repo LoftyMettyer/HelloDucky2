@@ -1,11 +1,6 @@
-﻿Public Class AuditLog
+﻿Public Class AuditLogForm
 
-    'TODO: Columns?
-    'TODO: Export
-    'TODO: Path + Validation
-    'TODO: Look
-    'TODO: As Model + Binding
-
+    Public Connection As String
     Private db As DBContext
     Private loading As Boolean = True
 
@@ -14,7 +9,7 @@
         periodEditor.SelectedIndex = 0
         loading = False
 
-        db = New DBContext
+        db = New DBContext(Connection)
         ShowAuditLogs()
     End Sub
 
@@ -78,11 +73,23 @@
     End Sub
 
     Private Sub grdAudit_InitializeLayout1(ByVal sender As Object, ByVal e As Infragistics.Win.UltraWinGrid.InitializeLayoutEventArgs) Handles grdAudit.InitializeLayout
+        e.Layout.Appearance.BackColor = Color.White
+        e.Layout.Override.BorderStyleRow = Infragistics.Win.UIElementBorderStyle.None
+        e.Layout.Override.BorderStyleCell = Infragistics.Win.UIElementBorderStyle.None
         e.Layout.Override.FilterUIType = Infragistics.Win.UltraWinGrid.FilterUIType.HeaderIcons
     End Sub
 
     Private Sub butOutput_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles butOutput.Click
-        UltraGridExcelExporter1.Export(grdAudit, txtFilePath.Text)
+        Try
+            UltraGridExcelExporter1.Export(grdAudit, txtFilePath.Text)
+            MsgBox("The file has been created.", , Me.Text)
+        Catch ex As System.IO.DirectoryNotFoundException
+            MsgBox("The directory specified does not exist.", MsgBoxStyle.Exclamation, Me.Text)
+        Catch ex As System.IO.IOException
+            MsgBox("The file specified is being used by another application.", MsgBoxStyle.Exclamation, Me.Text)
+        Catch ex As Exception
+            MsgBox("Export failed.", MsgBoxStyle.Exclamation, Me.Text)
+        End Try
     End Sub
 
 End Class

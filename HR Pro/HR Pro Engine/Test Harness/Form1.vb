@@ -308,26 +308,31 @@ Public Class Form1
 
   Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
 
-    Dim objHRPro As New SystemFramework.HCM
-    Dim objAudit As New AuditLog
+        'Dim objHRPro As New SystemFramework.HCM
+        '    Dim objAudit As New AuditLogForm
 
-    Dim objLogin As SystemFramework.Connectivity.Login
+        'Dim objLogin As SystemFramework.Connectivity.Login
 
-    With objLogin
-      .UseContext = False
-      .UserName = txtUser2.Text
-      .Password = txtPassword2.Text
-      .Database = txtDatabase2.Text
-      .Server = txtServer2.Text
-    End With
+        'With objLogin
+        '  .UseContext = False
+        '  .UserName = txtUser2.Text
+        '  .Password = txtPassword2.Text
+        '  .Database = txtDatabase2.Text
+        '  .Server = txtServer2.Text
+        'End With
 
-    objHRPro.Connect(objLogin)
+        'objHRPro.Connect(objLogin)
 
-        'objAudit.Database = objHRPro
-    objAudit.ShowDialog()
+        '    objAudit.Database = objHRPro
+        'objAudit.ShowDialog()
 
-    objHRPro.Disconnect()
+        'objHRPro.Disconnect()
 
+        Dim con = String.Format("Initial Catalog={0}; Server={1};User ID={2}; Password={3}; APP={4};",
+                             txtDatabase2.Text, txtServer2.Text, txtUser2.Text, txtPassword2.Text, "ScriptDB")
+
+        Dim f As New AuditLogForm With {.Connection = con}
+        f.ShowDialog()
 
   End Sub
 
