@@ -223,6 +223,9 @@ Public Property Get UserCancelled() As Boolean
   UserCancelled = mblnUserCancelled
 End Property
 
+Public Property Get NoRecords() As Boolean
+  NoRecords = mblnNoRecords
+End Property
 
 Public Function RunMatchReport(Optional plngTableID As Long, Optional plngRecordID As Long) As Boolean
 Dim strUtilityName As String

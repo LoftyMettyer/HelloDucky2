@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
 Begin VB.Form frmCrossTabRun 
    Caption         =   "Cross Tabs"
    ClientHeight    =   7455
@@ -593,9 +593,11 @@ Public Property Get InvalidPicklistFilter() As Boolean
 End Property
 
 Public Property Get ErrorString() As String
-
   ErrorString = mstrErrorMessage
-  
+End Property
+
+Public Property Get NoRecords() As Boolean
+  NoRecords = mblnNoRecords
 End Property
 
 Private Sub cboPageBreak_Click()
@@ -660,7 +662,7 @@ End Sub
 
 Private Sub Form_Activate()
   If Me.Visible And Me.Enabled Then
-    cmdOk.SetFocus
+    cmdOK.SetFocus
   End If
 End Sub
 
@@ -2378,10 +2380,10 @@ Private Sub Form_Resize()
 
   
   'Position the command buttons...
-  lngTop = Me.ScaleHeight - (cmdOk.Height + lngGap)
+  lngTop = Me.ScaleHeight - (cmdOK.Height + lngGap)
   
-  lngLeft = Me.ScaleWidth - (cmdOk.Width + lngGap)
-  cmdOk.Move lngLeft, lngTop
+  lngLeft = Me.ScaleWidth - (cmdOK.Width + lngGap)
+  cmdOK.Move lngLeft, lngTop
 
   lngLeft = lngLeft - (cmdOutput.Width + lngGap)
   cmdOutput.Move lngLeft, lngTop

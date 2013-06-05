@@ -1783,6 +1783,9 @@ Public Property Let ErrorString(ByVal sErrorString As String)
   msErrorString = sErrorString
 End Property
 
+Public Property Get NoRecords() As Boolean
+  NoRecords = mfNoRecords
+End Property
 
 Public Property Get UserCancelled() As Boolean
   UserCancelled = mblnUserCancelled
