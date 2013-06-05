@@ -619,14 +619,14 @@ Private Sub Form_Activate()
     
       iCurrentPageNo = mfrmWebForm.PageNo
       iPageCount = mfrmWebForm.tabPages.Tabs.Count
+      iPageCount = iPageCount + 1
 
       If iPageCount > 0 Then
-        ' Add backgournd controls first
-        DisplayBackgroundControl
+        ' Add an item to the combo for form itself.
+        GetPageControls 0
         ' Add items to the combo for each tab page.
         For Each objTab In mfrmWebForm.tabPages.Tabs
           With objTab
-          
             cboPage.AddItem .Caption
             cboPage.ItemData(cboPage.NewIndex) = val(.Tag) + 1
             
@@ -635,7 +635,6 @@ Private Sub Form_Activate()
             End If
             
             GetPageControls .Index
-            
           End With
         Next objTab
       
@@ -644,7 +643,7 @@ Private Sub Form_Activate()
          
          With asrPage
            .MinimumValue = 0
-           .MaximumValue = iPageCount
+           .MaximumValue = iPageCount - 1
          End With
         
          cboPage.ListIndex = iCurrentPageNo - 1
@@ -652,21 +651,8 @@ Private Sub Form_Activate()
          If ListView1(iCurrentPageNo).ListItems.Count > 0 Then
            ListView1(iCurrentPageNo).SelectedItem = ListView1(iCurrentPageNo).ListItems(1)
          End If
-         
       Else
-      
-        DisplayBackgroundControl
-      
-        ' Add an item to the combo for form itself.
-'        cboPage.AddItem "Background Controls"
-'        cboPage.ItemData(cboPage.NewIndex) = 0
-'
-'        GetPageControls 0
-'
-'        asrPage.MinimumValue = 0
-'        asrPage.MaximumValue = 0
-'
-'        cboPage.ListIndex = 0
+        GetPageControls 0
       End If
 
     ' If the number of pages on the form is one then the combobox is disabled.
@@ -713,12 +699,11 @@ ErrorTrap:
 End Sub
 Private Function DisplayBackgroundControl()
 ' Add an item to the combo for form itself.
-cboPage.AddItem "Forms"
-cboPage.ItemData(cboPage.NewIndex) = 0
-GetPageControls 0
-asrPage.MinimumValue = 0
-asrPage.MaximumValue = 0
-cboPage.ListIndex = 0
+'cboPage.AddItem "Background Controls"
+'GetPageControls 0
+'asrPage.MinimumValue = 0
+'asrPage.MaximumValue = 0
+'cboPage.ListIndex = 0
 End Function
         
 Private Sub Form_Initialize()
