@@ -324,11 +324,9 @@ Namespace ScriptDB
       Dim objIndex As Index
       Dim objMessage As FusionMessage
       Dim bBypassValidation As Boolean = False
-      Dim bStopDeletion As Boolean = False
 
       Dim sSQL As String = String.Empty
       Dim sCalculationCode As String
-      Dim sTriggerName As String = String.Empty
       Dim sColumnName As String = String.Empty
       Dim sAuditDataBase As String = String.Empty
       Dim sAuditDataDelete As String = String.Empty
@@ -390,14 +388,13 @@ Namespace ScriptDB
           aryAuditUpdates = New ArrayList
           aryAuditInserts = New ArrayList
           aryAuditDeletes = New ArrayList
-          '          aryUpdateUniqueCodes = New ArrayList
+
           aryParentsToUpdate = New ArrayList
           aryChildrenToUpdate = New ArrayList
           aryParentsToUpdate_Delete = New ArrayList
           aryBaseTableColumns = New ArrayList
           aryCalculatedColumns = New ArrayList
           aryPostAuditCalcs = New ArrayList
-          '     aryWritebackColumns = New ArrayList
 
           sSQLCalculatedColumns = String.Empty
           sSQLParentColumns = String.Empty
@@ -413,7 +410,6 @@ Namespace ScriptDB
           sSQLSpecialUpdate = String.Empty
           sQLInsteadOfInsertColumns = String.Empty
           bBypassValidation = False
-          bStopDeletion = False
 
           ' Build in indexes
           objAuditIndex = New Index
@@ -445,7 +441,6 @@ Namespace ScriptDB
               sSQLFusionCode = sSQLFusionCode & _
                 String.Format("        EXEC fusion.[spSendMessageCheckContext] @MessageType='{0}', @LocalId=@LocalId", objMessage.Name) & vbNewLine
               bBypassValidation = bBypassValidation Or objMessage.ByPassValidation
-              bStopDeletion = bStopDeletion Or objMessage.StopDeletion
             Next
 
             sSQLFusionCode = sSQLFusionCode & _
@@ -677,14 +672,14 @@ Namespace ScriptDB
           If aryBaseTableColumns.ToArray.Length > 0 Then
             sSQLWriteableColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
               "    UPDATE [dbo].[{0}]" & vbNewLine & _
-              "        SET [updflag] = base.[updflag]," & vbNewLine & _
+              "        SET [updflag] = base.[updflag], [_deleted] = base.[_deleted], [_deleteddate] = base.[_deleteddate]," & vbNewLine & _
               "        {1}" & vbNewLine & _
               "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
               , objTable.PhysicalName, String.Join(", " & vbNewLine & vbTab & vbTab & vbTab, aryBaseTableColumns.ToArray()))
           Else
             sSQLWriteableColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
               "    UPDATE [dbo].[{0}]" & vbNewLine & _
-              "        SET [updflag] = base.[updflag]" & vbNewLine & _
+              "        SET [updflag] = base.[updflag], [_deleted] = base.[_deleted], [_deleteddate] = base.[_deleteddate]" & vbNewLine & _
               "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
               , objTable.PhysicalName)
           End If
@@ -785,14 +780,13 @@ Namespace ScriptDB
           ' -------------------
           ' INSTEAD OF INSERT
           ' -------------------
-          sTriggerName = String.Format("{0}{1}_i01", Consts.Trigger, objTable.Name)
           sSQL = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
               "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
               "    INSERT [dbo].[tbsys_intransactiontrigger] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {2}, 1, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
               sQLInsteadOfInsertColumns _
-              , objTable.Name, sTriggerName _
+              , objTable.Name, "" _
               , objTable.ID _
               , String.Join(",", aryAllWriteableColumns.ToArray()), String.Join("," & vbNewLine, aryAllWriteableFormatted.ToArray()))
           ScriptTrigger("dbo", objTable, TriggerType.InsteadOfInsert, sSQL, existingTriggers)
@@ -800,7 +794,6 @@ Namespace ScriptDB
           ' -------------------
           ' AFTER INSERT
           ' -------------------
-          sTriggerName = String.Format("{0}{1}_i02", Consts.Trigger, objTable.Name)
           sSQL = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tableid] integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
               "    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
@@ -812,13 +805,12 @@ Namespace ScriptDB
               sValidation & vbNewLine & _
               "    DELETE [dbo].[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3};" & vbNewLine & vbNewLine & _
               "{4}" & vbNewLine & vbNewLine _
-              , objTable.Name, sTriggerName, sSQLCode_AuditInsert, objTable.ID, objTable.SysMgrInsertTrigger)
+              , objTable.Name, "", sSQLCode_AuditInsert, objTable.ID, objTable.SysMgrInsertTrigger)
           ScriptTrigger("dbo", objTable, TriggerType.AfterInsert, sSQL, existingTriggers)
 
           ' -------------------
           ' INSTEAD OF UPDATE
           ' -------------------
-          sTriggerName = String.Format("{0}{1}_u01", Consts.Trigger, objTable.Name)
           sSQL = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
               "    SET @sValidation = '';" & vbNewLine & _
@@ -828,7 +820,7 @@ Namespace ScriptDB
               "{3}" & vbNewLine & vbNewLine & _
               sValidation & vbNewLine & vbNewLine & _
               "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {2};" & vbNewLine _
-              , objTable.Name, sTriggerName _
+              , objTable.Name, "" _
               , objTable.ID _
               , sSQLWriteableColumns _
               , Consts.SysTriggerTransaction, objTable.ID)
@@ -837,7 +829,6 @@ Namespace ScriptDB
           ' -------------------
           ' AFTER UPDATE
           ' -------------------
-          sTriggerName = String.Format("{0}{1}_u02", Consts.Trigger, objTable.Name)
           sSQL = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), tableid integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
               "    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
@@ -854,53 +845,48 @@ Namespace ScriptDB
               "{7}" & vbNewLine & vbNewLine & _
               "{8}" & vbNewLine & vbNewLine & _
               "{9}" & vbNewLine & vbNewLine _
-              , objTable.Name, sTriggerName _
+              , objTable.Name, "" _
               , "", objTable.ID, Consts.SysTriggerTransaction _
               , "" _
               , sSQLCode_AuditUpdate, sSQLPostAuditCalcs, objTable.SysMgrUpdateTrigger, sSQLFusionCode) & vbNewLine & vbNewLine
           ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSQL, existingTriggers)
 
           ' -------------------
-          ' AFTER DELETE
+          ' INSTEAD OF DELETE
           ' -------------------
-          sTriggerName = String.Format("{0}{1}_d02", Consts.Trigger, objTable.Name)
-
-          ' To be replaced by a recycle bin in a future version?
-          If bStopDeletion Then
-
-            sSQL = "	DECLARE @sValidation nvarchar(MAX);" & vbNewLine & _
-                "SET @sValidation = 'Cannot delete this record whilst in Fusion connectivity mode.';" & vbNewLine & _
-                "RAISERROR(@sValidation, 16, 1);" & vbNewLine
+          sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tablename] varchar(255), [tableid] integer, [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
+              "    DECLARE @dChangeDate datetime;" & vbNewLine & _
+              "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
+              "    INSERT [dbo].[{3}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {4}, 3, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
+             "    -- Purge if already deleted" & vbNewLine & _
+              "    WITH base AS (SELECT * FROM dbo.[{0}]" & vbNewLine & _
+              "        WHERE [id] IN (SELECT DISTINCT [id] FROM deleted WHERE [_deleted] = 1))" & vbNewLine & _
+              "        DELETE FROM base;" & vbNewLine & vbNewLine & _
+              "    -- Mark records as deleted." & vbNewLine & _
+              "    WITH base AS (SELECT [_deleted], [_deleteddate] FROM dbo.[{0}]" & vbNewLine & _
+              "        WHERE [id] IN (SELECT DISTINCT [id] FROM deleted))" & vbNewLine & _
+              "        UPDATE base SET [_deleted] = 1, [_deleteddate] = GETDATE();" & vbNewLine & vbNewLine & _
+              "    -- Audit Trail" & vbNewLine & _
+              "{1}" & vbNewLine & vbNewLine & _
+              sSQLCode_Audit & _
+              sSQLSpecialUpdate & _
+              "{2}" & vbNewLine & vbNewLine & _
+              "{5}" & vbNewLine & vbNewLine & _
+              "    -- Clear the temporary trigger status table" & vbNewLine & _
+              "    DELETE [dbo].[{3}] WHERE [spid] = @@spid AND [tablefromid] = {4};" & vbNewLine & vbNewLine _
+              , objTable.PhysicalName, sSQLCode_AuditDelete, sSQLParentColumns_Delete _
+              , Consts.SysTriggerTransaction, objTable.ID, objTable.SysMgrDeleteTrigger)
             ScriptTrigger("dbo", objTable, TriggerType.InsteadOfDelete, sSQL, existingTriggers)
+
+            ' -------------------
+            ' AFTER DELETE
+            ' -------------------
             DropTrigger("dbo", objTable, TriggerType.AfterDelete, existingTriggers)
-
-          Else
-
-            sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tablename] varchar(255), [tableid] integer, [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
-                "    DECLARE @dChangeDate datetime;" & vbNewLine & _
-                "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-                "    INSERT [dbo].[{4}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {5}, 3, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
-                "    -- Audit Trail" & vbNewLine & _
-                "{2}" & vbNewLine & vbNewLine & _
-                sSQLCode_Audit & _
-                sSQLSpecialUpdate & _
-                "{3}" & vbNewLine & vbNewLine & _
-                "{6}" & vbNewLine & vbNewLine & _
-                "    -- Clear the temporary trigger status table" & vbNewLine & _
-                "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {5};" & vbNewLine & vbNewLine _
-                , objTable.Name, sTriggerName, sSQLCode_AuditDelete, sSQLParentColumns_Delete _
-                , Consts.SysTriggerTransaction, objTable.ID, objTable.SysMgrDeleteTrigger)
-
-            DropTrigger("dbo", objTable, TriggerType.InsteadOfDelete, existingTriggers)
-            ScriptTrigger("dbo", objTable, TriggerType.AfterDelete, sSQL, existingTriggers)
-
-          End If
-
 
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.Triggers, sTriggerName, SystemFramework.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.Triggers, "Error generating trigger", SystemFramework.ErrorHandler.Severity.Error, ex.Message, sSQL)
         bOK = False
 
       Finally
