@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.Form frmLogin 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "HR Pro Data Manager - Login"
@@ -244,11 +244,14 @@ Private Sub cmdDetails_Click()
 End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
-
-    If KeyCode = 192 Then
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
         KeyCode = 0
-    End If
-
+      End If
+    Case KeyCode = 192
+        KeyCode = 0
+  End Select
 End Sub
 
 Private Sub Form_KeyPress(KeyAscii As Integer)

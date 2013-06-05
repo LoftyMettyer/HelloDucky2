@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "12:24"
+            TextSave        =   "09:31"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
