@@ -39,6 +39,7 @@ Private mstrOutputFileName As String
 Private mblnPreviewOnScreen As Boolean
 Private mblnPrintFilterHeader As Boolean
 Private mlngOverrideFilterID As Long
+Private mblnOutputRetainPivotOrChart As Boolean
 Private mstrErrorMessage As String
 
 Private Sub Class_Initialize()
@@ -151,6 +152,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   Dim blnOutputTOC As Boolean
   Dim blnOutputCoverSheet As Boolean
   Dim lngOverrideFilterID As Long
+  Dim blnOutputRetainPivotOrChart As Boolean
   
   gblnBatchMode = True
 
@@ -158,8 +160,11 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   Set rsBatchDetails = mclsData.OpenPersistentRecordset("SELECT * FROM AsrSysBatchJobDetails WHERE BatchJobNameID = " & lBatchJobID & " ORDER BY JobOrder", adOpenKeyset, adLockReadOnly)
   
   If gblnReportPackMode Then
-    'GetBatchJobDefaultOutputParams
-    strOutputOptions = "outputPreview, outputFormat, outputScreen, outputPrinter,OutputPrinterName, outputSave, outputSaveExisting, outputEmail, outputEmailAddr, outputEmailSubject, outputFilename, outputEmailAttachAs, outputTitlePage, outputReportPackTitle, outputOverrideFilter, outputTOC, outputCoverSheet, OutputTitlePage, OutputReportPackTitle, OutputOverrideFilter, OutputTOC, OutputCoverSheet,OverrideFilterID"
+    strOutputOptions = "OutputPreview, OutputFormat, OutputScreen, OutputPrinter, OutputPrinterName, OutputSave, "
+    strOutputOptions = strOutputOptions & "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, "
+    strOutputOptions = strOutputOptions & "OutputFilename, OutputEmailAttachAs, OutputTitlePage, OutputReportPackTitle, "
+    strOutputOptions = strOutputOptions & "OutputOverrideFilter, OutputTOC, OutputCoverSheet, OverrideFilterID, OutputRetainPivotOrChart"
+    
     Set rsBatchOutputOptions = mclsData.OpenPersistentRecordset("SELECT " & strOutputOptions & " FROM ASRSysBatchJobName WHERE ID = " & lBatchJobID, adOpenKeyset, adLockReadOnly)
       
     With rsBatchOutputOptions
@@ -187,6 +192,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
       blnOutputTOC = !OutputTOC
       blnOutputCoverSheet = !OutputCoverSheet
       lngOverrideFilterID = !OverrideFilterID
+      blnOutputRetainPivotOrChart = !OutputRetainPivotOrChart
     End With
   End If
 
@@ -331,7 +337,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
           strOutputOverrideFilter, _
           blnOutputTOC, _
           blnOutputCoverSheet, _
-          lngOverrideFilterID
+          lngOverrideFilterID, _
+          blnOutputRetainPivotOrChart
         End If
             
         pobjCalendarReportRUN.CalendarReportID = rsBatchDetails.Fields("JobID")
@@ -385,7 +392,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
             strOutputOverrideFilter, _
             blnOutputTOC, _
             blnOutputCoverSheet, _
-            lngOverrideFilterID
+            lngOverrideFilterID, _
+            blnOutputRetainPivotOrChart
           End If
           
           If datGeneral.SystemPermission("CROSSTABS", "RUN") Then
@@ -413,7 +421,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
         Set pobjReportRUN = New clsCustomReportsRUN
         pobjReportRUN.CustomReportID = rsBatchDetails.Fields("JobID")
           
-        If fOK And Not mblnBatchCancelled Then
+       If fOK And Not mblnBatchCancelled Then
           ' No previous jobs in the batch have been cancelled so run this
           'Check permissions...
         
@@ -437,7 +445,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
             strOutputOverrideFilter, _
             blnOutputTOC, _
             blnOutputCoverSheet, _
-            lngOverrideFilterID
+            lngOverrideFilterID, _
+            blnOutputRetainPivotOrChart
         End If
         
         If datGeneral.SystemPermission("CUSTOMREPORTS", "RUN") Then
@@ -485,7 +494,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
               strOutputOverrideFilter, _
               blnOutputTOC, _
               blnOutputCoverSheet, _
-              lngOverrideFilterID
+              lngOverrideFilterID, _
+              blnOutputRetainPivotOrChart
             
           'MH20011107 Check permissions...
           If datGeneral.SystemPermission("RECORDPROFILE", "RUN") Then
@@ -761,7 +771,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
               strOutputOverrideFilter, _
               blnOutputTOC, _
               blnOutputCoverSheet, _
-              lngOverrideFilterID
+              lngOverrideFilterID, _
+              blnOutputRetainPivotOrChart
               
           If datGeneral.SystemPermission("MATCHREPORTS", "RUN") Then
             fOK = pfrmMatchRUN.RunMatchReport
@@ -811,7 +822,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
               strOutputOverrideFilter, _
               blnOutputTOC, _
               blnOutputCoverSheet, _
-              lngOverrideFilterID
+              lngOverrideFilterID, _
+              blnOutputRetainPivotOrChart
               
           If datGeneral.SystemPermission("SUCCESSION", "RUN") Then
             fOK = pfrmMatchRUN.RunMatchReport
@@ -861,7 +873,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
               strOutputOverrideFilter, _
               blnOutputTOC, _
               blnOutputCoverSheet, _
-              lngOverrideFilterID
+              lngOverrideFilterID, _
+              blnOutputRetainPivotOrChart
               
           If datGeneral.SystemPermission("CAREER", "RUN") Then
             fOK = pfrmMatchRUN.RunMatchReport
@@ -976,32 +989,37 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   Loop
   
   'Insert TOC code here as all Report Pack Jobs Or Batch Jobs would be done by now
-  If gblnReportPackMode And blnOutputSave And blnOutputTOC Then
+  If gblnReportPackMode And blnOutputSave And blnOutputTOC And lngOutputFormat <> fmtHTML Then
     'Open word file
     If GetTOCFile(strOutputFilename) Then
       'mwrdApp.Visible = True
       With mwrdApp.Selection 'Add TOC at the top
-        .TypeText Text:="Report Pack Title :"
+        .TypeParagraph
+        .TypeParagraph
+        .TypeText Text:="Report Pack Title"
         .HomeKey Unit:=wdLine, Extend:=wdExtend
-        .Font.Size = 12
-        '.Font.Bold = wdToggle
+        .Font.Bold = wdToggle
+        .Font.Size = 14
         .ParagraphFormat.Alignment = wdAlignParagraphCenter
-        .MoveDown Unit:=wdLine, Count:=2
-        
+        .MoveRight Unit:=wdCharacter, Count:=1
+        .TypeParagraph
         .TypeText Text:=sBatchJobName
         .HomeKey Unit:=wdLine, Extend:=wdExtend
         .Font.Size = 20
-        .Font.Bold = wdToggle
         .ParagraphFormat.Alignment = wdAlignParagraphCenter
-        .MoveDown Unit:=wdLine, Count:=2
-        
+        .MoveRight Unit:=wdCharacter, Count:=1
         .InsertBreak Type:=wdPageBreak
+        
+        
+        .MoveUp Unit:=wdLine
+        
         .TypeText Text:="Table of Contents"
         .HomeKey Unit:=wdLine, Extend:=wdExtend
         .Font.Size = 20
-        .Font.Bold = wdToggle
         .ParagraphFormat.Alignment = wdAlignParagraphCenter
-        .MoveDown Unit:=wdLine, Count:=2
+        .MoveRight Unit:=wdCharacter, Count:=2
+        .Font.Size = 12
+        .TypeParagraph
         
         With mwrdDoc
             .TablesOfContents.Add Range:=mwrdApp.Selection.Range, RightAlignPageNumbers:=True, UseHeadingStyles:=True, _
@@ -1011,7 +1029,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
         End With
         
         .InsertBreak Type:=wdPageBreak
-        mwrdDoc.SaveAs (strOutputFilename)
+        
+        mwrdDoc.Save
         mwrdDoc.Close
         mwrdApp.Quit
       End With

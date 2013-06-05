@@ -369,7 +369,12 @@ Public Function GetFile(objParent As clsOutputRun, colSytles As Collection) As B
   
   Else
     
-    'Check if file already exists...
+    If gblnReportPackMode And mlngSaveExisting = 0 And gobjProgress.Bar1Value > 0 Then
+        'reset write mode to append in order that the previous report job doesnt get overwritten
+        mlngSaveExisting = 3
+    End If
+  
+  'Check if file already exists...
     If Dir(mstrFileName) <> vbNullString And mstrFileName <> vbNullString Then
   
       Select Case mlngSaveExisting
@@ -441,7 +446,7 @@ LocalErr:
 End Function
 
 
-Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As Collection)
+Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As Collection, Optional mblnCoverSheet As Boolean)
 
   Dim strTitle As String
   Dim strHTMLOutput As String

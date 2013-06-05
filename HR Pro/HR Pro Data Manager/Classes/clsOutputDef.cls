@@ -123,6 +123,8 @@ Public Sub FormatClick(Index As Integer, Optional blnDataToScreen As Boolean = T
     If gblnReportPackMode Then
       mfrmParent.chkTOC.Enabled = True
       mfrmParent.chkRetainPivot.Enabled = False
+      mfrmParent.chkRetainPivot.Enabled = False
+      mfrmParent.chkRetainPivot.Value = vbUnchecked
     End If
     frmMain.CommonDialog1.Filter = "HTML Document (*.htm)|*.htm"
   'WORD

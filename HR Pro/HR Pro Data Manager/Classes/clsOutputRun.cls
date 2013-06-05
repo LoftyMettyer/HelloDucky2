@@ -385,8 +385,8 @@ End Function
 Public Function AddPage(strDefTitle As String, Optional mstrSheetName As String, Optional mblnOutputCoverSheet As Boolean)
   On Local Error Resume Next
   
-  mobjOutputType.AddPage strDefTitle, mstrSheetName, mcolStyles, mblnOutputCoverSheet
-  
+    mobjOutputType.AddPage strDefTitle, mstrSheetName, mcolStyles, mblnOutputCoverSheet
+
 End Function
 
 Public Property Let SizeColumnsIndependently(ByVal blnNewValue As Boolean)

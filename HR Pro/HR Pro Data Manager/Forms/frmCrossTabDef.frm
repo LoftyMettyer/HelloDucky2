@@ -76,14 +76,14 @@ Begin VB.Form frmCrossTabDef
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmCrossTabDef.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraInformation"
-      Tab(0).Control(1)=   "fraDefinition(1)"
+      Tab(0).Control(0)=   "fraDefinition(1)"
+      Tab(0).Control(1)=   "fraInformation"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmCrossTabDef.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(1)"
-      Tab(1).Control(1)=   "fraColumns(0)"
+      Tab(1).Control(0)=   "fraColumns(0)"
+      Tab(1).Control(1)=   "fraColumns(1)"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmCrossTabDef.frx":0044
@@ -435,7 +435,6 @@ Begin VB.Form frmCrossTabDef
          End
          Begin VB.CheckBox chkPreview 
             Caption         =   "P&review on screen"
-            Enabled         =   0   'False
             Height          =   195
             Left            =   195
             TabIndex        =   57
