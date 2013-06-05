@@ -2,7 +2,7 @@ VERSION 5.00
 Object = "{AD837810-DD1E-44E0-97C5-854390EA7D3A}#3.2#0"; "COA_Navigation.ocx"
 Begin VB.Form frmTechSupport 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "Technical Support"
+   Caption         =   "Support"
    ClientHeight    =   2355
    ClientLeft      =   45
    ClientTop       =   330
@@ -28,7 +28,7 @@ Begin VB.Form frmTechSupport
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.Frame Frame1 
-      Caption         =   "Contacts for Technical Support :"
+      Caption         =   "Contacts for Support :"
       Height          =   1575
       Left            =   120
       TabIndex        =   1
