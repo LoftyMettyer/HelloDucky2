@@ -415,6 +415,7 @@ Namespace ScriptDB
               objIndex.Name = String.Format("IDX_relation_{0}", objRelatedTable.Name)
               objIndex.IsTableIndex = True
               objIndex.IsClustered = False
+              objIndex.Enabled = False
               '              objIndex.Relations.AddIfNew(objRelation)
 
               For Each objColumn In objRelatedTable.DependsOnColumns
@@ -1018,11 +1019,14 @@ Namespace ScriptDB
       Dim aryIncludeColumns As ArrayList
       Dim sObjectName As String
       Dim sIncludeColumns As String
+      Dim bCreateIndex As Boolean
 
       Try
 
         For Each objTable In Globals.Things
           For Each objIndex In objTable.Indexes
+
+            bCreateIndex = False
 
             ' Drop existing index
             sObjectName = IIf(objIndex.IsTableIndex, objTable.PhysicalName, objTable.Name)
@@ -1037,6 +1041,7 @@ Namespace ScriptDB
             For Each objColumn In objIndex.Columns
               If objColumn.Table Is objTable Then
                 aryColumns.Add(objColumn.Name & " ASC")
+                bCreateIndex = True
               End If
             Next
 
@@ -1045,6 +1050,7 @@ Namespace ScriptDB
               If Not objIndex.Columns.Contains(objColumn) Then
                 If objColumn.Table Is objTable Then
                   aryIncludeColumns.Add(objColumn.Name)
+                  bCreateIndex = True
                 End If
               End If
             Next
@@ -1056,6 +1062,7 @@ Namespace ScriptDB
                 Case RelationshipType.Parent
                   aryColumns.Add(String.Format("[ID_{0}] ASC", CInt(objRelation.ChildID)))
               End Select
+              bCreateIndex = True
             Next
 
             ' Create index
@@ -1064,7 +1071,10 @@ Namespace ScriptDB
                   "({2})" & _
                   "{3}" _
                   , objIndex.Name, sObjectName, String.Join(", ", aryColumns.ToArray), sIncludeColumns)
-            Globals.CommitDB.ScriptStatement(sSQL)
+
+            If objIndex.Enabled And bCreateIndex Then
+              Globals.CommitDB.ScriptStatement(sSQL)
+            End If
 
           Next
         Next
