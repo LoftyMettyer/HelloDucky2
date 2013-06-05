@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Begin VB.Form frmGlobalFunctions 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Global "
@@ -626,11 +626,11 @@ End Property
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOK.Enabled = blnChanged
+  cmdOk.Enabled = blnChanged
 End Property
 
 
@@ -2053,6 +2053,8 @@ Private Function SaveDefinition() As Boolean
      
   If typGlobal <> glDelete Then
     If grdColumns.Rows = 0 Then
+     'NHRD14032012 JIRA HRPRO-1852
+      SSTab1.Tab = 1
       COAMsgBox "No columns selected.", vbExclamation, Me.Caption
       SaveDefinition = False
       Exit Function
@@ -2686,11 +2688,11 @@ Private Sub txtDesc_GotFocus()
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-  cmdOK.Default = False
+  cmdOk.Default = False
 End Sub
 
 Private Sub txtDesc_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub txtName_Change()
@@ -2747,8 +2749,8 @@ Private Sub FormatForm()
       cmdCancel.Move lngLeft, lngTop
 
       'Command OK
-      lngLeft = lngLeft - (cmdOK.Width + GAP)
-      cmdOK.Move lngLeft, lngTop
+      lngLeft = lngLeft - (cmdOk.Width + GAP)
+      cmdOk.Move lngLeft, lngTop
     End With
 
     SSTab1.Visible = False
@@ -2836,6 +2838,8 @@ Private Function CheckMandatoryColumns() As Boolean
                 "Please enter a source to populate these columns."
     intMBButtons = vbExclamation + vbOKOnly
     strTitle = App.ProductName
+    'NHRD14032012 JIRA HRPRO-1852
+    SSTab1.Tab = 1
     COAMsgBox strMBText, intMBButtons, strTitle
   End If
 
