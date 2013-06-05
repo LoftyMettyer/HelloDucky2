@@ -345,11 +345,9 @@ Namespace ScriptDB
       Dim objTable As Things.Table
       Dim objColumn As Things.Column
       Dim objRelation As Things.Relation
-      Dim objValidation As Things.Validation
       Dim sSQL As String = String.Empty
+      Dim sValidation As String = String.Empty
       Dim sTriggerName As String = String.Empty
-
-      Dim sSQLCode_Links As String
 
       Dim sSQLCode_AuditInsert As String = String.Empty
       Dim sSQLCode_AuditUpdate As String = String.Empty
@@ -402,16 +400,37 @@ Namespace ScriptDB
           aryAuditDeletes = New ArrayList
 
           aryValidationStatements = New ArrayList
-          For Each objValidation In objTable.Validations
+          'For Each objValidation In objTable.Validations
 
-            Select Case objValidation.ValidationType
-              Case Things.ValidationType.Mandatory
-                '            aryValidationStatements
+          '  Select Case objValidation.ValidationType
+
+          '    Case Things.ValidationType.Mandatory
+          '      sValidation = String.Format("    INSERT @Failed" & vbNewLine & _
+          '          "       SELECT [id],'{0}' AS [Message], {2} AS [Severity]" & vbNewLine & _
+          '          "       FROM inserted" & vbNewLine & _
+          '          "       WHERE [{1}] IS NULL OR [{1}] = {3};" & vbNewLine & vbNewLine _
+          '          , objValidation.Message, objValidation.Column.Name, CInt(objValidation.Severity), objValidation.Column.SafeReturnType)
+
+          '    Case Things.ValidationType.UniqueInTable
+          '      sValidation = String.Format("    INSERT @Failed" & vbNewLine & _
+          '          "        SELECT [id],'{0}' AS [Message], {1} AS [Severity] " & vbNewLine & _
+          '          "        FROM inserted base" & vbNewLine & _
+          '          "        WHERE [{2}] IN (SELECT [{2}] FROM inserted" & vbNewLine & _
+          '          "        GROUP BY [{2}]" & vbNewLine & _
+          '          "        HAVING COUNT([{2}]) > 1)" _
+          '          , objValidation.Message, CInt(objValidation.Severity), objValidation.Column.Name)
+
+          '      If objValidation.Column.IsCalculated Then
+          '        sValidation = sValidation & vbNewLine & String.Format("        OR [dbo].[{0}]() > 0" & vbNewLine _
+          '          , objValidation.Column.Calculation.UDF.CallingCode)
+          '      End If
 
 
-            End Select
+          '  End Select
 
-          Next
+          '  aryValidationStatements.Add(sValidation)
+
+          'Next
 
           aryAfterInsertColumns = New ArrayList
           aryUpdateUniqueCodes = New ArrayList
@@ -442,9 +461,6 @@ Namespace ScriptDB
               If objColumn.IsCalculated Then
                 objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
                 objColumn.Calculation.AssociatedColumn = objColumn
-
-                '     Debug.Assert(objColumn.Name <> "Holiday_Taken")
-
                 objColumn.Calculation.GenerateCode()
                 aryCalculatedColumns.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.Calculation.UDF.CallingCode) & vbNewLine)
               End If
@@ -567,62 +583,46 @@ Namespace ScriptDB
           End If
 
 
-          '' Insert all the columns that need updating after an insert operation
-          'aryAfterInsertColumns = GetArray_AfterInsertColumns(uiTableID)
-          'sSQLAfterInsertColumns = String.Empty
-          'If aryAfterInsertColumns.Count > 0 Then
-          '  sSQLAfterInsertColumns = String.Format("    UPDATE [dbo].[{0}]" & vbNewLine & _
-          '    "        SET {1}" & vbNewLine & _
-          '    "        FROM [inserted] WHERE [inserted].[id] = [dbo].[{0}].[id];" & vbNewLine _
-          '    , sObjectName, String.Join(", " & vbNewLine & vbTab & vbTab & vbTab, aryAfterInsertColumns.ToArray(GetType(String))))
-          'Else
-          '  sSQLAfterInsertColumns = String.Empty
-          'End If
-
-
-
-
           ' Update statement of all the calculated columns
           If aryCalculatedColumns.ToArray.Length > 0 Then
+            'sSQLCalculatedColumns = String.Format("    -- Update any calculated columns" & vbNewLine & _
+            '  "    UPDATE base" & vbNewLine & _
+            '  "        SET {1}" & vbNewLine & _
+            '  "        FROM [dbo].[{0}] base" & vbNewLine & _
+            '  "        WHERE [id] IN (SELECT DISTINCT [id] FROM inserted);" & vbNewLine & vbNewLine _
+            '  , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryCalculatedColumns.ToArray()))
+
             sSQLCalculatedColumns = String.Format("    -- Update any calculated columns" & vbNewLine & _
+              "    WITH base AS (" & vbNewLine & _
+              "        SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
+              "        FROM [dbo].[{0}]" & vbNewLine & _
+              "        WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
               "    UPDATE base" & vbNewLine & _
-              "        SET {1}" & vbNewLine & _
-              "        FROM [dbo].[{0}] base" & vbNewLine & _
-              "        WHERE [id] IN (SELECT DISTINCT [id] FROM inserted);" & vbNewLine & vbNewLine _
+              "        SET {1}" _
               , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryCalculatedColumns.ToArray()))
+
           Else
             sSQLCalculatedColumns = "    -- No calculated columns" & vbNewLine & vbNewLine
           End If
-
-
-          sSQLCode_Links = "    -- No links"
-
 
           ' -------------------
           ' INSTEAD OF INSERT
           ' -------------------
           sTriggerName = String.Format("{0}{1}_i01", ScriptDB.Consts.Trigger, objTable.Name)
-          sSQL = String.Format("    DECLARE @dChangeDate datetime;" & vbNewLine & _
+          sSQL = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
+              "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
+              "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-              "---------------------------" & vbNewLine & _
-              "-- Validation." & vbNewLine & _
-              "---------------------------" & vbNewLine & vbNewLine & _
-              "    DECLARE @Failed TABLE ([id] integer, [Message] nvarchar(500), [Severity] tinyint, [ValidationID] uniqueidentifier);" & vbNewLine & vbNewLine & _
               "{2}" & vbNewLine & vbNewLine & _
-              "---------------------------" & vbNewLine & _
-              "-- Commit valid data." & vbNewLine & _
-              "---------------------------" & vbNewLine & vbNewLine & _
-              "    DECLARE @UpdateBypass TABLE ([id] integer PRIMARY KEY CLUSTERED);" & vbNewLine & _
-              "    INSERT @UpdateBypass SELECT DISTINCT [id] FROM @Failed WHERE [Severity] = 2;" & vbNewLine & vbNewLine & _
+              "    ---------------------------" & vbNewLine & _
+              "    -- Commit valid data." & vbNewLine & _
+              "    ---------------------------" & vbNewLine & vbNewLine & _
+              "    --DECLARE @UpdateBypass TABLE ([id] integer PRIMARY KEY CLUSTERED);" & vbNewLine & _
+              "    --INSERT @UpdateBypass SELECT DISTINCT [id] FROM @Failed WHERE [Severity] = 2;" & vbNewLine & vbNewLine & _
               "    INSERT [dbo].[{0}] ({4})" & vbNewLine & _
-              "        SELECT {4} FROM inserted" & vbNewLine & _
-              "		     WHERE inserted.[id] not in (SELECT [id] FROM @UpdateBypass);" & vbNewLine & vbNewLine & _
-              "---------------------------" & vbNewLine & _
-              "-- Errors & warnings." & vbNewLine & _
-              "---------------------------" & vbNewLine & vbNewLine & _
-              "    IF EXISTS(SELECT * FROM @Failed) SELECT * FROM @Failed;" & vbNewLine & vbNewLine _
+              "        SELECT {4} FROM inserted;" & vbNewLine _
               , objTable.Name, sTriggerName _
-              , String.Join(vbNewLine, aryValidationStatements.ToArray()) _
+              , "" _
               , "" _
               , String.Join(",", aryAllWriteableColumns.ToArray()))
           ScriptTrigger("dbo", objTable, TriggerType.InsteadOfInsert, sSQL)
@@ -651,34 +651,27 @@ Namespace ScriptDB
           ' INSTEAD OF UPDATE
           ' -------------------
           sTriggerName = String.Format("{0}{1}_u01", ScriptDB.Consts.Trigger, objTable.Name)
-          sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] nvarchar(MAX), [newvalue] nvarchar(MAX), [tableid] integer, [columnid] integer);" & vbNewLine & _
-              "    DECLARE @dChangeDate datetime;" & vbNewLine & _
-              "    DECLARE @nvarCommand nvarchar(MAX);" & vbNewLine & _
+          sSQL = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] nvarchar(MAX), [newvalue] nvarchar(MAX), [tableid] integer, [columnid] integer);" & vbNewLine & _
+              "    DECLARE @dChangeDate datetime," & vbNewLine & _
+              "            @nvarCommand nvarchar(MAX)," & vbNewLine & _
+              "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
+              "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-              "    --IF NOT UPDATE([updflag]) INSERT [dbo].[{5}] ([spid], [tablefromid]) VALUES (@@spid,{6})" & vbNewLine & vbNewLine & _
-              "---------------------------" & vbNewLine & _
-              "-- Validation." & vbNewLine & _
-              "---------------------------" & vbNewLine & vbNewLine & _
-              "    DECLARE @Failed TABLE ([id] integer, [Message] nvarchar(500), [Severity] tinyint, [ValidationID] uniqueidentifier);" & vbNewLine & vbNewLine & _
+              "    IF NOT UPDATE([updflag])" & vbNewLine & vbNewLine & _
+              "        BEGIN" & vbNewLine & _
               "{2}" & vbNewLine & vbNewLine & _
-              "---------------------------" & vbNewLine & _
-              "-- Commit valid data." & vbNewLine & _
-              "---------------------------" & vbNewLine & vbNewLine & _
-              "    DECLARE @UpdateBypass TABLE ([id] integer PRIMARY KEY CLUSTERED);" & vbNewLine & _
-              "    INSERT @UpdateBypass SELECT DISTINCT [id] FROM @Failed WHERE [Severity] = 2;" & vbNewLine & vbNewLine & _
-              "{3}" & _
-              "    AND inserted.[id] not in (SELECT [id] FROM @UpdateBypass);" & vbNewLine & vbNewLine & _
+              "        ---------------------------" & vbNewLine & _
+              "        -- Commit writeable columns" & vbNewLine & _
+              "        ---------------------------" & vbNewLine & vbNewLine & _
+              "{3}" & vbNewLine & vbNewLine & _
+              "    END" & vbNewLine & vbNewLine & _
               "    ---------------------------" & vbNewLine & _
               "    -- Audit Trail" & vbNewLine & _
               "    ---------------------------" & vbNewLine & _
               "{4}" & vbNewLine & vbNewLine & _
               "    INSERT dbo.[tbsys_audittrail] (username, datetimestamp, recordid, oldvalue, newvalue, tableid, columnid, deleted)" & vbNewLine & _
               "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, tableid, columnid, 0 FROM @audit" & vbNewLine & vbNewLine & _
-              "{7}" & vbNewLine & vbNewLine & _
-              "---------------------------" & vbNewLine & _
-              "-- Errors & warnings." & vbNewLine & _
-              "---------------------------" & vbNewLine & vbNewLine & _
-              "    IF EXISTS(SELECT * FROM @Failed) SELECT * FROM @Failed;" & vbNewLine _
+              "{7}" & vbNewLine _
               , objTable.Name, sTriggerName _
               , String.Join(vbNewLine, aryValidationStatements.ToArray()) _
               , sSQLWriteableColumns _
@@ -692,21 +685,28 @@ Namespace ScriptDB
           ' AFTER UPDATE
           ' -------------------
           sTriggerName = String.Format("{0}{1}_u02", ScriptDB.Consts.Trigger, objTable.Name)
-          sSQL = String.Format("    DECLARE @dChangeDate datetime;" & vbNewLine & vbNewLine & _
+          sSQL = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
+              "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
+              "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
               "    -- Has the trigger been called from an update on another table?" & vbNewLine & _
-              "    IF NOT UPDATE([updflag]) INSERT [dbo].[{4}] ([spid], [tablefromid]) VALUES (@@spid,{3})" & vbNewLine & vbNewLine & _
+              "    IF NOT UPDATE([updflag]) INSERT [dbo].[{4}] ([spid], [tablefromid]) VALUES (@@spid,{3});" & vbNewLine & vbNewLine & _
               sSQLCalculatedColumns & vbNewLine & _
               sSQLParentColumns & vbNewLine & _
-              sSQLChildColumns & vbNewLine & _
-              "    -- Links " & vbNewLine & "{2}" & vbNewLine & vbNewLine & _
-              "    -- Update unique codes " & vbNewLine & "{5}" & vbNewLine & vbNewLine & _
+              sSQLChildColumns & vbNewLine & vbNewLine & _
+              "    ---------------------------" & vbNewLine & _
+              "    -- Validation" & vbNewLine & _
+              "    ---------------------------" & vbNewLine & _
+              "    SELECT @sValidation = dbo.[udfvalid_{0}](ID) FROM inserted WHERE LEN(dbo.[udfvalid_{0}](ID)) > 0" & vbNewLine & _
+              "    IF LEN(@sValidation) > 0" & vbNewLine & _
+              "    BEGIN" & vbNewLine & _
+              "        RAISERROR(@sValidation, 16, 1);" & vbNewLine & _
+              "        ROLLBACK;" & vbNewLine & _
+              "    END" & vbNewLine & vbNewLine & _
               "    -- Clear the temporary trigger status table" & vbNewLine & vbNewLine & _
-              "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {3};" & vbNewLine & vbNewLine & _
-              "    -- Some debug code - (REMOVE later) " & vbNewLine & _
-              "/* " & vbNewLine & String.Join(vbNewLine, aryDebugColumns.ToArray()) & vbNewLine & "*/" _
+              "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {3};" & vbNewLine & vbNewLine _
               , objTable.Name, sTriggerName _
-              , sSQLCode_Links, CInt(objTable.ID), Tables.sysTriggerTransaction _
+              , "", CInt(objTable.ID), Tables.sysTriggerTransaction _
               , String.Join(vbNewLine, aryUpdateUniqueCodes.ToArray()))
           ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSQL)
 
@@ -729,8 +729,6 @@ Namespace ScriptDB
           ScriptTrigger("dbo", objTable, TriggerType.AfterDelete, sSQL)
 
 
-
-
         Next
 
       Catch ex As Exception
@@ -738,7 +736,6 @@ Namespace ScriptDB
         bOK = False
 
       Finally
-        '     ProgressInfo.NextStep1()
 
       End Try
 
@@ -789,14 +786,14 @@ Namespace ScriptDB
         sSQL = String.Format("CREATE TRIGGER [{1}].[{0}] ON [{1}].[{2}]" & vbNewLine & _
           "    {3}" & vbNewLine & "AS" & vbNewLine & _
           "BEGIN" & vbNewLine & _
-          "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([{2}].[{0}]';" & vbNewLine & _
+          "    PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([{2}].[{0}]';" & vbNewLine & _
           "    SET NOCOUNT ON;" & vbNewLine & _
           "    DECLARE @iCount integer;" & vbNewLine & vbNewLine & _
          "    -- Only top level call (in case database property activating recursion is enabled)" & vbNewLine & _
          "    --print TRIGGER_NESTLEVEL()" & vbNewLine & _
          "    --IF TRIGGER_NESTLEVEL() > 15 RETURN" & vbNewLine & vbNewLine & _
           "{4}" & vbNewLine & vbNewLine & _
-          "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
+          "    PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
           "END" _
           , sTriggerName, [Role], Table.PhysicalName, sTriggerType, [BodyCode])
         CommitDB.ScriptStatement(sSQL)

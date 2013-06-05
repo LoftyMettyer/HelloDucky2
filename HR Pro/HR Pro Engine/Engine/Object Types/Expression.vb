@@ -38,11 +38,11 @@ Namespace Things
     Private mcolLinesOfCode As ScriptDB.LinesOfCode
     'Private mbAddBaseTable As Boolean
     Private mbIsValid As Boolean
+    Private mbRequiresRowNumber = False
 
     'tempry - must solve later
     Private miRecuriveStop As Integer
     Private OnlyReferencesThisTable As Boolean
-    Private mbRequiresRowNumber = False
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
@@ -50,18 +50,18 @@ Namespace Things
       End Get
     End Property
 
-    ' Some functions (unique value) need to know the row number of the insert/update row thats functioning because the UDF can't update the underlying data.
-    Public Property RequiresRowNumber As Boolean
-      Get
-        Return mbRequiresRowNumber
-      End Get
-      Set(ByVal value As Boolean)
-        mbRequiresRowNumber = value
-        If Not Me.BaseExpression Is Me Then
-          Me.BaseExpression.RequiresRowNumber = mbRequiresRowNumber
-        End If
-      End Set
-    End Property
+    '' Some functions (unique value) need to know the row number of the insert/update row thats functioning because the UDF can't update the underlying data.
+    'Public Property RequiresRowNumber As Boolean
+    '  Get
+    '    Return mbRequiresRowNumber
+    '  End Get
+    '  Set(ByVal value As Boolean)
+    '    mbRequiresRowNumber = value
+    '    If Not Me.BaseExpression Is Me Then
+    '      Me.BaseExpression.RequiresRowNumber = mbRequiresRowNumber
+    '    End If
+    '  End Set
+    'End Property
 
 
 
@@ -276,6 +276,12 @@ Namespace Things
       aryParameters2.Add("base.ID")
       aryParameters3.add("@prm_ID")
 
+      If mbRequiresRowNumber Then
+        aryParameters1.Add("@rownumber integer")
+        aryParameters2.Add("[rownumber]")
+        aryParameters3.Add("@rownumber")
+      End If
+
       ' Add other dependancies
       iCount = 0
       For Each objDependency In mcolDependencies
@@ -303,10 +309,11 @@ Namespace Things
           End If
 
         End If
-        'If objDependency.Type = Enums.Type.Setting Then
-        '  aryParameters1.Add(String.Format("@pid_{0} integer", CInt(CType(objDependency, Things.Setting).Value)))
-        '  aryParameters2.Add(String.Format("base.[ID_{0}]", CInt(CType(objDependency, Things.Setting).Value)))
-        'End If
+
+        '  If objDependency.Type = Enums.Type.Setting Then
+        '   '          aryParameters1.Add(String.Format("{0}", CInt(CType(objDependency, Things.Setting).Value)))
+        '  aryParameters2.Add(String.Format("{0}", CInt(CType(objDependency, Things.Setting).Value)))
+        '  End If
 
         iCount += iCount
       Next
@@ -480,6 +487,9 @@ Namespace Things
 
               Case ScriptDB.ComponentValueTypes.Date
                 LineOfCode.Code = String.Format("'{0}'", objComponent.ValueDate)
+
+              Case ScriptDB.ComponentValueTypes.SystemVariable
+                LineOfCode.Code = String.Format("{0}", objComponent.ValueString)
 
               Case Else
                 LineOfCode.Code = String.Format("{0}", IIf(objComponent.ValueLogic, 1, 0))
@@ -914,6 +924,8 @@ Namespace Things
       Dim objCodeLibrary As Things.CodeLibrary
       Dim ChildCodeCluster As ScriptDB.LinesOfCode
       Dim objSetting As Things.Setting
+      Dim objUniqueCode As Things.Setting
+
       'Dim objTable As Things.Table
       ' Dim objRelation As Things.Relation
       Dim objIDComponent As Things.Component
@@ -922,20 +934,24 @@ Namespace Things
       objCodeLibrary = Globals.Functions.GetObject(Enums.Type.CodeLibrary, Component.FunctionID)
       LineOfCode.Code = objCodeLibrary.Code
 
+
+
       ' Get parameters
       ChildCodeCluster = New ScriptDB.LinesOfCode
       ChildCodeCluster.CodeLevel = [CodeCluster].CodeLevel + 1
       ChildCodeCluster.NestedLevel = CodeCluster.NestedLevel + 1
       ChildCodeCluster.ReturnType = objCodeLibrary.ReturnType
 
-      '    Debug.Assert(CInt(objCodeLibrary.ID) <> 42)
-
-
       ' Add module dependancy info for this function
       If objCodeLibrary.HasDependancies Then
         For Each objSetting In objCodeLibrary.Dependancies
-          Select Case objSetting.SubType
-            Case Enums.Type.Table
+
+          Select Case objSetting.SettingType
+
+            Case SettingType.ModuleSetting
+
+              '     Select Case objSetting.SubType
+              'Case Enums.Type.Table
 
               ' Add it as a relation
               'objTable = Globals.Things.GetObject(Enums.Type.Table, objSetting.Value)
@@ -947,16 +963,27 @@ Namespace Things
               objIDComponent.TableID = objSetting.Value
               [Component].Objects.Add(objIDComponent)
 
-            Case Enums.Type.Column
+              '    Case Enums.Type.Column
               'AddDependancy(Globals.Things.GetObject(Enums.Type.Table, objSetting.Value))
 
+              '  End Select
+
+            Case SettingType.CodeItem
+              objIDComponent = New Things.Component
+              objIDComponent.SubType = ScriptDB.ComponentTypes.Value
+              objIDComponent.ValueString = objSetting.Code
+              objIDComponent.ValueType = ScriptDB.ComponentValueTypes.SystemVariable
+              [Component].Objects.Add(objIDComponent)
+
           End Select
+
 
         Next
       End If
 
       SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
       LineOfCode.Code = String.Format(LineOfCode.Code, ChildCodeCluster.ToArray)
+      mbRequiresRowNumber = mbRequiresRowNumber Or objCodeLibrary.RowNumberRequired
 
       ' For functions that return mixed type, make it type safe
       If objCodeLibrary.ReturnType = ScriptDB.ComponentValueTypes.Unknown Then

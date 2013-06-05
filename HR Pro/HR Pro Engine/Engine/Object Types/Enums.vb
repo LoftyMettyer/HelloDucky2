@@ -80,9 +80,27 @@
     Public Enum ValidationType
       None = 0
       Duplicate = 1
-      Unique = 2
-      Mandatory = 3
-      Offset = 4
+      UniqueInTable = 2
+      UniqueInSiblings = 3
+      Mandatory = 4
+      Offset = 5
+    End Enum
+
+    Public Enum ValidationSeverity
+      Information = 0
+      Warning = 1
+      [Error] = 2
+      Catastrophic = 3
+    End Enum
+
+    Public Enum UniqueCheckScope
+      All = 0
+      Sibling = 1
+    End Enum
+
+    Public Enum SettingType
+      ModuleSetting = 1
+      CodeItem = 2
     End Enum
 
   End Module

@@ -9,6 +9,7 @@
     Public AfterCode As String
     Public ReturnType As ScriptDB.ComponentValueTypes
     Public BypassValidation As Boolean
+    Public RowNumberRequired As Boolean
     '    Public Module_Dependancies As String
 
     'Public Overrides Function Commit() As Boolean

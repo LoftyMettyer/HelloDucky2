@@ -15,6 +15,7 @@ Public Module Globals
   Public ErrorLog As HRProEngine.ErrorHandler.Errors
   Public ModuleSetup As Things.Collection
   Public Options As HCMOptions
+  Public UniqueCodes As Things.Collection
 
   Public ScriptDB As ScriptDB.Script
 

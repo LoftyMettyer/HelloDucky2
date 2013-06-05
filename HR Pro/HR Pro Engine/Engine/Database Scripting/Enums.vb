@@ -131,11 +131,12 @@
       [Numeric] = 2
       [Logic] = 3
       [Date] = 4
-      [Another_Unknown] = 5
-      [Component_String] = 101
-      [Component_Numeric] = 102
-      [Component_Logic] = 103
-      [Component_Date] = 104
+      [SystemVariable] = 5
+      '[Another_Unknown] = 100
+      '[Component_String] = 101
+      '[Component_Numeric] = 102
+      '[Component_Logic] = 103
+      '[Component_Date] = 104
     End Enum
 
     'Public Enum ObjectTypes

@@ -63,10 +63,11 @@
         objDataset = Globals.CommitDB.ExecStoredProcedure("spadmin_getcomponentcodedependancies", objParameters)
         For Each objRow In objDataset.Tables(0).Rows
           objSetting = New Things.Setting
+          objSetting.SettingType = objRow.Item("type").ToString
           objSetting.Module = objRow.Item("parameterkey").ToString
           objSetting.Parameter = objRow.Item("modulekey").ToString
           objSetting.Value = objRow.Item("value").ToString
-          objSetting.SubType = objRow.Item("settingtype").ToString
+          objSetting.Code = objRow.Item("code").ToString
           objDependancies.Add(objSetting)
         Next
 
@@ -107,6 +108,7 @@
           objCodeLibrary.ReturnType = objRow.Item("returntype").ToString
           objCodeLibrary.OperatorType = objRow.Item("operatortype").ToString
           objCodeLibrary.BypassValidation = objRow.Item("bypassvalidation").ToString
+          objCodeLibrary.RowNumberRequired = objRow.Item("rownumberrequired").ToString
           objCodeLibrary.Dependancies = PopulateCodeLibraryDependancies(objCodeLibrary)
 
           If objRow.Item("isoperator") Then

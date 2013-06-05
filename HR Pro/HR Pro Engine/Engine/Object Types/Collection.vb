@@ -127,7 +127,7 @@ Namespace Things
     Public Function GetSetting(ByVal [Module] As String, ByVal [Parameter] As String) As Things.Setting
 
       Dim objChild As Things.Base
-      Dim objSetting As Things.Setting
+      Dim objSetting As New Things.Setting
 
       For Each objChild In MyBase.Items
         If objChild.Type = Type.Setting Then
@@ -138,7 +138,7 @@ Namespace Things
         End If
       Next
 
-      Return Nothing
+      Return objSetting
 
     End Function
 
