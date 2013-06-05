@@ -414,12 +414,12 @@ Public Class MainForm
 
     objPhoenix.Initialise()
 
-    'objError = New SystemFramework.ErrorHandler.Error
-    'objError.DateTime = Now
-    'objError.Detail = "my detail"
-    'objError.Severity = SystemFramework.ErrorHandler.Severity.Error
-    'objError.Message = "the error message"
-    'objPhoenix.ReturnErrorLog.Add(objError)
+    objError = New SystemFramework.ErrorHandler.Error
+    objError.DateTime = Now
+    objError.Detail = "my detail"
+    objError.Severity = SystemFramework.ErrorHandler.Severity.Error
+    objError.Message = "the error message"
+    objPhoenix.ReturnErrorLog.Add(objError)
 
 
     objError = New SystemFramework.ErrorHandler.Error
