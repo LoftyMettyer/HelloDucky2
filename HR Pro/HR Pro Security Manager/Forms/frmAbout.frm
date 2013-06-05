@@ -48,11 +48,11 @@ Begin VB.Form frmAbout
       Width           =   1155
       Begin VB.Image imgASR 
          Appearance      =   0  'Flat
-         Height          =   720
-         Left            =   210
+         Height          =   795
+         Left            =   105
          Picture         =   "frmAbout.frx":000C
-         Top             =   165
-         Width           =   720
+         Top             =   105
+         Width           =   900
       End
    End
    Begin VB.CommandButton cmdOK 
@@ -89,7 +89,7 @@ Begin VB.Form frmAbout
       ForeColor       =   &H00FF0000&
       Height          =   195
       Left            =   150
-      MouseIcon       =   "frmAbout.frx":06B9
+      MouseIcon       =   "frmAbout.frx":2592
       MousePointer    =   99  'Custom
       TabIndex        =   10
       Top             =   1510
