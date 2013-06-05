@@ -43,6 +43,9 @@ Public gpropShowColumns_ViewMgr As SystemMgr.Properties
 Public gbAFDEnabled As Boolean
 Public gbQAddressEnabled As Boolean
 
+' Fusion module
+Public gbFusionModule As Boolean
+
 ' Payroll module
 Public gbAccordPayrollModule As Boolean
 Public gbOpenPayModule As Boolean
