@@ -31,7 +31,7 @@ Begin VB.Form frmSSIntranetSetup
       Default         =   -1  'True
       Height          =   400
       Left            =   6040
-      TabIndex        =   44
+      TabIndex        =   45
       Top             =   5700
       Width           =   1200
    End
@@ -40,7 +40,7 @@ Begin VB.Form frmSSIntranetSetup
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   7300
-      TabIndex        =   45
+      TabIndex        =   46
       Top             =   5700
       Width           =   1200
    End
@@ -62,11 +62,13 @@ Begin VB.Form frmSSIntranetSetup
       TabPicture(0)   =   "frmSSIntranetSetup.frx":000C
       Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraViews"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Hypertext Links"
       TabPicture(1)   =   "frmSSIntranetSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraHypertextLinks"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Dash&board"
       TabPicture(2)   =   "frmSSIntranetSetup.frx":0044
@@ -78,25 +80,27 @@ Begin VB.Form frmSSIntranetSetup
       TabPicture(3)   =   "frmSSIntranetSetup.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraDropdownListLinks"
+      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "On-screen Docume&nt Display"
       TabPicture(4)   =   "frmSSIntranetSetup.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraDocuments"
+      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).ControlCount=   1
       Begin VB.Frame fraDocuments 
          Caption         =   "On-screen Document Display :"
          Enabled         =   0   'False
          Height          =   4935
          Left            =   -74850
-         TabIndex        =   53
+         TabIndex        =   54
          Top             =   400
          Width           =   8120
          Begin VB.CommandButton cmdAddDocument 
             Caption         =   "&Add ..."
             Height          =   400
             Left            =   6720
-            TabIndex        =   37
+            TabIndex        =   38
             Top             =   750
             Width           =   1245
          End
@@ -104,7 +108,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Edit ..."
             Height          =   400
             Left            =   6720
-            TabIndex        =   38
+            TabIndex        =   39
             Top             =   1250
             Width           =   1245
          End
@@ -112,7 +116,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Remove"
             Height          =   400
             Left            =   6720
-            TabIndex        =   40
+            TabIndex        =   41
             Top             =   2250
             Width           =   1245
          End
@@ -120,7 +124,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Remo&ve All"
             Height          =   400
             Left            =   6720
-            TabIndex        =   41
+            TabIndex        =   42
             Top             =   2745
             Width           =   1245
          End
@@ -128,7 +132,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Cop&y ..."
             Height          =   400
             Left            =   6720
-            TabIndex        =   39
+            TabIndex        =   40
             Top             =   1750
             Width           =   1245
          End
@@ -137,7 +141,7 @@ Begin VB.Form frmSSIntranetSetup
             Left            =   2100
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   35
+            TabIndex        =   36
             Top             =   300
             Width           =   4515
          End
@@ -145,7 +149,7 @@ Begin VB.Form frmSSIntranetSetup
             Height          =   3945
             Index           =   0
             Left            =   195
-            TabIndex        =   36
+            TabIndex        =   37
             Top             =   750
             Visible         =   0   'False
             Width           =   6400
@@ -313,7 +317,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Up"
             Height          =   405
             Left            =   6720
-            TabIndex        =   42
+            TabIndex        =   43
             Top             =   3255
             Width           =   1245
          End
@@ -321,7 +325,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Do&wn"
             Height          =   405
             Left            =   6720
-            TabIndex        =   43
+            TabIndex        =   44
             Top             =   3750
             Width           =   1245
          End
@@ -329,7 +333,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Table (View) :"
             Height          =   195
             Left            =   195
-            TabIndex        =   54
+            TabIndex        =   55
             Top             =   360
             Width           =   1560
          End
@@ -339,7 +343,7 @@ Begin VB.Form frmSSIntranetSetup
          Enabled         =   0   'False
          Height          =   4935
          Left            =   -74850
-         TabIndex        =   46
+         TabIndex        =   47
          Top             =   405
          Width           =   8120
          Begin VB.ComboBox cboHypertextLinkView 
@@ -565,7 +569,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Table (View) :"
             Height          =   195
             Left            =   195
-            TabIndex        =   47
+            TabIndex        =   48
             Top             =   360
             Width           =   1740
          End
@@ -574,7 +578,7 @@ Begin VB.Form frmSSIntranetSetup
          Caption         =   "Tables (Views) :"
          Height          =   4935
          Left            =   -74850
-         TabIndex        =   52
+         TabIndex        =   53
          Top             =   400
          Width           =   8120
          Begin VB.CommandButton cmdRemoveAllTableViews 
@@ -790,7 +794,7 @@ Begin VB.Form frmSSIntranetSetup
          Enabled         =   0   'False
          Height          =   4935
          Left            =   150
-         TabIndex        =   48
+         TabIndex        =   49
          Top             =   405
          Width           =   8120
          Begin VB.ComboBox cboSecurityGroup 
@@ -798,7 +802,7 @@ Begin VB.Form frmSSIntranetSetup
             Left            =   2100
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   56
+            TabIndex        =   18
             Top             =   675
             Width           =   4515
          End
@@ -815,7 +819,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Cop&y ..."
             Height          =   400
             Left            =   6720
-            TabIndex        =   21
+            TabIndex        =   22
             Top             =   2100
             Width           =   1245
          End
@@ -823,7 +827,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Add ..."
             Height          =   400
             Left            =   6720
-            TabIndex        =   19
+            TabIndex        =   20
             Top             =   1095
             Width           =   1245
          End
@@ -831,7 +835,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Edit ..."
             Height          =   400
             Left            =   6720
-            TabIndex        =   20
+            TabIndex        =   21
             Top             =   1590
             Width           =   1245
          End
@@ -839,7 +843,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Remove"
             Height          =   400
             Left            =   6720
-            TabIndex        =   22
+            TabIndex        =   23
             Top             =   2610
             Width           =   1245
          End
@@ -847,7 +851,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Remo&ve All"
             Height          =   400
             Left            =   6720
-            TabIndex        =   23
+            TabIndex        =   24
             Top             =   3120
             Width           =   1245
          End
@@ -855,7 +859,7 @@ Begin VB.Form frmSSIntranetSetup
             Height          =   3585
             Index           =   0
             Left            =   195
-            TabIndex        =   18
+            TabIndex        =   19
             Top             =   1110
             Visible         =   0   'False
             Width           =   6420
@@ -1135,7 +1139,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Up"
             Height          =   405
             Left            =   6720
-            TabIndex        =   24
+            TabIndex        =   25
             Top             =   3615
             Width           =   1245
          End
@@ -1143,7 +1147,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Do&wn"
             Height          =   405
             Left            =   6720
-            TabIndex        =   25
+            TabIndex        =   26
             Top             =   4110
             Width           =   1245
          End
@@ -1151,7 +1155,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "User Group :"
             Height          =   195
             Left            =   195
-            TabIndex        =   55
+            TabIndex        =   56
             Top             =   705
             Width           =   1695
          End
@@ -1159,7 +1163,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Table (View) :"
             Height          =   195
             Left            =   195
-            TabIndex        =   49
+            TabIndex        =   50
             Top             =   360
             Width           =   1695
          End
@@ -1169,7 +1173,7 @@ Begin VB.Form frmSSIntranetSetup
          Enabled         =   0   'False
          Height          =   4935
          Left            =   -74850
-         TabIndex        =   50
+         TabIndex        =   51
          Top             =   405
          Width           =   8120
          Begin VB.ComboBox cboDropdownListLinkView 
@@ -1177,7 +1181,7 @@ Begin VB.Form frmSSIntranetSetup
             Left            =   2100
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   26
+            TabIndex        =   27
             Top             =   300
             Width           =   4515
          End
@@ -1185,7 +1189,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Cop&y ..."
             Height          =   400
             Left            =   6720
-            TabIndex        =   30
+            TabIndex        =   31
             Top             =   1750
             Width           =   1245
          End
@@ -1193,7 +1197,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Remo&ve All"
             Height          =   400
             Left            =   6720
-            TabIndex        =   32
+            TabIndex        =   33
             Top             =   2745
             Width           =   1245
          End
@@ -1201,7 +1205,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Remove"
             Height          =   400
             Left            =   6720
-            TabIndex        =   31
+            TabIndex        =   32
             Top             =   2250
             Width           =   1245
          End
@@ -1209,7 +1213,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Edit ..."
             Height          =   400
             Left            =   6720
-            TabIndex        =   29
+            TabIndex        =   30
             Top             =   1250
             Width           =   1245
          End
@@ -1217,7 +1221,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Add ..."
             Height          =   400
             Left            =   6720
-            TabIndex        =   28
+            TabIndex        =   29
             Top             =   750
             Width           =   1245
          End
@@ -1225,7 +1229,7 @@ Begin VB.Form frmSSIntranetSetup
             Height          =   3945
             Index           =   0
             Left            =   195
-            TabIndex        =   27
+            TabIndex        =   28
             Top             =   750
             Visible         =   0   'False
             Width           =   6400
@@ -1379,7 +1383,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Do&wn"
             Height          =   405
             Left            =   6720
-            TabIndex        =   34
+            TabIndex        =   35
             Top             =   3750
             Width           =   1245
          End
@@ -1387,7 +1391,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "&Up"
             Height          =   405
             Left            =   6720
-            TabIndex        =   33
+            TabIndex        =   34
             Top             =   3255
             Width           =   1245
          End
@@ -1395,7 +1399,7 @@ Begin VB.Form frmSSIntranetSetup
             Caption         =   "Table (View) :"
             Height          =   195
             Left            =   195
-            TabIndex        =   51
+            TabIndex        =   52
             Top             =   360
             Width           =   1650
          End
@@ -1761,7 +1765,7 @@ Private Sub RefreshControls()
 
   End Select
 
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
 
 End Sub
 
