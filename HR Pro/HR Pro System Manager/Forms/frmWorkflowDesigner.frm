@@ -263,7 +263,7 @@ Begin VB.Form frmWorkflowDesigner
       MousePointer    =   1
       Appearance      =   0
       Arrows          =   65536
-      Orientation     =   1179649
+      Orientation     =   1572865
    End
    Begin MSComCtl2.FlatScrollBar scrollVertical 
       Height          =   3375
@@ -276,7 +276,7 @@ Begin VB.Form frmWorkflowDesigner
       _Version        =   393216
       MousePointer    =   1
       Appearance      =   0
-      Orientation     =   1179648
+      Orientation     =   1572864
    End
    Begin ActiveBarLibraryCtl.ActiveBar abMenu 
       Left            =   120
