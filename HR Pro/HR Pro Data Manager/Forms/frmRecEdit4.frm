@@ -2663,6 +2663,14 @@ Private Sub UpdateParentControls(plngParentTableID As Long, Optional plngParentR
             Else
               .Value = rsTemp(sColumnName) & vbNullString
             End If
+              
+          ElseIf TypeOf objControl Is COA_Navigation Then
+            If fResetControl Then
+              .NavigateTo = ""
+            Else
+              .NavigateTo = rsTemp(sColumnName) & vbNullString
+            End If
+            
           End If
         End With
       End If
