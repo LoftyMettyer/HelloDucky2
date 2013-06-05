@@ -73,14 +73,14 @@ Begin VB.Form frmTrainingBookingSetup
       TabCaption(2)   =   "De&legates"
       TabPicture(2)   =   "frmTrainingBookingSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraUnavailability"
-      Tab(2).Control(1)=   "fraDelegates"
+      Tab(2).Control(0)=   "fraDelegates"
+      Tab(2).Control(1)=   "fraUnavailability"
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "Waiting List / &Bookings"
       TabPicture(3)   =   "frmTrainingBookingSetup.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraTrainingBookings"
-      Tab(3).Control(1)=   "fraWaitingList"
+      Tab(3).Control(0)=   "fraWaitingList"
+      Tab(3).Control(1)=   "fraTrainingBookings"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "&Related Columns"
       TabPicture(4)   =   "frmTrainingBookingSetup.frx":007C
@@ -2099,8 +2099,10 @@ End Sub
 
 
 Private Sub ssgrdRelatedColumns_ComboCloseUp()
+  ssgrdRelatedColumns.Redraw = False
   ssgrdRelatedColumns.Update
-
+  ssgrdRelatedColumns.Redraw = True
+  Me.Changed = True
 End Sub
 
 Private Sub ssgrdRelatedColumns_LostFocus()
