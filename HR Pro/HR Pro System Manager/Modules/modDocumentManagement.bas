@@ -65,7 +65,8 @@ Public Function CreateLinkDocumentSP() As Boolean
     
     sSQL = sSQL & _
               "    DECLARE @iDocCategoryID integer," & vbNewLine & _
-              "        @iDocTypeID   integer;" & vbNewLine & vbNewLine
+              "        @iDocTypeID         integer," & vbNewLine & _
+              "        @iDocumentMapID     integer;" & vbNewLine & vbNewLine
 
     sSQL = sSQL & _
               "    SET @sExecuteSQL = '';" & vbNewLine & _
@@ -79,6 +80,17 @@ Public Function CreateLinkDocumentSP() As Boolean
               "    SELECT @iDocTypeID = [ID] FROM [" & sTypeTableName & "] WHERE [" & sTypeCategoryColumnName & "] = @DocumentCategory AND [" & sTypeColumnName & "] = @DocumentType;" & vbNewLine & vbNewLine
   
     sSQL = sSQL & _
+              "    -- Does this combination of category and type exist?" & vbNewLine & _
+              "    IF EXISTS(SELECT [DocumentMapID] FROM dbo.[ASRSysDocumentManagementTypes] d WHERE d.[TypeRecordID] = @iDocTypeID AND d.[CategoryRecordID] = @iDocCategoryID)" & vbNewLine & _
+              "        SELECT @iDocumentMapID = [DocumentMapID]" & vbNewLine & _
+              "        FROM dbo.[ASRSysDocumentManagementTypes] d" & vbNewLine & _
+              "        WHERE d.[TypeRecordID] = @iDocTypeID AND d.[CategoryRecordID] = @iDocCategoryID" & vbNewLine & _
+              "    ELSE" & vbNewLine & _
+              "        SELECT @iDocumentMapID = [DocumentMapID]" & vbNewLine & _
+              "        FROM dbo.[ASRSysDocumentManagementTypes] d" & vbNewLine & _
+              "        WHERE d.[TypeRecordID] = 0 AND d.[CategoryRecordID] = @iDocCategoryID;" & vbNewLine & vbNewLine
+  
+    sSQL = sSQL & _
               "    SELECT @sTableName = ISNULL(t.[TableName],''), @sTargetLinkColumn = ISNULL(c1.[ColumnName],''), @sTargetKeyField = ISNULL(c2.[ColumnName],'')" & vbNewLine & _
               "       , @intParent1TableID = ISNULL(d.[Parent1TableID],''), @sParent1KeyField = ISNULL(c3.[ColumnName],''), @sParent1TableName = ISNULL(pt.[TableName],'')" & vbNewLine & _
               "       , @sTargetCategoryColumn  = ISNULL(c4.[ColumnName],''), @sTargetTypeColumn  = ISNULL(c5.[ColumnName],'') " & vbNewLine & _
@@ -90,13 +102,13 @@ Public Function CreateLinkDocumentSP() As Boolean
               "        LEFT JOIN [ASRSysColumns] c3 ON c3.[ColumnID] = d.[Parent1KeyFieldColumnID]" & vbNewLine & _
               "        LEFT JOIN [ASRSysColumns] c4 ON c4.[ColumnID] = d.[TargetCategoryColumnID]" & vbNewLine & _
               "        LEFT JOIN [ASRSysColumns] c5 ON c5.[ColumnID] = d.[TargetTypeColumnID]" & vbNewLine & _
-              "        WHERE d.[CategoryRecordID] = @iDocCategoryID AND (d.[TypeRecordID] = @iDocTypeID OR @iDocTypeID IS NULL);" & vbNewLine & vbNewLine
+              "        WHERE d.[DocumentMapID] = @iDocumentMapID;" & vbNewLine & vbNewLine
   
     sSQL = sSQL & _
               "    IF LEN(@sTargetKeyField) > 0" & vbNewLine & _
               "    BEGIN" & vbNewLine & _
               "        SET @sWhereClause = '[' + @sTargetKeyField + '] = ''' + @Key + ''''" & vbNewLine & _
-              "        IF LEN(@sTargetTypeColumn) > 0 SET @sWhereClause = @sWhereClause + 'AND [' + @sTargetTypeColumn + '] = ''' + @DocumentType + '''';" & vbNewLine & vbNewLine & _
+              "        IF LEN(@sTargetTypeColumn) > 0 SET @sWhereClause = @sWhereClause + ' AND [' + @sTargetTypeColumn + '] = ''' + @DocumentType + '''';" & vbNewLine & vbNewLine & _
               "        IF LEN(@sParent1Keyfield) > 0" & vbNewLine & _
               "        BEGIN" & vbNewLine & _
               "            SET @sGetParentID = 'SELECT @intParent1RecordID = [id] FROM dbo.[' + @sParent1TableName + '] WHERE [' + @sParent1KeyField + '] = ''' + @Parent1Key + '''';" & vbNewLine & _
