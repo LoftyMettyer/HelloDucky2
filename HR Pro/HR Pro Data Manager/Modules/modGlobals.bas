@@ -36,7 +36,7 @@ Public gstrWindowsCurrentDomain As String
 Public gstrWindowsCurrentUser As String
 
 Public gblnBatchMode As Boolean
-
+Public gblnReportPackMode As Boolean
 'Just do batch jobs (without prompting) then log off
 Public gblnBatchJobsOnly As Boolean
 
