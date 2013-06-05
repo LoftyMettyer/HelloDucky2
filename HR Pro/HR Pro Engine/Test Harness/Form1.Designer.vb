@@ -127,22 +127,24 @@ Partial Class Form1
     '
     'Button1
     '
+    Me.Button1.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
     Me.Button1.Location = New System.Drawing.Point(294, 70)
     Me.Button1.Name = "Button1"
-    Me.Button1.Size = New System.Drawing.Size(117, 40)
+    Me.Button1.Size = New System.Drawing.Size(117, 59)
     Me.Button1.TabIndex = 26
-    Me.Button1.Text = "Audit"
+    Me.Button1.Text = "THIS ONE - Audit" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10)
     Me.Button1.UseVisualStyleBackColor = True
     '
     'butImport
     '
-    Me.butImport.Font = New System.Drawing.Font("Segoe Print", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+    Me.butImport.Font = New System.Drawing.Font("Verdana", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
     Me.butImport.Location = New System.Drawing.Point(161, 70)
     Me.butImport.Name = "butImport"
     Me.butImport.Size = New System.Drawing.Size(127, 40)
     Me.butImport.TabIndex = 5
     Me.butImport.Text = "Import"
     Me.butImport.UseVisualStyleBackColor = True
+    Me.butImport.Visible = False
     '
     'txtServer2
     '
@@ -158,7 +160,7 @@ Partial Class Form1
     Me.txtDatabase2.Name = "txtDatabase2"
     Me.txtDatabase2.Size = New System.Drawing.Size(100, 20)
     Me.txtDatabase2.TabIndex = 3
-    Me.txtDatabase2.Text = "richmond"
+    Me.txtDatabase2.Text = "std41"
     '
     'txtPassword2
     '
@@ -179,13 +181,14 @@ Partial Class Form1
     '
     'butViewObjects
     '
-    Me.butViewObjects.Font = New System.Drawing.Font("Segoe Print", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+    Me.butViewObjects.Font = New System.Drawing.Font("Verdana", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
     Me.butViewObjects.Location = New System.Drawing.Point(25, 70)
     Me.butViewObjects.Name = "butViewObjects"
     Me.butViewObjects.Size = New System.Drawing.Size(129, 40)
     Me.butViewObjects.TabIndex = 0
     Me.butViewObjects.Text = "Export"
     Me.butViewObjects.UseVisualStyleBackColor = True
+    Me.butViewObjects.Visible = False
     '
     'Label1
     '

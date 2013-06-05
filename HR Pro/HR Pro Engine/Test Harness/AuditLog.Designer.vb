@@ -69,7 +69,7 @@ Partial Class AuditLog
     Me.grdAudit.Location = New System.Drawing.Point(0, 0)
     Me.grdAudit.Margin = New System.Windows.Forms.Padding(6, 5, 6, 5)
     Me.grdAudit.Name = "grdAudit"
-    Me.grdAudit.Size = New System.Drawing.Size(1077, 469)
+    Me.grdAudit.Size = New System.Drawing.Size(1020, 469)
     Me.grdAudit.TabIndex = 18
     Me.grdAudit.TextRenderingMode = Infragistics.Win.TextRenderingMode.GDI
     '
@@ -95,7 +95,7 @@ Partial Class AuditLog
     '
     Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 13.0!)
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-    Me.ClientSize = New System.Drawing.Size(1077, 519)
+    Me.ClientSize = New System.Drawing.Size(1020, 519)
     Me.Controls.Add(Me.txtFilePath)
     Me.Controls.Add(Me.butOutput)
     Me.Controls.Add(Me.grdAudit)
