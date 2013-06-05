@@ -1349,6 +1349,12 @@ PRINT 'Step 5 - Intranet Dashboard Implementation'
 		EXEC sp_executesql N'UPDATE ASRSysSSIntranetLinks SET Chart_AggregateType = 0'
 	END		
 
+	IF NOT EXISTS(SELECT id FROM syscolumns
+	              WHERE  id = OBJECT_ID('ASRSysSSIViews', 'U') AND name = 'WFOutOfOffice')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysSSIViews ADD WFOutOfOffice bit NOT NULL DEFAULT 1'
+	END		
+
 --UPDATE EXISTING SEPARATORS 
 
 	IF NOT EXISTS(SELECT id FROM syscolumns
