@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmWorkflowLog 
    Caption         =   "Workflow Log"
@@ -29,27 +29,27 @@ Begin VB.Form frmWorkflowLog
    StartUpPosition =   2  'CenterScreen
    Begin VB.Frame fraFilters 
       Caption         =   "Filters :"
-      Height          =   825
-      Left            =   120
+      Height          =   945
+      Left            =   90
       TabIndex        =   0
       Top             =   120
       Width           =   10020
       Begin VB.ComboBox cboType 
          Height          =   315
          ItemData        =   "frmWorkflowLog.frx":000C
-         Left            =   4800
+         Left            =   3270
          List            =   "frmWorkflowLog.frx":000E
          Style           =   2  'Dropdown List
          TabIndex        =   4
-         Top             =   315
+         Top             =   500
          Width           =   2625
       End
       Begin VB.ComboBox cboUser 
          Height          =   315
-         Left            =   1100
+         Left            =   150
          Style           =   2  'Dropdown List
          TabIndex        =   2
-         Top             =   315
+         Top             =   500
          Width           =   2000
       End
       Begin VB.ComboBox cboStatus 
@@ -59,7 +59,7 @@ Begin VB.Form frmWorkflowLog
          List            =   "frmWorkflowLog.frx":0012
          Style           =   2  'Dropdown List
          TabIndex        =   6
-         Top             =   315
+         Top             =   500
          Width           =   1545
       End
       Begin VB.Label lblName 
@@ -68,7 +68,7 @@ Begin VB.Form frmWorkflowLog
          Height          =   195
          Left            =   3270
          TabIndex        =   3
-         Top             =   375
+         Top             =   250
          Width           =   1545
       End
       Begin VB.Label lblUser 
@@ -78,17 +78,17 @@ Begin VB.Form frmWorkflowLog
          Height          =   195
          Left            =   150
          TabIndex        =   1
-         Top             =   375
+         Top             =   205
          Width           =   675
       End
-      Begin VB.Label Label1 
+      Begin VB.Label lblStatus 
          AutoSize        =   -1  'True
          BackStyle       =   0  'Transparent
          Caption         =   "Status :"
          Height          =   195
-         Left            =   7605
+         Left            =   8355
          TabIndex        =   5
-         Top             =   375
+         Top             =   250
          Width           =   705
       End
    End
@@ -164,10 +164,10 @@ Begin VB.Form frmWorkflowLog
       EndProperty
    End
    Begin SSDataWidgets_B.SSDBGrid grdWorkflowLog 
-      Height          =   3645
-      Left            =   120
+      Height          =   3525
+      Left            =   90
       TabIndex        =   7
-      Top             =   1065
+      Top             =   1185
       Width           =   10020
       _Version        =   196617
       DataMode        =   1
@@ -267,7 +267,7 @@ Begin VB.Form frmWorkflowLog
       Columns(6).FieldLen=   256
       TabNavigation   =   1
       _ExtentX        =   17674
-      _ExtentY        =   6429
+      _ExtentY        =   6218
       _StockProps     =   79
       BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -1069,7 +1069,8 @@ End Sub
 
 Private Sub Form_Resize()
 
-  Const lngGap As Long = 120
+  Const COMBO_GAP As Integer = 170
+  Dim lngComboWidth As Long
   
   On Error GoTo ErrorTrap
   gobjErrorStack.PushStack "frmWorkflowLog.Form_Resize()"
@@ -1084,11 +1085,22 @@ Private Sub Form_Resize()
 '  If Me.Height < 5550 Then Me.Height = 5550
 '  If Me.Height > Screen.Height Then Me.Height = (Screen.Height - 500)
   
-  fraButtons.Left = Me.ScaleWidth - (fraButtons.Width + lngGap)
+  fraButtons.Left = Me.ScaleWidth - (fraButtons.Width + COMBO_GAP)
+  fraFilters.Width = fraButtons.Left - COMBO_GAP
   
-  fraFilters.Width = fraButtons.Left - (lngGap * 2)
+  cboStatus.Left = fraFilters.Width - (cboStatus.Width + COMBO_GAP)
+  lblStatus.Left = cboStatus.Left
+  
+  lngComboWidth = (cboStatus.Left - (COMBO_GAP * 3)) / 2
+  
+  cboUser.Move COMBO_GAP, 500, lngComboWidth
+  lblUser.Left = cboUser.Left
+  
+  cboType.Move cboUser.Left + cboUser.Width + COMBO_GAP, 500, lngComboWidth
+  lblName.Left = cboType.Left
+
   grdWorkflowLog.Width = fraFilters.Width
-  grdWorkflowLog.Height = Me.ScaleHeight - (fraFilters.Height + StatusBar1.Height + (lngGap * 3))
+  grdWorkflowLog.Height = Me.ScaleHeight - (fraFilters.Height + StatusBar1.Height + (COMBO_GAP * 2))
   
   DoColumnSizes
   
