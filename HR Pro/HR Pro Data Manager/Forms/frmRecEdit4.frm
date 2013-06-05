@@ -1314,6 +1314,9 @@ Private Sub COA_Navigation1_ToolClickRequest(Index As Integer, ByVal Tool As Str
   gblnBatchMode = True
   gbJustRunIt = True
   
+  gobjProgress.Visible = True
+  gobjProgress.Bar1Caption = "Batch Job"
+  
   asTools = Split(Tool, ";")
   For Each sTool In asTools
     
@@ -1343,6 +1346,7 @@ TidyUpAndExit:
   gbCloseDefSelAfterRun = bPreviousCloseDefSelAfterRun
   gblnBatchMode = False
   gbJustRunIt = False
+  gobjProgress.Visible = False
   
   Exit Sub
 
