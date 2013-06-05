@@ -420,7 +420,7 @@ Private Function DoTransfer() As Boolean
   
   ' Document Types
   Progress "Transferring Document Types..."
-  strCommand = "UPDATE ASRSysDocumentMapping SET Username = '" & strTo & "'"
+  strCommand = "UPDATE ASRSysDocumentManagementTypes SET Username = '" & strTo & "'"
   If Not blnAll Then strCommand = strCommand & " WHERE Username = '" & strFrom & "'"
   
   gADOCon.Execute strCommand
