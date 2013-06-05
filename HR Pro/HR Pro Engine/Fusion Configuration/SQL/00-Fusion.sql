@@ -1367,20 +1367,24 @@ BEGIN
 DECLARE @xmlCode xml;
 
 DECLARE @ParmDefinition nvarchar(500);
-DECLARE @ssql nvarchar(MAX) = '0 AS ID',
-		@sInsert nvarchar(MAX) = '0 AS ID',
-		@sUpdate nvarchar(MAX) = '',
+DECLARE @ssql nvarchar(MAX),
+		@sInsert nvarchar(MAX),
+		@sUpdate nvarchar(MAX),
 		@sColumns nvarchar(MAX),
 		@sTableName nvarchar(255),
 		@messagename nvarchar(255),
 		@datanodeKey nvarchar(255),
 		@foreignKeyName nvarchar(255),
 		@foreignkeyvalue nvarchar(255),
-		@executeCode nvarchar(MAX) = ''
+		@executeCode nvarchar(MAX);
 
 SET @messagename = @messagetype
 
-SET @xmlCode = convert(xml, @xml) 
+SET @executeCode = '';
+SET @ssql = '0 AS ID';
+SET @sInsert = '0 AS ID';
+SET	@sUpdate = '';
+SET @xmlCode = convert(xml, @xml);
 
 SELECT @datanodeKey = DataNodeKey FROM fusion.message WHERE Name = @messagetype;
 
@@ -1493,17 +1497,14 @@ BEGIN
 
 	SET NOCOUNT ON;
 
-	DECLARE @xmlmessageID int = 1
-
-	DECLARE @ssql nvarchar(MAX) = '',
-			@ssql2 varchar(MAX) = '',
+	DECLARE @ssql nvarchar(MAX),
 			@linesepcode nvarchar(255);
 
 	DECLARE @xmlMessageBody	varchar(MAX),
 			@xmllastmessage		varchar(MAX),
 			@xmlMessageCode		varchar(MAX),
 			@fusiontypeID		integer,
-			@effectivefrom		datetime = '',
+			@effectivefrom		datetime,
 			@postguid			varchar(255),
 			@tablename			varchar(255),
 			@selectcode			varchar(MAX);
@@ -1518,6 +1519,9 @@ BEGIN
 			@parentKey		varchar(255),
 			@parentID		varchar(10),
 			@version		int;
+
+	SET @effectivefrom = '';
+	SET @ssql = '';
 	
 	-- Details for this message
 	SELECT @messageID =	ID
