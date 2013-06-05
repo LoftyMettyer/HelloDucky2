@@ -65,31 +65,27 @@ Begin VB.Form frmCalendarReport
       TabPicture(1)   =   "frmCalendarReport.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraEvents"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Report Detai&ls"
       TabPicture(2)   =   "frmCalendarReport.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraDisplayOptions"
+      Tab(2).Control(0)=   "fraReportStart"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraReportEnd"
       Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).Control(2)=   "fraReportStart"
+      Tab(2).Control(2)=   "fraDisplayOptions"
       Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmCalendarReport.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraSort"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmCalendarReport.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraOutputFormat"
-      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraOutputDestination"
-      Tab(4).Control(1).Enabled=   0   'False
       Tab(4).ControlCount=   2
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
@@ -506,8 +502,9 @@ Begin VB.Form frmCalendarReport
             BackColorEven   =   -2147483643
             BackColorOdd    =   -2147483643
             RowHeight       =   423
+            ExtraHeight     =   79
             Columns.Count   =   26
-            Columns(0).Width=   1138
+            Columns(0).Width=   1217
             Columns(0).Caption=   "Name"
             Columns(0).Name =   "Name"
             Columns(0).DataField=   "Column 0"
@@ -520,7 +517,7 @@ Begin VB.Form frmCalendarReport
             Columns(1).DataField=   "Column 1"
             Columns(1).DataType=   8
             Columns(1).FieldLen=   256
-            Columns(2).Width=   1111
+            Columns(2).Width=   1138
             Columns(2).Caption=   "Table"
             Columns(2).Name =   "Table"
             Columns(2).DataField=   "Column 2"
@@ -559,7 +556,7 @@ Begin VB.Form frmCalendarReport
             Columns(7).DataField=   "Column 7"
             Columns(7).DataType=   8
             Columns(7).FieldLen=   256
-            Columns(8).Width=   1931
+            Columns(8).Width=   2302
             Columns(8).Caption=   "Start Session"
             Columns(8).Name =   "Start Session"
             Columns(8).DataField=   "Column 8"
@@ -572,7 +569,7 @@ Begin VB.Form frmCalendarReport
             Columns(9).DataField=   "Column 9"
             Columns(9).DataType=   8
             Columns(9).FieldLen=   256
-            Columns(10).Width=   1588
+            Columns(10).Width=   1773
             Columns(10).Caption=   "End Date"
             Columns(10).Name=   "End Date"
             Columns(10).DataField=   "Column 10"
@@ -585,7 +582,7 @@ Begin VB.Form frmCalendarReport
             Columns(11).DataField=   "Column 11"
             Columns(11).DataType=   8
             Columns(11).FieldLen=   256
-            Columns(12).Width=   1984
+            Columns(12).Width=   2196
             Columns(12).Caption=   "End Session"
             Columns(12).Name=   "End Session"
             Columns(12).DataField=   "Column 12"
@@ -598,7 +595,7 @@ Begin VB.Form frmCalendarReport
             Columns(13).DataField=   "Column 13"
             Columns(13).DataType=   8
             Columns(13).FieldLen=   256
-            Columns(14).Width=   1455
+            Columns(14).Width=   1588
             Columns(14).Caption=   "Duration"
             Columns(14).Name=   "Duration"
             Columns(14).DataField=   "Column 14"
@@ -652,7 +649,7 @@ Begin VB.Form frmCalendarReport
             Columns(21).DataField=   "Column 21"
             Columns(21).DataType=   8
             Columns(21).FieldLen=   256
-            Columns(22).Width=   1931
+            Columns(22).Width=   2249
             Columns(22).Caption=   "Description 1"
             Columns(22).Name=   "Description 1"
             Columns(22).DataField=   "Column 22"
@@ -665,7 +662,7 @@ Begin VB.Form frmCalendarReport
             Columns(23).DataField=   "Column 23"
             Columns(23).DataType=   8
             Columns(23).FieldLen=   256
-            Columns(24).Width=   2037
+            Columns(24).Width=   2249
             Columns(24).Caption=   "Description 2"
             Columns(24).Name=   "Description 2"
             Columns(24).DataField=   "Column 24"
@@ -894,7 +891,7 @@ Begin VB.Form frmCalendarReport
             Style           =   2  'Dropdown List
             TabIndex        =   34
             Top             =   1260
-            Width           =   1545
+            Width           =   1550
          End
          Begin VB.OptionButton optFixedEnd 
             Caption         =   "Fi&xed"
@@ -1060,7 +1057,7 @@ Begin VB.Form frmCalendarReport
             Style           =   2  'Dropdown List
             TabIndex        =   26
             Top             =   1260
-            Width           =   1500
+            Width           =   1550
          End
          Begin VB.OptionButton optFixedStart 
             Caption         =   "F&ixed"
@@ -1181,21 +1178,21 @@ Begin VB.Form frmCalendarReport
          Begin VB.ComboBox cboDescriptionSeparator 
             Height          =   315
             ItemData        =   "frmCalendarReport.frx":02D8
-            Left            =   3465
+            Left            =   1575
             List            =   "frmCalendarReport.frx":0300
             Style           =   2  'Dropdown List
             TabIndex        =   14
-            Top             =   3255
-            Width           =   1020
+            Top             =   3210
+            Width           =   1425
          End
          Begin VB.CommandButton cmdDescExpr 
             Caption         =   "..."
             Enabled         =   0   'False
             Height          =   315
-            Left            =   4170
+            Left            =   4215
             Picture         =   "frmCalendarReport.frx":0346
             TabIndex        =   12
-            Top             =   2835
+            Top             =   2385
             UseMaskColor    =   -1  'True
             Width           =   300
          End
@@ -1203,11 +1200,11 @@ Begin VB.Form frmCalendarReport
             BackColor       =   &H8000000F&
             Enabled         =   0   'False
             Height          =   315
-            Left            =   1530
+            Left            =   1575
             Locked          =   -1  'True
             TabIndex        =   104
             Tag             =   "0"
-            Top             =   2835
+            Top             =   2385
             Width           =   2640
          End
          Begin VB.CheckBox chkPrintFilterHeader 
@@ -1217,7 +1214,7 @@ Begin VB.Form frmCalendarReport
             TabIndex        =   9
             Tag             =   "PrintFilterHeader"
             Top             =   1560
-            Width           =   4425
+            Width           =   4110
          End
          Begin VB.ComboBox cboRegion 
             Height          =   315
@@ -1233,23 +1230,23 @@ Begin VB.Form frmCalendarReport
          Begin VB.ComboBox cboDesc2 
             Height          =   315
             ItemData        =   "frmCalendarReport.frx":03D1
-            Left            =   1530
+            Left            =   1575
             List            =   "frmCalendarReport.frx":03D8
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   11
-            Top             =   2400
+            Top             =   1950
             Width           =   2955
          End
          Begin VB.ComboBox cboDesc1 
             Height          =   315
             ItemData        =   "frmCalendarReport.frx":03E6
-            Left            =   1530
+            Left            =   1575
             List            =   "frmCalendarReport.frx":03ED
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   10
-            Top             =   1980
+            Top             =   1530
             Width           =   2955
          End
          Begin VB.CheckBox chkGroupByDesc 
@@ -1257,7 +1254,7 @@ Begin VB.Form frmCalendarReport
             Height          =   240
             Left            =   180
             TabIndex        =   13
-            Top             =   3300
+            Top             =   2850
             Width           =   2145
          End
          Begin VB.TextBox txtBaseFilter 
@@ -1316,7 +1313,7 @@ Begin VB.Form frmCalendarReport
             Style           =   2  'Dropdown List
             TabIndex        =   3
             Top             =   300
-            Width           =   2865
+            Width           =   2955
          End
          Begin VB.CommandButton cmdBasePicklist 
             Caption         =   "..."
@@ -1343,9 +1340,9 @@ Begin VB.Form frmCalendarReport
          Begin VB.Label lblDescSeparator 
             Caption         =   "Separator :"
             Height          =   285
-            Left            =   2460
+            Left            =   195
             TabIndex        =   105
-            Top             =   3315
+            Top             =   3270
             Width           =   1035
          End
          Begin VB.Label lblDescExpr 
@@ -1354,7 +1351,7 @@ Begin VB.Form frmCalendarReport
             Height          =   195
             Left            =   195
             TabIndex        =   103
-            Top             =   2865
+            Top             =   2415
             Width           =   1260
          End
          Begin VB.Label lblRegion 
@@ -1373,7 +1370,7 @@ Begin VB.Form frmCalendarReport
             Height          =   195
             Left            =   195
             TabIndex        =   97
-            Top             =   2445
+            Top             =   1995
             Width           =   1260
          End
          Begin VB.Label lblBaseTable 
@@ -1402,7 +1399,7 @@ Begin VB.Form frmCalendarReport
             Height          =   195
             Left            =   195
             TabIndex        =   88
-            Top             =   2025
+            Top             =   1575
             Width           =   1260
          End
       End
@@ -1428,7 +1425,7 @@ Begin VB.Form frmCalendarReport
             MaxLength       =   50
             TabIndex        =   0
             Top             =   300
-            Width           =   2865
+            Width           =   2955
          End
          Begin VB.TextBox txtDesc 
             Height          =   1080
@@ -1438,7 +1435,7 @@ Begin VB.Form frmCalendarReport
             ScrollBars      =   2  'Vertical
             TabIndex        =   1
             Top             =   700
-            Width           =   2865
+            Width           =   2955
          End
          Begin SSDataWidgets_B.SSDBGrid grdAccess 
             Height          =   1080
@@ -1607,7 +1604,7 @@ Begin VB.Form frmCalendarReport
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
-      Left            =   7140
+      Left            =   7095
       TabIndex        =   77
       Top             =   6495
       Width           =   1183
@@ -2748,10 +2745,10 @@ ErrorTrap:
   
 End Function
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Public Property Get SelectedID() As Long
