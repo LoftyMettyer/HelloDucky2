@@ -649,7 +649,7 @@ End Sub
 
 Private Sub Form_Activate()
   If Me.Visible And Me.Enabled Then
-    cmdOK.SetFocus
+    cmdOk.SetFocus
   End If
 End Sub
 
@@ -2344,10 +2344,10 @@ Private Sub Form_Resize()
 
   
   'Position the command buttons...
-  lngTop = Me.ScaleHeight - (cmdOK.Height + lngGap)
+  lngTop = Me.ScaleHeight - (cmdOk.Height + lngGap)
   
-  lngLeft = Me.ScaleWidth - (cmdOK.Width + lngGap)
-  cmdOK.Move lngLeft, lngTop
+  lngLeft = Me.ScaleWidth - (cmdOk.Width + lngGap)
+  cmdOk.Move lngLeft, lngTop
 
   lngLeft = lngLeft - (cmdOutput.Width + lngGap)
   cmdOutput.Move lngLeft, lngTop
@@ -2684,9 +2684,10 @@ Private Sub SSDBGrid1_DblClick()
 
   If mblnLoading Then Exit Sub
   
-  If Not CheckIfGotRecDescs Then
-    Exit Sub
-  End If
+' JIRA-381  - Why check - they should already be processed... Causes error when record description is blank.
+'  If Not CheckIfGotRecDescs Then
+'    Exit Sub
+'  End If
   
   
   With SSDBGrid1
