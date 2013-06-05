@@ -20,11 +20,12 @@
     Public Property DependsOnBankHoliday As Boolean
     Public Property IsTimeDependant As Boolean
 
-    Public Property Dependancies As IList(Of Setting)
+    Public Property Dependancies As ICollection(Of Setting)
 
     Public Sub New()
-      Dependancies = New List(Of Setting)
+      Dependancies = New Collection(Of Setting)
     End Sub
+
   End Class
 End Namespace
 

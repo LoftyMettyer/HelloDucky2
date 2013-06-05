@@ -30,7 +30,11 @@ Namespace Things
     Public Property IsSchemaBound As Boolean = True
     Public Property IsTimeDependant As Boolean
 
-    Public Property Components As New List(Of Component)
+    Public Property Components As ICollection(Of Component)
+
+    Public Sub New()
+      Components = New Collection(Of Component)
+    End Sub
 
     Public Function Clone() As Object Implements System.ICloneable.Clone
       Return Me.MemberwiseClone

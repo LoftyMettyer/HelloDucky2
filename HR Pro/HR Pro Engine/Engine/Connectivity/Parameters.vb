@@ -4,7 +4,7 @@ Namespace Connectivity
 
   <ClassInterface(ClassInterfaceType.None)>
   Public Class Parameters
-    Inherits System.ComponentModel.BindingList(Of Connectivity.Parameter)
+    Inherits Collection(Of Connectivity.Parameter)
 
     Public Overloads Sub Add(ByVal name As String, ByVal value As Integer)
 

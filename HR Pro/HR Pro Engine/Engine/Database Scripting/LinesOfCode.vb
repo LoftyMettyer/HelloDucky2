@@ -4,9 +4,7 @@ Namespace ScriptDB
 
   <ClassInterface(ClassInterfaceType.None), Serializable()>
   Public Class LinesOfCode
-    Inherits System.ComponentModel.BindingList(Of ScriptDB.CodeElement)
-
-    '    private AssociatedColumn As Base
+    Inherits Collection(Of ScriptDB.CodeElement)
 
     Private mbAppendAfterNext As Boolean
     Private mbIsComparison As Boolean
@@ -14,9 +12,8 @@ Namespace ScriptDB
     Private miNextInsertPoint As Integer
     Private miLastInsertOperatorType As OperatorSubType
 
-    Public CodeLevel As Integer
-    '    Public NestedLevel As Integer
-    Public ReturnType As ComponentValueTypes
+    Public Property CodeLevel As Integer
+    Public Property ReturnType As ComponentValueTypes
 
     Public Overloads Sub Add(ByVal LineOfCode As ScriptDB.CodeElement)
 
@@ -36,15 +33,9 @@ Namespace ScriptDB
 
     Public Overloads Sub InsertBeforePrevious(ByVal LineOfCode As ScriptDB.CodeElement)
       Me.Items.Insert(miNextInsertPoint, LineOfCode)
-      '  miLastInsertOperatorType = LineOfCode.OperatorType
     End Sub
 
     Public Overloads Sub AppendAfterNext(ByVal LineOfCode As ScriptDB.CodeElement)
-
-      'If miLastInsertOperatorType <> LineOfCode.OperatorType Then
-      '  miNextInsertPoint = Items.Count
-      'End If
-
       mbAppendAfterNext = True
       Me.Items.Add(LineOfCode)
     End Sub
@@ -52,20 +43,12 @@ Namespace ScriptDB
     ' Property to calculate the character indenation in the code (to beautify the code)
     Public ReadOnly Property Indentation() As String
       Get
-        Indentation = Space(8)
+        Return Space(8)
       End Get
     End Property
 
     Public Function ToArray() As String()
-
-      Dim returnArrayList As New List(Of String)
-
-      For Each objCodeElement As ScriptDB.CodeElement In Me.Items
-        returnArrayList.Add(objCodeElement.Code)
-      Next
-
-      Return returnArrayList.ToArray()
-
+      Return Me.Items.Select(Function(c) c.Code).ToArray()
     End Function
 
     Public ReadOnly Property Statement() As String

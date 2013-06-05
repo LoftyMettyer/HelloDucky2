@@ -8,7 +8,11 @@
     Public Property ComponentNumber As Long
     Public UDF As ScriptDB.GeneratedUDF
     Public RowDetails As ChildRowDetails
-    Public Property IncludedColumns As New List(Of Column)
+    Public Property IncludedColumns As ICollection(Of Column)
+
+    Public Sub New()
+      IncludedColumns = New Collection(Of Column)
+    End Sub
 
     Public Overrides Property Name As String
       Get

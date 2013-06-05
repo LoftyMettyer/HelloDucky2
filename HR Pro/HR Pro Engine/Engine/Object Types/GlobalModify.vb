@@ -6,7 +6,12 @@ Namespace Things
   Public Class GlobalModify
     Inherits Base
 
-    Public Property Items As New List(Of GlobalModifyItem)
+    Public Property Items As ICollection(Of GlobalModifyItem)
+
+    Public Sub New()
+      Items = New Collection(Of GlobalModifyItem)
+    End Sub
+
   End Class
 
 End Namespace

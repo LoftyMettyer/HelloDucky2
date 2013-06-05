@@ -32,7 +32,7 @@ Namespace Things
 
       For Each row As DataRow In ds.Tables(0).Rows
         Dim setting As New Setting
-        setting.Module = row.Item("section").ToString
+        setting.Module = row("section").ToString
         setting.Parameter = row.Item("settingkey").ToString
         setting.Value = row.Item("settingvalue").ToString
 
@@ -98,7 +98,7 @@ Namespace Things
         codeLibrary.DependsOnBankHoliday = row.Item("dependsonbankholiday").ToString
         codeLibrary.Dependancies = GetCodeLibraryDependancies(codeLibrary)
 
-        If row.Item("isoperator") Then
+        If CBool(row.Item("isoperator").ToString) Then
           Globals.Operators.Add(codeLibrary)
         Else
           Globals.Functions.Add(codeLibrary)
@@ -108,13 +108,13 @@ Namespace Things
 
     End Sub
 
-    Public Function GetCodeLibraryDependancies(ByVal codeLibrary As CodeLibrary) As List(Of Setting)
+    Public Function GetCodeLibraryDependancies(ByVal codeLibrary As CodeLibrary) As ICollection(Of Setting)
 
       Dim params As New Connectivity.Parameters
       params.Add("@componentid", codeLibrary.ID)
       Dim ds As DataSet = Globals.CommitDB.ExecStoredProcedure("spadmin_getcomponentcodedependancies", params)
 
-      Dim dependancies As New List(Of Setting)
+      Dim dependancies As New Collection(Of Setting)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
@@ -143,7 +143,7 @@ Namespace Things
         table.TableType = row.Item("tabletype").ToString
         table.Name = row.Item("name").ToString
         table.SchemaName = "dbo"
-        table.IsRemoteView = row.Item("isremoteview")
+        table.IsRemoteView = row.Item("isremoteview").ToString
         table.AuditInsert = row.Item("auditinsert").ToString
         table.AuditDelete = row.Item("auditdelete").ToString
         table.DefaultEmailID = row.Item("defaultemailid").ToString
@@ -165,7 +165,6 @@ Namespace Things
 
         Dim column As New Column
         column.Table = table
-
         column.ID = row.Item("id").ToString
         column.Name = row.Item("name").ToString
         column.SchemaName = "dbo"
@@ -175,8 +174,8 @@ Namespace Things
         column.DefaultValue = row.Item("defaultvalue").ToString
         column.CalcID = row.Item("calcid").ToString
         column.DataType = row.Item("datatype")
-        column.Size = row.Item("size")
-        column.Decimals = row.Item("decimals")
+        column.Size = row.Item("size").ToString
+        column.Decimals = row.Item("decimals").ToString
         column.Audit = row.Item("audit")
         column.Mandatory = row.Item("mandatory")
         column.Multiline = row.Item("multiline")
@@ -226,7 +225,7 @@ Namespace Things
         orderItem.Ascending = row.Item("ascending")
 
         orderItem.TableOrder = tableOrder
-        orderItem.Column = tableOrder.Table.Columns.GetById(row.Item("columnid").ToString)
+        orderItem.Column = tableOrder.Table.Columns.GetById(CInt(row.Item("columnid")))
 
         tableOrder.Items.Add(orderItem)
       Next
@@ -239,7 +238,7 @@ Namespace Things
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
+        Dim table As Table = Globals.Tables.GetById(row.Item("tableid"))
 
         Dim validation As New Validation
         validation.ValidationType = row.Item("validationtype").ToString
@@ -260,7 +259,7 @@ Namespace Things
       For Each row As DataRow In ds.Tables(0).Rows
 
         'add the relationshop from the parents perspective
-        table = Globals.Tables.GetById(row.Item("parentid").ToString)
+        table = Globals.Tables.GetById(CInt(row.Item("parentid")))
 
         relation = New Relation
         relation.RelationshipType = ScriptDB.RelationshipType.Child
@@ -271,7 +270,7 @@ Namespace Things
         table.Relations.Add(relation)
 
         'add the relationshop from the childs perspective
-        table = Globals.Tables.GetById(row.Item("childid").ToString)
+        table = Globals.Tables.GetById(CInt(row.Item("childid")))
 
         relation = New Relation
         relation.RelationshipType = ScriptDB.RelationshipType.Parent
@@ -290,7 +289,7 @@ Namespace Things
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
+        Dim table As Table = Globals.Tables.GetById(CInt(row.Item("tableid")))
 
         Dim expression As New Expression
         expression.ID = row.Item("id").ToString
@@ -318,7 +317,7 @@ Namespace Things
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
+        Dim table As Table = Globals.Tables.GetById(CInt(row.Item("tableid")))
 
         Dim view As New View
         view.ID = row.Item("id").ToString
@@ -326,7 +325,7 @@ Namespace Things
         view.Description = row.Item("description").ToString
 
         view.Table = table
-        view.Filter = table.Expressions.GetById(row.Item("filterid").ToString)
+        view.Filter = table.Expressions.GetById(CInt(row.Item("filterid")))
 
         table.Views.Add(view)
       Next
@@ -342,7 +341,7 @@ Namespace Things
         Dim viewId As Integer = CInt(row.Item("viewid"))
         Dim view As View = Globals.Tables.SelectMany(Function(t) t.Views).Where(Function(o) o.ID = viewId).FirstOrDefault
 
-        Dim column As Column = view.Table.Columns.GetById(row.Item("columnid").ToString)
+        Dim column As Column = view.Table.Columns.GetById(CInt(row.Item("columnid")))
         If column IsNot Nothing Then
           view.Columns.Add(column)
         End If
@@ -356,7 +355,7 @@ Namespace Things
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
+        Dim table As Table = Globals.Tables.GetById(CInt(row.Item("tableid")))
 
         Dim description As New RecordDescription
         description.ID = row.Item("id").ToString
@@ -380,7 +379,7 @@ Namespace Things
     Private componentfunction As DataSet
     Private componentbase As DataSet
 
-    Public Function LoadComponents(ByVal expression As Component, ByVal Type As ScriptDB.ComponentTypes) As List(Of Component)
+    Public Function LoadComponents(ByVal expression As Component, ByVal Type As ScriptDB.ComponentTypes) As ICollection(Of Component)
 
       If componentfunction Is Nothing Then
         componentfunction = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_function2", Nothing)
@@ -401,7 +400,7 @@ Namespace Things
           rows = componentbase.Tables(0).Select("ExpressionID = " & expression.ID)
       End Select
 
-      Dim collection As New List(Of Component)
+      Dim collection As New Collection(Of Component)
 
       For Each row As DataRow In rows
 
@@ -458,12 +457,12 @@ Namespace Things
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
+        Dim table As Table = Globals.Tables.GetById(CInt(row.Item("tableid")))
 
         Dim mask As New Mask
         mask.ID = row.Item("id").ToString
         mask.Name = row.Item("name").ToString
-        mask.AssociatedColumn = table.Columns.GetById(row.Item("columnid").ToString)
+        mask.AssociatedColumn = table.Columns.GetById(CInt(row.Item("columnid")))
         mask.SchemaName = "dbo"
         mask.Description = row.Item("description").ToString
         mask.State = row.Item("state")
@@ -486,7 +485,7 @@ Namespace Things
 
       For Each row In objDataset.Tables(0).Rows
 
-        Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
+        Dim table As Table = Globals.Tables.GetById(CInt(row.Item("tableid")))
 
         Dim screen As Screen = New Screen
         screen.ID = row.Item("id").ToString
@@ -507,7 +506,7 @@ Namespace Things
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
+        Dim table As Table = Globals.Tables.GetById(CInt(row.Item("tableid")))
 
         Dim workflow As New Workflow
         workflow.ID = row.Item("id").ToString
@@ -534,85 +533,74 @@ Namespace Things
     '  Dim objRow As DataRow
     '  Dim objParameters As New Connectivity.Parameters
 
-    '  objObjects.Parent = objWorkflow
-    '  objObjects.Root = objWorkflow.Root
-
-    '  Try
-
     '    ' Populate element
     '    objParameters.Add("@workflowid", objWorkflow.ID)
     '    objDataset = CommitDB.ExecStoredProcedure("spadmin_getworkflowelements", objParameters)
     '    For Each objRow In objDataset.Tables(0).Rows
 
     '      objElement = New WorkflowElement
-    '      objElement.ID = objRow.Item("elementid").ToString
+    '      objElement.ID = objRow.Item("elementid")
     '      objElement.SubType = objRow.Item("type")
     '      objElement.Caption = objRow.Item("caption")
     '      objElement.ConnectionPairID = objRow.Item("ConnectionPairID")
     '      objElement.LeftCoord = objRow.Item("LeftCoord")
     '      objElement.TopCoord = objRow.Item("TopCoord")
-    '      objElement.DecisionCaptionType = objRow.Item("DecisionCaptionType").ToString
-    '      objElement.Identifier = objRow.Item("Identifier").ToString
-    '      objElement.TrueFlowIdentifier = objRow.Item("TrueFlowIdentifier").ToString
-    '      objElement.DataAction = objRow.Item("DataAction").ToString
-    '      objElement.DataTableID = objRow.Item("DataTableID").ToString
-    '      objElement.DataRecord = objRow.Item("DataRecord").ToString
-    '      objElement.EmailID = objRow.Item("EmailID").ToString
-    '      objElement.EmailRecord = objRow.Item("EmailRecord").ToString
-    '      objElement.WebFormBGColor = objRow.Item("WebFormBGColor").ToString
-    '      objElement.WebFormBGImageID = objRow.Item("WebFormBGImageID").ToString
-    '      objElement.WebFormBGImageLocation = objRow.Item("WebFormBGImageLocation").ToString
-    '      objElement.WebFormDefaultFontName = objRow.Item("WebFormDefaultFontName").ToString
-    '      objElement.WebFormDefaultFontSize = objRow.Item("WebFormDefaultFontSize").ToString
-    '      objElement.WebFormDefaultFontBold = objRow.Item("WebFormDefaultFontBold").ToString
-    '      objElement.WebFormDefaultFontItalic = objRow.Item("WebFormDefaultFontItalic").ToString
-    '      objElement.WebFormDefaultFontStrikeThru = objRow.Item("WebFormDefaultFontStrikeThru").ToString
-    '      objElement.WebFormDefaultFontUnderline = objRow.Item("WebFormDefaultFontUnderline").ToString
-    '      objElement.WebFormWidth = objRow.Item("WebFormWidth").ToString
-    '      objElement.RecSelWebFormIdentifier = objRow.Item("RecSelWebFormIdentifier").ToString
-    '      objElement.RecSelIdentifier = objRow.Item("RecSelIdentifier").ToString
-    '      objElement.SecondaryDataRecord = objRow.Item("SecondaryDataRecord").ToString
-    '      objElement.SecondaryRecSelWebFormIdentifier = objRow.Item("SecondaryRecSelWebFormIdentifier").ToString
-    '      objElement.SecondaryRecSelIdentifier = objRow.Item("SecondaryRecSelIdentifier").ToString
-    '      objElement.EmailSubject = objRow.Item("EmailSubject").ToString
-    '      objElement.TimeoutFrequency = objRow.Item("TimeoutFrequency").ToString
-    '      objElement.TimeoutPeriod = objRow.Item("TimeoutPeriod").ToString
-    '      objElement.DataRecordTable = objRow.Item("DataRecordTable").ToString
-    '      objElement.SecondaryDataRecordTable = objRow.Item("SecondaryDataRecordTable").ToString
-    '      objElement.TrueFlowType = objRow.Item("TrueFlowType").ToString
-    '      objElement.TrueFlowExprID = objRow.Item("TrueFlowExprID").ToString
-    '      objElement.DescriptionExprID = objRow.Item("DescriptionExprID").ToString
-    '      objElement.WebFormFGColor = objRow.Item("WebFormFGColor").ToString
-    '      objElement.DescHasWorkflowName = objRow.Item("DescHasWorkflowName").ToString
-    '      objElement.DescHasElementCaption = objRow.Item("DescHasElementCaption").ToString
-    '      objElement.EmailCCID = objRow.Item("EmailCCID").ToString
-    '      objElement.TimeoutExcludeWeekend = objRow.Item("TimeoutExcludeWeekend").ToString
-    '      objElement.CompletionMessageType = objRow.Item("CompletionMessageType").ToString
-    '      objElement.CompletionMessage = objRow.Item("CompletionMessage").ToString
-    '      objElement.SavedForLaterMessageType = objRow.Item("SavedForLaterMessageType").ToString
-    '      objElement.SavedForLaterMessage = objRow.Item("SavedForLaterMessage").ToString
-    '      objElement.FollowOnFormsMessageType = objRow.Item("FollowOnFormsMessageType").ToString
-    '      objElement.FollowOnFormsMessage = objRow.Item("FollowOnFormsMessage").ToString
-    '      objElement.Attachment_Type = objRow.Item("Attachment_Type").ToString
-    '      objElement.Attachment_File = objRow.Item("Attachment_File").ToString
-    '      objElement.Attachment_WFElementIdentifier = objRow.Item("Attachment_WFElementIdentifier").ToString
-    '      objElement.Attachment_WFValueIdentifier = objRow.Item("Attachment_WFValueIdentifier").ToString
-    '      objElement.Attachment_DBColumnID = objRow.Item("Attachment_DBColumnID").ToString
-    '      objElement.Attachment_DBRecord = objRow.Item("Attachment_DBRecord").ToString
-    '      objElement.Attachment_DBElement = objRow.Item("Attachment_DBElement").ToString
-    '      objElement.Attachment_DBValue = objRow.Item("Attachment_DBValue").ToString
+    '      objElement.DecisionCaptionType = objRow.Item("DecisionCaptionType")
+    '      objElement.Identifier = objRow.Item("Identifier")
+    '      objElement.TrueFlowIdentifier = objRow.Item("TrueFlowIdentifier")
+    '      objElement.DataAction = objRow.Item("DataAction")
+    '      objElement.DataTableID = objRow.Item("DataTableID")
+    '      objElement.DataRecord = objRow.Item("DataRecord")
+    '      objElement.EmailID = objRow.Item("EmailID")
+    '      objElement.EmailRecord = objRow.Item("EmailRecord")
+    '      objElement.WebFormBGColor = objRow.Item("WebFormBGColor")
+    '      objElement.WebFormBGImageID = objRow.Item("WebFormBGImageID")
+    '      objElement.WebFormBGImageLocation = objRow.Item("WebFormBGImageLocation")
+    '      objElement.WebFormDefaultFontName = objRow.Item("WebFormDefaultFontName")
+    '      objElement.WebFormDefaultFontSize = objRow.Item("WebFormDefaultFontSize")
+    '      objElement.WebFormDefaultFontBold = objRow.Item("WebFormDefaultFontBold")
+    '      objElement.WebFormDefaultFontItalic = objRow.Item("WebFormDefaultFontItalic")
+    '      objElement.WebFormDefaultFontStrikeThru = objRow.Item("WebFormDefaultFontStrikeThru")
+    '      objElement.WebFormDefaultFontUnderline = objRow.Item("WebFormDefaultFontUnderline")
+    '      objElement.WebFormWidth = objRow.Item("WebFormWidth")
+    '      objElement.RecSelWebFormIdentifier = objRow.Item("RecSelWebFormIdentifier")
+    '      objElement.RecSelIdentifier = objRow.Item("RecSelIdentifier")
+    '      objElement.SecondaryDataRecord = objRow.Item("SecondaryDataRecord")
+    '      objElement.SecondaryRecSelWebFormIdentifier = objRow.Item("SecondaryRecSelWebFormIdentifier")
+    '      objElement.SecondaryRecSelIdentifier = objRow.Item("SecondaryRecSelIdentifier")
+    '      objElement.EmailSubject = objRow.Item("EmailSubject")
+    '      objElement.TimeoutFrequency = objRow.Item("TimeoutFrequency")
+    '      objElement.TimeoutPeriod = objRow.Item("TimeoutPeriod")
+    '      objElement.DataRecordTable = objRow.Item("DataRecordTable")
+    '      objElement.SecondaryDataRecordTable = objRow.Item("SecondaryDataRecordTable")
+    '      objElement.TrueFlowType = objRow.Item("TrueFlowType")
+    '      objElement.TrueFlowExprID = objRow.Item("TrueFlowExprID")
+    '      objElement.DescriptionExprID = objRow.Item("DescriptionExprID")
+    '      objElement.WebFormFGColor = objRow.Item("WebFormFGColor")
+    '      objElement.DescHasWorkflowName = objRow.Item("DescHasWorkflowName")
+    '      objElement.DescHasElementCaption = objRow.Item("DescHasElementCaption")
+    '      objElement.EmailCCID = objRow.Item("EmailCCID")
+    '      objElement.TimeoutExcludeWeekend = objRow.Item("TimeoutExcludeWeekend")
+    '      objElement.CompletionMessageType = objRow.Item("CompletionMessageType")
+    '      objElement.CompletionMessage = objRow.Item("CompletionMessage")
+    '      objElement.SavedForLaterMessageType = objRow.Item("SavedForLaterMessageType")
+    '      objElement.SavedForLaterMessage = objRow.Item("SavedForLaterMessage")
+    '      objElement.FollowOnFormsMessageType = objRow.Item("FollowOnFormsMessageType")
+    '      objElement.FollowOnFormsMessage = objRow.Item("FollowOnFormsMessage")
+    '      objElement.Attachment_Type = objRow.Item("Attachment_Type")
+    '      objElement.Attachment_File = objRow.Item("Attachment_File")
+    '      objElement.Attachment_WFElementIdentifier = objRow.Item("Attachment_WFElementIdentifier")
+    '      objElement.Attachment_WFValueIdentifier = objRow.Item("Attachment_WFValueIdentifier")
+    '      objElement.Attachment_DBColumnID = objRow.Item("Attachment_DBColumnID")
+    '      objElement.Attachment_DBRecord = objRow.Item("Attachment_DBRecord")
+    '      objElement.Attachment_DBElement = objRow.Item("Attachment_DBElement")
+    '      objElement.Attachment_DBValue = objRow.Item("Attachment_DBValue")
 
     '      objElement.Objects = Things.LoadWorkflowElementDetails(objElement)
 
     '      objObjects.Add(objElement)
 
     '    Next
-
-
-    '  Catch ex As Exception
-    '    Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, String.Empty)
-
-    '  End Try
 
     '  LoadWorkflowElements = objObjects
 
@@ -629,45 +617,32 @@ Namespace Things
     '  Dim objRow As DataRow
     '  Dim objParameters As New Connectivity.Parameters
 
-    '  objObjects.Parent = objWorkflowElement
-    '  objObjects.Root = objWorkflowElement.Root
-
-    '  Try
-
     '    ' Populate element
     '    objParameters.Add("@elementid", objWorkflowElement.ID)
     '    objDataset = CommitDB.ExecStoredProcedure("spadmin_getworkflowelementcolumns", objParameters)
     '    For Each objRow In objDataset.Tables(0).Rows
 
     '      objElementColumn = New WorkflowElementColumn
-    '      objElementColumn.ID = objRow.Item("elementid").ToString
-    '      objElementColumn.ColumnID = objRow.Item("columnid").ToString
+    '      objElementColumn.ID = objRow.Item("elementid")
+    '      objElementColumn.ColumnID = objRow.Item("columnid")
 
-    '      objElementColumn.ValueType = objRow.Item("valuetype").ToString
-    '      objElementColumn.Value = objRow.Item("value").ToString
-    '      objElementColumn.WFFormIdentifier = objRow.Item("wfformidentifier").ToString
-    '      objElementColumn.WFValueIdentifier = objRow.Item("wfvalueidentifier").ToString
-    '      objElementColumn.DBColumnID = objRow.Item("dbcolumnid").ToString
-    '      objElementColumn.DBRecord = objRow.Item("dbrecord").ToString
-    '      objElementColumn.CalcID = objRow.Item("calcid").ToString
+    '      objElementColumn.ValueType = objRow.Item("valuetype")
+    '      objElementColumn.Value = objRow.Item("value")
+    '      objElementColumn.WFFormIdentifier = objRow.Item("wfformidentifier")
+    '      objElementColumn.WFValueIdentifier = objRow.Item("wfvalueidentifier")
+    '      objElementColumn.DBColumnID = objRow.Item("dbcolumnid")
+    '      objElementColumn.DBRecord = objRow.Item("dbrecord")
+    '      objElementColumn.CalcID = objRow.Item("calcid")
 
     '      objObjects.Add(objElementColumn)
 
     '    Next
 
-
-    '  Catch ex As Exception
-    '    Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, String.Empty)
-
-    '  Finally
-
-    '  End Try
-
     'End Function
 
 #End Region
 
-    Private Function NullSafe(ByVal row As System.Data.DataRow, ByVal columnName As String, ByVal defaultValue As Object) As Object
+    Private Function NullSafe(ByVal row As DataRow, ByVal columnName As String, ByVal defaultValue As Object) As Object
 
       If row.IsNull(columnName) Then
         Return defaultValue

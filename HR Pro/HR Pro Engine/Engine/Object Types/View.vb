@@ -5,7 +5,11 @@
 
     Property Table As Table
     Property Filter As Expression
-    Property Columns As New List(Of Column)
+    Property Columns As ICollection(Of Column)
+
+    Public Sub New()
+      Columns = New Collection(Of Column)
+    End Sub
 
   End Class
 End Namespace

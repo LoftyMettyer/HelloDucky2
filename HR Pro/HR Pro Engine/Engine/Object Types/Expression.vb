@@ -423,7 +423,7 @@ Namespace Things
 
     End Sub
 
-    Private Sub SQLCode_AddCodeLevel(ByVal [Components] As List(Of Component), ByVal [CodeCluster] As ScriptDB.LinesOfCode)
+    Private Sub SQLCode_AddCodeLevel(ByVal [Components] As ICollection(Of Component), ByVal [CodeCluster] As ScriptDB.LinesOfCode)
 
       Dim objComponent As Component
 
@@ -432,7 +432,7 @@ Namespace Things
       Dim LineOfCode As ScriptDB.CodeElement
       Dim objCalculation As Expression
 
-      For Each objComponent In [Components]
+      For Each objComponent In [components]
         guiObjectID = objComponent.ID
 
         Select Case CType(CInt(objComponent.SubType), ScriptDB.ComponentTypes)

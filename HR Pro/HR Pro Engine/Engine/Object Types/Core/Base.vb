@@ -8,7 +8,7 @@ Namespace Things
   Public MustInherit Class Base
     Implements COMInterfaces.IObject
 
-    Public Property ID As Integer
+    Property ID As Integer
     Public Overridable Property Name As String Implements IObject.Name
     Public Property Description As String
     Public Property SchemaName As String
