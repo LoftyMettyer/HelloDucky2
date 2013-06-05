@@ -770,7 +770,8 @@ Namespace ScriptDB
               "    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
               "    SELECT @forcerefresh = dbo.[udfsys_triggerrequiresrefresh]();" & vbNewLine & _
-              "    SELECT TOP 1 @startingtrigger = ISNULL([actiontype],2) FROM dbo.[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3} ORDER BY [nestlevel];" & vbNewLine & _
+              "    SELECT TOP 1 @startingtrigger = ISNULL([actiontype],2) FROM dbo.[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3} ORDER BY [nestlevel] ASC;" & vbNewLine & _
+              "    SELECT TOP 1 @startingtriggertable = ISNULL([tablefromid],0) FROM dbo.[tbsys_intransactiontrigger] WHERE [spid] = @@spid ORDER BY [nestlevel] ASC;" & vbNewLine & _
               "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
               sSQLCalculatedColumns & vbNewLine & vbNewLine & _
@@ -873,11 +874,12 @@ Namespace ScriptDB
           "BEGIN" & vbNewLine & _
           "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([{2}].[{0}]';" & vbNewLine & _
           "    SET NOCOUNT ON;" & vbNewLine & _
-          "    DECLARE @iCount          integer," & vbNewLine & _
-          "            @isovernight     bit," & vbNewLine & _
-          "            @startingtrigger tinyint," & vbNewLine & _
-          "            @forcerefresh    bit," & vbNewLine & _
-          "            @username        varchar(255);" & vbNewLine & vbNewLine & _
+          "    DECLARE @iCount                integer," & vbNewLine & _
+          "            @isovernight           bit," & vbNewLine & _
+          "            @startingtrigger       tinyint," & vbNewLine & _
+          "            @startingtriggertable  integer," & vbNewLine & _
+          "            @forcerefresh          bit," & vbNewLine & _
+          "            @username              varchar(255);" & vbNewLine & vbNewLine & _
           "    SELECT @isovernight = dbo.[udfsys_isovernightprocess]();" & vbNewLine & _
           "    SELECT @username =	CASE WHEN UPPER(LEFT(APP_NAME(), 15)) = 'HR PRO WORKFLOW' THEN 'HR Pro Workflow'" & vbNewLine & _
           "          ELSE CASE WHEN @isovernight = 1 THEN 'HR Pro Overnight Process' ELSE RTRIM(SYSTEM_USER) END END" & vbNewLine & vbNewLine & _
