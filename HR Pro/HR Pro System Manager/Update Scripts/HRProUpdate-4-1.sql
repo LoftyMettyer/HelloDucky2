@@ -348,7 +348,7 @@ PRINT 'Step 1 - Modifying Workflow procedures'
 			FROM ASRSysWorkflowInstanceSteps WIS
 			INNER JOIN ASRSysWorkflowElements WE ON WIS.elementID = WE.ID
 				AND WE.type = 2 -- WebForm
-			WHERE WIS.status = 2 -- Pending user action
+			WHERE ((WIS.status = 2) OR (WIS.status = 7)) -- Pending user action/completion
 				AND isnull(WE.timeoutFrequency,0) > 0
 				AND CASE 
 						WHEN WE.timeoutPeriod = 0 THEN 
@@ -366,7 +366,7 @@ PRINT 'Step 1 - Modifying Workflow procedures'
 						WHEN WE.timeoutPeriod = 5 THEN 
 							dateadd(year, WE.timeoutFrequency, WIS.activationDateTime)
 						ELSE getDate()
-					END <= getDate();
+					END <= getDate();	
 		
 			OPEN timeoutCursor;
 			FETCH NEXT FROM timeoutCursor INTO @iInstanceID, @iElementID, @iStepID;
