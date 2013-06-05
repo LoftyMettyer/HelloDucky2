@@ -6,8 +6,7 @@ Private mfrmUse As frmUsage
 Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
   On Error GoTo ErrorTrap
   
- ' Dim objPhoenix As New Phoenix.SysMgr
-  
+  Dim objDBScripter As New DBScript.SysMgr
   
   Dim fOK As Boolean
   Dim fInTransaction As Boolean
@@ -180,6 +179,15 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       fOK = fOK And Not gobjProgress.Cancelled
     End If
       
+      
+    ' Initialise the .NET engine
+    If fOK Then
+      Set objDBScripter.CommitDB = gADOCon
+      Set objDBScripter.MetadataDB = daoDb
+      fOK = objDBScripter.Initialise
+      objDBScripter.Options.RefreshObjects = True
+    End If
+    
     
     'MH20010227 Messageboxes are now produced within 'SaveTables' etc.
     If fOK Then
@@ -188,17 +196,6 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       gobjProgress.UpdateProgress False
       DoEvents
       fOK = SaveTables(pfRefreshDatabase, mfrmUse)
-      
-      ' Initialise the .NET engine
-      'Set objPhoenix.CommitDB = gADOCon
-      'Set objPhoenix.MetadataDB = daoDb
-'      fOK = objPhoenix.Initialise
-'      objPhoenix.Options.RefreshObjects = True
-      
-'      fOK = fOK And objPhoenix.Script.DropViews
- '     fOK = fOK And objPhoenix.Script.DropTableViews
-  '    fOK = fOK And objPhoenix.Script.ScriptTables
-   '   fOK = fOK And objPhoenix.Script.ScriptTableViews
       fOK = fOK And Not gobjProgress.Cancelled
     End If
 
@@ -366,7 +363,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       gobjProgress.UpdateProgress False
       DoEvents
       fOK = SaveExpressions(pfRefreshDatabase)
-      'fOK = fOK And objPhoenix.Script.ScriptObjects
+      fOK = fOK And objDBScripter.Script.ScriptObjects
       fOK = fOK And Not gobjProgress.Cancelled
     End If
      
@@ -410,7 +407,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       OutputCurrentProcess "Generating Column Triggers"
       gobjProgress.UpdateProgress False
       DoEvents
-      'fOK = objPhoenix.Script.ScriptTriggers
+      fOK = objDBScripter.Script.ScriptTriggers
       fOK = SetTriggers(alngExpressions, pfRefreshDatabase)
       fOK = fOK And Not gobjProgress.Cancelled
     End If
@@ -422,7 +419,6 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       gobjProgress.UpdateProgress False
       DoEvents
       fOK = SaveViews(pfRefreshDatabase)
-'      fOK = fOK And objPhoenix.Script.ScriptViews
       fOK = fOK And Not gobjProgress.Cancelled
     End If
     
@@ -657,7 +653,7 @@ TidyUpAndExit:
   
   If fOK Then
     
-'    objPhoenix.ErrorLog.OutputToFile ("c:\dev\errorssysmgr.txt")
+ objDBScripter.ErrorLog.OutputToFile (App.Path + "\dbscripter.log")
     
     AuditAccess "Save", "System"
     
@@ -692,7 +688,7 @@ TidyUpAndExit:
 
     ' Kill the phoenix engine
 '    objPhoenix.CloseSafely
- '   Set objPhoenix = Nothing
+    Set objDBScripter = Nothing
 
     '16/08/2001 MH Fault 2691
     gfRefreshStoredProcedures = False
@@ -1899,7 +1895,7 @@ Private Function CheckIfRebuildDiaryOrEmail() As Boolean
 
           'JPD 20040303 Fault 8175
           'If !New Or !Changed Then
-          If (!New Or !Changed) And (Not !Deleted) Then
+          If (!new Or !Changed) And (Not !Deleted) Then
             OutputCurrentProcess "Rebuilding system Outlook events for '" & recTabEdit!TableName & "'"
 
             strSQL = _

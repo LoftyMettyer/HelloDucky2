@@ -474,8 +474,10 @@ Private Function TableNew() As Boolean
       Loop
     End If
 
-    ' Add a timestamp column.
+    ' Add custom columns
+    sTableCreate.Append IIf(sTableCreate.Length <> 0, ", ", vbNullString) & "[updflag] integer"
     sTableCreate.Append IIf(sTableCreate.Length <> 0, ", ", vbNullString) & "TimeStamp"
+   
     sCreateView.Append IIf(sCreateView.Length <> 0, ", ", vbNullString) & "TimeStamp"
 
     ' Complete the 'create table' SQL command string.
