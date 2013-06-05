@@ -1569,6 +1569,7 @@ Private Function CreateAbsenceBetween2DatesStoredProcedure() As Boolean
                ")" & vbNewLine & _
                "AS" & vbNewLine & _
                "BEGIN" & vbNewLine & _
+               "   SET NOCOUNT ON;" & vbNewLine & vbNewLine & _
                "   DECLARE @pdToday datetime" & vbNewLine & _
                "   SET @pdToday = GETDATE()" & vbNewLine
 
@@ -1629,7 +1630,7 @@ Private Function CreateAbsenceBetween2DatesStoredProcedure() As Boolean
 
     If glngSQLVersion > 7 Then
       strGenericSQL = strGenericSQL & _
-               "    DECLARE @AbsenceTypes table(Type nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS)" & vbNewLine & vbNewLine
+               "    DECLARE @AbsenceTypes table([type] varchar(50))" & vbNewLine & vbNewLine
     End If
 
     strGenericSQL = strGenericSQL & _
@@ -1653,54 +1654,36 @@ Private Function CreateAbsenceBetween2DatesStoredProcedure() As Boolean
     ' Convert entered absence types into temporary array (sql table variable)
     If fValidConfiguration Then
       
-      If glngSQLVersion = 7 Then
+      strGenericSQL = strGenericSQL & _
+                "    /* Convert the entered absence types into table variable for processing */" & vbNewLine & _
+                "    DECLARE @SplitID nvarchar(10)" & vbNewLine & _
+                "    DECLARE @Pos int" & vbNewLine & _
+                "    SET @psAbsenceTypes = LTRIM(RTRIM(@psAbsenceTypes))+ ','" & vbNewLine & _
+                "    SET @Pos = CHARINDEX(',', @psAbsenceTypes, 1)" & vbNewLine & _
+                "    IF REPLACE(@psAbsenceTypes, ',', '') <> ''" & vbNewLine & _
+                "    BEGIN" & vbNewLine & _
+                "      WHILE @Pos > 0" & vbNewLine & _
+                "      BEGIN" & vbNewLine & _
+                "        SET @SplitID = LTRIM(RTRIM(LEFT(@psAbsenceTypes, @Pos - 1)))" & vbNewLine & _
+                "        IF @SplitID <> '' INSERT INTO @AbsenceTypes (Type) VALUES (@SplitID)" & vbNewLine & _
+                "        SET @psAbsenceTypes = RIGHT(@psAbsenceTypes, LEN(@psAbsenceTypes) - @Pos)" & vbNewLine & _
+                "        SET @Pos = CHARINDEX(',', @psAbsenceTypes, 1)" & vbNewLine & _
+                "      END" & vbNewLine & _
+                "    END" & vbNewLine & vbNewLine
       
-        ' SQL7 will only allow one absence type to be searched upon.
-        strGenericSQL = strGenericSQL & _
-                  "    /* Now we need to get a recordset of all the absence records that satisfy the date and type criteria */" & vbNewLine & _
-                  "    DECLARE Absence_Cursor CURSOR LOCAL FAST_FORWARD FOR" & vbNewLine & _
-                  "        SELECT " & sAbsColStartDateName & ", " & sAbsColEndDateName & ", " & sAbsColStartPeriodName & ", " & sAbsColEndPeriodName & "," & sContinuousColumnName & vbNewLine & _
-                  "        FROM " & sAbsTableName & vbNewLine & _
-                  "        WHERE (" & sAbsTableName & ".ID_" & lngPersonnelTableID & " = @piPersonnelID)" & vbNewLine & _
-                  "        AND (" & sAbsColTypeName & " = @psAbsenceTypes)" & vbNewLine & _
-                  "        AND ((" & sAbsColStartDateName & " <= @pdtstartdate AND (" & sAbsColEndDateName & " >= @pdtstartdate) OR " & sAbsColEndDateName & " IS NULL)" & vbNewLine & _
-                  "        OR (" & sAbsColStartDateName & " >= @pdtstartdate AND " & sAbsColStartDateName & " <= @pdtenddate))" & vbNewLine & _
-                  "        ORDER BY " & sAbsColStartDateName & vbNewLine & vbNewLine & _
-                  "    OPEN Absence_Cursor" & vbNewLine
-      
-      Else
-      
-        strGenericSQL = strGenericSQL & _
-                  "    /* Convert the entered absence types into table variable for processing */" & vbNewLine & _
-                  "    DECLARE @SplitID nvarchar(10)" & vbNewLine & _
-                  "    DECLARE @Pos int" & vbNewLine & _
-                  "    SET @psAbsenceTypes = LTRIM(RTRIM(@psAbsenceTypes))+ ','" & vbNewLine & _
-                  "    SET @Pos = CHARINDEX(',', @psAbsenceTypes, 1)" & vbNewLine & _
-                  "    IF REPLACE(@psAbsenceTypes, ',', '') <> ''" & vbNewLine & _
-                  "    BEGIN" & vbNewLine & _
-                  "      WHILE @Pos > 0" & vbNewLine & _
-                  "      BEGIN" & vbNewLine & _
-                  "        SET @SplitID = LTRIM(RTRIM(LEFT(@psAbsenceTypes, @Pos - 1)))" & vbNewLine & _
-                  "        IF @SplitID <> '' INSERT INTO @AbsenceTypes (Type) VALUES (@SplitID)" & vbNewLine & _
-                  "        SET @psAbsenceTypes = RIGHT(@psAbsenceTypes, LEN(@psAbsenceTypes) - @Pos)" & vbNewLine & _
-                  "        SET @Pos = CHARINDEX(',', @psAbsenceTypes, 1)" & vbNewLine & _
-                  "      END" & vbNewLine & _
-                  "    END" & vbNewLine & vbNewLine
-        
-        ' Declare the cursor guff now....
-        strGenericSQL = strGenericSQL & _
-                  "    /* Now we need to get a recordset of all the absence records that satisfy the date and type criteria */" & vbNewLine & _
-                  "    DECLARE Absence_Cursor CURSOR LOCAL FAST_FORWARD FOR" & vbNewLine & _
-                  "        SELECT " & sAbsColStartDateName & ", " & sAbsColEndDateName & ", " & sAbsColStartPeriodName & ", " & sAbsColEndPeriodName & "," & sContinuousColumnName & vbNewLine & _
-                  "        FROM " & sAbsTableName & vbNewLine & _
-                  "        WHERE (" & sAbsTableName & ".ID_" & lngPersonnelTableID & " = @piPersonnelID)" & vbNewLine & _
-                  "        AND (" & sAbsColTypeName & " IN (SELECT Type From @AbsenceTypes))" & vbNewLine & _
-                  "        AND ((" & sAbsColStartDateName & " <= @pdtstartdate AND (" & sAbsColEndDateName & " >= @pdtstartdate) OR " & sAbsColEndDateName & " IS NULL)" & vbNewLine & _
-                  "        OR (" & sAbsColStartDateName & " >= @pdtstartdate AND " & sAbsColStartDateName & " <= @pdtenddate))" & vbNewLine & _
-                  "        ORDER BY " & sAbsColStartDateName & vbNewLine & vbNewLine & _
-                  "    OPEN Absence_Cursor" & vbNewLine
-                 
-      End If
+      ' Declare the cursor guff now....
+      strGenericSQL = strGenericSQL & _
+                "    /* Now we need to get a recordset of all the absence records that satisfy the date and type criteria */" & vbNewLine & _
+                "    DECLARE Absence_Cursor CURSOR LOCAL FAST_FORWARD FOR" & vbNewLine & _
+                "        SELECT " & sAbsColStartDateName & ", " & sAbsColEndDateName & ", " & sAbsColStartPeriodName & ", " & sAbsColEndPeriodName & "," & sContinuousColumnName & vbNewLine & _
+                "        FROM " & sAbsTableName & vbNewLine & _
+                "        WHERE (" & sAbsTableName & ".ID_" & lngPersonnelTableID & " = @piPersonnelID)" & vbNewLine & _
+                "        AND (" & sAbsColTypeName & " IN (SELECT Type From @AbsenceTypes))" & vbNewLine & _
+                "        AND ((" & sAbsColStartDateName & " <= @pdtstartdate AND (" & sAbsColEndDateName & " >= @pdtstartdate) OR " & sAbsColEndDateName & " IS NULL)" & vbNewLine & _
+                "        OR (" & sAbsColStartDateName & " >= @pdtstartdate AND " & sAbsColStartDateName & " <= @pdtenddate))" & vbNewLine & _
+                "        ORDER BY " & sAbsColStartDateName & vbNewLine & vbNewLine & _
+                "    OPEN Absence_Cursor" & vbNewLine
+
     
       strGenericSQL = strGenericSQL & _
                 "    /* Read the first record */" & vbNewLine & _
