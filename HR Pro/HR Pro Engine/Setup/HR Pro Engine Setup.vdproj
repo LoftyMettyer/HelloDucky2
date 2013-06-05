@@ -577,7 +577,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Framework v5.0"
         "ProductCode" = "8:{5E307BD6-5A13-431A-A38B-00242F0719BB}"
-        "PackageCode" = "8:{92F9289C-910E-43DE-9EE9-B7D090021D1B}"
+        "PackageCode" = "8:{DB035F7C-332B-434A-AB7A-2A63432127DE}"
         "UpgradeCode" = "8:{416839EF-23B1-4660-A4AD-E908AB32842E}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
