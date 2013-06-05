@@ -4427,7 +4427,7 @@ Public Sub DebugOutput(strWhere As String, strWhat As String)
 
 End Sub
 
-Public Sub UpdateUsage(ByRef lngType As UtilityType, ByRef lngUtilityID As Long, lngAction As EditOptions)
+Public Sub UpdateUsage(ByRef lngTYPE As UtilityType, ByRef lngUtilityID As Long, lngAction As EditOptions)
 
   Dim cmdUsage As New ADODB.Command
   Dim pmADO As ADODB.Parameter
@@ -4443,7 +4443,7 @@ Public Sub UpdateUsage(ByRef lngType As UtilityType, ByRef lngUtilityID As Long,
   
       Set pmADO = .CreateParameter("objecttype", adInteger, adParamInput, 50)
       .Parameters.Append pmADO
-      pmADO.Value = lngType
+      pmADO.Value = lngTYPE
   
       Set pmADO = .CreateParameter("objectid", adInteger, adParamInput, 50)
       .Parameters.Append pmADO
@@ -4458,4 +4458,63 @@ Public Sub UpdateUsage(ByRef lngType As UtilityType, ByRef lngUtilityID As Long,
 
 End Sub
 
+Public Function SaveObjectCategories(ByRef theCombo As ComboBox, UtilityType As UtilityType, UtilityID As Long) As Boolean
 
+  On Error GoTo ErrorTrap
+
+  Dim bOk As Boolean
+  Dim iLoop As Integer
+  Dim iSelectedID As Integer
+  
+  bOk = True
+  iSelectedID = GetComboItem(theCombo)
+  
+  gobjDataAccess.ExecuteSql "EXEC dbo.spssys_saveobjectcategories " & CStr(UtilityType) & ", " & CStr(UtilityID) & ", " & CStr(iSelectedID)
+  
+TidyUpAndExit:
+  SaveObjectCategories = bOk
+  Exit Function
+  
+ErrorTrap:
+bOk = False
+  GoTo TidyUpAndExit
+
+End Function
+
+Public Sub GetObjectCategories(ByRef theCombo As ComboBox, UtilityType As UtilityType, UtilityID As Long)
+
+  On Error GoTo ErrorTrap
+
+  Dim rsTemp As ADODB.Recordset
+  Dim iListIndex As Integer
+  
+  Set rsTemp = gobjDataAccess.OpenRecordset("EXEC dbo.spssys_getobjectcategories " & CStr(UtilityType) & ", " & CStr(UtilityID) _
+      , adOpenForwardOnly, adLockReadOnly)
+  
+  If Not rsTemp.BOF And Not rsTemp.EOF Then
+    rsTemp.MoveFirst
+    Do While Not rsTemp.EOF
+      theCombo.AddItem rsTemp.Fields("category_name").Value
+      theCombo.ItemData(theCombo.NewIndex) = rsTemp.Fields("ID").Value
+      
+      If rsTemp.Fields("Selected").Value = 1 Then
+        iListIndex = theCombo.NewIndex
+      End If
+      rsTemp.MoveNext
+    Loop
+  End If
+  
+  theCombo.Enabled = (theCombo.ListCount > 0)
+  
+  If iListIndex > -1 Then
+    theCombo.ListIndex = iListIndex
+  End If
+  
+TidyUpAndExit:
+  Set rsTemp = Nothing
+  Exit Sub
+  
+ErrorTrap:
+  GoTo TidyUpAndExit
+
+End Sub
