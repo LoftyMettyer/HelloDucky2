@@ -43,6 +43,7 @@ Partial Class Form1
     Me.Label2 = New System.Windows.Forms.Label()
     Me.Label3 = New System.Windows.Forms.Label()
     Me.butErrors = New System.Windows.Forms.Button()
+    Me.Button9 = New System.Windows.Forms.Button()
     Me.SuspendLayout()
     '
     'Button1
@@ -238,11 +239,21 @@ Partial Class Form1
     Me.butErrors.Text = "View Errors"
     Me.butErrors.UseVisualStyleBackColor = True
     '
+    'Button9
+    '
+    Me.Button9.Location = New System.Drawing.Point(221, 387)
+    Me.Button9.Name = "Button9"
+    Me.Button9.Size = New System.Drawing.Size(75, 23)
+    Me.Button9.TabIndex = 22
+    Me.Button9.Text = "Button9"
+    Me.Button9.UseVisualStyleBackColor = True
+    '
     'Form1
     '
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
     Me.ClientSize = New System.Drawing.Size(806, 426)
+    Me.Controls.Add(Me.Button9)
     Me.Controls.Add(Me.butErrors)
     Me.Controls.Add(Me.Label3)
     Me.Controls.Add(Me.Label2)
@@ -291,5 +302,6 @@ Partial Class Form1
   Friend WithEvents Label2 As System.Windows.Forms.Label
   Friend WithEvents Label3 As System.Windows.Forms.Label
   Friend WithEvents butErrors As System.Windows.Forms.Button
+  Friend WithEvents Button9 As System.Windows.Forms.Button
 
 End Class

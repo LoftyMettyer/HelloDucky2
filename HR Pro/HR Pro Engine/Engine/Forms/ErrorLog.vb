@@ -67,7 +67,7 @@ Namespace Forms
         sMessage = sMessage.Replace("""", "'")
 
         sMessage = String.Format("{0}HR Pro System Framework version : {1}" & _
-                        "%0d%0d%0d%0dDetails%0d{2}", vbLf, "XXX.XXX", sMessage)
+                        "%0d%0d%0d%0dDetails%0d{2}", vbLf, Version.Major & "." & Version.Minor & "." & Version.Build & "." & Version.Revision, sMessage)
 
         System.Diagnostics.Process.Start("mailto:" & e.Link.LinkData.ToString & "?Subject=Urgent Support Assistance Required" & "&Body=" & sMessage)
 

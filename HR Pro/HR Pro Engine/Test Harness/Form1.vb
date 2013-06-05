@@ -379,4 +379,14 @@ Public Class Form1
     objTech.ShowDialog1()
 
   End Sub
+
+  Private Sub Button9_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button9.Click
+
+    Dim objPhoenix As New HRProEngine.SysMgr
+
+    '    MsgBox(objPhoenix.SysFrameworkMajorVersion)
+    '    MsgBox(objPhoenix. Version)
+
+
+  End Sub
 End Class

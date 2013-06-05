@@ -10,7 +10,6 @@ Public Class SysMgr
   Private mobjCommitDB As New Connectivity.ADOClassic
   Private mobjScript As New ScriptDB.Script
   Private mbSysFrameworkMajor As String
-  Private Version As System.Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
 
   Public Property CommitDB As Object Implements COMInterfaces.iSystemManager.CommitDB
     Get

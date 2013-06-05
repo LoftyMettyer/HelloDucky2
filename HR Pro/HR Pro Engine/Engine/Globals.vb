@@ -26,6 +26,8 @@ Public Module Globals
 
   Public Login As Connectivity.Login
 
+  Public Version As System.Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
+
   Public Sub Initialise()
 
     ' Metadata objects
