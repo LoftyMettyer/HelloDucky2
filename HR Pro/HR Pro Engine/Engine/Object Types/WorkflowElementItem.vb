@@ -2,9 +2,9 @@
 
 Namespace Things
 
-  <ClassInterface(ClassInterfaceType.None), ComVisible(True), Serializable()> _
+  <ClassInterface(ClassInterfaceType.None), ComVisible(True), Serializable()>
   Public Class WorkflowElementItem
-    Inherits Things.Base
+    Inherits Base
     Implements IWorkflowElementItem
 
     Public Overloads Property ID As Integer Implements IWorkflowElementItem.ID
@@ -77,13 +77,6 @@ Namespace Things
     Public Property LookupFilterColumnID As Integer Implements IWorkflowElementItem.LookupFilterColumnID
     Public Property LookupFilterOperator As String Implements IWorkflowElementItem.LookupFilterOperator
     Public Property LookupFilterValue As String Implements IWorkflowElementItem.LookupFilterValue
-
-    Public Overrides ReadOnly Property Type As Enums.Type
-      Get
-        Return Enums.Type.WorkflowElementItem
-      End Get
-    End Property
-
 
   End Class
 End Namespace

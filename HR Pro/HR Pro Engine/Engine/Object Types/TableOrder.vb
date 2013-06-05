@@ -1,17 +1,11 @@
 ﻿Namespace Things
 
-  <Serializable()> _
+  <Serializable()>
   Public Class TableOrder
-    Inherits Things.Base
+    Inherits Base
 
     Public Property Table As Table
-    Public Property TableOrderItems As New List(Of TableOrderItem)
-
-    Public Overrides ReadOnly Property Type As Enums.Type
-      Get
-        Return Enums.Type.TableOrder
-      End Get
-    End Property
+    Public Property Items As New List(Of TableOrderItem)
 
   End Class
 

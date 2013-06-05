@@ -1,20 +1,14 @@
 ﻿Namespace Things
 
-  <Serializable()> _
+  <Serializable()>
   Public Class TableOrderFilter
-    Inherits Things.Base
+    Inherits Base
 
     Public Property Table As Table
     Public Property ComponentNumber As Long
     Public UDF As ScriptDB.GeneratedUDF
-    Public RowDetails As Things.ChildRowDetails
+    Public RowDetails As ChildRowDetails
     Public Property IncludedColumns As New List(Of Column)
-
-    Public Overrides ReadOnly Property Type As Enums.Type
-      Get
-        Return Enums.Type.TableOrderFilter
-      End Get
-    End Property
 
     Public Overrides Property Name As String
       Get
@@ -23,15 +17,15 @@
         sName = String.Format("udftab_{0}", Table.Name)
 
         If Not RowDetails.Order Is Nothing Then
-          sName = sName + "_" + String.Format("{0}({1})", RowDetails.Order.Name, CInt(RowDetails.Order.ID))
+          sName = sName + "_" + String.Format("{0}({1})", RowDetails.Order.Name, RowDetails.Order.ID)
         End If
 
         If Not RowDetails.Filter Is Nothing Then
-          sName = sName + "_" + String.Format("{0}({1})", RowDetails.Filter.Name, CInt(RowDetails.Filter.ID))
+          sName = sName + "_" + String.Format("{0}({1})", RowDetails.Filter.Name, RowDetails.Filter.ID)
         End If
 
         If Not RowDetails.Relation Is Nothing Then
-          sName = String.Format("{0}_{1}", sName, CInt(RowDetails.Relation.ParentID))
+          sName = String.Format("{0}_{1}", sName, RowDetails.Relation.ParentID)
         End If
 
         Select Case RowDetails.RowSelection
@@ -55,8 +49,8 @@
 
     Public Sub GenerateCode()
 
-      Dim objOrderItem As Things.TableOrderItem
-      Dim objColumn As Things.Column
+      Dim objOrderItem As TableOrderItem
+      Dim objColumn As Column
       Dim aryOrderBy As New ArrayList
       Dim aryColumnList As New ArrayList
       Dim aryReturnDefintion As New ArrayList
@@ -64,9 +58,9 @@
       Dim aryWheres As New ArrayList
       Dim aryJoins As New ArrayList
       Dim sRowSelection As String = vbNullString
-      Dim bReverseOrder As Boolean = False
+      Dim bReverseOrder As Boolean
       Dim sOptions As String = ""
-      Dim objIndex As New Things.Index
+      Dim objIndex As New Index
 
       ' What type of rows to retrieve
       Select Case RowDetails.RowSelection
@@ -76,9 +70,6 @@
           sRowSelection = " TOP 1"
           bReverseOrder = True
       End Select
-
-      '   Debug.Assert(Me.Name <> "udftab_Working_Patterns_Effective_Date(189)_Current_Working_Pattern(1236)_1_First")
-
 
       sOptions = "--WITH SCHEMABINDING"
 
@@ -100,7 +91,7 @@
       ' Build the order by clause
       If Not RowDetails.Order Is Nothing And _
           Not (RowDetails.RowSelection = ScriptDB.ColumnRowSelection.Total Or RowDetails.RowSelection = ScriptDB.ColumnRowSelection.Count) Then
-        For Each objOrderItem In RowDetails.Order.TableOrderItems
+        For Each objOrderItem In RowDetails.Order.Items
           If objOrderItem.ColumnType = "O" And Not objOrderItem.Column Is Nothing Then
 
             If Not objOrderItem.Column Is Nothing And objOrderItem.Column.Table Is Me.Table Then
@@ -120,8 +111,8 @@
 
       ' Add foreign key
       If Not RowDetails.Relation Is Nothing Then
-        aryParameters.Add(String.Format("@prm_ID_{0} integer", CInt(RowDetails.Relation.ParentID)))
-        aryWheres.Add(String.Format("[ID_{0}] = @prm_ID_{0}", CInt(RowDetails.Relation.ParentID)))
+        aryParameters.Add(String.Format("@prm_ID_{0} integer", RowDetails.Relation.ParentID))
+        aryWheres.Add(String.Format("[ID_{0}] = @prm_ID_{0}", RowDetails.Relation.ParentID))
         objIndex.Relations.AddIfNew(RowDetails.Relation)
       End If
 

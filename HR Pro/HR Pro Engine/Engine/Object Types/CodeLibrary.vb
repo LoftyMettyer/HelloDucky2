@@ -1,8 +1,8 @@
 ﻿Namespace Things
 
-  <Serializable()> _
+  <Serializable()>
   Public Class CodeLibrary
-    Inherits Things.Base
+    Inherits Base
 
     Public Property Code As String
     Public Property OperatorType As ScriptDB.OperatorSubType
@@ -11,23 +11,20 @@
     Public Property ReturnType As ScriptDB.ComponentValueTypes
     Public Property RowNumberRequired As Boolean
     Public Property RecordIDRequired As Boolean
-    Public Property OvernightOnly As Boolean = False
+    Public Property OvernightOnly As Boolean
     Public Property CalculatePostAudit As Boolean
-    Public Property IsGetFieldFromDB As Boolean = False
-    Public Property IsUniqueCode As Boolean = False
-    Public Property CaseCount As Integer = 0
-    Public Property MakeTypeSafe As Boolean = False
-    Public Property DependsOnBankHoliday As Boolean = False
-    Public Property IsTimeDependant As Boolean = False
+    Public Property IsGetFieldFromDB As Boolean
+    Public Property IsUniqueCode As Boolean
+    Public Property CaseCount As Integer
+    Public Property MakeTypeSafe As Boolean
+    Public Property DependsOnBankHoliday As Boolean
+    Public Property IsTimeDependant As Boolean
 
-    Public Property Dependancies As New List(Of Setting)
+    Public Property Dependancies As IList(Of Setting)
 
-    Public Overrides ReadOnly Property Type As Enums.Type
-      Get
-        Return Enums.Type.CodeLibrary
-      End Get
-    End Property
-
+    Public Sub New()
+      Dependancies = New List(Of Setting)
+    End Sub
   End Class
 End Namespace
 

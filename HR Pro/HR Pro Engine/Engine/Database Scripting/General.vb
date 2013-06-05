@@ -1,39 +1,9 @@
 ﻿Namespace ScriptDB
 
-  <HideModuleName()> _
+  <HideModuleName()>
   Public Module General
 
-
-    ' Dummy uDF can be replaced at a later time - this is just to get things running for evaluation purposes.
-    Public Function CreateUDF(ByRef [Role] As String, ByRef [ObjectName] As String, ByRef [BodyCode] As String, ByRef [SafeDummyUDF] As String) As Boolean
-
-      Dim sSQL As String = String.Empty
-
-      Try
-        ScriptDB.DropUDF([Role], [ObjectName])
-        sSQL = String.Format("CREATE FUNCTION [{0}].[{1}] {2}", [Role], [ObjectName], [BodyCode], vbNewLine)
-
-        ' Commit
-        CommitDB.ScriptStatement(sSQL)
-
-
-      Catch ex As Exception
-        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.UDFs, [ObjectName], SystemFramework.ErrorHandler.Severity.Error, ex.Message, sSQL)
-
-        ' This didn't work, so put a note in the error log and create a dummy UDF
-        sSQL = String.Format("CREATE FUNCTION [{0}].[{1}] {2}" _
-          , [Role], [ObjectName], [SafeDummyUDF], vbNewLine)
-
-        CommitDB.ScriptStatement(sSQL)
-
-        Return False
-
-      End Try
-
-      Return True
-    End Function
-
-    Public Function DropUDF(ByRef [Role] As String, ByRef [ObjectName] As String) As Boolean
+    Public Function DropUDF(ByVal [Role] As String, ByVal [ObjectName] As String) As Boolean
 
       Dim sSQL As String = String.Empty
 
@@ -57,7 +27,7 @@
 
     End Function
 
-    Public Function DropProcedure(ByRef [Role] As String, ByRef [ObjectName] As String) As Boolean
+    Public Function DropProcedure(ByVal [Role] As String, ByVal [ObjectName] As String) As Boolean
 
       Dim sSQL As String = String.Empty
 

@@ -2,16 +2,16 @@
 
 Namespace ScriptDB
 
-  <ClassInterface(ClassInterfaceType.None), Serializable()> _
+  <ClassInterface(ClassInterfaceType.None), Serializable()>
   Public Class LinesOfCode
     Inherits System.ComponentModel.BindingList(Of ScriptDB.CodeElement)
 
-    '    private AssociatedColumn As Things.Base
+    '    private AssociatedColumn As Base
 
-    Private mbAppendAfterNext As Boolean = False
-    Private mbIsComparison As Boolean = False
+    Private mbAppendAfterNext As Boolean
+    Private mbIsComparison As Boolean
 
-    Private miNextInsertPoint As Integer = 0
+    Private miNextInsertPoint As Integer
     Private miLastInsertOperatorType As OperatorSubType
 
     Public CodeLevel As Integer
@@ -73,8 +73,8 @@ Namespace ScriptDB
         Statement = String.Empty
 
         Dim Chunk As ScriptDB.CodeElement
-        Dim iThisElement As Integer = 0
-        Dim bComparisonSinceLastLogic As Boolean = False
+        Dim iThisElement As Integer
+        Dim bComparisonSinceLastLogic As Boolean
         Dim bAddAutoIsEqualTo As Boolean
 
         Statement = String.Empty

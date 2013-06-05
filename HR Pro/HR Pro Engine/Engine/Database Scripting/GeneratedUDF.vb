@@ -1,4 +1,5 @@
 ﻿Namespace ScriptDB
+
   <Serializable()>
   Public Structure GeneratedUDF
 
@@ -6,7 +7,7 @@
     Public Code As String
     Public CallingCode As String
     Public InlineCode As String
-    Public Type As Things.Type
+    Public Type As Type
 
     Public CodeStub As String
 

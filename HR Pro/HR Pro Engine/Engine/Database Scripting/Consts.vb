@@ -1,6 +1,6 @@
 ﻿Namespace Tables
 
-  <HideModuleName()> _
+  <HideModuleName()>
   Public Module Consts
 
     Public Const sysTriggerTransaction As String = "tbsys_intransactiontrigger"
@@ -9,7 +9,7 @@
 End Namespace
 
 Namespace ScriptDB
-  <HideModuleName()> _
+  <HideModuleName()>
   Public Module Consts
     Public Const UserTable As String = "tbuser_"
     Public Const Trigger As String = "trsys_"

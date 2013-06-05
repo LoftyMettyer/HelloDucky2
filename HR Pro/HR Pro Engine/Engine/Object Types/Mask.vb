@@ -1,13 +1,8 @@
 ﻿Namespace Things
-  <Serializable()> _
-  Public Class Mask
-    Inherits Things.Expression
 
-    Public Overrides ReadOnly Property Type As Enums.Type
-      Get
-        Return Enums.Type.Mask
-      End Get
-    End Property
+  <Serializable()>
+  Public Class Mask
+    Inherits Expression
 
     Public Overrides Sub GenerateCode()
       Me.ExpressionType = ScriptDB.ExpressionType.Mask

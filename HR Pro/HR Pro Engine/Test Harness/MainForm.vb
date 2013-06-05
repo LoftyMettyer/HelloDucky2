@@ -4,7 +4,7 @@
 Public Class MainForm
 
     'Private objProgress As Phoenix.HCMProgressBar
-    Private Initialised As Boolean = False
+  Private Initialised As Boolean
 
 #Region "Scripting stuff (some unused)"
 
@@ -120,7 +120,7 @@ Public Class MainForm
 
     'Private Sub Button10_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
 
-    '  Dim objTable1 As HRProEngine.Things.Table
+  '  Dim objTable1 As HRProEngine.Things.Table
     '  Dim objTable2 As HRProEngine.Things.Table
     '  Dim objColumn As HRProEngine.Things.Column
     '  Dim objColumn2 As HRProEngine.Things.Column
@@ -238,8 +238,8 @@ Public Class MainForm
         objHRPro.Initialise()
         objHRPro.PopulateObjects()
 
-        objViewer.Things = objHRPro.ReturnThings
-        objViewer.ShowDialog()
+    objViewer.Things = objHRPro.ReturnThings
+    objViewer.ShowDialog()
 
         objHRPro.Disconnect()
 

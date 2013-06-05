@@ -1,12 +1,10 @@
-﻿Option Explicit On
-'Option Strict On
-
-Imports Infragistics
+﻿Imports Infragistics
+Imports SystemFramework.Things
 
 Public Class ViewObjects
 
-  Public Property Things As SystemFramework.Things.Collections.Generic
-  Public Property ExportObjects As New SystemFramework.Things.Collections.Generic
+  Public Property Things As ICollection(Of Table)
+  Public Property ExportObjects As ICollection(Of Table)
 
   Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
 

@@ -2,9 +2,9 @@
 
 Namespace Things
 
-  <Serializable()> _
+  <Serializable()>
   Public Class GlobalModifyItem
-    Inherits Things.Base
+    Inherits Base
 
     Public Property ColumnID As Integer
     Public Property Value As String
@@ -12,12 +12,6 @@ Namespace Things
     Public Property RefColumnID As Integer
     Public Property LookupTableID As Integer
     Public Property LookupColumnID As Integer
-
-    Public Overrides ReadOnly Property Type As Enums.Type
-      Get
-        Return Enums.Type.GlobalModifyItem
-      End Get
-    End Property
 
     Public ReadOnly Property DisplayValue As String
       Get

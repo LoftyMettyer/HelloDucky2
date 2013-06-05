@@ -1,4 +1,6 @@
-﻿'Namespace Connectivity
+﻿
+'TODO: REMOVE???
+'Namespace Connectivity
 '  Public Class Connection
 '    Implements iConnection
 

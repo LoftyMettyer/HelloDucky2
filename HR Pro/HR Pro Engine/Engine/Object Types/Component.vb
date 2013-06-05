@@ -2,9 +2,9 @@
 
 Namespace Things
 
-  <ClassInterface(ClassInterfaceType.None), ComVisible(True), Serializable()> _
+  <ClassInterface(ClassInterfaceType.None), ComVisible(True), Serializable()>
   Public Class Component
-    Inherits Things.Base
+    Inherits Base
     Implements ICloneable
 
     Public Property ReturnType As ScriptDB.ComponentValueTypes
@@ -25,18 +25,12 @@ Namespace Things
     Public Property LookupTableID As Integer
     Public Property LookupColumnID As Integer
 
-    Public Property BaseExpression As Things.Expression
+    Public Property BaseExpression As Expression
 
     Public Property IsSchemaBound As Boolean = True
-    Public Property IsTimeDependant As Boolean = False
+    Public Property IsTimeDependant As Boolean
 
     Public Property Components As New List(Of Component)
-
-    Public Overrides ReadOnly Property Type As Enums.Type
-      Get
-        Return Enums.Type.Component
-      End Get
-    End Property
 
     Public Function Clone() As Object Implements System.ICloneable.Clone
       Return Me.MemberwiseClone

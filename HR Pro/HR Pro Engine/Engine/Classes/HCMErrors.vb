@@ -58,7 +58,7 @@ Namespace ErrorHandler
 
     End Function
 
-    Public Sub OutputToFile(ByRef FileName As String) Implements COMInterfaces.IErrors.OutputToFile
+    Public Sub OutputToFile(ByVal FileName As String) Implements COMInterfaces.IErrors.OutputToFile
 
       System.IO.File.Delete(FileName)
       Dim objWriter As System.IO.StreamWriter = System.IO.File.AppendText(FileName)

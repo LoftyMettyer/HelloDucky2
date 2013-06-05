@@ -4,7 +4,7 @@ Imports System.Runtime.InteropServices
 
 Namespace Things
 
-  <ClassInterface(ClassInterfaceType.None), ComVisible(True), Serializable()> _
+  <ClassInterface(ClassInterfaceType.None), ComVisible(True), Serializable()>
   Public Class Table
     Inherits Base
     Implements COMInterfaces.ITable
@@ -17,26 +17,40 @@ Namespace Things
     Public Property DefaultOrderID As Integer
     Public Property DefaultEmailID As Integer
     Public Property IsRemoteView As Boolean
-
     Public Property RecordDescription() As RecordDescription
-    Public Property Indexes As New List(Of Index)
-    Public Property Columns As New List(Of Column)
-    Public Property Validations As New List(Of Validation)
-    Public Property Views As New List(Of View)
-    Public Property TableOrders As New List(Of TableOrder)
-    Public Property TableOrderFilters As New List(Of TableOrderFilter)
-    Public Property Relations As New List(Of Relation)
-    Public Property Expressions As New List(Of Expression)
-    Public Property Masks As New List(Of Mask)
-    Public Property Workflows As New List(Of Workflow)
-    Public Property Screens As New List(Of Screen)
-    Public Property DependsOnChildColumns As New List(Of Column)
-    Public Property DependsOnParentColumns As New List(Of Column)
 
+    Public Property Indexes As ICollection(Of Index)
+    Public Property Columns As ICollection(Of Column)
+    Public Property Validations As ICollection(Of Validation)
+    Public Property Views As ICollection(Of View)
+    Public Property TableOrders As ICollection(Of TableOrder)
+    Public Property TableOrderFilters As ICollection(Of TableOrderFilter)
+    Public Property Relations As ICollection(Of Relation)
+    Public Property Expressions As ICollection(Of Expression)
+    Public Property Masks As ICollection(Of Mask)
+    Public Property Workflows As ICollection(Of Workflow)
+    Public Property Screens As ICollection(Of Screen)
+    Public Property DependsOnChildColumns As ICollection(Of Column)
+    Public Property DependsOnParentColumns As ICollection(Of Column)
+
+    'TODO: really strings???
     Public Property CustomTriggers As ICollection(Of String) Implements ITable.CustomTriggers
     Public Property UpdateStatements As New ArrayList
 
     Public Sub New()
+      Indexes = New Collection(Of Index)
+      Columns = New Collection(Of Column)
+      Validations = New Collection(Of Validation)
+      Views = New Collection(Of View)
+      TableOrders = New Collection(Of TableOrder)
+      TableOrderFilters = New Collection(Of TableOrderFilter)
+      Relations = New Collection(Of Relation)
+      Expressions = New Collection(Of Expression)
+      Masks = New Collection(Of Mask)
+      Workflows = New Collection(Of Workflow)
+      Screens = New Collection(Of Screen)
+      DependsOnChildColumns = New Collection(Of Column)
+      DependsOnParentColumns = New Collection(Of Column)
       CustomTriggers = New Collection(Of String)
     End Sub
 
@@ -46,23 +60,17 @@ Namespace Things
       End Get
     End Property
 
-    Public Overrides ReadOnly Property Type As Enums.Type
-      Get
-        Return Enums.Type.Table
-      End Get
-    End Property
+    Public Function GetRelation(ByVal toTableID As Integer) As Relation
 
-    Public Function GetRelation(ByVal ID As Integer) As Things.Relation
-
-      Dim relation As New Things.Relation
+      Dim relation As New Relation
 
       For Each relation In Me.Relations
         If relation.RelationshipType = ScriptDB.RelationshipType.Child Then
-          If relation.ChildID = ID Then
+          If relation.ChildID = toTableID Then
             Return relation
           End If
         Else
-          If relation.ParentID = ID Then
+          If relation.ParentID = toTableID Then
             Return relation
           End If
         End If
@@ -75,10 +83,10 @@ Namespace Things
 
 #Region "TableOrderFilter"
 
-    Public Function TableOrderFilter(ByRef RowDetails As Things.ChildRowDetails) As Things.TableOrderFilter
+    Public Function TableOrderFilter(ByVal RowDetails As ChildRowDetails) As TableOrderFilter
 
-      'ByRef Order As Things.TableOrder, ByRef Filter As Things.Expression _
-      '            , ByRef Relation As Things.Relation) As Things.TableOrderFilter
+      'ByVal Order As TableOrder, ByVal Filter As Expression _
+      '            , ByVal Relation As Relation) As TableOrderFilter
 
       For Each filer As TableOrderFilter In Me.TableOrderFilters
 
@@ -92,7 +100,7 @@ Namespace Things
       Next
 
       ' New table filter. Add to the stack and return
-      Dim filter As New Things.TableOrderFilter
+      Dim filter As New TableOrderFilter
       filter.RowDetails.Order = RowDetails.Order
       filter.RowDetails.Filter = RowDetails.Filter()
       filter.RowDetails.Relation = RowDetails.Relation

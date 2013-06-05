@@ -6,7 +6,7 @@ Public Module Extensions
   <Extension()>
   Public Sub AddIfNew(Of T As Base)(ByVal items As ICollection(Of T), ByVal item As T)
 
-    If Not items.Any(Function(i) i.ID = item.ID AndAlso i.Type = item.Type) Then
+    If Not items.Any(Function(i) i.ID = item.ID) Then ' AndAlso i.Type = item.Type
       items.Add(item)
     End If
 

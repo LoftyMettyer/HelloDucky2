@@ -1,4 +1,6 @@
-﻿Public Module COMInterfaces
+﻿Imports SystemFramework.Things
+
+Public Module COMInterfaces
 
   Public Interface ICommitDB
     Function ScriptTables() As Boolean
@@ -19,7 +21,7 @@
     Property CommitDB As Object
     ReadOnly Property ErrorLog As ErrorHandler.Errors
     ReadOnly Property TuningLog As Tuning.Report
-    ReadOnly Property Things As Things.Collections.Generic
+    ReadOnly Property Tables As ICollection(Of Table)
     ReadOnly Property Script As ScriptDB.Script
     ReadOnly Property Options As HCMOptions
     Function Initialise() As Boolean
@@ -30,7 +32,7 @@
   End Interface
 
   Public Interface IErrors
-    Sub OutputToFile(ByRef FileName As String)
+    Sub OutputToFile(ByVal FileName As String)
     Sub Show()
     ReadOnly Property ErrorCount As Integer
     ReadOnly Property IsCatastrophic As Boolean
@@ -222,13 +224,13 @@
     Property Multiline As Boolean
     Property CalculateIfEmpty As Boolean
     Property IsReadOnly As Boolean
-    Property CaseType As Things.CaseType
-    Property TrimType As Things.TrimType
-    Property Alignment As Things.AlignType
+    Property CaseType As CaseType
+    Property TrimType As TrimType
+    Property Alignment As AlignType
     Property Mandatory As Boolean
     Property OLEType As ScriptDB.OLEType
     Property DefaultCalcID As Integer
-    Property DefaultCalculation As Things.Expression
+    Property DefaultCalculation As Expression
     Property DefaultValue As String
   End Interface
 

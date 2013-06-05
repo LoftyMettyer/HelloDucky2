@@ -1,7 +1,6 @@
-﻿Option Explicit On
-
-Imports System.Runtime.InteropServices
+﻿Imports System.Runtime.InteropServices
 Imports System.Text
+Imports SystemFramework.Things
 
 Namespace ScriptDB
 
@@ -11,7 +10,7 @@ Namespace ScriptDB
 
 #Region "Table Scripting"
 
-    Private Sub DropView(ByRef [Role] As String, ByRef [ViewName] As String)
+    Private Sub DropView(ByVal [Role] As String, ByVal [ViewName] As String)
 
       Dim sSQL As String
 
@@ -38,9 +37,9 @@ Namespace ScriptDB
       Dim bOK As Boolean = True
 
       Try
-        For Each objTable As Things.Table In Globals.Tables
+        For Each objTable As Table In Globals.Tables
 
-          For Each objView As Things.View In objTable.Views
+          For Each objView As View In objTable.Views
             DropView(objTable.SchemaName, objView.Name)
           Next
         Next
@@ -57,7 +56,7 @@ Namespace ScriptDB
 
     Public Function DropTableViews() As Boolean Implements ICommitDB.DropTableViews
 
-      Dim objTable As New Things.Table
+      Dim objTable As New Table
       Dim bOK As Boolean = True
 
       Try
@@ -80,14 +79,13 @@ Namespace ScriptDB
       Dim sSQL As String = vbNullString
 
       Try
-
-        For Each objTable As Things.Table In Globals.Tables
+        For Each objTable As Table In Globals.Tables
 
           Select Case objTable.State
 
             Case DataRowState.Deleted
-              sSQL = String.Format("IF EXISTS(SELECT [name] FROM sys.sysobjects WHERE id = OBJECT_ID(N'[dbo].[{0}]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)" & vbNewLine & _
-                "DROP TABLE [dbo].[{0}];", objTable.PhysicalName)
+              sSQL = String.Format("IF EXISTS(SELECT [name] FROM sys.sysobjects WHERE id = OBJECT_ID(N'[dbo].[{0}]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1) " & vbNewLine & _
+                                   "DROP TABLE [dbo].[{0}];", objTable.PhysicalName)
               Globals.CommitDB.ScriptStatement(sSQL)
 
             Case DataRowState.Modified
@@ -117,7 +115,7 @@ Namespace ScriptDB
 
 
           ' Add any relations
-          For Each objRelation As Things.Relation In objTable.Relations
+          For Each objRelation As Relation In objTable.Relations
 
             If objRelation.RelationshipType = ScriptDB.RelationshipType.Parent Then
               sSQL = String.Format("IF NOT EXISTS ( SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE [TABLE_NAME]='{0}' AND [COLUMN_NAME] ='ID_{1}')" & vbNewLine & _
@@ -133,7 +131,7 @@ Namespace ScriptDB
           Next
 
           ' Now add the columns
-          For Each objColumn As Things.Column In objTable.Columns
+          For Each objColumn As Column In objTable.Columns
 
             If objColumn.State = DataRowState.Deleted Then
               sSQL = String.Format("IF EXISTS ( SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE [TABLE_NAME]='{0}' AND [COLUMN_NAME] ='{1}')" & vbNewLine & _
@@ -167,9 +165,9 @@ Namespace ScriptDB
       Dim sActualTableName As String = String.Empty
       Dim sOptions As String = String.Empty
 
-      Dim objTable As Things.Table
-      Dim objColumn As Things.Column
-      Dim objRelation As Things.Relation
+      Dim objTable As Table
+      Dim objColumn As Column
+      Dim objRelation As Relation
 
       Try
 
@@ -183,7 +181,7 @@ Namespace ScriptDB
           ' Add relations
           For Each objRelation In objTable.Relations
             If objRelation.RelationshipType = RelationshipType.Parent Then
-              sDefinitionSQL = sDefinitionSQL & String.Format(", [ID_{0}]", CInt(objRelation.ParentID)) & vbNewLine
+              sDefinitionSQL = sDefinitionSQL & String.Format(", [ID_{0}]", objRelation.ParentID) & vbNewLine
             End If
           Next
 
@@ -191,7 +189,7 @@ Namespace ScriptDB
           ' Add columns
           For Each objColumn In objTable.Columns
 
-            If objColumn.IsCalculated And objColumn.IsReadOnly And objTable.TableType = Things.TableType.Parent Then
+            If objColumn.IsCalculated And objColumn.IsReadOnly And objTable.TableType = TableType.Parent Then
               '              If Not objColumn.Calculation.RequiresRowNumber Then
 
               sDefinitionSQL = sDefinitionSQL & String.Format(", {0} AS [{1}]", objColumn.Calculation.UDF.CallingCode.Replace("@prm_", "base."), objColumn.Name & vbNewLine)
@@ -203,7 +201,6 @@ Namespace ScriptDB
 
           ' Add the base table
           sDefinitionSQL = sDefinitionSQL & vbNewLine & String.Format("FROM [dbo].[{0}] base", sActualTableName)
-
 
           DropView(objTable.SchemaName, sViewName)
 
@@ -224,9 +221,9 @@ Namespace ScriptDB
 
     Public Function CreateViews() As Boolean Implements ICommitDB.ScriptViews
 
-      Dim objTable As Things.Table
-      Dim objView As Things.View
-      Dim objColumn As Things.Column
+      Dim objTable As Table
+      Dim objView As View
+      Dim objColumn As Column
 
       Dim sDefinition As New StringBuilder
       Dim bOK As Boolean = True
@@ -284,11 +281,11 @@ Namespace ScriptDB
     Public Function CreateTriggers() As Boolean Implements ICommitDB.ScriptTriggers
 
       Dim bOK As Boolean = True
-      Dim objTable As Things.Table
-      Dim objRelatedTable As Things.Table
-      Dim objColumn As Things.Column
-      Dim objRelation As Things.Relation
-      Dim objIndex As Things.Index
+      Dim objTable As Table
+      Dim objRelatedTable As Table
+      Dim objColumn As Column
+      Dim objRelation As Relation
+      Dim objIndex As Index
 
       Dim sSQL As String = String.Empty
       Dim sCalculationCode As String
@@ -298,7 +295,7 @@ Namespace ScriptDB
       Dim sAuditDataDelete As String = String.Empty
       Dim sAuditDataInsert As String = String.Empty
 
-      Dim objAuditIndex As Things.Index
+      Dim objAuditIndex As Index
 
       Dim sSQLCode_AuditInsert As String = String.Empty
       Dim sSQLCode_AuditUpdate As String = String.Empty
@@ -378,7 +375,7 @@ Namespace ScriptDB
           sQLInsteadOfInsertColumns = String.Empty
 
           ' Build in indexes
-          objAuditIndex = New Things.Index
+          objAuditIndex = New Index
           objTable.Indexes.Add(objAuditIndex)
 
           ' Add the system generated columns
@@ -398,9 +395,9 @@ Namespace ScriptDB
 
             aryColumns = New ArrayList
             If objRelation.RelationshipType = RelationshipType.Parent Then
-              aryBaseTableColumns.Add(String.Format("[ID_{0}] = base.[ID_{0}]", CInt(objRelation.ParentID)))
-              aryAllWriteableColumns.Add(String.Format("[ID_{0}]", CInt(objRelation.ParentID)))
-              aryAllWriteableFormatted.Add(String.Format("[ID_{0}]", CInt(objRelation.ParentID)))
+              aryBaseTableColumns.Add(String.Format("[ID_{0}] = base.[ID_{0}]", objRelation.ParentID))
+              aryAllWriteableColumns.Add(String.Format("[ID_{0}]", objRelation.ParentID))
+              aryAllWriteableFormatted.Add(String.Format("[ID_{0}]", objRelation.ParentID))
 
               objRelatedTable = Globals.Tables.GetById(objRelation.ParentID)
               For Each objColumn In objTable.DependsOnParentColumns
@@ -412,18 +409,18 @@ Namespace ScriptDB
               If aryColumns.Count > 0 Then
                 aryParentsToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {1})" & vbNewLine & _
                     "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM inserted)" & vbNewLine _
-                    , objRelation.PhysicalName, CInt(objRelation.ParentID)))
+                    , objRelation.PhysicalName, objRelation.ParentID))
 
                 aryParentsToUpdate_Delete.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {1})" & vbNewLine & _
                     "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM deleted)" & vbNewLine _
-                    , objRelation.PhysicalName, CInt(objRelation.ParentID)))
+                    , objRelation.PhysicalName, objRelation.ParentID))
 
               End If
 
             Else
 
               objRelatedTable = Globals.Tables.GetById(objRelation.ChildID)
-              objIndex = New Things.Index
+              objIndex = New Index
               objIndex.Name = String.Format("IDX_relation_{0}", objRelatedTable.Name)
               objIndex.IsTableIndex = True
               objIndex.IsClustered = False
@@ -442,7 +439,7 @@ Namespace ScriptDB
                       "                INNER JOIN deleted d ON d.ID = i.ID " & vbNewLine & _
                       "                WHERE {4})" & vbNewLine & _
                       "        UPDATE dbo.[{0}] SET [updflag] = 1 WHERE ID_{1} IN (SELECT i.ID FROM inserted i);" _
-                      , objRelatedTable.PhysicalName, CInt(objTable.ID), objTable.PhysicalName, CInt(objRelatedTable.ID) _
+                      , objRelatedTable.PhysicalName, objTable.ID, objTable.PhysicalName, objRelatedTable.ID _
                       , String.Join(" OR ", aryColumns.ToArray())))
                 objTable.Indexes.Add(objIndex)
               End If
@@ -454,8 +451,8 @@ Namespace ScriptDB
             If Not objColumn.State = System.Data.DataRowState.Deleted Then
 
               ' Create an index on any unique check columns
-              If objColumn.UniqueType = Things.UniqueCheckScope.All Then
-                objIndex = New Things.Index
+              If objColumn.UniqueType = UniqueCheckScope.All Then
+                objIndex = New Index
                 objIndex.Name = String.Format("IDX_uniquecheck_{0}", objColumn.Name)
                 objIndex.IncludePrimaryKey = False
                 objIndex.IsTableIndex = True
@@ -496,7 +493,7 @@ Namespace ScriptDB
               End If
 
               ' Build list of default values
-              If CInt(objColumn.DefaultCalcID) > 0 And Not objColumn.DefaultCalculation Is Nothing Then
+              If objColumn.DefaultCalcID > 0 And Not objColumn.DefaultCalculation Is Nothing Then
                 objColumn.DefaultCalculation.AssociatedColumn = objColumn
                 objColumn.DefaultCalculation.ExpressionType = ExpressionType.ColumnDefault
                 objColumn.DefaultCalculation.GenerateCode()
@@ -545,16 +542,16 @@ Namespace ScriptDB
                 aryAuditInserts.Add(String.Format("        SELECT base.ID, '* New Record *', {0}, {4}, '{3}', '{6}', {1}, base.[_description]" & vbNewLine & _
                     "            FROM inserted i" & vbNewLine & _
                     "            INNER JOIN dbo.[{2}] base ON i.[id] = base.[id] AND NOT ISNULL({0},'') = ''" _
-                    , sAuditDataInsert, CInt(objColumn.ID), objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.ID), objColumn.SafeReturnType, objColumn.Name))
+                    , sAuditDataInsert, objColumn.ID, objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.ID), objColumn.SafeReturnType, objColumn.Name))
 
                 aryAuditUpdates.Add(String.Format("        SELECT d.ID, {7}, {0}, {4}, '{3}', '{6}', {1}, base.[_description]" & vbNewLine & _
                     "            FROM deleted d" & vbNewLine & _
                     "            INNER JOIN dbo.[{2}] base ON d.[id] = base.[id] AND NOT ISNULL({0},'') = ISNULL({7},'')" _
-                    , sAuditDataBase, CInt(objColumn.ID), objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.ID), objColumn.SafeReturnType, objColumn.Name, sAuditDataDelete))
+                    , sAuditDataBase, objColumn.ID, objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.ID), objColumn.SafeReturnType, objColumn.Name, sAuditDataDelete))
 
                 aryAuditDeletes.Add(String.Format("        SELECT d.ID, {0}, ' * Deleted Record *', {3}, '{2}', '{4}', {1}, d.[_description]" & vbNewLine & _
                     "            FROM deleted d WHERE {0} IS NOT NULL" _
-                    , sAuditDataDelete, CInt(objColumn.ID), objColumn.Table.Name, CInt(objColumn.Table.ID), objColumn.Name))
+                    , sAuditDataDelete, objColumn.ID, objColumn.Table.Name, objColumn.Table.ID, objColumn.Name))
 
                 objAuditIndex.IncludedColumns.Add(objColumn)
               End If
@@ -584,7 +581,7 @@ Namespace ScriptDB
               "            RAISERROR(@sValidation, 16, 1);" & vbNewLine & _
               "            ROLLBACK;" & vbNewLine & _
               "        END" & vbNewLine & _
-              "    END" & vbNewLine, CInt(objTable.ID), objTable.Name)
+              "    END" & vbNewLine, objTable.ID, objTable.Name)
 
           ' Update child records
           If aryChildrenToUpdate.ToArray.Length > 0 Then
@@ -660,13 +657,13 @@ Namespace ScriptDB
             sSQLCode_AuditInsert += vbNewLine & String.Format("    INSERT @audit (id, oldvalue, newvalue, tableid, tablename, columnname, recorddesc)" & vbNewLine & _
                     "        SELECT i.[id], '', ' * New Record *', {0}, '{1}', '', base.[_description] FROM inserted i" & vbNewLine & _
                     "            INNER JOIN dbo.{2} base ON i.[id] = base.[id]" _
-                    , CInt(objTable.ID), objTable.Name, objTable.PhysicalName)
+                    , objTable.ID, objTable.Name, objTable.PhysicalName)
           End If
 
           If objTable.AuditDelete Then
             sSQLCode_AuditDelete += vbNewLine & String.Format("    INSERT @audit (id, oldvalue, newvalue, tableid, tablename, columnname, recorddesc)" & vbNewLine & _
                     "        SELECT d.[id], '', ' * Deleted Record *', {0}, '{1}', '', d.[_description] FROM deleted d" & vbNewLine _
-                    , CInt(objTable.ID), objTable.Name)
+                    , objTable.ID, objTable.Name)
           End If
 
           ' Update statement of all the calculated columns
@@ -692,7 +689,7 @@ Namespace ScriptDB
               "        WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
               "    UPDATE base" & vbNewLine & _
               "    SET {1};" & vbNewLine _
-              , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryPostAuditCalcs.ToArray()), CInt(objTable.ID))
+              , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryPostAuditCalcs.ToArray()), objTable.ID)
           End If
 
 
@@ -714,7 +711,7 @@ Namespace ScriptDB
               "    INSERT [dbo].[tbsys_intransactiontrigger] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {2}, 1, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
               sQLInsteadOfInsertColumns _
               , objTable.Name, sTriggerName _
-              , CInt(objTable.ID) _
+              , objTable.ID _
               , String.Join(",", aryAllWriteableColumns.ToArray()), String.Join("," & vbNewLine, aryAllWriteableFormatted.ToArray()))
           ScriptTrigger("dbo", objTable, TriggerType.InsteadOfInsert, sSQL)
 
@@ -733,7 +730,7 @@ Namespace ScriptDB
               sValidation & vbNewLine & _
               "    DELETE [dbo].[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3};" & vbNewLine & vbNewLine & _
               "{4}" & vbNewLine & vbNewLine _
-              , objTable.Name, sTriggerName, sSQLCode_AuditInsert, CInt(objTable.ID), objTable.SysMgrInsertTrigger)
+              , objTable.Name, sTriggerName, sSQLCode_AuditInsert, objTable.ID, objTable.SysMgrInsertTrigger)
           ScriptTrigger("dbo", objTable, TriggerType.AfterInsert, sSQL)
 
           ' -------------------
@@ -750,9 +747,9 @@ Namespace ScriptDB
               sValidation & vbNewLine & vbNewLine & _
               "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {2};" & vbNewLine _
               , objTable.Name, sTriggerName _
-              , CInt(objTable.ID) _
+              , objTable.ID _
               , sSQLWriteableColumns _
-              , Tables.sysTriggerTransaction, CInt(objTable.ID))
+              , Tables.sysTriggerTransaction, objTable.ID)
           ScriptTrigger("dbo", objTable, TriggerType.InsteadOfUpdate, sSQL)
 
           ' -------------------
@@ -776,7 +773,7 @@ Namespace ScriptDB
               "{7}" & vbNewLine & vbNewLine & _
               "{8}" & vbNewLine & vbNewLine _
               , objTable.Name, sTriggerName _
-              , "", CInt(objTable.ID), Tables.sysTriggerTransaction _
+              , "", objTable.ID, Tables.sysTriggerTransaction _
               , "" _
               , sSQLCode_AuditUpdate, sSQLPostAuditCalcs, objTable.SysMgrUpdateTrigger) & vbNewLine & vbNewLine
           ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSQL)
@@ -798,7 +795,7 @@ Namespace ScriptDB
               "    -- Clear the temporary trigger status table" & vbNewLine & _
               "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {5};" & vbNewLine & vbNewLine _
               , objTable.Name, sTriggerName, sSQLCode_AuditDelete, sSQLParentColumns_Delete _
-              , Tables.sysTriggerTransaction, CInt(objTable.ID), objTable.SysMgrDeleteTrigger)
+              , Tables.sysTriggerTransaction, objTable.ID, objTable.SysMgrDeleteTrigger)
           ScriptTrigger("dbo", objTable, TriggerType.AfterDelete, sSQL)
 
         Next
@@ -815,7 +812,7 @@ Namespace ScriptDB
 
     End Function
 
-    Private Function ScriptTrigger(ByVal [Role] As String, ByVal [Table] As Things.Table, ByVal [TriggerType] As TriggerType, ByRef [BodyCode] As String) As Boolean
+    Private Function ScriptTrigger(ByVal [Role] As String, ByVal [Table] As Table, ByVal [TriggerType] As TriggerType, ByVal [BodyCode] As String) As Boolean
 
       Dim sSQL As String = String.Empty
       Dim sTriggerType As String = String.Empty
@@ -915,7 +912,7 @@ Namespace ScriptDB
         bOK = bOK And ScriptFunctions.UniqueCodeViews
         bOK = bOK And ScriptFunctions.GetFieldFromDatabases
         'bOK = bOK And ScriptFunctions.BankHolidayUpdate
-        ' bOK = bOK And ScriptFunctions.GeneratePerformanceIndexes
+        'bOK = bOK And ScriptFunctions.GeneratePerformanceIndexes
 
       Catch ex As Exception
         bOK = False
@@ -928,15 +925,15 @@ Namespace ScriptDB
 
     Public Function CreateObjects() As Boolean Implements ICommitDB.ScriptObjects
 
-      Dim objTable As Things.Table
-      Dim objColumn As Things.Column
-      Dim objExpression As Things.Expression
-      Dim objIndex As Things.Index
-      Dim objView As Things.View
+      Dim objTable As Table
+      Dim objColumn As Column
+      Dim objExpression As Expression
+      Dim objIndex As Index
+      Dim objView As View
 
       Dim bOK As Boolean = True
       Dim sObjectName As String = String.Empty
-      Dim objTableOrderFilter As Things.TableOrderFilter
+      Dim objTableOrderFilter As TableOrderFilter
 
       Try
 
@@ -947,7 +944,6 @@ Namespace ScriptDB
             ScriptDB.DropUDF("dbo", sObjectName)
           Next
         Next
-
 
         ' Now create the objects
         For Each objTable In Globals.Tables
@@ -965,16 +961,17 @@ Namespace ScriptDB
 
           '  Validation Masks
           For Each objExpression In objTable.Masks
-            sObjectName = String.Format("{0}{1}", Consts.MaskUDF, CInt(objExpression.ID))
+            sObjectName = String.Format("{0}{1}", Consts.MaskUDF, objExpression.ID)
             objExpression.GenerateCode()
             ScriptDB.DropUDF("dbo", sObjectName)
           Next
 
           ' Indexes for views
-          objIndex = New Things.Index
+          objIndex = New Index
           objIndex.Name = String.Format("IDX_Views_{0}", objTable.Name)
           objIndex.IncludePrimaryKey = True
           objIndex.IsTableIndex = True
+
           For Each objView In objTable.Views
 
             If Not objView.Filter Is Nothing Then
@@ -982,10 +979,8 @@ Namespace ScriptDB
               objView.Filter.AssociatedColumn = objTable.Columns(0)
               objView.Filter.GenerateCode()
 
-              For Each objColumn In objView.Filter.Dependencies.OfType(Of Things.Column)()
-                If objColumn.Type = Things.Type.Column Then
+              For Each objColumn In objView.Filter.Dependencies.OfType(Of Column)()
                   objIndex.Columns.AddIfNew(objColumn)
-                End If
               Next
             End If
 
@@ -1009,11 +1004,11 @@ Namespace ScriptDB
             End If
 
             ' Build default value code
-            If CInt(objColumn.DefaultCalcID) > 0 Then
+            If objColumn.DefaultCalcID > 0 Then
               objColumn.DefaultCalculation = objTable.Expressions.GetById(objColumn.DefaultCalcID)
 
               If objColumn.DefaultCalculation Is Nothing Then
-                Globals.ErrorLog.Add(ErrorHandler.Section.LoadingData, objColumn.Name, ErrorHandler.Severity.Error, "Default calculation not found", CStr(CInt(objColumn.DefaultCalcID)))
+                Globals.ErrorLog.Add(ErrorHandler.Section.LoadingData, objColumn.Name, ErrorHandler.Severity.Error, "Default calculation not found", CStr(objColumn.DefaultCalcID))
               Else
                 objColumn.DefaultCalculation.ExpressionType = ScriptDB.ExpressionType.ColumnDefault
                 objColumn.DefaultCalculation.AssociatedColumn = objColumn
@@ -1024,7 +1019,7 @@ Namespace ScriptDB
 
           '  Validation Masks
           For Each objExpression In objTable.Masks
-            sObjectName = String.Format("{0}{1}", Consts.MaskUDF, CInt(objExpression.ID))
+            sObjectName = String.Format("{0}{1}", Consts.MaskUDF, objExpression.ID)
             objExpression.GenerateCode()
             ScriptDB.DropUDF("dbo", sObjectName)
 
@@ -1075,7 +1070,7 @@ Namespace ScriptDB
               'End If
             End If
 
-            If CInt(objColumn.DefaultCalcID) > 0 And Not objColumn.DefaultCalculation Is Nothing Then
+            If objColumn.DefaultCalcID > 0 And Not objColumn.DefaultCalculation Is Nothing Then
 
               objColumn.DefaultCalculation.AssociatedColumn = objColumn
               objColumn.DefaultCalculation.StartOfPartNumbers = 0
@@ -1125,10 +1120,10 @@ Namespace ScriptDB
 
     Public Function ScriptIndexes() As Boolean Implements COMInterfaces.ICommitDB.ScriptIndexes
 
-      Dim objTable As Things.Table
-      Dim objRelation As Things.Relation
-      Dim objColumn As Things.Column
-      Dim objIndex As Things.Index
+      Dim objTable As Table
+      Dim objRelation As Relation
+      Dim objColumn As Column
+      Dim objIndex As Index
       Dim bOK As Boolean = True
       Dim sSQL As String
       Dim aryColumns As ArrayList
@@ -1181,9 +1176,9 @@ Namespace ScriptDB
             For Each objRelation In objIndex.Relations
               Select Case objRelation.RelationshipType
                 Case RelationshipType.Child
-                  aryColumns.Add(String.Format("[ID_{0}] ASC", CInt(objRelation.ParentID)))
+                  aryColumns.Add(String.Format("[ID_{0}] ASC", objRelation.ParentID))
                 Case RelationshipType.Parent
-                  aryColumns.Add(String.Format("[ID_{0}] ASC", CInt(objRelation.ChildID)))
+                  aryColumns.Add(String.Format("[ID_{0}] ASC", objRelation.ChildID))
               End Select
               bCreateIndex = True
             Next
@@ -1211,11 +1206,11 @@ Namespace ScriptDB
 
     End Function
 
-    Private Function SpecialTrigger_BankHolidays(ByVal Table As Things.Table) As String
+    Private Function SpecialTrigger_BankHolidays(ByVal Table As Table) As String
 
       Dim aryTriggerCode As ArrayList
       Dim lngColumnID As Integer
-      Dim objColumn As Things.Column
+      Dim objColumn As Column
       Dim sCode As String = ""
       Dim objTriggeredUpdate As ScriptDB.TriggeredUpdate
 
@@ -1249,10 +1244,10 @@ Namespace ScriptDB
 
     End Function
 
-    Private Function SpecialTrigger_Personnel(ByRef Table As Things.Table) As String
+    Private Function SpecialTrigger_Personnel(ByVal Table As Table) As String
 
       Dim sCode As String = ""
-      Dim objAbsenceTable As Things.Table
+      Dim objAbsenceTable As Table
 
       If Table Is Globals.ModuleSetup.Setting("MODULE_PERSONNEL", "Param_TablePersonnel").Table Then
         objAbsenceTable = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_TableAbsence").Table
@@ -1268,7 +1263,7 @@ Namespace ScriptDB
                   & "            EXEC dbo.[spsys_absencessp] @iCount;" & vbNewLine _
                   & "            SELECT @iCount=(SELECT MIN([ID]) FROM inserted WHERE [ID] > @iCount);" & vbNewLine _
                   & "        END" & vbNewLine _
-                  & "    END;", CInt(objAbsenceTable.ID))
+                  & "    END;", objAbsenceTable.ID)
         End If
       End If
 
@@ -1276,14 +1271,14 @@ Namespace ScriptDB
 
     End Function
 
-    Private Function SpecialTrigger_SSP(ByRef Table As Things.Table) As String
+    Private Function SpecialTrigger_SSP(ByVal Table As Table) As String
 
       Dim sCode As String = ""
-      Dim objPersonnelTable As Things.Table
-      Dim objColumn1 As Things.Column
-      Dim objColumn2 As Things.Column
-      Dim objColumn3 As Things.Column
-      Dim objColumn4 As Things.Column
+      Dim objPersonnelTable As Table
+      Dim objColumn1 As Column
+      Dim objColumn2 As Column
+      Dim objColumn3 As Column
+      Dim objColumn4 As Column
       Dim lngColumnID As Integer
 
 
@@ -1316,7 +1311,7 @@ Namespace ScriptDB
                   & "        FROM [inserted] WHERE [inserted].[id] = [dbo].[{1}].[id]" & vbNewLine _
                   & "        RETURN;" & vbNewLine _
                   & "    END;" & vbNewLine & vbNewLine _
-                  , CInt(objPersonnelTable.ID), Table.PhysicalName _
+                  , objPersonnelTable.ID, Table.PhysicalName _
                   , objColumn1.Name, objColumn2.Name, objColumn3.Name, objColumn4.Name)
 
         End If
@@ -1329,15 +1324,15 @@ Namespace ScriptDB
     Public Function ScriptOvernightStep2() As Boolean Implements COMInterfaces.ICommitDB.ScriptOvernightStep2
 
       Dim bOK As Boolean = True
-      Dim objTable As Things.Table
-      Dim objColumn As Things.Column
+      Dim objTable As Table
+      Dim objColumn As Column
       Dim aryColumns As ArrayList
       Dim sSQLOvernightJob As String = vbNullString
       Dim sUpdate As String
       Dim sObjectName As String = "spASRSysOvernightStep2"
-      Dim objPayrollArchive As Things.Setting
+      Dim objPayrollArchive As Setting
       Dim lngPayrollPeriod As Long
-      Dim lngPayrollPeriodType As Things.AccordPurgeType
+      Dim lngPayrollPeriodType As AccordPurgeType
       Dim bRefreshAll As Boolean
 
       Try
@@ -1377,34 +1372,31 @@ Namespace ScriptDB
         If objPayrollArchive.Value = "1" Then
 
           lngPayrollPeriod = CLng(Globals.ModuleSetup.Setting("MODULE_ACCORD", "Param_PurgeOptionPeriod").Value)
-          lngPayrollPeriodType = CType(CInt(Globals.ModuleSetup.Setting("MODULE_ACCORD", "Param_PurgeOptionPeriodType").Value), Things.AccordPurgeType)
+          lngPayrollPeriodType = CType(CInt(Globals.ModuleSetup.Setting("MODULE_ACCORD", "Param_PurgeOptionPeriodType").Value), AccordPurgeType)
 
           sSQLOvernightJob = sSQLOvernightJob & vbNewLine & "    -- Archive payroll" & vbNewLine
 
           Select Case lngPayrollPeriodType
 
-            Case Things.AccordPurgeType.Days
+            Case AccordPurgeType.Days
               sSQLOvernightJob = sSQLOvernightJob & "    UPDATE dbo.[ASRSysAccordTransactions] SET [archived] = 1 " & vbNewLine _
                 & "        WHERE [CreatedDateTime] < DATEADD(dd,-" & lngPayrollPeriod & ", GETDATE())" & vbNewLine
 
-            Case Things.AccordPurgeType.Weeks
+            Case AccordPurgeType.Weeks
               sSQLOvernightJob = sSQLOvernightJob & "    UPDATE dbo.[ASRSysAccordTransactions] SET [archived] = 1 " & vbNewLine _
                 & "        WHERE [CreatedDateTime] < DATEADD(wk,-" & lngPayrollPeriod & ", GETDATE())" & vbNewLine
 
-            Case Things.AccordPurgeType.Months
+            Case AccordPurgeType.Months
               sSQLOvernightJob = sSQLOvernightJob & "    UPDATE dbo.[ASRSysAccordTransactions] SET [archived] = 1 " & vbNewLine _
                 & "        WHERE [CreatedDateTime] < DATEADD(mm,-" & lngPayrollPeriod & ", GETDATE())" & vbNewLine
 
-            Case Things.AccordPurgeType.Years
+            Case AccordPurgeType.Years
               sSQLOvernightJob = sSQLOvernightJob & "    UPDATE dbo.[ASRSysAccordTransactions] SET [archived] = 1 " & vbNewLine _
                 & "        WHERE [CreatedDateTime] < DATEADD(yy,-" & lngPayrollPeriod & ", GETDATE())" & vbNewLine
 
           End Select
 
         End If
-
-
-
 
 
         ' Generate the stored procedure

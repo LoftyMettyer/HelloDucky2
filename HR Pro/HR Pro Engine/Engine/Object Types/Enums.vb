@@ -1,6 +1,6 @@
 ﻿Namespace Things
 
-  <HideModuleName()> _
+  <HideModuleName()>
   Public Module Enums
 
     Public Enum Type

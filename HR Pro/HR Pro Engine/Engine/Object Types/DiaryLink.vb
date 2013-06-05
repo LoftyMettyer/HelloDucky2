@@ -1,14 +1,14 @@
 ﻿Namespace Things
-  <Serializable()> _
+  <Serializable()>
   Public Class DiaryLink
-    Inherits Things.Base
+    Inherits Base
 
-    Public Property Column As Things.Column
+    Public Property Column As Column
     Public Property Comment As String
     Public Property Offset As Integer
     Public Property OffsetType As DateOffsetType
     Public Property Reminder As Boolean
-    Public Property Filter As Things.Expression
+    Public Property Filter As Expression
     Public Property EffectiveDate As DateTime
     Public Property CheckLeavingDate As Boolean
 
@@ -19,19 +19,19 @@
       'Dim sCode As String
       'Dim sFilterCode As String
       'Dim aryFilters As New ArrayList
-      'Dim objLeavingDate As Things.Column = Nothing
+      'Dim objLeavingDate As Column = Nothing
 
 
       '' Add offset
       'Select Case OffsetType
-      '  Case Things.DateOffsetType.Week
-      '    sCode = String.Format("DATEADD(WW, {1}, DATEADD(D, 0, DATEDIFF(D, 0, [{0}])))", Column.Name, CInt(Offset))
-      '  Case Things.DateOffsetType.Month
-      '    sCode = String.Format("DATEADD(MM, {1}, DATEADD(D, 0, DATEDIFF(D, 0, [{0}])))", Column.Name, CInt(Offset))
-      '  Case Things.DateOffsetType.Year
-      '    sCode = String.Format("DATEADD(DD, {1}, DATEADD(D, 0, DATEDIFF(D, 0, [{0}])))", Column.Name, CInt(Offset))
+      '  Case DateOffsetType.Week
+      '    sCode = String.Format("DATEADD(WW, {1}, DATEADD(D, 0, DATEDIFF(D, 0, [{0}])))", Column.Name, Offset)
+      '  Case DateOffsetType.Month
+      '    sCode = String.Format("DATEADD(MM, {1}, DATEADD(D, 0, DATEDIFF(D, 0, [{0}])))", Column.Name, Offset)
+      '  Case DateOffsetType.Year
+      '    sCode = String.Format("DATEADD(DD, {1}, DATEADD(D, 0, DATEDIFF(D, 0, [{0}])))", Column.Name, Offset)
       '  Case Else
-      '    sCode = String.Format("DATEADD(DD, {1}, DATEADD(D, 0, DATEDIFF(D, 0, [{0}])))", Column.Name, CInt(Offset))
+      '    sCode = String.Format("DATEADD(DD, {1}, DATEADD(D, 0, DATEDIFF(D, 0, [{0}])))", Column.Name, Offset)
       'End Select
 
       '' Add date effective
@@ -78,13 +78,6 @@
       '	, CASE WHEN [Start_Date] < GETDATE() THEN DATEADD(DD, 20, DATEADD(D, 0, DATEDIFF(D, 0, [Start_Date]))) ELSE NULL END AS [17]
 
     End Sub
-
-
-    Public Overrides ReadOnly Property Type As Things.Enums.Type
-      Get
-        Return Enums.Type.DiaryLink
-      End Get
-    End Property
 
   End Class
 End Namespace

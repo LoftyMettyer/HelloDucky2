@@ -2,9 +2,9 @@
 
 Namespace Things
 
-  <ClassInterface(ClassInterfaceType.None), ComVisible(True), Serializable()> _
+  <ClassInterface(ClassInterfaceType.None), ComVisible(True), Serializable()>
   Public Class WorkflowElement
-    Inherits Things.Base
+    Inherits Base
     Implements IWorkflowElement
 
     Public Property WorkFlowID As Integer Implements COMInterfaces.IWorkflowElement.WorkflowID
@@ -63,12 +63,6 @@ Namespace Things
     Public Property Attachment_DBRecord As Integer Implements COMInterfaces.IWorkflowElement.Attachment_DBRecord
     Public Property Attachment_DBElement As String Implements COMInterfaces.IWorkflowElement.Attachment_DBElement
     Public Property Attachment_DBValue As String Implements COMInterfaces.IWorkflowElement.Attachment_DBValue
-
-    Public Overrides ReadOnly Property Type As Enums.Type
-      Get
-        Return Enums.Type.WorkflowElement
-      End Get
-    End Property
 
   End Class
 

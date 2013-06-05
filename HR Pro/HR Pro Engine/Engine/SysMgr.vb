@@ -1,4 +1,5 @@
 ﻿Imports System.Runtime.InteropServices
+Imports SystemFramework.Things
 
 <ClassInterface(ClassInterfaceType.None)> _
 Public Class SysMgr
@@ -117,11 +118,9 @@ Public Class SysMgr
     End Get
   End Property
 
-  Public ReadOnly Property ReturnThings As Things.Collections.Generic Implements COMInterfaces.ISystemManager.Things
+  Public ReadOnly Property ReturnThings As ICollection(Of Table) Implements COMInterfaces.ISystemManager.Tables
     Get
-      'TODO: Global things is tables but global modify things are also being added????
-      Return New Things.Collections.Generic
-      'Return Globals.Things
+      Return Globals.Tables
     End Get
   End Property
 

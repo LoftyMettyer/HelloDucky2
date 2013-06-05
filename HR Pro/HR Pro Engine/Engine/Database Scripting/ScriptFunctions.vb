@@ -1,5 +1,4 @@
-﻿Option Explicit On
-
+﻿
 Namespace ScriptDB
 
   Public Module ScriptFunctions
@@ -12,10 +11,10 @@ Namespace ScriptDB
 
       Dim bOK As Boolean = True
       Dim sSQL As String = vbNullString
-      Dim objConversionTable As Things.Table
-      Dim objNameColumn As Things.Column
-      Dim objValueColumn As Things.Column
-      Dim objDecimalsColumn As Things.Column
+      Dim objConversionTable As Table
+      Dim objNameColumn As Column
+      Dim objValueColumn As Column
+      Dim objDecimalsColumn As Column
       Dim iKeyID As Integer
       Dim sObjectName As String
 
@@ -94,15 +93,15 @@ Namespace ScriptDB
       Dim sSQL As String = vbNullString
       Dim sStatement As String = vbNullString
       Dim aryStatements As New ArrayList
-      Dim objComponent As Things.Component
-      Dim objPart1 As Things.Component
-      Dim objPart3 As Things.Component
-      Dim objTable1 As Things.Table
-      Dim objTable2 As Things.Table
-      Dim objIndex As New Things.Index
+      Dim objComponent As Component
+      Dim objPart1 As Component
+      Dim objPart3 As Component
+      Dim objTable1 As Table
+      Dim objTable2 As Table
+      Dim objIndex As New Index
       Dim sVariableName As String
       Dim sSearchExpression As String
-      Dim objColumn As Things.Column
+      Dim objColumn As Column
       Dim bFound As Boolean
 
       Try
@@ -168,7 +167,7 @@ Namespace ScriptDB
                 Next
 
                 If Not bFound Then
-                  objIndex = New Things.Index
+                  objIndex = New Index
                   objIndex.Name = String.Format("IDX_getfromdb_{0}", objTable1.Columns.GetById(objPart1.ColumnID).Name)
                   objIndex.Columns.Add(objTable1.Columns.GetById(objPart1.ColumnID))
                   objIndex.IncludePrimaryKey = False
@@ -221,7 +220,7 @@ Namespace ScriptDB
     'Public Function GeneratePerformanceIndexes() As Boolean
 
     '  Dim bOK As Boolean = True
-    '  Dim objColumn As Things.Column
+    '  Dim objColumn As Column
 
     '  Try
     '    For Each objColumn In Globals.PerformanceIndexes
@@ -238,26 +237,24 @@ Namespace ScriptDB
 
     'End Function
 
-    'Public Function ScriptIndex(ByRef Column As Things.Column, ByVal Clustered As Boolean, ByVal IncludeForeignKey As Boolean) As Boolean
+    'Public Function ScriptIndex(ByVal Column As Column, ByVal Clustered As Boolean, ByVal IncludeForeignKey As Boolean) As Boolean
 
     '  Dim bOK As Boolean
     '  Dim sSQL As String = String.Empty
     '  Dim sColumns As String
-    '  Dim objRelation As Things.Relation
+    '  Dim objRelation As Relation
 
     '  Try
 
     '    sColumns = Column.Name
 
     '    If IncludeForeignKey Then
-    '      For Each objRelation In Column.Table.Objects(Things.Type.Relation)
+    '      For Each objRelation In Column.Table.Objects(Type.Relation)
     '        If objRelation.RelationshipType = RelationshipType.Parent Then
-    '          sColumns = sColumns & ", ID_" & CInt(objRelation.ParentID)
+    '          sColumns = sColumns & ", ID_" & objRelation.ParentID
     '        End If
     '      Next
     '    End If
-
-
 
     '    ' Create the new index
     '    sSQL = String.Format("IF EXISTS(SELECT [id] FROM sysindexes WHERE [name] = 'IDX_{1}_{0}')" & _
@@ -280,9 +277,9 @@ Namespace ScriptDB
 
     '  Dim bOK As Boolean = True
     '  Dim sSQL As String = vbNullString
-    '  Dim objBankHolidayTable As Things.Table
-    '  Dim objHolidayDateColumn As Things.Column
-    '  Dim objUpdateColumn As Things.Column
+    '  Dim objBankHolidayTable As Table
+    '  Dim objHolidayDateColumn As Column
+    '  Dim objUpdateColumn As Column
     '  Dim iKeyID As Integer
     '  Dim sObjectName As String
     '  Dim aryUpdates As New ArrayList

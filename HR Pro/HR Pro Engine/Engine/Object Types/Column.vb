@@ -2,14 +2,14 @@
 
 Namespace Things
 
-  <ClassInterface(ClassInterfaceType.None), ComVisible(True), Serializable()> _
+  <ClassInterface(ClassInterfaceType.None), ComVisible(True), Serializable()>
   Public Class Column
-    Inherits Things.Base
+    Inherits Base
 
-    Public Property Table As Things.Table
+    Public Property Table As Table
 
     Public Property CalcID As Integer
-    Public Property Calculation As Things.Expression
+    Public Property Calculation As Expression
 
     Public Property DataType As ScriptDB.ColumnTypes
     Public Property Size As Integer
@@ -31,21 +31,13 @@ Namespace Things
     Public Property UniqueType As Enums.UniqueCheckScope
 
     Public Property DefaultCalcID As Integer
-    Public Property DefaultCalculation As Things.Expression
+    Public Property DefaultCalculation As Expression
     Public Property DefaultValue As String
-
-    Public Property ReferencedBy As New Things.Collections.Generic
-
-    Public Overrides ReadOnly Property Type As Enums.Type
-      Get
-        Return Enums.Type.Column
-      End Get
-    End Property
 
     Public ReadOnly Property DataTypeSize As String
       Get
 
-        Select Case CInt(Me.DataType)
+        Select Case Me.DataType
           Case ScriptDB.ColumnTypes.Text
             If Me.Multiline Or Me.Size > 8000 Then
               Return "MAX"
@@ -75,7 +67,7 @@ Namespace Things
 
         Dim sqlType As String = String.Empty
 
-        Select Case CInt(Me.DataType)
+        Select Case Me.DataType
           Case ScriptDB.ColumnTypes.Text
             If Me.Multiline Or Me.Size > 8000 Then
               sqlType = "varchar(MAX)"

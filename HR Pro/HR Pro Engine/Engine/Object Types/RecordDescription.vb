@@ -1,13 +1,7 @@
 ﻿Namespace Things
-  <Serializable()> _
+  <Serializable()>
   Public Class RecordDescription
-    Inherits Things.Expression
-
-    Public Overrides ReadOnly Property Type As Enums.Type
-      Get
-        Return Enums.Type.RecordDescription
-      End Get
-    End Property
+    Inherits Expression
 
     Public Overrides Sub GenerateCode()
       Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription

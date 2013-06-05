@@ -1,16 +1,10 @@
 ﻿Namespace Things
   Public Class Validation
-    Inherits Things.Base
+    Inherits Base
 
-    Public Property ValidationType As Things.ValidationType
-    Public Property Column As Things.Column
-    Public Property Severity As Things.ValidationSeverity = ValidationSeverity.Error
-
-    Public Overrides ReadOnly Property Type As Enums.Type
-      Get
-        Return Enums.Type.Validation
-      End Get
-    End Property
+    Public Property ValidationType As ValidationType
+    Public Property Column As Column
+    Public Property Severity As ValidationSeverity = ValidationSeverity.Error
 
     Public ReadOnly Property Message As String
       Get

@@ -1,7 +1,7 @@
 ﻿Namespace ScriptDB
 
-  <Serializable()> _
-Public Structure CodeElement
+  <Serializable()>
+  Public Structure CodeElement
     Public CaseNumber As Long
     Public Code As String
     Public CodeType As ScriptDB.ComponentTypes

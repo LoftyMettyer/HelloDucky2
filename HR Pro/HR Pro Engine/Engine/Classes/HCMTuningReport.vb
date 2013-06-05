@@ -1,4 +1,5 @@
 ﻿Imports System.Runtime.InteropServices
+Imports SystemFramework.Things
 
 Namespace Tuning
 
@@ -6,14 +7,18 @@ Namespace Tuning
   Public Class Report
     Implements COMInterfaces.IErrors
 
-    Public Expressions As New Things.Collections.Generic
+    Public Expressions As ICollection(Of Column)
 
-    Public Sub OutputToFile(ByRef FileName As String) Implements COMInterfaces.IErrors.OutputToFile
+    Public Sub New()
+      Expressions = New Collection(Of Column)
+    End Sub
+
+    Public Sub OutputToFile(ByVal FileName As String) Implements COMInterfaces.IErrors.OutputToFile
 
       Dim objWriter As System.IO.StreamWriter
-      Dim objThing As Things.Base
-      Dim objTable As Things.Table
-      Dim objColumn As Things.Column
+      Dim objThing As Base
+      Dim objTable As Table
+      Dim objColumn As Column
       Dim sMessage As String
 
       System.IO.File.Delete(FileName)
@@ -38,7 +43,7 @@ Namespace Tuning
 
 
       'For Each objThing In Expressions
-      '  objColumn = CType(objThing, Things.Column)
+      '  objColumn = CType(objThing, Column)
       '  sMessage = String.Format("({0}) {1}.{2}{3}", objColumn.Tuning.Usage.ToString.PadLeft(3) _
       '        , objColumn.Table.Name, objThing.Name _
       '        , If(objColumn.Calculation.IsComplex, " (COMPLEX) ", "")) & vbNewLine

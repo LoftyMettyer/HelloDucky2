@@ -2,32 +2,25 @@
 
   Public Module Beautify
 
-    Public Sub Cleanwhitespace(ByRef Input As String)
+    Public Function CleanWhitespace(ByVal value As String) As String
 
-      ' Put correct indentation
-      Input.Replace(vbNewLine, vbNewLine & Space(4))
+      value = value.Replace(vbNewLine, vbNewLine & Space(4))
+      value = value.Replace(vbNewLine & vbNewLine, vbNewLine)
 
-      ' Remove blank lines
-      Input.Replace(vbNewLine & vbNewLine, vbNewLine)
+      Return value
 
+    End Function
 
-    End Sub
+    Public Function MakeSingleLine(ByVal value As String) As String
 
-    Public Sub FormatDeclarations(ByRef Input As String)
-    End Sub
+      value = Replace(value, Chr(13), " ")
+      value = Replace(value, Chr(10), "")
+      value = Replace(value, vbTab, " ")
 
-    Public Function MakeSingleLine(ByRef Input As String) As String
-
-      Dim sReturn As String = Input
-      sReturn = Replace(sReturn, Chr(13), " ")
-      sReturn = Replace(sReturn, Chr(10), "")
-      sReturn = Replace(sReturn, vbTab, " ")
-
-      Return sReturn
+      Return value
 
     End Function
 
   End Module
-
 
 End Namespace

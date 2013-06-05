@@ -3,8 +3,8 @@ Namespace Forms
 
   Public Class ErrorLog
 
-    Public Abort As Boolean = False
-    Private mlngInitialHeight As Long = 166
+    Public Abort As Boolean
+    Private mlngInitialHeight As Integer = 166
 
     Private Sub ErrorLog_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
@@ -21,7 +21,7 @@ Namespace Forms
       txtDetails.Text = Globals.ErrorLog.QuickReport()
       txtDetails.Text = txtDetails.Text & Globals.ErrorLog.DetailedReport
 
-      Me.Height = CInt(mlngInitialHeight)
+      Me.Height = mlngInitialHeight
 
     End Sub
 
@@ -30,10 +30,10 @@ Namespace Forms
 
       If txtDetails.Visible Then
         butDetails.Text = "Details <<<"
-        Me.Height = CInt(mlngInitialHeight) + txtDetails.Height + 10 + cmdCopy.Height
+        Me.Height = mlngInitialHeight + txtDetails.Height + 10 + cmdCopy.Height
       Else
         butDetails.Text = "Details >>>"
-        Me.Height = CInt(mlngInitialHeight)
+        Me.Height = mlngInitialHeight
       End If
 
     End Sub

@@ -1,4 +1,5 @@
 ﻿Imports System.Runtime.InteropServices
+Imports SystemFramework.Things
 
 <ClassInterface(ClassInterfaceType.None)> _
 Public Class HCM
@@ -67,10 +68,6 @@ Public Class HCM
 
   End Function
 
-
-
-
-
   Public Function CloseSafely() As Boolean Implements ISystemManager.CloseSafely
     Return True
   End Function
@@ -127,11 +124,9 @@ Public Class HCM
     End Get
   End Property
 
-  Public ReadOnly Property ReturnThings As Things.Collections.Generic Implements COMInterfaces.ISystemManager.Things
+  Public ReadOnly Property ReturnThings As ICollection(Of Table) Implements COMInterfaces.ISystemManager.Tables
     Get
-      'TODO: Global things is tables but global modify things are also being added????
-      Return New Things.Collections.Generic
-      'Return Globals.Things
+      Return Globals.Tables
     End Get
   End Property
 
@@ -149,7 +144,7 @@ Public Class HCM
 
 #Region "Connectivity"
 
-  Public Function Connect(ByRef Login As Connectivity.Login) As Boolean
+  Public Function Connect(ByVal Login As Connectivity.Login) As Boolean
 
     Dim bOK As Boolean = True
 

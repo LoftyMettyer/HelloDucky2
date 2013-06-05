@@ -1,28 +1,26 @@
-﻿Option Explicit On
-
-Imports System.Runtime.InteropServices
+﻿Imports System.Runtime.InteropServices
 
 Namespace Things
 
-  <ClassInterface(ClassInterfaceType.None), ComVisible(True), Serializable()> _
+  <ClassInterface(ClassInterfaceType.None), ComVisible(True), Serializable()>
   Public Class Expression
-    Inherits Things.Component
+    Inherits Component
 
     Public Property Size As Integer
     Public Property Decimals As Integer
     Public Property BaseTableID As Integer
-    Public Property BaseTable As Things.Table
-    Public Property AssociatedColumn As Things.Column
+    Public Property BaseTable As Table
+    Public Property AssociatedColumn As Column
     Public UDF As ScriptDB.GeneratedUDF
     Public Property ExpressionType As ScriptDB.ExpressionType
 
-    Public Property Dependencies As New Things.Collections.Generic
-    Public Property ColumnRecursion As New Things.Collections.Generic
-    Public Property StatementObjects As New Things.Collections.Generic
+    Public Property Dependencies As ICollection(Of Base)
+    Public Property ColumnRecursion As ICollection(Of Column)
+    Public Property StatementObjects As IList(Of Base)
 
     Public Property Joins As ArrayList
     Public Property FromTables As ArrayList
-    Public Property  Wheres As ArrayList
+    Public Property Wheres As ArrayList
     Public Property Declarations As New ArrayList
     Public Property PreStatements As New ArrayList
 
@@ -40,11 +38,11 @@ Namespace Things
     Public Property IsComplex As Boolean
     Public Property IsValid As Boolean = True
 
-    Public Overrides ReadOnly Property Type As Enums.Type
-      Get
-        Return Enums.Type.Expression
-      End Get
-    End Property
+    Public Sub New()
+      Dependencies = New Collection(Of Base)
+      ColumnRecursion = New Collection(Of Column)
+      StatementObjects = New List(Of Base)
+    End Sub
 
     Public ReadOnly Property CalculatePostAudit As Boolean
       Get
@@ -54,7 +52,7 @@ Namespace Things
 
 #Region "Generate code"
 
-    Private Sub BuildDependancies(ByVal expression As Things.Component)
+    Private Sub BuildDependancies(ByVal expression As Component)
 
       For Each component As Component In expression.Components
 
@@ -77,7 +75,6 @@ Namespace Things
 
     Public Overridable Sub GenerateCode()
 
-      Dim objDependency As Things.Base
       Dim sOptions As String = String.Empty
       Dim sCode As String = String.Empty
       Dim sBypassUDFCode As String = String.Empty
@@ -90,6 +87,7 @@ Namespace Things
       ' Initialise code object
       Me.IsComplex = False
       Me.CaseCount = 0
+
       _linesOfCode = New ScriptDB.LinesOfCode
       _linesOfCode.Clear()
       _linesOfCode.ReturnType = ReturnType
@@ -145,40 +143,38 @@ Namespace Things
       ' End If
 
       ' Add other dependancies
-      For Each objDependency In Dependencies
-        If objDependency.Type = Enums.Type.Column Then
-          If CType(objDependency, Things.Column).Table Is Me.BaseTable Then 'And Not CType(objDependency, Things.Column).IsCalculated Then
-            aryParameters1.Add(String.Format("@prm_{0} {1}", objDependency.Name, CType(objDependency, Things.Column).DataTypeSyntax))
-            aryParameters2.Add(String.Format("base.[{0}]", objDependency.Name))
-            aryParameters3.Add(String.Format("@prm_{0}", objDependency.Name))
-            aryComments.Add(String.Format("Column: {0}", objDependency.Name))
-          End If
+      For Each column In Dependencies.OfType(Of Column)()
+
+        If column.Table Is Me.BaseTable Then
+          aryParameters1.Add(String.Format("@prm_{0} {1}", column.Name, column.DataTypeSyntax))
+          aryParameters2.Add(String.Format("base.[{0}]", column.Name))
+          aryParameters3.Add(String.Format("@prm_{0}", column.Name))
+          aryComments.Add(String.Format("Column: {0}", column.Name))
         End If
+      Next
 
-        If objDependency.Type = Enums.Type.Relation Then
+      For Each relation In Dependencies.OfType(Of Relation)()
 
-          If Not aryParameters1.Contains(String.Format("@prm_ID_{0} integer", CInt(CType(objDependency, Things.Relation).ParentID))) Then
-            aryParameters1.Add(String.Format("@prm_ID_{0} integer", CInt(CType(objDependency, Things.Relation).ParentID)))
+        If Not aryParameters1.Contains(String.Format("@prm_ID_{0} integer", relation.ParentID)) Then
+          aryParameters1.Add(String.Format("@prm_ID_{0} integer", relation.ParentID))
 
-            If CType(objDependency, Things.Relation).RelationshipType = ScriptDB.RelationshipType.Parent Then
-              aryParameters2.Add(String.Format("base.[ID_{0}]", CInt(CType(objDependency, Things.Relation).ParentID)))
-              aryParameters3.Add(String.Format("@prm_ID_{0}", CInt(CType(objDependency, Things.Relation).ParentID)))
-              aryComments.Add(String.Format("Relation :{0}", objDependency.Name))
-            Else
-              aryParameters2.Add("base.[ID]")
-              aryParameters3.Add(String.Format("@prm_ID"))
-              aryComments.Add(String.Format("Relation : {0}", objDependency.Name))
-            End If
-
+          If relation.RelationshipType = ScriptDB.RelationshipType.Parent Then
+            aryParameters2.Add(String.Format("base.[ID_{0}]", relation.ParentID))
+            aryParameters3.Add(String.Format("@prm_ID_{0}", relation.ParentID))
+            aryComments.Add(String.Format("Relation :{0}", relation.Name))
+          Else
+            aryParameters2.Add("base.[ID]")
+            aryParameters3.Add(String.Format("@prm_ID"))
+            aryComments.Add(String.Format("Relation : {0}", relation.Name))
           End If
 
         End If
+      Next
 
-        If objDependency.Type = Enums.Type.Table Then
-          aryComments.Add(String.Format("Table : {0}", objDependency.Name))
-          aryDependsOn.Add(String.Format("{0}", CInt(objDependency.ID)))
-        End If
+      For Each table In Dependencies.OfType(Of Table)()
 
+        aryComments.Add(String.Format("Table : {0}", table.Name))
+        aryDependsOn.Add(String.Format("{0}", table.ID))
       Next
 
       ' Do we have caching on this UDF?
@@ -255,7 +251,7 @@ Namespace Things
         .WhereCode = If(Wheres.Count > 0, String.Format("WHERE {0}", String.Join(" AND ", Wheres.ToArray)) & vbNewLine, "")
 
         ' Code beautify
-        ScriptDB.Beautify.Cleanwhitespace(.Prerequisites)
+        .Prerequisites = ScriptDB.Beautify.CleanWhitespace(.Prerequisites)
 
         Select Case Me.ExpressionType
 
@@ -332,7 +328,7 @@ Namespace Things
 
             ' Wrapper for when expression is used as a filter in a view
           Case ScriptDB.ExpressionType.Mask
-            .Name = String.Format("[{0}].[{1}{2}]", Me.SchemaName, ScriptDB.Consts.MaskUDF, CInt(Me.BaseExpression.ID))
+            .Name = String.Format("[{0}].[{1}{2}]", Me.SchemaName, ScriptDB.Consts.MaskUDF, Me.BaseExpression.ID)
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters1.ToArray))
             .SelectCode = _linesOfCode.Statement
 
@@ -429,12 +425,12 @@ Namespace Things
 
     Private Sub SQLCode_AddCodeLevel(ByVal [Components] As List(Of Component), ByVal [CodeCluster] As ScriptDB.LinesOfCode)
 
-      Dim objComponent As Things.Component
+      Dim objComponent As Component
 
       Dim guiObjectID As Integer
 
       Dim LineOfCode As ScriptDB.CodeElement
-      Dim objCalculation As Things.Expression
+      Dim objCalculation As Expression
 
       For Each objComponent In [Components]
         guiObjectID = objComponent.ID
@@ -515,10 +511,10 @@ Namespace Things
 
     End Sub
 
-    Private Sub SQLCode_AddRelation(ByRef [CodeCluster] As ScriptDB.LinesOfCode, ByRef [Component] As Things.Component)
+    Private Sub SQLCode_AddRelation(ByVal [CodeCluster] As ScriptDB.LinesOfCode, ByVal [Component] As Component)
 
-      Dim objTable As Things.Table
-      Dim objRelation As Things.Relation
+      Dim objTable As Table
+      Dim objRelation As Relation
       Dim LineOfCode As ScriptDB.CodeElement
 
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Relation
@@ -532,26 +528,22 @@ Namespace Things
 
       Dependencies.AddIfNew(objTable)
 
-      '   If [Component].TableID = Me.AssociatedColumn.Table.ID Then
-      'LineOfCode.Code = "@prm_ID"
-      '   Else
       If Me.ExpressionType = ScriptDB.ExpressionType.Mask Then
         LineOfCode.Code = "@prm_ID"
       Else
-        LineOfCode.Code = String.Format("@prm_ID_{0}", CInt([Component].TableID))
+        LineOfCode.Code = String.Format("@prm_ID_{0}", [Component].TableID)
       End If
-      '  End If
 
       [CodeCluster].Add(LineOfCode)
 
     End Sub
 
-    Private Sub SQLCode_AddColumn(ByVal [CodeCluster] As ScriptDB.LinesOfCode, ByVal [Component] As Things.Component)
+    Private Sub SQLCode_AddColumn(ByVal [CodeCluster] As ScriptDB.LinesOfCode, ByVal [Component] As Component)
 
-      Dim objThisColumn As Things.Column
+      Dim objThisColumn As Column
 
-      Dim objRelation As Things.Relation
-      Dim objOrderFilter As Things.TableOrderFilter
+      Dim objRelation As Relation
+      Dim objOrderFilter As TableOrderFilter
       Dim sRelationCode As String
       Dim sFromCode As String
       Dim sWhereCode As String
@@ -568,7 +560,7 @@ Namespace Things
 
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Column
 
-      objThisColumn = CType(Dependencies.SingleOrDefault(Function(o) o.Type = Enums.Type.Column AndAlso o.ID = Component.ColumnID), Column)
+      objThisColumn = CType(Dependencies.OfType(Of Column).SingleOrDefault(Function(o) o.ID = Component.ColumnID), Column)
       objThisColumn.Tuning.Usage += 1
 
       'Dependencies.AddIfNew(objThisColumn.Table)
@@ -577,8 +569,8 @@ Namespace Things
       ' Is this column referencing the column that this udf is attaching itself to? (i.e. recursion)
       If Component.IsColumnByReference Then
         LineOfCode.Code = String.Format("'{0}-{1}'" _
-            , CInt(objThisColumn.Table.ID).ToString.PadLeft(8, "0"c) _
-            , CInt(objThisColumn.ID).ToString.PadLeft(8, "0"c))
+            , objThisColumn.Table.ID.ToString.PadLeft(8, "0"c) _
+            , objThisColumn.ID.ToString.PadLeft(8, "0"c))
         'Me.IsComplex = True
 
       ElseIf objThisColumn Is Me.AssociatedColumn _
@@ -661,7 +653,7 @@ Namespace Things
 
             ' Add table join component
             sRelationCode = String.Format("LEFT JOIN [dbo].[{0}] ON [{0}].[ID] = base.[ID_{1}]" _
-              , objRelation.Name, CInt(objRelation.ParentID))
+              , objRelation.Name, objRelation.ParentID)
             If Not Joins.Contains(sRelationCode) Then
               Joins.Add(sRelationCode)
             End If
@@ -734,20 +726,20 @@ Namespace Things
 
     End Sub
 
-    Private Sub SQLCode_AddFunction(ByVal component As Things.Component, ByVal codeCluster As ScriptDB.LinesOfCode)
+    Private Sub SQLCode_AddFunction(ByVal component As Component, ByVal codeCluster As ScriptDB.LinesOfCode)
 
       Dim LineOfCode As ScriptDB.CodeElement
       Dim ExtraCode As ScriptDB.CodeElement
 
-      Dim objCodeLibrary As Things.CodeLibrary
+      Dim objCodeLibrary As CodeLibrary
       Dim ChildCodeCluster As ScriptDB.LinesOfCode
       Dim WhereCodeCluster As ScriptDB.LinesOfCode
-      Dim objSetting As Things.Setting
-      Dim objIDComponent As Things.Component
+      Dim objSetting As Setting
+      Dim objIDComponent As Component
       Dim objTriggeredUpdate As ScriptDB.TriggeredUpdate
       Dim sWhereClause As String = ""
       Dim iBackupType As ScriptDB.ExpressionType
-      Dim bAddDefaultDataType As Boolean = False
+      Dim bAddDefaultDataType As Boolean
 
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Function
       objCodeLibrary = Globals.Functions.GetById(component.FunctionID)
@@ -766,15 +758,15 @@ Namespace Things
           Select Case objSetting.SettingType
 
             Case SettingType.ModuleSetting
-              objIDComponent = New Things.Component
-              objIDComponent.SubType = CType(CInt(ScriptDB.ComponentTypes.Relation), Things.Enums.Type)
+              objIDComponent = New Component
+              objIDComponent.SubType = CType(CInt(ScriptDB.ComponentTypes.Relation), Enums.Type)
               objIDComponent.TableID = CInt(objSetting.Value)
               component.Components.Add(objIDComponent)
               Me.IsComplex = True
 
             Case SettingType.CodeItem
-              objIDComponent = New Things.Component
-              objIDComponent.SubType = CType(CInt(ScriptDB.ComponentTypes.Value), Things.Enums.Type)
+              objIDComponent = New Component
+              objIDComponent.SubType = CType(CInt(ScriptDB.ComponentTypes.Value), Enums.Type)
               objIDComponent.ValueString = objSetting.Code
               objIDComponent.ValueType = ScriptDB.ComponentValueTypes.SystemVariable
               component.Components.Add(objIDComponent)
@@ -878,11 +870,11 @@ Namespace Things
 
     End Sub
 
-    Private Sub SQLCode_AddParameter(ByRef [Component] As Things.Component, ByRef [CodeCluster] As ScriptDB.LinesOfCode)
+    Private Sub SQLCode_AddParameter(ByVal [Component] As Component, ByVal [CodeCluster] As ScriptDB.LinesOfCode)
 
       Dim ChildCodeCluster As ScriptDB.LinesOfCode
       Dim LineOfCode As ScriptDB.CodeElement
-      Dim objExpression As Things.Expression
+      Dim objExpression As Expression
       Dim iPartNumber As Integer
       Dim sPartCode As String
 
@@ -898,7 +890,7 @@ Namespace Things
       ' Nesting is too deep - convert to part number
       If Me.CaseCount > 8 Then
 
-        objExpression = New Things.Expression
+        objExpression = New Expression
         objExpression.ExpressionType = Me.ExpressionType
         objExpression.BaseTable = Me.BaseTable
         objExpression.AssociatedColumn = Me.AssociatedColumn
@@ -949,10 +941,10 @@ Namespace Things
 
     End Sub
 
-    Private Sub SQLCode_AddOperator(ByVal objComponent As Things.Component, ByRef [CodeCluster] As ScriptDB.LinesOfCode)
+    Private Sub SQLCode_AddOperator(ByVal objComponent As Component, ByVal [CodeCluster] As ScriptDB.LinesOfCode)
 
       Dim LineOfCode As ScriptDB.CodeElement
-      Dim objCodeLibrary As Things.CodeLibrary
+      Dim objCodeLibrary As CodeLibrary
 
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Operator
 
@@ -1007,16 +999,16 @@ Namespace Things
 
     End Property
 
-    'Private Sub AddToDependencies(ByRef Dependencies As Things.Collection)
+    'Private Sub AddToDependencies(ByVal Dependencies As Collection)
 
-    '  Dim objDependency As Things.Base
-    '  Dim objColumn As Things.Column
-    '  Dim objRelation As Things.Relation
+    '  Dim objDependency As Base
+    '  Dim objColumn As Column
+    '  Dim objRelation As Relation
 
     '  For Each objDependency In Dependencies
 
     '    If objDependency.Type = Enums.Type.Column Then
-    '      objColumn = CType(objDependency, Things.Column)
+    '      objColumn = CType(objDependency, Column)
     '      If Not Dependencies.Contains(objColumn) Then
     '        If objColumn.Table Is Me.BaseTable Then
     '          Dependencies.Add(objDependency)
@@ -1025,7 +1017,7 @@ Namespace Things
     '    End If
 
     '    If objDependency.Type = Enums.Type.Relation Then
-    '      objRelation = CType(objDependency, Things.Relation)
+    '      objRelation = CType(objDependency, Relation)
     '      If Not Dependencies.Contains(objRelation) Then
     '        Dependencies.Add(objDependency)
     '      End If
@@ -1037,13 +1029,13 @@ Namespace Things
 
     ' Adds a calculated column to the pre-requists stack. This is for efficiency so the UDF is called a minimum of times.
 
-    Private Function AddCalculatedColumn(ByVal ReferencedColumn As Things.Column) As ScriptDB.CodeElement
+    Private Function AddCalculatedColumn(ByVal ReferencedColumn As Column) As ScriptDB.CodeElement
 
       Dim sCallingCode As ScriptDB.CodeElement
       Dim sVariableName As String
       Dim iBackupType As ScriptDB.ExpressionType
       Dim sStatement As String
-      Dim BackupColumn As Things.Column
+      Dim BackupColumn As Column
 
       If ReferencedColumn.Calculation Is Nothing Then
         ReferencedColumn.Calculation = ReferencedColumn.Table.Expressions.GetById(ReferencedColumn.CalcID)
@@ -1104,11 +1096,11 @@ Namespace Things
 
     End Function
 
-    'Private Function AddChildColumn(ByRef ChildView As Things.TableOrderFilter, ByRef ReferencedColumn As Things.Column) As ScriptDB.CodeElement
+    'Private Function AddChildColumn(ByVal ChildView As TableOrderFilter, ByVal ReferencedColumn As Column) As ScriptDB.CodeElement
 
     '  Dim sCallingCode As ScriptDB.CodeElement
     '  Dim sVariableName As String
-    '  Dim objChildView As Things.TableOrderFilter
+    '  Dim objChildView As TableOrderFilter
 
     '  If StatementObjects.Contains(ChildView) Then
     '    sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn) + 1)
@@ -1159,7 +1151,7 @@ Namespace Things
 
       Dim sSQLType As String = String.Empty
 
-      Select Case CInt(ColumnType)
+      Select Case ColumnType
         Case ScriptDB.ColumnTypes.Text
           sSQLType = "varchar(MAX)"
 
@@ -1193,14 +1185,14 @@ Namespace Things
 
     End Function
 
-    Private Function ResultWrapper(ByRef Statement As String) As String
+    Private Function ResultWrapper(ByVal Statement As String) As String
 
       Dim sWrapped As String = String.Empty
       Dim sSize As String = String.Empty
 
       If Globals.Options.OverflowSafety Then
 
-        Select Case CInt(Me.AssociatedColumn.DataType)
+        Select Case Me.AssociatedColumn.DataType
           Case ScriptDB.ColumnTypes.WorkingPattern
             sWrapped = Statement
 
@@ -1236,7 +1228,7 @@ Namespace Things
 
       Dim sSQLType As String = String.Empty
 
-      Select Case CInt(Me.AssociatedColumn.DataType)
+      Select Case Me.AssociatedColumn.DataType
         Case ScriptDB.ColumnTypes.Text
           sSQLType = "varchar(MAX)"
 

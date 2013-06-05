@@ -1,4 +1,6 @@
 ﻿Imports SystemFramework.Things
+Imports SystemFramework.ScriptDB
+Imports SystemFramework.ErrorHandler
 
 Public Module Globals
 
@@ -7,20 +9,19 @@ Public Module Globals
 
   Public MetadataProvider As Connectivity.MetadataProvider = Connectivity.MetadataProvider.PhoenixStoredProcs
 
-  Public Tables As List(Of Table)
-  Public Workflows As Things.Collections.Generic
-  Public Operators As List(Of CodeLibrary)
-  Public Functions As List(Of CodeLibrary)
-  Public SelectedThings As Things.Collections.Generic
-  Public ErrorLog As SystemFramework.ErrorHandler.Errors
+  Public Tables As ICollection(Of Table)
+  Public Workflows As ICollection(Of Workflow)
+  Public Operators As ICollection(Of CodeLibrary)
+  Public Functions As ICollection(Of CodeLibrary)
+  Public ErrorLog As Errors
   Public TuningLog As Tuning.Report
   Public ModuleSetup As SettingsCollection
   Public SystemSettings As SettingsCollection
   Public Options As HCMOptions
   Public Modifications As Modifications
-  Public GetFieldsFromDB As Things.Collections.Generic
-  Public PerformanceIndexes As Things.Collections.Generic
-  Public OnBankHolidayUpdate As Things.Collections.Generic
+  Public GetFieldsFromDB As ICollection(Of Component)
+  Public PerformanceIndexes As ICollection(Of Column)
+  Public OnBankHolidayUpdate As ICollection(Of TriggeredUpdate)
 
   Public ScriptDB As ScriptDB.Script
   Public Login As Connectivity.Login
@@ -30,11 +31,11 @@ Public Module Globals
   Public Sub Initialise()
 
     ' Metadata objects
-    Tables = New List(Of Table)
-    Workflows = New Things.Collections.Generic
-    Operators = New List(Of CodeLibrary)
-    Functions = New List(Of CodeLibrary)
-    ErrorLog = New SystemFramework.ErrorHandler.Errors
+    Tables = New Collection(Of Table)
+    Workflows = New Collection(Of Workflow)
+    Operators = New Collection(Of CodeLibrary)
+    Functions = New Collection(Of CodeLibrary)
+    ErrorLog = New Errors
     TuningLog = New Tuning.Report
     ModuleSetup = New SettingsCollection
     ScriptDB = New ScriptDB.Script
@@ -43,9 +44,9 @@ Public Module Globals
     SystemSettings = New SettingsCollection
 
     ' Dependency stack for special objects that will have procedures written for
-    GetFieldsFromDB = New Things.Collections.Generic
-    OnBankHolidayUpdate = New Things.Collections.Generic
-    PerformanceIndexes = New Things.Collections.Generic
+    GetFieldsFromDB = New Collection(Of Component)
+    OnBankHolidayUpdate = New Collection(Of TriggeredUpdate)
+    PerformanceIndexes = New Collection(Of Column)
 
   End Sub
 

@@ -1,14 +1,8 @@
 ﻿Namespace Things
   Public Class Screen
-    Inherits Things.Base
+    Inherits Base
 
-    Public Property Table As Things.Table
-
-    Public Overrides ReadOnly Property Type As Things.Enums.Type
-      Get
-        Return Things.Type.Screen
-      End Get
-    End Property
+    Public Property Table As Table
   End Class
 
 End Namespace

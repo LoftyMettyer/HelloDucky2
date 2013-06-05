@@ -3,15 +3,9 @@
   Public Class View
     Inherits Base
 
-    Public Property Table As Table
-    Public Property Filter As Expression
-    Public Property Columns As New List(Of Column)
-
-    Public Overrides ReadOnly Property Type As Things.Enums.Type
-      Get
-        Return Enums.Type.View
-      End Get
-    End Property
+    Property Table As Table
+    Property Filter As Expression
+    Property Columns As New List(Of Column)
 
   End Class
 End Namespace

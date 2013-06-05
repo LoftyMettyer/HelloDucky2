@@ -2,7 +2,7 @@
 
 Namespace Things
 
-  <HideModuleName()> _
+  <HideModuleName()>
   Public Module PopulateObjects
 
     Public Sub PopulateThings()
@@ -78,7 +78,7 @@ Namespace Things
       Dim ds As DataSet = Globals.CommitDB.ExecStoredProcedure("spadmin_getcomponentcode", Nothing)
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim codeLibrary As New Things.CodeLibrary
+        Dim codeLibrary As New CodeLibrary
         codeLibrary.ID = row.Item("id").ToString
         codeLibrary.Name = row.Item("name").ToString
         codeLibrary.Code = row.Item("code").ToString
@@ -108,17 +108,17 @@ Namespace Things
 
     End Sub
 
-    Public Function GetCodeLibraryDependancies(ByVal codeLibrary As Things.CodeLibrary) As List(Of Setting)
+    Public Function GetCodeLibraryDependancies(ByVal codeLibrary As CodeLibrary) As List(Of Setting)
 
       Dim params As New Connectivity.Parameters
-      params.Add("@componentid", CInt(codeLibrary.ID))
+      params.Add("@componentid", codeLibrary.ID)
       Dim ds As DataSet = Globals.CommitDB.ExecStoredProcedure("spadmin_getcomponentcodedependancies", params)
 
       Dim dependancies As New List(Of Setting)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim setting As New Things.Setting
+        Dim setting As New Setting
         setting.SettingType = row.Item("type").ToString
         setting.Module = row.Item("parameterkey").ToString
         setting.Parameter = row.Item("modulekey").ToString
@@ -197,7 +197,7 @@ Namespace Things
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim table As Things.Table = Globals.Tables.GetById(row.Item("tableid").ToString)
+        Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
 
         Dim tableOrder = New TableOrder
         tableOrder.ID = row.Item("orderid").ToString
@@ -228,7 +228,7 @@ Namespace Things
         orderItem.TableOrder = tableOrder
         orderItem.Column = tableOrder.Table.Columns.GetById(row.Item("columnid").ToString)
 
-        tableOrder.TableOrderItems.Add(orderItem)
+        tableOrder.Items.Add(orderItem)
       Next
 
     End Sub
@@ -239,7 +239,7 @@ Namespace Things
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim table As Things.Table = Globals.Tables.GetById(row.Item("tableid").ToString)
+        Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
 
         Dim validation As New Validation
         validation.ValidationType = row.Item("validationtype").ToString
@@ -290,7 +290,7 @@ Namespace Things
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim table As Things.Table = Globals.Tables.GetById(row.Item("tableid").ToString)
+        Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
 
         Dim expression As New Expression
         expression.ID = row.Item("id").ToString
@@ -318,7 +318,7 @@ Namespace Things
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim table As Things.Table = Globals.Tables.GetById(row.Item("tableid").ToString)
+        Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
 
         Dim view As New View
         view.ID = row.Item("id").ToString
@@ -405,7 +405,7 @@ Namespace Things
 
       For Each row As DataRow In rows
 
-        Dim component As New Things.Component
+        Dim component As New Component
         component.ID = row.Item("componentid").ToString
         component.SubType = row.Item("subtype")
         component.Name = row.Item("name")
@@ -460,7 +460,7 @@ Namespace Things
 
         Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
 
-        Dim mask As New Things.Mask
+        Dim mask As New Mask
         mask.ID = row.Item("id").ToString
         mask.Name = row.Item("name").ToString
         mask.AssociatedColumn = table.Columns.GetById(row.Item("columnid").ToString)
@@ -488,7 +488,7 @@ Namespace Things
 
         Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
 
-        Dim screen As Screen = New Things.Screen
+        Dim screen As Screen = New Screen
         screen.ID = row.Item("id").ToString
         screen.Name = row.Item("name").ToString
         screen.SchemaName = "dbo"
@@ -509,7 +509,7 @@ Namespace Things
 
         Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
 
-        Dim workflow As New Things.Workflow
+        Dim workflow As New Workflow
         workflow.ID = row.Item("id").ToString
         workflow.Name = row.Item("name").ToString
         workflow.SchemaName = "dbo"
@@ -526,10 +526,10 @@ Namespace Things
 
 #Region "Workflow"
 
-    'Public Function LoadWorkflowElements(ByRef objWorkflow As Things.Workflow) As Things.Collection
+    'Public Function LoadWorkflowElements(byval objWorkflow As Workflow) As Collection
 
-    '  Dim objObjects As New Things.Collection
-    '  Dim objElement As Things.WorkflowElement
+    '  Dim objObjects As New Collection
+    '  Dim objElement As WorkflowElement
     '  Dim objDataset As DataSet
     '  Dim objRow As DataRow
     '  Dim objParameters As New Connectivity.Parameters
@@ -544,7 +544,7 @@ Namespace Things
     '    objDataset = CommitDB.ExecStoredProcedure("spadmin_getworkflowelements", objParameters)
     '    For Each objRow In objDataset.Tables(0).Rows
 
-    '      objElement = New Things.WorkflowElement
+    '      objElement = New WorkflowElement
     '      objElement.ID = objRow.Item("elementid").ToString
     '      objElement.SubType = objRow.Item("type")
     '      objElement.Caption = objRow.Item("caption")
@@ -619,11 +619,11 @@ Namespace Things
 
     'End Function
 
-    'Public Function LoadWorkflowElementDetails(ByRef objWorkflowElement As Things.WorkflowElement) As Things.Collection
+    'Public Function LoadWorkflowElementDetails(ByVal objWorkflowElement As WorkflowElement) As Collection
 
-    '  Dim objObjects As New Things.Collection
-    '  Dim objElementColumn As Things.WorkflowElementColumn
-    '  '   Dim objElementItem As Things.WorkflowElementItem
+    '  Dim objObjects As New Collection
+    '  Dim objElementColumn As WorkflowElementColumn
+    '  '   Dim objElementItem As WorkflowElementItem
 
     '  Dim objDataset As DataSet
     '  Dim objRow As DataRow
@@ -639,7 +639,7 @@ Namespace Things
     '    objDataset = CommitDB.ExecStoredProcedure("spadmin_getworkflowelementcolumns", objParameters)
     '    For Each objRow In objDataset.Tables(0).Rows
 
-    '      objElementColumn = New Things.WorkflowElementColumn
+    '      objElementColumn = New WorkflowElementColumn
     '      objElementColumn.ID = objRow.Item("elementid").ToString
     '      objElementColumn.ColumnID = objRow.Item("columnid").ToString
 

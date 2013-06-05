@@ -1,5 +1,4 @@
-﻿Option Explicit On
-
+﻿
 Imports System.Runtime.InteropServices
 Imports System.Text
 
@@ -16,29 +15,29 @@ Namespace ScriptDB
   'End Structure
 
   <Serializable()>
-    Public Class Tuning
+  Public Class Tuning
 
-    Public Rating As Long = 0
-    Public Usage As Long = 0
+    Public Rating As Long
+    Public Usage As Long
 
-    Private mlngFilterCount As Long = 0
-    Private mlngOrderCount As Long = 0
-    Private mlngSelectCount As Long = 0
-    Private mlngSelectUDFCount As Long = 0
-    Private mlngSelectAsParameter As Long = 0
+    Private mlngFilterCount As Long
+    Private mlngOrderCount As Long
+    Private mlngSelectCount As Long
+    Private mlngSelectUDFCount As Long
+    Private mlngSelectAsParameter As Long
 
-    Private mlngFunctions As Long = 0
+    Private mlngFunctions As Long
 
     Public Sub IncrementFunction()
-      mlngFunctions = mlngFunctions + 1
+      mlngFunctions += 1
     End Sub
 
     Public Sub IncrementFilter()
-      mlngFilterCount = mlngFilterCount + 1
+      mlngFilterCount += 1
     End Sub
 
     Public Sub IncrementOrder()
-      mlngOrderCount = mlngOrderCount + 1
+      mlngOrderCount += 1
     End Sub
 
     'Public Sub IncrementSelect()
@@ -46,11 +45,11 @@ Namespace ScriptDB
     'End Sub
 
     Public Sub IncrementSelectAsCalculation()
-      mlngSelectUDFCount = mlngSelectUDFCount + 1
+      mlngSelectUDFCount += 1
     End Sub
 
     Public Sub IncrementSelectAsParameter()
-      mlngSelectAsParameter = mlngSelectAsParameter + 1
+      mlngSelectAsParameter += 1
     End Sub
 
     Public ReadOnly Property ExpressionComplexity As String

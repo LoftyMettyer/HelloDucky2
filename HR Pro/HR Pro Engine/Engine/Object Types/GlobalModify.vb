@@ -2,17 +2,11 @@
 
 Namespace Things
 
-  <Serializable()> _
+  <Serializable()>
   Public Class GlobalModify
-    Inherits Things.Base
+    Inherits Base
 
-    Public Property GlobalModifyItems As New List(Of GlobalModifyItem)
-
-    Public Overrides ReadOnly Property Type As Enums.Type
-      Get
-        Return Enums.Type.GlobalModify
-      End Get
-    End Property
+    Public Property Items As New List(Of GlobalModifyItem)
   End Class
 
 End Namespace

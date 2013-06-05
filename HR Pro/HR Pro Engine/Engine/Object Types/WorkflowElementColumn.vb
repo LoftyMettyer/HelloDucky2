@@ -1,13 +1,7 @@
 ﻿Namespace Things
 
   Public Class WorkflowElementColumn
-    Inherits Things.Base
-
-    Public Overrides ReadOnly Property Type As Enums.Type
-      Get
-        Return Enums.Type.WorkflowElementColumn
-      End Get
-    End Property
+    Inherits Base
 
     Public Property ColumnID As Integer
     Public Property ValueType As Integer

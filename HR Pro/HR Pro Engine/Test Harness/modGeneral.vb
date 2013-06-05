@@ -1,10 +1,10 @@
 ﻿Namespace TestHarness
 
-  <HideModuleName()> _
+  <HideModuleName()>
   Public Module modGeneral
 
     'Private objProgress As ScriptDB.HCMProgressBar
-    'Private Initialised As Boolean = False
+    'Private Initialised As Boolean
 
     'Private Sub InitialiseScriptDB()
 

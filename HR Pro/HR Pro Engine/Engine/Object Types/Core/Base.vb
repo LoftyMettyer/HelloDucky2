@@ -14,8 +14,7 @@ Namespace Things
     Public Property SchemaName As String
     Public Property Encrypted As Boolean
     Public Property State As System.Data.DataRowState
-    Public MustOverride ReadOnly Property Type As Things.Type
-    Public Overridable Property SubType As Things.Type
+    Public Overridable Property SubType As Type
     Public Property Tuning As New ScriptDB.Tuning
 
     Public Overridable ReadOnly Property PhysicalName As String Implements IObject.PhysicalName

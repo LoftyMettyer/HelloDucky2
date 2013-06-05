@@ -1,6 +1,6 @@
 ﻿Namespace ScriptDB
 
-  <HideModuleName()> _
+  <HideModuleName()>
   Public Module Enums
 
     Public Enum TriggerType

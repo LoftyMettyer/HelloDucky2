@@ -1,6 +1,6 @@
 ﻿Public Class DataSource
 
-  Public DS As Things.Datasource
+  Public DS As DataSource
 
 
 End Class
