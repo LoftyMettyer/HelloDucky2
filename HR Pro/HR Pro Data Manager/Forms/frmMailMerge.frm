@@ -1,10 +1,10 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmMailMerge 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Mail Merge Definition"
@@ -24,6 +24,7 @@ Begin VB.Form frmMailMerge
    HelpContextID   =   1046
    Icon            =   "frmMailMerge.frx":0000
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   5595
@@ -180,13 +181,13 @@ Begin VB.Form frmMailMerge
             RecordSelectors =   0   'False
             Col.Count       =   3
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).Picture=   "frmMailMerge.frx":0946
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).Picture=   "frmMailMerge.frx":0962
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -723,7 +724,7 @@ Begin VB.Form frmMailMerge
             Width           =   3000
          End
          Begin VB.CommandButton cmdPicklist 
-Caption = "..."
+            Caption         =   "..."
             Enabled         =   0   'False
             Height          =   315
             Left            =   9135
@@ -733,7 +734,7 @@ Caption = "..."
             Width           =   330
          End
          Begin VB.CommandButton cmdFilter 
-Caption = "..."
+            Caption         =   "..."
             Enabled         =   0   'False
             Height          =   315
             Left            =   9135
@@ -834,7 +835,7 @@ Caption = "..."
                Left            =   0
                TabIndex        =   81
                Top             =   60
-               Width           =   390
+               Width           =   615
             End
             Begin VB.Label lblProp_Decimals 
                AutoSize        =   -1  'True
@@ -844,7 +845,7 @@ Caption = "..."
                Left            =   0
                TabIndex        =   80
                Top             =   465
-               Width           =   720
+               Width           =   945
             End
          End
          Begin VB.TextBox txtProp_ColumnHeading 
@@ -957,7 +958,7 @@ Caption = "..."
             TabIndex        =   78
             Top             =   2805
             Visible         =   0   'False
-            Width           =   690
+            Width           =   870
          End
       End
       Begin VB.Frame fraColumns 
@@ -1104,9 +1105,9 @@ Caption = "..."
          End
          Begin VB.ComboBox cboEMailField 
             Height          =   315
-            ItemData        =   "frmMailMerge.frx":1ECC
+            ItemData        =   "frmMailMerge.frx":1148
             Left            =   1650
-            List            =   "frmMailMerge.frx":1ECE
+            List            =   "frmMailMerge.frx":114A
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   60
@@ -1127,10 +1128,10 @@ Caption = "..."
             Caption         =   "Attach as :"
             Enabled         =   0   'False
             Height          =   195
-            Left            =   530
+            Left            =   525
             TabIndex        =   64
-            Top             =   1565
-            Width           =   795
+            Top             =   1560
+            Width           =   975
          End
          Begin VB.Label lblEMailSubject 
             AutoSize        =   -1  'True
@@ -1140,7 +1141,7 @@ Caption = "..."
             Left            =   225
             TabIndex        =   61
             Top             =   765
-            Width           =   645
+            Width           =   915
          End
          Begin VB.Label lblEMailField 
             AutoSize        =   -1  'True
@@ -1195,7 +1196,7 @@ Caption = "..."
             Height          =   315
             Index           =   0
             Left            =   4305
-            Picture         =   "frmMailMerge.frx":1ED0
+            Picture         =   "frmMailMerge.frx":114C
             TabIndex        =   68
             Top             =   315
             UseMaskColor    =   -1  'True
@@ -1216,7 +1217,7 @@ Caption = "..."
       Height          =   510
       Index           =   0
       Left            =   5550
-      Picture         =   "frmMailMerge.frx":1F48
+      Picture         =   "frmMailMerge.frx":11C4
       ScaleHeight     =   450
       ScaleWidth      =   465
       TabIndex        =   74
@@ -1236,7 +1237,7 @@ Caption = "..."
       EndProperty
       Height          =   495
       Left            =   4515
-      Picture         =   "frmMailMerge.frx":2812
+      Picture         =   "frmMailMerge.frx":1A8E
       ScaleHeight     =   435
       ScaleWidth      =   465
       TabIndex        =   73
@@ -1284,11 +1285,11 @@ Caption = "..."
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   2
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMailMerge.frx":30DC
+            Picture         =   "frmMailMerge.frx":2358
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMailMerge.frx":34A8
+            Picture         =   "frmMailMerge.frx":2724
             Key             =   "IMG_CALC"
          EndProperty
       EndProperty
@@ -1307,7 +1308,7 @@ Caption = "..."
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Bands           =   "frmMailMerge.frx":38B8
+      Bands           =   "frmMailMerge.frx":2B34
    End
 End
 Attribute VB_Name = "frmMailMerge"
@@ -1451,11 +1452,11 @@ Public Property Let Cancelled(ByVal bCancel As Boolean)
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOk.Enabled = blnChanged
+  cmdOK.Enabled = blnChanged
 End Property
 
 Private Function IsDefinitionCreator(lngID As Long) As Boolean
@@ -3239,7 +3240,7 @@ Private Sub ListView1_GotFocus()
 End Sub
 
 Private Sub ListView1_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub ListView2_GotFocus()
@@ -3247,7 +3248,7 @@ Private Sub ListView2_GotFocus()
 End Sub
 
 Private Sub ListView2_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Function CopyToSelected(bAll As Boolean)
@@ -3710,11 +3711,11 @@ Private Sub txtDesc_GotFocus()
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-  cmdOk.Default = False
+  cmdOK.Default = False
 End Sub
 
 Private Sub txtDesc_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub txtEmailAttachmentName_Change()
