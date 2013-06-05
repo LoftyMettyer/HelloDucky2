@@ -770,7 +770,7 @@ Namespace Things
       ' to make typesafe (i.e. if its a logic add a '= 1' at the end)
       If Component.FunctionID = 4 And Component.Parent.Components(0).ID = [Component].ID Then
         ChildCodeCluster.MakeTypesafe = False
-        Me.CaseCount = Me.CaseCount + 2
+        'Me.CaseCount = Me.CaseCount + 2
       End If
 
       ' Nesting is too deep - convert to part number
