@@ -1,12 +1,7 @@
 Attribute VB_Name = "modWorkflowSpecifics"
 Option Explicit
 
-Private Declare Function OpenProcess Lib "kernel32" (ByVal dwDesiredAccess As Long, ByVal bInheritHandle As Long, ByVal dwProcessId As Long) As Long
-
-Const PROCESS_QUERY_INFORMATION = &H400
-
 Private mfInitTrue As Boolean
-Private Declare Sub CopyMemory Lib "kernel32" Alias "RtlMoveMemory" (Destination As Any, Source As Any, ByVal Length As Long)
 Private mabytArray() As Byte
 Private mlngHiByte As Long
 Private mlngHiBound As Long

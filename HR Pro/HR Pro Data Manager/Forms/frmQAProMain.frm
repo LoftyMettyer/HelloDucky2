@@ -193,12 +193,6 @@ Public strUserMessage As String
 ' picklist items that have been stepped into. This information is displayed to
 ' the user to give them "context" for the current picklist.
 Private arrHistory(10) As String
-
-' Used for setting tab stops in listbox
-Private Declare Function SendMessageA Lib "user32" (ByVal hWnd As Long, _
-                                                    ByVal wMsg As Long, _
-                                                    ByVal wParam As Long, _
-                                                    lParam As Any) As Long
                                                     
 'Module level var to hold the postcode we will be searching for
 Private strPostCode As String

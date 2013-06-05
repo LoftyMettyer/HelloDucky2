@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Begin VB.Form frmSelectPhoto 
    Caption         =   "Select Photo"
    ClientHeight    =   2955
@@ -129,23 +129,6 @@ Private msPhoto As String
 Private msPath As String
 Private objProc As Object
 
-
-Private Declare Function RegCloseKey Lib "advapi32.dll" (ByVal hKey As Long) As Long
-Private Declare Function RegOpenKeyEx Lib "advapi32.dll" Alias "RegOpenKeyExA" _
-  (ByVal hKey As Long, ByVal lpSubKey As String, ByVal ulOptions As Long, _
-  ByVal samDesired As Long, phkResult As Long) As Long
-Private Declare Function RegQueryValueEx Lib "advapi32" Alias "RegQueryValueExA" _
-  (ByVal hKey As Long, ByVal lpValueName$, ByVal lpdwReserved As Long, lpdwType As Long, _
-  lpData As Any, lpcbData As Long) As Long
-
-Const ERROR_SUCCESS = 0
-Const HKEY_CLASSES_ROOT = &H80000000
-Const KEY_ALL_ACCESS = &H3F
-Const REG_SZ As Long = 1
-Const REG_EXPAND_SZ As Long = 2
-
-Private Declare Function OpenProcess Lib "kernel32" (ByVal dwDesiredAccess As Long, ByVal bInheritHandle As Long, ByVal dwProcessId As Long) As Long
-Const PROCESS_QUERY_INFORMATION = &H400
 
 Public Sub Initialise(sPhoto As String)
   ' Initialise the Photo Selection form.
