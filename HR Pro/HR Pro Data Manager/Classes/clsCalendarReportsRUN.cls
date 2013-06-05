@@ -796,7 +796,8 @@ Public Function RunCalendarReport(pstrPicklistFilterIDs As String) As Boolean
   
   If fOK Then
     fOK = mfrmOutput.Initialise
-    If gblnBatchMode Then
+    
+    If gblnBatchMode Or gblnReportPackMode Then
       mblnUserCancelled = gobjProgress.Cancelled
     Else
       mblnUserCancelled = mfrmOutput.UserCancelled
@@ -805,28 +806,23 @@ Public Function RunCalendarReport(pstrPicklistFilterIDs As String) As Boolean
   End If
   
   If fOK And Not mblnUserCancelled Then
-    If gblnBatchMode Then
+    If gblnBatchMode Or gblnReportPackMode Or Not mblnPreviewOnScreen Then
       fOK = mfrmOutput.OutputReport(False)
       If Not fOK Then mstrErrorString = mfrmOutput.ErrorMessage
       
-    Else
-      If Not mblnOutputScreen And Not mblnPreviewOnScreen Then
-        fOK = mfrmOutput.OutputReport(False)
-      Else
-        fOK = mfrmOutput.ShowCalendar
-      End If
-      mblnUserCancelled = mfrmOutput.UserCancelled
+    ElseIf mblnPreviewOnScreen Then
+      fOK = mfrmOutput.ShowCalendar
       If Not fOK Then mstrErrorString = mfrmOutput.ErrorMessage
-      
+     
+      mblnUserCancelled = mfrmOutput.UserCancelled
+
       If fOK And Not mblnUserCancelled Then
         gobjProgress.CloseProgress
         Screen.MousePointer = vbDefault
-        If fOK And mblnOutputScreen Or mblnPreviewOnScreen Then
-          mfrmOutput.Show vbModal
-        End If
+        If fOK Then mfrmOutput.Show vbModal
       End If
-      
     End If
+       
   End If
   
   Set mfrmOutput = Nothing
@@ -1168,10 +1164,10 @@ Private Function GetCalendarReportDefinition() As Boolean
     'This is where we use the override filter if necessary
     If mlngCalendarReportsBaseTable = glngPersonnelTableID And gblnReportPackMode Then
       mlngCalendarReportsFilterID = IIf(mlngOverrideFilterID <> 0, mlngOverrideFilterID, IIf(IsNull(!Filter), 0, !Filter))
-      mlngCalendarReportsPickListID = IIf(mlngOverrideFilterID <> 0, 0, IIf(IsNull(!Picklist), 0, !Picklist))
+      mlngCalendarReportsPickListID = IIf(mlngOverrideFilterID <> 0, 0, IIf(IsNull(!picklist), 0, !picklist))
     Else
       mlngCalendarReportsFilterID = !Filter
-      mlngCalendarReportsPickListID = !Picklist
+      mlngCalendarReportsPickListID = !picklist
     End If
     
     mlngDescription1 = IIf(IsNull(!Description1), 0, !Description1)
@@ -1351,8 +1347,8 @@ Private Function GetCalendarReportDefinition() As Boolean
 
 
     'Change Output Options to Report Pack owning these Jobs if in Report Pack mode
-    mblnPreviewOnScreen = IIf(lblnReportPackMode, False, !OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
-    mblnOutputScreen = IIf(lblnReportPackMode, False, !OutputScreen)
+    mblnPreviewOnScreen = IIf(lblnReportPackMode, mblnPreviewOnScreen, !OutputPreview)
+    mblnOutputScreen = IIf(lblnReportPackMode, mblnOutputScreen, !OutputScreen)
     mlngOutputFormat = IIf(lblnReportPackMode, mlngOutputFormat, !OutputFormat)
     mblnOutputPrinter = IIf(lblnReportPackMode, mblnOutputPrinter, !OutputPrinter)
     mstrOutputPrinterName = IIf(lblnReportPackMode, mstrOutputPrinterName, !OutputPrinterName)

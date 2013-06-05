@@ -4973,7 +4973,7 @@ Public Function RunBradfordReport(pstrPicklistFilterIDs As String) As Boolean
     If gblnBatchMode Or Not mblnPreviewOnScreen Then
       fOK = OutputReport(False)
   
-    ElseIf mblnPreviewOnScreen And fOK Then
+    ElseIf mblnPreviewOnScreen Then
       Screen.MousePointer = vbDefault
       mfrmOutput.Caption = "Bradford Factor Report"
       mfrmOutput.BaseTable = mstrCustomReportsBaseTableName
