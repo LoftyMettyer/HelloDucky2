@@ -15,7 +15,7 @@ Begin VB.Form frmModuleDocument
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   Icon            =   "frmVersion1Setup.frx":0000
+   Icon            =   "frmModuleDocument.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -35,9 +35,7 @@ Begin VB.Form frmModuleDocument
       Width           =   5865
       Begin VB.ComboBox cboCategoryColumn 
          Height          =   315
-         ItemData        =   "frmVersion1Setup.frx":000C
          Left            =   2430
-         List            =   "frmVersion1Setup.frx":000E
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   11
@@ -47,9 +45,7 @@ Begin VB.Form frmModuleDocument
       End
       Begin VB.ComboBox cboCategoryTable 
          Height          =   315
-         ItemData        =   "frmVersion1Setup.frx":0010
          Left            =   2430
-         List            =   "frmVersion1Setup.frx":0012
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   10
@@ -82,9 +78,7 @@ Begin VB.Form frmModuleDocument
       Width           =   5865
       Begin VB.ComboBox cboTypeCategoryColumn 
          Height          =   315
-         ItemData        =   "frmVersion1Setup.frx":0014
          Left            =   2430
-         List            =   "frmVersion1Setup.frx":0016
          Style           =   2  'Dropdown List
          TabIndex        =   5
          Tag             =   "cboTypeTable"
@@ -93,9 +87,7 @@ Begin VB.Form frmModuleDocument
       End
       Begin VB.ComboBox cboTypeColumn 
          Height          =   315
-         ItemData        =   "frmVersion1Setup.frx":0018
          Left            =   2430
-         List            =   "frmVersion1Setup.frx":001A
          Style           =   2  'Dropdown List
          TabIndex        =   4
          Tag             =   "cboTypeTable"
@@ -104,9 +96,7 @@ Begin VB.Form frmModuleDocument
       End
       Begin VB.ComboBox cboTypeTable 
          Height          =   315
-         ItemData        =   "frmVersion1Setup.frx":001C
          Left            =   2430
-         List            =   "frmVersion1Setup.frx":001E
          Style           =   2  'Dropdown List
          TabIndex        =   3
          Top             =   315
