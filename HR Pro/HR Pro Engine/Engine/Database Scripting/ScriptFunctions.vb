@@ -168,69 +168,63 @@ Namespace ScriptDB
 
     End Function
 
-    Public Function GeneratePerformanceIndexes() As Boolean
+    'Public Function GeneratePerformanceIndexes() As Boolean
 
-      Dim bOK As Boolean = True
-      Dim objColumn As Things.Column
+    '  Dim bOK As Boolean = True
+    '  Dim objColumn As Things.Column
 
-      Try
-        For Each objColumn In Globals.PerformanceIndexes
+    '  Try
+    '    For Each objColumn In Globals.PerformanceIndexes
 
-          ScriptIndex(objColumn, False, True)
-        Next
+    '      ScriptIndex(objColumn, False, True)
+    '    Next
 
-      Catch ex As Exception
-        bOK = False
+    '  Catch ex As Exception
+    '    bOK = False
 
-      End Try
+    '  End Try
 
-      Return bOK
+    '  Return bOK
 
-    End Function
+    'End Function
 
-    Public Function ScriptIndex(ByRef Column As Things.Column, ByVal Clustered As Boolean, ByVal IncludeForeignKey As Boolean) As Boolean
+    'Public Function ScriptIndex(ByRef Column As Things.Column, ByVal Clustered As Boolean, ByVal IncludeForeignKey As Boolean) As Boolean
 
-      Dim bOK As Boolean
-      Dim sSQL As String = String.Empty
-      Dim sColumns As String
-      Dim objRelation As Things.Relation
+    '  Dim bOK As Boolean
+    '  Dim sSQL As String = String.Empty
+    '  Dim sColumns As String
+    '  Dim objRelation As Things.Relation
 
-      Try
+    '  Try
 
-        ' Drop any existing index
-        'sSQL = String.Format("IF EXISTS(SELECT [id] FROM sysindexes WHERE [name] = 'IDX_{1}_{0}')" & _
-        '      " DROP INDEX [IDX_{1}_{0}] ON [dbo].[{2}] WITH (ONLINE = OFF);" _
-        '    , Column.Name, Column.Table.Name, Column.Table.PhysicalName)
-        'Globals.CommitDB.ScriptStatement(sSQL)
+    '    sColumns = Column.Name
 
-        sColumns = Column.Name
-
-        If IncludeForeignKey Then
-          For Each objRelation In Column.Table.Objects(Things.Type.Relation)
-            If objRelation.RelationshipType = RelationshipType.Parent Then
-              sColumns = sColumns & ", ID_" & CInt(objRelation.ParentID)
-            End If
-          Next
-        End If
+    '    If IncludeForeignKey Then
+    '      For Each objRelation In Column.Table.Objects(Things.Type.Relation)
+    '        If objRelation.RelationshipType = RelationshipType.Parent Then
+    '          sColumns = sColumns & ", ID_" & CInt(objRelation.ParentID)
+    '        End If
+    '      Next
+    '    End If
 
 
 
-        ' Create the new index
-        sSQL = String.Format("IF EXISTS(SELECT [id] FROM sysindexes WHERE [name] = 'IDX_{1}_{0}')" & _
-            " DROP INDEX [IDX_{1}_{0}] ON [dbo].[{3}];" & _
-            " CREATE NONCLUSTERED INDEX [IDX_{1}_{0}] ON [dbo].[{3}] ({2});" & vbNewLine _
-            , Column.Name, Column.Table.Name, sColumns, Column.Table.PhysicalName)
-        Globals.CommitDB.ScriptStatement(sSQL)
+    '    ' Create the new index
+    '    sSQL = String.Format("IF EXISTS(SELECT [id] FROM sysindexes WHERE [name] = 'IDX_{1}_{0}')" & _
+    '        " DROP INDEX [IDX_{1}_{0}] ON [dbo].[{3}];" & _
+    '        " CREATE NONCLUSTERED INDEX [IDX_{1}_{0}] ON [dbo].[{3}] ({2});" & vbNewLine _
+    '        , Column.Name, Column.Table.Name, sColumns, Column.Table.PhysicalName)
+    '    Globals.CommitDB.ScriptStatement(sSQL)
 
-      Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.Views, Column.Table.Name & "--" & Column.Name, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sSQL)
-        bOK = False
+    '  Catch ex As Exception
+    '    Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.Views, Column.Table.Name & "--" & Column.Name, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sSQL)
+    '    bOK = False
 
-      End Try
+    '  End Try
 
-      Return bOK
+    '  Return bOK
 
-    End Function
+    'End Function
 
   End Module
 

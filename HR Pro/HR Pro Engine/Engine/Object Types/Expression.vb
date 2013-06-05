@@ -729,7 +729,7 @@ Namespace Things
 
             End Select
 
-            Globals.PerformanceIndexes.AddIfNew(objThisColumn)
+            'Globals.PerformanceIndexes.AddIfNew(objThisColumn)
 
             ' Add to prereqistits arrays
             If bIsSummaryColumn Then

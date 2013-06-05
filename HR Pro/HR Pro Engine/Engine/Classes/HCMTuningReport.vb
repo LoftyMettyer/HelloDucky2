@@ -13,21 +13,40 @@ Namespace Tuning
 
       Dim objWriter As System.IO.StreamWriter
       Dim objThing As Things.Base
+      Dim objTable As Things.Table
       Dim objColumn As Things.Column
       Dim sMessage As String
 
       System.IO.File.Delete(FileName)
       objWriter = System.IO.File.AppendText(FileName)
 
-      For Each objThing In Expressions
-        objColumn = CType(objThing, Things.Column)
-        sMessage = String.Format("({0}) {1}.{2}{3}", objColumn.Tuning.Usage.ToString.PadLeft(3) _
-              , objColumn.Table.Name, objThing.Name _
-              , IIf(objColumn.Calculation.IsComplex, " (COMPLEX) ", "")) & vbNewLine
-        objWriter.Write(sMessage)
+      objWriter.Write(String.Format("{0}{0}{1}{0}EXPRESSION USAGE{0}{1}{0}{0}", vbNewLine, "-------------------"))
+
+      For Each objTable In Globals.Things
+        For Each objColumn In objTable.Objects(Things.Type.Column)
+          If objColumn.IsCalculated Then
+            sMessage = String.Format("({0}) {1}.{2}     | Expression = {3} - ({4})", objColumn.Tuning.Usage.ToString.PadLeft(3) _
+                  , objColumn.Table.Name, objColumn.Name, objColumn.Calculation.Name _
+                  , IIf(objColumn.Calculation.IsComplex, "Complex ", "Simple")) & vbNewLine
+          Else
+            sMessage = String.Format("({0}) {1}.{2}", objColumn.Tuning.Usage.ToString.PadLeft(3) _
+                  , objColumn.Table.Name, objColumn.Name) & vbNewLine
+          End If
+
+          objWriter.Write(sMessage)
+        Next
       Next
 
-      objWriter.Write(String.Format("{0}{0}{1}{0}Functions{1}{0}{0}", vbNewLine, "-------------------"))
+
+      'For Each objThing In Expressions
+      '  objColumn = CType(objThing, Things.Column)
+      '  sMessage = String.Format("({0}) {1}.{2}{3}", objColumn.Tuning.Usage.ToString.PadLeft(3) _
+      '        , objColumn.Table.Name, objThing.Name _
+      '        , IIf(objColumn.Calculation.IsComplex, " (COMPLEX) ", "")) & vbNewLine
+      '  objWriter.Write(sMessage)
+      'Next
+
+      objWriter.Write(String.Format("{0}{0}{1}{0}FUNCTION USAGE{0}{1}{0}{0}", vbNewLine, "-------------------"))
       For Each objThing In Globals.Functions
         sMessage = String.Format("({0}) - {1}", objThing.Tuning.Usage.ToString.PadLeft(5) _
               , objThing.Name) & vbNewLine

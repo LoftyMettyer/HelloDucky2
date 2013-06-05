@@ -348,6 +348,8 @@ Namespace ScriptDB
       Dim sTriggerName As String = String.Empty
       Dim sColumnName As String = String.Empty
 
+      Dim objAuditIndex As Things.Index
+
       Dim sSQLCode_AuditInsert As String = String.Empty
       Dim sSQLCode_AuditUpdate As String = String.Empty
       Dim sSQLCode_AuditDelete As String = String.Empty
@@ -413,11 +415,20 @@ Namespace ScriptDB
           sSQLCode_AuditUpdate = String.Empty
           sSQLCode_AuditDelete = String.Empty
 
+          ' Build in indexes
+          objAuditIndex = New Things.Index
+          objTable.Objects.Add(objAuditIndex)
+
           ' Add the system generated columns
           If Not objTable.RecordDescription Is Nothing Then
             objTable.RecordDescription.GenerateCode()
             aryCalculatedColumns.Add(String.Format("[_description] = {0}", objTable.RecordDescription.UDF.CallingCode))
           End If
+
+          objAuditIndex.IsClustered = False
+          objAuditIndex.IsTableIndex = True
+          objAuditIndex.IncludePrimaryKey = True
+          objAuditIndex.Name = "IDX_AuditFields"
 
           ' Add any relationship columns
           For Each objRelation In objTable.Objects(Things.Type.Relation)
@@ -441,7 +452,7 @@ Namespace ScriptDB
               objIndex.Name = String.Format("IDX_relation_{0}", objRelatedTable.Name)
               objIndex.IsTableIndex = True
               objIndex.IsClustered = False
-              objIndex.Relations.AddIfNew(objRelatedTable)
+              '              objIndex.Relations.AddIfNew(objRelation)
 
               For Each objColumn In objRelatedTable.DependsOnColumns
                 If objColumn.Table Is objTable Then
@@ -457,7 +468,6 @@ Namespace ScriptDB
                       "        WHERE {4});" _
                       , objRelatedTable.PhysicalName, CInt(objTable.ID), objTable.PhysicalName, CInt(objRelatedTable.ID) _
                       , String.Join(" OR ", aryColumns.ToArray())))
-
                 objTable.Objects.Add(objIndex)
               End If
             End If
@@ -533,6 +543,7 @@ Namespace ScriptDB
                 aryAuditDeletes.Add(String.Format("        SELECT ID, convert(nvarchar(255),[{0}]), NULL, {3}, '{2}', '{0}', {1}, [_description]" & vbNewLine & _
                     "            FROM deleted WHERE [{0}] IS NOT NULL", objColumn.Name, CInt(objColumn.ID), objColumn.Table.Name, CInt(objColumn.Table.ID)))
 
+                objAuditIndex.IncludedColumns.Add(objColumn)
               End If
             End If
 
@@ -861,7 +872,7 @@ Namespace ScriptDB
         bOK = ScriptFunctions.ConvertCurrency
         bOK = bOK And ScriptFunctions.UniqueCodeViews
         bOK = bOK And ScriptFunctions.GetFieldFromDatabases
-        bOK = bOK And ScriptFunctions.GeneratePerformanceIndexes
+        ' bOK = bOK And ScriptFunctions.GeneratePerformanceIndexes
 
       Catch ex As Exception
         bOK = False
@@ -1010,12 +1021,14 @@ Namespace ScriptDB
     Public Function ScriptIndexes() As Boolean Implements Interfaces.iCommitDB.ScriptIndexes
 
       Dim objTable As Things.Table
+      Dim objRelation As Things.Relation
       Dim objIndex As Things.Index
       Dim bOK As Boolean = True
       Dim sSQL As String
       Dim aryColumns As ArrayList
       Dim aryIncludeColumns As ArrayList
       Dim sObjectName As String
+      Dim sIncludeColumns As String
 
       Try
 
@@ -1038,14 +1051,26 @@ Namespace ScriptDB
 
             aryIncludeColumns = New ArrayList
             For Each objColumn In objIndex.IncludedColumns
-              aryIncludeColumns.Add(objColumn.Name)
+              If Not objIndex.Columns.Contains(objColumn) Then
+                aryIncludeColumns.Add(objColumn.Name)
+              End If
+            Next
+
+            For Each objRelation In objIndex.Relations
+              Select Case objRelation.RelationshipType
+                Case RelationshipType.Child
+                  aryColumns.Add(String.Format("[ID_{0}] ASC", CInt(objRelation.ParentID)))
+                Case RelationshipType.Parent
+                  aryColumns.Add(String.Format("[ID_{0}] ASC", CInt(objRelation.ChildID)))
+              End Select
             Next
 
             ' Create index
+            sIncludeColumns = IIf(aryIncludeColumns.Count > 0, " INCLUDE (" & String.Join(", ", aryIncludeColumns.ToArray) & ")", "")
             sSQL = String.Format("CREATE NONCLUSTERED INDEX [{0}] ON [dbo].[{1}] " & _
                   "({2})" & _
-                  " INCLUDE ({3})" _
-                  , objIndex.Name, sObjectName, String.Join(", ", aryColumns.ToArray), String.Join(", ", aryIncludeColumns.ToArray))
+                  "{3}" _
+                  , objIndex.Name, sObjectName, String.Join(", ", aryColumns.ToArray), sIncludeColumns)
             Globals.CommitDB.ScriptStatement(sSQL)
 
           Next

@@ -71,6 +71,7 @@
       Dim sRowSelection As String = vbNullString
       Dim bReverseOrder As Boolean = False
       Dim sOptions As String = ""
+      Dim objIndex As New Things.Index
 
       ' What type of rows to retrieve
       Select Case RowDetails.RowSelection
@@ -102,6 +103,7 @@
               Case Else
                 aryOrderBy.Add(String.Format("[{0}]{1}", objOrderItem.Column.Name, IIf(bReverseOrder, " ASC", " DESC")))
             End Select
+            objIndex.Columns.AddIfNew(objOrderItem.Column)
           End If
         Next
       End If
@@ -110,14 +112,21 @@
       If Not RowDetails.Relation Is Nothing Then
         aryParameters.Add(String.Format("@prmID_{0} integer", CInt(RowDetails.Relation.ParentID)))
         aryWheres.Add(String.Format("[ID_{0}] = @prmID_{0}", CInt(RowDetails.Relation.ParentID)))
+        objIndex.Relations.AddIfNew(RowDetails.Relation)
       End If
 
       ' Add the included columns
       For Each objColumn In IncludedColumns
         aryColumnList.Add(String.Format("base.[{0}]", objColumn.Name))
         aryReturnDefintion.Add(String.Format("[{0}] {1}", objColumn.Name, objColumn.DataTypeSyntax))
+        objIndex.IncludedColumns.AddIfNew(objColumn)
       Next
 
+      ' Create index for this object
+      objIndex.Name = String.Format("IDX_{0}", Me.Name)
+      objIndex.IncludePrimaryKey = False
+      objIndex.IsTableIndex = True
+      objIndex.IsClustered = False
 
       With UDF
         .WhereCode = IIf(aryWheres.Count > 0, "WHERE ", "") & String.Join(" AND ", aryWheres.ToArray())
@@ -160,6 +169,9 @@
                         , Me.Parent.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode, sRowSelection _
                         , sOptions)
         End If
+
+        ' Add the index
+        Me.Parent.Objects.Add(objIndex)
 
       End With
 
