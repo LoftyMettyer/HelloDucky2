@@ -37,7 +37,6 @@ Begin VB.MDIForm frmSysMgr
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -716,23 +715,23 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     
     If Not blnReadonly Then
     
-      If frmDbMgr.ActiveView Is frmDbMgr.TreeView1 Then
+      If frmDbMgr.ActiveView Is frmDbMgr.Treeview1 Then
         
-        bCopyTable = DoesTableExistInDB(val(Mid(frmDbMgr.TreeView1.SelectedItem.key, 2)))
+        bCopyTable = DoesTableExistInDB(val(Mid(frmDbMgr.Treeview1.SelectedItem.key, 2)))
         
-        If frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATION Then
-          .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd) And (frmDbMgr.TreeView1.Nodes("TABLES").Children > 0)
+        If frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATION Then
+          .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd) And (frmDbMgr.Treeview1.Nodes("TABLES").Children > 0)
           .Tools("ID_CopyDef").Enabled = False
         Else
-          .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd)
+          .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd)
           .Tools("ID_CopyDef").Enabled = bCopyTable
         End If
         
         
         
-        .Tools("ID_Delete").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtDelete)
-        .Tools("ID_Properties").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtEdit)
-        .Tools("ID_Print").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtCopy)
+        .Tools("ID_Delete").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtDelete)
+        .Tools("ID_Properties").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtEdit)
+        .Tools("ID_Print").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtCopy)
       Else
         .Tools("ID_New").Enabled = (frmDbMgr.ListView1_SelectedTag And edtAdd)
         
@@ -755,7 +754,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     .Tools("ID_LargeIcons").Enabled = True
     .Tools("ID_SmallIcons").Enabled = True
     .Tools("ID_List").Enabled = True
-    .Tools("ID_Details").Enabled = ((frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLE))
+    .Tools("ID_Details").Enabled = ((frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLE))
     .Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Enabled And _
       (frmDbMgr.ListView1.View = lvwReport)
     frmSysMgr.tbMain.Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Enabled And _
@@ -769,7 +768,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
 '      .Tools("ID_List").Checked = False
 '      .Tools("ID_Details").Checked = True
       .Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Checked And _
-        ((frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLE))
+        ((frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLE))
 
       frmSysMgr.tbMain.Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Checked
     End If
@@ -805,18 +804,18 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     ' Configure the Edit menu.
     '==================================================
     ' Enable/disable the required tools.
-    If frmDbMgr.ActiveView Is frmDbMgr.TreeView1 Then
-      If frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATION Then
-        .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd) And (frmDbMgr.TreeView1.Nodes("TABLES").Children > 0) And Not blnReadonly
+    If frmDbMgr.ActiveView Is frmDbMgr.Treeview1 Then
+      If frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATION Then
+        .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd) And (frmDbMgr.Treeview1.Nodes("TABLES").Children > 0) And Not blnReadonly
         .Tools("ID_CopyDef").Enabled = False
         .Tools("ID_CopyDef").Visible = True
       Else
-        .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd) And Not blnReadonly
+        .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd) And Not blnReadonly
         .Tools("ID_CopyDef").Enabled = bCopyTable And Not blnReadonly
         .Tools("ID_CopyDef").Visible = True
       End If
-      .Tools("ID_Delete").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtDelete) And Not blnReadonly
-      .Tools("ID_Properties").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtEdit)
+      .Tools("ID_Delete").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtDelete) And Not blnReadonly
+      .Tools("ID_Properties").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtEdit)
       '.Tools("ID_CopyTable").Enabled = bCopyTable
       '.Tools("ID_CopyColumn").Enabled = False
       '.Tools("ID_CopyTable").Visible = True
@@ -856,7 +855,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
 
       End If
     End If
-    .Tools("ID_SelectAll").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag <> 0) And frmDbMgr.ListView1.ListItems.Count And Not blnReadonly
+    .Tools("ID_SelectAll").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag <> 0) And frmDbMgr.ListView1.ListItems.Count And Not blnReadonly
       
     ' Reassign shortcuts if required.
 '    .Tools("ID_ScreenObjectDelete").Shortcut = ssShortcutNone
@@ -900,7 +899,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     .Tools("ID_LargeIcons").Enabled = True
     .Tools("ID_SmallIcons").Enabled = True
     .Tools("ID_List").Enabled = True
-    .Tools("ID_Details").Enabled = ((frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLE))
+    .Tools("ID_Details").Enabled = ((frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLE))
  '(frmDbMgr.ListView1_SelectedTag = giNODE_COLUMN)
     
     If (frmDbMgr.ListView1.View = lvwReport) And _
@@ -2391,20 +2390,15 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     ' Help menu.
     '==================================================
     Case "ID_ContentsandIndex"
-      '' To be done.
-    
+      
       Dim plngHelp As Long
-      'plngHelp = ShellExecute(0&, vbNullString, App.Path & "\HRProHelp.chm", vbNullString, vbNullString, vbNormalNoFocus)
-      plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
-     
-      If plngHelp = 0 Then
-        MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
+      
+      If Not ShowAirHelp(0) Then
+        plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
+        If plngHelp = 0 Then
+          COAMsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to find and view the file " & App.HelpFile & ".", vbExclamation + vbOKOnly, App.EXEName
+        End If
       End If
-    
-      ' DOESNT SEEM TO WORK !
-      'CommonDialog1.HelpFile = "HRProHelp.chm"
-      'CommonDialog1.HelpCommand = cdlHelpContents
-      'CommonDialog1.ShowHelp
 
     Case "ID_ViewCurrentUsers"
       'MH20010524 Will be required for read-only access...
@@ -3967,20 +3961,13 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_ContentsandIndex"
       
       Dim plngHelp As Long
-      'TM20011005 Fault 2916
-      'Call the App.HelpFile function to get the helpfile for current app. e.g.(SYS)
-'      plngHelp = ShellExecute(0&, vbNullString, App.Path & "\HRProHelp.chm", vbNullString, vbNullString, vbNormalNoFocus)
-      plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
-
-      If plngHelp = 0 Then
-        MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
+      
+      If Not ShowAirHelp(0) Then
+        plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
+        If plngHelp = 0 Then
+          MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to find and view the file " & App.HelpFile & ".", vbExclamation + vbOKOnly, App.EXEName
+        End If
       End If
-
-      ' DOESNT SEEM TO WORK !
-      'CommonDialog1.HelpFile = "HRProHelp.chm"
-      'CommonDialog1.HelpCommand = cdlHelpContents
-      'CommonDialog1.ShowHelp
-      '' To be done.
     
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
