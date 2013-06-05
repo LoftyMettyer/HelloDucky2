@@ -5,11 +5,11 @@ Namespace Forms
 
     Public Abort As Boolean
     Private mlngInitialHeight As Integer = 166
+    Private ErrorSeverity As ErrorHandler.Severity = ErrorHandler.Severity.Warning
 
     Private Sub ErrorLog_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
-      '      Dim ErrorBindingSource As New BindingSource
-      '     ErrorBindingSource.DataSource = Globals.ErrorLog
+      Dim objListViewItem As ListViewItem
 
       lblTelephone.Text = "Telephone : " & Globals.SystemSettings.Setting("support", "telephone no").Value
       linkEmail.Text = Globals.SystemSettings.Setting("support", "email").Value
@@ -19,7 +19,31 @@ Namespace Forms
       LinkWeb.Links.Add(0, LinkWeb.Text.Length, LinkWeb.Text)
 
       'txtDetails.Text = Globals.ErrorLog.QuickReport()
-      txtDetails.Text = txtDetails.Text & Globals.ErrorLog.DetailedReport
+      '      txtDetails.Text = txtDetails.Text & Globals.ErrorLog.DetailedReport
+
+      For Each objError As ErrorHandler.Error In Globals.ErrorLog
+        objListViewItem = lvwErrors.Items.Add(objError.ID.ToString)
+        objListViewItem.ImageIndex = objError.Severity
+        objListViewItem.SubItems.Add(objError.Message)
+        objListViewItem.SubItems.Add(objError.Detail)
+
+        If objError.Severity = ErrorHandler.Severity.Error Then
+          ErrorSeverity = ErrorHandler.Severity.Error
+        End If
+      Next
+
+      Select Case ErrorSeverity
+        Case ErrorHandler.Severity.Warning
+          PictureBox1.Image = imagelist48.Images("warning")
+          TextBox2.Text = "Warnings were encountered by the .NET framework. The system can continue saving, but some calculations may not function correctly. Please contact support for assistance."
+
+        Case Else
+          PictureBox1.Image = imagelist48.Images("error")
+          TextBox2.Text = "Critical errors were encountered by the .NET framework. The system can continue saving, but some calculations may not function correctly and data may be lost. Please contact support for assistance."
+
+      End Select
+
+      lvwErrors.Select()
 
       Me.Height = mlngInitialHeight
 
@@ -39,7 +63,11 @@ Namespace Forms
     End Sub
 
     Private Sub butContinue_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles butContinue.Click
-      If MsgBox("System integrity is compromised. Are you sure you want to continue?", MsgBoxStyle.YesNo Or MsgBoxStyle.Question, "System Framework") = MsgBoxResult.Yes Then
+      If ErrorSeverity = ErrorHandler.Severity.Error Then
+        If MsgBox("System integrity is compromised. Are you sure you want to continue?", MsgBoxStyle.YesNo Or MsgBoxStyle.Question, "System Framework") = MsgBoxResult.Yes Then
+          Me.Close()
+        End If
+      Else
         Me.Close()
       End If
     End Sub
@@ -76,6 +104,11 @@ Namespace Forms
       End Try
 
     End Sub
+
+    Private Sub lvwErrors_Click(sender As Object, e As System.EventArgs) Handles lvwErrors.Click
+      txtDetails.Text = lvwErrors.SelectedItems(0).SubItems(2).Text
+    End Sub
+
   End Class
 
 End Namespace

@@ -96,6 +96,7 @@ Namespace ErrorHandler
   End Class
 
   Public Structure [Error]
+    Public ID As Guid
     Public Section As ErrorHandler.Section
     Public ObjectName As String
     Public Severity As ErrorHandler.Severity
@@ -103,6 +104,8 @@ Namespace ErrorHandler
     Public Detail As String
     Public DateTime As Date
     Public User As String
+    Public ErrorNumber As Long
+    Public ErrorArticleID As Long
   End Structure
 
   Public Enum Severity
