@@ -116,7 +116,9 @@ END
 		DROP VIEW [dbo].[ASRSysAllobjectNames]
 	EXEC sp_executesql N'CREATE VIEW dbo.[ASRSysAllObjectNames]
 	AS
-		SELECT 9 AS [objectType], MailMergeID AS ID, Name FROM ASRSysMailMergeName
+		SELECT 9 AS [objectType], MailMergeID AS ID, Name FROM ASRSysMailMergeName WHERE IsLabel = 0
+		UNION		
+		SELECT 18 AS [objectType], MailMergeID AS ID, Name FROM ASRSysMailMergeName WHERE IsLabel = 1
 		UNION		
 		SELECT 2 AS [objectType], ID, Name FROM ASRSysCustomReportsName
 		UNION
@@ -126,7 +128,19 @@ END
 				WHEN 0 THEN 14 
 				WHEN 1 THEN 23
 				WHEN 2 THEN 24 
-			END	AS [objectType], MatchReportID AS ID, Name FROM ASRSysMatchReportName
+			END	AS [objectType], MatchReportID AS ID, Name FROM ASRSysMatchReportName			
+		UNION
+		SELECT 4 AS [objectType], ID AS ID, Name FROM ASRSysExportName
+		UNION		
+		SELECT 8 AS [objectType], ID AS ID, Name FROM ASRSysImportName
+		UNION
+		SELECT 3 AS [objectType], DataTransferID AS ID, Name FROM ASRSysDataTransferName
+		UNION
+		SELECT 5 AS [objectType], [FunctionID] AS ID, Name FROM ASRSysGlobalFunctions WHERE [type] = ''A''
+		UNION
+		SELECT 6 AS [objectType], [FunctionID] AS ID, Name FROM ASRSysGlobalFunctions WHERE [type] = ''D''
+		UNION
+		SELECT 7 AS [objectType], [FunctionID] AS ID, Name FROM ASRSysGlobalFunctions WHERE [type] = ''U''
 		UNION		
 		SELECT 15 AS [objectType], 0 AS ID, ''Absence Breakdown''
 		UNION
