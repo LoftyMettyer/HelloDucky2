@@ -744,7 +744,7 @@ Public Sub OrganiseToolbarControls(pabActiveBar As ActiveBarLibraryCtl.ActiveBar
 
 End Sub
 
-Public Function GetUserSetting(strSection As String, strKey As String, varDefault As Variant) As String
+Public Function GetUserSetting(strSection As String, strKey As String, varDefault As Variant) As Variant
    
   On Error GoTo ErrorTrap
    
