@@ -5321,16 +5321,6 @@ Public Function ValidateGTMaskDate(dtTemp As GTMaskDate.GTMaskDate) As Boolean
 
 End Function
 
-' Returns the maximum of two values
-Public Function Maximum(plngValue1 As Long, plngValue2 As Long) As Long
-  Maximum = IIf(plngValue1 > plngValue2, plngValue1, plngValue2)
-End Function
-
-' Returns the minimum of two values
-Public Function Minimum(plngValue1 As Long, plngValue2 As Long) As Long
-  Minimum = IIf(plngValue1 < plngValue2, plngValue1, plngValue2)
-End Function
-
 ' Are the two passed in values within the given difference
 Public Function IsWithin(plngValue1, plngValue2, plngDifference) As Boolean
 
