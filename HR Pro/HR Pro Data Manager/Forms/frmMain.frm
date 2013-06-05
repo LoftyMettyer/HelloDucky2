@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "13:36"
+            TextSave        =   "14:58"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -1773,13 +1773,13 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
     .Tools("ID_Accord_SendAs_Update").Enabled = bAccordResendEnabled And Not fAddingNewRecord
    
     .Bands("bndRecordUtilities").Tools("MailMergeRec").Visible = fMailMergeExists
-    .Bands("bndRecordUtilities").Tools("MailMergeRec").Enabled = MenuEnabled("MAILMERGE") And Not fAddingNewRecord
+    .Bands("bndRecordUtilities").Tools("MailMergeRec").Enabled = MenuEnabled("MAILMERGE") And Not fAddingNewRecord And fSelectionMade
     
     .Bands("bndRecordUtilities").Tools("LabelsRec").Visible = fEnvelopeLabelsExists
     .Bands("bndRecordUtilities").Tools("LabelsRec").Enabled = MenuEnabled("LABELS") And Not fAddingNewRecord
     
     .Bands("bndRecordUtilities").Tools("DataTransferRec").Visible = fDataTransferExists
-    .Bands("bndRecordUtilities").Tools("DataTransferRec").Enabled = MenuEnabled("DATATRANSFER") And Not fAddingNewRecord
+    .Bands("bndRecordUtilities").Tools("DataTransferRec").Enabled = MenuEnabled("DATATRANSFER") And Not fAddingNewRecord And fSelectionMade
     .Tools("Email").Visible = fEmailAddrExists
     .Tools("Email").Enabled = MenuEnabled("EMAILADDRESSES") And Not fAddingNewRecord
     
@@ -1796,7 +1796,7 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
     .Bands("bndRecordReports").Tools("RecordProfileRec").Enabled = MenuEnabled("RECORDPROFILE") And Not fAddingNewRecord
 
     .Bands("bndRecordReports").Tools("CalendarReportRec").Visible = fCalendarReportExists
-    .Bands("bndRecordReports").Tools("CalendarReportRec").Enabled = MenuEnabled("CALENDARREPORTS") And Not fAddingNewRecord
+    .Bands("bndRecordReports").Tools("CalendarReportRec").Enabled = MenuEnabled("CALENDARREPORTS") And Not fAddingNewRecord And fSelectionMade
     
     'MH20030514 Should be visible but disabled if you don't access to run these reports.
     ' Only enable the absence reports if we are licensed
@@ -1941,11 +1941,11 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
     If (TypeOf pfrmCallingForm Is frmRecEdit4) Then
       .Tools("FilterClear").Enabled = fFilterClearEnabled
       .Tools("MailMergeRec").Visible = fMailMergeExists And .Tools("MailMergeRec").Visible
-      .Tools("MailMergeRec").Enabled = MenuEnabled("MAILMERGE") And Not fAddingNewRecord
+      .Tools("MailMergeRec").Enabled = MenuEnabled("MAILMERGE") And Not fAddingNewRecord And fSelectionMade
       .Tools("LabelsRec").Visible = fEnvelopeLabelsExists And .Tools("LabelsRec").Visible
       .Tools("LabelsRec").Enabled = MenuEnabled("LABELS") And Not fAddingNewRecord
       .Tools("DataTransferRec").Visible = fDataTransferExists And .Tools("DataTransferRec").Visible
-      .Tools("DataTransferRec").Enabled = MenuEnabled("DATATRANSFER") And Not fAddingNewRecord
+      .Tools("DataTransferRec").Enabled = MenuEnabled("DATATRANSFER") And Not fAddingNewRecord And fSelectionMade
       .Tools("Email").Visible = fEmailAddrExists And .Tools("Email").Visible
       .Tools("Email").Enabled = MenuEnabled("EMAILADDRESSES") And Not fAddingNewRecord
       .Tools("MatchReportRec").Visible = fMatchReportExists And .Tools("MatchReportRec").Visible
@@ -1957,7 +1957,7 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
       .Tools("RecordProfileRec").Visible = fRecordProfileExists And .Tools("RecordProfileRec").Visible
       .Tools("RecordProfileRec").Enabled = MenuEnabled("RECORDPROFILE") And Not fAddingNewRecord
       .Tools("CalendarReportRec").Visible = fCalendarReportExists And .Tools("CalendarReportRec").Visible
-      .Tools("CalendarReportRec").Enabled = MenuEnabled("CALENDARREPORTS") And Not fAddingNewRecord
+      .Tools("CalendarReportRec").Enabled = MenuEnabled("CALENDARREPORTS") And Not fAddingNewRecord And fSelectionMade
       
       ' Only enable the absence reports dropdown if we are licensed
       .Bands(0).Tools("AbsenceCalendar").Visible = fAbsenceReportsEnabled And .Bands(0).Tools("AbsenceCalendar").Visible
