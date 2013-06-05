@@ -344,3 +344,11 @@ Public Enum ToolbarPositions
   giTOOLBAR_FLOAT = 16
   giTOOLBAR_POPUP = 32
 End Enum
+
+' Navigation Display Types
+Public Enum NavigationDisplayType
+  Hyperlink = 0
+  Button = 1
+  Browser = 2
+  Hidden = 3
+End Enum
