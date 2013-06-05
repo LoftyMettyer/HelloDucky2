@@ -607,7 +607,6 @@ Begin VB.Form frmRecEdit4
       BeginProperty Tabs {0713E432-850A-101B-AFC0-4210102A8DA7} 
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
-            Caption         =   ""
             Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
@@ -3395,7 +3394,7 @@ End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
   '# RH 26/08/99. To pass shortcut keys thru to the activebar control
-'  Dim fHandled As Boolean
+  Dim fHandled As Boolean
 '
 '  If KeyCode <> vbKeyF1 Then
 '    fHandled = frmMain.abMain.OnKeyDown(KeyCode, Shift)
@@ -3410,6 +3409,14 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
       If ShowAirHelp(Me.HelpContextID) Then
         KeyCode = 0
       End If
+    Case Else
+      fHandled = frmMain.abMain.OnKeyDown(KeyCode, Shift)
+      'If fHandled Then
+        KeyCode = 0
+        Shift = 0
+      'End If
+      DoEvents
+      
   End Select
 
 End Sub
