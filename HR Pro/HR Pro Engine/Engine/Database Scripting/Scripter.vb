@@ -797,9 +797,9 @@ Namespace ScriptDB
               sSQLCode_Audit & _
               sSQLSpecialUpdate & _
               "{3}" & vbNewLine & vbNewLine & _
-              "    -- Clear the temporary trigger status table" & vbNewLine & vbNewLine & _
-              "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {5};" & vbNewLine & vbNewLine & _
-              "{6}" & vbNewLine & vbNewLine _
+              "{6}" & vbNewLine & vbNewLine & _
+              "    -- Clear the temporary trigger status table" & vbNewLine & _
+              "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {5};" & vbNewLine & vbNewLine _
               , objTable.Name, sTriggerName, sSQLCode_AuditDelete, sSQLParentColumns_Delete _
               , Tables.sysTriggerTransaction, CInt(objTable.ID), objTable.SysMgrDeleteTrigger)
           ScriptTrigger("dbo", objTable, TriggerType.AfterDelete, sSQL)
