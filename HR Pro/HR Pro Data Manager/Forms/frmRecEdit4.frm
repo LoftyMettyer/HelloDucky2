@@ -3,7 +3,7 @@ Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
 Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "tinumb6.ocx"
 Object = "{E2D000D0-2DA1-11D2-B358-00104B59D73D}#1.0#0"; "titext6.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
@@ -451,8 +451,8 @@ Begin VB.Form frmRecEdit4
          TabIndex        =   10
          Top             =   240
          Visible         =   0   'False
-         Width           =   1140
-         _ExtentX        =   2011
+         Width           =   1125
+         _ExtentX        =   1984
          _ExtentY        =   1138
       End
       Begin VB.CommandButton Command1 
@@ -4885,13 +4885,17 @@ Err_Trap:
 
 End Sub
 
-Public Function UpdateWithAVI(Optional pfDeactivating As Variant) As Boolean
-
+Public Function UpdateWithAVI(Optional pfDeactivating As Variant, Optional SaveCaption As String) As Boolean
   ' NPG20090902 Fault HRPRO-219
+  ' NHRD12102010 JIRA HRPRO-1107
   ' Show progress bar
   With gobjProgress
     .AVI = dbSaveRec
-    .Caption = "Saving changes..."
+    If Len(SaveCaption) > 0 Then
+      .Caption = SaveCaption
+    Else
+      .Caption = "Saving changes..."
+    End If
     .NumberOfBars = 0
     .Time = False
     .Cancel = False
@@ -6873,7 +6877,8 @@ Public Function SaveChanges(Optional pfUpdateControls As Variant, _
       Case vbYes
            
         ' Save the changes to the server.
-        If Not UpdateWithAVI(pfDeactivating) Then
+        ' NHRD12102010 JIRA HRPRO-1107
+        If Not UpdateWithAVI(pfDeactivating, "Transfer to payroll...") Then
           iResult = vbCancel
           mfCancelled = True
           Database.Validation = False
