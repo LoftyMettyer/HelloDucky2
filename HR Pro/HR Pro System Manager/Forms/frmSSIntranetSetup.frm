@@ -865,7 +865,7 @@ Begin VB.Form frmSSIntranetSetup
             DataMode        =   2
             RecordSelectors =   0   'False
             GroupHeaders    =   0   'False
-            Col.Count       =   46
+            Col.Count       =   52
             stylesets.count =   2
             stylesets(0).Name=   "ssEnabled"
             stylesets(0).ForeColor=   0
@@ -917,7 +917,7 @@ Begin VB.Form frmSSIntranetSetup
             BackColorOdd    =   -2147483643
             RowHeight       =   423
             ExtraHeight     =   265
-            Columns.Count   =   46
+            Columns.Count   =   52
             Columns(0).Width=   6324
             Columns(0).Caption=   "Prompt"
             Columns(0).Name =   "Prompt"
@@ -1241,6 +1241,48 @@ Begin VB.Form frmSSIntranetSetup
             Columns(45).DataField=   "Column 45"
             Columns(45).DataType=   8
             Columns(45).FieldLen=   256
+            Columns(46).Width=   3200
+            Columns(46).Visible=   0   'False
+            Columns(46).Caption=   "InitialDisplayMode"
+            Columns(46).Name=   "InitialDisplayMode"
+            Columns(46).DataField=   "Column 46"
+            Columns(46).DataType=   8
+            Columns(46).FieldLen=   256
+            Columns(47).Width=   3200
+            Columns(47).Visible=   0   'False
+            Columns(47).Caption=   "Chart_TableID_2"
+            Columns(47).Name=   "Chart_TableID_2"
+            Columns(47).DataField=   "Column 47"
+            Columns(47).DataType=   8
+            Columns(47).FieldLen=   256
+            Columns(48).Width=   3200
+            Columns(48).Visible=   0   'False
+            Columns(48).Caption=   "Chart_ColumnID_2"
+            Columns(48).Name=   "Chart_ColumnID_2"
+            Columns(48).DataField=   "Column 48"
+            Columns(48).DataType=   8
+            Columns(48).FieldLen=   256
+            Columns(49).Width=   3200
+            Columns(49).Visible=   0   'False
+            Columns(49).Caption=   "Chart_TableID_3"
+            Columns(49).Name=   "Chart_TableID_3"
+            Columns(49).DataField=   "Column 49"
+            Columns(49).DataType=   8
+            Columns(49).FieldLen=   256
+            Columns(50).Width=   3200
+            Columns(50).Visible=   0   'False
+            Columns(50).Caption=   "Chart_ColumnID_3"
+            Columns(50).Name=   "Chart_ColumnID_3"
+            Columns(50).DataField=   "Column 50"
+            Columns(50).DataType=   8
+            Columns(50).FieldLen=   256
+            Columns(51).Width=   3200
+            Columns(51).Visible=   0   'False
+            Columns(51).Caption=   "Chart_SortOrderID"
+            Columns(51).Name=   "Chart_SortOrderID"
+            Columns(51).DataField=   "Column 51"
+            Columns(51).DataType=   8
+            Columns(51).FieldLen=   256
             TabNavigation   =   1
             _ExtentX        =   11324
             _ExtentY        =   6324
@@ -1971,10 +2013,10 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
   Dim sChartType As Integer
   Dim fChartShowGrid As Boolean
   Dim fChartStackSeries As Boolean
-  Dim sChartViewID As Integer
-  Dim sChartTableID As Integer
-  Dim sChartColumnID As Integer
-  Dim sChartFilterID As Integer
+  Dim sChartViewID As String
+  Dim sChartTableID As String
+  Dim sChartColumnID As String
+  Dim sChartFilterID As String
   Dim sChartAggregateType As Integer
   Dim fChartShowValues As Boolean
   Dim fUseFormatting As Boolean
@@ -1996,6 +2038,12 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
   Dim sConditionalFormatting_Style_3 As String
   Dim sConditionalFormatting_Colour_3 As String
   Dim sSeparatorColour As String
+  Dim iInitialDisplayMode As Integer
+  Dim sChart_TableID_2 As String
+  Dim sChart_ColumnID_2 As String
+  Dim sChart_TableID_3 As String
+  Dim sChart_ColumnID_3 As String
+  Dim sChart_SortOrderID As String
   Dim iRed As Integer
   Dim iGreen As Integer
   Dim iBlue As Integer
@@ -2062,10 +2110,10 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
               sChartType = .Columns("ChartType").CellText(varBookmark)
               fChartShowGrid = .Columns("ChartShowGrid").CellText(varBookmark)
               fChartStackSeries = .Columns("ChartStackSeries").CellText(varBookmark)
-              sChartViewID = val(.Columns("ChartViewID").CellText(varBookmark))
-              sChartTableID = val(.Columns("ChartTableID").CellText(varBookmark))
-              sChartColumnID = val(.Columns("ChartColumnID").CellText(varBookmark))
-              sChartFilterID = val(.Columns("ChartFilterID").CellText(varBookmark))
+              sChartViewID = .Columns("ChartViewID").CellText(varBookmark)
+              sChartTableID = .Columns("ChartTableID").CellText(varBookmark)
+              sChartColumnID = .Columns("ChartColumnID").CellText(varBookmark)
+              sChartFilterID = .Columns("ChartFilterID").CellText(varBookmark)
               sChartAggregateType = val(.Columns("ChartAggregateType").CellText(varBookmark))
               fChartShowValues = val(.Columns("ChartShowValues").CellText(varBookmark))
               fUseFormatting = .Columns("UseFormatting").CellText(varBookmark)
@@ -2087,6 +2135,12 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
               sConditionalFormatting_Style_3 = .Columns("ConditionalFormatting_Style_3").CellText(varBookmark)
               sConditionalFormatting_Colour_3 = .Columns("ConditionalFormatting_Colour_3").CellText(varBookmark)
               sSeparatorColour = .Columns("SeparatorColour").CellText(varBookmark)
+              iInitialDisplayMode = val(.Columns("InitialDisplayMode").CellText(varBookmark))
+              sChart_TableID_2 = .Columns("Chart_TableID_2").CellText(varBookmark)
+              sChart_ColumnID_2 = .Columns("Chart_ColumnID_2").CellText(varBookmark)
+              sChart_TableID_3 = .Columns("Chart_TableID_3").CellText(varBookmark)
+              sChart_ColumnID_3 = .Columns("Chart_ColumnID_3").CellText(varBookmark)
+              sChart_SortOrderID = .Columns("Chart_SortOrderID").CellText(varBookmark)
                           
             Case SSINTLINK_DROPDOWNLIST
               sPrompt = ""
@@ -2141,6 +2195,17 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
           If Len(sPictureID) = 0 Then sPictureID = "0"
           If Len(sSeparatorOrientation) = 0 Then sSeparatorOrientation = "0"
           
+          sChartViewID = IIf(Len(sChartViewID) = 0, "0", sChartViewID)
+          sChartTableID = IIf(Len(sChartTableID) = 0, "0", sChartTableID)
+          sChartColumnID = IIf(Len(sChartColumnID) = 0, "0", sChartColumnID)
+          sChartFilterID = IIf(Len(sChartFilterID) = 0, "0", sChartFilterID)
+          
+          sChart_TableID_2 = IIf(Len(sChart_TableID_2) = 0, "0", sChart_TableID_2)
+          sChart_ColumnID_2 = IIf(Len(sChart_ColumnID_2) = 0, "0", sChart_ColumnID_2)
+          sChart_TableID_3 = IIf(Len(sChart_TableID_3) = 0, "0", sChart_TableID_3)
+          sChart_ColumnID_3 = IIf(Len(sChart_ColumnID_3) = 0, "0", sChart_ColumnID_3)
+          sChart_SortOrderID = IIf(Len(sChart_SortOrderID) = 0, "0", sChart_SortOrderID)
+                   
           sFormatting_Prefix = IIf(sFormatting_Prefix = "''", "''", "'" & Replace(sFormatting_Prefix, "'", "''") & "'")
           sFormatting_Suffix = IIf(sFormatting_Suffix = "''", "''", "'" & Replace(sFormatting_Suffix, "'", "''") & "'")
       
@@ -2158,6 +2223,13 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
           sConditionalFormatting_Colour_3 = IIf(sConditionalFormatting_Colour_3 = "''", "''", "'" & Replace(sConditionalFormatting_Colour_3, "'", "''") & "'")
           
           sSeparatorColour = IIf(sSeparatorColour = "''", "''", "'" & Replace(sSeparatorColour, "'", "''") & "'")
+          
+          iInitialDisplayMode = CStr(iInitialDisplayMode)
+'          sChart_TableID_2 = .Columns("sChart_TableID_2").CellText(varBookmark)
+'          sChart_ColumnID_2 = .Columns("sChart_ColumnID_2").CellText(varBookmark)
+'          sChart_TableID_3 = .Columns("sChart_TableID_3").CellText(varBookmark)
+'          sChart_ColumnID_3 = .Columns("sChart_ColumnID_3").CellText(varBookmark)
+'          sChart_SortOrderID = .Columns("sChart_SortOrderID").CellText(varBookmark)
                         
           'NPG20080211 Fault 12873
            sSQL = "INSERT INTO tmpSSIntranetLinks" & _
@@ -2170,7 +2242,8 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
             "[UseConditionalFormatting],[ConditionalFormatting_Operator_1],[ConditionalFormatting_Value_1],[ConditionalFormatting_Style_1]," & _
             "[ConditionalFormatting_Colour_1],[ConditionalFormatting_Operator_2],[ConditionalFormatting_Value_2],[ConditionalFormatting_Style_2]," & _
             "[ConditionalFormatting_Colour_2],[ConditionalFormatting_Operator_3],[ConditionalFormatting_Value_3],[ConditionalFormatting_Style_3]," & _
-            "[ConditionalFormatting_Colour_3],[SeparatorColour])" & _
+            "[ConditionalFormatting_Colour_3],[SeparatorColour],[InitialDisplayMode],[Chart_TableID_2] ,[Chart_ColumnID_2],[Chart_TableID_3]," & _
+            "[Chart_ColumnID_3],[Chart_SortOrderID])" & _
             " SELECT " & _
             CStr(piLinkType) & "," & CStr(iLoop) & "," & "'" & Replace(sPrompt, "'", "''") & "'," & _
             "'" & Replace(sText, "'", "''") & "'," & sScreenID & "," & "'" & Replace(sPageTitle, "'", "''") & "'," & _
@@ -2181,24 +2254,25 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
             "'" & Replace(sDocumentFilePath, "'", "''") & "',"
 
           sSQL = sSQL & _
-            "" & IIf(fDisplayDocumentHyperlink, "1", "0") & "," & _
-            "" & sElement_Type & "," & sSeparatorOrientation & "," & _
+            IIf(fDisplayDocumentHyperlink, "1", "0") & "," & _
+            sElement_Type & "," & sSeparatorOrientation & "," & _
             sPictureID & "," & "" & IIf(fChartShowLegend, "1", "0") & "," & _
             sChartType & "," & "" & IIf(fChartShowGrid, "1", "0") & "," & _
-            "" & IIf(fChartStackSeries, "1", "0") & "," & _
+            IIf(fChartStackSeries, "1", "0") & "," & _
             sChartViewID & "," & sChartTableID & "," & _
             sChartColumnID & "," & sChartFilterID & "," & _
             sChartAggregateType & "," & "" & IIf(fChartShowValues, "1", "0") & "," & _
             IIf(fUseFormatting, "1", "0") & "," & _
             iFormatting_DecimalPlaces & "," & _
-            fFormatting_Use1000Separator & "," & _
+            IIf(fFormatting_Use1000Separator, "1", "0") & "," & _
             sFormatting_Prefix & "," & _
             sFormatting_Suffix & "," & _
             IIf(fUseConditionalFormatting, "1", "0") & "," & _
             sConditionalFormatting_Operator_1 & "," & sConditionalFormatting_Value_1 & "," & sConditionalFormatting_Style_1 & "," & sConditionalFormatting_Colour_1 & "," & _
             sConditionalFormatting_Operator_2 & "," & sConditionalFormatting_Value_2 & "," & sConditionalFormatting_Style_2 & "," & sConditionalFormatting_Colour_2 & "," & _
             sConditionalFormatting_Operator_3 & "," & sConditionalFormatting_Value_3 & "," & sConditionalFormatting_Style_3 & "," & sConditionalFormatting_Colour_3 & "," & _
-            sSeparatorColour
+            sSeparatorColour & "," & CStr(iInitialDisplayMode) & "," & sChart_TableID_2 & "," & sChart_ColumnID_2 & "," & sChart_TableID_3 & "," & sChart_ColumnID_3 & "," & _
+            sChart_SortOrderID
 
           daoDb.Execute sSQL, dbFailOnError
         
@@ -2347,6 +2421,12 @@ Private Sub cmdAddButtonLink_Click()
   PopulateWFAccessGroup ctlSourceGrid, -1
   
   With frmLink
+    .InitialDisplayMode = 0
+    .Chart_TableID_2 = 0
+    .Chart_ColumnID_2 = 0
+    .Chart_TableID_3 = 0
+    .Chart_ColumnID_3 = 0
+    .Chart_SortOrderID = 0
     .Initialize SSINTLINK_BUTTON, _
       "", _
       "", _
@@ -2391,7 +2471,9 @@ Private Sub cmdAddButtonLink_Click()
         & vbTab & .cboDBValCFOperator(0).Text & vbTab & .txtDBValCFValue(0).Text & vbTab & .cboDBValCFStyle(0).Text & vbTab & .txtDBValCFColour(0).Text _
         & vbTab & .cboDBValCFOperator(0).Text & vbTab & .txtDBValCFValue(0).Text & vbTab & .cboDBValCFStyle(0).Text & vbTab & .txtDBValCFColour(0).Text _
         & vbTab & .cboDBValCFOperator(0).Text & vbTab & .txtDBValCFValue(0).Text & vbTab & .cboDBValCFStyle(0).Text & vbTab & .txtDBValCFColour(0).Text _
-        & vbTab & .txtSeparatorColour.Text
+        & vbTab & .txtSeparatorColour.Text & vbTab & .InitialDisplayMode & vbTab & .Chart_TableID_2 & vbTab & .Chart_ColumnID_2 & vbTab & .Chart_TableID_3 _
+        & vbTab & .Chart_ColumnID_3 & vbTab & .Chart_SortOrderID
+        
 
       For iLoop = 0 To cboButtonLinkView.ListCount - 1
         If cboButtonLinkView.List(iLoop) = .TableViewName Then
@@ -2918,7 +3000,13 @@ Private Sub cmdCopyButtonLink_Click()
   PopulateWFAccessGroup ctlSourceGrid, -1
   
   With frmLink
-  
+    .InitialDisplayMode = ctlSourceGrid.Columns("InitialDisplayMode").Text
+    .Chart_TableID_2 = ctlSourceGrid.Columns("Chart_TableID_2").Text
+    .Chart_ColumnID_2 = ctlSourceGrid.Columns("Chart_ColumnID_2").Text
+    .Chart_TableID_3 = ctlSourceGrid.Columns("Chart_TableID_3").Text
+    .Chart_ColumnID_3 = ctlSourceGrid.Columns("Chart_ColumnID_3").Text
+    .Chart_SortOrderID = ctlSourceGrid.Columns("Chart_SortOrderID").Text
+
     .Initialize SSINTLINK_BUTTON, _
       ctlSourceGrid.Columns("Prompt").Text, ctlSourceGrid.Columns("ButtonText").Text, _
       ctlSourceGrid.Columns("HRProScreenID").Text, ctlSourceGrid.Columns("PageTitle").Text, _
@@ -2934,10 +3022,10 @@ Private Sub cmdCopyButtonLink_Click()
       val(ctlSourceGrid.Columns("ChartViewID").Text), val(ctlSourceGrid.Columns("ChartTableID").Text), _
       val(ctlSourceGrid.Columns("ChartColumnID").Text), val(ctlSourceGrid.Columns("ChartFilterID").Text), _
       val(ctlSourceGrid.Columns("ChartAggregateType").Text), ctlSourceGrid.Columns("ChartShowValues").value, mcolGroups, _
-      ctlSourceGrid.Columns("UseFormatting").value, _
+      ctlSourceGrid.Columns("UseFormatting").Text, _
       ctlSourceGrid.Columns("Formatting_DecimalPlaces").Text, ctlSourceGrid.Columns("Formatting_Use1000Separator").Text, _
       ctlSourceGrid.Columns("Formatting_Prefix").Text, ctlSourceGrid.Columns("Formatting_Suffix").Text, _
-      ctlSourceGrid.Columns("UseConditionalFormatting").value, _
+      ctlSourceGrid.Columns("UseConditionalFormatting").Text, _
       ctlSourceGrid.Columns("ConditionalFormatting_Operator_1").Text, ctlSourceGrid.Columns("ConditionalFormatting_Value_1").Text, ctlSourceGrid.Columns("ConditionalFormatting_Style_1").Text, ctlSourceGrid.Columns("ConditionalFormatting_Colour_1").Text, _
       ctlSourceGrid.Columns("ConditionalFormatting_Operator_2").Text, ctlSourceGrid.Columns("ConditionalFormatting_Value_2").Text, ctlSourceGrid.Columns("ConditionalFormatting_Style_2").Text, ctlSourceGrid.Columns("ConditionalFormatting_Colour_2").Text, _
       ctlSourceGrid.Columns("ConditionalFormatting_Operator_3").Text, ctlSourceGrid.Columns("ConditionalFormatting_Value_3").Text, ctlSourceGrid.Columns("ConditionalFormatting_Style_3").Text, ctlSourceGrid.Columns("ConditionalFormatting_Colour_3").Text, _
@@ -2946,30 +3034,23 @@ Private Sub cmdCopyButtonLink_Click()
 
     If Not .Cancelled Then
       sRow = .Prompt _
-        & vbTab & .Text _
-        & vbTab & .URL _
-        & vbTab & .HRProScreenID _
-        & vbTab & .PageTitle _
-        & vbTab & .StartMode _
-        & vbTab & .UtilityType _
-        & vbTab & .UtilityID _
-        & vbTab & vbTab & IIf(.NewWindow, "1", "0") _
-        & vbTab & .EMailAddress _
-        & vbTab & .EMailSubject _
-        & vbTab & .AppFilePath _
-        & vbTab & .AppParameters _
-        & vbTab & IIf(.optLink(SSINTLINKSEPARATOR).value, 1, IIf(.optLink(SSINTLINKCHART).value, 2, IIf(.optLink(SSINTLINKPWFSTEPS).value, 3, IIf(.optLink(SSINTLINKDB_VALUE).value, 4, 0)))) _
-        & vbTab & IIf(.chkNewColumn.value = 0, "0", "1") _
-        & vbTab & IIf(Len(.txtIcon.Text) > 0, CStr(.PictureID), "") _
-        & vbTab & IIf(.chkShowLegend.value = 0, "0", "1") _
-        & vbTab & .cboChartType.ItemData(.cboChartType.ListIndex) _
-        & vbTab & IIf(.chkDottedGridlines.value = 0, "0", "1") _
-        & vbTab & IIf(.chkStackSeries.value = 0, "0", "1") _
-        & vbTab & .ChartViewID _
-        & vbTab & .ChartTableID _
-        & vbTab & .ChartColumnID _
-        & vbTab & .ChartFilterID _
-        & vbTab & .ChartAggregateType & vbTab & .ChartShowValues
+        & vbTab & .Text & vbTab & .URL & vbTab & .HRProScreenID _
+        & vbTab & .PageTitle & vbTab & .StartMode & vbTab & .UtilityType & vbTab & .UtilityID _
+        & vbTab & vbTab & IIf(.NewWindow, "1", "0") & vbTab & .EMailAddress & vbTab & .EMailSubject _
+        & vbTab & .AppFilePath & vbTab & .AppParameters & vbTab & IIf(.optLink(SSINTLINKSEPARATOR).value, 1, IIf(.optLink(SSINTLINKCHART).value, 2, IIf(.optLink(SSINTLINKPWFSTEPS).value, 3, IIf(.optLink(SSINTLINKDB_VALUE).value, 4, 0)))) _
+        & vbTab & IIf(.chkNewColumn.value = 0, "0", "1") & vbTab & IIf(Len(.txtIcon.Text) > 0, CStr(.PictureID), "") _
+        & vbTab & IIf(.chkShowLegend.value = 0, "0", "1") & vbTab & .cboChartType.ItemData(.cboChartType.ListIndex) _
+        & vbTab & IIf(.chkDottedGridlines.value = 0, "0", "1") & vbTab & IIf(.chkStackSeries.value = 0, "0", "1") _
+        & vbTab & .ChartViewID & vbTab & .ChartTableID & vbTab & .ChartColumnID & vbTab & .ChartFilterID _
+        & vbTab & .ChartAggregateType & vbTab & IIf(.chkShowValues.value = 0, "0", "1") _
+        & vbTab & .chkFormatting.value & vbTab & .spnDBValueDecimals.value & vbTab & .chkDBVaUseThousandSeparator.value _
+        & vbTab & .txtDBValuePrefix.Text & vbTab & .txtDBValueSuffix.Text _
+        & vbTab & .chkConditionalFormatting.value _
+        & vbTab & .cboDBValCFOperator(0).Text & vbTab & .txtDBValCFValue(0).Text & vbTab & .cboDBValCFStyle(0).Text & vbTab & .txtDBValCFColour(0).Text _
+        & vbTab & .cboDBValCFOperator(0).Text & vbTab & .txtDBValCFValue(0).Text & vbTab & .cboDBValCFStyle(0).Text & vbTab & .txtDBValCFColour(0).Text _
+        & vbTab & .cboDBValCFOperator(0).Text & vbTab & .txtDBValCFValue(0).Text & vbTab & .cboDBValCFStyle(0).Text & vbTab & .txtDBValCFColour(0).Text _
+        & vbTab & .SeparatorBorderColour & vbTab & .InitialDisplayMode & vbTab & .Chart_TableID_2 & vbTab & .Chart_ColumnID_2 & vbTab & .Chart_TableID_3 _
+        & vbTab & .Chart_ColumnID_3 & vbTab & .Chart_SortOrderID
 
       For iLoop = 0 To cboButtonLinkView.ListCount - 1
         If cboButtonLinkView.List(iLoop) = .TableViewName Then
@@ -3419,7 +3500,12 @@ Private Sub cmdEditButtonLink_Click()
   End If
   
   With frmLink
-    
+    .InitialDisplayMode = IIf(ctlSourceGrid.Columns("InitialDisplayMode").Text = vbNullString, 0, val(ctlSourceGrid.Columns("InitialDisplayMode").Text))
+    .Chart_TableID_2 = IIf(ctlSourceGrid.Columns("Chart_TableID_2").Text = vbNullString, 0, val(ctlSourceGrid.Columns("Chart_TableID_2").Text))
+    .Chart_ColumnID_2 = IIf(ctlSourceGrid.Columns("Chart_ColumnID_2").Text = vbNullString, 0, val(ctlSourceGrid.Columns("Chart_ColumnID_2").Text))
+    .Chart_TableID_3 = IIf(ctlSourceGrid.Columns("Chart_TableID_3").Text = vbNullString, 0, val(ctlSourceGrid.Columns("Chart_TableID_3").Text))
+    .Chart_ColumnID_3 = IIf(ctlSourceGrid.Columns("Chart_ColumnID_3").Text = vbNullString, 0, val(ctlSourceGrid.Columns("Chart_ColumnID_3").Text))
+    .Chart_SortOrderID = IIf(ctlSourceGrid.Columns("Chart_SortOrderID").Text = vbNullString, 0, val(ctlSourceGrid.Columns("Chart_SortOrderID").Text))
     .Initialize SSINTLINK_BUTTON, _
       ctlSourceGrid.Columns("Prompt").Text, ctlSourceGrid.Columns("ButtonText").Text, _
       ctlSourceGrid.Columns("HRProScreenID").Text, ctlSourceGrid.Columns("PageTitle").Text, _
@@ -3461,7 +3547,8 @@ Private Sub cmdEditButtonLink_Click()
         & vbTab & .ConditionalFormatting_Operator_1 & vbTab & .ConditionalFormatting_Value_1 & vbTab & .ConditionalFormatting_Style_1 & vbTab & .ConditionalFormatting_Colour_1 _
         & vbTab & .ConditionalFormatting_Operator_2 & vbTab & .ConditionalFormatting_Value_2 & vbTab & .ConditionalFormatting_Style_2 & vbTab & .ConditionalFormatting_Colour_2 _
         & vbTab & .ConditionalFormatting_Operator_3 & vbTab & .ConditionalFormatting_Value_3 & vbTab & .ConditionalFormatting_Style_3 & vbTab & .ConditionalFormatting_Colour_3 _
-        & vbTab & .SeparatorBorderColour
+        & vbTab & .SeparatorBorderColour & vbTab & .InitialDisplayMode & vbTab & .Chart_TableID_2 & vbTab & .Chart_ColumnID_2 & vbTab & .Chart_TableID_3 _
+        & vbTab & .Chart_ColumnID_3 & vbTab & .Chart_SortOrderID
 
       ctlSourceGrid.RemoveItem lngRow
       
@@ -4792,16 +4879,12 @@ Private Sub ReadParameters()
             vbTab & CStr(rsLinks!StartMode) & vbTab & CStr(IIf(IsNull(rsLinks!UtilityType), 0, rsLinks!UtilityType)) & _
             vbTab & CStr(IIf(IsNull(rsLinks!UtilityID), 0, rsLinks!UtilityID)) & _
             vbTab & vbTab & IIf(IsNull(rsLinks!NewWindow), "0", IIf(rsLinks!NewWindow, "1", "0")) & _
-            vbTab & rsLinks!EMailAddress & vbTab & rsLinks!EMailSubject & _
-            vbTab & rsLinks!AppFilePath & vbTab & rsLinks!AppParameters & _
-            vbTab & CStr(IIf(IsNull(rsLinks!Element_Type), "0", CStr(rsLinks!Element_Type))) & _
-            vbTab & IIf(IsNull(rsLinks!SeparatorOrientation), "0", CStr(rsLinks!SeparatorOrientation)) & _
-            vbTab & IIf(IsNull(rsLinks!PictureID), "0", CStr(rsLinks!PictureID)) & _
-            vbTab & IIf(IsNull(rsLinks!Chart_ShowLegend), "0", IIf(rsLinks!Chart_ShowLegend, "1", "0")) & _
+            vbTab & rsLinks!EMailAddress & vbTab & rsLinks!EMailSubject & vbTab & rsLinks!AppFilePath & vbTab & rsLinks!AppParameters & _
+            vbTab & CStr(IIf(IsNull(rsLinks!Element_Type), "0", CStr(rsLinks!Element_Type))) & vbTab & IIf(IsNull(rsLinks!SeparatorOrientation), "0", CStr(rsLinks!SeparatorOrientation)) & _
+            vbTab & IIf(IsNull(rsLinks!PictureID), "0", CStr(rsLinks!PictureID)) & vbTab & IIf(IsNull(rsLinks!Chart_ShowLegend), "0", IIf(rsLinks!Chart_ShowLegend, "1", "0")) & _
             vbTab & CStr(rsLinks!Chart_Type) & vbTab & IIf(IsNull(rsLinks!Chart_ShowGrid), "0", IIf(rsLinks!Chart_ShowGrid, "1", "0")) & _
             vbTab & IIf(IsNull(rsLinks!Chart_StackSeries), "0", IIf(rsLinks!Chart_StackSeries, "1", "0")) & _
-            vbTab & CStr(rsLinks!Chart_ViewID) & vbTab & CStr(rsLinks!Chart_TableID) & _
-            vbTab & CStr(rsLinks!Chart_ColumnID) & vbTab & CStr(rsLinks!Chart_FilterID) & _
+            vbTab & CStr(rsLinks!Chart_ViewID) & vbTab & CStr(rsLinks!Chart_TableID) & vbTab & CStr(rsLinks!Chart_ColumnID) & vbTab & CStr(rsLinks!Chart_FilterID) & _
             vbTab & CStr(rsLinks!Chart_AggregateType) & vbTab & IIf(IsNull(rsLinks!Chart_ShowValues), "0", IIf(rsLinks!Chart_ShowValues, "1", "0")) & _
             vbTab & IIf(IsNull(rsLinks!UseFormatting), "0", IIf(rsLinks!UseFormatting, "1", "0")) & _
             vbTab & IIf(IsNull(rsLinks!Formatting_DecimalPlaces), "0", CStr(rsLinks!Formatting_DecimalPlaces)) & vbTab & IIf(IsNull(rsLinks!Formatting_Use1000Separator), "0", IIf(rsLinks!Formatting_Use1000Separator, "1", "0")) & _
@@ -4810,7 +4893,8 @@ Private Sub ReadParameters()
             vbTab & rsLinks!ConditionalFormatting_Operator_1 & vbTab & rsLinks!ConditionalFormatting_Value_1 & vbTab & rsLinks!ConditionalFormatting_Style_1 & vbTab & rsLinks!ConditionalFormatting_Colour_1 & _
             vbTab & rsLinks!ConditionalFormatting_Operator_2 & vbTab & rsLinks!ConditionalFormatting_Value_2 & vbTab & rsLinks!ConditionalFormatting_Style_2 & vbTab & rsLinks!ConditionalFormatting_Colour_2 & _
             vbTab & rsLinks!ConditionalFormatting_Operator_3 & vbTab & rsLinks!ConditionalFormatting_Value_3 & vbTab & rsLinks!ConditionalFormatting_Style_3 & vbTab & rsLinks!ConditionalFormatting_Colour_3 & _
-            vbTab & rsLinks!SeparatorColour
+            vbTab & rsLinks!SeparatorColour & vbTab & CStr(rsLinks!InitialDisplayMode) & vbTab & CStr(rsLinks!Chart_TableID_2) & vbTab & CStr(rsLinks!Chart_ColumnID_2) & _
+            vbTab & CStr(rsLinks!Chart_TableID_3) & vbTab & CStr(rsLinks!Chart_ColumnID_3) & vbTab & CStr(rsLinks!Chart_SortOrderID)
        End If
           
       Case SSINTLINK_DROPDOWNLIST
