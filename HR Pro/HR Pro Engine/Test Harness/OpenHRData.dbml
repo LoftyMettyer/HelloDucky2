@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="STD41" Class="DBContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="STD41" Class="OpenHRDataDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Connection Mode="AppSettings" ConnectionString="Data Source=HARPDEV02;Initial Catalog=STD41;User ID=sa" SettingsObjectName="Test_Harness.My.MySettings" SettingsPropertyName="STD41ConnectionString1" Provider="System.Data.SqlClient" />
   <Table Name="dbo.ASRSysAuditTrail" Member="ASRSysAuditTrails">
     <Type Name="ASRSysAuditTrail">
