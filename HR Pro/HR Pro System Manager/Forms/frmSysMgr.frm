@@ -13,7 +13,7 @@ Begin VB.MDIForm frmSysMgr
    HelpContextID   =   5066
    Icon            =   "frmSysMgr.frx":0000
    LinkTopic       =   "MDIForm1"
-   MouseIcon       =   "frmSysMgr.frx":038A
+   MouseIcon       =   "frmSysMgr.frx":058A
    NegotiateToolbars=   0   'False
    StartUpPosition =   2  'CenterScreen
    WindowState     =   2  'Maximized
@@ -99,7 +99,7 @@ Begin VB.MDIForm frmSysMgr
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Bands           =   "frmSysMgr.frx":0714
+      Bands           =   "frmSysMgr.frx":0914
    End
 End
 Attribute VB_Name = "frmSysMgr"
