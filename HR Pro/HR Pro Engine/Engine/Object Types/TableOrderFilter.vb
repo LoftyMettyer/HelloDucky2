@@ -127,14 +127,16 @@
         Select Case RowDetails.RowSelection
           Case ScriptDB.ColumnRowSelection.Count
             aryColumnList.Add(String.Format("COUNT(base.[{0}])", objColumn.Name))
+            aryReturnDefintion.Add(String.Format("[{0}] numeric(38,8)", objColumn.Name))
           Case ScriptDB.ColumnRowSelection.Total
             aryColumnList.Add(String.Format("SUM(base.[{0}])", objColumn.Name))
+            aryReturnDefintion.Add(String.Format("[{0}] numeric(38,8)", objColumn.Name))
           Case Else
             aryColumnList.Add(String.Format("base.[{0}]", objColumn.Name))
+            aryReturnDefintion.Add(String.Format("[{0}] {1}", objColumn.Name, objColumn.DataTypeSyntax))
             objIndex.IncludedColumns.AddIfNew(objColumn)
         End Select
 
-        aryReturnDefintion.Add(String.Format("[{0}] {1}", objColumn.Name, objColumn.DataTypeSyntax))
       Next
 
       ' Create index for this object

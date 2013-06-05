@@ -708,7 +708,7 @@ Namespace Things
 
             ' Add calculation for this foreign column to the pre-requisits array 
             iPartNumber = Declarations.Count + Me.StartOfPartNumbers
-            bIsSummaryColumn = (ChildRowDetails.RowSelection = ScriptDB.ColumnRowSelection.Total Or ChildRowDetails.RowSelection = ScriptDB.ColumnRowSelection.Count)
+            bIsSummaryColumn = ([Component].ChildRowDetails.RowSelection = ScriptDB.ColumnRowSelection.Total Or [Component].ChildRowDetails.RowSelection = ScriptDB.ColumnRowSelection.Count)
 
             sPartCode = String.Format("{0}SELECT @part_{1} = base.[{2}]" & vbNewLine _
                 , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
@@ -728,8 +728,11 @@ Namespace Things
 
             StatementObjects.Add(objOrderFilter)
             PreStatements.Add(sPartCode)
-            LineOfCode.Code = String.Format("ISNULL(@part_{0},{1})", iPartNumber, objThisColumn.SafeReturnType)
-
+            If bIsSummaryColumn Then
+              LineOfCode.Code = String.Format("@part_{0}", iPartNumber)
+            Else
+              LineOfCode.Code = String.Format("ISNULL(@part_{0},{1})", iPartNumber, objThisColumn.SafeReturnType)
+            End If
           End If
         End If
       End If
