@@ -46,14 +46,14 @@ Begin VB.Form frmBatchJob
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmBatchJob.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraScheduling"
-      Tab(0).Control(1)=   "fraInfo"
+      Tab(0).Control(0)=   "fraInfo"
+      Tab(0).Control(1)=   "fraScheduling"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Jobs"
       TabPicture(1)   =   "frmBatchJob.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraEMailNotify"
-      Tab(1).Control(1)=   "fraJobs"
+      Tab(1).Control(0)=   "fraJobs"
+      Tab(1).Control(1)=   "fraEMailNotify"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmBatchJob.frx":0044
@@ -664,15 +664,11 @@ Begin VB.Form frmBatchJob
             GroupHeaders    =   0   'False
             Col.Count       =   5
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
-            stylesets(0).Picture=   "frmBatchJob.frx":0098
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
-            stylesets(1).HasFont=   -1  'True
-            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
+            stylesets(0).HasFont=   -1  'True
+            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
                Charset         =   0
@@ -681,6 +677,10 @@ Begin VB.Form frmBatchJob
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
+            stylesets(0).Picture=   "frmBatchJob.frx":0098
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).Picture=   "frmBatchJob.frx":00B4
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -1189,12 +1189,12 @@ Begin VB.Form frmBatchJob
          End
          Begin VB.Label lblTitlePage 
             AutoSize        =   -1  'True
-            Caption         =   "Title Page Template :"
+            Caption         =   "Report Pack Template :"
             Height          =   195
             Left            =   195
             TabIndex        =   65
             Top             =   300
-            Width           =   1830
+            Width           =   2025
          End
          Begin VB.Label lblReportPackTitle 
             AutoSize        =   -1  'True
@@ -4586,7 +4586,7 @@ Public Sub PrintDef(lBatchJobID As Long)
         If gblnReportPackMode Then
           ' Only include Output Options for Report Packs for the mo
           .PrintTitle "Output Options"
-          .PrintNormal "Title Page Template: " & rsTemp!OutputTitlePage
+          .PrintNormal "Report Pack Template : " & rsTemp!OutputTitlePage
           .PrintNormal "Report Pack Title : " & rsTemp!OutputReportPackTitle
           .PrintNormal " "
           .PrintNormal "Override Filter : " & rsTemp!OutputOverrideFilter
