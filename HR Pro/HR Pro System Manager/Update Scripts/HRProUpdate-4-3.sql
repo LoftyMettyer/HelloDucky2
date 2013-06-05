@@ -1464,7 +1464,7 @@ PRINT 'Step 11 - Add new calculation procedures'
 			DECLARE @Numerics varchar(MAX);
 
 			SET @result = 1;
-			IF ISNULL(@input,'''') = '''' RETURN 0
+			IF ISNULL(@input,'''') = '''' RETURN 1
 
 			SET @ValidPrefixes = 
 				''/AA/AB/AE/AH/AK/AL/AM/AP/AR/AS/AT/AW/AX/AY/AZ'' +
