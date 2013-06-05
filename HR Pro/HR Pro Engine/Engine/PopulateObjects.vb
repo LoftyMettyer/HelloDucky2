@@ -438,6 +438,7 @@
       Dim objValidation As Things.Validation
       Dim objTableOrder As Things.TableOrder
       Dim objDescription As Things.RecordDescription
+      Dim objMask As Things.Mask
 
       Table.Objects.Parent = Table
       Table.Objects.Root = Table.Root
@@ -510,6 +511,7 @@
           objExpression.ID = objRow.Item("id").ToString
           objExpression.Parent = Table
           objExpression.Name = objRow.Item("name").ToString
+          objExpression.ExpressionType = objRow.Item("type").ToString
           objExpression.SchemaName = "dbo"
           objExpression.Description = objRow.Item("description").ToString
           objExpression.State = objRow.Item("state")
@@ -546,7 +548,6 @@
           Table.Objects.Add(objValidation)
         Next
 
-
         ' Record Description
         objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getdescriptions", objParameters)
         For Each objRow In objDataset.Tables(0).Rows
@@ -568,6 +569,29 @@
           objDescription.Objects = Things.LoadComponents(objDescription, ScriptDB.ComponentTypes.Expression)
           Table.Objects.Add(objDescription)
         Next
+
+        ' Masks
+        objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getmasks", objParameters)
+        For Each objRow In objDataset.Tables(0).Rows
+          objMask = New Things.Mask
+          objMask.ID = objRow.Item("id").ToString
+          objMask.Parent = Table
+          objMask.Name = objRow.Item("name").ToString
+          objMask.AssociatedColumn = Table.Column(objRow.Item("columnid").ToString)
+          objMask.SchemaName = "dbo"
+          objMask.Description = objRow.Item("description").ToString
+          objMask.State = objRow.Item("state")
+          objMask.ReturnType = objRow.Item("returntype")
+          objMask.Size = objRow.Item("size")
+          objMask.Decimals = objRow.Item("decimals")
+          objMask.BaseTable = Table
+          objMask.BaseExpression = objMask
+
+          'Get all child objects for this expression
+          objMask.Objects = Things.LoadComponents(objMask, ScriptDB.ComponentTypes.Expression)
+          Table.Objects.Add(objMask)
+        Next
+
 
 
       Catch ex As Exception

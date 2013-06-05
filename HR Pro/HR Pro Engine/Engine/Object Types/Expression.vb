@@ -341,7 +341,7 @@ Namespace Things
 
           ' Wrapper for calculations with associated columns
           Case ScriptDB.ExpressionType.ColumnCalculation
-            .Name = String.Format("[{0}].[{1}_{2}.{3}]", Me.SchemaName, "udfcalc", Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
+            .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
             .SelectCode = mcolLinesOfCode.Statement
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
             '        .Where = String.Format("{0}", String.Join(",", Where.ToArray))
@@ -390,27 +390,58 @@ Namespace Things
 
             ' Wrapper for when this function is used as a filter in an expression
           Case ScriptDB.ExpressionType.ColumnFilter
-            .Name = String.Format("[{0}].[{1}_{2}.{3}]", Me.SchemaName, "udfcalc", Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
+            .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
             .SelectCode = String.Format("CASE WHEN ({0}) THEN 1 ELSE 0 END", mcolLinesOfCode.Statement)
 
             ' Wrapper for when expression is used as a filter in a view
-          Case ScriptDB.ExpressionType.ViewCode
-            .Name = String.Format("[{0}].[{1}_{2}.{3}]", Me.SchemaName, "udfcalc", Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
+          Case ScriptDB.ExpressionType.Mask
+            .Name = String.Format("[{0}].[{1}{2}]", Me.SchemaName, ScriptDB.Consts.MaskUDF, CInt(Me.BaseExpression.ID))
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters1.ToArray))
             .SelectCode = mcolLinesOfCode.Statement
-            '.SelectCode = String.Format("CASE WHEN ({0}) THEN 1 ELSE 0 END", mcolLinesOfCode.Statement)
+
+            .Code = String.Format("CREATE FUNCTION {0}(@prm_id integer)" & vbNewLine & _
+                           "RETURNS bit" & vbNewLine & _
+                           "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+                           "    DECLARE @Result AS bit;" & vbNewLine & vbNewLine & _
+                           "{4}" & vbNewLine & vbNewLine & _
+                           "{5}" & vbNewLine & vbNewLine & _
+                           "    -- Execute calculation code" & vbNewLine & _
+                           "SELECT @Result = CASE WHEN ({6}) THEN 1 ELSE 0 END" & vbNewLine & _
+                           "                 {7}" & vbNewLine & _
+                           "                 {8}" & vbNewLine & _
+                           "                 {9}" & vbNewLine & _
+                           "    RETURN ISNULL(@Result, 0);" & vbNewLine & _
+                           "END" _
+                          , .Name, String.Join(", ", aryParameters1.ToArray()) _
+                          , "", "", .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
+
+            .CodeStub = String.Format("CREATE FUNCTION {0}(@prm_id integer)" & vbNewLine & _
+                           "RETURNS bit" & vbNewLine & _
+                           "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+                           "    DECLARE @Result AS bit;" & vbNewLine & vbNewLine & _
+                           "/*{4}" & vbNewLine & vbNewLine & _
+                           "{5}" & vbNewLine & vbNewLine & _
+                           "    -- Execute calculation code" & vbNewLine & _
+                           "SELECT @Result = CASE WHEN ({6}) THEN 1 ELSE 0 END" & vbNewLine & _
+                           "                 {7}" & vbNewLine & _
+                           "                 {8}" & vbNewLine & _
+                           "                 {9}*/" & vbNewLine & _
+                           "    RETURN ISNULL(@Result, 1);" & vbNewLine & _
+                           "END" _
+                          , .Name, String.Join(", ", aryParameters1.ToArray()) _
+                          , "", "", .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
+
 
           Case ScriptDB.ExpressionType.ReferencedColumn
-            .Name = String.Format("[{0}].[{1}_{2}.{3}]", Me.SchemaName, "udfcalc", Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
+            .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters3.ToArray))
             .SelectCode = mcolLinesOfCode.Statement
 
           Case ScriptDB.ExpressionType.RecordDescription
-            .Name = String.Format("[{0}].[{1}_{2}]", Me.SchemaName, "udfdesc", Me.BaseTable.Name)
+            .Name = String.Format("[{0}].[{1}{2}]", Me.SchemaName, ScriptDB.Consts.RecordDescriptionUDF, Me.BaseTable.Name)
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
             .SelectCode = mcolLinesOfCode.Statement
-
 
             .Code = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
                            "RETURNS nvarchar(MAX)" & vbNewLine & _
@@ -431,7 +462,7 @@ Namespace Things
                           , "", sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
 
             .CodeStub = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
-                           "RETURNS {2}" & vbNewLine & _
+                           "RETURNS nvarchar(MAX)" & vbNewLine & _
                            "{3}" & vbNewLine & _
                            "--WITH SCHEMABINDING" & vbNewLine &
                            "AS" & vbNewLine & "BEGIN" & vbNewLine & _
@@ -536,7 +567,7 @@ Namespace Things
                 LineOfCode.Code = String.Format("'{0}'", objComponent.ValueString)
 
               Case ScriptDB.ComponentValueTypes.Date
-                LineOfCode.Code = String.Format("'{0}'", objComponent.ValueDate)
+                LineOfCode.Code = String.Format("'{0}'", objComponent.ValueDate.ToString("yyyy-MM-dd"))
 
               Case ScriptDB.ComponentValueTypes.SystemVariable
                 LineOfCode.Code = String.Format("{0}", objComponent.ValueString)
@@ -607,7 +638,6 @@ Namespace Things
       '      Dim drColumn As System.Data.DataRow
       Dim objThisColumn As Things.Column
       Dim objBaseColumn As Things.Column
-      Dim objCalculatedColumn As Things.Expression
 
       Dim objExpression As Things.Expression
       Dim ChildCodeCluster As ScriptDB.LinesOfCode
@@ -617,13 +647,9 @@ Namespace Things
       Dim sFromCode As String
       Dim sWhereCode As String
 
-      '      Dim objColumnFilter As Expression
-
       Dim sColumnFilter As String
       Dim sColumnOrder As String
       Dim sColumnJoinCode As String = String.Empty
-
-      Dim iColumnType As ScriptDB.ColumnTypes
       Dim iColumnAggregiateType As ScriptDB.AggregiateNumeric
 
       Dim sPartCode As String
@@ -673,11 +699,14 @@ Namespace Things
 
         ' Is this column referencing the column that this udf is attaching itself to? (i.e. recursion)
         If objThisColumn Is objBaseColumn _
-          And Not (Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter Or Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription) Then
+          And Not (Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter _
+                   Or Me.ExpressionType = ScriptDB.ExpressionType.Mask _
+                   Or Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription) Then
           '   LineOfCode.Code = String.Format("[dbo].[{0}].[{1}]", objThisColumn.Table.PhysicalName, objThisColumn.Name)
           LineOfCode.Code = String.Format("@prm_{0}", objThisColumn.Name)
 
-        ElseIf objThisColumn Is Me.AssociatedColumn And Me.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn Then
+        ElseIf objThisColumn Is Me.AssociatedColumn _
+          And Me.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn Then
           LineOfCode.Code = String.Format("@prm_{0}", objThisColumn.Name)
 
           ' Does the referenced column have default value on it, then reference the UDF/value of the default rather than the column itself.
@@ -731,8 +760,20 @@ Namespace Things
                 sColumnName = String.Format("[{0}].[{1}]", objThisColumn.Table.Name, objThisColumn.Name)
                 'mbAddBaseTable = True
 
-              Case ScriptDB.ExpressionType.ViewCode
+              Case ScriptDB.ExpressionType.Mask
                 sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
+
+                ' Needs base table added
+                sFromCode = String.Format("FROM [dbo].[{0}] base", objThisColumn.Table.Name)
+                If Not FromTables.Contains(sFromCode) Then
+                  FromTables.Add(sFromCode)
+                End If
+
+                ' Where clause
+                sWhereCode = String.Format("base.[ID] = @prm_id")
+                If Not maryWhere.Contains(sWhereCode) Then
+                  maryWhere.Add(sWhereCode)
+                End If
 
               Case Else
                 sColumnName = String.Format("@prm_{0}", objThisColumn.Name)
@@ -978,17 +1019,11 @@ Namespace Things
       Dim objCodeLibrary As Things.CodeLibrary
       Dim ChildCodeCluster As ScriptDB.LinesOfCode
       Dim objSetting As Things.Setting
-      Dim objUniqueCode As Things.Setting
-
-      'Dim objTable As Things.Table
-      ' Dim objRelation As Things.Relation
       Dim objIDComponent As Things.Component
 
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Function
       objCodeLibrary = Globals.Functions.GetObject(Enums.Type.CodeLibrary, Component.FunctionID)
       LineOfCode.Code = objCodeLibrary.Code
-
-
 
       ' Get parameters
       ChildCodeCluster = New ScriptDB.LinesOfCode
@@ -1093,7 +1128,7 @@ Namespace Things
       If ChildCodeCluster.NestedLevel > 12 Then 'And objCodeLibrary.SplitIntoCase Then
 
         objExpression = New Things.Expression
-        objExpression.ExpressionType = ScriptDB.ExpressionType.ViewCode
+        objExpression.ExpressionType = ScriptDB.ExpressionType.Mask
         objExpression.BaseTable = Me.BaseTable
         objExpression.AssociatedColumn = Me.AssociatedColumn
         objExpression.ReturnType = Component.ReturnType

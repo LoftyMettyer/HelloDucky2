@@ -129,6 +129,7 @@
     <Compile Include="Object Types\Datasource.vb" />
     <Compile Include="Object Types\GlobalModify.vb" />
     <Compile Include="Object Types\GlobalModifyItem.vb" />
+    <Compile Include="Object Types\Mask.vb" />
     <Compile Include="Object Types\TableOrder.vb" />
     <Compile Include="Object Types\TableOrderItem.vb" />
     <Compile Include="Object Types\Validation.vb" />

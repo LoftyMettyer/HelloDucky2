@@ -30,6 +30,7 @@
       TableOrderItem = 22
       GlobalModify = 23
       GlobalModifyItem = 24
+      Mask = 25
     End Enum
 
     Public Enum DisplayStyle

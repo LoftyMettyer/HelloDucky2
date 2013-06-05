@@ -61,34 +61,13 @@
       [ColumnDefault] = 0
       [ColumnCalculation] = 1
       [RecordDescription] = 2
-      [ViewCode] = 3
+      [Mask] = 3
       [RuntimeCode] = 4
       [Validation] = 5
       [DiaryFilter] = 6
       [ColumnFilter] = 7
       [ReferencedColumn] = 8
     End Enum
-
-    'Public Enum DataType
-    '  '[MatchPreviousSibling] = -1
-    '  '[None] = 0
-    '  [Character] = 12
-    '  [Numeric] = 2
-    '  [Integer] = 4
-    '  [Date] = 11
-    '  [Logic] = -7
-    '  [Binary] = -4
-    '  '[FieldReference] = 6
-    'End Enum
-
-    'Public Enum GenerateExpressionType
-    '  [ColumnDefault] = 0
-    '  [ColumnCalculation] = 1
-    '  [RecordDescription] = 2
-    '  [ViewCode] = 3
-    '  [RuntimeCode] = 4
-    '  [Validation] = 5
-    'End Enum
 
     Enum OperatorSubType
       [Comparison] = 177
@@ -191,15 +170,5 @@
 
   End Module
 
-  Public Module Consts
-    Public Const UserTable As String = "tbuser_"
-    Public Const Trigger As String = "trsys_"
-    Public Const ValidationUDF As String = "udfval_"
-    Public Const DefaultValueUDF As String = "udfdef_"
-    Public Const RecordDescriptionUDF As String = "udfdesc_"
-    Public Const CalculationUDF As String = "udfcalc_"
-    Public Const Column As String = ""
-    Public Const Index As String = "idx_"
-  End Module
 
 End Namespace

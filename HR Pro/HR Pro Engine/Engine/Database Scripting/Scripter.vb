@@ -175,14 +175,12 @@ Namespace ScriptDB
       Dim sDefinitionSQL As String = String.Empty
       Dim sViewName As String = String.Empty
       Dim sActualTableName As String = String.Empty
-      '    Dim sSchemaName As String
       Dim sOptions As String = String.Empty
 
       Dim objTable As Things.Table
       Dim objColumn As Things.Column
       Dim objRelation As Things.Relation
       Dim objExpression As Things.Expression
-      Dim objView As Things.View
 
       Try
 
@@ -524,8 +522,6 @@ Namespace ScriptDB
           Next
 
 
-
-
           ' Add any relationship columns
           For Each objRelation In objTable.Objects(Things.Type.Relation)
             If objRelation.RelationshipType = RelationshipType.Parent Then
@@ -533,16 +529,15 @@ Namespace ScriptDB
               aryAllWriteableColumns.Add(String.Format("[ID_{0}]", CInt(objRelation.ParentID)))
 
               aryParentsToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {1})" & vbNewLine & _
-                                                   "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM inserted)" & vbNewLine & vbNewLine _
-                , objRelation.PhysicalName, CInt(objRelation.ParentID)))
-
+                  "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM inserted)" & vbNewLine _
+                  , objRelation.PhysicalName, CInt(objRelation.ParentID)))
 
               aryParentsToUpdate_Delete.Add(String.Format("    UPDATE [dbo].[{1}] SET [updflag] = 1 WHERE [dbo].[{1}].[id] IN (SELECT DISTINCT [id_{2}] FROM deleted)" & vbNewLine & vbNewLine _
                 , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID)))
             Else
 
               aryChildrenToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3})" & vbNewLine & _
-                      "        UPDATE base SET [updflag] = 1 FROM dbo.[{1}] base WHERE [ID_{2}] IN (SELECT DISTINCT [id] FROM inserted);" & vbNewLine & vbNewLine _
+                      "        UPDATE base SET [updflag] = 1 FROM dbo.[{1}] base WHERE [ID_{2}] IN (SELECT DISTINCT [id] FROM inserted);" & vbNewLine _
                       , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID), CInt(objRelation.ChildID)))
 
             End If
@@ -569,9 +564,10 @@ Namespace ScriptDB
           If aryBaseTableColumns.ToArray.Length > 0 Then
             sSQLWriteableColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
               "    UPDATE [dbo].[{0}]" & vbNewLine & _
-              "        SET {1}" & vbNewLine & _
+              "        SET [updflag] = [inserted].[updflag]," & vbNewLine & _
+              "        {1}" & vbNewLine & _
               "        FROM [inserted] WHERE [inserted].[id] = [dbo].[{0}].[id]" & vbNewLine _
-              , objTable.Name, String.Join(", " & vbNewLine & vbTab & vbTab & vbTab, aryBaseTableColumns.ToArray()))
+              , objTable.PhysicalName, String.Join(", " & vbNewLine & vbTab & vbTab & vbTab, aryBaseTableColumns.ToArray()))
           Else
             sSQLWriteableColumns = String.Empty
           End If
@@ -665,6 +661,8 @@ Namespace ScriptDB
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
               "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
+              "    -- Has the trigger been called from an update on another table?" & vbNewLine & _
+              "    IF NOT UPDATE([updflag]) INSERT [dbo].[{5}] ([spid], [tablefromid]) VALUES (@@spid,{6});" & vbNewLine & vbNewLine & _
               "{2}" & vbNewLine & vbNewLine & _
               "        ---------------------------" & vbNewLine & _
               "        -- Commit writeable columns" & vbNewLine & _
@@ -676,13 +674,13 @@ Namespace ScriptDB
               "{4}" & vbNewLine & vbNewLine & _
               "    INSERT dbo.[tbsys_audittrail] (username, datetimestamp, recordid, oldvalue, newvalue, tableid, columnid, deleted, recorddesc)" & vbNewLine & _
               "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, tableid, columnid, 0, recorddesc FROM @audit" & vbNewLine & vbNewLine & _
-              "{7}" & vbNewLine _
+              "    -- Clear the temporary trigger status table" & vbNewLine & vbNewLine & _
+              "    DELETE [dbo].[{5}] WHERE [spid] = @@spid AND [tablefromid] = {6};" & vbNewLine & vbNewLine _
               , objTable.Name, sTriggerName _
               , String.Join(vbNewLine, aryValidationStatements.ToArray()) _
               , sSQLWriteableColumns _
               , sSQLCode_AuditUpdate _
-              , Tables.sysTriggerTransaction, CInt(objTable.ID) _
-              , sSQLCode_DiaryLinks)
+              , Tables.sysTriggerTransaction, CInt(objTable.ID))
           ScriptTrigger("dbo", objTable, TriggerType.InsteadOfUpdate, sSQL)
 
 
@@ -694,22 +692,23 @@ Namespace ScriptDB
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
               "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-              "    -- Has the trigger been called from an update on another table?" & vbNewLine & _
-              "    IF NOT UPDATE([updflag]) INSERT [dbo].[{4}] ([spid], [tablefromid]) VALUES (@@spid,{3});" & vbNewLine & vbNewLine & _
-              sSQLCalculatedColumns & vbNewLine & _
+              sSQLCalculatedColumns & vbNewLine & vbNewLine & _
+              "    INSERT [dbo].[{4}] ([spid], [tablefromid]) VALUES (@@spid,{3});" & vbNewLine & vbNewLine & _
               sSQLParentColumns & vbNewLine & _
               sSQLChildColumns & vbNewLine & vbNewLine & _
+              "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {3};" & vbNewLine & vbNewLine & _
               "    ---------------------------" & vbNewLine & _
               "    -- Validation" & vbNewLine & _
               "    ---------------------------" & vbNewLine & _
-              "    SELECT @sValidation = dbo.[udfvalid_{0}](ID) FROM inserted WHERE LEN(dbo.[udfvalid_{0}](ID)) > 0" & vbNewLine & _
-              "    IF LEN(@sValidation) > 0" & vbNewLine & _
+              "    IF NOT UPDATE([updflag])" & vbNewLine & _
               "    BEGIN" & vbNewLine & _
-              "        RAISERROR(@sValidation, 16, 1);" & vbNewLine & _
-              "        ROLLBACK;" & vbNewLine & _
-              "    END" & vbNewLine & vbNewLine & _
-              "    -- Clear the temporary trigger status table" & vbNewLine & vbNewLine & _
-              "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {3};" & vbNewLine & vbNewLine _
+              "        SELECT @sValidation = dbo.[udfvalid_{0}](ID) FROM inserted WHERE LEN(dbo.[udfvalid_{0}](ID)) > 0" & vbNewLine & _
+              "        IF LEN(@sValidation) > 0" & vbNewLine & _
+              "        BEGIN" & vbNewLine & _
+              "            RAISERROR(@sValidation, 16, 1);" & vbNewLine & _
+              "            ROLLBACK;" & vbNewLine & _
+              "        END" & vbNewLine & _
+              "     END" & vbNewLine & vbNewLine _
               , objTable.Name, sTriggerName _
               , "", CInt(objTable.ID), Tables.sysTriggerTransaction _
               , String.Join(vbNewLine, aryUpdateUniqueCodes.ToArray()))
@@ -723,14 +722,19 @@ Namespace ScriptDB
           sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] nvarchar(MAX), [newvalue] nvarchar(MAX), [tableid] integer, [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
               "    DECLARE @dChangeDate datetime;" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
+              "    -- Has the trigger been called from an update on another table?" & vbNewLine & _
+              "    IF NOT UPDATE([updflag]) INSERT [dbo].[{4}] ([spid], [tablefromid]) VALUES (@@spid,{5});" & vbNewLine & vbNewLine & _
               "    ---------------------------" & vbNewLine & _
               "    -- Audit Trail" & vbNewLine & _
               "    ---------------------------" & vbNewLine & _
               "{2}" & vbNewLine & vbNewLine & _
               "    INSERT dbo.[tbsys_audittrail] ([username], [datetimestamp], [recordid], [oldvalue], [newvalue], [tableid], [columnid], [deleted], [recorddesc])" & vbNewLine & _
               "		     SELECT SYSTEM_USER, @dChangeDate, [id], [oldvalue], [newvalue], [tableid], [columnid], 1, [recorddesc] FROM @audit" & vbNewLine & vbNewLine & _
-              "{3}" & vbNewLine _
-              , objTable.Name, sTriggerName, sSQLCode_AuditDelete, sSQLParentColumns_Delete)
+              "{3}" & vbNewLine & vbNewLine & _
+              "    -- Clear the temporary trigger status table" & vbNewLine & vbNewLine & _
+              "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {5};" & vbNewLine & vbNewLine _
+              , objTable.Name, sTriggerName, sSQLCode_AuditDelete, sSQLParentColumns_Delete _
+              , Tables.sysTriggerTransaction, CInt(objTable.ID))
           ScriptTrigger("dbo", objTable, TriggerType.AfterDelete, sSQL)
 
 
@@ -1179,7 +1183,7 @@ Namespace ScriptDB
 
       Dim objTable As Things.Table
       Dim objColumn As Things.Column
-      Dim objView As Things.View
+      Dim objExpression As Things.Expression
 
       Dim bOK As Boolean = True
       Dim sObjectName As String = String.Empty
@@ -1203,7 +1207,7 @@ Namespace ScriptDB
           '  End If
           'Next
 
-          ' Script the expression (generate a code stub if error)
+          ' Record Descriptions
           If Not objTable.RecordDescription Is Nothing Then
             objTable.RecordDescription.GenerateCode()
             sObjectName = String.Format("{0}{1}", Consts.RecordDescriptionUDF, objTable.Name)
@@ -1214,8 +1218,19 @@ Namespace ScriptDB
             End If
           End If
 
-          '  For Each 
+          '  Validation Masks
+          For Each objExpression In objTable.Objects(Things.Type.Mask)
+            objExpression.GenerateCode()
+            sObjectName = String.Format("{0}{1}", Consts.MaskUDF, CInt(objExpression.ID))
+            ScriptDB.DropUDF("dbo", sObjectName)
 
+            If Not Globals.CommitDB.ScriptStatement(objExpression.UDF.Code) Then
+              Globals.CommitDB.ScriptStatement(objExpression.UDF.CodeStub)
+            End If
+
+            Debug.Print(objExpression.Name)
+
+          Next
 
 
           ' Calculations

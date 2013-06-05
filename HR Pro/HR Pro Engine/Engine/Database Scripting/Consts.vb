@@ -8,7 +8,7 @@
   End Module
 End Namespace
 
-Namespace Things
+Namespace ScriptDB
   <HideModuleName()> _
   Public Module Consts
     Public Const UserTable As String = "tbuser_"
@@ -16,10 +16,10 @@ Namespace Things
     Public Const ValidationUDF As String = "udfval_"
     Public Const DefaultValueUDF As String = "udfdef_"
     Public Const RecordDescriptionUDF As String = "udfdesc_"
+    Public Const MaskUDF As String = "udfmask_"
     Public Const CalculationUDF As String = "udfcalc_"
     Public Const Column As String = ""
     Public Const Index As String = "idx_"
   End Module
-
 End Namespace
 

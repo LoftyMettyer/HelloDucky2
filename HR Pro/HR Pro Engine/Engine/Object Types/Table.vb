@@ -17,7 +17,7 @@ Namespace Things
 
     Public Overrides ReadOnly Property PhysicalName As String
       Get
-        Return Consts.UserTable & MyBase.Name
+        Return ScriptDB.Consts.UserTable & MyBase.Name
       End Get
     End Property
 

@@ -92,7 +92,7 @@ Namespace Things
         objExpression.FunctionID = Me.FunctionID
         objExpression.Objects = Me.Objects
         objExpression.ReturnType = Me.ReturnType
-        objExpression.ExpressionType = ScriptDB.ExpressionType.ViewCode
+        objExpression.ExpressionType = ScriptDB.ExpressionType.Mask
 
         Return objExpression
 
