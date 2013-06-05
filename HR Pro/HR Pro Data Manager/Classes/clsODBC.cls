@@ -50,16 +50,6 @@ Private Const SQL_SUCCESS_WITH_INFO As Long = 1
 
 Private Const STR_LEN = 254
 
-'ODBC API functions
-Private Declare Function SQLAllocStmt Lib "odbc32.dll" (ByVal hdbc&, phstmt&) As Integer
-Private Declare Function SQLFreeStmt Lib "odbc32.dll" (ByVal hstmt&, ByVal fOption%) As Integer
-Private Declare Function SQLGetData Lib "odbc32.dll" (ByVal hstmt&, ByVal icol%, ByVal fCType%, ByVal rgbValue As String, ByVal cbValueMax&, pcbValue&) As Integer
-Private Declare Function SQLColumns Lib "odbc32.dll" (ByVal hstmt&, ByVal szTblQualifier As String, ByVal cbTblQualifier%, ByVal szTblOwner As String, ByVal cbTblOwner%, ByVal szTblName As String, ByVal cbTblName%, ByVal szColName As String, ByVal cbColName%) As Integer
-Private Declare Function SQLBindCol Lib "odbc32.dll" (ByVal hstmt&, ByVal icol%, ByVal fCType%, rgbValue As Any, ByVal cbValueMax&, pcbValue&) As Integer
-Private Declare Function SQLFetch Lib "odbc32.dll" (ByVal hstmt&) As Integer
-Private Declare Function SQLGetInfo Lib "odbc32.dll" (ByVal hdbc&, ByVal fInfoType%, ByRef rgbInfoValue As Any, ByVal cbInfoMax%, cbInfoOut%) As Integer
-Private Declare Function SQLGetInfoString Lib "odbc32.dll" Alias "SQLGetInfo" (ByVal hdbc&, ByVal fInfoType%, ByVal rgbInfoValue As String, ByVal cbInfoMax%, cbInfoOut%) As Integer
-
 Function FormatError(ByVal ErrorMsg As String) As String
 '  On Error Resume Next
 '
