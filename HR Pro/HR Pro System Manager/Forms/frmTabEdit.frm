@@ -57,27 +57,18 @@ Begin VB.Form frmTabEdit
       TabPicture(0)   =   "frmTabEdit.frx":000C
       Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "lblRecordDescription"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "lblOrder"
-      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).Control(2)=   "lblTableName"
-      Tab(0).Control(2).Enabled=   0   'False
       Tab(0).Control(3)=   "lblEmail"
-      Tab(0).Control(3).Enabled=   0   'False
       Tab(0).Control(4)=   "cmdRecordDescription"
-      Tab(0).Control(4).Enabled=   0   'False
       Tab(0).Control(5)=   "txtRecordDescription"
       Tab(0).Control(5).Enabled=   0   'False
       Tab(0).Control(6)=   "txtOrder"
       Tab(0).Control(6).Enabled=   0   'False
       Tab(0).Control(7)=   "cmdOrder"
-      Tab(0).Control(7).Enabled=   0   'False
       Tab(0).Control(8)=   "fraTableType"
-      Tab(0).Control(8).Enabled=   0   'False
       Tab(0).Control(9)=   "txtTableName"
-      Tab(0).Control(9).Enabled=   0   'False
       Tab(0).Control(10)=   "cmdEmail"
-      Tab(0).Control(10).Enabled=   0   'False
       Tab(0).Control(11)=   "txtEmail"
       Tab(0).Control(11).Enabled=   0   'False
       Tab(0).ControlCount=   12
@@ -2991,6 +2982,23 @@ Public Sub CopyDefinitionToClipboard()
   Next iCount
 
   If iParents = 0 Then strClipboardText = strClipboardText & "<None>" & vbCrLf
+
+
+  ' Email Links Tab
+  strClipboardText = strClipboardText & vbCrLf & "Email Links" & vbCrLf
+  strClipboardText = strClipboardText & "---------------" & vbCrLf & vbCrLf
+  If ssGrdEmailLinks.Rows > 0 Then
+
+    strClipboardText = strClipboardText & "Name          Email Activation" & vbCrLf
+
+    ssGrdEmailLinks.MoveFirst
+    For iCount = 1 To ssGrdEmailLinks.Rows
+      strClipboardText = strClipboardText & ssGrdEmailLinks.Columns(0).value & "          " & ssGrdEmailLinks.Columns(1).value & vbCrLf
+      ssGrdEmailLinks.MoveNext
+    Next iCount
+  Else
+    strClipboardText = strClipboardText & "<None>" & vbCrLf
+  End If
 
 
   ' Calendar Links Tab
