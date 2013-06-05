@@ -410,9 +410,9 @@ Private Sub CalculateEmail(lngLinkID As Long, lngRecordID As Long, lngQueueID As
       MsgBox "This queue entry no longer matches the link filter and has been deleted.", vbInformation
       Unload Me
     Else
-      txtTO.Text = .Parameters("To").Value
-      txtCC.Text = .Parameters("Cc").Value
-      txtBCC.Text = .Parameters("Bcc").Value
+      txtTO.Text = RemoveLastChar(.Parameters("To").Value)
+      txtCC.Text = RemoveLastChar(.Parameters("Cc").Value)
+      txtBCC.Text = RemoveLastChar(.Parameters("Bcc").Value)
       txtSubject.Text = .Parameters("Subject").Value
       txtMsgText.Text = .Parameters("Message").Value
       txtAttachment.Text = .Parameters("Attachment").Value
@@ -537,7 +537,7 @@ Private Sub Form_Resize()
 
   'fraBOTTOM
   lTop = fraTop.Height + GAP2
-  lHeight = Me.ScaleHeight - (lTop + cmdOK.Height + GAP2)
+  lHeight = Me.ScaleHeight - (lTop + cmdOk.Height + GAP2)
   If lWidth >= 0 And lHeight >= 0 Then
     fraBottom.Move lLeft, lTop, lWidth, lHeight
   End If
@@ -571,14 +571,14 @@ Private Sub Form_Resize()
   txtDateSent.Left = lLeft
 
   'cmdOK
-  lLeft = Me.ScaleWidth - (cmdOK.Width + GAP)
-  lTop = Me.ScaleHeight - (cmdOK.Height + GAP)
+  lLeft = Me.ScaleWidth - (cmdOk.Width + GAP)
+  lTop = Me.ScaleHeight - (cmdOk.Height + GAP)
   If lLeft > GAP And lTop > GAP Then
-    cmdOK.Move lLeft, lTop
+    cmdOk.Move lLeft, lTop
   End If
 
   'cmdEmail
-  lLeft = lLeft - (cmdOK.Width + GAP)
+  lLeft = lLeft - (cmdOk.Width + GAP)
   If lLeft > GAP And lTop > GAP Then
     cmdEmail.Move lLeft, lTop
   End If
