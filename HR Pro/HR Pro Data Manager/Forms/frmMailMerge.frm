@@ -77,15 +77,15 @@ Begin VB.Form frmMailMerge
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmMailMerge.frx":08D6
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraDefinition(1)"
-      Tab(0).Control(1)=   "fraDefinition(0)"
+      Tab(0).Control(0)=   "fraDefinition(0)"
+      Tab(0).Control(1)=   "fraDefinition(1)"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmMailMerge.frx":08F2
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(2)"
+      Tab(1).Control(0)=   "fraColumns(0)"
       Tab(1).Control(1)=   "fraColumns(1)"
-      Tab(1).Control(2)=   "fraColumns(0)"
+      Tab(1).Control(2)=   "fraColumns(2)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Sort Order"
       TabPicture(2)   =   "frmMailMerge.frx":090E
@@ -277,13 +277,13 @@ Begin VB.Form frmMailMerge
             RecordSelectors =   0   'False
             Col.Count       =   3
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
             stylesets(0).Picture=   "frmMailMerge.frx":0D23
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
             stylesets(1).Picture=   "frmMailMerge.frx":0D3F
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -5577,11 +5577,11 @@ Private Function GetDefinition() As Recordset
            "ASRSysPickListName.Access AS PickListAccess, " & _
            "ASRSysExpressions.Name AS FilterName, " & _
            "ASRSysExpressions.Access AS FilterAccess, " & _
-           "ASRSysDocumentMapping.Name AS DocumentMapName " & _
+           "ASRSysDocumentManagementTypes.Name AS DocumentMapName " & _
            "FROM " & mstrSQLTableDef & " " & _
            "LEFT OUTER JOIN ASRSysExpressions ON " & mstrSQLTableDef & ".FilterID = ASRSysExpressions.ExprID " & _
            "LEFT OUTER JOIN ASRSysPickListName ON " & mstrSQLTableDef & ".PickListID = ASRSysPickListName.PickListID " & _
-           "LEFT OUTER JOIN ASRSysDocumentMapping ON " & mstrSQLTableDef & ".DocumentMapID = ASRSysDocumentMapping.DocumentMapID  " & _
+           "LEFT OUTER JOIN ASRSysDocumentManagementTypes ON " & mstrSQLTableDef & ".DocumentMapID = ASRSysDocumentManagementTypes.DocumentMapID  " & _
            "WHERE " & mstrSQLTableDef & ".MailMergeID = " & CStr(mlngMailMergeID)
   Set GetDefinition = datData.OpenRecordset(strSQL, adOpenForwardOnly, adLockReadOnly)
 
