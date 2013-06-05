@@ -226,7 +226,7 @@ Begin VB.Form frmProgress
    End
    Begin VB.Image Image1 
       Height          =   900
-      Left            =   -2760
+      Left            =   -2975
       Picture         =   "frmProgress.frx":2C77
       Top             =   0
       Width           =   9000
