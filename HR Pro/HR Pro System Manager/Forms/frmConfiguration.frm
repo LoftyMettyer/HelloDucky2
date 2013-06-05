@@ -75,37 +75,43 @@ Begin VB.Form frmConfiguration
       _Version        =   393216
       Style           =   1
       Tabs            =   5
-      Tab             =   4
       TabsPerRow      =   5
       TabHeight       =   520
       TabCaption(0)   =   "&Email"
       TabPicture(0)   =   "frmConfiguration.frx":000C
-      Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraEmailSetup"
+      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).Control(0)=   "fraTestSQLMail"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraEmailOptions"
-      Tab(0).Control(2)=   "fraTestSQLMail"
+      Tab(0).Control(1).Enabled=   0   'False
+      Tab(0).Control(2)=   "fraEmailSetup"
+      Tab(0).Control(2).Enabled=   0   'False
       Tab(0).ControlCount=   3
       TabCaption(1)   =   "&Processing Account"
       TabPicture(1)   =   "frmConfiguration.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraSQL2005"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "&Display"
       TabPicture(2)   =   "frmConfiguration.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "frmExpressions"
+      Tab(2).Control(0)=   "frmBackgrounds"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraGeneral"
-      Tab(2).Control(2)=   "frmBackgrounds"
+      Tab(2).Control(1).Enabled=   0   'False
+      Tab(2).Control(2)=   "frmExpressions"
+      Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "Dev"
       TabPicture(3)   =   "frmConfiguration.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "frmDeveloperAFD"
-      Tab(3).Control(1)=   "fraQuickAddress"
+      Tab(3).Control(0)=   "fraQuickAddress"
+      Tab(3).Control(1)=   "frmDeveloperAFD"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "&Advanced"
       TabPicture(4)   =   "frmConfiguration.frx":007C
-      Tab(4).ControlEnabled=   -1  'True
+      Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraTime"
       Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraOutlookCalendar"
@@ -116,7 +122,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame fraAdvancedSettings 
          Caption         =   "Database Settings : "
          Height          =   2055
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   77
          Top             =   3375
          Width           =   6465
@@ -171,7 +177,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame fraOutlookCalendar 
          Caption         =   "Outlook Calendar :"
          Height          =   1485
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   64
          Top             =   400
          Width           =   6465
@@ -439,7 +445,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame fraTime 
          Caption         =   "Overnight Processing :"
          Height          =   1365
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   73
          Top             =   1920
          Width           =   6465
@@ -782,11 +788,11 @@ Begin VB.Form frmConfiguration
          Top             =   400
          Width           =   6465
          Begin VB.CommandButton cmdColourPicker 
-            Caption         =   "O"
+            Caption         =   "..."
             BeginProperty Font 
-               Name            =   "Wingdings 2"
-               Size            =   20.25
-               Charset         =   2
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
                Weight          =   400
                Underline       =   0   'False
                Italic          =   0   'False
@@ -903,7 +909,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame fraEmailSetup 
          Caption         =   "Setup :"
          Height          =   2535
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   0
          Top             =   400
          Width           =   6465
@@ -993,7 +999,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame fraEmailOptions 
          Caption         =   "Options :"
          Height          =   1190
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   14
          Top             =   4240
          Width           =   6465
@@ -1071,7 +1077,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame fraTestSQLMail 
          Caption         =   "Test :"
          Height          =   1190
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   10
          Top             =   3000
          Width           =   6465
