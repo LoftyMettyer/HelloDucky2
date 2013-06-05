@@ -50,6 +50,9 @@ Private mvarUDFsRequired() As String
 Private mlngTableViews() As Long
 Private mstrSQLJoin As String
 
+Private mstrPicklistFilterIDs As String
+
+
 Public Property Get UserCancelled() As Boolean
   UserCancelled = mblnUserCancelled
 End Property
@@ -92,7 +95,7 @@ Private Function Progress() As Boolean
 End Function
 
 
-Public Function RunGlobal(lngSelectedID As Long, intType As GlobalType) As Boolean
+Public Function RunGlobal(lngSelectedID As Long, intType As GlobalType, strPicklistFilterIDs As String) As Boolean
 
   On Error GoTo LocalErr
 
@@ -100,6 +103,7 @@ Public Function RunGlobal(lngSelectedID As Long, intType As GlobalType) As Boole
   'mblnGlobalAdd = (intType = glAdd)
   'mstrType = IIf(mintType = glAdd, "Global Add", "Global Update")
   mstrType = "Global " & Choose(mintType, "Add", "Update", "Delete")
+  mstrPicklistFilterIDs = strPicklistFilterIDs
 
   fOK = True
   mlngSelectedID = lngSelectedID
@@ -1039,7 +1043,6 @@ Private Sub BuildRecordIDArray()
   Dim objTableView As CTablePrivilege
   Dim rsTemp As Recordset
   Dim lngLoop As Long
-  Dim strPicklistFilterIDs As String
   Dim lngLastID As Long
   
   Dim strSQL As String
@@ -1059,7 +1062,7 @@ Private Sub BuildRecordIDArray()
   'Set up an array of record ids to be updated
   ReDim mlngRecordIDs(0) As Long
   
-  strPicklistFilterIDs = GetPicklistFilterSelect(mlngPicklistID, mlngFilterID)
+  mstrPicklistFilterIDs = GetPicklistFilterSelect(mlngPicklistID, mlngFilterID)
   If Not fOK Then
     Exit Sub
   End If
@@ -1114,9 +1117,9 @@ Private Sub BuildRecordIDArray()
            "FROM [" & mstrBaseRealSource & "]" & vbNewLine & _
            strJoin
 
-  If strPicklistFilterIDs <> vbNullString Then
+  If mstrPicklistFilterIDs <> vbNullString Then
     strSQL = strSQL & _
-      "WHERE [" & mstrBaseRealSource & "].ID IN (" & strPicklistFilterIDs & ") " & vbNewLine
+      "WHERE [" & mstrBaseRealSource & "].ID IN (" & mstrPicklistFilterIDs & ") " & vbNewLine
   End If
 
   strSQL = strSQL & "ORDER BY [" & mstrBaseRealSource & "].ID"
@@ -1608,8 +1611,11 @@ Private Function GetPicklistFilterSelect(lngPicklistID As Long, lngFilterID As L
   
   GetPicklistFilterSelect = vbNullString
   
-  If lngPicklistID > 0 Then
-    
+  If mstrPicklistFilterIDs <> vbNullString Then
+    GetPicklistFilterSelect = mstrPicklistFilterIDs
+  
+  ElseIf lngPicklistID > 0 Then
+
     mstrStatusMessage = IsPicklistValid(lngPicklistID)
     If mstrStatusMessage <> vbNullString Then
       fOK = False

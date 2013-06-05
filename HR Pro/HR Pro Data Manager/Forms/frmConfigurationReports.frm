@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
@@ -90,8 +90,8 @@ Begin VB.Form frmConfigurationReports
       TabCaption(1)   =   "O&utput"
       TabPicture(1)   =   "frmConfigurationReports.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraOutputFormat"
-      Tab(1).Control(1)=   "fraOutputDestination"
+      Tab(1).Control(0)=   "fraOutputDestination"
+      Tab(1).Control(1)=   "fraOutputFormat"
       Tab(1).ControlCount=   2
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
@@ -962,18 +962,18 @@ Private mblnForceInitialChanged As Boolean
 
 
 Private Property Let Changed(pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Private Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Public Property Let Run(ByVal blnNewValue As Boolean)
   mblnRun = blnNewValue
   fraDateRangeDef.Visible = Not mblnRun
   fraDateRangeRun.Visible = mblnRun
-  cmdOK.Caption = IIf(mblnRun, "&Run", "&OK")
+  cmdOk.Caption = IIf(mblnRun, "&Run", "&OK")
 End Property
 
 Public Property Let SingleRecord(ByVal lngNewValue As Long)
@@ -1026,7 +1026,7 @@ Public Sub ShowControls(strReportType As String)
     fraRecordSelection.Height = fraRecordSelection.Height - 840
     fraOutputFormat.Height = fraOutputFormat.Height - 840
     fraOutputDestination.Height = fraOutputDestination.Height - 840
-    cmdOK.Top = cmdOK.Top - 840
+    cmdOk.Top = cmdOk.Top - 840
     cmdCancel.Top = cmdCancel.Top - 840
   End If
   
@@ -2215,7 +2215,7 @@ Private Sub RunDefinition()
       
     End If
     
-    fOK = pobjBradfordIndex.RunBradfordReport(mlngSingleRecord)
+    fOK = pobjBradfordIndex.RunBradfordReport(CStr(mlngSingleRecord))
     Set pobjBradfordIndex = Nothing
   
   Case Else

@@ -145,7 +145,7 @@ Private mbBradfordSRV As Boolean
 Private mbBradfordTotals As Boolean
 Private mbBradfordCount As Boolean
 Private mbBradfordWorkings As Boolean
-Private mlngPersonnelID As Long
+Private mstrPicklistFilterIDs As String
 Private mstrOrderByColumn As String
 Private mlngOrderByColumnID As Long
 Private mstrGroupByColumn As String
@@ -733,7 +733,7 @@ Private Sub Class_Terminate()
   
 End Sub
 
-Public Function RunCustomReport() As Boolean
+Public Function RunCustomReport(pstrPicklistFilterIDs As String) As Boolean
 
   ' Purpose : This function is called from frmDefsel and Batch Jobs.
   '           It is the main function which runs the report.
@@ -745,6 +745,7 @@ Public Function RunCustomReport() As Boolean
   fOK = True
   
   Screen.MousePointer = vbHourglass
+  mstrPicklistFilterIDs = pstrPicklistFilterIDs
   
   If fOK Then fOK = GetCustomReportDefinition
   
@@ -2203,6 +2204,15 @@ Private Function GenerateSQLWhere() As Boolean
   Dim pstrParent1PickListIDs As String
   Dim pstrParent2PickListIDs As String
   
+  
+  If mstrPicklistFilterIDs <> "" Then
+    mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & _
+      mstrSQLFrom & ".ID IN (" & mstrPicklistFilterIDs & ")"
+    GenerateSQLWhere = True
+    Exit Function
+  End If
+  
+  
   Set pobjTableView = gcoTablePrivileges.FindTableID(mlngCustomReportsBaseTable)
   If pobjTableView.AllowSelect = False Then
   
@@ -2343,10 +2353,11 @@ Private Function GenerateSQLWhere() As Boolean
       Exit Function
     End If
   End If
-        
+
   ' Now if we are using a picklist, add a where clause for that
   'Get List of IDs from Picklist
   If mlngCustomReportsPickListID > 0 Then
+  
     Set prstTemp = mclsData.OpenRecordset("EXEC sp_ASRGetPickListRecords " & mlngCustomReportsPickListID, adOpenForwardOnly, adLockReadOnly)
     
     If prstTemp.BOF And prstTemp.EOF Then
@@ -2365,12 +2376,6 @@ Private Function GenerateSQLWhere() As Boolean
 
     mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & _
     mstrSQLFrom & ".ID IN (" & pstrPickListIDs & ")"
-  
-  ' If we are running a Bradford Report on an individual person
-  ElseIf mbIsBradfordIndexReport = True And mlngPersonnelID > 0 Then
-    
-    mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & _
-      mstrSQLFrom & ".ID IN (" & mlngPersonnelID & ")"
   
   ElseIf mlngCustomReportsFilterID > 0 Then
     
@@ -4913,7 +4918,7 @@ GetBradfordRecordSet_ERROR:
   mstrErrorString = "Error whilst retrieving the details recordsets'." & vbNewLine & Err.Description
   
 End Function
-Public Function RunBradfordReport(plngPersonnelID As Long)
+Public Function RunBradfordReport(pstrPicklistFilterIDs As String)
 
 '(mdtAbsenceFrom As Date, mdtAbsenceTo As Date, pastrIncludeTypes() As String _
   , mblnOmitBeforeStart As Boolean, mblnOmitAfterEnd As Boolean, pbSRV As Boolean, pbShowTotals As Boolean _
@@ -4935,7 +4940,7 @@ Public Function RunBradfordReport(plngPersonnelID As Long)
   
   'Set this as a Bradford Index report
   mbIsBradfordIndexReport = True
-  mlngPersonnelID = plngPersonnelID
+  mstrPicklistFilterIDs = pstrPicklistFilterIDs
   
   If fOK And gblnBatchMode = True Then
     fOK = GetReportConfig

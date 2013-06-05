@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "10:06"
+            TextSave        =   "11:45"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -1380,6 +1380,8 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
   Dim fAddingNewRecord As Boolean
   Dim fRecordProfileExists As Boolean
   Dim fCalendarReportExists As Boolean
+  Dim fCustomReportExists As Boolean
+  Dim fGlobalUpdateExists As Boolean
   
   Dim fEnvelopesVisible As Boolean
   Dim fEnvelopesEnabled As Boolean
@@ -1430,6 +1432,8 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
   fAddingNewRecord = False
   fRecordProfileExists = False
   fCalendarReportExists = False
+  fCustomReportExists = False
+  fGlobalUpdateExists = False
   
   fBookCourseEnabled = False
   fBookCourseVisible = False
@@ -1572,6 +1576,11 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
         fTransferBookingVisible = pfrmCallingForm.TransferVisible
         fCancelBookingEnabled = pfrmCallingForm.CanCancelBooking And fOnlyOneSelectionMade
         fCancelBookingVisible = pfrmCallingForm.CancelBookingVisible
+      
+        fCustomReportExists = pfrmCallingForm.CustomReportExists
+        fCalendarReportExists = pfrmCallingForm.CalendarReportExists
+        fGlobalUpdateExists = pfrmCallingForm.GlobalUpdateExists
+      
       End If
       
       If (iScreenType = screenParentTable) Or _
@@ -2011,6 +2020,18 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
       .Bands(0).Tools("BulkBookingFind").Enabled = fBulkBookingEnabled
       .Bands(0).Tools("AddFromWaitingListFind").Enabled = fAddFromWaitingListEnabled
       .Bands(0).Tools("ID_Print").Enabled = True
+      
+      .Bands(0).Tools("CustomReports").Visible = fCustomReportExists
+      .Bands(0).Tools("CustomReports").Enabled = fSelectionMade
+      
+      .Bands(0).Tools("CalendarReports").Visible = fCalendarReportExists
+      .Bands(0).Tools("CalendarReports").Enabled = fSelectionMade
+      .Bands(0).Tools("CalendarReports").BeginGroup = Not fCustomReportExists
+      
+      .Bands(0).Tools("GlobalUpdate").Visible = fGlobalUpdateExists
+      .Bands(0).Tools("GlobalUpdate").Enabled = fSelectionMade
+      .Bands(0).Tools("GlobalUpdate").BeginGroup = (Not fCustomReportExists And Not fCalendarReportExists)
+
     End If
 
     .Refresh
@@ -2377,7 +2398,7 @@ Public Sub GlobalClick(FormType As GlobalType)
             'Set objGlobalAddUpdate = Nothing
             Set objGlobalRun = New clsGlobalRun
             'blnOK = objGlobalAddUpdate.RunGlobalAddUpdate(.SelectedID, False, FormType)
-            blnOK = objGlobalRun.RunGlobal(.SelectedID, FormType)
+            blnOK = objGlobalRun.RunGlobal(.SelectedID, FormType, "")
             Set objGlobalRun = Nothing
             fExit = gbCloseDefSelAfterRun
 
@@ -3350,7 +3371,7 @@ Public Sub CalendarReportsClick()
   '        'TO RUN AS NORMAL
             Set pobjCalendarReports = New clsCalendarReportsRUN
             pobjCalendarReports.CalendarReportID = .SelectedID
-            pobjCalendarReports.RunCalendarReport
+            pobjCalendarReports.RunCalendarReport ""
             Set pobjCalendarReports = Nothing
             fExit = gbCloseDefSelAfterRun
   
@@ -3511,7 +3532,7 @@ Public Sub CustomReportsClick()
   '        'TO RUN AS NORMAL
             Set pobjCustomReports = New clsCustomReportsRUN
             pobjCustomReports.CustomReportID = .SelectedID
-            pobjCustomReports.RunCustomReport
+            pobjCustomReports.RunCustomReport ("")
             Set pobjCustomReports = Nothing
             fExit = gbCloseDefSelAfterRun
   
@@ -3928,7 +3949,7 @@ Public Sub BradfordIndexClick()
   Dim pobjBradfordIndex As clsCustomReportsRUN
   
   Set pobjBradfordIndex = New clsCustomReportsRUN
-  pobjBradfordIndex.RunBradfordReport 0
+  pobjBradfordIndex.RunBradfordReport ""
   Set pobjBradfordIndex = Nothing
 
 End Sub
