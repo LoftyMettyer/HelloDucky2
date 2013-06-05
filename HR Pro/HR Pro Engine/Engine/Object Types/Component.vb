@@ -143,33 +143,36 @@ Namespace Things
           ' Pull a calculated column directly in as an expression
         ElseIf Me.SubType = ScriptDB.ComponentTypes.Column And Me.ConvertSubComponents Then
 
-          objTable = Globals.Tables.GetById(Me.TableID)
-          objColumn = objTable.Columns.GetById(Me.ColumnID)
+          If Not Me.IsColumnByReference Then
 
-          ' We've got ourselves into a recursive loop somehow
-          If Recursion.Contains(objColumn) Then
+            objTable = Globals.Tables.GetById(Me.TableID)
+            objColumn = objTable.Columns.GetById(Me.ColumnID)
 
-          ElseIf objColumn.IsCalculated Then
-            If objColumn.Table Is Me.BaseExpression.BaseTable Then
+            ' We've got ourselves into a recursive loop somehow
+            If Recursion.Contains(objColumn) Then
 
-              objExpression = objColumn.Table.Expressions.GetById(objColumn.CalcID).Clone
-              Me.Components = objExpression.Components
-              Me.ReturnType = objColumn.ComponentReturnType
-              bConvertsSubComponents = Not Recursion.Contains(objColumn)
+            ElseIf objColumn.IsCalculated Then
+              If objColumn.Table Is Me.BaseExpression.BaseTable Then
 
-              Recursion.AddIfNew(objColumn)
+                objExpression = objColumn.Table.Expressions.GetById(objColumn.CalcID).Clone
+                Me.Components = objExpression.Components
+                Me.ReturnType = objColumn.ComponentReturnType
+                bConvertsSubComponents = Not Recursion.Contains(objColumn)
 
-              For Each objComponent As Component In Me.Components
-                objComponent.ConvertSubComponents = bConvertsSubComponents
-                objComponent.ConvertToExpression(Level, Recursion)
-              Next
+                Recursion.AddIfNew(objColumn)
 
-              If lngThisLevel < Level Then
-                Recursion.Remove(objColumn)
+                For Each objComponent As Component In Me.Components
+                  objComponent.ConvertSubComponents = bConvertsSubComponents
+                  objComponent.ConvertToExpression(Level, Recursion)
+                Next
+
+                If lngThisLevel < Level Then
+                  Recursion.Remove(objColumn)
+                End If
+
+                Me.SubType = ScriptDB.ComponentTypes.ConvertedCalculatedColumn
+
               End If
-
-              Me.SubType = ScriptDB.ComponentTypes.ConvertedCalculatedColumn
-
             End If
           End If
 
