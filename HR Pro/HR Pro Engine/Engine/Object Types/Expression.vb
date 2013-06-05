@@ -323,6 +323,9 @@ Namespace Things
         .Declarations = String.Join(vbNewLine, maryDeclarations.ToArray())
         .Prerequisites = String.Join(vbNewLine, maryPrerequisitStatements.ToArray())
 
+        .WhereCode = String.Join(vbNewLine, maryWhere.ToArray())
+        .WhereCode = IIf(Len(.WhereCode) > 0, "WHERE " + .WhereCode, "")
+
         Select Case Me.ExpressionType
 
           ' Wrapper for calculations with associated columns
@@ -551,6 +554,7 @@ Namespace Things
       Dim objRelation As Things.Relation
       Dim sRelationCode As String
       Dim sFromCode As String
+      Dim sWhereCode As String
 
       '      Dim objColumnFilter As Expression
 
@@ -719,6 +723,13 @@ Namespace Things
                 If Not FromTables.Contains(sFromCode) Then
                   FromTables.Add(sFromCode)
                 End If
+
+              ' Where clause
+              sWhereCode = String.Format("[dbo].[{0}].ID = @prm_id", objBaseColumn.Table.Name)
+              If Not maryWhere.Contains(sWhereCode) Then
+                maryWhere.Add(sWhereCode)
+              End If
+
 
 
                 ' mbAddBaseTable = True

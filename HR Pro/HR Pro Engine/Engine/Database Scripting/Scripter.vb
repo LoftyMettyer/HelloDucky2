@@ -429,15 +429,11 @@ Namespace ScriptDB
             If Not objColumn.State = System.Data.DataRowState.Deleted Then
 
               If objColumn.IsCalculated Then
-
                 objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
                 objColumn.Calculation.AssociatedColumn = objColumn
                 objColumn.Calculation.GenerateCode()
                 aryCalculatedColumns.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.Calculation.UDF.CallingCode) & vbNewLine)
-
               End If
-
-
 
               If Not objColumn.IsReadOnly Then
                 Select Case objColumn.DataType
@@ -1242,13 +1238,12 @@ Namespace ScriptDB
             If objColumn.IsCalculated Then
 
               objColumn.Calculation = objTable.Objects.GetObject(Things.Type.Expression, objColumn.CalcID)
-
-
               If Not objColumn.Calculation.State = System.Data.DataRowState.Unchanged Or Globals.Options.RefreshObjects Then
 
                 sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
 
-                '       Debug.Assert(sObjectName <> "udfcalc_Personnel_Records.CHARACTER_FUNCTIONS_COMBINED_1")
+                Debug.Assert(sObjectName <> "udfcalc_Absence.Working_Pattern")
+
 
 
 
@@ -1258,14 +1253,7 @@ Namespace ScriptDB
                 If Not objColumn.Calculation Is Nothing Then
                   objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
                   objColumn.Calculation.AssociatedColumn = objColumn
-
-                  '                  Debug.Assert(Not objColumn.Name = "Full_Name")
-                  '                  Debug.Assert(Not objColumn.Name = "CPD_Hours_Total")
-
                   objColumn.Calculation.GenerateCode()
-                  '    objColumn.Calculation.GenerateCode()
-
-                  '                objColumn.Calculation.
 
                   ' Script the expression (generate a code stub if error)
                   If Not Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.Code) Then
