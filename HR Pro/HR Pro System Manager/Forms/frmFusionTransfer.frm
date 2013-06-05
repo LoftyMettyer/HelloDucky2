@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmFusionTransfer 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Fusion Integration"
@@ -838,7 +838,7 @@ Private Sub cmdEdit_Click()
   Dim ctlGrid As SSDBGrid
   Dim strAddString As String
   Dim strMandatory As Boolean
-  Dim strFusionFieldID As Long
+  Dim strFusionFieldID As String
   Dim strMapToDescription As String
   Dim strIsCompanyCode As String
   Dim strIsEmployeeCode As String
@@ -870,10 +870,10 @@ Private Sub cmdEdit_Click()
     .Group = CLng(ctlGrid.Columns("Group").Text)
     .PreventModify = ctlGrid.Columns("PreventModify").Text
     
-    .Direction = ctlGrid.Columns("Direction").Text
+    '.Direction = ctlGrid.Columns("Direction").Text
     .AlwaysTransferFieldID = ctlGrid.Columns("AlwaysTransfer").Text
     .ConvertData = ctlGrid.Columns("ConvertData").Text
-    .FusionFieldID = ctlGrid.Columns("FusionFieldID").Text
+    .NodeKey = ctlGrid.Columns("FusionFieldID").Text
     .FusionTransferID = GetComboItem(cboFusionType)
     
     strIsCompanyCode = ctlGrid.Columns("IsCompanyCode").Text
@@ -994,7 +994,7 @@ Private Sub cmdNone_Click()
     .Direction = ctlGrid.Columns("Direction").Text
     .AlwaysTransferFieldID = ctlGrid.Columns("AlwaysTransfer").Text
     .ConvertData = False
-    .FusionFieldID = ctlGrid.Columns("FusionFieldID").Text
+    .NodeKey = ctlGrid.Columns("FusionFieldID").Text
     .FusionTransferID = GetComboItem(cboFusionType)
     
     strIsCompanyCode = ctlGrid.Columns("IsCompanyCode").Text
@@ -1209,9 +1209,9 @@ Private Function SaveChanges() As Boolean
       For iLoop = 0 To (.Rows - 1)
   
       sSQL = "INSERT INTO tmpFusionFieldDefinitions" & _
-        " (FusionFieldID, FusionTypeID, Mandatory, Description, ASRMapType, ASRTableID, ASRColumnID, ASRExprID, ASRValue, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ConvertData, IsEmployeeName, IsDepartmentCode, IsDepartmentName, IsFusionCode, GroupBy, PreventModify)" & _
-        " VALUES (" & _
-        .Columns("FusionFieldID").value & "," & _
+        " (NodeKey, FusionTypeID, Mandatory, Description, ASRMapType, ASRTableID, ASRColumnID, ASRExprID, ASRValue, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer, ConvertData, IsEmployeeName, IsDepartmentCode, IsDepartmentName, IsFusionCode, GroupBy, PreventModify)" & _
+        " VALUES ('" & _
+        .Columns("FusionFieldID").value & "' ," & _
         iFusionType & "," & _
         IIf(.Columns("Mandatory").value = True, "1", "0") & "," & _
         "'" & Replace(.Columns("Description").Text, "'", "''") & "'," & _
@@ -1219,10 +1219,10 @@ Private Function SaveChanges() As Boolean
         IIf(Len(.Columns("ASRTableID").Text) = 0, "null", .Columns("ASRTableID").Text) & "," & _
         IIf(Len(.Columns("ASRColumnID").Text) = 0, "null", .Columns("ASRColumnID").Text) & "," & _
         IIf(Len(.Columns("ASRExprID").Text) = 0, "null", .Columns("ASRExprID").Text) & "," & _
-        "'" & Replace(IIf(Len(.Columns("ASRValue").Text) = 0, "null", .Columns("ASRValue").Text), "'", "''") & "'," & _
+        "'" & Replace(IIf(Len(.Columns("ASRValue").Text) = 0, "", .Columns("ASRValue").Text), "'", "''") & "'," & _
         IIf(.Columns("IsCompanyCode").Text = True, "1", "0") & "," & _
         IIf(.Columns("IsEmployeeCode").Text = True, "1", "0") & ", " & _
-        .Columns("Direction").Text & "," & _
+        "0 ," & _
         IIf(.Columns("IsKeyField").Text = True, "1", "0") & "," & _
         IIf(.Columns("AlwaysTransfer").Text = True, "1", "0") & "," & _
         IIf(.Columns("ConvertData").Text = True, "1", "0") & "," & _
@@ -1751,7 +1751,7 @@ Private Sub PopulateFusionTransferDetails(ByVal plngFusionGrid As Long, pbReset 
   sSQL = "SELECT *" & _
     " FROM tmpFusionFieldDefinitions" & _
     " WHERE FusionTypeID = " & CStr(iFusionTypeID) & _
-    " ORDER BY Mandatory, FusionFieldID"
+    " ORDER BY Mandatory, NodeKey"
     
   Set rsDefinition = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
 
@@ -1778,7 +1778,7 @@ Private Sub PopulateFusionTransferDetails(ByVal plngFusionGrid As Long, pbReset 
     End If
                
     strAddString = strAddString _
-        & vbTab & rsDefinition!Mandatory & vbTab & rsDefinition!FusionFieldID _
+        & vbTab & rsDefinition!Mandatory & vbTab & rsDefinition!NodeKey _
         & vbTab & rsDefinition!IsCompanyCode & vbTab & rsDefinition!IsEmployeeCode _
         & vbTab & rsDefinition!Direction & vbTab & rsDefinition!IsKeyField _
         & vbTab & rsDefinition!AlwaysTransfer _
@@ -1924,7 +1924,7 @@ Private Sub ClearItem(lngrow2 As Long)
     .Direction = ctlGrid.Columns("Direction").Text
     .AlwaysTransferFieldID = ctlGrid.Columns("AlwaysTransfer").Text
     .ConvertData = False
-    .FusionFieldID = ctlGrid.Columns("FusionFieldID").Text
+    .NodeKey = ctlGrid.Columns("FusionFieldID").Text
     .FusionTransferID = GetComboItem(cboFusionType)
     
     strIsCompanyCode = ctlGrid.Columns("IsCompanyCode").Text

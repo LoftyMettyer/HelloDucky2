@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmFusionComponent 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Fusion Field"
@@ -208,6 +208,7 @@ Begin VB.Form frmFusionComponent
          _Version        =   196617
          DataMode        =   2
          RecordSelectors =   0   'False
+         Col.Count       =   2
          AllowDelete     =   -1  'True
          MultiLine       =   0   'False
          RowSelectionStyle=   2
@@ -341,7 +342,7 @@ Private mbReadOnly As Boolean
 Private mbLoading As Boolean
 
 Private mlngFusionID As Long
-Private mlngFusionFieldID As Long
+Private msFusionNodeKey As String
 
 Private miMapType As SystemMgr.FusionMapType
 Private mlngBaseTableID As Long
@@ -364,11 +365,11 @@ Private mbForceAlwaysFusion As Boolean
 Private mbPreventModify As Boolean
 
 Public Property Let Changed(pbNewValue As Boolean)
-  cmdOK.Enabled = pbNewValue And Not mbLoading
+  cmdOk.Enabled = pbNewValue And Not mbLoading
 End Property
 
-Public Property Let FusionFieldID(ByVal plngNewValue As Long)
-  mlngFusionFieldID = plngNewValue
+Public Property Let NodeKey(ByVal psNewValue As String)
+  msFusionNodeKey = psNewValue
 End Property
 
 Public Property Let FusionTransferID(ByVal plngNewValue As Long)
@@ -492,10 +493,6 @@ Private Sub cboFldTable_Click()
   
 End Sub
 
-Private Sub cboFusionField_Change()
-
-End Sub
-
 Private Sub chkAlwaysFusion_Click()
   mbAlwaysTransferField = chkAlwaysFusion.value
   Me.Changed = True
@@ -551,7 +548,7 @@ Private Sub cmdCancel_Click()
   
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
   
   If Validate Then
     SaveMappings
@@ -623,14 +620,14 @@ Private Sub Form_Load()
   optComponentType(2).Enabled = IIf(mbIsEmployeeCode, False, True) And Not mbReadOnly
    
   mbLoading = False
-  cmdOK.Enabled = mbUndefined And Not mbReadOnly
+  cmdOk.Enabled = mbUndefined And Not mbReadOnly
 
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
   ' If the user cancels or tries to close the form
-  If UnloadMode <> vbFormCode And cmdOK.Enabled Then
+  If UnloadMode <> vbFormCode And cmdOk.Enabled Then
     Select Case MsgBox("Apply changes ?", vbYesNoCancel + vbQuestion, Me.Caption)
       Case vbCancel
         Cancel = True
@@ -892,7 +889,7 @@ Private Sub LoadMappings()
   sSQL = "SELECT *" & _
     " FROM tmpFusionFieldMappings" & _
     " WHERE FusionID = " & CStr(mlngFusionID) & _
-    " AND FieldID = " & CStr(mlngFusionFieldID) & _
+    " AND NodeKey = '" & msFusionNodeKey & "'" & _
     " ORDER BY HRProValue"
     
   Set rsDefinition = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
@@ -918,7 +915,7 @@ Private Sub SaveMappings()
 
   daoDb.Execute "DELETE FROM tmpFusionFieldMappings" & _
                   " WHERE FusionID = " & CStr(mlngFusionID) & _
-                  " AND FieldID = " & CStr(mlngFusionFieldID), dbFailOnError
+                  " AND NodeKey = '" & msFusionNodeKey & "'", dbFailOnError
   
   UI.LockWindow grdColumnMapping.hWnd
   
@@ -929,10 +926,10 @@ Private Sub SaveMappings()
       If Not (Len(.Columns("HRProValue").value) = 0 And Len(.Columns("FusionValue").value) = 0) Then
   
         sSQL = "INSERT INTO tmpFusionFieldMappings" & _
-          " (FusionID, FieldID, HRProValue, FusionValue)" & _
+          " (FusionID, NodeKey, HRProValue, FusionValue)" & _
           " VALUES (" & _
-          CStr(mlngFusionID) & "," & _
-          CStr(mlngFusionFieldID) & "," & _
+          CStr(mlngFusionID) & ", '" & _
+          msFusionNodeKey & "'," & _
           "'" & Replace(IIf(Len(.Columns("HRProValue").value) = 0, "", .Columns("HRProValue").value), "'", "''") & "'," & _
           "'" & Replace(IIf(Len(.Columns("FusionValue").value) = 0, "", .Columns("FusionValue").value), "'", "''") & "')"
   
