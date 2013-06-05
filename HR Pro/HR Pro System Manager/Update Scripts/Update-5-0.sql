@@ -2761,13 +2761,131 @@ PRINT 'Step 6 - Changes to Shared Table Transfer for RTI'
 /* ------------------------------------------------------------- */
 PRINT 'Step 7 - New Mobile User Logins Table'
 
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_mobilelogins]') AND type in (N'U'))
-BEGIN
-	EXEC sp_executesql N'CREATE TABLE [dbo].[tbsys_mobilelogins](
-												[userid] [integer] NOT NULL,
-												[password] [nvarchar](max) NULL,
-												[newpassword] [nvarchar](max) NULL);';
-END
+	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_mobilelogins]') AND type in (N'U'))
+	BEGIN
+		EXEC sp_executesql N'CREATE TABLE [dbo].[tbsys_mobilelogins](
+			[userid] [integer] NOT NULL,
+			[password] [nvarchar](max) NULL,
+			[newpassword] [nvarchar](max) NULL);';
+	END
+
+	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_mobileformlayout]') AND type in (N'U'))
+	BEGIN
+		EXEC sp_executesql N'CREATE TABLE [dbo].[tbsys_mobileformlayout](
+			[ID] [int] NOT NULL,
+			[HeaderBackColor] [int] NOT NULL,
+			[HeaderPictureID] [int] NULL,
+			[HeaderPictureLocation] [tinyint] NOT NULL,
+			[HeaderLogoID] [int] NULL,
+			[HeaderLogoWidth] [int] NOT NULL,
+			[HeaderLogoHeight] [int] NOT NULL,
+			[HeaderLogoHorizontalOffset] [int] NOT NULL,
+			[HeaderLogoVerticalOffset] [int] NOT NULL,
+			[HeaderLogoHorizontalOffsetBehaviour] [tinyint] NOT NULL,
+			[HeaderLogoVerticalOffsetBehaviour] [tinyint] NOT NULL,
+			[MainBackColor] [int] NOT NULL,
+			[MainPictureID] [int] NULL,
+			[MainPictureLocation] [tinyint] NOT NULL,
+			[FooterBackColor] [int] NOT NULL,
+			[FooterPictureID] [int] NULL,
+			[FooterPictureLocation] [tinyint] NOT NULL,
+			[TodoTitleFontName] [varchar](255) NOT NULL,
+			[TodoTitleFontSize] [float] NOT NULL,
+			[TodoTitleFontBold] [bit] NOT NULL,
+			[TodoTitleFontItalic] [bit] NOT NULL,
+			[TodoDescFontName] [varchar](255) NOT NULL,
+			[TodoDescFontSize] [float] NOT NULL,
+			[TodoDescFontBold] [bit] NOT NULL,
+			[TodoDescFontItalic] [bit] NOT NULL,
+			[HomeItemFontName] [varchar](255) NULL,
+			[HomeItemFontSize] [float] NULL,
+			[HomeItemFontBold] [bit] NULL,
+			[HomeItemFontItalic] [bit] NULL,
+ 		    CONSTRAINT [PK_tbsys_mobileformlayout] PRIMARY KEY CLUSTERED ([ID] ASC));';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformlayout] ([ID], [HeaderBackColor], [HeaderPictureID], [HeaderPictureLocation], [HeaderLogoID], [HeaderLogoWidth], [HeaderLogoHeight], [HeaderLogoHorizontalOffset], [HeaderLogoVerticalOffset], [HeaderLogoHorizontalOffsetBehaviour], [HeaderLogoVerticalOffsetBehaviour], [MainBackColor], [MainPictureID], [MainPictureLocation], [FooterBackColor], [FooterPictureID], [FooterPictureLocation], [TodoTitleFontName], [TodoTitleFontSize], [TodoTitleFontBold], [TodoTitleFontItalic], [TodoDescFontName], [TodoDescFontSize], [TodoDescFontBold], [TodoDescFontItalic], [HomeItemFontName], [HomeItemFontSize], [HomeItemFontBold], [HomeItemFontItalic]) VALUES (1, 15130800, NULL, 5, NULL, 0, 0, 0, 0, 0, 0, 16777215, 254, 2, 11829830, NULL, 5, N''Verdana'', 9.75, 1, 0, N''Verdana'', 8.25, 0, 0, N''Verdana'', 9.75, 1, 0);';
+	END
+
+	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_mobileformelements]') AND type in (N'U'))
+	BEGIN
+		EXEC sp_executesql N'CREATE TABLE [dbo].[tbsys_mobileformelements](
+			[ID] [int] NOT NULL,
+			[Form] [tinyint] NOT NULL,
+			[Type] [tinyint] NOT NULL,
+			[Name] [varchar](50) NULL,
+			[UtilID] [int] NULL,
+			[Caption] [varchar](500) NULL,
+			[FontName] [varchar](255) NULL,
+			[FontSize] [float] NULL,
+			[FontBold] [bit] NULL,
+			[FontItalic] [bit] NULL,
+			[Width] [int] NULL,
+			[Height] [int] NULL,
+			[BackStyle] [int] NULL,
+			[BackColor] [int] NULL,
+			[ForeColor] [int] NULL,
+			[HorizontalOffset] [int] NULL,
+			[VerticalOffset] [int] NULL,
+			[HorizontalOffsetBehaviour] [tinyint] NULL,
+			[VerticalOffsetBehaviour] [tinyint] NULL,
+			[PasswordType] [bit] NULL,
+			[PictureID] [int] NULL,
+			[PictureLocation] [tinyint] NULL,
+			[ButtonStyle] [int] NULL,
+		    CONSTRAINT [PK_tbsys_mobileformelements] PRIMARY KEY CLUSTERED ([ID] ASC))';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (7, 1, 2, N''lblUserName'', NULL, N''Username'', N''Verdana'', 9.75, 1, 0, 90, 16, NULL, NULL, 0, 32, 110, 0, 0, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (8, 1, 3, N''txtUserName'', NULL, NULL, N''Verdana'', 9.75, 1, 0, 155, 99, NULL, 16777215, 0, 35, 110, 1, 0, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (9, 1, 2, N''lblPassword'', NULL, N''Password'', N''Verdana'', 9.75, 1, 0, 90, 16, NULL, NULL, 0, 32, 170, 0, 0, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (10, 1, 3, N''txtPassword'', NULL, NULL, N''Verdana'', 9.75, 1, 0, 155, 21, NULL, 16777215, 0, 35, 170, 1, 0, 1, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (11, 1, 2, N''lblRememberPwd'', NULL, N''Keep me signed in:'', N''Verdana'', 8.25, 0, 0, 145, 16, NULL, NULL, 0, 32, 224, 0, 0, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (12, 1, 0, N''btnLogin'', NULL, N''Sign in'', N''Verdana'', 6, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 267, NULL, 1);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (13, 1, 0, N''btnForgotPwd'', NULL, N''Forgot Password'', N''Verdana'', 6, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 262, NULL, 1);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (14, 1, 0, N''btnRegister'', NULL, N''New Registration'', N''Verdana'', 6, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 266, NULL, 1);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (15, 2, 0, N''btnToDoList'', NULL, N''To Do List'', N''Verdana'', 6, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 260, NULL, 1);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (17, 2, 0, N''btnLogout'', NULL, N''Sign Out'', N''Verdana'', 6, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 263, NULL, 1);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (18, 2, 0, N''btnChangePwd'', NULL, N''Change Password'', N''Verdana'', 6, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 259, NULL, 1);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (19, 3, 2, N''lblEmail'', NULL, N''Email address'', N''Verdana'', 9.75, 1, 0, 110, 16, NULL, NULL, 0, 32, 110, 0, 0, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (20, 3, 3, N''txtEmail'', NULL, NULL, N''Verdana'', 9.75, 1, 0, 155, 21, NULL, 16777215, 0, 35, 110, 1, 0, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (21, 3, 2, N''lblUserName'', NULL, N''Username'', N''Verdana'', 9.75, 1, 0, 74, 16, NULL, NULL, 0, 32, 170, 0, 0, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (22, 3, 3, N''txtUserName'', NULL, NULL, N''Verdana'', 9.75, 1, 0, 155, 21, NULL, 16777215, 0, 35, 170, 1, 0, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (23, 3, 2, N''lblPassword'', NULL, N''Password'', N''Verdana'', 9.75, 1, 0, 74, 16, NULL, NULL, 0, 35, 227, 1, 0, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (24, 3, 3, N''txtPassword'', NULL, NULL, N''Verdana'', 9.75, 1, 0, 155, 21, NULL, 16777215, 0, 35, 227, 1, 0, 1, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (25, 3, 2, N''lblConfPassword'', NULL, N''Confirm Password'', N''Verdana'', 9.75, 1, 0, 220, 16, NULL, NULL, 0, 35, 287, 1, 0, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (26, 3, 3, N''txtConfPassword'', NULL, NULL, N''Verdana'', 9.75, 1, 0, 155, 21, NULL, 16777215, 0, 35, 287, 1, 0, 1, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (27, 3, 0, N''btnHome'', NULL, N''Home'', N''Verdana'', 6, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 258, NULL, 1);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (28, 3, 0, N''btnRegister'', NULL, N''Register'', N''Verdana'', 6, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 266, NULL, 1);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (29, 4, 2, N''lblCurrPassword'', NULL, N''Current Password'', N''Verdana'', 9.75, 1, 0, 110, 16, NULL, NULL, 0, 32, 110, 0, 0, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (30, 4, 3, N''txtCurrPassword'', NULL, NULL, N''Verdana'', 9.75, 1, 0, 155, 21, NULL, 16777215, 0, 35, 110, 1, 0, 1, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (31, 4, 2, N''lblNewPassword'', NULL, N''New Password'', N''Verdana'', 9.75, 1, 0, 110, 16, NULL, NULL, 0, 32, 170, 0, 0, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (32, 4, 3, N''txtNewPassword'', NULL, NULL, N''Verdana'', 9.75, 1, 0, 155, 21, NULL, 16777215, 0, 35, 170, 1, 0, 1, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (33, 4, 2, N''lblConfPassword'', NULL, N''Confirm Password'', N''Verdana'', 9.75, 1, 0, 140, 16, NULL, NULL, 0, 35, 227, 1, 0, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (34, 4, 3, N''txtConfPassword'', NULL, NULL, N''Verdana'', 9.75, 1, 0, 155, 21, NULL, 16777215, 0, 35, 227, 1, 0, 1, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (35, 4, 0, N''btnCancel'', NULL, N''Cancel'', N''Verdana'', 6, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 256, NULL, 1);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (36, 4, 0, N''btnSubmit'', NULL, N''OK'', N''Verdana'', 6, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 267, NULL, 1);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (37, 5, 0, N''btnCancel'', NULL, N''Cancel'', N''Verdana'', 6, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 256, NULL, 1);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (38, 5, 0, N''btnRefresh'', NULL, N''Refresh'', N''Verdana'', 6, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 268, NULL, 1);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (39, 6, 2, N''lblWelcome'', NULL, N''Enter your email address and an email will be sent to you confirming your login details.'', N''Verdana'', 8.25, 0, 0, 340, 32, NULL, NULL, 0, 32, 70, 0, 0, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (40, 6, 2, N''lblEmail'', NULL, N''Email address'', N''Verdana'', 9.75, 1, 0, 110, 16, NULL, NULL, 0, 32, 110, 0, 0, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (41, 6, 3, N''txtEmail'', NULL, NULL, N''Verdana'', 9.75, 1, 0, 155, 21, NULL, 16777215, 0, 35, 110, 1, 0, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (42, 6, 0, N''btnCancel'', NULL, N''Cancel'', N''Verdana'', 6, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 256, NULL, 1);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (43, 6, 0, N''btnSubmit'', NULL, N''OK'', N''Verdana'', 6, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 267, NULL, 1);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (44, 3, 2, N''lblWelcome'', NULL, N''Enter your email address and requested login details, and an activation email will be sent to you.'', N''Verdana'', 8.25, 0, 0, 155, 32, NULL, NULL, 0, 50, 50, 1, 1, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (45, 4, 2, N''lblWelcome'', NULL, N''Enter your current and new passwords.'', N''Verdana'', 8.25, 0, 0, 340, 32, NULL, NULL, 0, 32, 70, 0, 0, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (46, 5, 2, N''lblNothingTodo'', NULL, N''You have nothing in your ''''To Do'''' list.'', N''Verdana'', 8.25, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (47, 5, 2, N''lblInstruction'', NULL, N''Click on a ''''to do'''' item to view the details and complete your action.'', N''Verdana'', 8.25, 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (49, 2, 0, NULL, 8, N''Request Absence'', N''Verdana'', 9.75, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 269, NULL, 2);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (50, 2, 0, NULL, 8, N''AAA'', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 269, NULL, 2);';
+		EXEC sp_executesql N'INSERT [dbo].[tbsys_mobileformelements] ([ID], [Form], [Type], [Name], [UtilID], [Caption], [FontName], [FontSize], [FontBold], [FontItalic], [Width], [Height], [BackStyle], [BackColor], [ForeColor], [HorizontalOffset], [VerticalOffset], [HorizontalOffsetBehaviour], [VerticalOffsetBehaviour], [PasswordType], [PictureID], [PictureLocation], [ButtonStyle]) VALUES (51, 2, 0, NULL, 8, N''BBB'', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 269, NULL, 2);';
+	END
+
+	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_mobilegroupworkflows]') AND type in (N'U'))
+	BEGIN
+		EXEC sp_executesql N'CREATE TABLE [dbo].[tbsys_mobilegroupworkflows](
+			[GroupID] [int] NOT NULL,
+			[WorkflowID] [int] NOT NULL,
+			[Pos] [int] NOT NULL,
+		 CONSTRAINT [PK_tbsys_mobilegroupworkflows] PRIMARY KEY CLUSTERED ([GroupID] ASC, [WorkflowID] ASC));';
+	END
+		
 
 
 /* ------------------------------------------------------------- */
@@ -3908,7 +4026,6 @@ PRINT 'Step 11 - System Calculations'
 	DELETE FROM tbstat_componentcode WHERE ID = 4 AND isoperator = 1
 	INSERT [dbo].[tbstat_componentcode] ([id], [objectid], [code], [datatype], [name], [isoperator], [operatortype], [aftercode]) 
 		VALUES (4, 'a34f7387-91a1-40d6-b42f-f8032609cfd6', '/ NULLIF(', NULL, 'Divided by', 1, 0, ',0)');
-
 
 
 
