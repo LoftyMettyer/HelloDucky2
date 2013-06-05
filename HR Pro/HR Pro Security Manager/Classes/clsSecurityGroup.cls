@@ -316,8 +316,10 @@ Public Function PrintSecurity(piLevel As Integer) As Boolean
                
           sKey = rsPermissionCategory!CategoryKey
           
+          'NHRD20100428 JIRA HRPRO 884
           If Not (sKey = "CMG" And Not IsModuleEnabled(modCMG)) _
             And Not (sKey = "WORKFLOW" And Not IsModuleEnabled(modWorkflow)) _
+            And Not (sKey = "VERSION1" And Not IsModuleEnabled(modVersion1)) _
             And Not (sKey = "ACCORD" And Not IsModuleEnabled(modAccord)) Then
                       
             .CurrentX = giPRINT_XINDENT + (giPRINT_XCOLUMN * (miColumnNumber - 1))
