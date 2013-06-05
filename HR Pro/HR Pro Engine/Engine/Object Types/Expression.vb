@@ -1240,10 +1240,11 @@ Namespace Things
             Else
               sSize = New String("9", Me.AssociatedColumn.Size)
             End If
-            sWrapped = String.Format("CASE WHEN ISNULL({0}, 0) > {1} THEN 0 ELSE {0} END", Statement, sSize)
+            sWrapped = String.Format("CASE WHEN ISNULL({0}, 0) > {1} OR ISNULL({0}, 0) < -{1} THEN 0 ELSE {0} END", Statement, sSize)
 
           Case ScriptDB.ColumnTypes.Date, ScriptDB.ColumnTypes.Logic
             sWrapped = Statement
+
 
         End Select
 
