@@ -13,8 +13,7 @@ Namespace Things
     Public DefaultOrderID As HCMGuid
     Public RecordDescription As Things.RecordDescription
     Public DefaultEmailID As HCMGuid
-
-    Private mbIsRemoteView As Boolean
+    Public IsRemoteView As Boolean
 
     Public Overrides ReadOnly Property PhysicalName As String
       Get
@@ -65,10 +64,19 @@ Namespace Things
 
     End Property
 
+#Region "Child Objects"
+
     <System.Xml.Serialization.XmlIgnore(), System.ComponentModel.Browsable(False)> _
     Public ReadOnly Property Columns()
       Get
         Return Me.Objects(Things.Type.Column)
+      End Get
+    End Property
+
+    <System.Xml.Serialization.XmlIgnore(), System.ComponentModel.Browsable(False)> _
+    Public ReadOnly Property Validations()
+      Get
+        Return Me.Objects(Things.Type.Validation)
       End Get
     End Property
 
@@ -79,55 +87,9 @@ Namespace Things
       End Get
     End Property
 
-    'Public ReadOnly Property ToXML As String
-    '  Get
+#End Region
 
-    '    Dim objPropertyVal As Object
-
-    '    Dim xmlDoc As System.Xml.XmlDocument = New System.Xml.XmlDocument
-    '    Dim typObj As System.Type = Me.GetType
-
-    '    Dim declaration As System.Xml.XmlNode = xmlDoc.CreateNode(System.Xml.XmlNodeType.XmlDeclaration, Nothing, Nothing)
-    '    xmlDoc.AppendChild(declaration)
-
-    '    Dim xmlRoot As System.Xml.XmlElement = xmlDoc.CreateElement(typObj.Name)
-    '    xmlDoc.AppendChild(xmlRoot)
-
-    '    Dim piObjs As System.Reflection.PropertyInfo() = typObj.GetProperties()
-    '    For Each piObj As System.Reflection.PropertyInfo In piObjs
-
-    '      Debug.Print(piObj.Name)
-
-    '      If piObj.GetIndexParameters.Length = 0 And piObj.CanWrite Then
-    '        objPropertyVal = piObj.GetValue(Me, Nothing)
-
-    '        If Not objPropertyVal Is Nothing Then
-
-    '          Dim xmlSubElement As System.Xml.XmlElement = xmlDoc.CreateElement(piObj.Name)
-    '          xmlSubElement.InnerText = objPropertyVal.ToString
-    '          xmlRoot.AppendChild(xmlSubElement)
-    '        End If
-
-    '      End If
-
-    '    Next
-
-    '    ToXML = xmlDoc.InnerXml
-
-    '  End Get
-    'End Property
-
-    Public Property IsRemoteView As Boolean
-      Get
-        Return mbIsRemoteView
-      End Get
-
-      Set(ByVal value As Boolean)
-        mbIsRemoteView = value
-      End Set
-    End Property
-
-#Region "Get individual objects"
+#Region "Individual objects"
 
     Public Function Column(ByRef [ColumnID] As HCMGuid) As Things.Column
 
@@ -142,7 +104,6 @@ Namespace Things
       Return Nothing
 
     End Function
-
 
 #End Region
 

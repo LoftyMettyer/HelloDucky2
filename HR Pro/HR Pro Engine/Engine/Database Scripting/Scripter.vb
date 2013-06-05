@@ -345,6 +345,7 @@ Namespace ScriptDB
       Dim objTable As Things.Table
       Dim objColumn As Things.Column
       Dim objRelation As Things.Relation
+      Dim objValidation As Things.Validation
       Dim sSQL As String = String.Empty
       Dim sTriggerName As String = String.Empty
 
@@ -401,6 +402,16 @@ Namespace ScriptDB
           aryAuditDeletes = New ArrayList
 
           aryValidationStatements = New ArrayList
+          For Each objValidation In objTable.Validations
+
+            Select Case objValidation.ValidationType
+              Case Things.ValidationType.Mandatory
+                '            aryValidationStatements
+
+
+            End Select
+
+          Next
 
           aryAfterInsertColumns = New ArrayList
           aryUpdateUniqueCodes = New ArrayList
@@ -424,13 +435,16 @@ Namespace ScriptDB
           sSQLCode_AuditUpdate = String.Empty
           sSQLCode_AuditDelete = String.Empty
 
-          For Each objColumn In objTable.Objects(Things.Type.Column)
+          For Each objColumn In objTable.Columns
 
             If Not objColumn.State = System.Data.DataRowState.Deleted Then
 
               If objColumn.IsCalculated Then
                 objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
                 objColumn.Calculation.AssociatedColumn = objColumn
+
+                '     Debug.Assert(objColumn.Name <> "Holiday_Taken")
+
                 objColumn.Calculation.GenerateCode()
                 aryCalculatedColumns.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.Calculation.UDF.CallingCode) & vbNewLine)
               End If
@@ -1198,6 +1212,12 @@ Namespace ScriptDB
               If Not objColumn.Calculation.State = System.Data.DataRowState.Unchanged Or Globals.Options.RefreshObjects Then
 
                 sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
+
+                '                Debug.Assert(sObjectName <> "forename_surname_and_trigger_order_value_calc_minus_5_days")
+                ' Debug.Assert(sObjectName <> "udfcalc_Personnel_Records.Holiday_Taken")
+
+                'Debug.Assert(objColumn.Name <> "")
+
 
                 ScriptDB.DropUDF("dbo", sObjectName)
 

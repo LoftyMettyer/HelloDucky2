@@ -77,6 +77,14 @@
       Proper = 3
     End Enum
 
+    Public Enum ValidationType
+      None = 0
+      Duplicate = 1
+      Unique = 2
+      Mandatory = 3
+      Offset = 4
+    End Enum
+
   End Module
 
 End Namespace

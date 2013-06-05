@@ -131,6 +131,7 @@
     <Compile Include="Object Types\GlobalModifyItem.vb" />
     <Compile Include="Object Types\TableOrder.vb" />
     <Compile Include="Object Types\TableOrderItem.vb" />
+    <Compile Include="Object Types\Validation.vb" />
     <Compile Include="Object Types\View.vb" />
     <Compile Include="PopulateObjects.vb" />
     <Compile Include="Object Types\CodeLibrary.vb" />

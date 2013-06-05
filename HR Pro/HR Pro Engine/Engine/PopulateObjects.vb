@@ -475,20 +475,15 @@
 
     Public Sub PopulateTable(ByRef Table As Things.Base)
 
-      ', ByVal iObjectType As ObjectType
-
       Dim objDataset As DataSet
       Dim objRow As DataRow
       Dim objParameters As New Connectivity.Parameters
 
-      '    Dim objObjects As New Things.Collection
       Dim objColumn As Things.Column
       Dim objRelation As Things.Relation
       Dim objExpression As Things.Expression
       Dim objView As Things.View
-      '    Dim objWorkflow As Things.Workflow
-      '     Dim objScreen As Things.Screen
-      '      Dim objDiaryLink As Things.DiaryLink
+      Dim objValidation As Things.Validation
       Dim objTableOrder As Things.TableOrder
 
       Table.Objects.Parent = Table
@@ -540,7 +535,6 @@
           Table.Objects.Add(objColumn)
         Next
 
-
         ' Orders
         objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getorders", objParameters)
         For Each objRow In objDataset.Tables(0).Rows
@@ -590,6 +584,14 @@
           Table.Objects.Add(objView)
         Next
 
+        ' Validations
+        objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getvalidations", objParameters)
+        For Each objRow In objDataset.Tables(0).Rows
+          objValidation = New Things.Validation
+          objValidation.ValidationType = objRow.Item("validationtype").ToString
+          objValidation.Column = CType(Table, Things.Table).Column(objRow.Item("columnid").ToString)
+          Table.Objects.Add(objValidation)
+        Next
 
       Catch ex As Exception
 
