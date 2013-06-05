@@ -884,6 +884,14 @@ Private Function DoTransfer() As Boolean
   gADOCon.Execute strCommand
   DoEvents
   
+  ' Document management types
+  Progress "Transferring Document Management Types..."
+  strCommand = "UPDATE ASRSysDocumentManagementTypes SET Username = '" & strTo & "'"
+  strCommand = strCommand & sWhere
+  gADOCon.Execute strCommand
+  DoEvents
+  
+  
   ' Close progress bar
   gobjProgress.CloseProgress
 
