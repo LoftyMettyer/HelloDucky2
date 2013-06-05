@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Begin VB.UserControl COASD_TabPage 
+Begin VB.UserControl COAWF_TabPage 
    ClientHeight    =   3600
    ClientLeft      =   0
    ClientTop       =   0
@@ -48,7 +48,7 @@ Begin VB.UserControl COASD_TabPage
       Width           =   1185
    End
 End
-Attribute VB_Name = "COASD_TabPage"
+Attribute VB_Name = "COAWF_TabPage"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
