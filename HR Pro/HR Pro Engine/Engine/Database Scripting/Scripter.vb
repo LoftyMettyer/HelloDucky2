@@ -329,28 +329,21 @@ Namespace ScriptDB
       Dim sSQLChildColumns As String
 
       Dim aryCalculatedColumns As ArrayList
-      '      Dim aryPerformanceTuneColumns As ArrayList
       Dim aryPostAuditCalcs As ArrayList
       Dim aryUpdateUniqueCodes As ArrayList
 
-      'Dim aryDebugColumns As ArrayList
       Dim aryBaseTableColumns As ArrayList
       Dim aryParentsToUpdate As ArrayList
       Dim aryChildrenToUpdate As ArrayList
       Dim aryParentsToUpdate_Delete As ArrayList
-      '     Dim aryAfterInsertColumns As ArrayList
       Dim aryAllWriteableColumns As ArrayList
       Dim aryAllWriteableFormatted As ArrayList
 
       Dim aryColumns As New ArrayList
 
-      'Dim colRelatedTables As New Things.Collection
-
       Dim aryAuditUpdates As ArrayList
       Dim aryAuditInserts As ArrayList
       Dim aryAuditDeletes As ArrayList
-
-      '      Dim sDebugCode As String
 
       Try
 
@@ -415,11 +408,6 @@ Namespace ScriptDB
               Next
 
               If aryColumns.Count > 0 Then
-                'aryParentsToUpdate.Add(String.Format("--    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {1})" & vbNewLine & _
-                '    "--        WITH base" & vbNewLine & _
-                '    "--            SELECT * FROM dbo.{0} WHERE [id} IN  (SELECT DISTINCT [id_{1}] FROM inserted)" & vbNewLine & _
-                '    "--        UPDATE [dbo].[{0}] base SET {2}" & vbNewLine _
-                '    , objRelation.PhysicalName, CInt(objRelation.ParentID), String.Join(vbNewLine & ", ", aryColumns.ToArray())))
                 aryParentsToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {1})" & vbNewLine & _
                     "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM inserted)" & vbNewLine _
                     , objRelation.PhysicalName, CInt(objRelation.ParentID)))
@@ -436,7 +424,6 @@ Namespace ScriptDB
               objIndex.IsTableIndex = True
               objIndex.IsClustered = False
               objIndex.Enabled = False
-              '              objIndex.Relations.AddIfNew(objRelation)
 
               For Each objColumn In objRelatedTable.DependsOnChildColumns
                 If objColumn.Table Is objTable Then
@@ -464,9 +451,7 @@ Namespace ScriptDB
             If Not objColumn.State = System.Data.DataRowState.Deleted Then
 
               If objColumn.IsCalculated Then
-                '                objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
                 objColumn.Calculation.AssociatedColumn = objColumn
-                '              objColumn.Calculation.GenerateCode()
                 objColumn.Calculation.ExpressionType = ExpressionType.ColumnCalculation
                 objColumn.Calculation.GenerateCode()
 
@@ -553,29 +538,6 @@ Namespace ScriptDB
               End If
             End If
 
-            'For Each objChildTable In objColumn.ReferencedBy
-
-            '  '   colRelatedTables(objChildTable).id = 1
-
-
-            '  If colRelatedTables.Contains(objChildTable) Then
-            '    colRelatedTables.Table(objChildTable.ID).UpdateStatements.Add(String.Format("--NOT i.[{0}] = d.[{0}]", objColumn.Name, objChildTable.PhysicalName))
-            '  End If
-            'Next
-
-            ' Add any relationship columns
-            '   For Each objRelation In objTable.Objects(Things.Type.Relation)
-
-
-
-
-            '           UPDATE base SET [updflag] = 1 FROM dbo.[tbuser_chiltable1] base WHERE [ID_1] 
-            'IN (SELECT i.[id] FROM inserted i
-            'INNER JOIN dbo.tbuser_table1 d ON d.id = i.id
-            'WHERE NOT i.[address_combined] = d.[address_combined] OR NOT i.[address_combined] = d.[address_combined]);
-
-
-            '
           Next
 
           ' Update any parents
@@ -632,7 +594,21 @@ Namespace ScriptDB
                                            "{0};" _
                                           , String.Join(vbNewLine & "        UNION" & vbNewLine, aryAuditDeletes.ToArray()))
             sSQLCode_Audit = vbNewLine & "    INSERT dbo.[ASRSysAuditTrail] ([username], [datetimestamp], [recordid], [oldvalue], [newvalue], [tableid], [tablename], [columnname], [columnid], [deleted], [recorddesc])" & vbNewLine & _
-                             "		     SELECT SYSTEM_USER, @dChangeDate, [id], [oldvalue], [newvalue], [tableid], [tablename], [columnname], [columnid], 1, [recorddesc] FROM @audit;" & vbNewLine & vbNewLine
+                             "		     SELECT @user, @dChangeDate, [id], [oldvalue], [newvalue], [tableid], [tablename], [columnname], [columnid], 1, [recorddesc] FROM @audit;" & vbNewLine & vbNewLine
+          End If
+
+          ' Table level audits
+          If objTable.AuditInsert Then
+            sSQLCode_AuditInsert += vbNewLine & String.Format("    INSERT @audit (id, oldvalue, newvalue, tableid, tablename, columnname, recorddesc)" & vbNewLine & _
+                    "        SELECT i.[id], '', ' * New Record *', {0}, '{1}', '', base.[_description] FROM inserted i" & vbNewLine & _
+                    "            INNER JOIN dbo.{2} base ON i.[id] = base.[id]" _
+                    , CInt(objTable.ID), objTable.Name, objTable.PhysicalName)
+          End If
+
+          If objTable.AuditDelete Then
+            sSQLCode_AuditDelete += vbNewLine & String.Format("    INSERT @audit (id, oldvalue, newvalue, tableid, tablename, columnname, recorddesc)" & vbNewLine & _
+                    "        SELECT d.[id], '', ' * Deleted Record *', {0}, '{1}', '', d.[_description] FROM deleted d" & vbNewLine _
+                    , CInt(objTable.ID), objTable.Name)
           End If
 
           ' Update statement of all the calculated columns
@@ -698,7 +674,6 @@ Namespace ScriptDB
           sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tableid] integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
               "    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
-              "    SET @isovernight = 0;" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
               sSQLWriteableColumns & vbNewLine & _
               "    -- Audit Trail" & vbNewLine & _
@@ -715,7 +690,6 @@ Namespace ScriptDB
           sTriggerName = String.Format("{0}{1}_u01", ScriptDB.Consts.Trigger, objTable.Name)
           sSQL = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
-              "    SELECT @isovernight = dbo.[udfsys_isovernightprocess]();" & vbNewLine & _
               "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
               "    INSERT [dbo].[{4}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {5}, 2, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
@@ -735,7 +709,6 @@ Namespace ScriptDB
           sSQL = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), tableid integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
               "    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
-              "    SELECT @isovernight = dbo.[udfsys_isovernightprocess]();" & vbNewLine & _
               "    SELECT @forcerefresh = dbo.[udfsys_triggerrequiresrefresh]();" & vbNewLine & _
               "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
@@ -837,9 +810,13 @@ Namespace ScriptDB
           "BEGIN" & vbNewLine & _
           "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([{2}].[{0}]';" & vbNewLine & _
           "    SET NOCOUNT ON;" & vbNewLine & _
-          "    DECLARE @iCount integer," & vbNewLine & _
-          "            @isovernight bit," & vbNewLine & _
-          "            @forcerefresh bit;" & vbNewLine & vbNewLine & _
+          "    DECLARE @iCount        integer," & vbNewLine & _
+          "            @isovernight   bit," & vbNewLine & _
+          "            @forcerefresh  bit," & vbNewLine & _
+          "            @user          varchar(255);" & vbNewLine & vbNewLine & _
+          "    SELECT @isovernight = dbo.[udfsys_isovernightprocess]();" & vbNewLine & _
+          "    SELECT @user =	CASE WHEN UPPER(LEFT(APP_NAME(), 15)) = 'HR PRO WORKFLOW' THEN 'HR Pro Workflow'" & vbNewLine & _
+          "          ELSE CASE WHEN @isovernight = 1 THEN 'HR Pro Overnight Process' ELSE SYSTEM_USER END END" & vbNewLine & vbNewLine & _
           "{4}" & vbNewLine & vbNewLine & _
           "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
           "END" _
