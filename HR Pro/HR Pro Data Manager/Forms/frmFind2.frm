@@ -4596,12 +4596,13 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
   Dim blnExit As Boolean
   Dim blnOK As Boolean
   Dim strSelectedRecords As String
-
-  Dim varBookMark As Variant
+  Dim iFirstRow As Integer
+  
+  Dim varBookmark As Variant
 
   strSelectedRecords = GetSelectedIDs
-  
-  varBookMark = ssOleDBGridFindColumns.Bookmark
+  iFirstRow = ssOleDBGridFindColumns.FirstRow
+  varBookmark = ssOleDBGridFindColumns.Bookmark
   
   If strSelectedRecords <> vbNullString Then
     If mfrmParent.SaveChanges(False) Then
@@ -4677,7 +4678,8 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
     'NPG20100812 - Reinstate the selected items in the grid
     If strSelectedRecords <> vbNullString Then
       ReinstateSelectedRows (strSelectedRecords)
-      ssOleDBGridFindColumns.Bookmark = varBookMark
+      ssOleDBGridFindColumns.FirstRow = iFirstRow
+      ssOleDBGridFindColumns.Bookmark = varBookmark
     End If
     
   End If
