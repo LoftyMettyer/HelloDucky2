@@ -20,7 +20,6 @@ Begin VB.Form frmSSIntranetSetup
    HelpContextID   =   1040
    Icon            =   "frmSSIntranetSetup.frx":0000
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   6240
@@ -56,13 +55,13 @@ Begin VB.Form frmSSIntranetSetup
       _Version        =   393216
       Style           =   1
       Tabs            =   5
-      Tab             =   2
       TabsPerRow      =   5
       TabHeight       =   520
       TabCaption(0)   =   "&General"
       TabPicture(0)   =   "frmSSIntranetSetup.frx":000C
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraViews"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Hypertext Links"
       TabPicture(1)   =   "frmSSIntranetSetup.frx":0028
@@ -71,7 +70,7 @@ Begin VB.Form frmSSIntranetSetup
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Dash&board"
       TabPicture(2)   =   "frmSSIntranetSetup.frx":0044
-      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraButtonLinks"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
@@ -574,7 +573,7 @@ Begin VB.Form frmSSIntranetSetup
       Begin VB.Frame fraViews 
          Caption         =   "Tables (Views) :"
          Height          =   4935
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   52
          Top             =   400
          Width           =   8120
@@ -621,7 +620,7 @@ Begin VB.Form frmSSIntranetSetup
             DataMode        =   2
             RecordSelectors =   0   'False
             GroupHeaders    =   0   'False
-            Col.Count       =   13
+            Col.Count       =   14
             AllowUpdate     =   0   'False
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
@@ -643,8 +642,8 @@ Begin VB.Form frmSSIntranetSetup
             BackColorEven   =   -2147483643
             BackColorOdd    =   -2147483643
             RowHeight       =   423
-            ExtraHeight     =   79
-            Columns.Count   =   13
+            ExtraHeight     =   265
+            Columns.Count   =   14
             Columns(0).Width=   8837
             Columns(0).Caption=   "Table (View)"
             Columns(0).Name =   "TableView"
@@ -738,6 +737,14 @@ Begin VB.Form frmSSIntranetSetup
             Columns(12).DataType=   11
             Columns(12).FieldLen=   256
             Columns(12).Style=   2
+            Columns(13).Width=   3200
+            Columns(13).Visible=   0   'False
+            Columns(13).Caption=   "WFOutOfOffice"
+            Columns(13).Name=   "WFOutOfOffice"
+            Columns(13).DataField=   "Column 13"
+            Columns(13).DataType=   11
+            Columns(13).FieldLen=   256
+            Columns(13).Style=   2
             TabNavigation   =   1
             _ExtentX        =   11289
             _ExtentY        =   7726
@@ -782,10 +789,19 @@ Begin VB.Form frmSSIntranetSetup
          Caption         =   "Dashboard Links :"
          Enabled         =   0   'False
          Height          =   4935
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   48
          Top             =   405
          Width           =   8120
+         Begin VB.ComboBox cboSecurityGroup 
+            Height          =   315
+            Left            =   2100
+            Sorted          =   -1  'True
+            Style           =   2  'Dropdown List
+            TabIndex        =   56
+            Top             =   675
+            Width           =   4515
+         End
          Begin VB.ComboBox cboButtonLinkView 
             Height          =   315
             Left            =   2100
@@ -800,7 +816,7 @@ Begin VB.Form frmSSIntranetSetup
             Height          =   400
             Left            =   6720
             TabIndex        =   21
-            Top             =   1750
+            Top             =   2100
             Width           =   1245
          End
          Begin VB.CommandButton cmdAddButtonLink 
@@ -808,7 +824,7 @@ Begin VB.Form frmSSIntranetSetup
             Height          =   400
             Left            =   6720
             TabIndex        =   19
-            Top             =   750
+            Top             =   1095
             Width           =   1245
          End
          Begin VB.CommandButton cmdEditButtonLink 
@@ -816,7 +832,7 @@ Begin VB.Form frmSSIntranetSetup
             Height          =   400
             Left            =   6720
             TabIndex        =   20
-            Top             =   1250
+            Top             =   1590
             Width           =   1245
          End
          Begin VB.CommandButton cmdRemoveButtonLink 
@@ -824,7 +840,7 @@ Begin VB.Form frmSSIntranetSetup
             Height          =   400
             Left            =   6720
             TabIndex        =   22
-            Top             =   2265
+            Top             =   2610
             Width           =   1245
          End
          Begin VB.CommandButton cmdRemoveAllButtonLinks 
@@ -832,23 +848,52 @@ Begin VB.Form frmSSIntranetSetup
             Height          =   400
             Left            =   6720
             TabIndex        =   23
-            Top             =   2775
+            Top             =   3120
             Width           =   1245
          End
          Begin SSDataWidgets_B.SSDBGrid grdButtonLinks 
-            Height          =   3945
+            Height          =   3585
             Index           =   0
             Left            =   195
             TabIndex        =   18
-            Top             =   750
+            Top             =   1110
             Visible         =   0   'False
-            Width           =   6400
+            Width           =   6420
             ScrollBars      =   2
             _Version        =   196617
             DataMode        =   2
             RecordSelectors =   0   'False
             GroupHeaders    =   0   'False
             Col.Count       =   27
+            stylesets.count =   2
+            stylesets(0).Name=   "ssEnabled"
+            stylesets(0).ForeColor=   0
+            stylesets(0).BackColor=   16777215
+            stylesets(0).HasFont=   -1  'True
+            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(0).Picture=   "frmSSIntranetSetup.frx":0098
+            stylesets(1).Name=   "ssDisabled"
+            stylesets(1).ForeColor=   12632256
+            stylesets(1).BackColor=   16777215
+            stylesets(1).HasFont=   -1  'True
+            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(1).Picture=   "frmSSIntranetSetup.frx":00B4
             AllowUpdate     =   0   'False
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
@@ -1063,8 +1108,8 @@ Begin VB.Form frmSSIntranetSetup
             Columns(26).DataType=   8
             Columns(26).FieldLen=   256
             TabNavigation   =   1
-            _ExtentX        =   11289
-            _ExtentY        =   6959
+            _ExtentX        =   11324
+            _ExtentY        =   6324
             _StockProps     =   79
             Enabled         =   0   'False
             BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -1091,7 +1136,7 @@ Begin VB.Form frmSSIntranetSetup
             Height          =   405
             Left            =   6720
             TabIndex        =   24
-            Top             =   3270
+            Top             =   3615
             Width           =   1245
          End
          Begin VB.CommandButton cmdMoveButtonLinkDown 
@@ -1099,8 +1144,16 @@ Begin VB.Form frmSSIntranetSetup
             Height          =   405
             Left            =   6720
             TabIndex        =   25
-            Top             =   3765
+            Top             =   4110
             Width           =   1245
+         End
+         Begin VB.Label lblSecurityGroup 
+            Caption         =   "Security Group :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   55
+            Top             =   705
+            Width           =   1695
          End
          Begin VB.Label lblButtonLinkView 
             Caption         =   "Table (View) :"
@@ -1593,7 +1646,7 @@ Private Sub RefreshControls()
         ctlGrid.Visible = (ctlGrid.Index = iIndex)
       Next ctlGrid
       Set ctlGrid = Nothing
-
+      
     Case giPAGE_DROPDOWNLISTLINKS
       iIndex = 0
       Set ctlGrid = CurrentLinkGrid(SSINTLINK_DROPDOWNLIST)
@@ -1857,7 +1910,6 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
               sChartFilterID = Val(.Columns("ChartFilterID").CellText(varBookmark))
               sChartAggregateType = Val(.Columns("ChartAggregateType").CellText(varBookmark))
               fChartShowValues = Val(.Columns("ChartShowValues").CellText(varBookmark))
-              
              
             Case SSINTLINK_DROPDOWNLIST
               sPrompt = ""
@@ -1913,7 +1965,7 @@ Private Sub SaveLinkParameters(piLinkType As SSINTRANETLINKTYPES)
           If Len(sSeparatorOrientation) = 0 Then sSeparatorOrientation = "0"
           
           'NPG20080211 Fault 12873
-          sSQL = "INSERT INTO tmpSSIntranetLinks" & _
+           sSQL = "INSERT INTO tmpSSIntranetLinks" & _
             " ([linkType], [linkOrder], [prompt], [text], [screenID], [pageTitle], [url], [startMode], " & _
             "[utilityType], [utilityID], [viewID], [newWindow], [tableID], [EMailAddress], [EMailSubject], " & _
             "[AppFilePath], [AppParameters], [DocumentFilePath], [DisplayDocumentHyperlink], [Element_Type], " & _
@@ -2070,6 +2122,18 @@ End Sub
 
 Private Sub cboHypertextLinkView_Click()
   RefreshControls
+End Sub
+
+
+Private Sub cboSecurityGroup_Click()
+  Dim ctlSourceGrid As SSDBGrid
+  
+  Set ctlSourceGrid = CurrentLinkGrid(SSINTLINK_BUTTON)
+  If ctlSourceGrid Is Nothing Then
+    Exit Sub
+  End If
+  
+  ctlSourceGrid.Refresh
 End Sub
 
 Private Sub cmdAddButtonLink_Click()
@@ -2459,7 +2523,8 @@ Private Sub cmdAddTableView_Click()
       False, _
       "", _
       "", _
-      mcolSSITableViews
+      mcolSSITableViews, _
+      True
       
     If Not .Cancelled Then
       .Show vbModal
@@ -2479,6 +2544,7 @@ Private Sub cmdAddTableView_Click()
         & vbTab & .LinksLinkText _
         & vbTab & .PageTitle _
         & vbTab & .SingleRecordView _
+        & vbTab & .WFOutOfOffice
 
       With grdTableViews
         .AddItem sRow
@@ -3664,7 +3730,8 @@ Private Sub cmdEditTableView_Click()
       (grdTableViews.Columns("DropdownListLink").Text = "1"), _
       grdTableViews.Columns("LinksLinkText").Text, _
       grdTableViews.Columns("PageTitle").Text, _
-      mcolSSITableViews
+      mcolSSITableViews, _
+      grdTableViews.Columns("WFOutOfOffice").value
 
     .Show vbModal
 
@@ -3681,7 +3748,8 @@ Private Sub cmdEditTableView_Click()
         & vbTab & IIf(.DropdownListLink, "1", "0") _
         & vbTab & .LinksLinkText _
         & vbTab & .PageTitle _
-        & vbTab & .SingleRecordView
+        & vbTab & .SingleRecordView _
+        & vbTab & .WFOutOfOffice
 
       grdTableViews.RemoveItem lngRow
 
@@ -4298,6 +4366,7 @@ Private Function SaveChanges() As Boolean
   Dim fSingleRecordView As Boolean
   Dim sLinksLinkText As String
   Dim sPageTitle As String
+  Dim fWFOutOfOffice As Boolean
   
 '  ' Save the configured Personnel table ID and Personnel table view ID.
 '  With recModuleSetup
@@ -4329,6 +4398,7 @@ Private Function SaveChanges() As Boolean
       sTableID = .Columns("TableID").CellText(varBookmark)
       sViewID = .Columns("ViewID").CellText(varBookmark)
       fSingleRecordView = .Columns("SingleRecord").CellValue(varBookmark)
+      fWFOutOfOffice = .Columns("WFOutOfOffice").CellValue(varBookmark)
       
       If fSingleRecordView Then
         sButtonLink = "0"
@@ -4364,11 +4434,11 @@ Private Function SaveChanges() As Boolean
       sSQL = "INSERT INTO tmpSSIViews" & _
         " ([viewID], [tableID], [buttonLinkPromptText], [buttonLinkButtonText], [hypertextLinkText]," & _
         "  [dropdownListLinkText], [buttonLink], [hypertextLink], [dropdownListLink]," & _
-        "  [singleRecordView], [sequence], [linksLinkText], [pageTitle])" & _
+        "  [singleRecordView], [sequence], [linksLinkText], [pageTitle], [WFOutOfOffice])" & _
         " VALUES" & _
         " (" & sViewID & "," & sTableID & ",'" & Replace(sButtonLinkPromptText, "'", "''") & "','" & Replace(sButtonLinkButtonText, "'", "''") & "','" & Replace(sHypertextLinkText, "'", "''") & "','" & _
         Replace(sDropdownListLinkText, "'", "''") & "'," & sButtonLink & "," & sHypertextLink & "," & sDropdownListLink & "," & _
-        IIf(fSingleRecordView, "1", "0") & "," & CStr(iLoop) & ",'" & Replace(sLinksLinkText, "'", "''") & "','" & Replace(sPageTitle, "'", "''") & "'" & _
+        IIf(fSingleRecordView, "1", "0") & "," & CStr(iLoop) & ",'" & Replace(sLinksLinkText, "'", "''") & "','" & Replace(sPageTitle, "'", "''") & "'," & IIf(fWFOutOfOffice, "1", "0") & _
         ")"
       daoDb.Execute sSQL, dbFailOnError
     Next iLoop
@@ -4439,7 +4509,8 @@ Private Sub ReadParameters()
           vbTab & IIf(IIf(IsNull(rsLinks!DropdownListLink), False, rsLinks!DropdownListLink), "1", "0") & _
           vbTab & IIf(IsNull(rsLinks!LinksLinkText), "", rsLinks!LinksLinkText) & _
           vbTab & IIf(IsNull(rsLinks!PageTitle), "", rsLinks!PageTitle) & _
-          vbTab & rsLinks!SingleRecordView
+          vbTab & rsLinks!SingleRecordView & _
+          vbTab & rsLinks!WFOutOfOffice
 
     grdTableViews.AddItem sAddString
     
@@ -4636,6 +4707,48 @@ Private Sub ReadParameters()
   mfChanged = False
   
 End Sub
+
+Private Sub PopulateAccessCombo()
+  Dim sSQL As String
+  Dim rsGroups As New ADODB.Recordset
+
+  ' Get the recordset of user groups and their access on this definition.
+  sSQL = "SELECT name FROM sysusers" & _
+    " WHERE gid = uid AND gid > 0" & _
+    "   AND not (name like 'ASRSys%') AND not (name like 'db[_]%')" & _
+    " ORDER BY name"
+  rsGroups.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
+
+  ' Add the 'All Groups' item.
+  With cboSecurityGroup
+    .Clear
+    .AddItem "(All Groups)"
+  End With
+
+
+  With rsGroups
+    Do While Not .EOF
+      ' Add the user groups and their access on this definition to the access grid.
+'      If InStr(vbTab & UCase(psHiddenGroups) & vbTab, vbTab & UCase(Trim(!Name)) & vbTab) > 0 Then
+'        sVisibility = "False"
+'        fAllVisible = False
+'      Else
+'        sVisibility = "True"
+'      End If
+'
+      cboSecurityGroup.AddItem !Name '
+      .MoveNext
+    Loop
+      
+    .Close
+  End With
+  Set rsGroups = Nothing
+  
+  cboSecurityGroup.ListIndex = 0
+
+End Sub
+
+
 
 Private Sub cmdRemoveAllButtonLinks_Click()
 
@@ -4926,6 +5039,8 @@ Private Sub Form_Load()
   
   RefreshTableViewCombos
   
+  PopulateAccessCombo
+  
   RefreshTableViewsCollection
   
   mfLoading = False
@@ -5100,8 +5215,14 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 End Sub
 
 Private Sub Form_Resize()
+  
+  On Error GoTo ErrorTrap
+  
   'JPD 20030908 Fault 5756
   DisplayApplication
+  
+ErrorTrap:
+  
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
@@ -5126,8 +5247,29 @@ Private Sub grdButtonLinks_DblClick(Index As Integer)
 
 End Sub
 
+Private Sub grdButtonLinks_InitColumnProps(Index As Integer)
+        grdButtonLinks(Index).RowSelectionStyle = ssRowSelectionStyle3D
+
+End Sub
+
 Private Sub grdButtonLinks_RowColChange(Index As Integer, ByVal LastRow As Variant, ByVal LastCol As Integer)
   RefreshControls
+End Sub
+
+Private Sub grdButtonLinks_RowLoaded(Index As Integer, ByVal Bookmark As Variant)
+  
+  If cboSecurityGroup.ListIndex >= 0 Then
+      If (InStr(1, grdButtonLinks(Index).Columns("HiddenGroups").CellValue(Bookmark), cboSecurityGroup.List(cboSecurityGroup.ListIndex), vbTextCompare) > 0) _
+            And cboSecurityGroup.List(cboSecurityGroup.ListIndex) <> "(All Groups)" Then
+        grdButtonLinks(Index).Columns(0).CellStyleSet "ssDisabled"
+        grdButtonLinks(Index).Columns(1).CellStyleSet "ssDisabled"
+      Else
+        grdButtonLinks(Index).Columns(0).CellStyleSet "ssEnabled"
+        grdButtonLinks(Index).Columns(1).CellStyleSet "ssEnabled"
+
+      End If
+  End If
+
 End Sub
 
 Private Sub grdButtonLinks_SelChange(Index As Integer, ByVal SelType As Integer, Cancel As Integer, DispSelRowOverflow As Integer)
@@ -5147,6 +5289,11 @@ Private Sub grdDocuments_DblClick(Index As Integer)
       cmdAddDocument_Click
     End If
   End If
+
+End Sub
+
+Private Sub grdDocuments_InitColumnProps(Index As Integer)
+        grdDocuments(Index).RowSelectionStyle = ssRowSelectionStyle3D
 
 End Sub
 
@@ -5174,6 +5321,11 @@ Private Sub grdDropdownListLinks_DblClick(Index As Integer)
 
 End Sub
 
+Private Sub grdDropdownListLinks_InitColumnProps(Index As Integer)
+        grdDropdownListLinks(Index).RowSelectionStyle = ssRowSelectionStyle3D
+
+End Sub
+
 Private Sub grdDropdownListLinks_RowColChange(Index As Integer, ByVal LastRow As Variant, ByVal LastCol As Integer)
   RefreshControls
 End Sub
@@ -5198,6 +5350,11 @@ Private Sub grdHypertextLinks_DblClick(Index As Integer)
   
 End Sub
 
+Private Sub grdHypertextLinks_InitColumnProps(Index As Integer)
+        grdHypertextLinks(Index).RowSelectionStyle = ssRowSelectionStyle3D
+
+End Sub
+
 Private Sub grdHypertextLinks_RowColChange(Index As Integer, ByVal LastRow As Variant, ByVal LastCol As Integer)
   RefreshControls
 End Sub
@@ -5220,6 +5377,10 @@ Private Sub grdTableViews_DblClick()
     End If
   End If
 
+End Sub
+
+Private Sub grdTableViews_InitColumnProps()
+        grdTableViews.RowSelectionStyle = ssRowSelectionStyle3D
 End Sub
 
 Private Sub grdTableViews_RowColChange(ByVal LastRow As Variant, ByVal LastCol As Integer)

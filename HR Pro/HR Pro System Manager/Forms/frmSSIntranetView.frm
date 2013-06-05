@@ -2,7 +2,7 @@ VERSION 5.00
 Begin VB.Form frmSSIntranetView 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Self-service Intranet Table (View)"
-   ClientHeight    =   6720
+   ClientHeight    =   7605
    ClientLeft      =   1545
    ClientTop       =   435
    ClientWidth     =   6360
@@ -18,13 +18,28 @@ Begin VB.Form frmSSIntranetView
    HelpContextID   =   1058
    Icon            =   "frmSSIntranetView.frx":0000
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   6720
+   ScaleHeight     =   7605
    ScaleWidth      =   6360
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin VB.Frame fraWFOutOfOffice 
+      Caption         =   "Display options :"
+      Height          =   735
+      Left            =   200
+      TabIndex        =   26
+      Top             =   6105
+      Width           =   6000
+      Begin VB.CheckBox chkWFOutOfOffice 
+         Caption         =   "Display &Workflow Out Of Office Hypertext Link"
+         Height          =   255
+         Left            =   200
+         TabIndex        =   21
+         Top             =   300
+         Width           =   4380
+      End
+   End
    Begin VB.ComboBox cboTable 
       Height          =   315
       Left            =   1790
@@ -188,16 +203,16 @@ Begin VB.Form frmSSIntranetView
    Begin VB.Frame fraOKCancel 
       Height          =   400
       Left            =   3600
-      TabIndex        =   21
-      Top             =   6195
+      TabIndex        =   22
+      Top             =   7020
       Width           =   2600
       Begin VB.CommandButton cmdCancel 
          Cancel          =   -1  'True
          Caption         =   "&Cancel"
          Height          =   400
          Left            =   1400
-         TabIndex        =   23
-         Top             =   0
+         TabIndex        =   24
+         Top             =   -15
          Width           =   1200
       End
       Begin VB.CommandButton cmdOk 
@@ -205,7 +220,7 @@ Begin VB.Form frmSSIntranetView
          Default         =   -1  'True
          Height          =   400
          Left            =   135
-         TabIndex        =   22
+         TabIndex        =   23
          Top             =   0
          Width           =   1200
       End
@@ -215,7 +230,7 @@ Begin VB.Form frmSSIntranetView
       Caption         =   "Table : "
       Height          =   195
       Left            =   195
-      TabIndex        =   24
+      TabIndex        =   25
       Top             =   300
       Width           =   540
    End
@@ -262,7 +277,8 @@ Public Sub Initialize(plngViewID As Long, _
   pfDropdownListLink As Boolean, _
   psLinksLinkText As String, _
   psPageTitle As String, _
-  pcolSSITableViews As clsSSITableViews)
+  pcolSSITableViews As clsSSITableViews, _
+  pfWFOutOfOffice As Boolean)
   
   Set mcolSSITableViews = pcolSSITableViews
   
@@ -291,6 +307,8 @@ Public Sub Initialize(plngViewID As Long, _
   ButtonLinkButtonText = psButtonLinkButtonText
   DropdownListLinkText = psDropdownListLinkText
   LinksLinkText = psLinksLinkText
+  
+  WFOutOfOffice = pfWFOutOfOffice
   
   mfChanged = False
   
@@ -619,6 +637,14 @@ Public Property Let ButtonLink(ByVal pfNewValue As Boolean)
   chkButtonLink.value = IIf(pfNewValue, vbChecked, vbUnchecked)
 End Property
 
+Public Property Get WFOutOfOffice() As Boolean
+  WFOutOfOffice = (chkWFOutOfOffice.value = vbChecked)
+End Property
+
+Public Property Let WFOutOfOffice(ByVal pfNewValue As Boolean)
+  chkWFOutOfOffice.value = IIf(pfNewValue, vbChecked, vbUnchecked)
+End Property
+
 Public Property Let HypertextLinkText(ByVal psNewValue As String)
 
   If HypertextLink Then
@@ -726,6 +752,12 @@ Private Sub chkSingleRecordView_Click()
     mfDefaultPageTitle = True
   End If
   
+  mfChanged = True
+  RefreshControls
+
+End Sub
+
+Private Sub chkWFOutOfOffice_Click()
   mfChanged = True
   RefreshControls
 
