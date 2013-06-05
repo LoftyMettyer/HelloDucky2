@@ -4328,9 +4328,11 @@ Public Function GetOfficeWordVersion() As Integer
   On Error GoTo NotInstalled
 
   If giOfficeVersion_Word = 0 Then
-    Set App = CreateObject("Word.Application")
-    giOfficeVersion_Word = Val(App.Version)
-    App.Quit
+    If InStr(LCase(Command$), "/msoffice=false") = 0 Then
+      Set App = CreateObject("Word.Application")
+      giOfficeVersion_Word = Val(App.Version)
+      App.Quit
+    End If
   End If
 
 TidyUpAndExit:
@@ -4353,9 +4355,11 @@ Public Function GetOfficeExcelVersion() As Integer
   On Error GoTo NotInstalled
 
   If giOfficeVersion_Excel = 0 Then
-    Set App = CreateObject("Excel.Application")
-    giOfficeVersion_Excel = Val(App.Version)
-    App.Quit
+    If InStr(LCase(Command$), "/msoffice=false") = 0 Then
+      Set App = CreateObject("Excel.Application")
+      giOfficeVersion_Excel = Val(App.Version)
+      App.Quit
+    End If
   End If
 
 TidyUpAndExit:
