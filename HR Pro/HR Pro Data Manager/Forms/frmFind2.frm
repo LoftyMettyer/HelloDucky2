@@ -47,7 +47,6 @@ Begin VB.Form frmFind2
             Object.Width           =   10689
             Text            =   "x Records"
             TextSave        =   "x Records"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -1526,8 +1525,8 @@ Private Sub SetupSummary()
   Next
 
   'Begin subclassing (set minimum form size)
-  Unhook Me.hwnd
-  Hook Me.hwnd, mlngMinFormWidth, mlngMinFormHeight
+  Unhook Me.hWnd
+  Hook Me.hWnd, mlngMinFormWidth, mlngMinFormHeight
 
   ' the required controls are now loaded, so populate them.
   LoadSummaryDetails
@@ -2318,7 +2317,7 @@ Private Function ConfigureGrid() As Boolean
   Dim lngWidth As Long
   Dim dblPreviousColumnWidth As Double
   
-  UI.LockWindow Me.hwnd
+  UI.LockWindow Me.hWnd
   
   'Setting the form to disabled here stops the find window getting focus
   'when it shouldn't (i.e. when scrolling though RecEdit records!)
@@ -3153,7 +3152,7 @@ Public Sub DeleteRecord()
 
       'JPD 20030905 Fault 5184
       frmMain.DisableMenu
-      UI.LockWindow Me.hwnd
+      UI.LockWindow Me.hWnd
 
       With mfrmParent
         For intCount = 1 To nTotalSelRows
@@ -3490,7 +3489,6 @@ End Sub
 
 Private Sub Form_Initialize()
   mbIsLoading = True
-
 End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
@@ -3514,7 +3512,7 @@ End Sub
 Private Sub Form_Load()
    
   'Begin subclassing
-  Hook Me.hwnd, dblFINDFORM_MINWIDTH, dblFINDFORM_MINWIDTH
+  Hook Me.hWnd, dblFINDFORM_MINWIDTH, dblFINDFORM_MINWIDTH
   
   ' Set the user defined activebar
   OrganiseToolbarControls ActiveBar1
@@ -3696,7 +3694,7 @@ Private Sub Form_Unload(Cancel As Integer)
   End If
     
   'Stop subclassing.
-  Unhook Me.hwnd
+  Unhook Me.hWnd
       
   frmMain.RefreshMainForm Me, True
 
@@ -4646,7 +4644,7 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
   
       mfBusy = True
       frmMain.DisableMenu
-      UI.LockWindow Me.hwnd
+      UI.LockWindow Me.hWnd
 
       With mfrmParent
         
