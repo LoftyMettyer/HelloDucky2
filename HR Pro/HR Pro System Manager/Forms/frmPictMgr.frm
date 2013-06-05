@@ -1105,7 +1105,7 @@ Private Function PictureIsUsed(glngPictureID As Long) As Boolean
   
   Dim fUsed As Boolean
   Dim sSQL As String
-  Dim rsScreens As dao.Recordset
+  Dim rsScreens As DAO.Recordset
   Dim sPictureName As String
   Dim sScreenName As String
   Dim sTableName As String
