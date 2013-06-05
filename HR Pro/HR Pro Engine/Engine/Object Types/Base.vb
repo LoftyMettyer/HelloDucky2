@@ -1,9 +1,10 @@
 ﻿Imports System.Xml.Serialization
 Imports System.Reflection
+Imports System.Runtime.InteropServices
 
 Namespace Things
 
-  <Serializable()> _
+  <Serializable(), ClassInterface(ClassInterfaceType.None)> _
   Public MustInherit Class Base
     Implements COMInterfaces.iObject
 
@@ -41,7 +42,7 @@ Namespace Things
     Private mbIsSelected As Boolean
     Private msPhysicalName As String
 
-    Public Overridable ReadOnly Property PhysicalName As String
+    Public Overridable ReadOnly Property PhysicalName As String Implements iObject.PhysicalName
       Get
         Return msName
       End Get

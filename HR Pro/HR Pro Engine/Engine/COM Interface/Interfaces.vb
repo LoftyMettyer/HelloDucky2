@@ -50,14 +50,17 @@
 
   Public Interface iObject
     Property Name As String
+    ReadOnly Property PhysicalName As String
   End Interface
 
   Public Interface iTable
+    Inherits iObject
     Property CustomTriggers As Things.BaseCollection
     ' These eventually will be gotten rid of when we port the rest of sysmgr into this framework.
     Property SysMgrInsertTrigger As String
     Property SysMgrUpdateTrigger As String
     Property SysMgrDeleteTrigger As String
+
   End Interface
 
 End Module
