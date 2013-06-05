@@ -431,7 +431,7 @@ Private Function TableNew() As Boolean
             sColCreate = GetColCreateString(recColEdit!ColumnName, dtVARCHAR, 255, 0, False)
           ElseIf ((iDataType = dtBINARY) Or (iDataType = dtVARBINARY) Or (iDataType = dtLONGVARBINARY)) And bEmbedded Then
             sColCreate = GetColCreateString(recColEdit!ColumnName, dtLONGVARBINARY, 255, 0, False)
-          ElseIf (iDataType = dtLONGVARCHAR) Then
+          ElseIf (iDataType = dtlongvarchar) Then
             sColCreate = GetColCreateString(recColEdit!ColumnName, dtVARCHAR, 14, 0, recColEdit!MultiLine)
           Else
             sColCreate = GetColCreateString(recColEdit!ColumnName, iDataType, recColEdit!Size, recColEdit!Decimals, recColEdit!MultiLine)
@@ -451,11 +451,11 @@ Private Function TableNew() As Boolean
             ' Check if default required.
             If LenB(Trim(recColEdit!DefaultValue)) <> 0 Then
               Select Case iDataType
-                Case dtVARCHAR, dtLONGVARCHAR
+                Case dtVARCHAR, dtlongvarchar
                   'JPD 20041012 Fault 9293
                   'sSQL = sSQL & " DEFAULT '" & recColEdit!DefaultValue & "'"
                   sTableCreate.Append " DEFAULT '" & Replace(recColEdit!DefaultValue, "'", "''") & "'"
-                Case dtINTEGER, dtNUMERIC
+                Case dtinteger, dtNUMERIC
                   sTableCreate.Append " DEFAULT " & recColEdit!DefaultValue
                 Case dtBIT
                   sTableCreate.Append " DEFAULT " & IIf(recColEdit!DefaultValue = "TRUE", "1", "0")
@@ -488,7 +488,7 @@ Private Function TableNew() As Boolean
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
     sSQL = "CREATE VIEW dbo." & sTableName & " WITH SCHEMABINDING AS SELECT " & sCreateView.ToString & " FROM dbo." & sPhysicalTableName & vbNewLine & _
-           "WHERE [_deleted] = 0"
+           "WHERE ISNULL([_deleted],0) = 0"
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
     ' Add an index
@@ -797,7 +797,7 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
                   Case dtVARCHAR
                     asValueList(iColumnList) = "CONVERT(varchar(MAX)," & sName & ")"
 
-                  Case dtLONGVARCHAR
+                  Case dtlongvarchar
                     asValueList(iColumnList) = "CONVERT(varchar(" & Trim(Str(14)) & ")," & sName & ")"
 
                   ' Convert numeric.
@@ -823,9 +823,9 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
                 asColumnList(iColumnList) = sColumnName
                 Select Case !DataType
                   ' Convert data into character if possible.
-                  Case dtVARCHAR, dtLONGVARCHAR
+                  Case dtVARCHAR, dtlongvarchar
                     If (iDataType = dtTIMESTAMP) Or _
-                      (iDataType = dtINTEGER) Or _
+                      (iDataType = dtinteger) Or _
                       (iDataType = dtNUMERIC) Or _
                       (iDataType = dtBIT) Then
                         asValueList(iColumnList) = "CONVERT(varchar(MAX), " & sName & ")"
@@ -834,7 +834,7 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
                     End If
 
                   ' Convert data into integer if possible.
-                  Case dtINTEGER
+                  Case dtinteger
                     If (iDataType = dtNUMERIC) Or (iDataType = dtBIT) Then
                       asValueList(iColumnList) = "CONVERT(int, " & sName & ")"
                     Else
@@ -843,7 +843,7 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
 
                   ' Convert data into numeric if possible.
                   Case dtNUMERIC
-                    If (iDataType = dtINTEGER) Or (iDataType = dtBIT) Then
+                    If (iDataType = dtinteger) Or (iDataType = dtBIT) Then
                       asValueList(iColumnList) = "CONVERT(numeric(" & Trim(Str(!Size)) & "," & Trim(Str(!Decimals)) & "), " & sName & ")"
                     Else
                       asValueList(iColumnList) = "0"
@@ -903,13 +903,13 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
   ReDim Preserve asValueList(iColumnList)
 
   If fOK Then
-    ' Re-populate this table with saved data from temporary table.
+    ' Re-populate this table with saved data from temporary table
     ' NB. We use the 'openResultSet' method to perform the 'SET IDENTITY_INSERT' operation
     ' now, instead of the 'execute' method which did not work under SQL Server 7.0.
     gADOCon.Execute _
         "SET IDENTITY_INSERT " & sPhysicalTableName & " ON" & vbNewLine & _
-        "INSERT INTO " & sPhysicalTableName & " (" & Join(asColumnList, ",") & ")" & _
-        " SELECT " & Join(asValueList, ",") & " FROM " & sTempName & vbNewLine & _
+        "INSERT INTO " & sPhysicalTableName & " (" & Join(asColumnList, ",") & ", [_deleted], [_deleteddate])" & _
+        " SELECT " & Join(asValueList, ",") & ", [_deleted], [_deleteddate] FROM " & sTempName & vbNewLine & _
         "SET IDENTITY_INSERT " & sPhysicalTableName & " OFF", , adCmdText + adExecuteNoRecords
   End If
 
@@ -1059,10 +1059,10 @@ Private Function GetColCreateString(ByVal psColumnName As String, ByVal plngData
       GetColCreateString = "[" & Trim$(psColumnName) & "] [VARCHAR] (" & plngSize & ")"
     End If
 
-    Case dtLONGVARCHAR
+    Case dtlongvarchar
       GetColCreateString = "[" & Trim$(psColumnName) & "] [VARCHAR] (14)"
 
-    Case dtINTEGER
+    Case dtinteger
       GetColCreateString = "[" & Trim$(psColumnName) & "] [INT]"
 
     Case dtNUMERIC
