@@ -301,6 +301,8 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   Dim rsSummaryFields As DAO.Recordset
   Dim rsModules As DAO.Recordset
   Dim rsAccord As DAO.Recordset
+'NHRD Prototype Fusion Code***********************************************************
+  Dim rsFusion As DAO.Recordset
   Dim rsValidations As DAO.Recordset
   Dim sColumnName As String
   Dim sTableName As String
@@ -811,6 +813,26 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
     End With
   End If
 
+'NHRD Prototype Fusion Code***********************************************************
+  If gbFusionModule Then
+    sSQL = "SELECT rtrim(t.FusionType) + ' - ' + f.Description AS Description" & _
+           " FROM tmpFusionFieldDefinitions f " & _
+           " INNER JOIN tmpFusionTypes t ON t.FusionTypeID = f.FusionTypeID" & _
+           " WHERE ASRColumnID = " & Me.ColumnID & " AND ASRMapType = 0"
+    Set rsFusion = daoDb.OpenRecordset(sSQL)
+    With rsFusion
+      If Not (.EOF And .BOF) Then
+        fUsed = True
+        Do Until .EOF
+          mfrmUse.AddToList "Fusion Configuration : " & Trim(!Description)
+          .MoveNext
+        Loop
+      End If
+      .Close
+    End With
+  End If
+'NHRD Prototype Fusion Code***********************************************************
+  
   'TM20011003 Fault 2191 - 1
   'Make check for the columns use in email definitions.
   sSQL = "SELECT DISTINCT tmpEmailAddresses.name " & _
