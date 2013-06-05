@@ -1240,13 +1240,19 @@ Public Function RuntimeFilterCode(psFilterCode As String, _
 '  fOK = ConstructExpression
 
   If fOK Then
-    With recTabEdit
-      .Index = "idxTableID"
-      .Seek "=", mlngBaseTableID
-    
-      sBaseTableSource = !TableName
-    End With
-  
+
+    'MH20100324
+    If gblnExpressionForDeleteTrigger Then
+      sBaseTableSource = "deleted"
+    Else
+      With recTabEdit
+        .Index = "idxTableID"
+        .Seek "=", mlngBaseTableID
+      
+        sBaseTableSource = !TableName
+      End With
+    End If
+
     sRuntimeFilterSQL = "SELECT DISTINCT " & sBaseTableSource & ".id" & vbNewLine & _
       "FROM " & sBaseTableSource & " " & vbNewLine
       
@@ -1259,7 +1265,7 @@ Public Function RuntimeFilterCode(psFilterCode As String, _
     ' Get the filter code.
     fOK = RuntimeCode(sWhereCode, alngSourceTables, pfValidating, psPrefix)
   End If
-  
+
   If fOK Then
     ' Create an array of the tables related to the expression base table.
     ' Used when Joining any other tables/view used.
