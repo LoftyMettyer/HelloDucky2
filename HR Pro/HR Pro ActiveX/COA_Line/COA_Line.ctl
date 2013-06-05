@@ -36,6 +36,13 @@ Const giMinHeightV = 100
 Const giMinWidthH = 100
 Const giMinHeightH = 30
 
+' Declare public events.
+Public Event MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Public Event MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Public Event MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Public Event KeyDown(KeyCode As Integer, Shift As Integer)
+Public Event DblClick()
+
 ' Properties.
 Private miAlignment As Integer
 Private glColumnID As Long
@@ -44,6 +51,248 @@ Private gfSelected As Boolean
 Private miCurrentLength As Integer
 Private mbResizing As Boolean
 Private miTabIndex As Integer
+Private msWFIdentifier As String
+Private miWFItemType As Integer
+
+Public Property Let WFIdentifier(New_Value As String)
+  msWFIdentifier = New_Value
+End Property
+
+Public Property Get WFIdentifier() As String
+  WFIdentifier = msWFIdentifier
+End Property
+
+Public Property Let WFItemType(New_Value As Integer)
+  miWFItemType = New_Value
+End Property
+
+Public Property Get WFItemType() As Integer
+  WFItemType = miWFItemType
+End Property
+
+Public Property Get Length() As Long
+  Length = miCurrentLength
+End Property
+
+Public Property Let Length(ByVal lNewValue As Long)
+
+  If miAlignment = 1 Then  ' horizontal
+    UserControl.Width = lNewValue
+  Else ' Vertical
+    UserControl.Height = lNewValue
+  End If
+    
+End Property
+
+Public Property Get hWnd() As Long
+  hWnd = UserControl.hWnd
+End Property
+
+Public Property Get Selected() As Boolean
+  Selected = gfSelected
+End Property
+
+Public Property Let Selected(ByVal pfNewValue As Boolean)
+  gfSelected = pfNewValue
+End Property
+
+Public Property Get ControlLevel() As Integer
+  ControlLevel = giControlLevel
+End Property
+
+Public Property Let ControlLevel(ByVal piNewValue As Integer)
+  giControlLevel = piNewValue
+End Property
+
+Public Property Get ColumnID() As Long
+  ColumnID = glColumnID
+End Property
+
+Public Property Let ColumnID(ByVal pLngNewValue As Long)
+  glColumnID = pLngNewValue
+End Property
+
+Public Property Get MinimumHeight() As Long
+  If miAlignment = 1 Then
+    MinimumHeight = giMinHeightH
+  Else
+    MinimumHeight = giMinHeightV
+  End If
+End Property
+
+Public Property Get MinimumWidth() As Long
+  If miAlignment = 1 Then
+    MinimumWidth = giMinWidthH
+  Else
+    MinimumWidth = giMinWidthV
+  End If
+End Property
+
+Private Sub UserControl_DblClick()
+  RaiseEvent DblClick
+End Sub
+
+Private Sub UserControl_Resize()
+
+  If mbResizing Then Exit Sub
+  
+  mbResizing = True
+  
+  If miAlignment = 1 Then ' Horizontal
+    
+    UserControl.Height = 30
+    
+    If UserControl.Width < giMinWidthH Then UserControl.Width = giMinWidthH
+    If UserControl.Height <> giMinHeightH Then UserControl.Height = giMinHeightH
+
+    linGrey.X1 = 0
+    linGrey.X2 = UserControl.Width
+    linGrey.Y1 = 0
+    linGrey.Y2 = 0
+    
+    linWhite.X1 = 0
+    linWhite.X2 = UserControl.Width
+    linWhite.Y1 = 15
+    linWhite.Y2 = 15
+
+    miCurrentLength = UserControl.Width
+
+  Else ' Vertical
+     
+    UserControl.Width = 30
+    If UserControl.Height < giMinHeightV Then UserControl.Height = giMinHeightV
+    If UserControl.Width <> giMinWidthV Then UserControl.Width = giMinWidthV
+  
+    linGrey.X1 = 0
+    linGrey.X2 = 0
+    linGrey.Y1 = 0
+    linGrey.Y2 = UserControl.Height
+    
+    linWhite.X1 = 15
+    linWhite.X2 = 15
+    linWhite.Y1 = 0
+    linWhite.Y2 = UserControl.Height
+  
+    miCurrentLength = UserControl.Height
+    
+  End If
+  
+  mbResizing = False
+  
+End Sub
+
+Private Sub UserControl_Initialize()
+  miAlignment = 1
+  miCurrentLength = 1000
+End Sub
+
+Private Sub UserControl_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+  RaiseEvent MouseDown(Button, Shift, X, Y)
+End Sub
+
+Private Sub UserControl_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+  RaiseEvent MouseMove(Button, Shift, X, Y)
+End Sub
+
+Private Sub UserControl_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+  RaiseEvent MouseUp(Button, Shift, X, Y)
+End Sub
+
+Private Sub UserControl_KeyDown(KeyCode As Integer, Shift As Integer)
+  RaiseEvent KeyDown(KeyCode, Shift)
+End Sub
+
+Public Property Get BackColor() As OLE_COLOR
+  BackColor = linGrey.BorderColor
+End Property
+
+Public Property Let BackColor(ByVal vNewValue As OLE_COLOR)
+  linGrey.BorderColor = vNewValue
+End Property
+
+Public Property Get TabIndex() As Integer
+  TabIndex = miTabIndex
+End Property
+
+Public Property Let TabIndex(ByVal iNewValue As Integer)
+  miTabIndex = iNewValue
+End Property
+
+Public Property Get Alignment() As Integer
+  Alignment = miAlignment
+End Property
+
+Public Property Let Alignment(ByVal vNewValue As Integer)
+
+  If vNewValue = 0 Or vNewValue = 1 Then
+    miAlignment = vNewValue
+    
+    If miAlignment = 1 Then
+    
+      UserControl.Width = UserControl.Height
+    Else
+      UserControl.Height = UserControl.Width
+    End If
+  
+  End If
+  
+End Property
+
+
+'Private Sub UserControl_Resize()
+'
+'  If mbResizing Then Exit Sub
+'
+'  mbResizing = True
+'
+'  If miAlignment = 1 Then ' Horizontal
+'
+'    UserControl.Height = 30
+'
+'    If UserControl.Width < giMinWidthH Then UserControl.Width = giMinWidthH
+'    If UserControl.Height <> giMinHeightH Then UserControl.Height = giMinHeightH
+'
+'    linGrey.X1 = 0
+'    linGrey.X2 = UserControl.Width
+'    linGrey.Y1 = 0
+'    linGrey.Y2 = 0
+'
+'    linWhite.X1 = 0
+'    linWhite.X2 = UserControl.Width
+'    linWhite.Y1 = 15
+'    linWhite.Y2 = 15
+'
+'    miCurrentLength = UserControl.Width
+'
+'  Else ' Vertical
+'
+'    UserControl.Width = 30
+'    If UserControl.Height < giMinHeightV Then UserControl.Height = giMinHeightV
+'    If UserControl.Width <> giMinWidthV Then UserControl.Width = giMinWidthV
+'
+'    linGrey.X1 = 0
+'    linGrey.X2 = 0
+'    linGrey.Y1 = 0
+'    linGrey.Y2 = UserControl.Height
+'
+'    linWhite.X1 = 15
+'    linWhite.X2 = 15
+'    linWhite.Y1 = 0
+'    linWhite.Y2 = UserControl.Height
+'
+'    miCurrentLength = UserControl.Height
+'
+'  End If
+'
+'  mbResizing = False
+'
+'End Sub
+
+'Private Sub UserControl_Initialize()
+'  miAlignment = 1
+'  miCurrentLength = 1000
+'End Sub
+
 
 Private Sub IObjectSafety_GetInterfaceSafetyOptions(ByVal riid As Long, _
                                                     pdwSupportedOptions As Long, _
@@ -132,173 +381,4 @@ Private Sub IObjectSafety_SetInterfaceSafetyOptions(ByVal riid As Long, _
     End If
     
 End Sub
-Public Property Get TabIndex() As Integer
-
-  TabIndex = miTabIndex
-  
-End Property
-
-Public Property Let TabIndex(ByVal iNewValue As Integer)
-
-  miTabIndex = iNewValue
-  
-End Property
-
-Public Property Get Length() As Long
-
-Length = miCurrentLength
-
-End Property
-
-Public Property Get hWnd() As Long
-  ' Return the control's hWnd.
-  hWnd = UserControl.hWnd
-  
-End Property
-
-Public Property Let Length(ByVal lNewValue As Long)
-
-  If miAlignment = 1 Then  ' horizontal
-    UserControl.Width = lNewValue
-  Else ' Vertical
-    UserControl.Height = lNewValue
-  End If
-    
-End Property
-
-'Public Property Get Selected() As Boolean
-  
-'  Selected = gfSelected
-  
-'End Property
-
-'Public Property Let Selected(ByVal pfNewValue As Boolean)
-  
-'  gfSelected = pfNewValue
-    
-'End Property
-
-Public Property Get ControlLevel() As Integer
-  
-  ControlLevel = giControlLevel
-  
-End Property
-
-Public Property Let ControlLevel(ByVal piNewValue As Integer)
-  
-  giControlLevel = piNewValue
-  
-End Property
-
-Public Property Get ColumnID() As Long
-  
-  ColumnID = glColumnID
-  
-End Property
-
-Public Property Let ColumnID(ByVal pLngNewValue As Long)
-  
-  glColumnID = pLngNewValue
-  
-End Property
-
-Public Property Get MinimumHeight() As Long
-  
-  If miAlignment = 1 Then
-    MinimumHeight = giMinHeightH
-  Else
-    MinimumHeight = giMinHeightV
-  End If
-  
-End Property
-
-Public Property Get MinimumWidth() As Long
-  
-  If miAlignment = 1 Then
-    MinimumWidth = giMinWidthH
-  Else
-    MinimumWidth = giMinWidthV
-  End If
-  
-End Property
-
-Public Property Get Alignment() As Integer
-  
-  Alignment = miAlignment
-
-End Property
-
-Public Property Let Alignment(ByVal vNewValue As Integer)
-
-  If vNewValue = 0 Or vNewValue = 1 Then
-    miAlignment = vNewValue
-    
-    If miAlignment = 1 Then
-    
-      UserControl.Width = UserControl.Height
-    Else
-      UserControl.Height = UserControl.Width
-    End If
-  
-  End If
-  
-End Property
-
-Private Sub UserControl_Resize()
-
-  If mbResizing Then Exit Sub
-  
-  mbResizing = True
-  
-  If miAlignment = 1 Then ' Horizontal
-    
-    UserControl.Height = 30
-    
-    If UserControl.Width < giMinWidthH Then UserControl.Width = giMinWidthH
-    If UserControl.Height <> giMinHeightH Then UserControl.Height = giMinHeightH
-
-    linGrey.X1 = 0
-    linGrey.X2 = UserControl.Width
-    linGrey.Y1 = 0
-    linGrey.Y2 = 0
-    
-    linWhite.X1 = 0
-    linWhite.X2 = UserControl.Width
-    linWhite.Y1 = 15
-    linWhite.Y2 = 15
-
-    miCurrentLength = UserControl.Width
-
-  Else ' Vertical
-     
-    UserControl.Width = 30
-    If UserControl.Height < giMinHeightV Then UserControl.Height = giMinHeightV
-    If UserControl.Width <> giMinWidthV Then UserControl.Width = giMinWidthV
-  
-    linGrey.X1 = 0
-    linGrey.X2 = 0
-    linGrey.Y1 = 0
-    linGrey.Y2 = UserControl.Height
-    
-    linWhite.X1 = 15
-    linWhite.X2 = 15
-    linWhite.Y1 = 0
-    linWhite.Y2 = UserControl.Height
-  
-    miCurrentLength = UserControl.Height
-    
-  End If
-  
-  mbResizing = False
-  
-End Sub
-
-Private Sub UserControl_Initialize()
-
-  ' Default (when control first displayed) is Horizontal, 1000 px long
-  miAlignment = 1
-  miCurrentLength = 1000
-
-End Sub
-
 

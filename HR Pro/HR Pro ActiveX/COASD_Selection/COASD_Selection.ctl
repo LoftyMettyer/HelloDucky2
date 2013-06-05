@@ -9,12 +9,14 @@ Begin VB.UserControl COASD_Selection
    ClientWidth     =   855
    ScaleHeight     =   810
    ScaleWidth      =   855
+   ToolboxBitmap   =   "COASD_Selection.ctx":0000
    Begin VB.Image picSelectionMarker 
       Appearance      =   0  'Flat
       Height          =   105
       Index           =   0
       Left            =   165
       MousePointer    =   8  'Size NW SE
+      Picture         =   "COASD_Selection.ctx":0312
       Tag             =   "TopLeft"
       Top             =   150
       Width           =   105
@@ -25,6 +27,7 @@ Begin VB.UserControl COASD_Selection
       Index           =   1
       Left            =   330
       MousePointer    =   7  'Size N S
+      Picture         =   "COASD_Selection.ctx":03B0
       Tag             =   "TopCentre"
       Top             =   150
       Width           =   105
@@ -35,6 +38,7 @@ Begin VB.UserControl COASD_Selection
       Index           =   2
       Left            =   510
       MousePointer    =   6  'Size NE SW
+      Picture         =   "COASD_Selection.ctx":044E
       Tag             =   "TopRight"
       Top             =   150
       Width           =   105
@@ -45,6 +49,7 @@ Begin VB.UserControl COASD_Selection
       Index           =   3
       Left            =   165
       MousePointer    =   9  'Size W E
+      Picture         =   "COASD_Selection.ctx":04EC
       Tag             =   "CentreLeft"
       Top             =   315
       Width           =   105
@@ -55,6 +60,7 @@ Begin VB.UserControl COASD_Selection
       Index           =   4
       Left            =   510
       MousePointer    =   9  'Size W E
+      Picture         =   "COASD_Selection.ctx":058A
       Tag             =   "CentreRight"
       Top             =   315
       Width           =   105
@@ -65,6 +71,7 @@ Begin VB.UserControl COASD_Selection
       Index           =   5
       Left            =   165
       MousePointer    =   6  'Size NE SW
+      Picture         =   "COASD_Selection.ctx":0628
       Tag             =   "BottomLeft"
       Top             =   495
       Width           =   105
@@ -75,6 +82,7 @@ Begin VB.UserControl COASD_Selection
       Index           =   6
       Left            =   330
       MousePointer    =   7  'Size N S
+      Picture         =   "COASD_Selection.ctx":06C6
       Tag             =   "BottomCentre"
       Top             =   495
       Width           =   105
@@ -85,6 +93,7 @@ Begin VB.UserControl COASD_Selection
       Index           =   7
       Left            =   510
       MousePointer    =   8  'Size NW SE
+      Picture         =   "COASD_Selection.ctx":0764
       Tag             =   "BottomRight"
       Top             =   495
       Width           =   105
