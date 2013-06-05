@@ -983,7 +983,7 @@ Sub SendKeys(ByVal psSendString As String, Optional ByVal pLngHWnd As Long)
   
 End Sub
 
-Sub SetCaption(pObjControl As Object, ByVal psCaption As String)
+Public Sub SetCaption(pObjControl As Object, ByVal psCaption As String)
   On Error Resume Next
   
   'Attempt to set the Caption property
@@ -1005,7 +1005,7 @@ Sub SetFocus(ByVal pLngHWnd As Long)
 
 End Sub
 
-Function SetThickFrame(ByVal pLngHWnd As Long, ByVal pfThickFrame As Boolean)
+Public Function SetThickFrame(ByVal pLngHWnd As Long, ByVal pfThickFrame As Boolean)
   Dim lngWndStyle As Long
   
   'Get window style info
@@ -1025,7 +1025,7 @@ Function SetThickFrame(ByVal pLngHWnd As Long, ByVal pfThickFrame As Boolean)
 
 End Function
 
-Function UnlockWindow() As Boolean
+Public Function UnlockWindow() As Boolean
 
   'Unlock any window currently locked
   UnlockWindow = LockWindowUpdate(0&)
