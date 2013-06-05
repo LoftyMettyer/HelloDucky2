@@ -487,7 +487,7 @@ Namespace ScriptDB
                 If objColumn.Calculation.CalculatePostAudit Then
                   aryPostAuditCalcs.Add(sColumnName & vbNewLine)
                 Else
-                  aryCalculatedColumns.Add(sColumnName & vbNewLine)
+                  aryCalculatedColumns.Add(sColumnName)
                 End If
                 '              End If
 
@@ -595,7 +595,7 @@ Namespace ScriptDB
           ' Update child records
           If aryChildrenToUpdate.ToArray.Length > 0 Then
             sSQLChildColumns = "    --Update children" & vbNewLine & _
-                    "    IF @isovernight = 0 AND @startingtrigger = 2" & vbNewLine & "    BEGIN" & vbNewLine & _
+                    "    IF @isovernight = 0 AND ISNULL(@startingtrigger,2) = 2" & vbNewLine & "    BEGIN" & vbNewLine & _
                     String.Join(vbNewLine & vbNewLine, aryChildrenToUpdate.ToArray()) & vbNewLine & _
                    "     END"
           End If
@@ -684,7 +684,7 @@ Namespace ScriptDB
               "            WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
               "    UPDATE base SET " & vbNewLine & _
               "        {1};" & vbNewLine _
-              , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryCalculatedColumns.ToArray()))
+              , objTable.PhysicalName, String.Join(vbNewLine & vbTab & vbTab & vbTab & ", ", aryCalculatedColumns.ToArray()))
           End If
 
           ' Any calculations that require to be saved after the audit
