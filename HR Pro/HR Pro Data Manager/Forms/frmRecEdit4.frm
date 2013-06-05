@@ -5352,7 +5352,7 @@ Public Function Update(Optional pfDeactivating As Variant) As Boolean
 
           'MH20031002 Fault 7082 Reference Property instead of object to trap errors
           'fSavedOK = datGeneral.UpdateTableRecord(sSQL, mobjTableView.TableID, mobjTableView.RealSource, mlngRecordID, mlngTimeStamp)
-          fSavedOK = datGeneral.UpdateTableRecord(sSQL, Me.TableID, mobjTableView.TableName, mobjTableView.RealSource, mlngRecordID, mlngTimeStamp)
+          fSavedOK = datGeneral.UpdateTableRecord(sSQL, Me.TableID, mobjTableView.RealSource, mlngRecordID, mlngTimeStamp)
         End If
     End Select
     
@@ -5973,7 +5973,7 @@ Public Sub CancelCourse()
         Screen.MousePointer = vbHourglass
         'MH20031002 Fault 7082 Reference Property instead of object to trap errors
         'fOK = datGeneral.UpdateTableRecord(sSQL, mobjTableView.TableID, mobjTableView.RealSource, mlngRecordID, mlngTimeStamp)
-        fOK = datGeneral.UpdateTableRecord(sSQL, Me.TableID, mobjTableView.TableName, mobjTableView.RealSource, mlngRecordID, mlngTimeStamp)
+        fOK = datGeneral.UpdateTableRecord(sSQL, Me.TableID, mobjTableView.RealSource, mlngRecordID, mlngTimeStamp)
         
         If Not fOK Then
           gADOCon.RollbackTrans
@@ -10487,7 +10487,7 @@ Public Sub DeleteRecord(Optional pfPrompt As Variant, Optional pfFromFind As Boo
       ' Check that the required stored procedure exists.
       'MH20031002 Fault 7082 Reference Property instead of object to trap errors
       'fDeleteOK = datGeneral.DeleteTableRecord(mobjTableView.TableID, mobjTableView.RealSource, mlngRecordID)
-      fDeleteOK = datGeneral.DeleteTableRecord(Me.TableID, mobjTableView.TableName, mobjTableView.RealSource, mlngRecordID)
+      fDeleteOK = datGeneral.DeleteTableRecord(Me.TableID, mobjTableView.RealSource, mlngRecordID)
       
       If fDeleteOK Then
         mrsRecords.MoveNext
