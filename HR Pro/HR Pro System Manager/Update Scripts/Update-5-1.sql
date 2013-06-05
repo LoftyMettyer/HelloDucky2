@@ -115,11 +115,17 @@ END
 	IF EXISTS (SELECT * FROM sys.views WHERE object_id = object_ID(N'[dbo].[ASRSysAllObjectNames]'))
 		DROP VIEW [dbo].[ASRSysAllobjectNames]
 	EXEC sp_executesql N'CREATE VIEW dbo.[ASRSysAllObjectNames]
-	AS
-		SELECT 9 AS [objectType], MailMergeID AS ID, Name FROM ASRSysMailMergeName WHERE IsLabel = 0
-		UNION		
-		SELECT 18 AS [objectType], MailMergeID AS ID, Name FROM ASRSysMailMergeName WHERE IsLabel = 1
-		UNION		
+	AS		
+		SELECT CASE [IsBatch] 
+				WHEN 0 THEN 29
+				WHEN 1 THEN 0
+			END	AS [objectType], ID,  Name FROM ASRSysBatchJobName
+		UNION
+		SELECT CASE [IsLabel] 
+				WHEN 0 THEN 9
+				WHEN 1 THEN 18
+			END	AS [objectType],  MailMergeID AS ID, Name FROM ASRSysMailMergeName
+		UNION
 		SELECT 2 AS [objectType], ID, Name FROM ASRSysCustomReportsName
 		UNION
 		SELECT 1 AS [objectType], CrossTabID AS ID, Name FROM ASRSysCrossTab
@@ -136,16 +142,16 @@ END
 		UNION
 		SELECT 3 AS [objectType], DataTransferID AS ID, Name FROM ASRSysDataTransferName
 		UNION
-		SELECT 5 AS [objectType], [FunctionID] AS ID, Name FROM ASRSysGlobalFunctions WHERE [type] = ''A''
-		UNION
-		SELECT 6 AS [objectType], [FunctionID] AS ID, Name FROM ASRSysGlobalFunctions WHERE [type] = ''D''
-		UNION
-		SELECT 7 AS [objectType], [FunctionID] AS ID, Name FROM ASRSysGlobalFunctions WHERE [type] = ''U''
+		SELECT CASE [type] 
+				WHEN ''A'' THEN 5
+				WHEN ''D'' THEN 6
+				WHEN ''U'' THEN 7
+			END	AS [objectType], [FunctionID] AS ID, Name FROM ASRSysGlobalFunctions
 		UNION		
 		SELECT 15 AS [objectType], 0 AS ID, ''Absence Breakdown''
 		UNION
 		SELECT 16 AS [objectType], 0 AS ID, ''Bradford Factor''
-		UNION		
+		UNION
 		SELECT 17 AS [objectType], ID AS ID, Name FROM ASRSysCalendarReports
 		UNION		
 		SELECT 20 AS [objectType], RecordProfileID AS ID, Name FROM ASRSysRecordProfileName
