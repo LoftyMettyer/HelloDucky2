@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
-Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "tinumb6.ocx"
+Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "TIMASK6.OCX"
+Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "TINUMB6.OCX"
 Object = "{E2D000D0-2DA1-11D2-B358-00104B59D73D}#1.0#0"; "titext6.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
@@ -14,7 +14,7 @@ Object = "{4FD0EB05-F124-4460-A61D-CB587234FB75}#1.0#0"; "COA_Image.ocx"
 Object = "{EDB7B7A8-7908-4896-B964-57CE7262666E}#1.0#0"; "COA_OLE.ocx"
 Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "COA_Label.ocx"
 Object = "{3389D561-C8E1-4CB0-A73E-77582EA68D3C}#1.1#0"; "COA_Lookup.ocx"
-Object = "{AD837810-DD1E-44E0-97C5-854390EA7D3A}#3.1#0"; "COA_Navigation.ocx"
+Object = "{AD837810-DD1E-44E0-97C5-854390EA7D3A}#3.2#0"; "COA_Navigation.ocx"
 Begin VB.Form frmRecEdit4 
    BorderStyle     =   1  'Fixed Single
    ClientHeight    =   5835
@@ -429,8 +429,8 @@ Begin VB.Form frmRecEdit4
          TabIndex        =   10
          Top             =   240
          Visible         =   0   'False
-         Width           =   1125
-         _ExtentX        =   1984
+         Width           =   1140
+         _ExtentX        =   2011
          _ExtentY        =   1138
       End
       Begin VB.CommandButton Command1 
@@ -5205,13 +5205,10 @@ Public Function Update(Optional pfDeactivating As Variant) As Boolean
   End If
   
   If fSavedOK Then
-    
-    ' Do any bespoke post save navigation code
-    ExecutePostSaveCode
-    
+       
     ' Refresh the recordset as the current record may no longer be in it.
     RefreshRecordset
-    
+        
     ' Try to locate the current record in the recordset.
     ' If the current record is no longer in the recordset then inform the user why we've
     ' moved to the first record.
@@ -5277,6 +5274,10 @@ ExitUpdate:
     ' JPD20021007 Fault 4498
     ReDim malngChangedOLEPhotos(0)
     objEmail.SendImmediateEmails
+    
+    ' Do any bespoke post save navigation code
+    ExecutePostSaveCode
+    
   Else
     Database.Validation = False
   End If
