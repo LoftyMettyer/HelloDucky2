@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "TIMASK6.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
@@ -2208,7 +2208,7 @@ End Property
 
 Public Property Let Changed(pblnNewValue As Boolean)
   mblnChanged = pblnNewValue
-  cmdOk.Enabled = mblnChanged
+  cmdOK.Enabled = mblnChanged
 End Property
 
 Public Property Get Changed() As Boolean
@@ -2804,14 +2804,16 @@ Private Sub chkMultiLine_Click()
 '    End If
 '  End If
 
-  If chkMultiLine.value = vbChecked Then
-    asrSize.Text = VARCHAR_MAX_Size
-  Else
-    asrSize.Text = 8000
+  If miDataType = dtVARCHAR Then
+    If chkMultiLine.value = vbChecked Then
+      asrSize.Text = VARCHAR_MAX_Size
+    Else
+      asrSize.Text = 8000
+    End If
   End If
 
   spnDefaultDisplayWidth.Text = asrSize.Text
-  txtDefault.MaxLength = IIf(chkMultiLine.value = vbChecked, 8000, Val(asrSize.Text))
+  txtDefault.MaxLength = IIf(chkMultiLine.value = vbChecked, 8000, val(asrSize.Text))
 
   If Not mfLoading Then Changed = True
 End Sub
@@ -3243,7 +3245,7 @@ End Sub
 
 Private Sub cmdCancel_Click()
   Dim pintAnswer As Integer
-    If Changed = True And cmdOk.Enabled Then
+    If Changed = True And cmdOK.Enabled Then
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
       If pintAnswer = vbYes Then
         Me.MousePointer = vbHourglass
@@ -3611,7 +3613,7 @@ Private Sub cmdOK_Click()
     
     ' Ensure that the column name is not a database keyword.
     If UCase(sColumnName) = "ID" Or Database.IsKeyword(sColumnName) _
-      Or (UCase(Left(sColumnName, 3)) = "ID_" And Val(Mid(sColumnName, 4)) > 0) Then
+      Or (UCase(Left(sColumnName, 3)) = "ID_" And val(Mid(sColumnName, 4)) > 0) Then
       ' Flag to the user that the column name is a database keyword.
       MsgBox "'" & sColumnName & "' is a reserved word" & vbCr & _
         "and cannot be used for a column name.", _
@@ -3697,7 +3699,7 @@ Private Sub cmdOK_Click()
   '  End If
     
     ' Flag to the user if the column size is invalid.
-    If Database.ColumnHasSize(miDataType) And (Val(asrSize.Text) < 1) Then
+    If Database.ColumnHasSize(miDataType) And (val(asrSize.Text) < 1) Then
       MsgBox "Invalid column size.", vbOKOnly + vbExclamation, Application.Name
       tabColProps.Tab = iPAGE_DEFINITION
       If asrSize.Enabled Then
@@ -3748,7 +3750,7 @@ Private Sub cmdOK_Click()
               sValues = ""
             End If
               
-            If Len(sSubString) > Val(asrSize.Text) Then
+            If Len(sSubString) > val(asrSize.Text) Then
               MsgBox "The control values are too long for the defined column size.", _
                 vbOKOnly + vbExclamation, Application.Name
               tabColProps.Tab = iPAGE_CONTROL
@@ -3779,7 +3781,7 @@ Private Sub cmdOK_Click()
         'MH20040213 Fault 8088
         If txtDefault.Visible Then
           ' Check that the Default Value is valid.
-          If Len(Trim(txtDefault.Text)) > Val(asrSize.Text) Then
+          If Len(Trim(txtDefault.Text)) > val(asrSize.Text) Then
             MsgBox "The default value is too long for the defined column size.", _
               vbOKOnly + vbExclamation, Application.Name
             tabColProps.Tab = iPAGE_OPTIONS
@@ -3963,14 +3965,14 @@ Private Sub cmdOK_Click()
       iChangeStatus = 0
       sChangeStatus = ""
       
-      If (Val(asrSize.Text) <> mobjColumn.Properties("size")) And _
-          (Val(asrDecimals.Text) <> mobjColumn.Properties("decimals")) Then
+      If (val(asrSize.Text) <> mobjColumn.Properties("size")) And _
+          (val(asrDecimals.Text) <> mobjColumn.Properties("decimals")) Then
         iChangeStatus = 1
         sChangeStatus = "size or decimals"
-      ElseIf (Val(asrSize.Text) <> mobjColumn.Properties("size")) Then
+      ElseIf (val(asrSize.Text) <> mobjColumn.Properties("size")) Then
         iChangeStatus = 2
         sChangeStatus = "size"
-      ElseIf (Val(asrDecimals.Text) <> mobjColumn.Properties("decimals")) Then
+      ElseIf (val(asrDecimals.Text) <> mobjColumn.Properties("decimals")) Then
         iChangeStatus = 3
         sChangeStatus = "decimals"
       End If
@@ -4038,9 +4040,9 @@ Private Sub cmdOK_Click()
               objOtherCol.ColumnID = sOtherCols(2, iNewIndex)
               
               If objOtherCol.ReadColumn Then
-                objOtherCol.Properties("size") = Val(asrSize.Text)
-                objOtherCol.Properties("decimals") = Val(asrDecimals.Text)
-                objOtherCol.Properties("defaultdisplaywidth") = Val(spnDefaultDisplayWidth.value)
+                objOtherCol.Properties("size") = val(asrSize.Text)
+                objOtherCol.Properties("decimals") = val(asrDecimals.Text)
+                objOtherCol.Properties("defaultdisplaywidth") = val(spnDefaultDisplayWidth.value)
                 objOtherCol.WriteColumn_Transaction
               End If
             
@@ -4197,7 +4199,7 @@ Private Sub cmdOK_Click()
       .Properties("dataType") = miDataType
       
       ' RH 12/03/01 - Write the new default display width to the column object
-      .Properties("defaultdisplaywidth") = Val(Me.spnDefaultDisplayWidth.value)
+      .Properties("defaultdisplaywidth") = val(Me.spnDefaultDisplayWidth.value)
       
       'MH20010301 Fault 1931
       'Overwrite the size and decimals for certain data types...
@@ -4208,13 +4210,13 @@ Private Sub cmdOK_Click()
         .Properties("size") = 10
         .Properties("decimals") = 0
       Case "numeric"
-        .Properties("size") = Val(asrSize.Text)
-        .Properties("decimals") = Val(asrDecimals.Text)
+        .Properties("size") = val(asrSize.Text)
+        .Properties("decimals") = val(asrDecimals.Text)
       Case "character"
         If chkMultiLine.value = vbChecked Then
           .Properties("size") = VARCHAR_MAX_Size
         Else
-          .Properties("size") = Val(asrSize.Text)
+          .Properties("size") = val(asrSize.Text)
         End If
         .Properties("decimals") = 0
       Case Else
@@ -4248,15 +4250,15 @@ Private Sub cmdOK_Click()
       .Properties("spinnerMinimum") = IIf((((miColumnType = giCOLUMNTYPE_DATA) Or _
                                             (miColumnType = giCOLUMNTYPE_CALCULATED)) _
                                             And (miControlType = giCTRL_SPINNER)), _
-                                      Val(asrMinVal.Text), 0)
+                                      val(asrMinVal.Text), 0)
       .Properties("spinnerMaximum") = IIf((((miColumnType = giCOLUMNTYPE_DATA) Or _
                                             (miColumnType = giCOLUMNTYPE_CALCULATED)) _
                                             And (miControlType = giCTRL_SPINNER)), _
-                                      Val(asrMaxVal.Text), 0)
+                                      val(asrMaxVal.Text), 0)
       .Properties("spinnerIncrement") = IIf((((miColumnType = giCOLUMNTYPE_DATA) Or _
                                             (miColumnType = giCOLUMNTYPE_CALCULATED)) _
                                             And (miControlType = giCTRL_SPINNER)), _
-                                      Val(asrIncVal.Text), 0)
+                                      val(asrIncVal.Text), 0)
       
       'MH20060928 Fault 11527
       '.Properties("statusBarMessage") = Trim(txtStatusBarMessage.Text)
@@ -4868,7 +4870,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
   If mfCancelled = True Then
     If UnloadMode <> vbFormCode Then
-      If Changed = True And cmdOk.Enabled Then
+      If Changed = True And cmdOK.Enabled Then
         pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
         If pintAnswer = vbYes Then
           cmdOK_Click
@@ -6217,7 +6219,7 @@ Private Sub cboDefault_Refresh()
             Select Case miDataType
               Case dtNUMERIC, dtINTEGER
                 cboDefault.AddItem Trim(Str(vValue))
-                If vValue = Val(sDefaultValue) Then
+                If vValue = val(sDefaultValue) Then
                   iSelection = cboDefault.NewIndex
                   fDefaultChanged = False
                 End If
@@ -6556,6 +6558,7 @@ Private Function GetLookupColumn() As Boolean
     
     cboDataType_Refresh
     cboDefault_Refresh
+    'RefreshControlTab
     mfClearDefault = False
   End If
   
@@ -6593,13 +6596,13 @@ End Sub
 Private Sub txtListValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOk.Default = False
+  cmdOK.Default = False
   
 End Sub
 
 Private Sub txtListValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOk.Default = True
+  cmdOK.Default = True
 
   ' Refresh the list of possible default values.
   cboDefault_Refresh
@@ -7030,7 +7033,7 @@ Private Sub RefreshOptionsTab()
         dblControlBottom = TDBDefaultNumber.Top + TDBDefaultNumber.Height
       Else
         txtDefault.Visible = True
-        txtDefault.MaxLength = Minimum(Val(asrSize.Text), 8000)
+        txtDefault.MaxLength = Minimum(val(asrSize.Text), 8000)
         dblControlBottom = txtDefault.Top + txtDefault.Height
       End If
       
@@ -7045,9 +7048,9 @@ Private Sub RefreshOptionsTab()
     
     Case giCTRL_SPINNER
       asrDefault.Visible = True
-      asrDefault.MinimumValue = Val(asrMinVal.Text)
-      asrDefault.MaximumValue = Val(asrMaxVal.Text)
-      asrDefault.Increment = Val(asrIncVal.Text)
+      asrDefault.MinimumValue = val(asrMinVal.Text)
+      asrDefault.MaximumValue = val(asrMaxVal.Text)
+      asrDefault.Increment = val(asrIncVal.Text)
       dblControlBottom = asrDefault.Top + asrDefault.Height
             
     Case giCTRL_WORKINGPATTERN
