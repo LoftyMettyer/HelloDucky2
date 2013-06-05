@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
 Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "COASD_SelectionBox.ocx"
 Object = "{F3C5146D-8FDA-4D29-8E41-0C27C803C808}#1.0#0"; "COAWF_BeginEnd.ocx"
 Object = "{08EDC6C1-0A62-485F-8917-8D9FB93DB156}#1.0#0"; "COAWF_Decision.ocx"
@@ -12293,6 +12293,7 @@ Private Function SaveElementsAndLinks() As Boolean
               .Fields("LookupFilterColumnID") = asItems(67, iLoop)
               .Fields("LookupFilterOperator") = asItems(68, iLoop)
               .Fields("LookupFilterValue") = asItems(69, iLoop)
+              .Fields("LookupOrderID") = asItems(80, iLoop)
             End If
             
             .Fields("CalcID") = val(asItems(56, iLoop))
@@ -13226,6 +13227,7 @@ Public Function LoadElementsAndLinks() As Boolean
             ' Col 67 = Lookup Filter Column ID
             ' Col 68 = Lookup Filter Operator
             ' Col 69 = Lookup Filter Value
+            ' Col 70 = Lookup Order ID
             
             ' NB. IF YOU ADD ANY MORE ROWS TO THIS ARRAY YOU'LL NEED TO CHANGE
             ' THE 'WFITEMPROPERTYCOUNT' CONSTANT
@@ -13390,6 +13392,7 @@ Public Function LoadElementsAndLinks() As Boolean
                   asItems(67, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterColumnID").value), 0, recWorkflowElementItemEdit.Fields("LookupFilterColumnID").value)
                   asItems(68, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterOperator").value), 0, recWorkflowElementItemEdit.Fields("LookupFilterOperator").value)
                   asItems(69, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterValue").value), "", recWorkflowElementItemEdit.Fields("LookupFilterValue").value)
+                  asItems(80, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupOrderID").value), 0, recWorkflowElementItemEdit.Fields("LookupOrderID").value)
 
                   If (recWorkflowElementItemEdit.Fields("itemType") = giWFFORMITEM_INPUTVALUE_FILEUPLOAD) Then
 

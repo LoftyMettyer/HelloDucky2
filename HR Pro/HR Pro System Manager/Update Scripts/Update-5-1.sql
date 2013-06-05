@@ -2120,6 +2120,13 @@ PRINT 'Step - Audit Log Updates'
 	END
 
 /* ------------------------------------------------------------- */
+/* Step - Workflow Updates */
+/* ------------------------------------------------------------- */
+	
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysWorkflowElementItems', 'U') AND name = 'LookupOrderID')
+		EXEC sp_executesql N'ALTER TABLE dbo.ASRSysWorkflowElementItems ADD LookupOrderID int NULL;';
+
+/* ------------------------------------------------------------- */
 /* Step - Reset Password Parameters */
 /* ------------------------------------------------------------- */
 

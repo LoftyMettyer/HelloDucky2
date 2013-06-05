@@ -2198,8 +2198,10 @@ Public Function WebFormItemHasProperty(piItemType As WorkflowWebFormItemTypes, _
 
     Case WFITEMPROP_TABCAPTION ' 76
       fHasProperty = (piItemType = giWFFORMITEM_PAGETAB)
-
-
+    
+    Case WFITEMPROP_LOOKUPORDER ' 77
+      fHasProperty = (piItemType = giWFFORMITEM_INPUTVALUE_LOOKUP)
+      
   End Select
   
   WebFormItemHasProperty = fHasProperty
