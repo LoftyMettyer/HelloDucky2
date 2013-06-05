@@ -6,12 +6,12 @@ Namespace Things
   Public Class GlobalModifyItem
     Inherits Things.Base
 
-    Public ColumnID As SystemFramework.HCMGuid
-    Public Value As String
-    Public CalculationID As SystemFramework.HCMGuid
-    Public RefColumnID As SystemFramework.HCMGuid
-    Public LookupTableID As SystemFramework.HCMGuid
-    Public LookupColumnID As SystemFramework.HCMGuid
+    Public Property ColumnID As Integer
+    Public Property Value As String
+    Public Property CalculationID As Integer
+    Public Property RefColumnID As Integer
+    Public Property LookupTableID As Integer
+    Public Property LookupColumnID As Integer
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
@@ -27,7 +27,7 @@ Namespace Things
 
     Public ReadOnly Property DisplayColumn As String
       Get
-        Return CStr(CInt(ColumnID))
+        Return ColumnID.ToString
       End Get
     End Property
 

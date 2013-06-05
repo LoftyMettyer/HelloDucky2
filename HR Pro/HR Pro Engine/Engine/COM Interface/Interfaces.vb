@@ -1,6 +1,6 @@
 ﻿Public Module COMInterfaces
 
-  Public Interface iCommitDB
+  Public Interface ICommitDB
     Function ScriptTables() As Boolean
     Function ScriptTableViews() As Boolean
     Function ScriptObjects() As Boolean
@@ -14,7 +14,7 @@
     Function ScriptOvernightStep2() As Boolean
   End Interface
 
-  Public Interface iSystemManager
+  Public Interface ISystemManager
     Property MetadataDB As Object
     Property CommitDB As Object
     ReadOnly Property ErrorLog As ErrorHandler.Errors
@@ -29,61 +29,61 @@
     ReadOnly Property Modifications As Modifications
   End Interface
 
-  Public Interface iErrors
+  Public Interface IErrors
     Sub OutputToFile(ByRef FileName As String)
     Sub Show()
     ReadOnly Property ErrorCount As Integer
     ReadOnly Property IsCatastrophic As Boolean
   End Interface
 
-  Public Interface iForm
+  Public Interface IForm
     Sub Show()
     Sub ShowDialog()
   End Interface
 
-  Public Interface iOptions
+  Public Interface IOptions
     Property RefreshObjects As Boolean
     Property DevelopmentMode As Boolean
     Property OverflowSafety As Boolean
     Property OptimiseSaveProcess As Boolean
   End Interface
 
-  Public Interface iConnection
+  Public Interface IConnection
     Sub Open()
     Sub Close()
-    Function ExecStoredProcedure(ByVal ProcedureName As String, ByRef Parms As Connectivity.Parameters) As System.Data.DataSet
+    Function ExecStoredProcedure(ByVal ProcedureName As String, ByVal Parms As Connectivity.Parameters) As System.Data.DataSet
     Function ScriptStatement(ByVal Statement As String) As Boolean
     Property Login As Connectivity.Login
   End Interface
 
 #Region "Collections"
 
-  Public Interface iCollection_Base
+  Public Interface ICollection_Base
     ReadOnly Property Objects(ByVal Type As Things.Type) As Things.Collections.Generic
-    Sub Add(ByRef [Object] As Things.Base)
+    Sub Add(ByVal [Object] As Things.Base)
   End Interface
 
-  Public Interface iCollection_Objects
-    Function Table(ByRef [ID] As HCMGuid) As Things.Table
+  Public Interface ICollection_Objects
+    Function Table(ByVal [ID] As Integer) As Things.Table
     Function Setting(ByVal [Module] As String, ByVal [Parameter] As String) As Things.Setting
   End Interface
 
-  Public Interface iCollection_WorkflowElements
-    Function Element(ByRef [ID] As HCMGuid) As Things.WorkflowElement
+  Public Interface ICollection_WorkflowElements
+    Function Element(ByVal [ID] As Integer) As Things.WorkflowElement
     Function Elements() As Things.Collections.BaseCollection
-    Sub Add(ByRef objWorkflowElementItem As Things.WorkflowElementItem)
+    Sub Add(ByVal objWorkflowElementItem As Things.WorkflowElementItem)
   End Interface
 
 #End Region
 
 
-  Public Interface iObject
+  Public Interface IObject
     Property Name As String
     ReadOnly Property PhysicalName As String
   End Interface
 
-  Public Interface iTable
-    Inherits iObject
+  Public Interface ITable
+    Inherits IObject
     Property CustomTriggers As Things.Collections.BaseCollection
     ' These eventually will be gotten rid of when we port the rest of sysmgr into this framework.
     Property SysMgrInsertTrigger As String
@@ -91,8 +91,8 @@
     Property SysMgrDeleteTrigger As String
   End Interface
 
-  Public Interface iWorkflowElement
-    Property WorkflowID As HCMGuid
+  Public Interface IWorkflowElement
+    Property WorkflowID As Integer
     Property Caption As String
     Property ConnectionPairID As Integer
     Property LeftCoord As Integer
@@ -101,9 +101,9 @@
     Property Identifier As String
     Property TrueFlowIdentifier As String
     Property DataAction As Integer
-    Property DataTableID As HCMGuid
+    Property DataTableID As Integer
     Property DataRecord As Integer
-    Property EmailID As HCMGuid
+    Property EmailID As Integer
     Property EmailRecord As Integer
     Property WebFormBGColor As Integer
     Property WebFormBGImageID As Integer
@@ -124,15 +124,15 @@
     Property EmailSubject As String
     Property TimeoutFrequency As Integer
     Property TimeoutPeriod As Integer
-    Property DataRecordTable As HCMGuid
-    Property SecondaryDataRecordTable As HCMGuid
+    Property DataRecordTable As Integer
+    Property SecondaryDataRecordTable As Integer
     Property TrueFlowType As Integer
-    Property TrueFlowExprID As HCMGuid
-    Property DescriptionExprID As HCMGuid
+    Property TrueFlowExprID As Integer
+    Property DescriptionExprID As Integer
     Property WebFormFGColor As Integer
     Property DescHasWorkflowName As Boolean
     Property DescHasElementCaption As Boolean
-    Property EmailCCID As HCMGuid
+    Property EmailCCID As Integer
     Property TimeoutExcludeWeekend As Boolean
     Property CompletionMessageType As Integer
     Property CompletionMessage As String
@@ -144,13 +144,13 @@
     Property Attachment_File As String
     Property Attachment_WFElementIdentifier As String
     Property Attachment_WFValueIdentifier As String
-    Property Attachment_DBColumnID As HCMGuid
-    Property Attachment_DBRecord As HCMGuid
+    Property Attachment_DBColumnID As Integer
+    Property Attachment_DBRecord As Integer
     Property Attachment_DBElement As String
     Property Attachment_DBValue As String
   End Interface
 
-  Public Interface iWorkflowElementItem
+  Public Interface IWorkflowElementItem
     Property ID As Integer
     Property Description As String
     Property ItemType As Integer
@@ -223,7 +223,7 @@
     Property LookupFilterValue As String
   End Interface
 
-  Public Interface iModifications
+  Public Interface IModifications
     Property StructureChanged As Boolean
     Property ExpressionChanged As Boolean
     Property ScreenChanged As Boolean
@@ -233,9 +233,9 @@
   End Interface
 
 
-  ' NOT YET USED
-  Public Interface iColumn
-    Inherits iObject
+  'NOTE: NOT YET USED
+  Public Interface IColumn
+    Inherits IObject
     Property DataType As ScriptDB.ColumnTypes
     Property Size As Integer
     Property Decimals As Integer
@@ -248,7 +248,7 @@
     Property Alignment As Things.AlignType
     Property Mandatory As Boolean
     Property OLEType As ScriptDB.OLEType
-    Property DefaultCalcID As HCMGuid
+    Property DefaultCalcID As Integer
     Property DefaultCalculation As Things.Expression
     Property DefaultValue As String
   End Interface

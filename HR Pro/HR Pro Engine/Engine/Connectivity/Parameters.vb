@@ -6,7 +6,7 @@ Namespace Connectivity
     Public Class Parameters
     Inherits System.ComponentModel.BindingList(Of Connectivity.Parameter)
 
-    Public Shadows Sub Add(ByRef [Name] As String, ByRef [Value] As HCMGuid)
+    Public Shadows Sub Add(ByVal [Name] As String, ByVal [Value] As Integer)
 
       Dim objParameter As New Connectivity.Parameter
 
@@ -17,18 +17,7 @@ Namespace Connectivity
 
     End Sub
 
-    Public Shadows Sub Add(ByRef [Name] As String, ByRef [Value] As Integer)
-
-      Dim objParameter As New Connectivity.Parameter
-
-      objParameter.Name = [Name]
-      objParameter.DBType = DBType.Integer
-      objParameter.Value = [Value]
-      Me.Items.Add(objParameter)
-
-    End Sub
-
-    Public Shadows Sub Add(ByRef [Name] As String, ByRef [Value] As String)
+    Public Shadows Sub Add(ByVal [Name] As String, ByVal [Value] As String)
 
       Dim objParameter As New Connectivity.Parameter
 

@@ -8,43 +8,37 @@ Namespace Things
   Public Class Expression
     Inherits Things.Component
 
-    Public Size As Integer
-    Public Decimals As Integer
-    Public BaseTableID As HCMGuid
-
-    <System.Xml.Serialization.XmlIgnore()> _
-    Public BaseTable As Things.Table
-
-    <System.Xml.Serialization.XmlIgnore()> _
-    Public AssociatedColumn As Things.Column
-
+    Public Property Size As Integer
+    Public Property Decimals As Integer
+    Public Property BaseTableID As Integer
+    Public Property BaseTable As Things.Table
+    Public Property AssociatedColumn As Things.Column
     Public UDF As ScriptDB.GeneratedUDF
-    Public ExpressionType As ScriptDB.ExpressionType
+    Public Property ExpressionType As ScriptDB.ExpressionType
 
-    Public Dependencies As New Things.Collections.Generic
-    Public ColumnRecursion As New Things.Collections.Generic
-    Public StatementObjects As New Things.Collections.Generic
+    Public Property Dependencies As New Things.Collections.Generic
+    Public Property ColumnRecursion As New Things.Collections.Generic
+    Public Property StatementObjects As New Things.Collections.Generic
 
-    Public Joins As ArrayList
-    Public FromTables As ArrayList
-    Private Wheres As ArrayList
-    Public Declarations As New ArrayList
-    Public PreStatements As New ArrayList
+    Public Property Joins As ArrayList
+    Public Property FromTables As ArrayList
+    Public Property  Wheres As ArrayList
+    Public Property Declarations As New ArrayList
+    Public Property PreStatements As New ArrayList
 
-    Private mcolLinesOfCode As ScriptDB.LinesOfCode
+    Private _linesOfCode As ScriptDB.LinesOfCode
+    Private _calculatePostAudit As Boolean
 
-    Public CaseCount As Integer = 0
-    Private lngStartOfPartNumbers As Long = 0
-    Public RequiresRecordID As Boolean = False
-    Public RequiresOvernight As Boolean = False
-    Public ContainsUniqueCode As Boolean = False
-    Public ReferencesParent As Boolean = False
-    Public ReferencesChild As Boolean = False
+    Public Property CaseCount As Integer
+    Public Property StartOfPartNumbers As Long
+    Public Property RequiresRecordID As Boolean
+    Public Property RequiresOvernight As Boolean
+    Public Property ContainsUniqueCode As Boolean
+    Public Property ReferencesParent As Boolean
+    Public Property ReferencesChild As Boolean
 
-    Public IsComplex As Boolean = False
-    Public IsValid As Boolean = True
-
-    Private mbCalculatePostAudit As Boolean = False
+    Public Property IsComplex As Boolean
+    Public Property IsValid As Boolean = True
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
@@ -54,47 +48,30 @@ Namespace Things
 
     Public ReadOnly Property CalculatePostAudit As Boolean
       Get
-        Return mbCalculatePostAudit
+        Return _calculatePostAudit
       End Get
     End Property
-
-    Public Property StartOfPartNumbers As Long
-      Get
-        Return lngStartOfPartNumbers
-      End Get
-      Set(ByVal value As Long)
-        lngStartOfPartNumbers = value
-      End Set
-    End Property
-
-
 
 #Region "Generate code"
 
-    Private Sub BuildDependancies(ByVal objExpression As Things.Component)
+    Private Sub BuildDependancies(ByVal expression As Things.Component)
 
-      Try
+      For Each component As Component In expression.Components
 
-        For Each objComponent As Component In objExpression.Components
+        Select Case CInt(component.SubType)
+          Case ScriptDB.ComponentTypes.Column
 
-          Select Case objComponent.SubType
-            Case ScriptDB.ComponentTypes.Column
+            Dim table As Table = Globals.Tables.GetById(component.TableID)
+            Dim column As Column = table.Columns.GetById(component.ColumnID)
 
-              Dim objTable As Table = Globals.Tables.GetById(objComponent.TableID)
-              Dim objColumn As Column = objTable.Columns.GetById(objComponent.ColumnID)
+            Dependencies.AddIfNew(column)
+            Dependencies.AddIfNew(column.Table)
 
-              Dependencies.AddIfNew(objColumn)
-              Dependencies.AddIfNew(objColumn.Table)
+          Case ScriptDB.ComponentTypes.Expression, ScriptDB.ComponentTypes.Function, ScriptDB.ComponentTypes.Calculation
+            BuildDependancies(component)
+        End Select
 
-            Case ScriptDB.ComponentTypes.Expression, ScriptDB.ComponentTypes.Function, ScriptDB.ComponentTypes.Calculation
-              BuildDependancies(objComponent)
-          End Select
-
-        Next
-
-      Catch ex As Exception
-        Globals.ErrorLog.Add(ErrorHandler.Section.General, objExpression.Name, ErrorHandler.Severity.Error, "Expression component missing", ex.Message)
-      End Try
+      Next
 
     End Sub
 
@@ -113,10 +90,10 @@ Namespace Things
       ' Initialise code object
       Me.IsComplex = False
       Me.CaseCount = 0
-      mcolLinesOfCode = New ScriptDB.LinesOfCode
-      mcolLinesOfCode.Clear()
-      mcolLinesOfCode.ReturnType = ReturnType
-      mcolLinesOfCode.CodeLevel = IIf(Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter, 2, 1)
+      _linesOfCode = New ScriptDB.LinesOfCode
+      _linesOfCode.Clear()
+      _linesOfCode.ReturnType = ReturnType
+      _linesOfCode.CodeLevel = If(Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter, 2, 1)
 
       Joins = New ArrayList
       FromTables = New ArrayList
@@ -143,7 +120,7 @@ Namespace Things
       aryParameters3.Clear()
 
       ' Build the execution code
-      SQLCode_AddCodeLevel(Me.Components, mcolLinesOfCode)
+      SQLCode_AddCodeLevel(Me.Components, _linesOfCode)
 
       ' Always add the ID for the record
       If RequiresRecordID Or Me.IsComplex Or Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault Then
@@ -251,7 +228,7 @@ Namespace Things
       With UDF
 
         If Not Me.IsComplex Then
-          .InlineCode = ResultWrapper(mcolLinesOfCode.Statement)
+          .InlineCode = ResultWrapper(_linesOfCode.Statement)
           .InlineCode = .InlineCode.Replace("@prm_", "base.")
           .InlineCode = .InlineCode.Replace("@rownumber", "[rownumber]")
           .InlineCode = ScriptDB.Beautify.MakeSingleLine(.InlineCode)
@@ -271,11 +248,11 @@ Namespace Things
               , Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.Name, Me.BaseExpression.Name _
               , String.Join(", ", aryDependsOn.ToArray()), Now().ToString _
               , Me.Tuning.Rating, Me.Tuning.ExpressionComplexity, Me.Description)
-        .Declarations = IIf(Declarations.Count > 0, "DECLARE " & String.Join("," & vbNewLine, Declarations.ToArray()) & ";" & vbNewLine, "")
-        .Prerequisites = IIf(PreStatements.Count > 0, String.Join(vbNewLine, PreStatements.ToArray()) & vbNewLine & vbNewLine, "")
-        .JoinCode = IIf(Joins.Count > 0, String.Format("{0}", String.Join(vbNewLine, Joins.ToArray)) & vbNewLine, "")
-        .FromCode = IIf(FromTables.Count > 0, String.Format("{0}", String.Join(",", FromTables.ToArray)) & vbNewLine, "")
-        .WhereCode = IIf(Wheres.Count > 0, String.Format("WHERE {0}", String.Join(" AND ", Wheres.ToArray)) & vbNewLine, "")
+        .Declarations = If(Declarations.Count > 0, "DECLARE " & String.Join("," & vbNewLine, Declarations.ToArray()) & ";" & vbNewLine, "")
+        .Prerequisites = If(PreStatements.Count > 0, String.Join(vbNewLine, PreStatements.ToArray()) & vbNewLine & vbNewLine, "")
+        .JoinCode = If(Joins.Count > 0, String.Format("{0}", String.Join(vbNewLine, Joins.ToArray)) & vbNewLine, "")
+        .FromCode = If(FromTables.Count > 0, String.Format("{0}", String.Join(",", FromTables.ToArray)) & vbNewLine, "")
+        .WhereCode = If(Wheres.Count > 0, String.Format("WHERE {0}", String.Join(" AND ", Wheres.ToArray)) & vbNewLine, "")
 
         ' Code beautify
         ScriptDB.Beautify.Cleanwhitespace(.Prerequisites)
@@ -284,7 +261,7 @@ Namespace Things
 
           Case ScriptDB.ExpressionType.ColumnDefault
             .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.DefaultValueUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
-            .SelectCode = mcolLinesOfCode.Statement
+            .SelectCode = _linesOfCode.Statement
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
             .Code = String.Format("{11}CREATE FUNCTION {0}({1})" & vbNewLine & _
                            "RETURNS {2}" & vbNewLine & _
@@ -307,7 +284,7 @@ Namespace Things
             ' Wrapper for calculations with associated columns
           Case ScriptDB.ExpressionType.ColumnCalculation
             .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
-            .SelectCode = mcolLinesOfCode.Statement
+            .SelectCode = _linesOfCode.Statement
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
             .Code = String.Format("{11}CREATE FUNCTION {0}({1})" & vbNewLine & _
                            "RETURNS {2}" & vbNewLine & _
@@ -351,13 +328,13 @@ Namespace Things
             .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
             '.SelectCode = String.Format("CASE WHEN ({0}) THEN 1 ELSE 0 END", mcolLinesOfCode.Statement)
-            .SelectCode = mcolLinesOfCode.Statement
+            .SelectCode = _linesOfCode.Statement
 
             ' Wrapper for when expression is used as a filter in a view
           Case ScriptDB.ExpressionType.Mask
             .Name = String.Format("[{0}].[{1}{2}]", Me.SchemaName, ScriptDB.Consts.MaskUDF, CInt(Me.BaseExpression.ID))
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters1.ToArray))
-            .SelectCode = mcolLinesOfCode.Statement
+            .SelectCode = _linesOfCode.Statement
 
             .Code = String.Format("CREATE FUNCTION {0}(@prm_ID integer)" & vbNewLine & _
                            "RETURNS bit" & vbNewLine & _
@@ -395,12 +372,12 @@ Namespace Things
           Case ScriptDB.ExpressionType.ReferencedColumn
             .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters3.ToArray))
-            .SelectCode = mcolLinesOfCode.Statement
+            .SelectCode = _linesOfCode.Statement
 
           Case ScriptDB.ExpressionType.RecordDescription
             .Name = String.Format("[{0}].[{1}{2}]", Me.SchemaName, ScriptDB.Consts.RecordDescriptionUDF, Me.BaseTable.Name)
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
-            .SelectCode = mcolLinesOfCode.Statement
+            .SelectCode = _linesOfCode.Statement
 
             .Code = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
                            "RETURNS nvarchar(MAX)" & vbNewLine & _
@@ -442,7 +419,7 @@ Namespace Things
 
             ' Should never be called, but just in case...
           Case Else
-            .SelectCode = mcolLinesOfCode.Statement
+            .SelectCode = _linesOfCode.Statement
 
         End Select
 
@@ -450,13 +427,11 @@ Namespace Things
 
     End Sub
 
-    Private Sub SQLCode_AddCodeLevel(ByRef [Components] As List(Of Component), ByRef [CodeCluster] As ScriptDB.LinesOfCode)
+    Private Sub SQLCode_AddCodeLevel(ByVal [Components] As List(Of Component), ByVal [CodeCluster] As ScriptDB.LinesOfCode)
 
       Dim objComponent As Things.Component
 
-      Dim guiObjectID As HCMGuid
-
-      Dim iValueSubType As ScriptDB.ColumnTypes = Nothing
+      Dim guiObjectID As Integer
 
       Dim LineOfCode As ScriptDB.CodeElement
       Dim objCalculation As Things.Expression
@@ -464,7 +439,7 @@ Namespace Things
       For Each objComponent In [Components]
         guiObjectID = objComponent.ID
 
-        Select Case objComponent.SubType
+        Select Case CType(CInt(objComponent.SubType), ScriptDB.ComponentTypes)
 
           ' A table relationship
           Case ScriptDB.ComponentTypes.Relation
@@ -497,7 +472,7 @@ Namespace Things
                 LineOfCode.Code = String.Format("{0}", objComponent.ValueString)
 
               Case Else
-                LineOfCode.Code = String.Format("{0}", IIf(objComponent.ValueLogic, 1, 0))
+                LineOfCode.Code = String.Format("{0}", If(objComponent.ValueLogic, 1, 0))
 
             End Select
 
@@ -511,16 +486,13 @@ Namespace Things
             ' An expression or a parameter
           Case ScriptDB.ComponentTypes.Expression
             SQLCode_AddParameter(objComponent, [CodeCluster])
-            '            Me.IsComplex = True
 
             ' Expression 
           Case ScriptDB.ComponentTypes.Calculation, ScriptDB.ComponentTypes.Expression
 
             If Not objComponent.BaseExpression.BaseTable.Expressions.GetById(objComponent.CalculationID) Is Nothing Then
 
-              'objCalculation = Me.AssociatedColumn.Table
-
-              objCalculation = objComponent.BaseExpression.BaseTable.Expressions.GetById(objComponent.CalculationID).Clone
+              objCalculation = CType(objComponent.BaseExpression.BaseTable.Expressions.GetById(objComponent.CalculationID).Clone, Expression)
 
               'objCalculation.StartOfPartNumbers = 0
               objCalculation.BaseExpression = objComponent.BaseExpression
@@ -596,7 +568,7 @@ Namespace Things
 
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Column
 
-      objThisColumn = Dependencies.GetObject(Enums.Type.Column, Component.ColumnID)
+      objThisColumn = CType(Dependencies.GetObject(Enums.Type.Column, Component.ColumnID), Column)
       objThisColumn.Tuning.Usage += 1
 
       'Dependencies.AddIfNew(objThisColumn.Table)
@@ -778,7 +750,7 @@ Namespace Things
       Dim bAddDefaultDataType As Boolean = False
 
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Function
-      objCodeLibrary = Globals.Functions.GetObject(Enums.Type.CodeLibrary, component.FunctionID)
+      objCodeLibrary = Globals.Functions.GetById(component.FunctionID)
       LineOfCode.Code = objCodeLibrary.Code
       Me.CaseCount += objCodeLibrary.CaseCount
 
@@ -795,14 +767,14 @@ Namespace Things
 
             Case SettingType.ModuleSetting
               objIDComponent = New Things.Component
-              objIDComponent.SubType = ScriptDB.ComponentTypes.Relation
-              objIDComponent.TableID = objSetting.Value
+              objIDComponent.SubType = CType(CInt(ScriptDB.ComponentTypes.Relation), Things.Enums.Type)
+              objIDComponent.TableID = CInt(objSetting.Value)
               component.Components.Add(objIDComponent)
               Me.IsComplex = True
 
             Case SettingType.CodeItem
               objIDComponent = New Things.Component
-              objIDComponent.SubType = ScriptDB.ComponentTypes.Value
+              objIDComponent.SubType = CType(CInt(ScriptDB.ComponentTypes.Value), Things.Enums.Type)
               objIDComponent.ValueString = objSetting.Code
               objIDComponent.ValueType = ScriptDB.ComponentValueTypes.SystemVariable
               component.Components.Add(objIDComponent)
@@ -863,7 +835,7 @@ Namespace Things
       LineOfCode.Code = String.Format(LineOfCode.Code, ChildCodeCluster.ToArray)
 
       RequiresOvernight = RequiresOvernight Or objCodeLibrary.OvernightOnly
-      mbCalculatePostAudit = mbCalculatePostAudit Or objCodeLibrary.CalculatePostAudit
+      _calculatePostAudit = _calculatePostAudit Or objCodeLibrary.CalculatePostAudit
       Me.RequiresRecordID = Me.RequiresRecordID Or objCodeLibrary.RecordIDRequired
       Me.IsTimeDependant = Me.IsTimeDependant Or objCodeLibrary.IsTimeDependant
 
@@ -985,7 +957,7 @@ Namespace Things
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Operator
 
       ' Get the bits and bobs for this operator
-      objCodeLibrary = Globals.Operators.GetObject(Enums.Type.CodeLibrary, objComponent.OperatorID)
+      objCodeLibrary = Globals.Operators.GetById(objComponent.OperatorID)
 
       If objCodeLibrary.PreCode.Length > 0 Then
         LineOfCode.Code = objCodeLibrary.PreCode

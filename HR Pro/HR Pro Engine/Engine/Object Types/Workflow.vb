@@ -2,10 +2,10 @@
   Public Class Workflow
     Inherits Things.Base
 
-    Public Enabled As Boolean
-    Public InitiationType As Integer
-    Public Table As Things.Table
-    Public QueryString As String
+    Public Property Enabled As Boolean
+    Public Property InitiationType As Integer
+    Public Property Table As Things.Table
+    Public Property QueryString As String
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get

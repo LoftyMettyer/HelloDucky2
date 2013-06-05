@@ -119,10 +119,10 @@ Namespace ScriptDB
           ' Some logic expressions return a simple logic while others are set specifically 
           ' to logicval = 0, or have the not in front of them!
           If bAddAutoIsEqualTo Then
-            Statement = vbNewLine & String.Format("{0}{1}{2} = 1", New String(vbTab, CodeLevel), Statement, Chunk.Code)
+            Statement = vbNewLine & String.Format("{0}{1}{2} = 1", New String(CChar(vbTab), CodeLevel), Statement, Chunk.Code)
             bAddAutoIsEqualTo = False
           Else
-            Statement = vbNewLine & String.Format("{0}{1}{2}", New String(vbTab, CodeLevel), Statement, Chunk.Code)
+            Statement = vbNewLine & String.Format("{0}{1}{2}", New String(CChar(vbTab), CodeLevel), Statement, Chunk.Code)
           End If
 
           'If iThisElement > 0 Then
@@ -136,7 +136,7 @@ Namespace ScriptDB
 
         ' Wrap to return code chunks in safety
         If Me.ReturnType = ComponentValueTypes.Logic Or mbIsComparison Then
-          Statement = String.Format("{0}CASE WHEN ({1}) THEN 1 ELSE 0 END", New String(vbTab, CodeLevel), Statement)
+          Statement = String.Format("{0}CASE WHEN ({1}) THEN 1 ELSE 0 END", New String(CChar(vbTab), CodeLevel), Statement)
         End If
 
       End Get

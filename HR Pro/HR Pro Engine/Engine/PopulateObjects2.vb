@@ -5,7 +5,9 @@ Namespace Things
   <HideModuleName()> _
   Public Module PopulateObjects2
 
-    Public Sub PopulateThings2()
+    Public Sub PopulateThings()
+      componentfunction = Nothing
+      componentbase = Nothing
       Globals.Tables.Clear()
       Globals.Workflows.Clear()
       PopulateTables()
@@ -23,7 +25,7 @@ Namespace Things
 
     Public Sub PopulateTables()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_gettables", New Connectivity.Parameters)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_gettables", Nothing)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
@@ -38,11 +40,6 @@ Namespace Things
         table.DefaultEmailID = row.Item("defaultemailid").ToString
         table.DefaultOrderID = row.Item("defaultorderid").ToString
         table.State = row.Item("state")
-        table.Root = table
-
-        'TODO: table.Objects.Parent & Root
-        'table.Objects.Parent = table
-        'table.Objects.Root = table.Root
 
         Globals.Tables.Add(table)
       Next
@@ -51,19 +48,20 @@ Namespace Things
 
     Public Sub PopulateColumns()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcolumns2", New Connectivity.Parameters)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcolumns2", Nothing)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
         Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
 
         Dim column As New Column
+        column.Table = table
+
         column.ID = row.Item("id").ToString
         column.Name = row.Item("name").ToString
         column.SchemaName = "dbo"
         column.Description = row.Item("description").ToString
         column.State = row.Item("state")
-
         column.DefaultCalcID = NullSafe(row, "defaultcalcid", 0).ToString
         column.DefaultValue = row.Item("defaultvalue").ToString
         column.CalcID = row.Item("calcid").ToString
@@ -78,8 +76,6 @@ Namespace Things
         column.CalculateIfEmpty = row.Item("calculateifempty")
         column.TrimType = NullSafe(row, "trimming", 0).ToString
         column.Alignment = row.Item("alignment").ToString
-        column.Table = table
-        column.Parent = table
 
         table.Columns.Add(column)
       Next
@@ -88,7 +84,7 @@ Namespace Things
 
     Public Sub PopulateTableOrders()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getorders2", New Connectivity.Parameters)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getorders2", Nothing)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
@@ -98,7 +94,7 @@ Namespace Things
         tableOrder.ID = row.Item("orderid").ToString
         tableOrder.Name = row.Item("name").ToString
         tableOrder.SubType = row.Item("type").ToString
-        tableOrder.Parent = table
+        tableOrder.Table = table
 
         table.TableOrders.Add(tableOrder)
       Next
@@ -107,11 +103,11 @@ Namespace Things
 
     Public Sub PopulateTableOrderItems()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getorderitems2", New Connectivity.Parameters)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getorderitems2", Nothing)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim orderId As String = row.Item("orderid").ToString
+        Dim orderId As Integer = CInt(row.Item("orderid"))
         Dim tableOrder As TableOrder = Globals.Tables.SelectMany(Function(t) t.TableOrders).Where(Function(o) o.ID = orderId).FirstOrDefault
 
         Dim orderItem As New TableOrderItem
@@ -119,7 +115,9 @@ Namespace Things
         orderItem.ColumnType = row.Item("type")
         orderItem.Sequence = row.Item("sequence")
         orderItem.Ascending = row.Item("ascending")
-        orderItem.Column = CType(tableOrder.Parent, Table).Columns.GetById(row.Item("columnid").ToString)
+
+        orderItem.TableOrder = tableOrder
+        orderItem.Column = tableOrder.Table.Columns.GetById(row.Item("columnid").ToString)
 
         tableOrder.TableOrderItems.Add(orderItem)
       Next
@@ -128,7 +126,7 @@ Namespace Things
 
     Public Sub PopulateTableValidations()
 
-      Dim ds = Globals.MetadataDB.ExecStoredProcedure("spadmin_getvalidations2", New Connectivity.Parameters)
+      Dim ds = Globals.MetadataDB.ExecStoredProcedure("spadmin_getvalidations2", Nothing)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
@@ -145,7 +143,7 @@ Namespace Things
 
     Public Sub PopulateTableRelations()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getrelations2", New Connectivity.Parameters)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getrelations2", Nothing)
 
       Dim table As Table
       Dim relation As Relation
@@ -157,7 +155,6 @@ Namespace Things
 
         relation = New Relation
         relation.RelationshipType = ScriptDB.RelationshipType.Child
-        relation.Parent = table
         relation.ParentID = row.Item("parentid").ToString
         relation.ChildID = row.Item("childid").ToString
         relation.Name = row.Item("childname").ToString
@@ -169,7 +166,6 @@ Namespace Things
 
         relation = New Relation
         relation.RelationshipType = ScriptDB.RelationshipType.Parent
-        relation.Parent = table
         relation.ParentID = row.Item("parentid").ToString
         relation.ChildID = row.Item("childid").ToString
         relation.Name = row.Item("parentname").ToString
@@ -181,7 +177,7 @@ Namespace Things
 
     Public Sub PopulateTableExpressions()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getexpressions2", New Connectivity.Parameters)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getexpressions2", Nothing)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
@@ -189,7 +185,6 @@ Namespace Things
 
         Dim expression As New Expression
         expression.ID = row.Item("id").ToString
-        expression.Parent = table
         expression.Name = row.Item("name").ToString
         expression.ExpressionType = row.Item("type").ToString
         expression.SchemaName = "dbo"
@@ -201,7 +196,7 @@ Namespace Things
         expression.BaseTable = table
         expression.BaseExpression = expression
 
-        expression.Components = Things.LoadComponents2(expression, ScriptDB.ComponentTypes.Expression)
+        expression.Components = Things.LoadComponents(expression, ScriptDB.ComponentTypes.Expression)
 
         table.Expressions.Add(expression)
       Next
@@ -210,7 +205,7 @@ Namespace Things
 
     Public Sub PopulateTableViews()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getviews2", New Connectivity.Parameters)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getviews2", Nothing)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
@@ -220,7 +215,8 @@ Namespace Things
         view.ID = row.Item("id").ToString
         view.Name = row.Item("name").ToString
         view.Description = row.Item("description").ToString
-        view.Parent = table
+
+        view.Table = table
         view.Filter = table.Expressions.GetById(row.Item("filterid").ToString)
 
         table.Views.Add(view)
@@ -230,14 +226,14 @@ Namespace Things
 
     Public Sub PopulateTableViewItems()
 
-      Dim objDataset As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getviewitems2", New Connectivity.Parameters)
+      Dim objDataset As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getviewitems2", Nothing)
 
       For Each row As DataRow In objDataset.Tables(0).Rows
 
-        Dim viewId As String = row.Item("viewid").ToString
+        Dim viewId As Integer = CInt(row.Item("viewid"))
         Dim view As View = Globals.Tables.SelectMany(Function(t) t.Views).Where(Function(o) o.ID = viewId).FirstOrDefault
 
-        Dim column As Column = CType(view.Parent, Table).Columns.GetById(row.Item("columnid").ToString)
+        Dim column As Column = view.Table.Columns.GetById(row.Item("columnid").ToString)
         If column IsNot Nothing Then
           view.Columns.Add(column)
         End If
@@ -247,7 +243,7 @@ Namespace Things
 
     Public Sub PopulateTableRecordDescriptions()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getdescriptions2", New Connectivity.Parameters)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getdescriptions2", Nothing)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
@@ -255,7 +251,6 @@ Namespace Things
 
         Dim description As New RecordDescription
         description.ID = row.Item("id").ToString
-        description.Parent = table
         description.Name = row.Item("name").ToString
         description.SchemaName = "dbo"
         description.Description = row.Item("description").ToString
@@ -266,7 +261,7 @@ Namespace Things
         description.BaseTable = table
         description.BaseExpression = description
 
-        description.Components = LoadComponents2(description, ScriptDB.ComponentTypes.Expression)
+        description.Components = LoadComponents(description, ScriptDB.ComponentTypes.Expression)
 
         table.RecordDescription = description
       Next
@@ -276,14 +271,14 @@ Namespace Things
     Private componentfunction As DataSet
     Private componentbase As DataSet
 
-    Public Function LoadComponents2(ByVal expression As Component, ByVal Type As ScriptDB.ComponentTypes) As List(Of Component)
+    Public Function LoadComponents(ByVal expression As Component, ByVal Type As ScriptDB.ComponentTypes) As List(Of Component)
 
       If componentfunction Is Nothing Then
-        componentfunction = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_function2", New Connectivity.Parameters)
+        componentfunction = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_function2", Nothing)
       End If
 
       If componentbase Is Nothing Then
-        componentbase = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_base2", New Connectivity.Parameters)
+        componentbase = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_base2", Nothing)
       End If
 
       Dim rows As DataRow()
@@ -298,8 +293,6 @@ Namespace Things
       End Select
 
       Dim collection As New List(Of Component)
-      'TODO: PARENT
-      'collection.Parent = expression
 
       For Each row As DataRow In rows
 
@@ -334,14 +327,13 @@ Namespace Things
         component.LookupTableID = row.Item("lookuptableid").ToString
         component.LookupColumnID = row.Item("lookupcolumnid").ToString
 
-        component.Root = expression.Root
         component.BaseExpression = expression.BaseExpression
 
         Select Case component.SubType
           Case ScriptDB.ComponentTypes.Function
-            component.Components = Things.LoadComponents2(component, ScriptDB.ComponentTypes.Function)
+            component.Components = Things.LoadComponents(component, ScriptDB.ComponentTypes.Function)
           Case ScriptDB.ComponentTypes.Expression, ScriptDB.ComponentTypes.Calculation
-            component.Components = Things.LoadComponents2(component, component.SubType)
+            component.Components = Things.LoadComponents(component, component.SubType)
         End Select
 
         collection.Add(component)
@@ -353,7 +345,7 @@ Namespace Things
 
     Public Sub PopulateTableMasks()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getmasks2", New Connectivity.Parameters)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getmasks2", Nothing)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
@@ -361,7 +353,6 @@ Namespace Things
 
         Dim mask As New Things.Mask
         mask.ID = row.Item("id").ToString
-        mask.Parent = table
         mask.Name = row.Item("name").ToString
         mask.AssociatedColumn = table.Columns.GetById(row.Item("columnid").ToString)
         mask.SchemaName = "dbo"
@@ -373,52 +364,16 @@ Namespace Things
         mask.BaseTable = table
         mask.BaseExpression = mask
 
-        mask.Components = Things.LoadComponents2(mask, ScriptDB.ComponentTypes.Expression)
+        mask.Components = Things.LoadComponents(mask, ScriptDB.ComponentTypes.Expression)
 
         table.Masks.Add(mask)
       Next
 
     End Sub
 
-    'TODO use or not? still used by HCM is that different to my one?
-    Public Sub PopulateExpressions()
-
-      Dim objDataset As DataSet
-      Dim objRow As DataRow
-      Dim objParameters As New Connectivity.Parameters
-
-      Dim objExpression As Things.Expression
-      Dim objTable As Things.Table
-
-      objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getexpressions", objParameters)
-
-      For Each objRow In objDataset.Tables(0).Rows
-
-        objExpression = New Things.Expression
-        objExpression.ID = objRow.Item("id").ToString
-
-        objExpression.Name = objRow.Item("name").ToString
-        objExpression.ExpressionType = objRow.Item("type").ToString
-        objExpression.SchemaName = "dbo"
-        objExpression.Description = objRow.Item("description").ToString
-        objExpression.State = objRow.Item("state")
-        objExpression.ReturnType = objRow.Item("returntype")
-        objExpression.Size = objRow.Item("size")
-        objExpression.Decimals = objRow.Item("decimals")
-        objExpression.BaseExpression = objExpression
-
-        objTable = Globals.Tables.GetById(objRow.Item("tableid").ToString)
-        objExpression.BaseTable = objTable
-        objExpression.Parent = objTable
-
-        objTable.Expressions.Add(objExpression)
-      Next
-
-    End Sub
-
     Public Sub PopulateScreens()
 
-      Dim objDataset As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getscreens", New Connectivity.Parameters)
+      Dim objDataset As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getscreens", Nothing)
 
       For Each row In objDataset.Tables(0).Rows
 
@@ -431,7 +386,6 @@ Namespace Things
         screen.Description = row.Item("description").ToString
         screen.State = row.Item("state")
         screen.Table = table
-        screen.Parent = table
 
         table.Screens.Add(screen)
       Next
@@ -440,7 +394,7 @@ Namespace Things
 
     Public Sub PopulateWorkflows()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getworkflows", New Connectivity.Parameters)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getworkflows", Nothing)
 
       For Each row As DataRow In ds.Tables(0).Rows
 

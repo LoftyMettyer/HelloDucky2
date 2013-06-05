@@ -3,14 +3,14 @@
   Public Class DiaryLink
     Inherits Things.Base
 
-    Public Column As Things.Column
-    Public Comment As String
-    Public Offset As Integer
-    Public OffsetType As DateOffsetType
-    Public Reminder As Boolean
-    Public Filter As Things.Expression
-    Public EffectiveDate As DateTime
-    Public CheckLeavingDate As Boolean
+    Public Property Column As Things.Column
+    Public Property Comment As String
+    Public Property Offset As Integer
+    Public Property OffsetType As DateOffsetType
+    Public Property Reminder As Boolean
+    Public Property Filter As Things.Expression
+    Public Property EffectiveDate As DateTime
+    Public Property CheckLeavingDate As Boolean
 
     Public UDF As ScriptDB.GeneratedUDF
 
@@ -74,15 +74,8 @@
       '  .CallingCode = sCode
       'End With
 
-
-
-
-
-
       ' eefective date could be something like this?
       '	, CASE WHEN [Start_Date] < GETDATE() THEN DATEADD(DD, 20, DATEADD(D, 0, DATEDIFF(D, 0, [Start_Date]))) ELSE NULL END AS [17]
-
-
 
     End Sub
 

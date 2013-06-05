@@ -7,7 +7,7 @@ Namespace ErrorHandler
   <ClassInterface(ClassInterfaceType.None)> _
   Public Class Errors
     Inherits System.ComponentModel.BindingList(Of ErrorHandler.Error)
-    Implements COMInterfaces.iErrors
+    Implements COMInterfaces.IErrors
 
     Private mbIsCatastrophic As Boolean
 
@@ -72,7 +72,7 @@ Namespace ErrorHandler
 
     End Function
 
-    Public Sub OutputToFile(ByRef FileName As String) Implements COMInterfaces.iErrors.OutputToFile
+    Public Sub OutputToFile(ByRef FileName As String) Implements COMInterfaces.IErrors.OutputToFile
 
       Dim objWriter As System.IO.StreamWriter
       Dim objError As SystemFramework.ErrorHandler.Error
@@ -96,13 +96,13 @@ Namespace ErrorHandler
 
     End Sub
 
-    Public ReadOnly Property IsCatastrophic As Boolean Implements iErrors.IsCatastrophic
+    Public ReadOnly Property IsCatastrophic As Boolean Implements IErrors.IsCatastrophic
       Get
         Return mbIsCatastrophic
       End Get
     End Property
 
-    Public Sub Show() Implements iErrors.Show
+    Public Sub Show() Implements IErrors.Show
 
       Dim frmErrorLog As New Forms.ErrorLog
 
@@ -119,7 +119,7 @@ Namespace ErrorHandler
 
     End Sub
 
-    Public ReadOnly Property ErrorCount As Integer Implements iErrors.ErrorCount
+    Public ReadOnly Property ErrorCount As Integer Implements IErrors.ErrorCount
       Get
         Return Items.Count
       End Get

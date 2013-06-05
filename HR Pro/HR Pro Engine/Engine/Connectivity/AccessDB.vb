@@ -1,11 +1,11 @@
 ﻿Namespace Connectivity
   Public Class AccessDB
-    Implements iConnection
+    Implements IConnection
 
     Public DB As OleDb.OleDbConnection
     Public NativeObject As DAO.Database
 
-    Public Function ExecuteQuery(ByVal QueryName As String, ByRef Parms As Connectivity.Parameters) As System.Data.DataSet Implements iConnection.ExecStoredProcedure
+    Public Function ExecuteQuery(ByVal QueryName As String, ByVal Parms As Connectivity.Parameters) As System.Data.DataSet Implements IConnection.ExecStoredProcedure
 
       Dim objAdapter As New OleDb.OleDbDataAdapter
       Dim sqlParms As OleDb.OleDbParameterCollection
@@ -37,7 +37,7 @@
                 sqlParm = sqlParms.AddWithValue(objParameter.Name, objParameter.Value.ToString)
 
               Case Connectivity.DBType.GUID
-                If objParameter.Value = System.Guid.Empty Then
+                If objParameter.Value Is Nothing OrElse CType(objParameter.Value, Guid) = Guid.Empty Then
                   sqlParm = sqlParms.AddWithValue(objParameter.Name, DBNull.Value)
                 Else
                   sqlParm = sqlParms.AddWithValue(objParameter.Name, objParameter.Value.ToString)
@@ -70,7 +70,7 @@
 
     End Function
 
-    Public Sub Close() Implements iConnection.Close
+    Public Sub Close() Implements IConnection.Close
       DB.Close()
       NativeObject.Close()
 
@@ -81,7 +81,7 @@
 
     End Sub
 
-    Public Property Login As Login Implements iConnection.Login
+    Public Property Login As Login Implements IConnection.Login
       Get
         Return Nothing
       End Get
@@ -90,10 +90,10 @@
       End Set
     End Property
 
-    Public Sub Open() Implements iConnection.Open
+    Public Sub Open() Implements IConnection.Open
     End Sub
 
-    Public Function ScriptStatement(ByVal Statement As String) As Boolean Implements iConnection.ScriptStatement
+    Public Function ScriptStatement(ByVal Statement As String) As Boolean Implements IConnection.ScriptStatement
       Return False
     End Function
 

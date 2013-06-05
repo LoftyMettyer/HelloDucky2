@@ -16,7 +16,7 @@ Namespace ScriptDB
       Dim objNameColumn As Things.Column
       Dim objValueColumn As Things.Column
       Dim objDecimalsColumn As Things.Column
-      Dim iKeyID As HCMGuid
+      Dim iKeyID As Integer
       Dim sObjectName As String
 
       Try
@@ -24,13 +24,13 @@ Namespace ScriptDB
         objConversionTable = Globals.ModuleSetup.Setting("MODULE_CURRENCY", "Param_ConversionTable").Table
 
         If Not objConversionTable Is Nothing Then
-          iKeyID = Globals.ModuleSetup.Setting("MODULE_CURRENCY", "Param_CurrencyNameColumn").Value
+          iKeyID = CInt(Globals.ModuleSetup.Setting("MODULE_CURRENCY", "Param_CurrencyNameColumn").Value)
           objNameColumn = objConversionTable.Columns.GetById(iKeyID)
 
-          iKeyID = Globals.ModuleSetup.Setting("MODULE_CURRENCY", "Param_ConversionValueColumn").Value
+          iKeyID = CInt(Globals.ModuleSetup.Setting("MODULE_CURRENCY", "Param_ConversionValueColumn").Value)
           objValueColumn = objConversionTable.Columns.GetById(iKeyID)
 
-          iKeyID = Globals.ModuleSetup.Setting("MODULE_CURRENCY", "Param_DecimalColumn").Value
+          iKeyID = CInt(Globals.ModuleSetup.Setting("MODULE_CURRENCY", "Param_DecimalColumn").Value)
           objDecimalsColumn = objConversionTable.Columns.GetById(iKeyID)
 
           sObjectName = "udfsys_convertcurrency"
@@ -147,8 +147,8 @@ Namespace ScriptDB
                 "            SELECT {7} = [{5}] FROM dbo.[{4}] WHERE [{6}] = {8};" & vbNewLine & _
                 "            RETURN {7};" & vbNewLine & _
                 "        END" & vbNewLine _
-              , objPart1.TableID.PadLeft, objPart1.ColumnID.PadLeft _
-              , objPart3.TableID.PadLeft, objPart3.ColumnID.PadLeft _
+              , objPart1.TableID.ToString.PadLeft(8, "0"c), objPart1.ColumnID.ToString.PadLeft(8, "0"c) _
+              , objPart3.TableID.ToString.PadLeft(8, "0"c), objPart3.ColumnID.ToString.PadLeft(8, "0"c) _
               , objTable1.PhysicalName, objTable1.Columns.GetById(objPart3.ColumnID).Name _
               , objTable2.Columns.GetById(objPart1.ColumnID).Name, sVariableName, sSearchExpression)
 
@@ -284,7 +284,7 @@ Namespace ScriptDB
     '  Dim objBankHolidayTable As Things.Table
     '  Dim objHolidayDateColumn As Things.Column
     '  Dim objUpdateColumn As Things.Column
-    '  Dim iKeyID As HCMGuid
+    '  Dim iKeyID As Integer
     '  Dim sObjectName As String
     '  Dim aryUpdates As New ArrayList
 

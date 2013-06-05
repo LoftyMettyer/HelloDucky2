@@ -4,16 +4,11 @@
   Public Class TableOrderFilter
     Inherits Things.Base
 
-    Public ComponentNumber As Long
+    Public Property Table As Table
+    Public Property ComponentNumber As Long
     Public UDF As ScriptDB.GeneratedUDF
     Public RowDetails As Things.ChildRowDetails
     Public Property IncludedColumns As New List(Of Column)
-
-    Public ReadOnly Property Table As Things.Table
-      Get
-        Return CType(Parent, Table)
-      End Get
-    End Property
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
@@ -25,7 +20,7 @@
       Get
         Dim sName As String
 
-        sName = String.Format("udftab_{0}", Parent.Name)
+        sName = String.Format("udftab_{0}", Table.Name)
 
         If Not RowDetails.Order Is Nothing Then
           sName = sName + "_" + String.Format("{0}({1})", RowDetails.Order.Name, CInt(RowDetails.Order.ID))
@@ -89,7 +84,7 @@
 
       ' Build the where clause
       If Not RowDetails.Filter Is Nothing Then
-        RowDetails.Filter.AssociatedColumn = CType(Me.Parent, Table).Columns(0)
+        RowDetails.Filter.AssociatedColumn = Me.Table.Columns(0)
         RowDetails.Filter.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
         RowDetails.Filter.GenerateCode()
 
@@ -108,12 +103,12 @@
         For Each objOrderItem In RowDetails.Order.TableOrderItems
           If objOrderItem.ColumnType = "O" And Not objOrderItem.Column Is Nothing Then
 
-            If Not objOrderItem.Column Is Nothing And objOrderItem.Column.Table Is Me.Parent Then
+            If Not objOrderItem.Column Is Nothing And objOrderItem.Column.Table Is Me.Table Then
               Select Case objOrderItem.Ascending
                 Case Enums.Order.Ascending
-                  aryOrderBy.Add(String.Format("base.[{1}] {2}", objOrderItem.Column.Table.Name, objOrderItem.Column.Name, IIf(bReverseOrder, "DESC", "ASC")))
+                  aryOrderBy.Add(String.Format("base.[{1}] {2}", objOrderItem.Column.Table.Name, objOrderItem.Column.Name, If(bReverseOrder, "DESC", "ASC")))
                 Case Else
-                  aryOrderBy.Add(String.Format("base.[{1}] {2}", objOrderItem.Column.Table.Name, objOrderItem.Column.Name, IIf(bReverseOrder, "ASC", "DESC")))
+                  aryOrderBy.Add(String.Format("base.[{1}] {2}", objOrderItem.Column.Table.Name, objOrderItem.Column.Name, If(bReverseOrder, "ASC", "DESC")))
               End Select
               objIndex.Columns.AddIfNew(objOrderItem.Column)
             End If
@@ -177,7 +172,7 @@
              "END" _
             , Me.Name, String.Join(", ", aryParameters.ToArray()) _
             , String.Join(", ", aryReturnDefintion.ToArray()), String.Join(", ", aryColumnList.ToArray()) _
-            , Me.Parent.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode, sRowSelection _
+            , Me.Table.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode, sRowSelection _
             , sOptions, RowDetails.RowNumber)
 
         Else
@@ -196,12 +191,12 @@
                          "END" _
                         , Me.Name, String.Join(", ", aryParameters.ToArray()) _
                         , String.Join(", ", aryReturnDefintion.ToArray()), String.Join(", ", aryColumnList.ToArray()) _
-                        , Me.Parent.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode, sRowSelection _
+                        , Me.Table.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode, sRowSelection _
                         , sOptions)
         End If
 
         ' Add the index
-        CType(Me.Parent, Table).Indexes.Add(objIndex)
+        Me.Table.Indexes.Add(objIndex)
 
       End With
 

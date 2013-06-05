@@ -3,6 +3,7 @@
   Public Class View
     Inherits Base
 
+    Public Property Table As Table
     Public Property Filter As Expression
     Public Property Columns As New List(Of Column)
 

@@ -4,12 +4,12 @@ Imports Microsoft.SqlServer.Server
 Namespace Connectivity
 
   Public Class SQL
-    Implements iConnection
+    Implements IConnection
 
     Private mobjLogin As Connectivity.Login
     Private mConn As New SqlConnection
 
-    Public Property Login As Connectivity.Login Implements iConnection.Login
+    Public Property Login As Connectivity.Login Implements IConnection.Login
       Get
         Return mobjLogin
       End Get
@@ -18,7 +18,7 @@ Namespace Connectivity
       End Set
     End Property
 
-    Public Sub Open() Implements iConnection.Open
+    Public Sub Open() Implements IConnection.Open
 
       Dim sConnection As String = vbNullString
 
@@ -46,7 +46,7 @@ Namespace Connectivity
 
     End Sub
 
-    Public Function ExecStoredProcedure(ByVal ProcedureName As String, ByRef Parms As Connectivity.Parameters) As System.Data.DataSet Implements iConnection.ExecStoredProcedure
+    Public Function ExecStoredProcedure(ByVal ProcedureName As String, ByVal Parms As Connectivity.Parameters) As System.Data.DataSet Implements IConnection.ExecStoredProcedure
 
       Dim SQLParms As SqlParameterCollection
       Dim objParameter As Connectivity.Parameter
@@ -77,7 +77,7 @@ Namespace Connectivity
               sqlParm = SQLParms.AddWithValue(objParameter.Name, objParameter.Value.ToString)
 
             Case Connectivity.DBType.GUID
-              If objParameter.Value = System.Guid.Empty Then
+              If objParameter.Value Is Nothing OrElse CType(objParameter.Value, Guid) = Guid.Empty Then
                 sqlParm = SQLParms.AddWithValue(objParameter.Name, DBNull.Value)
               Else
                 sqlParm = SQLParms.AddWithValue(objParameter.Name, objParameter.Value.ToString)
@@ -102,11 +102,11 @@ Namespace Connectivity
       Return dsDataSet
     End Function
 
-    Public Sub Close() Implements iConnection.Close
+    Public Sub Close() Implements IConnection.Close
       mConn.Close()
     End Sub
 
-    Public Function ScriptStatement(ByVal Statement As String) As Boolean Implements iConnection.ScriptStatement
+    Public Function ScriptStatement(ByVal Statement As String) As Boolean Implements IConnection.ScriptStatement
 
       Dim objCommand As New SqlCommand
       Dim bOK As Boolean

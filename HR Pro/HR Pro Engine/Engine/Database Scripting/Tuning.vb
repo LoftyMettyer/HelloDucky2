@@ -53,7 +53,7 @@ Namespace ScriptDB
       mlngSelectAsParameter = mlngSelectAsParameter + 1
     End Sub
 
-    Public ReadOnly Property ExpressionComplexity
+    Public ReadOnly Property ExpressionComplexity As String
       Get
         Dim sComplexity As String = vbNullString
         sComplexity = String.Format("{0} Functions. {1} Parent Columns. {2} Child Columns. {3} Trigger Columns." _

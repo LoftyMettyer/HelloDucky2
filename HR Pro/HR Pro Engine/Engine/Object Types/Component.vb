@@ -7,35 +7,28 @@ Namespace Things
     Inherits Things.Base
     Implements ICloneable
 
-    Public ReturnType As ScriptDB.ComponentValueTypes
-    Public FunctionID As HCMGuid
-    Public OperatorID As HCMGuid
-    Public CalculationID As HCMGuid
-    Public ValueType As ScriptDB.ComponentValueTypes
-    Public ValueNumeric As Double
-    Public ValueString As String
-    Public ValueDate As Date
-    Public ValueLogic As Boolean
+    Public Property ReturnType As ScriptDB.ComponentValueTypes
+    Public Property FunctionID As Integer
+    Public Property OperatorID As Integer
+    Public Property CalculationID As Integer
+    Public Property ValueType As ScriptDB.ComponentValueTypes
+    Public Property ValueNumeric As Double
+    Public Property ValueString As String
+    Public Property ValueDate As Date
+    Public Property ValueLogic As Boolean
 
-    Public TableID As HCMGuid
-    Public ColumnID As HCMGuid
+    Public Property TableID As Integer
+    Public Property ColumnID As Integer
     Public ChildRowDetails As ChildRowDetails
 
-    'Public ColumnRowSelection As ScriptDB.ColumnRowSelection
-    'Public SpecificLine As Integer
-    'Public ColumnFilterID As HCMGuid
-    'Public ColumnOrderID As HCMGuid
+    Public Property IsColumnByReference As Boolean
+    Public Property LookupTableID As Integer
+    Public Property LookupColumnID As Integer
 
-    Public IsColumnByReference As Boolean
-    Public LookupTableID As HCMGuid
-    Public LookupColumnID As HCMGuid
+    Public Property BaseExpression As Things.Expression
 
-    <System.Xml.Serialization.XmlIgnore()> _
-    Public BaseExpression As Things.Expression
-
-    '    Public IsComplex As Boolean = False
-    Public IsSchemaBound As Boolean = True
-    Public IsTimeDependant As Boolean = False
+    Public Property IsSchemaBound As Boolean = True
+    Public Property IsTimeDependant As Boolean = False
 
     Public Property Components As New List(Of Component)
 
@@ -45,57 +38,31 @@ Namespace Things
       End Get
     End Property
 
-    'Public Sub SetBaseExpression(ByRef objBaseExpression As Things.Component)
-
-    '  ' Attach the base component info
-    '  Me.BaseExpression = objBaseExpression
-    '  For Each objComponent As Things.Component In Me.Objects
-    '    objComponent.SetBaseExpression(objBaseExpression)
-    '  Next
-
-    'End Sub
-
     Public Function Clone() As Object Implements System.ICloneable.Clone
       Return Me.MemberwiseClone
     End Function
 
-    'Public ReadOnly Property ToExpression() As Things.Expression
-    '  Get
-
-    '    Dim objExpression As New Things.Expression
-
-    '    objExpression.ID = Me.ID
-    '    objExpression.FunctionID = Me.FunctionID
-    '    objExpression.Objects = Me.Objects
-    '    objExpression.ReturnType = Me.ReturnType
-    '    objExpression.ExpressionType = ScriptDB.ExpressionType.Mask
-
-    '    Return objExpression
-
-    '  End Get
-    'End Property
-
     Public ReadOnly Property SafeReturnType As String
       Get
 
-        Dim sSQLType As String = String.Empty
+        Dim sqlType As String = String.Empty
 
         Select Case CInt(Me.ReturnType)
           Case ScriptDB.ComponentValueTypes.String
-            sSQLType = "''"
+            sqlType = "''"
 
           Case ScriptDB.ComponentValueTypes.Numeric
-            sSQLType = "0"
+            sqlType = "0"
 
           Case ScriptDB.ComponentValueTypes.Date
-            sSQLType = "NULL"
+            sqlType = "NULL"
 
           Case Else
-            sSQLType = "0"
+            sqlType = "0"
 
         End Select
 
-        Return sSQLType
+        Return sqlType
 
       End Get
     End Property

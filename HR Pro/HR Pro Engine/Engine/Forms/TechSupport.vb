@@ -1,13 +1,13 @@
 ﻿Public Class TechSupport
-  Implements COMInterfaces.iForm
+  Implements COMInterfaces.IForm
 
 #Region "COMInterfaces.iForm"
 
-  Public Sub Show1() Implements COMInterfaces.iForm.Show
+  Public Sub Show1() Implements COMInterfaces.IForm.Show
     Me.Show()
   End Sub
 
-  Public Sub ShowDialog1() Implements COMInterfaces.iForm.ShowDialog
+  Public Sub ShowDialog1() Implements COMInterfaces.IForm.ShowDialog
     Me.ShowDialog()
   End Sub
 

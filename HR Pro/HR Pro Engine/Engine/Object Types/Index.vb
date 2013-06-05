@@ -4,14 +4,14 @@
 Public Class Index
     Inherits Things.Base
 
-    Public IsClustered As Boolean = False
-    Public Columns As New List(Of Column)
-    Public IncludedColumns As New List(Of Column)
-    Public Relations As New List(Of Relation)
-    Public IsTableIndex As Boolean
-    Public IncludePrimaryKey As Boolean = True
-    Public Enabled As Boolean = True
-    Public IsUnique As Boolean
+    Public Property IsClustered As Boolean = False
+    Public Property Columns As New List(Of Column)
+    Public Property IncludedColumns As New List(Of Column)
+    Public Property Relations As New List(Of Relation)
+    Public Property IsTableIndex As Boolean
+    Public Property IncludePrimaryKey As Boolean = True
+    Public Property Enabled As Boolean = True
+    Public Property IsUnique As Boolean
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get

@@ -2,9 +2,9 @@
   Public Class Validation
     Inherits Things.Base
 
-    Public ValidationType As Things.ValidationType
-    Public Column As Things.Column
-    Public Severity As Things.ValidationSeverity = ValidationSeverity.Error
+    Public Property ValidationType As Things.ValidationType
+    Public Property Column As Things.Column
+    Public Property Severity As Things.ValidationSeverity = ValidationSeverity.Error
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get

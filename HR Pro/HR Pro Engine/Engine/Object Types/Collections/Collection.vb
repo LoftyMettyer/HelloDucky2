@@ -9,14 +9,14 @@ Namespace Things.Collections
   <Serializable()> _
   Public Class Generic
     Inherits Things.Collections.BaseCollection
-    Implements iCollection_Objects
+    Implements ICollection_Objects
 
-    Public Function Setting(ByVal [Module] As String, ByVal [Parameter] As String) As Things.Setting Implements iCollection_Objects.Setting
+    'TODO: WANT TO REMOVE
+    Public Function Setting(ByVal [Module] As String, ByVal [Parameter] As String) As Things.Setting Implements ICollection_Objects.Setting
 
-      Dim objChild As Things.Base
       Dim objSetting As New Things.Setting
 
-      For Each objChild In MyBase.Items
+      For Each objChild As Things.Base In MyBase.Items
         If objChild.Type = Type.Setting Then
           objSetting = CType(objChild, Things.Setting)
           If objSetting.Module.ToLower = [Module].ToLower And objSetting.Parameter.ToLower = Parameter.ToLower Then
@@ -29,7 +29,8 @@ Namespace Things.Collections
 
     End Function
 
-    Public Function Table(ByRef ID As HCMGuid) As Things.Table Implements iCollection_Objects.Table
+    'TODO: WANT TO REMOVE
+    Public Function Table(ByVal ID As Integer) As Things.Table Implements ICollection_Objects.Table
 
       For Each objChild As Things.Base In MyBase.Items
         If objChild.ID = ID And objChild.Type = Type.Table Then

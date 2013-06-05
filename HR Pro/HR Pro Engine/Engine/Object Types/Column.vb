@@ -6,41 +6,35 @@ Namespace Things
   Public Class Column
     Inherits Things.Base
 
-    <System.Xml.Serialization.XmlIgnore()> _
-    Public Table As Things.Table
+    Public Property Table As Things.Table
 
-    Public CalcID As HCMGuid
-    <System.Xml.Serialization.XmlIgnore()> _
-    Public Calculation As Things.Expression
+    Public Property CalcID As Integer
+    Public Property Calculation As Things.Expression
 
-    Public DataType As ScriptDB.ColumnTypes
-    Public Size As Integer
-    Public Decimals As Integer
+    Public Property DataType As ScriptDB.ColumnTypes
+    Public Property Size As Integer
+    Public Property Decimals As Integer
 
     ' Options
-    Public Audit As Boolean
-    Public Multiline As Boolean
-    Public CalculateIfEmpty As Boolean
-    Public IsReadOnly As Boolean
+    Public Property Audit As Boolean
+    Public Property Multiline As Boolean
+    Public Property CalculateIfEmpty As Boolean
+    Public Property IsReadOnly As Boolean
 
     ' Formatting
-    Public CaseType As Enums.CaseType
-    Public TrimType As Enums.TrimType
-    Public Alignment As Enums.AlignType
-    Public Mandatory As Boolean
-    Public OLEType As ScriptDB.OLEType
+    Public Property CaseType As Enums.CaseType
+    Public Property TrimType As Enums.TrimType
+    Public Property Alignment As Enums.AlignType
+    Public Property Mandatory As Boolean
+    Public Property OLEType As ScriptDB.OLEType
 
-    Public UniqueType As Enums.UniqueCheckScope
+    Public Property UniqueType As Enums.UniqueCheckScope
 
-    Public DefaultCalcID As HCMGuid
-    Public DefaultCalculation As Things.Expression
-    Public DefaultValue As String
+    Public Property DefaultCalcID As Integer
+    Public Property DefaultCalculation As Things.Expression
+    Public Property DefaultValue As String
 
-    Public ReferencedBy As Things.Collections.Generic
-
-    Public Sub New()
-      ReferencedBy = New Things.Collections.Generic
-    End Sub
+    Public Property ReferencedBy As New Things.Collections.Generic
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
@@ -50,6 +44,7 @@ Namespace Things
 
     Public ReadOnly Property DataTypeSize As String
       Get
+
         Select Case CInt(Me.DataType)
           Case ScriptDB.ColumnTypes.Text
             If Me.Multiline Or Me.Size > 8000 Then
@@ -78,43 +73,43 @@ Namespace Things
     Public ReadOnly Property DataTypeSyntax As String
       Get
 
-        Dim sSQLType As String = String.Empty
+        Dim sqlType As String = String.Empty
 
         Select Case CInt(Me.DataType)
           Case ScriptDB.ColumnTypes.Text
             If Me.Multiline Or Me.Size > 8000 Then
-              sSQLType = "varchar(MAX)"
+              sqlType = "varchar(MAX)"
             Else
-              sSQLType = String.Format("varchar({0})", Me.Size)
+              sqlType = String.Format("varchar({0})", Me.Size)
             End If
 
           Case ScriptDB.ColumnTypes.Integer
-            sSQLType = String.Format("integer")
+            sqlType = String.Format("integer")
 
           Case ScriptDB.ColumnTypes.Numeric
-            sSQLType = String.Format("numeric({0},{1})", Me.Size, Me.Decimals)
+            sqlType = String.Format("numeric({0},{1})", Me.Size, Me.Decimals)
 
           Case ScriptDB.ColumnTypes.Date
-            sSQLType = "datetime"
+            sqlType = "datetime"
 
           Case ScriptDB.ColumnTypes.Logic
-            sSQLType = "bit"
+            sqlType = "bit"
 
           Case ScriptDB.ColumnTypes.WorkingPattern
-            sSQLType = "varchar(14)"
+            sqlType = "varchar(14)"
 
           Case ScriptDB.ColumnTypes.Link
-            sSQLType = "varchar(255)"
+            sqlType = "varchar(255)"
 
           Case ScriptDB.ColumnTypes.Photograph
-            sSQLType = "varchar(255)"
+            sqlType = "varchar(255)"
 
           Case ScriptDB.ColumnTypes.Binary
-            sSQLType = "varbinary(MAX)"
+            sqlType = "varbinary(MAX)"
 
         End Select
 
-        Return sSQLType
+        Return sqlType
 
       End Get
 
@@ -123,16 +118,16 @@ Namespace Things
     Public ReadOnly Property HasDefaultValue As Boolean
       Get
 
-        If CInt(Me.DefaultCalcID) > 0 Then
+        If Me.DefaultCalcID > 0 Then
           Return True
         Else
           Select Case Me.DataType
             Case ScriptDB.ColumnTypes.Text
-              Return Len(Me.DefaultValue) > 0
+              Return Me.DefaultValue.Length > 0
             Case ScriptDB.ColumnTypes.Numeric, ScriptDB.ColumnTypes.Integer
-              Return (CInt(Me.DefaultValue) <> 0)
+              Return CInt(Me.DefaultValue) <> 0
             Case ScriptDB.ColumnTypes.Logic
-              Return CBool(Me.DefaultValue <> True)
+              Return CBool(Me.DefaultValue) <> True
             Case Else
               Return False
           End Select
@@ -144,81 +139,20 @@ Namespace Things
 
     Public ReadOnly Property IsCalculated As Boolean
       Get
-        Return (CInt(CalcID) > 0)
+        Return CalcID > 0
       End Get
     End Property
-
-    'Public ReadOnly Property BlankDefintion As String
-    '  Get
-
-    '    Dim sBlankDefintion As String = String.Empty
-
-    '    sBlankDefintion = "NULL"
-
-    '    'Select Case Me.DataType
-    '    '  Case ScriptDB.ColumnTypes.Date
-    '    '    sBlankDefintion = ""
-    '    '  Case ScriptDB.ColumnTypes.Logic
-    '    '    sBlankDefintion = "0"
-    '    '    Case 
-    '    'End Select
-
-    '    Return sBlankDefintion
-
-    '  End Get
-    'End Property
-
-    '#Region "XML"
-
-    '    Public ReadOnly Property ToXML As String ' Implements Interfaces.iSystemObject.ToXML 'Xml.XmlDocument 
-    '      Get
-
-    '        '     Dim sXML As String
-
-    '        Dim sb As New System.Text.StringBuilder
-    '        Dim writer As Xml.XmlTextWriter = New Xml.XmlTextWriter(New System.IO.StringWriter(sb))
-    '        'Dim returnXML As New Xml.Serialization.XmlSerializer(Me.GetType)
-
-    '        Dim returnXML As New Xml.Serialization.XmlSerializer(Me.GetType)
-
-
-
-    '        'dtExport.WriteXml(writer)
-    '        'writer.Close()
-
-    '        'sXML = Replace(sb.ToString, "<DocumentElement>", "")
-    '        'sXML = Replace(sXML, "</DocumentElement>", "")
-
-    '        'GetXMLFromDataTable = sXML
-
-
-
-    '        returnXML.Serialize(writer, Me)
-    '        writer.Close()
-    '        Return sb.ToString
-
-    '        '(returnXML, Me)
-
-
-
-    '        'returnXML.Serialize(objStreamWriter, Me)
-    '        'objStreamWriter.Close()
-    '        ' Return
-    '      End Get
-    '    End Property
-    '#End Region
 
     Public Function ApplyFormatting() As String
       Return ApplyFormatting(String.Empty)
     End Function
 
-    Public Function ApplyFormatting(ByRef Prefix As String) As String
+    Public Function ApplyFormatting(ByVal prefix As String) As String
 
-      Dim iFormats As Integer = 0
-      Dim sFormat As String = Me.Name
+      Dim format As String = Me.Name
 
-      If Not Prefix = String.Empty Then
-        sFormat = String.Format("[{0}].[{1}]", Prefix, sFormat)
+      If Not prefix = String.Empty Then
+        format = String.Format("[{0}].[{1}]", prefix, format)
       End If
 
       If Me.DataType = ScriptDB.ColumnTypes.Text Then
@@ -226,56 +160,41 @@ Namespace Things
         ' Case
         Select Case Me.CaseType
           Case Enums.CaseType.Lower
-            sFormat = String.Format("LOWER({0})", sFormat)
+            format = String.Format("LOWER({0})", format)
           Case Enums.CaseType.Proper
-            sFormat = String.Format("dbo.udfsys_propercase({0})", sFormat)
+            format = String.Format("dbo.udfsys_propercase({0})", format)
           Case Enums.CaseType.Upper
-            sFormat = String.Format("UPPER({0})", sFormat)
+            format = String.Format("UPPER({0})", format)
         End Select
-
-        'Select Case Me.Alignment
-        '  Case AlignType.Center
-        '  Case AlignType.Left
-        '  Case AlignType.Right
-        'End Select
 
         ' Trim type
         Select Case Me.TrimType
           Case Enums.TrimType.Both
-            sFormat = String.Format("LTRIM(RTRIM({0}))", sFormat)
+            format = String.Format("LTRIM(RTRIM({0}))", format)
           Case Enums.TrimType.Left
-            sFormat = String.Format("LTRIM({0})", sFormat)
+            format = String.Format("LTRIM({0})", format)
           Case Enums.TrimType.Right
-            sFormat = String.Format("RTRIM({0})", sFormat)
+            format = String.Format("RTRIM({0})", format)
         End Select
 
       End If
 
-      Return sFormat
+      Return format
     End Function
 
     Public ReadOnly Property SafeReturnType As String
       Get
 
-        Dim sSQLType As String = String.Empty
-
         Select Case CInt(Me.DataType)
           Case ScriptDB.ColumnTypes.Text, ScriptDB.ColumnTypes.WorkingPattern, ScriptDB.ColumnTypes.Link
-            sSQLType = "''"
-
+            Return "''"
           Case ScriptDB.ColumnTypes.Integer, ScriptDB.ColumnTypes.Numeric, ScriptDB.ColumnTypes.Logic
-            sSQLType = "0"
-
+            Return "0"
           Case ScriptDB.ColumnTypes.Date
-            sSQLType = "NULL"
-
+            Return "NULL"
           Case Else
-            sSQLType = "0"
-
+            Return "0"
         End Select
-
-        Return sSQLType
-
       End Get
     End Property
 

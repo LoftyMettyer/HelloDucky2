@@ -3,8 +3,8 @@
   Public Class Datasource
     Inherits Things.Base
 
-    Public Provider As String
-    Public Login As Connectivity.Login
+    Public Property Provider As String
+    Public Property Login As Connectivity.Login
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get

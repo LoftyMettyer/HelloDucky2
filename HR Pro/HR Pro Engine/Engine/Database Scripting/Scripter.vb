@@ -7,7 +7,7 @@ Namespace ScriptDB
 
   <ClassInterface(ClassInterfaceType.None)> _
   Public Class Script
-    Implements COMInterfaces.iCommitDB
+    Implements COMInterfaces.ICommitDB
 
 #Region "Table Scripting"
 
@@ -33,7 +33,7 @@ Namespace ScriptDB
 
     End Sub
 
-    Public Function DropViews() As Boolean Implements COMInterfaces.iCommitDB.DropViews
+    Public Function DropViews() As Boolean Implements COMInterfaces.ICommitDB.DropViews
 
       Dim bOK As Boolean = True
 
@@ -55,7 +55,7 @@ Namespace ScriptDB
 
     End Function
 
-    Public Function DropTableViews() As Boolean Implements iCommitDB.DropTableViews
+    Public Function DropTableViews() As Boolean Implements ICommitDB.DropTableViews
 
       Dim objTable As New Things.Table
       Dim bOK As Boolean = True
@@ -74,23 +74,20 @@ Namespace ScriptDB
 
     End Function
 
-    Public Function CreateTables() As Boolean Implements iCommitDB.ScriptTables
+    Public Function CreateTables() As Boolean Implements ICommitDB.ScriptTables
 
       Dim bOK As Boolean = True
-      Dim objTable As Things.Table
-      Dim objColumn As Things.Column
-      Dim objRelation As Things.Relation
       Dim sSQL As String = vbNullString
 
       Try
 
-        For Each objTable In Globals.Tables
+        For Each objTable As Things.Table In Globals.Tables
 
           Select Case objTable.State
 
             Case DataRowState.Deleted
               sSQL = String.Format("IF EXISTS(SELECT [name] FROM sys.sysobjects WHERE id = OBJECT_ID(N'[dbo].[{0}]') AND OBJECTPROPERTY(id, N'IsUserTable') = 1)" & vbNewLine & _
-                "DROP TABLE [dbo].[{0}];", objTable.NameInDB)
+                "DROP TABLE [dbo].[{0}];", objTable.PhysicalName)
               Globals.CommitDB.ScriptStatement(sSQL)
 
             Case DataRowState.Modified
@@ -120,38 +117,34 @@ Namespace ScriptDB
 
 
           ' Add any relations
-          For Each objRelation In objTable.Relations
+          For Each objRelation As Things.Relation In objTable.Relations
 
             If objRelation.RelationshipType = ScriptDB.RelationshipType.Parent Then
               sSQL = String.Format("IF NOT EXISTS ( SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE [TABLE_NAME]='{0}' AND [COLUMN_NAME] ='ID_{1}')" & vbNewLine & _
-                  "ALTER TABLE [dbo].[{0}] ADD [ID_{1}] integer NOT NULL", objTable.PhysicalName, CInt(objRelation.ParentID))
+                  "ALTER TABLE [dbo].[{0}] ADD [ID_{1}] integer NOT NULL", objTable.PhysicalName, objRelation.ParentID)
               Globals.CommitDB.ScriptStatement(sSQL)
 
               sSQL = String.Format("IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[{0}]') AND name = N'IDX_ID_{1}')" & vbNewLine & _
-                  "CREATE NONCLUSTERED INDEX [IDX_ID_{1}] ON [dbo].[{0}] ([ID_{1}] ASC)", objTable.PhysicalName, CInt(objRelation.ParentID))
+                  "CREATE NONCLUSTERED INDEX [IDX_ID_{1}] ON [dbo].[{0}] ([ID_{1}] ASC)", objTable.PhysicalName, objRelation.ParentID)
               Globals.CommitDB.ScriptStatement(sSQL)
 
             End If
 
           Next
 
-
-
           ' Now add the columns
-          For Each objColumn In objTable.Columns
+          For Each objColumn As Things.Column In objTable.Columns
 
             If objColumn.State = DataRowState.Deleted Then
               sSQL = String.Format("IF EXISTS ( SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE [TABLE_NAME]='{0}' AND [COLUMN_NAME] ='{1}')" & vbNewLine & _
                   "ALTER TABLE [dbo].[{0}] DROP COLUMN [{1}]", objTable.PhysicalName, objColumn.Name)
               Globals.CommitDB.ScriptStatement(sSQL)
 
-            ElseIf System.Data.DataRowState.Modified Or Globals.Options.RefreshObjects Then
+            ElseIf objColumn.State = System.Data.DataRowState.Modified Or Globals.Options.RefreshObjects Then
               sSQL = String.Format("IF EXISTS ( SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE [TABLE_NAME]='{0}' AND [COLUMN_NAME] ='{1}')" & vbNewLine & _
                   "ALTER TABLE [dbo].[{0}] ALTER COLUMN [{1}] {2} ELSE ALTER TABLE [dbo].[{0}] ADD [{1}] {2}", objTable.PhysicalName, objColumn.Name, objColumn.DataTypeSyntax)
               Globals.CommitDB.ScriptStatement(sSQL)
-
             End If
-
           Next
 
         Next
@@ -166,7 +159,7 @@ Namespace ScriptDB
 
     End Function
 
-    Public Function CreateTableViews() As Boolean Implements iCommitDB.ScriptTableViews
+    Public Function CreateTableViews() As Boolean Implements ICommitDB.ScriptTableViews
 
       Dim bOK As Boolean = True
       Dim sDefinitionSQL As String = String.Empty
@@ -217,9 +210,6 @@ Namespace ScriptDB
           sDefinitionSQL = String.Format("CREATE VIEW [{0}].[{1}] {2} {3}", objTable.SchemaName, sViewName, sOptions, sDefinitionSQL)
           CommitDB.ScriptStatement(sDefinitionSQL)
 
-
-
-
         Next
 
       Catch ex As Exception
@@ -232,7 +222,7 @@ Namespace ScriptDB
 
     End Function
 
-    Public Function CreateViews() As Boolean Implements iCommitDB.ScriptViews
+    Public Function CreateViews() As Boolean Implements ICommitDB.ScriptViews
 
       Dim objTable As Things.Table
       Dim objView As Things.View
@@ -291,7 +281,7 @@ Namespace ScriptDB
 
 #Region "Trigger Scripting"
 
-    Public Function CreateTriggers() As Boolean Implements iCommitDB.ScriptTriggers
+    Public Function CreateTriggers() As Boolean Implements ICommitDB.ScriptTriggers
 
       Dim bOK As Boolean = True
       Dim objTable As Things.Table
@@ -890,7 +880,7 @@ Namespace ScriptDB
           "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
           "END" _
           , sTriggerName, [Role], Table.PhysicalName, sTriggerType, [BodyCode] _
-          , IIf(Globals.Options.DevelopmentMode, "", "--"))
+          , If(Globals.Options.DevelopmentMode, "", "--"))
 
         ' Compile the trigger and put the apply correct firing order
         If CommitDB.ScriptStatement(sSQL) Then
@@ -916,7 +906,7 @@ Namespace ScriptDB
 
 #Region "Calculation Scripting"
 
-    Public Function CreateFunctions() As Boolean Implements iCommitDB.ScriptFunctions
+    Public Function CreateFunctions() As Boolean Implements ICommitDB.ScriptFunctions
 
       Dim bOK As Boolean = True
 
@@ -936,7 +926,7 @@ Namespace ScriptDB
 
     End Function
 
-    Public Function CreateObjects() As Boolean Implements iCommitDB.ScriptObjects
+    Public Function CreateObjects() As Boolean Implements ICommitDB.ScriptObjects
 
       Dim objTable As Things.Table
       Dim objColumn As Things.Column
@@ -1023,7 +1013,7 @@ Namespace ScriptDB
               objColumn.DefaultCalculation = objTable.Expressions.GetById(objColumn.DefaultCalcID)
 
               If objColumn.DefaultCalculation Is Nothing Then
-                Globals.ErrorLog.Add(ErrorHandler.Section.LoadingData, objColumn.Name, ErrorHandler.Severity.Error, "Default calculation not found", CInt(objColumn.DefaultCalcID))
+                Globals.ErrorLog.Add(ErrorHandler.Section.LoadingData, objColumn.Name, ErrorHandler.Severity.Error, "Default calculation not found", CStr(CInt(objColumn.DefaultCalcID)))
               Else
                 objColumn.DefaultCalculation.ExpressionType = ScriptDB.ExpressionType.ColumnDefault
                 objColumn.DefaultCalculation.AssociatedColumn = objColumn
@@ -1127,13 +1117,13 @@ Namespace ScriptDB
 
 #Region "Security Scripting"
 
-    Public Function ApplySecurity() As Boolean Implements iCommitDB.ApplySecurity
+    Public Function ApplySecurity() As Boolean Implements ICommitDB.ApplySecurity
       Return True
     End Function
 
 #End Region
 
-    Public Function ScriptIndexes() As Boolean Implements COMInterfaces.iCommitDB.ScriptIndexes
+    Public Function ScriptIndexes() As Boolean Implements COMInterfaces.ICommitDB.ScriptIndexes
 
       Dim objTable As Things.Table
       Dim objRelation As Things.Relation
@@ -1155,7 +1145,7 @@ Namespace ScriptDB
             bCreateIndex = False
 
             ' Drop existing index
-            sObjectName = IIf(objIndex.IsTableIndex, objTable.PhysicalName, objTable.Name)
+            sObjectName = If(objIndex.IsTableIndex, objTable.PhysicalName, objTable.Name)
             sSQL = String.Format("IF  EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[{0}]') AND name = N'{1}')" & _
                     "DROP INDEX [{1}] ON [dbo].[{0}]" _
                     , sObjectName, objIndex.Name)
@@ -1199,7 +1189,7 @@ Namespace ScriptDB
             Next
 
             ' Create index
-            sIncludeColumns = IIf(aryIncludeColumns.Count > 0, " INCLUDE (" & String.Join(", ", aryIncludeColumns.ToArray) & ")", "")
+            sIncludeColumns = If(aryIncludeColumns.Count > 0, " INCLUDE (" & String.Join(", ", aryIncludeColumns.ToArray) & ")", "")
             sSQL = String.Format("CREATE NONCLUSTERED INDEX [{0}] ON [dbo].[{1}] " & _
                   "({2})" & _
                   "{3}" _
@@ -1221,10 +1211,10 @@ Namespace ScriptDB
 
     End Function
 
-    Private Function SpecialTrigger_BankHolidays(ByRef Table As Things.Table) As String
+    Private Function SpecialTrigger_BankHolidays(ByVal Table As Things.Table) As String
 
       Dim aryTriggerCode As ArrayList
-      Dim lngColumnID As HCMGuid
+      Dim lngColumnID As Integer
       Dim objColumn As Things.Column
       Dim sCode As String = ""
       Dim objTriggeredUpdate As ScriptDB.TriggeredUpdate
@@ -1233,7 +1223,7 @@ Namespace ScriptDB
       If Table Is Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_TableBHol").Table Then
         aryTriggerCode = New ArrayList
 
-        lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldBHolDate").Value
+        lngColumnID = CInt(Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldBHolDate").Value)
         objColumn = Table.Columns.GetById(lngColumnID)
 
         For Each objTriggeredUpdate In Globals.OnBankHolidayUpdate
@@ -1294,23 +1284,23 @@ Namespace ScriptDB
       Dim objColumn2 As Things.Column
       Dim objColumn3 As Things.Column
       Dim objColumn4 As Things.Column
-      Dim lngColumnID As HCMGuid
+      Dim lngColumnID As Integer
 
 
       If Table Is Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_TableAbsence").Table Then
 
         objPersonnelTable = Globals.ModuleSetup.Setting("MODULE_PERSONNEL", "Param_TablePersonnel").Table
 
-        lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldSSPApplies").Value
+        lngColumnID = CInt(Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldSSPApplies").Value)
         objColumn1 = Table.Columns.GetById(lngColumnID)
 
-        lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldQualifyingDays").Value
+        lngColumnID = CInt(Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldQualifyingDays").Value)
         objColumn2 = Table.Columns.GetById(lngColumnID)
 
-        lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldWaitingDays").Value
+        lngColumnID = CInt(Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldWaitingDays").Value)
         objColumn3 = Table.Columns.GetById(lngColumnID)
 
-        lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldPaidDays").Value
+        lngColumnID = CInt(Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldPaidDays").Value)
         objColumn4 = Table.Columns.GetById(lngColumnID)
 
         If Not (objColumn1 Is Nothing Or objColumn2 Is Nothing Or objColumn3 Is Nothing Or objColumn4 Is Nothing Or objPersonnelTable Is Nothing) Then
@@ -1336,7 +1326,7 @@ Namespace ScriptDB
 
     End Function
 
-    Public Function ScriptOvernightStep2() As Boolean Implements COMInterfaces.iCommitDB.ScriptOvernightStep2
+    Public Function ScriptOvernightStep2() As Boolean Implements COMInterfaces.ICommitDB.ScriptOvernightStep2
 
       Dim bOK As Boolean = True
       Dim objTable As Things.Table
@@ -1352,7 +1342,7 @@ Namespace ScriptDB
 
       Try
 
-        bRefreshAll = Globals.SystemSettings.Setting("overnight", "refreshalltables").Value
+        bRefreshAll = CBool(Globals.SystemSettings.Setting("overnight", "refreshalltables").Value)
 
         For Each objTable In Globals.Tables
           aryColumns = New ArrayList
@@ -1386,8 +1376,8 @@ Namespace ScriptDB
         objPayrollArchive = Globals.ModuleSetup.Setting("MODULE_ACCORD", "Param_PurgeOption")
         If objPayrollArchive.Value = "1" Then
 
-          lngPayrollPeriod = Globals.ModuleSetup.Setting("MODULE_ACCORD", "Param_PurgeOptionPeriod").Value
-          lngPayrollPeriodType = Globals.ModuleSetup.Setting("MODULE_ACCORD", "Param_PurgeOptionPeriodType").Value
+          lngPayrollPeriod = CLng(Globals.ModuleSetup.Setting("MODULE_ACCORD", "Param_PurgeOptionPeriod").Value)
+          lngPayrollPeriodType = CType(CInt(Globals.ModuleSetup.Setting("MODULE_ACCORD", "Param_PurgeOptionPeriodType").Value), Things.AccordPurgeType)
 
           sSQLOvernightJob = sSQLOvernightJob & vbNewLine & "    -- Archive payroll" & vbNewLine
 

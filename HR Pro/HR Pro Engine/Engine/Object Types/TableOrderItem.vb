@@ -4,11 +4,12 @@
   Public Class TableOrderItem
     Inherits Things.Base
 
-    Public ColumnType As String
-    Public Order As Enums.Order
-    Public Column As Things.Column
-    Public Ascending As Enums.Order
-    Public Sequence As Integer
+    Public Property TableOrder As TableOrder
+    Public Property ColumnType As String
+    Public Property Order As Enums.Order
+    Public Property Column As Things.Column
+    Public Property Ascending As Enums.Order
+    Public Property Sequence As Integer
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get

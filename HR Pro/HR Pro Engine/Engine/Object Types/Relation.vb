@@ -3,16 +3,11 @@
   Public Class Relation
     Inherits Things.Base
 
-    Public RelationshipType As ScriptDB.RelationshipType
-    Public ParentID As HCMGuid
-    Public ChildID As HCMGuid
+    Public Property RelationshipType As ScriptDB.RelationshipType
+    Public Property ParentID As Integer
+    Public Property ChildID As Integer
 
-    Public DependantColumns As Things.Collections.Generic
-    '    Public DependantOnParent As Boolean = False
-
-    Public Sub New()
-      DependantColumns = New Things.Collections.Generic
-    End Sub
+    Public Property DependantColumns As New Things.Collections.Generic
 
     Public Overrides ReadOnly Property PhysicalName As String
       Get

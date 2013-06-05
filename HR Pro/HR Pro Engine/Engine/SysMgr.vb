@@ -2,7 +2,7 @@
 
 <ClassInterface(ClassInterfaceType.None)> _
 Public Class SysMgr
-  Implements COMInterfaces.iSystemManager
+  Implements COMInterfaces.ISystemManager
 
 #Region "iSystemManager Interface"
 
@@ -10,31 +10,31 @@ Public Class SysMgr
   Private mobjCommitDB As New Connectivity.ADOClassic
   Private mobjScript As New ScriptDB.Script
 
-  Public Property CommitDB As Object Implements COMInterfaces.iSystemManager.CommitDB
+  Public Property CommitDB As Object Implements COMInterfaces.ISystemManager.CommitDB
     Get
       Return mobjCommitDB.NativeObject
     End Get
     Set(ByVal value As Object)
-      mobjCommitDB.NativeObject = value
+      mobjCommitDB.NativeObject = CType(value, ADODB.Connection)
     End Set
   End Property
 
-  Public Property MetadataDB As Object Implements COMInterfaces.iSystemManager.MetadataDB
+  Public Property MetadataDB As Object Implements COMInterfaces.ISystemManager.MetadataDB
     Get
       Return objMetadataDB.NativeObject
     End Get
     Set(ByVal value As Object)
 
-      Dim conStr As String = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + value.Name + ";"
+      Dim conStr As String = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" & CType(value, DAO.Database).Name & ";"
 
       objMetadataDB.DB = New OleDb.OleDbConnection
       objMetadataDB.DB.ConnectionString = conStr
-      objMetadataDB.NativeObject = value
+      objMetadataDB.NativeObject = CType(value, DAO.Database)
 
     End Set
   End Property
 
-  Public Function PopulateObjects() As Boolean Implements COMInterfaces.iSystemManager.PopulateObjects
+  Public Function PopulateObjects() As Boolean Implements COMInterfaces.ISystemManager.PopulateObjects
 
     Dim bOK As Boolean = True
 
@@ -50,7 +50,7 @@ Public Class SysMgr
 
       Things.PopulateSystemThings()
       Things.PopulateSystemSettings()
-      Things.PopulateThings2()
+      Things.PopulateThings()
       Things.PopulateModuleSettings()
 
     Catch ex As Exception
@@ -61,7 +61,7 @@ Public Class SysMgr
 
   End Function
 
-  Public Function Initialise() As Boolean Implements COMInterfaces.iSystemManager.Initialise
+  Public Function Initialise() As Boolean Implements COMInterfaces.ISystemManager.Initialise
 
     Dim bOK As Boolean = True
 
@@ -77,7 +77,7 @@ Public Class SysMgr
 
   End Function
 
-  Public Function CloseSafely() As Boolean Implements COMInterfaces.iSystemManager.CloseSafely
+  Public Function CloseSafely() As Boolean Implements COMInterfaces.ISystemManager.CloseSafely
 
     Dim bOK As Boolean = True
 
@@ -96,25 +96,25 @@ Public Class SysMgr
 
   End Function
 
-  Public ReadOnly Property ReturnTuningLog As Tuning.Report Implements COMInterfaces.iSystemManager.TuningLog
+  Public ReadOnly Property ReturnTuningLog As Tuning.Report Implements COMInterfaces.ISystemManager.TuningLog
     Get
       Return Globals.TuningLog
     End Get
   End Property
 
-  Public ReadOnly Property Version As System.Version Implements iSystemManager.Version
+  Public ReadOnly Property Version As System.Version Implements ISystemManager.Version
     Get
       Return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
     End Get
   End Property
 
-  Public ReadOnly Property ReturnErrorLog As ErrorHandler.Errors Implements COMInterfaces.iSystemManager.ErrorLog
+  Public ReadOnly Property ReturnErrorLog As ErrorHandler.Errors Implements COMInterfaces.ISystemManager.ErrorLog
     Get
       Return Globals.ErrorLog
     End Get
   End Property
 
-  Public ReadOnly Property ReturnThings As Things.Collections.Generic Implements COMInterfaces.iSystemManager.Things
+  Public ReadOnly Property ReturnThings As Things.Collections.Generic Implements COMInterfaces.ISystemManager.Things
     Get
       'TODO: Global things is tables but global modify things are also being added????
       Return New Things.Collections.Generic
@@ -122,19 +122,19 @@ Public Class SysMgr
     End Get
   End Property
 
-  Public ReadOnly Property Script As ScriptDB.Script Implements COMInterfaces.iSystemManager.Script
+  Public ReadOnly Property Script As ScriptDB.Script Implements COMInterfaces.ISystemManager.Script
     Get
       Return mobjScript
     End Get
   End Property
 
-  Public ReadOnly Property Options As HCMOptions Implements COMInterfaces.iSystemManager.Options
+  Public ReadOnly Property Options As HCMOptions Implements COMInterfaces.ISystemManager.Options
     Get
       Return Globals.Options
     End Get
   End Property
 
-  Public ReadOnly Property Modifications As Modifications Implements COMInterfaces.iSystemManager.Modifications
+  Public ReadOnly Property Modifications As Modifications Implements COMInterfaces.ISystemManager.Modifications
     Get
       Return Globals.Modifications
     End Get

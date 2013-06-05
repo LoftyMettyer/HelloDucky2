@@ -2,21 +2,21 @@
 
 <ClassInterface(ClassInterfaceType.None)> _
 Public Class HCM
-  Implements COMInterfaces.iSystemManager
+  Implements COMInterfaces.ISystemManager
 
   Private objDatabase As New Connectivity.SQL
   Private mobjScript As New ScriptDB.Script
 
-  Public Property DB As Object Implements COMInterfaces.iSystemManager.CommitDB, COMInterfaces.iSystemManager.MetadataDB
+  Public Property DB As Object Implements COMInterfaces.ISystemManager.CommitDB, COMInterfaces.ISystemManager.MetadataDB
     Get
       Return objDatabase
     End Get
     Set(ByVal value As Object)
-      objDatabase = value
+      objDatabase = CType(value, Connectivity.SQL)
     End Set
   End Property
 
-  Public Function Initialise() As Boolean Implements iSystemManager.Initialise
+  Public Function Initialise() As Boolean Implements ISystemManager.Initialise
 
     Dim bOK As Boolean = True
 
@@ -45,7 +45,7 @@ Public Class HCM
       GetAuditLogDataSource = objDataset
 
     Catch ex As Exception
-            GetAuditLogDataSource = Nothing
+      GetAuditLogDataSource = Nothing
     End Try
 
   End Function
@@ -62,7 +62,7 @@ Public Class HCM
       GetAuditLogDescriptions = objDataset
 
     Catch ex As Exception
-            GetAuditLogDescriptions = Nothing
+      GetAuditLogDescriptions = Nothing
     End Try
 
   End Function
@@ -71,11 +71,11 @@ Public Class HCM
 
 
 
-  Public Function CloseSafely() As Boolean Implements iSystemManager.CloseSafely
+  Public Function CloseSafely() As Boolean Implements ISystemManager.CloseSafely
     Return True
   End Function
 
-  Public Function PopulateObjects() As Boolean Implements COMInterfaces.iSystemManager.PopulateObjects
+  Public Function PopulateObjects() As Boolean Implements COMInterfaces.ISystemManager.PopulateObjects
 
     Dim bOK As Boolean = True
 
@@ -109,25 +109,25 @@ Public Class HCM
   End Function
 
 
-  Public ReadOnly Property ErrorLog As ErrorHandler.Errors Implements COMInterfaces.iSystemManager.ErrorLog
+  Public ReadOnly Property ErrorLog As ErrorHandler.Errors Implements COMInterfaces.ISystemManager.ErrorLog
     Get
       Return Globals.ErrorLog
     End Get
   End Property
 
-  Public ReadOnly Property Options As HCMOptions Implements COMInterfaces.iSystemManager.Options
+  Public ReadOnly Property Options As HCMOptions Implements COMInterfaces.ISystemManager.Options
     Get
       Return Globals.Options
     End Get
   End Property
 
-  Public ReadOnly Property Script As ScriptDB.Script Implements COMInterfaces.iSystemManager.Script
+  Public ReadOnly Property Script As ScriptDB.Script Implements COMInterfaces.ISystemManager.Script
     Get
       Return mobjScript
     End Get
   End Property
 
-  Public ReadOnly Property ReturnThings As Things.Collections.Generic Implements COMInterfaces.iSystemManager.Things
+  Public ReadOnly Property ReturnThings As Things.Collections.Generic Implements COMInterfaces.ISystemManager.Things
     Get
       'TODO: Global things is tables but global modify things are also being added????
       Return New Things.Collections.Generic
@@ -135,13 +135,13 @@ Public Class HCM
     End Get
   End Property
 
-  Public ReadOnly Property TuningLog As Tuning.Report Implements COMInterfaces.iSystemManager.TuningLog
+  Public ReadOnly Property TuningLog As Tuning.Report Implements COMInterfaces.ISystemManager.TuningLog
     Get
       Return Globals.TuningLog
     End Get
   End Property
 
-  Public ReadOnly Property Version As System.Version Implements COMInterfaces.iSystemManager.Version
+  Public ReadOnly Property Version As System.Version Implements COMInterfaces.ISystemManager.Version
     Get
       Return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
     End Get
@@ -189,7 +189,7 @@ Public Class HCM
 
 #End Region
 
-  Public ReadOnly Property Modifications As Modifications Implements COMInterfaces.iSystemManager.Modifications
+  Public ReadOnly Property Modifications As Modifications Implements COMInterfaces.ISystemManager.Modifications
     Get
       Return Globals.Modifications
     End Get

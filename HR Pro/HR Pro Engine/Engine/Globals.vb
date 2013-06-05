@@ -1,17 +1,18 @@
-﻿'<HideModuleName()> _
+﻿Imports SystemFramework.Things
+
 Public Module Globals
 
-  Public MetadataDB As iConnection
-  Public CommitDB As iConnection
+  Public MetadataDB As IConnection
+  Public CommitDB As IConnection
 
   'Public Shared Connection As Connectivity.SQL
   Public MetadataProvider As Connectivity.MetadataProvider = Connectivity.MetadataProvider.PhoenixStoredProcs
   '    Public User As Connectivity.User
 
-  Public Tables As New List(Of Things.Table)
+  Public Tables As List(Of Table)
   Public Workflows As Things.Collections.Generic
-  Public Operators As Things.Collections.Generic
-  Public Functions As Things.Collections.Generic
+  Public Operators As List(Of CodeLibrary)
+  Public Functions As List(Of CodeLibrary)
   Public SelectedThings As Things.Collections.Generic
   Public ErrorLog As SystemFramework.ErrorHandler.Errors
   Public TuningLog As Tuning.Report
@@ -19,13 +20,11 @@ Public Module Globals
   Public SystemSettings As Things.Collections.Generic
   Public Options As HCMOptions
   Public Modifications As Modifications
-  '  Public UniqueCodes As Things.Collection
   Public GetFieldsFromDB As Things.Collections.Generic
   Public PerformanceIndexes As Things.Collections.Generic
   Public OnBankHolidayUpdate As Things.Collections.Generic
 
   Public ScriptDB As ScriptDB.Script
-
   Public Login As Connectivity.Login
 
   Public Version As System.Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
@@ -33,10 +32,10 @@ Public Module Globals
   Public Sub Initialise()
 
     ' Metadata objects
-    Tables = New List(Of Things.Table)
+    Tables = New List(Of Table)
     Workflows = New Things.Collections.Generic
-    Operators = New Things.Collections.Generic
-    Functions = New Things.Collections.Generic
+    Operators = New List(Of CodeLibrary)
+    Functions = New List(Of CodeLibrary)
     ErrorLog = New SystemFramework.ErrorHandler.Errors
     TuningLog = New Tuning.Report
     ModuleSetup = New Things.Collections.Generic

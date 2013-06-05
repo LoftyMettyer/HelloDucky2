@@ -10,15 +10,13 @@ Namespace Things.Collections
   Public Class BaseCollection
     Inherits System.ComponentModel.BindingList(Of Things.Base)
     Implements System.Xml.Serialization.IXmlSerializable
-    Implements iCollection_Base
-
-    '    Implements ICloneable
+    Implements ICollection_Base
 
     Public Parent As Things.Base ' iSystemObject
     Public Root As Things.Base 'iSystemObject
 
     ' Adds a unqiue object - scrolls through rather than uses contains because the type sent in could be a inherited type (there may be a better way to do this!)
-    Public Sub AddIfNew(ByRef [Thing] As Things.Base)
+    Public Sub AddIfNew(ByVal [Thing] As Things.Base)
 
       Dim objThing As Things.Base
       Dim bFound As Boolean
@@ -66,7 +64,7 @@ Namespace Things.Collections
 
     End Sub
 
-    Public ReadOnly Property Objects(ByVal Type As Things.Type) As Things.Collections.Generic Implements iCollection_Base.Objects
+    Public ReadOnly Property Objects(ByVal Type As Things.Type) As Things.Collections.Generic Implements ICollection_Base.Objects
       Get
 
         Dim objCollection As Things.Collections.Generic
@@ -84,7 +82,7 @@ Namespace Things.Collections
 
     End Property
 
-    Public Function GetObject(ByVal [Type] As Things.Type, ByVal [ID] As HCMGuid) As Things.Base
+    Public Function GetObject(ByVal [Type] As Things.Type, ByVal [ID] As Integer) As Things.Base
 
       Dim objChild As Things.Base
 
@@ -98,8 +96,9 @@ Namespace Things.Collections
 
     End Function
 
-    Public Sub Add1(ByRef [Object] As Things.Base) Implements COMInterfaces.iCollection_Base.Add
-      [Object].Parent = Me.Parent
+    Public Sub Add1(ByVal [Object] As Things.Base) Implements COMInterfaces.ICollection_Base.Add
+      'TODO: WANNA REMOVE
+      '[Object].Parent = Me.Parent
       Me.Items.Add([Object])
     End Sub
 
@@ -284,7 +283,7 @@ Namespace Things.Collections
 
     'End Sub
 
-    'Default Public ReadOnly Property GetSingleObject(ByVal ID As HCMGuid) As Things.Base
+    'Default Public ReadOnly Property GetSingleObject(ByVal ID As Integer) As Things.Base
     '  Get
 
     '    Dim objChild As Things.Base

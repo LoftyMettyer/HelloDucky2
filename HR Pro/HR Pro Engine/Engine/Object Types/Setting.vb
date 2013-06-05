@@ -2,14 +2,14 @@
   Public Class Setting
     Inherits Things.Base
 
-    Public [Module] As String
-    Public Parameter As String
-    Public ParameterType As String
-    Public Table As Things.Table
-    Public Column As Things.Column
-    Public Value As String
-    Public Code As String
-    Public SettingType As Enums.SettingType
+    Public Property [Module] As String
+    Public Property Parameter As String
+    Public Property ParameterType As String
+    Public Property Table As Things.Table
+    Public Property Column As Things.Column
+    Public Property Value As String
+    Public Property Code As String
+    Public Property SettingType As Enums.SettingType
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
