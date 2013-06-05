@@ -965,14 +965,14 @@ Public Sub Login()
   
   strUserName = Replace(txtUID.Text, ";", "")
  
-  If Not gblnBatchJobsOnly Then
-    If LenB(strUserName) <> 0 Then
-      gsConnectionString = gsConnectionString & "User ID=" & strUserName '& ";PWD=" & txtPWD.Text & ";"
-    Else
+  If LenB(strUserName) <> 0 Then
+    gsConnectionString = gsConnectionString & "User ID=" & strUserName
+  Else
+    
+    If Not gblnBatchJobsOnly Then
       gobjProgress.CloseProgress
       Screen.MousePointer = vbDefault
-      COAMsgBox "Please enter a user name.", _
-          vbExclamation + vbOKOnly, App.ProductName
+      COAMsgBox "Please enter a user name.", vbExclamation + vbOKOnly, App.ProductName
       txtUID.SetFocus
       Exit Sub
     End If
