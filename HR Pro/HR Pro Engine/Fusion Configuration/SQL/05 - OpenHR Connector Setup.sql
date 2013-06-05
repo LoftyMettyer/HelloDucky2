@@ -1,11 +1,12 @@
 
---DROP TABLE [fusion].[temptable]
---GO
+DROP TABLE [fusion].[temptable]
+GO
 
 
---CREATE TABLE [fusion].[temptable](
---	[Message] [varchar](max) NULL,
---	[CreatedDateTime] [datetime] NULL)
+CREATE TABLE [fusion].[temptable](
+	[Message] [varchar](max) NULL,
+	[recid] integer,
+	[CreatedDateTime] [datetime] NULL)
 	
  
 
@@ -63,7 +64,7 @@ BEGIN
 
 	SET NOCOUNT ON;
 
-	--INSERT [fusion].[temptable] (message) VALUES (@xml)
+	INSERT [fusion].[temptable] (message, createddatetime, recid) VALUES (@xml, getdate(), @id)
 
 DECLARE @xmlCode xml;
 
@@ -164,10 +165,15 @@ SET @executeCode = @executeCode
 	+ ' END' + CHAR(13)
 	+ ' SELECT @ID;';
 
+
+
 SET @ParmDefinition = N'@xmlCode xml, @ID integer OUTPUT';
+
+INSERT [fusion].[temptable] (message) VALUES (@executeCode)
+
 EXEC sp_executeSQL @executeCode, @ParmDefinition, @xmlcode = @xmlcode, @id = @id
 
-
+--select 0
 
 
 END
