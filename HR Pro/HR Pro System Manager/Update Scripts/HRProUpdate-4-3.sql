@@ -45,13 +45,14 @@ BEGIN
 	RETURN
 END
 
--- Only allow script to be run on SQL2005 or above
+-- Only allow script to be run on or above SQL2005
 SELECT @iSQLVersion = convert(float,substring(@@version,charindex('-',@@version)+2,2))
-IF (@iSQLVersion <> 9 AND @iSQLVersion <> 10)
+IF (@iSQLVersion < 9)
 BEGIN
 	RAISERROR('The SQL Server is incompatible with this version of HR Pro', 16, 1)
 	RETURN
 END
+
 
 /* ------------------------------------------------------------- */
 PRINT 'Step - System Functions'
@@ -2285,8 +2286,8 @@ PRINT 'Step - Remove redundant procedures'
 /* ------------------------------------------------------------- */
 PRINT 'Step - Server settings'
 
-	EXEC sp_dboption @DBName, 'recursive triggers', 'FALSE';
-
+  SELECT @NVarCommand = 'ALTER DATABASE ['+ DB_NAME() + '] SET RECURSIVE_TRIGGERS OFF';
+  EXEC sp_executesql @NVarCommand;
 
 /* ------------------------------------------------------------- */
 PRINT 'Step - Trigger functionality'
