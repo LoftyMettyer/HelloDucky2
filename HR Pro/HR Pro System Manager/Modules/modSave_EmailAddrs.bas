@@ -184,7 +184,7 @@ Public Function CreateEmailAddrStoredProcedure() As Boolean
 
   strSQL = vbNullString
   With recEmailAddrEdit
-    .Index = "idxID"
+    .index = "idxID"
 
     If Not (.BOF And .EOF) Then
       .MoveFirst
@@ -361,7 +361,7 @@ Public Function CreateEmailSendStoredProcedure(strProcName As String, lngMethod 
   
   'MH20090925 HRPRO-280
   sSQL = _
-       "    IF rtrim(isnull(@Attachment,'')) <> ''" & vbCrLf & _
+       "    IF rtrim(replace(isnull(@Attachment,''),';','') <> ''" & vbCrLf & _
        "    BEGIN" & vbCrLf & _
        "        EXEC master..xp_fileexist @Attachment, @AttachmentExists OUTPUT" & vbCrLf & _
        "        IF @AttachmentExists = 0" & vbCrLf & _
