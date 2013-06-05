@@ -190,6 +190,30 @@ Namespace Things
       End Get
     End Property
 
+    Public ReadOnly Property ComponentReturnType As ScriptDB.ComponentValueTypes
+      Get
+
+        Select Case CInt(Me.DataType)
+
+          Case ColumnTypes.Text, ColumnTypes.WorkingPattern, ColumnTypes.Link
+            Return ScriptDB.ComponentValueTypes.String
+
+          Case ColumnTypes.Integer, ColumnTypes.Numeric
+            Return ScriptDB.ComponentValueTypes.Numeric
+
+          Case ColumnTypes.Logic
+            Return ScriptDB.ComponentValueTypes.Logic
+
+          Case ColumnTypes.Date
+            Return ScriptDB.ComponentValueTypes.Date
+
+          Case Else
+            Return ScriptDB.ComponentValueTypes.Numeric
+        End Select
+
+      End Get
+    End Property
+
   End Class
 End Namespace
 

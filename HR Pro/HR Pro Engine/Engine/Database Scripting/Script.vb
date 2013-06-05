@@ -1146,12 +1146,18 @@ Namespace ScriptDB
 
                   If column.IsCalculated Then
 
-                     column.Calculation = table.Expressions.GetById(column.CalcID)
+              column.Calculation = table.Expressions.GetById(column.CalcID).Clone
+
+              column.Calculation.SetRootNode(column.Calculation)
+
+              '   Debug.Assert(column.Name <> "Intranet_Self_Service_Login")
 
                      If Not column.Calculation Is Nothing Then
                         column.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
-                        column.Calculation.AssociatedColumn = column
-                        column.Calculation.GenerateCode()
+
+                column.Calculation.AssociatedColumn = column
+                column.Calculation.ConvertToExpression()
+                column.Calculation.GenerateCode()
                      End If
 
                   End If

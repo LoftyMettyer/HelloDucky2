@@ -5,7 +5,6 @@ Namespace Things
   <ClassInterface(ClassInterfaceType.None), ComVisible(True), Serializable()>
   Public Class Component
     Inherits Base
-    Implements ICloneable
 
     Public Property SubType As ScriptDB.ComponentTypes
     Public Property ReturnType As ScriptDB.ComponentValueTypes
@@ -17,6 +16,8 @@ Namespace Things
     Public Property ValueDate As Date
     Public Property ValueLogic As Boolean
 
+    Public Property Dependencies As ICollection(Of Base)
+
     Public Property TableID As Integer
     Public Property ColumnID As Integer
     Public ChildRowDetails As ChildRowDetails
@@ -26,22 +27,22 @@ Namespace Things
     Public Property LookupColumnID As Integer
 
     Public Property BaseExpression As Expression
+    Public Property AssociatedColumn As Column
 
     Public Property IsSchemaBound As Boolean = True
     Public Property IsTimeDependant As Boolean
 
+    '  Public Property Recursion As ICollection(Of Base)
     Public Property Components As ICollection(Of Component)
     Public Property Level As Long = 0
 
     Private mdblValueNumeric As Double = 0
 
+    Private ConvertSubComponents As Boolean = True
+
     Public Sub New()
       Components = New Collection(Of Component)
     End Sub
-
-    Public Function Clone() As Object Implements System.ICloneable.Clone
-      Return Me.MemberwiseClone
-    End Function
 
     Public ReadOnly Property SafeReturnType As String
       Get
@@ -86,6 +87,130 @@ Namespace Things
         mdblValueNumeric = CDbl(value)
       End Set
     End Property
+
+#Region "Convert components to expressions"
+
+    Public Sub ConvertToExpression()
+
+      Dim objRecursiveComponents As New Collection(Of Base)
+      objRecursiveComponents.Add(Me.AssociatedColumn)
+      ConvertToExpression(0, objRecursiveComponents)
+
+    End Sub
+
+    Public Sub ConvertToExpression(ByRef Level As Long, ByRef Recursion As Collection(Of Base))
+
+      Dim objExpression As Expression
+      Dim objColumn As Column
+      Dim objTable As Table
+      Dim objClone As New Collection(Of Component)
+      Dim bConvertsSubComponents As Boolean
+      Dim lngThisLevel As Long
+
+      Level = Level + 1
+      lngThisLevel = Level
+
+      If Me.SubType = ScriptDB.ComponentTypes.Calculation Then
+
+        objExpression = Me.BaseExpression.BaseTable.Expressions.GetById(Me.CalculationID).Clone
+        Me.Components = objExpression.Components
+        Me.TableID = Me.BaseExpression.BaseTable.ID
+        Me.SubType = ScriptDB.ComponentTypes.Expression
+
+      ElseIf Me.SubType = ScriptDB.ComponentTypes.Expression Then
+        For Each objComponent As Component In Me.Components
+          objComponent.ConvertToExpression(Level, Recursion)
+        Next
+
+      ElseIf Me.SubType = ScriptDB.ComponentTypes.Function Then
+        For Each objComponent As Component In Me.Components
+          objComponent.ConvertToExpression(Level, Recursion)
+        Next
+
+        ' Pull a calculated column directly in as an expression
+      ElseIf Me.SubType = ScriptDB.ComponentTypes.Column And Me.ConvertSubComponents Then
+
+        objTable = Globals.Tables.GetById(Me.TableID)
+        objColumn = objTable.Columns.GetById(Me.ColumnID)
+
+        ' We've got ourselves into a recursive loop somehow
+        If Recursion.Contains(objColumn) Then
+
+        ElseIf objColumn.IsCalculated Then
+          If objColumn.Table Is Me.BaseExpression.BaseTable Then
+
+            objExpression = objColumn.Table.Expressions.GetById(objColumn.CalcID).Clone
+            Me.Components = objExpression.Components
+            Me.ReturnType = objColumn.ComponentReturnType
+            bConvertsSubComponents = Not Recursion.Contains(objColumn)
+
+            Recursion.AddIfNew(objColumn)
+
+            For Each objComponent As Component In Me.Components
+              objComponent.ConvertSubComponents = bConvertsSubComponents
+              objComponent.ConvertToExpression(Level, Recursion)
+            Next
+
+            If lngThisLevel < Level Then
+              Recursion.Remove(objColumn)
+            End If
+
+            Me.SubType = ScriptDB.ComponentTypes.ConvertedCalculatedColumn
+
+          End If
+        End If
+
+      End If
+
+    End Sub
+
+#End Region
+
+#Region "Cloning"
+
+    Public Function Clone() As Component
+
+      Dim objClone As New Component
+
+      ' Clone component properties (shallow clone)
+      objClone = CType(Me.MemberwiseClone(), Component)
+
+      ' Clone the child nodes (deep clone)
+      objClone.Components = New Collection(Of Component)
+      For Each objComponent As Component In Me.Components
+        objClone.Components.Add(CType(objComponent.Clone, Component))
+      Next
+
+      Return objClone
+    End Function
+
+    Public Function CloneComponents() As ICollection(Of Component)
+
+      Dim objClone As New Collection(Of Component)
+
+      ' Clone the child nodes
+      For Each objComponent As Component In Me.Components
+        objClone.Add(CType(objComponent.Clone, Component))
+      Next
+
+      Return objClone
+
+    End Function
+
+    ' Set the root expression on all nodes for this expression
+    Friend Sub SetRootNode(ByRef RootNode As Expression)
+
+      Me.BaseExpression = RootNode
+
+      ' Clone the child nodes
+      For Each objComponent As Component In Me.Components
+        objComponent.SetRootNode(RootNode)
+      Next
+
+    End Sub
+
+
+#End Region
 
   End Class
 End Namespace

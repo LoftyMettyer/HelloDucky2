@@ -81,6 +81,7 @@
     WorkflowValue = 11
     WorkflowColumn = 12
     Relation = 13
+    ConvertedCalculatedColumn = 14
   End Enum
 
   Public Enum ComponentValueTypes

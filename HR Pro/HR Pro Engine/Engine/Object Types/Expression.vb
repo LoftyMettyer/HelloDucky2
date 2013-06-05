@@ -11,14 +11,15 @@ Namespace Things
     Public Property Decimals As Integer
     Public Property BaseTableID As Integer
     Public Property BaseTable As Table
-    Public Property AssociatedColumn As Column
-    'Public Property 
+
     Public UDF As ScriptDB.GeneratedUDF
     Public Property ExpressionType As ScriptDB.ExpressionType
 
-    Public Property Dependencies As ICollection(Of Base)
+    '   Public Property Dependencies As ICollection(Of Base)
     Public Property ColumnRecursion As ICollection(Of Column)
     Public Property StatementObjects As IList(Of Base)
+
+    Public Property Comments As ICollection(Of String)
 
     Public Property Joins As ArrayList
     Public Property FromTables As ArrayList
@@ -40,10 +41,14 @@ Namespace Things
     Public Property IsComplex As Boolean
     Public Property IsValid As Boolean = True
 
+    Private StartRecursionLevel As Long
+
     Public Sub New()
       Dependencies = New Collection(Of Base)
       ColumnRecursion = New Collection(Of Column)
       StatementObjects = New List(Of Base)
+      Comments = New Collection(Of String)
+      '     Recursion = New Collection(Of Base)
     End Sub
 
     Public ReadOnly Property CalculatePostAudit As Boolean
@@ -67,7 +72,8 @@ Namespace Things
             Dependencies.AddIfNew(column)
             Dependencies.AddIfNew(column.Table)
 
-          Case ScriptDB.ComponentTypes.Expression, ScriptDB.ComponentTypes.Function, ScriptDB.ComponentTypes.Calculation
+          Case ScriptDB.ComponentTypes.Expression, ScriptDB.ComponentTypes.Function _
+            , ScriptDB.ComponentTypes.Calculation, ScriptDB.ComponentTypes.ConvertedCalculatedColumn
             BuildDependancies(component)
         End Select
 
@@ -103,6 +109,11 @@ Namespace Things
       PreStatements.Clear()
       Joins.Clear()
       Wheres.Clear()
+
+      ' Convert calculated columns into expression so as to avoid recursion (at least that's the idea!)
+      '   Me.BaseExpression.Recursion.Clear()
+      '   Me.BaseExpression.Recursion.Add(Me.AssociatedColumn)
+      'Me.ConvertToExpression()
 
       ' Build the dependencies collection
       Dependencies.Clear()
@@ -183,13 +194,13 @@ Namespace Things
         End If
 
 
-        sBypassUDFCode = String.Format("    -- Return the original value if we somehow get stuck in a recursive loop (shouldn't happen)" & vbNewLine &
-          "    IF @@NESTLEVEL > 15" & vbNewLine &
-          "        BEGIN" & vbNewLine &
-          "            SELECT @result = [{1}] FROM dbo.[{2}] WHERE [ID] = @prm_ID;" & vbNewLine &
-          "            RETURN @result;" & vbNewLine &
-          "        END" _
-          , String.Join(", ", aryDependsOn.ToArray()), Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.PhysicalName)
+        'sBypassUDFCode = String.Format("    -- Return the original value if we somehow get stuck in a recursive loop (shouldn't happen)" & vbNewLine &
+        '  "    IF @@NESTLEVEL > 15" & vbNewLine &
+        '  "        BEGIN" & vbNewLine &
+        '  "            SELECT @result = [{1}] FROM dbo.[{2}] WHERE [ID] = @prm_ID;" & vbNewLine &
+        '  "            RETURN @result;" & vbNewLine &
+        '  "        END" _
+        '  , String.Join(", ", aryDependsOn.ToArray()), Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.PhysicalName)
 
 
       End If
@@ -459,6 +470,25 @@ Namespace Things
           Case ScriptDB.ComponentTypes.Function
             SQLCode_AddFunction(objComponent, [CodeCluster])
 
+
+
+            ' VERY BAD CODE ALERT.... MUST CHANGE
+
+
+
+            ' botch for the moment until calculations and calculaated columns are tiyuped up!
+          Case ScriptDB.ComponentTypes.ConvertedCalculatedColumn
+            '            Me.CaseCount = 9
+            SQLCode_AddParameter(objComponent, [CodeCluster])
+
+
+            ' NORMAL CODE CONTINUES...
+
+
+
+
+
+
             ' An expression or a parameter
           Case ScriptDB.ComponentTypes.Expression
             SQLCode_AddParameter(objComponent, [CodeCluster])
@@ -472,7 +502,7 @@ Namespace Things
 
               'objCalculation.StartOfPartNumbers = 0
               objCalculation.BaseExpression = objComponent.BaseExpression
-              objComponent.Components = objCalculation.Components
+              objComponent.Components = objCalculation.CloneComponents
               objComponent.ReturnType = objCalculation.ReturnType
               SQLCode_AddParameter(objComponent, [CodeCluster])
 
@@ -571,10 +601,10 @@ Namespace Things
           And objThisColumn.Table Is Me.AssociatedColumn.Table) Then
         LineOfCode.Code = String.Format("{0}(@prm_ID)", objThisColumn.DefaultCalculation.UDF.Name)
 
-      ElseIf objThisColumn.IsCalculated And objThisColumn.Table Is Me.AssociatedColumn.Table _
-          And Not Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter And Not Me.ExpressionType = ScriptDB.ExpressionType.Mask _
-          And Not Me Is objThisColumn.Calculation Then
-        LineOfCode = AddCalculatedColumn(objThisColumn)
+        'ElseIf objThisColumn.IsCalculated And objThisColumn.Table Is Me.AssociatedColumn.Table _
+        '    And Not Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter And Not Me.ExpressionType = ScriptDB.ExpressionType.Mask _
+        '    And Not Me Is objThisColumn.Calculation Then
+        '  LineOfCode = AddCalculatedColumn(objThisColumn)
 
       Else
 
@@ -694,25 +724,25 @@ Namespace Things
 
             StatementObjects.Add(objOrderFilter)
             PreStatements.Add(sPartCode)
-            If bIsSummaryColumn Then
-              LineOfCode.Code = String.Format("@part_{0}", iPartNumber)
-            Else
-              If objThisColumn.SafeReturnType = "NULL" Then
-                LineOfCode.Code = "@part_" & iPartNumber
-              Else
-                LineOfCode.Code = String.Format("ISNULL(@part_{0},{1})", iPartNumber, objThisColumn.SafeReturnType)
-              End If
+            'If bIsSummaryColumn Then
+            LineOfCode.Code = String.Format("@part_{0}", iPartNumber)
+            'Else
+            'If objThisColumn.SafeReturnType = "NULL" Then
+            '  LineOfCode.Code = "@part_" & iPartNumber
+            'Else
+            '  LineOfCode.Code = String.Format("ISNULL(@part_{0},{1})", iPartNumber, objThisColumn.SafeReturnType)
+            ' End If
 
-            End If
+            '   End If
 
             Me.ReferencesChild = True
 
           End If
-        End If
-      End If
+            End If
+          End If
 
-      ' Add this column (or reference to it) to the main execute statement
-      [CodeCluster].Add(LineOfCode)
+          ' Add this column (or reference to it) to the main execute statement
+          [CodeCluster].Add(LineOfCode)
 
     End Sub
 
@@ -863,6 +893,7 @@ Namespace Things
       Dim objExpression As Expression
       Dim iPartNumber As Integer
       Dim sPartCode As String
+      Dim lngCaseLevel As Long
 
       ' Build code for the parameters
       ChildCodeCluster = New ScriptDB.LinesOfCode
@@ -871,7 +902,7 @@ Namespace Things
       ChildCodeCluster.CodeLevel = CodeCluster.CodeLevel + 1
 
       ' Nesting is too deep - convert to part number
-      If Me.CaseCount > 8 Then
+      If Me.CaseCount > 7 Then
 
         objExpression = New Expression
         objExpression.ExpressionType = Me.ExpressionType
@@ -879,11 +910,15 @@ Namespace Things
         objExpression.AssociatedColumn = Me.AssociatedColumn
         objExpression.BaseExpression = Me.BaseExpression
         objExpression.ReturnType = Component.ReturnType
-        objExpression.Components = Component.Components
+        objExpression.Components = Component.CloneComponents
         objExpression.StartOfPartNumbers = Declarations.Count + Me.StartOfPartNumbers
         objExpression.StatementObjects = Me.StatementObjects
 
+        lngCaseLevel = Me.CaseCount
         objExpression.GenerateCode()
+
+        'Debug.Assert(objExpression.CaseCount = 0)
+        '  If Me.CaseCount > lngCaseLevel Then
 
         Declarations.AddRange(objExpression.Declarations)
         PreStatements.AddRange(objExpression.PreStatements)
@@ -899,6 +934,8 @@ Namespace Things
         iPartNumber = Declarations.Count + CInt(Me.StartOfPartNumbers)
 
         Declarations.Add(String.Format("@part_{0} {1}", iPartNumber, objExpression.DataTypeSyntax))
+
+        'Debug.Assert(iPartNumber <> 127)
 
         sPartCode = String.Format("-- Component ({6})" & vbNewLine & _
             vbTab & "SELECT @part_{1} = {2}" & vbNewLine & _
@@ -917,6 +954,7 @@ Namespace Things
         Me.IsComplex = True
 
       Else
+
         SQLCode_AddCodeLevel(Component.Components, ChildCodeCluster)
         LineOfCode.Code = String.Format("({0})", ChildCodeCluster.Statement)
 
@@ -984,72 +1022,72 @@ Namespace Things
 
     End Property
 
-    Private Function AddCalculatedColumn(ByVal ReferencedColumn As Column) As ScriptDB.CodeElement
+    'Private Function AddCalculatedColumn(ByVal ReferencedColumn As Column) As ScriptDB.CodeElement
 
-      Dim sCallingCode As ScriptDB.CodeElement
-      Dim sVariableName As String
-      Dim iBackupType As ScriptDB.ExpressionType
-      Dim sStatement As String
-      Dim BackupColumn As Column
+    '  Dim sCallingCode As ScriptDB.CodeElement
+    '  Dim sVariableName As String
+    '  Dim iBackupType As ScriptDB.ExpressionType
+    '  Dim sStatement As String
+    '  Dim BackupColumn As Column
 
-      If ReferencedColumn.Calculation Is Nothing Then
-        ReferencedColumn.Calculation = ReferencedColumn.Table.Expressions.GetById(ReferencedColumn.CalcID)
-      End If
+    '  If ReferencedColumn.Calculation Is Nothing Then
+    '    ReferencedColumn.Calculation = ReferencedColumn.Table.Expressions.GetById(ReferencedColumn.CalcID)
+    '  End If
 
-      ColumnRecursion.AddIfNew(ReferencedColumn)
+    '  ColumnRecursion.AddIfNew(ReferencedColumn)
 
-      If StatementObjects.Contains(ReferencedColumn) Then
-        sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn))
-      Else
-        sVariableName = CStr(Declarations.Count + CInt(Me.StartOfPartNumbers))
-        StatementObjects.Add(ReferencedColumn)
+    '  If StatementObjects.Contains(ReferencedColumn) Then
+    '    sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn))
+    '  Else
+    '    sVariableName = CStr(Declarations.Count + CInt(Me.StartOfPartNumbers))
+    '    StatementObjects.Add(ReferencedColumn)
 
-        iBackupType = ReferencedColumn.Calculation.ExpressionType
-        BackupColumn = ReferencedColumn.Calculation.AssociatedColumn
+    '    iBackupType = ReferencedColumn.Calculation.ExpressionType
+    '    BackupColumn = ReferencedColumn.Calculation.AssociatedColumn
 
-        ReferencedColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn
-        ReferencedColumn.Calculation.AssociatedColumn = ReferencedColumn
+    '    ReferencedColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn
+    '    ReferencedColumn.Calculation.AssociatedColumn = ReferencedColumn
 
-        ReferencedColumn.Calculation.StartOfPartNumbers = Me.StartOfPartNumbers + Declarations.Count
+    '    ReferencedColumn.Calculation.StartOfPartNumbers = Me.StartOfPartNumbers + Declarations.Count
 
-        ReferencedColumn.Calculation.ColumnRecursion = ColumnRecursion
-        ReferencedColumn.Calculation.GenerateCode()
+    '    ReferencedColumn.Calculation.ColumnRecursion = ColumnRecursion
+    '    ReferencedColumn.Calculation.GenerateCode()
 
-        ReferencedColumn.Calculation.ExpressionType = iBackupType
-        ReferencedColumn.Calculation.AssociatedColumn = BackupColumn
+    '    ReferencedColumn.Calculation.ExpressionType = iBackupType
+    '    ReferencedColumn.Calculation.AssociatedColumn = BackupColumn
 
-        Declarations.Add(String.Format("@part_{0} {1}", sVariableName, ReferencedColumn.DataTypeSyntax))
+    '    Declarations.Add(String.Format("@part_{0} {1}", sVariableName, ReferencedColumn.DataTypeSyntax))
 
-        sStatement = ReferencedColumn.Calculation.UDF.CallingCode
-        If ReferencedColumn.CalculateIfEmpty Then
-          If ReferencedColumn.SafeReturnType = "NULL" Then
-            sStatement = String.Format("ISNULL(@prm_{0}, {1})", ReferencedColumn.Name, sStatement)
-          Else
-            sStatement = String.Format("ISNULL(NULLIF(@prm_{0}, {2}), {1})", ReferencedColumn.Name, sStatement, ReferencedColumn.SafeReturnType)
-          End If
-        End If
+    '    sStatement = ReferencedColumn.Calculation.UDF.CallingCode
+    '    If ReferencedColumn.CalculateIfEmpty Then
+    '      If ReferencedColumn.SafeReturnType = "NULL" Then
+    '        sStatement = String.Format("ISNULL(@prm_{0}, {1})", ReferencedColumn.Name, sStatement)
+    '      Else
+    '        sStatement = String.Format("ISNULL(NULLIF(@prm_{0}, {2}), {1})", ReferencedColumn.Name, sStatement, ReferencedColumn.SafeReturnType)
+    '      End If
+    '    End If
 
-        PreStatements.Add(String.Format("-- Column component ({2})" & vbNewLine & "SELECT @part_{0} = {1}" & vbNewLine _
-                          , sVariableName, sStatement, ReferencedColumn.Name))
-        sCallingCode.Code = String.Format("@part_{0}", sVariableName)
-      End If
+    '    PreStatements.Add(String.Format("-- Column component ({2})" & vbNewLine & "SELECT @part_{0} = {1}" & vbNewLine _
+    '                      , sVariableName, sStatement, ReferencedColumn.Name))
+    '    sCallingCode.Code = String.Format("@part_{0}", sVariableName)
+    '  End If
 
-      Me.CaseCount += ReferencedColumn.Calculation.CaseCount
-      Me.BaseExpression.IsComplex = True
-      Me.Tuning.Rating += ReferencedColumn.Calculation.Tuning.Rating
+    '  Me.CaseCount += ReferencedColumn.Calculation.CaseCount
+    '  Me.BaseExpression.IsComplex = True
+    '  Me.Tuning.Rating += ReferencedColumn.Calculation.Tuning.Rating
 
-      Me.RequiresRecordID = RequiresRecordID Or ReferencedColumn.Calculation.RequiresRecordID
-      Me.ContainsUniqueCode = ContainsUniqueCode Or ReferencedColumn.Calculation.ContainsUniqueCode
-      Me.RequiresOvernight = RequiresOvernight Or ReferencedColumn.Calculation.RequiresOvernight
-      Me.ReferencesParent = Me.ReferencesParent Or ReferencedColumn.Calculation.ReferencesParent
-      Me.ReferencesChild = Me.ReferencesChild Or ReferencedColumn.Calculation.ReferencesChild
-      Dependencies.Merge(ReferencedColumn.Calculation.Dependencies)
+    '  Me.RequiresRecordID = RequiresRecordID Or ReferencedColumn.Calculation.RequiresRecordID
+    '  Me.ContainsUniqueCode = ContainsUniqueCode Or ReferencedColumn.Calculation.ContainsUniqueCode
+    '  Me.RequiresOvernight = RequiresOvernight Or ReferencedColumn.Calculation.RequiresOvernight
+    '  Me.ReferencesParent = Me.ReferencesParent Or ReferencedColumn.Calculation.ReferencesParent
+    '  Me.ReferencesChild = Me.ReferencesChild Or ReferencedColumn.Calculation.ReferencesChild
+    '  Dependencies.Merge(ReferencedColumn.Calculation.Dependencies)
 
-      ReferencedColumn.Tuning.IncrementSelectAsCalculation()
+    '  ReferencedColumn.Tuning.IncrementSelectAsCalculation()
 
-      Return sCallingCode
+    '  Return sCallingCode
 
-    End Function
+    'End Function
 
     Private Function ResultDataType(ByVal ColumnType As ColumnTypes) As String
 
@@ -1164,6 +1202,24 @@ Namespace Things
 
       Return sSQLType
     End Function
+
+#Region "Cloning"
+
+    Public Overloads Function Clone() As Expression
+
+      Dim objClone As New Expression
+
+      ' Clone component properties (shallow clone)
+      objClone = CType(Me.MemberwiseClone(), Expression)
+
+      ' Clone the child nodes (deep clone)
+      objClone.Components = Me.CloneComponents
+
+      Return objClone
+
+    End Function
+
+#End Region
 
   End Class
 End Namespace

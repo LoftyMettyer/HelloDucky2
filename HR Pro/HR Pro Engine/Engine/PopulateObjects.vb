@@ -305,6 +305,7 @@ Namespace Things
 
         Dim expression As New Expression
         expression.ID = row.Item("id").ToString
+        expression.SubType = ScriptDB.ComponentTypes.Expression
         expression.Name = row.Item("name").ToString
         expression.ExpressionType = row.Item("type").ToString
         expression.SchemaName = "dbo"
