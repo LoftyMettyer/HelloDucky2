@@ -2496,15 +2496,20 @@ Private Sub ReadSelectedIDs()
   
 End Sub
 
+
 ' Show the selection or just force through the specified ID
 Public Sub CustomShow(ByVal ShowMode As VBRUN.FormShowConstants)
 
   If gbJustRunIt Then
     Me.SelectedID = glngBypassDefsel_ID
     Me.Action = edtSelect
+  
   Else
     Me.Show ShowMode
   End If
+
+  ' Record the event
+  UpdateUsage mutlUtilityType, mlngSelectedID, lngAction
 
 End Sub
 

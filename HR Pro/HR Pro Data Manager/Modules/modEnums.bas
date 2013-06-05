@@ -65,8 +65,9 @@ Public Enum UtilityType
   utlOrderDefinition = 27
   utlDocumentMapping = 28
   utlReportPack = 29
+  utlTurnover = 30
+  utlStability = 31
 End Enum
-
 
 ' Screen Types
 Public Enum ScreenType

@@ -4427,3 +4427,35 @@ Public Sub DebugOutput(strWhere As String, strWhat As String)
 
 End Sub
 
+Public Sub UpdateUsage(ByRef lngType As UtilityType, ByRef lngUtilityID As Long, lngAction As EditOptions)
+
+  Dim cmdUsage As New ADODB.Command
+  Dim pmADO As ADODB.Parameter
+
+  If lngAction = edtSelect Then
+
+    Set cmdUsage = New ADODB.Command
+    With cmdUsage
+      .CommandText = "dbo.spstat_updateobjectusage"
+      .CommandType = adCmdStoredProc
+      .CommandTimeout = 0
+      Set .ActiveConnection = gADOCon
+  
+      Set pmADO = .CreateParameter("objecttype", adInteger, adParamInput, 50)
+      .Parameters.Append pmADO
+      pmADO.Value = lngType
+  
+      Set pmADO = .CreateParameter("objectid", adInteger, adParamInput, 50)
+      .Parameters.Append pmADO
+      pmADO.Value = lngUtilityID
+  
+      .Execute
+  
+    End With
+  
+  End If
+  Set cmdUsage = Nothing
+
+End Sub
+
+
