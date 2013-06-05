@@ -63,7 +63,6 @@ Begin VB.Form frmMailMerge
       _Version        =   393216
       Style           =   1
       Tabs            =   4
-      Tab             =   3
       TabsPerRow      =   6
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -77,7 +76,7 @@ Begin VB.Form frmMailMerge
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmMailMerge.frx":08D6
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraDefinition(1)"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraDefinition(0)"
@@ -86,34 +85,107 @@ Begin VB.Form frmMailMerge
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmMailMerge.frx":08F2
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(2)"
-      Tab(1).Control(0).Enabled=   0   'False
+      Tab(1).Control(0)=   "fraColumns(0)"
       Tab(1).Control(1)=   "fraColumns(1)"
-      Tab(1).Control(1).Enabled=   0   'False
-      Tab(1).Control(2)=   "fraColumns(0)"
-      Tab(1).Control(2).Enabled=   0   'False
+      Tab(1).Control(2)=   "fraColumns(2)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Sort Order"
       TabPicture(2)   =   "frmMailMerge.frx":090E
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraSort(0)"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "Ou&tput"
       TabPicture(3)   =   "frmMailMerge.frx":092A
-      Tab(3).ControlEnabled=   -1  'True
+      Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraOutput(1)"
       Tab(3).Control(0).Enabled=   0   'False
-      Tab(3).Control(1)=   "fraOutput(2)"
+      Tab(3).Control(1)=   "fraOutput(0)"
       Tab(3).Control(1).Enabled=   0   'False
-      Tab(3).Control(2)=   "fraOutput(0)"
+      Tab(3).Control(2)=   "fraOutput(2)"
       Tab(3).Control(2).Enabled=   0   'False
       Tab(3).ControlCount=   3
+      Begin VB.Frame fraOutput 
+         Caption         =   "Email :"
+         Height          =   2670
+         Index           =   2
+         Left            =   -74880
+         TabIndex        =   58
+         Top             =   2160
+         Width           =   9600
+         Begin VB.TextBox txtEmailAttachmentName 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   1650
+            MaxLength       =   30
+            TabIndex        =   65
+            Top             =   1515
+            Width           =   3000
+         End
+         Begin VB.TextBox txtEMailSubject 
+            Height          =   315
+            Left            =   1650
+            MaxLength       =   30
+            TabIndex        =   62
+            Top             =   715
+            Width           =   3000
+         End
+         Begin VB.ComboBox cboEMailField 
+            Height          =   315
+            ItemData        =   "frmMailMerge.frx":0946
+            Left            =   1650
+            List            =   "frmMailMerge.frx":0948
+            Sorted          =   -1  'True
+            Style           =   2  'Dropdown List
+            TabIndex        =   60
+            Top             =   315
+            Width           =   3000
+         End
+         Begin VB.CheckBox chkEMailAttachment 
+            Caption         =   "Se&nd as attachment"
+            Height          =   195
+            Left            =   240
+            TabIndex        =   63
+            Top             =   1165
+            Width           =   2115
+         End
+         Begin VB.Label lblEmailAttachAs 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Attach as :"
+            Enabled         =   0   'False
+            Height          =   195
+            Left            =   525
+            TabIndex        =   64
+            Top             =   1560
+            Width           =   975
+         End
+         Begin VB.Label lblEMailSubject 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Subject :"
+            Height          =   195
+            Left            =   225
+            TabIndex        =   61
+            Top             =   765
+            Width           =   915
+         End
+         Begin VB.Label lblEMailField 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Email Address :"
+            Height          =   195
+            Left            =   240
+            TabIndex        =   59
+            Top             =   375
+            Width           =   1410
+         End
+      End
       Begin VB.Frame fraOutput 
          Caption         =   "Options :"
          Height          =   1650
          Index           =   0
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   47
          Top             =   360
          Width           =   9600
@@ -128,9 +200,9 @@ Begin VB.Form frmMailMerge
          End
          Begin VB.CommandButton cmdLabelType 
             Caption         =   "..."
-            DisabledPicture =   "frmMailMerge.frx":0946
+            DisabledPicture =   "frmMailMerge.frx":094A
             Height          =   315
-            Left            =   4320
+            Left            =   4365
             TabIndex        =   76
             Top             =   315
             UseMaskColor    =   -1  'True
@@ -146,14 +218,14 @@ Begin VB.Form frmMailMerge
             TabIndex        =   49
             Text            =   "<None>"
             Top             =   315
-            Width           =   2670
+            Width           =   2715
          End
          Begin VB.CommandButton cmdFileName 
             Caption         =   "..."
             Height          =   315
             Index           =   1
-            Left            =   4320
-            Picture         =   "frmMailMerge.frx":0CA7
+            Left            =   4365
+            Picture         =   "frmMailMerge.frx":0CAB
             TabIndex        =   50
             Top             =   315
             UseMaskColor    =   -1  'True
@@ -170,9 +242,9 @@ Begin VB.Form frmMailMerge
          End
          Begin VB.ComboBox cboOutput 
             Height          =   315
-            ItemData        =   "frmMailMerge.frx":0D1F
+            ItemData        =   "frmMailMerge.frx":0D23
             Left            =   1665
-            List            =   "frmMailMerge.frx":0D21
+            List            =   "frmMailMerge.frx":0D25
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   52
@@ -291,26 +363,26 @@ Begin VB.Form frmMailMerge
             RecordSelectors =   0   'False
             Col.Count       =   3
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
-            stylesets(0).Picture=   "frmMailMerge.frx":0D23
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
-            stylesets(1).Picture=   "frmMailMerge.frx":0D3F
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
+            stylesets(0).Picture=   "frmMailMerge.frx":0D27
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
+            stylesets(1).Picture=   "frmMailMerge.frx":0D43
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
             stylesets(2).BackColor=   -2147483643
-            stylesets(2).Picture=   "frmMailMerge.frx":0D5B
+            stylesets(2).Picture=   "frmMailMerge.frx":0D5F
             stylesets(3).Name=   "ssetHeaderEnabled"
             stylesets(3).ForeColor=   -2147483630
             stylesets(3).BackColor=   -2147483633
-            stylesets(3).Picture=   "frmMailMerge.frx":0D77
+            stylesets(3).Picture=   "frmMailMerge.frx":0D7B
             stylesets(4).Name=   "ssetDisabled"
             stylesets(4).ForeColor=   -2147483631
             stylesets(4).BackColor=   -2147483633
-            stylesets(4).Picture=   "frmMailMerge.frx":0D93
+            stylesets(4).Picture=   "frmMailMerge.frx":0D97
             AllowUpdate     =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -389,7 +461,7 @@ Begin VB.Form frmMailMerge
          EndProperty
          Height          =   1950
          Index           =   0
-         Left            =   -74865
+         Left            =   135
          TabIndex        =   0
          Top             =   405
          Width           =   9600
@@ -446,7 +518,7 @@ Begin VB.Form frmMailMerge
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmMailMerge.frx":0DAF
+            stylesets(0).Picture=   "frmMailMerge.frx":0DB3
             stylesets(1).Name=   "ReadOnly"
             stylesets(1).ForeColor=   -2147483631
             stylesets(1).BackColor=   -2147483633
@@ -460,7 +532,7 @@ Begin VB.Form frmMailMerge
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmMailMerge.frx":0DCB
+            stylesets(1).Picture=   "frmMailMerge.frx":0DCF
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -665,7 +737,7 @@ Begin VB.Form frmMailMerge
          Caption         =   "Data :"
          Height          =   2385
          Index           =   1
-         Left            =   -74865
+         Left            =   135
          TabIndex        =   8
          Top             =   2385
          Width           =   9600
@@ -1078,87 +1150,10 @@ Begin VB.Form frmMailMerge
          End
       End
       Begin VB.Frame fraOutput 
-         Caption         =   "Email :"
-         Height          =   2670
-         Index           =   2
-         Left            =   120
-         TabIndex        =   58
-         Top             =   2160
-         Width           =   9600
-         Begin VB.TextBox txtEmailAttachmentName 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   1650
-            MaxLength       =   30
-            TabIndex        =   65
-            Top             =   1515
-            Width           =   3000
-         End
-         Begin VB.TextBox txtEMailSubject 
-            Height          =   315
-            Left            =   1650
-            MaxLength       =   30
-            TabIndex        =   62
-            Top             =   715
-            Width           =   3000
-         End
-         Begin VB.ComboBox cboEMailField 
-            Height          =   315
-            ItemData        =   "frmMailMerge.frx":0DE7
-            Left            =   1650
-            List            =   "frmMailMerge.frx":0DE9
-            Sorted          =   -1  'True
-            Style           =   2  'Dropdown List
-            TabIndex        =   60
-            Top             =   315
-            Width           =   3000
-         End
-         Begin VB.CheckBox chkEMailAttachment 
-            Caption         =   "Se&nd as attachment"
-            Height          =   195
-            Left            =   240
-            TabIndex        =   63
-            Top             =   1165
-            Width           =   2115
-         End
-         Begin VB.Label lblEmailAttachAs 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Attach as :"
-            Enabled         =   0   'False
-            Height          =   195
-            Left            =   525
-            TabIndex        =   64
-            Top             =   1560
-            Width           =   975
-         End
-         Begin VB.Label lblEMailSubject 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Subject :"
-            Height          =   195
-            Left            =   225
-            TabIndex        =   61
-            Top             =   765
-            Width           =   915
-         End
-         Begin VB.Label lblEMailField 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Email Address :"
-            Height          =   195
-            Left            =   240
-            TabIndex        =   59
-            Top             =   375
-            Width           =   1410
-         End
-      End
-      Begin VB.Frame fraOutput 
          Caption         =   "New Document :"
          Height          =   2670
          Index           =   1
-         Left            =   135
+         Left            =   -74865
          TabIndex        =   57
          Top             =   2130
          Width           =   9600
@@ -1171,7 +1166,7 @@ Begin VB.Form frmMailMerge
             Locked          =   -1  'True
             TabIndex        =   67
             Top             =   315
-            Width           =   2685
+            Width           =   2730
          End
          Begin VB.CheckBox chkDocSave 
             Caption         =   "Sa&ve :"
@@ -1195,7 +1190,7 @@ Begin VB.Form frmMailMerge
             Enabled         =   0   'False
             Height          =   315
             Index           =   0
-            Left            =   4305
+            Left            =   4350
             Picture         =   "frmMailMerge.frx":0DEB
             TabIndex        =   68
             Top             =   315
@@ -1289,7 +1284,7 @@ Begin VB.Form frmMailMerge
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMailMerge.frx":23C3
+            Picture         =   "frmMailMerge.frx":2549
             Key             =   "IMG_CALC"
          EndProperty
       EndProperty
@@ -1308,7 +1303,7 @@ Begin VB.Form frmMailMerge
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Bands           =   "frmMailMerge.frx":27D3
+      Bands           =   "frmMailMerge.frx":2A9B
    End
 End
 Attribute VB_Name = "frmMailMerge"
@@ -1586,11 +1581,11 @@ Private Sub chkDocSave_Click()
   
   blnDocSave = (chkDocSave.Value = vbChecked)
   
-  cmdFilename(0).Enabled = blnDocSave
+  cmdFileName(0).Enabled = blnDocSave
   chkCloseDocument.Enabled = blnDocSave
   
   If blnDocSave = False Then
-    txtFilename(0).Text = vbNullString
+    txtFileName(0).Text = vbNullString
     chkCloseDocument.Value = vbUnchecked
   End If
 
@@ -1609,7 +1604,7 @@ Private Sub chkEMailAttachment_Click()
     
       If chkEMailAttachment.Value Then
         'Get everything to the right of the last "\" in template name
-        .Text = Mid(txtFilename(1), InStrRev(txtFilename(1), "\") + 1)
+        .Text = Mid(txtFileName(1), InStrRev(txtFileName(1), "\") + 1)
         'NHRD31082004 Fault 6653
         If .Text = "<None>" Then .Text = ""
       Else
@@ -1856,10 +1851,10 @@ Private Sub cmdFileName_Click(Index As Integer)
 '    Else
 '      .FileName = vbNullString
 '    End If
-    If Len(Trim(txtFilename(Index).Text)) = 0 Or txtFilename(Index).Text = "<None>" Then
+    If Len(Trim(txtFileName(Index).Text)) = 0 Or txtFileName(Index).Text = "<None>" Then
       .InitDir = gsDocumentsPath
     Else
-      .FileName = txtFilename(Index).Text
+      .FileName = txtFileName(Index).Text
     End If
 
     .CancelError = True
@@ -1889,7 +1884,7 @@ Private Sub cmdFileName_Click(Index As Integer)
 
           On Error GoTo WordErr
 
-          txtFilename(Index) = CDialog.FileName
+          txtFileName(Index) = CDialog.FileName
           
           Screen.MousePointer = vbHourglass
           gobjProgress.Caption = "Creating Word Document"
@@ -1900,7 +1895,7 @@ Private Sub cmdFileName_Click(Index As Integer)
           gobjProgress.Cancel = False
           gobjProgress.OpenProgress
 
-          txtFilename(Index) = CDialog.FileName
+          txtFileName(Index) = CDialog.FileName
           Set wrdApp = CreateObject("Word.Application")
           Set wrdDoc = wrdApp.Documents.Add
           wrdDoc.SaveAs CDialog.FileName, giOfficeSaveVersion_Word
@@ -1915,7 +1910,7 @@ Private Sub cmdFileName_Click(Index As Integer)
         
         End If
       Else
-        txtFilename(Index) = CDialog.FileName
+        txtFileName(Index) = CDialog.FileName
 
       End If
     End If
@@ -1938,7 +1933,7 @@ LocalErr:
     Else
       ErrorMsgbox "Error selecting file"
     End If
-    txtFilename(Index) = vbNullString
+    txtFileName(Index) = vbNullString
   End If
 
 Exit Sub
@@ -2134,8 +2129,8 @@ Private Sub cmdLabelType_Click()
           lngSelectedID = .SelectedID
           strSelectedName = .SelectedText
           
-          txtFilename(1).Text = strSelectedName
-          txtFilename(1).Tag = mlngLabelTypeID
+          txtFileName(1).Text = strSelectedName
+          txtFileName(1).Tag = mlngLabelTypeID
                     
           blnExit = True
           Me.Changed = True
@@ -2874,17 +2869,17 @@ Private Sub OutputClick(blnDocument As Boolean, blnEmail As Boolean)
   'End If
 
   'fraOutput(1).Enabled = blnDocument
-  FraOutput(1).Visible = blnDocument
+  fraOutput(1).Visible = blnDocument
   chkDocSave.Enabled = blnDocument
   If blnDocument = False Then
     chkDocSave.Value = vbUnchecked
-    cmdFilename(0).Enabled = False
-    txtFilename(0).Text = vbNullString
+    cmdFileName(0).Enabled = False
+    txtFileName(0).Text = vbNullString
     chkCloseDocument.Enabled = False
     chkCloseDocument.Value = vbUnchecked
   End If
 
-  FraOutput(2).Visible = blnEmail
+  fraOutput(2).Visible = blnEmail
   'MH20040419 Fault 5665 REMOVED
   'If blnEmail Then
   '  If mblnEmailPermission = False And mblnWarnedNoEmail = False Then
@@ -2900,18 +2895,18 @@ Private Sub OutputClick(blnDocument As Boolean, blnEmail As Boolean)
   'lblEMailAttachment.Enabled = blnEMail
   lblEMailField.Enabled = blnEmail
   cboEMailField.Enabled = blnEmail
-  lblEmailSubject.Enabled = blnEmail
-  txtEmailSubject.Enabled = blnEmail
+  lblEMailSubject.Enabled = blnEmail
+  txtEMailSubject.Enabled = blnEmail
   cboEMailField.BackColor = IIf(blnEmail, vbWindowBackground, vbButtonFace)
-  txtEmailSubject.BackColor = IIf(blnEmail, vbWindowBackground, vbButtonFace)
-  txtEmailSubject.BackColor = IIf(blnEmail, vbWindowBackground, vbButtonFace)
+  txtEMailSubject.BackColor = IIf(blnEmail, vbWindowBackground, vbButtonFace)
+  txtEMailSubject.BackColor = IIf(blnEmail, vbWindowBackground, vbButtonFace)
   'cboEMailField.List(0) = IIf(blnEMail, "<None>", vbNullString)
   If blnEmail = False Then
     chkEMailAttachment.Value = vbUnchecked
     If cboEMailField.ListCount > 0 Then
       cboEMailField.ListIndex = 0
     End If
-    txtEmailSubject.Text = vbNullString
+    txtEMailSubject.Text = vbNullString
   Else
     Call GetEmailFieldDefault
   End If
@@ -3826,11 +3821,11 @@ Private Function ValidateDefinition()
     Exit Function
   End If
   
-  If txtFilename(1).Text = vbNullString Or txtFilename(1).Text = "<None>" Then
+  If txtFileName(1).Text = vbNullString Or txtFileName(1).Text = "<None>" Then
     SSTab1.Tab = 3
     If Not mbIsLabel Then
       WarningMsgbox "No Template selected."
-      cmdFilename(1).SetFocus
+      cmdFileName(1).SetFocus
     Else
       WarningMsgbox "No Template selected."
     End If
@@ -3838,10 +3833,10 @@ Private Function ValidateDefinition()
   End If
   
   'NHRD22112004 Fault 3723
-  If txtFilename(1).Text = txtFilename(0).Text Then
+  If txtFileName(1).Text = txtFileName(0).Text Then
     WarningMsgbox "Word cannot give the save document the same name as the template document." + vbCrLf + "Enter a different name for the document you want to save."
     SSTab1.Tab = 3
-    cmdFilename(0).SetFocus
+    cmdFileName(0).SetFocus
     Exit Function
   End If
   
@@ -3858,20 +3853,20 @@ Private Function ValidateDefinition()
   On Error Resume Next
   
   If Not mbIsLabel Then
-    If Dir(txtFilename(1).Text) = vbNullString Then
+    If Dir(txtFileName(1).Text) = vbNullString Then
       SSTab1.Tab = 3
       WarningMsgbox "Template file not found."
-      cmdFilename(1).SetFocus
+      cmdFileName(1).SetFocus
       Exit Function
     End If
   End If
   
   On Error GoTo LocalErr
 
-  If chkDocSave And Len(txtFilename(0).Text) = 0 Then
+  If chkDocSave And Len(txtFileName(0).Text) = 0 Then
     SSTab1.Tab = 3
     WarningMsgbox "You must enter a file name."
-    cmdFilename(0).SetFocus
+    cmdFileName(0).SetFocus
     Exit Function
   End If
   
@@ -4210,13 +4205,13 @@ Private Function SaveDefinition() As Boolean
   Select Case cboOutput.ItemData(cboOutput.ListIndex)
   Case 0                'Document
     strDocSave = CStr(Abs(chkDocSave <> 0))
-    strDocFilename = "'" & Replace(txtFilename(0), "'", "''") & "'"
+    strDocFilename = "'" & Replace(txtFileName(0), "'", "''") & "'"
   Case 2                'EMail
 '    If mblnEmailPermission Then
       strEmailAttachment = CStr(Abs(chkEMailAttachment <> 0))
       strEmailAttachmentName = "'" & Replace(txtEmailAttachmentName.Text, "'", "''") & "'"
       strEmailAddrID = CStr(cboEMailField.ItemData(cboEMailField.ListIndex))
-      strEmailSubject = "'" & Replace(txtEmailSubject, "'", "''") & "'"
+      strEmailSubject = "'" & Replace(txtEMailSubject, "'", "''") & "'"
 '    Else
 '      strEmailAttachment = 0
 '      strEmailAttachmentName = "''"
@@ -4228,7 +4223,7 @@ Private Function SaveDefinition() As Boolean
   strName = "'" & Replace(Trim(txtName.Text), "'", "''") & "'"
   strDesc = "'" & Replace(txtDesc.Text, "'", "''") & "'"
   strTableID = CStr(cboBaseTable.ItemData(cboBaseTable.ListIndex))
-  strTemplate = "'" & Replace(txtFilename(1).Text, "'", "''") & "'"
+  strTemplate = "'" & Replace(txtFileName(1).Text, "'", "''") & "'"
   strSuppressBlanks = CStr(Abs(chkSuppressBlank <> 0))
   strPauseBeforeMerge = CStr(Abs(chkPauseBeforeMerge <> 0))
   strCloseDoc = CStr(Abs(chkCloseDocument <> 0))
@@ -4581,7 +4576,7 @@ Private Sub RetreiveDefinition()
     'optDocument = True
     OutputClick blnDocument:=True, blnEmail:=False
     chkDocSave.Value = Abs(rsTemp!DocSave)
-    txtFilename(0).Text = rsTemp!DocFileName
+    txtFileName(0).Text = rsTemp!DocFileName
   Case 1  'Printer
     'optPrinter = True
     
@@ -4595,7 +4590,7 @@ Private Sub RetreiveDefinition()
       txtEmailAttachmentName = IIf(IsNull(rsTemp!EmailAttachmentName), "", rsTemp!EmailAttachmentName)
   
       'SetComboText cboEMailField, GetItemName(False, rstemp!EmailColumnID)
-      txtEmailSubject.Text = rsTemp!EmailSubject
+      txtEMailSubject.Text = rsTemp!EmailSubject
     
       If IIf(IsNull(rsTemp!EmailAddrID), 0, rsTemp!EmailAddrID) = 0 Then
         MsgBox "Please select a destination email address for this merge.", vbExclamation, Me.Caption
@@ -4613,7 +4608,7 @@ Private Sub RetreiveDefinition()
   mlngLabelTypeID = IIf(IsNull(rsTemp!LabelTypeID), 0, rsTemp!LabelTypeID)
   chkPromptForPrintStart.Value = IIf(IsNull(rsTemp!PromptStart), vbUnchecked, rsTemp!PromptStart)
     
-  txtFilename(1).Text = rsTemp!TemplateFileName
+  txtFileName(1).Text = rsTemp!TemplateFileName
     
   chkSuppressBlank.Value = Abs(rsTemp!SuppressBlanks)
   chkPauseBeforeMerge.Value = Abs(rsTemp!PauseBeforeMerge)
@@ -6159,9 +6154,9 @@ Private Sub EnableDisableTabControls()
   
   ' Output tab page controls
   fraSort(0).Enabled = (SSTab1.Tab = 2)
-  FraOutput(0).Enabled = (SSTab1.Tab = 3)
-  FraOutput(1).Enabled = (SSTab1.Tab = 3)
-  FraOutput(2).Enabled = (SSTab1.Tab = 3)
+  fraOutput(0).Enabled = (SSTab1.Tab = 3)
+  fraOutput(1).Enabled = (SSTab1.Tab = 3)
+  fraOutput(2).Enabled = (SSTab1.Tab = 3)
   
 End Sub
 
@@ -6176,7 +6171,7 @@ Private Sub DisplayLabelSpecifics()
   
     lblPrimary.Caption = "Template :"
     cmdLabelType.Visible = True
-    cmdFilename(1).Visible = False
+    cmdFileName(1).Visible = False
     chkStartColumnOnNewLine.Visible = True
     'chkPromptForPrintStart.Visible = True
     
@@ -6197,7 +6192,7 @@ Private Sub DisplayLabelSpecifics()
 
     lblPrimary.Caption = "Template :"
     cmdLabelType.Visible = False
-    cmdFilename(1).Visible = True
+    cmdFileName(1).Visible = True
     chkStartColumnOnNewLine.Visible = False
     'chkPromptForPrintStart.Visible = False
 
