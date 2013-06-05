@@ -204,7 +204,8 @@ err_FillCombo:
   If lErrorNo = 9 And pCombo.Name = "cboDomain" Then
     'NHRD20100413 This is a generic FillCombo Fucntion so put this specific checking in for Win Authent Error
     'paArray wasnt being populated when running local and there was no network to check for Domains
-    MsgBox "No Domain values exist for this dropdown. You may be disconnected from the Network.", vbCritical + vbOKOnly, App.Title
+    MsgBox "No domains can be located. You may be disconnected from the network or the service which starts Microsoft SQL may not have access to the network." & _
+        vbNewLine & "Please contact your system administrator.", vbCritical + vbOKOnly, App.Title
   Else
     MsgBox Err.Description, vbCritical + vbOKOnly, App.Title
   End If
