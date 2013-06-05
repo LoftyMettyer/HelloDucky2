@@ -3298,7 +3298,10 @@ PRINT 'Step 4 - Workflow Tab Strips'
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysWorkflowElementItems', 'U') AND name = 'buttonstyle')
 		EXEC sp_executesql N'ALTER TABLE ASRSysWorkflowElementItems ADD buttonstyle tinyint NULL;';
-
+		
+	--Fix for minimum dropdown widths
+	EXEC sp_executesql N'UPDATE ASRSysWorkflowElementItems SET Width = 64 WHERE ItemType = 13 AND Width < 64;';
+	 
 /* ------------------------------------------------------------- */
 PRINT 'Step 5 - New Shared Table Transfer Types for NFP'
 
