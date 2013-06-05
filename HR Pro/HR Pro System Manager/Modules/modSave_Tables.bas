@@ -477,6 +477,8 @@ Private Function TableNew() As Boolean
     ' Add custom columns
     sTableCreate.Append IIf(sTableCreate.Length <> 0, ", ", vbNullString) & "[updflag] integer"
     sTableCreate.Append IIf(sTableCreate.Length <> 0, ", ", vbNullString) & "[_description] nvarchar(MAX)"
+    sTableCreate.Append IIf(sTableCreate.Length <> 0, ", ", vbNullString) & "[_deleted] bit"
+    sTableCreate.Append IIf(sTableCreate.Length <> 0, ", ", vbNullString) & "[_deleteddate] datetime"
     sTableCreate.Append IIf(sTableCreate.Length <> 0, ", ", vbNullString) & "TimeStamp"
    
     sCreateView.Append IIf(sCreateView.Length <> 0, ", ", vbNullString) & "TimeStamp"
@@ -485,7 +487,8 @@ Private Function TableNew() As Boolean
     sSQL = "CREATE TABLE dbo." & sPhysicalTableName & " (" & sTableCreate.ToString & ")"
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
-    sSQL = "CREATE VIEW dbo." & sTableName & " WITH SCHEMABINDING AS SELECT " & sCreateView.ToString & " FROM dbo." & sPhysicalTableName
+    sSQL = "CREATE VIEW dbo." & sTableName & " WITH SCHEMABINDING AS SELECT " & sCreateView.ToString & " FROM dbo." & sPhysicalTableName & vbNewLine & _
+           "WHERE [_deleted] = 0"
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
     ' Add an index
