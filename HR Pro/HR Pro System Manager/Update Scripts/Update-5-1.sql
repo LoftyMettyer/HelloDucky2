@@ -810,51 +810,51 @@ PRINT 'Step - Menu & Category enhancements'
 		DROP VIEW [dbo].[ASRSysAllobjectNames]
 	EXEC sp_executesql N'CREATE VIEW dbo.[ASRSysAllObjectNames]
 	AS
-		SELECT 25 AS [objectType], [ID], [Name] FROM ASRSysWorkflows
+		SELECT 25 AS [objectType], [ID], [Name], '''' AS Username, description FROM ASRSysWorkflows
 		UNION
 		SELECT CASE [IsBatch] 
 				WHEN 0 THEN 29
 				WHEN 1 THEN 0
-			END	, ID,  Name FROM ASRSysBatchJobName
+			END	, ID,  Name, Username, description FROM ASRSysBatchJobName
 		UNION
 		SELECT CASE [IsLabel] 
 				WHEN 0 THEN 9
 				WHEN 1 THEN 18
-			END	AS [objectType],  MailMergeID AS ID, Name FROM ASRSysMailMergeName
+			END	AS [objectType],  MailMergeID AS ID, Name, Username, description FROM ASRSysMailMergeName
 		UNION
-		SELECT 2 AS [objectType], ID, Name FROM ASRSysCustomReportsName
+		SELECT 2 AS [objectType], ID, Name, Username, description FROM ASRSysCustomReportsName
 		UNION
-		SELECT 1 AS [objectType], CrossTabID AS ID, Name FROM ASRSysCrossTab
+		SELECT 1 AS [objectType], CrossTabID AS ID, Name, Username, description FROM ASRSysCrossTab
 		UNION		
 		SELECT CASE [MatchReportType] 
 				WHEN 0 THEN 14 
 				WHEN 1 THEN 23
 				WHEN 2 THEN 24 
-			END	AS [objectType], MatchReportID AS ID, Name FROM ASRSysMatchReportName			
+			END	AS [objectType], MatchReportID AS ID, Name, Username, description FROM ASRSysMatchReportName			
 		UNION
-		SELECT 4 AS [objectType], ID AS ID, Name FROM ASRSysExportName
+		SELECT 4 AS [objectType], ID AS ID, Name, Username, description FROM ASRSysExportName
 		UNION		
-		SELECT 8 AS [objectType], ID AS ID, Name FROM ASRSysImportName
+		SELECT 8 AS [objectType], ID AS ID, Name, Username, description FROM ASRSysImportName
 		UNION
-		SELECT 3 AS [objectType], DataTransferID AS ID, Name FROM ASRSysDataTransferName
+		SELECT 3 AS [objectType], DataTransferID AS ID, Name, Username, description FROM ASRSysDataTransferName
 		UNION
 		SELECT CASE [type] 
 				WHEN ''A'' THEN 5
 				WHEN ''D'' THEN 6
 				WHEN ''U'' THEN 7
-			END	AS [objectType], [FunctionID] AS ID, Name FROM ASRSysGlobalFunctions
+			END	AS [objectType], [FunctionID] AS ID, Name, Username, description FROM ASRSysGlobalFunctions
 		UNION		
-		SELECT 15 AS [objectType], 0 AS ID, ''Absence Breakdown''
+		SELECT 15 AS [objectType], 0 AS ID, ''Absence Breakdown'', '''' AS Username, '''' AS Description
 		UNION
-		SELECT 16 AS [objectType], 0 AS ID, ''Bradford Factor''
+		SELECT 16 AS [objectType], 0 AS ID, ''Bradford Factor'', '''' AS Username, '''' AS Description
 		UNION
-		SELECT 17 AS [objectType], ID AS ID, Name FROM ASRSysCalendarReports
+		SELECT 17 AS [objectType], ID AS ID, Name, Username, description FROM ASRSysCalendarReports
 		UNION		
-		SELECT 20 AS [objectType], RecordProfileID AS ID, Name FROM ASRSysRecordProfileName
+		SELECT 20 AS [objectType], RecordProfileID AS ID, Name, Username, description FROM ASRSysRecordProfileName
 		UNION
-		SELECT 30 AS [objectType], 0 AS ID, ''Turnover''
+		SELECT 30 AS [objectType], 0 AS ID, ''Turnover'', '''' AS Username, '''' AS Description
 		UNION
-		SELECT 31 AS [objectType], 0 AS ID, ''Stability Index''';
+		SELECT 31 AS [objectType], 0 AS ID, ''Stability Index'', '''' AS Username, '''' AS Description;'
 	GRANT SELECT ON dbo.[ASRSysAllobjectNames] TO [ASRSysGroup];
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spstat_recentlyrunobjects]') AND xtype = 'P')
@@ -867,7 +867,7 @@ PRINT 'Step - Menu & Category enhancements'
 		SELECT TOP 10 ROW_NUMBER() OVER (ORDER BY [lastrun] DESC) AS ID, u.[objectid], o.[Name], o.[objectType]
 			FROM tbsys_userusage u
 			INNER JOIN ASRSysAllobjectNames o ON o.[objectType] = u.objecttype AND o.[ID] = u.objectid
-			WHERE [username] = SYSTEM_USER
+			WHERE u.[username] = SYSTEM_USER
 			ORDER BY u.[lastrun] DESC
 
 	END';
@@ -894,7 +894,7 @@ PRINT 'Step - Menu & Category enhancements'
 		SELECT o.[objectType], f.[objectid], o.[Name]
 			FROM tbsys_userfavourites f
 			INNER JOIN ASRSysAllobjectNames o ON o.[objectType] = f.[objecttype] AND o.[ID] = f.objectid
-			WHERE [username] = SYSTEM_USER
+			WHERE f.[username] = SYSTEM_USER
 			ORDER BY o.[Name]
 
 	END';
