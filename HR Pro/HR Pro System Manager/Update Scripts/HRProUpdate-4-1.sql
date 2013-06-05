@@ -1082,8 +1082,14 @@ PRINT 'Step 3 - Office Output Formats'
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 2,''Word 2007-2010 Document (*.docx)'' ,''docx'',16,0,0)'
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 3,''PDF format (*.pdf)''               ,''pdf'', 17,0,0)'
 	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Word'', 4,''XML document format (*.xml)''      ,''xml'', 12,0,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Excel'',5,''Excel 97-2003 Workbook (*.xls)''   ,''xls'', 56,1,0)'
-	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Excel'',6,''Excel 2007-2010 Workbook (*.xlsx)'',''xlsx'',51,0,0)'
+
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''WordTemplate'', 1,''Word 97-2003 Document (*.doc)''    ,''doc'', 0,0,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''WordTemplate'', 2,''Word 97-2003 Template (*.dot)''    ,''dot'', 0,1,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''WordTemplate'', 3,''Word 2007-2010 Document (*.docx)'' ,''docx'',0,0,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''WordTemplate'', 4,''Word 2007-2010 Template (*.dotx)'' ,''dotx'',0,0,0)'
+
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Excel'',1,''Excel 97-2003 Workbook (*.xls)''   ,''xls'', 56,1,0)'
+	EXEC sp_executesql N'INSERT ASRSysFileFormats VALUES(''Excel'',2,''Excel 2007-2010 Workbook (*.xlsx)'',''xlsx'',51,0,0)'
 
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE id = OBJECT_ID('ASRSysCalendarReports', 'U') AND name = 'OutputSaveFormat')
