@@ -3201,28 +3201,31 @@ Private Function SetTableTriggers_SpecialFunctions( _
             fTableDone = True
             sTableName = GetTableName(alngTables_AbsenceBetween2Dates(iCount))
             sUpdateUpdate.Append _
-              "    UPDATE dbo." & sTableName & vbNewLine & _
-              "        SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-              "        WHERE " & sTableName & ".ID" & IIf(alngTables_AbsenceBetween2Dates(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
-              "            (SELECT inserted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
-              "            FROM inserted)" & vbNewLine & _
-              "        OR " & sTableName & ".ID" & IIf(alngTables_AbsenceBetween2Dates(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
-              "            (SELECT deleted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
-              "            FROM deleted)" & vbNewLine
+              "    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = " & CStr(alngTables_AbsenceBetween2Dates(iCount)) & ")" & vbNewLine & _
+              "        UPDATE dbo." & sTableName & vbNewLine & _
+              "            SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
+              "            WHERE " & sTableName & ".ID" & IIf(alngTables_AbsenceBetween2Dates(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
+              "                (SELECT inserted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
+              "                FROM inserted)" & vbNewLine & _
+              "            OR " & sTableName & ".ID" & IIf(alngTables_AbsenceBetween2Dates(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
+              "                (SELECT deleted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
+              "                FROM deleted)" & vbNewLine
                 
             sInsertUpdate.Append _
-              "    UPDATE dbo." & sTableName & vbNewLine & _
-              "        SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-              "        WHERE " & sTableName & ".ID" & IIf(alngTables_AbsenceBetween2Dates(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
-              "            (SELECT inserted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
-              "            FROM inserted)"
+              "    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = " & CStr(alngTables_AbsenceBetween2Dates(iCount)) & ")" & vbNewLine & _
+              "        UPDATE dbo." & sTableName & vbNewLine & _
+              "            SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
+              "            WHERE " & sTableName & ".ID" & IIf(alngTables_AbsenceBetween2Dates(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
+              "                (SELECT inserted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
+              "                FROM inserted)"
             
             sDeleteUpdate.Append _
-              "    UPDATE dbo." & sTableName & vbNewLine & _
-              "        SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-              "        WHERE " & sTableName & ".ID" & IIf(alngTables_AbsenceBetween2Dates(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
-              "            (SELECT deleted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
-              "            FROM deleted)"
+              "    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = " & CStr(alngTables_AbsenceBetween2Dates(iCount)) & ")" & vbNewLine & _
+              "        UPDATE dbo." & sTableName & vbNewLine & _
+              "            SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
+              "            WHERE " & sTableName & ".ID" & IIf(alngTables_AbsenceBetween2Dates(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
+              "                (SELECT deleted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
+              "                FROM deleted)"
             
             ReDim Preserve alngTables_Done(UBound(alngTables_Done) + 1)
             alngTables_Done(UBound(alngTables_Done)) = alngTables_AbsenceBetween2Dates(iCount)
@@ -3248,114 +3251,6 @@ Private Function SetTableTriggers_SpecialFunctions( _
       sDeleteUpdate.ToString
   End If
   
-'
-'  If fIsBankHolTable Then
-'    ' Need to update the personnel or region history records, only if the bHolDate
-'    ' value has changed.
-'    sInsertUpdate.TheString = vbNullString
-'    sUpdateUpdate.TheString = vbNullString
-'    sDeleteUpdate.TheString = vbNullString
-'
-'    ReDim alngTables_Done(0)
-''
-''    If LenB(sBHolDate) <> 0 And _
-''      (lngStaticRegion > 0 Or lngHistRegion > 0) Then
-''
-'''      AE20080423 Fault #13116
-'''      sUpdateSelect.Append _
-'''        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-'''        "            @insSFBHolDate = inserted." & sBHolDate & "," & vbNewLine & _
-'''        "            @delSFBHolDate = deleted." & sBHolDate
-''
-''      sUpdateSelect.Append _
-''        IIf(sUpdateSelect.Length <> 0, "," & vbNewLine, vbNullString) & _
-''        "            @insCol_" & Trim(Str(lngBHolDate)) & " = inserted." & sBHolDate & "," & vbNewLine & _
-''        "            @insCol_" & Trim(Str(lngBHolDate)) & " = deleted." & sBHolDate
-''
-'''      AE20080423 Fault #13116
-'''      sUpdateUpdate.Append _
-'''        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-'''        "            IF @insSFBHolDate <> @delSFBHolDate SET @changesMade = 1" & vbNewLine & _
-'''        "            IF (@insSFBHolDate IS NULL) AND (NOT @delSFBHolDate IS NULL) SET @changesMade = 1" & vbNewLine & _
-'''        "            IF (NOT @insSFBHolDate IS NULL) AND (@delSFBHolDate IS NULL) SET @changesMade = 1" & vbNewLine
-''
-''      sUpdateUpdate.Append _
-''        IIf(sUpdateUpdate.Length <> 0, vbNewLine, vbNullString) & _
-''        "            IF @insCol_" & Trim(Str(lngBHolDate)) & " <> @delCol_" & Trim(Str(lngBHolDate)) & " SET @changesMade = 1" & vbNewLine & _
-''        "            IF (@insCol_" & Trim(Str(lngBHolDate)) & " IS NULL) AND (NOT @delCol_" & Trim(Str(lngBHolDate)) & " IS NULL) SET @changesMade = 1" & vbNewLine & _
-''        "            IF (NOT @insCol_" & Trim(Str(lngBHolDate)) & " IS NULL) AND (@delCol_" & Trim(Str(lngBHolDate)) & " IS NULL) SET @changesMade = 1" & vbNewLine
-''
-''      SetTableTriggers_SpecialFunctions_AddColumn alngAuditColumns, lngBHolDate
-''    End If
-''
-''    If sUpdateUpdate.Length <> 0 Then
-''      sUpdateUpdate.TheString = _
-''        "            SET @changesMade = 0" & vbNewLine & vbNewLine & _
-''        sUpdateUpdate.ToString & vbNewLine & _
-''        "            IF @changesMade = 1" & vbNewLine & _
-''        "            BEGIN" & vbNewLine
-'
-'      If (lngStaticRegion > 0) Then
-'        lngTableID = lngPersonnelTable
-'        sColumnName = sStaticRegion
-'      Else
-'        lngTableID = lngRegionTable
-'        sColumnName = sHistRegion
-'      End If
-'
-'      If LenB(sColumnName) <> 0 Then
-'        fTableDone = True
-'        sTableName = GetTableName(lngTableID)
-'
-'        sUpdateUpdate.Append _
-'          "    UPDATE dbo." & sTableName & vbNewLine & _
-'          "        SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-'          "        WHERE " & sTableName & "." & sColumnName & " = " & vbNewLine & _
-'          "            (SELECT " & sBankHolRegionTable & "." & sBHolRegion & vbNewLine & _
-'          "            FROM " & sBankHolRegionTable & vbNewLine & _
-'          "            WHERE " & sBankHolRegionTable & ".ID IN " & vbNewLine & _
-'          "                (SELECT inserted.id_" & CStr(lngBankHolRegionTable) & vbNewLine & _
-'          "                FROM inserted))" & vbNewLine
-'
-'        sInsertUpdate.Append _
-'          "    UPDATE dbo." & sTableName & vbNewLine & _
-'          "        SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-'          "        WHERE " & sTableName & "." & sColumnName & " = " & vbNewLine & _
-'          "            (SELECT " & sBankHolRegionTable & "." & sBHolRegion & vbNewLine & _
-'          "            FROM " & sBankHolRegionTable & vbNewLine & _
-'          "            WHERE " & sBankHolRegionTable & ".ID IN " & vbNewLine & _
-'          "                (SELECT inserted.id_" & CStr(lngBankHolRegionTable) & vbNewLine & _
-'          "                FROM inserted))" & vbNewLine
-'
-'        sDeleteUpdate.Append _
-'          "    UPDATE dbo." & sTableName & vbNewLine & _
-'          "        SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-'          "        WHERE " & sTableName & "." & sColumnName & " = " & vbNewLine & _
-'          "            (SELECT " & sBankHolRegionTable & "." & sBHolRegion & vbNewLine & _
-'          "            FROM " & sBankHolRegionTable & vbNewLine & _
-'          "            WHERE " & sBankHolRegionTable & ".ID IN " & vbNewLine & _
-'          "                (SELECT deleted.id_" & CStr(lngBankHolRegionTable) & vbNewLine & _
-'          "                FROM deleted))" & vbNewLine
-'      End If
-'
-''      sUpdateUpdate.Append "            END"
-'
-'      If Not fTableDone Then
-'        sUpdateUpdate.TheString = vbNullString
-'      End If
-''    End If
-'
-'    sInsertSpecialFunctionsCode = sInsertSpecialFunctionsCode & _
-'      IIf(LenB(sInsertSpecialFunctionsCode) <> 0, vbNewLine & vbNewLine, vbNullString) & _
-'      sInsertUpdate.ToString
-'    sUpdateSpecialFunctionsCode2 = sUpdateSpecialFunctionsCode2 & _
-'      IIf(LenB(sUpdateSpecialFunctionsCode2) <> 0, vbNewLine & vbNewLine, vbNullString) & _
-'      sUpdateUpdate.ToString
-'    sDeleteSpecialFunctionsCode = sDeleteSpecialFunctionsCode & _
-'      IIf(LenB(sDeleteSpecialFunctionsCode) <> 0, vbNewLine & vbNewLine, vbNullString) & _
-'      sDeleteUpdate.ToString
-'  End If
- 
   
   'JPD 20050920 Fault 10366
   If fIsRegionTable Or fIsWorkingPatternTable Then
@@ -3408,16 +3303,18 @@ Private Function SetTableTriggers_SpecialFunctions( _
               sTableName = GetTableName(alngTempArray(iCount))
 
               sUpdateUpdate.Append _
-                "    UPDATE dbo." & sTableName & vbNewLine & _
-                "        SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
-                "        WHERE " & sTableName & ".ID" & IIf(alngTempArray(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
-                "            (SELECT inserted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
-                "            FROM inserted)" & vbNewLine & _
-                "        OR " & sTableName & ".ID" & IIf(alngTempArray(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
-                "            (SELECT deleted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
-                "            FROM deleted)" & vbNewLine & vbNewLine
+                "    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = " & CStr(alngTempArray(iCount)) & ")" & vbNewLine & _
+                "        UPDATE dbo." & sTableName & vbNewLine & _
+                "            SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
+                "            WHERE " & sTableName & ".ID" & IIf(alngTempArray(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
+                "                (SELECT inserted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
+                "                FROM inserted)" & vbNewLine & _
+                "            OR " & sTableName & ".ID" & IIf(alngTempArray(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
+                "                (SELECT deleted.ID_" & CStr(lngPersonnelTable) & vbNewLine & _
+                "                FROM deleted)" & vbNewLine & vbNewLine
 
               sInsertUpdate.Append _
+                "    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = " & CStr(alngTempArray(iCount)) & ")" & vbNewLine & _
                 "    UPDATE dbo." & sTableName & vbNewLine & _
                 "        SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
                 "        WHERE " & sTableName & ".ID" & IIf(alngTempArray(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
@@ -3425,6 +3322,7 @@ Private Function SetTableTriggers_SpecialFunctions( _
                 "            FROM inserted)" & vbNewLine & vbNewLine
 
               sDeleteUpdate.Append _
+                "    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = " & CStr(alngTempArray(iCount)) & ")" & vbNewLine & _
                 "    UPDATE dbo." & sTableName & vbNewLine & _
                 "        SET " & sTableName & "." & sColumnName & " = " & sTableName & "." & sColumnName & vbNewLine & _
                 "        WHERE " & sTableName & ".ID" & IIf(alngTempArray(iCount) = lngPersonnelTable, vbNullString, "_" & CStr(lngPersonnelTable)) & " IN " & vbNewLine & _
