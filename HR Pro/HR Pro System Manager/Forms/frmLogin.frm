@@ -2,7 +2,7 @@ VERSION 5.00
 Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.Form frmLogin 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "HR Pro System Manager - Login"
+   Caption         =   "OpenHR System Manager - Login"
    ClientHeight    =   3645
    ClientLeft      =   1530
    ClientTop       =   2595
@@ -217,7 +217,7 @@ Private Declare Function SQLDrivers Lib "odbc32.dll" (ByVal henv&, ByVal fDirect
 Const SQL_SUCCESS As Long = 0
 Const SQL_FETCH_NEXT As Long = 1
 
-' HR Pro constants.
+' ODBC constants.
 Const ODBCDRIVER As String = "SQL Server"
 
 ' Private classes.
@@ -383,8 +383,6 @@ Private Sub Form_Load()
   'ShowInTaskbar
   SetWindowLong Me.hWnd, GWL_EXSTYLE, (GetWindowLong(hWnd, GWL_EXSTYLE) Or WS_EX_APPWINDOW)
 
-  
-  'lblVersion.Caption = "HR Pro System Manager - Version " & App.Major & "." & App.Minor & "." & App.Revision
   lblVersion.Caption = "Version " & App.Major & "." & App.Minor & "." & App.Revision
 
   If ASRDEVELOPMENT Then
@@ -412,7 +410,7 @@ Private Sub Form_Load()
   ' Check that the SQL Server driver is installed.
   If Not CheckSQLDriver Then
     MsgBox "The required ODBC Driver '" & ODBCDRIVER & "' is not installed." & vbNewLine & _
-      "Install the driver before running HR Pro.", _
+      "Install the driver before running System Manager.", _
       vbExclamation + vbOKOnly, App.ProductName
     UnLoad frmLogin
     Exit Sub
@@ -491,7 +489,7 @@ Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
   mfReRunScript = False
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
   Login
   
   ' SQL 2005 may have forced us to change the password, so we need to re-attempt the logon process in full
@@ -514,7 +512,7 @@ Public Sub Login()
   Dim rsSQLInfo As New ADODB.Recordset
   Dim sTempErrDescription As String
   Dim strRDOError As String
-  Dim objNET As New HRProSystemMgr.Net
+  Dim objNET As New SystemMgr.Net
   Dim sMsg As String
 
   fOK = True
@@ -551,7 +549,7 @@ Public Sub Login()
     gsServerName = txtServer.Text
   Else
     Screen.MousePointer = vbNormal
-    MsgBox "Please enter the name of the server on which the HR Pro database is located.", _
+    MsgBox "Please enter the name of the server on which the OpenHR database is located.", _
       vbExclamation + vbOKOnly, App.ProductName
     Exit Sub
   End If
@@ -574,7 +572,7 @@ Public Sub Login()
     sConnect = sConnect & "Database=" & txtDatabase.Text & ";"
   Else
     Screen.MousePointer = vbNormal
-    MsgBox "Please enter the name of the HR Pro database.", _
+    MsgBox "Please enter the name of the OpenHR database.", _
       vbExclamation + vbOKOnly, App.ProductName
     Exit Sub
   End If
@@ -647,7 +645,7 @@ Public Sub Login()
     ' The version of SQL Server is neither 6.5 nor 7.0 so tell the user.
     Screen.MousePointer = vbNormal
     MsgBox "You are running an invalid version of SQL Server." & vbNewLine & vbNewLine & _
-      "HR Pro requires SQL Server version 7.0 or above.", _
+      "OpenHR requires SQL Server version 7.0 or above.", _
       vbOKOnly, App.ProductName
     Exit Sub
   End If
@@ -659,7 +657,7 @@ Public Sub Login()
     Screen.MousePointer = vbNormal
     gobjProgress.CloseProgress
     MsgBox "Windows authenticated users are not supported on your SQL Server" & vbNewLine & vbNewLine & _
-      "HR Pro requires SQL Server version 2005 or above.", _
+      "OpenHR requires SQL Server version 2005 or above.", _
       vbExclamation, App.ProductName
     Exit Sub
   End If
@@ -894,8 +892,8 @@ ErrorTrap:
   Exit Sub
 
 NoFramework:
-  MsgBox "The HR Pro System Framework is not installed." & vbNewLine & vbNewLine & _
-    "Contact your System Administrator to install the latest HR Pro System Framework" & vbNewLine & vbNewLine _
+  MsgBox "The System Framework is not installed." & vbNewLine & vbNewLine & _
+    "Contact your System Administrator to install the latest System Framework" & vbNewLine & vbNewLine _
     , vbExclamation + vbOKOnly, Application.Name
   Screen.MousePointer = vbNormal
 
@@ -1039,7 +1037,7 @@ Private Sub DisplayOtherUsers(ByVal pasUsers As Variant)
   Dim sDisplay As String
   
   ' First warning row.
-  sDisplay = "The following user(s) are currently logged into the HR Pro databases :" & vbNewLine
+  sDisplay = "The following user(s) are currently logged into the OpenHR databases :" & vbNewLine
   
   ' User rows.
   For iLoop = 1 To UBound(pasUsers, 2)
@@ -1168,7 +1166,7 @@ End Sub
 '       LCase(Trim(sProgName)) = LCase(Trim(sSecurityName)) Or _
 '       LCase(Trim(sProgName)) = LCase(Trim(sUserModuleName)) Or _
 '       LCase(Trim(sProgName)) = LCase(Trim(sIntranetName)) Then
-'        'Found a HR Pro module running so report it
+'        'Found a OpenHR module running so report it
 '        sDisplay = sDisplay & _
 '                   "User '" & Trim(sLoginName) & "'" & _
 '                   " logged onto Machine '" & Trim(sHostName) & "'" & _
@@ -1189,7 +1187,7 @@ End Sub
 '      Set rdoCon = Nothing
 '    End If
 '
-'    sDisplay = "The following user(s) are currently logged into the HR Pro databases :" & vbnewline & vbnewline & _
+'    sDisplay = "The following user(s) are currently logged into the OpenHR databases :" & vbnewline & vbnewline & _
 '               sDisplay & vbnewline & vbnewline & _
 '               "All user must be logged off before the " & App.ProductName & " can be used." & _
 '               IIf(ASRDEVELOPMENT, vbnewline & "(COA Solutions Development bypass!)", "")
@@ -1407,7 +1405,7 @@ Public Sub CheckCommandLine()
       gobjProgress.AVI = dbLogin
       gobjProgress.MainCaption = "Login"
       gobjProgress.NumberOfBars = 0
-      gobjProgress.Caption = "Attempting log on to HR Pro..."
+      gobjProgress.Caption = "Attempting log on to OpenHR..."
       gobjProgress.OpenProgress
       Login
     End If
@@ -1446,7 +1444,7 @@ Private Sub CheckApplicationAccess()
     Application.AccessMode = accNone
     Screen.MousePointer = vbNormal
     MsgBox "You do not have permission to run the System Manager." & vbNewLine & vbNewLine & _
-           "Please contact your HR Pro security administrator.", vbOKOnly + vbExclamation, App.ProductName
+           "Please contact your security administrator.", vbOKOnly + vbExclamation, App.ProductName
     Exit Sub
   End If
 

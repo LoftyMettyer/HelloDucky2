@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
+Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "sstree.ocx"
 Begin VB.Form frmViewMgr 
    Caption         =   "View Manager"
    ClientHeight    =   3825
@@ -1037,7 +1037,7 @@ Public Sub EditMenu(psMenuItem As String)
       
     Case "ID_CustomiseColumns"
       ' Customise column view...
-      Set frmShowColumns = New HRProSystemMgr.frmShowColumns
+      Set frmShowColumns = New SystemMgr.frmShowColumns
       frmShowColumns.PropertySet = gpropShowColumns_ViewMgr
       frmShowColumns.Show vbModal
       SetColumnSizes

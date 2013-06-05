@@ -920,7 +920,7 @@ Private Sub cmdTestLogon_Click()
     "Server=" & Replace(gsServerName, ";", "") & ";" & _
     "UID=" & Replace(txtUID.Text, ";", "") & ";" & _
     "PWD=" & Replace(txtPWD.Tag, ";", "") & ";" & _
-    "Database=" & gsDatabaseName & ";Pooling=false;App=Test HR Pro Workflow"
+    "Database=" & gsDatabaseName & ";Pooling=false;App=Test OpenHR Workflow"
 
   Set objTestConn = New ADODB.Connection
   With objTestConn

@@ -104,7 +104,7 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
   Dim iColumnDataType As Integer
   Dim sSQL As String
   Dim sVarName As String
-  Dim sProcCode As HRProSystemMgr.cStringBuilder
+  Dim sProcCode As SystemMgr.cStringBuilder
   Dim sColumnName As String
   Dim sTableName As String
   Dim sParentTableName As String
@@ -113,14 +113,14 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
   Dim sLocalResult As String
   Dim sConvertCode As String
   Dim sFetchNextCode As String
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   Dim avOrderJoinTables() As Variant
   Dim objColumn As Column
  
   fOK = True
   sVarName = "component" & Trim$(Str$(mobjBaseComponent.ComponentID))
   sLocalResult = "@" & sVarName & "_localResult "
-  Set sProcCode = New HRProSystemMgr.cStringBuilder
+  Set sProcCode = New SystemMgr.cStringBuilder
   
   ' Get the field component's table name.
   With recTabEdit
@@ -708,7 +708,7 @@ Public Property Get ReturnType() As ExpressionValueTypes
     ' Determine the field's type by creating an
     ' instance of the column class, and instructing
     ' it to read its own details (including type).
-    Set objColumn = New HRProSystemMgr.Column
+    Set objColumn = New SystemMgr.Column
     objColumn.ColumnID = mlngColumnID
     objColumn.TableID = mlngTableID
     
@@ -920,7 +920,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
   Dim sParentTableName As String
   Dim sOrderCode As String
   Dim sFilterCode As String
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   Dim avOrderJoinTables() As Variant
   Dim objFilterExpr As CExpression
   Dim fWorkflowExpression As Boolean

@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmAccordPayrollTransfer 
@@ -450,7 +450,7 @@ Begin VB.Form frmAccordPayrollTransfer
             Columns(0).DataType=   8
             Columns(0).FieldLen=   256
             Columns(1).Width=   5741
-            Columns(1).Caption=   "HR Pro Value"
+            Columns(1).Caption=   "OpenHR Value"
             Columns(1).Name =   "Display_MapToValue"
             Columns(1).DataField=   "Column 1"
             Columns(1).DataType=   8
@@ -1030,7 +1030,7 @@ Private Sub cmdNone_Click()
 
 End Sub
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
 
   'AE20071119 Fault #12607
   'If ValidateSetup Then
@@ -1067,7 +1067,7 @@ Private Function SaveChanges() As Boolean
   
   Dim iLoop As Integer
   Dim iLoopTypes As Integer
-  Dim varBookmark As Variant
+  Dim varBookMark As Variant
   Dim sSQL As String
   Dim iTransferType As Integer
 
@@ -1731,7 +1731,7 @@ Private Sub PopulateBaseTables()
 End Sub
 
 ' Value of map transfer
-Private Function MapToDescription(piMapType As HRProSystemMgr.AccordMapType _
+Private Function MapToDescription(piMapType As SystemMgr.AccordMapType _
   , plngColumnID As Long, plngExprID As Long, pstrValue As String) As String
   
   Select Case piMapType

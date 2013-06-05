@@ -481,9 +481,9 @@ ErrorTrap:
     'Case 70:
     Case 70, 75:
       
-        MsgBox "An instance of HR Pro System Manager is already running on this machine" & vbCrLf & _
+        MsgBox "An instance of the System Manager is already running on this machine" & vbCrLf & _
                "using the '" & gsDatabaseName & "' database." & vbCrLf & vbCrLf & _
-               "Each instance of HR Pro System Manager must be accessing a unique database.", _
+               "Each instance of the System Manager must be accessing a unique database.", _
                vbCritical + vbOKOnly, App.Title
 
     Case Else
@@ -501,8 +501,8 @@ Public Function CreateTempTables() As Boolean
   
   Dim sSQL As String
   Dim sSource As String
-  Dim tbdTemp As dao.TableDef
-  Dim idxTemp As dao.Index
+  Dim tbdTemp As DAO.TableDef
+  Dim idxTemp As DAO.Index
 
 
   Application.ChangedTableName = False
@@ -1978,7 +1978,7 @@ Public Function Logout() As Boolean
 ErrorTrap:
   
   If Err.Number = 53 Then Resume Next
-  MsgBox "Error whilst calling Application.Logout." & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, "HR Pro - System Manager"
+  MsgBox "Error whilst calling Application.Logout." & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, Application.Name
   Logout = False
   Err = False
   
@@ -2001,7 +2001,7 @@ End Sub
 Private Sub ActivateModules()
   ' Only show licenced modules in the menus.
   Dim sSQL As String
-  Dim rsWorkflows As dao.Recordset
+  Dim rsWorkflows As DAO.Recordset
   Dim sURL As String
   Dim sNewQueryString As String
   Dim sNewString As String
@@ -2303,7 +2303,7 @@ Private Sub LoadShowWhichColumns()
   gbRememberDBColumnsView = GetSystemSetting("General", "RememberColumnsView", False)
   
   ' Load the Data manager column types
-  Set gpropShowColumns_DataMgr = New HRProSystemMgr.Properties
+  Set gpropShowColumns_DataMgr = New SystemMgr.Properties
   gpropShowColumns_DataMgr.Add "Name", GetSystemSetting("ShowColumn_DataMan", "Name", True)
   gpropShowColumns_DataMgr.Add "Data Type", GetSystemSetting("ShowColumn_DataMan", "Data Type", True)
   gpropShowColumns_DataMgr.Add "Size", GetSystemSetting("ShowColumn_DataMan", "Size", True)
@@ -2340,7 +2340,7 @@ Private Sub LoadShowWhichColumns()
   gpropShowColumns_DataMgr.Add "Trimming", GetSystemSetting("ShowColumn_DataMan", "Trimming", True)
   
   ' Load the Data manager (table) column types
-  Set gpropShowColumns_DataMgrTable = New HRProSystemMgr.Properties
+  Set gpropShowColumns_DataMgrTable = New SystemMgr.Properties
   gpropShowColumns_DataMgrTable.Add "Name", GetSystemSetting("ShowColumn_DataManTable", "Name", True)
   gpropShowColumns_DataMgrTable.Add "Type", GetSystemSetting("ShowColumn_DataManTable", "Type", True)
   gpropShowColumns_DataMgrTable.Add "Primary Order", GetSystemSetting("ShowColumn_DataManTable", "Primary Order", True)
@@ -2354,14 +2354,14 @@ Private Sub LoadShowWhichColumns()
   End If
   
   ' Load the Picture manager column types
-  Set gpropShowColumns_PictMgr = New HRProSystemMgr.Properties
+  Set gpropShowColumns_PictMgr = New SystemMgr.Properties
   gpropShowColumns_PictMgr.Add "Name", GetSystemSetting("ShowColumn_PictMan", "Name", True)
   gpropShowColumns_PictMgr.Add "Type", GetSystemSetting("ShowColumn_PictMan", "Type", True)
   gpropShowColumns_PictMgr.Add "Height", GetSystemSetting("ShowColumn_PictMan", "Height", True)
   gpropShowColumns_PictMgr.Add "Width", GetSystemSetting("ShowColumn_PictMan", "Width", True)
 
   ' Load the View manager column types
-  Set gpropShowColumns_ViewMgr = New HRProSystemMgr.Properties
+  Set gpropShowColumns_ViewMgr = New SystemMgr.Properties
   gpropShowColumns_ViewMgr.Add "Name", GetSystemSetting("ShowColumn_ViewMan", "Name", True)
   gpropShowColumns_ViewMgr.Add "Description", GetSystemSetting("ShowColumn_ViewMan", "Description", True)
 

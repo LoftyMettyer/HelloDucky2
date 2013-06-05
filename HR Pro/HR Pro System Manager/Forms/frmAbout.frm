@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form frmAbout 
    BorderStyle     =   3  'Fixed Dialog
-   Caption         =   "About HR Pro - System Manager"
+   Caption         =   "About OpenHR - System Manager"
    ClientHeight    =   1845
    ClientLeft      =   1065
    ClientTop       =   2955
@@ -150,7 +150,7 @@ Begin VB.Form frmAbout
    Begin VB.Label lblTitle 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "HR Pro System Manager - version"
+      Caption         =   "OpenHR System Manager - version"
       ForeColor       =   &H80000008&
       Height          =   195
       Left            =   1500
@@ -238,7 +238,7 @@ Private Sub Form_Load()
   'On Error GoTo ErrorTrap
   
   ' Initialize the screen labels.
-  lblTitle.Caption = "HR Pro System Manager - v" & App.Major & "." & App.Minor & "." & App.Revision
+  lblTitle.Caption = Application.Name & " - v" & App.Major & "." & App.Minor & "." & App.Revision
   lblDatabase.Caption = "Database : " & gsDatabaseName
   lblUser.Caption = "Current User : " & Trim(gsUserName)
   lblSecurity.Caption = "User Group : " & gsSecurityGroup
@@ -412,13 +412,13 @@ Private Sub lblURL_Click()
   
   If plngID = 0 Then
     ' Uh oh...the browser wasnt initiated...tell the user
-    MsgBox "HR Pro cannot automatically open your default web browser." & vbCrLf & vbCrLf & "Please open your web browser manually and navigate to the " & vbCrLf & "web address which has been placed in your clipboard." & IIf(Err.Description = "", "", vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")"), vbInformation + vbOKOnly, "Technical Support"
+    MsgBox "System Manager cannot automatically open your default web browser." & vbCrLf & vbCrLf & "Please open your web browser manually and navigate to the " & vbCrLf & "web address which has been placed in your clipboard." & IIf(Err.Description = "", "", vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")"), vbInformation + vbOKOnly, "Technical Support"
   End If
   
   Exit Sub
   
 ErrTrap:
-    MsgBox "HR Pro cannot automatically open your default web browser." & vbCrLf & vbCrLf & "Please open your web browser manually and navigate to the " & vbCrLf & "web address which has been placed in your clipboard." & IIf(Err.Description = "", "", vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")"), vbInformation + vbOKOnly, "Technical Support"
+    MsgBox "System Manager cannot automatically open your default web browser." & vbCrLf & vbCrLf & "Please open your web browser manually and navigate to the " & vbCrLf & "web address which has been placed in your clipboard." & IIf(Err.Description = "", "", vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")"), vbInformation + vbOKOnly, "Technical Support"
 
 End Sub
 

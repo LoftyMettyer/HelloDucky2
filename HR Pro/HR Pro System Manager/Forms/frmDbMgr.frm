@@ -481,7 +481,7 @@ End Property
 Private Sub SetColumnSizes()
 
   Dim iCount As Integer
-  Dim objShowColumns As HRProSystemMgr.Properties
+  Dim objShowColumns As SystemMgr.Properties
  
   Const iEXTRALENGTH = 3
   
@@ -1078,7 +1078,7 @@ Private Sub TreeView1_NodeClick(ByVal Node As ComctlLib.Node)
   
 End Sub
 
-Private Function CheckRelations(ByVal pObjTable As HRProSystemMgr.Table) As Boolean
+Private Function CheckRelations(ByVal pObjTable As SystemMgr.Table) As Boolean
   ' Refresh the relations display for the given table.
   On Error GoTo ErrorTrap
   
@@ -1141,7 +1141,7 @@ End Sub
 
 Public Sub EditMenu(psMenuItem As String)
   Dim lngItemType As Long
-  Dim frmShowColumns As HRProSystemMgr.frmShowColumns
+  Dim frmShowColumns As SystemMgr.frmShowColumns
   
   '# RH 05/04/2000 Fault Fix 127
   Select Case psMenuItem
@@ -1172,12 +1172,12 @@ Public Sub EditMenu(psMenuItem As String)
     Case "ID_CustomiseColumns"
       ' Customise column view...
       If (TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Then
-        Set frmShowColumns = New HRProSystemMgr.frmShowColumns
+        Set frmShowColumns = New SystemMgr.frmShowColumns
         frmShowColumns.PropertySet = gpropShowColumns_DataMgrTable
         frmShowColumns.Show vbModal
         SetColumnSizes
       ElseIf (TreeView1.SelectedItem.Tag = giNODE_TABLE) Then
-        Set frmShowColumns = New HRProSystemMgr.frmShowColumns
+        Set frmShowColumns = New SystemMgr.frmShowColumns
         frmShowColumns.PropertySet = gpropShowColumns_DataMgr
         frmShowColumns.Show vbModal
         SetColumnSizes
@@ -1677,7 +1677,7 @@ Private Function AddDetailsToListItem(pListView As ComctlLib.ListView) As Boolea
     '******************************************************************************
     '   Audit
     '******************************************************************************
-    objItem.SubItems(iOrder) = IIf(!audit, "Y", "N")
+    objItem.SubItems(iOrder) = IIf(!Audit, "Y", "N")
     iCount = iCount + 1
     malngColumnDataWidths(iCount) = IIf(malngColumnDataWidths(iCount) < Len(objItem.SubItems(iOrder)), Len(objItem.SubItems(iOrder)), malngColumnDataWidths(iCount))
     iOrder = iOrder + 1
@@ -1718,7 +1718,7 @@ Private Function AddDetailsToListItem(pListView As ComctlLib.ListView) As Boolea
       If !DataType = dtTIMESTAMP Then
         sDefault = Trim(!DefaultValue)
         If Len(sDefault) = 8 Then
-          ' Previous version of HR Pro saved the defult dates in the format mmddyyyy.
+          ' Previous version saved the defult dates in the format mmddyyyy.
           ' If the default is in this format, convert to mm/dd/yyyy format.
           sDefault = Left(sDefault, 2) & "/" & Mid(sDefault, 3, 2) & "/" & Mid(sDefault, 5)
         End If
@@ -2511,8 +2511,8 @@ Private Sub ColumnDelete()
   Dim fDeleteAll As Boolean
   Dim fConfirmed As Boolean
   Dim iLoop As Integer
-  Dim objTable As HRProSystemMgr.Table
-  Dim objColumn As HRProSystemMgr.Column
+  Dim objTable As SystemMgr.Table
+  Dim objColumn As SystemMgr.Column
 
   fOK = True
   fDeleteAll = False
@@ -2538,7 +2538,7 @@ Private Sub ColumnDelete()
   ' Lock the frmPicMgr form to avoid messy screen refresh.
   UI.LockWindow Me.hWnd
   
-  Set objTable = New HRProSystemMgr.Table
+  Set objTable = New SystemMgr.Table
   objTable.TableID = val(Mid(TreeView1.SelectedItem.key, 2))
   
   ' Loop through all of the listview items to see which ones are selected.
@@ -2552,7 +2552,7 @@ Private Sub ColumnDelete()
       
       If fOK Then
   
-        Set objColumn = New HRProSystemMgr.Column
+        Set objColumn = New SystemMgr.Column
         objColumn.ColumnID = val(Mid(ListView1.ListItems(iLoop).key, 2))
         objColumn.TableID = objTable.TableID
   
@@ -2660,7 +2660,7 @@ Private Sub TableDelete()
     aLngTableId(1) = val(Mid(ActiveView.SelectedItem.key, 2))
   End If
     
-  Set objTable = New HRProSystemMgr.Table
+  Set objTable = New SystemMgr.Table
   
   ' Delete all of the tables in the array..
   For iLoop = 1 To UBound(aLngTableId)
@@ -2877,17 +2877,17 @@ End Sub
 Private Sub ColumnAdd()
   ' Add a new column to the currently selected table.
   Dim fOK As Boolean
-  Dim objTable As HRProSystemMgr.Table
-  Dim objColumn As HRProSystemMgr.Column
+  Dim objTable As SystemMgr.Table
+  Dim objColumn As SystemMgr.Column
   Dim objItem As ComctlLib.ListItem
   
-  Set objTable = New HRProSystemMgr.Table
+  Set objTable = New SystemMgr.Table
   objTable.TableID = val(Mid(TreeView1.SelectedItem.key, 2))
       
   fOK = objTable.ReadTable
   
   If fOK Then
-    Set objColumn = New HRProSystemMgr.Column
+    Set objColumn = New SystemMgr.Column
     objColumn.TableID = objTable.TableID
     fOK = objColumn.NewColumn
         
@@ -2915,7 +2915,7 @@ Private Sub TableAdd()
   Dim objNode As ComctlLib.Node
       
   ' Instantiate a new Table object.
-  Set objTable = New HRProSystemMgr.Table
+  Set objTable = New SystemMgr.Table
 
   If objTable.NewTable Then
         
@@ -2978,15 +2978,15 @@ End Sub
 
 Private Sub ColumnEdit()
   ' Edit the selected column's properties.
-  Dim objTable As HRProSystemMgr.Table
-  Dim objColumn As HRProSystemMgr.Column
+  Dim objTable As SystemMgr.Table
+  Dim objColumn As SystemMgr.Column
 
   Screen.MousePointer = vbHourglass
   
-  Set objTable = New HRProSystemMgr.Table
+  Set objTable = New SystemMgr.Table
   objTable.TableID = val(Mid(TreeView1.SelectedItem.key, 2))
 
-  Set objColumn = New HRProSystemMgr.Column
+  Set objColumn = New SystemMgr.Column
   objColumn.TableID = objTable.TableID
   Set objTable = Nothing
   objColumn.ColumnID = val(Mid(ListView1.SelectedItem.key, 2))
@@ -3007,16 +3007,16 @@ Private Sub ColumnEdit()
 End Sub
 Private Sub ColumnCopy()
   ' Copy the selected column's properties.
-  Dim objTable As HRProSystemMgr.Table
-  Dim objColumn As HRProSystemMgr.Column
+  Dim objTable As SystemMgr.Table
+  Dim objColumn As SystemMgr.Column
   Dim objItem As ComctlLib.ListItem
   
   Screen.MousePointer = vbHourglass
   
-  Set objTable = New HRProSystemMgr.Table
+  Set objTable = New SystemMgr.Table
   objTable.TableID = val(Mid(TreeView1.SelectedItem.key, 2))
 
-  Set objColumn = New HRProSystemMgr.Column
+  Set objColumn = New SystemMgr.Column
   objColumn.TableID = objTable.TableID
   Set objTable = Nothing
   objColumn.ColumnID = val(Mid(ListView1.SelectedItem.key, 2))
@@ -3049,11 +3049,11 @@ Private Sub ColumnCopy()
 End Sub
 Private Sub TableEdit()
   ' Edit the table's properties.
-  Dim objTable As HRProSystemMgr.Table
+  Dim objTable As SystemMgr.Table
   Dim objNode As ComctlLib.Node
   Dim sImage As String
 
-  Set objTable = New HRProSystemMgr.Table
+  Set objTable = New SystemMgr.Table
   objTable.TableID = val(Mid(ActiveView.SelectedItem.key, 2))
   
   If objTable.EditTable Then
@@ -3110,10 +3110,10 @@ Private Sub TableEdit()
 End Sub
 
 Private Sub RelationAdd()
-  Dim frmRelation As HRProSystemMgr.frmRelate
+  Dim frmRelation As SystemMgr.frmRelate
            
   ' Pop-up the form to take the relationship values.
-  Set frmRelation = New HRProSystemMgr.frmRelate
+  Set frmRelation = New SystemMgr.frmRelate
   frmRelation.Show vbModal
   ' Disassociate object variables.
   Set frmRelation = Nothing
@@ -3132,7 +3132,7 @@ Private Sub RelationDelete()
   Dim iLoop As Integer
   Dim iNextIndex As Integer
   Dim aLngTableId() As Long
-  Dim objTable As HRProSystemMgr.Table
+  Dim objTable As SystemMgr.Table
   
   fOK = True
   ReDim aLngTableId(0)
@@ -3166,7 +3166,7 @@ Private Sub RelationDelete()
     aLngTableId(1) = val(Mid(ActiveView.SelectedItem.key, 2))
   End If
       
-  Set objTable = New HRProSystemMgr.Table
+  Set objTable = New SystemMgr.Table
   
   ' Change the mouse pointer.
   Screen.MousePointer = vbHourglass
@@ -3227,15 +3227,15 @@ ErrorTrap:
 
 End Sub
 Private Sub RelationEdit(psKey As String)
-  Dim objTable As HRProSystemMgr.Table
-  Dim frmRelation As HRProSystemMgr.frmRelate
+  Dim objTable As SystemMgr.Table
+  Dim frmRelation As SystemMgr.frmRelate
       
-  Set objTable = New HRProSystemMgr.Table
+  Set objTable = New SystemMgr.Table
   objTable.TableID = psKey
       
   If objTable.ReadTable Then
         
-    Set frmRelation = New HRProSystemMgr.frmRelate
+    Set frmRelation = New SystemMgr.frmRelate
     Set frmRelation.ParentTable = objTable
     frmRelation.Show vbModal
     Set frmRelation = Nothing
@@ -3296,7 +3296,7 @@ Private Sub RelationChildDelete()
     End If
   Next iLoop
            
-  Set objTable = New HRProSystemMgr.Table
+  Set objTable = New SystemMgr.Table
   objTable.TableID = val(Mid(TreeView1.SelectedItem.key, 2))
   
   ' Change the mouse pointer.
@@ -3371,7 +3371,7 @@ Private Function CheckAllRelations() As Boolean
   
   Dim fOK As Boolean
   Dim iIndex As Integer
-  Dim objTable As HRProSystemMgr.Table
+  Dim objTable As SystemMgr.Table
   Dim aLngTableIds() As Long
   
   ReDim aLngTableIds(0)
@@ -3395,7 +3395,7 @@ Private Function CheckAllRelations() As Boolean
   End With
     
   ' Refresh the relations display for each table.
-  Set objTable = New HRProSystemMgr.Table
+  Set objTable = New SystemMgr.Table
   For iIndex = 1 To UBound(aLngTableIds)
     objTable.TableID = aLngTableIds(iIndex)
     fOK = objTable.ReadTable
@@ -3562,7 +3562,7 @@ Private Sub TableCopy()
     End With
     
     ' Instantiate a table object.
-    Set objSourceTable = New HRProSystemMgr.Table
+    Set objSourceTable = New SystemMgr.Table
     objSourceTable.TableID = val(Mid(ActiveView.SelectedItem.key, 2))
 
     ' Get the source table to clone itself.
@@ -3723,11 +3723,11 @@ ErrorTrap:
 End Function
 
 ' Prints a defintion for selected table
-Private Sub OutputDefintion(piViewType As HRProSystemMgr.ViewItemTypes _
-                            , piOutputType As HRProSystemMgr.OutputDefintionTypes)
+Private Sub OutputDefintion(piViewType As SystemMgr.ViewItemTypes _
+                            , piOutputType As SystemMgr.OutputDefintionTypes)
 
-  Dim objTable As HRProSystemMgr.Table
-  Dim objColumn As HRProSystemMgr.Column
+  Dim objTable As SystemMgr.Table
+  Dim objColumn As SystemMgr.Column
   Dim objItem As ComctlLib.ListItem
   Dim bOK As Boolean
    
@@ -3735,13 +3735,13 @@ Private Sub OutputDefintion(piViewType As HRProSystemMgr.ViewItemTypes _
   Select Case piViewType
     
     Case giNODE_TABLE
-      Set objTable = New HRProSystemMgr.Table
+      Set objTable = New SystemMgr.Table
       objTable.TableID = val(Mid(ActiveView.SelectedItem.key, 2))
       objTable.ReadTable
       bOK = objTable.PrintDefinition(piOutputType)
       
     Case giNODE_COLUMN
-      Set objColumn = New HRProSystemMgr.Column
+      Set objColumn = New SystemMgr.Column
       objColumn.ColumnID = val(Mid(ActiveView.SelectedItem.key, 2))
       objColumn.ReadColumn
       bOK = objColumn.PrintDefinition(piOutputType)

@@ -5,7 +5,7 @@ Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.MDIForm frmSysMgr 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
-   Caption         =   "HR Pro - System Manager"
+   Caption         =   "OpenHR - System Manager"
    ClientHeight    =   6915
    ClientLeft      =   2370
    ClientTop       =   2130
@@ -109,18 +109,18 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private WithEvents frmDbMgr As HRProSystemMgr.frmDbMgr
+Private WithEvents frmDbMgr As SystemMgr.frmDbMgr
 Attribute frmDbMgr.VB_VarHelpID = -1
-Private WithEvents frmPictMgr As HRProSystemMgr.frmPictMgr
+Private WithEvents frmPictMgr As SystemMgr.frmPictMgr
 Attribute frmPictMgr.VB_VarHelpID = -1
 ' JPD 19/3/98 Need to refresh the menu when the Screen Open
 ' and Manager forms are closed.
-Public WithEvents frmScrOpen As HRProSystemMgr.frmScrOpen
+Public WithEvents frmScrOpen As SystemMgr.frmScrOpen
 Attribute frmScrOpen.VB_VarHelpID = -1
-Public WithEvents frmWorkflowOpen As HRProSystemMgr.frmWorkflowOpen
+Public WithEvents frmWorkflowOpen As SystemMgr.frmWorkflowOpen
 Attribute frmWorkflowOpen.VB_VarHelpID = -1
 'RJB 06/08/98 Added View manager
-Private WithEvents frmViewMgr As HRProSystemMgr.frmViewMgr
+Private WithEvents frmViewMgr As SystemMgr.frmViewMgr
 Attribute frmViewMgr.VB_VarHelpID = -1
 
 ' Functions to display/tile the background image
@@ -291,8 +291,7 @@ Private Sub MDIForm_Activate()
   ' Refresh the menu display.
   frmSysMgr.RefreshMenu
   
-  ' NPG20091007 Fault HR Pro-416
-  ' set the new multi-size icons for taskbar, application, and alt-tab
+  ' Set the new multi-size icons for taskbar, application, and alt-tab
   SetIcon Me.hWnd, "!ABS", True
   
 End Sub
@@ -716,23 +715,23 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     
     If Not blnReadonly Then
     
-      If frmDbMgr.ActiveView Is frmDbMgr.Treeview1 Then
+      If frmDbMgr.ActiveView Is frmDbMgr.TreeView1 Then
         
-        bCopyTable = DoesTableExistInDB(val(Mid(frmDbMgr.Treeview1.SelectedItem.key, 2)))
+        bCopyTable = DoesTableExistInDB(val(Mid(frmDbMgr.TreeView1.SelectedItem.key, 2)))
         
-        If frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATION Then
-          .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd) And (frmDbMgr.Treeview1.Nodes("TABLES").Children > 0)
+        If frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATION Then
+          .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd) And (frmDbMgr.TreeView1.Nodes("TABLES").Children > 0)
           .Tools("ID_CopyDef").Enabled = False
         Else
-          .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd)
+          .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd)
           .Tools("ID_CopyDef").Enabled = bCopyTable
         End If
         
         
         
-        .Tools("ID_Delete").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtDelete)
-        .Tools("ID_Properties").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtEdit)
-        .Tools("ID_Print").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtCopy)
+        .Tools("ID_Delete").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtDelete)
+        .Tools("ID_Properties").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtEdit)
+        .Tools("ID_Print").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtCopy)
       Else
         .Tools("ID_New").Enabled = (frmDbMgr.ListView1_SelectedTag And edtAdd)
         
@@ -755,7 +754,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     .Tools("ID_LargeIcons").Enabled = True
     .Tools("ID_SmallIcons").Enabled = True
     .Tools("ID_List").Enabled = True
-    .Tools("ID_Details").Enabled = ((frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLE))
+    .Tools("ID_Details").Enabled = ((frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLE))
     .Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Enabled And _
       (frmDbMgr.ListView1.View = lvwReport)
     frmSysMgr.tbMain.Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Enabled And _
@@ -769,7 +768,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
 '      .Tools("ID_List").Checked = False
 '      .Tools("ID_Details").Checked = True
       .Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Checked And _
-        ((frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLE))
+        ((frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLE))
 
       frmSysMgr.tbMain.Tools("ID_CustomiseColumns").Enabled = .Tools("ID_Details").Checked
     End If
@@ -805,18 +804,18 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     ' Configure the Edit menu.
     '==================================================
     ' Enable/disable the required tools.
-    If frmDbMgr.ActiveView Is frmDbMgr.Treeview1 Then
-      If frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_RELATION Then
-        .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd) And (frmDbMgr.Treeview1.Nodes("TABLES").Children > 0) And Not blnReadonly
+    If frmDbMgr.ActiveView Is frmDbMgr.TreeView1 Then
+      If frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATIONGROUP Or frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_RELATION Then
+        .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd) And (frmDbMgr.TreeView1.Nodes("TABLES").Children > 0) And Not blnReadonly
         .Tools("ID_CopyDef").Enabled = False
         .Tools("ID_CopyDef").Visible = True
       Else
-        .Tools("ID_New").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtAdd) And Not blnReadonly
+        .Tools("ID_New").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtAdd) And Not blnReadonly
         .Tools("ID_CopyDef").Enabled = bCopyTable And Not blnReadonly
         .Tools("ID_CopyDef").Visible = True
       End If
-      .Tools("ID_Delete").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtDelete) And Not blnReadonly
-      .Tools("ID_Properties").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag And edtEdit)
+      .Tools("ID_Delete").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtDelete) And Not blnReadonly
+      .Tools("ID_Properties").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag And edtEdit)
       '.Tools("ID_CopyTable").Enabled = bCopyTable
       '.Tools("ID_CopyColumn").Enabled = False
       '.Tools("ID_CopyTable").Visible = True
@@ -856,7 +855,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
 
       End If
     End If
-    .Tools("ID_SelectAll").Enabled = (frmDbMgr.Treeview1.SelectedItem.Tag <> 0) And frmDbMgr.ListView1.ListItems.Count And Not blnReadonly
+    .Tools("ID_SelectAll").Enabled = (frmDbMgr.TreeView1.SelectedItem.Tag <> 0) And frmDbMgr.ListView1.ListItems.Count And Not blnReadonly
       
     ' Reassign shortcuts if required.
 '    .Tools("ID_ScreenObjectDelete").Shortcut = ssShortcutNone
@@ -900,7 +899,7 @@ Private Sub RefreshMenu_DBMgr(piFormCount As Integer)
     .Tools("ID_LargeIcons").Enabled = True
     .Tools("ID_SmallIcons").Enabled = True
     .Tools("ID_List").Enabled = True
-    .Tools("ID_Details").Enabled = ((frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.Treeview1.SelectedItem.Tag = giNODE_TABLE))
+    .Tools("ID_Details").Enabled = ((frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLEGROUP) Or (frmDbMgr.TreeView1.SelectedItem.Tag = giNODE_TABLE))
  '(frmDbMgr.ListView1_SelectedTag = giNODE_COLUMN)
     
     If (frmDbMgr.ListView1.View = lvwReport) And _
@@ -2115,7 +2114,7 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_ScrMgr"
       ' Display the Screen Manager.
       If frmScrOpen Is Nothing Then
-        Set frmScrOpen = New HRProSystemMgr.frmScrOpen
+        Set frmScrOpen = New SystemMgr.frmScrOpen
       End If
       frmScrOpen.Show
       frmScrOpen.SetFocus
@@ -2124,7 +2123,7 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_WorkflowMgr"
       ' Display the Workflow Manager.
       If frmWorkflowOpen Is Nothing Then
-        Set frmWorkflowOpen = New HRProSystemMgr.frmWorkflowOpen
+        Set frmWorkflowOpen = New SystemMgr.frmWorkflowOpen
       End If
       frmWorkflowOpen.Show
       frmWorkflowOpen.SetFocus
@@ -2133,7 +2132,7 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_PicMgr"
       ' Display the Picture Manager.
       If frmPictMgr Is Nothing Then
-        Set frmPictMgr = New HRProSystemMgr.frmPictMgr
+        Set frmPictMgr = New SystemMgr.frmPictMgr
       End If
       frmPictMgr.Show
       frmPictMgr.SetFocus
@@ -2142,7 +2141,7 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_ViewMgr"
       ' Display the View Manager.
        If frmViewMgr Is Nothing Then
-         Set frmViewMgr = New HRProSystemMgr.frmViewMgr
+         Set frmViewMgr = New SystemMgr.frmViewMgr
        End If
        frmViewMgr.Show
        frmViewMgr.SetFocus
@@ -2413,15 +2412,15 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\HR Pro System Manager Version Information.htm"
+      strVersionFilename = App.Path & "\OpenHR System Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
         If plngHelp = 0 Then
-          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, "HR Pro System Manager"
+          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, Application.Name
         End If
       Else
-        MsgBox "No version information found.", vbExclamation + vbOKOnly, "HR Pro System Manager"
+        MsgBox "No version information found.", vbExclamation + vbOKOnly, Application.Name
       End If
       
       Screen.MousePointer = vbNormal
@@ -2460,7 +2459,7 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_DatMgr"
       ' Display the Database Manager.
       If frmDbMgr Is Nothing Then
-        Set frmDbMgr = New HRProSystemMgr.frmDbMgr
+        Set frmDbMgr = New SystemMgr.frmDbMgr
       End If
       frmDbMgr.Show
       frmDbMgr.SetFocus
@@ -2469,7 +2468,7 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_ScrMgr"
       ' Display the Screen Manager.
       If frmScrOpen Is Nothing Then
-        Set frmScrOpen = New HRProSystemMgr.frmScrOpen
+        Set frmScrOpen = New SystemMgr.frmScrOpen
       End If
       frmScrOpen.Show
       frmScrOpen.SetFocus
@@ -2478,7 +2477,7 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_WorkflowMgr"
       ' Display the Workflow Manager.
       If frmWorkflowOpen Is Nothing Then
-        Set frmWorkflowOpen = New HRProSystemMgr.frmWorkflowOpen
+        Set frmWorkflowOpen = New SystemMgr.frmWorkflowOpen
       End If
       frmWorkflowOpen.Show
       frmWorkflowOpen.SetFocus
@@ -2487,7 +2486,7 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_ViewMgr"
       ' Display the View Manager.
        If frmViewMgr Is Nothing Then
-         Set frmViewMgr = New HRProSystemMgr.frmViewMgr
+         Set frmViewMgr = New SystemMgr.frmViewMgr
        End If
        frmViewMgr.Show
        frmViewMgr.SetFocus
@@ -2731,7 +2730,7 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
 
       If plngHelp = 0 Then
-        MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
+        MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, "System Manager"
       End If
     
       ' DOESNT SEEM TO WORK !
@@ -2750,15 +2749,15 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\HR Pro System Manager Version Information.htm"
+      strVersionFilename = App.Path & "\OpenHR System Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
         If plngHelp = 0 Then
-          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, "HR Pro System Manager"
+          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, Application.Name
         End If
       Else
-        MsgBox "No version information found.", vbExclamation + vbOKOnly, "HR Pro System Manager"
+        MsgBox "No version information found.", vbExclamation + vbOKOnly, Application.Name
       End If
       
       Screen.MousePointer = vbNormal
@@ -2798,7 +2797,7 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_DatMgr"
       ' Display the Database Manager.
       If frmDbMgr Is Nothing Then
-        Set frmDbMgr = New HRProSystemMgr.frmDbMgr
+        Set frmDbMgr = New SystemMgr.frmDbMgr
       End If
       frmDbMgr.Show
       frmDbMgr.SetFocus
@@ -2807,7 +2806,7 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_WorkflowMgr"
       ' Display the Workflow Manager.
       If frmWorkflowOpen Is Nothing Then
-        Set frmWorkflowOpen = New HRProSystemMgr.frmWorkflowOpen
+        Set frmWorkflowOpen = New SystemMgr.frmWorkflowOpen
       End If
       frmWorkflowOpen.Show
       frmWorkflowOpen.SetFocus
@@ -2816,7 +2815,7 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_PicMgr"
       ' Display the Picture Manager.
       If frmPictMgr Is Nothing Then
-        Set frmPictMgr = New HRProSystemMgr.frmPictMgr
+        Set frmPictMgr = New SystemMgr.frmPictMgr
       End If
       frmPictMgr.Show
       frmPictMgr.SetFocus
@@ -2825,7 +2824,7 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_ViewMgr"
       ' Display the View Manager.
        If frmViewMgr Is Nothing Then
-         Set frmViewMgr = New HRProSystemMgr.frmViewMgr
+         Set frmViewMgr = New SystemMgr.frmViewMgr
        End If
        frmViewMgr.Show
        frmViewMgr.SetFocus
@@ -3045,7 +3044,7 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
 
       If plngHelp = 0 Then
-        MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
+        MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, "System Manager"
       End If
     
       ' DOESNT SEEM TO WORK !
@@ -3064,15 +3063,15 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\HR Pro System Manager Version Information.htm"
+      strVersionFilename = App.Path & "\OpenHR System Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
         If plngHelp = 0 Then
-          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, "HR Pro System Manager"
+          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, Application.Name
         End If
       Else
-        MsgBox "No version information found.", vbExclamation + vbOKOnly, "HR Pro System Manager"
+        MsgBox "No version information found.", vbExclamation + vbOKOnly, Application.Name
       End If
       
       Screen.MousePointer = vbNormal
@@ -3110,7 +3109,7 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_DatMgr"
       ' Display the Database Manager.
       If frmDbMgr Is Nothing Then
-        Set frmDbMgr = New HRProSystemMgr.frmDbMgr
+        Set frmDbMgr = New SystemMgr.frmDbMgr
       End If
       frmDbMgr.Show
       frmDbMgr.SetFocus
@@ -3119,7 +3118,7 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_ScrMgr"
       ' Display the Screen Manager.
       If frmScrOpen Is Nothing Then
-        Set frmScrOpen = New HRProSystemMgr.frmScrOpen
+        Set frmScrOpen = New SystemMgr.frmScrOpen
       End If
       frmScrOpen.Show
       frmScrOpen.SetFocus
@@ -3128,7 +3127,7 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_PicMgr"
       ' Display the Picture Manager.
       If frmPictMgr Is Nothing Then
-        Set frmPictMgr = New HRProSystemMgr.frmPictMgr
+        Set frmPictMgr = New SystemMgr.frmPictMgr
       End If
       frmPictMgr.Show
       frmPictMgr.SetFocus
@@ -3137,7 +3136,7 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_ViewMgr"
       ' Display the View Manager.
        If frmViewMgr Is Nothing Then
-         Set frmViewMgr = New HRProSystemMgr.frmViewMgr
+         Set frmViewMgr = New SystemMgr.frmViewMgr
        End If
        frmViewMgr.Show
        frmViewMgr.SetFocus
@@ -3357,7 +3356,7 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
 
       If plngHelp = 0 Then
-        MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
+        MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, "System Manager"
       End If
 
       ' DOESNT SEEM TO WORK !
@@ -3376,15 +3375,15 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
 
-      strVersionFilename = App.Path & "\HR Pro System Manager Version Information.htm"
+      strVersionFilename = App.Path & "\OpenHR System Manager Version Information.htm"
 
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
         If plngHelp = 0 Then
-          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, "HR Pro System Manager"
+          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, Application.Name
         End If
       Else
-        MsgBox "No version information found.", vbExclamation + vbOKOnly, "HR Pro System Manager"
+        MsgBox "No version information found.", vbExclamation + vbOKOnly, Application.Name
       End If
 
       Screen.MousePointer = vbNormal
@@ -3423,7 +3422,7 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_DatMgr"
       ' Display the Database Manager.
       If frmDbMgr Is Nothing Then
-        Set frmDbMgr = New HRProSystemMgr.frmDbMgr
+        Set frmDbMgr = New SystemMgr.frmDbMgr
       End If
       frmDbMgr.Show
       frmDbMgr.SetFocus
@@ -3432,7 +3431,7 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_ScrMgr"
       ' Display the Screen Manager.
       If frmScrOpen Is Nothing Then
-        Set frmScrOpen = New HRProSystemMgr.frmScrOpen
+        Set frmScrOpen = New SystemMgr.frmScrOpen
       End If
       frmScrOpen.Show
       frmScrOpen.SetFocus
@@ -3441,7 +3440,7 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_WorkflowMgr"
       ' Display the Workflow Manager.
       If frmWorkflowOpen Is Nothing Then
-        Set frmWorkflowOpen = New HRProSystemMgr.frmWorkflowOpen
+        Set frmWorkflowOpen = New SystemMgr.frmWorkflowOpen
       End If
       frmWorkflowOpen.Show
       frmWorkflowOpen.SetFocus
@@ -3450,7 +3449,7 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_PicMgr"
       ' Display the Picture Manager.
       If frmPictMgr Is Nothing Then
-        Set frmPictMgr = New HRProSystemMgr.frmPictMgr
+        Set frmPictMgr = New SystemMgr.frmPictMgr
       End If
       frmPictMgr.Show
       frmPictMgr.SetFocus
@@ -3698,7 +3697,7 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
 
       If plngHelp = 0 Then
-        MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
+        MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, Application.Name
       End If
     
       ' DOESNT SEEM TO WORK !
@@ -3717,15 +3716,15 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\HR Pro System Manager Version Information.htm"
+      strVersionFilename = App.Path & "\OpenHR System Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
         If plngHelp = 0 Then
-          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, "HR Pro System Manager"
+          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, Application.Name
         End If
       Else
-        MsgBox "No version information found.", vbExclamation + vbOKOnly, "HR Pro System Manager"
+        MsgBox "No version information found.", vbExclamation + vbOKOnly, Application.Name
       End If
       
       Screen.MousePointer = vbNormal
@@ -3763,7 +3762,7 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_DatMgr"
       ' Call up the Database Manager
       If frmDbMgr Is Nothing Then
-        Set frmDbMgr = New HRProSystemMgr.frmDbMgr
+        Set frmDbMgr = New SystemMgr.frmDbMgr
       End If
       frmDbMgr.Show
       frmDbMgr.SetFocus
@@ -3772,7 +3771,7 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_ScrMgr"
       ' Call up the Screen Manager
       If frmScrOpen Is Nothing Then
-        Set frmScrOpen = New HRProSystemMgr.frmScrOpen
+        Set frmScrOpen = New SystemMgr.frmScrOpen
       End If
       frmScrOpen.Show
       frmScrOpen.SetFocus
@@ -3781,7 +3780,7 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_WorkflowMgr"
       ' Call up the Workflow Manager
       If frmWorkflowOpen Is Nothing Then
-        Set frmWorkflowOpen = New HRProSystemMgr.frmWorkflowOpen
+        Set frmWorkflowOpen = New SystemMgr.frmWorkflowOpen
       End If
       frmWorkflowOpen.Show
       frmWorkflowOpen.SetFocus
@@ -3790,7 +3789,7 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_PicMgr"
       ' Call up the Picture Manager
       If frmPictMgr Is Nothing Then
-        Set frmPictMgr = New HRProSystemMgr.frmPictMgr
+        Set frmPictMgr = New SystemMgr.frmPictMgr
       End If
       frmPictMgr.Show
       frmPictMgr.SetFocus
@@ -3805,7 +3804,7 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_ViewMgr"
       ' Call up the View Manager
       If frmViewMgr Is Nothing Then
-        Set frmViewMgr = New HRProSystemMgr.frmViewMgr
+        Set frmViewMgr = New SystemMgr.frmViewMgr
       End If
       frmViewMgr.Show
       frmViewMgr.SetFocus
@@ -3977,15 +3976,15 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\HR Pro System Manager Version Information.htm"
+      strVersionFilename = App.Path & "\OpenHR System Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
         If plngHelp = 0 Then
-          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, "HR Pro System Manager"
+          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, Application.Name
         End If
       Else
-        MsgBox "No version information found.", vbExclamation + vbOKOnly, "HR Pro System Manager"
+        MsgBox "No version information found.", vbExclamation + vbOKOnly, Application.Name
       End If
       
       Screen.MousePointer = vbNormal
@@ -4002,15 +4001,15 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\HR Pro System Manager Version Information.htm"
+      strVersionFilename = App.Path & "\OpenHR System Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
         If plngHelp = 0 Then
-          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, "HR Pro System Manager"
+          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, Application.Name
         End If
       Else
-        MsgBox "No version information found.", vbExclamation + vbOKOnly, "HR Pro System Manager"
+        MsgBox "No version information found.", vbExclamation + vbOKOnly, Application.Name
       End If
       
       Screen.MousePointer = vbNormal
@@ -4049,7 +4048,7 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_DatMgr"
       ' Display the Database Manager.
       If frmDbMgr Is Nothing Then
-        Set frmDbMgr = New HRProSystemMgr.frmDbMgr
+        Set frmDbMgr = New SystemMgr.frmDbMgr
       End If
       frmDbMgr.Show
       frmDbMgr.SetFocus
@@ -4058,7 +4057,7 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_ScrMgr"
       ' Display the Screen Manager.
       If frmScrOpen Is Nothing Then
-        Set frmScrOpen = New HRProSystemMgr.frmScrOpen
+        Set frmScrOpen = New SystemMgr.frmScrOpen
       End If
       frmScrOpen.Show
       frmScrOpen.SetFocus
@@ -4067,7 +4066,7 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_WorkflowMgr"
       ' Display the Workflow Manager.
       If frmWorkflowOpen Is Nothing Then
-        Set frmWorkflowOpen = New HRProSystemMgr.frmWorkflowOpen
+        Set frmWorkflowOpen = New SystemMgr.frmWorkflowOpen
       End If
       frmWorkflowOpen.Show
       frmWorkflowOpen.SetFocus
@@ -4076,7 +4075,7 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_PicMgr"
       ' Display the Picture Manager.
       If frmPictMgr Is Nothing Then
-        Set frmPictMgr = New HRProSystemMgr.frmPictMgr
+        Set frmPictMgr = New SystemMgr.frmPictMgr
       End If
       frmPictMgr.Show
       frmPictMgr.SetFocus
@@ -4085,7 +4084,7 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_ViewMgr"
       ' Display the View Manager.
        If frmViewMgr Is Nothing Then
-         Set frmViewMgr = New HRProSystemMgr.frmViewMgr
+         Set frmViewMgr = New SystemMgr.frmViewMgr
        End If
        frmViewMgr.Show
        frmViewMgr.SetFocus
@@ -4363,7 +4362,7 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
         
         ' Display the screen manager.
         If frmSysMgr.frmScrOpen Is Nothing Then
-          Set frmSysMgr.frmScrOpen = New HRProSystemMgr.frmScrOpen
+          Set frmSysMgr.frmScrOpen = New SystemMgr.frmScrOpen
         End If
         frmSysMgr.frmScrOpen.Show
         frmSysMgr.frmScrOpen.SetFocus
@@ -4385,7 +4384,7 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
 
       If plngHelp = 0 Then
-        MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
+        MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, Application.Name
       End If
     
       ' DOESNT SEEM TO WORK !
@@ -4397,15 +4396,15 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\HR Pro System Manager Version Information.htm"
+      strVersionFilename = App.Path & "\OpenHR System Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
         If plngHelp = 0 Then
-          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, "HR Pro System Manager"
+          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, Application.Name
         End If
       Else
-        MsgBox "No version information found.", vbExclamation + vbOKOnly, "HR Pro System Manager"
+        MsgBox "No version information found.", vbExclamation + vbOKOnly, Application.Name
       End If
       
       Screen.MousePointer = vbNormal
@@ -4452,7 +4451,7 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_DatMgr"
       ' Display the Database Manager.
       If frmDbMgr Is Nothing Then
-        Set frmDbMgr = New HRProSystemMgr.frmDbMgr
+        Set frmDbMgr = New SystemMgr.frmDbMgr
       End If
       frmDbMgr.Show
       frmDbMgr.SetFocus
@@ -4461,7 +4460,7 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_ScrMgr"
       ' Display the Screen Manager.
       If frmScrOpen Is Nothing Then
-        Set frmScrOpen = New HRProSystemMgr.frmScrOpen
+        Set frmScrOpen = New SystemMgr.frmScrOpen
       End If
       frmScrOpen.Show
       frmScrOpen.SetFocus
@@ -4470,7 +4469,7 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_WorkflowMgr"
       ' Display the Workflow Manager.
       If frmWorkflowOpen Is Nothing Then
-        Set frmWorkflowOpen = New HRProSystemMgr.frmWorkflowOpen
+        Set frmWorkflowOpen = New SystemMgr.frmWorkflowOpen
       End If
       frmWorkflowOpen.Show
       frmWorkflowOpen.SetFocus
@@ -4479,7 +4478,7 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_PicMgr"
       ' Display the Picture Manager.
       If frmPictMgr Is Nothing Then
-        Set frmPictMgr = New HRProSystemMgr.frmPictMgr
+        Set frmPictMgr = New SystemMgr.frmPictMgr
       End If
       frmPictMgr.Show
       frmPictMgr.SetFocus
@@ -4488,7 +4487,7 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_ViewMgr"
       ' Display the View Manager.
        If frmViewMgr Is Nothing Then
-         Set frmViewMgr = New HRProSystemMgr.frmViewMgr
+         Set frmViewMgr = New SystemMgr.frmViewMgr
        End If
        frmViewMgr.Show
        frmViewMgr.SetFocus
@@ -4774,7 +4773,7 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
 '
 '        ' Display the screen manager.
 '        If frmSysMgr.frmScrOpen Is Nothing Then
-'          Set frmSysMgr.frmScrOpen = New HRProSystemMgr.frmScrOpen
+'          Set frmSysMgr.frmScrOpen = New SystemMgr.frmScrOpen
 '        End If
 '        frmSysMgr.frmScrOpen.Show
 '        frmSysMgr.frmScrOpen.SetFocus
@@ -4796,7 +4795,7 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
 
       If plngHelp = 0 Then
-        MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
+        MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, Application.Name
       End If
     
       ' DOESNT SEEM TO WORK !
@@ -4808,15 +4807,15 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_VersionInfo"
       Screen.MousePointer = vbHourglass
       
-      strVersionFilename = App.Path & "\HR Pro System Manager Version Information.htm"
+      strVersionFilename = App.Path & "\OpenHR System Manager Version Information.htm"
       
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
         If plngHelp = 0 Then
-          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, "HR Pro System Manager"
+          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, Application.Name
         End If
       Else
-        MsgBox "No version information found.", vbExclamation + vbOKOnly, "HR Pro System Manager"
+        MsgBox "No version information found.", vbExclamation + vbOKOnly, Application.Name
       End If
       
       Screen.MousePointer = vbNormal
@@ -4886,24 +4885,10 @@ End Sub
 '
 'End Sub
 
-
 Public Sub SetCaption()
 
-  '09/08/2001 MH Fault 2667
-  'Me.Caption = "HR Pro - System Manager"
-  Me.Caption = "HR Pro System Manager - " & gsDatabaseName & "  " & _
+  Me.Caption = Application.Name & " - " & gsDatabaseName & "  " & _
       Choose(Application.AccessMode, "", "[Support Mode]", "[Limited Access]", "[Read Only]")
-
-  'Select Case Application.AccessMode
-  ''Case accFull
-  'Case accSupportMode
-  '  Me.Caption = Me.Caption & "  [Support Mode]"
-  'Case accLimited
-  '  Me.Caption = Me.Caption & "  [Limited Access]"
-  'Case accSystemReadOnly
-  '  Me.Caption = Me.Caption & "  [Read Only]"
-  ''case accNone
-  'End Select
 
 End Sub
 

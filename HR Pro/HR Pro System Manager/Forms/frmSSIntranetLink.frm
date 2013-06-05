@@ -1,9 +1,9 @@
 VERSION 5.00
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
+Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "coa_colourpicker.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
-Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "mschrt20.ocx"
+Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCHRT20.OCX"
 Begin VB.Form frmSSIntranetLink 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Self-service Intranet Link"
@@ -912,7 +912,7 @@ Begin VB.Form frmSSIntranetLink
          Width           =   1305
       End
       Begin VB.OptionButton optLink 
-         Caption         =   "&HR Pro Screen"
+         Caption         =   "&OpenHR Screen"
          Height          =   315
          Index           =   0
          Left            =   200
@@ -1111,7 +1111,7 @@ Begin VB.Form frmSSIntranetLink
       End
    End
    Begin VB.Frame fraHRProUtilityLink 
-      Caption         =   "HR Pro Report / Utility :"
+      Caption         =   "OpenHR Report / Utility :"
       Height          =   1485
       Left            =   2880
       TabIndex        =   29
@@ -1164,7 +1164,7 @@ Begin VB.Form frmSSIntranetLink
       End
    End
    Begin VB.Frame fraHRProScreenLink 
-      Caption         =   "HR Pro Screen :"
+      Caption         =   "OpenHR Screen :"
       Height          =   6060
       Left            =   2880
       TabIndex        =   20
@@ -1508,7 +1508,7 @@ Private Sub FormatScreen()
   cboTableView.Top = txtText.Top + txtText.Height + GAPBETWEENTEXTBOXES
   lblTableView.Top = cboTableView.Top + (lblText.Top - txtText.Top)
  
-  ' HR Pro screen links only required for Button or Dropdown List Links
+  ' Screen links only required for Button or Dropdown List Links
   optLink(SSINTLINKSCREEN_HRPRO).Enabled = (miLinkType <> SSINTLINK_HYPERTEXT) And (miLinkType <> SSINTLINK_DOCUMENT)
   
   If miLinkType = SSINTLINK_DOCUMENT Then
@@ -2108,7 +2108,7 @@ Private Sub RefreshControls()
   fraChartLink.Visible = optLink(SSINTLINKCHART).value
   fraDBValue.Visible = optLink(SSINTLINKDB_VALUE).value
       
-  ' Disable the HR Pro screen controls as required.
+  ' Disable the screen controls as required.
   cboHRProTable.Enabled = (optLink(SSINTLINKSCREEN_HRPRO).value) And (cboHRProTable.ListCount > 0)
   cboHRProTable.BackColor = IIf(cboHRProTable.Enabled, vbWindowBackground, vbButtonFace)
   lblHRProTable.Enabled = cboHRProTable.Enabled
@@ -2388,7 +2388,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
 
 End Sub
@@ -2689,19 +2689,19 @@ Private Function ValidateLink() As Boolean
     End If
   End If
   
-  ' Check that the HR Pro screen has been selected (if required)
+  ' Check that the screen has been selected (if required)
   If fValid Then
     If (miLinkType <> SSINTLINK_HYPERTEXT) And _
       (optLink(SSINTLINKSCREEN_HRPRO).value) Then
       If cboHRProScreen.ListIndex < 0 Then
         fValid = False
-        MsgBox "No HR Pro screen has been selected.", vbOKOnly + vbExclamation, Application.Name
+        MsgBox "No screen has been selected.", vbOKOnly + vbExclamation, Application.Name
         cboHRProTable.SetFocus
       End If
     End If
   End If
   
-  ' Check that the HR Pro page title been entered
+  ' Check that the page title been entered
   If fValid Then
     If (miLinkType <> SSINTLINK_HYPERTEXT) And _
       (optLink(SSINTLINKSCREEN_HRPRO).value) Then
@@ -3050,7 +3050,7 @@ Private Sub cboColumns_Click()
   piColumnDataType = GetColumnDataType(lngColumnID)
   
   ' Disable 'total' option if not numeric or integer
-  If piColumnDataType <> dtinteger And piColumnDataType <> dtNUMERIC Then
+  If piColumnDataType <> dtINTEGER And piColumnDataType <> dtNUMERIC Then
     optAggregateType(0).value = True
     optAggregateType(1).Enabled = False
     optAggregateType(1).ForeColor = vbButtonFace

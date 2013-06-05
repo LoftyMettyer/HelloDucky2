@@ -1122,7 +1122,7 @@ Private Sub ReadParameterDefinition()
   Dim fOK As Boolean
   Dim iIndex As Integer
   Dim sSQL As String
-  Dim rsCustomisedParameters As dao.Recordset
+  Dim rsCustomisedParameters As DAO.Recordset
   Dim objNewParameter As CExprComponent
   Dim objFunctionDefParameter As clsFunctionDefParameter
   Dim objFunctionDef As clsFunctionDef
@@ -1644,7 +1644,7 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
   
   Dim fUnknownParameterType As Boolean
   Dim iLoop As Integer
-  Dim sProcCode As HRProSystemMgr.cStringBuilder
+  Dim sProcCode As SystemMgr.cStringBuilder
   Dim sIfNullCode As String
   Dim sVarName As String
   Dim sUnknownParameterSuffix As String
@@ -1663,7 +1663,7 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
   Dim lngSrchTableID As Long
   Dim lngRtnTableID As Long
   Dim fWorkflowExpression As Boolean
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim sSQL As String
   Dim lngElementID As Long
   Dim iElementType As ElementType
@@ -1677,7 +1677,7 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
   fWorkflowExpression = (mobjBaseComponent.ParentExpression.ExpressionType = giEXPR_WORKFLOWCALCULATION) _
     Or (mobjBaseComponent.ParentExpression.ExpressionType = giEXPR_WORKFLOWSTATICFILTER)
   
-  Set sProcCode = New HRProSystemMgr.cStringBuilder
+  Set sProcCode = New SystemMgr.cStringBuilder
   sVarName = "@component" & Trim$(Str$(mobjBaseComponent.ComponentID))
   
   fUnknownParameterType = False
@@ -2393,7 +2393,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
   Dim lngDependantsTableID As Long
   Dim lngMaternityTableID As Long
   Dim sVarName As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim strTempTableName As String
   Dim strTempTableID As String
   

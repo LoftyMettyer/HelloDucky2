@@ -90,7 +90,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 'Local variables to hold property values
-Private objParentTable As HRProSystemMgr.Table
+Private objParentTable As SystemMgr.Table
 
 'Local variables
 Private gfNew As Boolean
@@ -135,18 +135,18 @@ Private Function ParentCount(pLngChildTableID As Long, plngExcludedTableID As Lo
   
 End Function
 
-Public Property Get ParentTable() As HRProSystemMgr.Table
+Public Property Get ParentTable() As SystemMgr.Table
   
   ' Return the current parent table.
   If objParentTable Is Nothing Then
-    Set objParentTable = New HRProSystemMgr.Table
+    Set objParentTable = New SystemMgr.Table
   End If
   
   Set ParentTable = objParentTable
   
 End Property
 
-Public Property Set ParentTable(TableObject As HRProSystemMgr.Table)
+Public Property Set ParentTable(TableObject As SystemMgr.Table)
 
   ' Set the parent table.
   If TableObject Is Nothing Then
@@ -189,7 +189,7 @@ Private Sub cmdCancel_Click()
 End Sub
 
 
-Private Sub cmdOK_Click()
+Private Sub cmdOk_Click()
   On Error GoTo ErrorTrap
   
   Dim fOK As Boolean
@@ -198,7 +198,7 @@ Private Sub cmdOK_Click()
   Dim fRelRequired As Boolean
   Dim iLoop As Integer
   Dim iListPtr As Integer
-  Dim objRelatedTable As New HRProSystemMgr.Table
+  Dim objRelatedTable As New SystemMgr.Table
   
   ' Start transaction for temporary database.
   daoWS.BeginTrans

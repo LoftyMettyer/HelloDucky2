@@ -599,7 +599,7 @@ Public Function CalculatedColumnsThatUseThisExpression(ByRef pvColumns As Varian
   ' Return an array of the calculated columns that use this expression.
   Dim iNextIndex As Integer
   Dim sSQL As String
-  Dim rsCheck As dao.Recordset
+  Dim rsCheck As DAO.Recordset
   Dim objExpr As CExpression
   
   If mlngExpressionID > 0 Then
@@ -1363,7 +1363,7 @@ Public Function ValidateSelection() As Boolean
   Dim fOK As Boolean
   Dim sSQL As String
   Dim objExpr As CExpression
-  Dim rsCheck As dao.Recordset
+  Dim rsCheck As DAO.Recordset
   
   fOK = True
   
@@ -1461,14 +1461,14 @@ Public Function StoredProcedureCode(psVarName As String, Optional strBaseTable A
   Dim iParameter2Index As Integer
   Dim iMinOperatorPrecedence As Integer
   Dim iMaxOperatorPrecedence As Integer
-  Dim sProcCode As HRProSystemMgr.cStringBuilder
+  Dim sProcCode As SystemMgr.cStringBuilder
   Dim sVarName As String
   Dim sIfNullCode As String
   Dim vParameter1 As Variant
   Dim vParameter2 As Variant
   Dim avValues() As Variant
 
-  Set sProcCode = New HRProSystemMgr.cStringBuilder
+  Set sProcCode = New SystemMgr.cStringBuilder
 
 
   'If ASRDEVELOPMENT Then
@@ -1899,7 +1899,7 @@ Public Sub PrintExpressionWithoutConstructing()
   Dim fOK As Boolean
   Dim sTableName As String
   Dim objComponent As CExprComponent
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   Dim objPrinter As clsPrintDef
   
   fOK = True
@@ -2296,15 +2296,6 @@ ErrorTrap:
     
 End Function
 
-
-
-
-
-
-
-
-
-
 Public Function WriteExpression() As Boolean
   ' Write the expression definition to the database.
   On Error GoTo ErrorTrap
@@ -2540,26 +2531,18 @@ End Function
 
 Public Property Let AllWorkflowElements(pactlElements As Variant)
   mactlAllWorkflowElements = pactlElements
-  
 End Property
-
-
 
 Public Property Let PrecedingWorkflowElements(pactlElements As Variant)
   mactlPrecedingWorkflowElements = pactlElements
-  
 End Property
-
-
-
 
 Public Property Get AllWorkflowElements() As Variant
   AllWorkflowElements = mactlAllWorkflowElements
-  
 End Property
+
 Public Property Get PrecedingWorkflowElements() As Variant
   PrecedingWorkflowElements = mactlPrecedingWorkflowElements
-  
 End Property
 
 Public Property Get BadComponent() As CExprComponent
@@ -2597,7 +2580,7 @@ Public Sub DeleteExistingComponents()
   On Error GoTo ErrorTrap
   
   Dim sSQL As String
-  Dim rsSubExpressions As dao.Recordset
+  Dim rsSubExpressions As DAO.Recordset
   Dim objExpr As CExpression
     
   ' Get the expression's function components from the database.
@@ -2707,7 +2690,7 @@ Public Function ExpressionIsUsed(plngExprID As Long) As Boolean
   Dim rsADOCheck12 As ADODB.Recordset
   Dim rsADOCheck13 As ADODB.Recordset
   Dim rsADOCheck14 As ADODB.Recordset
-  Dim rsDAOCheck As dao.Recordset
+  Dim rsDAOCheck As DAO.Recordset
   Dim wfTempElement As VB.Control
   Dim lngLoop As Long
   Dim iLoop2 As Integer
@@ -3829,12 +3812,6 @@ Public Function ValidateSQLCode() As ExprValidationCodes
       On Error GoTo SQLCodeErrorTrap
         
       ' Drop the test stored procedure.
-'      sSPCode = "IF EXISTS (SELECT Name" & _
-'        " FROM sysobjects" & _
-'        " WHERE type = 'P'" & _
-'        " AND name = 'tmpsp_ASRExprTest')" & _
-'        " DROP PROCEDURE tmpsp_ASRExprTest"
-'      gADOCon.Execute sSPCode, , adExecuteNoRecords
       DropProcedure "tmpsp_ASRExprTest"
         
       ' Create the test stored procedure to see if the filter expression is valid.
@@ -3842,12 +3819,6 @@ Public Function ValidateSQLCode() As ExprValidationCodes
       gADOCon.Execute sSPCode, , adExecuteNoRecords
       
       ' Drop the test stored procedure.
-'      sSPCode = "IF EXISTS (SELECT Name" & _
-'        " FROM sysobjects" & _
-'        " WHERE type = 'P'" & _
-'        " AND name = 'tmpsp_ASRExprTest')" & _
-'        " DROP PROCEDURE tmpsp_ASRExprTest"
-'      gADOCon.Execute sSPCode, , adExecuteNoRecords
       DropProcedure "tmpsp_ASRExprTest"
     
       On Error GoTo ErrorTrap
@@ -3886,7 +3857,7 @@ End Function
 Public Function UsesCalculation(plngExprID As Long) As Variant
   ' Return TRUE if the expression (or any calculations within it) uses the given expressionn.
   Dim sSQL As String
-  Dim rsCheck As dao.Recordset
+  Dim rsCheck As DAO.Recordset
   Dim objExpr As CExpression
   
   ' Check if this expression uses the given expression as a calculation.
@@ -4079,9 +4050,9 @@ Public Function CreateStoredProcedure() As Boolean
   Dim fOK As Boolean
   Dim sSQL As String
   Dim sProcedureName As String
-  Dim sSPCode As HRProSystemMgr.cStringBuilder
+  Dim sSPCode As SystemMgr.cStringBuilder
 
-  Set sSPCode = New HRProSystemMgr.cStringBuilder
+  Set sSPCode = New SystemMgr.cStringBuilder
 
   ' Construct the expression from the database definition.
   fOK = ConstructExpression
@@ -4098,7 +4069,7 @@ Public Function CreateStoredProcedure() As Boolean
     ' uses can run it, and it does not get affected by permission changes.
     
     sSPCode.TheString = "/* ------------------------------------------------ */" & vbNewLine & _
-     "/* HR Pro expression procedure (" & msExpressionName & "). */" & vbNewLine & _
+     "/* Expression procedure (" & msExpressionName & "). */" & vbNewLine & _
      "/* Automatically generated by the System manager.   */" & vbNewLine & _
      "/* ------------------------------------------------ */" & vbNewLine & vbNewLine & _
      "CREATE PROCEDURE dbo." & sProcedureName & " (" & vbNewLine
@@ -4224,18 +4195,6 @@ ExecutionError:
 
 End Function
 
-
-
-
-
-
-
-
-
-
-
-
-
 Public Function CreateWorkflowUDF() As Boolean
   ' Create the filter UDF.
   On Error GoTo ErrorTrap
@@ -4243,11 +4202,11 @@ Public Function CreateWorkflowUDF() As Boolean
   Dim fOK As Boolean
   Dim sFilterCode As String
   Dim sUDFName As String
-  Dim UDFCode As HRProSystemMgr.cStringBuilder
+  Dim UDFCode As SystemMgr.cStringBuilder
   Dim alngSourceTables() As Long
   Dim sPrefix As String
 
-  Set UDFCode = New HRProSystemMgr.cStringBuilder
+  Set UDFCode = New SystemMgr.cStringBuilder
 
   ' Construct the expression from the database definition.
   fOK = ConstructExpression
@@ -4264,8 +4223,8 @@ Public Function CreateWorkflowUDF() As Boolean
     ' uses can run it, and it does not get affected by permission changes.
 
     UDFCode.TheString = "------------------------------------------------" & vbNewLine & _
-      "-- HR Pro Workflow expression filter (" & msExpressionName & ")." & vbNewLine & _
-      "-- Automatically generated by the System manager." & vbNewLine & _
+      "-- Workflow expression filter (" & msExpressionName & ")." & vbNewLine & _
+      "-- Automatically generated by the System Manager." & vbNewLine & _
       "------------------------------------------------" & vbNewLine & vbNewLine & _
       "CREATE FUNCTION [dbo].[" & sUDFName & "] (" & vbNewLine & _
       "    @piInstanceID integer" & vbNewLine & _
@@ -4343,7 +4302,7 @@ Public Function CreateDefaultValueStoredProcedure() As Boolean
   On Error GoTo ErrorTrap
   
   Dim fOK As Boolean
-  Dim sSQL As New HRProSystemMgr.cStringBuilder
+  Dim sSQL As New SystemMgr.cStringBuilder
   Dim sProcedureName As String
 
   ' Construct the expression from the database definition.
@@ -4353,19 +4312,13 @@ Public Function CreateDefaultValueStoredProcedure() As Boolean
     sProcedureName = "sp_ASRDfltExpr_" & mlngExpressionID
     
     ' Drop any existing stored procedure with this name.
-'    sSQL.TheString = "IF EXISTS (SELECT Name" & _
-'      " FROM sysObjects" & _
-'      " WHERE type = 'P'" & _
-'      " AND name = '" & Replace(sProcedureName, "'", "''") & "')" & _
-'      " DROP PROCEDURE " & Replace(sProcedureName, "'", "''")
-'    gADOCon.Execute sSQL.ToString, , adExecuteNoRecords
     DropProcedure sProcedureName
     
     ' Construct the stored procedure creation string.
     ' NB. The stored procedure needs to be owned by 'dbo' so that all
     ' uses can run it, and it does not get affected by permission changes.
     sSQL.TheString = "/* -------------------------------------------------------------------------------- */" & vbNewLine & _
-      "/* HR Pro default value expression stored procedure. */" & vbNewLine & _
+      "/* Default value expression stored procedure. */" & vbNewLine & _
       "/* -------------------------------------------------------------------------------- */" & vbNewLine & _
       "CREATE PROCEDURE dbo." & Replace(sProcedureName, "'", "''") & " (" & vbNewLine
     
@@ -4553,7 +4506,7 @@ Private Sub DumpStoredProcedure(psDumpString As String)
   ' Dump the given string to a file for debugging.
   
   ' Open the log file.
-  Open "HR Pro Stored Procedure.log" For Output Lock Write As #1 ' Close before reopening in another mode.
+  Open "OpenHR Stored Procedure.log" For Output Lock Write As #1 ' Close before reopening in another mode.
   
   ' Write the given string to the log file.
   If LenB(psDumpString) <> 0 Then
@@ -4652,7 +4605,7 @@ Public Function CopyExpressionToClipboard() As Boolean
   Dim fOK As Boolean
   Dim sTableName As String
   Dim objComponent As CExprComponent
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   Dim msClipboardText As String
   
   fOK = True
@@ -4745,7 +4698,7 @@ Public Function RootExpressionName() As String
   Dim fOK As Boolean
   Dim sSQL As String
   Dim objComp As CExpression
-  Dim rsExpressions As dao.Recordset
+  Dim rsExpressions As DAO.Recordset
   Dim sName As String
 
 If mlngParentComponentID = 0 Then

@@ -262,7 +262,7 @@ Private Function ReadTrainingBookingParameters() As Boolean
     If fOK Then
       'MH20001025 Fault 799 Type Mismatch
       'fOK = Not IsNull(!parametervalue)
-      fOK = (IIf(IsNull(!parametervalue), 0, Val(!parametervalue)) > 0)
+      fOK = (IIf(IsNull(!parametervalue), 0, val(!parametervalue)) > 0)
     End If
     If Not fOK Then
       mvar_fPreReqsOK = False
@@ -271,7 +271,7 @@ Private Function ReadTrainingBookingParameters() As Boolean
       
       mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  'Training Bookings' table not defined."
     Else
-      mvar_lngTrainBookTableID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+      mvar_lngTrainBookTableID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
 
       With recTabEdit
         .Index = "idxTableID"
@@ -300,7 +300,7 @@ Private Function ReadTrainingBookingParameters() As Boolean
       If fOK Then
         'MH20001025 Fault 799 Type Mismatch
         'fOK = Not IsNull(!parametervalue)
-        fOK = (IIf(IsNull(!parametervalue), 0, Val(!parametervalue)) > 0)
+        fOK = (IIf(IsNull(!parametervalue), 0, val(!parametervalue)) > 0)
       End If
       If Not fOK Then
         mvar_fPreReqsOK = False
@@ -309,7 +309,7 @@ Private Function ReadTrainingBookingParameters() As Boolean
         
         mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sTrainBookTableName & "' table 'Status' column not defined."
       Else
-        mvar_lngTrainBookStatusID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngTrainBookStatusID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       
         With recColEdit
           .Index = "idxColumnID"
@@ -332,7 +332,7 @@ Private Function ReadTrainingBookingParameters() As Boolean
             
             ' Check that if the Status column is a text column with option/combo entries, all of
             ' the required status values are in the option group/combo.
-            If (!ColumnType <> giCOLUMNTYPE_LOOKUP) And _
+            If (!columntype <> giCOLUMNTYPE_LOOKUP) And _
               ((!ControlType = giCTRL_COMBOBOX) Or (!ControlType = giCTRL_OPTIONGROUP)) Then
     
               fStatusFound_B = False
@@ -347,8 +347,8 @@ Private Function ReadTrainingBookingParameters() As Boolean
                     Exit Do
                   End If
         
-                  If Len(Trim(recContValEdit!Value)) > 0 Then
-                    Select Case UCase(Trim(recContValEdit!Value))
+                  If Len(Trim(recContValEdit!value)) > 0 Then
+                    Select Case UCase(Trim(recContValEdit!value))
                       Case "B"
                         fStatusFound_B = True
                       Case "C"
@@ -386,7 +386,7 @@ Private Function ReadTrainingBookingParameters() As Boolean
     Else
       'MH20001025 Fault 799
       'mvar_iTrainBookOverlapNotification = IIf(IsNull(!parametervalue), 0, !parametervalue)
-      mvar_iTrainBookOverlapNotification = Val(IIf(IsNull(!parametervalue), 0, !parametervalue))
+      mvar_iTrainBookOverlapNotification = val(IIf(IsNull(!parametervalue), 0, !parametervalue))
     End If
   
   End With
@@ -430,11 +430,11 @@ Private Function ReadPreRequisiteParameters() As Boolean
     End If
     
     If mvar_fPreReqsUsed Then
-      mvar_fPreReqsUsed = (Val(!parametervalue) > 0)
+      mvar_fPreReqsUsed = (val(!parametervalue) > 0)
     End If
     
     If mvar_fPreReqsUsed Then
-      mvar_lngPreReqTableID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+      mvar_lngPreReqTableID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
   
       With recTabEdit
         .Index = "idxTableID"
@@ -459,14 +459,14 @@ Private Function ReadPreRequisiteParameters() As Boolean
         If fOK Then
           'MH20001025 Fault 799 Type Mismatch
           'fOK = Not IsNull(!parametervalue)
-          fOK = (IIf(IsNull(!parametervalue), 0, Val(!parametervalue)) > 0)
+          fOK = (IIf(IsNull(!parametervalue), 0, val(!parametervalue)) > 0)
         End If
         If Not fOK Then
           mvar_fPreReqsOK = False
           
           mvar_sPreReqsMsg = mvar_sPreReqsMsg & vbNewLine & "  '" & mvar_sPreReqTableName & "' table 'Course Title' column not defined."
         Else
-          mvar_lngPreReqCourseTitleID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+          mvar_lngPreReqCourseTitleID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
         
           With recColEdit
             .Index = "idxColumnID"
@@ -494,14 +494,14 @@ Private Function ReadPreRequisiteParameters() As Boolean
         If fOK Then
           'MH20001025 Fault 799 Type Mismatch
           'fOK = Not IsNull(!parametervalue)
-          fOK = (IIf(IsNull(!parametervalue), 0, Val(!parametervalue)) > 0)
+          fOK = (IIf(IsNull(!parametervalue), 0, val(!parametervalue)) > 0)
         End If
         If Not fOK Then
           mvar_fPreReqsOK = False
           
           mvar_sPreReqsMsg = mvar_sPreReqsMsg & vbNewLine & "  '" & mvar_sPreReqTableName & "' table 'Grouping' column not defined."
         Else
-          mvar_lngPreReqGroupingID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+          mvar_lngPreReqGroupingID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
         
           With recColEdit
             .Index = "idxColumnID"
@@ -529,14 +529,14 @@ Private Function ReadPreRequisiteParameters() As Boolean
         If fOK Then
           'MH20001025 Fault 799 Type Mismatch
           'fOK = Not IsNull(!parametervalue)
-          fOK = (IIf(IsNull(!parametervalue), 0, Val(!parametervalue)) > 0)
+          fOK = (IIf(IsNull(!parametervalue), 0, val(!parametervalue)) > 0)
         End If
         If Not fOK Then
           mvar_fPreReqsOK = False
           
           mvar_sPreReqsMsg = mvar_sPreReqsMsg & vbNewLine & "  '" & mvar_sPreReqTableName & "' table 'Failure Notification' column not defined."
         Else
-          mvar_lngPreReqFailureNotificationID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+          mvar_lngPreReqFailureNotificationID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
         
           With recColEdit
             .Index = "idxColumnID"
@@ -555,7 +555,7 @@ Private Function ReadPreRequisiteParameters() As Boolean
             
               ' Check that if the Failure Notification column is a text column with option/combo entries, all of
               ' the required values are in the option group/combo.
-              If (!ColumnType <> giCOLUMNTYPE_LOOKUP) And _
+              If (!columntype <> giCOLUMNTYPE_LOOKUP) And _
                 ((!ControlType = giCTRL_COMBOBOX) Or (!ControlType = giCTRL_OPTIONGROUP)) Then
     
                 fNotificationFound_Error = False
@@ -569,8 +569,8 @@ Private Function ReadPreRequisiteParameters() As Boolean
                       Exit Do
                     End If
         
-                    If Len(Trim(recContValEdit!Value)) > 0 Then
-                      If UCase(Trim(recContValEdit!Value)) = "ERROR" Then
+                    If Len(Trim(recContValEdit!value)) > 0 Then
+                      If UCase(Trim(recContValEdit!value)) = "ERROR" Then
                         fNotificationFound_Error = True
                         Exit Do
                       End If
@@ -630,11 +630,11 @@ Private Function ReadUnavailabilityParameters() As Boolean
     End If
     
     If mvar_fUnavailabilityUsed Then
-      mvar_fUnavailabilityUsed = (Val(!parametervalue) > 0)
+      mvar_fUnavailabilityUsed = (val(!parametervalue) > 0)
     End If
     
     If mvar_fUnavailabilityUsed Then
-      mvar_lngUnavailTableID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+      mvar_lngUnavailTableID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
   
       With recTabEdit
         .Index = "idxTableID"
@@ -660,13 +660,13 @@ Private Function ReadUnavailabilityParameters() As Boolean
         If fOK Then
           'MH20001025 Fault 799 Type Mismatch
           'fOK = Not IsNull(!parametervalue)
-          fOK = (IIf(IsNull(!parametervalue), 0, Val(!parametervalue)) > 0)
+          fOK = (IIf(IsNull(!parametervalue), 0, val(!parametervalue)) > 0)
         End If
         If Not fOK Then
           mvar_fUnavailOK = False
           mvar_sUnavailMsg = mvar_sUnavailMsg & vbNewLine & "'" & mvar_sUnavailTableName & "' table 'From Date' column not defined."
         Else
-          mvar_lngUnavailFromDateID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+          mvar_lngUnavailFromDateID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
         
           With recColEdit
             .Index = "idxColumnID"
@@ -693,13 +693,13 @@ Private Function ReadUnavailabilityParameters() As Boolean
         If fOK Then
           'MH20001025 Fault 799 Type Mismatch
           'fOK = Not IsNull(!parametervalue)
-          fOK = (IIf(IsNull(!parametervalue), 0, Val(!parametervalue)) > 0)
+          fOK = (IIf(IsNull(!parametervalue), 0, val(!parametervalue)) > 0)
         End If
         If Not fOK Then
           mvar_fUnavailOK = False
           mvar_sUnavailMsg = mvar_sUnavailMsg & vbNewLine & "'" & mvar_sUnavailTableName & "' table 'To Date' column not defined."
         Else
-          mvar_lngUnavailToDateID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+          mvar_lngUnavailToDateID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
         
           With recColEdit
             .Index = "idxColumnID"
@@ -726,13 +726,13 @@ Private Function ReadUnavailabilityParameters() As Boolean
         If fOK Then
           'MH20001025 Fault 799 Type Mismatch
           'fOK = Not IsNull(!parametervalue)
-          fOK = (IIf(IsNull(!parametervalue), 0, Val(!parametervalue)) > 0)
+          fOK = (IIf(IsNull(!parametervalue), 0, val(!parametervalue)) > 0)
         End If
         If Not fOK Then
           mvar_fUnavailOK = False
           mvar_sUnavailMsg = mvar_sUnavailMsg & vbNewLine & "'" & mvar_sUnavailTableName & "' table 'Failure Notification' column not defined."
         Else
-          mvar_lngUnavailFailureNotificationID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+          mvar_lngUnavailFailureNotificationID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
         
           With recColEdit
             .Index = "idxColumnID"
@@ -750,7 +750,7 @@ Private Function ReadUnavailabilityParameters() As Boolean
             
               ' Check that if the Failure Notification column is a text column with option/combo entries, all of
               ' the required values are in the option group/combo.
-              If (!ColumnType <> giCOLUMNTYPE_LOOKUP) And _
+              If (!columntype <> giCOLUMNTYPE_LOOKUP) And _
                 ((!ControlType = giCTRL_COMBOBOX) Or (!ControlType = giCTRL_OPTIONGROUP)) Then
     
                 fNotificationFound_Error = False
@@ -764,8 +764,8 @@ Private Function ReadUnavailabilityParameters() As Boolean
                       Exit Do
                     End If
         
-                    If Len(Trim(recContValEdit!Value)) > 0 Then
-                      If UCase(Trim(recContValEdit!Value)) = "ERROR" Then
+                    If Len(Trim(recContValEdit!value)) > 0 Then
+                      If UCase(Trim(recContValEdit!value)) = "ERROR" Then
                         fNotificationFound_Error = True
                         Exit Do
                       End If
@@ -817,7 +817,7 @@ Private Function CreatePreRequisiteCheckStoredProcedure() As Boolean
   If mvar_fPreReqsUsed Then
     ' Construct the stored procedure creation string (if required).
     sProcSQL = "/* ------------------------------------------------ */" & vbNewLine & _
-      "/* HR Pro Training Booking module stored procedure. */" & vbNewLine & _
+      "/* Training Booking module stored procedure. */" & vbNewLine & _
       "/* Automatically generated by the System manager.   */" & vbNewLine & _
       "/* ------------------------------------------------ */" & vbNewLine & _
       "CREATE PROCEDURE dbo." & mvar_sPreReqProcedureName & " (" & vbNewLine & _
@@ -964,7 +964,7 @@ Private Function CreateCourseCancelDateCheckProcedure() As Boolean
       
   ' Construct the stored procedure creation string (if required).
   sProcSQL = "/* ------------------------------------------------ */" & vbNewLine & _
-    "/* HR Pro Training Booking module stored procedure. */" & vbNewLine & _
+    "/* Training Booking module stored procedure. */" & vbNewLine & _
     "/* Automatically generated by the System manager.   */" & vbNewLine & _
     "/* ------------------------------------------------ */" & vbNewLine & _
     "CREATE PROCEDURE dbo." & mvar_sCourseCancelledCheck & " (" & vbNewLine & _
@@ -1025,7 +1025,7 @@ Private Function CreateUnavailabilityCheckStoredProcedure() As Boolean
   If mvar_fUnavailabilityUsed Then
     ' Construct the stored procedure creation string (if required).
     sProcSQL = "/* ------------------------------------------------ */" & vbNewLine & _
-      "/* HR Pro Training Booking module stored procedure. */" & vbNewLine & _
+      "/* Training Booking module stored procedure. */" & vbNewLine & _
       "/* Automatically generated by the System manager.   */" & vbNewLine & _
       "/* ------------------------------------------------ */" & vbNewLine & _
       "CREATE PROCEDURE dbo." & mvar_sUnavailProcedureName & " (" & vbNewLine & _
@@ -1123,7 +1123,7 @@ Private Function CreateOverbookingCheckStoredProcedure() As Boolean
       
   ' Construct the stored procedure creation string (if required).
   sProcSQL = "/* -------------------------------------------------------------------------------- */" & vbNewLine & _
-    "/* HR Pro Training Booking module stored procedure. */" & vbNewLine & _
+    "/* Training Booking module stored procedure. */" & vbNewLine & _
     "/* Automatically generated by the System Manager.    */" & vbNewLine & _
     "/* -------------------------------------------------------------------------------- */" & vbNewLine & _
     "CREATE PROCEDURE dbo." & mvar_sOverbookingProcedureName & " (" & vbNewLine & _
@@ -1198,7 +1198,7 @@ Private Function CreateOverlappedBookingCheckStoredProcedure() As Boolean
   
   ' Construct the stored procedure creation string (if required).
   sProcSQL = "/* -------------------------------------------------------------------------------- */" & vbNewLine & _
-    "/* HR Pro Training Booking module stored procedure. */" & vbNewLine & _
+    "/* Training Booking module stored procedure. */" & vbNewLine & _
     "/* Automatically generated by the System manager.   */" & vbNewLine & _
     "/* -------------------------------------------------------------------------------- */" & vbNewLine & _
     "CREATE PROCEDURE dbo." & mvar_sOverlapProcedureName & " (" & vbNewLine & _
@@ -1296,7 +1296,7 @@ Private Function ReadCourseRecordParameters() As Boolean
     If fOK Then
       'MH20001025 Fault 799 Type Mismatch
       'fOK = Not IsNull(!parametervalue)
-      fOK = (IIf(IsNull(!parametervalue), 0, Val(!parametervalue)) > 0)
+      fOK = (IIf(IsNull(!parametervalue), 0, val(!parametervalue)) > 0)
     End If
     If Not fOK Then
       mvar_fPreReqsOK = False
@@ -1306,7 +1306,7 @@ Private Function ReadCourseRecordParameters() As Boolean
       
       mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  'Training Course' table not defined."
     Else
-      mvar_lngCourseTableID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+      mvar_lngCourseTableID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
 
       With recTabEdit
         .Index = "idxTableID"
@@ -1335,14 +1335,14 @@ Private Function ReadCourseRecordParameters() As Boolean
           .Seek "=", gsMODULEKEY_TRAININGBOOKING, gsPARAMETERKEY_COURSECANCELLATIONDATE
           fOK = Not .NoMatch
           If fOK Then
-            fOK = (IIf(IsNull(!parametervalue), 0, Val(!parametervalue)) > 0)
+            fOK = (IIf(IsNull(!parametervalue), 0, val(!parametervalue)) > 0)
           End If
           If Not fOK Then
             mvar_fCancelDateOK = False
             
             mvar_sCancelDateMsg = mvar_sCancelDateMsg & vbNewLine & "  '" & mvar_sCourseTableName & "' table 'Course Cancellation' column not defined."
           Else
-            mvar_lngCancelCourseID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+            mvar_lngCancelCourseID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
           
             With recColEdit
               .Index = "idxColumnID"
@@ -1370,14 +1370,14 @@ Private Function ReadCourseRecordParameters() As Boolean
       If fOK Then
         'MH20001025 Fault 799 Type Mismatch
         'fOK = Not IsNull(!parametervalue)
-        fOK = (IIf(IsNull(!parametervalue), 0, Val(!parametervalue)) > 0)
+        fOK = (IIf(IsNull(!parametervalue), 0, val(!parametervalue)) > 0)
       End If
       If Not fOK Then
         mvar_fPreReqsOK = False
         
         mvar_sPreReqsMsg = mvar_sPreReqsMsg & vbNewLine & "  '" & mvar_sCourseTableName & "' table 'Course Title' column not defined."
       Else
-        mvar_lngCourseTitleID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngCourseTitleID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       
         With recColEdit
           .Index = "idxColumnID"
@@ -1405,7 +1405,7 @@ Private Function ReadCourseRecordParameters() As Boolean
       If fOK Then
         'MH20001025 Fault 799 Type Mismatch
         'fOK = Not IsNull(!parametervalue)
-        fOK = (IIf(IsNull(!parametervalue), 0, Val(!parametervalue)) > 0)
+        fOK = (IIf(IsNull(!parametervalue), 0, val(!parametervalue)) > 0)
       End If
       If Not fOK Then
         mvar_fPreReqsOK = False
@@ -1414,7 +1414,7 @@ Private Function ReadCourseRecordParameters() As Boolean
         
         mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sCourseTableName & "' table 'Start Date' column not defined."
       Else
-        mvar_lngCourseStartDateID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngCourseStartDateID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       
         With recColEdit
           .Index = "idxColumnID"
@@ -1444,7 +1444,7 @@ Private Function ReadCourseRecordParameters() As Boolean
       If fOK Then
         'MH20001025 Fault 799 Type Mismatch
         'fOK = Not IsNull(!parametervalue)
-        fOK = (IIf(IsNull(!parametervalue), 0, Val(!parametervalue)) > 0)
+        fOK = (IIf(IsNull(!parametervalue), 0, val(!parametervalue)) > 0)
       End If
       If Not fOK Then
         mvar_fPreReqsOK = False
@@ -1453,7 +1453,7 @@ Private Function ReadCourseRecordParameters() As Boolean
         
         mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sCourseTableName & "' table 'End Date' column not defined."
       Else
-        mvar_lngCourseEndDateID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngCourseEndDateID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       
         With recColEdit
           .Index = "idxColumnID"
@@ -1519,14 +1519,14 @@ Private Function ReadCourseRecordParameters() As Boolean
       If fOK Then
         'MH20001025 Fault 799 Type Mismatch
         'fOK = Not IsNull(!parametervalue)
-        fOK = (IIf(IsNull(!parametervalue), 0, Val(!parametervalue)) > 0)
+        fOK = (IIf(IsNull(!parametervalue), 0, val(!parametervalue)) > 0)
       End If
       If Not fOK Then
         mvar_fOverbookOK = False
             
         mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  '" & mvar_sCourseTableName & "' table 'Max. Number of Delegates' column not defined."
       Else
-        mvar_lngCourseMaxNumberID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+        mvar_lngCourseMaxNumberID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
       
         With recColEdit
           .Index = "idxColumnID"
@@ -1562,7 +1562,7 @@ Private Function ReadCourseRecordParameters() As Boolean
     Else
       'MH20001025 Fault 799
       'mvar_iCourseOverbookingNotification = IIf(IsNull(!parametervalue), 0, !parametervalue)
-      mvar_iCourseOverbookingNotification = Val(IIf(IsNull(!parametervalue), 0, !parametervalue))
+      mvar_iCourseOverbookingNotification = val(IIf(IsNull(!parametervalue), 0, !parametervalue))
     End If
   End With
 
@@ -1592,7 +1592,7 @@ Private Function ReadEmployeeRecordParameters() As Boolean
     fOK = Not .NoMatch
     If fOK Then
       'MH20001025 Fault 799 Type Mismatch
-      fOK = (IIf(IsNull(!parametervalue), 0, Val(!parametervalue)) > 0)
+      fOK = (IIf(IsNull(!parametervalue), 0, val(!parametervalue)) > 0)
     End If
     
     If Not fOK Then
@@ -1601,7 +1601,7 @@ Private Function ReadEmployeeRecordParameters() As Boolean
       mvar_fOverlapOK = False
       mvar_sGeneralMsg = mvar_sGeneralMsg & vbNewLine & "  'Employee' table not defined."
     Else
-      mvar_lngEmployeeTableID = IIf(IsNull(!parametervalue), 0, Val(!parametervalue))
+      mvar_lngEmployeeTableID = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
     End If
     
 '    ' Get the Bulk Booking Id
