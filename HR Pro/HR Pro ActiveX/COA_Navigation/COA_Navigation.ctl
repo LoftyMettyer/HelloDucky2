@@ -257,6 +257,10 @@ End Sub
 
 Public Sub RefreshControls()
 
+  Dim sDisplayText As String
+  
+  sDisplayText = IIf(mstrCaption = vbNullString, mstrNavigateTo, mstrCaption)
+
   ' Button properties
   PushButton1.Font = UserControl.Font
   PushButton1.Font.Bold = UserControl.Font.Bold
@@ -265,7 +269,7 @@ Public Sub RefreshControls()
   PushButton1.Font.Underline = UserControl.Font.Underline
   PushButton1.Width = UserControl.Width
   PushButton1.Height = UserControl.Height
-  PushButton1.Caption = mstrCaption
+  PushButton1.Caption = sDisplayText
   PushButton1.ToolTipText = mstrNavigateTo
   PushButton1.ForeColor = mForeColor
   PushButton1.Enabled = mbEnabled
@@ -279,9 +283,10 @@ Public Sub RefreshControls()
   lblHyperlink.ForeColor = vbBlue
   lblHyperlink.Top = 10
   lblHyperlink.Left = 10
-  lblHyperlink.Width = UserControl.TextWidth(mstrNavigateTo)
-  lblHyperlink.Height = UserControl.TextHeight(mstrNavigateTo)
-  lblHyperlink.Caption = mstrNavigateTo
+  lblHyperlink.Width = UserControl.TextWidth(sDisplayText)
+  lblHyperlink.Height = UserControl.TextHeight(sDisplayText)
+  lblHyperlink.Caption = sDisplayText
+  lblHyperlink.ToolTipText = mstrNavigateTo
   lblHyperlink.ForeColor = mForeColor
   lblHyperlink.Enabled = mbEnabled
   lblHyperlink.Visible = (miDisplayType = enum_DisplayType.Hyperlink)
