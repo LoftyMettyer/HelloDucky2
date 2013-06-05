@@ -50,20 +50,23 @@ Public Class MainForm
         objPhoenix.MetadataDB = objDAODB
         objPhoenix.CommitDB = objADO
 
-        objPhoenix.Initialise()
-        objPhoenix.PopulateObjects()
-
+      objPhoenix.Initialise()
+      Dim sw As New Stopwatch
+      sw.Start()
+      objPhoenix.PopulateObjects()
+      Console.WriteLine(String.Format("Original Populate: {0} secs", sw.Elapsed.TotalSeconds))
+      'approx 60 seconds
 
 
         objPhoenix.Options.DevelopmentMode = chkDebugMode.Checked
         objPhoenix.Options.RefreshObjects = True
-        bOK = objPhoenix.Script.CreateObjects()
+      'bOK = objPhoenix.Script.CreateObjects()
 
 
         ' bOK = objPhoenix.Script.CreateTableViews
         '    bOK = objPhoenix.Script.CreateViews
-
-        bOK = objPhoenix.Script.CreateTriggers()
+      '
+      ' bOK = objPhoenix.Script.CreateTriggers()
 
 
         'objPhoenix.Script.DropViews()
@@ -74,11 +77,11 @@ Public Class MainForm
         'objPhoenix.Script.CreateViews()
         'objPhoenix.Script.ApplySecurity()
 
-        bOK = objPhoenix.Script.CreateFunctions
+      'bOK = objPhoenix.Script.CreateFunctions
 
-        bOK = objPhoenix.Script.ScriptIndexes
+      'bOK = objPhoenix.Script.ScriptIndexes
 
-        bOK = objPhoenix.Script.ScriptOvernightStep2
+      'bOK = objPhoenix.Script.ScriptOvernightStep2
 
         objPhoenix.CloseSafely()
 

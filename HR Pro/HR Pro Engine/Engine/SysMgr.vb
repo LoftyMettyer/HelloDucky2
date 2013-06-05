@@ -50,7 +50,13 @@ Public Class SysMgr
 
       Things.PopulateSystemThings()
       Things.PopulateSystemSettings()
-      Things.PopulateThings()
+
+      If False Then
+        Things.PopulateThings()
+      Else
+        Things.PopulateThings2()
+      End If
+
       Things.PopulateModuleSettings()
 
     Catch ex As Exception

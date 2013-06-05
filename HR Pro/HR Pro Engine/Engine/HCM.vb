@@ -94,7 +94,7 @@ Public Class HCM
       Things.PopulateTables()
       Things.PopulateColumns()
       Things.PopulateScreens()
-      Things.PopulateExpressions()
+      Things.PopulateTableExpressions()
       Things.PopulateWorkflows()
 
 
