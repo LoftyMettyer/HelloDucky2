@@ -69,6 +69,7 @@ Private Function SendEmailFromClientUsingCDO(strTo As String, strCC As String, s
   Dim strFrom As String
   Dim strArray() As String
   Dim lngIndex As Long
+  Dim strError As String
   
   On Local Error GoTo LocalErr
   
