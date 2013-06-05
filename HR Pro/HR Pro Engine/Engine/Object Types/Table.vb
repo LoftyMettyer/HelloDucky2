@@ -18,17 +18,18 @@ Namespace Things
     Public DefaultEmailID As HCMGuid
     Public IsRemoteView As Boolean
 
+    Public Property RecordDescription() As RecordDescription
+    Public Property Indexes() As ICollection(Of Index)
+
     Public DependsOnChildColumns As New Things.Collections.BaseCollection
     Public DependsOnParentColumns As New Things.Collections.BaseCollection
     Public objCustomTriggers As New Things.Collections.BaseCollection
 
-    Public ReadOnly Property Indexes As Things.Collections.Generic
-      Get
-        Return Me.Objects(Things.Enums.Type.Index)
-      End Get
-    End Property
-
     Public UpdateStatements As New ArrayList
+
+    Public Sub New()
+      Indexes = New List(Of Index)
+    End Sub
 
     Public Overrides ReadOnly Property PhysicalName As String
       Get
@@ -127,20 +128,6 @@ Namespace Things
       For Each objChild In Objects(Things.Type.Expression)
         If objChild.Type = Type.Column And objChild.ID = [ExpressionID] Then
           Return CType(objChild, Things.Expression)
-        End If
-      Next
-
-      Return Nothing
-
-    End Function
-
-    Public Function RecordDescription() As Things.Expression
-
-      Dim objChild As Things.Base
-
-      For Each objChild In Objects(Things.Type.RecordDescription)
-        If objChild.Type = Type.RecordDescription Then
-          Return CType(objChild, Things.RecordDescription)
         End If
       Next
 

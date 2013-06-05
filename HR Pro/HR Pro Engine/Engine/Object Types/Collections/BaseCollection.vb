@@ -12,6 +12,11 @@ Namespace Things.Collections
     Implements System.Xml.Serialization.IXmlSerializable
     Implements iCollection_Base
 
+    Protected Overrides Sub InsertItem(ByVal index As Integer, ByVal item As Base)
+      Debug.Assert(item.Type <> Type.Index)
+      MyBase.InsertItem(index, item)
+    End Sub
+
     '    Implements ICloneable
 
     Public Parent As Things.Base ' iSystemObject

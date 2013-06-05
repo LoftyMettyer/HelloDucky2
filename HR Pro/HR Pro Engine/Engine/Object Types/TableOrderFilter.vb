@@ -209,7 +209,7 @@
         End If
 
         ' Add the index
-        Me.Parent.Objects.Add(objIndex)
+        CType(Me.Parent, Table).Indexes.Add(objIndex)
 
       End With
 

@@ -179,7 +179,7 @@ Namespace ScriptDB
                 objIndex.IncludedColumns.Add(objTable2.Column(objPart3.ColumnID))
 
                 If Not bFound And Not CType(objIndex.Columns(0), Things.Column).Multiline Then
-                  objTable1.Objects.Add(objIndex)
+                  objTable1.Indexes.Add(objIndex)
                 End If
 
               End If

@@ -391,7 +391,7 @@ Namespace ScriptDB
 
           ' Build in indexes
           objAuditIndex = New Things.Index
-          objTable.Objects.Add(objAuditIndex)
+          objTable.Indexes.Add(objAuditIndex)
 
           ' Add the system generated columns
           If Not objTable.RecordDescription Is Nothing Then
@@ -456,7 +456,7 @@ Namespace ScriptDB
                       "        UPDATE dbo.[{0}] SET [updflag] = 1 WHERE ID_{1} IN (SELECT i.ID FROM inserted i);" _
                       , objRelatedTable.PhysicalName, CInt(objTable.ID), objTable.PhysicalName, CInt(objRelatedTable.ID) _
                       , String.Join(" OR ", aryColumns.ToArray())))
-                objTable.Objects.Add(objIndex)
+                objTable.Indexes.Add(objIndex)
               End If
             End If
           Next
@@ -475,7 +475,7 @@ Namespace ScriptDB
                 objIndex.Enabled = True
                 objIndex.IsUnique = True
                 objIndex.Columns.Add(objColumn)
-                objTable.Objects.Add(objIndex)
+                objTable.Indexes.Add(objIndex)
               End If
 
               If objColumn.IsCalculated Then
@@ -1002,7 +1002,7 @@ Namespace ScriptDB
             End If
 
           Next
-          objTable.Objects.Add(objIndex)
+          objTable.Indexes.Add(objIndex)
 
 
           ' Calculations
