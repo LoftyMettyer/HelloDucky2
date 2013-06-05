@@ -653,14 +653,16 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
+Private Const FORMMINWIDTH = 7395
+Private Const FORMMINHEIGHT = 5715
 
 Private Const EM_CHARFROMPOS& = &HD7
 Private Type POINTAPI
-    X As Long
-    Y As Long
+    x As Long
+    y As Long
 End Type
 
-Private Declare Function SendMessageLong Lib "user32" Alias "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal LParam As Long) As Long
+Private Declare Function SendMessageLong Lib "user32" Alias "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
 
 Private mlngTableID As Long
 Private mstrTableName As String
@@ -680,23 +682,23 @@ Private mcolRecipients() As Collection
 
 Public Property Let Changed(ByVal value As Boolean)
   If Not mblnLoading Then
-    cmdOk.Enabled = value
+    cmdOK.Enabled = value
   End If
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 
 ' Return the character position under the mouse.
-Public Function TextBoxCursorPos(ByVal txt As TextBox, ByVal X As Single, ByVal Y As Single) As Long
+Public Function TextBoxCursorPos(ByVal txt As TextBox, ByVal x As Single, ByVal y As Single) As Long
     ' Convert the position to pixels.
-    X = X \ Screen.TwipsPerPixelX
-    Y = Y \ Screen.TwipsPerPixelY
+    x = x \ Screen.TwipsPerPixelX
+    y = y \ Screen.TwipsPerPixelY
 
     ' Get the character number
-    TextBoxCursorPos = SendMessageLong(txt.hWnd, EM_CHARFROMPOS, 0&, CLng(X + Y * &H10000)) And &HFFFF&
+    TextBoxCursorPos = SendMessageLong(txt.hWnd, EM_CHARFROMPOS, 0&, CLng(x + y * &H10000)) And &HFFFF&
 End Function
 
 
@@ -1165,6 +1167,8 @@ Private Sub Form_Load()
 
   mblnLoading = True
 
+  Hook Me.hWnd, FORMMINWIDTH, FORMMINHEIGHT
+
   ReDim mcolRecipients(2)
   Set mcolRecipients(0) = New Collection
   Set mcolRecipients(1) = New Collection
@@ -1229,10 +1233,26 @@ Private Sub Form_Resize()
   
   On Local Error Resume Next
   
+'  Private Const FORMMINWIDTH = 7395
+'Private Const FORMMINHEIGHT = 5715
+'
+'
+'
+'  If FORMMINWIDTH < 7395 Then
+'    FORMMINWIDTH = 7395
+'    Me.Refresh
+'    Exit Sub
+'  End If
+'
+'  If FORMMINHEIGHT < 5715 Then
+'    FORMMINHEIGHT = 5715
+'    Exit Sub
+'  End If
+  
   
   'JPD 20030908 Fault 5756
   DisplayApplication
-
+  
   
   GAP = 100
 
@@ -1242,8 +1262,8 @@ Private Sub Form_Resize()
   lngTop = Me.ScaleHeight - (cmdCancel.Height + GAP)
   cmdCancel.Move lngLeft, lngTop
   
-  lngLeft = lngLeft - (cmdOk.Width + GAP)
-  cmdOk.Move lngLeft, lngTop
+  lngLeft = lngLeft - (cmdOK.Width + GAP)
+  cmdOK.Move lngLeft, lngTop
   
   lngWidth = Me.ScaleWidth - (GAP * 2)
   lngHeight = lngTop - (GAP * 2)
@@ -1320,6 +1340,10 @@ Private Sub Form_Terminate()
   'Set mcolRecipients = Nothing
 End Sub
 
+Private Sub Form_Unload(Cancel As Integer)
+  Unhook Me.hWnd
+End Sub
+
 Private Sub lstColumnLinkColumns_ItemCheck(Item As Integer)
   Changed = True
 End Sub
@@ -1393,11 +1417,11 @@ Private Sub txtContent_Change(Index As Integer)
 End Sub
 
 Private Sub txtContent_GotFocus(Index As Integer)
-  cmdOk.Default = False
+  cmdOK.Default = False
 End Sub
 
 Private Sub txtContent_LostFocus(Index As Integer)
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub txtFilter_Change()
@@ -1631,9 +1655,9 @@ End Sub
 '  End If
 'End Sub
 
-Private Sub sstrvAvailable_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub sstrvAvailable_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
 
-  sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(X, Y)
+  sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(x, y)
   
   If Button = vbLeftButton Then
     If Not (sstrvAvailable.SelectedItem Is Nothing) Then
@@ -1646,7 +1670,7 @@ Private Sub sstrvAvailable_MouseDown(Button As Integer, Shift As Integer, X As S
 End Sub
 
 
-Private Sub sstrvAvailable_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
+Private Sub sstrvAvailable_DragOver(Source As Control, x As Single, y As Single, State As Integer)
   
   'Key Prefixes:
   '
@@ -1656,7 +1680,7 @@ Private Sub sstrvAvailable_DragOver(Source As Control, X As Single, Y As Single,
   ' Z = Heading (no action)
   
   If sstrvAvailable.SelectedItem Is Nothing Then
-    sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(X, Y)
+    sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(x, y)
   End If
   
   If Not (sstrvAvailable.SelectedItem Is Nothing) Then
@@ -1673,11 +1697,11 @@ Private Sub sstrvAvailable_DragOver(Source As Control, X As Single, Y As Single,
   End If
 End Sub
 
-Private Sub frmContent_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
+Private Sub frmContent_DragOver(Source As Control, x As Single, y As Single, State As Integer)
   Source.DragIcon = picNoDrop.Picture
 End Sub
 
-Private Sub txtContent_DragOver(Index As Integer, Source As Control, X As Single, Y As Single, State As Integer)
+Private Sub txtContent_DragOver(Index As Integer, Source As Control, x As Single, y As Single, State As Integer)
   If TypeOf Source Is TreeView Then
     
     'sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(x, y)
@@ -1697,20 +1721,20 @@ Private Sub txtContent_DragOver(Index As Integer, Source As Control, X As Single
     End If
     
     ' Source.DragIcon = picDocument(0).Picture
-    txtContent(Index).SelStart = TextBoxCursorPos(txtContent(Index), X, Y)
+    txtContent(Index).SelStart = TextBoxCursorPos(txtContent(Index), x, y)
     txtContent(Index).SelLength = 0
   Else
     Source.DragIcon = picNoDrop.Picture
   End If
 End Sub
 
-Private Sub txtContent_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
+Private Sub txtContent_DragDrop(Index As Integer, Source As Control, x As Single, y As Single)
 
   Dim strFieldText As String
   Dim lngStart As Long
 
   If TypeOf Source Is TreeView Then
-    lngStart = TextBoxCursorPos(txtContent(Index), X, Y)
+    lngStart = TextBoxCursorPos(txtContent(Index), x, y)
     InsertColumn Index, lngStart
   End If
 
