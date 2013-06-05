@@ -387,66 +387,18 @@ Namespace ScriptDB
       ' Now strut our funky stuff
       Try
 
-        '   ProgressInfo.TotalSteps2 = Globals.Things.Count
         For Each objTable In Globals.Things
 
-          '       ProgressInfo.NextStep2()
-
           aryAllWriteableColumns = New ArrayList
-          '   aryInsertStatements = New ArrayList
-          '   aryDeleteStatements = New ArrayList
-
           aryAuditUpdates = New ArrayList
           aryAuditInserts = New ArrayList
           aryAuditDeletes = New ArrayList
-
           aryValidationStatements = New ArrayList
-          'For Each objValidation In objTable.Validations
-
-          '  Select Case objValidation.ValidationType
-
-          '    Case Things.ValidationType.Mandatory
-          '      sValidation = String.Format("    INSERT @Failed" & vbNewLine & _
-          '          "       SELECT [id],'{0}' AS [Message], {2} AS [Severity]" & vbNewLine & _
-          '          "       FROM inserted" & vbNewLine & _
-          '          "       WHERE [{1}] IS NULL OR [{1}] = {3};" & vbNewLine & vbNewLine _
-          '          , objValidation.Message, objValidation.Column.Name, CInt(objValidation.Severity), objValidation.Column.SafeReturnType)
-
-          '    Case Things.ValidationType.UniqueInTable
-          '      sValidation = String.Format("    INSERT @Failed" & vbNewLine & _
-          '          "        SELECT [id],'{0}' AS [Message], {1} AS [Severity] " & vbNewLine & _
-          '          "        FROM inserted base" & vbNewLine & _
-          '          "        WHERE [{2}] IN (SELECT [{2}] FROM inserted" & vbNewLine & _
-          '          "        GROUP BY [{2}]" & vbNewLine & _
-          '          "        HAVING COUNT([{2}]) > 1)" _
-          '          , objValidation.Message, CInt(objValidation.Severity), objValidation.Column.Name)
-
-          '      If objValidation.Column.IsCalculated Then
-          '        sValidation = sValidation & vbNewLine & String.Format("        OR [dbo].[{0}]() > 0" & vbNewLine _
-          '          , objValidation.Column.Calculation.UDF.CallingCode)
-          '      End If
-
-
-          '  End Select
-
-          '  aryValidationStatements.Add(sValidation)
-
-          'Next
-
           aryAfterInsertColumns = New ArrayList
           aryUpdateUniqueCodes = New ArrayList
           aryParentsToUpdate = New ArrayList
           aryChildrenToUpdate = New ArrayList
           aryParentsToUpdate_Delete = New ArrayList
-
-          ' Diary links code
-          'sSQLCode_DiaryLinks = String.Format("       SET @nvarCommand = '';" & vbNewLine & _
-          '                    "        SELECT @nvarCommand = @nvarCommand + 'EXEC dbo.spASRDiary_{0} ' + CONVERT(nvarchar(10),ID) + ';' FROM inserted;" & vbNewLine & _
-          '                    "        EXECUTE sp_executeSQL @nvarCommand" _
-          '                   , CInt(objTable.ID))
-
-
-          ' Build list of columns in this table
           aryBaseTableColumns = New ArrayList
           aryCalculatedColumns = New ArrayList
           aryPostAuditCalcs = New ArrayList
@@ -458,11 +410,9 @@ Namespace ScriptDB
 
           ' Add the system generated columns
           If Not objTable.RecordDescription Is Nothing Then
-            'objTable.RecordDescription.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
             objTable.RecordDescription.GenerateCode()
             aryCalculatedColumns.Add(String.Format("[_description] = {0}", objTable.RecordDescription.UDF.CallingCode))
           End If
-
 
           For Each objColumn In objTable.Columns
 
@@ -506,28 +456,20 @@ Namespace ScriptDB
 
               End If
 
-                ' Concatenate all the audited columns
+              ' Concatenate audited columns
               If objColumn.Audit Then
-                If objColumn.IsCalculated Then
+         
+                aryAuditInserts.Add(String.Format("        SELECT base.ID, NULL, convert(nvarchar(255),base.[{0}]), {1}, {3}, base.[_description]" & vbNewLine & _
+                    "            FROM inserted i" & vbNewLine & _
+                    "            INNER JOIN dbo.[{2}] base ON i.[id] = base.[id]" _
+                    , objColumn.Name, CInt(objColumn.ID), objColumn.Table.PhysicalName, CInt(objTable.ID)))
 
-                  aryAuditInserts.Add(String.Format("        SELECT base.ID, NULL, convert(nvarchar({4}),[{0}]), {1}, {5}, base.[_description]" & vbNewLine & _
-                                      "            FROM dbo.[{3}] base" _
-                                      , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, objColumn.Table.PhysicalName, objColumn.DataTypeSize, CInt(objTable.ID)))
-                  aryAuditUpdates.Add(String.Format("        SELECT d.ID, convert(nvarchar({4}),d.[{0}]), convert(nvarchar({4}), base.[{0}]), {1}, {5}, base.[_description]" & vbNewLine & _
-                                      "            FROM deleted d" & vbNewLine & _
-                                      "            INNER JOIN dbo.[{3}] base ON d.[id] = base.[id] AND NOT d.[{0}] = base.[{0}]" _
-                                      , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, objColumn.Table.PhysicalName, objColumn.DataTypeSize, CInt(objTable.ID)))
-                Else
-                  aryAuditInserts.Add(String.Format("        SELECT ID, NULL, convert(nvarchar({2}),[{0}]), {1}, {3}, [_description]" & vbNewLine & _
-                                      "            FROM inserted WHERE [{0}] IS NOT NULL" _
-                                      , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize, CInt(objTable.ID)))
-                  aryAuditUpdates.Add(String.Format("        SELECT i.ID, convert(nvarchar({2}),d.[{0}]), convert(nvarchar({2}),i.[{0}]), {1}, {3}, i.[_description]" & vbNewLine & _
-                                      "            FROM inserted i" & vbNewLine & _
-                                      "            INNER JOIN deleted d ON i.[id] = d.[id] AND NOT d.[{0}] = i.[{0}] AND UPDATE([{0}])" _
-                                      , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize, CInt(objTable.ID)))
-                End If
+                aryAuditUpdates.Add(String.Format("        SELECT d.ID, convert(nvarchar(255),d.[{0}]), convert(nvarchar(255), base.[{0}]), {1}, {3}, base.[_description]" & vbNewLine & _
+                    "            FROM deleted d" & vbNewLine & _
+                    "            INNER JOIN dbo.[{2}] base ON d.[id] = base.[id] AND NOT d.[{0}] = base.[{0}]" _
+                    , objColumn.Name, CInt(objColumn.ID), objColumn.Table.PhysicalName, CInt(objTable.ID)))
 
-                aryAuditDeletes.Add(String.Format("        SELECT ID, convert(varchar(255),[{0}]), NULL, {1}, {2}, [_description]" & vbNewLine & _
+                aryAuditDeletes.Add(String.Format("        SELECT ID, convert(nvarchar(255),[{0}]), NULL, {1}, {2}, [_description]" & vbNewLine & _
                     "            FROM deleted WHERE [{0}] IS NOT NULL", objColumn.Name, CInt(objColumn.ID), CInt(objTable.ID)))
 
               End If
@@ -549,9 +491,9 @@ Namespace ScriptDB
                 , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID)))
             ElseIf objRelation.DependantOnParent Then
 
-                aryChildrenToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3})" & vbNewLine & _
-                        "        UPDATE base SET [updflag] = 1 FROM dbo.[{1}] base WHERE [ID_{2}] IN (SELECT DISTINCT [id] FROM inserted);" & vbNewLine _
-                        , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID), CInt(objRelation.ChildID)))
+              aryChildrenToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3})" & vbNewLine & _
+                      "        UPDATE base SET [updflag] = 1 FROM dbo.[{1}] base WHERE [ID_{2}] IN (SELECT DISTINCT [id] FROM inserted);" & vbNewLine _
+                      , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID), CInt(objRelation.ChildID)))
 
             End If
           Next
