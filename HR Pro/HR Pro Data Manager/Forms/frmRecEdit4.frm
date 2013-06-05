@@ -628,6 +628,7 @@ Begin VB.Form frmRecEdit4
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
             Caption         =   ""
+            Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
          EndProperty
@@ -657,6 +658,7 @@ Begin VB.Form frmRecEdit4
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -5067,13 +5069,12 @@ Public Function Update(Optional pfDeactivating As Variant) As Boolean
       ' and is updatable.
       If (mobjScreenControls.Item(sTag).ColumnID > 0) Then
         'JPD 20040706 Fault 8993
-        'fDoControl = objControl.Enabled
-        fDoControl = True
+        fDoControl = objControl.Enabled
         
         If fDoControl Then
-'          If TypeOf objControl Is TDBText6Ctl.TDBText Then
-'            fDoControl = Not objControl.ReadOnly
-'          End If
+          If TypeOf objControl Is TDBText6Ctl.TDBText Then
+            fDoControl = Not objControl.ReadOnly
+          End If
 
           If TypeOf objControl Is COA_Navigation Then
             fDoControl = False
