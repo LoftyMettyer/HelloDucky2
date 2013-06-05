@@ -1,16 +1,48 @@
 
+DROP TABLE [fusion].[temptable]
+GO
+
+
+CREATE TABLE [fusion].[temptable](
+	[Message] [varchar](max) NULL,
+	[CreatedDateTime] [datetime] NULL)
+	
+ 
+
+
+
+
 ----------------------------------------------------------------------------
 -- OpenHR specifics
 ----------------------------------------------------------------------------
 
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[fusion].[spSendFusionMessage]') AND xtype = 'P')
+		DROP PROCEDURE [fusion].[spSendFusionMessage]
+
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[fusion].[spGetDataForMessage]') AND xtype = 'P')
 		DROP PROCEDURE [fusion].[spGetDataForMessage]
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[fusion].[pSetDataForMessage]') AND xtype = 'P')
+		DROP PROCEDURE [fusion].[pSetDataForMessage]
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[fusion].[makeXMLSafe]') AND xtype = 'FN')
 		DROP FUNCTION [fusion].[makeXMLSafe]
 
 GO
 
+CREATE PROCEDURE fusion.spSendFusionMessage(@TableID integer, @RecordID integer)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	EXEC fusion.[pSendMessageCheckContext] @MessageType='StaffChange', @LocalId=@RecordID
+
+
+END
+
+
+GO
 
 CREATE FUNCTION fusion.makeXMLSafe(@input varchar(MAX))
 	RETURNS VARCHAR(MAX)
@@ -22,8 +54,125 @@ CREATE FUNCTION fusion.makeXMLSafe(@input varchar(MAX))
 GO
 
 
+--exec fusion.[pSetDataForMessage] 'staff', 12, 'sss'
 
 
+CREATE PROCEDURE [fusion].[pSetDataForMessage](@messagetype varchar(255), @id integer OUTPUT, @xml varchar(MAX))
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	INSERT [fusion].[temptable] (message) VALUES (@xml)
+
+DECLARE @xmlCode xml;
+
+--DECLARE @ID integer = 12
+
+DECLARE @ParmDefinition nvarchar(500);
+DECLARE @ssql nvarchar(MAX) = '0 AS ID',
+		@sInsert nvarchar(MAX) = '0 AS ID',
+		@sUpdate nvarchar(MAX) = '',
+		@sColumns nvarchar(MAX),
+		@sTableName nvarchar(MAX),
+		@messagename nvarchar(MAX),
+		@executeCode nvarchar(MAX) = ''
+
+SET @messagename = 'staffChange'
+
+--SELECT TOP 1 @xmlCode = convert(xml, message) FROM [fusion].[temptable] order by createddatetime desc
+SET @xmlCode = convert(xml, @xml) 
+
+-- Temp table
+SET @ssql = 'DECLARE @mytable TABLE (ID integer'
+SELECT @ssql = @ssql + ', ' + nodekey + ' nvarchar(MAX)'
+	FROM fusion.messageElements e
+	INNER JOIN fusion.message m ON m.id = e.messageid
+	INNER JOIN fusion.element lm ON e.ElementID = lm.ID
+	WHERE lm.columnID IS NOT NULL AND m.name = @messagename
+SET @ssql = @ssql + ');'
+SET @executeCode = @executeCode + @ssql + CHAR(13);
+
+
+-- Insert
+SET @sInsert = 'INSERT @mytable (ID '
+SELECT @sInsert = @sInsert + ', ' + nodekey
+	FROM fusion.messageElements e
+	INNER JOIN fusion.message m ON m.id = e.messageid
+	INNER JOIN fusion.element lm ON e.ElementID = lm.ID
+	WHERE lm.columnID IS NOT NULL AND m.name = @messagename
+SET @sInsert = @sInsert + ')'
+
+SET @ssql = '';
+SELECT @ssql = @ssql + ',c.value(''nsWithXNS:' + nodekey + '[1]'', ''nvarchar(MAX)'') AS ' + nodekey + CHAR(13) 
+	FROM fusion.messageElements e
+	INNER JOIN fusion.message m ON m.id = e.messageid
+	INNER JOIN fusion.element lm ON e.ElementID = lm.ID
+	WHERE lm.columnID IS NOT NULL AND m.name = @messagename
+
+SET @ssql = 'WITH XMLNAMESPACES (''http://advancedcomputersoftware.com/xml/fusion/socialCare'' AS nsWithXNS)' + CHAR(13) +
+	@sInsert +
+	'SELECT 0' + @ssql + 'FROM @xmlCode.nodes(''nsWithXNS:staff'') AS mytable(c)'
+
+SET @executeCode = @executeCode + @ssql + CHAR(13);
+
+SELECT TOP 1 @sTableName = t.tablename
+	FROM fusion.messageElements e
+	INNER JOIN fusion.message m ON m.id = e.messageid
+	INNER JOIN fusion.element lm ON e.ElementID = lm.ID
+	INNER JOIN asrsyscolumns c ON c.columnid = lm.columnid
+	INNER JOIN asrsystables t ON c.tableID = t.tableID
+	WHERE lm.columnID IS NOT NULL AND m.name = @messagename
+
+SET @sInsert= '';
+SELECT @sInsert = @sInsert + CASE WHEN LEN(@sInsert) > 0 THEN ', ' ELSE '' END + ' [' + c.columnname + ']'
+	FROM fusion.messageElements e
+	INNER JOIN fusion.message m ON m.id = e.messageid
+	INNER JOIN fusion.element lm ON e.ElementID = lm.ID
+	INNER JOIN asrsyscolumns c ON c.columnid = lm.columnid
+	INNER JOIN asrsystables t ON c.tableID = t.tableID
+	WHERE lm.columnID IS NOT NULL AND m.name = @messagename;
+SET @sInsert= 'INSERT ' + @sTableName + ' ( ' + @sInsert + ') SELECT ';
+
+SET @sColumns = '';
+SELECT @sColumns = @sColumns + CASE WHEN LEN(@sColumns) > 0 THEN ', ' ELSE '' END + '[' + e.NodeKey + ']'
+	FROM fusion.messageElements e
+	INNER JOIN fusion.message m ON m.id = e.messageid
+	INNER JOIN fusion.element lm ON e.ElementID = lm.ID
+	INNER JOIN asrsyscolumns c ON c.columnid = lm.columnid
+	INNER JOIN asrsystables t ON c.tableID = t.tableID
+	WHERE lm.columnID IS NOT NULL AND m.name = @messagename;
+SET @sInsert = @sInsert + @sColumns + ' FROM @mytable';
+
+SELECT @sUpdate = @sUpdate + CASE WHEN LEN(@sUpdate) > 0 THEN ', ' ELSE '' END
+	+ @sTableName + '.[' + c.columnname + '] = message.[' + e.nodekey + ']'
+	FROM fusion.messageElements e
+	INNER JOIN fusion.message m ON m.id = e.messageid
+	INNER JOIN fusion.element lm ON e.ElementID = lm.ID
+	INNER JOIN asrsyscolumns c ON c.columnid = lm.columnid
+	INNER JOIN asrsystables t ON c.tableID = t.tableID
+	WHERE lm.columnID IS NOT NULL AND m.name = @messagename;
+SET @sUpdate = 'UPDATE ' + @sTableName + ' SET ' + @sUpdate + ' FROM @mytable message WHERE ' + @sTableName + '.ID = @ID;'
+
+SET @executeCode = @executeCode 
+	+ 'IF (@ID > 0)' + CHAR(13)
+	+ @sUpdate + CHAR(13) 
+	+ ' ELSE ' + CHAR(13)
+	+ ' BEGIN ' + CHAR(13)
+	+ @sInsert  + CHAR(13)
+	+ ' SELECT @ID = MAX(ID) FROM ' + @sTableName
+	+ ' END' + CHAR(13)
+	+ ' SELECT @ID;';
+
+SET @ParmDefinition = N'@xmlCode xml, @ID integer OUTPUT';
+EXEC sp_executeSQL @executeCode, @ParmDefinition, @xmlcode = @xmlcode, @id = @id
+
+
+
+
+END
+
+go
 
 CREATE PROCEDURE [fusion].[spGetDataForMessage](@messagetype varchar(255), @ID integer, @ID_Parent1 integer, @ID_Parent2 integer, @ID_Parent3 integer)
 AS
@@ -55,11 +204,14 @@ BEGIN
 	SELECT @effectivefrom = GETDATE();
 	SET @ssql = '';
 
-	-- Last XML message
-	SELECT TOP 1 @xmllastmessage = ISNULL(mt.LastGeneratedXml,'') FROM fusion.messagetracking mt
-			INNER JOIN fusion.IdTranslation tr ON tr.LocalId = @ID AND tr.BusRef = mt.BusRef
-		WHERE tr.TranslationName = @messagetype
-		ORDER BY mt.LastProcessedDate DESC;
+	---- Last XML message
+	--SELECT TOP 1 @xmllastmessage = ISNULL(mt.LastGeneratedXml,'') 
+	--	FROM fusion.messagetracking mt
+	--		INNER JOIN fusion.IdTranslation tr ON tr.LocalId = @ID AND tr.BusRef = mt.BusRef
+	--	WHERE tr.TranslationName = @messagetype
+	--	ORDER BY mt.LastProcessedDate DESC;
+
+	SET @xmllastmessage = '';
 
 	--select columnid, ColumnName from ASRSysColumns where tableID = 1 order by columnname
 	IF @messagetype = 'staffchange'

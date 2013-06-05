@@ -42,6 +42,35 @@
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[fusion].[pConvertData]') AND xtype = 'P')
 		DROP FUNCTION [fusion].[pConvertData]
 
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[fusion].[pSetFusionContext]') AND xtype = 'P')
+		DROP FUNCTION [fusion].[pSetFusionContext]
+
+
+	EXECUTE sp_executesql N'
+	---------------------------------------------------------------------------------
+	-- Name:    pSetFusionContext
+	--
+	-- Purpose: Sets current connection context to indicate message processing 
+	--          underway
+	--
+	-- Returns: n/a
+	---------------------------------------------------------------------------------
+
+	CREATE PROCEDURE [fusion].[pSetFusionContext]
+		(
+			@MessageType varchar(50)
+		)
+	AS
+	BEGIN
+		SET NOCOUNT ON;
+		
+		DECLARE @ContextInfo varbinary(128)
+	 
+		SELECT @ContextInfo = CAST( ''Fusion:''+@MessageType AS VARBINARY(128) );
+	 
+		SET CONTEXT_INFO @ContextInfo
+	END'
+	
 
 	EXECUTE sp_executesql N'
 	---------------------------------------------------------------------------------
@@ -71,7 +100,7 @@
 		SET @BusRef = NULL;
 		SET @DidGenerate = 0;
 		
-		SELECT @BusRef = BusRef from [fusion].IdTranslation WITH (ROWLOCK) 
+		SELECT @BusRef = BusRef from [fusion].IdTranslation
 			WHERE TranslationName = @TranslationName AND LocalId = @LocalId;
 		
 		IF @@ROWCOUNT = 0
@@ -81,7 +110,7 @@
 				SET @BusRef = NEWID();
 
 							
-				INSERT fusion.IdTranslation WITH (ROWLOCK) (TranslationName, LocalId, BusRef) 
+				INSERT fusion.IdTranslation (TranslationName, LocalId, BusRef) 
 						VALUES (@TranslationName, @LocalId, @BusRef);
 				
 				SET @DidGenerate = 1;
@@ -117,7 +146,7 @@
 	
 		SET @LocalId = null;
 	
-		SELECT @LocalId = LocalId from [fusion].IdTranslation WITH (ROWLOCK) 
+		SELECT @LocalId = LocalId from [fusion].IdTranslation 
 			WHERE TranslationName = @TranslationName and BusRef = @BusRef;
 	END';
 
@@ -141,15 +170,15 @@
 	BEGIN
 		SET NOCOUNT ON;
 	
-		BEGIN TRAN;
+		--BEGIN TRAN;
 	
-		DELETE fusion.IdTranslation WITH (ROWLOCK) 
+		DELETE fusion.IdTranslation
 			WHERE TranslationName = @TranslationName and LocalId = @LocalId;
 		
-		INSERT fusion.IdTranslation WITH (ROWLOCK) (TranslationName, LocalId, BusRef) 
+		INSERT fusion.IdTranslation(TranslationName, LocalId, BusRef) 
 			VALUES (@TranslationName, @LocalId, @BusRef);
 
-		COMMIT TRAN;
+		--COMMIT TRAN;
 	END	'
 
 	EXECUTE sp_executesql N'
