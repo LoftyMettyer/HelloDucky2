@@ -562,14 +562,17 @@ End Function
 Private Sub ReadCustomTriggers(ByVal sTableName As String, ByVal sPhysicalTableName As String, ByRef asTriggers() As String, ByRef asTriggerErrors() As String)
 
   Dim lngLocation As String
-'  Dim bONfound As Boolean
-'  Dim bFORfound As Boolean
-'  Dim bNAMEfound As Boolean
+  Dim bTABLENAMEfound As Boolean
+  Dim bTRIGGERNAMEfound As Boolean
+  Dim bBEGINfound As Boolean
   Dim sSQL As String
+  Dim bProcessed As Boolean
+  Dim sProcessedCode As String
 '
-'  Dim bIsComment As Boolean
-'  Dim bCommentStart As Boolean
-'  Dim bCommentEnd As Boolean
+  Dim bInCommentBlock As Boolean
+  Dim bIsCommentLine As Boolean
+  Dim bTablenameConverted As Boolean
+
 
   Dim rsTriggers As New ADODB.Recordset
   Dim rsTriggerDefn As New ADODB.Recordset
@@ -578,6 +581,8 @@ Private Sub ReadCustomTriggers(ByVal sTableName As String, ByVal sPhysicalTableN
 
   ReDim asTriggers(0)
   ReDim asTriggerErrors(0)
+
+  sProcessedCode = "--SYSTEM MANAGER AUTOMATICALLY UPGRADED TO 4.3"
 
   ' Get any non-HR Pro generted triggers.
   sSQL = "SELECT triggerobjects.name" & _
@@ -596,6 +601,7 @@ Private Sub ReadCustomTriggers(ByVal sTableName As String, ByVal sPhysicalTableN
   ' Loop through the custom triggers.
   Do While Not rsTriggers.EOF
     sTriggerDefn = vbNullString
+    bTablenameConverted = False
 
     ' Get the script for the custom trigger.
     sTriggerName = rsTriggers!Name
@@ -608,32 +614,54 @@ Private Sub ReadCustomTriggers(ByVal sTableName As String, ByVal sPhysicalTableN
       asTriggerErrors(UBound(asTriggerErrors)) = sTriggerName
     Else
       Do While Not rsTriggerDefn.EOF
-      
-'        bONfound = bONfound Or InStr(1, " " & rsTriggerDefn!Text, "ON", vbTextCompare) > 0
-'        bFORfound = bFORfound Or InStr(1, " " & rsTriggerDefn!Text, "FOR", vbTextCompare) > 0
-'        bNAMEfound = bNAMEfound Or InStr(1, " " & rsTriggerDefn!Text, sTriggerName, vbTextCompare) > 0
         
-'        If bONfound And Not bFORfound Then
-'          sTriggerDefn = sTriggerDefn & "ON " & sPhysicalTableName
-'        ElseIf bFORfound And Not bONfound Then
+        bProcessed = bProcessed Or InStr(1, " " & rsTriggerDefn!Text, sProcessedCode, vbTextCompare) > 0
+        
+        If bProcessed Then
+          sTriggerDefn = sTriggerDefn & rsTriggerDefn!Text
+        Else
+
+          ' Beginning of comment block
+          If InStr(1, " " & rsTriggerDefn!Text, "/*", vbTextCompare) > 0 Then
+            bInCommentBlock = True
+          End If
           
-' original code
-    '      sTriggerDefn = sTriggerDefn & rsTriggerDefn!Text
-
-    If InStr(1, rsTriggerDefn!Text, sTableName, vbTextCompare) > 0 And InStr(1, rsTriggerDefn!Text, sPhysicalTableName, vbTextCompare) = 0 Then
-      sTriggerDefn = sTriggerDefn & Replace(LCase(rsTriggerDefn!Text), LCase(sTableName), sPhysicalTableName)
-    Else
-      sTriggerDefn = sTriggerDefn & rsTriggerDefn!Text
-    End If
-
-'        End If
+          bIsCommentLine = InStr(1, Mid(LTrim(rsTriggerDefn!Text), 1, 2), "--", vbTextCompare) > 0
+          
+          ' Locate Keywords
+          If Not bInCommentBlock And Not bIsCommentLine Then
+            'bBEGINfound = bBEGINfound Or InStr(1, " " & rsTriggerDefn!Text, "BEGIN", vbTextCompare) > 0
+            bTRIGGERNAMEfound = bTRIGGERNAMEfound Or InStr(1, " " & rsTriggerDefn!Text, sTriggerName, vbTextCompare) > 0
+          End If
+          
+          ' Process command string
+          bTABLENAMEfound = InStr(1, " " & rsTriggerDefn!Text, sTableName, vbTextCompare) > 0
+          If bTABLENAMEfound And bTRIGGERNAMEfound And Not bInCommentBlock And Not bIsCommentLine And Not bTablenameConverted Then
+            sTriggerDefn = sTriggerDefn & Replace(LCase(rsTriggerDefn!Text), LCase(sTableName), sPhysicalTableName)
+            bTablenameConverted = True
+          Else
+            sTriggerDefn = sTriggerDefn & rsTriggerDefn!Text
+          End If
+  
+          ' End of comment block
+          If InStr(1, " " & rsTriggerDefn!Text, "*/", vbTextCompare) > 0 Then
+            bInCommentBlock = False
+          End If
+        End If
 
         rsTriggerDefn.MoveNext
       Loop
       rsTriggerDefn.Close
 
+      ' Mark as processed
+      If Not bProcessed Then
+        sTriggerDefn = sProcessedCode & vbNewLine & sTriggerDefn
+      End If
+
+      ' Add to trigger array
       ReDim Preserve asTriggers(UBound(asTriggers) + 1)
       asTriggers(UBound(asTriggers)) = sTriggerDefn
+    
     End If
 
     rsTriggers.MoveNext
