@@ -236,7 +236,7 @@ Namespace Things
       With UDF
 
         If Not Me.IsComplex Then
-          .InlineCode = mcolLinesOfCode.Statement
+          .InlineCode = ResultWrapper(mcolLinesOfCode.Statement)
           .InlineCode = .InlineCode.Replace("@prm_", "base.")
           .InlineCode = .InlineCode.Replace("@rownumber", "[rownumber]")
           .InlineCode = ScriptDB.Beautify.MakeSingleLine(.InlineCode)
@@ -263,9 +263,8 @@ Namespace Things
         .FromCode = IIf(FromTables.Count > 0, String.Format("{0}", String.Join(",", FromTables.ToArray)) & vbNewLine, "")
         .WhereCode = IIf(Wheres.Count > 0, String.Format("WHERE {0}", String.Join(" AND ", Wheres.ToArray)) & vbNewLine, "")
 
-        ' Code beatify
+        ' Code beautify
         ScriptDB.Beautify.Cleanwhitespace(.Prerequisites)
-
 
         Select Case Me.ExpressionType
 
@@ -278,20 +277,17 @@ Namespace Things
                            "RETURNS {2}" & vbNewLine & _
                            "{3}" & vbNewLine & _
                            "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                           "    DECLARE @Result as {2};" & vbNewLine & vbNewLine & _
+                           "    DECLARE @Result AS {15};" & vbNewLine & vbNewLine & _
                            "    {13}" & vbNewLine & vbNewLine & _
                            "    {4}{5}" & vbNewLine & vbNewLine & _
                            "    -- Execute calculation code" & vbNewLine & _
                            "    SELECT @Result = {6}" & vbNewLine & _
                            "                 {7}{8}{9}" & vbNewLine & _
-                           "    RETURN ISNULL(@Result, {10});" & vbNewLine & _
+                           "    RETURN {14};" & vbNewLine & _
                            "END" _
                           , .Name, String.Join(", ", aryParameters1.ToArray()) _
                           , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode _
-                          , Me.AssociatedColumn.SafeReturnType, .BoilerPlate, .Comments, sBypassUDFCode)
-
-            '            SELECT @result = CASE WHEN @result > 999.99 THEN 0 ELSE @result END
-
+                          , Me.AssociatedColumn.SafeReturnType, .BoilerPlate, .Comments, sBypassUDFCode, ResultWrapper("@Result"), ResultDefinition)
 
             .CodeStub = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
                            "RETURNS {2}" & vbNewLine & _
@@ -1162,6 +1158,73 @@ Namespace Things
 
     End Function
 
+    Private Function ResultWrapper(ByRef Statement As String) As String
+
+      Dim sSQLType As String = String.Empty
+      Dim sSize As String = String.Empty
+
+      If Globals.Options.OverflowSafety Then
+
+        Select Case CInt(Me.AssociatedColumn.DataType)
+          Case ScriptDB.ColumnTypes.Text, ScriptDB.ColumnTypes.WorkingPattern, ScriptDB.ColumnTypes.Link
+            sSQLType = String.Format("CASE WHEN LEN(ISNULL({0}, '')) > {1} THEN '' ELSE {0} END", Statement, Me.AssociatedColumn.Size)
+
+          Case ScriptDB.ColumnTypes.Integer, ScriptDB.ColumnTypes.Numeric
+            If Me.AssociatedColumn.Decimals > 0 Then
+              sSize = String.Format("{0}.{1}", New String("9", Me.AssociatedColumn.Size - Me.AssociatedColumn.Decimals - 1), New String("9", Me.AssociatedColumn.Decimals))
+            Else
+              sSize = New String("9", Me.AssociatedColumn.Size)
+            End If
+            sSQLType = String.Format("CASE WHEN ISNULL({0}, 0) > {1} THEN 0 ELSE {0} END", Statement, sSize)
+
+          Case ScriptDB.ColumnTypes.Date, ScriptDB.ColumnTypes.Logic
+            sSQLType = Statement
+
+        End Select
+
+      Else
+        sSQLType = Statement
+      End If
+
+      Return sSQLType
+    End Function
+
+    Private Function ResultDefinition() As String
+
+      Dim sSQLType As String = String.Empty
+
+      Select Case CInt(Me.AssociatedColumn.DataType)
+        Case ScriptDB.ColumnTypes.Text
+          sSQLType = "varchar(MAX)"
+
+        Case ScriptDB.ColumnTypes.Integer
+          sSQLType = String.Format("integer")
+
+        Case ScriptDB.ColumnTypes.Numeric
+          sSQLType = String.Format("numeric(38,8)")
+
+        Case ScriptDB.ColumnTypes.Date
+          sSQLType = "datetime"
+
+        Case ScriptDB.ColumnTypes.Logic
+          sSQLType = "bit"
+
+        Case ScriptDB.ColumnTypes.WorkingPattern
+          sSQLType = "varchar(14)"
+
+        Case ScriptDB.ColumnTypes.Link
+          sSQLType = "varchar(255)"
+
+        Case ScriptDB.ColumnTypes.Photograph
+          sSQLType = "varchar(255)"
+
+        Case ScriptDB.ColumnTypes.Binary
+          sSQLType = "varbinary(MAX)"
+
+      End Select
+
+      Return sSQLType
+    End Function
 
   End Class
 End Namespace

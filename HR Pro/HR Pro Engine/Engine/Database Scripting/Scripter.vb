@@ -456,7 +456,7 @@ Namespace ScriptDB
 
               If objColumn.IsCalculated Then
                 '                objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
-                '               objColumn.Calculation.AssociatedColumn = objColumn
+                objColumn.Calculation.AssociatedColumn = objColumn
                 '              objColumn.Calculation.GenerateCode()
                 objColumn.Calculation.ExpressionType = ExpressionType.ColumnCalculation
                 objColumn.Calculation.GenerateCode()

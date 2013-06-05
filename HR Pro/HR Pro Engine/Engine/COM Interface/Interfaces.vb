@@ -32,6 +32,7 @@
   Public Interface iOptions
     Property RefreshObjects As Boolean
     Property DevelopmentMode As Boolean
+    Property OverflowSafety As Boolean
   End Interface
 
   Public Interface iConnection

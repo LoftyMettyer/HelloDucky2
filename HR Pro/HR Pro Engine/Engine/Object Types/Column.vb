@@ -249,35 +249,6 @@
       Return sFormat
     End Function
 
-    '  Public Function MakesizeSafe() As String
-
-    '    Dim iFormats As Integer = 0
-    '    Dim sFormat As String = ""
-
-    '    Select Case Me.DataType
-    '      Case ScriptDB.ColumnTypes.Numeric
-    '        sFormat = 
-
-
-    '      Case ScriptDB.ColumnTypes.Text
-    '        sFormat.PadLeft(Me.Size, " ")
-
-    '        If Me.Multiline Or Me.Size > 8000 Then
-    '          Return "MAX"
-    '        Else
-    '          Return CStr(Me.Size)
-    '        End If
-
-    '      Case ScriptDB.ColumnTypes.Numeric
-    '        Return (Me.Size + Me.Decimals).ToString
-
-
-    '    End Select
-
-    '    Return sFormat
-
-    '  End Function
-
   End Class
 End Namespace
 
