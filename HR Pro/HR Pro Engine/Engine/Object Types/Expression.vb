@@ -903,7 +903,7 @@ Namespace Things
 
         StatementObjects.Add(objExpression)
         LineOfCode.Code = String.Format("@part_{0}", iPartNumber)
-        Me.CaseCount = 0
+        '   Me.CaseCount = 0
         Me.IsComplex = True
 
       Else
