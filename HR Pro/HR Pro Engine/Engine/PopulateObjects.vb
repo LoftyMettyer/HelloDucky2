@@ -154,7 +154,7 @@ Namespace Things
 
     Public Sub PopulateTableColumns()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcolumns2", Nothing)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcolumns", Nothing)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
@@ -189,7 +189,7 @@ Namespace Things
 
     Public Sub PopulateTableOrders()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getorders2", Nothing)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getorders", Nothing)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
@@ -207,7 +207,7 @@ Namespace Things
 
     Public Sub PopulateTableOrderItems()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getorderitems2", Nothing)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getorderitems", Nothing)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
@@ -230,7 +230,7 @@ Namespace Things
 
     Public Sub PopulateTableValidations()
 
-      Dim ds = Globals.MetadataDB.ExecStoredProcedure("spadmin_getvalidations2", Nothing)
+      Dim ds = Globals.MetadataDB.ExecStoredProcedure("spadmin_getvalidations", Nothing)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
@@ -247,7 +247,7 @@ Namespace Things
 
     Public Sub PopulateTableRelations()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getrelations2", Nothing)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getrelations", Nothing)
 
       Dim table As Table
       Dim relation As Relation
@@ -281,7 +281,7 @@ Namespace Things
 
     Public Sub PopulateTableExpressions()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getexpressions2", Nothing)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getexpressions", Nothing)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
@@ -309,7 +309,7 @@ Namespace Things
 
     Public Sub PopulateTableViews()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getviews2", Nothing)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getviews", Nothing)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
@@ -330,7 +330,7 @@ Namespace Things
 
     Public Sub PopulateTableViewItems()
 
-      Dim objDataset As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getviewitems2", Nothing)
+      Dim objDataset As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getviewitems", Nothing)
 
       For Each row As DataRow In objDataset.Tables(0).Rows
 
@@ -347,7 +347,7 @@ Namespace Things
 
     Public Sub PopulateTableRecordDescriptions()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getdescriptions2", Nothing)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getdescriptions", Nothing)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
@@ -378,11 +378,11 @@ Namespace Things
     Public Function LoadComponents(ByVal expression As Component, ByVal type As ScriptDB.ComponentTypes) As ICollection(Of Component)
 
       If componentfunction Is Nothing Then
-        componentfunction = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_function2", Nothing)
+        componentfunction = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_function", Nothing)
       End If
 
       If componentbase Is Nothing Then
-        componentbase = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_base2", Nothing)
+        componentbase = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_base", Nothing)
       End If
 
       Dim rows As DataRow()
@@ -449,7 +449,7 @@ Namespace Things
 
     Public Sub PopulateTableMasks()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getmasks2", Nothing)
+      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getmasks", Nothing)
 
       For Each row As DataRow In ds.Tables(0).Rows
 
