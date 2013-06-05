@@ -628,6 +628,7 @@ Begin VB.Form frmRecEdit4
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
             Caption         =   ""
+            Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
          EndProperty
@@ -657,6 +658,7 @@ Begin VB.Form frmRecEdit4
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -7712,8 +7714,6 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
   Dim lngCONTROLWIDTH As Long
   
   
-  Set mobjBorders = New clsBorders
-  
   ' Instantiate a new collection to hold the control indices.
   Set colTabIndices = New Collection
 
@@ -7788,6 +7788,9 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
         If TypeOf objNewControl Is TDBText6Ctl.TDBText _
           Or TypeOf objNewControl Is TDBNumber6Ctl.TDBNumber _
           Or TypeOf objNewControl Is GTMaskDate.GTMaskDate Then
+              If mobjBorders Is Nothing Then
+                Set mobjBorders = New clsBorders
+              End If
               mobjBorders.SetBorder objNewControl.hwnd, ctTextBox, RGB(169, 177, 184)
         End If
 
