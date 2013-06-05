@@ -1070,7 +1070,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
         "        /* ----------------------- */" & vbNewLine & _
         "        /* Email Triggers. */" & vbNewLine & _
         "        /* ----------------------- */" & vbNewLine & _
-        "        IF @fValidRecord = 1 AND @startingtriggertable = " & pLngCurrentTableID & vbNewLine & _
+        "        IF @fValidRecord = 1" & vbNewLine & _
         "        BEGIN" & vbNewLine & _
         gstrUpdateEmailCode & vbNewLine & _
         "        END" & vbNewLine & vbNewLine
