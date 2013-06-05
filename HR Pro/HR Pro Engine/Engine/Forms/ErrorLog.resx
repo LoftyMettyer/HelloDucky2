@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="TextBox2.Text" xml:space="preserve">
-    <value>Critical errors were encountered by the .NET framework. The system can continue saving, but some calculations may not function correctly and data may be lost. Please contact our helpdesk for assistance.</value>
+    <value>Critical errors were encountered by the .NET framework. The system can continue saving, but some calculations may not function correctly and data may be lost. Please contact support for assistance.</value>
   </data>
   <metadata name="$this.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
