@@ -913,6 +913,9 @@ PRINT 'Step - Menu & Category enhancements'
 						AND tabletype <> 3			
 
 		DELETE FROM @categorymatch WHERE categoryID IS NULL
+
+		--Make sure a table on maps to one category
+		DELETE t FROM (SELECT ROW_NUMBER() OVER (PARTITION BY tableid ORDER BY categoryid) cnt FROM @categorymatch) t WHERE t.cnt > 1
 		
 		-- Globals Deletes/Updates
 		INSERT tbsys_objectcategories ([objecttype], [objectid], [categoryid])
