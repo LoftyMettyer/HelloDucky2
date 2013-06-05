@@ -895,6 +895,7 @@ Public Sub Login()
   Dim bDBLocked As Boolean
   Dim sPassword As String
   
+  
   Screen.MousePointer = vbHourglass
    
   '14/08/2001 MH Fault 2447
@@ -904,6 +905,8 @@ Public Sub Login()
   gbUseWindowsAuthentication = chkUseWindowsAuthentication.Value
   gsDatabaseName = Replace(txtDatabase.Text, ";", "")
   gsServerName = Replace(txtServer.Text, ";", "")
+  
+  DebugOutput "frmLogin.Login", "ClearConnection"
   
   Set gcolSystemPermissions = New Collection
 
@@ -920,6 +923,8 @@ Public Sub Login()
     Exit Sub
   End If
     
+  DebugOutput "frmLogin.Login", "GetSQLProviderString"
+  
   ' Build the ODBC connection string.
   gsConnectionString = GetSQLProviderString
   If Len(gsConnectionString) = 0 Then
@@ -981,6 +986,8 @@ Public Sub Login()
   'Set error trap
   On Error GoTo LoginError
   
+  DebugOutput "frmLogin.Login", "GeneralConnect"
+  
   'Establish database connection
   If Not datGeneral.Connect(gsConnectionString, sMsg, strUserName, mlngTimeOut, bDBLocked) Then
     OK = False
@@ -990,6 +997,8 @@ Public Sub Login()
   ' If using trusted connection try and find any security groups that this user is a member of
 TryUsingGroupSecurity:
 
+  DebugOutput "frmLogin.Login", "CheckVersion"
+  
   ' Check the database version is the right one for the application version.
   If Not CheckVersion(Trim(txtServer.Text)) Then
     If Not gADOCon Is Nothing Then
@@ -1000,6 +1009,8 @@ TryUsingGroupSecurity:
     Screen.MousePointer = vbDefault
     Exit Sub
   End If
+  
+  DebugOutput "frmLogin.Login", "GetActualUserDetails"
   
   Dim cmdDetail As New ADODB.Command
   Dim pmADO As ADODB.Parameter
@@ -1032,6 +1043,8 @@ TryUsingGroupSecurity:
   
   Set cmdDetail = Nothing
 
+  DebugOutput "frmLogin.Login", "ModuleAccess DataManager"
+  
   ' AE20090623 Fault #13674
   If datGeneral.SystemPermission("MODULEACCESS", "DATAMANAGER") = False Then
     Screen.MousePointer = vbDefault
@@ -1077,6 +1090,8 @@ TryUsingGroupSecurity:
   ' Is user a system or security user?
   gfCurrentUserIsSysSecMgr = CurrentUserIsSysSecMgr
 
+  DebugOutput "frmLogin.Login", "CheckLicence"
+  
   'MH20050309 Fault 9872
   ' Check the database version is the right one for the application version.
   If Not datGeneral.CheckLicence Then
@@ -1096,6 +1111,8 @@ Bypass:
   'gsUserName = StrConv(txtUID, vbProperCase)
   gsPassword = Me.txtPWD.Text
 
+  DebugOutput "frmLogin.Login", "SavePCSettings"
+  
   If Not gblnBatchJobsOnly And Not gblnAutomaticLogon Then
     SavePCSetting "Login", "DataMgr_UserName", strUserName
     SavePCSetting "Login", "DataMgr_Database", txtDatabase.Text
@@ -1107,6 +1124,8 @@ Bypass:
 
   'RH 24/6/99
   CheckRegistrySettings
+  
+  DebugOutput "frmLogin.Login", "CheckPasswordExpiry"
   
   'MH20020508 Don't check password expiry for batch user...
   If Not gblnBatchJobsOnly And Not gbUseWindowsAuthentication And glngSQLVersion < 9 Then
@@ -1121,6 +1140,8 @@ Bypass:
   LC_ResetLock
   LC_SaveSettingsToRegistry
 
+  DebugOutput "frmLogin.Login", "CloseProgress"
+  
   OK = True
   Me.Hide
   gobjProgress.CloseProgress
@@ -1130,10 +1151,14 @@ LoginError:
   Dim iErrCount As Integer
   Dim iForceChangeReason As PasswordChangeReason
   
+  DebugOutput "frmLogin.Login", "LoginError"
+  
   iForceChangeReason = giPasswordChange_None
   
   For iErrCount = 0 To gADOCon.Errors.Count - 1
      
+    DebugOutput "frmLogin.Login", "LoginError " & gADOCon.Errors(iErrCount).NativeError
+    
     Select Case gADOCon.Errors(iErrCount).NativeError
        
       ' 14 - Invalid Connection String
@@ -1204,6 +1229,8 @@ LoginError:
    
   If iForceChangeReason <> 0 Then
     
+    DebugOutput "frmLogin.Login", "LoginError ChangePassword"
+    
     ' Change the password
     gsUserName = txtUID.Text
     gsPassword = txtPWD.Text
@@ -1222,6 +1249,8 @@ LoginError:
   
   Else
 
+    DebugOutput "frmLogin.Login", "LoginError Not ChangePassword"
+    
     ' Report the error
     CreateLoginErrFile sMsg
   
@@ -1350,6 +1379,14 @@ Public Sub CheckCommandLine()
         gblnAutomaticLogon = True
         blnPassword = True
         chkUseWindowsAuthentication.Value = vbChecked
+
+      'Case "debug"
+      '  If LCase(strValue) <> "false" Then
+      '    gstrDebugOutputFile = IIf(LCase(strValue) <> "true", strValue, "debug.txt")
+      '    If Dir(gstrDebugOutputFile) Then
+      '      Kill gstrDebugOutputFile
+      '    End If
+      '  End If
 
       End Select
 

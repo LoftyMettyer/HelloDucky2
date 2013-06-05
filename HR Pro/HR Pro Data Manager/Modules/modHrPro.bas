@@ -66,6 +66,7 @@ Public Const gblnDEFAULTDATAUNDERLINE As Boolean = False
 Public Const glngDEFAULTDATABACKCOLOUR As Long = 15988214     'GetColour("Pale Grey")
 Public Const glngDEFAULTDATAFORECOLOUR As Long = 6697779      'GetColour("Midnight Blue")
 
+Public gstrDebugOutputFile As String
 
 
 'Public gsngTimer As Single
@@ -444,44 +445,64 @@ End Function
 
 Sub Main()
   
+  If (InStr(LCase(Command$), "/debug=true") > 0) Then
+    gstrDebugOutputFile = App.Path & "\debug.txt"
+    If Dir(gstrDebugOutputFile) <> vbNullString Then
+      Kill gstrDebugOutputFile
+    End If
+  End If
+  
+  
   ' Allow initialisation of XP style controls
+  DebugOutput "modHRPro.Main", "InitCommonControls"
   InitCommonControls
   
   'Instantiate Application class
+  DebugOutput "modHRPro.Main", "Set Application"
   Set Application = New HRProDataMgr.Application
 
   'Instantiate Application class
+  DebugOutput "modHRPro.Main", "Set Database"
   Set Database = New HRProDataMgr.Database
   
+  DebugOutput "modHRPro.Main", "Set General"
   Set datGeneral = New HRProDataMgr.clsGeneral
   
+  DebugOutput "modHRPro.Main", "Set Email"
   Set objEmail = New clsEmail
   
   ' Create Current User class
   'Set gobjCurrentUser = New HRProDataMgr.clsUser
   
   'Instantiate User Interface class
+  DebugOutput "modHRPro.Main", "Set UI"
   Set UI = New HRProDataMgr.UI
   
   'Instantiate Progress Bar class
   'Set gobjProgress = New COA_Progress
+  DebugOutput "modHRPro.Main", "Set Progress"
   Set gobjProgress = New clsProgress
   gobjProgress.StyleResource = CodeJockStylePath
   gobjProgress.StyleIni = CodeJockStyleIni
 
   'Instantiate UtilityRunLog class
+  DebugOutput "modHRPro.Main", "Set EventLog"
   Set gobjEventLog = New clsEventLog
   
   ' Initialise the standard error handler
+  DebugOutput "modHRPro.Main", "Set ErrorStack"
   Set gobjErrorStack = New clsErrorStack
   
   ' Initialise the generic data access class
+  DebugOutput "modHRPro.Main", "Set DataAccess"
   Set gobjDataAccess = New HRProDataMgr.clsDataAccess
   
   ' Initialse the performance monitor
+  DebugOutput "modHRPro.Main", "Set Performance"
   Set gobjPerformance = New HRProDataMgr.clsPerformance
   
   ' Default logged on user information
+  DebugOutput "modHRPro.Main", "Set WindowsCurrent"
   gstrWindowsCurrentDomain = Environ("USERDOMAIN")
   gstrWindowsCurrentUser = Environ("USERNAME")
   
@@ -514,8 +535,10 @@ Sub Main()
     Exit Sub
   ElseIf App.StartMode = vbSModeStandalone Then
     'Login to database
+    DebugOutput "modHRPro.Main", "Application.Login"
     If Application.Login Then
       'Display splash screen
+      DebugOutput "modHRPro.Main", "Show frmSplash"
       frmSplash.Show
       frmSplash.Refresh
       
@@ -536,14 +559,18 @@ Sub Main()
 '      End If
   
       'Activate The System
+      DebugOutput "modHRPro.Main", "Application.Activate"
       Application.Activate
       
       'Unload splash screen
+      DebugOutput "modHRPro.Main", "Unload frmSplash"
       Unload frmSplash
       
     End If
   End If
     
+  DebugOutput "modHRPro.Main", "End"
+
 End Sub
 
 
@@ -2216,6 +2243,8 @@ Public Sub SetupTablesCollection()
   Dim sTableName As String
   Dim intAction As Integer
   
+  DebugOutput "modHRPro.SetupTablesCollection", "Start"
+    
     ' Instantiate a new collection of table privileges.
   Set gcoTablePrivileges = New CTablePrivileges
   
@@ -2525,6 +2554,8 @@ Public Sub SetupTablesCollection()
   Next frmForm
   Set frmForm = Nothing
     
+  DebugOutput "modHRPro.SetupTablesCollection", "End"
+
 End Sub
 
 Private Function ViewQuickEntry(plngScreenID As Long) As Boolean
@@ -4280,10 +4311,11 @@ Public Function COAMsgBox(sPrompt As String, Optional iButtons As VbMsgBoxStyle,
   If sTitle = vbNullString Then sTitle = App.ProductName
   gobjProgress.Visible = False
   
+  DebugOutput "modHRPro.COAMsgBox", Replace(sPrompt, vbCrLf, " ")
   If Not gblnBatchJobsOnly Then
     COAMsgBox = MsgBox(sPrompt, iButtons, sTitle)
   Else
-    Open "batcherr.txt" For Append As #1
+    Open App.Path & "\batcherr.txt" For Append As #1
     Print #1, Format(Now, DateFormat & " hh:nn")
     Print #1, sPrompt
     Print #1, ""
@@ -4507,3 +4539,20 @@ LocalErr:
   InitialiseCommonDialogFormats = blnResult
 
 End Function
+
+
+Public Sub DebugOutput(strWhere As String, strWhat As String)
+  
+  Dim lngFile As Long
+  
+  'Debug.Print CStr(Now) & "  " & Left(strWhere & Space(32), 32) & strWhat
+  If gstrDebugOutputFile <> vbNullString Then
+    On Local Error Resume Next
+    lngFile = FreeFile
+    Open gstrDebugOutputFile For Append As #lngFile
+    Print #lngFile, CStr(Now) & "  " & Left(strWhere & Space(32), 32) & strWhat
+    Close #lngFile
+  End If
+
+End Sub
+
