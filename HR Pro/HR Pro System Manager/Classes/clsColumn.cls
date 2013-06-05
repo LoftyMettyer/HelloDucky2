@@ -365,6 +365,7 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   Dim bUN As Boolean
   Dim bWF As Boolean
   Dim bAu As Boolean
+  Dim bDM As Boolean
   
   Dim strExpressions() As String
   Dim intIndex As Integer
@@ -805,6 +806,13 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
         bSS = True
         sModuleName = "Self Service Intranet"
         mfrmUse.AddToList (sModuleName & " module setup")
+      
+      ElseIf rsModules!moduleKey = gsMODULEKEY_DOCMANAGEMENT And (Not bDM) Then
+        fUsed = True
+        bDM = True
+        sModuleName = "Document Management"
+        mfrmUse.AddToList (sModuleName & " module setup")
+      
       End If
       
       rsModules.MoveNext
