@@ -528,7 +528,7 @@ Private Sub MDIForm_Activate()
   ' NPG20091007 Fault HR Pro-416
   ' set the new multi-size icons for taskbar, application, and alt-tab
   ' NB Only works when run as the executable
-  SetIcon Me.hWnd, "TASKBAR", True
+  SetIcon Me.hWnd, "!ABS", True
 
 End Sub
 
