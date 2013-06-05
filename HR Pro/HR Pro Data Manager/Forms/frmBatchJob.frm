@@ -41,7 +41,7 @@ Begin VB.Form frmBatchJob
       _ExtentY        =   9895
       _Version        =   393216
       Style           =   1
-      Tab             =   2
+      Tab             =   1
       TabHeight       =   520
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmBatchJob.frx":000C
@@ -51,19 +51,18 @@ Begin VB.Form frmBatchJob
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Jobs"
       TabPicture(1)   =   "frmBatchJob.frx":0028
-      Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "Frame1"
-      Tab(1).Control(1)=   "fraJobs"
+      Tab(1).ControlEnabled=   -1  'True
+      Tab(1).Control(0)=   "fraJobs"
+      Tab(1).Control(0).Enabled=   0   'False
+      Tab(1).Control(1)=   "Frame1"
+      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmBatchJob.frx":0044
-      Tab(2).ControlEnabled=   -1  'True
-      Tab(2).Control(0)=   "Frame4"
-      Tab(2).Control(0).Enabled=   0   'False
+      Tab(2).ControlEnabled=   0   'False
+      Tab(2).Control(0)=   "Frame3"
       Tab(2).Control(1)=   "Frame2"
-      Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).Control(2)=   "Frame3"
-      Tab(2).Control(2).Enabled=   0   'False
+      Tab(2).Control(2)=   "Frame4"
       Tab(2).ControlCount=   3
       Begin VB.Frame fraInfo 
          Height          =   2355
@@ -277,7 +276,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame Frame3 
          Caption         =   "Output Format :"
          Height          =   3200
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   65
          Top             =   2280
          Width           =   2265
@@ -313,7 +312,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame Frame2 
          Caption         =   "Output Destination(s) :"
          Height          =   3200
-         Left            =   2520
+         Left            =   -72480
          TabIndex        =   58
          Top             =   2280
          Width           =   7110
@@ -519,7 +518,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame Frame1 
          Caption         =   "Email Notifications :"
          Height          =   1400
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   26
          Top             =   4080
          Width           =   9495
@@ -594,7 +593,7 @@ Begin VB.Form frmBatchJob
       End
       Begin VB.Frame fraJobs 
          Height          =   3600
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   18
          Top             =   420
          Width           =   9495
@@ -1050,7 +1049,7 @@ Begin VB.Form frmBatchJob
       Begin VB.Frame Frame4 
          Caption         =   "Report Options :"
          Height          =   1800
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   66
          Top             =   420
          Width           =   9470
@@ -1267,10 +1266,10 @@ Private Sub RefreshColumnsGrid()
 End Sub
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Private Function JobUtilityType(psJobType As String) As UtilityType
@@ -2214,11 +2213,12 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
       Exit Sub
     ElseIf pintAnswer = vbCancel Then
       Cancel = True
-      Changed = False
+      Me.Changed = False
+      Set frmBatchJob = Nothing
       Exit Sub
     ElseIf pintAnswer = vbNo Then
-      Cancel = True
-      Changed = False
+      'Cancel = True
+      'Changed = False
       Exit Sub
     End If
   
@@ -2552,7 +2552,7 @@ Private Sub cmdEdit_Click()
   Set frmItem = New frmBatchJobJobSelection
   
   'mblnDontDoActivateCheck = True
-  
+  'frmItem.mblnLoading = True
   With grdColumns
     lRow = .AddItemRowIndex(.Bookmark)
     frmItem.Initialise .Columns("Job Type").Text, .Columns("Job Name").Text, .Columns("Parameter").Text
@@ -2563,20 +2563,14 @@ Private Sub cmdEdit_Click()
   
   If frmBatchJob.SSTab1.TabVisible(2) Then frmItem.Caption = "Report Pack Item Selection"
   
-  'frmItem.Changed = False
-  
   frmItem.Show vbModal
   
-  If Not frmItem.Cancelled Then
-  'If Not Me.Changed Then
+  'Me.Changed = frmItem.Changed
   
-    Changed = True
-      
+  If Not frmItem.Cancelled Then
     With frmItem
-      
       pstrAddString = .cboJobType.Text & vbTab
       
-      'If .cboJobType.Text = "-- Pause --" Then
       If (.cboJobType.Text = "-- Pause --") Then
         pstrAddString = pstrAddString & "0" & vbTab
         pstrAddString = pstrAddString & "" & vbTab
@@ -2603,7 +2597,7 @@ Private Sub cmdEdit_Click()
       .SelBookmarks.RemoveAll
       .SelBookmarks.Add .Bookmark
     End With
-     
+    Me.Changed = True
     ForceDefinitionToBeHiddenIfNeeded
   End If
   
@@ -2654,7 +2648,7 @@ Private Sub cmdOK_Click()
 End Sub
 
 Private Sub cmdCancel_Click()
-  Changed = False
+  'Changed = False
   Unload Me
 End Sub
 
