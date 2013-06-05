@@ -49,11 +49,11 @@ Begin VB.Form frmAbout
       Width           =   1155
       Begin VB.Image imgASR 
          Appearance      =   0  'Flat
-         Height          =   1125
+         Height          =   960
          Left            =   90
          Picture         =   "frmAbout.frx":000C
          Top             =   15
-         Width           =   1020
+         Width           =   960
       End
    End
    Begin VB.CommandButton cmdOK 
@@ -77,7 +77,7 @@ Begin VB.Form frmAbout
    Begin VB.Label lblURL 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "http://www.coasolutions.com"
+      Caption         =   "http://www.advancedcomputersoftware.com"
       BeginProperty Font 
          Name            =   "Verdana"
          Size            =   8.25
@@ -90,11 +90,11 @@ Begin VB.Form frmAbout
       ForeColor       =   &H00FF0000&
       Height          =   195
       Left            =   150
-      MouseIcon       =   "frmAbout.frx":3C14
+      MouseIcon       =   "frmAbout.frx":3050
       MousePointer    =   99  'Custom
       TabIndex        =   10
-      Top             =   1510
-      Width           =   2490
+      Top             =   1515
+      Width           =   3810
    End
    Begin VB.Label lblDatabase 
       AutoSize        =   -1  'True
@@ -150,13 +150,13 @@ Begin VB.Form frmAbout
    Begin VB.Label lblCopyRight 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "Copyright © COA Solutions Limited 1997-2009"
+      Caption         =   "Copyright © Advanced Computer Solutions"
       ForeColor       =   &H00000000&
       Height          =   195
       Left            =   150
       TabIndex        =   2
-      Top             =   1300
-      Width           =   4005
+      Top             =   1305
+      Width           =   3720
    End
 End
 Attribute VB_Name = "frmAbout"
