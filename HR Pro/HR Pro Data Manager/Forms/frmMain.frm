@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "16:23"
+            TextSave        =   "12:38"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -2069,18 +2069,20 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
       ' Recalculate the new utility/report group separators
       strGroupType = ""
       For Each objTool In .Bands(0).Tools
-        If (objTool.Name = "GlobalUpdate" Or objTool.Name = "DataTransfer" Or objTool.Name = "MailMerge") _
-          And (strGroupType = "" Or strGroupType <> "Utilities") Then
-            ' set the objtool to begingroup and change the flag
-            objTool.BeginGroup = True
-            strGroupType = "Utilities"
-        End If
-            
-        If (objTool.Name = "CalendarReports" Or objTool.Name = "CustomReports") _
-          And (strGroupType = "" Or strGroupType <> "Reports") Then
-            ' set the objtool to begingroup and change the flag
-            objTool.BeginGroup = True
-            strGroupType = "Reports"
+        If objTool.Visible Then
+          If (objTool.Name = "GlobalUpdate" Or objTool.Name = "DataTransfer" Or objTool.Name = "MailMerge") _
+            And (strGroupType = "" Or strGroupType <> "Utilities") Then
+              ' set the objtool to begingroup and change the flag
+              objTool.BeginGroup = True
+              strGroupType = "Utilities"
+          End If
+
+          If (objTool.Name = "CalendarReports" Or objTool.Name = "CustomReports") _
+            And (strGroupType = "" Or strGroupType <> "Reports") Then
+              ' set the objtool to begingroup and change the flag
+              objTool.BeginGroup = True
+              strGroupType = "Reports"
+          End If
         End If
       Next objTool
 
