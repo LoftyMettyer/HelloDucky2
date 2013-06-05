@@ -727,6 +727,7 @@ Private miChart_SortDirection As Integer
 Private mlngChart_ColourID As Long
 Private iLoop As Integer
 Private miFilterTableID As Long
+Private mlngFilterBaseTableID As Long
 
 Public Property Let Cancelled(ByVal bCancel As Boolean)
   mblnCancelled = bCancel
@@ -1073,6 +1074,12 @@ PopulateSortByCombo
 
 SetComboItemOrTopItem cboSortByAgg, 0
 
+' clear the filter if it doesn't match the base table
+
+If MatchFilterToBaseTable = False Then
+  cmdFilterClear_Click
+End If
+
 RefreshControls
 
 End Sub
@@ -1119,7 +1126,7 @@ End Sub
 Private Sub RefreshControls()
   
   
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 End Sub
 
@@ -1181,7 +1188,7 @@ Private Sub cmdFilter_Click()
       mlngChartFilterID = .ExpressionID
       mfChanged = True
       miFilterTableID = mlngTableID
-      
+      mlngFilterBaseTableID = mlngTableID
     Else
       ' Check in case the original expression has been deleted.
       txtFilter.Text = GetExpressionName(txtFilter.Tag)
@@ -1189,6 +1196,7 @@ Private Sub cmdFilter_Click()
         txtFilter.Tag = 0
         cmdFilterClear.Enabled = False
         miFilterTableID = 0
+        mlngFilterBaseTableID = 0
       End If
     End If
 
@@ -1325,6 +1333,8 @@ Public Sub Initialize(plngChartViewID As Long, _
   ' Filter frame
   txtFilter.Tag = plngChartFilterID
   txtFilter.Text = GetExpressionName(txtFilter.Tag)
+  mlngFilterBaseTableID = GetFilterBaseTableID(plngChartFilterID)
+  
   If txtFilter.Text = "" Then
     cmdFilterClear.Enabled = False
   Else
@@ -1461,6 +1471,7 @@ End Function
 Private Sub ClearFilter()
   txtFilter.Text = vbNullString
   txtFilter.Tag = 0
+  mlngFilterBaseTableID = 0
   mlngChartFilterID = 0
   miFilterTableID = 0
   cmdFilterClear.Enabled = False
@@ -1844,6 +1855,88 @@ Public Sub SetComboItemOrTopItem(cboCombo As ComboBox, lItem As Long)
   End With
 
 End Sub
+
+Private Function MatchFilterToBaseTable() As Boolean
+  ' Display the 'Where Clause' expression selection form.
+  On Error GoTo ErrorTrap
+
+  Dim fOK As Boolean
+  Dim objExpr As CExpression
+  Dim plngBaseTableID As Long
+  
+  fOK = True
+  
+  ' calculate the base table to use as the tableid
+  
+  If ChartTableID = 0 Or txtFilter.Tag = "" Then
+    MatchFilterToBaseTable = False
+    GoTo TidyUpAndExit
+  End If
+  
+  If Chart_TableID_2 = 0 And Chart_TableID_3 = 0 Then
+    ' Single axis chart, so use tableID 1 (X-axis)
+    plngBaseTableID = ChartTableID
+  Else
+    ' IsChildOfTable(Parent, Child)
+    If IsChildOfTable(Chart_TableID_3, Chart_TableID_2) Then
+      If IsChildOfTable(Chart_TableID_2, ChartTableID) Then
+        plngBaseTableID = ChartTableID
+      Else
+        plngBaseTableID = Chart_TableID_2
+      End If
+    Else
+      If IsChildOfTable(Chart_TableID_3, ChartTableID) Then
+        plngBaseTableID = ChartTableID
+      Else
+        plngBaseTableID = Chart_TableID_3
+      End If
+    End If
+  End If
+  
+  ' get the filter's base table id
+  If mlngFilterBaseTableID = 0 Then mlngFilterBaseTableID = GetFilterBaseTableID(txtFilter.Tag)
+
+  ' we now have the base table ID, compare to filter's basetableId
+  MatchFilterToBaseTable = (plngBaseTableID = mlngFilterBaseTableID)
+
+TidyUpAndExit:
+  Set objExpr = Nothing
+  If Not fOK Then
+    MsgBox "Error changing filter ID.", vbExclamation + vbOKOnly, App.ProductName
+  End If
+  Exit Function
+
+ErrorTrap:
+  fOK = False
+  Resume TidyUpAndExit
+End Function
+
+Private Function GetFilterBaseTableID(plngFilterID As Long) As Long
+  Dim sSQL As String
+  Dim rsInfo As DAO.Recordset
+  
+  If plngFilterID = 0 Then Exit Function
+  
+  sSQL = "SELECT tmpExpressions.TableID" & _
+    " FROM tmpExpressions" & _
+    " WHERE tmpExpressions.ExprID = " & Trim(Str(plngFilterID))
+  
+        Set rsInfo = daoDb.OpenRecordset(sSQL, _
+          dbOpenForwardOnly, dbReadOnly)
+        
+        With rsInfo
+          If Not (.EOF And .BOF) Then
+            GetFilterBaseTableID = !TableID
+          Else
+            GetFilterBaseTableID = 0
+          End If
+        End With
+        rsInfo.Close
+
+  
+End Function
+
+
 
 Public Property Get ChartTableID() As Long
   If cboTableX.ListIndex >= 0 Then
