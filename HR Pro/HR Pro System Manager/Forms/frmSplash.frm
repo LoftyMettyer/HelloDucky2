@@ -5,10 +5,10 @@ Begin VB.Form frmSplash
    Appearance      =   0  'Flat
    BackColor       =   &H00FFFFFF&
    BorderStyle     =   1  'Fixed Single
-   ClientHeight    =   3150
+   ClientHeight    =   2820
    ClientLeft      =   255
    ClientTop       =   3165
-   ClientWidth     =   6825
+   ClientWidth     =   6135
    ClipControls    =   0   'False
    ControlBox      =   0   'False
    BeginProperty Font 
@@ -26,8 +26,9 @@ Begin VB.Form frmSplash
    LinkTopic       =   "Form2"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   3150
-   ScaleWidth      =   6825
+   ScaleHeight     =   2820
+   ScaleMode       =   0  'User
+   ScaleWidth      =   6135
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin TDBMask6Ctl.TDBMask TDBMask1 
@@ -147,12 +148,11 @@ Begin VB.Form frmSplash
       MinValueVT      =   5
    End
    Begin VB.Image Image2 
-      Height          =   3075
-      Left            =   50
+      Height          =   2820
+      Left            =   0
       Picture         =   "frmSplash.frx":3390
-      Stretch         =   -1  'True
-      Top             =   50
-      Width           =   6750
+      Top             =   0
+      Width           =   6150
    End
 End
 Attribute VB_Name = "frmSplash"

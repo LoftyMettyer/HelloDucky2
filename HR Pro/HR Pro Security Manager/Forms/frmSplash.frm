@@ -5,10 +5,10 @@ Begin VB.Form frmSplash
    Appearance      =   0  'Flat
    BackColor       =   &H00FFFFFF&
    BorderStyle     =   1  'Fixed Single
-   ClientHeight    =   3150
+   ClientHeight    =   2805
    ClientLeft      =   2205
    ClientTop       =   2655
-   ClientWidth     =   6825
+   ClientWidth     =   6135
    ClipControls    =   0   'False
    ControlBox      =   0   'False
    BeginProperty Font 
@@ -25,8 +25,8 @@ Begin VB.Form frmSplash
    LinkTopic       =   "Form2"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   3150
-   ScaleWidth      =   6825
+   ScaleHeight     =   2805
+   ScaleWidth      =   6135
    ShowInTaskbar   =   0   'False
    Begin TDBNumber6Ctl.TDBNumber TDBNumber1 
       Height          =   495
@@ -145,12 +145,11 @@ Begin VB.Form frmSplash
       Value           =   "TDBMask1"
    End
    Begin VB.Image Image1 
-      Height          =   3075
-      Left            =   50
+      Height          =   2820
+      Left            =   0
       Picture         =   "frmSplash.frx":0748
-      Stretch         =   -1  'True
-      Top             =   50
-      Width           =   6750
+      Top             =   0
+      Width           =   6150
    End
 End
 Attribute VB_Name = "frmSplash"
