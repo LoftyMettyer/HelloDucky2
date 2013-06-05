@@ -2184,7 +2184,12 @@ Private Sub RefreshControls()
     
     ' disable the DB Value items
     lblDBValueDecimals.Enabled = chkFormatting
-    spnDBValueDecimals.Enabled = chkFormatting And Not optAggregateType(0).value
+    If chkFormatting And Not optAggregateType(0).value Then
+      spnDBValueDecimals.Enabled = True
+    Else
+      spnDBValueDecimals.Enabled = False
+      spnDBValueDecimals.value = 0
+    End If
     chkDBVaUseThousandSeparator.Enabled = chkFormatting
     lblDBValuePrefix.Enabled = chkFormatting
     txtDBValuePrefix.Enabled = chkFormatting
