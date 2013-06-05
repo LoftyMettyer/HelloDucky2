@@ -245,17 +245,11 @@ Private Function CreateSP_MobileCheckLogin() As Boolean
     "          @fActivated bit," & vbNewLine & _
     "          @sActualUserName varchar(255)," & vbNewLine & _
     "          @sRoleName varchar(255)," & vbNewLine & _
-    "          @dtExpiryDate datetime," & vbNewLine & _
-    "          @bLicensed bit;" & vbNewLine & _
+    "          @dtExpiryDate datetime;" & vbNewLine & _
     "  SET @iuserID = 0;" & vbNewLine & _
-    "  SET @psMessage = '';" & vbNewLine & vbNewLine & _
-    "  --First is module licensed?" & vbNewLine & _
-    "  EXEC spASRIntActivateModule 'MOBILE', @bLicensed OUTPUT;" & vbNewLine & _
-    "  IF ISNULL(@bLicensed,0) = 0 SET @psMessage = 'You are not licensed for the OpenHR Mobile module. Please contact your Advanced Business Solutions Account Manager for details';" & vbNewLine
+    "  SET @psMessage = '';" & vbNewLine & vbNewLine
  
  sProcSQL = sProcSQL & _
-    "  IF @psMessage = ''" & vbNewLine & _
-    "  BEGIN" & vbNewLine & _
     "    -- Get the record id for this user" & vbNewLine & _
     "    SELECT @iuserID = [ID], @dtExpiryDate = [" & mvar_sLeavingDateColumn & "]" & vbNewLine & _
     "      FROM [" & mvar_sLoginTable & "]" & vbNewLine & _
@@ -282,8 +276,7 @@ Private Function CreateSP_MobileCheckLogin() As Boolean
     "          @psKeyParameter OUTPUT," & vbNewLine & _
     "          @sRoleName OUTPUT," & vbNewLine & _
     "          @piUserGroupID OUTPUT" & vbNewLine & vbNewLine & _
-    "      IF ISNULL(@piUserGroupID,0) = 0 SET @psMessage = 'No valid SQL account found.';" & vbNewLine & _
-    "  END;" & vbNewLine & vbNewLine
+    "      IF ISNULL(@piUserGroupID,0) = 0 SET @psMessage = 'No valid SQL account found.';" & vbNewLine & vbNewLine
     
   sProcSQL = sProcSQL & _
     "END;"
