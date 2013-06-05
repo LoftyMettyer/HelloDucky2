@@ -43,7 +43,7 @@
 		DROP FUNCTION [fusion].[pConvertData]
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[fusion].[pSetFusionContext]') AND xtype = 'P')
-		DROP FUNCTION [fusion].[pSetFusionContext]
+		DROP PROCEDURE [fusion].[pSetFusionContext]
 
 
 	EXECUTE sp_executesql N'
