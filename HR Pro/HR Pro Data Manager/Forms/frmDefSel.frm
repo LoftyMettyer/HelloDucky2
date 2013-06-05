@@ -41,14 +41,14 @@ Begin VB.Form frmDefSel
       Caption         =   "Frame1"
       Height          =   3410
       Left            =   3240
-      TabIndex        =   14
+      TabIndex        =   18
       Top             =   105
       Width           =   1215
       Begin VB.CommandButton cmdRefresh 
          Caption         =   "Re&fresh"
          Height          =   400
          Left            =   0
-         TabIndex        =   8
+         TabIndex        =   12
          Top             =   3000
          Width           =   1200
       End
@@ -56,7 +56,7 @@ Begin VB.Form frmDefSel
          Caption         =   "Proper&ties..."
          Height          =   400
          Left            =   0
-         TabIndex        =   7
+         TabIndex        =   11
          Top             =   2500
          Width           =   1200
       End
@@ -64,7 +64,7 @@ Begin VB.Form frmDefSel
          Caption         =   "&Print"
          Height          =   400
          Left            =   0
-         TabIndex        =   6
+         TabIndex        =   10
          Top             =   2000
          Visible         =   0   'False
          Width           =   1200
@@ -73,7 +73,7 @@ Begin VB.Form frmDefSel
          Caption         =   "&Edit..."
          Height          =   400
          Left            =   0
-         TabIndex        =   3
+         TabIndex        =   7
          Top             =   500
          Width           =   1200
       End
@@ -81,7 +81,7 @@ Begin VB.Form frmDefSel
          Caption         =   "&Delete..."
          Height          =   400
          Left            =   0
-         TabIndex        =   5
+         TabIndex        =   9
          Top             =   1500
          Width           =   1200
       End
@@ -89,7 +89,7 @@ Begin VB.Form frmDefSel
          Caption         =   "Cop&y..."
          Height          =   400
          Left            =   0
-         TabIndex        =   4
+         TabIndex        =   8
          Top             =   1000
          Width           =   1200
       End
@@ -97,7 +97,7 @@ Begin VB.Form frmDefSel
          Caption         =   "&New..."
          Height          =   400
          Left            =   0
-         TabIndex        =   2
+         TabIndex        =   6
          Top             =   0
          Width           =   1200
       End
@@ -108,13 +108,13 @@ Begin VB.Form frmDefSel
       Caption         =   "Frame1"
       Height          =   6990
       Left            =   100
-      TabIndex        =   12
+      TabIndex        =   16
       Top             =   105
       Width           =   3015
       Begin VB.TextBox txtSearchFor 
          Height          =   330
          Left            =   810
-         TabIndex        =   20
+         TabIndex        =   2
          Top             =   720
          Width           =   2190
       End
@@ -124,7 +124,7 @@ Begin VB.Form frmDefSel
          Left            =   825
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   18
+         TabIndex        =   1
          Top             =   360
          Width           =   2175
       End
@@ -136,7 +136,7 @@ Begin VB.Form frmDefSel
          MaxLength       =   255
          MultiLine       =   -1  'True
          ScrollBars      =   2  'Vertical
-         TabIndex        =   1
+         TabIndex        =   5
          TabStop         =   0   'False
          Top             =   5865
          Width           =   3000
@@ -157,7 +157,7 @@ Begin VB.Form frmDefSel
          Left            =   0
          Sorted          =   -1  'True
          Style           =   1  'Checkbox
-         TabIndex        =   16
+         TabIndex        =   4
          Top             =   2865
          Visible         =   0   'False
          Width           =   3015
@@ -165,7 +165,7 @@ Begin VB.Form frmDefSel
       Begin MSComctlLib.ListView List1 
          Height          =   825
          Left            =   0
-         TabIndex        =   17
+         TabIndex        =   3
          Top             =   1125
          Width           =   3000
          _ExtentX        =   5292
@@ -208,7 +208,7 @@ Begin VB.Form frmDefSel
          Caption         =   "Owner :"
          Height          =   195
          Left            =   0
-         TabIndex        =   19
+         TabIndex        =   20
          Top             =   540
          Width           =   690
       End
@@ -218,7 +218,7 @@ Begin VB.Form frmDefSel
          Caption         =   "Table :"
          Height          =   195
          Left            =   0
-         TabIndex        =   13
+         TabIndex        =   17
          Top             =   60
          Width           =   600
       End
@@ -229,14 +229,14 @@ Begin VB.Form frmDefSel
       Caption         =   "Frame1"
       Height          =   1360
       Left            =   3240
-      TabIndex        =   15
+      TabIndex        =   19
       Top             =   5715
       Width           =   1215
       Begin VB.CommandButton cmdNone 
          Caption         =   "N&one"
          Height          =   400
          Left            =   0
-         TabIndex        =   10
+         TabIndex        =   14
          Top             =   480
          Width           =   1200
       End
@@ -244,7 +244,7 @@ Begin VB.Form frmDefSel
          Caption         =   "&Select"
          Height          =   400
          Left            =   0
-         TabIndex        =   9
+         TabIndex        =   13
          Top             =   0
          Width           =   1200
       End
@@ -253,7 +253,7 @@ Begin VB.Form frmDefSel
          Caption         =   "&OK"
          Height          =   400
          Left            =   0
-         TabIndex        =   11
+         TabIndex        =   15
          Top             =   960
          Width           =   1200
       End
@@ -497,7 +497,7 @@ Private Sub cboOwner_Click()
   Dim sExtraFilter As String
 
   If Not mblnScheduledJobs Then
-    sExtraFilter = IIf(Len(mstrExtraWhereClause) > 0, "(" & mstrExtraWhereClause & ") AND ", "") & "(name LIKE '%" & txtSearchFor.Text & "%')"
+    sExtraFilter = IIf(Len(mstrExtraWhereClause) > 0, "(" & mstrExtraWhereClause & ") AND ", "") & "(name LIKE '%" & Replace(txtSearchFor.Text, "'", "''") & "%')"
     GetSQL mutlUtilityType, sExtraFilter, False
     Call Populate_List
   End If
@@ -513,7 +513,7 @@ Private Sub cboTables_Click()
       If .ListIndex > -1 Then
         If mlngTableID <> .ItemData(.ListIndex) Then
           mlngTableID = .ItemData(.ListIndex)
-          sExtraFilter = IIf(Len(mstrExtraWhereClause) > 0, "(" & mstrExtraWhereClause & ") AND ", "") & "(name LIKE '%" & txtSearchFor.Text & "%')"
+          sExtraFilter = IIf(Len(mstrExtraWhereClause) > 0, "(" & mstrExtraWhereClause & ") AND ", "") & "(name LIKE '%" & Replace(txtSearchFor.Text, "'", "''") & "%')"
           GetSQL mutlUtilityType, sExtraFilter, False
           Call Populate_List
         End If
@@ -2037,7 +2037,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
 
   mblnApplyDefAccess = True
   mblnApplySystemPermissions = Not gfCurrentUserIsSysSecMgr
-  strExtraWhereClause = vbNullString
+  strExtraWhereClause = mstrExtraWhereClause
   msRecordSource = vbNullString
   mblnScheduledJobs = blnScheduledJobs
  
@@ -2582,7 +2582,7 @@ Private Sub txtSearchFor_Change()
 
   Dim sExtraFilter As String
 
-  sExtraFilter = "(name LIKE '%" & txtSearchFor.Text & "%')"
+  sExtraFilter = "(name LIKE '%" & Replace(txtSearchFor.Text, "'", "''") & "%')"
 
   GetSQL mutlUtilityType, sExtraFilter, False
   Populate_List
