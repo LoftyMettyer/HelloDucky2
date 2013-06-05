@@ -1519,7 +1519,7 @@ Private Sub TidyUpAndExit()
   'Make sure that the template does not still reference the data source
   '(close it and open it incase there have been changes to it or that
   ' the template is now the temporary email attachment name thingy !)
-  If Not mbIsLabel Then
+  If Not mbIsLabel And mstrDefTemplateFormat <> vbNullString Then
     wrdDocTemplate.Close SaveChanges:=False
     Set wrdDocTemplate = wrdApp.Documents.Open( _
         FileName:=mstrDefTemplateFile, _
