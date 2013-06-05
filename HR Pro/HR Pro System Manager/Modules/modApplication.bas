@@ -2128,7 +2128,6 @@ Public Sub EditMobileDesigner()
   Screen.MousePointer = vbHourglass
   
   Dim service As New MobileDesignerSerivce
-  
   service.InitialiseForVB6 (Environ("TEMP") & "\" & gsTempDatabaseName)
   Set service = Nothing
   
@@ -2136,6 +2135,7 @@ Public Sub EditMobileDesigner()
   
   Dim changesMade As Boolean
   Dim frm As New DesignerForm
+  frm.ReadOnly = (Application.AccessMode <> accFull And Application.AccessMode <> accSupportMode)
   changesMade = frm.ShowForVB6
   
   If changesMade Then
