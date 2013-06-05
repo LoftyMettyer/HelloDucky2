@@ -272,7 +272,7 @@ Public Function EditMenu(psMenuOption As String) As Boolean
     Case "ID_New": NewScreen
     Case "ID_Open": OpenScreen
     Case "ID_Delete": DeleteScreen
-    Case "ID_CopyScreen": CopyScreen
+    Case "ID_CopyDef": CopyScreen
     Case "ID_ScreenProperties": EditScreen
     
   End Select
