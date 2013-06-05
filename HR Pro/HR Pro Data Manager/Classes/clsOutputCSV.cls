@@ -70,12 +70,13 @@ Public Function GetFile(objParent As clsOutputRun, colStyles As Collection) As B
 
   'Just in case we are emailing but not saving...
   If mstrFileName = vbNullString Then
-    mstrFileName = objParent.GetTempFileName(mstrFileName)
-  End If
+    mstrFileName = objParent.GetTempFileName(mobjParent.EmailAttachAs)
+    If Dir(mstrFileName) <> vbNullString Then
+      objParent.KillFile mstrFileName
+    End If
   
-  
-  'Check if file already exists...
-  If Dir(mstrFileName) <> vbNullString And mstrFileName <> vbNullString Then
+  ElseIf Dir(mstrFileName) <> vbNullString Then
+    'Check if file already exists...
 
     Select Case mlngSaveExisting
     Case 0  'Overwrite
