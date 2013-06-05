@@ -4665,7 +4665,11 @@ Public Function GetSelectedIDs() As String
       'strSelectedRecords = strSelectedRecords & _
           IIf(strSelectedRecords <> vbNullString, ",", "") & _
           .Columns("ID").CellValue(.SelBookmarks(intCount))
-      .Bookmark = .SelBookmarks(intCount)
+      If .SelBookmarks(intCount) = 0 Then
+        .MoveFirst
+      Else
+        .Bookmark = .SelBookmarks(intCount)
+      End If
       strSelectedRecords = strSelectedRecords & _
           IIf(strSelectedRecords <> vbNullString, ",", "") & _
           .Columns("ID").Text
