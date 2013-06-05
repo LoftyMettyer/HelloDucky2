@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("HR Pro System Framework")> 
 <Assembly: AssemblyCompany("Advanced Business Software and Solutions Limited")> 
 <Assembly: AssemblyProduct("HR Pro System Framework")> 
-<Assembly: AssemblyCopyright("Copyright ©  2011")> 
+<Assembly: AssemblyCopyright("Copyright ©  Advanced Business Software and Solutions Limited 2000-2011")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(True)> 
