@@ -496,7 +496,7 @@ Namespace ScriptDB
               End If
 
               ' Build list of default values
-              If CInt(objColumn.DefaultCalcID) > 0 Then
+              If CInt(objColumn.DefaultCalcID) > 0 And Not objColumn.DefaultCalculation Is Nothing Then
                 objColumn.DefaultCalculation.AssociatedColumn = objColumn
                 objColumn.DefaultCalculation.ExpressionType = ExpressionType.ColumnDefault
                 objColumn.DefaultCalculation.GenerateCode()
@@ -1012,7 +1012,9 @@ Namespace ScriptDB
             If CInt(objColumn.DefaultCalcID) > 0 Then
               objColumn.DefaultCalculation = objTable.Objects.GetObject(Things.Type.Expression, objColumn.DefaultCalcID)
 
-              If Not objColumn.DefaultCalculation Is Nothing Then
+              If objColumn.DefaultCalculation Is Nothing Then
+                Globals.ErrorLog.Add(ErrorHandler.Section.LoadingData, objColumn.Name, ErrorHandler.Severity.Error, "Default calculation not found", CInt(objColumn.DefaultCalcID))
+              Else
                 objColumn.DefaultCalculation.ExpressionType = ScriptDB.ExpressionType.ColumnDefault
                 objColumn.DefaultCalculation.AssociatedColumn = objColumn
                 objColumn.DefaultCalculation.GenerateCode()
@@ -1086,7 +1088,7 @@ Namespace ScriptDB
               'End If
             End If
 
-            If CInt(objColumn.DefaultCalcID) > 0 Then
+            If CInt(objColumn.DefaultCalcID) > 0 And Not objColumn.DefaultCalculation Is Nothing Then
 
               objColumn.DefaultCalculation.AssociatedColumn = objColumn
               objColumn.DefaultCalculation.StartOfPartNumbers = 0
@@ -1107,10 +1109,7 @@ Namespace ScriptDB
               Else
                 Globals.CommitDB.ScriptStatement(objColumn.DefaultCalculation.UDF.CodeStub)
               End If
-              'End If
             End If
-
-
 
           Next
         Next
