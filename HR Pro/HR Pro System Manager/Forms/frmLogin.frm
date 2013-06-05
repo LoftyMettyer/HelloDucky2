@@ -221,7 +221,6 @@ Const SQL_FETCH_NEXT As Long = 1
 Const ODBCDRIVER As String = "SQL Server"
 
 ' Private classes.
-Private UI As New UI
 Private Net As New Net
 
 ' Globals.

@@ -127,9 +127,9 @@ Public gbCurrentUserIsSysSecMgr As Boolean
 Public gbIsUserSystemAdmin As Boolean
 Public gsSecurityGroup As String
 
-Public Application As SystemMgr.Application
-Public ODBC As SystemMgr.ODBC
-Public UI As New UI
+Public Application As SystemMgr.clsApplication
+Public ODBC As SystemMgr.clsODBC
+Public UI As New SystemMgr.clsUI
 
 Public gsTempDatabaseName As String
 
@@ -168,5 +168,11 @@ Public gstrEmailTestAddr As String
 Public gstrUpdateEmailCode As String
 Public gstrDeleteEmailCode As String
 
-
+' Module settings
+Public gfTrainingBookingModule As Boolean
+Public gfPersonnelModule As Boolean
+Public gfAbsenceModule As Boolean
+Public gfSSIntranetModule As Boolean
+Public gfWorkflowModule As Boolean
+Public gfVersion1Module As Boolean
 
