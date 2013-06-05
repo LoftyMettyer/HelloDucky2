@@ -22,42 +22,23 @@
     Public CaseType As Enums.CaseType
     Public TrimType As Enums.TrimType
     Public Alignment As Enums.AlignType
-
-    ' Validation
     Public Mandatory As Boolean
-
-
     Public OLEType As ScriptDB.OLEType
 
     Public CalcID As HCMGuid
     Public DefaultCalcID As HCMGuid
 
-    '    Public DirectInView As Boolean
+    Public ReferencedBy As Things.Collection
 
-    'Public Overrides Function Commit() As Boolean
-    'End Function
+    Public Sub New()
+      ReferencedBy = New Things.Collection
+    End Sub
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
         Return Enums.Type.Column
       End Get
     End Property
-
-    'Public ReadOnly Property ApplyFormatting As String
-    '  Get
-
-    '    Select Case Me.DataType
-    '      Case ScriptDB.ColumnTypes.Date
-    '        Return String.Format("DATEADD(dd, 0, DATEDIFF(dd, 0, [inserted].[{0}]))", Me.Name)
-
-    '      Case Else
-    '        Return Me.Name
-
-    '    End Select
-
-    '  End Get
-    'End Property
-
 
     Public ReadOnly Property DataTypeSize As String
       Get
@@ -84,7 +65,6 @@
         End Select
       End Get
     End Property
-
 
     Public ReadOnly Property SafeReturnType As String
       Get
@@ -157,71 +137,31 @@
 
     End Property
 
-
     Public ReadOnly Property IsCalculated As Boolean
       Get
-        'Return Not (CalcID = 0)
-
-        'botch so we only calculate the age field
-        ' 40 = age
-        ' 70 = holiday balance
-        '
-        ' 12307 = 
-        ' 14102 = Holiday_Taken_Simple
-        ' 10181 = Six Month Proabion Date
-        ' 3153 = HR Pro number
-        ' 12708 = Fleet Drivers. Vlaue When New
-        ' 6025 - Risk Assesments.Last Updated By
-        ' 4762 - PR.Continuous Service Years
-        ' 5079 - PR.Actual hours
-        ' 62 - Annual Rate
-        ' 11938 - PR.Professional Membership
-        ' 3196 - Is leaver
-        ' 154 - NVQ.Unit_1_Recommended_Finish
-        '64 - PR.Weekly Rate
-        '        Return (CalcID = 70 Or CalcID = 40 Or CalcID = 41 Or CalcID = 12307 Or CalcID = 14102)
-        ' 11036 Project_records.Logical_True
-        ' 193 - Absence.Duration_Days
-        ' 72 - PR.Holiday_Taken
-        ' 10944 - PR.Is QAS Role
-        ' 4328 - Training_Requests.Last Updated By
-        ' 4803 - PR.Payroll_Town
-        ' 131 - Loans.Outstanding Balance
-        ' 3237 - COurse recs.Is Current Course
-        ' 3193 - PR.Is current Employee
-        ' 14108 - Adoption. Not_True
-        ' 14109 - Adoption. Not_True 2
-        ' 14110 - Adoption. Not True 3
-        ' 14111 - PR.Site2
-        ' 2500 - Training_Booking.CPD_Accredited
-        ' 3776 - McFarlanes.Course_Records.Number Booked
-
-
         Return (CInt(CalcID) > 0)
-        'Return (CalcID = 3776)
-
       End Get
     End Property
 
-    Public ReadOnly Property BlankDefintion As String
-      Get
+    'Public ReadOnly Property BlankDefintion As String
+    '  Get
 
-        Dim sBlankDefintion As String = String.Empty
+    '    Dim sBlankDefintion As String = String.Empty
 
-        sBlankDefintion = "NULL"
+    '    sBlankDefintion = "NULL"
 
-        'Select Case Me.DataType
-        '  Case ScriptDB.ColumnTypes.Date
-        '    sBlankDefintion = ""
-        '  Case ScriptDB.ColumnTypes.Logic
-        '    sBlankDefintion = "0"
-        '    Case 
-        'End Select
+    '    'Select Case Me.DataType
+    '    '  Case ScriptDB.ColumnTypes.Date
+    '    '    sBlankDefintion = ""
+    '    '  Case ScriptDB.ColumnTypes.Logic
+    '    '    sBlankDefintion = "0"
+    '    '    Case 
+    '    'End Select
 
-        Return sBlankDefintion
+    '    Return sBlankDefintion
 
-      End Get
-    End Property
+    '  End Get
+    'End Property
 
     '#Region "XML"
 

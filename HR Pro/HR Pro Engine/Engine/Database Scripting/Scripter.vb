@@ -57,7 +57,6 @@ Namespace ScriptDB
 
     End Function
 
-
     Public Function DropTableViews() As Boolean Implements iCommitDB.DropTableViews
 
       Dim objTable As Things.Table
@@ -171,114 +170,113 @@ Namespace ScriptDB
 
     Public Function CreateTableViews() As Boolean Implements iCommitDB.ScriptTableViews
 
-      Dim bOK As Boolean = True
-      Dim sDefinitionSQL As String = String.Empty
-      Dim sViewName As String = String.Empty
-      Dim sActualTableName As String = String.Empty
-      Dim sOptions As String = String.Empty
+      'Dim bOK As Boolean = True
+      'Dim sDefinitionSQL As String = String.Empty
+      'Dim sViewName As String = String.Empty
+      'Dim sActualTableName As String = String.Empty
+      'Dim sOptions As String = String.Empty
 
-      Dim objTable As Things.Table
-      Dim objColumn As Things.Column
-      Dim objRelation As Things.Relation
-      Dim objExpression As Things.Expression
+      'Dim objTable As Things.Table
+      'Dim objColumn As Things.Column
+      'Dim objRelation As Things.Relation
+      'Dim objExpression As Things.Expression
 
-      Try
+      'Try
 
-        '     sSchemaName = "dbo"
-        sOptions = vbNewLine & "WITH SCHEMABINDING" & vbNewLine
+      '  '     sSchemaName = "dbo"
+      '  sOptions = vbNewLine & "WITH SCHEMABINDING" & vbNewLine
 
-        '        ProgressInfo.TotalSteps2 = Globals.Things.Count
-        For Each objTable In Globals.Things
+      '  '        ProgressInfo.TotalSteps2 = Globals.Things.Count
+      '  For Each objTable In Globals.Things
 
-          sViewName = objTable.Name
-          sActualTableName = String.Format("{0}{1}", Consts.UserTable, objTable.Name)
+      '    sViewName = objTable.Name
+      '    sActualTableName = String.Format("{0}{1}", Consts.UserTable, objTable.Name)
 
-          sDefinitionSQL = "AS SELECT [id], [guid], [timestamp], [updflag]" & vbNewLine
+      '    sDefinitionSQL = "AS SELECT [id], [guid], [timestamp], [updflag]" & vbNewLine
 
-          ' Add relations
-          For Each objRelation In objTable.Objects(Things.Type.Relation)
-            If objRelation.RelationshipType = RelationshipType.Parent Then
-              sDefinitionSQL = sDefinitionSQL & String.Format(", [ID_{0}]", CInt(objRelation.ParentID)) & vbNewLine
-            End If
-          Next
-
-
-          ' Is it a physical HR Pro table or a connection to a remote table/database
-          If objTable.IsRemoteView Then
-
-            ' Create dummy place holder for view
-            For Each objColumn In objTable.Objects(Things.Type.Column)
-              sDefinitionSQL = sDefinitionSQL & String.Format("{0} AS [{1}]", objColumn.BlankDefintion, objColumn.Name) & vbNewLine
-            Next
-
-          Else
-
-            'aryJoinCode = New ArrayList
-
-            ' Add columns
-            For Each objColumn In objTable.Objects(Things.Type.Column)
-
-              If Not objColumn.State = System.Data.DataRowState.Deleted Then
-
-                If objColumn.IsCalculated And 1 = 2 Then  'tempry 1=2 because I want to test just having it in the trigger
-                  objExpression = New Things.Expression
-                  objExpression = objTable.Objects.GetObject(Things.Type.Expression, objColumn.CalcID)
-                  If Not objExpression Is Nothing Then
-                    '    objExpression.ExpressionType = ScriptDB.ExpressionType.ViewCode
-                    objExpression.AssociatedColumn = objColumn
-                    '    sColumnCalculation = objExpression.Code
-                    '    If objExpression.IsSimpleCalc Then  'And objExpression.IsValid Then
-                    '      sSQL = sSQL & String.Format(", {0} AS [{1}]", sColumnCalculation, objColumn.Name) & vbNewLine
-                    '    Else
-                    '      sSQL = sSQL & String.Format(", [{0}]", objColumn.Name) & vbNewLine
-                    '    End If
-
-                    '    '    aryJoinCode.
-
-                    '    '    aryJoinCode.Add(objExpression.Joins)
-                    sDefinitionSQL = sDefinitionSQL & String.Format(", {0} AS [{1}]", objExpression.UDF.CallingCode, objColumn.Name) & vbNewLine
+      '    ' Add relations
+      '    For Each objRelation In objTable.Objects(Things.Type.Relation)
+      '      If objRelation.RelationshipType = RelationshipType.Parent Then
+      '        sDefinitionSQL = sDefinitionSQL & String.Format(", [ID_{0}]", CInt(objRelation.ParentID)) & vbNewLine
+      '      End If
+      '    Next
 
 
-                  End If
-                  'If objColumn.DataType = ColumnTypes.Binary Then
+      '    ' Is it a physical HR Pro table or a connection to a remote table/database
+      '    If objTable.IsRemoteView Then
 
-                Else
-                  sDefinitionSQL = sDefinitionSQL & String.Format(", base.[{0}]", objColumn.Name) & vbNewLine
-                  'End If
-                  'Else
+      '      ' Create dummy place holder for view
+      '      For Each objColumn In objTable.Objects(Things.Type.Column)
+      '        sDefinitionSQL = sDefinitionSQL & String.Format("{0} AS [{1}]", objColumn.BlankDefintion, objColumn.Name) & vbNewLine
+      '      Next
 
-                End If
-              End If
-            Next
+      '    Else
 
-            ' Add the base table
-            sDefinitionSQL = sDefinitionSQL & vbNewLine & String.Format("FROM [dbo].[{0}] base", sActualTableName)
-          End If
+      '      'aryJoinCode = New ArrayList
+
+      '      ' Add columns
+      '      For Each objColumn In objTable.Objects(Things.Type.Column)
+
+      '        If Not objColumn.State = System.Data.DataRowState.Deleted Then
+
+      '          If objColumn.IsCalculated And 1 = 2 Then  'tempry 1=2 because I want to test just having it in the trigger
+      '            objExpression = New Things.Expression
+      '            objExpression = objTable.Objects.GetObject(Things.Type.Expression, objColumn.CalcID)
+      '            If Not objExpression Is Nothing Then
+      '              '    objExpression.ExpressionType = ScriptDB.ExpressionType.ViewCode
+      '              objExpression.AssociatedColumn = objColumn
+      '              '    sColumnCalculation = objExpression.Code
+      '              '    If objExpression.IsSimpleCalc Then  'And objExpression.IsValid Then
+      '              '      sSQL = sSQL & String.Format(", {0} AS [{1}]", sColumnCalculation, objColumn.Name) & vbNewLine
+      '              '    Else
+      '              '      sSQL = sSQL & String.Format(", [{0}]", objColumn.Name) & vbNewLine
+      '              '    End If
+
+      '              '    '    aryJoinCode.
+
+      '              '    '    aryJoinCode.Add(objExpression.Joins)
+      '              sDefinitionSQL = sDefinitionSQL & String.Format(", {0} AS [{1}]", objExpression.UDF.CallingCode, objColumn.Name) & vbNewLine
 
 
-          DropView(objTable.SchemaName, sViewName)
+      '            End If
+      '            'If objColumn.DataType = ColumnTypes.Binary Then
 
-          sDefinitionSQL = String.Format("CREATE VIEW [{0}].[{1}] {2} {3}", objTable.SchemaName, sViewName, sOptions, sDefinitionSQL)
-          CommitDB.ScriptStatement(sDefinitionSQL)
+      '          Else
+      '            sDefinitionSQL = sDefinitionSQL & String.Format(", base.[{0}]", objColumn.Name) & vbNewLine
+      '            'End If
+      '            'Else
 
-          sDefinitionSQL = String.Format("IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[{0}]') AND name = N'IDX_ID')" & vbNewLine & _
-              "CREATE UNIQUE CLUSTERED INDEX [IDX_ID] ON [dbo].[{0}] ([ID] ASC)", objTable.Name)
-          CommitDB.ScriptStatement(sDefinitionSQL)
+      '          End If
+      '        End If
+      '      Next
+
+      '      ' Add the base table
+      '      sDefinitionSQL = sDefinitionSQL & vbNewLine & String.Format("FROM [dbo].[{0}] base", sActualTableName)
+      '    End If
 
 
-        Next
+      '    DropView(objTable.SchemaName, sViewName)
 
-      Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.Views, sViewName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sDefinitionSQL)
-        bOK = False
+      '    sDefinitionSQL = String.Format("CREATE VIEW [{0}].[{1}] {2} {3}", objTable.SchemaName, sViewName, sOptions, sDefinitionSQL)
+      '    CommitDB.ScriptStatement(sDefinitionSQL)
 
-      End Try
+      '    sDefinitionSQL = String.Format("IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[{0}]') AND name = N'IDX_ID')" & vbNewLine & _
+      '        "CREATE UNIQUE CLUSTERED INDEX [IDX_ID] ON [dbo].[{0}] ([ID] ASC)", objTable.Name)
+      '    CommitDB.ScriptStatement(sDefinitionSQL)
 
-      Return bOK
+
+      '  Next
+
+      'Catch ex As Exception
+      '  Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.Views, sViewName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sDefinitionSQL)
+      '  bOK = False
+
+      'End Try
+
+      'Return bOK
 
     End Function
 
-    ' Script each of the user defined views for this table
     Public Function CreateViews() As Boolean Implements iCommitDB.ScriptViews
 
       Dim objTable As Things.Table
@@ -332,7 +330,6 @@ Namespace ScriptDB
 
     End Function
 
-
 #End Region
 
 #Region "Trigger Scripting"
@@ -341,6 +338,7 @@ Namespace ScriptDB
 
       Dim bOK As Boolean = True
       Dim objTable As Things.Table
+      Dim objChildTable As Things.Table
       Dim objColumn As Things.Column
       Dim objRelation As Things.Relation
       Dim sSQL As String = String.Empty
@@ -352,9 +350,9 @@ Namespace ScriptDB
       Dim sSQLCode_AuditUpdate As String = String.Empty
       Dim sSQLCode_AuditDelete As String = String.Empty
 
-      Dim sSQLCode_RecordDescription As New StringBuilder
+      'Dim sSQLCode_RecordDescription As New StringBuilder
+      'Dim sSQLCode_DiaryLinks As String = String.Empty
 
-      Dim sSQLCode_DiaryLinks As String = String.Empty
       Dim sSQLWriteableColumns As String
       Dim sSQLCalculatedColumns As String
       Dim sSQLPostAuditCalcs As String
@@ -363,6 +361,7 @@ Namespace ScriptDB
       Dim sSQLChildColumns As String
 
       Dim aryCalculatedColumns As ArrayList
+      Dim aryPerformanceTuneColumns As ArrayList
       Dim aryPostAuditCalcs As ArrayList
       Dim aryDebugColumns As ArrayList
       Dim aryBaseTableColumns As ArrayList
@@ -376,24 +375,19 @@ Namespace ScriptDB
       Dim aryAuditInserts As ArrayList
       Dim aryAuditDeletes As ArrayList
 
-      '      Dim aryInsertStatements As ArrayList
-      'Dim aryUpdateStatements As ArrayList
-      '  Dim aryDeleteStatements As ArrayList
-
-      Dim aryValidationStatements As ArrayList
-
+      Dim sDebugCode As String
       Dim aryUpdateUniqueCodes As ArrayList
 
-      ' Now strut our funky stuff
       Try
 
         For Each objTable In Globals.Things
 
+          aryPerformanceTuneColumns = New ArrayList
           aryAllWriteableColumns = New ArrayList
           aryAuditUpdates = New ArrayList
           aryAuditInserts = New ArrayList
           aryAuditDeletes = New ArrayList
-          aryValidationStatements = New ArrayList
+          'aryValidationStatements = New ArrayList
           aryAfterInsertColumns = New ArrayList
           aryUpdateUniqueCodes = New ArrayList
           aryParentsToUpdate = New ArrayList
@@ -403,6 +397,8 @@ Namespace ScriptDB
           aryCalculatedColumns = New ArrayList
           aryPostAuditCalcs = New ArrayList
           aryDebugColumns = New ArrayList
+
+          sDebugCode = String.Empty
 
           sSQLCode_AuditInsert = String.Empty
           sSQLCode_AuditUpdate = String.Empty
@@ -435,6 +431,9 @@ Namespace ScriptDB
                   aryCalculatedColumns.Add(sColumnName & vbNewLine)
                 End If
 
+                aryPerformanceTuneColumns.Add(String.Format("SELECT {0} FROM {1} base --WHERE id" _
+                             , objColumn.Calculation.UDF.CallingCode, objTable.Name))
+
               End If
 
               If Not objColumn.IsReadOnly Then
@@ -458,7 +457,7 @@ Namespace ScriptDB
 
               ' Concatenate audited columns
               If objColumn.Audit Then
-         
+
                 aryAuditInserts.Add(String.Format("        SELECT base.ID, NULL, convert(nvarchar(255),base.[{0}]), {1}, {3}, base.[_description]" & vbNewLine & _
                     "            FROM inserted i" & vbNewLine & _
                     "            INNER JOIN dbo.[{2}] base ON i.[id] = base.[id]" _
@@ -474,6 +473,26 @@ Namespace ScriptDB
 
               End If
             End If
+
+
+            'For Each objChildTable In objColumn.ReferencedBy
+            '  aryChildrenToUpdate.Add(String.Format("--NOT i.[{0}] = d.[{0}]", objColumn.Name, objChildTable.PhysicalName))
+
+            'Next
+
+            ' Add any relationship columns
+            '   For Each objRelation In objTable.Objects(Things.Type.Relation)
+
+
+
+
+            '           UPDATE base SET [updflag] = 1 FROM dbo.[tbuser_chiltable1] base WHERE [ID_1] 
+            'IN (SELECT i.[id] FROM inserted i
+            'INNER JOIN dbo.tbuser_table1 d ON d.id = i.id
+            'WHERE NOT i.[address_combined] = d.[address_combined] OR NOT i.[address_combined] = d.[address_combined]);
+
+
+            '
           Next
 
 
@@ -489,14 +508,35 @@ Namespace ScriptDB
 
               aryParentsToUpdate_Delete.Add(String.Format("    UPDATE [dbo].[{1}] SET [updflag] = 1 WHERE [dbo].[{1}].[id] IN (SELECT DISTINCT [id_{2}] FROM deleted)" & vbNewLine & vbNewLine _
                 , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID)))
-            ElseIf objRelation.DependantOnParent Then
 
+            ElseIf objRelation.DependantOnParent Then
               aryChildrenToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3})" & vbNewLine & _
                       "        UPDATE base SET [updflag] = 1 FROM dbo.[{1}] base WHERE [ID_{2}] IN (SELECT DISTINCT [id] FROM inserted);" & vbNewLine _
                       , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID), CInt(objRelation.ChildID)))
 
+
+              ' We have dependant tables
+              'If i.colparent3 <> d.colparent 3 or i.blah1 <> d.blah1 etc
+              'objTable.Columns
+
+
+
+
+
             End If
           Next
+
+
+          '     For Each objColumn In objTable.DependantChildTableColumns
+
+          'aryChildrenToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3})" & vbNewLine & _
+          '        "        UPDATE base SET [updflag] = 1 FROM dbo.[{1}] base WHERE [ID_{2}] IN (SELECT DISTINCT [id] FROM inserted);" & vbNewLine _
+          '        , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID), CInt(objRelation.ChildID)))
+
+
+          'Next
+
+
 
           ' Update any parents
           If aryParentsToUpdate.ToArray.Length > 0 Then
@@ -554,6 +594,9 @@ Namespace ScriptDB
               "        SET {1}" _
               , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryCalculatedColumns.ToArray()))
 
+            sDebugCode = String.Format("{0}", String.Join(vbNewLine, aryPerformanceTuneColumns.ToArray()))
+
+
           Else
             sSQLCalculatedColumns = "    -- No calculated columns" & vbNewLine & vbNewLine
           End If
@@ -561,17 +604,19 @@ Namespace ScriptDB
           ' Any calculations that require to be saved after the audit
           If aryPostAuditCalcs.ToArray.Length > 0 Then
             sSQLPostAuditCalcs = String.Format("    -- Update columns that rely on audit log data" & vbNewLine & _
-              "    WITH base AS (" & vbNewLine & _
-              "        SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
-              "        FROM [dbo].[{0}]" & vbNewLine & _
-              "        WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
-              "    UPDATE base" & vbNewLine & _
-              "        SET {1}" _
-              , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryPostAuditCalcs.ToArray()))
+              "    IF EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {2} AND [nestlevel] = 1)" & vbNewLine & _
+              "    BEGIN" & vbNewLine & _
+              "        WITH base AS (" & vbNewLine & _
+              "            SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
+              "            FROM [dbo].[{0}]" & vbNewLine & _
+              "            WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
+              "        UPDATE base" & vbNewLine & _
+              "        SET {1}" & vbNewLine & _
+              "    END" _
+              , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryPostAuditCalcs.ToArray()), CInt(objTable.ID))
           Else
             sSQLPostAuditCalcs = vbNullString
           End If
-
 
           ' -------------------
           ' INSTEAD OF INSERT
@@ -581,17 +626,13 @@ Namespace ScriptDB
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
               "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-              "{2}" & vbNewLine & vbNewLine & _
-              "    ---------------------------" & vbNewLine & _
-              "    -- Commit valid data." & vbNewLine & _
-              "    ---------------------------" & vbNewLine & vbNewLine & _
-              "    --DECLARE @UpdateBypass TABLE ([id] integer PRIMARY KEY CLUSTERED);" & vbNewLine & _
-              "    --INSERT @UpdateBypass SELECT DISTINCT [id] FROM @Failed WHERE [Severity] = 2;" & vbNewLine & vbNewLine & _
-              "    INSERT [dbo].[{0}] ({4})" & vbNewLine & _
-              "        SELECT {4} FROM inserted;" & vbNewLine _
+              "    INSERT [dbo].[tbsys_intransactiontrigger] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {2}, 1, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
+              "    -- Commit writeable columns" & vbNewLine & _
+              "    INSERT [dbo].[{0}] ({3})" & vbNewLine & _
+              "        SELECT {3} FROM inserted;" & vbNewLine & vbNewLine & _
+              "    DELETE [dbo].[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {2};" & vbNewLine _
               , objTable.Name, sTriggerName _
-              , "" _
-              , "" _
+              , CInt(objTable.ID) _
               , String.Join(",", aryAllWriteableColumns.ToArray()))
           ScriptTrigger("dbo", objTable, TriggerType.InsteadOfInsert, sSQL)
 
@@ -604,73 +645,62 @@ Namespace ScriptDB
               "    DECLARE @dChangeDate datetime;" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
               sSQLWriteableColumns & vbNewLine & _
-              "    ---------------------------" & vbNewLine & _
               "    -- Audit Trail" & vbNewLine & _
-              "    ---------------------------" & vbNewLine & _
               "{2}" & vbNewLine & vbNewLine & _
               "    INSERT dbo.[tbsys_audittrail] (username, datetimestamp, recordid, oldvalue, newvalue, tableid, columnid, deleted, recorddesc)" & vbNewLine & _
-              "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, tableid, columnid, 0, recorddesc FROM @audit" & vbNewLine & vbNewLine & _
-              sSQLCode_DiaryLinks & vbNewLine _
+              "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, tableid, columnid, 0, recorddesc FROM @audit" & vbNewLine & vbNewLine _
               , objTable.Name, sTriggerName, sSQLCode_AuditInsert)
           ScriptTrigger("dbo", objTable, TriggerType.AfterInsert, sSQL)
-
 
           ' -------------------
           ' INSTEAD OF UPDATE
           ' -------------------
           sTriggerName = String.Format("{0}{1}_u01", ScriptDB.Consts.Trigger, objTable.Name)
-          sSQL = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] nvarchar(MAX), [newvalue] nvarchar(MAX), [tableid] integer, [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
-              "    DECLARE @dChangeDate datetime," & vbNewLine & _
-              "            @nvarCommand nvarchar(MAX)," & vbNewLine & _
+          sSQL = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
               "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-              "    -- Has the trigger been called from an update on another table?" & vbNewLine & _
-              "    IF NOT UPDATE([updflag]) INSERT [dbo].[{5}] ([spid], [tablefromid]) VALUES (@@spid,{6});" & vbNewLine & vbNewLine & _
-              "{2}" & vbNewLine & vbNewLine & _
-              "    -- Commit writeable columns" & vbNewLine & _
+              "    INSERT [dbo].[{4}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {5}, 2, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
               "{3}" & vbNewLine & vbNewLine & _
-              "    -- Audit Trail" & vbNewLine & _
-              "{4}" & vbNewLine & vbNewLine & _
-              "    INSERT dbo.[tbsys_audittrail] (username, datetimestamp, recordid, oldvalue, newvalue, tableid, columnid, deleted, recorddesc)" & vbNewLine & _
-              "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, tableid, columnid, 0, recorddesc FROM @audit;" & vbNewLine & vbNewLine & _
-              "{7}" & vbNewLine & vbNewLine & _
-              "    -- Clear the temporary trigger status table" & vbNewLine & vbNewLine & _
-              "    DELETE [dbo].[{5}] WHERE [spid] = @@spid AND [tablefromid] = {6};" & vbNewLine & vbNewLine _
+              "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {2};" & vbNewLine _
               , objTable.Name, sTriggerName _
-              , String.Join(vbNewLine, aryValidationStatements.ToArray()) _
+              , CInt(objTable.ID) _
               , sSQLWriteableColumns _
-              , sSQLCode_AuditUpdate _
-              , Tables.sysTriggerTransaction, CInt(objTable.ID), sSQLPostAuditCalcs)
+              , Tables.sysTriggerTransaction, CInt(objTable.ID))
           ScriptTrigger("dbo", objTable, TriggerType.InsteadOfUpdate, sSQL)
-
 
           ' -------------------
           ' AFTER UPDATE
           ' -------------------
           sTriggerName = String.Format("{0}{1}_u02", ScriptDB.Consts.Trigger, objTable.Name)
-          sSQL = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
+          sSQL = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] nvarchar(MAX), [newvalue] nvarchar(MAX), [tableid] integer, [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
+              "    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
               "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
               sSQLCalculatedColumns & vbNewLine & vbNewLine & _
-              "    INSERT [dbo].[{4}] ([spid], [tablefromid]) VALUES (@@spid,{3});" & vbNewLine & vbNewLine & _
+              "    --INSERT [dbo].[{4}] ([spid], [tablefromid]) VALUES (@@spid,{3});" & vbNewLine & vbNewLine & _
               sSQLParentColumns & vbNewLine & _
               sSQLChildColumns & vbNewLine & vbNewLine & _
-              "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {3};" & vbNewLine & vbNewLine & _
               "    -- Validation" & vbNewLine & _
-              "    --IF NOT UPDATE([updflag])" & vbNewLine & _
-              "    --BEGIN" & vbNewLine & _
-              "        SELECT @sValidation = dbo.[udfvalid_{0}](ID) FROM inserted WHERE LEN(dbo.[udfvalid_{0}](ID)) > 0" & vbNewLine & _
+              "    IF EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3} AND [nestlevel] = 1)" & vbNewLine & _
+              "    BEGIN" & vbNewLine & _
+              "        SET @sValidation = '';" & vbNewLine & _
+              "        SELECT @sValidation = @sValidation + dbo.[udfvalid_{0}](ID, [_description]) FROM inserted" & vbNewLine & _
               "        IF LEN(@sValidation) > 0" & vbNewLine & _
               "        BEGIN" & vbNewLine & _
               "            RAISERROR(@sValidation, 16, 1);" & vbNewLine & _
               "            ROLLBACK;" & vbNewLine & _
               "        END" & vbNewLine & _
-              "     --END" & vbNewLine & vbNewLine _
+              "    END" & vbNewLine & vbNewLine & _
+              "{6}" & vbNewLine & vbNewLine & _
+              "    INSERT dbo.[tbsys_audittrail] (username, datetimestamp, recordid, oldvalue, newvalue, tableid, columnid, deleted, recorddesc)" & vbNewLine & _
+              "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, tableid, columnid, 0, recorddesc FROM @audit;" & vbNewLine & vbNewLine & _
+              "{7}" & vbNewLine & vbNewLine _
               , objTable.Name, sTriggerName _
               , "", CInt(objTable.ID), Tables.sysTriggerTransaction _
-              , String.Join(vbNewLine, aryUpdateUniqueCodes.ToArray()))
+              , String.Join(vbNewLine, aryUpdateUniqueCodes.ToArray()) _
+              , sSQLCode_AuditUpdate, sSQLPostAuditCalcs) & "/* " & sDebugCode & "*/" & vbNewLine & vbNewLine
           ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSQL)
 
 
@@ -681,11 +711,8 @@ Namespace ScriptDB
           sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] nvarchar(MAX), [newvalue] nvarchar(MAX), [tableid] integer, [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
               "    DECLARE @dChangeDate datetime;" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-              "    -- Has the trigger been called from an update on another table?" & vbNewLine & _
-              "    IF NOT UPDATE([updflag]) INSERT [dbo].[{4}] ([spid], [tablefromid]) VALUES (@@spid,{5});" & vbNewLine & vbNewLine & _
-              "    ---------------------------" & vbNewLine & _
+              "    INSERT [dbo].[{4}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {5}, 3, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
               "    -- Audit Trail" & vbNewLine & _
-              "    ---------------------------" & vbNewLine & _
               "{2}" & vbNewLine & vbNewLine & _
               "    INSERT dbo.[tbsys_audittrail] ([username], [datetimestamp], [recordid], [oldvalue], [newvalue], [tableid], [columnid], [deleted], [recorddesc])" & vbNewLine & _
               "		     SELECT SYSTEM_USER, @dChangeDate, [id], [oldvalue], [newvalue], [tableid], [columnid], 1, [recorddesc] FROM @audit" & vbNewLine & vbNewLine & _
@@ -695,7 +722,6 @@ Namespace ScriptDB
               , objTable.Name, sTriggerName, sSQLCode_AuditDelete, sSQLParentColumns_Delete _
               , Tables.sysTriggerTransaction, CInt(objTable.ID))
           ScriptTrigger("dbo", objTable, TriggerType.AfterDelete, sSQL)
-
 
         Next
 
@@ -788,224 +814,9 @@ Namespace ScriptDB
 
     End Function
 
-    '' Generate the diary links part of the trigger
-    'Private Function SQLTrigger_Diary(ByRef objTable As Things.Table) As String
-
-    '  'Dim objDiaryLink As Things.DiaryLink
-    '  'Dim objRelation As Things.Relation
-    '  'Dim aryDiaryStatements1 As New ArrayList
-    '  'Dim aryDiaryStatements2 As New ArrayList
-    '  'Dim aryDiaryStatements3 As New ArrayList
-    '  'Dim aryRelations As New ArrayList
-    '  'Dim iCount As Integer = 0
-
-    '  'Dim sRecordDescriptionCode = ""
-    '  Dim sTriggerCode As String = ""
-
-    '  '' objTable.RecordDescription.Parameters
-
-    '  '' BOTHC - DON;T WORK ON JOINED (i.e OpenPay view) tablkes
-    '  'If 1 = 1 Or objTable.Objects(Things.Type.DiaryLink).Count = 0 Then
-    '  '  sTriggerCode = "---------------------------" & vbNewLine & "-- No Diary Links" & vbNewLine & "---------------------------" & vbNewLine
-    '  'Else
-
-    '  '  objTable.RecordDescription.GenerateCode()
-    '  '  sRecordDescriptionCode = objTable.RecordDescription.UDF.CallingCode
-    '  '  '   "dbo.[udfrecdesc_Personnel_Records](base.Surname, base.Forenames)"
-
-    '  '  ' eefective date could be something like this?
-    '  '  '	, CASE WHEN [Start_Date] < GETDATE() THEN DATEADD(DD, 20, DATEADD(D, 0, DATEDIFF(D, 0, [Start_Date]))) ELSE NULL END AS [17]
-
-    '  '  For Each objDiaryLink In objTable.Objects(Things.Type.DiaryLink)
-    '  '    objDiaryLink.Generate()
-    '  '    aryDiaryStatements1.Add(String.Format("{0}INSERT @links([id], [linkid], [description], [alarm], [columnid]) VALUES ({1}, {2}, '{3}', {4}, {5});" _
-    '  '        , vbTab, CInt(iCount), CInt(objDiaryLink.ID), objDiaryLink.Comment, IIf(objDiaryLink.Reminder, 1, 0), CInt(objDiaryLink.Column.ID)))
-    '  '    aryDiaryStatements2.Add(String.Format("{0} AS [{1}]", objDiaryLink.UDF.CallingCode, iCount))
-    '  '    aryDiaryStatements3.Add(String.Format("[{0}]", iCount))
-    '  '    iCount += 1
-    '  '  Next
-
-
-    '  '  ' Build any parent relations
-    '  '  For Each objRelation In objTable.Objects(Things.Type.Relation)
-    '  '    If objRelation.RelationshipType = RelationshipType.Parent Then
-    '  '      aryRelations.Add(String.Format("INNER JOIN dbo.[{0}] ON dbo.[{0}].[ID] = dbo.[{1}].[ID_{2}]", objRelation.PhysicalName, objTable.Name, CInt(objTable.ID)))
-    '  '    End If
-    '  '  Next
-
-
-    '  '  ' Put it all together
-    '  '  sTriggerCode = "---------------------------" & vbNewLine & "-- Diary Links" & vbNewLine & "---------------------------" & vbNewLine & _
-    '  '    vbTab & "DECLARE @links TABLE([id] integer, [linkid] nvarchar(2), [description] nvarchar(255), [alarm] bit, [columnid] integer);" & vbNewLine & _
-    '  '    String.Join(vbNewLine, aryDiaryStatements1.ToArray()) & vbNewLine & vbNewLine &
-    '  '    vbTab & "INSERT dbo.[ASRSysDiaryEvents] ([tableid], [columnid], [rowid], [eventdate], [eventtime], [alarm], [access], [copiedfromid], [eventnotes], [eventtitle], [username], [columnvalue], [linkid])" & vbNewLine & _
-    '  '    vbTab & String.Format("SELECT {0}, d.columnid, tblpivot.ID, tblPivot.eventdate, NULL, d.alarm, 'RO', NULL, NULL" & vbNewLine & _
-    '  '    "		, {1} + ': ' + d.[description]" & vbNewLine & _
-    '  '    "		, SYSTEM_USER, NULL, d.[linkid]" & vbNewLine & _
-    '  '    "    FROM (SELECT [ID]," & vbNewLine & _
-    '  '    "      {2}" & vbNewLine & _
-    '  '    "      FROM dbo.[{3}]) obj" & vbNewLine & _
-    '  '    "    UNPIVOT (eventdate For property IN ({4})) AS tblPivot" & vbNewLine & _
-    '  '    "      INNER JOIN @links d ON d.id = tblPivot.Property" & vbNewLine & _
-    '  '    "      INNER JOIN dbo.[{3}] ON dbo.[{3}].ID = tblPivot.ID" & vbNewLine & _
-    '  '    "      INNER JOIN inserted ON inserted.ID = dbo.[{3}].ID" & _
-    '  '    "{5};" _
-    '  '    , CInt(objTable.ID), sRecordDescriptionCode, String.Join(vbNewLine & vbTab & vbTab & ", ", aryDiaryStatements2.ToArray()) _
-    '  '    , objTable.Name, String.Join(",", aryDiaryStatements3.ToArray()) _
-    '  '    , String.Join(vbNewLine, aryRelations.ToArray()))
-
-    '  '  ' Comment it all over - development mode!!! (take out later)
-    '  '  sTriggerCode = vbNewLine & sTriggerCode & vbNewLine
-
-    '  'End If
-
-    '  ''SELECT 0 AS [tableID], d.columnid, tblpivot.ID AS [RowID]
-    '  ''		, tblPivot.EventDate, NULL AS [EventTime], d.alarm, 'RO' AS [Access], NULL AS [CopiedFrom], NULL AS [EventNotes]
-    '  ''		, dbo.[udfrecdesc_Personnel_Records](base.Surname, base.Forenames) + ': ' + d.[description]  AS [EventTitle]
-    '  ''		, SYSTEM_USER AS [UserName], NULL AS [ColumnValue], tblPivot.Property AS [LinkID]
-    '  ''	FROM (SELECT id,
-    '  ''		[date_of_birth] AS [1],
-    '  ''		[leaving_date] AS [2],
-    '  ''		[Start_Date] AS [3],		
-    '  ''		[Start_Date]+1 AS [4],
-    '  ''		dbo.udf_function_randomdate() AS [5]
-    '  ''		FROM Personnel_records) Person
-    '  ''		UNPIVOT (EventDate For Property IN ([1],[2],[3],[4],[5])) AS tblPivot
-    '  ''	INNER JOIN @diarylinks d ON d.linkid = tblPivot.Property
-    '  ''	INNER JOIN Personnel_Records base ON base.ID = tblPivot.ID
-
-
-    '  Return sTriggerCode
-
-
-    'End Function
-
 #End Region
 
 #Region "Calculation Scripting"
-
-    'Public Sub ScriptDiaryLinkFilters(ByRef ProgressInfo As HCMProgressBar)
-
-    '  Dim objTable As Things.Table
-    '  Dim objDiaryLink As Things.DiaryLink
-    '  Dim sObjectName As String
-
-    '  For Each objTable In Globals.Things
-    '    For Each objDiaryLink In objTable.Objects(Things.Type.DiaryLink)
-    '      If Not objDiaryLink.Filter Is Nothing Then
-    '        objDiaryLink.Filter.GenerateCode()
-    '        If objDiaryLink.Filter.IsComplex Then
-
-    '          sObjectName = String.Format("udfdiarylinkfilter_{0}.{1}", objTable.Name, objDiaryLink.Name)
-    '          ScriptDB.DropUDF("dbo", sObjectName)
-
-    '        End If
-    '      End If
-    '    Next
-    '  Next
-
-    'End Sub
-
-    'Public Sub ScriptColumnCalculations(ByRef ProgressInfo As HCMProgressBar)
-
-    '  Dim objTable As Things.Table
-    '  Dim objColumn As Things.Column
-    '  Dim sObjectName As String = String.Empty
-    '  Dim sReturnType As String
-
-    '  Dim sUDFWithOptions As String
-    '  Dim sUDFSQL As String = String.Empty
-    '  Dim sSafeDummyUDF As String
-    '  Dim sCalcSQL As String
-    '  Dim sParameters As String
-
-    '  '      Dim aryDependantTables As Array
-
-    '  Try
-
-    '    ' Put this on later, after development and after some tweaking in the system manager
-    '    'sUDFWithOptions = "WITH SCHEMABINDING"
-    '    sUDFWithOptions = String.Empty
-
-    '    ProgressInfo.TotalSteps2 = Globals.Things.Count
-    '    For Each objTable In Globals.Things
-
-    '      For Each objColumn In objTable.Objects(Things.Type.Column)
-
-    '        If objColumn.IsCalculated Then
-
-    '          sObjectName = String.Format("udfcalc_{0}.{1}", objTable.Name, objColumn.Name)
-    '          '    sReturnType = objColumn.DataTypeSyntax
-
-    '          objColumn.Calculation.ExpressionType = ExpressionType.ColumnCalculation
-    '          sParameters = String.Format("@pID as integer, @pOriginalValue {0}", sReturnType)
-
-    '          '    sParameters = objColumn.Calculation.Parameters
-    '          sCalcSQL = objColumn.Calculation.UDF.Code
-
-    '          ' If we're dependant on any fields other than our base table wrap within the cache code
-    '          'If objColumn.Calculation.DependsOnTables.Length > 0 Then
-
-    '          '  sUDFSQL = String.Format("({0})" & vbNewLine & _
-    '          '             "RETURNS {1}" & vbNewLine & _
-    '          '             sUDFWithOptions & vbNewLine & _
-    '          '             "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-    '          '             "    DECLARE @Result as {1} = @pOriginalValue;" & vbNewLine & vbNewLine & _
-    '          '             "    IF EXISTS (SELECT [actiontype] FROM [dbo].[{4}] WHERE [tablefromid] IN ({2}) AND [spid] = @@SPID)" & vbNewLine & _
-    '          '             "    BEGIN" & vbNewLine & vbNewLine & _
-    '          '             "         -- Execute calculation code" & vbNewLine & _
-    '          '             "{3}" & vbNewLine & vbNewLine & _
-    '          '             "    END" & vbNewLine &
-    '          '             "    RETURN ISNULL(@Result, 0);" & vbNewLine & _
-    '          '             "END" _
-    '          '            , sParameters, sReturnType, objColumn.Calculation.DependsOnTables _
-    '          '            , sCalcSQL, Tables.sysTriggerTransaction)
-
-    '          'Else
-
-    '          sUDFSQL = String.Format("({0})" & vbNewLine & _
-    '                     "RETURNS {1}" & vbNewLine & _
-    '                     sUDFWithOptions & vbNewLine & _
-    '                     "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-    '                     "    DECLARE @Result as {1} = @pOriginalValue;" & vbNewLine & vbNewLine & _
-    '                     "    -- Execute calculation code" & vbNewLine & _
-    '                     "{2}" & vbNewLine & vbNewLine & _
-    '                     "    RETURN ISNULL(@Result, 0);" & vbNewLine & _
-    '                     "END" _
-    '                    , sParameters, objColumn.DataTypeSyntax, sCalcSQL)
-    '          '  End If
-
-    '          sSafeDummyUDF = String.Format("({0})" & vbNewLine & _
-    '                       "RETURNS {1}" & vbNewLine & _
-    '                       "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-    '                       "    DECLARE @Result as {1};" & vbNewLine & vbNewLine & _
-    '                       "    -- Execute calculation code" & vbNewLine & _
-    '                       "/*" & vbNewLine & "{2}" & vbNewLine & vbNewLine & _
-    '                       "*/" & vbNewLine & "    RETURN ISNULL(@Result, 0);" & vbNewLine & "END" _
-    '                      , sParameters, objColumn.DataTypeSyntax, sCalcSQL)
-
-    '          ' Try and create the UDF, if not put dummy code in place and record the error. To be updated once project go-ahead has been given (in other words I don't
-    '          ' won't to spend ages debugging the whole damn thing in case this never sees the light of day!!!!
-    '          If Not ScriptDB.CreateUDF("dbo", sObjectName, sUDFSQL, sSafeDummyUDF) Then
-    '            objColumn.Calculation.IsScriptSafe = False
-    '          End If
-
-    '        End If
-
-    '      Next
-
-    '      ProgressInfo.NextStep2()
-    '    Next
-
-    '  Catch ex As Exception
-    '    Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, sObjectName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sUDFSQL)
-
-    '  Finally
-    '    ProgressInfo.NextStep1()
-
-    '  End Try
-
-    'End Sub
 
     Public Function CreateFunctions() As Boolean Implements iCommitDB.ScriptFunctions
 
@@ -1016,6 +827,7 @@ Namespace ScriptDB
         bOK = ScriptFunctions.ConvertCurrency
         bOK = bOK And ScriptFunctions.UniqueCodeViews
         bOK = bOK And ScriptFunctions.GetFieldFromDatabases
+        bOK = bOK And ScriptFunctions.GeneratePerformanceIndexes
 
       Catch ex As Exception
         bOK = False

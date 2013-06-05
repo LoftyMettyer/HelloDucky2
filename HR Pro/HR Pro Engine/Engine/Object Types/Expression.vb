@@ -548,20 +548,29 @@ Namespace Things
             sColumnOrder = String.Empty
             bIsSummaryColumn = False
 
+
+            ' I think if we're a byreference component this would have been dealt with higher up the case statement!
+            ''''''''''''''''''
             ' Is parent or child?
-            If Component.IsColumnByReference Then
-              objRelation = New Things.Relation
-              objRelation.RelationshipType = ScriptDB.RelationshipType.Unknown
-            Else
-              'objRelation = objBaseColumn.Table.GetRelation(objThisColumn.Table.ID)
-              objRelation = Me.BaseTable.GetRelation(objThisColumn.Table.ID)
-            End If
+            '            If Component.IsColumnByReference Then
+            'objRelation = New Things.Relation
+            'objRelation.RelationshipType = ScriptDB.RelationshipType.Unknown
+            'Else
+            'objRelation = objBaseColumn.Table.GetRelation(objThisColumn.Table.ID)
+            objRelation = Me.BaseTable.GetRelation(objThisColumn.Table.ID)
+            'End If
 
             If objRelation.RelationshipType = ScriptDB.RelationshipType.Parent Then
               LineOfCode.Code = String.Format("ISNULL([{0}].[{1}],{2})", objThisColumn.Table.Name, objThisColumn.Name, objThisColumn.SafeReturnType)
 
+              'objThisColumn.Table.Column(objThisColumn.ID).ReferencedBy.AddIfNew(Me.AssociatedColumn.Table)
+
+              objThisColumn.ReferencedBy.AddIfNew(Me.AssociatedColumn.Table)
+
+              '              objThisColumn.Table.DependantChildTableColumns.AddIfNew(objThisColumn)
+
               ' Add table join component
-              sRelationCode = String.Format("INNER JOIN [dbo].[{0}] ON [{0}].[ID] = base.[ID_{1}]" _
+              sRelationCode = String.Format("LEFT JOIN [dbo].[{0}] ON [{0}].[ID] = base.[ID_{1}]" _
                 , objRelation.Name, CInt(objRelation.ParentID))
               If Not Joins.Contains(sRelationCode) Then
                 Joins.Add(sRelationCode)
@@ -646,6 +655,9 @@ Namespace Things
               ' Code for the order on this column in a child table
               If CInt([Component].ColumnOrderID) > 0 Then
                 sColumnOrder = SQLCode_AddOrder(objThisColumn.Table, [Component].ColumnOrderID, bReverseOrder)
+
+                '                objThisColumn.Table.Parent = objt
+                Globals.PerformanceIndexes.AddIfNew(objThisColumn)
               End If
 
               ' Add to prereqistits arrays

@@ -11,9 +11,14 @@ Namespace Things
     Public AuditInsert As Boolean
     Public AuditDelete As Boolean
     Public DefaultOrderID As HCMGuid
-    '    Public RecordDescription As Things.RecordDescription
     Public DefaultEmailID As HCMGuid
     Public IsRemoteView As Boolean
+
+    '    Public DependantChildTableColumns As Things.Collection
+
+    'Public Sub New()
+    '  DependantChildTableColumns = New Things.Collection
+    'End Sub
 
     Public Overrides ReadOnly Property PhysicalName As String
       Get

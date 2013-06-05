@@ -22,6 +22,25 @@ Namespace Things
     Public Parent As Things.Base ' iSystemObject
     Public Root As Things.Base 'iSystemObject
 
+    ' Adds a unqiue object - scrolls through rather than uses contains because the type sent in could be a inherited type (there may be a better way to do this!)
+    Public Sub AddIfNew(ByRef [Thing] As Things.Base)
+
+      Dim objThing As Things.Base
+      Dim bFound As Boolean
+
+      For Each objThing In Me.Items
+        If objThing.ID = Thing.ID Then
+          bFound = True
+          Exit For
+        End If
+      Next
+
+      If Not bFound Then
+        Me.Items.Add([Thing])
+      End If
+
+    End Sub
+
     'Public Root As iSystemObject
 
     'Public Sub New()

@@ -457,8 +457,18 @@
         objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getrelations", objParameters)
         For Each objRow In objDataset.Tables(0).Rows
           objRelation = New Things.Relation
-          objRelation.Parent = Table
           objRelation.RelationshipType = objRow.Item("relationship").ToString
+
+          'Select Case objRelation.RelationshipType
+          '  Case ScriptDB.RelationshipType.Parent
+          '    objRelation.Parent = Table.Objects.Parent
+
+          '  Case ScriptDB.RelationshipType.Child
+          '    objRelation.Parent = Table
+
+          'End Select
+
+          objRelation.Parent = Table
           objRelation.ParentID = objRow.Item("parentid").ToString
           objRelation.ChildID = objRow.Item("childid").ToString
           objRelation.Name = objRow.Item("name").ToString
