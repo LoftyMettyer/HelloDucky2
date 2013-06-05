@@ -70,6 +70,8 @@ Public Function CreateLinkDocumentSP() As Boolean
     sSQL = sSQL & _
               "    SET @sExecuteSQL = '';" & vbNewLine & _
               "    SET @sWhereClause = '';" & vbNewLine & _
+              "    SET @sInsertColumns = '';" & vbNewLine & _
+              "    SET @sInsertValues = '';" & vbNewLine & _
               "    SET @intParent1RecordID = 0;" & vbNewLine & vbNewLine
   
     sSQL = sSQL & _
@@ -88,12 +90,13 @@ Public Function CreateLinkDocumentSP() As Boolean
               "        LEFT JOIN [ASRSysColumns] c3 ON c3.[ColumnID] = d.[Parent1KeyFieldColumnID]" & vbNewLine & _
               "        LEFT JOIN [ASRSysColumns] c4 ON c4.[ColumnID] = d.[TargetCategoryColumnID]" & vbNewLine & _
               "        LEFT JOIN [ASRSysColumns] c5 ON c5.[ColumnID] = d.[TargetTypeColumnID]" & vbNewLine & _
-              "    WHERE d.[CategoryRecordID] = @iDocCategoryID AND d.[TypeRecordID] = @iDocTypeID;" & vbNewLine & vbNewLine
+              "        WHERE d.[CategoryRecordID] = @iDocCategoryID AND (d.[TypeRecordID] = @iDocTypeID OR @iDocTypeID IS NULL);" & vbNewLine & vbNewLine
   
     sSQL = sSQL & _
               "    IF LEN(@sTargetKeyField) > 0" & vbNewLine & _
               "    BEGIN" & vbNewLine & _
               "        SET @sWhereClause = '[' + @sTargetKeyField + '] = ''' + @Key + ''''" & vbNewLine & _
+              "        IF LEN(@sTargetTypeColumn) > 0 SET @sWhereClause = @sWhereClause + 'AND [' + @sTargetTypeColumn + '] = ''' + @DocumentType + '''';" & vbNewLine & vbNewLine & _
               "        IF LEN(@sParent1Keyfield) > 0" & vbNewLine & _
               "        BEGIN" & vbNewLine & _
               "            SET @sGetParentID = 'SELECT @intParent1RecordID = [id] FROM dbo.[' + @sParent1TableName + '] WHERE [' + @sParent1KeyField + '] = ''' + @Parent1Key + '''';" & vbNewLine & _
