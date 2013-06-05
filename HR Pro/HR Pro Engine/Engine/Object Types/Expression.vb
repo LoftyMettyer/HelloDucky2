@@ -146,7 +146,7 @@ Namespace Things
           aryParameters1.Add(String.Format("@prm_{0} {1}", column.Name, column.DataTypeSyntax))
           aryParameters2.Add(String.Format("base.[{0}]", column.Name))
           aryParameters3.Add(String.Format("@prm_{0}", column.Name))
-          aryComments.Add(String.Format("Column: {0}", column.Name))
+          '          aryComments.Add(String.Format("Column: {0}", column.Name))
         End If
       Next
 
@@ -185,10 +185,22 @@ Namespace Things
         End If
       Next
 
-      For Each table In Dependencies.Tables
-        aryComments.Add(String.Format("Table : {0}", table.Name))
-        aryDependsOn.Add(String.Format("{0}", table.ID))
-      Next
+      '' Add relationship code
+      'For Each table In Dependencies.Tables
+      '  'aryComments.Add(String.Format("Table : {0}", table.Name))
+      '  '        aryDependsOn.Add(String.Format("{0}", table.ID))
+
+      '  'If Relation.RelationshipType = RelationshipType.Parent Then
+      '  '  aryParameters2.Add(String.Format("base.[ID_{0}]", Relation.ParentID))
+      '  '  aryParameters3.Add(String.Format("@prm_ID_{0}", Relation.ParentID))
+      '  '  aryComments.Add(String.Format("Relation :{0}", Relation.Name))
+      '  'Else
+      '  aryParameters2.Add("base.[ID]")
+      '  aryParameters3.Add(String.Format("@prm_ID"))
+      '  'aryComments.Add(String.Format("Relation : {0}", Relation.Name))
+      '  'End If
+
+      'Next
 
       ' Calling statement
       With UDF

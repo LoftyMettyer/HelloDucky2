@@ -82,6 +82,10 @@
         RowDetails.Filter.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
         RowDetails.Filter.GenerateCodeForColumn()
 
+        If RowDetails.Filter.RequiresRecordID Then
+          aryParameters.Add("@prm_ID integer")
+        End If
+
         aryDeclarations.AddRange(RowDetails.Filter.Declarations)
         aryStatements.AddRange(RowDetails.Filter.PreStatements)
         aryWheres.Add(String.Format("({0} = 1)", RowDetails.Filter.UDF.SelectCode))

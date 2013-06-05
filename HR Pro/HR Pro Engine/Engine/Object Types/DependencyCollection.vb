@@ -103,7 +103,6 @@ Public Class ExpressionDependencies
         sTypesafeCode = Child.Column.SafeReturnType
       End If
 
-
       objOrderFilter = Child.Column.Table.TableOrderFilter(Child)
       objOrderFilter.IncludedColumns.AddIfNew(Child.Column)
 
