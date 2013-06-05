@@ -30,6 +30,603 @@ Begin VB.Form frmSSIntranetLink
    ScaleWidth      =   9360
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin VB.Frame fraDBValue 
+      Caption         =   "Database Value :"
+      Height          =   6060
+      Left            =   2880
+      TabIndex        =   80
+      Top             =   6000
+      Width           =   6300
+      Begin VB.ComboBox cboDBValCFOperator 
+         Height          =   315
+         Index           =   2
+         Left            =   210
+         Style           =   2  'Dropdown List
+         TabIndex        =   111
+         Top             =   4635
+         Width           =   2730
+      End
+      Begin VB.TextBox txtDBValCFValue 
+         Height          =   315
+         Index           =   2
+         Left            =   2970
+         TabIndex        =   112
+         Top             =   4635
+         Width           =   645
+      End
+      Begin VB.ComboBox cboDBValCFStyle 
+         Height          =   315
+         Index           =   2
+         Left            =   3660
+         Style           =   2  'Dropdown List
+         TabIndex        =   113
+         Top             =   4635
+         Width           =   1035
+      End
+      Begin VB.TextBox txtDBValCFColour 
+         BackColor       =   &H00FFFFFF&
+         Enabled         =   0   'False
+         Height          =   315
+         Index           =   2
+         Left            =   4740
+         TabIndex        =   114
+         Top             =   4635
+         Width           =   990
+      End
+      Begin VB.CommandButton cmdDBValueColPick 
+         Caption         =   "..."
+         Height          =   315
+         Index           =   2
+         Left            =   5745
+         TabIndex        =   115
+         ToolTipText     =   "Select Formatting Colour"
+         Top             =   4635
+         UseMaskColor    =   -1  'True
+         Width           =   315
+      End
+      Begin VB.ComboBox cboDBValCFOperator 
+         Height          =   315
+         Index           =   1
+         Left            =   210
+         Style           =   2  'Dropdown List
+         TabIndex        =   106
+         Top             =   4275
+         Width           =   2730
+      End
+      Begin VB.TextBox txtDBValCFValue 
+         Height          =   315
+         Index           =   1
+         Left            =   2970
+         TabIndex        =   107
+         Top             =   4275
+         Width           =   645
+      End
+      Begin VB.ComboBox cboDBValCFStyle 
+         Height          =   315
+         Index           =   1
+         Left            =   3660
+         Style           =   2  'Dropdown List
+         TabIndex        =   108
+         Top             =   4275
+         Width           =   1035
+      End
+      Begin VB.TextBox txtDBValCFColour 
+         BackColor       =   &H00FFFFFF&
+         Enabled         =   0   'False
+         Height          =   315
+         Index           =   1
+         Left            =   4740
+         TabIndex        =   109
+         Top             =   4275
+         Width           =   990
+      End
+      Begin VB.CommandButton cmdDBValueColPick 
+         Caption         =   "..."
+         Height          =   315
+         Index           =   1
+         Left            =   5745
+         TabIndex        =   110
+         ToolTipText     =   "Select Formatting Colour"
+         Top             =   4275
+         UseMaskColor    =   -1  'True
+         Width           =   315
+      End
+      Begin VB.TextBox txtDBValueSample 
+         Height          =   315
+         Left            =   1215
+         TabIndex        =   116
+         Text            =   "12345.210"
+         Top             =   5280
+         Width           =   1290
+      End
+      Begin COASpinner.COA_Spinner spnDBValueDecimals 
+         Height          =   300
+         Left            =   2310
+         TabIndex        =   94
+         Top             =   2385
+         Width           =   600
+         _ExtentX        =   1058
+         _ExtentY        =   529
+         BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Text            =   "0"
+      End
+      Begin VB.CommandButton cmdDBValueColPick 
+         Caption         =   "..."
+         Height          =   315
+         Index           =   0
+         Left            =   5745
+         TabIndex        =   105
+         ToolTipText     =   "Select Formatting Colour"
+         Top             =   3915
+         UseMaskColor    =   -1  'True
+         Width           =   315
+      End
+      Begin VB.TextBox txtDBValCFColour 
+         BackColor       =   &H00FFFFFF&
+         Enabled         =   0   'False
+         Height          =   315
+         Index           =   0
+         Left            =   4740
+         TabIndex        =   104
+         Top             =   3915
+         Width           =   990
+      End
+      Begin VB.ComboBox cboDBValCFStyle 
+         Height          =   315
+         Index           =   0
+         ItemData        =   "frmSSIntranetLink.frx":000C
+         Left            =   3660
+         List            =   "frmSSIntranetLink.frx":000E
+         Style           =   2  'Dropdown List
+         TabIndex        =   103
+         Top             =   3915
+         Width           =   1035
+      End
+      Begin VB.TextBox txtDBValCFValue 
+         Height          =   315
+         Index           =   0
+         Left            =   2970
+         TabIndex        =   102
+         Top             =   3915
+         Width           =   645
+      End
+      Begin VB.ComboBox cboDBValCFOperator 
+         Height          =   315
+         Index           =   0
+         Left            =   210
+         Style           =   2  'Dropdown List
+         TabIndex        =   101
+         Top             =   3915
+         Width           =   2730
+      End
+      Begin VB.CheckBox chkConditionalFormatting 
+         Caption         =   "Use cond&itional formatting"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   100
+         Top             =   3315
+         Width           =   2835
+      End
+      Begin VB.TextBox txtDBValueSuffix 
+         Height          =   300
+         Left            =   4815
+         TabIndex        =   99
+         Top             =   2745
+         Width           =   1125
+      End
+      Begin VB.TextBox txtDBValuePrefix 
+         Height          =   300
+         Left            =   1800
+         TabIndex        =   97
+         Top             =   2745
+         Width           =   1125
+      End
+      Begin VB.CheckBox chkDBVaUseThousandSeparator 
+         Caption         =   "Use &1000 separator"
+         Height          =   240
+         Left            =   3975
+         TabIndex        =   95
+         Top             =   2415
+         Width           =   2040
+      End
+      Begin VB.CheckBox chkFormatting 
+         Caption         =   "Use &formatting"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   92
+         Top             =   2040
+         Width           =   1575
+      End
+      Begin VB.ComboBox cboColumns 
+         Height          =   315
+         Left            =   1575
+         Sorted          =   -1  'True
+         Style           =   2  'Dropdown List
+         TabIndex        =   84
+         Top             =   705
+         Width           =   4515
+      End
+      Begin VB.ComboBox cboParents 
+         Height          =   315
+         Left            =   1575
+         Sorted          =   -1  'True
+         Style           =   2  'Dropdown List
+         TabIndex        =   82
+         Top             =   315
+         Width           =   4515
+      End
+      Begin VB.OptionButton optAggregateType 
+         Caption         =   "Count"
+         Height          =   285
+         Index           =   0
+         Left            =   2265
+         TabIndex        =   90
+         Top             =   1545
+         Value           =   -1  'True
+         Width           =   855
+      End
+      Begin VB.OptionButton optAggregateType 
+         Caption         =   "Total"
+         Height          =   285
+         Index           =   1
+         Left            =   3390
+         TabIndex        =   91
+         Top             =   1545
+         Width           =   765
+      End
+      Begin VB.CommandButton cmdFilter 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   5430
+         TabIndex        =   87
+         ToolTipText     =   "Select Filter"
+         Top             =   1080
+         Width           =   315
+      End
+      Begin VB.TextBox txtFilter 
+         Height          =   330
+         Left            =   1575
+         TabIndex        =   86
+         Top             =   1080
+         Width           =   3870
+      End
+      Begin VB.CommandButton cmdFilterClear 
+         Caption         =   "O"
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   20.25
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Left            =   5745
+         MaskColor       =   &H000000FF&
+         TabIndex        =   88
+         ToolTipText     =   "Clear Filter"
+         Top             =   1080
+         UseMaskColor    =   -1  'True
+         Width           =   330
+      End
+      Begin VB.Label lblCFHeader4 
+         AutoSize        =   -1  'True
+         Caption         =   "Colour"
+         Height          =   195
+         Left            =   4755
+         TabIndex        =   127
+         Top             =   3660
+         Width           =   570
+      End
+      Begin VB.Label lblCFHeader3 
+         AutoSize        =   -1  'True
+         Caption         =   "Format"
+         Height          =   195
+         Left            =   3690
+         TabIndex        =   126
+         Top             =   3660
+         Width           =   600
+      End
+      Begin VB.Label lblCFHeader2 
+         AutoSize        =   -1  'True
+         Caption         =   "Value"
+         Height          =   195
+         Left            =   2985
+         TabIndex        =   125
+         Top             =   3660
+         Width           =   480
+      End
+      Begin VB.Label lblCFHeader1 
+         AutoSize        =   -1  'True
+         Caption         =   "Operator"
+         Height          =   195
+         Left            =   240
+         TabIndex        =   124
+         Top             =   3660
+         Width           =   765
+      End
+      Begin VB.Label lblDBValueSample 
+         Caption         =   "12345.21"
+         Height          =   510
+         Left            =   3660
+         TabIndex        =   117
+         Top             =   5325
+         Width           =   2430
+      End
+      Begin VB.Label lblDBValuePreview 
+         AutoSize        =   -1  'True
+         Caption         =   "Preview :"
+         Height          =   195
+         Left            =   2655
+         TabIndex        =   120
+         Top             =   5310
+         Width           =   810
+      End
+      Begin VB.Label lblConditionWarning 
+         AutoSize        =   -1  'True
+         Caption         =   "(in priority order)"
+         Height          =   195
+         Left            =   4530
+         TabIndex        =   119
+         Top             =   3315
+         Width           =   1500
+      End
+      Begin VB.Label lblDBVSampleHeader 
+         Caption         =   "Sample :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   118
+         Top             =   5310
+         Width           =   870
+      End
+      Begin VB.Line Line3 
+         BorderColor     =   &H80000015&
+         X1              =   195
+         X2              =   6075
+         Y1              =   5100
+         Y2              =   5100
+      End
+      Begin VB.Line Line2 
+         BorderColor     =   &H80000015&
+         X1              =   195
+         X2              =   6075
+         Y1              =   3195
+         Y2              =   3195
+      End
+      Begin VB.Label lblDBValueSuffix 
+         AutoSize        =   -1  'True
+         Caption         =   "Suffix :"
+         Height          =   195
+         Left            =   3975
+         TabIndex        =   98
+         Top             =   2790
+         Width           =   630
+      End
+      Begin VB.Label lblDBValuePrefix 
+         AutoSize        =   -1  'True
+         Caption         =   "Prefix :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   96
+         Top             =   2790
+         Width           =   630
+      End
+      Begin VB.Label lblDBValueDecimals 
+         AutoSize        =   -1  'True
+         Caption         =   "Decimal places :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   93
+         Top             =   2430
+         Width           =   1425
+      End
+      Begin VB.Line Line1 
+         BorderColor     =   &H80000015&
+         X1              =   195
+         X2              =   6075
+         Y1              =   1920
+         Y2              =   1920
+      End
+      Begin VB.Label lblParents 
+         AutoSize        =   -1  'True
+         Caption         =   "Table :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   81
+         Top             =   330
+         Width           =   600
+      End
+      Begin VB.Label lblColumn 
+         AutoSize        =   -1  'True
+         Caption         =   "Column :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   83
+         Top             =   720
+         Width           =   795
+      End
+      Begin VB.Label lblFilter 
+         Caption         =   "Filter :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   85
+         Top             =   1155
+         Width           =   615
+      End
+      Begin VB.Label lblAggregateType 
+         AutoSize        =   -1  'True
+         Caption         =   "Aggregate Function :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   89
+         Top             =   1575
+         Width           =   1785
+      End
+   End
+   Begin VB.Frame fraChartLink 
+      Caption         =   "Chart :"
+      Height          =   5160
+      Left            =   2880
+      TabIndex        =   64
+      Top             =   6375
+      Width           =   6300
+      Begin VB.CheckBox chkShowPercentages 
+         Caption         =   "Show Values as Percent"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   72
+         Top             =   2730
+         Width           =   2355
+      End
+      Begin VB.CheckBox chkPrimaryDisplay 
+         Caption         =   "D&isplay Data Grid First"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   71
+         Top             =   2385
+         Width           =   2235
+      End
+      Begin VB.CommandButton cmdChartData 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   5715
+         TabIndex        =   74
+         ToolTipText     =   "Select Chart Data"
+         Top             =   3315
+         Width           =   315
+      End
+      Begin VB.TextBox txtChartDescription 
+         Enabled         =   0   'False
+         Height          =   330
+         Left            =   1935
+         TabIndex        =   73
+         Top             =   3315
+         Width           =   3780
+      End
+      Begin VB.CommandButton cmdChartReportClear 
+         Caption         =   "O"
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   20.25
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Left            =   5715
+         MaskColor       =   &H000000FF&
+         TabIndex        =   77
+         ToolTipText     =   "Clear Drill Down Utility"
+         Top             =   3705
+         UseMaskColor    =   -1  'True
+         Width           =   330
+      End
+      Begin VB.CommandButton cmdChartReport 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   5385
+         TabIndex        =   76
+         ToolTipText     =   "Select Drill Down Utility"
+         Top             =   3705
+         Width           =   315
+      End
+      Begin VB.TextBox txtChartUtility 
+         Enabled         =   0   'False
+         Height          =   330
+         Left            =   1935
+         TabIndex        =   75
+         Top             =   3705
+         Width           =   3450
+      End
+      Begin MSChart20Lib.MSChart MSChart1 
+         Height          =   2505
+         Left            =   2730
+         OleObjectBlob   =   "frmSSIntranetLink.frx":0010
+         TabIndex        =   78
+         Top             =   555
+         Width           =   3330
+      End
+      Begin VB.CheckBox chkShowValues 
+         Caption         =   "Show &Values"
+         Height          =   210
+         Left            =   210
+         TabIndex        =   69
+         Top             =   1695
+         Width           =   1665
+      End
+      Begin VB.CheckBox chkStackSeries 
+         Caption         =   "S&tack Series"
+         Height          =   210
+         Left            =   210
+         TabIndex        =   70
+         Top             =   2040
+         Width           =   1665
+      End
+      Begin VB.CheckBox chkDottedGridlines 
+         Caption         =   "Dotted &Gridlines"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   68
+         Top             =   1350
+         Width           =   1980
+      End
+      Begin VB.CheckBox chkShowLegend 
+         Caption         =   "Show &Legend"
+         Height          =   240
+         Left            =   210
+         TabIndex        =   67
+         Top             =   990
+         Width           =   1710
+      End
+      Begin VB.ComboBox cboChartType 
+         Height          =   315
+         ItemData        =   "frmSSIntranetLink.frx":2500
+         Left            =   210
+         List            =   "frmSSIntranetLink.frx":2502
+         Style           =   2  'Dropdown List
+         TabIndex        =   66
+         Top             =   555
+         Width           =   2205
+      End
+      Begin VB.Label lblChartData 
+         AutoSize        =   -1  'True
+         Caption         =   "Chart Data :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   123
+         Top             =   3360
+         Width           =   1080
+      End
+      Begin VB.Label lblUtility 
+         AutoSize        =   -1  'True
+         Caption         =   "Drill down utility :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   122
+         Top             =   3750
+         Width           =   1515
+      End
+      Begin VB.Label lblChartyType 
+         AutoSize        =   -1  'True
+         Caption         =   "Chart Type :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   65
+         Top             =   300
+         Width           =   1095
+      End
+   End
    Begin VB.Frame fraLinkSeparator 
       Caption         =   "Separator :"
       Height          =   2610
@@ -41,7 +638,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "Use &formatting"
          Height          =   195
          Left            =   210
-         TabIndex        =   119
+         TabIndex        =   61
          Top             =   1260
          Width           =   1800
       End
@@ -50,7 +647,7 @@ Begin VB.Form frmSSIntranetLink
          Enabled         =   0   'False
          Height          =   315
          Left            =   2580
-         TabIndex        =   118
+         TabIndex        =   62
          Top             =   1545
          Width           =   1170
       End
@@ -58,7 +655,8 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "..."
          Height          =   315
          Left            =   3765
-         TabIndex        =   117
+         TabIndex        =   63
+         ToolTipText     =   "Select Border Colour"
          Top             =   1530
          UseMaskColor    =   -1  'True
          Width           =   315
@@ -68,6 +666,7 @@ Begin VB.Form frmSSIntranetLink
          Height          =   315
          Left            =   4830
          TabIndex        =   58
+         ToolTipText     =   "Select Icon"
          Top             =   315
          Width           =   315
       End
@@ -94,7 +693,7 @@ Begin VB.Form frmSSIntranetLink
          Left            =   5160
          MaskColor       =   &H000000FF&
          TabIndex        =   59
-         ToolTipText     =   "Clear Path"
+         ToolTipText     =   "Clear Icon"
          Top             =   315
          UseMaskColor    =   -1  'True
          Width           =   330
@@ -112,7 +711,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "Separator border colour :"
          Height          =   195
          Left            =   210
-         TabIndex        =   120
+         TabIndex        =   121
          Top             =   1575
          Width           =   2205
       End
@@ -128,7 +727,7 @@ Begin VB.Form frmSSIntranetLink
          Caption         =   "There are no configurable options for this link type"
          Height          =   195
          Left            =   285
-         TabIndex        =   75
+         TabIndex        =   79
          Top             =   2190
          Visible         =   0   'False
          Width           =   4350
@@ -147,692 +746,6 @@ Begin VB.Form frmSSIntranetLink
          Stretch         =   -1  'True
          Top             =   330
          Width           =   510
-      End
-   End
-   Begin VB.Frame fraChartLink 
-      Caption         =   "Chart :"
-      Height          =   5160
-      Left            =   2880
-      TabIndex        =   61
-      Top             =   6375
-      Width           =   6300
-      Begin VB.CheckBox chkShowPercentages 
-         Caption         =   "Show Values as Percent"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   129
-         Top             =   2730
-         Width           =   2355
-      End
-      Begin VB.CheckBox chkPrimaryDisplay 
-         Caption         =   "D&isplay Data Grid First"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   68
-         Top             =   2385
-         Width           =   2235
-      End
-      Begin VB.CommandButton cmdChartData 
-         Caption         =   "..."
-         Height          =   315
-         Left            =   5715
-         TabIndex        =   70
-         Top             =   3315
-         Width           =   315
-      End
-      Begin VB.TextBox txtChartDescription 
-         Enabled         =   0   'False
-         Height          =   330
-         Left            =   1935
-         TabIndex        =   69
-         Top             =   3315
-         Width           =   3780
-      End
-      Begin VB.CommandButton cmdChartReportClear 
-         Caption         =   "O"
-         BeginProperty Font 
-            Name            =   "Wingdings 2"
-            Size            =   20.25
-            Charset         =   2
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Left            =   5715
-         MaskColor       =   &H000000FF&
-         TabIndex        =   73
-         ToolTipText     =   "Clear Path"
-         Top             =   3705
-         UseMaskColor    =   -1  'True
-         Width           =   330
-      End
-      Begin VB.CommandButton cmdChartReport 
-         Caption         =   "..."
-         Height          =   315
-         Left            =   5385
-         TabIndex        =   72
-         Top             =   3705
-         Width           =   315
-      End
-      Begin VB.TextBox txtChartUtility 
-         Enabled         =   0   'False
-         Height          =   330
-         Left            =   1935
-         TabIndex        =   71
-         Top             =   3705
-         Width           =   3450
-      End
-      Begin MSChart20Lib.MSChart MSChart1 
-         Height          =   2505
-         Left            =   2730
-         OleObjectBlob   =   "frmSSIntranetLink.frx":000C
-         TabIndex        =   74
-         Top             =   555
-         Width           =   3330
-      End
-      Begin VB.CheckBox chkShowValues 
-         Caption         =   "Show &Values"
-         Height          =   210
-         Left            =   210
-         TabIndex        =   66
-         Top             =   1695
-         Width           =   1665
-      End
-      Begin VB.CheckBox chkStackSeries 
-         Caption         =   "S&tack Series"
-         Height          =   210
-         Left            =   210
-         TabIndex        =   67
-         Top             =   2040
-         Width           =   1665
-      End
-      Begin VB.CheckBox chkDottedGridlines 
-         Caption         =   "Dotted &Gridlines"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   65
-         Top             =   1350
-         Width           =   1980
-      End
-      Begin VB.CheckBox chkShowLegend 
-         Caption         =   "Show &Legend"
-         Height          =   240
-         Left            =   210
-         TabIndex        =   64
-         Top             =   990
-         Width           =   1710
-      End
-      Begin VB.ComboBox cboChartType 
-         Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":24FC
-         Left            =   210
-         List            =   "frmSSIntranetLink.frx":24FE
-         Style           =   2  'Dropdown List
-         TabIndex        =   63
-         Top             =   555
-         Width           =   2205
-      End
-      Begin VB.Label lblChartData 
-         AutoSize        =   -1  'True
-         Caption         =   "Chart Data :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   122
-         Top             =   3360
-         Width           =   1080
-      End
-      Begin VB.Label lblUtility 
-         AutoSize        =   -1  'True
-         Caption         =   "Drill down utility :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   121
-         Top             =   3750
-         Width           =   1515
-      End
-      Begin VB.Label lblChartyType 
-         AutoSize        =   -1  'True
-         Caption         =   "Chart Type :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   62
-         Top             =   300
-         Width           =   1095
-      End
-   End
-   Begin VB.Frame fraDBValue 
-      Caption         =   "Database Value :"
-      Height          =   6060
-      Left            =   2895
-      TabIndex        =   76
-      Top             =   6000
-      Width           =   6300
-      Begin VB.ComboBox cboDBValCFOperator 
-         Height          =   315
-         Index           =   2
-         Left            =   210
-         Style           =   2  'Dropdown List
-         TabIndex        =   107
-         Top             =   4635
-         Width           =   2730
-      End
-      Begin VB.TextBox txtDBValCFValue 
-         Height          =   315
-         Index           =   2
-         Left            =   2970
-         TabIndex        =   108
-         Top             =   4635
-         Width           =   645
-      End
-      Begin VB.ComboBox cboDBValCFStyle 
-         Height          =   315
-         Index           =   2
-         Left            =   3660
-         Style           =   2  'Dropdown List
-         TabIndex        =   109
-         Top             =   4635
-         Width           =   1035
-      End
-      Begin VB.TextBox txtDBValCFColour 
-         BackColor       =   &H00FFFFFF&
-         Enabled         =   0   'False
-         Height          =   315
-         Index           =   2
-         Left            =   4740
-         TabIndex        =   110
-         Top             =   4635
-         Width           =   990
-      End
-      Begin VB.CommandButton cmdDBValueColPick 
-         Caption         =   "..."
-         Height          =   315
-         Index           =   2
-         Left            =   5745
-         TabIndex        =   111
-         Top             =   4635
-         UseMaskColor    =   -1  'True
-         Width           =   315
-      End
-      Begin VB.ComboBox cboDBValCFOperator 
-         Height          =   315
-         Index           =   1
-         Left            =   210
-         Style           =   2  'Dropdown List
-         TabIndex        =   102
-         Top             =   4275
-         Width           =   2730
-      End
-      Begin VB.TextBox txtDBValCFValue 
-         Height          =   315
-         Index           =   1
-         Left            =   2970
-         TabIndex        =   103
-         Top             =   4275
-         Width           =   645
-      End
-      Begin VB.ComboBox cboDBValCFStyle 
-         Height          =   315
-         Index           =   1
-         Left            =   3660
-         Style           =   2  'Dropdown List
-         TabIndex        =   104
-         Top             =   4275
-         Width           =   1035
-      End
-      Begin VB.TextBox txtDBValCFColour 
-         BackColor       =   &H00FFFFFF&
-         Enabled         =   0   'False
-         Height          =   315
-         Index           =   1
-         Left            =   4740
-         TabIndex        =   105
-         Top             =   4275
-         Width           =   990
-      End
-      Begin VB.CommandButton cmdDBValueColPick 
-         Caption         =   "..."
-         Height          =   315
-         Index           =   1
-         Left            =   5745
-         TabIndex        =   106
-         Top             =   4275
-         UseMaskColor    =   -1  'True
-         Width           =   315
-      End
-      Begin VB.TextBox txtDBValueSample 
-         Height          =   315
-         Left            =   1215
-         TabIndex        =   112
-         Text            =   "12345.210"
-         Top             =   5280
-         Width           =   1290
-      End
-      Begin COASpinner.COA_Spinner spnDBValueDecimals 
-         Height          =   300
-         Left            =   2310
-         TabIndex        =   90
-         Top             =   2385
-         Width           =   600
-         _ExtentX        =   1058
-         _ExtentY        =   529
-         BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Text            =   "0"
-      End
-      Begin VB.CommandButton cmdDBValueColPick 
-         Caption         =   "..."
-         Height          =   315
-         Index           =   0
-         Left            =   5745
-         TabIndex        =   101
-         Top             =   3915
-         UseMaskColor    =   -1  'True
-         Width           =   315
-      End
-      Begin VB.TextBox txtDBValCFColour 
-         BackColor       =   &H00FFFFFF&
-         Enabled         =   0   'False
-         Height          =   315
-         Index           =   0
-         Left            =   4740
-         TabIndex        =   100
-         Top             =   3915
-         Width           =   990
-      End
-      Begin VB.ComboBox cboDBValCFStyle 
-         Height          =   315
-         Index           =   0
-         ItemData        =   "frmSSIntranetLink.frx":2500
-         Left            =   3660
-         List            =   "frmSSIntranetLink.frx":2502
-         Style           =   2  'Dropdown List
-         TabIndex        =   99
-         Top             =   3915
-         Width           =   1035
-      End
-      Begin VB.TextBox txtDBValCFValue 
-         Height          =   315
-         Index           =   0
-         Left            =   2970
-         TabIndex        =   98
-         Top             =   3915
-         Width           =   645
-      End
-      Begin VB.ComboBox cboDBValCFOperator 
-         Height          =   315
-         Index           =   0
-         Left            =   210
-         Style           =   2  'Dropdown List
-         TabIndex        =   97
-         Top             =   3915
-         Width           =   2730
-      End
-      Begin VB.CheckBox chkConditionalFormatting 
-         Caption         =   "Use cond&itional formatting"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   96
-         Top             =   3315
-         Width           =   2835
-      End
-      Begin VB.TextBox txtDBValueSuffix 
-         Height          =   300
-         Left            =   4815
-         TabIndex        =   95
-         Top             =   2745
-         Width           =   1125
-      End
-      Begin VB.TextBox txtDBValuePrefix 
-         Height          =   300
-         Left            =   1800
-         TabIndex        =   93
-         Top             =   2745
-         Width           =   1125
-      End
-      Begin VB.CheckBox chkDBVaUseThousandSeparator 
-         Caption         =   "Use &1000 separator"
-         Height          =   240
-         Left            =   3975
-         TabIndex        =   91
-         Top             =   2415
-         Width           =   2040
-      End
-      Begin VB.CheckBox chkFormatting 
-         Caption         =   "Use &formatting"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   88
-         Top             =   2040
-         Width           =   1575
-      End
-      Begin VB.ComboBox cboColumns 
-         Height          =   315
-         Left            =   1575
-         Sorted          =   -1  'True
-         Style           =   2  'Dropdown List
-         TabIndex        =   80
-         Top             =   705
-         Width           =   4515
-      End
-      Begin VB.ComboBox cboParents 
-         Height          =   315
-         Left            =   1575
-         Sorted          =   -1  'True
-         Style           =   2  'Dropdown List
-         TabIndex        =   78
-         Top             =   315
-         Width           =   4515
-      End
-      Begin VB.OptionButton optAggregateType 
-         Caption         =   "Count"
-         Height          =   285
-         Index           =   0
-         Left            =   2265
-         TabIndex        =   86
-         Top             =   1545
-         Value           =   -1  'True
-         Width           =   855
-      End
-      Begin VB.OptionButton optAggregateType 
-         Caption         =   "Total"
-         Height          =   285
-         Index           =   1
-         Left            =   3390
-         TabIndex        =   87
-         Top             =   1545
-         Width           =   765
-      End
-      Begin VB.CommandButton cmdFilter 
-         Caption         =   "..."
-         Height          =   315
-         Left            =   5430
-         TabIndex        =   83
-         Top             =   1080
-         Width           =   315
-      End
-      Begin VB.TextBox txtFilter 
-         Height          =   330
-         Left            =   1575
-         TabIndex        =   82
-         Top             =   1080
-         Width           =   3870
-      End
-      Begin VB.CommandButton cmdFilterClear 
-         Caption         =   "O"
-         BeginProperty Font 
-            Name            =   "Wingdings 2"
-            Size            =   20.25
-            Charset         =   2
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Left            =   5745
-         MaskColor       =   &H000000FF&
-         TabIndex        =   84
-         ToolTipText     =   "Clear Path"
-         Top             =   1080
-         UseMaskColor    =   -1  'True
-         Width           =   330
-      End
-      Begin VB.Label lblCFHeader4 
-         AutoSize        =   -1  'True
-         Caption         =   "Colour"
-         Height          =   195
-         Left            =   4755
-         TabIndex        =   126
-         Top             =   3660
-         Width           =   570
-      End
-      Begin VB.Label lblCFHeader3 
-         AutoSize        =   -1  'True
-         Caption         =   "Format"
-         Height          =   195
-         Left            =   3690
-         TabIndex        =   125
-         Top             =   3660
-         Width           =   600
-      End
-      Begin VB.Label lblCFHeader2 
-         AutoSize        =   -1  'True
-         Caption         =   "Value"
-         Height          =   195
-         Left            =   2985
-         TabIndex        =   124
-         Top             =   3660
-         Width           =   480
-      End
-      Begin VB.Label lblCFHeader1 
-         AutoSize        =   -1  'True
-         Caption         =   "Operator"
-         Height          =   195
-         Left            =   240
-         TabIndex        =   123
-         Top             =   3660
-         Width           =   765
-      End
-      Begin VB.Label lblDBValueSample 
-         Caption         =   "12345.21"
-         Height          =   510
-         Left            =   3660
-         TabIndex        =   113
-         Top             =   5340
-         Width           =   2430
-      End
-      Begin VB.Label lblDBValuePreview 
-         AutoSize        =   -1  'True
-         Caption         =   "Preview :"
-         Height          =   195
-         Left            =   2655
-         TabIndex        =   116
-         Top             =   5340
-         Width           =   810
-      End
-      Begin VB.Label lblConditionWarning 
-         AutoSize        =   -1  'True
-         Caption         =   "(in priority order)"
-         Height          =   195
-         Left            =   4530
-         TabIndex        =   115
-         Top             =   3315
-         Width           =   1500
-      End
-      Begin VB.Label lblDBVSampleHeader 
-         Caption         =   "Sample :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   114
-         Top             =   5310
-         Width           =   870
-      End
-      Begin VB.Line Line3 
-         BorderColor     =   &H80000015&
-         X1              =   195
-         X2              =   6075
-         Y1              =   5100
-         Y2              =   5100
-      End
-      Begin VB.Line Line2 
-         BorderColor     =   &H80000015&
-         X1              =   195
-         X2              =   6075
-         Y1              =   3195
-         Y2              =   3195
-      End
-      Begin VB.Label lblDBValueSuffix 
-         AutoSize        =   -1  'True
-         Caption         =   "Suffix :"
-         Height          =   195
-         Left            =   3975
-         TabIndex        =   94
-         Top             =   2790
-         Width           =   630
-      End
-      Begin VB.Label lblDBValuePrefix 
-         AutoSize        =   -1  'True
-         Caption         =   "Prefix :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   92
-         Top             =   2790
-         Width           =   630
-      End
-      Begin VB.Label lblDBValueDecimals 
-         AutoSize        =   -1  'True
-         Caption         =   "Decimal places :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   89
-         Top             =   2430
-         Width           =   1425
-      End
-      Begin VB.Line Line1 
-         BorderColor     =   &H80000015&
-         X1              =   195
-         X2              =   6075
-         Y1              =   1920
-         Y2              =   1920
-      End
-      Begin VB.Label lblParents 
-         AutoSize        =   -1  'True
-         Caption         =   "Table :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   77
-         Top             =   330
-         Width           =   600
-      End
-      Begin VB.Label lblColumn 
-         AutoSize        =   -1  'True
-         Caption         =   "Column :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   79
-         Top             =   720
-         Width           =   795
-      End
-      Begin VB.Label lblFilter 
-         Caption         =   "Filter :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   81
-         Top             =   1155
-         Width           =   615
-      End
-      Begin VB.Label lblAggregateType 
-         AutoSize        =   -1  'True
-         Caption         =   "Aggregate Function :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   85
-         Top             =   1575
-         Width           =   1785
-      End
-   End
-   Begin VB.Frame fraHRProUtilityLink 
-      Caption         =   "HR Pro Report / Utility :"
-      Height          =   1485
-      Left            =   2880
-      TabIndex        =   29
-      Top             =   6180
-      Width           =   6300
-      Begin VB.ComboBox cboHRProUtility 
-         Height          =   315
-         Left            =   1400
-         Style           =   2  'Dropdown List
-         TabIndex        =   33
-         Top             =   700
-         Width           =   4700
-      End
-      Begin VB.ComboBox cboHRProUtilityType 
-         Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":2504
-         Left            =   1400
-         List            =   "frmSSIntranetLink.frx":2506
-         Style           =   2  'Dropdown List
-         TabIndex        =   31
-         Top             =   300
-         Width           =   4700
-      End
-      Begin VB.Label lblHRProUtilityMessage 
-         AutoSize        =   -1  'True
-         Caption         =   "<message>"
-         ForeColor       =   &H000000FF&
-         Height          =   195
-         Left            =   1395
-         TabIndex        =   34
-         Top             =   1160
-         Width           =   4695
-         WordWrap        =   -1  'True
-      End
-      Begin VB.Label lblHRProUtility 
-         Caption         =   "Name :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   32
-         Top             =   765
-         Width           =   780
-      End
-      Begin VB.Label lblHRProUtilityType 
-         Caption         =   "Type :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   30
-         Top             =   360
-         Width           =   645
-      End
-   End
-   Begin VB.Frame fraEmailLink 
-      Caption         =   "Email Link :"
-      Height          =   1245
-      Left            =   2880
-      TabIndex        =   45
-      Top             =   5310
-      Width           =   6300
-      Begin VB.TextBox txtEmailSubject 
-         Height          =   315
-         Left            =   1575
-         MaxLength       =   500
-         TabIndex        =   49
-         Top             =   700
-         Width           =   4515
-      End
-      Begin VB.TextBox txtEmailAddress 
-         Height          =   315
-         Left            =   1575
-         MaxLength       =   500
-         TabIndex        =   47
-         Top             =   300
-         Width           =   4515
-      End
-      Begin VB.Label lblEmailSubject 
-         AutoSize        =   -1  'True
-         Caption         =   "Email Subject :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   48
-         Top             =   765
-         Width           =   1275
-      End
-      Begin VB.Label lblEMailAddress 
-         AutoSize        =   -1  'True
-         Caption         =   "Email Address :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   46
-         Top             =   360
-         Width           =   1320
       End
    End
    Begin VB.Frame fraURLLink 
@@ -865,64 +778,6 @@ Begin VB.Form frmSSIntranetLink
          TabIndex        =   36
          Top             =   360
          Width           =   570
-      End
-   End
-   Begin MSComDlg.CommonDialog CommonDialog1 
-      Left            =   810
-      Top             =   11535
-      _ExtentX        =   847
-      _ExtentY        =   847
-      _Version        =   393216
-   End
-   Begin VB.Frame fraApplicationLink 
-      Caption         =   "Application :"
-      Height          =   1245
-      Left            =   2880
-      TabIndex        =   39
-      Top             =   3585
-      Width           =   6300
-      Begin VB.CommandButton cmdAppFilePathSel 
-         Caption         =   "..."
-         Height          =   315
-         Left            =   5760
-         TabIndex        =   42
-         Top             =   300
-         UseMaskColor    =   -1  'True
-         Width           =   315
-      End
-      Begin VB.TextBox txtAppFilePath 
-         Height          =   315
-         Left            =   1575
-         MaxLength       =   500
-         TabIndex        =   41
-         Top             =   300
-         Width           =   4185
-      End
-      Begin VB.TextBox txtAppParameters 
-         Height          =   315
-         Left            =   1575
-         MaxLength       =   500
-         TabIndex        =   44
-         Top             =   700
-         Width           =   4515
-      End
-      Begin VB.Label lblAppFilePath 
-         AutoSize        =   -1  'True
-         Caption         =   "File Path :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   40
-         Top             =   360
-         Width           =   720
-      End
-      Begin VB.Label lblAppParameters 
-         AutoSize        =   -1  'True
-         Caption         =   "Parameters :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   43
-         Top             =   765
-         Width           =   930
       End
    End
    Begin VB.Frame fraLinkType 
@@ -1025,31 +880,6 @@ Begin VB.Form frmSSIntranetLink
          Width           =   2265
       End
    End
-   Begin VB.Frame fraOKCancel 
-      Height          =   400
-      Left            =   6600
-      TabIndex        =   54
-      Top             =   12150
-      Width           =   2600
-      Begin VB.CommandButton cmdOk 
-         Caption         =   "&OK"
-         Default         =   -1  'True
-         Height          =   400
-         Left            =   135
-         TabIndex        =   127
-         Top             =   0
-         Width           =   1200
-      End
-      Begin VB.CommandButton cmdCancel 
-         Cancel          =   -1  'True
-         Caption         =   "&Cancel"
-         Height          =   400
-         Left            =   1400
-         TabIndex        =   128
-         Top             =   0
-         Width           =   1200
-      End
-   End
    Begin VB.Frame fraLink 
       Caption         =   "Link :"
       Height          =   1710
@@ -1059,9 +889,9 @@ Begin VB.Form frmSSIntranetLink
       Width           =   9000
       Begin VB.ComboBox cboTableView 
          Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":2508
+         ItemData        =   "frmSSIntranetLink.frx":2504
          Left            =   1485
-         List            =   "frmSSIntranetLink.frx":250A
+         List            =   "frmSSIntranetLink.frx":2506
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   6
@@ -1109,7 +939,7 @@ Begin VB.Form frmSSIntranetLink
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         stylesets(0).Picture=   "frmSSIntranetLink.frx":250C
+         stylesets(0).Picture=   "frmSSIntranetLink.frx":2508
          stylesets(1).Name=   "ReadOnly"
          stylesets(1).ForeColor=   -2147483631
          stylesets(1).BackColor=   -2147483633
@@ -1123,7 +953,7 @@ Begin VB.Form frmSSIntranetLink
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         stylesets(1).Picture=   "frmSSIntranetLink.frx":2528
+         stylesets(1).Picture=   "frmSSIntranetLink.frx":2524
          MultiLine       =   0   'False
          AllowRowSizing  =   0   'False
          AllowGroupSizing=   0   'False
@@ -1220,45 +1050,58 @@ Begin VB.Form frmSSIntranetLink
          Width           =   840
       End
    End
-   Begin VB.Frame fraDocument 
-      Caption         =   "Document :"
-      Height          =   1125
-      Left            =   165
-      TabIndex        =   50
-      Top             =   5895
-      Width           =   9060
-      Begin VB.TextBox txtDocumentFilePath 
+   Begin VB.Frame fraHRProUtilityLink 
+      Caption         =   "HR Pro Report / Utility :"
+      Height          =   1485
+      Left            =   2880
+      TabIndex        =   29
+      Top             =   6180
+      Width           =   6300
+      Begin VB.ComboBox cboHRProUtility 
          Height          =   315
          Left            =   1400
-         MaxLength       =   500
-         TabIndex        =   52
+         Style           =   2  'Dropdown List
+         TabIndex        =   33
+         Top             =   700
+         Width           =   4700
+      End
+      Begin VB.ComboBox cboHRProUtilityType 
+         Height          =   315
+         ItemData        =   "frmSSIntranetLink.frx":2540
+         Left            =   1400
+         List            =   "frmSSIntranetLink.frx":2542
+         Style           =   2  'Dropdown List
+         TabIndex        =   31
          Top             =   300
-         Width           =   7365
+         Width           =   4700
       End
-      Begin VB.CheckBox chkDisplayDocumentHyperlink 
-         Caption         =   "Displa&y hyperlink to document"
-         Height          =   330
-         Left            =   1395
-         TabIndex        =   53
-         Top             =   690
-         Width           =   3720
-      End
-      Begin VB.Label lblDocumentFilePath 
+      Begin VB.Label lblHRProUtilityMessage 
          AutoSize        =   -1  'True
-         Caption         =   "URL :"
+         Caption         =   "<message>"
+         ForeColor       =   &H000000FF&
+         Height          =   195
+         Left            =   1395
+         TabIndex        =   34
+         Top             =   1160
+         Width           =   4695
+         WordWrap        =   -1  'True
+      End
+      Begin VB.Label lblHRProUtility 
+         Caption         =   "Name :"
          Height          =   195
          Left            =   195
-         TabIndex        =   51
-         Top             =   360
-         Width           =   390
+         TabIndex        =   32
+         Top             =   765
+         Width           =   780
       End
-   End
-   Begin COAColourPicker.COA_ColourPicker ColorPicker 
-      Left            =   240
-      Top             =   11535
-      _ExtentX        =   820
-      _ExtentY        =   820
-      ShowSysColorButton=   0   'False
+      Begin VB.Label lblHRProUtilityType 
+         Caption         =   "Type :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   30
+         Top             =   360
+         Width           =   645
+      End
    End
    Begin VB.Frame fraHRProScreenLink 
       Caption         =   "HR Pro Screen :"
@@ -1334,6 +1177,172 @@ Begin VB.Form frmSSIntranetLink
          TabIndex        =   27
          Top             =   1560
          Width           =   900
+      End
+   End
+   Begin VB.Frame fraEmailLink 
+      Caption         =   "Email Link :"
+      Height          =   1245
+      Left            =   2880
+      TabIndex        =   45
+      Top             =   5310
+      Width           =   6300
+      Begin VB.TextBox txtEmailSubject 
+         Height          =   315
+         Left            =   1575
+         MaxLength       =   500
+         TabIndex        =   49
+         Top             =   700
+         Width           =   4515
+      End
+      Begin VB.TextBox txtEmailAddress 
+         Height          =   315
+         Left            =   1575
+         MaxLength       =   500
+         TabIndex        =   47
+         Top             =   300
+         Width           =   4515
+      End
+      Begin VB.Label lblEmailSubject 
+         AutoSize        =   -1  'True
+         Caption         =   "Email Subject :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   48
+         Top             =   765
+         Width           =   1275
+      End
+      Begin VB.Label lblEMailAddress 
+         AutoSize        =   -1  'True
+         Caption         =   "Email Address :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   46
+         Top             =   360
+         Width           =   1320
+      End
+   End
+   Begin VB.Frame fraApplicationLink 
+      Caption         =   "Application :"
+      Height          =   1245
+      Left            =   2880
+      TabIndex        =   39
+      Top             =   3585
+      Width           =   6300
+      Begin VB.CommandButton cmdAppFilePathSel 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   5760
+         TabIndex        =   42
+         ToolTipText     =   "Select File Path"
+         Top             =   300
+         UseMaskColor    =   -1  'True
+         Width           =   315
+      End
+      Begin VB.TextBox txtAppFilePath 
+         Height          =   315
+         Left            =   1575
+         MaxLength       =   500
+         TabIndex        =   41
+         Top             =   300
+         Width           =   4185
+      End
+      Begin VB.TextBox txtAppParameters 
+         Height          =   315
+         Left            =   1575
+         MaxLength       =   500
+         TabIndex        =   44
+         Top             =   700
+         Width           =   4515
+      End
+      Begin VB.Label lblAppFilePath 
+         AutoSize        =   -1  'True
+         Caption         =   "File Path :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   40
+         Top             =   360
+         Width           =   720
+      End
+      Begin VB.Label lblAppParameters 
+         AutoSize        =   -1  'True
+         Caption         =   "Parameters :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   43
+         Top             =   765
+         Width           =   930
+      End
+   End
+   Begin MSComDlg.CommonDialog CommonDialog1 
+      Left            =   810
+      Top             =   11535
+      _ExtentX        =   847
+      _ExtentY        =   847
+      _Version        =   393216
+   End
+   Begin VB.Frame fraOKCancel 
+      Height          =   400
+      Left            =   6600
+      TabIndex        =   54
+      Top             =   12150
+      Width           =   2600
+      Begin VB.CommandButton cmdOk 
+         Caption         =   "&OK"
+         Default         =   -1  'True
+         Height          =   400
+         Left            =   135
+         TabIndex        =   128
+         Top             =   0
+         Width           =   1200
+      End
+      Begin VB.CommandButton cmdCancel 
+         Cancel          =   -1  'True
+         Caption         =   "&Cancel"
+         Height          =   400
+         Left            =   1400
+         TabIndex        =   129
+         Top             =   0
+         Width           =   1200
+      End
+   End
+   Begin COAColourPicker.COA_ColourPicker ColorPicker 
+      Left            =   240
+      Top             =   11535
+      _ExtentX        =   820
+      _ExtentY        =   820
+      ShowSysColorButton=   0   'False
+   End
+   Begin VB.Frame fraDocument 
+      Caption         =   "Document :"
+      Height          =   1125
+      Left            =   150
+      TabIndex        =   50
+      Top             =   5895
+      Width           =   9045
+      Begin VB.TextBox txtDocumentFilePath 
+         Height          =   315
+         Left            =   1400
+         MaxLength       =   500
+         TabIndex        =   52
+         Top             =   300
+         Width           =   7365
+      End
+      Begin VB.CheckBox chkDisplayDocumentHyperlink 
+         Caption         =   "Displa&y hyperlink to document"
+         Height          =   330
+         Left            =   1395
+         TabIndex        =   53
+         Top             =   690
+         Width           =   3720
+      End
+      Begin VB.Label lblDocumentFilePath 
+         AutoSize        =   -1  'True
+         Caption         =   "URL :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   51
+         Top             =   360
+         Width           =   390
       End
    End
 End
@@ -4616,11 +4625,11 @@ Public Property Get Chart_Description() As String
   If ChartColumnID = 0 Then
     Chart_Description = ""
   ElseIf Chart_ColumnID_2 = 0 And Chart_ColumnID_3 = 0 Then
-    Chart_Description = "1-D"
+    Chart_Description = "1-T"
   ElseIf Chart_ColumnID_2 > 0 Then  ' table 2 is actually the Z-Axis
-    Chart_Description = "3-D"
+    Chart_Description = "3-T"
   Else
-    Chart_Description = "2-D"
+    Chart_Description = "2-T"
   End If
     
   Chart_Description = Chart_Description & IIf(ChartTableID > 0, ", " & Replace(GetTableName(ChartTableID), "_", " "), "")
