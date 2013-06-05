@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmTabOrd 
    BorderStyle     =   3  'Fixed Dialog
@@ -169,57 +169,61 @@ Begin VB.Form frmTabOrd
       MaskColor       =   12632256
       _Version        =   327682
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
-         NumListImages   =   13
+         NumListImages   =   14
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
             Picture         =   "frmTabOrd.frx":0286
             Key             =   "IMG_CHECK"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmTabOrd.frx":065C
-            Key             =   "IMG_PHOTO"
+            Picture         =   "frmTabOrd.frx":07D8
+            Key             =   "IMG_NAVIGATION"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmTabOrd.frx":0A43
-            Key             =   "IMG_COMBO"
+            Picture         =   "frmTabOrd.frx":0B2A
+            Key             =   "IMG_PHOTO"
          EndProperty
          BeginProperty ListImage4 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmTabOrd.frx":0E15
-            Key             =   "IMG_TEXT"
+            Picture         =   "frmTabOrd.frx":107C
+            Key             =   "IMG_COMBO"
          EndProperty
          BeginProperty ListImage5 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmTabOrd.frx":121F
-            Key             =   "IMG_FRAME"
+            Picture         =   "frmTabOrd.frx":15CE
+            Key             =   "IMG_TEXT"
          EndProperty
          BeginProperty ListImage6 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmTabOrd.frx":15E8
-            Key             =   "IMG_LABEL"
+            Picture         =   "frmTabOrd.frx":1B20
+            Key             =   "IMG_FRAME"
          EndProperty
          BeginProperty ListImage7 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmTabOrd.frx":1981
-            Key             =   "IMG_OLE"
+            Picture         =   "frmTabOrd.frx":2072
+            Key             =   "IMG_LABEL"
          EndProperty
          BeginProperty ListImage8 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmTabOrd.frx":1D69
-            Key             =   "IMG_IMAGE"
+            Picture         =   "frmTabOrd.frx":25C4
+            Key             =   "IMG_OLE"
          EndProperty
          BeginProperty ListImage9 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmTabOrd.frx":2187
-            Key             =   "IMG_RADIO"
+            Picture         =   "frmTabOrd.frx":2B16
+            Key             =   "IMG_IMAGE"
          EndProperty
          BeginProperty ListImage10 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmTabOrd.frx":2580
-            Key             =   "IMG_SPINNER"
+            Picture         =   "frmTabOrd.frx":3068
+            Key             =   "IMG_RADIO"
          EndProperty
          BeginProperty ListImage11 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmTabOrd.frx":2930
-            Key             =   "IMG_LINK"
+            Picture         =   "frmTabOrd.frx":35BA
+            Key             =   "IMG_SPINNER"
          EndProperty
          BeginProperty ListImage12 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmTabOrd.frx":2D12
-            Key             =   "IMG_UNKNOWN"
+            Picture         =   "frmTabOrd.frx":3B0C
+            Key             =   "IMG_LINK"
          EndProperty
          BeginProperty ListImage13 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmTabOrd.frx":3135
+            Picture         =   "frmTabOrd.frx":405E
+            Key             =   "IMG_UNKNOWN"
+         EndProperty
+         BeginProperty ListImage14 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
+            Picture         =   "frmTabOrd.frx":45B0
             Key             =   "IMG_WORKINGPATTERN"
          EndProperty
       EndProperty
@@ -1065,6 +1069,8 @@ Private Function ImageKey(piType As Integer) As String
       ImageKey = "IMG_LINK"
     Case giCTRL_WORKINGPATTERN
       ImageKey = "IMG_WORKINGPATTERN"
+    Case giCTRL_NAVIGATION
+      ImageKey = "IMG_NAVIGATION"
     Case Else
       ImageKey = "IMG_UNKNOWN"
   End Select
@@ -1104,6 +1110,8 @@ Private Function ControlTypeName(piType As Integer) As String
       ControlTypeName = "Link Button"
     Case giCTRL_WORKINGPATTERN
       ControlTypeName = "Working Pattern"
+    Case giCTRL_NAVIGATION
+      ControlTypeName = "Navigation Control"
     Case Else
       ControlTypeName = "Unknown"
   End Select
