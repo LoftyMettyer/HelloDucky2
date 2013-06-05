@@ -1,16 +1,21 @@
 ﻿Public Class AuditLogForm
 
-    Public Connection As String
+    Public ConString As String
     Private db As DBContext
     Private loading As Boolean = True
 
     Private Sub AuditLog_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
+        db = New DBContext(ConString)
+
+        periodEditor.Items.Add(New Infragistics.Win.ValueListItem(DatePeriod.ThisMonth, "This Month"))
+        periodEditor.Items.Add(New Infragistics.Win.ValueListItem(DatePeriod.LastMonth, "Last Month"))
+        periodEditor.Items.Add(New Infragistics.Win.ValueListItem(DatePeriod.SpecificDates, "Specific Dates"))
+        userEditor.Items.Add(New Infragistics.Win.ValueListItem(Nothing))
+        userEditor.Items.AddRange(GetUsers().Select(Function(u) New Infragistics.Win.ValueListItem(u)).ToArray)
+
         periodEditor.SelectedIndex = 0
         loading = False
-
-        db = New DBContext(Connection)
-        ShowAuditLogs()
     End Sub
 
     Private Function GetAuditLogs() As IList
@@ -34,6 +39,10 @@
                 End If
         End Select
 
+        If Not String.IsNullOrWhiteSpace(userEditor.Text) Then
+            query = query.Where(Function(a) a.UserName = userEditor.Text)
+        End If
+
         Dim data = From a In query
                    Select New With {
                     .User = a.UserName,
@@ -47,6 +56,10 @@
                    }
 
         Return data.ToList
+    End Function
+
+    Private Function GetUsers() As IList(Of String)
+        Return db.ASRSysAuditTrails.Select(Function(a) a.UserName).Distinct.ToList()
     End Function
 
     Private Sub ShowAuditLogs()
@@ -65,31 +78,6 @@
         ShowAuditLogs()
     End Sub
 
-    Private Sub periodEditor_ValueChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles periodEditor.ValueChanged
-        ShowControls()
-        If Not loading AndAlso (periodEditor.Value = 1 OrElse periodEditor.Value = 2) Then
-            ShowAuditLogs()
-        End If
-    End Sub
 
-    Private Sub grdAudit_InitializeLayout1(ByVal sender As Object, ByVal e As Infragistics.Win.UltraWinGrid.InitializeLayoutEventArgs) Handles grdAudit.InitializeLayout
-        e.Layout.Appearance.BackColor = Color.White
-        e.Layout.Override.BorderStyleRow = Infragistics.Win.UIElementBorderStyle.None
-        e.Layout.Override.BorderStyleCell = Infragistics.Win.UIElementBorderStyle.None
-        e.Layout.Override.FilterUIType = Infragistics.Win.UltraWinGrid.FilterUIType.HeaderIcons
-    End Sub
-
-    Private Sub butOutput_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles butOutput.Click
-        Try
-            UltraGridExcelExporter1.Export(grdAudit, txtFilePath.Text)
-            MsgBox("The file has been created.", , Me.Text)
-        Catch ex As System.IO.DirectoryNotFoundException
-            MsgBox("The directory specified does not exist.", MsgBoxStyle.Exclamation, Me.Text)
-        Catch ex As System.IO.IOException
-            MsgBox("The file specified is being used by another application.", MsgBoxStyle.Exclamation, Me.Text)
-        Catch ex As Exception
-            MsgBox("Export failed.", MsgBoxStyle.Exclamation, Me.Text)
-        End Try
-    End Sub
 
 End Class

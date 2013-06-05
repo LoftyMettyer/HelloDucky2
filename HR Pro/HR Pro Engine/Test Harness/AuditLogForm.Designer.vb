@@ -24,11 +24,14 @@ Partial Class AuditLogForm
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim Appearance3 As Infragistics.Win.Appearance = New Infragistics.Win.Appearance("Highlight", 74988782)
+        Dim ValueListItem1 As Infragistics.Win.ValueListItem = New Infragistics.Win.ValueListItem()
+        Dim ValueListItem5 As Infragistics.Win.ValueListItem = New Infragistics.Win.ValueListItem()
+        Dim ValueListItem6 As Infragistics.Win.ValueListItem = New Infragistics.Win.ValueListItem()
+        Dim DateButton3 As Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton = New Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton()
+        Dim DateButton4 As Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton = New Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton()
         Dim ValueListItem2 As Infragistics.Win.ValueListItem = New Infragistics.Win.ValueListItem()
         Dim ValueListItem3 As Infragistics.Win.ValueListItem = New Infragistics.Win.ValueListItem()
         Dim ValueListItem4 As Infragistics.Win.ValueListItem = New Infragistics.Win.ValueListItem()
-        Dim DateButton1 As Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton = New Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton()
-        Dim DateButton2 As Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton = New Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton()
         Me.grdAudit = New Infragistics.Win.UltraWinGrid.UltraGrid()
         Me.butOutput = New System.Windows.Forms.Button()
         Me.UltraGridExcelExporter1 = New Infragistics.Win.UltraWinGrid.ExcelExport.UltraGridExcelExporter(Me.components)
@@ -39,11 +42,13 @@ Partial Class AuditLogForm
         Me.showButton = New Infragistics.Win.Misc.UltraButton()
         Me.dateFromEditor = New Infragistics.Win.UltraWinSchedule.UltraCalendarCombo()
         Me.dateToEditor = New Infragistics.Win.UltraWinSchedule.UltraCalendarCombo()
+        Me.userEditor = New Infragistics.Win.UltraWinEditors.UltraComboEditor()
         CType(Me.grdAudit, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.periodEditor, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.datePanel.SuspendLayout()
         CType(Me.dateFromEditor, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dateToEditor, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.userEditor, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'grdAudit
@@ -69,10 +74,10 @@ Partial Class AuditLogForm
         Me.grdAudit.DisplayLayout.Override.SelectTypeRow = Infragistics.Win.UltraWinGrid.SelectType.[Single]
         Me.grdAudit.DisplayLayout.ScrollStyle = Infragistics.Win.UltraWinGrid.ScrollStyle.Immediate
         Me.grdAudit.DisplayLayout.TabNavigation = Infragistics.Win.UltraWinGrid.TabNavigation.NextControlOnLastCell
-        Me.grdAudit.Location = New System.Drawing.Point(0, 41)
+        Me.grdAudit.Location = New System.Drawing.Point(0, 68)
         Me.grdAudit.Margin = New System.Windows.Forms.Padding(6, 5, 6, 5)
         Me.grdAudit.Name = "grdAudit"
-        Me.grdAudit.Size = New System.Drawing.Size(833, 336)
+        Me.grdAudit.Size = New System.Drawing.Size(833, 309)
         Me.grdAudit.TabIndex = 18
         Me.grdAudit.TextRenderingMode = Infragistics.Win.TextRenderingMode.GDI
         Me.grdAudit.UseOsThemes = Infragistics.Win.DefaultableBoolean.[True]
@@ -95,18 +100,17 @@ Partial Class AuditLogForm
         Me.txtFilePath.Name = "txtFilePath"
         Me.txtFilePath.Size = New System.Drawing.Size(273, 21)
         Me.txtFilePath.TabIndex = 20
-        Me.txtFilePath.Text = "c:\dev\output.xls"
         '
         'periodEditor
         '
         Me.periodEditor.DropDownStyle = Infragistics.Win.DropDownStyle.DropDownList
-        ValueListItem2.DataValue = 1
-        ValueListItem2.DisplayText = "This Month"
-        ValueListItem3.DataValue = 2
-        ValueListItem3.DisplayText = "Last Month"
-        ValueListItem4.DataValue = 3
-        ValueListItem4.DisplayText = "Between"
-        Me.periodEditor.Items.AddRange(New Infragistics.Win.ValueListItem() {ValueListItem2, ValueListItem3, ValueListItem4})
+        ValueListItem1.DataValue = 1
+        ValueListItem1.DisplayText = "This Month"
+        ValueListItem5.DataValue = 2
+        ValueListItem5.DisplayText = "Last Month"
+        ValueListItem6.DataValue = 3
+        ValueListItem6.DisplayText = "Between"
+        Me.periodEditor.Items.AddRange(New Infragistics.Win.ValueListItem() {ValueListItem1, ValueListItem5, ValueListItem6})
         Me.periodEditor.LimitToList = True
         Me.periodEditor.Location = New System.Drawing.Point(13, 10)
         Me.periodEditor.Name = "periodEditor"
@@ -117,7 +121,6 @@ Partial Class AuditLogForm
         'datePanel
         '
         Me.datePanel.Controls.Add(Me.dateLabel)
-        Me.datePanel.Controls.Add(Me.showButton)
         Me.datePanel.Controls.Add(Me.dateFromEditor)
         Me.datePanel.Controls.Add(Me.dateToEditor)
         Me.datePanel.Location = New System.Drawing.Point(152, 10)
@@ -136,7 +139,7 @@ Partial Class AuditLogForm
         '
         'showButton
         '
-        Me.showButton.Location = New System.Drawing.Point(247, -1)
+        Me.showButton.Location = New System.Drawing.Point(399, 37)
         Me.showButton.Name = "showButton"
         Me.showButton.Size = New System.Drawing.Size(58, 23)
         Me.showButton.TabIndex = 30
@@ -145,7 +148,7 @@ Partial Class AuditLogForm
         'dateFromEditor
         '
         Me.dateFromEditor.BackColor = System.Drawing.SystemColors.Window
-        Me.dateFromEditor.DateButtons.Add(DateButton1)
+        Me.dateFromEditor.DateButtons.Add(DateButton3)
         Me.dateFromEditor.Location = New System.Drawing.Point(0, 0)
         Me.dateFromEditor.Name = "dateFromEditor"
         Me.dateFromEditor.NonAutoSizeHeight = 21
@@ -157,7 +160,7 @@ Partial Class AuditLogForm
         'dateToEditor
         '
         Me.dateToEditor.BackColor = System.Drawing.SystemColors.Window
-        Me.dateToEditor.DateButtons.Add(DateButton2)
+        Me.dateToEditor.DateButtons.Add(DateButton4)
         Me.dateToEditor.Location = New System.Drawing.Point(139, 0)
         Me.dateToEditor.Name = "dateToEditor"
         Me.dateToEditor.NonAutoSizeHeight = 21
@@ -166,11 +169,30 @@ Partial Class AuditLogForm
         Me.dateToEditor.TabIndex = 28
         Me.dateToEditor.Value = ""
         '
+        'userEditor
+        '
+        Me.userEditor.DropDownStyle = Infragistics.Win.DropDownStyle.DropDownList
+        ValueListItem2.DataValue = 1
+        ValueListItem2.DisplayText = "This Month"
+        ValueListItem3.DataValue = 2
+        ValueListItem3.DisplayText = "Last Month"
+        ValueListItem4.DataValue = 3
+        ValueListItem4.DisplayText = "Between"
+        Me.userEditor.Items.AddRange(New Infragistics.Win.ValueListItem() {ValueListItem2, ValueListItem3, ValueListItem4})
+        Me.userEditor.LimitToList = True
+        Me.userEditor.Location = New System.Drawing.Point(13, 38)
+        Me.userEditor.Name = "userEditor"
+        Me.userEditor.Size = New System.Drawing.Size(123, 22)
+        Me.userEditor.TabIndex = 23
+        Me.userEditor.ValueMember = ""
+        '
         'AuditLogForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(833, 413)
+        Me.Controls.Add(Me.userEditor)
+        Me.Controls.Add(Me.showButton)
         Me.Controls.Add(Me.datePanel)
         Me.Controls.Add(Me.periodEditor)
         Me.Controls.Add(Me.txtFilePath)
@@ -186,6 +208,7 @@ Partial Class AuditLogForm
         Me.datePanel.PerformLayout()
         CType(Me.dateFromEditor, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.dateToEditor, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.userEditor, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -200,4 +223,5 @@ Partial Class AuditLogForm
     Friend WithEvents showButton As Infragistics.Win.Misc.UltraButton
     Friend WithEvents dateFromEditor As Infragistics.Win.UltraWinSchedule.UltraCalendarCombo
     Friend WithEvents dateToEditor As Infragistics.Win.UltraWinSchedule.UltraCalendarCombo
+    Friend WithEvents userEditor As Infragistics.Win.UltraWinEditors.UltraComboEditor
 End Class
