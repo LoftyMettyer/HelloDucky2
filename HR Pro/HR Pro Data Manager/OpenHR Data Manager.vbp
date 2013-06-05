@@ -280,12 +280,12 @@ Object={051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0; coa_colourpicker.ocx
 Object={19400013-2704-42FE-AAA4-45D1A725A895}#1.0#0; coa_colourselector.ocx
 Form=Forms\frmRecEdit4.frm
 Form=Forms\frmSelectEmbedded.frm
-ResFile32="HR Pro Data Manager.res"
+ResFile32="OpenHR Data Manager.res"
 IconForm="frmSplash"
 Startup="Sub Main"
 HelpFile="OpenHR Data Manager.chm"
 Title="OpenHR Data Manager"
-ExeName32="HR Pro Data Manager.exe"
+ExeName32="OpenHR Data Manager.exe"
 Command32="/details=true "
 Name="DataMgr"
 HelpContextID="0"
