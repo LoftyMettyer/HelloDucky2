@@ -140,7 +140,7 @@ Namespace Things
       SQLCode_AddCodeLevel(Me.Objects, mcolLinesOfCode)
 
       ' Always add the ID for the record
-      If RequiresRecordID Or Me.IsComplex Then
+      If RequiresRecordID Or Me.IsComplex Or Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault Then
         aryParameters1.Add("@prm_ID integer")
         aryParameters2.Add("base.ID")
         aryParameters3.Add("@prm_ID")
@@ -605,25 +605,19 @@ Namespace Things
           Or Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription) Then
         LineOfCode.Code = String.Format("ISNULL(@prm_{0},{1})", objThisColumn.Name, objThisColumn.SafeReturnType)
 
-        'ElseIf ColumnRecursion.Contains(objThisColumn) Then
-        '  LineOfCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(objThisColumn))
-
       ElseIf objThisColumn Is Me.AssociatedColumn _
-        And Me.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn Then
+          And Me.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn Then
         LineOfCode.Code = String.Format("@prm_{0}", objThisColumn.Name)
 
         ' Does the referenced column have default value on it, then reference the UDF/value of the default rather than the column itself.
       ElseIf (Not objThisColumn.DefaultCalculation Is Nothing _
-        And Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault) Then
-        LineOfCode.Code = String.Format("[dbo].[{0}](@prm_ID)", objThisColumn.Name)
-
-        '  ElseIf ColumnRecursion.Contains(objThisColumn) Then
-        '   LineOfCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(objThisColumn))
+          And Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault _
+          And objThisColumn.Table Is Me.AssociatedColumn.Table) Then
+        LineOfCode.Code = String.Format("{0}(@prm_ID)", objThisColumn.DefaultCalculation.UDF.Name)
 
       ElseIf objThisColumn.IsCalculated And objThisColumn.Table Is Me.AssociatedColumn.Table _
           And Not Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter And Not Me.ExpressionType = ScriptDB.ExpressionType.Mask _
           And Not Me Is objThisColumn.Calculation Then
-
         LineOfCode = AddCalculatedColumn(objThisColumn)
 
       Else
