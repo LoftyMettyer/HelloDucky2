@@ -1306,7 +1306,7 @@ Public Function ShowList(sCode As String, Optional msRecordSourceWhere As String
       msIcon = "EXPR_CALCULATION"
       'mblnApplySystemPermissions = False
       miExpressionType = giEXPR_RUNTIMECALCULATION
-      Me.HelpContextID = 1062
+      Me.HelpContextID = 8062
       
     Case "FILTERS"
       msType = "Filter"
@@ -1316,7 +1316,7 @@ Public Function ShowList(sCode As String, Optional msRecordSourceWhere As String
       msIDField = "ExprID"
       msIcon = "EXPR_FILTER"
       miExpressionType = giEXPR_RUNTIMEFILTER
-      Me.HelpContextID = 1063
+      Me.HelpContextID = 8063
     
   End Select
   

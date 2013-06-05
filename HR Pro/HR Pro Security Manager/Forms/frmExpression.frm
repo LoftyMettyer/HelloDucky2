@@ -360,11 +360,11 @@ Private Function AccessState(lngExprID As Long) As String
 End Function
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOK.Enabled = blnChanged
+  cmdOk.Enabled = blnChanged
 End Property
 
 Private Sub RemoveComponentNode(psNodeKey As String)
@@ -1932,10 +1932,10 @@ Private Sub ConfigureScreen()
   Case giEXPR_RECORDDESCRIPTION
   Case giEXPR_VIEWFILTER
   Case giEXPR_RUNTIMECALCULATION
-    Me.HelpContextID = 1025
+    Me.HelpContextID = 8025
   Case giEXPR_RUNTIMEFILTER
     cmdTest.Visible = True
-    Me.HelpContextID = 1026
+    Me.HelpContextID = 8026
   Case giEXPR_UTILRUNTIMEFILTER
     lblOwner.Visible = False
     txtOwner.Visible = False
@@ -1978,7 +1978,7 @@ Private Sub sstrvComponents_AfterLabelEdit(Cancel As SSActiveTreeView.SSReturnBo
   mfLabelEditing = False
   
   ' RH - Fault 1909 - Put the default button back on
-  cmdOK.Default = True
+  cmdOk.Default = True
   
   ' Validate the entered label.
   If Len(NewString) = 0 Then
@@ -2012,7 +2012,7 @@ Private Sub sstrvComponents_BeforeLabelEdit(Cancel As SSActiveTreeView.SSReturnB
   CreateUndoView (giUNDO_RENAME)
   
   ' RH - Fault 1909 - Remove the default button
-  cmdOK.Default = False
+  cmdOk.Default = False
   
   ' Only allow sub-expression labels to be edited.
   If sstrvComponents.SelectedItem.Key = ROOTKEY Then
@@ -2245,12 +2245,12 @@ End Sub
 Private Sub txtDescription_GotFocus()
   ' Select the entire contents of the textbox.
   UI.txtSelText
-  cmdOK.Default = False
+  cmdOk.Default = False
 
 End Sub
 
 Private Sub txtDescription_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub txtExpressionName_Change()

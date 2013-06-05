@@ -1444,31 +1444,31 @@ Private Sub InitializeComponentControls()
   Select Case miComponentType
     Case giCOMPONENT_FIELD
       InitializeFieldControls
-      Me.HelpContextID = 1054
+      Me.HelpContextID = 8054
       
     Case giCOMPONENT_FUNCTION
       InitializeFunctionControls
-      Me.HelpContextID = 1055
+      Me.HelpContextID = 8055
       
     Case giCOMPONENT_CALCULATION
       InitializeCalcControls
-      Me.HelpContextID = 1056
+      Me.HelpContextID = 8056
       
     Case giCOMPONENT_VALUE
       InitializeValueControls
-      Me.HelpContextID = 1057
+      Me.HelpContextID = 8057
 
     Case giCOMPONENT_OPERATOR
       InitializeOperatorControls
-      Me.HelpContextID = 1058
+      Me.HelpContextID = 8058
       
     Case giCOMPONENT_TABLEVALUE
       InitializeTableValueControls
-      Me.HelpContextID = 1059
+      Me.HelpContextID = 8059
       
     Case giCOMPONENT_PROMPTEDVALUE
       InitializePromptedValueControls
-      Me.HelpContextID = 1060
+      Me.HelpContextID = 8060
       
     Case giCOMPONENT_CUSTOMCALC
       ' Not required.
@@ -1485,7 +1485,7 @@ Private Sub InitializeComponentControls()
     'JDM - 12/03/01 - Fault 1219 - Add filter to filter
     Case giCOMPONENT_FILTER
         InitializeFilterControls
-        Me.HelpContextID = 1061
+        Me.HelpContextID = 8061
       
   End Select
   
@@ -1676,7 +1676,7 @@ Private Sub cboPValColumn_Refresh()
     cboPValDefaultTabVal_Refresh
   End If
   
-  cmdOK.Enabled = (Len(Trim(mobjComponent.Component.Prompt)) > 0) And _
+  cmdOk.Enabled = (Len(Trim(mobjComponent.Component.Prompt)) > 0) And _
     ((mobjComponent.Component.valueType <> giEXPRVALUE_TABLEVALUE) Or (cboPValColumn.Enabled))
 
   Exit Sub
@@ -1860,7 +1860,7 @@ Private Sub InitializeTableValueControls()
 
   ' Only allow the user to confirm the component definition if a valid
   ' table value is selected.
-  cmdOK.Enabled = cboTabValValue.Enabled
+  cmdOk.Enabled = cboTabValValue.Enabled
 
   ' Set the dropdowns to the selected table & column
   If cboTabValTable.Enabled Then
@@ -2093,7 +2093,7 @@ Private Sub cboTabValValue_Refresh()
   
 TidyUpAndExit:
   Set rsLookupValues = Nothing
-  cmdOK.Enabled = cboTabValValue.Enabled
+  cmdOk.Enabled = cboTabValValue.Enabled
   Exit Sub
   
 ErrorTrap:
@@ -2125,7 +2125,7 @@ ErrorTrap:
     ssTreeOpOperator.SelectedItem = ssTreeOpOperator.Nodes(1)
   End If
   
-  cmdOK.Enabled = False
+  cmdOk.Enabled = False
       
 End Sub
 
@@ -2250,7 +2250,7 @@ Private Sub InitializeValueControls()
   asrValDateValue.Text = IIf(IsNull(dDateValue), vbNullString, dDateValue)
   
   ' Ensure the user can confirm the component definition.
-  cmdOK.Enabled = True
+  cmdOk.Enabled = True
 
 End Sub
 
@@ -2289,7 +2289,7 @@ Private Sub InitializeCalcControls()
   
   ' Only allow the user to confirm the component definition if a valid
   ' calculation is selected.
-  cmdOK.Enabled = listCalcCalculation.Enabled
+  cmdOk.Enabled = listCalcCalculation.Enabled
     
 End Sub
 
@@ -2306,7 +2306,7 @@ Private Sub InitializeFilterControls()
   
   ' Only allow the user to confirm the component definition if a valid
   ' calculation is selected.
-  cmdOK.Enabled = listCalcFilters.Enabled
+  cmdOk.Enabled = listCalcFilters.Enabled
     
 End Sub
 
@@ -2516,7 +2516,7 @@ ErrorTrap:
     ssTreeFuncFunction.SelectedItem = ssTreeFuncFunction.Nodes(1)
   End If
   
-  cmdOK.Enabled = False
+  cmdOk.Enabled = False
   
 End Sub
 
@@ -3011,7 +3011,7 @@ Private Sub cboFldColumn_Refresh()
       cboFldColumn.ListIndex = 0
     End If
     
-    cmdOK.Enabled = .Enabled
+    cmdOk.Enabled = .Enabled
   End With
 
 End Sub
@@ -3636,7 +3636,7 @@ Private Sub chkOnlyMine_Click()
     listCalcCalculation.ListIndex = iIndex
   End If
 
-  cmdOK.Enabled = listCalcCalculation.ListCount > 0
+  cmdOk.Enabled = listCalcCalculation.ListCount > 0
 
 End Sub
 
@@ -3667,7 +3667,7 @@ Private Sub chkOnlyMyFilters_Click()
     listCalcFilters.ListIndex = iIndex
   End If
 
-  cmdOK.Enabled = listCalcFilters.ListCount > 0
+  cmdOk.Enabled = listCalcFilters.ListCount > 0
 
 
 End Sub
@@ -4351,15 +4351,15 @@ Private Sub FormatScreen()
     .Top = iYFRAMEGAP + iYGAP + iFRAMEHEIGHT
     .Left = fraComponent(fraComponent.LBound).Left + _
       fraComponent(fraComponent.LBound).Width - .Width
-    cmdOK.Top = .Top
-    cmdOK.Left = .Left - iXGAP - cmdOK.Width
+    cmdOk.Top = .Top
+    cmdOk.Left = .Left - iXGAP - cmdOk.Width
   End With
   
   ' Size the form.
   Me.Width = fraComponent(fraComponent.UBound).Left + _
     fraComponent(fraComponent.UBound).Width + iXFRAMEGAP + _
     (UI.GetSystemMetrics(SM_CXFRAME) * Screen.TwipsPerPixelX)
-  Me.Height = cmdOK.Top + cmdOK.Height + iXFRAMEGAP + _
+  Me.Height = cmdOk.Top + cmdOk.Height + iXFRAMEGAP + _
     (Screen.TwipsPerPixelY * (UI.GetSystemMetrics(SM_CYCAPTION) + UI.GetSystemMetrics(SM_CYFRAME)))
 
 End Sub
@@ -4908,7 +4908,7 @@ End Sub
 
 Private Sub listCalcCalculation_DblClick()
   ' Confirm the selection.
-  If cmdOK.Enabled Then
+  If cmdOk.Enabled Then
     cmdOK_Click
   End If
 
@@ -4938,7 +4938,7 @@ End Sub
 
 Private Sub listCalcFilters_DblClick()
   ' Confirm the selection.
-  If cmdOK.Enabled Then
+  If cmdOk.Enabled Then
     cmdOK_Click
   End If
 
@@ -5056,7 +5056,7 @@ End Sub
 
 Private Sub ssTreeFuncFunction_DblClick()
   ' Confirm the function selection.
-  If cmdOK.Enabled Then
+  If cmdOk.Enabled Then
     cmdOK_Click
   End If
 
@@ -5077,7 +5077,7 @@ Private Sub ssTreeFuncFunction_NodeClick(Node As SSActiveTreeView.SSNode)
   
   ' Only enable the OK button if a function has been selected.
   ' ie. not when the root node, or one of the category nodes is selected.
-  cmdOK.Enabled = fFunctionSelected
+  cmdOk.Enabled = fFunctionSelected
 
 End Sub
 
@@ -5093,7 +5093,7 @@ End Sub
 
 Private Sub ssTreeOpOperator_DblClick()
   ' Confirm the operator selection.
-  If cmdOK.Enabled Then
+  If cmdOk.Enabled Then
     cmdOK_Click
   End If
 
@@ -5113,7 +5113,7 @@ Private Sub ssTreeOpOperator_NodeClick(Node As SSActiveTreeView.SSNode)
   
   ' Only enable the OK button if an operator has been selected.
   ' ie. not when the root node, or one of the category nodes is selected.
-  cmdOK.Enabled = fOperatorSelected
+  cmdOk.Enabled = fOperatorSelected
 
 End Sub
 
@@ -5181,7 +5181,7 @@ Private Sub txtPValPrompt_Change()
     
   ' Only enable the OK button if a prompt is entered and
   ' there is a valid column selected for table type prompted values.
-  cmdOK.Enabled = (Len(Trim(txtPValPrompt.Text)) > 0) And _
+  cmdOk.Enabled = (Len(Trim(txtPValPrompt.Text)) > 0) And _
     (mobjComponent.Component.valueType <> giEXPRVALUE_TABLEVALUE Or _
     mobjComponent.Component.LookupColumn > 0)
 
