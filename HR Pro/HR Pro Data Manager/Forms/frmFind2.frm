@@ -2450,7 +2450,7 @@ Public Sub UpdateFindWindow()
   
 End Sub
 
-Private Sub LocateRecordID(plngID As Long)
+Private Sub LocateRecordIDWithoutSelect(plngID As Long)
   ' Locate the given record in the recordset.
   Dim fFound As Boolean
   Dim iColumnDataType As Integer
@@ -2622,11 +2622,18 @@ Private Sub LocateRecordID(plngID As Long)
   varbkCurrentRecord = mrsFindRecords.Bookmark
   ssOleDBGridFindColumns.MoveRecords varbkCurrentRecord
   ssOleDBGridFindColumns.Bookmark = varbkCurrentRecord
+  CurrentBookMark = ssOleDBGridFindColumns.Bookmark
+  
+End Sub
+
+
+Private Sub LocateRecordID(plngID As Long)
+  
+  LocateRecordIDWithoutSelect plngID
   
   'MH20020430 Fault 3809 RemoveAll bookmarks before setting current record...
   ssOleDBGridFindColumns.SelBookmarks.RemoveAll
   ssOleDBGridFindColumns.SelBookmarks.Add ssOleDBGridFindColumns.Bookmark
-  CurrentBookMark = ssOleDBGridFindColumns.Bookmark
 
 End Sub
 
@@ -4668,20 +4675,31 @@ Public Function GetSelectedIDs() As String
   
   ssOleDBGridFindColumns.Redraw = False
   
-  For intCount = 1 To nTotalSelRows
-    arrayBookmarks(intCount) = ssOleDBGridFindColumns.SelBookmarks.Item(intCount - 1)
-  Next intCount
-  
-  'Now need to populate an array with all the IDs that we are going to delete
-  strSelectedRecords = vbNullString
-  For intCount = 1 To nTotalSelRows Step 1
-    ssOleDBGridFindColumns.Bookmark = arrayBookmarks(intCount)
-    CurrentBookMark = ssOleDBGridFindColumns.Bookmark
-    strSelectedRecords = strSelectedRecords & _
-        IIf(strSelectedRecords <> vbNullString, ",", "") & _
-        SelectedRecordID
-  Next intCount
+'''  For intCount = 1 To nTotalSelRows
+'''    arrayBookmarks(intCount) = ssOleDBGridFindColumns.SelBookmarks.Item(intCount - 1)
+'''  Next intCount
+'''
+'''  'Now need to populate an array with all the IDs that we are going to delete
+'''  strSelectedRecords = vbNullString
+'''  For intCount = 1 To nTotalSelRows
+'''    ssOleDBGridFindColumns.Bookmark = arrayBookmarks(intCount)
+'''    CurrentBookMark = ssOleDBGridFindColumns.Bookmark
+'''    strSelectedRecords = strSelectedRecords & _
+'''        IIf(strSelectedRecords <> vbNullString, ",", "") & _
+'''        SelectedRecordID
+'''
+'''  Next intCount
 
+
+  strSelectedRecords = vbNullString
+  With ssOleDBGridFindColumns
+    For intCount = 0 To .SelBookmarks.Count - 1
+      strSelectedRecords = strSelectedRecords & _
+          IIf(strSelectedRecords <> vbNullString, ",", "") & _
+          .Columns("ID").CellValue(.SelBookmarks(intCount))
+    Next
+  End With
+  
   ssOleDBGridFindColumns.Redraw = True
   
   GetSelectedIDs = strSelectedRecords
@@ -4782,13 +4800,9 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
         mblnRefreshing = True
         frmMain.RefreshRecordEditScreens
         mblnRefreshing = False
-        'frmMain.RefreshMainForm Me
 
-        If mstrSelectedRecords <> vbNullString Then
-          ReinstateSelectedRows mstrSelectedRecords
-        End If
-        
-        '.UpdateAll
+        ReinstateSelectedRows mstrSelectedRecords
+      
       End With
 
       UI.UnlockWindow
@@ -4822,8 +4836,9 @@ Public Function ReinstateSelectedRows(pstrSelectedRecords As String)
   Dim nTotalSelRows As Variant
   Dim intCount As Integer
   Dim iGridLoop As Integer
-  'Dim varFirstRow As Variant
-  'Dim blnFirstRow As Boolean
+  
+  Dim strIDs() As String
+  Dim intIndex As Integer
     
   If pstrSelectedRecords = vbNullString Then Exit Function
   
@@ -4834,37 +4849,33 @@ Public Function ReinstateSelectedRows(pstrSelectedRecords As String)
   
   With ssOleDBGridFindColumns
   
-  .Redraw = False
-  
-  .SelBookmarks.RemoveAll
-  
-  'For intCount = 0 To UBound(arrayBookmarks)
+    .Redraw = False
+    .SelBookmarks.RemoveAll
     
-    ' match record id stored in array to the "ID" column of the grid, then
-    ' add the bookmark to selbookmarks if found.
-    
-    'Set varFirstRow = Nothing
-    
-    .MoveFirst
-    'blnFirstRow = False
-    pstrSelectedRecords = "," & pstrSelectedRecords & ","
-    For iGridLoop = 1 To RecordCount
-      nTotalSelRows = .Bookmark 'GetBookmark(iGridLoop)
-      If InStr(pstrSelectedRecords, "," & CStr(.Columns("ID").Value) & ",") > 0 Then
-        .SelBookmarks.Add nTotalSelRows
-        'If Not blnFirstRow Then
-        '  varFirstRow = .FirstRow
-        '  blnFirstRow = True
-        'End If
+    mrsFindRecords.MoveFirst
+    strIDs = Split(pstrSelectedRecords, ",")
+    For intIndex = 0 To UBound(strIDs)
+      mrsFindRecords.Find "ID = " & strIDs(intIndex)
+      If Not mrsFindRecords.EOF Then
+        .SelBookmarks.Add mrsFindRecords.Bookmark
       End If
-      .MoveNext
     Next
-
-  If .SelBookmarks.Count > 0 Then
-    .Bookmark = .SelBookmarks(0)
-  End If
     
-  .Redraw = True
+    '.MoveFirst
+    'pstrSelectedRecords = "," & pstrSelectedRecords & ","
+    'For iGridLoop = 1 To RecordCount
+    '  nTotalSelRows = .Bookmark
+    '  If InStr(pstrSelectedRecords, "," & CStr(.Columns("ID").Value) & ",") > 0 Then
+    '    .SelBookmarks.Add nTotalSelRows
+    '  End If
+    '  .MoveNext
+    'Next
+  
+    If .SelBookmarks.Count > 0 Then
+      .Bookmark = .SelBookmarks(0)
+    End If
+      
+    .Redraw = True
   
   End With
   
