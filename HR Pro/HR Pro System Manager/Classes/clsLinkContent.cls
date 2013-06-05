@@ -212,6 +212,7 @@ End Function
 
 Public Function SetContentFromTextbox(txt As TextBox, colAvailableComponents As Collection, lngTableID As Long) As String
 
+  Dim colOriginal As Collection
   Dim strArray() As String
   Dim strArray2() As String
   Dim intIndex As Integer
@@ -219,6 +220,9 @@ Public Function SetContentFromTextbox(txt As TextBox, colAvailableComponents As 
   Dim strMergeField As String
   Dim strHighlightText As String
   Dim blnLastField As Boolean
+  
+  Set colOriginal = mcolContentDetails
+  
   
   SetContentFromTextbox = vbNullString
   
@@ -253,6 +257,7 @@ Public Function SetContentFromTextbox(txt As TextBox, colAvailableComponents As 
   Next
   
   If strHighlightText <> vbNullString Then
+    Set mcolContentDetails = colOriginal
     txt.SelStart = InStr(txt.Text, strHighlightText) - 1
     txt.SelLength = Len(strHighlightText)
   End If
