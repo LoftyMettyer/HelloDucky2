@@ -112,8 +112,6 @@ Begin VB.Form frmScrOpen
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   9340
-            TextSave        =   ""
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -215,6 +213,8 @@ Private gfLoading As Boolean
 Private gLngLockedTableID As Long
 Private mstrCurrentTable As String
 Private mIamMaximised As Boolean
+Private mlngScreenID As Long
+Private mstrScreenName As String
 
 Private Const MIN_FORM_HEIGHT = 5000
 Private Const MIN_FORM_WIDTH = 6000
@@ -666,6 +666,8 @@ Private Function CopyScreen() As Boolean
   With rsScreen
     ' Create a new unique screen name.
     sScreenName = "Copy_of_" & .Fields("Name")
+    mstrScreenName = sScreenName
+    
     iCounter = 1
     fGoodName = False
     Do While Not fGoodName
@@ -833,6 +835,10 @@ TidyUpAndExit:
     daoWS.CommitTrans dbForceOSFlush
     Application.Changed = True
     RefreshScreens
+    
+    'Select Newly Created Screen
+    SelectScreen
+    
   Else
     daoWS.Rollback
     MsgBox "Unable to copy the screen." & vbCr & vbCr & _
@@ -846,6 +852,23 @@ ErrorTrap:
   Resume TidyUpAndExit
   
 End Function
+
+Public Sub SelectScreen()
+  Dim iCount As Integer
+  
+  With ssGrdScreens
+    .MoveFirst
+    For iCount = 0 To .Rows
+      If .Columns(0).Text = mstrScreenName Then
+        .Bookmark = .AddItemBookmark(ScreenID)
+        .SelBookmarks.RemoveAll
+        .SelBookmarks.Add .Bookmark
+        Exit For
+      End If
+      .MoveNext
+    Next iCount
+  End With
+End Sub
 
 Private Function EditScreen() As Boolean
   ' Edit the selected screen.
