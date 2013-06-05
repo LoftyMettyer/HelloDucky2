@@ -163,36 +163,43 @@ Namespace Things
 
     Public Sub PopulateTableColumns()
 
-      Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcolumns", Nothing)
+      Try
 
-      For Each row As DataRow In ds.Tables(0).Rows
+        Dim ds As DataSet = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcolumns", Nothing)
 
-        Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
+        For Each row As DataRow In ds.Tables(0).Rows
 
-        Dim column As New Column
-        column.Table = table
-        column.ID = row.Item("id").ToString
-        column.Name = row.Item("name").ToString
-        column.SchemaName = "dbo"
-        column.Description = row.Item("description").ToString
-        column.State = row.Item("state")
-        column.DefaultCalcID = NullSafe(row, "defaultcalcid", 0).ToString
-        column.DefaultValue = row.Item("defaultvalue").ToString
-        column.CalcID = row.Item("calcid").ToString
-        column.DataType = row.Item("datatype")
-        column.Size = row.Item("size").ToString
-        column.Decimals = row.Item("decimals").ToString
-        column.Audit = row.Item("audit")
-        column.Mandatory = row.Item("mandatory")
-        column.Multiline = row.Item("multiline")
-        column.IsReadOnly = row.Item("isreadonly")
-        column.CaseType = row.Item("case").ToString
-        column.CalculateIfEmpty = row.Item("calculateifempty")
-        column.TrimType = NullSafe(row, "trimming", 0).ToString
-        column.Alignment = row.Item("alignment").ToString
+          Dim table As Table = Globals.Tables.GetById(row.Item("tableid").ToString)
 
-        table.Columns.Add(column)
-      Next
+          Dim column As New Column
+          column.Table = table
+          column.ID = row.Item("id").ToString
+          column.Name = row.Item("name").ToString
+          column.SchemaName = "dbo"
+          column.Description = row.Item("description").ToString
+          column.State = row.Item("state")
+          column.DefaultCalcID = NullSafe(row, "defaultcalcid", 0).ToString
+          column.DefaultValue = row.Item("defaultvalue").ToString
+          column.CalcID = row.Item("calcid").ToString
+          column.DataType = row.Item("datatype")
+          column.Size = row.Item("size").ToString
+          column.Decimals = row.Item("decimals").ToString
+          column.Audit = row.Item("audit")
+          column.Mandatory = row.Item("mandatory")
+          column.Multiline = row.Item("multiline")
+          column.IsReadOnly = row.Item("isreadonly")
+          column.CaseType = row.Item("case").ToString
+          column.CalculateIfEmpty = row.Item("calculateifempty")
+          column.TrimType = NullSafe(row, "trimming", 0).ToString
+          column.Alignment = row.Item("alignment").ToString
+
+          table.Columns.Add(column)
+        Next
+
+      Catch ex As Exception
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.LoadingData, "PopulateTableColumns", SystemFramework.ErrorHandler.Severity.Error, "Table or column not found", "Error in system metatdata - table or column not found")
+
+      End Try
 
     End Sub
 
