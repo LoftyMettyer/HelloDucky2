@@ -1009,7 +1009,8 @@ Public Function GetScreens() As Boolean
         If avPrimaryMenuInfo(11, iLoop) > 0 Then
           LoadMenuPicture CLng(avPrimaryMenuInfo(11, iLoop)), objFileTool
         Else
-          objFileTool.SetPicture 0, LoadResPicture("SCREEN", 0), COL_GREY
+          ' objFileTool.SetPicture 0, LoadResPicture("SCREEN", 0), COL_GREY
+          objFileTool.SetPicture 0, LoadResPicture("SCREENICO", 1), COL_GREY
         End If
         
         'Add the new tool to the main menu
@@ -1079,7 +1080,8 @@ Public Function GetScreens() As Boolean
             If avSubMenuInfo(5, iLoop2) > 0 Then
               LoadMenuPicture CLng(avSubMenuInfo(5, iLoop2)), objFileTool
             Else
-              objFileTool.SetPicture 0, LoadResPicture("SCREEN", 0), COL_GREY
+              ' objFileTool.SetPicture 0, LoadResPicture("SCREEN", 0), COL_GREY
+              objFileTool.SetPicture 0, LoadResPicture("SCREENICO", 1), COL_GREY
             End If
             .Bands(sBand).Tools.Insert 0, objFileTool
           End If
@@ -1119,7 +1121,8 @@ Public Function GetScreens() As Boolean
               If gcoTablePrivileges.Item(rsTemp!TableName).TableType = tabLookup Then
                 objFileTool.SetPicture 0, LoadResPicture("LOOKUP_TABLE", 0), COL_GREY
               Else
-                objFileTool.SetPicture 0, LoadResPicture("SCREEN", 0), COL_GREY
+                ' objFileTool.SetPicture 0, LoadResPicture("SCREEN", 0), COL_GREY
+                objFileTool.SetPicture 0, LoadResPicture("SCREENICO", 1), COL_GREY
               End If
             End If
           
@@ -1149,7 +1152,8 @@ Public Function GetScreens() As Boolean
           If rsScreens!PictureID > 0 Then
             LoadMenuPicture rsScreens!PictureID, objFileTool
           Else
-            objFileTool.SetPicture 0, LoadResPicture("SCREEN", 0), COL_GREY
+            ' objFileTool.SetPicture 0, LoadResPicture("SCREEN", 0), COL_GREY
+            objFileTool.SetPicture 0, LoadResPicture("SCREENICO", 1), COL_GREY
           End If
 
           .Bands("bndQuickEntry").Tools.Insert 0, objFileTool
