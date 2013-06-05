@@ -464,7 +464,7 @@ Public Function CreateTempTables() As Boolean
     daoDb.Execute sSQL
   
     ' Local copy of the security groups
-    sSQL = "SELECT uid, name INTO tmpmobileusergroups FROM sysusers " & _
+    sSQL = "SELECT uid AS ID, name INTO tmpmobileusergroups FROM sysusers " & _
       " IN " & sSource & " WHERE gid = uid And gid > 0 AND not (name like 'ASRSys%') AND NOT (name like 'db[_]%')"
     daoDb.Execute sSQL
    
