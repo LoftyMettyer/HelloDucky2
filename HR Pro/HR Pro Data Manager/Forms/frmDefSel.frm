@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
    ClientHeight    =   7740
@@ -2417,7 +2417,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
   msFieldName = "Name"
    
   ' Show only unassigned utilities
-  If mlngTableID > -1 And Not mblnTableComboVisible Then
+  If mlngTableID > -1 And Not mblnTableComboVisible And Not blnScheduledJobs Then
     sCategoryFilter = " LEFT JOIN dbo.tbsys_objectcategories cat ON cat.objectid = " & msTableName & "." & msIDField & " AND cat.objecttype = " & CStr(mutlUtilityType)
     strExtraWhereClause = strExtraWhereClause & IIf(strExtraWhereClause <> vbNullString, " AND ", "") & "(ISNULL(cat.categoryid,0) = " & mlngTableID & ")"
   End If
@@ -2443,7 +2443,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
       IIf(mblnApplyDefAccess, " INNER JOIN " & msAccessTableName & " ON " & msTableName & "." & msIDField & " = " & msAccessTableName & ".ID" & _
         " AND " & msAccessTableName & ".groupname = '" & gsUserGroup & "'", vbNullString) & _
       IIf(strExtraWhereClause <> vbNullString, " WHERE " & strExtraWhereClause, "")
-  Else
+  ElseIf Len(msRecordSource) = 0 Then
     
     msRecordSource = _
       "SELECT " & msTableName & ".name," & _
