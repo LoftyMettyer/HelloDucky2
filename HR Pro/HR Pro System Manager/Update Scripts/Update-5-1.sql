@@ -59,6 +59,45 @@ BEGIN
 END
 
 /* ------------------------------------------------------------- */
+/* Step - Calculation framework */
+/* ------------------------------------------------------------- */
+
+	IF EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('tbstat_componentcode', 'U') AND name = 'objectid')
+		EXEC sp_executesql N'ALTER TABLE tbstat_componentcode DROP COLUMN [objectid];';
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_convertcharactertonumeric]') AND xtype = 'FN')
+		DROP FUNCTION [dbo].[udfsys_convertcharactertonumeric];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_divide]') AND xtype = 'FN')
+		DROP FUNCTION [dbo].[udfsys_divide];
+
+	---- Clear old component expressions
+	DELETE FROM tbstat_componentcode WHERE id IN (16, 61, 25) AND isoperator = 0
+	DELETE FROM tbstat_componentcode WHERE id IN (4) AND isoperator = 1
+	DELETE FROM tbstat_componentdependancy WHERE id IN (16, 61, 25)
+
+
+	-- Is Field Empty
+	INSERT [dbo].[tbstat_componentcode] ([id], [code], [datatype], [name], [isoperator], [operatortype], [casecount])
+		VALUES (16, 'dbo.udfstat_isfieldempty({0},{1})', 3, 'Is Field Empty', 0, 0, 1);		
+	INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (16, 4, '', '', '');
+
+	-- Is Field Populated
+	INSERT [dbo].[tbstat_componentcode] ([id], [code], [datatype], [name], [isoperator], [operatortype], [casecount])
+		VALUES (61, 'dbo.udfstat_isfieldpopulated({0},{1})', 3, 'Is Field Populated', 0, 0, 1);		
+	INSERT [dbo].[tbstat_componentdependancy] ([id], [type], [modulekey], [parameterkey], [code]) VALUES (61, 4, '', '', '');
+
+	-- Convert character to numeric
+	INSERT [dbo].[tbstat_componentcode] ([id], [code], [datatype], [name], [isoperator], [operatortype], [casecount])
+		VALUES (25, 'dbo.udfstat_convertcharactertonumeric({0})', 2, 'Convert Character to Numeric', 0, 0, 0);		
+
+	-- Divided By
+	INSERT [dbo].[tbstat_componentcode] ([id], [precode], [code], [aftercode], [name], [isoperator], [operatortype], [casecount])
+		VALUES (4, 'dbo.udfstat_divideby(', ',', ')', 'Divided by', 1, 0, 0);		
+
+
+
+/* ------------------------------------------------------------- */
 /* Step - Object triggers */
 /* ------------------------------------------------------------- */
 
