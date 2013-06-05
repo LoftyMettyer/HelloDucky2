@@ -1,6 +1,6 @@
 
 /* --------------------------------------------------- */
-/* Update the database from version 3.7 to version 3.8 */
+/* Update the database from version 3.7 to version 4.0 */
 /* --------------------------------------------------- */
 
 DECLARE @iRecCount integer,
@@ -41,7 +41,7 @@ where [Section] = 'database' and [SettingKey] = 'version'
 /* Exit if the database is not previous or current version . */
 /* NB. We allow the script to run even if the database is the new version, as the flags set at the end of the script */
 /* may need to be run if we issue corrected versions of the applications without updating the database verion number. */
-IF (@sDBVersion <> '3.7') and (@sDBVersion <> '3.8')
+IF (@sDBVersion <> '3.7') and (@sDBVersion <> '4.0')
 BEGIN
 	RAISERROR('The current database version is incompatible with this update script', 16, 1)
 	RETURN
@@ -69,7 +69,7 @@ PRINT 'Step 1 of X - Updating Email Definitions'
     BEGIN
 
 		---------------------------------------------------
-		--Clear out previous version of v3.8 update script
+		--Clear out previous version of v4.0 update script
 		IF NOT OBJECT_ID('ASRSysLinkContent', N'U') IS NULL	
 			EXEC sp_executesql N'DROP TABLE ASRSysLinkContent'
 
@@ -12858,12 +12858,12 @@ PRINT 'Step X of X - Updating Versions'
 delete from asrsyssystemsettings
 where [Section] = 'database' and [SettingKey] = 'version'
 insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
-values('database', 'version', '3.8')
+values('database', 'version', '4.0')
 
 delete from asrsyssystemsettings
 where [Section] = 'intranet' and [SettingKey] = 'minimum version'
 insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
-values('intranet', 'minimum version', '3.8.0')
+values('intranet', 'minimum version', '4.0.0')
 
 delete from asrsyssystemsettings
 where [Section] = 'server dll' and [SettingKey] = 'minimum version'
@@ -12873,7 +12873,7 @@ values('server dll', 'minimum version', '3.4.0')
 delete from asrsyssystemsettings
 where [Section] = '.NET Assembly' and [SettingKey] = 'minimum version'
 insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
-values('.NET Assembly', 'minimum version', '3.8.0')
+values('.NET Assembly', 'minimum version', '4.0.0')
 
 delete from asrsyssystemsettings
 where [Section] = 'outlook service' and [SettingKey] = 'minimum version'
@@ -12883,11 +12883,11 @@ values('outlook service', 'minimum version', '3.6.0')
 delete from asrsyssystemsettings
 where [Section] = 'workflow service' and [SettingKey] = 'minimum version'
 insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
-values('workflow service', 'minimum version', '3.8.0')
+values('workflow service', 'minimum version', '4.0.0')
 
 insert into asrsysauditaccess
 (DateTimeStamp, UserGroup, UserName, ComputerName, HRProModule, Action)
-values (getdate(),'<none>',left(system_user,50),lower(left(host_name(),30)),'System','v3.8')
+values (getdate(),'<none>',left(system_user,50),lower(left(host_name(),30)),'System','v4.0')
 
 
 SELECT @NVarCommand = 
@@ -12933,4 +12933,4 @@ SET NOCOUNT OFF
 /* ------------------ */
 /* Display OK Message */
 /* ------------------ */
-PRINT 'Update Script Has Converted Your HR Pro Database To Use v3.8 Of HR Pro'
+PRINT 'Update Script Has Converted Your HR Pro Database To Use v4.0 Of HR Pro'
