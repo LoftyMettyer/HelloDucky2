@@ -481,7 +481,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
         
           If fRtnColumnOK Then
             ' The search column can be read direct from the table.
-            sRtnColumnCode = sRealTableSource & "." & sRtnColumnName
+            sRtnColumnCode = "lookup." & sRtnColumnName
           Else
             ' Then column cannot be read direct. If its from a parent, try parent views
             ' Loop thru the views on the table, seeing if any have read permis for the column
@@ -502,7 +502,6 @@ Public Function RuntimeCode(psRuntimeCode As String, _
                     ReDim Preserve asViews(2, UBound(asViews, 2) + 1)
                     asViews(1, UBound(asViews, 2)) = objTableView.ViewName
                     asViews(2, UBound(asViews, 2)) = ""
-        
                   End If
                 End If
               End If
@@ -520,7 +519,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
                 End If
         
                 sRtnColumnCode = sRtnColumnCode & _
-                  " WHEN NOT " & asViews(1, iLoop) & "." & sRtnColumnName & " IS NULL THEN " & asViews(1, iLoop) & "." & sRtnColumnName
+                  " WHEN NOT " & "lookup_" & iLoop & "." & sRtnColumnName & " IS NULL THEN " & "lookup_" & iLoop & "." & sRtnColumnName
               Next iLoop
         
               sRtnColumnCode = sRtnColumnCode & _
@@ -532,7 +531,6 @@ Public Function RuntimeCode(psRuntimeCode As String, _
           
           Set objColumnPrivileges = GetColumnPrivileges(sSrchTableName)
           
-          
           fSrchColumnOK = objColumnPrivileges.IsValid(sSrchColumnName)
         
           If fSrchColumnOK Then
@@ -541,7 +539,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
         
           If fSrchColumnOK Then
             ' The search column can be read direct from the table.
-            sSrchColumnCode = sRealTableSource & "." & sSrchColumnName & " = " & sParamCode2
+            sSrchColumnCode = "lookup" & "." & sSrchColumnName & " = " & sParamCode2
           Else
             ' Then column cannot be read direct. If its from a parent, try parent views
             ' Loop thru the views on the table, seeing if any have read permis for the column
@@ -589,7 +587,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
                 End If
           
                 sSrchColumnCode = sSrchColumnCode & _
-                  sRealTableSource & ".id IN (SELECT id FROM " & asViews(1, iLoop) & " WHERE " & sSrchColumnName & " = " & sParamCode2 & ")"
+                  sRealTableSource & ".id IN (SELECT id FROM " & asViews(1, iLoop) & " lookup_" & iLoop & " WHERE " & sSrchColumnName & " = " & sParamCode2 & ")"
               End If
             Next iLoop
           End If
@@ -597,14 +595,21 @@ Public Function RuntimeCode(psRuntimeCode As String, _
           sSrchTableCode = ""
           For iLoop = 1 To UBound(asViews, 2)
             sSrchTableCode = sSrchTableCode & _
-              " LEFT OUTER JOIN " & asViews(1, iLoop) & " ON " & sRealTableSource & ".id = " & asViews(1, iLoop) & ".id"
+              " LEFT OUTER JOIN " & asViews(1, iLoop) & " lookup_" & iLoop & " ON " & sRealTableSource & ".id = " & " lookup_" & iLoop & ".id"
           Next iLoop
           
           If fSrchColumnOK Then
-            sCode = "(SELECT TOP 1 " & sRtnColumnCode & _
-              " FROM " & sRealTableSource & _
-              " " & sSrchTableCode & _
-              " WHERE (" & sSrchColumnCode & "))"
+            If UBound(asViews, 2) = 0 Then
+              sCode = "(SELECT TOP 1 " & sRtnColumnCode & _
+                " FROM " & sRealTableSource & " lookup" & _
+                " " & sSrchTableCode & _
+                " WHERE (" & sSrchColumnCode & "))"
+            Else
+              sCode = "(SELECT TOP 1 " & sRtnColumnCode & _
+                " FROM " & sRealTableSource & _
+                " " & sSrchTableCode & _
+                " WHERE (" & sSrchColumnCode & "))"
+            End If
           Else
             sCode = "null"
           End If
