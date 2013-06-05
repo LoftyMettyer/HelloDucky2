@@ -418,8 +418,20 @@ Private Sub abDefSel_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     Case "ID_FavouriteRemove"
       Favourites (False)
       
+    Case "ID_FavouritesClear"
+      ClearFavourites
+      
   End Select
   
+End Sub
+
+Private Sub ClearFavourites()
+
+  Dim sSQL As String
+
+  sSQL = "EXEC dbo.[spstat_clearfavourites]"
+  gADOCon.Execute sSQL
+
 End Sub
 
 Private Sub Favourites(ByVal bAdd As Boolean)
@@ -432,11 +444,11 @@ Private Sub Favourites(ByVal bAdd As Boolean)
   If bAdd Then
     sSQL = "EXEC dbo.[spstat_addtofavourites] " & mutlUtilityType & "," & lngSelectedID
   Else
+    sSQL = "EXEC dbo.[spstat_removefromfavourites] " & mutlUtilityType & "," & lngSelectedID
   End If
   
-
+  ' Execute
   gADOCon.Execute sSQL
-
 
 End Sub
 
@@ -1566,7 +1578,6 @@ ErrorTrap:
   'Resume Exit_Populate_List
   
 End Function
-
 
 
 Public Function ShowOrders(strSQL As String, lngOrderID As Long) As Boolean
