@@ -220,12 +220,8 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   End If
 
   Dim title As String
-  If strOutputReportPackTitle = vbNullString Then
-    title = sBatchJobName
-  Else
-    title = strOutputReportPackTitle
-  End If
-
+  If strOutputReportPackTitle = vbNullString Then title = sBatchJobName Else title = strOutputReportPackTitle
+  
   gstrHTMLOutputTOC = "<HTML><BODY><CENTER><FONT face=Verdana size=2><a id=" & "'" & "top" & "'" & "><h2>" & title & "</h2></a>"
   If blnOutputTOC Then
     gstrHTMLOutputTOC = gstrHTMLOutputTOC & "<h3>Table Of Contents</h3>"
@@ -1043,14 +1039,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   '4
   'Insert TOC code here as all Report Pack Jobs Or Batch Jobs would be done by now
   ElseIf gblnReportPackMode And fOK And blnOutputSave And blnOutputTOC Then
-  
-    If strOutputFilename = vbNullString Then
-      If strOutputEmailAttachAs = vbNullString Then
-      Else
-        strOutputFilename = strOutputEmailAttachAs
-      End If
-    End If
-  
+    
     Select Case lngOutputFormat
       Case fmtHTML
           FileNum = FreeFile()
@@ -1126,32 +1115,26 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
       Select Case lngOutputFormat
         Case fmtHTML
           
-          If strOutputFilename = vbNullString Then
-            strNotes = "No file name has been specified in the Report Pack definition."
-            fOK = False
-            blnOutputEmail = False
-          Else
-            If strOutputReportPackTitle = vbNullString Then strOutputReportPackTitle = sBatchJobName
-            gstrHTMLOutputTOC = "<HTML><BODY><CENTER><FONT face=Verdana size=2><a id=" & "'" & "top" & "'" & "><h2>" & strOutputReportPackTitle & "</h2></a>"
+          If strOutputReportPackTitle = vbNullString Then strOutputReportPackTitle = sBatchJobName
+          gstrHTMLOutputTOC = "<HTML><BODY><CENTER><FONT face=Verdana size=2><a id=" & "'" & "top" & "'" & "><h2>" & strOutputReportPackTitle & "</h2></a>"
+        
+          FileNum = FreeFile()
+          LineCount = 1
           
-            FileNum = FreeFile()
-            LineCount = 1
-            
-            'Read the contents of the HTML file
-            Open strOutputFilename For Input As #FileNum
-              Do While Not EOF(FileNum)
-                Line Input #FileNum, NextLine
-                strReadInFileContents = strReadInFileContents & NextLine
-                LineCount = LineCount + 1
-              Loop
-            Close #FileNum
-            
-            'Write back the contents with our added TOC HTML
-            Open strOutputFilename For Output As #FileNum
-                strReadInFileContents = gstrHTMLOutputTOC & strReadInFileContents
-                Print #FileNum, strReadInFileContents
-            Close #FileNum
-          End If
+          'Read the contents of the HTML file
+          Open strOutputFilename For Input As #FileNum
+            Do While Not EOF(FileNum)
+              Line Input #FileNum, NextLine
+              strReadInFileContents = strReadInFileContents & NextLine
+              LineCount = LineCount + 1
+            Loop
+          Close #FileNum
+          
+          'Write back the contents with our added TOC HTML
+          Open strOutputFilename For Output As #FileNum
+              strReadInFileContents = gstrHTMLOutputTOC & strReadInFileContents
+              Print #FileNum, strReadInFileContents
+          Close #FileNum
         
         Case fmtWordDoc
         Case fmtExcelchart, fmtExcelPivotTable, fmtExcelWorksheet
