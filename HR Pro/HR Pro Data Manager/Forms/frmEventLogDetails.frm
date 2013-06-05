@@ -64,6 +64,15 @@ Begin VB.Form frmEventLogDetails
             _ExtentX        =   12700
             _ExtentY        =   53
          End
+         Begin VB.Label lblAllJobsLabel 
+            BackStyle       =   0  'Transparent
+            Caption         =   "All Jobs in Batch :"
+            Height          =   195
+            Left            =   3270
+            TabIndex        =   24
+            Top             =   120
+            Width           =   1785
+         End
          Begin VB.Label lblBatchJobName 
             BackStyle       =   0  'Transparent
             Caption         =   "BatchJobName"
@@ -81,16 +90,7 @@ Begin VB.Form frmEventLogDetails
             Left            =   120
             TabIndex        =   25
             Top             =   120
-            Width           =   1620
-         End
-         Begin VB.Label lblAllJobsLabel 
-            BackStyle       =   0  'Transparent
-            Caption         =   "All Jobs in Batch :"
-            Height          =   195
-            Left            =   3270
-            TabIndex        =   24
-            Top             =   120
-            Width           =   1665
+            Width           =   1740
          End
       End
       Begin VB.Frame fraEventDetails 
