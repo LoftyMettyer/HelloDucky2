@@ -1887,6 +1887,65 @@ PRINT 'Step 7 - Validation Messages'
 	EXECUTE spASRResizeColumn 'ASRSysColumns','errorMessage','MAX';
 
 
+
+/* ------------------------------------------------------------- */
+PRINT 'Step 8 of X - Updating Support Contact Details'
+/* ------------------------------------------------------------- */
+
+	---New email address
+  SET @sSPCode_0 = 'DELETE FROM [ASRSysSystemSettings] 
+              WHERE [ASRSysSystemSettings].[Section] = ''support'' 
+                AND [ASRSysSystemSettings].[SettingKey] = ''email'''
+	EXECUTE (@sSPCode_0)
+	
+  SET @sSPCode_0 = 'INSERT INTO [ASRSysSystemSettings] ([ASRSysSystemSettings].[Section], 
+                                                  [ASRSysSystemSettings].[SettingKey], 
+                                                  [ASRSysSystemSettings].[SettingValue])
+                    VALUES (''support'', ''email'', ''service.delivery@coasolutions.com'')'
+              
+	EXECUTE (@sSPCode_0)
+
+	---New Web access detail
+  SET @sSPCode_0 = 'DELETE FROM [ASRSysSystemSettings] 
+              WHERE [ASRSysSystemSettings].[Section] = ''support'' 
+                AND [ASRSysSystemSettings].[SettingKey] = ''webpage'''
+	EXECUTE (@sSPCode_0)
+	
+  SET @sSPCode_0 = 'INSERT INTO [ASRSysSystemSettings] ([ASRSysSystemSettings].[Section], 
+                                                  [ASRSysSystemSettings].[SettingKey], 
+                                                  [ASRSysSystemSettings].[SettingValue])
+                    VALUES (''support'', ''webpage'', ''http://webfirst.coasolutions.com/'')'
+              
+	EXECUTE (@sSPCode_0)
+
+
+	---New contact number (from UK)
+  SET @sSPCode_0 = 'DELETE FROM [ASRSysSystemSettings] 
+              WHERE [ASRSysSystemSettings].[Section] = ''support'' 
+                AND [ASRSysSystemSettings].[SettingKey] = ''telephone no'''
+	EXECUTE (@sSPCode_0)
+	
+  SET @sSPCode_0 = 'INSERT INTO [ASRSysSystemSettings] ([ASRSysSystemSettings].[Section], 
+                                                  [ASRSysSystemSettings].[SettingKey], 
+                                                  [ASRSysSystemSettings].[SettingValue])
+                    VALUES (''support'', ''telephone no'', ''08451 609 999'')'
+              
+	EXECUTE (@sSPCode_0)
+
+	---New contact number (International)
+  SET @sSPCode_0 = 'DELETE FROM [ASRSysSystemSettings] 
+              WHERE [ASRSysSystemSettings].[Section] = ''support'' 
+                AND [ASRSysSystemSettings].[SettingKey] = ''telephone no intl'''
+	EXECUTE (@sSPCode_0)
+	
+  SET @sSPCode_0 = 'INSERT INTO [ASRSysSystemSettings] ([ASRSysSystemSettings].[Section], 
+                                                  [ASRSysSystemSettings].[SettingKey], 
+                                                  [ASRSysSystemSettings].[SettingValue])
+                    VALUES (''support'', ''telephone no intl'', ''+44(0)1932 590 721'')'
+              
+	EXECUTE (@sSPCode_0)
+	
+	
 /* ------------------------------------------------------------- */
 /* ------------------------------------------------------------- */
 
