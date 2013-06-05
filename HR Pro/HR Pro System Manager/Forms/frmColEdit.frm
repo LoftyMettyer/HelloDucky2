@@ -5,7 +5,7 @@ Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "coa_colourpicker.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "coa_workingpattern.ocx"
 Object = "{19400013-2704-42FE-AAA4-45D1A725A895}#1.0#0"; "coa_colourselector.ocx"
 Begin VB.Form frmColEdit 
@@ -28,6 +28,7 @@ Begin VB.Form frmColEdit
    Icon            =   "frmColEdit.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   6525
@@ -64,6 +65,7 @@ Begin VB.Form frmColEdit
       _Version        =   393216
       Style           =   1
       Tabs            =   8
+      Tab             =   3
       TabsPerRow      =   8
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -77,9 +79,8 @@ Begin VB.Form frmColEdit
       EndProperty
       TabCaption(0)   =   "De&finition"
       TabPicture(0)   =   "frmColEdit.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraDefinitionPage"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Screen Control "
       TabPicture(1)   =   "frmColEdit.frx":0028
@@ -93,8 +94,9 @@ Begin VB.Form frmColEdit
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "Valida&tion"
       TabPicture(3)   =   "frmColEdit.frx":0060
-      Tab(3).ControlEnabled=   0   'False
+      Tab(3).ControlEnabled=   -1  'True
       Tab(3).Control(0)=   "fraValidationPage"
+      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "Diar&y Links"
       TabPicture(4)   =   "frmColEdit.frx":007C
@@ -1146,7 +1148,7 @@ Begin VB.Form frmColEdit
          BorderStyle     =   0  'None
          Enabled         =   0   'False
          Height          =   5350
-         Left            =   -74950
+         Left            =   50
          TabIndex        =   108
          Top             =   320
          Visible         =   0   'False
@@ -1732,7 +1734,7 @@ Begin VB.Form frmColEdit
          BackColor       =   &H8000000C&
          BorderStyle     =   0  'None
          Height          =   5550
-         Left            =   45
+         Left            =   -74955
          TabIndex        =   99
          Top             =   315
          Width           =   8205
@@ -2225,7 +2227,7 @@ End Property
 
 Public Property Let Changed(pblnNewValue As Boolean)
   mblnChanged = pblnNewValue
-  cmdOK.Enabled = mblnChanged
+  cmdOk.Enabled = mblnChanged
 End Property
 
 Public Property Get Changed() As Boolean
@@ -3266,7 +3268,7 @@ End Sub
 
 Private Sub cmdCancel_Click()
   Dim pintAnswer As Integer
-    If Changed = True And cmdOK.Enabled Then
+    If Changed = True And cmdOk.Enabled Then
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
       If pintAnswer = vbYes Then
         Me.MousePointer = vbHourglass
@@ -4453,7 +4455,7 @@ Private Sub cmdOk_Click()
         mlngDfltValueExprID = 0
       End If
       .Properties("defaultValue") = sDefault
-      .Properties("dfltValueExprID") = mlngDfltValueExprID
+      .Properties("dfltValueExprID").value = IIf(mlngDfltValueExprID = -1, 0, mlngDfltValueExprID)
       
       ' Update Validation properties.
       .Properties("duplicate") = (chkDuplicate.value = vbChecked)
@@ -4491,7 +4493,7 @@ Private Sub cmdOk_Click()
       
       .Properties("mask") = IIf(Len(Trim(txtMask.Text)) > 0, txtMask.Text, vNull)
       
-      .Properties("lostFocusExprID") = mlngValidationExprID
+      .Properties("lostFocusExprID").value = IIf(mlngValidationExprID = -1, 0, mlngValidationExprID)
       .Properties("errorMessage") = Trim(txtErrorMessage.Text)
       
       ' Update Afd properties. RH 7/9/99
@@ -5031,7 +5033,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
   If mfCancelled = True Then
     If UnloadMode <> vbFormCode Then
-      If Changed = True And cmdOK.Enabled Then
+      If Changed = True And cmdOk.Enabled Then
         pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
         If pintAnswer = vbYes Then
           cmdOk_Click
@@ -6766,13 +6768,13 @@ End Sub
 Private Sub txtListValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOK.Default = False
+  cmdOk.Default = False
   
 End Sub
 
 Private Sub txtListValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOK.Default = True
+  cmdOk.Default = True
 
   ' Refresh the list of possible default values.
   cboDefault_Refresh
