@@ -25,7 +25,7 @@ Begin VB.Form frmWorkflowStepDetails
    MinButton       =   0   'False
    ScaleHeight     =   8700
    ScaleWidth      =   7965
-   StartUpPosition =   1  'CenterOwner
+   StartUpPosition =   2  'CenterScreen
    Begin VB.PictureBox picResizer 
       Height          =   495
       Left            =   120
