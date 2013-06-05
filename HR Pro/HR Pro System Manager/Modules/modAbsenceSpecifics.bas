@@ -2076,37 +2076,43 @@ Private Function CreateAbsenceBetween2DatesStoredProcedure() As Boolean
         "    DECLARE @bIncludeInstance bit" & vbNewLine & _
         "    DECLARE @iInstances int" & vbNewLine & vbNewLine & _
         "    DECLARE @AbsenceTypes table(Type nvarchar(50) COLLATE SQL_Latin1_General_CP1_CI_AS);" & vbNewLine & _
-        "    DECLARE @absences TABLE(duration integer, instance tinyint);" & vbNewLine & _
+        "    DECLARE @absences TABLE(duration float, instance integer);" & vbNewLine & _
         "    DECLARE @SplitID nvarchar(10)," & vbNewLine & _
-        "            @Pos int;" & vbNewLine & vbNewLine & _
-        "    SET @psAbsenceTypes = LTRIM(RTRIM(@psAbsenceTypes))+ ',';" & vbNewLine & _
-        "    SET @Pos = CHARINDEX(',', @psAbsenceTypes, 1);" & vbNewLine & _
-        "    IF REPLACE(@psAbsenceTypes, ',', '') <> ''" & vbNewLine & _
-        "    BEGIN" & vbNewLine & _
-        "        WHILE @Pos > 0" & vbNewLine & _
-        "        BEGIN" & vbNewLine & _
-        "            SET @SplitID = LTRIM(RTRIM(LEFT(@psAbsenceTypes, @Pos - 1)));" & vbNewLine & _
-        "            IF @SplitID <> '' INSERT INTO @AbsenceTypes (Type) VALUES (@SplitID);" & vbNewLine & _
-        "            SET @psAbsenceTypes = RIGHT(@psAbsenceTypes, LEN(@psAbsenceTypes) - @Pos);" & vbNewLine & _
-        "            SET @Pos = CHARINDEX(',', @psAbsenceTypes, 1);" & vbNewLine & _
-        "        END" & vbNewLine & _
-        "    END" & vbNewLine
+        "            @Pos int;" & vbNewLine & vbNewLine
+
+    If fValidConfiguration Then
+      sBradfordUDF = sBradfordUDF & vbNewLine & _
+          "    SET @psAbsenceTypes = LTRIM(RTRIM(@psAbsenceTypes))+ ',';" & vbNewLine & _
+          "    SET @Pos = CHARINDEX(',', @psAbsenceTypes, 1);" & vbNewLine & _
+          "    IF REPLACE(@psAbsenceTypes, ',', '') <> ''" & vbNewLine & _
+          "    BEGIN" & vbNewLine & _
+          "        WHILE @Pos > 0" & vbNewLine & _
+          "        BEGIN" & vbNewLine & _
+          "            SET @SplitID = LTRIM(RTRIM(LEFT(@psAbsenceTypes, @Pos - 1)));" & vbNewLine & _
+          "            IF @SplitID <> '' INSERT INTO @AbsenceTypes (Type) VALUES (@SplitID);" & vbNewLine & _
+          "            SET @psAbsenceTypes = RIGHT(@psAbsenceTypes, LEN(@psAbsenceTypes) - @Pos);" & vbNewLine & _
+          "            SET @Pos = CHARINDEX(',', @psAbsenceTypes, 1);" & vbNewLine & _
+          "        END" & vbNewLine & _
+          "    END" & vbNewLine
     
+      sBradfordUDF = sBradfordUDF & vbNewLine & _
+          "    INSERT @absences" & vbNewLine & _
+          "        SELECT dbo.[udf_ASRFn_AbsenceBetweenTwoDates](" & vbNewLine & _
+          "            (CASE WHEN " & sAbsColStartDateName & " < @pdtStartDate THEN @pdtStartDate ELSE " & sAbsColStartDateName & " END)" & vbNewLine & _
+          "            ,(CASE WHEN " & sAbsColEndDateName & " > @pdtEndDate THEN @pdtEndDate ELSE " & sAbsColEndDateName & " END)" & vbNewLine & _
+          "            ," & sAbsColTypeName & ",@piPersonnelID, GETDATE())" & vbNewLine & _
+          "            , CASE WHEN ROW_NUMBER() OVER (ORDER BY " & sAbsColStartDateName & ") = 1 OR " & sContinuousColumnName & " = 0 THEN 1 ELSE 0 END" & vbNewLine & _
+          "        FROM " & sAbsTableName & " WHERE ID_" & lngPersonnelTableID & " = @piPersonnelID" & vbNewLine & _
+          "            AND (" & sAbsColTypeName & " IN (SELECT Type From @AbsenceTypes))" & vbNewLine & _
+          "            AND ((" & sAbsColStartDateName & " <= @pdtstartdate AND (" & sAbsColEndDateName & " >= @pdtstartdate) OR " & sAbsColEndDateName & " IS NULL)" & vbNewLine & _
+          "            OR (" & sAbsColStartDateName & " >= @pdtstartdate AND " & sAbsColStartDateName & " <= @pdtenddate));" & vbNewLine & vbNewLine & _
+          "    SELECT @iInstances = SUM(instance),@pdblBradford = SUM(duration) FROM @absences;" & vbNewLine & vbNewLine
+      End If
+        
     sBradfordUDF = sBradfordUDF & vbNewLine & _
-        "    INSERT @absences" & vbNewLine & _
-        "        SELECT dbo.[udf_ASRFn_AbsenceBetweenTwoDates](" & vbNewLine & _
-        "            (CASE WHEN " & sAbsColStartDateName & " < @pdtStartDate THEN @pdtStartDate ELSE " & sAbsColStartDateName & " END)" & vbNewLine & _
-        "            ,(CASE WHEN " & sAbsColEndDateName & " > @pdtEndDate THEN @pdtEndDate ELSE " & sAbsColEndDateName & " END)" & vbNewLine & _
-        "            ," & sAbsColTypeName & ",@piPersonnelID, GETDATE())" & vbNewLine & _
-        "            , CASE WHEN ROW_NUMBER() OVER (ORDER BY " & sAbsColStartDateName & ") = 1 OR " & sContinuousColumnName & " = 0 THEN 1 ELSE 0 END" & vbNewLine & _
-        "        FROM " & sAbsTableName & " WHERE ID_" & lngPersonnelTableID & " = @piPersonnelID" & vbNewLine & _
-        "            AND (" & sAbsColTypeName & " IN (SELECT Type From @AbsenceTypes))" & vbNewLine & _
-        "            AND ((" & sAbsColStartDateName & " <= @pdtstartdate AND (" & sAbsColEndDateName & " >= @pdtstartdate) OR " & sAbsColEndDateName & " IS NULL)" & vbNewLine & _
-        "            OR (" & sAbsColStartDateName & " >= @pdtstartdate AND " & sAbsColStartDateName & " <= @pdtenddate));" & vbNewLine & vbNewLine & _
-        "    SELECT @iInstances = SUM(instance),@pdblBradford = SUM(duration) FROM @absences;" & vbNewLine & vbNewLine & _
         "    RETURN ((@iInstances * @iInstances) * @pdblBradford);" & vbNewLine & _
         "END" & vbNewLine
-        
+      
     gADOCon.Execute sAbsenceBetweenProc, , adExecuteNoRecords
     gADOCon.Execute sAbsenceBetweenUDF, , adExecuteNoRecords
     gADOCon.Execute sBradfordUDF, , adExecuteNoRecords
