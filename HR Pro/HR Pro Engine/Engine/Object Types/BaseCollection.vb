@@ -54,7 +54,7 @@ Namespace Things
 
 
     'TO DO - This can probably be done using some inbuilt property on the collection, but its late and I'm hungry, so this will have to do.
-    Public Function MergeUnique(ByRef Items As Things.Collection)
+    Public Sub MergeUnique(ByRef Items As Things.Collection)
 
       Dim objThing As Things.Base
 
@@ -64,7 +64,7 @@ Namespace Things
         End If
       Next
 
-    End Function
+    End Sub
 
     'Public Root As iSystemObject
 

@@ -59,7 +59,7 @@ Namespace ScriptDB
 
     Public Function DropTableViews() As Boolean Implements iCommitDB.DropTableViews
 
-      Dim objTable As Things.Table
+      Dim objTable As New Things.Table
       Dim bOK As Boolean = True
 
       Try
@@ -82,7 +82,7 @@ Namespace ScriptDB
       Dim objTable As Things.Table
       Dim objColumn As Things.Column
       Dim objRelation As Things.Relation
-      Dim sSQL As String
+      Dim sSQL As String = vbNullString
 
       Try
 
@@ -179,7 +179,6 @@ Namespace ScriptDB
       Dim objTable As Things.Table
       Dim objColumn As Things.Column
       Dim objRelation As Things.Relation
-      Dim objExpression As Things.Expression
 
       Try
 

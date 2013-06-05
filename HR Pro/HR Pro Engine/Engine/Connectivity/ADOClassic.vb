@@ -96,7 +96,7 @@ Namespace Connectivity
 
     Public Property Login As Login Implements COMInterfaces.iConnection.Login
       Get
-
+        Return Nothing
       End Get
       Set(ByVal value As Login)
 

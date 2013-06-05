@@ -56,7 +56,7 @@ Namespace Things
     Public ReadOnly Property GetRelation(ByVal ID As HCMGuid) As Things.Relation
       Get
 
-        Dim objRelation As Things.Relation
+        Dim objRelation As New Things.Relation
         Dim bFound As Boolean
 
         For Each objRelation In Objects(Things.Type.Relation)

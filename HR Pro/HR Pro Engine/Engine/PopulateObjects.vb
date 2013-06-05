@@ -220,151 +220,151 @@
 
     End Sub
 
-    Public Function LoadWorkflowElementDetails(ByRef objWorkflowElement As Things.WorkflowElement) As Things.Collection
+    'Public Function LoadWorkflowElementDetails(ByRef objWorkflowElement As Things.WorkflowElement) As Things.Collection
 
-      Dim objObjects As New Things.Collection
-      Dim objElementColumn As Things.WorkflowElementColumn
-      '   Dim objElementItem As Things.WorkflowElementItem
+    '  Dim objObjects As New Things.Collection
+    '  Dim objElementColumn As Things.WorkflowElementColumn
+    '  '   Dim objElementItem As Things.WorkflowElementItem
 
-      Dim objDataset As DataSet
-      Dim objRow As DataRow
-      Dim objParameters As New Connectivity.Parameters
+    '  Dim objDataset As DataSet
+    '  Dim objRow As DataRow
+    '  Dim objParameters As New Connectivity.Parameters
 
-      objObjects.Parent = objWorkflowElement
-      objObjects.Root = objWorkflowElement.Root
+    '  objObjects.Parent = objWorkflowElement
+    '  objObjects.Root = objWorkflowElement.Root
 
-      Try
+    '  Try
 
-        ' Populate element
-        objParameters.Add("@elementid", objWorkflowElement.ID)
-        objDataset = CommitDB.ExecStoredProcedure("spadmin_getworkflowelementcolumns", objParameters)
-        For Each objRow In objDataset.Tables(0).Rows
+    '    ' Populate element
+    '    objParameters.Add("@elementid", objWorkflowElement.ID)
+    '    objDataset = CommitDB.ExecStoredProcedure("spadmin_getworkflowelementcolumns", objParameters)
+    '    For Each objRow In objDataset.Tables(0).Rows
 
-          objElementColumn = New Things.WorkflowElementColumn
-          objElementColumn.ID = objRow.Item("elementid").ToString
-          objElementColumn.ColumnID = objRow.Item("columnid").ToString
+    '      objElementColumn = New Things.WorkflowElementColumn
+    '      objElementColumn.ID = objRow.Item("elementid").ToString
+    '      objElementColumn.ColumnID = objRow.Item("columnid").ToString
 
-          objElementColumn.ValueType = objRow.Item("valuetype").ToString
-          objElementColumn.Value = objRow.Item("value").ToString
-          objElementColumn.WFFormIdentifier = objRow.Item("wfformidentifier").ToString
-          objElementColumn.WFValueIdentifier = objRow.Item("wfvalueidentifier").ToString
-          objElementColumn.DBColumnID = objRow.Item("dbcolumnid").ToString
-          objElementColumn.DBRecord = objRow.Item("dbrecord").ToString
-          objElementColumn.CalcID = objRow.Item("calcid").ToString
+    '      objElementColumn.ValueType = objRow.Item("valuetype").ToString
+    '      objElementColumn.Value = objRow.Item("value").ToString
+    '      objElementColumn.WFFormIdentifier = objRow.Item("wfformidentifier").ToString
+    '      objElementColumn.WFValueIdentifier = objRow.Item("wfvalueidentifier").ToString
+    '      objElementColumn.DBColumnID = objRow.Item("dbcolumnid").ToString
+    '      objElementColumn.DBRecord = objRow.Item("dbrecord").ToString
+    '      objElementColumn.CalcID = objRow.Item("calcid").ToString
 
-          objObjects.Add(objElementColumn)
+    '      objObjects.Add(objElementColumn)
 
-        Next
-
-
-      Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, String.Empty)
-
-      Finally
-
-      End Try
+    '    Next
 
 
-      ' Load element columns
+    '  Catch ex As Exception
+    '    Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, String.Empty)
+
+    '  Finally
+
+    '  End Try
+
+
+    '  ' Load element columns
 
 
 
-      ' Load element items
+    '  ' Load element items
 
-    End Function
+    'End Function
 
-    Public Function LoadWorkflowElements(ByRef objWorkflow As Things.Workflow) As Things.Collection
+    'Public Function LoadWorkflowElements(ByRef objWorkflow As Things.Workflow) As Things.Collection
 
-      Dim objObjects As New Things.Collection
-      Dim objElement As Things.WorkflowElement
-      Dim objDataset As DataSet
-      Dim objRow As DataRow
-      Dim objParameters As New Connectivity.Parameters
+    '  Dim objObjects As New Things.Collection
+    '  Dim objElement As Things.WorkflowElement
+    '  Dim objDataset As DataSet
+    '  Dim objRow As DataRow
+    '  Dim objParameters As New Connectivity.Parameters
 
-      objObjects.Parent = objWorkflow
-      objObjects.Root = objWorkflow.Root
+    '  objObjects.Parent = objWorkflow
+    '  objObjects.Root = objWorkflow.Root
 
-      Try
+    '  Try
 
-        ' Populate element
-        objParameters.Add("@workflowid", objWorkflow.ID)
-        objDataset = CommitDB.ExecStoredProcedure("spadmin_getworkflowelements", objParameters)
-        For Each objRow In objDataset.Tables(0).Rows
+    '    ' Populate element
+    '    objParameters.Add("@workflowid", objWorkflow.ID)
+    '    objDataset = CommitDB.ExecStoredProcedure("spadmin_getworkflowelements", objParameters)
+    '    For Each objRow In objDataset.Tables(0).Rows
 
-          objElement = New Things.WorkflowElement
-          objElement.ID = objRow.Item("elementid").ToString
-          objElement.SubType = objRow.Item("type")
-          objElement.Caption = objRow.Item("caption")
-          objElement.ConnectionPairID = objRow.Item("ConnectionPairID")
-          objElement.LeftCoord = objRow.Item("LeftCoord")
-          objElement.TopCoord = objRow.Item("TopCoord")
-          objElement.DecisionCaptionType = objRow.Item("DecisionCaptionType").ToString
-          objElement.Identifier = objRow.Item("Identifier").ToString
-          objElement.TrueFlowIdentifier = objRow.Item("TrueFlowIdentifier").ToString
-          objElement.DataAction = objRow.Item("DataAction").ToString
-          objElement.DataTableID = objRow.Item("DataTableID").ToString
-          objElement.DataRecord = objRow.Item("DataRecord").ToString
-          objElement.EmailID = objRow.Item("EmailID").ToString
-          objElement.EmailRecord = objRow.Item("EmailRecord").ToString
-          objElement.WebFormBGColor = objRow.Item("WebFormBGColor").ToString
-          objElement.WebFormBGImageID = objRow.Item("WebFormBGImageID").ToString
-          objElement.WebFormBGImageLocation = objRow.Item("WebFormBGImageLocation").ToString
-          objElement.WebFormDefaultFontName = objRow.Item("WebFormDefaultFontName").ToString
-          objElement.WebFormDefaultFontSize = objRow.Item("WebFormDefaultFontSize").ToString
-          objElement.WebFormDefaultFontBold = objRow.Item("WebFormDefaultFontBold").ToString
-          objElement.WebFormDefaultFontItalic = objRow.Item("WebFormDefaultFontItalic").ToString
-          objElement.WebFormDefaultFontStrikeThru = objRow.Item("WebFormDefaultFontStrikeThru").ToString
-          objElement.WebFormDefaultFontUnderline = objRow.Item("WebFormDefaultFontUnderline").ToString
-          objElement.WebFormWidth = objRow.Item("WebFormWidth").ToString
-          objElement.RecSelWebFormIdentifier = objRow.Item("RecSelWebFormIdentifier").ToString
-          objElement.RecSelIdentifier = objRow.Item("RecSelIdentifier").ToString
-          objElement.SecondaryDataRecord = objRow.Item("SecondaryDataRecord").ToString
-          objElement.SecondaryRecSelWebFormIdentifier = objRow.Item("SecondaryRecSelWebFormIdentifier").ToString
-          objElement.SecondaryRecSelIdentifier = objRow.Item("SecondaryRecSelIdentifier").ToString
-          objElement.EmailSubject = objRow.Item("EmailSubject").ToString
-          objElement.TimeoutFrequency = objRow.Item("TimeoutFrequency").ToString
-          objElement.TimeoutPeriod = objRow.Item("TimeoutPeriod").ToString
-          objElement.DataRecordTable = objRow.Item("DataRecordTable").ToString
-          objElement.SecondaryDataRecordTable = objRow.Item("SecondaryDataRecordTable").ToString
-          objElement.TrueFlowType = objRow.Item("TrueFlowType").ToString
-          objElement.TrueFlowExprID = objRow.Item("TrueFlowExprID").ToString
-          objElement.DescriptionExprID = objRow.Item("DescriptionExprID").ToString
-          objElement.WebFormFGColor = objRow.Item("WebFormFGColor").ToString
-          objElement.DescHasWorkflowName = objRow.Item("DescHasWorkflowName").ToString
-          objElement.DescHasElementCaption = objRow.Item("DescHasElementCaption").ToString
-          objElement.EmailCCID = objRow.Item("EmailCCID").ToString
-          objElement.TimeoutExcludeWeekend = objRow.Item("TimeoutExcludeWeekend").ToString
-          objElement.CompletionMessageType = objRow.Item("CompletionMessageType").ToString
-          objElement.CompletionMessage = objRow.Item("CompletionMessage").ToString
-          objElement.SavedForLaterMessageType = objRow.Item("SavedForLaterMessageType").ToString
-          objElement.SavedForLaterMessage = objRow.Item("SavedForLaterMessage").ToString
-          objElement.FollowOnFormsMessageType = objRow.Item("FollowOnFormsMessageType").ToString
-          objElement.FollowOnFormsMessage = objRow.Item("FollowOnFormsMessage").ToString
-          objElement.Attachment_Type = objRow.Item("Attachment_Type").ToString
-          objElement.Attachment_File = objRow.Item("Attachment_File").ToString
-          objElement.Attachment_WFElementIdentifier = objRow.Item("Attachment_WFElementIdentifier").ToString
-          objElement.Attachment_WFValueIdentifier = objRow.Item("Attachment_WFValueIdentifier").ToString
-          objElement.Attachment_DBColumnID = objRow.Item("Attachment_DBColumnID").ToString
-          objElement.Attachment_DBRecord = objRow.Item("Attachment_DBRecord").ToString
-          objElement.Attachment_DBElement = objRow.Item("Attachment_DBElement").ToString
-          objElement.Attachment_DBValue = objRow.Item("Attachment_DBValue").ToString
+    '      objElement = New Things.WorkflowElement
+    '      objElement.ID = objRow.Item("elementid").ToString
+    '      objElement.SubType = objRow.Item("type")
+    '      objElement.Caption = objRow.Item("caption")
+    '      objElement.ConnectionPairID = objRow.Item("ConnectionPairID")
+    '      objElement.LeftCoord = objRow.Item("LeftCoord")
+    '      objElement.TopCoord = objRow.Item("TopCoord")
+    '      objElement.DecisionCaptionType = objRow.Item("DecisionCaptionType").ToString
+    '      objElement.Identifier = objRow.Item("Identifier").ToString
+    '      objElement.TrueFlowIdentifier = objRow.Item("TrueFlowIdentifier").ToString
+    '      objElement.DataAction = objRow.Item("DataAction").ToString
+    '      objElement.DataTableID = objRow.Item("DataTableID").ToString
+    '      objElement.DataRecord = objRow.Item("DataRecord").ToString
+    '      objElement.EmailID = objRow.Item("EmailID").ToString
+    '      objElement.EmailRecord = objRow.Item("EmailRecord").ToString
+    '      objElement.WebFormBGColor = objRow.Item("WebFormBGColor").ToString
+    '      objElement.WebFormBGImageID = objRow.Item("WebFormBGImageID").ToString
+    '      objElement.WebFormBGImageLocation = objRow.Item("WebFormBGImageLocation").ToString
+    '      objElement.WebFormDefaultFontName = objRow.Item("WebFormDefaultFontName").ToString
+    '      objElement.WebFormDefaultFontSize = objRow.Item("WebFormDefaultFontSize").ToString
+    '      objElement.WebFormDefaultFontBold = objRow.Item("WebFormDefaultFontBold").ToString
+    '      objElement.WebFormDefaultFontItalic = objRow.Item("WebFormDefaultFontItalic").ToString
+    '      objElement.WebFormDefaultFontStrikeThru = objRow.Item("WebFormDefaultFontStrikeThru").ToString
+    '      objElement.WebFormDefaultFontUnderline = objRow.Item("WebFormDefaultFontUnderline").ToString
+    '      objElement.WebFormWidth = objRow.Item("WebFormWidth").ToString
+    '      objElement.RecSelWebFormIdentifier = objRow.Item("RecSelWebFormIdentifier").ToString
+    '      objElement.RecSelIdentifier = objRow.Item("RecSelIdentifier").ToString
+    '      objElement.SecondaryDataRecord = objRow.Item("SecondaryDataRecord").ToString
+    '      objElement.SecondaryRecSelWebFormIdentifier = objRow.Item("SecondaryRecSelWebFormIdentifier").ToString
+    '      objElement.SecondaryRecSelIdentifier = objRow.Item("SecondaryRecSelIdentifier").ToString
+    '      objElement.EmailSubject = objRow.Item("EmailSubject").ToString
+    '      objElement.TimeoutFrequency = objRow.Item("TimeoutFrequency").ToString
+    '      objElement.TimeoutPeriod = objRow.Item("TimeoutPeriod").ToString
+    '      objElement.DataRecordTable = objRow.Item("DataRecordTable").ToString
+    '      objElement.SecondaryDataRecordTable = objRow.Item("SecondaryDataRecordTable").ToString
+    '      objElement.TrueFlowType = objRow.Item("TrueFlowType").ToString
+    '      objElement.TrueFlowExprID = objRow.Item("TrueFlowExprID").ToString
+    '      objElement.DescriptionExprID = objRow.Item("DescriptionExprID").ToString
+    '      objElement.WebFormFGColor = objRow.Item("WebFormFGColor").ToString
+    '      objElement.DescHasWorkflowName = objRow.Item("DescHasWorkflowName").ToString
+    '      objElement.DescHasElementCaption = objRow.Item("DescHasElementCaption").ToString
+    '      objElement.EmailCCID = objRow.Item("EmailCCID").ToString
+    '      objElement.TimeoutExcludeWeekend = objRow.Item("TimeoutExcludeWeekend").ToString
+    '      objElement.CompletionMessageType = objRow.Item("CompletionMessageType").ToString
+    '      objElement.CompletionMessage = objRow.Item("CompletionMessage").ToString
+    '      objElement.SavedForLaterMessageType = objRow.Item("SavedForLaterMessageType").ToString
+    '      objElement.SavedForLaterMessage = objRow.Item("SavedForLaterMessage").ToString
+    '      objElement.FollowOnFormsMessageType = objRow.Item("FollowOnFormsMessageType").ToString
+    '      objElement.FollowOnFormsMessage = objRow.Item("FollowOnFormsMessage").ToString
+    '      objElement.Attachment_Type = objRow.Item("Attachment_Type").ToString
+    '      objElement.Attachment_File = objRow.Item("Attachment_File").ToString
+    '      objElement.Attachment_WFElementIdentifier = objRow.Item("Attachment_WFElementIdentifier").ToString
+    '      objElement.Attachment_WFValueIdentifier = objRow.Item("Attachment_WFValueIdentifier").ToString
+    '      objElement.Attachment_DBColumnID = objRow.Item("Attachment_DBColumnID").ToString
+    '      objElement.Attachment_DBRecord = objRow.Item("Attachment_DBRecord").ToString
+    '      objElement.Attachment_DBElement = objRow.Item("Attachment_DBElement").ToString
+    '      objElement.Attachment_DBValue = objRow.Item("Attachment_DBValue").ToString
 
-          objElement.Objects = Things.LoadWorkflowElementDetails(objElement)
+    '      objElement.Objects = Things.LoadWorkflowElementDetails(objElement)
 
-          objObjects.Add(objElement)
+    '      objObjects.Add(objElement)
 
-        Next
-
-
-      Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, String.Empty)
-
-      End Try
-
-      LoadWorkflowElements = objObjects
+    '    Next
 
 
-    End Function
+    '  Catch ex As Exception
+    '    Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, String.Empty)
+
+    '  End Try
+
+    '  LoadWorkflowElements = objObjects
+
+
+    'End Function
 
     Public Function LoadComponents(ByRef objExpression As Things.Component, ByVal Type As ScriptDB.ComponentTypes) As Things.Collection
 

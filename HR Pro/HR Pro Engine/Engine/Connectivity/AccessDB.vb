@@ -83,7 +83,7 @@
 
     Public Property Login As Login Implements iConnection.Login
       Get
-
+        Return Nothing
       End Get
       Set(ByVal value As Login)
 
@@ -94,6 +94,7 @@
     End Sub
 
     Public Function ScriptStatement(ByVal Statement As String) As Boolean Implements iConnection.ScriptStatement
+      Return False
     End Function
 
   End Class

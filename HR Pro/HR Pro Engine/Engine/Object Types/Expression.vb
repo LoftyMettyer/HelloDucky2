@@ -1066,7 +1066,6 @@ Namespace Things
       Dim iBackupType As ScriptDB.ExpressionType
       Dim sStatement As String
       Dim BackupColumn As Things.Column
-      Dim iBackupStart As Long
 
       If ReferencedColumn.Calculation Is Nothing Then
         ReferencedColumn.Calculation = ReferencedColumn.Table.GetObject(Type.Expression, ReferencedColumn.CalcID)

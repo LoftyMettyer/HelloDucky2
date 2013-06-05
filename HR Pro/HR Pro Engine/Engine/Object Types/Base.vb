@@ -117,8 +117,7 @@ Namespace Things
     'End Sub
 
     '<System.ComponentModel.ImmutableObject(True)> _
-    Public MustOverride ReadOnly Property Type() As Things.Type 'Implements Things.iSystemObject.Type
-    '    Public MustOverride Function Commit() As Boolean Implements Things.iSystemObject.Commit
+    Public MustOverride ReadOnly Property Type() As Things.Type
 
     Public Overridable Property SubType() As Things.Type
       Get
@@ -128,11 +127,6 @@ Namespace Things
         miSubType = value
       End Set
     End Property
-
-    ' Returns all objects
-    '    <System.ComponentModel.Browsable(False)> _
-    '    <XmlArray("Objects")> _
-    '    <System.Xml.Serialization.xmlarray("Objects")> _
 
     <System.Xml.Serialization.XmlElement()> _
     Public Property Objects() As Things.Collection
@@ -469,6 +463,17 @@ Namespace Things
     End Function
 
 #End Region
+
+    '#Region "Dependency Stuff"
+
+    '    Public Overridable ReadOnly Property Dependencies As Things.Collection
+    '      Get
+    '        Return New Things.Collection
+    '      End Get
+    '    End Property
+
+    '#End Region
+
 
 
   End Class
