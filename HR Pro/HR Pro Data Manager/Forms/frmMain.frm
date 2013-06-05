@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "11:42"
+            TextSave        =   "12:56"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -623,7 +623,7 @@ End Sub
 
 Private Sub MDIForm_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   
-  DebugOutput "frmMain", "MDIForm_QueryUnload"
+  DebugOutput "frmMain", "MDIForm_QueryUnload 0"
   
   ' Unload any remaining forms.
   Dim iFormCount As Integer
@@ -641,6 +641,7 @@ Private Sub MDIForm_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     End If
     
     Unload Forms(1)
+  DebugOutput "frmMain", "MDIForm_QueryUnload 1"
     DoEvents
 
     ' If the number of loaded forms has not changed then the
@@ -651,6 +652,8 @@ Private Sub MDIForm_QueryUnload(Cancel As Integer, UnloadMode As Integer)
       Cancel = Me.Visible
       Exit Do
     End If
+    
+  DebugOutput "frmMain", "MDIForm_QueryUnload 2"
     
     'JPD 20030820 Fault 3047
     If (Forms.Count > 1) And (lngFormID > 0) Then
@@ -665,6 +668,7 @@ Private Sub MDIForm_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     End If
   Loop
   
+  DebugOutput "frmMain", "MDIForm_QueryUnload 3"
   
 
   If Forms.Count > 1 Then
@@ -676,6 +680,7 @@ Private Sub MDIForm_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   End If
 
   If Cancel = False Then
+  DebugOutput "frmMain", "MDIForm_QueryUnload 4"
     'Phils PC was not refreshing the screen at logoff
     'and the menu bar was still visible even though
     'the form wasn't !  So had to put in all this stuff
@@ -693,6 +698,8 @@ Private Sub MDIForm_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     Set gcolScreenControls = Nothing
   End If
 
+  DebugOutput "frmMain", "MDIForm_QueryUnload 5"
+  
   'Remove Progress Bar class from memory
   Set gobjProgress = Nothing
 
@@ -700,6 +707,8 @@ Private Sub MDIForm_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   Set gobjDiary = Nothing
 
   If Cancel = False Then Call AuditAccess(iLOGOFF, "Data")
+
+  DebugOutput "frmMain", "MDIForm_QueryUnload 6"
 
 End Sub
 

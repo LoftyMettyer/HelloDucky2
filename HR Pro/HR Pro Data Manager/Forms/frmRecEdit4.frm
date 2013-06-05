@@ -1434,6 +1434,8 @@ Private Sub Form_Deactivate()
 
   On Error GoTo LocalErr
   
+  DebugOutput "frmRecEdit4", "Form_Deactivate"
+  
   intErrorLine = 10
   
   DoEvents
@@ -3522,6 +3524,8 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   
   On Local Error GoTo LocalErr
   
+  DebugOutput "frmRecEdit4", "Form_QueryUnload"
+  
   intErrorLine = 10
   
   DoEvents
@@ -3742,6 +3746,8 @@ Private Sub Form_Unload(Cancel As Integer)
   Dim lngParentHWnd As Long
   Dim sTag As String
 
+  DebugOutput "frmRecEdit4", "Form_Unload"
+  
   ' If this is an Add New Table form then enable all the others.
   If mfTableEntry Then
     ' Get the Hwnd value of the parent form.
@@ -4268,6 +4274,8 @@ Public Sub UpdateControls(Optional pfNoWarnings As Boolean)
   ' database for the current record.
   On Error GoTo Err_Trap
   
+  DebugOutput "UpdateControls", "Start"
+  
   Dim objFile As New ADODB.Stream
   Dim fFound As Boolean
   Dim fResetControl As Boolean
@@ -4417,7 +4425,10 @@ Public Sub UpdateControls(Optional pfNoWarnings As Boolean)
                 If fResetControl Then
                   .Text = ""
                 Else
-                  .Text = RTrim(mrsRecords(sColumnName).Value & vbNullString)
+DebugOutput "UpdateControls", "Before SetTDBText"
+                  '.Text = RTrim(mrsRecords(sColumnName).Value & vbNullString)
+                  SetTDBText objControl, RTrim(mrsRecords(sColumnName).Value & vbNullString)
+DebugOutput "UpdateControls", "After SetTDBText"
                 End If
 
               ElseIf TypeOf objControl Is COA_Image Then
@@ -4735,10 +4746,13 @@ Public Sub UpdateControls(Optional pfNoWarnings As Boolean)
   Screen.MousePointer = vbDefault
   'Set objFile = Nothing
   
+  DebugOutput "UpdateControls", "End"
   
   Exit Sub
 
 Err_Trap:
+  DebugOutput "UpdateControls", "Error"
+  
   Select Case Err.Number
       Case 28 'Out of Stack Space
         If lngRetryCount < 3 Then
@@ -4746,7 +4760,7 @@ Err_Trap:
           DoEvents
           Resume 0
         Else
-          COAMsgBox Err.Description, vbCritical
+          MsgBox Err.Description, vbCritical, "UpdateControls Error"
           Resume Next
         End If
     Case 3021, 91
@@ -4787,6 +4801,22 @@ Err_Trap:
   End Select
 
 End Sub
+
+
+Private Function SetTDBText(objText As TDBText, strInput As String) As Boolean
+
+  On Local Error GoTo LocalErr
+  
+  objText.Text = strInput
+  SetTDBText = False
+  
+Exit Function
+
+LocalErr:
+  COAMsgBox "Error setting text column" & vbCrLf & "(" & Err.Description & ")", vbCritical
+  SetTDBText = False
+
+End Function
 
 
 Public Function GetTag(objControl As Control) As String
@@ -10927,6 +10957,8 @@ Private Sub TDBText1_Change(Index As Integer)
   Dim sThisControlsColumnName As String
   Dim objControl As Control
     
+DebugOutput "TDBText1_Change", "Start"
+    
   'JPD 20030815 Fault 6737
   If mlngUpdatedMultiLineControl = 0 Then
     mlngUpdatedMultiLineControl = Index
@@ -10973,9 +11005,12 @@ Private Sub TDBText1_Change(Index As Integer)
     mlngUpdatedMultiLineControl = 0
   End If
   
+DebugOutput "TDBText1_Change", "End"
+  
   Exit Sub
   
 Err_Trap:
+DebugOutput "TDBText1_Change", "Error"
   If Err.Number = 440 Then
     mfDataChanged = True
 
@@ -10988,15 +11023,25 @@ Err_Trap:
 End Sub
 
 Private Sub TDBText1_GotFocus(Index As Integer)
+  
+DebugOutput "TDBText1_GotFocus", "Start"
+  
   ' Run the column's 'GotFocus' Expression.
   GotFocusCheck TDBText1(Index)
+
+DebugOutput "TDBText1_GotFocus", "End"
 
 End Sub
 
 
 Private Sub TDBText1_Validate(Index As Integer, Cancel As Boolean)
+  
+DebugOutput "TDBText1_Validate", "Start"
+  
   ' Run the column's 'LostFocus' Expression.
   Cancel = Not LostFocusCheck(TDBText1(Index))
+
+DebugOutput "TDBText1_Validate", "End"
 
 End Sub
 

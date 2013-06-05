@@ -3506,6 +3506,8 @@ End Sub
 
 Private Sub Form_Deactivate()
 
+  DebugOutput "frmFind2", "Form_Deactivate"
+
   DoEvents
   
   'TM20020612 Fault 2302 - disable the toolbar controls.
@@ -3566,6 +3568,8 @@ End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   Dim frmTemp As Form
+  
+  DebugOutput "frmFind2", "Form_QueryUnload"
   
   ' JPD20030306 Fault 5118
   If mfBusy Then
@@ -3680,14 +3684,22 @@ End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
   
+  DebugOutput "frmFind2", "Form_Unload"
+  
   ' Dont do the unload event if form has been loaded from configuration screen
   If mbIsLoading Then
     Exit Sub
   End If
   
-  If mfFindForm Then
-    mfrmParent.ReleaseFindWindow
+  DebugOutput "frmFind2", "Form_Unload 1"
+  
+  If Not mfrmParent Is Nothing Then
+    If mfFindForm Then
+      mfrmParent.ReleaseFindWindow
+    End If
   End If
+  
+  DebugOutput "frmFind2", "Form_Unload 2"
   
   ' RH 16/05/00 - Save the find window coordinates
   If Me.WindowState = vbNormal Then
@@ -3697,56 +3709,81 @@ Private Sub Form_Unload(Cancel As Integer)
     SavePCSetting "FindWindowCoOrdinates\" & gsDatabaseName & "\" & mfrmParent.ScreenID, "Height", Me.Height
   End If
   
-  ' Check to see if we should discard the history window as well
-  If (mfrmParent.ScreenType = screenHistoryTable) Or _
-    (mfrmParent.ScreenType = screenHistoryView) Then
-
-    ' RH 07/03/01
-    ' If find window has bn cancelled and the recedit is visible, then dont
-    ' unload the find window, just make it invisible, and dont unload recedit
-    If mfCancelled And mfrmParent.Visible = True Then
-      Me.Visible = False
-      mfrmParent.SetFocus
-      Cancel = True
-      Exit Sub
-    ElseIf mfCancelled Then
-      mfrmParent.ParentUnload = True
-      Unload mfrmParent
-    End If
-
-    'mfrmParent.ParentUnload = True
-    'Unload mfrmParent
-    
-  Else
+  DebugOutput "frmFind2", "Form_Unload 3"
   
-    'Its a Primary/Lookup/Quick Access
-    
-    If mfrmParent.Visible = False And mfCancelled Then
-      'Recedit is invisible and user cancelled the findform so unload recedit too
-      Unload mfrmParent
+  ' Check to see if we should discard the history window as well
+  If Not mfrmParent Is Nothing Then
+    If (mfrmParent.ScreenType = screenHistoryTable) Or _
+      (mfrmParent.ScreenType = screenHistoryView) Then
+  
+  DebugOutput "frmFind2", "Form_Unload 4"
+      
+      ' RH 07/03/01
+      ' If find window has bn cancelled and the recedit is visible, then dont
+      ' unload the find window, just make it invisible, and dont unload recedit
+      If mfCancelled And mfrmParent.Visible = True Then
+        Me.Visible = False
+        If mfrmParent.Visible And mfrmParent.Enabled Then
+  DebugOutput "frmFind2", "Form_Unload 5"
+          mfrmParent.SetFocus
+        End If
+        Cancel = True
+  DebugOutput "frmFind2", "Form_Unload 6"
+        Exit Sub
+      ElseIf mfCancelled Then
+  DebugOutput "frmFind2", "Form_Unload 7"
+        mfrmParent.ParentUnload = True
+        Unload mfrmParent
+      End If
+  
+      'mfrmParent.ParentUnload = True
+      'Unload mfrmParent
+      
     Else
-      'JPD 20031009 Fault 7080
-      If (mfrmParent.Recordset.State <> adStateClosed) Then
-        'If Not mfrmParent.Visible Then
-          'Recedit is invisible and user selects somebody so make recedit visible and give focus
-          mfrmParent.Visible = True
-          mfrmParent.Enabled = True
-          frmMain.Enabled = True
-          If mfrmParent.Visible And mfrmParent.Enabled Then
-            mfrmParent.SetFocus
+    
+      'Its a Primary/Lookup/Quick Access
+  DebugOutput "frmFind2", "Form_Unload 8"
+      
+      If mfrmParent.Visible = False And mfCancelled Then
+        'Recedit is invisible and user cancelled the findform so unload recedit too
+  DebugOutput "frmFind2", "Form_Unload 9"
+        Unload mfrmParent
+      Else
+        'JPD 20031009 Fault 7080
+        If Not mfrmParent.Recordset Is Nothing Then
+          If (mfrmParent.Recordset.State <> adStateClosed) Then
+            'If Not mfrmParent.Visible Then
+              'Recedit is invisible and user selects somebody so make recedit visible and give focus
+    DebugOutput "frmFind2", "Form_Unload 10"
+              mfrmParent.Visible = True
+              mfrmParent.Enabled = True
+              frmMain.Enabled = True
+              If mfrmParent.Visible And mfrmParent.Enabled Then
+    DebugOutput "frmFind2", "Form_Unload 11"
+                mfrmParent.SetFocus
+              End If
+              frmMain.RefreshMainForm mfrmParent
+    DebugOutput "frmFind2", "Form_Unload 12"
+              Exit Sub
+            'End If
           End If
-          frmMain.RefreshMainForm mfrmParent
-          Exit Sub
-        'End If
+        End If
       End If
     End If
   End If
     
+  DebugOutput "frmFind2", "Form_Unload 13"
+  
   'Stop subclassing.
   Unhook Me.hWnd
       
-  frmMain.RefreshMainForm Me, True
+  If Not frmMain Is Nothing Then
+  DebugOutput "frmFind2", "Form_Unload 14"
+    frmMain.RefreshMainForm Me, True
+  End If
 
+  DebugOutput "frmFind2", "Form_Unload 15"
+  
 End Sub
 
 Private Sub ssOleDBGridFindColumns_Click()
