@@ -272,26 +272,6 @@ WhenExpressionIDGetErr:
     
 End Property
 
-
-
-
-Private Sub Class_Initialize()
-'    #If DebugMode Then
-'        'get the next available class ID, and print out
-'        'that the class was created successfully
-'        mlClassDebugID = GetNextClassDebugID()
-'        Debug.Print "'" & TypeName(Me) & "' instance " & mlClassDebugID & " created"
-'    #End If
-End Sub
-
-
-Private Sub Class_Terminate()
-    'the class is being destroyed
-'    #If DebugMode Then
-'        Debug.Print "'" & TypeName(Me) & "' instance " & CStr(mlClassDebugID) & " is terminating"
-'    #End If
-End Sub
-
 Public Property Let ReadOnly(ByVal bReadOnly As Boolean)
 
     mbReadOnly = bReadOnly
