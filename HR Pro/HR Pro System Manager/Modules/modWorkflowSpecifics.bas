@@ -1873,7 +1873,7 @@ Public Function WebFormItemHasProperty(piItemType As WorkflowWebFormItemTypes, _
         Or (piItemType = giWFFORMITEM_DBVALUE) _
         Or (piItemType = giWFFORMITEM_LABEL) _
         Or (piItemType = giWFFORMITEM_WFVALUE)
-        
+               
     Case WFITEMPROP_CAPTION ' 4
       fHasProperty = (piItemType = giWFFORMITEM_BUTTON) _
         Or (piItemType = giWFFORMITEM_FORM) _
@@ -2195,6 +2195,9 @@ Public Function WebFormItemHasProperty(piItemType As WorkflowWebFormItemTypes, _
 
     Case WFITEMPROP_LOOKUPFILTERVALUE ' 74
       fHasProperty = (piItemType = giWFFORMITEM_INPUTVALUE_LOOKUP)
+
+    Case WFITEMPROP_TABCAPTION ' 76
+      fHasProperty = (piItemType = giWFFORMITEM_PAGETAB)
 
 
   End Select
