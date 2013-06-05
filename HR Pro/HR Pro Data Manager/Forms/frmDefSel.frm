@@ -177,6 +177,7 @@ Begin VB.Form frmDefSel
          _ExtentX        =   5292
          _ExtentY        =   1693
          View            =   3
+         LabelEdit       =   1
          LabelWrap       =   -1  'True
          HideSelection   =   -1  'True
          HideColumnHeaders=   -1  'True
@@ -409,6 +410,10 @@ Private Sub abDefSel_BandOpen(ByVal Band As ActiveBarLibraryCtl.Band)
   abDefSel.Tools("ID_FavouriteAdd").Visible = AllowFavourites
   abDefSel.Tools("ID_FavouriteRemove").Visible = AllowFavourites
   abDefSel.Tools("ID_FavouritesClear").Visible = AllowFavourites
+
+  abDefSel.Tools("ID_FavouriteAdd").Enabled = (List1.ListItems.Count > 0)
+  abDefSel.Tools("ID_FavouriteRemove").Enabled = (List1.ListItems.Count > 0)
+  abDefSel.Tools("ID_FavouritesClear").Enabled = (List1.ListItems.Count > 0)
 
 End Sub
 
