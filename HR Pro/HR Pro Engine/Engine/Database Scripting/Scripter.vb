@@ -341,6 +341,7 @@ Namespace ScriptDB
       Dim aryParentsToUpdate_Delete As ArrayList
       '     Dim aryAfterInsertColumns As ArrayList
       Dim aryAllWriteableColumns As ArrayList
+      Dim aryAllWriteableFormatted As ArrayList
 
       Dim aryColumns As New ArrayList
 
@@ -358,6 +359,7 @@ Namespace ScriptDB
 
           ' aryPerformanceTuneColumns = New ArrayList
           aryAllWriteableColumns = New ArrayList
+          aryAllWriteableFormatted = New ArrayList
           aryAuditUpdates = New ArrayList
           aryAuditInserts = New ArrayList
           aryAuditDeletes = New ArrayList
@@ -405,6 +407,7 @@ Namespace ScriptDB
             If objRelation.RelationshipType = RelationshipType.Parent Then
               aryBaseTableColumns.Add(String.Format("[ID_{0}] = [inserted].[ID_{0}]", CInt(objRelation.ParentID)))
               aryAllWriteableColumns.Add(String.Format("[ID_{0}]", CInt(objRelation.ParentID)))
+              aryAllWriteableFormatted.Add(String.Format("[ID_{0}]", CInt(objRelation.ParentID)))
 
               aryParentsToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {1})" & vbNewLine & _
                   "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM inserted)" & vbNewLine _
@@ -484,14 +487,17 @@ Namespace ScriptDB
                   Case ScriptDB.ColumnTypes.Binary
                     aryBaseTableColumns.Add(String.Format("[{0}] = [inserted].[{0}]", objColumn.Name))
                     aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
+                    aryAllWriteableFormatted.Add(String.Format("[{0}]", objColumn.Name))
 
                   Case ScriptDB.ColumnTypes.Date
                     aryBaseTableColumns.Add(String.Format("[{0}] = DATEADD(dd, 0, DATEDIFF(dd, 0, [inserted].[{0}]))", objColumn.Name))
                     aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
+                    aryAllWriteableFormatted.Add(String.Format(" DATEADD(dd, 0, DATEDIFF(dd, 0, [{0}]))", objColumn.Name))
 
                   Case Else
                     aryBaseTableColumns.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.ApplyFormatting("inserted")))
                     aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
+                    aryAllWriteableFormatted.Add(String.Format("[{0}]", objColumn.Name))
 
                 End Select
 
@@ -502,13 +508,13 @@ Namespace ScriptDB
 
                 aryAuditInserts.Add(String.Format("        SELECT base.ID, NULL, convert(nvarchar(255),base.[{0}]), {4}, '{3}', '{0}', {1}, base.[_description]" & vbNewLine & _
                     "            FROM inserted i" & vbNewLine & _
-                    "            INNER JOIN dbo.[{2}] base ON i.[id] = base.[id]" _
-                    , objColumn.Name, CInt(objColumn.ID), objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.ID)))
+                    "            INNER JOIN dbo.[{2}] base ON i.[id] = base.[id] AND NOT ISNULL(base.[{0}],{5}) = {5}" _
+                    , objColumn.Name, CInt(objColumn.ID), objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.ID), objColumn.SafeReturnType))
 
                 aryAuditUpdates.Add(String.Format("        SELECT d.ID, convert(nvarchar(255),d.[{0}]), convert(nvarchar(255), base.[{0}]), {4}, '{3}', '{0}', {1}, base.[_description]" & vbNewLine & _
                     "            FROM deleted d" & vbNewLine & _
-                    "            INNER JOIN dbo.[{2}] base ON d.[id] = base.[id] AND NOT d.[{0}] = base.[{0}]" _
-                    , objColumn.Name, CInt(objColumn.ID), objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.ID)))
+                    "            INNER JOIN dbo.[{2}] base ON d.[id] = base.[id] AND NOT ISNULL(d.[{0}],{5}) = ISNULL(base.[{0}],{5})" _
+                    , objColumn.Name, CInt(objColumn.ID), objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.ID), objColumn.SafeReturnType))
 
                 aryAuditDeletes.Add(String.Format("        SELECT ID, convert(nvarchar(255),[{0}]), NULL, {3}, '{2}', '{0}', {1}, [_description]" & vbNewLine & _
                     "            FROM deleted WHERE [{0}] IS NOT NULL", objColumn.Name, CInt(objColumn.ID), objColumn.Table.Name, CInt(objColumn.Table.ID)))
@@ -658,12 +664,11 @@ Namespace ScriptDB
               "    INSERT [dbo].[tbsys_intransactiontrigger] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {2}, 1, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
               "    -- Commit writeable columns" & vbNewLine & _
               "    INSERT [dbo].[{0}] ({3})" & vbNewLine & _
-              "        SELECT {3} FROM inserted;" & vbNewLine & vbNewLine _
+              "        SELECT {4} FROM inserted;" & vbNewLine & vbNewLine _
               , objTable.Name, sTriggerName _
               , CInt(objTable.ID) _
-              , String.Join(",", aryAllWriteableColumns.ToArray()))
+              , String.Join(",", aryAllWriteableColumns.ToArray()), String.Join("," & vbNewLine, aryAllWriteableFormatted.ToArray()))
           ScriptTrigger("dbo", objTable, TriggerType.InsteadOfInsert, sSQL)
-
 
           ' -------------------
           ' AFTER INSERT
@@ -939,6 +944,8 @@ Namespace ScriptDB
 
             If objColumn.IsCalculated Then
 
+              Debug.Assert(objColumn.Name <> "Current_Salary")
+
               objColumn.Calculation = objTable.Objects.GetObject(Things.Type.Expression, objColumn.CalcID)
               If Not objColumn.Calculation.State = System.Data.DataRowState.Unchanged Or Globals.Options.RefreshObjects Then
 
@@ -975,7 +982,9 @@ Namespace ScriptDB
             '   Debug.Print(objColumn.Name)
             If objColumn.IsCalculated Then
               '     If objColumn.Calculation.IsComplex Then
+              Debug.Assert(objColumn.Name <> "Current_Salary_Size_2")
 
+              objColumn.Calculation.AssociatedColumn = objColumn
               objColumn.Calculation.GenerateCode()
               Globals.TuningLog.Expressions.Add(objColumn)
 
