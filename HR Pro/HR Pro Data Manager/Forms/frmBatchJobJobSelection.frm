@@ -186,10 +186,10 @@ Private Sub Form_Load()
       If Not gblnReportPackMode Then .AddItem "Global Update"
       If Not gblnReportPackMode Then .AddItem "Import"
       
-      If gfAbsenceEnabled Then .AddItem "Absence Breakdown": .AddItem "Bradford Factor"
-      
-      If gfPersonnelEnabled Then .AddItem "Stability Index Report"
-      If gfPersonnelEnabled Then .AddItem "Turnover Report"
+      If gfAbsenceEnabled And Not gblnReportPackMode Then .AddItem "Absence Breakdown"
+      If gfAbsenceEnabled And Not gblnReportPackMode Then .AddItem "Bradford Factor"
+      If gfPersonnelEnabled And Not gblnReportPackMode Then .AddItem "Stability Index Report"
+      If gfPersonnelEnabled And Not gblnReportPackMode Then .AddItem "Turnover Report"
       'Set combo to first item
       .ListIndex = 0
     End With
