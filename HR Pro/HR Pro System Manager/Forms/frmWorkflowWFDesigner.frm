@@ -4832,6 +4832,7 @@ Private Function PasteControls() As Boolean
      
       ' Add the required control type.
       iControlType = WebFormControl_Type(ctlControl)
+      
       Set ctlNewControl = AddControl(iControlType)
     
       fOK = Not (ctlNewControl Is Nothing)
@@ -4872,6 +4873,8 @@ Private Function PasteControls() As Boolean
   If fOK Then
     ' Mark the screen as having changed.
     mfChanged = True
+
+
 
     ' Set the last action flag and enable the Undo menu option.
     giLastActionFlag = giACTION_PASTECONTROLS
@@ -6366,10 +6369,12 @@ Private Function SaveWebFormItems(pwfElement As COAWF_Webform) As Boolean
           And WebFormItemHasProperty(iWFItemType, WFITEMPROP_WFIDENTIFIER) Then
           
           For iLoop = 1 To UBound(mavIdentifierLog, 2)
-            If mavIdentifierLog(1, iLoop).WFIdentifier = ctlControl.WFIdentifier Then
-              mavIdentifierLog(3, iLoop) = .WFIdentifier
-              mavIdentifierLog(4, iLoop) = False
-              Exit For
+            If mavIdentifierLog(1, iLoop) Is ctlControl Then
+              If mavIdentifierLog(1, iLoop).WFIdentifier = ctlControl.WFIdentifier Then
+                mavIdentifierLog(3, iLoop) = .WFIdentifier
+                mavIdentifierLog(4, iLoop) = False
+                Exit For
+              End If
             End If
           Next iLoop
         End If
