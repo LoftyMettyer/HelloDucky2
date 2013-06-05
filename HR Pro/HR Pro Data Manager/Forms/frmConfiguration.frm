@@ -3,7 +3,7 @@ Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
+Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
 Begin VB.Form frmConfiguration 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Configuration"
@@ -57,38 +57,38 @@ Begin VB.Form frmConfiguration
       TabCaption(0)   =   "&Display Defaults"
       TabPicture(0)   =   "frmConfiguration.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraDisplay(1)"
-      Tab(0).Control(1)=   "fraDisplay(0)"
-      Tab(0).Control(2)=   "fraDisplay(2)"
-      Tab(0).Control(3)=   "Frame2"
+      Tab(0).Control(0)=   "Frame2"
+      Tab(0).Control(1)=   "fraDisplay(2)"
+      Tab(0).Control(2)=   "fraDisplay(0)"
+      Tab(0).Control(3)=   "fraDisplay(1)"
       Tab(0).ControlCount=   4
       TabCaption(1)   =   "&Reports && Utilities"
       TabPicture(1)   =   "frmConfiguration.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraReports(1)"
+      Tab(1).Control(0)=   "fraReports(0)"
       Tab(1).Control(1)=   "frmReportsGeneral"
-      Tab(1).Control(2)=   "fraReports(0)"
+      Tab(1).Control(2)=   "fraReports(1)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Network Configuration"
       TabPicture(2)   =   "frmConfiguration.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "frmAutoLogin"
-      Tab(2).Control(1)=   "fraNetwork(0)"
-      Tab(2).Control(2)=   "fraNetwork(1)"
-      Tab(2).Control(3)=   "frmOutputs"
+      Tab(2).Control(0)=   "frmOutputs"
+      Tab(2).Control(1)=   "fraNetwork(1)"
+      Tab(2).Control(2)=   "fraNetwork(0)"
+      Tab(2).Control(3)=   "frmAutoLogin"
       Tab(2).ControlCount=   4
       TabCaption(3)   =   "&Batch Login"
       TabPicture(3)   =   "frmConfiguration.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraBatch(1)"
-      Tab(3).Control(1)=   "fraBatch(0)"
+      Tab(3).Control(0)=   "fraBatch(0)"
+      Tab(3).Control(1)=   "fraBatch(1)"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "E&vent Log"
       TabPicture(4)   =   "frmConfiguration.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "FraEventLog(0)"
+      Tab(4).Control(0)=   "FraEventLog(2)"
       Tab(4).Control(1)=   "FraEventLog(1)"
-      Tab(4).Control(2)=   "FraEventLog(2)"
+      Tab(4).Control(2)=   "FraEventLog(0)"
       Tab(4).ControlCount=   3
       TabCaption(5)   =   "Report Out&put"
       TabPicture(5)   =   "frmConfiguration.frx":0098
@@ -103,8 +103,8 @@ Begin VB.Form frmConfiguration
       TabCaption(6)   =   "Tool&bars"
       TabPicture(6)   =   "frmConfiguration.frx":00B4
       Tab(6).ControlEnabled=   0   'False
-      Tab(6).Control(0)=   "fraToolbars"
-      Tab(6).Control(1)=   "fraToolbarGeneral"
+      Tab(6).Control(0)=   "fraToolbarGeneral"
+      Tab(6).Control(1)=   "fraToolbars"
       Tab(6).ControlCount=   2
       Begin VB.Frame fraReports 
          Caption         =   "Report / Utility / Tool Selection && Access :"
@@ -3603,9 +3603,9 @@ Private Sub Form_Load()
     .StartRow = Val(GetUserSetting("Output", "TitleRow", "2"))
     .Gridlines = (GetUserSetting("Output", "TitleGridLines", "0") = "1")
     .Bold = (GetUserSetting("Output", "TitleBold", "1") = "1")
-    .Underline = (GetUserSetting("Output", "TitleUnderline", "1") = "1")
+    .Underline = (GetUserSetting("Output", "TitleUnderline", "0") = "1")
     .BackCol = Val(GetUserSetting("Output", "TitleBackcolour", vbWhite))
-    .ForeCol = Val(GetUserSetting("Output", "TitleForecolour", vbBlack))
+    .ForeCol = Val(GetUserSetting("Output", "TitleForecolour", GetColour("Midnight Blue")))
   
     RefreshGridlines 0, .Gridlines
     RefreshBold 0, .Bold
@@ -3621,8 +3621,8 @@ Private Sub Form_Load()
     .Gridlines = (GetUserSetting("Output", "HeadingGridLines", "1") = "1")
     .Bold = (GetUserSetting("Output", "HeadingBold", "1") = "1")
     .Underline = (GetUserSetting("Output", "HeadingUnderline", "0") = "1")
-    .BackCol = Val(GetUserSetting("Output", "HeadingBackcolour", GetColour("Violet")))
-    .ForeCol = Val(GetUserSetting("Output", "HeadingForecolour", vbWhite))
+    .BackCol = Val(GetUserSetting("Output", "HeadingBackcolour", GetColour("Dolphin Blue")))
+    .ForeCol = Val(GetUserSetting("Output", "HeadingForecolour", GetColour("Midnight Blue")))
   
     RefreshGridlines 1, .Gridlines
     RefreshBold 1, .Bold
@@ -3638,8 +3638,8 @@ Private Sub Form_Load()
     .Gridlines = (GetUserSetting("Output", "DataGridLines", "1") = "1")
     .Bold = (GetUserSetting("Output", "DataBold", "0") = "1")
     .Underline = (GetUserSetting("Output", "DataUnderline", "0") = "1")
-    .BackCol = Val(GetUserSetting("Output", "DataBackcolour", GetColour("Gold")))
-    .ForeCol = Val(GetUserSetting("Output", "DataForecolour", vbBlack))
+    .BackCol = Val(GetUserSetting("Output", "DataBackcolour", GetColour("Pale Grey")))
+    .ForeCol = Val(GetUserSetting("Output", "DataForecolour", GetColour("Midnight Blue")))
   
     RefreshGridlines 2, .Gridlines
     RefreshBold 2, .Bold
@@ -3776,19 +3776,19 @@ Private Sub cboTextType_Click()
   Select Case cboTextType.ListIndex
   Case 0
     Set moutCurrent = moutTitle
-    chkGridlines.Enabled = False
+    chkGridLines.Enabled = False
     lblBackColour.Enabled = False
     cboBackColour.Enabled = False
     cboBackColour.BackColor = vbButtonFace
   Case 1
     Set moutCurrent = moutHeading
-    chkGridlines.Enabled = True
+    chkGridLines.Enabled = True
     lblBackColour.Enabled = True
     cboBackColour.Enabled = True
     cboBackColour.BackColor = vbWindowBackground
   Case 2
     Set moutCurrent = moutData
-    chkGridlines.Enabled = True
+    chkGridLines.Enabled = True
     lblBackColour.Enabled = True
     cboBackColour.Enabled = True
     cboBackColour.BackColor = vbWindowBackground
@@ -3810,7 +3810,7 @@ Private Sub cboTextType_Click()
   
   chkBold.Value = IIf(moutCurrent.Bold, vbChecked, vbUnchecked)
   chkUnderLine.Value = IIf(moutCurrent.Underline, vbChecked, vbUnchecked)
-  chkGridlines.Value = IIf(moutCurrent.Gridlines, vbChecked, vbUnchecked)
+  chkGridLines.Value = IIf(moutCurrent.Gridlines, vbChecked, vbUnchecked)
   
   mbLoading = False
   
@@ -3913,7 +3913,7 @@ Private Sub RefreshUnderLine(lngIndex, blnUnderline As Boolean)
 End Sub
 
 Private Sub chkGridlines_Click()
-  moutCurrent.Gridlines = (chkGridlines.Value = vbChecked)
+  moutCurrent.Gridlines = (chkGridLines.Value = vbChecked)
   RefreshGridlines cboTextType.ListIndex, moutCurrent.Gridlines
 End Sub
 
