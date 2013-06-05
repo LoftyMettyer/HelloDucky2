@@ -1,11 +1,11 @@
 VERSION 5.00
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
 Begin VB.Form frmColEdit 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Column Properties"
@@ -83,16 +83,19 @@ Begin VB.Form frmColEdit
       TabPicture(1)   =   "frmColEdit.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraControlPage"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Opt&ions"
       TabPicture(2)   =   "frmColEdit.frx":0044
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraOptionsPage"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "Valida&tion"
       TabPicture(3)   =   "frmColEdit.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraValidationPage"
+      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "Diar&y Links"
       TabPicture(4)   =   "frmColEdit.frx":007C
@@ -682,6 +685,90 @@ Begin VB.Form frmColEdit
          Top             =   320
          Visible         =   0   'False
          Width           =   8205
+         Begin VB.Frame fraStorage 
+            Caption         =   "Storage Type : "
+            Height          =   1905
+            Left            =   210
+            TabIndex        =   165
+            Top             =   3075
+            Width           =   7815
+            Begin VB.CheckBox chkEnableOLEMaxSize 
+               Caption         =   "Enable document e&mbedding"
+               Enabled         =   0   'False
+               Height          =   285
+               Left            =   540
+               TabIndex        =   170
+               Top             =   1290
+               Width           =   2850
+            End
+            Begin VB.OptionButton optOLEStorageType 
+               Caption         =   "Lin&ked / Embedded in database"
+               Height          =   270
+               Index           =   2
+               Left            =   180
+               TabIndex        =   168
+               Top             =   945
+               Width           =   3270
+            End
+            Begin VB.OptionButton optOLEStorageType 
+               Caption         =   "Copi&ed to local OLE directory"
+               Height          =   270
+               Index           =   0
+               Left            =   180
+               TabIndex        =   167
+               Top             =   615
+               Width           =   3630
+            End
+            Begin VB.OptionButton optOLEStorageType 
+               Caption         =   "Co&pied to server OLE directory"
+               Height          =   270
+               Index           =   1
+               Left            =   180
+               TabIndex        =   166
+               Top             =   285
+               Value           =   -1  'True
+               Width           =   3630
+            End
+            Begin COASpinner.COA_Spinner asrMaxOLESize 
+               Height          =   315
+               Left            =   5700
+               TabIndex        =   171
+               Top             =   1275
+               Width           =   735
+               _ExtentX        =   1296
+               _ExtentY        =   556
+               BackColor       =   -2147483643
+               BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+                  Name            =   "Verdana"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
+               Enabled         =   0   'False
+               Increment       =   100
+               MaximumValue    =   8000
+               Text            =   "100"
+            End
+            Begin VB.Label lblMb 
+               Caption         =   "Kb"
+               Height          =   195
+               Left            =   6540
+               TabIndex        =   172
+               Top             =   1320
+               Width           =   285
+            End
+            Begin VB.Label lblMaximumOLESize 
+               Caption         =   "Maximum size :"
+               Height          =   300
+               Left            =   4215
+               TabIndex        =   169
+               Top             =   1320
+               Width           =   1395
+            End
+         End
          Begin VB.Frame fraOptions 
             Caption         =   "Options :"
             Height          =   735
@@ -792,90 +879,6 @@ Begin VB.Form frmColEdit
                Width           =   690
             End
          End
-         Begin VB.Frame fraStorage 
-            Caption         =   "Storage Type : "
-            Height          =   1905
-            Left            =   210
-            TabIndex        =   165
-            Top             =   3075
-            Width           =   7815
-            Begin VB.CheckBox chkEnableOLEMaxSize 
-               Caption         =   "Enable document e&mbedding"
-               Enabled         =   0   'False
-               Height          =   285
-               Left            =   540
-               TabIndex        =   170
-               Top             =   1290
-               Width           =   2850
-            End
-            Begin VB.OptionButton optOLEStorageType 
-               Caption         =   "Lin&ked / Embedded in database"
-               Height          =   270
-               Index           =   2
-               Left            =   180
-               TabIndex        =   168
-               Top             =   945
-               Width           =   3270
-            End
-            Begin VB.OptionButton optOLEStorageType 
-               Caption         =   "Copi&ed to local OLE directory"
-               Height          =   270
-               Index           =   0
-               Left            =   180
-               TabIndex        =   167
-               Top             =   615
-               Width           =   3630
-            End
-            Begin VB.OptionButton optOLEStorageType 
-               Caption         =   "Co&pied to server OLE directory"
-               Height          =   270
-               Index           =   1
-               Left            =   180
-               TabIndex        =   166
-               Top             =   285
-               Value           =   -1  'True
-               Width           =   3630
-            End
-            Begin COASpinner.COA_Spinner asrMaxOLESize 
-               Height          =   315
-               Left            =   5700
-               TabIndex        =   171
-               Top             =   1275
-               Width           =   735
-               _ExtentX        =   1296
-               _ExtentY        =   556
-               BackColor       =   -2147483643
-               BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-                  Name            =   "Verdana"
-                  Size            =   8.25
-                  Charset         =   0
-                  Weight          =   400
-                  Underline       =   0   'False
-                  Italic          =   0   'False
-                  Strikethrough   =   0   'False
-               EndProperty
-               Enabled         =   0   'False
-               Increment       =   100
-               MaximumValue    =   8000
-               Text            =   "100"
-            End
-            Begin VB.Label lblMb 
-               Caption         =   "Kb"
-               Height          =   195
-               Left            =   6540
-               TabIndex        =   172
-               Top             =   1320
-               Width           =   285
-            End
-            Begin VB.Label lblMaximumOLESize 
-               Caption         =   "Maximum size :"
-               Height          =   300
-               Left            =   4215
-               TabIndex        =   169
-               Top             =   1320
-               Width           =   1395
-            End
-         End
          Begin VB.Frame fraDefault 
             Caption         =   "Default Value :"
             Height          =   2235
@@ -900,10 +903,9 @@ Begin VB.Form frmColEdit
                Width           =   1400
             End
             Begin VB.CommandButton cmdDfltValueExpression 
+               Caption         =   "..."
                Height          =   315
                Left            =   7260
-               Picture         =   "frmColEdit.frx":01AA
-               Style           =   1  'Graphical
                TabIndex        =   54
                Top             =   700
                UseMaskColor    =   -1  'True
@@ -1064,7 +1066,7 @@ Begin VB.Form frmColEdit
                   Italic          =   0   'False
                   Strikethrough   =   0   'False
                EndProperty
-               MouseIcon       =   "frmColEdit.frx":02F8
+               MouseIcon       =   "frmColEdit.frx":01AA
                MousePointer    =   0
             End
             Begin GTMaskDate.GTMaskDate ASRDate1 
@@ -1233,7 +1235,7 @@ Begin VB.Form frmColEdit
                _Version        =   65536
                _ExtentX        =   661
                _ExtentY        =   317
-               Caption         =   "frmColEdit.frx":0314
+               Caption         =   "frmColEdit.frx":01C6
                BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                   Name            =   "Verdana"
                   Size            =   8.25
@@ -1243,7 +1245,7 @@ Begin VB.Form frmColEdit
                   Italic          =   0   'False
                   Strikethrough   =   0   'False
                EndProperty
-               Keys            =   "frmColEdit.frx":0379
+               Keys            =   "frmColEdit.frx":022B
                AlignHorizontal =   0
                AlignVertical   =   0
                Appearance      =   1
@@ -1364,10 +1366,9 @@ Begin VB.Form frmColEdit
                Width           =   6870
             End
             Begin VB.CommandButton cmdLostFocusClause 
+               Caption         =   "..."
                Height          =   315
                Left            =   7065
-               Picture         =   "frmColEdit.frx":03BB
-               Style           =   1  'Graphical
                TabIndex        =   63
                Top             =   300
                UseMaskColor    =   -1  'True
@@ -1595,9 +1596,9 @@ Begin VB.Form frmColEdit
          End
          Begin VB.ComboBox cboControl 
             Height          =   315
-            ItemData        =   "frmColEdit.frx":0509
+            ItemData        =   "frmColEdit.frx":026D
             Left            =   1575
-            List            =   "frmColEdit.frx":0522
+            List            =   "frmColEdit.frx":0286
             Style           =   2  'Dropdown List
             TabIndex        =   26
             Top             =   200
@@ -1784,6 +1785,119 @@ Begin VB.Form frmColEdit
                Width           =   1110
             End
          End
+         Begin VB.Frame fraDataType 
+            Caption         =   "Data Type :"
+            Height          =   870
+            Left            =   200
+            TabIndex        =   103
+            Top             =   1440
+            Width           =   7815
+            Begin VB.ComboBox cboDataType 
+               Height          =   315
+               ItemData        =   "frmColEdit.frx":02CD
+               Left            =   195
+               List            =   "frmColEdit.frx":02CF
+               Sorted          =   -1  'True
+               Style           =   2  'Dropdown List
+               TabIndex        =   5
+               Top             =   300
+               Width           =   1815
+            End
+            Begin COASpinner.COA_Spinner asrSize 
+               Height          =   315
+               Left            =   2625
+               TabIndex        =   6
+               Top             =   300
+               Width           =   870
+               _ExtentX        =   1535
+               _ExtentY        =   556
+               BackColor       =   -2147483643
+               BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+                  Name            =   "Verdana"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
+               MaximumValue    =   8000
+               Text            =   "1"
+            End
+            Begin COASpinner.COA_Spinner asrDecimals 
+               Height          =   315
+               Left            =   4590
+               TabIndex        =   7
+               Top             =   300
+               Width           =   735
+               _ExtentX        =   1296
+               _ExtentY        =   556
+               BackColor       =   -2147483643
+               BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+                  Name            =   "Verdana"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
+               MaximumValue    =   6
+               Text            =   "0"
+            End
+            Begin COASpinner.COA_Spinner spnDefaultDisplayWidth 
+               Height          =   315
+               Left            =   6465
+               TabIndex        =   8
+               Top             =   300
+               Width           =   735
+               _ExtentX        =   1296
+               _ExtentY        =   556
+               BackColor       =   -2147483643
+               BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+                  Name            =   "Verdana"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
+               MaximumValue    =   8000
+               MinimumValue    =   1
+               Text            =   "1"
+            End
+            Begin VB.Label lblDefaultDisplayWidth 
+               AutoSize        =   -1  'True
+               BackStyle       =   0  'Transparent
+               Caption         =   "Display :"
+               Height          =   195
+               Left            =   5595
+               TabIndex        =   134
+               Top             =   360
+               Width           =   795
+            End
+            Begin VB.Label lblSize 
+               AutoSize        =   -1  'True
+               BackStyle       =   0  'Transparent
+               Caption         =   "Size :"
+               Height          =   195
+               Left            =   2085
+               TabIndex        =   105
+               Top             =   360
+               Width           =   480
+            End
+            Begin VB.Label lblDecimals 
+               AutoSize        =   -1  'True
+               BackStyle       =   0  'Transparent
+               Caption         =   "Decimals :"
+               Height          =   195
+               Left            =   3645
+               TabIndex        =   104
+               Top             =   360
+               Width           =   900
+            End
+         End
          Begin VB.Frame fraLookup 
             Caption         =   "Lookup :"
             Height          =   3000
@@ -1919,10 +2033,9 @@ Begin VB.Form frmColEdit
                Width           =   5235
             End
             Begin VB.CommandButton cmdLinkOrder 
+               Caption         =   "..."
                Height          =   315
                Left            =   6960
-               Picture         =   "frmColEdit.frx":0569
-               Style           =   1  'Graphical
                TabIndex        =   25
                Top             =   1100
                UseMaskColor    =   -1  'True
@@ -1993,127 +2106,13 @@ Begin VB.Form frmColEdit
                Width           =   6765
             End
             Begin VB.CommandButton cmdCalculation 
+               Caption         =   "..."
                Height          =   315
                Left            =   6960
-               Picture         =   "frmColEdit.frx":06B7
-               Style           =   1  'Graphical
                TabIndex        =   20
                Top             =   300
                UseMaskColor    =   -1  'True
                Width           =   315
-            End
-         End
-         Begin VB.Frame fraDataType 
-            Caption         =   "Data Type :"
-            Height          =   870
-            Left            =   200
-            TabIndex        =   103
-            Top             =   1440
-            Width           =   7815
-            Begin VB.ComboBox cboDataType 
-               Height          =   315
-               ItemData        =   "frmColEdit.frx":0805
-               Left            =   195
-               List            =   "frmColEdit.frx":0807
-               Sorted          =   -1  'True
-               Style           =   2  'Dropdown List
-               TabIndex        =   5
-               Top             =   300
-               Width           =   1815
-            End
-            Begin COASpinner.COA_Spinner asrSize 
-               Height          =   315
-               Left            =   2625
-               TabIndex        =   6
-               Top             =   300
-               Width           =   870
-               _ExtentX        =   1535
-               _ExtentY        =   556
-               BackColor       =   -2147483643
-               BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-                  Name            =   "Verdana"
-                  Size            =   8.25
-                  Charset         =   0
-                  Weight          =   400
-                  Underline       =   0   'False
-                  Italic          =   0   'False
-                  Strikethrough   =   0   'False
-               EndProperty
-               MaximumValue    =   8000
-               Text            =   "1"
-            End
-            Begin COASpinner.COA_Spinner asrDecimals 
-               Height          =   315
-               Left            =   4590
-               TabIndex        =   7
-               Top             =   300
-               Width           =   735
-               _ExtentX        =   1296
-               _ExtentY        =   556
-               BackColor       =   -2147483643
-               BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-                  Name            =   "Verdana"
-                  Size            =   8.25
-                  Charset         =   0
-                  Weight          =   400
-                  Underline       =   0   'False
-                  Italic          =   0   'False
-                  Strikethrough   =   0   'False
-               EndProperty
-               MaximumValue    =   6
-               Text            =   "0"
-            End
-            Begin COASpinner.COA_Spinner spnDefaultDisplayWidth 
-               Height          =   315
-               Left            =   6465
-               TabIndex        =   8
-               Top             =   300
-               Width           =   735
-               _ExtentX        =   1296
-               _ExtentY        =   556
-               BackColor       =   -2147483643
-               BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-                  Name            =   "Verdana"
-                  Size            =   8.25
-                  Charset         =   0
-                  Weight          =   400
-                  Underline       =   0   'False
-                  Italic          =   0   'False
-                  Strikethrough   =   0   'False
-               EndProperty
-               MaximumValue    =   8000
-               MinimumValue    =   1
-               Text            =   "1"
-            End
-            Begin VB.Label lblDefaultDisplayWidth 
-               AutoSize        =   -1  'True
-               BackStyle       =   0  'Transparent
-               Caption         =   "Display :"
-               Height          =   195
-               Left            =   5595
-               TabIndex        =   134
-               Top             =   360
-               Width           =   795
-            End
-            Begin VB.Label lblSize 
-               AutoSize        =   -1  'True
-               BackStyle       =   0  'Transparent
-               Caption         =   "Size :"
-               Height          =   195
-               Left            =   2085
-               TabIndex        =   105
-               Top             =   360
-               Width           =   480
-            End
-            Begin VB.Label lblDecimals 
-               AutoSize        =   -1  'True
-               BackStyle       =   0  'Transparent
-               Caption         =   "Decimals :"
-               Height          =   195
-               Left            =   3645
-               TabIndex        =   104
-               Top             =   360
-               Width           =   900
             End
          End
          Begin VB.Label lblColumnName 
@@ -8582,4 +8581,5 @@ Private Function QAToggleControlStatus(pfValue As Boolean)
   fraFieldMapping(1).Enabled = pfValue And Not mblnReadOnly
   
 End Function
+
 
