@@ -15,6 +15,7 @@ Begin VB.Form frmCategorySetup
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
+   HelpContextID   =   5101
    Icon            =   "frmCategorySetup.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -109,7 +110,7 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  If Not mbLoading Then cmdOk.Enabled = True
+  If Not mbLoading Then cmdOK.Enabled = True
 End Property
 
 Private Sub cboCategoryTable_Click()
@@ -269,11 +270,20 @@ Private Sub Form_Load()
   ' Initialise all controls with the current settings, or defaults.
   InitialiseBaseTableCombos
 
-  cmdOk.Enabled = False
+  cmdOK.Enabled = False
   Changed = False
   mbLoading = False
   Screen.MousePointer = vbDefault
  
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
 End Sub
 
 Private Sub RefreshControls()
