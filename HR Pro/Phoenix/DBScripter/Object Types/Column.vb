@@ -72,6 +72,9 @@
           Case ScriptDB.ColumnTypes.Numeric
             Return (Me.Size + Me.Decimals).ToString
 
+          Case ScriptDB.ColumnTypes.Logic
+            Return "1"
+
           Case ScriptDB.ColumnTypes.Date
             Return "20"
 

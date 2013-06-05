@@ -439,9 +439,9 @@ Namespace ScriptDB
                 'End If
 
                 ' Does the calculation 
-                If objColumn.Calculation.IsDeterministic Then
-                Else
-                End If
+                'If objColumn.Calculation.IsDeterministic Then
+                'Else
+                'End If
 
 
                 '      objExpression = New Things.Expression
@@ -524,9 +524,7 @@ Namespace ScriptDB
             If objRelation.RelationshipType = RelationshipType.Parent Then
               aryBaseTableColumns.Add(String.Format("[ID_{0}] = [inserted].[ID_{0}]", CInt(objRelation.ParentID)))
               aryAllWriteableColumns.Add(String.Format("[ID_{0}]", CInt(objRelation.ParentID)))
-              aryParentsToUpdate.Add(String.Format("    --INSERT [dbo].[tbsys_intransactiontrigger] ([spid], [tablefromid]) VALUES (@@spid,{0})" & vbNewLine & _
-                                                   "    UPDATE [dbo].[{1}] SET [updflag] = 1 WHERE [dbo].[{1}].[id] IN (SELECT DISTINCT [id_{2}] FROM inserted)" & vbNewLine & _
-                                                   "    --DELETE [dbo].[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {0}" & vbNewLine & vbNewLine _
+              aryParentsToUpdate.Add(String.Format("    UPDATE [dbo].[{1}] SET [updflag] = 1 WHERE [dbo].[{1}].[id] IN (SELECT DISTINCT [id_{2}] FROM inserted)" & vbNewLine & vbNewLine _
                 , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID)))
             End If
           Next

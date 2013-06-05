@@ -11,6 +11,12 @@
     'Public Overrides Function Commit() As Boolean
     'End Function
 
+    Public Overrides ReadOnly Property PhysicalName As String
+      Get
+        Return Consts.UserTable & MyBase.Name
+      End Get
+    End Property
+
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
         Return Enums.Type.Relation
