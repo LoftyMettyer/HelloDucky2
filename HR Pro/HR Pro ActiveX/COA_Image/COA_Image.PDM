@@ -68,6 +68,6 @@ DepCabRun=COA_Image.INF
 PackageFolder=C:\DEV\HR Pro\HR Pro ActiveX\COA_Image
 ProjectFolder=C:\DEV\HR Pro\HR Pro ActiveX\COA_Image
 ServerSideCab=
-File1=
+File1=C:\DEV\HR Pro\HR Pro ActiveX\COA_Image\COA_Image.DEP
 Handler1=PDWizard.FolderDplySubWiz
 Handler2=PDWizard.WebPostDplySubWiz

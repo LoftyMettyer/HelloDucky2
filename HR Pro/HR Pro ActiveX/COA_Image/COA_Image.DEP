@@ -3,16 +3,16 @@ Version=1.0.0.7
 
 [COA_Image.ocx <0009>]
 Dest=$(WinSysPath)
-Date=18/11/2009
-Time=16:37
+Date=07/10/2010
+Time=15:50
 Version=1.0.0.7
 CABFilename=COA_Image.CAB
 CABINFFile=COA_Image.INF
-Uses1=msado25.tlb
-Uses2=objsafe.tlb
-
-[msado25.tlb <0009>]
-Dest=$(WinSysPath)
-Date=28/04/2004
-Time=08:57
-Version=2.81.1117.0
+Uses1=msvbvm60.dll
+Uses2=OLEAUT32.DLL
+Uses3=OLEPRO32.DLL
+Uses4=ASYCFILT.DLL
+Uses5=STDOLE2.TLB
+Uses6=COMCAT.DLL
+Uses7=msado25.tlb
+Uses8=objsafe.tlb
