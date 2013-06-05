@@ -58,7 +58,6 @@ Public Function SaveExpressions(pfRefreshDatabase As Boolean) As Boolean
           If .Fields("ParentComponentID").value = 0 Then
             OutputCurrentProcess2 .Fields("Name").value
           End If
-          Debug.Print "Save Expression: " & !ExprID
           fOK = ExpressionSave
         Else
           OutputCurrentProcess2 vbNullString
