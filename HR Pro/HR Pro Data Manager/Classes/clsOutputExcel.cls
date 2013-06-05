@@ -1584,7 +1584,6 @@ Public Sub Complete()
       mstrErrorMessage = "This definition is set to save in a file format which is not compatible with your version of Microsoft Office."
       GoTo TidyAndExit
     End If
-    
     mxlWorkBook.SaveAs mstrFileName, Val(strFormat)
 
   End If
@@ -1593,27 +1592,26 @@ Public Sub Complete()
   'EMAIL
   If mblnEmail Then
     mstrErrorMessage = "Error sending email"
+    
     If Not mblnSave Then
-      mstrFileName = mobjParent.GetTempFileName(mstrFileName)
-      
-      strFormat = GetOfficeSaveAsFormat(mstrFileName, GetOfficeExcelVersion)
+      strFormat = GetOfficeSaveAsFormat(mobjParent.EmailAttachAs, GetOfficeExcelVersion)
       If strFormat = "" Then
         mstrErrorMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
         GoTo TidyAndExit
       End If
       
+      mstrFileName = mobjParent.GetTempFileName(mstrFileName)
       mxlWorkBook.SaveAs mstrFileName, Val(strFormat)
     End If
+    
     mobjParent.SendEmail mstrFileName
   End If
 
 
   'PRINTER
   If mblnPrinter Then
-    'TM23122003 FAULT - DEFAULT PRINTER
     Dim strCurrentPrinter As String
     mstrErrorMessage = "Error printing"
-    'mobjParent.SetPrinter
     
     If mblnChart Then
       For Each objChart In mxlWorkBook.Charts
@@ -1627,7 +1625,6 @@ Public Sub Complete()
       Next
     End If
     
-    'mobjParent.ResetDefaultPrinter
   End If
 
 

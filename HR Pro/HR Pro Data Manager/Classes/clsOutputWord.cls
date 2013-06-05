@@ -1088,10 +1088,8 @@ Public Sub Complete()
   
   
   'SAVE
-  If mstrFileName <> vbNullString Then
+  If mblnSave Then
     mstrErrorMessage = "Error saving file <" & mstrFileName & ">"
-    ''mwrdDoc.SaveAs mstrFileName, giOfficeSaveVersion_Word
-    'mwrdDoc.SaveAs mstrFileName, mlngSaveFileFormat
     
     strFormat = GetOfficeSaveAsFormat(mstrFileName, GetOfficeWordVersion)
     If strFormat = "" Then
@@ -1107,17 +1105,16 @@ Public Sub Complete()
   If mblnEmail Then
     mstrErrorMessage = "Error sending email"
     
-    'If Not mblnSave Then
-      mstrFileName = mobjParent.GetTempFileName(mstrFileName)
-        
-      strFormat = GetOfficeSaveAsFormat(mstrFileName, GetOfficeWordVersion)
+    If Not mblnSave Then
+      strFormat = GetOfficeSaveAsFormat(mobjParent.EmailAttachAs, GetOfficeWordVersion)
       If strFormat = "" Then
         mstrErrorMessage = "This definition is set to email an attachment in a file format which is not compatible with your version of Microsoft Office."
         GoTo TidyAndExit
       End If
       
-      mwrdDoc.SaveAs mstrFileName, Val(strFormat)
-    'End If
+      mstrFileName = mobjParent.GetTempFileName(mstrFileName)
+      mwrdDoc.SaveAs mstrFileName, FileFormat:=Val(strFormat)
+    End If
     
     mobjParent.SendEmail mstrFileName
   End If
@@ -1128,15 +1125,14 @@ Public Sub Complete()
 
   'PRINTER
   If mblnPrinter Then
-    'TM23122003 FAULT - DEFAULT PRINTER
     Dim strCurrentPrinter As String
     mstrErrorMessage = "Error printing"
-    'mobjParent.SetPrinter
+    
     strCurrentPrinter = mwrdApp.ActivePrinter
     mwrdApp.ActivePrinter = mstrPrinterName
     mwrdDoc.PrintOut
     mwrdApp.ActivePrinter = strCurrentPrinter
-    'mobjParent.ResetDefaultPrinter
+  
   End If
   
   
