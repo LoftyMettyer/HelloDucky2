@@ -225,7 +225,7 @@ Begin VB.Form frmSSIntranetChart
          Height          =   180
          Left            =   4485
          TabIndex        =   37
-         Top             =   1170
+         Top             =   1185
          Width           =   1440
          WordWrap        =   -1  'True
       End
@@ -316,7 +316,7 @@ Begin VB.Form frmSSIntranetChart
          Height          =   195
          Left            =   210
          TabIndex        =   31
-         Top             =   795
+         Top             =   810
          Width           =   600
       End
    End
@@ -690,7 +690,7 @@ Begin VB.Form frmSSIntranetChart
          Height          =   195
          Left            =   4485
          TabIndex        =   26
-         Top             =   420
+         Top             =   435
          Width           =   1050
       End
    End
