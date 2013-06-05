@@ -600,7 +600,7 @@ Namespace ScriptDB
                             "            FROM deleted d WHERE {0} IS NOT NULL" _
                             , sAuditDataDelete, objColumn.ID, objColumn.Table.Name, objColumn.Table.ID, objColumn.Name))
 
-                        objAuditIndex.IncludedColumns.Add(objColumn)
+                objAuditIndex.IncludedColumns.AddIfNew(objColumn)
                      End If
                   End If
 

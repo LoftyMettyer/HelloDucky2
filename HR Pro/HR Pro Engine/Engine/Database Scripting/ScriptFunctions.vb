@@ -170,7 +170,7 @@ Namespace ScriptDB
                   objIndex.IsTableIndex = True
                 End If
 
-                objIndex.IncludedColumns.Add(objTable2.Columns.GetById(objPart3.ColumnID))
+                objIndex.IncludedColumns.AddIfNew(objTable2.Columns.GetById(objPart3.ColumnID))
 
                 If Not bFound And Not objIndex.Columns(0).Multiline Then
                   objTable1.Indexes.Add(objIndex)
