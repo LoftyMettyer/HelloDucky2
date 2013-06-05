@@ -4467,194 +4467,192 @@ Private Function ApplyChanges_CleanUp() As Boolean
   fOK = True
   ReDim asSQL(0)
   
-  If IsVersion7 Then
-    ' Revoke all permissions on the 'public' group.
-    
-    ' Get the uid of the 'public' group.
-    sSQL = "SELECT uid" & _
-      " FROM sysusers" & _
-      " WHERE name = 'public'"
+  ' Revoke all permissions on the 'public' group.
+  
+  ' Get the uid of the 'public' group.
+  sSQL = "SELECT uid" & _
+    " FROM sysusers" & _
+    " WHERE name = 'public'"
 
-    rsPermissions.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly, adCmdText
-    If Not (rsPermissions.EOF And rsPermissions.BOF) Then
-      lngPublicUID = rsPermissions!uid
-    End If
-    rsPermissions.Close
-  
-    ' Get the uid of the 'INFORMATION_SCHEMA' group.
-    sSQL = "SELECT uid" & _
-      " FROM sysusers" & _
-      " WHERE name = 'INFORMATION_SCHEMA'"
-    rsPermissions.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly, adCmdText
-    If Not (rsPermissions.EOF And rsPermissions.BOF) Then
-      lngInfoSchemaUID = rsPermissions!uid
-    End If
-    rsPermissions.Close
-    
-    sSQL = "SELECT sysobjects.name," & _
-      " CASE" & _
-      "  WHEN sysprotects.action = 26 THEN 'REFERENCES'" & _
-      "  WHEN sysprotects.action = 193 THEN 'SELECT'" & _
-      "  WHEN sysprotects.action = 195 THEN 'INSERT'" & _
-      "  WHEN sysprotects.action = 196 THEN 'DELETE'" & _
-      "  WHEN sysprotects.action = 197 THEN 'UPDATE'" & _
-      "  WHEN sysprotects.action = 198 THEN 'CREATE TABLE'" & _
-      "  WHEN sysprotects.action = 203 THEN 'CREATE DATABASE'" & _
-      "  WHEN sysprotects.action = 207 THEN 'CREATE VIEW'" & _
-      "  WHEN sysprotects.action = 222 THEN 'CREATE PROCEDURE'" & _
-      "  WHEN sysprotects.action = 224 THEN 'EXECUTE'" & _
-      "  WHEN sysprotects.action = 228 THEN 'BACKUP DATABASE'" & _
-      "  WHEN sysprotects.action = 233 THEN 'CREATE DEFAULT'" & _
-      "  WHEN sysprotects.action = 235 THEN 'BACKUP LOG'" & _
-      "  WHEN sysprotects.action = 236 THEN 'CREATE RULE'" & _
-      "  ELSE ''" & _
-      " END As action" & _
-      " FROM sysprotects" & _
-      " INNER JOIN sysobjects ON sysprotects.ID = sysobjects.ID" & _
-      " WHERE sysprotects.UID = " & Trim(Str(lngPublicUID)) & _
-      " AND NOT sysprotects.grantor = " & Trim(Str(lngInfoSchemaUID))
-    
-    sSQL = sSQL & _
-      " AND NOT sysobjects.name IN ('sysalternates'," & _
-      "   'syscolumns'," & _
-      "   'syscomments'," & _
-      "   'sysconstraints'," & _
-      "   'sysdepends'," & _
-      "   'sysfilegroups'," & _
-      "   'sysfiles'," & _
-      "   'sysforeignkeys'," & _
-      "   'sysfulltextcatalogs'," & _
-      "   'sysindexes'," & _
-      "   'sysindexkeys'," & _
-      "   'sysmembers'," & _
-      "   'sysobjects'," & _
-      "   'syspermissions'," & _
-      "   'sysprotects'," & _
-      "   'sysreferences'," & _
-      "   'syssegments'," & _
-      "   'systypes'," & _
-      "   'sysusers'," & _
-      "   '.')"
-  
-    rsPermissions.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly, adCmdText
-    
-    With rsPermissions
-      Do While Not .EOF
-        If Len(!Action) > 0 Then
-          sSQL = "REVOKE " & !Action & " ON " & !Name & " FROM [public]"
-          iNextIndex = UBound(asSQL) + 1
-          ReDim Preserve asSQL(iNextIndex)
-          asSQL(iNextIndex) = sSQL
-        End If
-        
-        .MoveNext
-      Loop
-      
-      .Close
-    End With
-  
-    For iNextIndex = 1 To UBound(asSQL)
-      gADOCon.Execute asSQL(iNextIndex), , adExecuteNoRecords
-    Next iNextIndex
-  
-    ' NEWACCESS - needs to be updated as each report/utility is updated for the new access.
-    sSQL = "DELETE FROM ASRSysBatchJobAccess" & _
-      " WHERE groupName NOT IN" & _
-      "   (SELECT name" & _
-      "    FROM sysusers" & _
-      "    WHERE gid = uid" & _
-      "      AND uid <> 0)"
-    gADOCon.Execute sSQL, , adExecuteNoRecords
-    
-    sSQL = "DELETE FROM ASRSysCalendarReportAccess" & _
-      " WHERE groupName NOT IN" & _
-      "   (SELECT name" & _
-      "    FROM sysusers" & _
-      "    WHERE gid = uid" & _
-      "      AND uid <> 0)"
-    gADOCon.Execute sSQL, , adExecuteNoRecords
-    
-    sSQL = "DELETE FROM ASRSysCrossTabAccess" & _
-      " WHERE groupName NOT IN" & _
-      "   (SELECT name" & _
-      "    FROM sysusers" & _
-      "    WHERE gid = uid" & _
-      "      AND uid <> 0)"
-    gADOCon.Execute sSQL, , adExecuteNoRecords
-    
-    sSQL = "DELETE FROM ASRSysCustomReportAccess" & _
-      " WHERE groupName NOT IN" & _
-      "   (SELECT name" & _
-      "    FROM sysusers" & _
-      "    WHERE gid = uid" & _
-      "      AND uid <> 0)"
-    gADOCon.Execute sSQL, , adExecuteNoRecords
-    
-    sSQL = "DELETE FROM ASRSysDataTransferAccess" & _
-      " WHERE groupName NOT IN" & _
-      "   (SELECT name" & _
-      "    FROM sysusers" & _
-      "    WHERE gid = uid" & _
-      "      AND uid <> 0)"
-    gADOCon.Execute sSQL, , adExecuteNoRecords
-    
-    sSQL = "DELETE FROM ASRSysExportAccess" & _
-      " WHERE groupName NOT IN" & _
-      "   (SELECT name" & _
-      "    FROM sysusers" & _
-      "    WHERE gid = uid" & _
-      "      AND uid <> 0)"
-    gADOCon.Execute sSQL, , adExecuteNoRecords
-    
-    sSQL = "DELETE FROM ASRSysGlobalAccess" & _
-      " WHERE groupName NOT IN" & _
-      "   (SELECT name" & _
-      "    FROM sysusers" & _
-      "    WHERE gid = uid" & _
-      "      AND uid <> 0)"
-    gADOCon.Execute sSQL, , adExecuteNoRecords
-    
-    sSQL = "DELETE FROM ASRSysImportAccess" & _
-      " WHERE groupName NOT IN" & _
-      "   (SELECT name" & _
-      "    FROM sysusers" & _
-      "    WHERE gid = uid" & _
-      "      AND uid <> 0)"
-    gADOCon.Execute sSQL, , adExecuteNoRecords
-    
-    sSQL = "DELETE FROM ASRSysMailMergeAccess" & _
-      " WHERE groupName NOT IN" & _
-      "   (SELECT name" & _
-      "    FROM sysusers" & _
-      "    WHERE gid = uid" & _
-      "      AND uid <> 0)"
-    gADOCon.Execute sSQL, , adExecuteNoRecords
-    
-    sSQL = "DELETE FROM ASRSysRecordProfileAccess" & _
-      " WHERE groupName NOT IN" & _
-      "   (SELECT name" & _
-      "    FROM sysusers" & _
-      "    WHERE gid = uid" & _
-      "      AND uid <> 0)"
-    gADOCon.Execute sSQL, , adExecuteNoRecords
-    
-    sSQL = "DELETE FROM ASRSysMatchReportAccess" & _
-      " WHERE groupName NOT IN" & _
-      "   (SELECT name" & _
-      "    FROM sysusers" & _
-      "    WHERE gid = uid" & _
-      "      AND uid <> 0)"
-    gADOCon.Execute sSQL, , adExecuteNoRecords
-    
-    'JPD 20071203 Faults 12580, 12670, 12671
-    sSQL = "DELETE FROM ASRSysSSIHiddenGroups" & _
-      " WHERE groupName NOT IN" & _
-      "   (SELECT name" & _
-      "    FROM sysusers" & _
-      "    WHERE gid = uid" & _
-      "      AND uid <> 0)"
-    gADOCon.Execute sSQL, , adExecuteNoRecords
+  rsPermissions.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly, adCmdText
+  If Not (rsPermissions.EOF And rsPermissions.BOF) Then
+    lngPublicUID = rsPermissions!uid
   End If
+  rsPermissions.Close
+
+  ' Get the uid of the 'INFORMATION_SCHEMA' group.
+  sSQL = "SELECT uid" & _
+    " FROM sysusers" & _
+    " WHERE name = 'INFORMATION_SCHEMA'"
+  rsPermissions.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly, adCmdText
+  If Not (rsPermissions.EOF And rsPermissions.BOF) Then
+    lngInfoSchemaUID = rsPermissions!uid
+  End If
+  rsPermissions.Close
+  
+  sSQL = "SELECT sysobjects.name," & _
+    " CASE" & _
+    "  WHEN sysprotects.action = 26 THEN 'REFERENCES'" & _
+    "  WHEN sysprotects.action = 193 THEN 'SELECT'" & _
+    "  WHEN sysprotects.action = 195 THEN 'INSERT'" & _
+    "  WHEN sysprotects.action = 196 THEN 'DELETE'" & _
+    "  WHEN sysprotects.action = 197 THEN 'UPDATE'" & _
+    "  WHEN sysprotects.action = 198 THEN 'CREATE TABLE'" & _
+    "  WHEN sysprotects.action = 203 THEN 'CREATE DATABASE'" & _
+    "  WHEN sysprotects.action = 207 THEN 'CREATE VIEW'" & _
+    "  WHEN sysprotects.action = 222 THEN 'CREATE PROCEDURE'" & _
+    "  WHEN sysprotects.action = 224 THEN 'EXECUTE'" & _
+    "  WHEN sysprotects.action = 228 THEN 'BACKUP DATABASE'" & _
+    "  WHEN sysprotects.action = 233 THEN 'CREATE DEFAULT'" & _
+    "  WHEN sysprotects.action = 235 THEN 'BACKUP LOG'" & _
+    "  WHEN sysprotects.action = 236 THEN 'CREATE RULE'" & _
+    "  ELSE ''" & _
+    " END As action" & _
+    " FROM sysprotects" & _
+    " INNER JOIN sysobjects ON sysprotects.ID = sysobjects.ID" & _
+    " WHERE sysprotects.UID = " & Trim(Str(lngPublicUID)) & _
+    " AND NOT sysprotects.grantor = " & Trim(Str(lngInfoSchemaUID))
+  
+  sSQL = sSQL & _
+    " AND NOT sysobjects.name IN ('sysalternates'," & _
+    "   'syscolumns'," & _
+    "   'syscomments'," & _
+    "   'sysconstraints'," & _
+    "   'sysdepends'," & _
+    "   'sysfilegroups'," & _
+    "   'sysfiles'," & _
+    "   'sysforeignkeys'," & _
+    "   'sysfulltextcatalogs'," & _
+    "   'sysindexes'," & _
+    "   'sysindexkeys'," & _
+    "   'sysmembers'," & _
+    "   'sysobjects'," & _
+    "   'syspermissions'," & _
+    "   'sysprotects'," & _
+    "   'sysreferences'," & _
+    "   'syssegments'," & _
+    "   'systypes'," & _
+    "   'sysusers'," & _
+    "   '.')"
+
+  rsPermissions.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly, adCmdText
+  
+  With rsPermissions
+    Do While Not .EOF
+      If Len(!Action) > 0 Then
+        sSQL = "REVOKE " & !Action & " ON " & !Name & " FROM [public]"
+        iNextIndex = UBound(asSQL) + 1
+        ReDim Preserve asSQL(iNextIndex)
+        asSQL(iNextIndex) = sSQL
+      End If
+      
+      .MoveNext
+    Loop
+    
+    .Close
+  End With
+
+  For iNextIndex = 1 To UBound(asSQL)
+    gADOCon.Execute asSQL(iNextIndex), , adExecuteNoRecords
+  Next iNextIndex
+
+  ' NEWACCESS - needs to be updated as each report/utility is updated for the new access.
+  sSQL = "DELETE FROM ASRSysBatchJobAccess" & _
+    " WHERE groupName NOT IN" & _
+    "   (SELECT name" & _
+    "    FROM sysusers" & _
+    "    WHERE gid = uid" & _
+    "      AND uid <> 0)"
+  gADOCon.Execute sSQL, , adExecuteNoRecords
+  
+  sSQL = "DELETE FROM ASRSysCalendarReportAccess" & _
+    " WHERE groupName NOT IN" & _
+    "   (SELECT name" & _
+    "    FROM sysusers" & _
+    "    WHERE gid = uid" & _
+    "      AND uid <> 0)"
+  gADOCon.Execute sSQL, , adExecuteNoRecords
+  
+  sSQL = "DELETE FROM ASRSysCrossTabAccess" & _
+    " WHERE groupName NOT IN" & _
+    "   (SELECT name" & _
+    "    FROM sysusers" & _
+    "    WHERE gid = uid" & _
+    "      AND uid <> 0)"
+  gADOCon.Execute sSQL, , adExecuteNoRecords
+  
+  sSQL = "DELETE FROM ASRSysCustomReportAccess" & _
+    " WHERE groupName NOT IN" & _
+    "   (SELECT name" & _
+    "    FROM sysusers" & _
+    "    WHERE gid = uid" & _
+    "      AND uid <> 0)"
+  gADOCon.Execute sSQL, , adExecuteNoRecords
+  
+  sSQL = "DELETE FROM ASRSysDataTransferAccess" & _
+    " WHERE groupName NOT IN" & _
+    "   (SELECT name" & _
+    "    FROM sysusers" & _
+    "    WHERE gid = uid" & _
+    "      AND uid <> 0)"
+  gADOCon.Execute sSQL, , adExecuteNoRecords
+  
+  sSQL = "DELETE FROM ASRSysExportAccess" & _
+    " WHERE groupName NOT IN" & _
+    "   (SELECT name" & _
+    "    FROM sysusers" & _
+    "    WHERE gid = uid" & _
+    "      AND uid <> 0)"
+  gADOCon.Execute sSQL, , adExecuteNoRecords
+  
+  sSQL = "DELETE FROM ASRSysGlobalAccess" & _
+    " WHERE groupName NOT IN" & _
+    "   (SELECT name" & _
+    "    FROM sysusers" & _
+    "    WHERE gid = uid" & _
+    "      AND uid <> 0)"
+  gADOCon.Execute sSQL, , adExecuteNoRecords
+  
+  sSQL = "DELETE FROM ASRSysImportAccess" & _
+    " WHERE groupName NOT IN" & _
+    "   (SELECT name" & _
+    "    FROM sysusers" & _
+    "    WHERE gid = uid" & _
+    "      AND uid <> 0)"
+  gADOCon.Execute sSQL, , adExecuteNoRecords
+  
+  sSQL = "DELETE FROM ASRSysMailMergeAccess" & _
+    " WHERE groupName NOT IN" & _
+    "   (SELECT name" & _
+    "    FROM sysusers" & _
+    "    WHERE gid = uid" & _
+    "      AND uid <> 0)"
+  gADOCon.Execute sSQL, , adExecuteNoRecords
+  
+  sSQL = "DELETE FROM ASRSysRecordProfileAccess" & _
+    " WHERE groupName NOT IN" & _
+    "   (SELECT name" & _
+    "    FROM sysusers" & _
+    "    WHERE gid = uid" & _
+    "      AND uid <> 0)"
+  gADOCon.Execute sSQL, , adExecuteNoRecords
+  
+  sSQL = "DELETE FROM ASRSysMatchReportAccess" & _
+    " WHERE groupName NOT IN" & _
+    "   (SELECT name" & _
+    "    FROM sysusers" & _
+    "    WHERE gid = uid" & _
+    "      AND uid <> 0)"
+  gADOCon.Execute sSQL, , adExecuteNoRecords
+  
+  'JPD 20071203 Faults 12580, 12670, 12671
+  sSQL = "DELETE FROM ASRSysSSIHiddenGroups" & _
+    " WHERE groupName NOT IN" & _
+    "   (SELECT name" & _
+    "    FROM sysusers" & _
+    "    WHERE gid = uid" & _
+    "      AND uid <> 0)"
+  gADOCon.Execute sSQL, , adExecuteNoRecords
 
   ' JDM - 26/06/06 - Fault 10725 - Cleanup users that aren't on the server
   gADOCon.Execute "EXEC spASRTidyUpNonASRUsers", , adExecuteNoRecords
