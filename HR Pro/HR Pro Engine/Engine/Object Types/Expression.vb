@@ -946,7 +946,7 @@ Namespace Things
 
       Else
         SQLCode_AddCodeLevel(Component.Components, ChildCodeCluster)
-        LineOfCode.Code = String.Format("{0}", ChildCodeCluster.Statement)
+        LineOfCode.Code = String.Format("({0})", ChildCodeCluster.Statement)
 
       End If
 
