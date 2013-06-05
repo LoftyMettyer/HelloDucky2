@@ -436,7 +436,7 @@ Namespace Things
 
             Select Case objComponent.ValueType
               Case ScriptDB.ComponentValueTypes.Numeric
-                LineOfCode.Code = String.Format("{0}", objComponent.ValueNumeric.ToString.Replace(",", "."))
+                LineOfCode.Code = String.Format("{0}", objComponent.ValueNumeric)
 
               Case ScriptDB.ComponentValueTypes.String
                 LineOfCode.Code = String.Format("'{0}'", objComponent.ValueString.Replace("'", "''"))
