@@ -207,7 +207,7 @@ PRINT 'Step - Object scripting'
 		SET @OleOnServer = 0; 
 		SET @childUniqueCheck = 0;
 		SET @LinkViewID = 0; 
-		SET @DefaultDisplayWidth = 0; 
+		SET @DefaultDisplayWidth = convert(varchar(10),@size);
 		SET @UniqueCheckType = 0;
 		SET @Trimming = 0;
 		SET @Use1000Separator = 0;
@@ -268,6 +268,7 @@ PRINT 'Step - Object scripting'
 			SET @datasyntax = ''numeric('' + convert(varchar(5),@size) + '','' + @decimals + '')'';
 			SET @defaultvalue = 0;	
 			SET @controltype = 64;
+			SET @DefaultDisplayWidth = convert(varchar(10),@size + @decimals);
 		END
 
 		-- Integers
