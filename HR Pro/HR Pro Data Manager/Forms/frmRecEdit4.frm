@@ -374,7 +374,7 @@ Begin VB.Form frmRecEdit4
          CaretPicture    =   "frmRecEdit4.frx":0295
          NullText        =   "__/__/____"
          BeginProperty NullFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-            Name            =   "Tahoma"
+            Name            =   "Verdana"
             Size            =   8.25
             Charset         =   0
             Weight          =   400
@@ -1359,7 +1359,7 @@ Private Sub Combo1_KeyPress(Index As Integer, KeyAscii As Integer)
 
   ' RH 31/07/00 - If space bar is pressed, then drop down the combo box
   If KeyAscii = 32 Then
-    UI.cboDropDown Combo1(Index).hWnd, True
+    UI.cboDropDown Combo1(Index).hwnd, True
   End If
   
 End Sub
@@ -3294,19 +3294,19 @@ Private Sub ctlNewLookup1_NewEntry(Index As Integer)
       '''' Only add a new ClookupValue to the ClookupValues collection if it
       '''' does not already exist.
       If gcoLookupValues.Count > 0 Then
-        If gcoLookupValues.IsValid(Me.hWnd) Then
-          gcoLookupValues.Remove CStr(Me.hWnd)
+        If gcoLookupValues.IsValid(Me.hwnd) Then
+          gcoLookupValues.Remove CStr(Me.hwnd)
         End If
       End If
       ' Add the ClookupValue to the ClookupValues collection.
-      Set objLUValue = gcoLookupValues.Add(sLookupColumnName, Me.hWnd, 0, mobjScreenControls.Item(ctlNewLookup1(Index).Tag).ColumnID)
+      Set objLUValue = gcoLookupValues.Add(sLookupColumnName, Me.hwnd, 0, mobjScreenControls.Item(ctlNewLookup1(Index).Tag).ColumnID)
   
       ' Disable the current record edit screen, and display the lookup table screen.
       DisableMe
       AddNewTableEntry mobjScreenControls.Item(sTag).LookupTableID
       
       ' Set the child Hwnd value in the ClookupValue object.
-      objLUValue.ChildHwnd = frmMain.ActiveForm.hWnd
+      objLUValue.ChildHwnd = frmMain.ActiveForm.hwnd
     End If
   End If
 
@@ -3690,7 +3690,7 @@ Private Sub Form_Unload(Cancel As Integer)
   If mfTableEntry Then
     ' Get the Hwnd value of the parent form.
     For Each objLUValue In gcoLookupValues.Collection
-      If objLUValue.ChildHwnd = Me.hWnd Then
+      If objLUValue.ChildHwnd = Me.hwnd Then
         lngParentHWnd = objLUValue.ParentHwnd
         Exit For
       End If
@@ -3699,7 +3699,7 @@ Private Sub Form_Unload(Cancel As Integer)
     
     ' Get the parent form.
     For Each fTemp In Forms
-      If fTemp.hWnd = lngParentHWnd Then
+      If fTemp.hwnd = lngParentHWnd Then
         fTemp.EnableMe
         
         If Not mfLeaveLookup Then
@@ -3749,7 +3749,7 @@ Private Sub Form_Unload(Cancel As Integer)
   Set mobjTableView = Nothing
 
   For Each fTemp In Forms
-    If fTemp.hWnd = lngParentHWnd Then
+    If fTemp.hwnd = lngParentHWnd Then
       fTemp.SetFocus
       frmMain.RefreshMainForm fTemp
       Exit For
@@ -4049,7 +4049,7 @@ Public Function LoadScreen(ByVal plngScreenID As Long, ByVal plngViewID As Long)
 
     ' Load the controls onto the screen.
     
-    UI.LockWindow Me.hWnd
+    UI.LockWindow Me.hwnd
     fOK = LoadControls(objScreen)
     UI.UnlockWindow
   End If
@@ -4235,7 +4235,7 @@ Public Sub UpdateControls(Optional pfNoWarnings As Boolean)
   If mrsRecords.State = adStateClosed Then Exit Sub
 
   Screen.MousePointer = vbHourglass
-  UI.LockWindow Me.hWnd
+  UI.LockWindow Me.hwnd
   
   mfLeaveLookup = False
   mfLoading = True
@@ -9610,7 +9610,7 @@ Private Sub TabStrip1_Click()
   If Not mfLoading Then
   
     ' Lock the window refreshing.
-    UI.LockWindow Me.hWnd
+    UI.LockWindow Me.hwnd
   
     ' Get the index of the selected tabpage.
     iIndex = TabStrip1.SelectedItem.Index
