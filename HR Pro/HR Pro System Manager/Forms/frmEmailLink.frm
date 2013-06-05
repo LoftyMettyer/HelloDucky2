@@ -22,7 +22,6 @@ Begin VB.Form frmEmailLink
    HelpContextID   =   1016
    Icon            =   "frmEmailLink.frx":0000
    LinkTopic       =   "Form2"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   7500
@@ -1138,17 +1137,31 @@ Private Sub cmdOK_Click()
     .RecordUpdate = (chkRecordLinkRecord(1).value = vbChecked)
     .RecordDelete = (chkRecordLinkRecord(2).value = vbChecked)
 
-    If cboDateLinkColumn.ListIndex >= 0 And cboDateLinkOffsetPeriod.ListIndex >= 0 Then
+'    If cboDateLinkColumn.ListIndex >= 0 And cboDateLinkOffsetPeriod.ListIndex >= 0 Then
+'      .DateColumnID = cboDateLinkColumn.ItemData(cboDateLinkColumn.ListIndex)
+'      .DateOffset = spnDateLinkOffset.value * IIf(cboDateLinkDirection.ListIndex = 1, 1, -1)
+'      .DatePeriod = cboDateLinkOffsetPeriod.ItemData(cboDateLinkOffsetPeriod.ListIndex)
+'      .DateAmendment = (chkDateAmendments.value = vbChecked)
+'    Else
+'      .DateColumnID = 0
+'      .DateOffset = 0
+'      .DatePeriod = 0
+'      .DateAmendment = True
+'    End If
+
+    If cboDateLinkColumn.ListIndex >= 0 Then
       .DateColumnID = cboDateLinkColumn.ItemData(cboDateLinkColumn.ListIndex)
-      .DateOffset = spnDateLinkOffset.value * IIf(cboDateLinkDirection.ListIndex = 1, 1, -1)
-      .DatePeriod = cboDateLinkOffsetPeriod.ItemData(cboDateLinkOffsetPeriod.ListIndex)
-      .DateAmendment = (chkDateAmendments.value = vbChecked)
     Else
       .DateColumnID = 0
+    End If
+    If cboDateLinkOffsetPeriod.ListIndex >= 0 Then
+      .DateOffset = spnDateLinkOffset.value * IIf(cboDateLinkDirection.ListIndex = 1, 1, -1)
+      .DatePeriod = cboDateLinkOffsetPeriod.ItemData(cboDateLinkOffsetPeriod.ListIndex)
+    Else
       .DateOffset = 0
       .DatePeriod = 0
-      .DateAmendment = True
     End If
+    .DateAmendment = (chkDateAmendments.value = vbChecked)
 
     .Attachment = txtAttachment.Text
 
