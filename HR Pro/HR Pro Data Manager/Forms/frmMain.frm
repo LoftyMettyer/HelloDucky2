@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "11:49"
+            TextSave        =   "15:06"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -3711,8 +3711,9 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long, By
   fExit = False
   bRunOnce = Not (UtilityID = 0)
   glngCurrentCategoryID = -1 ' Default to <All>
+  lngUtilityType = UtilType
 
-  Select Case UtilType
+  Select Case lngUtilityType
    
     Case utlAbsenceBreakdown
       bOk = DoStandardReport("AbsenceBreakdown")
@@ -3749,7 +3750,7 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long, By
           .EnableNew = Not (UtilType = utlAll)
           .EnableRun = True
           .CategoryID = glngCurrentCategoryID
-          .SelectedUtilityType = UtilType
+          .SelectedUtilityType = lngUtilityType
           .SearchText = sSearchText
           .SearchUserID = lngSearchUserID
               
@@ -3839,6 +3840,7 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long, By
             
               sSearchText = .SearchText
               lngSearchUserID = .SearchUserID
+              lngUtilityType = .SelectedUtilityType
             
               ' Record the event
               If bOk Then UpdateUsage .SelectedUtilityType, .SelectedID, .Action
