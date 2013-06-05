@@ -20,7 +20,6 @@ Begin VB.Form frmExportColumns
    Icon            =   "frmExportColumn.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   4410
@@ -283,14 +282,14 @@ Begin VB.Form frmExportColumns
       Left            =   1850
       TabIndex        =   12
       Top             =   120
-      Width           =   4260
+      Width           =   4800
       Begin VB.TextBox txtOther 
          Height          =   315
          Left            =   1640
          MaxLength       =   256
          TabIndex        =   14
          Top             =   340
-         Width           =   2445
+         Width           =   2985
       End
       Begin VB.Label lblTitle 
          AutoSize        =   -1  'True
@@ -309,7 +308,7 @@ Begin VB.Form frmExportColumns
       Left            =   1850
       TabIndex        =   9
       Top             =   120
-      Width           =   4260
+      Width           =   4800
       Begin VB.ComboBox cboOther 
          Height          =   315
          ItemData        =   "frmExportColumn.frx":0042
@@ -318,7 +317,7 @@ Begin VB.Form frmExportColumns
          Style           =   2  'Dropdown List
          TabIndex        =   11
          Top             =   340
-         Width           =   2450
+         Width           =   3030
       End
       Begin VB.Label lblTitle 
          AutoSize        =   -1  'True
@@ -337,12 +336,11 @@ Begin VB.Form frmExportColumns
       Left            =   1850
       TabIndex        =   5
       Top             =   120
-      Width           =   4260
+      Width           =   4800
       Begin VB.CommandButton cmdCalculation 
+         Caption         =   "..."
          Height          =   315
-         Left            =   3740
-         Picture         =   "frmExportColumn.frx":0046
-         Style           =   1  'Graphical
+         Left            =   4320
          TabIndex        =   8
          Top             =   340
          Width           =   330
@@ -355,7 +353,7 @@ Begin VB.Form frmExportColumns
          MaxLength       =   256
          TabIndex        =   7
          Top             =   340
-         Width           =   2115
+         Width           =   2700
       End
       Begin VB.Label lblTitle 
          AutoSize        =   -1  'True
