@@ -976,6 +976,7 @@ Private Function RefreshGrid() As Boolean
   
   ' Populate the grid using filter/sort criteria as set by the user
   Dim pstrSQL As String
+  Dim intMode As Integer
   
   If mblnLoading = True Then GoTo TidyUpAndExit
   
@@ -1024,7 +1025,11 @@ Private Function RefreshGrid() As Boolean
   
   ' Put the mode filter in...
   If cboMode.Text <> "<All>" Then
-    pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & "[ASRSysEventLog].[Mode] = " & IIf(cboMode.Text = "Batch", 1, 0)
+    Select Case cboMode.Text
+      Case "Batch": pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & "[ASRSysEventLog].[Mode] = " & 1 & " AND [ASRSysEventLog].[ReportPack] = " & 0
+      Case "Pack": pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & "[ASRSysEventLog].[ReportPack] = " & 1
+      Case "Manual": pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & "[ASRSysEventLog].[Mode] = " & 0 & " AND [ASRSysEventLog].[ReportPack] = " & 0
+    End Select
   End If
   
   'MH20030422
@@ -1220,12 +1225,12 @@ ErrorTrap:
   
 End Sub
 
-Private Sub grdEventLog_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub grdEventLog_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   
   On Error GoTo ErrorTrap
-  gobjErrorStack.PushStack "frmEventLog.grdEventLog_MouseUp(Button,Shift,X,Y)", Array(Button, Shift, x, y)
+  gobjErrorStack.PushStack "frmEventLog.grdEventLog_MouseUp(Button,Shift,X,Y)", Array(Button, Shift, X, Y)
 
- If (Button = vbRightButton) And (y > Me.grdEventLog.RowHeight) Then
+ If (Button = vbRightButton) And (Y > Me.grdEventLog.RowHeight) Then
     ' Enable/disable the required tools.
     With Me.abEventLog.Bands("bndEventLog")
       .Tools("View").Enabled = Me.cmdView.Enabled
@@ -1357,9 +1362,8 @@ Private Sub grdEventLog_UnboundReadData(ByVal RowBuf As SSDataWidgets_B.ssRowBuf
               RowBuf.Value(iRowIndex, iFieldIndex) = FormatEventDuration(mrstHeaders.Fields("Duration").Value)
             Case "Type"
               RowBuf.Value(iRowIndex, iFieldIndex) = GetUtilityType(mrstHeaders.Fields("Type"))
-              'RowBuf.Value(iRowIndex, iFieldIndex) = mrstHeaders.Fields("Type")
             Case "Mode"
-              RowBuf.Value(iRowIndex, iFieldIndex) = IIf(mrstHeaders.Fields("Mode") = False, "Manual", "Batch")
+              RowBuf.Value(iRowIndex, iFieldIndex) = cboMode.Text ' IIf(mrstHeaders.Fields("Mode") = False, "Manual", "Batch")
             Case Else
               RowBuf.Value(iRowIndex, iFieldIndex) = mrstHeaders(iFieldIndex)
           End Select
