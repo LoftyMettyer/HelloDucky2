@@ -106,12 +106,12 @@ Namespace Connectivity
       mConn.Close()
     End Sub
 
-    Public Function ScriptStatement(ByVal Statement As String) As Boolean Implements IConnection.ScriptStatement
+    Public Function ScriptStatement(ByVal statement As String) As Boolean Implements IConnection.ScriptStatement
 
       Dim objCommand As New SqlCommand
       Dim bOK As Boolean
 
-      objCommand.CommandText = Statement
+      objCommand.CommandText = statement
 
       If Login.UseContext Then
         Microsoft.SqlServer.Server.SqlContext.Pipe.ExecuteAndSend(objCommand)

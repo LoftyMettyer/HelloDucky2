@@ -78,36 +78,36 @@ Namespace Things
 
 #Region "TableOrderFilter"
 
-      Public Function TableOrderFilter(ByVal RowDetails As ChildRowDetails) As TableOrderFilter
+    Public Function TableOrderFilter(ByVal rowDetails As ChildRowDetails) As TableOrderFilter
 
-         'ByVal Order As TableOrder, ByVal Filter As Expression _
-         '            , ByVal Relation As Relation) As TableOrderFilter
+      'ByVal Order As TableOrder, ByVal Filter As Expression _
+      '            , ByVal Relation As Relation) As TableOrderFilter
 
-         For Each filer As TableOrderFilter In Me.TableOrderFilters
+      For Each filer As TableOrderFilter In Me.TableOrderFilters
 
-            If filer.RowDetails.Order Is RowDetails.Order _
-                And filer.RowDetails.Filter Is RowDetails.Filter _
-                And filer.RowDetails.Relation Is RowDetails.Relation _
-                And filer.RowDetails.RowNumber = RowDetails.RowNumber _
-                And filer.RowDetails.RowSelection = RowDetails.RowSelection Then
-               Return filer
-            End If
-         Next
+        If filer.RowDetails.Order Is RowDetails.Order _
+            And filer.RowDetails.Filter Is RowDetails.Filter _
+            And filer.RowDetails.Relation Is RowDetails.Relation _
+            And filer.RowDetails.RowNumber = RowDetails.RowNumber _
+            And filer.RowDetails.RowSelection = RowDetails.RowSelection Then
+          Return filer
+        End If
+      Next
 
-         ' New table filter. Add to the stack and return
-         Dim filter As New TableOrderFilter
-         filter.RowDetails.Order = RowDetails.Order
-         filter.RowDetails.Filter = RowDetails.Filter()
-         filter.RowDetails.Relation = RowDetails.Relation
-         filter.RowDetails.RowNumber = RowDetails.RowNumber
-         filter.RowDetails.RowSelection = RowDetails.RowSelection
-         filter.ComponentNumber = Me.TableOrderFilters.Count + 1
-         filter.Table = Me
-         Me.TableOrderFilters.Add(filter)
+      ' New table filter. Add to the stack and return
+      Dim filter As New TableOrderFilter
+      filter.RowDetails.Order = RowDetails.Order
+      filter.RowDetails.Filter = RowDetails.Filter()
+      filter.RowDetails.Relation = RowDetails.Relation
+      filter.RowDetails.RowNumber = RowDetails.RowNumber
+      filter.RowDetails.RowSelection = RowDetails.RowSelection
+      filter.ComponentNumber = Me.TableOrderFilters.Count + 1
+      filter.Table = Me
+      Me.TableOrderFilters.Add(filter)
 
-         Return filter
+      Return filter
 
-      End Function
+    End Function
 
 #End Region
 

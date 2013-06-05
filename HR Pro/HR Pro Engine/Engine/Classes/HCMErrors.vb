@@ -13,7 +13,7 @@ Namespace ErrorHandler
 
       Dim item As [Error]
 
-      item.Section = Section
+      item.Section = section
       item.ObjectName = ObjectName
       item.Severity = Severity
       item.Message = Message

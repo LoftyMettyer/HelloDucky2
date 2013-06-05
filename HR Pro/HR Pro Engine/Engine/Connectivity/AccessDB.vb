@@ -95,7 +95,7 @@
     Public Sub Open() Implements IConnection.Open
     End Sub
 
-    Public Function ScriptStatement(ByVal Statement As String) As Boolean Implements IConnection.ScriptStatement
+    Public Function ScriptStatement(ByVal statement As String) As Boolean Implements IConnection.ScriptStatement
       Return False
     End Function
 

@@ -100,7 +100,7 @@ Namespace Connectivity
     Public Sub Open() Implements COMInterfaces.IConnection.Open
     End Sub
 
-    Public Function ScriptStatement(ByVal Statement As String) As Boolean Implements COMInterfaces.IConnection.ScriptStatement
+    Public Function ScriptStatement(ByVal statement As String) As Boolean Implements COMInterfaces.IConnection.ScriptStatement
 
       Dim bOK As Boolean = True
 
