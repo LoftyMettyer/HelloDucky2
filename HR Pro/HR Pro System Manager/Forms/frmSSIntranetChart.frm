@@ -16,6 +16,26 @@ Begin VB.Form frmSSIntranetChart
    ScaleWidth      =   11580
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin VB.ComboBox cboSortByAgg 
+      BeginProperty Font 
+         Name            =   "Verdana"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   315
+      ItemData        =   "frmSSIntranetChart.frx":000C
+      Left            =   2925
+      List            =   "frmSSIntranetChart.frx":0016
+      Style           =   2  'Dropdown List
+      TabIndex        =   36
+      Top             =   5610
+      Visible         =   0   'False
+      Width           =   2670
+   End
    Begin VB.Frame fraChartType 
       Caption         =   "Type :"
       BeginProperty Font 
@@ -29,7 +49,7 @@ Begin VB.Form frmSSIntranetChart
       EndProperty
       Height          =   5325
       Left            =   150
-      TabIndex        =   35
+      TabIndex        =   34
       Top             =   165
       Width           =   2310
       Begin VB.OptionButton optChartType 
@@ -100,9 +120,26 @@ Begin VB.Form frmSSIntranetChart
       EndProperty
       Height          =   1635
       Left            =   2520
-      TabIndex        =   30
+      TabIndex        =   29
       Top             =   1530
       Width           =   8940
+      Begin VB.CheckBox chkSortByAggregate 
+         Caption         =   "Sort By Aggregate"
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   195
+         Left            =   4485
+         TabIndex        =   38
+         Top             =   435
+         Width           =   2565
+      End
       Begin VB.ComboBox cboChartColColumn 
          BeginProperty Font 
             Name            =   "Verdana"
@@ -116,27 +153,8 @@ Begin VB.Form frmSSIntranetChart
          Height          =   315
          Left            =   5970
          Style           =   2  'Dropdown List
-         TabIndex        =   11
-         Top             =   1125
-         Width           =   2670
-      End
-      Begin VB.ComboBox cboSortByAgg 
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         ItemData        =   "frmSSIntranetChart.frx":000C
-         Left            =   5970
-         List            =   "frmSSIntranetChart.frx":0016
-         Style           =   2  'Dropdown List
          TabIndex        =   10
-         Top             =   750
+         Top             =   1125
          Width           =   2670
       End
       Begin VB.ComboBox cboSortOrderAgg 
@@ -155,7 +173,7 @@ Begin VB.Form frmSSIntranetChart
          List            =   "frmSSIntranetChart.frx":003B
          Style           =   2  'Dropdown List
          TabIndex        =   9
-         Top             =   375
+         Top             =   750
          Width           =   2670
       End
       Begin VB.ComboBox cboAggregateType 
@@ -169,7 +187,9 @@ Begin VB.Form frmSSIntranetChart
             Strikethrough   =   0   'False
          EndProperty
          Height          =   315
+         ItemData        =   "frmSSIntranetChart.frx":0056
          Left            =   1425
+         List            =   "frmSSIntranetChart.frx":0058
          Style           =   2  'Dropdown List
          TabIndex        =   6
          Top             =   375
@@ -224,28 +244,10 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   180
          Left            =   4485
-         TabIndex        =   37
+         TabIndex        =   35
          Top             =   1185
          Width           =   1440
          WordWrap        =   -1  'True
-      End
-      Begin VB.Label lblSortByAgg 
-         AutoSize        =   -1  'True
-         Caption         =   "Sort By :"
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   195
-         Left            =   4485
-         TabIndex        =   36
-         Top             =   810
-         Width           =   780
       End
       Begin VB.Label lblSortorderAgg 
          AutoSize        =   -1  'True
@@ -261,8 +263,8 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   4485
-         TabIndex        =   34
-         Top             =   435
+         TabIndex        =   33
+         Top             =   810
          Width           =   1050
       End
       Begin VB.Label lblAggregateType 
@@ -279,7 +281,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   33
+         TabIndex        =   32
          Top             =   435
          Width           =   1020
       End
@@ -297,7 +299,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   32
+         TabIndex        =   31
          Top             =   1185
          Width           =   795
       End
@@ -315,7 +317,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   31
+         TabIndex        =   30
          Top             =   810
          Width           =   600
       End
@@ -332,7 +334,7 @@ Begin VB.Form frmSSIntranetChart
       EndProperty
       Height          =   915
       Left            =   2520
-      TabIndex        =   24
+      TabIndex        =   23
       Top             =   4575
       Width           =   8925
       Begin VB.CommandButton cmdFilter 
@@ -348,7 +350,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   315
          Left            =   3420
-         TabIndex        =   16
+         TabIndex        =   15
          ToolTipText     =   "Select Filter..."
          Top             =   360
          Width           =   315
@@ -365,7 +367,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   330
          Left            =   1425
-         TabIndex        =   15
+         TabIndex        =   14
          Top             =   360
          Width           =   1995
       End
@@ -383,7 +385,7 @@ Begin VB.Form frmSSIntranetChart
          Height          =   315
          Left            =   3750
          MaskColor       =   &H000000FF&
-         TabIndex        =   17
+         TabIndex        =   16
          ToolTipText     =   "Clear Path"
          Top             =   360
          UseMaskColor    =   -1  'True
@@ -403,7 +405,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   29
+         TabIndex        =   28
          Top             =   405
          Width           =   555
       End
@@ -421,7 +423,7 @@ Begin VB.Form frmSSIntranetChart
       EndProperty
       Height          =   400
       Left            =   8925
-      TabIndex        =   19
+      TabIndex        =   18
       Top             =   5640
       Width           =   1200
    End
@@ -438,7 +440,7 @@ Begin VB.Form frmSSIntranetChart
       EndProperty
       Height          =   1275
       Left            =   2520
-      TabIndex        =   18
+      TabIndex        =   17
       Top             =   165
       Width           =   8955
       Begin VB.ComboBox cboTableX 
@@ -470,9 +472,9 @@ Begin VB.Form frmSSIntranetChart
             Strikethrough   =   0   'False
          EndProperty
          Height          =   315
-         ItemData        =   "frmSSIntranetChart.frx":0056
+         ItemData        =   "frmSSIntranetChart.frx":005A
          Left            =   5970
-         List            =   "frmSSIntranetChart.frx":0060
+         List            =   "frmSSIntranetChart.frx":0064
          Style           =   2  'Dropdown List
          TabIndex        =   5
          Top             =   360
@@ -510,7 +512,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   4485
-         TabIndex        =   23
+         TabIndex        =   22
          Top             =   420
          Width           =   1050
       End
@@ -528,7 +530,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   22
+         TabIndex        =   21
          Top             =   810
          Width           =   795
       End
@@ -546,7 +548,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   21
+         TabIndex        =   20
          Top             =   420
          Width           =   600
       End
@@ -564,7 +566,7 @@ Begin VB.Form frmSSIntranetChart
       EndProperty
       Height          =   400
       Left            =   10215
-      TabIndex        =   20
+      TabIndex        =   19
       Top             =   5640
       Width           =   1200
    End
@@ -581,7 +583,7 @@ Begin VB.Form frmSSIntranetChart
       EndProperty
       Height          =   1245
       Left            =   2520
-      TabIndex        =   25
+      TabIndex        =   24
       Top             =   3255
       Width           =   8925
       Begin VB.ComboBox cboTableZ 
@@ -598,7 +600,7 @@ Begin VB.Form frmSSIntranetChart
          Left            =   1425
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   12
+         TabIndex        =   11
          Top             =   375
          Width           =   2670
       End
@@ -613,11 +615,11 @@ Begin VB.Form frmSSIntranetChart
             Strikethrough   =   0   'False
          EndProperty
          Height          =   315
-         ItemData        =   "frmSSIntranetChart.frx":007B
+         ItemData        =   "frmSSIntranetChart.frx":007F
          Left            =   5970
-         List            =   "frmSSIntranetChart.frx":0085
+         List            =   "frmSSIntranetChart.frx":0089
          Style           =   2  'Dropdown List
-         TabIndex        =   14
+         TabIndex        =   13
          Top             =   375
          Width           =   2670
       End
@@ -635,7 +637,7 @@ Begin VB.Form frmSSIntranetChart
          Left            =   1425
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   13
+         TabIndex        =   12
          Top             =   750
          Width           =   2670
       End
@@ -653,7 +655,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   28
+         TabIndex        =   27
          Top             =   435
          Width           =   600
       End
@@ -671,7 +673,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   27
+         TabIndex        =   26
          Top             =   795
          Width           =   795
       End
@@ -689,10 +691,29 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   4485
-         TabIndex        =   26
+         TabIndex        =   25
          Top             =   435
          Width           =   1050
       End
+   End
+   Begin VB.Label lblSortByAgg 
+      AutoSize        =   -1  'True
+      Caption         =   "Sort By Aggregate :"
+      BeginProperty Font 
+         Name            =   "Verdana"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   195
+      Left            =   705
+      TabIndex        =   37
+      Top             =   5685
+      Visible         =   0   'False
+      Width           =   1725
    End
 End
 Attribute VB_Name = "frmSSIntranetChart"
@@ -743,7 +764,9 @@ End Property
 Private Sub cboAggregateType_Click()
   
   PopulateSortByCombo
-  SetComboItemOrTopItem cboSortByAgg, 0
+  ' SetComboItemOrTopItem cboSortByAgg, 0
+  
+  chkSortByAggregate.value = 0
   
   If Not mfLoading Then
     
@@ -773,8 +796,9 @@ Private Sub ChangeChartType()
     cboTableY.Visible = False
     lblColumnY.Visible = False
     cboColumnY.Visible = False
-    lblSortByAgg.Visible = True
-    cboSortByAgg.Visible = True
+    'lblSortByAgg.Visible = True
+    'cboSortByAgg.Visible = True
+    chkSortByAggregate.Visible = True
   ElseIf optChartType(1).value Then
     ' Set up Two Dimension chart options
     fra_Z_Data.Visible = False
@@ -782,8 +806,9 @@ Private Sub ChangeChartType()
     cboTableY.Visible = True
     lblColumnY.Visible = True
     cboColumnY.Visible = True
-    lblSortByAgg.Visible = True
-    cboSortByAgg.Visible = True
+    'lblSortByAgg.Visible = True
+    'cboSortByAgg.Visible = True
+    chkSortByAggregate.Visible = True
   Else
     ' set up Three Dimension chart options
     fra_Z_Data.Visible = True
@@ -791,8 +816,9 @@ Private Sub ChangeChartType()
     cboTableY.Visible = True
     lblColumnY.Visible = True
     cboColumnY.Visible = True
-    lblSortByAgg.Visible = False
-    cboSortByAgg.Visible = False
+    'lblSortByAgg.Visible = False
+    'cboSortByAgg.Visible = False
+    chkSortByAggregate.Visible = False
   End If
     
 
@@ -802,7 +828,7 @@ Private Sub cboColumnX_Click()
 
 If optChartType(0).value Then
   ' set the aggregate
-  PopulateAggregateCombo cboColumnX.ItemData(cboColumnX.ListIndex)
+  PopulateAggregateCombo ' cboColumnX.ItemData(cboColumnX.ListIndex)
   SetComboItemOrTopItem cboAggregateType, ChartAggregateType
   PopulateColourCombo cboTableX.ItemData(cboTableX.ListIndex)
 End If
@@ -815,12 +841,14 @@ End Sub
 
 Private Sub cboColumnY_Click()
   ' set the aggregate
-  If mfLoading Then PopulateAggregateCombo cboColumnY.ItemData(cboColumnY.ListIndex)
+  If mfLoading Then PopulateAggregateCombo ' cboColumnY.ItemData(cboColumnY.ListIndex)
   SetComboItemOrTopItem cboAggregateType, ChartAggregateType
   PopulateColourCombo cboTableY.ItemData(cboTableY.ListIndex)
   
   PopulateSortByCombo
-  SetComboItemOrTopItem cboSortByAgg, 0
+  'SetComboItemOrTopItem cboSortByAgg, 0
+  
+  chkSortByAggregate.value = 0
   
 mfChanged = True
 
@@ -833,6 +861,32 @@ mfChanged = True
 
 RefreshControls
 
+End Sub
+
+Private Sub chkSortByAggregate_Click()
+  ' Disable combos as required
+  If chkSortByAggregate.value = 1 Then
+    ' Sort by aggregate, so disable X-Axis sort order
+    lblSortorderX.Enabled = False
+    cboSortOrderX.Enabled = False
+    lblSortorderAgg.Enabled = True
+    cboSortOrderAgg.Enabled = True
+  Else
+    ' Sort by column, so disable Aggregate sort order
+    lblSortorderX.Enabled = True
+    cboSortOrderX.Enabled = True
+    lblSortorderAgg.Enabled = False
+    cboSortOrderAgg.Enabled = False
+  End If
+  
+  If Not mfLoading Then
+    SetComboItemOrTopItem cboSortOrderAgg, 0
+  End If
+  
+mfChanged = True
+
+RefreshControls
+  
 End Sub
 
 Private Sub cboSortByAgg_Click()
@@ -946,9 +1000,11 @@ Public Function SetSortCombos(plngSortOrderID As Long)
       
   ' Aggregate (Y-AXIS) sort tick box
   If val(Mid(pstrBinaryString, 3, 1)) = 0 Then
-    cboSortByAgg.ListIndex = 0
+    'cboSortByAgg.ListIndex = 0
+    chkSortByAggregate.value = 0
   Else
-    cboSortByAgg.ListIndex = 1
+    'cboSortByAgg.ListIndex = 1
+    chkSortByAggregate.value = 1
   End If
   
   ' Aggregate (Y-AXIS) Sort Combo
@@ -958,7 +1014,8 @@ Public Function SetSortCombos(plngSortOrderID As Long)
     cboSortOrderAgg.ListIndex = 1
   End If
   
-  cboSortByAgg_Click
+  'cboSortByAgg_Click
+  chkSortByAggregate_Click
   
 End Function
 
@@ -988,7 +1045,8 @@ Dim BinaryToDec As Integer
 
   pstrBinaryString = IIf(cboSortOrderX = "Descending", "1", "0")
   pstrBinaryString = pstrBinaryString & IIf(cboSortOrderZ = "Descending", "1", "0")
-  pstrBinaryString = pstrBinaryString & IIf(cboSortByAgg.ListIndex > 0, "1", "0")
+  ' pstrBinaryString = pstrBinaryString & IIf(cboSortByAgg.ListIndex > 0, "1", "0")
+  pstrBinaryString = pstrBinaryString & IIf(chkSortByAggregate.value = 1, "1", "0")
   pstrBinaryString = pstrBinaryString & IIf(cboSortOrderAgg = "Descending", "1", "0")
   
   Do
@@ -1055,6 +1113,8 @@ ErrorTrap:
  
 End Sub
 
+
+
 Private Sub optChartType_Click(Index As Integer)
 Dim piChartAggregateType As Integer
 
@@ -1074,7 +1134,8 @@ End If
 SetAggregateValue piChartAggregateType
 PopulateSortByCombo
 
-SetComboItemOrTopItem cboSortByAgg, 0
+'SetComboItemOrTopItem cboSortByAgg, 0
+chkSortByAggregate.value = 0
 
 ' clear the filter if it doesn't match the base table
 
@@ -1128,7 +1189,7 @@ End Sub
 Private Sub RefreshControls()
   
   ChangeChartType
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
   ' Disable the Y column if aggregate is set to 'Count'
   cboColumnY.Enabled = (cboAggregateType.Text <> "Count")
@@ -1138,19 +1199,28 @@ Private Sub RefreshControls()
   If cboColumnY.ListCount = 0 Then
     cboColumnY.Enabled = False
     lblColumnY.Enabled = False
-    cboSortByAgg.Enabled = False
-    lblSortByAgg.Enabled = False
+    'cboSortByAgg.Enabled = False
+    'lblSortByAgg.Enabled = False
+    chkSortByAggregate.Enabled = False
     cboChartColColumn.Enabled = False
     lblChartIntColour.Enabled = False
-  
+    ' Set aggregate combo to count and disable if 0 columns
+    SetComboItemOrTopItem cboAggregateType, 0
+    cboAggregateType.Enabled = False
+    lblAggregateType.Enabled = False
+      
+      
   Else
     'enable them
     cboColumnY.Enabled = True
     lblColumnY.Enabled = True
-    cboSortByAgg.Enabled = True
-    lblSortByAgg.Enabled = True
+    'cboSortByAgg.Enabled = True
+    'lblSortByAgg.Enabled = True
+    chkSortByAggregate.Enabled = True
     cboChartColColumn.Enabled = True
     lblChartIntColour.Enabled = True
+    cboAggregateType.Enabled = True
+    lblAggregateType.Enabled = True
     
   End If
   
@@ -1330,9 +1400,9 @@ Public Sub Initialize(plngChartViewID As Long, _
   SetComboItemOrTopItem cboTableZ, plngChart_TableID_2
   SetComboItemOrTopItem cboColumnZ, plngChart_ColumnID_2
         
-  optChartType(0).value = (plngChart_ColumnID_2 = 0 And plngChart_ColumnID_3 = 0)
-  optChartType(1).value = (plngChart_ColumnID_3 > 0)
-  optChartType(2).value = (plngChart_ColumnID_2 > 0)
+  optChartType(0).value = (plngChart_TableID_2 = 0 And plngChart_TableID_3 = 0)
+  optChartType(1).value = (plngChart_TableID_3 > 0)
+  optChartType(2).value = (plngChart_TableID_2 > 0)
   
   ChangeChartType ' display/hide relevant frames and combos
   
@@ -1344,11 +1414,13 @@ Public Sub Initialize(plngChartViewID As Long, _
       
   SetComboItemOrTopItem cboChartColColumn, plngChart_ColourID
       
-  If optChartType(0).value Then   ' one dimension chart
-    PopulateAggregateCombo cboColumnX.ItemData(cboColumnX.ListIndex)
-  Else
-    PopulateAggregateCombo cboColumnY.ItemData(cboColumnY.ListIndex)
-  End If
+'  If optChartType(0).value Then   ' one dimension chart
+    PopulateAggregateCombo ' cboColumnX.ItemData(cboColumnX.ListIndex)
+'  Else
+'    If cboColumnY.ListIndex >= 0 Then
+'      PopulateAggregateCombo cboColumnY.ItemData(cboColumnY.ListIndex)
+'    End If
+'  End If
   
   ' PopulateAggregateCombo cboColumnY.ItemData(cboColumnY.ListIndex)
   SetAggregateValue piChartAggregateType
@@ -1369,7 +1441,7 @@ Public Sub Initialize(plngChartViewID As Long, _
   txtFilter.Enabled = False
   txtFilter.BackColor = vbButtonFace
   
-  cmdOK.Enabled = (miChartTableID = 0)
+  cmdOk.Enabled = (miChartTableID = 0)
    
   mfLoading = False
   
@@ -1794,7 +1866,7 @@ End Sub
 
 
 
-Private Function PopulateAggregateCombo(plngColumnID As Long) As Boolean
+Private Function PopulateAggregateCombo() As Boolean
   
   Dim piColumnDataType As Integer
   
@@ -1816,6 +1888,8 @@ Private Function PopulateAggregateCombo(plngColumnID As Long) As Boolean
     cboAggregateType.ItemData(cboAggregateType.NewIndex) = 4
   'End If
   
+  
+  
 End Function
 
 
@@ -1828,7 +1902,7 @@ Private Function SetAggregateValue(piAggregateType As Integer)
     End If
   Next
 
-  If cboAggregateType.ListIndex < 0 Then cboAggregateType.ListIndex = 0
+  If cboAggregateType.ListIndex < 0 And cboAggregateType.ListCount > 0 Then cboAggregateType.ListIndex = 0
   
   ' Disable the Y column if aggregate is set to 'Count'
   cboColumnY.Enabled = (cboAggregateType.Text <> "Count")
@@ -1959,28 +2033,28 @@ Private Function ValidateChartSetup() As Boolean
   fValid = True
   
   
-If optChartType(0).value Then ' If One-Table chart
-  
-  
-ElseIf optChartType(1).value Then ' If Two-Table chart
-  ' Has column 2 been selected - this may be blank if the table has no numeric columns and a numeric
-  ' aggregate has been selected.
-  If cboColumnY.ListIndex < 0 Then
-'    If cboAggregateType <> "Count" Then
-'      fValid = False
-'      MsgBox "No Y-Axis Column has been selected.", vbOKOnly + vbExclamation, Application.Name
-'      ' cboColumnY.SetFocus
-'    Else
-      If MsgBox("No numeric columns have been found for the Y-Axis" & vbCrLf & "The chart will be saved as a one-table chart.", vbOKCancel + vbQuestion, Me.Caption) = vbOK Then
-        fValid = True
-      Else
-        fValid = False
-      End If
-          
-    'End If
-  End If
-  
-End If
+'If optChartType(0).value Then ' If One-Table chart
+'
+'
+'ElseIf optChartType(1).value Then ' If Two-Table chart
+'  ' Has column 2 been selected - this may be blank if the table has no numeric columns and a numeric
+'  ' aggregate has been selected.
+'  If cboColumnY.ListIndex < 0 Then
+''    If cboAggregateType <> "Count" Then
+''      fValid = False
+''      MsgBox "No Y-Axis Column has been selected.", vbOKOnly + vbExclamation, Application.Name
+''      ' cboColumnY.SetFocus
+''    Else
+'      If MsgBox("No numeric columns have been found for the Y-Axis" & vbCrLf & "The chart will be saved as a one-table chart.", vbOKCancel + vbQuestion, Me.Caption) = vbOK Then
+'        fValid = True
+'      Else
+'        fValid = False
+'      End If
+'
+'    'End If
+'  End If
+'
+'End If
 
 ValidateChartSetup = fValid
 
