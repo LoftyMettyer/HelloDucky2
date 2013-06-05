@@ -285,7 +285,7 @@ Private Sub UserControl_Resize()
           End With
         Next Index
         
-        intHeight = intHeight + Option1(Option1.UBound).Height + 50
+        intHeight = Option1(Option1.UBound).Height + 90
         
         If BorderStyle = 1 Then
           intWidth = (Option1(Option1.UBound).Left) + Option1(Option1.UBound).Width + UserControl.TextWidth("WW")
