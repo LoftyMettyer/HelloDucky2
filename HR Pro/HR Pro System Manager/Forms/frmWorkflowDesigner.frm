@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
 Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "COASD_SelectionBox.ocx"
 Object = "{F3C5146D-8FDA-4D29-8E41-0C27C803C808}#1.0#0"; "COAWF_BeginEnd.ocx"
 Object = "{08EDC6C1-0A62-485F-8917-8D9FB93DB156}#1.0#0"; "COAWF_Decision.ocx"
@@ -263,7 +263,7 @@ Begin VB.Form frmWorkflowDesigner
       MousePointer    =   1
       Appearance      =   0
       Arrows          =   65536
-      Orientation     =   1572865
+      Orientation     =   1179649
    End
    Begin MSComCtl2.FlatScrollBar scrollVertical 
       Height          =   3375
@@ -276,7 +276,7 @@ Begin VB.Form frmWorkflowDesigner
       _Version        =   393216
       MousePointer    =   1
       Appearance      =   0
-      Orientation     =   1572864
+      Orientation     =   1179648
    End
    Begin ActiveBarLibraryCtl.ActiveBar abMenu 
       Left            =   120
@@ -11438,7 +11438,7 @@ Private Sub Form_Load()
     End If
   End If
   
-  cmdOk.Enabled = IsNew
+  cmdOK.Enabled = IsNew
   
   scrollVertical.SmallChange = SMALLSCROLL
   scrollHorizontal.SmallChange = SMALLSCROLL
@@ -12386,13 +12386,13 @@ End Function
 
 
 Private Sub Form_Resize()
-  
+
   'JPD 20030908 Fault 5756
   DisplayApplication
 
   Dim lngMinWidth As Long
   Dim lngHeight As Long
-  
+
   If (Me.WindowState = vbMinimized) Or (mblnLoading) Then
     Exit Sub
   End If
@@ -12401,13 +12401,13 @@ Private Sub Form_Resize()
     .Left = Me.ScaleWidth - .Width - 200
     .Top = Me.ScaleHeight - .Height - 100
   End With
-  
+
   With picContainer
     .Top = 0
     .Left = 0
     .Width = Me.ScaleWidth - scrollVertical.Width
-    
-    
+
+
     lngHeight = fraButtons.Top - .Top - scrollHorizontal.Height - 100
     .Height = Maximum(lngHeight, 0)
 
@@ -12418,7 +12418,7 @@ Private Sub Form_Resize()
     scrollHorizontal.Left = .Left
     scrollHorizontal.Top = .Top + .Height
     scrollHorizontal.Width = .Width
-    
+
     If picDefinition.Width < .Width Then
       picDefinition.Width = .Width
     End If
@@ -12426,7 +12426,7 @@ Private Sub Form_Resize()
       picDefinition.Height = .Height
     End If
   End With
- 
+
   SetScrollBarValues
 
   If (scrollVertical.value = scrollVertical.Max) Then
@@ -12516,17 +12516,14 @@ Private Sub Form_Unload(Cancel As Integer)
       If .frmWorkflowOpen Is Nothing Then
         Set .frmWorkflowOpen = New HRProSystemMgr.frmWorkflowOpen
       End If
-      
-      .frmWorkflowOpen.Show
-
-      frmSysMgr.frmWorkflowOpen.WindowState = vbNormal
-      
+            
       .frmWorkflowOpen.WorkflowID = mlngWorkflowID
 
       'JPD 20060921 Fault 11003
       .frmWorkflowOpen.RefreshWorkflows
       .frmWorkflowOpen.SelectWorkflow
 
+      .frmWorkflowOpen.Show
       .frmWorkflowOpen.SetFocus
       .RefreshMenu
     End With
@@ -12534,6 +12531,7 @@ Private Sub Form_Unload(Cancel As Integer)
 
   Unhook Me.hWnd
 
+ 
 TidyUpAndExit:
   Exit Sub
   
@@ -13658,7 +13656,7 @@ Public Property Let IsChanged(pfNewValue As Boolean)
   ' Set the 'workflow changed' flag.
   
   mfChanged = pfNewValue
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
   ' Menu may be dependent on the status of the screen.
   'frmSysMgr.RefreshMenu
