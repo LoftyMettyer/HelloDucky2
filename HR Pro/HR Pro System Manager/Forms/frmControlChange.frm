@@ -5,7 +5,7 @@ Begin VB.Form frmControlChange
    ClientHeight    =   3030
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   4335
+   ClientWidth     =   4665
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -19,11 +19,10 @@ Begin VB.Form frmControlChange
    Icon            =   "frmControlChange.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   3030
-   ScaleWidth      =   4335
+   ScaleWidth      =   4665
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.CommandButton cmdOK 
@@ -51,7 +50,7 @@ Begin VB.Form frmControlChange
       Left            =   200
       TabIndex        =   1
       Top             =   2000
-      Width           =   3720
+      Width           =   3960
    End
    Begin VB.OptionButton optChoice 
       Caption         =   "C&hange the controls to the new type"
@@ -61,16 +60,16 @@ Begin VB.Form frmControlChange
       TabIndex        =   0
       Top             =   1600
       Value           =   -1  'True
-      Width           =   3720
+      Width           =   3960
    End
    Begin VB.Label lblInfo2 
       BackStyle       =   0  'Transparent
       Caption         =   "These screens will require reviewing."
-      Height          =   195
-      Left            =   200
+      Height          =   315
+      Left            =   195
       TabIndex        =   6
       Top             =   1200
-      Width           =   2640
+      Width           =   3360
    End
    Begin VB.Label lblScreenList 
       AutoSize        =   -1  'True
@@ -88,10 +87,10 @@ Begin VB.Form frmControlChange
       BackStyle       =   0  'Transparent
       Caption         =   "You are changing the control type that represents this column in the following screens :"
       Height          =   405
-      Left            =   200
+      Left            =   195
       TabIndex        =   2
-      Top             =   200
-      Width           =   4005
+      Top             =   195
+      Width           =   4245
    End
 End
 Attribute VB_Name = "frmControlChange"
