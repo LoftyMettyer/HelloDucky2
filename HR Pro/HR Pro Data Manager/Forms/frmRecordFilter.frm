@@ -63,6 +63,7 @@ Begin VB.Form frmRecordFilter
          ColumnHeaders   =   0   'False
          GroupHeadLines  =   0
          HeadLines       =   0
+         Col.Count       =   6
          DividerType     =   2
          AllowUpdate     =   0   'False
          AllowRowSizing  =   0   'False
@@ -290,7 +291,7 @@ Begin VB.Form frmRecordFilter
          BackStyle       =   0  'Transparent
          Caption         =   "Value :"
          Height          =   195
-         Left            =   4395
+         Left            =   5295
          TabIndex        =   15
          Top             =   300
          Width           =   720
