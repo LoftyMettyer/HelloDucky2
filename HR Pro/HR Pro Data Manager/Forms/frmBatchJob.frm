@@ -46,14 +46,14 @@ Begin VB.Form frmBatchJob
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmBatchJob.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraInfo"
-      Tab(0).Control(1)=   "fraScheduling"
+      Tab(0).Control(0)=   "fraScheduling"
+      Tab(0).Control(1)=   "fraInfo"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Jobs"
       TabPicture(1)   =   "frmBatchJob.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraJobs"
-      Tab(1).Control(1)=   "Frame1"
+      Tab(1).Control(0)=   "Frame1"
+      Tab(1).Control(1)=   "fraJobs"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmBatchJob.frx":0044
@@ -664,11 +664,15 @@ Begin VB.Form frmBatchJob
             GroupHeaders    =   0   'False
             Col.Count       =   5
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
-            stylesets(0).HasFont=   -1  'True
-            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Picture=   "frmBatchJob.frx":0098
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
+            stylesets(1).HasFont=   -1  'True
+            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
                Charset         =   0
@@ -677,10 +681,6 @@ Begin VB.Form frmBatchJob
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmBatchJob.frx":0098
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
             stylesets(1).Picture=   "frmBatchJob.frx":00B4
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -1324,10 +1324,10 @@ Private Sub RefreshColumnsGrid()
 End Sub
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Private Function JobUtilityType(psJobType As String) As UtilityType
@@ -4565,6 +4565,7 @@ Public Sub PrintDef(lBatchJobID As Long)
           .PrintNormal "Override Filter : " & rsTemp!OutputOverrideFilter
           .PrintNormal "Create Table Of Contents : " & IIf(rsTemp!OutputTOC = True, "Yes", "No")
           .PrintNormal "Force Cover Sheet : " & IIf(rsTemp!OutputCoverSheet = True, "Yes", "No")
+          .PrintNormal "Retain Pivot/Chart : " & IIf(rsTemp!OutputRetainPivotOrChart = True, "Yes", "No")
           
           .PrintNormal " "
           
