@@ -649,7 +649,7 @@ End Sub
 
 Private Sub Form_Activate()
   If Me.Visible And Me.Enabled Then
-    cmdOk.SetFocus
+    cmdOK.SetFocus
   End If
 End Sub
 
@@ -1457,7 +1457,12 @@ Private Sub BuildDataArrays()
       strTempValue = IIf(Not IsNull(.Fields("HOR")), .Fields("HOR"), vbNullString)
       lngCol = GetGroupNumber(strTempValue, HOR)
 
-      strTempValue = IIf(Not IsNull(.Fields("VER")), FormatString(.Fields("VER")), vbNullString)
+      If Not IsNull(.Fields("VER")) Then
+        strTempValue = FormatString(.Fields("VER"))
+      Else
+        strTempValue = vbNullString
+      End If
+      
       lngRow = GetGroupNumber(strTempValue, VER)
 
       If mblnPageBreak Then
@@ -2339,10 +2344,10 @@ Private Sub Form_Resize()
 
   
   'Position the command buttons...
-  lngTop = Me.ScaleHeight - (cmdOk.Height + lngGap)
+  lngTop = Me.ScaleHeight - (cmdOK.Height + lngGap)
   
-  lngLeft = Me.ScaleWidth - (cmdOk.Width + lngGap)
-  cmdOk.Move lngLeft, lngTop
+  lngLeft = Me.ScaleWidth - (cmdOK.Width + lngGap)
+  cmdOK.Move lngLeft, lngTop
 
   lngLeft = lngLeft - (cmdOutput.Width + lngGap)
   cmdOutput.Move lngLeft, lngTop
