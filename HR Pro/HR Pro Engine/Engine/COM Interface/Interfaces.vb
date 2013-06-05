@@ -22,12 +22,20 @@
     ReadOnly Property Script As ScriptDB.Script
     ReadOnly Property Options As HCMOptions
     Function Initialise() As Boolean
-    Function InitialiseLite() As Boolean
+    Function PopulateObjects() As Boolean
     Function CloseSafely() As Boolean
   End Interface
 
   Public Interface iErrors
     Sub OutputToFile(ByRef FileName As String)
+    Sub Show()
+    ReadOnly Property ErrorCount As Integer
+    ReadOnly Property IsCatastrophic As Boolean
+  End Interface
+
+  Public Interface iForm
+    Sub Show()
+    Sub ShowDialog()
   End Interface
 
   Public Interface iOptions

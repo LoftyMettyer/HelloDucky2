@@ -112,6 +112,12 @@
     <Compile Include="Forms\ErrorLog.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\TechSupport.Designer.vb">
+      <DependentUpon>TechSupport.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TechSupport.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Globals.vb" />
     <Compile Include="HCM.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -174,6 +180,9 @@
     <EmbeddedResource Include="Forms\ErrorLog.resx">
       <DependentUpon>ErrorLog.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TechSupport.resx">
+      <DependentUpon>TechSupport.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
@@ -223,6 +232,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Connectivity\Access DB Stored Procedures\spadmin_gettables.txt" />
+    <None Include="Resources\Cancel48.png" />
+    <None Include="Resources\Cancel256.png" />
+    <None Include="Resources\mobsync.15.ico" />
+    <None Include="Resources\Error48.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Object Types\Old Scripting\" />

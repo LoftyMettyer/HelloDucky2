@@ -36,18 +36,22 @@ Public Class SysMgr
     End Set
   End Property
 
-  Public Function Initialise() As Boolean Implements COMInterfaces.iSystemManager.Initialise
+  Public Function PopulateObjects() As Boolean Implements COMInterfaces.iSystemManager.PopulateObjects
 
     Dim bOK As Boolean = True
 
     Try
 
-      Globals.Initialise()
+      If Options Is Nothing Then
+        Globals.Initialise()
+      End If
+
       Globals.MetadataDB = objMetadataDB
       Globals.CommitDB = mobjCommitDB
       Globals.Options.DevelopmentMode = False
 
       Things.PopulateSystemThings()
+      Things.PopulateSystemSettings()
       Things.PopulateThings()
       Things.PopulateModuleSettings()
 
@@ -57,29 +61,23 @@ Public Class SysMgr
 
     Return bOK
 
-    End Function
+  End Function
 
-    Public Function InitialiseLite() As Boolean Implements COMInterfaces.iSystemManager.InitialiseLite
+  Public Function Initialise() As Boolean Implements COMInterfaces.iSystemManager.Initialise
 
-        Dim bOK As Boolean = True
+    Dim bOK As Boolean = True
 
-        Try
-            Globals.Initialise()
-            'Globals.MetadataDB = objMetadataDB
-            'Globals.CommitDB = mobjCommitDB
-            'Globals.Options.DevelopmentMode = False
+    Try
+      Globals.Initialise()
+      System.Windows.Forms.Application.EnableVisualStyles()
 
-            'Things.PopulateSystemThings()
-            'Things.PopulateThings()
-            'Things.PopulateModuleSettings()
+    Catch ex As Exception
+      bOK = False
+    End Try
 
-        Catch ex As Exception
-            bOK = False
-        End Try
+    Return bOK
 
-        Return bOK
-
-    End Function
+  End Function
 
   Public Function CloseSafely() As Boolean Implements COMInterfaces.iSystemManager.CloseSafely
 

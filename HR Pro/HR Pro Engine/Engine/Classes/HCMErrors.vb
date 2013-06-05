@@ -9,7 +9,9 @@ Namespace ErrorHandler
     Inherits System.ComponentModel.BindingList(Of ErrorHandler.Error)
     Implements COMInterfaces.iErrors
 
-    Public Shadows Sub Add(ByVal Section As HRProEngine.ErrorHandler.Section, ByVal ObjectName As String, ByVal Severity As HRProEngine.ErrorHandler.Severity, ByVal Message As String, ByVal Detail As String)
+    Private mbIsCatastrophic As Boolean
+
+    Public Shadows Sub Add(ByVal Section As ErrorHandler.Section, ByVal ObjectName As String, ByVal Severity As HRProEngine.ErrorHandler.Severity, ByVal Message As String, ByVal Detail As String)
 
       Dim objError As HRProEngine.ErrorHandler.Error
 
@@ -18,12 +20,57 @@ Namespace ErrorHandler
       objError.Severity = Severity
       objError.Message = Message
       objError.Detail = Detail
-      objError.User = "A user"
+      objError.User = Globals.Login.UserName
       objError.DateTime = Now
 
       MyBase.Add(objError)
 
     End Sub
+
+    Public Function DetailedReport() As String
+
+      Dim sMessage As String = vbNullString
+
+      Try
+
+        For Each objError In Me.Items
+          sMessage = sMessage & String.Format("{1}{0}{1}{2}{1}", objError.Message, vbNewLine, objError.Detail)
+        Next
+
+      Catch ex As Exception
+
+      End Try
+
+      Return sMessage
+
+    End Function
+
+    Public Function QuickReport() As String
+
+      Dim sMessage As String = vbNullString
+
+      Try
+
+        For Each objError In Me.Items
+
+          Select Case objError.Severity
+            Case Severity.Error
+              sMessage = sMessage & String.Format("{0} - {1}", objError.ObjectName, objError.Message)
+
+            Case Severity.Warning
+              'sMessage = sMessage & String.Format("{1}{1}{1}{1}{0}{1}{2}{1}", objError.Message, vbNewLine, objError.Detail)
+
+          End Select
+
+        Next
+
+      Catch ex As Exception
+
+      End Try
+
+      Return sMessage
+
+    End Function
 
     Public Sub OutputToFile(ByRef FileName As String) Implements COMInterfaces.iErrors.OutputToFile
 
@@ -49,12 +96,41 @@ Namespace ErrorHandler
 
     End Sub
 
+    Public ReadOnly Property IsCatastrophic As Boolean Implements iErrors.IsCatastrophic
+      Get
+        Return mbIsCatastrophic
+      End Get
+    End Property
+
+    Public Sub Show() Implements iErrors.Show
+
+      Dim frmErrorLog As New Forms.ErrorLog
+
+      Try
+        frmErrorLog.ShowDialog()
+        mbIsCatastrophic = frmErrorLog.Abort
+
+      Catch ex As Exception
+
+      Finally
+        frmErrorLog = Nothing
+
+      End Try
+
+    End Sub
+
+    Public ReadOnly Property ErrorCount As Integer Implements iErrors.ErrorCount
+      Get
+        Return Items.Count
+      End Get
+    End Property
+
   End Class
 
   Public Structure [Error]
-    Public Section As HRProEngine.ErrorHandler.Section
+    Public Section As ErrorHandler.Section
     Public ObjectName As String
-    Public Severity As HRProEngine.ErrorHandler.Severity
+    Public Severity As ErrorHandler.Severity
     Public Message As String
     Public Detail As String
     Public DateTime As Date

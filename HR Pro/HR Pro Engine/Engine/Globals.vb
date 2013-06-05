@@ -15,6 +15,7 @@ Public Module Globals
   Public ErrorLog As HRProEngine.ErrorHandler.Errors
   Public TuningLog As Tuning.Report
   Public ModuleSetup As Things.Collection
+  Public SystemSettings As Things.Collection
   Public Options As HCMOptions
   '  Public UniqueCodes As Things.Collection
   Public GetFieldsFromDB As Things.Collection
@@ -22,6 +23,8 @@ Public Module Globals
   Public OnBankHolidayUpdate As Things.Collection
 
   Public ScriptDB As ScriptDB.Script
+
+  Public Login As Connectivity.Login
 
   Public Sub Initialise()
 
@@ -35,6 +38,7 @@ Public Module Globals
     ModuleSetup = New Things.Collection
     ScriptDB = New ScriptDB.Script
     Options = New HCMOptions
+    SystemSettings = New Things.Collection
 
     ' Dependency stack for special objects that will have procedures written for
     '   UniqueCodes = New Things.Collection

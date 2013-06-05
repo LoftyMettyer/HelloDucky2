@@ -3,6 +3,38 @@
   <HideModuleName()> _
   Public Module PopulateObjects
 
+
+    Public Sub PopulateSystemSettings()
+
+      Dim objDataset As DataSet
+      Dim objRow As DataRow
+      Dim objParameters As New Connectivity.Parameters
+      Dim objSetting As Things.Setting
+
+
+      Try
+
+        ' Clear existing objects
+        Globals.SystemSettings.Clear()
+
+        ' Populate module setup
+        objDataset = Globals.CommitDB.ExecStoredProcedure("spadmin_getsystemsettings", objParameters)
+        For Each objRow In objDataset.Tables(0).Rows
+          objSetting = New Things.Setting
+          objSetting.Module = objRow.Item("section").ToString
+          objSetting.Parameter = objRow.Item("settingkey").ToString
+          objSetting.Value = objRow.Item("settingvalue").ToString
+
+          Globals.SystemSettings.Add(objSetting)
+        Next
+
+      Catch ex As Exception
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+
+      End Try
+
+    End Sub
+
     Public Sub PopulateModuleSettings()
 
       Dim objDataset As DataSet
