@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{4A4AA691-3E6F-11D2-822F-00104B9E07A1}#3.0#0"; "ssdw3bo.ocx"
 Begin VB.Form frmFind2 
@@ -2018,9 +2018,6 @@ Private Sub cmbOrders_Click()
     Else
       cmbOrders.ListIndex = miOldOrderIndex
     End If
-
-    'Update the find window
-    ResizeFindColumns
   
   End If
   
@@ -2300,6 +2297,9 @@ Private Function ConfigureGrid() As Boolean
     ' Add the extra width to handle the scroll bar
     '.Width = lngWidth + (UI.GetSystemMetrics(SM_CXVSCROLL) * Screen.TwipsPerPixelX) + 20
 
+    'Update the find window
+    ResizeFindColumns
+
     mfFormattingGrid = False
     '.Rebind
     .Rows = RecordCount
@@ -2317,9 +2317,6 @@ Private Function ConfigureGrid() As Boolean
   End If
 
   ' RH 13/10/00 - BUG 1121 - Only resize the window if its not min/max.
-  If Me.WindowState = vbNormal Then
-      'Me.Width = lngWidth
-  End If
   StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s")
   
   'Setting the form to disabled here stops the find window getting focus
