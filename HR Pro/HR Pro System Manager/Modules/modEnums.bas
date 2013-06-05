@@ -701,8 +701,8 @@ Public Enum enum_Module
   modAccordPayroll = 512
   modWorkflow = 1024
   modVersion1 = 2048
-  modFusion = 4096
-  modMobile = 8192
+  modMobile = 4096
+  modFusion = 8192
 End Enum
 
 'System metrics constants
