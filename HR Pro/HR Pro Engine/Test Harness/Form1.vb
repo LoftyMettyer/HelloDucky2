@@ -323,7 +323,7 @@ Public Class Form1
 
     objHRPro.Connect(objLogin)
 
-    objAudit.Database = objHRPro
+        'objAudit.Database = objHRPro
     objAudit.ShowDialog()
 
     objHRPro.Disconnect()

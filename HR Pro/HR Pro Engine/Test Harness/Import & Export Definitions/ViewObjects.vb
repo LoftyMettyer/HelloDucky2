@@ -123,7 +123,7 @@ Public Class ViewObjects
     ExportObjects.Clear()
 
     For Each objRow In grdThings.Selected.Rows
-      ExportObjects.Add(objRow.ListObject)
+            ExportObjects.Add(objRow.ListObject)
       '      objObject = objRow.ListObject
     Next
 

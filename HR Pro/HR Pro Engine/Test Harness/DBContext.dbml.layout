@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="DBContext">
-  <DataContextMoniker Name="/DBContextDataContext" />
+  <DataContextMoniker Name="/DBContext" />
   <nestedChildShapes>
     <classShape Id="a080b21b-0c80-42d2-87a2-2f3923bfa37d" absoluteBounds="0.875, 3, 2, 3.3093082682291666">
-      <DataClassMoniker Name="/DBContextDataContext/ASRSysAuditTrail" />
+      <DataClassMoniker Name="/DBContext/ASRSysAuditTrail" />
       <nestedChildShapes>
         <elementListCompartment Id="219c4817-4fbb-40cc-8b65-c6d81e73bbfc" absoluteBounds="0.89, 3.46, 1.9700000000000002, 2.7493082682291665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
