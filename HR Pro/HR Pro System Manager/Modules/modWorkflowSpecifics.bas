@@ -4459,10 +4459,7 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
   ByRef sSelectInsCols2 As HRProSystemMgr.cStringBuilder, _
   ByRef sSelectDelCols As HRProSystemMgr.cStringBuilder, _
   ByRef sFetchInsCols As HRProSystemMgr.cStringBuilder, _
-  ByRef sFetchDelCols As HRProSystemMgr.cStringBuilder, _
-  ByRef sSelectInsLargeCols As HRProSystemMgr.cStringBuilder, _
-  ByRef sSelectInsLargeCols2 As HRProSystemMgr.cStringBuilder, _
-  ByRef sSelectDelLargeCols As HRProSystemMgr.cStringBuilder)
+  ByRef sFetchDelCols As HRProSystemMgr.cStringBuilder)
 
   Dim strColumnName As String
   Dim fColumnOK As Boolean
@@ -4574,18 +4571,9 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
         ReDim Preserve alngAuditColumns(UBound(alngAuditColumns) + 1)
         alngAuditColumns(UBound(alngAuditColumns)) = lngColumnID
 
-        If (iDataType <> dtVARCHAR) Or (lngSize <= VARCHARTHRESHOLD) Then
-          'sSelectInsCols.Append "," & vbNewLine & "        inserted." & strColumnName
-          sSelectInsCols2.Append ",@insCol_" & Trim$(Str$(lngColumnID)) & "=" & strColumnName
-          sSelectDelCols.Append "," & vbNewLine & "        deleted." & strColumnName
-
-          'sFetchInsCols.Append "," & vbNewLine & "        @insCol_" & Trim$(Str$(lngColumnID))
-          sFetchDelCols.Append "," & vbNewLine & "        @delCol_" & Trim$(Str$(lngColumnID))
-        Else
-          sSelectInsLargeCols.Append ",@insCol_" & Trim$(Str$(lngColumnID)) & "=inserted." & strColumnName
-          sSelectInsLargeCols2.Append ",@insCol_" & Trim$(Str$(lngColumnID)) & "=" & strColumnName
-          sSelectDelLargeCols.Append ",@delCol_" & Trim$(Str$(lngColumnID)) & "=deleted." & strColumnName
-        End If
+        sSelectInsCols2.Append ",@insCol_" & Trim$(Str$(lngColumnID)) & "=" & strColumnName
+        sSelectDelCols.Append "," & vbNewLine & "        deleted." & strColumnName
+        sFetchDelCols.Append "," & vbNewLine & "        @delCol_" & Trim$(Str$(lngColumnID))
   
         sDeclareInsCols.Append "," & vbNewLine & "        @insCol_" & Trim$(Str$(lngColumnID))
         sDeclareDelCols.Append "," & vbNewLine & "        @delCol_" & Trim$(Str$(lngColumnID))
@@ -4921,10 +4909,7 @@ Public Sub CreateWorkflowProcsForTable(pLngCurrentTableID As Long, _
   ByRef sSelectInsCols2 As HRProSystemMgr.cStringBuilder, _
   ByRef sSelectDelCols As HRProSystemMgr.cStringBuilder, _
   ByRef sFetchInsCols As HRProSystemMgr.cStringBuilder, _
-  ByRef sFetchDelCols As HRProSystemMgr.cStringBuilder, _
-  ByRef sSelectInsLargeCols As HRProSystemMgr.cStringBuilder, _
-  ByRef sSelectInsLargeCols2 As HRProSystemMgr.cStringBuilder, _
-  ByRef sSelectDelLargeCols As HRProSystemMgr.cStringBuilder)
+  ByRef sFetchDelCols As HRProSystemMgr.cStringBuilder)
   
   Dim sTemp As String
   Dim sTemp_Trigger As String
@@ -4967,8 +4952,7 @@ Public Sub CreateWorkflowProcsForTable(pLngCurrentTableID As Long, _
               CreateWorkflowProcsForLink pLngCurrentTableID, sCurrentTable, !LinkID, lngRecordDescExprID, alngAuditColumns, _
                 sDeclareInsCols, sDeclareDelCols, _
                 sSelectInsCols2, sSelectDelCols, _
-                sFetchInsCols, sFetchDelCols, _
-                sSelectInsLargeCols, sSelectInsLargeCols2, sSelectDelLargeCols
+                sFetchInsCols, sFetchDelCols
     
               msInsertLinkCode = msInsertLinkCode & msInsertLinkTemp
               msUpdateLinkCode = msUpdateLinkCode & msUpdateLinkTemp
