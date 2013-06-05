@@ -389,6 +389,8 @@ Private mfBulkBookingVisible As Boolean
 Private mfCustomReportExists As Boolean
 Private mfCalendarReportExists As Boolean
 Private mfGlobalUpdateExists As Boolean
+Private mfDataTransferExists As Boolean
+Private mfMailMergeExists As Boolean
 
 Private mfBusy As Boolean
 
@@ -1837,6 +1839,14 @@ Private Sub FormatControls()
            "WHERE TableID = " & CStr(mobjTableView.TableID) & " AND Type = 'U'"
   mfGlobalUpdateExists = (GetRecCount(strSQL) > 0)
   
+  strSQL = "SELECT COUNT(*) FROM ASRSysDataTransferName " & _
+           "WHERE FromTableID = " & CStr(mobjTableView.TableID)
+  mfDataTransferExists = (GetRecCount(strSQL) > 0)
+  
+  strSQL = "SELECT COUNT(*) FROM ASRSysMailMergeName " & _
+           "WHERE TableID = " & CStr(mobjTableView.TableID) & " AND IsLabel = 0"
+  mfMailMergeExists = (GetRecCount(strSQL) > 0)
+  
   Exit Sub
 
 ErrorTrap:
@@ -1862,6 +1872,14 @@ End Property
 
 Public Property Get GlobalUpdateExists() As Boolean
   GlobalUpdateExists = mfGlobalUpdateExists
+End Property
+
+Public Property Get DataTransferExists() As Boolean
+  DataTransferExists = mfDataTransferExists
+End Property
+
+Public Property Get MailMergeExists() As Boolean
+  MailMergeExists = mfMailMergeExists
 End Property
 
 
