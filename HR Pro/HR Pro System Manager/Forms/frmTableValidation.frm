@@ -127,6 +127,7 @@ Begin VB.Form frmTableValidation
    Begin VB.CommandButton cmdOK 
       Caption         =   "&OK"
       Default         =   -1  'True
+      Enabled         =   0   'False
       Height          =   400
       Left            =   3420
       TabIndex        =   6
@@ -180,18 +181,26 @@ End Property
 
 Private Sub cboOverlapColumnEndDate_Click()
   txtOverlapMessage.Text = GenerateMessage
+  Me.Changed = True
 End Sub
 
 Private Sub cboOverlapColumnEndSession_Click()
   txtOverlapMessage.Text = GenerateMessage
+  Me.Changed = True
 End Sub
 
 Private Sub cboOverlapColumnStartDate_Click()
   txtOverlapMessage.Text = GenerateMessage
+  Me.Changed = True
 End Sub
 
 Private Sub cboOverlapColumnStartSession_Click()
   txtOverlapMessage.Text = GenerateMessage
+  Me.Changed = True
+End Sub
+
+Private Sub cboOverlapColumnType_Click()
+  Me.Changed = True
 End Sub
 
 Private Sub Form_Load()
@@ -266,7 +275,7 @@ Private Sub SaveDefinition()
   objValidationObject.EventEnddateColumnID = GetComboItem(cboOverlapColumnEndDate)
   objValidationObject.EventEndSessionColumnID = GetComboItem(cboOverlapColumnEndSession)
   objValidationObject.EventTypeColumnID = GetComboItem(cboOverlapColumnType)
-  objValidationObject.Message = GenerateMessage 'txtOverlapMessage.Text
+  objValidationObject.Message = txtOverlapMessage.Text
 
 End Sub
 
@@ -280,6 +289,7 @@ Public Function PopulateControls() As Boolean
 
   bOK = True
   lngTableID = objValidationObject.TableID
+  mbLoading = True
 
   ' Clear existing definitions
   cboOverlapColumnStartDate.Clear
@@ -300,10 +310,10 @@ Public Function PopulateControls() As Boolean
   SetComboItem cboOverlapColumnEndSession, objValidationObject.EventEndSessionColumnID
   SetComboItem cboOverlapColumnType, objValidationObject.EventTypeColumnID
   
-  txtOverlapMessage.Text = GenerateMessage 'objValidationObject.Message
-  
+  txtOverlapMessage.Text = objValidationObject.Message
   
 TidyUpAndExit:
+  mbLoading = False
   PopulateControls = bOK
   Exit Function
   
@@ -360,9 +370,10 @@ Private Sub optType_Click(Index As Integer)
   miValidationType = Index
 End Sub
 
-
 Private Function GenerateMessage() As String
-
   GenerateMessage = cboOverlapColumnStartDate.Text & " and " & cboOverlapColumnEndDate.Text & " overlaps with another record."
-
 End Function
+
+Private Sub txtOverlapMessage_Click()
+  Me.Changed = True
+End Sub

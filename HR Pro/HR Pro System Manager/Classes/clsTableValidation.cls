@@ -111,9 +111,9 @@ End Property
 
 Public Property Get Message() As String
   'If mstrMessage = vbNullString Then
-    Message = GetColumnName(mlngEventStartDateColumnID, True) & " to " & GetColumnName(mlngEventEndDateColumnID, True) & " overlaps with another record."
+   ' Message = GetColumnName(mlngEventStartDateColumnID, True) & " to " & GetColumnName(mlngEventEndDateColumnID, True) & " overlaps with another record."
   'Else
-   ' Message = mstrMessage
+    Message = mstrMessage
   'End If
 End Property
 
