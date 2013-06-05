@@ -323,7 +323,7 @@ Namespace Things
 
         .Declarations = String.Join(vbNewLine, maryDeclarations.ToArray())
         .Prerequisites = String.Join(vbNewLine, maryPrerequisitStatements.ToArray())
-        .JoinCode = String.Format("{0}", String.Join(",", Joins.ToArray))
+        .JoinCode = String.Format("{0}", String.Join(vbNewLine, Joins.ToArray))
         .FromCode = String.Format("{0}", String.Join(",", FromTables.ToArray))
 
         .WhereCode = String.Join(vbNewLine, maryWhere.ToArray())
@@ -714,6 +714,7 @@ Namespace Things
           objThisColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn
           objThisColumn.Calculation.AssociatedColumn = objThisColumn
           objThisColumn.Calculation.GenerateCode()
+          mbRequiresRowNumber = mbRequiresRowNumber Or objThisColumn.Calculation.mbRequiresRowNumber
 
           If objThisColumn.Calculation.IsComplex Then
             LineOfCode.Code = objThisColumn.Calculation.UDF.CallingCode
