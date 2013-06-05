@@ -26,7 +26,7 @@ Public Const giPRINT_YSPACE = 100
 Public Const gsOLEDISPLAYTYPE_ICON = " (icon)"
 Public Const gsOLEDISPLAYTYPE_CONTENTS = " (contents)"
 
-Public Const gsVALIDATIONSPPREFIX = "sp_ASRValidate_"
+Public Const gsVALIDATIONSPPREFIX = "udfvalid_"
 Public Const gsVIEWVALIDATIONSPPREFIX = "sp_ASRValidateView_"
 
 Public Const gsEMAILADDR = "dbo.spASRSysEmailAddr_"
@@ -454,7 +454,7 @@ Public Enum ValidationType
 End Enum
 
 Public Enum Severity
-  SEVERITY_WARNING = 0
+  Severity_Warning = 0
   SEVERITY_FAILURE = 1
   SEVERITY_INFORMATION = 2
 End Enum
