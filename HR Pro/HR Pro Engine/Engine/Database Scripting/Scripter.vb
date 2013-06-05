@@ -323,6 +323,8 @@ Namespace ScriptDB
       Dim sValidation As String
 
       Dim sSQLWriteableColumns As String
+      Dim SQLAfterInsertColumns As String
+
       Dim sSQLCalculatedColumns As String
       Dim sSQLPostAuditCalcs As String
       Dim sSQLUniqueCalcs As String
@@ -339,6 +341,8 @@ Namespace ScriptDB
       Dim aryParentsToUpdate As ArrayList
       Dim aryChildrenToUpdate As ArrayList
       Dim aryParentsToUpdate_Delete As ArrayList
+
+      Dim aryColumnsWithDefaultValues As ArrayList
       Dim aryAllWriteableColumns As ArrayList
       Dim aryAllWriteableFormatted As ArrayList
 
@@ -352,6 +356,7 @@ Namespace ScriptDB
 
         For Each objTable In Globals.Things
 
+          aryColumnsWithDefaultValues = New ArrayList
           aryAllWriteableColumns = New ArrayList
           aryAllWriteableFormatted = New ArrayList
           aryAuditUpdates = New ArrayList
@@ -400,7 +405,7 @@ Namespace ScriptDB
 
             aryColumns = New ArrayList
             If objRelation.RelationshipType = RelationshipType.Parent Then
-              aryBaseTableColumns.Add(String.Format("[ID_{0}] = [inserted].[ID_{0}]", CInt(objRelation.ParentID)))
+              aryBaseTableColumns.Add(String.Format("[ID_{0}] = base.[ID_{0}]", CInt(objRelation.ParentID)))
               aryAllWriteableColumns.Add(String.Format("[ID_{0}]", CInt(objRelation.ParentID)))
               aryAllWriteableFormatted.Add(String.Format("[ID_{0}]", CInt(objRelation.ParentID)))
 
@@ -482,25 +487,41 @@ Namespace ScriptDB
 
               End If
 
-              If Not objColumn.IsReadOnly Then 'Or CInt(objColumn.DefaultCalcID) > 0 Then
+              If Not objColumn.IsReadOnly Then
                 Select Case objColumn.DataType
 
-                  Case ScriptDB.ColumnTypes.Binary
-                    aryBaseTableColumns.Add(String.Format("[{0}] = [inserted].[{0}]", objColumn.Name))
-                    aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
-                    aryAllWriteableFormatted.Add(String.Format("[{0}]", objColumn.Name))
+                  'Case ScriptDB.ColumnTypes.Binary
+                  '  aryBaseTableColumns.Add(String.Format("[{0}] = [inserted].[{0}]", objColumn.Name))
+                  '  aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
+                  '  aryAllWriteableFormatted.Add(String.Format("[{0}]", objColumn.Name))
 
                   Case ScriptDB.ColumnTypes.Date
-                    aryBaseTableColumns.Add(String.Format("[{0}] = DATEADD(dd, 0, DATEDIFF(dd, 0, [inserted].[{0}]))", objColumn.Name))
+                    aryBaseTableColumns.Add(String.Format("[{0}] = DATEADD(dd, 0, DATEDIFF(dd, 0, base.[{0}]))", objColumn.Name))
                     aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
                     aryAllWriteableFormatted.Add(String.Format(" DATEADD(dd, 0, DATEDIFF(dd, 0, [{0}]))", objColumn.Name))
 
                   Case Else
-                    aryBaseTableColumns.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.ApplyFormatting("inserted")))
+                    aryBaseTableColumns.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.ApplyFormatting("base")))
                     aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
                     aryAllWriteableFormatted.Add(String.Format("[{0}]", objColumn.Name))
 
                 End Select
+
+              ElseIf CInt(objColumn.DefaultCalcID) > 0 Then
+                objColumn.DefaultCalculation.AssociatedColumn = objColumn
+                objColumn.DefaultCalculation.ExpressionType = ExpressionType.ColumnDefault
+                objColumn.DefaultCalculation.GenerateCode()
+
+                '             If objColumn.DefaultCalculation.IsComplex Then
+                sCalculationCode = objColumn.DefaultCalculation.UDF.CallingCode
+                '               Else
+                '                sCalculationCode = objColumn.DefaultCalculation.UDF.InlineCode
+                '                End If
+
+                '                aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
+                '               aryAllWriteableFormatted.Add(sCalculationCode)
+
+                aryColumnsWithDefaultValues.Add(String.Format("[{0}] = {1}", objColumn.Name, sCalculationCode))
 
               End If
 
@@ -577,13 +598,29 @@ Namespace ScriptDB
           If aryBaseTableColumns.ToArray.Length > 0 Then
             sSQLWriteableColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
               "    UPDATE [dbo].[{0}]" & vbNewLine & _
-              "        SET [updflag] = [inserted].[updflag]," & vbNewLine & _
+              "        SET [updflag] = base.[updflag]," & vbNewLine & _
               "        {1}" & vbNewLine & _
-              "        FROM [inserted] WHERE [inserted].[id] = [dbo].[{0}].[id]" & vbNewLine _
+              "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
               , objTable.PhysicalName, String.Join(", " & vbNewLine & vbTab & vbTab & vbTab, aryBaseTableColumns.ToArray()))
           Else
             sSQLWriteableColumns = String.Empty
           End If
+
+
+          ' Update the default values
+          If aryColumnsWithDefaultValues.ToArray.Length > 0 Then
+            aryColumnsWithDefaultValues.AddRange(aryBaseTableColumns)
+            SQLAfterInsertColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
+              "    UPDATE [dbo].[{0}]" & vbNewLine & _
+              "        SET [updflag] = base.[updflag]," & vbNewLine & _
+              "        {1}" & vbNewLine & _
+              "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
+              , objTable.PhysicalName, String.Join(", " & vbNewLine & vbTab & vbTab & vbTab, aryColumnsWithDefaultValues.ToArray()))
+          Else
+            SQLAfterInsertColumns = String.Empty
+          End If
+
+
 
           ' Build audit strings
           If aryAuditUpdates.ToArray.Length > 0 Then
@@ -671,7 +708,7 @@ Namespace ScriptDB
               "    INSERT [dbo].[tbsys_intransactiontrigger] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {2}, 1, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
               "    -- Commit writeable columns" & vbNewLine & _
               "    INSERT [dbo].[{0}] ({3})" & vbNewLine & _
-              "        SELECT {4} FROM inserted;" & vbNewLine & vbNewLine _
+              "        SELECT {4} FROM inserted base;" & vbNewLine & vbNewLine _
               , objTable.Name, sTriggerName _
               , CInt(objTable.ID) _
               , String.Join(",", aryAllWriteableColumns.ToArray()), String.Join("," & vbNewLine, aryAllWriteableFormatted.ToArray()))
@@ -685,7 +722,7 @@ Namespace ScriptDB
               "    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-              sSQLWriteableColumns & vbNewLine & _
+              SQLAfterInsertColumns & vbNewLine & _
               "    -- Audit Trail" & vbNewLine & _
               "{2}" & vbNewLine & vbNewLine & _
               sSQLCode_Audit & _
@@ -836,13 +873,15 @@ Namespace ScriptDB
           "END" _
           , sTriggerName, [Role], Table.PhysicalName, sTriggerType, [BodyCode] _
           , IIf(Globals.Options.DevelopmentMode, "", "--"))
-        CommitDB.ScriptStatement(sSQL)
 
-        ' Put the correct firing order on the trigger
-        If TriggerType = Enums.TriggerType.AfterDelete Or TriggerType = Enums.TriggerType.AfterUpdate Or TriggerType = Enums.TriggerType.AfterInsert Then
-          sSQL = String.Format("EXEC sp_settriggerorder @triggername=N'[{0}].[{1}]', @order=N'First', @stmttype=N'{2}'" _
-              , [Role], sTriggerName, sTriggerFireType)
-          CommitDB.ScriptStatement(sSQL)
+        ' Compile the trigger and put the apply correct firing order
+        If CommitDB.ScriptStatement(sSQL) Then
+
+          If TriggerType = Enums.TriggerType.AfterDelete Or TriggerType = Enums.TriggerType.AfterUpdate Or TriggerType = Enums.TriggerType.AfterInsert Then
+            sSQL = String.Format("EXEC sp_settriggerorder @triggername=N'[{0}].[{1}]', @order=N'First', @stmttype=N'{2}'" _
+                , [Role], sTriggerName, sTriggerFireType)
+            CommitDB.ScriptStatement(sSQL)
+          End If
         End If
 
       Catch ex As Exception
@@ -951,21 +990,34 @@ Namespace ScriptDB
 
             If objColumn.IsCalculated Then
 
-              'Debug.Assert(objColumn.Name <> "Current_Salary")
-
               objColumn.Calculation = objTable.Objects.GetObject(Things.Type.Expression, objColumn.CalcID)
-              If Not objColumn.Calculation.State = System.Data.DataRowState.Unchanged Or Globals.Options.RefreshObjects Then
+              '              If Not objColumn.Calculation.State = System.Data.DataRowState.Unchanged Or Globals.Options.RefreshObjects Then
 
-                sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
+              '              sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
 
-                If Not objColumn.Calculation Is Nothing Then
-                  objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
-                  objColumn.Calculation.AssociatedColumn = objColumn
-                  objColumn.Calculation.GenerateCode()
-                End If
-
+              If Not objColumn.Calculation Is Nothing Then
+                objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
+                objColumn.Calculation.AssociatedColumn = objColumn
+                objColumn.Calculation.GenerateCode()
               End If
+
+              '            End If
             End If
+
+            If CInt(objColumn.DefaultCalcID) > 0 Then
+              objColumn.DefaultCalculation = objTable.Objects.GetObject(Things.Type.Expression, objColumn.DefaultCalcID)
+
+              '              sObjectName = String.Format("{0}{1}.{2}", Consts.DefaultValueUDF, objTable.Name, objColumn.Name)
+
+              If Not objColumn.Calculation Is Nothing Then
+                objColumn.DefaultCalculation.ExpressionType = ScriptDB.ExpressionType.ColumnDefault
+                objColumn.DefaultCalculation.AssociatedColumn = objColumn
+                objColumn.DefaultCalculation.GenerateCode()
+              End If
+
+
+            End If
+
 
           Next
 
@@ -1020,10 +1072,6 @@ Namespace ScriptDB
               Globals.TuningLog.Expressions.Add(objColumn)
 
               sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
-              'Debug.Assert(sObjectName <> "udfcalc_Personnel_Records.Trigger_to_Payroll")
-
-              '  Debug.Assert(objColumn.Calculation.UDF.Name <> "[dbo].[udfcalc__Personnel_Records.Trigger_to_Payroll")
-              'Debug.Assert(sObjectName <> "udfcalc_Table1.calclevel2")
 
               ScriptDB.DropUDF("dbo", sObjectName)
 
@@ -1036,6 +1084,33 @@ Namespace ScriptDB
               End If
               'End If
             End If
+
+            If CInt(objColumn.DefaultCalcID) > 0 Then
+
+              objColumn.DefaultCalculation.AssociatedColumn = objColumn
+              objColumn.DefaultCalculation.StartOfPartNumbers = 0
+              objColumn.DefaultCalculation.StatementObjects.Clear()
+
+              objColumn.DefaultCalculation.ExpressionType = ExpressionType.ColumnDefault
+              objColumn.DefaultCalculation.GenerateCode()
+              Globals.TuningLog.Expressions.Add(objColumn)
+
+              sObjectName = String.Format("{0}{1}.{2}", Consts.DefaultValueUDF, objTable.Name, objColumn.Name)
+
+              ScriptDB.DropUDF("dbo", sObjectName)
+
+              If objColumn.DefaultCalculation.IsValid Then
+                If Not Globals.CommitDB.ScriptStatement(objColumn.DefaultCalculation.UDF.Code) Then
+                  Globals.CommitDB.ScriptStatement(objColumn.DefaultCalculation.UDF.CodeStub)
+                End If
+              Else
+                Globals.CommitDB.ScriptStatement(objColumn.DefaultCalculation.UDF.CodeStub)
+              End If
+              'End If
+            End If
+
+
+
           Next
         Next
 

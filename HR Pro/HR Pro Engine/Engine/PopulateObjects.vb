@@ -499,7 +499,7 @@
           objColumn.Table = Table
           objColumn.State = objRow.Item("state")
 
-          ' objColumn.DefaultCalcID = objRow.Item("defaultcalcid").ToString
+          objColumn.DefaultCalcID = NullSafe(objRow, "defaultcalcid", 0).ToString
           objColumn.DefaultValue = objRow.Item("defaultvalue").ToString
           objColumn.CalcID = objRow.Item("calcid").ToString
           objColumn.DataType = objRow.Item("datatype")
@@ -511,7 +511,7 @@
           objColumn.IsReadOnly = objRow.Item("isreadonly")
           objColumn.CaseType = objRow.Item("case").ToString
           objColumn.CalculateIfEmpty = objRow.Item("calculateifempty")
-          objColumn.TrimType = objRow.Item("trimming").ToString
+          objColumn.TrimType = NullSafe(objRow, "trimming", Enums.TrimType.None).ToString
           objColumn.Alignment = objRow.Item("alignment").ToString
 
           Table.Objects.Add(objColumn)
@@ -757,6 +757,19 @@
       End Try
 
     End Sub
+
+    Private Function NullSafe(ByRef ObjectData As System.Data.DataRow, ByRef ColumnName As String, ByRef DefaultValue As Object)
+
+      If ObjectData.IsNull(ColumnName) Then
+        Return DefaultValue
+      Else
+        Return ObjectData.Item(ColumnName)
+      End If
+
+    End Function
+
+
+
 
   End Module
 

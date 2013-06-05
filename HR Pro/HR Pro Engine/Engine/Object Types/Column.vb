@@ -5,6 +5,7 @@
     <System.Xml.Serialization.XmlIgnore()> _
         Public Table As Things.Table
 
+    Public CalcID As HCMGuid
     <System.Xml.Serialization.XmlIgnore()> _
     Public Calculation As Things.Expression
 
@@ -25,8 +26,8 @@
     Public Mandatory As Boolean
     Public OLEType As ScriptDB.OLEType
 
-    Public CalcID As HCMGuid
     Public DefaultCalcID As HCMGuid
+    Public DefaultCalculation As Things.Expression
     Public DefaultValue As String
 
     Public ReferencedBy As Things.Collection
@@ -137,6 +138,28 @@
       End Get
 
     End Property
+
+    Public ReadOnly Property HasDefaultValue As Boolean
+      Get
+
+        If CInt(Me.DefaultCalcID) > 0 Then
+          Return True
+        Else
+          Select Case Me.DataType
+            Case ScriptDB.ColumnTypes.Text
+              Return Len(Me.DefaultValue) > 0
+            Case ScriptDB.ColumnTypes.Numeric, ScriptDB.ColumnTypes.Integer
+              Return (CInt(Me.DefaultValue) <> 0)
+            Case ScriptDB.ColumnTypes.Logic
+              Return CBool(Me.DefaultValue <> True)
+            Case Else
+              Return False
+          End Select
+        End If
+
+      End Get
+    End Property
+
 
     Public ReadOnly Property IsCalculated As Boolean
       Get

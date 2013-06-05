@@ -267,7 +267,29 @@ Namespace Things
 
         Select Case Me.ExpressionType
 
-          ' Wrapper for calculations with associated columns
+          Case ScriptDB.ExpressionType.ColumnDefault
+            .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.DefaultValueUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
+            .SelectCode = mcolLinesOfCode.Statement
+            .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
+            .Code = String.Format("{11}CREATE FUNCTION {0}({1})" & vbNewLine & _
+                           "RETURNS {2}" & vbNewLine & _
+                           "{3}" & vbNewLine & _
+                           "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+                           "    DECLARE @Result AS {15};" & vbNewLine & vbNewLine & _
+                           "    {13}" & vbNewLine & vbNewLine & _
+                           "    {4}{5}" & vbNewLine & vbNewLine & _
+                           "    -- Execute calculation code" & vbNewLine & _
+                           "    SELECT @Result = {6}" & vbNewLine & _
+                           "                 {7}{8}{9}" & vbNewLine & _
+                           "    RETURN {14};" & vbNewLine & _
+                           "END" _
+                          , .Name, String.Join(", ", aryParameters1.ToArray()) _
+                          , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode _
+                          , Me.AssociatedColumn.SafeReturnType, .BoilerPlate, .Comments, sBypassUDFCode, ResultWrapper("@Result"), ResultDefinition)
+
+
+
+            ' Wrapper for calculations with associated columns
           Case ScriptDB.ExpressionType.ColumnCalculation
             .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
             .SelectCode = mcolLinesOfCode.Statement
@@ -582,7 +604,7 @@ Namespace Things
         LineOfCode.Code = String.Format("@prm_{0}", objThisColumn.Name)
 
         ' Does the referenced column have default value on it, then reference the UDF/value of the default rather than the column itself.
-      ElseIf (Not objThisColumn.DefaultCalcID = 0 And Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault) Then
+      ElseIf (Not objThisColumn.DefaultCalculation Is Nothing And Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault) Then
         LineOfCode.Code = String.Format("[dbo].[{0}](@prm_ID)", objThisColumn.Name)
 
       ElseIf objThisColumn.IsCalculated And objThisColumn.Table Is Me.AssociatedColumn.Table _
