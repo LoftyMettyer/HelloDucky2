@@ -15,7 +15,7 @@ namespace System_Framework.Test
 			SystemFramework.Globals.Initialise();
 
 			var errors = SystemFramework.Globals.ErrorLog;
-			errors.Add(Section.TableAndColumns, "ObjectName", Severity.Warning, "Message", "Detail");
+			errors.Add(Section.TableAndColumns, "ObjectName", Severity.Warning, "Error creating calculation for Second_Holiday_Requests.Holiday_Authorised_EMail ", "Detail");
 			errors.Add(Section.TableAndColumns, "ObjectName", Severity.Warning, "Message", "Detail");
 			errors.Add(Section.TableAndColumns, "ObjectName2", Severity.Warning, "Message", "Detail2");
 			errors.Add(Section.TableAndColumns, "ObjectName2", Severity.Warning, "Message", "Detail");
