@@ -808,6 +808,9 @@ Public Property Let Read_Only(blnValue As Boolean)
     fraOptGroup.ForeColor = IIf(blnValue, vbGrayText, mForecolour)
     fraOptGroup.BackColor = IIf(blnValue, vbButtonFace, mBackcolour)
     
+    fraInternal.ForeColor = IIf(blnValue, vbGrayText, mForecolour)
+    fraInternal.BackColor = IIf(blnValue, vbButtonFace, mBackcolour)
+    
     UserControl.BackColor = IIf(blnValue, vbButtonFace, mBackcolour)
   Next
 
