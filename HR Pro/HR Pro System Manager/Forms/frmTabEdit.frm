@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmTabEdit 
@@ -8,7 +8,7 @@ Begin VB.Form frmTabEdit
    ClientHeight    =   5445
    ClientLeft      =   315
    ClientTop       =   1665
-   ClientWidth     =   7860
+   ClientWidth     =   8130
    ClipControls    =   0   'False
    BeginProperty Font 
       Name            =   "Verdana"
@@ -27,7 +27,7 @@ Begin VB.Form frmTabEdit
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   5445
-   ScaleWidth      =   7860
+   ScaleWidth      =   8130
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.ListBox lstSort 
@@ -41,56 +41,76 @@ Begin VB.Form frmTabEdit
    End
    Begin TabDlg.SSTab ssTabTableProperties 
       Height          =   4770
-      Left            =   50
+      Left            =   45
       TabIndex        =   0
       Top             =   45
-      Width           =   7740
-      _ExtentX        =   13653
+      Width           =   7965
+      _ExtentX        =   14049
       _ExtentY        =   8414
       _Version        =   393216
       Style           =   1
-      Tabs            =   6
-      Tab             =   2
-      TabsPerRow      =   6
+      Tabs            =   7
+      TabsPerRow      =   7
       TabHeight       =   520
       TabCaption(0)   =   "De&finition"
       TabPicture(0)   =   "frmTabEdit.frx":000C
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "lblRecordDescription"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "lblOrder"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).Control(2)=   "lblTableName"
+      Tab(0).Control(2).Enabled=   0   'False
       Tab(0).Control(3)=   "lblEmail"
+      Tab(0).Control(3).Enabled=   0   'False
       Tab(0).Control(4)=   "cmdRecordDescription"
+      Tab(0).Control(4).Enabled=   0   'False
       Tab(0).Control(5)=   "txtRecordDescription"
       Tab(0).Control(5).Enabled=   0   'False
       Tab(0).Control(6)=   "txtOrder"
       Tab(0).Control(6).Enabled=   0   'False
       Tab(0).Control(7)=   "cmdOrder"
+      Tab(0).Control(7).Enabled=   0   'False
       Tab(0).Control(8)=   "fraTableType"
+      Tab(0).Control(8).Enabled=   0   'False
       Tab(0).Control(9)=   "txtTableName"
+      Tab(0).Control(9).Enabled=   0   'False
       Tab(0).Control(10)=   "cmdEmail"
+      Tab(0).Control(10).Enabled=   0   'False
       Tab(0).Control(11)=   "txtEmail"
       Tab(0).Control(11).Enabled=   0   'False
       Tab(0).ControlCount=   12
-      TabCaption(1)   =   "Su&mmary Columns"
+      TabCaption(1)   =   "Su&mmary"
       TabPicture(1)   =   "frmTabEdit.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "lblParentTable"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraColumns"
+      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).Control(2)=   "cmdInsert"
+      Tab(1).Control(2).Enabled=   0   'False
       Tab(1).Control(3)=   "cmdDown"
+      Tab(1).Control(3).Enabled=   0   'False
       Tab(1).Control(4)=   "cmdUp"
+      Tab(1).Control(4).Enabled=   0   'False
       Tab(1).Control(5)=   "cmdRemove"
+      Tab(1).Control(5).Enabled=   0   'False
       Tab(1).Control(6)=   "cmdAdd"
+      Tab(1).Control(6).Enabled=   0   'False
       Tab(1).Control(7)=   "fraSummaryFields"
+      Tab(1).Control(7).Enabled=   0   'False
       Tab(1).Control(8)=   "cmdInsertBreak"
+      Tab(1).Control(8).Enabled=   0   'False
       Tab(1).Control(9)=   "cboParentTable"
+      Tab(1).Control(9).Enabled=   0   'False
       Tab(1).Control(10)=   "cmdColumnBreak"
+      Tab(1).Control(10).Enabled=   0   'False
       Tab(1).Control(11)=   "chkManualColumnBreak"
+      Tab(1).Control(11).Enabled=   0   'False
       Tab(1).ControlCount=   12
       TabCaption(2)   =   "Ema&il Links"
       TabPicture(2)   =   "frmTabEdit.frx":0044
-      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraEmail"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
@@ -98,29 +118,37 @@ Begin VB.Form frmTabEdit
       TabPicture(3)   =   "frmTabEdit.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraCalendarLinks"
+      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "&Workflow Links"
       TabPicture(4)   =   "frmTabEdit.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraWorkflowLinks"
+      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).ControlCount=   1
       TabCaption(5)   =   "Audi&t"
       TabPicture(5)   =   "frmTabEdit.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraAudit"
-      Tab(5).Control(1)=   "fraTableStats"
+      Tab(5).Control(0)=   "fraTableStats"
+      Tab(5).Control(0).Enabled=   0   'False
+      Tab(5).Control(1)=   "fraAudit"
+      Tab(5).Control(1).Enabled=   0   'False
       Tab(5).ControlCount=   2
+      TabCaption(6)   =   "&Validation"
+      TabPicture(6)   =   "frmTabEdit.frx":00B4
+      Tab(6).ControlEnabled=   0   'False
+      Tab(6).ControlCount=   0
       Begin VB.Frame fraEmail 
          Caption         =   "Email Links :"
          Height          =   4150
-         Left            =   200
+         Left            =   -74800
          TabIndex        =   30
          Top             =   400
-         Width           =   7340
+         Width           =   7560
          Begin VB.CommandButton cmdEmailLinkProperties 
             Caption         =   "&Edit"
             Height          =   400
-            Left            =   2100
+            Left            =   2190
             TabIndex        =   33
             Top             =   3550
             Width           =   1200
@@ -128,7 +156,7 @@ Begin VB.Form frmTabEdit
          Begin VB.CommandButton cmdRemoveAllEmailLinks 
             Caption         =   "Delete &All"
             Height          =   400
-            Left            =   5900
+            Left            =   6030
             TabIndex        =   35
             Top             =   3550
             Width           =   1200
@@ -136,7 +164,7 @@ Begin VB.Form frmTabEdit
          Begin VB.CommandButton cmdRemoveEmailLink 
             Caption         =   "&Delete"
             Height          =   400
-            Left            =   4000
+            Left            =   4050
             TabIndex        =   34
             Top             =   3550
             Width           =   1200
@@ -145,17 +173,17 @@ Begin VB.Form frmTabEdit
             Caption         =   "&New"
             Enabled         =   0   'False
             Height          =   400
-            Left            =   200
+            Left            =   330
             TabIndex        =   32
             Top             =   3550
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid ssGrdEmailLinks 
-            Height          =   3050
-            Left            =   200
+            Height          =   3045
+            Left            =   330
             TabIndex        =   31
             Top             =   300
-            Width           =   6910
+            Width           =   6915
             ScrollBars      =   2
             _Version        =   196617
             DataMode        =   2
@@ -213,8 +241,8 @@ Begin VB.Form frmTabEdit
             Columns(3).FieldLen=   256
             UseDefaults     =   0   'False
             TabNavigation   =   1
-            _ExtentX        =   12188
-            _ExtentY        =   5380
+            _ExtentX        =   12197
+            _ExtentY        =   5371
             _StockProps     =   79
             BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -266,12 +294,12 @@ Begin VB.Form frmTabEdit
          Left            =   -74800
          TabIndex        =   42
          Top             =   400
-         Width           =   7340
+         Width           =   7560
          Begin VB.CommandButton cmdRemoveWorkflowLink 
             Caption         =   "&Delete"
             Enabled         =   0   'False
             Height          =   400
-            Left            =   4000
+            Left            =   4050
             TabIndex        =   46
             Top             =   3550
             Width           =   1200
@@ -280,7 +308,7 @@ Begin VB.Form frmTabEdit
             Caption         =   "&New"
             Enabled         =   0   'False
             Height          =   400
-            Left            =   200
+            Left            =   330
             TabIndex        =   44
             Top             =   3550
             Width           =   1200
@@ -289,7 +317,7 @@ Begin VB.Form frmTabEdit
             Caption         =   "Delete &All"
             Enabled         =   0   'False
             Height          =   400
-            Left            =   5900
+            Left            =   6030
             TabIndex        =   47
             Top             =   3550
             Width           =   1200
@@ -298,17 +326,17 @@ Begin VB.Form frmTabEdit
             Caption         =   "&Edit"
             Enabled         =   0   'False
             Height          =   400
-            Left            =   2100
+            Left            =   2190
             TabIndex        =   45
             Top             =   3550
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid ssGrdWorkflowLinks 
-            Height          =   3050
-            Left            =   195
+            Height          =   3045
+            Left            =   330
             TabIndex        =   43
             Top             =   300
-            Width           =   6910
+            Width           =   6915
             ScrollBars      =   2
             _Version        =   196617
             DataMode        =   2
@@ -455,12 +483,12 @@ Begin VB.Form frmTabEdit
          Left            =   -74800
          TabIndex        =   36
          Top             =   400
-         Width           =   7340
+         Width           =   7560
          Begin VB.CommandButton cmdOutlookLinkProperties 
             Caption         =   "&Edit"
             Enabled         =   0   'False
             Height          =   400
-            Left            =   2100
+            Left            =   2190
             TabIndex        =   39
             Top             =   3550
             Width           =   1200
@@ -469,7 +497,7 @@ Begin VB.Form frmTabEdit
             Caption         =   "Delete &All"
             Enabled         =   0   'False
             Height          =   400
-            Left            =   5900
+            Left            =   6030
             TabIndex        =   41
             Top             =   3550
             Width           =   1200
@@ -478,7 +506,7 @@ Begin VB.Form frmTabEdit
             Caption         =   "&Delete"
             Enabled         =   0   'False
             Height          =   400
-            Left            =   4000
+            Left            =   4050
             TabIndex        =   40
             Top             =   3550
             Width           =   1200
@@ -487,17 +515,17 @@ Begin VB.Form frmTabEdit
             Caption         =   "&New"
             Enabled         =   0   'False
             Height          =   400
-            Left            =   200
+            Left            =   330
             TabIndex        =   38
             Top             =   3550
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid ssGrdOutlookLinks 
-            Height          =   3050
-            Left            =   195
+            Height          =   3045
+            Left            =   330
             TabIndex        =   37
             Top             =   300
-            Width           =   6910
+            Width           =   6915
             ScrollBars      =   2
             _Version        =   196617
             DataMode        =   2
@@ -574,16 +602,16 @@ Begin VB.Form frmTabEdit
       Begin VB.CheckBox chkManualColumnBreak 
          Caption         =   "Manual column br&eaks"
          Height          =   240
-         Left            =   -70110
+         Left            =   -69975
          TabIndex        =   18
          Top             =   645
-         Width           =   2300
+         Width           =   2385
       End
       Begin VB.CommandButton cmdColumnBreak 
          Caption         =   "Colum&n Break >"
          Enabled         =   0   'False
          Height          =   360
-         Left            =   -71945
+         Left            =   -71850
          TabIndex        =   25
          Top             =   3090
          Width           =   1630
@@ -592,17 +620,17 @@ Begin VB.Form frmTabEdit
          BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
-         Left            =   -72900
+         Left            =   2100
          Locked          =   -1  'True
          TabIndex        =   14
          TabStop         =   0   'False
          Top             =   3200
-         Width           =   5125
+         Width           =   5355
       End
       Begin VB.CommandButton cmdEmail 
          Caption         =   "..."
          Height          =   315
-         Left            =   -67775
+         Left            =   7455
          TabIndex        =   15
          Top             =   3200
          UseMaskColor    =   -1  'True
@@ -620,7 +648,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdInsertBreak 
          Caption         =   "&Break >"
          Height          =   360
-         Left            =   -71945
+         Left            =   -71850
          TabIndex        =   24
          Top             =   2655
          Width           =   1630
@@ -628,23 +656,23 @@ Begin VB.Form frmTabEdit
       Begin VB.Frame fraSummaryFields 
          Caption         =   "Summary Columns :"
          Height          =   3500
-         Left            =   -70110
+         Left            =   -69975
          TabIndex        =   28
          Top             =   1000
-         Width           =   2650
+         Width           =   2745
          Begin VB.ListBox lstSummaryFields 
             Height          =   2985
             Index           =   1
             Left            =   200
             TabIndex        =   29
             Top             =   300
-            Width           =   2250
+            Width           =   2340
          End
       End
       Begin VB.CommandButton cmdAdd 
          Caption         =   "&Add  >"
          Height          =   360
-         Left            =   -71945
+         Left            =   -71850
          TabIndex        =   21
          Top             =   1110
          Width           =   1630
@@ -652,7 +680,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdRemove 
          Caption         =   "&Remove  <"
          Height          =   360
-         Left            =   -71945
+         Left            =   -71850
          TabIndex        =   23
          Top             =   1980
          Width           =   1630
@@ -660,7 +688,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdUp 
          Caption         =   "Move Up"
          Height          =   360
-         Left            =   -71945
+         Left            =   -71850
          TabIndex        =   26
          Top             =   3675
          UseMaskColor    =   -1  'True
@@ -669,8 +697,8 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdDown 
          Caption         =   "Move Down"
          Height          =   360
-         Left            =   -71945
-         Picture         =   "frmTabEdit.frx":00B4
+         Left            =   -71850
+         Picture         =   "frmTabEdit.frx":00D0
          TabIndex        =   27
          Top             =   4110
          UseMaskColor    =   -1  'True
@@ -679,7 +707,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdInsert 
          Caption         =   "&Insert  >"
          Height          =   360
-         Left            =   -71945
+         Left            =   -71850
          TabIndex        =   22
          Top             =   1545
          Width           =   1630
@@ -690,7 +718,7 @@ Begin VB.Form frmTabEdit
          Left            =   -74800
          TabIndex        =   19
          Top             =   1000
-         Width           =   2650
+         Width           =   2790
          Begin VB.ListBox lstColumns 
             Height          =   2985
             Index           =   1
@@ -698,25 +726,25 @@ Begin VB.Form frmTabEdit
             Sorted          =   -1  'True
             TabIndex        =   20
             Top             =   300
-            Width           =   2250
+            Width           =   2340
          End
       End
       Begin VB.TextBox txtTableName 
          Height          =   315
-         Left            =   -74000
+         Left            =   1000
          MaxLength       =   30
          TabIndex        =   2
          Text            =   "txtTabName"
          Top             =   600
-         Width           =   6540
+         Width           =   6765
       End
       Begin VB.Frame fraTableType 
          Caption         =   "Type :"
          Height          =   800
-         Left            =   -74800
+         Left            =   200
          TabIndex        =   3
          Top             =   1100
-         Width           =   7340
+         Width           =   7560
          Begin VB.OptionButton optTableType 
             Caption         =   "&Parent"
             Height          =   315
@@ -748,7 +776,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdOrder 
          Caption         =   "..."
          Height          =   315
-         Left            =   -67775
+         Left            =   7455
          TabIndex        =   9
          Top             =   2200
          UseMaskColor    =   -1  'True
@@ -758,28 +786,28 @@ Begin VB.Form frmTabEdit
          BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
-         Left            =   -72900
+         Left            =   2100
          Locked          =   -1  'True
          TabIndex        =   8
          TabStop         =   0   'False
          Top             =   2200
-         Width           =   5125
+         Width           =   5355
       End
       Begin VB.TextBox txtRecordDescription 
          BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
-         Left            =   -72900
+         Left            =   2100
          Locked          =   -1  'True
          TabIndex        =   11
          TabStop         =   0   'False
          Top             =   2700
-         Width           =   5125
+         Width           =   5355
       End
       Begin VB.CommandButton cmdRecordDescription 
          Caption         =   "..."
          Height          =   315
-         Left            =   -67775
+         Left            =   7455
          TabIndex        =   12
          Top             =   2700
          UseMaskColor    =   -1  'True
@@ -790,7 +818,7 @@ Begin VB.Form frmTabEdit
          BackStyle       =   0  'Transparent
          Caption         =   "Default Email :"
          Height          =   195
-         Left            =   -74800
+         Left            =   200
          TabIndex        =   13
          Top             =   3255
          Width           =   1440
@@ -809,7 +837,7 @@ Begin VB.Form frmTabEdit
          BackStyle       =   0  'Transparent
          Caption         =   "Name :"
          Height          =   195
-         Left            =   -74800
+         Left            =   200
          TabIndex        =   1
          Top             =   660
          Width           =   510
@@ -819,7 +847,7 @@ Begin VB.Form frmTabEdit
          BackStyle       =   0  'Transparent
          Caption         =   "Primary Order :"
          Height          =   195
-         Left            =   -74800
+         Left            =   200
          TabIndex        =   7
          Top             =   2265
          Width           =   1515
@@ -829,7 +857,7 @@ Begin VB.Form frmTabEdit
          BackStyle       =   0  'Transparent
          Caption         =   "Record Description :"
          Height          =   195
-         Left            =   -74800
+         Left            =   200
          TabIndex        =   10
          Top             =   2760
          Width           =   1725
@@ -841,7 +869,7 @@ Begin VB.Form frmTabEdit
       Default         =   -1  'True
       Enabled         =   0   'False
       Height          =   400
-      Left            =   5160
+      Left            =   5520
       TabIndex        =   56
       Top             =   4905
       Width           =   1200
@@ -850,7 +878,7 @@ Begin VB.Form frmTabEdit
       Cancel          =   -1  'True
       Caption         =   "&Cancel"
       Height          =   400
-      Left            =   6560
+      Left            =   6810
       TabIndex        =   57
       Top             =   4905
       Width           =   1200
@@ -908,11 +936,11 @@ Private mblnEmailSortByActivation As Boolean
 Private mblnEmailSortDesc As Boolean
 
 Private Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Private Property Let Changed(ByVal blnNewValue As Boolean)
-  cmdOk.Enabled = blnNewValue
+  cmdOK.Enabled = blnNewValue
 End Property
 
 
