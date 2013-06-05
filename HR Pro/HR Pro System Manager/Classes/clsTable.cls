@@ -185,18 +185,18 @@ Public Function DeleteTable() As Boolean
   
   Dim fOK As Boolean
   Dim sSQL As String
-  Dim rsColumns As dao.Recordset
-  Dim rsOrders As dao.Recordset
-  Dim rsExpressions As dao.Recordset
-  Dim rsViews As dao.Recordset
-  Dim rsRelatedTables As dao.Recordset
+  Dim rsColumns As DAO.Recordset
+  Dim rsOrders As DAO.Recordset
+  Dim rsExpressions As DAO.Recordset
+  Dim rsViews As DAO.Recordset
+  Dim rsRelatedTables As DAO.Recordset
   Dim objColumn As Column
   Dim objOrder As Order
   Dim objTable As Table
   Dim objExpression As CExpression
   
   Dim objEmail As clsEmailAddr
-  Dim rsEmailAddrs As dao.Recordset
+  Dim rsEmailAddrs As DAO.Recordset
   
   ' Begin the transaction of data to the local database.
   daoWS.BeginTrans
@@ -589,19 +589,19 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
   Dim sViewName As String
   Dim sTableName As String
   Dim sScreenName As String
-  Dim rsViews As dao.Recordset
-  Dim rsOrders As dao.Recordset
-  Dim rsScreens As dao.Recordset
-  Dim rsWorkflows As dao.Recordset
-  Dim rsColumns As dao.Recordset
-  Dim rsFilters As dao.Recordset
-  Dim rsChildren As dao.Recordset
-  Dim rsControls As dao.Recordset
-  Dim rsExpressions As dao.Recordset
-  Dim rsViewScreens As dao.Recordset
-  Dim rsViewColumns As dao.Recordset
-  Dim rsPageCaptions As dao.Recordset
-  Dim rsHistoryScreens As dao.Recordset
+  Dim rsViews As DAO.Recordset
+  Dim rsOrders As DAO.Recordset
+  Dim rsScreens As DAO.Recordset
+  Dim rsWorkflows As DAO.Recordset
+  Dim rsColumns As DAO.Recordset
+  Dim rsFilters As DAO.Recordset
+  Dim rsChildren As DAO.Recordset
+  Dim rsControls As DAO.Recordset
+  Dim rsExpressions As DAO.Recordset
+  Dim rsViewScreens As DAO.Recordset
+  Dim rsViewColumns As DAO.Recordset
+  Dim rsPageCaptions As DAO.Recordset
+  Dim rsHistoryScreens As DAO.Recordset
   Dim objNewTable As Table
   Dim objChildTable As Table
   Dim objCopyChildTable As Table
@@ -611,8 +611,8 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
   Dim objSourceColumn As Column
   Dim objNewExpr As CExpression
   Dim objSourceExpr As CExpression
-  Dim rsParents As dao.Recordset
-  Dim rsSummaryFields As dao.Recordset
+  Dim rsParents As DAO.Recordset
+  Dim rsSummaryFields As DAO.Recordset
   Dim objSourceSummary As cSummaryField
   Dim objNewSummary As cSummaryField
   Dim lngOriginalTableID As Long
@@ -621,12 +621,12 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
   Dim objNewEmail As clsEmailAddr
   Dim objSourceEmailLink As clsEmailLink
   Dim objNewEmailLink As clsEmailLink
-  Dim rsEmailDef As dao.Recordset
+  Dim rsEmailDef As DAO.Recordset
   
   'NPG20071120 Fault 12614
   Dim objSourceDiaryLink As cDiaryLink
   Dim objNewDiaryLink As cDiaryLink
-  Dim rsDiaryDef As dao.Recordset
+  Dim rsDiaryDef As DAO.Recordset
   
   
   Dim mstrEmailNotCopied As String
@@ -634,7 +634,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
   'Dim lngNewEmailID As Long
   'Dim objEmailLinks As Collection
 
-  Dim rsOutlookDef As dao.Recordset
+  Dim rsOutlookDef As DAO.Recordset
   Dim objSourceOutlookFolder As clsOutlookFolder
   Dim objNewOutlookFolder As clsOutlookFolder
   Dim objSourceOutlookLink As clsOutlookLink
@@ -642,7 +642,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
   Dim objSourceOutlookLinkColumn As clsOutlookLinkColumn
   Dim objNewOutlookLinkColumn As clsOutlookLinkColumn
 
-  Dim rsWorkflowTriggeredLinkDef As dao.Recordset
+  Dim rsWorkflowTriggeredLinkDef As DAO.Recordset
   Dim objSourceWorkflowTriggeredLink As clsWorkflowTriggeredLink
   Dim objNewWorkflowTriggeredLink As clsWorkflowTriggeredLink
   Dim objSourceWorkflowTriggeredLinkColumn As clsWFTriggeredLinkColumn
@@ -2423,7 +2423,7 @@ Public Function ReadTable() As Boolean
       
       'JPD 20030829 Fault 5538
       mbIsCopy = !IsCopy
-      mlngCopyTableID = !CopySecurityTableID
+      mlngCopyTableID = !copySecurityTableID
       msCopyTableName = !copySecurityTableName
 
       mbPermissionsPrompted = !PermissionsPrompted
@@ -2580,7 +2580,7 @@ Public Function WriteTable() As Boolean
   Dim fNewTable As Boolean
   Dim sIndex As String
   Dim sSQL As String
-  Dim rsViews As dao.Recordset
+  Dim rsViews As DAO.Recordset
   
   With recTabEdit
     'Store current index
@@ -2632,7 +2632,7 @@ Public Function WriteTable() As Boolean
       !GrantNew = miGrantNew
       !GrantDelete = miGrantDelete
       !IsCopy = mbIsCopy
-      !CopySecurityTableID = IIf(IsNull(CopyTableID), 0, CopyTableID)
+      !copySecurityTableID = IIf(IsNull(CopyTableID), 0, CopyTableID)
       !copySecurityTableName = IIf(IsNull(CopyTableName), 0, CopyTableName)
       !PermissionsPrompted = mbPermissionsPrompted
       !ManualSummaryColumnBreaks = mbManualColumnBreaks
@@ -2786,7 +2786,7 @@ Public Function AddIDColumn(pLngParentTableID As Long) As Boolean
     .InitColumnProps
     .Properties("new") = True
     .Properties("columnName") = IIf(pLngParentTableID = TableID, "ID", "ID_" & pLngParentTableID)
-    .Properties("dataType") = dtINTEGER
+    .Properties("dataType") = dtinteger
     .Properties("size") = 0
     .Properties("decimals") = 0
     .Properties("columnType") = giCOLUMNTYPE_SYSTEM
@@ -2847,7 +2847,7 @@ Public Function IsDescendantOf(plngTableID As Long) As Boolean
   ' Returns TRUE if the current table object is a descendant
   ' of the given table id.
   Dim objParentTable As Table
-  Dim varBookmark As Variant
+  Dim varBookMark As Variant
   
   With recRelEdit
     .Index = "idxParentID"
@@ -2869,13 +2869,13 @@ Public Function IsDescendantOf(plngTableID As Long) As Boolean
             Exit Do
           End If
         
-          varBookmark = .Bookmark
+          varBookMark = .Bookmark
           Set objParentTable = New Table
           objParentTable.TableID = !parentID
           IsDescendantOf = objParentTable.IsDescendantOf(plngTableID)
           Set objParentTable = Nothing
           .Index = "idxChildID"
-          .Bookmark = varBookmark
+          .Bookmark = varBookMark
 
           .MoveNext
         Loop
@@ -2890,7 +2890,7 @@ Public Function DeleteAllRelations() As Boolean
   
   Dim fOK As Boolean
   Dim sSQL As String
-  Dim rsRelations As dao.Recordset
+  Dim rsRelations As DAO.Recordset
   Dim lngTempTableID As Long
   
   fOK = True
@@ -3067,9 +3067,9 @@ Public Function RelationIsUsed(pLngChildTableID As Long, pfrmUsage As frmUsage) 
   Dim sExprType As String
   Dim sChildTable As String
   Dim sParentTable As String
-  Dim rsExpressions As dao.Recordset
-  Dim rsScreens As dao.Recordset
-  Dim rsLinks As dao.Recordset
+  Dim rsExpressions As DAO.Recordset
+  Dim rsScreens As DAO.Recordset
+  Dim rsLinks As DAO.Recordset
   Dim rsCheck1 As ADODB.Recordset
   Dim rsCheck2 As ADODB.Recordset
   Dim rsCheck3 As ADODB.Recordset
@@ -3081,15 +3081,15 @@ Public Function RelationIsUsed(pLngChildTableID As Long, pfrmUsage As frmUsage) 
   Dim rsCheck9 As ADODB.Recordset
   Dim rsCheck10 As ADODB.Recordset
   Dim objExpr As CExpression
-  Dim rsModules As dao.Recordset
-  Dim rsInfo As dao.Recordset
+  Dim rsModules As DAO.Recordset
+  Dim rsInfo As DAO.Recordset
   Dim sModuleName As String
   Dim sType As String
   Dim objComp As CExprComponent
   Dim lngExprID As Long
   Dim sAccess As String
-  Dim rsDAOTemp As dao.Recordset
-  Dim rsDAOTemp2 As dao.Recordset
+  Dim rsDAOTemp As DAO.Recordset
+  Dim rsDAOTemp2 As DAO.Recordset
   Dim lngPersonnelTableID As Long
 
   lngPersonnelTableID = GetModuleSetting(gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_PERSONNELTABLE, 0)
@@ -3812,10 +3812,10 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
   Dim sExprName As String
   Dim sParentTable As String
   Dim objExpr As CExpression
-  Dim rsExpressions As dao.Recordset
-  Dim rsColumns As dao.Recordset
-  Dim rsModules As dao.Recordset
-  Dim rsDAOTemp As dao.Recordset
+  Dim rsExpressions As DAO.Recordset
+  Dim rsColumns As DAO.Recordset
+  Dim rsModules As DAO.Recordset
+  Dim rsDAOTemp As DAO.Recordset
   Dim sModuleName As String
   Dim rsGlobalFunctions As ADODB.Recordset
   Dim rsUtils1 As ADODB.Recordset
@@ -3830,11 +3830,12 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
   Dim rsUtils10 As ADODB.Recordset
   Dim rsUtils11 As ADODB.Recordset
   Dim rsUtils12 As ADODB.Recordset
+  Dim rsUtilsDocTypes As ADODB.Recordset
   Dim sGlobalFunctionType As String
-  Dim rsEmail As dao.Recordset
+  Dim rsEmail As DAO.Recordset
   Dim strSYSOrderIDs As String
   Dim strSYSEmailIDs As String
-  Dim rsOrders As dao.Recordset
+  Dim rsOrders As DAO.Recordset
   Dim strSYSCheckedOrderIDs As String
   
   Dim bTR As Boolean
@@ -4057,6 +4058,27 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
   
   
   ' ### We now need to check every single util/report/tool to see if the Table is used.
+  
+  ' NHRD09112010 JIRA HRPRO-1083
+  ' Check if the column is used in any Document Types
+  sSQL = "SELECT DISTINCT DocumentMapID, Name " & _
+          "FROM ASRSysDocumentManagementTypes " & _
+          "WHERE ASRSysDocumentManagementTypes.[Parent1TableID] = " & gLngTableID
+
+  Set rsUtilsDocTypes = New ADODB.Recordset
+  
+  rsUtilsDocTypes.Open sSQL, gADOCon, adOpenStatic, adLockReadOnly
+  With rsUtilsDocTypes
+    If Not (.EOF And .BOF) Then
+      fUsed = True
+      Do Until .EOF
+        mfrmUse.AddToList ("Document Type : " & !Name)
+        .MoveNext
+      Loop
+    End If
+    .Close
+  End With
+  Set rsUtilsDocTypes = Nothing
   
   ' Now Check if the column is used in a Custom Report
   sSQL = "SELECT DISTINCT ASRSysCustomReportsName.Name, ASRSysCustomReportsName.ID, ASRSysCustomReportsName.Username" & _
@@ -4611,8 +4633,8 @@ Public Function CloneTable_Transaction(pfCopyData As Boolean, pfCopySecurity As 
   Dim iIndex As Integer
   Dim sSQL As String
   Dim objCloneTable As Table
-  Dim rsParents As dao.Recordset
-  Dim rsColumns As dao.Recordset
+  Dim rsParents As DAO.Recordset
+  Dim rsColumns As DAO.Recordset
   Dim avCloneRegister() As Variant
   
   ' Begin the transaction of data to the local database.
