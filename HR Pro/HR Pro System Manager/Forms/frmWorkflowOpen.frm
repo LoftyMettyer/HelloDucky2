@@ -196,6 +196,7 @@ Begin VB.Form frmWorkflowOpen
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   9234
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -986,6 +987,23 @@ Private Sub cmdDelete_Click()
     Set rsLocalInfo = Nothing
   End If
 
+  If fOK Then
+    ' NPG20120222 Fault HRPRO-2027
+    ' Check if the workflow is used in Mobile Designer.
+    sSQL = "SELECT COUNT(*) AS recCount" & _
+      " FROM tmpmobilegroupworkflows" & _
+      " WHERE WorkflowID = " & CStr(WorkflowID)
+    Set rsLocalInfo = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+    If rsLocalInfo!reccount > 0 Then
+      MsgBox "The '" & lstItems.SelectedItem.Text & "' workflow cannot be deleted." & vbCr & "It is used in the Mobile Workflow module.", _
+        vbExclamation + vbOKOnly, Me.Caption
+      fOK = False
+    End If
+    rsLocalInfo.Close
+    Set rsLocalInfo = Nothing
+  End If
+  
+  
   If fOK Then
     ' Check if the workflow is used in a table's triggered link.
     sSQL = "SELECT COUNT(*) AS recCount" & _
