@@ -3721,8 +3721,10 @@ Private Sub ssOleDBGridFindColumns_Click()
 End Sub
 
 Private Sub UpdateStatusBar()
-  StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s") & _
+  'StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s") & _
         IIf(ssOleDBGridFindColumns.SelBookmarks.Count > 1, " - " & ssOleDBGridFindColumns.SelBookmarks.Count & " Selected", "")
+  StatusBar1.Panels(1).Text = ssOleDBGridFindColumns.Rows & " Record" & IIf(ssOleDBGridFindColumns.Rows = 1, "", "s") & _
+        IIf(ssOleDBGridFindColumns.SelBookmarks.Count > 0, " - " & ssOleDBGridFindColumns.SelBookmarks.Count & " Selected", "")
 End Sub
 
 
