@@ -26,7 +26,7 @@
 
     Public ReadOnly Property BaseName() As String
       Get
-        Debug.Assert(Name.StartsWith("[dbo].["))
+        ' Debug.Assert(Name.StartsWith("[dbo].["))
         Return Name.Substring(7, Name.Length - 8)
       End Get
     End Property
