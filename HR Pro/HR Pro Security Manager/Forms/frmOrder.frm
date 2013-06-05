@@ -72,13 +72,13 @@ Begin VB.Form frmOrder
       TabsPerRow      =   2
       TabHeight       =   520
       TabCaption(0)   =   "&Find Window Columns"
-      TabPicture(0)   =   "frmOrder.frx":08D8
+      TabPicture(0)   =   "frmOrder.frx":0B20
       Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraPageContainer(0)"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Sort Order Columns"
-      TabPicture(1)   =   "frmOrder.frx":08F4
+      TabPicture(1)   =   "frmOrder.frx":0B3C
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraPageContainer(1)"
       Tab(1).ControlCount=   1
@@ -99,7 +99,7 @@ Begin VB.Form frmOrder
             Top             =   400
             Width           =   2955
             Begin ComctlLib.TreeView trvSelectedSortColumns 
-               DragIcon        =   "frmOrder.frx":0910
+               DragIcon        =   "frmOrder.frx":0B58
                Height          =   3375
                Left            =   150
                TabIndex        =   9
@@ -123,7 +123,7 @@ Begin VB.Form frmOrder
             Top             =   400
             Width           =   3000
             Begin ComctlLib.TreeView trvSortColumns 
-               DragIcon        =   "frmOrder.frx":0A5A
+               DragIcon        =   "frmOrder.frx":0CA2
                Height          =   3375
                Left            =   150
                TabIndex        =   7
@@ -224,7 +224,7 @@ Begin VB.Form frmOrder
             Top             =   400
             Width           =   3000
             Begin ComctlLib.TreeView trvFindColumns 
-               DragIcon        =   "frmOrder.frx":0E9C
+               DragIcon        =   "frmOrder.frx":10E4
                Height          =   3375
                Left            =   150
                TabIndex        =   1
@@ -248,7 +248,7 @@ Begin VB.Form frmOrder
             Top             =   400
             Width           =   2955
             Begin ComctlLib.TreeView trvSelectedFindColumns 
-               DragIcon        =   "frmOrder.frx":12DE
+               DragIcon        =   "frmOrder.frx":1526
                Height          =   3375
                Left            =   150
                TabIndex        =   2
@@ -336,11 +336,11 @@ Begin VB.Form frmOrder
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   2
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrder.frx":1428
+            Picture         =   "frmOrder.frx":1670
             Key             =   "IMG_UP"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrder.frx":17F3
+            Picture         =   "frmOrder.frx":1BC2
             Key             =   "IMG_DOWN"
          EndProperty
       EndProperty
@@ -359,15 +359,15 @@ Begin VB.Form frmOrder
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   3
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrder.frx":1BBB
+            Picture         =   "frmOrder.frx":2114
             Key             =   "IMG_COLUMN"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrder.frx":1F0D
+            Picture         =   "frmOrder.frx":2466
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrder.frx":245F
+            Picture         =   "frmOrder.frx":29B8
             Key             =   "IMG_CALC"
          EndProperty
       EndProperty
@@ -721,7 +721,7 @@ Private Sub SortColumns_RefreshControls()
     (Not mfReadOnly)
     
   ' Disable the OK command control if there are no order items specified.
-  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOk.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And _
     (Not mfReadOnly)
@@ -738,7 +738,7 @@ Private Sub cmdCancel_Click()
   If mfChanged Then
     intAnswer = MsgBox("The order definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
     If intAnswer = vbYes Then
-      If Me.cmdOK.Enabled Then
+      If Me.cmdOk.Enabled Then
         Call cmdOK_Click
         Exit Sub
       Else
@@ -798,7 +798,7 @@ Private Sub FindColumns_RefreshControls()
     (Not mfReadOnly)
     
   ' Disable the OK command control if there are no order items specified.
-  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOk.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And _
     (Not mfReadOnly)
@@ -1926,7 +1926,7 @@ Private Sub txtOrderName_Change(Index As Integer)
   mfChanged = True
   
   ' Disable the OK command control if there are no order items specified.
-  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOk.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And _
     (Not mfReadOnly)
