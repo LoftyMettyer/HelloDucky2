@@ -7081,7 +7081,11 @@ Public Function LoadWebFormItems() As Boolean
             End If
           End If
           
-          ctlControl.Caption = Replace(sCaption, "&", "&&")
+          If iWFItemType = giWFFORMITEM_PAGETAB Then
+            ctlControl.Caption = sCaption
+          Else
+            ctlControl.Caption = Replace(sCaption, "&", "&&")
+          End If
         End If
                     
         If ((iWFItemType = giWFFORMITEM_DBVALUE) _
