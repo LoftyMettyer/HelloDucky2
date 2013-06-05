@@ -901,7 +901,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "        /* ----------------------- */" & vbNewLine & _
       "        /* Outlook Triggers. */" & vbNewLine & _
       "        /* ----------------------- */" & vbNewLine & _
-      "        IF @fValidRecord = 1 AND @startingtriggertable = " & pLngCurrentTableID & vbNewLine & _
+      "        IF @fValidRecord = 1" & vbNewLine & _
       "        BEGIN" & vbNewLine & _
       "        IF EXISTS (SELECT Name FROM sysobjects WHERE type = 'P' AND name = 'spASROutlook_" & CStr(pLngCurrentTableID) & "')" & vbNewLine & _
       "          EXEC dbo.spASROutlook_" & CStr(pLngCurrentTableID) & " @recordID" & vbNewLine & _
@@ -1128,7 +1128,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "        /* ----------------------- */" & vbNewLine & _
       "        /* Outlook Triggers. */" & vbNewLine & _
       "        /* ----------------------- */" & vbNewLine & _
-      "        IF @fValidRecord = 1 AND @startingtriggertable = " & pLngCurrentTableID & vbNewLine & _
+      "        IF @fValidRecord = 1" & vbNewLine & _
       "        BEGIN" & vbNewLine & _
       "          IF EXISTS (SELECT Name FROM sysobjects WHERE type = 'P' AND name = 'spASROutlook_" & CStr(pLngCurrentTableID) & "')" & vbNewLine & _
       "            EXEC dbo.spASROutlook_" & CStr(pLngCurrentTableID) & " @recordID" & vbNewLine & _
@@ -1381,7 +1381,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "        /* ----------------------- */" & vbNewLine & _
       "        /* Outlook Triggers. */" & vbNewLine & _
       "        /* ----------------------- */" & vbNewLine & _
-      "        UPDATE ASRSysOutlookEvents SET Deleted = 1 " & _
+      "        UPDATE dbo.[ASRSysOutlookEvents] SET Deleted = 1 " & _
                "WHERE TableID = " & CStr(pLngCurrentTableID) & _
                " AND RecordID = @recordID" & vbNewLine & vbNewLine & vbNewLine
 
