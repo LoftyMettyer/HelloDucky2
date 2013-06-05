@@ -9,8 +9,8 @@
     </SchemaVersion>
     <ProjectGuid>{C475177F-6A94-43B0-BAEE-427642923108}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>HRProEngine</RootNamespace>
-    <AssemblyName>HRProEngine</AssemblyName>
+    <RootNamespace>SystemFramework</RootNamespace>
+    <AssemblyName>SystemFramework</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
@@ -26,7 +26,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>HRProEngine.xml</DocumentationFile>
+    <DocumentationFile>SystemFramework.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
     <RegisterForComInterop>true</RegisterForComInterop>
   </PropertyGroup>
@@ -36,7 +36,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>HRProEngine.xml</DocumentationFile>
+    <DocumentationFile>SystemFramework.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
     <RegisterForComInterop>true</RegisterForComInterop>

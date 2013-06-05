@@ -18,7 +18,7 @@
 
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, [ObjectName], HRProEngine.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.UDFs, [ObjectName], SystemFramework.ErrorHandler.Severity.Error, ex.Message, sSQL)
 
         ' This didn't work, so put a note in the error log and create a dummy UDF
         sSQL = String.Format("CREATE FUNCTION [{0}].[{1}] {2}" _
@@ -48,7 +48,7 @@
         CommitDB.ScriptStatement(sSQL)
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, [ObjectName], HRProEngine.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.UDFs, [ObjectName], SystemFramework.ErrorHandler.Severity.Error, ex.Message, sSQL)
         Return False
 
       End Try
@@ -72,7 +72,7 @@
         CommitDB.ScriptStatement(sSQL)
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.General, [ObjectName], HRProEngine.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.General, [ObjectName], SystemFramework.ErrorHandler.Severity.Error, ex.Message, sSQL)
         Return False
 
       End Try

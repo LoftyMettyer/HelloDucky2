@@ -211,7 +211,7 @@ Namespace ScriptDB
         bOK = CommitDB.ScriptStatement(sSQL)
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.Triggers, sObjectName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.Triggers, sObjectName, SystemFramework.ErrorHandler.Severity.Error, ex.Message, sSQL)
         bOK = False
       End Try
 

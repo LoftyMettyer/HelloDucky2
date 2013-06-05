@@ -140,7 +140,7 @@
       '
       'PictureBox1
       '
-      Me.PictureBox1.Image = Global.HRProEngine.My.Resources.Resources.Cancel48
+      Me.PictureBox1.Image = Global.SystemFramework.My.Resources.Resources.Cancel48
       Me.PictureBox1.Location = New System.Drawing.Point(14, 12)
       Me.PictureBox1.Name = "PictureBox1"
       Me.PictureBox1.Size = New System.Drawing.Size(48, 48)

@@ -6,12 +6,12 @@ Namespace Things
   Public Class GlobalModifyItem
     Inherits Things.Base
 
-    Public ColumnID As HRProEngine.HCMGuid
+    Public ColumnID As SystemFramework.HCMGuid
     Public Value As String
-    Public CalculationID As HRProEngine.HCMGuid
-    Public RefColumnID As HRProEngine.HCMGuid
-    Public LookupTableID As HRProEngine.HCMGuid
-    Public LookupColumnID As HRProEngine.HCMGuid
+    Public CalculationID As SystemFramework.HCMGuid
+    Public RefColumnID As SystemFramework.HCMGuid
+    Public LookupTableID As SystemFramework.HCMGuid
+    Public LookupColumnID As SystemFramework.HCMGuid
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get

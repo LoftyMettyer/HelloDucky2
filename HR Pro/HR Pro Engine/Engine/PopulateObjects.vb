@@ -29,7 +29,7 @@
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.LoadingData, String.Empty, SystemFramework.ErrorHandler.Severity.Error, ex.Message, vbNullString)
 
       End Try
 
@@ -77,7 +77,7 @@
 
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.LoadingData, String.Empty, SystemFramework.ErrorHandler.Severity.Error, ex.Message, vbNullString)
 
       End Try
 
@@ -107,7 +107,7 @@
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.LoadingData, String.Empty, SystemFramework.ErrorHandler.Severity.Error, ex.Message, vbNullString)
 
       End Try
 
@@ -162,7 +162,7 @@
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.LoadingData, String.Empty, SystemFramework.ErrorHandler.Severity.Error, ex.Message, vbNullString)
 
       Finally
         objDataset = Nothing
@@ -460,7 +460,7 @@
 
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, String.Empty, HRProEngine.ErrorHandler.Severity.Error, ex.Message, String.Empty)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.LoadingData, String.Empty, SystemFramework.ErrorHandler.Severity.Error, ex.Message, String.Empty)
 
       Finally
         objDataset = Nothing

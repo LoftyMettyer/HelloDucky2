@@ -48,7 +48,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.Views, "DropViews", HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.Views, "DropViews", SystemFramework.ErrorHandler.Severity.Error, ex.Message, vbNullString)
         bOK = False
 
       End Try
@@ -68,7 +68,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.Views, objTable.Name, HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.Views, objTable.Name, SystemFramework.ErrorHandler.Severity.Error, ex.Message, vbNullString)
 
       End Try
 
@@ -159,7 +159,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.TableAndColumns, "Views", HRProEngine.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.TableAndColumns, "Views", SystemFramework.ErrorHandler.Severity.Error, ex.Message, sSQL)
         bOK = False
 
       End Try
@@ -225,7 +225,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.Views, sViewName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sDefinitionSQL)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.Views, sViewName, SystemFramework.ErrorHandler.Severity.Error, ex.Message, sDefinitionSQL)
         bOK = False
 
       End Try
@@ -816,7 +816,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.Triggers, sTriggerName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.Triggers, sTriggerName, SystemFramework.ErrorHandler.Severity.Error, ex.Message, sSQL)
         bOK = False
 
       Finally
@@ -905,7 +905,7 @@ Namespace ScriptDB
         End If
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, sTriggerName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.UDFs, sTriggerName, SystemFramework.ErrorHandler.Severity.Error, ex.Message, sSQL)
         Return False
 
       End Try
@@ -1129,7 +1129,7 @@ Namespace ScriptDB
 
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, sObjectName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.UDFs, sObjectName, SystemFramework.ErrorHandler.Severity.Error, ex.Message, vbNullString)
         bOK = False
 
       End Try
@@ -1228,7 +1228,7 @@ Namespace ScriptDB
         Next
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, "Index", HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.UDFs, "Index", SystemFramework.ErrorHandler.Severity.Error, ex.Message, vbNullString)
         bOK = False
       End Try
 
@@ -1449,7 +1449,7 @@ Namespace ScriptDB
 
 
       Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.Triggers, "Overnight Job", HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.Triggers, "Overnight Job", SystemFramework.ErrorHandler.Severity.Error, ex.Message, vbNullString)
         bOK = False
 
       End Try

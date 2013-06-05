@@ -11,9 +11,9 @@ Namespace ErrorHandler
 
     Private mbIsCatastrophic As Boolean
 
-    Public Shadows Sub Add(ByVal Section As ErrorHandler.Section, ByVal ObjectName As String, ByVal Severity As HRProEngine.ErrorHandler.Severity, ByVal Message As String, ByVal Detail As String)
+    Public Shadows Sub Add(ByVal Section As ErrorHandler.Section, ByVal ObjectName As String, ByVal Severity As SystemFramework.ErrorHandler.Severity, ByVal Message As String, ByVal Detail As String)
 
-      Dim objError As HRProEngine.ErrorHandler.Error
+      Dim objError As SystemFramework.ErrorHandler.Error
 
       objError.Section = Section
       objError.ObjectName = ObjectName
@@ -75,7 +75,7 @@ Namespace ErrorHandler
     Public Sub OutputToFile(ByRef FileName As String) Implements COMInterfaces.iErrors.OutputToFile
 
       Dim objWriter As System.IO.StreamWriter
-      Dim objError As HRProEngine.ErrorHandler.Error
+      Dim objError As SystemFramework.ErrorHandler.Error
       Dim sMessage As String
 
       Try

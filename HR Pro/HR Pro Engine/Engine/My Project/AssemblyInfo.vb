@@ -8,10 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("HR Pro System Framework")> 
-<Assembly: AssemblyDescription("HR Pro System Framework")> 
+<Assembly: AssemblyTitle("Advanced OpenFramework")> 
+<Assembly: AssemblyDescription("Advanced OpenFramework")> 
 <Assembly: AssemblyCompany("Advanced Business Software and Solutions Limited")> 
-<Assembly: AssemblyProduct("HR Pro System Framework")> 
+<Assembly: AssemblyProduct("Advanced OpenFramework")> 
 <Assembly: AssemblyCopyright("Copyright ©  Advanced Business Software and Solutions Limited 2000-2011")> 
 <Assembly: AssemblyTrademark("")> 
 
