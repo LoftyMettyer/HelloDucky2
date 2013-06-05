@@ -102,7 +102,9 @@ Public Function SelectOrder() As Boolean
                " AND type = " & CStr(OrderType)
       
       .ShowOrders sSQL, OrderID
-    gcolSystemPermissions.Item (59)
+    'NHRD dont know how this line got in here but it was stopping the order defsel from loading.
+    'Commented out for bug JIRA HR Pro 714
+    'gcolSystemPermissions.Item (59)
 
       ' Display the selection form.
       .Show vbModal
