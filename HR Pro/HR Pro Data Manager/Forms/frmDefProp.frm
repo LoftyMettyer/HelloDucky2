@@ -399,7 +399,7 @@ Private Sub DrawControls(utlType As UtilityType)
   End If
   
   
-  cmdOk.Top = cmdOk.Top - lngOffset
+  cmdOK.Top = cmdOK.Top - lngOffset
   Me.Height = Me.Height - lngOffset
 
   ' Leave form size at its default if we are using as a change type form
@@ -1595,7 +1595,29 @@ Public Function CheckForUseage(piType As UtilityType, plngItemID As Long) As Boo
         " WHERE ASRSysMailMergeName.PickListID = " & CStr(plngItemID))
     End If
 
-
+  Case utlDocumentMapping
+  
+    If gfCurrentUserIsSysSecMgr Then
+      Call GetNameWhereUsed( _
+        "SELECT DISTINCT 'Mail Merge'," & _
+        " ASRSysMailMergeName.Name," & _
+        " ASRSysMailMergeName.UserName," & _
+        " '" & ACCESS_READWRITE & "' AS access" & _
+        " FROM ASRSysMailMergeName" & _
+        " WHERE ASRSysMailMergeName.DocumentMapID = " & CStr(plngItemID))
+    Else
+      Call GetNameWhereUsed( _
+        "SELECT DISTINCT 'Mail Merge'," & _
+        " ASRSysMailMergeName.Name," & _
+        " ASRSysMailMergeName.UserName," & _
+        " ASRSysMailMergeAccess.Access" & _
+        " FROM ASRSysMailMergeName" & _
+        " INNER JOIN ASRSysMailMergeAccess ON ASRSysMailMergeName.mailMergeID = ASRSysMailMergeAccess.ID" & _
+        " INNER JOIN sysusers b ON ASRSysMailMergeAccess.groupname = b.name" & _
+        "   AND b.name = '" & gsUserGroup & "'" & _
+        " WHERE ASRSysMailMergeName.DocumentMapID = " & CStr(plngItemID))
+    End If
+  
   Case Else
     List1.AddItem "<Error Checking Usage>"    'Do not allow delete if not recognised
 
