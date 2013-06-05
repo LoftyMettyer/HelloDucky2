@@ -334,12 +334,19 @@ Begin VB.Form frmConfiguration
             Width           =   330
          End
          Begin VB.CommandButton cmdDocumentsPathClear 
-            DisabledPicture =   "frmConfiguration.frx":0140
+Caption = "O"
+BeginProperty Font
+    Name = "Wingdings 2"
+    Size = 20.25
+    Charset = 2
+    Weight = 400
+    Underline = 0
+    Italic = 0
+    Strikethrough = 0
+EndProperty
             Height          =   315
             Left            =   6200
             MaskColor       =   &H000000FF&
-            Picture         =   "frmConfiguration.frx":0512
-            Style           =   1  'Graphical
             TabIndex        =   34
             ToolTipText     =   "Clear Path"
             Top             =   390
@@ -945,12 +952,19 @@ Begin VB.Form frmConfiguration
             Width           =   330
          End
          Begin VB.CommandButton cmdCrystalPathClear 
-            DisabledPicture =   "frmConfiguration.frx":08F1
+Caption = "O"
+BeginProperty Font
+    Name = "Wingdings 2"
+    Size = 20.25
+    Charset = 2
+    Weight = 400
+    Underline = 0
+    Italic = 0
+    Strikethrough = 0
+EndProperty
             Height          =   315
             Left            =   6200
             MaskColor       =   &H000000FF&
-            Picture         =   "frmConfiguration.frx":0CC3
-            Style           =   1  'Graphical
             TabIndex        =   46
             Top             =   1515
             UseMaskColor    =   -1  'True
@@ -958,12 +972,19 @@ Begin VB.Form frmConfiguration
             Width           =   330
          End
          Begin VB.CommandButton cmdPhotoPathClear 
-            DisabledPicture =   "frmConfiguration.frx":109E
+Caption = "O"
+BeginProperty Font
+    Name = "Wingdings 2"
+    Size = 20.25
+    Charset = 2
+    Weight = 400
+    Underline = 0
+    Italic = 0
+    Strikethrough = 0
+EndProperty
             Height          =   315
             Left            =   6200
             MaskColor       =   &H000000FF&
-            Picture         =   "frmConfiguration.frx":1470
-            Style           =   1  'Graphical
             TabIndex        =   43
             ToolTipText     =   "Clear Path"
             Top             =   1110
@@ -971,12 +992,19 @@ Begin VB.Form frmConfiguration
             Width           =   330
          End
          Begin VB.CommandButton cmdLocalOLEPathClear 
-            DisabledPicture =   "frmConfiguration.frx":184B
+Caption = "O"
+BeginProperty Font
+    Name = "Wingdings 2"
+    Size = 20.25
+    Charset = 2
+    Weight = 400
+    Underline = 0
+    Italic = 0
+    Strikethrough = 0
+EndProperty
             Height          =   315
             Left            =   6200
             MaskColor       =   &H000000FF&
-            Picture         =   "frmConfiguration.frx":1C1D
-            Style           =   1  'Graphical
             TabIndex        =   40
             ToolTipText     =   "Clear Path"
             Top             =   705
@@ -984,12 +1012,19 @@ Begin VB.Form frmConfiguration
             Width           =   330
          End
          Begin VB.CommandButton cmdOLEPathClear 
-            DisabledPicture =   "frmConfiguration.frx":1FF8
+Caption = "O"
+BeginProperty Font
+    Name = "Wingdings 2"
+    Size = 20.25
+    Charset = 2
+    Weight = 400
+    Underline = 0
+    Italic = 0
+    Strikethrough = 0
+EndProperty
             Height          =   315
             Left            =   6200
             MaskColor       =   &H000000FF&
-            Picture         =   "frmConfiguration.frx":23CA
-            Style           =   1  'Graphical
             TabIndex        =   37
             ToolTipText     =   "Clear Path"
             Top             =   300
@@ -1509,14 +1544,21 @@ Begin VB.Form frmConfiguration
          Top             =   3775
          Width           =   3800
          Begin VB.CommandButton cmdFileClear 
-            DisabledPicture =   "frmConfiguration.frx":27C5
+Caption = "O"
+BeginProperty Font
+    Name = "Wingdings 2"
+    Size = 20.25
+    Charset = 2
+    Weight = 400
+    Underline = 0
+    Italic = 0
+    Strikethrough = 0
+EndProperty
             Enabled         =   0   'False
             Height          =   315
             Index           =   1
             Left            =   3345
             MaskColor       =   &H000000FF&
-            Picture         =   "frmConfiguration.frx":2B97
-            Style           =   1  'Graphical
             TabIndex        =   94
             ToolTipText     =   "Clear Path"
             Top             =   705
@@ -1568,14 +1610,21 @@ Begin VB.Form frmConfiguration
             Width           =   330
          End
          Begin VB.CommandButton cmdFileClear 
-            DisabledPicture =   "frmConfiguration.frx":2F72
+Caption = "O"
+BeginProperty Font
+    Name = "Wingdings 2"
+    Size = 20.25
+    Charset = 2
+    Weight = 400
+    Underline = 0
+    Italic = 0
+    Strikethrough = 0
+EndProperty
             Enabled         =   0   'False
             Height          =   315
             Index           =   0
             Left            =   3345
             MaskColor       =   &H000000FF&
-            Picture         =   "frmConfiguration.frx":3344
-            Style           =   1  'Graphical
             TabIndex        =   91
             ToolTipText     =   "Clear Path"
             Top             =   300
@@ -4208,4 +4257,5 @@ Private Function CurrentToolBarIndex() As Integer
   CurrentToolBarIndex = iDisplayListViewID
 
 End Function
+
 
