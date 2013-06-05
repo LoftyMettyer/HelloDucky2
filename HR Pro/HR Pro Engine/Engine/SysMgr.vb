@@ -9,7 +9,6 @@ Public Class SysMgr
   Private objMetadataDB As New Connectivity.AccessDB
   Private mobjCommitDB As New Connectivity.ADOClassic
   Private mobjScript As New ScriptDB.Script
-  Private mbSysFrameworkMajor As String
 
   Public Property CommitDB As Object Implements COMInterfaces.iSystemManager.CommitDB
     Get
@@ -103,13 +102,10 @@ Public Class SysMgr
     End Get
   End Property
 
-  Public Property SysFrameworkMajorVersion As String
+  Public ReadOnly Property Version As System.Version Implements iSystemManager.Version
     Get
-      Return mbSysFrameworkMajor
+      Return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
     End Get
-    Set(ByVal value As String)
-      mbSysFrameworkMajor = Version.Major & "." & Version.Minor & "." & Version.Revision
-    End Set
   End Property
 
   Public ReadOnly Property ReturnErrorLog As ErrorHandler.Errors Implements COMInterfaces.iSystemManager.ErrorLog

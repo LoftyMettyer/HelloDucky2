@@ -205,12 +205,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\dotNetDBforHRPro\dotNetDBforHRPro.vbproj">
-      <Project>{F585CBA0-39DC-48B9-AE9B-0C549B363BB1}</Project>
-      <Name>dotNetDBforHRPro</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <COMReference Include="ADODB">
       <Guid>{2A75196C-D9EB-4129-B803-931327F72D5C}</Guid>
       <VersionMajor>2</VersionMajor>

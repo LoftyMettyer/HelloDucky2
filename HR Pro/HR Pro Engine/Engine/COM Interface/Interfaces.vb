@@ -24,6 +24,7 @@
     Function Initialise() As Boolean
     Function PopulateObjects() As Boolean
     Function CloseSafely() As Boolean
+    ReadOnly Property Version As System.Version
   End Interface
 
   Public Interface iErrors
