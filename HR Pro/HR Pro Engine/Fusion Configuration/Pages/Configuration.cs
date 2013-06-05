@@ -50,7 +50,7 @@ namespace Fusion.Pages
 					if (categoryGrid.Rows.Count > 0) categoryGrid.Rows[0].Activate();
 		
 					//if the app is closing make sure changes are pushing into the databinding sources
-					MainForm.AppClosing += (s, e) => elementGrid.UpdateData();
+					MainForm.EndEdits += (s, e) => elementGrid.UpdateData();
 				}
 			}
 			categoryGrid.Select();

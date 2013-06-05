@@ -15,7 +15,7 @@ namespace Fusion
 	public partial class MainForm : Form
 	{
 		public static EventHandler LogsPurged;
-		public static EventHandler AppClosing;
+		public static EventHandler EndEdits;
 
 		private ISession _session;
 		private ISessionFactory _sessionFactory;
@@ -55,6 +55,9 @@ namespace Fusion
 
 		private void ToolbarsManagerToolClick(object sender, ToolClickEventArgs e)
 		{
+			if (EndEdits != null)
+				EndEdits(this, EventArgs.Empty);
+
 			switch (e.Tool.Key) {
 				case "ID_Save":
 					Save();
@@ -182,9 +185,8 @@ namespace Fusion
 			if (e.CloseReason != CloseReason.UserClosing)
 				return;
 
-			//inform views app is closing, they may need to do something
-			if (AppClosing != null)
-				AppClosing(this, EventArgs.Empty);
+			if (EndEdits != null)
+				EndEdits(this, EventArgs.Empty);
 
 			if (IsDirty()) {
 				var result = MessageBox.Show(Resources.MessageBox_SaveChanges, Resources.MessageBox_Title, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);

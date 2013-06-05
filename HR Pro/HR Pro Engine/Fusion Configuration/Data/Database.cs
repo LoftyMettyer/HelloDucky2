@@ -48,35 +48,44 @@ namespace Fusion
 
 		public bool Lock(LockLevel level)
 		{
-            //if (level == LockLevel.ReadWrite) {
-            //    //cant take a read-write lock if there are any locks
-            //    using (var cmd = new SqlCommand("exec sp_ASRLockCheck", _connection)) {
-            //        using (var dr = cmd.ExecuteReader()) {
-            //            if (dr.HasRows)
-            //                return false;
-            //        }
-            //    }
-            //} else if (level == LockLevel.Saving) {
-            //    //already have a read-write lock, can only upgrade to a save lock if no users are in the system
-            //    using (var cmd = new SqlCommand("exec spASRGetCurrentUsers", _connection)) {
-            //        using (var dr = cmd.ExecuteReader()) {
-            //            //two users will be me, one for each lock, so a third means someone else
-            //            if (dr.Read() && dr.Read() && dr.Read())
-            //                return false;
-            //        }
-            //    }
-            //}
+#if DEBUG
+			return true;
+#endif
 
-            ////take the lock
-            //using (var cmd = new SqlCommand("exec sp_ASRLockWrite " + (int) level, _connection)) {
-            //    cmd.ExecuteNonQuery();
-            //}
+			if (level == LockLevel.ReadWrite) {
+				//cant take a read-write lock if there are any locks
+				using (var cmd = new SqlCommand("exec sp_ASRLockCheck", _connection)) {
+					using (var dr = cmd.ExecuteReader()) {
+						if (dr.HasRows)
+							return false;
+					}
+				}
+			}
+			else if (level == LockLevel.Saving)
+			{
+				//already have a read-write lock, can only upgrade to a save lock if no users are in the system
+				using (var cmd = new SqlCommand("exec spASRGetCurrentUsers", _connection)) {
+					using (var dr = cmd.ExecuteReader()) {
+						//two users will be me, one for each lock, so a third means someone else
+						if (dr.Read() && dr.Read() && dr.Read())
+							return false;
+					}
+				}
+			}
+
+			//take the lock
+			using (var cmd = new SqlCommand("exec sp_ASRLockWrite " + (int)level, _connection)) {
+				cmd.ExecuteNonQuery();
+			}
 
 			return true;
 		}
 
 		public void Unlock(LockLevel level)
 		{
+#if DEBUG
+			return;
+#endif
 			using (var cmd = new SqlCommand("exec sp_ASRLockDelete " + (int) level, _connection)) {
 				cmd.ExecuteNonQuery();
 			}
