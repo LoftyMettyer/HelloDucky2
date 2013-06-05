@@ -1979,7 +1979,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
   Dim objTable As HRProEngine.Table
   Dim fOK As Boolean
   Dim sSQL As String
-  Dim sGetRecordDesc As String
+  'Dim sGetRecordDesc As String
   Dim sCursorName As String
   Dim objExpr As CExpression
   Dim iLoop As Integer
@@ -2017,17 +2017,17 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
   ' Now put them all together to make the trigger creation string.
   '
   If fOK Then
-    sGetRecordDesc = _
-      "        /* ------------------------------------- */" & vbNewLine & _
-      "        /* Get Record Description */" & vbNewLine & _
-      "        /* ------------------------------------- */" & vbNewLine & _
-      "        IF EXISTS(SELECT Name FROM sysobjects WHERE type = 'P' AND name = 'sp_ASRExpr_" & Trim$(Str$(plngRecDescExprID)) & "')" & vbNewLine & _
-      "        BEGIN" & vbNewLine & _
-      "            EXEC @hResult = dbo.sp_ASRExpr_" & Trim$(Str$(plngRecDescExprID)) & " @recordDesc OUTPUT, @recordID" & vbNewLine & _
-      "            IF @hResult <> 0 SET @recordDesc = ''" & vbNewLine & _
-      "            SET @recordDesc = CONVERT(varchar(255), @recordDesc)" & vbNewLine & _
-      "        END" & vbNewLine & _
-      "        ELSE SET @recordDesc = ''" & vbNewLine & vbNewLine
+'    sGetRecordDesc = _
+'      "        /* ------------------------------------- */" & vbNewLine & _
+'      "        /* Get Record Description */" & vbNewLine & _
+'      "        /* ------------------------------------- */" & vbNewLine & _
+'      "        IF EXISTS(SELECT Name FROM sysobjects WHERE type = 'P' AND name = 'sp_ASRExpr_" & Trim$(Str$(plngRecDescExprID)) & "')" & vbNewLine & _
+'      "        BEGIN" & vbNewLine & _
+'      "            EXEC @hResult = dbo.sp_ASRExpr_" & Trim$(Str$(plngRecDescExprID)) & " @recordDesc OUTPUT, @recordID" & vbNewLine & _
+'      "            IF @hResult <> 0 SET @recordDesc = ''" & vbNewLine & _
+'      "            SET @recordDesc = CONVERT(varchar(255), @recordDesc)" & vbNewLine & _
+'      "        END" & vbNewLine & _
+'      "        ELSE SET @recordDesc = ''" & vbNewLine & vbNewLine
     
     fSelfCalcs = asCalcSelfCode(1).Length <> 0 And _
        asCalcSelfCode(2).Length <> 0
@@ -2172,10 +2172,10 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "    BEGIN" & vbNewLine
     sInsertTriggerSQL.Append _
       "    /* Loop through the virtual 'inserted' table, getting the record ID of each inserted record. */" & vbNewLine & _
-      "    SET @cursInsertedRecords = CURSOR LOCAL FAST_FORWARD READ_ONLY FOR SELECT inserted.id, convert(int,inserted.timestamp)" & sSelectInsCols.ToString & sSelectDelCols.ToString & " FROM inserted" & vbNewLine & _
+      "    SET @cursInsertedRecords = CURSOR LOCAL FAST_FORWARD READ_ONLY FOR SELECT inserted.id, convert(int,inserted.timestamp), inserted.[_description]" & sSelectInsCols.ToString & sSelectDelCols.ToString & " FROM inserted" & vbNewLine & _
       "    LEFT OUTER JOIN deleted ON inserted.id = deleted.id" & vbNewLine & vbNewLine & _
       "    OPEN @cursInsertedRecords" & vbNewLine & _
-      "    FETCH NEXT FROM @cursInsertedRecords INTO @recordID, @TStamp" & sFetchInsCols.ToString & sFetchDelCols.ToString & vbNewLine & vbNewLine & _
+      "    FETCH NEXT FROM @cursInsertedRecords INTO @recordID, @TStamp, @recordDesc" & sFetchInsCols.ToString & sFetchDelCols.ToString & vbNewLine & vbNewLine & _
       "    WHILE (@@fetch_status = 0) AND (@fValidRecord = 1)" & vbNewLine & _
       "    BEGIN" & vbNewLine
 
@@ -2323,13 +2323,13 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
 '
     
     
-    '-------------------------------------------------------------------------------------------------------
-    'MH20020529 Fault 3918
-    'NEED TO GET RECORD DESCRIPTION AGAIN IN CASE THAT HAS CHANGED!
-    sInsertTriggerSQL.Append vbNewLine & _
-      sGetRecordDesc
-
-    
+'    '-------------------------------------------------------------------------------------------------------
+'    'MH20020529 Fault 3918
+'    'NEED TO GET RECORD DESCRIPTION AGAIN IN CASE THAT HAS CHANGED!
+'    sInsertTriggerSQL.Append vbNewLine & _
+'      sGetRecordDesc
+'
+'
 '    ' Insert the Audit trigger code.
 '    If sInsertAuditCode.Length = 0 Then
 '      sInsertTriggerSQL.Append _
@@ -2442,7 +2442,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     ' Here we are adding the required FETCH statements to the INSERT trigger.
     'Get next record which has been inserted
     sInsertTriggerSQL.Append vbNewLine & _
-      "        IF @fValidRecord = 1 FETCH NEXT FROM @cursInsertedRecords INTO @recordID, @TStamp" & sFetchInsCols.ToString & sFetchDelCols.ToString & vbNewLine & _
+      "        IF @fValidRecord = 1 FETCH NEXT FROM @cursInsertedRecords INTO @recordID, @TStamp, @recorddesc" & sFetchInsCols.ToString & sFetchDelCols.ToString & vbNewLine & _
       "    END" & vbNewLine & _
       "    IF @fValidRecord = 1 CLOSE @cursInsertedRecords" & vbNewLine & _
       "    DEALLOCATE @cursInsertedRecords" & vbNewLine & vbNewLine
@@ -2620,11 +2620,11 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     ' Here we are adding the required FETCH statements to the UPDATE trigger.
     sUpdateTriggerSQL.Append _
       "    /* Loop through the virtual 'inserted' table, getting the record ID of each updated record. */" & vbNewLine & _
-      "    SET @cursInsertedRecords = CURSOR LOCAL FAST_FORWARD READ_ONLY FOR SELECT inserted.id, convert(int,inserted.timestamp)" & sSelectInsCols.ToString & sSelectDelCols.ToString & vbNewLine & _
+      "    SET @cursInsertedRecords = CURSOR LOCAL FAST_FORWARD READ_ONLY FOR SELECT inserted.id, convert(int,inserted.timestamp), inserted.[_description]" & sSelectInsCols.ToString & sSelectDelCols.ToString & vbNewLine & _
       "        FROM deleted" & vbNewLine & _
       "        LEFT OUTER JOIN dbo.[" & psTableName & "] inserted ON inserted.id = deleted.id" & vbNewLine & _
       "    OPEN @cursInsertedRecords" & vbNewLine & _
-      "    FETCH NEXT FROM @cursInsertedRecords INTO @recordID, @TStamp" & sFetchInsCols.ToString & sFetchDelCols.ToString & vbNewLine
+      "    FETCH NEXT FROM @cursInsertedRecords INTO @recordID, @TStamp, @recorddesc" & sFetchInsCols.ToString & sFetchDelCols.ToString & vbNewLine
 
     sUpdateTriggerSQL.Append _
       "    WHILE (@@fetch_status = 0) AND (@fValidRecord = 1)" & vbNewLine & _
@@ -2658,9 +2658,9 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     'Auto Update for Destination Tables for Lookup Column Type Values
     Dim sAULookupCode As String
     
-    '-------------------------------------------------------------------------------------------------------
-    sUpdateTriggerSQL.Append vbNewLine & _
-      sGetRecordDesc
+'    '-------------------------------------------------------------------------------------------------------
+'    sUpdateTriggerSQL.Append vbNewLine & _
+'      sGetRecordDesc
 
     'A date is required to pass to the diary subroutine.  This is used for the rebuild function.
     'This date indicates not to create diary entries prior to 1980
@@ -2765,7 +2765,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "    DEALLOCATE @cursInsertedRecords" & vbNewLine & _
       "END"
     sUpdateTriggerSQL.Append vbNewLine & _
-      "        IF @fValidRecord = 1 FETCH NEXT FROM @cursInsertedRecords INTO @recordID, @TStamp" & sFetchInsCols.ToString & sFetchDelCols.ToString & vbNewLine & _
+      "        IF @fValidRecord = 1 FETCH NEXT FROM @cursInsertedRecords INTO @recordID, @TStamp, @recorddesc" & sFetchInsCols.ToString & sFetchDelCols.ToString & vbNewLine & _
       "    END" & vbNewLine & _
       "    IF @fValidRecord = 1 CLOSE @cursInsertedRecords" & vbNewLine & _
       "    DEALLOCATE @cursInsertedRecords" & vbNewLine
