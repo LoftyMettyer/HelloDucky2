@@ -515,9 +515,9 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       SaveSystemSetting "Outlook", "PMStartTime", Format(glngPMStartTime, "00:00")
       SaveSystemSetting "Outlook", "PMEndTime", Format(glngPMEndTime, "00:00")
   
-  
       SaveSystemSetting "Database", "RefreshStoredProcedures", 0
       SaveSystemSetting "Database", "UpdatingDateDependantColumns", 0
+      SaveSystemSetting "Database", "SystemLastSaveDate", Now
   
     End If
   
