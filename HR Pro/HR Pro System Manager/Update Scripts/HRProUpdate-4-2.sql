@@ -1385,7 +1385,7 @@ values('support', 'email', 'service.delivery@advancedcomputersoftware.com')
 delete from asrsyssystemsettings
 where [Section] = 'support' and [SettingKey] = 'webpage'
 insert ASRSysSystemSettings([Section], [SettingKey], [SettingValue])
-values('support', 'webpage', 'http//webfirst.advancedcomputersoftware.com')
+values('support', 'webpage', 'http://webfirst.advancedcomputersoftware.com')
 /* ------------------------------------------------------------- */
 -- Update the system permission image for Module Access
 	IF EXISTS(SELECT * FROM dbo.[ASRSysPermissionCategories] WHERE [categoryID] = 1)
