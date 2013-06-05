@@ -528,7 +528,7 @@ PRINT 'Step - Add abstraction layer to user defined tables'
 					@sqlRevokePermissions nvarchar(MAX);
 
 			DECLARE @permissions TABLE([owner] nvarchar(255), [object] nvarchar(255), [grantee] nvarchar(255), [grantor] nvarchar(255)
-					, [protecttype] nvarchar(255), [action] nvarchar(10), [column] nvarchar(MAX))
+					, [protecttype] nvarchar(255), [action] nvarchar(255), [column] nvarchar(MAX))
 
 			SET @newname = ''tbuser_'' + @oldname;
 			SET @columnnames = '''';
