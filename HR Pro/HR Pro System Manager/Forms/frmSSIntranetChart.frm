@@ -281,6 +281,8 @@ Private mvar_lngPersonnelTableID As Long
 Private miChartTableID As Long
 Private mlngChartColumnID As Long
 Private miChartAggregateType As Integer
+Private mlngChartFilterID As Long
+
 
 Public Property Let Cancelled(ByVal bCancel As Boolean)
   mblnCancelled = bCancel
@@ -355,6 +357,11 @@ Private Sub cmdFilter_Click()
     If .SelectExpression Then
       txtFilter.Tag = .ExpressionID
       txtFilter.Text = GetExpressionName(txtFilter.Tag)
+      
+      mlngChartFilterID = .ExpressionID
+      mfChanged = True
+      
+      
     Else
       ' Check in case the original expression has been deleted.
       txtFilter.Text = GetExpressionName(txtFilter.Tag)
@@ -379,49 +386,49 @@ ErrorTrap:
 
 End Sub
 
-Private Function GetFldSelFilterDetails() As Boolean
-  ' Get the 'Field Selection Filter' expression details.
-  On Error GoTo ErrorTrap
-
-  Dim fOK As Boolean
-  Dim sExprName As String
-  Dim objExpr As CExpression
-
-  fOK = True
-
-  ' Initialise the default values.
-  sExprName = ""
-
-  ' Instantiate the expression class.
-  Set objExpr = New CExpression
-
-  With objExpr
-    ' Set the expression id.
-    .ExpressionID = mobjComponent.Component.SelectionFilter
-
-    ' Read the required info from the expression.
-    If .ReadExpressionDetails Then
-      sExprName = .Name
-    End If
-  End With
-
-TidyUpAndExit:
-  ' Disassociate object variables.
-  Set objExpr = Nothing
-  If Not fOK Then
-    sExprName = ""
-  End If
-
-  txtFldSelFilter.Text = sExprName
-
-  GetFldSelFilterDetails = fOK
-  Exit Function
-
-ErrorTrap:
-  fOK = False
-  Resume TidyUpAndExit
-
-End Function
+'Private Function GetFldSelFilterDetails() As Boolean
+'  ' Get the 'Field Selection Filter' expression details.
+'  On Error GoTo ErrorTrap
+'
+'  Dim fOK As Boolean
+'  Dim sExprName As String
+'  Dim objExpr As CExpression
+'
+'  fOK = True
+'
+'  ' Initialise the default values.
+'  sExprName = ""
+'
+'  ' Instantiate the expression class.
+'  Set objExpr = New CExpression
+'
+'  With objExpr
+'    ' Set the expression id.
+'    .ExpressionID = mobjComponent.Component.SelectionFilter
+'
+'    ' Read the required info from the expression.
+'    If .ReadExpressionDetails Then
+'      sExprName = .Name
+'    End If
+'  End With
+'
+'TidyUpAndExit:
+'  ' Disassociate object variables.
+'  Set objExpr = Nothing
+'  If Not fOK Then
+'    sExprName = ""
+'  End If
+'
+'  txtfldSelFilter.Text = sExprName
+'
+'  GetFldSelFilterDetails = fOK
+'  Exit Function
+'
+'ErrorTrap:
+'  fOK = False
+'  Resume TidyUpAndExit
+'
+'End Function
 
 
 
@@ -436,6 +443,7 @@ Public Sub Initialize(plngChartViewID As Long, _
   ChartTableID = miChartTableID
   ChartColumnID = plngChartColumnID
   ChartAggregateType = piChartAggregateType
+  ChartFilterID = plngChartFilterID
 
 End Sub
 
@@ -450,7 +458,12 @@ Private Sub Form_Load()
   optAggregateType(0).value = IIf(ChartAggregateType = 0, True, False)
   optAggregateType(1).value = IIf(ChartAggregateType = 1, True, False)
   
-  txtFilter.Tag = 0
+  'txtFilter.Tag = 0
+  
+  txtFilter.Tag = mlngChartFilterID
+  txtFilter.Text = GetExpressionName(txtFilter.Tag)
+  
+  
   txtFilter.Enabled = False
   txtFilter.BackColor = vbButtonFace
 End Sub
@@ -573,6 +586,13 @@ Public Property Let ChartAggregateType(ByVal piNewValue As Integer)
   miChartAggregateType = piNewValue
 End Property
 
+Public Property Get ChartFilterID() As Long
+  ChartFilterID = mlngChartFilterID
+End Property
+
+Public Property Let ChartFilterID(ByVal plngNewValue As Long)
+  mlngChartFilterID = plngNewValue
+End Property
 
 
 
