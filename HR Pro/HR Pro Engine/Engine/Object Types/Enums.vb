@@ -104,8 +104,9 @@
     End Enum
 
     Public Enum UniqueCheckScope
-      All = 0
-      Sibling = 1
+      None = 0
+      All = -1
+      Sibling = -2
     End Enum
 
     Public Enum SettingType

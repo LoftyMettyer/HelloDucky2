@@ -545,6 +545,7 @@
           objColumn.CalculateIfEmpty = objRow.Item("calculateifempty")
           objColumn.TrimType = NullSafe(objRow, "trimming", 0).ToString
           objColumn.Alignment = objRow.Item("alignment").ToString
+          objColumn.UniqueType = objRow.Item("uniquechecktype").ToString
 
           Table.Objects.Add(objColumn)
         Next

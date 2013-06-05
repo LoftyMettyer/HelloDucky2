@@ -30,6 +30,8 @@ Namespace Things
     Public Mandatory As Boolean
     Public OLEType As ScriptDB.OLEType
 
+    Public UniqueType As Enums.UniqueCheckScope
+
     Public DefaultCalcID As HCMGuid
     Public DefaultCalculation As Things.Expression
     Public DefaultValue As String

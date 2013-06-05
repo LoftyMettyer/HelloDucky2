@@ -17,6 +17,7 @@ Public Class Index
     Public IsTableIndex As Boolean = False
     Public IncludePrimaryKey As Boolean = True
     Public Enabled As Boolean = True
+    Public IsUnique As Boolean = False
 
     Public Sub New()
       Columns = New Things.Collection

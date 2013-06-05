@@ -465,6 +465,19 @@ Namespace ScriptDB
 
             If Not objColumn.State = System.Data.DataRowState.Deleted Then
 
+              ' Create an index on any unique check columns
+              If objColumn.UniqueType = Things.UniqueCheckScope.All Then
+                objIndex = New Things.Index
+                objIndex.Name = String.Format("IDX_uniquecheck_{0}", objColumn.Name)
+                objIndex.IncludePrimaryKey = False
+                objIndex.IsTableIndex = True
+                objIndex.IsClustered = False
+                objIndex.Enabled = True
+                objIndex.IsUnique = True
+                objIndex.Columns.Add(objColumn)
+                objTable.Objects.Add(objIndex)
+              End If
+
               If objColumn.IsCalculated Then
                 objColumn.Calculation.AssociatedColumn = objColumn
                 objColumn.Calculation.ExpressionType = ExpressionType.ColumnCalculation
