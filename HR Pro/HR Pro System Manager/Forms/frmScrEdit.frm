@@ -780,6 +780,8 @@ Private Sub Form_Activate()
     listHistoryScreens_Refresh
     imgIcon_Refresh
     
+    chkGroupByCategory.Enabled = (listHistoryScreens.ListCount > 0)
+    
     'Refresh current tab page
     RefreshHistoryScreensTab
     'Set focus to column name textbox
