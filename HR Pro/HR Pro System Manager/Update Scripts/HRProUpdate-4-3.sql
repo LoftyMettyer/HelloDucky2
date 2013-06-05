@@ -145,6 +145,21 @@ PRINT 'Step 3 - New admin system security'
 	END
 
 /* ------------------------------------------------------------- */
+PRINT 'Step 4 - Audit changes'
+
+	-- Rename the base audit log
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysAuditTrail]') AND xtype = 'V')
+	BEGIN
+		DROP VIEW [dbo].[ASRSysAuditTrail];
+		EXECUTE sp_executesql N'EXECUTE sp_rename [tbsys_audittrail], [ASRSysAuditTrail];';
+	END
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysAuditTrail', 'U') AND name = 'TableID')
+		EXEC sp_executesql N'ALTER TABLE ASRSysAuditTrail ADD tableid bit NULL'
+
+	EXEC spsys_setsystemsetting 'integration', 'auditlog', 0;
+
+/* ------------------------------------------------------------- */
 PRINT 'Step 4 - Create object tracking system'
 
 	IF OBJECT_ID('tbsys_scriptedobjects', N'U') IS NULL	
@@ -582,72 +597,6 @@ PRINT 'Step 9 - Drop all HR Pro defined object (schema binding)'
 	EXECUTE sp_executesql @NVarCommand;
 
 
-
-/* ------------------------------------------------------------- */
-PRINT 'Step 10 - Convert audit table to view'
-
-	-- Rename the base audit log
-	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[tbsys_audittrail]') AND xtype = 'U')
-	BEGIN
-		EXECUTE sp_executesql N'EXECUTE sp_rename [ASRSysAuditTrail], [tbsys_audittrail];';
-		EXEC spsys_setsystemsetting 'integration', 'auditlog', 0;
-	END
-
-	SET @sSPCode = '';
-	IF EXISTS(SELECT dbo.[udfsys_getmodulesetting]('MODULE_AUDIT','Param_AuditTable'))
-	BEGIN
-		SELECT @sSPCode = 'IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id = object_id(N''' + [tablename] + ''', ''V''))
-			DROP VIEW dbo.[' + [tablename] + ']' FROM dbo.[tbsys_tables]
-			WHERE tableid = dbo.[udfsys_getmodulesetting]('MODULE_AUDIT','Param_AuditTable');
-		EXECUTE sp_executesql @sSPCode;
-		
-		SELECT @sSPCode = 'CREATE VIEW dbo.[' + [tablename] + '] AS SELECT * FROM dbo.[tbuser_' + [tablename] + ']' FROM dbo.[tbsys_tables]
-			WHERE tableid = dbo.[udfsys_getmodulesetting]('MODULE_AUDIT','Param_AuditTable');
-	--	EXECUTE sp_executesql @sSPCode;
-
-	END
-
-	-- Remove old audit view
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysAuditTrail]') AND xtype = 'V')
-		DROP VIEW [dbo].[ASRSysAuditTrail];
-		
-	-- Alter structure of the base table
-	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('tbsys_audittrail', 'U') AND name = 'tableid')
-		EXECUTE sp_executesql N'ALTER TABLE dbo.[tbsys_audittrail] ADD [tableid] integer NULL'
-
-	IF EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('tbsys_audittrail', 'U') AND name = 'tablename')
-		EXECUTE sp_executesql N'ALTER TABLE dbo.[tbsys_audittrail] DROP COLUMN [tablename]'
-
-	IF EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('tbsys_audittrail', 'U') AND name = 'columnname')
-		EXECUTE sp_executesql N'ALTER TABLE dbo.[tbsys_audittrail] DROP COLUMN [columnname]'
-
-	-- Create audit view
-	EXECUTE sp_executesql N'CREATE VIEW [ASRSysAuditTrail]
-		WITH SCHEMABINDING
-		AS SELECT
-			a.[id], a.[UserName], a.[DateTimeStamp], a.[RecordID], a.[RecordDesc], a.[OldValue], a.[NewValue],
-			t.[Tablename], c.[Columnname], a.[CMGExportDate],	a.[CMGCommitDate], a.[ColumnID], a.[Deleted]
-		FROM [dbo].[tbsys_audittrail] a
-		INNER JOIN dbo.[tbsys_tables] t ON t.[tableid] = a.[tableid]
-		INNER JOIN dbo.[tbsys_columns] c ON c.[columnid] = a.[columnid] AND t.[tableid] = c.[tableid]'
-
-	-- Remove old triggers 
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[INS_ASRSysAuditTrail]') AND xtype = 'TR')
-		DROP TRIGGER [dbo].[INS_ASRSysAuditTrail];
-
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[DEL_ASRSysAuditTrail]') AND xtype = 'TR')
-		DROP TRIGGER [dbo].[DEL_ASRSysAuditTrail];
-
-	-- Generate triggers on the audit logs		
-	EXECUTE sp_executesql N'CREATE TRIGGER [dbo].[DEL_ASRSysAuditTrail] ON [dbo].[ASRSysAuditTrail]
-		INSTEAD OF DELETE
-		AS
-		BEGIN
-			SET NOCOUNT ON;
-			DELETE FROM dbo.[tbsys_audittrail] WHERE ID IN (SELECT ID FROM deleted);
-		END'
-
-
 /* ------------------------------------------------------------- */
 PRINT 'Step 11 - Add new calculation procedures'
 
@@ -1022,7 +971,7 @@ PRINT 'Step 11 - Add new calculation procedures'
 		SET @todate = DATEADD(dd, 0, DATEDIFF(dd, 0, @todate));
 
 		SELECT @result = CASE WHEN
-				EXISTS(SELECT [DateTimeStamp] FROM [tbsys_audittrail]
+				EXISTS(SELECT [DateTimeStamp] FROM [ASRSysAuditTrail]
 					WHERE [ColumnID] = @columnid AND [TableID] = @tableID
 					AND @recordID = [RecordID] 
 					AND [DateTimeStamp] >= @fromdate AND DateTimeStamp < @todate + 1)
@@ -1048,7 +997,7 @@ PRINT 'Step 11 - Add new calculation procedures'
 		SET @tableid = SUBSTRING(@colrefID, 1, 8);
 		SET @columnid = SUBSTRING(@colrefID, 10, 8);
 
-		SELECT TOP 1 @result = [DateTimeStamp] FROM [tbsys_audittrail]
+		SELECT TOP 1 @result = [DateTimeStamp] FROM [ASRSysAuditTrail]
 			WHERE [ColumnID] = @columnid AND [TableID] = @tableID
 				AND @recordID = [RecordID]
 			ORDER BY [DateTimeStamp] DESC ;
@@ -1884,35 +1833,6 @@ PRINT 'Step 18 - System Functions'
 	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[tbsys_uniquecodes]') AND xtype = 'U')
 		EXECUTE sp_executesql N'EXECUTE sp_rename [ASRSysUniqueCodes], [tbsys_uniquecodes];';
 
-	EXECUTE sp_executesql N'CREATE PROCEDURE dbo.[spadmin_generateuniquecodes]
-		AS
-		BEGIN
-			DECLARE @sSQL nvarchar(MAX);
-
-			SET @sSQL = '''';
-
-			SELECT @sSQL = ISNULL(@sSQL, '''') +
-					+ '' UNION SELECT '''''' + c2.ValueCharacter + '''''' AS [codeprefix], ''
-					+ '' MAX(['' + cl.columnname + '']) AS [maxcodesuffix], 1 AS [isbound] FROM dbo.[tbuser_'' +  t.tablename + '']''
-				FROM ASRSysExprComponents c
-					INNER JOIN ASRSysExpressions e ON c.ComponentID = e.ParentComponentID
-					INNER JOIN ASRSysExprComponents c2 ON e.ExprID = c2.ExprID AND c2.ValueCharacter IS NOT NULL
-					INNER JOIN ASRSysExpressions p ON p.ExprID = c.ExprID
-					INNER JOIN ASRSysColumns cl ON cl.calcexprid = ISNULL(dbo.udf_ASRRootExpressionID(p.ParentComponentID), p.exprid)
-					INNER JOIN ASRSysTables t ON cl.tableid = t.tableid
-				WHERE c.FunctionID = 43;
-
-				SET @sSQL = ''CREATE VIEW dbo.[ASRSysUniqueCodes] AS SELECT ''
-					+ SUBSTRING(@ssql,15,DATALENGTH(@ssql));
-
-				EXEC sp_executesql N''IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''''[dbo].[ASRSysUniqueCodes]'''') AND type in (N''''V''''))
-					DROP VIEW [dbo].[ASRSysUniqueCodes]'';
-
-				EXEC sp_executesql @sSQL;
-
-		END'
-
-	EXECUTE sp_executesql N'spadmin_generateuniquecodes';
 	
 /* ------------------------------------------------------------- */
 /* ------------------------------------------------------------- */
