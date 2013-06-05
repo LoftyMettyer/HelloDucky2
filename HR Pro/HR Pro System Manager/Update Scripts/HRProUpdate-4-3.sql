@@ -278,7 +278,25 @@ PRINT 'Step 4 - Create object tracking system'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 4 - Create views on metadata tables'
+PRINT 'Step 4 - Upgrade image data structures to varbinary(max)'
+
+	-- User defined types
+	SET @NVarCommand = ''
+	SELECT @NVarCommand = @NVarCommand + 'ALTER TABLE dbo.[' + o.Name + '] ALTER COLUMN [' + c.ColumnName + '] varbinary(MAX);' 
+		FROM ASRSysColumns c 
+		INNER JOIN ASRSysTables t ON c.tableID = t.TableID
+		INNER JOIN sys.sysobjects o ON t.tablename = o.name AND o.xtype = 'U' 
+		INNER JOIN sys.syscolumns oc ON c.columnname = oc.name AND oc.id = o.id AND oc.type = 34
+		WHERE (c.datatype = -4 AND c.OLEType >= 2) OR (c.datatype = -3 AND c.OLEType >= 2);
+	EXECUTE sp_executesql @NVarCommand;
+
+	-- System tables
+	EXEC sp_executesql N'ALTER TABLE dbo.[ASRSysPictures] ALTER COLUMN [Picture] varbinary(MAX);';
+	EXEC sp_executesql N'ALTER TABLE dbo.[ASRSysPermissionCategories] ALTER COLUMN [Picture] varbinary(MAX);';
+
+
+/* ------------------------------------------------------------- */
+PRINT 'Step 5 - Create views on metadata tables'
 
 	IF EXISTS (SELECT id FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[spASRConvertTableToView]') AND xtype ='P')
 		DROP PROCEDURE [dbo].[spASRConvertTableToView]
@@ -405,20 +423,6 @@ PRINT 'Step 4 - Create views on metadata tables'
 	EXEC dbo.spASRConvertTableToView 'ASRSysViews', 'tbsys_views', 'viewid', 3;
 	EXEC dbo.spASRConvertTableToView 'ASRSysWorkflows', 'tbsys_workflows', 'id', 10;
 	--EXEC dbo.spASRConvertTableToView 'ASRSysScreens', 'tbsys_screens', 'screenid', 14;
-
-
-
-/* ------------------------------------------------------------- */
-PRINT 'Step 5 - Upgrade image data structures to varbinary(max)'
-
-	SET @NVarCommand = ''
-	SELECT @NVarCommand = @NVarCommand + 'ALTER TABLE dbo.[' + o.Name + '] ALTER COLUMN [' + c.ColumnName + '] varbinary(MAX);' 
-		FROM ASRSysColumns c 
-		INNER JOIN ASRSysTables t ON c.tableID = t.TableID
-		INNER JOIN sys.sysobjects o ON t.tablename = o.name AND o.xtype = 'U' 
-		INNER JOIN sys.syscolumns oc ON c.columnname = oc.name AND oc.id = o.id AND oc.type = 34
-		WHERE (c.datatype = -4 AND c.OLEType >= 2) OR (c.datatype = -3 AND c.OLEType >= 2);
-	EXECUTE sp_executesql @NVarCommand;
 
 
 /* ------------------------------------------------------------- */
