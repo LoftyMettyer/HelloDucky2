@@ -1861,7 +1861,6 @@ PRINT 'Step 16 - Server settings'
 	EXEC sp_dboption @DBName, 'recursive triggers', 'FALSE';
 
 
-
 /* ------------------------------------------------------------- */
 PRINT 'Step 17 - Trigger functionality'
 
@@ -1873,6 +1872,8 @@ PRINT 'Step 17 - Trigger functionality'
 		[tablefromid] [integer] NOT NULL,
 		[nestlevel]   [integer] NOT NULL,
 		[actiontype]  [tinyint] NOT NULL)'
+
+	EXEC spsys_setsystemsetting 'advanceddatabasesetting', 'globalupdatebatchsize', 50;
 
 /* ------------------------------------------------------------- */
 PRINT 'Step 18 - System Functions'
