@@ -679,10 +679,10 @@ TidyUpAndExit:
       gobjHRProEngine.ErrorLog.Show
       fOK = Not gobjHRProEngine.ErrorLog.IsCatastrophic
     End If
-    
-    If ASRDEVELOPMENT Then
-      gobjHRProEngine.TuningLog.OutputToFile (App.Path + "\HRProSystemFrameworkTuning.log")
-    End If
+'
+'    If ASRDEVELOPMENT And Not gobjHRProEngine.TuningLog Is Nothing Then
+'      gobjHRProEngine.TuningLog.OutputToFile (App.Path + "\HRProSystemFrameworkTuning.log")
+'    End If
     
   End If
   
@@ -1506,7 +1506,7 @@ Private Function CopyData() As Boolean
                     ' Convert data into character if possible.
                     Case dtVARCHAR, dtLONGVARCHAR
                       If (iSourceColumnDataType = dtTIMESTAMP) Or _
-                        (iSourceColumnDataType = dtINTEGER) Or _
+                        (iSourceColumnDataType = dtinteger) Or _
                         (iSourceColumnDataType = dtNUMERIC) Or _
                         (iSourceColumnDataType = dtBIT) Then
                         sColumnList.Append IIf(sColumnList.Length <> 0, ",", vbNullString) & strColumnName
@@ -1514,7 +1514,7 @@ Private Function CopyData() As Boolean
                       End If
                                     
                     ' Convert data into integer if possible.
-                    Case dtINTEGER
+                    Case dtinteger
                       If (iSourceColumnDataType = dtNUMERIC) Or _
                         (iSourceColumnDataType = dtBIT) Then
                         sColumnList.Append IIf(sColumnList.Length <> 0, ",", vbNullString) & strColumnName
@@ -1523,7 +1523,7 @@ Private Function CopyData() As Boolean
                                   
                     ' Convert data into numeric if possible.
                     Case dtNUMERIC
-                      If (iSourceColumnDataType = dtINTEGER) Or _
+                      If (iSourceColumnDataType = dtinteger) Or _
                         (iSourceColumnDataType = dtBIT) Then
                         sColumnList.Append IIf(sColumnList.Length <> 0, ",", vbNullString) & strColumnName
                         sValueList.Append IIf(sValueList.Length <> 0, ",", vbNullString) & "CONVERT(numeric(" & Trim$(Str$(iDestinationColumnSize)) & "," & Trim$(Str$(iDestinationColumnDecimals)) & "), " & strColumnName & ")"
