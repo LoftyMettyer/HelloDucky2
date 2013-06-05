@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
@@ -2355,7 +2355,7 @@ Private Sub cboDefaultValue_refresh(ByVal psCurrentValue As String)
               " WHERE " & sLookupColumnName
 
             Select Case iDataType
-              Case dtNUMERIC, dtINTEGER
+              Case dtNUMERIC, dtinteger
                 sSQL = sSQL & _
                   " = " & UI.ConvertNumberForSQL(Val(psCurrentValue))
               Case dtTIMESTAMP
@@ -2383,7 +2383,7 @@ Private Sub cboDefaultValue_refresh(ByVal psCurrentValue As String)
 
             If Not IsNull(vValue) Then
               Select Case iDataType
-                Case dtNUMERIC, dtINTEGER
+                Case dtNUMERIC, dtinteger
                   .AddItem UI.ConvertNumberForDisplay(Trim(Str(vValue)))
 
                 Case dtTIMESTAMP
@@ -4138,7 +4138,7 @@ Private Sub RefreshDefaultValueControls()
           Case dtTIMESTAMP
             iExprType = giEXPRVALUE_DATE
 
-          Case dtINTEGER
+          Case dtinteger
             iExprType = giEXPRVALUE_NUMERIC
 
           Case dtBIT
@@ -4147,7 +4147,7 @@ Private Sub RefreshDefaultValueControls()
           Case dtNUMERIC
             iExprType = giEXPRVALUE_NUMERIC
 
-          Case dtLONGVARCHAR
+          Case dtlongvarchar
             iExprType = giEXPRVALUE_CHARACTER
         End Select
       
@@ -4238,7 +4238,9 @@ Private Sub RefreshHeaderControls()
         And (Not mfReadOnly)
 
       EnableControl lblHeaderFont, fEnable
-      EnableControl txtHeaderFont, fEnable
+      ' NPG20100428 Fault HRPRO-718
+      ' EnableControl txtHeaderFont, fEnable
+      EnableControl txtHeaderFont, vbFalse
       EnableControl cmdHeaderFont, fEnable
     End If
     
@@ -4307,7 +4309,7 @@ Private Sub RefreshScreen()
   
   fOKToSave = mfChanged And (Not mfReadOnly)
   
-  cmdOk.Enabled = fOKToSave
+  cmdOK.Enabled = fOKToSave
 
 End Sub
 
@@ -5731,7 +5733,7 @@ Private Sub cmdDefaultValueExpression_Click()
           Case dtTIMESTAMP
             iExprType = giEXPRVALUE_DATE
           
-          Case dtINTEGER
+          Case dtinteger
             iExprType = giEXPRVALUE_NUMERIC
  
           Case dtBIT
@@ -5740,7 +5742,7 @@ Private Sub cmdDefaultValueExpression_Click()
           Case dtNUMERIC
             iExprType = giEXPRVALUE_NUMERIC
 
-          Case dtLONGVARCHAR
+          Case dtlongvarchar
             iExprType = giEXPRVALUE_CHARACTER
         End Select
       Else
@@ -9855,13 +9857,13 @@ End Sub
 Private Sub txtControlValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOk.Default = False
+  cmdOK.Default = False
 
 End Sub
 
 Private Sub txtControlValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
@@ -10009,14 +10011,14 @@ End Sub
 Private Sub txtFileExtensions_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOk.Default = False
+  cmdOK.Default = False
 
 End Sub
 
 
 Private Sub txtFileExtensions_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
