@@ -424,14 +424,14 @@ Public Sub ShowMessage(Optional pvMode As Variant)
       Me.Height = (Screen.Height / 2)
 
     Case miMODE_MOBILECREDENTIALS
-      sMessage = "Here is the MobileKey entry for web.custom.config :"
+      sMessage = "Here are the Mobile Website entries for web.custom.config :"
       sFrameCaption = "Mobile Credentials"
       imgIcon(0).Picture = LoadResPicture("IMG_INFORMATION", 1)
       miButtons = USAGEBUTTONS_COPY + USAGEBUTTONS_PRINT + USAGEBUTTONS_OK
       Me.Caption = "Mobile Credentials"
 
       With lstUsage.ColumnHeaders
-        .Item(1).Text = "URL"
+        .Item(1).Text = "Web.custom.config keys"
         ' Hide unrequired columns
         .Item(1).Width = lstUsage.Width
         .Item(2).Width = 0
@@ -495,7 +495,6 @@ Private Function PrintUsage() As Boolean
               .PrintNormal ""
             
             Case miMODE_MOBILECREDENTIALS
-              .PrintNormal "Here is the MobileKey entry for web.custom.config :"
               .PrintNormal lstUsage.ListItems(iLoop)
                 
             Case Else
@@ -587,7 +586,7 @@ Private Function CopyData() As Boolean
           vbTab & "New URL: " & lstUsage.ListItems(iLoop).SubItems(2) & vbNewLine & vbNewLine
       
       Case miMODE_MOBILECREDENTIALS
-          Clipboard.SetText lstUsage.ListItems(iLoop)
+          Clipboard.SetText Clipboard.GetText & lstUsage.ListItems(iLoop) & vbNewLine
       
       Case Else
         Clipboard.SetText Clipboard.GetText & _

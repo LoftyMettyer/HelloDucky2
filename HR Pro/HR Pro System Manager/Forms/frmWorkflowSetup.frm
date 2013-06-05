@@ -78,12 +78,12 @@ Begin VB.Form frmWorkflowSetup
          End
          Begin VB.Label lblGetMobileKey 
             AutoSize        =   -1  'True
-            Caption         =   "Generate Mobile Key :"
+            Caption         =   "Generate Mobile Keys :"
             Height          =   195
             Left            =   195
             TabIndex        =   35
             Top             =   420
-            Width           =   1920
+            Width           =   2010
          End
       End
       Begin VB.Frame fraWebSiteLogin 
@@ -723,9 +723,22 @@ Private Sub cmdGenMobileKey_Click()
 
   Set frmChangedPlatform = New frmChangedPlatform
   frmChangedPlatform.ResetList
-                
+  
+  ' MobileKey key
   sNewString = "<add key=""MobileKey"" value=""" & sNewQueryString & """/>"
   frmChangedPlatform.AddToList sNewString
+  
+  ' Workflow URL key
+  sURL = Trim(txtURL.Text)
+  If UCase(Right(sURL, 5)) <> ".ASPX" _
+    And Right(sURL, 1) <> "/" _
+    And Len(sURL) > 0 Then
+
+    sURL = sURL + "/"
+  End If
+  sNewString = "<add key=""WorkflowURL"" value=""" & sURL & """/>"
+  frmChangedPlatform.AddToList sNewString
+  
 
   frmChangedPlatform.Width = (3 * Screen.Width / 4)
   frmChangedPlatform.Height = (Screen.Height / 2)
