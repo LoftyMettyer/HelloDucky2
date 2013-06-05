@@ -949,7 +949,7 @@ Private Function GetPageControls(piPageNo As Integer) As Boolean
         bAdd = True
       
         If iControlType = giCTRL_NAVIGATION Then
-          If ctlControl.DisplayType = NavigationDisplayType.Hidden Then
+          If (ctlControl.DisplayType = NavigationDisplayType.Hidden Or ctlControl.DisplayType = NavigationDisplayType.Browser) Then
             bAdd = False
           Else
             sName = ctlControl.Caption
