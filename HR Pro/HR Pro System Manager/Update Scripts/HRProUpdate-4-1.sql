@@ -1979,9 +1979,9 @@ PRINT 'Step 3 - Mail Merge Modifications'
 				[ManualDocManHeader] bit NULL';
 
 		EXEC sp_executesql N'UPDATE [ASRSysMailMergeName] SET
-				[OutputFormat]       = CASE WHEN Output=2                 THEN 1 ELSE 0 END,
-				[OutputScreen]       = CASE WHEN DocSave=1 AND CloseDoc=0 THEN 1 ELSE 0 END,
-				[OutputPrinter]      = CASE WHEN Output=1                 THEN 1 ELSE 0 END,
+				[OutputFormat]       = CASE WHEN Output=2   THEN 1 ELSE 0 END,
+				[OutputScreen]       = CASE WHEN CloseDoc=0 THEN 1 ELSE 0 END,
+				[OutputPrinter]      = CASE WHEN Output=1   THEN 1 ELSE 0 END,
 				[OutputPrinterName]  = '''',
 				[OutputSave]         = DocSave,
 				[OutputFileName]     = DocFileName,
@@ -1999,6 +1999,10 @@ PRINT 'Step 3 - Mail Merge Modifications'
 
 	END
 
+	EXEC sp_executesql N'UPDATE [ASRSysMailMergeName] SET
+			      [OutputScreen] = 1
+			WHERE [OutputFormat] = 0
+			  AND [OutputPrinter] = 0 AND [OutputSave]= 0';
 
 
 /* ------------------------------------------------------------- */
