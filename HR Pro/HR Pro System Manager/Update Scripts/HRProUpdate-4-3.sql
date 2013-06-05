@@ -1548,6 +1548,7 @@ PRINT 'Step 12 - Populate code generation tables'
 			[operatortype] [tinyint] NULL,
 			[rownumberrequired] [bit] NULL,
 			[recordidrequired] [bit] NULL,
+			[overnightonly] [bit] NULL,
 			[calculatepostaudit] [bit] NULL,
 			[isgetfieldfromdb] [bit],
 			[isuniquecode] [bit],
@@ -1614,7 +1615,7 @@ PRINT 'Step 12 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [casecount]) VALUES (N''7d539e37-6d9f-44b3-a694-7db9638a2502'', N''CASE WHEN ({0}) BETWEEN ({1}) AND ({2}) THEN 1 ELSE 0 END'', 0, N''Is Between'', NULL, 0, 0, 38, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [casecount]) VALUES (N''a9997816-add0-467f-999d-79ef30c2b713'', N''(CASE WHEN DATALENGTH({0}) = 0 OR DATALENGTH({0}) IS NULL THEN 1 ELSE 0 END)'', 3, N''Is Field Empty'', NULL, 0, 0, 16, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [casecount]) VALUES (N''8caf9f74-dee4-4618-8d59-e292847f202a'', N''(CASE WHEN DATALENGTH({0}) = 0 OR DATALENGTH({0}) IS NULL THEN 0 ELSE 1 END)'', 3, N''Is Field Populated'', NULL, 0, 0, 61, 1)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''63d90dd1-1fb0-42a7-8135-83cb25293d7b'', N''[dbo].[udfsys_isovernightprocess]() '', 3, N''Is Overnight Process'', NULL, 0, 0, 50)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [overnightonly]) VALUES (N''63d90dd1-1fb0-42a7-8135-83cb25293d7b'', N''@isovernight'', 3, N''Is Overnight Process'', NULL, 0, 0, 50, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [performancerating]) VALUES (N''94127e4f-8046-4516-83a0-2062dd0ea2e6'', N'''', 3, N''Is Personnel That Current User Reports To'', NULL, 0, 0, 72, 20)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [performancerating]) VALUES (N''17d67659-4e60-40ee-bb72-763f4f85a645'', N'''', 3, N''Is Personnel That Reports To Current User'', NULL, 0, 0, 68, 20)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [performancerating]) VALUES (N''0a0d63a7-d926-4b8c-9f4e-2c3ae3d650ab'', N'''', 3, N''Is Post That Current User Reports To'', NULL, 0, 0, 70, 20)';
@@ -1683,6 +1684,7 @@ PRINT 'Step 13 - Administration module stored procedures'
 			, ISNULL([isgetfieldfromdb],0) AS [isgetfieldfromdb]
 			, ISNULL([isuniquecode],0) AS [isuniquecode]
 			, ISNULL([performancerating],1) AS [performancerating]
+			, ISNULL([overnightonly],0) AS [overnightonly]
 			, ISNULL([casecount],0) AS [casecount]		
 			FROM dbo.[tbstat_componentcode] WHERE [id] IS NOT NULL;
 	END';
