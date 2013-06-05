@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "10:30"
+            TextSave        =   "17:03"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -176,6 +176,7 @@ Const EM_GETMODIFY = &HB8
 
 Private mbLoading As Boolean
 Private mbChanging As Boolean
+Private mblnLogOff As Boolean
 
 ' Functions to tile the background image
 Private Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal x As Long, ByVal y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
@@ -468,6 +469,8 @@ End Sub
 
 Private Sub MDIForm_Activate()
 
+  DebugOutput "frmMain", "MDIForm_Activate"
+  
   ' Reset the mouse pointer.
   Screen.MousePointer = vbDefault
 
@@ -581,6 +584,9 @@ Private Sub EditPerform(EditFunction As Integer)
 End Sub
 
 Public Sub RefreshEditMenu()
+  
+  DebugOutput "frmMain", "RefreshEditMenu"
+  
   ' This procedure determines which edit menu options should be enabled.
   With abMain
     ' Check that we do have an active control
@@ -616,6 +622,9 @@ Public Sub RefreshEditMenu()
 End Sub
 
 Private Sub MDIForm_QueryUnload(Cancel As Integer, UnloadMode As Integer)
+  
+  DebugOutput "frmMain", "MDIForm_QueryUnload"
+  
   ' Unload any remaining forms.
   Dim iFormCount As Integer
   Dim lngFormID As Long
@@ -729,6 +738,8 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     Exit Sub
   End If
   
+  mblnLogOff = False
+  
   Select Case Tool.Name
     ' <DATABASE> menu.
     
@@ -753,6 +764,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
           
           If Database.Validation Then
             gbForceLogonScreen = True
+            mblnLogOff = True
             datGeneral.ClearConnection
             Main
           End If
@@ -1354,6 +1366,8 @@ End Sub
 
 Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As Boolean)
 
+  DebugOutput "frmMain", "RefreshRecordMenu"
+  
   On Error GoTo ErrorTrap
   gobjErrorStack.PushStack "frmMain.RefreshRecordMenu(pfrmCallingForm,pfUnLoad)", Array(pfrmCallingForm, pfUnLoad)
   ' Refresh the Record menu options.
@@ -2130,6 +2144,9 @@ ErrorTrap:
 End Sub
 
 Private Sub UpdateStatusBar(pfrmCallingForm As Form, Optional ByVal pfUnLoad As Boolean)
+  
+  DebugOutput "frmMain", "UpdateStatusBar"
+  
   ' Update the status bar.
   On Error GoTo Err_Trap
     
@@ -2166,9 +2183,12 @@ Private Sub UpdateStatusBar(pfrmCallingForm As Form, Optional ByVal pfUnLoad As 
     .Panels("pnlFILTER").Enabled = fFiltered
   End With
   
+  DebugOutput "frmMain", "UpdateStatusBar 2"
+  
   Exit Sub
     
 Err_Trap:
+  DebugOutput "frmMain", "UpdateStatusBar 3"
   If Err.Number = 3021 Then
     Exit Sub
   End If
@@ -2906,6 +2926,8 @@ Public Sub RefreshMainForm(pfrmCallingForm As Form, Optional ByVal pfUnLoad As B
   Dim iVisibleWinCount As Integer
   Dim frmForm As Form
   
+  DebugOutput "frmMain", "RefreshMainForm"
+  
   'JPD 20030905 Fault 5184
   If mfMenuDisabled Then
     Exit Sub
@@ -3036,6 +3058,8 @@ Public Sub RefreshHistoryMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad A
   Dim fHistoryEnabled As Boolean
   Dim objHistoryScreens As clsHistoryScreens
 
+  DebugOutput "frmMain", "RefreshHistoryMenu"
+  
   fHistoryEnabled = Not pfUnLoad
   
   ' Histories only available for top-level or child table screens.
@@ -3081,6 +3105,8 @@ Public Sub RefreshHistoryMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad A
   'abMain.Tools("mnuHistory").Enabled = fHistoryEnabled
   abMain.Tools("mnuHistory").Enabled = (fHistoryEnabled And pfrmCallingForm.Visible)
   
+  DebugOutput "frmMain", "RefreshHistoryMenu 2"
+
 End Sub
 
 'Public Sub RefreshReportsMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As Boolean)
@@ -3129,6 +3155,8 @@ Public Sub PopulateHistoryMenu()
   Dim fTableDone As Boolean
   Dim fMultiScreen As Boolean
 
+  DebugOutput "frmMain", "PopulateHistoryMenu"
+  
   ' Column 1 = table ID
   ' Column 2 = screen count
   ' Column 3 = sub menu added ?
@@ -3286,6 +3314,9 @@ End Sub
 
 
 Private Sub MDIForm_Resize()
+  
+  DebugOutput "frmMain", "MDIForm_Resize"
+  
   'JPD 20030908 Fault 5756
   If Me.WindowState <> vbMinimized Then
     giWindowState = Me.WindowState
@@ -3302,8 +3333,11 @@ End Sub
 
 
 Private Sub MDIForm_Unload(Cancel As Integer)
+  DebugOutput "frmMain", "MDIForm_Unload"
   'Stops Data hanging around after the MDI form is gone
-  End
+  If Not mblnLogOff Then
+    End
+  End If
 End Sub
 
 Private Sub Timer1_Timer()
@@ -3342,6 +3376,7 @@ Private Sub Timer1_Timer()
 End Sub
 
 Private Sub tmrDiary_Timer()
+  DebugOutput "frmMain", "tmrDiary_Timer"
 '
 '  'This time will be disabled if the variable
 '  'gblnDiaryConstCheck is set to false
@@ -3940,6 +3975,8 @@ Public Sub RefreshRecordEditScreens()
   ' This is done after utilities that may have updated the data are run.
   Dim frmForm As Form
   
+  DebugOutput "frmMain", "RefreshRecordEditScreens"
+
 '  Set frmform2 = Me.ActiveForm
   
   ' Loop through the MDI form's child forms.
@@ -3951,7 +3988,7 @@ Public Sub RefreshRecordEditScreens()
       If (frmForm.ScreenType = screenParentTable) Or _
         (frmForm.ScreenType = screenParentView) Or _
         (frmForm.ScreenType = screenLookup) Then
-        frmForm.Requery False
+            frmForm.Requery False
       End If
     End If
   Next frmForm
@@ -3964,6 +4001,8 @@ End Sub
 
 Private Function SaveCurrentRecordEditScreen() As Boolean
   ' Save changes in the current record editing screen.
+  
+  DebugOutput "frmMain", "SaveCurrentRecordEditScreen"
   
   SaveCurrentRecordEditScreen = True
   
@@ -4171,6 +4210,8 @@ End Sub
 
 Private Sub EnableTools()
 
+  DebugOutput "frmMain", "EnableTools"
+  
   With abMain
     .Tools("mnuRecord").Visible = False
     .Tools("mnuHistory").Visible = False
@@ -4409,6 +4450,8 @@ Public Sub CheckForNonactiveForms(pfrmCallingForm As Form)
 
   Dim frmForm As Form
 
+  DebugOutput "frmMain", "CheckForNonactiveForms"
+  
   'MH20050516 Fault 9978
   'Avoid the error "Unable to unload within this context"
   'if this procedure is called as part of a form resize.
