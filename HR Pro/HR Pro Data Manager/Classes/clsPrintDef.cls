@@ -307,7 +307,7 @@ Init_ERROR:
     Case Else: pstrError = Err.Description
   End Select
   
-  If Not gblnBatchMode Then MsgBox pstrError, vbExclamation + vbOKOnly, "HR Pro"
+  If Not gblnBatchMode Then COAMsgBox pstrError, vbExclamation + vbOKOnly, "HR Pro"
   
 End Sub
 
@@ -354,7 +354,7 @@ Exit Function
 LocalErr:
   mblnIsOK = False
   Set frmOptions = Nothing
-  MsgBox Err.Description, vbCritical
+  COAMsgBox Err.Description, vbCritical
 
 End Function
 

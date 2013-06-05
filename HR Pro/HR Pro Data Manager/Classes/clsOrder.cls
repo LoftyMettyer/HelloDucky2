@@ -287,7 +287,7 @@ Private Sub PrintOrder()
 TidyUpAndExit:
   Set objOrderItem = Nothing
   If Not fOK Then
-    MsgBox "Unable to print the order '" & msOrderName & "'." & vbCr & vbCr & _
+    COAMsgBox "Unable to print the order '" & msOrderName & "'." & vbCr & vbCr & _
       Err.Description, vbExclamation + vbOKOnly, App.ProductName
   End If
   Exit Sub
@@ -464,7 +464,7 @@ Private Function OrderIsUsed() As Boolean
   
     If fUsed Then
       ' Tell the user why the order cannot be deleted.
-      MsgBox "This order cannot be deleted." & vbCr & vbCrLf & _
+      COAMsgBox "This order cannot be deleted." & vbCr & vbCrLf & _
         "It is used as the default order for the '" & !TableName & "' table.", _
         vbExclamation + vbOKOnly, App.ProductName
     End If
@@ -485,7 +485,7 @@ Private Function OrderIsUsed() As Boolean
     
       If fUsed Then
         ' Tell the user why the order cannot be deleted.
-        MsgBox "This order cannot be deleted." & vbCrLf & vbCr & _
+        COAMsgBox "This order cannot be deleted." & vbCrLf & vbCr & _
           "It is used as the order for the '" & !Name & "' screen.", _
           vbExclamation + vbOKOnly, App.ProductName
       End If
@@ -512,7 +512,7 @@ Private Function OrderIsUsed() As Boolean
         sExprType = LCase(ExpressionTypeName(!Type))
         
         ' Tell the user why the order cannot be deleted.
-        MsgBox "This order cannot be deleted." & vbCr & vbCr & _
+        COAMsgBox "This order cannot be deleted." & vbCr & vbCr & _
           "It is used as the order for a field component in the " & sExprType & " '" & !Name & "'," & vbCrLf & _
           "which is owned by the '" & !TableName & "' table.", _
           vbExclamation + vbOKOnly, App.ProductName
@@ -537,7 +537,7 @@ Private Function OrderIsUsed() As Boolean
     
       If fUsed Then
         ' Tell the user why the order cannot be deleted.
-        MsgBox "This order cannot be deleted." & vbCr & vbCr & _
+        COAMsgBox "This order cannot be deleted." & vbCr & vbCr & _
           "It is used in the '" & !Name & "' Mail Merge definition," & vbCrLf & _
           "which is owned by the '" & !TableName & "' table.", _
           vbExclamation + vbOKOnly, App.ProductName
@@ -572,7 +572,7 @@ Private Function OrderIsUsed() As Boolean
         End Select
           
         ' Tell the user why the column cannot be deleted.
-        MsgBox "This order cannot be deleted." & vbCr & _
+        COAMsgBox "This order cannot be deleted." & vbCr & _
           "It is used in the '" & sModuleName & "' module definition.", _
           vbExclamation + vbOKOnly, App.ProductName
       End If
@@ -599,7 +599,7 @@ Private Function OrderIsUsed() As Boolean
     
       If fUsed Then
         ' Tell the user why the order cannot be deleted.
-        MsgBox "This order cannot be deleted." & vbCr & vbCr & _
+        COAMsgBox "This order cannot be deleted." & vbCr & vbCr & _
           "It is used in the '" & !Name & "' Record Profile definition," & vbCrLf & _
           "which is owned by the '" & !TableName & "' table.", _
           vbExclamation + vbOKOnly, App.ProductName
@@ -715,7 +715,7 @@ TidyUpAndExit:
   Exit Function
 
 ErrorTrap:
-  MsgBox Err.Description, vbExclamation + vbOKOnly, App.ProductName
+  COAMsgBox Err.Description, vbExclamation + vbOKOnly, App.ProductName
   fOK = False
   Resume TidyUpAndExit
 
@@ -817,7 +817,7 @@ TidyUpAndExit:
   Exit Function
 
 ErrorTrap:
-  MsgBox "Error constructing order.", _
+  COAMsgBox "Error constructing order.", _
     vbExclamation + vbOKOnly, App.ProductName
   fOK = False
   Resume TidyUpAndExit

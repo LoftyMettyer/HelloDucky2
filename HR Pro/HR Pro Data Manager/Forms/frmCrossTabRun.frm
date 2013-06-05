@@ -390,7 +390,7 @@ Private mblnOutputEmail As Boolean
 Private mlngOutputEmailAddr As Long
 Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
-Private mstrOutputFilename As String
+Private mstrOutputFileName As String
 Private mblnChkPicklistFilter As String
 
 ' Array holding the User Defined functions that are needed for this report
@@ -609,10 +609,10 @@ Private Sub chkPercentage_Click()
   If mblnLoading Then Exit Sub
   
   blnEnabled = (chkPercentage.Value = vbChecked And cboPageBreak.Enabled = True)
-  chkPercentageOfPage.Enabled = blnEnabled
+  chkPercentageofPage.Enabled = blnEnabled
   If Not blnEnabled Then
     mblnLoading = True
-    chkPercentageOfPage.Value = vbUnchecked
+    chkPercentageofPage.Value = vbUnchecked
     mblnLoading = False
   End If
 
@@ -625,7 +625,7 @@ End Sub
 Private Sub chkPercentageOfPage_Click()
   If mblnLoading Then Exit Sub
   PopulateGrid
-  chkPercentageOfPage.SetFocus
+  chkPercentageofPage.SetFocus
 End Sub
 
 Private Sub chkSuppressZeros_Click()
@@ -649,7 +649,7 @@ End Sub
 
 Private Sub Form_Activate()
   If Me.Visible And Me.Enabled Then
-    cmdOk.SetFocus
+    cmdOK.SetFocus
   End If
 End Sub
 
@@ -774,7 +774,7 @@ Private Sub OutputJobStatus()
       gobjProgress.CloseProgress
     End If
     If (fOK = False) Or (mblnNoRecords = True) Or (Not mblnPreviewOnScreen) Then
-      MsgBox mstrErrorMessage, IIf(fOK Or mblnNoRecords, vbInformation, vbExclamation) + vbOKOnly, Me.Caption
+      COAMsgBox mstrErrorMessage, IIf(fOK Or mblnNoRecords, vbInformation, vbExclamation) + vbOKOnly, Me.Caption
     End If
   Else
     gobjProgress.ResetBar2
@@ -1138,7 +1138,7 @@ Public Sub RetreiveDefinition(lngCrossTabID As Long)
     mlngOutputEmailAddr = !OutputEmailAddr
     mstrOutputEmailSubject = !OutputEmailSubject
     mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
-    mstrOutputFilename = !OutputFilename
+    mstrOutputFileName = !OutputFilename
 
     mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
     
@@ -1898,7 +1898,7 @@ Private Function GetPercentageFactor(lngPage As Long, lngTYPE As Long)
   'mdblPercentageFactor will be used in FORMATCELL, if required
   mdblPercentageFactor = 0
   If chkPercentage.Value = vbChecked Then
-    If chkPercentageOfPage = vbChecked Then
+    If chkPercentageofPage = vbChecked Then
       If mdblPageTotal(lngPage, lngTYPE) > 0 Then
         mdblPercentageFactor = 1 / mdblPageTotal(lngPage, lngTYPE)
       End If
@@ -2365,10 +2365,10 @@ Private Sub Form_Resize()
 
   
   'Position the command buttons...
-  lngTop = Me.ScaleHeight - (cmdOk.Height + lngGap)
+  lngTop = Me.ScaleHeight - (cmdOK.Height + lngGap)
   
-  lngLeft = Me.ScaleWidth - (cmdOk.Width + lngGap)
-  cmdOk.Move lngLeft, lngTop
+  lngLeft = Me.ScaleWidth - (cmdOK.Width + lngGap)
+  cmdOK.Move lngLeft, lngTop
 
   lngLeft = lngLeft - (cmdOutput.Width + lngGap)
   cmdOutput.Move lngLeft, lngTop
@@ -2394,7 +2394,7 @@ Private Sub Form_Resize()
     'fraIntersection.Visible = False
     Me.lblColumn.Visible = False
     Me.chkPercentage.Visible = False
-    Me.chkPercentageOfPage.Visible = False
+    Me.chkPercentageofPage.Visible = False
     Me.lblType.Top = Me.lblColumn.Top
     Me.chkSuppressZeros.Top = Me.lblColumn.Top
     Me.txtIntersectionCol.Text = mstrCrossTabName
@@ -2474,8 +2474,8 @@ Private Sub PrepareForms()
   
   
   chkPercentage.Value = IIf(mblnShowPercentage, vbChecked, vbUnchecked)
-  chkPercentageOfPage.Value = IIf(mblnPercentageofPage, vbChecked, vbUnchecked)
-  chkPercentageOfPage.Enabled = (mblnPageBreak = True And mblnShowPercentage = True)
+  chkPercentageofPage.Value = IIf(mblnPercentageofPage, vbChecked, vbUnchecked)
+  chkPercentageofPage.Enabled = (mblnPageBreak = True And mblnShowPercentage = True)
   chkSuppressZeros.Value = IIf(mblnSuppressZeros, vbChecked, vbUnchecked)
   chkThousandSeparators.Value = IIf(mbThousandSeparators, vbChecked, vbUnchecked)
 
@@ -2860,7 +2860,7 @@ Public Sub BreakdownComboClick(Index As Integer)
 Exit Sub
 
 LocalErr:
-  MsgBox Err.Description, vbCritical, Me.Caption
+  COAMsgBox Err.Description, vbCritical, Me.Caption
   mblnLoading = False
   SSDBGrid1.Redraw = True
 
@@ -3264,7 +3264,7 @@ LocalErr:
   frmBreakDown.SSDBGrid1.Redraw = True
   Screen.MousePointer = vbDefault
   'Never see breakdown if running in batch mode so no need to check if batch
-  MsgBox "Error reading Breakdown" & vbCrLf & Err.Description, vbExclamation, Me.Caption
+  COAMsgBox "Error reading Breakdown" & vbCrLf & Err.Description, vbExclamation, Me.Caption
   Err.Clear
 
 End Function
@@ -3475,7 +3475,7 @@ Private Sub TurnoverCreateGridColumns()
 Exit Sub
 
 LocalErr:
-  MsgBox "Error creating grid columns" & vbCrLf & "(" & Err.Description & ")", vbCritical, Me.Caption
+  COAMsgBox "Error creating grid columns" & vbCrLf & "(" & Err.Description & ")", vbCritical, Me.Caption
 
 End Sub
 
@@ -4344,7 +4344,7 @@ Private Function CheckIfGotRecDescs(Optional strWhere As String)
   CheckIfGotRecDescs = False
   
   If mlngRecordDescExprID = 0 Then
-    MsgBox "Unable to show cell breakdown details as no record description " & _
+    COAMsgBox "Unable to show cell breakdown details as no record description " & _
            "has been set up for the '" & mstrBaseTable & "' table.", vbInformation, Me.Caption
     Exit Function
   End If
@@ -4452,7 +4452,7 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
       mblnOutputPrinter, mstrOutputPrinterName, _
       mblnOutputSave, mlngOutputSaveExisting, _
       mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-      mstrOutputEmailAttachAs, mstrOutputFilename) Then
+      mstrOutputEmailAttachAs, mstrOutputFileName) Then
 
     If Not gblnBatchMode Then
       If mlngCrossTabType = cttNormal Then
@@ -4690,10 +4690,10 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
     DoEvents
 
     If fOK Then
-      MsgBox strDefTitle & " output complete.", _
+      COAMsgBox strDefTitle & " output complete.", _
           vbInformation, Me.Caption
     Else
-      MsgBox strDefTitle & " output failed." & vbCrLf & vbCrLf & mstrErrorMessage, _
+      COAMsgBox strDefTitle & " output failed." & vbCrLf & vbCrLf & mstrErrorMessage, _
           vbExclamation, Me.Caption
     End If
 
@@ -4794,7 +4794,7 @@ Public Sub GetReportConfig(strReportType As String)
   mlngOutputEmailAddr = GetSystemSetting(strReportType, "EmailAddr", 0)
   mstrOutputEmailSubject = GetSystemSetting(strReportType, "EmailSubject", vbNullString)
   mstrOutputEmailAttachAs = GetSystemSetting(strReportType, "EmailAttachAs", vbNullString)
-  mstrOutputFilename = GetSystemSetting(strReportType, "FileName", vbNullString)
+  mstrOutputFileName = GetSystemSetting(strReportType, "FileName", vbNullString)
   mblnPreviewOnScreen = (GetSystemSetting(strReportType, "Preview", True) Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
   mblnChkPicklistFilter = (GetSystemSetting(strReportType, "PrintFilterHeader", 0) = 1)
 
@@ -4862,7 +4862,7 @@ Public Sub SetOutputParameters( _
   mlngOutputEmailAddr = lngOutputEmailAddr
   mstrOutputEmailSubject = strOutputEmailSubject
   mstrOutputEmailAttachAs = strOutputEmailAttachAs
-  mstrOutputFilename = strOutputFilename
+  mstrOutputFileName = strOutputFilename
   mblnPreviewOnScreen = blnPreviewOnScreen
   mblnChkPicklistFilter = blnChkPicklistFilter
 

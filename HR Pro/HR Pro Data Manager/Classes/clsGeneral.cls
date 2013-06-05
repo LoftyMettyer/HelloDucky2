@@ -559,7 +559,7 @@ Exit_Ok:
   Exit Function
     
 Exit_Fail:
-    MsgBox sMsg, vbCritical
+    COAMsgBox sMsg, vbCritical
     CheckLicence = False
 '    If rsUsers.State = adStateOpen Then
 '      rsUsers.Close
@@ -1977,8 +1977,8 @@ End Function
 '  If rsWhere.BOF And rsWhere.EOF Then
 '    'Set WaitWindow = Nothing
 '
-'    'MsgBox "No records to transfer from selected option.", vbExclamation, "Data Transfer"
-'    If bSilentmode = False Then MsgBox "No records to transfer from selected option.", vbExclamation, "Data Transfer"
+'    'COAMsgBox "No records to transfer from selected option.", vbExclamation, "Data Transfer"
+'    If bSilentmode = False Then COAMsgBox "No records to transfer from selected option.", vbExclamation, "Data Transfer"
 '
 '    rsWhere.Close
 '    Set rsWhere = Nothing
@@ -2203,7 +2203,7 @@ End Function
 '    sTemp = lRecordCount & " Record Transfered."
 '  End If
 '
-'  If bSilentmode = False Then MsgBox sTemp, vbInformation, "Data Transfer"
+'  If bSilentmode = False Then COAMsgBox sTemp, vbInformation, "Data Transfer"
 '
 '  RunDataTransfer = True
 '
@@ -2212,7 +2212,7 @@ End Function
 'Err_Trap:
 ''Set WaitWindow = Nothing
 '
-'  If bSilentmode = False Then MsgBox Err.Description
+'  If bSilentmode = False Then COAMsgBox Err.Description
 '
 '  Screen.MousePointer = vbDefault
 '  RunDataTransfer = False
@@ -2912,7 +2912,7 @@ Public Function AFDEnabled() As AFDTypes
     'If GetPCSetting( "Afd", "ShowError" & CStr(App.Major & "." & App.Minor & "." & App.Revision), True) = True Then
     If GetPCSetting("Afd", "ShowError" & CStr(App.Major & "." & App.Minor), True) = True Then
       If Not ASRDEVELOPMENT And Not gblnBatchJobsOnly Then
-        MsgBox "HR Pro is configured to use Afd Postcode Names and Numbers software," & vbCrLf & _
+        COAMsgBox "HR Pro is configured to use Afd Postcode Names and Numbers software," & vbCrLf & _
                "but one or more of the required files are missing from your PC." & vbCrLf & vbCrLf & _
                "HR Pro will continue, but all Afd functionality will be disabled." & vbCrLf & vbCrLf & _
                "(This message will not appear again until a new version of HR Pro is installed.)" _
@@ -3032,7 +3032,7 @@ LocalErr:
   End If
 
   If strOutput <> vbNullString And Not gblnBatchJobsOnly Then
-    MsgBox "HR Pro is configured to send emails dependant upon data entered " & _
+    COAMsgBox "HR Pro is configured to send emails dependant upon data entered " & _
            "but there is currently a problem sending emails from the SQL server." & vbCrLf & vbCrLf & _
            Err.Description & vbCrLf & vbCrLf & _
            "HR Pro will continue, but the email link functionality will be disabled.", vbExclamation + vbOKOnly, "HR Pro"
@@ -4206,7 +4206,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
         ' Can change utils and no utils
         ' are contained within batch jobs
         ' that cant be changed
-'        If MsgBox("Changing the selected " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " to hidden will automatically" & vbCrLf & _
+'        If COAMsgBox("Changing the selected " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " to hidden will automatically" & vbCrLf & _
 '                  "make the following definition(s), of which you are the" & vbCrLf & _
 '                  "owner, hidden also:" & vbCrLf & vbCrLf & _
 '                  sDetails_Owner & sBatchJobDetails_Owner & vbCrLf & _
@@ -4216,7 +4216,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
 '          CheckCanMakeHidden = False
 '          Exit Function
         'NHRD12112004 Fault 6335
-        If MsgBox("Changing the selected " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " to hidden will automatically " & _
+        If COAMsgBox("Changing the selected " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " to hidden will automatically " & _
                   "make the following definition(s)," & vbCrLf & " of which you are the owner, hidden also:" & vbCrLf & vbCrLf & _
                   sDetails_Owner & sBatchJobDetails_Owner & vbCrLf & _
                   "Do you wish to continue ?", vbQuestion + vbYesNo, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)) _
@@ -4342,12 +4342,12 @@ Public Function CheckCanMakeHidden(pstrType As String, _
         ' utils are in batch jobs which cannot
         ' be changed
         If Len(sBatchJobDetails_ScheduledForOtherUsers) > 0 Then
-          MsgBox "This " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " cannot be made hidden as it is used in " & vbCrLf & _
+          COAMsgBox "This " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " cannot be made hidden as it is used in " & vbCrLf & _
                  "definition(s) which are included in the following" & vbCrLf & _
                  "batch jobs which are scheduled to be run by other user groups :" & vbCrLf & vbCrLf & sBatchJobDetails_ScheduledForOtherUsers, vbExclamation + vbOKOnly _
                  , IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
         Else
-          MsgBox "This " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " cannot be made hidden as it is used in " & vbCrLf & _
+          COAMsgBox "This " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " cannot be made hidden as it is used in " & vbCrLf & _
                  "definition(s) which are included in the following" & vbCrLf & _
                  "batch jobs of which you are not the owner :" & vbCrLf & vbCrLf & sBatchJobDetails_NotOwner, vbExclamation + vbOKOnly _
                  , IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
@@ -4359,7 +4359,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
 
       ElseIf (iCount_NotOwner > 0) Then            ' Cannot change utils
       
-        MsgBox "This " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " cannot be made hidden as it is used in the" & vbCrLf & _
+        COAMsgBox "This " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " cannot be made hidden as it is used in the" & vbCrLf & _
                "following definition(s), of which you are not the" & vbCrLf & _
                "owner :" & vbCrLf & vbCrLf & sDetails_NotOwner, _
                vbExclamation + vbOKOnly, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
@@ -5088,7 +5088,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
         ' Can change utils and no utils
         ' are contained within batch jobs
         ' that cant be changed
-'        If MsgBox("Changing the selected picklist to hidden will automatically" & vbCrLf & _
+'        If COAMsgBox("Changing the selected picklist to hidden will automatically" & vbCrLf & _
 '                  "make the following definition(s), of which you are the" & vbCrLf & _
 '                  "owner, hidden also:" & vbCrLf & vbCrLf & _
 '                  sDetails_Owner & sBatchJobDetails_Owner & vbCrLf & _
@@ -5098,7 +5098,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
 '          CheckCanMakeHidden = False
 '          Exit Function
         'NHRD12112004 Fault 6335
-        If MsgBox("Changing the selected " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " to hidden will automatically " & _
+        If COAMsgBox("Changing the selected " & IIf(UCase(pstrType) = "F", "filter", "calculation") & " to hidden will automatically " & _
                   "make the following definition(s)," & vbCrLf & " of which you are the owner, hidden also:" & vbCrLf & vbCrLf & _
                   sDetails_Owner & sBatchJobDetails_Owner & vbCrLf & _
                   "Do you wish to continue ?", vbQuestion + vbYesNo, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)) _
@@ -5211,12 +5211,12 @@ Public Function CheckCanMakeHidden(pstrType As String, _
         ' utils are in batch jobs which cannot
         ' be changed
         If Len(sBatchJobDetails_ScheduledForOtherUsers) > 0 Then
-          MsgBox "This picklist cannot be made hidden as it is used in " & vbCrLf & _
+          COAMsgBox "This picklist cannot be made hidden as it is used in " & vbCrLf & _
                  "definition(s) which are included in the following" & vbCrLf & _
                  "batch jobs which are scheduled to be run by other user groups :" & vbCrLf & vbCrLf & sBatchJobDetails_ScheduledForOtherUsers, vbExclamation + vbOKOnly _
                  , IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
         Else
-          MsgBox "This picklist cannot be made hidden as it is used in " & vbCrLf & _
+          COAMsgBox "This picklist cannot be made hidden as it is used in " & vbCrLf & _
                  "definition(s) which are included in the following" & vbCrLf & _
                  "batch jobs of which you are not the owner :" & vbCrLf & vbCrLf & sBatchJobDetails_NotOwner, vbExclamation + vbOKOnly _
                  , IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
@@ -5227,7 +5227,7 @@ Public Function CheckCanMakeHidden(pstrType As String, _
 
       ElseIf (iCount_NotOwner > 0) Then
         ' Cannot change utils
-        MsgBox "This picklist cannot be made hidden as it is used in the" & vbCrLf & _
+        COAMsgBox "This picklist cannot be made hidden as it is used in the" & vbCrLf & _
                "following definition(s), of which you are not the" & vbCrLf & _
                "owner :" & vbCrLf & vbCrLf & sDetails_NotOwner, _
                vbExclamation + vbOKOnly, IIf(Len(pstrCaption) = 0, "HR Pro - Data Manager", pstrCaption)
@@ -6082,7 +6082,7 @@ ExitPoint:
   
 ErrTrap:
   
-  MsgBox "Error determining Access rights of selected calc:" & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error determining Access rights of selected calc:" & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
   Resume ExitPoint
 End Function
 
@@ -6529,7 +6529,7 @@ Public Function QAddressEnabled() As HRProDataMgr.QAddressTypes
   If iQAddressType = QADDRESS_DISABLED And bLicensed Then
     If GetPCSetting("QAddress", "ShowError" & CStr(App.Major & "." & App.Minor), True) = True Then
       If Not ASRDEVELOPMENT And Not gblnBatchJobsOnly Then
-        MsgBox "HR Pro is configured to use Quick Address Postcode recognition," & vbCrLf & _
+        COAMsgBox "HR Pro is configured to use Quick Address Postcode recognition," & vbCrLf & _
                "but one or more of the required files are missing from your PC." & vbCrLf & vbCrLf & _
                "HR Pro will continue, but all Quick Address functionality will be disabled." & vbCrLf & vbCrLf & _
                "(This message will not appear again until a new version of HR Pro is installed.)" _
@@ -6604,12 +6604,12 @@ Public Function ReEstablishADOConnection() As Boolean
     gobjProgress.CloseProgress
   End If
 
-  If MsgBox("A Windows network error has occured, and your connection to the database has been severed." & vbNewLine & vbNewLine _
+  If COAMsgBox("A Windows network error has occured, and your connection to the database has been severed." & vbNewLine & vbNewLine _
       & "Would you like HR Pro to try reconnecting?", vbCritical + vbYesNo) = vbYes Then
 
     If Not datGeneral.Connect(gADOCon.ConnectionString, sErrorMsg, gsUserName, lngTimeOut, bDBLocked) Then
     
-        MsgBox "HR Pro cannot establish a connection to the database." _
+        COAMsgBox "HR Pro cannot establish a connection to the database." _
           & "This is likely a problem with your network connection. Please check your network connections, " & vbNewLine _
           & "or contact your IT system administrator." & vbNewLine & vbNewLine _
           & "HR Pro will now exit.", vbInformation
@@ -6621,7 +6621,7 @@ Public Function ReEstablishADOConnection() As Boolean
         AuditAccess iDISCONNECTED, "Data"
         AuditAccess iRECONNECT, "Data"
         
-        MsgBox "HR Pro has successfully logged back in." & vbNewLine & vbNewLine _
+        COAMsgBox "HR Pro has successfully logged back in." & vbNewLine & vbNewLine _
           & "If you experience this error on a regular basis it may point to a problem with your " _
           & "network environment. Please contact your IT system administrator.", vbInformation
           

@@ -181,7 +181,7 @@ Private Sub cmdOK_Click()
       gobjDiary.FilterPastPresent > 0 Or _
       gobjDiary.FilterOnlyMine = True) Then
     
-    MsgBox "No records match the current filter." & vbCrLf & _
+    COAMsgBox "No records match the current filter." & vbCrLf & _
            "No filter is applied.", vbInformation + vbOKOnly, "Diary Filter"
     
     cboEventType.ListIndex = 0

@@ -541,7 +541,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Private Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal X As Long, ByVal Y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
+Private Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal x As Long, ByVal y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
 Private Declare Function sndPlaySound Lib "winmm.dll" Alias "sndPlaySoundA" (ByVal lpszSoundName As String, ByVal uFlags As Long) As Long
 
 Private Const SND_ASYNC = &H1
@@ -680,7 +680,7 @@ Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
 End Sub
 
 Private Sub Form_Load()
-  Dim I As Integer
+  Dim i As Integer
   Dim J As Integer
   
   Me.Width = picGame.Width + Shape1.Width + 40
@@ -694,11 +694,11 @@ Private Sub Form_Load()
   ENEMY_WIDTH = picEnemy.ScaleWidth
   ENEMY_HEIGHT = picEnemy.ScaleHeight
   
-  For I = 0 To 5
+  For i = 0 To 5
     For J = 0 To 4
-      BitBlt picBackGround.hDC, picBack.ScaleWidth * I, picBack.ScaleHeight * J, picBack.ScaleWidth, picBack.ScaleHeight, picBack.hDC, 0, 0, vbSrcCopy
+      BitBlt picBackGround.hDC, picBack.ScaleWidth * i, picBack.ScaleHeight * J, picBack.ScaleWidth, picBack.ScaleHeight, picBack.hDC, 0, 0, vbSrcCopy
     Next J
-  Next I
+  Next i
   
   picBackGround.Refresh
   Call GameBackGroundRefresh
@@ -726,7 +726,7 @@ Private Sub PlayerMove()
 End Sub
 
 Private Sub BallMove()
-  Dim I As Long
+  Dim i As Long
   BallRect.Left = BallRect.Left + BallVelocityX
   If BallRect.Left <= 0 Then
     BallRect.Left = 0
@@ -747,7 +747,7 @@ Private Sub BallMove()
     LiveNumber = LiveNumber - 1
     lblLives.Caption = LiveNumber
     If LiveNumber = 0 Then
-      If MsgBox("Game Over.  Play again?", vbExclamation + vbYesNo, "ASRkanoid") = vbYes Then
+      If COAMsgBox("Game Over.  Play again?", vbExclamation + vbYesNo, "ASRkanoid") = vbYes Then
         Call mnuNewGame_Click
       Else
         Unload Me
@@ -772,37 +772,37 @@ Private Sub BallMove()
     BallRect.Top = BallRect.Top - Abs(BallVelocityY)
   End If
   
-  For I = 0 To EnemyCount - 1
-    If Enemy(I).Alive = True Then
-      If Collision(Enemy(I).EnemyRect, BallRect) = True Then
-        If Enemy(I).Color <> Grey Then
+  For i = 0 To EnemyCount - 1
+    If Enemy(i).Alive = True Then
+      If Collision(Enemy(i).EnemyRect, BallRect) = True Then
+        If Enemy(i).Color <> Grey Then
           If picBall.Tag <> "fast" Then
-            Call ChangeVellosity(Enemy(I).EnemyRect)
+            Call ChangeVellosity(Enemy(i).EnemyRect)
           End If
           
           Score = Score + 20
           lblScore.Caption = Score
-          Enemy(I).Alive = False
-          If Enemy(I).Bonus <> None Then
+          Enemy(i).Alive = False
+          If Enemy(i).Bonus <> None Then
             BonusCount = BonusCount + 1
             ReDim Preserve Bonuses(BonusCount)
             Bonuses(BonusCount).BonusRect.Width = picBonus.ScaleWidth
             Bonuses(BonusCount).BonusRect.Height = picBonus.ScaleHeight
-            Bonuses(BonusCount).BonusRect.Top = Enemy(I).EnemyRect.Top + Enemy(I).EnemyRect.Height + 1
-            Bonuses(BonusCount).BonusRect.Left = Enemy(I).EnemyRect.Left + Enemy(I).EnemyRect.Width / 2 - Bonuses(BonusCount).BonusRect.Width / 2
+            Bonuses(BonusCount).BonusRect.Top = Enemy(i).EnemyRect.Top + Enemy(i).EnemyRect.Height + 1
+            Bonuses(BonusCount).BonusRect.Left = Enemy(i).EnemyRect.Left + Enemy(i).EnemyRect.Width / 2 - Bonuses(BonusCount).BonusRect.Width / 2
             Bonuses(BonusCount).BonusNotExist = False
             Randomize
-            Bonuses(BonusCount).BonusType = Enemy(I).Bonus
+            Bonuses(BonusCount).BonusType = Enemy(i).Bonus
           End If
           Call PlaySound(1)
         Else 'is gray
-          Call ChangeVellosity(Enemy(I).EnemyRect)
+          Call ChangeVellosity(Enemy(i).EnemyRect)
         End If
         
         Exit For
       End If
     End If
-  Next I
+  Next i
   Call DrawBitmap(picBall, picBallMask.hDC, picGame.hDC, BallRect.Left, BallRect.Top)
 End Sub
 
@@ -912,23 +912,23 @@ Private Sub SetStartPosition()
 End Sub
 
 Private Sub DrawEnemis()
-  Dim I As Integer
+  Dim i As Integer
   Dim MissionComplete As Boolean
   MissionComplete = True
-  For I = 0 To EnemyCount - 1
-    If Enemy(I).Alive = True Then
-      Select Case Enemy(I).Color
-      Case Red: Call DrawBitmap(picEnemy, picEnemyMask.hDC, picGame.hDC, Enemy(I).EnemyRect.Left, Enemy(I).EnemyRect.Top)
+  For i = 0 To EnemyCount - 1
+    If Enemy(i).Alive = True Then
+      Select Case Enemy(i).Color
+      Case Red: Call DrawBitmap(picEnemy, picEnemyMask.hDC, picGame.hDC, Enemy(i).EnemyRect.Left, Enemy(i).EnemyRect.Top)
                 MissionComplete = False
-      Case Blue: Call DrawBitmap(picEnemyBlue, picEnemyMask.hDC, picGame.hDC, Enemy(I).EnemyRect.Left, Enemy(I).EnemyRect.Top)
+      Case Blue: Call DrawBitmap(picEnemyBlue, picEnemyMask.hDC, picGame.hDC, Enemy(i).EnemyRect.Left, Enemy(i).EnemyRect.Top)
                  MissionComplete = False
-      Case Yellow: Call DrawBitmap(picEnemyYellow, picEnemyMask.hDC, picGame.hDC, Enemy(I).EnemyRect.Left, Enemy(I).EnemyRect.Top)
+      Case Yellow: Call DrawBitmap(picEnemyYellow, picEnemyMask.hDC, picGame.hDC, Enemy(i).EnemyRect.Left, Enemy(i).EnemyRect.Top)
                    MissionComplete = False
-      Case Grey: Call DrawBitmap(picEnemyGrey, picEnemyMask.hDC, picGame.hDC, Enemy(I).EnemyRect.Left, Enemy(I).EnemyRect.Top)
+      Case Grey: Call DrawBitmap(picEnemyGrey, picEnemyMask.hDC, picGame.hDC, Enemy(i).EnemyRect.Left, Enemy(i).EnemyRect.Top)
       'Case Else: Call DrawBitmap(picEnemyGrey, picEnemyMask.hDC, picGame.hDC, Enemy(I).EnemyRect.Left, Enemy(I).EnemyRect.Top)
       End Select
     End If
-  Next I
+  Next i
   If MissionComplete = True Then
     PlayerDirection.MoveLeft = False
     PlayerDirection.MoveRight = False
@@ -939,21 +939,21 @@ Private Sub DrawEnemis()
 End Sub
 
 Private Sub BonusMove()
-  Dim I As Integer
+  Dim i As Integer
   Dim MoreBonuses As Boolean
   MoreBonuses = False
-  For I = 1 To BonusCount
-    If Bonuses(I).BonusNotExist = False Then
-      Bonuses(I).BonusRect.Top = Bonuses(I).BonusRect.Top + BonusStep
-      If Collision(Bonuses(I).BonusRect, PlayerRect) = True Then
-        Bonuses(I).BonusNotExist = True
-        Call CheckBonusType(Bonuses(I).BonusType)
+  For i = 1 To BonusCount
+    If Bonuses(i).BonusNotExist = False Then
+      Bonuses(i).BonusRect.Top = Bonuses(i).BonusRect.Top + BonusStep
+      If Collision(Bonuses(i).BonusRect, PlayerRect) = True Then
+        Bonuses(i).BonusNotExist = True
+        Call CheckBonusType(Bonuses(i).BonusType)
       Else
         MoreBonuses = True
-        Call DrawBitmap(picBonus, picBonusMask.hDC, picGame.hDC, Bonuses(I).BonusRect.Left, Bonuses(I).BonusRect.Top)
+        Call DrawBitmap(picBonus, picBonusMask.hDC, picGame.hDC, Bonuses(i).BonusRect.Left, Bonuses(i).BonusRect.Top)
       End If
     End If
-  Next I
+  Next i
   If MoreBonuses = False Then
     BonusCount = 0
   End If
@@ -1169,7 +1169,7 @@ Private Sub LoadLevels(LevelNum As Integer)
   txtLevel.Text = CStr(LevelNum)
   Exit Sub
 LoadLevelsError:
-  MsgBox Err.Description, vbCritical, "ASRkanoid"
+  COAMsgBox Err.Description, vbCritical, "ASRkanoid"
   Unload Me
 End Sub
 

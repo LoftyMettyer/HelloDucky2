@@ -74,7 +74,7 @@ Private mstrFilteredIDs As String
   Private mlngOutputEmailAddr As Long
   Private mstrOutputEmailSubject As String
   Private mstrOutputEmailAttachAs As String
-  Private mstrOutputFilename As String
+  Private mstrOutputFileName As String
   Private mblnPreviewOnScreen As Boolean
  
 'Recordset to store the final data from the temp table
@@ -845,7 +845,7 @@ Public Function RunCalendarReport(Optional plngRecordID As Long) As Boolean
   If Not gblnBatchMode Then
     If gobjProgress.Visible Then gobjProgress.CloseProgress
     If (fOK = False) Or (mblnNoRecords) Or (mblnUserCancelled) Or Not mblnPreviewOnScreen Then
-      MsgBox mstrErrorString, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, "Calendar Reports"
+      COAMsgBox mstrErrorString, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, "Calendar Reports"
     End If
   End If
   
@@ -1334,7 +1334,7 @@ Private Function GetCalendarReportDefinition() As Boolean
     mlngOutputEmailAddr = !OutputEmailAddr
     mstrOutputEmailSubject = !OutputEmailSubject
     mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
-    mstrOutputFilename = !OutputFilename
+    mstrOutputFileName = !OutputFilename
 
     mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
 
@@ -1456,7 +1456,7 @@ Private Function GetEventsCollection() As Boolean
       If !EventStartDateID > 0 Then
         sTempStartDateName = datGeneral.GetColumnName(!EventStartDateID)
       Else
-        MsgBox "Cannot load the event information for this Calendar Report", vbExclamation + vbOKOnly, "Calendar Reports"
+        COAMsgBox "Cannot load the event information for this Calendar Report", vbExclamation + vbOKOnly, "Calendar Reports"
         GetEventsCollection = False
         GoTo TidyUpAndExit
       End If
@@ -2658,7 +2658,7 @@ Private Function InitialisePreview() As Boolean
     .OutputEmailAddr = mlngOutputEmailAddr
     .OutputEmailSubject = mstrOutputEmailSubject
     .OutputEmailAttachAs = mstrOutputEmailAttachAs
-    .OutputFilename = mstrOutputFilename
+    .OutputFilename = mstrOutputFileName
     
     .HasMultipleEvents = mblnHasMultipleEvents
   End With
@@ -2726,7 +2726,7 @@ Private Function ClearUp() As Boolean
   mlngOutputEmailAddr = 0
   mstrOutputEmailSubject = vbNullString
   mstrOutputEmailAttachAs = vbNullString
-  mstrOutputFilename = vbNullString
+  mstrOutputFileName = vbNullString
   
   mblnDefinitionOwner = False
    

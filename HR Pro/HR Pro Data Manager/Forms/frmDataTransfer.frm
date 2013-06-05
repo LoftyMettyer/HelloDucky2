@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Begin VB.Form frmDataTransfer 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Data Transfer Definition"
@@ -305,7 +305,7 @@ Begin VB.Form frmDataTransfer
             Width           =   3000
          End
          Begin VB.CommandButton cmdPicklist 
-Caption = "..."
+            Caption         =   "..."
             Enabled         =   0   'False
             Height          =   315
             Left            =   8895
@@ -315,7 +315,7 @@ Caption = "..."
             Width           =   330
          End
          Begin VB.CommandButton cmdFilter 
-Caption = "..."
+            Caption         =   "..."
             Enabled         =   0   'False
             Height          =   315
             Left            =   8895
@@ -326,9 +326,9 @@ Caption = "..."
          End
          Begin VB.ComboBox cboToTable 
             Height          =   315
-            ItemData        =   "frmDataTransfer.frx":0DCC
+            ItemData        =   "frmDataTransfer.frx":0048
             Left            =   1620
-            List            =   "frmDataTransfer.frx":0DCE
+            List            =   "frmDataTransfer.frx":004A
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
             TabIndex        =   19
@@ -427,7 +427,7 @@ Caption = "..."
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(0).Picture=   "frmDataTransfer.frx":0DD0
+            stylesets(0).Picture=   "frmDataTransfer.frx":004C
             stylesets(1).Name=   "ReadOnly"
             stylesets(1).ForeColor=   -2147483631
             stylesets(1).BackColor=   -2147483633
@@ -441,7 +441,7 @@ Caption = "..."
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            stylesets(1).Picture=   "frmDataTransfer.frx":0DEC
+            stylesets(1).Picture=   "frmDataTransfer.frx":0068
             MultiLine       =   0   'False
             AllowRowSizing  =   0   'False
             AllowGroupSizing=   0   'False
@@ -786,7 +786,7 @@ End Sub
 Private Sub CheckChangeTable(cboTable As ComboBox, strOldValue As String, blnFromCombo)
 
   Dim strMBText As String
-  Dim intMBButtons As Integer
+  Dim intMBButtons As Long
   Dim strMBTitle As String
   Dim intMBResponse As Integer
   
@@ -802,7 +802,7 @@ Private Sub CheckChangeTable(cboTable As ComboBox, strOldValue As String, blnFro
             "Are you sure you wish to continue?"
     intMBButtons = vbQuestion + vbYesNo
     strMBTitle = "Data Transfer"
-    intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+    intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
     
     If intMBResponse <> vbYes Then
       SetComboText cboTable, strOldValue
@@ -875,7 +875,7 @@ Private Sub cmdCancel_Click()
   Dim strSQL As String
   
   Dim strMBText As String
-  Dim intMBButtons As Integer
+  Dim intMBButtons As Long
   Dim strMBTitle As String
   Dim intMBResponse As Integer
 
@@ -885,7 +885,7 @@ Private Sub cmdCancel_Click()
     strMBText = "You have changed the current definition. Save changes ?"
     intMBButtons = vbQuestion + vbYesNoCancel + vbDefaultButton1
     strMBTitle = "Data Transfer"
-    intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+    intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
     
     Select Case intMBResponse
     Case vbYes
@@ -905,7 +905,7 @@ End Sub
 
 Private Sub cmdClearAll_Click()
 
-  If MsgBox("Are you sure you want to clear the column selections ?", vbQuestion + vbYesNo, Me.Caption) = vbYes Then
+  If COAMsgBox("Are you sure you want to clear the column selections ?", vbQuestion + vbYesNo, Me.Caption) = vbYes Then
     Me.Changed = True
     grdColumns.RemoveAll
     cmdEdit.Enabled = False
@@ -922,7 +922,7 @@ Private Sub cmdDelete_Click()
 
   'MH20011024 Fault 3014
   'Removed confirmation as per request from PJC
-  'If MsgBox("Are you sure you wish to delete the current row ?", vbQuestion + vbYesNo, Me.Caption) = vbYes Then
+  'If COAMsgBox("Are you sure you wish to delete the current row ?", vbQuestion + vbYesNo, Me.Caption) = vbYes Then
     Me.Changed = True
 
     With grdColumns
@@ -1484,7 +1484,7 @@ Private Sub RetreiveDefinition()
   Set rsTemp = GetDefinition
   If rsTemp.BOF And rsTemp.EOF Then
     Screen.MousePointer = vbDefault
-    MsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Data Transfer"
+    COAMsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Data Transfer"
     fOK = False
     Exit Sub
   End If
@@ -1677,7 +1677,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
           (Not FormPrint)
         If fRemove Then
           sBigMessage = "The '" & cboFromTable.List(cboFromTable.ListIndex) & "' table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -1735,7 +1735,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
 
         If fRemove Then
           sBigMessage = "The '" & cboFromTable.List(cboFromTable.ListIndex) & "' table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -1907,7 +1907,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
       sBigMessage = Me.Caption & " print failed. The definition is currently invalid : " & vbCrLf & vbCrLf & sBigMessage
     End If
 
-    MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+    COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
   End If
 
   ForceDefinitionToBeHiddenIfNeeded = (Len(sBigMessage) = 0)
@@ -2134,7 +2134,7 @@ Private Function SaveDefinition() As Boolean
   Exit Function
   
 Err_Trap:
-  MsgBox Err.Description
+  COAMsgBox Err.Description
   SaveDefinition = False
 
 End Function
@@ -2241,7 +2241,7 @@ Private Function InsertDataTransfer(pstrSQL As String) As Long
     cmADO.Execute
               
     If Not fSavedOK Then
-      MsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
+      COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
         Err.Description, vbOKOnly + vbExclamation, App.ProductName
         InsertDataTransfer = 0
         Set cmADO = Nothing
@@ -2308,7 +2308,7 @@ Private Function ValidateDefinition() As Boolean
   
   If Len(strName) = 0 Then
     SSTab1.Tab = 0
-    MsgBox "You must give this definition a name.", vbExclamation, Me.Caption
+    COAMsgBox "You must give this definition a name.", vbExclamation, Me.Caption
     txtName.SetFocus
     ValidateDefinition = False
     Exit Function
@@ -2317,14 +2317,14 @@ Private Function ValidateDefinition() As Boolean
   If optFilter Then
     If Val(txtFilter.Tag) = 0 Then
       SSTab1.Tab = 0
-      MsgBox "No filter selected.", vbExclamation, Me.Caption
+      COAMsgBox "No filter selected.", vbExclamation, Me.Caption
       ValidateDefinition = False
       Exit Function
     End If
   ElseIf optPicklist Then
     If Val(txtPicklist.Tag) = 0 Then
       SSTab1.Tab = 0
-      MsgBox "No picklist selected.", vbExclamation, Me.Caption
+      COAMsgBox "No picklist selected.", vbExclamation, Me.Caption
       ValidateDefinition = False
       Exit Function
     End If
@@ -2345,7 +2345,7 @@ Private Function ValidateDefinition() As Boolean
   End With
 
   If blnFound = False Then
-    MsgBox "No transfer columns specified on the main destination table", vbExclamation, Me.Caption
+    COAMsgBox "No transfer columns specified on the main destination table", vbExclamation, Me.Caption
     ValidateDefinition = False
     Exit Function
   End If
@@ -2375,7 +2375,7 @@ Private Function ValidateDefinition() As Boolean
   
   If ValidateUniqueName(strName, mlTransferID) = False Then
     SSTab1.Tab = 0
-    MsgBox "A Data Transfer definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
+    COAMsgBox "A Data Transfer definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
     txtName.SetFocus
     ValidateDefinition = False
     Exit Function
@@ -2404,11 +2404,11 @@ If mlTransferID > 0 Then
 
     If (Not fBatchJobsOK) Then
       If Len(sBatchJobDetails_ScheduledForOtherUsers) > 0 Then
-        MsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
+        COAMsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
                "as it is used in the following batch jobs which are scheduled to be run by these user groups :" & vbCrLf & vbCrLf & sBatchJobDetails_ScheduledForOtherUsers, _
                vbExclamation + vbOKOnly, "Data Transfer"
       Else
-        MsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
+        COAMsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
                "batch jobs of which you are not the owner :" & vbCrLf & vbCrLf & sBatchJobDetails_NotOwner, vbExclamation + vbOKOnly _
                , "Data Transfer"
       End If
@@ -2418,7 +2418,7 @@ If mlTransferID > 0 Then
       Exit Function
 
     ElseIf (iCount_Owner > 0) Then
-      If MsgBox("Making this definition hidden to user groups will automatically" & vbCrLf & _
+      If COAMsgBox("Making this definition hidden to user groups will automatically" & vbCrLf & _
                 "make the following definition(s), of which you are the" & vbCrLf & _
                 "owner, hidden to the same user groups:" & vbCrLf & vbCrLf & _
                 sBatchJobDetails_Owner & vbCrLf & _
@@ -2617,7 +2617,7 @@ Private Function CheckMandatoryColumns() As Boolean
   Dim strColumnIDs As String
 
   Dim strMBText As String
-  Dim intMBButtons As Integer
+  Dim intMBButtons As Long
   Dim strTitle As String
   
   strMandatoryColumns = vbNullString
@@ -2714,7 +2714,7 @@ Private Function CheckMandatoryColumns() As Boolean
                 "Please enter a source to populate these columns."
     intMBButtons = vbExclamation + vbOKOnly
     strTitle = App.ProductName
-    MsgBox strMBText, intMBButtons, strTitle
+    COAMsgBox strMBText, intMBButtons, strTitle
   End If
 
 End Function
@@ -2803,7 +2803,7 @@ Public Sub PrintDef(lTransferID As Long)
   mlTransferID = lTransferID
   Set rsTemp = GetDefinition
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Data Transfer"
+    COAMsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Data Transfer"
     Exit Sub
   End If
   
@@ -2887,7 +2887,7 @@ Public Sub PrintDef(lTransferID As Long)
 Exit Sub
 
 LocalErr:
-  MsgBox "Printing Data Transfer Definition Failed"
+  COAMsgBox "Printing Data Transfer Definition Failed"
 
 End Sub
 

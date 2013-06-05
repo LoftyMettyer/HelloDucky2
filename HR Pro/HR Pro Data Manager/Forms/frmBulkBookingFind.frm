@@ -328,7 +328,7 @@ Private Function GetRecords() As Boolean
   
   fOK = Not (rsInfo.EOF And rsInfo.BOF)
   If Not fOK Then
-    MsgBox "No order defined for the '" & gsEmployeeTableName & "'table." & _
+    COAMsgBox "No order defined for the '" & gsEmployeeTableName & "'table." & _
       vbCrLf & "Unable to display records.", vbExclamation, "Security"
   Else
     ' Check the user's privilieges on the order columns.
@@ -519,7 +519,7 @@ Private Function GetRecords() As Boolean
 
     ' Inform the user if they do not have permission to see the data.
     If fNoSelect Then
-      MsgBox "You do not have 'read' permission on all of the columns in the selected order." & _
+      COAMsgBox "You do not have 'read' permission on all of the columns in the selected order." & _
         vbCrLf & "Only permitted columns will be shown.", vbExclamation, "Security"
     End If
     
@@ -596,7 +596,7 @@ Private Function GetRecords() As Boolean
         ' Check we have delegate records.
 '        fOK = (mlngRecordCount > 0)
 '        If Not fOK Then
-'          MsgBox "No delegate records found.", vbExclamation, Me.Caption
+'          COAMsgBox "No delegate records found.", vbExclamation, Me.Caption
 '        End If
         
         If fOK Then
@@ -605,12 +605,12 @@ Private Function GetRecords() As Boolean
         End If
       Else
         ' Unable to read from the delegate table.
-        MsgBox "You do not have permission to read the Delegate table." & _
+        COAMsgBox "You do not have permission to read the Delegate table." & _
           vbCrLf & "Unable to display records.", vbExclamation, "Security"
         fOK = False
       End If
     Else
-      MsgBox "You do not have permission to read any of the columns in the Delegate table's default order." & _
+      COAMsgBox "You do not have permission to read any of the columns in the Delegate table's default order." & _
         vbCrLf & "Unable to display records.", vbExclamation, "Security"
       fOK = False
     End If
@@ -634,7 +634,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  MsgBox "Error reading Delegate records.", vbExclamation, Me.Caption
+  COAMsgBox "Error reading Delegate records.", vbExclamation, Me.Caption
   fOK = False
   Resume TidyUpAndExit
 
@@ -656,7 +656,7 @@ Public Function Initialise() As Boolean
   ConfigureViewCombo
   
   If cmbView.ListCount = 0 Then
-    MsgBox "You do not have 'read' permission on this table." & _
+    COAMsgBox "You do not have 'read' permission on this table." & _
       vbCrLf & "Unable to display the records.", vbExclamation, "Security"
     mfCancelled = True
     Me.Hide
@@ -669,7 +669,7 @@ Public Function Initialise() As Boolean
   
   fOK = (cmbOrders.ListCount > 0)
   If Not fOK Then
-    MsgBox "There are no orders defined for this table." & _
+    COAMsgBox "There are no orders defined for this table." & _
       vbCrLf & "Unable to display the records.", vbExclamation, "Security"
   End If
   

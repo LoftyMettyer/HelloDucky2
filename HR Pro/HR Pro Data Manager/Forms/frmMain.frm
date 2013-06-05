@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
 Begin VB.MDIForm frmMain 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "12:21"
+            TextSave        =   "16:37"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -253,7 +253,7 @@ Private Sub WorkflowLogClick()
   Dim frmLog As frmWorkflowLog
   
   If GetSystemSetting("workflow", "suspended", "0") = "1" Then
-    MsgBox "The Workflow Service is currently suspended." & vbCrLf & vbCrLf & "Please contact your system administrator.", vbOKOnly & vbInformation, "Workflow"
+    COAMsgBox "The Workflow Service is currently suspended." & vbCrLf & vbCrLf & "Please contact your system administrator.", vbOKOnly & vbInformation, "Workflow"
   End If
   
   Screen.MousePointer = vbHourglass
@@ -725,7 +725,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
           
         'NHRD 16042002 Fault 3381 Log Off clarification notice.
         'The F3 key was added to the log off option in the active bar designer.
-        If MsgBox("Are you sure you wish to log off?", vbQuestion + vbYesNo, "Logging Off") = vbYes Then
+        If COAMsgBox("Are you sure you wish to log off?", vbQuestion + vbYesNo, "Logging Off") = vbYes Then
           'Looks like we want to log off so do the necessary.
           Database.Validation = True
           'RH 12/10/00 - Now call from frmMain_QueryUnload
@@ -1121,7 +1121,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
           Unload frmChangePassword
           Set frmChangePassword = Nothing
         Else
-          MsgBox "Cannot change password. This account is currently being used " & _
+          COAMsgBox "Cannot change password. This account is currently being used " & _
                   "by " & IIf(iUsers > 2, iUsers & " users", "another user") & " in the system.", vbExclamation + vbOKOnly, App.Title
         End If
       End If
@@ -1194,7 +1194,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     Case "HelpContentsAndIndex"
       plngHelp = ShellExecute(0&, vbNullString, App.Path & "\" & App.HelpFile, vbNullString, vbNullString, vbNormalNoFocus)
       If plngHelp = 0 Then
-        MsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
+        COAMsgBox "Error whilst attempting to display help file." & vbCrLf & vbCrLf & "Please use windows explorer to view the file 'HRProHelp.chm'.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
       End If
     
       ' DOESNT SEEM TO WORK !
@@ -1221,10 +1221,10 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
       If Len(strVersionFilename) > 0 Then
         plngHelp = ShellExecute(0&, vbNullString, strVersionFilename, vbNullString, vbNullString, vbNormalNoFocus)
         If plngHelp = 0 Then
-          MsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
+          COAMsgBox "Error whilst attempting to display version information file.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
         End If
       Else
-        MsgBox "No version information found.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
+        COAMsgBox "No version information found.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
       End If
       
       Screen.MousePointer = vbNormal
@@ -1236,7 +1236,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
 
     Case "ID_CMGCommit"
       If datGeneral.CMGCommit = True Then
-        MsgBox "CMG Commit successful", vbOKOnly & vbInformation, "CMG"
+        COAMsgBox "CMG Commit successful", vbOKOnly & vbInformation, "CMG"
       End If
     
     
@@ -1247,7 +1247,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     
     ' Message boxes
     Case "MessageBox"
-      MsgBox Tool.Text, vbOKOnly
+      COAMsgBox Tool.Text, vbOKOnly
     
     
     ' JPD20021126 Fault 4805
@@ -1461,7 +1461,7 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
             If .AbsolutePosition = adPosUnknown Then
               ' The current record no longer exists. Try to move onto the next record.
               
-              MsgBox "The current record has been deleted by another user, screen will be refreshed.", vbExclamation, App.ProductName
+              COAMsgBox "The current record has been deleted by another user, screen will be refreshed.", vbExclamation, App.ProductName
               
               If (Not .EOF) Then .MoveNext
               
@@ -2496,13 +2496,13 @@ Public Sub WorkflowClick()
   ' Check the URL has ben defined.
   sURL = WorkflowURL
   If Len(sURL) = 0 Then
-    MsgBox "No Workflow URL has been configured. Contact your system administrator.", vbInformation + vbOKOnly, "Workflow"
+    COAMsgBox "No Workflow URL has been configured. Contact your system administrator.", vbInformation + vbOKOnly, "Workflow"
     Exit Sub
   End If
   
   ReadWebLogon sUser, sPassword
   If Len(sUser) = 0 Then
-    MsgBox "No Workflow Web Logon has been configured. Contact your system administrator.", vbInformation + vbOKOnly, "Workflow"
+    COAMsgBox "No Workflow Web Logon has been configured. Contact your system administrator.", vbInformation + vbOKOnly, "Workflow"
     Exit Sub
   End If
   
@@ -2557,7 +2557,7 @@ Public Sub WorkflowClick()
             
             If Len(sMessage) > 0 Then
               ' Instantiation failed for some reason. Tell the user why.
-              MsgBox "Workflow : '" & .SelectedText & "' initiation failed." & vbCrLf & vbCrLf & sMessage, vbExclamation + vbOKOnly, "Workflow"
+              COAMsgBox "Workflow : '" & .SelectedText & "' initiation failed." & vbCrLf & vbCrLf & sMessage, vbExclamation + vbOKOnly, "Workflow"
             Else
               ' Launch the default browser to hit the HR Pro Workflow webservice
               ' passing in the InstanceID and the InstanceStepID
@@ -2580,12 +2580,12 @@ Public Sub WorkflowClick()
                 
                 If Len(Trim(strExePath)) > 1 Then
                   'JPD 20071205 Fault 12680
-                  'MsgBox "Workflow : '" & .SelectedText & "' initiated successfully." & vbCrLf & vbCrLf & "Please complete the required Workflow forms.", vbInformation + vbOKOnly, "Workflow"
+                  'COAMsgBox "Workflow : '" & .SelectedText & "' initiated successfully." & vbCrLf & vbCrLf & "Please complete the required Workflow forms.", vbInformation + vbOKOnly, "Workflow"
                 Else
-                  MsgBox "Workflow : '" & .SelectedText & "' initiated successfully, but unable to open required Workflow forms." & vbCrLf & vbCrLf & "Please contact your system administrator.", vbExclamation + vbOKOnly, "Workflow"
+                  COAMsgBox "Workflow : '" & .SelectedText & "' initiated successfully, but unable to open required Workflow forms." & vbCrLf & vbCrLf & "Please contact your system administrator.", vbExclamation + vbOKOnly, "Workflow"
                 End If
               Else
-                MsgBox "Workflow : '" & .SelectedText & "' initiated successfully.", vbInformation + vbOKOnly, "Workflow"
+                COAMsgBox "Workflow : '" & .SelectedText & "' initiated successfully.", vbInformation + vbOKOnly, "Workflow"
               End If
   
               Me.SetFocus
@@ -2607,7 +2607,7 @@ Public Sub WorkflowClick()
   Exit Sub
 
 ErrorTrap:
-  MsgBox "Error " & IIf(fRunning, "running Workflow.", "displaying Workflows.") & vbCrLf & _
+  COAMsgBox "Error " & IIf(fRunning, "running Workflow.", "displaying Workflows.") & vbCrLf & _
     Err.Description, _
     vbOKOnly + vbExclamation, Application.Name
 
@@ -2756,19 +2756,19 @@ Public Sub BatchJobsClick()
 'MH20030818 Fault 5673
 '            If InStr(UCase(strNotes), "SUCCESSFULLY") And InStr(UCase(strNotes), "FAILED") = 0 Then
 '            'If InStr(UCase(strNotes), "SUCCESS") Then
-'              MsgBox "Batch Job : " & .SelectedText & " Completed successfully.", vbInformation + vbOKOnly, "Batch Jobs"
+'              COAMsgBox "Batch Job : " & .SelectedText & " Completed successfully.", vbInformation + vbOKOnly, "Batch Jobs"
 '            ElseIf InStr(UCase(strNotes), "CANCELLED") Then
-'              MsgBox "Batch Job : " & .SelectedText & " Cancelled by user.", vbExclamation + vbOKOnly, "Batch Jobs"
+'              COAMsgBox "Batch Job : " & .SelectedText & " Cancelled by user.", vbExclamation + vbOKOnly, "Batch Jobs"
 '            Else
-'              MsgBox "Batch Job : " & .SelectedText & " " & vbCrLf & strNotes, vbExclamation + vbOKOnly, "Batch Jobs"
+'              COAMsgBox "Batch Job : " & .SelectedText & " " & vbCrLf & strNotes, vbExclamation + vbOKOnly, "Batch Jobs"
 '            End If
             Select Case pobjBatchJobRUN.JobStatus
             Case elsSuccessful
-              MsgBox "Batch Job : '" & .SelectedText & "' Completed successfully.", vbInformation + vbOKOnly, "Batch Jobs"
+              COAMsgBox "Batch Job : '" & .SelectedText & "' Completed successfully.", vbInformation + vbOKOnly, "Batch Jobs"
             Case elsCancelled
-              MsgBox "Batch Job : '" & .SelectedText & "' Cancelled by user.", vbExclamation + vbOKOnly, "Batch Jobs"
+              COAMsgBox "Batch Job : '" & .SelectedText & "' Cancelled by user.", vbExclamation + vbOKOnly, "Batch Jobs"
             Case Else
-              MsgBox "Batch Job : '" & .SelectedText & "' Failed." & vbCrLf & vbCrLf & strNotes, vbExclamation + vbOKOnly, "Batch Jobs"
+              COAMsgBox "Batch Job : '" & .SelectedText & "' Failed." & vbCrLf & vbCrLf & strNotes, vbExclamation + vbOKOnly, "Batch Jobs"
             End Select
 
             Set pobjBatchJobRUN = Nothing
@@ -3231,7 +3231,7 @@ Private Sub Timer1_Timer()
     Set rsMessages = Nothing
   
     If Len(sMessage) > 0 Then
-      MsgBox sMessage, vbInformation + vbOKOnly, App.ProductName
+      COAMsgBox sMessage, vbInformation + vbOKOnly, App.ProductName
     End If
   End If
 
@@ -3279,7 +3279,7 @@ Private Sub tmrDiary_Timer()
 'LocalErr:
 '  On Local Error Resume Next
 '  tmrDiary.Enabled = False
-'  MsgBox "An error occurred checking for alarmed diary events.  No further checks will be made for alarmed events until HR Pro is restarted." & _
+'  COAMsgBox "An error occurred checking for alarmed diary events.  No further checks will be made for alarmed events until HR Pro is restarted." & _
 '         IIf(Err.Description <> vbNullString, vbCrLf & "(" & Err.Description & ")", ""), vbExclamation, "Alarmed Diary Events"
 '
   gobjDiary.CheckAlarmedEvents tmrDiary, mstrLastAlarmCheck

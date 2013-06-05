@@ -20,7 +20,7 @@ Declare Function getPCPPostLocation Lib "pcpv232.dll" Alias "GetPostcode" (PcLoc
 Declare Function getPCPPostAddress Lib "pcpv232.dll" Alias "GetAddress" (PcAddr As PcAddrRec, ByVal RecNo As Long) As Long
 
 ' AFD Poscode Normal Functions
-Declare Function getPostcodeFirst Lib "PCODE32.DLL" Alias "GetFirst" (details As PostcodeData, flags As Integer) As Long
+Declare Function getPostcodeFirst Lib "PCODE32.DLL" Alias "GetFirst" (details As PostcodeData, Flags As Integer) As Long
 Declare Function getPostcodeNext Lib "PCODE32.DLL" Alias "GetNext" (details As PostcodeData) As Long
 
 
@@ -253,14 +253,14 @@ End Sub
 
 Sub ShowError(ErrorNumber&)
  Select Case ErrorNumber&
-    Case -1: MsgBox "Invalid Postcode", 16
-    Case -2: MsgBox "Postcode Not Found", 16
-    Case -3: MsgBox "Invalid Record Number", 16
-    Case -4: MsgBox "Error Opening Postcode Files", 16
-    Case -5: MsgBox "File Read Error", 16
-    Case -6: MsgBox "End of Search", 16
-    Case -7: MsgBox "Data License Error", 16
-    Case -8: MsgBox "Conflicting Search Parameters", 16      'Occurs when Organisation &
+    Case -1: COAMsgBox "Invalid Postcode", 16
+    Case -2: COAMsgBox "Postcode Not Found", 16
+    Case -3: COAMsgBox "Invalid Record Number", 16
+    Case -4: COAMsgBox "Error Opening Postcode Files", 16
+    Case -5: COAMsgBox "File Read Error", 16
+    Case -6: COAMsgBox "End of Search", 16
+    Case -7: COAMsgBox "Data License Error", 16
+    Case -8: COAMsgBox "Conflicting Search Parameters", 16      'Occurs when Organisation &
                                                                                             'Name Searches are attempted at same time
  End Select
 
@@ -473,7 +473,7 @@ Exit Sub
 
 AdfShowMappedFieldsError:
 
-MsgBox "Error : " & Err.Number & " - " & Err.Description & " - ModAFDSpecifics.modAfdShowMappedFields", vbOKOnly, "Error"
+COAMsgBox "Error : " & Err.Number & " - " & Err.Description & " - ModAFDSpecifics.modAfdShowMappedFields", vbOKOnly, "Error"
 Resume AdfShowMappedFieldsResume
 
 End Sub

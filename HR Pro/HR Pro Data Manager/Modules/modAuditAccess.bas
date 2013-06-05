@@ -40,7 +40,7 @@ Exit Sub
 
 ErrTrap:
 
-  MsgBox "Error recording module access in the audit log." & vbNewLine & "Contact support stating :" & vbNewLine & vbNewLine & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Access Audit Log"
+  COAMsgBox "Error recording module access in the audit log." & vbNewLine & "Contact support stating :" & vbNewLine & vbNewLine & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Access Audit Log"
  
 End Sub
 

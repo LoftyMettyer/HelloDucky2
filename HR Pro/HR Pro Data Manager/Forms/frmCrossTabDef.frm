@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Begin VB.Form frmCrossTabDef 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Cross Tab Definition"
@@ -82,17 +82,17 @@ Begin VB.Form frmCrossTabDef
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmCrossTabDef.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(1)"
+      Tab(1).Control(0)=   "fraColumns(0)"
       Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "fraColumns(0)"
+      Tab(1).Control(1)=   "fraColumns(1)"
       Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmCrossTabDef.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraOutputFormat"
+      Tab(2).Control(0)=   "fraOutputDestination"
       Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraOutputDestination"
+      Tab(2).Control(1)=   "fraOutputFormat"
       Tab(2).Control(1).Enabled=   0   'False
       Tab(2).ControlCount=   2
       Begin VB.Frame fraOutputDestination 
@@ -1612,7 +1612,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
           (Not mblnReadOnly)
         If fRemove Then
           sBigMessage = "The '" & cboBaseTable.List(cboBaseTable.ListIndex) & "' table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -1667,7 +1667,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
 
         If fRemove Then
           sBigMessage = "The '" & cboBaseTable.List(cboBaseTable.ListIndex) & "' table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -1831,7 +1831,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
   ForceAccess
 
   If Len(sBigMessage) > 0 Then
-    MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+    COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
   End If
 
   ForceDefinitionToBeHiddenIfNeeded = (Len(sBigMessage) = 0)
@@ -1865,11 +1865,11 @@ End Function
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOk.Enabled = blnChanged
+  cmdOK.Enabled = blnChanged
 End Property
 
 Public Property Get SelectedID() As Long
@@ -1878,9 +1878,9 @@ End Property
 
 
 
-Private Function ErrorMsgbox(strMessage As String) As Boolean
+Private Function ErrorCOAMsgBox(strMessage As String) As Boolean
   Screen.MousePointer = vbDefault
-  MsgBox strMessage & vbCrLf & Err.Description, vbCritical, "Cross Tab"
+  COAMsgBox strMessage & vbCrLf & Err.Description, vbCritical, "Cross Tab"
 End Function
 
 Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lCrossTabID As Long) As Boolean
@@ -1951,7 +1951,7 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lCrossTab
 Exit Function
 
 LocalErr:
-  ErrorMsgbox "Error with Cross Tab Definition"
+  ErrorCOAMsgBox "Error with Cross Tab Definition"
 
 End Function
 
@@ -2225,7 +2225,7 @@ Private Sub txtDesc_Change()
 End Sub
 
 Private Sub txtDesc_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub txtEmailGroup_Change()
@@ -2254,13 +2254,13 @@ End Sub
 
 Private Sub txtDesc_GotFocus()
   txt_GotFocus txtDesc
-  cmdOk.Default = False
+  cmdOK.Default = False
 End Sub
 
 Private Sub cboBaseTable_Click()
 
   Dim strMBText As String
-  Dim intMBButtons As Integer
+  Dim intMBButtons As Long
   Dim strMBTitle As String
   Dim intMBResponse As Integer
   
@@ -2278,7 +2278,7 @@ Private Sub cboBaseTable_Click()
     strMBText = "Changing the Base Table will reset all of the selected columns. Continue ?"
     intMBButtons = vbQuestion + vbYesNo   'Cancel
     strMBTitle = Me.Caption
-    intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+    intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
   End If
 
   If intMBResponse = vbYes Then
@@ -2355,7 +2355,7 @@ Private Sub cmdPicklist_Click()
   On Error GoTo LocalErr
   
   'If cboBaseTable.Text = "<None>" Then
-  '  MsgBox "No primary table specified", vbExclamation, Me.Caption
+  '  COAMsgBox "No primary table specified", vbExclamation, Me.Caption
   '  Exit Sub
   'End If
 
@@ -2445,7 +2445,7 @@ Private Sub cmdPicklist_Click()
 Exit Sub
 
 LocalErr:
-  ErrorMsgbox "Error selecting picklist"
+  ErrorCOAMsgBox "Error selecting picklist"
 
 End Sub
 
@@ -2461,7 +2461,7 @@ Private Sub cmdFilter_Click()
   On Error GoTo LocalErr
   
   'If cboBaseTable.Text = "<None>" Then
-  '  MsgBox "No primary table specified", vbExclamation, Me.Caption
+  '  COAMsgBox "No primary table specified", vbExclamation, Me.Caption
   '  Exit Sub
   'End If
 
@@ -2496,7 +2496,7 @@ Private Sub cmdFilter_Click()
 Exit Sub
 
 LocalErr:
-  ErrorMsgbox "Error selecting filter"
+  ErrorCOAMsgBox "Error selecting filter"
 
 End Sub
 
@@ -2518,7 +2518,7 @@ Private Sub cmdCancel_Click()
   Dim strSQL As String
   
   Dim strMBText As String
-  Dim intMBButtons As Integer
+  Dim intMBButtons As Long
   Dim strMBTitle As String
   Dim intMBResponse As Integer
 
@@ -2528,7 +2528,7 @@ Private Sub cmdCancel_Click()
     strMBText = "You have changed the current definition. Save changes ?"
     intMBButtons = vbQuestion + vbYesNoCancel + vbDefaultButton1
     strMBTitle = "Cross Tab"
-    intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+    intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
     
     Select Case intMBResponse
     Case vbYes
@@ -2600,14 +2600,14 @@ Private Sub RetreiveDefinition()
 
   Set rsTemp = GetDefinition
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Cross Tab"
+    COAMsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Cross Tab"
     fOK = False
     Exit Sub
   End If
   
   SetComboText cboBaseTable, GetItemName(True, rsTemp!TableID)
   If cboBaseTable.ItemData(cboBaseTable.ListIndex) <> rsTemp!TableID Then
-    MsgBox "This definition contains an invalid base table and could not be loaded", vbExclamation, "Cross Tab"
+    COAMsgBox "This definition contains an invalid base table and could not be loaded", vbExclamation, "Cross Tab"
     fOK = False
     Exit Sub
   End If
@@ -2757,7 +2757,7 @@ Private Sub RetreiveDefinition()
 Exit Sub
 
 LocalErr:
-  ErrorMsgbox "Error retrieving Cross Tab definition"
+  ErrorCOAMsgBox "Error retrieving Cross Tab definition"
 
 End Sub
 
@@ -3020,7 +3020,7 @@ Private Sub SaveDefinition()
 Exit Sub
 
 LocalErr:
-  ErrorMsgbox "Error saving Cross Tab definition"
+  ErrorCOAMsgBox "Error saving Cross Tab definition"
 
 End Sub
 
@@ -3125,7 +3125,7 @@ Private Function InsertCrossTab(pstrSQL As String) As Long
     cmADO.Execute
               
     If Not fSavedOK Then
-      MsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
+      COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
         Err.Description, vbOKOnly + vbExclamation, App.ProductName
         InsertCrossTab = 0
         Set cmADO = Nothing
@@ -3177,7 +3177,7 @@ Private Function ValidateDefinition() As Boolean
 
   If Len(strName) = 0 Then
     SSTab1.Tab = 0
-    MsgBox "You must give this definition a name.", vbExclamation, Me.Caption
+    COAMsgBox "You must give this definition a name.", vbExclamation, Me.Caption
     txtName.SetFocus
     Exit Function
   End If
@@ -3185,7 +3185,7 @@ Private Function ValidateDefinition() As Boolean
   If optFilter Then
     If Val(txtFilter.Tag) = 0 Then
       SSTab1.Tab = 0
-      MsgBox "No Filter entered for the base table.", vbExclamation
+      COAMsgBox "No Filter entered for the base table.", vbExclamation
       cmdFilter.SetFocus
       Exit Function
     End If
@@ -3194,7 +3194,7 @@ Private Function ValidateDefinition() As Boolean
   If optPicklist Then
     If Val(txtPicklist.Tag) = 0 Then
       SSTab1.Tab = 0
-      MsgBox "No Picklist entered for the base table.", vbExclamation
+      COAMsgBox "No Picklist entered for the base table.", vbExclamation
       cmdPicklist.SetFocus
       Exit Function
     End If
@@ -3209,20 +3209,20 @@ Private Function ValidateDefinition() As Boolean
   If Val(mskHorizontalRange(0).Value) <> 0 Or Val(mskHorizontalRange(1).Value) <> 0 Then
     If Val(mskHorizontalRange(1).Value) <= Val(mskHorizontalRange(0).Value) Then
       SSTab1.Tab = 1
-      MsgBox "Horizontal stop value must be greater than Horizontal start value", vbExclamation
+      COAMsgBox "Horizontal stop value must be greater than Horizontal start value", vbExclamation
       mskHorizontalRange(1).SetFocus
       Exit Function
     End If
     If Val(mskHorizontalRange(2).Value) <= 0 Then
       SSTab1.Tab = 1
-      MsgBox "Horizontal increment must be greater than zero", vbExclamation
+      COAMsgBox "Horizontal increment must be greater than zero", vbExclamation
       mskHorizontalRange(2).SetFocus
       Exit Function
     End If
   
     ' RH 05/10/00 - Ensure steps does not exceed maximum imposed by combo control
     If (Val(mskHorizontalRange(1).Value) - Val(mskHorizontalRange(0).Value)) / Val(mskHorizontalRange(2).Value) > 32768 Then
-      MsgBox "Maximum number of steps between start, stop and increment value for the Horizontal Range " & _
+      COAMsgBox "Maximum number of steps between start, stop and increment value for the Horizontal Range " & _
              "has been exceeded. You must either increase the increment value or decrease the stop value.", vbExclamation
       SSTab1.Tab = 1
       Exit Function
@@ -3234,20 +3234,20 @@ Private Function ValidateDefinition() As Boolean
   If Val(mskVerticalRange(0).Value) <> 0 Or Val(mskVerticalRange(1).Value) <> 0 Then
     If Val(mskVerticalRange(1).Value) <= Val(mskVerticalRange(0).Value) Then
       SSTab1.Tab = 1
-      MsgBox "Vertical stop value must be greater than Vertical start value", vbExclamation
+      COAMsgBox "Vertical stop value must be greater than Vertical start value", vbExclamation
       mskVerticalRange(1).SetFocus
       Exit Function
     End If
     If Val(mskVerticalRange(2).Value) <= 0 Then
       SSTab1.Tab = 1
-      MsgBox "Vertical increment must be greater than zero", vbExclamation
+      COAMsgBox "Vertical increment must be greater than zero", vbExclamation
       mskVerticalRange(2).SetFocus
       Exit Function
     End If
   
     ' RH 05/10/00 - Ensure steps does not exceed maximum imposed by combo control
     If (Val(mskVerticalRange(1).Value) - Val(mskVerticalRange(0).Value)) / Val(mskVerticalRange(2).Value) > 32768 Then
-      MsgBox "Maximum number of steps between start, stop and increment value for the Vertical Range " & _
+      COAMsgBox "Maximum number of steps between start, stop and increment value for the Vertical Range " & _
              "has been exceeded. You must either increase the increment value or decrease the stop value.", vbExclamation
       SSTab1.Tab = 1
       Exit Function
@@ -3259,20 +3259,20 @@ Private Function ValidateDefinition() As Boolean
   If Val(mskPageBreakRange(0).Value) <> 0 Or Val(mskPageBreakRange(1).Value) <> 0 Then
     If Val(mskPageBreakRange(1).Value) <= Val(mskPageBreakRange(0).Value) Then
       SSTab1.Tab = 1
-      MsgBox "Page Break stop value must be greater than Page Break start value", vbExclamation
+      COAMsgBox "Page Break stop value must be greater than Page Break start value", vbExclamation
       mskPageBreakRange(1).SetFocus
       Exit Function
     End If
     If Val(mskPageBreakRange(2).Value) <= 0 Then
       SSTab1.Tab = 1
-      MsgBox "Page Break increment must be greater than zero", vbExclamation
+      COAMsgBox "Page Break increment must be greater than zero", vbExclamation
       mskPageBreakRange(2).SetFocus
       Exit Function
     End If
         
     ' RH 05/10/00 - Ensure steps does not exceed maximum imposed by combo control
     If (Val(mskPageBreakRange(1).Value) - Val(mskPageBreakRange(0).Value)) / Val(mskPageBreakRange(2).Value) > 32768 Then
-      MsgBox "Maximum number of steps between start, stop and increment value for the Page Break Range " & _
+      COAMsgBox "Maximum number of steps between start, stop and increment value for the Page Break Range " & _
              "has been exceeded. You must either increase the increment value or decrease the stop value.", vbExclamation
       SSTab1.Tab = 1
       Exit Function
@@ -3284,7 +3284,7 @@ Private Function ValidateDefinition() As Boolean
   'If optOutput(1).Value Then
   '  If chkSave.Value And txtFilename = "" Then
   '    SSTab1.Tab = 2
-  '    MsgBox "You must select a filename if you opt to save the document !", vbExclamation
+  '    COAMsgBox "You must select a filename if you opt to save the document !", vbExclamation
   '    cmdFilename.SetFocus
   '    Exit Function
   '  End If
@@ -3312,7 +3312,7 @@ Private Function ValidateDefinition() As Boolean
 
   If ValidateDefinitionUniqueName(strName) = False Then
     SSTab1.Tab = 0
-    MsgBox "A Cross Tab definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
+    COAMsgBox "A Cross Tab definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
     txtName.SetFocus
     Exit Function
   End If
@@ -3336,11 +3336,11 @@ If mlngCrossTabID > 0 Then
 
     If (Not fBatchJobsOK) Then
       If Len(sBatchJobDetails_ScheduledForOtherUsers) > 0 Then
-        MsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
+        COAMsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
                "as it is used in the following batch jobs which are scheduled to be run by these user groups :" & vbCrLf & vbCrLf & sBatchJobDetails_ScheduledForOtherUsers, _
                vbExclamation + vbOKOnly, "Cross Tabs"
       Else
-        MsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
+        COAMsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
                "batch jobs of which you are not the owner :" & vbCrLf & vbCrLf & sBatchJobDetails_NotOwner, vbExclamation + vbOKOnly _
                , "Cross Tabs"
       End If
@@ -3350,7 +3350,7 @@ If mlngCrossTabID > 0 Then
       Exit Function
 
     ElseIf (iCount_Owner > 0) Then
-      If MsgBox("Making this definition hidden to user groups will automatically" & vbCrLf & _
+      If COAMsgBox("Making this definition hidden to user groups will automatically" & vbCrLf & _
                 "make the following definition(s), of which you are the" & vbCrLf & _
                 "owner, hidden to the same user groups:" & vbCrLf & vbCrLf & _
                 sBatchJobDetails_Owner & vbCrLf & _
@@ -3374,7 +3374,7 @@ End If
 Exit Function
 
 LocalErr:
-  ErrorMsgbox "Error validating Cross Tab definition"
+  ErrorCOAMsgBox "Error validating Cross Tab definition"
 
 End Function
 
@@ -3810,7 +3810,7 @@ Public Sub PrintDef(lCrossTabID As Long)
   mlngCrossTabID = lCrossTabID
   Set rsTemp = GetDefinition
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Cross Tab"
+    COAMsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Cross Tab"
     Exit Sub
   End If
 
@@ -3962,7 +3962,7 @@ Public Sub PrintDef(lCrossTabID As Long)
 Exit Sub
 
 LocalErr:
-  ErrorMsgbox "Printing Cross Tab Definition Failed"
+  ErrorCOAMsgBox "Printing Cross Tab Definition Failed"
 
 End Sub
 

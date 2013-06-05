@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
-Object = "{C932BA88-4374-101B-A56C-00AA003668DC}#1.1#0"; "MSMASK32.OCX"
+Object = "{C932BA88-4374-101B-A56C-00AA003668DC}#1.1#0"; "msmask32.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmDiaryDuplicate 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Repeat/Copy Diary Entry"
@@ -337,7 +337,7 @@ Private Sub cboCopyDate_LostFocus()
 '     IsDate(cboCopyDate.DateValue) And _
 '     cboCopyDate.Text <> "  /  /" Then
 '
-'     MsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
+'     COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
 '     cboCopyDate.DateValue = Null
 '     cboCopyDate.SetFocus
 '     Exit Sub
@@ -364,7 +364,7 @@ Private Sub cboUntilDate_LostFocus()
 '     IsDate(cboUntilDate.DateValue) And _
 '     cboUntilDate.Text <> "  /  /" Then
 '
-'     MsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
+'     COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
 '     cboUntilDate.DateValue = Null
 '     cboUntilDate.SetFocus
 '     Exit Sub
@@ -429,7 +429,7 @@ Private Sub cmdOK_Click()
        
   'NHRD29102004 Fault 9248
   If cboUntilDate.DateValue < (DateAdd(strIntervalPeriod, spnIntervalAmount.Value, dtDate)) Then
-    MsgBox "Interval Period is greater than the Until Date." & vbCrLf & vbCrLf & "Decrease the Interval Period or Increase the Until Date.", vbExclamation, "Interval Period"
+    COAMsgBox "Interval Period is greater than the Until Date." & vbCrLf & vbCrLf & "Decrease the Interval Period or Increase the Until Date.", vbExclamation, "Interval Period"
         gobjProgress.CloseProgress
         Screen.MousePointer = vbDefault
     Exit Sub
@@ -441,11 +441,11 @@ Private Sub cmdOK_Click()
     If ValidateGTMaskDate(cboCopyDate) = False Then
       Exit Sub
     ElseIf IsValidDate(cboCopyDate.DateValue) = False Then
-      MsgBox "Please enter a valid date", vbExclamation
+      COAMsgBox "Please enter a valid date", vbExclamation
       cboCopyDate.SetFocus
       Exit Sub
     ElseIf FormatTime(Me.mskCopyTime) = vbNullString Then
-      MsgBox "Please enter a valid time", vbExclamation
+      COAMsgBox "Please enter a valid time", vbExclamation
       mskCopyTime.SetFocus
       Exit Sub
     End If
@@ -464,7 +464,7 @@ Private Sub cmdOK_Click()
     If ValidateGTMaskDate(cboUntilDate) = False Then
       Exit Sub
     ElseIf IsValidDate(cboUntilDate.DateValue) = False Then
-      MsgBox "Please enter a valid date", vbExclamation
+      COAMsgBox "Please enter a valid date", vbExclamation
       cboUntilDate.SetFocus
       Exit Sub
     End If
@@ -527,7 +527,7 @@ Private Sub cmdOK_Click()
   End If
 
   frmDiary.Enabled = True
-  MsgBox "Diary entry duplicated " & CStr(intCount) & " time(s).", vbInformation
+  COAMsgBox "Diary entry duplicated " & CStr(intCount) & " time(s).", vbInformation
   Unload Me
 
 End Sub

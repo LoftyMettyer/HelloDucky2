@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmConfigurationReports 
@@ -89,8 +89,8 @@ Begin VB.Form frmConfigurationReports
       TabCaption(1)   =   "O&utput"
       TabPicture(1)   =   "frmConfigurationReports.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraOutputFormat"
-      Tab(1).Control(1)=   "fraOutputDestination"
+      Tab(1).Control(0)=   "fraOutputDestination"
+      Tab(1).Control(1)=   "fraOutputFormat"
       Tab(1).ControlCount=   2
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
@@ -1261,7 +1261,7 @@ Private Sub cmdExprDate_Click(Index As Integer)
         fOK = (.ReturnType = giEXPRVALUE_DATE)
         
         If Not fOK Then
-          MsgBox "This calculation does not return a date value.", vbExclamation, Me.Caption
+          COAMsgBox "This calculation does not return a date value.", vbExclamation, Me.Caption
         End If
       Loop While Not fOK
 
@@ -1337,7 +1337,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   If (Changed) Then
     
     If (lngAction = rptCancel) And (Not mblnRun) Then
-      pintAnswer = MsgBox("You have changed the report configuration. Save changes ?", vbQuestion + vbYesNoCancel, "Report Configuration")
+      pintAnswer = COAMsgBox("You have changed the report configuration. Save changes ?", vbQuestion + vbYesNoCancel, "Report Configuration")
         
       If pintAnswer = vbYes Then
         If Not ValidDefinition Then
@@ -1433,7 +1433,7 @@ Private Sub LoadPicklistFilter()
       optFilter.Value = True
       strRecSelStatus = IsFilterValid(plngID)
       If strRecSelStatus <> vbNullString Then
-        MsgBox strRecSelStatus & vbCrLf & "It has been removed from the definition.", vbExclamation, Me.Caption
+        COAMsgBox strRecSelStatus & vbCrLf & "It has been removed from the definition.", vbExclamation, Me.Caption
         txtFilter.Text = "<None>"
         txtFilter.Tag = 0
         mblnForceInitialChanged = True
@@ -1445,7 +1445,7 @@ Private Sub LoadPicklistFilter()
       optPicklist.Value = True
       strRecSelStatus = IsPicklistValid(plngID)
       If strRecSelStatus <> vbNullString Then
-        MsgBox strRecSelStatus & vbCrLf & "It has been removed from the definition.", vbExclamation, Me.Caption
+        COAMsgBox strRecSelStatus & vbCrLf & "It has been removed from the definition.", vbExclamation, Me.Caption
         txtPicklist.Text = "<None>"
         txtPicklist.Tag = 0
         mblnForceInitialChanged = True
@@ -1593,7 +1593,7 @@ Private Sub cmdPicklist_Click()
 Exit Sub
 
 LocalErr:
-  MsgBox "Error selecting picklist", vbCritical, Me.Caption
+  COAMsgBox "Error selecting picklist", vbCritical, Me.Caption
 
 End Sub
 
@@ -1631,7 +1631,7 @@ Private Sub cmdFilter_Click()
 Exit Sub
 
 LocalErr:
-  MsgBox "Error selecting filter", vbCritical, Me.Caption
+  COAMsgBox "Error selecting filter", vbCritical, Me.Caption
 
 End Sub
 
@@ -1788,7 +1788,7 @@ Private Sub LoadDates()
         
         strRecSelStatus = IsCalcValid(lngID)
         If strRecSelStatus <> vbNullString Then
-          MsgBox strRecSelStatus & vbCrLf & "It has been removed from the definition.", vbExclamation, Me.Caption
+          COAMsgBox strRecSelStatus & vbCrLf & "It has been removed from the definition.", vbExclamation, Me.Caption
           txtDateExpr(lngCount).Text = "<None>"
           txtDateExpr(lngCount).Tag = 0
           mblnForceInitialChanged = True
@@ -1806,7 +1806,7 @@ Private Sub LoadDates()
       lngStartDateExprID = GetSystemSetting(mstrReportType, "Start Date", 0)
       strRecSelStatus = IsCalcValid(lngStartDateExprID)
       If strRecSelStatus <> vbNullString Then
-        MsgBox strRecSelStatus & vbCrLf & "It has been removed from the definition.", vbExclamation, Me.Caption
+        COAMsgBox strRecSelStatus & vbCrLf & "It has been removed from the definition.", vbExclamation, Me.Caption
         mblnForceInitialChanged = True
       Else
         dtDate(0).DateValue = datGeneral.GetValueForRecordIndependantCalc(lngStartDateExprID)
@@ -1815,7 +1815,7 @@ Private Sub LoadDates()
       lngEndDateExprID = GetSystemSetting(mstrReportType, "End Date", 0)
       strRecSelStatus = IsCalcValid(lngEndDateExprID)
       If strRecSelStatus <> vbNullString Then
-        MsgBox strRecSelStatus & vbCrLf & "It has been removed from the definition.", vbExclamation, Me.Caption
+        COAMsgBox strRecSelStatus & vbCrLf & "It has been removed from the definition.", vbExclamation, Me.Caption
         mblnForceInitialChanged = True
       Else
         dtDate(1).DateValue = datGeneral.GetValueForRecordIndependantCalc(lngEndDateExprID)
@@ -1882,7 +1882,7 @@ Private Sub LoadOutputOptions()
     If cboPrinterName.Text <> strPrinterName Then
       cboPrinterName.AddItem strPrinterName
       cboPrinterName.ListIndex = cboPrinterName.NewIndex
-      MsgBox "This definition is set to output to printer " & strPrinterName & _
+      COAMsgBox "This definition is set to output to printer " & strPrinterName & _
              " which is not set up on your PC.", vbInformation, Me.Caption
     End If
   End If
@@ -1895,11 +1895,11 @@ Private Sub LoadOutputOptions()
   If blnEmail Then
     txtEmailGroup.Text = datGeneral.GetEmailGroupName(lngEmailAddr)
     txtEmailGroup.Tag = lngEmailAddr
-    txtEMailSubject.Text = strEmailSubject
+    txtEmailSubject.Text = strEmailSubject
     txtEmailAttachAs.Text = strEmailAttachAs
     'txtEmailAttachAs.Tag = lngEmailFileFormat
   End If
-  txtFileName.Text = strFileName
+  txtFilename.Text = strFileName
   'txtFilename.Tag = lngFileFormat
 
 End Sub
@@ -1960,7 +1960,7 @@ Private Function ValidDefinition() As Boolean
 
   If mblnRun Then
     If IsNull(dtDate(0).DateValue) Then
-      MsgBox "You must enter a start date.", vbExclamation, Me.Caption
+      COAMsgBox "You must enter a start date.", vbExclamation, Me.Caption
       Exit Function
     ElseIf Not ValidateGTMaskDate(dtDate(0)) Then
       Exit Function
@@ -1968,24 +1968,24 @@ Private Function ValidDefinition() As Boolean
   
     If IsNull(dtDate(1).DateValue) Then
       'AE20071005 Fault #9959
-      MsgBox "You must enter an end date.", vbExclamation, Me.Caption
+      COAMsgBox "You must enter an end date.", vbExclamation, Me.Caption
       Exit Function
     ElseIf Not ValidateGTMaskDate(dtDate(1)) Then
       Exit Function
     End If
   
     If DateDiff("d", dtDate(0).DateValue, dtDate(1).DateValue) < 0 Then
-      MsgBox "The report end date is before the report start date.", vbExclamation, Me.Caption
+      COAMsgBox "The report end date is before the report start date.", vbExclamation, Me.Caption
       Exit Function
     End If
   
   Else
     If optDate(1).Value = True Then
       If Val(txtDateExpr(0).Tag) = 0 Then
-        MsgBox "You must select a Start Date calculation.", vbExclamation, Me.Caption
+        COAMsgBox "You must select a Start Date calculation.", vbExclamation, Me.Caption
         Exit Function
       ElseIf Val(txtDateExpr(1).Tag) = 0 Then
-        MsgBox "You must select an End Date calculation.", vbExclamation, Me.Caption
+        COAMsgBox "You must select an End Date calculation.", vbExclamation, Me.Caption
         Exit Function
       End If
     End If
@@ -1994,10 +1994,10 @@ Private Function ValidDefinition() As Boolean
   
   ' Check for valid personnel record selection criteria
   If optPicklist And Val(txtPicklist.Tag) = 0 Then
-    MsgBox "You must select a picklist.", vbExclamation, Me.Caption
+    COAMsgBox "You must select a picklist.", vbExclamation, Me.Caption
     Exit Function
   ElseIf optFilter And Val(txtFilter.Tag) = 0 Then
-    MsgBox "You must select a filter.", vbExclamation, Me.Caption
+    COAMsgBox "You must select a filter.", vbExclamation, Me.Caption
     Exit Function
   End If
   
@@ -2006,7 +2006,7 @@ Private Function ValidDefinition() As Boolean
     ' Check at least 1 absence type has been selected
     If lstTypes.Visible = True Then
       If lstTypes.SelCount = 0 Then
-        MsgBox "You must have at least 1 absence type selected.", vbExclamation + vbOKOnly, Me.Caption
+        COAMsgBox "You must have at least 1 absence type selected.", vbExclamation + vbOKOnly, Me.Caption
         Exit Function
       End If
     End If
@@ -2085,13 +2085,13 @@ Private Function SaveDefinition() As Boolean
   SaveSystemSetting mstrReportType, "PrinterName", cboPrinterName.Text
   SaveSystemSetting mstrReportType, "Save", IIf(chkDestination(desSave).Value = vbChecked, "1", "0")
   SaveSystemSetting mstrReportType, "SaveExisting", cboSaveExisting.ListIndex
-  SaveSystemSetting mstrReportType, "FileName", txtFileName.Text
+  SaveSystemSetting mstrReportType, "FileName", txtFilename.Text
   'SaveSystemSetting mstrReportType, "SaveFormat", Val(txtFilename.Tag)
 
   If chkDestination(desEmail).Value = vbChecked Then
     SaveSystemSetting mstrReportType, "Email", 1
     SaveSystemSetting mstrReportType, "EmailAddr", txtEmailGroup.Tag
-    SaveSystemSetting mstrReportType, "EmailSubject", txtEMailSubject.Text
+    SaveSystemSetting mstrReportType, "EmailSubject", txtEmailSubject.Text
     SaveSystemSetting mstrReportType, "EmailAttachAs", txtEmailAttachAs.Text
     'SaveSystemSetting mstrReportType, "EmailFileFormat", txtEmailAttachAs.Tag
   Else
@@ -2154,9 +2154,9 @@ Private Sub RunDefinition()
           cboSaveExisting.ListIndex, _
           (chkDestination(desEmail).Value), _
           Val(txtEmailGroup.Tag), _
-          txtEMailSubject.Text, _
+          txtEmailSubject.Text, _
           txtEmailAttachAs.Text, _
-          txtFileName.Text, _
+          txtFilename.Text, _
           (chkPreview.Value = vbChecked), _
           (chkPrintFilterHeader.Value = vbChecked)
 
@@ -2220,9 +2220,9 @@ Private Sub RunDefinition()
           cboSaveExisting.ListIndex, _
           (chkDestination(desEmail).Value), _
           Val(txtEmailGroup.Tag), _
-          txtEMailSubject.Text, _
+          txtEmailSubject.Text, _
           txtEmailAttachAs.Text, _
-          txtFileName.Text, _
+          txtFilename.Text, _
           (chkPreview.Value = vbChecked), _
           (chkPrintFilterHeader.Value = vbChecked)
 

@@ -198,14 +198,14 @@ Private Function CheckAvailability() As Boolean
         Select Case .Parameters("result").Value
           Case 1    ' Employee unavailable (error).
             fOK = False
-            MsgBox "Some transferred delegates are unavailable for the selected course." & vbCrLf & _
+            COAMsgBox "Some transferred delegates are unavailable for the selected course." & vbCrLf & _
               "Unable to make the bookings.", vbExclamation + vbOKOnly, App.ProductName
               
           Case 2    ' Employee unavailable (over-rideable by the user).
             If mfUnavailOverridden Then
               fOK = True
             Else
-              fOK = (MsgBox("Some transferred delegates are unavailable for the selected course." & vbCrLf & _
+              fOK = (COAMsgBox("Some transferred delegates are unavailable for the selected course." & vbCrLf & _
                 "Do you still want to make the booking ?", vbYesNo + vbQuestion, App.ProductName) = vbYes)
               mfUnavailOverridden = fOK
             End If
@@ -272,14 +272,14 @@ Private Function CheckPreRequisites() As Boolean
         Select Case .Parameters("preReqsMet").Value
           Case 1    ' Pre-requisites not satisfied (error).
             fOK = False
-            MsgBox "The pre-requisites for the selected course have not been met." & vbCrLf & _
+            COAMsgBox "The pre-requisites for the selected course have not been met." & vbCrLf & _
               "Unable to transfer the booking(s).", vbExclamation + vbOKOnly, App.ProductName
               
           Case 2    ' Pre-requisites not satisfied (over-rideable by the user).
             If mfPreReqsOverridden Then
               fOK = True
             Else
-              fOK = (MsgBox("The pre-requisites for the selected course have not been met." & vbCrLf & _
+              fOK = (COAMsgBox("The pre-requisites for the selected course have not been met." & vbCrLf & _
                 "Do you still want to make the booking(s) ?", vbYesNo + vbQuestion, App.ProductName) = vbYes)
               mfPreReqsOverridden = fOK
             End If
@@ -401,7 +401,7 @@ Private Sub TransferBookings()
 
   If Not fOK Then
     mfErrorTransferring = True
-    MsgBox "Unable to transfer the bookings." & vbCrLf & vbCrLf & sErrorMsg, vbExclamation + vbOKOnly, App.ProductName
+    COAMsgBox "Unable to transfer the bookings." & vbCrLf & vbCrLf & sErrorMsg, vbExclamation + vbOKOnly, App.ProductName
   End If
 
   Set objTBTable = Nothing
@@ -456,14 +456,14 @@ Private Function CheckOverlappedBooking() As Boolean
       Select Case .Parameters("result").Value
         Case 1    ' Overlapped booking (error).
           fOK = False
-          MsgBox "A delegate is already booked on a course that overlaps with the selected course." & vbCrLf & _
+          COAMsgBox "A delegate is already booked on a course that overlaps with the selected course." & vbCrLf & _
             "Unable to transfer the booking.", vbExclamation + vbOKOnly, App.ProductName
             
         Case 2    ' Overlapped booking (over-rideable by the user).
           If mfOverlapOverridden Then
             fOK = True
           Else
-            fOK = (MsgBox("A delegate is already booked on a course that overlaps with the selected course." & vbCrLf & _
+            fOK = (COAMsgBox("A delegate is already booked on a course that overlaps with the selected course." & vbCrLf & _
               "Do you still want to make the booking ?", vbYesNo + vbQuestion, App.ProductName) = vbYes)
             mfOverlapOverridden = fOK
           End If
@@ -535,11 +535,11 @@ Private Function CheckOverbooking(plngNumberBooked As Long) As Boolean
       Select Case .Parameters("result").Value
         Case 1    ' Course fully booked (error).
           fOK = False
-          MsgBox "The selected course is already fully booked." & vbCrLf & _
+          COAMsgBox "The selected course is already fully booked." & vbCrLf & _
             "Unable to transfer the bookings.", vbExclamation + vbOKOnly, App.ProductName
             
         Case 2    ' Course fully booked (over-rideable by the user).
-          fOK = (MsgBox("The selected course is already fully booked." & vbCrLf & _
+          fOK = (COAMsgBox("The selected course is already fully booked." & vbCrLf & _
             "Do you still want to transfer the bookings ?", vbYesNo + vbQuestion, App.ProductName) = vbYes)
                   
         Case Else ' Course NOT fully booked.
@@ -774,7 +774,7 @@ Private Function GetCourseRecords() As Boolean
 
   fOK = Not (rsInfo.EOF And rsInfo.BOF)
   If Not fOK Then
-    MsgBox "No default order defined for the course table." & _
+    COAMsgBox "No default order defined for the course table." & _
       vbCrLf & "Unable to display the records.", vbExclamation, "Security"
   Else
     ' Check the user's privilieges on the order columns.
@@ -970,7 +970,7 @@ Private Function GetCourseRecords() As Boolean
 
     ' Inform the user if they do not have permission to see the data.
     If fNoSelect Then
-      MsgBox "You do not have 'read' permission on all of the columns in the selected order." & _
+      COAMsgBox "You do not have 'read' permission on all of the columns in the selected order." & _
         vbCrLf & "Only permitted columns will be shown.", vbExclamation, "Security"
     End If
     
@@ -1065,7 +1065,7 @@ Private Function GetCourseRecords() As Boolean
         ' Check we have course records.
         fOK = (mlngRecordCount > 0)
         If Not fOK Then
-          MsgBox "No course records found.", vbExclamation, Me.Caption
+          COAMsgBox "No course records found.", vbExclamation, Me.Caption
         End If
         
         If fOK Then
@@ -1074,12 +1074,12 @@ Private Function GetCourseRecords() As Boolean
         End If
       Else
         ' Unable to read from the course table.
-        MsgBox "You do not have permission to read the Course table." & _
+        COAMsgBox "You do not have permission to read the Course table." & _
           vbCrLf & "Unable to display records.", vbExclamation, "Security"
         fOK = False
       End If
     Else
-      MsgBox "You do not have permission to read any of the columns in the Course table's default order." & _
+      COAMsgBox "You do not have permission to read any of the columns in the Course table's default order." & _
         vbCrLf & "Unable to display records.", vbExclamation, "Security"
       fOK = False
     End If
@@ -1094,7 +1094,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  MsgBox "Error reading Course records.", vbExclamation, Me.Caption
+  COAMsgBox "Error reading Course records.", vbExclamation, Me.Caption
   fOK = False
   Resume TidyUpAndExit
 
@@ -1111,7 +1111,7 @@ Private Function ValidateParameters() As Boolean
     ' Check that the user has permission to insert records into the Training Bookings table.
     fValid = gcoTablePrivileges.Item(gsTrainBookTableName).AllowInsert
     If Not fValid Then
-      MsgBox "You do not have 'new' permission on the '" & gsTrainBookTableName & "' table.", vbExclamation + vbOKOnly, App.ProductName
+      COAMsgBox "You do not have 'new' permission on the '" & gsTrainBookTableName & "' table.", vbExclamation + vbOKOnly, App.ProductName
     End If
   End If
 
@@ -1122,14 +1122,14 @@ Private Function ValidateParameters() As Boolean
 '''    ' Check that the user has permission to edit the Training Bookings Course Title column.
 '''    fValid = objColumns.Item(gsTrainBookCourseTitleName).AllowUpdate
 '''    If Not fValid Then
-'''      MsgBox "You do not have 'edit' permission on the '" & gsTrainBookCourseTitleName & "' column.", vbExclamation + vbOKOnly, App.ProductName
+'''      COAMsgBox "You do not have 'edit' permission on the '" & gsTrainBookCourseTitleName & "' column.", vbExclamation + vbOKOnly, App.ProductName
 '''    End If
 
     If fValid Then
       ' Check that the user has permission to edit the Training Bookings Status column.
       fValid = objColumns.Item(gsTrainBookStatusColumnName).AllowUpdate
       If Not fValid Then
-        MsgBox "You do not have 'edit' permission on the '" & gsTrainBookStatusColumnName & "' column.", vbExclamation + vbOKOnly, App.ProductName
+        COAMsgBox "You do not have 'edit' permission on the '" & gsTrainBookStatusColumnName & "' column.", vbExclamation + vbOKOnly, App.ProductName
       End If
     End If
 

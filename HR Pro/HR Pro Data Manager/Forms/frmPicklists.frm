@@ -479,7 +479,7 @@ End Sub
 '
 '  If Not mfLoading Then
 '    If lvRecords.ListItems.Count > 0 Then
-'      If MsgBox("Changing the table will remove ALL records from the picklist, continue ?", vbQuestion + vbOKCancel, Me.Caption) = vbOK Then
+'      If COAMsgBox("Changing the table will remove ALL records from the picklist, continue ?", vbQuestion + vbOKCancel, Me.Caption) = vbOK Then
 '        lvRecords.ListItems.Clear
 '        RefreshControls
 '      Else
@@ -514,7 +514,7 @@ Private Sub cmdAddAll_Click()
   
 AddAllError:
   
-  MsgBox "Error whilst adding all records to the picklist." & vbCrLf & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error whilst adding all records to the picklist." & vbCrLf & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
     
 End Sub
 
@@ -557,7 +557,7 @@ Private Sub cmdAddFilter_Click()
             Me.Changed = True
 
         Else
-          MsgBox "You do not have permission to use this filter.", vbExclamation, Me.Caption
+          COAMsgBox "You do not have permission to use this filter.", vbExclamation, Me.Caption
         End If
       End If
     End If
@@ -570,7 +570,7 @@ End Sub
 Private Sub cmdCancel_Click()
   ' Exit the form, without saving changes.
   If Me.Changed = True Then
-    Select Case MsgBox("You have changed this picklist definition. Would you like to save changes ?", vbQuestion + vbYesNoCancel, "Picklists")
+    Select Case COAMsgBox("You have changed this picklist definition. Would you like to save changes ?", vbQuestion + vbYesNoCancel, "Picklists")
     Case vbYes
       cmdOK_Click
     Case vbNo
@@ -626,7 +626,7 @@ End Sub
 
 Private Sub cmdDeleteAll_Click()
   ' Remove all items from the picklist definition.
-  If MsgBox("Remove all records from the picklist, are you sure ?", vbQuestion + vbYesNo, Me.Caption) = vbYes Then
+  If COAMsgBox("Remove all records from the picklist, are you sure ?", vbQuestion + vbYesNo, Me.Caption) = vbYes Then
     Screen.MousePointer = vbHourglass
     lvRecords.ListItems.Clear
     Screen.MousePointer = vbDefault
@@ -703,7 +703,7 @@ Private Sub cmdOK_Click()
 
   ' Validate the picklist name.
   If Len(Trim(txtName.Text)) = 0 Then
-    MsgBox "You must give this definition a name.", vbExclamation, "Picklists"
+    COAMsgBox "You must give this definition a name.", vbExclamation, "Picklists"
     txtName.SetFocus
     Exit Sub
   End If
@@ -711,7 +711,7 @@ Private Sub cmdOK_Click()
   ' RH 29/08/00 - BUG 852 - Should allow save of empty picklist.
   ' RH 13/09/00 - JED request leave check in
   If lvRecords.ListItems.Count = 0 Then
-    MsgBox "Picklists must contain at least one record.", vbExclamation, "Picklists"
+    COAMsgBox "Picklists must contain at least one record.", vbExclamation, "Picklists"
     Exit Sub
   End If
   
@@ -836,7 +836,7 @@ Private Function CheckForExistingName(pfNew As Boolean) As Boolean
   If Not (rsName.EOF And rsName.BOF) Then
     CheckForExistingName = True
         
-    MsgBox "A picklist definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
+    COAMsgBox "A picklist definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
     txtName.SetFocus
     Screen.MousePointer = vbDefault
   End If
@@ -1060,7 +1060,7 @@ Private Sub ReadTableInfo()
   Set objTable = Nothing
   
   If rsInfo.EOF And rsInfo.BOF Then
-    MsgBox "No default order defined for this table." & vbCrLf & _
+    COAMsgBox "No default order defined for this table." & vbCrLf & _
            "Unable to display the picklist records.", vbExclamation, "Security"
 '    mfNoSelect = True
   Else
@@ -1097,11 +1097,11 @@ Private Sub ReadTableInfo()
 '    ' Inform the user if they do not have permission to see the picklist data.
 '    If fNoSelect Then
 '      If UBound(mavOrderDefinition, 2) > 0 Then
-'        MsgBox "You do not have 'read' permission on all of the columns in the selected table's default order." & _
+'        COAMsgBox "You do not have 'read' permission on all of the columns in the selected table's default order." & _
 '          vbCrLf & "Only permitted columns will be shown.", vbExclamation, "Security"
 '        fNoSelect = False
 '      Else
-'        MsgBox "You do not have 'read' permission on any of the columns in the selected table's default order." & _
+'        COAMsgBox "You do not have 'read' permission on any of the columns in the selected table's default order." & _
 '          vbCrLf & "Unable to display the picklist records.", vbExclamation, "Security"
 '      End If
 '    End If
@@ -1532,7 +1532,7 @@ Private Sub AddItems(Optional psFilterString As String, Optional blnCheckRecordC
             Next lngCount
     
             ' RH 06/09/00 - Do not add duplicate entries in the picklist
-            'fApply = (MsgBox("The record '" & sRecordDesc & "' is already in this picklist, add again ?", vbQuestion + vbYesNo, Me.Caption) = vbYes)
+            'fApply = (COAMsgBox("The record '" & sRecordDesc & "' is already in this picklist, add again ?", vbQuestion + vbYesNo, Me.Caption) = vbYes)
             fApply = False
           
           End If
@@ -1599,7 +1599,7 @@ Private Sub AddItems(Optional psFilterString As String, Optional blnCheckRecordC
       ' We are adding records from a filter
       Set rsFilterCount = datGeneral.GetRecords(psFilterString)
       If (lCountAddedAll <> rsFilterCount.RecordCount) And Not fUserCancelled Then
-        MsgBox "One or more records returned by this filter have already been added" & vbCrLf & _
+        COAMsgBox "One or more records returned by this filter have already been added" & vbCrLf & _
                "to the picklist.", vbInformation + vbOKOnly, "Picklists"
       End If
       Set rsFilterCount = Nothing
@@ -1612,12 +1612,12 @@ Private Sub AddItems(Optional psFilterString As String, Optional blnCheckRecordC
         ' We are adding just selected records
         If lCountAddedAll <> (UBound(Split(psFilterString, ",")) + 1) Then
           If (UBound(Split(psFilterString, ",")) + 1) = 1 Then
-            MsgBox "The selected record has not been added to this picklist as it" & vbCrLf & _
+            COAMsgBox "The selected record has not been added to this picklist as it" & vbCrLf & _
                    "has been deleted by another user.", vbInformation + vbOKOnly, "Picklists"
           Else
             ' RH 21/11/00 - Bug 1404
             If mlngSelectedRecords <> (UBound(Split(psFilterString, ",")) + 1) Then
-              MsgBox "One or more records have not been added to this picklist as they" & vbCrLf & _
+              COAMsgBox "One or more records have not been added to this picklist as they" & vbCrLf & _
                      "have been deleted by another user.", vbInformation + vbOKOnly, "Picklists"
             End If
           End If
@@ -1634,17 +1634,17 @@ Private Sub AddItems(Optional psFilterString As String, Optional blnCheckRecordC
     mblnReportedRestriction = True
   
     If fNoOrder Then
-      MsgBox "No default order defined for this table." & vbCrLf & _
+      COAMsgBox "No default order defined for this table." & vbCrLf & _
              "Unable to add records.", vbExclamation, "Security"
   
     ElseIf fColumnDenied Then
     
       ' Inform the user if they do not have permission to see the data.
       If fSomeSelect Then
-        MsgBox "You do not have 'read' permission on all of the columns in the selected order." & vbCrLf & _
+        COAMsgBox "You do not have 'read' permission on all of the columns in the selected order." & vbCrLf & _
                "Only permitted columns will be shown.", vbExclamation, "Security"
       Else
-        MsgBox "You do not have permission to read any of the columns in the default order for this table." & vbCrLf & _
+        COAMsgBox "You do not have permission to read any of the columns in the default order for this table." & vbCrLf & _
                "Unable to display records.", vbExclamation, "Security"
         fOK = False
       End If
@@ -1656,13 +1656,13 @@ Private Sub AddItems(Optional psFilterString As String, Optional blnCheckRecordC
       If fRecordDenied Then
 
         If lngActualNumRecords > 0 Then
-          MsgBox "You do not have 'read' permission on all of the records in the selected picklist." & vbCrLf & _
+          COAMsgBox "You do not have 'read' permission on all of the records in the selected picklist." & vbCrLf & _
                  "Only permitted records will be shown" & _
                  IIf(Not mfFromCopy, " and the definition will be read only", vbNullString) & _
                  ".", vbExclamation, "Security"
           mfReadOnly = (Not mfFromCopy)
         Else
-          MsgBox "You do not have 'read' permission on any of the records in the selected picklist." & vbCrLf & _
+          COAMsgBox "You do not have 'read' permission on any of the records in the selected picklist." & vbCrLf & _
                  "Unable to display records.", vbExclamation, "Security"
           fOK = False
         End If
@@ -1677,7 +1677,7 @@ Exit Sub
 AddItems_ERROR:
 
   If gobjProgress.Visible = True Then gobjProgress.CloseProgress
-  MsgBox "Error whilst adding records to picklist : " & vbCrLf & vbCrLf & Err.Number & " - " & Err.Description, vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error whilst adding records to picklist : " & vbCrLf & vbCrLf & Err.Number & " - " & Err.Description, vbExclamation + vbOKOnly, App.Title
   Screen.MousePointer = vbDefault
   
 End Sub
@@ -1783,7 +1783,7 @@ Public Sub PrintDef(plngTableID As Long, plngPicklistID As Long)
 Exit Sub
 
 LocalErr:
-  MsgBox "Printing Picklist Definition Failed" & vbCrLf & Err.Description, vbCritical, "Picklist"
+  COAMsgBox "Printing Picklist Definition Failed" & vbCrLf & Err.Description, vbCritical, "Picklist"
 
 End Sub
 
@@ -1901,7 +1901,7 @@ Private Function InsertPicklistName(psName As String, psDesc As String, plngTabl
     cmADO.Execute
               
     If Not fSavedOK Then
-      MsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
+      COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
         Err.Description, vbOKOnly + vbExclamation, App.ProductName
         InsertPicklistName = 0
         Set cmADO = Nothing

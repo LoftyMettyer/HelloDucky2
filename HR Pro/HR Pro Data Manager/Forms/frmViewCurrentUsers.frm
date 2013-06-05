@@ -42,6 +42,7 @@ Begin VB.Form frmViewCurrentUsers
          _Version        =   196617
          DataMode        =   2
          RecordSelectors =   0   'False
+         Col.Count       =   3
          AllowUpdate     =   0   'False
          MultiLine       =   0   'False
          AllowRowSizing  =   0   'False
@@ -255,7 +256,7 @@ End Sub
 'ErrRefresh:
 '
 '  Screen.MousePointer = vbNormal
-'  MsgBox "Error whilst refreshing the grid." & vbCrLf & vbCrLf & Err.Number & " - " & Err.Description, vbExclamation + vbOKOnly, App.Title
+'  COAMsgBox "Error whilst refreshing the grid." & vbCrLf & vbCrLf & Err.Number & " - " & Err.Description, vbExclamation + vbOKOnly, App.Title
 '
 'End Sub
 

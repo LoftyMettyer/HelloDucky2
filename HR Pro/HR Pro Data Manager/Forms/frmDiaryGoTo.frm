@@ -140,7 +140,7 @@ Private Sub cboDate_LostFocus()
 '     IsDate(cboDate.DateValue) And _
 '     cboDate.Text <> "  /  /" Then
 '
-'     MsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
+'     COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
 '     cboDate.DateValue = Null
 '     cboDate.SetFocus
 '     Exit Sub
@@ -169,7 +169,7 @@ Private Sub cmdGoToDate_Click()
   If ValidateGTMaskDate(cboDate) = False Then
     Exit Sub
   ElseIf IsDate(cboDate.DateValue) = False Then
-    MsgBox "Please enter a valid date", vbExclamation
+    COAMsgBox "Please enter a valid date", vbExclamation
     cboDate.SetFocus
     Exit Sub
   End If
@@ -180,7 +180,7 @@ Private Sub cmdGoToDate_Click()
   Exit Sub
 
 LocalErr:
-  MsgBox "Please enter a valid date", vbExclamation
+  COAMsgBox "Please enter a valid date", vbExclamation
   cboDate.SetFocus
 
 End Sub

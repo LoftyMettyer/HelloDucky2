@@ -406,7 +406,7 @@ Private Sub cmdAddToList_Click()
   fValidParameters = (cboColumns.ItemData(cboColumns.ListIndex) > 0)
   
   If Not fValidParameters Then
-    MsgBox "Invalid column selected.", vbExclamation, App.ProductName
+    COAMsgBox "Invalid column selected.", vbExclamation, App.ProductName
     cboColumns.SetFocus
   End If
   
@@ -415,7 +415,7 @@ Private Sub cmdAddToList_Click()
     fValidParameters = (cboOperators.ItemData(cboOperators.ListIndex) > 0)
     
     If Not fValidParameters Then
-      MsgBox "Invalid operator selected.", vbExclamation, App.ProductName
+      COAMsgBox "Invalid operator selected.", vbExclamation, App.ProductName
       cboOperators.SetFocus
     End If
   End If
@@ -426,7 +426,7 @@ Private Sub cmdAddToList_Click()
     fValidParameters = mvar_objColumnPrivileges.IsValid(cboColumns.List(cboColumns.ListIndex))
     
     If Not fValidParameters Then
-      MsgBox "Invalid column selected.", vbExclamation, App.ProductName
+      COAMsgBox "Invalid column selected.", vbExclamation, App.ProductName
       cboColumns.SetFocus
     End If
   End If
@@ -445,7 +445,7 @@ Private Sub cmdAddToList_Click()
         End If
         fValidParameters = IsNumeric(Replace(tdbNumberValue.Text, ",", ""))
         If Not fValidParameters Then
-          MsgBox "Invalid numeric value entered.", vbExclamation, App.ProductName
+          COAMsgBox "Invalid numeric value entered.", vbExclamation, App.ProductName
           tdbNumberValue.SetFocus
         End If
 
@@ -474,7 +474,7 @@ Private Sub cmdAddToList_Click()
             fValidParameters = True
           Else
             txtStringValue.ForeColor = vbRed
-            MsgBox "You have entered an invalid date.", vbExclamation, App.ProductName
+            COAMsgBox "You have entered an invalid date.", vbExclamation, App.ProductName
             txtStringValue.ForeColor = vbWindowText
             txtStringValue.Text = ""
             txtStringValue.SetFocus
@@ -934,7 +934,7 @@ Private Sub txtStringValue_LostFocus()
     
     If Not fValidParameters Then
       txtStringValue.ForeColor = vbRed
-      MsgBox "You have entered an invalid date.", vbExclamation, App.ProductName
+      COAMsgBox "You have entered an invalid date.", vbExclamation, App.ProductName
       txtStringValue.ForeColor = vbWindowText
       txtStringValue.Text = ""
       txtStringValue.SetFocus

@@ -308,7 +308,7 @@ Public Function ValidateAbsenceParameters_BreakdownReport() As Boolean
   ' If an error found, warn the user.
   If Len(strMessage) > 0 Then
     strMessage = "The Absence module is not properly configured." & vbCrLf & vbCrLf & strMessage
-    MsgBox strMessage, vbExclamation, App.ProductName
+    COAMsgBox strMessage, vbExclamation, App.ProductName
     fValid = False
   Else
     fValid = True
@@ -413,7 +413,7 @@ Public Function ValidateAbsenceParameters() As Boolean
   ' If an error found, warn the user.
   If Len(strMessage) > 0 Then
     strMessage = "The Absence module is not properly configured." & vbCrLf & vbCrLf & strMessage
-    MsgBox strMessage, vbExclamation, App.ProductName
+    COAMsgBox strMessage, vbExclamation, App.ProductName
     fValid = False
   Else
     fValid = True

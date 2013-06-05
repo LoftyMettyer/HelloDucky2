@@ -290,7 +290,7 @@ Public Function Initialise(plngTableID As Long, _
   ' Populate the View combo.
   ConfigureViewCombo plngViewID
   If cmbView.ListCount = 0 Then
-    MsgBox "You do not have 'read' permission on this table." & _
+    COAMsgBox "You do not have 'read' permission on this table." & _
       vbCrLf & "Unable to display the records.", vbExclamation, "Security"
     mfCancelled = True
     Me.Hide
@@ -312,7 +312,7 @@ Public Function Initialise(plngTableID As Long, _
   ConfigureOrdersCombo
   Screen.MousePointer = vbHourglass
   If cmbOrders.ListCount = 0 Then
-    MsgBox "There are no orders defined for this table." & _
+    COAMsgBox "There are no orders defined for this table." & _
       vbCrLf & "Unable to display the records.", vbExclamation, "Security"
     mfCancelled = True
     Me.Hide
@@ -455,7 +455,7 @@ Private Sub ConfigureOrdersCombo()
       .AddItem "<No order>"
       .ItemData(.NewIndex) = 0
       .ListIndex = 0
-      MsgBox "No orders defined for this " & IIf(mlngViewID > 0, "table.", "view."), vbInformation, Me.Caption
+      COAMsgBox "No orders defined for this " & IIf(mlngViewID > 0, "table.", "view."), vbInformation, Me.Caption
       .Enabled = False
     End If
   End With
@@ -768,7 +768,7 @@ Private Sub GetRecords()
   Set rsInfo = datGeneral.GetOrderDefinition(mlngOrderID)
   
   If rsInfo.EOF And rsInfo.BOF Then
-    MsgBox "No order defined for this " & IIf(mlngViewID > 0, "view.", "table.") & _
+    COAMsgBox "No order defined for this " & IIf(mlngViewID > 0, "view.", "table.") & _
       vbCrLf & "Unable to display records.", vbExclamation, "Security"
     mfCancelled = True
     Me.Hide
@@ -1010,7 +1010,7 @@ Private Sub GetRecords()
 
     ' Inform the user if they do not have permission to see the data.
     If fNoSelect Then
-      MsgBox "You do not have 'read' permission on all of the columns in the selected order." & _
+      COAMsgBox "You do not have 'read' permission on all of the columns in the selected order." & _
         vbCrLf & "Only permitted columns will be shown.", vbExclamation, "Security"
     End If
     
@@ -1051,7 +1051,7 @@ Private Sub GetRecords()
       ' Configure the grid.
       ConfigureGrid
     Else
-      MsgBox "You do not have permission to read any of the columns in the selected order for this " & IIf(mlngViewID > 0, "view.", "table.") & _
+      COAMsgBox "You do not have permission to read any of the columns in the selected order for this " & IIf(mlngViewID > 0, "view.", "table.") & _
         vbCrLf & "Unable to display records.", vbExclamation, "Security"
 
       'JPD 20050311 Fault 9891

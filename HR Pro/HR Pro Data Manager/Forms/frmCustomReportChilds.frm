@@ -354,7 +354,7 @@ Private Function PopulateChildCombo() As Boolean
   
   If Not rsChildren.BOF And Not rsChildren.EOF Then
     If (rsChildren.RecordCount = mfrmParent.grdChildren.Rows) And mblnNew Then
-      MsgBox "All child tables for the current base table have been added to the report definition." _
+      COAMsgBox "All child tables for the current base table have been added to the report definition." _
               , vbInformation + vbOKOnly, "Custom Reports"
       PopulateChildCombo = False
       Me.Cancelled = True
@@ -456,7 +456,7 @@ TidyUpAndExit:
   Exit Function
   
 Error_Trap:
-  MsgBox "Error populating childs dropdown box.", vbExclamation + vbOKOnly, "Custom Reports"
+  COAMsgBox "Error populating childs dropdown box.", vbExclamation + vbOKOnly, "Custom Reports"
   PopulateChildCombo = False
   GoTo TidyUpAndExit
   
@@ -480,7 +480,7 @@ Private Function ValidateChildInfo() As Boolean
 
     If prstTemp.BOF And prstTemp.EOF Then
       sMessage = "The '" & Me.txtChildFilter.Text & "' filter has been deleted by another user."
-      MsgBox sMessage, vbExclamation + vbOKOnly, "Custom Reports"
+      COAMsgBox sMessage, vbExclamation + vbOKOnly, "Custom Reports"
       Me.txtChildFilter.Text = vbNullString
       Me.txtChildFilter.Tag = 0
       bOK = False
@@ -489,7 +489,7 @@ Private Function ValidateChildInfo() As Boolean
       
       If sMessage <> vbNullString Then
         sMessage = "The '" & Me.txtChildFilter.Text & "' filter has been made hidden by another user."
-        MsgBox sMessage, vbExclamation + vbOKOnly, "Custom Reports"
+        COAMsgBox sMessage, vbExclamation + vbOKOnly, "Custom Reports"
         Me.txtChildFilter.Text = vbNullString
         Me.txtChildFilter.Tag = 0
         bOK = False
@@ -506,7 +506,7 @@ TidyUpAndExit:
   Exit Function
   
 Error_Trap:
-  MsgBox "Error validating child table information.", vbExclamation + vbOKOnly, "Custom Reports"
+  COAMsgBox "Error validating child table information.", vbExclamation + vbOKOnly, "Custom Reports"
   ValidateChildInfo = False
   GoTo TidyUpAndExit
   
@@ -554,14 +554,14 @@ Private Sub GetFilter(ctlSource As Control, ctlTarget As Control)
   '      If .Access = 2 Then
         If .Access = "HD" Then
           If Not mfrmParent.DefinitionOwner Then
-            MsgBox "Unable to select this filter as it is a hidden filter and you are not the owner of this definition", vbExclamation
+            COAMsgBox "Unable to select this filter as it is a hidden filter and you are not the owner of this definition", vbExclamation
             If ctlTarget.Tag = .ExpressionID Or (.ExpressionID = 0) Then
               ctlTarget.Text = ""
               ctlTarget.Tag = 0
             End If
             Exit Sub
 '          Else
-'              If (mblnForceHidden = False) And (Me.optHidden = False) Then MsgBox "This definition will now be hidden as a hidden filter has been selected", vbInformation
+'              If (mblnForceHidden = False) And (Me.optHidden = False) Then COAMsgBox "This definition will now be hidden as a hidden filter has been selected", vbInformation
           End If
 '        Else
 '          optReadWrite.Enabled = mblnDefinitionCreator
@@ -579,7 +579,7 @@ Private Sub GetFilter(ctlSource As Control, ctlTarget As Control)
         If ctlTarget.Tag = .ExpressionID Then
           If .Access = "HD" Then
             If Not mfrmParent.DefinitionOwner Then
-              MsgBox "Unable to select this filter as it is a hidden filter and you are not the owner of this definition", vbExclamation
+              COAMsgBox "Unable to select this filter as it is a hidden filter and you are not the owner of this definition", vbExclamation
               ctlTarget.Text = ""
               ctlTarget.Tag = 0
               Exit Sub
@@ -643,7 +643,7 @@ Private Sub GetOrder(ctlSource As Control, ctlTarget As Control)
 TidyUpAndExit:
   Set objOrder = Nothing
   If Not fOK Then
-    MsgBox "Error changing order ID.", vbExclamation + vbOKOnly, App.ProductName
+    COAMsgBox "Error changing order ID.", vbExclamation + vbOKOnly, App.ProductName
   End If
   Exit Sub
 
@@ -680,7 +680,7 @@ End Sub
 Private Sub cmdOK_Click()
 
   If Trim(Me.cboChild.Text) = vbNullString Then
-    MsgBox "You must select a table and column.", vbExclamation, Me.Caption
+    COAMsgBox "You must select a table and column.", vbExclamation, Me.Caption
     Exit Sub
   End If
 
@@ -834,7 +834,7 @@ TidyUpAndExit:
   Exit Function
   
 Error_Trap:
-  MsgBox "Error initialising the the child tables form.", vbExclamation + vbOKOnly, "Custom Reports"
+  COAMsgBox "Error initialising the the child tables form.", vbExclamation + vbOKOnly, "Custom Reports"
   Initialize = False
   GoTo TidyUpAndExit
 

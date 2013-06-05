@@ -872,7 +872,7 @@ Public Sub PrintExpression()
 TidyUpAndExit:
   Set objComponent = Nothing
   If Not fOK Then
-    MsgBox "Unable to print the " & ExpressionTypeName(miExpressionType) & " '" & Name & "'." & vbCr & vbCr & _
+    COAMsgBox "Unable to print the " & ExpressionTypeName(miExpressionType) & " '" & Name & "'." & vbCr & vbCr & _
       Err.Description, vbExclamation + vbOKOnly, App.ProductName
   End If
   Exit Sub
@@ -1025,7 +1025,7 @@ TidyUpAndExit:
     End If
   Else
     If (Not fUsed) Then
-      MsgBox "Error deleting the expression.", _
+      COAMsgBox "Error deleting the expression.", _
         vbOKOnly, App.ProductName
     End If
     If fInTransaction Then
@@ -1086,7 +1086,7 @@ Private Function ExpressionIsUsed() As Boolean
     
       If fUsed Then
         ' Tell the user why the expression cannot be deleted.
-        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
+        COAMsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
           "It is used as the record description for the '" & .Fields("tableName") & "' table.", _
           vbExclamation + vbOKOnly, App.ProductName
       End If
@@ -1110,7 +1110,7 @@ Private Function ExpressionIsUsed() As Boolean
     
       If fUsed Then
         ' Tell the user why the expression cannot be deleted.
-        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
+        COAMsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
           "It is used by the '" & !ColumnName & "' column in the '" & !TableName & "' table.", _
           vbExclamation + vbOKOnly, App.ProductName
       End If
@@ -1132,7 +1132,7 @@ Private Function ExpressionIsUsed() As Boolean
     
       If fUsed Then
         ' Tell the user why the expression cannot be deleted.
-        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
+        COAMsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
           "It is used as the filter for the '" & !ViewName & "' view, based on the '" & !TableName & "' table.", _
           vbExclamation + vbOKOnly, App.ProductName
       End If
@@ -1187,7 +1187,7 @@ Private Function ExpressionIsUsed() As Boolean
       Set rsCheck = Nothing
       
       ' Tell the user why the expression cannot be deleted.
-      MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
+      COAMsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
         "It is used by the " & sExprType & " '" & sExprName & "'," & vbCr & _
         "which is owned by the '" & sExprParentTable & "' table.", _
         vbExclamation + vbOKOnly, App.ProductName
@@ -1205,7 +1205,7 @@ Private Function ExpressionIsUsed() As Boolean
     
       If fUsed Then
         ' Tell the user why the expression cannot be deleted.
-        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
+        COAMsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
           "It is used as the filter for the '" & !Name & "' cross-tab.", _
           vbExclamation + vbOKOnly, App.ProductName
       End If
@@ -1232,7 +1232,7 @@ Private Function ExpressionIsUsed() As Boolean
     
       If fUsed Then
         ' Tell the user why the expression cannot be deleted.
-        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
+        COAMsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
           "It is used as a filter in the '" & !Name & "' custom report.", _
           vbExclamation + vbOKOnly, App.ProductName
       End If
@@ -1256,7 +1256,7 @@ Private Function ExpressionIsUsed() As Boolean
     
       If fUsed Then
         ' Tell the user why the expression cannot be deleted.
-        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
+        COAMsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
           "It is used as a calculation in the '" & !Name & "' custom report.", _
           vbExclamation + vbOKOnly, App.ProductName
       End If
@@ -1277,7 +1277,7 @@ Private Function ExpressionIsUsed() As Boolean
     
       If fUsed Then
         ' Tell the user why the expression cannot be deleted.
-        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
+        COAMsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
           "It is used as the filter for the '" & !Name & "' data transfer.", _
           vbExclamation + vbOKOnly, App.ProductName
       End If
@@ -1302,7 +1302,7 @@ Private Function ExpressionIsUsed() As Boolean
     
       If fUsed Then
         ' Tell the user why the expression cannot be deleted.
-        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
+        COAMsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
           "It is used as a filter in the '" & !Name & "' export.", _
           vbExclamation + vbOKOnly, App.ProductName
       End If
@@ -1326,7 +1326,7 @@ Private Function ExpressionIsUsed() As Boolean
     
       If fUsed Then
         ' Tell the user why the expression cannot be deleted.
-        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
+        COAMsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
           "It is used as a calculation in the '" & !Name & "' export.", _
           vbExclamation + vbOKOnly, App.ProductName
       End If
@@ -1357,7 +1357,7 @@ Private Function ExpressionIsUsed() As Boolean
           Case Else
             sGlobalFunctionType = "function"
         End Select
-        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
+        COAMsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
           "It is used as the filter for the '" & !Name & "' global " & sGlobalFunctionType & ".", _
           vbExclamation + vbOKOnly, App.ProductName
       End If
@@ -1390,7 +1390,7 @@ Private Function ExpressionIsUsed() As Boolean
           Case Else
             sGlobalFunctionType = "function"
         End Select
-        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
+        COAMsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
           "It is used as a calculation in the '" & !Name & "' global " & sGlobalFunctionType & ".", _
           vbExclamation + vbOKOnly, App.ProductName
       End If
@@ -1410,7 +1410,7 @@ Private Function ExpressionIsUsed() As Boolean
       fUsed = Not (.EOF And .BOF)
     
       If fUsed Then
-        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
+        COAMsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
           "It is used as the filter for the '" & !Name & "' mail merge.", _
           vbExclamation + vbOKOnly, App.ProductName
       End If
@@ -1433,7 +1433,7 @@ Private Function ExpressionIsUsed() As Boolean
     
       If fUsed Then
         ' Tell the user why the expression cannot be deleted.
-        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
+        COAMsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
           "It is used as a calculation in the '" & !Name & "' mail merge.", _
           vbExclamation + vbOKOnly, App.ProductName
       End If
@@ -1457,7 +1457,7 @@ Private Function ExpressionIsUsed() As Boolean
     
       If fUsed Then
         ' Tell the user why the expression cannot be deleted.
-        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
+        COAMsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
           "It is used as a filter in the '" & !Name & "' record profile.", _
           vbExclamation + vbOKOnly, App.ProductName
       End If
@@ -1482,7 +1482,7 @@ Private Function ExpressionIsUsed() As Boolean
     
       If fUsed Then
         ' Tell the user why the expression cannot be deleted.
-        MsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
+        COAMsgBox "This " & LCase(ExpressionTypeName(miExpressionType)) & " cannot be deleted." & vbCr & _
           "It is used as a filter in the '" & !Name & "' calendar report.", _
           vbExclamation + vbOKOnly, App.ProductName
       End If
@@ -1502,7 +1502,7 @@ TidyUpAndExit:
   Exit Function
 
 ErrorTrap:
-  MsgBox "Error checking if the expression is used.", _
+  COAMsgBox "Error checking if the expression is used.", _
     vbOKOnly + vbExclamation, App.ProductName
   fUsed = True
   Resume TidyUpAndExit
@@ -1747,7 +1747,7 @@ TidyUpAndExit:
   Exit Function
 
 ErrorTrap:
-  MsgBox "Error saving the expression.", _
+  COAMsgBox "Error saving the expression.", _
     vbOKOnly + vbExclamation, App.ProductName
   fOK = False
   Resume TidyUpAndExit
@@ -2575,7 +2575,7 @@ TidyUpAndExit:
   Exit Function
 
 ErrorTrap:
-  MsgBox "Error validating expression (checking for hidden components)." & vbNewLine & Err.Description, _
+  COAMsgBox "Error validating expression (checking for hidden components)." & vbNewLine & Err.Description, _
     vbExclamation + vbOKOnly, App.ProductName
   Resume TidyUpAndExit
   
@@ -3125,7 +3125,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   fOK = False
-  MsgBox "Error constructing the expression.", _
+  COAMsgBox "Error constructing the expression.", _
     vbOKOnly + vbExclamation, App.ProductName
   Err = False
   Resume TidyUpAndExit
@@ -3156,7 +3156,7 @@ TidyUpAndExit:
   Exit Function
 
 ErrorTrap:
-  MsgBox "Error checking for cyclic expressions.", _
+  COAMsgBox "Error checking for cyclic expressions.", _
     vbOKOnly + vbExclamation, App.ProductName
   Err = False
   Resume TidyUpAndExit
@@ -3340,7 +3340,7 @@ TidyUpAndExit:
   
 ErrorTrap:
   fOK = False
-  MsgBox Err.Description, vbExclamation + vbOKOnly, App.ProductName
+  COAMsgBox Err.Description, vbExclamation + vbOKOnly, App.ProductName
   Err = False
   Resume TidyUpAndExit
   
@@ -3409,7 +3409,7 @@ Public Function CopyExpressionToClipboard() As Boolean
 TidyUpAndExit:
   Set objComponent = Nothing
   If Not fOK Then
-    MsgBox "Unable to send the " & ExpressionTypeName(miExpressionType) & " '" & Name & "' to the clipboard." & vbCr & vbCr & _
+    COAMsgBox "Unable to send the " & ExpressionTypeName(miExpressionType) & " '" & Name & "' to the clipboard." & vbCr & vbCr & _
       Err.Description, vbExclamation + vbOKOnly, App.ProductName
   End If
   CopyExpressionToClipboard = fOK

@@ -270,11 +270,11 @@ Private mlngTimeStamp As Long
 Private blnActivated As Boolean
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOk.Enabled = blnChanged
+  cmdOK.Enabled = blnChanged
 End Property
 
 Private Function CheckNull(varInput As Variant) As String
@@ -296,7 +296,7 @@ End Sub
 Private Sub cboDate_LostFocus()
 
 '  If IsNull(cboDate.DateValue) And Not IsDate(cboDate.DateValue) And cboDate.Text <> "  /  /" Then
-'    MsgBox "You have entered an invalid date.", vbOKOnly & vbExclamation, "Diary Detail"
+'    COAMsgBox "You have entered an invalid date.", vbOKOnly & vbExclamation, "Diary Detail"
 '    cboDate.DateValue = Null
 '    cboDate.SetFocus
 '    Exit Sub
@@ -465,7 +465,7 @@ Private Sub Form_Unload(Cancel As Integer)
   
   If Me.Changed = True And Me.Visible Then
     
-    Select Case MsgBox("You have changed the current diary event. Save changes ?", vbQuestion + vbYesNoCancel, "Diary Event")
+    Select Case COAMsgBox("You have changed the current diary event. Save changes ?", vbQuestion + vbYesNoCancel, "Diary Event")
     Case vbYes
       If Not SaveChanges Then
         Cancel = True
@@ -541,11 +541,11 @@ Private Sub txtNotes_GotFocus()
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-  cmdOk.Default = False
+  cmdOK.Default = False
 End Sub
 
 Private Sub txtNotes_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 Private Sub txtTitle_Change()
   Me.Changed = True
@@ -604,7 +604,7 @@ Private Sub cmdPrint_Click()
 Exit Sub
 
 LocalErr:
-  MsgBox "Printing Diary Event Failed", vbExclamation
+  COAMsgBox "Printing Diary Event Failed", vbExclamation
 
 End Sub
 
@@ -680,17 +680,17 @@ Private Function SaveChanges() As Boolean
     Exit Function
 
   ElseIf IsValidDate(cboDate.DateValue) = False Then
-    MsgBox "Please enter a valid date for this event", vbExclamation
+    COAMsgBox "Please enter a valid date for this event", vbExclamation
     cboDate.SetFocus
     Exit Function
 
   ElseIf FormatTime(mskTime) = vbNullString Then
-    MsgBox "Please enter a valid time for this event", vbExclamation
+    COAMsgBox "Please enter a valid time for this event", vbExclamation
     mskTime.SetFocus
     Exit Function
 
   ElseIf Trim$(txtTitle) = vbNullString Then
-    MsgBox "Please enter a title for this event", vbExclamation
+    COAMsgBox "Please enter a title for this event", vbExclamation
     txtTitle.SetFocus
     Exit Function
 
@@ -741,7 +741,7 @@ Private Function SaveChanges() As Boolean
 
   If Not IsInCurrentFilter Then
     If Not gobjDiary.ViewingAlarms Then
-      MsgBox "The event saved does not satisfy the current filter.", vbInformation, App.ProductName
+      COAMsgBox "The event saved does not satisfy the current filter.", vbInformation, App.ProductName
     End If
     gobjDiary.DiaryEventID = 0
   End If

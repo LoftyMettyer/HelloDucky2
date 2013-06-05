@@ -121,7 +121,7 @@ Public Sub Initialise(blnNew As Boolean, blnCopy As Boolean, Optional lngSelecte
     Set rsTemp = datGeneral.GetReadOnlyRecords(strSQL)
   
     If rsTemp.BOF And rsTemp.EOF Then
-      MsgBox "This Email definition has been deleted by another user.", vbCritical, "Email Definition"
+      COAMsgBox "This Email definition has been deleted by another user.", vbCritical, "Email Definition"
       mlngSelectedID = 0
       Exit Sub
     End If
@@ -147,25 +147,25 @@ End Sub
 Private Sub cmdOK_Click()
 
   If Trim(txtName.Text) = vbNullString Then
-    MsgBox "You must give this definition a name", vbExclamation, Me.Caption
+    COAMsgBox "You must give this definition a name", vbExclamation, Me.Caption
     txtName.SetFocus
     Exit Sub
   End If
 
   If Trim(txtEmailAddress.Text) = vbNullString Then
-    MsgBox "You must enter an email address", vbExclamation, Me.Caption
+    COAMsgBox "You must enter an email address", vbExclamation, Me.Caption
     txtEmailAddress.SetFocus
     Exit Sub
   End If
 
 '  If InStr(txtEmailAddress.Text, "'") > 0 Then
-'    MsgBox "The email address cannot contain apostraphes.", vbExclamation, Me.Caption
+'    COAMsgBox "The email address cannot contain apostraphes.", vbExclamation, Me.Caption
 '    txtEmailAddress.SetFocus
 '    Exit Sub
 '  End If
 
   If UniqueName(txtName.Text) = False Then
-    MsgBox "An email address called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
+    COAMsgBox "An email address called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
     txtName.SetFocus
     Exit Sub
   End If
@@ -261,7 +261,7 @@ Public Sub PrintDef(lngEmailGroupID As Long)
   Set rsTemp = datGeneral.GetReadOnlyRecords(strSQL)
 
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This Email definition has been deleted by another user.", vbCritical, "Email Definition"
+    COAMsgBox "This Email definition has been deleted by another user.", vbCritical, "Email Definition"
     Exit Sub
   End If
 
@@ -291,7 +291,7 @@ Public Sub PrintDef(lngEmailGroupID As Long)
 Exit Sub
 
 LocalErr:
-  MsgBox "Printing Cross Tab Definition Failed", vbCritical, "Email Address Definition"
+  COAMsgBox "Printing Cross Tab Definition Failed", vbCritical, "Email Address Definition"
 
 End Sub
 
@@ -316,7 +316,7 @@ Private Function CheckForUsage() As Boolean
         strMBText = strMBText & .List(lngCount) & vbCrLf
       Next
       strMBText = strMBText & vbCrLf & "Continue anyway?"
-      CheckForUsage = (MsgBox(strMBText, vbExclamation + vbYesNo, Me.Caption) = vbYes)
+      CheckForUsage = (COAMsgBox(strMBText, vbExclamation + vbYesNo, Me.Caption) = vbYes)
   
     End If
   End With

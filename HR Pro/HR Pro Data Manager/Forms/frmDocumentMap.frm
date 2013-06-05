@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
+Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
 Begin VB.Form frmDocumentMap 
    BorderStyle     =   1  'Fixed Single
    Caption         =   "Document Management Type"
@@ -481,7 +481,7 @@ Private Sub RetreiveDefinition()
 
   Set rsTemp = GetDefinition
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Label Definition"
+    COAMsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Label Definition"
     bOK = False
     Exit Sub
   End If
@@ -908,7 +908,7 @@ Private Function InsertDocumentMap(pstrSQL As String) As Long
     cmADO.Execute
               
     If Not fSavedOK Then
-      MsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
+      COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
         Err.Description, vbOKOnly + vbExclamation, App.ProductName
         InsertDocumentMap = 0
         Set cmADO = Nothing

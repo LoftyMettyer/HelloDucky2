@@ -132,7 +132,7 @@ Private mfQuietMode As Boolean
 Private Sub cmdCancel_Click()
   
   If Not mfQuietMode Then
-    If (MsgBox("Some features may not be available if a path is not entered." & vbCrLf & _
+    If (COAMsgBox("Some features may not be available if a path is not entered." & vbCrLf & _
       "Are you sure you wish to cancel ?", vbQuestion + vbYesNo + vbDefaultButton2, "Path Selection") = vbNo) Then
       Exit Sub
     End If
@@ -171,7 +171,7 @@ Private Sub cmdOK_Click()
     End Select
     
     If Not mfQuietMode Then
-      MsgBox "The path has been stored successfully.", vbInformation + vbOKOnly, "Path Selection"
+      COAMsgBox "The path has been stored successfully.", vbInformation + vbOKOnly, "Path Selection"
     End If
     
     Unload Me
@@ -207,10 +207,10 @@ Private Sub drvDrives_Change()
 ErrTrap:
   Select Case Err.Number
     Case 68
-      MsgBox "No disk in drive or drive not ready", vbExclamation + vbOKOnly, "Error"
+      COAMsgBox "No disk in drive or drive not ready", vbExclamation + vbOKOnly, "Error"
       drvDrives.Drive = strolddrive
     Case Else
-      MsgBox "Error : " & Err.Number & Chr(10) & "Descr : " & Err.Description
+      COAMsgBox "Error : " & Err.Number & Chr(10) & "Descr : " & Err.Description
       drvDrives.Drive = strolddrive
   End Select
   
@@ -252,7 +252,7 @@ Public Property Let SelectionType(ByVal piNewValue As Integer)
                             "Please select a valid folder on the server."
         
         If Dir(frmConfiguration.txtPhotoPath.Text & IIf(Right(frmConfiguration.txtPhotoPath.Text, 1) = "\", "*.*", "\*.*"), vbDirectory) = vbNullString Then
-          MsgBox "The folder where the HR Pro photographs (non-linked) are stored is invalid." & vbCrLf & _
+          COAMsgBox "The folder where the HR Pro photographs (non-linked) are stored is invalid." & vbCrLf & _
                  "Please select a valid folder on the server.", _
                   vbExclamation + vbOKOnly, App.Title
         Else
@@ -272,7 +272,7 @@ Public Property Let SelectionType(ByVal piNewValue As Integer)
                             "Please select a valid folder on the server."
         
         If Dir(frmConfiguration.txtOLEPath.Text & IIf(Right(frmConfiguration.txtOLEPath.Text, 1) = "\", "*.*", "\*.*"), vbDirectory) = vbNullString Then
-          MsgBox "The folder where the HR Pro OLE documents are stored is invalid." & vbCrLf & _
+          COAMsgBox "The folder where the HR Pro OLE documents are stored is invalid." & vbCrLf & _
                             "Please select a valid folder on the server.", _
                             vbExclamation + vbOKOnly, App.Title
         Else
@@ -292,7 +292,7 @@ Public Property Let SelectionType(ByVal piNewValue As Integer)
                             "Please select a valid folder on the server."
       
         If Dir(frmConfiguration.txtCrystalPath.Text & IIf(Right(frmConfiguration.txtCrystalPath.Text, 1) = "\", "*.*", "\*.*"), vbDirectory) = vbNullString Then
-          MsgBox "The folder where the HR Pro Crystal Report documents are stored is invalid." & vbCrLf & _
+          COAMsgBox "The folder where the HR Pro Crystal Report documents are stored is invalid." & vbCrLf & _
                             "Please select a valid folder on the server.", _
                             vbExclamation + vbOKOnly, App.Title
         Else
@@ -312,7 +312,7 @@ Public Property Let SelectionType(ByVal piNewValue As Integer)
                             "Please select a valid folder on the server."
         
         If Dir(frmConfiguration.txtDocumentsPath.Text & IIf(Right(frmConfiguration.txtDocumentsPath.Text, 1) = "\", "*.*", "\*.*"), vbDirectory) = vbNullString Then
-          MsgBox "The folder where the HR Pro documents are stored is invalid." & vbCrLf & _
+          COAMsgBox "The folder where the HR Pro documents are stored is invalid." & vbCrLf & _
                             "Please select a valid folder on the server.", _
                             vbExclamation + vbOKOnly, App.Title
         Else
@@ -332,7 +332,7 @@ Public Property Let SelectionType(ByVal piNewValue As Integer)
                             "Please select a valid folder."
         
         If Dir(frmConfiguration.txtLocalOLEPath.Text & IIf(Right(frmConfiguration.txtLocalOLEPath.Text, 1) = "\", "*.*", "\*.*"), vbDirectory) = vbNullString Then
-          MsgBox "The folder where the Local HR Pro OLE documents are stored is invalid." & vbCrLf & _
+          COAMsgBox "The folder where the Local HR Pro OLE documents are stored is invalid." & vbCrLf & _
                             "Please select a valid folder.", _
                             vbExclamation + vbOKOnly, App.Title
         Else

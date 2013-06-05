@@ -64,7 +64,7 @@ Public Function ExitProc(Name As String) As Boolean
             Set mobjTopProc = mobjTopProc.NextProc
             ExitProc = True
         Else
-            MsgBox "Error. Trying to pop wrong procedure. " & _
+            COAMsgBox "Error. Trying to pop wrong procedure. " & _
              "You passed '" & Name & "'. " & _
              "Current procedure is '" & _
              mobjTopProc.Name & "'.", vbCritical

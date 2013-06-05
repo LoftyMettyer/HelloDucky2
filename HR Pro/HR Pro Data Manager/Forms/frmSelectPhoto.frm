@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Begin VB.Form frmSelectPhoto 
    Caption         =   "Select Photo"
    ClientHeight    =   2955
@@ -182,7 +182,7 @@ Private Sub EditFile_Part2()
   Dim iLoop As Integer
   Dim lngAPIResult As Long
   Dim lngKeyHandle As Long
-  Dim lngType As Long
+  Dim lngTYPE As Long
   Dim sFileExtension As String
   Dim sRegValue As String
   Dim sApplication As String
@@ -207,7 +207,7 @@ Private Sub EditFile_Part2()
 
   If Not fOK Then
     ' No extension on the file.
-    MsgBox "Error opening the selected file." & vbCrLf & _
+    COAMsgBox "Error opening the selected file." & vbCrLf & _
       "The file has no extension.", _
       vbExclamation + vbOKOnly, Application.Name
   Else
@@ -216,7 +216,7 @@ Private Sub EditFile_Part2()
     fOK = (lngAPIResult = ERROR_SUCCESS)
 
     If Not fOK Then
-      MsgBox "Error opening the selected file." & vbCrLf & _
+      COAMsgBox "Error opening the selected file." & vbCrLf & _
         "Unable to open the file extension's key in the registry.", _
         vbExclamation + vbOKOnly, Application.Name
     End If
@@ -226,13 +226,13 @@ Private Sub EditFile_Part2()
     ' Get the class name of the given file extension.
     sRegValue = Space$(iVALUESIZE)
 
-    lngAPIResult = RegQueryValueEx(lngKeyHandle, "", 0, lngType, ByVal sRegValue, iVALUESIZE)
+    lngAPIResult = RegQueryValueEx(lngKeyHandle, "", 0, lngTYPE, ByVal sRegValue, iVALUESIZE)
     RegCloseKey (lngKeyHandle)
 
-    fOK = ((lngAPIResult = ERROR_SUCCESS) And (lngType = REG_SZ))
+    fOK = ((lngAPIResult = ERROR_SUCCESS) And (lngTYPE = REG_SZ))
 
     If Not fOK Then
-      MsgBox "Error opening the selected file." & vbCrLf & _
+      COAMsgBox "Error opening the selected file." & vbCrLf & _
         "Unable to read the file extension's class from the registry.", _
         vbExclamation + vbOKOnly, Application.Name
     End If
@@ -250,7 +250,7 @@ Private Sub EditFile_Part2()
     fOK = (Len(sRegValue) > 0)
 
     If Not fOK Then
-      MsgBox "Error opening the selected file." & vbCrLf & _
+      COAMsgBox "Error opening the selected file." & vbCrLf & _
         "Unable to read the file extension's class from the registry.", _
         vbExclamation + vbOKOnly, Application.Name
     End If
@@ -264,7 +264,7 @@ Private Sub EditFile_Part2()
     fOK = (lngAPIResult = ERROR_SUCCESS)
 
     If Not fOK Then
-      MsgBox "Error opening the selected file." & vbCrLf & _
+      COAMsgBox "Error opening the selected file." & vbCrLf & _
         "Unable to open the given file's class key in the registry.", _
         vbExclamation + vbOKOnly, Application.Name
     End If
@@ -272,13 +272,13 @@ Private Sub EditFile_Part2()
 
   If fOK Then
     ' Read the given file's default application from the registry.
-    lngAPIResult = RegQueryValueEx(lngKeyHandle, "", 0, lngType, ByVal sRegValue, iVALUESIZE)
+    lngAPIResult = RegQueryValueEx(lngKeyHandle, "", 0, lngTYPE, ByVal sRegValue, iVALUESIZE)
     RegCloseKey (lngKeyHandle)
 
-    fOK = ((lngAPIResult = ERROR_SUCCESS) And ((lngType = REG_EXPAND_SZ) Or (lngType = REG_SZ)))
+    fOK = ((lngAPIResult = ERROR_SUCCESS) And ((lngTYPE = REG_EXPAND_SZ) Or (lngTYPE = REG_SZ)))
 
     If Not fOK Then
-      MsgBox "Error opening the selected file." & vbCrLf & _
+      COAMsgBox "Error opening the selected file." & vbCrLf & _
         "Unable to read the default application for the given file's class from the registry.", _
         vbExclamation + vbOKOnly, Application.Name
     End If
@@ -295,7 +295,7 @@ Private Sub EditFile_Part2()
 
     fOK = (Len(sRegValue) > 0)
     If Not fOK Then
-      MsgBox "Error opening the selected file." & vbCrLf & _
+      COAMsgBox "Error opening the selected file." & vbCrLf & _
         "Unable to read the default application for the given file's class from the registry.", _
         vbExclamation + vbOKOnly, Application.Name
     End If
@@ -317,7 +317,7 @@ Private Sub EditFile_Part2()
     fOK = (pid <> 0)
 
     If Not fOK Then
-      MsgBox "Error opening the selected file." & vbCrLf & _
+      COAMsgBox "Error opening the selected file." & vbCrLf & _
         "Unable to run the selected file's default application.", _
         vbExclamation + vbOKOnly, Application.Name
     End If
@@ -340,7 +340,7 @@ Private Sub EditFile_Part2()
   Exit Sub
   
 Edit_Error:
-  MsgBox "Error attempting to invoke the default editor for this file type." & vbCrLf & vbCrLf & _
+  COAMsgBox "Error attempting to invoke the default editor for this file type." & vbCrLf & vbCrLf & _
          "(" & Err.Number & " - " & Err.Description & ")", _
          vbExclamation + vbOKOnly, App.Title
 
@@ -405,7 +405,7 @@ Private Sub EditFile_Part1()
     frmSystemLocked.LockType = giLOCKTYPE_PHOTO
     frmSystemLocked.Show vbModal
   Else
-    MsgBox "No application is associated with this file.", _
+    COAMsgBox "No application is associated with this file.", _
       vbExclamation + vbOKOnly, App.ProductName
   End If
   
@@ -502,7 +502,7 @@ Private Sub filPhoto_Click()
   If FileExists(sFilenameAndPath) Then
     imgPhoto.Picture = LoadPicture(sFilenameAndPath)
   Else
-    MsgBox "The selected file has been moved or deleted." & vbCrLf & _
+    COAMsgBox "The selected file has been moved or deleted." & vbCrLf & _
           "It will be removed from the list.", vbOKOnly + vbExclamation, App.Title
     filPhoto.Refresh
   End If

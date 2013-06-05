@@ -173,7 +173,7 @@ End Function
 '  Exit Function
 '
 'Error_Trap:
-'  MsgBox "Error validating current users.", vbExclamation + vbOKOnly, App.Title
+'  COAMsgBox "Error validating current users.", vbExclamation + vbOKOnly, App.Title
 '  UserSessions = True
 '  GoTo TidyUpAndExit
 '
@@ -223,7 +223,7 @@ Public Function SetUtilityAccess(lngID As Long, sUtility As String, sAccessType 
 '  Exit Function
 '
 'ErrorTrap:
-'  MsgBox "Error setting " & StrConv(sUtility, vbProperCase) & " definition access.", vbOKOnly + vbCritical, App.Title
+'  COAMsgBox "Error setting " & StrConv(sUtility, vbProperCase) & " definition access.", vbOKOnly + vbCritical, App.Title
 '  Resume TidyUpAndExit
   
 End Function
@@ -266,7 +266,7 @@ Public Function CheckVersion(psServerName As String) As Boolean
   If Len(sDBVersion) = 0 Then
     fOK = False
 
-    MsgBox "Error checking version compatibility." & vbCrLf & _
+    COAMsgBox "Error checking version compatibility." & vbCrLf & _
       "Version number not found.", _
       vbOKOnly + vbExclamation, Application.Name
   Else
@@ -299,7 +299,7 @@ Public Function CheckVersion(psServerName As String) As Boolean
       ' Application is too old for the database.
 
       If ASRDEVELOPMENT Then
-        iResponse = MsgBox("The application is out of date." & vbCrLf & _
+        iResponse = COAMsgBox("The application is out of date." & vbCrLf & _
           "Contact your administrator for a new version of the application." & vbCrLf & vbCrLf & _
           "Database Name : " & gsDatabaseName & vbCrLf & _
           "Database Version : " & sDBVersion & vbCrLf & vbCrLf & _
@@ -308,7 +308,7 @@ Public Function CheckVersion(psServerName As String) As Boolean
 
         fOK = (iResponse = vbYes)
       Else
-        MsgBox "The application is out of date." & vbCrLf & _
+        COAMsgBox "The application is out of date." & vbCrLf & _
           "Contact your administrator for a new version of the application." & vbCrLf & vbCrLf & _
           "Database Name : " & gsDatabaseName & vbCrLf & _
           "Database Version : " & sDBVersion & vbCrLf & vbCrLf & _
@@ -328,7 +328,7 @@ Public Function CheckVersion(psServerName As String) As Boolean
       ' Database is too old for the application. Try to update the database.
       
       If ASRDEVELOPMENT Then
-        iResponse = MsgBox("The database is out of date." & vbCrLf & _
+        iResponse = COAMsgBox("The database is out of date." & vbCrLf & _
           "Please ask the System Administrator to update the database in the System Manager." & vbCrLf & vbCrLf & _
           "Database Name : " & gsDatabaseName & vbCrLf & _
           "Database Version : " & sDBVersion & vbCrLf & vbCrLf & _
@@ -338,7 +338,7 @@ Public Function CheckVersion(psServerName As String) As Boolean
         
           fOK = (iResponse = vbYes)
       Else
-         MsgBox "The database is out of date." & vbCrLf & _
+         COAMsgBox "The database is out of date." & vbCrLf & _
           "Please ask the System Administrator to update the database in the System Manager." & vbCrLf & vbCrLf & _
           "Database Name : " & gsDatabaseName & vbCrLf & _
           "Database Version : " & sDBVersion & vbCrLf & vbCrLf & _
@@ -369,7 +369,7 @@ Public Function CheckVersion(psServerName As String) As Boolean
         ((App.Major = iMajorAppVersion) And (App.Minor < iMinorAppVersion)) Or _
         ((App.Major = iMajorAppVersion) And (App.Minor = iMinorAppVersion) And (App.Revision < iRevisionAppVersion And Not blnNewStyleVersionNo)) Then
 
-        MsgBox "The application is now out of date due to an update to the intranet module." & vbCrLf & _
+        COAMsgBox "The application is now out of date due to an update to the intranet module." & vbCrLf & _
           "Contact your administrator for a new version of the application.", _
           vbOKOnly + vbExclamation, Application.Name
         
@@ -408,7 +408,7 @@ Public Function CheckVersion(psServerName As String) As Boolean
         fOK = False
       End If
 
-      MsgBox "The database is out of date." & vbCrLf & _
+      COAMsgBox "The database is out of date." & vbCrLf & _
         "Please ask the System Administrator to save the update in the System Manager.", _
         vbOKOnly + vbExclamation, Application.Name
     End If
@@ -429,11 +429,11 @@ TidyUpAndExit:
   
 ErrorTrap:
   If (Err.Number = 75) Or (Err.Number = 76) Then
-    MsgBox "The database is out of date." & vbCrLf & _
+    COAMsgBox "The database is out of date." & vbCrLf & _
       "Unable to update the database as the required update script cannot be found.", _
       vbOKOnly + vbExclamation, Application.Name
   Else
-    MsgBox "Error checking database and application versions." & vbCrLf & _
+    COAMsgBox "Error checking database and application versions." & vbCrLf & _
       Err.Description, _
       vbOKOnly + vbExclamation, Application.Name
   End If
@@ -739,7 +739,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  MsgBox "Error checking if the database " & gsDatabaseName & " contains columns of the specified datatype." _
+  COAMsgBox "Error checking if the database " & gsDatabaseName & " contains columns of the specified datatype." _
           , vbExclamation + vbOKOnly, App.Title
   DBContains_DataType = False
   Resume TidyUpAndExit
@@ -907,7 +907,7 @@ Public Function GetSpecialFolderA(ByVal eSpecialFolder As mceIDLPaths) As String
     iRet = SHGetSpecialFolderPath(0, strPath, eSpecialFolder, False)
     If Trim(strPath) <> Chr(0) Then
         strPath = Left(strPath, InStr(strPath, Chr(0)) - 1) & "\"
-        ' MsgBox (strPath)
+        ' COAMsgBox (strPath)
     End If
     
     GetSpecialFolderA = strPath
@@ -1215,7 +1215,7 @@ TidyUpAndExit:
   Exit Function
     
 ErrorTrap:
-    MsgBox Err.Description & " - GetColumnPrivileges"
+    COAMsgBox Err.Description & " - GetColumnPrivileges"
     fOK = False
     Resume TidyUpAndExit
     
@@ -1279,7 +1279,7 @@ TidyUpAndExit:
   Exit Function
     
 ErrorTrap:
-    MsgBox Err.Description & " - GetHistoryScreens"
+    COAMsgBox Err.Description & " - GetHistoryScreens"
     fOK = False
     Resume TidyUpAndExit
     
@@ -1723,7 +1723,7 @@ Public Function GetPictureFromDatabase(plngImageID As Long) As String
       If .BOF And .EOF Then
         ' Background image somehow deleted.
         SaveSystemSetting "DesktopSetting", "BitmapID", 0
-        MsgBox "The background image no longer exists.", vbExclamation + vbOKOnly, App.ProductName
+        COAMsgBox "The background image no longer exists.", vbExclamation + vbOKOnly, App.ProductName
       Else
         lngColSize = !Picture.ActualSize
         If lngColSize > 0 Then
@@ -2078,12 +2078,12 @@ Public Sub AddNewTableEntry(plngLookupTableID As Long)
       Exit Sub
     ElseIf rsTemp.RecordCount > 1 Then
       ' The lookup table has more than one screen defined for it. So tell the user.
-      MsgBox "The lookup table '" & sTableName & "' has more than one screen definition." & vbCrLf & "Please contact your system administrator for more information.", vbExclamation, App.ProductName
+      COAMsgBox "The lookup table '" & sTableName & "' has more than one screen definition." & vbCrLf & "Please contact your system administrator for more information.", vbExclamation, App.ProductName
       frmMain.ActiveForm.Enabled = True
     End If
   Else
     ' The lookup table has no screens defined for it. So tell the user.
-    MsgBox "The lookup table '" & sTableName & "' does not have a screen definition." & vbCrLf & "Please contact your system administrator for more information.", vbExclamation, App.ProductName
+    COAMsgBox "The lookup table '" & sTableName & "' does not have a screen definition." & vbCrLf & "Please contact your system administrator for more information.", vbExclamation, App.ProductName
     frmMain.ActiveForm.Enabled = True
   End If
   rsTemp.Close
@@ -2778,7 +2778,7 @@ Public Sub UtilityDefAmended(psTable As String, _
   Dim rsTemp As Recordset
   Dim sTemp As String
   Dim strMBText As String
-  Dim intMBButtons As Integer
+  Dim intMBButtons As Long
   Dim intMBResponse As Integer
   
   Dim blnTimeStampChanged As Boolean
@@ -2835,7 +2835,7 @@ Public Sub UtilityDefAmended(psTable As String, _
     strMBText = strMBText & vbCrLf & _
                 "Save as a new " & strType & "?"
     intMBButtons = vbExclamation + vbOKCancel
-    intMBResponse = MsgBox(strMBText, intMBButtons, App.ProductName)
+    intMBResponse = COAMsgBox(strMBText, intMBButtons, App.ProductName)
       
     Select Case intMBResponse
     Case vbOK         'save as new (but this may cause duplicate name message)
@@ -2867,7 +2867,7 @@ Public Sub UtilityDefAmended(psTable As String, _
       strMBText = "The current " & strType & " has been amended by another user. " & vbCrLf & _
                   "Would you like to overwrite this " & strType & "?" & vbCrLf
       intMBButtons = vbExclamation + vbYesNoCancel
-      intMBResponse = MsgBox(strMBText, intMBButtons, App.ProductName)
+      intMBResponse = COAMsgBox(strMBText, intMBButtons, App.ProductName)
       
       Select Case intMBResponse
       Case vbYes        'overwrite existing definition and any changes
@@ -2889,7 +2889,7 @@ Public Sub UtilityDefAmended(psTable As String, _
   
 Amended_ERROR:
   
-  MsgBox "Error whilst checking if utility definition has been amended." & vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error whilst checking if utility definition has been amended." & vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
   blnContinueSave = False
   
 End Sub
@@ -3615,10 +3615,10 @@ Public Function ValidateGTMaskDate(dtTemp As GTMaskDate.GTMaskDate) As Boolean
         .ForeColor = vbRed
 
         'MH20020712 Fault 4131
-        'Msgbox sometimes causes run time error but DoEvents prevents this!
+        'COAMsgBox sometimes causes run time error but DoEvents prevents this!
         DoEvents
 
-        MsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
+        COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
         .ForeColor = vbWindowText
         .DateValue = Null
         If .Visible And .Enabled Then
@@ -3637,7 +3637,7 @@ Public Function ValidateGTMaskDate(dtTemp As GTMaskDate.GTMaskDate) As Boolean
 '
 '        DoEvents
 '
-'        MsgBox "No date has been selected.", vbOKOnly + vbExclamation, App.Title
+'        COAMsgBox "No date has been selected.", vbOKOnly + vbExclamation, App.Title
 '        .ForeColor = vbWindowText
 '        .DateValue = Null
 '        If .Visible And .Enabled Then
@@ -3753,7 +3753,7 @@ Public Function CheckPlatform() As Boolean
   If GetOldServerName <> GetServerName Then
     sMsg = "The Microsoft SQL Server has been renamed but the operation is incomplete."
     
-    MsgBox sMsg & vbCrLf & _
+    COAMsgBox sMsg & vbCrLf & _
             "Please contact your System Administrator", _
             vbOKOnly + vbExclamation, Application.Name
     
@@ -3772,7 +3772,7 @@ Public Function CheckPlatform() As Boolean
     End If
     
     If sMsg <> vbNullString Then
-      MsgBox sMsg & vbCrLf & _
+      COAMsgBox sMsg & vbCrLf & _
             "Please ask the System Administrator to update the database in the System Manager.", _
             vbOKOnly + vbExclamation, Application.Name
     
@@ -4226,7 +4226,7 @@ Public Function GetEmailAddress(lngEmailAddrID As Long, lngRecordID As Long) As 
 Exit Function
 
 LocalErr:
-  MsgBox "Error reading email details" & vbCr & "(" & Err.Description & ")", vbExclamation
+  COAMsgBox "Error reading email details" & vbCr & "(" & Err.Description & ")", vbExclamation
   Set cmADO = Nothing
 
 End Function
@@ -4273,11 +4273,27 @@ ErrorTrap:
 End Function
 
 
-Public Function COAMsgBox(sPrompt As String, iButtons As VbMsgBoxStyle, Optional sTitle As String) As VbMsgBoxResult
+Public Function COAMsgBox(sPrompt As String, Optional iButtons As VbMsgBoxStyle, Optional sTitle As String) As VbMsgBoxResult
+  
+  On Local Error GoTo LocalErr
   
   If sTitle = vbNullString Then sTitle = App.ProductName
   gobjProgress.Visible = False
-  COAMsgBox = MsgBox(sPrompt, iButtons, sTitle)
+  
+  If Not gblnBatchJobsOnly Then
+    COAMsgBox = MsgBox(sPrompt, iButtons, sTitle)
+  Else
+    Open "batcherr.txt" For Append As #1
+    Print #1, Format(Now, DateFormat & " hh:nn")
+    Print #1, sPrompt
+    Print #1, ""
+    Close #1
+  End If
+
+Exit Function
+
+LocalErr:
+  Close #1
 
 End Function
 

@@ -364,7 +364,7 @@ Private Sub OutputJobStatus()
   End If
   
   If Not gblnBatchMode Then
-    MsgBox mstrStatusMessage, IIf(fOK, vbInformation, vbExclamation), strCaption
+    COAMsgBox mstrStatusMessage, IIf(fOK, vbInformation, vbExclamation), strCaption
   End If
 
 End Sub
@@ -720,7 +720,7 @@ Private Sub WrdOpenTemplate(blnSuppressPrompt As Boolean)
         "You need to remove this reference in order to proceed with this mail merge."
         
     If blnSuppressPrompt = False Then
-      If MsgBox(mstrStatusMessage & vbCrLf & "Proceed ?", vbYesNo + vbExclamation, "Mail Merge") <> vbYes Then
+      If COAMsgBox(mstrStatusMessage & vbCrLf & "Proceed ?", vbYesNo + vbExclamation, "Mail Merge") <> vbYes Then
         fOK = False
         Exit Sub
       End If
@@ -941,7 +941,7 @@ End Sub
 Private Sub WrdPauseBeforeMerge()
 
   Dim strMBText As String
-  Dim intMBButtons As Integer
+  Dim intMBButtons As Long
   Dim strMBTitle As String
   Dim intMBResponse As Integer
   
@@ -961,7 +961,7 @@ Private Sub WrdPauseBeforeMerge()
     intMBButtons = vbQuestion + vbYesNoCancel
     strMBTitle = IIf(mbIsLabel, "Envelopes & Labels", "Mail Merge")
     
-    intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+    intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
 
     If intMBResponse = vbCancel Then
       mblnUserCancelled = True
@@ -983,7 +983,7 @@ Private Sub WrdPauseBeforeMerge()
       strMBText = "Click OK to proceed with the " & IIf(mbIsLabel, "label", "mail") & " merge."
       intMBButtons = vbInformation + vbOKCancel
       strMBTitle = IIf(mbIsLabel, "Envelopes & Labels", "Mail Merge")
-      intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+      intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
 
       If intMBResponse = vbCancel Then
         mblnUserCancelled = True
@@ -1010,7 +1010,7 @@ CheckMergeFieldExists:
                 "Would you like to switch to word to insert merge fields now?"
     intMBButtons = vbQuestion + vbOKCancel
     strMBTitle = "Mail Merge"
-    intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+    intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
     
     If intMBResponse = vbCancel Then
       mblnUserCancelled = True
@@ -1026,7 +1026,7 @@ CheckMergeFieldExists:
       strMBText = "Please insert merge fields on the template document then click OK to proceed"
       intMBButtons = vbInformation + vbOKCancel
       strMBTitle = "Mail Merge"
-      intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+      intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
     
       If intMBResponse = vbCancel Then
         mblnUserCancelled = True
@@ -1075,7 +1075,7 @@ End Sub
 Private Sub WrdCheckIfSaveTemplate()
     
   Dim strMBText As String
-  Dim intMBButtons As Integer
+  Dim intMBButtons As Long
   Dim strMBTitle As String
   Dim intMBResponse As Integer
   
@@ -1094,7 +1094,7 @@ Private Sub WrdCheckIfSaveTemplate()
     strMBText = "You have not saved changes to the template document, would you like to save changes now?"
     intMBButtons = vbQuestion + vbYesNo
     strMBTitle = "Mail Merge"
-    intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+    intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
 
     If intMBResponse = vbYes Then
       wrdApp.Visible = True
@@ -1105,7 +1105,7 @@ Private Sub WrdCheckIfSaveTemplate()
         strMBText = "This template file is currently in use by another user.  Please save as a new file."
         intMBButtons = vbInformation
         strMBTitle = "Mail Merge"
-        intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+        intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
         wrdDocTemplate.SaveAs FileFormat:=Val(mstrDefTemplateFormat)
         blnTemplateReadOnly = False
         intMBResponse = vbYes
@@ -1178,7 +1178,7 @@ Private Sub WrdValidateTemplateMergeFields(blnAbortOnError As Boolean)
   'delete field from template is required
 
   Dim strMBText As String
-  Dim intMBButtons As Integer
+  Dim intMBButtons As Long
   Dim strMBTitle As String
   Dim intMBResponse As Integer
   
@@ -1270,7 +1270,7 @@ Private Sub WrdValidateTemplateMergeFields(blnAbortOnError As Boolean)
           strMBTitle = "Mail Merge"
           
           gobjProgress.Visible = False
-          intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+          intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
           gobjProgress.Visible = True
 
           If intMBResponse = vbOK Then

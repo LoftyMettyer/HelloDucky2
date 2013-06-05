@@ -123,13 +123,13 @@ Public Function Initialise(pblnNew As Boolean, pfrmForm As Form, Optional plngCo
   If pblnNew Then
   
     If pintLoop = 0 Then
-      MsgBox "You must add a column to the definition before you can add to the sort order.", vbExclamation + vbOKOnly, mfrmForm.Caption
+      COAMsgBox "You must add a column to the definition before you can add to the sort order.", vbExclamation + vbOKOnly, mfrmForm.Caption
       Initialise = False
       Exit Function
     End If
      
     If (mfrmForm.grdReportOrder.Rows = pintLoop And pintLoop > 0) Or (cboColumns.ListCount = 0) Then
-      MsgBox "You have selected all existing columns in the sort order." & vbCrLf & _
+      COAMsgBox "You have selected all existing columns in the sort order." & vbCrLf & _
              "To add more sort order columns, you must add more columns to the definition.", vbExclamation + vbOKOnly, mfrmForm.Caption
       Initialise = False
       Exit Function
@@ -159,7 +159,7 @@ Public Function Initialise(pblnNew As Boolean, pfrmForm As Form, Optional plngCo
 Initialise_ERROR:
   
   Initialise = False
-  MsgBox "Error initialising the order form." & vbCrLf & vbCrLf & "(" & Err.Description & ")", vbCritical + vbOKOnly, mfrmForm.Caption
+  COAMsgBox "Error initialising the order form." & vbCrLf & vbCrLf & "(" & Err.Description & ")", vbCritical + vbOKOnly, mfrmForm.Caption
 
 End Function
 
@@ -206,7 +206,7 @@ Private Sub cmdAction_Click(Index As Integer)
   Dim pstrRow As String
   
   If cboColumns.Text = "" Then
-    MsgBox "You must select a column.", vbExclamation + vbOKOnly, mfrmForm.Caption
+    COAMsgBox "You must select a column.", vbExclamation + vbOKOnly, mfrmForm.Caption
     Exit Sub
   End If
   ' OK pressed

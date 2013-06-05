@@ -952,7 +952,7 @@ Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
   'MH20020820
   'Print Screen
   ElseIf KeyCode = 44 And FromErrorMessage Then
-    If MsgBox("Would you like to email details of this error to the helpdesk?", vbQuestion + vbYesNo, "Email Error") = vbYes Then
+    If COAMsgBox("Would you like to email details of this error to the helpdesk?", vbQuestion + vbYesNo, "Email Error") = vbYes Then
       frmEmailSel.SendEmail _
         GetSystemSetting("support", "email", "service.delivery@coasolutions.com"), _
         App.Title & " Error", _
@@ -990,7 +990,7 @@ Public Function ErrorBox(pstrDetails As String) As Integer
   
   FromErrorMessage = True
   
-  'TM20020104 Fault 3029 - Lock the details section when msgbox used as error box.
+  'TM20020104 Fault 3029 - Lock the details section when COAMsgBox used as error box.
   Me.DetailsLocked = True
   
   DefineControls (vbYesNoCancel + vbCritical)

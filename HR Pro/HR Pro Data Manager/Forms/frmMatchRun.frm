@@ -179,7 +179,7 @@ Private mlngOutputEmailAddr As Long
 Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
 'Private mlngOutputEmailFileFormat As Long
-Private mstrOutputFilename As String
+Private mstrOutputFileName As String
 
 ' Array holding the User Defined functions that are needed for this report
 Private mastrUDFsRequired() As String
@@ -302,7 +302,7 @@ Dim strUtilityName As String
   If Not gblnBatchMode Then
     If gobjProgress.Visible Then gobjProgress.CloseProgress
     If (fOK = False) Or (mblnNoRecords = True) Or (Not mblnPreviewOnScreen) Then
-      MsgBox mstrErrorMessage, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, Me.Caption
+      COAMsgBox mstrErrorMessage, IIf(fOK, vbInformation, vbExclamation) + vbOKOnly, Me.Caption
     End If
   End If
 
@@ -1743,7 +1743,7 @@ Private Function GetMatchReportDefinition() As Boolean
     mstrOutputEmailSubject = !OutputEmailSubject
     mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
     'mlngOutputEmailFileFormat = !OutputEmailFileFormat
-    mstrOutputFilename = !OutputFilename
+    mstrOutputFileName = !OutputFilename
 
     mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
     
@@ -2185,7 +2185,7 @@ LocalErr:
   If ASRDEVELOPMENT Then
     Clipboard.Clear
     Clipboard.SetText mstrSQL
-    MsgBox Err.Description
+    COAMsgBox Err.Description
   End If
   PopulateGrid = False
 
@@ -2360,13 +2360,13 @@ Private Sub grdOutput_DblClick()
   Dim lngRecord2ID As Long
   
   If mlngTable1ID > 0 And mlngTable1RecDescExprID = 0 Then
-    MsgBox "Unable to show cell breakdown details as no record description " & _
+    COAMsgBox "Unable to show cell breakdown details as no record description " & _
            "has been set up for the '" & mstrTable1Name & "' table.", vbInformation, Me.Caption
     Exit Sub
   End If
   
   If mlngTable2ID > 0 And mlngTable2RecDescExprID = 0 Then
-    MsgBox "Unable to show cell breakdown details as no record description " & _
+    COAMsgBox "Unable to show cell breakdown details as no record description " & _
            "has been set up for the '" & mstrTable2Name & "' table.", vbInformation, Me.Caption
     Exit Sub
   End If
@@ -2400,7 +2400,7 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
       mblnOutputPrinter, mstrOutputPrinterName, _
       mblnOutputSave, mlngOutputSaveExisting, _
       mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-      mstrOutputEmailAttachAs, mstrOutputFilename) Then
+      mstrOutputEmailAttachAs, mstrOutputFileName) Then
 
     objOutput.PageTitles = False
 
@@ -2449,10 +2449,10 @@ Private Function OutputReport(blnPrompt As Boolean) As Boolean
     DoEvents
     
     If fOK Then
-      MsgBox Me.Caption & ": '" & mstrName & "' output complete.", _
+      COAMsgBox Me.Caption & ": '" & mstrName & "' output complete.", _
           vbInformation, Me.Caption
     Else
-      MsgBox Me.Caption & ": '" & mstrName & "' output failed." & vbCrLf & vbCrLf & mstrErrorMessage, _
+      COAMsgBox Me.Caption & ": '" & mstrName & "' output failed." & vbCrLf & vbCrLf & mstrErrorMessage, _
           vbExclamation, Me.Caption
     End If
   End If

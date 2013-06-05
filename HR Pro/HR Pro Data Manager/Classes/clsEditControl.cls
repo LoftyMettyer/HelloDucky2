@@ -66,7 +66,7 @@ Public Property Let BlankIfZero(ByVal vData As Boolean)
 
 BlankIfZeroLetErr:
   'Call RaiseError(MyUnhandledError, "CEditControl:BlankIfZero Property Let")
-  MsgBox "Error CEditControl:BlankIfZero Property Let.", _
+  COAMsgBox "Error CEditControl:BlankIfZero Property Let.", _
     vbExclamation + vbOKOnly, App.ProductName
     
 End Property
@@ -84,7 +84,7 @@ Public Property Get BlankIfZero() As Boolean
 
 BlankIfZeroGetErr:
   'Call RaiseError(MyUnhandledError, "CEditControl:BlankIfZero Property Get")
-  MsgBox "Error CEditControl:BlankIfZero Property Get.", _
+  COAMsgBox "Error CEditControl:BlankIfZero Property Get.", _
     vbExclamation + vbOKOnly, App.ProductName
     
 End Property
@@ -102,7 +102,7 @@ Public Property Let UserChanged(ByVal vData As Boolean)
 
 UserChangedLetErr:
   'Call RaiseError(MyUnhandledError, "CEditControl:UserChanged Property Let")
-  MsgBox "Error CEditControl:UserChanged Property Let.", _
+  COAMsgBox "Error CEditControl:UserChanged Property Let.", _
     vbExclamation + vbOKOnly, App.ProductName
     
 End Property
@@ -120,7 +120,7 @@ Public Property Get UserChanged() As Boolean
 
 UserChangedGetErr:
   'Call RaiseError(MyUnhandledError, "CEditControl:UserChanged Property Get")
-  MsgBox "Error CEditControl:UserChanged Property Get.", _
+  COAMsgBox "Error CEditControl:UserChanged Property Get.", _
     vbExclamation + vbOKOnly, App.ProductName
     
 End Property
@@ -139,7 +139,7 @@ Public Property Let CalcTrigger(ByVal vData As Integer)
 
 CalcTriggerLetErr:
   'Call RaiseError(MyUnhandledError, "CEditControl:CalcTrigger Property Let")
-  MsgBox "Error CEditControl:CalcTrigger Property Let.", _
+  COAMsgBox "Error CEditControl:CalcTrigger Property Let.", _
     vbExclamation + vbOKOnly, App.ProductName
     
 End Property
@@ -157,7 +157,7 @@ Public Property Get CalcTrigger() As Integer
 
 CalcTriggerGetErr:
    'Call RaiseError(MyUnhandledError, "CEditControl:CalcTrigger Property Get")
-   MsgBox "Error CEditControl:CalcTrigger Property Get.", _
+   COAMsgBox "Error CEditControl:CalcTrigger Property Get.", _
     vbExclamation + vbOKOnly, App.ProductName
     
 End Property
@@ -176,7 +176,7 @@ Public Property Let CalcExpressionID(ByVal vData As Long)
 
 CalcExpressionIDLetErr:
   'Call RaiseError(MyUnhandledError, "CEditControl:CalcExpressionID Property Let")
-  MsgBox "Error CEditControl:CalcExpressionID Property Let.", _
+  COAMsgBox "Error CEditControl:CalcExpressionID Property Let.", _
     vbExclamation + vbOKOnly, App.ProductName
     
 End Property
@@ -194,7 +194,7 @@ Public Property Get CalcExpressionID() As Long
 
 CalcExpressionIDGetErr:
   'Call RaiseError(MyUnhandledError, "CEditControl:CalcExpressionID Property Get")
-  MsgBox "Error CEditControl:CalcExpressionID Property Get.", _
+  COAMsgBox "Error CEditControl:CalcExpressionID Property Get.", _
     vbExclamation + vbOKOnly, App.ProductName
     
 End Property
@@ -213,7 +213,7 @@ Public Property Let ValidExpressionID(ByVal vData As Long)
 
 ValidExpressionIDLetErr:
   'Call RaiseError(MyUnhandledError, "CEditControl:ValidExpressionID Property Let")
-  MsgBox "Error CEditControl:ValidExpressionID Property Let.", _
+  COAMsgBox "Error CEditControl:ValidExpressionID Property Let.", _
     vbExclamation + vbOKOnly, App.ProductName
     
 End Property
@@ -231,7 +231,7 @@ Public Property Get ValidExpressionID() As Long
 
 ValidExpressionIDGetErr:
   'Call RaiseError(MyUnhandledError, "CEditControl:ValidExpressionID Property Get")
-  MsgBox "Error CEditControl:ValidExpressionID Property Get.", _
+  COAMsgBox "Error CEditControl:ValidExpressionID Property Get.", _
     vbExclamation + vbOKOnly, App.ProductName
     
 End Property
@@ -249,7 +249,7 @@ Public Property Let WhenExpressionID(ByVal vData As Long)
 
 WhenExpressionIDLetErr:
   'Call RaiseError(MyUnhandledError, "CEditControl:WhenExpressionID Property Let")
-  MsgBox "Error CEditControl:WhenExpressionID Property Let.", _
+  COAMsgBox "Error CEditControl:WhenExpressionID Property Let.", _
     vbExclamation + vbOKOnly, App.ProductName
     
 End Property
@@ -267,7 +267,7 @@ Public Property Get WhenExpressionID() As Long
 
 WhenExpressionIDGetErr:
   'Call RaiseError(MyUnhandledError, "CEditControl:WhenExpressionID Property Get")
-  MsgBox "Error CEditControl:WhenExpressionID Property Get.", _
+  COAMsgBox "Error CEditControl:WhenExpressionID Property Get.", _
     vbExclamation + vbOKOnly, App.ProductName
     
 End Property

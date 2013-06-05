@@ -186,6 +186,7 @@ Begin VB.Form frmDiary
          EndProperty
          RecordSelectors =   0   'False
          ColumnHeaders   =   0   'False
+         Col.Count       =   4
          stylesets.count =   1
          stylesets(0).Name=   "Alarm"
          stylesets(0).BackColor=   16184819
@@ -346,6 +347,7 @@ Begin VB.Form frmDiary
          EndProperty
          RecordSelectors =   0   'False
          ColumnHeaders   =   0   'False
+         Col.Count       =   4
          stylesets.count =   1
          stylesets(0).Name=   "Alarm"
          stylesets(0).BackColor=   16184819
@@ -468,6 +470,7 @@ Begin VB.Form frmDiary
          EndProperty
          RecordSelectors =   0   'False
          ColumnHeaders   =   0   'False
+         Col.Count       =   4
          stylesets.count =   1
          stylesets(0).Name=   "Alarm"
          stylesets(0).BackColor=   16184819
@@ -590,6 +593,7 @@ Begin VB.Form frmDiary
          EndProperty
          RecordSelectors =   0   'False
          ColumnHeaders   =   0   'False
+         Col.Count       =   4
          stylesets.count =   1
          stylesets(0).Name=   "Alarm"
          stylesets(0).BackColor=   16184819
@@ -712,6 +716,7 @@ Begin VB.Form frmDiary
          EndProperty
          RecordSelectors =   0   'False
          ColumnHeaders   =   0   'False
+         Col.Count       =   4
          stylesets.count =   1
          stylesets(0).Name=   "Alarm"
          stylesets(0).BackColor=   16184819
@@ -834,6 +839,7 @@ Begin VB.Form frmDiary
          EndProperty
          RecordSelectors =   0   'False
          ColumnHeaders   =   0   'False
+         Col.Count       =   4
          stylesets.count =   1
          stylesets(0).Name=   "Alarm"
          stylesets(0).BackColor=   16184819
@@ -956,6 +962,7 @@ Begin VB.Form frmDiary
          EndProperty
          RecordSelectors =   0   'False
          ColumnHeaders   =   0   'False
+         Col.Count       =   4
          stylesets.count =   1
          stylesets(0).Name=   "Alarm"
          stylesets(0).BackColor=   16184819
@@ -1078,6 +1085,7 @@ Begin VB.Form frmDiary
          EndProperty
          RecordSelectors =   0   'False
          ColumnHeaders   =   0   'False
+         Col.Count       =   4
          stylesets.count =   1
          stylesets(0).Name=   "Alarm"
          stylesets(0).BackColor=   16184819
@@ -1401,7 +1409,7 @@ Begin VB.Form frmDiary
          MonthRows       =   2
          MonthBackColor  =   16184819
          ScrollRate      =   1
-         StartOfWeek     =   51576833
+         StartOfWeek     =   16973825
          TitleBackColor  =   6697779
          TitleForeColor  =   15988214
          TrailingForeColor=   -2147483643
@@ -2183,7 +2191,7 @@ End Sub
 
 Private Sub PrintDiaryEvents()
 
-  ' RH 19/09/00 - BUG 950 - Grids return 'Cancelled by user' msgbox if a printer
+  ' RH 19/09/00 - BUG 950 - Grids return 'Cancelled by user' COAMsgBox if a printer
   '                         is not connected to the machine, so use the check in
   '                         clsPrintDef to check for printer existance first
   Dim frmDiaryPrint As HRProDataMgr.frmDiaryPrintOptions
@@ -2219,7 +2227,7 @@ Private Sub PrintDiaryEvents()
     If Not bCancelled Then
       With grdPrint
         If .Rows = 0 Then
-          MsgBox strErrorMessage, vbInformation, "Diary Print"
+          COAMsgBox strErrorMessage, vbInformation, "Diary Print"
           
         Else
           'This bit prints using the PrintGrid object
@@ -2283,7 +2291,7 @@ End Sub
 Private Sub ClearFilter()
 
   Dim strMBText As String
-  Dim intMBButtons As Integer
+  Dim intMBButtons As Long
   Dim strMBTitle As String
   Dim intMBResponse As Integer
     
@@ -2291,7 +2299,7 @@ Private Sub ClearFilter()
   strMBText = "Are you sure you want to clear the current filter?"
   intMBButtons = vbInformation + vbYesNo
   strMBTitle = "Clear Filter"
-  intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+  intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
     
   If intMBResponse = vbYes Then
     gobjDiary.FilterEventType = 0
@@ -2401,7 +2409,7 @@ Private Function EventStillExists() As Boolean
     Set rsTables = gobjDiary.GetCurrentRecord
       
     If rsTables.BOF And rsTables.EOF Then
-      MsgBox "This diary event has been deleted by another user.", vbCritical, "Diary"
+      COAMsgBox "This diary event has been deleted by another user.", vbCritical, "Diary"
       gobjDiary.DiaryEventID = 0
       gobjDiary.RefreshDiaryData
       EventStillExists = False

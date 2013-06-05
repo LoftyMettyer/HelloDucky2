@@ -621,7 +621,7 @@ End Sub
 Private Sub ASRDateValue_LostFocus()
 
   'If Not (IsDate(ASRDateValue.DateValue) And ASRDateValue.Text = Format(ASRDateValue.DateValue, DateFormat)) Then
-  '  MsgBox "Please enter a valid date", vbExclamation, Me.Caption
+  '  COAMsgBox "Please enter a valid date", vbExclamation, Me.Caption
   '  ASRDateValue.Text = vbNullString
   '  ASRDateValue.SetFocus
   'End If
@@ -630,7 +630,7 @@ Private Sub ASRDateValue_LostFocus()
 '       IsDate(ASRDateValue.DateValue) And _
 '       ASRDateValue.Text <> "  /  /" Then
 '
-'       MsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
+'       COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
 '       ASRDateValue.DateValue = Null
 '       ASRDateValue.SetFocus
 '       Exit Sub
@@ -673,13 +673,13 @@ Private Sub cmdOK_Click()
           mvValue = ASRDateValue.Text
         Else
           mvValue = 0
-          MsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
+          COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
           ASRDateValue.SetFocus
           Exit Sub
         End If
       Else
         mvValue = 0
-        'MsgBox "Please enter a valid date", vbExclamation, Me.Caption
+        'COAMsgBox "Please enter a valid date", vbExclamation, Me.Caption
         ASRDateValue.SetFocus
         Exit Sub
       End If

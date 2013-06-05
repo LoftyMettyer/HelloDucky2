@@ -368,11 +368,11 @@ Private Function AccessState(lngExprID As Long) As String
 End Function
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOk.Enabled = blnChanged
+  cmdOK.Enabled = blnChanged
 End Property
 
 Private Sub RemoveComponentNode(psNodeKey As String)
@@ -551,8 +551,8 @@ Private Sub cmdCancel_Click()
   
   ' Check if any changes have been made.
   If Me.Changed Then
-    'intAnswer = MsgBox(" The " & LCase(ExpressionTypeName(mobjExpression.ExpressionType)) & " definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
-    intAnswer = MsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
+    'intAnswer = COAMsgBox(" The " & LCase(ExpressionTypeName(mobjExpression.ExpressionType)) & " definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
+    intAnswer = COAMsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
     If intAnswer = vbYes Then
       Call cmdOK_Click
       Exit Sub
@@ -817,7 +817,7 @@ Private Function CheckForDeletedCalcs() As Boolean
     Select Case iReturnCode
     Case 0:
     Case 1:
-      MsgBox "The expression component '" & objComponent.ComponentDescription & _
+      COAMsgBox "The expression component '" & objComponent.ComponentDescription & _
               "' has been made hidden by another user." & vbCrLf & _
               "The expression will now be made hidden.", vbExclamation + vbOKOnly, App.Title
       SetExprAccess mobjExpression.ExpressionID, ACCESS_HIDDEN
@@ -826,7 +826,7 @@ Private Function CheckForDeletedCalcs() As Boolean
       mblnForcedHidden = True
     Case 2:
       If Not isOwnerOfComp(objComponent) Then
-        MsgBox "The expression component '" & objComponent.ComponentDescription & _
+        COAMsgBox "The expression component '" & objComponent.ComponentDescription & _
                 "' has been made hidden by another user." & vbCrLf & _
                 "Cannot make any modifications to this definition. " & vbCrLf _
                 , vbExclamation + vbOKOnly, App.Title
@@ -838,21 +838,21 @@ Private Function CheckForDeletedCalcs() As Boolean
         Exit Function
 
       Else
-        MsgBox "The expression component '" & objComponent.ComponentDescription & _
+        COAMsgBox "The expression component '" & objComponent.ComponentDescription & _
                 "' is hidden " & _
                 "and cannot be added to another user's expression." _
                 , vbExclamation + vbOKOnly, App.Title
         
       End If
     Case 3:
-      MsgBox "The expression component '" & objComponent.ComponentDescription & "' has been deleted." & vbCrLf & _
+      COAMsgBox "The expression component '" & objComponent.ComponentDescription & "' has been deleted." & vbCrLf & _
              "It will be removed from the expression.", vbExclamation + vbOKOnly, App.Title
       RemoveUnowned_HDComps mobjExpression
       PopulateTreeView
       mblnHasChanged = True
 
     Case 4:
-      MsgBox "The expression contains a component which has been made hidden by another user." & vbCrLf & _
+      COAMsgBox "The expression contains a component which has been made hidden by another user." & vbCrLf & _
              "It will be removed from the expression.", vbExclamation + vbOKOnly, App.Title
       
       RemoveUnowned_HDComps mobjExpression
@@ -861,7 +861,7 @@ Private Function CheckForDeletedCalcs() As Boolean
     End Select
     
     If (iReturnCode > 1) Then
-'      MsgBox "The expression component '" & objComponent.ComponentDescription & "' has been deleted." & vbCrLf & _
+'      COAMsgBox "The expression component '" & objComponent.ComponentDescription & "' has been deleted." & vbCrLf & _
 '             "Please remove it from the expression.", vbExclamation + vbOKOnly, App.Title
 '      ' Hilight the invalid calc in the treeview
       For iLoop = 1 To mobjExpression.Components.Count
@@ -882,7 +882,7 @@ TidyUpAndExit:
   Exit Function
 
 ErrorTrap:
-  MsgBox "Error validating expression (checking for deleted calcs)." & vbCrLf & Err.Description, _
+  COAMsgBox "Error validating expression (checking for deleted calcs)." & vbCrLf & Err.Description, _
     vbExclamation + vbOKOnly, App.ProductName
   iReturnCode = 0
   Resume TidyUpAndExit
@@ -912,7 +912,7 @@ Private Sub SetAccessOptions(bHasHiddenComps As Boolean, _
     Me.optAccess(2).Enabled = (LCase(sOwner) = LCase(gsUserName))
     
   ElseIf Not bHasHiddenComps And sAccessCurrentState = ACCESS_HIDDEN Then
-    If (Not Me.optAccess(2).Enabled) And (LCase(sOwner) = LCase(gsUserName)) Then MsgBox "The expression no longer has to be hidden.", vbInformation + vbOKOnly, App.Title
+    If (Not Me.optAccess(2).Enabled) And (LCase(sOwner) = LCase(gsUserName)) Then COAMsgBox "The expression no longer has to be hidden.", vbInformation + vbOKOnly, App.Title
     Me.optAccess(2).Value = True
     Me.optAccess(0).Enabled = (LCase(sOwner) = LCase(gsUserName))
     Me.optAccess(1).Enabled = (LCase(sOwner) = LCase(gsUserName))
@@ -921,7 +921,7 @@ Private Sub SetAccessOptions(bHasHiddenComps As Boolean, _
   ElseIf bHasHiddenComps And sAccessCurrentState <> ACCESS_HIDDEN Then
     If Not IsMissing(pvShowHiddenMessage) Then
       If CBool(pvShowHiddenMessage) Then
-        MsgBox "The selected component is hidden, the current expression will now be made hidden.", vbExclamation + vbOKOnly, App.Title
+        COAMsgBox "The selected component is hidden, the current expression will now be made hidden.", vbExclamation + vbOKOnly, App.Title
       End If
     End If
              
@@ -942,7 +942,7 @@ TidyUpAndExit:
   Exit Sub
 
 ErrorTrap:
-  MsgBox "Error validating expression (checking for hidden components)." & vbCrLf & Err.Description, _
+  COAMsgBox "Error validating expression (checking for hidden components)." & vbCrLf & Err.Description, _
     vbExclamation + vbOKOnly, App.ProductName
   Resume TidyUpAndExit
   
@@ -976,7 +976,7 @@ Private Function CheckExpression() As Boolean
   ' Check that there is an expression name.
   fValid = (Len(Trim(txtExpressionName.Text)) > 0)
   If Not fValid Then
-    MsgBox "You must give this definition a name.", vbExclamation, Me.Caption
+    COAMsgBox "You must give this definition a name.", vbExclamation, Me.Caption
     sstrvComponents.SelectedItem = sstrvComponents.Nodes(ROOTKEY)
     mfCancelled = True
     txtExpressionName.SetFocus
@@ -991,7 +991,7 @@ Private Function CheckExpression() As Boolean
     fValid = (iValidityCode = giEXPRVALIDATION_NOERRORS)
 
     If Not fValid Then
-      MsgBox mobjExpression.ValidityMessage(iValidityCode), _
+      COAMsgBox mobjExpression.ValidityMessage(iValidityCode), _
         vbExclamation + vbOKOnly, App.ProductName
         mfCancelled = True
 
@@ -1055,7 +1055,7 @@ Private Function CheckExpression() As Boolean
         End If
                       
         sMBText = sMBText & vbCrLf & "Save as a new definition ?"
-        Select Case MsgBox(sMBText, vbExclamation + vbOKCancel, App.ProductName)
+        Select Case COAMsgBox(sMBText, vbExclamation + vbOKCancel, App.ProductName)
         Case vbOK         'save as new (but this may cause duplicate name message)
           fContinueSave = True
           fSaveAsNew = True
@@ -1066,7 +1066,7 @@ Private Function CheckExpression() As Boolean
         ' Prompt to see if user should overwrite definition
         sMBText = "This " & sExpressionTypeName & " has been amended by another user. " & vbCrLf & _
           "Would you like to overwrite this definition?" & vbCrLf
-        Select Case MsgBox(sMBText, vbExclamation + vbYesNoCancel, App.ProductName)
+        Select Case COAMsgBox(sMBText, vbExclamation + vbYesNoCancel, App.ProductName)
         Case vbYes        'overwrite existing definition and any changes
           fContinueSave = True
         Case vbNo         'save as new (but this may cause duplicate name message)
@@ -1113,7 +1113,7 @@ Private Function CheckExpression() As Boolean
       fValid = .EOF And .BOF
       
       If Not fValid Then
-        MsgBox "A " & LCase(sExpressionTypeName) & " called '" & mobjExpression.Name & "' already exists.", _
+        COAMsgBox "A " & LCase(sExpressionTypeName) & " called '" & mobjExpression.Name & "' already exists.", _
           vbExclamation + vbOKOnly, App.ProductName
         sstrvComponents.SelectedItem = sstrvComponents.Nodes(ROOTKEY)
         txtExpressionName.SetFocus
@@ -1130,7 +1130,7 @@ Private Function CheckExpression() As Boolean
     fValid = Not mobjExpression.ContainsExpression(mobjExpression.ExpressionID)
     
     If Not fValid Then
-     MsgBox "Invalid definition due to cyclic reference.", _
+     COAMsgBox "Invalid definition due to cyclic reference.", _
         vbExclamation + vbOKOnly, App.ProductName
       mfCancelled = True
     End If
@@ -1146,7 +1146,7 @@ TidyUpAndExit:
   Exit Function
 
 ErrorTrap:
-  MsgBox "Error validating expression." & vbCrLf & Err.Description, _
+  COAMsgBox "Error validating expression." & vbCrLf & Err.Description, _
     vbExclamation + vbOKOnly, App.ProductName
   fValid = False
   Resume TidyUpAndExit
@@ -1307,7 +1307,7 @@ TidyUp:
 Prop_ERROR:
   
   Screen.MousePointer = vbDefault
-  MsgBox "Error retrieving properties for this definition." & vbCrLf & "Please contact support stating : " & vbCrLf & vbCrLf & Err.Description, vbExclamation + vbOKOnly, "Properties"
+  COAMsgBox "Error retrieving properties for this definition." & vbCrLf & "Please contact support stating : " & vbCrLf & vbCrLf & Err.Description, vbExclamation + vbOKOnly, "Properties"
   Resume TidyUp
 
 End Function
@@ -1369,7 +1369,7 @@ Private Sub cmdTest_Click()
     End If
     
     strMBText = "Your filter is defined correctly." & vbCrLf & vbCrLf & strMBText
-    MsgBox strMBText, vbInformation + vbOKOnly, "Filter Definition"
+    COAMsgBox strMBText, vbInformation + vbOKOnly, "Filter Definition"
 
   End If
 
@@ -1530,7 +1530,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
        
         'Check if any changes have been made.
         If Me.Changed Then
-            intAnswer = MsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
+            intAnswer = COAMsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
             If intAnswer = vbYes Then
                 Call cmdOK_Click
                 If Me.Cancelled Or Not mfValid Then Cancel = 1
@@ -1627,12 +1627,12 @@ Public Property Set Expression(pobjExpr As clsExprExpression)
 '    sAccessState = AccessState(.ExpressionID)
 '    If .ExpressionID <> 0 Then lngHiddenComponents = HasHiddenComponents(.ExpressionID)
 '    If lngHiddenComponents And sAccessState <> "HD" And LCase(.Owner) <> LCase(gsUserName) Then
-'      MsgBox "The selected expression contains hidden components and is owned by another user." & vbCrLf & vbCrLf & "The expression will now be made hidden.", vbExclamation + vbOKOnly, App.Title
+'      COAMsgBox "The selected expression contains hidden components and is owned by another user." & vbCrLf & vbCrLf & "The expression will now be made hidden.", vbExclamation + vbOKOnly, App.Title
 '      sAccessState = "HD"
 '      Me.Cancelled = True
 '    ElseIf lngHiddenComponents And sAccessState <> "HD" _
 '            And LCase(.Owner) = LCase(gsUserName) And .ActionType <> edtdelete Then
-'      MsgBox "The selected expression contains hidden components!" & vbCrLf & vbCrLf & "The expression will now be made hidden.", vbExclamation + vbOKOnly, App.Title
+'      COAMsgBox "The selected expression contains hidden components!" & vbCrLf & vbCrLf & "The expression will now be made hidden.", vbExclamation + vbOKOnly, App.Title
 '      sAccessState = "HD"
 '    End If
     
@@ -2036,11 +2036,11 @@ Private Sub sstrvComponents_AfterLabelEdit(Cancel As SSActiveTreeView.SSReturnBo
   mfLabelEditing = False
   
   ' RH - Fault 1909 - Put the default button back on
-  cmdOk.Default = True
+  cmdOK.Default = True
   
   ' Validate the entered label.
   If Len(NewString) = 0 Then
-    MsgBox "You must enter a name.", vbExclamation + vbOKOnly, App.ProductName
+    COAMsgBox "You must enter a name.", vbExclamation + vbOKOnly, App.ProductName
     Cancel = True
   Else
     SelectedComponent(sstrvComponents.SelectedItem).Component.Name = NewString
@@ -2070,7 +2070,7 @@ Private Sub sstrvComponents_BeforeLabelEdit(Cancel As SSActiveTreeView.SSReturnB
   CreateUndoView (giUNDO_RENAME)
   
   ' RH - Fault 1909 - Remove the default button
-  cmdOk.Default = False
+  cmdOK.Default = False
   
   ' Only allow sub-expression labels to be edited.
   If sstrvComponents.SelectedItem.Key = ROOTKEY Then
@@ -2305,12 +2305,12 @@ End Sub
 Private Sub txtDescription_GotFocus()
   ' Select the entire contents of the textbox.
   UI.txtSelText
-  cmdOk.Default = False
+  cmdOK.Default = False
 
 End Sub
 
 Private Sub txtDescription_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub txtExpressionName_Change()

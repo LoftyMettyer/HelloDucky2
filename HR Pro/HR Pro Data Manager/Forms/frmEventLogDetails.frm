@@ -529,7 +529,7 @@ TidyUpAndExit:
   
 ErrorTrap:
   Initialise = False
-  MsgBox "Error retrieving detail entries for this record." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Utility Run Log"
+  COAMsgBox "Error retrieving detail entries for this record." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Utility Run Log"
   GoTo TidyUpAndExit
 
 End Function
@@ -668,7 +668,7 @@ AskAgain:
     
     If (lngReturnCode = 100002) Then
       blnPrintAll = True
-        lngSecondaryResponse = MsgBox("Are you sure you want to print ALL events?", vbYesNo + vbQuestion, "Event Log")
+        lngSecondaryResponse = COAMsgBox("Are you sure you want to print ALL events?", vbYesNo + vbQuestion, "Event Log")
         If lngSecondaryResponse = vbNo Then
           blnPrintAll = False
           GoTo AskAgain
@@ -944,10 +944,10 @@ Private Sub Form_Resize()
   
   lngLineWidth = lngInnerFrameWidth - 135
 
-  cmdOk.Left = Me.ScaleWidth - (BUTTON_WIDTH + (BUTTON_GAP / 2))
-  cmdOk.Top = Me.ScaleHeight - (BUTTON_HEIGHT + (BUTTON_GAP / 2))
+  cmdOK.Left = Me.ScaleWidth - (BUTTON_WIDTH + (BUTTON_GAP / 2))
+  cmdOK.Top = Me.ScaleHeight - (BUTTON_HEIGHT + (BUTTON_GAP / 2))
 
-  cmdPrint.Left = cmdOk.Left - (BUTTON_WIDTH + (BUTTON_GAP / 2))
+  cmdPrint.Left = cmdOK.Left - (BUTTON_WIDTH + (BUTTON_GAP / 2))
   cmdPrint.Top = Me.ScaleHeight - (BUTTON_HEIGHT + (BUTTON_GAP / 2))
 
   cmdEmail.Left = cmdPrint.Left - (BUTTON_WIDTH + (BUTTON_GAP / 2))
@@ -1073,7 +1073,7 @@ Private Function DoHeaderInfo(plngKey As Long) As Boolean
   With rstTemp
   
     If .BOF And .EOF Then
-      MsgBox "This record no longer exists in the event log.", vbExclamation + vbOKOnly, "Event Log"
+      COAMsgBox "This record no longer exists in the event log.", vbExclamation + vbOKOnly, "Event Log"
       DoHeaderInfo = False
       GoTo TidyUpAndExit
     End If
@@ -1189,7 +1189,7 @@ TidyUpAndExit:
   
 ErrorTrap:
 
-  MsgBox "Error whilst populating event log detail." & vbCrLf & "(" & Err.Description & ")"
+  COAMsgBox "Error whilst populating event log detail." & vbCrLf & "(" & Err.Description & ")"
   DoHeaderInfo = False
 
 End Function

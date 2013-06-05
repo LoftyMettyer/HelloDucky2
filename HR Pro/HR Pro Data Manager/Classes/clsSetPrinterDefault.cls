@@ -146,7 +146,7 @@ Alias "SendMessageA" _
 (ByVal hWnd As Long, _
 ByVal wMsg As Long, _
 ByVal wParam As Long, _
-LParam As String) As Long
+lParam As String) As Long
 
 Private Declare Function GetVersionExA Lib "kernel32" _
 (lpVersionInformation As OSVERSIONINFO) As Integer
@@ -181,9 +181,9 @@ Private Declare Function ClosePrinter Lib "winspool.drv" _
 (ByVal hPrinter As Long) As Long
 
 Private Function PtrCtoVbString(Add As Long) As String
-    Dim sTemp As String * 512, X As Long
+    Dim sTemp As String * 512, x As Long
 
-    X = lstrcpy(sTemp, Add)
+    x = lstrcpy(sTemp, Add)
     If (InStr(1, sTemp, Chr(0)) = 0) Then
          PtrCtoVbString = ""
     Else
@@ -195,19 +195,19 @@ Private Sub SetDefaultPrinter(ByVal PrinterName As String, _
     ByVal DriverName As String, ByVal PrinterPort As String)
     Dim DeviceLine As String
     Dim r As Long
-    Dim L As Long
+    Dim l As Long
     DeviceLine = PrinterName & "," & DriverName & "," & PrinterPort
     ' Store the new printer information in the [WINDOWS] section of
     ' the WIN.INI file for the DEVICE= item
     r = WriteProfileString("windows", "Device", DeviceLine)
     ' Cause all applications to reload the INI file:
-    L = SendMessage(HWND_BROADCAST, WM_WININICHANGE, 0, "windows")
+    l = SendMessage(HWND_BROADCAST, WM_WININICHANGE, 0, "windows")
 End Sub
 
 Private Sub Win95SetDefaultPrinter(strPrinterName As String)
     Dim Handle As Long          'handle to printer
     Dim pd As PRINTER_DEFAULTS
-    Dim X As Long
+    Dim x As Long
     Dim need As Long            ' bytes needed
     Dim pi5 As PRINTER_INFO_5   ' your PRINTER_INFO structure
     'Dim LastError As Long
@@ -223,9 +223,9 @@ Private Sub Win95SetDefaultPrinter(strPrinterName As String)
     pd.DesiredAccess = PRINTER_ALL_ACCESS Or pd.DesiredAccess
 
     ' Get a handle to the printer
-    X = OpenPrinter(strPrinterName, Handle, pd)
+    x = OpenPrinter(strPrinterName, Handle, pd)
     ' failed the open
-    If X = False Then
+    If x = False Then
         'error handler code goes here
         Exit Sub
     End If
@@ -233,7 +233,7 @@ Private Sub Win95SetDefaultPrinter(strPrinterName As String)
     ' Make an initial call to GetPrinter, requesting Level 5
     ' (PRINTER_INFO_5) information, to determine how many bytes
     ' you need
-    X = GetPrinter(Handle, 5, ByVal 0&, 0, need)
+    x = GetPrinter(Handle, 5, ByVal 0&, 0, need)
     ' don't want to check Err.LastDllError here - it's supposed
     ' to fail
     ' with a 122 - ERROR_INSUFFICIENT_BUFFER
@@ -241,9 +241,9 @@ Private Sub Win95SetDefaultPrinter(strPrinterName As String)
     ReDim t((need \ 4)) As Long
 
     ' and call GetPrinter for keepers this time
-    X = GetPrinter(Handle, 5, t(0), need, need)
+    x = GetPrinter(Handle, 5, t(0), need, need)
     ' failed the GetPrinter
-    If X = False Then
+    If x = False Then
         'error handler code goes here
         Exit Sub
     End If
@@ -263,10 +263,10 @@ Private Sub Win95SetDefaultPrinter(strPrinterName As String)
     pi5.Attributes = PRINTER_ATTRIBUTE_DEFAULT
 
        ' call SetPrinter to set it
-       X = SetPrinter(Handle, 5, pi5, 0)
+       x = SetPrinter(Handle, 5, pi5, 0)
 
-       If X = False Then   ' SetPrinter failed
-           MsgBox "SetPrinter Failed. Error code: " & Err.LastDllError
+       If x = False Then   ' SetPrinter failed
+           COAMsgBox "SetPrinter Failed. Error code: " & Err.LastDllError
            Exit Sub
        Else
            If Printer.DeviceName <> strPrinterName Then

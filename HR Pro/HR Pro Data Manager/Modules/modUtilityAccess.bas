@@ -590,7 +590,7 @@ Public Sub UtilityAmended(piUtilityType As UtilityType, _
                   
     strMBText = strMBText & vbCrLf & _
                 "Save as a new " & strType & "?"
-    intMBResponse = MsgBox(strMBText, vbExclamation + vbOKCancel, App.ProductName)
+    intMBResponse = COAMsgBox(strMBText, vbExclamation + vbOKCancel, App.ProductName)
       
     Select Case intMBResponse
       Case vbOK         'save as new (but this may cause duplicate name message)
@@ -617,7 +617,7 @@ Public Sub UtilityAmended(piUtilityType As UtilityType, _
       'Prompt to see if user should overwrite definition
       strMBText = "The current " & strType & " has been amended by another user. " & vbCrLf & _
                   "Would you like to overwrite this " & strType & "?" & vbCrLf
-      intMBResponse = MsgBox(strMBText, vbExclamation + vbYesNoCancel, App.ProductName)
+      intMBResponse = COAMsgBox(strMBText, vbExclamation + vbYesNoCancel, App.ProductName)
       
       Select Case intMBResponse
         Case vbYes        'overwrite existing definition and any changes
@@ -637,7 +637,7 @@ Public Sub UtilityAmended(piUtilityType As UtilityType, _
   
 Amended_ERROR:
   
-  MsgBox "Error whilst checking if utility definition has been amended." & vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error whilst checking if utility definition has been amended." & vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
   blnContinueSave = False
   
 End Sub

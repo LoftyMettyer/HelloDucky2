@@ -780,7 +780,7 @@ Exit Sub
 
 QAShowMappedFieldsError:
 
-MsgBox "Error : " & Err.Number & " - " & Err.Description & " - modQAddressSpecifics.modQAShowMappedFields", vbOKOnly, "Error"
+COAMsgBox "Error : " & Err.Number & " - " & Err.Description & " - modQAddressSpecifics.modQAShowMappedFields", vbOKOnly, "Error"
 Resume QAShowMappedFieldsResume
 
 End Sub

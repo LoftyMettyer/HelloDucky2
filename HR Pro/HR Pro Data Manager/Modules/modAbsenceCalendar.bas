@@ -2,7 +2,7 @@ Attribute VB_Name = "modAbsenceCalendar"
 Option Explicit
 
 'AE20071108 Fault #12547
-Const TWIPS = 10
+Const twips = 10
 
 ' Box (Label) Constants
 Const MONTH_BOXWIDTH = 990
@@ -20,7 +20,7 @@ Const CALDATES_BOXSTARTY = MONTH_BOXSTARTY
 Const CAL_BOXWIDTH = 220
 Const CAL_BOXHEIGHT = 200
 Const CAL_BOXSTARTX = MONTH_BOXSTARTX + MONTH_BOXWIDTH
-Const CAL_BOXSTARTY = MONTH_BOXSTARTY + CAL_BOXWIDTH - TWIPS
+Const CAL_BOXSTARTY = MONTH_BOXSTARTY + CAL_BOXWIDTH - twips
 
 'AE20071108 Fault #12547
 Const CAL_FONTSIZE_SMALL = 5.5
@@ -76,7 +76,7 @@ DrawMonths_ERROR:
     
   ' Theres been an error
   DrawMonths = False
-  MsgBox "An error has occurred whilst drawing the calendar. Please ensure your" & _
+  COAMsgBox "An error has occurred whilst drawing the calendar. Please ensure your" & _
   vbCrLf & "Absence module is setup correctly." & vbCrLf & vbCrLf & _
   "If contacting support, please state:" & vbCrLf & Err.Number & _
   " - " & Err.Description, vbExclamation + vbOKOnly, "Absence Calendar"
@@ -96,7 +96,7 @@ Public Function DrawDays() As Boolean
     frmAbsenceCalendar.lblDay(count_x).Visible = True
     frmAbsenceCalendar.lblDay(count_x).Width = DAY_BOXWIDTH
     frmAbsenceCalendar.lblDay(count_x).Height = DAY_BOXHEIGHT
-    frmAbsenceCalendar.lblDay(count_x).Left = (DAY_BOXSTARTX + (DAY_BOXWIDTH * (count_x - 1))) - (TWIPS * (count_x) - 1)
+    frmAbsenceCalendar.lblDay(count_x).Left = (DAY_BOXSTARTX + (DAY_BOXWIDTH * (count_x - 1))) - (twips * (count_x) - 1)
     frmAbsenceCalendar.lblDay(count_x).Caption = UCase(Left(Format(DateAdd("d", count_x - 1, giWeekdayStart), "ddd"), 1))
     frmAbsenceCalendar.lblDay(count_x).Tag = IIf(frmAbsenceCalendar.lblDay(count_x - 1).Tag = 7, 1, frmAbsenceCalendar.lblDay(count_x - 1).Tag + 1)
   Next count_x
@@ -108,7 +108,7 @@ DrawDays_ERROR:
     
   ' Theres been an error
   DrawDays = False
-  MsgBox "An error has occurred whilst drawing the calendar. Please ensure your" & _
+  COAMsgBox "An error has occurred whilst drawing the calendar. Please ensure your" & _
   vbCrLf & "Absence module is setup correctly." & vbCrLf & vbCrLf & _
   "If contacting support, please state:" & vbCrLf & Err.Number & _
   " - " & Err.Description, vbExclamation + vbOKOnly, "Absence Calendar"
@@ -132,7 +132,7 @@ Public Function DrawCalDates() As Boolean
 
       With frmAbsenceCalendar.lblCalDates.Item(lngIndex)
         .Visible = True
-        .Move (CALDATES_BOXSTARTX + (CALDATES_BOXWIDTH * (count_x - 1))) - (TWIPS * (count_x) - 1), _
+        .Move (CALDATES_BOXSTARTX + (CALDATES_BOXWIDTH * (count_x - 1))) - (twips * (count_x) - 1), _
               frmAbsenceCalendar.lblMonth(count_y).Top
         .Tag = lngIndex
       End With
@@ -147,7 +147,7 @@ DrawCalDates_ERROR:
 
   ' Theres been an error
   DrawCalDates = False
-  MsgBox "An error has occurred whilst drawing the calendar. Please ensure your" & _
+  COAMsgBox "An error has occurred whilst drawing the calendar. Please ensure your" & _
   vbCrLf & "Absence module is setup correctly." & vbCrLf & vbCrLf & _
   "If contacting support, please state:" & vbCrLf & Err.Number & _
   " - " & Err.Description, vbExclamation + vbOKOnly, "Absence Calendar"
@@ -167,7 +167,7 @@ Public Function DrawCal() As Boolean
     intTop = frmAbsenceCalendar.lblMonth(count_month).Top
 
     For count_x = 0 To 36
-      intLeft = (CAL_BOXSTARTX + ((CAL_BOXWIDTH - TWIPS) * count_x)) - TWIPS
+      intLeft = (CAL_BOXSTARTX + ((CAL_BOXWIDTH - twips) * count_x)) - twips
       
       For Count = 1 To 2
         
@@ -177,12 +177,12 @@ Public Function DrawCal() As Boolean
         'frmAbsenceCalendar.lblCal(intIndex).Top = frmAbsenceCalendar.lblMonth(count_month).Top + ((CAL_BOXHEIGHT - 15) * Count)
         'frmAbsenceCalendar.lblCal(intIndex).Left = intLeft
         With frmAbsenceCalendar.lblCal(intIndex)
-          .Move intLeft, intTop + ((CAL_BOXHEIGHT - TWIPS) * Count)
+          .Move intLeft, intTop + ((CAL_BOXHEIGHT - twips) * Count)
           .Visible = True
           .Width = CAL_BOXWIDTH
           
           If count_month = 12 And Count = 2 Then
-            .Height = CAL_BOXHEIGHT - (TWIPS * 2)
+            .Height = CAL_BOXHEIGHT - (twips * 2)
           Else
             .Height = CAL_BOXHEIGHT
           End If
@@ -199,7 +199,7 @@ DrawCal_ERROR:
   
   ' Theres been an error
   DrawCal = False
-  MsgBox "An error has occurred whilst drawing the calendar. Please ensure your" & _
+  COAMsgBox "An error has occurred whilst drawing the calendar. Please ensure your" & _
   vbCrLf & "Absence module is setup correctly." & vbCrLf & vbCrLf & _
   "If contacting support, please state:" & vbCrLf & Err.Number & _
   " - " & Err.Description, vbExclamation + vbOKOnly, "Absence Calendar"
@@ -217,8 +217,8 @@ Public Function DrawLines() As Boolean
   For count_vert = 1 To 37
     Load frmAbsenceCalendar.linVertical(count_vert)
     frmAbsenceCalendar.linVertical(count_vert).Visible = True
-    frmAbsenceCalendar.linVertical(count_vert).X1 = MONTH_BOXSTARTX + MONTH_BOXWIDTH + ((CAL_BOXWIDTH - TWIPS) * count_vert) - TWIPS
-    frmAbsenceCalendar.linVertical(count_vert).X2 = MONTH_BOXSTARTX + MONTH_BOXWIDTH + ((CAL_BOXWIDTH - TWIPS) * count_vert) - TWIPS
+    frmAbsenceCalendar.linVertical(count_vert).X1 = MONTH_BOXSTARTX + MONTH_BOXWIDTH + ((CAL_BOXWIDTH - twips) * count_vert) - twips
+    frmAbsenceCalendar.linVertical(count_vert).X2 = MONTH_BOXSTARTX + MONTH_BOXWIDTH + ((CAL_BOXWIDTH - twips) * count_vert) - twips
     frmAbsenceCalendar.linVertical(count_vert).Y1 = frmAbsenceCalendar.lblMonth(1).Top
     frmAbsenceCalendar.linVertical(count_vert).Y2 = frmAbsenceCalendar.lblMonth(12).Top + MONTH_BOXHEIGHT
     frmAbsenceCalendar.linVertical(count_vert).ZOrder 0
@@ -226,10 +226,10 @@ Public Function DrawLines() As Boolean
   
   Load frmAbsenceCalendar.linHorizontal(13)
   frmAbsenceCalendar.linHorizontal(13).Visible = True
-  frmAbsenceCalendar.linHorizontal(13).X1 = CAL_BOXSTARTX - TWIPS
-  frmAbsenceCalendar.linHorizontal(13).X2 = CAL_BOXSTARTX - TWIPS + (37 * (CAL_BOXWIDTH - TWIPS))
-  frmAbsenceCalendar.linHorizontal(13).Y1 = frmAbsenceCalendar.lblMonth(12).Top + MONTH_BOXHEIGHT - TWIPS
-  frmAbsenceCalendar.linHorizontal(13).Y2 = frmAbsenceCalendar.lblMonth(12).Top + MONTH_BOXHEIGHT - TWIPS
+  frmAbsenceCalendar.linHorizontal(13).X1 = CAL_BOXSTARTX - twips
+  frmAbsenceCalendar.linHorizontal(13).X2 = CAL_BOXSTARTX - twips + (37 * (CAL_BOXWIDTH - twips))
+  frmAbsenceCalendar.linHorizontal(13).Y1 = frmAbsenceCalendar.lblMonth(12).Top + MONTH_BOXHEIGHT - twips
+  frmAbsenceCalendar.linHorizontal(13).Y2 = frmAbsenceCalendar.lblMonth(12).Top + MONTH_BOXHEIGHT - twips
   frmAbsenceCalendar.linHorizontal(13).BorderWidth = 1
   frmAbsenceCalendar.linHorizontal(13).ZOrder 0
       
@@ -240,7 +240,7 @@ DrawLines_ERROR:
   
   ' Theres been an error
   DrawLines = False
-  MsgBox "An error has occurred whilst drawing the calendar. Please ensure your" & _
+  COAMsgBox "An error has occurred whilst drawing the calendar. Please ensure your" & _
   vbCrLf & "Absence module is setup correctly." & vbCrLf & vbCrLf & _
   "If contacting support, please state:" & vbCrLf & Err.Number & _
   " - " & Err.Description, vbExclamation + vbOKOnly, "Absence Calendar"
@@ -297,7 +297,7 @@ ClearAll_ERROR:
   
   ' Theres been an error
   ClearAll = False
-  MsgBox "An error has occurred whilst clearing the calendar. Please ensure your" & _
+  COAMsgBox "An error has occurred whilst clearing the calendar. Please ensure your" & _
   vbCrLf & "Absence module is setup correctly." & vbCrLf & vbCrLf & _
   "If contacting support, please state:" & vbCrLf & Err.Number & _
   " - " & Err.Description, vbExclamation + vbOKOnly, "Absence Calendar"
@@ -383,7 +383,7 @@ Public Function GetYearLayout() As Boolean
 GetYearLayout_ERROR:
   ' Theres been an error
   GetYearLayout = False
-  MsgBox "An error has occurred whilst retrieving the year layout. Please ensure your" & _
+  COAMsgBox "An error has occurred whilst retrieving the year layout. Please ensure your" & _
   vbCrLf & "Absence module is setup correctly." & vbCrLf & vbCrLf & _
   "If contacting support, please state:" & vbCrLf & Err.Number & _
   " - " & Err.Description, vbExclamation + vbOKOnly, "Absence Calendar"
@@ -404,7 +404,7 @@ Public Function GetCalIndex(dtmDate As Date, booSession As Boolean) As Integer
   ' GetCalIndex - the index (integer)
   '
   
-  Dim intFirstDayIndex As Integer, temphundred As Integer, Temp As Integer
+  Dim intFirstDayIndex As Integer, temphundred As Integer, temp As Integer
   Dim diff As Integer, intDay As Integer
   
   If dtmDate < frmAbsenceCalendar.lblFirstDate Or dtmDate > frmAbsenceCalendar.lblLastDate Then
@@ -421,8 +421,8 @@ Public Function GetCalIndex(dtmDate As Date, booSession As Boolean) As Integer
   
   ' Find the index of the first day of the relevant month in the correct column
   temphundred = CInt(intFirstDayIndex / 100)
-  Temp = intFirstDayIndex
-  intFirstDayIndex = ((Temp * 2) - (temphundred * 100)) - 1
+  temp = intFirstDayIndex
+  intFirstDayIndex = ((temp * 2) - (temphundred * 100)) - 1
   intDay = Day(dtmDate)
   
   ' Determine the index depending on whether session is am or pm

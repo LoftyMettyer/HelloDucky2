@@ -1,9 +1,9 @@
 VERSION 5.00
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
 Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "tinumb6.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmExprComponent 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Expression Component"
@@ -3266,7 +3266,7 @@ Private Sub asrPValDefaultDate_LostFocus()
 '     IsDate(asrPValDefaultDate.DateValue) And _
 '     asrPValDefaultDate.Text <> "  /  /" Then
 '
-'     MsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
+'     COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
 '     asrPValDefaultDate.DateValue = Null
 '     asrPValDefaultDate.SetFocus
 '     Exit Sub
@@ -3332,7 +3332,7 @@ Private Sub asrValDateValue_LostFocus()
 '     IsDate(asrValDateValue.DateValue) And _
 '     asrValDateValue.Text <> "  /  /" Then
 '
-'     MsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
+'     COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, App.Title
 '     asrValDateValue.DateValue = Null
 '     asrValDateValue.SetFocus
 '     Exit Sub
@@ -3814,7 +3814,7 @@ Private Function SaveCalc() As Boolean
 
   If Me.listCalcCalculation.ListCount = 0 Then
     fSaveOK = False
-    MsgBox "You must select a calculation.", vbExclamation + vbOKOnly, App.Title
+    COAMsgBox "You must select a calculation.", vbExclamation + vbOKOnly, App.Title
   End If
 
   'TM20011003 Fault 2656
@@ -3832,7 +3832,7 @@ Private Function SaveCalc() As Boolean
 '  sOwner = GetExprField(lngExpressionID, "Username")
 '  If HasHiddenComponents(lngExpressionID) And LCase(sOwner) <> LCase(gsUserName) Then
 '    fSaveOK = False
-'    MsgBox "The selected expression contains hidden components and is owned by another user." & vbCrLf & vbCrLf & "The expression will now be made hidden.", vbExclamation + vbOKOnly, App.Title
+'    COAMsgBox "The selected expression contains hidden components and is owned by another user." & vbCrLf & vbCrLf & "The expression will now be made hidden.", vbExclamation + vbOKOnly, App.Title
 '    listCalcCalculation_Initialize
 '  End If
   
@@ -3850,7 +3850,7 @@ Private Function SaveFilter() As Boolean
 
   If Me.listCalcFilters.ListCount = 0 Then
     fSaveOK = False
-    MsgBox "You must select a filter.", vbExclamation + vbOKOnly, App.Title
+    COAMsgBox "You must select a filter.", vbExclamation + vbOKOnly, App.Title
   End If
 
   'TM20011003 Fault 2656
@@ -3868,7 +3868,7 @@ Private Function SaveFilter() As Boolean
 '  sOwner = GetExprField(lngExpressionID, "Username")
 '  If HasHiddenComponents(lngExpressionID) And LCase(sOwner) <> LCase(gsUserName) Then
 '    fSaveOK = False
-'    MsgBox "The selected expression contains hidden components and is owned by another user." & vbCrLf & vbCrLf & "The expression will now be made hidden.", vbExclamation + vbOKOnly, App.Title
+'    COAMsgBox "The selected expression contains hidden components and is owned by another user." & vbCrLf & vbCrLf & "The expression will now be made hidden.", vbExclamation + vbOKOnly, App.Title
 '    listCalcFilter_Initialize
 '  End If
   
@@ -3958,7 +3958,7 @@ Private Function SaveValue() As Boolean
         Else
           
           'MH20020424 Invalid Date message should already have been shown so rem this one out.
-          'MsgBox "Invalid date.", vbOKOnly + vbExclamation, App.ProductName
+          'COAMsgBox "Invalid date.", vbOKOnly + vbExclamation, App.ProductName
           asrValDateValue.SetFocus
           fSaveOK = False
         End If
@@ -4075,7 +4075,7 @@ Private Function SaveField() As Boolean
     (mobjComponent.Component.SelectionType = giSELECT_RECORDCOUNT)
 
   If Not SaveField Then
-    MsgBox "An order must be specified when referring to child fields.", vbExclamation + vbOKOnly, App.ProductName
+    COAMsgBox "An order must be specified when referring to child fields.", vbExclamation + vbOKOnly, App.ProductName
   End If
   
 End Function
@@ -4160,7 +4160,7 @@ Private Sub cmdFldSelFilter_Click()
     If .SelectExpression(True) Then
       If .Access = ACCESS_HIDDEN Then
         If LCase(mobjComponent.ParentExpression.Owner) <> LCase(gsUserName) Then
-          MsgBox "Unable to select this filter as it is a hidden filter and you are not the owner of this expression.", vbExclamation + vbOKOnly, App.Title
+          COAMsgBox "Unable to select this filter as it is a hidden filter and you are not the owner of this expression.", vbExclamation + vbOKOnly, App.Title
           If .ExpressionID = mobjComponent.Component.SelectionFilterID Or (.ExpressionID = 0) Then
             txtFldSelFilter.Text = ""
             txtFldSelFilter.Tag = 0
@@ -4186,7 +4186,7 @@ Private Sub cmdFldSelFilter_Click()
       Else
         If rsExpressions!Access = ACCESS_HIDDEN Then
           If LCase(mobjComponent.ParentExpression.Owner) <> LCase(gsUserName) Then
-            MsgBox "Unable to select this filter as it is a hidden filter and you are not the owner of this expression.", vbExclamation + vbOKOnly, App.Title
+            COAMsgBox "Unable to select this filter as it is a hidden filter and you are not the owner of this expression.", vbExclamation + vbOKOnly, App.Title
             txtFldSelFilter.Text = ""
             txtFldSelFilter.Tag = 0
             mobjComponent.Component.SelectionFilterID = 0
@@ -4204,7 +4204,7 @@ Private Sub cmdFldSelFilter_Click()
 TidyUpAndExit:
   Set objExpr = Nothing
   If Not fOK Then
-    MsgBox "Error changing expression ID.", vbExclamation + vbOKOnly, App.ProductName
+    COAMsgBox "Error changing expression ID.", vbExclamation + vbOKOnly, App.ProductName
   End If
   Exit Sub
   
@@ -4267,7 +4267,7 @@ Private Sub cmdFldSelOrder_Click()
 TidyUpAndExit:
   Set objOrder = Nothing
   If Not fOK Then
-    MsgBox "Error changing order ID.", vbExclamation + vbOKOnly, App.ProductName
+    COAMsgBox "Error changing order ID.", vbExclamation + vbOKOnly, App.ProductName
   End If
   Exit Sub
 
@@ -4306,7 +4306,7 @@ Private Sub cmdOK_Click()
 '        .ForeColor = vbRed
 '
 '        DoEvents
-'        MsgBox "No date has been entered.", vbOKOnly + vbExclamation, App.Title
+'        COAMsgBox "No date has been entered.", vbOKOnly + vbExclamation, App.Title
 '
 '        .ForeColor = vbWindowText
 '        .DateValue = Null
@@ -4333,7 +4333,7 @@ Private Sub cmdOK_Click()
         .ForeColor = vbRed
     
         DoEvents
-        MsgBox "No date has been entered.", vbOKOnly + vbExclamation, App.Title
+        COAMsgBox "No date has been entered.", vbOKOnly + vbExclamation, App.Title
         
         .ForeColor = vbWindowText
         .DateValue = Null
@@ -5248,7 +5248,7 @@ Private Sub TDBPValDefaultNumeric_KeyUp(KeyCode As Integer, Shift As Integer)
     If intDec <= 4 Then
       asrPValReturnDecimals.Value = intDec
     Else
-      'MsgBox "Max 4 decimal places only", vbOKOnly, "Default Values"
+      'COAMsgBox "Max 4 decimal places only", vbOKOnly, "Default Values"
     End If
   End If
 End Sub
@@ -5298,11 +5298,11 @@ Private Sub txtPValFormat_LostFocus()
 InvalidMask:
   
   If Err.Number = 380 Then
-    MsgBox "You must have at least one user enterable character in the mask field" & vbCrLf & "and the mask must correspond with the 'size' setting.", vbExclamation + vbOKOnly, "Validation Error"
+    COAMsgBox "You must have at least one user enterable character in the mask field" & vbCrLf & "and the mask must correspond with the 'size' setting.", vbExclamation + vbOKOnly, "Validation Error"
     tdbMaskTest.Format = ""
     txtPValFormat.SetFocus
   Else
-    MsgBox "Warning : " & Err.Number & " - " & Err.Description, vbExclamation + vbOKOnly, "Validation Error"
+    COAMsgBox "Warning : " & Err.Number & " - " & Err.Description, vbExclamation + vbOKOnly, "Validation Error"
     tdbMaskTest.Format = ""
     txtPValFormat.SetFocus
   End If

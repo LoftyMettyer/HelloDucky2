@@ -290,7 +290,7 @@ Private Sub OutputJobStatus()
   If Not gblnBatchMode Then
     gobjProgress.CloseProgress
     Screen.MousePointer = vbDefault
-    MsgBox mstrStatusMessage, IIf(fOK, vbInformation, vbExclamation), mstrType
+    COAMsgBox mstrStatusMessage, IIf(fOK, vbInformation, vbExclamation), mstrType
   Else
     gobjProgress.ResetBar2
   End If
@@ -370,7 +370,7 @@ Private Sub CheckHiddenElements()
   If rsTemp!PicklistID Then
     sText = IsPicklistValid(rsTemp!PicklistID)
     If sText <> vbNullString Then
-      MsgBox "You cannot run this Global definition as it contains a hidden picklist which has been deleted or made hidden by another user." & vbNewLine & _
+      COAMsgBox "You cannot run this Global definition as it contains a hidden picklist which has been deleted or made hidden by another user." & vbNewLine & _
              "Please re-visit your definition to remove the hidden picklist.", vbExclamation, App.Title
       bShowMSG = True
       fOK = False
@@ -382,7 +382,7 @@ Private Sub CheckHiddenElements()
   If rsTemp!FilterID Then
     sText = IsFilterValid(rsTemp!FilterID)
     If sText <> vbNullString Then
-      MsgBox "You cannot run this Global definition as it contains a hidden filter which has been deleted or made hidden by another user." & vbNewLine & _
+      COAMsgBox "You cannot run this Global definition as it contains a hidden filter which has been deleted or made hidden by another user." & vbNewLine & _
              "Please re-visit your definition to remove the hidden filter.", vbExclamation, App.Title
       bShowMSG = True
       fOK = False
@@ -424,7 +424,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   fOK = False
-  MsgBox "Error validating the Global definition.", vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error validating the Global definition.", vbOKOnly + vbExclamation, App.Title
   Resume TidyUpAndExit
   
 End Sub
@@ -1186,7 +1186,7 @@ Private Sub BuildRecordIDArray()
       Set msb = Nothing
     End If
     
-'    mblnUserCancelled = (MsgBox(strMBText, intMBButtons, mstrType) <> vbYes)
+'    mblnUserCancelled = (COAMsgBox(strMBText, intMBButtons, mstrType) <> vbYes)
     If mblnUserCancelled Then
       fOK = False
       Exit Sub

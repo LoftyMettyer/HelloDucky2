@@ -177,11 +177,15 @@ Begin VB.Form frmEmailDefGroup
          RecordSelectors =   0   'False
          Col.Count       =   2
          stylesets.count =   5
-         stylesets(0).Name=   "ssetHeaderDisabled"
-         stylesets(0).ForeColor=   -2147483631
-         stylesets(0).BackColor=   -2147483633
-         stylesets(0).HasFont=   -1  'True
-         BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         stylesets(0).Name=   "ssetSelected"
+         stylesets(0).ForeColor=   -2147483634
+         stylesets(0).BackColor=   -2147483635
+         stylesets(0).Picture=   "frmEmailDefGroup.frx":000C
+         stylesets(1).Name=   "ssetHeaderDisabled"
+         stylesets(1).ForeColor=   -2147483631
+         stylesets(1).BackColor=   -2147483633
+         stylesets(1).HasFont=   -1  'True
+         BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "Verdana"
             Size            =   8.25
             Charset         =   0
@@ -190,10 +194,6 @@ Begin VB.Form frmEmailDefGroup
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         stylesets(0).Picture=   "frmEmailDefGroup.frx":000C
-         stylesets(1).Name=   "ssetSelected"
-         stylesets(1).ForeColor=   -2147483634
-         stylesets(1).BackColor=   -2147483635
          stylesets(1).Picture=   "frmEmailDefGroup.frx":0028
          stylesets(2).Name=   "ssetEnabled"
          stylesets(2).ForeColor=   -2147483640
@@ -550,7 +550,7 @@ Private Sub RetrieveDefinition()
   Set rsEmail = datGeneral.GetReadOnlyRecords(strSQL)
 
   If rsEmail.BOF And rsEmail.EOF Then
-    MsgBox "Error retriving email group definition", vbCritical, Me.Caption
+    COAMsgBox "Error retriving email group definition", vbCritical, Me.Caption
     Exit Sub
   End If
 
@@ -655,7 +655,7 @@ End Sub
 
 Private Sub cmdRemoveAll_Click()
   
-  If MsgBox("Are you sure you want to remove all the Email Addresses from this definition?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
+  If COAMsgBox("Are you sure you want to remove all the Email Addresses from this definition?", vbYesNo + vbQuestion, Me.Caption) = vbYes Then
     ssGrdRecipients.RemoveAll
     UpdateButtonStatus
     
@@ -670,7 +670,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   If (Changed) Then
     
     If (mfCancelled) Then
-      pintAnswer = MsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, Me.Caption)
+      pintAnswer = COAMsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, Me.Caption)
         
       If pintAnswer = vbYes Then
         Cancel = 1
@@ -797,18 +797,18 @@ Private Function ValidateDefinition() As Boolean
   ValidateDefinition = False
   
   If Trim(txtName.Text) = vbNullString Then
-    MsgBox "You must give this definition a name.", vbExclamation, Me.Caption
+    COAMsgBox "You must give this definition a name.", vbExclamation, Me.Caption
     txtName.SetFocus
     Exit Function
   End If
 
   If ssGrdRecipients.Rows < 1 Then
-    MsgBox "You must add at least one email definition.", vbExclamation, Me.Caption
+    COAMsgBox "You must add at least one email definition.", vbExclamation, Me.Caption
     Exit Function
   End If
   
   If UniqueName(txtName.Text) = False Then
-    MsgBox "An Email Group called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
+    COAMsgBox "An Email Group called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
     txtName.SetFocus
     Exit Function
   End If
@@ -869,7 +869,7 @@ Private Sub SaveDefinition()
                .Columns("EmailID").CellText(varBookmark) & ")"
 
       If Not datGeneral.ExecuteSql(strSQL, strError) Then
-        MsgBox "Error saving definition" & vbCrLf & strError, vbCritical, Me.Caption
+        COAMsgBox "Error saving definition" & vbCrLf & strError, vbCritical, Me.Caption
         Exit Sub
       End If
 
@@ -880,7 +880,7 @@ Private Sub SaveDefinition()
 Exit Sub
 
 LocalErr:
-  MsgBox "Error saving definition" & vbCrLf & Err.Description, vbCritical, Me.Caption
+  COAMsgBox "Error saving definition" & vbCrLf & Err.Description, vbCritical, Me.Caption
 
 End Sub
 
@@ -937,7 +937,7 @@ Public Sub PrintDef(lngEmailGroupID As Long)
   Set rsEmail = datGeneral.GetReadOnlyRecords(strSQL)
 
   If rsEmail.BOF And rsEmail.EOF Then
-    MsgBox "Error retriving email group definition", vbCritical, Me.Caption
+    COAMsgBox "Error retriving email group definition", vbCritical, Me.Caption
     Exit Sub
   End If
 
@@ -997,7 +997,7 @@ Public Sub PrintDef(lngEmailGroupID As Long)
 Exit Sub
 
 LocalErr:
-  MsgBox "Printing Email Group Definition Failed", vbCritical, "Email Group Definition"
+  COAMsgBox "Printing Email Group Definition Failed", vbCritical, "Email Group Definition"
 
 End Sub
 
@@ -1030,7 +1030,7 @@ Private Function AlreadyUsed(lngID As Long, lngIgnoreRow As Long) As Boolean
       If lngRow <> lngIgnoreRow Then
         varBookmark = .AddItemBookmark(lngRow)
         If .Columns("EmailID").CellValue(varBookmark) = lngID Then
-          MsgBox "This email address is already included in this email group.", vbInformation, "Email Group"
+          COAMsgBox "This email address is already included in this email group.", vbInformation, "Email Group"
           AlreadyUsed = True
           Exit Function
         End If

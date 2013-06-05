@@ -100,7 +100,7 @@ Begin VB.Form frmRecordProfilePreview
       _ExtentY        =   2566
       _Version        =   393216
       Appearance      =   0
-      Orientation     =   1179648
+      Orientation     =   1245184
    End
    Begin MSComCtl2.FlatScrollBar scrollHorizontal 
       Height          =   255
@@ -113,7 +113,7 @@ Begin VB.Form frmRecordProfilePreview
       _Version        =   393216
       Appearance      =   0
       Arrows          =   65536
-      Orientation     =   1179649
+      Orientation     =   1245185
    End
    Begin VB.PictureBox picContainer 
       Height          =   1455
@@ -324,7 +324,7 @@ Private mlngOutputEmailAddr As Long
 Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
 'Private mlngOutputEmailFileFormat As Long
-Private mstrOutputFilename As String
+Private mstrOutputFileName As String
 
 Private mblnIndentRelatedTables As Boolean
 Private mblnSuppressEmptyRelatedTableTitles As Boolean
@@ -500,7 +500,7 @@ End Property
 
 
 Public Property Let OutputFilename(pstrOutputFilename As String)
-  mstrOutputFilename = pstrOutputFilename
+  mstrOutputFileName = pstrOutputFilename
 End Property
 
 
@@ -1525,7 +1525,7 @@ Public Function OutputReport(pfPrompt As Boolean) As Boolean
     mblnOutputPrinter, mstrOutputPrinterName, _
     mblnOutputSave, mlngOutputSaveExisting, _
     mblnOutputEmail, mlngOutputEmailAddr, mstrOutputEmailSubject, _
-    mstrOutputEmailAttachAs, mstrOutputFilename) Then
+    mstrOutputEmailAttachAs, mstrOutputFileName) Then
 
 '''    objOutput.SizeColumnsIndependently = False
     
@@ -1595,10 +1595,10 @@ Public Function OutputReport(pfPrompt As Boolean) As Boolean
   If pfPrompt Then
     gobjProgress.CloseProgress
     If fOK Then
-      MsgBox "Record Profile: '" & msRecordProfileName & "' output complete.", _
+      COAMsgBox "Record Profile: '" & msRecordProfileName & "' output complete.", _
           vbInformation, "Record Profile"
     Else
-      MsgBox "Record Profile: '" & msRecordProfileName & "' output failed." & vbCrLf & vbCrLf & mstrErrorMessage, _
+      COAMsgBox "Record Profile: '" & msRecordProfileName & "' output failed." & vbCrLf & vbCrLf & mstrErrorMessage, _
           vbExclamation, "Record Profile"
     End If
   End If

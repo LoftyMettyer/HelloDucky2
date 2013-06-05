@@ -333,7 +333,7 @@ Private Function GetRecordDesc(lngRecDescExprID As Long, lngRecordID As Long) As
 Exit Function
 
 LocalErr:
-  'MsgBox "Error reading record description" & vbCr & _
+  'COAMsgBox "Error reading record description" & vbCr & _
          "(ID = " & CStr(lngRecordID) & ", Record Description = " & CStr(lngRecDescExprID)
   'fOK = False
 

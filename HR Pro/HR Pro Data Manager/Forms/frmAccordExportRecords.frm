@@ -283,7 +283,7 @@ Private Sub cboTransfer_Click()
   Set objTableView = Nothing
 
   If Not bFound Then
-    MsgBox "You need full table access to run the " & Trim(cboTransfer.Text) & " export.", vbExclamation, Me.Caption
+    COAMsgBox "You need full table access to run the " & Trim(cboTransfer.Text) & " export.", vbExclamation, Me.Caption
   End If
 
   cmdOK.Enabled = bFound
@@ -348,7 +348,7 @@ Private Sub cmdFilter_Click()
 Exit Sub
 
 LocalErr:
-  MsgBox "Error selecting filter"
+  COAMsgBox "Error selecting filter"
 
 End Sub
 
@@ -432,7 +432,7 @@ Private Sub cmdPicklist_Click()
 Exit Sub
 
 LocalErr:
-  MsgBox "Error selecting picklist"
+  COAMsgBox "Error selecting picklist"
 End Sub
 
 Private Sub cmdCancel_Click()
@@ -447,7 +447,7 @@ Private Sub cmdOK_Click()
   ' Validate options
   If optPicklist.Value Then
     If txtPicklist.Text = "" Or txtPicklist.Tag = "0" Or txtPicklist.Tag = "" Then
-      MsgBox "You must select a picklist, or change the record selection.", vbExclamation + vbOKOnly
+      COAMsgBox "You must select a picklist, or change the record selection.", vbExclamation + vbOKOnly
       cmdPicklist.SetFocus
       Exit Sub
     End If
@@ -455,7 +455,7 @@ Private Sub cmdOK_Click()
   
   If optFilter.Value Then
     If txtFilter.Text = "" Or txtFilter.Tag = "0" Or txtFilter.Tag = "" Then
-      MsgBox "You must select a filter, or change the record selection.", vbExclamation + vbOKOnly
+      COAMsgBox "You must select a filter, or change the record selection.", vbExclamation + vbOKOnly
       cmdFilter.SetFocus
       Exit Sub
     End If
@@ -476,7 +476,7 @@ Public Function Initialise() As Boolean
   PopulateControls
 
   If cboTransfer.ListCount = 0 Then
-    MsgBox "No transfer definitions defined. Please see your system administrator.", vbExclamation, Me.Caption
+    COAMsgBox "No transfer definitions defined. Please see your system administrator.", vbExclamation, Me.Caption
     Initialise = False
   End If
 
@@ -537,7 +537,7 @@ On Error GoTo ErrorTrap
 
   Dim strSQL As String
 
-  If MsgBox("Purging the transfer table will reset the statuses of all records." & vbNewLine & "THIS PROCESS CANNOT BE UNDONE." & vbNewLine & "Are you sure you want to proceed?", vbYesNo + vbQuestion) = vbYes Then
+  If COAMsgBox("Purging the transfer table will reset the statuses of all records." & vbNewLine & "THIS PROCESS CANNOT BE UNDONE." & vbNewLine & "Are you sure you want to proceed?", vbYesNo + vbQuestion) = vbYes Then
 
     strSQL = "DELETE FROM ASRSysAccordTransactions"
     gADOCon.Execute strSQL, , adExecuteNoRecords
@@ -548,7 +548,7 @@ TidyUpAndExit:
   Exit Sub
 
 ErrorTrap:
-  MsgBox Err.Description, vbCritical
+  COAMsgBox Err.Description, vbCritical
   Exit Sub
 
 End Sub
@@ -849,12 +849,12 @@ TidyUpAndExit:
     gADOCon.CommitTrans
     
     If Not gblnBatchMode And Not plngRecordID > 0 Then
-      MsgBox strErrorString, IIf(bOK, vbInformation, vbExclamation) + vbOKOnly, "Administer Transfers"
+      COAMsgBox strErrorString, IIf(bOK, vbInformation, vbExclamation) + vbOKOnly, "Administer Transfers"
     End If
     
   Else
     If InStr(1, strErrorString, "SELECT Permission", vbTextCompare) And Not gblnBatchMode Then
-      MsgBox "You need access to the " & strBaseTableName & " base table to use this functionality.", vbInformation, Me.Caption
+      COAMsgBox "You need access to the " & strBaseTableName & " base table to use this functionality.", vbInformation, Me.Caption
     End If
   
     gADOCon.RollbackTrans

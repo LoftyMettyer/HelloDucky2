@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Begin VB.Form frmExport 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Export Definition"
@@ -78,11 +78,11 @@ Begin VB.Form frmExport
       TabCaption(1)   =   "Related &Tables"
       TabPicture(1)   =   "frmExport.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraParent1"
+      Tab(1).Control(0)=   "fraChild"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraParent2"
       Tab(1).Control(1).Enabled=   0   'False
-      Tab(1).Control(2)=   "fraChild"
+      Tab(1).Control(2)=   "fraParent1"
       Tab(1).Control(2).Enabled=   0   'False
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
@@ -100,21 +100,21 @@ Begin VB.Form frmExport
       TabCaption(4)   =   "O&ptions"
       TabPicture(4)   =   "frmExport.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraDateOptions"
+      Tab(4).Control(0)=   "fraHeaderOptions"
       Tab(4).Control(0).Enabled=   0   'False
-      Tab(4).Control(1)=   "fraHeaderOptions"
+      Tab(4).Control(1)=   "fraDateOptions"
       Tab(4).Control(1).Enabled=   0   'False
       Tab(4).ControlCount=   2
       TabCaption(5)   =   "O&utput"
       TabPicture(5)   =   "frmExport.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraDelimFile"
+      Tab(5).Control(0)=   "fraOutputType"
       Tab(5).Control(0).Enabled=   0   'False
-      Tab(5).Control(1)=   "fraCMGFile"
+      Tab(5).Control(1)=   "fraOutputDestination"
       Tab(5).Control(1).Enabled=   0   'False
-      Tab(5).Control(2)=   "fraOutputDestination"
+      Tab(5).Control(2)=   "fraCMGFile"
       Tab(5).Control(2).Enabled=   0   'False
-      Tab(5).Control(3)=   "fraOutputType"
+      Tab(5).Control(3)=   "fraDelimFile"
       Tab(5).Control(3).Enabled=   0   'False
       Tab(5).ControlCount=   4
       Begin VB.Frame fraOutputType 
@@ -572,9 +572,9 @@ Begin VB.Form frmExport
             RecordSelectors =   0   'False
             Col.Count       =   11
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -586,9 +586,9 @@ Begin VB.Form frmExport
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmExport.frx":0187
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -1827,7 +1827,7 @@ Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional pln
         Initialise = False
         Exit Function
       Else
-        If MsgBox("HR Pro could not load all of the definition successfully. The recommendation is that" & vbCrLf & _
+        If COAMsgBox("HR Pro could not load all of the definition successfully. The recommendation is that" & vbCrLf & _
                "you delete the definition and create a new one, however, you may edit the existing" & vbCrLf & _
                "definition if you wish. Would you like to continue and edit this definition ?", vbQuestion + vbYesNo, "Export") = vbNo Then
           Initialise = False
@@ -1907,7 +1907,7 @@ LoadBaseCombo_ERROR:
   
   pstrSQL = vbNullString
   Set prstTables = Nothing
-  MsgBox "Error populating the base table combo box." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Export"
+  COAMsgBox "Error populating the base table combo box." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Export"
   
 End Sub
 
@@ -1939,7 +1939,7 @@ Private Sub cboBaseTable_Click()
     
   If mstrBaseTable <> cboBaseTable.Text Then
     If grdColumns.Rows > 0 Then
-      If MsgBox("Warning: Changing the base table will result in all table/column " & _
+      If COAMsgBox("Warning: Changing the base table will result in all table/column " & _
               "specific aspects of this export definition being cleared." & vbCrLf & _
               "Are you sure you wish to continue?", _
               vbQuestion + vbYesNo + vbDefaultButton2, "Export") = vbYes Then
@@ -1990,7 +1990,7 @@ Private Sub cboBaseTable_LostFocus()
 '  End If
 '
 '  If mblnBaseTableSpecificChanged = True Then
-'    If MsgBox("Warning : Changing the base table will result in all table/column specific aspects of this" & vbCrLf & " export definition being cleared. Are you sure you wish to continue ?", vbQuestion + vbYesNo + vbDefaultButton2, "Export") = vbYes Then
+'    If COAMsgBox("Warning : Changing the base table will result in all table/column specific aspects of this" & vbCrLf & " export definition being cleared. Are you sure you wish to continue ?", vbQuestion + vbYesNo + vbDefaultButton2, "Export") = vbYes Then
 '      ClearForNew True
 '      mstrBaseTable = cboBaseTable.Text
 '      UpdateDependantFields
@@ -2504,7 +2504,7 @@ Private Sub cmdCancel_Click()
 '
 '  If changed = True Then
 '
-'    pintAnswer = MsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, "Export")
+'    pintAnswer = COAMsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, "Export")
 '
 '    If pintAnswer = vbYes Then
 '      cmdOK_Click
@@ -2620,7 +2620,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   
   If Changed = True Then
     
-    pintAnswer = MsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, "Export")
+    pintAnswer = COAMsgBox("You have changed the current definition. Save changes ?", vbQuestion + vbYesNoCancel, "Export")
       
     If pintAnswer = vbYes Then
       cmdOK_Click
@@ -3168,7 +3168,7 @@ Public Function AnyChildColumnsUsed(lngTableID As Long) As Integer
     Exit Function
   End If
 
-  If MsgBox("One or more columns from the '" & datGeneral.GetTableName(lngTableID) & "' table have been included in the current export definition. Changing the child table will remove these columns from the export definition." & vbCrLf & "Do you wish to continue ?", vbYesNo + vbQuestion, "Export") = vbNo Then
+  If COAMsgBox("One or more columns from the '" & datGeneral.GetTableName(lngTableID) & "' table have been included in the current export definition. Changing the child table will remove these columns from the export definition." & vbCrLf & "Do you wish to continue ?", vbYesNo + vbQuestion, "Export") = vbNo Then
     AnyChildColumnsUsed = 1
     Exit Function
   End If
@@ -3463,7 +3463,7 @@ Private Sub cmdEditColumn_Click()
           Next iCount
           
           If fFoundInSortOrder Then
-            If MsgBox("You have changed a column that is used in the export sort order." & vbCrLf & _
+            If COAMsgBox("You have changed a column that is used in the export sort order." & vbCrLf & _
                       "Continuing will remove the old column from the sort order." & vbCrLf & _
                       "Do you wish to continue ?", vbYesNo + vbQuestion, App.Title) = vbNo Then
               Exit Sub
@@ -3580,7 +3580,7 @@ Private Sub cmdDeleteColumn_Click()
   mblnBaseTableSpecificChanged = True
  
   If IsUsedInSortOrder(grdColumns.Columns("ColExprID").Value) = True Then
-    If MsgBox("The '" & grdColumns.Columns("Data").Value & "' column is defined in the export sort order." & vbCrLf & "If you delete the column from the export, it will be removed from the sort order." & vbCrLf & "Do you wish to continue ?", vbQuestion + vbYesNo, "Export") = vbYes Then
+    If COAMsgBox("The '" & grdColumns.Columns("Data").Value & "' column is defined in the export sort order." & vbCrLf & "If you delete the column from the export, it will be removed from the sort order." & vbCrLf & "Do you wish to continue ?", vbQuestion + vbYesNo, "Export") = vbYes Then
       RemoveFromSortOrder (grdColumns.Columns("ColExprID").Value)
       UpdateButtonStatus
     Else
@@ -3727,7 +3727,7 @@ Private Sub cmdClearColumn_Click()
   'Output  : None
   If grdExportOrder.Rows > 0 Then
   
-    If MsgBox("Clearing all export columns will automatically clear the sort order definition." & vbCrLf & "Do you wish to continue ?", vbYesNo + vbQuestion, "Export") = vbYes Then
+    If COAMsgBox("Clearing all export columns will automatically clear the sort order definition." & vbCrLf & "Do you wish to continue ?", vbYesNo + vbQuestion, "Export") = vbYes Then
       grdColumns.RemoveAll
       grdExportOrder.RemoveAll
       UpdateButtonStatus
@@ -3737,7 +3737,7 @@ Private Sub cmdClearColumn_Click()
 
   Else
     
-    If MsgBox("Are you sure you wish to clear all columns / calculations from this definition ?", vbYesNo + vbQuestion, "Export") = vbYes Then
+    If COAMsgBox("Are you sure you wish to clear all columns / calculations from this definition ?", vbYesNo + vbQuestion, "Export") = vbYes Then
       grdColumns.RemoveAll
       grdExportOrder.RemoveAll
       UpdateButtonStatus
@@ -3844,7 +3844,7 @@ Private Sub cmdClearOrder_Click()
   'Input   : None
   'Output  : None
   
-  If MsgBox("Are you sure you wish to clear the sort order ?", vbYesNo + vbQuestion, "Export") = vbYes Then
+  If COAMsgBox("Are you sure you wish to clear the sort order ?", vbYesNo + vbQuestion, "Export") = vbYes Then
     grdExportOrder.RemoveAll
     UpdateButtonStatus
     Changed = True
@@ -4260,7 +4260,7 @@ Private Function ValidateDefinition() As Boolean
   
   ' Check a name has been entered
   If Trim(txtName.Text) = "" Then
-    MsgBox "You must give this definition a name.", vbExclamation, Me.Caption
+    COAMsgBox "You must give this definition a name.", vbExclamation, Me.Caption
     SSTab1.Tab = 0
     txtName.SetFocus
     ValidateDefinition = False
@@ -4284,7 +4284,7 @@ Private Function ValidateDefinition() As Boolean
   
   ' Check the name is unique
   If Not CheckUniqueName(Trim(txtName.Text), mlngExportID) Then
-    MsgBox "An Export definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
+    COAMsgBox "An Export definition called '" & Trim(txtName.Text) & "' already exists.", vbExclamation, Me.Caption
     SSTab1.Tab = 0
     txtName.SelStart = 0
     txtName.SelLength = Len(txtName.Text)
@@ -4295,7 +4295,7 @@ Private Function ValidateDefinition() As Boolean
   ' BASE TABLE - If using a picklist, check one has been selected
   If optBasePicklist.Value Then
     If txtBasePicklist.Text = "" Or txtBasePicklist.Tag = "0" Or txtBasePicklist.Tag = "" Then
-      MsgBox "You must select a picklist, or change the record selection for your base table.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "You must select a picklist, or change the record selection for your base table.", vbExclamation + vbOKOnly, "Export"
       SSTab1.Tab = 0
       cmdBasePicklist.SetFocus
       ValidateDefinition = False
@@ -4306,7 +4306,7 @@ Private Function ValidateDefinition() As Boolean
   ' BASE TABLE - If using a filter, check one has been selected
   If optBaseFilter.Value Then
     If txtBaseFilter.Text = "" Or txtBaseFilter.Tag = "0" Or txtBasePicklist.Tag = "" Then
-      MsgBox "You must select a filter, or change the record selection for your base table.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "You must select a filter, or change the record selection for your base table.", vbExclamation + vbOKOnly, "Export"
       SSTab1.Tab = 0
       cmdBaseFilter.SetFocus
       ValidateDefinition = False
@@ -4317,7 +4317,7 @@ Private Function ValidateDefinition() As Boolean
   ' PARENT 1 TABLE - If using a picklist, check one has been selected
   If optParent1Picklist.Value Then
     If txtParent1Picklist.Text = "" Or txtParent1Picklist.Tag = "0" Or txtParent1Picklist.Tag = "" Then
-      MsgBox "You must select a picklist, or change the record selection for your first parent table.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "You must select a picklist, or change the record selection for your first parent table.", vbExclamation + vbOKOnly, "Export"
       SSTab1.Tab = 1
       cmdParent1Picklist.SetFocus
       ValidateDefinition = False
@@ -4328,7 +4328,7 @@ Private Function ValidateDefinition() As Boolean
   ' PARENT 1 TABLE - If using a filter, check one has been selected
   If optParent1Filter.Value Then
     If txtParent1Filter.Text = "" Or txtParent1Filter.Tag = "0" Or txtParent1Filter.Tag = "" Then
-      MsgBox "You must select a filter, or change the record selection for your first parent table.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "You must select a filter, or change the record selection for your first parent table.", vbExclamation + vbOKOnly, "Export"
       SSTab1.Tab = 1
       cmdParent1Filter.SetFocus
       ValidateDefinition = False
@@ -4339,7 +4339,7 @@ Private Function ValidateDefinition() As Boolean
   ' PARENT 2 TABLE - If using a picklist, check one has been selected
   If optParent2Picklist.Value Then
     If txtParent2Picklist.Text = "" Or txtParent2Picklist.Tag = "0" Or txtParent2Picklist.Tag = "" Then
-      MsgBox "You must select a picklist, or change the record selection for your second parent table.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "You must select a picklist, or change the record selection for your second parent table.", vbExclamation + vbOKOnly, "Export"
       SSTab1.Tab = 1
       cmdParent2Picklist.SetFocus
       ValidateDefinition = False
@@ -4350,7 +4350,7 @@ Private Function ValidateDefinition() As Boolean
   ' PARENT 2 TABLE - If using a filter, check one has been selected
   If optParent2Filter.Value Then
     If txtParent2Filter.Text = "" Or txtParent2Filter.Tag = "0" Or txtParent2Filter.Tag = "" Then
-      MsgBox "You must select a filter, or change the record selection for your second parent table.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "You must select a filter, or change the record selection for your second parent table.", vbExclamation + vbOKOnly, "Export"
       SSTab1.Tab = 1
       cmdParent2Filter.SetFocus
       ValidateDefinition = False
@@ -4360,7 +4360,7 @@ Private Function ValidateDefinition() As Boolean
   
   If txtChildFilter.Tag <> 0 Then
     If txtChildFilter.Text = "" Or txtChildFilter.Tag = "0" Or txtChildFilter.Tag = "" Then
-      MsgBox "You must select a filter, or change the record selection for the child table.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "You must select a filter, or change the record selection for the child table.", vbExclamation + vbOKOnly, "Export"
       SSTab1.Tab = 1
       cmdChildFilter.SetFocus
       ValidateDefinition = False
@@ -4374,7 +4374,7 @@ Private Function ValidateDefinition() As Boolean
   
   ' Check that there are columns defined in the export definition
   If grdColumns.Rows = 0 Then
-    MsgBox "You must select at least 1 column for your export.", vbExclamation + vbOKOnly, "Export"
+    COAMsgBox "You must select at least 1 column for your export.", vbExclamation + vbOKOnly, "Export"
     SSTab1.Tab = 2
     ValidateDefinition = False
     Exit Function
@@ -4383,7 +4383,7 @@ Private Function ValidateDefinition() As Boolean
   '  Check that a delimiter is specified if the file format is ASCII Delimited
   If optOutputFormat(fmtCSV) Then
     If cboDelimiter.Text = "<Other>" And Trim(txtDelimiter.Text) = "" Then
-      MsgBox "You must specify a delimiter for delimited files.", vbExclamation + vbOKOnly, "Import"
+      COAMsgBox "You must specify a delimiter for delimited files.", vbExclamation + vbOKOnly, "Import"
       ValidateDefinition = False
       Exit Function
     End If
@@ -4391,7 +4391,7 @@ Private Function ValidateDefinition() As Boolean
   
   ' Check that at least 1 column has been defined as the export order
   If grdExportOrder.Rows = 0 Then
-    MsgBox "You must select at least 1 column to order the export by.", vbExclamation + vbOKOnly, "Export"
+    COAMsgBox "You must select at least 1 column to order the export by.", vbExclamation + vbOKOnly, "Export"
     SSTab1.Tab = 3
     ValidateDefinition = False
     Exit Function
@@ -4400,7 +4400,7 @@ Private Function ValidateDefinition() As Boolean
   
   If optOutputFormat(fmtCMGFile).Value = True Then
     If cboParentFields.Text = vbNullString Then
-      MsgBox "No record identifier selected for the CMG file.", vbExclamation, "Export"
+      COAMsgBox "No record identifier selected for the CMG file.", vbExclamation, "Export"
       ValidateDefinition = False
       SSTab1.Tab = 5
       Exit Function
@@ -4425,7 +4425,7 @@ Private Function ValidateDefinition() As Boolean
          grdColumns.Columns("TableID").CellValue(pvarbookmark) <> Val(txtParent1.Tag) And _
          grdColumns.Columns("TableID").CellValue(pvarbookmark) <> Val(txtParent2.Tag) And _
          grdColumns.Columns("TableID").CellValue(pvarbookmark) <> Val(cboChild.ItemData(cboChild.ListIndex)) Then
-        MsgBox "The '" & Left(grdColumns.Columns("Data").CellText(pvarbookmark), InStr(grdColumns.Columns("Data").CellText(pvarbookmark), ".") - 1) & "' table has not been selected as a Base, Parent or Child table, but exists in the export definition." & Chr(10) & "Please either include this table or remove the grid entries referring to it.", vbExclamation, "Export"
+        COAMsgBox "The '" & Left(grdColumns.Columns("Data").CellText(pvarbookmark), InStr(grdColumns.Columns("Data").CellText(pvarbookmark), ".") - 1) & "' table has not been selected as a Base, Parent or Child table, but exists in the export definition." & Chr(10) & "Please either include this table or remove the grid entries referring to it.", vbExclamation, "Export"
         ValidateDefinition = False
         Exit Function
       End If
@@ -4437,7 +4437,7 @@ Private Function ValidateDefinition() As Boolean
         If grdColumns.Columns("Type").CellValue(pvarbookmark) <> "R" Then
           
           If blnContinue = False Then
-            blnContinue = (MsgBox("You have selected zero for the length of one or more export columns." & vbCrLf & _
+            blnContinue = (COAMsgBox("You have selected zero for the length of one or more export columns." & vbCrLf & _
                     "Leaving a column with a length of zero will result in the values not" & vbCrLf & _
                     "appearing." & vbCrLf & vbCrLf & _
                     "Do you wish to continue ?", vbQuestion + vbYesNo, "Export") = vbYes)
@@ -4459,7 +4459,7 @@ Private Function ValidateDefinition() As Boolean
         grdColumns.SelBookmarks.Add pvarbookmark
         grdColumns.Bookmark = pvarbookmark
         SSTab1.Tab = 2
-        MsgBox "Record numbers are not available when exporting to CMG format", vbExclamation, "Export"
+        COAMsgBox "Record numbers are not available when exporting to CMG format", vbExclamation, "Export"
         ValidateDefinition = False
         Exit Function
 '      ElseIf optOutputFormat(fmtSQLTable).Value = True Then
@@ -4467,7 +4467,7 @@ Private Function ValidateDefinition() As Boolean
 '        grdColumns.SelBookmarks.Add pvarbookmark
 '        grdColumns.Bookmark = pvarbookmark
 '        SSTab1.Tab = 2
-'        MsgBox "Record numbers are not available when exporting to a SQL table", vbExclamation, "Export"
+'        COAMsgBox "Record numbers are not available when exporting to a SQL table", vbExclamation, "Export"
 '        ValidateDefinition = False
 '        Exit Function
       End If
@@ -4483,7 +4483,7 @@ Private Function ValidateDefinition() As Boolean
   For pintLoop = 0 To grdExportOrder.Rows - 1
     pvarbookmark = grdExportOrder.GetBookmark(pintLoop)
     If Not IsInExportDefinition(CLng(grdExportOrder.Columns("ColExprID").CellText(pvarbookmark))) Then
-      MsgBox "The '" & Right(grdExportOrder.Columns("Column").CellText(pvarbookmark), Len(grdExportOrder.Columns("Column").CellText(pvarbookmark)) - InStr(grdExportOrder.Columns("Column").CellText(pvarbookmark), ".")) & "' column has not been selected to appear in the export." & Chr(10) & "Please either include this column or remove it form the sort order.", vbExclamation, "Export"
+      COAMsgBox "The '" & Right(grdExportOrder.Columns("Column").CellText(pvarbookmark), Len(grdExportOrder.Columns("Column").CellText(pvarbookmark)) - InStr(grdExportOrder.Columns("Column").CellText(pvarbookmark), ".")) & "' column has not been selected to appear in the export." & Chr(10) & "Please either include this column or remove it form the sort order.", vbExclamation, "Export"
       ValidateDefinition = False
       Exit Function
     End If
@@ -4508,11 +4508,11 @@ If mlngExportID > 0 Then
 
     If (Not fBatchJobsOK) Then
       If Len(sBatchJobDetails_ScheduledForOtherUsers) > 0 Then
-        MsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
+        COAMsgBox "This definition cannot be made hidden from the following user groups :" & vbCrLf & vbCrLf & sBatchJobScheduledUserGroups & vbCrLf & _
                "as it is used in the following batch jobs which are scheduled to be run by these user groups :" & vbCrLf & vbCrLf & sBatchJobDetails_ScheduledForOtherUsers, _
                vbExclamation + vbOKOnly, "Export"
       Else
-        MsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
+        COAMsgBox "This definition cannot be made hidden as it is used in the following" & vbCrLf & _
                "batch jobs of which you are not the owner :" & vbCrLf & vbCrLf & sBatchJobDetails_NotOwner, vbExclamation + vbOKOnly _
                , "Export"
       End If
@@ -4522,7 +4522,7 @@ If mlngExportID > 0 Then
       Exit Function
 
     ElseIf (iCount_Owner > 0) Then
-      If MsgBox("Making this definition hidden to user groups will automatically" & vbCrLf & _
+      If COAMsgBox("Making this definition hidden to user groups will automatically" & vbCrLf & _
                 "make the following definition(s), of which you are the" & vbCrLf & _
                 "owner, hidden to the same user groups:" & vbCrLf & vbCrLf & _
                 sBatchJobDetails_Owner & vbCrLf & _
@@ -4548,7 +4548,7 @@ End If
   
 ValidateDefinition_ERROR:
   
-  MsgBox "Error whilst validating export definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Export"
+  COAMsgBox "Error whilst validating export definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Export"
   ValidateDefinition = False
   
 End Function
@@ -4949,7 +4949,7 @@ Private Function SaveDefinition() As Boolean
 
 Err_Trap:
   Screen.MousePointer = vbDefault
-  MsgBox "Error whilst saving Export definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Export"
+  COAMsgBox "Error whilst saving Export definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Export"
   SaveDefinition = False
 Resume
 End Function
@@ -5102,7 +5102,7 @@ Private Function InsertExport(pstrSQL As String) As Long
     cmADO.Execute
               
     If Not fSavedOK Then
-      MsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
+      COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
         Err.Description, vbOKOnly + vbExclamation, App.ProductName
         InsertExport = 0
         Set cmADO = Nothing
@@ -5162,7 +5162,7 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
                                      "FROM ASRSysExportName WHERE ID = " & plngExportID)
 
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This Export definition has been deleted by another user.", vbExclamation + vbOKOnly, "Export"
+    COAMsgBox "This Export definition has been deleted by another user.", vbExclamation + vbOKOnly, "Export"
     Set rsTemp = Nothing
     RetrieveExportDetails = False
     Exit Function
@@ -5171,7 +5171,7 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
   
   If rsTemp!OutputFormat = fmtSQLTable Then
     'If Not mblnEnableSQLTable Then
-      MsgBox "This Export definition is invalid as export to SQL Table is no longer supported.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "This Export definition is invalid as export to SQL Table is no longer supported.", vbExclamation + vbOKOnly, "Export"
       Set rsTemp = Nothing
       RetrieveExportDetails = False
       mblnDeleted = True
@@ -5408,7 +5408,7 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
   Set rsTemp = datGeneral.GetRecords("SELECT * FROM ASRSysExportDetails WHERE ExportID = " & plngExportID & " ORDER BY ID")
   
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "No column information found for this Export.", vbExclamation + vbOKOnly, "Export"
+    COAMsgBox "No column information found for this Export.", vbExclamation + vbOKOnly, "Export"
     Set rsTemp = Nothing
     RetrieveExportDetails = False
     Exit Function
@@ -5526,7 +5526,7 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
   Set rsTemp = datGeneral.GetRecords("SELECT * FROM ASRSysExportDetails WHERE ExportID = " & plngExportID & " AND SortOrderSequence > 0 AND Type = 'C' ORDER BY [SortOrderSequence]")
   
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "No sort order information found for this Export.", vbExclamation + vbOKOnly, "Export"
+    COAMsgBox "No sort order information found for this Export.", vbExclamation + vbOKOnly, "Export"
     Set rsTemp = Nothing
     RetrieveExportDetails = False
     Exit Function
@@ -5558,7 +5558,7 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
 
 Load_ERROR:
 
-  MsgBox "Error whilst retrieving the Export definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Export"
+  COAMsgBox "Error whilst retrieving the Export definition." & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Export"
   RetrieveExportDetails = False
   Set rsTemp = Nothing
 
@@ -5648,7 +5648,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
           (Not FormPrint)
         If fRemove Then
           sBigMessage = "The '" & cboBaseTable.List(cboBaseTable.ListIndex) & "' table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -5707,7 +5707,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
 
         If fRemove Then
           sBigMessage = "The '" & cboBaseTable.List(cboBaseTable.ListIndex) & "' table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -5765,7 +5765,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
           (Not FormPrint)
         If fRemove Then
           sBigMessage = "The '" & txtParent1.Text & "' table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -5824,7 +5824,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
 
         If fRemove Then
           sBigMessage = "The '" & txtParent1.Text & "' table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -5882,7 +5882,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
           (Not FormPrint)
         If fRemove Then
           sBigMessage = "The '" & txtParent2.Text & "' table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -5941,7 +5941,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
 
         If fRemove Then
           sBigMessage = "The '" & txtParent2.Text & "' table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -6000,7 +6000,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
 
         If fRemove Then
           sBigMessage = "The '" & cboChild.List(cboChild.ListIndex) & "' table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-          MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+          COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
         Else
           fNeedToForceHidden = True
   
@@ -6068,7 +6068,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
 
               If fRemove Then
                 sBigMessage = "The '" & sCalcName & "' calculation will be removed from this definition as it is hidden and you do not have permission to make this definition hidden."
-                MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+                COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
               Else
                 fNeedToForceHidden = True
   
@@ -6252,7 +6252,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded(Optional pvOnlyFatalMessages 
       sBigMessage = Me.Caption & " print failed. The definition is currently invalid : " & vbCrLf & vbCrLf & sBigMessage
     End If
 
-    MsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
+    COAMsgBox sBigMessage, vbExclamation + vbOKOnly, Me.Caption
   End If
 
   ForceDefinitionToBeHiddenIfNeeded = (Len(sBigMessage) = 0)
@@ -6412,7 +6412,7 @@ Public Sub PrintDef(lExportID As Long)
                                      "FROM ASRSysExportName WHERE ID = " & mlngExportID)
                                         
   If rsTemp.BOF And rsTemp.EOF Then
-    MsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Print Definition"
+    COAMsgBox "This definition has been deleted by another user.", vbExclamation + vbOKOnly, "Print Definition"
     Set rsTemp = Nothing
     Exit Sub
   End If
@@ -6674,7 +6674,7 @@ Public Sub PrintDef(lExportID As Long)
 Exit Sub
 
 LocalErr:
-  MsgBox "Printing export definition failed" & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Print Definition"
+  COAMsgBox "Printing export definition failed" & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, "Print Definition"
 
 End Sub
 
@@ -6702,7 +6702,7 @@ Private Function IsRecordSelectionValid() As Boolean
     Set rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
     If rsTemp.BOF And rsTemp.EOF Then
       ' filter no longer exists !
-      MsgBox "The '" & txtBaseFilter.Text & "' filter has been deleted by another user.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "The '" & txtBaseFilter.Text & "' filter has been deleted by another user.", vbExclamation + vbOKOnly, "Export"
       txtBaseFilter.Tag = 0
       txtBaseFilter.Text = "<None>"
       Set rsTemp = Nothing
@@ -6710,7 +6710,7 @@ Private Function IsRecordSelectionValid() As Boolean
       Exit Function
     ElseIf rsTemp!Access = "HD" And LCase(Trim(rsTemp!UserName)) <> LCase(Trim(gsUserName)) Then
       ' Filter has been made hidden by its owner
-      MsgBox "The '" & txtBaseFilter.Text & "' filter has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "The '" & txtBaseFilter.Text & "' filter has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
       txtBaseFilter.Tag = 0
       txtBaseFilter.Text = "<None>"
       Set rsTemp = Nothing
@@ -6722,7 +6722,7 @@ Private Function IsRecordSelectionValid() As Boolean
     Set rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
     If rsTemp.BOF And rsTemp.EOF Then
       ' picklist no longer exists !
-      MsgBox "The '" & txtBasePicklist.Text & "' picklist has been deleted by another user.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "The '" & txtBasePicklist.Text & "' picklist has been deleted by another user.", vbExclamation + vbOKOnly, "Export"
       txtBasePicklist.Tag = 0
       txtBasePicklist.Text = "<None>"
       Set rsTemp = Nothing
@@ -6730,7 +6730,7 @@ Private Function IsRecordSelectionValid() As Boolean
       Exit Function
     ElseIf rsTemp!Access = "HD" And LCase(Trim(rsTemp!UserName)) <> LCase(Trim(gsUserName)) Then
       ' picklist has been made hidden by its owner
-      MsgBox "The '" & txtBasePicklist.Text & "' picklist has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "The '" & txtBasePicklist.Text & "' picklist has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
       txtBasePicklist.Tag = 0
       txtBasePicklist.Text = "<None>"
       Set rsTemp = Nothing
@@ -6745,7 +6745,7 @@ Private Function IsRecordSelectionValid() As Boolean
     Set rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
     If rsTemp.BOF And rsTemp.EOF Then
       ' filter no longer exists !
-      MsgBox "The '" & txtParent1Filter.Text & "' filter has been deleted by another user.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "The '" & txtParent1Filter.Text & "' filter has been deleted by another user.", vbExclamation + vbOKOnly, "Export"
       txtParent1Filter.Tag = 0
       txtParent1Filter.Text = "<None>"
       Set rsTemp = Nothing
@@ -6753,7 +6753,7 @@ Private Function IsRecordSelectionValid() As Boolean
       Exit Function
     ElseIf rsTemp!Access = "HD" And LCase(Trim(rsTemp!UserName)) <> LCase(Trim(gsUserName)) Then
       ' filter has been made hidden by its owner
-      MsgBox "The '" & txtParent1Filter.Text & "' filter has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "The '" & txtParent1Filter.Text & "' filter has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
       txtParent1Filter.Tag = 0
       txtParent1Filter.Text = "<None>"
       Set rsTemp = Nothing
@@ -6766,7 +6766,7 @@ Private Function IsRecordSelectionValid() As Boolean
     
     If rsTemp.BOF And rsTemp.EOF Then
       ' Picklist has been deleted by another user
-      MsgBox "The '" & txtParent1Picklist.Text & "' picklist has been deleted by another user.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "The '" & txtParent1Picklist.Text & "' picklist has been deleted by another user.", vbExclamation + vbOKOnly, "Export"
       txtParent1Picklist.Tag = 0
       txtParent1Picklist.Text = "<None>"
       Set rsTemp = Nothing
@@ -6774,7 +6774,7 @@ Private Function IsRecordSelectionValid() As Boolean
       Exit Function
     ElseIf rsTemp!Access = "HD" And LCase(rsTemp!UserName) <> LCase(gsUserName) Then
       ' Picklist has been made hidden by its owner
-      MsgBox "The '" & txtParent1Picklist.Text & "' picklist has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "The '" & txtParent1Picklist.Text & "' picklist has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
       txtParent1Picklist.Tag = 0
       txtParent1Picklist.Text = "<None>"
       Set rsTemp = Nothing
@@ -6789,7 +6789,7 @@ Private Function IsRecordSelectionValid() As Boolean
     Set rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
     If rsTemp.BOF And rsTemp.EOF Then
       ' filter no longer exists !
-      MsgBox "The '" & txtParent2Filter.Text & "' filter has been deleted by another user.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "The '" & txtParent2Filter.Text & "' filter has been deleted by another user.", vbExclamation + vbOKOnly, "Export"
       txtParent2Filter.Tag = 0
       txtParent2Filter.Text = "<None>"
       Set rsTemp = Nothing
@@ -6797,7 +6797,7 @@ Private Function IsRecordSelectionValid() As Boolean
       Exit Function
     ElseIf rsTemp!Access = "HD" And LCase(Trim(rsTemp!UserName)) <> LCase(Trim(gsUserName)) Then
       ' filter has been made hidden by its owner
-      MsgBox "The '" & txtParent2Filter.Text & "' filter has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "The '" & txtParent2Filter.Text & "' filter has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
       txtParent2Filter.Tag = 0
       txtParent2Filter.Text = "<None>"
       Set rsTemp = Nothing
@@ -6810,7 +6810,7 @@ Private Function IsRecordSelectionValid() As Boolean
     
     If rsTemp.BOF And rsTemp.EOF Then
       ' Picklist has been deleted by another user
-      MsgBox "The '" & txtParent2Picklist.Text & "' picklist has been deleted by another user.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "The '" & txtParent2Picklist.Text & "' picklist has been deleted by another user.", vbExclamation + vbOKOnly, "Export"
       txtParent2Picklist.Tag = 0
       txtParent2Picklist.Text = "<None>"
       Set rsTemp = Nothing
@@ -6818,7 +6818,7 @@ Private Function IsRecordSelectionValid() As Boolean
       Exit Function
     ElseIf rsTemp!Access = "HD" And LCase(rsTemp!UserName) <> LCase(gsUserName) Then
       ' Picklist has been made hidden by its owner
-      MsgBox "The '" & txtParent2Picklist.Text & "' picklist has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "The '" & txtParent2Picklist.Text & "' picklist has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
       txtParent2Picklist.Tag = 0
       txtParent2Picklist.Text = "<None>"
       Set rsTemp = Nothing
@@ -6833,7 +6833,7 @@ Private Function IsRecordSelectionValid() As Boolean
     Set rsTemp = datGeneral.GetReadOnlyRecords(sSQL)
     If rsTemp.BOF And rsTemp.EOF Then
       ' filter no longer exists !
-      MsgBox "The '" & txtChildFilter.Text & "' filter has been deleted by another user.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "The '" & txtChildFilter.Text & "' filter has been deleted by another user.", vbExclamation + vbOKOnly, "Export"
       txtChildFilter.Tag = 0
       txtChildFilter.Text = "<None>"
       Set rsTemp = Nothing
@@ -6841,7 +6841,7 @@ Private Function IsRecordSelectionValid() As Boolean
       Exit Function
     ElseIf rsTemp!Access = "HD" And LCase(Trim(rsTemp!UserName)) <> LCase(Trim(gsUserName)) Then
       ' filter has been made hidden by its owner
-      MsgBox "The '" & txtChildFilter.Text & "' filter has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
+      COAMsgBox "The '" & txtChildFilter.Text & "' filter has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
       txtChildFilter.Tag = 0
       txtChildFilter.Text = "<None>"
       Set rsTemp = Nothing
@@ -6899,19 +6899,19 @@ Private Function IsRecordSelectionValid() As Boolean
     ' RH - 09/10/00 - QA prefer generic msg rather than specific calc names
     '  sMsgTxt = "One or more calculation(s) have been deleted and/or made hidden" & vbCrLf & _
     '            "by their owner and will be removed from this Export."
-    '  MsgBox sMsgTxt, vbOKOnly + vbExclamation, "Export"
+    '  COAMsgBox sMsgTxt, vbOKOnly + vbExclamation, "Export"
     
     
     'MH20001102 Fault 1248
     If blnHiddenCalcs Then
       sMsgTxt = "This definition contains one or more calculation(s) which have been made hidden by another user." & vbCrLf & _
                 "They will be automatically removed from this definition."
-      MsgBox sMsgTxt, vbOKOnly + vbExclamation, "Export"
+      COAMsgBox sMsgTxt, vbOKOnly + vbExclamation, "Export"
     End If
     If blnDeletedCalcs Then
       sMsgTxt = "This definition contains one or more calculation(s) which have been deleted by another user." & vbCrLf & _
                 "They will be automatically removed from this definition."
-      MsgBox sMsgTxt, vbOKOnly + vbExclamation, "Export"
+      COAMsgBox sMsgTxt, vbOKOnly + vbExclamation, "Export"
     End If
               
     ' Delete the rows. Work from bottom-up otherwise the row indexes will be wrong!
@@ -6940,7 +6940,7 @@ Private Function IsRecordSelectionValid() As Boolean
   
 Valid_ERROR:
 
-  MsgBox "Error whilst checking if picklist/filters/calculations selected in the" & vbCrLf & _
+  COAMsgBox "Error whilst checking if picklist/filters/calculations selected in the" & vbCrLf & _
          "Export still exist:" & vbCrLf & vbCrLf & Err.Description, vbExclamation + vbOKOnly
   Set rsTemp = Nothing
   IsRecordSelectionValid = False
