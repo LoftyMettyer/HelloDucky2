@@ -10,17 +10,17 @@ EndProject
 Global
 	GlobalSection(SourceCodeControl) = preSolution
 		SccNumberOfProjects = 4
-		SccProjectUniqueName0 = Setup\\HR\u0020Pro\u0020Engine\u0020Setup.vdproj
-		SccProjectName0 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Engine/Setup\u0022,\u0020LVGDAAAA
-		SccLocalPath0 = Setup
-		SccProjectUniqueName1 = ..\\HR\u0020Pro\u0020Mobile\u0020Designer\\MobileDesigner\\MobileDesigner.csproj
-		SccProjectName1 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Mobile\u0020Designer\u0022,\u0020MDLDAAAA
-		SccLocalPath1 = ..\\HR\u0020Pro\u0020Mobile\u0020Designer
-		SccProjectFilePathRelativizedFromConnection1 = MobileDesigner\\
-		SccProjectUniqueName2 = Engine\\System\u0020Framework.vbproj
-		SccProjectName2 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Engine/Engine\u0022,\u0020TKGDAAAA
-		SccLocalPath2 = Engine
-		SccLocalPath3 = .
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Setup\\HR\u0020Pro\u0020Engine\u0020Setup.vdproj
+		SccProjectName1 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Engine/Setup\u0022,\u0020LVGDAAAA
+		SccLocalPath1 = Setup
+		SccProjectUniqueName2 = ..\\HR\u0020Pro\u0020Mobile\u0020Designer\\MobileDesigner\\MobileDesigner.csproj
+		SccProjectName2 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Mobile\u0020Designer\u0022,\u0020MDLDAAAA
+		SccLocalPath2 = ..\\HR\u0020Pro\u0020Mobile\u0020Designer
+		SccProjectFilePathRelativizedFromConnection2 = MobileDesigner\\
+		SccProjectUniqueName3 = Engine\\System\u0020Framework.vbproj
+		SccProjectName3 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Engine/Engine\u0022,\u0020TKGDAAAA
+		SccLocalPath3 = Engine
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
