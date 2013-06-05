@@ -320,13 +320,12 @@ Namespace Things
 
       ' Calling statement
       With UDF
-
         .Declarations = String.Join(vbNewLine, maryDeclarations.ToArray())
         .Prerequisites = String.Join(vbNewLine, maryPrerequisitStatements.ToArray())
         .JoinCode = String.Format("{0}", String.Join(vbNewLine, Joins.ToArray))
         .FromCode = String.Format("{0}", String.Join(",", FromTables.ToArray))
 
-        .WhereCode = String.Join(vbNewLine, maryWhere.ToArray())
+        .WhereCode = String.Join(" AND ", maryWhere.ToArray())
         .WhereCode = IIf(Len(.WhereCode) > 0, "WHERE " + .WhereCode, "")
 
         Select Case Me.ExpressionType
@@ -715,7 +714,7 @@ Namespace Things
               , CInt(objThisColumn.Table.ID).ToString.PadLeft(8, "0") _
               , CInt(objThisColumn.ID).ToString.PadLeft(8, "0"))
 
-        ElseIf objThisColumn Is objBaseColumn _
+        ElseIf objThisColumn Is Me.AssociatedColumn _
             And Not (Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter _
             Or Me.ExpressionType = ScriptDB.ExpressionType.Mask _
             Or Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription) Then
@@ -729,7 +728,8 @@ Namespace Things
         ElseIf (Not objThisColumn.DefaultCalcID = 0 And Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault) Then
           LineOfCode.Code = String.Format("[dbo].[{0}](@pID)", objThisColumn.Name)
 
-        ElseIf objThisColumn.IsCalculated And objThisColumn.Table Is Me.AssociatedColumn.Table And Not Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter Then
+        ElseIf objThisColumn.IsCalculated And objThisColumn.Table Is Me.AssociatedColumn.Table _
+            And Not Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter And Not Me.ExpressionType = ScriptDB.ExpressionType.Mask Then
 
           If objThisColumn.Calculation Is Nothing Then
             objThisColumn.Calculation = objThisColumn.Table.GetObject(Type.Expression, objThisColumn.CalcID)
@@ -748,16 +748,17 @@ Namespace Things
           objThisColumn.Calculation.GenerateCode()
 
           mbRequiresRowNumber = mbRequiresRowNumber Or objThisColumn.Calculation.mbRequiresRowNumber
+          'maryDeclarations.AddRange(objThisColumn.Calculation.maryDeclarations)
 
-          If objThisColumn.Calculation.IsComplex Then
+          '          If objThisColumn.Calculation.IsComplex Then
 
-            'AddToDependencies(objThisColumn.Calculation.mcolDependencies)
+          'AddToDependencies(objThisColumn.Calculation.mcolDependencies)
 
-            LineOfCode.Code = objThisColumn.Calculation.UDF.CallingCode
-          Else
-            AddToDependencies(objThisColumn.Calculation.mcolDependencies)
-            LineOfCode.Code = objThisColumn.Calculation.UDF.SelectCode
-          End If
+          LineOfCode.Code = objThisColumn.Calculation.UDF.CallingCode
+          '         Else
+          AddToDependencies(objThisColumn.Calculation.mcolDependencies)
+          'LineOfCode.Code = objThisColumn.Calculation.UDF.SelectCode
+          '          End If
 
           objThisColumn.Calculation.ExpressionType = iBackupType
 
@@ -769,7 +770,7 @@ Namespace Things
 
             Select Case Component.BaseExpression.ExpressionType
               Case ScriptDB.ExpressionType.ColumnFilter
-                sColumnName = String.Format("[{0}].[{1}]", objThisColumn.Table.Name, objThisColumn.Name)
+                sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
                 'mbAddBaseTable = True
 
               Case ScriptDB.ExpressionType.Mask
@@ -815,20 +816,20 @@ Namespace Things
               LineOfCode.Code = String.Format("ISNULL([{0}].[{1}],{2})", objThisColumn.Table.Name, objThisColumn.Name, objThisColumn.SafeReturnType)
 
               ' Add table join component
-              sRelationCode = String.Format("INNER JOIN [dbo].[{0}] ON [{0}].[ID] = [{1}].[ID_{2}]" & vbNewLine _
-                , objRelation.Name, objBaseColumn.Table.Name, CInt(objRelation.ParentID))
+              sRelationCode = String.Format("INNER JOIN [dbo].[{0}] ON [{0}].[ID] = base.[ID_{1}]" _
+                , objRelation.Name, CInt(objRelation.ParentID))
               If Not Joins.Contains(sRelationCode) Then
                 Joins.Add(sRelationCode)
               End If
 
               ' Needs base table added
-              sFromCode = String.Format("FROM [dbo].[{0}]", objBaseColumn.Table.Name)
+              sFromCode = String.Format("FROM [dbo].[{0}] base", objBaseColumn.Table.Name)
               If Not FromTables.Contains(sFromCode) Then
                 FromTables.Add(sFromCode)
               End If
 
               ' Where clause
-              sWhereCode = String.Format("[dbo].[{0}].ID = @prm_id", objBaseColumn.Table.Name)
+              sWhereCode = "base.[ID] = @prm_id"
               If Not maryWhere.Contains(sWhereCode) Then
                 maryWhere.Add(sWhereCode)
               End If
@@ -908,33 +909,28 @@ Namespace Things
                 'Case enumAggregiateNumeric.Last
 
                 Case ScriptDB.AggregiateNumeric.Maximum
-                  sPartCode = String.Format("{0}SELECT @part_{1} = MAX([{3}].[{2}])" & vbNewLine _
-                              , [CodeCluster].Indentation, iPartNumber _
-                              , objThisColumn.Name, objThisColumn.Table.Name)
+                  sPartCode = String.Format("{0}SELECT @part_{1} = MAX(base.[{2}])" & vbNewLine _
+                              , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
 
                 Case ScriptDB.AggregiateNumeric.Minimum
-                  sPartCode = String.Format("{0}SELECT @part_{1} = MIN([{3}].[{2}])" & vbNewLine _
-                              , [CodeCluster].Indentation, iPartNumber _
-                              , objThisColumn.Name, objThisColumn.Table.Name)
+                  sPartCode = String.Format("{0}SELECT @part_{1} = MIN(base.[{2}])" & vbNewLine _
+                              , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
 
                   '          Case enumAggregiateNumeric.Specific
 
                 Case ScriptDB.AggregiateNumeric.Total
-                  sPartCode = String.Format("{0}SELECT @part_{1} = SUM([{3}].[{2}])" & vbNewLine _
-                              , [CodeCluster].Indentation, iPartNumber _
-                              , objThisColumn.Name, objThisColumn.Table.Name)
+                  sPartCode = String.Format("{0}SELECT @part_{1} = SUM(base.[{2}])" & vbNewLine _
+                              , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
                   bIsSummaryColumn = True
 
                 Case ScriptDB.AggregiateNumeric.Count
-                  sPartCode = String.Format("{0}SELECT @part_{1} = COUNT([{3}].[{2}])" & vbNewLine _
-                              , [CodeCluster].Indentation, iPartNumber _
-                              , objThisColumn.Name, objThisColumn.Table.Name)
+                  sPartCode = String.Format("{0}SELECT @part_{1} = COUNT(base.[{2}])" & vbNewLine _
+                              , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
                   bIsSummaryColumn = True
 
                 Case Else
-                  sPartCode = String.Format("{0}SELECT TOP 1 @part_{1} = [{3}].[{2}]" & vbNewLine _
-                              , [CodeCluster].Indentation, iPartNumber _
-                              , objThisColumn.Name, objThisColumn.Table.Name)
+                  sPartCode = String.Format("{0}SELECT TOP 1 @part_{1} = base.[{2}]" & vbNewLine _
+                              , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
 
               End Select
 
@@ -962,7 +958,7 @@ Namespace Things
                     , objThisColumn.Table.Name _
                     , sColumnFilter, sColumnOrder)
               Else
-                sPartCode = sPartCode & String.Format("{0}FROM [dbo].[{1}]" & vbNewLine _
+                sPartCode = sPartCode & String.Format("{0}FROM [dbo].[{1}] base" & vbNewLine _
                     & "{5}" & vbNewLine _
                     & "{0}WHERE [id_{2}] = @pID_{2} " & vbNewLine _
                     & "{0}{3}" & vbNewLine _
@@ -996,6 +992,8 @@ Namespace Things
               maryPrerequisitStatements.Add(sPartCode)
               LineOfCode.Code = String.Format("ISNULL(@part_{0},{1})", iPartNumber, objThisColumn.SafeReturnType)
 
+
+
             End If
 
             ' Add table join component
@@ -1010,9 +1008,9 @@ Namespace Things
             '    , PhysicalName([Component].Item("columnorderid").ToString, ObjectPrefix.Table)))
             'End If
 
-            End If
-
           End If
+
+        End If
       End If
 
         ' Add this column (or reference to it) to the main execute statement
@@ -1084,13 +1082,7 @@ Namespace Things
       'ChildCodeCluster.IsEvaluated = Not objCodeLibrary.BypassValidation
       SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
       LineOfCode.BypassEvaluation = objCodeLibrary.BypassValidation
-
-      'bocth?
-      ' If objCodeLibrary.ID = 4 Then
-      'LineOfCode.Code = ChildCodeCluster.Statement
-      '  Else
       LineOfCode.Code = String.Format(LineOfCode.Code, ChildCodeCluster.ToArray)
-      '   End If
 
       mbRequiresRowNumber = mbRequiresRowNumber Or objCodeLibrary.RowNumberRequired
       mbCalculatePostAudit = mbCalculatePostAudit Or objCodeLibrary.CalculatePostAudit

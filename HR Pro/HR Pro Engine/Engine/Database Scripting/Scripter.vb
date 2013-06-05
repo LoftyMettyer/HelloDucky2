@@ -487,54 +487,51 @@ Namespace ScriptDB
 
               End If
 
-                If Not objColumn.IsReadOnly Then
-                  Select Case objColumn.DataType
+              If Not objColumn.IsReadOnly Then
+                Select Case objColumn.DataType
 
-                    Case ScriptDB.ColumnTypes.Binary
-                      aryBaseTableColumns.Add(String.Format("[{0}] = [inserted].[{0}]", objColumn.Name))
-                      aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
+                  Case ScriptDB.ColumnTypes.Binary
+                    aryBaseTableColumns.Add(String.Format("[{0}] = [inserted].[{0}]", objColumn.Name))
+                    aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
 
-                    Case ScriptDB.ColumnTypes.Date
-                      aryBaseTableColumns.Add(String.Format("[{0}] = DATEADD(dd, 0, DATEDIFF(dd, 0, [inserted].[{0}]))", objColumn.Name))
-                      aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
+                  Case ScriptDB.ColumnTypes.Date
+                    aryBaseTableColumns.Add(String.Format("[{0}] = DATEADD(dd, 0, DATEDIFF(dd, 0, [inserted].[{0}]))", objColumn.Name))
+                    aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
 
-                    Case Else
-                      aryBaseTableColumns.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.ApplyFormatting("inserted")))
-                      aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
+                  Case Else
+                    aryBaseTableColumns.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.ApplyFormatting("inserted")))
+                    aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
 
-                  End Select
+                End Select
 
-                End If
-
+              End If
 
                 ' Concatenate all the audited columns
-                If objColumn.Audit Then
-                  If objColumn.IsCalculated Then
+              If objColumn.Audit Then
+                If objColumn.IsCalculated Then
 
-                    aryAuditInserts.Add(String.Format("        SELECT base.ID, NULL, convert(nvarchar({4}),[{0}]), {1}, {5}, base.[_description]" & vbNewLine & _
-                                        "            FROM dbo.[{3}] base" _
-                                        , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, objColumn.Table.PhysicalName, objColumn.DataTypeSize, CInt(objTable.ID)))
-                    aryAuditUpdates.Add(String.Format("        SELECT d.ID, convert(nvarchar({4}),d.[{0}]), convert(nvarchar({4}), base.[{0}]), {1}, {5}, base.[_description]" & vbNewLine & _
-                                        "            FROM deleted d" & vbNewLine & _
-                                        "            INNER JOIN dbo.[{3}] base ON d.[id] = base.[id] AND NOT d.[{0}] = base.[{0}]" _
-                                        , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, objColumn.Table.PhysicalName, objColumn.DataTypeSize, CInt(objTable.ID)))
-                    aryAuditDeletes.Add(String.Format("        SELECT base.ID, convert(nvarchar({4}),{2}), NULL, {1}, {5}, base.[_description]" & vbNewLine & _
-                                        "            FROM deleted base" _
-                                        , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, "", objColumn.DataTypeSize, CInt(objTable.ID)))
-                  Else
-                    aryAuditInserts.Add(String.Format("        SELECT ID, NULL, convert(nvarchar({2}),[{0}]), {1}, {3}, [_description]" & vbNewLine & _
-                                        "            FROM inserted WHERE [{0}] IS NOT NULL" _
-                                        , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize, CInt(objTable.ID)))
-                    aryAuditUpdates.Add(String.Format("        SELECT i.ID, convert(nvarchar({2}),d.[{0}]), convert(nvarchar({2}),i.[{0}]), {1}, {3}, i.[_description]" & vbNewLine & _
-                                        "            FROM inserted i" & vbNewLine & _
-                                        "            INNER JOIN deleted d ON i.[id] = d.[id] AND NOT d.[{0}] = i.[{0}] AND UPDATE([{0}])" _
-                                        , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize, CInt(objTable.ID)))
-                    aryAuditDeletes.Add(String.Format("        SELECT ID, convert(nvarchar({2}),[{0}]), NULL, {1}, {3}, [_description]" & vbNewLine & _
-                                        "            FROM deleted WHERE [{0}] IS NOT NULL" _
-                                        , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize, CInt(objTable.ID)))
-                  End If
+                  aryAuditInserts.Add(String.Format("        SELECT base.ID, NULL, convert(nvarchar({4}),[{0}]), {1}, {5}, base.[_description]" & vbNewLine & _
+                                      "            FROM dbo.[{3}] base" _
+                                      , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, objColumn.Table.PhysicalName, objColumn.DataTypeSize, CInt(objTable.ID)))
+                  aryAuditUpdates.Add(String.Format("        SELECT d.ID, convert(nvarchar({4}),d.[{0}]), convert(nvarchar({4}), base.[{0}]), {1}, {5}, base.[_description]" & vbNewLine & _
+                                      "            FROM deleted d" & vbNewLine & _
+                                      "            INNER JOIN dbo.[{3}] base ON d.[id] = base.[id] AND NOT d.[{0}] = base.[{0}]" _
+                                      , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, objColumn.Table.PhysicalName, objColumn.DataTypeSize, CInt(objTable.ID)))
+                Else
+                  aryAuditInserts.Add(String.Format("        SELECT ID, NULL, convert(nvarchar({2}),[{0}]), {1}, {3}, [_description]" & vbNewLine & _
+                                      "            FROM inserted WHERE [{0}] IS NOT NULL" _
+                                      , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize, CInt(objTable.ID)))
+                  aryAuditUpdates.Add(String.Format("        SELECT i.ID, convert(nvarchar({2}),d.[{0}]), convert(nvarchar({2}),i.[{0}]), {1}, {3}, i.[_description]" & vbNewLine & _
+                                      "            FROM inserted i" & vbNewLine & _
+                                      "            INNER JOIN deleted d ON i.[id] = d.[id] AND NOT d.[{0}] = i.[{0}] AND UPDATE([{0}])" _
+                                      , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize, CInt(objTable.ID)))
                 End If
+
+                aryAuditDeletes.Add(String.Format("        SELECT ID, convert(varchar(255),[{0}]), NULL, {1}, {2}, [_description]" & vbNewLine & _
+                    "            FROM deleted WHERE [{0}] IS NOT NULL", objColumn.Name, CInt(objColumn.ID), CInt(objTable.ID)))
+
               End If
+            End If
           Next
 
 
@@ -979,229 +976,106 @@ Namespace ScriptDB
 
     End Sub
 
-    Public Sub ScriptColumnCalculations(ByRef ProgressInfo As HCMProgressBar)
+    'Public Sub ScriptColumnCalculations(ByRef ProgressInfo As HCMProgressBar)
 
-      Dim objTable As Things.Table
-      Dim objColumn As Things.Column
-      Dim sObjectName As String = String.Empty
-      Dim sReturnType As String
+    '  Dim objTable As Things.Table
+    '  Dim objColumn As Things.Column
+    '  Dim sObjectName As String = String.Empty
+    '  Dim sReturnType As String
 
-      Dim sUDFWithOptions As String
-      Dim sUDFSQL As String = String.Empty
-      Dim sSafeDummyUDF As String
-      Dim sCalcSQL As String
-      Dim sParameters As String
+    '  Dim sUDFWithOptions As String
+    '  Dim sUDFSQL As String = String.Empty
+    '  Dim sSafeDummyUDF As String
+    '  Dim sCalcSQL As String
+    '  Dim sParameters As String
 
-      '      Dim aryDependantTables As Array
+    '  '      Dim aryDependantTables As Array
 
-      Try
+    '  Try
 
-        ' Put this on later, after development and after some tweaking in the system manager
-        'sUDFWithOptions = "WITH SCHEMABINDING"
-        sUDFWithOptions = String.Empty
+    '    ' Put this on later, after development and after some tweaking in the system manager
+    '    'sUDFWithOptions = "WITH SCHEMABINDING"
+    '    sUDFWithOptions = String.Empty
 
-        ProgressInfo.TotalSteps2 = Globals.Things.Count
-        For Each objTable In Globals.Things
+    '    ProgressInfo.TotalSteps2 = Globals.Things.Count
+    '    For Each objTable In Globals.Things
 
-          For Each objColumn In objTable.Objects(Things.Type.Column)
+    '      For Each objColumn In objTable.Objects(Things.Type.Column)
 
-            If objColumn.IsCalculated Then
+    '        If objColumn.IsCalculated Then
 
-              sObjectName = String.Format("udfcalc_{0}.{1}", objTable.Name, objColumn.Name)
-              '    sReturnType = objColumn.DataTypeSyntax
+    '          sObjectName = String.Format("udfcalc_{0}.{1}", objTable.Name, objColumn.Name)
+    '          '    sReturnType = objColumn.DataTypeSyntax
 
-              objColumn.Calculation.ExpressionType = ExpressionType.ColumnCalculation
-              sParameters = String.Format("@pID as integer, @pOriginalValue {0}", sReturnType)
+    '          objColumn.Calculation.ExpressionType = ExpressionType.ColumnCalculation
+    '          sParameters = String.Format("@pID as integer, @pOriginalValue {0}", sReturnType)
 
-              '    sParameters = objColumn.Calculation.Parameters
-              sCalcSQL = objColumn.Calculation.UDF.Code
+    '          '    sParameters = objColumn.Calculation.Parameters
+    '          sCalcSQL = objColumn.Calculation.UDF.Code
 
-              ' If we're dependant on any fields other than our base table wrap within the cache code
-              'If objColumn.Calculation.DependsOnTables.Length > 0 Then
+    '          ' If we're dependant on any fields other than our base table wrap within the cache code
+    '          'If objColumn.Calculation.DependsOnTables.Length > 0 Then
 
-              '  sUDFSQL = String.Format("({0})" & vbNewLine & _
-              '             "RETURNS {1}" & vbNewLine & _
-              '             sUDFWithOptions & vbNewLine & _
-              '             "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-              '             "    DECLARE @Result as {1} = @pOriginalValue;" & vbNewLine & vbNewLine & _
-              '             "    IF EXISTS (SELECT [actiontype] FROM [dbo].[{4}] WHERE [tablefromid] IN ({2}) AND [spid] = @@SPID)" & vbNewLine & _
-              '             "    BEGIN" & vbNewLine & vbNewLine & _
-              '             "         -- Execute calculation code" & vbNewLine & _
-              '             "{3}" & vbNewLine & vbNewLine & _
-              '             "    END" & vbNewLine &
-              '             "    RETURN ISNULL(@Result, 0);" & vbNewLine & _
-              '             "END" _
-              '            , sParameters, sReturnType, objColumn.Calculation.DependsOnTables _
-              '            , sCalcSQL, Tables.sysTriggerTransaction)
+    '          '  sUDFSQL = String.Format("({0})" & vbNewLine & _
+    '          '             "RETURNS {1}" & vbNewLine & _
+    '          '             sUDFWithOptions & vbNewLine & _
+    '          '             "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+    '          '             "    DECLARE @Result as {1} = @pOriginalValue;" & vbNewLine & vbNewLine & _
+    '          '             "    IF EXISTS (SELECT [actiontype] FROM [dbo].[{4}] WHERE [tablefromid] IN ({2}) AND [spid] = @@SPID)" & vbNewLine & _
+    '          '             "    BEGIN" & vbNewLine & vbNewLine & _
+    '          '             "         -- Execute calculation code" & vbNewLine & _
+    '          '             "{3}" & vbNewLine & vbNewLine & _
+    '          '             "    END" & vbNewLine &
+    '          '             "    RETURN ISNULL(@Result, 0);" & vbNewLine & _
+    '          '             "END" _
+    '          '            , sParameters, sReturnType, objColumn.Calculation.DependsOnTables _
+    '          '            , sCalcSQL, Tables.sysTriggerTransaction)
 
-              'Else
+    '          'Else
 
-              sUDFSQL = String.Format("({0})" & vbNewLine & _
-                         "RETURNS {1}" & vbNewLine & _
-                         sUDFWithOptions & vbNewLine & _
-                         "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                         "    DECLARE @Result as {1} = @pOriginalValue;" & vbNewLine & vbNewLine & _
-                         "    -- Execute calculation code" & vbNewLine & _
-                         "{2}" & vbNewLine & vbNewLine & _
-                         "    RETURN ISNULL(@Result, 0);" & vbNewLine & _
-                         "END" _
-                        , sParameters, objColumn.DataTypeSyntax, sCalcSQL)
-              '  End If
+    '          sUDFSQL = String.Format("({0})" & vbNewLine & _
+    '                     "RETURNS {1}" & vbNewLine & _
+    '                     sUDFWithOptions & vbNewLine & _
+    '                     "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+    '                     "    DECLARE @Result as {1} = @pOriginalValue;" & vbNewLine & vbNewLine & _
+    '                     "    -- Execute calculation code" & vbNewLine & _
+    '                     "{2}" & vbNewLine & vbNewLine & _
+    '                     "    RETURN ISNULL(@Result, 0);" & vbNewLine & _
+    '                     "END" _
+    '                    , sParameters, objColumn.DataTypeSyntax, sCalcSQL)
+    '          '  End If
 
-              sSafeDummyUDF = String.Format("({0})" & vbNewLine & _
-                           "RETURNS {1}" & vbNewLine & _
-                           "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                           "    DECLARE @Result as {1};" & vbNewLine & vbNewLine & _
-                           "    -- Execute calculation code" & vbNewLine & _
-                           "/*" & vbNewLine & "{2}" & vbNewLine & vbNewLine & _
-                           "*/" & vbNewLine & "    RETURN ISNULL(@Result, 0);" & vbNewLine & "END" _
-                          , sParameters, objColumn.DataTypeSyntax, sCalcSQL)
+    '          sSafeDummyUDF = String.Format("({0})" & vbNewLine & _
+    '                       "RETURNS {1}" & vbNewLine & _
+    '                       "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+    '                       "    DECLARE @Result as {1};" & vbNewLine & vbNewLine & _
+    '                       "    -- Execute calculation code" & vbNewLine & _
+    '                       "/*" & vbNewLine & "{2}" & vbNewLine & vbNewLine & _
+    '                       "*/" & vbNewLine & "    RETURN ISNULL(@Result, 0);" & vbNewLine & "END" _
+    '                      , sParameters, objColumn.DataTypeSyntax, sCalcSQL)
 
-              ' Try and create the UDF, if not put dummy code in place and record the error. To be updated once project go-ahead has been given (in other words I don't
-              ' won't to spend ages debugging the whole damn thing in case this never sees the light of day!!!!
-              If Not ScriptDB.CreateUDF("dbo", sObjectName, sUDFSQL, sSafeDummyUDF) Then
-                objColumn.Calculation.IsScriptSafe = False
-              End If
+    '          ' Try and create the UDF, if not put dummy code in place and record the error. To be updated once project go-ahead has been given (in other words I don't
+    '          ' won't to spend ages debugging the whole damn thing in case this never sees the light of day!!!!
+    '          If Not ScriptDB.CreateUDF("dbo", sObjectName, sUDFSQL, sSafeDummyUDF) Then
+    '            objColumn.Calculation.IsScriptSafe = False
+    '          End If
 
-            End If
+    '        End If
 
-          Next
+    '      Next
 
-          ProgressInfo.NextStep2()
-        Next
+    '      ProgressInfo.NextStep2()
+    '    Next
 
-      Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, sObjectName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sUDFSQL)
+    '  Catch ex As Exception
+    '    Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, sObjectName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, sUDFSQL)
 
-      Finally
-        ProgressInfo.NextStep1()
+    '  Finally
+    '    ProgressInfo.NextStep1()
 
-      End Try
+    '  End Try
 
-    End Sub
-
-    ' Generates and stores the code for all the calculations
-    '    Public Sub GenerateSQLCodeForObjects(ByRef ProgressInfo As HCMProgressBar)
-    Public Sub OLD_CreateObjects()
-
-      Dim objTable As Things.Table
-      ' Dim objExpression As Things.Expression
-      Dim objColumn As Things.Column
-      Dim sObjectName As String = String.Empty
-      'Dim sReturnType As String
-
-      Dim sUDFWithOptions As String
-      'Dim sUDFSQL As String
-      'Dim sSafeDummyUDF As String
-      'Dim sCalcSQL As String
-
-      'Dim aryDependantTables As Array
-
-      Try
-
-        ' Put this on later, after development and after some tweaking in the system manager
-        'sUDFWithOptions = "WITH SCHEMABINDING"
-        sUDFWithOptions = String.Empty
-
-        '  ProgressInfo.TotalSteps2 = Globals.Things.Count
-        For Each objTable In Globals.Things
-
-          For Each objColumn In objTable.Objects(Things.Type.Column)
-
-            If objColumn.IsCalculated Then
-
-              sObjectName = String.Format("udfcalc_{0}.{1}", objTable.Name, objColumn.Name)
-
-              ScriptDB.DropUDF("dbo", sObjectName)
-
-              objColumn.Calculation = objTable.Objects.GetObject(Things.Type.Expression, objColumn.CalcID)
-
-              If Not objColumn.Calculation Is Nothing Then
-                objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
-                objColumn.Calculation.AssociatedColumn = objColumn
-
-                objColumn.Calculation.GenerateCode()
-
-                ' Validate the expression
-                'sTestSQLCode = objColumn.Calculation.Code
-                'If Not CommitDB.ScriptStatement(sTestSQLCode) Then
-                '  objColumn.Calculation.IsValid = False
-                'End If
-
-
-                '                objColumn.DirectInView = objColumn.Calculation.IsSimpleCalc      ' This is calculated in the .code function - reorder some of the functions to make better code-reading.
-
-                '  aryDependantTables = objColumn.Calculation.DependsOnTables()
-
-                '  sReturnType = GetSQLColumnSyntax(objColumn)
-
-
-                '  ' If we're dependant on any fields other than our base table wrap within the cache code
-                '  If aryDependantTables.Length > 0 Then
-
-                '    sUDFSQL = String.Format("(@pID as integer, @pOriginalValue {0})" & vbNewLine & _
-                '               "RETURNS {0}" & vbNewLine & _
-                '               sUDFWithOptions & vbNewLine & _
-                '               "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                '               "    DECLARE @Result as {0} = @pOriginalValue;" & vbNewLine & vbNewLine & _
-                '               "    IF EXISTS (SELECT [actiontype] FROM [dbo].[{3}] WHERE [tablefromid] IN ({1}) AND [spid] = @@SPID)" & vbNewLine & _
-                '               "    BEGIN" & vbNewLine & vbNewLine & _
-                '               "         -- Execute calculation code" & vbNewLine & _
-                '               "{2}" & vbNewLine & vbNewLine & _
-                '               "    END" & vbNewLine & "--    ELSE" & vbNewLine & "--    BEGIN" & vbNewLine & vbNewLine & _
-                '               "    --    -- No need to update - read from table" & vbNewLine & _
-                '               "    --    SET @Result = @pOriginalValue" & vbNewLine & vbNewLine & _
-                '               "    --END" & vbNewLine & _
-                '               "    RETURN ISNULL(@Result, 0);" & vbNewLine & _
-                '               "END" _
-                '              , sReturnType, String.Join(",", aryDependantTables), sCalcSQL, Tables.sysTriggerTransaction)
-
-                '  Else
-
-                '    sUDFSQL = String.Format("(@pID as integer, @pOriginalValue {0})" & vbNewLine & _
-                '               "RETURNS {0}" & vbNewLine & _
-                '               sUDFWithOptions & vbNewLine & _
-                '               "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                '               "    DECLARE @Result as {0};" & vbNewLine & vbNewLine & _
-                '               "    -- Execute calculation code" & vbNewLine & _
-                '               "{1}" & vbNewLine & vbNewLine & _
-                '               "    RETURN ISNULL(@Result, 0);" & vbNewLine & _
-                '               "END" _
-                '              , sReturnType, sCalcSQL)
-                '  End If
-
-                '  sSafeDummyUDF = String.Format("(@pID as integer, @pOriginalValue {0})" & vbNewLine & _
-                '               "RETURNS {0}" & vbNewLine & _
-                '               "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                '               "    DECLARE @Result as {0};" & vbNewLine & vbNewLine & _
-                '               "    -- Execute calculation code" & vbNewLine & _
-                '               "/*" & vbNewLine & _
-                '               "{1}" & vbNewLine & vbNewLine & _
-                '               "*/" & vbNewLine & _
-                '               "    RETURN ISNULL(@Result, 0);" & vbNewLine & _
-                '               "END" _
-                '              , sReturnType, sCalcSQL)
-
-                'ScriptUDF("dbo", sObjectName, sUDFSQL, sSafeDummyUDF)
-              End If
-
-            End If
-
-          Next
-
-          '      ProgressInfo.NextStep2()
-        Next
-
-      Catch ex As Exception
-        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.LoadingData, sObjectName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
-
-      Finally
-        '     ProgressInfo.NextStep1()
-
-      End Try
-
-
-    End Sub
+    'End Sub
 
     Public Function CreateFunctions() As Boolean Implements iCommitDB.ScriptFunctions
 
@@ -1220,7 +1094,6 @@ Namespace ScriptDB
       Return bOK
 
     End Function
-
 
     Public Function CreateObjects() As Boolean Implements iCommitDB.ScriptObjects
 
@@ -1264,6 +1137,9 @@ Namespace ScriptDB
           '  Validation Masks
           For Each objExpression In objTable.Objects(Things.Type.Mask)
             sObjectName = String.Format("{0}{1}", Consts.MaskUDF, CInt(objExpression.ID))
+
+            ' Debug.Assert(sObjectName <> "udfmask_10039")
+
             objExpression.IsEvaluated = True
             objExpression.GenerateCode()
             ScriptDB.DropUDF("dbo", sObjectName)
@@ -1286,15 +1162,7 @@ Namespace ScriptDB
                 sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
 
                 '                Debug.Assert(sObjectName <> "udfcalc_Table1.simplelogic")
-                'Debug.Assert(sObjectName <> "udfcalc_Table1.simplelogic")
-
-                '                Debug.Assert(sObjectName <> "udfcalc_Table1.simpleifthenelse")
-
-                '     Debug.Assert(sObjectName <> "udfcalc_Table1.simpleifthenelse3")
-
-                '    Debug.Assert(sObjectName <> "udfcalc_Table1.simple2")
-
-
+                ' Debug.Assert(sObjectName <> "udfcalc_Personnel_Records.Holiday_Balance")
 
                 ScriptDB.DropUDF("dbo", sObjectName)
 
@@ -1314,7 +1182,6 @@ Namespace ScriptDB
             End If
           Next
 
-          '      ProgressInfo.NextStep2()
         Next
 
       Catch ex As Exception
@@ -1322,55 +1189,12 @@ Namespace ScriptDB
         bOK = False
 
       Finally
-        '     ProgressInfo.NextStep1()
 
       End Try
 
       Return bOK
 
     End Function
-
-    Public Sub ScriptRecordDescriptions(ByRef ProgressInfo As HCMProgressBar)
-
-      Dim objTable As Things.Table
-      'Dim sObjectName As String = ""
-      'Dim sSQLRecordDescription As String
-
-      'Try
-
-      '  ProgressInfo.TotalSteps2 = Globals.Things.Count
-      '  For Each objTable In Globals.Things
-      '    If Not objTable.RecordDescription Is Nothing Then
-      '      objTable.RecordDescription.GenerateCode()
-
-
-      '      sObjectName = String.Format("udfrecdesc_{0}", objTable.Name)
-      '      sSQLRecordDescription = String.Format("({0})" & vbNewLine & _
-      '       "RETURNS nvarchar(MAX)" & vbNewLine & _
-      '       "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-      '       "    DECLARE @Result as nvarchar(MAX);" & vbNewLine & vbNewLine & _
-      '       "    -- Execute calculation code" & vbNewLine & _
-      '       "{1}" & vbNewLine & vbNewLine & _
-      '       "    RETURN ISNULL(@Result, '');" & vbNewLine & _
-      '       "END" _
-      '      , objTable.RecordDescription.Parameters, objTable.RecordDescription.UDF.Code)
-
-      '      ScriptUDF("dbo", sObjectName, sSQLRecordDescription, "")
-      '    End If
-
-      '  Next
-
-      'Catch ex As Exception
-      '  Globals.ErrorLog.Add(Phoenix.ErrorHandler.Section.UDFs, "", Phoenix.ErrorHandler.Severity.Error, ex.Message, "")
-
-      'Finally
-      '  ProgressInfo.NextStep1()
-
-      'End Try
-
-
-
-    End Sub
 
 #End Region
 
