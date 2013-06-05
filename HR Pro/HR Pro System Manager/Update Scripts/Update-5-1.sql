@@ -29,6 +29,9 @@ DECLARE @bCategoriesProcessed bit,
 		@disciplineID integer,
 		@healthID integer,
 		@trainingID integer,
+		@skillID integer,
+		@benefitID integer,
+		@statabsenceID integer,
 		@absenceID integer;
 		
 DECLARE @tableid	integer,
@@ -786,10 +789,12 @@ PRINT 'Step - Menu & Category enhancements'
 			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Learning & Development')
 			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Pension')
 			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Configuration')
-			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Parental Leave')
+			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Statutory Leave')
 			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('General')
 			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Recruitment')
 			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Post')
+			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Skills')
+			INSERT dbo.tbuser_Object_Categories_Table ([Category_Name]) VALUES ('Benefits')			
 		END
 
 		IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spsys_getobjectcategories]') AND xtype = 'P')
@@ -811,8 +816,6 @@ PRINT 'Step - Menu & Category enhancements'
 	END
 
 
-
-
 	-- Populate catageories from existing definitions
 	IF NOT EXISTS(SELECT [SettingValue] FROM ASRSysSystemSettings WHERE [Section] = 'upgrade' and [SettingKey] = 'categoriesprocessed' AND [SettingValue] = 1)
 	BEGIN
@@ -826,7 +829,9 @@ PRINT 'Step - Menu & Category enhancements'
 		SELECT @disciplineID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Discipline';
 		SELECT @healthID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Health & Safety';	
 		SELECT @trainingID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Learning & Development';	
-
+		SELECT @skillID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Skills';	
+		SELECT @benefitID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Benefits';	
+		SELECT @statabsenceID = ID FROM tbuser_Object_Categories_Table WHERE [Category_Name] = 'Statutory Leave';	
 
 		-- Build category match lookup
 		INSERT @categorymatch
@@ -835,7 +840,7 @@ PRINT 'Step - Menu & Category enhancements'
 				WHERE [Category_Name] = 'Personnel'
 			UNION
 			SELECT ParameterValue AS TableID, ID AS categoryid FROM tbuser_Object_Categories_Table
-				INNER JOIN ASRSysModuleSetup ON ModuleKey IN ('MODULE_ABSENCE', 'MODULE_MATERNITY') AND [ParameterType] = 'PType_TableID'
+				INNER JOIN ASRSysModuleSetup ON ModuleKey IN ('MODULE_ABSENCE') AND [ParameterType] = 'PType_TableID'
 				WHERE [Category_Name] = 'Absence'
 			UNION
 			SELECT ParameterValue AS TableID, ID AS categoryid FROM tbuser_Object_Categories_Table
@@ -861,7 +866,20 @@ PRINT 'Step - Menu & Category enhancements'
 				SELECT TableID, @trainingID FROM ASRSysTables WHERE tablename LIKE '%training%' AND tabletype <> 3				
 			UNION	
 				SELECT TableID, @healthID AS categoryid FROM ASRSysTables WHERE (tablename LIKE '%incidents%' OR tablename LIKE '%health%' OR tablename LIKE '%safety%') AND tabletype <> 3
+			UNION	
+				SELECT TableID, @skillID AS categoryid FROM ASRSysTables 
+					WHERE (tablename LIKE '%qualification%' OR tablename LIKE '%competenc%' 
+					OR tablename LIKE '%nvq%' OR tablename LIKE '%language%') AND tabletype <> 3
+			UNION
+				SELECT TableID, @benefitID AS categoryid FROM ASRSysTables
+					WHERE (tablename LIKE '%benefit%' OR tablename LIKE '%eye_test%' OR tablename LIKE '%loans%') 
+						AND tabletype <> 3			
+			UNION
+				SELECT TableID, @statabsenceID AS categoryid FROM ASRSysTables
+					WHERE (tablename LIKE '%maternity%' OR tablename LIKE '%paternity%' OR tablename LIKE '%adoption%') 
+						AND tabletype <> 3			
 
+		DELETE FROM @categorymatch WHERE categoryID IS NULL
 		
 		-- Globals Deletes/Updates
 		INSERT tbsys_objectcategories ([objecttype], [objectid], [categoryid])
