@@ -2399,9 +2399,9 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
   ' Filter the user
   If cboOwner.ListIndex > 0 Then
     If cboOwner.ListIndex = 1 Then
-      strExtraWhereClause = strExtraWhereClause & IIf(strExtraWhereClause <> vbNullString, " AND ", "") & "username = '" & gsUserName & "'"
+      strExtraWhereClause = strExtraWhereClause & IIf(strExtraWhereClause <> vbNullString, " AND ", "") & "username = '" & Replace(gsUserName, "'", "''") & "'"
     Else
-      strExtraWhereClause = strExtraWhereClause & IIf(strExtraWhereClause <> vbNullString, " AND ", "") & "username = '" & cboOwner.Text & "'"
+      strExtraWhereClause = strExtraWhereClause & IIf(strExtraWhereClause <> vbNullString, " AND ", "") & "username = '" & Replace(cboOwner.Text, "'", "''") & "'"
     End If
   End If
   
