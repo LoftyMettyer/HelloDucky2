@@ -4495,7 +4495,9 @@ Public Sub SetCurrentRecord()
 End Sub
 
 Public Sub PrintGrid()
-Dim pstrError As String
+
+  Dim pstrError As String
+  Dim intResponse As Integer
 
   On Error GoTo ErrorTrap
   gobjErrorStack.PushStack "clsPrintGrid.PrintGrid()"
@@ -4527,8 +4529,20 @@ Dim pstrError As String
     .PageFooterFont.Bold = False
     .PageFooterFont.Underline = False
     
-    ' Force to print all rows
-    .PrintData ssPrintAllRows + ssPrintFieldOrder, False, gbPrinterPrompt
+    'intResponse = vbNo
+    'If .SelBookmarks > 1 Then
+    '  intResponse = MsgBox("Would you just like to print the selected rows?", vbQuestion + vbYesNoCancel)
+    'End If
+    
+    'Select Case intResponse
+    'Case vbNo
+      .PrintData ssPrintAllRows + ssPrintFieldOrder, False, gbPrinterPrompt
+    'Case vbYes
+    '  .PrintData ssPrintSelectedRows + ssPrintFieldOrder, False, gbPrinterPrompt
+    'Case Else
+    '  Exit Sub
+    'End Select
+
     .HeadFont.Underline = False
 
     .Redraw = True
