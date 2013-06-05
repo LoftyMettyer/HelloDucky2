@@ -1,0 +1,16 @@
+[Version]
+Version=1.0.0.2
+
+[COA_CalRepDates.ocx <0009>]
+Dest=$(AppPath)
+Date=16/10/2009
+Time=10:12
+Version=1.0.0.2
+CABFilename=COA_CalRepDates.CAB
+CABINFFile=COA_CalRepDates.INF
+Uses1=MSVBVM60.DLL
+Uses2=OLEAUT32.DLL
+Uses3=OLEPRO32.DLL
+Uses4=ASYCFILT.DLL
+Uses5=STDOLE2.TLB
+Uses6=COMCAT.DLL
