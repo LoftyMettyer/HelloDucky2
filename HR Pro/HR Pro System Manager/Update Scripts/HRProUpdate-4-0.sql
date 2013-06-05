@@ -12694,6 +12694,14 @@ PRINT 'Step 11 of X - New Shared Table Transfer Types'
 
 	END
 
+	-- Adjustment for v0.8 of Fulcrum absence spec
+	IF NOT EXISTS (SELECT TransferFieldID
+			FROM ASRSysAccordTransferFieldDefinitions WHERE TransferTypeID = 72 AND TransferFieldID = 11)
+	BEGIN	
+		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (11,72,1,''Absence ID'',0,0,2,1,1)'
+		EXEC sp_executesql @NVarCommand
+	END
+
 	-- Some test databases have had previous script run on this.
 	SELECT @NVarCommand = 'UPDATE [ASRSysAccordTransferFieldDefinitions]
 			SET [AlwaysTransfer] = 1
@@ -12748,7 +12756,6 @@ PRINT 'Step 11 of X - New Shared Table Transfer Types'
 		SELECT @NVarCommand = 'INSERT INTO ASRSysAccordTransferFieldDefinitions  (TransferFieldID, TransferTypeID, Mandatory, Description, IsCompanyCode, IsEmployeeCode, Direction, IsKeyField, AlwaysTransfer) VALUES (4,74,1,''Working Pattern PM'',0,0,2,0,0)'
 		EXEC sp_executesql @NVarCommand
 	END
-
 
 	-- Keeping in Touch Days (Maternity)
 	SELECT @iRecCount = count(TransferTypeID) FROM ASRSysAccordTransferTypes WHERE TransferTypeID = 75
