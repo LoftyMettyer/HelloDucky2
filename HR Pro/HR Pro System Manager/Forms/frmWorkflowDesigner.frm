@@ -8250,6 +8250,14 @@ Private Sub PrintElementDetails_WebForm(pwfElement As VB.Control)
 
             .PrintNormal "          Mandatory : " & IIf(CBool(asItems(55, iLoop)), "True", "False")
 
+          Case giWFFORMITEM_FRAME
+          
+            .PrintNormal "     Frame"
+            .PrintNormal "          Caption : " & asItems(3, iLoop)
+            If Len(asItems(81, iLoop)) > 0 Then
+              .PrintNormal "          Hotspot Identifier : " & asItems(81, iLoop)
+            End If
+
           Case giWFFORMITEM_INPUTVALUE_GRID
             .PrintNormal "     Record Selector : " & asItems(9, iLoop)
             .PrintNormal "          Type : Record Selector"
@@ -11446,7 +11454,7 @@ Private Sub Form_Load()
     End If
   End If
   
-  cmdOk.Enabled = IsNew
+  cmdOK.Enabled = IsNew
   
   scrollVertical.SmallChange = SMALLSCROLL
   scrollHorizontal.SmallChange = SMALLSCROLL
@@ -13722,13 +13730,13 @@ End Property
 Public Property Let IsChanged(pfNewValue As Boolean)
   mfChanged = pfNewValue
   mfPerge = pfNewValue
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
 End Property
 
 Public Sub SetChanged(pfPerge As Boolean)
   mfChanged = True
   mfPerge = (mfPerge Or pfPerge)
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
 End Sub
 
 Public Function IsUniqueIdentifier(psIdentifier As String, plngIgnoreElementIndex As Long) As Boolean
