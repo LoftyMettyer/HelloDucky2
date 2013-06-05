@@ -37,6 +37,7 @@ Begin VB.MDIForm frmSysMgr
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -1769,7 +1770,6 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     .Tools("ID_Post").Enabled = Application.PersonnelModule
     .Tools("ID_Absence").Enabled = Application.AbsenceModule
     .Tools("ID_AccordTransfer").Enabled = gbAccordPayrollModule
-    .Tools("ID_FusionIntegration").Enabled = gbFusionModule
     .Tools("ID_CMG").Enabled = gbCMGExportEnabled
     .Tools("ID_WorkflowSetup").Enabled = Application.WorkflowModule
     .Tools("ID_MobileSetup").Enabled = Application.MobileModule
@@ -1804,7 +1804,6 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     .Tools("ID_Post").Visible = Application.PersonnelModule
     .Tools("ID_Absence").Visible = Application.AbsenceModule
     .Tools("ID_AccordTransfer").Visible = gbAccordPayrollModule
-    .Tools("ID_FusionIntegration").Visible = gbFusionModule
     .Tools("ID_CMG").Visible = gbCMGExportEnabled
     .Tools("ID_WorkflowSetup").Visible = Application.WorkflowModule
     .Tools("ID_MobileSetup").Visible = Application.MobileModule
@@ -2136,13 +2135,7 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
-  
-'NHRD Prototype Fusion Code***********************************************************
-    Case "ID_FusionIntegration"
-      ' Call up the Fusion Integration Module Setup screen.
-      frmFusionTransfer.Show vbModal
-      Set frmFusionTransfer = Nothing
-         
+          
     Case "ID_CMG"
       ' Call up the CMG/Centrefile module setup
       frmCMGSetup.Show vbModal
@@ -2476,13 +2469,7 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
-      
-'NHRD Prototype Fusion Code***********************************************************
-    Case "ID_FusionIntegration"
-      ' Call up the Fusion Integration Module Setup screen.
-      frmFusionTransfer.Show vbModal
-      Set frmFusionTransfer = Nothing
-        
+             
     Case "ID_CMG"
       ' Call up the CMG/Centrefile module setup
       frmCMGSetup.Show vbModal
@@ -2831,13 +2818,7 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
-
-'NHRD Prototype Fusion Code***********************************************************
-    Case "ID_FusionIntegration"
-      ' Call up the Fusion Integration module setup
-      frmFusionTransfer.Show vbModal
-      Set frmFusionTransfer = Nothing
-      
+     
     Case "ID_CMG"
       ' Call up the CMG/Centrefile module setup
       frmCMGSetup.Show vbModal
@@ -3161,12 +3142,6 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
       
-'NHRD Prototype Fusion Code***********************************************************
-  Case "ID_FusionIntegration"
-      ' Call up the Fusion Integration module setup
-      frmFusionTransfer.Show vbModal
-      Set frmFusionTransfer = Nothing
-
     Case "ID_CMG"
       ' Call up the CMG/Centrefile module setup
       frmCMGSetup.Show vbModal
@@ -3490,13 +3465,7 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
-      
-'NHRD Prototype Fusion Code***********************************************************
-    Case "ID_FusionIntegration"
-      ' Call up the Fusion Integration module setup
-      frmFusionTransfer.Show vbModal
-      Set frmFusionTransfer = Nothing
-            
+                 
     Case "ID_CMG"
       ' Call up the CMG/Centrefile module setup
       frmCMGSetup.Show vbModal
@@ -3862,13 +3831,7 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
-      
-'NHRD Prototype Fusion Code***********************************************************
-    Case "ID_FusionIntegration"
-      ' Call up the Fusion Integration module setup
-      frmFusionTransfer.Show vbModal
-      Set frmFusionTransfer = Nothing
-            
+                 
     Case "ID_CMG"
       ' Call up the CMG/Centrefile module setup
       frmCMGSetup.Show vbModal
@@ -4159,13 +4122,7 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
-      
-'NHRD Prototype Fusion Code***********************************************************
-    Case "ID_FusionIntegration"
-      ' Call up the Fusion Integration module setup
-      frmFusionTransfer.Show vbModal
-      Set frmFusionTransfer = Nothing
-            
+                 
     Case "ID_CMG"
       ' Call up the CMG/Centrefile module setup
       frmCMGSetup.Show vbModal
@@ -4579,13 +4536,7 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
       ' Call up the Payroll Tranfer module setup
       frmAccordPayrollTransfer.Show vbModal
       Set frmAccordPayrollTransfer = Nothing
-      
-'NHRD Prototype Fusion Code***********************************************************
-    Case "ID_FusionIntegration"
-      ' Call up the Fusion Integration module setup
-      frmFusionTransfer.Show vbModal
-      Set frmFusionTransfer = Nothing
-            
+                 
     Case "ID_CMG"
       ' Call up the CMG/Centrefile module setup
       frmCMGSetup.Show vbModal
