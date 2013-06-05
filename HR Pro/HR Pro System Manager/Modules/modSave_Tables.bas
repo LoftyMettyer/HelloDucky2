@@ -565,14 +565,16 @@ Private Sub ReadCustomTriggers(ByVal sTableName As String, ByVal sPhysicalTableN
   Dim bTABLENAMEfound As Boolean
   Dim bTRIGGERNAMEfound As Boolean
   Dim bBEGINfound As Boolean
+  Dim ONfound As Boolean
+  Dim FORfound As Boolean
+  
   Dim sSQL As String
   Dim bProcessed As Boolean
   Dim sProcessedCode As String
-'
+
   Dim bInCommentBlock As Boolean
   Dim bIsCommentLine As Boolean
   Dim bTablenameConverted As Boolean
-
 
   Dim rsTriggers As New ADODB.Recordset
   Dim rsTriggerDefn As New ADODB.Recordset
@@ -632,11 +634,13 @@ Private Sub ReadCustomTriggers(ByVal sTableName As String, ByVal sPhysicalTableN
           If Not bInCommentBlock And Not bIsCommentLine Then
             'bBEGINfound = bBEGINfound Or InStr(1, " " & rsTriggerDefn!Text, "BEGIN", vbTextCompare) > 0
             bTRIGGERNAMEfound = bTRIGGERNAMEfound Or InStr(1, " " & rsTriggerDefn!Text, sTriggerName, vbTextCompare) > 0
+            'FORfound = FORfound Or InStr(1, " " & rsTriggerDefn!Text, " FOR", vbTextCompare) > 0
+            ONfound = ONfound Or InStr(1, " " & rsTriggerDefn!Text, " ON", vbTextCompare) > 0
           End If
           
           ' Process command string
           bTABLENAMEfound = InStr(1, " " & rsTriggerDefn!Text, sTableName, vbTextCompare) > 0
-          If bTABLENAMEfound And bTRIGGERNAMEfound And Not bInCommentBlock And Not bIsCommentLine And Not bTablenameConverted Then
+          If bTABLENAMEfound And bTRIGGERNAMEfound And Not bInCommentBlock And Not bIsCommentLine And Not bTablenameConverted And ONfound Then
             sTriggerDefn = sTriggerDefn & Replace(LCase(rsTriggerDefn!Text), LCase(sTableName), sPhysicalTableName)
             bTablenameConverted = True
           Else
