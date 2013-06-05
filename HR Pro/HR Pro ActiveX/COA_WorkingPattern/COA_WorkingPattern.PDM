@@ -1,0 +1,141 @@
+[Root]
+Most Recent Package=Dep File 2
+
+
+[Package|Dep File 1|Root]
+SubWizProgID=PDWizard.DepPkgSubWiz
+BuildFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_WorkingPattern
+Controls Design-Time Support=No
+
+[Package|Dep File 1|Configure DAO ISAMs]
+Applicable=No
+
+[Package|Dep File 1|Configure DAO ODBC]
+JetWorkspace=
+ODBCDirect=
+
+[Package|Dep File 1|Files Found]
+
+[Package|Dep File 1|Files Released]
+
+[Package|Dep File 1|Missing Dependency Information]
+C:\WINNT\system32\objsafe.tlb=
+
+[Package|Dep File 1|Out-of-Date Dependency Information]
+
+[Package|Dep File 1|Files Added]
+c:\winnt\system32\msstkprp.dll=This file is needed for usercontrol design-time support.
+
+[Package|Dep File 1|Files Removed]
+c:\winnt\system32\msstkprp.dll=
+
+[Package|Dep File 1|Files In Project]
+C:\dev\HR Pro\HR Pro ActiveX\COA_WorkingPattern\COA_WorkingPattern.ocx=Yes
+C:\WINNT\system32\MSVBVM60.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=Yes
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=Yes
+C:\WINNT\system32\objsafe.tlb=Yes
+C:\WINNT\system32\MSSTKPRP.DLL=No
+
+[Package|Dep File 1|Configure Registry Files]
+Applicable=
+
+[Package|Dep File 1|Configure Remote Servers]
+Applicable=
+
+[Package|Dep File 1|Install Locations]
+C:\dev\HR Pro\HR Pro ActiveX\COA_WorkingPattern\COA_WorkingPattern.ocx=$(WinSysPath)
+C:\WINNT\system32\MSVBVM60.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=$(WinSysPathSysFile)
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=$(WinSysPathSysFile)
+C:\WINNT\system32\objsafe.tlb=$(WinSysPath)
+
+[Package|Dep File 1|Configure Shared Files]
+Applicable=
+
+[Package|Dep File 1|DepFile]
+DepCabFile=COA_WorkingPattern.CAB
+DepCabRun=COA_WorkingPattern.INF
+
+[Package|Dep File 1|Package]
+PackageFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_WorkingPattern
+ProjectFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_WorkingPattern
+ServerSideCab=
+File1=C:\dev\HR Pro\HR Pro ActiveX\COA_WorkingPattern\COA_WorkingPattern.DEP
+Handler1=PDWizard.FolderDplySubWiz
+Handler2=PDWizard.WebPostDplySubWiz
+
+
+[Package|Dep File 2|Root]
+SubWizProgID=PDWizard.DepPkgSubWiz
+BuildFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_WorkingPattern
+Controls Design-Time Support=No
+
+[Package|Dep File 2|Configure DAO ISAMs]
+Applicable=No
+
+[Package|Dep File 2|Configure DAO ODBC]
+JetWorkspace=
+ODBCDirect=
+
+[Package|Dep File 2|Files Found]
+
+[Package|Dep File 2|Files Released]
+
+[Package|Dep File 2|Missing Dependency Information]
+
+[Package|Dep File 2|Out-of-Date Dependency Information]
+
+[Package|Dep File 2|Files Added]
+C:\WINNT\system32\MsStkPrp.dll=This file is needed for usercontrol design-time support.
+
+[Package|Dep File 2|Files Removed]
+c:\winnt\system32\msstkprp.dll=
+c:\winnt\system32\msvbvm60.dll=
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\oleaut32.dll=
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\olepro32.dll=
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\asycfilt.dll=
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\stdole2.tlb=
+c:\program files\microsoft visual studio\vb98\wizards\pdwizard\redist\comcat.dll=
+
+[Package|Dep File 2|Files In Project]
+C:\dev\HR Pro\HR Pro ActiveX\COA_WorkingPattern\COA_WorkingPattern.ocx=Yes
+C:\WINNT\system32\MSVBVM60.DLL=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEAUT32.DLL=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\OLEPRO32.DLL=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\ASYCFILT.DLL=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\STDOLE2.TLB=No
+C:\Program Files\Microsoft Visual Studio\VB98\Wizards\PDWizard\Redist\COMCAT.DLL=No
+C:\WINNT\system32\objsafe.tlb=Yes
+C:\WINNT\system32\MSSTKPRP.DLL=No
+
+[Package|Dep File 2|Configure Registry Files]
+Applicable=
+
+[Package|Dep File 2|Configure Remote Servers]
+Applicable=
+
+[Package|Dep File 2|Install Locations]
+C:\dev\HR Pro\HR Pro ActiveX\COA_WorkingPattern\COA_WorkingPattern.ocx=$(WinSysPath)
+C:\WINNT\system32\objsafe.tlb=$(WinSysPath)
+
+[Package|Dep File 2|Configure Shared Files]
+Applicable=
+
+[Package|Dep File 2|DepFile]
+DepCabFile=COA_WorkingPattern.CAB
+DepCabRun=COA_WorkingPattern.INF
+
+[Package|Dep File 2|Package]
+PackageFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_WorkingPattern
+ProjectFolder=C:\dev\HR Pro\HR Pro ActiveX\COA_WorkingPattern
+ServerSideCab=
+File1=C:\dev\HR Pro\HR Pro ActiveX\COA_WorkingPattern\COA_WorkingPattern.DEP
+Handler1=PDWizard.FolderDplySubWiz
+Handler2=PDWizard.WebPostDplySubWiz
