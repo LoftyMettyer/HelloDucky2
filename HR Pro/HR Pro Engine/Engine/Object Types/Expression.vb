@@ -565,7 +565,7 @@ Namespace Things
           Or Me.ExpressionType = ScriptDB.ExpressionType.TriggeredUpdate _
           Or Me.ExpressionType = ScriptDB.ExpressionType.Mask _
           Or Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription) Then
-        LineOfCode.Code = String.Format("@prm_{0}", objThisColumn.Name)
+        LineOfCode.Code = String.Format("ISNULL(@prm_{0},{1})", objThisColumn.Name, objThisColumn.SafeReturnType)
 
       ElseIf objThisColumn Is Me.AssociatedColumn _
         And Me.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn Then
@@ -576,7 +576,12 @@ Namespace Things
         LineOfCode.Code = String.Format("[dbo].[{0}](@prm_ID)", objThisColumn.Name)
 
       ElseIf objThisColumn.IsCalculated And objThisColumn.Table Is Me.AssociatedColumn.Table _
-          And Not Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter And Not Me.ExpressionType = ScriptDB.ExpressionType.Mask Then
+          And Not Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter And Not Me.ExpressionType = ScriptDB.ExpressionType.Mask _
+          And Not Me Is objThisColumn.Calculation Then
+
+        'If Dependencies.Contains(objThisColumn) Then
+        '  LineOfCode.Code = String.Format("@prm_{0}", objThisColumn.Name)
+        'Else
 
         If objThisColumn.Calculation Is Nothing Then
           objThisColumn.Calculation = objThisColumn.Table.GetObject(Type.Expression, objThisColumn.CalcID)
@@ -589,9 +594,12 @@ Namespace Things
         objThisColumn.Calculation.StartOfPartNumbers = Me.StartOfPartNumbers + Declarations.Count
         objThisColumn.Calculation.GenerateCode()
 
+
         objThisColumn.Calculation.ExpressionType = iBackupType
         LineOfCode = AddCalculatedColumn(objThisColumn)
         objThisColumn.Tuning.IncrementSelectAsCalculation()
+
+        '   End If
 
       Else
 

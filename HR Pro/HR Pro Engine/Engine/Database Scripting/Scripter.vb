@@ -660,27 +660,6 @@ Namespace ScriptDB
           sSQLSpecialUpdate = SpecialTrigger_BankHolidays(objTable)
           sSQLSpecialUpdate = sSQLSpecialUpdate & SpecialTrigger_Personnel(objTable)
 
-
-          '' Special bank holiday update
-          'If objTable Is Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_TableBHol").Table Then
-          '  arySpecialUpdate = New ArrayList
-
-          '  lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldBHolDate").Value
-          '  objModuleColumn = objTable.Column(lngColumnID)
-
-          '  For Each objTriggeredUpdate In Globals.OnBankHolidayUpdate
-          '    arySpecialUpdate.Add(String.Format("    WITH base AS (" & vbNewLine &
-          '        "        SELECT {0} FROM dbo.[{1}]" & vbNewLine & _
-          '        "        INNER JOIN inserted ON inserted.{2} {3})" & vbNewLine & _
-          '        "    UPDATE base SET [{0}] = [{0}];" _
-          '        , objTriggeredUpdate.Column.Name, objTriggeredUpdate.Column.Table.PhysicalName, objModuleColumn.Name, objTriggeredUpdate.Where))
-          '  Next
-
-          '  sSQLSpecialUpdate = vbNewLine & vbNewLine & String.Format(vbNewLine & "SET @iCount = @iCount;" & vbNewLine & "-- Bank Holiday update" & vbNewLine & _
-          '    "{0}", String.Join(vbNewLine & vbNewLine, arySpecialUpdate.ToArray())) & vbNewLine
-
-          'End If
-
           ' -------------------
           ' INSTEAD OF INSERT
           ' -------------------
@@ -988,7 +967,7 @@ Namespace ScriptDB
                 If Not objColumn.Calculation Is Nothing Then
                   objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
                   objColumn.Calculation.AssociatedColumn = objColumn
-                  objColumn.Calculation.GenerateCode()
+                  ' objColumn.Calculation.GenerateCode()
                 End If
 
               End If
