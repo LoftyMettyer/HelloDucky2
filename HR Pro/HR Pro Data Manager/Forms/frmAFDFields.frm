@@ -19,7 +19,6 @@ Begin VB.Form frmAFDFields
    HelpContextID   =   1007
    Icon            =   "frmAFDFields.frx":0000
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   6885
@@ -43,6 +42,7 @@ Begin VB.Form frmAFDFields
          _Version        =   196617
          DataMode        =   2
          RecordSelectors =   0   'False
+         Col.Count       =   8
          AllowUpdate     =   0   'False
          MultiLine       =   0   'False
          AllowRowSizing  =   0   'False
@@ -140,6 +140,25 @@ Begin VB.Form frmAFDFields
             Strikethrough   =   0   'False
          EndProperty
       End
+   End
+   Begin VB.CommandButton cmdAction 
+      Caption         =   "&OK"
+      Default         =   -1  'True
+      Height          =   400
+      Index           =   0
+      Left            =   3225
+      TabIndex        =   20
+      Top             =   6360
+      Width           =   1200
+   End
+   Begin VB.CommandButton cmdAction 
+      Caption         =   "&Cancel"
+      Height          =   400
+      Index           =   1
+      Left            =   4530
+      TabIndex        =   21
+      Top             =   6360
+      Width           =   1200
    End
    Begin VB.Frame fraIndividual 
       Caption         =   "Selected Record :"
@@ -383,7 +402,7 @@ Begin VB.Form frmAFDFields
       Visible         =   0   'False
       Width           =   5580
       Begin VB.CheckBox chkMergedInitials 
-         Caption         =   "Include ?"
+         Caption         =   "Include"
          Height          =   285
          Left            =   4300
          TabIndex        =   25
@@ -399,7 +418,7 @@ Begin VB.Form frmAFDFields
          Width           =   2500
       End
       Begin VB.CheckBox chkMergedForename 
-         Caption         =   "Include ?"
+         Caption         =   "Include"
          Height          =   285
          Left            =   4300
          TabIndex        =   23
@@ -415,7 +434,7 @@ Begin VB.Form frmAFDFields
          Width           =   2500
       End
       Begin VB.CheckBox chkMergedSurname 
-         Caption         =   "Include ?"
+         Caption         =   "Include"
          Height          =   285
          Left            =   4300
          TabIndex        =   27
@@ -431,7 +450,7 @@ Begin VB.Form frmAFDFields
          Width           =   2500
       End
       Begin VB.CheckBox chkMergedTelephone 
-         Caption         =   "Include ?"
+         Caption         =   "Include"
          Height          =   270
          Left            =   4300
          TabIndex        =   31
@@ -440,7 +459,7 @@ Begin VB.Form frmAFDFields
          Width           =   950
       End
       Begin VB.CheckBox chkMergedAddress 
-         Caption         =   "Include ?"
+         Caption         =   "Include"
          Height          =   345
          Left            =   4300
          TabIndex        =   29
@@ -509,25 +528,6 @@ Begin VB.Form frmAFDFields
          Width           =   855
       End
    End
-   Begin VB.CommandButton cmdAction 
-      Caption         =   "&OK"
-      Default         =   -1  'True
-      Height          =   400
-      Index           =   0
-      Left            =   3225
-      TabIndex        =   20
-      Top             =   6360
-      Width           =   1200
-   End
-   Begin VB.CommandButton cmdAction 
-      Caption         =   "&Cancel"
-      Height          =   400
-      Index           =   1
-      Left            =   4530
-      TabIndex        =   21
-      Top             =   6360
-      Width           =   1200
-   End
    Begin VB.Label lblWarning 
       BackStyle       =   0  'Transparent
       Caption         =   "Note : You have amended the original data returned from Afd..."
@@ -559,7 +559,7 @@ Private mobjQAPostcodes() As HRProDataMgr.PostCode
 
 Public Function InitialiseAFD(PostCode As String, fIndiv As Boolean, frmCallingForm As Form, FieldName As String) As Boolean
 
-  Dim Temp As String     ' Copy of the postcode, incase AFD detects an old postcode
+  Dim temp As String     ' Copy of the postcode, incase AFD detects an old postcode
   Dim RecNo As Long      ' Current record number from the return set
   Dim Result As Long     ' Status of the search
   Dim nnFlags As Long    ' Afd parameters
