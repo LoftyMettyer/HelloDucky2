@@ -1,10 +1,10 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Begin VB.Form frmGlobalFunctions 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Global "
-   ClientHeight    =   4920
+   ClientHeight    =   5295
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   9915
@@ -23,18 +23,18 @@ Begin VB.Form frmGlobalFunctions
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   4920
+   ScaleHeight     =   5295
    ScaleWidth      =   9915
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
    Begin TabDlg.SSTab SSTab1 
-      Height          =   4200
+      Height          =   4560
       Left            =   90
-      TabIndex        =   28
+      TabIndex        =   26
       Top             =   90
-      Width           =   9700
+      Width           =   9705
       _ExtentX        =   17119
-      _ExtentY        =   7408
+      _ExtentY        =   8043
       _Version        =   393216
       Style           =   1
       Tabs            =   2
@@ -43,9 +43,9 @@ Begin VB.Form frmGlobalFunctions
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmGlobalFunctions.frx":000C
       Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "fraDefinition(0)"
+      Tab(0).Control(0)=   "fraDefinition(1)"
       Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "fraDefinition(1)"
+      Tab(0).Control(1)=   "fraDefinition(0)"
       Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
@@ -53,11 +53,215 @@ Begin VB.Form frmGlobalFunctions
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraColumns"
       Tab(1).ControlCount=   1
+      Begin VB.Frame fraDefinition 
+         Height          =   2355
+         Index           =   0
+         Left            =   135
+         TabIndex        =   27
+         Top             =   360
+         Width           =   9405
+         Begin VB.TextBox txtUserName 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   5805
+            MaxLength       =   30
+            TabIndex        =   4
+            Top             =   300
+            Width           =   3405
+         End
+         Begin VB.TextBox txtName 
+            Height          =   315
+            Left            =   1530
+            MaxLength       =   50
+            TabIndex        =   1
+            Top             =   300
+            Width           =   3090
+         End
+         Begin VB.TextBox txtDesc 
+            Height          =   1080
+            Left            =   1530
+            MaxLength       =   255
+            MultiLine       =   -1  'True
+            ScrollBars      =   2  'Vertical
+            TabIndex        =   3
+            Top             =   1110
+            Width           =   3090
+         End
+         Begin VB.ComboBox cboCategory 
+            Height          =   315
+            Left            =   1530
+            Style           =   2  'Dropdown List
+            TabIndex        =   2
+            Top             =   720
+            Width           =   3090
+         End
+         Begin SSDataWidgets_B.SSDBGrid grdAccess 
+            Height          =   1485
+            Left            =   5805
+            TabIndex        =   5
+            Top             =   705
+            Width           =   3405
+            ScrollBars      =   2
+            _Version        =   196617
+            DataMode        =   2
+            RecordSelectors =   0   'False
+            Col.Count       =   3
+            stylesets.count =   2
+            stylesets(0).Name=   "SysSecMgr"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
+            stylesets(0).HasFont=   -1  'True
+            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(0).Picture=   "frmGlobalFunctions.frx":0044
+            stylesets(1).Name=   "ReadOnly"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
+            stylesets(1).HasFont=   -1  'True
+            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(1).Picture=   "frmGlobalFunctions.frx":0060
+            MultiLine       =   0   'False
+            AllowRowSizing  =   0   'False
+            AllowGroupSizing=   0   'False
+            AllowColumnSizing=   0   'False
+            AllowGroupMoving=   0   'False
+            AllowColumnMoving=   0
+            AllowGroupSwapping=   0   'False
+            AllowColumnSwapping=   0
+            AllowGroupShrinking=   0   'False
+            AllowColumnShrinking=   0   'False
+            AllowDragDrop   =   0   'False
+            SelectTypeCol   =   0
+            SelectTypeRow   =   0
+            BalloonHelp     =   0   'False
+            MaxSelectedRows =   0
+            ForeColorEven   =   0
+            BackColorEven   =   -2147483643
+            BackColorOdd    =   -2147483643
+            RowHeight       =   423
+            Columns.Count   =   3
+            Columns(0).Width=   2963
+            Columns(0).Caption=   "User Group"
+            Columns(0).Name =   "GroupName"
+            Columns(0).AllowSizing=   0   'False
+            Columns(0).DataField=   "Column 0"
+            Columns(0).DataType=   8
+            Columns(0).FieldLen=   256
+            Columns(0).Locked=   -1  'True
+            Columns(1).Width=   2566
+            Columns(1).Caption=   "Access"
+            Columns(1).Name =   "Access"
+            Columns(1).AllowSizing=   0   'False
+            Columns(1).DataField=   "Column 1"
+            Columns(1).DataType=   8
+            Columns(1).FieldLen=   256
+            Columns(1).Locked=   -1  'True
+            Columns(1).Style=   3
+            Columns(1).Row.Count=   3
+            Columns(1).Col.Count=   2
+            Columns(1).Row(0).Col(0)=   "Read / Write"
+            Columns(1).Row(1).Col(0)=   "Read Only"
+            Columns(1).Row(2).Col(0)=   "Hidden"
+            Columns(2).Width=   3200
+            Columns(2).Visible=   0   'False
+            Columns(2).Caption=   "SysSecMgr"
+            Columns(2).Name =   "SysSecMgr"
+            Columns(2).DataField=   "Column 2"
+            Columns(2).DataType=   8
+            Columns(2).FieldLen=   256
+            TabNavigation   =   1
+            _ExtentX        =   6006
+            _ExtentY        =   2619
+            _StockProps     =   79
+            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+         End
+         Begin VB.Label lblOwner 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Owner :"
+            Height          =   195
+            Left            =   4950
+            TabIndex        =   32
+            Top             =   360
+            Width           =   810
+         End
+         Begin VB.Label lblName 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Name :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   31
+            Top             =   360
+            Width           =   690
+         End
+         Begin VB.Label lblDescription 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Description :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   30
+            Top             =   1155
+            Width           =   1080
+         End
+         Begin VB.Label lblAccess 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Access :"
+            Height          =   195
+            Left            =   4950
+            TabIndex        =   29
+            Top             =   765
+            Width           =   825
+         End
+         Begin VB.Label lblCategory 
+            Caption         =   "Category :"
+            Height          =   240
+            Left            =   195
+            TabIndex        =   28
+            Top             =   765
+            Width           =   1005
+         End
+      End
       Begin VB.Frame fraColumns 
          Enabled         =   0   'False
-         Height          =   3660
+         Height          =   4050
          Left            =   -74865
-         TabIndex        =   20
+         TabIndex        =   18
          Top             =   360
          Width           =   9400
          Begin VB.CommandButton cmdClearAll 
@@ -65,7 +269,7 @@ Begin VB.Form frmGlobalFunctions
             Enabled         =   0   'False
             Height          =   400
             Left            =   7950
-            TabIndex        =   25
+            TabIndex        =   23
             Top             =   1935
             Width           =   1200
          End
@@ -73,7 +277,7 @@ Begin VB.Form frmGlobalFunctions
             Caption         =   "&Add..."
             Height          =   400
             Left            =   7950
-            TabIndex        =   22
+            TabIndex        =   20
             Top             =   315
             Width           =   1200
          End
@@ -82,7 +286,7 @@ Begin VB.Form frmGlobalFunctions
             Enabled         =   0   'False
             Height          =   400
             Left            =   7950
-            TabIndex        =   23
+            TabIndex        =   21
             Top             =   855
             Width           =   1200
          End
@@ -91,14 +295,14 @@ Begin VB.Form frmGlobalFunctions
             Enabled         =   0   'False
             Height          =   400
             Left            =   7950
-            TabIndex        =   24
+            TabIndex        =   22
             Top             =   1395
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid grdColumns 
-            Height          =   3160
+            Height          =   3570
             Left            =   210
-            TabIndex        =   21
+            TabIndex        =   19
             Top             =   315
             Width           =   7440
             ScrollBars      =   2
@@ -177,7 +381,7 @@ Begin VB.Form frmGlobalFunctions
             Columns(6).FieldLen=   256
             TabNavigation   =   1
             _ExtentX        =   13123
-            _ExtentY        =   5574
+            _ExtentY        =   6297
             _StockProps     =   79
             BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -204,8 +408,8 @@ Begin VB.Form frmGlobalFunctions
          Height          =   1650
          Index           =   1
          Left            =   135
-         TabIndex        =   7
-         Top             =   2350
+         TabIndex        =   0
+         Top             =   2760
          Width           =   9400
          Begin VB.TextBox txtFilter 
             BackColor       =   &H8000000F&
@@ -213,7 +417,7 @@ Begin VB.Form frmGlobalFunctions
             Height          =   315
             Left            =   6930
             Locked          =   -1  'True
-            TabIndex        =   18
+            TabIndex        =   16
             Top             =   1080
             Width           =   1965
          End
@@ -223,7 +427,7 @@ Begin VB.Form frmGlobalFunctions
             Height          =   315
             Left            =   6930
             Locked          =   -1  'True
-            TabIndex        =   15
+            TabIndex        =   13
             Top             =   705
             Width           =   1965
          End
@@ -231,7 +435,7 @@ Begin VB.Form frmGlobalFunctions
             Caption         =   "&Filter"
             Height          =   195
             Left            =   5865
-            TabIndex        =   17
+            TabIndex        =   15
             Top             =   1120
             Width           =   975
          End
@@ -239,7 +443,7 @@ Begin VB.Form frmGlobalFunctions
             Caption         =   "&Picklist"
             Height          =   195
             Left            =   5865
-            TabIndex        =   14
+            TabIndex        =   12
             Top             =   750
             Width           =   930
          End
@@ -247,7 +451,7 @@ Begin VB.Form frmGlobalFunctions
             Caption         =   "&All"
             Height          =   195
             Left            =   5865
-            TabIndex        =   13
+            TabIndex        =   11
             Top             =   365
             Value           =   -1  'True
             Width           =   675
@@ -257,7 +461,7 @@ Begin VB.Form frmGlobalFunctions
             Enabled         =   0   'False
             Height          =   315
             Left            =   8900
-            TabIndex        =   16
+            TabIndex        =   14
             Top             =   705
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -267,30 +471,30 @@ Begin VB.Form frmGlobalFunctions
             Enabled         =   0   'False
             Height          =   315
             Left            =   8900
-            TabIndex        =   19
+            TabIndex        =   17
             Top             =   1080
             UseMaskColor    =   -1  'True
             Width           =   330
          End
          Begin VB.ComboBox cboTables 
             Height          =   315
-            ItemData        =   "frmGlobalFunctions.frx":0044
+            ItemData        =   "frmGlobalFunctions.frx":007C
             Left            =   1620
-            List            =   "frmGlobalFunctions.frx":0046
+            List            =   "frmGlobalFunctions.frx":007E
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   9
+            TabIndex        =   7
             Top             =   315
             Width           =   3000
          End
          Begin VB.ComboBox cboChild 
             Height          =   315
-            ItemData        =   "frmGlobalFunctions.frx":0048
+            ItemData        =   "frmGlobalFunctions.frx":0080
             Left            =   1620
-            List            =   "frmGlobalFunctions.frx":004A
+            List            =   "frmGlobalFunctions.frx":0082
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   11
+            TabIndex        =   9
             Top             =   705
             Width           =   3000
          End
@@ -301,7 +505,7 @@ Begin VB.Form frmGlobalFunctions
             Height          =   195
             Index           =   5
             Left            =   4920
-            TabIndex        =   12
+            TabIndex        =   10
             Top             =   360
             Width           =   870
          End
@@ -312,7 +516,7 @@ Begin VB.Form frmGlobalFunctions
             Height          =   195
             Index           =   1
             Left            =   225
-            TabIndex        =   8
+            TabIndex        =   6
             Top             =   360
             Width           =   1290
          End
@@ -323,201 +527,9 @@ Begin VB.Form frmGlobalFunctions
             Height          =   195
             Index           =   2
             Left            =   225
-            TabIndex        =   10
+            TabIndex        =   8
             Top             =   750
             Width           =   1155
-         End
-      End
-      Begin VB.Frame fraDefinition 
-         Height          =   1950
-         Index           =   0
-         Left            =   135
-         TabIndex        =   29
-         Top             =   360
-         Width           =   9400
-         Begin VB.TextBox txtUserName 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   5865
-            MaxLength       =   30
-            TabIndex        =   5
-            Top             =   315
-            Width           =   3405
-         End
-         Begin VB.TextBox txtName 
-            Height          =   315
-            Left            =   1620
-            MaxLength       =   50
-            TabIndex        =   1
-            Top             =   315
-            Width           =   3000
-         End
-         Begin VB.TextBox txtDesc 
-            Height          =   1080
-            Left            =   1620
-            MaxLength       =   255
-            MultiLine       =   -1  'True
-            ScrollBars      =   2  'Vertical
-            TabIndex        =   3
-            Top             =   705
-            Width           =   3000
-         End
-         Begin SSDataWidgets_B.SSDBGrid grdAccess 
-            Height          =   1080
-            Left            =   5850
-            TabIndex        =   30
-            Top             =   720
-            Width           =   3405
-            ScrollBars      =   2
-            _Version        =   196617
-            DataMode        =   2
-            RecordSelectors =   0   'False
-            Col.Count       =   3
-            stylesets.count =   2
-            stylesets(0).Name=   "SysSecMgr"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
-            stylesets(0).HasFont=   -1  'True
-            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            stylesets(0).Picture=   "frmGlobalFunctions.frx":004C
-            stylesets(1).Name=   "ReadOnly"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
-            stylesets(1).HasFont=   -1  'True
-            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            stylesets(1).Picture=   "frmGlobalFunctions.frx":0068
-            MultiLine       =   0   'False
-            AllowRowSizing  =   0   'False
-            AllowGroupSizing=   0   'False
-            AllowColumnSizing=   0   'False
-            AllowGroupMoving=   0   'False
-            AllowColumnMoving=   0
-            AllowGroupSwapping=   0   'False
-            AllowColumnSwapping=   0
-            AllowGroupShrinking=   0   'False
-            AllowColumnShrinking=   0   'False
-            AllowDragDrop   =   0   'False
-            SelectTypeCol   =   0
-            SelectTypeRow   =   0
-            BalloonHelp     =   0   'False
-            MaxSelectedRows =   0
-            ForeColorEven   =   0
-            BackColorEven   =   -2147483643
-            BackColorOdd    =   -2147483643
-            RowHeight       =   423
-            Columns.Count   =   3
-            Columns(0).Width=   2963
-            Columns(0).Caption=   "User Group"
-            Columns(0).Name =   "GroupName"
-            Columns(0).AllowSizing=   0   'False
-            Columns(0).DataField=   "Column 0"
-            Columns(0).DataType=   8
-            Columns(0).FieldLen=   256
-            Columns(0).Locked=   -1  'True
-            Columns(1).Width=   2566
-            Columns(1).Caption=   "Access"
-            Columns(1).Name =   "Access"
-            Columns(1).AllowSizing=   0   'False
-            Columns(1).DataField=   "Column 1"
-            Columns(1).DataType=   8
-            Columns(1).FieldLen=   256
-            Columns(1).Locked=   -1  'True
-            Columns(1).Style=   3
-            Columns(1).Row.Count=   3
-            Columns(1).Col.Count=   2
-            Columns(1).Row(0).Col(0)=   "Read / Write"
-            Columns(1).Row(1).Col(0)=   "Read Only"
-            Columns(1).Row(2).Col(0)=   "Hidden"
-            Columns(2).Width=   3200
-            Columns(2).Visible=   0   'False
-            Columns(2).Caption=   "SysSecMgr"
-            Columns(2).Name =   "SysSecMgr"
-            Columns(2).DataField=   "Column 2"
-            Columns(2).DataType=   8
-            Columns(2).FieldLen=   256
-            TabNavigation   =   1
-            _ExtentX        =   6006
-            _ExtentY        =   1905
-            _StockProps     =   79
-            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Owner :"
-            Height          =   195
-            Index           =   2
-            Left            =   4965
-            TabIndex        =   4
-            Top             =   360
-            Width           =   720
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Name :"
-            Height          =   195
-            Index           =   0
-            Left            =   225
-            TabIndex        =   0
-            Top             =   360
-            Width           =   825
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Description :"
-            Height          =   195
-            Index           =   1
-            Left            =   225
-            TabIndex        =   2
-            Top             =   750
-            Width           =   1215
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Access :"
-            Height          =   195
-            Index           =   3
-            Left            =   4965
-            TabIndex        =   6
-            Top             =   765
-            Width           =   735
          End
       End
    End
@@ -526,8 +538,8 @@ Begin VB.Form frmGlobalFunctions
       Default         =   -1  'True
       Height          =   400
       Left            =   7350
-      TabIndex        =   26
-      Top             =   4400
+      TabIndex        =   24
+      Top             =   4755
       Width           =   1200
    End
    Begin VB.CommandButton cmdCancel 
@@ -535,8 +547,8 @@ Begin VB.Form frmGlobalFunctions
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   8595
-      TabIndex        =   27
-      Top             =   4400
+      TabIndex        =   25
+      Top             =   4755
       Width           =   1200
    End
 End
@@ -592,7 +604,7 @@ Private Sub PopulateAccessGrid()
   ' Get the recordset of user groups and their access on this definition.
   Select Case typGlobal
     Case glAdd
-      Set rsAccess = GetUtilityAccessRecords(UtlGlobalAdd, mlFunctionID, mbFromCopy)
+      Set rsAccess = GetUtilityAccessRecords(utlGlobalAdd, mlFunctionID, mbFromCopy)
     Case glUpdate
       Set rsAccess = GetUtilityAccessRecords(utlGlobalUpdate, mlFunctionID, mbFromCopy)
     Case glDelete
@@ -681,6 +693,9 @@ Public Function Initialise(bNew As Boolean, bFromCopy As Boolean, typeGlobal As 
     txtUserName = gsUserName
     mblnDefinitionCreator = True
     Call cboTables_Click
+    
+    GetObjectCategories cboCategory, utlGlobalAdd, 0, cboTables.ItemData(cboTables.ListIndex)
+    SetComboItem cboCategory, IIf(glngCurrentCategoryID = -1, 0, glngCurrentCategoryID)
     
     PopulateAccessGrid
     
@@ -1969,6 +1984,7 @@ Private Function SaveDefinition() As Boolean
   Dim sSQL As String
   Dim strName As String
   Dim strRecSelStatus As String
+  Dim iUtilityType As UtilityType
 
   Dim lngColumnType As Long
   Dim strColumnValue As String
@@ -2000,12 +2016,14 @@ Private Function SaveDefinition() As Boolean
   'the current user read it
   Select Case typGlobal
     Case glAdd
-      Call UtilityAmended(UtlGlobalAdd, mlFunctionID, mlngTimeStamp, blnContinueSave, blnSaveAsNew)
+      iUtilityType = utlGlobalAdd
     Case glDelete
-      Call UtilityAmended(utlGlobalDelete, mlFunctionID, mlngTimeStamp, blnContinueSave, blnSaveAsNew)
+      iUtilityType = utlGlobalDelete
     Case glUpdate
-      Call UtilityAmended(utlGlobalUpdate, mlFunctionID, mlngTimeStamp, blnContinueSave, blnSaveAsNew)
+      iUtilityType = utlGlobalUpdate
   End Select
+
+  Call UtilityAmended(utlGlobalAdd, mlFunctionID, mlngTimeStamp, blnContinueSave, blnSaveAsNew)
 
   If blnContinueSave = False Then
     SaveDefinition = False
@@ -2093,7 +2111,7 @@ If mlFunctionID > 0 Then
     
     Select Case typGlobal
     Case glAdd
-      CheckCanMakeHiddenInBatchJobs UtlGlobalAdd, _
+      CheckCanMakeHiddenInBatchJobs utlGlobalAdd, _
         CStr(mlFunctionID), _
         txtUserName.Text, _
         iCount_Owner, _
@@ -2178,31 +2196,19 @@ End If
     sSQL = "Delete From ASRSysGlobalItems Where FunctionID = " & mlFunctionID
     datData.ExecuteSql sSQL
   
-    Select Case typGlobal
-      Case glAdd
-        Call UtilUpdateLastSaved(UtlGlobalAdd, mlFunctionID)
-      Case glUpdate
-        Call UtilUpdateLastSaved(utlGlobalUpdate, mlFunctionID)
-      Case glDelete
-        Call UtilUpdateLastSaved(utlGlobalDelete, mlFunctionID)
-    End Select
+    Call UtilUpdateLastSaved(iUtilityType, mlFunctionID)
   
   Else
     InsertFunction strName, txtDesc, Mid$(Me.Caption, 8, 1), cboTables.ItemData(cboTables.ListIndex), _
       optAllRecords, lFilterID, lPicklistID, lChildID
   
-    Select Case typGlobal
-    Case glAdd
-      Call UtilCreated(UtlGlobalAdd, mlFunctionID)
-    Case glUpdate
-      Call UtilCreated(utlGlobalUpdate, mlFunctionID)
-    Case glDelete
-      Call UtilCreated(utlGlobalDelete, mlFunctionID)
-    End Select
-  
+    Call UtilUpdateLastSaved(iUtilityType, mlFunctionID)
+    
   End If
   
   SaveAccess
+  SaveObjectCategories cboCategory, iUtilityType, mlFunctionID
+  
 
   With grdColumns
     'TM20010807 Fault 2617 - needs to redraw so SaveDefinition can be called before showing the form.
@@ -2337,6 +2343,7 @@ Private Function RetreiveDefinition() As Boolean
   Dim strValue As String
   Dim iCount As Integer
   Dim iCount2 As Integer
+  Dim iUtilityType As UtilityType
   
   Dim strTemp As String
   
@@ -2359,23 +2366,27 @@ Private Function RetreiveDefinition() As Boolean
   ' Treat the Global Function as read-only if the user does not have permission to edit them.
   Select Case typGlobal
   Case glAdd
+    iUtilityType = utlGlobalAdd
     mblnReadOnly = Not datGeneral.SystemPermission("GLOBALADD", "EDIT")
     If (Not mblnReadOnly) And (Not mblnDefinitionCreator) Then
-      mblnReadOnly = (CurrentUserAccess(UtlGlobalAdd, mlFunctionID) = ACCESS_READONLY)
+      mblnReadOnly = (CurrentUserAccess(utlGlobalAdd, mlFunctionID) = ACCESS_READONLY)
     End If
   Case glDelete
+    iUtilityType = utlGlobalDelete
     mblnReadOnly = Not datGeneral.SystemPermission("GLOBALDELETE", "EDIT")
     If (Not mblnReadOnly) And (Not mblnDefinitionCreator) Then
       mblnReadOnly = (CurrentUserAccess(utlGlobalDelete, mlFunctionID) = ACCESS_READONLY)
     End If
   Case glUpdate
+    iUtilityType = utlGlobalUpdate
     mblnReadOnly = Not datGeneral.SystemPermission("GLOBALUPDATE", "EDIT")
     If (Not mblnReadOnly) And (Not mblnDefinitionCreator) Then
       mblnReadOnly = (CurrentUserAccess(utlGlobalUpdate, mlFunctionID) = ACCESS_READONLY)
     End If
   End Select
-  
+        
   txtDesc.Text = IIf(rsTemp!Description <> vbNullString, rsTemp!Description, vbNullString)
+  GetObjectCategories cboCategory, iUtilityType, mlFunctionID
   
   If mbFromCopy Then
     txtName.Text = "Copy of " & rsTemp!Name
@@ -2669,15 +2680,11 @@ Private Function Exists(bNew As Boolean, lColumnID As Long) As Boolean
       
 End Function
 
-
-
 Private Sub SSTab1_Click(PreviousTab As Integer)
   fraDefinition(0).Enabled = (SSTab1.Tab = giTABSTRIP_GLOBALFUNCTIONDEF)
   fraDefinition(1).Enabled = fraDefinition(0).Enabled
   fraColumns.Enabled = (SSTab1.Tab = giTABSTRIP_COLUMNDEF)
 End Sub
-
-
 
 Private Sub txtDesc_Change()
   Me.Changed = True
@@ -3303,7 +3310,6 @@ Private Function GetDataType(lColumnID As Long) As Long
 
 End Function
 
-
 Private Sub CheckIfScrollBarRequired()
 
   With grdColumns
@@ -3320,4 +3326,6 @@ Private Sub CheckIfScrollBarRequired()
 
 End Sub
 
-
+Private Sub cboCategory_Click()
+  Changed = True
+End Sub
