@@ -917,7 +917,7 @@ Private Sub SetCaption()
 
   '09/08/2001 MH Fault 2667
   'Me.Caption = "OpenHR - Security Manager"
-  Me.Caption = Application.Name & gsDatabaseName
+  Me.Caption = Application.Name & " - " & gsDatabaseName
 
   Select Case Application.AccessMode
   Case accFull
