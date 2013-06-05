@@ -1804,10 +1804,13 @@ PRINT 'Step 17 - Trigger functionality'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 18 - Unique code function'
+PRINT 'Step 18 - System Functions'
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_generateuniquecodes]') AND xtype = 'P')
 		DROP PROCEDURE dbo.[spadmin_generateuniquecodes]
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_generategetfields]') AND xtype = 'P')
+		DROP PROCEDURE dbo.[spadmin_generategetfields]
 
 	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[tbsys_uniquecodes]') AND xtype = 'U')
 		EXECUTE sp_executesql N'EXECUTE sp_rename [ASRSysUniqueCodes], [tbsys_uniquecodes];';
@@ -1840,7 +1843,21 @@ PRINT 'Step 18 - Unique code function'
 
 		END'
 
-		EXEC sp_executesql N'spadmin_generateuniquecodes';
+	EXECUTE sp_executesql N'CREATE PROCEDURE dbo.[spadmin_generategetfields]
+		AS
+		BEGIN
+
+			EXEC sp_executesql N''IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''''[dbo].[ASRSysGetFieldFromDatabaseRecord]'''') AND type in (N''''V''''))
+				DROP VIEW [dbo].[ASRSysGetFieldFromDatabaseRecord]'';
+
+			EXEC sp_executesql N''CREATE VIEW dbo.[ASRSysGetFieldFromDatabaseRecord] AS SELECT '''' AS [searchcolumnid]
+				,'''' AS [returnfieldid]
+				, '''' AS [lookupkey], '''' AS [returnvalue]'';
+		
+		END'
+
+	EXECUTE sp_executesql N'spadmin_generategetfields';
+	EXECUTE sp_executesql N'spadmin_generateuniquecodes';
 	
 /* ------------------------------------------------------------- */
 /* ------------------------------------------------------------- */
