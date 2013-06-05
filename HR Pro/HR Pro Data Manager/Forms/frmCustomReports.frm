@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
@@ -86,7 +86,6 @@ Begin VB.Form frmCustomReports
       _Version        =   393216
       Style           =   1
       Tabs            =   5
-      Tab             =   2
       TabsPerRow      =   5
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -100,7 +99,7 @@ Begin VB.Form frmCustomReports
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmCustomReports.frx":1CB4
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraInformation"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraBase"
@@ -109,13 +108,13 @@ Begin VB.Form frmCustomReports
       TabCaption(1)   =   "Related Ta&bles"
       TabPicture(1)   =   "frmCustomReports.frx":1CD0
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraChild"
+      Tab(1).Control(0)=   "fraParent1"
       Tab(1).Control(1)=   "fraParent2"
-      Tab(1).Control(2)=   "fraParent1"
+      Tab(1).Control(2)=   "fraChild"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmCustomReports.frx":1CEC
-      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraFieldsAvailable"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraFieldsSelected"
@@ -126,19 +125,19 @@ Begin VB.Form frmCustomReports
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmCustomReports.frx":1D08
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraRepetition"
+      Tab(3).Control(0)=   "fraReportOrder"
       Tab(3).Control(0).Enabled=   0   'False
-      Tab(3).Control(1)=   "fraReportOrder"
+      Tab(3).Control(1)=   "fraRepetition"
       Tab(3).Control(1).Enabled=   0   'False
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmCustomReports.frx":1D24
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraOutputDestination"
+      Tab(4).Control(0)=   "fraReportOptions"
       Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraOutputFormat"
       Tab(4).Control(1).Enabled=   0   'False
-      Tab(4).Control(2)=   "fraReportOptions"
+      Tab(4).Control(2)=   "fraOutputDestination"
       Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       Begin VB.Frame fraReportOrder 
@@ -211,9 +210,9 @@ Begin VB.Form frmCustomReports
             HeadLines       =   2
             Col.Count       =   7
             stylesets.count =   6
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -225,9 +224,9 @@ Begin VB.Form frmCustomReports
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmCustomReports.frx":1D40
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -479,24 +478,24 @@ Begin VB.Form frmCustomReports
             Width           =   2790
          End
          Begin VB.CommandButton cmdFilename 
+            Caption         =   "..."
             DisabledPicture =   "frmCustomReports.frx":1DE8
             Enabled         =   0   'False
             Height          =   315
             Left            =   6060
             Picture         =   "frmCustomReports.frx":2149
-            Style           =   1  'Graphical
             TabIndex        =   104
             Top             =   1760
             UseMaskColor    =   -1  'True
             Width           =   330
          End
          Begin VB.CommandButton cmdEmailGroup 
+            Caption         =   "..."
             DisabledPicture =   "frmCustomReports.frx":24AA
             Enabled         =   0   'False
             Height          =   315
             Left            =   6060
             Picture         =   "frmCustomReports.frx":280B
-            Style           =   1  'Graphical
             TabIndex        =   110
             Top             =   2660
             UseMaskColor    =   -1  'True
@@ -618,7 +617,7 @@ Begin VB.Form frmCustomReports
          BorderStyle     =   0  'None
          Caption         =   "Buttons :"
          Height          =   5385
-         Left            =   3960
+         Left            =   -71040
          TabIndex        =   53
          Top             =   400
          Width           =   1515
@@ -724,9 +723,9 @@ Begin VB.Form frmCustomReports
             RecordSelectors =   0   'False
             Col.Count       =   7
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -738,9 +737,9 @@ Begin VB.Form frmCustomReports
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmCustomReports.frx":2B6C
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -977,9 +976,9 @@ Begin VB.Form frmCustomReports
             GroupHeadLines  =   0
             Col.Count       =   3
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -991,9 +990,9 @@ Begin VB.Form frmCustomReports
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmCustomReports.frx":2BF8
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -1119,7 +1118,7 @@ Begin VB.Form frmCustomReports
       Begin VB.Frame fraBase 
          Caption         =   "Data :"
          Height          =   3340
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   9
          Top             =   2450
          Width           =   9180
@@ -1458,7 +1457,7 @@ Begin VB.Form frmCustomReports
       Begin VB.Frame fraFieldsSelected 
          Caption         =   "Columns / Calculations Selected :"
          Height          =   5385
-         Left            =   5700
+         Left            =   -69300
          TabIndex        =   60
          Top             =   400
          Width           =   3615
@@ -1631,7 +1630,7 @@ Begin VB.Form frmCustomReports
       Begin VB.Frame fraFieldsAvailable 
          Caption         =   "Columns / Calculations Available :"
          Height          =   5385
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   47
          Top             =   400
          Width           =   3615
@@ -1726,7 +1725,7 @@ Begin VB.Form frmCustomReports
       End
       Begin VB.Frame fraInformation 
          Height          =   1950
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   0
          Top             =   400
          Width           =   9180
@@ -2022,10 +2021,10 @@ Private mblnGridChangeRecursive As Boolean
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = (pblnChanged) And (Not mblnReadOnly)
+  cmdOk.Enabled = (pblnChanged) And (Not mblnReadOnly)
 End Property
 
 
@@ -4276,7 +4275,7 @@ Private Sub ListView1_GotFocus()
 End Sub
 
 Private Sub ListView1_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub ListView2_GotFocus()
@@ -4284,7 +4283,7 @@ Private Sub ListView2_GotFocus()
 End Sub
 
 Private Sub ListView2_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub optBaseAllRecords_Click()
@@ -5844,13 +5843,13 @@ Private Sub txtDesc_GotFocus()
     .SelLength = Len(.Text)
   End With
   
-  cmdOK.Default = False
+  cmdOk.Default = False
   
 End Sub
 
 Private Sub txtDesc_LostFocus()
 
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 
