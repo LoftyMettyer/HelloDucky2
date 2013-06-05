@@ -239,7 +239,7 @@ Public Property Let WFDefaultValue(New_Value As String)
   msWFDefaultValue = New_Value
 End Property
 Public Property Get WFDefaultValue() As String
-' WFDefaultValue = Option1(GetSelectedOption()).Value
+ WFDefaultValue = Option1(GetSelectedOption()).Value
 End Property
 
 Public Property Let WFIdentifier(New_Value As String)
@@ -820,6 +820,8 @@ Public Property Let Read_Only(blnValue As Boolean)
     Option1(lngIndex).BackColor = IIf(blnValue, vbButtonFace, mBackcolour)
     fraOptGroup.ForeColor = IIf(blnValue, vbGrayText, mForecolour)
     fraOptGroup.BackColor = IIf(blnValue, vbButtonFace, mBackcolour)
+    
+    UserControl.BackColor = IIf(blnValue, vbButtonFace, mBackcolour)
   Next
 
 End Property
