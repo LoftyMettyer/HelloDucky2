@@ -202,10 +202,10 @@ Namespace ScriptDB
           For Each objColumn In objTable.Objects(Things.Type.Column)
 
             If objColumn.IsCalculated And objColumn.IsReadOnly And objTable.TableType = Things.TableType.Parent Then
-              If Not objColumn.Calculation.RequiresRowNumber Then
+              '              If Not objColumn.Calculation.RequiresRowNumber Then
 
-                sDefinitionSQL = sDefinitionSQL & String.Format(", {0} AS [{1}]", objColumn.Calculation.UDF.CallingCode.Replace("@prm_", "base."), objColumn.Name & vbNewLine)
-              End If
+              sDefinitionSQL = sDefinitionSQL & String.Format(", {0} AS [{1}]", objColumn.Calculation.UDF.CallingCode.Replace("@prm_", "base."), objColumn.Name & vbNewLine)
+              '              End If
             Else
               sDefinitionSQL = sDefinitionSQL & (String.Format(", base.[{0}] AS [{0}]", objColumn.Name) & vbNewLine)
             End If
@@ -327,7 +327,8 @@ Namespace ScriptDB
 
       Dim sSQLCalculatedColumns As String
       Dim sSQLPostAuditCalcs As String
-      Dim sSQLUniqueCalcs As String
+      '      Dim sSQLUniqueCalcs As String
+      '   Dim sWritebackColumns As String
       Dim sSQLParentColumns As String
       Dim sSQLParentColumns_Delete As String
       Dim sSQLChildColumns As String
@@ -336,7 +337,8 @@ Namespace ScriptDB
 
       Dim aryCalculatedColumns As ArrayList
       Dim aryPostAuditCalcs As ArrayList
-      Dim aryUpdateUniqueCodes As ArrayList
+      '      Dim aryWritebackColumns As ArrayList
+      '      Dim aryUpdateUniqueCodes As ArrayList
 
       Dim aryBaseTableColumns As ArrayList
       Dim aryParentsToUpdate As ArrayList
@@ -363,13 +365,14 @@ Namespace ScriptDB
           aryAuditUpdates = New ArrayList
           aryAuditInserts = New ArrayList
           aryAuditDeletes = New ArrayList
-          aryUpdateUniqueCodes = New ArrayList
+          '          aryUpdateUniqueCodes = New ArrayList
           aryParentsToUpdate = New ArrayList
           aryChildrenToUpdate = New ArrayList
           aryParentsToUpdate_Delete = New ArrayList
           aryBaseTableColumns = New ArrayList
           aryCalculatedColumns = New ArrayList
           aryPostAuditCalcs = New ArrayList
+          '     aryWritebackColumns = New ArrayList
 
           sSQLCalculatedColumns = String.Empty
           sSQLParentColumns = String.Empty
@@ -382,7 +385,7 @@ Namespace ScriptDB
           sSQLCode_AuditDelete = String.Empty
           sSQLCode_Audit = String.Empty
           sSQLPostAuditCalcs = String.Empty
-          sSQLUniqueCalcs = String.Empty
+          '       sWritebackColumns = String.Empty
           sSQLSpecialUpdate = String.Empty
 
           ' Build in indexes
@@ -476,15 +479,15 @@ Namespace ScriptDB
                   sColumnName = String.Format("[{0}] = {1}", objColumn.Name, sCalculationCode)
                 End If
 
-                If objColumn.Calculation.ContainsUniqueCode Then
-                  aryUpdateUniqueCodes.Add(sColumnName & vbNewLine)
+                'If objColumn.Calculation.RequiresWriteback Then
+                '  aryWritebackColumns.Add(sColumnName & vbNewLine)
+                'Else
+                If objColumn.Calculation.CalculatePostAudit Then
+                  aryPostAuditCalcs.Add(sColumnName & vbNewLine)
                 Else
-                  If objColumn.Calculation.CalculatePostAudit Then
-                    aryPostAuditCalcs.Add(sColumnName & vbNewLine)
-                  Else
-                    aryCalculatedColumns.Add(sColumnName & vbNewLine)
-                  End If
+                  aryCalculatedColumns.Add(sColumnName & vbNewLine)
                 End If
+                '              End If
 
               End If
 
@@ -684,20 +687,20 @@ Namespace ScriptDB
               , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryPostAuditCalcs.ToArray()), CInt(objTable.ID))
           End If
 
-          ' Any calculations that have the unique code (or an function that requires some writeback)
-          If aryUpdateUniqueCodes.ToArray.Length > 0 Then
-            sSQLUniqueCalcs = String.Format("    -- Update columns that requires a writeback from the UDFs" & vbNewLine & _
-              "    IF EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {2} AND [nestlevel] = 1)" & vbNewLine & _
-              "    BEGIN" & vbNewLine & _
-              "        WITH base AS (" & vbNewLine & _
-              "            SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
-              "            FROM [dbo].[{0}]" & vbNewLine & _
-              "            WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
-              "        UPDATE base" & vbNewLine & _
-              "        SET {1}" & vbNewLine & _
-              "    END" _
-              , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryUpdateUniqueCodes.ToArray()), CInt(objTable.ID))
-          End If
+          '' Any calculations that have the unique code (or an function that requires some writeback)
+          'If aryWritebackColumns.ToArray.Length > 0 Then
+          '  sWritebackColumns = String.Format("    -- Update columns that requires a writeback from the UDFs" & vbNewLine & _
+          '    "--    IF EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {2} AND [nestlevel] = 1)" & vbNewLine & _
+          '    " --   BEGIN" & vbNewLine & _
+          '    "  --      WITH base AS (" & vbNewLine & _
+          '    "  --          SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
+          '    "  --          FROM [dbo].[{0}]" & vbNewLine & _
+          '    "   --         WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
+          '    "   --     UPDATE base" & vbNewLine & _
+          '    "   /*     SET {1} */" & vbNewLine & _
+          '    "  --  END" _
+          '    , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryWritebackColumns.ToArray()), CInt(objTable.ID))
+          'End If
 
           ' Special bypass trigger code
           sSQLCode_Bypass = SpecialTrigger_SSP(objTable)
@@ -773,7 +776,6 @@ Namespace ScriptDB
               sSQLCalculatedColumns & vbNewLine & vbNewLine & _
               sSQLParentColumns & vbNewLine & _
               sSQLChildColumns & vbNewLine & vbNewLine & _
-              sSQLUniqueCalcs & vbNewLine & vbNewLine & _
               "{6}" & vbNewLine & _
               sSQLCode_Audit & _
               sSQLSpecialUpdate & _
@@ -781,7 +783,7 @@ Namespace ScriptDB
               "{8}" & vbNewLine & vbNewLine _
               , objTable.Name, sTriggerName _
               , "", CInt(objTable.ID), Tables.sysTriggerTransaction _
-              , String.Join(vbNewLine, aryUpdateUniqueCodes.ToArray()) _
+              , "" _
               , sSQLCode_AuditUpdate, sSQLPostAuditCalcs, objTable.SysMgrUpdateTrigger) & vbNewLine & vbNewLine
           ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSQL)
 

@@ -37,9 +37,10 @@ Namespace Things
     Public CaseCount As Integer = 0
     Public StartOfPartNumbers As Integer = 0
     Public RequiresRecordID As Boolean = False
-    Public RequiresRowNumber As Boolean = False
+    '    Public RequiresRowNumber As Boolean = False
+    Public RequiresWriteback As Boolean = False
     Public RequiresOvernight As Boolean = False
-    Public ContainsUniqueCode As Boolean = False
+    '    Public ContainsUniqueCode As Boolean = False
     Public ReferencesParent As Boolean = False
     Public ReferencesChild As Boolean = False
 
@@ -144,12 +145,12 @@ Namespace Things
         aryParameters3.Add("@prm_ID")
       End If
 
-      ' Some function require the row number of the record as a parameter
-      If RequiresRowNumber Then
-        aryParameters1.Add("@rownumber integer")
-        aryParameters2.Add("[rownumber]")
-        aryParameters3.Add("@rownumber")
-      End If
+      '' Some function require the row number of the record as a parameter
+      'If RequiresRowNumber Then
+      '  aryParameters1.Add("@rownumber integer")
+      '  aryParameters2.Add("[rownumber]")
+      '  aryParameters3.Add("@rownumber")
+      'End If
 
       ' Some function require the row number of the record as a parameter
       If RequiresOvernight Then
@@ -823,10 +824,10 @@ Namespace Things
         Globals.GetFieldsFromDB.Add([Component])
       End If
 
-      ' Is this a unique value that needs evaluating?
-      If objCodeLibrary.IsUniqueCode Then
-        Globals.UniqueCodes.Add([Component])
-      End If
+      '' Is this a unique value that needs evaluating?
+      'If objCodeLibrary.IsUniqueCode Then
+      '  Globals.UniqueCodes.Add([Component])
+      'End If
 
       ' Is this expression reliant on the bank holiday table (I'm sure this can be tidyied up)
       If objCodeLibrary.DependsOnBankHoliday And Me.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation Then
@@ -861,7 +862,7 @@ Namespace Things
 
       SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
       LineOfCode.Code = String.Format(LineOfCode.Code, ChildCodeCluster.ToArray)
-      RequiresRowNumber = RequiresRowNumber Or objCodeLibrary.RowNumberRequired
+      '    RequiresWriteback = RequiresWriteback Or objCodeLibrary.RequiresWriteback
       RequiresOvernight = RequiresOvernight Or objCodeLibrary.OvernightOnly
       mbCalculatePostAudit = mbCalculatePostAudit Or objCodeLibrary.CalculatePostAudit
       Me.RequiresRecordID = RequiresRecordID Or objCodeLibrary.RecordIDRequired
@@ -942,7 +943,7 @@ Namespace Things
         StatementObjects.MergeUnique(objExpression.StatementObjects)
 
         Me.RequiresRecordID = RequiresRecordID Or objExpression.RequiresRecordID
-        Me.RequiresRowNumber = RequiresRowNumber Or objExpression.RequiresRowNumber
+        Me.RequiresWriteback = RequiresWriteback Or objExpression.RequiresWriteback
         Me.RequiresOvernight = RequiresOvernight Or objExpression.RequiresOvernight
         Me.ReferencesParent = Me.ReferencesParent Or objExpression.ReferencesParent
         Me.ReferencesChild = Me.ReferencesChild Or objExpression.ReferencesChild
@@ -1096,7 +1097,7 @@ Namespace Things
       '      End If
 
       Me.RequiresRecordID = RequiresRecordID Or ReferencedColumn.Calculation.RequiresRecordID
-      Me.RequiresRowNumber = RequiresRowNumber Or ReferencedColumn.Calculation.RequiresRowNumber
+      Me.RequiresWriteback = RequiresWriteback Or ReferencedColumn.Calculation.RequiresWriteback
       Me.RequiresOvernight = RequiresOvernight Or ReferencedColumn.Calculation.RequiresOvernight
       Me.ReferencesParent = Me.ReferencesParent Or ReferencedColumn.Calculation.ReferencesParent
       Me.ReferencesChild = Me.ReferencesChild Or ReferencedColumn.Calculation.ReferencesChild

@@ -16,7 +16,7 @@ Public Module Globals
   Public TuningLog As Tuning.Report
   Public ModuleSetup As Things.Collection
   Public Options As HCMOptions
-  Public UniqueCodes As Things.Collection
+  '  Public UniqueCodes As Things.Collection
   Public GetFieldsFromDB As Things.Collection
   Public PerformanceIndexes As Things.Collection
   Public OnBankHolidayUpdate As Things.Collection
@@ -37,7 +37,7 @@ Public Module Globals
     Options = New HCMOptions
 
     ' Dependency stack for special objects that will have procedures written for
-    UniqueCodes = New Things.Collection
+    '   UniqueCodes = New Things.Collection
     GetFieldsFromDB = New Things.Collection
     OnBankHolidayUpdate = New Things.Collection
     PerformanceIndexes = New Things.Collection

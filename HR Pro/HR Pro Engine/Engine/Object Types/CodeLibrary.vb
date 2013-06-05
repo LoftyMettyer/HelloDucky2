@@ -12,10 +12,11 @@
     Public OvernightOnly As Boolean = False
     Public CalculatePostAudit As Boolean
     Public IsGetFieldFromDB As Boolean = False
-    Public IsUniqueCode As Boolean = False
+    '    Public IsUniqueCode As Boolean = False
     Public CaseCount As Integer = 0
-    Public MakeTypeSafe As Boolean = 0
-    Public DependsOnBankHoliday As Boolean = 0
+    Public MakeTypeSafe As Boolean = False
+    Public DependsOnBankHoliday As Boolean = False
+    '    Public RequiresWriteback As Boolean = False
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get
