@@ -939,19 +939,14 @@ Public Function SetOptions( _
 
   mlngFormat = lngFormat
   
-  If gblnReportPackMode Then
+  If gblnReportPackMode And mlngFormat = fmtExcelWorksheet Then
     'Default should be excel if not set
     Select Case lngOriginalOutputFormat
       Case fmtExcelPivotTable
         mlngFormat = fmtExcelPivotTable
-      Case fmtExcelWorksheet
-        mlngFormat = fmtExcelWorksheet
       Case fmtExcelchart
         mlngFormat = fmtExcelchart
     End Select
-    'mlngFormat = IIf(mlngFormat = 4, IIf(blnOutputRetainPivotOrChart, fmtExcelchart, fmtExcelWorksheet), mlngFormat)
-  Else
-    mlngFormat = lngFormat
   End If
   
   Select Case mlngFormat
