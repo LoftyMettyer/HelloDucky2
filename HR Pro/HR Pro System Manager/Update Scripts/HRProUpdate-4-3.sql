@@ -1515,10 +1515,14 @@ PRINT 'Step 14 - Convert to merged audit table'
 	SET @NVarCommand = 'EXECUTE sp_rename [ASRSysAuditTrail], [tbsys_audittrail];'
 	EXECUTE sp_executesql @NVarCommand;
 
+	-- Remove old view
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysAuditTrail]') AND xtype = 'V')
+		DROP VIEW [dbo].[ASRSysAuditTrail];
+
 	SET @NVarCommand = 'CREATE VIEW [ASRSysAuditTrail]
 		WITH SCHEMABINDING
 		AS SELECT
-			[id], [UserName], [DateTimeStamp], [RecordID], [RecordDesc], [OldValue], [NewValue]
+			[id], [UserName], [DateTimeStamp], [RecordID], [RecordDesc], [OldValue], [NewValue],
 			[Tablename], [Columnname], [CMGExportDate],	[CMGCommitDate], [ColumnID], [Deleted]
 		FROM [dbo].[tbsys_audittrail];'
 	EXECUTE sp_executesql @NVarCommand;		
@@ -1532,6 +1536,7 @@ PRINT 'Step 14 - Convert to merged audit table'
 
 	-- Set as a non-integrated audit log
 	EXEC spsys_setsystemsetting 'integration', 'auditlog', 0;
+
 
 
 	
