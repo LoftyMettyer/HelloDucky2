@@ -2110,7 +2110,7 @@ PRINT 'Step - New Shared Table Transfer Types for ASPP'
 PRINT 'Step - New Reserved words'
 
 	-- Keywords Additional reserved words
-	SELECT @iRecCount = count(Keyword) FROM ASRSysKeywords WHERE keyword = 'tbsys' or keyword = 'ybstat' or keyword = 'tbuser'	
+	SELECT @iRecCount = count(Keyword) FROM ASRSysKeywords WHERE keyword = 'tbsys' or keyword = 'tbstat' or keyword = 'tbuser'	
 	IF @iRecCount = 0
 	BEGIN
 		SELECT @NVarCommand = 'INSERT INTO ASRSysKeywords ([Provider], [Keyword]) VALUES (''Microsoft SQL Server'',''tbsys'')'
