@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "16:39"
+            TextSave        =   "12:35"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -3015,133 +3015,133 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
             sIconName = "CustomReports"
             sIconBandName = "mnuReports"
             sType = "Custom Report : "
-            bEnabled = datGeneral.SystemPermission("CUSTOMREPORTS", "RUN")
+            bEnabled = datGeneral.SystemPermission("CUSTOMREPORTS", "RUN") Or gbRecentDisplayDefSel
             
           Case utlCrossTab
             sIconName = "CrossTab"
             sIconBandName = "mnuReports"
             sType = "Cross Tab : "
-            bEnabled = datGeneral.SystemPermission("CROSSTABS", "RUN")
+            bEnabled = datGeneral.SystemPermission("CROSSTABS", "RUN") Or gbRecentDisplayDefSel
           
           Case utlMatchReport
             sIconName = "MatchReport"
             sIconBandName = "mnuReports"
             sType = "Match Report : "
-            bEnabled = datGeneral.SystemPermission("MATCHREPORTS", "RUN")
+            bEnabled = datGeneral.SystemPermission("MATCHREPORTS", "RUN") Or gbRecentDisplayDefSel
           
           Case utlAbsenceBreakdown
             sIconName = "AbsenceBreakdown"
             sIconBandName = "mnuReports"
             sType = "Standard Report : "
-            bEnabled = datGeneral.SystemPermission("STANDARDREPORTS", "RUN_AB")
+            bEnabled = datGeneral.SystemPermission("STANDARDREPORTS", "RUN_AB") Or gbRecentDisplayDefSel
           
           Case utlBradfordFactor
             sIconName = "BradfordIndex"
             sIconBandName = "mnuReports"
             sType = "Standard Report : "
-            bEnabled = datGeneral.SystemPermission("STANDARDREPORTS", "RUN_BF")
+            bEnabled = datGeneral.SystemPermission("STANDARDREPORTS", "RUN_BF") Or gbRecentDisplayDefSel
           
           Case utlStability
             sIconName = "StabilityIndex"
             sIconBandName = "mnuReports"
             sType = "Standard Report : "
-            bEnabled = datGeneral.SystemPermission("STANDARDREPORTS", "RUN_SI")
+            bEnabled = datGeneral.SystemPermission("STANDARDREPORTS", "RUN_SI") Or gbRecentDisplayDefSel
           
           Case utlTurnover
             sIconName = "Turnover"
             sIconBandName = "mnuReports"
             sType = "Standard Report : "
-            bEnabled = datGeneral.SystemPermission("STANDARDREPORTS", "RUN_TR")
+            bEnabled = datGeneral.SystemPermission("STANDARDREPORTS", "RUN_TR") Or gbRecentDisplayDefSel
           
           Case utlCalendarReport
             sIconName = "CalendarReport"
             sIconBandName = "mnuReports"
             sType = "Calendar Report : "
-            bEnabled = datGeneral.SystemPermission("CALENDARREPORTS", "RUN")
+            bEnabled = datGeneral.SystemPermission("CALENDARREPORTS", "RUN") Or gbRecentDisplayDefSel
           
           Case utlRecordProfile
             sIconName = "RecordProfile"
             sIconBandName = "mnuReports"
             sType = "Record Profile : "
-            bEnabled = datGeneral.SystemPermission("RECORDPROFILE", "RUN")
+            bEnabled = datGeneral.SystemPermission("RECORDPROFILE", "RUN") Or gbRecentDisplayDefSel
           
           Case utlSuccession
             sIconName = "Succession"
             sIconBandName = "mnuReports"
             sType = "Succession Planning: "
-            bEnabled = datGeneral.SystemPermission("SUCCESSION", "RUN")
+            bEnabled = datGeneral.SystemPermission("SUCCESSION", "RUN") Or gbRecentDisplayDefSel
           
           Case utlCareer
             sIconName = "Career"
             sIconBandName = "mnuReports"
             sType = "Career Progression: "
-            bEnabled = datGeneral.SystemPermission("CAREER", "RUN")
+            bEnabled = datGeneral.SystemPermission("CAREER", "RUN") Or gbRecentDisplayDefSel
           
           Case utlMailMerge
             sIconName = "MailMerge"
             sIconBandName = "mnuUtilities"
             sType = "Mail Merge : "
-            bEnabled = datGeneral.SystemPermission("MAILMERGE", "RUN")
+            bEnabled = datGeneral.SystemPermission("MAILMERGE", "RUN") Or gbRecentDisplayDefSel
           
           Case utlLabel
             sIconName = "mnuLabels"
             sIconBandName = "mnuUtilities"
             sType = "Envelopes && Labels : "
-            bEnabled = datGeneral.SystemPermission("LABELS", "RUN")
+            bEnabled = datGeneral.SystemPermission("LABELS", "RUN") Or gbRecentDisplayDefSel
           
           Case utlExport
             sIconName = "Export"
             sIconBandName = "mnuUtilities"
             sType = "Export : "
-            bEnabled = datGeneral.SystemPermission("EXPORT", "RUN")
+            bEnabled = datGeneral.SystemPermission("EXPORT", "RUN") Or gbRecentDisplayDefSel
           
           Case utlImport
             sIconName = "Import"
             sIconBandName = "mnuUtilities"
             sType = "Import : "
-            bEnabled = datGeneral.SystemPermission("IMPORT", "RUN")
+            bEnabled = datGeneral.SystemPermission("IMPORT", "RUN") Or gbRecentDisplayDefSel
           
           Case utlDataTransfer
             sIconName = "DataTransfer"
             sIconBandName = "mnuUtilities"
             sType = "Data Transfer : "
-            bEnabled = datGeneral.SystemPermission("DATATRANSFER", "RUN")
+            bEnabled = datGeneral.SystemPermission("DATATRANSFER", "RUN") Or gbRecentDisplayDefSel
           
           Case UtlGlobalAdd
             sIconName = "GlobalAdd"
             sIconBandName = "mnuUtilities"
             sType = "Global Add : "
-            bEnabled = datGeneral.SystemPermission("GLOBALADD", "RUN")
+            bEnabled = datGeneral.SystemPermission("GLOBALADD", "RUN") Or gbRecentDisplayDefSel
           
           Case utlGlobalUpdate
             sIconName = "GlobalUpdate"
             sIconBandName = "mnuUtilities"
             sType = "Global Update : "
-            bEnabled = datGeneral.SystemPermission("GLOBALUPDATE", "RUN")
+            bEnabled = datGeneral.SystemPermission("GLOBALUPDATE", "RUN") Or gbRecentDisplayDefSel
           
           Case utlGlobalDelete
             sIconName = "GlobalDelete"
             sIconBandName = "mnuUtilities"
             sType = "Global Delete : "
-            bEnabled = datGeneral.SystemPermission("GLOBALDELETE", "RUN")
+            bEnabled = datGeneral.SystemPermission("GLOBALDELETE", "RUN") Or gbRecentDisplayDefSel
           
           Case utlBatchJob
             sIconName = "BatchJobs"
             sIconBandName = "mnuUtilities"
             sType = "Batch Job : "
-            bEnabled = datGeneral.SystemPermission("BATCHJOBS", "RUN")
+            bEnabled = datGeneral.SystemPermission("BATCHJOBS", "RUN") Or gbRecentDisplayDefSel
           
           Case utlReportPack
             sIconName = "ReportPack"
             sIconBandName = "mnuReports"
             sType = "Report Pack : "
-            bEnabled = datGeneral.SystemPermission("REPORTPACKS", "RUN")
+            bEnabled = datGeneral.SystemPermission("REPORTPACKS", "RUN") Or gbRecentDisplayDefSel
           
           Case utlWorkflow
             sIconName = "Workflow"
             sIconBandName = "mnuUtilities"
             sType = "Workflow : "
-            bEnabled = datGeneral.SystemPermission("WORKFLOW", "RUN")
+            bEnabled = datGeneral.SystemPermission("WORKFLOW", "RUN") Or gbRecentDisplayDefSel
           
           Case Else
             sIconName = "BLANK"
