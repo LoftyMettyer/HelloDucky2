@@ -18,6 +18,7 @@ DECLARE @iRecCount integer,
 	@sColumnDataType varchar(8000),
 	@iDateFormat varchar(255),
 	@sSQLVersion nvarchar(20),
+	@iSQLVersion int,
 	@iTemp integer,
 	@sTemp varchar(8000),
 	@sTemp2 varchar(8000)
@@ -33,6 +34,8 @@ DECLARE @sSQL varchar(8000)
 /* ----------------------------------- */
 SET NOCOUNT ON
 SET @DBName = DB_NAME()
+SELECT @iSQLVersion = convert(float,substring(@@version,charindex('-',@@version)+2,2))
+
 
 /* ------------------------------------------------------- */
 /* Get the database version from the ASRSysSettings table. */
@@ -3095,11 +3098,19 @@ values (getdate(),'<none>',left(system_user,50),lower(left(host_name(),30)),'Sys
 
 
 SELECT @NVarCommand = 'USE master
-GRANT EXECUTE ON master..xp_LoginConfig TO public
-GRANT EXECUTE ON master..xp_EnumGroups TO public
-GRANT EXECUTE ON master..xp_StartMail TO public
-GRANT EXECUTE ON master..xp_SendMail TO public'
+	GRANT EXECUTE ON master..xp_LoginConfig TO public
+	GRANT EXECUTE ON master..xp_EnumGroups TO public'
 EXEC sp_executesql @NVarCommand
+
+-- Version specific functions
+IF (@iSQLVersion < 11)
+BEGIN
+	SELECT @NVarCommand = 'USE master
+		GRANT EXECUTE ON xp_StartMail TO public
+		GRANT EXECUTE ON xp_SendMail TO public';
+	EXEC sp_executesql @NVarCommand;
+END
+
 
 SELECT @NVarCommand = 'USE ['+@DBName + ']'
 EXEC sp_executesql @NVarCommand

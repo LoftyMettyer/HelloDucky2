@@ -6,6 +6,7 @@
 DECLARE @iRecCount integer,
 	@sDBVersion varchar(10),
 	@DBName varchar(255),
+	@iSQLVersion int,
 	@Command varchar(8000),
 	@NVarCommand nvarchar(4000),
     @sObject sysname,
@@ -26,6 +27,7 @@ DECLARE @sSPCode_7 nvarchar(4000)
 /* ----------------------------------- */
 SET NOCOUNT ON
 SET @DBName = DB_NAME()
+SELECT @iSQLVersion = convert(float,substring(@@version,charindex('-',@@version)+2,2))
 
 /* ------------------------------------------------------- */
 /* Get the database version from the ASRSysSettings table. */
@@ -7369,18 +7371,25 @@ CLOSE curObjects
 DEALLOCATE curObjects
 
 SELECT @NVarCommand = 'USE master
-GRANT EXECUTE ON sp_OACreate TO public
-GRANT EXECUTE ON sp_OADestroy TO public
-GRANT EXECUTE ON sp_OAGetErrorInfo TO public
-GRANT EXECUTE ON sp_OAGetProperty TO public
-GRANT EXECUTE ON sp_OAMethod TO public
-GRANT EXECUTE ON sp_OASetProperty TO public
-GRANT EXECUTE ON sp_OAStop TO public
-GRANT EXECUTE ON xp_StartMail TO public
-GRANT EXECUTE ON xp_SendMail TO public
-GRANT EXECUTE ON xp_LoginConfig TO public
-GRANT EXECUTE ON xp_EnumGroups TO public'
+	GRANT EXECUTE ON sp_OACreate TO public
+	GRANT EXECUTE ON sp_OADestroy TO public
+	GRANT EXECUTE ON sp_OAGetErrorInfo TO public
+	GRANT EXECUTE ON sp_OAGetProperty TO public
+	GRANT EXECUTE ON sp_OAMethod TO public
+	GRANT EXECUTE ON sp_OASetProperty TO public
+	GRANT EXECUTE ON sp_OAStop TO public
+	GRANT EXECUTE ON xp_LoginConfig TO public
+	GRANT EXECUTE ON xp_EnumGroups TO public'
 EXEC sp_executesql @NVarCommand
+
+-- Version specific functions
+IF (@iSQLVersion < 11)
+BEGIN
+	SELECT @NVarCommand = 'USE master
+		GRANT EXECUTE ON xp_StartMail TO public
+		GRANT EXECUTE ON xp_SendMail TO public';
+	EXEC sp_executesql @NVarCommand;
+END
 
 SELECT @NVarCommand = 'USE ['+@DBName + ']'
 EXEC sp_executesql @NVarCommand
