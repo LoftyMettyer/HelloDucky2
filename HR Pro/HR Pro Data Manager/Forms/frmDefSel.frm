@@ -1722,6 +1722,7 @@ Private Sub ShowControls()
 
   Dim lngOffset As Long
   Dim lngUserID As Long
+  Dim lngTableID As Long
   
   Const lngGap = 100
 
@@ -1861,8 +1862,9 @@ Private Sub ShowControls()
     cboTables.Clear
     cboTables.AddItem "<All>"
     cboTables.ItemData(cboTables.NewIndex) = -1
-    
-    GetObjectCategories cboTables, mutlUtilityType, 0, mlngTableID
+    lngTableID = mlngTableID
+    SetComboItem cboTables, -1
+    GetObjectCategories cboTables, mutlUtilityType, 0, lngTableID
     
   End If
         
