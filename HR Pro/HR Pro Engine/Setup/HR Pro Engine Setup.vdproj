@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_0263C16530BC4835804B37F7A58ED8A1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_64A94834F18A48339DC3AC2694BA4D97"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -154,6 +160,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0263C16530BC4835804B37F7A58ED8A1"
+            {
+            "SourcePath" = "8:..\\..\\..\\Installers\\Graphics\\COA_Banner.jpg"
+            "TargetName" = "8:COA_Banner.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9FC007E9F83BD607D644C32BA220CADD"
             {
             "SourcePath" = "8:HRProEngine.tlb"
@@ -204,7 +230,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_F8AA754A46FC40D489A47B32DBA1BFFB"
             {
-            "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer]\\[ProductName]"
+            "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer]\\HR Pro v4.3"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -231,7 +257,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:HR Pro System Framework Setup"
         "ProductCode" = "8:{9CC98852-438E-48B8-9362-F9BD414891F5}"
-        "PackageCode" = "8:{2477A4FD-9EF0-4105-BDAD-A5BBB358DB16}"
+        "PackageCode" = "8:{86472D66-966C-483C-A841-D0B8FAA4BD0F}"
         "UpgradeCode" = "8:{416839EF-23B1-4660-A4AD-E908AB32842E}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -239,7 +265,7 @@
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
         "ProductVersion" = "8:1.0.18"
-        "Manufacturer" = "8:Advanced Business and Software Solutions Limited"
+        "Manufacturer" = "8:Advanced"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:HR Pro System Framework Setup"
@@ -384,7 +410,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_0263C16530BC4835804B37F7A58ED8A1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "UpdateText"
@@ -395,8 +422,8 @@
                             "Type" = "3:15"
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
-                            "Setting" = "3:1"
-                            "Value" = "8:#1258"
+                            "Setting" = "3:2"
+                            "Value" = "8:"
                             "DefaultValue" = "8:#1258"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -428,7 +455,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_0263C16530BC4835804B37F7A58ED8A1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "ShowProgress"
@@ -472,7 +500,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_0263C16530BC4835804B37F7A58ED8A1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "ShowProgress"
@@ -516,7 +545,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_0263C16530BC4835804B37F7A58ED8A1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "InstallAllUsersVisible"
@@ -528,7 +558,7 @@
                             "ContextData" = "8:1;True=1;False=0"
                             "Attributes" = "3:0"
                             "Setting" = "3:0"
-                            "Value" = "3:1"
+                            "Value" = "3:0"
                             "DefaultValue" = "3:1"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -551,7 +581,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_0263C16530BC4835804B37F7A58ED8A1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -599,7 +630,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_0263C16530BC4835804B37F7A58ED8A1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -630,7 +662,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_0263C16530BC4835804B37F7A58ED8A1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -667,7 +700,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_0263C16530BC4835804B37F7A58ED8A1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -689,7 +723,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_0263C16530BC4835804B37F7A58ED8A1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -711,7 +746,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_0263C16530BC4835804B37F7A58ED8A1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -752,7 +788,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_64A94834F18A48339DC3AC2694BA4D97"
             {
-            "SourcePath" = "8:..\\Engine\\obj\\Debug\\HRProEngine.dll"
+            "SourcePath" = "8:..\\Engine\\obj\\Release\\HRProEngine.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
@@ -780,7 +816,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_8F746683F4E34F279D0C7A856A336B46"
             {
-            "SourcePath" = "8:..\\Engine\\obj\\Debug\\HRProEngine.dll"
+            "SourcePath" = "8:..\\Engine\\obj\\Release\\HRProEngine.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
