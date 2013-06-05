@@ -627,11 +627,11 @@ End Property
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOk.Enabled = blnChanged
+  cmdOK.Enabled = blnChanged
 End Property
 
 
@@ -2685,11 +2685,11 @@ Private Sub txtDesc_GotFocus()
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-  cmdOk.Default = False
+  cmdOK.Default = False
 End Sub
 
 Private Sub txtDesc_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub txtName_Change()
@@ -2746,8 +2746,8 @@ Private Sub FormatForm()
       cmdCancel.Move lngLeft, lngTop
 
       'Command OK
-      lngLeft = lngLeft - (cmdOk.Width + GAP)
-      cmdOk.Move lngLeft, lngTop
+      lngLeft = lngLeft - (cmdOK.Width + GAP)
+      cmdOK.Move lngLeft, lngTop
     End With
 
     SSTab1.Visible = False
@@ -3141,8 +3141,13 @@ Private Function InsertFunctionItems(lColumnID As Long, lValueType As Long, _
             strTemp = "null"
           End If
         Else
-          'strTemp = sValue
-          strTemp = "'" & sValue & "'"
+          ''strTemp = sValue
+          'strTemp = "'" & sValue & "'"
+          If datGeneral.DoesColumnUseSeparators(lColumnID) Then
+            strTemp = "'" & Replace(sValue, UI.GetSystemThousandSeparator, "") & "'"
+          Else
+            strTemp = "'" & sValue & "'"
+          End If
         End If
         
         sSQL = sSQL & "0, " & strTemp & ", 0, 0, 0)"
