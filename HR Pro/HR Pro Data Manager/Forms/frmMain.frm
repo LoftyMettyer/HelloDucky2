@@ -90,6 +90,7 @@ Begin VB.MDIForm frmMain
          BeginProperty Panel3 {8E3867AB-8586-11D1-B16A-00C0F0283628} 
             Style           =   1
             Alignment       =   1
+            Enabled         =   0   'False
             Object.Width           =   1058
             MinWidth        =   1058
             TextSave        =   "CAPS"
@@ -108,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "12:22"
+            TextSave        =   "17:30"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -4458,10 +4459,19 @@ Private Sub DocumentTypesClick()
           Set frmDefinition = Nothing
            
         Case edtPrint
-          Set frmDefinition = New frmDocumentMap
-          frmDefinition.PrintDefinition .SelectedID
-          Unload frmDefinition
-          Set frmDefinition = Nothing
+        
+Set frmDefinition = New frmDocumentMap
+
+frmDefinition.Initialise False, .FromCopy, .SelectedID
+frmDefinition.PrintDefinition .SelectedID
+'If Not frmDefinition.Cancelled Then
+'  frmDefinition.Hide
+'  If .FromCopy And frmDefinition.SelectedID > 0 Then
+'    .SelectedID = frmDefinition.SelectedID
+'  End If
+'End If
+Unload frmDefinition
+Set frmDefinition = Nothing
         
         Case 0
           blnExit = True  'cancel
