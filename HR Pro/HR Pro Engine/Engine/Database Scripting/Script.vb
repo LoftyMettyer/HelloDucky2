@@ -1267,17 +1267,13 @@ Namespace ScriptDB
               'do nothing the function exists and hasnt changed
             Else
               'function needs to be updated
-              If Not Globals.CommitDB.ScriptStatement(func.SqlAlter, False) Then
-                Globals.CommitDB.ScriptStatement(func.SqlAlterStub, True)
-              End If
+              Globals.CommitDB.ScriptStatement(func.SqlAlter, False)
             End If
 
           Else
 
             'create the function it doesnt exist
-            If Not Globals.CommitDB.ScriptStatement(func.SqlCreate, False) Then
-              Globals.CommitDB.ScriptStatement(func.SqlCreateStub, True)
-            End If
+            Globals.CommitDB.ScriptStatement(func.SqlCreate, False)
 
           End If
           existingFunctions.Remove(func.BaseName)
