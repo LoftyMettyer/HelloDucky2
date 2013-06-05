@@ -138,55 +138,55 @@
       [Component_Date] = 104
     End Enum
 
-    Public Enum ObjectTypes
-      [All] = -2
-      '[TablesAndViews] = -1
-      Unknown = 0
-      Table = 1
-      Column = 2
-      View = 3
-      Screen = 4
-      Link = 5
-      Group = 6
-      Validation = 7
-      EmailAddress = 8
-      Diary = 9
-      OutlookFolder = 10
-      CalculatedValue = 11
-      Filter = 12
-      ValidationExpression = 13
-      User = 14
-      Shortcut = 15
-      Template = 16
-      Control = 17
-      [Function] = 18
-      [Operator] = 19
-      Parameter = 20
-      Value = 21
-      PromptedValue = 22
-      PermissionFolder = 23
-      Permission = 24
-      [Configuration] = 25
-      ConfigurationSetting = 26
-      Orders = 27
-      Folder = 28
-      [Structure] = 29
-      Security = 30
-      [Tools] = 31
-      [Resource] = 32
-      '[Image] = 33
-      Relationship = 34
-      FindColumns = 35
-      Report = 1000
-      CustomReport = 1001
-      Import = 1002
-      Export = 1003
-      MailMerge = 2001
-      Workflow = 2002
-      RuntimeCalculation = 3001
-      RuntimeFilter = 3002
-      AuditLog = 4001
-    End Enum
+    'Public Enum ObjectTypes
+    '  [All] = -2
+    '  '[TablesAndViews] = -1
+    '  Unknown = 0
+    '  Table = 1
+    '  Column = 2
+    '  View = 3
+    '  Screen = 4
+    '  Link = 5
+    '  Group = 6
+    '  Validation = 7
+    '  EmailAddress = 8
+    '  Diary = 9
+    '  OutlookFolder = 10
+    '  CalculatedValue = 11
+    '  Filter = 12
+    '  ValidationExpression = 13
+    '  User = 14
+    '  Shortcut = 15
+    '  Template = 16
+    '  Control = 17
+    '  [Function] = 18
+    '  [Operator] = 19
+    '  Parameter = 20
+    '  Value = 21
+    '  PromptedValue = 22
+    '  PermissionFolder = 23
+    '  Permission = 24
+    '  [Configuration] = 25
+    '  ConfigurationSetting = 26
+    '  Orders = 27
+    '  Folder = 28
+    '  [Structure] = 29
+    '  Security = 30
+    '  [Tools] = 31
+    '  [Resource] = 32
+    '  '[Image] = 33
+    '  Relationship = 34
+    '  FindColumns = 35
+    '  Report = 1000
+    '  CustomReport = 1001
+    '  Import = 1002
+    '  Export = 1003
+    '  MailMerge = 2001
+    '  Workflow = 2002
+    '  RuntimeCalculation = 3001
+    '  RuntimeFilter = 3002
+    '  AuditLog = 4001
+    'End Enum
 
   End Module
 
