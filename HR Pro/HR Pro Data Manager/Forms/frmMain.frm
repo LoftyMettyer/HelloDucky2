@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "13:55"
+            TextSave        =   "14:31"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -950,7 +950,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     ' <Global Functions - Add>
     Case "GlobalAdd"
       If SaveCurrentRecordEditScreen Then
-        BrowseUtility utlGlobalAdd
+        BrowseUtility UtlGlobalAdd
       
         ' RH - Note : this sub causes the enabling history menu bug
         RefreshRecordEditScreens
@@ -3097,7 +3097,7 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
             sType = "Data Transfer : "
             bEnabled = datGeneral.SystemPermission("DATATRANSFER", "RUN")
           
-          Case utlGlobalAdd
+          Case UtlGlobalAdd
             sIconName = "GlobalAdd"
             sIconBandName = "mnuUtilities"
             sType = "Global Add : "
@@ -3609,7 +3609,7 @@ Private Function DoMatchReport(mrtMatchReportType As MatchReportType, ByVal Acti
   
   Dim frmEdit As frmMatchDef
   Dim frmRun As frmMatchRun
-  Dim lngTYPE As UtilityType
+  Dim lngType As UtilityType
   Dim bOk As Boolean
 
   bOk = True
@@ -3622,9 +3622,9 @@ Private Function DoMatchReport(mrtMatchReportType As MatchReportType, ByVal Acti
 
 
   Select Case mrtMatchReportType
-    Case mrtNormal: lngTYPE = utlMatchReport
-    Case mrtSucession: lngTYPE = utlSuccession
-    Case mrtCareer: lngTYPE = utlCareer
+    Case mrtNormal: lngType = utlMatchReport
+    Case mrtSucession: lngType = utlSuccession
+    Case mrtCareer: lngType = utlCareer
   End Select
 
   Select Case Action
@@ -3792,7 +3792,7 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long, By
                 Case utlMailMerge
                    DoMailMerge .Action, lngSelectedID, .FromCopy
                 
-                Case utlGlobalAdd
+                Case UtlGlobalAdd
                   DoGlobal glAdd, .Action, lngSelectedID, .FromCopy
                 
                 Case utlGlobalUpdate
