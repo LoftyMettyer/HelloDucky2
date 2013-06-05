@@ -773,3 +773,53 @@ Public Enum SQLDataType
   sqlVarBinary = -3   ' Photo columns
   sqlLongVarChar = -1 ' Working Pattern columns
 End Enum
+
+
+Public Enum UsageCheckObject
+  Table = 1
+  Relationship = 2
+  Column = 3
+  Calculation = 4
+  Order = 5
+  Picture = 6
+  Filter = 7
+  ChildTable = 8
+  LookupTable = 9
+  Email = 10
+  OutlookFolder = 11
+  View = 12
+  Workflow = 13
+  Form = 14
+End Enum
+
+Public Enum SQLServerAuthenticationType
+  iWINDOWSONLY = 1
+  iMIXEDMODE = 2
+End Enum
+
+Public Enum UsageCheckType
+  Delete = 1
+  Edit = 2
+  Copy = 3
+End Enum
+
+Public Enum OLEType
+  OLE_LOCAL = 0
+  OLE_SERVER = 1
+  OLE_EMBEDDED = 2
+End Enum
+
+Public Enum ValidationType
+  VALIDATION_MANDATORY = 0
+  VALIDATION_UNIQUE = 1
+  VALIDATION_DUPLICATE = 2
+  VALIDATION_OVERLAP = 3
+  VALIDATION_CUSTOM = 4
+End Enum
+
+Public Enum Severity
+  Severity_Warning = 0
+  SEVERITY_FAILURE = 1
+  SEVERITY_INFORMATION = 2
+End Enum
+
