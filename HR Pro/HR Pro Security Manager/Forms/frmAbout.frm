@@ -5,7 +5,7 @@ Begin VB.Form frmAbout
    ClientHeight    =   1845
    ClientLeft      =   345
    ClientTop       =   4815
-   ClientWidth     =   6570
+   ClientWidth     =   7410
    ClipControls    =   0   'False
    BeginProperty Font 
       Name            =   "Verdana"
@@ -24,13 +24,13 @@ Begin VB.Form frmAbout
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   1845
-   ScaleWidth      =   6570
+   ScaleWidth      =   7410
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.CommandButton cmdTech 
       Caption         =   "&Support..."
       Height          =   400
-      Left            =   5000
+      Left            =   5835
       TabIndex        =   8
       Top             =   1300
       Width           =   1425
@@ -61,7 +61,7 @@ Begin VB.Form frmAbout
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
-      Left            =   5000
+      Left            =   5835
       TabIndex        =   0
       Top             =   150
       Width           =   1425
@@ -69,7 +69,7 @@ Begin VB.Form frmAbout
    Begin VB.CommandButton cmdSysInfo 
       Caption         =   "System &Info..."
       Height          =   400
-      Left            =   5000
+      Left            =   5835
       TabIndex        =   1
       Top             =   725
       Width           =   1425
@@ -150,13 +150,13 @@ Begin VB.Form frmAbout
    Begin VB.Label lblCopyRight 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "Copyright © Advanced Business Solutions Limited 2011"
+      Caption         =   "Copyright © Advanced Business Software and Solutions Limited"
       ForeColor       =   &H00000000&
       Height          =   195
       Left            =   150
       TabIndex        =   2
       Top             =   1305
-      Width           =   4770
+      Width           =   5490
    End
 End
 Attribute VB_Name = "frmAbout"
@@ -237,7 +237,7 @@ Private Sub Form_Load()
   lblUser.Caption = "Current User : " & Trim(gsUserName)
   lblSecurity.Caption = "User Group : " & gsUserGroup
   lblSql.Caption = GetSqlVersion
-  lblCopyRight.Caption = "Copyright © Advanced Business Solutions Limited 2011"
+  lblCopyRight.Caption = "Copyright © Advanced Business Software and Solutions Limited"
   
   sngMaxX = lblTitle.Left + lblTitle.Width
   sngMaxX = IIf(lblDatabase.Left + lblDatabase.Width > sngMaxX, lblDatabase.Left + lblDatabase.Width, sngMaxX)
@@ -246,11 +246,11 @@ Private Sub Form_Load()
   sngMaxX = IIf(lblSql.Left + lblSql.Width > sngMaxX, lblSql.Left + lblSql.Width, sngMaxX)
   sngMaxX = IIf(lblCopyRight.Left + lblCopyRight.Width > sngMaxX, lblCopyRight.Left + lblCopyRight.Width, sngMaxX)
   
-  cmdOk.Left = sngMaxX + 250
-  cmdSysInfo.Left = cmdOk.Left
-  cmdTech.Left = cmdOk.Left
+  cmdOK.Left = sngMaxX + 250
+  cmdSysInfo.Left = cmdOK.Left
+  cmdTech.Left = cmdOK.Left
   
-  Me.Width = cmdOk.Left + cmdOk.Width + 200
+  Me.Width = cmdOK.Left + cmdOK.Width + 200
   
   Exit Sub
     
