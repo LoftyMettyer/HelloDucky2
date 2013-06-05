@@ -1021,16 +1021,9 @@ Private Sub listHistoryScreens_Refresh()
       
   Loop
     
-'  ' Now sort the list
-'  Set objRecords = daoDb.OpenRecordset("SELECT * FROM tmpHistoryScreens WHERE parentScreenID=" & ScreenID & " ORDER BY [order]", dbFailOnError)
-'  Do While Not objRecords.EOF
-'
-'    objRecords.MoveNext
-'  Loop
-'
-    
-    
-    
+  ' Select the top item
+  listHistoryScreens.ListIndex = 0
+        
 Exit_listHistoryScreens_Refresh:
   
   UI.UnlockWindow
