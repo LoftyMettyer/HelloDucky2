@@ -4481,6 +4481,37 @@ bOk = False
 
 End Function
 
+Public Function GetObjectCategory(UtilityType As UtilityType, UtilityID As Long) As String
+
+  On Error GoTo ErrorTrap
+
+  Dim rsTemp As ADODB.Recordset
+  
+  GetObjectCategory = "<None>"
+
+  Set rsTemp = gobjDataAccess.OpenRecordset("EXEC dbo.spsys_getobjectcategories " & CStr(UtilityType) & ", " & CStr(UtilityID) & ", 0" _
+      , adOpenForwardOnly, adLockReadOnly)
+  If Not rsTemp.BOF And Not rsTemp.EOF Then
+    rsTemp.MoveFirst
+    
+    ' This loop may be a bit ineffcient, but it is proposed at some point to have multiple categories, so that's why it loops!
+    Do While Not rsTemp.EOF
+      If rsTemp.Fields("Selected").Value = 1 Then
+        GetObjectCategory = rsTemp.Fields("category_name").Value
+      End If
+    rsTemp.MoveNext
+    Loop
+  End If
+
+TidyUpAndExit:
+  Set rsTemp = Nothing
+  Exit Function
+  
+ErrorTrap:
+  GoTo TidyUpAndExit
+
+End Function
+
 Public Sub GetObjectCategories(ByRef theCombo As ComboBox, UtilityType As UtilityType, UtilityID As Long, Optional TableID As Long)
 
   On Error GoTo ErrorTrap
