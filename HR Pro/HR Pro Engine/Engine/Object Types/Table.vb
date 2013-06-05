@@ -65,7 +65,7 @@ Namespace Things
       Dim relation As New Relation
 
       For Each relation In Me.Relations
-        If relation.RelationshipType = ScriptDB.RelationshipType.Child Then
+        If relation.RelationshipType = RelationshipType.Child Then
           If relation.ChildID = toTableID Then
             Return relation
           End If

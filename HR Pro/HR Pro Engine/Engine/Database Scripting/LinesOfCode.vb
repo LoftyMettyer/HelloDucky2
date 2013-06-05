@@ -4,7 +4,7 @@ Namespace ScriptDB
 
   <ClassInterface(ClassInterfaceType.None), Serializable()>
   Public Class LinesOfCode
-    Inherits Collection(Of ScriptDB.CodeElement)
+    Inherits Collection(Of CodeElement)
 
     Private mbAppendAfterNext As Boolean
     Private mbIsComparison As Boolean
@@ -15,7 +15,7 @@ Namespace ScriptDB
     Public Property CodeLevel As Integer
     Public Property ReturnType As ComponentValueTypes
 
-    Public Overloads Sub Add(ByVal LineOfCode As ScriptDB.CodeElement)
+    Public Overloads Sub Add(ByVal LineOfCode As CodeElement)
 
       If mbAppendAfterNext Then
         Me.Items.Insert(Me.Items.Count - 1, LineOfCode)
@@ -31,11 +31,11 @@ Namespace ScriptDB
 
     End Sub
 
-    Public Overloads Sub InsertBeforePrevious(ByVal LineOfCode As ScriptDB.CodeElement)
+    Public Overloads Sub InsertBeforePrevious(ByVal LineOfCode As CodeElement)
       Me.Items.Insert(miNextInsertPoint, LineOfCode)
     End Sub
 
-    Public Overloads Sub AppendAfterNext(ByVal LineOfCode As ScriptDB.CodeElement)
+    Public Overloads Sub AppendAfterNext(ByVal LineOfCode As CodeElement)
       mbAppendAfterNext = True
       Me.Items.Add(LineOfCode)
     End Sub
@@ -55,7 +55,7 @@ Namespace ScriptDB
       Get
         Statement = String.Empty
 
-        Dim Chunk As ScriptDB.CodeElement
+        Dim Chunk As CodeElement
         Dim iThisElement As Integer
         Dim bComparisonSinceLastLogic As Boolean
         Dim bAddAutoIsEqualTo As Boolean

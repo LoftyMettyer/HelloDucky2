@@ -218,30 +218,30 @@ Public Class MainForm
 
     Private Sub butViewObjects_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles butViewObjects.Click
 
-        Dim objHRPro As New SystemFramework.HCM
-        Dim objViewer As New ViewObjects
+    '    Dim objHRPro As New SystemFramework.HCM
+    '    Dim objViewer As New ViewObjects
 
-        '    Dim SQLDB As New HRProEngine.Connectivity.SQL
-        Dim objLogin As SystemFramework.Connectivity.Login
+    '    '    Dim SQLDB As New HRProEngine.Connectivity.SQL
+    '    Dim objLogin As SystemFramework.Connectivity.Login
 
-        With objLogin
-            .UseContext = False
-            .UserName = txtUser2.Text
-            .Password = txtPassword2.Text
-            .Database = txtDatabase2.Text
-            .Server = txtServer2.Text
-        End With
+    '    With objLogin
+    '        .UseContext = False
+    '        .UserName = txtUser2.Text
+    '        .Password = txtPassword2.Text
+    '        .Database = txtDatabase2.Text
+    '        .Server = txtServer2.Text
+    '    End With
 
 
-        objHRPro.Connect(objLogin)
+    '    objHRPro.Connect(objLogin)
 
-        objHRPro.Initialise()
-        objHRPro.PopulateObjects()
+    '    objHRPro.Initialise()
+    '    objHRPro.PopulateObjects()
 
-    objViewer.Things = objHRPro.ReturnThings
-    objViewer.ShowDialog()
+    'objViewer.Things = objHRPro.ReturnThings
+    'objViewer.ShowDialog()
 
-        objHRPro.Disconnect()
+    '    objHRPro.Disconnect()
 
 
 
@@ -275,29 +275,29 @@ Public Class MainForm
 
     Private Sub butImport_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles butImport.Click
 
-        Dim objHRPro As New SystemFramework.HCM
-        Dim objImport As New ViewObjects
+    'Dim objHRPro As New SystemFramework.HCM
+    'Dim objImport As New ViewObjects
 
-        '    Dim SQLDB As New HRProEngine.Connectivity.SQL
-        Dim objLogin As SystemFramework.Connectivity.Login
+    ''    Dim SQLDB As New HRProEngine.Connectivity.SQL
+    'Dim objLogin As SystemFramework.Connectivity.Login
 
-        With objLogin
-            .UseContext = False
-            .UserName = txtUser2.Text
-            .Password = txtPassword2.Text
-            .Database = txtDatabase2.Text
-            .Server = txtServer2.Text
-        End With
+    'With objLogin
+    '    .UseContext = False
+    '    .UserName = txtUser2.Text
+    '    .Password = txtPassword2.Text
+    '    .Database = txtDatabase2.Text
+    '    .Server = txtServer2.Text
+    'End With
 
-        objHRPro.Connect(objLogin)
+    'objHRPro.Connect(objLogin)
 
-        objHRPro.Initialise()
-        objHRPro.PopulateObjects()
+    'objHRPro.Initialise()
+    'objHRPro.PopulateObjects()
 
-        objImport.Things = objHRPro.ReturnThings
-        objImport.ShowDialog()
+    'objImport.Things = objHRPro.ReturnThings
+    'objImport.ShowDialog()
 
-        objHRPro.Disconnect()
+    'objHRPro.Disconnect()
 
     End Sub
 

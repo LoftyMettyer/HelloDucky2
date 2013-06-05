@@ -117,7 +117,7 @@ Namespace ScriptDB
           ' Add any relations
           For Each objRelation As Relation In objTable.Relations
 
-            If objRelation.RelationshipType = ScriptDB.RelationshipType.Parent Then
+            If objRelation.RelationshipType = RelationshipType.Parent Then
               sSQL = String.Format("IF NOT EXISTS ( SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE [TABLE_NAME]='{0}' AND [COLUMN_NAME] ='ID_{1}')" & vbNewLine & _
                   "ALTER TABLE [dbo].[{0}] ADD [ID_{1}] integer NOT NULL", objTable.PhysicalName, objRelation.ParentID)
               Globals.CommitDB.ScriptStatement(sSQL)
@@ -506,7 +506,7 @@ Namespace ScriptDB
               If Not objColumn.IsReadOnly Then
                 Select Case objColumn.DataType
 
-                  Case ScriptDB.ColumnTypes.Date
+                  Case ColumnTypes.Date
                     aryBaseTableColumns.Add(String.Format("[{0}] = DATEADD(dd, 0, DATEDIFF(dd, 0, base.[{0}]))", objColumn.Name))
                     aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
                     aryAllWriteableFormatted.Add(String.Format(" DATEADD(dd, 0, DATEDIFF(dd, 0, [{0}]))", objColumn.Name))
@@ -703,7 +703,7 @@ Namespace ScriptDB
           ' -------------------
           ' INSTEAD OF INSERT
           ' -------------------
-          sTriggerName = String.Format("{0}{1}_i01", ScriptDB.Consts.Trigger, objTable.Name)
+          sTriggerName = String.Format("{0}{1}_i01", Consts.Trigger, objTable.Name)
           sSQL = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
               "    SET @sValidation = '';" & vbNewLine & _
@@ -718,7 +718,7 @@ Namespace ScriptDB
           ' -------------------
           ' AFTER INSERT
           ' -------------------
-          sTriggerName = String.Format("{0}{1}_i02", ScriptDB.Consts.Trigger, objTable.Name)
+          sTriggerName = String.Format("{0}{1}_i02", Consts.Trigger, objTable.Name)
           sSQL = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tableid] integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
               "    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
@@ -736,7 +736,7 @@ Namespace ScriptDB
           ' -------------------
           ' INSTEAD OF UPDATE
           ' -------------------
-          sTriggerName = String.Format("{0}{1}_u01", ScriptDB.Consts.Trigger, objTable.Name)
+          sTriggerName = String.Format("{0}{1}_u01", Consts.Trigger, objTable.Name)
           sSQL = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
               "    SET @sValidation = '';" & vbNewLine & _
@@ -755,7 +755,7 @@ Namespace ScriptDB
           ' -------------------
           ' AFTER UPDATE
           ' -------------------
-          sTriggerName = String.Format("{0}{1}_u02", ScriptDB.Consts.Trigger, objTable.Name)
+          sTriggerName = String.Format("{0}{1}_u02", Consts.Trigger, objTable.Name)
           sSQL = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), tableid integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
               "    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
@@ -781,7 +781,7 @@ Namespace ScriptDB
           ' -------------------
           ' AFTER DELETE
           ' -------------------
-          sTriggerName = String.Format("{0}{1}_d02", ScriptDB.Consts.Trigger, objTable.Name)
+          sTriggerName = String.Format("{0}{1}_d02", Consts.Trigger, objTable.Name)
           sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tablename] varchar(255), [tableid] integer, [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
               "    DECLARE @dChangeDate datetime;" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
@@ -822,33 +822,33 @@ Namespace ScriptDB
       Try
 
         Select Case [TriggerType]
-          Case Enums.TriggerType.InsteadOfInsert
-            sTriggerName = String.Format("{0}{1}_i01", ScriptDB.Consts.Trigger, Table.Name)
+          Case TriggerType.InsteadOfInsert
+            sTriggerName = String.Format("{0}{1}_i01", Consts.Trigger, Table.Name)
             sTriggerType = "INSTEAD OF INSERT"
             sTriggerFireType = "INSERT"
 
-          Case Enums.TriggerType.AfterInsert
-            sTriggerName = String.Format("{0}{1}_i02", ScriptDB.Consts.Trigger, Table.Name)
+          Case TriggerType.AfterInsert
+            sTriggerName = String.Format("{0}{1}_i02", Consts.Trigger, Table.Name)
             sTriggerType = "AFTER INSERT"
             sTriggerFireType = "INSERT"
 
-          Case Enums.TriggerType.InsteadOfUpdate
-            sTriggerName = String.Format("{0}{1}_u01", ScriptDB.Consts.Trigger, Table.Name)
+          Case TriggerType.InsteadOfUpdate
+            sTriggerName = String.Format("{0}{1}_u01", Consts.Trigger, Table.Name)
             sTriggerType = "INSTEAD OF UPDATE"
             sTriggerFireType = "UPDATE"
 
-          Case Enums.TriggerType.AfterUpdate
-            sTriggerName = String.Format("{0}{1}_u02", ScriptDB.Consts.Trigger, Table.Name)
+          Case TriggerType.AfterUpdate
+            sTriggerName = String.Format("{0}{1}_u02", Consts.Trigger, Table.Name)
             sTriggerType = "AFTER UPDATE"
             sTriggerFireType = "UPDATE"
 
-          Case Enums.TriggerType.InsteadOfDelete
-            sTriggerName = String.Format("{0}{1}_d01", ScriptDB.Consts.Trigger, Table.Name)
+          Case TriggerType.InsteadOfDelete
+            sTriggerName = String.Format("{0}{1}_d01", Consts.Trigger, Table.Name)
             sTriggerType = "INSTEAD OF DELETE"
             sTriggerFireType = "DELETE"
 
-          Case Enums.TriggerType.AfterDelete
-            sTriggerName = String.Format("{0}{1}_d02", ScriptDB.Consts.Trigger, Table.Name)
+          Case TriggerType.AfterDelete
+            sTriggerName = String.Format("{0}{1}_d02", Consts.Trigger, Table.Name)
             sTriggerType = "AFTER DELETE"
             sTriggerFireType = "DELETE"
 
@@ -882,7 +882,7 @@ Namespace ScriptDB
         ' Compile the trigger and put the apply correct firing order
         If CommitDB.ScriptStatement(sSQL) Then
 
-          If TriggerType = Enums.TriggerType.AfterDelete Or TriggerType = Enums.TriggerType.AfterUpdate Or TriggerType = Enums.TriggerType.AfterInsert Then
+          If TriggerType = TriggerType.AfterDelete Or TriggerType = TriggerType.AfterUpdate Or TriggerType = TriggerType.AfterInsert Then
             sSQL = String.Format("EXEC sp_settriggerorder @triggername=N'[{0}].[{1}]', @order=N'First', @stmttype=N'{2}'" _
                 , [Role], sTriggerName, sTriggerFireType)
             CommitDB.ScriptStatement(sSQL)

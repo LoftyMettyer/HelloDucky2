@@ -4,8 +4,8 @@
   Public Structure CodeElement
     Public CaseNumber As Long
     Public Code As String
-    Public CodeType As ScriptDB.ComponentTypes
-    Public OperatorType As ScriptDB.OperatorSubType
+    Public CodeType As ComponentTypes
+    Public OperatorType As OperatorSubType
     Public BypassEvaluation As Boolean
   End Structure
 

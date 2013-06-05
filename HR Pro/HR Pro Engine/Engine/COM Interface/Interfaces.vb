@@ -217,7 +217,7 @@ Public Module COMInterfaces
   'NOTE: NOT YET USED
   Public Interface IColumn
     Inherits IObject
-    Property DataType As ScriptDB.ColumnTypes
+    Property DataType As ColumnTypes
     Property Size As Integer
     Property Decimals As Integer
     Property Audit As Boolean
@@ -228,7 +228,7 @@ Public Module COMInterfaces
     Property TrimType As TrimType
     Property Alignment As AlignType
     Property Mandatory As Boolean
-    Property OLEType As ScriptDB.OLEType
+    Property OLEType As OLEType
     Property DefaultCalcID As Integer
     Property DefaultCalculation As Expression
     Property DefaultValue As String

@@ -40,7 +40,7 @@ Public Class SysMgr
     Dim bOK As Boolean = True
 
     Try
-
+      'TODO: ensure successive calls to populate objects works as expected, better still get rid off it
       If Options Is Nothing Then
         Globals.Initialise()
       End If
@@ -67,6 +67,7 @@ Public Class SysMgr
     Dim bOK As Boolean = True
 
     Try
+      'TODO: do we really need to call initialise???
       Globals.Initialise()
       System.Windows.Forms.Application.EnableVisualStyles()
 

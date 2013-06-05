@@ -3,7 +3,7 @@
   Public Class Relation
     Inherits Base
 
-    Public Property RelationshipType As ScriptDB.RelationshipType
+    Public Property RelationshipType As RelationshipType
     Public Property ParentID As Integer
     Public Property ChildID As Integer
 

@@ -1,193 +1,196 @@
-﻿Imports System.Runtime.InteropServices
-Imports SystemFramework.Things
+﻿
+'TODO: why do we need this and the SysMgr class???
 
-<ClassInterface(ClassInterfaceType.None)>
-Public Class HCM
-  Implements COMInterfaces.ISystemManager
+'Imports System.Runtime.InteropServices
+'Imports SystemFramework.Things
 
-  Private objDatabase As New Connectivity.SQL
-  Private mobjScript As New ScriptDB.Script
+'<ClassInterface(ClassInterfaceType.None)>
+'Public Class HCM
+'  Implements COMInterfaces.ISystemManager
 
-  Public Property DB As Object Implements COMInterfaces.ISystemManager.CommitDB, COMInterfaces.ISystemManager.MetadataDB
-    Get
-      Return objDatabase
-    End Get
-    Set(ByVal value As Object)
-      objDatabase = CType(value, Connectivity.SQL)
-    End Set
-  End Property
+'  Private objDatabase As New Connectivity.SQL
+'  Private mobjScript As New ScriptDB.Script
 
-  Public Function Initialise() As Boolean Implements ISystemManager.Initialise
+'  Public Property DB As Object Implements COMInterfaces.ISystemManager.CommitDB, COMInterfaces.ISystemManager.MetadataDB
+'    Get
+'      Return objDatabase
+'    End Get
+'    Set(ByVal value As Object)
+'      objDatabase = CType(value, Connectivity.SQL)
+'    End Set
+'  End Property
 
-    Dim bOK As Boolean = True
+'  Public Function Initialise() As Boolean Implements ISystemManager.Initialise
 
-    Try
-      Globals.Initialise()
+'    Dim bOK As Boolean = True
 
-    Catch ex As Exception
-      bOK = False
-    End Try
+'    Try
+'      Globals.Initialise()
 
-    Return bOK
+'    Catch ex As Exception
+'      bOK = False
+'    End Try
 
-  End Function
+'    Return bOK
 
-  Public Function GetAuditLogDataSource() As DataSet
+'  End Function
 
-    Dim objDataset As DataSet
-    Dim objParameters As New Connectivity.Parameters
+'  Public Function GetAuditLogDataSource() As DataSet
 
-    Try
+'    Dim objDataset As DataSet
+'    Dim objParameters As New Connectivity.Parameters
 
-      objParameters.Add("@piAuditType", 1)
-      objParameters.Add("@psOrder", "")
-      objDataset = objDatabase.ExecStoredProcedure("spstat_getaudittrail", objParameters)
+'    Try
 
-      GetAuditLogDataSource = objDataset
+'      objParameters.Add("@piAuditType", 1)
+'      objParameters.Add("@psOrder", "")
+'      objDataset = objDatabase.ExecStoredProcedure("spstat_getaudittrail", objParameters)
 
-    Catch ex As Exception
-      GetAuditLogDataSource = Nothing
-    End Try
+'      GetAuditLogDataSource = objDataset
 
-  End Function
+'    Catch ex As Exception
+'      GetAuditLogDataSource = Nothing
+'    End Try
 
-  Public Function GetAuditLogDescriptions() As DataSet
+'  End Function
 
-    Dim objDataset As DataSet
-    Dim objParameters As New Connectivity.Parameters
+'  Public Function GetAuditLogDescriptions() As DataSet
 
-    Try
+'    Dim objDataset As DataSet
+'    Dim objParameters As New Connectivity.Parameters
 
-      objDataset = objDatabase.ExecStoredProcedure("spstat_getauditrecorddescriptions", objParameters)
+'    Try
 
-      GetAuditLogDescriptions = objDataset
+'      objDataset = objDatabase.ExecStoredProcedure("spstat_getauditrecorddescriptions", objParameters)
 
-    Catch ex As Exception
-      GetAuditLogDescriptions = Nothing
-    End Try
+'      GetAuditLogDescriptions = objDataset
 
-  End Function
+'    Catch ex As Exception
+'      GetAuditLogDescriptions = Nothing
+'    End Try
 
-  Public Function CloseSafely() As Boolean Implements ISystemManager.CloseSafely
-    Return True
-  End Function
+'  End Function
 
-  Public Function PopulateObjects() As Boolean Implements COMInterfaces.ISystemManager.PopulateObjects
+'  Public Function CloseSafely() As Boolean Implements ISystemManager.CloseSafely
+'    Return True
+'  End Function
 
-    Dim bOK As Boolean = True
+'  Public Function PopulateObjects() As Boolean Implements COMInterfaces.ISystemManager.PopulateObjects
 
-    Try
+'    Dim bOK As Boolean = True
 
-      If Options Is Nothing Then
-        Globals.Initialise()
-      End If
+'    Try
 
-      Globals.MetadataDB = objDatabase
-      Globals.CommitDB = objDatabase
-      Globals.Options.DevelopmentMode = False
+'      If Options Is Nothing Then
+'        Globals.Initialise()
+'      End If
 
-      'Things.PopulateSystemThings()
-      '       PopulateSystemSettings()
-      Things.PopulateTables()
-      Things.PopulateTableColumns()
-      Things.PopulateScreens()
-      Things.PopulateTableExpressions()
-      Things.PopulateWorkflows()
+'      Globals.MetadataDB = objDatabase
+'      Globals.CommitDB = objDatabase
+'      Globals.Options.DevelopmentMode = False
 
-
-      '        PopulateModuleSettings()
-
-    Catch ex As Exception
-      bOK = False
-    End Try
-
-    Return bOK
-
-  End Function
+'      'Things.PopulateSystemThings()
+'      '       PopulateSystemSettings()
+'      Things.PopulateTables()
+'      Things.PopulateTableColumns()
+'      Things.PopulateScreens()
+'      Things.PopulateTableExpressions()
+'      Things.PopulateWorkflows()
 
 
-  Public ReadOnly Property ErrorLog As ErrorHandler.Errors Implements COMInterfaces.ISystemManager.ErrorLog
-    Get
-      Return Globals.ErrorLog
-    End Get
-  End Property
+'      '        PopulateModuleSettings()
 
-  Public ReadOnly Property Options As HCMOptions Implements COMInterfaces.ISystemManager.Options
-    Get
-      Return Globals.Options
-    End Get
-  End Property
+'    Catch ex As Exception
+'      bOK = False
+'    End Try
 
-  Public ReadOnly Property Script As ScriptDB.Script Implements COMInterfaces.ISystemManager.Script
-    Get
-      Return mobjScript
-    End Get
-  End Property
+'    Return bOK
 
-  Public ReadOnly Property ReturnThings As ICollection(Of Table) Implements COMInterfaces.ISystemManager.Tables
-    Get
-      Return Globals.Tables
-    End Get
-  End Property
+'  End Function
 
-  Public ReadOnly Property TuningLog As Tuning.Report Implements COMInterfaces.ISystemManager.TuningLog
-    Get
-      Return Globals.TuningLog
-    End Get
-  End Property
 
-  Public ReadOnly Property Version As System.Version Implements COMInterfaces.ISystemManager.Version
-    Get
-      Return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
-    End Get
-  End Property
+'  Public ReadOnly Property ErrorLog As ErrorHandler.Errors Implements COMInterfaces.ISystemManager.ErrorLog
+'    Get
+'      Return Globals.ErrorLog
+'    End Get
+'  End Property
 
-#Region "Connectivity"
+'  Public ReadOnly Property Options As HCMOptions Implements COMInterfaces.ISystemManager.Options
+'    Get
+'      Return Globals.Options
+'    End Get
+'  End Property
 
-  Public Function Connect(ByVal Login As Connectivity.Login) As Boolean
+'  Public ReadOnly Property Script As ScriptDB.Script Implements COMInterfaces.ISystemManager.Script
+'    Get
+'      Return mobjScript
+'    End Get
+'  End Property
 
-    Dim bOK As Boolean = True
+'  Public ReadOnly Property ReturnThings As ICollection(Of Table) Implements COMInterfaces.ISystemManager.Tables
+'    Get
+'      Return Globals.Tables
+'    End Get
+'  End Property
 
-    Try
+'  Public ReadOnly Property TuningLog As Tuning.Report Implements COMInterfaces.ISystemManager.TuningLog
+'    Get
+'      Return Globals.TuningLog
+'    End Get
+'  End Property
 
-      If Login.UserName = vbNullString Then
-        bOK = False
-      Else
-        objDatabase.Login = Login
-        objDatabase.Open()
-      End If
+'  Public ReadOnly Property Version As System.Version Implements COMInterfaces.ISystemManager.Version
+'    Get
+'      Return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
+'    End Get
+'  End Property
 
-    Catch ex As Exception
-      bOK = False
+'#Region "Connectivity"
 
-    End Try
+'  Public Function Connect(ByVal Login As Connectivity.Login) As Boolean
 
-    Return bOK
+'    Dim bOK As Boolean = True
 
-  End Function
+'    Try
 
-  Public Function Disconnect() As Boolean
+'      If Login.UserName = vbNullString Then
+'        bOK = False
+'      Else
+'        objDatabase.Login = Login
+'        objDatabase.Open()
+'      End If
 
-    Dim bOK As Boolean
+'    Catch ex As Exception
+'      bOK = False
 
-    Try
-      objDatabase.Close()
+'    End Try
 
-    Catch ex As Exception
-      bOK = False
+'    Return bOK
 
-    End Try
+'  End Function
 
-    Return bOK
+'  Public Function Disconnect() As Boolean
 
-  End Function
+'    Dim bOK As Boolean
 
-#End Region
+'    Try
+'      objDatabase.Close()
 
-  Public ReadOnly Property Modifications As Modifications Implements COMInterfaces.ISystemManager.Modifications
-    Get
-      Return Globals.Modifications
-    End Get
-  End Property
-End Class
+'    Catch ex As Exception
+'      bOK = False
+
+'    End Try
+
+'    Return bOK
+
+'  End Function
+
+'#End Region
+
+'  Public ReadOnly Property Modifications As Modifications Implements COMInterfaces.ISystemManager.Modifications
+'    Get
+'      Return Globals.Modifications
+'    End Get
+'  End Property
+'End Class
 

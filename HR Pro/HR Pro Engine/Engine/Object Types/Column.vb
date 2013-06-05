@@ -11,7 +11,7 @@ Namespace Things
     Public Property CalcID As Integer
     Public Property Calculation As Expression
 
-    Public Property DataType As ScriptDB.ColumnTypes
+    Public Property DataType As ColumnTypes
     Public Property Size As Integer
     Public Property Decimals As Integer
 
@@ -26,7 +26,7 @@ Namespace Things
     Public Property TrimType As TrimType
     Public Property Alignment As AlignType
     Public Property Mandatory As Boolean
-    Public Property OLEType As ScriptDB.OLEType
+    Public Property OLEType As OLEType
 
     Public Property UniqueType As UniqueCheckScope
 
@@ -38,20 +38,20 @@ Namespace Things
       Get
 
         Select Case Me.DataType
-          Case ScriptDB.ColumnTypes.Text
+          Case ColumnTypes.Text
             If Me.Multiline Or Me.Size > 8000 Then
               Return "MAX"
             Else
               Return CStr(Me.Size)
             End If
 
-          Case ScriptDB.ColumnTypes.Numeric
+          Case ColumnTypes.Numeric
             Return (Me.Size + Me.Decimals).ToString
 
-          Case ScriptDB.ColumnTypes.Logic
+          Case ColumnTypes.Logic
             Return "1"
 
-          Case ScriptDB.ColumnTypes.Date
+          Case ColumnTypes.Date
             Return "20"
 
           Case Else
@@ -68,35 +68,35 @@ Namespace Things
         Dim sqlType As String = String.Empty
 
         Select Case Me.DataType
-          Case ScriptDB.ColumnTypes.Text
+          Case ColumnTypes.Text
             If Me.Multiline Or Me.Size > 8000 Then
               sqlType = "varchar(MAX)"
             Else
               sqlType = String.Format("varchar({0})", Me.Size)
             End If
 
-          Case ScriptDB.ColumnTypes.Integer
+          Case ColumnTypes.Integer
             sqlType = String.Format("integer")
 
-          Case ScriptDB.ColumnTypes.Numeric
+          Case ColumnTypes.Numeric
             sqlType = String.Format("numeric({0},{1})", Me.Size, Me.Decimals)
 
-          Case ScriptDB.ColumnTypes.Date
+          Case ColumnTypes.Date
             sqlType = "datetime"
 
-          Case ScriptDB.ColumnTypes.Logic
+          Case ColumnTypes.Logic
             sqlType = "bit"
 
-          Case ScriptDB.ColumnTypes.WorkingPattern
+          Case ColumnTypes.WorkingPattern
             sqlType = "varchar(14)"
 
-          Case ScriptDB.ColumnTypes.Link
+          Case ColumnTypes.Link
             sqlType = "varchar(255)"
 
-          Case ScriptDB.ColumnTypes.Photograph
+          Case ColumnTypes.Photograph
             sqlType = "varchar(255)"
 
-          Case ScriptDB.ColumnTypes.Binary
+          Case ColumnTypes.Binary
             sqlType = "varbinary(MAX)"
 
         End Select
@@ -114,11 +114,11 @@ Namespace Things
           Return True
         Else
           Select Case Me.DataType
-            Case ScriptDB.ColumnTypes.Text
+            Case ColumnTypes.Text
               Return Me.DefaultValue.Length > 0
-            Case ScriptDB.ColumnTypes.Numeric, ScriptDB.ColumnTypes.Integer
+            Case ColumnTypes.Numeric, ColumnTypes.Integer
               Return CInt(Me.DefaultValue) <> 0
-            Case ScriptDB.ColumnTypes.Logic
+            Case ColumnTypes.Logic
               Return CBool(Me.DefaultValue) <> True
             Case Else
               Return False
@@ -147,7 +147,7 @@ Namespace Things
         format = String.Format("[{0}].[{1}]", prefix, format)
       End If
 
-      If Me.DataType = ScriptDB.ColumnTypes.Text Then
+      If Me.DataType = ColumnTypes.Text Then
 
         ' Case
         Select Case Me.CaseType
@@ -178,11 +178,11 @@ Namespace Things
       Get
 
         Select Case CInt(Me.DataType)
-          Case ScriptDB.ColumnTypes.Text, ScriptDB.ColumnTypes.WorkingPattern, ScriptDB.ColumnTypes.Link
+          Case ColumnTypes.Text, ColumnTypes.WorkingPattern, ColumnTypes.Link
             Return "''"
-          Case ScriptDB.ColumnTypes.Integer, ScriptDB.ColumnTypes.Numeric, ScriptDB.ColumnTypes.Logic
+          Case ColumnTypes.Integer, ColumnTypes.Numeric, ColumnTypes.Logic
             Return "0"
-          Case ScriptDB.ColumnTypes.Date
+          Case ColumnTypes.Date
             Return "NULL"
           Case Else
             Return "0"

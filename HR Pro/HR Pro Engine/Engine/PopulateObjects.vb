@@ -258,7 +258,7 @@ Namespace Things
         table = Globals.Tables.GetById(CInt(row.Item("parentid")))
 
         relation = New Relation
-        relation.RelationshipType = ScriptDB.RelationshipType.Child
+        relation.RelationshipType = RelationshipType.Child
         relation.ParentID = row.Item("parentid").ToString
         relation.ChildID = row.Item("childid").ToString
         relation.Name = row.Item("childname").ToString
@@ -269,7 +269,7 @@ Namespace Things
         table = Globals.Tables.GetById(CInt(row.Item("childid")))
 
         relation = New Relation
-        relation.RelationshipType = ScriptDB.RelationshipType.Parent
+        relation.RelationshipType = RelationshipType.Parent
         relation.ParentID = row.Item("parentid").ToString
         relation.ChildID = row.Item("childid").ToString
         relation.Name = row.Item("parentname").ToString
@@ -375,7 +375,7 @@ Namespace Things
     Private componentfunction As DataSet
     Private componentbase As DataSet
 
-    Public Function LoadComponents(ByVal expression As Component, ByVal Type As ScriptDB.ComponentTypes) As ICollection(Of Component)
+    Public Function LoadComponents(ByVal expression As Component, ByVal type As ScriptDB.ComponentTypes) As ICollection(Of Component)
 
       If componentfunction Is Nothing Then
         componentfunction = Globals.MetadataDB.ExecStoredProcedure("spadmin_getcomponent_function2", Nothing)
@@ -387,7 +387,7 @@ Namespace Things
 
       Dim rows As DataRow()
 
-      Select Case Type
+      Select Case type
         Case ScriptDB.ComponentTypes.Function
           rows = componentfunction.Tables(0).Select("ExpressionID = " & expression.ID)
         Case ScriptDB.ComponentTypes.Calculation

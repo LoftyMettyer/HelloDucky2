@@ -6,6 +6,18 @@
     Lookup = 2
   End Enum
 
+  Public Enum ColumnTypes
+    [Logic] = -7
+    [Binary] = -4
+    [Photograph] = -3
+    [Link] = -2
+    [WorkingPattern] = -1
+    [Numeric] = 2
+    [Integer] = 4
+    [Date] = 11
+    [Text] = 12
+  End Enum
+
   Public Enum DisplayStyle
     Hierarchy = 0
     List = 1
@@ -44,11 +56,25 @@
     Center = 2          ' It pains me to use the American spelling, but probably best for consistency with other controls!
   End Enum
 
+  Public Enum RelationshipType
+    [Child] = 0
+    [Parent] = 1
+    [Unknown] = 2
+  End Enum
+
   Public Enum CaseType
     None = 0
     Upper = 1
     Lower = 2
     Proper = 3
+  End Enum
+
+  Public Enum OLEType
+    LocalPath = 0
+    ServerPath = 1
+    Linked = 2
+    Embedded = 3
+    Filestream = 4
   End Enum
 
   Public Enum ValidationType

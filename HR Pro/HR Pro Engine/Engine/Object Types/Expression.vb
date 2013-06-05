@@ -158,7 +158,7 @@ Namespace Things
         If Not aryParameters1.Contains(String.Format("@prm_ID_{0} integer", relation.ParentID)) Then
           aryParameters1.Add(String.Format("@prm_ID_{0} integer", relation.ParentID))
 
-          If relation.RelationshipType = ScriptDB.RelationshipType.Parent Then
+          If relation.RelationshipType = RelationshipType.Parent Then
             aryParameters2.Add(String.Format("base.[ID_{0}]", relation.ParentID))
             aryParameters3.Add(String.Format("@prm_ID_{0}", relation.ParentID))
             aryComments.Add(String.Format("Relation :{0}", relation.Name))
@@ -643,7 +643,7 @@ Namespace Things
 
           objRelation = Me.BaseTable.GetRelation(objThisColumn.Table.ID)
 
-          If objRelation.RelationshipType = ScriptDB.RelationshipType.Parent Then
+          If objRelation.RelationshipType = RelationshipType.Parent Then
 
             If Me.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation Then
               Me.AssociatedColumn.Table.DependsOnChildColumns.AddIfNew(objThisColumn)
@@ -1147,36 +1147,36 @@ Namespace Things
 
     'End Function
 
-    Private Function ResultDataType(ByVal ColumnType As ScriptDB.ColumnTypes) As String
+    Private Function ResultDataType(ByVal ColumnType As ColumnTypes) As String
 
       Dim sSQLType As String = String.Empty
 
       Select Case ColumnType
-        Case ScriptDB.ColumnTypes.Text
+        Case ColumnTypes.Text
           sSQLType = "varchar(MAX)"
 
-        Case ScriptDB.ColumnTypes.Integer
+        Case ColumnTypes.Integer
           sSQLType = "integer"
 
-        Case ScriptDB.ColumnTypes.Numeric
+        Case ColumnTypes.Numeric
           sSQLType = "numeric(38,8)"
 
-        Case ScriptDB.ColumnTypes.Date
+        Case ColumnTypes.Date
           sSQLType = "datetime"
 
-        Case ScriptDB.ColumnTypes.Logic
+        Case ColumnTypes.Logic
           sSQLType = "bit"
 
-        Case ScriptDB.ColumnTypes.WorkingPattern
+        Case ColumnTypes.WorkingPattern
           sSQLType = "varchar(14)"
 
-        Case ScriptDB.ColumnTypes.Link
+        Case ColumnTypes.Link
           sSQLType = "varchar(255)"
 
-        Case ScriptDB.ColumnTypes.Photograph
+        Case ColumnTypes.Photograph
           sSQLType = "varchar(255)"
 
-        Case ScriptDB.ColumnTypes.Binary
+        Case ColumnTypes.Binary
           sSQLType = "varbinary(MAX)"
 
       End Select
@@ -1193,17 +1193,17 @@ Namespace Things
       If Globals.Options.OverflowSafety Then
 
         Select Case Me.AssociatedColumn.DataType
-          Case ScriptDB.ColumnTypes.WorkingPattern
+          Case ColumnTypes.WorkingPattern
             sWrapped = Statement
 
-          Case ScriptDB.ColumnTypes.Text, ScriptDB.ColumnTypes.Link
+          Case ColumnTypes.Text, ColumnTypes.Link
             If Me.AssociatedColumn.Multiline Then
               sWrapped = Statement
             Else
               sWrapped = String.Format("SUBSTRING(ISNULL({0}, ''), 1, {1})", Statement, Me.AssociatedColumn.Size)
             End If
 
-          Case ScriptDB.ColumnTypes.Integer, ScriptDB.ColumnTypes.Numeric
+          Case ColumnTypes.Integer, ColumnTypes.Numeric
             If Me.AssociatedColumn.Decimals > 0 Then
               sSize = String.Format("{0}.{1}", New String("9"c, Me.AssociatedColumn.Size - Me.AssociatedColumn.Decimals), New String("9"c, Me.AssociatedColumn.Decimals))
             Else
@@ -1211,7 +1211,7 @@ Namespace Things
             End If
             sWrapped = String.Format("CASE WHEN ISNULL({0}, 0) > {1} OR ISNULL({0}, 0) < -{1} THEN 0 ELSE {0} END", Statement, sSize)
 
-          Case ScriptDB.ColumnTypes.Date, ScriptDB.ColumnTypes.Logic
+          Case ColumnTypes.Date, ColumnTypes.Logic
             sWrapped = Statement
 
 
@@ -1229,31 +1229,31 @@ Namespace Things
       Dim sSQLType As String = String.Empty
 
       Select Case Me.AssociatedColumn.DataType
-        Case ScriptDB.ColumnTypes.Text
+        Case ColumnTypes.Text
           sSQLType = "varchar(MAX)"
 
-        Case ScriptDB.ColumnTypes.Integer
+        Case ColumnTypes.Integer
           sSQLType = String.Format("integer")
 
-        Case ScriptDB.ColumnTypes.Numeric
+        Case ColumnTypes.Numeric
           sSQLType = String.Format("numeric(38,8)")
 
-        Case ScriptDB.ColumnTypes.Date
+        Case ColumnTypes.Date
           sSQLType = "datetime"
 
-        Case ScriptDB.ColumnTypes.Logic
+        Case ColumnTypes.Logic
           sSQLType = "bit"
 
-        Case ScriptDB.ColumnTypes.WorkingPattern
+        Case ColumnTypes.WorkingPattern
           sSQLType = "varchar(14)"
 
-        Case ScriptDB.ColumnTypes.Link
+        Case ColumnTypes.Link
           sSQLType = "varchar(255)"
 
-        Case ScriptDB.ColumnTypes.Photograph
+        Case ColumnTypes.Photograph
           sSQLType = "varchar(255)"
 
-        Case ScriptDB.ColumnTypes.Binary
+        Case ColumnTypes.Binary
           sSQLType = "varbinary(MAX)"
 
       End Select
