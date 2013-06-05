@@ -4434,7 +4434,7 @@ Private Function SetTableTriggers_AutoUpdate(pLngCurrentTableID As Long, psTable
            "           WHERE id = @recordID" & vbNewLine & _
            "           SET @newCharValue = CONVERT(varchar(max), @col" & Trim(Str(!LookupColumnID)) & ")" & vbNewLine & _
            "           EXEC dbo.sp_ASRCaseSensitiveCompare @comparisonResult OUTPUT, @oldCharValue, @newCharValue" & vbNewLine & _
-           "           IF @comparisonResult = 0" & vbNewLine & _
+           "           IF @comparisonResult = 0 and isnull(@oldCharValue,'') <> ''" & vbNewLine & _
            "           BEGIN" & vbNewLine & _
            "             UPDATE [" & !TableName & "] " & vbNewLine & _
            "             SET [" & !TableName & "].[" & !ColumnName & "] = @col" & Trim(Str(!LookupColumnID)) & vbNewLine & _
