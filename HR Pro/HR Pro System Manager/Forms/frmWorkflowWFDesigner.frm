@@ -3888,7 +3888,8 @@ Private Function DeleteTabPage(piTabIndex As Integer, pfPromptUser As Boolean) A
     If fOK Then
       
       ' Hide the page container
-      DeselectControl tabPages
+      'DeselectControl tabPages
+      DeselectAllControls
       objTabContainer(piTabIndex).Visible = False
   
       ' Remember the tabpage caption.
@@ -3907,6 +3908,7 @@ Private Function DeleteTabPage(piTabIndex As Integer, pfPromptUser As Boolean) A
       
         tabPages.Visible = False
       Else
+        tabPages.TabPage(1).Selected = True
         tabPages_Click
       End If
           
