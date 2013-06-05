@@ -1,6 +1,6 @@
 Type=Control
 Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#..\..\..\..\WINDOWS\system32\stdole2.tlb#OLE Automation
-Object={EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}#1.1#0; shdocvw.dll
+Object={EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}#1.1#0; ieframe.dll
 Reference=*\G{C67830E0-D11D-11CF-BD80-00AA00575603}#1.0#0#..\..\..\..\WINDOWS\system32\objsafe.tlb#VB IObjectSafety Interface
 Object={A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0; Codejock.Controls.v13.1.0.ocx
 Module=modSafeCtl; modSafeCtl.bas
@@ -19,7 +19,7 @@ CompatibleEXE32="COA_Navigation.ocx"
 VersionCompatible32="1"
 MajorVer=1
 MinorVer=0
-RevisionVer=6
+RevisionVer=7
 AutoIncrementVer=1
 ServerSupportFiles=0
 VersionCompanyName="Advanced Business Solutions Ltd"

@@ -1,5 +1,6 @@
 [Root]
 Most Recent Package=Dep File 1
+Most Recent Deploy=Folder Deployment 1
 
 
 [Package|Dep File 1|Root]
@@ -78,3 +79,9 @@ ServerSideCab=
 File1=C:\DEV\HR Pro\HR Pro ActiveX\COA_Navigation\COA_Navigation.DEP
 Handler1=PDWizard.FolderDplySubWiz
 Handler2=PDWizard.WebPostDplySubWiz
+
+
+[Deploy|Folder Deployment 1|Root]
+Package=Dep File 1
+Handler=PDWizard.FolderDplySubWiz
+Folder=C:\Temp\bob
