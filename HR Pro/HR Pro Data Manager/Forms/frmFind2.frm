@@ -47,7 +47,6 @@ Begin VB.Form frmFind2
             Object.Width           =   10689
             Text            =   "x Records"
             TextSave        =   "x Records"
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -4104,6 +4103,11 @@ Private Sub ssOleDBGridFindColumns_PrintInitialize(ByVal ssPrintInfo As SSDataWi
 End Sub
 
 Private Sub ssOleDBGridFindColumns_RowColChange(ByVal LastRow As Variant, ByVal LastCol As Integer)
+  With ssOleDBGridFindColumns
+    If .Rows > 0 And .SelBookmarks.Count = 0 Then
+      .SelBookmarks.Add .Bookmark
+    End If
+  End With
   frmMain.RefreshRecordMenu Me
 End Sub
 
