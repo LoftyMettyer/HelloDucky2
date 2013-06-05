@@ -49,7 +49,11 @@ Public Class SysMgr
       Globals.CommitDB = mobjCommitDB
       Globals.Options.DevelopmentMode = False
 
-      Things.PopulateSystemThings()
+         Dim sw As New Stopwatch
+         sw.Start()
+         Things.PopulateSystemThings()
+         Console.WriteLine("PST:" & sw.ElapsedMilliseconds)
+
       Things.PopulateSystemSettings()
       Things.PopulateThings()
       Things.PopulateModuleSettings()

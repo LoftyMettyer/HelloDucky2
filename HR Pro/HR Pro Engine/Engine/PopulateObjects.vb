@@ -13,8 +13,13 @@ Namespace Things
       PopulateTableRelations()
       PopulateTableColumns()
       PopulateTableOrders()
-      PopulateTableOrderItems()
-      PopulateTableExpressions()
+         PopulateTableOrderItems()
+         Dim sw As New Stopwatch
+         sw.Start()
+         PopulateTableExpressions()
+
+         Console.WriteLine("PTE:" & sw.ElapsedMilliseconds)
+
       PopulateTableViews()
       PopulateTableViewItems()
       PopulateTableValidations()
