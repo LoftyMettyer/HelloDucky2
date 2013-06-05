@@ -7337,20 +7337,33 @@ Public Function SelectControl(pctlControl As VB.Control) As Boolean
   ' Have selection markers for this control already been created
   If pctlControl.Selected Then
   
-    iIndex = ASRSelectionMarkers.Count
-    Load ASRSelectionMarkers(iIndex)
+    If pctlControl.Tag = "" Then
     
-    With ASRSelectionMarkers(iIndex)
-      Set .Container = pctlControl.Container
-      .WFDesigner = True
-      .AttachedObject = pctlControl
-      .Move .AttachedObject.Left - .MarkerSize, .AttachedObject.Top - .MarkerSize, .AttachedObject.Width + (.MarkerSize * 2), .AttachedObject.Height + (.MarkerSize * 2)
-      .RefreshSelectionMarkers True
-      .ZOrder vbBringToFront
-      .Visible = True
-    End With
-  
-    pctlControl.Tag = iIndex
+      iIndex = ASRSelectionMarkers.Count
+      Load ASRSelectionMarkers(iIndex)
+      
+      With ASRSelectionMarkers(iIndex)
+        Set .Container = pctlControl.Container
+        .WFDesigner = True
+        .AttachedObject = pctlControl
+        .Move .AttachedObject.Left - .MarkerSize, .AttachedObject.Top - .MarkerSize, .AttachedObject.Width + (.MarkerSize * 2), .AttachedObject.Height + (.MarkerSize * 2)
+        .RefreshSelectionMarkers True
+        .ZOrder vbBringToFront
+        .Visible = True
+      End With
+    
+      pctlControl.Tag = iIndex
+    Else
+    
+      With ASRSelectionMarkers(pctlControl.Tag)
+        ' Ensure the selection markers are in the same container
+        ' as the control - this can get out of synch sometimes.
+        Set .Container = pctlControl.Container
+        .ZOrder vbBringToFront
+        .Visible = True
+      End With
+    
+    End If
 
   End If
   
