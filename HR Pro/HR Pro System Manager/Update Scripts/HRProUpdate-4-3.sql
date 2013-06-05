@@ -1038,7 +1038,7 @@ PRINT 'Step 9 - Add new calculation procedures'
 	EXECUTE sp_executeSQL @sSPCode;
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_nicetime](
-			@inputdate as datetime)
+			@inputdate as varchar(20))
 		RETURNS nvarchar(255)
 		WITH SCHEMABINDING
 		AS
@@ -1046,9 +1046,20 @@ PRINT 'Step 9 - Add new calculation procedures'
 		
 			DECLARE @result varchar(255);
 		
-			SET @result = '''';
-			SELECT @result =convert(char(8), @inputdate, 108)
-		
+			SELECT @Result = 
+				CASE
+				WHEN LEN(LTRIM(RTRIM(@inputdate))) = 0 then ''''
+				ELSE 
+					CASE 
+						WHEN ISDATE(@inputdate) = 0 THEN ''***''
+						ELSE (CONVERT(varchar(2),((DATEPART(hour,CONVERT(datetime, @inputdate)) + 11) % 12) + 1)
+							+ '':'' + RIGHT(''00'' + DATENAME(minute, CONVERT(datetime, @inputdate)),2)
+							+ CASE 
+								WHEN DATEPART(hour, CONVERT(datetime, @inputdate)) > 11 THEN '' pm''
+								ELSE '' am''
+							END) 
+					END 
+			END		
 			RETURN @result;
 			
 		END';
