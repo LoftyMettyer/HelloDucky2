@@ -717,7 +717,9 @@ Private Function CopyScreen() As Boolean
     recScrEdit!dfltFontItalic = .Fields("DfltFontItalic")
     recScrEdit!QuickEntry = .Fields("QuickEntry")
     recScrEdit!SSIntranet = .Fields("SSIntranet")
-    
+    recScrEdit!Category = .Fields("Category")
+    recScrEdit!GroupScreens = .Fields("GroupScreens")
+    recScrEdit!Description = .Fields("Description")
     recScrEdit.Update
         
     ' Copy the screen control definitions.
