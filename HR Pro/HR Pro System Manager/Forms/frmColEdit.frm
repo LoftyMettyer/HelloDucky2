@@ -64,6 +64,7 @@ Begin VB.Form frmColEdit
       _Version        =   393216
       Style           =   1
       Tabs            =   8
+      Tab             =   2
       TabsPerRow      =   8
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -77,7 +78,7 @@ Begin VB.Form frmColEdit
       EndProperty
       TabCaption(0)   =   "De&finition"
       TabPicture(0)   =   "frmColEdit.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraDefinitionPage"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
@@ -89,7 +90,7 @@ Begin VB.Form frmColEdit
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Opt&ions"
       TabPicture(2)   =   "frmColEdit.frx":0044
-      Tab(2).ControlEnabled=   0   'False
+      Tab(2).ControlEnabled=   -1  'True
       Tab(2).Control(0)=   "fraOptionsPage"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
@@ -682,7 +683,7 @@ Begin VB.Form frmColEdit
          BorderStyle     =   0  'None
          Enabled         =   0   'False
          Height          =   5350
-         Left            =   -74950
+         Left            =   50
          TabIndex        =   90
          Top             =   320
          Visible         =   0   'False
@@ -1735,7 +1736,7 @@ Begin VB.Form frmColEdit
          BackColor       =   &H8000000C&
          BorderStyle     =   0  'None
          Height          =   5550
-         Left            =   45
+         Left            =   -74955
          TabIndex        =   99
          Top             =   315
          Width           =   8205
@@ -7259,6 +7260,7 @@ Private Sub RefreshOptionsTab()
   ' OLE storage frame
   bEnableStorage = (miControlType = giCTRL_OLE Or miControlType = giCTRL_PHOTO)
   fraStorage.Visible = bEnableStorage
+  fraDefault.Visible = Not bEnableStorage
   fraStorage.Enabled = bEnableStorage And Not mblnReadOnly
   
   If bEnableStorage Then
