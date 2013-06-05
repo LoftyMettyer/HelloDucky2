@@ -79,6 +79,11 @@ Namespace Things
 
     End Sub
 
+    Public Sub GenerateCodeForColumn()
+      GenerateCode()
+    End Sub
+
+
     Public Overridable Sub GenerateCode()
 
       Dim sOptions As String = String.Empty

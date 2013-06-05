@@ -534,28 +534,30 @@ Namespace ScriptDB
               If objColumn.IsCalculated Then
                 objColumn.Calculation.AssociatedColumn = objColumn
                 objColumn.Calculation.ExpressionType = ExpressionType.ColumnCalculation
-                objColumn.Calculation.GenerateCode()
+                objColumn.Calculation.GenerateCodeForColumn()
 
-                If objColumn.Calculation.IsComplex Then
-                  sCalculationCode = objColumn.Calculation.UDF.CallingCode
-                Else
-                  sCalculationCode = objColumn.Calculation.UDF.InlineCode
-                End If
-
-                If objColumn.CalculateIfEmpty Then
-                  If objColumn.SafeReturnType = "NULL" Then
-                    sColumnName = String.Format("[{0}] = ISNULL([{0}], {1})", objColumn.Name, sCalculationCode)
+                If objColumn.Calculation.IsValid Then
+                  If objColumn.Calculation.IsComplex Then
+                    sCalculationCode = objColumn.Calculation.UDF.CallingCode
                   Else
-                    sColumnName = String.Format("[{0}] = ISNULL(NULLIF([{0}], {2}), {1})", objColumn.Name, sCalculationCode, objColumn.SafeReturnType)
+                    sCalculationCode = objColumn.Calculation.UDF.InlineCode
                   End If
-                Else
-                  sColumnName = String.Format("[{0}] = {1}", objColumn.Name, sCalculationCode)
-                End If
 
-                If objColumn.Calculation.CalculatePostAudit Then
-                  aryPostAuditCalcs.Add(sColumnName & vbNewLine)
-                Else
-                  aryCalculatedColumns.Add(sColumnName)
+                  If objColumn.CalculateIfEmpty Then
+                    If objColumn.SafeReturnType = "NULL" Then
+                      sColumnName = String.Format("[{0}] = ISNULL([{0}], {1})", objColumn.Name, sCalculationCode)
+                    Else
+                      sColumnName = String.Format("[{0}] = ISNULL(NULLIF([{0}], {2}), {1})", objColumn.Name, sCalculationCode, objColumn.SafeReturnType)
+                    End If
+                  Else
+                    sColumnName = String.Format("[{0}] = {1}", objColumn.Name, sCalculationCode)
+                  End If
+
+                  If objColumn.Calculation.CalculatePostAudit Then
+                    aryPostAuditCalcs.Add(sColumnName & vbNewLine)
+                  Else
+                    aryCalculatedColumns.Add(sColumnName)
+                  End If
                 End If
 
               End If
@@ -564,7 +566,7 @@ Namespace ScriptDB
               If objColumn.DefaultCalcID > 0 And Not objColumn.DefaultCalculation Is Nothing Then
                 objColumn.DefaultCalculation.AssociatedColumn = objColumn
                 objColumn.DefaultCalculation.ExpressionType = ExpressionType.ColumnDefault
-                objColumn.DefaultCalculation.GenerateCode()
+                objColumn.DefaultCalculation.GenerateCodeForColumn()
 
                 sCalculationCode = objColumn.DefaultCalculation.UDF.CallingCode
                 aryColumnsWithDefaultValues.Add(String.Format("[{0}] = ISNULL(base.[{0}], {1})", objColumn.Name, sCalculationCode))
@@ -1131,7 +1133,7 @@ Namespace ScriptDB
                   If Not view.Filter Is Nothing Then
                      view.Filter.ExpressionType = ExpressionType.Mask
                      view.Filter.AssociatedColumn = table.Columns(0)
-                     view.Filter.GenerateCode()
+              view.Filter.GenerateCodeForColumn()
 
                      For Each column In view.Filter.Dependencies.OfType(Of Column)()
                         index.Columns.AddIfNew(column)
@@ -1156,7 +1158,7 @@ Namespace ScriptDB
 
                   column.Calculation.AssociatedColumn = column
                   column.Calculation.ConvertToExpression()
-                  column.Calculation.GenerateCode()
+                  column.Calculation.GenerateCodeForColumn()
 
                   If column.Calculation.ReturnType <> column.ComponentReturnType Then
                     Globals.ErrorLog.Add(ErrorHandler.Section.UDFs, column.Name, ErrorHandler.Severity.Error _
@@ -1165,6 +1167,16 @@ Namespace ScriptDB
                                       "This could result in further errors in the save process or conversion failure error messages when saving records on this table or associated tables" _
                                       , column.Table.Name, column.Name))
                   End If
+
+                  ' Trap for error 1753 (some system may have duff metadata that's built up over the years
+                  If column.Calculation.Components.Count = 0 Then
+                    Globals.ErrorLog.Add(ErrorHandler.Section.UDFs, column.Name, ErrorHandler.Severity.Warning _
+                      , String.Format("Invalid expression on {0}", column.Name) _
+                      , String.Format("The calculation on {0}.{1} has no components and is invalid. You will need to redefine this calculation.", column.Table.Name, column.Name))
+                    column.Calculation.IsValid = False
+                  End If
+
+
 
                 End If
 
@@ -1181,7 +1193,7 @@ Namespace ScriptDB
                 Else
                   column.DefaultCalculation.ExpressionType = ScriptDB.ExpressionType.ColumnDefault
                   column.DefaultCalculation.AssociatedColumn = column
-                  column.DefaultCalculation.GenerateCode()
+                  column.DefaultCalculation.GenerateCodeForColumn()
                 End If
               End If
 
@@ -1222,7 +1234,7 @@ Namespace ScriptDB
                   .StatementObjects.Clear()
                   .ExpressionType = ExpressionType.ColumnCalculation
                   .AssociatedColumn = column
-                  .GenerateCode()
+                  .GenerateCodeForColumn()
 
 
                   Globals.TuningLog.Expressions.Add(column)
@@ -1245,7 +1257,7 @@ Namespace ScriptDB
 
                   .ExpressionType = ExpressionType.ColumnDefault
                   .AssociatedColumn = column
-                  .GenerateCode()
+                  .GenerateCodeForColumn()
                   Globals.TuningLog.Expressions.Add(column)
 
                   If .IsValid Then
