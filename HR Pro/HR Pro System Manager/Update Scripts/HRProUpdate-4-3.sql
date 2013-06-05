@@ -1758,6 +1758,11 @@ PRINT 'Step - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''5b2c16e0-489a-4061-a0eb-eb94d5f2ee6f'', N''[dbo].[udfsys_isvalidpayrollcharacterset]({0}, {1})'', 3, N''Is Valid Payroll Character Set'', NULL, 0, 0, 76)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''84b11964-4b8b-46e4-b340-f3d5598a82fe'', N''REPLACE({0}, {1}, {2})'', 1, N''Replace Characters In A String'', NULL, 0, 0, 77)';
 
+	-- Change functions over to UDFs
+	UPDATE dbo.[ASRSysFunctions] SET [spName] = '', [UDF] = 1, [UDFName] = 'udfsys_parentalleaveentitlement' WHERE [functionID] = 62
+	UPDATE dbo.[ASRSysFunctions] SET [spName] = '', [UDF] = 1, [UDFName] = 'udfsys_parentalleavetaken' WHERE [functionID] = 63
+	UPDATE dbo.[ASRSysFunctions] SET [spName] = '', [UDF] = 1, [UDFName] = 'udfsys_maternityexpectedreturndate' WHERE [functionID] = 64
+
 
 
 /* ------------------------------------------------------------- */
