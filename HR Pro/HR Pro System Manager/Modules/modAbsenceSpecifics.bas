@@ -2106,7 +2106,7 @@ Private Function CreateAbsenceBetween2DatesStoredProcedure() As Boolean
           "            AND (" & sAbsColTypeName & " IN (SELECT Type From @AbsenceTypes))" & vbNewLine & _
           "            AND ((" & sAbsColStartDateName & " <= @pdtstartdate AND (" & sAbsColEndDateName & " >= @pdtstartdate) OR " & sAbsColEndDateName & " IS NULL)" & vbNewLine & _
           "            OR (" & sAbsColStartDateName & " >= @pdtstartdate AND " & sAbsColStartDateName & " <= @pdtenddate));" & vbNewLine & vbNewLine & _
-          "    SELECT @iInstances = SUM(instance),@pdblBradford = SUM(duration) FROM @absences;" & vbNewLine & vbNewLine
+          "    SELECT @iInstances = SUM(instance),@pdblBradford = SUM(duration) FROM @absences WHERE @pdblBradford > 0;" & vbNewLine & vbNewLine
       End If
         
     sBradfordUDF = sBradfordUDF & vbNewLine & _
