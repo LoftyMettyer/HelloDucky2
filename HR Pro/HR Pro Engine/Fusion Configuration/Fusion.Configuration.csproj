@@ -160,6 +160,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\WaitCursor.cs" />
+    <Content Include="Setup DB For Fusion.sql" />
     <None Include="Resources\Splash.png" />
     <None Include="Resources\Stop_32.png" />
     <None Include="Resources\Start_32.png" />
