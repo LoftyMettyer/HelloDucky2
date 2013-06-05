@@ -66,6 +66,7 @@
       [Validation] = 5
       [DiaryFilter] = 6
       [ColumnFilter] = 7
+      [ReferencedColumn] = 8
     End Enum
 
     'Public Enum DataType

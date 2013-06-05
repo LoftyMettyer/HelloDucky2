@@ -66,119 +66,119 @@ Namespace Things
 
 #Region "Generate code"
 
-    ' Any columns that are calculated should be amended to embed their respective calculations
-    Private Function ChangeCalculatedColumnsToExpressions(ByRef objExpression As Things.Component) As Things.Collection
+    '' Any columns that are calculated should be amended to embed their respective calculations
+    'Private Function ChangeCalculatedColumnsToExpressions(ByRef objExpression As Things.Component) As Things.Collection
 
-      Dim objColumn As Things.Column
-      Dim objComponent As Things.Component
-      Dim objReplaceComponent As Things.Component
-      Dim objNew As New Things.Collection '= objExpression.Clone
-      Dim bIsProcessed As Boolean = False
-      Dim objDepends As Things.Base
+    '  Dim objColumn As Things.Column
+    '  Dim objComponent As Things.Component
+    '  Dim objReplaceComponent As Things.Component
+    '  Dim objNew As New Things.Collection '= objExpression.Clone
+    '  Dim bIsProcessed As Boolean = False
+    '  Dim objDepends As Things.Base
 
-      'objExpression.Objects.Clear()
-      miRecuriveStop = miRecuriveStop + 1
-      If miRecuriveStop > 150 Then
-        Debug.Print(objExpression.Name)
-        '    Return objExpression.Objects
-      End If
-
-
-      For Each objComponent In objExpression.Objects
-        Select Case objComponent.SubType
-
-          Case ScriptDB.ComponentTypes.Column
-
-            objColumn = Globals.Things.GetObject(Enums.Type.Table, objComponent.TableID).Objects.GetObject(Enums.Type.Column, objComponent.ColumnID)
-
-            For Each objDepends In mcolDependencies
-              If objDepends.Type = Enums.Type.Column Then
-                If CType(objDepends, Things.Column).ID = objColumn.ID Then
-                  bIsProcessed = True
-                  Exit For
-                End If
-              End If
-            Next
-
-            If Not bIsProcessed Then
-              mcolDependencies.Add(objColumn)
-            End If
-
-            '   Debug.Assert(Not objComponent.ColumnID = 985)
+    '  'objExpression.Objects.Clear()
+    '  miRecuriveStop = miRecuriveStop + 1
+    '  If miRecuriveStop > 150 Then
+    '    Debug.Print(objExpression.Name)
+    '    '    Return objExpression.Objects
+    '  End If
 
 
-            If objColumn.IsCalculated And Not objColumn Is Me.AssociatedColumn And Not bIsProcessed Then
-              objReplaceComponent = Globals.Things.GetObject(Enums.Type.Table, objComponent.TableID).Objects.GetObject(Enums.Type.Expression, objColumn.CalcID)
-              objReplaceComponent.BaseExpression = objComponent.BaseExpression
-              objReplaceComponent.SubType = ScriptDB.ComponentTypes.Expression
-              objReplaceComponent.Objects = ChangeCalculatedColumnsToExpressions(objReplaceComponent)
-              objNew.Add(objReplaceComponent)
-            Else
-              objNew.Add(objComponent)
-            End If
+    '  For Each objComponent In objExpression.Objects
+    '    Select Case objComponent.SubType
 
-            '' Add to the dependancy stack
-            'If Not bIsProcessed Then
-            '  mcolDependencies.Add(objColumn)
-            'End If
-            '     Case ScriptDB.ComponentTypes.Calculation
+    '      Case ScriptDB.ComponentTypes.Column
 
-            'For Each objDepends In mcolDependencies
-            '  If objDepends.Type = Enums.Type.Component Then
-            '    If CType(objDepends, Things.Component).ID = objComponent.ID Then
-            '      bIsProcessed = True
-            '      Exit For
-            '    End If
-            '  End If
-            'Next
+    '        objColumn = Globals.Things.GetObject(Enums.Type.Table, objComponent.TableID).Objects.GetObject(Enums.Type.Column, objComponent.ColumnID)
 
-            'If Not bIsProcessed Then
-            '  objComponent.Objects = ChangeCalculatedColumnsToExpressions(objComponent)
-            'End If
-            'objNew.Add(objComponent)
+    '        For Each objDepends In mcolDependencies
+    '          If objDepends.Type = Enums.Type.Column Then
+    '            If CType(objDepends, Things.Column).ID = objColumn.ID Then
+    '              bIsProcessed = True
+    '              Exit For
+    '            End If
+    '          End If
+    '        Next
+
+    '        If Not bIsProcessed Then
+    '          mcolDependencies.Add(objColumn)
+    '        End If
+
+    '        '   Debug.Assert(Not objComponent.ColumnID = 985)
 
 
-          Case ScriptDB.ComponentTypes.Expression, ScriptDB.ComponentTypes.Function, ScriptDB.ComponentTypes.Calculation
+    '        If objColumn.IsCalculated And Not objColumn Is Me.AssociatedColumn And Not bIsProcessed Then
+    '          objReplaceComponent = Globals.Things.GetObject(Enums.Type.Table, objComponent.TableID).Objects.GetObject(Enums.Type.Expression, objColumn.CalcID)
+    '          objReplaceComponent.BaseExpression = objComponent.BaseExpression
+    '          objReplaceComponent.SubType = ScriptDB.ComponentTypes.Expression
+    '          objReplaceComponent.Objects = ChangeCalculatedColumnsToExpressions(objReplaceComponent)
+    '          objNew.Add(objReplaceComponent)
+    '        Else
+    '          objNew.Add(objComponent)
+    '        End If
 
-            BuildDependancies(objComponent)
+    '        '' Add to the dependancy stack
+    '        'If Not bIsProcessed Then
+    '        '  mcolDependencies.Add(objColumn)
+    '        'End If
+    '        '     Case ScriptDB.ComponentTypes.Calculation
 
-            'For Each objDepends In mcolDependencies
-            '  If objDepends.Type = objComponent.Type Then
-            '    If CType(objDepends, Things.Component).ID = objComponent.ID Then
-            '      bIsProcessed = True
-            '      Exit For
-            '    End If
-            '  End If
-            'Next
+    '        'For Each objDepends In mcolDependencies
+    '        '  If objDepends.Type = Enums.Type.Component Then
+    '        '    If CType(objDepends, Things.Component).ID = objComponent.ID Then
+    '        '      bIsProcessed = True
+    '        '      Exit For
+    '        '    End If
+    '        '  End If
+    '        'Next
 
-            'If Not bIsProcessed Then
-            '  mcolDependencies.Add(objComponent)
-            '  objComponent.Objects = ChangeCalculatedColumnsToExpressions(objComponent)
-            'Else
+    '        'If Not bIsProcessed Then
+    '        '  objComponent.Objects = ChangeCalculatedColumnsToExpressions(objComponent)
+    '        'End If
+    '        'objNew.Add(objComponent)
 
-            'End If
-            'objComponent.SubType = ScriptDB.ComponentTypes.Expression
-            '     End If
 
-            objNew.Add(objComponent)
+    '      Case ScriptDB.ComponentTypes.Expression, ScriptDB.ComponentTypes.Function, ScriptDB.ComponentTypes.Calculation
 
-            'mcolDependencies.Add(objComponent)
-            '       Else
-            '     objNew.Add(objComponent)
+    '        BuildDependancies(objComponent)
 
-            '    Debug.Print("hhhe")
-            '    End If
+    '        'For Each objDepends In mcolDependencies
+    '        '  If objDepends.Type = objComponent.Type Then
+    '        '    If CType(objDepends, Things.Component).ID = objComponent.ID Then
+    '        '      bIsProcessed = True
+    '        '      Exit For
+    '        '    End If
+    '        '  End If
+    '        'Next
 
-          Case Else
-            objNew.Add(objComponent)
+    '        'If Not bIsProcessed Then
+    '        '  mcolDependencies.Add(objComponent)
+    '        '  objComponent.Objects = ChangeCalculatedColumnsToExpressions(objComponent)
+    '        'Else
 
-        End Select
+    '        'End If
+    '        'objComponent.SubType = ScriptDB.ComponentTypes.Expression
+    '        '     End If
 
-      Next
+    '        objNew.Add(objComponent)
 
-      Return objNew
+    '        'mcolDependencies.Add(objComponent)
+    '        '       Else
+    '        '     objNew.Add(objComponent)
 
-    End Function
+    '        '    Debug.Print("hhhe")
+    '        '    End If
+
+    '      Case Else
+    '        objNew.Add(objComponent)
+
+    '    End Select
+
+    '  Next
+
+    '  Return objNew
+
+    'End Function
 
     Private Sub AddDependancy(ByRef Thing As Things.Base)
 
@@ -202,8 +202,10 @@ Namespace Things
 
             objColumn = Globals.Things.GetObject(Enums.Type.Table, objComponent.TableID).Objects.GetObject(Enums.Type.Column, objComponent.ColumnID)
             'If objColumn.IsCalculated Then
-            '  objComponent = Globals.Things.GetObject(Enums.Type.Table, objComponent.TableID).Objects.GetObject(Enums.Type.Expression, objComponent.CalculationID)
+            '  objComponent = Globals.Things.GetObject(Enums.Type.Table, objColumn.Table.ID).Objects.GetObject(Enums.Type.Expression, objColumn.CalculationID)
             '  BuildDependancies(objComponent)
+            'End If
+
             If Not mcolDependencies.Contains(objColumn) Then
               mcolDependencies.Add(objColumn)
             End If
@@ -224,6 +226,7 @@ Namespace Things
       Dim sCode As String = ""
       Dim aryParameters1 As New ArrayList
       Dim aryParameters2 As New ArrayList
+      Dim aryParameters3 As New ArrayList
       Dim iCount As Integer
 
       sOptions = IIf(Me.Encrypted, "WITH ENCYPTION", "")
@@ -252,12 +255,12 @@ Namespace Things
       ' Build the dependencies collection
       mcolDependencies.Clear()
       miRecuriveStop = 0
-      Me.Objects = ChangeCalculatedColumnsToExpressions(Me)
-      '  BuildDependancies(Me)
+      BuildDependancies(Me)
 
       '   BuildDependancies(Me)
       aryParameters1.Clear()
       aryParameters2.Clear()
+      aryParameters3.clear()
 
       ' Build the executeion code
       If Me.Objects.Count = 0 Then
@@ -269,6 +272,7 @@ Namespace Things
       ' Always add the ID for the record
       aryParameters1.Add("@prm_ID integer")
       aryParameters2.Add("base.ID")
+      aryParameters3.add("@prm_ID")
 
       ' Add other dependancies
       iCount = 0
@@ -287,8 +291,10 @@ Namespace Things
 
             If CType(objDependency, Things.Relation).RelationshipType = ScriptDB.RelationshipType.Parent Then
               aryParameters2.Add(String.Format("base.[ID_{0}]", CInt(CType(objDependency, Things.Relation).ParentID)))
+              aryParameters3.Add(String.Format("@prm_{0}]", CInt(CType(objDependency, Things.Relation).ParentID)))
             Else
               aryParameters2.Add("base.[ID]")
+              aryParameters3.Add(String.Format("@prm_ID"))
             End If
 
           End If
@@ -312,6 +318,7 @@ Namespace Things
 
       ' Calling statement
       With UDF
+        .Name = String.Format("[{0}].[{1}_{2}.{3}]", Me.SchemaName, "udfcalc", Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
         .Declarations = String.Join(vbNewLine, maryDeclarations.ToArray())
         .Prerequisites = String.Join(vbNewLine, maryPrerequisitStatements.ToArray())
 
@@ -319,7 +326,6 @@ Namespace Things
 
           ' Wrapper for calculations with associated columns
           Case ScriptDB.ExpressionType.ColumnCalculation
-            .Name = String.Format("[{0}].[{1}_{2}.{3}]", Me.SchemaName, "udfcalc", Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
             .SelectCode = mcolLinesOfCode.Statement
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
             .JoinCode = String.Format("{0}", String.Join(",", Joins.ToArray))
@@ -339,10 +345,12 @@ Namespace Things
                            "                 {7}" & vbNewLine & _
                            "                 {8}" & vbNewLine & _
                            "                 {9}" & vbNewLine & _
-                           "    RETURN ISNULL(@Result, 0);" & vbNewLine & _
+                           "    RETURN ISNULL(@Result, {10});" & vbNewLine & _
                            "END" _
                           , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                          , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
+                          , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode _
+                          , Me.AssociatedColumn.SafeReturnType)
+
 
             .CodeStub = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
                            "RETURNS {2}" & vbNewLine & _
@@ -360,10 +368,11 @@ Namespace Things
                            "                 {8}" & vbNewLine & _
                            "                 {9}" & vbNewLine & vbNewLine & _
                            "*/" & vbNewLine & _
-                           "    RETURN ISNULL(@Result, 0);" & vbNewLine & _
+                           "    RETURN ISNULL(@Result, {10});" & vbNewLine & _
                            "END" _
                           , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                          , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
+                          , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode _
+                          , Me.AssociatedColumn.SafeReturnType)
 
             ' Wrapper for when this function is used as a filter in an expression
           Case ScriptDB.ExpressionType.ColumnFilter
@@ -374,8 +383,13 @@ Namespace Things
 
             ' Wrapper for when expression is used as a filter in a view
           Case ScriptDB.ExpressionType.ViewCode
+            .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters1.ToArray))
             .SelectCode = mcolLinesOfCode.Statement
             '.SelectCode = String.Format("CASE WHEN ({0}) THEN 1 ELSE 0 END", mcolLinesOfCode.Statement)
+
+          Case ScriptDB.ExpressionType.ReferencedColumn
+            .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters3.ToArray))
+            .SelectCode = mcolLinesOfCode.Statement
 
             ' Should never be called, but just in case...
           Case Else
@@ -561,6 +575,7 @@ Namespace Things
 
       Dim LineOfCode As ScriptDB.CodeElement
 
+      IsComplex = False
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Column
 
       ' there has to be a cleaner way, but for the moment put a dummy objbasecolumn in there so the function does not fail with a blah blah is not set to object error on the .TableID property.
@@ -583,6 +598,9 @@ Namespace Things
       Else
 
 
+        '  Debug.Assert(Me.AssociatedColumn.Name <> "Function_Is_Between_Current_Salary_10000_and_20000")
+
+
         guidTableID = objThisColumn.Table.ID
 
         ' Is this column referencing the column that this udf is attaching itself to? (i.e. recursion)
@@ -596,273 +614,258 @@ Namespace Things
           LineOfCode.Code = String.Format("[dbo].[{0}](@pID)", objThisColumn.Name)
           'mbAddBaseTable = True
 
-          ' Does the referenced column have calculation on it, then reference the UDF of the calc rather than the column itself.
-          'And miGenerateExpressionType = ScriptDB.GenerateExpressionType.ColumnCalculation _
-          'ElseIf Not objThisColumn.CalcID = 0 And Me.EmbedDependencies _
-          '    And objThisColumn.Table.ID = objBaseColumn.Table.ID _
-          '    And Not maryAvoidRecursion.Contains(objThisColumn.CalcID) Then
+        ElseIf objThisColumn.IsCalculated And objThisColumn.Table Is Me.AssociatedColumn.Table Then
 
-          '  ' Suck the calc in instead of referencing UDF - performance and stops potential recursion
-          '  'LineOfCode.Code = String.Format("[dbo].[udfcalc_{0}.{1}](@pID,[{0}].[{1}])" _
-          '  '  , objThisColumn.Table.Name, objThisColumn.Name)
-          '  maryAvoidRecursion.Add(objThisColumn.CalcID)
+          If objThisColumn.Calculation Is Nothing Then
+            objThisColumn.Calculation = objThisColumn.Table.GetObject(Type.Expression, objThisColumn.CalcID)
+          End If
+          objThisColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn
+          objThisColumn.Calculation.AssociatedColumn = objThisColumn
+          objThisColumn.Calculation.GenerateCode()
 
-          '  objExpression = New Things.Expression
-          '  objExpression = objThisColumn.Table.Objects.GetObject(Things.Type.Expression, objThisColumn.CalcID)
-          '  If Component.BaseExpression Is Nothing Then
-          '    Debug.Print("dkkd")
-          '  End If
-
-          '  If Not Component.BaseExpression Is Nothing Then
-          '    objExpression.AssociatedColumn = Component.BaseExpression.AssociatedColumn
-          '    ChildCodeCluster = New ScriptDB.LinesOfCode
-          '    ChildCodeCluster.CodeLevel = [CodeCluster].CodeLevel + 1
-          '    ChildCodeCluster.ReturnType = objThisColumn.DataType
-          '    SQLCode_AddCodeLevel(objExpression.Objects, ChildCodeCluster)
-          '    LineOfCode.Code = ChildCodeCluster.Statement
-          '  End If
-
-          '  mbAddBaseTable = True
-
-
-          '      ElseIf Not objThisColumn.Table.ID = objBaseColumn.Table.ID Then
+          If objThisColumn.Calculation.IsComplex Then
+            LineOfCode.Code = objThisColumn.Calculation.UDF.CallingCode
+          Else
+            AddToDependencies(objThisColumn.Calculation.mcolDependencies)
+            LineOfCode.Code = objThisColumn.Calculation.UDF.SelectCode
+          End If
 
           ' No calcs to worry about, just read the column directly (its a free entry text field)
-        Else
-
-          ' Oh hey, wait, we need to know the return type
-          iColumnType = objThisColumn.DataType
-
-          'If is this column on the base table then add directly to the main execute statement,
-          ' otherwise add it into child/parent statements array
-          If objThisColumn.Table.ID = objBaseColumn.Table.ID Then
-
-            Select Case Component.BaseExpression.ExpressionType
-              Case ScriptDB.ExpressionType.ColumnFilter
-                sColumnName = String.Format("[{0}].[{1}]", objThisColumn.Table.Name, objThisColumn.Name)
-                'mbAddBaseTable = True
-
-              Case ScriptDB.ExpressionType.ViewCode
-                sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
-
-              Case Else
-                sColumnName = String.Format("@prm_{0}", objThisColumn.Name)
-                'mbAddBaseTable = True
-
-            End Select
-
-            'If ExpressionType = ScriptDB.ExpressionType.RecordDescription Then
-            '  sColumnName = String.Format("@{0}", objThisColumn.Name)
-            'Else
-            '  '            sColumnName = String.Format("[{0}].[{1}]", objThisColumn.Table.PhysicalName, objThisColumn.Name)
-            '  sColumnName = String.Format("@prm_{0}", objThisColumn.Name)
-            '  mbAddBaseTable = True
-            'End If
-
-
-
-
-            Select Case iColumnType
-
-              Case ScriptDB.ColumnTypes.Logic, ScriptDB.ColumnTypes.Numeric, ScriptDB.ColumnTypes.Integer
-                LineOfCode.Code = String.Format("ISNULL({0},0)", sColumnName)
-              Case ScriptDB.ColumnTypes.Date
-                LineOfCode.Code = String.Format("ISNULL({0},NULL)", sColumnName)
-              Case Else
-                LineOfCode.Code = String.Format("ISNULL({0},'')", sColumnName)
-
-            End Select
-
           Else
 
-            IsComplex = True
-            sColumnFilter = String.Empty
-            sColumnOrder = String.Empty
-            bIsSummaryColumn = False
+            ' Oh hey, wait, we need to know the return type
+            iColumnType = objThisColumn.DataType
 
-            ' Is parent or child?
-            If Component.IsColumnByReference Then
-              objRelation = New Things.Relation
-              objRelation.RelationshipType = ScriptDB.RelationshipType.Unknown
-            Else
-              objRelation = objBaseColumn.Table.GetRelation(objThisColumn.Table.ID)
-            End If
+            'If is this column on the base table then add directly to the main execute statement,
+            ' otherwise add it into child/parent statements array
+            If objThisColumn.Table.ID = objBaseColumn.Table.ID Then
 
-            If objRelation.RelationshipType = ScriptDB.RelationshipType.Parent Then
+              Select Case Component.BaseExpression.ExpressionType
+                Case ScriptDB.ExpressionType.ColumnFilter
+                  sColumnName = String.Format("[{0}].[{1}]", objThisColumn.Table.Name, objThisColumn.Name)
+                  'mbAddBaseTable = True
+
+                Case ScriptDB.ExpressionType.ViewCode
+                  sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
+
+                Case Else
+                  sColumnName = String.Format("@prm_{0}", objThisColumn.Name)
+                  'mbAddBaseTable = True
+
+              End Select
+
+              'If ExpressionType = ScriptDB.ExpressionType.RecordDescription Then
+              '  sColumnName = String.Format("@{0}", objThisColumn.Name)
+              'Else
+              '  '            sColumnName = String.Format("[{0}].[{1}]", objThisColumn.Table.PhysicalName, objThisColumn.Name)
+              '  sColumnName = String.Format("@prm_{0}", objThisColumn.Name)
+              '  mbAddBaseTable = True
+              'End If
+
+
+
 
               Select Case iColumnType
 
                 Case ScriptDB.ColumnTypes.Logic, ScriptDB.ColumnTypes.Numeric, ScriptDB.ColumnTypes.Integer
-                  LineOfCode.Code = String.Format("ISNULL([{0}].[{1}],0)", objThisColumn.Table.Name, objThisColumn.Name)
-
+                  LineOfCode.Code = String.Format("ISNULL({0},0)", sColumnName)
                 Case ScriptDB.ColumnTypes.Date
-                  LineOfCode.Code = String.Format("ISNULL([{0}].[{1}],NULL)", objThisColumn.Table.Name, objThisColumn.Name)
-
+                  LineOfCode.Code = String.Format("ISNULL({0},NULL)", sColumnName)
                 Case Else
-                  LineOfCode.Code = String.Format("ISNULL([{0}].[{1}],'')", objThisColumn.Table.Name, objThisColumn.Name)
+                  LineOfCode.Code = String.Format("ISNULL({0},'')", sColumnName)
 
               End Select
-
-              ' Add table join component
-              sRelationCode = String.Format("INNER JOIN [dbo].[{0}] ON [{0}].[ID] = [{1}].[ID_{2}]" & vbNewLine _
-                , objRelation.Name, objBaseColumn.Table.Name, CInt(objRelation.ParentID))
-              If Not Joins.Contains(sRelationCode) Then
-                Joins.Add(sRelationCode)
-              End If
-
-              ' Needs base table added
-              sFromCode = String.Format("FROM [dbo].[{0}]", objBaseColumn.Table.Name)
-              If Not FromTables.Contains(sFromCode) Then
-                FromTables.Add(sFromCode)
-              End If
-
-
-              ' mbAddBaseTable = True
-
-              ' sSQL = String.Join(vbNewLine, maryDeclarations.ToArray(GetType(String))) & vbNewLine & vbNewLine
-
 
             Else
 
-              ' Derive code for any filter on this column in a child table
-              If CInt([Component].ColumnFilterID) > 0 Then
+              IsComplex = True
+              sColumnFilter = String.Empty
+              sColumnOrder = String.Empty
+              bIsSummaryColumn = False
 
-                objExpression = New Things.Expression
-                ChildCodeCluster = New ScriptDB.LinesOfCode
+              ' Is parent or child?
+              If Component.IsColumnByReference Then
+                objRelation = New Things.Relation
+                objRelation.RelationshipType = ScriptDB.RelationshipType.Unknown
+              Else
+                objRelation = objBaseColumn.Table.GetRelation(objThisColumn.Table.ID)
+              End If
 
-                objExpression = objThisColumn.Table.Objects.GetObject(Things.Type.Expression, [Component].ColumnFilterID)
-                'objExpression.BaseExpression = Me.BaseExpression
-                '                objExpression.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
-                objExpression.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
-                objExpression.AssociatedColumn = objThisColumn
+              If objRelation.RelationshipType = ScriptDB.RelationshipType.Parent Then
 
-                'SQLCode_AddCodeLevel(objExpression.Objects, ChildCodeCluster)
-                'ChildCodeCluster.CodeLevel = [CodeCluster].CodeLevel + 1
-                ' ChildCodeCluster.ReturnType = ScriptDB.ComponentValueTypes.Logic
-                ' sColumnFilter = vbNewLine & "                AND " & ChildCodeCluster.Statement
+                Select Case iColumnType
 
-                'sSQL = sSQL & vbNewLine & String.Join(vbNewLine, Joins.ToArray(GetType(String)))
-                objExpression.GenerateCode()
-                sColumnFilter = vbNewLine & "                AND (" & objExpression.UDF.SelectCode & " = 1)"
+                  Case ScriptDB.ColumnTypes.Logic, ScriptDB.ColumnTypes.Numeric, ScriptDB.ColumnTypes.Integer
+                    LineOfCode.Code = String.Format("ISNULL([{0}].[{1}],0)", objThisColumn.Table.Name, objThisColumn.Name)
 
-                ' Add any join statements
-                If objExpression.Joins.Count > 0 Then
-                  sColumnJoinCode = String.Join(vbNewLine, objExpression.Joins.ToArray())
+                  Case ScriptDB.ColumnTypes.Date
+                    LineOfCode.Code = String.Format("ISNULL([{0}].[{1}],NULL)", objThisColumn.Table.Name, objThisColumn.Name)
+
+                  Case Else
+                    LineOfCode.Code = String.Format("ISNULL([{0}].[{1}],'')", objThisColumn.Table.Name, objThisColumn.Name)
+
+                End Select
+
+                ' Add table join component
+                sRelationCode = String.Format("INNER JOIN [dbo].[{0}] ON [{0}].[ID] = [{1}].[ID_{2}]" & vbNewLine _
+                  , objRelation.Name, objBaseColumn.Table.Name, CInt(objRelation.ParentID))
+                If Not Joins.Contains(sRelationCode) Then
+                  Joins.Add(sRelationCode)
                 End If
 
-              End If
+                ' Needs base table added
+                sFromCode = String.Format("FROM [dbo].[{0}]", objBaseColumn.Table.Name)
+                If Not FromTables.Contains(sFromCode) Then
+                  FromTables.Add(sFromCode)
+                End If
 
-              ' Derive the code for the order on this column in a child table
-              If Not [Component].ColumnOrderID = 0 Then
-                sColumnOrder = SQLCode_AddOrder(objThisColumn.Table, [Component].ColumnOrderID)
-              End If
+
+                ' mbAddBaseTable = True
+
+                ' sSQL = String.Join(vbNewLine, maryDeclarations.ToArray(GetType(String))) & vbNewLine & vbNewLine
 
 
-              ' Add calculation for this foreign column to the pre-requisits array
-              iPartNumber = maryDeclarations.Count
-
-              iColumnAggregiateType = [Component].ColumnAggregiateType
-              Select Case iColumnAggregiateType
-
-                'Case enumAggregiateNumeric.Average
-                'Case enumAggregiateNumeric.First
-                'Case enumAggregiateNumeric.Last
-
-                Case ScriptDB.AggregiateNumeric.Maximum
-                  sPartCode = String.Format("{0}SELECT @part_{1} = MAX([{3}].[{2}])" & vbNewLine _
-                              , [CodeCluster].Indentation, iPartNumber _
-                              , objThisColumn.Name, objThisColumn.Table.Name)
-
-                Case ScriptDB.AggregiateNumeric.Minimum
-                  sPartCode = String.Format("{0}SELECT @part_{1} = MIN([{3}].[{2}])" & vbNewLine _
-                              , [CodeCluster].Indentation, iPartNumber _
-                              , objThisColumn.Name, objThisColumn.Table.Name)
-
-                  '          Case enumAggregiateNumeric.Specific
-
-                Case ScriptDB.AggregiateNumeric.Total
-                  sPartCode = String.Format("{0}SELECT @part_{1} = SUM([{3}].[{2}])" & vbNewLine _
-                              , [CodeCluster].Indentation, iPartNumber _
-                              , objThisColumn.Name, objThisColumn.Table.Name)
-                  bIsSummaryColumn = True
-
-                Case ScriptDB.AggregiateNumeric.Count
-                  sPartCode = String.Format("{0}SELECT @part_{1} = COUNT([{3}].[{2}])" & vbNewLine _
-                              , [CodeCluster].Indentation, iPartNumber _
-                              , objThisColumn.Name, objThisColumn.Table.Name)
-                  bIsSummaryColumn = True
-
-                Case Else
-                  sPartCode = String.Format("{0}SELECT TOP 1 @part_{1} = [{3}].[{2}]" & vbNewLine _
-                              , [CodeCluster].Indentation, iPartNumber _
-                              , objThisColumn.Name, objThisColumn.Table.Name)
-
-              End Select
-
-              'AND [_deleteddate] IS NULL{3}" & vbNewLine _
-              '              & "{0}WHERE [pid_{2}] = @pID " & vbNewLine _
-
-              ' Add to prereqistits arrays
-              If bIsSummaryColumn Then
-                maryDeclarations.Add(String.Format("{0}DECLARE @part_{1} numeric(10,0);" _
-                    , [CodeCluster].Indentation, iPartNumber))
-                sColumnOrder = vbNullString
               Else
-                maryDeclarations.Add(String.Format("{0}DECLARE @part_{1} {2};" _
-                    , [CodeCluster].Indentation, iPartNumber, objThisColumn.DataTypeSyntax))
-              End If
+
+                ' Derive code for any filter on this column in a child table
+                If CInt([Component].ColumnFilterID) > 0 Then
+
+                  objExpression = New Things.Expression
+                  ChildCodeCluster = New ScriptDB.LinesOfCode
+
+                  objExpression = objThisColumn.Table.Objects.GetObject(Things.Type.Expression, [Component].ColumnFilterID)
+                  'objExpression.BaseExpression = Me.BaseExpression
+                  '                objExpression.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
+                  objExpression.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
+                  objExpression.AssociatedColumn = objThisColumn
+
+                  'SQLCode_AddCodeLevel(objExpression.Objects, ChildCodeCluster)
+                  'ChildCodeCluster.CodeLevel = [CodeCluster].CodeLevel + 1
+                  ' ChildCodeCluster.ReturnType = ScriptDB.ComponentValueTypes.Logic
+                  ' sColumnFilter = vbNewLine & "                AND " & ChildCodeCluster.Statement
+
+                  'sSQL = sSQL & vbNewLine & String.Join(vbNewLine, Joins.ToArray(GetType(String)))
+                  objExpression.GenerateCode()
+                  sColumnFilter = vbNewLine & "                AND (" & objExpression.UDF.SelectCode & " = 1)"
+
+                  ' Add any join statements
+                  If objExpression.Joins.Count > 0 Then
+                    sColumnJoinCode = String.Join(vbNewLine, objExpression.Joins.ToArray())
+                  End If
+
+                End If
+
+                ' Derive the code for the order on this column in a child table
+                If CInt([Component].ColumnOrderID) > 0 Then
+                  sColumnOrder = SQLCode_AddOrder(objThisColumn.Table, [Component].ColumnOrderID)
+                End If
 
 
-              ' TODO - this needs to reference the relationship to the parent table, how do we deal with get field from db record?!!!!
-              If Component.IsColumnByReference Then
+                ' Add calculation for this foreign column to the pre-requisits array
+                iPartNumber = maryDeclarations.Count
 
-                sPartCode = sPartCode & String.Format("{0}FROM [dbo].[{1}]" & vbNewLine _
-                    & "{0} " & vbNewLine _
-                    & "{0}{2}" & vbNewLine _
-                    , [CodeCluster].Indentation _
-                    , objThisColumn.Table.Name _
-                    , sColumnFilter, sColumnOrder)
-              Else
-                sPartCode = sPartCode & String.Format("{0}FROM [dbo].[{1}]" & vbNewLine _
-                    & "{5}" & vbNewLine _
-                    & "{0}WHERE [id_{2}] = @pID_{2} " & vbNewLine _
-                    & "{0}{3}" & vbNewLine _
-                    & "{0}{4}" & vbNewLine _
-                    , [CodeCluster].Indentation _
-                    , objThisColumn.Table.Name _
-                    , CInt(objBaseColumn.Table.ID), sColumnFilter, sColumnOrder, sColumnJoinCode)
-              End If
+                iColumnAggregiateType = [Component].ColumnAggregiateType
+                Select Case iColumnAggregiateType
+
+                  'Case enumAggregiateNumeric.Average
+                  'Case enumAggregiateNumeric.First
+                  'Case enumAggregiateNumeric.Last
+
+                  Case ScriptDB.AggregiateNumeric.Maximum
+                    sPartCode = String.Format("{0}SELECT @part_{1} = MAX([{3}].[{2}])" & vbNewLine _
+                                , [CodeCluster].Indentation, iPartNumber _
+                                , objThisColumn.Name, objThisColumn.Table.Name)
+
+                  Case ScriptDB.AggregiateNumeric.Minimum
+                    sPartCode = String.Format("{0}SELECT @part_{1} = MIN([{3}].[{2}])" & vbNewLine _
+                                , [CodeCluster].Indentation, iPartNumber _
+                                , objThisColumn.Name, objThisColumn.Table.Name)
+
+                    '          Case enumAggregiateNumeric.Specific
+
+                  Case ScriptDB.AggregiateNumeric.Total
+                    sPartCode = String.Format("{0}SELECT @part_{1} = SUM([{3}].[{2}])" & vbNewLine _
+                                , [CodeCluster].Indentation, iPartNumber _
+                                , objThisColumn.Name, objThisColumn.Table.Name)
+                    bIsSummaryColumn = True
+
+                  Case ScriptDB.AggregiateNumeric.Count
+                    sPartCode = String.Format("{0}SELECT @part_{1} = COUNT([{3}].[{2}])" & vbNewLine _
+                                , [CodeCluster].Indentation, iPartNumber _
+                                , objThisColumn.Name, objThisColumn.Table.Name)
+                    bIsSummaryColumn = True
+
+                  Case Else
+                    sPartCode = String.Format("{0}SELECT TOP 1 @part_{1} = [{3}].[{2}]" & vbNewLine _
+                                , [CodeCluster].Indentation, iPartNumber _
+                                , objThisColumn.Name, objThisColumn.Table.Name)
+
+                End Select
+
+                'AND [_deleteddate] IS NULL{3}" & vbNewLine _
+                '              & "{0}WHERE [pid_{2}] = @pID " & vbNewLine _
+
+                ' Add to prereqistits arrays
+                If bIsSummaryColumn Then
+                  maryDeclarations.Add(String.Format("{0}DECLARE @part_{1} numeric(10,0);" _
+                      , [CodeCluster].Indentation, iPartNumber))
+                  sColumnOrder = vbNullString
+                Else
+                  maryDeclarations.Add(String.Format("{0}DECLARE @part_{1} {2};" _
+                      , [CodeCluster].Indentation, iPartNumber, objThisColumn.DataTypeSyntax))
+                End If
 
 
-              'TODO -  change the relation object to have references to teh poarent and child instead of guids?
-              ' Add relation to the dependency stack
-              bAddRelation = True
-              For Each objDepends As Things.Base In mcolDependencies
-                If objDepends.Type = Enums.Type.Relation Then
-                  If CType(objDepends, Things.Relation).ParentID = objRelation.ParentID Then
-                    bAddRelation = False
-                    Exit For
+                ' TODO - this needs to reference the relationship to the parent table, how do we deal with get field from db record?!!!!
+                If Component.IsColumnByReference Then
+
+                  sPartCode = sPartCode & String.Format("{0}FROM [dbo].[{1}]" & vbNewLine _
+                      & "{0} " & vbNewLine _
+                      & "{0}{2}" & vbNewLine _
+                      , [CodeCluster].Indentation _
+                      , objThisColumn.Table.Name _
+                      , sColumnFilter, sColumnOrder)
+                Else
+                  sPartCode = sPartCode & String.Format("{0}FROM [dbo].[{1}]" & vbNewLine _
+                      & "{5}" & vbNewLine _
+                      & "{0}WHERE [id_{2}] = @pID_{2} " & vbNewLine _
+                      & "{0}{3}" & vbNewLine _
+                      & "{0}{4}" & vbNewLine _
+                      , [CodeCluster].Indentation _
+                      , objThisColumn.Table.Name _
+                      , CInt(objBaseColumn.Table.ID), sColumnFilter, sColumnOrder, sColumnJoinCode)
+                End If
+
+
+                'TODO -  change the relation object to have references to teh poarent and child instead of guids?
+                ' Add relation to the dependency stack
+                bAddRelation = True
+                For Each objDepends As Things.Base In mcolDependencies
+                  If objDepends.Type = Enums.Type.Relation Then
+                    If CType(objDepends, Things.Relation).ParentID = objRelation.ParentID Then
+                      bAddRelation = False
+                      Exit For
+                    End If
+                  End If
+                Next
+
+                If bAddRelation Then
+                  If Not mcolDependencies.Contains(objRelation) Then
+                    mcolDependencies.Add(objRelation)
                   End If
                 End If
-              Next
 
-              If bAddRelation Then
-                If Not mcolDependencies.Contains(objRelation) Then
-                  mcolDependencies.Add(objRelation)
-                End If
-              End If
+                maryPrerequisitStatements.Add(sPartCode)
 
-              maryPrerequisitStatements.Add(sPartCode)
-
-              ' Add this column to the main executing statement
-              LineOfCode.Code = String.Format("ISNULL(@part_{0},0)", iPartNumber)
+                ' Add this column to the main executing statement
+                LineOfCode.Code = String.Format("ISNULL(@part_{0},{1})", iPartNumber, objThisColumn.SafeReturnType)
 
 
-              ' Add the order and the direction.
+                ' Add the order and the direction.
 
-              ' How do we do specific line X?
+                ' How do we do specific line X?
 
-              '            , PhysicalName([Component].Item("columnorderid").ToString, ObjectPrefix.Column)))
+                '            , PhysicalName([Component].Item("columnorderid").ToString, ObjectPrefix.Column)))
               End If
 
               ' Add table join component
@@ -877,9 +880,9 @@ Namespace Things
               '    , PhysicalName([Component].Item("columnorderid").ToString, ObjectPrefix.Table)))
               'End If
 
-          End If
+            End If
 
-        End If
+          End If
       End If
 
       ' Add this column (or reference to it) to the main execute statement
@@ -1001,7 +1004,8 @@ Namespace Things
         objExpression.GenerateCode()
 
         iPartNumber = maryDeclarations.Count
-        maryDeclarations.Add(String.Format("{0}DECLARE @part_{1} {2};", [CodeCluster].Indentation, iPartNumber, ScriptDB.GetSQLColumnDatatype(Component.ReturnType)))
+        '        maryDeclarations.Add(String.Format("{0}DECLARE @part_{1} {2};", [CodeCluster].Indentation, iPartNumber, ScriptDB.GetSQLColumnDatatype(Component.ReturnType)))
+        maryDeclarations.Add(String.Format("{0}DECLARE @part_{1} {2};", [CodeCluster].Indentation, iPartNumber, objExpression.DataTypeSyntax))
 
         sPartCode = String.Format("{0}SELECT @part_{1} = {2}" & vbNewLine & _
             "{0}{3}" & vbNewLine & _
@@ -1089,6 +1093,71 @@ Namespace Things
 
 #End Region
 
+    ' Declaration syntax for a column type
+    Public ReadOnly Property DataTypeSyntax As String
+      Get
+
+        Dim sSQLType As String = String.Empty
+
+        Select Case CInt(Me.ReturnType)
+          Case ScriptDB.ColumnTypes.Text
+            If Me.Size > 8000 Then
+              sSQLType = "[varchar](MAX)"
+            Else
+              sSQLType = String.Format("[varchar]({0})", Me.Size)
+            End If
+
+          Case ScriptDB.ColumnTypes.Integer
+            sSQLType = String.Format("[integer]")
+
+          Case ScriptDB.ColumnTypes.Numeric
+            sSQLType = String.Format("[numeric]({0},{1})", Me.Size, Me.Decimals)
+
+          Case ScriptDB.ColumnTypes.Date
+            sSQLType = "[datetime]"
+
+          Case ScriptDB.ColumnTypes.Logic
+            sSQLType = "[bit]"
+
+          Case ScriptDB.ColumnTypes.WorkingPattern
+            sSQLType = "[varchar](14)"
+
+          Case ScriptDB.ColumnTypes.Link
+            sSQLType = "[varchar](255)"
+
+          Case ScriptDB.ColumnTypes.Photograph
+            sSQLType = "[varchar](255)"
+
+          Case ScriptDB.ColumnTypes.Binary
+            sSQLType = "[varbinary](MAX)"
+
+        End Select
+
+        Return sSQLType
+
+      End Get
+
+    End Property
+
+    Private Sub AddToDependencies(ByRef Dependencies As Things.Collection)
+
+      Dim objDependency As Things.Base
+      Dim objColumn As Things.Column
+
+      For Each objDependency In Dependencies
+
+        If objDependency.Type = Enums.Type.Column Then
+          objColumn = CType(objDependency, Things.Column)
+          If Not mcolDependencies.Contains(objColumn) Then
+            If objColumn.Table Is Me.BaseTable Then
+              mcolDependencies.Add(objDependency)
+            End If
+          End If
+        End If
+
+      Next
+
+    End Sub
 
   End Class
 End Namespace

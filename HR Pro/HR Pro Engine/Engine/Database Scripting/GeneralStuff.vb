@@ -5,28 +5,28 @@ Namespace ScriptDB
   <HideModuleName()> _
   Public Module General
 
-    Public Function GetSQLColumnDatatype(ByVal Type As ScriptDB.ComponentValueTypes) As String
+    'Public Function GetSQLColumnDatatype(ByVal Type As ScriptDB.ComponentValueTypes) As String
 
-      Dim sSQLType As String = String.Empty
+    '  Dim sSQLType As String = String.Empty
 
-      Select Case CInt(Type)
-        Case ComponentValueTypes.String, ComponentValueTypes.Component_String
-          sSQLType = "[varchar](MAX)"
+    '  Select Case CInt(Type)
+    '    Case ComponentValueTypes.String, ComponentValueTypes.Component_String
+    '      sSQLType = "[varchar](MAX)"
 
-        Case ComponentValueTypes.Numeric, ComponentValueTypes.Component_Numeric
-          sSQLType = String.Format("[numeric](38,8)")
+    '    Case ComponentValueTypes.Numeric, ComponentValueTypes.Component_Numeric
+    '      sSQLType = String.Format("[numeric](38,8)")
 
-        Case ComponentValueTypes.Date, ComponentValueTypes.Component_Date
-          sSQLType = "[datetime]"
+    '    Case ComponentValueTypes.Date, ComponentValueTypes.Component_Date
+    '      sSQLType = "[datetime]"
 
-        Case ComponentValueTypes.Logic, ComponentValueTypes.Component_Logic
-          sSQLType = "[bit]"
+    '    Case ComponentValueTypes.Logic, ComponentValueTypes.Component_Logic
+    '      sSQLType = "[bit]"
 
-      End Select
+    '  End Select
 
-      GetSQLColumnDatatype = sSQLType
+    '  GetSQLColumnDatatype = sSQLType
 
-    End Function
+    'End Function
 
   End Module
 End Namespace

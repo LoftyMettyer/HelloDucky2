@@ -360,11 +360,15 @@ Namespace ScriptDB
       Dim sSQLWriteableColumns As String
       Dim sSQLCalculatedColumns As String
       Dim sSQLParentColumns As String
+      Dim sSQLParentColumns_Delete As String
+      Dim sSQLChildColumns As String
 
       Dim aryCalculatedColumns As ArrayList
       Dim aryDebugColumns As ArrayList
       Dim aryBaseTableColumns As ArrayList
       Dim aryParentsToUpdate As ArrayList
+      Dim aryChildrenToUpdate As ArrayList
+      Dim aryParentsToUpdate_Delete As ArrayList
       Dim aryAfterInsertColumns As ArrayList
       Dim aryAllWriteableColumns As ArrayList
 
@@ -401,6 +405,8 @@ Namespace ScriptDB
           aryAfterInsertColumns = New ArrayList
           aryUpdateUniqueCodes = New ArrayList
           aryParentsToUpdate = New ArrayList
+          aryChildrenToUpdate = New ArrayList
+          aryParentsToUpdate_Delete = New ArrayList
 
           ' Diary links code
           'sSQLCode_DiaryLinks = String.Format("       SET @nvarCommand = '';" & vbNewLine & _
@@ -424,43 +430,10 @@ Namespace ScriptDB
 
               If objColumn.IsCalculated Then
 
-                ' If calculation is complex reference its UDF else embed code directly into trigger
-                'If objColumn.Calculation.IsComplex Or Not objColumn.Calculation.IsScriptSafe Then
-                '  aryCalculatedColumns.Add(String.Format("[{0}] = [dbo].[udfcalc_{1}.{0}]([id],[{0}])", objColumn.Name, objTable.Name))
-                'Else
-                '  objColumn.Calculation.GenerateType = GenerateType.SimpleUDF
-                '  'aryCalculatedColumns.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.Calculation.Code))
-
-                '  aryCalculatedColumns.Add(String.Format("[{0}] = [dbo].[udfcalc_{1}.{0}]([id],[{0}])", objColumn.Name, objTable.Name))
-
-                '  '                aryCalculatedColumns.Add(String.Format("[{0}] = [dbo].[udfcalc_{1}.{0}]([id],[{0}])", objColumn.Name, objTable.Name))
-                '  'aryDebugColumns.Add(String.Format("UPDATE [dbo].[{1}] SET [{0}] = [dbo].[udfcalc_{1}.{0}]([id],[{0}]);", objColumn.Name, objTable.Name))
-
-                'End If
-
-                ' Does the calculation 
-                'If objColumn.Calculation.IsDeterministic Then
-                'Else
-                'End If
-
-
-                '      objExpression = New Things.Expression
-                'objExpression = objTable.Objects.GetObject(Things.Type.Expression, objColumn.CalcID)
-                'If Not objExpression Is Nothing Then
-                '    objExpression.ExpressionType = ScriptDB.ExpressionType.ViewCode
-                '    objExpression.AssociatedColumn = objColumn
-                '    sColumnCalculation = objExpression.Code
-                '    If objExpression.IsSimpleCalc Then  'And objExpression.IsValid Then
-                '      sSQL = sSQL & String.Format(", {0} AS [{1}]", sColumnCalculation, objColumn.Name) & vbNewLine
-                '    Else
-                '      sSQL = sSQL & String.Format(", [{0}]", objColumn.Name) & vbNewLine
-                'End If
-
-                '    '    aryJoinCode.
-
-                '    '    aryJoinCode.Add(objExpression.Joins)
+                objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
+                objColumn.Calculation.AssociatedColumn = objColumn
+                objColumn.Calculation.GenerateCode()
                 aryCalculatedColumns.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.Calculation.UDF.CallingCode) & vbNewLine)
-                '  aryCalculatedColumns.Add(String.Format("[{0}] = [dbo].[udfcalc_{1}.{0}]([id],[{0}])", objColumn.Name, objTable.Name))
 
               End If
 
@@ -524,19 +497,39 @@ Namespace ScriptDB
             If objRelation.RelationshipType = RelationshipType.Parent Then
               aryBaseTableColumns.Add(String.Format("[ID_{0}] = [inserted].[ID_{0}]", CInt(objRelation.ParentID)))
               aryAllWriteableColumns.Add(String.Format("[ID_{0}]", CInt(objRelation.ParentID)))
-              aryParentsToUpdate.Add(String.Format("    UPDATE [dbo].[{1}] SET [updflag] = 1 WHERE [dbo].[{1}].[id] IN (SELECT DISTINCT [id_{2}] FROM inserted)" & vbNewLine & vbNewLine _
+
+              aryParentsToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {1})" & vbNewLine & _
+                                                   "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM inserted)" & vbNewLine & vbNewLine _
+                , objRelation.PhysicalName, CInt(objRelation.ParentID)))
+
+
+              aryParentsToUpdate_Delete.Add(String.Format("    UPDATE [dbo].[{1}] SET [updflag] = 1 WHERE [dbo].[{1}].[id] IN (SELECT DISTINCT [id_{2}] FROM deleted)" & vbNewLine & vbNewLine _
                 , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID)))
+            Else
+
+              aryChildrenToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3})" & vbNewLine & _
+                      "        UPDATE base SET [updflag] = 1 FROM dbo.[{1}] base WHERE [ID_{2}] IN (SELECT DISTINCT [id] FROM inserted);" & vbNewLine & vbNewLine _
+                      , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID), CInt(objRelation.ChildID)))
+
             End If
           Next
 
           ' Update any parents
           If aryParentsToUpdate.ToArray.Length > 0 Then
-            sSQLParentColumns = String.Format("    -- Refresh any parents" & vbNewLine & _
-              String.Join(vbNewLine, aryParentsToUpdate.ToArray()))
+            sSQLParentColumns = String.Format("    -- Refresh any parents" & vbNewLine & String.Join(vbNewLine, aryParentsToUpdate.ToArray()))
+            sSQLParentColumns_Delete = String.Format("    -- Refresh any parents" & vbNewLine & String.Join(vbNewLine, aryParentsToUpdate_Delete.ToArray()))
           Else
             sSQLParentColumns = "    -- No parents to refresh" & vbNewLine & vbNewLine
+            sSQLParentColumns_Delete = "    -- No parents to refresh" & vbNewLine & vbNewLine
           End If
 
+
+          ' Update child records
+          If aryChildrenToUpdate.ToArray.Length > 0 Then
+            sSQLChildColumns = String.Format("    -- Refresh children" & vbNewLine & String.Join(vbNewLine, aryChildrenToUpdate.ToArray()))
+          Else
+            sSQLChildColumns = "    -- No children to refresh" & vbNewLine & vbNewLine
+          End If
 
           ' Update statement of all the non read only columns (free entry columns)
           If aryBaseTableColumns.ToArray.Length > 0 Then
@@ -691,14 +684,15 @@ Namespace ScriptDB
           sTriggerName = String.Format("{0}{1}_u02", ScriptDB.Consts.Trigger, objTable.Name)
           sSQL = String.Format("    DECLARE @dChangeDate datetime;" & vbNewLine & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-              "    -- If the update has been called directly from this base table put a flag in the the temporary trigger status table" & vbNewLine & _
-              "    --IF NOT UPDATE([updflag]) INSERT [dbo].[{4}] ([spid], [tablefromid]) VALUES (@@spid,{3})" & vbNewLine & vbNewLine & _
+              "    -- Has the trigger been called from an update on another table?" & vbNewLine & _
+              "    IF NOT UPDATE([updflag]) INSERT [dbo].[{4}] ([spid], [tablefromid]) VALUES (@@spid,{3})" & vbNewLine & vbNewLine & _
               sSQLCalculatedColumns & vbNewLine & _
               sSQLParentColumns & vbNewLine & _
+              sSQLChildColumns & vbNewLine & _
               "    -- Links " & vbNewLine & "{2}" & vbNewLine & vbNewLine & _
               "    -- Update unique codes " & vbNewLine & "{5}" & vbNewLine & vbNewLine & _
               "    -- Clear the temporary trigger status table" & vbNewLine & vbNewLine & _
-              "    --DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {3};" & vbNewLine & vbNewLine & _
+              "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {3};" & vbNewLine & vbNewLine & _
               "    -- Some debug code - (REMOVE later) " & vbNewLine & _
               "/* " & vbNewLine & String.Join(vbNewLine, aryDebugColumns.ToArray()) & vbNewLine & "*/" _
               , objTable.Name, sTriggerName _
@@ -719,8 +713,9 @@ Namespace ScriptDB
               "    ---------------------------" & vbNewLine & _
               "{2}" & vbNewLine & vbNewLine & _
               "    INSERT dbo.[tbsys_audittrail] (username, datetimestamp, recordid, oldvalue, newvalue, columnid, deleted)" & vbNewLine & _
-              "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, columnid, 1 FROM @audit" & vbNewLine _
-              , objTable.Name, sTriggerName, sSQLCode_AuditDelete)
+              "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, columnid, 1 FROM @audit" & vbNewLine & vbNewLine & _
+              "{3}" & vbNewLine _
+              , objTable.Name, sTriggerName, sSQLCode_AuditDelete, sSQLParentColumns_Delete)
           ScriptTrigger("dbo", objTable, TriggerType.AfterDelete, sSQL)
 
 
@@ -789,7 +784,7 @@ Namespace ScriptDB
           "    DECLARE @iCount integer;" & vbNewLine & vbNewLine & _
          "    -- Only top level call (in case database property activating recursion is enabled)" & vbNewLine & _
          "    --print TRIGGER_NESTLEVEL()" & vbNewLine & _
-         "    --IF TRIGGER_NESTLEVEL() > 4 RETURN" & vbNewLine & vbNewLine & _
+         "    --IF TRIGGER_NESTLEVEL() > 15 RETURN" & vbNewLine & vbNewLine & _
           "{4}" & vbNewLine & vbNewLine & _
           "    --PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
           "END" _
@@ -1232,13 +1227,13 @@ Namespace ScriptDB
         For Each objTable In Globals.Things
 
           ' Views
-          For Each objView In objTable.Views
-            If Not objView.Filter Is Nothing Then
-              objView.Filter.ExpressionType = ExpressionType.ViewCode
-              '              objView.Filter.BaseTable
-              objView.Filter.GenerateCode()
-            End If
-          Next
+          'For Each objView In objTable.Views
+          '  If Not objView.Filter Is Nothing Then
+          '    objView.Filter.ExpressionType = ExpressionType.ViewCode
+          '    '              objView.Filter.BaseTable
+          '    objView.Filter.GenerateCode()
+          '  End If
+          'Next
 
 
           ' Calculations
@@ -1248,9 +1243,15 @@ Namespace ScriptDB
 
               objColumn.Calculation = objTable.Objects.GetObject(Things.Type.Expression, objColumn.CalcID)
 
+
               If Not objColumn.Calculation.State = System.Data.DataRowState.Unchanged Or Globals.Options.RefreshObjects Then
 
                 sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
+
+                Debug.Assert(sObjectName <> "udfcalc_Personnel_Records.CHARACTER_FUNCTIONS_COMBINED_1")
+
+
+
 
                 ScriptDropUDF("dbo", sObjectName)
 
