@@ -2,21 +2,19 @@
 
 Public Class AuditLogForm2
 
+    Public ConString As String
     Private model As AuditLogModel
 
     Private Sub AuditLog_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
-        If model Is Nothing Then model = New AuditLogModel With {.Context = New DBContext}
+        model = New AuditLogModel(New DBContext(ConString))
 
         BindControls()
 
-        AddHandler model.PropertyChanged,
-           Sub(s As Object, ev As PropertyChangedEventArgs)
-               If ev.PropertyName = "Period" AndAlso model.Period <> DatePeriod.SpecificDates Then model.Show()
-               If ev.PropertyName = "Period" Then datePanel.Visible = (model.Period = DatePeriod.SpecificDates)
+        AddHandler Application.Idle,
+           Sub()
+               datePanel.Visible = (model.Period = DatePeriod.SpecificDates)
            End Sub
-
-        model.Show()
     End Sub
 
     Private Sub BindControls()
@@ -24,17 +22,40 @@ Public Class AuditLogForm2
         periodEditor.Items.Add(New Infragistics.Win.ValueListItem(DatePeriod.ThisMonth, "This Month"))
         periodEditor.Items.Add(New Infragistics.Win.ValueListItem(DatePeriod.LastMonth, "Last Month"))
         periodEditor.Items.Add(New Infragistics.Win.ValueListItem(DatePeriod.SpecificDates, "Specific Dates"))
+        userEditor.Items.Add(New Infragistics.Win.ValueListItem(Nothing))
+        userEditor.Items.AddRange(model.Users.Select(Function(u) New Infragistics.Win.ValueListItem(u)).ToArray)
         periodEditor.DataBindings.Add(New Binding("Value", model, "Period", True, DataSourceUpdateMode.OnPropertyChanged))
         dateFromEditor.DataBindings.Add(New Binding("Value", model, "DateFrom", True, DataSourceUpdateMode.OnPropertyChanged))
         dateToEditor.DataBindings.Add(New Binding("Value", model, "DateTo", True, DataSourceUpdateMode.OnPropertyChanged))
+        userEditor.DataBindings.Add(New Binding("Text", model, "User", True, DataSourceUpdateMode.OnValidation))
         auditLogsGrid.DataSource = model.AuditLogs
-        AddHandler showButton.Click,
+        AddHandler findButton.Click,
             Sub()
-                model.Show()
+                model.Find()
             End Sub
-        AddHandler model.PropertyChanged,
-            Sub(s As Object, ev As PropertyChangedEventArgs)
-                If ev.PropertyName = "AuditLogs" Then auditLogsGrid.DataSource = model.AuditLogs
+        AddHandler model.AuditLogsChanged,
+            Sub()
+                auditLogsGrid.DataSource = model.AuditLogs
             End Sub
+    End Sub
+
+    Private Sub auditLogsGrid_InitializeLayout1(ByVal sender As Object, ByVal e As Infragistics.Win.UltraWinGrid.InitializeLayoutEventArgs)
+        e.Layout.Appearance.BackColor = Color.White
+        e.Layout.Override.BorderStyleRow = Infragistics.Win.UIElementBorderStyle.None
+        e.Layout.Override.BorderStyleCell = Infragistics.Win.UIElementBorderStyle.None
+        e.Layout.Override.FilterUIType = Infragistics.Win.UltraWinGrid.FilterUIType.HeaderIcons
+    End Sub
+
+    Private Sub butOutput_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles butOutput.Click
+        Try
+            gridExporter.Export(auditLogsGrid, txtFilePath.Text)
+            MsgBox("The file has been created.", , Me.Text)
+        Catch ex As System.IO.DirectoryNotFoundException
+            MsgBox("The directory specified does not exist.", MsgBoxStyle.Exclamation, Me.Text)
+        Catch ex As System.IO.IOException
+            MsgBox("The file specified is being used by another application.", MsgBoxStyle.Exclamation, Me.Text)
+        Catch ex As Exception
+            MsgBox("Export failed.", MsgBoxStyle.Exclamation, Me.Text)
+        End Try
     End Sub
 End Class
