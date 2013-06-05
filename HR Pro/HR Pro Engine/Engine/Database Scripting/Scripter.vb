@@ -1198,11 +1198,13 @@ Namespace ScriptDB
             Next
 
             ' Create index
-            sIncludeColumns = IIf(aryIncludeColumns.Count > 0, " INCLUDE (" & String.Join(", ", aryIncludeColumns.ToArray) & ")", "")
-            sSQL = String.Format("CREATE NONCLUSTERED INDEX [{0}] ON [dbo].[{1}] " & _
-                  "({2})" & _
-                  "{3}" _
-                  , objIndex.Name, sObjectName, String.Join(", ", aryColumns.ToArray), sIncludeColumns)
+            If aryColumns.ToArray.Length < 17 Then
+              sIncludeColumns = IIf(aryIncludeColumns.Count > 0, " INCLUDE (" & String.Join(", ", aryIncludeColumns.ToArray) & ")", "")
+              sSQL = String.Format("CREATE NONCLUSTERED INDEX [{0}] ON [dbo].[{1}] " & _
+                    "({2})" & _
+                    "{3}" _
+                    , objIndex.Name, sObjectName, String.Join(", ", aryColumns.ToArray), sIncludeColumns)
+            End If
 
             If objIndex.Enabled And bCreateIndex Then
               Globals.CommitDB.ScriptStatement(sSQL)
