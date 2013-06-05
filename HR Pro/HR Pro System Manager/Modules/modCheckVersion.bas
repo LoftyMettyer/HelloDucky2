@@ -41,14 +41,18 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
   Dim iMajorDependencyVersion As Integer
   Dim iMinorDependencyVersion As Integer
   
+  Dim idxname As Integer
+  Dim rsInfo As New ADODB.Recordset
+  Dim strSQLVersion As String
+  
+  
   fOK = True
   fVersionOK = False
   gfRefreshStoredProcedures = False
   gfDatabaseServerChanged = False
-  
+    
   blnReRunCurrent = False
   
-
   If fOK Then
     sDBVersion = GetDBVersion
     
@@ -80,7 +84,6 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
     End If
   End If
   
-  
   If fOK Then
     ' Check the System Manager version against the one for the current database.
     ' Application is too old for the database.
@@ -94,6 +97,24 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
         "Database Version : " & sDBVersion & vbNewLine & vbNewLine & _
         "Application Version : " & CStr(App.Major) & "." & CStr(App.Minor), _
         vbExclamation + vbOKOnly, Application.Name
+    End If
+    'NHRD01082011 JIRA HRPro 1501
+    'Check to see if app is 4.2 and if it is make sure there are no tables starting with a reserved word prefix
+    If CStr(App.Major) & "." & CStr(App.Minor) = "4.2" Then
+      strSQLVersion = "SELECT name FROM dbo.sysobjects where name like 'tbstat%' or name like 'tbsys%' or name like 'tbuser%'"
+      rsInfo.Open strSQLVersion, gADOCon, adOpenStatic, adLockReadOnly, adCmdText
+      With rsInfo
+        If Not (.BOF And .EOF) Then
+          .MoveLast
+          .MoveFirst
+          idxname = .RecordCount
+          MsgBox "There are " & idxname & " tables starting with the reserved word prefix of either 'tbstat', 'tbuser' or 'tbsys'" & _
+            vbCrLf & vbCrLf & "Please rename these tables before upgrading to the latest version of HR Pro." & _
+            vbCrLf & vbCrLf & "The System Manager will now terminate the Upgrade Script.", vbCritical, "HR Pro System Manager"
+        End If
+      End With
+      
+      rsInfo.Close
     End If
   End If
      
@@ -665,7 +686,7 @@ Private Function UpdateDatabase( _
   
   ' Calculate how many files we're going to process
   Set fso = New FileSystemObject
-  lngNewVersions = fso.GetFolder(strScriptPath).Files.count + 1 '- 14
+  lngNewVersions = fso.GetFolder(strScriptPath).Files.Count + 1 '- 14
   Set fso = Nothing
     
   rsInfo.Open strSQLVersion, gADOCon, adOpenForwardOnly, adLockReadOnly
