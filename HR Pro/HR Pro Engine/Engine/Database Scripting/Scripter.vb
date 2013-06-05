@@ -341,6 +341,7 @@ Namespace ScriptDB
       Dim objRelatedTable As Things.Table
       Dim objColumn As Things.Column
       Dim objRelation As Things.Relation
+      Dim objIndex As Things.Index
       Dim sSQL As String = String.Empty
       Dim sValidation As String = String.Empty
       Dim sTriggerName As String = String.Empty
@@ -435,9 +436,16 @@ Namespace ScriptDB
             Else
 
               objRelatedTable = Globals.Things.GetObject(Things.Type.Table, objRelation.ChildID)
+              objIndex = New Things.Index
+              objIndex.Name = String.Format("IDX_relation_{0}", objRelatedTable.Name)
+              objIndex.IsTableIndex = True
+              objIndex.IsClustered = False
+              objIndex.Relations.AddIfNew(objRelatedTable)
+
               For Each objColumn In objRelatedTable.DependsOnColumns
                 If objColumn.Table Is objTable Then
                   aryColumns.Add(String.Format("NOT i.{0} = d.{0}", objColumn.Name))
+                  objIndex.IncludedColumns.AddIfNew(objColumn)
                 End If
               Next
 
@@ -448,6 +456,8 @@ Namespace ScriptDB
                       "        WHERE {4});" _
                       , objRelatedTable.PhysicalName, CInt(objTable.ID), objTable.PhysicalName, CInt(objRelatedTable.ID) _
                       , String.Join(" OR ", aryColumns.ToArray())))
+
+                objTable.Objects.Add(objIndex)
               End If
             End If
           Next
@@ -839,7 +849,6 @@ Namespace ScriptDB
       Dim bOK As Boolean = True
 
       Try
-
         bOK = ScriptFunctions.ConvertCurrency
         bOK = bOK And ScriptFunctions.UniqueCodeViews
         bOK = bOK And ScriptFunctions.GetFieldFromDatabases
@@ -952,6 +961,51 @@ Namespace ScriptDB
 
 #End Region
 
+    Public Function ScriptIndexes() As Boolean Implements Interfaces.iCommitDB.ScriptIndexes
+
+      Dim objTable As Things.Table
+      Dim objIndex As Things.Index
+      Dim bOK As Boolean = True
+      Dim sSQL As String
+      Dim aryColumns As ArrayList
+      Dim sObjectName As String
+
+      Try
+
+        For Each objTable In Globals.Things
+          For Each objIndex In objTable.Indexes
+
+            ' Drop existing index
+            sObjectName = IIf(objIndex.IsTableIndex, objTable.PhysicalName, objTable.Name)
+            sSQL = String.Format("IF  EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[dbo].[{0}]') AND name = N'{1}')" & _
+                    "DROP INDEX [{1}] ON [dbo].[{0}]" _
+                    , sObjectName, objIndex.Name)
+            Globals.CommitDB.ScriptStatement(sSQL)
+
+            ' Generate index contents
+            aryColumns = New ArrayList
+            For Each objColumn In objIndex.IncludedColumns
+              aryColumns.Add(objColumn.Name)
+            Next
+
+            ' Create index
+            sSQL = String.Format("CREATE NONCLUSTERED INDEX [{0}] ON [dbo].[{1}] " & _
+                  "([ID]  Asc) " & _
+                  "INCLUDE ({2})" _
+                  , objIndex.Name, sObjectName, String.Join(", ", aryColumns.ToArray))
+            Globals.CommitDB.ScriptStatement(sSQL)
+
+          Next
+        Next
+
+      Catch ex As Exception
+        Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, "Index", HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        bOK = False
+      End Try
+
+      Return bOK
+
+    End Function
   End Class
 
 End Namespace

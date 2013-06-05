@@ -31,6 +31,7 @@
       GlobalModify = 23
       GlobalModifyItem = 24
       Mask = 25
+      Index = 26
     End Enum
 
     Public Enum DisplayStyle

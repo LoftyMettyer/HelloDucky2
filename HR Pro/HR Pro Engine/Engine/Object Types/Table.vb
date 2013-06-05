@@ -16,14 +16,13 @@ Namespace Things
 
     Public DependsOnColumns As New Things.Collection
 
-    'Public Sub New()
-    '  DependantChildTableColumns = New Things.Collection
-    'End Sub
+    Public ReadOnly Property Indexes As Things.Collection
+      Get
+        Return Me.Objects(Things.Enums.Type.Index)
+      End Get
+    End Property
 
     Public UpdateStatements As New ArrayList
-
-
-
 
     Public Overrides ReadOnly Property PhysicalName As String
       Get

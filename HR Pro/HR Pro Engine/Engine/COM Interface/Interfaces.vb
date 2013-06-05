@@ -7,14 +7,15 @@
     Function ScriptFunctions() As Boolean
     Function ScriptTriggers() As Boolean
     Function ScriptViews() As Boolean
+    Function ScriptIndexes() As Boolean
     Function DropTableViews() As Boolean
     Function DropViews() As Boolean
     Function ApplySecurity() As Boolean
   End Interface
 
   Public Interface iSystemManager
-    Property MetadataDB As Object ' DAO.Database
-    Property CommitDB As Object ' ADODB.Connection
+    Property MetadataDB As Object
+    Property CommitDB As Object
     ReadOnly Property ErrorLog As ErrorHandler.Errors
     ReadOnly Property Things As Things.Collection
     ReadOnly Property Script As ScriptDB.Script
