@@ -378,7 +378,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
             
             'Rebuild
             strRebuildOne = _
-                GetSQLForRebuild(lngLinkID, lngTableID, sCurrentTable, !FilterID, !EffectiveDate, "@sColumnValue", lngColumnID, !DateOffset, !DatePeriod)
+                GetSQLForRebuild(lngLinkID, lngTableID, sCurrentTable, !FilterID, !EffectiveDate, lngColumnID, !DateOffset, !DatePeriod)
             If strRebuildOne <> vbNullString Then
               strRebuildAll = strRebuildAll & vbNewLine & _
               "            -- " & strLinkTitle & vbNewLine & _
@@ -526,6 +526,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
       "BEGIN" & vbNewLine & vbNewLine & _
       "  DECLARE @RecalculateRecordDesc bit" & vbNewLine & _
       "  DECLARE @recordDesc varchar(max)" & vbNewLine & _
+      "  DECLARE @dateValue datetime" & vbNewLine & _
       strTemp & vbNewLine & vbNewLine & _
       "  SELECT @RecalculateRecordDesc = 1, @recordDesc = ''" & vbNewLine & vbNewLine & _
       "  DELETE FROM ASRSysEmailQueue WHERE Immediate = 0 AND DateSent IS NULL AND recordID = @recordID AND TableID = " & CStr(lngTableID) & vbNewLine & vbNewLine & _
@@ -849,28 +850,29 @@ LocalErr:
 End Function
 
 
-Private Function GetSQLForRebuild(lngLinkID As Long, lngTableID As Long, sCurrentTable As String, lngFilterID As Long, dtEffectiveDate As Date, strInsVar As String, lngDateColumnID As Long, lngOffset As Long, lngPeriod As Long) As String
+Private Function GetSQLForRebuild(lngLinkID As Long, lngTableID As Long, sCurrentTable As String, lngFilterID As Long, dtEffectiveDate As Date, lngDateColumnID As Long, lngOffset As Long, lngPeriod As Long) As String
 
   Dim strOutput As String
-    
+  Dim strDateValue As String
+  
+  strDateValue = "isnull(convert(varchar(max),@DateValue," & CStr(glngEmailDateFormat) & "),'')"
     
   strOutput = _
     "                IF (DateDiff(day, @purgeDate, @emailDate) >= 0 OR @PurgeDate IS NULL)" & vbNewLine & _
-    "                 AND IsNull(@LastSent,'') <> IsNull(CONVERT(varchar(max), @sColumnValue),'')" & vbNewLine & _
+    "                 AND IsNull(@LastSent,'') <> " & strDateValue & vbNewLine & _
     "                BEGIN" & vbNewLine & _
-    GetInsertCommand(LinkRebuild, lngLinkID, lngTableID, False, True, lngDateColumnID, strInsVar, False) & vbNewLine & _
+    GetInsertCommand(LinkRebuild, lngLinkID, lngTableID, False, True, lngDateColumnID, strDateValue, False) & vbNewLine & _
     "                END" & vbNewLine
 
   strOutput = ApplyFilter(lngFilterID, dtEffectiveDate, strOutput)
   
   
   strOutput = _
-      "            SELECT @sColumnValue = isnull(convert(varchar(max)," & GetColumnName(lngDateColumnID, True) & "," & CStr(glngEmailDateFormat) & "),'')" & _
-                  "FROM " & sCurrentTable & " WHERE id = @recordID" & vbNewLine & _
-      "            SELECT @emailDate    = " & ApplyOffset(strInsVar, lngPeriod, lngOffset) & vbNewLine & _
+      "            SELECT @dateValue = " & GetColumnName(lngDateColumnID, True) & " FROM " & sCurrentTable & " WHERE id = @recordID" & vbNewLine & _
+      "            SELECT @emailDate = " & ApplyOffset("@dateValue", lngPeriod, lngOffset) & vbNewLine & _
       GetLastSent(lngLinkID) & _
       strOutput
-
+  
   GetSQLForRebuild = strOutput
 
 End Function
