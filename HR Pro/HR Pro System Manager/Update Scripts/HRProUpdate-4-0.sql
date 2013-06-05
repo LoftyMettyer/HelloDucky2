@@ -10149,7 +10149,6 @@ PRINT 'Step 10 of X - Multiline Character Modifications'
 			@piInstanceID		integer,
 			@piElementID		integer,
 			@psFormInput1		varchar(MAX),
-			@psFormInput2		varchar(MAX),
 			@psFormElements		varchar(MAX)	OUTPUT,
 			@pfSavedForLater	bit				OUTPUT
 		)
@@ -10279,7 +10278,7 @@ PRINT 'Step 10 of X - Multiline Character Modifications'
 		
 				IF @iDataAction = 2 -- Deleted - Record Description calculated before the record was deleted.
 				BEGIN
-					SET @sValueDescription = @psFormInput2;
+					SET @sValueDescription = @psFormInput1;
 				END
 				ELSE
 				BEGIN
@@ -10307,42 +10306,14 @@ PRINT 'Step 10 of X - Multiline Character Modifications'
 			ELSE
 			BEGIN
 				-- Put the submitted form values into the ASRSysWorkflowInstanceValues table. 
-				WHILE (charindex(CHAR(9), @psFormInput1) > 0) OR (charindex(CHAR(9), @psFormInput2) > 0)
+				WHILE (charindex(CHAR(9), @psFormInput1) > 0)
 				BEGIN
-					SET @iIndex1 = charindex(CHAR(9), @psFormInput1)
-					IF @iIndex1 > 0
-					BEGIN
-						SET @sID = replace(LEFT(@psFormInput1, @iIndex1-1), '''''''', '''''''''''');
-		
-						SET @iIndex2 = charindex(CHAR(9), @psFormInput1, @iIndex1+1);
-						IF @iIndex2 > 0	
-						BEGIN
-							SET @sValue = SUBSTRING(@psFormInput1, @iIndex1+1, @iIndex2-@iIndex1-1);
-		
-							SET @psFormInput1 = SUBSTRING(@psFormInput1, @iIndex2+1, LEN(@psFormInput1) - @iIndex2);
-						END
-						ELSE
-						BEGIN
-							SET @iIndex2 = charindex(CHAR(9), @psFormInput2);
-							SET @sValue = SUBSTRING(@psFormInput1, @iIndex1+1, len(@psFormInput1)-@iIndex1) +
-								LEFT(@psFormInput2, @iIndex2-1);
-		
-							SET @psFormInput1 = '''';
-							SET @psFormInput2 = SUBSTRING(@psFormInput2, @iIndex2+1, LEN(@psFormInput2) - @iIndex2);
-						END
-					END
-					ELSE
-					BEGIN
-						SET @iIndex1 = charindex(CHAR(9), @psFormInput2);
-						SET @iIndex2 = charindex(CHAR(9), @psFormInput2, @iIndex1+1);
-		
-						SET @sID = replace(@psFormInput1, '''''''', '''''''''''') +
-							replace(LEFT(@psFormInput2, @iIndex1-1), '''''''', '''''''''''');
-						SET @sValue = SUBSTRING(@psFormInput2, @iIndex1+1, @iIndex2-@iIndex1-1);
-		
-						SET @psFormInput1 = '''';
-						SET @psFormInput2 = SUBSTRING(@psFormInput2, @iIndex2+1, LEN(@psFormInput2) - @iIndex2);
-					END
+				
+					SET @iIndex1 = charindex(CHAR(9), @psFormInput1);
+					SET @iIndex2 = charindex(CHAR(9), @psFormInput1, @iIndex1+1);
+					SET @sID = replace(LEFT(@psFormInput1, @iIndex1-1), '''''''', '''''''''''');
+					SET @sValue = SUBSTRING(@psFormInput1, @iIndex1+1, @iIndex2-@iIndex1-1);
+					SET @psFormInput1 = SUBSTRING(@psFormInput1, @iIndex2+1, LEN(@psFormInput1) - @iIndex2);
 		
 					--Get the record description (for RecordSelectors only)
 					SET @sValueDescription = '''';
