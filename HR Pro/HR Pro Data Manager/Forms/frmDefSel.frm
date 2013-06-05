@@ -306,6 +306,8 @@ Private msSingularCaption As String
 Private malngSelectedIDs()
 Private mstrExtraWhereClause As String
 
+Public AllowFavourites As Boolean
+
 Public Property Get CategoryID() As Long
   CategoryID = mlngTableID
 End Property
@@ -378,6 +380,15 @@ Public Property Let TableID(ByVal lngNewValue As Long)
   mlngTableID = lngNewValue
 End Property
 
+
+Private Sub abDefSel_BandOpen(ByVal Band As ActiveBarLibraryCtl.Band)
+
+  ' Favourites is optional
+  abDefSel.Tools("ID_FavouriteAdd").Visible = AllowFavourites
+  abDefSel.Tools("ID_FavouriteRemove").Visible = AllowFavourites
+  abDefSel.Tools("ID_FavouritesClear").Visible = AllowFavourites
+
+End Sub
 
 Private Sub abDefSel_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
 
