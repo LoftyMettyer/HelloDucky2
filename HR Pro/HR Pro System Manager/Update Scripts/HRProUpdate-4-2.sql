@@ -1474,6 +1474,29 @@ PRINT 'Step 9 - Integration Services'
 
 	EXECUTE sp_executeSQL @sSPCode;
 
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[spASRReadFromTextFile]')
+			AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+		DROP PROCEDURE [dbo].[spASRReadFromTextFile];
+
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[spASRReadFromTextFile](
+		@FileName varchar (1024),
+		@Output nvarchar(MAX) OUTPUT)
+	AS
+	BEGIN
+
+		DECLARE @text varchar(MAX)
+		DECLARE @command nvarchar(4000);
+		SET @Output = '''';
+
+		SELECT @command=''SELECT  @text = BulkColumn FROM OPENROWSET(BULK '''''' + REPLACE(@FileName,'''''''','''''''''''')+'''''', SINGLE_BLOB) AS x''
+		EXECUTE sp_ExecuteSQL @command, N''@text varchar(max) output '',@text OUTPUT
+	
+		SET @Output = @text;
+
+	END';
+	EXECUTE sp_executeSQL @sSPCode;
 
 
 
