@@ -14,6 +14,7 @@
     Public Relations As Things.Collection
     Public IsTableIndex As Boolean = False
     Public IncludePrimaryKey As Boolean = True
+    Public Enabled As Boolean = True
 
     Public Sub New()
       Columns = New Things.Collection
