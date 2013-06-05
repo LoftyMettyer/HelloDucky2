@@ -1,7 +1,8 @@
 Type=Exe
 Form=frmTestHarness.frm
 Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#..\..\..\..\Windows\system32\stdole2.tlb#OLE Automation
-Object={66DD2720-DB90-4D94-963B-369CC9DC8BF8}#1.0#0; COAWF_TabPage.ocx
+Object={66DD2720-DB90-4D94-963B-369CC9DC8BF8}#2.0#0; COAWF_TabPage.ocx
+IconForm="frmTestHarness"
 Startup="frmTestHarness"
 Command32=""
 Name="TestHarness"
