@@ -6,7 +6,7 @@ Private mfrmUse As frmUsage
 Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
   On Error GoTo ErrorTrap
   
-  Dim objDBScripter As New DBScript.SysMgr
+  Dim objHRProEngine As New HRProEngine.SysMgr
   
   Dim fOK As Boolean
   Dim fInTransaction As Boolean
@@ -182,10 +182,10 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       
     ' Initialise the .NET engine
     If fOK Then
-      Set objDBScripter.CommitDB = gADOCon
-      Set objDBScripter.MetadataDB = daoDb
-      fOK = objDBScripter.Initialise
-      objDBScripter.Options.RefreshObjects = True
+      Set objHRProEngine.CommitDB = gADOCon
+      Set objHRProEngine.MetadataDB = daoDb
+      fOK = objHRProEngine.Initialise
+      objHRProEngine.Options.RefreshObjects = True
     End If
     
     
@@ -363,7 +363,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       gobjProgress.UpdateProgress False
       DoEvents
       fOK = SaveExpressions(pfRefreshDatabase)
-      fOK = fOK And objDBScripter.Script.ScriptObjects
+      fOK = fOK And objHRProEngine.Script.ScriptObjects
       fOK = fOK And Not gobjProgress.Cancelled
     End If
      
@@ -407,7 +407,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       OutputCurrentProcess "Generating Column Triggers"
       gobjProgress.UpdateProgress False
       DoEvents
-      fOK = objDBScripter.Script.ScriptTriggers
+      fOK = objHRProEngine.Script.ScriptTriggers
       fOK = SetTriggers(alngExpressions, pfRefreshDatabase)
       fOK = fOK And Not gobjProgress.Cancelled
     End If
@@ -653,7 +653,7 @@ TidyUpAndExit:
   
   If fOK Then
     
- objDBScripter.ErrorLog.OutputToFile (App.Path + "\dbscripter.log")
+ objHRProEngine.ErrorLog.OutputToFile (App.Path + "\dbscripter.log")
     
     AuditAccess "Save", "System"
     
@@ -688,7 +688,7 @@ TidyUpAndExit:
 
     ' Kill the phoenix engine
 '    objPhoenix.CloseSafely
-    Set objDBScripter = Nothing
+    Set objHRProEngine = Nothing
 
     '16/08/2001 MH Fault 2691
     gfRefreshStoredProcedures = False
@@ -1895,7 +1895,7 @@ Private Function CheckIfRebuildDiaryOrEmail() As Boolean
 
           'JPD 20040303 Fault 8175
           'If !New Or !Changed Then
-          If (!new Or !Changed) And (Not !Deleted) Then
+          If (!New Or !Changed) And (Not !Deleted) Then
             OutputCurrentProcess "Rebuilding system Outlook events for '" & recTabEdit!TableName & "'"
 
             strSQL = _
