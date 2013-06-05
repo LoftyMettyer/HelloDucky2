@@ -1774,6 +1774,8 @@ Private Function GetMatchReportDefinition() As Boolean
     mlngOverrideFilterID = IIf(lblnReportPackMode, mlngOverrideFilterID, 0)
     mblnOutputRetainPivotOrChart = IIf(lblnReportPackMode, mblnOutputRetainPivotOrChart, 0)
     
+    mblnPreviewOnScreen = (mblnPreviewOnScreen Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
+    
   End With
 
   If Not gblnBatchMode Then
@@ -1866,11 +1868,11 @@ Private Function IsRecordSelectionValid() As Boolean
 End Function
 
 
-Private Sub AddToJoinArray(lngType As Long, lngTableID As Long)
+Private Sub AddToJoinArray(lngTYPE As Long, lngTableID As Long)
 
   Dim lngIndex As Integer
 
-  If lngType = 0 Then   'Table
+  If lngTYPE = 0 Then   'Table
     If lngTableID = mlngTable1ID Or _
        lngTableID = mlngTable2ID Then
           Exit Sub
@@ -1878,7 +1880,7 @@ Private Sub AddToJoinArray(lngType As Long, lngTableID As Long)
   End If
 
   For lngIndex = 1 To UBound(mlngTableViews, 2)
-    If mlngTableViews(1, lngIndex) = lngType And _
+    If mlngTableViews(1, lngIndex) = lngTYPE And _
       mlngTableViews(2, lngIndex) = lngTableID Then
       Exit Sub
     End If
@@ -1891,7 +1893,7 @@ Private Sub AddToJoinArray(lngType As Long, lngTableID As Long)
   'Only get here if not already in array
   lngIndex = UBound(mlngTableViews, 2) + 1
   ReDim Preserve mlngTableViews(2, lngIndex)
-  mlngTableViews(1, lngIndex) = lngType
+  mlngTableViews(1, lngIndex) = lngTYPE
   mlngTableViews(2, lngIndex) = lngTableID
 
 End Sub
