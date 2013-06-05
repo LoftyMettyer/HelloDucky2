@@ -2522,7 +2522,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     ' Ensure the HR Pro trigger fires before any custom triggers.
     ' NB. Can only do this on SQL 2000 and above.
     If glngSQLVersion >= 8 Then
-      sSQL = "EXEC dbo.sp_settriggerorder @triggername = '[INS_" & psTableName & "]', @order = 'first', @stmttype = 'INSERT'"
+      sSQL = "EXEC dbo.sp_settriggerorder @triggername = '[INS_" & psTableName & "]', @order = 'LAST', @stmttype = 'INSERT'"
       gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
     End If
     
@@ -3114,7 +3114,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     ' Ensure the HR Pro trigger fires before any custom triggers.
     ' NB. Can only do this on SQL 2000 and above.
     If glngSQLVersion >= 8 Then
-      sSQL = "EXEC dbo.sp_settriggerorder @triggername = '[UPD_" & psTableName & "]', @order = 'first', @stmttype = 'UPDATE'"
+      sSQL = "EXEC dbo.sp_settriggerorder @triggername = '[UPD_" & psTableName & "]', @order = 'LAST', @stmttype = 'UPDATE'"
       gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
     End If
     
@@ -3585,7 +3585,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
     ' Ensure the HR Pro trigger fires before any custom triggers.
     ' NB. Can only do this on SQL 2000 and above.
     If glngSQLVersion >= 8 Then
-      sSQL = "EXEC dbo.sp_settriggerorder @triggername = '[DEL_" & psTableName & "]', @order = 'first', @stmttype = 'DELETE'"
+      sSQL = "EXEC dbo.sp_settriggerorder @triggername = '[DEL_" & psTableName & "]', @order = 'LAST', @stmttype = 'DELETE'"
       gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
     End If
     
