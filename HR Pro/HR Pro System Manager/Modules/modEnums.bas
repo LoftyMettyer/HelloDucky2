@@ -284,4 +284,142 @@ Public Enum NavigateIn
   DB = 2
 End Enum
 
+Public Enum UsageButtonOptions
+  USAGEBUTTONS_OK = 2 ^ 0
+  USAGEBUTTONS_YES = 2 ^ 1
+  USAGEBUTTONS_NO = 2 ^ 2
+  USAGEBUTTONS_PRINT = 2 ^ 3
+  USAGEBUTTONS_SELECT = 2 ^ 4
+  USAGEBUTTONS_FIX = 2 ^ 5
+  USAGEBUTTONS_COPY = 2 ^ 6
+End Enum
+
+'Background type constants
+Public Enum BackgroundLocationTypes
+  giLOCATION_TOPLEFT = 0
+  giLOCATION_TOPRIGHT = 1
+  giLOCATION_CENTRE = 2
+  giLOCATION_LEFTTILE = 3
+  giLOCATION_RIGHTTILE = 4
+  giLOCATION_TOPTILE = 5
+  giLOCATION_BOTTOMTILE = 6
+  giLOCATION_TILE = 7
+End Enum
+
+Public Enum ExpressionColour
+  EXPRESSIONBUILDER_COLOUROFF = 1
+  EXPRESSIONBUILDER_COLOURON = 2
+End Enum
+
+Public Enum ExpressionSaveView
+  EXPRESSIONBUILDER_NODESMINIMIZE = 1
+  EXPRESSIONBUILDER_NODESEXPAND = 2
+  EXPRESSIONBUILDER_NODESTOPLEVEL = 3
+End Enum
+
+Public Enum AccordTransactionStatus
+  ACCORD_STATUS_PENDING = 1
+  ACCORD_STATUS_PENDING_CHANGED = 2
+  ACCORD_STATUS_SUCCESS = 10
+  ACCORD_STATUS_SUCCESS_WARNINGS = 11
+  ACCORD_STATUS_FAILURE_UNKNOWN = 20
+  ACCORD_STATUS_FAILURE_RESOLVED = 21
+  ACCORD_STATUS_BLOCKED = 30
+End Enum
+
+Public Enum PasswordChangeReason
+  giPasswordChange_None = 0
+  giPasswordChange_MinLength = 1
+  giPasswordChange_Expired = 2
+  giPasswordChange_AdminRequested = 3
+  giPasswordChange_LastChangeUnknown = 4
+  giPasswordChange_ComplexitySettings = 5
+End Enum
+
+Public Enum HotfixType
+  BEFORELOAD = 0
+  BEFORESAVE = 1
+  AFTERSAVE = 2
+End Enum
+
+Public Enum PrintFontFormat
+  pffNormal = 0
+  pffBold = 1
+  pffNonBold = 2
+End Enum
+
+Public Enum UtilityType
+  utlBatchJob = 0
+  utlCrossTab = 1
+  utlCustomReport = 2
+  utlDataTransfer = 3
+  utlExport = 4
+  UtlGlobalAdd = 5
+  utlGlobalDelete = 6
+  utlGlobalUpdate = 7
+  utlImport = 8
+  utlMailMerge = 9
+  utlPicklist = 10
+  utlFilter = 11
+  utlCalculation = 12
+  utlOrder = 13
+  utlMatchReport = 14
+  utlAbsenceBreakdown = 15
+  utlBradfordFactor = 16
+  utlCalendarReport = 17
+  utlLabel = 18
+  utlLabelType = 19
+  utlRecordProfile = 20
+  utlEmailAddress = 21
+  utlEmailGroup = 22
+  utlSuccession = 23
+  utlCareer = 24
+  utlWorkflow = 25
+End Enum
+
+' Workflow Edit
+Public Enum DataAction
+  DATAACTION_INSERT = 0
+  DATAACTION_UPDATE = 1
+  DATAACTION_DELETE = 2
+End Enum
+
+' Numbering out of sequence as we started using the WorkflowWebFormItemTypes
+' enum for this, which included differenty items. Sorry.
+Public Enum WorkflowEmailItemTypes
+  giWFEMAILITEM_UNKNOWN = -1
+  giWFEMAILITEM_DBVALUE = 1
+  giWFEMAILITEM_LABEL = 2
+  giWFEMAILITEM_WFVALUE = 4
+  giWFEMAILITEM_FORMATCODE = 12 ' NB. Only used in emails.
+  giWFEMAILITEM_CALCULATION = 16
+  giWFEMAILITEM_FILEATTACHMENT = 18 ' NB. Only used in emails.
+End Enum
+
+Public Enum WFTriggerRelatedRecord
+  WFRELATEDRECORD_INSERT = 0
+  WFRELATEDRECORD_UPDATE = 1
+  WFRELATEDRECORD_DELETE = 2
+End Enum
+
+Public Enum WorkflowTriggerLinkType
+  WORKFLOWTRIGGERLINKTYPE_COLUMN = 0
+  WORKFLOWTRIGGERLINKTYPE_RECORD = 1
+  WORKFLOWTRIGGERLINKTYPE_DATE = 2
+End Enum
+
+Public Enum WorkflowTriggerOffsetPeriod
+  WORKFLOWTRIGGERLINKOFFESTPERIOD_DAY = 0
+  WORKFLOWTRIGGERLINKOFFESTPERIOD_WEEK = 1
+  WORKFLOWTRIGGERLINKOFFESTPERIOD_MONTH = 2
+  WORKFLOWTRIGGERLINKOFFESTPERIOD_YEAR = 3
+End Enum
+
+Public Enum ProcessAdminConfig
+  iPROCESSADMIN_DISABLED = 0
+  iPROCESSADMIN_SERVICEACCOUNT = 1
+  iPROCESSADMIN_SQLACCOUNT = 2
+  iPROCESSADMIN_EVERYONE = 3
+End Enum
+
 

@@ -1016,12 +1016,6 @@ Private mlngPersonnelTableID As Long
 Private mlngBaseTableID As Long
 Private miInitiationType As WorkflowInitiationTypes
 
-Public Enum DataAction
-  DATAACTION_INSERT = 0
-  DATAACTION_UPDATE = 1
-  DATAACTION_DELETE = 2
-End Enum
-
 Private Enum EmailRecipients
   EMAIL_TO = 0
   EMAIL_CC = 1
