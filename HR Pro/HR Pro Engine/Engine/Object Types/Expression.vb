@@ -189,7 +189,7 @@ Namespace Things
       ' Do we have caching on this UDF?
       If mbCheckTriggerStack Then
         sBypassUDFCode = String.Format("    -- Return the original value if none of the dependent tables are in the trigger stack." & vbNewLine &
-            "    IF NOT EXISTS (SELECT * FROM [dbo].[tbsys_intransactiontrigger] WHERE [tablefromid] IN ({0}) AND [spid] = @@SPID)" & vbNewLine & _
+            "    IF NOT EXISTS (SELECT [tablefromid] FROM [dbo].[tbsys_intransactiontrigger] WHERE [tablefromid] IN ({0}) AND [spid] = @@SPID)" & vbNewLine & _
             "        BEGIN" & vbNewLine & _
             "            SELECT @result = [{1}] FROM dbo.[{2}] WHERE [ID] = @prm_ID;" & vbNewLine & _
             "            RETURN @result;" & vbNewLine & _
@@ -228,11 +228,12 @@ Namespace Things
 
             .Code = String.Format("{11}CREATE FUNCTION {0}({1})" & vbNewLine & _
                            "RETURNS {2}" & vbNewLine & _
+                           "--WITH SCHEMABINDING" & vbNewLine & _
                            "{3}" & vbNewLine & _
                            "AS" & vbNewLine & "BEGIN" & vbNewLine & _
                            "{12}" & vbNewLine & _
                            "    DECLARE @Result as {2};" & vbNewLine & vbNewLine & _
-                           "{13}" & vbNewLine & vbNewLine & _                           
+                           "{13}" & vbNewLine & vbNewLine & _
                            "{4}" & vbNewLine & vbNewLine & _
                            "{5}" & vbNewLine & vbNewLine & _
                            "    -- Execute calculation code" & vbNewLine & _
@@ -243,7 +244,7 @@ Namespace Things
                            "    RETURN ISNULL(@Result, {10});" & vbNewLine & _
                            "END" _
                           , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                          , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode _
+                          , Me.AssociatedColumn.DataTypeSyntax, "", .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode _
                           , Me.AssociatedColumn.SafeReturnType, .BoilerPlate, .Comments, sBypassUDFCode)
 
             .CodeStub = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
@@ -282,6 +283,7 @@ Namespace Things
 
             .Code = String.Format("CREATE FUNCTION {0}(@prm_ID integer)" & vbNewLine & _
                            "RETURNS bit" & vbNewLine & _
+                           "--WITH SCHEMABINDING" & vbNewLine & _
                            "AS" & vbNewLine & "BEGIN" & vbNewLine & _
                            "    DECLARE @Result AS bit;" & vbNewLine & vbNewLine & _
                            "{4}" & vbNewLine & vbNewLine & _
@@ -535,20 +537,24 @@ Namespace Things
         LineOfCode.Code = String.Format("'{0}-{1}'" _
             , CInt(objThisColumn.Table.ID).ToString.PadLeft(8, "0") _
             , CInt(objThisColumn.ID).ToString.PadLeft(8, "0"))
+        objThisColumn.Tuning.IncrementSelect()
 
       ElseIf objThisColumn Is Me.AssociatedColumn _
           And Not (Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter _
           Or Me.ExpressionType = ScriptDB.ExpressionType.Mask _
           Or Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription) Then
         LineOfCode.Code = String.Format("@prm_{0}", objThisColumn.Name)
+        objThisColumn.Tuning.IncrementSelectAsParameter()
 
       ElseIf objThisColumn Is Me.AssociatedColumn _
         And Me.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn Then
         LineOfCode.Code = String.Format("@prm_{0}", objThisColumn.Name)
+        objThisColumn.Tuning.IncrementSelectAsParameter()
 
         ' Does the referenced column have default value on it, then reference the UDF/value of the default rather than the column itself.
       ElseIf (Not objThisColumn.DefaultCalcID = 0 And Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault) Then
         LineOfCode.Code = String.Format("[dbo].[{0}](@prm_ID)", objThisColumn.Name)
+        objThisColumn.Tuning.IncrementSelectAsParameter()
 
       ElseIf objThisColumn.IsCalculated And objThisColumn.Table Is Me.AssociatedColumn.Table _
           And Not Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter And Not Me.ExpressionType = ScriptDB.ExpressionType.Mask Then
@@ -568,6 +574,9 @@ Namespace Things
         objThisColumn.Calculation.ExpressionType = iBackupType
 
         Me.BaseExpression.IsComplex = True
+
+        objThisColumn.Tuning.IncrementSelectAsCalculation()
+
 
       Else
 

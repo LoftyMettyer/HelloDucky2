@@ -101,6 +101,7 @@
     <Compile Include="Database Scripting\LinesOfCode.vb" />
     <Compile Include="Database Scripting\Scripter.vb" />
     <Compile Include="Database Scripting\ScriptFunctions.vb" />
+    <Compile Include="Database Scripting\Tuning.vb" />
     <Compile Include="Globals.vb" />
     <Compile Include="HCM.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -149,7 +150,6 @@
     <Compile Include="Object Types\Screen.vb" />
     <Compile Include="Object Types\Setting.vb" />
     <Compile Include="Object Types\Table.vb" />
-    <Compile Include="Object Types\Value.vb" />
     <Compile Include="Object Types\Workflow.vb" />
     <Compile Include="Object Types\WorkflowElement.vb" />
     <Compile Include="Object Types\WorkflowElementColumn.vb" />

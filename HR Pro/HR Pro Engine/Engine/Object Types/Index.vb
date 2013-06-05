@@ -13,17 +13,10 @@
     Public IncludedColumns As Things.Collection
     Public Relations As Things.Collection
     Public IsTableIndex As Boolean = False
-
-    'Private msUniqueName As String
-
-    'Public ReadOnly Property UniqueName As String
-    '  Get
-    '    Return msUniqueName
-    '  End Get
-    'End Property
+    Public IncludePrimaryKey As Boolean = True
 
     Public Sub New()
-      'msUniqueName = "IDX_" & Guid.NewGuid().ToString("N")
+      Columns = New Things.Collection
       IncludedColumns = New Things.Collection
       Relations = New Things.Collection
     End Sub

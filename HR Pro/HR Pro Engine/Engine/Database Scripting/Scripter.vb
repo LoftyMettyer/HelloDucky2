@@ -968,6 +968,7 @@ Namespace ScriptDB
       Dim bOK As Boolean = True
       Dim sSQL As String
       Dim aryColumns As ArrayList
+      Dim aryIncludeColumns As ArrayList
       Dim sObjectName As String
 
       Try
@@ -984,15 +985,21 @@ Namespace ScriptDB
 
             ' Generate index contents
             aryColumns = New ArrayList
+            If objIndex.IncludePrimaryKey Then aryColumns.Add("[ID] ASC")
+            For Each objColumn In objIndex.Columns
+              aryColumns.Add(objColumn.Name & " ASC")
+            Next
+
+            aryIncludeColumns = New ArrayList
             For Each objColumn In objIndex.IncludedColumns
-              aryColumns.Add(objColumn.Name)
+              aryIncludeColumns.Add(objColumn.Name)
             Next
 
             ' Create index
             sSQL = String.Format("CREATE NONCLUSTERED INDEX [{0}] ON [dbo].[{1}] " & _
-                  "([ID]  Asc) " & _
-                  "INCLUDE ({2})" _
-                  , objIndex.Name, sObjectName, String.Join(", ", aryColumns.ToArray))
+                  "({2})" & _
+                  " INCLUDE ({3})" _
+                  , objIndex.Name, sObjectName, String.Join(", ", aryColumns.ToArray), String.Join(", ", aryIncludeColumns.ToArray))
             Globals.CommitDB.ScriptStatement(sSQL)
 
           Next

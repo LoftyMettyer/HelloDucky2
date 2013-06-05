@@ -26,6 +26,7 @@ Namespace Things
     '    Public Status As System.Data.DataRowState
     Public SchemaName As String
     Public Encrypted As Boolean = False
+    Public Tuning As ScriptDB.Tuning
 
     Private msDescription As String
     Private mID As HCMGuid
@@ -164,6 +165,7 @@ Namespace Things
     End Property
 
     Public Sub New()
+      Tuning = New ScriptDB.Tuning
       Objects = New Things.Collection
       Objects.Parent = Me
     End Sub

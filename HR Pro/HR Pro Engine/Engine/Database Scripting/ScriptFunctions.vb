@@ -91,12 +91,14 @@ Namespace ScriptDB
       Dim bOK As Boolean = True
       Dim sObjectName As String = "udfsys_getfieldfromdatabaserecord"
       Dim sSQL As String = vbNullString
+      Dim sStatement As String = vbNullString
       Dim aryStatements As New ArrayList
       Dim objComponent As Things.Component
       Dim objPart1 As Things.Component
       Dim objPart3 As Things.Component
       Dim objTable1 As Things.Table
       Dim objTable2 As Things.Table
+      Dim objIndex As Things.Index
 
       Try
 
@@ -111,7 +113,7 @@ Namespace ScriptDB
           ' Even though the user can select different table for parameters 1 and 3 this
           ' would return garbage data so ignore it!
           If objTable1 Is objTable2 Then
-            aryStatements.Add(String.Format("    IF @searchcolumnid = '{0}-{1}' AND @returncolumnid = '{2}-{3}'" & vbNewLine & _
+            sStatement = String.Format("    IF @searchcolumnid = '{0}-{1}' AND @returncolumnid = '{2}-{3}'" & vbNewLine & _
               "        BEGIN" & vbNewLine & _
               "            SELECT @result = [{5}] FROM dbo.[{4}] WHERE [{6}] = @searchexpression;" & vbNewLine & _
               "            RETURN @result;" & vbNewLine & _
@@ -119,9 +121,24 @@ Namespace ScriptDB
             , objPart1.TableID.PadLeft, objPart1.ColumnID.PadLeft _
             , objPart3.TableID.PadLeft, objPart3.ColumnID.PadLeft _
             , objTable1.PhysicalName, objTable1.Column(objPart3.ColumnID).Name _
-            , objTable2.Column(objPart1.ColumnID).Name))
-          End If
+            , objTable2.Column(objPart1.ColumnID).Name)
 
+            ' Only add if not already done so
+            If Not aryStatements.Contains(sStatement) Then
+
+              aryStatements.Add(sStatement)
+
+              ' Put an index on this column
+              objIndex = New Things.Index
+              objIndex.Name = String.Format("IDX_getfromdb_{0}_{1}", objTable1.Column(objPart1.ColumnID).Name, objTable2.Column(objPart3.ColumnID).Name)
+              objIndex.Columns.Add(objTable1.Column(objPart1.ColumnID))
+              objIndex.IncludedColumns.Add(objTable2.Column(objPart3.ColumnID))
+              objIndex.IncludePrimaryKey = False
+              objIndex.IsTableIndex = True
+
+              objTable1.Objects.Add(objIndex)
+            End If
+          End If
         Next
 
         ' Build the stored procedure
@@ -130,6 +147,7 @@ Namespace ScriptDB
             "    @searchexpression AS nvarchar(MAX)," & vbNewLine & _
             "    @returncolumnid AS varchar(17))" & vbNewLine & _
             "RETURNS nvarchar(MAX)" & vbNewLine & _
+            "WITH SCHEMABINDING" & vbNewLine & _
             "AS" & vbNewLine & "BEGIN" & vbNewLine & _
             "    DECLARE @result nvarchar(MAX);" & vbNewLine & _
             "    SET @result = '';" & vbNewLine & vbNewLine & _
