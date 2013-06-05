@@ -29,9 +29,10 @@ Begin VB.Form frmPersonnelSetup
    StartUpPosition =   2  'CenterScreen
    Begin TabDlg.SSTab SSTab1 
       Height          =   7590
-      Left            =   105
-      TabIndex        =   36
-      Top             =   105
+      Left            =   120
+      TabIndex        =   0
+      TabStop         =   0   'False
+      Top             =   120
       Width           =   5670
       _ExtentX        =   10001
       _ExtentY        =   13388
@@ -47,17 +48,20 @@ Begin VB.Form frmPersonnelSetup
       TabCaption(1)   =   "C&areer Change"
       TabPicture(1)   =   "frmPersonnelSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraRegion"
-      Tab(1).Control(1)=   "fraWorkingPattern"
+      Tab(1).Control(0)=   "fraWorkingPattern"
+      Tab(1).Control(1)=   "fraRegion"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Hierarchy"
       TabPicture(2)   =   "frmPersonnelSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraHierarchyTable"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraPostAllocationTable"
+      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).ControlCount=   2
       Begin VB.Frame fraPostAllocationTable 
          Caption         =   "Post Allocation Table :"
+         Enabled         =   0   'False
          Height          =   1860
          Left            =   -74850
          TabIndex        =   68
@@ -67,7 +71,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   31
+            TabIndex        =   32
             Top             =   300
             Width           =   2505
          End
@@ -75,7 +79,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   33
+            TabIndex        =   34
             Top             =   1350
             Width           =   2505
          End
@@ -83,7 +87,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   32
+            TabIndex        =   33
             Top             =   945
             Width           =   2505
          End
@@ -128,6 +132,7 @@ Begin VB.Form frmPersonnelSetup
       End
       Begin VB.Frame fraHierarchyTable 
          Caption         =   "Hierarchy Table :"
+         Enabled         =   0   'False
          Height          =   1860
          Left            =   -74850
          TabIndex        =   63
@@ -137,7 +142,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   28
+            TabIndex        =   29
             Top             =   300
             Width           =   2505
          End
@@ -145,7 +150,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   29
+            TabIndex        =   30
             Top             =   945
             Width           =   2505
          End
@@ -153,7 +158,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   30
+            TabIndex        =   31
             Top             =   1350
             Width           =   2505
          End
@@ -198,6 +203,7 @@ Begin VB.Form frmPersonnelSetup
       End
       Begin VB.Frame fraWorkingPattern 
          Caption         =   "Working Pattern :"
+         Enabled         =   0   'False
          Height          =   2850
          Left            =   -74850
          TabIndex        =   54
@@ -207,7 +213,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   23
+            TabIndex        =   24
             Top             =   705
             Width           =   2500
          End
@@ -215,7 +221,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Static Working Pattern"
             Height          =   255
             Left            =   150
-            TabIndex        =   22
+            TabIndex        =   23
             Top             =   360
             Value           =   -1  'True
             Width           =   2535
@@ -224,7 +230,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Historical Working Pattern"
             Height          =   255
             Left            =   150
-            TabIndex        =   24
+            TabIndex        =   25
             Top             =   1140
             Width           =   3045
          End
@@ -234,7 +240,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   25
+            TabIndex        =   26
             Top             =   1515
             Width           =   2500
          End
@@ -244,7 +250,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   26
+            TabIndex        =   27
             Top             =   1920
             Width           =   2500
          End
@@ -254,7 +260,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   27
+            TabIndex        =   28
             Top             =   2325
             Width           =   2500
          End
@@ -301,6 +307,7 @@ Begin VB.Form frmPersonnelSetup
       End
       Begin VB.Frame fraRegion 
          Caption         =   "Region :"
+         Enabled         =   0   'False
          Height          =   2850
          Left            =   -74850
          TabIndex        =   49
@@ -312,7 +319,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   21
+            TabIndex        =   22
             Top             =   2325
             Width           =   2500
          End
@@ -322,7 +329,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   20
+            TabIndex        =   21
             Top             =   1920
             Width           =   2500
          End
@@ -332,7 +339,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   19
+            TabIndex        =   20
             Top             =   1515
             Width           =   2500
          End
@@ -340,7 +347,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Historical Region"
             Height          =   255
             Left            =   150
-            TabIndex        =   18
+            TabIndex        =   19
             Top             =   1140
             Width           =   1935
          End
@@ -348,7 +355,7 @@ Begin VB.Form frmPersonnelSetup
             Caption         =   "Static Region"
             Height          =   255
             Left            =   150
-            TabIndex        =   15
+            TabIndex        =   17
             Top             =   360
             Value           =   -1  'True
             Width           =   1770
@@ -357,7 +364,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   17
+            TabIndex        =   18
             Top             =   705
             Width           =   2500
          End
@@ -413,7 +420,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   11
+            TabIndex        =   12
             Top             =   4935
             Width           =   2505
          End
@@ -422,7 +429,7 @@ Begin VB.Form frmPersonnelSetup
             Index           =   1
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   10
+            TabIndex        =   11
             Top             =   4540
             Width           =   2505
          End
@@ -430,7 +437,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   14
+            TabIndex        =   15
             Top             =   6135
             Width           =   2505
          End
@@ -438,7 +445,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   13
+            TabIndex        =   14
             Top             =   5730
             Width           =   2505
          End
@@ -446,7 +453,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   12
+            TabIndex        =   13
             Top             =   5325
             Width           =   2505
          End
@@ -455,7 +462,7 @@ Begin VB.Form frmPersonnelSetup
             Index           =   0
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   9
+            TabIndex        =   10
             Top             =   4140
             Width           =   2505
          End
@@ -463,7 +470,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   0
+            TabIndex        =   1
             Top             =   300
             Width           =   2505
          End
@@ -471,7 +478,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   1
+            TabIndex        =   2
             Top             =   940
             Width           =   2505
          End
@@ -479,7 +486,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   2
+            TabIndex        =   3
             Top             =   1340
             Width           =   2505
          End
@@ -487,7 +494,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   4
+            TabIndex        =   5
             Top             =   2140
             Width           =   2505
          End
@@ -495,7 +502,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   3
+            TabIndex        =   4
             Top             =   1740
             Width           =   2505
          End
@@ -503,7 +510,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   5
+            TabIndex        =   6
             Top             =   2540
             Width           =   2505
          End
@@ -511,7 +518,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   6
+            TabIndex        =   7
             Top             =   2940
             Width           =   2505
          End
@@ -519,7 +526,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   7
+            TabIndex        =   8
             Top             =   3340
             Width           =   2505
          End
@@ -535,7 +542,7 @@ Begin VB.Form frmPersonnelSetup
             Height          =   315
             Left            =   2730
             Style           =   2  'Dropdown List
-            TabIndex        =   8
+            TabIndex        =   9
             Top             =   3740
             Width           =   2505
          End
@@ -699,7 +706,7 @@ Begin VB.Form frmPersonnelSetup
       Default         =   -1  'True
       Height          =   400
       Left            =   3315
-      TabIndex        =   34
+      TabIndex        =   35
       Top             =   7815
       Width           =   1200
    End
@@ -708,7 +715,7 @@ Begin VB.Form frmPersonnelSetup
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   4575
-      TabIndex        =   35
+      TabIndex        =   36
       Top             =   7815
       Width           =   1200
    End
@@ -766,6 +773,12 @@ Private mvar_lngOriginalHierarchyReportsToColumnID As Long
 Private mblnReadOnly As Boolean
 Private mbLoading As Boolean
 Private mfChanged As Boolean
+
+' Page number constants.
+Private Const giPAGE_PERSONNEL = 0
+Private Const giPAGE_CAREER_CHANGE = 1
+Private Const giPAGE_HIERARCHY = 2
+
 
 Public Property Get Changed() As Boolean
   Changed = mfChanged
@@ -1315,7 +1328,7 @@ Private Sub RefreshPersonnelColumnControls()
           End If
 
           ' Load working pattern fields
-          If !DataType = dtlongvarchar Then
+          If !DataType = dtLONGVARCHAR Then
             cboWorkingPattern.AddItem !ColumnName
             cboWorkingPattern.ItemData(cboWorkingPattern.NewIndex) = !ColumnID
             If !ColumnID = mvar_lngWorkingPatternID Then
@@ -1325,7 +1338,7 @@ Private Sub RefreshPersonnelColumnControls()
 
           If !DataType = dtVARCHAR Or _
                   !DataType = dtNUMERIC Or _
-                  !DataType = dtinteger Then
+                  !DataType = dtINTEGER Then
             cboManagerStaffNo.AddItem !ColumnName
             cboManagerStaffNo.ItemData(cboManagerStaffNo.NewIndex) = !ColumnID
             If !ColumnID = mvar_lngManagerStaffNoID Then
@@ -1588,7 +1601,7 @@ Private Sub RefreshHistoricWorkingPatternColumnControls()
           (!columntype <> giCOLUMNTYPE_LINK) And _
           (!columntype <> giCOLUMNTYPE_SYSTEM) Then
           
-          If !DataType = dtlongvarchar Then
+          If !DataType = dtLONGVARCHAR Then
             cboWorkingPatternField.AddItem !ColumnName
             cboWorkingPatternField.ItemData(cboWorkingPatternField.NewIndex) = !ColumnID
             If !ColumnID = mvar_lngHWorkingPatternFieldID Then
@@ -2238,7 +2251,7 @@ Private Sub RefreshHierarchyControls()
           ' Load varchar fields
           If (!DataType = dtVARCHAR) Or _
             (!DataType = dtNUMERIC) Or _
-            (!DataType = dtinteger) Then
+            (!DataType = dtINTEGER) Then
             cboHierarchyIdentifyingColumn.AddItem !ColumnName
             cboHierarchyIdentifyingColumn.ItemData(cboHierarchyIdentifyingColumn.NewIndex) = !ColumnID
             
@@ -2600,6 +2613,18 @@ Private Sub optWorkingPatternHistory_Click()
 End Sub
 
 
+
+Private Sub SSTab1_Click(PreviousTab As Integer)
+  If Not mblnReadOnly Then
+    
+    fraTableDefinition.Enabled = (SSTab1.Tab = giPAGE_PERSONNEL)
+    fraRegion.Enabled = (SSTab1.Tab = giPAGE_CAREER_CHANGE)
+    fraWorkingPattern.Enabled = (SSTab1.Tab = giPAGE_CAREER_CHANGE)
+    fraHierarchyTable.Enabled = (SSTab1.Tab = giPAGE_HIERARCHY)
+    fraPostAllocationTable.Enabled = (SSTab1.Tab = giPAGE_HIERARCHY)
+  End If
+  
+End Sub
 
 Private Sub SSTab1_DblClick()
 
