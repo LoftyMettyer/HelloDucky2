@@ -346,6 +346,7 @@ PRINT 'Step 4 - Create views on metadata tables'
 
 					SET NOCOUNT ON;
 
+					-- Update objects table
 					IF NOT EXISTS(SELECT [guid]
 						FROM dbo.[tbsys_scriptedobjects] o
 						INNER JOIN inserted i ON i.'' + @IDName + '' = o.targetid AND o.objecttype = '' + convert(nvarchar(2),@ObjectType) + '')
@@ -353,11 +354,11 @@ PRINT 'Step 4 - Create views on metadata tables'
 						INSERT dbo.[tbsys_scriptedobjects] ([guid], [objecttype], [targetid], [ownerid], [effectivedate], [revision], [locked], [lastupdated])
 							SELECT NEWID(), '' + convert(nvarchar(2),@ObjectType) + '', ['' + @IDName + ''], dbo.[udfsys_getownerid](), ''''01/01/1900'''',1,0, GETDATE()
 								FROM inserted;
-								
-						INSERT dbo.['' + @newname + '' ] ('' + SUBSTRING(@columnnames,0,LEN(@columnnames)) + '') 
-							SELECT '' + SUBSTRING(@columnnames,0,LEN(@columnnames)) + '' FROM inserted;
-								
 					END
+
+					-- Update base table								
+					INSERT dbo.['' + @newname + ''] ('' + SUBSTRING(@columnnames,0,LEN(@columnnames)) + '') 
+						SELECT '' + SUBSTRING(@columnnames,0,LEN(@columnnames)) + '' FROM inserted;
 
 				END'';
 				EXECUTE sp_executesql @NVarCommand;
