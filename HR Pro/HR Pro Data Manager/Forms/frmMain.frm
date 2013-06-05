@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "12:13"
+            TextSave        =   "12:23"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -1959,11 +1959,11 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
     If (TypeOf pfrmCallingForm Is frmRecEdit4) Then
       .Tools("FilterClear").Enabled = fFilterClearEnabled
       .Tools("MailMergeRec").Visible = fMailMergeExists And .Tools("MailMergeRec").Visible
-      .Tools("MailMergeRec").Enabled = MenuEnabled("MAILMERGE") And Not fAddingNewRecord And fSelectionMade
+      .Tools("MailMergeRec").Enabled = MenuEnabled("MAILMERGE") And Not fAddingNewRecord
       .Tools("LabelsRec").Visible = fEnvelopeLabelsExists And .Tools("LabelsRec").Visible
       .Tools("LabelsRec").Enabled = MenuEnabled("LABELS") And Not fAddingNewRecord
       .Tools("DataTransferRec").Visible = fDataTransferExists And .Tools("DataTransferRec").Visible
-      .Tools("DataTransferRec").Enabled = MenuEnabled("DATATRANSFER") And Not fAddingNewRecord And fSelectionMade
+      .Tools("DataTransferRec").Enabled = MenuEnabled("DATATRANSFER") And Not fAddingNewRecord
       .Tools("Email").Visible = fEmailAddrExists And .Tools("Email").Visible
       .Tools("Email").Enabled = MenuEnabled("EMAILADDRESSES") And Not fAddingNewRecord
       .Tools("MatchReportRec").Visible = fMatchReportExists And .Tools("MatchReportRec").Visible
@@ -1975,22 +1975,15 @@ Public Sub RefreshRecordMenu(pfrmCallingForm As Form, Optional ByVal pfUnLoad As
       .Tools("RecordProfileRec").Visible = fRecordProfileExists And .Tools("RecordProfileRec").Visible
       .Tools("RecordProfileRec").Enabled = MenuEnabled("RECORDPROFILE") And Not fAddingNewRecord
       .Tools("CalendarReportRec").Visible = fCalendarReportExists And .Tools("CalendarReportRec").Visible
-      .Tools("CalendarReportRec").Enabled = MenuEnabled("CALENDARREPORTS") And Not fAddingNewRecord And fSelectionMade
+      .Tools("CalendarReportRec").Enabled = MenuEnabled("CALENDARREPORTS") And Not fAddingNewRecord
       
       ' NPG20100826 Fault HRPRO-1091 - Added functionality to display custom reports & global update to the record menu
       '                                 but disabled for now as there's no code yet in recedit4 and if we added the code
       '                                 QA then wanted icons on recedit4 for them, which was deemed to much for v4.2
       '.Tools("CustomReportsRec").Visible = fCustomReportExists And .Tools("CustomReportsRec").Visible
       '.Tools("CustomReportsRec").Enabled = MenuEnabled("CUSTOMREPORTS") And Not fAddingNewRecord And fSelectionMade
-            
       '.Bands(0).Tools("GlobalUpdate").Visible = fGlobalUpdateExists And (.Bands(0).Tools("GlobalUpdate").Visible)
       '.Bands(0).Tools("GlobalUpdate").Enabled = MenuEnabled("GLOBALUPDATE") And Not fAddingNewRecord And fSelectionMade
-            
-      .Tools("CustomReportsRec").Visible = False
-      .Tools("CustomReportsRec").Enabled = False
-                  
-      .Tools("GlobalUpdate").Visible = False
-      .Tools("GlobalUpdate").Enabled = False
             
       ' Only enable the absence reports dropdown if we are licensed
       .Bands(0).Tools("AbsenceCalendar").Visible = fAbsenceReportsEnabled And .Bands(0).Tools("AbsenceCalendar").Visible
