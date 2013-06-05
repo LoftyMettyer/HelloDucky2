@@ -47,7 +47,7 @@ Public Function CurrentUsersPopulate(grdTemp As SSDBGrid, Optional strUsersToLog
 Exit Function
 
 LocalErr:
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   COAMsgBox "Error checking process information" & vbCrLf & "(" & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
   CurrentUsersPopulate = False
 
@@ -86,7 +86,7 @@ Public Function GetCurrentUsersCountOnServer(strUserName As String) As Long
 Exit Function
 
 LocalErr:
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   COAMsgBox "Error checking process information" & vbCr & _
          "(GetCurrentUsersCountOnServer - " & Err.Description & ")", vbCritical
 
@@ -121,7 +121,7 @@ Public Function GetCurrentUsersCountInApp() As Long
 Exit Function
 
 LocalErr:
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   COAMsgBox "Error checking process information" & vbCr & _
          "(GetCurrentUsersCountInApp - " & Err.Description & ")", vbCritical
 

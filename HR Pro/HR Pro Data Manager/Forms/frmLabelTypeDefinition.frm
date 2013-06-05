@@ -1810,11 +1810,11 @@ Private Sub cmdOK_Click()
     Screen.MousePointer = vbHourglass
       
     If Not SaveDefinition Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       Exit Sub
     End If
     
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
   End If
   
   Me.Hide
@@ -2302,7 +2302,7 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lLabelDef
   UpdatePreview
   EnableDisableTabControls
   
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   mbIsLoading = False
   
   ' Fault 6184 - Not enabling ok button

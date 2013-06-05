@@ -701,7 +701,7 @@ Private Sub cboTable_Click()
   
   rsCols.Close
   Set rsCols = Nothing
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
 End Sub
 

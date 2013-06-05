@@ -1857,7 +1857,7 @@ Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional pln
   mblnLoading = False
   Cancelled = False
   If mblnForceHidden Then mblnForceHidden = True
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Initialise = True
   
 End Function
@@ -4527,7 +4527,7 @@ If mlngExportID > 0 Then
                , "Export"
       End If
 
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       SSTab1.Tab = 0
       Exit Function
 
@@ -4537,7 +4537,7 @@ If mlngExportID > 0 Then
                 "owner, hidden to the same user groups:" & vbCrLf & vbCrLf & _
                 sBatchJobDetails_Owner & vbCrLf & _
                 "Do you wish to continue ?", vbQuestion + vbYesNo, "Export") = vbNo Then
-        Screen.MousePointer = vbNormal
+        Screen.MousePointer = vbDefault
         SSTab1.Tab = 0
         Exit Function
       Else

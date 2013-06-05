@@ -603,7 +603,7 @@ On Error GoTo QAShowMappedFieldsError
    
     'Call the Afd routines. If they fail, exit sub, if not, show the Afd form
     If frmQAProMain.InitialiseQA(PostCode, fIndividual, frmForm, FieldName) = False Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       Exit Sub
     End If
     
@@ -764,7 +764,7 @@ On Error GoTo QAShowMappedFieldsError
   
     'Call the Afd routines. If they fail, exit sub, if not, show the Afd form
     If frmAFDFields.InitialiseQA(PostCode, fIndividual, frmForm, FieldName) = False Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       Exit Sub
     End If
     

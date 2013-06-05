@@ -180,7 +180,15 @@ Public Sub SetBorder(ByVal hwnd As Long, _
                     Optional ByVal ctrlType As vbControlType = ctOther, _
                     Optional ByVal Shadow As Long = vbButtonShadow)
   
-  SetBorder1 hwnd, bsFlat1Color, ctrlType, Shadow, -1, -1, -1
+  SetBorder1 hwnd, bsFlat1Color, ctrlType, Shadow, -1, -1, -1, False
+
+End Sub
+
+Public Sub SetBorderForDateControl(ByVal hwnd As Long, _
+                    Optional ByVal ctrlType As vbControlType = ctOther, _
+                    Optional ByVal Shadow As Long = vbButtonShadow)
+  
+  SetBorder1 hwnd, bsFlat1Color, ctrlType, Shadow, -1, -1, -1, True
 
 End Sub
 
@@ -189,7 +197,8 @@ Private Sub SetBorder1(ByVal hwnd As Long, BorderStyle As BorderStyleOptions, _
                     Optional ByVal Shadow As Long = vbButtonShadow, _
                     Optional ByVal DarkShadow As Long = bsAutoShade, _
                     Optional ByVal Highlight As Long = bsAutoShade, _
-                    Optional ByVal LightShadow As Long = bsAutoShade)
+                    Optional ByVal LightShadow As Long = bsAutoShade, _
+                    Optional ByVal IsDateControl As Boolean)
     
     ' The control will be subclassed to allow custom borders. Therefore it is
     ' best to call ResetBorder on any control loaded with Controls.Add before
@@ -402,10 +411,18 @@ Private Sub SetBorder1(ByVal hwnd As Long, BorderStyle As BorderStyleOptions, _
     
     ' force any border changes now
     SetWindowPos hwnd, 0, cRect.Left, cRect.Top, wRect.Right, wRect.Bottom, lFlags
-        
+    
     ' force repaint. SetWindowPos seems not to do this for all controls
     InvalidateRect hwnd, ByVal 0&, True
     
+    
+    
+    If IsDateControl Then
+      SetWindowPos hwnd, 0, cRect.Left, cRect.Top, wRect.Right - 200, wRect.Bottom, lFlags
+      InvalidateRect hwnd, ByVal 0&, True
+    End If
+
+
 End Sub
 
 Public Sub ReSetBorder(ByVal hwnd As Long, Optional Refresh As Boolean = True)

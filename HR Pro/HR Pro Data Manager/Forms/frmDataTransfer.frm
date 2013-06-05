@@ -2421,7 +2421,7 @@ If mlTransferID > 0 Then
                , "Data Transfer"
       End If
 
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       SSTab1.Tab = 0
       Exit Function
 
@@ -2431,7 +2431,7 @@ If mlTransferID > 0 Then
                 "owner, hidden to the same user groups:" & vbCrLf & vbCrLf & _
                 sBatchJobDetails_Owner & vbCrLf & _
                 "Do you wish to continue ?", vbQuestion + vbYesNo, "Data Transfer") = vbNo Then
-        Screen.MousePointer = vbNormal
+        Screen.MousePointer = vbDefault
         SSTab1.Tab = 0
         Exit Function
       Else

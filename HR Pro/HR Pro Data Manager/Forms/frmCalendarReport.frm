@@ -2876,7 +2876,7 @@ Public Function Initialise(pbNew As Boolean, pbCopy As Boolean, Optional plngCal
   mblnLoading = False
   
   Cancelled = False
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
 End Function
 Private Sub PopulateAccessGrid()
@@ -3406,7 +3406,7 @@ If mlngCalendarReportID > 0 Then
                , "Calendar Reports"
       End If
 
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       SSTab1.Tab = 0
       Exit Function
 
@@ -3416,7 +3416,7 @@ If mlngCalendarReportID > 0 Then
                 "owner, hidden to the same user groups:" & vbCrLf & vbCrLf & _
                 sBatchJobDetails_Owner & vbCrLf & _
                 "Do you wish to continue ?", vbQuestion + vbYesNo, "Calendar Reports") = vbNo Then
-        Screen.MousePointer = vbNormal
+        Screen.MousePointer = vbDefault
         SSTab1.Tab = 0
         Exit Function
       Else
@@ -4933,16 +4933,16 @@ Private Sub cmdOK_Click()
     Screen.MousePointer = vbHourglass
     
     If Not ValidateDefinition(mlngCalendarReportID) Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       Exit Sub
     End If
     
     If Not SaveDefinition Then
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       Exit Sub
     End If
     
-    Screen.MousePointer = vbNormal
+    Screen.MousePointer = vbDefault
   End If
   
   Me.Hide

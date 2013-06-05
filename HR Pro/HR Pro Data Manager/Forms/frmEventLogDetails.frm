@@ -500,7 +500,7 @@ Public Function Initialise(plngKey As Long, _
   If fOK Then Form_Resize
   
   ' Let user know we have finished, and can now redraw the form
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Me.AutoRedraw = True
   
   fraBatch.Visible = mblnBatch
@@ -677,7 +677,7 @@ AskAgain:
       blnPrintAll = False
     Else
       Set frmMSG = Nothing
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       Exit Sub
     End If
     
@@ -859,7 +859,7 @@ AskAgain:
   
   Set objPrintDef = Nothing
 
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   
 End Sub
 

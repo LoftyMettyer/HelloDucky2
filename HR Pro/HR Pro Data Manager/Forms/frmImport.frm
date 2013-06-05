@@ -1450,7 +1450,7 @@ Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional pln
   End If
     
   mblnLoading = False
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Initialise = True
   
 End Function
@@ -2452,7 +2452,7 @@ If mlngImportID > 0 Then
                , "Import"
       End If
 
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
       tabImport.Tab = 0
       Exit Function
 
@@ -2462,7 +2462,7 @@ If mlngImportID > 0 Then
                 "owner, hidden to the same user groups:" & vbCrLf & vbCrLf & _
                 sBatchJobDetails_Owner & vbCrLf & _
                 "Do you wish to continue ?", vbQuestion + vbYesNo, "Import") = vbNo Then
-        Screen.MousePointer = vbNormal
+        Screen.MousePointer = vbDefault
         tabImport.Tab = 0
         Exit Function
       Else

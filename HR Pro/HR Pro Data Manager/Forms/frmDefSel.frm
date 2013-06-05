@@ -1108,7 +1108,7 @@ End Sub
 Private Sub List2_Click()
   Screen.MousePointer = vbHourglass
   Refresh_Controls
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 End Sub
 
 Private Sub List1_DblClick()

@@ -1258,7 +1258,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
         COAMsgBox "No version information found.", vbExclamation + vbOKOnly, "HR Pro Data Manager"
       End If
       
-      Screen.MousePointer = vbNormal
+      Screen.MousePointer = vbDefault
     
     ' <CMG Recovery>
     Case "ID_CMGRecovery"
@@ -2883,7 +2883,7 @@ Public Sub BatchJobsClick()
   Unload frmSelection
   Set frmSelection = Nothing
 
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
 
   '# RH090300 To prevent toolbar locking after batch jobs
   With abMain

@@ -4359,7 +4359,7 @@ ExitLoadScreen:
   Set objScreen = Nothing
   
   LoadScreen = fOK
-  Screen.MousePointer = vbNormal
+  Screen.MousePointer = vbDefault
   Exit Function
 
 ErrorTrap_LoadScreen:
@@ -7786,12 +7786,18 @@ Private Function LoadControls(pobjScreen As clsScreen) As Boolean
         End If
 
         If TypeOf objNewControl Is TDBText6Ctl.TDBText _
-          Or TypeOf objNewControl Is TDBNumber6Ctl.TDBNumber _
-          Or TypeOf objNewControl Is GTMaskDate.GTMaskDate Then
+          Or TypeOf objNewControl Is TDBNumber6Ctl.TDBNumber Then
               If mobjBorders Is Nothing Then
                 Set mobjBorders = New clsBorders
               End If
-              mobjBorders.SetBorder objNewControl.hwnd, ctTextBox, RGB(169, 177, 184)
+              mobjBorders.SetBorder objNewControl.hwnd, ctTextBox, RGB(169, 177, 184), False
+
+        ElseIf TypeOf objNewControl Is GTMaskDate.GTMaskDate Then
+              If mobjBorders Is Nothing Then
+                Set mobjBorders = New clsBorders
+              End If
+              mobjBorders.SetBorder objNewControl.hwnd, ctTextBox, RGB(169, 177, 184), False
+
         End If
 
 '        ' Position the new control on the screen
