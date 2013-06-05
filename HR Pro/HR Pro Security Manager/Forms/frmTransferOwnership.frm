@@ -502,7 +502,7 @@ Private Function BuildReportSQL(sUserName As String) As String
     sWhere = "WHERE LOWER(Username) = '" & Replace(LCase(sUserName), "'", "''") & "' " & vbCrLf
   End If
   
-  sSQL = sSQL & "SELECT  ID, 'BATCH JOB' AS Type, Name, Username " & vbCrLf
+  sSQL = sSQL & "SELECT  ID, CASE IsBatch WHEN 1 THEN 'BATCH JOB' WHEN 0 THEN 'REPORT PACK' END AS Type, Name, Username " & vbCrLf
   sSQL = sSQL & "From  ASRSysBatchJobName " & vbCrLf
   sSQL = sSQL & sWhere
   sSQL = sSQL & "Union " & vbCrLf
