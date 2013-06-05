@@ -486,7 +486,7 @@ Private Function OvernightJob5() As Boolean
     "        -- Tidy up temporary objects" & vbNewLine & _
     "        EXEC sp_executeSQL spASRDropTempObjects;" & vbNewLine & vbNewLine & _
     "        -- Defragment indexes" & vbNewLine & _
-    "        EXEC dbo.spASRDefragIndexes 100;" & vbNewLine & vbNewLine & _
+    "        EXEC dbo.spASRDefragIndexes;" & vbNewLine & vbNewLine & _
     "        -- Update statistics" & vbNewLine & _
     "        EXEC sp_executeSQL spASRUpdateStatistics;" & vbNewLine & vbNewLine & _
     "        -- Optimise the record save for single record" & vbNewLine & _
