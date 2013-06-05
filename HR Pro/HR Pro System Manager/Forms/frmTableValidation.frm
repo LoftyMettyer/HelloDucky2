@@ -302,11 +302,11 @@ Public Function PopulateControls() As Boolean
   cboOverlapColumnEndSession.Clear
   cboOverlapColumnType.Clear
  
-  PopulateComboWithColumns cboOverlapColumnStartDate, lngTableID, False, dtTIMESTAMP
-  PopulateComboWithColumns cboOverlapColumnStartSession, lngTableID, True, dtVARCHAR
-  PopulateComboWithColumns cboOverlapColumnEndDate, lngTableID, False, dtTIMESTAMP
-  PopulateComboWithColumns cboOverlapColumnEndSession, lngTableID, True, dtVARCHAR
-  PopulateComboWithColumns cboOverlapColumnType, lngTableID, True, dtVARCHAR
+  PopulateComboWithColumns cboOverlapColumnStartDate, lngTableID, False, dtTIMESTAMP, True
+  PopulateComboWithColumns cboOverlapColumnStartSession, lngTableID, True, dtVARCHAR, False
+  PopulateComboWithColumns cboOverlapColumnEndDate, lngTableID, False, dtTIMESTAMP, False
+  PopulateComboWithColumns cboOverlapColumnEndSession, lngTableID, True, dtVARCHAR, False
+  PopulateComboWithColumns cboOverlapColumnType, lngTableID, True, dtVARCHAR, False
   
   SetComboItem cboOverlapColumnStartDate, objValidationObject.EventStartdateColumnID
   SetComboItem cboOverlapColumnStartSession, objValidationObject.EventStartSessionColumnID
@@ -327,7 +327,7 @@ ErrorTrap:
 End Function
 
 
-Private Sub PopulateComboWithColumns(ByRef cboTemp As ComboBox, ByVal plngTableID As Long, ByVal AllowNone As Boolean, ByVal DataType As DataTypes)
+Private Sub PopulateComboWithColumns(ByRef cboTemp As ComboBox, ByVal plngTableID As Long, ByVal AllowNone As Boolean, ByVal DataType As DataTypes, IsMandatory As Boolean)
 
   If AllowNone Then
     With cboTemp
@@ -348,7 +348,7 @@ Private Sub PopulateComboWithColumns(ByRef cboTemp As ComboBox, ByVal plngTableI
           Exit Do
         End If
 
-        If (Not !Deleted) And (!DataType = DataType) Then
+        If (Not !Deleted) And (!DataType = DataType) And (!Mandatory = IsMandatory Or Not IsMandatory) Then
 
           cboTemp.AddItem (!ColumnName)
           cboTemp.ItemData(cboTemp.NewIndex) = !ColumnID
