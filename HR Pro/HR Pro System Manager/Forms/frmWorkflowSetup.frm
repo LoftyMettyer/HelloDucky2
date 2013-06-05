@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Begin VB.Form frmWorkflowSetup 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Workflow Configuration"
@@ -22,6 +22,7 @@ Begin VB.Form frmWorkflowSetup
    Icon            =   "frmWorkflowSetup.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   6495
@@ -45,14 +46,14 @@ Begin VB.Form frmWorkflowSetup
       TabCaption(0)   =   "&Web Site"
       TabPicture(0)   =   "frmWorkflowSetup.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraWebSite"
-      Tab(0).Control(1)=   "fraWebSiteLogin"
+      Tab(0).Control(0)=   "fraWebSiteLogin"
+      Tab(0).Control(1)=   "fraWebSite"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "&Personnel Identification"
       TabPicture(1)   =   "frmWorkflowSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraDelegation"
-      Tab(1).Control(1)=   "fraPersonnelTable"
+      Tab(1).Control(0)=   "fraPersonnelTable"
+      Tab(1).Control(1)=   "fraDelegation"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Service"
       TabPicture(2)   =   "frmWorkflowSetup.frx":0044
@@ -76,6 +77,7 @@ Begin VB.Form frmWorkflowSetup
          Width           =   6500
          Begin VB.CommandButton cmdGenMobileKey 
             Caption         =   "&Generate"
+            Enabled         =   0   'False
             Height          =   400
             Left            =   5100
             TabIndex        =   44
@@ -623,7 +625,7 @@ Private Sub cboMobEMailColumn_Click()
   
   If Not mbLoading Then
     mbLoading = True
-    RefreshPersonnelColumnControls
+    'RefreshPersonnelColumnControls
     mbLoading = False
     Changed = True
   End If
@@ -639,7 +641,7 @@ Private Sub cboMobLeavingDateColumn_Click()
   
   If Not mbLoading Then
     mbLoading = True
-    RefreshPersonnelColumnControls
+    'RefreshPersonnelColumnControls
     mbLoading = False
     Changed = True
   End If
@@ -655,7 +657,7 @@ Private Sub cboMobLoginName_Click()
   
   If Not mbLoading Then
     mbLoading = True
-    RefreshPersonnelColumnControls
+    'RefreshPersonnelColumnControls
     mbLoading = False
     Changed = True
   End If
@@ -670,10 +672,12 @@ Private Sub cboMobUserActivated_Click()
   
   If Not mbLoading Then
     mbLoading = True
-    RefreshPersonnelColumnControls
+    'RefreshPersonnelColumnControls
     mbLoading = False
     Changed = True
   End If
+  
+  RefreshControls
   
 End Sub
 
@@ -1618,8 +1622,20 @@ Private Sub RefreshControls()
   ' Refresh the Mobile Key controls
   ' ------------------------------------------
   ' Refresh the Mobile Key controls
-  lblGetMobileKey.Enabled = (Application.MobileModule)
-  cmdGenMobileKey.Enabled = (Application.MobileModule)
+  
+  ' All columns configured and module activated
+  If Application.MobileModule _
+    And cboMobEMailColumn.ListIndex > 0 _
+    And cboMobLoginName.ListIndex > 0 _
+    And cboMobLeavingDateColumn.ListIndex > 0 _
+    And cboMobUserActivated.ListIndex > 0 Then
+  
+    cmdGenMobileKey.Enabled = True
+  Else
+    cmdGenMobileKey.Enabled = False
+  End If
+  
+  lblGetMobileKey.Enabled = cmdGenMobileKey.Enabled
   
   cboMobPersonnelTable.Clear
   cboMobPersonnelTable.AddItem (cboPersonnelTable)
