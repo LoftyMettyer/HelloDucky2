@@ -74,7 +74,7 @@ BEGIN
 END
 
 /* ------------------------------------------------------------- */
-PRINT 'Step - Fusion Integration'
+PRINT 'Step - Deletion changes'
 /* ------------------------------------------------------------- */
 
 	SET @NVarCommand = '';
@@ -82,6 +82,15 @@ PRINT 'Step - Fusion Integration'
 		ALTER TABLE [tbuser_' + TableName + '] ADD [_deleted] bit, [_deleteddate] datetime;' FROM ASRSysTables
 			ORDER BY tablename;	
 	EXECUTE sp_executesql @NVarCommand;
+
+
+/* ------------------------------------------------------------- */
+PRINT 'Step - Fusion Message Bus Integration'
+/* ------------------------------------------------------------- */
+
+
+
+
 
 
 /* ------------------------------------------------------------- */
