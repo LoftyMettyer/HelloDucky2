@@ -6,7 +6,7 @@ Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Object = "{98B2556E-F719-4726-9028-5F2EAB345800}#1.0#0"; "coasd_checkbox.ocx"
 Object = "{3EBC9263-7DE3-4E87-8721-81ACE59CD84E}#1.1#0"; "coasd_combo.ocx"
 Object = "{3CCEDCBE-4766-494F-84C9-95993D77BD56}#1.0#0"; "coasd_command.ocx"
-Object = "{FFAE31F9-C18D-4C20-AAF7-74C1356185D9}#1.0#0"; "coasd_frame.ocx"
+Object = "{FFAE31F9-C18D-4C20-AAF7-74C1356185D9}#1.0#0"; "COASD_Frame.ocx"
 Object = "{5F165695-EDF2-40E1-BD8E-8D2E6325BDCF}#1.0#0"; "coasd_image.ocx"
 Object = "{32648AC7-4D67-4E6A-A546-1B7783115C22}#1.0#0"; "coasd_ole.ocx"
 Object = "{CE18FF03-F3BF-4C4F-81DC-192ED1E1B91F}#1.0#0"; "coasd_optiongroup.ocx"
@@ -317,7 +317,6 @@ Begin VB.Form frmScrDesigner2
       BeginProperty Tabs {0713E432-850A-101B-AFC0-4210102A8DA7} 
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
-            Caption         =   ""
             Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
@@ -1315,9 +1314,9 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
           If fOK Then
             ' Set the last action flag and enable the Undo menu option.
             giLastActionFlag = giACTION_DROPTABPAGE
-            giUndo_TabPageIndex = tabPages.Tabs.Count
+            giUndo_TabPageIndex = TabPages.Tabs.Count
     
-            tabPages.SetFocus
+            TabPages.SetFocus
           End If
         Else
         
@@ -1539,7 +1538,7 @@ Private Sub Form_Initialize()
   End With
   
   ' Clear the tab strip.
-  tabPages.Tabs.Clear
+  TabPages.Tabs.Clear
   
   ' Disable the 'undo' menu option until we have somethig to undo.
   giLastActionFlag = giACTION_NOACTION
@@ -1717,8 +1716,8 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
           bHandled = True
         End If
       Else
-        If tabPages.Tabs.Count > 0 Then
-          If Not DeleteTabPage(tabPages.SelectedItem.Index, True) Then
+        If TabPages.Tabs.Count > 0 Then
+          If Not DeleteTabPage(TabPages.SelectedItem.Index, True) Then
             MsgBox "Unable to delete tab page." & vbCr & vbCr & _
               Err.Description, vbExclamation + vbOKOnly, App.ProductName
           End If
@@ -1890,8 +1889,8 @@ Public Sub EditMenu(ByVal psMenuOption As String)
             Err.Description, vbExclamation + vbOKOnly, App.ProductName
         End If
       Else
-        If tabPages.Tabs.Count > 0 Then
-          If Not DeleteTabPage(tabPages.SelectedItem.Index, True) Then
+        If TabPages.Tabs.Count > 0 Then
+          If Not DeleteTabPage(TabPages.SelectedItem.Index, True) Then
             MsgBox "Unable to delete the tab." & vbCr & vbCr & _
               Err.Description, vbExclamation + vbOKOnly, App.ProductName
           End If
@@ -2077,17 +2076,17 @@ Private Sub AutoFormatScreen()
       ' If there are no controls, then the start page should be 0. So
       ' we need to get rid of any existing tab pages to start with.
       If iStartPage = 0 Then
-        For iLoop = tabPages.Tabs.Count To 1 Step -1
+        For iLoop = TabPages.Tabs.Count To 1 Step -1
     
           ' Unload the tabpage's picture container.
-          UnLoad picPageContainer(tabPages.Tabs(iLoop).Tag)
+          UnLoad picPageContainer(TabPages.Tabs(iLoop).Tag)
     
           ' Remove the tab from the tabstrip.
-          tabPages.Tabs.Remove iLoop
+          TabPages.Tabs.Remove iLoop
     
           ' Hide the tabstrip if we now have no tabs left.
-          If tabPages.Tabs.Count = 0 Then
-            tabPages.Visible = False
+          If TabPages.Tabs.Count = 0 Then
+            TabPages.Visible = False
           End If
         Next iLoop
       End If
@@ -2100,7 +2099,7 @@ Private Sub AutoFormatScreen()
           
         If fOK Then
           ' Ensure the new pagecontainer is visible.
-          picPageContainer(tabPages.Tabs(iStartPage).Tag).Visible = True
+          picPageContainer(TabPages.Tabs(iStartPage).Tag).Visible = True
           iStartPage = 2
           gfUndo_TabsCreated = True
         End If
@@ -2112,11 +2111,11 @@ Private Sub AutoFormatScreen()
   
   If fOK Then
     ' Add a new tab page if required.
-    If iStartPage > tabPages.Tabs.Count Then
+    If iStartPage > TabPages.Tabs.Count Then
       fOK = AddTabPage
       If fOK Then
         ' Ensure the new pagecontainer is visible.
-        picPageContainer(tabPages.Tabs(iStartPage).Tag).Visible = True
+        picPageContainer(TabPages.Tabs(iStartPage).Tag).Visible = True
       Else
         MsgBox "Unable to add more than " & Trim(Str(giMAXTABS)) & " page tabs." & vbCr & vbCr & _
           Err.Description, vbExclamation + vbOKOnly, App.ProductName
@@ -2130,7 +2129,7 @@ Private Sub AutoFormatScreen()
     If iCurrentPage = 0 Then
       Set varCurrentPageContainer = Me
     Else
-      Set varCurrentPageContainer = picPageContainer(tabPages.Tabs(iCurrentPage).Tag)
+      Set varCurrentPageContainer = picPageContainer(TabPages.Tabs(iCurrentPage).Tag)
     End If
   
     ' Read the required column and control information from the database tables.
@@ -2247,7 +2246,7 @@ Private Sub AutoFormatScreen()
             If .Top + sngControlHeight > varCurrentPageContainer.ScaleHeight Then
               ' If we are adding the first page then we need to move existing controls onto this page,
               ' and then create another page for the current control.
-              If tabPages.Tabs.Count = 0 Then
+              If TabPages.Tabs.Count = 0 Then
                 If ScreenControlsCount > 0 Then
                   If AddTabPage Then
                     iStartPage = 1
@@ -2268,7 +2267,7 @@ Private Sub AutoFormatScreen()
                 If AddTabPage Then
                   iCurrentPage = iCurrentPage + 1
                   lngYPosition = gLngAUTOFORMATYSTART
-                  Set varCurrentPageContainer = picPageContainer(tabPages.Tabs(iCurrentPage).Tag)
+                  Set varCurrentPageContainer = picPageContainer(TabPages.Tabs(iCurrentPage).Tag)
                       
                   ' Move the control onto the new page.
                   Set .Container = varCurrentPageContainer
@@ -2482,7 +2481,7 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y A
     End If
 
     ' Limit the multi-selection area to the form or tab page area.
-    If tabPages.Tabs.Count > 0 Then
+    If TabPages.Tabs.Count > 0 Then
       lngRightLimit = picPageContainer(picPageContainer.UBound).Width - XBorder
       lngBottomLimit = picPageContainer(picPageContainer.UBound).Height - YBorder
     Else
@@ -2717,7 +2716,7 @@ Private Sub Form_Resize()
   If Me.WindowState <> vbMinimized Then
     
     ' Resize the tabstrip if it is visible.
-    If tabPages.Tabs.Count > 0 Then
+    If TabPages.Tabs.Count > 0 Then
       TabPages_Resize
     End If
   End If
@@ -2752,13 +2751,13 @@ Private Function TabPages_Resize() As Boolean
   Dim ctlPictureBox As PictureBox
   
   ' Position and size the tabstrip to fill the form's client area.
-  tabPages.Move XFrame, YFrame, Me.ScaleWidth - (XFrame * 2), _
+  TabPages.Move XFrame, YFrame, Me.ScaleWidth - (XFrame * 2), _
     Me.ScaleHeight - (YFrame * 2)
   
   ' Position and size the picture box containers of the tabstrip.
   For Each ctlPictureBox In picPageContainer
-    ctlPictureBox.Move tabPages.ClientLeft, tabPages.ClientTop, _
-      tabPages.ClientWidth, tabPages.ClientHeight
+    ctlPictureBox.Move TabPages.ClientLeft, TabPages.ClientTop, _
+      TabPages.ClientWidth, TabPages.ClientHeight
   Next ctlPictureBox
           
   fOK = True
@@ -3149,13 +3148,13 @@ Private Function LoadScreen() As Boolean
       Me.Font.Italic = IIf(IsNull(.Fields("dfltFontItalic")), False, .Fields("dfltFontItalic"))
        
       ' Set tabstrip properties.
-      tabPages.Font.Name = IIf(IsNull(.Fields("fontName")), DefaultFont.Name, .Fields("fontName"))
-      tabPages.Font.Size = IIf(IsNull(.Fields("fontSize")), DefaultFont.Size, .Fields("fontSize"))
-      tabPages.Font.Bold = IIf(IsNull(.Fields("fontBold")), DefaultFont.Bold, .Fields("fontBold"))
-      tabPages.Font.Italic = IIf(IsNull(.Fields("fontItalic")), DefaultFont.Italic, .Fields("fontItalic"))
-      tabPages.Font.Strikethrough = IIf(IsNull(.Fields("fontStrikeThru")), DefaultFont.Strikethrough, .Fields("fontStrikeThru"))
-      tabPages.Font.Underline = IIf(IsNull(.Fields("fontUnderline")), DefaultFont.Underline, .Fields("fontUnderline"))
-      tabPages.TabIndex = 0
+      TabPages.Font.Name = IIf(IsNull(.Fields("fontName")), DefaultFont.Name, .Fields("fontName"))
+      TabPages.Font.Size = IIf(IsNull(.Fields("fontSize")), DefaultFont.Size, .Fields("fontSize"))
+      TabPages.Font.Bold = IIf(IsNull(.Fields("fontBold")), DefaultFont.Bold, .Fields("fontBold"))
+      TabPages.Font.Italic = IIf(IsNull(.Fields("fontItalic")), DefaultFont.Italic, .Fields("fontItalic"))
+      TabPages.Font.Strikethrough = IIf(IsNull(.Fields("fontStrikeThru")), DefaultFont.Strikethrough, .Fields("fontStrikeThru"))
+      TabPages.Font.Underline = IIf(IsNull(.Fields("fontUnderline")), DefaultFont.Underline, .Fields("fontUnderline"))
+      TabPages.TabIndex = 0
       iTabPages = 0
       
        ' Add tab pages if required.
@@ -3176,7 +3175,7 @@ Private Function LoadScreen() As Boolean
             If fLoadOk Then
               'MH20020527 Fault 1862
               'tabPages.Tabs(tabPages.Tabs.Count).Caption = IIf(IsNull(.Fields("caption")), "", .Fields("caption"))
-              tabPages.Tabs(tabPages.Tabs.Count).Caption = IIf(IsNull(.Fields("caption")), "", Replace(.Fields("caption"), "&", "&&"))
+              TabPages.Tabs(TabPages.Tabs.Count).Caption = IIf(IsNull(.Fields("caption")), "", Replace(.Fields("caption"), "&", "&&"))
             End If
             
             .MoveNext
@@ -3615,7 +3614,7 @@ Private Function AddTabPage(Optional piTabPageIndex As Integer) As Boolean
   Dim iCount As Integer
   
   ' Do not exceed the maximum number of pages.
-  If tabPages.Tabs.Count = giMAXTABS Then
+  If TabPages.Tabs.Count = giMAXTABS Then
     ' Flag the error to the user if we are not just loading the screen.
     If Not gfLoading Then
       MsgBox "Unable to add more than " & Trim(Str(giMAXTABS)) & " page tabs."
@@ -3627,30 +3626,30 @@ Private Function AddTabPage(Optional piTabPageIndex As Integer) As Boolean
   
   ' Get the index of the new tab page.
   If (IsMissing(piTabPageIndex)) Or (piTabPageIndex = 0) Then
-    piTabPageIndex = tabPages.Tabs.Count + 1
-  ElseIf (piTabPageIndex > tabPages.Tabs.Count + 1) Then
-    piTabPageIndex = tabPages.Tabs.Count + 1
+    piTabPageIndex = TabPages.Tabs.Count + 1
+  ElseIf (piTabPageIndex > TabPages.Tabs.Count + 1) Then
+    piTabPageIndex = TabPages.Tabs.Count + 1
   End If
   
   ' Get the index of the new page's pictureBox container.
   iContainerIndex = picPageContainer.UBound + 1
   
   ' If we are adding the first tab page then move all existing controls onto this page
-  If tabPages.Tabs.Count = 0 Then
+  If TabPages.Tabs.Count = 0 Then
   
     ' Add the new tab, and initialise its caption.
-    tabPages.Tabs.Add
-    tabPages.Tabs(1).Caption = "Page 1"
+    TabPages.Tabs.Add
+    TabPages.Tabs(1).Caption = "Page 1"
     
     ' Add a picture control to the tab page to contain its controls, and initialise its properties.
     Load picPageContainer(iContainerIndex)
     With picPageContainer(iContainerIndex)
       .BackColor = Me.BackColor
       .BorderStyle = 0
-      .Left = tabPages.ClientLeft
-      .Top = tabPages.ClientTop
-      .Width = tabPages.ClientWidth
-      .Height = tabPages.ClientHeight
+      .Left = TabPages.ClientLeft
+      .Top = TabPages.ClientTop
+      .Width = TabPages.ClientWidth
+      .Height = TabPages.ClientHeight
       .Visible = False
       .ZOrder 1
     End With
@@ -3675,7 +3674,7 @@ Private Function AddTabPage(Optional piTabPageIndex As Integer) As Boolean
     ' form dimensions to allow for the tabs.
     If fControlsMoved Then
       With Me
-        .Height = .Height + (tabPages.Height - tabPages.ClientHeight) + (2 * YFrame)
+        .Height = .Height + (TabPages.Height - TabPages.ClientHeight) + (2 * YFrame)
         .Width = .Width + (4 * XFrame)
       End With
     
@@ -3690,17 +3689,17 @@ Private Function AddTabPage(Optional piTabPageIndex As Integer) As Boolean
     
   Else
     ' Add the new tab.
-    tabPages.Tabs.Add piTabPageIndex, , "Page " & tabPages.Tabs.Count + 1
+    TabPages.Tabs.Add piTabPageIndex, , "Page " & TabPages.Tabs.Count + 1
     
     ' Add a picture control to the tab page to contain its controls, and initialise its properties.
     Load picPageContainer(iContainerIndex)
     With picPageContainer(iContainerIndex)
       .BackColor = Me.BackColor
       .BorderStyle = 0
-      .Left = tabPages.ClientLeft
-      .Top = tabPages.ClientTop
-      .Width = tabPages.ClientWidth
-      .Height = tabPages.ClientHeight
+      .Left = TabPages.ClientLeft
+      .Top = TabPages.ClientTop
+      .Width = TabPages.ClientWidth
+      .Height = TabPages.ClientHeight
       .Visible = False
       .ZOrder 1
     End With
@@ -3709,11 +3708,11 @@ Private Function AddTabPage(Optional piTabPageIndex As Integer) As Boolean
   
   ' Set the 'tag' property of the tab page. We use to relate a tab page
   ' with its associated picture container control.
-  tabPages.Tabs(piTabPageIndex).Tag = iContainerIndex
+  TabPages.Tabs(piTabPageIndex).Tag = iContainerIndex
 
   ' Display the tab strip.
   fOK = TabPages_Resize
-  tabPages.Visible = True
+  TabPages.Visible = True
   
   ' Select the new page if we are not just loading the screen.
   If Not gfLoading Then
@@ -3746,13 +3745,15 @@ Private Function DeleteTabPage(piTabIndex As Integer, pfPromptUser As Boolean) A
   Dim ctlControl As VB.Control
   Dim actlScreenControls() As VB.Control
   Dim ctlPageContainer As VB.PictureBox
+  Dim strCaption As String
   
   fOK = True
   
   CurrentPageContainer.SetFocus
   
   ' Get the given tab page's container control.
-  Set ctlPageContainer = picPageContainer(tabPages.Tabs(piTabIndex).Tag)
+  Set ctlPageContainer = picPageContainer(TabPages.Tabs(piTabIndex).Tag)
+  strCaption = TabPages.Tabs(TabPages.SelectedItem.Index).Caption
     
   ' Construct an array of the given tab page's screen controls.
   ReDim actlScreenControls(0)
@@ -3770,7 +3771,7 @@ Private Function DeleteTabPage(piTabIndex As Integer, pfPromptUser As Boolean) A
 
   ' Prompt the user for confirmation if the page contains controls.
   If (UBound(actlScreenControls) > 0) And (pfPromptUser) Then
-    fConfirmed = (MsgBox("This page contains controls." & _
+    fConfirmed = (MsgBox("The page '" & strCaption & "' contains controls." & _
       vbCr & vbCr & "Are you sure you want to delete it ?", _
       vbQuestion + vbYesNo, Me.Caption) = vbYes)
   Else
@@ -3822,15 +3823,15 @@ Private Function DeleteTabPage(piTabIndex As Integer, pfPromptUser As Boolean) A
       picPageContainer(piTabIndex).Visible = False
   
       ' Remember the tabpage caption.
-      gsUndo_TabPageCaption = tabPages.Tabs(piTabIndex).Caption
+      gsUndo_TabPageCaption = TabPages.Tabs(piTabIndex).Caption
       
       ' Remove the tab from the tabstrip.
-      tabPages.Tabs.Remove piTabIndex
+      TabPages.Tabs.Remove piTabIndex
   
       ' Hide the tabstrip if we now have no tabs left.
       ' Otherwise select the first tab page.
-      If tabPages.Tabs.Count = 0 Then
-        tabPages.Visible = False
+      If TabPages.Tabs.Count = 0 Then
+        TabPages.Visible = False
         PageNo = 0
       Else
         PageNo = 1
@@ -3870,14 +3871,14 @@ Public Property Let PageNo(piPageNumber As Integer)
   Dim ctlPictureBox As PictureBox
   
   ' Do nothing if there are no tabpages.
-  If tabPages.Tabs.Count > 0 Then
+  If TabPages.Tabs.Count > 0 Then
     
     ' If the given page number is not valid, just select the first page.
-    If piPageNumber > tabPages.Tabs.Count Then
+    If piPageNumber > TabPages.Tabs.Count Then
       piPageNumber = 1
     End If
     
-    iPageTag = tabPages.Tabs(piPageNumber).Tag
+    iPageTag = TabPages.Tabs(piPageNumber).Tag
     
     ' Position and size the picture box containers of the tabstrip.
     For Each ctlPictureBox In picPageContainer
@@ -3893,7 +3894,7 @@ Public Property Let PageNo(piPageNumber As Integer)
       End With
     Next ctlPictureBox
     
-    tabPages.Tabs(piPageNumber).Selected = True
+    TabPages.Tabs(piPageNumber).Selected = True
       
     ' If the page has changed then ensure that the old page
     ' controls are deselected.
@@ -3927,10 +3928,10 @@ Public Property Get PageNo() As Integer
   
   Dim iPageNo As Integer
   
-  If tabPages.Tabs.Count = 0 Then
+  If TabPages.Tabs.Count = 0 Then
     iPageNo = 0
   Else
-    iPageNo = tabPages.SelectedItem.Index
+    iPageNo = TabPages.SelectedItem.Index
   End If
   
 TidyUpAndExit:
@@ -3953,20 +3954,20 @@ Private Sub tabPages_Click()
   If Not fInClick Then
     fInClick = True
   
-    tabPages.Enabled = False
+    TabPages.Enabled = False
     Screen.MousePointer = vbHourglass
   
     ' Set the active page.
-    PageNo = tabPages.SelectedItem.Index
+    PageNo = TabPages.SelectedItem.Index
       
     ' Load the controls for this page
-    LoadTabPage (tabPages.SelectedItem.Index)
+    LoadTabPage (TabPages.SelectedItem.Index)
       
     ' Refresh the properties screen.
     Set frmScrObjProps.CurrentScreen = Me
     frmScrObjProps.RefreshProperties
   
-    tabPages.Enabled = True
+    TabPages.Enabled = True
     Screen.MousePointer = vbDefault
   
     fInClick = False
@@ -4139,8 +4140,8 @@ Private Sub tabPages_GotFocus()
   End If
   
   ' Deselect all controls.
-  If tabPages.Tabs.Count > 0 Then
-    If PageNo <> tabPages.SelectedItem.Index Then
+  If TabPages.Tabs.Count > 0 Then
+    If PageNo <> TabPages.SelectedItem.Index Then
       DeselectAllControls
   
       ' Refresh the menu.
@@ -4158,8 +4159,8 @@ End Sub
 
 Private Function CurrentPageContainer() As Variant
   ' Return the current page container.
-  If tabPages.Tabs.Count > 0 Then
-    Set CurrentPageContainer = picPageContainer(tabPages.SelectedItem.Tag)
+  If TabPages.Tabs.Count > 0 Then
+    Set CurrentPageContainer = picPageContainer(TabPages.SelectedItem.Tag)
   Else
     Set CurrentPageContainer = Me
   End If
@@ -4268,8 +4269,8 @@ Private Function SaveScreen() As Boolean
   End With
   
   ' Load existing tab pages, so the save is successful
-  If tabPages.Tabs.Count > 0 Then
-    For iCount = 1 To tabPages.Tabs.Count
+  If TabPages.Tabs.Count > 0 Then
+    For iCount = 1 To TabPages.Tabs.Count
     'For iCount = 1 To picPageContainer.Count - 1
     'For iCount = 0 To picPageContainer.Count - 1
       LoadTabPage (iCount)
@@ -4280,11 +4281,11 @@ Private Function SaveScreen() As Boolean
   daoWS.BeginTrans
   
   ' Set then level of each control.
-  If tabPages.Tabs.Count = 0 Then
+  If TabPages.Tabs.Count = 0 Then
     fOK = GetControlLevel(Me.hWnd)
   Else
-    For iPageNo = 1 To tabPages.Tabs.Count
-      fOK = GetControlLevel(picPageContainer(tabPages.Tabs(iPageNo).Tag).hWnd)
+    For iPageNo = 1 To TabPages.Tabs.Count
+      fOK = GetControlLevel(picPageContainer(TabPages.Tabs(iPageNo).Tag).hWnd)
     Next iPageNo
   End If
   
@@ -4308,12 +4309,12 @@ Private Function SaveScreen() As Boolean
       '####
       .Fields("height") = Me.Height - 450 - IIf(UI.GetOSVersion = 6, 240, 0)
       .Fields("width") = Me.Width - IIf(UI.GetOSVersion = 6, 240, 0)
-      .Fields("fontName") = tabPages.Font.Name
-      .Fields("fontSize") = tabPages.Font.Size
-      .Fields("fontBold") = tabPages.Font.Bold
-      .Fields("fontitalic") = tabPages.Font.Italic
-      .Fields("fontStrikeThru") = tabPages.Font.Strikethrough
-      .Fields("fontUnderline") = tabPages.Font.Underline
+      .Fields("fontName") = TabPages.Font.Name
+      .Fields("fontSize") = TabPages.Font.Size
+      .Fields("fontBold") = TabPages.Font.Bold
+      .Fields("fontitalic") = TabPages.Font.Italic
+      .Fields("fontStrikeThru") = TabPages.Font.Strikethrough
+      .Fields("fontUnderline") = TabPages.Font.Underline
       .Fields("gridX") = GridX
       .Fields("gridY") = GridY
       .Fields("alignToGrid") = IIf(AlignToGrid, 1, 0)
@@ -4331,15 +4332,15 @@ Private Function SaveScreen() As Boolean
     daoDb.Execute "DELETE FROM tmpPageCaptions WHERE screenID = " & gLngScreenID
   
     ' Save the page captions.
-    If tabPages.Tabs.Count > 0 Then
+    If TabPages.Tabs.Count > 0 Then
       With recPageCaptEdit
-        For iPageNo = 1 To tabPages.Tabs.Count
+        For iPageNo = 1 To TabPages.Tabs.Count
           .AddNew
           .Fields("screenID") = gLngScreenID
           .Fields("pageIndexID") = iPageNo
           'MH20020527 Fault 1862
           '.Fields("caption") = tabPages.Tabs(iPageNo).Caption
-          .Fields("caption") = Replace(tabPages.Tabs(iPageNo).Caption, "&&", "&")
+          .Fields("caption") = Replace(TabPages.Tabs(iPageNo).Caption, "&&", "&")
           .Update
         Next iPageNo
       End With
@@ -4521,8 +4522,8 @@ Public Function GetControlPageNo(pctlControl As VB.Control) As Integer
   
   iPageNo = 0
         
-  If (tabPages.Tabs.Count > 0) And (Not pctlControl.Container Is Me) Then
-    For Each objTabPage In tabPages.Tabs
+  If (TabPages.Tabs.Count > 0) And (Not pctlControl.Container Is Me) Then
+    For Each objTabPage In TabPages.Tabs
       If objTabPage.Tag = pctlControl.Container.Index Then
         iPageNo = objTabPage.Index
       End If
@@ -4744,7 +4745,7 @@ Private Function UndoDropTabPage() As Boolean
     Next ctlControl
      
     ' Adjust the form's dimensions.
-    Me.Height = Me.Height - (tabPages.Height - tabPages.ClientHeight) - (2 * YFrame)
+    Me.Height = Me.Height - (TabPages.Height - TabPages.ClientHeight) - (2 * YFrame)
     Me.Width = Me.Width - (4 * XFrame)
      
     ' Disassociate object variables.
@@ -4914,7 +4915,7 @@ Private Function UndoAutoFormat() As Boolean
   ' Delete any AutoFormatted tab pages.
   If giUndo_TabPageIndex > 0 Then
       
-    For iLoop = tabPages.Tabs.Count To giUndo_TabPageIndex Step -1
+    For iLoop = TabPages.Tabs.Count To giUndo_TabPageIndex Step -1
       fOK = DeleteTabPage(iLoop, False)
       
       If Not fOK Then
@@ -4941,7 +4942,7 @@ Private Function UndoAutoFormat() As Boolean
       Set ctlControl = Nothing
         
       ' Adjust the form's dimensions.
-      Me.Height = Me.Height - (tabPages.Height - tabPages.ClientHeight) - (2 * YFrame)
+      Me.Height = Me.Height - (TabPages.Height - TabPages.ClientHeight) - (2 * YFrame)
       Me.Width = Me.Width - (4 * XFrame)
       
       ' Delete the first AutoFormatted tab page.
@@ -5047,10 +5048,10 @@ Private Function UndoDeleteTabPage() As Boolean
   If fOK Then
   
     ' Restore the original page caption.
-    tabPages.Tabs(giUndo_TabPageIndex).Caption = gsUndo_TabPageCaption
+    TabPages.Tabs(giUndo_TabPageIndex).Caption = gsUndo_TabPageCaption
      
     ' Recreate the controls that were on this page when it was deleted.
-    Set picContainer = picPageContainer(tabPages.Tabs(giUndo_TabPageIndex).Tag)
+    Set picContainer = picPageContainer(TabPages.Tabs(giUndo_TabPageIndex).Tag)
   
     ' Restore the deleted controls to their original positions.
     For iIndex = 1 To UBound(gactlUndo_DeletedControls)
@@ -6198,8 +6199,8 @@ Public Function LoadTabPage(piPageNumber As Integer) As Boolean
     Exit Function
   End If
  
-  If tabPages.Tabs.Count > 0 Then
-    iOriginalPageNumber = tabPages.Tabs(piPageNumber).Tag
+  If TabPages.Tabs.Count > 0 Then
+    iOriginalPageNumber = TabPages.Tabs(piPageNumber).Tag
   Else
     iOriginalPageNumber = 0
   End If
