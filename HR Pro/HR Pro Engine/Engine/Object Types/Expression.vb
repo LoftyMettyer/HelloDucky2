@@ -32,8 +32,8 @@ Namespace Things
     Public Joins As ArrayList
     Public FromTables As ArrayList
     Private maryWhere As ArrayList
-    Private maryDeclarations As ArrayList
-    Private maryPrerequisitStatements As ArrayList
+    Public Declarations As ArrayList
+    Public PreStatements As ArrayList
 
     Private mcolLinesOfCode As ScriptDB.LinesOfCode
     'Private mbAddBaseTable As Boolean
@@ -235,16 +235,11 @@ Namespace Things
       FromTables = New ArrayList
       maryWhere = New ArrayList
 
-      maryDeclarations = New ArrayList
-      maryPrerequisitStatements = New ArrayList
-      '    maryAvoidRecursion = New ArrayList
+      If Declarations Is Nothing Then Declarations = New ArrayList
+      If PreStatements Is Nothing Then PreStatements = New ArrayList
 
-      '   maryAvoidRecursion.Clear()
       Joins.Clear()
       maryWhere.Clear()
-      maryPrerequisitStatements.Clear()
-      maryDeclarations.Clear()
-
 
       ' Build the dependencies collection
       mcolDependencies.Clear()
@@ -302,26 +297,13 @@ Namespace Things
 
         End If
 
-        '  If objDependency.Type = Enums.Type.Setting Then
-        '   '          aryParameters1.Add(String.Format("{0}", CInt(CType(objDependency, Things.Setting).Value)))
-        '  aryParameters2.Add(String.Format("{0}", CInt(CType(objDependency, Things.Setting).Value)))
-        '  End If
-
         iCount += iCount
       Next
 
-
-      ' Special parameters for functions
-      'If Me.BaseExpression.RequiresRowNumber Then
-      '  aryParameters1.Add(String.Format("@base_rownumber integer"))
-      '  aryParameters2.Add("ROW_NUMBER() OVER(OVER(ORDER BY base.[ID])")
-      'End If
-
-
       ' Calling statement
       With UDF
-        .Declarations = String.Join(vbNewLine, maryDeclarations.ToArray())
-        .Prerequisites = String.Join(vbNewLine, maryPrerequisitStatements.ToArray())
+        .Declarations = String.Join(vbNewLine, Declarations.ToArray())
+        .Prerequisites = String.Join(vbNewLine, PreStatements.ToArray())
         .JoinCode = String.Format("{0}", String.Join(vbNewLine, Joins.ToArray))
         .FromCode = String.Format("{0}", String.Join(",", FromTables.ToArray))
 
@@ -333,24 +315,8 @@ Namespace Things
           ' Wrapper for calculations with associated columns
           Case ScriptDB.ExpressionType.ColumnCalculation
             .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
-
-
-            '  If Me.ReturnType = ScriptDB.ComponentValueTypes.Logic Then
-            '    .SelectCode = String.Format("CASE WHEN ({0}) THEN 1 ELSE 0 END", mcolLinesOfCode.Statement)
-            '  Else
             .SelectCode = mcolLinesOfCode.Statement
-            'End If
-
-
-            '            SELECT @Result = (CASE WHEN 
-            'dbo.udfsys_fieldchangedbetweentwodates((('00000001-00000009')), (('2011-05-01')), (('2011-05-31')), @prm_ID)
-            ' THEN 1 ELSE 0 END)
-
-
-
-            '            .SelectCode = mcolLinesOfCode.Statement
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
-            '        .Where = String.Format("{0}", String.Join(",", Where.ToArray))
 
             .Code = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
                            "RETURNS {2}" & vbNewLine & _
@@ -396,7 +362,6 @@ Namespace Things
 
             ' Wrapper for when this function is used as a filter in an expression
           Case ScriptDB.ExpressionType.ColumnFilter
-            mcolLinesOfCode.IsEvaluated = True
             .Name = String.Format("[{0}].[{1}{2}.{3}]", Me.SchemaName, ScriptDB.Consts.CalculationUDF, Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
             '.SelectCode = String.Format("CASE WHEN ({0}) THEN 1 ELSE 0 END", mcolLinesOfCode.Statement)
@@ -406,7 +371,6 @@ Namespace Things
           Case ScriptDB.ExpressionType.Mask
             .Name = String.Format("[{0}].[{1}{2}]", Me.SchemaName, ScriptDB.Consts.MaskUDF, CInt(Me.BaseExpression.ID))
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters1.ToArray))
-            mcolLinesOfCode.IsEvaluated = True
             .SelectCode = mcolLinesOfCode.Statement
 
             .Code = String.Format("CREATE FUNCTION {0}(@prm_id integer)" & vbNewLine & _
@@ -501,33 +465,7 @@ Namespace Things
 
         End Select
 
-
-
-
       End With
-
-
-
-
-      ' MONDAY COMMENT OUT - TEST!!!
-      'Select Case ReturnType
-      '  Case ScriptDB.ComponentValueTypes.Logic
-      '    .SelectCode = String.Format("CASE WHEN ({0}) THEN 1 ELSE 0 END", mcolLinesOfCode.Statement) 'working when no if then else
-      '    '.SelectCode = String.Format("convert(bit, {0})", mcolLinesOfCode.Statement)
-      '    '.SelectCode = mcolLinesOfCode.Statement
-
-      '  Case Else
-      '    .SelectCode = mcolLinesOfCode.Statement
-      'End Select
-
-
-
-
-      ' .JoinCode = String.Join(vbNewLine, Joins.ToArray())
-      '  .FromCode = String.Format(" FROM [{0}].[{1}]", Me.BaseTable.SchemaName, Me.BaseTable.PhysicalName)
-      ' .WhereCode = String.Format(" WHERE [{0}].[id] = @pID", Me.BaseTable.PhysicalName)
-
-
 
     End Sub
 
@@ -561,6 +499,8 @@ Namespace Things
 
             ' Value component
           Case ScriptDB.ComponentTypes.Value, ScriptDB.ComponentTypes.TableValue
+
+            Debug.Assert(objComponent.ValueString <> "big'?<%")
 
             LineOfCode.CodeType = ScriptDB.ComponentTypes.Value
 
@@ -742,7 +682,7 @@ Namespace Things
           objThisColumn.Calculation.GenerateCode()
 
           mbRequiresRowNumber = mbRequiresRowNumber Or objThisColumn.Calculation.mbRequiresRowNumber
-          'maryDeclarations.AddRange(objThisColumn.Calculation.maryDeclarations)
+          'Declarations.AddRange(objThisColumn.Calculation.Declarations)
 
           '          If objThisColumn.Calculation.IsComplex Then
 
@@ -836,7 +776,7 @@ Namespace Things
 
               ' mbAddBaseTable = True
 
-              ' sSQL = String.Join(vbNewLine, maryDeclarations.ToArray(GetType(String))) & vbNewLine & vbNewLine
+              ' sSQL = String.Join(vbNewLine, Declarations.ToArray(GetType(String))) & vbNewLine & vbNewLine
 
 
             Else
@@ -868,7 +808,7 @@ Namespace Things
 
                 objExpression.Filters.Add(objExpression.UDF.SelectCode)
 
-                maryDeclarations.AddRange(objExpression.maryPrerequisitStatements)
+                Declarations.AddRange(objExpression.PreStatements)
 
 
                 '     maryPrerequisitStatement()
@@ -876,7 +816,7 @@ Namespace Things
                 '     objExpression.UDF.Prerequisites
 
                 ' Add any pre-requisits
-                '    maryPrerequisitStatements.Add()
+                '    PreStatements.Add()
 
 
                 ' Add any join statements
@@ -887,7 +827,7 @@ Namespace Things
               End If
 
               ' Add calculation for this foreign column to the pre-requisits array
-              iPartNumber = maryDeclarations.Count
+              iPartNumber = Declarations.Count
               bReverseOrder = False
 
               ' What type/line number are we dealing with?
@@ -929,11 +869,11 @@ Namespace Things
 
               ' Add to prereqistits arrays
               If bIsSummaryColumn Then
-                maryDeclarations.Add(String.Format("{0}DECLARE @part_{1} numeric(38,8);" _
+                Declarations.Add(String.Format("{0}DECLARE @part_{1} numeric(38,8);" _
                     , [CodeCluster].Indentation, iPartNumber))
                 sColumnOrder = vbNullString
               Else
-                maryDeclarations.Add(String.Format("{0}DECLARE @part_{1} {2};" _
+                Declarations.Add(String.Format("{0}DECLARE @part_{1} {2};" _
                     , [CodeCluster].Indentation, iPartNumber, objThisColumn.DataTypeSyntax))
               End If
 
@@ -975,7 +915,7 @@ Namespace Things
                 End If
               End If
 
-              maryPrerequisitStatements.Add(sPartCode)
+              PreStatements.Add(sPartCode)
               LineOfCode.Code = String.Format("ISNULL(@part_{0},{1})", iPartNumber, objThisColumn.SafeReturnType)
 
             End If
@@ -997,12 +937,12 @@ Namespace Things
         End If
       End If
 
-        ' Add this column (or reference to it) to the main execute statement
-        [CodeCluster].Add(LineOfCode)
+      ' Add this column (or reference to it) to the main execute statement
+      [CodeCluster].Add(LineOfCode)
 
-        ' Add this column's tableID to the dependency stack
-        '  AddTableToDependencies(objThisColumn.Table.ID)
-        '   AddColumnToDependencies(objThisColumn)
+      ' Add this column's tableID to the dependency stack
+      '  AddTableToDependencies(objThisColumn.Table.ID)
+      '   AddColumnToDependencies(objThisColumn)
 
     End Sub
 
@@ -1098,11 +1038,9 @@ Namespace Things
 
         End Select
 
-
       End If
 
       ' Attach the line of code
-
       [CodeCluster].Add(LineOfCode)
 
     End Sub
@@ -1121,22 +1059,27 @@ Namespace Things
       ChildCodeCluster.ReturnType = Component.ReturnType
       ChildCodeCluster.CodeLevel = CodeCluster.CodeLevel + 1
       ChildCodeCluster.NestedLevel = CodeCluster.NestedLevel
-      '      ChildCodeCluster.
 
       ' Nesting is too deep - convert to part number
-      If ChildCodeCluster.NestedLevel > 11 Then 'And objCodeLibrary.SplitIntoCase Then
+      If ChildCodeCluster.NestedLevel > 9 Then
 
         objExpression = New Things.Expression
-        objExpression.ExpressionType = ScriptDB.ExpressionType.ColumnFilter
+        objExpression.ExpressionType = Me.ExpressionType ' ScriptDB.ExpressionType.ColumnCalculation
         objExpression.BaseTable = Me.BaseTable
         objExpression.AssociatedColumn = Me.AssociatedColumn
         objExpression.ReturnType = Component.ReturnType
         objExpression.Objects = Component.Objects
+        objExpression.Declarations = Declarations
+        objExpression.PreStatements = PreStatements
         objExpression.GenerateCode()
 
-        iPartNumber = maryDeclarations.Count
-        '        maryDeclarations.Add(String.Format("{0}DECLARE @part_{1} {2};", [CodeCluster].Indentation, iPartNumber, ScriptDB.GetSQLColumnDatatype(Component.ReturnType)))
-        maryDeclarations.Add(String.Format("{0}DECLARE @part_{1} {2};", [CodeCluster].Indentation, iPartNumber, objExpression.DataTypeSyntax))
+
+        Declarations = objExpression.Declarations
+        PreStatements = objExpression.PreStatements
+
+        iPartNumber = Declarations.Count
+        Declarations.Add(String.Format("{0}DECLARE @part_{1} {2};", [CodeCluster].Indentation _
+            , iPartNumber, objExpression.DataTypeSyntax))
 
         sPartCode = String.Format("{0}SELECT @part_{1} = {2}" & vbNewLine & _
             "{0}{3}" & vbNewLine & _
@@ -1144,15 +1087,14 @@ Namespace Things
             "{0}{5}" & vbNewLine _
             , [CodeCluster].Indentation, iPartNumber _
             , objExpression.UDF.SelectCode, objExpression.UDF.FromCode, objExpression.UDF.JoinCode, objExpression.UDF.WhereCode)
-        maryPrerequisitStatements.Add(sPartCode)
+        PreStatements.Add(sPartCode)
 
         LineOfCode.Code = String.Format("@part_{0}", iPartNumber)
       Else
         SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
 
-        ' Debug.Assert(Component.IsEvaluated = False)
 
-        ChildCodeCluster.IsEvaluated = Component.IsEvaluated
+        'ChildCodeCluster.IsEvaluated = Component.IsEvaluated
         ' Debug.Print(Component.SubType)
 
         ' Debug.Print(Component.IsEvaluated)
@@ -1169,11 +1111,10 @@ Namespace Things
         '        LineOfCode.Code = String.Format("(CASE WHEN {0} THEN 1 ELSE 0 END)", ChildCodeCluster.Statement)
         '       Else
 
-        sPartCode = ChildCodeCluster.Statement
         '  If ChildCodeCluster.IsCodeFlow Then
         '     LineOfCode.Code = String.Format("(CASE WHEN ({0}=1) THEN 1 ELSE 0 END)", sPartCode)
         '    Else
-        LineOfCode.Code = String.Format("{0}", sPartCode)
+        LineOfCode.Code = String.Format("{0}", ChildCodeCluster.Statement)
         '     End If
 
 
@@ -1265,39 +1206,56 @@ Namespace Things
 
         Dim sSQLType As String = String.Empty
 
-        Select Case CInt(Me.ReturnType)
-          Case ScriptDB.ColumnTypes.Text
-            If Me.Size > 8000 Then
-              sSQLType = "[varchar](MAX)"
-            Else
-              sSQLType = String.Format("[varchar]({0})", Me.Size)
-            End If
-
-          Case ScriptDB.ColumnTypes.Integer
-            sSQLType = String.Format("[integer]")
-
-          Case ScriptDB.ColumnTypes.Numeric
-            sSQLType = String.Format("[numeric]({0},{1})", Me.Size, Me.Decimals)
-
-          Case ScriptDB.ColumnTypes.Date
-            sSQLType = "[datetime]"
-
-          Case ScriptDB.ColumnTypes.Logic
+        Select Case Me.ReturnType
+          Case ScriptDB.ComponentValueTypes.Logic
             sSQLType = "[bit]"
 
-          Case ScriptDB.ColumnTypes.WorkingPattern
-            sSQLType = "[varchar](14)"
+          Case ScriptDB.ComponentValueTypes.Numeric
+            sSQLType = String.Format("[numeric](38,8)")
 
-          Case ScriptDB.ColumnTypes.Link
-            sSQLType = "[varchar](255)"
+          Case ScriptDB.ComponentValueTypes.Date
+            sSQLType = "[datetime]"
 
-          Case ScriptDB.ColumnTypes.Photograph
-            sSQLType = "[varchar](255)"
+          Case ScriptDB.ComponentValueTypes.String
+            sSQLType = "[varchar](MAX)"
 
-          Case ScriptDB.ColumnTypes.Binary
-            sSQLType = "[varbinary](MAX)"
+          Case Else
+            sSQLType = "[varchar](MAX)"
 
         End Select
+
+        'Select Case CInt(Me.ReturnType)
+        '  Case ScriptDB.ColumnTypes.Text
+        '    If Me.Size > 8000 Then
+        '      sSQLType = "[varchar](MAX)"
+        '    Else
+        '      sSQLType = String.Format("[varchar]({0})", Me.Size)
+        '    End If
+
+        '  Case ScriptDB.ColumnTypes.Integer
+        '    sSQLType = String.Format("[integer]")
+
+        '  Case ScriptDB.ColumnTypes.Numeric
+
+        '  Case ScriptDB.ColumnTypes.Date
+        '    sSQLType = "[datetime]"
+
+        '  Case ScriptDB.ColumnTypes.Logic
+        '    sSQLType = "[bit]"
+
+        '  Case ScriptDB.ColumnTypes.WorkingPattern
+        '    sSQLType = "[varchar](14)"
+
+        '  Case ScriptDB.ColumnTypes.Link
+        '    sSQLType = "[varchar](255)"
+
+        '  Case ScriptDB.ColumnTypes.Photograph
+        '    sSQLType = "[varchar](255)"
+
+        '  Case ScriptDB.ColumnTypes.Binary
+        '    sSQLType = "[varbinary](MAX)"
+
+        'End Select
 
         Return sSQLType
 

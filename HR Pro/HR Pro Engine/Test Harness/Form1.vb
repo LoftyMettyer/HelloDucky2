@@ -250,7 +250,7 @@ Public Class Form1
     Dim objDAOEngine As New DAO.DBEngine
     Dim objDAODB As DAO.Database
     '    Dim objRecordset As DAO.Recordset
-    Dim sADOConnect As String = "Driver=SQL Server;Server={harpdev01};UID=sa;PWD=asr;Database=" & txtDatabase.Text & ";"""
+    Dim sADOConnect As String = "Driver=SQL Server;Server={harpqa02};UID=sa;PWD=asr;Database=" & txtDatabase.Text & ";"""
     '  Dim objADOLogin As Phoenix.Connectivity.Login
 
     ' THIS IS SYSTEM MGR RECCREATION

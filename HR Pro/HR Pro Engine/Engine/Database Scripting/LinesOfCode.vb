@@ -9,14 +9,12 @@ Namespace ScriptDB
     Private mbAppendWildcard As Boolean
     Private mlngCaseStatements As Long
     Private mbAppendAftercode As Boolean
+    Private mbIsComparison As Boolean = False
 
     Public CodeLevel As Integer
     Public NestedLevel As Integer
     Public ReturnType As ComponentValueTypes
-    Public IsEvaluated As Boolean
 
-    ' Public IsCodeFlow As Boolean = False
-    Public IsComparision As Boolean = False
 
     Public Sub New()
       mbAppendWildcard = False
@@ -103,7 +101,7 @@ Namespace ScriptDB
         For Each Chunk In Me.Items
           bAddAutoIsEqualTo = False
 
-          If Chunk.OperatorType = OperatorSubType.Comparison Then Me.IsComparision = True
+          If Chunk.OperatorType = OperatorSubType.Comparison Then mbIsComparison = True
 
           If ReturnType = ComponentValueTypes.Logic Then
 
@@ -166,7 +164,7 @@ Namespace ScriptDB
         End If
 
         ' Wrap to return code chunks in safety
-        If Me.ReturnType = ComponentValueTypes.Logic Or Me.IsComparision Then
+        If Me.ReturnType = ComponentValueTypes.Logic Or mbIsComparison Then
           Statement = vbNewLine & String.Format("{0}CASE WHEN ({1}) THEN 1 ELSE 0 END", New String(vbTab, CodeLevel), Statement)
         End If
 
