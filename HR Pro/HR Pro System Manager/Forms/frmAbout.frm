@@ -89,7 +89,7 @@ Begin VB.Form frmAbout
       EndProperty
       ForeColor       =   &H00FF0000&
       Height          =   195
-      Left            =   120
+      Left            =   150
       MouseIcon       =   "frmAbout.frx":07C4
       MousePointer    =   99  'Custom
       TabIndex        =   11
