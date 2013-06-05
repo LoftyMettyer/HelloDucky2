@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
 Begin VB.Form frmDiary 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Diary Events"
@@ -1409,7 +1409,7 @@ Begin VB.Form frmDiary
          MonthRows       =   2
          MonthBackColor  =   16184819
          ScrollRate      =   1
-         StartOfWeek     =   16973825
+         StartOfWeek     =   66977793
          TitleBackColor  =   6697779
          TitleForeColor  =   15988214
          TrailingForeColor=   -2147483643
@@ -1712,7 +1712,11 @@ Dim fManyEvents As Boolean
         frmDiaryAlarmSet.Show vbModal
         gobjDiary.RefreshDiaryData
       End If
-
+      
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
     End Select
   End If
   

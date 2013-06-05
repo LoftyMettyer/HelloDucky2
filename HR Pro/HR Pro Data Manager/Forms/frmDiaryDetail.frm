@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{C932BA88-4374-101B-A56C-00AA003668DC}#1.1#0"; "msmask32.ocx"
+Object = "{C932BA88-4374-101B-A56C-00AA003668DC}#1.1#0"; "MSMASK32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Begin VB.Form frmDiaryDetail 
    BorderStyle     =   3  'Fixed Dialog
@@ -445,6 +445,15 @@ Private Sub Form_Activate()
 
 End Sub
 
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
 
 Private Sub Form_Load()
   'Call SetDateComboFormat(cboDate)
