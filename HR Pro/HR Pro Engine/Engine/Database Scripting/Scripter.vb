@@ -598,7 +598,7 @@ Namespace ScriptDB
           ' Update child records
           If aryChildrenToUpdate.ToArray.Length > 0 Then
             sSQLChildColumns = "    --Update children" & vbNewLine & _
-                    "    IF @isovernight = 0 AND ISNULL(@startingtrigger,2) = 2" & vbNewLine & "    BEGIN" & vbNewLine & _
+                    "    IF @isovernight = 0 AND @startingtrigger = 2" & vbNewLine & "    BEGIN" & vbNewLine & _
                     String.Join(vbNewLine & vbNewLine, aryChildrenToUpdate.ToArray()) & vbNewLine & _
                    "     END"
           End If
@@ -729,7 +729,7 @@ Namespace ScriptDB
           ' AFTER INSERT
           ' -------------------
           sTriggerName = String.Format("{0}{1}_i02", ScriptDB.Consts.Trigger, objTable.Name)
-          sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tableid] integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
+          sSQL = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tableid] integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
               "    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
@@ -770,7 +770,7 @@ Namespace ScriptDB
               "    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
               "    SELECT @forcerefresh = dbo.[udfsys_triggerrequiresrefresh]();" & vbNewLine & _
-              "    SELECT @startingtrigger = [actiontype] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3} AND nestlevel = 1" & vbNewLine & _
+              "    SELECT TOP 1 @startingtrigger = ISNULL([actiontype],2) FROM dbo.[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3} ORDER BY [nestlevel];" & vbNewLine & _
               "    SET @sValidation = '';" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
               sSQLCalculatedColumns & vbNewLine & vbNewLine & _
