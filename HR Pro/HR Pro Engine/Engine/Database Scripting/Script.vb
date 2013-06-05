@@ -1142,7 +1142,7 @@ Namespace ScriptDB
                table.Indexes.Add(index)
 
                ' Calculations
-               For Each column In table.Columns
+          For Each column In table.Columns
 
             If column.State <> DataRowState.Deleted Then
 
@@ -1157,6 +1157,15 @@ Namespace ScriptDB
                   column.Calculation.AssociatedColumn = column
                   column.Calculation.ConvertToExpression()
                   column.Calculation.GenerateCode()
+
+                  If column.Calculation.ReturnType <> column.ComponentReturnType Then
+                    Globals.ErrorLog.Add(ErrorHandler.Section.UDFs, column.Name, ErrorHandler.Severity.Error _
+                      , String.Format("Incorrect return type on {0}", column.Name) _
+                      , String.Format("The calculation selected on {0}.{1} is not the same type as its column. Please reselect the correct calculation for this column" & vbNewLine & _
+                                      "This could result in further errors in the save process or conversion failure error messages when saving records on this table or associated tables" _
+                                      , column.Table.Name, column.Name))
+                  End If
+
                 End If
 
               End If
