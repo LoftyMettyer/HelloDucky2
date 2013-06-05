@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "10:13"
+            TextSave        =   "14:52"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -2810,6 +2810,7 @@ Private Function DoReportPack(ByVal Action As EditOptions, ByRef SelectedID As L
 
   End Select
 
+  gblnReportPackMode = False
 
   '# RH090300 To prevent toolbar locking after batch jobs / Report Pack
   With abMain
