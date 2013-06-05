@@ -91,7 +91,7 @@ Public Class MainForm
     'objPhoenix.Script.ApplySecurity()
 
 
-    'bOK = objPhoenix.Script.ScriptOvernightStep2
+    bOK = objPhoenix.Script.ScriptOvernightStep2
 
     objPhoenix.CloseSafely()
 
