@@ -1423,7 +1423,21 @@ PRINT 'Step 8 - Adding new control type'
 
 
 /* ------------------------------------------------------------- */
+PRINT 'Step 9 - Integration Services'
+/* ------------------------------------------------------------- */
 
+		SELECT @iRecCount = count(id) FROM syscolumns
+		where id = (select id from sysobjects where name = 'ASRSysTables')
+		and name = 'isremoteview';
+
+		if @iRecCount = 0
+		BEGIN
+			SELECT @NVarCommand = 'ALTER TABLE ASRSysTables ADD [isremoteview] [bit] NULL;';
+			EXEC sp_executesql @NVarCommand;
+
+			SELECT @NVarCommand = 'UPDATE ASRSysTables SET isremoteview = 0;';
+			EXEC sp_executesql @NVarCommand;
+		END
 
 
 /* ------------------------------------------------------------- */
