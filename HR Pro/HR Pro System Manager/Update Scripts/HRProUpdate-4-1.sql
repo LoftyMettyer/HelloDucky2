@@ -1027,6 +1027,12 @@ PRINT 'Step 2 - Version 1 Integration Modifications'
 								 ADD [OutputPrinterName] nvarchar(255), [DocumentMapID] integer';
 	END
 
+	-- Add columns to ASRSysMailMergeName
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysMailMergeName', 'U') AND name = 'ManualDocManHeader')
+    BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysMailMergeName
+								 ADD [ManualDocManHeader] bit';
+	END
 
 	-- Add columns to ASRSysControls
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysControls', 'U') AND name = 'NavigateTo')
