@@ -537,7 +537,6 @@ Namespace Things
     Private Sub SQLCode_AddColumn(ByRef [CodeCluster] As ScriptDB.LinesOfCode, ByRef [Component] As Things.Component)
 
       Dim objThisColumn As Things.Column
-      '      Dim objBaseColumn As Things.Column
 
       Dim objRelation As Things.Relation
       Dim objOrderFilter As Things.TableOrderFilter
@@ -546,7 +545,6 @@ Namespace Things
       Dim sWhereCode As String
 
       Dim sColumnFilter As String
-      '      Dim sColumnOrder As String
       Dim sColumnJoinCode As String = String.Empty
 
       Dim iBackupType As ScriptDB.ExpressionType
@@ -554,21 +552,11 @@ Namespace Things
       Dim iPartNumber As Integer
       Dim bIsSummaryColumn As Boolean
       Dim sColumnName As String
-      '      Dim bReverseOrder As Boolean
 
       Dim LineOfCode As ScriptDB.CodeElement
 
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Column
 
-      ' there has to be a cleaner way, but for the moment put a dummy objbasecolumn in there so the function does not fail with a blah blah is not set to object error on the .TableID property.
-      'objBaseColumn = Component.BaseExpression.AssociatedColumn
-
-      'If objBaseColumn Is Nothing Then
-      '  objBaseColumn = New Things.Column
-      '  objBaseColumn.Table = Me.BaseTable
-      'End If
-
-      '      objThisColumn = Globals.Things.GetObject(Enums.Type.Table, [Component].TableID).Objects.GetObject(Enums.Type.Column, Component.ColumnID)
       objThisColumn = Dependencies.GetObject(Enums.Type.Column, Component.ColumnID)
       objThisColumn.Tuning.Usage += 1
 
@@ -610,22 +598,8 @@ Namespace Things
         objThisColumn.Calculation.StartOfPartNumbers = Me.StartOfPartNumbers + Declarations.Count
         objThisColumn.Calculation.GenerateCode()
 
-        'iPartNumber = Declarations.Count
-        'sPartCode = String.Format("{0}SELECT @part_{1} = {2}" & vbNewLine _
-        '    , [CodeCluster].Indentation, iPartNumber, objThisColumn.Calculation.UDF.CallingCode)
-
-        '        LineOfCode.Code = objThisColumn.Calculation.UDF.CallingCode
-        'LineOfCode.Code = String.Format("@part_{0}", iPartNumber)
-
-        'Declarations.Add(String.Format("{0}DECLARE @part_{1} {2};" _
-        '    , [CodeCluster].Indentation, iPartNumber, objThisColumn.DataTypeSyntax))
-        'PreStatements.Add(sPartCode)
-
-        '  AddToDependencies(objThisColumn.Calculation.Dependencies)
         objThisColumn.Calculation.ExpressionType = iBackupType
-
         LineOfCode = AddCalculatedColumn(objThisColumn)
-
         objThisColumn.Tuning.IncrementSelectAsCalculation()
 
       Else
@@ -637,12 +611,10 @@ Namespace Things
           Select Case Component.BaseExpression.ExpressionType
             Case ScriptDB.ExpressionType.ColumnFilter
               sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
-              '              Me.BaseExpression.IsSchemaBound = False
               Me.IsComplex = True
 
             Case ScriptDB.ExpressionType.Mask
               sColumnName = String.Format("base.[{0}]", objThisColumn.Name)
-              'Me.BaseExpression.IsSchemaBound = False
               Me.IsComplex = True
 
               ' Needs base table added
@@ -667,7 +639,6 @@ Namespace Things
         Else
 
           sColumnFilter = String.Empty
-          '    sColumnOrder = String.Empty
           RequiresRecordID = True
           bIsSummaryColumn = False
           Me.IsComplex = True
@@ -676,7 +647,6 @@ Namespace Things
 
           If objRelation.RelationshipType = ScriptDB.RelationshipType.Parent Then
 
-            '            If Not Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription Then
             If Me.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation Then
               Me.AssociatedColumn.Table.DependsOnChildColumns.AddIfNew(objThisColumn)
             End If
@@ -702,11 +672,6 @@ Namespace Things
               Wheres.Add(sWhereCode)
             End If
 
-            '' Mark this relation has having to be updated in the parent triggers
-            'If Not Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription Then
-            '  objRelation = objThisColumn.Table.GetRelation(Me.AssociatedColumn.Table.ID)
-            '  objRelation.DependantOnParent = True
-            'End If
             Me.ReferencesParent = True
 
           Else
@@ -722,14 +687,9 @@ Namespace Things
             objOrderFilter = objThisColumn.Table.TableOrderFilter([Component].ChildRowDetails)
             objOrderFilter.IncludedColumns.AddIfNew(objThisColumn)
 
-            '            ChildColumns.AddIfNew(objOrderFilter)
-            '     LineOfCode = AddChildColumn(objOrderFilter, objThisColumn)
-            '            objOrderFilter.Table
-
             ' Add calculation for this foreign column to the pre-requisits array 
             iPartNumber = Declarations.Count + Me.StartOfPartNumbers
             bIsSummaryColumn = ([Component].ChildRowDetails.RowSelection = ScriptDB.ColumnRowSelection.Total Or [Component].ChildRowDetails.RowSelection = ScriptDB.ColumnRowSelection.Count)
-
 
             ' Add to prereqistits arrays
             If bIsSummaryColumn Then
@@ -1044,24 +1004,24 @@ Namespace Things
       Dim sCallingCode As ScriptDB.CodeElement
       Dim sVariableName As String
 
-      If Not ReferencedColumn.Calculation.IsComplex Then
-        sCallingCode.Code = ReferencedColumn.Calculation.UDF.SelectCode
+      'If Not ReferencedColumn.Calculation.IsComplex Then
+      '  sCallingCode.Code = ReferencedColumn.Calculation.UDF.SelectCode
+      'Else
+      If StatementObjects.Contains(ReferencedColumn) Then
+        sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn))
       Else
-        If StatementObjects.Contains(ReferencedColumn) Then
-          sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn))
-        Else
-          sVariableName = StatementObjects.Count + Me.StartOfPartNumbers
-          StatementObjects.Add(ReferencedColumn)
-          Declarations.Add(String.Format("@part_{0} {1}", sVariableName, ReferencedColumn.DataTypeSyntax))
-          PreStatements.Add(String.Format("SELECT @part_{0} = {1}", sVariableName, ReferencedColumn.Calculation.UDF.CallingCode))
-          sCallingCode.Code = String.Format("@part_{0}", sVariableName)
-        End If
-
-        Me.CaseCount += ReferencedColumn.Calculation.CaseCount
-        Me.BaseExpression.IsComplex = True
-        Me.Tuning.Rating += ReferencedColumn.Calculation.Tuning.Rating
-
+        sVariableName = StatementObjects.Count + Me.StartOfPartNumbers
+        StatementObjects.Add(ReferencedColumn)
+        Declarations.Add(String.Format("@part_{0} {1}", sVariableName, ReferencedColumn.DataTypeSyntax))
+        PreStatements.Add(String.Format("SELECT @part_{0} = {1}", sVariableName, ReferencedColumn.Calculation.UDF.CallingCode))
+        sCallingCode.Code = String.Format("@part_{0}", sVariableName)
       End If
+
+      Me.CaseCount += ReferencedColumn.Calculation.CaseCount
+      Me.BaseExpression.IsComplex = True
+      Me.Tuning.Rating += ReferencedColumn.Calculation.Tuning.Rating
+
+      '      End If
 
       Me.RequiresRecordID = RequiresRecordID Or ReferencedColumn.Calculation.RequiresRecordID
       Me.RequiresRowNumber = RequiresRowNumber Or ReferencedColumn.Calculation.RequiresRowNumber
