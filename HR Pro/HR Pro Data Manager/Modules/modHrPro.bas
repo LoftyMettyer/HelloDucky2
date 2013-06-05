@@ -3896,16 +3896,6 @@ Public Function GetJobName(pstrJobType As String, plngJobID As Long) As String
 
 End Function
 
-' Returns the maximum of two values
-Public Function Maximum(psngValue1 As Single, psngValue2 As Single) As Long
-  Maximum = IIf(psngValue1 > psngValue2, psngValue1, psngValue2)
-End Function
-
-' Returns the minimum of two values
-Public Function Minimum(psngValue1 As Single, psngValue2 As Single) As Long
-  Minimum = IIf(psngValue1 < psngValue2, psngValue1, psngValue2)
-End Function
-
 ' Load the filename from a given stream
 Public Function LoadFileNameFromStream(ByRef pobjStream As ADODB.Stream, pbFullPath As Boolean, pbDisplayOLEType As Boolean) As String
 

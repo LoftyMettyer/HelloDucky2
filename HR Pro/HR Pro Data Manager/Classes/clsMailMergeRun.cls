@@ -111,10 +111,10 @@ Private mbDefinitionOwner As Boolean
 Private mlngLabelDefinitionID As Long
 Private msngLabelTopMargin As Single
 Private msngLabelSideMargin As Single
-Private msngLabelHorizontalPitch As Single
-Private msngLabelVerticalPitch As Single
-Private msngLabelHeight As Single
-Private msngLabelWidth As Single
+Private msngLabelHorizontalPitch As Long
+Private msngLabelVerticalPitch As Long
+Private msngLabelHeight As Long
+Private msngLabelWidth As Long
 Private miLabelNumberDown As Integer
 Private miLabelNumberAcross As Integer
 
