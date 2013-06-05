@@ -188,6 +188,10 @@ Private mlngDefaultEmailID As Long
 Private mstrRecordDetails As String
 Private miSendType As EmailSendTypes
 Private mstrEventLogIDs As String
+Public ReportPack As Boolean
+
+
+
 
 Public Sub Initialise(lngTableID As Long, lngRecordID As Long, strRecordDetails As String)
   
@@ -623,7 +627,7 @@ Public Function SendBatchNotification(strSubject As String, strEventIDs As Strin
 
   If rsEmail.BOF And rsEmail.EOF Then
     If Not gblnBatchJobsOnly Then
-      COAMsgBox "Error retrieving email recipient(s)", vbExclamation, "Batch Job Notification"
+      COAMsgBox "Error retrieving email recipient(s)", vbExclamation, IIf(frmEmailSel.ReportPack, "Report Pack Notification", "Batch Job Notification")
     End If
     SendBatchNotification = False
     Exit Function
@@ -677,6 +681,7 @@ Private Function GetEventDetails(pstrEventIDs As String) As String
   Dim lngDetailsCount As Long
   Dim lngCurrentLogCount As Long
   Dim strDateFormat As String
+  Dim strMode, strJobsNameLabel, strAllJobsLabel  As String
   
   Const NO_DETAILS = vbCrLf & "There are no details for this event log entry"
   
@@ -687,7 +692,7 @@ Private Function GetEventDetails(pstrEventIDs As String) As String
   strSQL = strSQL & "SELECT [E].[ID], [E].[DateTime], [E].[EndTime], [E].[Duration], "
   strSQL = strSQL & "   [E].[Name], [E].[UserName], [E].[Mode], [D].[Notes] , [E].[Type], "
   strSQL = strSQL & "   [E].[SuccessCount], [E].[FailCount], [E].[Status], "
-  strSQL = strSQL & "   [E].[BatchRunID], [E].[BatchJobID], [E].[BatchName], "
+  strSQL = strSQL & "   [E].[BatchRunID], [E].[BatchJobID], [E].[BatchName],[E].[ReportPack], "
   strSQL = strSQL & " (SELECT COUNT(DISTINCT [C].[ID]) FROM [ASRSysEventLogDetails] [C] WHERE [C].[EventLogID] = [E].[ID]) AS 'DetailsCount' "
   strSQL = strSQL & "FROM [ASRSysEventLog] [E] "
   strSQL = strSQL & "       LEFT OUTER JOIN [ASRSysEventLogDetails] [D] "
@@ -696,53 +701,67 @@ Private Function GetEventDetails(pstrEventIDs As String) As String
   
   Set rstDetailRecords = datGeneral.GetReadOnlyRecords(strSQL)
   
+  ' Setup strings so we can change output label dpending on Batch or Report Pack
+  With rstDetailRecords
+    Select Case .Fields("ReportPack")
+        Case True
+          strMode = "Pack"
+          strJobsNameLabel = "Report Pack Name : "
+          strAllJobsLabel = "All Reports in Pack : "
+          ReportPack = True
+        Case Else
+          strMode = IIf(.Fields("Mode").Value, "Batch", "Manual")
+          strJobsNameLabel = "Batch Job Name : "
+          strAllJobsLabel = "All Jobs in Batch : "
+          ReportPack = False
+      End Select
+  
   ' Add each note to the message string
-  If Not (rstDetailRecords.EOF And rstDetailRecords.BOF) Then
+  If Not (.EOF And .BOF) Then
     lngEventID = -1
     blnNewEvent = False
     strMessage = ""
     lngDetailsCount = 0
     lngCurrentLogCount = 0
     
-    Do Until rstDetailRecords.EOF
+    Do Until .EOF
     
-      If lngEventID <> rstDetailRecords.Fields("ID").Value Then
+      If lngEventID <> .Fields("ID").Value Then
         If lngEventID <> -1 Then
           strMessage = strMessage & vbCrLf & vbCrLf & vbCrLf
         End If
       
-        lngEventID = rstDetailRecords.Fields("ID")
+        lngEventID = .Fields("ID")
         blnNewEvent = True
         lngCurrentLogCount = 0
-        
-        strMessage = strMessage & String(Len(rstDetailRecords.Fields("Name")) + 30, "-") & vbCrLf
-        strMessage = strMessage & "Event Name : " & rstDetailRecords.Fields("Name") & vbCrLf
-        strMessage = strMessage & String(Len(rstDetailRecords.Fields("Name")) + 30, "-") & vbCrLf
-        strMessage = strMessage & "Mode : " & vbTab & vbTab & IIf(rstDetailRecords.Fields("Mode").Value, "Batch", "Manual") & vbCrLf
+
+        strMessage = strMessage & String(Len(.Fields("Name")) + 30, "-") & vbCrLf
+        strMessage = strMessage & "Event Name : " & .Fields("Name") & vbCrLf
+        strMessage = strMessage & String(Len(.Fields("Name")) + 30, "-") & vbCrLf
+        strMessage = strMessage & "Mode : " & vbTab & vbTab & strMode & vbCrLf
         strMessage = strMessage & vbCrLf
-        strMessage = strMessage & "Start Time : " & vbTab & Format(rstDetailRecords.Fields("DateTime"), strDateFormat & " hh:mm:ss") & vbCrLf
-        strMessage = strMessage & "End Time : " & vbTab & IIf(IsNull(rstDetailRecords.Fields("EndTime")), "", Format(rstDetailRecords.Fields("EndTime"), strDateFormat & " hh:mm:ss")) & vbCrLf
-        strMessage = strMessage & "Duration : " & vbTab & FormatEventDuration(IIf(IsNull(rstDetailRecords.Fields("Duration")), 0, rstDetailRecords.Fields("Duration"))) & vbCrLf
+        strMessage = strMessage & "Start Time : " & vbTab & Format(.Fields("DateTime"), strDateFormat & " hh:mm:ss") & vbCrLf
+        strMessage = strMessage & "End Time : " & vbTab & IIf(IsNull(.Fields("EndTime")), "", Format(.Fields("EndTime"), strDateFormat & " hh:mm:ss")) & vbCrLf
+        strMessage = strMessage & "Duration : " & vbTab & FormatEventDuration(IIf(IsNull(.Fields("Duration")), 0, .Fields("Duration"))) & vbCrLf
         strMessage = strMessage & vbCrLf
-        strMessage = strMessage & "Type : " & vbTab & vbTab & GetUtilityType(rstDetailRecords.Fields("Type")) & vbCrLf
-        strMessage = strMessage & "Status : " & vbTab & GetUtilityStatus(rstDetailRecords.Fields("Status")) & vbCrLf
-        strMessage = strMessage & "User name : " & vbTab & rstDetailRecords.Fields("Username") & vbCrLf
+        strMessage = strMessage & "Type : " & vbTab & vbTab & GetUtilityType(.Fields("Type")) & vbCrLf
+        strMessage = strMessage & "Status : " & vbTab & GetUtilityStatus(.Fields("Status")) & vbCrLf
+        strMessage = strMessage & "User name : " & vbTab & .Fields("Username") & vbCrLf
         
-        If Not IsNull(rstDetailRecords.Fields("BatchRunID")) Then
-          If rstDetailRecords.Fields("BatchRunID") > 0 Then
+        If Not IsNull(.Fields("BatchRunID")) Then
+          If .Fields("BatchRunID") > 0 Then
             strSQL = vbNullString
             strSQL = strSQL & "SELECT * "
             strSQL = strSQL & "FROM [ASRSysEventLog] "
-            strSQL = strSQL & "WHERE [BatchRunID] = " & rstDetailRecords.Fields("BatchRunID")
+            strSQL = strSQL & "WHERE [BatchRunID] = " & .Fields("BatchRunID")
             strSQL = strSQL & " ORDER BY [ID]"
             
             Set rstBatchDetails = datGeneral.GetReadOnlyRecords(strSQL)
 
             If Not (rstBatchDetails.BOF And rstBatchDetails.EOF) Then
               strMessage = strMessage & vbCrLf
-              strMessage = strMessage & "Batch Job Name : " & rstBatchDetails.Fields("BatchName") & vbCrLf
               strMessage = strMessage & vbCrLf
-              strMessage = strMessage & "All Jobs in Batch : " & vbCrLf & vbCrLf
+              strMessage = strMessage & strAllJobsLabel & vbCrLf & vbCrLf
               
               Do Until rstBatchDetails.EOF
                 strMessage = strMessage & GetUtilityType(rstBatchDetails.Fields("Type")) & " - " & rstBatchDetails.Fields("Name") & " (" & GetUtilityStatus(rstBatchDetails.Fields("Status")) & ")" & vbCrLf
@@ -753,45 +772,36 @@ Private Function GetEventDetails(pstrEventIDs As String) As String
           End If
         End If
         
-        If (Not IsNull(rstDetailRecords.Fields("SuccessCount"))) And (Not IsNull(rstDetailRecords.Fields("FailCount"))) Then
+        If (Not IsNull(.Fields("SuccessCount"))) And (Not IsNull(.Fields("FailCount"))) Then
           strMessage = strMessage & vbCrLf
-          strMessage = strMessage & "Records Successful : " & vbTab & rstDetailRecords.Fields("SuccessCount") & vbCrLf
-          strMessage = strMessage & "Records Failed : " & vbTab & rstDetailRecords.Fields("FailCount") & vbCrLf
+          strMessage = strMessage & "Records Successful : " & vbTab & .Fields("SuccessCount") & vbCrLf
+          strMessage = strMessage & "Records Failed : " & vbTab & .Fields("FailCount") & vbCrLf
         End If
         
         strMessage = strMessage & vbCrLf
         
         strMessage = strMessage & "Details : " & vbCrLf
         
-        lngDetailsCount = rstDetailRecords.Fields("DetailsCount")
+        lngDetailsCount = .Fields("DetailsCount")
         lngCurrentLogCount = lngCurrentLogCount + 1
         If lngDetailsCount > 0 Then
           strMessage = strMessage & vbCrLf & vbCrLf & "***  Log entry " & lngCurrentLogCount & " of " & lngDetailsCount & "  ***" & vbCrLf
         End If
-        strMessage = strMessage & IIf(((IsNull(rstDetailRecords.Fields("Notes"))) Or (Trim(rstDetailRecords.Fields("Notes")) = "")), NO_DETAILS, rstDetailRecords.Fields("Notes")) & vbCrLf
+        strMessage = strMessage & IIf(((IsNull(.Fields("Notes"))) Or (Trim(.Fields("Notes")) = "")), NO_DETAILS, .Fields("Notes")) & vbCrLf
       Else
         blnNewEvent = False
         lngCurrentLogCount = lngCurrentLogCount + 1
         If lngDetailsCount > 0 Then
           strMessage = strMessage & vbCrLf & vbCrLf & "***  Log entry " & lngCurrentLogCount & " of " & lngDetailsCount & "  ***" & vbCrLf
         End If
-        strMessage = strMessage & IIf(((IsNull(rstDetailRecords.Fields("Notes"))) Or (Trim(rstDetailRecords.Fields("Notes")) = "")), NO_DETAILS, rstDetailRecords.Fields("Notes")) & vbCrLf
+        strMessage = strMessage & IIf(((IsNull(.Fields("Notes"))) Or (Trim(.Fields("Notes")) = "")), NO_DETAILS, .Fields("Notes")) & vbCrLf
       End If
       
-      rstDetailRecords.MoveNext
+      .MoveNext
     Loop
         
     Set rstDetailRecords = Nothing
   Else
-  
-''     JDM - 17/06/02 - Fault 3770 - Add details for successful records
-'    strSQL = vbNullString
-'    strSQL = strSQL & "SELECT [ASRSysEventLog].[Name], "
-'    strSQL = strSQL & "       [ASRSysEventLog].[UserName], "
-'    strSQL = strSQL & "       [ASRSysEventLog].[Mode], "
-'    strSQL = strSQL & "       [ASRSysEventLog].[DateTime] "
-'    strSQL = strSQL & "FROM  [ASRSysEventLog]"
-    
     strSQL = vbNullString
     strSQL = strSQL & "SELECT [E].[ID], [E].[DateTime], [E].[EndTime], [E].[Duration], "
     strSQL = strSQL & "   [E].[Name], [E].[UserName], [E].[Mode], [E].[Type], "
@@ -801,24 +811,24 @@ Private Function GetEventDetails(pstrEventIDs As String) As String
   
     Set rstDetailRecords = datGeneral.GetReadOnlyRecords(strSQL)
     
-    If Not rstDetailRecords.EOF And Not rstDetailRecords.BOF Then
-      strMessage = strMessage & String(Len(rstDetailRecords.Fields("Name")) + 30, "-") & vbCrLf
-      strMessage = strMessage & "Event Name : " & rstDetailRecords.Fields("Name") & vbCrLf
-      strMessage = strMessage & String(Len(rstDetailRecords.Fields("Name")) + 30, "-") & vbCrLf
-      strMessage = strMessage & "Mode : " & vbTab & vbTab & IIf(rstDetailRecords.Fields("Mode").Value, "Batch", "Manual") & vbCrLf
+    If Not .EOF And Not .BOF Then
+      strMessage = strMessage & String(Len(.Fields("Name")) + 30, "-") & vbCrLf
+      strMessage = strMessage & "Event Name : " & .Fields("Name") & vbCrLf
+      strMessage = strMessage & String(Len(.Fields("Name")) + 30, "-") & vbCrLf
+      strMessage = strMessage & "Mode : " & vbTab & vbTab & strMode & vbCrLf
       strMessage = strMessage & vbCrLf
-      strMessage = strMessage & "Start Time : " & vbTab & rstDetailRecords.Fields("DateTime") & vbCrLf
-      strMessage = strMessage & "End Time : " & vbTab & IIf(IsNull(rstDetailRecords.Fields("EndTime")), "", rstDetailRecords.Fields("EndTime")) & vbCrLf
-      strMessage = strMessage & "Duration : " & vbTab & FormatEventDuration(IIf(IsNull(rstDetailRecords.Fields("Duration")), 0, rstDetailRecords.Fields("Duration"))) & vbCrLf
+      strMessage = strMessage & "Start Time : " & vbTab & .Fields("DateTime") & vbCrLf
+      strMessage = strMessage & "End Time : " & vbTab & IIf(IsNull(.Fields("EndTime")), "", .Fields("EndTime")) & vbCrLf
+      strMessage = strMessage & "Duration : " & vbTab & FormatEventDuration(IIf(IsNull(.Fields("Duration")), 0, .Fields("Duration"))) & vbCrLf
       strMessage = strMessage & vbCrLf
-      strMessage = strMessage & "Type : " & vbTab & vbTab & GetUtilityType(rstDetailRecords.Fields("Type")) & vbCrLf
-      strMessage = strMessage & "Status : " & vbTab & vbTab & GetUtilityStatus(rstDetailRecords.Fields("Status")) & vbCrLf
-      strMessage = strMessage & "User name : " & vbTab & rstDetailRecords.Fields("Username") & vbCrLf
+      strMessage = strMessage & "Type : " & vbTab & vbTab & GetUtilityType(.Fields("Type")) & vbCrLf
+      strMessage = strMessage & "Status : " & vbTab & vbTab & GetUtilityStatus(.Fields("Status")) & vbCrLf
+      strMessage = strMessage & "User name : " & vbTab & .Fields("Username") & vbCrLf
       
-      If (Not IsNull(rstDetailRecords.Fields("SuccessCount"))) And (Not IsNull(rstDetailRecords.Fields("FailCount"))) Then
+      If (Not IsNull(.Fields("SuccessCount"))) And (Not IsNull(.Fields("FailCount"))) Then
         strMessage = strMessage & vbCrLf
-        strMessage = strMessage & "Records Successful : " & vbTab & rstDetailRecords.Fields("SuccessCount") & vbCrLf
-        strMessage = strMessage & "Records Failed : " & vbTab & vbTab & rstDetailRecords.Fields("FailCount") & vbCrLf
+        strMessage = strMessage & "Records Successful : " & vbTab & .Fields("SuccessCount") & vbCrLf
+        strMessage = strMessage & "Records Failed : " & vbTab & vbTab & .Fields("FailCount") & vbCrLf
       End If
       
       strMessage = strMessage & vbCrLf
@@ -829,6 +839,7 @@ Private Function GetEventDetails(pstrEventIDs As String) As String
     End If
   
   End If
+End With
 
   GetEventDetails = strMessage
  
