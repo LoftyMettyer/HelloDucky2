@@ -2,7 +2,7 @@ VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmDbMgr 
-   Caption         =   "Database Manager"
+   Caption         =   "Table Manager"
    ClientHeight    =   5340
    ClientLeft      =   390
    ClientTop       =   1830
@@ -127,14 +127,12 @@ Begin VB.Form frmDbMgr
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
             TextSave        =   ""
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   9393
             TextSave        =   ""
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
