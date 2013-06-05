@@ -1,19 +1,51 @@
-SET IDENTITY_INSERT FUSION.[MessageElements] ON
+--SET IDENTITY_INSERT FUSION.[MessageElements] ON
+RETURN
 
+--select * from fusion.[MessageElements]
 
 DELETE FROM fusion.[MessageElements]
 DELETE FROM fusion.[Message]
+
+
+DBCC CHECKIDENT ('fusion.[MessageElements]', RESEED, 0)
 
 
 -- StaffChange
 	INSERT fusion.[Message] (ID, Name, Description, [Schema], Skeleton, Version, AllowPublish, AllowSubscribe, Publish, Subscribe, StopDeletion, BypassValidation)
 		VALUES (1, 'StaffChange', ' Change of staff details', 0x, 1, 1, 1, 1, 1, 1, 1, 1)
 
-	INSERT fusion.[MessageElements] (ID, MessageID, ElementID, NodeKey, Position, DataType, Nillable, MinOccurs, MaxOccurs, MinSize, MaxSize, [Lookup])
-		VALUES (1, 1, 1, 'title', 1, 12, 1, 1, 1, 20, 50, 1)
+	INSERT fusion.[MessageElements] (MessageID, ElementID, NodeKey, Position, DataType, Nillable, MinOccurs, MaxOccurs, MinSize, MaxSize, [Lookup])
+		VALUES (1, 2, 'forenames', 1, 12, 1, 1, 1, 20, 50, 0)
 
 	INSERT fusion.[MessageElements] (ID, MessageID, ElementID, NodeKey, Position, DataType, Nillable, MinOccurs, MaxOccurs, MinSize, MaxSize, [Lookup])
-		VALUES (2, 1, 2, 'forenames', 1, 12, 1, 1, 1, 20, 50, 1)
+		VALUES (2, 1, 2, 'surname', 2, 12, 1, 1, 1, 20, 50, 0)
+
+	INSERT fusion.[MessageElements] (ID, MessageID, ElementID, NodeKey, Position, DataType, Nillable, MinOccurs, MaxOccurs, MinSize, MaxSize, [Lookup])
+		VALUES (2, 1, 2, 'preferredName', 3, 12, 1, 1, 1, 20, 50, 0)
+
+	INSERT fusion.[MessageElements] (ID, MessageID, ElementID, NodeKey, Position, DataType, Nillable, MinOccurs, MaxOccurs, MinSize, MaxSize, [Lookup])
+		VALUES (2, 1, 2, 'payrollNumber', 4, 12, 1, 1, 1, 20, 50, 0)
+
+	INSERT fusion.[MessageElements] (ID, MessageID, ElementID, NodeKey, Position, DataType, Nillable, MinOccurs, MaxOccurs, MinSize, MaxSize, [Lookup])
+		VALUES (2, 1, 2, 'DOB', 5, 11, 1, 1, 1, 20, 50, 0)
+
+	INSERT fusion.[MessageElements] (ID, MessageID, ElementID, NodeKey, Position, DataType, Nillable, MinOccurs, MaxOccurs, MinSize, MaxSize, [Lookup])
+		VALUES (2, 1, 2, 'employeeType', 5, 12, 1, 1, 1, 20, 50, 0)
+
+	INSERT fusion.[MessageElements] (ID, MessageID, ElementID, NodeKey, Position, DataType, Nillable, MinOccurs, MaxOccurs, MinSize, MaxSize, [Lookup])
+		VALUES (2, 1, 2, 'employmentStatus', 5, 12, 1, 1, 1, 20, 50, 0)
+
+	INSERT fusion.[MessageElements] (ID, MessageID, ElementID, NodeKey, Position, DataType, Nillable, MinOccurs, MaxOccurs, MinSize, MaxSize, [Lookup])
+		VALUES (2, 1, 2, 'homePhoneNumber', 5, 12, 1, 1, 1, 20, 50, 0)
+
+	INSERT fusion.[MessageElements] (ID, MessageID, ElementID, NodeKey, Position, DataType, Nillable, MinOccurs, MaxOccurs, MinSize, MaxSize, [Lookup])
+		VALUES (2, 1, 2, 'workMobile', 5, 12, 1, 1, 1, 20, 50, 0)
+
+	INSERT fusion.[MessageElements] (ID, MessageID, ElementID, NodeKey, Position, DataType, Nillable, MinOccurs, MaxOccurs, MinSize, MaxSize, [Lookup])
+		VALUES (2, 1, 2, 'personalMobile', 5, 12, 1, 1, 1, 20, 50, 0)
+
+
+--select * from fusion.[MessageElements]
 
 
 --		INSERT @xmldef (position, xmlmessageid, xmlnodekey, nilable, minoccurs, tableid, columnid, datatype) VALUES (1, 1, 'forenames', 0, 1, 1, 3, 12)

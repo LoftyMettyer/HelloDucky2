@@ -57,8 +57,20 @@ END
 
 GO
 
+/*
+	DECLARE @NVarCommand nvarchar(MAX)
+
+	-- Should this run everytime or move into the system manager change platform code?
+	SET @NVarCommand = 'ALTER DATABASE [' + DB_NAME() + '] SET ENABLE_BROKER WITH ROLLBACK IMMEDIATE';
+	exec sp_executeSQL @NVarCommand;
+
+	--SET @NVarCommand = 'ALTER DATABASE [' + DB_Name() + '] SET NEW_BROKER';
+	--exec sp_executeSQL @NVarCommand;
+*/
+
 
 --go
 --exec fusion.[spClearFusionMessageQueue] ''
 --go
 --exec fusion.[spClearFusionTranslations] ''
+

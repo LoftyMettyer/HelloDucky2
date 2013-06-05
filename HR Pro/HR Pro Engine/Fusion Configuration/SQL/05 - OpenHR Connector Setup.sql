@@ -64,13 +64,16 @@ BEGIN
 	--select columnid, ColumnName from ASRSysColumns where tableID = 1 order by columnname
 	IF @messagetype = 'staffchange'
 	BEGIN
-			
 		SELECT @ssql = @ssql + CASE LEN(@ssql) WHEN 0 THEN '' ELSE ' + ' END +
 			CASE 
-				WHEN x.value IS NOT NULL
+				WHEN NULLIF(x.value, '') IS NOT NULL
 					THEN @linesepcode + '''<' + x.xmlnodekey + '>' + x.value + '</' + x.xmlnodekey + '>''' 
 
-				WHEN x.minoccurs = 0 AND x.nilable = 0 AND x.datatype = 11
+				WHEN c.datatype = 2
+					THEN 'CASE ISNULL([' + c.ColumnName + '],0) WHEN 0 THEN '''' ELSE '
+						+ @linesepcode + '''<' + x.xmlnodekey + '>'' + convert(varchar(10),[' + c.ColumnName + '], 120) + ''</' + x.xmlnodekey + '>'' END' 
+
+				WHEN x.minoccurs = 0 AND x.nilable = 0 AND c.datatype = 11
 					THEN 'CASE ISNULL([' + c.ColumnName + '],'''') WHEN '''' THEN '''' ELSE '
 						+ @linesepcode + '''<' + x.xmlnodekey + '>'' + convert(varchar(10),[' + c.ColumnName + '], 120) + ''</' + x.xmlnodekey + '>'' END' 
 
@@ -78,14 +81,14 @@ BEGIN
 					THEN 'CASE ISNULL([' + c.ColumnName + '],'''') WHEN '''' THEN '''' ELSE '
 						+ @linesepcode + '''<' + x.xmlnodekey + '>'' + fusion.makeXMLSafe([' + c.ColumnName + ']) + ''</' + x.xmlnodekey + '>'' END' 
 
-				WHEN x.nilable = 0 AND x.datatype = 11
+				WHEN x.nilable = 0 AND c.datatype = 11
 					THEN + @linesepcode + 'CASE ISNULL([' + c.ColumnName + '],'''') WHEN '''' THEN ''<' +  x.xmlnodekey + '/>'' ELSE ''<' + x.xmlnodekey 
 						+ '>'' + convert(varchar(10),[' + c.ColumnName + '], 120) + ''</' + x.xmlnodekey + '>'' END' 
 
 				WHEN x.nilable = 0
 					THEN + @linesepcode + '''<' + x.xmlnodekey + '>'' + ISNULL(fusion.makeXMLSafe([' + c.ColumnName + ']),'''') + ''</' + x.xmlnodekey + '>''' 
 
-				WHEN x.nilable = 1 AND x.datatype = 11
+				WHEN x.nilable = 1 AND c.datatype = 11
 					THEN + @linesepcode + 'CASE ISNULL([' + c.ColumnName + '],'''') WHEN '''' THEN ''<' + x.xmlnodekey 
 						+ ' xsi:nil="true"/>'' ELSE ''<' + x.xmlnodekey + '>'' + convert(varchar(10),[' + c.ColumnName + '],120) + ''</' + x.xmlnodekey + '>'' END' 
 
@@ -97,14 +100,13 @@ BEGIN
 				-- + ' AS [column_' + convert(varchar(3), x.position) + ']'
 
 			FROM [fusion].[MessageDefinition] x
-			LEFT JOIN ASRSysColumns c ON c.columnID = x.columnid
-			LEFT JOIN ASRSysTables t ON t.TableID = x.tableid
+				INNER JOIN ASRSysColumns c ON c.columnID = x.columnid
+				INNER JOIN ASRSysTables t ON t.TableID = x.tableid
 
-		select @ssql = N'SELECT @xml = ' + @ssql + ' FROM table1 WHERE ID = ' + convert(varchar(10),@ID)
+		select @ssql = N'SELECT @xml = ' + @ssql + ' FROM [personnel_records] WHERE ID = ' + convert(varchar(10),@ID)
 
+print @ssql
 		execute sp_executeSQL @ssql, N'@xml nvarchar(MAX) out', @xml = @xmlwholemessage output;
-
-
 
 		SELECT N'<?xml version="1.0" encoding="utf-8"?>
 		<staffChange version="1" staffRef="{0}" 

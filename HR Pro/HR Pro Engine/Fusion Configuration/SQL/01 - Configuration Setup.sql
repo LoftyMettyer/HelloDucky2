@@ -177,6 +177,7 @@ AS
 			INNER JOIN fusion.Element e ON e.ID = me.ElementID
 			INNER JOIN fusion.Category c ON c.ID = e.categoryID
 
+GO
 
 -- Upgrade v5.0 procedures
 
@@ -196,12 +197,12 @@ AS
 
 
 
-
+/*
 select * from fusion.[Message]
 select * from fusion.[Element]
 select * from fusion.[MessageElements]
 select * from fusion.category
-
+*/
 
 
 

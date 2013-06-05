@@ -1,4 +1,6 @@
 
+RETURN
+
 UPDATE fusion.MessageElements SET ElementID = NULL
 DELETE FROM fusion.Element
 DELETE FROM fusion.Category

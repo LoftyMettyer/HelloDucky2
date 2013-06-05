@@ -1,11 +1,11 @@
 
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[fusion_table1]') AND xtype = 'TR')
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[PERSONNEL_RECORDS]') AND xtype = 'TR')
 		DROP TRIGGER [dbo].[fusion_table1];
 
 go
 
 CREATE TRIGGER fusion_table1
-   ON dbo.tbuser_Table1
+   ON dbo.tbuser_Personnel_Records
    AFTER INSERT, UPDATE
 AS 
 BEGIN

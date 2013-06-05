@@ -419,7 +419,7 @@
 	AS
 	BEGIN
 		SET NOCOUNT ON;
-	
+
 		DECLARE @ContextInfo varbinary(128);
  
 		SELECT @ContextInfo = CAST( ''Fusion:''+@MessageType AS VARBINARY(128) );
