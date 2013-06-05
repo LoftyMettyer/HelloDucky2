@@ -2014,6 +2014,49 @@ PRINT 'Step 9 - Misc stored procedures'
 
 	EXECUTE sp_executeSQL @sSPCode;
 	
+		
+	----------------------------------------------------------------------
+	-- sp_ASRFn_FirstNameFromForenames
+	----------------------------------------------------------------------
+
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[sp_ASRFn_FirstNameFromForenames]')
+			AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+		DROP PROCEDURE [dbo].[sp_ASRFn_FirstNameFromForenames];
+
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[sp_ASRFn_FirstNameFromForenames]
+		AS
+		BEGIN
+			DECLARE @iDummy integer;
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'ALTER PROCEDURE [dbo].[sp_ASRFn_FirstNameFromForenames]
+		(
+			@psResult		varchar(MAX) OUTPUT,
+			@psForenames	varchar(MAX)
+		)
+		AS
+		BEGIN
+			IF (LEN(@psForenames) = 0) OR (@psForenames IS NULL)
+			BEGIN
+				SET @psResult = '''';
+			END
+			ELSE
+			BEGIN
+				IF CHARINDEX('' '', @psForenames) > 0
+				BEGIN
+					SET @psResult = RTRIM(LTRIM(LEFT(@psForenames, CHARINDEX('' '', @psForenames))));
+				END
+				ELSE
+				BEGIN
+					SET @psResult = RTRIM(LTRIM(@psForenames));
+				END
+			END
+		END';
+
+	EXECUTE sp_executeSQL @sSPCode;
 	
 	
 
