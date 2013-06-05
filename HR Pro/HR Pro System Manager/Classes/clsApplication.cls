@@ -2409,7 +2409,7 @@ Private Function CreateQueryDefs() As Boolean
       ", c.[Alignment], c.[trimming], c.[calculateifempty]" & _
       ", IIF(c.[deleted]=-1, 8 , IIF(c.[new]=-1,4 ,IIF(c.[changed]=-1,16, 2))) AS [state]" & _
       " FROM tmpColumns c WHERE c.tableid = @parentid" & _
-      " AND c.[ColumnName] NOT LIKE 'ID%'" & _
+      " AND c.columntype <> 3" & _
       " ORDER BY c.[columnname];"
   daoDb.CreateQueryDef "spadmin_getcolumns", sSQL
 
