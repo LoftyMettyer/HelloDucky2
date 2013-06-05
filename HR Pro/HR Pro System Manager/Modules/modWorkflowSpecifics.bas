@@ -542,7 +542,7 @@ Private Function BaseTableColumnsUsedInDeleteTriggeredWorkflow(plngWorkflowID As
 
   lngBaseTableID = 0
   With recWorkflowEdit
-    .Index = "idxWorkflowID"
+    .index = "idxWorkflowID"
     .Seek "=", plngWorkflowID
 
     If Not .NoMatch Then
@@ -695,7 +695,7 @@ Private Function BaseTableEmailAddressesUsedInDeleteTriggeredWorkflow(plngWorkfl
   ' Column 2 = column/expr ID
   lngBaseTableID = 0
   With recWorkflowEdit
-    .Index = "idxWorkflowID"
+    .index = "idxWorkflowID"
     .Seek "=", plngWorkflowID
 
     If Not .NoMatch Then
@@ -1194,7 +1194,7 @@ Public Function GetWorkflowName(plngWorkflowID As Long) As String
   sName = "<unknown>"
   
   With recWorkflowEdit
-    .Index = "idxWorkflowID"
+    .index = "idxWorkflowID"
     .Seek "=", plngWorkflowID
 
     If Not .NoMatch Then
@@ -1221,7 +1221,7 @@ Public Function GetWorkflowEnabled(plngWorkflowID As Long) As Boolean
   fEnabled = False
   
   With recWorkflowEdit
-    .Index = "idxWorkflowID"
+    .index = "idxWorkflowID"
     .Seek "=", plngWorkflowID
 
     If Not .NoMatch Then
@@ -1286,7 +1286,7 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
     fGoodName = False
     Do While Not fGoodName
       With recWorkflowEdit
-        .Index = "idxName"
+        .index = "idxName"
         .Seek "=", sWorkflowName, False
         If Not .NoMatch Then
           iCounter = iCounter + 1
@@ -1402,7 +1402,7 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
             If pavCloneRegister(1, iIndex) = "EXPRESSION" And _
               pavCloneRegister(2, iIndex) = .Fields("fieldSelectionFilter") Then
 
-              recCompEdit.Index = "idxCompID"
+              recCompEdit.index = "idxCompID"
               recCompEdit.Seek "=", .Fields("componentID")
               If Not recCompEdit.NoMatch Then
                 recCompEdit.Edit
@@ -2438,7 +2438,7 @@ Public Sub DefaultWorkflowSetup()
   Dim lngSecondLoginColumnID As Long
   
   With recModuleSetup
-    .Index = "idxModuleParameter"
+    .index = "idxModuleParameter"
       
     ' ------------------------------------------
     ' Default the Personnel Identification parameters as they moved from
@@ -3586,7 +3586,7 @@ Private Function ReadWorkflowParameters() As Boolean
   ReDim malngEmailColumns(0)
   
   With recModuleSetup
-    .Index = "idxModuleParameter"
+    .index = "idxModuleParameter"
 
     ' Get the URL. Essential.
     mvar_sURL = GetModuleSetting(gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_URL, "")
@@ -3696,7 +3696,7 @@ Public Function ReadWebLogon(strUserName As String, strPassword As String) As Bo
   Dim lngFinish As Long
 
   With recModuleSetup
-    .Index = "idxModuleParameter"
+    .index = "idxModuleParameter"
     
     ' Get the Workflow web site user and password.
     .Seek "=", gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_WEBPARAM1
@@ -3774,7 +3774,7 @@ Public Function SaveWebLogon(strUserName As String, _
   
   ' Save the Web Site Login details.
   With recModuleSetup
-    .Index = "idxModuleParameter"
+    .index = "idxModuleParameter"
   
     .Seek "=", gsMODULEKEY_WORKFLOW, gsPARAMETERKEY_WEBPARAM1
     If .NoMatch Then
@@ -3892,7 +3892,7 @@ Public Function GetWorkflowURL() As String
   sURL = ""
   
   With recModuleSetup
-    .Index = "idxModuleParameter"
+    .index = "idxModuleParameter"
     
     ' ------------------------------------------
     ' Read the Web Site parameters
@@ -4192,7 +4192,7 @@ Public Function WorkflowTableTriggerCode(plngTableID As Long, _
   iIndent = 2
   
   With recWorkflowTriggeredLinks
-    .Index = "idxTableID"
+    .index = "idxTableID"
     .Seek "=", plngTableID
 
     If Not .NoMatch Then
@@ -4201,7 +4201,7 @@ Public Function WorkflowTableTriggerCode(plngTableID As Long, _
         
           fNeeded = False
           
-          recWorkflowEdit.Index = "idxWorkflowID"
+          recWorkflowEdit.index = "idxWorkflowID"
           recWorkflowEdit.Seek "=", !WorkflowID
           
           If Not recWorkflowEdit.NoMatch Then
@@ -4489,7 +4489,7 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
   Select Case iLinkType
     Case WORKFLOWTRIGGERLINKTYPE_COLUMN
       With recWorkflowTriggeredLinkColumns
-        .Index = "idxLinkID"
+        .index = "idxLinkID"
         .Seek "=", recWorkflowTriggeredLinks!LinkID
 
         If Not .NoMatch Then
@@ -4499,7 +4499,7 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
             End If
             
             With recColEdit
-              .Index = "idxColumnID"
+              .index = "idxColumnID"
               .Seek "=", IIf(IsNull(recWorkflowTriggeredLinkColumns!ColumnID), 0, recWorkflowTriggeredLinkColumns!ColumnID)
           
               If Not .NoMatch Then
@@ -4519,7 +4519,7 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
       
     Case WORKFLOWTRIGGERLINKTYPE_DATE
       With recColEdit
-        .Index = "idxColumnID"
+        .index = "idxColumnID"
         .Seek "=", IIf(IsNull(recWorkflowTriggeredLinks!DateColumn), 0, recWorkflowTriggeredLinks!DateColumn)
     
         If Not .NoMatch Then
@@ -4638,7 +4638,10 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
       strRebuildDeclare = strRebuildDeclare & vbNewLine & _
         vbTab & vbTab & "DECLARE " & strVariableName & " varchar(MAX)" & vbNewLine
 
-      strCheckCode = strCheckCode & vbNewLine & _
+
+
+
+      'strCheckCode = strCheckCode & vbNewLine & _
         vbTab & vbTab & "DECLARE " & strVariableName & " varchar(MAX)" & vbNewLine & _
         vbTab & vbTab & "SET " & strVariableName & " = " & sConvertInsCols & vbNewLine & _
         vbTab & vbTab & "IF (@insCol_" & Trim$(Str$(lngColumnID)) & " <> @delCol_" & Trim$(Str$(lngColumnID)) & ") OR " & vbNewLine & _
@@ -4647,7 +4650,27 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
         vbTab & vbTab & "BEGIN" & vbNewLine & _
         vbTab & vbTab & vbTab & "SET @fWFTrigger = 1" & vbNewLine & _
         vbTab & vbTab & "END" & vbNewLine
+      strCheckCode = strCheckCode & vbNewLine & _
+        vbTab & vbTab & "DECLARE " & strVariableName & " varchar(MAX)" & vbNewLine & _
+        vbTab & vbTab & "SET " & strVariableName & " = " & sConvertInsCols & vbNewLine
+
+      Select Case iDataType
+      Case dtNUMERIC, dtINTEGER, dtBIT
+        strCheckCode = strCheckCode & vbNewLine & _
+          vbTab & vbTab & "IF (isnull(@insCol_" & CStr(lngColumnID) & ",0) <> isnull(@delCol_" & CStr(lngColumnID) & ",0))" & vbNewLine
+      Case Else
+        strCheckCode = strCheckCode & vbNewLine & _
+          vbTab & vbTab & "IF (isnull(@insCol_" & CStr(lngColumnID) & ",'') <> isnull(@delCol_" & CStr(lngColumnID) & ",''))" & vbNewLine
+      End Select
         
+      strCheckCode = strCheckCode & vbNewLine & _
+        vbTab & vbTab & "BEGIN" & vbNewLine & _
+        vbTab & vbTab & vbTab & "SET @fWFTrigger = 1" & vbNewLine & _
+        vbTab & vbTab & "END" & vbNewLine
+
+
+
+
       strColumnValuesInsert = strColumnValuesInsert & vbNewLine & _
         vbTab & vbTab & "INSERT INTO ASRSysWorkflowQueueColumns" & vbNewLine & _
         vbTab & vbTab & vbTab & "(queueID, columnID, columnValue, emailID)" & vbNewLine & _
@@ -4897,7 +4920,7 @@ Public Sub CreateWorkflowProcsForTable(pLngCurrentTableID As Long, _
   
   On Error GoTo LocalErr
 
-  recTabEdit.Index = "idxTableID"
+  recTabEdit.index = "idxTableID"
   recTabEdit.Seek "=", pLngCurrentTableID
   lngRecDescID = IIf(IsNull(recTabEdit!RecordDescExprID), 0, recTabEdit!RecordDescExprID)
 
@@ -4906,7 +4929,7 @@ Public Sub CreateWorkflowProcsForTable(pLngCurrentTableID As Long, _
   msRebuildLinkCode = vbNullString
 
   With recWorkflowTriggeredLinks
-    .Index = "idxTableID"
+    .index = "idxTableID"
     .Seek "=", pLngCurrentTableID
 
     If Not .NoMatch Then
@@ -4915,7 +4938,7 @@ Public Sub CreateWorkflowProcsForTable(pLngCurrentTableID As Long, _
           And ((!Type = WORKFLOWTRIGGERLINKTYPE_COLUMN) _
             Or (!Type = WORKFLOWTRIGGERLINKTYPE_DATE)) Then
 
-          recWorkflowEdit.Index = "idxWorkflowID"
+          recWorkflowEdit.index = "idxWorkflowID"
           recWorkflowEdit.Seek "=", !WorkflowID
           
           If Not recWorkflowEdit.NoMatch Then
@@ -5150,7 +5173,7 @@ Public Function CreateSP_WorkflowCalculation() As Boolean
 
   strSQL = vbNullString
   With recExprEdit
-    .Index = "idxExprID"
+    .index = "idxExprID"
     
     If Not (.BOF And .EOF) Then
       .MoveFirst
@@ -5285,7 +5308,7 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
       If !Enabled Then
 
         With recWorkflowElementEdit
-          .Index = "idxWorkflowID"
+          .index = "idxWorkflowID"
           .Seek ">=", recWorkflowEdit!id
       
           If Not .NoMatch Then
@@ -5299,7 +5322,7 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
                 strWebFormSQL = vbNullString
                 
                 ' Form validations
-                recWorkflowElementValidationEdit.Index = "idxElementID"
+                recWorkflowElementValidationEdit.index = "idxElementID"
                 recWorkflowElementValidationEdit.Seek ">=", recWorkflowElementEdit!id
 
                 If Not recWorkflowElementValidationEdit.NoMatch Then
@@ -5335,7 +5358,7 @@ Public Function CreateSP_WorkflowWebFormValidation() As Boolean
                 End If
                 
                 ' Mandatory checks
-                recWorkflowElementItemEdit.Index = "idxElementID"
+                recWorkflowElementItemEdit.index = "idxElementID"
                 recWorkflowElementItemEdit.Seek ">=", recWorkflowElementEdit!id
                 
                 If Not recWorkflowElementItemEdit.NoMatch Then
