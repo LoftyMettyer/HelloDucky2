@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "System Framework", "Engine\System Framework.vbproj", "{C475177F-6A94-43B0-BAEE-427642923108}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OpenHR Framework Setup", "Setup\HR Pro Engine Setup.vdproj", "{783E6446-B800-4FD0-8A15-295D047936A1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DC0A927D-9ADA-423D-880B-304F4C4D7529} = {DC0A927D-9ADA-423D-880B-304F4C4D7529}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileDesigner", "MobileDesigner\MobileDesigner.csproj", "{6D7DBE8A-D215-4F00-9438-DD412B50E48B}"
 EndProject
