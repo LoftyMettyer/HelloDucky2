@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
 Begin VB.Form frmLogin 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "HR Pro Data Manager - Login"
@@ -561,7 +561,7 @@ Private Sub CheckRegistrySettings()
  
   ' Set the continue flag to start with
   fContinue = False
-  
+
   'JDM - 09/10/01 - Fault 2932 - Only allow if user has access to PC configuration
 '  If datGeneral.SystemPermission("CONFIGURATION", "PC") Then
     If Not gblnBatchJobsOnly And Not ASRDEVELOPMENT Then
@@ -583,109 +583,116 @@ Private Sub CheckRegistrySettings()
   
   If fContinue Then
   
-    ' Check that the Documents path is defined.
-    If sDocumentsPath = vbNullString Then
-      Set frmSelectPath = New frmPathSel
-      With frmSelectPath
-        .SelectionType = 8
-        .QuietMode = False
-        .Show vbModal
-      End With
-      Set frmSelectPath = Nothing
-    Else
-      ' Change directory to the OLE path to check that it exists.
-      fPathExists = True
-      ChDir sDocumentsPath
-      'If the directory doesn't exist, ask the user to select it.
-      If Not fPathExists Then
-        Set frmSelectPath = New frmPathSel
-        With frmSelectPath
-          .SelectionType = 8
-          .QuietMode = False
-          .Show vbModal
-        End With
-        Set frmSelectPath = Nothing
-      End If
+' NPG20100824 Fault 1096 - allow UNC's as folder paths.
+    If frmConfiguration.Initialise(False) Then
+      frmConfiguration.Show vbModal
     End If
-    
-    If bHasOleColumn Then
-      ' Check that the OLE path is defined.
-      If sOLEPath = vbNullString Then
-        Set frmSelectPath = New frmPathSel
-        With frmSelectPath
-          .SelectionType = 2
-          .QuietMode = False
-          .Show vbModal
-        End With
-        Set frmSelectPath = Nothing
-      Else
-        ' Change directory to the OLE path to check that it exists.
-        fPathExists = True
-        ChDir sOLEPath
-        'If the directory doesn't exist, ask the user to select it.
-        If Not fPathExists Then
-          Set frmSelectPath = New frmPathSel
-          With frmSelectPath
-            .SelectionType = 2
-            .QuietMode = False
-            .Show vbModal
-          End With
-          Set frmSelectPath = Nothing
-        End If
-      End If
-      
-      ' Check that the Local OLE path is defined.
-      If sLocalOLEPath = vbNullString Then
-        Set frmSelectPath = New frmPathSel
-        With frmSelectPath
-          .SelectionType = 16
-          .QuietMode = False
-          .Show vbModal
-        End With
-        Set frmSelectPath = Nothing
-      Else
-        ' Change directory to the OLE path to check that it exists.
-        fPathExists = True
-        ChDir sLocalOLEPath
-        'If the directory doesn't exist, ask the user to select it.
-        If Not fPathExists Then
-          Set frmSelectPath = New frmPathSel
-          With frmSelectPath
-            .SelectionType = 16
-            .QuietMode = False
-            .Show vbModal
-          End With
-          Set frmSelectPath = Nothing
-        End If
-      End If
-    End If
-    
-    If bHasPhotoColumn Then
-      ' Check that the Photo path is defined.
-      If sPhotoPath = vbNullString Then
-        Set frmSelectPath = New frmPathSel
-        With frmSelectPath
-          .SelectionType = 1
-          .QuietMode = False
-          .Show vbModal
-        End With
-        Set frmSelectPath = Nothing
-      Else
-        ' Change directory to the photo path to check that it exists.
-        fPathExists = True
-        ChDir sPhotoPath
-        'If the directory doesn't exist, ask the user to select it.
-        If Not fPathExists Then
-          Set frmSelectPath = New frmPathSel
-          With frmSelectPath
-            .SelectionType = 1
-            .QuietMode = False
-            .Show vbModal
-          End With
-          Set frmSelectPath = Nothing
-        End If
-      End If
-    End If
+    Set frmConfiguration = Nothing
+    frmMain.EnableMenu Me
+  
+'    ' Check that the Documents path is defined.
+'    If sDocumentsPath = vbNullString Then
+'      Set frmSelectPath = New frmPathSel
+'      With frmSelectPath
+'        .SelectionType = 8
+'        .QuietMode = False
+'        .Show vbModal
+'      End With
+'      Set frmSelectPath = Nothing
+'    Else
+'      ' Change directory to the OLE path to check that it exists.
+'      fPathExists = True
+'      ChDir sDocumentsPath
+'      'If the directory doesn't exist, ask the user to select it.
+'      If Not fPathExists Then
+'        Set frmSelectPath = New frmPathSel
+'        With frmSelectPath
+'          .SelectionType = 8
+'          .QuietMode = False
+'          .Show vbModal
+'        End With
+'        Set frmSelectPath = Nothing
+'      End If
+'    End If
+'
+'    If bHasOleColumn Then
+'      ' Check that the OLE path is defined.
+'      If sOLEPath = vbNullString Then
+'        Set frmSelectPath = New frmPathSel
+'        With frmSelectPath
+'          .SelectionType = 2
+'          .QuietMode = False
+'          .Show vbModal
+'        End With
+'        Set frmSelectPath = Nothing
+'      Else
+'        ' Change directory to the OLE path to check that it exists.
+'        fPathExists = True
+'        ChDir sOLEPath
+'        'If the directory doesn't exist, ask the user to select it.
+'        If Not fPathExists Then
+'          Set frmSelectPath = New frmPathSel
+'          With frmSelectPath
+'            .SelectionType = 2
+'            .QuietMode = False
+'            .Show vbModal
+'          End With
+'          Set frmSelectPath = Nothing
+'        End If
+'      End If
+'
+'      ' Check that the Local OLE path is defined.
+'      If sLocalOLEPath = vbNullString Then
+'        Set frmSelectPath = New frmPathSel
+'        With frmSelectPath
+'          .SelectionType = 16
+'          .QuietMode = False
+'          .Show vbModal
+'        End With
+'        Set frmSelectPath = Nothing
+'      Else
+'        ' Change directory to the OLE path to check that it exists.
+'        fPathExists = True
+'        ChDir sLocalOLEPath
+'        'If the directory doesn't exist, ask the user to select it.
+'        If Not fPathExists Then
+'          Set frmSelectPath = New frmPathSel
+'          With frmSelectPath
+'            .SelectionType = 16
+'            .QuietMode = False
+'            .Show vbModal
+'          End With
+'          Set frmSelectPath = Nothing
+'        End If
+'      End If
+'    End If
+'
+'    If bHasPhotoColumn Then
+'      ' Check that the Photo path is defined.
+'      If sPhotoPath = vbNullString Then
+'        Set frmSelectPath = New frmPathSel
+'        With frmSelectPath
+'          .SelectionType = 1
+'          .QuietMode = False
+'          .Show vbModal
+'        End With
+'        Set frmSelectPath = Nothing
+'      Else
+'        ' Change directory to the photo path to check that it exists.
+'        fPathExists = True
+'        ChDir sPhotoPath
+'        'If the directory doesn't exist, ask the user to select it.
+'        If Not fPathExists Then
+'          Set frmSelectPath = New frmPathSel
+'          With frmSelectPath
+'            .SelectionType = 1
+'            .QuietMode = False
+'            .Show vbModal
+'          End With
+'          Set frmSelectPath = Nothing
+'        End If
+'      End If
+'    End If
   End If
  
   ' Let windows get rid of the screen residue.
