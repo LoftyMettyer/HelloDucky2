@@ -290,7 +290,7 @@ Private Sub Form_Load()
   UI.frmAtCenter Me
 
   'lblVersion.Caption = "OpenHR Data Manager - Version " & App.Major & "." & App.Minor & "." & App.Revision
-  lblVersion.Caption = "Version " & App.Major & "." & App.Minor & "." & App.Revision
+  lblVersion.Caption = "Version " & app.Major & "." & app.Minor & "." & app.Revision
   
   If ASRDEVELOPMENT Then
     lblDevelopmentMode.Caption = "(Dev mode)"
@@ -312,7 +312,7 @@ Private Sub Form_Load()
   If Not CheckSQLDriver Then
     COAMsgBox "The required ODBC Driver '" & ODBCDRIVER & "' is not installed." & vbNewLine & _
       "Install the driver before running OpenHR.", _
-      vbExclamation + vbOKOnly, App.ProductName
+      vbExclamation + vbOKOnly, app.ProductName
     Unload frmLogin
     Exit Sub
   End If
@@ -582,7 +582,7 @@ Private Sub CheckRegistrySettings()
         
         fContinue = COAMsgBox("One or more data paths have not yet been defined for this database." & vbNewLine & _
                            "OpenHR may not function correctly without these paths defined." & vbNewLine & _
-                           "Would you like to define these now?", vbYesNo + vbQuestion + vbDefaultButton2, App.Title) = vbYes
+                           "Would you like to define these now?", vbYesNo + vbQuestion + vbDefaultButton2, app.Title) = vbYes
       End If
       
     End If
@@ -856,7 +856,7 @@ Private Sub CheckPassword()
   
 Check_ERROR:
   
-  COAMsgBox "Error checking passwords." & vbNewLine & vbNewLine & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error checking passwords." & vbNewLine & vbNewLine & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, app.Title
   
 End Sub
 
@@ -886,7 +886,7 @@ Private Sub UpdateConfig()
 Update_ERROR:
 
   COAMsgBox "Error updating AsrSysPasswords." & vbNewLine & vbNewLine & _
-         "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, App.Title
+         "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, app.Title
 
   Set rsInfo = Nothing
          
@@ -946,7 +946,7 @@ Public Sub Login()
   If Len(gsConnectionString) = 0 Then
     Screen.MousePointer = vbDefault
     COAMsgBox "Microsoft SQL Native Client has not been correctly installed on this machine.", _
-        vbExclamation + vbOKOnly, App.ProductName
+        vbExclamation + vbOKOnly, app.ProductName
     Exit Sub
   End If
   
@@ -958,7 +958,7 @@ Public Sub Login()
     gobjProgress.CloseProgress
     Screen.MousePointer = vbDefault
     COAMsgBox "Please enter the name of the server on which the OpenHR database is located.", _
-        vbExclamation + vbOKOnly, App.ProductName
+        vbExclamation + vbOKOnly, app.ProductName
     txtServer.SetFocus
     Exit Sub
   End If
@@ -972,7 +972,7 @@ Public Sub Login()
     If Not gblnBatchJobsOnly Then
       gobjProgress.CloseProgress
       Screen.MousePointer = vbDefault
-      COAMsgBox "Please enter a user name.", vbExclamation + vbOKOnly, App.ProductName
+      COAMsgBox "Please enter a user name.", vbExclamation + vbOKOnly, app.ProductName
       txtUID.SetFocus
       Exit Sub
     End If
@@ -986,13 +986,13 @@ Public Sub Login()
     gobjProgress.CloseProgress
     Screen.MousePointer = vbDefault
     COAMsgBox "Please enter the name of the OpenHR database.", _
-        vbExclamation + vbOKOnly, App.ProductName
+        vbExclamation + vbOKOnly, app.ProductName
     txtDatabase.SetFocus
     Exit Sub
   End If
   
   'gsConnectionString = gsConnectionString & "APP=" & App.ProductName & ";"
-  gsConnectionString = gsConnectionString & "Application Name=" & App.ProductName & ";"
+  gsConnectionString = gsConnectionString & "Application Name=" & app.ProductName & ";"
   
   ' Different connection string depending if use are using Windows Authentication
   If gbUseWindowsAuthentication Then
@@ -1073,13 +1073,13 @@ TryUsingGroupSecurity:
     gobjProgress.CloseProgress
     Screen.MousePointer = vbDefault
     If ASRDEVELOPMENT Then
-      COAMsgBox sMsg & vbNewLine & "(ASR Development bypass)", vbExclamation, App.ProductName
+      COAMsgBox sMsg & vbNewLine & "(ASR Development bypass)", vbExclamation, app.ProductName
     Else
       If Not gADOCon Is Nothing Then
         gADOCon.Close
         Set gADOCon = Nothing
       End If
-      COAMsgBox sMsg, vbExclamation, App.ProductName
+      COAMsgBox sMsg, vbExclamation, app.ProductName
       Exit Sub
     End If
     
@@ -1126,7 +1126,6 @@ Bypass:
   'JPD 20040219 - replaced the gsUserName line as it reads the users
   'group AND whether or not they are SysSecMgr users.
   gsUserName = StrConv(strUserName, vbProperCase)
-  'gsUserName = StrConv(txtUID, vbProperCase)
   gsPassword = Me.txtPWD.Text
 
   DebugOutput "frmLogin.Login", "SavePCSettings"
@@ -1378,6 +1377,9 @@ Public Sub CheckCommandLine()
 
         If GetPCSetting("BatchLogon", "Enabled", False) = True Then
           GetBatchLogon strUserName, strPassword, strDatabaseName, strServerName
+          If strUserName = vbNullString And GetPCSetting("BatchLogon", "TrustedConnection", False) = True Then
+            strUserName = gstrWindowsCurrentDomain & "\" & gstrWindowsCurrentUser
+          End If
           txtUID.Text = strUserName
           txtPWD.Text = strPassword
           chkUseWindowsAuthentication.Value = IIf(GetPCSetting("BatchLogon", "TrustedConnection", False), vbChecked, vbUnchecked)
@@ -1436,11 +1438,11 @@ Public Function CreateLoginErrFile(sMsg As String) As String
   Dim lngCount As Long
   On Local Error Resume Next
 
-  Open App.Path & "\LoginErr.txt" For Output As #lngFileNum
+  Open app.Path & "\LoginErr.txt" For Output As #lngFileNum
   Print #lngFileNum, "Server    : " & txtServer.Text
   Print #lngFileNum, "Database  : " & txtDatabase.Text
   Print #lngFileNum, "Username  : " & txtUID.Text
-  Print #lngFileNum, "Version   : " & CStr(App.Major) & "." & CStr(App.Minor) & "." & CStr(App.Revision)
+  Print #lngFileNum, "Version   : " & CStr(app.Major) & "." & CStr(app.Minor) & "." & CStr(app.Revision)
   Print #lngFileNum, ""
 
   Print #lngFileNum, "Date/Time : " & CStr(Now)
