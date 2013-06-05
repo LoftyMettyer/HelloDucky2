@@ -508,16 +508,62 @@ End Sub
 Private Function ValidateDefinition() As Boolean
   
   Dim bOK As Boolean
+  Dim strErrorMessage As String
   
   bOK = True
+  strErrorMessage = vbNullString
+  
+  ' General validation
+  If Len(txtName.Text) = 0 Then
+    strErrorMessage = strErrorMessage & "You must give this definition a name." & vbNewLine
+  End If
+  
+  
+  ' Target table
+  If GetComboItem(cboTargetTable) = 0 Then
+    strErrorMessage = strErrorMessage & "Target table must be specified" & vbNewLine
+  End If
+  
+  ' Target column
+  If GetComboItem(cboTargetColumn) = 0 Then
+    strErrorMessage = strErrorMessage & "Target column must be specified" & vbNewLine
+  End If
+  
+  ' Target keyfield
+  If GetComboItem(cboTargetKeyField) = 0 Then
+    strErrorMessage = strErrorMessage & "Target keyfield column must be specified" & vbNewLine
+  End If
    
-'  If Len(txtName.Text) = 0 Then
-'    TabControl1.TabIndex = 0
-'    MsgBox "You must give this definition a name.", vbExclamation, Me.Caption
-'    txtName.SetFocus
-'    Exit Function
-'  End If
    
+  ' Keyfield of parent 1
+  If Me.cboParent1Table.Enabled Then
+    If GetComboItem(cboParent1Table) = 0 Then
+      strErrorMessage = strErrorMessage & "Parent 1 table must be specified" & vbNewLine
+    End If
+     
+    If GetComboItem(cboParent1Keyfield) = 0 Then
+      strErrorMessage = strErrorMessage & "Parent 1 keyfield column must be specified" & vbNewLine
+    End If
+  End If
+   
+  
+  ' Keyfield of parent 2
+  If Me.cboParent2Table.Enabled Then
+    If GetComboItem(cboParent2Table) = 0 Then
+      strErrorMessage = strErrorMessage & "Parent 2 table must be specified" & vbNewLine
+    End If
+     
+    If GetComboItem(cboParent2Keyfield) = 0 Then
+      strErrorMessage = strErrorMessage & "Parent 2 keyfield column must be specified" & vbNewLine
+    End If
+  End If
+   
+   
+  If Len(strErrorMessage) > 0 Then
+    bOK = False
+    COAMsgBox strErrorMessage, vbExclamation + vbOKOnly, Me.Caption
+  End If
+  
   ValidateDefinition = bOK
   
 End Function
@@ -645,19 +691,7 @@ Private Sub cboTargetTable_Click()
   cboParent1Keyfield.Clear
   cboParent2Table.Clear
   cboParent2Keyfield.Clear
-  
-  With cboTargetColumn
-    .Clear
-    .AddItem "<None>"
-    .ItemData(.NewIndex) = 0
-  End With
-  
-  With cboTargetKeyField
-    .Clear
-    .AddItem "<None>"
-    .ItemData(.NewIndex) = 0
-  End With
-  
+     
   With cboTargetCategory
     .Clear
     .AddItem "<None>"
