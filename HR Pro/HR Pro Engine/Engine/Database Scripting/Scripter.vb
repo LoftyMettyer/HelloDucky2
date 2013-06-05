@@ -1237,8 +1237,8 @@ Namespace ScriptDB
                   & "        UPDATE dbo.[{1}]" & vbNewLine _
                   & "           SET [{2}] = inserted.[{2}]," & vbNewLine _
                   & "               [{3}] = inserted.[{3}]," & vbNewLine _
-                  & "               [{4}] = inserted.[{3}]," & vbNewLine _
-                  & "               [{5}] = inserted.[{3}]" & vbNewLine _
+                  & "               [{4}] = inserted.[{4}]," & vbNewLine _
+                  & "               [{5}] = inserted.[{5}]" & vbNewLine _
                   & "        FROM [inserted] WHERE [inserted].[id] = [dbo].[{1}].[id]" & vbNewLine _
                   & "        RETURN;" & vbNewLine _
                   & "    END;" & vbNewLine & vbNewLine _
