@@ -1,4 +1,6 @@
 ﻿Namespace Things
+
+  <Serializable()> _
   Public Class TableOrder
     Inherits Things.Base
 
@@ -7,19 +9,13 @@
         Return Enums.Type.TableOrder
       End Get
     End Property
-  
-  <System.Xml.Serialization.XmlIgnore(), System.ComponentModel.Browsable(False)> _
-  Public ReadOnly Property FindWindowsColumns()
-    Get
-        Return Me.Objects(Things.Type.TableOrderItem)
-    End Get
-  End Property
 
-    'Public ReadOnly Property OrderFilters() As Things.Collection
-    '  Get
-    '    Return Me.Objects(Things.Type.Expression)
-    '  End Get
-    'End Property
+    <System.Xml.Serialization.XmlIgnore(), System.ComponentModel.Browsable(False)> _
+    Public ReadOnly Property FindWindowsColumns()
+      Get
+        Return Me.Objects(Things.Type.TableOrderItem)
+      End Get
+    End Property
 
   End Class
 

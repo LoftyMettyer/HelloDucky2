@@ -2,7 +2,7 @@
 
 Namespace ScriptDB
 
-  <ClassInterface(ClassInterfaceType.None)> _
+  <ClassInterface(ClassInterfaceType.None), Serializable()> _
   Public Class LinesOfCode
     Inherits System.ComponentModel.BindingList(Of ScriptDB.CodeElement)
 

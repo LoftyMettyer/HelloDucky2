@@ -6,6 +6,7 @@ Imports System.Runtime.InteropServices
 
 Namespace Things
 
+  <Serializable()> _
   Public Class Collection
     Inherits Things.BaseCollection
     Implements iObjectCollection

@@ -1,8 +1,8 @@
-﻿'Imports System.IO
-'Imports System.Runtime.Serialization.Formatters.Binary
-'Imports System.Runtime.Serialization
+﻿Imports System.Runtime.InteropServices
 
 Namespace Things
+
+  <ClassInterface(ClassInterfaceType.None), ComVisible(True), Serializable()> _
   Public Class Component
     Inherits Things.Base
     Implements ICloneable

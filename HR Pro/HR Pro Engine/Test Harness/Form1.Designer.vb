@@ -44,6 +44,7 @@ Partial Class Form1
     Me.Label3 = New System.Windows.Forms.Label()
     Me.butErrors = New System.Windows.Forms.Button()
     Me.Button9 = New System.Windows.Forms.Button()
+    Me.Button10 = New System.Windows.Forms.Button()
     Me.SuspendLayout()
     '
     'Button1
@@ -248,11 +249,21 @@ Partial Class Form1
     Me.Button9.Text = "Button9"
     Me.Button9.UseVisualStyleBackColor = True
     '
+    'Button10
+    '
+    Me.Button10.Location = New System.Drawing.Point(32, 373)
+    Me.Button10.Name = "Button10"
+    Me.Button10.Size = New System.Drawing.Size(75, 23)
+    Me.Button10.TabIndex = 23
+    Me.Button10.Text = "Clone"
+    Me.Button10.UseVisualStyleBackColor = True
+    '
     'Form1
     '
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
     Me.ClientSize = New System.Drawing.Size(806, 426)
+    Me.Controls.Add(Me.Button10)
     Me.Controls.Add(Me.Button9)
     Me.Controls.Add(Me.butErrors)
     Me.Controls.Add(Me.Label3)
@@ -303,5 +314,6 @@ Partial Class Form1
   Friend WithEvents Label3 As System.Windows.Forms.Label
   Friend WithEvents butErrors As System.Windows.Forms.Button
   Friend WithEvents Button9 As System.Windows.Forms.Button
+  Friend WithEvents Button10 As System.Windows.Forms.Button
 
 End Class

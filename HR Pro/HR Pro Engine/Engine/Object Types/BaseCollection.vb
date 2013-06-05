@@ -10,6 +10,7 @@ Namespace Things
   Public Class BaseCollection
     Inherits System.ComponentModel.BindingList(Of Things.Base)
     Implements System.Xml.Serialization.IXmlSerializable
+    '    Implements ICloneable
 
     Public Parent As Things.Base ' iSystemObject
     Public Root As Things.Base 'iSystemObject
@@ -264,6 +265,35 @@ Namespace Things
     End Sub
 
 #End Region
+
+
+    '#Region "iClonable interface"
+
+    '    Public Function Clone() As Object Implements System.ICloneable.Clone
+
+    '      Dim NewList As Object = Activator.CreateInstance(Me.GetType)
+
+    '      If Me.Items.Count > 0 Then
+    '        Dim ICloneType As System.Type = Me(0).GetType.GetInterface("ICloneable", True)
+    '        If Not (ICloneType Is Nothing) Then
+    '          For Each Value As Things.Base In Me
+    '            NewList.Add(CType(Value, ICloneable).Clone)
+    '          Next
+    '        Else
+    '          Dim MethodsList() As System.Reflection.MethodInfo = Me(0).GetType.GetMethods
+    '          For Each Value As Things.Base In Me
+    '            NewList.Add(Value)
+    '          Next
+    '        End If
+    '        Return NewList
+    '      Else
+    '        Return NewList
+    '      End If
+
+    '    End Function
+
+    '#End Region
+
 
   End Class
 

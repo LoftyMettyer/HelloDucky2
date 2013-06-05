@@ -1,5 +1,7 @@
 ﻿Namespace Things
-  Public Class Index
+
+  <Serializable()> _
+Public Class Index
     Inherits Things.Base
 
     Public Overrides ReadOnly Property Type As Enums.Type

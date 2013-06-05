@@ -1,8 +1,10 @@
 ﻿Option Explicit On
 
+Imports System.Runtime.InteropServices
+
 Namespace Things
 
-  <Serializable()> _
+  <ClassInterface(ClassInterfaceType.None), ComVisible(True), Serializable()> _
   Public Class Expression
     Inherits Things.Component
 
@@ -524,7 +526,7 @@ Namespace Things
 
               ' There has to be a cleaner way, but once again I'm in  a hurry and this DOES work. Amazingly!
               ' I'm still in a hurry!!! :-(
-              objCalculation = CType(objComponent.BaseExpression.BaseTable.Objects.GetObject(Enums.Type.Expression, objComponent.CalculationID), Things.Expression).Clone
+              objCalculation = CType(objComponent.BaseExpression.BaseTable.Objects.GetObject(Enums.Type.Expression, objComponent.CalculationID), Things.Expression).clone
 
               'objCalculation.StartOfPartNumbers = 0
               objCalculation.BaseExpression = objComponent.BaseExpression

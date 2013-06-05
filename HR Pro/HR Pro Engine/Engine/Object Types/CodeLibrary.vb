@@ -1,4 +1,6 @@
 ﻿Namespace Things
+
+  <Serializable()> _
   Public Class [CodeLibrary]
     Inherits Things.Base
 

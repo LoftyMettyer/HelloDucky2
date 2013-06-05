@@ -1,4 +1,5 @@
 ﻿Namespace ScriptDB
+  <Serializable()>
   Public Structure GeneratedUDF
 
     Public Name As String
@@ -9,8 +10,6 @@
 
     Public CodeStub As String
 
-    '   Public IsSimple As Boolean
-    '    Public IsGenerated As Boolean
     Public IsSchemaBound As Boolean
 
     Public JoinCode As String

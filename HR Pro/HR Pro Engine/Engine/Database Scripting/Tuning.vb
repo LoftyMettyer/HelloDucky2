@@ -15,8 +15,8 @@ Namespace ScriptDB
   '  Public CalculatedColumns As Integer
   'End Structure
 
-
-  Public Class Tuning
+  <Serializable()>
+    Public Class Tuning
 
     Public Rating As Long = 0
     Public Usage As Long = 0

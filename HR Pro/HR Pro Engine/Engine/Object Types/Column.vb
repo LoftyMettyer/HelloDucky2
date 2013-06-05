@@ -1,9 +1,13 @@
-﻿Namespace Things
+﻿Imports System.Runtime.InteropServices
+
+Namespace Things
+
+  <ClassInterface(ClassInterfaceType.None), ComVisible(True), Serializable()> _
   Public Class Column
     Inherits Things.Base
 
     <System.Xml.Serialization.XmlIgnore()> _
-        Public Table As Things.Table
+    Public Table As Things.Table
 
     Public CalcID As HCMGuid
     <System.Xml.Serialization.XmlIgnore()> _

@@ -7,6 +7,7 @@ Namespace Things
   <Serializable(), ClassInterface(ClassInterfaceType.None)> _
   Public MustInherit Class Base
     Implements COMInterfaces.iObject
+    '    Implements ICloneable
 
     '    Implements Things.iSystemObject
     '    Implements System.Xml.Serialization.IXmlSerializable
@@ -140,10 +141,6 @@ Namespace Things
         Return mobjChildObjects.Item(Index)
       End Get
     End Property
-
-
-    ' Returns all child objects of specified type
-    '    <System.ComponentModel.Browsable(False)> _
 
     <System.Xml.Serialization.XmlIgnore()> _
     Public Property Objects(ByVal Type As Things.Type) As Things.Collection
@@ -386,6 +383,85 @@ Namespace Things
       Return New Things.Collection
 
     End Function
+
+
+
+#Region "iClonable"
+
+    'Private Function Clone(ByVal vObj As Object)
+
+    '  Dim iClone As ICloneable
+
+    '  If Not vObj Is Nothing Then
+    '    If vObj.GetType.IsValueType OrElse vObj.GetType Is System.Type.GetType("System.String") Then
+    '      Return vObj
+    '    Else
+    '      Dim newObject As Object = Activator.CreateInstance(vObj.GetType)
+    '      If Not newObject.GetType.GetInterface("IEnumerable", True) Is Nothing AndAlso Not newObject.GetType.GetInterface("ICloneable", True) Is Nothing Then
+    '        'This is a cloneable enumeration object so just clone it
+    '        newObject = CType(vObj, ICloneable).Clone
+    '        Return newObject
+    '      Else
+    '        For Each Item As PropertyInfo In newObject.GetType.GetProperties
+    '          'If a property has the ICloneable interface, then call the interface clone method
+    '          If Not (Item.PropertyType.GetInterface("ICloneable") Is Nothing) Then
+
+    '            '           Item.PropertyType.Name
+    '            ' Item.GetValue(
+
+    '            If Item.CanWrite Then
+    '              iClone = CType(Item.GetValue(vObj, Nothing), ICloneable)
+    '              If Not iClone Is Nothing Then
+    '                Item.SetValue(newObject, iClone.Clone, Nothing)
+    '              End If
+    '            End If
+    '          Else
+    '            'Otherwise just set the value
+    '            If Item.CanWrite Then
+    '              Item.SetValue(newObject, Clone(Item.GetValue(vObj, Nothing)), Nothing)
+    '            End If
+    '          End If
+    '        Next
+    '        Return newObject
+    '      End If
+    '    End If
+    '  Else
+    '    Return Nothing
+    '  End If
+    'End Function
+
+    'Public Function Clone() As Object Implements System.ICloneable.Clone
+    '  Return Clone(Me)
+    'End Function
+
+    'Private Function GetReflectedProperty(ByVal PropertyName As String, ByVal PropertyIndex As Object()) As Object
+    '  Dim retVal As Object = Me.GetType().GetProperty(PropertyName).GetValue(Me, Nothing)
+    '  If PropertyIndex IsNot Nothing Then
+    '    retVal = retVal.[GetType]().GetProperty("Item").GetValue(retVal, PropertyIndex)
+    '  End If
+    '  Return retVal
+    'End Function
+
+    Private Function DeepClone(ByVal Obj As Object) As Object
+
+      Dim objResult As Object = Nothing
+      Using ms As New System.IO.MemoryStream()
+        Dim bf As New System.Runtime.Serialization.Formatters.Binary.BinaryFormatter()
+        bf.Serialize(ms, obj)
+
+        ms.Position = 0
+        objResult = bf.Deserialize(ms)
+      End Using
+      Return objResult
+
+    End Function
+
+    Public Function DeepClone() As Object
+      Return DeepClone(Me)
+    End Function
+
+#End Region
+
 
   End Class
 End Namespace

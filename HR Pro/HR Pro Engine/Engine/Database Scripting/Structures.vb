@@ -3,6 +3,7 @@
   <HideModuleName()> _
   Public Module Structures
 
+    <Serializable()> _
     Public Structure ChildRowDetails
       Property RowSelection As ScriptDB.ColumnRowSelection
       Property RowNumber As Integer
@@ -14,11 +15,6 @@
       Property Filter As Things.Expression
       Property Relation As Things.Relation
     End Structure
-
-    'Public Structure Invalidity
-    '  Property Number As Integer
-    '  Property Message As String
-    'End Structure
 
   End Module
 End Namespace

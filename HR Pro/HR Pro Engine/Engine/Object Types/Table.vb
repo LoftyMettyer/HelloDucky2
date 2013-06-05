@@ -4,7 +4,7 @@ Imports System.Runtime.InteropServices
 
 Namespace Things
 
-  <ClassInterface(ClassInterfaceType.None), ComVisible(True)> _
+  <ClassInterface(ClassInterfaceType.None), ComVisible(True), Serializable()> _
   Public Class Table
     Inherits Things.Base
     Implements COMInterfaces.iTable
@@ -82,21 +82,21 @@ Namespace Things
 #Region "Child Objects"
 
     <System.Xml.Serialization.XmlIgnore(), System.ComponentModel.Browsable(False)> _
-    Public ReadOnly Property Columns()
+    Public ReadOnly Property Columns As Things.Collection
       Get
         Return Me.Objects(Things.Type.Column)
       End Get
     End Property
 
     <System.Xml.Serialization.XmlIgnore(), System.ComponentModel.Browsable(False)> _
-    Public ReadOnly Property Validations()
+    Public ReadOnly Property Validations() As Things.Collection
       Get
         Return Me.Objects(Things.Type.Validation)
       End Get
     End Property
 
     <System.Xml.Serialization.XmlIgnore(), System.ComponentModel.Browsable(False)> _
-    Public ReadOnly Property Views()
+    Public ReadOnly Property Views() As Things.Collection
       Get
         Return Me.Objects(Things.Type.View)
       End Get

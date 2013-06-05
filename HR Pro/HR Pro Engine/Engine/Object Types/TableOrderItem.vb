@@ -1,5 +1,6 @@
 ﻿Namespace Things
 
+  <Serializable()> _
   Public Class TableOrderItem
     Inherits Things.Base
 

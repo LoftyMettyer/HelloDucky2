@@ -311,6 +311,8 @@ Public Class Form1
 
     bOK = objPhoenix.Script.ScriptIndexes
 
+    bOK = objPhoenix.Script.ScriptOvernightStep2
+
     objPhoenix.CloseSafely()
 
 
@@ -380,12 +382,59 @@ Public Class Form1
 
   End Sub
 
-  Private Sub Button9_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button9.Click
+  Private Sub Button10_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button10.Click
 
-    Dim objPhoenix As New HRProEngine.SysMgr
+    Dim objTable1 As HRProEngine.Things.Table
+    Dim objTable2 As HRProEngine.Things.Table
+    Dim objColumn As HRProEngine.Things.Column
+    Dim objColumn2 As HRProEngine.Things.Column
+    Dim objExpresssion1 As HRProEngine.Things.Expression
+    Dim objExpresssion2 As HRProEngine.Things.Expression
+    Dim objComponent1 As HRProEngine.Things.Component
 
-    '    MsgBox(objPhoenix.SysFrameworkMajorVersion)
-    '    MsgBox(objPhoenix. Version)
+    objComponent1 = New HRProEngine.Things.Component
+
+    objExpresssion1 = New HRProEngine.Things.Expression
+    objExpresssion1.Objects.Add(objComponent1)
+
+    objColumn = New HRProEngine.Things.Column
+    objColumn.Name = "column1"
+
+    objColumn2 = New HRProEngine.Things.Column
+    objColumn2.Name = "column1"
+
+    objTable1 = New HRProEngine.Things.Table
+    objTable1.Name = "myatble1"
+
+    objTable1.Objects.Add(objColumn)
+    objTable1.Objects.Add(objExpresssion1)
+
+    objExpresssion2 = objExpresssion1.DeepClone
+    objExpresssion2.Name = "copy expr"
+
+    objExpresssion2.Objects.Clear()
+    objExpresssion2.Objects.Add(objComponent1)
+    objExpresssion2.Objects.Add(objComponent1)
+    objExpresssion2.Objects.Add(objComponent1)
+
+    objTable2 = objTable1.DeepClone
+
+    'objTable2 = objTable1 '.DeepClone
+
+    objTable2.Name = "mycloned"
+
+    '    objTable1.Objects.Add(objColumn2)
+    objTable2.Objects(0).Name = "changed"
+    objTable2.Objects.Add(objExpresssion2)
+
+    'MsgBox(objTable1.Objects(0).Name)
+    'MsgBox(objTable2.Objects(0).Name)
+    'MsgBox(objTable1.Objects.Count)
+    'MsgBox(objTable2.Objects.Count)
+
+
+    MsgBox(objExpresssion1.Objects.Count)
+    MsgBox(objExpresssion2.Objects.Count)
 
 
   End Sub
