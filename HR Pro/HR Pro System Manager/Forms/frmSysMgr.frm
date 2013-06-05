@@ -1,7 +1,7 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~3.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
 Begin VB.MDIForm frmSysMgr 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
@@ -474,27 +474,6 @@ Public Sub RefreshMenu(Optional ByVal pfUnLoad As Boolean)
     Next
     Set objTool = Nothing
 
-'    ' Remove all separators from the tool bar.
-'    For Each objTool In .Bands("Main Toolbar").Tools
-'      If objTool.Type = ssTypeSeparator Then
-'        .ToolBars("Main Toolbar").Tools.Remove "separator"
-'      End If
-'    Next
-'    Set objTool = Nothing
-'
-'    ' Remove all separators from the menu bar.
-'    For Each objGroup In .ToolBars("Main Menu").Tools
-'      If objGroup.Type = ssTypeMenu Then
-'        For Each objTool In objGroup.Menu.Tools
-'          If objTool.Type = ssTypeSeparator Then
-'            objGroup.Menu.Tools.Remove "separator"
-'          End If
-'        Next
-'        Set objTool = Nothing
-'      End If
-'    Next
-'    Set objGroup = Nothing
-'
     ' Configure the default menu tools.
     RefreshMenu_Defaults (iFormCount)
     
@@ -1299,7 +1278,7 @@ Private Sub RefreshMenu_ScrDesigner(piFormCount As Integer)
     .Tools("ID_Cut").Enabled = fControlsExist
     .Tools("ID_Copy").Enabled = fControlsExist
     .Tools("ID_Paste").Enabled = (objScreen.ClipboardControlsCount > 0)
-    .Tools("ID_ScreenObjectDelete").Enabled = fControlsExist Or (objScreen.TabPages.Tabs.Count > 0)
+    .Tools("ID_ScreenObjectDelete").Enabled = fControlsExist Or (objScreen.tabPages.Tabs.Count > 0)
     .Tools("ID_ScreenSelectAll").Enabled = bFormHasControls
     .Tools("ID_Save").Enabled = objScreen.IsChanged
             
@@ -1579,7 +1558,7 @@ Private Sub RefreshMenu_WebFormDesigner(piFormCount As Integer)
     .Tools("ID_Cut").Enabled = fControlsExist And (Not objScreen.ReadOnly)
     .Tools("ID_Copy").Enabled = fControlsExist And (Not objScreen.ReadOnly)
     .Tools("ID_Paste").Enabled = (objScreen.ClipboardControlsCount > 0) And (Not objScreen.ReadOnly)
-    .Tools("ID_ScreenObjectDelete").Enabled = (fControlsExist And (Not objScreen.ReadOnly)) Or objScreen.TabPages.Tabs.Count > 0
+    .Tools("ID_ScreenObjectDelete").Enabled = (fControlsExist And (Not objScreen.ReadOnly)) Or objScreen.tabPages.Tabs.Count > 0
     .Tools("ID_ScreenSelectAll").Enabled = bFormHasControls And (Not objScreen.ReadOnly)
     .Tools("ID_mnuWFSave").Enabled = objScreen.IsChanged And (Not objScreen.ReadOnly)
             
@@ -1782,6 +1761,7 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     .Tools("ID_BankHoliday").Enabled = Application.PersonnelModule
     .Tools("ID_Currency").Enabled = True
     .Tools("ID_Configuration").Enabled = True
+    .Tools("ID_CategorySetup").Enabled = True
     
     ' Display the required menu and it's tools.
     .Tools("ID_mnuModule").Visible = True
@@ -1816,6 +1796,7 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     .Tools("ID_BankHoliday").Visible = Application.PersonnelModule
     .Tools("ID_Currency").Visible = True
     .Tools("ID_Configuration").Visible = True
+    .Tools("ID_CategorySetup").Visible = True
     
     .Tools("ID_SaveChanges").Visible = True
     .Tools("ID_Logoff").Visible = True
@@ -3909,6 +3890,10 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmModuleDocument.Show vbModal
       Set frmModuleDocument = Nothing
 
+    Case "ID_CategorySetup"
+      frmCategorySetup.Show vbModal
+      Set frmCategorySetup = Nothing
+
     Case "ID_SaveChanges"
       '01/08/2001 MH Fault 2382
       '' Save changes without exiting.
@@ -4978,14 +4963,6 @@ End Sub
 
 Private Sub tbMain_MenuItemEnter(ByVal Tool As ActiveBarLibraryCtl.Tool)
   DoEvents
-End Sub
-
-Private Sub tbMain_MouseEnter(ByVal Tool As ActiveBarLibraryCtl.Tool)
-
-'  If Tool.Name = "ID_mnuModule" Or Tool.Name = "ID_mnuWindow" Then
-'    frmSysMgr.RefreshMenu
-'  End If
-
 End Sub
 
 Private Sub tbMain_PreCustomizeMenu(ByVal Cancel As ActiveBarLibraryCtl.ReturnBool)
