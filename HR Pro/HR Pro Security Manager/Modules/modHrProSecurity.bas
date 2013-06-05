@@ -8,7 +8,8 @@ Public gADOCon As ADODB.Connection
 
 Public giSQLServerAuthenticationType As HrProSecurityMgr.SQLServerAuthenticationType
 Public gsSQLServerName As String
-Public glngSQLVersion As Long                          ' Database version
+'Public glngSQLVersion As Long                          ' Database version
+Public glngSQLVersion As Double     'changed from Long to Double for SQL2008 R2 (i.e. version 10.5)
 Public gstrSQLFullVersion As String
 Public gsConnectString As String
 Public gsActualSQLLogin As String
