@@ -901,7 +901,7 @@ Namespace Things
       ChildCodeCluster.CodeLevel = CodeCluster.CodeLevel + 1
 
       ' Nesting is too deep - convert to part number
-      If Me.CaseCount > 8 Then
+      If Me.CaseCount > 7 Then
 
         objExpression = New Expression
         objExpression.ExpressionType = Me.ExpressionType
