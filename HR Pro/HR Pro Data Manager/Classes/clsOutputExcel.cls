@@ -641,7 +641,7 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
     End If
   Next lngTabIndex
         
-  mxlApp.Visible = True
+  'mxlApp.Visible = True
   With mxlApp.ActiveWindow
     .DisplayGridLines = True 'mblnXLExcelGridlines
     .DisplayHeadings = True 'mblnXLExcelHeaders

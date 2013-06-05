@@ -1062,7 +1062,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
         'Open word file
         If GetTOCFile(strOutputFilename, lngOutputFormat, lngOutputSaveExisting) Then
           InitialiseStyles
-          mwrdApp.Visible = True
+          'mwrdApp.Visible = True
           With mwrdApp.Selection
             .HomeKey unit:=wdStory
             'Insert TOC
