@@ -1766,11 +1766,11 @@ Private Sub cboColours_Click()
 End Sub
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   If Not mbLoading Then
-    cmdOK.Enabled = pblnChanged
+    cmdOk.Enabled = pblnChanged
   End If
 End Property
 
@@ -4303,7 +4303,7 @@ Private Function GetOutputFormats(strDestin As String, cboTemp As ComboBox)
   
   strSQL = "SELECT * FROM ASRSysFileFormats " & _
            "WHERE Destination = '" & Replace(strDestin, "'", "''") & "' " & _
-           "ORDER BY Sequence"
+           "ORDER BY ID"
   Set rsTemp = datGeneral.GetRecords(strSQL)
     
     

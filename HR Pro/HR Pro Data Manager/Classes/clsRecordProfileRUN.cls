@@ -30,10 +30,12 @@ Private mblnOutputPrinter As Boolean
 Private mstrOutputPrinterName As String
 Private mblnOutputSave As Boolean
 Private mlngOutputSaveExisting As Long
+Private mlngOutputSaveFormat As Long
 Private mblnOutputEmail As Boolean
 Private mlngOutputEmailAddr As Long
 Private mstrOutputEmailSubject As String
 Private mstrOutputEmailAttachAs As String
+Private mlngOutputEmailFileFormat As Long
 Private mstrOutputFilename As String
 Private mblnPreviewOnScreen As Boolean
 
@@ -317,10 +319,12 @@ Private Function InitialisePreview() As Boolean
     .OutputPrinterName = mstrOutputPrinterName
     .OutputSave = mblnOutputSave
     .OutputSaveExisting = mlngOutputSaveExisting
+    .OutputSaveFormat = mlngOutputSaveFormat
     .OutputEmail = mblnOutputEmail
     .OutputEmailAddr = mlngOutputEmailAddr
     .OutputEmailSubject = mstrOutputEmailSubject
     .OutputEmailAttachAs = mstrOutputEmailAttachAs
+    .OutputEmailFileFormat = mlngOutputEmailFileFormat
     .OutputFilename = mstrOutputFilename
     
     .IndentRelatedTables = mblnIndentRelatedTables
@@ -1485,10 +1489,12 @@ Private Function GetRecordProfileTables() As Boolean
     mstrOutputPrinterName = IIf(IsNull(!OutputPrinterName), "", !OutputPrinterName)
     mblnOutputSave = IIf(IsNull(!OutputSave), False, !OutputSave)
     mlngOutputSaveExisting = IIf(IsNull(!OutputSaveExisting), 0, !OutputSaveExisting)
+    mlngOutputSaveFormat = IIf(IsNull(!OutputSaveFormat), 0, !OutputSaveFormat)
     mblnOutputEmail = IIf(IsNull(!OutputEmail), False, !OutputEmail)
     mlngOutputEmailAddr = IIf(IsNull(!OutputEmailAddr), 0, !OutputEmailAddr)
     mstrOutputEmailSubject = IIf(IsNull(!OutputEmailSubject), "", !OutputEmailSubject)
     mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), "", !OutputEmailAttachAs)
+    mlngOutputEmailFileFormat = IIf(IsNull(!OutputEmailFileFormat), 0, !OutputEmailFileFormat)
     mstrOutputFilename = IIf(IsNull(!OutputFilename), "", !OutputFilename)
   
     mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))

@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmExport 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Export Definition"
@@ -78,11 +78,11 @@ Begin VB.Form frmExport
       TabCaption(1)   =   "Related &Tables"
       TabPicture(1)   =   "frmExport.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraParent1"
+      Tab(1).Control(0)=   "fraChild"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraParent2"
       Tab(1).Control(1).Enabled=   0   'False
-      Tab(1).Control(2)=   "fraChild"
+      Tab(1).Control(2)=   "fraParent1"
       Tab(1).Control(2).Enabled=   0   'False
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
@@ -100,21 +100,21 @@ Begin VB.Form frmExport
       TabCaption(4)   =   "O&ptions"
       TabPicture(4)   =   "frmExport.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraDateOptions"
+      Tab(4).Control(0)=   "fraHeaderOptions"
       Tab(4).Control(0).Enabled=   0   'False
-      Tab(4).Control(1)=   "fraHeaderOptions"
+      Tab(4).Control(1)=   "fraDateOptions"
       Tab(4).Control(1).Enabled=   0   'False
       Tab(4).ControlCount=   2
       TabCaption(5)   =   "O&utput"
       TabPicture(5)   =   "frmExport.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraDelimFile"
+      Tab(5).Control(0)=   "fraOutputType"
       Tab(5).Control(0).Enabled=   0   'False
-      Tab(5).Control(1)=   "fraCMGFile"
+      Tab(5).Control(1)=   "fraOutputDestination"
       Tab(5).Control(1).Enabled=   0   'False
-      Tab(5).Control(2)=   "fraOutputDestination"
+      Tab(5).Control(2)=   "fraCMGFile"
       Tab(5).Control(2).Enabled=   0   'False
-      Tab(5).Control(3)=   "fraOutputType"
+      Tab(5).Control(3)=   "fraDelimFile"
       Tab(5).Control(3).Enabled=   0   'False
       Tab(5).ControlCount=   4
       Begin VB.Frame fraOutputType 
@@ -572,9 +572,9 @@ Begin VB.Form frmExport
             RecordSelectors =   0   'False
             Col.Count       =   11
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -586,9 +586,9 @@ Begin VB.Form frmExport
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmExport.frx":0187
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -1710,7 +1710,7 @@ Public Property Let FormPrint(ByVal bPrint As Boolean)
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -1750,7 +1750,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Public Property Get SelectedID() As Long
@@ -4681,13 +4681,24 @@ Private Function SaveDefinition() As Boolean
     
     strSQL = strSQL & "OutputFormat = " & CStr(mobjOutputDef.GetSelectedFormatIndex) & ","
 
+'    If chkDestination(desSave).Value = vbChecked Then
+'      strSQL = strSQL & _
+'        "OutputSave = 1, " & _
+'        "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
+'    Else
+'      strSQL = strSQL & _
+'        "OutputSave = 0, " & _
+'        "OutputSaveExisting = 0, "
+'    End If
     If chkDestination(desSave).Value = vbChecked Then
       strSQL = strSQL & _
         "OutputSave = 1, " & _
+        "OutputSaveFormat = " & Val(txtFilename.Tag) & ", " & _
         "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
     Else
       strSQL = strSQL & _
         "OutputSave = 0, " & _
+        "OutputSaveFormat = 0, " & _
         "OutputSaveExisting = 0, "
     End If
         
@@ -4696,21 +4707,26 @@ Private Function SaveDefinition() As Boolean
           "OutputEmail = 1, " & _
           "OutputEmailAddr = " & txtEmailGroup.Tag & ", " & _
           "OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
-          "OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "', "
+          "OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "', " & _
+          "OutputEmailFileFormat = " & CStr(Val(txtEmailAttachAs.Tag)) & ", "
     Else
       strSQL = strSQL & _
           "OutputEmail = 0, " & _
           "OutputEmailAddr = 0, " & _
           "OutputEmailSubject = '', " & _
-          "OutputEmailAttachAs = '', "
+          "OutputEmailAttachAs = '', " & _
+          "OutputEmailFileFormat = 0, "
     End If
     
 '    If optOutputFormat(fmtSQLTable).Value Then
 '      strSQL = strSQL & _
 '          "OutputFilename = '" & Replace(txtSQLTableName.Text, "'", "''") & "',"
 '    Else
-      strSQL = strSQL & _
+      'strSQL = strSQL & _
           "OutputFilename = '" & Replace(txtFilename.Text, "'", "''") & "',"
+      strSQL = strSQL & _
+          "OutputFilename = '" & Replace(txtFilename.Text, "'", "''") & "'," ' & _
+          "OutputSaveFormat = " & Val(txtFilename.Tag) & ","
 '    End If
     
     
@@ -4766,8 +4782,8 @@ Private Function SaveDefinition() As Boolean
            "DateFormat, DateSeparator, DateYearDigits, UserName," & _
            "CMGExportFileCode, CMGExportUpdateAudit, CMGExportRecordID," & _
            "Parent1AllRecords, Parent1Picklist, Parent2AllRecords, Parent2Picklist, " & _
-           "OmitHeader, ForceHeader, OutputFormat, OutputSave, " & _
-           "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputFilename) "
+           "OmitHeader, ForceHeader, OutputFormat, OutputSave, OutputSaveFormat, " & _
+           "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputEmailFileFormat, OutputFilename) "
            
            'AppendToFile,
 
@@ -4833,19 +4849,20 @@ Private Function SaveDefinition() As Boolean
     strSQL = strSQL & CStr(mobjOutputDef.GetSelectedFormatIndex) & ","
     
     If chkDestination(desSave).Value = vbChecked Then
-      strSQL = strSQL & "1, " & _
+      strSQL = strSQL & "1, " & CStr(Val(txtFilename.Tag)) & ", " & _
         cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
     Else
-      strSQL = strSQL & "0, 0, "
+      strSQL = strSQL & "0, 0, 0, "
     End If
 
     If chkDestination(desEmail).Value = vbChecked Then
       strSQL = strSQL & "1, " & _
           txtEmailGroup.Tag & ", " & _
           "'" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
-          "'" & Replace(txtEmailAttachAs.Text, "'", "''") & "', "
+          "'" & Replace(txtEmailAttachAs.Text, "'", "''") & ", " & _
+          CStr(Val(txtEmailAttachAs.Tag)) & ", "      'OutputEmail, OutputEmailAddr, OutputEmailAttachAs, OutputEmailFileFormat, OutputEmailSubject
     Else
-      strSQL = strSQL & "0, 0, '', '', "
+      strSQL = strSQL & "0, 0, '', '', 0, "               'OutputEmail, OutputEmailAddr, OutputEmailAttachAs, OutputEmailFileFormat, OutputEmailSubject
     End If
 
 '    If optOutputFormat(fmtSQLTable).Value Then
@@ -5345,12 +5362,15 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
     txtEmailGroup.Tag = rsTemp!OutputEmailAddr
     txtEmailSubject.Text = rsTemp!OutputEmailSubject
     txtEmailAttachAs.Text = IIf(IsNull(rsTemp!OutputEmailAttachAs), vbNullString, rsTemp!OutputEmailAttachAs)
+    txtEmailAttachAs.Tag = IIf(IsNull(rsTemp!OutputEmailFileFormat), vbNullString, rsTemp!OutputEmailFileFormat)
   End If
 
 '  If rsTemp!OutputFormat = fmtSQLTable Then
 '    txtSQLTableName.Text = rsTemp!OutputFilename
 '  Else
     txtFilename.Text = rsTemp!OutputFilename
+    txtFilename.SelLength = Len(txtFilename.Text)
+    txtFilename.Tag = rsTemp!OutputSaveFormat
 '  End If
 
 

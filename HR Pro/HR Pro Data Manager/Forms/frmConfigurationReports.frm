@@ -1,8 +1,8 @@
 VERSION 5.00
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmConfigurationReports 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Report Configuration"
@@ -961,18 +961,18 @@ Private mblnForceInitialChanged As Boolean
 
 
 Private Property Let Changed(pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Private Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Public Property Let Run(ByVal blnNewValue As Boolean)
   mblnRun = blnNewValue
   fraDateRangeDef.Visible = Not mblnRun
   fraDateRangeRun.Visible = mblnRun
-  cmdOK.Caption = IIf(mblnRun, "&Run", "&OK")
+  cmdOk.Caption = IIf(mblnRun, "&Run", "&OK")
 End Property
 
 Public Property Let SingleRecord(ByVal lngNewValue As Long)
@@ -1025,7 +1025,7 @@ Public Sub ShowControls(strReportType As String)
     fraRecordSelection.Height = fraRecordSelection.Height - 840
     fraOutputFormat.Height = fraOutputFormat.Height - 840
     fraOutputDestination.Height = fraOutputDestination.Height - 840
-    cmdOK.Top = cmdOK.Top - 840
+    cmdOk.Top = cmdOk.Top - 840
     cmdCancel.Top = cmdCancel.Top - 840
   End If
   
@@ -1845,6 +1845,8 @@ Private Sub LoadOutputOptions()
   Dim strEmailSubject As String
   Dim strEmailAttachAs As String
   Dim strFileName As String
+  Dim lngFileFormat As Long
+  Dim lngEmailFileFormat As Long
 
   lngFormat = GetSystemSetting(mstrReportType, "Format", 0)
   blnPreview = GetSystemSetting(mstrReportType, "Preview", 0)
@@ -1854,16 +1856,19 @@ Private Sub LoadOutputOptions()
   blnSave = GetSystemSetting(mstrReportType, "Save", 0)
   lngSaveExisting = GetSystemSetting(mstrReportType, "SaveExisting", -1)
   strFileName = GetSystemSetting(mstrReportType, "FileName", vbNullString)
+  lngFileFormat = GetSystemSetting(mstrReportType, "SaveFormat", vbNullString)
   
   blnEmail = GetSystemSetting(mstrReportType, "Email", "0")
   If blnEmail Then
     lngEmailAddr = GetSystemSetting(mstrReportType, "EmailAddr", 0)
     strEmailSubject = GetSystemSetting(mstrReportType, "EmailSubject", vbNullString)
     strEmailAttachAs = GetSystemSetting(mstrReportType, "EmailAttachAs", vbNullString)
+    lngEmailFileFormat = GetSystemSetting(mstrReportType, "EmailFileFormat", vbNullString)
   Else
     lngEmailAddr = 0
     strEmailSubject = vbNullString
     strEmailAttachAs = vbNullString
+    lngEmailFileFormat = 0
   End If
 
 
@@ -1892,8 +1897,10 @@ Private Sub LoadOutputOptions()
     txtEmailGroup.Tag = lngEmailAddr
     txtEmailSubject.Text = strEmailSubject
     txtEmailAttachAs.Text = strEmailAttachAs
+    txtEmailAttachAs.Tag = lngEmailFileFormat
   End If
   txtFilename.Text = strFileName
+  txtFilename.Tag = lngFileFormat
 
 End Sub
 
@@ -2079,17 +2086,20 @@ Private Function SaveDefinition() As Boolean
   SaveSystemSetting mstrReportType, "Save", IIf(chkDestination(desSave).Value = vbChecked, "1", "0")
   SaveSystemSetting mstrReportType, "SaveExisting", cboSaveExisting.ListIndex
   SaveSystemSetting mstrReportType, "FileName", txtFilename.Text
+  SaveSystemSetting mstrReportType, "SaveFormat", Val(txtFilename.Tag)
 
   If chkDestination(desEmail).Value = vbChecked Then
     SaveSystemSetting mstrReportType, "Email", 1
     SaveSystemSetting mstrReportType, "EmailAddr", txtEmailGroup.Tag
     SaveSystemSetting mstrReportType, "EmailSubject", txtEmailSubject.Text
     SaveSystemSetting mstrReportType, "EmailAttachAs", txtEmailAttachAs.Text
+    SaveSystemSetting mstrReportType, "EmailFileFormat", txtEmailAttachAs.Tag
   Else
     SaveSystemSetting mstrReportType, "Email", 0
     SaveSystemSetting mstrReportType, "EmailAddr", 0
     SaveSystemSetting mstrReportType, "EmailSubject", vbNullString
     SaveSystemSetting mstrReportType, "EmailAttachAs", vbNullString
+    SaveSystemSetting mstrReportType, "EmailFileFormat", 0
   End If
 
 End Function
@@ -2142,10 +2152,12 @@ Private Sub RunDefinition()
           cboPrinterName.Text, _
           (chkDestination(desSave).Value = vbChecked), _
           cboSaveExisting.ListIndex, _
+          Val(txtFilename.Tag), _
           (chkDestination(desEmail).Value), _
           Val(txtEmailGroup.Tag), _
           txtEmailSubject.Text, _
           txtEmailAttachAs.Text, _
+          Val(txtEmailAttachAs.Tag), _
           txtFilename.Text, _
           (chkPreview.Value = vbChecked), _
           (chkPrintFilterHeader.Value = vbChecked)
@@ -2208,10 +2220,12 @@ Private Sub RunDefinition()
           cboPrinterName.Text, _
           (chkDestination(desSave).Value = vbChecked), _
           cboSaveExisting.ListIndex, _
+          Val(txtFilename.Tag), _
           (chkDestination(desEmail).Value), _
           Val(txtEmailGroup.Tag), _
           txtEmailSubject.Text, _
           txtEmailAttachAs.Text, _
+          Val(txtEmailAttachAs.Tag), _
           txtFilename.Text, _
           (chkPreview.Value = vbChecked), _
           (chkPrintFilterHeader.Value = vbChecked)

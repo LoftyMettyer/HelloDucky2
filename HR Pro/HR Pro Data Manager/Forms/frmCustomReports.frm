@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
@@ -86,6 +86,7 @@ Begin VB.Form frmCustomReports
       _Version        =   393216
       Style           =   1
       Tabs            =   5
+      Tab             =   4
       TabsPerRow      =   5
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -99,43 +100,33 @@ Begin VB.Form frmCustomReports
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmCustomReports.frx":1CB4
-      Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "fraInformation"
-      Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "fraBase"
-      Tab(0).Control(1).Enabled=   0   'False
+      Tab(0).ControlEnabled=   0   'False
+      Tab(0).Control(0)=   "fraBase"
+      Tab(0).Control(1)=   "fraInformation"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Related Ta&bles"
       TabPicture(1)   =   "frmCustomReports.frx":1CD0
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraParent1"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraParent2"
-      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).Control(2)=   "fraChild"
-      Tab(1).Control(2).Enabled=   0   'False
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmCustomReports.frx":1CEC
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraFieldsAvailable"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraFieldsSelected"
-      Tab(2).Control(1).Enabled=   0   'False
       Tab(2).Control(2)=   "fraButtons"
-      Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmCustomReports.frx":1D08
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraRepetition"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).Control(1)=   "fraReportOrder"
-      Tab(3).Control(1).Enabled=   0   'False
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmCustomReports.frx":1D24
-      Tab(4).ControlEnabled=   0   'False
+      Tab(4).ControlEnabled=   -1  'True
       Tab(4).Control(0)=   "fraReportOptions"
       Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraOutputFormat"
@@ -410,7 +401,7 @@ Begin VB.Form frmCustomReports
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
          Height          =   3975
-         Left            =   -72255
+         Left            =   2745
          TabIndex        =   95
          Top             =   1800
          Width           =   6555
@@ -890,7 +881,7 @@ Begin VB.Form frmCustomReports
       Begin VB.Frame fraOutputFormat 
          Caption         =   "Output Format :"
          Height          =   3975
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   87
          Top             =   1800
          Width           =   2500
@@ -1121,7 +1112,7 @@ Begin VB.Form frmCustomReports
       Begin VB.Frame fraBase 
          Caption         =   "Data :"
          Height          =   3340
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   9
          Top             =   2450
          Width           =   9180
@@ -1705,7 +1696,7 @@ Begin VB.Form frmCustomReports
          Caption         =   "Report Options :"
          Enabled         =   0   'False
          Height          =   1335
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   84
          Top             =   400
          Width           =   9180
@@ -1728,7 +1719,7 @@ Begin VB.Form frmCustomReports
       End
       Begin VB.Frame fraInformation 
          Height          =   1950
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   0
          Top             =   400
          Width           =   9180
@@ -2024,10 +2015,10 @@ Private mblnGridChangeRecursive As Boolean
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = (pblnChanged) And (Not mblnReadOnly)
+  cmdOk.Enabled = (pblnChanged) And (Not mblnReadOnly)
 End Property
 
 
@@ -4278,7 +4269,7 @@ Private Sub ListView1_GotFocus()
 End Sub
 
 Private Sub ListView1_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub ListView2_GotFocus()
@@ -4286,7 +4277,7 @@ Private Sub ListView2_GotFocus()
 End Sub
 
 Private Sub ListView2_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub optBaseAllRecords_Click()
@@ -5846,13 +5837,13 @@ Private Sub txtDesc_GotFocus()
     .SelLength = Len(.Text)
   End With
   
-  cmdOK.Default = False
+  cmdOk.Default = False
   
 End Sub
 
 Private Sub txtDesc_LostFocus()
 
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 
@@ -6148,10 +6139,12 @@ Private Function SaveDefinition() As Boolean
     If chkDestination(desSave).Value = vbChecked Then
       sSQL = sSQL & _
         "OutputSave = 1, " & _
+        "OutputSaveFormat = " & Val(txtFilename.Tag) & ", " & _
         "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
     Else
       sSQL = sSQL & _
         "OutputSave = 0, " & _
+        "OutputSaveFormat = 0, " & _
         "OutputSaveExisting = 0, "
     End If
         
@@ -6159,14 +6152,16 @@ Private Function SaveDefinition() As Boolean
       sSQL = sSQL & _
           "OutputEmail = 1, " & _
           "OutputEmailAddr = " & txtEmailGroup.Tag & ", " & _
-          "OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
-          "OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "', "
+          "OutputEmailSubject = '" & Replace(txtEMailSubject.Text, "'", "''") & "', " & _
+          "OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "', " & _
+          "OutputEmailFileFormat = " & CStr(Val(txtEmailAttachAs.Tag)) & ", "
     Else
       sSQL = sSQL & _
           "OutputEmail = 0, " & _
           "OutputEmailAddr = 0, " & _
           "OutputEmailSubject = '', " & _
-          "OutputEmailAttachAs = '', "
+          "OutputEmailAttachAs = '', " & _
+          "OutputEmailFileFormat = 0,"
     End If
     
     sSQL = sSQL & _
@@ -6207,8 +6202,8 @@ Private Function SaveDefinition() As Boolean
            "UserName," & _
            "Parent1AllRecords, Parent1Picklist, Parent2AllRecords, Parent2Picklist, IgnoreZeros, " & _
            "OutputPreview, OutputFormat, OutputScreen, OutputPrinter, " & _
-           "OutputPrinterName, OutputSave, OutputSaveExisting, OutputEmail, " & _
-           "OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputFileName " & _
+           "OutputPrinterName, OutputSave, OutputSaveFormat, OutputSaveExisting, OutputEmail, " & _
+           "OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputEmailFileFormat, OutputFileName " & _
            ") "
     
            '"DefaultOutput, DefaultExportTo, DefaultSave, DefaultSaveAs, DefaultCloseApp, " & _
@@ -6259,27 +6254,29 @@ Private Function SaveDefinition() As Boolean
     sSQL = sSQL & CStr(IIf(chkDestination(desScreen).Value = vbChecked, "1", "0")) & ","  'OutputScreen
     
     If chkDestination(desPrinter).Value = vbChecked Then
-      sSQL = sSQL & "1, "                                                            'OutputPrinter
-      sSQL = sSQL & "'" & Replace(cboPrinterName.Text, "'", "''") & "',"            'OutputPrinterName
+      sSQL = sSQL & "1, "                                                                 'OutputPrinter
+      sSQL = sSQL & "'" & Replace(cboPrinterName.Text, "'", "''") & "',"                  'OutputPrinterName
     Else
-      sSQL = sSQL & "0, "                  'OutputPrinter
-      sSQL = sSQL & "'',"                 'OutputPrinterName
+      sSQL = sSQL & "0, "                                                                 'OutputPrinter
+      sSQL = sSQL & "'',"                                                                 'OutputPrinterName
     End If
     
     If chkDestination(desSave).Value = vbChecked Then
-      sSQL = sSQL & "1, " & _
-        cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "    'OutputSave, OutputSaveExisting
+      sSQL = sSQL & "1, " & CStr(Val(txtFilename.Tag)) & ", " & _
+        cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "    'OutputSave, OutputSaveFormat, OutputSaveExisting
     Else
-      sSQL = sSQL & "0, 0, "    'OutputSave, OutputSaveExisting
+      sSQL = sSQL & "0, 0, 0, "                                       'OutputSave, OutputSaveFormat, OutputSaveExisting
     End If
+
 
     If chkDestination(desEmail).Value = vbChecked Then
       sSQL = sSQL & "1, " & _
           txtEmailGroup.Tag & ", " & _
-          "'" & Replace(txtEmailSubject.Text, "'", "''") & "', " & _
-          "'" & Replace(txtEmailAttachAs.Text, "'", "''") & "', "      'OutputEmail, OutputEmailAddr, OutputEmailSubject
+          "'" & Replace(txtEMailSubject.Text, "'", "''") & "', " & _
+          "'" & Replace(txtEmailAttachAs.Text, "'", "''") & "', " & _
+          CStr(Val(txtEmailAttachAs.Tag)) & ", "      'OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailFileFormat
     Else
-      sSQL = sSQL & "0, 0, '', '', "   'OutputEmail, OutputEmailAddr, OutputEmailSubject
+      sSQL = sSQL & "0, 0, '', '', 0, "   'OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailFileFormat
     End If
 
     sSQL = sSQL & _
@@ -6682,33 +6679,35 @@ Private Function RetrieveCustomReportDetails(plngCustomReportID As Long) As Bool
   'Set the default options
   optOutputFormat(rsTemp!OutputFormat).Value = True
   chkPreview.Value = IIf(rsTemp!OutputPreview, vbChecked, vbUnchecked)
-  chkDestination(desScreen).Value = IIf(rsTemp!OutputScreen, vbChecked, vbUnchecked)
-  
-  chkDestination(desPrinter).Value = IIf(rsTemp!OutputPrinter, vbChecked, vbUnchecked)
-  SetComboText cboPrinterName, rsTemp!OutputPrinterName
-  If rsTemp!OutputPrinterName <> vbNullString Then
-    If cboPrinterName.Text <> rsTemp!OutputPrinterName Then
-      cboPrinterName.AddItem rsTemp!OutputPrinterName
-      cboPrinterName.ListIndex = cboPrinterName.NewIndex
-      MsgBox "This definition is set to output to printer " & rsTemp!OutputPrinterName & _
-             " which is not set up on your PC.", vbInformation, Me.Caption
-    End If
-  End If
-  
-  chkDestination(desSave).Value = IIf(rsTemp!OutputSave, vbChecked, vbUnchecked)
-  If chkDestination(desSave).Value Then
-    txtFilename.Text = rsTemp!OutputFilename
-    SetComboItem cboSaveExisting, rsTemp!OutputSaveExisting
-  End If
-  
-  chkDestination(desEmail).Value = IIf(rsTemp!OutputEmail, vbChecked, vbUnchecked)
-  If rsTemp!OutputEmail Then
-    txtEmailGroup.Text = datGeneral.GetEmailGroupName(rsTemp!OutputEmailAddr)
-    txtEmailGroup.Tag = rsTemp!OutputEmailAddr
-    txtEmailSubject.Text = rsTemp!OutputEmailSubject
-    txtEmailAttachAs.Text = IIf(IsNull(rsTemp!OutputEmailAttachAs), vbNullString, rsTemp!OutputEmailAttachAs)
-  End If
-  
+'  chkDestination(desScreen).Value = IIf(rsTemp!OutputScreen, vbChecked, vbUnchecked)
+'
+'  chkDestination(desPrinter).Value = IIf(rsTemp!OutputPrinter, vbChecked, vbUnchecked)
+'  SetComboText cboPrinterName, rsTemp!OutputPrinterName
+'  If rsTemp!OutputPrinterName <> vbNullString Then
+'    If cboPrinterName.Text <> rsTemp!OutputPrinterName Then
+'      cboPrinterName.AddItem rsTemp!OutputPrinterName
+'      cboPrinterName.ListIndex = cboPrinterName.NewIndex
+'      MsgBox "This definition is set to output to printer " & rsTemp!OutputPrinterName & _
+'             " which is not set up on your PC.", vbInformation, Me.Caption
+'    End If
+'  End If
+'
+'  chkDestination(desSave).Value = IIf(rsTemp!OutputSave, vbChecked, vbUnchecked)
+'  If chkDestination(desSave).Value Then
+'    txtFilename.Text = rsTemp!OutputFilename
+'    txtFilename.Tag = rsTemp!OutputSaveFormat
+'    SetComboItem cboSaveExisting, rsTemp!OutputSaveExisting
+'  End If
+'
+'  chkDestination(desEmail).Value = IIf(rsTemp!OutputEmail, vbChecked, vbUnchecked)
+'  If rsTemp!OutputEmail Then
+'    txtEmailGroup.Text = datGeneral.GetEmailGroupName(rsTemp!OutputEmailAddr)
+'    txtEmailGroup.Tag = rsTemp!OutputEmailAddr
+'    txtEmailSubject.Text = rsTemp!OutputEmailSubject
+'    txtEmailAttachAs.Text = IIf(IsNull(rsTemp!OutputEmailAttachAs), vbNullString, rsTemp!OutputEmailAttachAs)
+'    txtEmailAttachAs.Tag = rsTemp!OutputEmailFileFormat
+'  End If
+  mobjOutputDef.PopulateOutputControls rsTemp
   
   mlngTimeStamp = rsTemp!intTimestamp
   
@@ -9221,7 +9220,7 @@ Public Sub PrintDef(lCustomReportID As Long)
         If chkDestination(3).Value = vbChecked Then
           .PrintNormal "Output Destination : Send to email"
           .PrintNormal "Email Group : " & txtEmailGroup.Text
-          .PrintNormal "Email Subject : " & txtEmailSubject.Text
+          .PrintNormal "Email Subject : " & txtEMailSubject.Text
           .PrintNormal "Email Attach As : " & txtEmailAttachAs.Text
         End If
         

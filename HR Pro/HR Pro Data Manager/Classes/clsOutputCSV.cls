@@ -25,6 +25,9 @@ Private mstrFileName As String
 Private mstrDelim As String
 Private mblnQuotes As Boolean
 
+Private mlngSaveFileFormat As Long
+Private mlngEmailFileFormat As Long
+
 Private mstrErrorMessage As String
 
 Public Property Let Screen(blnScreen As Boolean)
@@ -279,4 +282,20 @@ End Sub
 Public Sub ClearUp()
   Close
 End Sub
+
+Public Property Let SaveFileFormat(lngSaveFileFormat As Long)
+  mlngSaveFileFormat = lngSaveFileFormat
+End Property
+
+Public Property Get SaveFileFormat() As Long
+  SaveFileFormat = mlngSaveFileFormat
+End Property
+
+Public Property Let EmailFileFormat(lngEmailFileFormat As Long)
+  mlngEmailFileFormat = lngEmailFileFormat
+End Property
+
+Public Property Get EmailFileFormat() As Long
+  EmailFileFormat = mlngEmailFileFormat
+End Property
 
