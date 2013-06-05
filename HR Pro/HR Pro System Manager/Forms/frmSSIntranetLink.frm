@@ -24,6 +24,7 @@ Begin VB.Form frmSSIntranetLink
    Icon            =   "frmSSIntranetLink.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   12660
@@ -875,7 +876,7 @@ Begin VB.Form frmSSIntranetLink
          Width           =   1305
       End
       Begin VB.OptionButton optLink 
-         Caption         =   "&Separator"
+         Caption         =   "Se&parator"
          Height          =   315
          Index           =   5
          Left            =   195
@@ -912,7 +913,7 @@ Begin VB.Form frmSSIntranetLink
          Width           =   1305
       End
       Begin VB.OptionButton optLink 
-         Caption         =   "&OpenHR Screen"
+         Caption         =   "&Screen"
          Height          =   315
          Index           =   0
          Left            =   200
@@ -931,7 +932,7 @@ Begin VB.Form frmSSIntranetLink
          Width           =   960
       End
       Begin VB.OptionButton optLink 
-         Caption         =   "HR &Pro Report / Utility"
+         Caption         =   "&Report / Utility"
          Height          =   315
          Index           =   2
          Left            =   200
@@ -1111,7 +1112,7 @@ Begin VB.Form frmSSIntranetLink
       End
    End
    Begin VB.Frame fraHRProUtilityLink 
-      Caption         =   "OpenHR Report / Utility :"
+      Caption         =   "Report / Utility :"
       Height          =   1485
       Left            =   2880
       TabIndex        =   29
@@ -1164,7 +1165,7 @@ Begin VB.Form frmSSIntranetLink
       End
    End
    Begin VB.Frame fraHRProScreenLink 
-      Caption         =   "OpenHR Screen :"
+      Caption         =   "Screen :"
       Height          =   6060
       Left            =   2880
       TabIndex        =   20
@@ -1765,7 +1766,7 @@ Private Sub GetHRProUtilities(pUtilityType As UtilityType)
 
       While Not rsLocalUtilities.EOF
         cboHRProUtility.AddItem rsLocalUtilities!Name
-        cboHRProUtility.ItemData(cboHRProUtility.NewIndex) = rsLocalUtilities!id
+        cboHRProUtility.ItemData(cboHRProUtility.NewIndex) = rsLocalUtilities!ID
 
         rsLocalUtilities.MoveNext
       Wend
@@ -1786,7 +1787,7 @@ Private Sub GetHRProUtilities(pUtilityType As UtilityType)
       rsUtilities.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
       While Not rsUtilities.EOF
         cboHRProUtility.AddItem rsUtilities!Name
-        cboHRProUtility.ItemData(cboHRProUtility.NewIndex) = rsUtilities!id
+        cboHRProUtility.ItemData(cboHRProUtility.NewIndex) = rsUtilities!ID
   
         rsUtilities.MoveNext
       Wend
@@ -2372,7 +2373,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 
 End Sub
