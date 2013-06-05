@@ -182,7 +182,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DBScripter\Phoenix.vbproj">
+    <ProjectReference Include="..\Engine\HR Pro Engine.vbproj">
       <Project>{C475177F-6A94-43B0-BAEE-427642923108}</Project>
       <Name>Phoenix</Name>
     </ProjectReference>

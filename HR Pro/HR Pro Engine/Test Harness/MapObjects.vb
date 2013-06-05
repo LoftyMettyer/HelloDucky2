@@ -1,8 +1,8 @@
 ﻿Public Class MapObjects
 
-  Private mobjPhoenix As Phoenix.HCM
+  Private mobjPhoenix As DBScripter.HCM
 
-  Private objProgress As Phoenix.HCMProgressBar
+  Private objProgress As DBScripter.HCMProgressBar
   Private Initialised As Boolean = False
   Private miMappingsRequired As Integer = 0
 
@@ -19,18 +19,18 @@
 
   Private Sub InitialiseStuff()
 
-    objProgress = New Phoenix.HCMProgressBar
+    objProgress = New DBScripter.HCMProgressBar
     AddHandler objProgress.Update1, AddressOf UpdateProgress1
     AddHandler objProgress.Update2, AddressOf UpdateProgress2
 
     If Not Initialised Then
       mobjPhoenix.Initialise()
-      Phoenix.CommitDB.Open()
+      DBScripter.CommitDB.Open()
 
       CurrentPhase.Text = "Populating Objects..."
-      Phoenix.Things.PopulateSystemThings()
+      DBScripter.Things.PopulateSystemThings()
       '   Phoenix.Things.PopulateThings(objProgress)
-      Phoenix.Things.PopulateModuleSettings(objProgress)
+      DBScripter.Things.PopulateModuleSettings(objProgress)
 
       Initialised = True
     End If
@@ -44,7 +44,7 @@
 
   End Sub
 
-  Public Shared Function ToXML(ByVal objTable As Phoenix.Things.Table) As String
+  Public Shared Function ToXML(ByVal objTable As DBScripter.Things.Table) As String
 
     Dim xmlDoc As System.Xml.XmlDocument = New System.Xml.XmlDocument()
     Dim xmlSerializer As New System.Xml.Serialization.XmlSerializer(objTable.[GetType]())
@@ -57,7 +57,7 @@
 
   End Function
 
-  Public Function ToXML2(ByVal objTable As Phoenix.Things.Table) As String
+  Public Function ToXML2(ByVal objTable As DBScripter.Things.Table) As String
 
     Dim objPropertyVal As Object
 

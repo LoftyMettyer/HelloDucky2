@@ -3,7 +3,7 @@
 
 Public Class Form1
 
-  Private objProgress As Phoenix.HCMProgressBar
+  'Private objProgress As Phoenix.HCMProgressBar
   Private Initialised As Boolean = False
 
   'Private Sub DisplayErrors()
@@ -22,7 +22,7 @@ Public Class Form1
 
   Private Sub InitialiseStuff()
 
-    objProgress = New Phoenix.HCMProgressBar
+    ' objProgress = New Phoenix.HCMProgressBar
     '  AddHandler objProgress.Update1, AddressOf UpdateProgress1
     '  AddHandler objProgress.Update2, AddressOf UpdateProgress2
 
@@ -53,9 +53,9 @@ Public Class Form1
 
     InitialiseStuff()
 
-    objProgress.TotalSteps1 = 6
+    '  objProgress.TotalSteps1 = 6
 
-    Label1.Text = Phoenix.CommitDB.Login.Database
+    ' Label1.Text = Phoenix.CommitDB.Login.Database
     ''    Dim objAssembly As ScriptDB.Connectivity.ConnectionType
 
     ' Generate all the SQL code for our objects
@@ -161,7 +161,7 @@ Public Class Form1
 
   Private Sub Button5_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button5.Click
 
-    Dim objPhoenix As New Phoenix.SysMgr
+    Dim objPhoenix As New DBScripter.SysMgr
 
     Dim objADO As New ADODB.Connection
     Dim objDAOEngine As New DAO.DBEngine
@@ -242,7 +242,7 @@ Public Class Form1
 
   Private Sub Button7_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button7.Click
 
-    Dim objPhoenix As New Phoenix.SysMgr
+    Dim objPhoenix As New DBScripter.SysMgr
 
     Dim objADO As New ADODB.Connection
     Dim objDAOEngine As New DAO.DBEngine
@@ -339,7 +339,7 @@ Public Class Form1
 
   Private Sub cmdDatasource_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDatasource.Click
 
-    Dim objPhoenix As New Phoenix.SysMgr
+    Dim objPhoenix As New DBScripter.SysMgr
 
     Dim objADO As New ADODB.Connection
     Dim objDAOEngine As New DAO.DBEngine
@@ -392,14 +392,14 @@ Public Class Form1
 
   Private Sub Button8_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button8.Click
 
-    Dim objHCM As New Phoenix.HCM
+    Dim objHCM As New DBScripter.HCM
 
     '    objHCM.
 
 
     objHCM.Initialise()
     objHCM.Login("sa", "asr", "phoenix", "harpdev01")
-    objHCM.Populate(Phoenix.Things.Type.GlobalModify)
+    objHCM.Populate(DBScripter.Things.Type.GlobalModify)
 
 
 
