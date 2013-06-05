@@ -655,7 +655,7 @@ Private Function CreateValidationStoredProcedure(pLngCurrentTableID As Long, _
                     Case Else ' Literal.
                       sSPCode = sSPCode & _
                         "        SELECT @sOneChar = substring(@sTmpChar, " & Trim$(Str$(iCharIndex)) & ", 1)" & vbNewLine & _
-                        "        IF ascii(@sOneChar) <> ascii('" & Mid(!Mask, iLoop, 1) & "') SET @fItemOK = 0" & vbNewLine
+                        "        IF ascii(@sOneChar) <> ascii('" & Replace(Mid(!Mask, iLoop, 1), "'", "''") & "') SET @fItemOK = 0" & vbNewLine
                     
                   End Select
                 End If
