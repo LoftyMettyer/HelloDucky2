@@ -559,7 +559,7 @@ Public Function SaveSystemSetting(strSection As String, strKey As String, varSet
 
 End Function
 
-Public Function GetSystemSetting(strSection As String, strKey As String, varDefault As Variant) As Variant
+Public Function GetSystemSetting(strSection As String, strKey As String, varDefault As Variant) As String
   
   Dim datData As clsDataAccess
   Dim rsTemp As Recordset
