@@ -2761,7 +2761,7 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As Syst
         lngTransferType = !TransferTypeID
         lngFilterID = !FilterID
         strTransferFieldID = !TransferFieldID
-  
+   
         Select Case !ASRMapType
           Case MAPTYPE_COLUMN
                 
@@ -2867,6 +2867,8 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As Syst
                   sConvertDelCols = "ISNULL(CONVERT(varchar(255), @delCol_" & sASRColumnID & "), '')"
               End Select
     
+    
+    
               lngGroupBy = !GroupBy
               If lngGroupBy <> 0 Then
               
@@ -2880,7 +2882,7 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As Syst
 
                   Do While Not rsAssociatedColumns.EOF
                     ' AE20080616 Fault #13168
-                    Select Case GetColumnDataType(lngASRColumnID)
+                    Select Case GetColumnDataType(rsAssociatedColumns.Fields(0).value)
                     Case dtINTEGER, dtNUMERIC, dtBIT
                       strCurrentUpdate.Append _
                         " ISNULL(@insCol_" & rsAssociatedColumns.Fields(0).value & ",0) <> ISNULL(@delCol_" & rsAssociatedColumns.Fields(0).value & ",0)"
