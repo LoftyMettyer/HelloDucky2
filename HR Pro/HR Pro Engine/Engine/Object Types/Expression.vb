@@ -935,13 +935,14 @@ Namespace Things
 
         Declarations.Add(String.Format("@part_{0} {1}", iPartNumber, objExpression.DataTypeSyntax))
 
-        sPartCode = String.Format("-- Component part number {1}" & vbNewLine & _
+        sPartCode = String.Format("-- Component ({6})" & vbNewLine & _
             vbTab & "SELECT @part_{1} = {2}" & vbNewLine & _
             "{0}{3}" & vbNewLine & _
             "{0}{4}" & vbNewLine & _
             "{0}{5}" & vbNewLine _
             , [CodeCluster].Indentation, iPartNumber _
-            , objExpression.UDF.SelectCode, objExpression.UDF.FromCode, objExpression.UDF.JoinCode, objExpression.UDF.WhereCode)
+            , objExpression.UDF.SelectCode, objExpression.UDF.FromCode, objExpression.UDF.JoinCode, objExpression.UDF.WhereCode _
+            , objExpression.Description)
         sPartCode = Regex.Replace(sPartCode, "\s*(\n)", "$1")
 
         PreStatements.Add(sPartCode)
@@ -1100,7 +1101,8 @@ Namespace Things
           End If
         End If
 
-        PreStatements.Add(String.Format("SELECT @part_{0} = {1}", sVariableName, sStatement))
+        PreStatements.Add(String.Format("-- Column component ({2})" & vbNewLine & "SELECT @part_{0} = {1}" & vbNewLine _
+                          , sVariableName, sStatement, ReferencedColumn.Name))
         sCallingCode.Code = String.Format("@part_{0}", sVariableName)
       End If
 
