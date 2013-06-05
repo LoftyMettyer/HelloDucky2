@@ -158,6 +158,7 @@ Attribute VB_Exposed = False
 Option Explicit
 Private mbSelected As Boolean
 Private msItem As String
+Public Event KeyDown(KeyCode As Integer, Shift As Integer)
 
 Private Sub cmdCancel_Click()
 
@@ -218,6 +219,12 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
   ' <Menu> Key - Dunno what this does, but its always been there and I'm afraid to take it out.
   If KeyCode = vbKeyMenu Then
     frmDrop.Hide
+  End If
+
+  ' Ctrl key pressed - pass back to parent control
+  If (Shift And vbCtrlMask) > 0 Then
+    frmDrop.Hide
+    RaiseEvent KeyDown(KeyCode, Shift)
   End If
 
 End Sub
