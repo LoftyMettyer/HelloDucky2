@@ -671,13 +671,15 @@ Namespace ScriptDB
 
           ' Update statement of all the calculated columns
           If aryCalculatedColumns.ToArray.Length > 0 Then
-            sSQLCalculatedColumns = String.Format("    -- Update calculated columns" & vbNewLine & _
+            sSQLCalculatedColumns = String.Format("    EXECUTE sp_executeSQL N'dbo.[spstat_flushuniquecode]';" & vbNewLine & vbNewLine & _
+              "    -- Update calculated columns" & vbNewLine & _
               "    WITH base AS (" & vbNewLine & _
               "        SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
               "            FROM [dbo].[{0}]" & vbNewLine & _
               "            WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
               "    UPDATE base SET " & vbNewLine & _
-              "        {1};" & vbNewLine _
+              "        {1};" & vbNewLine & vbNewLine & _
+              "    EXECUTE sp_executeSQL N'dbo.[spstat_flushuniquecode]';" & vbNewLine & vbNewLine _
               , objTable.PhysicalName, String.Join(vbNewLine & vbTab & vbTab & vbTab & ", ", aryCalculatedColumns.ToArray()))
           End If
 

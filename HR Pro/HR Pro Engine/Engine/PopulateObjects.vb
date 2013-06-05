@@ -144,7 +144,7 @@
           '     objCodeLibrary.RowNumberRequired = objRow.Item("rownumberrequired").ToString
           objCodeLibrary.RecordIDRequired = objRow.Item("recordidrequired").ToString
           objCodeLibrary.CalculatePostAudit = objRow.Item("calculatepostaudit").ToString
-          '          objCodeLibrary.IsUniqueCode = objRow.Item("isuniquecode").ToString
+          objCodeLibrary.IsUniqueCode = objRow.Item("isuniquecode").ToString
           '         objCodeLibrary.RequiresWriteback = objRow.Item("requireswriteback").ToString
           objCodeLibrary.IsGetFieldFromDB = objRow.Item("isgetfieldfromdb").ToString
           objCodeLibrary.CaseCount = objRow.Item("casecount").ToString

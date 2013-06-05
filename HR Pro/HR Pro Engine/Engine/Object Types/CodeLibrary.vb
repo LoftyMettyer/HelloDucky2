@@ -12,7 +12,7 @@
     Public OvernightOnly As Boolean = False
     Public CalculatePostAudit As Boolean
     Public IsGetFieldFromDB As Boolean = False
-    '    Public IsUniqueCode As Boolean = False
+    Public IsUniqueCode As Boolean = False
     Public CaseCount As Integer = 0
     Public MakeTypeSafe As Boolean = False
     Public DependsOnBankHoliday As Boolean = False

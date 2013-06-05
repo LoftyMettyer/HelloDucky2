@@ -39,9 +39,9 @@ Namespace Things
     Public StartOfPartNumbers As Integer = 0
     Public RequiresRecordID As Boolean = False
     '    Public RequiresRowNumber As Boolean = False
-    Public RequiresWriteback As Boolean = False
+    'Public RequiresWriteback As Boolean = False
     Public RequiresOvernight As Boolean = False
-    '    Public ContainsUniqueCode As Boolean = False
+    Public ContainsUniqueCode As Boolean = False
     Public ReferencesParent As Boolean = False
     Public ReferencesChild As Boolean = False
 
@@ -614,7 +614,8 @@ Namespace Things
         LineOfCode.Code = String.Format("@prm_{0}", objThisColumn.Name)
 
         ' Does the referenced column have default value on it, then reference the UDF/value of the default rather than the column itself.
-      ElseIf (Not objThisColumn.DefaultCalculation Is Nothing And Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault) Then
+      ElseIf (Not objThisColumn.DefaultCalculation Is Nothing _
+        And Me.ExpressionType = ScriptDB.ExpressionType.ColumnDefault) Then
         LineOfCode.Code = String.Format("[dbo].[{0}](@prm_ID)", objThisColumn.Name)
 
         '  ElseIf ColumnRecursion.Contains(objThisColumn) Then
@@ -844,10 +845,11 @@ Namespace Things
         Globals.GetFieldsFromDB.Add([Component])
       End If
 
-      '' Is this a unique value that needs evaluating?
-      'If objCodeLibrary.IsUniqueCode Then
-      '  Globals.UniqueCodes.Add([Component])
-      'End If
+      ' Is this a unique value?
+      If objCodeLibrary.IsUniqueCode Then
+        Me.ContainsUniqueCode = True
+        Me.IsComplex = True
+      End If
 
       ' Is this expression reliant on the bank holiday table (I'm sure this can be tidyied up)
       If objCodeLibrary.DependsOnBankHoliday And Me.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation Then ' And Not Me.IsComplex Then
@@ -981,7 +983,7 @@ Namespace Things
         StatementObjects.MergeUnique(objExpression.StatementObjects)
 
         Me.RequiresRecordID = RequiresRecordID Or objExpression.RequiresRecordID
-        Me.RequiresWriteback = RequiresWriteback Or objExpression.RequiresWriteback
+        Me.ContainsUniqueCode = ContainsUniqueCode Or objExpression.ContainsUniqueCode
         Me.RequiresOvernight = RequiresOvernight Or objExpression.RequiresOvernight
         Me.ReferencesParent = Me.ReferencesParent Or objExpression.ReferencesParent
         Me.ReferencesChild = Me.ReferencesChild Or objExpression.ReferencesChild
@@ -1137,7 +1139,7 @@ Namespace Things
       '      End If
 
       Me.RequiresRecordID = RequiresRecordID Or ReferencedColumn.Calculation.RequiresRecordID
-      Me.RequiresWriteback = RequiresWriteback Or ReferencedColumn.Calculation.RequiresWriteback
+      Me.ContainsUniqueCode = ContainsUniqueCode Or ReferencedColumn.Calculation.ContainsUniqueCode
       Me.RequiresOvernight = RequiresOvernight Or ReferencedColumn.Calculation.RequiresOvernight
       Me.ReferencesParent = Me.ReferencesParent Or ReferencedColumn.Calculation.ReferencesParent
       Me.ReferencesChild = Me.ReferencesChild Or ReferencedColumn.Calculation.ReferencesChild
