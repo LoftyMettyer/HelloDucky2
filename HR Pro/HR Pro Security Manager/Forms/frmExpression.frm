@@ -16,7 +16,7 @@ Begin VB.Form frmExpression
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
-   HelpContextID   =   1035
+   HelpContextID   =   8035
    Icon            =   "frmExpression.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
@@ -360,11 +360,11 @@ Private Function AccessState(lngExprID As Long) As String
 End Function
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOk.Enabled = blnChanged
+  cmdOK.Enabled = blnChanged
 End Property
 
 Private Sub RemoveComponentNode(psNodeKey As String)
@@ -1978,7 +1978,7 @@ Private Sub sstrvComponents_AfterLabelEdit(Cancel As SSActiveTreeView.SSReturnBo
   mfLabelEditing = False
   
   ' RH - Fault 1909 - Put the default button back on
-  cmdOk.Default = True
+  cmdOK.Default = True
   
   ' Validate the entered label.
   If Len(NewString) = 0 Then
@@ -2012,7 +2012,7 @@ Private Sub sstrvComponents_BeforeLabelEdit(Cancel As SSActiveTreeView.SSReturnB
   CreateUndoView (giUNDO_RENAME)
   
   ' RH - Fault 1909 - Remove the default button
-  cmdOk.Default = False
+  cmdOK.Default = False
   
   ' Only allow sub-expression labels to be edited.
   If sstrvComponents.SelectedItem.Key = ROOTKEY Then
@@ -2245,12 +2245,12 @@ End Sub
 Private Sub txtDescription_GotFocus()
   ' Select the entire contents of the textbox.
   UI.txtSelText
-  cmdOk.Default = False
+  cmdOK.Default = False
 
 End Sub
 
 Private Sub txtDescription_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 End Sub
 
 Private Sub txtExpressionName_Change()
