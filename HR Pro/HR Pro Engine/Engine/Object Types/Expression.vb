@@ -94,7 +94,7 @@ Namespace Things
 
       ' Initialise code object
       Me.IsComplex = False
-      Me.CaseCount = 0
+      Me.CaseCount = 3
 
       _linesOfCode = New ScriptDB.LinesOfCode
       _linesOfCode.Clear()
@@ -893,7 +893,6 @@ Namespace Things
       Dim objExpression As Expression
       Dim iPartNumber As Integer
       Dim sPartCode As String
-      Dim lngCaseLevel As Long
 
       ' Build code for the parameters
       ChildCodeCluster = New ScriptDB.LinesOfCode
@@ -902,7 +901,7 @@ Namespace Things
       ChildCodeCluster.CodeLevel = CodeCluster.CodeLevel + 1
 
       ' Nesting is too deep - convert to part number
-      If Me.CaseCount > 7 Then
+      If Me.CaseCount > 8 Then
 
         objExpression = New Expression
         objExpression.ExpressionType = Me.ExpressionType
@@ -914,11 +913,7 @@ Namespace Things
         objExpression.StartOfPartNumbers = Declarations.Count + Me.StartOfPartNumbers
         objExpression.StatementObjects = Me.StatementObjects
 
-        lngCaseLevel = Me.CaseCount
         objExpression.GenerateCode()
-
-        'Debug.Assert(objExpression.CaseCount = 0)
-        '  If Me.CaseCount > lngCaseLevel Then
 
         Declarations.AddRange(objExpression.Declarations)
         PreStatements.AddRange(objExpression.PreStatements)
@@ -942,7 +937,7 @@ Namespace Things
             "{0}{3}" & vbNewLine & _
             "{0}{4}" & vbNewLine & _
             "{0}{5}" & vbNewLine _
-            , [CodeCluster].Indentation, iPartNumber _
+            , " ", iPartNumber _
             , objExpression.UDF.SelectCode, objExpression.UDF.FromCode, objExpression.UDF.JoinCode, objExpression.UDF.WhereCode _
             , objExpression.Description)
         sPartCode = Regex.Replace(sPartCode, "\s*(\n)", "$1")
