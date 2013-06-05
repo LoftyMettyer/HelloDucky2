@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
+Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
 Begin VB.UserControl COA_Lookup 
-   ClientHeight    =   480
+   ClientHeight    =   570
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   2460
@@ -16,8 +16,9 @@ Begin VB.UserControl COA_Lookup
    EndProperty
    KeyPreview      =   -1  'True
    LockControls    =   -1  'True
-   ScaleHeight     =   480
+   ScaleHeight     =   570
    ScaleWidth      =   2460
+   ToolboxBitmap   =   "COA_Lookup.ctx":0000
    Begin XtremeSuiteControls.PushButton cmdDrop 
       Height          =   360
       Left            =   1530
@@ -29,6 +30,7 @@ Begin VB.UserControl COA_Lookup
       _ExtentY        =   644
       _StockProps     =   79
       UseVisualStyle  =   -1  'True
+      MultiLine       =   0   'False
       DrawFocusRect   =   0   'False
       PushButtonStyle =   1
    End
@@ -36,6 +38,7 @@ Begin VB.UserControl COA_Lookup
       Height          =   330
       Left            =   0
       TabIndex        =   1
+      TabStop         =   0   'False
       Top             =   0
       Width           =   1815
       _Version        =   851969
@@ -43,6 +46,7 @@ Begin VB.UserControl COA_Lookup
       _ExtentY        =   582
       _StockProps     =   77
       BackColor       =   -2147483643
+      Locked          =   -1  'True
    End
    Begin VB.Timer tmrTimer 
       Enabled         =   0   'False
@@ -78,18 +82,24 @@ Public Event Change() 'MappingInfo=txtText,txtText,-1,Change
 Public Event NewEntry()
 Public Event Click()
 
-Private Sub cmdDrop_KeyDown(KeyCode As Integer, Shift As Integer)
-    
-  'If user presses <Space> when control has focus, drop the lookup down
+Private Sub UserControl_KeyDown(KeyCode As Integer, Shift As Integer)
+
+'  'If user presses <Space> when control has focus, drop the lookup down
   If KeyCode = vbKeySpace Then
-    cmdDrop_MouseDown 1, 0, 0, 0
+    ShowDropdown 1, 0, 0, 0
   End If
 
+  ' Stop re-firing
   KeyCode = 0
 
 End Sub
 
-Private Sub cmdDrop_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub cmdDrop_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+  ShowDropdown Button, Shift, x, y
+End Sub
+
+Private Sub ShowDropdown(Button As Integer, Shift As Integer, x As Single, y As Single)
+  
   Dim lpContainer As RECT
   Dim lpForm As RECT
   Dim lpDesk As RECT
@@ -105,6 +115,7 @@ Private Sub cmdDrop_MouseDown(Button As Integer, Shift As Integer, X As Single, 
       RaiseEvent Click
       If Not mbSelect Then
         Unload frmDrop
+        txtText.SetFocus
         Exit Sub
       End If
 
@@ -218,28 +229,26 @@ Private Sub cmdDrop_MouseDown(Button As Integer, Shift As Integer, X As Single, 
           End If
         End If
         
-        'JPD 20060130 Fault 10748
-        'JPD 20050830 Fault 10283
         .lsvList.Sorted = True
-        '.lsvList.Refresh
         
         'Show the form and set focus on the grid
         .Visible = True
         .lsvList.SetFocus
 
       End With
+      
+      cmdDrop.Enabled = False
       tmrTimer.Enabled = True
     Else
       Unload frmDrop
+      cmdDrop.Enabled = True
+      txtText.SetFocus
     End If
+  
   End If
 
-Screen.MousePointer = vbDefault
+  Screen.MousePointer = vbDefault
 
-End Sub
-
-Private Sub ComboBox1_Click()
-Exit Sub
 End Sub
 
 Private Sub tmrTimer_Timer()
@@ -268,11 +277,12 @@ Private Sub txtText_GotFocus()
     .Selected = False
   End With
 
+  cmdDrop.Enabled = True
   cmdDrop.SetFocus
 
 End Sub
 
-Private Sub txtText_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub txtText_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
 
   'To prevent the mouse icon from turning into an I-bar, and causing user to
   'think they should be able to type into the control
@@ -280,66 +290,52 @@ Private Sub txtText_MouseMove(Button As Integer, Shift As Integer, X As Single, 
   
 End Sub
 
-Private Sub UserControl_KeyDown(KeyCode As Integer, Shift As Integer)
-Debug.Print "hh"
-End Sub
-
 Private Sub UserControl_Resize()
 
-  'Prevent user from sizing control smaller than the minimum size allowed
-'  If Not mbSizing Then
-'    UserControl.Height = 315
-'    If UserControl.Width < 390 Then
-'      UserControl.Width = 390
-'    End If
-'    cmdDrop.Left = UserControl.Width - 265
-'    txtText.Width = UserControl.Width
-'  End If
-    
-If Not mbSizing Then
   Dim lngButtonWidth As Long
   Dim lngCtrlWidth As Long
   Dim lngCtrlHeight As Long
-  
-  ' Do not let the user make the control too small.
-  With UserControl
-    If (.Width < 390) Then
-      .Width = 390
-    End If
-    
-    If (.Height < 315) Then
-      .Height = 315
-    End If
-    
-    lngCtrlWidth = .Width
-    lngCtrlHeight = .Height
-  End With
-  
-  lngButtonWidth = cmdDrop.Width
-  
-  ' Resize the text and button controls as our custom
-  ' control is resized. NB. the button control
-  ' has a fixed width.
-  With txtText
-    .Top = 0
-    .Height = lngCtrlHeight
-    .Width = (lngCtrlWidth - cmdDrop.Width) + 7
-    .Left = 0
-  End With
-  
-  With cmdDrop
-    .Top = 0
-    .Height = lngCtrlHeight
-    .Left = lngCtrlWidth - lngButtonWidth
-  End With
 
-  If UserControl.Height < txtText.Height Then
-    UserControl.Height = txtText.Height
+
+  ' Prevent user from sizing control smaller than the minimum size allowed
+  If Not mbSizing Then
+    
+    ' Do not let the user make the control too small.
+    With UserControl
+      If (.Width < 390) Then
+        .Width = 390
+      End If
+      
+      If (.Height < 315) Then
+        .Height = 315
+      End If
+      
+      lngCtrlWidth = .Width
+      lngCtrlHeight = .Height
+    End With
+    
+    lngButtonWidth = cmdDrop.Width
+    
+    ' Resize the text and button controls as our custom control is resized. NB. the button control
+    ' has a fixed width.
+    With txtText
+      .Top = 0
+      .Height = lngCtrlHeight
+      .Width = (lngCtrlWidth - cmdDrop.Width) + 7
+      .Left = 0
+    End With
+    
+    With cmdDrop
+      .Top = 0
+      .Height = lngCtrlHeight
+      .Left = lngCtrlWidth - lngButtonWidth
+    End With
+  
+    If UserControl.Height < txtText.Height Then
+      UserControl.Height = txtText.Height
+    End If
   End If
-End If
-    
-    
-    
+      
 End Sub
 'WARNING! DO NOT REMOVE OR MODIFY THE FOLLOWING COMMENTED LINES!
 'MappingInfo=txtText,txtText,-1,BackColor
@@ -517,10 +513,6 @@ Private Sub txtText_Change()
     On Error Resume Next
     RaiseEvent Change
     
-    
-    'cmdDrop.SetFocus
-    
-    
 End Sub
 
 'WARNING! DO NOT REMOVE OR MODIFY THE FOLLOWING COMMENTED LINES!
@@ -626,4 +618,3 @@ Public Sub PassArray(vPassedArray As Variant)
   asLookupItems = vPassedArray
 
 End Sub
-
