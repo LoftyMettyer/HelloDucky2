@@ -6770,6 +6770,54 @@ PRINT 'Step 12 - Auto Configuration'
 
 	END
 
+/* ------------------------------------------------------------- */
+/* Create Mobile Licensing SP.           */
+/* ------------------------------------------------------------- */
+PRINT 'Step 13 - Additional Mobile Configuration'
+	----------------------------------------------------------------------
+	-- spASRSysGenMobileLicence
+	----------------------------------------------------------------------
+DECLARE @sSPCode nvarchar(MAX);
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[spASRSysGenMobileLicence]')
+			AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+		DROP PROCEDURE [dbo].[spASRSysGenMobileLicence];
+
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[spASRSysGenMobileLicence]
+		AS
+		BEGIN
+			DECLARE @iDummy integer;
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'ALTER PROCEDURE [dbo].[spASRSysGenMobileLicence](
+		  @piLicenceQty bigint
+		  ) 
+		AS
+		BEGIN
+		  DECLARE 
+		  @sGUID varchar(MAX),
+		  @iCount integer;
+		
+			SELECT @iCount = COUNT(*) FROM ASRSysSystemSettings WHERE [Section] = ''licence'' AND [SettingKey] = ''mobile'';
+			
+			IF @iCount > 0 DELETE FROM ASRSysSystemSettings WHERE [Section] = ''licence'' AND [SettingKey] = ''mobile'';
+		
+			IF @piLicenceQty <= 0 RETURN;
+		
+			SET @sGUID = NEWID();
+			
+			SET @sGUID = @sGUID + ''-EA'' + CONVERT(VARCHAR(MAX), @piLicenceQty) + ''FF'';
+			
+			INSERT INTO ASRSysSystemSettings
+				(Section, SettingKey, SettingValue)
+				VALUES 
+				(''licence'', ''mobile'', @sGUID);
+		
+		END;';
+
+	EXECUTE sp_executeSQL @sSPCode;
 
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
