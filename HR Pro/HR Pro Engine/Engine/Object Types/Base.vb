@@ -28,7 +28,11 @@ Namespace Things
     '  Public Parents As ObjectCollection
     '    Public Status As System.Data.DataRowState
     Public SchemaName As String
+
+    <System.Xml.Serialization.XmlIgnore()> _
     Public Encrypted As Boolean = False
+
+    <System.Xml.Serialization.XmlIgnore()> _
     Public Tuning As ScriptDB.Tuning
 
     Private msDescription As String
@@ -36,13 +40,17 @@ Namespace Things
     Private msName As String
     Public NameInDB As String
     Private miSubType As Things.Type
+
+    <System.Xml.Serialization.XmlIgnore()> _
     Public State As System.Data.DataRowState
+
     Private mobjChildObjects As Things.Collection
-    Private mobjParent As Things.Base 'iSystemObject
-    Private mobjRoot As Things.Base ' iSystemObject
+    Private mobjParent As Things.Base
+    Private mobjRoot As Things.Base
     Private mbIsSelected As Boolean
     Private msPhysicalName As String
 
+    <System.Xml.Serialization.XmlIgnore()> _
     Public Overridable ReadOnly Property PhysicalName As String Implements iObject.PhysicalName
       Get
         Return msName
@@ -50,7 +58,7 @@ Namespace Things
     End Property
 
     <System.Xml.Serialization.XmlIgnore(), System.ComponentModel.Browsable(False)> _
-    Public Overridable Property Parent() As Things.Base 'Things.iSystemObject Implements Things.iSystemObject.Parent
+    Public Overridable Property Parent() As Things.Base
       Get
         Return mobjParent
       End Get
@@ -69,7 +77,7 @@ Namespace Things
     End Property
 
     <System.ComponentModel.Browsable(False)> _
-    Public Property ID() As HCMGuid 'Implements Things.iSystemObject.ID
+    Public Property ID() As HCMGuid
       Get
         Return mID
       End Get
