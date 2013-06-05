@@ -293,7 +293,7 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
     ' Check if a new version of the application is required due to an Intranet update
     
     sDBVersion = GetSystemSetting("Database", "Minimum Version", vbNullString)
-    If LenB(sDBVersion) <> 0 Then
+    If Len(sDBVersion) <> 0 Then
       
       iMajorAppVersion = val(Split(sDBVersion, ".")(0))
       iMinorAppVersion = val(Split(sDBVersion, ".")(1))
@@ -326,7 +326,7 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
     sMinVersion = GetSystemSetting("Server DLL", "Minimum Version", vbNullString)
     sDependencyVersion = GetServerDLLVersion(sConnect)
 
-    If LenB(sDependencyVersion) > 0 And LenB(sMinVersion) > 0 Then
+    If Len(sDependencyVersion) > 0 And Len(sMinVersion) > 0 Then
 
       iMinimumMajor = val(Split(sMinVersion, ".")(0))
       iMinimumMinor = val(Split(sMinVersion, ".")(1))
