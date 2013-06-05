@@ -68,6 +68,9 @@ PRINT 'Step 1 - System Functions'
 	IF EXISTS (SELECT id FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[udfsys_getownerid]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_getownerid]
 
+	IF EXISTS (SELECT id FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[spsys_setsystemsetting]')	AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spsys_setsystemsetting];
+
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getownerid]()
 		RETURNS uniqueidentifier
 		AS
@@ -94,6 +97,20 @@ PRINT 'Step 1 - System Functions'
 			RETURN @result;			
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[spsys_setsystemsetting](
+			@section AS nvarchar(255),
+			@settingkey AS nvarchar(255),
+			@settingvalue AS nvarchar(MAX))
+		AS
+		BEGIN
+			IF EXISTS(SELECT [SettingValue] FROM [asrsyssystemsettings] WHERE [Section] = @section AND [SettingKey] = @settingkey)
+				UPDATE ASRSysSystemSettings SET [SettingValue] = @settingvalue WHERE [Section] = @section AND [SettingKey] = @settingkey;
+			ELSE
+				INSERT ASRSysSystemSettings([Section], [SettingKey], [SettingValue]) VALUES (@section, @settingkey, @settingvalue);	
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
 
 /* ------------------------------------------------------------- */
 PRINT 'Step 2 - Scripted Updates Date Effective Module'
@@ -235,6 +252,7 @@ PRINT 'Step 4 - Create object tracking system'
 
 			END'
 	END
+
 
 	-- Modification history table
 	EXEC sp_executesql N'IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[tbsys_scriptedchanges]'') AND type in (N''U''))
@@ -1779,27 +1797,6 @@ PRINT 'Step 13 - Administration module stored procedures'
 			LEFT JOIN ASRSysModulesetup m on m.modulekey = c.modulekey AND m.parameterkey = c.parameterkey
 			WHERE c.id = @componentid;
 	END';
-
-
-/* ------------------------------------------------------------- */
-PRINT 'Step 14 - System stored procedures'
-
-	IF EXISTS (SELECT id FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[spsys_setsystemsetting]')	AND xtype = 'P')
-		DROP PROCEDURE [dbo].[spsys_setsystemsetting];
-
-
-	SET @sSPCode = 'CREATE PROCEDURE [dbo].[spsys_setsystemsetting](
-			@section AS nvarchar(255),
-			@settingkey AS nvarchar(255),
-			@settingvalue AS nvarchar(MAX))
-		AS
-		BEGIN
-			IF EXISTS(SELECT [SettingValue] FROM [asrsyssystemsettings] WHERE [Section] = @section AND [SettingKey] = @settingkey)
-				UPDATE ASRSysSystemSettings SET [SettingValue] = @settingvalue WHERE [Section] = @section AND [SettingKey] = @settingkey;
-			ELSE
-				INSERT ASRSysSystemSettings([Section], [SettingKey], [SettingValue]) VALUES (@section, @settingkey, @settingvalue);	
-		END';
-	EXECUTE sp_executeSQL @sSPCode;
 
 
 /* ------------------------------------------------------------- */
