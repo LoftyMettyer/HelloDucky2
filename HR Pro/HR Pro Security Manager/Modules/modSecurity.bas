@@ -1027,7 +1027,24 @@ Function ApplyChanges() As Boolean
   End If
   
   '
-  ' Progress step 1A - Add new User Groups (Roles).
+  ' Progress step 1A - Apply User deletions.
+  '
+  If fOK Then
+  
+    ' Delete Users.
+    OutputCurrentProcess2 "Deletions"
+    fOK = ApplyChanges_DeleteUsers
+    gobjProgress.UpdateProgress2
+  
+    ' Flag any errors.
+    If Not fOK Then
+      gobjProgress.Visible = False
+      MsgBox "Error deleting users.", vbOKOnly + vbExclamation, Application.Name
+    End If
+  End If
+
+  '
+  ' Progress step 1B - Add new User Groups (Roles).
   '
   If fOK Then
     
@@ -1232,23 +1249,6 @@ Function ApplyChanges() As Boolean
     If Not fOK Then
       gobjProgress.Visible = False
       MsgBox "Error moving users.", vbOKOnly + vbExclamation, Application.Name
-    End If
-  End If
-
-  '
-  ' Progress step 8 - Apply User deletions.
-  '
-  If fOK Then
-  
-    ' Delete Users.
-    OutputCurrentProcess2 "Deletions"
-    fOK = ApplyChanges_DeleteUsers
-    gobjProgress.UpdateProgress2
-  
-    ' Flag any errors.
-    If Not fOK Then
-      gobjProgress.Visible = False
-      MsgBox "Error deleting users.", vbOKOnly + vbExclamation, Application.Name
     End If
   End If
 
