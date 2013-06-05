@@ -23,16 +23,18 @@ Namespace Things
     Public mcolDependencies As New Things.Collection
     Private mcolOrders As Things.Collection
 
+    Public StatementObjects As New ArrayList
+
     Public Joins As ArrayList
     Public FromTables As ArrayList
     Private Wheres As ArrayList
-    Public Declarations As ArrayList
-    Public PreStatements As ArrayList
+    Public Declarations As New ArrayList
+    Public PreStatements As New ArrayList
 
     Private mcolLinesOfCode As ScriptDB.LinesOfCode
 
-    Private mbRequiresRecordID As Boolean = False
-    Private mbRequiresRowNumber As Boolean = False
+    Public RequiresRecordID As Boolean = False
+    Public RequiresRowNumber As Boolean = False
     Private mbCalculatePostAudit As Boolean = False
     Private mbNeedsOriginalValue As Boolean = False
     Private mbCheckTriggerStack As Boolean = False
@@ -108,11 +110,15 @@ Namespace Things
       FromTables = New ArrayList
       Wheres = New ArrayList
 
-      If Declarations Is Nothing Then Declarations = New ArrayList
-      If PreStatements Is Nothing Then PreStatements = New ArrayList
+      '     If Declarations Is Nothing Then Declarations = New ArrayList
+      '      If PreStatements Is Nothing Then PreStatements = New ArrayList
+      Declarations.Clear()
+      PreStatements.Clear()
 
       Joins.Clear()
       Wheres.Clear()
+      StatementObjects.Clear()
+
 
       ' Build the dependencies collection
       mcolDependencies.Clear()
@@ -129,14 +135,14 @@ Namespace Things
       SQLCode_AddCodeLevel(Me.Objects, mcolLinesOfCode)
 
       ' Always add the ID for the record
-      If mbRequiresRecordID Then
+      If RequiresRecordID Then
         aryParameters1.Add("@prm_ID integer")
         aryParameters2.Add("base.ID")
         aryParameters3.Add("@prm_ID")
       End If
 
       ' Some function require the row number of the record as a parameter
-      If mbRequiresRowNumber Then
+      If RequiresRowNumber Then
         aryParameters1.Add("@rownumber integer")
         aryParameters2.Add("[rownumber]")
         aryParameters3.Add("@rownumber")
@@ -219,11 +225,15 @@ Namespace Things
               , String.Join(", ", aryDependsOn.ToArray()), Now().ToString)
         .Comments = ""
 
-        .Declarations = IIf(Declarations.Count > 0, String.Join(vbNewLine, Declarations.ToArray()) & vbNewLine, "")
-        .Prerequisites = IIf(PreStatements.Count > 0, String.Join(vbNewLine, PreStatements.ToArray()) & vbNewLine, "")
+        .Declarations = IIf(Declarations.Count > 0, "DECLARE " & String.Join("," & vbNewLine, Declarations.ToArray()) & ";" & vbNewLine, "")
+        .Prerequisites = IIf(PreStatements.Count > 0, String.Join(vbNewLine, PreStatements.ToArray()) & vbNewLine & vbNewLine, "")
         .JoinCode = IIf(Joins.Count > 0, String.Format("{0}", String.Join(vbNewLine, Joins.ToArray)) & vbNewLine, "")
         .FromCode = IIf(FromTables.Count > 0, String.Format("{0}", String.Join(",", FromTables.ToArray)) & vbNewLine, "")
         .WhereCode = IIf(Wheres.Count > 0, String.Format("WHERE {0}", String.Join(" AND ", Wheres.ToArray)) & vbNewLine, "")
+
+        ' Code beatify
+        ScriptDB.Beautify(.Prerequisites)
+
 
         Select Case Me.ExpressionType
 
@@ -237,15 +247,15 @@ Namespace Things
                            "RETURNS {2}" & vbNewLine & _
                            "{3}" & vbNewLine & _
                            "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-                           "    DECLARE @Result as {2};" & vbNewLine & vbNewLine & _
-                           "{4}{5}" & vbNewLine & _
+                           "    DECLARE @Result as {2};" & vbNewLine & _
+                           "    {4}{5}" & vbNewLine & vbNewLine & _
                            "    -- Execute calculation code" & vbNewLine & _
                            "    SELECT @Result = {6}" & vbNewLine & _
                            "                 {7}{8}{9}" & vbNewLine & _
                            "    RETURN ISNULL(@Result, {10});" & vbNewLine & _
                            "END" _
                           , .Name, String.Join(", ", aryParameters1.ToArray()) _
-                          , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode _
+                          , Me.AssociatedColumn.DataTypeSyntax, sOptions, .Declarations, .Prerequisites, .SelectCode.Trim, .FromCode, .JoinCode, .WhereCode _
                           , Me.AssociatedColumn.SafeReturnType, .BoilerPlate, .Comments)
 
             .CodeStub = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
@@ -560,14 +570,21 @@ Namespace Things
         objThisColumn.Calculation.AssociatedColumn = objThisColumn
         objThisColumn.Calculation.GenerateCode()
 
-        mbRequiresRowNumber = mbRequiresRowNumber Or objThisColumn.Calculation.mbRequiresRowNumber
-        LineOfCode.Code = objThisColumn.Calculation.UDF.CallingCode
+        'iPartNumber = Declarations.Count
+        'sPartCode = String.Format("{0}SELECT @part_{1} = {2}" & vbNewLine _
+        '    , [CodeCluster].Indentation, iPartNumber, objThisColumn.Calculation.UDF.CallingCode)
+
+        '        LineOfCode.Code = objThisColumn.Calculation.UDF.CallingCode
+        'LineOfCode.Code = String.Format("@part_{0}", iPartNumber)
+
+        'Declarations.Add(String.Format("{0}DECLARE @part_{1} {2};" _
+        '    , [CodeCluster].Indentation, iPartNumber, objThisColumn.DataTypeSyntax))
+        'PreStatements.Add(sPartCode)
+
         AddToDependencies(objThisColumn.Calculation.mcolDependencies)
         objThisColumn.Calculation.ExpressionType = iBackupType
 
-        Me.BaseExpression.IsComplex = True
-        Me.BaseExpression.IsSchemaBound = False
-        mbRequiresRecordID = True
+        LineOfCode = AddCalculatedColumn(objThisColumn)
 
         objThisColumn.Tuning.IncrementSelectAsCalculation()
 
@@ -611,7 +628,7 @@ Namespace Things
 
           sColumnFilter = String.Empty
           sColumnOrder = String.Empty
-          mbRequiresRecordID = True
+          RequiresRecordID = True
           bIsSummaryColumn = False
           Me.BaseExpression.IsComplex = True
 
@@ -659,9 +676,11 @@ Namespace Things
             objOrderFilter = objThisColumn.Table.TableOrderFilter([Component].ChildRowDetails)
             objOrderFilter.IncludedColumns.AddIfNew(objThisColumn)
 
+            '     LineOfCode = AddChildColumn(objOrderFilter, objThisColumn)
 
-            ' Add calculation for this foreign column to the pre-requisits array
-            iPartNumber = Declarations.Count
+
+            ' Add calculation for this foreign column to the pre-requisits array 
+            iPartNumber = Declarations.Count + 1
             '  bReverseOrder = False
 
             ' What type/line number are we dealing with?
@@ -688,50 +707,22 @@ Namespace Things
 
             End Select
 
-
-            '   sColumnOrder = SQLCode_AddOrder(objThisColumn.Table, [Component].ColumnOrderID, bReverseOrder)
             Globals.PerformanceIndexes.AddIfNew(objThisColumn)
-            '          End If
 
             ' Add to prereqistits arrays
             If bIsSummaryColumn Then
-              Declarations.Add(String.Format("{0}DECLARE @part_{1} numeric(38,8);" _
+              Declarations.Add(String.Format("@part_{1} numeric(38,8)" _
                   , [CodeCluster].Indentation, iPartNumber))
               sColumnOrder = vbNullString
             Else
-              Declarations.Add(String.Format("{0}DECLARE @part_{1} {2};" _
+              Declarations.Add(String.Format("@part_{1} {2}" _
                   , [CodeCluster].Indentation, iPartNumber, objThisColumn.DataTypeSyntax))
             End If
-
-            'sPartCode = sPartCode & String.Format("{0}FROM [dbo].[{1}] base" & vbNewLine _
-            '    & "{5}" & vbNewLine _
-            '    & "{0}WHERE [id_{2}] = @prm_ID_{2} " & vbNewLine _
-            '    & "{0}{3}" & vbNewLine _
-            '    & "{0}{4}" & vbNewLine _
-            '    , [CodeCluster].Indentation _
-            '    , objThisColumn.Table.Name _
-            '    , CInt(Me.BaseTable.ID), sColumnFilter, sColumnOrder, sColumnJoinCode)
 
             sPartCode = sPartCode & String.Format("{0} FROM [dbo].[{1}](@prm_ID) base" _
                 , [CodeCluster].Indentation, objOrderFilter.Name)
 
-            ' Add relation to the dependency stack
-            'bAddRelation = True
-            'For Each objDepends As Things.Base In mcolDependencies
-            '  If objDepends.Type = Enums.Type.Relation Then
-            '    If CType(objDepends, Things.Relation).ParentID = objRelation.ParentID Then
-            '      bAddRelation = False
-            '      Exit For
-            '    End If
-            '  End If
-            'Next
-
-            'If bAddRelation Then
-            '  If Not mcolDependencies.Contains(objRelation) Then
-            '    mcolDependencies.Add(objRelation)
-            '  End If
-            'End If
-
+            StatementObjects.Add(objOrderFilter)
             PreStatements.Add(sPartCode)
             LineOfCode.Code = String.Format("ISNULL(@part_{0},{1})", iPartNumber, objThisColumn.SafeReturnType)
 
@@ -799,9 +790,9 @@ Namespace Things
 
       SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
       LineOfCode.Code = String.Format(LineOfCode.Code, ChildCodeCluster.ToArray)
-      mbRequiresRowNumber = mbRequiresRowNumber Or objCodeLibrary.RowNumberRequired
+      RequiresRowNumber = RequiresRowNumber Or objCodeLibrary.RowNumberRequired
       mbCalculatePostAudit = mbCalculatePostAudit Or objCodeLibrary.CalculatePostAudit
-      mbRequiresRecordID = mbRequiresRecordID Or objCodeLibrary.RecordIDRequired
+      RequiresRecordID = RequiresRecordID Or objCodeLibrary.RecordIDRequired
 
       ' For functions that return mixed type, make it type safe
       If objCodeLibrary.ReturnType = ScriptDB.ComponentValueTypes.Unknown Then
@@ -871,8 +862,7 @@ Namespace Things
         PreStatements = objExpression.PreStatements
 
         iPartNumber = Declarations.Count
-        Declarations.Add(String.Format("{0}DECLARE @part_{1} {2};", [CodeCluster].Indentation _
-            , iPartNumber, objExpression.DataTypeSyntax))
+        Declarations.Add(String.Format("@part_{1} {2};", iPartNumber, objExpression.DataTypeSyntax))
 
         sPartCode = String.Format("{0}SELECT @part_{1} = {2}" & vbNewLine & _
             "{0}{3}" & vbNewLine & _
@@ -958,19 +948,19 @@ Namespace Things
 
         Select Case Me.ReturnType
           Case ScriptDB.ComponentValueTypes.Logic
-            sSQLType = "[bit]"
+            sSQLType = "bit"
 
           Case ScriptDB.ComponentValueTypes.Numeric
-            sSQLType = String.Format("[numeric](38,8)")
+            sSQLType = String.Format("numeric(38,8)")
 
           Case ScriptDB.ComponentValueTypes.Date
-            sSQLType = "[datetime]"
+            sSQLType = "datetime"
 
           Case ScriptDB.ComponentValueTypes.String
-            sSQLType = "[varchar](MAX)"
+            sSQLType = "varchar(MAX)"
 
           Case Else
-            sSQLType = "[varchar](MAX)"
+            sSQLType = "varchar(MAX)"
 
         End Select
         Return sSQLType
@@ -1006,6 +996,82 @@ Namespace Things
       Next
 
     End Sub
+
+    ' Adds a calculated column to the pre-requists stack. This is for efficiency so the UDF is called a minimum of times.
+    Private Function AddCalculatedColumn(ByRef ReferencedColumn As Things.Column) As ScriptDB.CodeElement
+
+      Dim sCallingCode As ScriptDB.CodeElement
+      Dim sVariableName As String
+
+      If StatementObjects.Contains(ReferencedColumn) Then
+        sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn) + 1)
+      Else
+        StatementObjects.Add(ReferencedColumn)
+        sVariableName = StatementObjects.Count
+        Declarations.Add(String.Format("@part_{0} {1}", sVariableName, ReferencedColumn.DataTypeSyntax))
+        PreStatements.Add(String.Format("SELECT @part_{0} = {1}", sVariableName, ReferencedColumn.Calculation.UDF.CallingCode))
+        sCallingCode.Code = String.Format("@part_{0}", sVariableName)
+      End If
+
+      Me.BaseExpression.IsComplex = True
+      Me.BaseExpression.IsSchemaBound = False
+      Me.RequiresRecordID = RequiresRecordID Or ReferencedColumn.Calculation.RequiresRecordID
+      Me.RequiresRowNumber = RequiresRowNumber Or ReferencedColumn.Calculation.RequiresRowNumber
+
+      Return sCallingCode
+
+    End Function
+
+    'Private Function AddChildColumn(ByRef ChildView As Things.TableOrderFilter, ByRef ReferencedColumn As Things.Column) As ScriptDB.CodeElement
+
+    '  Dim sCallingCode As ScriptDB.CodeElement
+    '  Dim sVariableName As String
+    '  Dim objChildView As Things.TableOrderFilter
+
+    '  If StatementObjects.Contains(ChildView) Then
+    '    sCallingCode.Code = String.Format("@part_{0}", StatementObjects.IndexOf(ReferencedColumn) + 1)
+
+    '    ' append to select statement
+
+
+    '  Else
+
+    '    StatementObjects.Add(ChildView)
+    '    sVariableName = StatementObjects.Count
+
+    '    ' What type/line number are we dealing with?
+    '    Select Case ChildView.RowDetails.RowSelection
+
+    '      Case ScriptDB.ColumnRowSelection.First, ScriptDB.ColumnRowSelection.Last, ScriptDB.ColumnRowSelection.Specific
+    '        Declarations.Add(String.Format("@part_{1} {2};", sVariableName, ReferencedColumn.DataTypeSyntax))
+    '        sCallingCode.Code = String.Format("@part_{0} = base.[{1}]", sVariableName, ReferencedColumn.Name)
+
+    '      Case ScriptDB.ColumnRowSelection.Total
+    '        Declarations.Add(String.Format("@part_{0} numeric(38,8);", sVariableName))
+    '        sCallingCode.Code = String.Format("@part_{0} = SUM(base.[{1}])", sVariableName, ReferencedColumn.Name)
+
+    '      Case ScriptDB.ColumnRowSelection.Count
+    '        Declarations.Add(String.Format("@part_{0} numeric(38,8);", sVariableName))
+    '        sCallingCode.Code = String.Format("@part_{0} = COUNT(base.[{1}])", sVariableName, ReferencedColumn.Name)
+
+    '    End Select
+
+    '    PreStatements.Add(String.Format("SELECT @part_{0} = {1}", sVariableName, ReferencedColumn.Calculation.UDF.CallingCode))
+
+
+
+    '    sPartCode = sPartCode & String.Format("{0} FROM [dbo].[{1}](@prm_ID) base" _
+    '        , [CodeCluster].Indentation, objOrderFilter.Name)
+
+
+    '    PreStatements.Add(sPartCode)
+    '    LineOfCode.Code = String.Format("ISNULL(@part_{0},{1})", iPartNumber, objThisColumn.SafeReturnType)
+
+    '  End If
+
+    '  Return sCallingCode
+
+    'End Function
 
   End Class
 End Namespace

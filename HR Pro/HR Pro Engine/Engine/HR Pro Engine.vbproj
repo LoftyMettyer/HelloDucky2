@@ -93,6 +93,7 @@
     <Compile Include="Connectivity\Parameter.vb" />
     <Compile Include="Connectivity\Parameters.vb" />
     <Compile Include="Connectivity\SQL.vb" />
+    <Compile Include="Database Scripting\Beautify.vb" />
     <Compile Include="Database Scripting\CodeElement.vb" />
     <Compile Include="Database Scripting\Consts.vb" />
     <Compile Include="Database Scripting\Enums.vb" />

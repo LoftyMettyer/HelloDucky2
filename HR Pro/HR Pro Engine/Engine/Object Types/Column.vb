@@ -100,34 +100,34 @@
         Select Case CInt(Me.DataType)
           Case ScriptDB.ColumnTypes.Text
             If Me.Multiline Or Me.Size > 8000 Then
-              sSQLType = "[varchar](MAX)"
+              sSQLType = "varchar(MAX)"
             Else
-              sSQLType = String.Format("[varchar]({0})", Me.Size)
+              sSQLType = String.Format("varchar({0})", Me.Size)
             End If
 
           Case ScriptDB.ColumnTypes.Integer
-            sSQLType = String.Format("[integer]")
+            sSQLType = String.Format("integer")
 
           Case ScriptDB.ColumnTypes.Numeric
-            sSQLType = String.Format("[numeric]({0},{1})", Me.Size, Me.Decimals)
+            sSQLType = String.Format("numeric({0},{1})", Me.Size, Me.Decimals)
 
           Case ScriptDB.ColumnTypes.Date
-            sSQLType = "[datetime]"
+            sSQLType = "datetime"
 
           Case ScriptDB.ColumnTypes.Logic
-            sSQLType = "[bit]"
+            sSQLType = "bit"
 
           Case ScriptDB.ColumnTypes.WorkingPattern
-            sSQLType = "[varchar](14)"
+            sSQLType = "varchar(14)"
 
           Case ScriptDB.ColumnTypes.Link
-            sSQLType = "[varchar](255)"
+            sSQLType = "varchar(255)"
 
           Case ScriptDB.ColumnTypes.Photograph
-            sSQLType = "[varchar](255)"
+            sSQLType = "varchar(255)"
 
           Case ScriptDB.ColumnTypes.Binary
-            sSQLType = "[varbinary](MAX)"
+            sSQLType = "varbinary(MAX)"
 
         End Select
 

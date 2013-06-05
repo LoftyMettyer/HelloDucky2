@@ -923,8 +923,6 @@ Namespace ScriptDB
 
                 sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
 
-                ' Debug.Assert(sObjectName <> "udfcalc_Personnel_Records.Trigger_to_Payroll")
-
                 If Not objColumn.Calculation Is Nothing Then
                   objColumn.Calculation.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation
                   objColumn.Calculation.AssociatedColumn = objColumn
@@ -962,6 +960,7 @@ Namespace ScriptDB
               'Debug.Assert(sObjectName <> "udfcalc_Personnel_Records.Trigger_to_Payroll")
 
               '  Debug.Assert(objColumn.Calculation.UDF.Name <> "[dbo].[udfcalc__Personnel_Records.Trigger_to_Payroll")
+              'Debug.Assert(sObjectName <> "udfcalc_Table1.calclevel2")
 
               ScriptDB.DropUDF("dbo", sObjectName)
               If Not Globals.CommitDB.ScriptStatement(objColumn.Calculation.UDF.Code) Then

@@ -6,6 +6,8 @@ Namespace ScriptDB
   Public Class LinesOfCode
     Inherits System.ComponentModel.BindingList(Of ScriptDB.CodeElement)
 
+    '    private AssociatedColumn As Things.Base
+
     Private mbAppendAfterNext As Boolean = False
     Private mbIsComparison As Boolean = False
 
