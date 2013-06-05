@@ -30,7 +30,8 @@ Public gstrServerDefaultDomain As String
 Public Application As HrProSecurityMgr.Application     ' Application Class
 Public Database As HrProSecurityMgr.Database           ' Database Class
 Public UI As HrProSecurityMgr.UI                       ' User interface class
-Public gobjProgress As COAProgress.COA_Progress
+'Public gobjProgress As COAProgress.COA_Progress
+Public gobjProgress As clsProgress
 
 'MH20060427
 '''Public gobjCurrentUser As HrProSecurityMgr.clsUser     ' Logged on user information
@@ -73,8 +74,8 @@ Sub Main()
   Set Database = New HrProSecurityMgr.Database
   
   'Instantiate Progress Bar class
-  Set gobjProgress = New COAProgress.COA_Progress
-  'Set gobjProgress = New clsProgress
+  'Set gobjProgress = New COAProgress.COA_Progress
+  Set gobjProgress = New clsProgress
   gobjProgress.StyleResource = CodeJockStylePath
   gobjProgress.StyleIni = CodeJockStyleIni
   
