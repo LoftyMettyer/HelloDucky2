@@ -30,8 +30,6 @@ Public Enum UtilityType
   utlWorkflow = 25
   utlWorkFlowPendingSteps = 26
   utlOrderDefinition = 27
-  utlVersion1 = 28
-  
 End Enum
 
 
