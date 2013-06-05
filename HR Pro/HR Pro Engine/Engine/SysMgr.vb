@@ -41,18 +41,22 @@ Public Class SysMgr
     Dim bOK As Boolean = True
 
     Try
-         If Options Is Nothing Then
-            Globals.Initialise()
-         End If
+
+      ' Clear any existing errors
+      Globals.ErrorLog.Clear()
+
+      If Options Is Nothing Then
+        Globals.Initialise()
+      End If
 
       Globals.MetadataDB = objMetadataDB
       Globals.CommitDB = mobjCommitDB
       Globals.Options.DevelopmentMode = False
 
-         Dim sw As New Stopwatch
-         sw.Start()
-         Things.PopulateSystemThings()
-         Console.WriteLine("PST:" & sw.ElapsedMilliseconds)
+      Dim sw As New Stopwatch
+      sw.Start()
+      Things.PopulateSystemThings()
+      Console.WriteLine("PST:" & sw.ElapsedMilliseconds)
 
       Things.PopulateSystemSettings()
       Things.PopulateThings()
