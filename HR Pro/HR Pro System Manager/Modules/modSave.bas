@@ -581,6 +581,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       SaveSystemSetting "AdvancedDatabaseSetting", "ManualRecursionLevel", giManualRecursionLevel
       SaveSystemSetting "AdvancedDatabaseSetting", "SpecialFunctionAutoUpdate", gbDisableSpecialFunctionAutoUpdate
       SaveSystemSetting "AdvancedDatabaseSetting", "UpdateIndexesOvernight", gbReorganiseIndexesInOvernightJob
+      SaveSystemSetting "AdvancedDatabaseSetting", "UsedotNETDatabaseScripting", gbUsedotNetScriptEngine
     End If
   
     ' Save the default expression builder settings
