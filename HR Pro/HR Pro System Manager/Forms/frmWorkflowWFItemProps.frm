@@ -50,7 +50,6 @@ Begin VB.Form frmWorkflowWFItemProps
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -3115,6 +3114,9 @@ Public Function RefreshProperties(Optional pfStayOnSameLine As Boolean) As Boole
                   avProperties(WFITEMPROP_TABNUMBER, 1) = False
                 End If
               End If
+
+              ' Tab caption property
+              avProperties(WFITEMPROP_TABCAPTION, 1) = False
 
               ' Flag that we have read a control's properties.
               fPassedOnce = True
