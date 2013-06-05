@@ -15,6 +15,7 @@ Begin VB.Form frmSSIntranetLinkSeparator
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
+   HelpContextID   =   1087
    Icon            =   "frmSSIIntranetLinkSeparator.frx":0000
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
@@ -179,7 +180,7 @@ Private Sub RefreshControls()
   If mblnRefreshing Then Exit Sub
  
   ' Disable the OK button as required.
-  cmdOK.Enabled = True
+  cmdOk.Enabled = True
   
 End Sub
 
