@@ -21,9 +21,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileDesigner.Test", "Mobi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System Framework.Test", "System Framework.Test\System Framework.Test.csproj", "{12756D7F-A55D-43DC-9025-ABFDCB279381}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Test Harness", "Test Harness\Test Harness.vbproj", "{1D876F09-E9F9-41F2-ADF3-62666FC221D2}"
+EndProject
 Global
 	GlobalSection(SourceCodeControl) = preSolution
-		SccNumberOfProjects = 6
+		SccNumberOfProjects = 7
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = Setup\\HR\u0020Pro\u0020Engine\u0020Setup.vdproj
 		SccProjectName1 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Engine/Setup\u0022,\u0020LVGDAAAA
@@ -40,6 +42,9 @@ Global
 		SccProjectUniqueName5 = System\u0020Framework.Test\\System\u0020Framework.Test.csproj
 		SccLocalPath5 = .
 		SccProjectFilePathRelativizedFromConnection5 = System\u0020Framework.Test\\
+		SccProjectUniqueName6 = Test\u0020Harness\\Test\u0020Harness.vbproj
+		SccProjectName6 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Engine/Test\u0020Harness\u0022,\u0020VKGDAAAA
+		SccLocalPath6 = Test\u0020Harness
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +106,16 @@ Global
 		{12756D7F-A55D-43DC-9025-ABFDCB279381}.Release|Mixed Platforms.Build.0 = Release|x86
 		{12756D7F-A55D-43DC-9025-ABFDCB279381}.Release|x86.ActiveCfg = Release|x86
 		{12756D7F-A55D-43DC-9025-ABFDCB279381}.Release|x86.Build.0 = Release|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Debug|x86.ActiveCfg = Debug|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Debug|x86.Build.0 = Debug|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Release|Any CPU.ActiveCfg = Release|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Release|Mixed Platforms.Build.0 = Release|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Release|x86.ActiveCfg = Release|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
