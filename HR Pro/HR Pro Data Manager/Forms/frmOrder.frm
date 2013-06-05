@@ -69,17 +69,18 @@ Begin VB.Form frmOrder
       _Version        =   393216
       Style           =   1
       Tabs            =   2
+      Tab             =   1
       TabsPerRow      =   2
       TabHeight       =   520
       TabCaption(0)   =   "&Find Window Columns"
-      TabPicture(0)   =   "frmOrder.frx":08D6
-      Tab(0).ControlEnabled=   -1  'True
+      TabPicture(0)   =   "frmOrder.frx":0596
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraPageContainer(0)"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Sort Order Columns"
-      TabPicture(1)   =   "frmOrder.frx":08F2
-      Tab(1).ControlEnabled=   0   'False
+      TabPicture(1)   =   "frmOrder.frx":05B2
+      Tab(1).ControlEnabled=   -1  'True
       Tab(1).Control(0)=   "fraPageContainer(1)"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
@@ -88,7 +89,7 @@ Begin VB.Form frmOrder
          BorderStyle     =   0  'None
          Height          =   4300
          Index           =   1
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   24
          Top             =   450
          Width           =   7500
@@ -100,7 +101,7 @@ Begin VB.Form frmOrder
             Top             =   400
             Width           =   3000
             Begin ComctlLib.TreeView trvSelectedSortColumns 
-               DragIcon        =   "frmOrder.frx":090E
+               DragIcon        =   "frmOrder.frx":05CE
                Height          =   3375
                Left            =   165
                TabIndex        =   19
@@ -124,7 +125,7 @@ Begin VB.Form frmOrder
             Top             =   400
             Width           =   3000
             Begin ComctlLib.TreeView trvSortColumns 
-               DragIcon        =   "frmOrder.frx":0A58
+               DragIcon        =   "frmOrder.frx":0718
                Height          =   3375
                Left            =   150
                TabIndex        =   12
@@ -213,7 +214,7 @@ Begin VB.Form frmOrder
          BorderStyle     =   0  'None
          Height          =   4300
          Index           =   0
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   20
          Top             =   450
          Width           =   7500
@@ -225,7 +226,7 @@ Begin VB.Form frmOrder
             Top             =   400
             Width           =   3000
             Begin ComctlLib.TreeView trvFindColumns 
-               DragIcon        =   "frmOrder.frx":0E9A
+               DragIcon        =   "frmOrder.frx":0B5A
                Height          =   3375
                Left            =   150
                TabIndex        =   1
@@ -249,7 +250,7 @@ Begin VB.Form frmOrder
             Top             =   400
             Width           =   3000
             Begin ComctlLib.TreeView trvSelectedFindColumns 
-               DragIcon        =   "frmOrder.frx":12DC
+               DragIcon        =   "frmOrder.frx":0F9C
                Height          =   3375
                Left            =   150
                TabIndex        =   7
@@ -339,15 +340,15 @@ Begin VB.Form frmOrder
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   3
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrder.frx":1426
+            Picture         =   "frmOrder.frx":10E6
             Key             =   "IMG_COLUMN"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrder.frx":1978
+            Picture         =   "frmOrder.frx":1680
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrder.frx":1D29
+            Picture         =   "frmOrder.frx":1BD2
             Key             =   "IMG_CALC"
          EndProperty
       EndProperty
@@ -365,11 +366,11 @@ Begin VB.Form frmOrder
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   2
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrder.frx":2139
-            Key             =   ""
+            Picture         =   "frmOrder.frx":2124
+            Key             =   "IMG_DOWN"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrder.frx":248D
+            Picture         =   "frmOrder.frx":24EC
             Key             =   "IMG_UP"
          EndProperty
       EndProperty
