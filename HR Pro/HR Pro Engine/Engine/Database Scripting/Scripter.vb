@@ -1045,25 +1045,10 @@ Namespace ScriptDB
 
       Dim bOK As Boolean = True
       Dim sObjectName As String = String.Empty
-      Dim sUDFWithOptions As String = String.Empty
 
       Try
 
-        ' Put this on later, after development and after some tweaking in the system manager
-        'sUDFWithOptions = "WITH SCHEMABINDING"
-        'sUDFWithOptions = String.Empty
-
-        '  ProgressInfo.TotalSteps2 = Globals.Things.Count
         For Each objTable In Globals.Things
-
-          ' Views
-          'For Each objView In objTable.Views
-          '  If Not objView.Filter Is Nothing Then
-          '    objView.Filter.ExpressionType = ExpressionType.ViewCode
-          '    '              objView.Filter.BaseTable
-          '    objView.Filter.GenerateCode()
-          '  End If
-          'Next
 
           ' Record Descriptions
           If Not objTable.RecordDescription Is Nothing Then
@@ -1079,10 +1064,6 @@ Namespace ScriptDB
           '  Validation Masks
           For Each objExpression In objTable.Objects(Things.Type.Mask)
             sObjectName = String.Format("{0}{1}", Consts.MaskUDF, CInt(objExpression.ID))
-
-            ' Debug.Assert(sObjectName <> "udfmask_10039")
-
-            objExpression.IsEvaluated = True
             objExpression.GenerateCode()
             ScriptDB.DropUDF("dbo", sObjectName)
 
@@ -1129,8 +1110,6 @@ Namespace ScriptDB
       Catch ex As Exception
         Globals.ErrorLog.Add(HRProEngine.ErrorHandler.Section.UDFs, sObjectName, HRProEngine.ErrorHandler.Severity.Error, ex.Message, vbNullString)
         bOK = False
-
-      Finally
 
       End Try
 

@@ -387,7 +387,6 @@
           objComponent.ColumnOrderID = objRow.Item("columnorderid").ToString
           objComponent.CalculationID = objRow.Item("calculationid").ToString
           objComponent.ValueType = objRow.Item("valuetype").ToString
-          objComponent.IsEvaluated = objRow.Item("isevaluated").ToString
 
           Select Case objComponent.ValueType
             Case ScriptDB.ComponentValueTypes.Date
