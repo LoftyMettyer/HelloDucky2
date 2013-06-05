@@ -381,13 +381,13 @@
           objComponent.TableID = objRow.Item("tableid").ToString
           objComponent.ColumnID = objRow.Item("columnid").ToString
           objComponent.ColumnAggregiateType = objRow.Item("columnaggregiatetype").ToString
+          objComponent.SpecificLine = objRow.Item("specificline").ToString
           objComponent.IsColumnByReference = objRow.Item("iscolumnbyreference").ToString
           objComponent.ColumnFilterID = objRow.Item("columnfilterid").ToString
           objComponent.ColumnOrderID = objRow.Item("columnorderid").ToString
           objComponent.CalculationID = objRow.Item("calculationid").ToString
           objComponent.ValueType = objRow.Item("valuetype").ToString
           objComponent.IsEvaluated = objRow.Item("isevaluated").ToString
-
 
           Select Case objComponent.ValueType
             Case ScriptDB.ComponentValueTypes.Date

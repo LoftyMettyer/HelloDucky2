@@ -662,13 +662,14 @@ Namespace Things
       Dim sColumnFilter As String
       Dim sColumnOrder As String
       Dim sColumnJoinCode As String = String.Empty
-      Dim iColumnAggregiateType As ScriptDB.AggregiateNumeric
+      'Dim iColumnAggregiateType As ScriptDB.AggregiateNumeric
 
       Dim sPartCode As String
       Dim iPartNumber As Integer
       Dim bIsSummaryColumn As Boolean
       Dim sColumnName As String
       Dim bAddRelation As Boolean
+      Dim bReverseOrder As Boolean
 
       Dim iBackupType As ScriptDB.ExpressionType
 
@@ -892,40 +893,34 @@ Namespace Things
 
               End If
 
-              ' Derive the code for the order on this column in a child table
-              If CInt([Component].ColumnOrderID) > 0 Then
-                sColumnOrder = SQLCode_AddOrder(objThisColumn.Table, [Component].ColumnOrderID)
-              End If
-
-
               ' Add calculation for this foreign column to the pre-requisits array
               iPartNumber = maryDeclarations.Count
+              bReverseOrder = False
 
-              iColumnAggregiateType = [Component].ColumnAggregiateType
-              Select Case iColumnAggregiateType
+              ' What type/line number are we dealing with?
+              Select Case [Component].ColumnAggregiateType
 
-                'Case enumAggregiateNumeric.Average
-                'Case enumAggregiateNumeric.First
-                'Case enumAggregiateNumeric.Last
+                Case ScriptDB.AggregiateNumeric.First
+                  sPartCode = String.Format("{0}SELECT TOP 1 @part_{1} = base.[{2}]" & vbNewLine _
+                      , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
 
-                Case ScriptDB.AggregiateNumeric.Maximum
-                  sPartCode = String.Format("{0}SELECT @part_{1} = MAX(base.[{2}])" & vbNewLine _
-                              , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
+                Case ScriptDB.AggregiateNumeric.Last
+                  sPartCode = String.Format("{0}SELECT TOP 1 @part_{1} = base.[{2}]" & vbNewLine _
+                      , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
+                  bReverseOrder = True
 
-                Case ScriptDB.AggregiateNumeric.Minimum
-                  sPartCode = String.Format("{0}SELECT @part_{1} = MIN(base.[{2}])" & vbNewLine _
-                              , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
-
-                  '          Case enumAggregiateNumeric.Specific
+                Case ScriptDB.AggregiateNumeric.Specific
+                  sPartCode = String.Format("{0}SELECT TOP {3} @part_{1} = base.[{2}]" & vbNewLine _
+                      , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name, Component.SpecificLine)
 
                 Case ScriptDB.AggregiateNumeric.Total
                   sPartCode = String.Format("{0}SELECT @part_{1} = SUM(base.[{2}])" & vbNewLine _
-                              , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
+                      , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
                   bIsSummaryColumn = True
 
                 Case ScriptDB.AggregiateNumeric.Count
                   sPartCode = String.Format("{0}SELECT @part_{1} = COUNT(base.[{2}])" & vbNewLine _
-                              , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
+                      , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
                   bIsSummaryColumn = True
 
                 Case Else
@@ -934,8 +929,10 @@ Namespace Things
 
               End Select
 
-              'AND [_deleteddate] IS NULL{3}" & vbNewLine _
-              '              & "{0}WHERE [pid_{2}] = @pID " & vbNewLine _
+              ' Code for the order on this column in a child table
+              If CInt([Component].ColumnOrderID) > 0 Then
+                sColumnOrder = SQLCode_AddOrder(objThisColumn.Table, [Component].ColumnOrderID, bReverseOrder)
+              End If
 
               ' Add to prereqistits arrays
               If bIsSummaryColumn Then
@@ -968,10 +965,6 @@ Namespace Things
                     , CInt(Me.BaseTable.ID), sColumnFilter, sColumnOrder, sColumnJoinCode)
               End If
 
-              '29/5/11
-              ' just changed to  Me.BaseTable from objBaseColumn.Table
-
-              'TODO -  change the relation object to have references to teh poarent and child instead of guids?
               ' Add relation to the dependency stack
               bAddRelation = True
               For Each objDepends As Things.Base In mcolDependencies
@@ -991,8 +984,6 @@ Namespace Things
 
               maryPrerequisitStatements.Add(sPartCode)
               LineOfCode.Code = String.Format("ISNULL(@part_{0},{1})", iPartNumber, objThisColumn.SafeReturnType)
-
-
 
             End If
 
@@ -1245,7 +1236,7 @@ Namespace Things
 
     End Sub
 
-    Public Function SQLCode_AddOrder(ByRef objTable As Things.Table, ByVal [OrderID] As HCMGuid) As String
+    Public Function SQLCode_AddOrder(ByRef objTable As Things.Table, ByVal [OrderID] As HCMGuid, ByVal ReverseOrder As Boolean) As String
 
       Dim objOrderItems As Things.Collection
       Dim objOrderItem As Things.TableOrderItem
@@ -1258,9 +1249,9 @@ Namespace Things
         If objOrderItem.ColumnType = "O" Then
           Select Case objOrderItem.Ascending
             Case Enums.Order.Ascending
-              aryOrderBy.Add(String.Format("[{0}]{1}", objOrderItem.Column.Name, " ASC"))
+              aryOrderBy.Add(String.Format("[{0}]{1}", objOrderItem.Column.Name, IIf(ReverseOrder, " DESC", " ASC")))
             Case Else
-              aryOrderBy.Add(String.Format("[{0}]{1}", objOrderItem.Column.Name, " DESC"))
+              aryOrderBy.Add(String.Format("[{0}]{1}", objOrderItem.Column.Name, IIf(ReverseOrder, " ASC", " DESC")))
           End Select
         End If
       Next

@@ -32,6 +32,7 @@ Namespace Things
     Public ColumnFilterID As HCMGuid
     Public ColumnOrderID As HCMGuid
     Public ColumnAggregiateType As ScriptDB.AggregiateNumeric
+    Public SpecificLine As Integer
     Public IsColumnByReference As Boolean
     Public IsEvaluated As Boolean = False
 

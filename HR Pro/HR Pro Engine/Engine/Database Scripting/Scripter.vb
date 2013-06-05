@@ -857,124 +857,123 @@ Namespace ScriptDB
 
     End Function
 
-    ' Generate the diary links part of the trigger
-    Private Function SQLTrigger_Diary(ByRef objTable As Things.Table) As String
+    '' Generate the diary links part of the trigger
+    'Private Function SQLTrigger_Diary(ByRef objTable As Things.Table) As String
 
-      'Dim objDiaryLink As Things.DiaryLink
-      'Dim objRelation As Things.Relation
-      'Dim aryDiaryStatements1 As New ArrayList
-      'Dim aryDiaryStatements2 As New ArrayList
-      'Dim aryDiaryStatements3 As New ArrayList
-      'Dim aryRelations As New ArrayList
-      'Dim iCount As Integer = 0
+    '  'Dim objDiaryLink As Things.DiaryLink
+    '  'Dim objRelation As Things.Relation
+    '  'Dim aryDiaryStatements1 As New ArrayList
+    '  'Dim aryDiaryStatements2 As New ArrayList
+    '  'Dim aryDiaryStatements3 As New ArrayList
+    '  'Dim aryRelations As New ArrayList
+    '  'Dim iCount As Integer = 0
 
-      'Dim sRecordDescriptionCode = ""
-      Dim sTriggerCode As String = ""
+    '  'Dim sRecordDescriptionCode = ""
+    '  Dim sTriggerCode As String = ""
 
-      '' objTable.RecordDescription.Parameters
+    '  '' objTable.RecordDescription.Parameters
 
-      '' BOTHC - DON;T WORK ON JOINED (i.e OpenPay view) tablkes
-      'If 1 = 1 Or objTable.Objects(Things.Type.DiaryLink).Count = 0 Then
-      '  sTriggerCode = "---------------------------" & vbNewLine & "-- No Diary Links" & vbNewLine & "---------------------------" & vbNewLine
-      'Else
+    '  '' BOTHC - DON;T WORK ON JOINED (i.e OpenPay view) tablkes
+    '  'If 1 = 1 Or objTable.Objects(Things.Type.DiaryLink).Count = 0 Then
+    '  '  sTriggerCode = "---------------------------" & vbNewLine & "-- No Diary Links" & vbNewLine & "---------------------------" & vbNewLine
+    '  'Else
 
-      '  objTable.RecordDescription.GenerateCode()
-      '  sRecordDescriptionCode = objTable.RecordDescription.UDF.CallingCode
-      '  '   "dbo.[udfrecdesc_Personnel_Records](base.Surname, base.Forenames)"
+    '  '  objTable.RecordDescription.GenerateCode()
+    '  '  sRecordDescriptionCode = objTable.RecordDescription.UDF.CallingCode
+    '  '  '   "dbo.[udfrecdesc_Personnel_Records](base.Surname, base.Forenames)"
 
-      '  ' eefective date could be something like this?
-      '  '	, CASE WHEN [Start_Date] < GETDATE() THEN DATEADD(DD, 20, DATEADD(D, 0, DATEDIFF(D, 0, [Start_Date]))) ELSE NULL END AS [17]
+    '  '  ' eefective date could be something like this?
+    '  '  '	, CASE WHEN [Start_Date] < GETDATE() THEN DATEADD(DD, 20, DATEADD(D, 0, DATEDIFF(D, 0, [Start_Date]))) ELSE NULL END AS [17]
 
-      '  For Each objDiaryLink In objTable.Objects(Things.Type.DiaryLink)
-      '    objDiaryLink.Generate()
-      '    aryDiaryStatements1.Add(String.Format("{0}INSERT @links([id], [linkid], [description], [alarm], [columnid]) VALUES ({1}, {2}, '{3}', {4}, {5});" _
-      '        , vbTab, CInt(iCount), CInt(objDiaryLink.ID), objDiaryLink.Comment, IIf(objDiaryLink.Reminder, 1, 0), CInt(objDiaryLink.Column.ID)))
-      '    aryDiaryStatements2.Add(String.Format("{0} AS [{1}]", objDiaryLink.UDF.CallingCode, iCount))
-      '    aryDiaryStatements3.Add(String.Format("[{0}]", iCount))
-      '    iCount += 1
-      '  Next
-
-
-      '  ' Build any parent relations
-      '  For Each objRelation In objTable.Objects(Things.Type.Relation)
-      '    If objRelation.RelationshipType = RelationshipType.Parent Then
-      '      aryRelations.Add(String.Format("INNER JOIN dbo.[{0}] ON dbo.[{0}].[ID] = dbo.[{1}].[ID_{2}]", objRelation.PhysicalName, objTable.Name, CInt(objTable.ID)))
-      '    End If
-      '  Next
+    '  '  For Each objDiaryLink In objTable.Objects(Things.Type.DiaryLink)
+    '  '    objDiaryLink.Generate()
+    '  '    aryDiaryStatements1.Add(String.Format("{0}INSERT @links([id], [linkid], [description], [alarm], [columnid]) VALUES ({1}, {2}, '{3}', {4}, {5});" _
+    '  '        , vbTab, CInt(iCount), CInt(objDiaryLink.ID), objDiaryLink.Comment, IIf(objDiaryLink.Reminder, 1, 0), CInt(objDiaryLink.Column.ID)))
+    '  '    aryDiaryStatements2.Add(String.Format("{0} AS [{1}]", objDiaryLink.UDF.CallingCode, iCount))
+    '  '    aryDiaryStatements3.Add(String.Format("[{0}]", iCount))
+    '  '    iCount += 1
+    '  '  Next
 
 
-      '  ' Put it all together
-      '  sTriggerCode = "---------------------------" & vbNewLine & "-- Diary Links" & vbNewLine & "---------------------------" & vbNewLine & _
-      '    vbTab & "DECLARE @links TABLE([id] integer, [linkid] nvarchar(2), [description] nvarchar(255), [alarm] bit, [columnid] integer);" & vbNewLine & _
-      '    String.Join(vbNewLine, aryDiaryStatements1.ToArray()) & vbNewLine & vbNewLine &
-      '    vbTab & "INSERT dbo.[ASRSysDiaryEvents] ([tableid], [columnid], [rowid], [eventdate], [eventtime], [alarm], [access], [copiedfromid], [eventnotes], [eventtitle], [username], [columnvalue], [linkid])" & vbNewLine & _
-      '    vbTab & String.Format("SELECT {0}, d.columnid, tblpivot.ID, tblPivot.eventdate, NULL, d.alarm, 'RO', NULL, NULL" & vbNewLine & _
-      '    "		, {1} + ': ' + d.[description]" & vbNewLine & _
-      '    "		, SYSTEM_USER, NULL, d.[linkid]" & vbNewLine & _
-      '    "    FROM (SELECT [ID]," & vbNewLine & _
-      '    "      {2}" & vbNewLine & _
-      '    "      FROM dbo.[{3}]) obj" & vbNewLine & _
-      '    "    UNPIVOT (eventdate For property IN ({4})) AS tblPivot" & vbNewLine & _
-      '    "      INNER JOIN @links d ON d.id = tblPivot.Property" & vbNewLine & _
-      '    "      INNER JOIN dbo.[{3}] ON dbo.[{3}].ID = tblPivot.ID" & vbNewLine & _
-      '    "      INNER JOIN inserted ON inserted.ID = dbo.[{3}].ID" & _
-      '    "{5};" _
-      '    , CInt(objTable.ID), sRecordDescriptionCode, String.Join(vbNewLine & vbTab & vbTab & ", ", aryDiaryStatements2.ToArray()) _
-      '    , objTable.Name, String.Join(",", aryDiaryStatements3.ToArray()) _
-      '    , String.Join(vbNewLine, aryRelations.ToArray()))
-
-      '  ' Comment it all over - development mode!!! (take out later)
-      '  sTriggerCode = vbNewLine & sTriggerCode & vbNewLine
-
-      'End If
-
-      ''SELECT 0 AS [tableID], d.columnid, tblpivot.ID AS [RowID]
-      ''		, tblPivot.EventDate, NULL AS [EventTime], d.alarm, 'RO' AS [Access], NULL AS [CopiedFrom], NULL AS [EventNotes]
-      ''		, dbo.[udfrecdesc_Personnel_Records](base.Surname, base.Forenames) + ': ' + d.[description]  AS [EventTitle]
-      ''		, SYSTEM_USER AS [UserName], NULL AS [ColumnValue], tblPivot.Property AS [LinkID]
-      ''	FROM (SELECT id,
-      ''		[date_of_birth] AS [1],
-      ''		[leaving_date] AS [2],
-      ''		[Start_Date] AS [3],		
-      ''		[Start_Date]+1 AS [4],
-      ''		dbo.udf_function_randomdate() AS [5]
-      ''		FROM Personnel_records) Person
-      ''		UNPIVOT (EventDate For Property IN ([1],[2],[3],[4],[5])) AS tblPivot
-      ''	INNER JOIN @diarylinks d ON d.linkid = tblPivot.Property
-      ''	INNER JOIN Personnel_Records base ON base.ID = tblPivot.ID
+    '  '  ' Build any parent relations
+    '  '  For Each objRelation In objTable.Objects(Things.Type.Relation)
+    '  '    If objRelation.RelationshipType = RelationshipType.Parent Then
+    '  '      aryRelations.Add(String.Format("INNER JOIN dbo.[{0}] ON dbo.[{0}].[ID] = dbo.[{1}].[ID_{2}]", objRelation.PhysicalName, objTable.Name, CInt(objTable.ID)))
+    '  '    End If
+    '  '  Next
 
 
-      Return sTriggerCode
+    '  '  ' Put it all together
+    '  '  sTriggerCode = "---------------------------" & vbNewLine & "-- Diary Links" & vbNewLine & "---------------------------" & vbNewLine & _
+    '  '    vbTab & "DECLARE @links TABLE([id] integer, [linkid] nvarchar(2), [description] nvarchar(255), [alarm] bit, [columnid] integer);" & vbNewLine & _
+    '  '    String.Join(vbNewLine, aryDiaryStatements1.ToArray()) & vbNewLine & vbNewLine &
+    '  '    vbTab & "INSERT dbo.[ASRSysDiaryEvents] ([tableid], [columnid], [rowid], [eventdate], [eventtime], [alarm], [access], [copiedfromid], [eventnotes], [eventtitle], [username], [columnvalue], [linkid])" & vbNewLine & _
+    '  '    vbTab & String.Format("SELECT {0}, d.columnid, tblpivot.ID, tblPivot.eventdate, NULL, d.alarm, 'RO', NULL, NULL" & vbNewLine & _
+    '  '    "		, {1} + ': ' + d.[description]" & vbNewLine & _
+    '  '    "		, SYSTEM_USER, NULL, d.[linkid]" & vbNewLine & _
+    '  '    "    FROM (SELECT [ID]," & vbNewLine & _
+    '  '    "      {2}" & vbNewLine & _
+    '  '    "      FROM dbo.[{3}]) obj" & vbNewLine & _
+    '  '    "    UNPIVOT (eventdate For property IN ({4})) AS tblPivot" & vbNewLine & _
+    '  '    "      INNER JOIN @links d ON d.id = tblPivot.Property" & vbNewLine & _
+    '  '    "      INNER JOIN dbo.[{3}] ON dbo.[{3}].ID = tblPivot.ID" & vbNewLine & _
+    '  '    "      INNER JOIN inserted ON inserted.ID = dbo.[{3}].ID" & _
+    '  '    "{5};" _
+    '  '    , CInt(objTable.ID), sRecordDescriptionCode, String.Join(vbNewLine & vbTab & vbTab & ", ", aryDiaryStatements2.ToArray()) _
+    '  '    , objTable.Name, String.Join(",", aryDiaryStatements3.ToArray()) _
+    '  '    , String.Join(vbNewLine, aryRelations.ToArray()))
+
+    '  '  ' Comment it all over - development mode!!! (take out later)
+    '  '  sTriggerCode = vbNewLine & sTriggerCode & vbNewLine
+
+    '  'End If
+
+    '  ''SELECT 0 AS [tableID], d.columnid, tblpivot.ID AS [RowID]
+    '  ''		, tblPivot.EventDate, NULL AS [EventTime], d.alarm, 'RO' AS [Access], NULL AS [CopiedFrom], NULL AS [EventNotes]
+    '  ''		, dbo.[udfrecdesc_Personnel_Records](base.Surname, base.Forenames) + ': ' + d.[description]  AS [EventTitle]
+    '  ''		, SYSTEM_USER AS [UserName], NULL AS [ColumnValue], tblPivot.Property AS [LinkID]
+    '  ''	FROM (SELECT id,
+    '  ''		[date_of_birth] AS [1],
+    '  ''		[leaving_date] AS [2],
+    '  ''		[Start_Date] AS [3],		
+    '  ''		[Start_Date]+1 AS [4],
+    '  ''		dbo.udf_function_randomdate() AS [5]
+    '  ''		FROM Personnel_records) Person
+    '  ''		UNPIVOT (EventDate For Property IN ([1],[2],[3],[4],[5])) AS tblPivot
+    '  ''	INNER JOIN @diarylinks d ON d.linkid = tblPivot.Property
+    '  ''	INNER JOIN Personnel_Records base ON base.ID = tblPivot.ID
 
 
-    End Function
+    '  Return sTriggerCode
+
+
+    'End Function
 
 #End Region
 
 #Region "Calculation Scripting"
 
+    'Public Sub ScriptDiaryLinkFilters(ByRef ProgressInfo As HCMProgressBar)
 
-    Public Sub ScriptDiaryLinkFilters(ByRef ProgressInfo As HCMProgressBar)
+    '  Dim objTable As Things.Table
+    '  Dim objDiaryLink As Things.DiaryLink
+    '  Dim sObjectName As String
 
-      Dim objTable As Things.Table
-      Dim objDiaryLink As Things.DiaryLink
-      Dim sObjectName As String
+    '  For Each objTable In Globals.Things
+    '    For Each objDiaryLink In objTable.Objects(Things.Type.DiaryLink)
+    '      If Not objDiaryLink.Filter Is Nothing Then
+    '        objDiaryLink.Filter.GenerateCode()
+    '        If objDiaryLink.Filter.IsComplex Then
 
-      For Each objTable In Globals.Things
-        For Each objDiaryLink In objTable.Objects(Things.Type.DiaryLink)
-          If Not objDiaryLink.Filter Is Nothing Then
-            objDiaryLink.Filter.GenerateCode()
-            If objDiaryLink.Filter.IsComplex Then
+    '          sObjectName = String.Format("udfdiarylinkfilter_{0}.{1}", objTable.Name, objDiaryLink.Name)
+    '          ScriptDB.DropUDF("dbo", sObjectName)
 
-              sObjectName = String.Format("udfdiarylinkfilter_{0}.{1}", objTable.Name, objDiaryLink.Name)
-              ScriptDB.DropUDF("dbo", sObjectName)
+    '        End If
+    '      End If
+    '    Next
+    '  Next
 
-            End If
-          End If
-        Next
-      Next
-
-    End Sub
+    'End Sub
 
     'Public Sub ScriptColumnCalculations(ByRef ProgressInfo As HCMProgressBar)
 
@@ -1162,7 +1161,7 @@ Namespace ScriptDB
                 sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
 
                 '                Debug.Assert(sObjectName <> "udfcalc_Table1.simplelogic")
-                ' Debug.Assert(sObjectName <> "udfcalc_Personnel_Records.Holiday_Balance")
+                Debug.Assert(sObjectName <> "udfcalc_Table1.divby0_triggerval")
 
                 ScriptDB.DropUDF("dbo", sObjectName)
 
