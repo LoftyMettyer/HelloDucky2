@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~3.OCX"
 Begin VB.MDIForm frmMain 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "10:49"
+            TextSave        =   "15:10"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -2710,6 +2710,7 @@ Private Function DoBatchJob(ByVal Action As EditOptions, ByRef SelectedID As Lon
   Dim objBatchJobRUN As clsBatchJobRUN
   Dim lngEventLogID As Long
     
+  gblnReportPackMode = False
   bOK = True
        
   Select Case Action
@@ -2806,11 +2807,11 @@ Private Function DoReportPack(ByVal Action As EditOptions, ByRef SelectedID As L
 
       Select Case objBatchJobRUN.JobStatus
         Case elsSuccessful
-          COAMsgBox "Report Pack : '" & SelectedText & "' Completed successfully.", vbInformation + vbOKOnly, "Report Pack"
+          COAMsgBox "Report Packs : '" & SelectedText & "' Completed successfully.", vbInformation + vbOKOnly, "Report Packs"
         Case elsCancelled
-          COAMsgBox "Report Pack : '" & SelectedText & "' Cancelled by user.", vbExclamation + vbOKOnly, "Report Pack"
+          COAMsgBox "Report Packs : '" & SelectedText & "' Cancelled by user.", vbExclamation + vbOKOnly, "Report Packs"
         Case Else
-          COAMsgBox "Report Pack : '" & SelectedText & "' Failed." & vbCrLf & vbCrLf & strNotes, vbExclamation + vbOKOnly, "Report Pack"
+          COAMsgBox "Report Packs : '" & SelectedText & "' Failed." & vbCrLf & vbCrLf & strNotes, vbExclamation + vbOKOnly, "Report Packs"
       End Select
      
     Case edtPrint
@@ -3079,7 +3080,7 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
             sType = "Batch Job : "
           Case utlReportPack
             sIconName = "BLANK"
-            sType = "Report Park : "
+            sType = "Report Pack : "
           Case Else
             sIconName = "BLANK"
         End Select
