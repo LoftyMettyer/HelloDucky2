@@ -334,6 +334,7 @@ Private mstrExtraWhereClause As String
 
 Public AllowFavourites As Boolean
 Public SelectedUtilityType As UtilityType
+Public EnableNew As Boolean
 
 Public Property Get CategoryID() As Long
   CategoryID = mlngTableID
@@ -751,6 +752,7 @@ End Sub
 Private Sub cmdNew_Click()
   ' Create a new item.
   lngAction = edtAdd
+  SelectedUtilityType = mutlUtilityType
   FromCopy = False
   Unload Me
     
@@ -795,13 +797,14 @@ Private Sub cmdProperties_Click()
 
   With frmDefProp
 
-lngUtilityType = GetTypeFromTag(List1.SelectedItem.Tag)
+    lngUtilityType = GetTypeFromTag(List1.SelectedItem.Tag)
+    msSingularCaption = IIf(mutlUtilityType = utlAll, GetBatchJobType(lngUtilityType), msSingularCaption)
 
     .Caption = msSingularCaption & " Properties"
     .UtilName = SelectedText
     .PopulateUtil lngUtilityType, mlngSelectedID
 
-    .CheckForUseage msType, mlngSelectedID
+    .CheckForUseage lngUtilityType, mlngSelectedID
     
     ' RH return the pointer to norma
     Screen.MousePointer = vbDefault
@@ -910,7 +913,7 @@ Private Sub Form_Load()
   
   mblnLoading = False
   If mlngOptions = 0 Then
-    mlngOptions = edtAdd + edtDelete + edtEdit + edtCopy + edtSelect + edtPrint + edtProperties
+    mlngOptions = IIf(EnableNew, edtAdd, 0) + edtDelete + edtEdit + edtCopy + edtSelect + edtPrint + edtProperties
   End If
   
   If Not mblnFirstLoad Then
@@ -920,8 +923,6 @@ Private Sub Form_Load()
 
   'mstrEventLogIDs = vbNullString
   SizeControls
-
-
 
 
 End Sub
@@ -1030,6 +1031,9 @@ Public Sub Refresh_Controls()
   Dim fNewValue As Boolean
   Dim iCount As Integer
   Dim lngTempIndex As Long
+  Dim sType As String
+  Dim lngTYPE As UtilityType
+  Dim bSystemMgrDefined As Boolean
   
   If mblnLoading Then
     Exit Sub
@@ -1038,6 +1042,11 @@ Public Sub Refresh_Controls()
   On Error GoTo LocalErr
   
   lngSelected = 0
+  
+  If Not List1.SelectedItem Is Nothing Then
+    bSystemMgrDefined = (GetTypeFromTag(List1.SelectedItem.Tag) = utlWorkflow)
+  End If
+  
   If mblnBatchPrompt Then
     If List2.ListCount > 0 And List2.ListIndex <> -1 Then
       lngSelected = List2.ItemData(List2.ListIndex)
@@ -1066,21 +1075,17 @@ Public Sub Refresh_Controls()
     cmdSelect.Enabled = (List2.SelCount > 0)
   Else
     
-    'MH20050107 Fault 9571
     'Update "<All>" option...
     If mblnBatchPrompt And List2.ListCount > 0 Then
       lngTempIndex = List2.ListIndex
       List2.Selected(0) = (List2.SelCount = List2.ListCount - IIf(List2.Selected(0), 0, 1))
-      'NHRD270905 Fault 9612
-     ' List2.ListIndex = lngTempIndex
     End If
     
-    'NHRD15112004 Fault 9351
     cmdProperties.Enabled = (List2.Text <> "<All>") And (List2.ListCount > 0)
   End If
   
   ' Enable/disable controls as required.
-  If lngSelected > 0 Then
+  If lngSelected > 0 And Not bSystemMgrDefined Then
     With mrsRecords
       If Not (.BOF And .EOF) Then
         .MoveFirst
@@ -1090,8 +1095,8 @@ Public Sub Refresh_Controls()
           txtDesc.Text = vbNullString
           
           If mutlUtilityType = utlAll Then
-         '   txtDesc.Text = msSingularCaption & vbNewLine
-            txtDesc.Text = GetTypeFromTag(List1.SelectedItem.Tag) & vbNewLine
+            sType = GetBatchJobType(GetTypeFromTag(List1.SelectedItem.Tag))
+            txtDesc.Text = sType & vbNewLine & String(Len(sType) * 2, "-") & vbNewLine
           End If
           
           txtDesc.Text = txtDesc.Text & IIf(IsNull(.Fields("Description").Value), vbNullString, .Fields("Description").Value)
@@ -1149,16 +1154,13 @@ Public Sub Refresh_Controls()
     cmdCopy.Enabled = False
     cmdEdit.Enabled = False
     cmdDelete.Enabled = False
-    'cmdSelect.Enabled = List2.Text = "<All>"
+    
     If mblnBatchPrompt Then
       cmdSelect.Enabled = (mfEnableRun And List2.SelCount > 0)
     Else
-      cmdSelect.Enabled = False
+      cmdSelect.Enabled = bSystemMgrDefined
     End If
     cmdPrint.Enabled = False
-    
-    'NHRD15112004 Fault 9351
-    'cmdProperties.Enabled = List2.Text = "<All>"
     cmdProperties.Enabled = (List2.Text <> "<All>") And (List2.ListCount > 0)
     
     cmdEdit.Caption = "&Edit..."
@@ -1231,7 +1233,6 @@ Private Sub GetSelected()
 
 End Sub
 
-
 Public Property Let EnableRun(ByVal bEnable As Boolean)
   ' Change the caption on the cmdSelect control as appropriate.
   cmdSelect.Caption = IIf(bEnable, "&Run", "&Select")
@@ -1255,12 +1256,15 @@ Private Function CheckForUseage(sDefType As String, lItemID As Long) As Boolean
   ' Check if the given record is used.
   Dim sMsg As String
   Dim intCount As Integer
+  Dim lngUtilityType As UtilityType
 
   Load frmDefProp
   
   With frmDefProp
     
-    If .CheckForUseage(sDefType, lItemID) Then
+    lngUtilityType = GetTypeFromTag(List1.SelectedItem.Tag)
+    
+    If .CheckForUseage(lngUtilityType, lItemID) Then
         
       With .List1
         sMsg = vbNullString
@@ -1368,54 +1372,6 @@ Dim fAllColumns As Boolean
     End If
   End If
 
-'
-'  If mblnApplyDefAccess Then
-'    If OldAccessUtility(mutlUtilityType) Then
-'      If gfCurrentUserIsSysSecMgr Then
-'        If chkOnlyMine.Value = vbChecked Then
-'          strSQL = strSQL & _
-'            IIf(InStr(strSQL, " WHERE ") = 0, " WHERE ", " AND ") & _
-'            "(" & msTableName & ".userName = '" & datGeneral.UserNameForSQL & "'" & ")"
-'        End If
-'      Else
-'        strSQL = strSQL & _
-'          IIf(InStr(strSQL, " WHERE ") = 0, " WHERE ", " AND ") & _
-'          "(" & msTableName & ".userName = '" & datGeneral.UserNameForSQL & "'"
-'
-'        If Not (chkOnlyMine.Value = vbChecked) Then
-'          strSQL = strSQL & _
-'            " OR " & msTableName & ".access <> '" & ACCESS_HIDDEN & "'"
-'        End If
-'
-'        strSQL = strSQL & _
-'          ")"
-'      End If
-'    Else
-'      If gfCurrentUserIsSysSecMgr Then
-'        'MH20030521 Fault 5726
-'        'If chkOnlyMine Then
-'        If chkOnlyMine.Value = vbChecked Then
-'          strSQL = strSQL & _
-'            IIf(InStr(strSQL, " WHERE ") = 0, " WHERE ", " AND ") & _
-'            "(" & msTableName & ".userName = '" & datGeneral.UserNameForSQL & "'" & ")"
-'        End If
-'      Else
-'        strSQL = strSQL & _
-'          IIf(InStr(strSQL, " WHERE ") = 0, " WHERE ", " AND ") & _
-'          "(" & msTableName & ".userName = '" & datGeneral.UserNameForSQL & "'"
-'
-'        'MH20030521 Fault 5726
-'        'If Not chkOnlyMine Then
-'        If Not (chkOnlyMine.Value = vbChecked) Then
-'          strSQL = strSQL & _
-'            " OR " & msAccessTableName & ".access <> '" & ACCESS_HIDDEN & "'"
-'        End If
-'
-'        strSQL = strSQL & _
-'          ")"
-'      End If
-'    End If
-'  End If
 
   UI.LockWindow Me.hWnd
 
@@ -2386,7 +2342,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
     
     If blnScheduledJobs Then
       msType = "Pending Workflow Steps"
-      msRecordSource = "SELECT ASRSysWorkflowInstanceSteps.ID," & _
+      msRecordSource = "SELECT " & utlWorkflow & " AS objecttype, ASRSysWorkflowInstanceSteps.ID," & _
         "   ASRSysWorkflows.name + ' - ' + ASRSysWorkflowElements.caption AS [name]," & _
         "   '' AS [description]" & _
         " FROM ASRSysWorkflowInstanceSteps" & _
@@ -2401,7 +2357,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
       msType = "Workflow"
       msGeneralCaption = "Workflow"
       msSingularCaption = "Workflow"
-      msRecordSource = "SELECT ID, name, description" & _
+      msRecordSource = "SELECT " & utlWorkflow & " AS objecttype, ID, name, description" & _
         " FROM " & msTableName & _
         " WHERE ASRSysWorkflows.enabled = 1" & _
         "   AND ISNULL(ASRSysWorkflows.initiationType, 0) = 0"

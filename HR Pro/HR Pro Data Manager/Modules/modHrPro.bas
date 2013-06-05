@@ -4375,7 +4375,7 @@ Public Sub DebugOutput(strWhere As String, strWhat As String)
 
 End Sub
 
-Public Sub UpdateUsage(ByRef lngTYPE As UtilityType, ByRef lngUtilityID As Long, lngAction As EditOptions)
+Public Sub UpdateUsage(ByRef lngType As UtilityType, ByRef lngUtilityID As Long, lngAction As EditOptions)
 
   Dim cmdUsage As New ADODB.Command
   Dim pmADO As ADODB.Parameter
@@ -4391,7 +4391,7 @@ Public Sub UpdateUsage(ByRef lngTYPE As UtilityType, ByRef lngUtilityID As Long,
   
       Set pmADO = .CreateParameter("objecttype", adInteger, adParamInput, 50)
       .Parameters.Append pmADO
-      pmADO.Value = lngTYPE
+      pmADO.Value = lngType
   
       Set pmADO = .CreateParameter("objectid", adInteger, adParamInput, 50)
       .Parameters.Append pmADO
@@ -4558,3 +4558,84 @@ ErrorTrap:
 
 End Sub
 
+' Converts utilityID to text format because the batch jobs store it in a testual format (Why? For god's sake why???)
+Public Function GetBatchJobType(ByVal Utility As UtilityType) As String
+
+  Select Case Utility
+  
+    Case utlCalendarReport
+      GetBatchJobType = "Calendar Report"
+  
+    Case utlCalculation
+      GetBatchJobType = "Calculation"
+  
+    Case utlCrossTab
+      GetBatchJobType = "Cross Tab"
+  
+    Case utlCustomReport
+      GetBatchJobType = "Custom Report"
+  
+    Case utlDataTransfer
+      GetBatchJobType = "Data Transfer"
+  
+    Case utlEmailAddress
+      GetBatchJobType = "Email Address"
+  
+    Case utlEmailGroup
+      GetBatchJobType = "Email Group"
+  
+    Case utlExport
+      GetBatchJobType = "Export"
+  
+    Case utlFilter
+      GetBatchJobType = "Filter"
+      
+    Case UtlGlobalAdd
+      GetBatchJobType = "Global Add"
+    
+    Case utlGlobalDelete
+      GetBatchJobType = "Global Delete"
+    
+    Case utlGlobalUpdate
+      GetBatchJobType = "Global Update"
+     
+    Case utlImport
+      GetBatchJobType = "Import"
+  
+    Case utlMatchReport
+      GetBatchJobType = "Match Report"
+    
+    Case utlSuccession
+      GetBatchJobType = "Succession Planning"
+    
+    Case utlCareer
+      GetBatchJobType = "Career Progression"
+  
+    Case utlMailMerge
+      GetBatchJobType = "Mail Merge"
+      
+    Case utlLabel
+      GetBatchJobType = "Envelopes & Labels"
+    
+    Case utlLabelType
+      GetBatchJobType = "Envelope & Label Template"
+  
+    Case utlDocumentMapping
+      GetBatchJobType = "Document Type"
+  
+    Case utlPicklist
+      GetBatchJobType = "Picklist"
+    
+    Case utlRecordProfile
+      GetBatchJobType = "Record Profile"
+      
+    Case utlWorkflow
+      GetBatchJobType = "Workflow"
+      
+    Case Else
+      GetBatchJobType = ""
+
+  End Select
+
+
+End Function
