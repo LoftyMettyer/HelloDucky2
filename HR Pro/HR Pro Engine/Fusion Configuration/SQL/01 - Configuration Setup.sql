@@ -6,21 +6,21 @@ SELECT @fusionschemaID = [SCHEMA_ID] FROM sys.schemas WHERE [name] = 'fusion'
 	IF EXISTS (SELECT id FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[spsys_getmodulesetting]')	AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spsys_getmodulesetting];
 
-	--IF EXISTS (SELECT id FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[spsys_getaccordmodulesetting]')	AND xtype = 'P')
-	--	DROP PROCEDURE [dbo].[spsys_getaccordmodulesetting];
+	IF EXISTS (SELECT id FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[spsys_getaccordmodulesetting]')	AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spsys_getaccordmodulesetting];
 
 
 
-	--EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spsys_getaccordmodulesetting](
-	--		@moduleKey AS varchar(50),
-	--		@parameterKey AS varchar(50),
-	--		@paramterType AS varchar(50),			
-	--		@parameterValue AS nvarchar(MAX) OUTPUT)
-	--	AS
-	--	BEGIN
-	--		SELECT @parameterValue = [parameterValue] FROM [asrsysModuleSetup] WHERE [ModuleKey] = @moduleKey 
-	--			AND [ParameterKey] = @parameterKey AND [ParameterType] = @paramterType
-	--	END';
+	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spsys_getaccordmodulesetting](
+			@moduleKey AS varchar(50),
+			@parameterKey AS varchar(50),
+			@paramterType AS varchar(50),			
+			@parameterValue AS nvarchar(MAX) OUTPUT)
+		AS
+		BEGIN
+			SELECT @parameterValue = [parameterValue] FROM [asrsysModuleSetup] WHERE [ModuleKey] = @moduleKey 
+				AND [ParameterKey] = @parameterKey AND [ParameterType] = @paramterType
+		END';
 
 
 	EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spsys_getmodulesetting](
@@ -66,7 +66,8 @@ SELECT @fusionschemaID = [SCHEMA_ID] FROM sys.schemas WHERE [name] = 'fusion'
 		[ID] [int] NOT NULL,
 		[Name] [varchar](255) NOT NULL,
 		[TableID] [int] NULL,
-		[TranslationName] varchar(255) NOT NULL
+		[TranslationName] varchar(255) NOT NULL,
+		[IsDataList] bit NOT NULL
 		CONSTRAINT [PK_Category] PRIMARY KEY CLUSTERED ([ID] ASC))'
 
 	-- Element
@@ -94,7 +95,6 @@ SELECT @fusionschemaID = [SCHEMA_ID] FROM sys.schemas WHERE [name] = 'fusion'
 		[Name] [varchar](255) NOT NULL,
 		[Description] [varchar](max) NULL,
 		[Schema] [varbinary](max) NULL,
-		[Skeleton] [nvarchar](max) NULL,
 		[Version] [int] NOT NULL,
 		[AllowPublish] [bit] NOT NULL,
 		[AllowSubscribe] [bit] NOT NULL,
