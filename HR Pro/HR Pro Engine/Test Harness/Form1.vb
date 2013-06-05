@@ -315,14 +315,14 @@ Public Class Form1
 
 
 
-    objPhoenix.ReturnErrorLog.Add(HRProEngine.ErrorHandler.Section.General, "hello", HRProEngine.ErrorHandler.Severity.Error, _
-"SQLCode_AddCodeLevel", " -- Missing calculation")
+    '    objPhoenix.ReturnErrorLog.Add(HRProEngine.ErrorHandler.Section.General, "hello", HRProEngine.ErrorHandler.Severity.Error, _
+    '"SQLCode_AddCodeLevel", " -- Missing calculation")
 
-    If objPhoenix.ReturnErrorLog.Count > 0 Then
+    '    If objPhoenix.ReturnErrorLog.Count > 0 Then
 
-      objPhoenix.ReturnErrorLog.Show()
+    '      objPhoenix.ReturnErrorLog.Show()
 
-    End If
+    '    End If
 
 
 
