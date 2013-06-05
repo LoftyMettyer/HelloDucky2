@@ -538,15 +538,16 @@ Namespace ScriptDB
 
                      End If
 
-                     ' Build list of default values
-                     If objColumn.DefaultCalcID > 0 And Not objColumn.DefaultCalculation Is Nothing Then
-                        objColumn.DefaultCalculation.AssociatedColumn = objColumn
-                        objColumn.DefaultCalculation.ExpressionType = ExpressionType.ColumnDefault
-                        objColumn.DefaultCalculation.GenerateCode()
+              ' Build list of default values
+              If objColumn.DefaultCalcID > 0 And Not objColumn.DefaultCalculation Is Nothing Then
+                objColumn.DefaultCalculation.AssociatedColumn = objColumn
+                objColumn.DefaultCalculation.ExpressionType = ExpressionType.ColumnDefault
+                objColumn.DefaultCalculation.GenerateCode()
 
-                        sCalculationCode = objColumn.DefaultCalculation.UDF.CallingCode
-                        aryColumnsWithDefaultValues.Add(String.Format("[{0}] = {1}", objColumn.Name, sCalculationCode))
-                     End If
+                sCalculationCode = objColumn.DefaultCalculation.UDF.CallingCode
+                aryColumnsWithDefaultValues.Add(String.Format("[{0}] = ISNULL(base.[{0}], {1})", objColumn.Name, sCalculationCode))
+
+              End If
 
 
                      If Not objColumn.IsReadOnly Then
