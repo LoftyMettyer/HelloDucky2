@@ -636,14 +636,17 @@ PRINT 'Step - Menu & Category enhancements'
 	END';
 	GRANT EXECUTE ON dbo.[spstat_updateobjectusage] TO [ASRSysGroup];
 
+
 	IF EXISTS (SELECT * FROM sys.views WHERE object_id = object_ID(N'[dbo].[ASRSysAllObjectNames]'))
 		DROP VIEW [dbo].[ASRSysAllobjectNames]
 	EXEC sp_executesql N'CREATE VIEW dbo.[ASRSysAllObjectNames]
-	AS		
+	AS
+		SELECT 25 AS [objectType], [ID], [Name] FROM ASRSysWorkflows
+		UNION
 		SELECT CASE [IsBatch] 
 				WHEN 0 THEN 29
 				WHEN 1 THEN 0
-			END	AS [objectType], ID,  Name FROM ASRSysBatchJobName
+			END	, ID,  Name FROM ASRSysBatchJobName
 		UNION
 		SELECT CASE [IsLabel] 
 				WHEN 0 THEN 9
