@@ -459,27 +459,27 @@ Namespace ScriptDB
               If objColumn.Audit Then
                 If objColumn.IsCalculated Then
 
-                  aryAuditInserts.Add(String.Format("        SELECT base.ID, NULL, convert(nvarchar({4}),[{0}]), {1}" & vbNewLine & _
+                  aryAuditInserts.Add(String.Format("        SELECT base.ID, NULL, convert(nvarchar({4}),[{0}]), {1}, {5}" & vbNewLine & _
                                       "            FROM dbo.[{3}] base" _
-                                      , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, objColumn.Table.Name, objColumn.DataTypeSize))
-                  aryAuditUpdates.Add(String.Format("        SELECT d.ID, convert(nvarchar({4}),d.[{0}]), convert(nvarchar({4}), base.[{0}]), {1}" & vbNewLine & _
+                                      , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, objColumn.Table.Name, objColumn.DataTypeSize, CInt(objTable.ID)))
+                  aryAuditUpdates.Add(String.Format("        SELECT d.ID, convert(nvarchar({4}),d.[{0}]), convert(nvarchar({4}), base.[{0}]), {1}, {5}" & vbNewLine & _
                                       "            FROM deleted d" & vbNewLine & _
                                       "            INNER JOIN dbo.[{3}] base ON d.[id] = base.[id] AND NOT d.[{0}] = base.[{0}]" _
-                                      , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, objColumn.Table.Name, objColumn.DataTypeSize))
-                  aryAuditDeletes.Add(String.Format("        SELECT base.ID, convert(nvarchar({4}),{2}), NULL, {1}" & vbNewLine & _
+                                      , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, objColumn.Table.Name, objColumn.DataTypeSize, CInt(objTable.ID)))
+                  aryAuditDeletes.Add(String.Format("        SELECT base.ID, convert(nvarchar({4}),{2}), NULL, {1}, {5}" & vbNewLine & _
                                       "            FROM deleted base" _
-                                      , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, objColumn.Table.Name, objColumn.DataTypeSize))
+                                      , objColumn.Name, CInt(objColumn.ID), objColumn.Calculation.UDF.CallingCode, objColumn.Table.Name, objColumn.DataTypeSize, CInt(objTable.ID)))
                 Else
-                  aryAuditInserts.Add(String.Format("        SELECT ID, NULL, convert(nvarchar({2}),[{0}]), {1}" & vbNewLine & _
+                  aryAuditInserts.Add(String.Format("        SELECT ID, NULL, convert(nvarchar({2}),[{0}]), {1}, {3}" & vbNewLine & _
                                       "            FROM inserted WHERE [{0}] IS NOT NULL" _
-                                      , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize))
-                  aryAuditUpdates.Add(String.Format("        SELECT i.ID, convert(nvarchar({2}),d.[{0}]), convert(nvarchar({2}),i.[{0}]), {1}" & vbNewLine & _
+                                      , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize, CInt(objTable.ID)))
+                  aryAuditUpdates.Add(String.Format("        SELECT i.ID, convert(nvarchar({2}),d.[{0}]), convert(nvarchar({2}),i.[{0}]), {1}, {3}" & vbNewLine & _
                                       "            FROM inserted i" & vbNewLine & _
                                       "            INNER JOIN deleted d ON i.[id] = d.[id] AND NOT d.[{0}] = i.[{0}] AND UPDATE([{0}])" _
-                                      , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize))
-                  aryAuditDeletes.Add(String.Format("        SELECT ID, convert(nvarchar({2}),[{0}]), NULL, {1}" & vbNewLine & _
+                                      , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize, CInt(objTable.ID)))
+                  aryAuditDeletes.Add(String.Format("        SELECT ID, convert(nvarchar({2}),[{0}]), NULL, {1}, {3}" & vbNewLine & _
                                       "            FROM deleted WHERE [{0}] IS NOT NULL" _
-                                      , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize))
+                                      , objColumn.Name, CInt(objColumn.ID), objColumn.DataTypeSize, CInt(objTable.ID)))
                 End If
               End If
             End If
@@ -541,13 +541,13 @@ Namespace ScriptDB
 
           ' Build Audit strings
           If aryAuditUpdates.ToArray.Length > 0 Then
-            sSQLCode_AuditInsert = String.Format("    INSERT @audit (id, oldvalue, newvalue, columnid)" & vbNewLine & _
+            sSQLCode_AuditInsert = String.Format("    INSERT @audit (id, oldvalue, newvalue, columnid, tableid)" & vbNewLine & _
                                            "{0};" _
                                           , String.Join(vbNewLine & "        UNION" & vbNewLine, aryAuditInserts.ToArray()))
-            sSQLCode_AuditUpdate = String.Format("    INSERT @audit (id, oldvalue, newvalue, columnid)" & vbNewLine & _
+            sSQLCode_AuditUpdate = String.Format("    INSERT @audit (id, oldvalue, newvalue, columnid, tableid)" & vbNewLine & _
                                            "{0};" _
                                           , String.Join(vbNewLine & "        UNION" & vbNewLine, aryAuditUpdates.ToArray()))
-            sSQLCode_AuditDelete = String.Format("    INSERT @audit (id, oldvalue, newvalue, columnid)" & vbNewLine & _
+            sSQLCode_AuditDelete = String.Format("    INSERT @audit (id, oldvalue, newvalue, columnid, tableid)" & vbNewLine & _
                                            "{0};" _
                                           , String.Join(vbNewLine & "        UNION" & vbNewLine, aryAuditDeletes.ToArray()))
           End If
@@ -618,7 +618,7 @@ Namespace ScriptDB
           ' AFTER INSERT
           ' -------------------
           sTriggerName = String.Format("{0}{1}_i02", ScriptDB.Consts.Trigger, objTable.Name)
-          sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] nvarchar(MAX), [newvalue] nvarchar(MAX), columnid integer);" & vbNewLine & _
+          sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] nvarchar(MAX), [newvalue] nvarchar(MAX), [tableid] integer, [columnid] integer);" & vbNewLine & _
               "    DECLARE @dChangeDate datetime;" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
               sSQLWriteableColumns & vbNewLine & _
@@ -626,8 +626,8 @@ Namespace ScriptDB
               "    -- Audit Trail" & vbNewLine & _
               "    ---------------------------" & vbNewLine & _
               "{2}" & vbNewLine & vbNewLine & _
-              "    INSERT dbo.[tbsys_audittrail] (username, datetimestamp, recordid, oldvalue, newvalue, columnid, deleted)" & vbNewLine & _
-              "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, columnid, 0 FROM @audit" & vbNewLine & vbNewLine & _
+              "    INSERT dbo.[tbsys_audittrail] (username, datetimestamp, recordid, oldvalue, newvalue, tableid, columnid, deleted)" & vbNewLine & _
+              "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, tableid, columnid, 0 FROM @audit" & vbNewLine & vbNewLine & _
               sSQLCode_DiaryLinks & vbNewLine _
               , objTable.Name, sTriggerName, sSQLCode_AuditInsert)
           ScriptTrigger("dbo", objTable, TriggerType.AfterInsert, sSQL)
@@ -637,7 +637,7 @@ Namespace ScriptDB
           ' INSTEAD OF UPDATE
           ' -------------------
           sTriggerName = String.Format("{0}{1}_u01", ScriptDB.Consts.Trigger, objTable.Name)
-          sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] nvarchar(MAX), [newvalue] nvarchar(MAX), columnid integer);" & vbNewLine & _
+          sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] nvarchar(MAX), [newvalue] nvarchar(MAX), [tableid] integer, [columnid] integer);" & vbNewLine & _
               "    DECLARE @dChangeDate datetime;" & vbNewLine & _
               "    DECLARE @nvarCommand nvarchar(MAX);" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
@@ -658,8 +658,8 @@ Namespace ScriptDB
               "    -- Audit Trail" & vbNewLine & _
               "    ---------------------------" & vbNewLine & _
               "{4}" & vbNewLine & vbNewLine & _
-              "    INSERT dbo.[tbsys_audittrail] (username, datetimestamp, recordid, oldvalue, newvalue, columnid, deleted)" & vbNewLine & _
-              "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, columnid, 0 FROM @audit" & vbNewLine & vbNewLine & _
+              "    INSERT dbo.[tbsys_audittrail] (username, datetimestamp, recordid, oldvalue, newvalue, tableid, columnid, deleted)" & vbNewLine & _
+              "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, tableid, columnid, 0 FROM @audit" & vbNewLine & vbNewLine & _
               "{7}" & vbNewLine & vbNewLine & _
               "---------------------------" & vbNewLine & _
               "-- Errors & warnings." & vbNewLine & _
@@ -701,15 +701,15 @@ Namespace ScriptDB
           ' AFTER DELETE
           ' -------------------
           sTriggerName = String.Format("{0}{1}_d02", ScriptDB.Consts.Trigger, objTable.Name)
-          sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] nvarchar(MAX), [newvalue] nvarchar(MAX), columnid integer);" & vbNewLine & _
+          sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] nvarchar(MAX), [newvalue] nvarchar(MAX), [tableid] integer, [columnid] integer);" & vbNewLine & _
               "    DECLARE @dChangeDate datetime;" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
               "    ---------------------------" & vbNewLine & _
               "    -- Audit Trail" & vbNewLine & _
               "    ---------------------------" & vbNewLine & _
               "{2}" & vbNewLine & vbNewLine & _
-              "    INSERT dbo.[tbsys_audittrail] (username, datetimestamp, recordid, oldvalue, newvalue, columnid, deleted)" & vbNewLine & _
-              "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, columnid, 1 FROM @audit" & vbNewLine & vbNewLine & _
+              "    INSERT dbo.[tbsys_audittrail] (username, datetimestamp, recordid, oldvalue, newvalue, tableid, columnid, deleted)" & vbNewLine & _
+              "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, tableid, columnid, 1 FROM @audit" & vbNewLine & vbNewLine & _
               "{3}" & vbNewLine _
               , objTable.Name, sTriggerName, sSQLCode_AuditDelete, sSQLParentColumns_Delete)
           ScriptTrigger("dbo", objTable, TriggerType.AfterDelete, sSQL)
