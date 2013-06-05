@@ -4435,6 +4435,7 @@ Private Sub SaveProperties()
   Dim lngNewTableID As Long
   Dim fMessageOK As Boolean
   Dim iIndex As Integer
+  Dim objForm As Form
   
   sOriginalIdentifier = ""
   lngOriginalTableID = 0
@@ -4484,7 +4485,8 @@ Private Sub SaveProperties()
         
     'JPD 20081209 Fault 13410
     If miItemType = giWFFORMITEM_FORM Then
-      varControl.Caption = sCaption
+      Set objForm = varControl
+      SetFormCaption objForm, sCaption
     Else
       varControl.Caption = Replace(sCaption, "&", "&&")
     End If
