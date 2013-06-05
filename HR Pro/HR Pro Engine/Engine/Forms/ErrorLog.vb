@@ -4,7 +4,7 @@ Namespace Forms
   Public Class ErrorLog
 
     Public Abort As Boolean
-    Private mlngInitialHeight As Integer = 166
+    Private mlngInitialHeight As Integer = 160
     Private ErrorSeverity As ErrorHandler.Severity = ErrorHandler.Severity.Warning
 
     Private Sub ErrorLog_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
@@ -54,7 +54,7 @@ Namespace Forms
 
       If txtDetails.Visible Then
         butDetails.Text = "Details <<<"
-        Me.Height = mlngInitialHeight + txtDetails.Height + 10 + cmdCopy.Height
+        Me.Height = mlngInitialHeight + txtDetails.Height + 20 + cmdCopy.Height
       Else
         butDetails.Text = "Details >>>"
         Me.Height = mlngInitialHeight

@@ -54,7 +54,7 @@
       Me.txtDetails.Name = "txtDetails"
       Me.txtDetails.ReadOnly = True
       Me.txtDetails.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-      Me.txtDetails.Size = New System.Drawing.Size(279, 311)
+      Me.txtDetails.Size = New System.Drawing.Size(279, 318)
       Me.txtDetails.TabIndex = 0
       Me.txtDetails.Visible = False
       '
@@ -71,8 +71,8 @@
       Me.TextBox2.TabIndex = 2
       Me.TextBox2.TabStop = False
       Me.TextBox2.Text = "Critical errors were encountered by the .NET framework. The system can continue s" & _
-      "aving, but some calculations may not function correctly and data may be lost. Pl" & _
-      "ease contact support for assistance."
+          "aving, but some calculations may not function correctly and data may be lost. Pl" & _
+          "ease contact support for assistance."
       '
       'butDetails
       '
@@ -190,7 +190,7 @@
       Me.lvwErrors.FullRowSelect = True
       Me.lvwErrors.Location = New System.Drawing.Point(16, 132)
       Me.lvwErrors.Name = "lvwErrors"
-      Me.lvwErrors.Size = New System.Drawing.Size(397, 311)
+      Me.lvwErrors.Size = New System.Drawing.Size(397, 320)
       Me.lvwErrors.SmallImageList = Me.imagelist16
       Me.lvwErrors.TabIndex = 13
       Me.lvwErrors.UseCompatibleStateImageBehavior = False
@@ -214,7 +214,7 @@
       '
       Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 13.0!)
       Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-      Me.ClientSize = New System.Drawing.Size(716, 497)
+      Me.ClientSize = New System.Drawing.Size(712, 493)
       Me.ControlBox = False
       Me.Controls.Add(Me.lvwErrors)
       Me.Controls.Add(Me.cmdCopy)
