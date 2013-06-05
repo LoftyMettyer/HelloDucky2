@@ -801,7 +801,7 @@ Namespace Things
       ' JIRA-2507 - Hack to handle problems with unique code
       If ConvertedFromColumn Then
         objColumn = BaseTable.Columns.GetById(Component.ColumnID)
-        If objColumn.CalculateIfEmpty And Not objColumn.SafeReturnType = "NULL" Then
+        If objColumn.CalculateIfEmpty Then
           LineOfCode.Code = String.Format("ISNULL(NULLIF(@prm_{0},{2}),{1})", objColumn.Name, LineOfCode.Code, objColumn.SafeReturnType)
         End If
       End If
