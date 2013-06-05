@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "09:26"
+            TextSave        =   "09:41"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -2958,6 +2958,7 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
   Dim rsTemp As ADODB.Recordset
   Dim objFileTool As ActiveBarLibraryCtl.Tool
   Dim sIconName As String
+  Dim sIconBandName As String
   Dim sUtilityName As String
   Dim sType As String
   Dim iCount As Integer
@@ -2994,70 +2995,92 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
         
         Select Case rsTemp("ObjectType").Value
           Case utlCustomReport
-            sIconName = "CUSTOMREPORTS"
+            sIconName = "CustomReports"
+            sIconBandName = "mnuReports"
             sType = "Custom Report : "
           Case utlCrossTab
-            sIconName = "CROSSTABS"
+            sIconName = "CrossTab"
+            sIconBandName = "mnuReports"
             sType = "Cross Tab : "
           Case utlMatchReport
-            sIconName = "MATCHREPORTS"
+            sIconName = "MatchReport"
+            sIconBandName = "mnuReports"
             sType = "Match Report : "
           Case utlAbsenceBreakdown
-            sIconName = "ABSENCEBREAKDOWN"
+            sIconName = "AbsenceBreakdown"
+            sIconBandName = "mnuReports"
             sType = "Standard Report : "
           Case utlBradfordFactor
-            sIconName = "BRADFORDFACTOR"
+            sIconName = "BradfordIndex"
+            sIconBandName = "mnuReports"
             sType = "Standard Report : "
           Case utlStability
-            sIconName = "STABILITY"
+            sIconName = "StabilityIndex"
+            sIconBandName = "mnuReports"
             sType = "Standard Report : "
           Case utlTurnover
-            sIconName = "TURNOVER"
+            sIconName = "Turnover"
+            sIconBandName = "mnuReports"
             sType = "Standard Report : "
           Case utlCalendarReport
-            sIconName = "CALENDARREPORTS"
+            sIconName = "CalendarReport"
+            sIconBandName = "mnuReports"
             sType = "Calendar Report : "
           Case utlRecordProfile
-            sIconName = "RECORDPROFILE"
+            sIconName = "RecordProfile"
+            sIconBandName = "mnuReports"
             sType = "Record Profile : "
           Case utlSuccession
-            sIconName = "SUCCESSION"
+            sIconName = "Succession"
+            sIconBandName = "mnuReports"
             sType = "Succession Planning: "
           Case utlCareer
-            sIconName = "CAREER"
+            sIconName = "Career"
+            sIconBandName = "mnuReports"
             sType = "Career Progression: "
           Case utlMailMerge
-            sIconName = "MAILMERGE"
+            sIconName = "MailMerge"
+            sIconBandName = "mnuUtilities"
             sType = "Mail Merge : "
           Case utlLabel
-            sIconName = "ENVELOPES&LABELS"
+            sIconName = "mnuLabels"
+            sIconBandName = "mnuUtilities"
             sType = "Envelopes && Labels : "
           Case utlExport
-            sIconName = "EXPORT"
+            sIconName = "Export"
+            sIconBandName = "mnuUtilities"
             sType = "Export : "
           Case utlImport
-            sIconName = "IMPORT"
+            sIconName = "Import"
+            sIconBandName = "mnuUtilities"
             sType = "Import : "
           Case utlDataTransfer
-            sIconName = "DATATRANSFER"
+            sIconName = "DataTransfer"
+            sIconBandName = "mnuUtilities"
             sType = "Data Transfer : "
           Case UtlGlobalAdd
-            sIconName = "GLOBALADD"
+            sIconName = "GlobalAdd"
+            sIconBandName = "mnuUtilities"
             sType = "Global Add : "
           Case utlGlobalUpdate
-            sIconName = "GLOBALUPDATE"
+            sIconName = "GlobalUpdate"
+            sIconBandName = "mnuUtilities"
             sType = "Global Update : "
           Case utlGlobalDelete
-            sIconName = "GLOBALDELETE"
+            sIconName = "GlobalDelete"
+            sIconBandName = "mnuUtilities"
             sType = "Global Delete : "
           Case utlBatchJob
-            sIconName = "BATCHJOBS"
+            sIconName = "BatchJobs"
+            sIconBandName = "mnuUtilities"
             sType = "Batch Job : "
           Case utlReportPack
-            sIconName = "BLANK"
+            sIconName = "ReportPack"
+            sIconBandName = "mnuReports"
             sType = "Report Pack : "
           Case utlWorkflow
-            sIconName = "WORKFLOW"
+            sIconName = "Workflow"
+            sIconBandName = "mnuUtilities"
             sType = "Workflow : "
           Case Else
             sIconName = "BLANK"
@@ -3070,7 +3093,7 @@ Private Sub RefreshQuickLinks(ByVal MenuType As UserMenuType)
         End If
         
         objFileTool.Caption = sCaption
-        objFileTool.SetPicture 0, LoadResPicture(sIconName, 1), COL_GREY
+        objFileTool.SetPicture 0, frmMain.abMain.Bands(sIconBandName).Tools(sIconName).GetPicture(0), COL_GREY
       
       End With
 
