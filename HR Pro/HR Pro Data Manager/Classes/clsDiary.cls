@@ -976,7 +976,7 @@ Private Sub ExecuteSql(strSQL As String)
 End Sub
 
 
-Public Function GetAlarmCount(intAlarmSetting As Integer)
+Public Function GetAlarmCount(intAlarmSetting As Integer) As Long
 
   Dim rsAlarmCount As ADODB.Recordset
   Dim strSQL As String

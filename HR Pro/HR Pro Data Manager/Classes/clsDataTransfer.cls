@@ -116,7 +116,7 @@ Private Sub Class_Terminate()
   Set datData = Nothing
 End Sub
 
-Public Property Get ErrorString()
+Public Property Get ErrorString() As String
   ErrorString = mstrStatusMessage
 End Property
 

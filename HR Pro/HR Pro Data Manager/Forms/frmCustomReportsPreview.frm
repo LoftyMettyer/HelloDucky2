@@ -320,7 +320,7 @@ Public Property Let HasSummaryInfo(ByVal blnNewValue As Boolean)
   mblnReportHasSummaryInfo = blnNewValue
 End Property
 
-Public Property Get ErrorMessage() As Variant
+Public Property Get ErrorMessage() As String
   ErrorMessage = mstrErrorString
 End Property
 
@@ -345,7 +345,7 @@ Private Sub Form_Load()
   Me.Height = GetPCSetting("CustomReportPreview", "Height", dblFORM_MINHEIGHT)
   Me.Width = GetPCSetting("CustomReportPreview", "Width", dblFORM_MINWIDTH)
     
-  Hook Me.hWnd, dblFORM_MINWIDTH, dblFORM_MINHEIGHT
+  Hook Me.hwnd, dblFORM_MINWIDTH, dblFORM_MINHEIGHT
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
@@ -379,6 +379,6 @@ Public Property Let Parent(ByVal objNewValue As clsCustomReportsRUN)
 End Property
 
 Private Sub Form_Unload(Cancel As Integer)
-  Unhook Me.hWnd
+  Unhook Me.hwnd
 End Sub
 

@@ -542,8 +542,8 @@ Private Function MessageLength(sMessage As String) As Integer
   
 End Function
 
-Public Function MessageBox(sPrompt As String, Optional Buttons As Integer, _
-                            Optional sTitle As String, Optional iCheckBoxValue As Variant, _
+Public Function MessageBox(sPrompt As String, Buttons As Integer, _
+                            sTitle As String, iCheckBoxValue As Integer, _
                             Optional sCheckBoxMessage As String) As VbMsgBoxResult
 
   On Error GoTo ErrorTrap

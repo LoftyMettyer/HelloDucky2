@@ -298,7 +298,7 @@ End Property
 
 
 'Public Sub InitialisePickList(pfNew As Boolean, pfCopy As Boolean, Optional pvTableID As Variant, Optional plngPicklistID As Long)
-Public Function InitialisePickList(pfNew As Boolean, pfCopy As Boolean, plngTableID As Long, Optional plngPicklistID As Long)
+Public Function InitialisePickList(pfNew As Boolean, pfCopy As Boolean, plngTableID As Long, Optional plngPicklistID As Long) As Boolean
   ' Initialise the picklist definition form.
   Dim fLocked As Boolean
   Dim rsPicklist As Recordset
