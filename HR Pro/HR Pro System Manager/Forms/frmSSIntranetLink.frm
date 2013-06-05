@@ -1534,9 +1534,10 @@ Private Sub SetChartTypes()
     .AddItem "2D Pie"
     .ItemData(.NewIndex) = 14
         
-'    Enabled for v4.2 as multi-dimensional charts are now configurable
-    .AddItem "2D XY"
-    .ItemData(.NewIndex) = 16
+'   Leave 2d xy disabled, as it requires data to be in a 2-column format which isn't
+'   catered for at present.
+'    .AddItem "2D XY"
+'    .ItemData(.NewIndex) = 16
         
     .ListIndex = iDefaultItem
   End With
