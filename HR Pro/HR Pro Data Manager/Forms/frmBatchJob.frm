@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
@@ -1671,7 +1671,7 @@ Private Sub cmdEmailNotifyGroup_Click(Index As Integer)
 End Sub
 
 Private Sub cmdFilterClear_Click()
-  txtOverrideFilter = "<None>"
+  txtOverrideFilter = ""
   txtOverrideFilter.Tag = 0
   cmdfilterClear.Enabled = False
   cmdOverrideFilter.SetFocus
@@ -1680,7 +1680,7 @@ End Sub
 
 Private Sub cmdOverrideFilter_Click()
   GetFilter txtFilterSource, txtOverrideFilter
-  cmdfilterClear.Enabled = txtOverrideFilter.Text <> "<None>"
+  cmdfilterClear.Enabled = txtOverrideFilter.Text <> ""
   Changed = Not mblnLoading
 End Sub
 Private Sub GetFilter(ctlSource As Control, ctlTarget As Control)
@@ -1787,21 +1787,21 @@ Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional pln
   
   Set mclsData = New DataMgr.clsDataAccess           'Instantiate class
   Dim iUtilityType As UtilityType
+  Dim lngFormat As Long
   
   Screen.MousePointer = vbHourglass
   
   iUtilityType = IIf(IsReportPack, utlReportPack, utlBatchJob)
   
+  mblnLoading = True
+  
   If IsReportPack Then
     Me.Caption = "Report Pack Definition"
     chkEmail(0).Caption = "&Send email if the report pack fails"
     chkEmail(1).Caption = "Send email if the repor&t pack is successful"
-    'mstrPackTemplate = GetUserSetting("Output", "PackTemplate", vbNullString)
     mobjOutputDef.FormatClick fmtExcelWorksheet
     optOutputFormat(fmtExcelWorksheet).Value = True
   End If
-  
-  mblnLoading = True
   
   If pblnNew Then                                  'If this is a new definition
     mlngBatchJobID = 0                             'Set ID to 0 to indicate new record
@@ -2166,7 +2166,7 @@ Private Function RetrieveBatchJobDetails() As Boolean
     txtOverrideFilter.Tag = prstTemp!OverrideFilterID
     
     cmdTitlePageClear.Enabled = Not txtTitlePage.Text = ""
-    cmdfilterClear.Enabled = Not txtOverrideFilter.Text = "<None>"
+    cmdfilterClear.Enabled = Not txtOverrideFilter.Text = ""
     
     optOutputFormat(prstTemp!OutputFormat).Value = True
     mobjOutputDef.PopulateOutputControls prstTemp
@@ -3007,7 +3007,7 @@ Private Function SaveDefinition2() As Boolean
       sSQL = sSQL & "OutputScreen = " & IIf(chkDestination(desScreen).Value = vbChecked, "1", "0") & ", "
       'Printer Options
       sSQL = sSQL & IIf(chkDestination(desPrinter), (" OutputPrinterName = '" & Replace(cboPrinterName.Text, " '", "''") & "',"), (" OutputPrinterName = '', "))
-      sSQL = sSQL & "OutputFilename = '" & Replace(txtFileName.Text, "'", "''") & "',"
+      sSQL = sSQL & "OutputFilename = '" & Replace(txtFilename.Text, "'", "''") & "',"
       'outputSaveExisting
       If chkDestination(desSave).Value = vbChecked Then
         sSQL = sSQL & "OutputSaveExisting = " & cboSaveExisting.ItemData(cboSaveExisting.ListIndex) & ", "
@@ -3023,7 +3023,7 @@ Private Function SaveDefinition2() As Boolean
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmail = 1, "), ("OutputEmail = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAddr = " & txtEmailGroup.Tag & ", "), ("OutputEmailAddr = 0, "))
     sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailSubject = '" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("OutputEmailSubject = '', "))
-    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEMailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
+    sSQL = sSQL & IIf(chkDestination(desEmail), ("OutputEmailAttachAs = '" & Replace(txtEmailAttachAs.Text, "'", "''") & "'"), ("OutputEmailAttachAs = ''"))
     
     'FINAL WHERE CLAUSE
     sSQL = sSQL & " WHERE ID = " & mlngBatchJobID
@@ -3109,9 +3109,9 @@ Private Function SaveDefinition2() As Boolean
           'outputEmailSubject
           sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailSubject.Text, "'", "''") & "', "), ("'', "))
           'outputFilename
-          sSQL = sSQL & "'" & Replace(txtFileName.Text, "'", "''") & "',"
+          sSQL = sSQL & "'" & Replace(txtFilename.Text, "'", "''") & "',"
           'outputEmailAttachAs
-          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEMailAttachAs.Text, "'", "''") & "',"), ("'',"))
+          sSQL = sSQL & IIf(chkDestination(desEmail), ("'" & Replace(txtEmailAttachAs.Text, "'", "''") & "',"), ("'',"))
           'outputTitlePage
           sSQL = sSQL & "'" & Replace(txtTitlePage.Text, "'", "''") & "', "
           'outputReportPackTitle
@@ -3455,7 +3455,7 @@ Private Function ValidDestination() As Boolean
   ValidDestination = False
 
   If chkDestination(desSave).Value = vbChecked Then
-    If txtFileName.Text = vbNullString Then
+    If txtFilename.Text = vbNullString Then
       COAMsgBox "You must enter a file name.", vbExclamation, Caption
       Exit Function
     End If
@@ -3474,20 +3474,20 @@ Private Function ValidDestination() As Boolean
       Exit Function
     End If
 
-    If txtEMailAttachAs.Text = vbNullString Then
+    If txtEmailAttachAs.Text = vbNullString Then
       COAMsgBox "You must enter an email attachment file name.", vbExclamation, Caption
       Exit Function
     End If
     
-    If InStr(txtEMailAttachAs.Text, "/") Or _
-       InStr(txtEMailAttachAs.Text, ":") Or _
-       InStr(txtEMailAttachAs.Text, "?") Or _
-       InStr(txtEMailAttachAs.Text, Chr(34)) Or _
-       InStr(txtEMailAttachAs.Text, "<") Or _
-       InStr(txtEMailAttachAs.Text, ">") Or _
-       InStr(txtEMailAttachAs.Text, "|") Or _
-       InStr(txtEMailAttachAs.Text, "\") Or _
-       InStr(txtEMailAttachAs.Text, "*") Then
+    If InStr(txtEmailAttachAs.Text, "/") Or _
+       InStr(txtEmailAttachAs.Text, ":") Or _
+       InStr(txtEmailAttachAs.Text, "?") Or _
+       InStr(txtEmailAttachAs.Text, Chr(34)) Or _
+       InStr(txtEmailAttachAs.Text, "<") Or _
+       InStr(txtEmailAttachAs.Text, ">") Or _
+       InStr(txtEmailAttachAs.Text, "|") Or _
+       InStr(txtEmailAttachAs.Text, "\") Or _
+       InStr(txtEmailAttachAs.Text, "*") Then
           COAMsgBox "The email attachment file name cannot contain any of the following characters:" & vbCrLf & _
                  "/  :  ?  " & Chr(34) & "  <  >  |  \  *", vbExclamation, Caption
           Exit Function
@@ -3613,7 +3613,7 @@ Private Function ForceDefinitionToBeHiddenIfNeeded2(Optional pvOnlyFatalMessages
     If fRemove Then
       ' Filter invalid, deleted or hidden by another user. Remove it from this definition.
       txtOverrideFilter.Tag = 0
-      txtOverrideFilter.Text = "<None>"
+      txtOverrideFilter.Text = ""
       'mblnRecordSelectionInvalid = True
     End If
   End If
@@ -4324,6 +4324,7 @@ Private Function OnlyPauseJobsDefined() As Boolean
 
 End Function
 Private Sub optOutputFormat_Click(Index As Integer)
+  If Not mblnLoading Then txtTitlePage = vbNullString
   mobjOutputDef.FormatClick Index
   Changed = True
 End Sub
@@ -4698,5 +4699,6 @@ End Sub
 Private Sub cboCategory_Click()
   Changed = True
 End Sub
+
 
 
