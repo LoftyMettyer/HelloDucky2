@@ -85,9 +85,9 @@ Begin VB.Form frmMailMerge
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmMailMerge.frx":08F2
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(0)"
+      Tab(1).Control(0)=   "fraColumns(2)"
       Tab(1).Control(1)=   "fraColumns(1)"
-      Tab(1).Control(2)=   "fraColumns(2)"
+      Tab(1).Control(2)=   "fraColumns(0)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "&Sort Order"
       TabPicture(2)   =   "frmMailMerge.frx":090E
@@ -97,11 +97,11 @@ Begin VB.Form frmMailMerge
       TabCaption(3)   =   "Ou&tput"
       TabPicture(3)   =   "frmMailMerge.frx":092A
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraOutput(1)"
-      Tab(3).Control(1)=   "fraOutput(0)"
+      Tab(3).Control(0)=   "fraOutputFormat"
+      Tab(3).Control(1)=   "fraOutputOptions"
       Tab(3).Control(2)=   "fraOutput(2)"
-      Tab(3).Control(3)=   "fraOutputOptions"
-      Tab(3).Control(4)=   "fraOutputFormat"
+      Tab(3).Control(3)=   "fraOutput(0)"
+      Tab(3).Control(4)=   "fraOutput(1)"
       Tab(3).ControlCount=   5
       Begin VB.Frame fraDefinition 
          Height          =   2355
@@ -484,13 +484,13 @@ Begin VB.Form frmMailMerge
             RecordSelectors =   0   'False
             Col.Count       =   3
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
             stylesets(0).Picture=   "frmMailMerge.frx":0D57
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
             stylesets(1).Picture=   "frmMailMerge.frx":0D73
             stylesets(2).Name=   "ssetEnabled"
             stylesets(2).ForeColor=   -2147483640
@@ -2584,7 +2584,7 @@ Private Sub cmdPicklist_Click()
   'sSQL = "TableID = " & cboBaseTable.ItemData(cboBaseTable.ListIndex)
 
   With frmDefSel
-    
+    .SelectedUtilityType = utlPicklist
     .TableID = cboBaseTable.ItemData(cboBaseTable.ListIndex)
     .TableComboVisible = True
     .TableComboEnabled = False

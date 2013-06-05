@@ -120,24 +120,24 @@ Begin VB.Form frmRecordProfile
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmRecordProfile.frx":0E98
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "cmdRemoveAll"
-      Tab(2).Control(1)=   "cmdAddAll"
-      Tab(2).Control(2)=   "cmdMoveDown"
-      Tab(2).Control(3)=   "cmdMoveUp"
-      Tab(2).Control(4)=   "cmdRemove"
+      Tab(2).Control(0)=   "fraTable"
+      Tab(2).Control(1)=   "fraFieldsAvailable"
+      Tab(2).Control(2)=   "fraFieldsSelected"
+      Tab(2).Control(3)=   "cmdAddSeparator"
+      Tab(2).Control(4)=   "cmdAddHeading"
       Tab(2).Control(5)=   "cmdAdd"
-      Tab(2).Control(6)=   "cmdAddHeading"
-      Tab(2).Control(7)=   "cmdAddSeparator"
-      Tab(2).Control(8)=   "fraFieldsSelected"
-      Tab(2).Control(9)=   "fraFieldsAvailable"
-      Tab(2).Control(10)=   "fraTable"
+      Tab(2).Control(6)=   "cmdRemove"
+      Tab(2).Control(7)=   "cmdMoveUp"
+      Tab(2).Control(8)=   "cmdMoveDown"
+      Tab(2).Control(9)=   "cmdAddAll"
+      Tab(2).Control(10)=   "cmdRemoveAll"
       Tab(2).ControlCount=   11
       TabCaption(3)   =   "Outpu&t"
       TabPicture(3)   =   "frmRecordProfile.frx":0EB4
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraOutputDestination"
+      Tab(3).Control(0)=   "fraOutputFormat"
       Tab(3).Control(1)=   "fraReportOptions"
-      Tab(3).Control(2)=   "fraOutputFormat"
+      Tab(3).Control(2)=   "fraOutputDestination"
       Tab(3).ControlCount=   3
       Begin VB.Frame fraInformation 
          Height          =   2355
@@ -4505,6 +4505,7 @@ Private Sub GetPicklist(ctlSource As Control, ctlTarget As Control)
   End If
   
   With frmDefSel
+    .SelectedUtilityType = utlPicklist
     .TableID = lngTableID
     .TableComboVisible = True
     .TableComboEnabled = False

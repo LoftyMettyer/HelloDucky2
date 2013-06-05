@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Begin VB.Form frmDataTransfer 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Data Transfer Definition"
@@ -621,11 +621,11 @@ Public Property Get SelectedID() As Long
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Public Property Let Changed(blnChanged As Boolean)
-  cmdOK.Enabled = blnChanged
+  cmdOk.Enabled = blnChanged
 End Property
 
 Public Property Get FormPrint() As Boolean
@@ -1193,6 +1193,7 @@ Private Sub cmdPicklist_Click()
     lTo = cboToTable.ItemData(cboToTable.ListIndex)
     .TableID = cboFromTable.ItemData(cboFromTable.ListIndex)
 
+    .SelectedUtilityType = utlPicklist
     .TableComboVisible = True
     .TableComboEnabled = False
     If Val(txtPicklist.Tag) > 0 Then
@@ -2495,11 +2496,11 @@ Private Sub txtDesc_GotFocus()
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-  cmdOK.Default = False
+  cmdOk.Default = False
 End Sub
 
 Private Sub txtDesc_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub txtName_Change()

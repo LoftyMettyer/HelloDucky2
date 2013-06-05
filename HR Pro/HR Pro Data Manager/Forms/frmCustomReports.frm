@@ -3,8 +3,8 @@ Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmCustomReports 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Custom Report Definition"
@@ -87,7 +87,6 @@ Begin VB.Form frmCustomReports
       _Version        =   393216
       Style           =   1
       Tabs            =   5
-      Tab             =   4
       TabsPerRow      =   5
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -101,7 +100,7 @@ Begin VB.Form frmCustomReports
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmCustomReports.frx":1974
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraInformation"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraBase"
@@ -129,7 +128,7 @@ Begin VB.Form frmCustomReports
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmCustomReports.frx":19E4
-      Tab(4).ControlEnabled=   -1  'True
+      Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraReportOptions"
       Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraOutputFormat"
@@ -404,7 +403,7 @@ Begin VB.Form frmCustomReports
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
          Height          =   3975
-         Left            =   2745
+         Left            =   -72255
          TabIndex        =   96
          Top             =   1800
          Width           =   6555
@@ -883,7 +882,7 @@ Begin VB.Form frmCustomReports
       Begin VB.Frame fraOutputFormat 
          Caption         =   "Output Format :"
          Height          =   3975
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   88
          Top             =   1800
          Width           =   2500
@@ -1114,7 +1113,7 @@ Begin VB.Form frmCustomReports
       Begin VB.Frame fraBase 
          Caption         =   "Data :"
          Height          =   2940
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   10
          Top             =   2850
          Width           =   9180
@@ -1698,7 +1697,7 @@ Begin VB.Form frmCustomReports
          Caption         =   "Report Options :"
          Enabled         =   0   'False
          Height          =   1335
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   85
          Top             =   400
          Width           =   9180
@@ -1721,7 +1720,7 @@ Begin VB.Form frmCustomReports
       End
       Begin VB.Frame fraInformation 
          Height          =   2355
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   0
          Top             =   400
          Width           =   9180
@@ -8014,6 +8013,7 @@ Private Sub GetPicklist(ctlSource As Control, ctlTarget As Control)
   End If
   
   With frmDefSel
+    .SelectedUtilityType = utlPicklist
     .TableID = lngTableID
     .TableComboVisible = True
     .TableComboEnabled = False

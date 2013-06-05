@@ -3,8 +3,8 @@ Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmMatchDef 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Match Report Definition"
@@ -85,7 +85,6 @@ Begin VB.Form frmMatchDef
       _Version        =   393216
       Style           =   1
       Tabs            =   5
-      Tab             =   4
       TabsPerRow      =   5
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -99,9 +98,11 @@ Begin VB.Form frmMatchDef
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmMatchDef.frx":0E60
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraDefinition(1)"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraInformation"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Ta&bles"
       TabPicture(1)   =   "frmMatchDef.frx":0E7C
@@ -111,9 +112,9 @@ Begin VB.Form frmMatchDef
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmMatchDef.frx":0E98
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraFieldsSelected"
+      Tab(2).Control(0)=   "fraFieldButtons"
       Tab(2).Control(1)=   "fraFieldsAvailable"
-      Tab(2).Control(2)=   "fraFieldButtons"
+      Tab(2).Control(2)=   "fraFieldsSelected"
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmMatchDef.frx":0EB4
@@ -122,7 +123,7 @@ Begin VB.Form frmMatchDef
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmMatchDef.frx":0ED0
-      Tab(4).ControlEnabled=   -1  'True
+      Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraReportOptions"
       Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraOutputFormat"
@@ -132,7 +133,7 @@ Begin VB.Form frmMatchDef
       Tab(4).ControlCount=   3
       Begin VB.Frame fraInformation 
          Height          =   2355
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   104
          Top             =   360
          Width           =   9360
@@ -336,7 +337,7 @@ Begin VB.Form frmMatchDef
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
          Height          =   3990
-         Left            =   2760
+         Left            =   -72240
          TabIndex        =   84
          Top             =   1665
          Width           =   6675
@@ -602,7 +603,7 @@ Begin VB.Form frmMatchDef
       Begin VB.Frame fraOutputFormat 
          Caption         =   "Output Format :"
          Height          =   3990
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   68
          Top             =   1665
          Width           =   2500
@@ -813,7 +814,7 @@ Begin VB.Form frmMatchDef
       Begin VB.Frame fraReportOptions 
          Caption         =   "Matched Records :"
          Height          =   1215
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   58
          Top             =   400
          Width           =   9315
@@ -1314,7 +1315,7 @@ Begin VB.Form frmMatchDef
          Caption         =   "Data :"
          Height          =   3275
          Index           =   1
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   0
          Top             =   2835
          Width           =   9360
@@ -6161,6 +6162,7 @@ Private Sub GetPicklist(ctlSource As Control, ctlTarget As Control)
   End If
   
   With frmDefSel
+    .SelectedUtilityType = utlPicklist
     .TableID = lngTableID
     .TableComboVisible = True
     .TableComboEnabled = False
