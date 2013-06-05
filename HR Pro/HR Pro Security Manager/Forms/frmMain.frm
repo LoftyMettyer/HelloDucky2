@@ -66,7 +66,7 @@ Begin VB.MDIForm frmMain
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Bands           =   "frmMain.frx":038A
+      Bands           =   "frmMain.frx":058A
    End
 End
 Attribute VB_Name = "frmMain"
