@@ -188,7 +188,7 @@ Partial Class Form1
     Me.Button8.Name = "Button8"
     Me.Button8.Size = New System.Drawing.Size(75, 23)
     Me.Button8.TabIndex = 16
-    Me.Button8.Text = "Button8"
+    Me.Button8.Text = "tech support"
     Me.Button8.UseVisualStyleBackColor = True
     '
     'txtServer

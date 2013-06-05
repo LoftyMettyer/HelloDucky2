@@ -244,6 +244,7 @@ Public Class Form1
 
     Dim objPhoenix As New HRProEngine.SysMgr
 
+
     Dim sPath As String = "C:\dev\HR Pro\HR Pro Engine\Test Harness\"
 
     Dim objADO As New ADODB.Connection
@@ -285,6 +286,7 @@ Public Class Form1
     objPhoenix.CommitDB = objADO
 
     objPhoenix.Initialise()
+    objPhoenix.PopulateObjects()
 
     objPhoenix.Options.DevelopmentMode = chkDebugMode.Checked
     objPhoenix.Options.RefreshObjects = True
@@ -312,25 +314,17 @@ Public Class Form1
     objPhoenix.CloseSafely()
 
 
-    'objRecordset = objDAODB.OpenRecordset("spadmin_gettables")
-    'objRecordset.MoveFirst()
-    'Do While Not objRecordset.EOF
-    '  Debug.Print(objRecordset.Fields("name").Value().ToString)
-    '  objRecordset.MoveNext()
-    'Loop
-    '' -----------------------------------------------------------------
 
-    '' our stuff
-    ''    objDAODB.CreateQueryDef("spadmin_gettables",
-    ''   mobjPhoenix.Mode = Phoenix.Connectivity.MetadataProvider.LegacyDAO
-    ''    mobjPhoenix.CommitDB = objDAODB
+    objPhoenix.ReturnErrorLog.Add(HRProEngine.ErrorHandler.Section.General, "hello", HRProEngine.ErrorHandler.Severity.Error, _
+"SQLCode_AddCodeLevel", " -- Missing calculation")
 
-    'objPhoenix.MetadataDB = objDAODB
-    'objPhoenix.Initialise()
+    If objPhoenix.ReturnErrorLog.Count > 0 Then
 
-    '  mobjPhoenix.CommitDB = objADO
+      objPhoenix.ReturnErrorLog.Show()
 
-    '    objPhoenix.
+    End If
+
+
 
     objPhoenix.ReturnErrorLog.OutputToFile("c:\dev\errors.txt")
 
@@ -357,70 +351,32 @@ Public Class Form1
 
   End Sub
 
-  Private Sub cmdDatasource_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmdDatasource.Click
-
-    Dim objPhoenix As New HRProEngine.SysMgr
-
-    Dim objADO As New ADODB.Connection
-    Dim objDAOEngine As New DAO.DBEngine
-    Dim objDAODB As DAO.Database
-    '    Dim objRecordset As DAO.Recordset
-    Dim sADOConnect As String = "Driver=SQL Server;Server={harpdev01};UID=sa;PWD=asr;Database=phoenix;"""
-    'Dim objADOLogin As Phoenix.Connectivity.Login
-
-    ' THIS IS SYSTEM MGR RECCREATION
-    Dim conStr As String = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=c:\dev\play\AsrTemp_phoenix.mdb"
-
-    objDAODB = objDAOEngine.OpenDatabase("c:\dev\play\AsrTemp_phoenix.mdb", , False, conStr)
-    '    objADO = ADODB
-
-    With objADO
-      .ConnectionString = sADOConnect
-      .Provider = "SQLOLEDB"
-      .CommandTimeout = 0
-      .ConnectionTimeout = 5
-      .CursorLocation = ADODB.CursorLocationEnum.adUseServer
-      .Mode = ADODB.ConnectModeEnum.adModeReadWrite
-      '.Properties("Packet Size") = 32767
-      .Open()
-    End With
-
-    'With objADOLogin
-    '  .Database = "phoenix"
-    '  .Server = "harpdev01"
-    '  .UserName = "sa"
-    '  .Password = "asr"
-    'End With
-
-    objPhoenix.MetadataDB = objDAODB
-    objPhoenix.CommitDB = objADO
-
-    objPhoenix.Initialise()
-
-    '  objPhoenix.Script.
-    '    objPhoenix
-    '     objPhoenix.ReturnThings
-
-    ' -----------------------------------------------------------------
-    ' THIS IS SYSTEM MGR RECCREATION
-    objDAODB.Close()
-
-
-
-
-  End Sub
-
   Private Sub butErrors_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles butErrors.Click
 
     Dim frmErrorLog As New HRProEngine.Forms.ErrorLog
 
-    '    objPhoenix.Initialise()
+    Dim objPhoenix As New HRProEngine.SysMgr
+
+    objPhoenix.Initialise()
+
+    objPhoenix.ReturnErrorLog.Add(HRProEngine.ErrorHandler.Section.General, "hello", HRProEngine.ErrorHandler.Severity.Error, _
+    "SQLCode_AddCodeLevel", " -- Missing calculation")
+
+
 
     frmErrorLog.Show()
 
     frmErrorLog = Nothing
 
 
+
+  End Sub
+
+  Private Sub Button8_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button8.Click
+
+    Dim objTech As New HRProEngine.TechSupport
+
+    objTech.ShowDialog1()
 
   End Sub
 End Class
