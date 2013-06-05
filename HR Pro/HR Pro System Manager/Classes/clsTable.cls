@@ -666,10 +666,16 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
     lngCopyTableID = 0
     strCopyTableName = ""
   Else
-    bGrantRead = 0
-    bGrantNew = 0
-    bGrantEdit = 0
-    bGrantDelete = 0
+    'MH20100625
+    'bGrantRead = 0
+    'bGrantNew = 0
+    'bGrantEdit = 0
+    'bGrantDelete = 0
+    bGrantRead = miGrantRead
+    bGrantNew = miGrantNew
+    bGrantEdit = miGrantEdit
+    bGrantDelete = miGrantDelete
+    
     lngCopyTableID = TableID
     strCopyTableName = TableName
   End If
