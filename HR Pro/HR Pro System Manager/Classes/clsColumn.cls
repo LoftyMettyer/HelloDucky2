@@ -287,12 +287,10 @@ ErrorTrap:
 End Function
 
 Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
-
   ' Return true if the column is used somewhere and
   ' therefore cannot be deleted.
   '
   ' Columns may be used in the following contexts :
-  '
   '   Lookup columns for other columns.
   '   Field components in expressions.
   '   Lookup field component in expressions.
@@ -303,41 +301,34 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   '   Module definitions.
   '   Global Update/Add definitions.
   '   Chart Definitions.
-  
+  '   Document Types
+
   On Error GoTo ErrorTrap
   
   Set mfrmUse = pfrmUsage
   
   Dim fUsed As Boolean
   Dim sSQL As String
-  Dim rsOtherColumns As DAO.Recordset
-  Dim rsExpressions As DAO.Recordset
-  Dim rsScreens As DAO.Recordset
-  Dim rsOrders As DAO.Recordset
-  Dim rsViews As DAO.Recordset
-  Dim rsEmail As DAO.Recordset
-  Dim rsOutlook As DAO.Recordset
-  Dim rsSummaryFields As DAO.Recordset
-  Dim rsModules As DAO.Recordset
-  Dim rsAccord As DAO.Recordset
-  Dim rsValidations As DAO.Recordset
+  Dim rsOtherColumns As dao.Recordset
+  Dim rsExpressions As dao.Recordset
+  Dim rsScreens As dao.Recordset
+  Dim rsOrders As dao.Recordset
+  Dim rsViews As dao.Recordset
+  Dim rsEmail As dao.Recordset
+  Dim rsOutlook As dao.Recordset
+  Dim rsSummaryFields As dao.Recordset
+  Dim rsModules As dao.Recordset
+  Dim rsAccord As dao.Recordset
+  Dim rsValidations As dao.Recordset
   Dim sColumnName As String
   Dim sTableName As String
-  'Dim sExprName As String
-  'Dim sExprParentTable As String
-  'Dim sExprType As String
-  'Dim objExpr As CExpression
-  'Dim lngExprParentTableID As Long
   Dim sName As String
   Dim sModuleName As String
   Dim sGlobalFunctionType As String
-  'Dim objComp As CExprComponent
-  'Dim lngExprID As Long
   Dim sAccess As String
   Dim strSYSOrderIDs As String
-  'Dim strSYSEmailIDs As String
   Dim strSYSCheckedOrderIDs As String
-  Dim rsDAOTemp As DAO.Recordset
+  Dim rsDAOTemp As dao.Recordset
 
   Dim rsUtils1 As ADODB.Recordset
   Dim rsUtils2 As ADODB.Recordset
@@ -350,6 +341,8 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   Dim rsUtils9 As ADODB.Recordset
   Dim rsUtils10 As ADODB.Recordset
   Dim rsUtils11 As ADODB.Recordset
+  Dim rsUtilsDocTypes As ADODB.Recordset
+  
   Dim rsExprs As ADODB.Recordset
   
   Dim sMessage As String
@@ -582,30 +575,23 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
 ''        sExprName = objExpr.Name
 ''        sExprType = objExpr.ExpressionTypeName
 ''        lngExprParentTableID = objExpr.BaseTableID
-''
 ''        If objExpr.ExpressionContainsColumn(gLngColumnID) Then
 ''          fUsed = True
-''
 ''          If objExpr.ExpressionType = giEXPR_RECORDINDEPENDANTCALC Then
 ''            sExprParentTable = vbNullString
 ''          Else
 ''            ' Get the expression's parent table name.
 ''            recTabEdit.Index = "idxTableID"
 ''            recTabEdit.Seek "=", lngExprParentTableID
-''
 ''            If Not recTabEdit.NoMatch Then
 ''              sExprParentTable = recTabEdit!TableName
 ''            Else
 ''              sExprParentTable = "<unknown>"
 ''            End If
 ''          End If
-''
 ''          mfrmUse.AddToList (sExprType & " : " & sExprName & " <" & sExprParentTable & ">")
-''
 ''        End If
-''
 ''      End If
-''
 ''      ' Disassociate object variables.
 ''      'objExpr.Terminate      'MH20060727
 ''      Set objExpr = Nothing
@@ -936,9 +922,37 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   End With
   Set rsOutlook = Nothing
 
-
-
   ' ### We now need to check every single util/report/tool for column usage
+  
+  ' NHRD09112010 JIRA HRPRO-1083
+  ' Check if the column is used in any Document Types
+  sSQL = "SELECT DocumentMapID, Name" & _
+            ",ASRSysDocumentManagementTypes.TargetKeyFieldColumnID" & _
+            ",ASRSysDocumentManagementTypes.TargetColumnID" & _
+            ",ASRSysDocumentManagementTypes.TargetCategoryColumnID" & _
+            ",ASRSysDocumentManagementTypes.TargetTypeColumnID" & _
+            ",ASRSysDocumentManagementTypes.Parent1KeyFieldColumnID " & _
+         "FROM ASRSysDocumentManagementTypes " & _
+         "WHERE ASRSysDocumentManagementTypes.TargetKeyFieldColumnID = " & gLngColumnID & _
+            " OR ASRSysDocumentManagementTypes.TargetColumnID = " & gLngColumnID & _
+            " OR ASRSysDocumentManagementTypes.TargetCategoryColumnID = " & gLngColumnID & _
+            " OR ASRSysDocumentManagementTypes.TargetTypeColumnID = " & gLngColumnID & _
+            " OR ASRSysDocumentManagementTypes.Parent1KeyFieldColumnID = " & gLngColumnID
+        
+  Set rsUtilsDocTypes = New ADODB.Recordset
+  
+  rsUtilsDocTypes.Open sSQL, gADOCon, adOpenStatic, adLockReadOnly
+  With rsUtilsDocTypes
+    If Not (.EOF And .BOF) Then
+      fUsed = True
+      Do Until .EOF
+        mfrmUse.AddToList ("Document Type : " & !Name)
+        .MoveNext
+      Loop
+    End If
+    .Close
+  End With
+  Set rsUtilsDocTypes = Nothing
     
   ' Now Check if the column is used in a Custom Report
   sSQL = "SELECT DISTINCT ASRSysCustomReportsName.Name, ASRSysCustomReportsName.ID, ASRSysCustomReportsName.Username" & _
@@ -1563,7 +1577,7 @@ ErrorTrap:
 End Function
 
 Public Function InitColumnProps() As Boolean
-  Dim ThisField As DAO.Field
+  Dim ThisField As dao.Field
   Dim fOK As Boolean
   
   Set Me.Properties = Nothing
@@ -1676,7 +1690,7 @@ Public Function ReadColumn() As Boolean
   
   Dim fOK As Boolean
   Dim sIndex As String
-  Dim objField As DAO.Field
+  Dim objField As dao.Field
   
   With recColEdit
     'Store current index and bookmark
