@@ -127,58 +127,39 @@ Private Type PRINTER_DEFAULTS
      DesiredAccess As Long
 End Type
 
-Private Declare Function GetProfileString Lib "kernel32" _
-Alias "GetProfileStringA" _
-(ByVal lpAppName As String, _
-ByVal lpKeyName As String, _
-ByVal lpDefault As String, _
-ByVal lpReturnedString As String, _
-ByVal nSize As Long) As Long
+Private Declare Function GetVersionExA Lib "kernel32" (lpVersionInformation As OSVERSIONINFO) As Integer
 
-Private Declare Function WriteProfileString Lib "kernel32" _
-Alias "WriteProfileStringA" _
-(ByVal lpszSection As String, _
-ByVal lpszKeyName As String, _
-ByVal lpszString As String) As Long
+Private Declare Function GetProfileString Lib "kernel32" Alias "GetProfileStringA" _
+  (ByVal lpAppName As String, _
+  ByVal lpKeyName As String, _
+  ByVal lpDefault As String, _
+  ByVal lpReturnedString As String, _
+  ByVal nSize As Long) As Long
 
-Private Declare Function SendMessage Lib "user32" _
-Alias "SendMessageA" _
-(ByVal hWnd As Long, _
-ByVal wMsg As Long, _
-ByVal wParam As Long, _
-LParam As String) As Long
+Private Declare Function WriteProfileString Lib "kernel32" Alias "WriteProfileStringA" _
+  (ByVal lpszSection As String, _
+  ByVal lpszKeyName As String, _
+  ByVal lpszString As String) As Long
 
-Private Declare Function GetVersionExA Lib "kernel32" _
-(lpVersionInformation As OSVERSIONINFO) As Integer
+Private Declare Function OpenPrinter Lib "winspool.drv" Alias "OpenPrinterA" _
+  (ByVal pPrinterName As String, _
+  phPrinter As Long, _
+  pDefault As PRINTER_DEFAULTS) As Long
 
-Private Declare Function OpenPrinter Lib "winspool.drv" _
-Alias "OpenPrinterA" _
-(ByVal pPrinterName As String, _
-phPrinter As Long, _
-pDefault As PRINTER_DEFAULTS) As Long
+Private Declare Function SetPrinter Lib "winspool.drv" Alias "SetPrinterA" _
+  (ByVal hPrinter As Long, _
+  ByVal Level As Long, _
+  pPrinter As Any, _
+  ByVal Command As Long) As Long
 
-Private Declare Function SetPrinter Lib "winspool.drv" _
-Alias "SetPrinterA" _
-(ByVal hPrinter As Long, _
-ByVal Level As Long, _
-pPrinter As Any, _
-ByVal Command As Long) As Long
+Private Declare Function GetPrinter Lib "winspool.drv" Alias "GetPrinterA" _
+  (ByVal hPrinter As Long, _
+  ByVal Level As Long, _
+  pPrinter As Any, _
+  ByVal cbBuf As Long, _
+  pcbNeeded As Long) As Long
 
-Private Declare Function GetPrinter Lib "winspool.drv" _
-Alias "GetPrinterA" _
-(ByVal hPrinter As Long, _
-ByVal Level As Long, _
-pPrinter As Any, _
-ByVal cbBuf As Long, _
-pcbNeeded As Long) As Long
-
-Private Declare Function lstrcpy Lib "kernel32" _
-Alias "lstrcpyA" _
-(ByVal lpString1 As String, _
-ByVal lpString2 As Any) As Long
-
-Private Declare Function ClosePrinter Lib "winspool.drv" _
-(ByVal hPrinter As Long) As Long
+Private Declare Function ClosePrinter Lib "winspool.drv" (ByVal hPrinter As Long) As Long
 
 Private Function PtrCtoVbString(Add As Long) As String
     Dim sTemp As String * 512, X As Long
@@ -238,10 +219,10 @@ Private Sub Win95SetDefaultPrinter(strPrinterName As String)
     ' to fail
     ' with a 122 - ERROR_INSUFFICIENT_BUFFER
     ' redim t as large as you need
-    ReDim t((need \ 4)) As Long
+    ReDim T((need \ 4)) As Long
 
     ' and call GetPrinter for keepers this time
-    X = GetPrinter(Handle, 5, t(0), need, need)
+    X = GetPrinter(Handle, 5, T(0), need, need)
     ' failed the GetPrinter
     If X = False Then
         'error handler code goes here
@@ -253,11 +234,11 @@ Private Sub Win95SetDefaultPrinter(strPrinterName As String)
     ' pointers contained in the t() array into a Visual Basic string.
     ' The other three elements are just DWORDS (long integers) and
     ' don't require any conversion
-    pi5.pPrinterName = PtrCtoVbString(t(0))
-    pi5.pPortName = PtrCtoVbString(t(1))
-    pi5.Attributes = t(2)
-    pi5.DeviceNotSelectedTimeout = t(3)
-    pi5.TransmissionRetryTimeout = t(4)
+    pi5.pPrinterName = PtrCtoVbString(T(0))
+    pi5.pPortName = PtrCtoVbString(T(1))
+    pi5.Attributes = T(2)
+    pi5.DeviceNotSelectedTimeout = T(3)
+    pi5.TransmissionRetryTimeout = T(4)
 
     ' this is the critical flag that makes it the default printer
     pi5.Attributes = PRINTER_ATTRIBUTE_DEFAULT
@@ -362,11 +343,6 @@ Private Sub SelectPrinter(NewPrinter As String)
         Exit For
         End If
     Next
-End Sub
-
-
-Private Sub Class_Initialize()
-
 End Sub
 
 

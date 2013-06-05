@@ -17,9 +17,6 @@ End Type
 
 Global lpPrevWndProc As Long
 
-Private Declare Function SetWindowLong Lib "user32" Alias _
-   "SetWindowLongA" (ByVal hWnd As Long, _
-    ByVal nIndex As Long, ByVal dwNewLong As Long) As Long
 Private Declare Function DefWindowProc Lib "user32" Alias _
    "DefWindowProcA" (ByVal hWnd As Long, ByVal wMsg As Long, _
     ByVal wParam As Long, ByVal lParam As Long) As Long
