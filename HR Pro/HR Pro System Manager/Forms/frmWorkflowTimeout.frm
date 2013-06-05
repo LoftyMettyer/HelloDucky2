@@ -74,16 +74,17 @@ Begin VB.Form frmWorkflowTimeout
       _ExtentY        =   17277
       _Version        =   393216
       Style           =   1
+      Tab             =   1
       TabHeight       =   520
       TabCaption(0)   =   "&General"
       TabPicture(0)   =   "frmWorkflowTimeout.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "picTabContainer(0)"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "Appea&rance"
       TabPicture(1)   =   "frmWorkflowTimeout.frx":0028
-      Tab(1).ControlEnabled=   0   'False
+      Tab(1).ControlEnabled=   -1  'True
       Tab(1).Control(0)=   "picTabContainer(1)"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
@@ -842,7 +843,7 @@ Begin VB.Form frmWorkflowTimeout
          BorderStyle     =   0  'None
          Height          =   9300
          Index           =   0
-         Left            =   150
+         Left            =   -74850
          ScaleHeight     =   9300
          ScaleWidth      =   8400
          TabIndex        =   0
@@ -1484,7 +1485,7 @@ Begin VB.Form frmWorkflowTimeout
          BorderStyle     =   0  'None
          Height          =   7300
          Index           =   1
-         Left            =   -74850
+         Left            =   150
          ScaleHeight     =   7305
          ScaleWidth      =   8400
          TabIndex        =   63
@@ -8194,12 +8195,14 @@ Private Function FormatScreen_Frame_Background() As Boolean
     End With
 
     With cmdPictureClear
+      .Font.Size = 8
       .Top = sngCurrentControlTop
       .Left = msngFrameWidth _
         - X_COLUMN1 _
         - picPictureHolder.Width _
         - XGAP_CONTROL_CONTROL _
         - .Width
+      .Font.Size = 20
       .Visible = True
     End With
 

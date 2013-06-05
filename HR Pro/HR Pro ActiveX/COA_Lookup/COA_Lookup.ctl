@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
+Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "CODEJO~1.OCX"
 Begin VB.UserControl COA_Lookup 
    ClientHeight    =   570
    ClientLeft      =   0
@@ -115,7 +115,8 @@ Private Sub ShowDropdown(Button As Integer, Shift As Integer, X As Single, Y As 
       RaiseEvent Click
       If Not mbSelect Then
         Unload frmDrop
-        txtText.SetFocus
+        'txtText.SetFocus
+        TrySetFocus txtText
         Exit Sub
       End If
 
@@ -233,7 +234,8 @@ Private Sub ShowDropdown(Button As Integer, Shift As Integer, X As Single, Y As 
         
         'Show the form and set focus on the grid
         .Visible = True
-        .lsvList.SetFocus
+        '.lsvList.SetFocus
+        TrySetFocus .lsvList
 
       End With
       
@@ -242,7 +244,8 @@ Private Sub ShowDropdown(Button As Integer, Shift As Integer, X As Single, Y As 
     Else
       Unload frmDrop
       cmdDrop.Enabled = True
-      txtText.SetFocus
+      'txtText.SetFocus
+      TrySetFocus txtText
     End If
   
   End If
@@ -256,7 +259,11 @@ Private Sub tmrTimer_Timer()
   If lhndDrop <> GetActiveWindow Then
     Unload frmDrop
     tmrTimer.Enabled = False
-    txtText.SetFocus
+    
+    If txtText.Visible = True Then
+      'txtText.SetFocus
+      TrySetFocus txtText
+    End If
   End If
 
 End Sub
@@ -278,7 +285,8 @@ Private Sub txtText_GotFocus()
   End With
 
   cmdDrop.Enabled = True
-  cmdDrop.SetFocus
+  'cmdDrop.SetFocus
+  TrySetFocus cmdDrop
 
 End Sub
 

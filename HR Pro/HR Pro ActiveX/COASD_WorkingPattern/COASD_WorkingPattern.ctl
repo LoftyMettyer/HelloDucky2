@@ -537,43 +537,46 @@ Private giControlLevel As Integer
 Private gfSelected As Boolean
 Private mblnReadOnly As Boolean   'NPG20071022
 
+Private mBackcolour As OLE_COLOR
+
+
 '########################################################################
 '# PROPERTIES                                                           #
 '########################################################################
 
-Public Property Get Backcolor() As OLE_COLOR
-
-  ' Return the back colour of the control
-  
-  Backcolor = fraWorkingPattern.Backcolor
-  
-End Property
 Public Property Get Selected() As Boolean
-  ' Return the Selected property.
   Selected = gfSelected
-  
 End Property
 
 Public Property Let Selected(ByVal pfNewValue As Boolean)
-  ' Set the Selected property.
   gfSelected = pfNewValue
-    
 End Property
+
+Public Property Get Backcolor() As OLE_COLOR
+  Backcolor = mBackcolour
+End Property
+
 Public Property Let Backcolor(ByVal NewColor As OLE_COLOR)
 
   ' Set the back colour of the individual controls
   
   Dim iCounter As Integer
   
-  fraWorkingPattern.Backcolor = NewColor
+  mBackcolour = NewColor
   
-  For iCounter = 1 To 7
-    lblDay(iCounter).Backcolor = NewColor
-  Next iCounter
-  
-  lblToggle.Backcolor = NewColor
-  lblAM.Backcolor = NewColor
-  lblPM.Backcolor = NewColor
+  If Not mblnReadOnly Then
+    
+    fraWorkingPattern.Backcolor = mBackcolour
+    
+    For iCounter = 1 To 7
+      lblDay(iCounter).Backcolor = mBackcolour
+    Next iCounter
+    
+    lblToggle.Backcolor = mBackcolour
+    lblAM.Backcolor = mBackcolour
+    lblPM.Backcolor = mBackcolour
+    
+  End If
   
 End Property
 
@@ -819,58 +822,6 @@ Public Property Get hWnd() As Long
   
 End Property
 
-'Public Property Get Value() As String
-'
-'  Value = CreateCharacterString
-'
-'End Property
-'
-'Public Property Let Value(ByVal NewString As String)
-'
-'  Dim iCounter As Integer
-'
-'  If Len(NewString) < 14 Then NewString = NewString & Space(14 - Len(NewString))
-'
-'  For iCounter = 1 To 14
-'    If Mid(NewString, iCounter, 1) <> " " Then
-'      Select Case iCounter
-'        Case 1: chkDay(1).Value = vbChecked
-'        Case 2: chkDay(2).Value = vbChecked
-'        Case 3: chkDay(3).Value = vbChecked
-'        Case 4: chkDay(4).Value = vbChecked
-'        Case 5: chkDay(5).Value = vbChecked
-'        Case 6: chkDay(6).Value = vbChecked
-'        Case 7: chkDay(7).Value = vbChecked
-'        Case 8: chkDay(8).Value = vbChecked
-'        Case 9: chkDay(9).Value = vbChecked
-'        Case 10: chkDay(10).Value = vbChecked
-'        Case 11: chkDay(11).Value = vbChecked
-'        Case 12: chkDay(12).Value = vbChecked
-'        Case 13: chkDay(13).Value = vbChecked
-'        Case 14: chkDay(14).Value = vbChecked
-'      End Select
-'    Else
-'      Select Case iCounter
-'        Case 1: chkDay(1).Value = vbUnchecked
-'        Case 2: chkDay(2).Value = vbUnchecked
-'        Case 3: chkDay(3).Value = vbUnchecked
-'        Case 4: chkDay(4).Value = vbUnchecked
-'        Case 5: chkDay(5).Value = vbUnchecked
-'        Case 6: chkDay(6).Value = vbUnchecked
-'        Case 7: chkDay(7).Value = vbUnchecked
-'        Case 8: chkDay(8).Value = vbUnchecked
-'        Case 9: chkDay(9).Value = vbUnchecked
-'        Case 10: chkDay(10).Value = vbUnchecked
-'        Case 11: chkDay(11).Value = vbUnchecked
-'        Case 12: chkDay(12).Value = vbUnchecked
-'        Case 13: chkDay(13).Value = vbUnchecked
-'        Case 14: chkDay(14).Value = vbUnchecked
-'      End Select
-'    End If
-'  Next iCounter
-'
-'End Property
-
 '########################################################################
 '# FUNCTIONS USED BY THE CONTROL WHICH ARE NOT EXPOSED TO ITS CONTAINER #
 '########################################################################
@@ -980,6 +931,8 @@ Private Sub UserControl_Initialize()
   lblDay(5) = UCase(Left(WeekdayName(5, , vbSunday), 1))
   lblDay(6) = UCase(Left(WeekdayName(6, , vbSunday), 1))
   lblDay(7) = UCase(Left(WeekdayName(7, , vbSunday), 1))
+    
+  mBackcolour = vbButtonFace
     
 End Sub
 
@@ -1179,11 +1132,18 @@ Public Property Let Read_Only(blnValue As Boolean)
   
   For lngIndex = lblDay.LBound To lblDay.UBound
     lblDay(lngIndex).Enabled = Not blnValue
+    lblDay(lngIndex).Backcolor = IIf(mblnReadOnly, vbButtonFace, mBackcolour)
   Next
 
   For lngIndex = Picture1.LBound To Picture1.UBound
-    Picture1(lngIndex).Backcolor = IIf(Not blnValue, vbWindowBackground, Me.Backcolor)
+    Picture1(lngIndex).Backcolor = IIf(mblnReadOnly, vbButtonFace, vbWhite)
   Next
+
+  fraWorkingPattern.Backcolor = IIf(mblnReadOnly, vbButtonFace, mBackcolour)
+  lblToggle.Backcolor = IIf(mblnReadOnly, vbButtonFace, mBackcolour)
+  lblAM.Backcolor = IIf(mblnReadOnly, vbButtonFace, mBackcolour)
+  lblPM.Backcolor = IIf(mblnReadOnly, vbButtonFace, mBackcolour)
+
 
 End Property
 

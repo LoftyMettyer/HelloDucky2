@@ -1017,6 +1017,7 @@ Public Sub EditMenu(psMenuItem As String)
   End Select
   
   RefreshAuditMenu
+  RefreshFormCaption
 
 End Sub
 
@@ -1209,6 +1210,7 @@ Private Sub RefreshAuditMenu()
   End If
   
   frmMain.RefreshMenu False
+  SetFormCaption Me, Me.Caption
   
 End Sub
 
@@ -1253,12 +1255,17 @@ Private Sub RefreshFormCaption()
   If Filtered Then
     sCaption = sCaption & " [Filtered]"
   End If
-  
-  Me.Caption = sCaption
-  RemoveIcon Me
-  
+   
   RefreshStatusBar
-  
+  SetFormCaption Me, sCaption
+
+  If Me.WindowState = vbMaximized Then
+    SetBlankIcon Me
+  Else
+    RemoveIcon Me
+    Me.BorderStyle = vbSizable
+  End If
+
 End Sub
 
 Public Property Get Filtered() As Boolean

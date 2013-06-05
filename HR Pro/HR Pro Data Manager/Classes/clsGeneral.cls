@@ -1742,7 +1742,7 @@ DeadlockRecoveryPoint:
             gADOCon.Errors.Clear
         
             If Not fDoneOK Then
-              MsgBox "ERROR." & vbCrLf & vbCrLf & _
+              COAMsgBox "ERROR." & vbCrLf & vbCrLf & _
                 sErrorMsg, vbOKOnly + vbExclamation, App.ProductName
             End If
           End If
@@ -1804,14 +1804,14 @@ DeadlockErrorTrap:
       Resume DeadlockRecoveryPoint
     Else
       fDoneOK = False
-      MsgBox "Another user is deadlocking the database. Try saving again.", _
+      COAMsgBox "Another user is deadlocking the database. Try saving again.", _
         vbExclamation + vbOKOnly, Application.Name
       gobjErrorStack.HandleError
       Resume TidyUpAndExit
     End If
   Else
     fDoneOK = False
-    MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+    COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
     gobjErrorStack.HandleError
     Resume TidyUpAndExit
   End If
@@ -5352,7 +5352,7 @@ Public Function InsertTableRecord(psInsertSQL As String, _
   Set rsInfo = Nothing
           
   If Not fInsertedOK Then
-    MsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
+    COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
       "The required stored procedure 'sp_ASRInsertNewRecord_" & Trim(Str(plngTableID)) & "' does not exist.", _
       vbOKOnly + vbExclamation, App.ProductName
   Else
@@ -5427,7 +5427,7 @@ InsertDeadlockRecoveryPoint:
           gADOCon.Errors.Clear
 
           If Not fInsertedOK Then
-            MsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
+            COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
               sErrorMsg, vbOKOnly + vbExclamation, App.ProductName
           End If
         End If
@@ -5457,7 +5457,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   fInsertedOK = False
-  MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+  COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
   Resume TidyUpAndExit
 
 InsertErrorTrap:
@@ -5480,7 +5480,7 @@ InsertErrorTrap:
     Else
       fInsertedOK = False
       gobjProgress.CloseProgress
-      MsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
+      COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
         "Another user is deadlocking the database. Try saving again.", _
         vbExclamation + vbOKOnly, Application.Name
       Resume TidyUpAndExit
@@ -5489,7 +5489,7 @@ InsertErrorTrap:
     fInsertedOK = False
     'JPD 20030904 Fault 5479
     gobjProgress.CloseProgress
-    MsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
+    COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
       ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
     Resume TidyUpAndExit
   End If
@@ -5531,7 +5531,7 @@ Public Function DeleteTableRecord(plngTableID As Long, _
   Set rsInfo = Nothing
           
   If Not fDeletedOK Then
-    MsgBox "The record could not be deleted." & vbCrLf & vbCrLf & _
+    COAMsgBox "The record could not be deleted." & vbCrLf & vbCrLf & _
       "The required stored procedure 'sp_ASRDeleteRecord_" & Trim(Str(plngTableID)) & "' does not exist.", _
       vbOKOnly + vbExclamation, App.ProductName
   Else
@@ -5609,13 +5609,13 @@ DeleteDeadlockRecoveryPoint:
           gADOCon.Errors.Clear
 
           If Not fDeletedOK Then
-            MsgBox "The record could not be deleted." & vbCrLf & vbCrLf & _
+            COAMsgBox "The record could not be deleted." & vbCrLf & vbCrLf & _
               sErrorMsg, vbOKOnly + vbExclamation, App.ProductName
           End If
         Else
           Select Case .Parameters(0).Value
             Case 2 ' Record has been amended AND is no longer in the given table/view.
-              MsgBox "The record has been amended by another user and is no longer in the current view.", vbExclamation, App.ProductName
+              COAMsgBox "The record has been amended by another user and is no longer in the current view.", vbExclamation, App.ProductName
               
             Case Else ' Record deleted OK.
           End Select
@@ -5643,7 +5643,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   fDeletedOK = False
-  MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+  COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
   Resume TidyUpAndExit
 
 DeleteErrorTrap:
@@ -5665,14 +5665,14 @@ DeleteErrorTrap:
       Resume DeleteDeadlockRecoveryPoint
     Else
       fDeletedOK = False
-      MsgBox "The record could not be deleted." & vbCrLf & vbCrLf & _
+      COAMsgBox "The record could not be deleted." & vbCrLf & vbCrLf & _
         "Another user is deadlocking the database. Try saving again.", _
         vbExclamation + vbOKOnly, Application.Name
       Resume TidyUpAndExit
     End If
   Else
     fDeletedOK = False
-    MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+    COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
     Resume TidyUpAndExit
   End If
   
@@ -5716,7 +5716,7 @@ Public Function UpdateTableRecord(psUpdateSQL As String, _
   Set rsInfo = Nothing
           
   If Not fUpdatedOK Then
-    MsgBox "The record could not be updated." & vbCrLf & vbCrLf & _
+    COAMsgBox "The record could not be updated." & vbCrLf & vbCrLf & _
       "The required stored procedure 'sp_ASRUpdateRecord_" & Trim(Str(plngTableID)) & "' does not exist.", _
       vbOKOnly + vbExclamation, App.ProductName
   Else
@@ -5807,7 +5807,7 @@ UpdateDeadlockRecoveryPoint:
           gADOCon.Errors.Clear
 
           If Not fUpdatedOK Then
-            MsgBox "The record could not be updated." & vbCrLf & vbCrLf & _
+            COAMsgBox "The record could not be updated." & vbCrLf & vbCrLf & _
               sErrorMsg, vbOKOnly + vbExclamation, App.ProductName
           End If
         End If
@@ -5815,11 +5815,11 @@ UpdateDeadlockRecoveryPoint:
         If fUpdatedOK And (Not fDeadlock) Then
           Select Case .Parameters(0).Value
             Case 1 ' Record changed by another user, and still in the current table/view.
-              MsgBox "The record has been amended by another user and will be refreshed.", vbExclamation, App.ProductName
+              COAMsgBox "The record has been amended by another user and will be refreshed.", vbExclamation, App.ProductName
             Case 2 ' Record changed by another user, and is no longer in the current table/view.
-              MsgBox "The record has been amended by another user and is no longer in the current view.", vbExclamation, App.ProductName
+              COAMsgBox "The record has been amended by another user and is no longer in the current view.", vbExclamation, App.ProductName
             Case 3 ' Record deleted by another user.
-              MsgBox "The record has been deleted by another user.", vbExclamation, App.ProductName
+              COAMsgBox "The record has been deleted by another user.", vbExclamation, App.ProductName
             Case Else ' Record updated OK.
               
           End Select
@@ -5846,7 +5846,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   fUpdatedOK = False
-  MsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
+  COAMsgBox ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
   Resume TidyUpAndExit
 
 UpdateErrorTrap:
@@ -5869,7 +5869,7 @@ UpdateErrorTrap:
     Else
       fUpdatedOK = False
       gobjProgress.CloseProgress
-      MsgBox "The record could not be updated." & vbCrLf & vbCrLf & _
+      COAMsgBox "The record could not be updated." & vbCrLf & vbCrLf & _
         "Another user is deadlocking the database. Try saving again.", _
         vbExclamation + vbOKOnly, Application.Name
       Resume TidyUpAndExit
@@ -5878,7 +5878,7 @@ UpdateErrorTrap:
     fUpdatedOK = False
     'JPD 20030904 Fault 5479
     gobjProgress.CloseProgress
-    MsgBox "The record could not be updated." & vbCrLf & vbCrLf & _
+    COAMsgBox "The record could not be updated." & vbCrLf & vbCrLf & _
       ODBC.FormatError(Err.Description), vbExclamation + vbOKOnly, Application.Name
     Resume TidyUpAndExit
   End If
