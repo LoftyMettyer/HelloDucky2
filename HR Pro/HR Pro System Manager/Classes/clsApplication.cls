@@ -2403,6 +2403,7 @@ Private Function CreateQueryDefs() As Boolean
       ", c.[size], [decimals]" & _
       ", c.[audit], [mandatory], [multiline] " & _
       ", c.[dfltvalueexprid] as [defaultcalcid]" & _
+      ", c.[defaultvalue] as [defaultvalue]" & _
       ", c.[convertcase] as [case]" & _
       ", c.[readOnly] as [isreadonly]" & _
       ", c.[Alignment], c.[trimming], c.[calculateifempty]" & _
