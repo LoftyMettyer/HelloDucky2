@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
 Begin VB.Form frmViewMgr 
    Caption         =   "View Manager"
@@ -136,14 +136,12 @@ Begin VB.Form frmViewMgr
          NumPanels       =   2
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   2
-            TextSave        =   ""
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
          BeginProperty Panel2 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   10081
-            TextSave        =   ""
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
@@ -188,7 +186,7 @@ Begin VB.Form frmViewMgr
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   1
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmViewMgr.frx":BAD4
+            Picture         =   "frmViewMgr.frx":BAD0
             Key             =   "IMG_VIEW"
          EndProperty
       EndProperty
@@ -227,11 +225,11 @@ Begin VB.Form frmViewMgr
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   2
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmViewMgr.frx":C01C
+            Picture         =   "frmViewMgr.frx":C322
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmViewMgr.frx":C3CD
+            Picture         =   "frmViewMgr.frx":C874
             Key             =   "IMG_VIEW"
          EndProperty
       EndProperty
@@ -564,9 +562,9 @@ Private Sub trvTables_Initialise()
 End Sub
 
 
-Private Sub fraSplit_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub fraSplit_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' Record the split move start position.
-  gSngSplitStartX = x
+  gSngSplitStartX = X
   
   ' Flag that the split is being moved.
   gfSplitMoving = True
@@ -574,16 +572,16 @@ Private Sub fraSplit_MouseDown(Button As Integer, Shift As Integer, x As Single,
 End Sub
 
 
-Private Sub fraSplit_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub fraSplit_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' If we are moving the split then move it.
   If gfSplitMoving Then
-    fraSplit.Left = fraSplit.Left + (x - gSngSplitStartX)
+    fraSplit.Left = fraSplit.Left + (X - gSngSplitStartX)
   End If
   
 End Sub
 
 
-Private Sub fraSplit_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub fraSplit_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   ' If the split is being moved then call the routine that resizes the
   ' tree and list views accordingly.
   If gfSplitMoving Then
@@ -827,7 +825,7 @@ Private Sub lstViews_KeyUp(KeyCode As Integer, Shift As Integer)
 
 End Sub
 
-Private Sub lstViews_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub lstViews_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   Dim lXMouse As Long
   Dim lYMouse As Long
   
@@ -926,7 +924,7 @@ Private Sub trvTables_KeyPress(KeyAscii As Integer)
 End Sub
 
 
-Private Sub trvTables_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub trvTables_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   Dim lXMouse As Long
   Dim lYMouse As Long
   Dim nodX As SSNode
@@ -939,7 +937,7 @@ Private Sub trvTables_MouseUp(Button As Integer, Shift As Integer, x As Single, 
     
     ' Call the activebar to display the popup menu.
     ' Check that we are over a node
-    Set nodX = trvTables.HitTest(x, y)
+    Set nodX = trvTables.HitTest(X, Y)
     If Not nodX Is Nothing Then
       Set nodX = Nothing
       UI.GetMousePos lXMouse, lYMouse
@@ -996,7 +994,7 @@ Public Sub EditMenu(psMenuItem As String)
       ' Delete the current selected view(s)
       DeleteViews
     
-    Case "ID_CopyView"
+    Case "ID_CopyDef"
       ' Copy the selected view(s)
       CopyView
       
