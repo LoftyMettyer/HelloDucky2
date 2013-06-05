@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "TIMASK6.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
@@ -63,6 +63,7 @@ Begin VB.Form frmColEdit
       _Version        =   393216
       Style           =   1
       Tabs            =   8
+      Tab             =   3
       TabsPerRow      =   8
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -76,7 +77,7 @@ Begin VB.Form frmColEdit
       EndProperty
       TabCaption(0)   =   "De&finition"
       TabPicture(0)   =   "frmColEdit.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraDefinitionPage"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
@@ -93,13 +94,15 @@ Begin VB.Form frmColEdit
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "Valida&tion"
       TabPicture(3)   =   "frmColEdit.frx":0060
-      Tab(3).ControlEnabled=   0   'False
+      Tab(3).ControlEnabled=   -1  'True
       Tab(3).Control(0)=   "fraValidationPage"
+      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "Diar&y Links"
       TabPicture(4)   =   "frmColEdit.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraDiaryLinkPage"
+      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).ControlCount=   1
       TabCaption(5)   =   "Email Lin&ks"
       TabPicture(5)   =   "frmColEdit.frx":0098
@@ -1137,7 +1140,7 @@ Begin VB.Form frmColEdit
          BorderStyle     =   0  'None
          Enabled         =   0   'False
          Height          =   5350
-         Left            =   -74950
+         Left            =   50
          TabIndex        =   108
          Top             =   320
          Visible         =   0   'False
@@ -1159,22 +1162,22 @@ Begin VB.Form frmColEdit
                Begin VB.Label lblMaskKey6 
                   AutoSize        =   -1  'True
                   BackStyle       =   0  'Transparent
-                  Caption         =   "\ - Follow by any literal"
+                  Caption         =   "# - Numbers, Symbols"
                   Height          =   195
-                  Left            =   5160
+                  Left            =   5100
                   TabIndex        =   147
                   Top             =   495
-                  Width           =   1635
+                  Width           =   1950
                End
                Begin VB.Label lblMaskKey5 
                   AutoSize        =   -1  'True
                   BackStyle       =   0  'Transparent
-                  Caption         =   "B - Binary (0 or 1)"
+                  Caption         =   "9 - Numbers (0-9)"
                   Height          =   195
-                  Left            =   5160
+                  Left            =   5100
                   TabIndex        =   146
                   Top             =   240
-                  Width           =   1275
+                  Width           =   1560
                End
                Begin VB.Label lblMaskKey2 
                   AutoSize        =   -1  'True
@@ -1189,22 +1192,22 @@ Begin VB.Form frmColEdit
                Begin VB.Label lblMaskKey4 
                   AutoSize        =   -1  'True
                   BackStyle       =   0  'Transparent
-                  Caption         =   "# - Numbers, Symbols"
+                  Caption         =   "s - Lower case or space"
                   Height          =   195
-                  Left            =   2460
+                  Left            =   2300
                   TabIndex        =   144
                   Top             =   495
-                  Width           =   1590
+                  Width           =   2040
                End
                Begin VB.Label lblMaskKey3 
                   AutoSize        =   -1  'True
                   BackStyle       =   0  'Transparent
-                  Caption         =   "9 - Numbers (0-9)"
+                  Caption         =   "S - Upper case or space"
                   Height          =   195
-                  Left            =   2460
+                  Left            =   2300
                   TabIndex        =   143
                   Top             =   240
-                  Width           =   1275
+                  Width           =   2070
                End
                Begin VB.Label lblMaskKey1 
                   AutoSize        =   -1  'True
@@ -1723,7 +1726,7 @@ Begin VB.Form frmColEdit
          BackColor       =   &H8000000C&
          BorderStyle     =   0  'None
          Height          =   5550
-         Left            =   45
+         Left            =   -74955
          TabIndex        =   99
          Top             =   315
          Width           =   8205
