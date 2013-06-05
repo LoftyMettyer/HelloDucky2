@@ -72,16 +72,15 @@ Begin VB.Form frmOrdEdit
       TabsPerRow      =   2
       TabHeight       =   520
       TabCaption(0)   =   "&Find Window Columns"
-      TabPicture(0)   =   "frmOrdEdit.frx":034E
+      TabPicture(0)   =   "frmOrdEdit.frx":0596
       Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraPageContainer(0)"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Sort Order Columns"
-      TabPicture(1)   =   "frmOrdEdit.frx":036A
+      TabPicture(1)   =   "frmOrdEdit.frx":05B2
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraPageContainer(1)"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       Begin VB.Frame fraPageContainer 
          BackColor       =   &H80000010&
@@ -100,7 +99,7 @@ Begin VB.Form frmOrdEdit
             Top             =   400
             Width           =   3000
             Begin ComctlLib.TreeView trvSelectedSortColumns 
-               DragIcon        =   "frmOrdEdit.frx":0386
+               DragIcon        =   "frmOrdEdit.frx":05CE
                Height          =   3375
                Left            =   150
                TabIndex        =   19
@@ -132,7 +131,7 @@ Begin VB.Form frmOrdEdit
             Top             =   400
             Width           =   3000
             Begin ComctlLib.TreeView trvSortColumns 
-               DragIcon        =   "frmOrdEdit.frx":04D0
+               DragIcon        =   "frmOrdEdit.frx":0718
                Height          =   3375
                Left            =   150
                TabIndex        =   12
@@ -225,7 +224,7 @@ Begin VB.Form frmOrdEdit
             Top             =   400
             Width           =   3000
             Begin ComctlLib.TreeView trvSelectedFindColumns 
-               DragIcon        =   "frmOrdEdit.frx":0912
+               DragIcon        =   "frmOrdEdit.frx":0B5A
                Height          =   3375
                Left            =   150
                TabIndex        =   7
@@ -255,7 +254,7 @@ Begin VB.Form frmOrdEdit
             Top             =   400
             Width           =   3000
             Begin ComctlLib.TreeView trvFindColumns 
-               DragIcon        =   "frmOrdEdit.frx":0A5C
+               DragIcon        =   "frmOrdEdit.frx":0CA4
                Height          =   3375
                Left            =   150
                TabIndex        =   1
@@ -337,11 +336,11 @@ Begin VB.Form frmOrdEdit
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   2
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrdEdit.frx":0BA6
+            Picture         =   "frmOrdEdit.frx":0DEE
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrdEdit.frx":0F57
+            Picture         =   "frmOrdEdit.frx":1340
             Key             =   "IMG_COLUMN"
          EndProperty
       EndProperty
@@ -359,11 +358,11 @@ Begin VB.Form frmOrdEdit
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   2
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrdEdit.frx":12A9
+            Picture         =   "frmOrdEdit.frx":1692
             Key             =   "IMG_DOWN"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrdEdit.frx":1671
+            Picture         =   "frmOrdEdit.frx":1BE4
             Key             =   "IMG_UP"
          EndProperty
       EndProperty
