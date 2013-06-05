@@ -565,10 +565,7 @@ PRINT 'Step 9 - Add new calculation procedures'
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfstat_ParentalLeaveEntitlement]')AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfstat_ParentalLeaveEntitlement];
-
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_absencebetweentwodates]')AND xtype in (N'FN', N'IF', N'TF'))
-		DROP FUNCTION [dbo].[udfsys_absencebetweentwodates];
-		
+	
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_convertcharactertonumeric]') AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_convertcharactertonumeric];
 
@@ -845,39 +842,6 @@ PRINT 'Step 9 - Add new calculation procedures'
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
 
-	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_absencebetweentwodates] (
-		     @date1		datetime,
-		     @date2		datetime,
-		     @type		nvarchar(MAX) )
-		RETURNS integer 
-		WITH SCHEMABINDING
-		AS
-		BEGIN
-		
-			DECLARE @result integer;
-			
-		    -- Get the number of whole years
-		    SET @result = YEAR(@date2) - YEAR(@date1);
-		
-		    -- See if the date passed in months are greater than todays month
-		    IF MONTH(@date1) > MONTH(@date2)
-		    BEGIN
-				SET @result = @result - 1;
-		    END
-		    
-		    -- See if the months are equal and if they are test the day value
-		    IF MONTH(@date1) = MONTH(@date2)
-		    BEGIN
-		        IF DAY(@date1) > DAY(@date2)
-		            BEGIN
-						SET @result = @result - 1;
-		            END
-		        END
-		        
-		    RETURN @result;
-		
-		END';
-	EXECUTE sp_executeSQL @sSPCode;
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_convertcharactertonumeric]
 		(@psToConvert nvarchar(MAX))
@@ -1553,7 +1517,8 @@ PRINT 'Step 10 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''6e51716a-4ac3-49dc-97a5-2bc417e38c2f'', N''+'', NULL, 0, 0, N''Plus'', NULL, 1, 0, 1, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''1acde45c-39a1-4a50-8526-aed3b8e6392b'', N''*'', NULL, 0, 0, N''Times by'', NULL, 1, 0, 3, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''a0aefbd0-b295-4598-9432-d4f653eca1ac'', N''*'', NULL, 0, 0, N''To the power of'', NULL, 1, 0, 15, 0)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''e6bd0161-786d-42a8-bdff-8400963e3e89'', N''[dbo].[udfsys_absencebetweentwodates] ({0}, {1}, {2})'', 2, 0, 0, N''Absence between Two Dates'', NULL, 0, 0, 47, 0)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''e6bd0161-786d-42a8-bdff-8400963e3e89'', N''[dbo].[udf_ASRFn_AbsenceBetweenTwoDates] ({0}, {1}, {2}, {3}, GETDATE())'', 2, 0, 0, N''Absence between Two Dates'', NULL, 0, 0, 47, 0)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [modulekey], [parameterkey]) VALUES (47, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'')';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''a4776d94-8917-4f5b-ad36-f4104b04e3e0'', N''[dbo].[udf_ASRFn_AbsenceDuration]({0}, {1}, {2}, {3}, {4})'', 2, 0, 0, N''Absence Duration'', NULL, 0, 0, 30, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [modulekey], [parameterkey]) VALUES (30, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'')';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''edfa5940-f5ba-47b5-bd93-8f19c35490b3'', N''DATEADD(DD, {1}, DATEADD(D, 0, DATEDIFF(D, 0, {0})))'', 4, 0, 0, N''Add Days to Date'', NULL, 0, 0, 44, 0)';
@@ -1623,7 +1588,8 @@ PRINT 'Step 10 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''fbccef52-27be-4ee4-8afa-d8228da2e952'', N''[dbo].[udfsys_wholemonthsbetweentwodates] ({0}, {1})'', 2, 0, 0, N''Whole Months between Two Dates'', NULL, 0, 0, 26, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''1b5082ad-36bb-4bf8-b859-22a1de8f8d2e'', N''[dbo].[udfsys_wholeyearsbetweentwodates] ({0}, {1})'', 2, 0, 0, N''Whole Years between Two Dates'', NULL, 0, 0, 54, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''97880cd2-c73d-4c7e-a4c4-971824b850e6'', N''[dbo].[udfsys_wholeyearsbetweentwodates] ({0}, GETDATE())'', 2, 0, 0, N''Whole Years until Current Date'', NULL, 0, 0, 18, 0)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''f11ffb85-31bc-4b12-9b3d-e4464c868ca4'', N''[dbo].[udfsys_workingdaysbetweentwodates] ({0}, {1})'', 2, 0, 0, N''Working Days between Two Dates'', NULL, 0, 0, 46, 0)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''f11ffb85-31bc-4b12-9b3d-e4464c868ca4'', N''[dbo].[udf_ASRFn_WorkingDaysBetweenTwoDates] ({0}, {1}, {2})'', 2, 0, 0, N''Working Days between Two Dates'', NULL, 0, 0, 46, 0)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentdependancy] ([id], [modulekey], [parameterkey]) VALUES (46, ''MODULE_PERSONNEL'', ''Param_TablePersonnel'')';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5c9a6256-ac11-456d-92fe-a5e2f5ba4c11'', N''DATEPART(YYYY, {0})'', 2, 0, 0, N''Year of Date'', NULL, 0, 0, 32, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5b636d9f-7589-46d4-bd6a-0e23aef81a51'', N''NOT'', 0, 0, 0, N''Not'', NULL, 1, 180, 13, 0)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [appendwildcard], [splitintocase], [name], [aftercode], [isoperator], [operatortype], [id], [bypassvalidation]) VALUES (N''5da8bb7e-f632-4ed0-b236-e042b88f3a1b'', N''[dbo].[udfsys_getfieldfromdatabaserecord] ({0}, {1}, {2})'', 0, 0, 0, N''Get field from database record'', NULL, 0, 0, 42, 0)';
