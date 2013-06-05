@@ -156,6 +156,24 @@ Namespace Things
     '  End Get
     'End Property
 
+    Public ReadOnly Property Objects(ByVal Type As Things.Type) As Things.Collection
+      Get
+
+        Dim objCollection As Things.Collection
+        Dim objObject As Things.Base
+
+        objCollection = New Things.Collection
+        For Each objObject In Me.Items
+          If objObject.Type = [Type] Then
+            objCollection.Add(objObject)
+          End If
+        Next
+
+        Return objCollection
+      End Get
+
+    End Property
+
 
     Public Function GetObject(ByVal [Type] As Things.Type, ByVal [ID] As HCMGuid) As Things.Base ' Things.iSystemObject
 

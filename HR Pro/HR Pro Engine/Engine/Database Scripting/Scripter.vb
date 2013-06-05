@@ -342,6 +342,8 @@ Namespace ScriptDB
       Dim objColumn As Things.Column
       Dim objRelation As Things.Relation
       Dim objIndex As Things.Index
+      Dim objView As Things.View
+
       Dim sSQL As String = String.Empty
       Dim sCalculationCode As String
       '  Dim sValidation As String = String.Empty
@@ -429,6 +431,7 @@ Namespace ScriptDB
           objAuditIndex.IsTableIndex = True
           objAuditIndex.IncludePrimaryKey = True
           objAuditIndex.Name = "IDX_AuditFields"
+
 
           ' Add any relationship columns
           For Each objRelation In objTable.Objects(Things.Type.Relation)
@@ -888,6 +891,8 @@ Namespace ScriptDB
       Dim objTable As Things.Table
       Dim objColumn As Things.Column
       Dim objExpression As Things.Expression
+      Dim objIndex As Things.Index
+      Dim objView As Things.View
 
       Dim bOK As Boolean = True
       Dim sObjectName As String = String.Empty
@@ -930,6 +935,29 @@ Namespace ScriptDB
             End If
 
           Next
+
+          ' Indexes for views
+          objIndex = New Things.Index
+          objIndex.Name = String.Format("IDX_Views_{0}", objTable.Name)
+          objIndex.IncludePrimaryKey = True
+          objIndex.IsTableIndex = True
+          For Each objView In objTable.Objects(Things.Type.View)
+
+            If Not objView.Filter Is Nothing Then
+              objView.Filter.ExpressionType = ExpressionType.Mask
+              objView.Filter.AssociatedColumn = objTable.Objects(Things.Type.Column)(0)
+              objView.Filter.GenerateCode()
+
+              For Each objColumn In objView.Filter.Dependencies.Objects(Things.Type.Column)
+                If objColumn.Type = Things.Type.Column Then
+                  objIndex.Columns.AddIfNew(objColumn)
+                End If
+              Next
+            End If
+
+          Next
+          objTable.Objects.Add(objIndex)
+
 
           ' Calculations
           For Each objColumn In objTable.Columns
@@ -1022,6 +1050,7 @@ Namespace ScriptDB
 
       Dim objTable As Things.Table
       Dim objRelation As Things.Relation
+      Dim objColumn As Things.Column
       Dim objIndex As Things.Index
       Dim bOK As Boolean = True
       Dim sSQL As String
@@ -1046,13 +1075,17 @@ Namespace ScriptDB
             aryColumns = New ArrayList
             If objIndex.IncludePrimaryKey Then aryColumns.Add("[ID] ASC")
             For Each objColumn In objIndex.Columns
-              aryColumns.Add(objColumn.Name & " ASC")
+              If objColumn.Table Is objTable Then
+                aryColumns.Add(objColumn.Name & " ASC")
+              End If
             Next
 
             aryIncludeColumns = New ArrayList
             For Each objColumn In objIndex.IncludedColumns
               If Not objIndex.Columns.Contains(objColumn) Then
-                aryIncludeColumns.Add(objColumn.Name)
+                If objColumn.Table Is objTable Then
+                  aryIncludeColumns.Add(objColumn.Name)
+                End If
               End If
             Next
 
