@@ -649,7 +649,7 @@ End Sub
 
 Private Sub Form_Activate()
   If Me.Visible And Me.Enabled Then
-    cmdOk.SetFocus
+    cmdOK.SetFocus
   End If
 End Sub
 
@@ -789,7 +789,7 @@ Dim strUtilityAction As String
   
   With gobjProgress
     '.AviFile = App.Path & "\videos\crosstab.avi"
-      .AVI = dbCrossTab
+      .AVI = dbText
       Select Case mlngCrossTabType
         Case cttNormal
           strUtilityAction = "Cross Tab"
@@ -2344,10 +2344,10 @@ Private Sub Form_Resize()
 
   
   'Position the command buttons...
-  lngTop = Me.ScaleHeight - (cmdOk.Height + lngGap)
+  lngTop = Me.ScaleHeight - (cmdOK.Height + lngGap)
   
-  lngLeft = Me.ScaleWidth - (cmdOk.Width + lngGap)
-  cmdOk.Move lngLeft, lngTop
+  lngLeft = Me.ScaleWidth - (cmdOK.Width + lngGap)
+  cmdOK.Move lngLeft, lngTop
 
   lngLeft = lngLeft - (cmdOutput.Width + lngGap)
   cmdOutput.Move lngLeft, lngTop
@@ -4317,7 +4317,7 @@ Private Function CheckIfGotRecDescs(Optional strWhere As String)
   If rsTemp.Fields(0).Value > 0 Then
 
     'gobjProgress.AviFile = App.Path & "\videos\crosstab.avi"
-    gobjProgress.AVI = dbCrossTab
+    gobjProgress.AVI = dbText
     gobjProgress.MainCaption = "Cross Tab"
     gobjProgress.Bar1Caption = "Getting record descriptions..."
     gobjProgress.Bar1MaxValue = rsTemp.Fields(0).Value

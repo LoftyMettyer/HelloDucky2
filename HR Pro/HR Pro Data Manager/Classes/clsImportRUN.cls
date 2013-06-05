@@ -531,7 +531,7 @@ Private Function GetImportDefinition() As Boolean
 
   
   If mintImportFileType = 2 Then
-    gobjProgress.AVI = dbExcel
+    gobjProgress.AVI = dbText
   End If
   
   
