@@ -366,7 +366,7 @@ Public Function GetFile(objParent As clsOutputRun, colSytles As Collection) As B
       End If
     End If
   Else
-    If gblnReportPackMode And mlngSaveExisting = 0 And gobjProgress.Bar1Value > 0 Then
+    If gblnReportPackMode And mlngSaveExisting = 2 And gobjProgress.Bar1Value > 0 Then
         'reset write mode to append in order that the previous report job doesnt get overwritten
         mlngSaveExisting = 3
     End If
@@ -857,7 +857,7 @@ RetryDisplay:
       On Error GoTo LocalErr
       IE.AddressBar = False
       If Not IE.Document Is Nothing Then
-        IE.Document.title = mstrDefTitle
+        IE.Document.Title = mstrDefTitle
         If Not IE.Document.Body Is Nothing Then
           IE.Document.Body.InnerHTML = mstrHTMLOutput
           blnOK = (Err.Number = 0)

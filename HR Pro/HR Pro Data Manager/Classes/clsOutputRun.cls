@@ -47,6 +47,7 @@ Private mblnPivot As Boolean
 Private mblnUserCancelled As Boolean
 Private mblnIndicatorColumn As Boolean
 Private mblnUpdateProgress As Boolean
+Private mstrSequentialFileName As String
 
 
 Private Function ConvertToGrid(pstrArray() As String, pGrdTemp As SSDBGrid) As SSDBGrid
@@ -475,6 +476,11 @@ End Property
 Public Property Let HeaderCols(ByVal lngNewValue As Long)
   mlngHeaderCols = lngNewValue
 End Property
+
+Public Property Let SequentialFileName(ByVal strNewValue As String)
+  mstrSequentialFileName = strNewValue
+End Property
+
 
 
 Public Function DataGrid(objNewValue As SSDBGrid)
