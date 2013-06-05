@@ -63,13 +63,14 @@ Begin VB.Form frmWorkflowLog
          Width           =   1545
       End
       Begin VB.Label lblName 
+         AutoSize        =   -1  'True
          BackStyle       =   0  'Transparent
          Caption         =   "Workflow Name :"
          Height          =   195
          Left            =   3270
          TabIndex        =   3
          Top             =   250
-         Width           =   1545
+         Width           =   1485
       End
       Begin VB.Label lblUser 
          AutoSize        =   -1  'True
@@ -78,8 +79,8 @@ Begin VB.Form frmWorkflowLog
          Height          =   195
          Left            =   150
          TabIndex        =   1
-         Top             =   205
-         Width           =   675
+         Top             =   250
+         Width           =   810
       End
       Begin VB.Label lblStatus 
          AutoSize        =   -1  'True
