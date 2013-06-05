@@ -1175,7 +1175,7 @@ PRINT 'Step 4 - Overlapping dates functionality'
 	IF EXISTS (SELECT *
 		FROM dbo.sysobjects
 		WHERE id = object_id(N'[dbo].[udfASRDateOverlap]')
-			AND OBJECTPROPERTY(id, N'IsScalarFunction ') = 1)
+			AND OBJECTPROPERTY(id, N'IsScalarFunction') = 1)
 		DROP FUNCTION [dbo].[udfASRDateOverlap];
 
 	SET @sSPCode = 'CREATE FUNCTION dbo.[udfASRDateOverlap]()
