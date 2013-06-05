@@ -162,8 +162,9 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
   iOriginalStyles = pcolStyles.Count
   lngXLCol = 2
   
-  'lngXLRow = 4
-  lngXLRow = mlngDataCurrentRow
+  lngXLRow = 4
+  'lngXLRow = mlngDataCurrentRow
+  'lngXLRow = IIf(mlngDataCurrentRow < 1, 1, mlngDataCurrentRow)
 
   lngMaxXLRow = lngXLRow
   lngMaxXLCol = lngXLCol
@@ -174,7 +175,8 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
   ' as we need to translate the picture's width into the number of characters
   ' that fit into that width.
   iOriginalScaleMode = pfrmRecProfile.ScaleMode
-  With mxlWorkSheet.Cells(1, 1)
+  'With mxlWorkBook.ActiveSheet.Cells(1, 1)
+  With mxlWorkBook.Worksheets(1).Cells(1, 1)
     .Font.Bold = pcolStyles("Data").Bold
     pfrmRecProfile.lblColumnSizingLabel.Font.Name = .Font.Name
     pfrmRecProfile.lblColumnSizingLabel.Font.Size = .Font.Size
@@ -207,13 +209,16 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
         
         ' Write the label's caption to Excel.
         lngXLCol = 2
-
-        mxlWorkSheet.Cells(lngXLRow, lngXLCol).FormulaR1C1 = ctlTemp.Caption
+        
+        'mxlWorkBook.Worksheets(1).Cells(lngXLRow, lngXLCol).FormulaR1C1 = ctlTemp.Caption
+        mxlWorkBook.ActiveSheet.Cells(lngXLRow, lngXLCol).FormulaR1C1 = ctlTemp.Caption
+        
+        'mxlWorkBook.ActiveSheet.Cells(lngXLRow, lngXLCol).FormulaR1C1 = ctlTemp.Caption
         
         lngMaxXLRow = IIf(lngMaxXLRow < lngXLRow, lngXLRow, lngMaxXLRow)
         lngMaxXLCol = IIf(lngMaxXLCol < lngXLCol, lngXLCol, lngMaxXLCol)
         
-        Set objRange = mxlWorkSheet.Cells(lngXLRow, lngXLCol)
+        Set objRange = mxlWorkBook.Worksheets(1).Cells(lngXLRow, lngXLCol)
         ApplyStyleToRange objRange, pcolStyles("Title")
 
     
@@ -278,7 +283,7 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
               If (ctlTemp.Groups.Count > 0) And (ctlTemp.GroupHeaders) Then
                 If (iLastGroup <> ctlTemp.Columns(iLoop).Group) Then
                   ' Send the group header to the Excel document.
-                  mxlWorkSheet.Cells(lngXLRow, lngXLCol).FormulaR1C1 = ctlTemp.Groups(ctlTemp.Columns(iLoop).Group).Caption
+                  mxlWorkBook.Worksheets(1).Cells(lngXLRow, lngXLCol).FormulaR1C1 = ctlTemp.Groups(ctlTemp.Columns(iLoop).Group).Caption
   
                   ' Remember if the group heading cells need to be merged.
                   If iGroupStart < iTemp - 1 Then
@@ -322,7 +327,7 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
               End If
               
               ' Send the column header to the Excel document.
-              mxlWorkSheet.Cells(lngXLRow + IIf((ctlTemp.Groups.Count > 0) And (ctlTemp.GroupHeaders), 1, 0), lngXLCol).FormulaR1C1 = ctlTemp.Columns(iLoop).Caption
+              mxlWorkBook.Worksheets(1).Cells(lngXLRow + IIf((ctlTemp.Groups.Count > 0) And (ctlTemp.GroupHeaders), 1, 0), lngXLCol).FormulaR1C1 = ctlTemp.Columns(iLoop).Caption
               iTemp = iTemp + 1
             End If
             
@@ -504,7 +509,7 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
                 End If
               Else
                 varBookmark = ctlTemp.AddItemBookmark(iLoop)
-                With mxlWorkSheet.Cells(lngXLRow, lngXLCol)
+                With mxlWorkBook.ActiveSheet.Cells(lngXLRow, lngXLCol)
                   .NumberFormat = "@"
                   
                   ' Format the cell for the required size & decimals if the column is numeric.
@@ -606,7 +611,7 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
                 (objTemp.EndRow >= objTemp.StartRow) And _
                 (objTemp.EndCol >= objTemp.StartCol) Then
                 
-                Set objRange = mxlWorkSheet.Range(mxlWorkSheet.Cells(objTemp.StartRow, objTemp.StartCol), mxlWorkSheet.Cells(objTemp.EndRow, objTemp.EndCol))
+                Set objRange = mxlWorkBook.ActiveSheet.Range(mxlWorkBook.ActiveSheet.Cells(objTemp.StartRow, objTemp.StartCol), mxlWorkBook.ActiveSheet.Cells(objTemp.EndRow, objTemp.EndCol))
                 ApplyStyleToRange objRange, objTemp
                 objRange.VerticalAlignment = xlCenter
               End If
@@ -616,7 +621,7 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
               If (objMerge.EndRow > objMerge.StartRow) Or _
                 (objMerge.EndCol > objMerge.StartCol) Then
                 
-                Set objRange = mxlWorkSheet.Range(mxlWorkSheet.Cells(objMerge.StartRow, objMerge.StartCol), mxlWorkSheet.Cells(objMerge.EndRow, objMerge.EndCol))
+                Set objRange = mxlWorkBook.ActiveSheet.Range(mxlWorkBook.ActiveSheet.Cells(objMerge.StartRow, objMerge.StartCol), mxlWorkBook.ActiveSheet.Cells(objMerge.EndRow, objMerge.EndCol))
                 objRange.MergeCells = True
                 objRange.VerticalAlignment = xlCenter
               End If
@@ -643,23 +648,24 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
     End If
   Next lngTabIndex
         
+  'mxlApp.Visible = True
   With mxlApp.ActiveWindow
-    .DisplayGridLines = mblnXLExcelGridlines
-    .DisplayHeadings = mblnXLExcelHeaders
+    .DisplayGridLines = True 'mblnXLExcelGridlines
+    .DisplayHeadings = True 'mblnXLExcelHeaders
   End With
   
-  mxlWorkSheet.Range(mxlWorkSheet.Cells(2, 2), mxlWorkSheet.Cells(lngMaxXLRow, lngMaxXLCol)).EntireColumn.AutoFit
+  mxlWorkBook.ActiveSheet.Range(mxlWorkBook.ActiveSheet.Cells(2, 2), mxlWorkBook.ActiveSheet.Cells(lngMaxXLRow, lngMaxXLCol)).EntireColumn.AutoFit
   
   ' Size rows/cols with pictures to fit the pictures.
   For iLoop4 = 1 To UBound(alngPictureRows, 2)
-    If mxlWorkSheet.Rows(alngPictureRows(1, iLoop4)).RowHeight < alngPictureRows(2, iLoop4) Then
-      mxlWorkSheet.Rows(alngPictureRows(1, iLoop4)).RowHeight = alngPictureRows(2, iLoop4)
+    If mxlWorkBook.ActiveSheet.Rows(alngPictureRows(1, iLoop4)).RowHeight < alngPictureRows(2, iLoop4) Then
+      mxlWorkBook.ActiveSheet.Rows(alngPictureRows(1, iLoop4)).RowHeight = alngPictureRows(2, iLoop4)
     End If
   Next iLoop4
 
   For iLoop4 = 1 To UBound(alngPictureCols, 2)
-    If mxlWorkSheet.Columns(alngPictureCols(1, iLoop4)).ColumnWidth < alngPictureCols(2, iLoop4) Then
-      mxlWorkSheet.Columns(alngPictureCols(1, iLoop4)).ColumnWidth = alngPictureCols(2, iLoop4)
+    If mxlWorkBook.ActiveSheet.Columns(alngPictureCols(1, iLoop4)).ColumnWidth < alngPictureCols(2, iLoop4) Then
+      mxlWorkBook.ActiveSheet.Columns(alngPictureCols(1, iLoop4)).ColumnWidth = alngPictureCols(2, iLoop4)
     End If
   Next iLoop4
   
@@ -670,22 +676,22 @@ Public Function RecordProfilePage(pfrmRecProfile As frmRecordProfilePreview, _
     .EndCol = .StartCol
     .EndRow = .StartRow
   End With
-  mxlWorkSheet.Cells(pcolStyles("Title").StartRow, pcolStyles("Title").StartCol).FormulaR1C1 = mstrDefTitle
-  Set objRange = mxlWorkSheet.Cells(pcolStyles("Title").StartRow, pcolStyles("Title").StartCol)
+  mxlWorkBook.ActiveSheet.Cells(pcolStyles("Title").StartRow, pcolStyles("Title").StartCol).FormulaR1C1 = mstrDefTitle
+  Set objRange = mxlWorkBook.ActiveSheet.Cells(pcolStyles("Title").StartRow, pcolStyles("Title").StartCol)
   ApplyStyleToRange objRange, pcolStyles("Title")
   objRange.VerticalAlignment = xlCenter
   
-  mxlWorkSheet.DisplayPageBreaks = False
+  mxlWorkBook.ActiveSheet.DisplayPageBreaks = False
   
   'Delete superfluous spacerrow and spacer cols if setup in User Config reports section
-  If mblnXLExcelOmitLeftCol Then mxlWorkSheet.Range("A:A").Delete
-  If mblnXLExcelOmitTopRow Then mxlWorkSheet.Range("1:1").Delete
+  If mblnXLExcelOmitLeftCol Then mxlWorkBook.ActiveSheet.Range("A:A").Delete
+  If mblnXLExcelOmitTopRow Then mxlWorkBook.ActiveSheet.Range("1:1").Delete
       
   mxlWorkBook.ActiveSheet.Range("A1").Select
   mxlWorkBook.Sheets(1).Select
 
   On Local Error Resume Next  'MH20040120 Fault 7955
-  mxlWorkSheet.PageSetup.Orientation = IIf(mblnXLLandscape, xlLandscape, xlPortrait)
+  mxlWorkBook.ActiveSheet.PageSetup.Orientation = IIf(mblnXLLandscape, xlLandscape, xlPortrait)
 
 TidyUpAndExit:
   gobjErrorStack.PopStack

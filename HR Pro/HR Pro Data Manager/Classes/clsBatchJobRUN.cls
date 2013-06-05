@@ -38,6 +38,7 @@ Private mstrOutputEmailAttachAs As String
 Private mstrOutputFileName As String
 Private mblnPreviewOnScreen As Boolean
 Private mblnPrintFilterHeader As Boolean
+Private mlngOverrideFilterID As Long
 Private mstrErrorMessage As String
 
 Private Sub Class_Initialize()
@@ -130,25 +131,26 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
   Dim strNotes As String
   Dim strOutputOptions As String
   
-'New Default Output Variables
-Dim lngOutputFormat As Long
-Dim blnOutputScreen As Boolean
-Dim blnOutputPrinter As Boolean
-Dim strOutputPrinterName As String
-Dim blnOutputSave As Boolean
-Dim lngOutputSaveExisting As Long
-Dim blnOutputEmail As Boolean
-Dim lngOutputEmailAddr As Long
-Dim strOutputEmailSubject As String
-Dim strOutputEmailAttachAs As String
-Dim strOutputFilename As String
-Dim blnPreviewOnScreen As Boolean
-Dim blnPrintFilterHeader As Boolean
-Dim strOutputTitlePage As String
-Dim strOutputReportPackTitle As String
-Dim strOutputOverrideFilter As String
-Dim blnOutputTOC As Boolean
-Dim blnOutputCoverSheet As Boolean
+  'New Default Output Variables
+  Dim lngOutputFormat As Long
+  Dim blnOutputScreen As Boolean
+  Dim blnOutputPrinter As Boolean
+  Dim strOutputPrinterName As String
+  Dim blnOutputSave As Boolean
+  Dim lngOutputSaveExisting As Long
+  Dim blnOutputEmail As Boolean
+  Dim lngOutputEmailAddr As Long
+  Dim strOutputEmailSubject As String
+  Dim strOutputEmailAttachAs As String
+  Dim strOutputFilename As String
+  Dim blnPreviewOnScreen As Boolean
+  Dim blnPrintFilterHeader As Boolean
+  Dim strOutputTitlePage As String
+  Dim strOutputReportPackTitle As String
+  Dim strOutputOverrideFilter As String
+  Dim blnOutputTOC As Boolean
+  Dim blnOutputCoverSheet As Boolean
+  Dim lngOverrideFilterID As Long
   
   gblnBatchMode = True
 
@@ -157,7 +159,7 @@ Dim blnOutputCoverSheet As Boolean
   
   If gblnReportPackMode Then
     'GetBatchJobDefaultOutputParams
-    strOutputOptions = "outputPreview, outputFormat, outputScreen, outputPrinter,OutputPrinterName, outputSave, outputSaveExisting, outputEmail, outputEmailAddr, outputEmailSubject, outputFilename, outputEmailAttachAs, outputTitlePage, outputReportPackTitle, outputOverrideFilter, outputTOC, outputCoverSheet, OutputTitlePage, OutputReportPackTitle, OutputOverrideFilter, OutputTOC, OutputCoverSheet"
+    strOutputOptions = "outputPreview, outputFormat, outputScreen, outputPrinter,OutputPrinterName, outputSave, outputSaveExisting, outputEmail, outputEmailAddr, outputEmailSubject, outputFilename, outputEmailAttachAs, outputTitlePage, outputReportPackTitle, outputOverrideFilter, outputTOC, outputCoverSheet, OutputTitlePage, OutputReportPackTitle, OutputOverrideFilter, OutputTOC, OutputCoverSheet,OverrideFilterID"
     Set rsBatchOutputOptions = mclsData.OpenPersistentRecordset("SELECT " & strOutputOptions & " FROM ASRSysBatchJobName WHERE ID = " & lBatchJobID, adOpenKeyset, adLockReadOnly)
       
     With rsBatchOutputOptions
@@ -184,8 +186,9 @@ Dim blnOutputCoverSheet As Boolean
       strOutputOverrideFilter = !OutputOverrideFilter
       blnOutputTOC = !OutputTOC
       blnOutputCoverSheet = !OutputCoverSheet
+      lngOverrideFilterID = !OverrideFilterID
     End With
-End If
+  End If
 
   'This should never happen, but just in case...
   If rsBatchDetails.BOF And rsBatchDetails.EOF Then
@@ -198,15 +201,15 @@ End If
   rsBatchDetails.MoveLast
   rsBatchDetails.MoveFirst
  
-    With gobjProgress
-      .Bar1MaxValue = rsBatchDetails.RecordCount
-      .Caption = IIf(gblnReportPackMode, "Report Pack", "Batch Job") & " : " & sBatchJobName
-      .AVI = dbTransfer
-      .Time = False
-      .Cancel = True
-      .NumberOfBars = 2
-      .OpenProgress
-    End With
+  With gobjProgress
+    .Bar1MaxValue = rsBatchDetails.RecordCount
+    .Caption = IIf(gblnReportPackMode, "Report Pack", "Batch Job") & " : " & sBatchJobName
+    .AVI = dbTransfer
+    .Time = False
+    .Cancel = True
+    .NumberOfBars = 2
+    .OpenProgress
+  End With
 
   gobjEventLog.GetBatchRunID
   gobjEventLog.BatchJobID = lBatchJobID
@@ -271,7 +274,6 @@ End If
         End If
         Set pobjAbsenceBreakdown = Nothing
 
-
       Case "Bradford Factor"
         Dim pobjBradfordFactor As clsCustomReportsRUN
         
@@ -308,7 +310,32 @@ End If
       
         Dim pobjCalendarReportRUN As clsCalendarReportsRUN
         Set pobjCalendarReportRUN = New clsCalendarReportsRUN
+        'Setup report output variables that can be used to override default ones.
+        If gblnReportPackMode Then
+          pobjCalendarReportRUN.SetOutputParameters _
+          lngOutputFormat, _
+          blnOutputScreen, _
+          blnOutputPrinter, _
+          strOutputPrinterName, _
+          blnOutputSave, _
+          lngOutputSaveExisting, _
+          blnOutputEmail, _
+          lngOutputEmailAddr, _
+          strOutputEmailSubject, _
+          strOutputEmailAttachAs, _
+          strOutputFilename, _
+          blnPreviewOnScreen, _
+          blnPrintFilterHeader, _
+          strOutputTitlePage, _
+          strOutputReportPackTitle, _
+          strOutputOverrideFilter, _
+          blnOutputTOC, _
+          blnOutputCoverSheet, _
+          lngOverrideFilterID
+        End If
+            
         pobjCalendarReportRUN.CalendarReportID = rsBatchDetails.Fields("JobID")
+        
         If fOK And Not mblnBatchCancelled Then
           ' No previous jobs in the batch have been cancelled so run this
           If datGeneral.SystemPermission("CALENDARREPORTS", "RUN") Then
@@ -334,9 +361,33 @@ End If
       
         Dim pfrmCrossTabRUN As New frmCrossTabRun
         Set pfrmCrossTabRUN = New frmCrossTabRun
+            
         If fOK And Not mblnBatchCancelled Then
           ' No previous jobs in the batch have been cancelled so run this
           'Check permissions...
+          If gblnReportPackMode Then
+            pfrmCrossTabRUN.SetOutputParameters _
+            lngOutputFormat, _
+            blnOutputScreen, _
+            blnOutputPrinter, _
+            strOutputPrinterName, _
+            blnOutputSave, _
+            lngOutputSaveExisting, _
+            blnOutputEmail, _
+            lngOutputEmailAddr, _
+            strOutputEmailSubject, _
+            strOutputEmailAttachAs, _
+            strOutputFilename, _
+            blnPreviewOnScreen, _
+            blnPrintFilterHeader, _
+            strOutputTitlePage, _
+            strOutputReportPackTitle, _
+            strOutputOverrideFilter, _
+            blnOutputTOC, _
+            blnOutputCoverSheet, _
+            lngOverrideFilterID
+          End If
+          
           If datGeneral.SystemPermission("CROSSTABS", "RUN") Then
             fOK = pfrmCrossTabRUN.ExecuteCrossTab(rsBatchDetails.Fields("JobID"))
             strNotes = pfrmCrossTabRUN.ErrorString
@@ -361,6 +412,10 @@ End If
         Dim pobjReportRUN As New clsCustomReportsRUN
         Set pobjReportRUN = New clsCustomReportsRUN
         pobjReportRUN.CustomReportID = rsBatchDetails.Fields("JobID")
+          
+        If fOK And Not mblnBatchCancelled Then
+          ' No previous jobs in the batch have been cancelled so run this
+          'Check permissions...
         
         If gblnReportPackMode Then
           pobjReportRUN.SetOutputParameters _
@@ -381,13 +436,11 @@ End If
             strOutputReportPackTitle, _
             strOutputOverrideFilter, _
             blnOutputTOC, _
-            blnOutputCoverSheet
+            blnOutputCoverSheet, _
+            lngOverrideFilterID
         End If
-          
-        If fOK And Not mblnBatchCancelled Then
-          ' No previous jobs in the batch have been cancelled so run this
-          'Check permissions...
-          If datGeneral.SystemPermission("CUSTOMREPORTS", "RUN") Then
+        
+        If datGeneral.SystemPermission("CUSTOMREPORTS", "RUN") Then
             fOK = pobjReportRUN.RunCustomReport("")
             strNotes = pobjReportRUN.ErrorString
             mblnJobCancelled = pobjReportRUN.UserCancelled
@@ -413,7 +466,27 @@ End If
         pobjRecordProfileRUN.RecordProfileID = rsBatchDetails.Fields("JobID")
         If fOK And Not mblnBatchCancelled Then
           ' No previous jobs in the batch have been cancelled so run this
-          
+            pobjRecordProfileRUN.SetOutputParameters _
+              lngOutputFormat, _
+              blnOutputScreen, _
+              blnOutputPrinter, _
+              strOutputPrinterName, _
+              blnOutputSave, _
+              lngOutputSaveExisting, _
+              blnOutputEmail, _
+              lngOutputEmailAddr, _
+              strOutputEmailSubject, _
+              strOutputEmailAttachAs, _
+              strOutputFilename, _
+              blnPreviewOnScreen, _
+              blnPrintFilterHeader, _
+              strOutputTitlePage, _
+              strOutputReportPackTitle, _
+              strOutputOverrideFilter, _
+              blnOutputTOC, _
+              blnOutputCoverSheet, _
+              lngOverrideFilterID
+            
           'MH20011107 Check permissions...
           If datGeneral.SystemPermission("RECORDPROFILE", "RUN") Then
             fOK = pobjRecordProfileRUN.RunRecordProfile
@@ -669,7 +742,27 @@ End If
         pfrmMatchRUN.MatchReportID = rsBatchDetails.Fields("JobID")
         If fOK And Not mblnBatchCancelled Then
           ' No previous jobs in the batch have been cancelled so run this
-          
+            pfrmMatchRUN.SetOutputParameters _
+              lngOutputFormat, _
+              blnOutputScreen, _
+              blnOutputPrinter, _
+              strOutputPrinterName, _
+              blnOutputSave, _
+              lngOutputSaveExisting, _
+              blnOutputEmail, _
+              lngOutputEmailAddr, _
+              strOutputEmailSubject, _
+              strOutputEmailAttachAs, _
+              strOutputFilename, _
+              blnPreviewOnScreen, _
+              blnPrintFilterHeader, _
+              strOutputTitlePage, _
+              strOutputReportPackTitle, _
+              strOutputOverrideFilter, _
+              blnOutputTOC, _
+              blnOutputCoverSheet, _
+              lngOverrideFilterID
+              
           If datGeneral.SystemPermission("MATCHREPORTS", "RUN") Then
             fOK = pfrmMatchRUN.RunMatchReport
             strNotes = pfrmMatchRUN.ErrorString
@@ -699,7 +792,27 @@ End If
         pfrmMatchRUN.MatchReportType = mrtSucession
         If fOK And Not mblnBatchCancelled Then
           ' No previous jobs in the batch have been cancelled so run this
-          
+            pfrmMatchRUN.SetOutputParameters _
+              lngOutputFormat, _
+              blnOutputScreen, _
+              blnOutputPrinter, _
+              strOutputPrinterName, _
+              blnOutputSave, _
+              lngOutputSaveExisting, _
+              blnOutputEmail, _
+              lngOutputEmailAddr, _
+              strOutputEmailSubject, _
+              strOutputEmailAttachAs, _
+              strOutputFilename, _
+              blnPreviewOnScreen, _
+              blnPrintFilterHeader, _
+              strOutputTitlePage, _
+              strOutputReportPackTitle, _
+              strOutputOverrideFilter, _
+              blnOutputTOC, _
+              blnOutputCoverSheet, _
+              lngOverrideFilterID
+              
           If datGeneral.SystemPermission("SUCCESSION", "RUN") Then
             fOK = pfrmMatchRUN.RunMatchReport
             strNotes = pfrmMatchRUN.ErrorString
@@ -729,7 +842,27 @@ End If
         pfrmMatchRUN.MatchReportType = mrtCareer
         If fOK And Not mblnBatchCancelled Then
           ' No previous jobs in the batch have been cancelled so run this
-          
+            pfrmMatchRUN.SetOutputParameters _
+              lngOutputFormat, _
+              blnOutputScreen, _
+              blnOutputPrinter, _
+              strOutputPrinterName, _
+              blnOutputSave, _
+              lngOutputSaveExisting, _
+              blnOutputEmail, _
+              lngOutputEmailAddr, _
+              strOutputEmailSubject, _
+              strOutputEmailAttachAs, _
+              strOutputFilename, _
+              blnPreviewOnScreen, _
+              blnPrintFilterHeader, _
+              strOutputTitlePage, _
+              strOutputReportPackTitle, _
+              strOutputOverrideFilter, _
+              blnOutputTOC, _
+              blnOutputCoverSheet, _
+              lngOverrideFilterID
+              
           If datGeneral.SystemPermission("CAREER", "RUN") Then
             fOK = pfrmMatchRUN.RunMatchReport
             strNotes = pfrmMatchRUN.ErrorString
@@ -817,16 +950,13 @@ End If
           gobjEventLog.ChangeHeaderStatus elsSkipped
         End If
         Set pobjTurnoverReport = Nothing
-
-
+      
       Case Else
-        
         gobjEventLog.AddHeader eltSystemError, "Unknown Job in Batch"
         gobjEventLog.ChangeHeaderStatus elsSkipped
         fOK = False
         
     End Select
-    
     
     If Not mblnBatchCancelled Then
       If mblnJobCancelled Or gobjProgress.Cancelled Then
@@ -845,12 +975,27 @@ End If
     rsBatchDetails.MoveNext
   Loop
   
-  'Insert TOC code here
+  'Insert TOC code here as all Report Pack Jobs Or Batch Jobs would be done by now
   If gblnReportPackMode And blnOutputSave And blnOutputTOC Then
     'Open word file
     If GetTOCFile(strOutputFilename) Then
-      
+      'mwrdApp.Visible = True
       With mwrdApp.Selection 'Add TOC at the top
+        .TypeText Text:="Report Pack Title :"
+        .HomeKey Unit:=wdLine, Extend:=wdExtend
+        .Font.Size = 12
+        '.Font.Bold = wdToggle
+        .ParagraphFormat.Alignment = wdAlignParagraphCenter
+        .MoveDown Unit:=wdLine, Count:=2
+        
+        .TypeText Text:=sBatchJobName
+        .HomeKey Unit:=wdLine, Extend:=wdExtend
+        .Font.Size = 20
+        .Font.Bold = wdToggle
+        .ParagraphFormat.Alignment = wdAlignParagraphCenter
+        .MoveDown Unit:=wdLine, Count:=2
+        
+        .InsertBreak Type:=wdPageBreak
         .TypeText Text:="Table of Contents"
         .HomeKey Unit:=wdLine, Extend:=wdExtend
         .Font.Size = 20
@@ -866,13 +1011,14 @@ End If
         End With
         
         .InsertBreak Type:=wdPageBreak
-        mwrdDoc.Save
+        mwrdDoc.SaveAs (strOutputFilename)
         mwrdDoc.Close
         mwrdApp.Quit
       End With
     Else
       MsgBox mstrErrorMessage, vbExclamation, "Report Pack"
     End If
+    gblnReportPackMode = False
   End If
   
   CheckNotifications lBatchJobID

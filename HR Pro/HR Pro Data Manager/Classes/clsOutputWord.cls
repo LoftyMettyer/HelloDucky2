@@ -589,6 +589,11 @@ Public Function GetFile(objParent As clsOutputRun, colStyles As Collection) As B
     mstrFileName = objParent.GetTempFileName(mstrFileName)
   End If
   
+'  If gblnReportPackMode Then
+'    mstrFileName = mstrPackTemplate
+'    mlngSaveExisting = 3
+'  End If
+  
   'Check if file already exists...
   If Dir(mstrFileName) <> vbNullString And mstrFileName <> vbNullString Then
 
@@ -648,6 +653,8 @@ Private Sub GetNewDocument()
   
   On Local Error GoTo LocalErr
   
+  If gblnReportPackMode Then mstrWrdTemplate = mstrPackTemplate
+  
   If mstrWrdTemplate <> "" And Dir(mstrWrdTemplate) <> "" Then
     'Set mwrdDoc = mwrdApp.Documents.Open(mstrWrdTemplate, ReadOnly:=True)
 
@@ -669,13 +676,6 @@ Private Sub GetNewDocument()
     mwrdApp.Selection.EndKey Unit:=wdStory
   Else
     Set mwrdDoc = mwrdApp.Documents.Add
-
-    ''Insert heading (slightly bigger, bold, underline and centered)
-    '.Font.Bold = True
-    '.Font.Size = .Font.Size + 2
-    '.Font.Underline = wdUnderlineSingle
-    '.ParagraphFormat.Alignment = wdAlignParagraphCenter
-
     mwrdDoc.PageSetup.Orientation = IIf(mblnWrdLandscape, wdOrientLandscape, wdOrientPortrait)
 
     With mwrdApp
@@ -731,6 +731,8 @@ Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As 
 
   mwrdDoc.Bookmarks.Add strBookMark
 
+'mwrdApp.Visible = True
+
   With mwrdDoc.ActiveWindow.Selection
     
     'Remember the current setting to restore them later...
@@ -760,9 +762,6 @@ Public Sub AddPage(strDefTitle As String, mstrSheetName As String, colStyles As 
     .GoTo What:=wdGoToBookmark, Name:=strBookMark
     
     If gblnReportPackMode Then
-
-      'mwrdApp.Visible = True
-      
       If mblnCoverSheet Then
         .TypeParagraph: .TypeParagraph: .TypeParagraph: .TypeParagraph
         .TypeParagraph: .TypeParagraph: .TypeParagraph: .TypeParagraph

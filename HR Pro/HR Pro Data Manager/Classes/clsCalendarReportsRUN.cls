@@ -63,20 +63,28 @@ Private mbStartOnCurrentMonth As Boolean
 Private mblnCustomReportsPrintFilterHeader As Boolean
 Private mstrFilteredIDs As String
 
+'Default Output Variables
+Private mlngOutputFormat As Long
+Private mblnOutputScreen As Boolean
+Private mblnOutputPrinter As Boolean
+Private mstrOutputPrinterName As String
+Private mblnOutputSave As Boolean
+Private mlngOutputSaveExisting As Long
+Private mblnOutputEmail As Boolean
+Private mlngOutputEmailAddr As Long
+Private mstrOutputEmailSubject As String
+Private mstrOutputEmailAttachAs As String
+Private mstrOutputFileName As String
+Private mblnPreviewOnScreen As Boolean
+Private mstrOutputTitlePage As String
+Private mstrOutputReportPackTitle As String
+Private mstrOutputOverrideFilter As String
+Private mblnOutputTOC As Boolean
+Private mblnOutputCoverSheet As Boolean
+Private mlngOverrideFilterID As Long
 
-  'New Default Output Variables
-  Private mlngOutputFormat As Long
-  Private mblnOutputScreen As Boolean
-  Private mblnOutputPrinter As Boolean
-  Private mstrOutputPrinterName As String
-  Private mblnOutputSave As Boolean
-  Private mlngOutputSaveExisting As Long
-  Private mblnOutputEmail As Boolean
-  Private mlngOutputEmailAddr As Long
-  Private mstrOutputEmailSubject As String
-  Private mstrOutputEmailAttachAs As String
-  Private mstrOutputFileName As String
-  Private mblnPreviewOnScreen As Boolean
+Private mblnChkPicklistFilter As Boolean ' might not be needed
+
  
 'Recordset to store the final data from the temp table
 Private mrsCalendarReportsOutput As ADODB.Recordset
@@ -738,21 +746,14 @@ Private Sub Class_Terminate()
   
 End Sub
 
-'Public Function RunCalendarReport(Optional plngRecordID As Long) As Boolean
 Public Function RunCalendarReport(pstrPicklistFilterIDs As String) As Boolean
-
   ' Purpose : This function is called from frmDefsel and Batch Jobs.
   '           It is the main function which runs the report.
-
   On Error GoTo Error_Trap
-  
   Dim fOK As Boolean
   
   fOK = True
-  
   Screen.MousePointer = vbHourglass
-  
-  'mlngSingleRecordID = plngRecordID
   mstrPicklistFilterIDs = pstrPicklistFilterIDs
   
   If fOK Then fOK = GetCalendarReportDefinition
@@ -1102,26 +1103,23 @@ ErrorTrap:
 End Function
 
 Private Function GetCalendarReportDefinition() As Boolean
-  
   ' Purpose : This function retrieves the basic definition details
   '           and stores it in module level variables
-  
   On Error GoTo Error_Trap
 
   Dim rsTemp As Recordset
-  
   Dim sSQL As String
   Dim sTable As String
   Dim sColumn As String
   Dim sDateInterval As String
-  
   Dim i As Integer
-  
   Dim rsIDs As ADODB.Recordset
   Dim blnOK As Boolean
-  
   Dim intExprReturnType As Integer
   Dim objExpression As clsExprExpression
+  Dim lblnReportPackMode As Boolean
+  
+  lblnReportPackMode = gblnReportPackMode
   
   mstrSQLIDs = vbNullString
   
@@ -1131,7 +1129,6 @@ Private Function GetCalendarReportDefinition() As Boolean
   Set rsTemp = mclsData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
   
   With rsTemp
-  
     If .BOF And .EOF Then
       GetCalendarReportDefinition = False
       mstrErrorString = "Could not find specified Calendar Report definition."
@@ -1160,11 +1157,15 @@ Private Function GetCalendarReportDefinition() As Boolean
       GoTo TidyAndExit
     End If
     
-    
     mlngCalendarReportsAllRecords = !AllRecords
     mlngCalendarReportsPickListID = !picklist
-    mlngCalendarReportsFilterID = !Filter
-      
+    'This is where we use the override filter if necessary
+    If mlngCalendarReportsBaseTable = glngPersonnelTableID And gblnReportPackMode Then
+      mlngCalendarReportsFilterID = mlngOverrideFilterID
+    Else
+      mlngCalendarReportsFilterID = !Filter
+    End If
+    
     mlngDescription1 = IIf(IsNull(!Description1), 0, !Description1)
     If mlngDescription1 > 0 Then
       mstrDescription1 = datGeneral.GetColumnName(!Description1)
@@ -1326,23 +1327,36 @@ Private Function GetCalendarReportDefinition() As Boolean
     mbStartOnCurrentMonth = !StartOnCurrentMonth
     mblnCustomReportsPrintFilterHeader = !PrintFilterHeader
     
-    'New Default Output Variables
-    mlngOutputFormat = !OutputFormat
-    mblnOutputScreen = !OutputScreen
-    mblnOutputPrinter = !OutputPrinter
-    mstrOutputPrinterName = !OutputPrinterName
-    mblnOutputSave = !OutputSave
-    mlngOutputSaveExisting = !OutputSaveExisting
-    mblnOutputEmail = !OutputEmail
-    mlngOutputEmailAddr = !OutputEmailAddr
-    mstrOutputEmailSubject = !OutputEmailSubject
-    mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
-    mstrOutputFileName = !OutputFilename
+'    'New Default Output Variables
+'    mlngOutputFormat = !OutputFormat
+'    mblnOutputScreen = !OutputScreen
+'    mblnOutputPrinter = !OutputPrinter
+'    mstrOutputPrinterName = !OutputPrinterName
+'    mblnOutputSave = !OutputSave
+'    mlngOutputSaveExisting = !OutputSaveExisting
+'    mblnOutputEmail = !OutputEmail
+'    mlngOutputEmailAddr = !OutputEmailAddr
+'    mstrOutputEmailSubject = !OutputEmailSubject
+'    mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
+'    mstrOutputFileName = !OutputFilename
+    'mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
 
-    mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
 
-    'If mlngSingleRecordID > 0 Then
-    '  mstrSQLIDs = CStr(mlngSingleRecordID)
+    'Change Output Options to Report Pack owning these Jobs if in Report Pack mode
+    mblnPreviewOnScreen = IIf(lblnReportPackMode, False, !OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
+    mblnOutputScreen = IIf(lblnReportPackMode, False, !OutputScreen)
+    mlngOutputFormat = IIf(lblnReportPackMode, mlngOutputFormat, !OutputFormat)
+    mblnOutputPrinter = IIf(lblnReportPackMode, mblnOutputPrinter, !OutputPrinter)
+    mstrOutputPrinterName = IIf(lblnReportPackMode, mstrOutputPrinterName, !OutputPrinterName)
+    mblnOutputSave = IIf(lblnReportPackMode, mblnOutputSave, !OutputSave)
+    mlngOutputSaveExisting = IIf(lblnReportPackMode, mlngOutputSaveExisting, !OutputSaveExisting)
+    mblnOutputEmail = IIf(lblnReportPackMode, mblnOutputEmail, !OutputEmail)
+    mlngOutputEmailAddr = IIf(lblnReportPackMode, mlngOutputEmailAddr, !OutputEmailAddr)
+    mstrOutputEmailSubject = IIf(lblnReportPackMode, mstrOutputEmailSubject, !OutputEmailSubject)
+    mstrOutputEmailAttachAs = IIf(lblnReportPackMode, mstrOutputEmailAttachAs, !OutputEmailAttachAs)
+    mstrOutputFileName = IIf(lblnReportPackMode, mstrOutputFileName, !OutputFilename)
+    mlngOverrideFilterID = IIf(lblnReportPackMode, mlngOverrideFilterID, 0)
+
     If mstrPicklistFilterIDs <> vbNullString Then
       mstrSQLIDs = mstrPicklistFilterIDs
     
@@ -2680,6 +2694,7 @@ Private Function InitialisePreview() As Boolean
     .OutputEmailSubject = mstrOutputEmailSubject
     .OutputEmailAttachAs = mstrOutputEmailAttachAs
     .OutputFilename = mstrOutputFileName
+    .OverrideFilterID = mlngOverrideFilterID
     
     .HasMultipleEvents = mblnHasMultipleEvents
   End With
@@ -2915,3 +2930,50 @@ Private Function IsRecordSelectionValid() As Boolean
   IsRecordSelectionValid = (Len(mstrErrorString) = 0)
 
 End Function
+
+
+    Public Sub SetOutputParameters( _
+          lngOutputFormat As Long, _
+          blnOutputScreen As Boolean, _
+          blnOutputPrinter As Boolean, _
+          strOutputPrinterName As String, _
+          blnOutputSave As Boolean, _
+          lngOutputSaveExisting As Long, _
+          blnOutputEmail As Boolean, _
+          lngOutputEmailAddr As Long, _
+          strOutputEmailSubject As String, _
+          strOutputEmailAttachAs As String, _
+          strOutputFilename As String, _
+          blnPreviewOnScreen As Boolean, _
+          blnChkPicklistFilter As Boolean, _
+          Optional strOutputTitlePage As String, _
+          Optional strOutputReportPackTitle As String, _
+          Optional strOutputOverrideFilter As String, _
+          Optional blnOutputTOC As Boolean, _
+          Optional blnOutputCoverSheet As Boolean, _
+          Optional lngOverrideFilterID As Long)
+
+  mlngOutputFormat = lngOutputFormat
+  mblnOutputScreen = blnOutputScreen
+  mblnOutputPrinter = blnOutputPrinter
+  mstrOutputPrinterName = strOutputPrinterName
+  mblnOutputSave = blnOutputSave
+  mlngOutputSaveExisting = lngOutputSaveExisting
+  mblnOutputEmail = blnOutputEmail
+  mlngOutputEmailAddr = lngOutputEmailAddr
+  mstrOutputEmailSubject = strOutputEmailSubject
+  mstrOutputEmailAttachAs = strOutputEmailAttachAs
+  mstrOutputFileName = strOutputFilename
+  mblnChkPicklistFilter = blnChkPicklistFilter
+  mblnPreviewOnScreen = (blnPreviewOnScreen Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
+  mstrOutputTitlePage = IIf(IsMissing(strOutputTitlePage), giEXPRVALUE_CHARACTER, strOutputTitlePage)
+  mstrOutputReportPackTitle = IIf(IsMissing(strOutputReportPackTitle), giEXPRVALUE_CHARACTER, strOutputReportPackTitle)
+  mstrOutputOverrideFilter = IIf(IsMissing(strOutputOverrideFilter), giEXPRVALUE_CHARACTER, strOutputOverrideFilter)
+  mblnOutputTOC = IIf(IsMissing(blnOutputTOC), giEXPRVALUE_CHARACTER, blnOutputTOC)
+  mblnOutputCoverSheet = IIf(IsMissing(blnOutputCoverSheet), giEXPRVALUE_CHARACTER, blnOutputCoverSheet)
+  mlngOverrideFilterID = IIf(IsMissing(lngOverrideFilterID), giEXPRVALUE_CHARACTER, lngOverrideFilterID)
+End Sub
+
+
+
+

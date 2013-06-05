@@ -38,6 +38,13 @@ Private mstrOutputEmailAttachAs As String
 'Private mlngOutputEmailFileFormat As Long
 Private mstrOutputFileName As String
 Private mblnPreviewOnScreen As Boolean
+Private mstrOutputTitlePage As String
+Private mstrOutputReportPackTitle As String
+Private mstrOutputOverrideFilter As String
+Private mblnOutputTOC As Boolean
+Private mblnOutputCoverSheet As Boolean
+Private mlngOverrideFilterID As Long
+Private mblnChkPicklistFilter As Boolean 'might not need
 
 Private mblnIndentRelatedTables As String
 Private mblnSuppressEmptyRelatedTableTitles As String
@@ -1463,6 +1470,10 @@ Private Function GetRecordProfileTables() As Boolean
   Dim objTempTable2 As clsRecordProfileTabDtl
   Dim iLoop As Integer
   Dim iLoop2 As Integer
+  Dim lngFilterID As Long
+  Dim lblnReportPackMode As Boolean
+  
+  lblnReportPackMode = gblnReportPackMode
   
   strSQL = "SELECT ASRSysRecordProfileName.*, ASRSysTables.recordDescExprID" & _
     " FROM ASRSysRecordProfileName" & _
@@ -1483,21 +1494,36 @@ Private Function GetRecordProfileTables() As Boolean
     mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!UserName)))
   
     'New Default Output Variables
-    mlngOutputFormat = IIf(IsNull(!OutputFormat), 0, !OutputFormat)
-    mblnOutputScreen = IIf(IsNull(!OutputScreen), False, !OutputScreen)
-    mblnOutputPrinter = IIf(IsNull(!OutputPrinter), False, !OutputPrinter)
-    mstrOutputPrinterName = IIf(IsNull(!OutputPrinterName), "", !OutputPrinterName)
-    mblnOutputSave = IIf(IsNull(!OutputSave), False, !OutputSave)
-    mlngOutputSaveExisting = IIf(IsNull(!OutputSaveExisting), 0, !OutputSaveExisting)
-    'mlngOutputSaveFormat = IIf(IsNull(!OutputSaveFormat), 0, !OutputSaveFormat)
-    mblnOutputEmail = IIf(IsNull(!OutputEmail), False, !OutputEmail)
-    mlngOutputEmailAddr = IIf(IsNull(!OutputEmailAddr), 0, !OutputEmailAddr)
-    mstrOutputEmailSubject = IIf(IsNull(!OutputEmailSubject), "", !OutputEmailSubject)
-    mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), "", !OutputEmailAttachAs)
-    'mlngOutputEmailFileFormat = IIf(IsNull(!OutputEmailFileFormat), 0, !OutputEmailFileFormat)
-    mstrOutputFileName = IIf(IsNull(!OutputFilename), "", !OutputFilename)
+'    mlngOutputFormat = IIf(IsNull(!OutputFormat), 0, !OutputFormat)
+'    mblnOutputScreen = IIf(IsNull(!OutputScreen), False, !OutputScreen)
+'    mblnOutputPrinter = IIf(IsNull(!OutputPrinter), False, !OutputPrinter)
+'    mstrOutputPrinterName = IIf(IsNull(!OutputPrinterName), "", !OutputPrinterName)
+'    mblnOutputSave = IIf(IsNull(!OutputSave), False, !OutputSave)
+'    mlngOutputSaveExisting = IIf(IsNull(!OutputSaveExisting), 0, !OutputSaveExisting)
+'    'mlngOutputSaveFormat = IIf(IsNull(!OutputSaveFormat), 0, !OutputSaveFormat)
+'    mblnOutputEmail = IIf(IsNull(!OutputEmail), False, !OutputEmail)
+'    mlngOutputEmailAddr = IIf(IsNull(!OutputEmailAddr), 0, !OutputEmailAddr)
+'    mstrOutputEmailSubject = IIf(IsNull(!OutputEmailSubject), "", !OutputEmailSubject)
+'    mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), "", !OutputEmailAttachAs)
+'    'mlngOutputEmailFileFormat = IIf(IsNull(!OutputEmailFileFormat), 0, !OutputEmailFileFormat)
+'    mstrOutputFileName = IIf(IsNull(!OutputFilename), "", !OutputFilename)
   
-    mblnPreviewOnScreen = (!OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
+    'Change Output Options to Report Pack owning these Jobs if in Report Pack mode
+    mblnPreviewOnScreen = IIf(lblnReportPackMode, False, !OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
+    mblnOutputScreen = IIf(lblnReportPackMode, False, (IIf(IsNull(!OutputScreen), False, !OutputScreen)))
+    mlngOutputFormat = IIf(lblnReportPackMode, mlngOutputFormat, (IIf(IsNull(!OutputFormat), 0, !OutputFormat)))
+    mblnOutputPrinter = IIf(lblnReportPackMode, mblnOutputPrinter, IIf(IsNull(!OutputPrinter), False, !OutputPrinter))
+    mstrOutputPrinterName = IIf(lblnReportPackMode, mstrOutputPrinterName, IIf(IsNull(!OutputPrinterName), "", !OutputPrinterName))
+    mblnOutputSave = IIf(lblnReportPackMode, mblnOutputSave, IIf(IsNull(!OutputSave), False, !OutputSave))
+    mlngOutputSaveExisting = IIf(lblnReportPackMode, mlngOutputSaveExisting, IIf(IsNull(!OutputSaveExisting), 0, !OutputSaveExisting))
+    mblnOutputEmail = IIf(lblnReportPackMode, mblnOutputEmail, IIf(IsNull(!OutputEmail), False, !OutputEmail))
+    mlngOutputEmailAddr = IIf(lblnReportPackMode, mlngOutputEmailAddr, IIf(IsNull(!OutputEmailAddr), 0, !OutputEmailAddr))
+    mstrOutputEmailSubject = IIf(lblnReportPackMode, mstrOutputEmailSubject, IIf(IsNull(!OutputEmailSubject), "", !OutputEmailSubject))
+    mstrOutputEmailAttachAs = IIf(lblnReportPackMode, mstrOutputEmailAttachAs, IIf(IsNull(!OutputEmailAttachAs), "", !OutputEmailAttachAs))
+    mstrOutputFileName = IIf(lblnReportPackMode, mstrOutputFileName, IIf(IsNull(!OutputFilename), "", !OutputFilename))
+    mlngOverrideFilterID = IIf(lblnReportPackMode, mlngOverrideFilterID, 0)
+    
+    
     
     mblnIndentRelatedTables = IIf(IsNull(!IndentRelatedTables), False, !IndentRelatedTables)
     mblnSuppressEmptyRelatedTableTitles = IIf(IsNull(!SuppressEmptyRelatedTableTitles), False, !SuppressEmptyRelatedTableTitles)
@@ -1505,14 +1531,15 @@ Private Function GetRecordProfileTables() As Boolean
     mfPrintFilterHeader = IIf(IsNull(!PrintFilterHeader), False, !PrintFilterHeader)
     
     lngTempOrderID = IIf(IsNull(!OrderID), 0, !OrderID)
-    If lngTempOrderID = 0 Then
-      lngTempOrderID = datGeneral.GetDefaultOrder(!BaseTable)
-    End If
+    
+    If lngTempOrderID = 0 Then lngTempOrderID = datGeneral.GetDefaultOrder(!BaseTable)
+    ' Use Override filter if there is one
+    If gblnReportPackMode Then lngFilterID = IIf(mlngOverrideFilterID <> 0, mlngOverrideFilterID, IIf(IsNull(!FilterID), 0, !FilterID))
     
     Set objTempTable = mobjDefinition.Add(!BaseTable, _
       datGeneral.GetTableName(!BaseTable), _
       IIf(IsNull(!RecordDescExprID), 0, !RecordDescExprID), _
-      IIf(IsNull(!FilterID), 0, !FilterID), _
+      lngFilterID, _
       IIf(IsNull(!PicklistID), 0, !PicklistID), _
       lngTempOrderID, _
       0, _
@@ -1526,6 +1553,7 @@ Private Function GetRecordProfileTables() As Boolean
 
     .Close
   End With
+  
   Set rsTemp_Definition = Nothing
 
   strSQL = "SELECT ASRSysRecordProfileTables.tableID," & _
@@ -1554,14 +1582,13 @@ Private Function GetRecordProfileTables() As Boolean
       mobjDefinition.Add !TableID, _
         !TableName, _
         IIf(IsNull(!RecordDescExprID), 0, !RecordDescExprID), _
-        !FilterID, _
+        lngFilterID, _
         0, _
         lngTempOrderID, _
         !MaxRecords, _
         !Orientation, _
         !PageBreak, _
         !Sequence
-      
       .MoveNext
     Loop
     
@@ -1700,7 +1727,47 @@ Private Function IsRecordSelectionValid() As Boolean
   
 End Function
 
+    Public Sub SetOutputParameters( _
+          lngOutputFormat As Long, _
+          blnOutputScreen As Boolean, _
+          blnOutputPrinter As Boolean, _
+          strOutputPrinterName As String, _
+          blnOutputSave As Boolean, _
+          lngOutputSaveExisting As Long, _
+          blnOutputEmail As Boolean, _
+          lngOutputEmailAddr As Long, _
+          strOutputEmailSubject As String, _
+          strOutputEmailAttachAs As String, _
+          strOutputFilename As String, _
+          blnPreviewOnScreen As Boolean, _
+          blnChkPicklistFilter As Boolean, _
+          Optional strOutputTitlePage As String, _
+          Optional strOutputReportPackTitle As String, _
+          Optional strOutputOverrideFilter As String, _
+          Optional blnOutputTOC As Boolean, _
+          Optional blnOutputCoverSheet As Boolean, _
+          Optional lngOverrideFilterID As Long)
 
+  mlngOutputFormat = lngOutputFormat
+  mblnOutputScreen = blnOutputScreen
+  mblnOutputPrinter = blnOutputPrinter
+  mstrOutputPrinterName = strOutputPrinterName
+  mblnOutputSave = blnOutputSave
+  mlngOutputSaveExisting = lngOutputSaveExisting
+  mblnOutputEmail = blnOutputEmail
+  mlngOutputEmailAddr = lngOutputEmailAddr
+  mstrOutputEmailSubject = strOutputEmailSubject
+  mstrOutputEmailAttachAs = strOutputEmailAttachAs
+  mstrOutputFileName = strOutputFilename
+  mblnChkPicklistFilter = blnChkPicklistFilter
+  mblnPreviewOnScreen = (blnPreviewOnScreen Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
+  mstrOutputTitlePage = IIf(IsMissing(strOutputTitlePage), giEXPRVALUE_CHARACTER, strOutputTitlePage)
+  mstrOutputReportPackTitle = IIf(IsMissing(strOutputReportPackTitle), giEXPRVALUE_CHARACTER, strOutputReportPackTitle)
+  mstrOutputOverrideFilter = IIf(IsMissing(strOutputOverrideFilter), giEXPRVALUE_CHARACTER, strOutputOverrideFilter)
+  mblnOutputTOC = IIf(IsMissing(blnOutputTOC), giEXPRVALUE_CHARACTER, blnOutputTOC)
+  mblnOutputCoverSheet = IIf(IsMissing(blnOutputCoverSheet), giEXPRVALUE_CHARACTER, blnOutputCoverSheet)
+  mlngOverrideFilterID = IIf(IsMissing(lngOverrideFilterID), giEXPRVALUE_CHARACTER, lngOverrideFilterID)
+End Sub
 
 Public Property Get InvalidPicklistFilter() As Boolean
   InvalidPicklistFilter = mblnInvalidPicklistFilter
@@ -1708,7 +1775,6 @@ End Property
 Private Property Let InvalidPicklistFilter(bValid As Boolean)
   mblnInvalidPicklistFilter = bValid
 End Property
-
 
 Public Property Get ErrorString() As String
   ErrorString = msErrorString
@@ -1752,5 +1818,6 @@ Private Sub Class_Terminate()
   Set mobjDefinition = Nothing
 
 End Sub
+
 
 
