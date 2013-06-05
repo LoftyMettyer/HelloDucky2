@@ -282,6 +282,28 @@ Public glngWindowWidth As Long
 Public gbWorkflowEnabled As Boolean           ' Is the Workflow module enabled
 Public gbWorkflowOutOfOfficeEnabled As Boolean ' Is the Workflow module enabled AND have the OutOfOffice parameters been configured
 
+
+
+Public Const gblnDEFAULTTITLEGRIDLINES As Boolean = False
+Public Const gblnDEFAULTTITLEBOLD As Boolean = True
+Public Const gblnDEFAULTTITLEUNDERLINE As Boolean = False
+Public Const glngDEFAULTTITLEBACKCOLOUR As Long = 16777215    'vbWhite
+Public Const glngDEFAULTTITLEFORECOLOUR As Long = 6697779     'GetColour("Midnight Blue")
+
+Public Const gblnDEFAULTHEADINGGRIDLINES As Boolean = True
+Public Const gblnDEFAULTHEADINGBOLD As Boolean = True
+Public Const gblnDEFAULTHEADINGUNDERLINE As Boolean = False
+Public Const glngDEFAULTHEADINGBACKCOLOUR As Long = 16248553  'GetColour("Dolphin Blue")
+Public Const glngDEFAULTHEADINGFORECOLOUR As Long = 6697779   'GetColour("Midnight Blue")
+
+Public Const gblnDEFAULTDATAGRIDLINES As Boolean = True
+Public Const gblnDEFAULTDATABOLD As Boolean = False
+Public Const gblnDEFAULTDATAUNDERLINE As Boolean = False
+Public Const glngDEFAULTDATABACKCOLOUR As Long = 15988214     'GetColour("Pale Grey")
+Public Const glngDEFAULTDATAFORECOLOUR As Long = 6697779      'GetColour("Midnight Blue")
+
+
+
 'Public gsngTimer As Single
 
 Public Sub DisplayApplication()
@@ -4515,6 +4537,15 @@ Public Function EvaluateRecordDescription(plngRecordID As Long, plngRecDescID As
 ErrorTrap:
   EvaluateRecordDescription = ""
   
+End Function
+
+
+Public Function COAMsgBox(sPrompt As String, iButtons As VbMsgBoxStyle, Optional sTitle As String) As VbMsgBoxResult
+  
+  If sTitle = vbNullString Then sTitle = App.ProductName
+  gobjProgress.Visible = False
+  COAMsgBox = MsgBox(sPrompt, iButtons, sTitle)
+
 End Function
 
 
