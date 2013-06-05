@@ -100,7 +100,8 @@
       End If
 
       ' Build the order by clause
-      If Not RowDetails.Order Is Nothing Then
+      If Not RowDetails.Order Is Nothing And _
+          Not (RowDetails.RowSelection = ScriptDB.ColumnRowSelection.Total Or RowDetails.RowSelection = ScriptDB.ColumnRowSelection.Count) Then
         For Each objOrderItem In RowDetails.Order.Objects
           If objOrderItem.ColumnType = "O" Then
             Select Case objOrderItem.Ascending

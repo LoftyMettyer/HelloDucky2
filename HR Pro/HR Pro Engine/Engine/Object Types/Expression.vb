@@ -708,7 +708,7 @@ Namespace Things
 
             ' Add calculation for this foreign column to the pre-requisits array 
             iPartNumber = Declarations.Count + Me.StartOfPartNumbers
-            bIsSummaryColumn = ScriptDB.ColumnRowSelection.Total Or ScriptDB.ColumnRowSelection.Count
+            bIsSummaryColumn = (ChildRowDetails.RowSelection = ScriptDB.ColumnRowSelection.Total Or ChildRowDetails.RowSelection = ScriptDB.ColumnRowSelection.Count)
 
             sPartCode = String.Format("{0}SELECT @part_{1} = base.[{2}]" & vbNewLine _
                 , [CodeCluster].Indentation, iPartNumber, objThisColumn.Name)
