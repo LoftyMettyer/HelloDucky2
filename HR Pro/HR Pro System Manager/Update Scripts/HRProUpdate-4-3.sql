@@ -47,13 +47,53 @@ BEGIN
 END
 
 /* ------------------------------------------------------------- */
-PRINT 'Step X - '
+PRINT 'Step 1 - Create table rename function'
 
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[spASRTableToView]')
+			AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+		DROP PROCEDURE [dbo].[spASRTableToView];
 
+	SET @NVarCommand = 'CREATE PROCEDURE dbo.spASRTableToView(@oldname nvarchar(255), @newname nvarchar(255))
+		AS
+		BEGIN
+
+			DECLARE @sqlCommand nvarchar(MAX);
+
+			IF EXISTS(SELECT name FROM sys.sysobjects WHERE name = @oldname AND xtype = ''U'')
+			BEGIN
+				EXECUTE sp_rename @oldname, @newname;
+
+				SET @sqlCommand = ''CREATE VIEW dbo.['' + @oldname + ''] AS SELECT * FROM dbo.['' + @newname + ''];'';
+				EXECUTE sp_executesql @sqlCommand;
+			END
+
+		END'
+	EXECUTE (@NVarCommand);
+
+/* ------------------------------------------------------------- */
+PRINT 'Step 2 - Rename base user tables'
+
+	SET @NVarCommand = '';
+	SELECT @NVarCommand = @NVarCommand + 'EXECUTE dbo.spASRTableToView ''' + TableName + ''', ''tbuser_' + LOWER(TableName) + ''';'
+		FROM ASRSysTables;
+	EXECUTE sp_executesql @NVarCommand;
+
+/* ------------------------------------------------------------- */
+PRINT 'Step X - Rename base system tables'
+
+	SET @NVarCommand = 'EXECUTE spASRTableToView ''ASRSysTables'', ''tbsys_tables'''
+	EXECUTE (@NVarCommand);
+
+	SET @NVarCommand = 'EXECUTE spASRTableToView ''ASRSysColumns'', ''tbsys_columns'''
+	EXECUTE (@NVarCommand);
 
 
 /* ------------------------------------------------------------- */
 PRINT 'Step X - '
+
+
 
 	
 /* ------------------------------------------------------------- */
