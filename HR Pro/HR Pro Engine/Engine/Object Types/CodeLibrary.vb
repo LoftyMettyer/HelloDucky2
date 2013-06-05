@@ -15,6 +15,7 @@
     Public IsUniqueCode As Boolean = False
     Public CaseCount As Integer = 0
     Public MakeTypeSafe As Boolean = 0
+    Public DependsOnBankHoliday As Boolean = 0
 
     Public Overrides ReadOnly Property Type As Enums.Type
       Get

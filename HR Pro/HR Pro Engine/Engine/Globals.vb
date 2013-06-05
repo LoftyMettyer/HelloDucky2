@@ -19,6 +19,7 @@ Public Module Globals
   Public UniqueCodes As Things.Collection
   Public GetFieldsFromDB As Things.Collection
   Public PerformanceIndexes As Things.Collection
+  Public OnBankHolidayUpdate As Things.Collection
 
   Public ScriptDB As ScriptDB.Script
 
@@ -38,6 +39,7 @@ Public Module Globals
     ' Dependency stack for special objects that will have procedures written for
     UniqueCodes = New Things.Collection
     GetFieldsFromDB = New Things.Collection
+    OnBankHolidayUpdate = New Things.Collection
     PerformanceIndexes = New Things.Collection
 
   End Sub

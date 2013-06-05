@@ -302,7 +302,10 @@ Namespace ScriptDB
       Dim objColumn As Things.Column
       Dim objRelation As Things.Relation
       Dim objIndex As Things.Index
+      Dim objTriggeredUpdate As ScriptDB.TriggeredUpdate
+      Dim objModuleColumn As Things.Column
 
+      Dim lngColumnID As HCMGuid
       Dim sSQL As String = String.Empty
       Dim sCalculationCode As String
       Dim sTriggerName As String = String.Empty
@@ -327,6 +330,7 @@ Namespace ScriptDB
       Dim sSQLParentColumns As String
       Dim sSQLParentColumns_Delete As String
       Dim sSQLChildColumns As String
+      Dim sSQLSpecialUpdate As String
 
       Dim aryCalculatedColumns As ArrayList
       Dim aryPostAuditCalcs As ArrayList
@@ -338,6 +342,7 @@ Namespace ScriptDB
       Dim aryParentsToUpdate_Delete As ArrayList
       Dim aryAllWriteableColumns As ArrayList
       Dim aryAllWriteableFormatted As ArrayList
+      Dim arySpecialUpdate As ArrayList
 
       Dim aryColumns As New ArrayList
 
@@ -374,6 +379,7 @@ Namespace ScriptDB
           sSQLCode_Audit = String.Empty
           sSQLPostAuditCalcs = String.Empty
           sSQLUniqueCalcs = String.Empty
+          sSQLSpecialUpdate = String.Empty
 
           ' Build in indexes
           objAuditIndex = New Things.Index
@@ -619,7 +625,7 @@ Namespace ScriptDB
               "            FROM [dbo].[{0}]" & vbNewLine & _
               "            WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
               "    UPDATE base SET " & vbNewLine & _
-              "        {1}" & vbNewLine _
+              "        {1};" & vbNewLine _
               , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryCalculatedColumns.ToArray()))
           End If
 
@@ -631,7 +637,7 @@ Namespace ScriptDB
               "        FROM [dbo].[{0}]" & vbNewLine & _
               "        WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
               "    UPDATE base" & vbNewLine & _
-              "    SET {1}" & vbNewLine _
+              "    SET {1};" & vbNewLine _
               , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryPostAuditCalcs.ToArray()), CInt(objTable.ID))
           End If
 
@@ -648,6 +654,26 @@ Namespace ScriptDB
               "        SET {1}" & vbNewLine & _
               "    END" _
               , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryUpdateUniqueCodes.ToArray()), CInt(objTable.ID))
+          End If
+
+          ' Special bank holiday update
+          If objTable Is Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_TableBHol").Table Then
+            arySpecialUpdate = New ArrayList
+
+            lngColumnID = Globals.ModuleSetup.Setting("MODULE_ABSENCE", "Param_FieldBHolDate").Value
+            objModuleColumn = objTable.Column(lngColumnID)
+
+            For Each objTriggeredUpdate In Globals.OnBankHolidayUpdate
+              arySpecialUpdate.Add(String.Format("    WITH base AS (" & vbNewLine &
+                  "        SELECT {0} FROM dbo.[{1}]" & vbNewLine & _
+                  "        INNER JOIN inserted ON inserted.{2} {3})" & vbNewLine & _
+                  "    UPDATE base SET [{0}] = [{0}];" _
+                  , objTriggeredUpdate.Column.Name, objTriggeredUpdate.Column.Table.PhysicalName, objModuleColumn.Name, objTriggeredUpdate.Where))
+            Next
+
+            sSQLSpecialUpdate = vbNewLine & vbNewLine & String.Format("-- Bank Holiday update" & vbNewLine & _
+              "{0}", String.Join(vbNewLine & vbNewLine, arySpecialUpdate.ToArray())) & vbNewLine
+
           End If
 
           ' -------------------
@@ -719,6 +745,7 @@ Namespace ScriptDB
               sSQLUniqueCalcs & vbNewLine & vbNewLine & _
               "{6}" & vbNewLine & _
               sSQLCode_Audit & _
+              sSQLSpecialUpdate & _
               "{7}" & vbNewLine & vbNewLine & _
               "{8}" & vbNewLine & vbNewLine _
               , objTable.Name, sTriggerName _
@@ -726,7 +753,6 @@ Namespace ScriptDB
               , String.Join(vbNewLine, aryUpdateUniqueCodes.ToArray()) _
               , sSQLCode_AuditUpdate, sSQLPostAuditCalcs, objTable.SysMgrUpdateTrigger) & vbNewLine & vbNewLine
           ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSQL)
-
 
           ' -------------------
           ' AFTER DELETE
@@ -856,6 +882,7 @@ Namespace ScriptDB
         bOK = ScriptFunctions.ConvertCurrency
         bOK = bOK And ScriptFunctions.UniqueCodeViews
         bOK = bOK And ScriptFunctions.GetFieldFromDatabases
+        'bOK = bOK And ScriptFunctions.BankHolidayUpdate
         ' bOK = bOK And ScriptFunctions.GeneratePerformanceIndexes
 
       Catch ex As Exception
@@ -988,6 +1015,7 @@ Namespace ScriptDB
               objColumn.Calculation.AssociatedColumn = objColumn
               objColumn.Calculation.StartOfPartNumbers = 0
 
+              objColumn.Calculation.ExpressionType = ExpressionType.ColumnCalculation
               objColumn.Calculation.GenerateCode()
               Globals.TuningLog.Expressions.Add(objColumn)
 

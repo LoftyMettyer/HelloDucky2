@@ -4260,12 +4260,12 @@ Public Function WorkflowTableTriggerCode(plngTableID As Long, _
             ' Create the basic trigger code
             If pfAction <> WFRELATEDRECORD_DELETE Then
               sSubCode = sSubCode & _
-                String(iIndent, vbTab) & "DELETE FROM ASRSysWorkflowQueue" & vbNewLine & _
+                String(iIndent, vbTab) & "DELETE FROM dbo.[ASRSysWorkflowQueue]" & vbNewLine & _
                 String(iIndent, vbTab) & "WHERE dateInitiated IS null AND recordID=@recordID AND linkID=" & .Fields("linkID").value & vbNewLine & vbNewLine
             End If
             
             sSubCode = sSubCode & _
-              String(iIndent, vbTab) & "INSERT ASRSysWorkflowQueue(LinkID,RecordID,DateDue,UserName,[Immediate],RecalculateRecordDesc,RecordDesc, parent1TableID, parent1RecordID, parent2TableID, parent2RecordID, instanceID)" & vbNewLine & _
+              String(iIndent, vbTab) & "INSERT dbo.[ASRSysWorkflowQueue](LinkID,RecordID,DateDue,UserName,[Immediate],RecalculateRecordDesc,RecordDesc, parent1TableID, parent1RecordID, parent2TableID, parent2RecordID, instanceID)" & vbNewLine & _
               String(iIndent, vbTab) & "VALUES (" & .Fields("linkID").value & ",@recordID, getDate()," & _
                 "CASE WHEN UPPER(LEFT(APP_NAME(), " & Len(gsWORKFLOWAPPLICATIONPREFIX) & ")) = '" & UCase(gsWORKFLOWAPPLICATIONPREFIX) & "' THEN '" & gsWORKFLOWAPPLICATIONPREFIX & "' ELSE ltrim(rtrim(SYSTEM_USER)) END," & _
                 "1, " & IIf(pfAction = WFRELATEDRECORD_DELETE, "0", "1") & ", @recordDesc, @parent1TableID, @parent1RecordID, @parent2TableID, @parent2RecordID, 0)" & vbNewLine
@@ -4319,9 +4319,9 @@ Public Function WorkflowTableTriggerCode(plngTableID As Long, _
                 End Select
               
                 sDeleteTriggerInsertCode = sDeleteTriggerInsertCode & vbNewLine & _
-                  String(iIndent, vbTab) & "INSERT INTO ASRSysWorkflowQueueColumns" & vbNewLine & _
+                  String(iIndent, vbTab) & "INSERT INTO dbo.[ASRSysWorkflowQueueColumns]" & vbNewLine & _
                   String(iIndent + 1, vbTab) & "(queueID, columnID, columnValue, emailID)" & vbNewLine & _
-                  String(iIndent + 1, vbTab) & "SELECT max(queueID), " & CStr(lngColumnID) & ", " & strVariableName & ", 0 FROM ASRSysWorkflowQueue" & vbNewLine
+                  String(iIndent + 1, vbTab) & "SELECT max(queueID), " & CStr(lngColumnID) & ", " & strVariableName & ", 0 FROM dbo.[ASRSysWorkflowQueue]" & vbNewLine
               Next lngLoop
             
               alngEmailsUsed = BaseTableEmailAddressesUsedInDeleteTriggeredWorkflow(!WorkflowID)
@@ -4343,7 +4343,7 @@ Public Function WorkflowTableTriggerCode(plngTableID As Long, _
                   sDeleteTriggerInsertCode = sDeleteTriggerInsertCode & vbNewLine & _
                     String(iIndent, vbTab) & "INSERT INTO [dbo].[ASRSysWorkflowQueueColumns]" & vbNewLine & _
                     String(iIndent + 1, vbTab) & "(queueID, emailID, columnValue, columnID)" & vbNewLine & _
-                    String(iIndent + 1, vbTab) & "SELECT max(queueID), " & CStr(lngEmailID) & ", " & strVariableName & ", 0 FROM ASRSysWorkflowQueue" & vbNewLine
+                    String(iIndent + 1, vbTab) & "SELECT max(queueID), " & CStr(lngEmailID) & ", " & strVariableName & ", 0 FROM dbo.[ASRSysWorkflowQueue]" & vbNewLine
                 Else
                   'Calculated
                   Set objExpr = New CExpression
@@ -4357,9 +4357,9 @@ Public Function WorkflowTableTriggerCode(plngTableID As Long, _
                   End With
     
                   sSubCode = sSubCode & vbNewLine & _
-                    String(iIndent, vbTab) & "INSERT INTO ASRSysWorkflowQueueColumns" & vbNewLine & _
+                    String(iIndent, vbTab) & "INSERT INTO dbo.[ASRSysWorkflowQueueColumns]" & vbNewLine & _
                     String(iIndent + 1, vbTab) & "(queueID, emailID, columnValue, columnID)" & vbNewLine & _
-                    String(iIndent + 1, vbTab) & "SELECT max(queueID), " & CStr(lngEmailID) & ", " & strVariableName & ", 0 FROM ASRSysWorkflowQueue" & vbNewLine
+                    String(iIndent + 1, vbTab) & "SELECT max(queueID), " & CStr(lngEmailID) & ", " & strVariableName & ", 0 FROM dbo.[ASRSysWorkflowQueue]" & vbNewLine
                 End If
               Next lngLoop
               
@@ -4456,7 +4456,7 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
   ByRef alngAuditColumns As Variant, _
   ByRef sDeclareInsCols As HRProSystemMgr.cStringBuilder, _
   ByRef sDeclareDelCols As HRProSystemMgr.cStringBuilder, _
-  ByRef sSelectInsCols2 As HRProSystemMgr.cStringBuilder, _
+  ByRef sSelectInsCols As HRProSystemMgr.cStringBuilder, _
   ByRef sSelectDelCols As HRProSystemMgr.cStringBuilder, _
   ByRef sFetchInsCols As HRProSystemMgr.cStringBuilder, _
   ByRef sFetchDelCols As HRProSystemMgr.cStringBuilder)
@@ -4571,9 +4571,10 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
         ReDim Preserve alngAuditColumns(UBound(alngAuditColumns) + 1)
         alngAuditColumns(UBound(alngAuditColumns)) = lngColumnID
 
-        sSelectInsCols2.Append ",@insCol_" & Trim$(Str$(lngColumnID)) & "=" & strColumnName
-        sSelectDelCols.Append "," & vbNewLine & "        deleted." & strColumnName
-        sFetchDelCols.Append "," & vbNewLine & "        @delCol_" & Trim$(Str$(lngColumnID))
+        sSelectInsCols.Append ", inserted." & strColumnName
+        sSelectDelCols.Append ", deleted." & strColumnName
+        sFetchInsCols.Append ", @insCol_" & Trim$(Str$(lngColumnID))
+        sFetchDelCols.Append ", @delCol_" & Trim$(Str$(lngColumnID))
   
         sDeclareInsCols.Append "," & vbNewLine & "        @insCol_" & Trim$(Str$(lngColumnID))
         sDeclareDelCols.Append "," & vbNewLine & "        @delCol_" & Trim$(Str$(lngColumnID))
@@ -4677,9 +4678,9 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
 
 
       strColumnValuesInsert = strColumnValuesInsert & vbNewLine & _
-        vbTab & vbTab & "INSERT INTO ASRSysWorkflowQueueColumns" & vbNewLine & _
+        vbTab & vbTab & "INSERT INTO dbo.[ASRSysWorkflowQueueColumns]" & vbNewLine & _
         vbTab & vbTab & vbTab & "(queueID, columnID, columnValue, emailID)" & vbNewLine & _
-        vbTab & vbTab & vbTab & "SELECT max(queueID), " & CStr(lngColumnID) & ", " & strVariableName & ", 0 FROM ASRSysWorkflowQueue" & vbNewLine
+        vbTab & vbTab & vbTab & "SELECT max(queueID), " & CStr(lngColumnID) & ", " & strVariableName & ", 0 FROM dbo.[ASRSysWorkflowQueue]" & vbNewLine
     Next iColumnLoop
   
     If Not IsNull(recWorkflowTriggeredLinks!EffectiveDate) Then
@@ -4697,14 +4698,14 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
     End If
     
     sImmediate = _
-      String(iIndent + 1, vbTab) & "INSERT ASRSysWorkflowQueue(LinkID,RecordID,DateDue,UserName,[Immediate],RecalculateRecordDesc, recordDesc, parent1TableID, parent1RecordID, parent2TableID, parent2RecordID, instanceID)" & vbNewLine & _
+      String(iIndent + 1, vbTab) & "INSERT dbo.[ASRSysWorkflowQueue](LinkID,RecordID,DateDue,UserName,[Immediate],RecalculateRecordDesc, recordDesc, parent1TableID, parent1RecordID, parent2TableID, parent2RecordID, instanceID)" & vbNewLine & _
       String(iIndent + 1, vbTab) & "VALUES (" & CStr(lngLinkID) & ",@recordID, getDate()," & _
         "CASE WHEN UPPER(LEFT(APP_NAME(), " & Len(gsWORKFLOWAPPLICATIONPREFIX) & ")) = '" & UCase(gsWORKFLOWAPPLICATIONPREFIX) & "' THEN '" & gsWORKFLOWAPPLICATIONPREFIX & "' ELSE ltrim(rtrim(SYSTEM_USER)) END," & _
         "1, 1, @recordDesc, @parent1TableID, @parent1RecordID, @parent2TableID, @parent2RecordID, 0)" & vbNewLine & _
       strColumnValuesInsert
 
     strRebuildTemp = _
-      String(iIndent, vbTab) & "INSERT ASRSysWorkflowQueue(LinkID,RecordID,DateDue,UserName,[Immediate],RecalculateRecordDesc, recordDesc, parent1TableID, parent1RecordID, parent2TableID, parent2RecordID, instanceID)" & vbNewLine & _
+      String(iIndent, vbTab) & "INSERT dbo.[ASRSysWorkflowQueue](LinkID,RecordID,DateDue,UserName,[Immediate],RecalculateRecordDesc, recordDesc, parent1TableID, parent1RecordID, parent2TableID, parent2RecordID, instanceID)" & vbNewLine & _
       String(iIndent, vbTab) & "VALUES (" & CStr(lngLinkID) & ",@recordID, @dtWFLinkDate," & _
         "CASE WHEN UPPER(LEFT(APP_NAME(), " & Len(gsWORKFLOWAPPLICATIONPREFIX) & ")) = '" & UCase(gsWORKFLOWAPPLICATIONPREFIX) & "' THEN '" & gsWORKFLOWAPPLICATIONPREFIX & "' ELSE ltrim(rtrim(SYSTEM_USER)) END," & _
         "0, 1, @recordDesc, @parent1TableID, @parent1RecordID, @parent2TableID, @parent2RecordID, 0)" & vbNewLine & _
@@ -4749,7 +4750,7 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
 
         strTemp = _
           String(iIndent + 1, vbTab) & "SELECT TOP 1 @sWFLastSent = ASRSysWorkflowQueueColumns.ColumnValue" & vbNewLine & _
-          String(iIndent + 1, vbTab) & "FROM ASRSysWorkflowQueueColumns" & vbNewLine & _
+          String(iIndent + 1, vbTab) & "FROM dbo.[ASRSysWorkflowQueueColumns]" & vbNewLine & _
           String(iIndent + 1, vbTab) & "INNER JOIN ASRSysWorkflowQueue ON ASRSysWorkflowQueueColumns.queueID = ASRSysWorkflowQueue.queueID" & vbNewLine & _
           String(iIndent + 1, vbTab) & "WHERE ASRSysWorkflowQueue.recordID = @recordid" & vbNewLine & _
           String(iIndent + 2, vbTab) & "AND ASRSysWorkflowQueue.linkID = " & CStr(lngLinkID) & vbNewLine & _
@@ -4868,7 +4869,7 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
       vbTab & vbTab & vbTab & vbTab & "END" & vbNewLine & _
       vbTab & vbTab & vbTab & vbTab & "ELSE SET @recordDesc = ''" & vbNewLine & _
       vbTab & vbTab & vbTab & "END" & vbNewLine & vbNewLine & _
-      vbTab & vbTab & vbTab & "DELETE FROM ASRSysWorkflowQueue" & vbNewLine & _
+      vbTab & vbTab & vbTab & "DELETE FROM dbo.[ASRSysWorkflowQueue]" & vbNewLine & _
       vbTab & vbTab & vbTab & "WHERE dateInitiated IS Null AND recordID=@recordID AND linkID = " & CStr(lngLinkID) & vbNewLine & vbNewLine & _
       strTriggerCode & vbNewLine & _
       vbTab & vbTab & "END" & vbNewLine
@@ -4878,7 +4879,7 @@ Private Sub CreateWorkflowProcsForLink(lngTableID As Long, _
       strCheckCode & vbNewLine & _
       vbTab & vbTab & "IF @fWFTrigger = 1" & vbNewLine & _
       vbTab & vbTab & "BEGIN" & vbNewLine & _
-      vbTab & vbTab & vbTab & "DELETE FROM ASRSysWorkflowQueue" & vbNewLine & _
+      vbTab & vbTab & vbTab & "DELETE FROM dbo.[ASRSysWorkflowQueue]" & vbNewLine & _
       vbTab & vbTab & vbTab & "WHERE dateInitiated IS Null AND recordID=@recordID AND linkID = " & CStr(lngLinkID) & vbNewLine & vbNewLine & _
       strTriggerCode & vbNewLine & _
       vbTab & vbTab & "END" & vbNewLine
@@ -4906,7 +4907,7 @@ Public Sub CreateWorkflowProcsForTable(pLngCurrentTableID As Long, _
   ByRef alngAuditColumns As Variant, _
   ByRef sDeclareInsCols As HRProSystemMgr.cStringBuilder, _
   ByRef sDeclareDelCols As HRProSystemMgr.cStringBuilder, _
-  ByRef sSelectInsCols2 As HRProSystemMgr.cStringBuilder, _
+  ByRef sSelectInsCols As HRProSystemMgr.cStringBuilder, _
   ByRef sSelectDelCols As HRProSystemMgr.cStringBuilder, _
   ByRef sFetchInsCols As HRProSystemMgr.cStringBuilder, _
   ByRef sFetchDelCols As HRProSystemMgr.cStringBuilder)
@@ -4951,7 +4952,7 @@ Public Sub CreateWorkflowProcsForTable(pLngCurrentTableID As Long, _
               
               CreateWorkflowProcsForLink pLngCurrentTableID, sCurrentTable, !LinkID, lngRecordDescExprID, alngAuditColumns, _
                 sDeclareInsCols, sDeclareDelCols, _
-                sSelectInsCols2, sSelectDelCols, _
+                sSelectInsCols, sSelectDelCols, _
                 sFetchInsCols, sFetchDelCols
     
               msInsertLinkCode = msInsertLinkCode & msInsertLinkTemp

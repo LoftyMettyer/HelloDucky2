@@ -115,6 +115,7 @@
           objCodeLibrary.MakeTypeSafe = objRow.Item("maketypesafe").ToString
           objCodeLibrary.OvernightOnly = objRow.Item("overnightonly").ToString
           objCodeLibrary.Tuning.Rating = objRow.Item("performancerating").ToString
+          objCodeLibrary.DependsOnBankHoliday = objRow.Item("dependsonbankholiday").ToString
           objCodeLibrary.Dependancies = PopulateCodeLibraryDependancies(objCodeLibrary)
 
           If objRow.Item("isoperator") Then

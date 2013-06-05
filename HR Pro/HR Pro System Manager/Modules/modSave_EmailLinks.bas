@@ -291,7 +291,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
   ByRef alngAuditColumns As Variant, _
   ByRef sDeclareInsCols As HRProSystemMgr.cStringBuilder, _
   ByRef sDeclareDelCols As HRProSystemMgr.cStringBuilder, _
-  ByRef sSelectInsCols2 As HRProSystemMgr.cStringBuilder, _
+  ByRef sSelectInsCols As HRProSystemMgr.cStringBuilder, _
   ByRef sSelectDelCols As HRProSystemMgr.cStringBuilder, _
   ByRef sFetchInsCols As HRProSystemMgr.cStringBuilder, _
   ByRef sFetchDelCols As HRProSystemMgr.cStringBuilder)
@@ -377,7 +377,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
             
             AddColumnToTrigger _
                   lngColumnID, alngAuditColumns, sDeclareInsCols, sDeclareDelCols, _
-                  sSelectInsCols2, sSelectDelCols, sFetchInsCols, sFetchDelCols
+                  sSelectInsCols, sSelectDelCols, sFetchInsCols, sFetchDelCols
             
             'Rebuild
             strRebuildOne = _
@@ -437,7 +437,7 @@ Public Sub CreateEmailProcsForTable(lngTableID As Long, _
             
             strCheckColumns = GetSQLForImmediateEmails(lngLinkID, _
                   alngAuditColumns, sDeclareInsCols, sDeclareDelCols, _
-                  sSelectInsCols2, sSelectDelCols, sFetchInsCols, sFetchDelCols)
+                  sSelectInsCols, sSelectDelCols, sFetchInsCols, sFetchDelCols)
 
           End If
           
@@ -561,7 +561,7 @@ Private Function AddColumnToTrigger( _
   lngColumnID As Long, ByRef alngAuditColumns As Variant, _
   ByRef sDeclareInsCols As HRProSystemMgr.cStringBuilder, _
   ByRef sDeclareDelCols As HRProSystemMgr.cStringBuilder, _
-  ByRef sSelectInsCols2 As HRProSystemMgr.cStringBuilder, _
+  ByRef sSelectInsCols As HRProSystemMgr.cStringBuilder, _
   ByRef sSelectDelCols As HRProSystemMgr.cStringBuilder, _
   ByRef sFetchInsCols As HRProSystemMgr.cStringBuilder, _
   ByRef sFetchDelCols As HRProSystemMgr.cStringBuilder)
@@ -620,12 +620,12 @@ Private Function AddColumnToTrigger( _
   
 '      If (iDataType <> dtVARCHAR) Or (lngSize <= VARCHARTHRESHOLD) Then
   
-        'sSelectInsCols.Append "," & vbNewLine & "        inserted." & strColumnName
-        sSelectInsCols2.Append ",@insCol_" & CStr(lngColumnID) & "=" & strColumnName
-        sSelectDelCols.Append "," & vbNewLine & "        deleted." & strColumnName
+        sSelectInsCols.Append ", inserted." & strColumnName
+        'sSelectInsCols2.Append ",@insCol_" & CStr(lngColumnID) & "=" & strColumnName
+        sSelectDelCols.Append ", deleted." & strColumnName
   
-        'sFetchInsCols.Append "," & vbNewLine & "        @insCol_" & CStr(lngColumnID)
-        sFetchDelCols.Append "," & vbNewLine & "        @delCol_" & CStr(lngColumnID)
+        sFetchInsCols.Append ", @insCol_" & CStr(lngColumnID)
+        sFetchDelCols.Append ", @delCol_" & CStr(lngColumnID)
 '      Else
 '        sSelectInsLargeCols.Append ",@insCol_" & CStr(lngColumnID) & "=inserted." & strColumnName
 '        sSelectInsLargeCols2.Append ",@insCol_" & CStr(lngColumnID) & "=" & strColumnName
@@ -978,7 +978,7 @@ Private Function GetSQLForImmediateEmails(lngLinkID As Long, _
   ByRef alngAuditColumns As Variant, _
   ByRef sDeclareInsCols As HRProSystemMgr.cStringBuilder, _
   ByRef sDeclareDelCols As HRProSystemMgr.cStringBuilder, _
-  ByRef sSelectInsCols2 As HRProSystemMgr.cStringBuilder, _
+  ByRef sSelectInsCols As HRProSystemMgr.cStringBuilder, _
   ByRef sSelectDelCols As HRProSystemMgr.cStringBuilder, _
   ByRef sFetchInsCols As HRProSystemMgr.cStringBuilder, _
   ByRef sFetchDelCols As HRProSystemMgr.cStringBuilder) As String
@@ -1009,7 +1009,7 @@ Private Function GetSQLForImmediateEmails(lngLinkID As Long, _
           
         AddColumnToTrigger _
               lngColumnID, alngAuditColumns, sDeclareInsCols, sDeclareDelCols, _
-              sSelectInsCols2, sSelectDelCols, sFetchInsCols, sFetchDelCols
+              sSelectInsCols, sSelectDelCols, sFetchInsCols, sFetchDelCols
         
         .MoveNext
       Loop

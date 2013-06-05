@@ -68,6 +68,7 @@
       [ColumnFilter] = 7
       [ReferencedColumn] = 8
       [ViewFilter] = 9
+      [TriggeredUpdate] = 10
     End Enum
 
     Enum OperatorSubType

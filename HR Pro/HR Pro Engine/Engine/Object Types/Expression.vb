@@ -559,6 +559,9 @@ Namespace Things
             , CInt(objThisColumn.ID).ToString.PadLeft(8, "0"))
         'Me.IsComplex = True
 
+      ElseIf Me.ExpressionType = ScriptDB.ExpressionType.TriggeredUpdate Then
+        LineOfCode.Code = String.Format("[{0}].[{1}]", objThisColumn.Table.PhysicalName, objThisColumn.Name)
+
       ElseIf objThisColumn Is Me.AssociatedColumn _
           And Not (Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter _
           Or Me.ExpressionType = ScriptDB.ExpressionType.Mask _
@@ -720,8 +723,12 @@ Namespace Things
 
       Dim objCodeLibrary As Things.CodeLibrary
       Dim ChildCodeCluster As ScriptDB.LinesOfCode
+      Dim WhereCodeCluster As ScriptDB.LinesOfCode
       Dim objSetting As Things.Setting
       Dim objIDComponent As Things.Component
+      Dim objTriggeredUpdate As ScriptDB.TriggeredUpdate
+      Dim sWhereClause As String = ""
+      Dim iBackupType As ScriptDB.ExpressionType
 
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Function
       objCodeLibrary = Globals.Functions.GetObject(Enums.Type.CodeLibrary, Component.FunctionID)
@@ -732,7 +739,6 @@ Namespace Things
       ' Get parameters
       ChildCodeCluster = New ScriptDB.LinesOfCode
       ChildCodeCluster.CodeLevel = [CodeCluster].CodeLevel + 1
-      '     ChildCodeCluster.NestedLevel = CodeCluster.NestedLevel + 1
       ChildCodeCluster.ReturnType = objCodeLibrary.ReturnType
 
       ' Add module dependancy info for this function
@@ -755,6 +761,9 @@ Namespace Things
               objIDComponent.ValueType = ScriptDB.ComponentValueTypes.SystemVariable
               [Component].Objects.Add(objIDComponent)
 
+            Case SettingType.UpdateParameter
+              sWhereClause = objSetting.Code
+
           End Select
 
         Next
@@ -770,6 +779,28 @@ Namespace Things
         Globals.UniqueCodes.Add([Component])
       End If
 
+      ' Is this expression reliant on the bank holiday table (I'm sure this can be tidyied up)
+      If objCodeLibrary.DependsOnBankHoliday And Me.ExpressionType = ScriptDB.ExpressionType.ColumnCalculation Then
+        objTriggeredUpdate = New ScriptDB.TriggeredUpdate
+        objTriggeredUpdate.Column = Me.AssociatedColumn
+        objTriggeredUpdate.ID = Me.AssociatedColumn.ID
+
+        '' this is the messy bit!
+        iBackupType = Me.ExpressionType
+        Me.ExpressionType = ScriptDB.ExpressionType.TriggeredUpdate
+
+        ' Get parameters
+        WhereCodeCluster = New ScriptDB.LinesOfCode
+        SQLCode_AddCodeLevel([Component].Objects, WhereCodeCluster)
+        objTriggeredUpdate.Where = String.Format(sWhereClause, WhereCodeCluster.ToArray)
+
+        Globals.OnBankHolidayUpdate.AddIfNew(objTriggeredUpdate)
+
+        Me.ExpressionType = iBackupType
+
+      End If
+
+
       SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
       LineOfCode.Code = String.Format(LineOfCode.Code, ChildCodeCluster.ToArray)
       RequiresRowNumber = RequiresRowNumber Or objCodeLibrary.RowNumberRequired
@@ -778,6 +809,7 @@ Namespace Things
       Me.RequiresRecordID = RequiresRecordID Or objCodeLibrary.RecordIDRequired
       Me.Tuning.Rating += objCodeLibrary.Tuning.Rating
       objCodeLibrary.Tuning.Usage += 1
+
 
       ' For functions that return mixed type, make it type safe
       If objCodeLibrary.ReturnType = ScriptDB.ComponentValueTypes.Unknown And objCodeLibrary.MakeTypeSafe Then

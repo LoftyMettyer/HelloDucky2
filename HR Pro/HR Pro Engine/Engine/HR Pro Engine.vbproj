@@ -104,6 +104,7 @@
     <Compile Include="Database Scripting\Scripter.vb" />
     <Compile Include="Database Scripting\ScriptFunctions.vb" />
     <Compile Include="Database Scripting\Structures.vb" />
+    <Compile Include="Database Scripting\TriggeredUpdate.vb" />
     <Compile Include="Database Scripting\Tuning.vb" />
     <Compile Include="Forms\ErrorLog.Designer.vb">
       <DependentUpon>ErrorLog.vb</DependentUpon>
