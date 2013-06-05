@@ -7,7 +7,7 @@ Public Module Globals
   'Public Shared Connection As Connectivity.SQL
   Public MetadataProvider As Connectivity.MetadataProvider = Connectivity.MetadataProvider.PhoenixStoredProcs
   '    Public User As Connectivity.User
-  Public Things As Things.Collections.Generic
+    Public Things As Things.Collections.Generic
   Public Workflows As Things.Collections.Generic
   Public Operators As Things.Collections.Generic
   Public Functions As Things.Collections.Generic
