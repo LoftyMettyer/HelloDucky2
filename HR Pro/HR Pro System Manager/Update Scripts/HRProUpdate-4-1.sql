@@ -1889,7 +1889,7 @@ PRINT 'Step 7 - Validation Messages'
 
 
 /* ------------------------------------------------------------- */
-PRINT 'Step 8 of X - Updating Support Contact Details'
+PRINT 'Step 8 - Updating Support Contact Details'
 /* ------------------------------------------------------------- */
 
 	---New email address
@@ -1945,6 +1945,79 @@ PRINT 'Step 8 of X - Updating Support Contact Details'
               
 	EXECUTE (@sSPCode_0)
 	
+
+
+/* ------------------------------------------------------------- */
+PRINT 'Step 9 - Misc stored procedures'
+/* ------------------------------------------------------------- */
+
+	----------------------------------------------------------------------
+	-- sp_ASRFn_ConvertToPropercase
+	----------------------------------------------------------------------
+
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[sp_ASRFn_ConvertToPropercase]')
+			AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+		DROP PROCEDURE [dbo].[sp_ASRFn_ConvertToPropercase];
+
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[sp_ASRFn_ConvertToPropercase]
+		AS
+		BEGIN
+			DECLARE @iDummy integer;
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'ALTER PROCEDURE [dbo].[sp_ASRFn_ConvertToPropercase]
+	(
+		@psOutput	varchar(MAX) OUTPUT,
+		@psInput 	varchar(MAX)
+	)
+	AS
+	BEGIN
+
+		DECLARE @Index	integer,
+				@Char	char(1);
+
+		SET @psOutput = LOWER(@psInput);
+		SET @Index = 1;
+		SET @psOutput = STUFF(@psOutput, 1, 1,UPPER(SUBSTRING(@psInput,1,1)));
+
+		WHILE @Index <= LEN(@psInput)
+		BEGIN
+
+			SET @Char = SUBSTRING(@psInput, @Index, 1);
+
+			IF @Char IN (''m'',''M'','' '', '';'', '':'', ''!'', ''?'', '','', ''.'', ''_'', ''-'', ''/'', ''&'','''''''',''('',char(9))
+			BEGIN
+				IF @Index + 1 <= LEN(@psInput)
+				BEGIN
+					IF @Char = '''' AND UPPER(SUBSTRING(@psInput, @Index + 1, 1)) != ''S''
+						SET @psOutput = STUFF(@psOutput, @Index + 1, 1,UPPER(SUBSTRING(@psInput, @Index + 1, 1)));
+					ELSE IF UPPER(@Char) != ''M''
+						SET @psOutput = STUFF(@psOutput, @Index + 1, 1,UPPER(SUBSTRING(@psInput, @Index + 1, 1)));
+
+					-- Catch the McName
+					IF UPPER(@Char) = ''M'' AND UPPER(SUBSTRING(@psInput, @Index + 1, 1)) = ''C'' AND UPPER(SUBSTRING(@psInput, @Index - 1, 1)) = ''''
+					BEGIN
+						SET @psOutput = STUFF(@psOutput, @Index + 1, 1,LOWER(SUBSTRING(@psInput, @Index + 1, 1)));
+						SET @psOutput = STUFF(@psOutput, @Index + 2, 1,UPPER(SUBSTRING(@psInput, @Index + 2, 1)));
+						SET @Index = @Index + 1;
+					END
+				END
+			END
+
+		SET @Index = @Index + 1;
+		END
+
+	END';
+
+	EXECUTE sp_executeSQL @sSPCode;
+	
+	
+	
+
+
 	
 /* ------------------------------------------------------------- */
 /* ------------------------------------------------------------- */
