@@ -430,6 +430,7 @@ Public Sub ResizeFindColumns()
   DoEvents
   
   With ssOleDBGridFindColumns
+    
     .Redraw = False
     
     If .VisibleRows > .Rows Then
@@ -2348,6 +2349,7 @@ Public Sub UpdateFindWindow()
   'MH20001124 Fault 1335
   'Edit and delete still enabled when shouldn't be !
   FormatControls
+  ResizeFindColumns
   frmMain.RefreshRecordMenu Me
   
 End Sub
