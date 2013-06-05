@@ -4,7 +4,7 @@ Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Begin VB.Form frmDataTransfer 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Data Transfer Definition"
-   ClientHeight    =   5385
+   ClientHeight    =   5865
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   9825
@@ -24,18 +24,18 @@ Begin VB.Form frmDataTransfer
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   5385
+   ScaleHeight     =   5865
    ScaleWidth      =   9825
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
    Begin TabDlg.SSTab SSTab1 
-      Height          =   4670
+      Height          =   5160
       Left            =   90
-      TabIndex        =   28
+      TabIndex        =   26
       Top             =   90
       Width           =   9675
       _ExtentX        =   17066
-      _ExtentY        =   8229
+      _ExtentY        =   9102
       _Version        =   393216
       Style           =   1
       Tabs            =   2
@@ -44,9 +44,9 @@ Begin VB.Form frmDataTransfer
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmDataTransfer.frx":000C
       Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "fraDefinition(0)"
+      Tab(0).Control(0)=   "fraDefinition(1)"
       Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "fraDefinition(1)"
+      Tab(0).Control(1)=   "fraDefinition(0)"
       Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
@@ -54,18 +54,222 @@ Begin VB.Form frmDataTransfer
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraColumnDefinition"
       Tab(1).ControlCount=   1
+      Begin VB.Frame fraDefinition 
+         Height          =   2355
+         Index           =   0
+         Left            =   135
+         TabIndex        =   27
+         Top             =   360
+         Width           =   9405
+         Begin VB.ComboBox cboCategory 
+            Height          =   315
+            Left            =   1620
+            Style           =   2  'Dropdown List
+            TabIndex        =   2
+            Top             =   720
+            Width           =   3000
+         End
+         Begin VB.TextBox txtDesc 
+            Height          =   1080
+            Left            =   1620
+            MaxLength       =   255
+            MultiLine       =   -1  'True
+            ScrollBars      =   2  'Vertical
+            TabIndex        =   3
+            Top             =   1110
+            Width           =   3000
+         End
+         Begin VB.TextBox txtName 
+            Height          =   315
+            Left            =   1620
+            MaxLength       =   50
+            TabIndex        =   1
+            Top             =   300
+            Width           =   3000
+         End
+         Begin VB.TextBox txtUserName 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   5850
+            MaxLength       =   30
+            TabIndex        =   4
+            Top             =   300
+            Width           =   3405
+         End
+         Begin SSDataWidgets_B.SSDBGrid grdAccess 
+            Height          =   1485
+            Left            =   5850
+            TabIndex        =   5
+            Top             =   705
+            Width           =   3405
+            ScrollBars      =   2
+            _Version        =   196617
+            DataMode        =   2
+            RecordSelectors =   0   'False
+            Col.Count       =   3
+            stylesets.count =   2
+            stylesets(0).Name=   "SysSecMgr"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
+            stylesets(0).HasFont=   -1  'True
+            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(0).Picture=   "frmDataTransfer.frx":0044
+            stylesets(1).Name=   "ReadOnly"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
+            stylesets(1).HasFont=   -1  'True
+            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            stylesets(1).Picture=   "frmDataTransfer.frx":0060
+            MultiLine       =   0   'False
+            AllowRowSizing  =   0   'False
+            AllowGroupSizing=   0   'False
+            AllowColumnSizing=   0   'False
+            AllowGroupMoving=   0   'False
+            AllowColumnMoving=   0
+            AllowGroupSwapping=   0   'False
+            AllowColumnSwapping=   0
+            AllowGroupShrinking=   0   'False
+            AllowColumnShrinking=   0   'False
+            AllowDragDrop   =   0   'False
+            SelectTypeCol   =   0
+            SelectTypeRow   =   0
+            BalloonHelp     =   0   'False
+            MaxSelectedRows =   0
+            ForeColorEven   =   0
+            BackColorEven   =   -2147483643
+            BackColorOdd    =   -2147483643
+            RowHeight       =   423
+            Columns.Count   =   3
+            Columns(0).Width=   2963
+            Columns(0).Caption=   "User Group"
+            Columns(0).Name =   "GroupName"
+            Columns(0).AllowSizing=   0   'False
+            Columns(0).DataField=   "Column 0"
+            Columns(0).DataType=   8
+            Columns(0).FieldLen=   256
+            Columns(0).Locked=   -1  'True
+            Columns(1).Width=   2566
+            Columns(1).Caption=   "Access"
+            Columns(1).Name =   "Access"
+            Columns(1).AllowSizing=   0   'False
+            Columns(1).DataField=   "Column 1"
+            Columns(1).DataType=   8
+            Columns(1).FieldLen=   256
+            Columns(1).Locked=   -1  'True
+            Columns(1).Style=   3
+            Columns(1).Row.Count=   3
+            Columns(1).Col.Count=   2
+            Columns(1).Row(0).Col(0)=   "Read / Write"
+            Columns(1).Row(1).Col(0)=   "Read Only"
+            Columns(1).Row(2).Col(0)=   "Hidden"
+            Columns(2).Width=   3200
+            Columns(2).Visible=   0   'False
+            Columns(2).Caption=   "SysSecMgr"
+            Columns(2).Name =   "SysSecMgr"
+            Columns(2).DataField=   "Column 2"
+            Columns(2).DataType=   8
+            Columns(2).FieldLen=   256
+            TabNavigation   =   1
+            _ExtentX        =   6006
+            _ExtentY        =   2619
+            _StockProps     =   79
+            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+         End
+         Begin VB.Label lblCategory 
+            Caption         =   "Category :"
+            Height          =   240
+            Left            =   195
+            TabIndex        =   32
+            Top             =   765
+            Width           =   1005
+         End
+         Begin VB.Label lblAccess 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Access :"
+            Height          =   195
+            Left            =   4995
+            TabIndex        =   31
+            Top             =   765
+            Width           =   825
+         End
+         Begin VB.Label lblDescription 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Description :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   30
+            Top             =   1155
+            Width           =   1080
+         End
+         Begin VB.Label lblName 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Name :"
+            Height          =   195
+            Left            =   195
+            TabIndex        =   29
+            Top             =   360
+            Width           =   690
+         End
+         Begin VB.Label lblOwner 
+            AutoSize        =   -1  'True
+            BackStyle       =   0  'Transparent
+            Caption         =   "Owner :"
+            Height          =   195
+            Left            =   4995
+            TabIndex        =   28
+            Top             =   360
+            Width           =   810
+         End
+      End
       Begin VB.Frame fraColumnDefinition 
          Enabled         =   0   'False
          Height          =   4140
          Left            =   -74865
-         TabIndex        =   20
+         TabIndex        =   18
          Top             =   360
          Width           =   9400
          Begin VB.CommandButton cmdClearAll 
             Caption         =   "Remo&ve All"
             Height          =   400
             Left            =   7950
-            TabIndex        =   25
+            TabIndex        =   23
             Top             =   1935
             Width           =   1200
          End
@@ -74,7 +278,7 @@ Begin VB.Form frmDataTransfer
             Enabled         =   0   'False
             Height          =   400
             Left            =   7950
-            TabIndex        =   24
+            TabIndex        =   22
             Top             =   1395
             Width           =   1200
          End
@@ -83,7 +287,7 @@ Begin VB.Form frmDataTransfer
             Enabled         =   0   'False
             Height          =   400
             Left            =   7950
-            TabIndex        =   23
+            TabIndex        =   21
             Top             =   840
             Width           =   1200
          End
@@ -91,14 +295,14 @@ Begin VB.Form frmDataTransfer
             Caption         =   "&Add..."
             Height          =   400
             Left            =   7950
-            TabIndex        =   22
+            TabIndex        =   20
             Top             =   315
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid grdColumns 
             Height          =   3650
             Left            =   210
-            TabIndex        =   21
+            TabIndex        =   19
             Top             =   315
             Width           =   7440
             ScrollBars      =   2
@@ -244,8 +448,8 @@ Begin VB.Form frmDataTransfer
          Height          =   2150
          Index           =   1
          Left            =   135
-         TabIndex        =   7
-         Top             =   2350
+         TabIndex        =   0
+         Top             =   2805
          Width           =   9400
          Begin VB.TextBox txtFilter 
             BackColor       =   &H8000000F&
@@ -253,7 +457,7 @@ Begin VB.Form frmDataTransfer
             Height          =   315
             Left            =   7170
             Locked          =   -1  'True
-            TabIndex        =   16
+            TabIndex        =   14
             Top             =   1080
             Width           =   1750
          End
@@ -263,7 +467,7 @@ Begin VB.Form frmDataTransfer
             Height          =   315
             Left            =   7170
             Locked          =   -1  'True
-            TabIndex        =   13
+            TabIndex        =   11
             Top             =   705
             Width           =   1750
          End
@@ -271,7 +475,7 @@ Begin VB.Form frmDataTransfer
             Caption         =   "&Filter"
             Height          =   195
             Left            =   6000
-            TabIndex        =   15
+            TabIndex        =   13
             Top             =   1120
             Width           =   1065
          End
@@ -279,7 +483,7 @@ Begin VB.Form frmDataTransfer
             Caption         =   "&Picklist"
             Height          =   195
             Left            =   6000
-            TabIndex        =   12
+            TabIndex        =   10
             Top             =   750
             Width           =   1020
          End
@@ -287,19 +491,19 @@ Begin VB.Form frmDataTransfer
             Caption         =   "&All"
             Height          =   195
             Left            =   6000
-            TabIndex        =   11
+            TabIndex        =   9
             Top             =   365
             Value           =   -1  'True
             Width           =   765
          End
          Begin VB.ComboBox cboFromTable 
             Height          =   315
-            ItemData        =   "frmDataTransfer.frx":0044
+            ItemData        =   "frmDataTransfer.frx":007C
             Left            =   1620
-            List            =   "frmDataTransfer.frx":0046
+            List            =   "frmDataTransfer.frx":007E
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   9
+            TabIndex        =   7
             Top             =   315
             Width           =   3000
          End
@@ -308,7 +512,7 @@ Begin VB.Form frmDataTransfer
             Enabled         =   0   'False
             Height          =   315
             Left            =   8895
-            TabIndex        =   14
+            TabIndex        =   12
             Top             =   705
             UseMaskColor    =   -1  'True
             Width           =   330
@@ -318,19 +522,19 @@ Begin VB.Form frmDataTransfer
             Enabled         =   0   'False
             Height          =   315
             Left            =   8895
-            TabIndex        =   17
+            TabIndex        =   15
             Top             =   1080
             UseMaskColor    =   -1  'True
             Width           =   330
          End
          Begin VB.ComboBox cboToTable 
             Height          =   315
-            ItemData        =   "frmDataTransfer.frx":0048
+            ItemData        =   "frmDataTransfer.frx":0080
             Left            =   1620
-            List            =   "frmDataTransfer.frx":004A
+            List            =   "frmDataTransfer.frx":0082
             Sorted          =   -1  'True
             Style           =   2  'Dropdown List
-            TabIndex        =   19
+            TabIndex        =   17
             Top             =   1575
             Width           =   3000
          End
@@ -340,7 +544,7 @@ Begin VB.Form frmDataTransfer
             Caption         =   "Source :"
             Height          =   195
             Left            =   225
-            TabIndex        =   8
+            TabIndex        =   6
             Top             =   360
             Width           =   600
          End
@@ -351,7 +555,7 @@ Begin VB.Form frmDataTransfer
             Height          =   195
             Index           =   5
             Left            =   5010
-            TabIndex        =   10
+            TabIndex        =   8
             Top             =   360
             Width           =   870
          End
@@ -361,201 +565,9 @@ Begin VB.Form frmDataTransfer
             Caption         =   "Destination :"
             Height          =   195
             Left            =   225
-            TabIndex        =   18
+            TabIndex        =   16
             Top             =   1635
             Width           =   915
-         End
-      End
-      Begin VB.Frame fraDefinition 
-         Height          =   1950
-         Index           =   0
-         Left            =   135
-         TabIndex        =   29
-         Top             =   360
-         Width           =   9400
-         Begin VB.TextBox txtUserName 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   5865
-            MaxLength       =   30
-            TabIndex        =   5
-            Top             =   315
-            Width           =   3360
-         End
-         Begin VB.TextBox txtName 
-            Height          =   315
-            Left            =   1620
-            MaxLength       =   50
-            TabIndex        =   1
-            Top             =   315
-            Width           =   3000
-         End
-         Begin VB.TextBox txtDesc 
-            Height          =   1080
-            Left            =   1620
-            MaxLength       =   255
-            MultiLine       =   -1  'True
-            ScrollBars      =   2  'Vertical
-            TabIndex        =   3
-            Top             =   705
-            Width           =   3000
-         End
-         Begin SSDataWidgets_B.SSDBGrid grdAccess 
-            Height          =   1080
-            Left            =   5850
-            TabIndex        =   30
-            Top             =   720
-            Width           =   3405
-            ScrollBars      =   2
-            _Version        =   196617
-            DataMode        =   2
-            RecordSelectors =   0   'False
-            Col.Count       =   3
-            stylesets.count =   2
-            stylesets(0).Name=   "SysSecMgr"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
-            stylesets(0).HasFont=   -1  'True
-            BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            stylesets(0).Picture=   "frmDataTransfer.frx":004C
-            stylesets(1).Name=   "ReadOnly"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
-            stylesets(1).HasFont=   -1  'True
-            BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            stylesets(1).Picture=   "frmDataTransfer.frx":0068
-            MultiLine       =   0   'False
-            AllowRowSizing  =   0   'False
-            AllowGroupSizing=   0   'False
-            AllowColumnSizing=   0   'False
-            AllowGroupMoving=   0   'False
-            AllowColumnMoving=   0
-            AllowGroupSwapping=   0   'False
-            AllowColumnSwapping=   0
-            AllowGroupShrinking=   0   'False
-            AllowColumnShrinking=   0   'False
-            AllowDragDrop   =   0   'False
-            SelectTypeCol   =   0
-            SelectTypeRow   =   0
-            BalloonHelp     =   0   'False
-            MaxSelectedRows =   0
-            ForeColorEven   =   0
-            BackColorEven   =   -2147483643
-            BackColorOdd    =   -2147483643
-            RowHeight       =   423
-            Columns.Count   =   3
-            Columns(0).Width=   2963
-            Columns(0).Caption=   "User Group"
-            Columns(0).Name =   "GroupName"
-            Columns(0).AllowSizing=   0   'False
-            Columns(0).DataField=   "Column 0"
-            Columns(0).DataType=   8
-            Columns(0).FieldLen=   256
-            Columns(0).Locked=   -1  'True
-            Columns(1).Width=   2566
-            Columns(1).Caption=   "Access"
-            Columns(1).Name =   "Access"
-            Columns(1).AllowSizing=   0   'False
-            Columns(1).DataField=   "Column 1"
-            Columns(1).DataType=   8
-            Columns(1).FieldLen=   256
-            Columns(1).Locked=   -1  'True
-            Columns(1).Style=   3
-            Columns(1).Row.Count=   3
-            Columns(1).Col.Count=   2
-            Columns(1).Row(0).Col(0)=   "Read / Write"
-            Columns(1).Row(1).Col(0)=   "Read Only"
-            Columns(1).Row(2).Col(0)=   "Hidden"
-            Columns(2).Width=   3200
-            Columns(2).Visible=   0   'False
-            Columns(2).Caption=   "SysSecMgr"
-            Columns(2).Name =   "SysSecMgr"
-            Columns(2).DataField=   "Column 2"
-            Columns(2).DataType=   8
-            Columns(2).FieldLen=   256
-            TabNavigation   =   1
-            _ExtentX        =   6006
-            _ExtentY        =   1905
-            _StockProps     =   79
-            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Owner :"
-            Height          =   195
-            Index           =   2
-            Left            =   5010
-            TabIndex        =   4
-            Top             =   360
-            Width           =   720
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Name :"
-            Height          =   195
-            Index           =   0
-            Left            =   225
-            TabIndex        =   0
-            Top             =   365
-            Width           =   510
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Description :"
-            Height          =   195
-            Index           =   1
-            Left            =   225
-            TabIndex        =   2
-            Top             =   750
-            Width           =   900
-         End
-         Begin VB.Label Label1 
-            AutoSize        =   -1  'True
-            BackStyle       =   0  'Transparent
-            Caption         =   "Access :"
-            Height          =   195
-            Index           =   3
-            Left            =   5010
-            TabIndex        =   6
-            Top             =   810
-            Width           =   690
          End
       End
    End
@@ -564,8 +576,8 @@ Begin VB.Form frmDataTransfer
       Default         =   -1  'True
       Height          =   400
       Left            =   7305
-      TabIndex        =   26
-      Top             =   4900
+      TabIndex        =   24
+      Top             =   5355
       Width           =   1200
    End
    Begin VB.CommandButton cmdCancel 
@@ -573,8 +585,8 @@ Begin VB.Form frmDataTransfer
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   8565
-      TabIndex        =   27
-      Top             =   4900
+      TabIndex        =   25
+      Top             =   5355
       Width           =   1200
    End
 End
@@ -652,6 +664,10 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional lTransfer
     mlTransferID = 0
   
     PopulateAccessGrid
+    
+    ' Set the categories combo
+    GetObjectCategories cboCategory, utlDataTransfer, 0, cboFromTable.ItemData(cboFromTable.ListIndex)
+    SetComboItem cboCategory, IIf(glngCurrentCategoryID = -1, 0, glngCurrentCategoryID)
     
     Me.Changed = False
   
@@ -1470,25 +1486,6 @@ Private Sub RetreiveDefinition()
   Dim sMessage As String
   Dim fAlreadyNotified As Boolean
 
-  ' RH BUG 1007 Related ! You DO need to refresh the dest combo, so dont set the
-  ' loading flag until after the combos
-  
-  'mbLoading = True
-  
-        '  sSQL = "SELECT ASRSysDataTransferName.*, " & _
-        '         "       CONVERT(integer,ASRSysDataTransferName.TimeStamp) AS intTimeStamp, " & _
-        '         "ASRSysPickListName.Name AS PickListName, " & _
-        '         "ASRSysPickListName.Access AS PickListAccess, " & _
-        '         "ASRSysExpressions.Name AS FilterName, " & _
-        '         "ASRSysExpressions.Access AS FilterAccess " & _
-        '         "FROM ASRSysDataTransferName " & _
-        '         "LEFT OUTER JOIN ASRSysExpressions " & _
-        '         "  ON ASRSysDataTransferName.FilterID = ASRSysExpressions.ExprID " & _
-        '         "LEFT OUTER JOIN ASRSysPickListName " & _
-        '         "  ON ASRSysDataTransferName.PickListID = ASRSysPickListName.PickListID " & _
-        '         "WHERE ASRSysDataTransferName.DataTransferID = " & mlTransferID
-        '  Set rsTemp = datData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
-
   Set rsTemp = GetDefinition
   If rsTemp.BOF And rsTemp.EOF Then
     Screen.MousePointer = vbDefault
@@ -1514,7 +1511,9 @@ Private Sub RetreiveDefinition()
   cmdFilter.Enabled = False
   cmdPicklist.Enabled = False
     
-  
+  ' Set the categories combo
+  GetObjectCategories cboCategory, utlDataTransfer, mlTransferID
+     
   
   mlTimeStamp = rsTemp!intTimestamp
 
@@ -2136,6 +2135,7 @@ Private Function SaveDefinition() As Boolean
   End If
   
   SaveAccess
+  SaveObjectCategories cboCategory, utlDataTransfer, mlTransferID
   
   SaveDefinition = True
   
@@ -2477,10 +2477,6 @@ Private Function HiddenGroups() As String
   HiddenGroups = sHiddenGroups
   
 End Function
-
-
-
-
 
 Private Sub SSTab1_Click(PreviousTab As Integer)
   fraDefinition(0).Enabled = (SSTab1.Tab = giTABSTRIP_DATATRANSFERDEF)
@@ -2948,3 +2944,6 @@ Private Sub CheckIfScrollBarRequired()
 
 End Sub
 
+Private Sub cboCategory_Click()
+  Changed = True
+End Sub
