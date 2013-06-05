@@ -560,6 +560,12 @@ PRINT 'Step 9 - Drop all HR Pro defined object (schema binding)'
 /* ------------------------------------------------------------- */
 PRINT 'Step 9 - Add new calculation procedures'
 
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfstat_MaternityExpectedReturn]')AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfstat_MaternityExpectedReturn];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfstat_ParentalLeaveEntitlement]')AND xtype in (N'FN', N'IF', N'TF'))
+		DROP FUNCTION [dbo].[udfstat_ParentalLeaveEntitlement];
+
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsys_absencebetweentwodates]')AND xtype in (N'FN', N'IF', N'TF'))
 		DROP FUNCTION [dbo].[udfsys_absencebetweentwodates];
 		
@@ -654,6 +660,100 @@ PRINT 'Step 9 - Add new calculation procedures'
 		DROP FUNCTION [dbo].[udfsys_workingdaysbetweentwodates];
 	
 
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfstat_MaternityExpectedReturn] (
+			@EWCDate datetime,
+			@LeaveStart datetime,
+			@BabyBirthDate datetime,
+			@Ordinary varchar(MAX)
+			)
+	RETURNS datetime			
+	WITH SCHEMABINDING
+	AS
+	BEGIN
+
+		DECLARE @pdblResult datetime;
+
+		IF LOWER(@Ordinary) = ''ordinary''
+			IF DATEDIFF(d,''04/06/2003'', @EWCDate) >= 0
+				SET @pdblResult = DATEADD(ww,26,@LeaveStart);
+			ELSE
+				IF DATEDIFF(d,''04/30/2000'', @EWCDate) >= 0
+					SET @pdblResult = DATEADD(ww,18,@LeaveStart);
+				ELSE
+					SET @pdblResult = DATEADD(ww,14,@LeaveStart);
+		ELSE
+			IF DATEDIFF(d,''04/06/2003'', @EWCDate) >= 0
+				SET @pdblResult = DATEADD(ww,52,@LeaveStart);
+			ELSE
+				--29 weeks from baby birth date (but return on the monday before!)
+				SET @pdblResult = DATEADD(d,203 - datepart(dw,DATEADD(d,-2,@BabyBirthDate)),@BabyBirthDate);
+
+		RETURN @pdblResult;
+
+	END';
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfstat_ParentalLeaveEntitlement] (
+		@DateOfBirth	datetime,
+		@AdoptedDate	datetime,
+		@Disabled		bit,
+		@Region			varchar(MAX)
+	)
+	RETURNS float
+	AS
+	BEGIN
+
+		DECLARE @pdblResult			float,
+			@Today					datetime,
+			@ChildAge				integer,
+			@Adopted				bit,
+			@YearsOfResponsibility	integer,
+			@StartDate				datetime,
+			@Standard				integer,
+			@Extended				integer;
+
+		SET @Standard = 65;
+		SET @Extended = 90;
+		IF @Region = ''Rep of Ireland''
+		BEGIN
+			SET @Standard = 70;
+			SET @Extended = 70;
+		END
+
+
+		--Check if we should used the Date of Birth or the Date of Adoption column...
+		SET @Adopted = 0;
+		SET @StartDate = @DateOfBirth;
+		IF NOT @AdoptedDate IS NULL
+		BEGIN
+			SET @Adopted = 1;
+			SET @StartDate = @AdoptedDate;
+		END
+
+		--Set variables based on this date...
+		--(years of responsibility = years since born or adopted)
+		SET @Today = GETDATE();
+		SELECT @ChildAge = [dbo].[udfsys_wholeyearsbetweentwodates](@DateOfBirth, @Today);
+		SELECT @YearsOfResponsibility = [dbo].[udfsys_wholeyearsbetweentwodates](@StartDate, @Today);
+
+		SELECT @pdblResult = CASE
+			WHEN @Disabled = 0 AND @Adopted = 0 AND @ChildAge < 5
+				THEN @Standard
+			WHEN @Disabled = 0 AND @Adopted = 1 AND @ChildAge < 18
+				AND @YearsOfResponsibility < 5 THEN	@Standard
+			WHEN @Disabled = 1 AND @Adopted = 0 AND @ChildAge < 18 
+				AND DATEDIFF(d,''12/15/1994'',@DateOfBirth) >= 0 THEN @Extended
+			WHEN @Disabled = 1 AND @Adopted = 1 AND @ChildAge < 18 
+				AND DATEDIFF(d,''12/15/1994'',@AdoptedDate) >= 0 THEN @Extended
+			ELSE 0
+			END;
+
+		RETURN ISNULL(@pdblResult,0);
+
+	END'
+	EXECUTE sp_executeSQL @sSPCode;
+
+
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_weekdaysbetweentwodates](
 			@datefrom AS datetime,
 			@dateto AS datetime)
@@ -677,8 +777,6 @@ PRINT 'Step 9 - Add new calculation procedures'
 			
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
-
-
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_wholemonthsbetweentwodates] 
 		(
@@ -1026,22 +1124,6 @@ PRINT 'Step 9 - Add new calculation procedures'
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
 
-	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_maternityexpectedreturndate] (
-		     @id		integer)
-		RETURNS datetime
-		WITH SCHEMABINDING
-		AS
-		BEGIN
-		
-			DECLARE @result datetime;
-			
-			SET @result = GETDATE()
-		        
-		    RETURN @result;
-		
-		END';
-	EXECUTE sp_executeSQL @sSPCode;
-
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_nicedate](
 			@inputdate as datetime)
 		RETURNS nvarchar(max)
@@ -1090,37 +1172,8 @@ PRINT 'Step 9 - Add new calculation procedures'
 		END';
 	EXECUTE sp_executeSQL @sSPCode;
 
-	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_parentalleaveentitlement] (
-		     @id		integer)
-		RETURNS integer
-		WITH SCHEMABINDING
-		AS
-		BEGIN
-		
-			DECLARE @result integer;
-			
-			SET @result = 10;
-		        
-		    RETURN @result;
-		
-		END';
-	EXECUTE sp_executeSQL @sSPCode;
 
-	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_parentalleavetaken] (
-		     @id		integer)
-		RETURNS integer
-		WITH SCHEMABINDING
-		AS
-		BEGIN
-		
-			DECLARE @result integer;
-			
-			SET @result = 0;
-		        
-		    RETURN @result;
-		
-		END';
-	EXECUTE sp_executeSQL @sSPCode;
+
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_propercase](
 			@text as nvarchar(max))
@@ -1655,6 +1708,21 @@ PRINT 'Step 13 - Remove redundant procedures'
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRFn_WeekdaysFromStartAndEndDates]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[sp_ASRFn_WeekdaysFromStartAndEndDates];
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRSysFnMaternityExpectedReturn]') AND xtype = 'P')
+		DROP PROCEDURE dbo.[spASRSysFnMaternityExpectedReturn]
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRSysFnParentalLeaveEntitlement]') AND xtype = 'P')
+		DROP PROCEDURE dbo.[spASRSysFnParentalLeaveEntitlement]
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRSysFnParentalLeaveTaken]') AND xtype = 'P')
+		DROP PROCEDURE dbo.[spASRSysFnParentalLeaveTaken]
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRMaternityExpectedReturn]') AND xtype = 'P')
+		DROP PROCEDURE dbo.[spASRMaternityExpectedReturn]
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRParentalLeaveEntitlement]') AND xtype = 'P')
+		DROP PROCEDURE dbo.[spASRParentalLeaveEntitlement]
 
 
 
