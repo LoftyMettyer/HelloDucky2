@@ -2880,10 +2880,10 @@ PRINT 'Step 7 - New Mobile User Logins Table'
 	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_mobilegroupworkflows]') AND type in (N'U'))
 	BEGIN
 		EXEC sp_executesql N'CREATE TABLE [dbo].[tbsys_mobilegroupworkflows](
-			[GroupID] [int] NOT NULL,
+			[UserGroupID] [int] NOT NULL,
 			[WorkflowID] [int] NOT NULL,
 			[Pos] [int] NOT NULL,
-		 CONSTRAINT [PK_tbsys_mobilegroupworkflows] PRIMARY KEY CLUSTERED ([GroupID] ASC, [WorkflowID] ASC));';
+		 CONSTRAINT [PK_tbsys_mobilegroupworkflows] PRIMARY KEY CLUSTERED ([UserGroupID] ASC, [WorkflowID] ASC));';
 	END
 		
 
