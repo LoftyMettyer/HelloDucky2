@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.1#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
 Begin VB.Form frmCrossTabRun 
    Caption         =   "Cross Tabs"
    ClientHeight    =   7455
@@ -570,7 +570,7 @@ Public Function AbsenceBreakdownExecuteReport(lngPersonnelID As Long) As Boolean
   If Progress Then PopulateGrid
 
   If Progress Then
-    If gblnBatchMode Or Not mblnPreviewOnScreen Then
+    If gblnBatchMode Or gblnReportPackMode Or Not mblnPreviewOnScreen Then
       fOK = OutputReport(False)
     End If
   End If
@@ -727,7 +727,7 @@ Public Function ExecuteCrossTab(lngCrossTabID As Long) As Boolean
   mblnLoading = False
   
   If Progress Then
-    If gblnBatchMode Or Not mblnPreviewOnScreen Then
+    If gblnBatchMode Or gblnReportPackMode Or Not mblnPreviewOnScreen Then
       fOK = OutputReport(False)
     End If
   End If
@@ -1132,8 +1132,8 @@ Public Sub RetreiveDefinition(lngCrossTabID As Long)
     mstrPicklistFilter = GetPicklistFilterSelect(!PicklistID, !FilterID)
     
     'Change Output Options to Report Pack owning these Jobs if in Report Pack mode
-    mblnPreviewOnScreen = IIf(lblnReportPackMode, False, !OutputPreview Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
-    mblnOutputScreen = IIf(lblnReportPackMode, False, !OutputScreen)
+    mblnPreviewOnScreen = IIf(lblnReportPackMode, mblnPreviewOnScreen, !OutputPreview)
+    mblnOutputScreen = IIf(lblnReportPackMode, mblnOutputScreen, !OutputScreen)
     mlngOriginalOutputFormat = !OutputFormat
     mlngOutputFormat = IIf(lblnReportPackMode, mlngOutputFormat, !OutputFormat)
     mblnOutputPrinter = IIf(lblnReportPackMode, mblnOutputPrinter, !OutputPrinter)
@@ -1148,6 +1148,8 @@ Public Sub RetreiveDefinition(lngCrossTabID As Long)
     mlngOverrideFilterID = IIf(lblnReportPackMode, mlngOverrideFilterID, 0)
     mblnOutputRetainPivotOrChart = IIf(lblnReportPackMode, mblnOutputRetainPivotOrChart, 0)
     'mblnOutputRetainCharts = IIf(lblnReportPackMode, mblnOutputRetainCharts, 0)
+    
+    mblnPreviewOnScreen = (mblnPreviewOnScreen Or (mlngOutputFormat = fmtDataOnly And mblnOutputScreen))
     
     If fOK = False Then
       Exit Sub
@@ -3317,7 +3319,7 @@ Public Function TurnoverExecuteReport() As Boolean
   If Progress Then Call PopulateGrid
 
   If Progress Then
-    If gblnBatchMode Or Not mblnPreviewOnScreen Then
+    If gblnBatchMode Or gblnReportPackMode Or Not mblnPreviewOnScreen Then
       fOK = OutputReport(False)
     End If
   End If
@@ -3363,7 +3365,7 @@ Public Function TurnoverStabilityReport() As Boolean
   If Progress Then Call PopulateGrid
 
   If Progress Then
-    If gblnBatchMode Or Not mblnPreviewOnScreen Then
+    If gblnBatchMode Or gblnReportPackMode Or Not mblnPreviewOnScreen Then
       fOK = OutputReport(False)
     End If
   End If
