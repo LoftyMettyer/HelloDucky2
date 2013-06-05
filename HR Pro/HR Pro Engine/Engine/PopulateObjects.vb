@@ -135,7 +135,6 @@
       Dim objRow As DataRow
 
       Dim objTable As Things.Table
-      Dim objDescription As Things.RecordDescription
 
       Dim objParameters As New Connectivity.Parameters
 
@@ -164,20 +163,11 @@
 
         ' needs putting back in when I figure out how to put an IF statement in the Access storedprocs (queries). Otherwise will need to split the code
 
-        '' Record Description
-        'objDescription = New Things.RecordDescription
-        'objDescription.ID = objRow.Item("recorddescriptionid").ToString
-        'objDescription.ExpressionType = ScriptDB.ExpressionType.RecordDescription
-        'objDescription.BaseTable = objTable
-        'objDescription.Objects = Things.LoadComponents(objDescription, ScriptDB.ComponentTypes.Expression)
-        'objTable.RecordDescription = objDescription
-
         ' Get all child objects for this table
         Things.PopulateTable(objTable)
         objTable.Root = objTable
 
         Globals.Things.Add(objTable)
-        ''      ProgressInfo.NextStep2()
 
       Next
 
@@ -417,46 +407,6 @@
 
           End Select
 
-
-          ' Calculations are attached after all the expressions have been loaded - otherwise we have horrible recursion problems
-
-
-          ' If objComponent.SubType = ScriptDB.ComponentTypes.Calculation Then
-          '            objComponent.Objects = Things.LoadComponents(objComponent, ScriptDB.ComponentTypes.Calculation)
-
-          '            objComponent.Objects = Globals.Things.GetObject(Enums.Type.Expression, objComponent.CalculationID)
-          ' objComponent.CalculationID = 
-
-          '' Isn't already loaded - do it now
-          'If objComponent.Objects Is Nothing Then
-
-          '  'Globals.Things(
-
-          '  ' the base table of this expression
-          '  'objBaseTable = Globals.Things.GetObject(Enums.Type.Table, (CType(objExpression, Things.Expression).BaseTableID))
-
-          '  objBaseTable = CType(objExpression, Things.Expression).BaseTable
-
-          '  objComponent.Objects = Things.LoadComponents(objComponent, ScriptDB.ComponentTypes.Calculation)
-
-          '  objCalculation = New Things.Expression
-          '  objCalculation.ID = objRow.Item("id").ToString
-          '  objExpression.Name = objRow.Item("name").ToString
-          '  objExpression.Description = objRow.Item("description").ToString
-          '  objExpression.Parent = objObjects.Parent
-          '  objExpression.DataType = objRow.Item("datatype")
-          '  objExpression.Size = objRow.Item("size")
-          '  objExpression.Decimals = objRow.Item("decimals")
-          '  objExpression.Root = objExpression
-
-          '  ' Get all child objects for this table
-          '  objExpression.Objects = Things.LoadComponents(objExpression, ScriptDB.ComponentTypes.Expression)
-          '  objObjects.Add(objExpression)
-
-          'End If
-
-          'End If
-
           objObjects.Add(objComponent)
         Next
 
@@ -475,7 +425,7 @@
 
     End Function
 
-    Public Sub PopulateTable(ByRef Table As Things.Base)
+    Public Sub PopulateTable(ByRef Table As Things.Table)
 
       Dim objDataset As DataSet
       Dim objRow As DataRow
@@ -487,6 +437,7 @@
       Dim objView As Things.View
       Dim objValidation As Things.Validation
       Dim objTableOrder As Things.TableOrder
+      Dim objDescription As Things.RecordDescription
 
       Table.Objects.Parent = Table
       Table.Objects.Root = Table.Root
@@ -594,6 +545,30 @@
           objValidation.Column = CType(Table, Things.Table).Column(objRow.Item("columnid").ToString)
           Table.Objects.Add(objValidation)
         Next
+
+
+        ' Record Description
+        objDataset = Globals.MetadataDB.ExecStoredProcedure("spadmin_getdescriptions", objParameters)
+        For Each objRow In objDataset.Tables(0).Rows
+
+          objDescription = New Things.RecordDescription
+          objDescription.ID = objRow.Item("id").ToString
+          objDescription.Parent = Table
+          objDescription.Name = objRow.Item("name").ToString
+          objDescription.SchemaName = "dbo"
+          objDescription.Description = objRow.Item("description").ToString
+          objDescription.State = objRow.Item("state")
+          objDescription.ReturnType = objRow.Item("returntype")
+          objDescription.Size = objRow.Item("size")
+          objDescription.Decimals = objRow.Item("decimals")
+          objDescription.BaseTable = Table
+          objDescription.BaseExpression = objDescription
+
+          'Get all child objects for this expression
+          objDescription.Objects = Things.LoadComponents(objDescription, ScriptDB.ComponentTypes.Expression)
+          Table.Objects.Add(objDescription)
+        Next
+
 
       Catch ex As Exception
 

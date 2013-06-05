@@ -219,7 +219,7 @@ Namespace Things
 
     End Sub
 
-    Public Sub GenerateCode()
+    Public Overridable Sub GenerateCode()
 
       ' Dim objColumn As Things.Column
       Dim objDependency As Things.Base
@@ -262,7 +262,7 @@ Namespace Things
       '   BuildDependancies(Me)
       aryParameters1.Clear()
       aryParameters2.Clear()
-      aryParameters3.clear()
+      aryParameters3.Clear()
 
       ' Build the executeion code
       If Me.Objects.Count = 0 Then
@@ -274,7 +274,7 @@ Namespace Things
       ' Always add the ID for the record
       aryParameters1.Add("@prm_ID integer")
       aryParameters2.Add("base.ID")
-      aryParameters3.add("@prm_ID")
+      aryParameters3.Add("@prm_ID")
 
       If mbRequiresRowNumber Then
         aryParameters1.Add("@rownumber integer")
@@ -328,7 +328,7 @@ Namespace Things
 
       ' Calling statement
       With UDF
-        .Name = String.Format("[{0}].[{1}_{2}.{3}]", Me.SchemaName, "udfcalc", Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
+
         .Declarations = String.Join(vbNewLine, maryDeclarations.ToArray())
         .Prerequisites = String.Join(vbNewLine, maryPrerequisitStatements.ToArray())
         .JoinCode = String.Format("{0}", String.Join(",", Joins.ToArray))
@@ -341,6 +341,7 @@ Namespace Things
 
           ' Wrapper for calculations with associated columns
           Case ScriptDB.ExpressionType.ColumnCalculation
+            .Name = String.Format("[{0}].[{1}_{2}.{3}]", Me.SchemaName, "udfcalc", Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
             .SelectCode = mcolLinesOfCode.Statement
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
             '        .Where = String.Format("{0}", String.Join(",", Where.ToArray))
@@ -389,18 +390,67 @@ Namespace Things
 
             ' Wrapper for when this function is used as a filter in an expression
           Case ScriptDB.ExpressionType.ColumnFilter
+            .Name = String.Format("[{0}].[{1}_{2}.{3}]", Me.SchemaName, "udfcalc", Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
             .SelectCode = String.Format("CASE WHEN ({0}) THEN 1 ELSE 0 END", mcolLinesOfCode.Statement)
 
             ' Wrapper for when expression is used as a filter in a view
           Case ScriptDB.ExpressionType.ViewCode
+            .Name = String.Format("[{0}].[{1}_{2}.{3}]", Me.SchemaName, "udfcalc", Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters1.ToArray))
             .SelectCode = mcolLinesOfCode.Statement
             '.SelectCode = String.Format("CASE WHEN ({0}) THEN 1 ELSE 0 END", mcolLinesOfCode.Statement)
 
           Case ScriptDB.ExpressionType.ReferencedColumn
+            .Name = String.Format("[{0}].[{1}_{2}.{3}]", Me.SchemaName, "udfcalc", Me.AssociatedColumn.Table.Name, Me.AssociatedColumn.Name)
             .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters3.ToArray))
             .SelectCode = mcolLinesOfCode.Statement
+
+          Case ScriptDB.ExpressionType.RecordDescription
+            .Name = String.Format("[{0}].[{1}_{2}]", Me.SchemaName, "udfdesc", Me.BaseTable.Name)
+            .CallingCode = String.Format("{0}({1})", .Name, String.Join(",", aryParameters2.ToArray))
+            .SelectCode = mcolLinesOfCode.Statement
+
+
+            .Code = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
+                           "RETURNS nvarchar(MAX)" & vbNewLine & _
+                           "{3}" & vbNewLine & _
+                           "--WITH SCHEMABINDING" & vbNewLine &
+                           "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+                           "    DECLARE @Result AS nvarchar(MAX);" & vbNewLine & vbNewLine & _
+                           "{4}" & vbNewLine & vbNewLine & _
+                           "{5}" & vbNewLine & vbNewLine & _
+                           "    -- Execute calculation code" & vbNewLine & _
+                           "SELECT @Result = {6}" & vbNewLine & _
+                           "                 {7}" & vbNewLine & _
+                           "                 {8}" & vbNewLine & _
+                           "                 {9}" & vbNewLine & _
+                           "    RETURN ISNULL(@Result, '');" & vbNewLine & _
+                           "END" _
+                          , .Name, String.Join(", ", aryParameters1.ToArray()) _
+                          , "", sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
+
+            .CodeStub = String.Format("CREATE FUNCTION {0}({1})" & vbNewLine & _
+                           "RETURNS {2}" & vbNewLine & _
+                           "{3}" & vbNewLine & _
+                           "--WITH SCHEMABINDING" & vbNewLine &
+                           "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+                           "    DECLARE @Result AS nvarchar(MAX);" & vbNewLine & vbNewLine & _
+                           "-- Could not generate this procedure. " & vbNewLine & _
+                           "/*" & vbNewLine & _
+                           "{4}" & vbNewLine & vbNewLine & _
+                           "{5}" & vbNewLine & vbNewLine & _
+                           "    -- Execute calculation code" & vbNewLine & _
+                           "SELECT @Result = {6}" & vbNewLine & _
+                           "                 {7}" & vbNewLine & _
+                           "                 {8}" & vbNewLine & _
+                           "                 {9}" & vbNewLine & vbNewLine & _
+                           "*/" & vbNewLine & _
+                           "    RETURN ISNULL(@Result, '');" & vbNewLine & _
+                           "END" _
+                          , .Name, String.Join(", ", aryParameters1.ToArray()) _
+                          , "", sOptions, .Declarations, .Prerequisites, .SelectCode, .FromCode, .JoinCode, .WhereCode)
+
 
             ' Should never be called, but just in case...
           Case Else
@@ -622,7 +672,8 @@ Namespace Things
         guidTableID = objThisColumn.Table.ID
 
         ' Is this column referencing the column that this udf is attaching itself to? (i.e. recursion)
-        If objThisColumn Is objBaseColumn And Not Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter Then
+        If objThisColumn Is objBaseColumn _
+          And Not (Me.ExpressionType = ScriptDB.ExpressionType.ColumnFilter Or Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription) Then
           '   LineOfCode.Code = String.Format("[dbo].[{0}].[{1}]", objThisColumn.Table.PhysicalName, objThisColumn.Name)
           LineOfCode.Code = String.Format("@prm_{0}", objThisColumn.Name)
 
@@ -673,7 +724,7 @@ Namespace Things
 
           'If is this column on the base table then add directly to the main execute statement,
           ' otherwise add it into child/parent statements array
-          If objThisColumn.Table.ID = objBaseColumn.Table.ID Then
+          If objThisColumn.Table Is objBaseColumn.Table Then
 
             Select Case Component.BaseExpression.ExpressionType
               Case ScriptDB.ExpressionType.ColumnFilter
@@ -703,7 +754,8 @@ Namespace Things
               objRelation = New Things.Relation
               objRelation.RelationshipType = ScriptDB.RelationshipType.Unknown
             Else
-              objRelation = objBaseColumn.Table.GetRelation(objThisColumn.Table.ID)
+              'objRelation = objBaseColumn.Table.GetRelation(objThisColumn.Table.ID)
+              objRelation = Me.BaseTable.GetRelation(objThisColumn.Table.ID)
             End If
 
             If objRelation.RelationshipType = ScriptDB.RelationshipType.Parent Then
@@ -854,9 +906,11 @@ Namespace Things
                     & "{0}{4}" & vbNewLine _
                     , [CodeCluster].Indentation _
                     , objThisColumn.Table.Name _
-                    , CInt(objBaseColumn.Table.ID), sColumnFilter, sColumnOrder, sColumnJoinCode)
+                    , CInt(Me.BaseTable.ID), sColumnFilter, sColumnOrder, sColumnJoinCode)
               End If
 
+              '29/5/11
+              ' just changed to  Me.BaseTable from objBaseColumn.Table
 
               'TODO -  change the relation object to have references to teh poarent and child instead of guids?
               ' Add relation to the dependency stack

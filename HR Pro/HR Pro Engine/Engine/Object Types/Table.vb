@@ -11,7 +11,7 @@ Namespace Things
     Public AuditInsert As Boolean
     Public AuditDelete As Boolean
     Public DefaultOrderID As HCMGuid
-    Public RecordDescription As Things.RecordDescription
+    '    Public RecordDescription As Things.RecordDescription
     Public DefaultEmailID As HCMGuid
     Public IsRemoteView As Boolean
 
@@ -104,6 +104,36 @@ Namespace Things
       Return Nothing
 
     End Function
+
+    Public Function Expression(ByRef [ExpressionID] As HCMGuid) As Things.Expression
+
+      Dim objChild As Things.Base
+
+      For Each objChild In Objects(Things.Type.Expression)
+        If objChild.Type = Type.Column And objChild.ID = [ExpressionID] Then
+          Return CType(objChild, Things.Expression)
+        End If
+      Next
+
+      Return Nothing
+
+    End Function
+
+    Public Function RecordDescription() As Things.Expression
+
+      Dim objChild As Things.Base
+
+      For Each objChild In Objects(Things.Type.RecordDescription)
+        If objChild.Type = Type.RecordDescription Then
+          Return CType(objChild, Things.RecordDescription)
+        End If
+      Next
+
+      Return Nothing
+
+    End Function
+
+
 
 #End Region
 

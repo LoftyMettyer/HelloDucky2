@@ -76,7 +76,8 @@ Namespace ScriptDB
 
       Try
 
-
+        sSQL = "spadmin_generateuniquecodes"
+        bOK = CommitDB.ScriptStatement(sSQL)
 
       Catch ex As Exception
         bOK = False
