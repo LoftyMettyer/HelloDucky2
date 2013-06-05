@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
 Begin VB.Form frmWorkflowWFTabOrder 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Control Order"
@@ -138,111 +138,111 @@ Begin VB.Form frmWorkflowWFTabOrder
             Key             =   "IMG_WORKINGPATTERN"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":03FF
+            Picture         =   "frmWorkflowWFTabOrder.frx":055E
             Key             =   "IMG_FILEDOWNLOAD"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":07D0
+            Picture         =   "frmWorkflowWFTabOrder.frx":0AB0
             Key             =   "IMG_UNKNOWN"
          EndProperty
          BeginProperty ListImage4 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":0BF3
+            Picture         =   "frmWorkflowWFTabOrder.frx":1002
             Key             =   "IMG_FILEUPLOAD"
          EndProperty
          BeginProperty ListImage5 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":0FC2
+            Picture         =   "frmWorkflowWFTabOrder.frx":1554
             Key             =   "IMG_WEBFORM"
          EndProperty
          BeginProperty ListImage6 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":136A
+            Picture         =   "frmWorkflowWFTabOrder.frx":1AA6
             Key             =   ""
          EndProperty
          BeginProperty ListImage7 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":16BC
+            Picture         =   "frmWorkflowWFTabOrder.frx":1DF8
             Key             =   "IMG_BUTTON"
          EndProperty
          BeginProperty ListImage8 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":1A83
+            Picture         =   "frmWorkflowWFTabOrder.frx":234A
             Key             =   "IMG_GRID"
          EndProperty
          BeginProperty ListImage9 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":1E3D
+            Picture         =   "frmWorkflowWFTabOrder.frx":289C
             Key             =   "IMG_COLUMN"
          EndProperty
          BeginProperty ListImage10 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":2209
+            Picture         =   "frmWorkflowWFTabOrder.frx":2DEE
             Key             =   "IMG_COMBOBOX"
          EndProperty
          BeginProperty ListImage11 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":25DB
+            Picture         =   "frmWorkflowWFTabOrder.frx":3340
             Key             =   "IMG_DATE"
          EndProperty
          BeginProperty ListImage12 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":29F5
+            Picture         =   "frmWorkflowWFTabOrder.frx":3892
             Key             =   "IMG_LINE"
          EndProperty
          BeginProperty ListImage13 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":2D5C
+            Picture         =   "frmWorkflowWFTabOrder.frx":3DE4
             Key             =   "IMG_IMAGE"
          EndProperty
          BeginProperty ListImage14 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":317A
+            Picture         =   "frmWorkflowWFTabOrder.frx":4336
             Key             =   "IMG_FRAME"
          EndProperty
          BeginProperty ListImage15 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":3543
+            Picture         =   "frmWorkflowWFTabOrder.frx":4888
             Key             =   "IMG_LABEL"
          EndProperty
          BeginProperty ListImage16 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":38DC
+            Picture         =   "frmWorkflowWFTabOrder.frx":4DDA
             Key             =   "IMG_LINK"
          EndProperty
          BeginProperty ListImage17 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":3CBE
+            Picture         =   "frmWorkflowWFTabOrder.frx":532C
             Key             =   "IMG_CHECKBOX"
          EndProperty
          BeginProperty ListImage18 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":4094
+            Picture         =   "frmWorkflowWFTabOrder.frx":587E
             Key             =   "IMG_LOOKUP"
          EndProperty
          BeginProperty ListImage19 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":4466
+            Picture         =   "frmWorkflowWFTabOrder.frx":5DD0
             Key             =   "IMG_NUMERIC"
          EndProperty
          BeginProperty ListImage20 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":4870
+            Picture         =   "frmWorkflowWFTabOrder.frx":6322
             Key             =   "IMG_OLE"
          EndProperty
          BeginProperty ListImage21 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":4C58
+            Picture         =   "frmWorkflowWFTabOrder.frx":6874
             Key             =   "IMG_PHOTO"
          EndProperty
          BeginProperty ListImage22 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":503F
+            Picture         =   "frmWorkflowWFTabOrder.frx":6DC6
             Key             =   "IMG_PROPERTIES"
          EndProperty
          BeginProperty ListImage23 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":5418
+            Picture         =   "frmWorkflowWFTabOrder.frx":7318
             Key             =   "IMG_RADIO"
          EndProperty
          BeginProperty ListImage24 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":5811
+            Picture         =   "frmWorkflowWFTabOrder.frx":786A
             Key             =   "IMG_SPINNER"
          EndProperty
          BeginProperty ListImage25 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":5BC1
+            Picture         =   "frmWorkflowWFTabOrder.frx":7DBC
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage26 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":5F72
+            Picture         =   "frmWorkflowWFTabOrder.frx":830E
             Key             =   "IMG_TEXTBOX"
          EndProperty
          BeginProperty ListImage27 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":637C
+            Picture         =   "frmWorkflowWFTabOrder.frx":8860
             Key             =   "IMG_TOOLBOX"
          EndProperty
          BeginProperty ListImage28 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmWorkflowWFTabOrder.frx":6755
+            Picture         =   "frmWorkflowWFTabOrder.frx":8DB2
             Key             =   "IMG_WORKFLOW"
          EndProperty
       EndProperty
@@ -732,7 +732,8 @@ Private Sub ListView1_MouseMove(Index As Integer, Button As Integer, Shift As In
     Call ClipCursorRect(typRect)
     
     'Begin drag
-    ListView1(Index).DragIcon = ImageList1.ListImages(mobjDragItem.SmallIcon).Picture
+    'NHRD17042012 Jira HRPRO-2092
+    ListView1(Index).DragIcon = mobjDragItem.CreateDragImage
     ListView1(Index).Drag vbBeginDrag
   End If
   
