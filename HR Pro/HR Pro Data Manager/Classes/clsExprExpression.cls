@@ -2665,7 +2665,9 @@ Public Property Let Owner(ByVal psNewValue As String)
 
 End Property
 
-Public Function ValidateExpression(pfTopLevel As Boolean, Optional pvJustGettingReturnType As Variant) As Integer
+Public Function ValidateExpression(pfTopLevel As Boolean, _
+  Optional pvJustGettingReturnType As Variant, _
+  Optional pvCheckAssociatedExpressions As Boolean) As Integer
   ' Validate the expression. Return a code defining the validity of the expression.
   ' NB. This function is also good for evaluating the return type of an expression
   ' which has definite return type (eg. function sub-expressions, runtime calcs, etc).
@@ -2692,7 +2694,8 @@ Public Function ValidateExpression(pfTopLevel As Boolean, Optional pvJustGetting
   Dim iTempReturnType As Integer
   
   If IsMissing(pvJustGettingReturnType) Then pvJustGettingReturnType = False
-  
+  If IsMissing(pvCheckAssociatedExpressions) Then pvCheckAssociatedExpressions = False
+
   ' Initialise variables.
   iBadLogicColumnIndex = 0
   iMinOperatorPrecedence = -1
@@ -2927,7 +2930,7 @@ Public Function ValidateExpression(pfTopLevel As Boolean, Optional pvJustGetting
     If (iValidationCode = giEXPRVALIDATION_NOERRORS) And _
       pfTopLevel Then
       iTempReturnType = miReturnType
-      iValidationCode = ValidateSQLCode
+      iValidationCode = ValidateSQLCode(, , pvCheckAssociatedExpressions)
       miReturnType = iTempReturnType
     End If
   End If
@@ -3481,7 +3484,7 @@ Private Function ValidateAssociatedExpressionsSQLCode(plngFixedExpressionID As L
       Set objExpr = New clsExprExpression
       objExpr.ExpressionID = .Fields(1).Value
       objExpr.ConstructExpression
-      iValidationCode = objExpr.ValidateSQLCode(plngFixedExpressionID, psFixedSQLCode)
+      iValidationCode = objExpr.ValidateSQLCode(plngFixedExpressionID, psFixedSQLCode, True)
       If iValidationCode <> giEXPRVALIDATION_NOERRORS Then
         msErrorMessage = objExpr.ErrorMessage
       End If
@@ -3498,7 +3501,9 @@ Private Function ValidateAssociatedExpressionsSQLCode(plngFixedExpressionID As L
   ValidateAssociatedExpressionsSQLCode = iValidationCode
   
 End Function
-Public Function ValidateSQLCode(Optional plngFixedExprID As Long, Optional psFixedSQLCode As String) As ExprValidationCodes
+Public Function ValidateSQLCode(Optional plngFixedExprID As Long, _
+  Optional psFixedSQLCode As String, _
+  Optional pvCheckAssociatedExpressions As Boolean) As ExprValidationCodes
   ' Validate the expression's SQL code. This picks up on errors such as too many nested levels of the CASE statement.
   On Error GoTo ErrorTrap
   
@@ -3517,6 +3522,8 @@ Public Function ValidateSQLCode(Optional plngFixedExprID As Long, Optional psFix
   
   iValidationCode = giEXPRVALIDATION_NOERRORS
     
+  If IsMissing(pvCheckAssociatedExpressions) Then pvCheckAssociatedExpressions = False
+
   If ((Not ExprDeleted(Me.ExpressionID)) Or (mlngExpressionID = 0)) And _
     ((miExpressionType = giEXPR_VIEWFILTER) Or _
     (miExpressionType = giEXPR_RUNTIMEFILTER) Or _
@@ -3598,7 +3605,8 @@ Public Function ValidateSQLCode(Optional plngFixedExprID As Long, Optional psFix
       End If
     End If
   
-    If iValidationCode = giEXPRVALIDATION_NOERRORS Then
+    If (iValidationCode = giEXPRVALIDATION_NOERRORS) _
+      And (pvCheckAssociatedExpressions = True) Then
       ' Need to check if all calcs/filters that use this filter are still okay.
       If (IsMissing(plngFixedExprID) And IsMissing(psFixedSQLCode)) Or _
         ((plngFixedExprID = 0) And (psFixedSQLCode = "")) Then
