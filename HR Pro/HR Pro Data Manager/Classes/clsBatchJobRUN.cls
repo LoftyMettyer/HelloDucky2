@@ -1128,7 +1128,7 @@ Public Function RunBatchJob(lBatchJobID As Long, sBatchJobName As String, lEvent
             'Open word file
             If GetTOCFile(strOutputFilename, fmtWordDoc) Then
               InitialiseStyles
-              mwrdApp.Visible = True
+              'mwrdApp.Visible = True
               With mwrdApp.Selection
                 'Insert Report Title or Report Pack name if blank
                 .HomeKey unit:=wdStory
