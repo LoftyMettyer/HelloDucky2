@@ -71,27 +71,27 @@ Namespace ScriptDB
 
       End Sub
 
-      Public Function DropViews() As Boolean Implements COMInterfaces.ICommitDB.DropViews
+    Public Function DropViews() As Boolean Implements COMInterfaces.ICommitDB.DropViews
 
-         Dim bOK As Boolean = True
+      Dim bOK As Boolean = True
 
-         Try
-            For Each objTable As Table In Globals.Tables
+      Try
+        For Each objTable As Table In Globals.Tables
 
-               For Each objView As View In objTable.Views
-                  DropView(objTable.SchemaName, objView.Name)
-               Next
-            Next
+          For Each objView As View In objTable.Views
+            DropView(objTable.SchemaName, objView.Name)
+          Next
+        Next
 
-         Catch ex As Exception
-            Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.Views, "DropViews", SystemFramework.ErrorHandler.Severity.Error, ex.Message, vbNullString)
-            bOK = False
+      Catch ex As Exception
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.Views, "DropViews", SystemFramework.ErrorHandler.Severity.Error, ex.Message, vbNullString)
+        bOK = False
 
-         End Try
+      End Try
 
-         Return bOK
+      Return bOK
 
-      End Function
+    End Function
 
       Public Function DropTableViews() As Boolean Implements ICommitDB.DropTableViews
 
@@ -324,7 +324,10 @@ Namespace ScriptDB
          Dim objRelatedTable As Table
          Dim objColumn As Column
          Dim objRelation As Relation
-         Dim objIndex As Index
+      Dim objIndex As Index
+      Dim objMessage As FusionMessage
+      Dim bBypassValidation As Boolean = False
+      Dim bStopDeletion As Boolean = False
 
          Dim sSQL As String = String.Empty
          Dim sCalculationCode As String
@@ -351,20 +354,16 @@ Namespace ScriptDB
 
          Dim sSQLCalculatedColumns As String
          Dim sSQLPostAuditCalcs As String
-         '      Dim sSQLUniqueCalcs As String
-         '   Dim sWritebackColumns As String
-         Dim sSQLParentColumns As String
+      Dim sSQLParentColumns As String
          Dim sSQLParentColumns_Delete As String
          Dim sSQLChildColumns As String
 
-         Dim sSQLSpecialUpdate As String
+      Dim sSQLSpecialUpdate As String
+      Dim sSQLFusionCode As String
 
          Dim aryCalculatedColumns As ArrayList
          Dim aryPostAuditCalcs As ArrayList
-         '      Dim aryWritebackColumns As ArrayList
-         '      Dim aryUpdateUniqueCodes As ArrayList
-
-         Dim aryBaseTableColumns As ArrayList
+      Dim aryBaseTableColumns As ArrayList
          Dim aryParentsToUpdate As ArrayList
          Dim aryChildrenToUpdate As ArrayList
          Dim aryParentsToUpdate_Delete As ArrayList
@@ -379,142 +378,169 @@ Namespace ScriptDB
          Dim aryAuditInserts As ArrayList
          Dim aryAuditDeletes As ArrayList
 
-         Try
-            'Build list of existing system UDF
-            Dim existingTriggers = (From f In DatabaseMetadata.GetTriggers()
-                             ).ToDictionary(Function(f) f.Name, StringComparer.InvariantCultureIgnoreCase)
-
-            For Each objTable In Globals.Tables
-
-               aryColumnsWithDefaultValues = New ArrayList
-               aryAllWriteableColumns = New ArrayList
-               aryAllWriteableFormatted = New ArrayList
-               aryAuditUpdates = New ArrayList
-               aryAuditInserts = New ArrayList
-               aryAuditDeletes = New ArrayList
-               '          aryUpdateUniqueCodes = New ArrayList
-               aryParentsToUpdate = New ArrayList
-               aryChildrenToUpdate = New ArrayList
-               aryParentsToUpdate_Delete = New ArrayList
-               aryBaseTableColumns = New ArrayList
-               aryCalculatedColumns = New ArrayList
-               aryPostAuditCalcs = New ArrayList
-               '     aryWritebackColumns = New ArrayList
-
-               sSQLCalculatedColumns = String.Empty
-               sSQLParentColumns = String.Empty
-               sSQLParentColumns_Delete = String.Empty
-               sSQLChildColumns = String.Empty
-               sValidation = String.Empty
-
-               sSQLCode_AuditInsert = String.Empty
-               sSQLCode_AuditUpdate = String.Empty
-               sSQLCode_AuditDelete = String.Empty
-               sSQLCode_Audit = String.Empty
-               sSQLPostAuditCalcs = String.Empty
-               '       sWritebackColumns = String.Empty
-               sSQLSpecialUpdate = String.Empty
-               sQLInsteadOfInsertColumns = String.Empty
-
-               ' Build in indexes
-               objAuditIndex = New Index
-               objTable.Indexes.Add(objAuditIndex)
-
-               ' Add the system generated columns
-               If Not objTable.RecordDescription Is Nothing Then
-                  objTable.RecordDescription.GenerateCode()
-                  aryCalculatedColumns.Add(String.Format("[_description] = {0}", objTable.RecordDescription.UDF.CallingCode))
-               End If
-
-               objAuditIndex.IsClustered = False
-               objAuditIndex.IsTableIndex = True
-               objAuditIndex.IncludePrimaryKey = True
-               objAuditIndex.Name = "IDX_AuditFields"
+      Try
 
 
-               ' Add any relationship columns
-               For Each objRelation In objTable.Relations
+        'Build list of existing system UDF
+        Dim existingTriggers = (From f In DatabaseMetadata.GetTriggers()
+                         ).ToDictionary(Function(f) f.Name, StringComparer.InvariantCultureIgnoreCase)
 
-                  aryColumns = New ArrayList
-                  If objRelation.RelationshipType = RelationshipType.Parent Then
-                     aryBaseTableColumns.Add(String.Format("[ID_{0}] = base.[ID_{0}]", objRelation.ParentID))
-                     aryAllWriteableColumns.Add(String.Format("[ID_{0}]", objRelation.ParentID))
-                     aryAllWriteableFormatted.Add(String.Format("[ID_{0}]", objRelation.ParentID))
+        For Each objTable In Globals.Tables
 
-                     objRelatedTable = Globals.Tables.GetById(objRelation.ParentID)
-                     For Each objColumn In objTable.DependsOnParentColumns
-                        If objColumn.Table Is objRelatedTable Then
-                           aryColumns.Add(String.Format("base.{0} = {0}", objColumn.Name))
-                        End If
-                     Next
+          aryColumnsWithDefaultValues = New ArrayList
+          aryAllWriteableColumns = New ArrayList
+          aryAllWriteableFormatted = New ArrayList
+          aryAuditUpdates = New ArrayList
+          aryAuditInserts = New ArrayList
+          aryAuditDeletes = New ArrayList
+          '          aryUpdateUniqueCodes = New ArrayList
+          aryParentsToUpdate = New ArrayList
+          aryChildrenToUpdate = New ArrayList
+          aryParentsToUpdate_Delete = New ArrayList
+          aryBaseTableColumns = New ArrayList
+          aryCalculatedColumns = New ArrayList
+          aryPostAuditCalcs = New ArrayList
+          '     aryWritebackColumns = New ArrayList
 
-                     If aryColumns.Count > 0 Then
-                        aryParentsToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {1})" & vbNewLine & _
-                            "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM inserted)" & vbNewLine _
-                            , objRelation.PhysicalName, objRelation.ParentID))
+          sSQLCalculatedColumns = String.Empty
+          sSQLParentColumns = String.Empty
+          sSQLParentColumns_Delete = String.Empty
+          sSQLChildColumns = String.Empty
+          sValidation = String.Empty
 
-                        aryParentsToUpdate_Delete.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {1})" & vbNewLine & _
-                            "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM deleted)" & vbNewLine _
-                            , objRelation.PhysicalName, objRelation.ParentID))
+          sSQLCode_AuditInsert = String.Empty
+          sSQLCode_AuditUpdate = String.Empty
+          sSQLCode_AuditDelete = String.Empty
+          sSQLCode_Audit = String.Empty
+          sSQLPostAuditCalcs = String.Empty
+          sSQLSpecialUpdate = String.Empty
+          sQLInsteadOfInsertColumns = String.Empty
+          bBypassValidation = False
+          bStopDeletion = False
 
-                     End If
+          ' Build in indexes
+          objAuditIndex = New Index
+          objTable.Indexes.Add(objAuditIndex)
 
-                  Else
+          ' Add the system generated columns
+          If Not objTable.RecordDescription Is Nothing Then
+            objTable.RecordDescription.GenerateCode()
+            aryCalculatedColumns.Add(String.Format("[_description] = {0}", objTable.RecordDescription.UDF.CallingCode))
+          End If
 
-                     objRelatedTable = Globals.Tables.GetById(objRelation.ChildID)
-                     objIndex = New Index
-                     objIndex.Name = String.Format("IDX_relation_{0}", objRelatedTable.Name)
-                     objIndex.IsTableIndex = True
-                     objIndex.IsClustered = False
-                     objIndex.Enabled = False
+          objAuditIndex.IsClustered = False
+          objAuditIndex.IsTableIndex = True
+          objAuditIndex.IncludePrimaryKey = True
+          objAuditIndex.Name = "IDX_AuditFields"
 
-                     For Each objColumn In objRelatedTable.DependsOnChildColumns
-                        If objColumn.Table Is objTable Then
-                           aryColumns.Add(String.Format("NOT i.{0} = d.{0}", objColumn.Name))
-                           objIndex.IncludedColumns.AddIfNew(objColumn)
-                        End If
-                     Next
 
-                     If aryColumns.Count > 0 Then
-                        aryChildrenToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3})" & vbNewLine & _
-                              "            AND EXISTS(SELECT i.ID FROM dbo.[{2}] i" & vbNewLine & _
-                              "                INNER JOIN deleted d ON d.ID = i.ID " & vbNewLine & _
-                              "                WHERE {4})" & vbNewLine & _
-                              "        UPDATE dbo.[{0}] SET [updflag] = 1 WHERE ID_{1} IN (SELECT i.ID FROM inserted i);" _
-                              , objRelatedTable.PhysicalName, objTable.ID, objTable.PhysicalName, objRelatedTable.ID _
-                              , String.Join(" OR ", aryColumns.ToArray())))
-                        objTable.Indexes.Add(objIndex)
-                     End If
-                  End If
-               Next
+          ' Build fusion messages
+          sSQLFusionCode = vbNullString
+          If objTable.FusionMessages.Count > 0 Then
+            sSQLFusionCode = "    -- Send fusion message(s) to service broker" & vbNewLine & _
+              "    DECLARE MessageCursor CURSOR LOCAL FAST_FORWARD FOR SELECT [ID] FROM inserted;" & vbNewLine & _
+              "    OPEN MessageCursor;" & vbNewLine & vbNewLine & _
+              "    FETCH NEXT FROM MessageCursor INTO @LocalId;" & vbNewLine & _
+              "    WHILE @@FETCH_STATUS = 0" & vbNewLine & _
+              "    BEGIN" & vbNewLine
 
-               For Each objColumn In objTable.Columns
+            For Each objMessage In objTable.FusionMessages
+              sSQLFusionCode = sSQLFusionCode & _
+                String.Format("        EXEC fusion.[spSendMessageCheckContext] @MessageType='{0}', @LocalId=@LocalId", objMessage.Name) & vbNewLine
+              bBypassValidation = bBypassValidation Or objMessage.ByPassValidation
+              bStopDeletion = bStopDeletion Or objMessage.StopDeletion
+            Next
 
-                  If Not objColumn.State = System.Data.DataRowState.Deleted Then
+            sSQLFusionCode = sSQLFusionCode & _
+              "        FETCH NEXT FROM MessageCursor INTO @LocalId;" & vbNewLine & _
+              "    END" & vbNewLine & _
+              "    CLOSE MessageCursor;" & vbNewLine & _
+              "    DEALLOCATE MessageCursor;"
+          End If
 
-                     ' Create an index on any unique check columns
-                     If objColumn.UniqueType = UniqueCheckScope.All Then
-                        objIndex = New Index
-                        objIndex.Name = String.Format("IDX_uniquecheck_{0}", objColumn.Name)
-                        objIndex.IncludePrimaryKey = False
-                        objIndex.IsTableIndex = True
-                        objIndex.IsClustered = False
-                        objIndex.Enabled = True
-                        objIndex.IsUnique = True
-                        objIndex.Columns.Add(objColumn)
-                        objTable.Indexes.Add(objIndex)
-                     End If
+          ' Add any relationship columns
+          For Each objRelation In objTable.Relations
 
-                     If objColumn.IsCalculated Then
-                        objColumn.Calculation.AssociatedColumn = objColumn
-                        objColumn.Calculation.ExpressionType = ExpressionType.ColumnCalculation
-                        objColumn.Calculation.GenerateCode()
+            aryColumns = New ArrayList
+            If objRelation.RelationshipType = RelationshipType.Parent Then
+              aryBaseTableColumns.Add(String.Format("[ID_{0}] = base.[ID_{0}]", objRelation.ParentID))
+              aryAllWriteableColumns.Add(String.Format("[ID_{0}]", objRelation.ParentID))
+              aryAllWriteableFormatted.Add(String.Format("[ID_{0}]", objRelation.ParentID))
 
-                        If objColumn.Calculation.IsComplex Then
-                           sCalculationCode = objColumn.Calculation.UDF.CallingCode
-                        Else
-                           sCalculationCode = objColumn.Calculation.UDF.InlineCode
-                        End If
+              objRelatedTable = Globals.Tables.GetById(objRelation.ParentID)
+              For Each objColumn In objTable.DependsOnParentColumns
+                If objColumn.Table Is objRelatedTable Then
+                  aryColumns.Add(String.Format("base.{0} = {0}", objColumn.Name))
+                End If
+              Next
+
+              If aryColumns.Count > 0 Then
+                aryParentsToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {1})" & vbNewLine & _
+                    "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM inserted)" & vbNewLine _
+                    , objRelation.PhysicalName, objRelation.ParentID))
+
+                aryParentsToUpdate_Delete.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {1})" & vbNewLine & _
+                    "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM deleted)" & vbNewLine _
+                    , objRelation.PhysicalName, objRelation.ParentID))
+
+              End If
+
+            Else
+
+              objRelatedTable = Globals.Tables.GetById(objRelation.ChildID)
+              objIndex = New Index
+              objIndex.Name = String.Format("IDX_relation_{0}", objRelatedTable.Name)
+              objIndex.IsTableIndex = True
+              objIndex.IsClustered = False
+              objIndex.Enabled = False
+
+              For Each objColumn In objRelatedTable.DependsOnChildColumns
+                If objColumn.Table Is objTable Then
+                  aryColumns.Add(String.Format("NOT i.{0} = d.{0}", objColumn.Name))
+                  objIndex.IncludedColumns.AddIfNew(objColumn)
+                End If
+              Next
+
+              If aryColumns.Count > 0 Then
+                aryChildrenToUpdate.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3})" & vbNewLine & _
+                      "            AND EXISTS(SELECT i.ID FROM dbo.[{2}] i" & vbNewLine & _
+                      "                INNER JOIN deleted d ON d.ID = i.ID " & vbNewLine & _
+                      "                WHERE {4})" & vbNewLine & _
+                      "        UPDATE dbo.[{0}] SET [updflag] = 1 WHERE ID_{1} IN (SELECT i.ID FROM inserted i);" _
+                      , objRelatedTable.PhysicalName, objTable.ID, objTable.PhysicalName, objRelatedTable.ID _
+                      , String.Join(" OR ", aryColumns.ToArray())))
+                objTable.Indexes.Add(objIndex)
+              End If
+            End If
+          Next
+
+          For Each objColumn In objTable.Columns
+
+            If Not objColumn.State = System.Data.DataRowState.Deleted Then
+
+              ' Create an index on any unique check columns
+              If objColumn.UniqueType = UniqueCheckScope.All Then
+                objIndex = New Index
+                objIndex.Name = String.Format("IDX_uniquecheck_{0}", objColumn.Name)
+                objIndex.IncludePrimaryKey = False
+                objIndex.IsTableIndex = True
+                objIndex.IsClustered = False
+                objIndex.Enabled = True
+                objIndex.IsUnique = True
+                objIndex.Columns.Add(objColumn)
+                objTable.Indexes.Add(objIndex)
+              End If
+
+              If objColumn.IsCalculated Then
+                objColumn.Calculation.AssociatedColumn = objColumn
+                objColumn.Calculation.ExpressionType = ExpressionType.ColumnCalculation
+                objColumn.Calculation.GenerateCode()
+
+                If objColumn.Calculation.IsComplex Then
+                  sCalculationCode = objColumn.Calculation.UDF.CallingCode
+                Else
+                  sCalculationCode = objColumn.Calculation.UDF.InlineCode
+                End If
 
                 If objColumn.CalculateIfEmpty Then
                   If objColumn.SafeReturnType = "NULL" Then
@@ -526,17 +552,13 @@ Namespace ScriptDB
                   sColumnName = String.Format("[{0}] = {1}", objColumn.Name, sCalculationCode)
                 End If
 
-                        'If objColumn.Calculation.RequiresWriteback Then
-                        '  aryWritebackColumns.Add(sColumnName & vbNewLine)
-                        'Else
-                        If objColumn.Calculation.CalculatePostAudit Then
-                           aryPostAuditCalcs.Add(sColumnName & vbNewLine)
-                        Else
-                           aryCalculatedColumns.Add(sColumnName)
-                        End If
-                        '              End If
+                If objColumn.Calculation.CalculatePostAudit Then
+                  aryPostAuditCalcs.Add(sColumnName & vbNewLine)
+                Else
+                  aryCalculatedColumns.Add(sColumnName)
+                End If
 
-                     End If
+              End If
 
               ' Build list of default values
               If objColumn.DefaultCalcID > 0 And Not objColumn.DefaultCalculation Is Nothing Then
@@ -550,314 +572,391 @@ Namespace ScriptDB
               End If
 
 
-                     If Not objColumn.IsReadOnly Then
-                        Select Case objColumn.DataType
+              If Not objColumn.IsReadOnly Then
+                Select Case objColumn.DataType
 
-                           Case ColumnTypes.Date
-                              aryBaseTableColumns.Add(String.Format("[{0}] = DATEADD(dd, 0, DATEDIFF(dd, 0, base.[{0}]))", objColumn.Name))
-                              aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
-                              aryAllWriteableFormatted.Add(String.Format(" DATEADD(dd, 0, DATEDIFF(dd, 0, [{0}]))", objColumn.Name))
+                  Case ColumnTypes.Date
+                    aryBaseTableColumns.Add(String.Format("[{0}] = DATEADD(dd, 0, DATEDIFF(dd, 0, base.[{0}]))", objColumn.Name))
+                    aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
+                    aryAllWriteableFormatted.Add(String.Format(" DATEADD(dd, 0, DATEDIFF(dd, 0, [{0}]))", objColumn.Name))
 
-                           Case Else
-                              aryBaseTableColumns.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.ApplyFormatting("base")))
-                              aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
-                              aryAllWriteableFormatted.Add(String.Format("[{0}]", objColumn.Name))
+                  Case Else
+                    aryBaseTableColumns.Add(String.Format("[{0}] = {1}", objColumn.Name, objColumn.ApplyFormatting("base")))
+                    aryAllWriteableColumns.Add(String.Format("[{0}]", objColumn.Name))
+                    aryAllWriteableFormatted.Add(String.Format("[{0}]", objColumn.Name))
 
-                        End Select
+                End Select
 
-                     End If
+              End If
 
-                     ' Concatenate audited columns
-                     If objColumn.Audit Then
-                        Select Case objColumn.DataType
-                           Case ColumnTypes.Date
-                              sAuditDataInsert = String.Format(" CONVERT(varchar(11), i.[{0}], 105)", objColumn.Name)
-                              sAuditDataDelete = String.Format(" CONVERT(varchar(11), d.[{0}], 105)", objColumn.Name)
-                              sAuditDataBase = String.Format(" CONVERT(varchar(11), base.[{0}], 105)", objColumn.Name)
+              ' Concatenate audited columns
+              If objColumn.Audit Then
+                Select Case objColumn.DataType
+                  Case ColumnTypes.Date
+                    sAuditDataInsert = String.Format(" CONVERT(varchar(11), i.[{0}], 105)", objColumn.Name)
+                    sAuditDataDelete = String.Format(" CONVERT(varchar(11), d.[{0}], 105)", objColumn.Name)
+                    sAuditDataBase = String.Format(" CONVERT(varchar(11), base.[{0}], 105)", objColumn.Name)
 
-                           Case ColumnTypes.Logic
-                              sAuditDataInsert = String.Format(" CASE i.[{0}] WHEN 1 THEN 'Yes' WHEN NULL THEN 'No' ELSE 'No' END", objColumn.Name)
-                              sAuditDataDelete = String.Format(" CASE d.[{0}] WHEN 1 THEN 'Yes'  WHEN NULL THEN 'No' ELSE 'No' END", objColumn.Name)
-                              sAuditDataBase = String.Format(" CASE base.[{0}] WHEN 1 THEN 'Yes'  WHEN NULL THEN 'No' ELSE 'No' END", objColumn.Name)
+                  Case ColumnTypes.Logic
+                    sAuditDataInsert = String.Format(" CASE i.[{0}] WHEN 1 THEN 'Yes' WHEN NULL THEN 'No' ELSE 'No' END", objColumn.Name)
+                    sAuditDataDelete = String.Format(" CASE d.[{0}] WHEN 1 THEN 'Yes'  WHEN NULL THEN 'No' ELSE 'No' END", objColumn.Name)
+                    sAuditDataBase = String.Format(" CASE base.[{0}] WHEN 1 THEN 'Yes'  WHEN NULL THEN 'No' ELSE 'No' END", objColumn.Name)
 
-                           Case Else
-                              sAuditDataInsert = String.Format(" CONVERT(varchar(255), i.[{0}], 105)", objColumn.Name)
-                              sAuditDataDelete = String.Format(" CONVERT(varchar(255), d.[{0}], 105)", objColumn.Name)
-                              sAuditDataBase = String.Format(" CONVERT(varchar(255), base.[{0}], 105)", objColumn.Name)
-                        End Select
+                  Case Else
+                    sAuditDataInsert = String.Format(" CONVERT(varchar(255), i.[{0}], 105)", objColumn.Name)
+                    sAuditDataDelete = String.Format(" CONVERT(varchar(255), d.[{0}], 105)", objColumn.Name)
+                    sAuditDataBase = String.Format(" CONVERT(varchar(255), base.[{0}], 105)", objColumn.Name)
+                End Select
 
-                        aryAuditInserts.Add(String.Format("        SELECT base.ID, '* New Record *', {0}, {4}, '{3}', '{6}', {1}, base.[_description]" & vbNewLine & _
-                            "            FROM inserted i" & vbNewLine & _
-                            "            INNER JOIN dbo.[{2}] base ON i.[id] = base.[id] AND NOT ISNULL({0},'') = ''" _
-                            , sAuditDataInsert, objColumn.ID, objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.ID), objColumn.SafeReturnType, objColumn.Name))
+                aryAuditInserts.Add(String.Format("        SELECT base.ID, '* New Record *', {0}, {4}, '{3}', '{6}', {1}, base.[_description]" & vbNewLine & _
+                    "            FROM inserted i" & vbNewLine & _
+                    "            INNER JOIN dbo.[{2}] base ON i.[id] = base.[id] AND NOT ISNULL({0},'') = ''" _
+                    , sAuditDataInsert, objColumn.ID, objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.ID), objColumn.SafeReturnType, objColumn.Name))
 
-                        aryAuditUpdates.Add(String.Format("        SELECT d.ID, {7}, {0}, {4}, '{3}', '{6}', {1}, base.[_description]" & vbNewLine & _
-                            "            FROM deleted d" & vbNewLine & _
-                            "            INNER JOIN dbo.[{2}] base ON d.[id] = base.[id] AND NOT ISNULL({0},'') = ISNULL({7},'')" _
-                            , sAuditDataBase, objColumn.ID, objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.ID), objColumn.SafeReturnType, objColumn.Name, sAuditDataDelete))
+                aryAuditUpdates.Add(String.Format("        SELECT d.ID, {7}, {0}, {4}, '{3}', '{6}', {1}, base.[_description]" & vbNewLine & _
+                    "            FROM deleted d" & vbNewLine & _
+                    "            INNER JOIN dbo.[{2}] base ON d.[id] = base.[id] AND NOT ISNULL({0},'') = ISNULL({7},'')" _
+                    , sAuditDataBase, objColumn.ID, objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.ID), objColumn.SafeReturnType, objColumn.Name, sAuditDataDelete))
 
-                        aryAuditDeletes.Add(String.Format("        SELECT d.ID, {0}, ' * Deleted Record *', {3}, '{2}', '{4}', {1}, d.[_description]" & vbNewLine & _
-                            "            FROM deleted d WHERE {0} IS NOT NULL" _
-                            , sAuditDataDelete, objColumn.ID, objColumn.Table.Name, objColumn.Table.ID, objColumn.Name))
+                aryAuditDeletes.Add(String.Format("        SELECT d.ID, {0}, ' * Deleted Record *', {3}, '{2}', '{4}', {1}, d.[_description]" & vbNewLine & _
+                    "            FROM deleted d WHERE {0} IS NOT NULL" _
+                    , sAuditDataDelete, objColumn.ID, objColumn.Table.Name, objColumn.Table.ID, objColumn.Name))
 
                 objAuditIndex.IncludedColumns.AddIfNew(objColumn)
-                     End If
-                  End If
+              End If
+            End If
 
-               Next
+          Next
 
-               ' Update any parents
-               If aryParentsToUpdate.ToArray.Length > 0 Then
-                  sSQLParentColumns = "    -- Refresh parent records" & vbNewLine & _
-                                      "    IF @isovernight = 0" & vbNewLine & "    BEGIN" & vbNewLine & _
-                                      String.Join(vbNewLine, aryParentsToUpdate.ToArray()) & _
-                                      "     END"
-                  sSQLParentColumns_Delete = "    -- Refresh parents records" & vbNewLine & _
-                                      String.Join(vbNewLine, aryParentsToUpdate_Delete.ToArray())
+          ' Update any parents
+          If aryParentsToUpdate.ToArray.Length > 0 Then
+            sSQLParentColumns = "    -- Refresh parent records" & vbNewLine & _
+                                "    IF @isovernight = 0" & vbNewLine & "    BEGIN" & vbNewLine & _
+                                String.Join(vbNewLine, aryParentsToUpdate.ToArray()) & _
+                                "     END"
+            sSQLParentColumns_Delete = "    -- Refresh parents records" & vbNewLine & _
+                                String.Join(vbNewLine, aryParentsToUpdate_Delete.ToArray())
 
-               End If
+          End If
 
-               ' Validation
-               sValidation = String.Format("    -- Validation" & vbNewLine & _
-                   "    IF @isovernight = 0 AND (SELECT TOP 1 [tablefromid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid ORDER BY [nestlevel] ASC) = {0}" & vbNewLine & _
-                   "    BEGIN" & vbNewLine & _
-                   "        SET @sValidation = '';" & vbNewLine & _
-                   "        SELECT @sValidation = @sValidation + dbo.[udfvalid_{1}](ID, [_description]) FROM inserted" & vbNewLine & _
-                   "        IF LEN(@sValidation) > 0" & vbNewLine & _
-                   "        BEGIN" & vbNewLine & _
-                   "            RAISERROR(@sValidation, 16, 1);" & vbNewLine & _
-                   "            ROLLBACK;" & vbNewLine & _
-                   "        END" & vbNewLine & _
-                   "    END" & vbNewLine, objTable.ID, objTable.Name)
+          ' Validation
+          sValidation = String.Format("    -- Validation" & vbNewLine & _
+              "    IF @isovernight = 0 AND (SELECT TOP 1 [tablefromid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid ORDER BY [nestlevel] ASC) = {0}" & vbNewLine & _
+              "    BEGIN" & vbNewLine & _
+              "        DELETE FROM fusion.ValidationWarnings" & vbNewLine & _
+              "            WHERE RecordID IN (SELECT ID FROM inserted) AND tableid = {0}" & vbNewLine & vbNewLine & _
+              "        SET @sValidation = '';" & vbNewLine & _
+              "        SELECT @sValidation = @sValidation + dbo.[udfvalid_{1}](ID, [_description]) FROM inserted" & vbNewLine & _
+              "        IF LEN(@sValidation) > 0 AND @bIsFusionMessage = 0" & vbNewLine & _
+              "        BEGIN" & vbNewLine & _
+              "            RAISERROR(@sValidation, 16, 1);" & vbNewLine & _
+              "            ROLLBACK;" & vbNewLine & _
+              "        END" & vbNewLine _
+              , objTable.ID, objTable.Name)
 
-               ' Update child records
-               If aryChildrenToUpdate.ToArray.Length > 0 Then
-                  sSQLChildColumns = "    --Update children" & vbNewLine & _
-                          "    IF @isovernight = 0 AND @startingtrigger = 2" & vbNewLine & "    BEGIN" & vbNewLine & _
-                          String.Join(vbNewLine & vbNewLine, aryChildrenToUpdate.ToArray()) & vbNewLine & _
-                         "     END"
-               End If
+          If objTable.FusionMessages.Count > 0 Then
+            sValidation = sValidation & vbNewLine & String.Format("        IF LEN(@sValidation) > 0 AND @bIsFusionMessage = 1" & vbNewLine & _
+                "        BEGIN" & vbNewLine & _
+                "            INSERT fusion.ValidationWarnings (TableID, RecordID, MessageName, ValidationMessage, CreatedDateTime)" & vbNewLine & _
+                "            SELECT '1',ID,@fusionMessageName,@sValidation,GETDATE()" & vbNewLine & _
+                "                FROM inserted" & vbNewLine & _
+                "        END" & vbNewLine _
+                , objTable.ID)
+          End If
 
-               ' Update statement of all the non read only columns (free entry columns)
-               If aryBaseTableColumns.ToArray.Length > 0 Then
-                  sSQLWriteableColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
-                    "    UPDATE [dbo].[{0}]" & vbNewLine & _
-                    "        SET [updflag] = base.[updflag]," & vbNewLine & _
-                    "        {1}" & vbNewLine & _
-                    "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
-                    , objTable.PhysicalName, String.Join(", " & vbNewLine & vbTab & vbTab & vbTab, aryBaseTableColumns.ToArray()))
-               Else
-                  sSQLWriteableColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
-                    "    UPDATE [dbo].[{0}]" & vbNewLine & _
-                    "        SET [updflag] = base.[updflag]" & vbNewLine & _
-                    "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
-                    , objTable.PhysicalName)
-               End If
+          sValidation = sValidation & "    END" & vbNewLine
 
+          ' Update child records
+          If aryChildrenToUpdate.ToArray.Length > 0 Then
+            sSQLChildColumns = "    --Update children" & vbNewLine & _
+                    "    IF @isovernight = 0 AND @startingtrigger = 2" & vbNewLine & "    BEGIN" & vbNewLine & _
+                    String.Join(vbNewLine & vbNewLine, aryChildrenToUpdate.ToArray()) & vbNewLine & _
+                   "     END"
+          End If
 
-               ' Update the default values
-               If aryColumnsWithDefaultValues.ToArray.Length > 0 Then
-                  'aryColumnsWithDefaultValues.AddRange(aryBaseTableColumns)
-                  SQLAfterInsertColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
-                    "    UPDATE [dbo].[{0}]" & vbNewLine & _
-                    "        SET [updflag] = base.[updflag]," & vbNewLine & _
-                    "        {1}" & vbNewLine & _
-                    "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
-                    , objTable.PhysicalName, String.Join(", " & vbNewLine & vbTab & vbTab & vbTab, aryColumnsWithDefaultValues.ToArray()))
-               Else
-                  SQLAfterInsertColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
-                    "    UPDATE [dbo].[{0}]" & vbNewLine & _
-                    "        SET [updflag] = base.[updflag]" & vbNewLine & _
-                    "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
-                    , objTable.PhysicalName)
-               End If
-
-               ' Instead of writeable columns
-               If aryAllWriteableColumns.ToArray.Length > 0 Then
-                  sQLInsteadOfInsertColumns = String.Format("    -- Commit writeable columns" & vbNewLine & _
-                            "    INSERT [dbo].[{0}] ({1})" & vbNewLine & _
-                            "        SELECT {2} FROM inserted base;" & vbNewLine & vbNewLine _
-                            , objTable.PhysicalName, String.Join(",", aryAllWriteableColumns.ToArray()), String.Join("," & vbNewLine, aryAllWriteableFormatted.ToArray()))
-               Else
-                  sQLInsteadOfInsertColumns = String.Format("    -- Commit writeable columns" & vbNewLine & _
-                            "    INSERT [dbo].[{0}] ([updflag]) VALUES (1);" & vbNewLine & vbNewLine _
-                            , objTable.PhysicalName)
-               End If
-
-               ' Build audit strings
-               If aryAuditUpdates.ToArray.Length > 0 Then
-                  sSQLCode_AuditInsert = String.Format("    INSERT @audit (id, oldvalue, newvalue, tableid, tablename, columnname, columnid, recorddesc)" & vbNewLine & _
-                                                 "{0};" _
-                                                , String.Join(vbNewLine & "        UNION" & vbNewLine, aryAuditInserts.ToArray()))
-                  sSQLCode_AuditUpdate = String.Format("    INSERT @audit (id, oldvalue, newvalue, tableid, tablename, columnname, columnid, recorddesc)" & vbNewLine & _
-                                                 "{0};" _
-                                                , String.Join(vbNewLine & "        UNION" & vbNewLine, aryAuditUpdates.ToArray()))
-                  sSQLCode_AuditDelete = String.Format("    INSERT @audit (id, oldvalue, newvalue, tableid, tablename, columnname, columnid, recorddesc)" & vbNewLine & _
-                                                 "{0};" _
-                                                , String.Join(vbNewLine & "        UNION" & vbNewLine, aryAuditDeletes.ToArray()))
-                  sSQLCode_Audit = vbNewLine & "    INSERT dbo.[ASRSysAuditTrail] ([username], [datetimestamp], [recordid], [oldvalue], [newvalue], [tableid], [tablename], [columnname], [columnid], [deleted], [recorddesc])" & vbNewLine & _
-                                   "		     SELECT @username, @dChangeDate, [id], [oldvalue], [newvalue], [tableid], [tablename], [columnname], [columnid], 1, [recorddesc] FROM @audit;" & vbNewLine & vbNewLine
-               End If
-
-               ' Table level audits
-               If objTable.AuditInsert Then
-                  sSQLCode_AuditInsert += vbNewLine & String.Format("    INSERT @audit (id, oldvalue, newvalue, tableid, tablename, columnname, recorddesc)" & vbNewLine & _
-                          "        SELECT i.[id], '', ' * New Record *', {0}, '{1}', '', base.[_description] FROM inserted i" & vbNewLine & _
-                          "            INNER JOIN dbo.{2} base ON i.[id] = base.[id]" _
-                          , objTable.ID, objTable.Name, objTable.PhysicalName)
-               End If
-
-               If objTable.AuditDelete Then
-                  sSQLCode_AuditDelete += vbNewLine & String.Format("    INSERT @audit (id, oldvalue, newvalue, tableid, tablename, columnname, recorddesc)" & vbNewLine & _
-                          "        SELECT d.[id], '', ' * Deleted Record *', {0}, '{1}', '', d.[_description] FROM deleted d" & vbNewLine _
-                          , objTable.ID, objTable.Name)
-               End If
-
-               ' Update statement of all the calculated columns
-               If aryCalculatedColumns.ToArray.Length > 0 Then
-                  sSQLCalculatedColumns = String.Format("    EXECUTE sp_executeSQL N'dbo.[spstat_flushuniquecode]';" & vbNewLine & vbNewLine & _
-                    "    -- Update calculated columns" & vbNewLine & _
-                    "    WITH base AS (" & vbNewLine & _
-                    "        SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
-                    "            FROM [dbo].[{0}]" & vbNewLine & _
-                    "            WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
-                    "    UPDATE base SET " & vbNewLine & _
-                    "        {1};" & vbNewLine & vbNewLine & _
-                    "    EXECUTE sp_executeSQL N'dbo.[spstat_flushuniquecode]';" & vbNewLine & vbNewLine _
-                    , objTable.PhysicalName, String.Join(vbNewLine & vbTab & vbTab & vbTab & ", ", aryCalculatedColumns.ToArray()))
-               End If
-
-               ' Any calculations that require to be saved after the audit
-               If aryPostAuditCalcs.ToArray.Length > 0 Then
-                  sSQLPostAuditCalcs = String.Format("    -- Update columns that rely on audit log data" & vbNewLine & _
-                    "    WITH base AS (" & vbNewLine & _
-                    "        SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
-                    "        FROM [dbo].[{0}]" & vbNewLine & _
-                    "        WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
-                    "    UPDATE base" & vbNewLine & _
-                    "    SET {1};" & vbNewLine _
-                    , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryPostAuditCalcs.ToArray()), objTable.ID)
-               End If
+          ' Update statement of all the non read only columns (free entry columns)
+          If aryBaseTableColumns.ToArray.Length > 0 Then
+            sSQLWriteableColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
+              "    UPDATE [dbo].[{0}]" & vbNewLine & _
+              "        SET [updflag] = base.[updflag]," & vbNewLine & _
+              "        {1}" & vbNewLine & _
+              "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
+              , objTable.PhysicalName, String.Join(", " & vbNewLine & vbTab & vbTab & vbTab, aryBaseTableColumns.ToArray()))
+          Else
+            sSQLWriteableColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
+              "    UPDATE [dbo].[{0}]" & vbNewLine & _
+              "        SET [updflag] = base.[updflag]" & vbNewLine & _
+              "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
+              , objTable.PhysicalName)
+          End If
 
 
-               ' Special bypass trigger code
-               sSQLCode_Bypass = SpecialTrigger_SSP(objTable)
+          ' Update the default values
+          If aryColumnsWithDefaultValues.ToArray.Length > 0 Then
+            'aryColumnsWithDefaultValues.AddRange(aryBaseTableColumns)
+            SQLAfterInsertColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
+              "    UPDATE [dbo].[{0}]" & vbNewLine & _
+              "        SET [updflag] = base.[updflag]," & vbNewLine & _
+              "        {1}" & vbNewLine & _
+              "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
+              , objTable.PhysicalName, String.Join(", " & vbNewLine & vbTab & vbTab & vbTab, aryColumnsWithDefaultValues.ToArray()))
+          Else
+            SQLAfterInsertColumns = String.Format("    -- Update any columns specified in the update clause" & vbNewLine & _
+              "    UPDATE [dbo].[{0}]" & vbNewLine & _
+              "        SET [updflag] = base.[updflag]" & vbNewLine & _
+              "        FROM [inserted] base WHERE base.[id] = [dbo].[{0}].[id]" & vbNewLine _
+              , objTable.PhysicalName)
+          End If
 
-               ' Add trigger code based on module setup
-               sSQLSpecialUpdate = SpecialTrigger_BankHolidays(objTable)
-               sSQLSpecialUpdate = sSQLSpecialUpdate & SpecialTrigger_Personnel(objTable)
+          ' Instead of writeable columns
+          If aryAllWriteableColumns.ToArray.Length > 0 Then
+            sQLInsteadOfInsertColumns = String.Format("    -- Commit writeable columns" & vbNewLine & _
+                      "    INSERT [dbo].[{0}] ({1})" & vbNewLine & _
+                      "        SELECT {2} FROM inserted base;" & vbNewLine & vbNewLine _
+                      , objTable.PhysicalName, String.Join(",", aryAllWriteableColumns.ToArray()), String.Join("," & vbNewLine, aryAllWriteableFormatted.ToArray()))
+          Else
+            sQLInsteadOfInsertColumns = String.Format("    -- Commit writeable columns" & vbNewLine & _
+                      "    INSERT [dbo].[{0}] ([updflag]) VALUES (1);" & vbNewLine & vbNewLine _
+                      , objTable.PhysicalName)
+          End If
 
-               ' -------------------
-               ' INSTEAD OF INSERT
-               ' -------------------
-               sTriggerName = String.Format("{0}{1}_i01", Consts.Trigger, objTable.Name)
-               sSQL = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
-                   "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
-                   "    SET @sValidation = '';" & vbNewLine & _
-                   "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-                   "    INSERT [dbo].[tbsys_intransactiontrigger] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {2}, 1, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
-                   sQLInsteadOfInsertColumns _
-                   , objTable.Name, sTriggerName _
-                   , objTable.ID _
-                   , String.Join(",", aryAllWriteableColumns.ToArray()), String.Join("," & vbNewLine, aryAllWriteableFormatted.ToArray()))
-               ScriptTrigger("dbo", objTable, TriggerType.InsteadOfInsert, sSQL, existingTriggers)
+          ' Build audit strings
+          If aryAuditUpdates.ToArray.Length > 0 Then
+            sSQLCode_AuditInsert = String.Format("    INSERT @audit (id, oldvalue, newvalue, tableid, tablename, columnname, columnid, recorddesc)" & vbNewLine & _
+                                           "{0};" _
+                                          , String.Join(vbNewLine & "        UNION" & vbNewLine, aryAuditInserts.ToArray()))
+            sSQLCode_AuditUpdate = String.Format("    INSERT @audit (id, oldvalue, newvalue, tableid, tablename, columnname, columnid, recorddesc)" & vbNewLine & _
+                                           "{0};" _
+                                          , String.Join(vbNewLine & "        UNION" & vbNewLine, aryAuditUpdates.ToArray()))
+            sSQLCode_AuditDelete = String.Format("    INSERT @audit (id, oldvalue, newvalue, tableid, tablename, columnname, columnid, recorddesc)" & vbNewLine & _
+                                           "{0};" _
+                                          , String.Join(vbNewLine & "        UNION" & vbNewLine, aryAuditDeletes.ToArray()))
+            sSQLCode_Audit = vbNewLine & "    INSERT dbo.[ASRSysAuditTrail] ([username], [datetimestamp], [recordid], [oldvalue], [newvalue], [tableid], [tablename], [columnname], [columnid], [deleted], [recorddesc])" & vbNewLine & _
+                             "		     SELECT @username, @dChangeDate, [id], [oldvalue], [newvalue], [tableid], [tablename], [columnname], [columnid], 1, [recorddesc] FROM @audit;" & vbNewLine & vbNewLine
+          End If
 
-               ' -------------------
-               ' AFTER INSERT
-               ' -------------------
-               sTriggerName = String.Format("{0}{1}_i02", Consts.Trigger, objTable.Name)
-               sSQL = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tableid] integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
-                   "    DECLARE @dChangeDate datetime," & vbNewLine & _
-                   "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
-                   "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-                   SQLAfterInsertColumns & vbNewLine & _
-                   "    -- Audit Trail" & vbNewLine & _
-                   "{2}" & vbNewLine & vbNewLine & _
-                   sSQLCode_Audit & _
-                   sValidation & vbNewLine & _
-                   "    DELETE [dbo].[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3};" & vbNewLine & vbNewLine & _
-                   "{4}" & vbNewLine & vbNewLine _
-                   , objTable.Name, sTriggerName, sSQLCode_AuditInsert, objTable.ID, objTable.SysMgrInsertTrigger)
-               ScriptTrigger("dbo", objTable, TriggerType.AfterInsert, sSQL, existingTriggers)
+          ' Table level audits
+          If objTable.AuditInsert Then
+            sSQLCode_AuditInsert += vbNewLine & String.Format("    INSERT @audit (id, oldvalue, newvalue, tableid, tablename, columnname, recorddesc)" & vbNewLine & _
+                    "        SELECT i.[id], '', ' * New Record *', {0}, '{1}', '', base.[_description] FROM inserted i" & vbNewLine & _
+                    "            INNER JOIN dbo.{2} base ON i.[id] = base.[id]" _
+                    , objTable.ID, objTable.Name, objTable.PhysicalName)
+          End If
 
-               ' -------------------
-               ' INSTEAD OF UPDATE
-               ' -------------------
-               sTriggerName = String.Format("{0}{1}_u01", Consts.Trigger, objTable.Name)
-               sSQL = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
-                   "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
-                   "    SET @sValidation = '';" & vbNewLine & _
-                   "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-                   sSQLCode_Bypass & _
-                   "    INSERT [dbo].[{4}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {5}, 2, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
-                   "{3}" & vbNewLine & vbNewLine & _
-                   sValidation & vbNewLine & vbNewLine & _
-                   "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {2};" & vbNewLine _
-                   , objTable.Name, sTriggerName _
-                   , objTable.ID _
-                   , sSQLWriteableColumns _
-                   , Consts.SysTriggerTransaction, objTable.ID)
-               ScriptTrigger("dbo", objTable, TriggerType.InsteadOfUpdate, sSQL, existingTriggers)
+          If objTable.AuditDelete Then
+            sSQLCode_AuditDelete += vbNewLine & String.Format("    INSERT @audit (id, oldvalue, newvalue, tableid, tablename, columnname, recorddesc)" & vbNewLine & _
+                    "        SELECT d.[id], '', ' * Deleted Record *', {0}, '{1}', '', d.[_description] FROM deleted d" & vbNewLine _
+                    , objTable.ID, objTable.Name)
+          End If
 
-               ' -------------------
-               ' AFTER UPDATE
-               ' -------------------
-               sTriggerName = String.Format("{0}{1}_u02", Consts.Trigger, objTable.Name)
-               sSQL = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), tableid integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
-                   "    DECLARE @dChangeDate datetime," & vbNewLine & _
-                   "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
-                   "    SELECT @forcerefresh = dbo.[udfsys_triggerrequiresrefresh]();" & vbNewLine & _
-                   "    SELECT TOP 1 @startingtrigger = ISNULL([actiontype],2) FROM dbo.[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3} ORDER BY [nestlevel] ASC;" & vbNewLine & _
-                   "    SELECT TOP 1 @startingtriggertable = ISNULL([tablefromid],0) FROM dbo.[tbsys_intransactiontrigger] WHERE [spid] = @@spid ORDER BY [nestlevel] ASC;" & vbNewLine & _
-                   "    SET @sValidation = '';" & vbNewLine & _
-                   "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-                   sSQLCalculatedColumns & vbNewLine & vbNewLine & _
-                   sSQLParentColumns & vbNewLine & _
-                   sSQLChildColumns & vbNewLine & vbNewLine & _
-                   "{6}" & vbNewLine & _
-                   sSQLCode_Audit & _
-                   sSQLSpecialUpdate & _
-                   "{7}" & vbNewLine & vbNewLine & _
-                   "{8}" & vbNewLine & vbNewLine _
-                   , objTable.Name, sTriggerName _
-                   , "", objTable.ID, Consts.SysTriggerTransaction _
-                   , "" _
-                   , sSQLCode_AuditUpdate, sSQLPostAuditCalcs, objTable.SysMgrUpdateTrigger) & vbNewLine & vbNewLine
-               ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSQL, existingTriggers)
+          ' Update statement of all the calculated columns
+          If aryCalculatedColumns.ToArray.Length > 0 Then
+            sSQLCalculatedColumns = String.Format("    EXECUTE sp_executeSQL N'dbo.[spstat_flushuniquecode]';" & vbNewLine & vbNewLine & _
+              "    -- Update calculated columns" & vbNewLine & _
+              "    WITH base AS (" & vbNewLine & _
+              "        SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
+              "            FROM [dbo].[{0}]" & vbNewLine & _
+              "            WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
+              "    UPDATE base SET " & vbNewLine & _
+              "        {1};" & vbNewLine & vbNewLine & _
+              "    EXECUTE sp_executeSQL N'dbo.[spstat_flushuniquecode]';" & vbNewLine & vbNewLine _
+              , objTable.PhysicalName, String.Join(vbNewLine & vbTab & vbTab & vbTab & ", ", aryCalculatedColumns.ToArray()))
+          End If
 
-               ' -------------------
-               ' AFTER DELETE
-               ' -------------------
-               sTriggerName = String.Format("{0}{1}_d02", Consts.Trigger, objTable.Name)
-               sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tablename] varchar(255), [tableid] integer, [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
-                   "    DECLARE @dChangeDate datetime;" & vbNewLine & _
-                   "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-                   "    INSERT [dbo].[{4}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {5}, 3, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
-                   "    -- Audit Trail" & vbNewLine & _
-                   "{2}" & vbNewLine & vbNewLine & _
-                   sSQLCode_Audit & _
-                   sSQLSpecialUpdate & _
-                   "{3}" & vbNewLine & vbNewLine & _
-                   "{6}" & vbNewLine & vbNewLine & _
-                   "    -- Clear the temporary trigger status table" & vbNewLine & _
-                   "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {5};" & vbNewLine & vbNewLine _
-                   , objTable.Name, sTriggerName, sSQLCode_AuditDelete, sSQLParentColumns_Delete _
-                   , Consts.SysTriggerTransaction, objTable.ID, objTable.SysMgrDeleteTrigger)
-               ScriptTrigger("dbo", objTable, TriggerType.AfterDelete, sSQL, existingTriggers)
+          ' Any calculations that require to be saved after the audit
+          If aryPostAuditCalcs.ToArray.Length > 0 Then
+            sSQLPostAuditCalcs = String.Format("    -- Update columns that rely on audit log data" & vbNewLine & _
+              "    WITH base AS (" & vbNewLine & _
+              "        SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
+              "        FROM [dbo].[{0}]" & vbNewLine & _
+              "        WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
+              "    UPDATE base" & vbNewLine & _
+              "    SET {1};" & vbNewLine _
+              , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryPostAuditCalcs.ToArray()), objTable.ID)
+          End If
 
-            Next
 
-         Catch ex As Exception
-            Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.Triggers, sTriggerName, SystemFramework.ErrorHandler.Severity.Error, ex.Message, sSQL)
-            bOK = False
+          ' Special bypass trigger code
+          sSQLCode_Bypass = SpecialTrigger_SSP(objTable)
 
-         Finally
+          ' Add trigger code based on module setup
+          sSQLSpecialUpdate = SpecialTrigger_BankHolidays(objTable)
+          sSQLSpecialUpdate = sSQLSpecialUpdate & SpecialTrigger_Personnel(objTable)
 
-         End Try
+          ' -------------------
+          ' INSTEAD OF INSERT
+          ' -------------------
+          sTriggerName = String.Format("{0}{1}_i01", Consts.Trigger, objTable.Name)
+          sSQL = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
+              "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
+              "    SET @sValidation = '';" & vbNewLine & _
+              "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
+              "    INSERT [dbo].[tbsys_intransactiontrigger] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {2}, 1, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
+              sQLInsteadOfInsertColumns _
+              , objTable.Name, sTriggerName _
+              , objTable.ID _
+              , String.Join(",", aryAllWriteableColumns.ToArray()), String.Join("," & vbNewLine, aryAllWriteableFormatted.ToArray()))
+          ScriptTrigger("dbo", objTable, TriggerType.InsteadOfInsert, sSQL, existingTriggers)
+
+          ' -------------------
+          ' AFTER INSERT
+          ' -------------------
+          sTriggerName = String.Format("{0}{1}_i02", Consts.Trigger, objTable.Name)
+          sSQL = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tableid] integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
+              "    DECLARE @dChangeDate datetime," & vbNewLine & _
+              "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
+              "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
+              SQLAfterInsertColumns & vbNewLine & _
+              "    -- Audit Trail" & vbNewLine & _
+              "{2}" & vbNewLine & vbNewLine & _
+              sSQLCode_Audit & _
+              sValidation & vbNewLine & _
+              "    DELETE [dbo].[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3};" & vbNewLine & vbNewLine & _
+              "{4}" & vbNewLine & vbNewLine _
+              , objTable.Name, sTriggerName, sSQLCode_AuditInsert, objTable.ID, objTable.SysMgrInsertTrigger)
+          ScriptTrigger("dbo", objTable, TriggerType.AfterInsert, sSQL, existingTriggers)
+
+          ' -------------------
+          ' INSTEAD OF UPDATE
+          ' -------------------
+          sTriggerName = String.Format("{0}{1}_u01", Consts.Trigger, objTable.Name)
+          sSQL = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
+              "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
+              "    SET @sValidation = '';" & vbNewLine & _
+              "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
+              sSQLCode_Bypass & _
+              "    INSERT [dbo].[{4}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {5}, 2, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
+              "{3}" & vbNewLine & vbNewLine & _
+              sValidation & vbNewLine & vbNewLine & _
+              "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {2};" & vbNewLine _
+              , objTable.Name, sTriggerName _
+              , objTable.ID _
+              , sSQLWriteableColumns _
+              , Consts.SysTriggerTransaction, objTable.ID)
+          ScriptTrigger("dbo", objTable, TriggerType.InsteadOfUpdate, sSQL, existingTriggers)
+
+          ' -------------------
+          ' AFTER UPDATE
+          ' -------------------
+          sTriggerName = String.Format("{0}{1}_u02", Consts.Trigger, objTable.Name)
+          sSQL = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), tableid integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
+              "    DECLARE @dChangeDate datetime," & vbNewLine & _
+              "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
+              "    SELECT @forcerefresh = dbo.[udfsys_triggerrequiresrefresh]();" & vbNewLine & _
+              "    SELECT TOP 1 @startingtrigger = ISNULL([actiontype],2) FROM dbo.[tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {3} ORDER BY [nestlevel] ASC;" & vbNewLine & _
+              "    SELECT TOP 1 @startingtriggertable = ISNULL([tablefromid],0) FROM dbo.[tbsys_intransactiontrigger] WHERE [spid] = @@spid ORDER BY [nestlevel] ASC;" & vbNewLine & _
+              "    SET @sValidation = '';" & vbNewLine & _
+              "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
+              sSQLCalculatedColumns & vbNewLine & vbNewLine & _
+              sSQLParentColumns & vbNewLine & _
+              sSQLChildColumns & vbNewLine & vbNewLine & _
+              "{6}" & vbNewLine & _
+              sSQLCode_Audit & _
+              sSQLSpecialUpdate & _
+              "{7}" & vbNewLine & vbNewLine & _
+              "{8}" & vbNewLine & vbNewLine & _
+              "{9}" & vbNewLine & vbNewLine _
+              , objTable.Name, sTriggerName _
+              , "", objTable.ID, Consts.SysTriggerTransaction _
+              , "" _
+              , sSQLCode_AuditUpdate, sSQLPostAuditCalcs, objTable.SysMgrUpdateTrigger, sSQLFusionCode) & vbNewLine & vbNewLine
+          ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSQL, existingTriggers)
+
+          ' -------------------
+          ' AFTER DELETE
+          ' -------------------
+          sTriggerName = String.Format("{0}{1}_d02", Consts.Trigger, objTable.Name)
+
+          ' To be replaced by a recycle bin in a future version?
+          If bStopDeletion Then
+
+            sSQL = "	DECLARE @sValidation nvarchar(MAX);" & vbNewLine & _
+                "SET @sValidation = 'Cannot delete this record whilst in Fusion connectivity mode.';" & vbNewLine & _
+                "RAISERROR(@sValidation, 16, 1);" & vbNewLine
+            ScriptTrigger("dbo", objTable, TriggerType.InsteadOfDelete, sSQL, existingTriggers)
+            DropTrigger("dbo", objTable, TriggerType.AfterDelete, existingTriggers)
+
+          Else
+
+            sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tablename] varchar(255), [tableid] integer, [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
+                "    DECLARE @dChangeDate datetime;" & vbNewLine & _
+                "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
+                "    INSERT [dbo].[{4}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {5}, 3, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
+                "    -- Audit Trail" & vbNewLine & _
+                "{2}" & vbNewLine & vbNewLine & _
+                sSQLCode_Audit & _
+                sSQLSpecialUpdate & _
+                "{3}" & vbNewLine & vbNewLine & _
+                "{6}" & vbNewLine & vbNewLine & _
+                "    -- Clear the temporary trigger status table" & vbNewLine & _
+                "    DELETE [dbo].[{4}] WHERE [spid] = @@spid AND [tablefromid] = {5};" & vbNewLine & vbNewLine _
+                , objTable.Name, sTriggerName, sSQLCode_AuditDelete, sSQLParentColumns_Delete _
+                , Consts.SysTriggerTransaction, objTable.ID, objTable.SysMgrDeleteTrigger)
+
+            DropTrigger("dbo", objTable, TriggerType.InsteadOfDelete, existingTriggers)
+            ScriptTrigger("dbo", objTable, TriggerType.AfterDelete, sSQL, existingTriggers)
+
+          End If
+
+
+        Next
+
+      Catch ex As Exception
+        Globals.ErrorLog.Add(SystemFramework.ErrorHandler.Section.Triggers, sTriggerName, SystemFramework.ErrorHandler.Severity.Error, ex.Message, sSQL)
+        bOK = False
+
+      Finally
+
+      End Try
 
          Return bOK
 
       End Function
+
+    Private Sub DropTrigger(ByVal [Role] As String, ByVal [Table] As Table, ByVal [TriggerType] As TriggerType, ByVal existingTriggers As IDictionary(Of String, ScriptedMetadata))
+
+      Dim sSQL As String = String.Empty
+      Dim sTriggerName As String = String.Empty
+
+      Try
+
+        Select Case [TriggerType]
+          Case TriggerType.InsteadOfInsert
+            sTriggerName = String.Format("{0}{1}_i01", Consts.Trigger, Table.Name)
+
+          Case TriggerType.AfterInsert
+            sTriggerName = String.Format("{0}{1}_i02", Consts.Trigger, Table.Name)
+
+          Case TriggerType.InsteadOfUpdate
+            sTriggerName = String.Format("{0}{1}_u01", Consts.Trigger, Table.Name)
+
+          Case TriggerType.AfterUpdate
+            sTriggerName = String.Format("{0}{1}_u02", Consts.Trigger, Table.Name)
+
+          Case TriggerType.InsteadOfDelete
+            sTriggerName = String.Format("{0}{1}_d01", Consts.Trigger, Table.Name)
+
+          Case TriggerType.AfterDelete
+            sTriggerName = String.Format("{0}{1}_d02", Consts.Trigger, Table.Name)
+
+        End Select
+
+        Dim existingTrigger As ScriptedMetadata = Nothing
+        existingTriggers.TryGetValue(sTriggerName, existingTrigger)
+
+        If existingTrigger IsNot Nothing Then
+          sSQL = String.Format("DROP TRIGGER {0}", sTriggerName)
+          CommitDB.ScriptStatement(sSQL)
+        End If
+
+      Catch ex As Exception
+
+      End Try
+
+
+    End Sub
+
+
 
       Private Function ScriptTrigger(ByVal [Role] As String, ByVal [Table] As Table, ByVal [TriggerType] As TriggerType, ByVal [BodyCode] As String, existingTriggers As IDictionary(Of String, ScriptedMetadata)) As Boolean
 
@@ -908,12 +1007,17 @@ Namespace ScriptDB
           "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([{2}].[{0}]';" & vbNewLine & _
           "    SET NOCOUNT ON;" & vbNewLine & _
           "    DECLARE @iCount                integer," & vbNewLine & _
+          "            @localID               integer," & vbNewLine & _
           "            @isovernight           bit," & vbNewLine & _
           "            @startingtrigger       tinyint," & vbNewLine & _
           "            @startingtriggertable  integer," & vbNewLine & _
           "            @forcerefresh          bit," & vbNewLine & _
+          "            @fusionMessageName     varchar(128)," & vbNewLine & _
+          "            @bIsFusionMessage      bit," & vbNewLine & _
           "            @username              varchar(255);" & vbNewLine & vbNewLine & _
           "    SELECT @isovernight = dbo.[udfsys_isovernightprocess]();" & vbNewLine & _
+          "    SELECT @fusionMessageName = RTRIM(LTRIM(ISNULL(SUBSTRING(CAST(CONTEXT_INFO() AS varchar(128)),0,128),'')));" & vbNewLine & _
+          "    SELECT @bIsFusionMessage = CASE SUBSTRING(@fusionMessageName,1,6) WHEN 'Fusion' THEN 1 ELSE 0 END;" & vbNewLine & _
           "    SELECT @username =	CASE WHEN UPPER(LEFT(APP_NAME(), 15)) = 'OPENHR WORKFLOW' THEN 'OpenHR Workflow'" & vbNewLine & _
           "          ELSE CASE WHEN @isovernight = 1 THEN 'OpenHR Overnight Process' ELSE RTRIM(SYSTEM_USER) END END" & vbNewLine & vbNewLine & _
           "{4}" & vbNewLine & vbNewLine & _

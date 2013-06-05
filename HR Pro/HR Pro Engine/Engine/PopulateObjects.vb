@@ -25,6 +25,7 @@ Namespace Things
       PopulateTableValidations()
       PopulateTableRecordDescriptions()
       PopulateTableMasks()
+      PopulateFusionMessages()
 
       componentbase = Nothing
       componentfunction = Nothing
@@ -460,6 +461,27 @@ Namespace Things
       Return collection
 
     End Function
+
+    Public Sub PopulateFusionMessages()
+
+      Dim ds As DataSet = Globals.CommitDB.ExecStoredProcedure("fusion.spGetMessageDefinitions", Nothing)
+
+      For Each row As DataRow In ds.Tables(0).Rows
+
+        Dim table As Table = Globals.Tables.GetById(CInt(row.Item("tableid")))
+
+        If Not table Is Nothing Then
+          Dim message As New FusionMessage
+          message.ID = row.Item("id").ToString
+          message.Name = row.Item("name").ToString
+          message.StopDeletion = row.Item("stopdeletion").ToString
+          message.ByPassValidation = row.Item("bypassvalidation").ToString
+
+          table.FusionMessages.Add(message)
+        End If
+      Next
+
+    End Sub
 
     Public Sub PopulateTableMasks()
 
