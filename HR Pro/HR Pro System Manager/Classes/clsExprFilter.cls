@@ -121,8 +121,6 @@ Public Function PrintComponent(piLevel As Integer) As Boolean
   Printer.CurrentY = Printer.CurrentY + giPRINT_YSPACE
   Printer.Print "Filter : " & ComponentDescription
   
-  CheckEndOfPage2 glngBottom
-  
 TidyUpAndExit:
   PrintComponent = fOK
   Exit Function
