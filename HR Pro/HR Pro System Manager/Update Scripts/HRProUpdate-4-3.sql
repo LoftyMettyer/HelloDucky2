@@ -123,6 +123,15 @@ PRINT 'Step 2 - Scripted Updates Date Effective Module'
 	END
 
 /* ------------------------------------------------------------- */
+PRINT 'Step 18 - System Functions'
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_generateuniquecodes]') AND xtype = 'P')
+		DROP PROCEDURE dbo.[spadmin_generateuniquecodes]
+
+	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[tbsys_uniquecodes]') AND xtype = 'U')
+		EXECUTE sp_executesql N'EXECUTE sp_rename [ASRSysUniqueCodes], [tbsys_uniquecodes];';
+
+/* ------------------------------------------------------------- */
 PRINT 'Step 3 - New admin system security'
 
 	IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = N'ASRSysAdmins' AND type = 'R')
@@ -582,12 +591,12 @@ PRINT 'Step 9 - Drop all HR Pro defined object (schema binding)'
 	--PRINT @NVarCommand;
 	--EXECUTE sp_executesql @NVarCommand;
 
-	-- Calculations
-	SELECT @NVarCommand = @NVarCommand + 'DROP FUNCTION dbo.[' + name + '];'
-		FROM dbo.sysobjects
-		WHERE name LIKE 'udfcalc_%'
-			AND xtype in (N'FN', N'IF', N'TF')
-	EXECUTE sp_executesql @NVarCommand;
+	---- Calculations
+	--SELECT @NVarCommand = @NVarCommand + 'DROP FUNCTION dbo.[' + name + '];'
+	--	FROM dbo.sysobjects
+	--	WHERE name LIKE 'udfcalc_%'
+	--		AND xtype in (N'FN', N'IF', N'TF')
+	--EXECUTE sp_executesql @NVarCommand;
 
 
 /* ------------------------------------------------------------- */
@@ -735,88 +744,6 @@ PRINT 'Step 11 - Add new calculation procedures'
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
 
-	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfstat_ParentalLeaveEntitlement] (
-		@DateOfBirth	datetime,
-		@AdoptedDate	datetime,
-		@Disabled		bit,
-		@Region			varchar(MAX))
-	RETURNS float
-	AS
-	BEGIN
-
-		DECLARE @pdblResult			float,
-			@Today					datetime,
-			@ChildAge				integer,
-			@Adopted				bit,
-			@YearsOfResponsibility	integer,
-			@StartDate				datetime,
-			@Standard				integer,
-			@Extended				integer;
-
-		SET @Standard = 65;
-		SET @Extended = 90;
-		IF @Region = ''Rep of Ireland''
-		BEGIN
-			SET @Standard = 70;
-			SET @Extended = 70;
-		END
-
-		-- Check if we should used the Date of Birth or the Date of Adoption column...
-		SET @Adopted = 0;
-		SET @StartDate = @DateOfBirth;
-		IF NOT @AdoptedDate IS NULL
-		BEGIN
-			SET @Adopted = 1;
-			SET @StartDate = @AdoptedDate;
-		END
-
-		-- Set variables based on this date...
-		--( years of responsibility = years since born or adopted)
-		SET @Today = GETDATE();
-		SELECT @ChildAge = [dbo].[udfsys_wholeyearsbetweentwodates](@DateOfBirth, @Today);
-		SELECT @YearsOfResponsibility = [dbo].[udfsys_wholeyearsbetweentwodates](@StartDate, @Today);
-
-		SELECT @pdblResult = CASE
-			WHEN @Disabled = 0 AND @Adopted = 0 AND @ChildAge < 5
-				THEN @Standard
-			WHEN @Disabled = 0 AND @Adopted = 1 AND @ChildAge < 18
-				AND @YearsOfResponsibility < 5 THEN	@Standard
-			WHEN @Disabled = 1 AND @Adopted = 0 AND @ChildAge < 18 
-				AND DATEDIFF(d,''12/15/1994'',@DateOfBirth) >= 0 THEN @Extended
-			WHEN @Disabled = 1 AND @Adopted = 1 AND @ChildAge < 18 
-				AND DATEDIFF(d,''12/15/1994'',@AdoptedDate) >= 0 THEN @Extended
-			ELSE 0
-			END;
-
-		RETURN ISNULL(@pdblResult,0);
-
-	END'
-	EXECUTE sp_executeSQL @sSPCode;
-
-	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_weekdaysbetweentwodates](
-		@datefrom AS datetime,
-		@dateto AS datetime)
-	RETURNS integer
-	WITH SCHEMABINDING
-	AS
-	BEGIN
-	
-		DECLARE @result integer;
-
-		SELECT @result = CASE 
-			WHEN DATEDIFF (day, @datefrom, @dateto) <= 0 THEN 0
-			ELSE DATEDIFF(day, @datefrom, @dateto + 1) 
-				- (2 * (DATEDIFF(day, @datefrom - (DATEPART(dw, @datefrom) -1),
-					@dateto	- (DATEPART(dw, @dateto) - 1)) / 7))
-				- CASE WHEN DATEPART(dw, @datefrom) = 1 THEN 1 ELSE 0 END
-				- CASE WHEN DATEPART(dw, @dateto) = 7 THEN 1 ELSE 0	END
-				END;
-				
-		RETURN @result;
-		
-	END';
-	EXECUTE sp_executeSQL @sSPCode;
-
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_wholemonthsbetweentwodates](
 		@date1 	datetime,
 		@date2 	datetime)
@@ -882,7 +809,6 @@ PRINT 'Step 11 - Add new calculation procedures'
 	END';
 	EXECUTE sp_executeSQL @sSPCode;
 
-
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_convertcharactertonumeric]
 		(@psToConvert nvarchar(MAX))
 	RETURNS numeric(38,8)
@@ -918,9 +844,6 @@ PRINT 'Step 11 - Add new calculation procedures'
 	END'
 	EXECUTE sp_executeSQL @sSPCode;
 
-
-
-
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_firstnamefromforenames] (
 		@forenames nvarchar(max))
 	RETURNS nvarchar(max)
@@ -954,6 +877,7 @@ PRINT 'Step 11 - Add new calculation procedures'
 		@recordID	integer
 	)
 	RETURNS bit
+	WITH SCHEMABINDING
 	AS
 	BEGIN
 
@@ -967,7 +891,7 @@ PRINT 'Step 11 - Add new calculation procedures'
 		SET @todate = DATEADD(dd, 0, DATEDIFF(dd, 0, @todate));
 
 		SELECT @result = CASE WHEN
-				EXISTS(SELECT [DateTimeStamp] FROM [ASRSysAuditTrail]
+				EXISTS(SELECT [DateTimeStamp] FROM dbo.[ASRSysAuditTrail]
 					WHERE [ColumnID] = @columnid AND [TableID] = @tableID
 					AND @recordID = [RecordID] 
 					AND [DateTimeStamp] >= @fromdate AND DateTimeStamp < @todate + 1)
@@ -983,6 +907,7 @@ PRINT 'Step 11 - Add new calculation procedures'
 		@recordID	integer
 	)
 	RETURNS datetime
+	WITH SCHEMABINDING
 	AS
 	BEGIN
 
@@ -993,7 +918,7 @@ PRINT 'Step 11 - Add new calculation procedures'
 		SET @tableid = SUBSTRING(@colrefID, 1, 8);
 		SET @columnid = SUBSTRING(@colrefID, 10, 8);
 
-		SELECT TOP 1 @result = [DateTimeStamp] FROM [ASRSysAuditTrail]
+		SELECT TOP 1 @result = [DateTimeStamp] FROM dbo.[ASRSysAuditTrail]
 			WHERE [ColumnID] = @columnid AND [TableID] = @tableID
 				AND @recordID = [RecordID]
 			ORDER BY [DateTimeStamp] DESC ;
@@ -1008,13 +933,14 @@ PRINT 'Step 11 - Add new calculation procedures'
 			@rootvalue as integer,
 			@rowoffset AS integer)
 		RETURNS [nvarchar](255)
+		WITH SCHEMABINDING
 		AS
 		BEGIN
 		
 			DECLARE @result nvarchar(255);
 
 			SELECT @result = convert(integer, [maxcodesuffix]) + @rowoffset
-				FROM tbsys_uniquecodes WHERE [codeprefix] = @prefix;
+				FROM dbo.[tbsys_uniquecodes] WHERE [codeprefix] = @prefix;
 			
 			RETURN @result;
 		
@@ -1033,12 +959,13 @@ PRINT 'Step 11 - Add new calculation procedures'
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_getfunctionparametertype]
 			(@functionid integer, @parameterindex integer)
 		RETURNS integer
+		WITH SCHEMABINDING
 		AS
 		BEGIN
 		
 			DECLARE @result integer;
 		
-			SELECT @result = [parametertype] FROM ASRSysFunctionParameters
+			SELECT @result = [parametertype] FROM dbo.ASRSysFunctionParameters
 				WHERE @functionid = [functionID] AND @parameterindex = [parameterIndex];
 		
 			RETURN @result;
@@ -1048,7 +975,7 @@ PRINT 'Step 11 - Add new calculation procedures'
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_initialsfromforenames] 
 		(
-			@forenames	varchar(8000),
+			@forenames	varchar(255),
 			@padwithspace bit
 		)
 		RETURNS nvarchar(10)
@@ -1160,13 +1087,14 @@ PRINT 'Step 11 - Add new calculation procedures'
 
 	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_isovernightprocess] ()
 	RETURNS bit 
+	WITH SCHEMABINDING
 	AS
 	BEGIN
 	
 		DECLARE @result bit;
 		
 		SET @result = 0;
-		SELECT @result = ISNULL(settingValue,0) FROM ASRSysSystemSettings WHERE section = ''database'' AND settingKey = ''updatingdatedependantcolumns'';
+		SELECT @result = ISNULL(settingValue,0) FROM dbo.[ASRSysSystemSettings] WHERE section = ''database'' AND settingKey = ''updatingdatedependantcolumns'';
 		
 		RETURN @result;
 	END';
@@ -1280,6 +1208,7 @@ PRINT 'Step 11 - Add new calculation procedures'
 		@pfNumberToRound 	float,
 		@pfNearestNumber	float)
 	RETURNS float
+	WITH SCHEMABINDING
 	AS
 	BEGIN
 
@@ -1597,6 +1526,88 @@ PRINT 'Step 11 - Add new calculation procedures'
 		END'
 	EXECUTE sp_executeSQL @sSPCode;
 
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfstat_ParentalLeaveEntitlement] (
+		@DateOfBirth	datetime,
+		@AdoptedDate	datetime,
+		@Disabled		bit,
+		@Region			varchar(MAX))
+	RETURNS float
+	WITH SCHEMABINDING
+	AS
+	BEGIN
+
+		DECLARE @pdblResult			float,
+			@Today					datetime,
+			@ChildAge				integer,
+			@Adopted				bit,
+			@YearsOfResponsibility	integer,
+			@StartDate				datetime,
+			@Standard				integer,
+			@Extended				integer;
+
+		SET @Standard = 65;
+		SET @Extended = 90;
+		IF @Region = ''Rep of Ireland''
+		BEGIN
+			SET @Standard = 70;
+			SET @Extended = 70;
+		END
+
+		-- Check if we should used the Date of Birth or the Date of Adoption column...
+		SET @Adopted = 0;
+		SET @StartDate = @DateOfBirth;
+		IF NOT @AdoptedDate IS NULL
+		BEGIN
+			SET @Adopted = 1;
+			SET @StartDate = @AdoptedDate;
+		END
+
+		-- Set variables based on this date...
+		--( years of responsibility = years since born or adopted)
+		SET @Today = GETDATE();
+		SELECT @ChildAge = [dbo].[udfsys_wholeyearsbetweentwodates](@DateOfBirth, @Today);
+		SELECT @YearsOfResponsibility = [dbo].[udfsys_wholeyearsbetweentwodates](@StartDate, @Today);
+
+		SELECT @pdblResult = CASE
+			WHEN @Disabled = 0 AND @Adopted = 0 AND @ChildAge < 5
+				THEN @Standard
+			WHEN @Disabled = 0 AND @Adopted = 1 AND @ChildAge < 18
+				AND @YearsOfResponsibility < 5 THEN	@Standard
+			WHEN @Disabled = 1 AND @Adopted = 0 AND @ChildAge < 18 
+				AND DATEDIFF(d,''12/15/1994'',@DateOfBirth) >= 0 THEN @Extended
+			WHEN @Disabled = 1 AND @Adopted = 1 AND @ChildAge < 18 
+				AND DATEDIFF(d,''12/15/1994'',@AdoptedDate) >= 0 THEN @Extended
+			ELSE 0
+			END;
+
+		RETURN ISNULL(@pdblResult,0);
+
+	END'
+	EXECUTE sp_executeSQL @sSPCode;
+
+	SET @sSPCode = 'CREATE FUNCTION [dbo].[udfsys_weekdaysbetweentwodates](
+		@datefrom AS datetime,
+		@dateto AS datetime)
+	RETURNS integer
+	WITH SCHEMABINDING
+	AS
+	BEGIN
+	
+		DECLARE @result integer;
+
+		SELECT @result = CASE 
+			WHEN DATEDIFF (day, @datefrom, @dateto) <= 0 THEN 0
+			ELSE DATEDIFF(day, @datefrom, @dateto + 1) 
+				- (2 * (DATEDIFF(day, @datefrom - (DATEPART(dw, @datefrom) -1),
+					@dateto	- (DATEPART(dw, @dateto) - 1)) / 7))
+				- CASE WHEN DATEPART(dw, @datefrom) = 1 THEN 1 ELSE 0 END
+				- CASE WHEN DATEPART(dw, @dateto) = 7 THEN 1 ELSE 0	END
+				END;
+				
+		RETURN @result;
+		
+	END';
+	EXECUTE sp_executeSQL @sSPCode;
 
 
 /* ------------------------------------------------------------- */
@@ -1825,15 +1836,6 @@ PRINT 'Step 17 - Trigger functionality'
 
 	EXEC spsys_setsystemsetting 'advanceddatabasesetting', 'globalupdatebatchsize', 1;
 
-/* ------------------------------------------------------------- */
-PRINT 'Step 18 - System Functions'
-
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spadmin_generateuniquecodes]') AND xtype = 'P')
-		DROP PROCEDURE dbo.[spadmin_generateuniquecodes]
-
-	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[tbsys_uniquecodes]') AND xtype = 'U')
-		EXECUTE sp_executesql N'EXECUTE sp_rename [ASRSysUniqueCodes], [tbsys_uniquecodes];';
-	
 /* ------------------------------------------------------------- */
 PRINT 'Step 19 - New Shared Table Transfer Types for ASPP'
 
