@@ -148,7 +148,6 @@ Begin VB.Form frmWorkflowLogDetails
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   19844
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
