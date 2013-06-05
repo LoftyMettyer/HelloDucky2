@@ -343,11 +343,11 @@ Begin VB.Form frmOrder
             Key             =   "IMG_COLUMN"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrder.frx":17F2
+            Picture         =   "frmOrder.frx":1978
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrder.frx":1BA3
+            Picture         =   "frmOrder.frx":1D29
             Key             =   "IMG_CALC"
          EndProperty
       EndProperty
@@ -365,11 +365,11 @@ Begin VB.Form frmOrder
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   2
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrder.frx":1FB3
-            Key             =   "IMG_DOWN"
+            Picture         =   "frmOrder.frx":2139
+            Key             =   ""
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrder.frx":238F
+            Picture         =   "frmOrder.frx":248D
             Key             =   "IMG_UP"
          EndProperty
       EndProperty
