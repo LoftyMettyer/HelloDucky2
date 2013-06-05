@@ -2179,7 +2179,7 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
       ' Get Field From Database Record handled differently
       With recColEdit
         .Index = "idxColumnID"
-        .Seek "=", Val(mcolParameters(1).Component.Components(1).Component.ColumnID)
+        .Seek "=", val(mcolParameters(1).Component.Components(1).Component.ColumnID)
         fOK = Not .NoMatch
     
         If fOK Then
@@ -2194,7 +2194,7 @@ Public Function StoredProcedureCode(Optional strBaseTable As String) As String
           If fOK Then
             sSrchTableName = recTabEdit!TableName
     
-            .Seek "=", Val(mcolParameters(3).Component.Components(1).Component.ColumnID)
+            .Seek "=", val(mcolParameters(3).Component.Components(1).Component.ColumnID)
             fOK = Not .NoMatch
       
             If fOK Then
@@ -2722,7 +2722,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
       Case 21  ' First Name from Forenames
         sCode = _
           "case" & _
-          "    when charindex(' ', ltrim(" & sParamCode1 & ")) > 0 then substring(ltrim(" & sParamCode1 & "), 1, charindex(' ', ltrim(" & sParamCode1 & ")))" & _
+          "    when charindex(' ', ltrim(" & sParamCode1 & ")) > 0 then substring(ltrim(" & sParamCode1 & "), 1, charindex(' ', ltrim(" & sParamCode1 & "))-1)" & _
           "    else ltrim(" & sParamCode1 & ")" & _
           "end"
       
@@ -2913,7 +2913,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
         ' Get the column parameter definitions.
         With recColEdit
           .Index = "idxColumnID"
-          .Seek "=", Val(sParamCode1)
+          .Seek "=", val(sParamCode1)
           fOK = Not .NoMatch
           
           If fOK Then
@@ -2928,7 +2928,7 @@ Public Function RuntimeCode(psRuntimeCode As String, _
             If fOK Then
               sSrchTableName = recTabEdit!TableName
             
-              .Seek "=", Val(sParamCode3)
+              .Seek "=", val(sParamCode3)
               fOK = Not .NoMatch
             
               If fOK Then
