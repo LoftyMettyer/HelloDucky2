@@ -237,7 +237,7 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:HR Pro System Framework Setup"
+        "ProductName" = "8:HR Pro System Framework"
         "ProductCode" = "8:{5E307BD6-5A13-431A-A38B-00242F0719BB}"
         "PackageCode" = "8:{C11FFF35-69CD-4075-874D-353954234449}"
         "UpgradeCode" = "8:{416839EF-23B1-4660-A4AD-E908AB32842E}"
@@ -250,9 +250,9 @@
         "Manufacturer" = "8:Advanced Computer Software"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:HR Pro System Framework Setup"
+        "Title" = "8:HR Pro System Framework"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:Advanced Business and Software Solutions Limited"
+        "ARPCONTACT" = "8:Advanced Business Software and Solutions Limited"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:System framework for HR Pro"
         "ARPURLINFOABOUT" = "8:http://www.advancedcomputersoftware.com/"
@@ -770,7 +770,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_64A94834F18A48339DC3AC2694BA4D97"
             {
-            "SourcePath" = "8:..\\Engine\\obj\\Debug\\HRProEngine.dll"
+            "SourcePath" = "8:..\\Engine\\obj\\Release\\HRProEngine.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
