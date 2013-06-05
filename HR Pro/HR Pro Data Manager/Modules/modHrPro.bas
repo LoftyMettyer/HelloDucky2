@@ -2022,6 +2022,8 @@ Public Sub InitialiseModules()
   gbWorkflowEnabled = IsModuleEnabled(modWorkflow)
   gbWorkflowOutOfOfficeEnabled = OutOfOfficeEnabled
 
+  gbVersion1Enabled = IsModuleEnabled(modVersionOne)
+
 End Sub
 
 
