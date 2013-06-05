@@ -740,7 +740,6 @@ Namespace Things
         ChildCodeCluster.Add(ExtraCode)
       End If
 
-
       LineOfCode.Code = String.Format(LineOfCode.Code, ChildCodeCluster.ToArray)
       RequiresOvernight = RequiresOvernight Or objCodeLibrary.OvernightOnly
       _calculatePostAudit = _calculatePostAudit Or objCodeLibrary.CalculatePostAudit
@@ -783,6 +782,7 @@ Namespace Things
       Dim LineOfCode As ScriptDB.CodeElement
       Dim objExpression As Expression
       Dim objColumn As Column
+      Dim bExtraCaseAdded As Boolean = False
 
       ' Build code for the parameters
       ChildCodeCluster = New ScriptDB.LinesOfCode
@@ -792,8 +792,7 @@ Namespace Things
       ' Hack to hanld the first clause of an "if... then... else" function. The first parameter can be defined in all manner of ways that we need
       ' to make typesafe (i.e. if its a logic add a '= 1' at the end)
       If Component.FunctionID = 4 And Component.Parent.Components(0).ID = [Component].ID Then
-        ChildCodeCluster.MakeTypesafe = False
-        'Me.CaseCount = Me.CaseCount + 2
+        ChildCodeCluster.CaseReturnType = ScriptDB.CaseReturnType.Condition
       End If
 
       ' Nesting is too deep - convert to part number
@@ -819,7 +818,7 @@ Namespace Things
         Me.ReferencesChild = Me.ReferencesChild Or objExpression.ReferencesChild
 
         ' If first part of an if... then... else process slightly differently
-        If Not ChildCodeCluster.MakeTypesafe And objExpression.ReturnType = ScriptDB.ComponentValueTypes.Logic Then
+        If ChildCodeCluster.CaseReturnType = ScriptDB.CaseReturnType.Condition Then
           LineOfCode.Code = String.Format("{0} = 1", Dependencies.Add(objExpression))
         Else
           LineOfCode.Code = Dependencies.Add(objExpression)

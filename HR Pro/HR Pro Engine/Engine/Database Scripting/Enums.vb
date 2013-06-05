@@ -100,6 +100,11 @@
     '[Component_Date] = 104
   End Enum
 
+  Public Enum CaseReturnType
+    [Condition] = 0
+    [Result] = 1
+  End Enum
+
   'Public Enum ObjectTypes
   '  [All] = -2
   '  '[TablesAndViews] = -1

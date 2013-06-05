@@ -13,6 +13,7 @@ Namespace ScriptDB
     Public Property CodeLevel As Integer
     Public Property ReturnType As ComponentValueTypes
     Public Property MakeTypesafe As Boolean = True
+    Public Property CaseReturnType As CaseReturnType = ScriptDB.CaseReturnType.Result
     Public Property IsLogicBlock As Boolean
 
     Public Overloads Sub Add(ByVal LineOfCode As CodeElement)
@@ -58,13 +59,16 @@ Namespace ScriptDB
         Dim iThisElement As Integer
         Dim bComparisonSinceLastLogic As Boolean
 
-        Dim bAddAutoIsEqualTo As Boolean
+        Dim bNeedsIsEqualTo As Boolean
         Dim bNewLine As Boolean
+        Dim bConvertLogicToResult = False
 
         Statement = String.Empty
         For Each Chunk In Me.Items
-          bAddAutoIsEqualTo = False
+          bNeedsIsEqualTo = False
           bNewLine = False
+
+          Debug.Print(Chunk.Code)
 
           If ReturnType = ComponentValueTypes.Logic Then
 
@@ -89,18 +93,19 @@ Namespace ScriptDB
             If Me.Items.Count - 1 > iThisElement Then
               If Me.Items(iThisElement + 1).OperatorType = OperatorSubType.Logic Then
                 If Not bComparisonSinceLastLogic Then
-                  bAddAutoIsEqualTo = True
+                  bNeedsIsEqualTo = True
+                  IsLogicBlock = True
                 End If
               End If
             Else
-              bAddAutoIsEqualTo = Not bComparisonSinceLastLogic
+              bNeedsIsEqualTo = Not bComparisonSinceLastLogic
             End If
 
             ' Am I the last component and was there an operator before me?
             If iThisElement = Me.Items.Count - 1 And iThisElement > 0 Then
               If Me.Items(iThisElement - 1).OperatorType = OperatorSubType.Logic Then
                 If Not bComparisonSinceLastLogic Then
-                  bAddAutoIsEqualTo = True
+                  bNeedsIsEqualTo = True
                 End If
               End If
             End If
@@ -111,10 +116,15 @@ Namespace ScriptDB
           ' Does this code element make needing logic safe?
           ' Some logic expressions return a simple logic while others are set specifically 
           ' to logicval = 0, or have the not in front of them!
-          If bAddAutoIsEqualTo Then
+          If IsLogicBlock And bNeedsIsEqualTo Then
             Statement = String.Format("{0}{1}{2} = 1", Statement, IIf(bNewLine, vbNewLine & New String(CChar(vbTab), CodeLevel), vbNullString), Chunk.Code)
             IsLogicBlock = True
-            bAddAutoIsEqualTo = False
+            bNeedsIsEqualTo = False
+
+          ElseIf bNeedsIsEqualTo And CaseReturnType = ScriptDB.CaseReturnType.Condition Then
+            Statement = String.Format("{0}{1}{2} = 1", Statement, IIf(bNewLine, vbNewLine & New String(CChar(vbTab), CodeLevel), vbNullString), Chunk.Code)
+            IsLogicBlock = True
+            bNeedsIsEqualTo = False
           Else
             Statement = String.Format("{0}{1}{2}", Statement, IIf(bNewLine, vbNewLine & New String(CChar(vbTab), CodeLevel), vbNullString), Chunk.Code)
           End If
@@ -124,12 +134,15 @@ Namespace ScriptDB
         Next
 
         ' Wrap to return code chunks in safety (was there 'not' statement)
-        If IsLogicBlock And Me.ReturnType = ComponentValueTypes.Logic And MakeTypesafe Then
+        If IsLogicBlock And CaseReturnType = ScriptDB.CaseReturnType.Result Then
           Statement = String.Format("CASE WHEN ({0}) THEN 1 ELSE 0 END", Statement)
         End If
 
       End Get
     End Property
+
+
+
 
   End Class
 
