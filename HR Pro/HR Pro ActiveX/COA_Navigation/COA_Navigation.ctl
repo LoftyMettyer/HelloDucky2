@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
 Object = "{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}#1.1#0"; "ieframe.dll"
+Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
 Begin VB.UserControl COA_Navigation 
    ClientHeight    =   2010
    ClientLeft      =   0
@@ -17,39 +17,13 @@ Begin VB.UserControl COA_Navigation
    EndProperty
    ScaleHeight     =   2010
    ScaleWidth      =   2985
-   Begin VB.PictureBox picHidden 
-      Appearance      =   0  'Flat
-      BackColor       =   &H80000005&
-      ForeColor       =   &H80000008&
-      Height          =   510
-      Left            =   1800
-      Picture         =   "COA_Navigation.ctx":0000
-      ScaleHeight     =   480
-      ScaleWidth      =   660
-      TabIndex        =   4
-      Top             =   180
-      Visible         =   0   'False
-      Width           =   690
-   End
-   Begin VB.PictureBox picBrowser 
-      Appearance      =   0  'Flat
-      BackColor       =   &H80000005&
-      ForeColor       =   &H80000008&
-      Height          =   600
-      Left            =   1620
-      ScaleHeight     =   570
-      ScaleWidth      =   840
-      TabIndex        =   3
-      Top             =   1125
-      Width           =   870
-   End
    Begin SHDocVwCtl.WebBrowser WebBrowser1 
       Height          =   375
-      Left            =   135
-      TabIndex        =   2
-      Top             =   1350
-      Width           =   600
-      ExtentX         =   1058
+      Left            =   180
+      TabIndex        =   3
+      Top             =   1305
+      Width           =   1005
+      ExtentX         =   1773
       ExtentY         =   661
       ViewMode        =   0
       Offline         =   0
@@ -68,10 +42,36 @@ Begin VB.UserControl COA_Navigation
       ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
       Location        =   "http://search.mywebsearch.com/mywebsearch/AJmain.jhtml?PG=SEASUSH&SEC=ABMANY&st=kwd&ptnrS=ZJxdm088LCGB"
    End
+   Begin VB.PictureBox picHidden 
+      Appearance      =   0  'Flat
+      BackColor       =   &H80000005&
+      ForeColor       =   &H80000008&
+      Height          =   510
+      Left            =   1800
+      Picture         =   "COA_Navigation.ctx":0000
+      ScaleHeight     =   480
+      ScaleWidth      =   660
+      TabIndex        =   2
+      Top             =   180
+      Visible         =   0   'False
+      Width           =   690
+   End
+   Begin VB.PictureBox picBrowser 
+      Appearance      =   0  'Flat
+      BackColor       =   &H80000005&
+      ForeColor       =   &H80000008&
+      Height          =   600
+      Left            =   1620
+      ScaleHeight     =   570
+      ScaleWidth      =   840
+      TabIndex        =   1
+      Top             =   1125
+      Width           =   870
+   End
    Begin XtremeSuiteControls.PushButton PushButton1 
       Height          =   645
       Left            =   0
-      TabIndex        =   0
+      TabIndex        =   4
       Top             =   0
       Width           =   1275
       _Version        =   851969
@@ -95,7 +95,7 @@ Begin VB.UserControl COA_Navigation
       ForeColor       =   &H00FF0000&
       Height          =   330
       Left            =   0
-      TabIndex        =   1
+      TabIndex        =   0
       Top             =   990
       Width           =   2400
    End
@@ -106,6 +106,7 @@ Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
+Implements IObjectSafetyTLB.IObjectSafety
 
 Public Event ToolClickRequest(ByVal Tool As String)
 Public Event DBExecuteRequest(ByVal SQL As String)
@@ -138,6 +139,94 @@ Private mbEnabled As Boolean
 Private miControlLevel As Integer
 Private mForeColor As OLE_COLOR
 Private mbNavigateOnSave As Boolean
+
+Private Sub IObjectSafety_GetInterfaceSafetyOptions(ByVal riid As Long, _
+                                                    pdwSupportedOptions As Long, _
+                                                    pdwEnabledOptions As Long)
+
+    Dim Rc      As Long
+    Dim rClsId  As udtGUID
+    Dim IID     As String
+    Dim bIID()  As Byte
+
+    pdwSupportedOptions = INTERFACESAFE_FOR_UNTRUSTED_CALLER Or _
+                          INTERFACESAFE_FOR_UNTRUSTED_DATA
+
+    If (riid <> 0) Then
+        CopyMemory rClsId, ByVal riid, Len(rClsId)
+
+        bIID = String$(MAX_GUIDLEN, 0)
+        Rc = StringFromGUID2(rClsId, VarPtr(bIID(0)), MAX_GUIDLEN)
+        Rc = InStr(1, bIID, vbNullChar) - 1
+        IID = Left$(UCase(bIID), Rc)
+
+        Select Case IID
+            Case IID_IDispatch
+                pdwEnabledOptions = IIf(m_fSafeForScripting, _
+              INTERFACESAFE_FOR_UNTRUSTED_CALLER, 0)
+                Exit Sub
+            Case IID_IPersistStorage, IID_IPersistStream, _
+               IID_IPersistPropertyBag
+                pdwEnabledOptions = IIf(m_fSafeForInitializing, _
+              INTERFACESAFE_FOR_UNTRUSTED_DATA, 0)
+                Exit Sub
+            Case Else
+                Err.Raise E_NOINTERFACE
+                Exit Sub
+        End Select
+    End If
+    
+End Sub
+
+Private Sub IObjectSafety_SetInterfaceSafetyOptions(ByVal riid As Long, _
+                                                    ByVal dwOptionsSetMask As Long, _
+                                                    ByVal dwEnabledOptions As Long)
+    Dim Rc          As Long
+    Dim rClsId      As udtGUID
+    Dim IID         As String
+    Dim bIID()      As Byte
+
+    If (riid <> 0) Then
+        CopyMemory rClsId, ByVal riid, Len(rClsId)
+
+        bIID = String$(MAX_GUIDLEN, 0)
+        Rc = StringFromGUID2(rClsId, VarPtr(bIID(0)), MAX_GUIDLEN)
+        Rc = InStr(1, bIID, vbNullChar) - 1
+        IID = Left$(UCase(bIID), Rc)
+
+        Select Case IID
+            Case IID_IDispatch
+                If ((dwEnabledOptions And dwOptionsSetMask) <> _
+             INTERFACESAFE_FOR_UNTRUSTED_CALLER) Then
+                    Err.Raise E_FAIL
+                    Exit Sub
+                Else
+                    If Not m_fSafeForScripting Then
+                        Err.Raise E_FAIL
+                    End If
+                    Exit Sub
+                End If
+
+            Case IID_IPersistStorage, IID_IPersistStream, _
+          IID_IPersistPropertyBag
+                If ((dwEnabledOptions And dwOptionsSetMask) <> _
+              INTERFACESAFE_FOR_UNTRUSTED_DATA) Then
+                    Err.Raise E_FAIL
+                    Exit Sub
+                Else
+                    If Not m_fSafeForInitializing Then
+                        Err.Raise E_FAIL
+                    End If
+                    Exit Sub
+                End If
+
+            Case Else
+                Err.Raise E_NOINTERFACE
+                Exit Sub
+        End Select
+    End If
+    
+End Sub
 
 Private Sub lblHyperlink_Click()
   Navigate mstrNavigateTo
