@@ -1135,7 +1135,10 @@ Namespace Things
       If Globals.Options.OverflowSafety Then
 
         Select Case CInt(Me.AssociatedColumn.DataType)
-          Case ScriptDB.ColumnTypes.Text, ScriptDB.ColumnTypes.WorkingPattern, ScriptDB.ColumnTypes.Link
+          Case ScriptDB.ColumnTypes.WorkingPattern
+            sWrapped = Statement
+
+          Case ScriptDB.ColumnTypes.Text, ScriptDB.ColumnTypes.Link
             If Me.AssociatedColumn.Multiline Then
               sWrapped = Statement
             Else
