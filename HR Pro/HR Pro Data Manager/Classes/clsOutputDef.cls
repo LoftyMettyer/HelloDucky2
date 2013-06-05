@@ -472,17 +472,14 @@ Private Sub cmdFilename_Click()
   Dim txtEmailAttachAs As TextBox
   Dim blnEmail As Boolean
   Dim lngIndex As Long
-  Dim lngFormat As Long
 
   On Local Error GoTo LocalErr
   
-  'Set cd1 = mfrmParent.CommonDialog1
   Set cd1 = frmMain.CommonDialog1
   Set txtFilename = mfrmParent.txtFilename
   Set txtEmailAttachAs = mfrmParent.txtEmailAttachAs
   blnEmail = (mfrmParent.chkDestination(desEmail).Value = vbChecked)
-  
-  
+    
   With cd1
 
     .FileName = txtFilename.Text
@@ -493,16 +490,9 @@ Private Sub cmdFilename_Click()
     .CancelError = True
     .DialogTitle = "Output file name"
     .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames
-      
-    '  .FilterIndex = 3
-      
-'    lngFormat = IIf(txtFilename.Text <> "", Val(txtFilename.Tag), mlngFileFormatsDefault)
-'    For lngIndex = 1 To mlngFileFormats.Count
-'      If Val(mlngFileFormats(lngIndex)) = lngFormat Then
-'        .FilterIndex = lngIndex
-'        Exit For
-'      End If
-'    Next
+    
+    ' Save the save as dropdown to a correct format
+    SetSaveAsType
     
     .ShowSave
 
@@ -531,6 +521,30 @@ Exit Sub
 LocalErr:
   If Err.Number <> 32755 Then   '32755 = Cancel was selected.
     COAMsgBox Err.Description, vbCritical
+  End If
+
+End Sub
+
+Private Sub SetSaveAsType()
+
+  Dim aryFileBits() As String
+  Dim strExtension As String
+  Dim iCount As Integer
+ 
+  If mfrmParent.txtFilename.Text <> vbNullString Then
+
+    aryFileBits = Split(mfrmParent.txtFilename.Text, ".")
+    strExtension = UCase(aryFileBits(UBound(aryFileBits)))
+
+    aryFileBits = Split(frmMain.CommonDialog1.Filter, "(*.")
+    
+    For iCount = LBound(aryFileBits) To UBound(aryFileBits)
+      If InStr(1, UCase(aryFileBits(iCount)), strExtension + ")|*.", vbTextCompare) > 0 Then
+        frmMain.CommonDialog1.FilterIndex = iCount
+        Exit For
+      End If
+    Next iCount
+
   End If
 
 End Sub
