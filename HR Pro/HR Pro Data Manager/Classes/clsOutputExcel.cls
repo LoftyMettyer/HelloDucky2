@@ -1209,10 +1209,17 @@ Private Sub CreatePivotTable(lngMaxRows As Long, lngMaxCols As Long, strHor As S
 '        Orientation = xlDataField
 
 'EXCEL XP
-  'mxlWorkBook.PivotCaches.Add(SourceType:=xlDatabase, SourceData:= _
-      mxlWorkSheet.Range(mxlWorkSheet.Cells(mlngDataCurrentRow, mlngDataStartCol), mxlWorkSheet.Cells(lngMaxRows, lngMaxCols))).CreatePivotTable TableDestination:="", TableName:= _
-      "PivotTable1"
+'  mxlWorkBook.PivotCaches.Add(SourceType:=xlDatabase, SourceData:= _
+'      mxlWorkSheet.Range(mxlWorkSheet.Cells(mlngDataCurrentRow, mlngDataStartCol), mxlWorkSheet.Cells(lngMaxRows, lngMaxCols))).CreatePivotTable TableDestination:="", TableName:= _
+'      "PivotTable1"
   
+'Excel 2010
+'    ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:= _
+'        "Data Personnel_Records!R5C2:R59C11", Version:=xlPivotTableVersion14). _
+'        CreatePivotTable TableDestination:="Personnel_Records!R5C2", TableName:= _
+'        "PivotTable1", DefaultVersion:=xlPivotTableVersion14
+
+
   Set xlData = mxlWorkSheet.Range(mxlWorkSheet.Cells(mlngDataCurrentRow, mlngDataStartCol), mxlWorkSheet.Cells(lngMaxRows, lngMaxCols))
   strSheetName = Mid(mxlWorkSheet.Name, 6)
   'SetSheetName mxlWorkSheet, "Data " & mxlWorkSheet.Name
@@ -1228,10 +1235,14 @@ Private Sub CreatePivotTable(lngMaxRows As Long, lngMaxCols As Long, strHor As S
 
   mxlApp.DisplayAlerts = False
   
-  Set xlPivot = mxlWorkSheet.PivotTableWizard _
+  
+  'PivotCaches should be okay from Excel 2000 onwards?
+  'Set xlPivot = mxlWorkSheet.PivotTableWizard _
       (SourceType:=xlDatabase, _
       SourceData:=xlData, _
       TableDestination:=xlStart)
+  Set xlPivot = mxlWorkBook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:=xlData). _
+                CreatePivotTable(TableDestination:=xlStart)
 
   With xlPivot
     .AddFields RowFields:=strVer, ColumnFields:=strHor
@@ -1278,6 +1289,7 @@ Private Sub CreatePivotTable(lngMaxRows As Long, lngMaxCols As Long, strHor As S
     mxlApp.DisplayAlerts = True
   End With
 
+ 
   ApplyStyleToRange xlStart, colStyles("Heading")
   ApplyStyleToRange xlPivot.RowRange, colStyles("Heading")
   ApplyStyleToRange xlPivot.ColumnRange, colStyles("Heading")
