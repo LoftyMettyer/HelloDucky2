@@ -12,12 +12,12 @@
         Dim sMessage As String = vbNullString
 
         Select Case Me.ValidationType
-          Case Enums.ValidationType.Mandatory
+          Case ValidationType.Mandatory
             sMessage = String.Format("{0} is mandatory.", Column.Name)
 
-          Case Enums.ValidationType.Duplicate
+          Case ValidationType.Duplicate
 
-          Case Enums.ValidationType.UniqueInTable, Enums.ValidationType.UniqueInSiblings
+          Case ValidationType.UniqueInTable, ValidationType.UniqueInSiblings
             sMessage = String.Format("{0} is not unique.", Column.Name)
 
           Case Else

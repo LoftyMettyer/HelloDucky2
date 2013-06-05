@@ -8,13 +8,12 @@ Namespace Things
   Public MustInherit Class Base
     Implements COMInterfaces.IObject
 
-    Property ID As Integer
+    Public Property ID As Integer
     Public Overridable Property Name As String Implements IObject.Name
     Public Property Description As String
     Public Property SchemaName As String
     Public Property Encrypted As Boolean
     Public Property State As System.Data.DataRowState
-    Public Overridable Property SubType As Type
     Public Property Tuning As New ScriptDB.Tuning
 
     Public Overridable ReadOnly Property PhysicalName As String Implements IObject.PhysicalName

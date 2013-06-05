@@ -22,13 +22,13 @@ Namespace Things
     Public Property IsReadOnly As Boolean
 
     ' Formatting
-    Public Property CaseType As Enums.CaseType
-    Public Property TrimType As Enums.TrimType
-    Public Property Alignment As Enums.AlignType
+    Public Property CaseType As CaseType
+    Public Property TrimType As TrimType
+    Public Property Alignment As AlignType
     Public Property Mandatory As Boolean
     Public Property OLEType As ScriptDB.OLEType
 
-    Public Property UniqueType As Enums.UniqueCheckScope
+    Public Property UniqueType As UniqueCheckScope
 
     Public Property DefaultCalcID As Integer
     Public Property DefaultCalculation As Expression
@@ -151,21 +151,21 @@ Namespace Things
 
         ' Case
         Select Case Me.CaseType
-          Case Enums.CaseType.Lower
+          Case CaseType.Lower
             format = String.Format("LOWER({0})", format)
-          Case Enums.CaseType.Proper
+          Case CaseType.Proper
             format = String.Format("dbo.udfsys_propercase({0})", format)
-          Case Enums.CaseType.Upper
+          Case CaseType.Upper
             format = String.Format("UPPER({0})", format)
         End Select
 
         ' Trim type
         Select Case Me.TrimType
-          Case Enums.TrimType.Both
+          Case TrimType.Both
             format = String.Format("LTRIM(RTRIM({0}))", format)
-          Case Enums.TrimType.Left
+          Case TrimType.Left
             format = String.Format("LTRIM({0})", format)
-          Case Enums.TrimType.Right
+          Case TrimType.Right
             format = String.Format("RTRIM({0})", format)
         End Select
 

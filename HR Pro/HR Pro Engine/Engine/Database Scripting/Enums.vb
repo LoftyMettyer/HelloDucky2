@@ -25,6 +25,7 @@
       [Variable] = 9
     End Enum
 
+    'TODO: MOVE TO THINGS???
     Public Enum ColumnTypes
       [Logic] = -7
       [Binary] = -4

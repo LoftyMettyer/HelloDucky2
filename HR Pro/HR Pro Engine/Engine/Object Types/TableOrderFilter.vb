@@ -100,7 +100,7 @@
 
             If Not objOrderItem.Column Is Nothing And objOrderItem.Column.Table Is Me.Table Then
               Select Case objOrderItem.Ascending
-                Case Enums.Order.Ascending
+                Case Order.Ascending
                   aryOrderBy.Add(String.Format("base.[{1}] {2}", objOrderItem.Column.Table.Name, objOrderItem.Column.Name, If(bReverseOrder, "DESC", "ASC")))
                 Case Else
                   aryOrderBy.Add(String.Format("base.[{1}] {2}", objOrderItem.Column.Table.Name, objOrderItem.Column.Name, If(bReverseOrder, "ASC", "DESC")))

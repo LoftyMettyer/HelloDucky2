@@ -7,6 +7,7 @@ Namespace Things
     Inherits Base
     Implements ICloneable
 
+    Public Property SubType As ScriptDB.ComponentTypes
     Public Property ReturnType As ScriptDB.ComponentValueTypes
     Public Property FunctionID As Integer
     Public Property OperatorID As Integer

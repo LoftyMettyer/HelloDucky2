@@ -56,7 +56,7 @@ Namespace Things
 
       For Each component As Component In expression.Components
 
-        Select Case CInt(component.SubType)
+        Select Case component.SubType
           Case ScriptDB.ComponentTypes.Column
 
             Dim table As Table = Globals.Tables.GetById(component.TableID)
@@ -435,7 +435,7 @@ Namespace Things
       For Each objComponent In [components]
         guiObjectID = objComponent.ID
 
-        Select Case CType(CInt(objComponent.SubType), ScriptDB.ComponentTypes)
+        Select Case objComponent.SubType
 
           ' A table relationship
           Case ScriptDB.ComponentTypes.Relation
@@ -759,14 +759,14 @@ Namespace Things
 
             Case SettingType.ModuleSetting
               objIDComponent = New Component
-              objIDComponent.SubType = CType(CInt(ScriptDB.ComponentTypes.Relation), Enums.Type)
+              objIDComponent.SubType = ScriptDB.ComponentTypes.Relation
               objIDComponent.TableID = CInt(objSetting.Value)
               component.Components.Add(objIDComponent)
               Me.IsComplex = True
 
             Case SettingType.CodeItem
               objIDComponent = New Component
-              objIDComponent.SubType = CType(CInt(ScriptDB.ComponentTypes.Value), Enums.Type)
+              objIDComponent.SubType = ScriptDB.ComponentTypes.Value
               objIDComponent.ValueString = objSetting.Code
               objIDComponent.ValueType = ScriptDB.ComponentValueTypes.SystemVariable
               component.Components.Add(objIDComponent)

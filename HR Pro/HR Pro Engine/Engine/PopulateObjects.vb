@@ -52,14 +52,11 @@ Namespace Things
         Dim setting As New Setting
         setting.Module = row.Item("modulekey").ToString
         setting.Parameter = row.Item("parameterkey").ToString
-        setting.SubType = row.Item("subtype").ToString
 
         If Not row.Item("value").ToString = "" Then
-          Select Case setting.SubType
-            Case Type.Table
+          Select Case row.Item("subtype").ToString
+            Case 1
               setting.Table = Globals.Tables.GetById(row.Item("value").ToString)
-            Case Type.Column
-              setting.Value = row.Item("value").ToString
             Case Else
               setting.Value = row.Item("value").ToString
           End Select
@@ -201,7 +198,6 @@ Namespace Things
         Dim tableOrder = New TableOrder
         tableOrder.ID = row.Item("orderid").ToString
         tableOrder.Name = row.Item("name").ToString
-        tableOrder.SubType = row.Item("type").ToString
         tableOrder.Table = table
 
         table.TableOrders.Add(tableOrder)

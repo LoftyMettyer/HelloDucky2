@@ -5,11 +5,10 @@
     Inherits Base
 
     Public Property TableOrder As TableOrder
-    Public Property ColumnType As String
-    Public Property Order As Enums.Order
     Public Property Column As Column
-    Public Property Ascending As Enums.Order
+    Public Property ColumnType As String
     Public Property Sequence As Integer
+    Public Property Ascending As Order
 
   End Class
 End Namespace
