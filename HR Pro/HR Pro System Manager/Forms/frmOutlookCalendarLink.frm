@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "TIMASK6.OCX"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmOutlookCalendarLink 
@@ -126,9 +126,9 @@ Begin VB.Form frmOutlookCalendarLink
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmOutlookCalendarLink.frx":0E7C
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(0)"
+      Tab(1).Control(0)=   "fraColumns(2)"
       Tab(1).Control(1)=   "fraColumns(1)"
-      Tab(1).Control(2)=   "fraColumns(2)"
+      Tab(1).Control(2)=   "fraColumns(0)"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Co&ntent"
       TabPicture(2)   =   "frmOutlookCalendarLink.frx":0E98
@@ -1089,7 +1089,7 @@ Private Sub Form_Load()
 
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
 
   If ValidDefinition = False Then
     Exit Sub
@@ -1253,7 +1253,7 @@ Private Sub cmdCancel_Click()
   If Me.Changed Then
     Select Case MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
     Case vbYes
-      cmdOk_Click
+      cmdOK_Click
       Exit Sub
     Case vbCancel
       Exit Sub
@@ -1965,7 +1965,7 @@ Private Sub CheckListViewColWidth(lstvw As ListView)
         lngSelectedItem = objItem.Index
       End If
     
-      lngLen = Me.TextWidth(objItem.Text)
+      lngLen = TextWidth(objItem.Text)
       If lngMax < lngLen Then
         lngMax = lngLen
       End If
