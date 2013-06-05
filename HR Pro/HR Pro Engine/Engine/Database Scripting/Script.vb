@@ -516,11 +516,15 @@ Namespace ScriptDB
                            sCalculationCode = objColumn.Calculation.UDF.InlineCode
                         End If
 
-                        If objColumn.CalculateIfEmpty Then
-                           sColumnName = String.Format("[{0}] = ISNULL(NULLIF([{0}], {2}), {1})", objColumn.Name, sCalculationCode, objColumn.SafeReturnType)
-                        Else
-                           sColumnName = String.Format("[{0}] = {1}", objColumn.Name, sCalculationCode)
-                        End If
+                If objColumn.CalculateIfEmpty Then
+                  If objColumn.SafeReturnType = "NULL" Then
+                    sColumnName = String.Format("[{0}] = ISNULL([{0}], {1})", objColumn.Name, sCalculationCode)
+                  Else
+                    sColumnName = String.Format("[{0}] = ISNULL(NULLIF([{0}], {2}), {1})", objColumn.Name, sCalculationCode, objColumn.SafeReturnType)
+                  End If
+                Else
+                  sColumnName = String.Format("[{0}] = {1}", objColumn.Name, sCalculationCode)
+                End If
 
                         'If objColumn.Calculation.RequiresWriteback Then
                         '  aryWritebackColumns.Add(sColumnName & vbNewLine)

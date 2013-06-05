@@ -99,10 +99,8 @@ Namespace Things
 
          Declarations.Clear()
          PreStatements.Clear()
-
          Joins.Clear()
          Wheres.Clear()
-         '      StatementObjects.Clear()
 
          ' Build the dependencies collection
          Dependencies.Clear()
@@ -203,17 +201,15 @@ Namespace Things
             '    , String.Join(", ", aryDependsOn.ToArray()), Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.PhysicalName)
 
             sBypassUDFCode = String.Format("    -- Return the original value if we somehow get stuck in a recursive loop (shouldn't happen)" & vbNewLine &
-                "    IF @@NESTLEVEL > 15" & vbNewLine & _
-                "        BEGIN" & vbNewLine & _
-                "            SELECT @result = [{1}] FROM dbo.[{2}] WHERE [ID] = @prm_ID;" & vbNewLine & _
-                "            RETURN @result;" & vbNewLine & _
+                "    IF @@NESTLEVEL > 15" & vbNewLine &
+                "        BEGIN" & vbNewLine &
+                "            SELECT @result = [{1}] FROM dbo.[{2}] WHERE [ID] = @prm_ID;" & vbNewLine &
+                "            RETURN @result;" & vbNewLine &
                 "        END" _
                 , String.Join(", ", aryDependsOn.ToArray()), Me.AssociatedColumn.Name, Me.AssociatedColumn.Table.PhysicalName)
 
 
          End If
-
-
 
          ' Can object be schemabound
          If Me.BaseExpression.IsSchemaBound Then
@@ -578,7 +574,12 @@ Namespace Things
           Or Me.ExpressionType = ScriptDB.ExpressionType.TriggeredUpdate _
           Or Me.ExpressionType = ScriptDB.ExpressionType.Mask _
           Or Me.ExpressionType = ScriptDB.ExpressionType.RecordDescription) Then
-        LineOfCode.Code = String.Format("ISNULL(@prm_{0},{1})", objThisColumn.Name, objThisColumn.SafeReturnType)
+
+        If objThisColumn.SafeReturnType = "NULL" Then
+          LineOfCode.Code = "@prm_" & objThisColumn.Name
+        Else
+          LineOfCode.Code = String.Format("ISNULL(@prm_{0},{1})", objThisColumn.Name, objThisColumn.SafeReturnType)
+        End If
 
       ElseIf objThisColumn Is Me.AssociatedColumn _
           And Me.ExpressionType = ScriptDB.ExpressionType.ReferencedColumn Then
@@ -632,8 +633,11 @@ Namespace Things
             End Select
           End If
 
-          LineOfCode.Code = String.Format("ISNULL({0},{1})", sColumnName, objThisColumn.SafeReturnType)
-
+          If objThisColumn.SafeReturnType = "NULL" Then
+            LineOfCode.Code = sColumnName
+          Else
+            LineOfCode.Code = String.Format("ISNULL({0},{1})", sColumnName, objThisColumn.SafeReturnType)
+          End If
         Else
 
           sColumnFilter = String.Empty
@@ -649,7 +653,11 @@ Namespace Things
               Me.AssociatedColumn.Table.DependsOnChildColumns.AddIfNew(objThisColumn)
             End If
 
-            LineOfCode.Code = String.Format("ISNULL([{0}].[{1}],{2})", objThisColumn.Table.Name, objThisColumn.Name, objThisColumn.SafeReturnType)
+            If objThisColumn.SafeReturnType = "NULL" Then
+              LineOfCode.Code = String.Format("[{0}].[{1}]", objThisColumn.Table.Name, objThisColumn.Name)
+            Else
+              LineOfCode.Code = String.Format("ISNULL([{0}].[{1}],{2})", objThisColumn.Table.Name, objThisColumn.Name, objThisColumn.SafeReturnType)
+            End If
 
             ' Add table join component
             sRelationCode = String.Format("LEFT JOIN [dbo].[{0}] ON [{0}].[ID] = base.[ID_{1}]" _
@@ -712,7 +720,12 @@ Namespace Things
             If bIsSummaryColumn Then
               LineOfCode.Code = String.Format("@part_{0}", iPartNumber)
             Else
-              LineOfCode.Code = String.Format("ISNULL(@part_{0},{1})", iPartNumber, objThisColumn.SafeReturnType)
+              If objThisColumn.SafeReturnType = "NULL" Then
+                LineOfCode.Code = "@part_" & iPartNumber
+              Else
+                LineOfCode.Code = String.Format("ISNULL(@part_{0},{1})", iPartNumber, objThisColumn.SafeReturnType)
+              End If
+
             End If
 
             Me.ReferencesChild = True
@@ -1072,7 +1085,11 @@ Namespace Things
 
         sStatement = ReferencedColumn.Calculation.UDF.CallingCode
         If ReferencedColumn.CalculateIfEmpty Then
-          sStatement = String.Format("ISNULL(NULLIF(@prm_{0}, {2}), {1})", ReferencedColumn.Name, sStatement, ReferencedColumn.SafeReturnType)
+          If ReferencedColumn.SafeReturnType = "NULL" Then
+            sStatement = String.Format("ISNULL(@prm_{0}, {1})", ReferencedColumn.Name, sStatement)
+          Else
+            sStatement = String.Format("ISNULL(NULLIF(@prm_{0}, {2}), {1})", ReferencedColumn.Name, sStatement, ReferencedColumn.SafeReturnType)
+          End If
         End If
 
         PreStatements.Add(String.Format("SELECT @part_{0} = {1}", sVariableName, sStatement))
