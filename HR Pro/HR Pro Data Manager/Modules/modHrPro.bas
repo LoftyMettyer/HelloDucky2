@@ -4511,7 +4511,7 @@ Public Sub GetObjectCategories(ByRef theCombo As ComboBox, UtilityType As Utilit
   
   theCombo.Enabled = (theCombo.ListCount > 0)
     
-  If iListIndex > -1 Then
+  If iListIndex > -1 And UtilityID > 0 Then
     theCombo.ListIndex = iListIndex
   End If
   

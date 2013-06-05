@@ -109,29 +109,29 @@ Begin VB.Form frmCustomReports
       TabCaption(1)   =   "Related Ta&bles"
       TabPicture(1)   =   "frmCustomReports.frx":1990
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraParent1"
+      Tab(1).Control(0)=   "fraChild"
       Tab(1).Control(1)=   "fraParent2"
-      Tab(1).Control(2)=   "fraChild"
+      Tab(1).Control(2)=   "fraParent1"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmCustomReports.frx":19AC
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraFieldsAvailable"
+      Tab(2).Control(0)=   "fraButtons"
       Tab(2).Control(1)=   "fraFieldsSelected"
-      Tab(2).Control(2)=   "fraButtons"
+      Tab(2).Control(2)=   "fraFieldsAvailable"
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmCustomReports.frx":19C8
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraRepetition"
-      Tab(3).Control(1)=   "fraReportOrder"
+      Tab(3).Control(0)=   "fraReportOrder"
+      Tab(3).Control(1)=   "fraRepetition"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmCustomReports.frx":19E4
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraReportOptions"
+      Tab(4).Control(0)=   "fraOutputDestination"
       Tab(4).Control(1)=   "fraOutputFormat"
-      Tab(4).Control(2)=   "fraOutputDestination"
+      Tab(4).Control(2)=   "fraReportOptions"
       Tab(4).ControlCount=   3
       Begin VB.Frame fraReportOrder 
          Caption         =   "Sort Order :"
@@ -203,9 +203,9 @@ Begin VB.Form frmCustomReports
             HeadLines       =   2
             Col.Count       =   7
             stylesets.count =   6
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -217,9 +217,9 @@ Begin VB.Form frmCustomReports
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmCustomReports.frx":1A00
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -716,9 +716,9 @@ Begin VB.Form frmCustomReports
             RecordSelectors =   0   'False
             Col.Count       =   7
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -730,9 +730,9 @@ Begin VB.Form frmCustomReports
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmCustomReports.frx":282C
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -969,9 +969,9 @@ Begin VB.Form frmCustomReports
             GroupHeadLines  =   0
             Col.Count       =   3
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -983,9 +983,9 @@ Begin VB.Form frmCustomReports
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmCustomReports.frx":28B8
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -2028,17 +2028,12 @@ Private mblnIsChildColumnSelected As Boolean
 Private mblnGridActionCancelled As Boolean
 Private mblnGridChangeRecursive As Boolean
 
-
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = (pblnChanged) And (Not mblnReadOnly)
+  cmdOk.Enabled = (pblnChanged) And (Not mblnReadOnly)
 End Property
-
-
-
-
 
 Private Sub ClearRepetition()
   
@@ -2434,6 +2429,7 @@ Public Function Initialise(bNew As Boolean, bCopy As Boolean, Optional plngCusto
   
   ' Set the categories combo
     GetObjectCategories cboCategory, utlCustomReport, 0, cboBaseTable.ItemData(cboBaseTable.ListIndex)
+    SetComboItem cboCategory, glngCurrentCategoryID
 
     UpdateDependantFields
     
@@ -4300,7 +4296,7 @@ Private Sub ListView1_GotFocus()
 End Sub
 
 Private Sub ListView1_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub ListView2_GotFocus()
@@ -4308,7 +4304,7 @@ Private Sub ListView2_GotFocus()
 End Sub
 
 Private Sub ListView2_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub optBaseAllRecords_Click()
@@ -5870,13 +5866,13 @@ Private Sub txtDesc_GotFocus()
     .SelLength = Len(.Text)
   End With
   
-  cmdOK.Default = False
+  cmdOk.Default = False
   
 End Sub
 
 Private Sub txtDesc_LostFocus()
 
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 
