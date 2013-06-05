@@ -369,9 +369,9 @@ Public Property Get MinimumWidth() As Long
   ' Return the minimum height of the control.
   Dim lngMinWidth As Long
   
-  lngMinWidth = 0
+  lngMinWidth = UserControl.TextWidth("mn") / 2
   If lblLabel.BorderStyle = vbFixedSingle Then
-    lngMinWidth = (4 * GetSystemMetricsAPI(SM_CXFRAME) * Screen.TwipsPerPixelX)
+    lngMinWidth = lngMinWidth + (8 * Screen.TwipsPerPixelX)
   End If
   
   MinimumWidth = IIf(lngMinWidth < gLngMinWidth, gLngMinWidth, lngMinWidth)
