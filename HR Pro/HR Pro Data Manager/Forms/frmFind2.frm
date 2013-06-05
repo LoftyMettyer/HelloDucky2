@@ -4692,11 +4692,11 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
   Dim blnOK As Boolean
   Dim iFirstRow As Integer
   
-  Dim varBookmark As Variant
+  'Dim varBookmark As Variant
 
   mstrSelectedRecords = GetSelectedIDs
   ' iFirstRow = ssOleDBGridFindColumns.FirstRow
-  varBookmark = ssOleDBGridFindColumns.Bookmark
+  'varBookmark = ssOleDBGridFindColumns.Bookmark
   
   If mstrSelectedRecords <> vbNullString Then
     If mfrmParent.SaveChanges(False) Then
@@ -4706,7 +4706,6 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
   
       mfBusy = True
       frmMain.DisableMenu
-      UI.LockWindow Me.hWnd
 
       With mfrmParent
         
@@ -4721,44 +4720,52 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
             .TableID = mobjTableView.TableID
             .Options = edtSelect
             .EnableRun = True
-      
+
             If .ShowList(lngUtilType) Then
-      
+
               .CustomShow vbModal
-              
+
               Select Case .Action
                 Case edtSelect
-                
+
                   Select Case lngUtilType
                   Case utlCustomReport
                     Set objCustomReportRun = New clsCustomReportsRUN
                     objCustomReportRun.CustomReportID = .SelectedID
                     objCustomReportRun.RunCustomReport mstrSelectedRecords
                     Set objCustomReportRun = Nothing
-                  
+
                   Case utlCalendarReport
                     Set objCalendarReport = New clsCalendarReportsRUN
                     objCalendarReport.CalendarReportID = .SelectedID
                     objCalendarReport.RunCalendarReport mstrSelectedRecords
                     Set objCalendarReport = Nothing
-                  
+
                   Case utlGlobalUpdate
                     Set objGlobalRun = New clsGlobalRun
                     objGlobalRun.RunGlobal .SelectedID, glUpdate, mstrSelectedRecords
                     Set objGlobalRun = Nothing
-                  
+
+                    'Need to refresh the window as data may have changed
+                    UI.LockWindow Me.hWnd
+                    mblnRefreshing = True
+                    frmMain.RefreshRecordEditScreens
+                    mblnRefreshing = False
+                    ReinstateSelectedRows mstrSelectedRecords
+                    UI.UnlockWindow
+
                   Case utlMailMerge
                     Set objMailMergeRun = New clsMailMergeRun
                     objMailMergeRun.ExecuteMailMerge .SelectedID, mstrSelectedRecords
                     Set objMailMergeRun = Nothing
-                  
+
                   Case utlDataTransfer
                     Set objDataTransferRun = New clsDataTransferRun
                     objDataTransferRun.ExecuteDataTransfer .SelectedID, mstrSelectedRecords
                     Set objDataTransferRun = Nothing
-                  
+
                   End Select
-                
+
                   blnExit = gbCloseDefSelAfterRun
                 Case edtCancel
                   blnExit = True  'cancel
@@ -4769,19 +4776,11 @@ Public Sub UtilityClick(lngUtilType As UtilityType)
           Loop
         End With
       
-        mblnRefreshing = True
-        frmMain.RefreshRecordEditScreens
-        mblnRefreshing = False
-
-        ReinstateSelectedRows mstrSelectedRecords
-      
       End With
 
-      UI.UnlockWindow
       frmMain.EnableMenu Me
     End If
-    
-  
+
   End If
 
 
@@ -4824,9 +4823,9 @@ Public Function ReinstateSelectedRows(pstrSelectedRecords As String)
     .Redraw = False
     .SelBookmarks.RemoveAll
     
-    mrsFindRecords.MoveFirst
     strIDs = Split(pstrSelectedRecords, ",")
     For intIndex = 0 To UBound(strIDs)
+      mrsFindRecords.MoveFirst
       mrsFindRecords.Find "ID = " & strIDs(intIndex)
       If Not mrsFindRecords.EOF Then
         .SelBookmarks.Add mrsFindRecords.Bookmark
