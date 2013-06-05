@@ -1421,6 +1421,8 @@ Public Sub Initialize(piType As SSINTRANETLINKTYPES, _
     optLink(SSINTLINKPWFSTEPS).Enabled = False
     optLink(SSINTLINKCHART).Enabled = False
     optLink(SSINTLINKDB_VALUE).Enabled = False
+    ' fault HRPRO-907 - disable separators for all but dashboard and hypertext links
+    If miLinkType <> SSINTLINK_HYPERTEXT Then optLink(SSINTLINKSEPARATOR).Enabled = False
   End If
     
     
