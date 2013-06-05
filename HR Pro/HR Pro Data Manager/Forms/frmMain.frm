@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "12:43"
+            TextSave        =   "17:05"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -1177,8 +1177,6 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     '<Event Log>
     Case "EventLog"
       EventLogClick
-'      frmEventLog.Show vbModal
-'      Set frmEventLog = Nothing
       
     '<Workflow Log>
     Case "WorkflowLog"
@@ -1191,12 +1189,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     '<Workflow OutOfOffice>
     Case "WorkflowOutOfOffice"
       WorkflowOutOfOffice
-      
-    '<Set Default Printer>
-'    Case "SetDefaultPrinter"
-'      frmSetDefaultPrinter.Show vbModal
-'      Set frmSetDefaultPrinter = Nothing
-      
+            
     '<View Current Users>
     Case "ViewCurrentUsers"
       frmViewCurrentUsers.Show vbModal
@@ -1270,6 +1263,9 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     Case "ID_Print"
       ActiveForm.PrintGrid
        
+    ' Search
+    Case "ID_Search"
+      SearchUtilities
        
     Case Else
       ' It must be a screen of some kind so decide what type it is.
@@ -1279,7 +1275,7 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
           lPos = InStr(1, Tool.Name, ":")
           iUtilityType = Val(Mid$(Tool.Name, 3, lPos - 3))
           lngUtilityID = Val(Mid$(Tool.Name, lPos + 1, Len(Tool.Name)))
-          RunUtility iUtilityType, lngUtilityID
+          RunUtility iUtilityType, lngUtilityID, False
         
         Case "QE" ' Quick Entry Screen.
           EditForm_Load Val(Right(Tool.Name, Len(Tool.Name) - 2)), screenQuickEntry
@@ -3644,13 +3640,18 @@ Private Function DoMatchReport(mrtMatchReportType As MatchReportType, ByVal Acti
 
 End Function
 
+' Browse with search
+Private Sub SearchUtilities()
+  RunUtility utlAll, 0, True
+End Sub
+
 ' Browse the utilities
 Public Sub BrowseUtility(ByRef UtilType As UtilityType)
-  RunUtility UtilType, 0
+  RunUtility UtilType, 0, False
 End Sub
 
 ' Run a utility
-Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
+Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long, ByRef ShowSearch As Boolean)
 
   Dim frmSelection As frmDefSel
   Dim fExit As Boolean
@@ -3699,6 +3700,7 @@ Public Sub RunUtility(ByRef UtilType As UtilityType, ByRef UtilityID As Long)
         Do While Not fExit
           .EnableRun = True
           .CategoryID = glngCurrentCategoryID
+          .ShowSearch = ShowSearch
               
           If UtilType = utlWorkflow Then
             .Options = edtSelect
@@ -4532,7 +4534,7 @@ Private Sub DocumentTypesClick()
           .SelectedID = frmDefinition.SelectedID
           Unload frmDefinition
           Set frmDefinition = Nothing
-                    
+
         Case edtEdit
           Set frmDefinition = New frmDocumentMap
           frmDefinition.Initialise False, .FromCopy, .SelectedID
@@ -4545,7 +4547,7 @@ Private Sub DocumentTypesClick()
           End If
           Unload frmDefinition
           Set frmDefinition = Nothing
-           
+
         Case edtPrint
           Set frmDefinition = New frmDocumentMap
           frmDefinition.Initialise False, .FromCopy, .SelectedID

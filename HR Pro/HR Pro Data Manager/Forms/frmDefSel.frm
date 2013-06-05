@@ -1,12 +1,12 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
 Begin VB.Form frmDefSel 
    Caption         =   "Select"
-   ClientHeight    =   6465
+   ClientHeight    =   7740
    ClientLeft      =   2715
    ClientTop       =   2535
-   ClientWidth     =   5265
+   ClientWidth     =   7200
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -20,26 +20,58 @@ Begin VB.Form frmDefSel
    Icon            =   "frmDefSel.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   6465
-   ScaleWidth      =   5265
+   ScaleHeight     =   7740
+   ScaleWidth      =   7200
    StartUpPosition =   1  'CenterOwner
+   Begin MSComctlLib.ImageList imglistSmall 
+      Left            =   4995
+      Top             =   5130
+      _ExtentX        =   1005
+      _ExtentY        =   1005
+      BackColor       =   -2147483643
+      MaskColor       =   12632256
+      _Version        =   393216
+   End
+   Begin VB.Frame fraSearch 
+      BorderStyle     =   0  'None
+      Height          =   1455
+      Left            =   90
+      TabIndex        =   18
+      Top             =   90
+      Width           =   5010
+      Begin VB.CommandButton cmdSearch 
+         Caption         =   "Find Now"
+         Height          =   375
+         Left            =   3150
+         TabIndex        =   20
+         Top             =   585
+         Width           =   1200
+      End
+      Begin VB.Label Label1 
+         Caption         =   "Search goes here..."
+         Height          =   555
+         Left            =   855
+         TabIndex        =   19
+         Top             =   540
+         Width           =   2715
+      End
+   End
    Begin VB.Frame fraTopButtons 
       BackColor       =   &H8000000C&
       BorderStyle     =   0  'None
       Caption         =   "Frame1"
       Height          =   3410
       Left            =   3240
-      TabIndex        =   16
-      Top             =   100
+      TabIndex        =   15
+      Top             =   1860
       Width           =   1215
       Begin VB.CommandButton cmdRefresh 
          Caption         =   "Re&fresh"
          Height          =   400
          Left            =   0
-         TabIndex        =   9
+         TabIndex        =   8
          Top             =   3000
          Width           =   1200
       End
@@ -47,7 +79,7 @@ Begin VB.Form frmDefSel
          Caption         =   "Proper&ties..."
          Height          =   400
          Left            =   0
-         TabIndex        =   8
+         TabIndex        =   7
          Top             =   2500
          Width           =   1200
       End
@@ -55,7 +87,7 @@ Begin VB.Form frmDefSel
          Caption         =   "&Print"
          Height          =   400
          Left            =   0
-         TabIndex        =   7
+         TabIndex        =   6
          Top             =   2000
          Visible         =   0   'False
          Width           =   1200
@@ -64,7 +96,7 @@ Begin VB.Form frmDefSel
          Caption         =   "&Edit..."
          Height          =   400
          Left            =   0
-         TabIndex        =   4
+         TabIndex        =   3
          Top             =   500
          Width           =   1200
       End
@@ -72,7 +104,7 @@ Begin VB.Form frmDefSel
          Caption         =   "&Delete..."
          Height          =   400
          Left            =   0
-         TabIndex        =   6
+         TabIndex        =   5
          Top             =   1500
          Width           =   1200
       End
@@ -80,7 +112,7 @@ Begin VB.Form frmDefSel
          Caption         =   "Cop&y..."
          Height          =   400
          Left            =   0
-         TabIndex        =   5
+         TabIndex        =   4
          Top             =   1000
          Width           =   1200
       End
@@ -88,7 +120,7 @@ Begin VB.Form frmDefSel
          Caption         =   "&New..."
          Height          =   400
          Left            =   0
-         TabIndex        =   3
+         TabIndex        =   2
          Top             =   0
          Width           =   1200
       End
@@ -99,8 +131,8 @@ Begin VB.Form frmDefSel
       Caption         =   "Frame1"
       Height          =   5240
       Left            =   100
-      TabIndex        =   14
-      Top             =   100
+      TabIndex        =   13
+      Top             =   1860
       Width           =   3015
       Begin VB.TextBox txtDesc 
          BackColor       =   &H8000000F&
@@ -110,7 +142,7 @@ Begin VB.Form frmDefSel
          MaxLength       =   255
          MultiLine       =   -1  'True
          ScrollBars      =   2  'Vertical
-         TabIndex        =   2
+         TabIndex        =   1
          Top             =   4155
          Width           =   3000
       End
@@ -130,52 +162,40 @@ Begin VB.Form frmDefSel
          Left            =   0
          Sorted          =   -1  'True
          Style           =   1  'Checkbox
-         TabIndex        =   18
+         TabIndex        =   17
          Top             =   840
          Visible         =   0   'False
          Width           =   3015
       End
-      Begin ComctlLib.ListView List1 
-         Height          =   3705
+      Begin MSComctlLib.ListView List1 
+         Height          =   960
          Left            =   0
-         TabIndex        =   1
-         Top             =   405
+         TabIndex        =   21
+         Top             =   315
          Width           =   3000
          _ExtentX        =   5292
-         _ExtentY        =   6535
-         SortKey         =   1
+         _ExtentY        =   1693
          View            =   3
-         LabelEdit       =   1
-         LabelWrap       =   0   'False
-         HideSelection   =   0   'False
+         LabelWrap       =   -1  'True
+         HideSelection   =   -1  'True
          HideColumnHeaders=   -1  'True
-         _Version        =   327682
+         _Version        =   393217
+         SmallIcons      =   "imglistSmall"
          ForeColor       =   -2147483640
          BackColor       =   -2147483643
          BorderStyle     =   1
          Appearance      =   1
-         BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
          NumItems        =   2
-         BeginProperty ColumnHeader(1) {0713E8C7-850A-101B-AFC0-4210102A8DA7} 
+         BeginProperty ColumnHeader(1) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
             Key             =   "Column"
             Object.Tag             =   "Column"
-            Text            =   "Column"
-            Object.Width           =   52917
+            Text            =   "column"
+            Object.Width           =   2540
          EndProperty
-         BeginProperty ColumnHeader(2) {0713E8C7-850A-101B-AFC0-4210102A8DA7} 
+         BeginProperty ColumnHeader(2) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
             SubItemIndex    =   1
-            Key             =   ""
-            Object.Tag             =   ""
-            Text            =   "SortKey"
-            Object.Width           =   0
+            Text            =   "sortkey"
+            Object.Width           =   2540
          EndProperty
       End
       Begin VB.Label lblTables 
@@ -184,7 +204,7 @@ Begin VB.Form frmDefSel
          Caption         =   "Table:"
          Height          =   195
          Left            =   0
-         TabIndex        =   15
+         TabIndex        =   14
          Top             =   60
          Width           =   540
       End
@@ -195,14 +215,14 @@ Begin VB.Form frmDefSel
       Caption         =   "Frame1"
       Height          =   1360
       Left            =   3240
-      TabIndex        =   17
-      Top             =   4000
+      TabIndex        =   16
+      Top             =   5760
       Width           =   1215
       Begin VB.CommandButton cmdNone 
          Caption         =   "N&one"
          Height          =   400
          Left            =   0
-         TabIndex        =   11
+         TabIndex        =   10
          Top             =   480
          Width           =   1200
       End
@@ -210,7 +230,7 @@ Begin VB.Form frmDefSel
          Caption         =   "&Select"
          Height          =   400
          Left            =   0
-         TabIndex        =   10
+         TabIndex        =   9
          Top             =   0
          Width           =   1200
       End
@@ -219,7 +239,7 @@ Begin VB.Form frmDefSel
          Caption         =   "&OK"
          Height          =   400
          Left            =   0
-         TabIndex        =   12
+         TabIndex        =   11
          Top             =   960
          Width           =   1200
       End
@@ -228,13 +248,13 @@ Begin VB.Form frmDefSel
       Caption         =   "On&ly show definitions where owner is 'username'"
       Height          =   405
       Left            =   100
-      TabIndex        =   13
-      Top             =   5450
+      TabIndex        =   12
+      Top             =   7200
       Width           =   4320
    End
    Begin ActiveBarLibraryCtl.ActiveBar abDefSel 
       Left            =   3120
-      Top             =   3720
+      Top             =   5475
       _ExtentX        =   847
       _ExtentY        =   847
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -307,6 +327,7 @@ Private malngSelectedIDs()
 Private mstrExtraWhereClause As String
 
 Public AllowFavourites As Boolean
+Public ShowSearch As Boolean
 
 Public Property Get CategoryID() As Long
   CategoryID = mlngTableID
@@ -417,7 +438,6 @@ Private Sub abDefSel_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
     Case "ID_None"
       cmdNone_Click
       
-    ' JDM - 07/11/01 - Fault 3088 - Run click does nowt...
     Case "Run"
       cmdSelect_Click
       
@@ -939,8 +959,6 @@ Private Sub Form_Resize()
   'JPD 20030908 Fault 5756
   DisplayApplication
   
-  'DrawControls
-  'ShowControls
   If Me.Visible = True Then
     SizeControls
   End If
@@ -951,11 +969,7 @@ Private Sub Form_Unload(Cancel As Integer)
 Unhook Me.hWnd
 End Sub
 
-'Private Sub List1_Click()
-'  Refresh_Controls
-'End Sub
-
-Private Sub List1_ItemClick(ByVal Item As ComctlLib.ListItem)
+Private Sub List1_ItemClick(ByVal Item As MSComctlLib.ListItem)
   Refresh_Controls
 End Sub
 
@@ -1328,7 +1342,7 @@ Dim fAllColumns As Boolean
   
   Dim strSQL As String
   'Dim intCount As Integer
-  Dim objListItem As ListItem
+  Dim objListItem As MSComctlLib.ListItem
   Dim objBatchJob As clsBatchJobRUN
   Dim sDescription As String
   Dim lngMax As Long
@@ -1358,16 +1372,6 @@ Dim fAllColumns As Boolean
       strSQL = strSQL & _
         IIf(InStr(strSQL, " WHERE ") = 0, " WHERE ", " AND ") & _
         CStr(mlngTableID) & " IN (" & msTableName & "." & msTableIDColumnName & ")"
-'    Else
-'
-'      strSQL = strSQL & _
-'        " INNER JOIN dbo.tbsys_objectcategories cat ON cat.objectid = " & msTableName & ".ID AND cat.objecttype = 2 "
-'
-'      ' Show only unassigned utilities
-'      If Not mlngTableID = 0 Then
-'        strSQL = strSQL & "AND cat.categoryid = " & mlngTableID
-'      End If
-'
     End If
   End If
 
@@ -1501,7 +1505,8 @@ Dim fAllColumns As Boolean
       Else
         'List1.ListItems.Clear
         Do While Not .EOF
-          Set objListItem = List1.ListItems.Add(, , RemoveUnderScores(.Fields(msFieldName)))
+               
+          Set objListItem = List1.ListItems.Add(, , RemoveUnderScores(.Fields(msFieldName).Value))
           objListItem.Tag = .Fields(msIDField)
           lngLen = Me.TextWidth(objListItem.Text)
           If lngMax < lngLen Then
@@ -1875,6 +1880,11 @@ Private Sub ShowControls()
     
   End If
   
+  ' Display search options
+  fraSearch.Visible = ShowSearch
+  
+  
+  
   
   txtDesc.Visible = Not mblnHideDesc
   chkOnlyMine.Visible = mblnApplyDefAccess
@@ -1901,18 +1911,12 @@ Private Sub SizeControls()
   Dim lngOffset As Long
   Const lngGap = 100
   Dim blnCheckBoxVisible As Boolean
-
-  'If Me.Width < 4000 Then
-    'Me.Width = 4000
-    'Exit Sub  'Resize will be called again anyway
-  'End If
   
-  'If Me.Height < 3000 Then
-    'Me.Height = 3000
-    'Exit Sub  'Resize will be called again anyway
-  'End If
-    
-  lngOffset = Me.ScaleHeight - (lngGap * 2)
+  If fraSearch.Visible Then
+    lngOffset = Me.ScaleHeight - (lngGap * 2) + fraSearch.Height
+  Else
+    lngOffset = Me.ScaleHeight - (lngGap * 2)
+  End If
   
   'chkOnlyMine (Outside of frame)
   blnCheckBoxVisible = mblnApplyDefAccess
@@ -1921,21 +1925,10 @@ Private Sub SizeControls()
     lngOffset = lngOffset - (chkOnlyMine.Height + lngGap)
   End If
 
-
   'Move Frames
   fraMain.Move lngGap, lngGap, Me.ScaleWidth - (fraTopButtons.Width + (lngGap * 3)), lngOffset
   fraTopButtons.Move fraMain.Left + fraMain.Width + lngGap, lngGap
   fraBottomButtons.Move fraTopButtons.Left, (fraMain.Top + fraMain.Height) - fraBottomButtons.Height
-
-
-  'Check for button overlap...
-'  If fraTopButtons.Top + fraTopButtons.Height > fraBottomButtons.Top Then
-'    fraBottomButtons.Top = fraTopButtons.Top + fraTopButtons.Height
-'    Me.Height = (Me.Height - Me.ScaleHeight) + _
-'                fraTopButtons.Height + fraBottomButtons.Height + _
-'                IIf(blnCheckBoxVisible, chkOnlyMine.Height + lngGap, 0) + (lngGap * 2)
-'    Exit Sub  'Resize will be called again anyway
-'  End If
      
   'txtDesc (fraMain)
   If Not mblnHideDesc Then
@@ -2078,6 +2071,19 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
 
 
   Select Case lngUtilType
+  
+  Case utlAll
+    msTypeCode = "ALL"
+    msType = "All"
+    msGeneralCaption = "All Reports & Utilities"
+    msSingularCaption = "Report and Utility"
+    msTableName = "ASRSysAllObjectNames"
+    msIDField = "ID"
+    mutlUtilityType = utlAll
+    msAccessTableName = ""
+    mblnHideDesc = True
+    mblnApplyDefAccess = False
+  
   Case utlBatchJob
     msTypeCode = "BATCHJOBS"
     
@@ -2428,6 +2434,17 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As St
       IIf(mblnApplyDefAccess, " INNER JOIN " & msAccessTableName & " ON " & msTableName & "." & msIDField & " = " & msAccessTableName & ".ID" & _
         " AND " & msAccessTableName & ".groupname = '" & gsUserGroup & "'", vbNullString) & _
       IIf(strExtraWhereClause <> vbNullString, " WHERE " & strExtraWhereClause, "")
+  Else
+    
+    msRecordSource = _
+      "SELECT " & msTableName & ".name," & _
+        IIf(mblnHideDesc, vbNullString, msTableName & ".description, ") & _
+        IIf(mblnApplyDefAccess, msTableName & ".userName, " & msAccessTableName & ".access, ", vbNullString) & _
+        msTableName & "." & msIDField & _
+      " FROM " & msTableName & _
+      sCategoryFilter & _
+      IIf(strExtraWhereClause <> vbNullString, " WHERE " & strExtraWhereClause, "")
+    
   End If
 
   If psRecordSourceWhere <> vbNullString Then
