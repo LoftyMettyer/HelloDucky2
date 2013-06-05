@@ -2110,7 +2110,7 @@ Private Function CreateAbsenceBetween2DatesStoredProcedure() As Boolean
       End If
         
     sBradfordUDF = sBradfordUDF & vbNewLine & _
-        "    RETURN ((@iInstances * @iInstances) * @pdblBradford);" & vbNewLine & _
+        "    RETURN ISNULL((@iInstances * @iInstances) * @pdblBradford,0);" & vbNewLine & _
         "END" & vbNewLine
       
     gADOCon.Execute sAbsenceBetweenProc, , adExecuteNoRecords
