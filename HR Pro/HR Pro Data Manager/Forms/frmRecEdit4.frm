@@ -4926,7 +4926,7 @@ Public Function Update(Optional pfDeactivating As Variant) As Boolean
   If mrsRecords.EditMode <> adEditAdd Then
     'MH20031002 Fault 7082 Reference Property instead of object to trap errors
     'iChangeReason = RecordAmended2(mobjTableView.RealSource, mobjTableView.TableID, mlngRecordID, mlngTimeStamp)
-    iChangeReason = datGeneral.RecordAmended(Me.TableID, mobjTableView.TableName, mobjTableView.RealSource, mlngRecordID, mlngTimeStamp)
+    iChangeReason = datGeneral.RecordAmended(Me.TableID, mobjTableView.RealSource, mlngRecordID, mlngTimeStamp)
     If iChangeReason > 0 Then
       AmendedRecord2 True, iChangeReason
       Update = True
@@ -10441,7 +10441,7 @@ Public Sub DeleteRecord(Optional pfPrompt As Variant, Optional pfFromFind As Boo
   'First check that the record hasn't already been deleted or amended !
   'MH20031002 Fault 7082 Reference Property instead of object to trap errors
   'iChangeReason = RecordAmended2(mobjTableView.RealSource, mobjTableView.TableID, mlngRecordID, mlngTimeStamp)
-  iChangeReason = datGeneral.RecordAmended(Me.TableID, mobjTableView.TableName, mobjTableView.RealSource, mlngRecordID, mlngTimeStamp)
+  iChangeReason = datGeneral.RecordAmended(Me.TableID, mobjTableView.RealSource, mlngRecordID, mlngTimeStamp)
   
   If iChangeReason = 2 Then
     ' The current record has been amended AND is no longer in the given table/view.
