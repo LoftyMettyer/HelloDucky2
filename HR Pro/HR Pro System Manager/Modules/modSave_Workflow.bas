@@ -19,7 +19,7 @@ Public Function SaveWorkflows() As Boolean
       ElseIf !New Then
         fOK = WorkflowNew
       ElseIf !Changed Then
-        fOK = WorkflowSave
+          fOK = WorkflowSave
       End If
 
       .MoveNext
@@ -48,7 +48,6 @@ ErrorTrap:
   Resume TidyUpAndExit
 
 End Function
-
 
 Private Function WorkflowSave() As Boolean
   ' Save the current Workflow record to the server database.
@@ -108,10 +107,12 @@ Private Function WorkflowDelete() As Boolean
   Else
     ' NB. Deleting the ASRSysWorkflowInstances record will trigger the deletion of related
     ' records in ASRSysWorkflowInstanceSteps and ASRSysWorkflowInstanceValues
-    gADOCon.Execute "DELETE FROM ASRSysWorkflowInstances" & _
-      " WHERE workflowID=" & lngWorkflowID & _
-      "   AND status <> " & CStr(giWFSTATUS_INPROGRESS), , _
-      adCmdText + adExecuteNoRecords
+    If recWorkflowEdit!perge Then
+      gADOCon.Execute "DELETE FROM ASRSysWorkflowInstances" & _
+        " WHERE workflowID=" & lngWorkflowID & _
+        "   AND status <> " & CStr(giWFSTATUS_INPROGRESS), , _
+        adCmdText + adExecuteNoRecords
+      End If
   End If
   
   fOK = True

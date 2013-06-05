@@ -414,6 +414,7 @@ Private Function SaveChanges() As Boolean
   
         !New = True
         !Changed = False
+        !perge = False
         !Deleted = False
         .Update
       End If
