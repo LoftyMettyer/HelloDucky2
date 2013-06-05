@@ -200,14 +200,15 @@ Public Function RunRecordProfile(Optional plngRecordID As Long) As Boolean
     mblnUserCancelled = mfrmOutput.UserCancelled
 
     If Not mblnUserCancelled Then
-      If gblnBatchMode Or Not mblnOutputScreen Then
+      If gblnBatchMode Or gblnReportPackMode Then
         fOK = mfrmOutput.ShowResults
         If fOK Then
           fOK = mfrmOutput.OutputReport(False)
         End If
         If Not fOK Then msErrorString = mfrmOutput.ErrorMessage
         gobjProgress.UpdateProgress True
-      ElseIf mblnOutputScreen Then
+        
+      ElseIf mblnOutputScreen Or mblnPreviewOnScreen Then
         fOK = mfrmOutput.ShowResults
         If Not fOK Then msErrorString = mfrmOutput.ErrorMessage
         

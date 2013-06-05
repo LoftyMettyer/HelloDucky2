@@ -793,11 +793,9 @@ Public Function RunCustomReport(pstrPicklistFilterIDs As String) As Boolean
   If fOK Then fOK = PopulateGrid
 
   If fOK Then
-    'If gblnBatchMode Or gblnReportPackMode Then
-    If gblnBatchMode Or gblnReportPackMode Or Not mblnOutputScreen Then
+    If gblnBatchMode Or gblnReportPackMode Then
       fOK = OutputReport(False)
-    'ElseIf mblnPreviewOnScreen Or mblnOutputScreen Then
-    ElseIf mblnOutputScreen Then
+    ElseIf mblnPreviewOnScreen Or mblnOutputScreen Then
       Screen.MousePointer = vbDefault
       mfrmOutput.BaseTable = mstrCustomReportsBaseTableName
       mfrmOutput.Parent = Me
