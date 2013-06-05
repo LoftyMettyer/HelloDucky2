@@ -3477,7 +3477,6 @@ PRINT 'Step 8 - New Mobile User Logins Table'
 
 						DELETE FROM [tbsys_workflows] WHERE id IN (SELECT id FROM deleted);
 					END'
-					
 
 	EXEC sp_executesql N'CREATE TRIGGER [dbo].[INS_ASRSysWorkflows] ON [dbo].[ASRSysWorkflows]
 					INSTEAD OF INSERT
@@ -3501,6 +3500,9 @@ PRINT 'Step 8 - New Mobile User Logins Table'
 							SELECT [id], [name], [description], [enabled], [initiationType], [baseTable], [queryString], [pictureid] FROM inserted;
 
 					END'
+
+	EXEC sp_executesql N'GRANT SELECT,INSERT,UPDATE,DELETE ON [ASRSysWorkflows] TO [ASRSysGroup]';
+	EXEC sp_executesql N'GRANT SELECT,INSERT,UPDATE,DELETE ON [ASRSysWorkflows] TO [ASRSysAdmins]';
 
 
 	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_mobileformlayout]') AND type in (N'U'))
