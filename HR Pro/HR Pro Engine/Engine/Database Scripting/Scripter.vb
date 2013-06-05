@@ -324,19 +324,22 @@ Namespace ScriptDB
       Dim sSQLWriteableColumns As String
       Dim sSQLCalculatedColumns As String
       Dim sSQLPostAuditCalcs As String
+      Dim sSQLUniqueCalcs As String
       Dim sSQLParentColumns As String
       Dim sSQLParentColumns_Delete As String
       Dim sSQLChildColumns As String
 
       Dim aryCalculatedColumns As ArrayList
-      Dim aryPerformanceTuneColumns As ArrayList
+      '      Dim aryPerformanceTuneColumns As ArrayList
       Dim aryPostAuditCalcs As ArrayList
-      Dim aryDebugColumns As ArrayList
+      Dim aryUpdateUniqueCodes As ArrayList
+
+      'Dim aryDebugColumns As ArrayList
       Dim aryBaseTableColumns As ArrayList
       Dim aryParentsToUpdate As ArrayList
       Dim aryChildrenToUpdate As ArrayList
       Dim aryParentsToUpdate_Delete As ArrayList
-      Dim aryAfterInsertColumns As ArrayList
+      '     Dim aryAfterInsertColumns As ArrayList
       Dim aryAllWriteableColumns As ArrayList
 
       Dim aryColumns As New ArrayList
@@ -347,20 +350,19 @@ Namespace ScriptDB
       Dim aryAuditInserts As ArrayList
       Dim aryAuditDeletes As ArrayList
 
-      Dim sDebugCode As String
-      Dim aryUpdateUniqueCodes As ArrayList
+      '      Dim sDebugCode As String
 
       Try
 
         For Each objTable In Globals.Things
 
-          aryPerformanceTuneColumns = New ArrayList
+          ' aryPerformanceTuneColumns = New ArrayList
           aryAllWriteableColumns = New ArrayList
           aryAuditUpdates = New ArrayList
           aryAuditInserts = New ArrayList
           aryAuditDeletes = New ArrayList
           'aryValidationStatements = New ArrayList
-          aryAfterInsertColumns = New ArrayList
+          'aryAfterInsertColumns = New ArrayList
           aryUpdateUniqueCodes = New ArrayList
           aryParentsToUpdate = New ArrayList
           aryChildrenToUpdate = New ArrayList
@@ -368,18 +370,20 @@ Namespace ScriptDB
           aryBaseTableColumns = New ArrayList
           aryCalculatedColumns = New ArrayList
           aryPostAuditCalcs = New ArrayList
-          aryDebugColumns = New ArrayList
+          '      aryDebugColumns = New ArrayList
 
 
 
           sSQLParentColumns = String.Empty
           sSQLParentColumns_Delete = String.Empty
-          sDebugCode = String.Empty
+          '          sDebugCode = String.Empty
           sValidation = String.Empty
 
           sSQLCode_AuditInsert = String.Empty
           sSQLCode_AuditUpdate = String.Empty
           sSQLCode_AuditDelete = String.Empty
+          sSQLPostAuditCalcs = String.Empty
+          sSQLUniqueCalcs = String.Empty
 
           ' Build in indexes
           objAuditIndex = New Things.Index
@@ -465,14 +469,15 @@ Namespace ScriptDB
                   sColumnName = String.Format("[{0}] = {1}", objColumn.Name, sCalculationCode)
                 End If
 
-                If objColumn.Calculation.CalculatePostAudit Then
-                  aryPostAuditCalcs.Add(sColumnName & vbNewLine)
+                If objColumn.Calculation.ContainsUniqueCode Then
+                  aryUpdateUniqueCodes.Add(sColumnName & vbNewLine)
                 Else
-                  aryCalculatedColumns.Add(sColumnName & vbNewLine)
+                  If objColumn.Calculation.CalculatePostAudit Then
+                    aryPostAuditCalcs.Add(sColumnName & vbNewLine)
+                  Else
+                    aryCalculatedColumns.Add(sColumnName & vbNewLine)
+                  End If
                 End If
-
-                aryPerformanceTuneColumns.Add(String.Format("SELECT {0} FROM {1} base --WHERE id" _
-                             , objColumn.Calculation.UDF.CallingCode, objTable.Name))
 
               End If
 
@@ -617,7 +622,7 @@ Namespace ScriptDB
               "        {1}" _
               , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryCalculatedColumns.ToArray()))
 
-            sDebugCode = String.Format("{0}", String.Join(vbNewLine, aryPerformanceTuneColumns.ToArray()))
+            '            sDebugCode = String.Format("{0}", String.Join(vbNewLine, aryPerformanceTuneColumns.ToArray()))
 
 
           Else
@@ -637,9 +642,23 @@ Namespace ScriptDB
               "        SET {1}" & vbNewLine & _
               "    END" _
               , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryPostAuditCalcs.ToArray()), CInt(objTable.ID))
-          Else
-            sSQLPostAuditCalcs = vbNullString
           End If
+
+          ' Any calculations that have the unique code (or an function that requires some writeback)
+          If aryUpdateUniqueCodes.ToArray.Length > 0 Then
+            sSQLUniqueCalcs = String.Format("    -- Update columns that requires a writeback from the UDFs" & vbNewLine & _
+              "    IF EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {2} AND [nestlevel] = 1)" & vbNewLine & _
+              "    BEGIN" & vbNewLine & _
+              "        WITH base AS (" & vbNewLine & _
+              "            SELECT *, ROW_NUMBER() OVER(ORDER BY [ID]) AS [rownumber]" & vbNewLine & _
+              "            FROM [dbo].[{0}]" & vbNewLine & _
+              "            WHERE [id] IN (SELECT DISTINCT [id] FROM inserted))" & vbNewLine & _
+              "        UPDATE base" & vbNewLine & _
+              "        SET {1}" & vbNewLine & _
+              "    END" _
+              , objTable.PhysicalName, String.Join(vbTab & vbTab & vbTab & ", ", aryUpdateUniqueCodes.ToArray()), CInt(objTable.ID))
+          End If
+
 
           ' -------------------
           ' INSTEAD OF INSERT
@@ -708,6 +727,7 @@ Namespace ScriptDB
               "    --INSERT [dbo].[{4}] ([spid], [tablefromid]) VALUES (@@spid,{3});" & vbNewLine & vbNewLine & _
               sSQLParentColumns & vbNewLine & _
               sSQLChildColumns & vbNewLine & vbNewLine & _
+              sSQLUniqueCalcs & vbNewLine & vbNewLine & _
               "{6}" & vbNewLine & _
               "    INSERT dbo.[ASRSysAuditTrail] (username, datetimestamp, recordid, oldvalue, newvalue, tableid, tablename, columnname, columnid, deleted, recorddesc)" & vbNewLine & _
               "		     SELECT SYSTEM_USER, @dChangeDate, id, oldvalue, newvalue, tableid, tablename, columnname, columnid, 0, recorddesc FROM @audit;" & vbNewLine & vbNewLine & _
@@ -715,7 +735,7 @@ Namespace ScriptDB
               , objTable.Name, sTriggerName _
               , "", CInt(objTable.ID), Tables.sysTriggerTransaction _
               , String.Join(vbNewLine, aryUpdateUniqueCodes.ToArray()) _
-              , sSQLCode_AuditUpdate, sSQLPostAuditCalcs) & "/* " & sDebugCode & "*/" & vbNewLine & vbNewLine
+              , sSQLCode_AuditUpdate, sSQLPostAuditCalcs) & vbNewLine & vbNewLine
           ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSQL)
 
 
@@ -804,7 +824,9 @@ Namespace ScriptDB
           "BEGIN" & vbNewLine & _
           "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Start ([{2}].[{0}]';" & vbNewLine & _
           "    SET NOCOUNT ON;" & vbNewLine & _
-          "    DECLARE @iCount integer;" & vbNewLine & vbNewLine & _
+          "    DECLARE @iCount integer," & vbNewLine & _
+          "            @isovernight bit;" & vbNewLine & vbNewLine & _
+          "    SELECT @isovernight = dbo.[udfsys_isovernightprocess]();" & vbNewLine & vbNewLine & _
           "{4}" & vbNewLine & vbNewLine & _
           "    {5}PRINT CONVERT(nvarchar(28), GETDATE(),121) + ' Exit ([{2}].[{0}]'; " & vbNewLine & _
           "END" _

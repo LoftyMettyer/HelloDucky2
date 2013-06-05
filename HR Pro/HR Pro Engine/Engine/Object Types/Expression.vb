@@ -38,6 +38,8 @@ Namespace Things
     Public StartOfPartNumbers As Integer = 0
     Public RequiresRecordID As Boolean = False
     Public RequiresRowNumber As Boolean = False
+    Public RequiresOvernight As Boolean = False
+    Public ContainsUniqueCode As Boolean = False
 
     Public IsComplex As Boolean = False
     Public IsValid As Boolean = True
@@ -153,6 +155,14 @@ Namespace Things
         aryParameters2.Add("[rownumber]")
         aryParameters3.Add("@rownumber")
       End If
+
+      ' Some function require the row number of the record as a parameter
+      If RequiresOvernight Then
+        aryParameters1.Add("@isovernight bit")
+        aryParameters2.Add("@isovernight")
+        aryParameters3.Add("@isovernight")
+      End If
+
 
       ' Is this function going to check to see if any of the dependant tables were called as part of this transaction?
       'If mbCheckTriggerStack Then
@@ -801,6 +811,7 @@ Namespace Things
       SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
       LineOfCode.Code = String.Format(LineOfCode.Code, ChildCodeCluster.ToArray)
       RequiresRowNumber = RequiresRowNumber Or objCodeLibrary.RowNumberRequired
+      RequiresOvernight = RequiresOvernight Or objCodeLibrary.OvernightOnly
       mbCalculatePostAudit = mbCalculatePostAudit Or objCodeLibrary.CalculatePostAudit
       Me.RequiresRecordID = RequiresRecordID Or objCodeLibrary.RecordIDRequired
       Me.Tuning.Rating += objCodeLibrary.Tuning.Rating
@@ -1042,6 +1053,7 @@ Namespace Things
 
       Me.RequiresRecordID = RequiresRecordID Or ReferencedColumn.Calculation.RequiresRecordID
       Me.RequiresRowNumber = RequiresRowNumber Or ReferencedColumn.Calculation.RequiresRowNumber
+      Me.RequiresOvernight = RequiresOvernight Or ReferencedColumn.Calculation.RequiresOvernight
       Dependencies.MergeUnique(ReferencedColumn.Calculation.Dependencies)
 
       Return sCallingCode
