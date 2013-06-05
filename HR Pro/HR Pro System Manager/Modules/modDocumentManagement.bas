@@ -58,24 +58,29 @@ Public Function CreateLinkDocumentSP() As Boolean
               "        @sTargetLinkColumn    nvarchar(255)," & vbNewLine & _
               "        @sTargetCategoryColumn  nvarchar(255)," & vbNewLine & _
               "        @sTargetTypeColumn    nvarchar(255)," & vbNewLine & _
-              "        @sTargetGUIDColumn    nvarchar(255)," & vbNewLine & _
               "        @sParent1Keyfield      nvarchar(255)," & vbNewLine & _
               "        @sParent1TableName     nvarchar(255)," & vbNewLine & _
               "        @intParent1TableID     integer," & vbNewLine & _
               "        @intParent1RecordID    integer;" & vbNewLine & vbNewLine
     
     sSQL = sSQL & _
+              "    DECLARE @iDocCategoryID integer," & vbNewLine & _
+              "        @iDocTypeID   integer;" & vbNewLine & vbNewLine
+
+    sSQL = sSQL & _
               "    SET @sExecuteSQL = '';" & vbNewLine & _
               "    SET @sWhereClause = '';" & vbNewLine & _
               "    SET @intParent1RecordID = 0;" & vbNewLine & vbNewLine
   
     sSQL = sSQL & _
+              "    SELECT @iDocCategoryID = [ID] FROM [" & sCategoryTableName & "] WHERE [" & sCategoryColumnName & "] = @DocumentCategory;" & vbNewLine & _
+              "    SELECT @iDocTypeID = [ID] FROM [" & sTypeTableName & "] WHERE [" & sTypeCategoryColumnName & "] = @DocumentCategory AND [" & sTypeColumnName & "] = @DocumentType;" & vbNewLine & vbNewLine
+  
+    sSQL = sSQL & _
               "    SELECT @sTableName = ISNULL(t.[TableName],''), @sTargetLinkColumn = ISNULL(c1.[ColumnName],''), @sTargetKeyField = ISNULL(c2.[ColumnName],'')" & vbNewLine & _
               "       , @intParent1TableID = ISNULL(d.[Parent1TableID],''), @sParent1KeyField = ISNULL(c3.[ColumnName],''), @sParent1TableName = ISNULL(pt.[TableName],'')" & vbNewLine & _
-              "       , @sTargetCategoryColumn  = ISNULL(c4.[ColumnName],''), @sTargetTypeColumn  = ISNULL(c5.[ColumnName],''), @sTargetGUIDColumn = ISNULL(c6.[ColumnName],'')" & vbNewLine & _
+              "       , @sTargetCategoryColumn  = ISNULL(c4.[ColumnName],''), @sTargetTypeColumn  = ISNULL(c5.[ColumnName],'') " & vbNewLine & _
               "    FROM dbo.[ASRSysDocumentManagementTypes] d" & vbNewLine & _
-              "        INNER JOIN [" & sCategoryTableName & "] dc ON d.[CategoryRecordID] = dc.[id]" & vbNewLine & _
-              "        LEFT JOIN [" & sTypeTableName & "] dt ON dt.[" & sTypeCategoryColumnName & "] = dc.[" & sCategoryColumnName & "]" & vbNewLine & _
               "        INNER JOIN [ASRSysTables] t ON t.[TableID] = d.[TargetTableID]" & vbNewLine & _
               "        LEFT JOIN [ASRSysTables] pt ON pt.[TableID] = d.[Parent1TableID]" & vbNewLine & _
               "        LEFT JOIN [ASRSysColumns] c1 ON c1.[ColumnID] = d.[TargetColumnID]" & vbNewLine & _
@@ -83,8 +88,7 @@ Public Function CreateLinkDocumentSP() As Boolean
               "        LEFT JOIN [ASRSysColumns] c3 ON c3.[ColumnID] = d.[Parent1KeyFieldColumnID]" & vbNewLine & _
               "        LEFT JOIN [ASRSysColumns] c4 ON c4.[ColumnID] = d.[TargetCategoryColumnID]" & vbNewLine & _
               "        LEFT JOIN [ASRSysColumns] c5 ON c5.[ColumnID] = d.[TargetTypeColumnID]" & vbNewLine & _
-              "        LEFT JOIN [ASRSysColumns] c6 ON c6.[ColumnID] = d.[TargetGUIDColumnID]" & vbNewLine & _
-              "    WHERE dc.[" & sCategoryColumnName & "] = @DocumentCategory AND dt.[" & sTypeColumnName & "] = @DocumentType;" & vbNewLine & vbNewLine
+              "    WHERE d.[CategoryRecordID] = @iDocCategoryID AND d.[TypeRecordID] = @iDocTypeID;" & vbNewLine & vbNewLine
   
     sSQL = sSQL & _
               "    IF LEN(@sTargetKeyField) > 0" & vbNewLine & _
@@ -102,12 +106,22 @@ Public Function CreateLinkDocumentSP() As Boolean
               "    END" & vbNewLine & vbNewLine
   
     sSQL = sSQL & _
-              "    SET @sInsertColumns = @sInsertColumns + @sTargetCategoryColumn + ',' + @sTargetTypeColumn" & vbNewLine & _
-              "                          + ', ' + @sTargetGUIDColumn + ', ' + @sTargetKeyField + ', ' + @sTargetLinkColumn;" & vbNewLine & vbNewLine
-  
+              "    IF LEN(@sTargetCategoryColumn) > 0" & vbNewLine & _
+              "    BEGIN" & vbNewLine & _
+              "      SET @sInsertColumns = @sInsertColumns + @sTargetCategoryColumn + ', '" & vbNewLine & _
+              "      SET @sInsertValues = @sInsertValues + '''' + @DocumentCategory + ''', '" & vbNewLine & _
+              "    END" & vbNewLine & vbNewLine
+
     sSQL = sSQL & _
-              "    SET @sInsertValues = @sInsertValues + '''' + @DocumentCategory + ''', ''' + @DocumentType" & vbNewLine & _
-              "                          + ''', ''' + convert(nvarchar(50),@DocumentGuid) + ''', ' + @Key + ', ''' + @Link + '''';" & vbNewLine & vbNewLine
+              "    IF LEN(@sTargetTypeColumn) > 0" & vbNewLine & _
+              "    BEGIN" & vbNewLine & _
+              "      SET @sInsertColumns = @sInsertColumns + @sTargetTypeColumn + ', '" & vbNewLine & _
+              "      SET @sInsertValues = @sInsertValues + '''' + @DocumentType + ''', '" & vbNewLine & _
+              "    END" & vbNewLine & vbNewLine
+
+    sSQL = sSQL & _
+              "    SET @sInsertColumns = @sInsertColumns + @sTargetKeyField + ', ' + @sTargetLinkColumn;" & vbNewLine & _
+              "    SET @sInsertValues = @sInsertValues + '''' + @Key + ''', ''' + @Link + '''';" & vbNewLine & vbNewLine
   
     sSQL = sSQL & _
               "    SET @sExecuteSQL = 'IF EXISTS(SELECT [ID] FROM dbo.[' + @sTableName + '] WHERE ' + @sWhereClause + ') ' + CHAR(13) +" & vbNewLine & _
