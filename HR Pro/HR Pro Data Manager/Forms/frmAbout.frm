@@ -2,10 +2,10 @@ VERSION 5.00
 Begin VB.Form frmAbout 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "About OpenHR Data Manager"
-   ClientHeight    =   2205
+   ClientHeight    =   6735
    ClientLeft      =   345
    ClientTop       =   4815
-   ClientWidth     =   7425
+   ClientWidth     =   6150
    ClipControls    =   0   'False
    BeginProperty Font 
       Name            =   "Verdana"
@@ -20,11 +20,10 @@ Begin VB.Form frmAbout
    Icon            =   "frmAbout.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form2"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   2205
-   ScaleWidth      =   7425
+   ScaleHeight     =   6735
+   ScaleWidth      =   6150
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.TextBox Text1 
@@ -32,62 +31,79 @@ Begin VB.Form frmAbout
       BackColor       =   &H8000000F&
       ForeColor       =   &H8000000F&
       Height          =   285
-      Left            =   4050
-      TabIndex        =   9
+      Left            =   4680
+      TabIndex        =   8
       TabStop         =   0   'False
-      Top             =   5000
+      Top             =   12240
       Width           =   1395
    End
    Begin VB.CommandButton cmdTech 
       Caption         =   "&Support..."
       Height          =   400
-      Left            =   5835
-      TabIndex        =   2
-      Top             =   1300
+      Left            =   1395
+      TabIndex        =   1
+      Top             =   6105
       Width           =   1425
-   End
-   Begin VB.PictureBox Picture1 
-      Appearance      =   0  'Flat
-      BackColor       =   &H80000005&
-      ForeColor       =   &H80000008&
-      Height          =   1095
-      Left            =   240
-      ScaleHeight     =   1065
-      ScaleWidth      =   1185
-      TabIndex        =   5
-      TabStop         =   0   'False
-      Top             =   120
-      Width           =   1215
-      Begin VB.Image Image1 
-         Height          =   720
-         Left            =   220
-         Picture         =   "frmAbout.frx":000C
-         Top             =   160
-         Width           =   720
-      End
    End
    Begin VB.CommandButton cmdOK 
       Cancel          =   -1  'True
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
-      Left            =   5835
+      Left            =   4515
       TabIndex        =   0
-      Top             =   150
+      Top             =   6120
       Width           =   1425
    End
    Begin VB.CommandButton cmdSysInfo 
       Caption         =   "System &Info..."
       Height          =   400
-      Left            =   5835
-      TabIndex        =   1
-      Top             =   725
+      Left            =   2955
+      TabIndex        =   2
+      Top             =   6120
       Width           =   1425
+   End
+   Begin VB.Line Line2 
+      X1              =   120
+      X2              =   6000
+      Y1              =   5880
+      Y2              =   5880
+   End
+   Begin VB.Line Line1 
+      X1              =   120
+      X2              =   6000
+      Y1              =   3360
+      Y2              =   3360
+   End
+   Begin VB.Label Label1 
+      AutoSize        =   -1  'True
+      Caption         =   "About OpenHR - Data Manager"
+      BeginProperty Font 
+         Name            =   "Verdana"
+         Size            =   9.75
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   240
+      Left            =   120
+      TabIndex        =   12
+      Top             =   3000
+      Width           =   3315
+   End
+   Begin VB.Image Image2 
+      Height          =   2820
+      Left            =   0
+      Picture         =   "frmAbout.frx":000C
+      Top             =   0
+      Width           =   6150
    End
    Begin VB.Label lblAdvancedConnectURL 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "Click here to visit the customer website, for the latest OpenHR news and events "
+      Caption         =   "Visit the customer website for the latest OpenHR news and events "
       BeginProperty Font 
          Name            =   "Verdana"
          Size            =   8.25
@@ -100,11 +116,11 @@ Begin VB.Form frmAbout
       ForeColor       =   &H00FF0000&
       Height          =   195
       Left            =   150
-      MouseIcon       =   "frmAbout.frx":07C4
+      MouseIcon       =   "frmAbout.frx":55C1
       MousePointer    =   99  'Custom
-      TabIndex        =   12
-      Top             =   1800
-      Width           =   6915
+      TabIndex        =   11
+      Top             =   5520
+      Width           =   5715
    End
    Begin VB.Label lblURL 
       AutoSize        =   -1  'True
@@ -122,10 +138,10 @@ Begin VB.Form frmAbout
       ForeColor       =   &H00FF0000&
       Height          =   195
       Left            =   150
-      MouseIcon       =   "frmAbout.frx":0916
+      MouseIcon       =   "frmAbout.frx":5713
       MousePointer    =   99  'Custom
-      TabIndex        =   11
-      Top             =   1515
+      TabIndex        =   10
+      Top             =   5115
       Width           =   4185
    End
    Begin VB.Label lblDatabase 
@@ -133,9 +149,9 @@ Begin VB.Form frmAbout
       BackStyle       =   0  'Transparent
       Caption         =   "Database : "
       Height          =   195
-      Left            =   1500
-      TabIndex        =   10
-      Top             =   370
+      Left            =   120
+      TabIndex        =   9
+      Top             =   3735
       Width           =   2280
    End
    Begin VB.Label lblUser 
@@ -143,9 +159,9 @@ Begin VB.Form frmAbout
       BackStyle       =   0  'Transparent
       Caption         =   "User : "
       Height          =   195
-      Left            =   1500
-      TabIndex        =   8
-      Top             =   580
+      Left            =   120
+      TabIndex        =   7
+      Top             =   3945
       Width           =   2100
    End
    Begin VB.Label lblSecurity 
@@ -153,9 +169,9 @@ Begin VB.Form frmAbout
       BackStyle       =   0  'Transparent
       Caption         =   "User Group : "
       Height          =   195
-      Left            =   1500
-      TabIndex        =   7
-      Top             =   795
+      Left            =   120
+      TabIndex        =   6
+      Top             =   4155
       Width           =   1170
    End
    Begin VB.Label lblSql 
@@ -163,9 +179,9 @@ Begin VB.Form frmAbout
       BackStyle       =   0  'Transparent
       Caption         =   "SQL Server Version : "
       Height          =   195
-      Left            =   1500
-      TabIndex        =   6
-      Top             =   1000
+      Left            =   120
+      TabIndex        =   5
+      Top             =   4365
       Width           =   2295
    End
    Begin VB.Label lblCopyRight 
@@ -176,7 +192,7 @@ Begin VB.Form frmAbout
       Height          =   195
       Left            =   150
       TabIndex        =   4
-      Top             =   1305
+      Top             =   4785
       Width           =   5490
    End
    Begin VB.Label lblTitle 
@@ -185,9 +201,9 @@ Begin VB.Form frmAbout
       Caption         =   "OpenHR Data Manager - version"
       ForeColor       =   &H80000008&
       Height          =   195
-      Left            =   1500
+      Left            =   120
       TabIndex        =   3
-      Top             =   160
+      Top             =   3525
       Width           =   2670
    End
 End
@@ -266,7 +282,8 @@ Private Sub Form_Load()
   'sAniPath = App.Path & "\Videos\about.avi"
   'aniAbout.Open sAniPath
     
-  lblTitle.Caption = "OpenHR Data Manager - v" & App.Major & "." & App.Minor & "." & App.Revision
+  ' lblTitle.Caption = "OpenHR Data Manager - v" & App.Major & "." & App.Minor & "." & App.Revision
+  lblTitle.Caption = "Version : " & App.Major & "." & App.Minor & "." & App.Revision
   lblDatabase.Caption = "Database : " & gsDatabaseName
   lblUser.Caption = "Current User : " & gsUserName
   
@@ -291,9 +308,9 @@ Private Sub Form_Load()
   sngMaxX = IIf(lblSql.Left + lblSql.Width > sngMaxX, lblSql.Left + lblSql.Width, sngMaxX)
   sngMaxX = IIf(lblCopyRight.Left + lblCopyRight.Width > sngMaxX, lblCopyRight.Left + lblCopyRight.Width, sngMaxX)
   
-  cmdOK.Left = sngMaxX + 250
-  cmdSysInfo.Left = cmdOK.Left
-  cmdTech.Left = cmdOK.Left
+  'cmdOK.Left = sngMaxX + 250
+  'cmdSysInfo.Left = cmdOK.Left
+  'cmdTech.Left = cmdOK.Left
   
   Me.Width = cmdOK.Left + cmdOK.Width + 200
   
@@ -408,6 +425,11 @@ Private Sub Form_Resize()
 End Sub
 
 Private Sub imgASR_Click()
+  Text1.Text = ""
+  Text1.SetFocus
+End Sub
+
+Private Sub Image2_Click()
   Text1.Text = ""
   Text1.SetFocus
 End Sub
