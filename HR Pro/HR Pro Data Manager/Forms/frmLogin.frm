@@ -978,7 +978,7 @@ Public Sub Login()
     End If
   End If
   
-  gsConnectionString = gsConnectionString & ";Password=" & Chr(34) & Replace(Replace(txtPWD.Text, ";", ""), Chr(34), Chr(34) & Chr(34)) & Chr(34) & ";"
+  gsConnectionString = gsConnectionString & ";Password='" & Replace(Replace(txtPWD.Text, ";", ""), "'", "''") & "';"
   
   If LenB(gsDatabaseName) <> 0 Then
     gsConnectionString = gsConnectionString & "Initial Catalog=" & gsDatabaseName & ";"
