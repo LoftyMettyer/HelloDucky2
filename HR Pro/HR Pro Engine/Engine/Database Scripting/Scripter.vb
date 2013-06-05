@@ -309,6 +309,9 @@ Namespace ScriptDB
       '  Dim sValidation As String = String.Empty
       Dim sTriggerName As String = String.Empty
       Dim sColumnName As String = String.Empty
+      Dim sAuditDataBase As String = String.Empty
+      Dim sAuditDataDelete As String = String.Empty
+      Dim sAuditDataInsert As String = String.Empty
 
       Dim objAuditIndex As Things.Index
 
@@ -505,19 +508,36 @@ Namespace ScriptDB
 
               ' Concatenate audited columns
               If objColumn.Audit Then
+                Select Case objColumn.DataType
+                  Case ColumnTypes.Date
+                    sAuditDataInsert = String.Format(" CONVERT(varchar(11), i.[{0}], 105)", objColumn.Name)
+                    sAuditDataDelete = String.Format(" CONVERT(varchar(11), d.[{0}], 105)", objColumn.Name)
+                    sAuditDataBase = String.Format(" CONVERT(varchar(11), base.[{0}], 105)", objColumn.Name)
 
-                aryAuditInserts.Add(String.Format("        SELECT base.ID, NULL, convert(nvarchar(255),base.[{0}]), {4}, '{3}', '{0}', {1}, base.[_description]" & vbNewLine & _
+                  Case ColumnTypes.Logic
+                    sAuditDataInsert = String.Format(" CASE i.[{0}] WHEN 1 THEN 'Yes' WHEN NULL THEN 'No' ELSE 'No' END", objColumn.Name)
+                    sAuditDataDelete = String.Format(" CASE d.[{0}] WHEN 1 THEN 'Yes'  WHEN NULL THEN 'No' ELSE 'No' END", objColumn.Name)
+                    sAuditDataBase = String.Format(" CASE base.[{0}] WHEN 1 THEN 'Yes'  WHEN NULL THEN 'No' ELSE 'No' END", objColumn.Name)
+
+                  Case Else
+                    sAuditDataInsert = String.Format(" CONVERT(varchar(255), i.[{0}], 105)", objColumn.Name)
+                    sAuditDataDelete = String.Format(" CONVERT(varchar(255), d.[{0}], 105)", objColumn.Name)
+                    sAuditDataBase = String.Format(" CONVERT(varchar(255), base.[{0}], 105)", objColumn.Name)
+                End Select
+
+                aryAuditInserts.Add(String.Format("        SELECT base.ID, '* New Record *', {0}, {4}, '{3}', '{6}', {1}, base.[_description]" & vbNewLine & _
                     "            FROM inserted i" & vbNewLine & _
-                    "            INNER JOIN dbo.[{2}] base ON i.[id] = base.[id] AND NOT ISNULL(base.[{0}],{5}) = {5}" _
-                    , objColumn.Name, CInt(objColumn.ID), objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.ID), objColumn.SafeReturnType))
+                    "            INNER JOIN dbo.[{2}] base ON i.[id] = base.[id] AND NOT ISNULL({0},'') = ''" _
+                    , sAuditDataInsert, CInt(objColumn.ID), objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.ID), objColumn.SafeReturnType, objColumn.Name))
 
-                aryAuditUpdates.Add(String.Format("        SELECT d.ID, convert(nvarchar(255),d.[{0}]), convert(nvarchar(255), base.[{0}]), {4}, '{3}', '{0}', {1}, base.[_description]" & vbNewLine & _
+                aryAuditUpdates.Add(String.Format("        SELECT d.ID, {7}, {0}, {4}, '{3}', '{6}', {1}, base.[_description]" & vbNewLine & _
                     "            FROM deleted d" & vbNewLine & _
-                    "            INNER JOIN dbo.[{2}] base ON d.[id] = base.[id] AND NOT ISNULL(d.[{0}],{5}) = ISNULL(base.[{0}],{5})" _
-                    , objColumn.Name, CInt(objColumn.ID), objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.ID), objColumn.SafeReturnType))
+                    "            INNER JOIN dbo.[{2}] base ON d.[id] = base.[id] AND NOT ISNULL({0},'') = ISNULL({7},'')" _
+                    , sAuditDataBase, CInt(objColumn.ID), objColumn.Table.PhysicalName, objColumn.Table.Name, CInt(objColumn.Table.ID), objColumn.SafeReturnType, objColumn.Name, sAuditDataDelete))
 
-                aryAuditDeletes.Add(String.Format("        SELECT ID, convert(nvarchar(255),[{0}]), NULL, {3}, '{2}', '{0}', {1}, [_description]" & vbNewLine & _
-                    "            FROM deleted WHERE [{0}] IS NOT NULL", objColumn.Name, CInt(objColumn.ID), objColumn.Table.Name, CInt(objColumn.Table.ID)))
+                aryAuditDeletes.Add(String.Format("        SELECT d.ID, {0}, ' * Deleted Record *', {3}, '{2}', '{4}', {1}, d.[_description]" & vbNewLine & _
+                    "            FROM deleted d WHERE {0} IS NOT NULL" _
+                    , sAuditDataDelete, CInt(objColumn.ID), objColumn.Table.Name, CInt(objColumn.Table.ID), objColumn.Name))
 
                 objAuditIndex.IncludedColumns.Add(objColumn)
               End If
@@ -674,7 +694,7 @@ Namespace ScriptDB
           ' AFTER INSERT
           ' -------------------
           sTriggerName = String.Format("{0}{1}_i02", ScriptDB.Consts.Trigger, objTable.Name)
-          sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] nvarchar(MAX), [newvalue] nvarchar(MAX), [tableid] integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
+          sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tableid] integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
               "    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
@@ -710,7 +730,7 @@ Namespace ScriptDB
           ' AFTER UPDATE
           ' -------------------
           sTriggerName = String.Format("{0}{1}_u02", ScriptDB.Consts.Trigger, objTable.Name)
-          sSQL = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] nvarchar(MAX), [newvalue] nvarchar(MAX), tableid integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
+          sSQL = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), tableid integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
               "    DECLARE @dChangeDate datetime," & vbNewLine & _
               "            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
               "    SET @sValidation = '';" & vbNewLine & _
@@ -735,7 +755,7 @@ Namespace ScriptDB
           ' AFTER DELETE
           ' -------------------
           sTriggerName = String.Format("{0}{1}_d02", ScriptDB.Consts.Trigger, objTable.Name)
-          sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] nvarchar(MAX), [newvalue] nvarchar(MAX), [tablename] varchar(255), [tableid] integer, [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
+          sSQL = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tablename] varchar(255), [tableid] integer, [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
               "    DECLARE @dChangeDate datetime;" & vbNewLine & _
               "    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
               "    INSERT [dbo].[{4}] ([spid], [tablefromid], [actiontype], [nestlevel]) VALUES (@@spid, {5}, 3, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
