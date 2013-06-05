@@ -6107,6 +6107,10 @@ Private Function SetControlLevel() As Boolean
         If ctlControl.ControlLevel = iLevel And ctlControl.Name <> "TabPages" Then
           ctlControl.ZOrder vbBringToFront
         End If
+        'NHRD21062012 Jira HRPRO-2260
+        If ctlControl.WFItemType = giWFFORMITEM_FRAME Then
+          ctlControl.ZOrder vbSendToBack
+        End If
       End If
     Next ctlControl
   Next iLevel
