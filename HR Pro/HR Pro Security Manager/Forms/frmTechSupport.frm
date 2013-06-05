@@ -335,7 +335,7 @@ Private Sub lblEMail_Click()
   'lblEMail.ForeColor = &H800080
   
   'Show the compose message window
-  MAPIsendMessage "HR Pro Support Query - Security Mgr", lblEMail.Caption, "", 0, Me, 1
+  MAPIsendMessage "HR Pro Support Query - Security Manager", lblEMail.Caption, "", 0, Me, 1
 
 End Sub
 
