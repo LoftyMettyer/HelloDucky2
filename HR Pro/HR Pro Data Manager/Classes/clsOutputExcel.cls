@@ -33,10 +33,10 @@ Private mblnScreen As Boolean
 Private mblnPrinter As Boolean
 Private mstrPrinterName As String
 Private mblnSave As Boolean
-Private mlngSaveFileFormat As Long
+'Private mlngSaveFileFormat As Long
 Private mlngSaveExisting As Long
 Private mblnEmail As Boolean
-Private mlngEmailFileFormat As Long
+'Private mlngEmailFileFormat As Long
 Private mstrFileName As String
 Private mblnSizeColumnsIndependently As Boolean
 Private mblnApplyStyles As Boolean
@@ -727,13 +727,13 @@ Public Property Let Save(blnSave As Boolean)
   mblnSave = blnSave
 End Property
 
-Public Property Let SaveFileFormat(lngSaveFileFormat As Long)
-  mlngSaveFileFormat = lngSaveFileFormat
-End Property
-
-Public Property Get SaveFileFormat() As Long
-  SaveFileFormat = mlngSaveFileFormat
-End Property
+'Public Property Let SaveFileFormat(lngSaveFileFormat As Long)
+'  mlngSaveFileFormat = lngSaveFileFormat
+'End Property
+'
+'Public Property Get SaveFileFormat() As Long
+'  SaveFileFormat = mlngSaveFileFormat
+'End Property
 
 Public Property Let SaveExisting(lngSaveExisting As Long)
   mlngSaveExisting = lngSaveExisting
@@ -747,13 +747,13 @@ Public Property Let Email(blnEmail As Boolean)
   mblnEmail = blnEmail
 End Property
 
-Public Property Let EmailFileFormat(lngEmailFileFormat As Long)
-  mlngEmailFileFormat = lngEmailFileFormat
-End Property
-
-Public Property Get EmailFileFormat() As Long
-  EmailFileFormat = mlngEmailFileFormat
-End Property
+'Public Property Let EmailFileFormat(lngEmailFileFormat As Long)
+'  mlngEmailFileFormat = lngEmailFileFormat
+'End Property
+'
+'Public Property Get EmailFileFormat() As Long
+'  EmailFileFormat = mlngEmailFileFormat
+'End Property
 
 Public Property Let FileName(strFileName As String)
   mstrFileName = strFileName
