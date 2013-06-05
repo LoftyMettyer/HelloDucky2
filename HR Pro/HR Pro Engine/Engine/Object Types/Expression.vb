@@ -1124,14 +1124,18 @@ Namespace Things
 
     Private Function ResultWrapper(ByRef Statement As String) As String
 
-      Dim sSQLType As String = String.Empty
+      Dim sWrapped As String = String.Empty
       Dim sSize As String = String.Empty
 
       If Globals.Options.OverflowSafety Then
 
         Select Case CInt(Me.AssociatedColumn.DataType)
           Case ScriptDB.ColumnTypes.Text, ScriptDB.ColumnTypes.WorkingPattern, ScriptDB.ColumnTypes.Link
-            sSQLType = String.Format("CASE WHEN LEN(ISNULL({0}, '')) > {1} THEN '' ELSE {0} END", Statement, Me.AssociatedColumn.Size)
+            If Me.AssociatedColumn.Multiline Then
+              sWrapped = Statement
+            Else
+              sWrapped = String.Format("CASE WHEN LEN(ISNULL({0}, '')) > {1} THEN '' ELSE {0} END", Statement, Me.AssociatedColumn.Size)
+            End If
 
           Case ScriptDB.ColumnTypes.Integer, ScriptDB.ColumnTypes.Numeric
             If Me.AssociatedColumn.Decimals > 0 Then
@@ -1139,18 +1143,18 @@ Namespace Things
             Else
               sSize = New String("9", Me.AssociatedColumn.Size)
             End If
-            sSQLType = String.Format("CASE WHEN ISNULL({0}, 0) > {1} THEN 0 ELSE {0} END", Statement, sSize)
+            sWrapped = String.Format("CASE WHEN ISNULL({0}, 0) > {1} THEN 0 ELSE {0} END", Statement, sSize)
 
           Case ScriptDB.ColumnTypes.Date, ScriptDB.ColumnTypes.Logic
-            sSQLType = Statement
+            sWrapped = Statement
 
         End Select
 
       Else
-        sSQLType = Statement
+        sWrapped = Statement
       End If
 
-      Return sSQLType
+      Return sWrapped
     End Function
 
     Private Function ResultDefinition() As String
