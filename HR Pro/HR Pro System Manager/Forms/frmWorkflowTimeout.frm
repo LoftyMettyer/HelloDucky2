@@ -4232,7 +4232,9 @@ Private Sub cboHotSpotIdentifier_refresh(ByVal psCurrentValue As String)
           
           Case giWFFORMITEM_INPUTVALUE_OPTIONGROUP
             fItemOK = False
-
+            
+          Case giWFFORMITEM_INPUTVALUE_FILEUPLOAD
+            fItemOK = False
           Case Else
             fItemOK = True
         
@@ -4880,7 +4882,7 @@ Private Sub RefreshScreen()
   
   fOKToSave = mfChanged And (Not mfReadOnly)
   
-  cmdOk.Enabled = fOKToSave
+  cmdOK.Enabled = fOKToSave
 
 End Sub
 
@@ -10873,13 +10875,13 @@ End Sub
 Private Sub txtControlValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOk.Default = False
+  cmdOK.Default = False
 
 End Sub
 
 Private Sub txtControlValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
@@ -11027,14 +11029,14 @@ End Sub
 Private Sub txtFileExtensions_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOk.Default = False
+  cmdOK.Default = False
 
 End Sub
 
 
 Private Sub txtFileExtensions_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
