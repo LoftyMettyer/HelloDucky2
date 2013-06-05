@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmTabEdit 
    BorderStyle     =   3  'Fixed Dialog
@@ -56,21 +56,21 @@ Begin VB.Form frmTabEdit
       TabCaption(0)   =   "De&finition"
       TabPicture(0)   =   "frmTabEdit.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "txtEmail"
-      Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "cmdEmail"
-      Tab(0).Control(2)=   "txtTableName"
-      Tab(0).Control(3)=   "fraTableType"
-      Tab(0).Control(4)=   "cmdOrder"
-      Tab(0).Control(5)=   "txtOrder"
+      Tab(0).Control(0)=   "lblRecordDescription"
+      Tab(0).Control(1)=   "lblOrder"
+      Tab(0).Control(2)=   "lblTableName"
+      Tab(0).Control(3)=   "lblEmail"
+      Tab(0).Control(4)=   "cmdRecordDescription"
+      Tab(0).Control(5)=   "txtRecordDescription"
       Tab(0).Control(5).Enabled=   0   'False
-      Tab(0).Control(6)=   "txtRecordDescription"
+      Tab(0).Control(6)=   "txtOrder"
       Tab(0).Control(6).Enabled=   0   'False
-      Tab(0).Control(7)=   "cmdRecordDescription"
-      Tab(0).Control(8)=   "lblEmail"
-      Tab(0).Control(9)=   "lblTableName"
-      Tab(0).Control(10)=   "lblOrder"
-      Tab(0).Control(11)=   "lblRecordDescription"
+      Tab(0).Control(7)=   "cmdOrder"
+      Tab(0).Control(8)=   "fraTableType"
+      Tab(0).Control(9)=   "txtTableName"
+      Tab(0).Control(10)=   "cmdEmail"
+      Tab(0).Control(11)=   "txtEmail"
+      Tab(0).Control(11).Enabled=   0   'False
       Tab(0).ControlCount=   12
       TabCaption(1)   =   "Su&mmary"
       TabPicture(1)   =   "frmTabEdit.frx":0028
@@ -118,8 +118,8 @@ Begin VB.Form frmTabEdit
       TabCaption(5)   =   "Audi&t"
       TabPicture(5)   =   "frmTabEdit.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraAudit"
-      Tab(5).Control(1)=   "fraTableStats"
+      Tab(5).Control(0)=   "fraTableStats"
+      Tab(5).Control(1)=   "fraAudit"
       Tab(5).ControlCount=   2
       TabCaption(6)   =   "&Validation"
       TabPicture(6)   =   "frmTabEdit.frx":00B4
@@ -1893,7 +1893,7 @@ Private Sub cmdOrder_Click()
   Dim fCanSelectOrder As Boolean
   Dim objOrder As Order
   Dim sSQL As String
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   
   ' Create a new order object.
   Set objOrder = New Order
@@ -2309,17 +2309,20 @@ End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
   
-  Select Case KeyCode
-    Case vbKeyU
-      If (Shift And vbAltMask) > 0 Then
-        cmdUp_Click
-      End If
-
-    Case vbKeyD
-      If (Shift And vbAltMask) > 0 Then
-        cmdDown_Click
-      End If
-  End Select
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+  Case vbKeyU
+    If (Shift And vbAltMask) > 0 Then
+      cmdUp_Click
+    End If
+  Case vbKeyD
+    If (Shift And vbAltMask) > 0 Then
+      cmdDown_Click
+    End If
+End Select
 
 End Sub
 
@@ -2562,7 +2565,7 @@ Private Sub lstColumns_Initialise()
   Dim fIsSummaryField As Boolean
   Dim iLoop As Integer
   Dim sSQL As String
-  Dim rsColumns As dao.Recordset
+  Dim rsColumns As DAO.Recordset
   Dim objSummaryField As cSummaryField
             
   ' For each table in the parent table combo ...
@@ -2685,7 +2688,7 @@ Private Sub cboParentTable_Initialise()
   ' Populate the Parent Table combo with the parent table(s) of the current table.
   
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   
   cboParentTable.Clear
   
@@ -2750,7 +2753,7 @@ End Function
 
 Private Function MarkViewsAndExpressionsChanged()
 
-  Dim rsChangedDefs As dao.Recordset
+  Dim rsChangedDefs As DAO.Recordset
   Dim sSQL As String
 
   'Mark parent views as changed...
@@ -2870,7 +2873,7 @@ Public Sub PrintDefinition()
       
               ' Ignore deleted and system columns.
               If (Not .Fields("deleted")) And _
-                (Not !columnType = giCOLUMNTYPE_SYSTEM) Then
+                (Not !columntype = giCOLUMNTYPE_SYSTEM) Then
       
                   ' Size
                   If Database.ColumnHasSize(.Fields("DataType").value) Then
@@ -3134,7 +3137,7 @@ Public Sub CopyDefinitionToClipboard()
           
         ' Ignore deleted and system columns.
         If (Not .Fields("deleted")) And _
-          (Not !columnType = giCOLUMNTYPE_SYSTEM) Then
+          (Not !columntype = giCOLUMNTYPE_SYSTEM) Then
     
             ' Size
             If Database.ColumnHasSize(.Fields("DataType").value) Then

@@ -17,6 +17,7 @@ Begin VB.Form frmShowColumns
    EndProperty
    HelpContextID   =   5063
    Icon            =   "frmShowColumns.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -100,6 +101,16 @@ UnLoad Me
 
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+
+End Sub
+
 Private Sub Form_Load()
 
   Dim iCount As Integer
@@ -149,19 +160,19 @@ Private Sub ResizeForm()
   fraDefinition.Width = (iAcross * Y_OFFSET)
   fraDefinition.Height = X_OFFSET * IIf(iDown = 10, iDown + 1, iDown) + 100
   
-  If fraDefinition.Width < (cmdCancel.Left - cmdOk.Left + cmdCancel.Width) Then
-    fraDefinition.Width = (cmdCancel.Left - cmdOk.Left + cmdCancel.Width)
+  If fraDefinition.Width < (cmdCancel.Left - cmdOK.Left + cmdCancel.Width) Then
+    fraDefinition.Width = (cmdCancel.Left - cmdOK.Left + cmdCancel.Width)
   End If
   
   ' Set form size
   Me.Width = fraDefinition.Width + (Y_BORDER * 3)
-  Me.Height = fraDefinition.Height + cmdOk.Height + 800
+  Me.Height = fraDefinition.Height + cmdOK.Height + 800
   
   ' Set button locations
-  cmdOk.Top = fraDefinition.Top + fraDefinition.Height + X_BORDER
-  cmdCancel.Top = cmdOk.Top
+  cmdOK.Top = fraDefinition.Top + fraDefinition.Height + X_BORDER
+  cmdCancel.Top = cmdOK.Top
   cmdCancel.Left = fraDefinition.Left + fraDefinition.Width - cmdCancel.Width
-  cmdOk.Left = cmdCancel.Left - 1350
+  cmdOK.Left = cmdCancel.Left - 1350
   
   'cmdCancel.Left = cmdOk.Left + cmdOk.Width + 100
 

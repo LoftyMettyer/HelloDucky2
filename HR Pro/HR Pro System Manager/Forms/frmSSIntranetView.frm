@@ -17,6 +17,7 @@ Begin VB.Form frmSSIntranetView
    EndProperty
    HelpContextID   =   5058
    Icon            =   "frmSSIntranetView.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -415,7 +416,7 @@ Private Sub GetTables()
 
   ' Populate the views combo.
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim iDefaultItem As Integer
   Dim sTableName As String
   
@@ -478,7 +479,7 @@ Private Sub GetViews()
 
   ' Populate the views combo.
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim iDefaultItem As Integer
   Dim sTableName As String
   
@@ -888,6 +889,15 @@ Private Sub Form_Initialize()
   mblnReadOnly = (Application.AccessMode <> accFull And _
     Application.AccessMode <> accSupportMode)
 
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_Load()

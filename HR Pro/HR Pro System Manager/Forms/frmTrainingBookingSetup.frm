@@ -20,6 +20,7 @@ Begin VB.Form frmTrainingBookingSetup
    EndProperty
    HelpContextID   =   5089
    Icon            =   "frmTrainingBookingSetup.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -75,17 +76,17 @@ Begin VB.Form frmTrainingBookingSetup
       TabCaption(2)   =   "De&legates"
       TabPicture(2)   =   "frmTrainingBookingSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraUnavailability"
+      Tab(2).Control(0)=   "fraDelegates"
       Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraDelegates"
+      Tab(2).Control(1)=   "fraUnavailability"
       Tab(2).Control(1).Enabled=   0   'False
       Tab(2).ControlCount=   2
       TabCaption(3)   =   "Waiting List / &Bookings"
       TabPicture(3)   =   "frmTrainingBookingSetup.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraTrainingBookings"
+      Tab(3).Control(0)=   "fraWaitingList"
       Tab(3).Control(0).Enabled=   0   'False
-      Tab(3).Control(1)=   "fraWaitingList"
+      Tab(3).Control(1)=   "fraTrainingBookings"
       Tab(3).Control(1).Enabled=   0   'False
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "&Related Columns"
@@ -921,7 +922,7 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  If Not mbLoading Then cmdOk.Enabled = True
+  If Not mbLoading Then cmdOK.Enabled = True
 End Property
 
 Private Sub cboCourseCancellationDate_Click()
@@ -1354,10 +1355,19 @@ Private Sub cmdOK_Click()
   
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   
   mbLoading = True
-  cmdOk.Enabled = False
+  cmdOK.Enabled = False
   
   ' Position the form in the same place it was last time.
   Me.Top = GetPCSetting(Me.Name, "Top", (Screen.Height - Me.Height) / 2)
@@ -1526,8 +1536,8 @@ Private Sub RefreshCourseColumnControls()
         End If
         
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
                           
           If (!DataType = dtVARCHAR) Then
             cboCourseTitle.AddItem !ColumnName
@@ -1563,7 +1573,7 @@ Private Sub RefreshCourseColumnControls()
             End If
           End If
           
-          If (!DataType = dtINTEGER) Then
+          If (!DataType = dtinteger) Then
             cboCourseNumberBooked.AddItem !ColumnName
             cboCourseNumberBooked.ItemData(cboCourseNumberBooked.NewIndex) = !ColumnID
             If !ColumnID = mvar_lngCourseNumberBookedID Then
@@ -1647,8 +1657,8 @@ Private Sub RefreshTrainingBookingsColumnControls()
         End If
         
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
                           
           ' Only have character columns for the status.
           If (!DataType = dtVARCHAR) Then
@@ -1728,8 +1738,8 @@ Private Sub RefreshPreRequisiteColumnControls()
         End If
         
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
                           
           If (!DataType = dtVARCHAR) Then
             cboPreRequisiteCourseTitle.AddItem !ColumnName
@@ -1751,7 +1761,7 @@ Private Sub RefreshPreRequisiteColumnControls()
             ' JPD 10/4/01 Ensure that the failure notification column
             ' is an option group or dropdown list.
             If ((!ControlType = giCTRL_OPTIONGROUP) Or (!ControlType = giCTRL_COMBOBOX)) And _
-              (!columnType <> giCOLUMNTYPE_LOOKUP) Then
+              (!columntype <> giCOLUMNTYPE_LOOKUP) Then
               cboPreRequisiteFailureNotification.AddItem !ColumnName
               cboPreRequisiteFailureNotification.ItemData(cboPreRequisiteFailureNotification.NewIndex) = !ColumnID
               If !ColumnID = mvar_lngPreReqFailureNotificationID Then
@@ -1812,8 +1822,8 @@ Private Sub RefreshUnavailabilityColumnControls()
         End If
         
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
                           
           If (!DataType = dtTIMESTAMP) Then
             cboUnavailabilityFromDate.AddItem !ColumnName
@@ -1833,7 +1843,7 @@ Private Sub RefreshUnavailabilityColumnControls()
             ' JPD 10/4/01 Ensure that the failure notification column
             ' is an option group or dropdown list.
             If ((!ControlType = giCTRL_OPTIONGROUP) Or (!ControlType = giCTRL_COMBOBOX)) And _
-              (!columnType <> giCOLUMNTYPE_LOOKUP) Then
+              (!columntype <> giCOLUMNTYPE_LOOKUP) Then
               cboUnavailabilityNotification.AddItem !ColumnName
               cboUnavailabilityNotification.ItemData(cboUnavailabilityNotification.NewIndex) = !ColumnID
               If !ColumnID = mvar_lngUnavailFailureNotificationID Then
@@ -1887,8 +1897,8 @@ Private Sub RefreshWaitingListColumnControls()
         End If
         
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
                           
           If (!DataType = dtVARCHAR) Then
             cboWaitingListCourseTitle.AddItem !ColumnName
@@ -1947,8 +1957,8 @@ Private Sub RefreshWaitingListOverrideColumnControls()
         End If
         
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
                           
           If (!DataType = dtTIMESTAMP) Then
             cboWaitingListOrderOveride.AddItem !ColumnName
