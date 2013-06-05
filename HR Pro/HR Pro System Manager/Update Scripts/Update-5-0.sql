@@ -3777,13 +3777,13 @@ PRINT 'Step 8 - New Mobile User Logins Table'
 			WHERE (gid = uid) AND (gid > 0) AND (NOT (name LIKE ''ASRSys%'')) AND (NOT (name LIKE ''db[_]%''));'
 	END
 	
-	IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_mobilelogins]') AND type in (N'U'))
-	BEGIN
-		EXEC sp_executesql N'CREATE TABLE [dbo].[tbsys_mobilelogins](
-			[userid] [integer] NOT NULL,
-			[password] [nvarchar](max) NULL,
-			[newpassword] [nvarchar](max) NULL);';
-	END
+	--IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[tbsys_mobilelogins]') AND type in (N'U'))
+	--BEGIN
+	--	EXEC sp_executesql N'CREATE TABLE [dbo].[tbsys_mobilelogins](
+	--		[userid] [integer] NOT NULL,
+	--		[password] [nvarchar](max) NULL,
+	--		[newpassword] [nvarchar](max) NULL);';
+	--END
 	
 	IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[ASRSysWorkflows]'))
 	DROP VIEW [dbo].[ASRSysWorkflows]
@@ -4514,11 +4514,51 @@ PRINT 'Step 8 - New Mobile User Logins Table'
 	EXECUTE sp_executeSQL @sSPCode;
 		
 		
+
+	----------------------------------------------------------------------
+	-- spASRSysMobilePasswordOK Stored Procedure
+	----------------------------------------------------------------------
+
+	IF EXISTS (SELECT *
+		FROM dbo.sysobjects
+		WHERE id = object_id(N'[dbo].[spASRSysMobilePasswordOK]')
+			AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+		DROP PROCEDURE [dbo].spASRSysMobilePasswordOK;
+
+	SET @sSPCode = 'CREATE PROCEDURE [dbo].[spASRSysMobilePasswordOK]
+		AS
+		BEGIN
+			DECLARE @iDummy integer;
+		END';
+	EXECUTE sp_executeSQL @sSPCode;
 	
-	
-	
-	
-	
+	SET @sSPCode = 'ALTER PROCEDURE [dbo].[spASRSysMobilePasswordOK]
+		(
+			@sCurrentUser VARCHAR(MAX)
+		)
+		AS
+		BEGIN
+			/* Update the current user''s record into ASRSysPassword table.. */
+			DECLARE @iCount		integer;		
+			/* Check that the current user has a record in the table. */
+			SELECT @iCount = COUNT(userName)
+			FROM ASRSysPasswords
+			WHERE userName = @sCurrentUser;
+			IF @iCount = 0
+			BEGIN
+				INSERT INTO ASRSysPasswords (userName, lastChanged, forceChange)
+				VALUES (@sCurrentUser, GETDATE(), 0);
+			END
+			ELSE
+			BEGIN
+				UPDATE ASRSysPasswords 
+				SET lastChanged = GETDATE(), 
+					forceChange = 0
+				WHERE userName = @sCurrentUser;
+			END
+		END';
+
+	EXECUTE sp_executeSQL @sSPCode;
 	
 	
 /* ------------------------------------------------------------- */
