@@ -4655,6 +4655,7 @@ Public Function GetSelectedIDs() As String
   Dim arrayBookmarks() As Variant
   Dim nTotalSelRows As Variant
   Dim intCount As Integer
+  Dim objTemp As Variant
   
   'Workout how many records have been selected
   nTotalSelRows = ssOleDBGridFindColumns.SelBookmarks.Count
@@ -4693,11 +4694,17 @@ Public Function GetSelectedIDs() As String
 
   strSelectedRecords = vbNullString
   With ssOleDBGridFindColumns
+    objTemp = .Bookmark
     For intCount = 0 To .SelBookmarks.Count - 1
-      strSelectedRecords = strSelectedRecords & _
+      'strSelectedRecords = strSelectedRecords & _
           IIf(strSelectedRecords <> vbNullString, ",", "") & _
           .Columns("ID").CellValue(.SelBookmarks(intCount))
+      .Bookmark = .SelBookmarks(intCount)
+      strSelectedRecords = strSelectedRecords & _
+          IIf(strSelectedRecords <> vbNullString, ",", "") & _
+          .Columns("ID").Text
     Next
+    .Bookmark = objTemp
   End With
   
   ssOleDBGridFindColumns.Redraw = True
