@@ -520,14 +520,7 @@ PRINT 'Step 8 - Add abstraction layer to user defined tables'
 			
 				-- Rename the original object
 				EXECUTE sp_rename @oldname, @newname;
-
-				-- Add new columns
-				SET @sqlCommand = ''ALTER TABLE '' + @newname + '' ADD [updflag] integer;'';
-				EXECUTE sp_executesql @sqlCommand;
-
-				SET @sqlCommand = ''ALTER TABLE dbo.['' + @newname + ''] ADD [_description] nvarchar(MAX);'';
-				EXECUTE sp_executesql @sqlCommand;
-				
+			
 				-- Build list of columns for the view (exclude some). Needed because select * does not allow indexing
 				SELECT @columnnames = @columnnames + ''['' + syscolumns.name + ''], ''  
 					FROM sysobjects 
@@ -560,6 +553,13 @@ PRINT 'Step 8 - Add abstraction layer to user defined tables'
 				SELECT @sqlRevokePermissions = @sqlRevokePermissions + ''REVOKE SELECT, UPDATE, DELETE, INSERT ON '' + p.[object] + '' TO ['' + p.[grantee] + ''];'' + CHAR(13)
 					FROM @permissions p
 				EXECUTE sp_executesql @sqlRevokePermissions;
+
+				-- Add new columns on the base table
+				SET @sqlCommand = ''ALTER TABLE '' + @newname + '' ADD [updflag] integer;'';
+				EXECUTE sp_executesql @sqlCommand;
+
+				SET @sqlCommand = ''ALTER TABLE dbo.['' + @newname + ''] ADD [_description] nvarchar(MAX);'';
+				EXECUTE sp_executesql @sqlCommand;
 
 			END
 		END';
@@ -1637,6 +1637,7 @@ PRINT 'Step 12 - Populate code generation tables'
 			[isoperator] [bit] NULL,
 			[operatortype] [tinyint] NULL,
 			[rownumberrequired] [bit] NULL,
+			[recordidrequired] [bit] NULL,
 			[calculatepostaudit] [bit] NULL,
 			[isgetfieldfromdb] [bit],
 			[isuniquecode] [bit]
@@ -1709,7 +1710,7 @@ PRINT 'Step 12 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''3e9cae1a-0948-481d-8d0b-9c13ca5d9373'', N''DATEADD(dd, -1, DATEADD(mm, 1, DATEADD(dd, 1 - DATEPART(dd, {0}), {0})))'', 4, N''Last Day of Month'', NULL, 0, 0, 56)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''bc2ce0fc-6e2c-43a2-86f9-0ed45cba129a'', N''DATEADD(dd, -1, DATEADD(yy, 1, DATEADD(dd, 1 - DATEPART(dy, {0}), {0})))'', 4, N''Last Day of Year'', NULL, 0, 0, 58)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''18babc7b-b84e-4ca9-9e10-c630bb004891'', N''LEN({0})'', 2, N''Length of Character Field'', NULL, 0, 0, 7)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''bba7fff7-bd75-4953-abd1-2f70418bbb80'', N''[dbo].[udfsys_maternityexpectedreturndate](@prm_ID)'', 4, N''Maternity Expected Return Date'', NULL, 0, 0, 64)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [recordidrequired]) VALUES (N''bba7fff7-bd75-4953-abd1-2f70418bbb80'', N''[dbo].[udfsys_maternityexpectedreturndate](@prm_ID)'', 4, N''Maternity Expected Return Date'', NULL, 0, 0, 64, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''5acc9ebe-af46-438e-9ebd-2741b42e26e0'', N''CASE WHEN {0} > {1} THEN {0} ELSE {1} END'', 1, N''Maximum'', NULL, 0, 0, 9)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''e03d8884-8835-425c-b268-1eec196917eb'', N''CASE WHEN {0} < {1} THEN {0} ELSE {1} END'', 1, N''Minimum'', NULL, 0, 0, 10)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''7d1376aa-5bdc-4844-9e5d-b3499b807639'', N''DATEPART(MM, {0})'', 2, N''Month of Date'', NULL, 0, 0, 33)';
@@ -1718,8 +1719,8 @@ PRINT 'Step 12 - Populate code generation tables'
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''ccbcd03a-0c7e-47c7-b4bf-d6e8bd7963e8'', N''[dbo].[udfsys_nicedate]({0})'', 1, N''Nice Date'', NULL, 0, 0, 35)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''42a88b07-200f-4785-9c1f-e4b5a97a9001'', N''[dbo].[udfsys_nicetime]({0})'', 1, N''Nice Time'', NULL, 0, 0, 36)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''e59b8c9c-31d1-494f-b9c3-ca0a6a6aef1e'', N''(convert(float, len(replace(left({0}, 14), SPACE(1), SPACE(0)))) / 2)'', 2, N''Number of Working Days per Week'', NULL, 0, 0, 29)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''84044568-fea7-48d5-ae8a-f8178b7ed927'', N''[dbo].[udfsys_parentalleaveentitlement](@prm_ID)'', 2, N''Parental Leave Entitlement'', NULL, 0, 0, 62)';
-	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''5278a126-c44e-41c5-9e7a-1c890c297d3f'', N''[dbo].[udfsys_parentalleavetaken](@prm_ID)'', 2, N''Parental Leave Taken'', NULL, 0, 0, 63)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [recordidrequired]) VALUES (N''84044568-fea7-48d5-ae8a-f8178b7ed927'', N''[dbo].[udfsys_parentalleaveentitlement](@prm_ID)'', 2, N''Parental Leave Entitlement'', NULL, 0, 0, 62, 1)';
+	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id], [recordidrequired]) VALUES (N''5278a126-c44e-41c5-9e7a-1c890c297d3f'', N''[dbo].[udfsys_parentalleavetaken](@prm_ID)'', 2, N''Parental Leave Taken'', NULL, 0, 0, 63, 1)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''ed3be9d9-28f1-4345-a8c8-ca9f0c18a3a2'', N''({0})'', 0, N''Parentheses'', NULL, 0, 0, 27)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''06e67c1b-c376-4fc9-a260-e9a12022791f'', N''[dbo].[udfsys_remainingmonthssincewholeyears]({0}, GETDATE())'', 2, N''Remaining Months since Whole Years'', NULL, 0, 0, 19)';
 	EXEC sp_executesql N'INSERT [dbo].[tbstat_componentcode] ([objectid], [code], [datatype], [name], [aftercode], [isoperator], [operatortype], [id]) VALUES (N''b86c77e6-e393-499e-9114-95a201a316d4'', N''LTRIM(RTRIM({0}))'', 1, N''Remove Leading and Trailing Spaces'', NULL, 0, 0, 5)';
@@ -1765,6 +1766,7 @@ PRINT 'Step 13 - Administration module stored procedures'
 		SELECT [id], [code], [name], ISNULL([datatype],0) AS [returntype]
 			, [precode], [aftercode], [isoperator], [operatortype], [aftercode] 
 			, ISNULL([rownumberrequired],0) AS [rownumberrequired]
+			, ISNULL([recordidrequired],0) AS [recordidrequired]			
 			, ISNULL([CalculatePostAudit],0) AS [calculatepostaudit]
 			, ISNULL([isgetfieldfromdb],0) AS [isgetfieldfromdb]
 			, ISNULL([isuniquecode],0) AS [isuniquecode]
