@@ -22,7 +22,7 @@ namespace Fusion
 													db.Dialect<MsSql2008Dialect>();		
 													db.ConnectionString = connectionString;
 			                           	db.SchemaAction = SchemaAutoAction.Validate;
-			                           	db.LogSqlInConsole = true;
+			                           	//db.LogSqlInConsole = true;
 			                           });
 
 			config.AddDeserializedMapping(GetMappings(), "");
