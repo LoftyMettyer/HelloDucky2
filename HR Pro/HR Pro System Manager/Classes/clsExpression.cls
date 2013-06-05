@@ -1242,7 +1242,7 @@ Public Function RuntimeFilterCode(psFilterCode As String, _
   If fOK Then
 
     'MH20100324
-    If gblnExpressionForDeleteTrigger Then
+    If glngExpressionTableIDForDeleteTrigger = mlngBaseTableID Then
       sBaseTableSource = "deleted"
     Else
       With recTabEdit
