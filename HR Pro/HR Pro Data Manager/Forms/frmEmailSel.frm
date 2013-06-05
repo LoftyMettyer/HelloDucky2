@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{20C62CAE-15DA-101B-B9A8-444553540000}#1.1#0"; "msmapi32.Ocx"
+Object = "{20C62CAE-15DA-101B-B9A8-444553540000}#1.1#0"; "MSMAPI32.OCX"
 Begin VB.Form frmEmailSel 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Select Email Recipients"
@@ -523,8 +523,10 @@ Private Function SendEventLog() As Boolean
   ssGrdRecipients.MoveFirst
   For intRow = 1 To ssGrdRecipients.Rows
     For intCol = 0 To 2
+    
       If ssGrdRecipients.Columns(intCol).Value <> 0 Then
-
+        
+        strEmailAddr = vbNullString
         If (ssGrdRecipients.Columns(5).Value = 1) Then
           Set colRecipients = New clsEmailRecipients
           colRecipients.Populate_Collection CStr(ssGrdRecipients.Columns(4).Value)
@@ -542,16 +544,16 @@ Private Function SendEventLog() As Boolean
         
         End If
         
+        If Trim(strEmailAddr) <> vbNullString Then
+          Select Case intCol
+            Case 0: strTo = strTo & IIf(strTo <> "", ";", "") & strEmailAddr
+            Case 1: strCC = strCC & IIf(strCC <> "", ";", "") & strEmailAddr
+            Case 2: strBCC = strBCC & IIf(strBCC <> "", ";", "") & strEmailAddr
+          End Select
+        End If
+
       End If
         
-      If Trim(strEmailAddr) <> vbNullString Then
-        Select Case intCol
-          Case 0: strTo = strTo & IIf(strTo <> "", ";", "") & strEmailAddr
-          Case 1: strCC = strCC & IIf(strCC <> "", ";", "") & strEmailAddr
-          Case 2: strBCC = strBCC & IIf(strBCC <> "", ";", "") & strEmailAddr
-        End Select
-      End If
-
     Next
 
     ssGrdRecipients.MoveNext
