@@ -1,28 +1,28 @@
 Attribute VB_Name = "modIntranetSpecifics"
 Option Explicit
 
-Private Const msMobileCheckLogin_PROCEDURENAME = "spASRSysMobileCheckLogin"
+Private Const msResetPassword_PROCEDURENAME = "spASRIntResetPassword"
 
 Private mvar_fGeneralOK As Boolean
 Private mvar_sGeneralMsg As String
 
 Private mvar_sLoginColumn As String
 Private mvar_sLoginTable As String
-Private mvar_sUniqueEmailColumn As String
+Private mvar_sWorkEmailColumn As String
 Private mvar_sLeavingDateColumn As String
 Private mvar_sActivatedUserColumn As String
-Private mvar_lngUniqueEmailColumn As Long
+Private mvar_lngWorkEmailColumn As Long
 Private mvar_lngLeavingDateColumn As Long
 Private mvar_lngActivatedUserColumn As Long
 
 
-Public Sub DropMobileObjects()
-  DropProcedure msMobileCheckLogin_PROCEDURENAME
+Public Sub DropIntranetObjects()
+  DropProcedure msResetPassword_PROCEDURENAME
 End Sub
 
 
 
-Public Function ConfigureMobileSpecifics() As Boolean
+Public Function ConfigureIntranetSpecifics() As Boolean
   ' Configure module specific objects (eg. stored procedures)
   On Error GoTo ErrorTrap
   
@@ -33,37 +33,33 @@ Public Function ConfigureMobileSpecifics() As Boolean
   
   mvar_fGeneralOK = True
   mvar_sGeneralMsg = ""
-    
 
-  fOK = ReadMobileParameters
-
+  fOK = ReadIntranetParameters
   
-  'Make sure that we drop the Mobile SPs
-  DropMobileObjects
+  'Make sure that we drop the Intranet SPs
+  DropIntranetObjects
   
-  
-  ' Create the CheckLogin stored procedures.
+  ' Create the ResetPassword stored procedure.
   If fOK And mvar_fGeneralOK Then
-    fOK = CreateSP_MobileCheckLogin
+    fOK = CreateSP_ResetPassword
     If Not fOK Then
-      DropProcedure msMobileCheckLogin_PROCEDURENAME
+      DropProcedure msResetPassword_PROCEDURENAME
     End If
   End If
   
-  
 TidyUpAndExit:
-  ConfigureMobileSpecifics = True
+  ConfigureIntranetSpecifics = True
   Exit Function
   
 ErrorTrap:
-  OutputError "Error configuring Mobile specifics"
+  OutputError "Error configuring Intranet specifics"
   fOK = False
   Resume TidyUpAndExit
   
 End Function
 
-Private Function ReadMobileParameters() As Boolean
-  ' Read the configured Mobile parameters into member variables.
+Private Function ReadIntranetParameters() As Boolean
+  ' Read the configured Intranet parameters into member variables.
   On Error GoTo ErrorTrap
   
   Dim fOK As Boolean
@@ -81,7 +77,7 @@ Private Function ReadMobileParameters() As Boolean
     
     If fOK Then
       ' Get the login column
-      lngLoginColumn = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_LOGINNAME, 0)
+      lngLoginColumn = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_LOGINNAME, 0)
    
       fOK = lngLoginColumn > 0
       If Not fOK Then
@@ -96,25 +92,16 @@ Private Function ReadMobileParameters() As Boolean
       mvar_sLoginTable = GetTableName(lngLoginTable)
    
       ' Get the Unique Email column.
-      .Seek "=", gsMODULEKEY_MOBILE, gsPARAMETERKEY_UNIQUEEMAILCOLUMN
+      .Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_WORKEMAIL
       If .NoMatch Then
-        mvar_lngUniqueEmailColumn = 0
+        mvar_lngWorkEmailColumn = 0
       Else
-        mvar_lngUniqueEmailColumn = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
-        mvar_sUniqueEmailColumn = GetColumnName(mvar_lngUniqueEmailColumn, True)
-      End If
-    
-      ' Get the Leaving Date column.
-      .Seek "=", gsMODULEKEY_MOBILE, gsPARAMETERKEY_LEAVINGDATE
-      If .NoMatch Then
-        mvar_lngLeavingDateColumn = 0
-      Else
-        mvar_lngLeavingDateColumn = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
-        mvar_sLeavingDateColumn = GetColumnName(mvar_lngLeavingDateColumn, True)
+        mvar_lngWorkEmailColumn = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+        mvar_sWorkEmailColumn = GetColumnName(mvar_lngWorkEmailColumn, True)
       End If
       
-      ' Get the Mobile Activated User column.
-      .Seek "=", gsMODULEKEY_MOBILE, gsPARAMETERKEY_MOBILEACTIVATED
+      ' Get the Intranet Activated User column.
+      .Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_LOGINNAME
       If .NoMatch Then
         mvar_lngActivatedUserColumn = 0
       Else
@@ -128,11 +115,11 @@ Private Function ReadMobileParameters() As Boolean
   End With
 
 TidyUpAndExit:
-  ReadMobileParameters = fOK
+  ReadIntranetParameters = fOK
   Exit Function
   
 ErrorTrap:
-  OutputError "Error reading mobile parameters"
+  OutputError "Error reading Intranet parameters"
   fOK = False
   Resume TidyUpAndExit
   
@@ -140,7 +127,7 @@ End Function
 
 
 
-Private Function CreateSP_MobileCheckLogin() As Boolean
+Private Function CreateSP_ResetPassword() As Boolean
   ' Create the Check Login stored procedure.
   On Error GoTo ErrorTrap
 
@@ -152,71 +139,97 @@ Private Function CreateSP_MobileCheckLogin() As Boolean
 
   ' Construct the stored procedure creation string.
   sProcSQL = "/* ------------------------------------------------ */" & vbNewLine & _
-    "/* Mobile module stored procedure.         */" & vbNewLine & _
+    "/* Intranet module stored procedure.         */" & vbNewLine & _
     "/* Automatically generated by the System manager.   */" & vbNewLine & _
     "/* ------------------------------------------------ */" & vbNewLine & _
-    "CREATE PROCEDURE [dbo].[" & msMobileCheckLogin_PROCEDURENAME & "](" & vbNewLine & _
-    "  @psKeyParameter varchar(max)," & vbNewLine & _
-    "  @piUserGroupID integer OUTPUT," & vbNewLine & _
-    "  @psMessage varchar(max) OUTPUT" & vbNewLine & _
-    "  ) " & vbNewLine & _
+    "CREATE PROCEDURE [dbo].[spASRIntResetPassword](" & vbNewLine & _
+    "  @psWebsiteURL VARCHAR(255)," & vbNewLine & _
+    "  @psUserName VARCHAR(255)," & vbNewLine & _
+    "  @pdtChangeDate DATETIME," & vbNewLine & _
+    "  @psEncryptedLink VARCHAR(MAX)," & vbNewLine & _
+    "  @psMessage VARCHAR(MAX) OUTPUT" & vbNewLine & _
+    "  )" & vbNewLine & _
     "AS" & vbNewLine & _
     "BEGIN" & vbNewLine
-
+    
   sProcSQL = sProcSQL & _
-    "  DECLARE @iuserID integer," & vbNewLine & _
-    "          @fActivated bit," & vbNewLine & _
-    "          @sActualUserName varchar(255)," & vbNewLine & _
-    "          @sRoleName varchar(255)," & vbNewLine & _
-    "          @dtExpiryDate datetime," & vbNewLine & _
-    "          @iCount integer;" & vbNewLine & _
-    "  SET @iuserID = 0;" & vbNewLine & _
-    "  SET @psMessage = '';" & vbNewLine & vbNewLine
- 
+    "    DECLARE @iCount INTEGER," & vbNewLine & _
+    "          @psEmailAddress VARCHAR(MAX)," & vbNewLine & _
+    "          @dtExpiryDate DATETIME," & vbNewLine & _
+    "          @sMessage VARCHAR(MAX);" & vbNewLine & vbNewLine
+    
   sProcSQL = sProcSQL & _
-    "  -- Count records with the supplied login name" & vbNewLine & _
-    "  SELECT @iCount = COUNT([ID])" & vbNewLine & _
-    "    FROM [" & mvar_sLoginTable & "]" & vbNewLine & _
-    "    WHERE ISNULL([" & mvar_sLoginColumn & "], '') = @psKeyParameter" & vbNewLine & _
-    "    AND [" & mvar_sActivatedUserColumn & "] = 1" & vbNewLine & _
-    "    AND DATEDIFF(d, GETDATE(), ISNULL([" & mvar_sLeavingDateColumn & "], GETDATE())) >= 0;" & vbNewLine & vbNewLine & _
+    "  SET @iCount = 0;" & vbNewLine & _
+    "  SET @psMessage = '';" & vbNewLine & _
+    "" & vbNewLine & _
+    "  SELECT @iCount = COUNT([" & mvar_sActivatedUserColumn & "])" & vbNewLine & _
+    "    FROM " & mvar_sLoginTable & "" & vbNewLine & _
+    "    WHERE ISNULL(" & mvar_sLoginTable & ".[" & mvar_sActivatedUserColumn & "], '') = @psUserName;" & vbNewLine & _
+    "" & vbNewLine & _
+    "  IF @iCount = 0" & vbNewLine & _
+    "  BEGIN" & vbNewLine & _
+    "    SET @psMessage = 'No records exist with the given user name.';" & vbNewLine & _
+    "  END;" & vbNewLine & _
+    "" & vbNewLine & _
     "  IF @iCount > 1" & vbNewLine & _
-    "      SET @psMessage = 'Multiple accounts exist with this login.';" & vbNewLine & vbNewLine
- 
- sProcSQL = sProcSQL & _
-    "  -- Check other parameters" & vbNewLine & _
-    "  SELECT @iuserID = [ID], @dtExpiryDate = [" & mvar_sLeavingDateColumn & "], @fActivated = [" & mvar_sActivatedUserColumn & "]" & vbNewLine & _
-    "    FROM [" & mvar_sLoginTable & "]" & vbNewLine & _
-    "    WHERE ISNULL([" & mvar_sLoginColumn & "], '') = @psKeyParameter" & vbNewLine & vbNewLine
+    "  BEGIN" & vbNewLine & _
+    "    SET @psMessage = 'More than 1 record exists with the given user name.';" & vbNewLine & _
+    "  END;" & vbNewLine & _
+    "" & vbNewLine & _
+    "  IF @iCount = 1" & vbNewLine & _
+    "  BEGIN" & vbNewLine
     
-  sProcSQL = sProcSQL & _
-    "  IF @psMessage = '' AND @iuserID = 0" & vbNewLine & _
-    "      SET @psMessage = 'Incorrect e-mail / password combination.';" & vbNewLine & _
-    "  IF @psMessage = '' AND ISNULL(@fActivated, 0)  = 0" & vbNewLine & _
-    "      SET @psMessage = 'Account not activated.';" & vbNewLine & _
-    "  IF @psMessage = '' AND DATEDIFF(d, GETDATE(), ISNULL(@dtExpiryDate, GETDATE())) < 0" & vbNewLine & _
-    "      SET @psMessage = 'Account Expired.';" & vbNewLine
-
-  sProcSQL = sProcSQL & _
-    "  EXEC dbo.spASRIntGetActualUserDetailsForLogin" & vbNewLine & _
-    "      @psKeyParameter," & vbNewLine & _
-    "      @psKeyParameter OUTPUT," & vbNewLine & _
-    "      @sRoleName OUTPUT," & vbNewLine & _
-    "      @piUserGroupID OUTPUT" & vbNewLine & vbNewLine & _
-    "  IF ISNULL(@piUserGroupID,0) = 0 SET @psMessage = 'No valid SQL account found.';" & vbNewLine & vbNewLine
+  sProcSQL = sProcSQL & "    SELECT @psEmailAddress = ISNULL(" & mvar_sWorkEmailColumn & ", '')" & vbNewLine & _
+    "    From " & mvar_sLoginTable & "" & vbNewLine & _
+    "    WHERE ISNULL(" & mvar_sLoginTable & "." & mvar_sActivatedUserColumn & ", '') = @psUserName;" & vbNewLine & _
+    "" & vbNewLine & _
+    "    IF (LEN(@psEmailAddress) = 0)" & vbNewLine & _
+    "    BEGIN" & vbNewLine & _
+    "      SET @psMessage = 'No e-mail address exists for the given user name.';" & vbNewLine & _
+    "    END" & vbNewLine & _
+    "    ELSE" & vbNewLine & _
+    "    BEGIN" & vbNewLine & _
+    "      SET @sMessage = 'To reset your password, copy the link shown below into your browser address bar. This will take you to a web page where you can create a new password.' + CHAR(13) + CHAR(10) +" & vbNewLine & _
+    "            'If you weren''t trying to reset your password, don''t worry — your account is still secure and no one has been given access to it.' + CHAR(13) + CHAR(10) + CHAR(13) + CHAR(10) +" & vbNewLine & _
+    "            'Copy the link shown below into your web browser to reset your password:' + CHAR(13) + CHAR(10) +" & vbNewLine & _
+    "            @psWebsiteURL + '?' + @psEncryptedLink;" & vbNewLine & vbNewLine
     
-  sProcSQL = sProcSQL & _
+  sProcSQL = sProcSQL & "      INSERT [dbo].[ASRSysEmailQueue](" & vbNewLine & _
+    "        RecordDesc," & vbNewLine & _
+    "        ColumnValue," & vbNewLine & _
+    "        DateDue," & vbNewLine & _
+    "        UserName," & vbNewLine & _
+    "        [Immediate]," & vbNewLine & _
+    "        RecalculateRecordDesc," & vbNewLine & _
+    "        RepTo," & vbNewLine & _
+    "        MsgText," & vbNewLine & _
+    "        WorkflowInstanceID," & vbNewLine & _
+    "        [Subject])" & vbNewLine & _
+    "      VALUES (''," & vbNewLine & _
+    "        ''," & vbNewLine & _
+    "        getdate()," & vbNewLine & _
+    "        'OpenHR Self-service Intranet'," & vbNewLine & _
+    "        1," & vbNewLine & _
+    "        0," & vbNewLine & _
+    "        @psEmailAddress," & vbNewLine & _
+    "        @sMessage," & vbNewLine & _
+    "        0," & vbNewLine & _
+    "        'How to reset your self-service intranet password');" & vbNewLine & vbNewLine
+    
+  sProcSQL = sProcSQL & "      EXEC [dbo].[spASREmailImmediate] 'OpenHR Mobile';" & vbNewLine & _
+    "    END;" & vbNewLine & _
+    "  END;" & vbNewLine & _
     "END;"
 
   gADOCon.Execute sProcSQL, , adExecuteNoRecords
 
 TidyUpAndExit:
-  CreateSP_MobileCheckLogin = fCreatedOK
+  CreateSP_ResetPassword = fCreatedOK
   Exit Function
 
 ErrorTrap:
   fCreatedOK = False
-  OutputError "Error creating Check Mobile Login stored procedure (Mobile)"
+  OutputError "Error creating Reset Password stored procedure (Intranet)"
   Resume TidyUpAndExit
 
 End Function

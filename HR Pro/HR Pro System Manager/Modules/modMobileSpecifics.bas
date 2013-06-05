@@ -15,10 +15,12 @@ Private mvar_sGeneralMsg As String
 
 Private mvar_sLoginColumn As String
 Private mvar_sLoginTable As String
-Private mvar_sUniqueEmailColumn As String
+' Private mvar_sUniqueEmailColumn As String
+Private mvar_sWorkEmailColumn As String
 Private mvar_sLeavingDateColumn As String
 Private mvar_sActivatedUserColumn As String
-Private mvar_lngUniqueEmailColumn As Long
+' Private mvar_lngUniqueEmailColumn As Long
+Private mvar_lngWorkEmailColumn As Long
 Private mvar_lngLeavingDateColumn As Long
 Private mvar_lngActivatedUserColumn As Long
 
@@ -173,12 +175,12 @@ Private Function ReadMobileParameters() As Boolean
       mvar_sLoginTable = GetTableName(lngLoginTable)
    
       ' Get the Unique Email column.
-      .Seek "=", gsMODULEKEY_MOBILE, gsPARAMETERKEY_UNIQUEEMAILCOLUMN
+      .Seek "=", gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_WORKEMAIL
       If .NoMatch Then
-        mvar_lngUniqueEmailColumn = 0
+        mvar_lngWorkEmailColumn = 0
       Else
-        mvar_lngUniqueEmailColumn = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
-        mvar_sUniqueEmailColumn = GetColumnName(mvar_lngUniqueEmailColumn, True)
+        mvar_lngWorkEmailColumn = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+        mvar_sWorkEmailColumn = GetColumnName(mvar_lngWorkEmailColumn, True)
       End If
     
       ' Get the Leaving Date column.
@@ -333,7 +335,7 @@ Private Function CreateSP_MobileRegistration() As Boolean
     "  SET @psMessage = '';" & vbNewLine & _
     "  SELECT @iCount = COUNT([" & mvar_sLoginColumn & "])" & vbNewLine & _
     "      FROM " & mvar_sLoginTable & vbNewLine & _
-    "      WHERE [" & mvar_sUniqueEmailColumn & "] = @psEmailAddress AND [" & mvar_sUniqueEmailColumn & "] IS NOT NULL;" & vbNewLine & _
+    "      WHERE [" & mvar_sWorkEmailColumn & "] = @psEmailAddress AND [" & mvar_sWorkEmailColumn & "] IS NOT NULL;" & vbNewLine & _
     "  IF @iCount = 0" & vbNewLine & _
     "      SET @psMessage = 'No records exist with the given email address.';" & vbNewLine & _
     "  IF @iCount > 1" & vbNewLine & _
@@ -343,7 +345,7 @@ sProcSQL = sProcSQL & "  IF @psMessage = ''" & vbNewLine & _
     "  BEGIN" & vbNewLine & _
     "    SELECT @dtExpiryDate = [" & mvar_sLeavingDateColumn & "]" & vbNewLine & _
     "        FROM " & mvar_sLoginTable & vbNewLine & _
-    "        WHERE [" & mvar_sUniqueEmailColumn & "] = @psEmailAddress AND [" & mvar_sUniqueEmailColumn & "] IS NOT NULL;" & vbNewLine & vbNewLine & _
+    "        WHERE [" & mvar_sWorkEmailColumn & "] = @psEmailAddress AND [" & mvar_sWorkEmailColumn & "] IS NOT NULL;" & vbNewLine & vbNewLine & _
     "    IF DATEDIFF(d, GETDATE(), ISNULL(@dtExpiryDate, GETDATE())) < 0" & vbNewLine & _
     "        SET @psMessage = 'Unable to register you, please contact your administrator.';" & vbNewLine & _
     "  END" & vbNewLine
@@ -359,12 +361,12 @@ sProcSQL = sProcSQL & "  IF @psMessage = ''" & vbNewLine & _
     "    SET @sUserName = '';" & vbNewLine & _
     "    SELECT @sUserName = [" & mvar_sLoginColumn & "]" & vbNewLine & _
     "      FROM " & mvar_sLoginTable & vbNewLine & _
-    "      WHERE [" & mvar_sUniqueEmailColumn & "] = @psEmailAddress AND [" & mvar_sUniqueEmailColumn & "] IS NOT NULL;" & vbNewLine & _
+    "      WHERE [" & mvar_sWorkEmailColumn & "] = @psEmailAddress AND [" & mvar_sWorkEmailColumn & "] IS NOT NULL;" & vbNewLine & _
     "    --CHECK LOGINS TABLE NOW" & vbNewLine & _
     "    SET @iUserRecordID = 0;" & vbNewLine & _
     "    SELECT @iUserRecordID = [ID]" & vbNewLine & _
     "    FROM " & mvar_sLoginTable & vbNewLine & _
-    "      WHERE ISNULL(" & mvar_sLoginTable & "." & mvar_sUniqueEmailColumn & ", '') = @psEmailAddress;" & vbNewLine & _
+    "      WHERE ISNULL(" & mvar_sLoginTable & "." & mvar_sWorkEmailColumn & ", '') = @psEmailAddress;" & vbNewLine & _
     "      SELECT @iCount = COUNT([" & mvar_sActivatedUserColumn & "])" & vbNewLine & _
     "        From [" & mvar_sLoginTable & "]" & vbNewLine & _
     "        WHERE ISNULL([" & mvar_sLoginTable & "].[ID], 0) = @iUserRecordID" & vbNewLine & _
@@ -591,11 +593,11 @@ Private Function CreateSP_MobileCheckPendingWorkflowSteps() As Boolean
     "  IF (@hResult = 0 OR @sSQLVersion > 8) AND (len(@sURL) > 0)" & vbNewLine & _
     "  BEGIN" & vbNewLine & _
     "    DECLARE @sEmailAddress_1 varchar(MAX)" & vbNewLine & _
-    "    SELECT @sEmailAddress_1 = replace(upper(ltrim(rtrim(" & mvar_sLoginTable & "." & mvar_sUniqueEmailColumn & "))), ' ', '')" & vbNewLine & _
+    "    SELECT @sEmailAddress_1 = replace(upper(ltrim(rtrim(" & mvar_sLoginTable & "." & mvar_sWorkEmailColumn & "))), ' ', '')" & vbNewLine & _
     "      From " & mvar_sLoginTable & vbNewLine & _
     "      WHERE (ISNULL(" & mvar_sLoginTable & "." & mvar_sLoginColumn & ", '') = @psKeyParameter)" & vbNewLine
 
-  sProcSQL = sProcSQL & "      AND len(" & mvar_sLoginTable & "." & mvar_sUniqueEmailColumn & ") > 0" & vbNewLine & _
+  sProcSQL = sProcSQL & "      AND len(" & mvar_sLoginTable & "." & mvar_sWorkEmailColumn & ") > 0" & vbNewLine & _
     "    print @sEmailAddress_1;" & vbNewLine & _
     "    DECLARE steps_cursor CURSOR LOCAL FAST_FORWARD FOR" & vbNewLine & _
     "    SELECT ASRSysWorkflowInstanceSteps.instanceID," & vbNewLine & _
@@ -696,7 +698,7 @@ Private Function CreateSP_MobileGetUserIDFromEmail() As Boolean
     "BEGIN" & vbNewLine & _
     "  SELECT @piUserID = " & mvar_sLoginTable & ".ID" & vbNewLine & _
     "  FROM " & mvar_sLoginTable & vbNewLine & _
-    "  WHERE " & mvar_sLoginTable & "." & mvar_sUniqueEmailColumn & " = @psEmail" & vbNewLine & _
+    "  WHERE " & mvar_sLoginTable & "." & mvar_sWorkEmailColumn & " = @psEmail" & vbNewLine & _
     "END" & vbNewLine
 
   gADOCon.Execute sProcSQL, , adExecuteNoRecords
@@ -787,7 +789,7 @@ Private Function CreateSP_MobileForgotLogin() As Boolean
     "    SET @psMessage = '';" & vbNewLine & _
     "    SELECT @iCount = COUNT([" & mvar_sLoginColumn & "])" & vbNewLine & _
     "    FROM " & mvar_sLoginTable & vbNewLine & _
-    "    WHERE ISNULL(" & mvar_sLoginTable & "." & mvar_sUniqueEmailColumn & ", '') = @psEmailAddress;" & vbNewLine & _
+    "    WHERE ISNULL(" & mvar_sLoginTable & "." & mvar_sWorkEmailColumn & ", '') = @psEmailAddress;" & vbNewLine & _
     "    IF @iCount = 0" & vbNewLine & _
     "    BEGIN" & vbNewLine & _
     "    SET @psMessage = 'No records exist with the given email address.';" & vbNewLine & _
@@ -801,7 +803,7 @@ Private Function CreateSP_MobileForgotLogin() As Boolean
     "    BEGIN" & vbNewLine & _
     "        SELECT @sLogin = ISNULL(" & mvar_sLoginColumn & ", ''), @dtExpiryDate = [" & mvar_sLeavingDateColumn & "]" & vbNewLine & _
     "    FROM " & mvar_sLoginTable & vbNewLine & _
-    "    WHERE ISNULL(" & mvar_sLoginTable & "." & mvar_sUniqueEmailColumn & ", '') = @psEmailAddress;" & vbNewLine & _
+    "    WHERE ISNULL(" & mvar_sLoginTable & "." & mvar_sWorkEmailColumn & ", '') = @psEmailAddress;" & vbNewLine & _
     "    IF (LEN(@sLogin) = 0) OR (LEN(@sLogin) = 0)  OR (DATEDIFF(d, GETDATE(), ISNULL(@dtExpiryDate, GETDATE())) < 0)" & vbNewLine & _
     "    BEGIN" & vbNewLine & _
     "      SET @psMessage = 'No registered user exists with the given email address.';" & vbNewLine & _

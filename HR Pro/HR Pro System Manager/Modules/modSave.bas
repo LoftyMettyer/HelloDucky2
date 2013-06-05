@@ -1804,6 +1804,13 @@ Private Function ConfigureModuleSpecifics() As Boolean
     fOK = modMobileSpecifics.ConfigureMobileSpecifics
   End If
   
+  ' HRPRO-2303 - reset password and future intranet SP's
+  modIntranetSpecifics.DropIntranetObjects
+  If Application.SelfServiceIntranetModule Then
+    OutputCurrentProcess2 "Intranet"
+    fOK = modIntranetSpecifics.ConfigureIntranetSpecifics
+  End If
+  
 
 TidyAndExit:
   ConfigureModuleSpecifics = fOK

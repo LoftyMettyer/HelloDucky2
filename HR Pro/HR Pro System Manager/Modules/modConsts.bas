@@ -60,7 +60,8 @@ Public Const gsWORKFLOWAPPLICATIONPREFIX = "OpenHR Workflow"
 ' MOBILE MODULE CONSTANTS
 Public Const gsMODULEKEY_MOBILE = "MODULE_MOBILE"
 ' Parameter Type constants.
-Public Const gsPARAMETERKEY_UNIQUEEMAILCOLUMN = "Param_UniqueEmailColumn"
+' fault 2303:
+' Public Const gsPARAMETERKEY_UNIQUEEMAILCOLUMN = "Param_UniqueEmailColumn"
 Public Const gsPARAMETERKEY_MOBILELOGIN = "Param_LoginName"
 ' Public Const gsPARAMETERKEY_LEAVINGDATE = "Param_FieldsLeavingDate"
 Public Const gsPARAMETERKEY_MOBILEACTIVATED = "Param_MobileActivated"

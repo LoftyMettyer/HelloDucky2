@@ -129,7 +129,7 @@ Private mbLoading As Boolean
 
 Private mlngPersonnelTableID As Long
 Private mlngLoginColumnID As Long
-Private mlngUniqueEmailColumnID As Long
+Private mlngWorkEmailColumnID As Long
 Private mlngLeavingDateColumnID As Long
 
 Public Property Get Changed() As Boolean
@@ -137,14 +137,14 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  If Not mbLoading Then cmdOk.Enabled = True
+  If Not mbLoading Then cmdOK.Enabled = True
 End Property
 
 
 
 Private Sub cboEMailColumn_Click()
   With cboEMailColumn
-    mlngUniqueEmailColumnID = .ItemData(.ListIndex)
+    mlngWorkEmailColumnID = .ItemData(.ListIndex)
   End With
   
   If Not mbLoading Then
@@ -205,7 +205,7 @@ Private Sub cboPersonnelTable_Click()
     
     fGoAhead = True
     If (mlngLoginColumnID > 0) _
-      Or (mlngUniqueEmailColumnID > 0) _
+      Or (mlngWorkEmailColumnID > 0) _
       Or (mlngLeavingDateColumnID > 0) Then
       
       fGoAhead = (MsgBox("Warning: Changing the Personnel table will reset all other parameters." & vbCrLf & _
@@ -236,7 +236,7 @@ End Sub
 
 Private Sub cmdCancel_Click()
   Dim pintAnswer As Integer
-    If Changed = True And cmdOk.Enabled Then
+    If Changed = True And cmdOK.Enabled Then
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
       If pintAnswer = vbYes Then
         'AE20071108 Fault #12551
@@ -282,7 +282,7 @@ Private Sub SaveChanges()
 
   SaveModuleSetting gsMODULEKEY_MOBILE, gsPARAMETERKEY_PERSONNELTABLE, gsPARAMETERTYPE_TABLEID, mlngPersonnelTableID
   SaveModuleSetting gsMODULEKEY_MOBILE, gsPARAMETERKEY_LOGINNAME, gsPARAMETERTYPE_COLUMNID, mlngLoginColumnID
-  SaveModuleSetting gsMODULEKEY_MOBILE, gsPARAMETERKEY_UNIQUEEMAILCOLUMN, gsPARAMETERTYPE_COLUMNID, mlngUniqueEmailColumnID
+  SaveModuleSetting gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_WORKEMAIL, gsPARAMETERTYPE_COLUMNID, mlngWorkEmailColumnID
   SaveModuleSetting gsMODULEKEY_MOBILE, gsPARAMETERKEY_LEAVINGDATE, gsPARAMETERTYPE_COLUMNID, mlngLeavingDateColumnID
     
   Application.Changed = True
@@ -324,7 +324,7 @@ End Sub
 Private Sub Form_Load()
    
   mbLoading = True
-  cmdOk.Enabled = False
+  cmdOK.Enabled = False
   
   ' Position the form in the same place it was last time.
   Me.Top = GetPCSetting(Me.Name, "Top", (Screen.Height - Me.Height) / 2)
@@ -398,7 +398,7 @@ Private Sub ReadParameters()
   ' ------------------------------------------
   mlngPersonnelTableID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE, 0)
   mlngLoginColumnID = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_LOGINNAME, 0)
-  mlngUniqueEmailColumnID = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_UNIQUEEMAILCOLUMN, 0)
+  mlngWorkEmailColumnID = GetModuleSetting(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_WORKEMAIL, 0)
   mlngLeavingDateColumnID = GetModuleSetting(gsMODULEKEY_MOBILE, gsPARAMETERKEY_LEAVINGDATE, 0)
 End Sub
 
@@ -459,7 +459,7 @@ Private Sub RefreshControls()
   lblLeavingDateColumn.Enabled = cboLeavingDateColumn.Enabled
   
   ' Disable the OK button as required.
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
 End Sub
 
@@ -518,7 +518,7 @@ Private Sub RefreshPersonnelColumnControls()
   
               cboEMailColumn.AddItem !ColumnName
               cboEMailColumn.ItemData(cboEMailColumn.NewIndex) = !ColumnID
-              If !ColumnID = mlngUniqueEmailColumnID Then
+              If !ColumnID = mlngWorkEmailColumnID Then
                 iEmailColumnListIndex = cboEMailColumn.NewIndex
               End If
               
