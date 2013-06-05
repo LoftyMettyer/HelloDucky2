@@ -20,6 +20,8 @@ Private mlngEndRow As Long
 Private mblnGridlines As Boolean
 Private mblnBold As Boolean
 Private mblnUnderLine As Boolean
+Private mblnOmitSpacerCol As Boolean
+Private mblnOmitSpacerRow As Boolean
 Private mlngBackCol As Long
 Private mlngForeCol As Long
 Private mblnCenterText As Boolean
@@ -76,6 +78,20 @@ Public Property Let Bold(ByVal blnNewValue As Boolean)
   mblnBold = blnNewValue
 End Property
 
+Public Property Get OmitSpacerCol() As Boolean
+  OmitSpacerCol = mblnOmitSpacerCol
+End Property
+
+Public Property Let OmitSpacerCol(ByVal blnNewValue As Boolean)
+  mblnOmitSpacerCol = blnNewValue
+End Property
+Public Property Get OmitSpacerRow() As Boolean
+  OmitSpacerRow = mblnOmitSpacerRow
+End Property
+
+Public Property Let OmitSpacerRow(ByVal blnNewValue As Boolean)
+  mblnOmitSpacerRow = blnNewValue
+End Property
 Public Property Get Underline() As Boolean
   Underline = mblnUnderLine
 End Property
