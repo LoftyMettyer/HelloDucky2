@@ -1,6 +1,6 @@
 Type=Control
-Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#..\..\..\..\Windows\system32\stdole2.tlb#OLE
-Reference=*\G{C67830E0-D11D-11CF-BD80-00AA00575603}#1.0#0#..\..\..\..\WINDOWS\system32\objsafe.tlb#VB IObjectSafety Interface
+Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#..\..\..\..\WINNT\system32\STDOLE2.TLB#OLE
+Reference=*\G{C67830E0-D11D-11CF-BD80-00AA00575603}#1.0#0#..\..\..\..\WINNT\system32\objsafe.tlb#VB IObjectSafety Interface
 Module=modSafeCtl; modSafeCtl.bas
 UserControl=COA_Label.ctl
 Startup="(None)"
@@ -16,7 +16,7 @@ CompatibleEXE32="..\COA_Label.ocx"
 VersionCompatible32="1"
 MajorVer=1
 MinorVer=0
-RevisionVer=10
+RevisionVer=11
 AutoIncrementVer=1
 ServerSupportFiles=0
 VersionCompanyName="COA Solutions Limited"

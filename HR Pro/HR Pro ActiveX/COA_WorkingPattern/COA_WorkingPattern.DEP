@@ -1,17 +1,11 @@
 [Version]
-Version=1.0.0.2
+Version=1.0.0.3
 
 [COA_WorkingPattern.ocx <0009>]
 Dest=$(WinSysPath)
-Date=02/11/2009
-Time=13:06
-Version=1.0.0.2
+Date=18/11/2009
+Time=16:50
+Version=1.0.0.3
 CABFilename=COA_WorkingPattern.CAB
 CABINFFile=COA_WorkingPattern.INF
-Uses1=MSVBVM60.DLL
-Uses2=OLEAUT32.DLL
-Uses3=OLEPRO32.DLL
-Uses4=ASYCFILT.DLL
-Uses5=STDOLE2.TLB
-Uses6=COMCAT.DLL
-Uses7=objsafe.tlb
+Uses1=objsafe.tlb
