@@ -640,14 +640,14 @@ Public Sub Login()
   End With
   Set rsSQLInfo = Nothing
 
-  If Not IsVersion10 Then
-    ' The version of SQL Server is below 2008
-    Screen.MousePointer = vbDefault
-    MsgBox "You are running an unsupported version of SQL Server." & vbNewLine & vbNewLine & _
-      "OpenHR requires SQL Server version 2008 or above.", _
-      vbOKOnly, App.ProductName
-    Exit Sub
-  End If
+'  If Not IsVersion10 Then
+'    ' The version of SQL Server is below 2008
+'    Screen.MousePointer = vbDefault
+'    MsgBox "You are running an unsupported version of SQL Server." & vbNewLine & vbNewLine & _
+'      "OpenHR requires SQL Server version 2008 or above.", _
+'      vbOKOnly, App.ProductName
+'    Exit Sub
+'  End If
 
   ' Is Windows authentication disabled on this server (have bypass on development)
   gbCanUseWindowsAuthentication = IIf(glngSQLVersion < 9, False, True)
