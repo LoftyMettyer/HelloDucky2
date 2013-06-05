@@ -28,6 +28,12 @@
         "Entry"
         {
         "MsmKey" = "8:_0FBD6F559F233160B01BA2B091FD246B"
+        "OwnerKey" = "8:_E02E041CE3CF4ACFA5BD4DCF7A403F69"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0FBD6F559F233160B01BA2B091FD246B"
         "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -35,12 +41,6 @@
         {
         "MsmKey" = "8:_0FBD6F559F233160B01BA2B091FD246B"
         "OwnerKey" = "8:_D678DD2A7595AF247208B31310D9FB5B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_421AA797AAD79EFD3ABB1E8F1600528E"
-        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -53,6 +53,12 @@
         {
         "MsmKey" = "8:_62AC4BE8505A65726694ECBBBC0EFA6C"
         "OwnerKey" = "8:_08DA41F5DDB9FE0D8F66F345415A3657"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_62AC4BE8505A65726694ECBBBC0EFA6C"
+        "OwnerKey" = "8:_E02E041CE3CF4ACFA5BD4DCF7A403F69"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -87,6 +93,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_8423537773C73422F04CF09F27FA50AA"
+        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -111,8 +123,20 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_CF09350666BC5EECD49E4B0857A0533E"
+        "OwnerKey" = "8:_E02E041CE3CF4ACFA5BD4DCF7A403F69"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D678DD2A7595AF247208B31310D9FB5B"
         "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D678DD2A7595AF247208B31310D9FB5B"
+        "OwnerKey" = "8:_E02E041CE3CF4ACFA5BD4DCF7A403F69"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -123,8 +147,20 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_E02E041CE3CF4ACFA5BD4DCF7A403F69"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_64A94834F18A48339DC3AC2694BA4D97"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_E02E041CE3CF4ACFA5BD4DCF7A403F69"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -336,26 +372,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_421AA797AAD79EFD3ABB1E8F1600528E"
-            {
-            "SourcePath" = "8:MobileDesigner.tlb"
-            "TargetName" = "8:MobileDesigner.tlb"
-            "Tag" = "8:"
-            "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:2"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5A3EBDE1052BAD1A162FEE9DCF1BCCD1"
             {
             "SourcePath" = "8:SystemFramework.tlb"
@@ -425,6 +441,26 @@
             "Register" = "3:1"
             "Exclude" = "11:TRUE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8423537773C73422F04CF09F27FA50AA"
+            {
+            "SourcePath" = "8:MobileDesigner.tlb"
+            "TargetName" = "8:MobileDesigner.tlb"
+            "Tag" = "8:"
+            "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:2"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_CD0BEBB93278B0D81902C556FCEDC569"
@@ -587,15 +623,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Framework v5.1"
-        "ProductCode" = "8:{591E5FF7-3934-4CFE-8506-5C8D36D3320C}"
-        "PackageCode" = "8:{F8473D05-1F98-47FD-9551-3EF479D98DA0}"
+        "ProductCode" = "8:{7688407A-3FD7-413B-866D-51B8B0101131}"
+        "PackageCode" = "8:{FD0570AD-8814-4E86-8A28-D1CA728B0805}"
         "UpgradeCode" = "8:{416839EF-23B1-4660-A4AD-E908AB32842E}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:5.1.4"
+        "ProductVersion" = "8:5.1.5"
         "Manufacturer" = "8:Advanced Business Software and Solutions Limited"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -1119,7 +1155,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_64A94834F18A48339DC3AC2694BA4D97"
             {
-            "SourcePath" = "8:..\\Engine\\obj\\Release\\SystemFramework.dll"
+            "SourcePath" = "8:..\\Engine\\obj\\Debug\\SystemFramework.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
@@ -1147,7 +1183,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_8F9C4DA7A01643BC84613D7F8758514D"
             {
-            "SourcePath" = "8:..\\..\\HR Pro Mobile Designer\\MobileDesigner\\obj\\x86\\Release\\MobileDesigner.dll"
+            "SourcePath" = "8:..\\..\\HR Pro Mobile Designer\\MobileDesigner\\obj\\x86\\Debug\\MobileDesigner.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
@@ -1168,6 +1204,34 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{6D7DBE8A-D215-4F00-9438-DD412B50E48B}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_E02E041CE3CF4ACFA5BD4DCF7A403F69"
+            {
+            "SourcePath" = "8:..\\Fusion Configuration\\obj\\x86\\Debug\\Fusion.Configuration.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{A55797B6-EC39-43FF-9AF4-E014AE8BEB14}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
