@@ -444,7 +444,7 @@ Private Function ValidateCommands() As Boolean
   ValidateCommands = False
 
   If cboJobType.ListIndex < 0 Then
-    COAMsgBox "You must select a job type.", vbExclamation + vbOKOnly, "Batch Job Validation"
+    COAMsgBox "You must select a job type.", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Pack", "Batch Job") & " Validation"
     Exit Function
   End If
   
@@ -459,7 +459,7 @@ Private Function ValidateCommands() As Boolean
   
   If JobTypeRequiresDef(cboJobType.Text) Then
     If cboJobName.ListIndex < 0 Then
-      COAMsgBox "You must select a job name.", vbExclamation + vbOKOnly, "Batch Job Validation"
+      COAMsgBox "You must select a job name.", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Pack", "Batch Job") & " Validation"
       Exit Function
     End If
 
@@ -611,7 +611,7 @@ Private Function OKToSelectThisJob(pstrJobType As String, plngID As Long) As Boo
   Set rsTemp = mclsData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
 
   If rsTemp.BOF And rsTemp.EOF Then
-    COAMsgBox "Cannot select this job. It has been deleted by another user.", vbExclamation + vbOKOnly, "Batch Jobs"
+    COAMsgBox "Cannot select this job. It has been deleted by another user.", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Packs", "Batch Jobs")
     OKToSelectThisJob = False
     Exit Function
   End If
@@ -620,7 +620,7 @@ Private Function OKToSelectThisJob(pstrJobType As String, plngID As Long) As Boo
     If (sCurrentUserAccess = ACCESS_HIDDEN) And _
       (LCase(rsTemp.Fields("Username")) <> LCase(gsUserName)) Then
       
-      COAMsgBox "Cannot select this job. It has been made hidden by another user.", vbExclamation + vbOKOnly, "Batch Jobs"
+      COAMsgBox "Cannot select this job. It has been made hidden by another user.", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Packs", "Batch Jobs")
       OKToSelectThisJob = False
       
     ElseIf fUtilityIsHidden And _
@@ -651,8 +651,8 @@ Private Function OKToSelectThisJob(pstrJobType As String, plngID As Long) As Boo
         Set rsJobAccess = Nothing
         
         If fWillChangeBatchJobAccess Then
-          COAMsgBox "Unable to add this job to the batch as it is hidden" & vbCrLf & _
-                 "and you are not the owner of the batch job definition.", vbExclamation + vbOKOnly, "Batch Jobs"
+          COAMsgBox "Unable to add this job to the " & IIf(gblnReportPackMode, "pack", "batch") & " as it is hidden" & vbCrLf & _
+                 "and you are not the owner of the " & IIf(gblnReportPackMode, "report pack", "batch job") & " definition.", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Packs", "Batch Jobs")
           OKToSelectThisJob = False
         Else
           OKToSelectThisJob = True
@@ -663,7 +663,7 @@ Private Function OKToSelectThisJob(pstrJobType As String, plngID As Long) As Boo
     End If
   Else
     If rsTemp.Fields("Access") = ACCESS_HIDDEN And LCase(rsTemp.Fields("Username")) <> LCase(gsUserName) Then
-      COAMsgBox "Cannot select this job. It has been made hidden by another user.", vbExclamation + vbOKOnly, "Batch Jobs"
+      COAMsgBox "Cannot select this job. It has been made hidden by another user.", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Packs", "Batch Jobs")
       OKToSelectThisJob = False
     ElseIf rsTemp.Fields("Access") = ACCESS_HIDDEN And LCase(rsTemp.Fields("Username")) = LCase(gsUserName) Then
       If mblnDefinitionCreator Then
@@ -691,8 +691,8 @@ Private Function OKToSelectThisJob(pstrJobType As String, plngID As Long) As Boo
         Set rsJobAccess = Nothing
         
         If fWillChangeBatchJobAccess Then
-          COAMsgBox "Unable to add this job to the batch as it is hidden" & vbCrLf & _
-                 "and you are not the owner of the batch job definition.", vbExclamation + vbOKOnly, "Batch Jobs"
+          COAMsgBox "Unable to add this job to the " & IIf(gblnReportPackMode, "pack", "batch") & " as it is hidden" & vbCrLf & _
+                 "and you are not the owner of the " & IIf(gblnReportPackMode, "report pack", "batch job") & " definition.", vbExclamation + vbOKOnly, IIf(gblnReportPackMode, "Report Packs", "Batch Jobs")
           OKToSelectThisJob = False
         Else
           OKToSelectThisJob = True
