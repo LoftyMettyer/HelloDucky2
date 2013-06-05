@@ -100,9 +100,10 @@ Namespace ScriptDB
       Dim objPart3 As Things.Component
       Dim objTable1 As Things.Table
       Dim objTable2 As Things.Table
-      Dim objIndex As Things.Index
+      Dim objIndex As New Things.Index
       Dim sVariableName As String
       Dim objColumn As Things.Column
+      Dim bFound As Boolean
 
       Try
 
@@ -146,14 +147,30 @@ Namespace ScriptDB
                 aryStatements.Add(sStatement)
 
                 ' Put an index on this column
-                objIndex = New Things.Index
-                objIndex.Name = String.Format("IDX_getfromdb_{0}_{1}", objTable1.Column(objPart1.ColumnID).Name, objTable2.Column(objPart3.ColumnID).Name)
-                objIndex.Columns.Add(objTable1.Column(objPart1.ColumnID))
-                objIndex.IncludedColumns.Add(objTable2.Column(objPart3.ColumnID))
-                objIndex.IncludePrimaryKey = False
-                objIndex.IsTableIndex = True
+                bFound = False
+                For Each objIndex In objTable1.Indexes
+                  If objIndex.Columns.Count > 0 Then
+                    If objIndex.Columns(0) Is objTable1.Column(objPart1.ColumnID) Then
+                      bFound = True
+                      Exit For
+                    End If
+                  End If
+                Next
 
-                objTable1.Objects.Add(objIndex)
+                If Not bFound Then
+                  objIndex = New Things.Index
+                  objIndex.Name = String.Format("IDX_getfromdb_{0}", objTable1.Column(objPart1.ColumnID).Name)
+                  objIndex.Columns.Add(objTable1.Column(objPart1.ColumnID))
+                  objIndex.IncludePrimaryKey = False
+                  objIndex.IsTableIndex = True
+                End If
+
+                objIndex.IncludedColumns.Add(objTable2.Column(objPart3.ColumnID))
+
+                If Not bFound And Not CType(objIndex.Columns(0), Things.Column).Multiline Then
+                  objTable1.Objects.Add(objIndex)
+                End If
+
               End If
             End If
           End If
