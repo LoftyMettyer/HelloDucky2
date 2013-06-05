@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
@@ -358,15 +358,6 @@ Begin VB.Form frmEmailLink
          End
          Begin VB.CommandButton cmdFilter 
             Caption         =   "..."
-            BeginProperty Font 
-               Name            =   "Verdana"
-               Size            =   8.25
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
             Height          =   315
             Left            =   8340
             TabIndex        =   5
@@ -665,11 +656,11 @@ Option Explicit
 
 Private Const EM_CHARFROMPOS& = &HD7
 Private Type POINTAPI
-    x As Long
-    y As Long
+    X As Long
+    Y As Long
 End Type
 
-Private Declare Function SendMessageLong Lib "user32" Alias "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
+Private Declare Function SendMessageLong Lib "user32" Alias "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal LParam As Long) As Long
 
 Private mlngTableID As Long
 Private mstrTableName As String
@@ -699,13 +690,13 @@ End Property
 
 
 ' Return the character position under the mouse.
-Public Function TextBoxCursorPos(ByVal txt As TextBox, ByVal x As Single, ByVal y As Single) As Long
+Public Function TextBoxCursorPos(ByVal txt As TextBox, ByVal X As Single, ByVal Y As Single) As Long
     ' Convert the position to pixels.
-    x = x \ Screen.TwipsPerPixelX
-    y = y \ Screen.TwipsPerPixelY
+    X = X \ Screen.TwipsPerPixelX
+    Y = Y \ Screen.TwipsPerPixelY
 
     ' Get the character number
-    TextBoxCursorPos = SendMessageLong(txt.hWnd, EM_CHARFROMPOS, 0&, CLng(x + y * &H10000)) And &HFFFF&
+    TextBoxCursorPos = SendMessageLong(txt.hWnd, EM_CHARFROMPOS, 0&, CLng(X + Y * &H10000)) And &HFFFF&
 End Function
 
 
@@ -882,22 +873,22 @@ Private Sub chkDateAmendments_Click()
   Changed = True
 End Sub
 
-Private Sub chkRecordLinkRecord_Click(index As Integer)
+Private Sub chkRecordLinkRecord_Click(Index As Integer)
   Changed = True
 End Sub
 
-Private Sub cmdRecipients_Click(index As Integer)
+Private Sub cmdRecipients_Click(Index As Integer)
   
   Dim objEmail As clsEmailAddr
 
   Set objEmail = New clsEmailAddr
   
   With objEmail
-    .EmailIDs = mcolRecipients(index)
+    .EmailIDs = mcolRecipients(Index)
     .TableID = mlngTableID
   
     If .SelectEmail(mblnReadOnly, True) Then
-      Set mcolRecipients(index) = .EmailIDs
+      Set mcolRecipients(Index) = .EmailIDs
     End If
 
   End With
@@ -1333,10 +1324,10 @@ Private Sub lstColumnLinkColumns_ItemCheck(Item As Integer)
   Changed = True
 End Sub
 
-Private Sub optLinkType_Click(index As Integer)
-  fraLinkTypeDetails(0).Visible = (index = 0)
-  fraLinkTypeDetails(1).Visible = (index = 1)
-  fraLinkTypeDetails(2).Visible = (index = 2)
+Private Sub optLinkType_Click(Index As Integer)
+  fraLinkTypeDetails(0).Visible = (Index = 0)
+  fraLinkTypeDetails(1).Visible = (Index = 1)
+  fraLinkTypeDetails(2).Visible = (Index = 2)
   Changed = True
 End Sub
 
@@ -1382,9 +1373,9 @@ Private Sub SSTab1_Click(PreviousTab As Integer)
 
   frmDefinition(0).Visible = (SSTab1.Tab = 0)
   frmDefinition(1).Visible = (SSTab1.Tab = 0)
-  fraLinkTypeDetails(0).Visible = (SSTab1.Tab = 0)
-  fraLinkTypeDetails(1).Visible = (SSTab1.Tab = 0)
-  fraLinkTypeDetails(2).Visible = (SSTab1.Tab = 0)
+  fraLinkTypeDetails(0).Visible = (SSTab1.Tab = 0 And optLinkType(0).value = True)
+  fraLinkTypeDetails(1).Visible = (SSTab1.Tab = 0 And optLinkType(1).value = True)
+  fraLinkTypeDetails(2).Visible = (SSTab1.Tab = 0 And optLinkType(2).value = True)
   frmContent.Visible = (SSTab1.Tab = 1)
 
 End Sub
@@ -1397,15 +1388,15 @@ Private Sub txtAttachment_Change()
   Changed = True
 End Sub
 
-Private Sub txtContent_Change(index As Integer)
+Private Sub txtContent_Change(Index As Integer)
   Changed = True
 End Sub
 
-Private Sub txtContent_GotFocus(index As Integer)
+Private Sub txtContent_GotFocus(Index As Integer)
   cmdOk.Default = False
 End Sub
 
-Private Sub txtContent_LostFocus(index As Integer)
+Private Sub txtContent_LostFocus(Index As Integer)
   cmdOk.Default = True
 End Sub
 
@@ -1413,7 +1404,7 @@ Private Sub txtFilter_Change()
   Changed = True
 End Sub
 
-Private Sub txtRecipients_Change(index As Integer)
+Private Sub txtRecipients_Change(Index As Integer)
   Changed = True
 End Sub
 
@@ -1468,7 +1459,7 @@ Public Sub PopulateComponents()
     PopulateColumnNodes mlngTableID, mstrTableName
 
     With recRelEdit
-      .index = "idxChildID"
+      .Index = "idxChildID"
       .MoveFirst
       .Seek "=", mlngTableID
     
@@ -1509,7 +1500,7 @@ Private Sub PopulateColumnNodes(lngTableID As Long, strTableName As String)
   Set objParent = sstrvAvailable.Nodes.Add(, , "T" & CStr(lngTableID), strTableName, "IMG_TABLE", "IMG_TABLE")
   objParent.Expanded = True
   With recColEdit
-    .index = "idxName"
+    .Index = "idxName"
     .Seek ">=", lngTableID
 
     If Not .NoMatch Then
@@ -1536,7 +1527,7 @@ Private Sub PopulateColumnNodes(lngTableID As Long, strTableName As String)
   End With
 
   If objParent.Children = 0 Then
-    sstrvAvailable.Nodes.Remove objParent.index
+    sstrvAvailable.Nodes.Remove objParent.Index
   End If
 
 End Sub
@@ -1548,7 +1539,7 @@ Private Sub PopulateColumns(lngTableID As Long)
   cboDateLinkColumn.Clear
   
   With recColEdit
-    .index = "idxName"
+    .Index = "idxName"
     .Seek ">=", lngTableID
 
     If Not .NoMatch Then
@@ -1598,7 +1589,7 @@ Private Sub PopulateCalculationNodes()
   Set objParent = sstrvAvailable.Nodes.Add(, , "ZCalculations", "Calculations", "IMG_CALC", "IMG_CALC")
   objParent.Expanded = True
   With recExprEdit
-    .index = "idxExprName"
+    .Index = "idxExprName"
     
     If Not (.BOF And .EOF) Then
       .MoveFirst
@@ -1623,7 +1614,7 @@ Private Sub PopulateCalculationNodes()
   End With
   
   If objParent.Children = 0 Then
-    sstrvAvailable.Nodes.Remove objParent.index
+    sstrvAvailable.Nodes.Remove objParent.Index
   End If
 
 End Sub
@@ -1640,9 +1631,9 @@ End Sub
 '  End If
 'End Sub
 
-Private Sub sstrvAvailable_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub sstrvAvailable_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
 
-  sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(x, y)
+  sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(X, Y)
   
   If Button = vbLeftButton Then
     If Not (sstrvAvailable.SelectedItem Is Nothing) Then
@@ -1655,7 +1646,7 @@ Private Sub sstrvAvailable_MouseDown(Button As Integer, Shift As Integer, x As S
 End Sub
 
 
-Private Sub sstrvAvailable_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub sstrvAvailable_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
   
   'Key Prefixes:
   '
@@ -1665,7 +1656,7 @@ Private Sub sstrvAvailable_DragOver(Source As Control, x As Single, y As Single,
   ' Z = Heading (no action)
   
   If sstrvAvailable.SelectedItem Is Nothing Then
-    sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(x, y)
+    sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(X, Y)
   End If
   
   If Not (sstrvAvailable.SelectedItem Is Nothing) Then
@@ -1682,11 +1673,11 @@ Private Sub sstrvAvailable_DragOver(Source As Control, x As Single, y As Single,
   End If
 End Sub
 
-Private Sub frmContent_DragOver(Source As Control, x As Single, y As Single, State As Integer)
+Private Sub frmContent_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
   Source.DragIcon = picNoDrop.Picture
 End Sub
 
-Private Sub txtContent_DragOver(index As Integer, Source As Control, x As Single, y As Single, State As Integer)
+Private Sub txtContent_DragOver(Index As Integer, Source As Control, X As Single, Y As Single, State As Integer)
   If TypeOf Source Is TreeView Then
     
     'sstrvAvailable.SelectedItem = sstrvAvailable.HitTest(x, y)
@@ -1706,27 +1697,27 @@ Private Sub txtContent_DragOver(index As Integer, Source As Control, x As Single
     End If
     
     ' Source.DragIcon = picDocument(0).Picture
-    txtContent(index).SelStart = TextBoxCursorPos(txtContent(index), x, y)
-    txtContent(index).SelLength = 0
+    txtContent(Index).SelStart = TextBoxCursorPos(txtContent(Index), X, Y)
+    txtContent(Index).SelLength = 0
   Else
     Source.DragIcon = picNoDrop.Picture
   End If
 End Sub
 
-Private Sub txtContent_DragDrop(index As Integer, Source As Control, x As Single, y As Single)
+Private Sub txtContent_DragDrop(Index As Integer, Source As Control, X As Single, Y As Single)
 
   Dim strFieldText As String
   Dim lngStart As Long
 
   If TypeOf Source Is TreeView Then
-    lngStart = TextBoxCursorPos(txtContent(index), x, y)
-    InsertColumn index, lngStart
+    lngStart = TextBoxCursorPos(txtContent(Index), X, Y)
+    InsertColumn Index, lngStart
   End If
 
 End Sub
 
 
-Private Sub InsertColumn(index As Integer, lngStart As Long)
+Private Sub InsertColumn(Index As Integer, lngStart As Long)
   Dim lngStartMergePoint As Long
   Dim lngEndMergePoint As Long
   Dim strNodeText As String
@@ -1738,17 +1729,17 @@ Private Sub InsertColumn(index As Integer, lngStart As Long)
   
   If strNodeText <> "" Then
     If lngStart > 0 Then
-      lngStartMergePoint = InStr(lngStart, txtContent(index).Text, strDelimStart)
-      lngEndMergePoint = InStr(lngStart, txtContent(index).Text, strDelimStop)
+      lngStartMergePoint = InStr(lngStart, txtContent(Index).Text, strDelimStart)
+      lngEndMergePoint = InStr(lngStart, txtContent(Index).Text, strDelimStop)
       If (lngStartMergePoint = 0 And lngEndMergePoint > 0) Or _
           (lngStartMergePoint > lngEndMergePoint) Then
         lngStart = lngEndMergePoint
       End If
     End If
 
-    txtContent(index).SelStart = lngStart
-    txtContent(index).SelLength = 0
-    txtContent(index).SelText = strDelimStart & strNodeText & strDelimStop
+    txtContent(Index).SelStart = lngStart
+    txtContent(Index).SelLength = 0
+    txtContent(Index).SelText = strDelimStart & strNodeText & strDelimStop
   End If
 
 End Sub
@@ -1761,7 +1752,7 @@ Private Function GetEmailAddressName(lngRecipientID As Long) As String
   GetEmailAddressName = vbNullString
   
   With recEmailAddrEdit
-    .index = "idxID"
+    .Index = "idxID"
     .Seek "=", lngRecipientID
     If Not .NoMatch Then
       If Not !Deleted Then
