@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~3.OCX"
 Begin VB.MDIForm frmMain 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "09:54"
+            TextSave        =   "08:59"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -1033,7 +1033,13 @@ Public Sub abMain_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
         ' RH - Note : this sub causes the enabling history menu bug
         RefreshRecordEditScreens
       End If
-
+    
+    Case "ReportPack"
+      If SaveCurrentRecordEditScreen Then
+        ReportPackClick
+        ' RH - Note : this sub causes the enabling history menu bug
+        RefreshRecordEditScreens
+      End If
 
     ' <Tools> menu.
     Case "Calculations"
@@ -2914,6 +2920,94 @@ Public Sub BatchJobsClick()
   End With
   
 End Sub
+
+
+Public Sub ReportPackClick()
+  Dim fExit As Boolean
+  Dim frmSelection As frmDefSel
+  Dim frmEdit As frmBatchJob
+    
+  Screen.MousePointer = vbHourglass
+  
+  Set frmSelection = New frmDefSel
+  fExit = False
+  
+  With frmSelection
+    Do While Not fExit
+      
+      .EnableRun = True
+      
+      If .ShowList(utlReportPack) Then
+      
+        .CustomShow vbModal
+        DoEvents
+        
+        Select Case .Action
+          Case edtAdd
+            Set frmEdit = New frmBatchJob
+            frmEdit.Initialise True, .FromCopy
+            frmEdit.Show vbModal
+            .SelectedID = frmEdit.SelectedID
+            Unload frmEdit
+            Set frmEdit = Nothing
+                      
+          Case edtEdit
+            Set frmEdit = New frmBatchJob
+            If frmEdit.Initialise(False, .FromCopy, .SelectedID) Then
+              frmEdit.Show vbModal
+              If .FromCopy And frmEdit.SelectedID > 0 Then
+                .SelectedID = frmEdit.SelectedID
+              End If
+            End If
+            Unload frmEdit
+            Set frmEdit = Nothing
+              
+          Case edtSelect
+            Dim pobjBatchJobRUN As clsBatchJobRUN
+            Dim plngEventLogID As Long
+            Dim strNotes As String
+            Set pobjBatchJobRUN = New clsBatchJobRUN
+            strNotes = pobjBatchJobRUN.RunBatchJob(.SelectedID, .SelectedText, plngEventLogID)
+
+            Select Case pobjBatchJobRUN.JobStatus
+              Case elsSuccessful
+                COAMsgBox "Report Pack : '" & .SelectedText & "' Completed successfully.", vbInformation + vbOKOnly, "Report Pack"
+              Case elsCancelled
+                COAMsgBox "Report Pack : '" & .SelectedText & "' Cancelled by user.", vbExclamation + vbOKOnly, "Report Pack"
+              Case Else
+                COAMsgBox "Report Pack : '" & .SelectedText & "' Failed." & vbCrLf & vbCrLf & strNotes, vbExclamation + vbOKOnly, "Report Pack"
+            End Select
+
+            Set pobjBatchJobRUN = Nothing
+            fExit = gbCloseDefSelAfterRun
+            
+          Case edtPrint
+            Set frmEdit = New frmBatchJob
+            frmEdit.PrintDef .SelectedID
+            Unload frmEdit
+            Set frmEdit = Nothing
+            
+          Case edtCancel
+            fExit = True
+  
+        End Select
+      End If
+    Loop
+  End With
+
+  Unload frmSelection
+  Set frmSelection = Nothing
+
+  Screen.MousePointer = vbDefault
+
+  '# RH090300 To prevent toolbar locking after batch jobs / Report Pack
+  With abMain
+    .ResetHooks
+    .Refresh
+  End With
+  
+End Sub
+
 
 
 Public Sub RefreshMainForm(pfrmCallingForm As Form, Optional ByVal pfUnLoad As Boolean)
