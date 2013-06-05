@@ -427,8 +427,10 @@ Namespace ScriptDB
                     "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM inserted)" & vbNewLine _
                     , objRelation.PhysicalName, CInt(objRelation.ParentID)))
 
-                aryParentsToUpdate_Delete.Add(String.Format("    UPDATE [dbo].[{1}] SET [updflag] = 1 WHERE [dbo].[{1}].[id] IN (SELECT DISTINCT [id_{2}] FROM deleted)" & vbNewLine & vbNewLine _
-                    , CInt(objTable.ID), objRelation.PhysicalName, CInt(objRelation.ParentID)))
+                aryParentsToUpdate_Delete.Add(String.Format("    IF NOT EXISTS(SELECT [spid] FROM [tbsys_intransactiontrigger] WHERE [spid] = @@spid AND [tablefromid] = {1})" & vbNewLine & _
+                    "        UPDATE [dbo].[{0}] SET [updflag] = 1 WHERE [dbo].[{0}].[id] IN (SELECT DISTINCT [id_{1}] FROM deleted)" & vbNewLine _
+                    , objRelation.PhysicalName, CInt(objRelation.ParentID)))
+
               End If
 
             Else
@@ -577,9 +579,8 @@ Namespace ScriptDB
                                 String.Join(vbNewLine, aryParentsToUpdate.ToArray()) & _
                                 "     END"
             sSQLParentColumns_Delete = "    -- Refresh parents records" & vbNewLine & _
-                                "   IF @startingtrigger = 3" & vbNewLine & "    BEGIN" & vbNewLine & _
-                                String.Join(vbNewLine, aryParentsToUpdate_Delete.ToArray()) & _
-                                "     END"
+                                String.Join(vbNewLine, aryParentsToUpdate_Delete.ToArray())
+
           End If
 
           ' Validation
