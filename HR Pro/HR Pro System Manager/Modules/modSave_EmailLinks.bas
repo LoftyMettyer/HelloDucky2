@@ -1067,7 +1067,7 @@ Private Function IsRelatedToSingleColumn(lngLinkID As Long) As Long
 End Function
 
 
-Private Function GetInsertCommand(intType As EmailType, lngLinkID As Long, lngTableID As Long, blnImmediate As Boolean, blnRecalcRecDesc As Boolean, strColumn As String, strColumnValue As String, blnIncludeContent As Boolean) As String
+Private Function GetInsertCommand(intType As enum_EmailType, lngLinkID As Long, lngTableID As Long, blnImmediate As Boolean, blnRecalcRecDesc As Boolean, strColumn As String, strColumnValue As String, blnIncludeContent As Boolean) As String
 
   Dim strOutput As String
 
