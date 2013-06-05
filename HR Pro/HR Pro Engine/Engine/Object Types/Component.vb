@@ -73,6 +73,31 @@ Namespace Things
     '  End Get
     'End Property
 
+    Public ReadOnly Property SafeReturnType As String
+      Get
+
+        Dim sSQLType As String = String.Empty
+
+        Select Case CInt(Me.ReturnType)
+          Case ScriptDB.ComponentValueTypes.String
+            sSQLType = "''"
+
+          Case ScriptDB.ComponentValueTypes.Numeric
+            sSQLType = "0"
+
+          Case ScriptDB.ComponentValueTypes.Date
+            sSQLType = "NULL"
+
+          Case Else
+            sSQLType = "0"
+
+        End Select
+
+        Return sSQLType
+
+      End Get
+    End Property
+
   End Class
 End Namespace
 

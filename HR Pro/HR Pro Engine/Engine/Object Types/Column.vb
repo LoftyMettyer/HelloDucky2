@@ -72,31 +72,6 @@ Namespace Things
       End Get
     End Property
 
-    Public ReadOnly Property SafeReturnType As String
-      Get
-
-        Dim sSQLType As String = String.Empty
-
-        Select Case CInt(Me.DataType)
-          Case ScriptDB.ColumnTypes.Text, ScriptDB.ColumnTypes.WorkingPattern, ScriptDB.ColumnTypes.Link
-            sSQLType = "''"
-
-          Case ScriptDB.ColumnTypes.Integer, ScriptDB.ColumnTypes.Numeric, ScriptDB.ColumnTypes.Logic
-            sSQLType = "0"
-
-          Case ScriptDB.ColumnTypes.Date
-            sSQLType = "NULL"
-
-          Case Else
-            sSQLType = "0"
-
-        End Select
-
-        Return sSQLType
-
-      End Get
-    End Property
-
     ' Declaration syntax for a column type
     Public ReadOnly Property DataTypeSyntax As String
       Get
@@ -276,6 +251,31 @@ Namespace Things
 
       Return sFormat
     End Function
+
+    Public ReadOnly Property SafeReturnType As String
+      Get
+
+        Dim sSQLType As String = String.Empty
+
+        Select Case CInt(Me.DataType)
+          Case ScriptDB.ColumnTypes.Text, ScriptDB.ColumnTypes.WorkingPattern, ScriptDB.ColumnTypes.Link
+            sSQLType = "''"
+
+          Case ScriptDB.ColumnTypes.Integer, ScriptDB.ColumnTypes.Numeric, ScriptDB.ColumnTypes.Logic
+            sSQLType = "0"
+
+          Case ScriptDB.ColumnTypes.Date
+            sSQLType = "NULL"
+
+          Case Else
+            sSQLType = "0"
+
+        End Select
+
+        Return sSQLType
+
+      End Get
+    End Property
 
   End Class
 End Namespace

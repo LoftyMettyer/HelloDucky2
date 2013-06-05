@@ -74,4 +74,24 @@
 
   End Interface
 
+  ' NOT YET USED
+  Public Interface iColumn
+    Inherits iObject
+    Property DataType As ScriptDB.ColumnTypes
+    Property Size As Integer
+    Property Decimals As Integer
+    Property Audit As Boolean
+    Property Multiline As Boolean
+    Property CalculateIfEmpty As Boolean
+    Property IsReadOnly As Boolean
+    Property CaseType As Things.CaseType
+    Property TrimType As Things.TrimType
+    Property Alignment As Things.AlignType
+    Property Mandatory As Boolean
+    Property OLEType As ScriptDB.OLEType
+    Property DefaultCalcID As HCMGuid
+    Property DefaultCalculation As Things.Expression
+    Property DefaultValue As String
+  End Interface
+
 End Module

@@ -771,6 +771,7 @@ Namespace Things
     Private Sub SQLCode_AddFunction(ByRef [Component] As Things.Component, ByRef [CodeCluster] As ScriptDB.LinesOfCode)
 
       Dim LineOfCode As ScriptDB.CodeElement
+      Dim ExtraCode As ScriptDB.CodeElement
 
       Dim objCodeLibrary As Things.CodeLibrary
       Dim ChildCodeCluster As ScriptDB.LinesOfCode
@@ -780,6 +781,7 @@ Namespace Things
       Dim objTriggeredUpdate As ScriptDB.TriggeredUpdate
       Dim sWhereClause As String = ""
       Dim iBackupType As ScriptDB.ExpressionType
+      Dim bAddDefaultDataType As Boolean = False
 
       LineOfCode.CodeType = ScriptDB.ComponentTypes.Function
       objCodeLibrary = Globals.Functions.GetObject(Enums.Type.CodeLibrary, Component.FunctionID)
@@ -813,6 +815,9 @@ Namespace Things
 
             Case SettingType.UpdateParameter
               sWhereClause = objSetting.Code
+
+            Case SettingType.DefaultDataType
+              bAddDefaultDataType = True
 
           End Select
 
@@ -854,6 +859,13 @@ Namespace Things
       End If
 
       SQLCode_AddCodeLevel([Component].Objects, ChildCodeCluster)
+
+      If bAddDefaultDataType Then
+        ExtraCode = New ScriptDB.CodeElement
+        ExtraCode.Code = CType([Component].Objects(0).Objects(0), Things.Component).SafeReturnType
+        ChildCodeCluster.Add(ExtraCode)
+      End If
+
       LineOfCode.Code = String.Format(LineOfCode.Code, ChildCodeCluster.ToArray)
 
       RequiresOvernight = RequiresOvernight Or objCodeLibrary.OvernightOnly

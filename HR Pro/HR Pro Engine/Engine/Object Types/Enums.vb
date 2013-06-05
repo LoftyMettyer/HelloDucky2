@@ -112,6 +112,7 @@
       ModuleSetting = 1
       CodeItem = 2
       UpdateParameter = 3
+      DefaultDataType = 4
     End Enum
 
     Public Enum AccordPurgeType
