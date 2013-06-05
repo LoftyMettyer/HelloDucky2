@@ -497,7 +497,7 @@ Private Sub SetColumnSizes()
   
   With Me.ListView1
     For iCount = 1 To .ColumnHeaders.Count Step 1
-      If (iCount = 1) Or (CBool(objShowColumns(.ColumnHeaders.Item(iCount).Index)) = True) Then
+      If (iCount = 1) Or (CBool(objShowColumns(.ColumnHeaders.Item(iCount).Index).value) = True) Then
         If UBound(malngColumnDataWidths) > 0 Then
           .ColumnHeaders(iCount).Width = (IIf(malngColumnDataWidths(iCount) > Len(.ColumnHeaders(iCount).Text), _
             malngColumnDataWidths(iCount), Len(.ColumnHeaders(iCount).Text)) + iEXTRALENGTH) * UI.GetAvgCharWidth(Me.hDC)
