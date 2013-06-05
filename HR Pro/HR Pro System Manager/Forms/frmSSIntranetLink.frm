@@ -1334,6 +1334,7 @@ Private mlngChart_TableID_3 As Long
 Private mlngChart_ColumnID_3 As Long
 Private mlngChart_SortOrderID As Long
 Private miChart_SortDirection As Integer
+Private mlngChart_ColourID As Long
 
 Private mcolSSITableViews As clsSSITableViews
 Private mcolGroups As Collection
@@ -2207,7 +2208,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 
 End Sub
@@ -3028,7 +3029,7 @@ Private Sub cmdChartData_Click()
   Dim frmSSIChart As New frmSSIntranetChart
 
   With frmSSIChart
-    .Initialize 1, ChartTableID, ChartColumnID, ChartFilterID, ChartAggregateType, Chart_TableID_2, Chart_ColumnID_2, Chart_TableID_3, Chart_ColumnID_3, Chart_SortOrderID, Chart_SortDirection
+    .Initialize 1, ChartTableID, ChartColumnID, ChartFilterID, ChartAggregateType, Chart_TableID_2, Chart_ColumnID_2, Chart_TableID_3, Chart_ColumnID_3, Chart_SortOrderID, Chart_SortDirection, Chart_ColourID
     
     .Show vbModal
     
@@ -3045,6 +3046,7 @@ Private Sub cmdChartData_Click()
       Chart_ColumnID_3 = .Chart_ColumnID_3
       Chart_SortOrderID = .Chart_SortOrderID
       Chart_SortDirection = .Chart_SortDirection
+      Chart_ColourID = .Chart_ColourID
       
       mfChanged = True
       
@@ -3381,7 +3383,7 @@ Private Sub grdAccess_Change()
   Dim fNewValue As Boolean
   Dim fAllVisible As Boolean
   
-  UI.LockWindow grdAccess.hwnd
+  UI.LockWindow grdAccess.hWnd
   
   If (grdAccess.AddItemRowIndex(grdAccess.Bookmark) = 0) Then
     ' The 'All Groups' access has changed. Apply the selection to all other groups.
@@ -4329,4 +4331,11 @@ Public Property Let InitialDisplayMode(ByVal piNewValue As Integer)
   miInitialDisplayMode = piNewValue
 End Property
 
+Public Property Get Chart_ColourID() As Long
+  Chart_ColourID = mlngChart_ColourID
+End Property
+
+Public Property Let Chart_ColourID(ByVal plngNewValue As Long)
+  mlngChart_ColourID = plngNewValue
+End Property
 

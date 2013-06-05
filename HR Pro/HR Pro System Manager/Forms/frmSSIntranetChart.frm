@@ -29,7 +29,7 @@ Begin VB.Form frmSSIntranetChart
       EndProperty
       Height          =   1125
       Left            =   165
-      TabIndex        =   28
+      TabIndex        =   26
       Top             =   6225
       Width           =   4380
       Begin VB.ComboBox cboSortOrder 
@@ -48,7 +48,7 @@ Begin VB.Form frmSSIntranetChart
          Left            =   1425
          List            =   "frmSSIntranetChart.frx":0016
          Style           =   2  'Dropdown List
-         TabIndex        =   30
+         TabIndex        =   28
          Top             =   645
          Width           =   1890
       End
@@ -65,7 +65,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   29
+         TabIndex        =   27
          Top             =   345
          Width           =   1875
       End
@@ -83,7 +83,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   33
+         TabIndex        =   31
          Top             =   690
          Width           =   1050
       End
@@ -99,11 +99,28 @@ Begin VB.Form frmSSIntranetChart
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   1680
+      Height          =   2010
       Left            =   165
-      TabIndex        =   23
+      TabIndex        =   21
       Top             =   4080
       Width           =   4380
+      Begin VB.ComboBox cboChartColColumn 
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Left            =   1425
+         Style           =   2  'Dropdown List
+         TabIndex        =   36
+         Top             =   1500
+         Width           =   2490
+      End
       Begin VB.ComboBox cboAggregateType 
          BeginProperty Font 
             Name            =   "Verdana"
@@ -118,7 +135,7 @@ Begin VB.Form frmSSIntranetChart
          Index           =   0
          Left            =   1425
          Style           =   2  'Dropdown List
-         TabIndex        =   31
+         TabIndex        =   29
          Top             =   1125
          Width           =   1890
       End
@@ -137,7 +154,7 @@ Begin VB.Form frmSSIntranetChart
          Left            =   1425
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   25
+         TabIndex        =   23
          Top             =   750
          Width           =   2670
       End
@@ -156,9 +173,27 @@ Begin VB.Form frmSSIntranetChart
          Left            =   1425
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   24
+         TabIndex        =   22
          Top             =   375
          Width           =   2670
+      End
+      Begin VB.Label lblChartIntColour 
+         AutoSize        =   -1  'True
+         Caption         =   "Colour :"
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   195
+         Left            =   210
+         TabIndex        =   35
+         Top             =   1545
+         Width           =   705
       End
       Begin VB.Label lblAggregateType 
          AutoSize        =   -1  'True
@@ -174,7 +209,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   32
+         TabIndex        =   30
          Top             =   1185
          Width           =   1020
       End
@@ -192,7 +227,7 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   27
+         TabIndex        =   25
          Top             =   810
          Width           =   795
       End
@@ -210,29 +245,10 @@ Begin VB.Form frmSSIntranetChart
          EndProperty
          Height          =   195
          Left            =   210
-         TabIndex        =   26
+         TabIndex        =   24
          Top             =   420
          Width           =   600
       End
-   End
-   Begin VB.ComboBox cboChartType 
-      BeginProperty Font 
-         Name            =   "Verdana"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      Height          =   315
-      ItemData        =   "frmSSIntranetChart.frx":0031
-      Left            =   1590
-      List            =   "frmSSIntranetChart.frx":003B
-      Style           =   2  'Dropdown List
-      TabIndex        =   22
-      Top             =   255
-      Width           =   2670
    End
    Begin VB.Frame fraVer_Data 
       Caption         =   "Vertical Data :"
@@ -610,23 +626,50 @@ Begin VB.Form frmSSIntranetChart
       Top             =   9045
       Width           =   1200
    End
-   Begin VB.Label Label2 
-      AutoSize        =   -1  'True
-      Caption         =   "Chart Type :"
-      BeginProperty Font 
-         Name            =   "Verdana"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      Height          =   195
-      Left            =   210
-      TabIndex        =   21
-      Top             =   285
-      Width           =   1095
+   Begin VB.Frame Frame1 
+      Caption         =   "Chart Type"
+      Height          =   705
+      Left            =   165
+      TabIndex        =   32
+      Top             =   45
+      Width           =   4380
+      Begin VB.ComboBox cboChartType 
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         ItemData        =   "frmSSIntranetChart.frx":0031
+         Left            =   1425
+         List            =   "frmSSIntranetChart.frx":003B
+         Style           =   2  'Dropdown List
+         TabIndex        =   33
+         Top             =   255
+         Width           =   2670
+      End
+      Begin VB.Label Label2 
+         AutoSize        =   -1  'True
+         Caption         =   "Chart Type :"
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   195
+         Left            =   210
+         TabIndex        =   34
+         Top             =   285
+         Width           =   1095
+      End
    End
 End
 Attribute VB_Name = "frmSSIntranetChart"
@@ -656,6 +699,7 @@ Private mlngChart_TableID_3 As Long
 Private mlngChart_ColumnID_3 As Long
 Private mlngChart_SortOrderID As Long
 Private miChart_SortDirection As Integer
+Private mlngChart_ColourID As Long
 
 Public Property Let Cancelled(ByVal bCancel As Boolean)
   mblnCancelled = bCancel
@@ -675,33 +719,56 @@ Private Sub cboAggregateType_Click(Index As Integer)
  End If
 End Sub
 
+Private Sub cboChartColColumn_Change()
+
+End Sub
+
+Private Sub cboChartColColumn_Click()
+  mfChanged = True
+  If Not mfLoading Then
+    Chart_ColourID = cboChartColColumn.ItemData(cboChartColColumn.ListIndex)
+    RefreshControls
+  End If
+
+End Sub
+
 Private Sub cboChartType_Click()
   
   If cboChartType = "Single Axis Chart" Then
     'hide the vertical frame
-    Me.fraInt_Data.Height = 915
+    Me.fraInt_Data.Height = 1275
     Me.lblAggregateType.Top = 405
     Me.cboAggregateType(0).Top = 360
 
-    Me.Height = 6935
     fraVer_Data.Visible = False
     fraInt_Data.Top = fraHor_Data.Top + fraHor_Data.Height + 90
+    fraAggregate.Visible = True
+    fraAggregate.Top = fraInt_Data.Top + fraInt_Data.Height + 90
+    fraChartFilter.Top = fraAggregate.Top + fraAggregate.Height + 90
+    lblChartIntColour.Top = 795
+    cboChartColColumn.Top = 735
+    
+    Me.Height = 6935
   Else
-    Me.fraInt_Data.Height = 1680
+    Me.fraInt_Data.Height = 2010
     Me.lblAggregateType.Top = 1185
     Me.cboAggregateType(0).Top = 1125
     
     ' display the vertical frame
-    Me.Height = 9500
     fraVer_Data.Visible = True
     fraVer_Data.Top = fraHor_Data.Top + fraHor_Data.Height + 90
     fraInt_Data.Top = fraVer_Data.Top + fraVer_Data.Height + 90
+    fraAggregate.Visible = False
+    fraChartFilter.Top = fraInt_Data.Top + fraInt_Data.Height + 90
+    lblChartIntColour.Top = 1545
+    cboChartColColumn.Top = 1500
+    ' Me.Height = 8300
   End If
   
-  fraAggregate.Top = fraInt_Data.Top + fraInt_Data.Height + 90
-  fraChartFilter.Top = fraAggregate.Top + fraAggregate.Height + 90
   cmdOk.Top = fraChartFilter.Top + fraChartFilter.Height + 190
   cmdCancel.Top = cmdOk.Top
+  
+  Me.Height = cmdOk.Top + 500 + cmdOk.Height + 190
   
   EnableDisableCombos
 
@@ -746,12 +813,9 @@ Private Sub EnableDisableCombos()
   lblIntersectionColumn.Visible = (cboChartType.ListIndex = 1)
   cboColumns(2).Visible = (cboChartType.ListIndex = 1)
   
-
-  
-  
   ' display the horizontal data in the intersection section for display purposes
-  If cboChartType = "Single Axis Chart" Then
-
+'  If cboChartType = "Single Axis Chart" Then
+'
 '    cboParents(1).Clear
 '    cboParents(1).AddItem cboParents(0).Text
 '    cboParents(1).ListIndex = 0
@@ -767,8 +831,8 @@ Private Sub EnableDisableCombos()
 '    cboColumns(2).Clear
 '    cboColumns(2).AddItem cboColumns(0).Text
 '    cboColumns(2).ListIndex = 0
-
-  Else
+'
+'  Else
 '    If Chart_ColumnID_2 = 0 Then
 '      cboParents(1).Clear
 '      cboColumns(1).Clear
@@ -779,7 +843,7 @@ Private Sub EnableDisableCombos()
 '      cboColumns(2).Clear
 '      cboAggregateType(0).Clear
 '    End If
-  End If
+'  End If
 
 End Sub
 
@@ -819,6 +883,16 @@ Private Sub cboParents_Click(Index As Integer)
       End If
     End If
   End If
+  
+  If cboParents(0) = cboParents(1) Or cboChartType = "Single Axis Chart" Then
+    fOK = PopulateColourCombo(cboParents(0).ItemData(cboParents(0).ListIndex), 0)
+  ElseIf Index = 2 Then
+    fOK = PopulateColourCombo(cboParents(2).ItemData(cboParents(2).ListIndex), 0)
+  Else
+    cboChartColColumn.Clear
+  End If
+  
+  
   ' Check if the selected expression is for the current table.
   With recExprEdit
     .Index = "idxExprID"
@@ -1097,13 +1171,13 @@ Public Sub Initialize(plngChartViewID As Long, _
                         plngChartColumnID As Long, _
                         plngChartFilterID As Long, _
                         piChartAggregateType As Integer, _
-                        plngChart_TableID_2, _
-                        plngChart_ColumnID_2, _
-                        plngChart_TableID_3, _
-                        plngChart_ColumnID_3, _
-                        plngChart_SortOrderID, _
-                        plngChart_SortDirection)
-
+                        plngChart_TableID_2 As Long, _
+                        plngChart_ColumnID_2 As Long, _
+                        plngChart_TableID_3 As Long, _
+                        plngChart_ColumnID_3 As Long, _
+                        plngChart_SortOrderID As Long, _
+                        plngChart_SortDirection As Long, _
+                        plngChart_ColourID As Long)
 
   '  ChartViewID = plngChartViewID
   ChartTableID = miChartTableID
@@ -1116,6 +1190,7 @@ Public Sub Initialize(plngChartViewID As Long, _
   Chart_ColumnID_3 = plngChart_ColumnID_3
   Chart_SortOrderID = plngChart_SortOrderID
   Chart_SortDirection = plngChart_SortDirection
+  Chart_ColourID = plngChart_ColourID
   
   RefreshControls
   
@@ -1143,6 +1218,7 @@ Private Sub Form_Load()
   fOK = PopulateColumnsCombo(Chart_TableID_2, 1, Chart_ColumnID_2)
   PopulateIntersectionCombo (Chart_TableID_3)  ' populate and set default value - Intersection
   fOK = PopulateColumnsCombo(Chart_TableID_3, 2, Chart_ColumnID_3)
+  fOK = PopulateColourCombo(IIf(Chart_ColumnID_2 > 0, Chart_TableID_3, miChartTableID), Chart_ColourID)
   
   txtFilter.Tag = mlngChartFilterID
   txtFilter.Text = GetExpressionName(txtFilter.Tag)
@@ -1181,6 +1257,79 @@ Private Sub Form_Load()
   RefreshControls
   
 End Sub
+
+Private Function PopulateColourCombo(plngTableID As Long, plngDefaultID As Long) As Boolean
+  Dim i As Integer
+  
+  ' Clear the contents of the combo
+  cboChartColColumn.Clear
+
+  ' Add empty value
+  cboChartColColumn.AddItem ""
+
+  ' Add the table's columns to the view definition in the local database.
+  On Error GoTo ErrorTrap
+
+  Dim fOK As Boolean
+
+  recColEdit.Index = "idxTableID"
+  recColEdit.Seek "=", plngTableID
+
+  fOK = Not recColEdit.NoMatch
+
+  If fOK Then
+
+    Do While Not recColEdit.EOF
+
+      ' If no more columns for this table exit loop
+      If recColEdit!TableID <> plngTableID Then
+        Exit Do
+      End If
+
+      ' Don't add deleted or system columns
+      If recColEdit!Deleted <> True And recColEdit!columntype <> giCOLUMNTYPE_SYSTEM Then
+        ' Add the column to the combo
+        ' Making sure it isn't ole, photo, wp or link...
+        If recColEdit!DataType <> dtLONGVARCHAR And _
+          recColEdit!DataType <> dtBINARY And _
+          recColEdit!DataType <> dtVARBINARY And _
+          recColEdit!DataType <> dtLONGVARBINARY And _
+          recColEdit!ControlType = 2 ^ 15 Then
+            cboChartColColumn.AddItem recColEdit.Fields("ColumnName")
+            cboChartColColumn.ItemData(cboChartColColumn.NewIndex) = recColEdit.Fields("ColumnID")
+        End If
+      End If
+
+      recColEdit.MoveNext
+    Loop
+
+
+    ' Set the correct item as default
+    If plngDefaultID = 0 Then
+      cboChartColColumn.ListIndex = 0
+    Else
+      For i = 0 To cboChartColColumn.ListCount - 1
+        If cboChartColColumn.ItemData(i) = plngDefaultID Then
+          cboChartColColumn.ListIndex = i
+          Exit For
+        End If
+      Next
+    End If
+    
+    If cboChartColColumn.ListIndex < 0 Then cboChartColColumn.ListIndex = 0
+      
+  End If
+
+TidyUpAndExit:
+  Exit Function
+
+ErrorTrap:
+  fOK = False
+  Resume TidyUpAndExit
+
+End Function
+
+
 
 Private Function PopulateParentsCombo(plngDefaultID As Long) As Boolean
   
@@ -1404,6 +1553,8 @@ Private Function PopulateIntersectionCombo(plngDefaultID As Long) As Boolean
     Next
   End If
   
+  fOK = PopulateColourCombo(plngDefaultID, 0)
+  
 '  cboParents(2).Enabled = (cboParents(2).ListCount > 1)
 '  cboParents(2).BackColor = IIf(cboParents(2).Enabled, vbWindowBackground, vbButtonFace)
   
@@ -1592,4 +1743,11 @@ Public Property Let Chart_SortDirection(ByVal piNewValue As Integer)
   miChart_SortDirection = piNewValue
 End Property
 
+Public Property Get Chart_ColourID() As Long
+  Chart_ColourID = mlngChart_ColourID
+End Property
+
+Public Property Let Chart_ColourID(ByVal plngNewValue As Long)
+  mlngChart_ColourID = plngNewValue
+End Property
 

@@ -66,7 +66,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
   pfRefreshDatabase = (pfRefreshDatabase Or gfRefreshStoredProcedures)
   
   'RH 02/10/00 - BUG 1044 - Disable the X button whilst saving
-  EnableCloseButton frmSysMgr.hwnd, False
+  EnableCloseButton frmSysMgr.hWnd, False
   
   'RH 21/08/00 - BUG 788. Disable all mdi forms while we save changes - this
   '              prevents users from col editing etc whilst saving ! a good idea
@@ -765,7 +765,7 @@ TidyUpAndExit:
   Next iCount
   
   'RH 02/10/00 - BUG 1044 - Enable the X button as finished/aborted saving
-  EnableCloseButton frmSysMgr.hwnd, True
+  EnableCloseButton frmSysMgr.hWnd, True
 
   OutputCurrentProcess "End of save process"
 
@@ -960,7 +960,7 @@ Private Function SaveModuleDefinitions() As Boolean
       "ConditionalFormatting_Style_1, ConditionalFormatting_Colour_1, ConditionalFormatting_Operator_2, ConditionalFormatting_Value_2, " & _
       "ConditionalFormatting_Style_2, ConditionalFormatting_Colour_2, ConditionalFormatting_Operator_3, ConditionalFormatting_Value_3, " & _
       "ConditionalFormatting_Style_3, ConditionalFormatting_Colour_3, SeparatorColour, InitialDisplayMode, Chart_TableID_2, Chart_ColumnID_2, " & _
-      "Chart_TableID_3, Chart_ColumnID_3, Chart_SortOrderID, Chart_SortDirection)" & _
+      "Chart_TableID_3, Chart_ColumnID_3, Chart_SortOrderID, Chart_SortDirection, Chart_ColourID)" & _
       " VALUES(" & _
       CStr(rsLinks!LinkType) & "," & _
       CStr(rsLinks!linkOrder) & "," & _
@@ -1019,8 +1019,8 @@ Private Function SaveModuleDefinitions() As Boolean
       "'" & Replace(IIf(IsNull(rsLinks!SeparatorColour), "", rsLinks!SeparatorColour), "'", "''") & "'," & CStr(IIf(IsNull(rsLinks!InitialDisplayMode), 0, rsLinks!InitialDisplayMode)) & "," & _
       CStr(IIf(IsNull(rsLinks!Chart_TableID_2), 0, rsLinks!Chart_TableID_2)) & "," & CStr(IIf(IsNull(rsLinks!Chart_ColumnID_2), 0, rsLinks!Chart_ColumnID_2)) & "," & _
       CStr(IIf(IsNull(rsLinks!Chart_TableID_3), 0, rsLinks!Chart_TableID_3)) & "," & CStr(IIf(IsNull(rsLinks!Chart_ColumnID_3), 0, rsLinks!Chart_ColumnID_3)) & "," & _
-      CStr(IIf(IsNull(rsLinks!Chart_SortOrderID), 0, rsLinks!Chart_SortOrderID)) & "," & CStr(IIf(IsNull(rsLinks!Chart_SortDirection), 0, rsLinks!Chart_SortDirection)) & _
-      ")"
+      CStr(IIf(IsNull(rsLinks!Chart_SortOrderID), 0, rsLinks!Chart_SortOrderID)) & "," & CStr(IIf(IsNull(rsLinks!Chart_SortDirection), 0, rsLinks!Chart_SortDirection)) & "," & _
+      CStr(IIf(IsNull(rsLinks!Chart_ColourID), 0, rsLinks!Chart_ColourID)) & ")"
 
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
@@ -1507,7 +1507,7 @@ Private Function CopyData() As Boolean
                     ' Convert data into character if possible.
                     Case dtVARCHAR, dtLONGVARCHAR
                       If (iSourceColumnDataType = dtTIMESTAMP) Or _
-                        (iSourceColumnDataType = dtINTEGER) Or _
+                        (iSourceColumnDataType = dtinteger) Or _
                         (iSourceColumnDataType = dtNUMERIC) Or _
                         (iSourceColumnDataType = dtBIT) Then
                         sColumnList.Append IIf(sColumnList.Length <> 0, ",", vbNullString) & strColumnName
@@ -1515,7 +1515,7 @@ Private Function CopyData() As Boolean
                       End If
                                     
                     ' Convert data into integer if possible.
-                    Case dtINTEGER
+                    Case dtinteger
                       If (iSourceColumnDataType = dtNUMERIC) Or _
                         (iSourceColumnDataType = dtBIT) Then
                         sColumnList.Append IIf(sColumnList.Length <> 0, ",", vbNullString) & strColumnName
@@ -1524,7 +1524,7 @@ Private Function CopyData() As Boolean
                                   
                     ' Convert data into numeric if possible.
                     Case dtNUMERIC
-                      If (iSourceColumnDataType = dtINTEGER) Or _
+                      If (iSourceColumnDataType = dtinteger) Or _
                         (iSourceColumnDataType = dtBIT) Then
                         sColumnList.Append IIf(sColumnList.Length <> 0, ",", vbNullString) & strColumnName
                         sValueList.Append IIf(sValueList.Length <> 0, ",", vbNullString) & "CONVERT(numeric(" & Trim$(Str$(iDestinationColumnSize)) & "," & Trim$(Str$(iDestinationColumnDecimals)) & "), " & strColumnName & ")"
