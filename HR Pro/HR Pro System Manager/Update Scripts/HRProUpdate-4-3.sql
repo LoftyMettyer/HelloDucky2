@@ -233,6 +233,9 @@ PRINT 'Step 4 - Create object tracking system'
 	IF EXISTS (SELECT id FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[spASRApplyScripts]') AND xtype ='P')
 		DROP PROCEDURE [dbo].spASRApplyScripts
 
+	IF EXISTS (SELECT id FROM dbo.sysobjects WHERE id = object_id(N'[dbo].[spASRUploadScript]') AND xtype ='P')
+		DROP PROCEDURE [dbo].spASRUploadScript
+
 	EXEC sp_executesql N'CREATE PROCEDURE dbo.[spASRApplyScripts] (@runtype integer)
 	AS
 	BEGIN
@@ -261,6 +264,20 @@ PRINT 'Step 4 - Create object tracking system'
 			SET [lastrundate] = GETDATE()
 			FROM @changes c WHERE c.id = [tbsys_scriptedchanges].id;
 
+	END'
+
+	EXEC sp_executesql N'CREATE PROCEDURE dbo.spASRUploadScript
+	(@runtype integer, @script nvarchar(MAX), @runonce bit, @runinversion nvarchar(10))
+	AS
+	BEGIN
+
+		DECLARE @iMax integer;
+
+		SELECT @iMax = MAX([order]) FROM tbsys_scriptedchanges;
+
+		INSERT tbsys_scriptedchanges ([order], [file], [uploaddate], [runtype], [runonce], [runinversion])
+			VALUES (@iMax, @script, GETDATE(), @runtype, @runonce, @runinversion)
+		
 	END'
 
 
@@ -1512,32 +1529,33 @@ PRINT 'Step 14 - Server settings'
 PRINT 'Step 14 - Convert to merged audit table'
 
 	-- Rename the base audit log
-	SET @NVarCommand = 'EXECUTE sp_rename [ASRSysAuditTrail], [tbsys_audittrail];'
-	EXECUTE sp_executesql @NVarCommand;
+	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[tbsys_audittrail]') AND xtype = 'U')
+	BEGIN
+		EXECUTE sp_executesql N'EXECUTE sp_rename [ASRSysAuditTrail], [tbsys_audittrail];';
 
-	-- Remove old view
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysAuditTrail]') AND xtype = 'V')
-		DROP VIEW [dbo].[ASRSysAuditTrail];
+		-- Remove old view
+		IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysAuditTrail]') AND xtype = 'V')
+			DROP VIEW [dbo].[ASRSysAuditTrail];
 
-	SET @NVarCommand = 'CREATE VIEW [ASRSysAuditTrail]
-		WITH SCHEMABINDING
-		AS SELECT
-			[id], [UserName], [DateTimeStamp], [RecordID], [RecordDesc], [OldValue], [NewValue],
-			[Tablename], [Columnname], [CMGExportDate],	[CMGCommitDate], [ColumnID], [Deleted]
-		FROM [dbo].[tbsys_audittrail];'
-	EXECUTE sp_executesql @NVarCommand;		
+		SET @NVarCommand = 'CREATE VIEW [ASRSysAuditTrail]
+			WITH SCHEMABINDING
+			AS SELECT
+				[id], [UserName], [DateTimeStamp], [RecordID], [RecordDesc], [OldValue], [NewValue],
+				[Tablename], [Columnname], [CMGExportDate],	[CMGCommitDate], [ColumnID], [Deleted]
+			FROM [dbo].[tbsys_audittrail];'
+		EXECUTE sp_executesql @NVarCommand;		
 
-	-- Remove old triggers 
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[INS_ASRSysAuditTrail]') AND xtype = 'TR')
-		DROP TRIGGER [dbo].[INS_ASRSysAuditTrail];
+		-- Remove old triggers 
+		IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[INS_ASRSysAuditTrail]') AND xtype = 'TR')
+			DROP TRIGGER [dbo].[INS_ASRSysAuditTrail];
 
-	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[DEL_ASRSysAuditTrail]') AND xtype = 'TR')
-		DROP TRIGGER [dbo].[DEL_ASRSysAuditTrail];
+		IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[DEL_ASRSysAuditTrail]') AND xtype = 'TR')
+			DROP TRIGGER [dbo].[DEL_ASRSysAuditTrail];
 
-	-- Set as a non-integrated audit log
-	EXEC spsys_setsystemsetting 'integration', 'auditlog', 0;
+		-- Set as a non-integrated audit log
+		EXEC spsys_setsystemsetting 'integration', 'auditlog', 0;
 
-
+	END
 
 	
 /* ------------------------------------------------------------- */
