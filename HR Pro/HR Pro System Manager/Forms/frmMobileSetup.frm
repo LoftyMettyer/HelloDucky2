@@ -5,7 +5,7 @@ Begin VB.Form frmMobileSetup
    ClientHeight    =   3120
    ClientLeft      =   45
    ClientTop       =   375
-   ClientWidth     =   6825
+   ClientWidth     =   7230
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -21,14 +21,14 @@ Begin VB.Form frmMobileSetup
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   3120
-   ScaleWidth      =   6825
+   ScaleWidth      =   7230
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.CommandButton cmdCancel 
       Cancel          =   -1  'True
       Caption         =   "&Cancel"
       Height          =   400
-      Left            =   5460
+      Left            =   5865
       TabIndex        =   6
       Top             =   2535
       Width           =   1200
@@ -37,7 +37,7 @@ Begin VB.Form frmMobileSetup
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
-      Left            =   4200
+      Left            =   4605
       TabIndex        =   5
       Top             =   2535
       Width           =   1200
@@ -48,10 +48,10 @@ Begin VB.Form frmMobileSetup
       Left            =   150
       TabIndex        =   2
       Top             =   120
-      Width           =   6540
+      Width           =   6945
       Begin VB.ComboBox cboLeavingDateColumn 
          Height          =   315
-         Left            =   2370
+         Left            =   2820
          Style           =   2  'Dropdown List
          TabIndex        =   4
          Top             =   1530
@@ -59,15 +59,15 @@ Begin VB.Form frmMobileSetup
       End
       Begin VB.ComboBox cboEMailColumn 
          Height          =   315
-         Left            =   2370
+         Left            =   2820
          Style           =   2  'Dropdown List
          TabIndex        =   3
-         Top             =   1125
+         Top             =   720
          Width           =   3975
       End
       Begin VB.ComboBox cboPersonnelTable 
          Height          =   315
-         Left            =   2370
+         Left            =   2820
          Style           =   2  'Dropdown List
          TabIndex        =   0
          Top             =   300
@@ -75,14 +75,14 @@ Begin VB.Form frmMobileSetup
       End
       Begin VB.ComboBox cboLoginName 
          Height          =   315
-         Left            =   2370
+         Left            =   2820
          Style           =   2  'Dropdown List
          TabIndex        =   1
-         Top             =   700
+         Top             =   1110
          Width           =   3975
       End
       Begin VB.Label lblLeavingDateColumn 
-         Caption         =   "Leaving Date Column :"
+         Caption         =   "Login Expiry Date :"
          Height          =   195
          Left            =   195
          TabIndex        =   10
@@ -99,20 +99,20 @@ Begin VB.Form frmMobileSetup
       End
       Begin VB.Label lblLoginNameColumn 
          AutoSize        =   -1  'True
-         Caption         =   "Login Name Column :"
+         Caption         =   "Mobile Login Username :"
          Height          =   195
          Left            =   195
          TabIndex        =   8
-         Top             =   765
-         Width           =   1860
+         Top             =   1170
+         Width           =   2115
       End
       Begin VB.Label lblEmailAddresses 
-         Caption         =   "Email Address :"
+         Caption         =   "Registration Email Address :"
          Height          =   195
          Left            =   195
          TabIndex        =   7
-         Top             =   1170
-         Width           =   1995
+         Top             =   765
+         Width           =   2445
       End
    End
 End
@@ -137,7 +137,7 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  If Not mbLoading Then cmdOK.Enabled = True
+  If Not mbLoading Then cmdOk.Enabled = True
 End Property
 
 
@@ -236,7 +236,7 @@ End Sub
 
 Private Sub cmdCancel_Click()
   Dim pintAnswer As Integer
-    If Changed = True And cmdOK.Enabled Then
+    If Changed = True And cmdOk.Enabled Then
       pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
       If pintAnswer = vbYes Then
         'AE20071108 Fault #12551
@@ -324,7 +324,7 @@ End Sub
 Private Sub Form_Load()
    
   mbLoading = True
-  cmdOK.Enabled = False
+  cmdOk.Enabled = False
   
   ' Position the form in the same place it was last time.
   Me.Top = GetPCSetting(Me.Name, "Top", (Screen.Height - Me.Height) / 2)
@@ -459,7 +459,7 @@ Private Sub RefreshControls()
   lblLeavingDateColumn.Enabled = cboLeavingDateColumn.Enabled
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 End Sub
 
