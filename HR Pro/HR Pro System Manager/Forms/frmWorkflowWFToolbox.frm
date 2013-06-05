@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Begin VB.Form frmWorkflowWFToolbox 
    Caption         =   "Toolbox"
    ClientHeight    =   9180
@@ -738,6 +738,13 @@ End Sub
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
   Dim bHandled As Boolean
   
+  Select Case KeyCode
+    Case vbKeyF1
+      If ShowAirHelp(Me.HelpContextID) Then
+        KeyCode = 0
+      End If
+  End Select
+  
   bHandled = frmSysMgr.tbMain.OnKeyDown(KeyCode, Shift)
   If bHandled Then
     KeyCode = 0
@@ -939,7 +946,7 @@ End Function
 Private Sub RefreshColumnsTreeView()
   ' Populate the treeview of database column controls.
   Dim objNode As ComctlLib.Node
-  Dim rsColumns As dao.Recordset
+  Dim rsColumns As DAO.Recordset
   Dim fPopulated As Boolean
   Dim sSQL As String
   Dim sIconKey As String

@@ -19,6 +19,7 @@ Begin VB.Form frmWorkflowLink
    EndProperty
    HelpContextID   =   5077
    Icon            =   "frmWorkflowLink.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -568,8 +569,8 @@ Private Sub PopulateAvailable()
         End If
 
         If (Not !Deleted) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) And _
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) And _
           (!DataType <> dtVARBINARY) And _
           (!DataType <> dtLONGVARBINARY) Then
 
@@ -613,13 +614,13 @@ End Sub
 
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 
 
 Public Property Let Changed(ByVal blnNewValue As Boolean)
   If Not mblnLoading Then
-    cmdOk.Enabled = blnNewValue And Not mblnReadOnly
+    cmdOK.Enabled = blnNewValue And Not mblnReadOnly
   End If
 End Property
 
@@ -831,7 +832,7 @@ Private Function SaveDefinition() As Boolean
 
   With mobjWorkflowLink
     .WorkflowID = cboWorkflow.ItemData(cboWorkflow.ListIndex)
-    .FilterID = Val(txtFilter.Tag)
+    .FilterID = val(txtFilter.Tag)
     .EffectiveDate = cboEffectiveDate.DateValue
     
     .LinkType = miLinkType
@@ -875,6 +876,15 @@ Private Function SaveDefinition() As Boolean
 
 End Function
 
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
 
 Private Sub Form_Load()
   Dim fraTemp As Frame

@@ -18,6 +18,7 @@ Begin VB.Form frmWorkflowEditOptions
    EndProperty
    HelpContextID   =   5076
    Icon            =   "frmWorkflowEditOptions.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -155,7 +156,7 @@ Private Sub RefreshScreen()
     ControlsDisableAll Me
   End If
 
-  cmdOk.Enabled = mfChanged And (Not fReadOnly)
+  cmdOK.Enabled = mfChanged And (Not fReadOnly)
 
 End Sub
 
@@ -179,7 +180,7 @@ Private Sub FormatForm()
   asrNewHeight.Left = asrNewWidth.Left
     
   cmdCancel.Left = asrNewWidth.Left + asrNewWidth.Width - cmdCancel.Width
-  cmdOk.Left = cmdCancel.Left - cmdOk.Width - GAP_ButtonToButton
+  cmdOK.Left = cmdCancel.Left - cmdOK.Width - GAP_ButtonToButton
   
   Me.Width = asrNewWidth.Left + asrNewWidth.Width + lblCurrentWidth.Left
     
@@ -240,6 +241,15 @@ Private Sub cmdOK_Click()
   mfCancelled = False
   UnLoad Me
 
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_Load()

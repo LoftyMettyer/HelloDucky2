@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
 Begin VB.Form frmViewMgr 
    Caption         =   "View Manager"
@@ -100,10 +100,11 @@ Begin VB.Form frmViewMgr
       Width           =   3000
       _ExtentX        =   5292
       _ExtentY        =   2646
-      _Version        =   65538
+      _Version        =   65536
       LabelEdit       =   1
       LineStyle       =   1
       Indentation     =   315
+      Sorted          =   1
       AutoSearch      =   0   'False
       HideSelection   =   0   'False
       PictureBackgroundUseMask=   0   'False
@@ -120,7 +121,6 @@ Begin VB.Form frmViewMgr
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Sorted          =   1
    End
    Begin ComctlLib.StatusBar sbStatus 
       Align           =   2  'Align Bottom
@@ -361,6 +361,14 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
   'TM20020102 Fault 2879
   Dim bHandled As Boolean
   
+  
+  Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+
   bHandled = frmSysMgr.tbMain.OnKeyDown(KeyCode, Shift)
   If bHandled Then
     KeyCode = 0
@@ -1243,8 +1251,8 @@ Private Sub DeleteViews()
   Dim sViewName As String
   Dim aLngViewID() As Long
   Dim sSQL As String
-  Dim rsModules As dao.Recordset
-  Dim rsTemp As dao.Recordset
+  Dim rsModules As DAO.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim sModuleName As String
   Dim frmUse As frmUsage
   Dim fUsed As Boolean
@@ -1674,7 +1682,7 @@ Private Function lstColumns_Refresh() As Boolean
   Dim lngTableID As Long
   Dim sSQL As String
   Dim sMessage As String
-  Dim rsColumns As dao.Recordset
+  Dim rsColumns As DAO.Recordset
   
   sMessage = ""
   
@@ -1838,7 +1846,7 @@ Private Function AddViewColumns_Transaction(plngViewID As Long, plngViewTableID 
   Dim sNodeLabel As String
   Dim frmViewProperties As frmViewProp
   Dim nodX As SSNode
-  Dim rsColumns As dao.Recordset
+  Dim rsColumns As DAO.Recordset
   
   ' Begin the transaction of data to the local database.
   daoWS.BeginTrans

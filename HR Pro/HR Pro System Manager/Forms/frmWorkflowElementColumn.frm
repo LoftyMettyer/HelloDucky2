@@ -20,6 +20,7 @@ Begin VB.Form frmWorkflowElementColumn
    EndProperty
    HelpContextID   =   5057
    Icon            =   "frmWorkflowElementColumn.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -1235,7 +1236,7 @@ Public Sub Initialize(pfrmCallingForm As Form, _
         fDefaultLogic = (msValue = "True")
 
       Case sqlNumeric, sqlInteger
-        dblDefaultNumeric = Val(msValue)
+        dblDefaultNumeric = val(msValue)
 
       Case sqlDate
         Set objMisc = New Misc
@@ -1317,8 +1318,8 @@ Private Sub cboColumns_Refresh()
         ' Do not allow the user to select system columns, or deleted columns
         If (!TableID = mlngTableID) _
           And (!Deleted = False) _
-          And (!columnType <> giCOLUMNTYPE_LINK) _
-          And (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          And (!columntype <> giCOLUMNTYPE_LINK) _
+          And (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
           fDone = False
           For iLoop = 1 To UBound(malngColumnsDone)
@@ -1471,7 +1472,7 @@ Private Sub RefreshScreen()
   
   fEnableOK = fEnableOK And (cboColumns.Enabled)
   
-  cmdOk.Enabled = fEnableOK
+  cmdOK.Enabled = fEnableOK
   
 End Sub
 
@@ -1496,6 +1497,15 @@ Private Function SelectedElement() As VB.Control
   
 End Function
 
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
 
 Private Sub Form_Load()
   fraOKCancel.BorderStyle = vbBSNone
@@ -1635,7 +1645,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   If UnloadMode <> vbFormCode Then
 
     'Check if any changes have been made.
-    If mfChanged And cmdOk.Enabled Then
+    If mfChanged And cmdOK.Enabled Then
       iAnswer = MsgBox("You have changed the definition. Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
       If iAnswer = vbYes Then
         Call cmdOK_Click
@@ -1824,8 +1834,8 @@ Private Sub cboDBValueColumn_Refresh()
         If (!TableID = lngTableID) And _
           (!Deleted = False) And _
           (!DataType = miColumnDataType) And _
-          (!columnType <> giCOLUMNTYPE_LINK) And _
-          (!columnType <> giCOLUMNTYPE_SYSTEM) Then
+          (!columntype <> giCOLUMNTYPE_LINK) And _
+          (!columntype <> giCOLUMNTYPE_SYSTEM) Then
 
           fColumnOK = ((miColumnDataType <> sqlOle) _
             And (miColumnDataType <> sqlVarBinary)) _
@@ -2417,13 +2427,13 @@ Private Sub cmdCalcCalculation_Click()
         .Initialise 0, mlngCalculationExprID, giEXPR_WORKFLOWCALCULATION, giEXPRVALUE_OLE
       Case dtVARBINARY
         .Initialise 0, mlngCalculationExprID, giEXPR_WORKFLOWCALCULATION, giEXPRVALUE_PHOTO
-      Case dtINTEGER
+      Case dtinteger
         .Initialise 0, mlngCalculationExprID, giEXPR_WORKFLOWCALCULATION, giEXPRVALUE_NUMERIC
       Case dtBIT
         .Initialise 0, mlngCalculationExprID, giEXPR_WORKFLOWCALCULATION, giEXPRVALUE_LOGIC
       Case dtNUMERIC
         .Initialise 0, mlngCalculationExprID, giEXPR_WORKFLOWCALCULATION, giEXPRVALUE_NUMERIC
-      Case dtLONGVARCHAR
+      Case dtlongvarchar
         .Initialise 0, mlngCalculationExprID, giEXPR_WORKFLOWCALCULATION, giEXPRVALUE_CHARACTER
       Case Else
         .Initialise 0, mlngCalculationExprID, giEXPR_WORKFLOWCALCULATION, giEXPRVALUE_UNDEFINED

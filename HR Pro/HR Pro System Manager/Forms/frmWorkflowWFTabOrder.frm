@@ -18,6 +18,7 @@ Begin VB.Form frmWorkflowWFTabOrder
    EndProperty
    HelpContextID   =   5073
    Icon            =   "frmWorkflowWFTabOrder.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -377,9 +378,9 @@ Private Sub cmdOK_Click()
       
       sKey = Mid(objItem.key, 3)
       
-      iWFItemType = Val(Left(sKey, InStr(1, sKey, "_") - 1))
+      iWFItemType = val(Left(sKey, InStr(1, sKey, "_") - 1))
       sKey = Mid(sKey, InStr(1, sKey, "_") + 1)
-      iIndex = Val(sKey)
+      iIndex = val(sKey)
       
       ' Get the control object
       Select Case iWFItemType
@@ -539,6 +540,15 @@ End Sub
 
 Private Sub Form_Initialize()
   mfLoading = True
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_Load()

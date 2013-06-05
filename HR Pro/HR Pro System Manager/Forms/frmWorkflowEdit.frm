@@ -17,6 +17,7 @@ Begin VB.Form frmWorkflowEdit
    EndProperty
    HelpContextID   =   5052
    Icon            =   "frmWorkflowEdit.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -178,9 +179,9 @@ Private Sub FormatScreen()
       - X_GAP _
       - (UI.GetSystemMetrics(SM_CXFRAME) * Screen.TwipsPerPixelX)
     
-    cmdOk.Top = .Top
-    cmdOk.Left = .Left _
-      - cmdOk.Width _
+    cmdOK.Top = .Top
+    cmdOK.Left = .Left _
+      - cmdOK.Width _
       - X_GAP
     
     chkEnabled.Top = .Top _
@@ -277,7 +278,7 @@ Private Sub RefreshScreen()
     ControlsDisableAll Me
   End If
 
-  cmdOk.Enabled = mfChanged And (Not fReadOnly)
+  cmdOK.Enabled = mfChanged And (Not fReadOnly)
 
 End Sub
 
@@ -314,7 +315,7 @@ Private Function SaveChanges() As Boolean
   Dim fOK As Boolean
   Dim iIndex As Integer
   Dim sSQL As String
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   Dim fTransStarted As Boolean
   Dim sQueryString As String
   
@@ -573,6 +574,15 @@ Private Sub Form_Initialize()
 End Sub
 
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   Dim objControl As VB.Control
 
@@ -585,7 +595,7 @@ Private Sub Form_Load()
   Next
   Set objControl = Nothing
 
-  cmdOk.Enabled = False
+  cmdOK.Enabled = False
   
   ' Position the form.
   UI.frmAtCenterOfParent Me, frmSysMgr
@@ -646,13 +656,13 @@ End Sub
 Private Sub txtDescription_GotFocus()
   ' Select the whole string.
   UI.txtSelText
-  cmdOk.Default = False
+  cmdOK.Default = False
 
 End Sub
 
 
 Private Sub txtDescription_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 

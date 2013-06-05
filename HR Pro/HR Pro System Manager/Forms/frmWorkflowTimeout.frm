@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
@@ -25,6 +25,7 @@ Begin VB.Form frmWorkflowTimeout
    EndProperty
    HelpContextID   =   5075
    Icon            =   "frmWorkflowTimeout.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -2357,7 +2358,7 @@ Private Sub cboDefaultValue_refresh(ByVal psCurrentValue As String)
             Select Case iDataType
               Case dtNUMERIC, dtinteger
                 sSQL = sSQL & _
-                  " = " & UI.ConvertNumberForSQL(Val(psCurrentValue))
+                  " = " & UI.ConvertNumberForSQL(val(psCurrentValue))
               Case dtTIMESTAMP
                 If IsDate(psCurrentValue) Then
                   sSQL = sSQL & _
@@ -2498,7 +2499,7 @@ Private Sub cboRecordIdentificationElement_refresh(ByVal psCurrentElement As Str
   Dim wfTemp As VB.Control
   Dim asItems() As String
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   Dim fDone As Boolean
   Dim fFound As Boolean
   
@@ -2660,7 +2661,7 @@ Private Sub cboRecordIdentificationRecordSelector_refresh(ByVal psCurrentRecSel 
   Dim wfTemp As VB.Control
   Dim asItems() As String
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   Dim fDone As Boolean
   Dim fFound As Boolean
   Dim fNeeded As Boolean
@@ -2914,7 +2915,7 @@ Private Sub cboRecordIdentificationRecord_refresh(ByVal piCurrentRecord As Workf
   Dim asItems() As String
   Dim sTableIDs As String
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   Dim sValidTableIDs As String
   
   iIndex = -1
@@ -3130,7 +3131,7 @@ Private Sub cboRecordIdentificationRecordTable_refresh(ByVal plngCurrentRecordTa
   ' Populate the combo and select the current or default value.
   Dim iRecord As WorkflowRecordSelectorTypes
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   Dim lngLoop As Long
   Dim iLoop As Integer
   Dim iLoop2 As Integer
@@ -3279,7 +3280,7 @@ End Sub
 Private Sub cboRecordIdentificationTable_refresh(ByVal pLngCurrentTableID As Long)
   ' Populate the combo and select the current or default value.
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   Dim iLoop As Integer
   Dim iIndex As Integer
   Dim iDefaultIndex As Integer
@@ -3340,7 +3341,7 @@ End Sub
 Private Sub cboLookupTable_refresh(ByVal pLngCurrentTableID As Long)
   ' Populate the combo and select the current or default value.
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   Dim iLoop As Integer
   Dim iIndex As Integer
   Dim iDefaultIndex As Integer
@@ -3834,8 +3835,8 @@ Private Sub DefineValidation(blnNew As Boolean)
   sTypeDesc = ""
   
   If Not blnNew Then
-    lngExprID = Val(grdValidation.Columns("ExprID").CellText(grdValidation.Bookmark))
-    iType = Val(grdValidation.Columns("Type").CellText(grdValidation.Bookmark))
+    lngExprID = val(grdValidation.Columns("ExprID").CellText(grdValidation.Bookmark))
+    iType = val(grdValidation.Columns("Type").CellText(grdValidation.Bookmark))
     sMessage = grdValidation.Columns("Message").CellText(grdValidation.Bookmark)
     sTypeDesc = grdValidation.Columns("TypeDescription").CellText(grdValidation.Bookmark)
   End If
@@ -4913,8 +4914,8 @@ Private Sub SaveProperties()
       For iLoop = 0 To (.Rows - 1)
         varBookmark = .AddItemBookmark(iLoop)
   
-        lngExprID = Val(.Columns("ExprID").CellText(varBookmark))
-        iValidationType = Val(.Columns("Type").CellText(varBookmark))
+        lngExprID = val(.Columns("ExprID").CellText(varBookmark))
+        iValidationType = val(.Columns("Type").CellText(varBookmark))
         sMessage = Trim(.Columns("Message").CellText(varBookmark))
         
         ReDim Preserve asValidations(4, UBound(asValidations, 2) + 1)
@@ -5160,7 +5161,7 @@ Private Function ValidateProperties() As Boolean
       For iLoop = 0 To (.Rows - 1)
         varBookmark = .AddItemBookmark(iLoop)
   
-        lngExprID = Val(.Columns("ExprID").CellText(varBookmark))
+        lngExprID = val(.Columns("ExprID").CellText(varBookmark))
         sMessage = Trim(.Columns("Message").CellText(varBookmark))
         
         If lngExprID <= 0 Then
@@ -6324,6 +6325,15 @@ Private Sub dtDefaultValue_LostFocus()
 
 End Sub
 
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
 
 Private Sub Form_Load()
   Dim iLoop As Integer
@@ -9297,7 +9307,7 @@ Private Function FormatScreen_Frame_RecordIdentification() As Boolean
   Dim fFrameNeeded As Boolean
   Dim sngCurrentControlTop As Single
   Dim sSQL As String
-  Dim rsTables As dao.Recordset
+  Dim rsTables As DAO.Recordset
   Dim alngValidTables() As Long
   Dim fFound As Boolean
   Dim lngLoop As Long

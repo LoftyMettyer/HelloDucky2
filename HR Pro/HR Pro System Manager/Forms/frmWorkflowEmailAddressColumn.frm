@@ -17,6 +17,7 @@ Begin VB.Form frmWorkflowEmailAddressColumn
    EndProperty
    HelpContextID   =   5069
    Icon            =   "frmWorkflowEmailAddressColumn.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -131,7 +132,7 @@ End Property
 Private Sub GetColumns()
   ' Populate the columns combo.
   Dim sSQL As String
-  Dim rsTemp As dao.Recordset
+  Dim rsTemp As DAO.Recordset
   Dim iDefaultItem As Integer
   Dim sTableName As String
 
@@ -195,7 +196,7 @@ End Sub
 
 Private Sub RefreshControls()
   ' Disable the OK button as required.
-  cmdOk.Enabled = (ColumnID <> mlngColumnID)
+  cmdOK.Enabled = (ColumnID <> mlngColumnID)
     
 End Sub
 
@@ -225,6 +226,15 @@ Private Sub Form_Initialize()
   mblnReadOnly = (Application.AccessMode <> accFull And _
     Application.AccessMode <> accSupportMode)
 
+End Sub
+
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
 End Sub
 
 Private Sub Form_Load()

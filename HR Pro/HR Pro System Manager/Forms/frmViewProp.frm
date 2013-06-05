@@ -17,6 +17,7 @@ Begin VB.Form frmViewProp
    EndProperty
    HelpContextID   =   5038
    Icon            =   "frmViewProp.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -649,6 +650,15 @@ Private Sub Form_Initialize()
 
 End Sub
 
+Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
+Select Case KeyCode
+  Case vbKeyF1
+    If ShowAirHelp(Me.HelpContextID) Then
+      KeyCode = 0
+    End If
+End Select
+End Sub
+
 Private Sub Form_Load()
   ' Clear the menu shortcuts. This needs to be done so that some shortcut keys
   ' (eg. DEL) will function normally in textboxes instead of triggering menu options.
@@ -813,12 +823,12 @@ Private Sub txtViewDescription_GotFocus()
   
   UI.txtSelText
   
-  cmdOk.Default = False
+  cmdOK.Default = False
   
 End Sub
 
 Private Sub txtViewDescription_LostFocus()
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 
@@ -864,7 +874,7 @@ Private Function lstScreens_Refresh() As Boolean
   Dim fInView As Boolean
   Dim fAllScreens As Boolean
   Dim sSQL As String
-  Dim rsScreens As dao.Recordset
+  Dim rsScreens As DAO.Recordset
   Dim iTmpCount As Integer
 
   gfRefreshing = True
