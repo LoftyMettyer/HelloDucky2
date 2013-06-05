@@ -1787,13 +1787,13 @@ Private Sub ssGridProperties_BeforeUpdate(Cancel As Integer)
       End If
       
     Case WFITEMPROP_TABCAPTION
-      'NHRD27062012 Jira HRPRO-2256 changed max tab caption length from 200! to 20
+      'NHRD27062012 Jira HRPRO-2256 changed max tab caption length from 200! to 35
       If Len(sNewValue) > 35 Then
         sNewValue = Left(sNewValue, 35)
         ssGridProperties.ActiveCell.Text = sNewValue
-        MsgBox ("Max Tab caption length is 35chrs!" & vbCrLf & vbCrLf & "Your caption has been shortened to this limit." & vbCrLf & _
-                          "You can accept this version or re-enter your own shorter alternative."), _
-                          vbOKOnly + vbExclamation, Application.Name
+        'MsgBox ("Max Tab caption length is 35chrs!" & vbCrLf & vbCrLf & "Your caption has been shortened to this limit." & vbCrLf & _
+         '                 "You can accept this version or re-enter your own shorter alternative."), _
+          '                vbOKOnly + vbExclamation, Application.Name
       End If
       
     ' --------------------
@@ -3136,9 +3136,9 @@ Public Function RefreshProperties(Optional pfStayOnSameLine As Boolean) As Boole
       If CurrentWebForm.ActiveControl.Name = "TabPages" Then
       ' The screen's tab strip is the active control.
         Me.StatusBar1.SimpleText = "Tab"
-        If CurrentWebForm.tabPages.Tabs.Count > 0 Then
+        If CurrentWebForm.TabPages.Tabs.Count > 0 Then
           
-          With CurrentWebForm.tabPages
+          With CurrentWebForm.TabPages
             ' Read the Caption property from the tab strip.
             avProperties(WFITEMPROP_TABCAPTION, 1) = True
             msTabCaption = Replace(.SelectedItem.Caption, "&&", "&")
@@ -4120,7 +4120,7 @@ Private Function UpdateControls(piProperty As WFItemProperty) As Boolean
         Next iCount
 
         ' If tab page is selected then force a refresh.
-        If mfrmWebForm.tabPages.Selected Then
+        If mfrmWebForm.TabPages.Selected Then
           mfrmWebForm.DockPagesToTabStrip
         End If
 
@@ -4267,23 +4267,23 @@ Private Function UpdateControls(piProperty As WFItemProperty) As Boolean
         
           Case WFITEMPROP_TABNUMBER
             
-            If mlngTabNumber <> mfrmWebForm.tabPages.SelectedItem.Tag Then
-              lngTargetPageNumber = mfrmWebForm.tabPages.SelectedItem.Tag
-              sCaption = mfrmWebForm.tabPages.SelectedItem.Caption
+            If mlngTabNumber <> mfrmWebForm.TabPages.SelectedItem.Tag Then
+              lngTargetPageNumber = mfrmWebForm.TabPages.SelectedItem.Tag
+              sCaption = mfrmWebForm.TabPages.SelectedItem.Caption
               
-              mfrmWebForm.tabPages.SelectedItem.Tag = mfrmWebForm.tabPages.Tabs.Item(mlngTabNumber).Tag
-              mfrmWebForm.tabPages.Tabs.Item(mlngTabNumber).Tag = lngTargetPageNumber
+              mfrmWebForm.TabPages.SelectedItem.Tag = mfrmWebForm.TabPages.Tabs.Item(mlngTabNumber).Tag
+              mfrmWebForm.TabPages.Tabs.Item(mlngTabNumber).Tag = lngTargetPageNumber
               
               ' Select the new page
-              mfrmWebForm.tabPages.SelectedItem.Caption = mfrmWebForm.tabPages.Tabs.Item(mlngTabNumber).Caption
-              mfrmWebForm.tabPages.Tabs.Item(mlngTabNumber).Caption = sCaption
+              mfrmWebForm.TabPages.SelectedItem.Caption = mfrmWebForm.TabPages.Tabs.Item(mlngTabNumber).Caption
+              mfrmWebForm.TabPages.Tabs.Item(mlngTabNumber).Caption = sCaption
               mfrmWebForm.PageNo = mlngTabNumber
               mfrmWebForm.IsChanged = True
               blnDontRefresh = True
             End If
             
           Case WFITEMPROP_TABCAPTION
-            mfrmWebForm.tabPages.Tabs.Item(mlngTabNumber).Caption = Replace(ssGridProperties.ActiveCell.Text, "&", "&&")
+            mfrmWebForm.TabPages.Tabs.Item(mlngTabNumber).Caption = Replace(ssGridProperties.ActiveCell.Text, "&", "&&")
             mfrmWebForm.IsChanged = True
             blnDontRefresh = True
             
