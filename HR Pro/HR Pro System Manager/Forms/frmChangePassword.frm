@@ -268,7 +268,7 @@ Private Sub Form_Load()
   mbCancelled = True
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
   Dim iUsers As Integer
   
   'JPD 20020218 Fault 3343
