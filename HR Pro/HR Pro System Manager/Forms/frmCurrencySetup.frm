@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.0#0"; "COA_Line.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Begin VB.Form frmCurrencySetup 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Currency Setup"
@@ -87,11 +87,9 @@ Begin VB.Form frmCurrencySetup
       Begin COALine.COA_Line ASRDummyLine3 
          Height          =   30
          Left            =   150
-         TabIndex        =   5
-         TabStop         =   0   'False
          Top             =   765
-         Width           =   4845
-         _ExtentX        =   8546
+         Width           =   5195
+         _ExtentX        =   9155
          _ExtentY        =   53
       End
       Begin VB.Label lblCConvDecimal 
@@ -100,7 +98,7 @@ Begin VB.Form frmCurrencySetup
          Caption         =   "Decimal Column :"
          Height          =   195
          Left            =   195
-         TabIndex        =   11
+         TabIndex        =   5
          Top             =   2085
          Width           =   1755
       End
