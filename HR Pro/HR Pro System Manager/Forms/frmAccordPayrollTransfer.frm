@@ -680,12 +680,12 @@ Public Property Get Changed() As Boolean
 End Property
 Public Property Let Changed(ByVal pblnChanged As Boolean)
   mfChanged = pblnChanged
-  cmdOK.Enabled = True
+  cmdOk.Enabled = True
 End Property
 Private Sub RefreshButtons()
   
   If Not mbLoading Then
-    cmdOK.Enabled = mfChanged And Not mbReadOnly
+    cmdOk.Enabled = mfChanged And Not mbReadOnly
     cmdEdit.Enabled = (cboTransferTables <> "<None>")
     cmdDelete.Enabled = (cboTransferTables <> "<None>") And (Not mbReadOnly)
     cmdNone.Enabled = (SelectedComboItem(cboTransferTables) > 0) And Not mbReadOnly
@@ -1362,7 +1362,7 @@ Private Sub Form_Load()
   
   mfChanged = False
   cmdDelete.Enabled = Not mbReadOnly
-  cmdOK.Enabled = False
+  cmdOk.Enabled = False
 
   Screen.MousePointer = vbDefault
 
@@ -1638,8 +1638,7 @@ Private Sub PopulateTransferTypes()
       mavarTransferBaseTableIDs(2, UBound(mavarTransferBaseTableIDs, 2)) = !ASRBaseTableID
       ReDim Preserve mavarTransferBaseTableIDs(2, UBound(mavarTransferBaseTableIDs, 2) + 1)
       
-      cboTransferType.AddItem Trim(!TransferType)
-      cboTransferType.ItemData(cboTransferType.NewIndex) = !TransferTypeID
+      AddItemToComboBox cboTransferType, !TransferType, !TransferTypeID
       
       ' Filter information
       mavarTransferFilterIDs(UBound(mavarTransferFilterIDs)) = !FilterID
@@ -1829,7 +1828,7 @@ End Sub
 
 Private Sub EnableDisableTabControls()
 
-  cmdOK.Enabled = Not mbReadOnly And mfChanged
+  cmdOk.Enabled = Not mbReadOnly And mfChanged
   cmdNone.Enabled = (tabOptions.Tab = 0) And Not mbReadOnly
   cmdEdit.Caption = IIf(mbReadOnly, "&View...", "&Edit...")
   cmdFilter.Enabled = (tabOptions.Tab = 0) And Not mbReadOnly
