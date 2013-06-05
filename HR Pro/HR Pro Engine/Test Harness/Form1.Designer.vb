@@ -22,298 +22,214 @@ Partial Class Form1
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-    Me.Button1 = New System.Windows.Forms.Button()
-    Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
-    Me.ProgressBar2 = New System.Windows.Forms.ProgressBar()
-    Me.Label1 = New System.Windows.Forms.Label()
-    Me.CurrentPhase = New System.Windows.Forms.Label()
-    Me.Button2 = New System.Windows.Forms.Button()
-    Me.Button3 = New System.Windows.Forms.Button()
-    Me.txtUpdateScript = New System.Windows.Forms.TextBox()
-    Me.Button4 = New System.Windows.Forms.Button()
-    Me.Button5 = New System.Windows.Forms.Button()
-    Me.Button6 = New System.Windows.Forms.Button()
-    Me.Button7 = New System.Windows.Forms.Button()
-    Me.cmdDatasource = New System.Windows.Forms.Button()
-    Me.txtErrors = New System.Windows.Forms.TextBox()
-    Me.txtDatabase = New System.Windows.Forms.TextBox()
-    Me.Button8 = New System.Windows.Forms.Button()
-    Me.txtServer = New System.Windows.Forms.TextBox()
-    Me.chkDebugMode = New System.Windows.Forms.CheckBox()
-    Me.Label2 = New System.Windows.Forms.Label()
+    Me.pnlScripting = New System.Windows.Forms.Panel()
     Me.Label3 = New System.Windows.Forms.Label()
-    Me.butErrors = New System.Windows.Forms.Button()
-    Me.Button9 = New System.Windows.Forms.Button()
-    Me.Button10 = New System.Windows.Forms.Button()
+    Me.Label2 = New System.Windows.Forms.Label()
+    Me.chkDebugMode = New System.Windows.Forms.CheckBox()
+    Me.txtServer = New System.Windows.Forms.TextBox()
+    Me.txtDatabase = New System.Windows.Forms.TextBox()
+    Me.butScriptDB = New System.Windows.Forms.Button()
+    Me.Panel1 = New System.Windows.Forms.Panel()
+    Me.butImport = New System.Windows.Forms.Button()
+    Me.txtServer2 = New System.Windows.Forms.TextBox()
+    Me.txtDatabase2 = New System.Windows.Forms.TextBox()
+    Me.txtPassword2 = New System.Windows.Forms.TextBox()
+    Me.txtUser2 = New System.Windows.Forms.TextBox()
+    Me.butViewObjects = New System.Windows.Forms.Button()
+    Me.Label1 = New System.Windows.Forms.Label()
+    Me.Label4 = New System.Windows.Forms.Label()
+    Me.pnlScripting.SuspendLayout()
+    Me.Panel1.SuspendLayout()
     Me.SuspendLayout()
     '
-    'Button1
+    'pnlScripting
     '
-    Me.Button1.Enabled = False
-    Me.Button1.Location = New System.Drawing.Point(24, 31)
-    Me.Button1.Name = "Button1"
-    Me.Button1.Size = New System.Drawing.Size(166, 38)
-    Me.Button1.TabIndex = 0
-    Me.Button1.Text = "Calcs & Triggas"
-    Me.Button1.UseVisualStyleBackColor = True
+    Me.pnlScripting.Controls.Add(Me.Label3)
+    Me.pnlScripting.Controls.Add(Me.Label2)
+    Me.pnlScripting.Controls.Add(Me.chkDebugMode)
+    Me.pnlScripting.Controls.Add(Me.txtServer)
+    Me.pnlScripting.Controls.Add(Me.txtDatabase)
+    Me.pnlScripting.Controls.Add(Me.butScriptDB)
+    Me.pnlScripting.Location = New System.Drawing.Point(15, 39)
+    Me.pnlScripting.Name = "pnlScripting"
+    Me.pnlScripting.Size = New System.Drawing.Size(308, 163)
+    Me.pnlScripting.TabIndex = 21
     '
-    'ProgressBar1
+    'Label3
     '
-    Me.ProgressBar1.Location = New System.Drawing.Point(32, 118)
-    Me.ProgressBar1.Name = "ProgressBar1"
-    Me.ProgressBar1.Size = New System.Drawing.Size(530, 23)
-    Me.ProgressBar1.TabIndex = 1
+    Me.Label3.AutoSize = True
+    Me.Label3.Location = New System.Drawing.Point(16, 52)
+    Me.Label3.Name = "Label3"
+    Me.Label3.Size = New System.Drawing.Size(53, 13)
+    Me.Label3.TabIndex = 26
+    Me.Label3.Text = "Database"
     '
-    'ProgressBar2
+    'Label2
     '
-    Me.ProgressBar2.Location = New System.Drawing.Point(32, 148)
-    Me.ProgressBar2.Name = "ProgressBar2"
-    Me.ProgressBar2.Size = New System.Drawing.Size(530, 23)
-    Me.ProgressBar2.TabIndex = 2
-    '
-    'Label1
-    '
-    Me.Label1.AutoSize = True
-    Me.Label1.Location = New System.Drawing.Point(218, 14)
-    Me.Label1.Name = "Label1"
-    Me.Label1.Size = New System.Drawing.Size(39, 13)
-    Me.Label1.TabIndex = 3
-    Me.Label1.Text = "Label1"
-    '
-    'CurrentPhase
-    '
-    Me.CurrentPhase.AutoSize = True
-    Me.CurrentPhase.Font = New System.Drawing.Font("Microsoft Sans Serif", 24.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-    Me.CurrentPhase.Location = New System.Drawing.Point(568, 118)
-    Me.CurrentPhase.Name = "CurrentPhase"
-    Me.CurrentPhase.Size = New System.Drawing.Size(134, 37)
-    Me.CurrentPhase.TabIndex = 4
-    Me.CurrentPhase.Text = "Phase..."
-    '
-    'Button2
-    '
-    Me.Button2.Enabled = False
-    Me.Button2.Location = New System.Drawing.Point(458, 18)
-    Me.Button2.Name = "Button2"
-    Me.Button2.Size = New System.Drawing.Size(104, 22)
-    Me.Button2.TabIndex = 5
-    Me.Button2.Text = "RemoteView On"
-    Me.Button2.UseVisualStyleBackColor = True
-    '
-    'Button3
-    '
-    Me.Button3.Enabled = False
-    Me.Button3.Location = New System.Drawing.Point(221, 46)
-    Me.Button3.Name = "Button3"
-    Me.Button3.Size = New System.Drawing.Size(121, 23)
-    Me.Button3.TabIndex = 6
-    Me.Button3.Text = "Read And Spit"
-    Me.Button3.UseVisualStyleBackColor = True
-    '
-    'txtUpdateScript
-    '
-    Me.txtUpdateScript.Location = New System.Drawing.Point(221, 76)
-    Me.txtUpdateScript.Name = "txtUpdateScript"
-    Me.txtUpdateScript.Size = New System.Drawing.Size(257, 20)
-    Me.txtUpdateScript.TabIndex = 7
-    Me.txtUpdateScript.Text = "c:\dev\updatescript\tables.sql"
-    '
-    'Button4
-    '
-    Me.Button4.Enabled = False
-    Me.Button4.Location = New System.Drawing.Point(458, 46)
-    Me.Button4.Name = "Button4"
-    Me.Button4.Size = New System.Drawing.Size(104, 23)
-    Me.Button4.TabIndex = 8
-    Me.Button4.Text = "RemoteView Off"
-    Me.Button4.UseVisualStyleBackColor = True
-    '
-    'Button5
-    '
-    Me.Button5.Enabled = False
-    Me.Button5.Location = New System.Drawing.Point(501, 78)
-    Me.Button5.Name = "Button5"
-    Me.Button5.Size = New System.Drawing.Size(142, 23)
-    Me.Button5.TabIndex = 9
-    Me.Button5.Text = "DAO Populate"
-    Me.Button5.UseVisualStyleBackColor = True
-    '
-    'Button6
-    '
-    Me.Button6.Enabled = False
-    Me.Button6.Location = New System.Drawing.Point(694, 71)
-    Me.Button6.Name = "Button6"
-    Me.Button6.Size = New System.Drawing.Size(87, 29)
-    Me.Button6.TabIndex = 10
-    Me.Button6.Text = "Button6"
-    Me.Button6.UseVisualStyleBackColor = True
-    '
-    'Button7
-    '
-    Me.Button7.Location = New System.Drawing.Point(454, 335)
-    Me.Button7.Name = "Button7"
-    Me.Button7.Size = New System.Drawing.Size(104, 45)
-    Me.Button7.TabIndex = 11
-    Me.Button7.Text = "Go Script."
-    Me.Button7.UseVisualStyleBackColor = True
-    '
-    'cmdDatasource
-    '
-    Me.cmdDatasource.Enabled = False
-    Me.cmdDatasource.Location = New System.Drawing.Point(684, 18)
-    Me.cmdDatasource.Name = "cmdDatasource"
-    Me.cmdDatasource.Size = New System.Drawing.Size(75, 23)
-    Me.cmdDatasource.TabIndex = 13
-    Me.cmdDatasource.Text = "Datasource"
-    Me.cmdDatasource.UseVisualStyleBackColor = True
-    '
-    'txtErrors
-    '
-    Me.txtErrors.Location = New System.Drawing.Point(12, 177)
-    Me.txtErrors.Multiline = True
-    Me.txtErrors.Name = "txtErrors"
-    Me.txtErrors.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-    Me.txtErrors.Size = New System.Drawing.Size(359, 179)
-    Me.txtErrors.TabIndex = 14
-    '
-    'txtDatabase
-    '
-    Me.txtDatabase.Location = New System.Drawing.Point(458, 300)
-    Me.txtDatabase.Name = "txtDatabase"
-    Me.txtDatabase.Size = New System.Drawing.Size(100, 20)
-    Me.txtDatabase.TabIndex = 15
-    Me.txtDatabase.Text = "getchild4"
-    '
-    'Button8
-    '
-    Me.Button8.Location = New System.Drawing.Point(728, 251)
-    Me.Button8.Name = "Button8"
-    Me.Button8.Size = New System.Drawing.Size(75, 23)
-    Me.Button8.TabIndex = 16
-    Me.Button8.Text = "tech support"
-    Me.Button8.UseVisualStyleBackColor = True
-    '
-    'txtServer
-    '
-    Me.txtServer.Location = New System.Drawing.Point(458, 274)
-    Me.txtServer.Name = "txtServer"
-    Me.txtServer.Size = New System.Drawing.Size(100, 20)
-    Me.txtServer.TabIndex = 17
-    Me.txtServer.Text = "harpdev01"
+    Me.Label2.AutoSize = True
+    Me.Label2.Location = New System.Drawing.Point(22, 27)
+    Me.Label2.Name = "Label2"
+    Me.Label2.Size = New System.Drawing.Size(38, 13)
+    Me.Label2.TabIndex = 25
+    Me.Label2.Text = "Server"
     '
     'chkDebugMode
     '
     Me.chkDebugMode.AutoSize = True
     Me.chkDebugMode.Checked = True
     Me.chkDebugMode.CheckState = System.Windows.Forms.CheckState.Checked
-    Me.chkDebugMode.Location = New System.Drawing.Point(575, 274)
+    Me.chkDebugMode.Location = New System.Drawing.Point(192, 23)
     Me.chkDebugMode.Name = "chkDebugMode"
     Me.chkDebugMode.Size = New System.Drawing.Size(88, 17)
-    Me.chkDebugMode.TabIndex = 18
+    Me.chkDebugMode.TabIndex = 24
     Me.chkDebugMode.Text = "Debug Mode"
     Me.chkDebugMode.UseVisualStyleBackColor = True
     '
-    'Label2
+    'txtServer
     '
-    Me.Label2.AutoSize = True
-    Me.Label2.Location = New System.Drawing.Point(399, 277)
-    Me.Label2.Name = "Label2"
-    Me.Label2.Size = New System.Drawing.Size(38, 13)
-    Me.Label2.TabIndex = 19
-    Me.Label2.Text = "Server"
+    Me.txtServer.Location = New System.Drawing.Point(75, 23)
+    Me.txtServer.Name = "txtServer"
+    Me.txtServer.Size = New System.Drawing.Size(100, 20)
+    Me.txtServer.TabIndex = 23
+    Me.txtServer.Text = "harpdev01"
     '
-    'Label3
+    'txtDatabase
     '
-    Me.Label3.AutoSize = True
-    Me.Label3.Location = New System.Drawing.Point(399, 303)
-    Me.Label3.Name = "Label3"
-    Me.Label3.Size = New System.Drawing.Size(53, 13)
-    Me.Label3.TabIndex = 20
-    Me.Label3.Text = "Database"
+    Me.txtDatabase.Location = New System.Drawing.Point(75, 49)
+    Me.txtDatabase.Name = "txtDatabase"
+    Me.txtDatabase.Size = New System.Drawing.Size(100, 20)
+    Me.txtDatabase.TabIndex = 22
+    Me.txtDatabase.Text = "getchild4"
     '
-    'butErrors
+    'butScriptDB
     '
-    Me.butErrors.Location = New System.Drawing.Point(694, 356)
-    Me.butErrors.Name = "butErrors"
-    Me.butErrors.Size = New System.Drawing.Size(75, 23)
-    Me.butErrors.TabIndex = 21
-    Me.butErrors.Text = "View Errors"
-    Me.butErrors.UseVisualStyleBackColor = True
+    Me.butScriptDB.Location = New System.Drawing.Point(71, 84)
+    Me.butScriptDB.Name = "butScriptDB"
+    Me.butScriptDB.Size = New System.Drawing.Size(104, 45)
+    Me.butScriptDB.TabIndex = 21
+    Me.butScriptDB.Text = "Go Script."
+    Me.butScriptDB.UseVisualStyleBackColor = True
     '
-    'Button9
+    'Panel1
     '
-    Me.Button9.Location = New System.Drawing.Point(221, 387)
-    Me.Button9.Name = "Button9"
-    Me.Button9.Size = New System.Drawing.Size(75, 23)
-    Me.Button9.TabIndex = 22
-    Me.Button9.Text = "Button9"
-    Me.Button9.UseVisualStyleBackColor = True
+    Me.Panel1.Controls.Add(Me.butImport)
+    Me.Panel1.Controls.Add(Me.txtServer2)
+    Me.Panel1.Controls.Add(Me.txtDatabase2)
+    Me.Panel1.Controls.Add(Me.txtPassword2)
+    Me.Panel1.Controls.Add(Me.txtUser2)
+    Me.Panel1.Controls.Add(Me.butViewObjects)
+    Me.Panel1.Location = New System.Drawing.Point(348, 39)
+    Me.Panel1.Name = "Panel1"
+    Me.Panel1.Size = New System.Drawing.Size(348, 163)
+    Me.Panel1.TabIndex = 22
     '
-    'Button10
+    'butImport
     '
-    Me.Button10.Location = New System.Drawing.Point(32, 373)
-    Me.Button10.Name = "Button10"
-    Me.Button10.Size = New System.Drawing.Size(75, 23)
-    Me.Button10.TabIndex = 23
-    Me.Button10.Text = "Clone"
-    Me.Button10.UseVisualStyleBackColor = True
+    Me.butImport.Font = New System.Drawing.Font("Segoe Print", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+    Me.butImport.Location = New System.Drawing.Point(161, 70)
+    Me.butImport.Name = "butImport"
+    Me.butImport.Size = New System.Drawing.Size(127, 40)
+    Me.butImport.TabIndex = 5
+    Me.butImport.Text = "Import"
+    Me.butImport.UseVisualStyleBackColor = True
+    '
+    'txtServer2
+    '
+    Me.txtServer2.Location = New System.Drawing.Point(121, 40)
+    Me.txtServer2.Name = "txtServer2"
+    Me.txtServer2.Size = New System.Drawing.Size(100, 20)
+    Me.txtServer2.TabIndex = 4
+    Me.txtServer2.Text = "harpdev01"
+    '
+    'txtDatabase2
+    '
+    Me.txtDatabase2.Location = New System.Drawing.Point(14, 40)
+    Me.txtDatabase2.Name = "txtDatabase2"
+    Me.txtDatabase2.Size = New System.Drawing.Size(100, 20)
+    Me.txtDatabase2.TabIndex = 3
+    Me.txtDatabase2.Text = "bibby"
+    '
+    'txtPassword2
+    '
+    Me.txtPassword2.Location = New System.Drawing.Point(121, 13)
+    Me.txtPassword2.Name = "txtPassword2"
+    Me.txtPassword2.PasswordChar = Global.Microsoft.VisualBasic.ChrW(42)
+    Me.txtPassword2.Size = New System.Drawing.Size(100, 20)
+    Me.txtPassword2.TabIndex = 2
+    Me.txtPassword2.Text = "asr"
+    '
+    'txtUser2
+    '
+    Me.txtUser2.Location = New System.Drawing.Point(14, 13)
+    Me.txtUser2.Name = "txtUser2"
+    Me.txtUser2.Size = New System.Drawing.Size(100, 20)
+    Me.txtUser2.TabIndex = 1
+    Me.txtUser2.Text = "sa"
+    '
+    'butViewObjects
+    '
+    Me.butViewObjects.Font = New System.Drawing.Font("Segoe Print", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+    Me.butViewObjects.Location = New System.Drawing.Point(25, 70)
+    Me.butViewObjects.Name = "butViewObjects"
+    Me.butViewObjects.Size = New System.Drawing.Size(129, 40)
+    Me.butViewObjects.TabIndex = 0
+    Me.butViewObjects.Text = "Export"
+    Me.butViewObjects.UseVisualStyleBackColor = True
+    '
+    'Label1
+    '
+    Me.Label1.AutoSize = True
+    Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+    Me.Label1.Location = New System.Drawing.Point(346, 9)
+    Me.Label1.Name = "Label1"
+    Me.Label1.Size = New System.Drawing.Size(116, 18)
+    Me.Label1.TabIndex = 23
+    Me.Label1.Text = "Export Selection"
+    '
+    'Label4
+    '
+    Me.Label4.AutoSize = True
+    Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+    Me.Label4.Location = New System.Drawing.Point(12, 8)
+    Me.Label4.Name = "Label4"
+    Me.Label4.Size = New System.Drawing.Size(59, 18)
+    Me.Label4.TabIndex = 24
+    Me.Label4.Text = "Scripter"
     '
     'Form1
     '
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
     Me.ClientSize = New System.Drawing.Size(806, 426)
-    Me.Controls.Add(Me.Button10)
-    Me.Controls.Add(Me.Button9)
-    Me.Controls.Add(Me.butErrors)
-    Me.Controls.Add(Me.Label3)
-    Me.Controls.Add(Me.Label2)
-    Me.Controls.Add(Me.chkDebugMode)
-    Me.Controls.Add(Me.txtServer)
-    Me.Controls.Add(Me.Button8)
-    Me.Controls.Add(Me.txtDatabase)
-    Me.Controls.Add(Me.txtErrors)
-    Me.Controls.Add(Me.cmdDatasource)
-    Me.Controls.Add(Me.Button7)
-    Me.Controls.Add(Me.Button6)
-    Me.Controls.Add(Me.Button5)
-    Me.Controls.Add(Me.Button4)
-    Me.Controls.Add(Me.txtUpdateScript)
-    Me.Controls.Add(Me.Button3)
-    Me.Controls.Add(Me.Button2)
-    Me.Controls.Add(Me.CurrentPhase)
+    Me.Controls.Add(Me.Label4)
     Me.Controls.Add(Me.Label1)
-    Me.Controls.Add(Me.ProgressBar2)
-    Me.Controls.Add(Me.ProgressBar1)
-    Me.Controls.Add(Me.Button1)
+    Me.Controls.Add(Me.Panel1)
+    Me.Controls.Add(Me.pnlScripting)
     Me.Name = "Form1"
     Me.Text = "DB"
+    Me.pnlScripting.ResumeLayout(False)
+    Me.pnlScripting.PerformLayout()
+    Me.Panel1.ResumeLayout(False)
+    Me.Panel1.PerformLayout()
     Me.ResumeLayout(False)
     Me.PerformLayout()
 
   End Sub
-  Friend WithEvents Button1 As System.Windows.Forms.Button
-  Friend WithEvents ProgressBar1 As System.Windows.Forms.ProgressBar
-  Friend WithEvents ProgressBar2 As System.Windows.Forms.ProgressBar
-  Friend WithEvents Label1 As System.Windows.Forms.Label
-  Friend WithEvents CurrentPhase As System.Windows.Forms.Label
-  Friend WithEvents Button2 As System.Windows.Forms.Button
-  Friend WithEvents Button3 As System.Windows.Forms.Button
-  Friend WithEvents txtUpdateScript As System.Windows.Forms.TextBox
-  Friend WithEvents Button4 As System.Windows.Forms.Button
-  Friend WithEvents Button5 As System.Windows.Forms.Button
-  Friend WithEvents Button6 As System.Windows.Forms.Button
-  Friend WithEvents Button7 As System.Windows.Forms.Button
-  Friend WithEvents cmdDatasource As System.Windows.Forms.Button
-  Friend WithEvents txtErrors As System.Windows.Forms.TextBox
-  Friend WithEvents txtDatabase As System.Windows.Forms.TextBox
-  Friend WithEvents Button8 As System.Windows.Forms.Button
-  Friend WithEvents txtServer As System.Windows.Forms.TextBox
-  Friend WithEvents chkDebugMode As System.Windows.Forms.CheckBox
-  Friend WithEvents Label2 As System.Windows.Forms.Label
+  Friend WithEvents pnlScripting As System.Windows.Forms.Panel
   Friend WithEvents Label3 As System.Windows.Forms.Label
-  Friend WithEvents butErrors As System.Windows.Forms.Button
-  Friend WithEvents Button9 As System.Windows.Forms.Button
-  Friend WithEvents Button10 As System.Windows.Forms.Button
+  Friend WithEvents Label2 As System.Windows.Forms.Label
+  Friend WithEvents chkDebugMode As System.Windows.Forms.CheckBox
+  Friend WithEvents txtServer As System.Windows.Forms.TextBox
+  Friend WithEvents txtDatabase As System.Windows.Forms.TextBox
+  Friend WithEvents butScriptDB As System.Windows.Forms.Button
+  Friend WithEvents Panel1 As System.Windows.Forms.Panel
+  Friend WithEvents butViewObjects As System.Windows.Forms.Button
+  Friend WithEvents txtServer2 As System.Windows.Forms.TextBox
+  Friend WithEvents txtDatabase2 As System.Windows.Forms.TextBox
+  Friend WithEvents txtPassword2 As System.Windows.Forms.TextBox
+  Friend WithEvents txtUser2 As System.Windows.Forms.TextBox
+  Friend WithEvents Label1 As System.Windows.Forms.Label
+  Friend WithEvents Label4 As System.Windows.Forms.Label
+  Friend WithEvents butImport As System.Windows.Forms.Button
 
 End Class

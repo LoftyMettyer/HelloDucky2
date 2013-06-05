@@ -55,6 +55,9 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Infragistics2.Shared.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb" />
+    <Reference Include="Infragistics2.Win.UltraWinGrid.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL" />
+    <Reference Include="Infragistics2.Win.v9.1, Version=9.1.20091.1000, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -88,10 +91,10 @@
       <DependentUpon>Form1.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Import &amp; Export Definitions\ImportObjects.Designer.vb">
-      <DependentUpon>ImportObjects.vb</DependentUpon>
+    <Compile Include="Import &amp; Export Definitions\ViewObjects.Designer.vb">
+      <DependentUpon>ViewObjects.vb</DependentUpon>
     </Compile>
-    <Compile Include="Import &amp; Export Definitions\ImportObjects.vb">
+    <Compile Include="Import &amp; Export Definitions\ViewObjects.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="modGeneral.vb" />
@@ -121,8 +124,8 @@
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Import &amp; Export Definitions\ImportObjects.resx">
-      <DependentUpon>ImportObjects.vb</DependentUpon>
+    <EmbeddedResource Include="Import &amp; Export Definitions\ViewObjects.resx">
+      <DependentUpon>ViewObjects.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\licenses.licx" />
     <EmbeddedResource Include="My Project\Resources.resx">

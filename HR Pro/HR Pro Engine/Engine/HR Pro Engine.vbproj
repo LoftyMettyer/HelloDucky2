@@ -178,6 +178,7 @@
     <Compile Include="Object Types\WorkflowElement.vb" />
     <Compile Include="Object Types\WorkflowElementColumn.vb" />
     <Compile Include="Object Types\WorkflowElementItem.vb" />
+    <Compile Include="PopulateObjects2.vb" />
     <Compile Include="Structure Port Scripting\Outputer.vb" />
     <Compile Include="Structure Port Scripting\XMLExport.vb" />
     <Compile Include="SysMgr.vb" />
@@ -233,6 +234,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Connectivity\Access DB Stored Procedures\spadmin_gettables.txt" />
+    <Content Include="Connectivity\Stored Procedures\Get Metadata Stored Procedures.sql" />
     <None Include="Resources\Cancel48.png" />
     <None Include="Resources\Cancel256.png" />
     <None Include="Resources\mobsync.15.ico" />
