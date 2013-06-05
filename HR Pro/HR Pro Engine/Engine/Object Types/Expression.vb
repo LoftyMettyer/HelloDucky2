@@ -903,7 +903,7 @@ Namespace Things
 
       ' Nesting is too deep - convert to part number
 
-      If Me.CaseCount > 8 And [Component].Components.Count > 1 Then
+      If Me.CaseCount > 8 Then
 
         ' Debug.Assert(Me.Name <> "Annual_Rounded")
 
