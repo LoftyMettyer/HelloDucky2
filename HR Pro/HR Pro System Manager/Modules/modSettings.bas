@@ -1,40 +1,10 @@
 Attribute VB_Name = "modSettings"
 Option Explicit
 
-Public Const VARCHAR_MAX_Size = 2147483646 'Yup one below the actual max, needs to be otherwise things go so awfully wrong, you don't believe me, well go on then, change it, see if I care!!!)
-
-' Generic API for doing "interesting" stuff (mainly icon handling)
-Public Declare Function SendMessageLong Lib "user32" Alias "SendMessageA" ( _
-      ByVal hWnd As Long, ByVal wMsg As Long, _
-      ByVal wParam As Long, ByVal LParam As Long _
-   ) As Long
-
-Public Declare Function GetWindowLong Lib "user32" Alias "GetWindowLongA" _
-    (ByVal hWnd As Long, ByVal nIndex As Long) As Long
-
-Public Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongA" _
-    (ByVal hWnd As Long, ByVal nIndex As Long, ByVal dwNewLong As Long) As Long
-
-Private Declare Function RegOpenKeyEx Lib "advapi32" Alias "RegOpenKeyExA" (ByVal hKey As Long, ByVal lpSubKey As String, ByVal ulOptions As Long, ByVal samDesired As Long, ByRef phkResult As Long) As Long
-Private Declare Function RegCloseKey Lib "advapi32" (ByVal hKey As Long) As Long
-
 Private Const HKEY_LOCAL_MACHINE = &H80000002
 Private Const KEY_READ = &H20019
-' --------------------------------------------------------------------------------------------
-' For setting icons
-Private Declare Function GetSystemMetrics Lib "user32" ( _
-      ByVal nIndex As Long _
-   ) As Long
 
-Private Declare Function LoadImageAsString Lib "user32" Alias "LoadImageA" ( _
-      ByVal hInst As Long, _
-      ByVal lpsz As String, _
-      ByVal uType As Long, _
-      ByVal cxDesired As Long, _
-      ByVal cyDesired As Long, _
-      ByVal fuLoad As Long _
-   ) As Long
-                                              
+' Setting icons
 Private Const LR_DEFAULTCOLOR = &H0
 Private Const LR_MONOCHROME = &H1
 Private Const LR_COLOR = &H2
@@ -48,75 +18,15 @@ Private Const LR_LOADMAP3DCOLORS = &H1000
 Private Const LR_CREATEDIBSECTION = &H2000
 Private Const LR_COPYFROMRESOURCE = &H4000
 Private Const LR_SHARED = &H8000&
-
 Private Const IMAGE_ICON = 1
-
 Private Const WM_SETICON = &H80
-
 Private Const ICON_SMALL = 0
 Private Const ICON_BIG = 1
-
 Private Const SM_CXSMICON = 49
 Private Const SM_CYSMICON = 50
-Private Declare Function GetWindow Lib "user32" ( _
-   ByVal hWnd As Long, ByVal wCmd As Long) As Long
 Private Const GW_OWNER = 4
                                               
 ' --------------------------------------------------------------------------------------------
-                                              
-                                              
-' Used for performance monitoring
-Public Declare Function GetTickCount Lib "kernel32" () As Long
-
-Public Const LB_SETHORIZONTALEXTENT = &H194
-
-Public Const WS_THICKFRAME As Long = &H40000
-Public Const WS_MAXIMIZE As Long = &H1000000
-Public Const WS_MAXIMIZEBOX As Long = &H10000
-Public Const WS_MINIMIZE As Long = &H20000000
-Public Const WS_MINIMIZEBOX As Long = &H20000
-Public Const WS_EX_WINDOWEDGE As Long = &H100
-Public Const WS_EX_APPWINDOW As Long = &H40000
-Public Const WS_EX_DLGMODALFRAME As Long = &H1
-Public Const GWL_EXSTYLE As Long = (-20)
-Public Const GWL_STYLE As Long = (-16)
-
-' Globals for the desktop settings
-Public glngDesktopBitmapID As Long
-Public glngDesktopBitmapLocation As BackgroundLocationTypes
-Public glngDeskTopColour As Long
-
-' Globals for the Audit (CMG Export)
-Public gbCMGExportUseCSV As Boolean
-Public gbCMGIgnoreBlanks As Boolean
-Public gbCMGReverseDateChanged As Boolean
-'NPG20090313 Fault
-Public giCMGExportFileCodeOrderID As Integer
-Public giCMGEXportRecordIDOrderID As Integer
-Public giCMGExportFieldCodeOrderID As Integer
-Public giCMGExportOutputColumnOrderID As Integer
-Public giCMGExportLastChangeDateOrderID As Integer
-
-Public gbCMGExportEnabled As Boolean
-Public gbCMGExportFileCode As Boolean
-Public gbCMGExportFieldCode As Boolean
-Public gbCMGExportLastChangeDate As Boolean
-Public giCMGExportFileCodeSize As Integer
-Public giCMGEXportRecordIDSize As Integer
-Public giCMGExportFieldCodeSize As Integer
-Public giCMGExportOutputColumnSize As Integer
-Public giCMGExportLastChangeDateSize As Integer
-
-Public glngExpressionViewColours As ExpressionColour
-Public glngExpressionViewNodes As ExpressionSaveView
-
-Public gbMaximizeScreens As Boolean
-
-Public gbRememberDBColumnsView As Boolean
-Public gpropShowColumns_DataMgr As SystemMgr.Properties  ' Column display
-Public gpropShowColumns_DataMgrTable As SystemMgr.Properties  ' Table display
-Public gpropShowColumns_PictMgr As SystemMgr.Properties
-Public gpropShowColumns_ViewMgr As SystemMgr.Properties
 
 'Security Settings - Login Checks i.e.Bad Attempts
 Private gblnCFG_PCL As Boolean
@@ -126,22 +36,6 @@ Private glngCFG_LD As Long
 Private gintPC_BA As Integer
 Private gdtPC_LA As Date
 Private gdtPC_LKD As Date
-
-' Postcode modules
-Public gbAFDEnabled As Boolean
-Public gbQAddressEnabled As Boolean
-
-' Payroll module
-Public gbAccordPayrollModule As Boolean
-Public gbOpenPayModule As Boolean
-
-' Advanced database settings to control the recursion levels in the database
-Public Const giDefaultRecursionLevel = 8
-Public gbManualRecursionLevel As Boolean
-Public giManualRecursionLevel As Integer
-
-Public gbDisableSpecialFunctionAutoUpdate As Boolean
-Public gbReorganiseIndexesInOvernightJob As Boolean
 
 Private Function LC_FormatDateTimeMessage(plngSeconds As Long) As String
 
