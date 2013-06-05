@@ -2142,7 +2142,7 @@ Private Sub Form_Activate()
   ' Ensure the screen designer form is at the front of the display.
   On Error GoTo ErrorTrap
   
-  Me.ZOrder 0
+  Me.ZOrder vbBringToFront
   
   ' Refresh the properties screen.
   Set frmWorkflowWFItemProps.CurrentWebForm = Me
@@ -2219,8 +2219,8 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
           .Seek "=", lngColumnID
           
           If Not .NoMatch Then
-            lngTableID = recColEdit.Fields("TableId")
-            iColumnDataType = .Fields("dataType")
+            lngTableID = recColEdit.Fields("TableId").value
+            iColumnDataType = .Fields("dataType").value
             
             ' Add the required control type.
             If (iColumnDataType = dtLONGVARBINARY) _
@@ -2250,7 +2250,7 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
               Set ctlControl.Container = pVarPageContainer
               ctlControl.Left = AlignX(CLng(pSngX))
               ctlControl.Top = AlignY(CLng(pSngY))
-              ctlControl.ColumnID = .Fields("columnID")
+              ctlControl.ColumnID = .Fields("columnID").value
               
               ' Give the control a tooltip.
               sColumnName = .Fields("columnName")
@@ -2259,7 +2259,7 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
                 .Seek "=", lngTableID
                     
                 If Not .NoMatch Then
-                  sTableName = .Fields("tableName")
+                  sTableName = .Fields("tableName").value
                   ctlControl.ToolTipText = "<" & sTableName & "." & sColumnName & ">"
                 End If
               End With
@@ -2397,7 +2397,7 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
               'we only check the visible property of other controls.
               If ctlControl.Name <> "abWebForm" Then
                 ctlControl.Visible = True
-                ctlControl.ZOrder 0
+                ctlControl.ZOrder vbBringToFront
               End If
             End If
             
@@ -2618,9 +2618,9 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
                 
                 ' Put frame at the back
                 If iControlType = giWFFORMITEM_FRAME And gbAutoSendFrameToBack Then
-                  .ZOrder 1
+                  .ZOrder vbSendToBack
                 Else
-                  .ZOrder 0
+                  .ZOrder vbBringToFront
                 End If
               
               End If
@@ -2739,9 +2739,9 @@ Private Function DropControl(pVarPageContainer As Variant, pCtlSource As Control
               
               ' Put frame at the back
               If iControlType = giWFFORMITEM_FRAME And gbAutoSendFrameToBack Then
-                .ZOrder 1
+                .ZOrder vbSendToBack
               Else
-                .ZOrder 0
+                .ZOrder vbBringToFront
               End If
               
             End If
@@ -2961,7 +2961,7 @@ End Sub
 
 Public Sub RefreshBlankDesignLabel()
   Me.lblBlankDesigner.Visible = (WebFormControlsCount < 1)
-  Me.lblBlankDesigner.ZOrder 0
+  Me.lblBlankDesigner.ZOrder vbBringToFront
   Me.lblBlankDesigner.Left = (Me.ScaleWidth - lblBlankDesigner.Width) / 2
   Me.lblBlankDesigner.Top = (Me.ScaleHeight - lblBlankDesigner.Height) / 2
 End Sub
@@ -3231,7 +3231,7 @@ Public Sub EditMenu(ByVal psMenuOption As String)
         frmWorkflowWFItemProps.Show
       Else
         frmWorkflowWFItemProps.WindowState = vbNormal
-        frmWorkflowWFItemProps.ZOrder 0
+        frmWorkflowWFItemProps.ZOrder vbBringToFront
       End If
             
     ' Display the object properties screen.
@@ -3248,7 +3248,7 @@ Public Sub EditMenu(ByVal psMenuOption As String)
         frmWorkflowWFToolbox.Show
       Else
         frmWorkflowWFToolbox.WindowState = vbNormal
-        frmWorkflowWFToolbox.ZOrder 0
+        frmWorkflowWFToolbox.ZOrder vbBringToFront
       End If
      
     Case "ID_AutoLabel"
@@ -3351,7 +3351,7 @@ Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y A
       .Height = 0
       Set .Container = VarPageContainer
       .Visible = True
-      .ZOrder 0
+      .ZOrder vbBringToFront
     End With
   
   End If
@@ -4669,7 +4669,11 @@ Private Function PasteControls() As Boolean
   UI.LockWindow Me.hWnd
   
   ' Get the current page container.
-  Set VarPageContainer = CurrentPageContainer(0, 0)
+  If TabPages.Selected Then
+    Set VarPageContainer = objTabContainer(TabPages.SelectedItem.Tag)
+  Else
+    Set VarPageContainer = CurrentPageContainer(0, 0)
+  End If
   
   ' Get the offset for the new positions of the controls.
   lngXOffset = VarPageContainer.Width
@@ -5698,7 +5702,7 @@ Private Function SetControlLevel() As Boolean
     For Each ctlControl In Me.Controls
       If IsWebFormControl(ctlControl) Then
         If ctlControl.ControlLevel = iLevel Then
-          ctlControl.ZOrder 0
+          ctlControl.ZOrder vbBringToFront
         End If
       End If
     Next ctlControl
@@ -6660,6 +6664,9 @@ Private Function WebFormControl_MouseUp(pctlControl As VB.Control, piButton As I
           End With
         Next iCount
         
+        ' Try and autodock onto tab page
+        AutoDockInTabControl pctlControl
+        
         ' Flag screen as having changed
         IsChanged = True
         
@@ -6782,7 +6789,7 @@ Private Function AutoLabel(pVarPageContainer As Variant, pSngX As Single, pSngY 
             
         If fOK Then
           .Visible = True
-          .ZOrder 0
+          .ZOrder vbBringToFront
         End If
       
         If giLastActionFlag = giACTION_DROPCONTROLAUTOLABEL Then
@@ -6923,7 +6930,12 @@ Public Function SelectControl(pctlControl As VB.Control) As Boolean
       .AttachedObject = pctlControl
       .Move .AttachedObject.Left - .MarkerSize, .AttachedObject.Top - .MarkerSize, .AttachedObject.Width + (.MarkerSize * 2), .AttachedObject.Height + (.MarkerSize * 2)
       .RefreshSelectionMarkers True
-      .ZOrder 0
+      
+      If Not .AttachedObject.Name = "TabPages" Then
+        .AttachedObject.ZOrder vbBringToFront
+      End If
+      
+      .ZOrder vbBringToFront
       .Visible = True
     End With
   
@@ -7655,7 +7667,7 @@ Private Function SendSelectedControlsToBack()
   For iCount = 1 To ASRSelectionMarkers.Count - 1
     With ASRSelectionMarkers(iCount)
       If .Visible Then
-        .AttachedObject.ZOrder 1
+        .AttachedObject.ZOrder vbSendToBack
       End If
     End With
   Next iCount
@@ -7672,7 +7684,12 @@ Private Function BringSelectedControlsToFront()
   For iCount = 1 To ASRSelectionMarkers.Count - 1
     With ASRSelectionMarkers(iCount)
       If .Visible Then
-        .AttachedObject.ZOrder 0
+        .AttachedObject.ZOrder vbBringToFront
+        
+        If .AttachedObject.Name = "TabPages" Then
+          tabPages_Click
+        End If
+        
       End If
     End With
   Next iCount
@@ -8287,7 +8304,7 @@ Private Function DropTabPage(Optional piTabPageIndex As Integer) As Boolean
       .Width = TabPages.Width - 100
       .Height = TabPages.Height - 100
       .Visible = True
-      .ZOrder 1
+      .ZOrder vbSendToBack
     End With
 
     fControlsMoved = False
@@ -8330,7 +8347,7 @@ Private Function DropTabPage(Optional piTabPageIndex As Integer) As Boolean
       .Left = 50
       .Top = 50
       .Visible = True
-      .ZOrder 1
+      .ZOrder vbSendToBack
     End With
        
     DockPagesToTabStrip
@@ -8469,7 +8486,7 @@ Private Sub tabPages_Click()
       If .Index = mlngCurrentPageNo Then
         .Enabled = True
         .Visible = True
-        .ZOrder 0
+        .ZOrder vbBringToFront
       Else
         .Enabled = False
         .Visible = False
@@ -8639,3 +8656,35 @@ ErrorTrap:
   Resume TidyUpAndExit
   
 End Function
+
+' Try and auto dock the passed in control if its highlighted over a control
+Private Sub AutoDockInTabControl(ByRef pobjControl As Control)
+
+  Dim bIsContained As Boolean
+  Dim X1 As Integer
+  Dim X2 As Integer
+  Dim Y1 As Integer
+  Dim Y2 As Integer
+
+  bIsContained = False
+  X1 = pobjControl.Left
+  X2 = pobjControl.Left + pobjControl.Width
+  Y1 = pobjControl.Top
+  Y2 = pobjControl.Top + pobjControl.Height
+
+  If TabPages.Tabs.Count > 0 And pobjControl.Container Is Me Then
+    If X1 > TabPages.ClientLeft And X2 < TabPages.ClientLeft + TabPages.ClientWidth _
+      And Y1 > TabPages.ClientTop And Y2 < TabPages.ClientTop + TabPages.ClientHeight Then
+        bIsContained = True
+    End If
+  End If
+  
+  ' Yup - autodock it!
+  If bIsContained Then
+    Set pobjControl.Container = objTabContainer(TabPages.SelectedItem.Tag)
+    
+    pobjControl.Top = pobjControl.Top - TabPages.ClientTop - TabPages.Top
+    pobjControl.Left = pobjControl.Left - TabPages.ClientLeft - TabPages.Left
+  End If
+
+End Sub
