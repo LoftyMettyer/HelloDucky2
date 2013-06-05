@@ -497,13 +497,15 @@ Private Sub Favourites(ByVal bAdd As Boolean)
 
   Dim sSQL As String
   Dim lngSelectedID As Integer
+  Dim lngUtilityType As UtilityType
 
   lngSelectedID = GetIDFromTag(List1.SelectedItem.Tag)
+  lngUtilityType = GetTypeFromTag(List1.SelectedItem.Tag)
   
   If bAdd Then
-    sSQL = "EXEC dbo.[spstat_addtofavourites] " & mutlUtilityType & "," & lngSelectedID
+    sSQL = "EXEC dbo.[spstat_addtofavourites] " & lngUtilityType & "," & lngSelectedID
   Else
-    sSQL = "EXEC dbo.[spstat_removefromfavourites] " & mutlUtilityType & "," & lngSelectedID
+    sSQL = "EXEC dbo.[spstat_removefromfavourites] " & lngUtilityType & "," & lngSelectedID
   End If
   
   ' Execute
@@ -1013,7 +1015,7 @@ Private Sub List1_DblClick()
         If mblnCaptionIsRun Then
           'If COAMsgBox("Are you sure you want to run the '" & List1.SelectedItem.Text & "' " & Me.Caption & " ?", vbYesNo + vbQuestion, "Confirmation...") = vbNo Then
           'NHRD25082004 Fault 7802
-          If COAMsgBox("Are you sure you want to run the '" & List1.SelectedItem.Text & "' " & msSingularCaption & " ?", vbYesNo + vbQuestion, "Confirmation...") = vbNo Then
+          If COAMsgBox("Are you sure you want to run '" & List1.SelectedItem.Text & "' ?", vbYesNo + vbQuestion, "Confirmation...") = vbNo Then
             Exit Sub
           End If
         End If
