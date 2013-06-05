@@ -281,6 +281,7 @@ Namespace Things
           If CType(objDependency, Things.Column).Table Is Me.BaseTable Then
             aryParameters1.Add(String.Format("@prm_{0} {1}", objDependency.Name, CType(objDependency, Things.Column).DataTypeSyntax))
             aryParameters2.Add(String.Format("base.[{0}]", objDependency.Name))
+            aryParameters3.Add(String.Format("@prm_{0}", objDependency.Name))
           End If
         End If
 
