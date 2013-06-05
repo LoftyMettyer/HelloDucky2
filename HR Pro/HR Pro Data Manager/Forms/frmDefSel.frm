@@ -304,6 +304,7 @@ Private msGeneralCaption As String
 Private msSingularCaption As String
 
 Private malngSelectedIDs()
+Private mstrExtraWhereClause As String
 
 Public Property Get CategoryID() As Long
   CategoryID = mlngTableID
@@ -456,8 +457,7 @@ Private Sub cboTables_Click()
     If .ListIndex > -1 Then
       If mlngTableID <> .ItemData(.ListIndex) Then
         mlngTableID = .ItemData(.ListIndex)
-  '      mlngLastCategory = .ItemData(.ListIndex)
-        GetSQL mutlUtilityType, "", False
+        GetSQL mutlUtilityType, mstrExtraWhereClause, False
         Call Populate_List
       End If
     End If
@@ -1848,7 +1848,7 @@ Private Sub ShowControls()
    
   ' Table combo flag now used to show categories or tables
   lblTables.Visible = True
-  cboTables.Visible = True
+  cboTables.Visible = lblTables.Visible
     
   If mblnTableComboVisible Then
     PopulateTables
@@ -2049,7 +2049,7 @@ Public Property Let EventLogIDs(ByVal strNewValue As String)
   mstrEventLogIDs = strNewValue
 End Property
 
-Public Sub GetSQL(lngUtilType As UtilityType, Optional msRecordSourceWhere As String, Optional blnScheduledJobs As Boolean)
+Public Sub GetSQL(lngUtilType As UtilityType, Optional psRecordSourceWhere As String, Optional blnScheduledJobs As Boolean)
 
   Dim strExtraWhereClause As String
   Dim sCategoryFilter As String
@@ -2234,7 +2234,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional msRecordSourceWhere As St
     msSingularCaption = msType
     msTableName = "ASRSysGlobalFunctions"
     msIDField = "FunctionID"
-    msRecordSourceWhere = msTableName & ".Type = '" & Mid$(msTypeCode, 7, 1) & "'"
+    psRecordSourceWhere = msTableName & ".Type = '" & Mid$(msTypeCode, 7, 1) & "'"
     msAccessTableName = "ASRSysGlobalAccess"
   
   Case utlImport
@@ -2252,7 +2252,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional msRecordSourceWhere As St
     msTypeCode = "MATCHREPORTS"
     msType = "Match Report"
     mutlUtilityType = utlMatchReport
-    msRecordSourceWhere = "ASRSysMatchReportName.matchReportType = 0"
+    psRecordSourceWhere = "ASRSysMatchReportName.matchReportType = 0"
     msGeneralCaption = "Match Reports"
     msSingularCaption = "Match Report"
     msTableName = "ASRSysMatchReportName"
@@ -2265,7 +2265,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional msRecordSourceWhere As St
     msTypeCode = "SUCCESSION"   '"SUCCESSIONPLANNING"
     msType = "Succession Planning"
     mutlUtilityType = utlSuccession
-    msRecordSourceWhere = "ASRSysMatchReportName.matchReportType = 1"
+    psRecordSourceWhere = "ASRSysMatchReportName.matchReportType = 1"
     msGeneralCaption = "Succession Planning"
     msSingularCaption = "Succession Planning"
     msTableName = "ASRSysMatchReportName"
@@ -2278,7 +2278,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional msRecordSourceWhere As St
     msTypeCode = "CAREER"    '"CAREERPROGRESSION"
     msType = "Career Progression"
     mutlUtilityType = utlCareer
-    msRecordSourceWhere = "ASRSysMatchReportName.matchReportType = 2"
+    psRecordSourceWhere = "ASRSysMatchReportName.matchReportType = 2"
     msGeneralCaption = "Career Progression"
     msSingularCaption = "Career Progression"
     msTableName = "ASRSysMatchReportName"
@@ -2295,7 +2295,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional msRecordSourceWhere As St
     msTableName = "ASRSysMailMergeName"
     msIDField = "MailMergeID"
     mutlUtilityType = utlMailMerge
-    msRecordSourceWhere = "ASRSysMailMergeName.IsLabel = 0"
+    psRecordSourceWhere = "ASRSysMailMergeName.IsLabel = 0"
     msAccessTableName = "ASRSysMailMergeAccess"
     Me.HelpContextID = 1101
     
@@ -2307,7 +2307,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional msRecordSourceWhere As St
     msTableName = "ASRSysMailMergeName"
     msIDField = "MailMergeID"
     mutlUtilityType = utlLabel
-    msRecordSourceWhere = "ASRSysMailMergeName.IsLabel = 1"
+    psRecordSourceWhere = "ASRSysMailMergeName.IsLabel = 1"
     msAccessTableName = "ASRSysMailMergeAccess"
     Me.HelpContextID = 1102
 
@@ -2390,7 +2390,7 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional msRecordSourceWhere As St
   msFieldName = "Name"
    
   ' Show only unassigned utilities
-  If mlngTableID > -1 Then
+  If mlngTableID > -1 And Not mblnTableComboVisible Then
     sCategoryFilter = " LEFT JOIN dbo.tbsys_objectcategories cat ON cat.objectid = " & msTableName & "." & msIDField & " AND cat.objecttype = " & CStr(mutlUtilityType)
     strExtraWhereClause = "(ISNULL(cat.categoryid,0) = " & mlngTableID & ")"
   End If
@@ -2418,15 +2418,17 @@ Public Sub GetSQL(lngUtilType As UtilityType, Optional msRecordSourceWhere As St
       IIf(strExtraWhereClause <> vbNullString, " WHERE " & strExtraWhereClause, "")
   End If
 
-  If msRecordSourceWhere <> vbNullString Then
-    msRecordSource = msRecordSource & IIf(strExtraWhereClause <> vbNullString, " AND ", " WHERE ") & msRecordSourceWhere
+  If psRecordSourceWhere <> vbNullString Then
+    msRecordSource = msRecordSource & IIf(strExtraWhereClause <> vbNullString, " AND ", " WHERE ") & psRecordSourceWhere
   End If
 
 End Sub
 
-Public Function ShowList(lngUtilType As UtilityType, Optional msRecordSourceWhere As String, Optional blnScheduledJobs As Boolean) As Boolean
+Public Function ShowList(lngUtilType As UtilityType, Optional psRecordSourceWhere As String, Optional blnScheduledJobs As Boolean) As Boolean
 
-  GetSQL lngUtilType, msRecordSourceWhere, blnScheduledJobs
+  mstrExtraWhereClause = psRecordSourceWhere
+
+  GetSQL lngUtilType, mstrExtraWhereClause, blnScheduledJobs
     
   If mblnFirstLoad Then
     chkOnlyMine.Value = GetUserSetting("DefSel", "OnlyMine " & msTypeCode, 0)
