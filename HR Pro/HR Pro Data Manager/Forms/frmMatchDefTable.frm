@@ -1,9 +1,9 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmMatchDefTable 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Match Report Table Comparison"
@@ -120,10 +120,12 @@ Begin VB.Form frmMatchDefTable
          Top             =   1720
          Width           =   7380
          Begin VB.CommandButton cmdPreferredClear 
-            Caption         =   "X"
+            DisabledPicture =   "frmMatchDefTable.frx":11D8
             Height          =   315
             Left            =   5280
             MaskColor       =   &H000000FF&
+            Picture         =   "frmMatchDefTable.frx":15AA
+            Style           =   1  'Graphical
             TabIndex        =   12
             ToolTipText     =   "Clear Path"
             Top             =   700
@@ -131,10 +133,12 @@ Begin VB.Form frmMatchDefTable
             Width           =   330
          End
          Begin VB.CommandButton cmdScoreClear 
-            Caption         =   "X"
+            DisabledPicture =   "frmMatchDefTable.frx":1985
             Height          =   315
             Left            =   5280
             MaskColor       =   &H000000FF&
+            Picture         =   "frmMatchDefTable.frx":1D57
+            Style           =   1  'Graphical
             TabIndex        =   16
             ToolTipText     =   "Clear Path"
             Top             =   1100
@@ -142,10 +146,12 @@ Begin VB.Form frmMatchDefTable
             Width           =   330
          End
          Begin VB.CommandButton cmdRequiredClear 
-            Caption         =   "X"
+            DisabledPicture =   "frmMatchDefTable.frx":2132
             Height          =   315
             Left            =   5280
             MaskColor       =   &H000000FF&
+            Picture         =   "frmMatchDefTable.frx":2504
+            Style           =   1  'Graphical
             TabIndex        =   8
             ToolTipText     =   "Clear Path"
             Top             =   300
@@ -643,15 +649,15 @@ Begin VB.Form frmMatchDefTable
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   3
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDefTable.frx":11D8
+            Picture         =   "frmMatchDefTable.frx":28DF
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDefTable.frx":15A4
+            Picture         =   "frmMatchDefTable.frx":2CAB
             Key             =   "IMG_CALC"
          EndProperty
          BeginProperty ListImage3 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmMatchDefTable.frx":19B4
+            Picture         =   "frmMatchDefTable.frx":30BB
             Key             =   "IMG_MATCH"
          EndProperty
       EndProperty
@@ -824,7 +830,7 @@ Public Property Let ReadOnly(blnNewValue As Boolean)
 End Property
 
 Private Property Let Changed(blnNewValue As Boolean)
-  cmdOK.Enabled = blnNewValue
+  cmdOk.Enabled = blnNewValue
 End Property
 
 Private Sub cboMatchTables_Click()
@@ -1416,7 +1422,7 @@ Private Sub ListView1_GotFocus()
 End Sub
 
 Private Sub ListView1_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub ListView2_GotFocus()
@@ -1424,7 +1430,7 @@ Private Sub ListView2_GotFocus()
 End Sub
 
 Private Sub ListView2_LostFocus()
-  cmdOK.Default = True
+  cmdOk.Default = True
 End Sub
 
 Private Sub ListView1_DblClick()
