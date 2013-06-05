@@ -84,6 +84,7 @@
     <Compile Include="Classes\HCMGuid.vb" />
     <Compile Include="Classes\HCMOptions.vb" />
     <Compile Include="Classes\HCMProgressBar.vb" />
+    <Compile Include="Classes\HCMTuningReport.vb" />
     <Compile Include="COM Interface\Interfaces.vb" />
     <Compile Include="Connectivity\AccessDB.vb" />
     <Compile Include="Connectivity\ADOClassic.vb" />

@@ -17,6 +17,7 @@
     Property MetadataDB As Object
     Property CommitDB As Object
     ReadOnly Property ErrorLog As ErrorHandler.Errors
+    ReadOnly Property TuningLog As Tuning.Report
     ReadOnly Property Things As Things.Collection
     ReadOnly Property Script As ScriptDB.Script
     Function Initialise() As Boolean

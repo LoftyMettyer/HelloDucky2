@@ -111,6 +111,7 @@
           objCodeLibrary.CalculatePostAudit = objRow.Item("calculatepostaudit").ToString
           objCodeLibrary.IsUniqueCode = objRow.Item("isuniquecode").ToString
           objCodeLibrary.IsGetFieldFromDB = objRow.Item("isgetfieldfromdb").ToString
+          objCodeLibrary.Tuning.Rating = objRow.Item("performancerating").ToString
           objCodeLibrary.Dependancies = PopulateCodeLibraryDependancies(objCodeLibrary)
 
           If objRow.Item("isoperator") Then

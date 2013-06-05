@@ -76,6 +76,12 @@ Public Class SysMgr
 
   End Function
 
+  Public ReadOnly Property ReturnTuningLog As Tuning.Report Implements Interfaces.iSystemManager.TuningLog
+    Get
+      Return Globals.TuningLog
+    End Get
+  End Property
+
   Public ReadOnly Property ReturnErrorLog As ErrorHandler.Errors Implements Interfaces.iSystemManager.ErrorLog
     Get
       Return Globals.ErrorLog

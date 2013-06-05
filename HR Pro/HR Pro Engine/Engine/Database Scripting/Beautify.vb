@@ -1,9 +1,8 @@
 ﻿Namespace ScriptDB
 
-  <HideModuleName()> _
-  Public Module StringFunctions
+  Public Module Beautify
 
-    Public Sub Beautify(ByRef Input As String)
+    Public Sub Cleanwhitespace(ByRef Input As String)
 
       ' Put correct indentation
       Input.Replace(vbNewLine, vbNewLine & Space(4))
@@ -15,10 +14,18 @@
     End Sub
 
     Public Sub FormatDeclarations(ByRef Input As String)
-
-
-
     End Sub
+
+    Public Function MakeSingleLine(ByVal Input As String) As String
+
+      Dim sReturn As String = Input
+
+      sReturn.Replace(vbNewLine, "")
+      sReturn.Replace(" ", "")
+
+      Return sReturn
+
+    End Function
 
   End Module
 

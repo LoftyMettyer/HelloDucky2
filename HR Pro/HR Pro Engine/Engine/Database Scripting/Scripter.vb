@@ -955,6 +955,7 @@ Namespace ScriptDB
             If objColumn.IsCalculated Then
 
               objColumn.Calculation.GenerateCode()
+              Globals.TuningLog.Expressions.Add(objColumn)
 
               sObjectName = String.Format("{0}{1}.{2}", Consts.CalculationUDF, objTable.Name, objColumn.Name)
               'Debug.Assert(sObjectName <> "udfcalc_Personnel_Records.Trigger_to_Payroll")

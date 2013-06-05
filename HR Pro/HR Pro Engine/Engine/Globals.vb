@@ -13,6 +13,7 @@ Public Module Globals
   Public Functions As Things.Collection
   Public SelectedThings As Things.Collection
   Public ErrorLog As HRProEngine.ErrorHandler.Errors
+  Public TuningLog As Tuning.Report
   Public ModuleSetup As Things.Collection
   Public Options As HCMOptions
   Public UniqueCodes As Things.Collection
@@ -29,6 +30,7 @@ Public Module Globals
     Operators = New Things.Collection
     Functions = New Things.Collection
     ErrorLog = New HRProEngine.ErrorHandler.Errors
+    TuningLog = New Tuning.Report
     ModuleSetup = New Things.Collection
     ScriptDB = New ScriptDB.Script
     Options = New HCMOptions
