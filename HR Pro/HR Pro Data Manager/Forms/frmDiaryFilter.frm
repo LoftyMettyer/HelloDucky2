@@ -17,6 +17,7 @@ Begin VB.Form frmDiaryFilter
    EndProperty
    HelpContextID   =   1031
    Icon            =   "frmDiaryFilter.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False

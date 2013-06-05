@@ -17,6 +17,7 @@ Begin VB.Form frmDocumentMap
       Strikethrough   =   0   'False
    EndProperty
    Icon            =   "frmDocumentMap.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False

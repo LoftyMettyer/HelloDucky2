@@ -19,6 +19,7 @@ Begin VB.Form frmEmailSel
    EndProperty
    HelpContextID   =   1034
    Icon            =   "frmEmailSel.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form5"
    LockControls    =   -1  'True
    MaxButton       =   0   'False

@@ -16,6 +16,7 @@ Begin VB.Form frmGlobalFunctionsTableValue
       Strikethrough   =   0   'False
    EndProperty
    Icon            =   "frmGlobalFunctionsTableValue.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -342,7 +343,7 @@ Private Sub GetRecords()
     Loop
         
     .Enabled = (.ListCount > 0)
-    cmdOk.Enabled = (.ListCount > 0)
+    cmdOK.Enabled = (.ListCount > 0)
     .BackColor = IIf(.ListCount > 0, vbWindowBackground, vbButtonFace)
   
   End With

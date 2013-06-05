@@ -23,6 +23,7 @@ Begin VB.Form frmMatchDef
    EndProperty
    HelpContextID   =   1074
    Icon            =   "frmMatchDef.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -112,11 +113,11 @@ Begin VB.Form frmMatchDef
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmMatchDef.frx":11D8
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraFieldButtons"
+      Tab(2).Control(0)=   "fraFieldsSelected"
       Tab(2).Control(0).Enabled=   0   'False
       Tab(2).Control(1)=   "fraFieldsAvailable"
       Tab(2).Control(1).Enabled=   0   'False
-      Tab(2).Control(2)=   "fraFieldsSelected"
+      Tab(2).Control(2)=   "fraFieldButtons"
       Tab(2).Control(2).Enabled=   0   'False
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "&Sort Order"
@@ -128,11 +129,11 @@ Begin VB.Form frmMatchDef
       TabCaption(4)   =   "O&utput"
       TabPicture(4)   =   "frmMatchDef.frx":1210
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraOutputDestination"
+      Tab(4).Control(0)=   "fraReportOptions"
       Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraOutputFormat"
       Tab(4).Control(1).Enabled=   0   'False
-      Tab(4).Control(2)=   "fraReportOptions"
+      Tab(4).Control(2)=   "fraOutputDestination"
       Tab(4).Control(2).Enabled=   0   'False
       Tab(4).ControlCount=   3
       Begin VB.Frame fraOutputDestination 

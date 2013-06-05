@@ -20,6 +20,7 @@ Begin VB.Form frmCalendarReportEventDetails
    EndProperty
    HelpContextID   =   1068
    Icon            =   "frmCalendarReportEventDetails.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False

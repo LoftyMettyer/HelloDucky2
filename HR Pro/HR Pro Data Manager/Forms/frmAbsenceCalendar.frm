@@ -10,6 +10,7 @@ Begin VB.Form frmAbsenceCalendar
    ClientWidth     =   11775
    HelpContextID   =   1005
    Icon            =   "frmAbsenceCalendar.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False

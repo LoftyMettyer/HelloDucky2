@@ -23,6 +23,7 @@ Begin VB.Form frmCrossTabDef
    ForeColor       =   &H00C0C0C0&
    HelpContextID   =   1025
    Icon            =   "frmCrossTabDef.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -82,17 +83,17 @@ Begin VB.Form frmCrossTabDef
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmCrossTabDef.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(0)"
+      Tab(1).Control(0)=   "fraColumns(1)"
       Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "fraColumns(1)"
+      Tab(1).Control(1)=   "fraColumns(0)"
       Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmCrossTabDef.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraOutputDestination"
+      Tab(2).Control(0)=   "fraOutputFormat"
       Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraOutputFormat"
+      Tab(2).Control(1)=   "fraOutputDestination"
       Tab(2).Control(1).Enabled=   0   'False
       Tab(2).ControlCount=   2
       Begin VB.Frame fraOutputDestination 

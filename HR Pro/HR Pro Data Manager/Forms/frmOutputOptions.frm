@@ -18,6 +18,7 @@ Begin VB.Form frmOutputOptions
    EndProperty
    HelpContextID   =   1049
    Icon            =   "frmOutputOptions.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form4"
    LockControls    =   -1  'True
    MaxButton       =   0   'False

@@ -17,6 +17,7 @@ Begin VB.Form frmImportColumns
    EndProperty
    HelpContextID   =   1044
    Icon            =   "frmImportColumns.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False

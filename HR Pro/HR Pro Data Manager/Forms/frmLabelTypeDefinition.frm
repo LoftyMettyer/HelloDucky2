@@ -20,6 +20,7 @@ Begin VB.Form frmLabelTypeDefinition
    EndProperty
    HelpContextID   =   1082
    Icon            =   "frmLabelTypeDefinition.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -57,11 +58,11 @@ Begin VB.Form frmLabelTypeDefinition
       TabCaption(1)   =   "&Format"
       TabPicture(1)   =   "frmLabelTypeDefinition.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "ImageList1"
-      Tab(1).Control(1)=   "picColour"
+      Tab(1).Control(0)=   "fraPreview"
+      Tab(1).Control(1)=   "fraFont(1)"
       Tab(1).Control(2)=   "fraFont(0)"
-      Tab(1).Control(3)=   "fraFont(1)"
-      Tab(1).Control(4)=   "fraPreview"
+      Tab(1).Control(3)=   "picColour"
+      Tab(1).Control(4)=   "ImageList1"
       Tab(1).ControlCount=   5
       Begin VB.Frame fraPreview 
          Caption         =   "Preview :"

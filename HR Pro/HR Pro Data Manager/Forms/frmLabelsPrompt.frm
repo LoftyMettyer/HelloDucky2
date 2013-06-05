@@ -18,6 +18,7 @@ Begin VB.Form frmLabelsPrompt
    EndProperty
    HelpContextID   =   1081
    Icon            =   "frmLabelsPrompt.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False

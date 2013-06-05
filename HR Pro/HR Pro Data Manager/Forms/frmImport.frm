@@ -21,6 +21,7 @@ Begin VB.Form frmImport
    EndProperty
    HelpContextID   =   1044
    Icon            =   "frmImport.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    LockControls    =   -1  'True
    MaxButton       =   0   'False
@@ -53,8 +54,8 @@ Begin VB.Form frmImport
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmImport.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraDefinition(0)"
-      Tab(0).Control(1)=   "fraData"
+      Tab(0).Control(0)=   "fraData"
+      Tab(0).Control(1)=   "fraDefinition(0)"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmImport.frx":0028
@@ -947,7 +948,7 @@ Public Property Get SelectedID() As Long
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -981,7 +982,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = pblnChanged
+  cmdOK.Enabled = pblnChanged
 End Property
 
 Private Sub cboBaseTable_Click()
@@ -2129,13 +2130,13 @@ Private Sub txtDesc_GotFocus()
     .SelLength = Len(.Text)
   End With
 
-  cmdOk.Default = False
+  cmdOK.Default = False
   
 End Sub
 
 Private Sub txtDesc_LostFocus()
 
-  cmdOk.Default = True
+  cmdOK.Default = True
 
 End Sub
 

@@ -17,6 +17,7 @@ Begin VB.Form frmAccordExportRecords
    EndProperty
    HelpContextID   =   1149
    Icon            =   "frmAccordExportRecords.frx":0000
+   KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
