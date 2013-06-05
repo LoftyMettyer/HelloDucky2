@@ -56,7 +56,7 @@ Begin VB.Form frmScrDesigner2
       DisplayType     =   1
       NavigateIn      =   0
       NavigateTo      =   ""
-      InScreenDesigner=   0   'False
+      InScreenDesigner=   -1  'True
       ColumnID        =   0
       ColumnName      =   ""
       Selected        =   0   'False
@@ -75,6 +75,7 @@ Begin VB.Form frmScrDesigner2
       FontStrikethrough=   0   'False
       FontUnderline   =   -1  'True
       ForeColor       =   -2147483630
+      BackColor       =   -2147483633
       NavigateOnSave  =   0   'False
    End
    Begin VB.PictureBox picFormIcon 
