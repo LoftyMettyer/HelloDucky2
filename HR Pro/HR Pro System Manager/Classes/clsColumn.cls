@@ -1443,7 +1443,8 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
       " WHERE tmpSSIntranetLinks.Chart_columnID = " & Trim(Str(gLngColumnID)) & _
       " OR tmpSSIntranetLinks.Chart_ColumnID_2 = " & Trim(Str(gLngColumnID)) & _
       " OR tmpSSIntranetLinks.Chart_ColumnID_3 = " & Trim(Str(gLngColumnID)) & _
-      " OR tmpSSIntranetLinks.Chart_ColourID = " & Trim(Str(gLngColumnID))
+      " OR tmpSSIntranetLinks.Chart_ColourID = " & Trim(Str(gLngColumnID)) & _
+      " OR tmpSSIntranetLinks.Chart_FilterID = " & Trim(Str(gLngColumnID))
   
     Set rsDAOTemp = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
     If Not (rsDAOTemp.BOF And rsDAOTemp.EOF) Then
