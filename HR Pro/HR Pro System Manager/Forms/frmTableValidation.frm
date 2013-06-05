@@ -155,7 +155,7 @@ Private mbCancelled As Boolean
 Private mbReadOnly As Boolean
 Private mbLoading As Boolean
 Private objValidationObject As clsTableValidation
-Private miValidationType As Integer
+Private miValidationType As ValidationType
 
 Public Property Get ValidationObject() As clsTableValidation
   Set ValidationObject = objValidationObject
@@ -203,6 +203,7 @@ End Sub
 
 Private Sub Form_Load()
 
+  miValidationType = VALIDATION_OVERLAP
   mbCancelled = True
   mbReadOnly = (Application.AccessMode <> accFull And _
                   Application.AccessMode <> accSupportMode)
@@ -252,16 +253,21 @@ Private Function ValidDefinition() As Boolean
     Case VALIDATION_OVERLAP
     
       If GetComboItem(cboOverlapColumnStartDate) = 0 Then
-        sValidationMessage = sValidationMessage & "Overlap Start Event is not defined"
+        sValidationMessage = sValidationMessage & "Overlap Event Start is not defined" & vbNewLine
       End If
     
-      If GetComboItem(cboOverlapColumnStartDate) = 0 Then
-        sValidationMessage = sValidationMessage & "Overlap End Event is not defined"
+      If GetComboItem(cboOverlapColumnEndDate) = 0 Then
+        sValidationMessage = sValidationMessage & "Overlap Event End is not defined" & vbNewLine
       End If
     
     Case VALIDATION_CUSTOM
         
   End Select
+  
+  If Len(sValidationMessage) > 0 Then
+    MsgBox sValidationMessage, vbInformation, "Validation"
+    ValidDefinition = False
+  End If
   
 End Function
 
